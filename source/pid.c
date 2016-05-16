@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <3ds.h>
 
-#define DELAY 25
+#define DELAY 20
 
 void hexa2bin (int binary[], char hexadecimal[], int nbit) {
 	int k = 0;
@@ -128,12 +128,11 @@ void hexa2bin (int binary[], char hexadecimal[], int nbit) {
 }
 
 long unsigned int hexa2dec (char hexadecimal[], int binary[], int nbit) {
-	int i = 0;
 	long unsigned int decimal = 0;
 	
 	hexa2bin (binary, hexadecimal, nbit);
 	
-	for (i = 0; i < nbit * 4; i++) {
+	for (int i = 0; i < nbit * 4; i++) {
 		long unsigned int pot = 1;
 		int j = 0;
 		while (j < i) {
@@ -146,7 +145,7 @@ long unsigned int hexa2dec (char hexadecimal[], int binary[], int nbit) {
 }
 
 void PIDchecker(char pid_hexa_vett[], int var[]) {
-	int pid_bin_vett[8 * 4];
+	int pid_bin_vett[32];
 	int tid_vett[16];
 	int sid_vett[16];
 	int xor_vett[16];
@@ -159,7 +158,12 @@ void PIDchecker(char pid_hexa_vett[], int var[]) {
 	
 	decimal = hexa2dec (pid_hexa_vett, pid_bin_vett, 8);
 	
-	printf("\x1b[5;0H-Nature (III/IV gen only): ");
+	printf("\x1b[5;0H- Binary PID: ");
+	for (int t = 0; t < 32; t++) {
+		printf("%d", pid_bin_vett[t]);
+	}
+	
+	printf("\x1b[7;0H- Nature (III/IV gen only): ");
 	switch (decimal % 25) {	
 		case 0 : { printf("Hardy   "); break;}
 		case 1 : { printf("Lonely  "); break;}	
@@ -188,14 +192,14 @@ void PIDchecker(char pid_hexa_vett[], int var[]) {
 		case 24 : { printf("Quirky  "); break;}		
 	}
 	
-	printf("\x1b[6;0H-Highest IV(it can fail): ");
+	printf("\x1b[8;0H- Highest IV(it can fail): ");
 	switch (decimal % 6) {
-		case 0 : { printf("HP     "); break;	}
-		case 1 : { printf("Attack "); break;	}	
-		case 2 : { printf("Defense"); break;	}	
-		case 4 : { printf("Sp. Atk"); break;	}			
-		case 5 : { printf("Sp. Def"); break;	}			
-		case 3 : { printf("Speed  "); break;	}					
+		case 0 : { printf("HP     "); break;}
+		case 1 : { printf("Attack "); break;}	
+		case 2 : { printf("Defense"); break;}	
+		case 3 : { printf("Speed  "); break;}
+		case 4 : { printf("Sp. Atk"); break;}			
+		case 5 : { printf("Sp. Def"); break;}				
 	}
 	
 	//SHINYNESS
@@ -239,13 +243,13 @@ void PIDchecker(char pid_hexa_vett[], int var[]) {
 		xor_result += xor_vett[15 - i] * pot;	
 	}
 	
-	printf ("\x1b[7;0H-Shiny in III-V gen: ");
+	printf ("\x1b[9;0H- Shiny in III-V gen: ");
 	if (xor_result < 8)
 		printf("\x1b[32mTRUE \x1b[0m");
 	else 
 		printf("\x1b[31mFALSE\x1b[0m");
 	
-	printf ("\x1b[8;0H-Shiny in VI gen: ");
+	printf ("\x1b[10;0H- Shiny in VI gen: ");
 	if (xor_result < 16)
 		printf("\x1b[32mTRUE \x1b[0m");
 	else
@@ -320,46 +324,46 @@ void PID(){
 
 		u32 kDown = hidKeysDown();
 		
-		if ((kDown & KEY_DRIGHT || (hidKeysHeld() & KEY_DRIGHT && t_frame % DELAY == 0)) && (posizione[0] < 17)) {
+		if (((kDown & KEY_DRIGHT) ^ (hidKeysHeld() & KEY_DRIGHT && t_frame % DELAY == 1)) && (posizione[0] < 17)) {
 			posCursore(cursore, posizione, 1);
 			printCursore(cursore);
 		}
 		
-		if ((kDown & KEY_DLEFT || (hidKeysHeld() & KEY_DLEFT && t_frame % DELAY == 0)) && (posizione[0] > 0)) {
+		if (((kDown & KEY_DLEFT) ^ (hidKeysHeld() & KEY_DLEFT && t_frame % DELAY == 1)) && (posizione[0] > 0)) {
 			posCursore(cursore, posizione, -1);
 			printCursore(cursore);
 		}
 		
-		if ((kDown & KEY_DUP || (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 0)) && (var[posizione[0]] < 6) && (posizione[0] == 0)) { // posizione 0
+		if (((kDown & KEY_DUP) ^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)) && (var[posizione[0]] < 6) && (posizione[0] == 0)) { // posizione 0
 			incrementa(var, posizione, 1);
 			checkValDec(var);
 			show(var, pid);
 			PIDchecker(pid, var);
 		}
-		if ((kDown & KEY_DUP || (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 0)) && (var[posizione[0]] < 6) && (posizione[0] == 5)) { // posizione 5
+		if (((kDown & KEY_DUP) ^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)) && (var[posizione[0]] < 6) && (posizione[0] == 5)) { // posizione 5
 			incrementa(var, posizione, 1);
 			checkValDec(var);
 			show(var, pid);
 			PIDchecker(pid, var);
 		}
-		if ((kDown & KEY_DUP || (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 0)) && (var[posizione[0]] < 9) && (posizione[0] > 0) && (posizione[0] < 10) && (posizione[0] != 5)) { // posizione 1,2,3,4,6,7,8,9
+		if (((kDown & KEY_DUP) ^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)) && (var[posizione[0]] < 9) && (posizione[0] > 0) && (posizione[0] < 10) && (posizione[0] != 5)) { // posizione 1,2,3,4,6,7,8,9
 			incrementa(var, posizione, 1);	
 			checkValDec(var);
 			show(var, pid);	
 			PIDchecker(pid, var);
 		}
-		if ((kDown & KEY_DUP || (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 0)) && (posizione[0] > 9) && (counterPID[posizione[0] - 10] < 15)) {
+		if (((kDown & KEY_DUP) ^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)) && (posizione[0] > 9) && (counterPID[posizione[0] - 10] < 15)) {
 			incrementaPID(pid, counterPID, varPID, posizione, 1);
 			show(var, pid);
 			PIDchecker(pid, var);
 		}
 				
-		if ((kDown & KEY_DDOWN || (hidKeysHeld() & KEY_DDOWN && t_frame % DELAY == 0)) && (var[posizione[0]] > 0) && (posizione[0] >= 0) && (posizione[0] < 10)) { // tutte le posizioni
+		if (((kDown & KEY_DDOWN) ^ (hidKeysHeld() & KEY_DDOWN && t_frame % DELAY == 1)) && (var[posizione[0]] > 0) && (posizione[0] >= 0) && (posizione[0] < 10)) { // tutte le posizioni
 			incrementa(var, posizione, -1);
 			show(var, pid);
 			PIDchecker(pid, var);
 		}
-		if ((kDown & KEY_DDOWN || (hidKeysHeld() & KEY_DDOWN && t_frame % DELAY == 0)) && (posizione[0] > 9) && (counterPID[posizione[0] - 10] > 0)) {
+		if (((kDown & KEY_DDOWN) ^ (hidKeysHeld() & KEY_DDOWN && t_frame % DELAY == 1)) && (posizione[0] > 9) && (counterPID[posizione[0] - 10] > 0)) {
 			incrementaPID(pid, counterPID, varPID, posizione, -1);
 			show(var, pid);
 			PIDchecker(pid, var);

@@ -101,8 +101,15 @@ int main() {
 		if (kDown & KEY_Y) {
 			consoleSelect(&bottomScreen);
 			printf("\x1b[2J");
+			printf("----------------------------------------");
+			printf("NA  - North America");
+			printf("\nPAL - Europe, Australia");
+			printf("\nJPN - Japan");
+			printf("\nKOR - South Korea");
+			printf("\nALL - All regions available\n");
+			printf("----------------------------------------");
 			printf("\x1b[27;0H    Please check your connection....");
-			printf("\x1b[29;10HPress START to exit.");
+			printf("\x1b[29;10HPress A to continue.");
 			consoleSelect(&topScreen);		
 			printf("\x1b[2J");
 			getText("http://eventcatchersitalia.altervista.org/10/giveaway.txt");
@@ -112,7 +119,7 @@ int main() {
 				hidScanInput();
 
 				u32 kDown = hidKeysDown();
-				if (kDown & KEY_START) 
+				if (kDown & KEY_A) 
 					break; 			 
 			}
 			
