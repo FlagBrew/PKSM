@@ -46,10 +46,10 @@ void getText(char *url) {
 	Result ret = 0;
 	httpcContext context;
 	
-	httpcInit();
+	httpcInit(0);
 	gfxFlushBuffers();
 
-	ret = httpcOpenContext(&context, url, 1);
+	ret = httpcOpenContext(&context, HTTPC_METHOD_GET, url, 1);
 	gfxFlushBuffers();
 	
 	if (ret == 0) {
