@@ -394,8 +394,8 @@ void PID(){
 		gfxFlushBuffers();
 		gfxSwapBuffers();
 		
-		if (t_frame > 90000) t_frame = 1;
 		t_frame++;
+		if (t_frame > 5000) t_frame = 1;
 		
 	}
 }

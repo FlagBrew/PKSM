@@ -134,6 +134,11 @@ int main() {
 		if (kDown & KEY_B) {
 			consoleSelect(&bottomScreen);
 			printf("\x1b[2J");
+			printf("----------------------------------------");
+			printf("\n\x1A\x1B - Move cursor\n");
+			printf("\x18\x19 - Change value (0-9/A-F)\n");
+			// printf("SELECT - Reset values\n\n");
+			printf("----------------------------------------");
 			printf("\x1b[29;10HPress START to exit.");
 			consoleSelect(&topScreen);
 			catchrate();
