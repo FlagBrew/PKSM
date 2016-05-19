@@ -312,7 +312,7 @@ void PID(){
 
 	printf("\x1b[2J");
 	printf("\x1b[47;30m                   PID Checker                    \x1b[0m");
-	printf("---------------------------------------------------------");	
+	printf("--------------------------------------------------");	
 	
 	show(var, pid);
 	printCursore(cursore);

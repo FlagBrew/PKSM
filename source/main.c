@@ -3,12 +3,14 @@
 #include <3ds.h>
 #include "http.h"
 #include "PID.h"
+#include "catch.h"
 
 void intro(PrintConsole topScreen, PrintConsole bottomScreen){
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
 	printf("\x1b[47;30m     Pokemon Event Catchers Italia Tool v1.0      \x1b[0m");
 	printf("\nA - PID Checker");
+	printf("\nB - Catch rate calculator");
 	printf("\nX - Worldwide distributions");
 	printf("\nY - Our distributions");
 	printf("\x1b[29;15HPress Start to exit.");	
@@ -123,6 +125,18 @@ int main() {
 					break; 			 
 			}
 			
+			consoleSelect(&bottomScreen);
+			printf("\x1b[2J");
+			consoleSelect(&topScreen);
+			intro(topScreen, bottomScreen);
+		}
+		
+		if (kDown & KEY_B) {
+			consoleSelect(&bottomScreen);
+			printf("\x1b[2J");
+			printf("\x1b[29;10HPress START to exit.");
+			consoleSelect(&topScreen);
+			catchrate();
 			consoleSelect(&bottomScreen);
 			printf("\x1b[2J");
 			consoleSelect(&topScreen);
