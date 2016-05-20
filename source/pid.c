@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <3ds.h>
 
-#define DELAY 20
+#define DELAY 10
 
 void hexa2bin (int binary[], char hexadecimal[], int nbit) {
 	int k = 0;
@@ -272,16 +272,14 @@ void incrementaPID(char pid[], int counterPID[], char varPID[], int posizione[],
 }
 
 void checkValDec(int var[]) {
-	int tempTid = var[0] * 10000 + var[1] * 1000 + var[2] * 100 + var[3] * 10 + var[4] * 1; 
-	int tempSid = var[5] * 10000 + var[6] * 1000 + var[7] * 100 + var[8] * 10 + var[9] * 1;
-	if (tempTid >= 65536) {
+	if ((var[0] * 10000 + var[1] * 1000 + var[2] * 100 + var[3] * 10 + var[4]) >= 65536) {
 		var[0] = 6;
 		var[1] = 5;
 		var[2] = 5;
 		var[3] = 3;
 		var[4] = 5;
 	}
-	if (tempSid >= 65536) {
+	if ((var[5] * 10000 + var[6] * 1000 + var[7] * 100 + var[8] * 10 + var[9]) >= 65536) {
 		var[5] = 6;
 		var[6] = 5;
 		var[7] = 5;
