@@ -8,7 +8,7 @@
 void intro(PrintConsole topScreen, PrintConsole bottomScreen){
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
-	printf("\x1b[47;30m     Pokemon Event Catchers Italia Tool v1.0      \x1b[0m");
+	printf("\x1b[47;30m     Pokemon Event Catchers Italia Tool v1.1      \x1b[0m");
 	printf("\nA - PID Checker");
 	printf("\nB - Catch rate calculator");
 	printf("\nX - Worldwide distributions");
@@ -43,7 +43,7 @@ int main() {
 			printf("\x1b[2J");
 			printf("----------------------------------------");
 			printf("\n\x1A\x1B - Move cursor\n");
-			printf("\x18\x19 - Change value (0-9/A-F)\n");
+			printf("\x18\x19 - Change values (0-9/A-F)\n");
 			printf("SELECT - Reset values\n\n");
 			printf("----------------------------------------");
 			printf("\x1b[19;0H----------------------------------------");
@@ -136,8 +136,8 @@ int main() {
 			printf("\x1b[2J");
 			printf("----------------------------------------");
 			printf("\n\x1A\x1B - Move cursor\n");
-			printf("\x18\x19 - Change value (0-9/A-F)\n");
-			// printf("SELECT - Reset values\n\n");
+			printf("\x18\x19 - Change values\n");
+			printf("SELECT - Reset values\n\n");
 			printf("----------------------------------------");
 			printf("\x1b[29;10HPress START to exit.");
 			consoleSelect(&topScreen);

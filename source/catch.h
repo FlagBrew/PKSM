@@ -5,5 +5,5 @@
 
 void check(int number[]);
 void printCursoreC(char cur[]);
-void showC(int number[], int ratio[], int HP_perc);
+void showC(int number[], int ratio[], int HP_perc, float bonusballvett[], int bonusindex, float status[], int statusindex, int r);
 void catchrate();
