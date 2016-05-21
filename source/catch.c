@@ -24,28 +24,63 @@ void check(int number[]) {
 
 void printCursoreC(char cur[]) {
 	printf("\x1b[3;24H%c%c%c", cur[0], cur[1], cur[2]);
-	printf("\x1b[7;33H%c", cur[3]);
-	printf("\x1b[9;15H%c", cur[4]);
-	printf("\x1b[11;18H%c", cur[5]);
-	printf("\x1b[13;17H%c", cur[6]);
+	printf("\x1b[3;37H%c", cur[3]);
+	printf("\x1b[7;33H%c", cur[4]);
+	printf("\x1b[9;15H%c", cur[5]);
+	printf("\x1b[11;18H%c", cur[6]);
+	printf("\x1b[13;17H%c", cur[7]);
+	printf("\x1b[15;25H%c", cur[8]);
 }
 
-void showC(int number[], int ratio[], int HP_perc, float bonusballvett[], int bonusindex, float status[], int statusindex, int r) {
-	printf("\x1b[2;0HNumber in National Dex: \x1b[32m%d%d%d\x1b[0m\n\nHas a catch rate of \x1b[32m%d\x1b[0m  ", number[0], number[1], number[2], ratio[(number[0] * 100 + number[1] * 10 + number[2]) - 1]);
+void showC(int number[], int ratio[], int HP_perc, float bonusballvett[], int bonusindex, float status[], int statusindex, int r, int gen, float captureOgenV[], float captureOgenVI[], int captureOindex) {
+	printf("\x1b[2;0HNumber in National Dex: \x1b[32m%d%d%d\x1b[0m", number[0], number[1], number[2]);
+	printf("  Gen is: \x1b[32m%d\x1b[0m", gen);
+	printf("\n\nHas a catch rate of \x1b[32m%d\x1b[0m  ", ratio[(number[0] * 100 + number[1] * 10 + number[2]) - 1]);
 	printf("\n\nApprossimative HP percentage is: \x1b[32m%d\x1b[0m%%  ", HP_perc);
-	printf("\n\nBall bonus is: \x1b[32m%4.2f\x1b[0m   ", bonusballvett[bonusindex]);
-	printf("\n\nStatus' bonus is: \x1b[32m%4.2f\x1b[0m  ", status[statusindex]);
+	printf("\n\nBall bonus is: \x1b[32m%4.2f\x1b[0mx   ", bonusballvett[bonusindex]);
+	printf("\n\nStatus' bonus is: \x1b[32m%4.2f\x1b[0mx  ", status[statusindex]);
 	printf("\n\nNumber of tries: \x1b[32m%d\x1b[0m  ", r);
+	if (gen == 5)
+		printf("\n\nCapture O multiplier is: \x1b[32m%4.2f\x1b[0mx  ", captureOgenV[captureOindex]);
+	else if (gen == 6)
+		printf("\n\nCapture O multiplier is: \x1b[32m%4.2f\x1b[0mx  ", captureOgenVI[captureOindex]);
+	else printf("\n\nCapture O multiplier is: \x1b[32m%d\x1b[0mx   ", 1);
 	
 	float HP_perc_float = (float)HP_perc / 100;
 	
-	long double a = (ratio[(number[0] * 100 + number[1] * 10 + number[2]) - 1] * bonusballvett[bonusindex] * status[statusindex]);
-	a -= (0.666666) * (ratio[(number[0] * 100 + number[1] * 10 + number[2]) - 1] * bonusballvett[bonusindex] * status[statusindex]) * (HP_perc_float);
-
-	long double b = 16711680 / a;
-	b = sqrt(b);
-	b = sqrt(b);
-	b = 1048560 / b;
+	long double a = -1;
+	long double b = -1;
+	
+	if (gen == 3 || gen == 4) {
+		a = (ratio[(number[0] * 100 + number[1] * 10 + number[2]) - 1] * bonusballvett[bonusindex] * status[statusindex]);
+		a -= (0.666666) * (ratio[(number[0] * 100 + number[1] * 10 + number[2]) - 1] * bonusballvett[bonusindex] * status[statusindex]) * (HP_perc_float);
+		
+		b = 16711680 / a;
+		b = sqrt(b);
+		b = sqrt(b);
+		b = 1048560 / b;
+	}
+	
+	if (gen == 5) {
+		a = (ratio[(number[0] * 100 + number[1] * 10 + number[2]) - 1] * bonusballvett[bonusindex] * status[statusindex]);
+		a -= (0.666666) * (ratio[(number[0] * 100 + number[1] * 10 + number[2]) - 1] * bonusballvett[bonusindex] * status[statusindex]) * (HP_perc_float);		
+		a = a * captureOgenV[captureOindex];
+		
+		b = 255 / a;
+		b = sqrt(b);
+		b = sqrt(b);
+		b = 65536 / b;
+	}
+	
+	if (gen == 6) {
+		a = (ratio[(number[0] * 100 + number[1] * 10 + number[2]) - 1] * bonusballvett[bonusindex] * status[statusindex]);
+		a -= (0.666666) * (ratio[(number[0] * 100 + number[1] * 10 + number[2]) - 1] * bonusballvett[bonusindex] * status[statusindex]) * (HP_perc_float);		
+		a = a * captureOgenVI[captureOindex];
+		
+		b = 255 / a;
+		b = 65536 / pow(b, 0.1875);
+	}
+	
 	long double p = ((b + 1) / 65536) * ((b + 1) / 65536) * ((b + 1) / 65536) * ((b + 1) / 65536);
 	
 	long double P;
@@ -69,7 +104,7 @@ void showC(int number[], int ratio[], int HP_perc, float bonusballvett[], int bo
 	if (P > 1) 
 		P = 1;
 	
-	printf("\n\nModified catch rate: \x1b[32m%Lf\x1b[0m   ", a);
+	// printf("\n\nModified catch rate: \x1b[32m%Lf\x1b[0m   ", a);
 	printf("\n\nProbability of capture tends to: \x1b[32m%Lf\x1b[0m%%      ", (P * 100));
 }
 
@@ -78,20 +113,24 @@ void catchrate() {
 	int ratio[DEX] = {45, 45, 45, 45, 45, 45, 45, 45, 45, 255, 120, 45, 255, 120, 45, 255, 120, 45, 255, 127, 255, 90, 255, 90, 190, 75, 255, 90, 235, 120, 45, 235, 120, 45, 150, 25, 190, 75, 170, 50, 255, 90, 255, 120, 45, 190, 75, 190, 75, 255, 50, 255, 90, 190, 75, 190, 75, 190, 75, 255, 120, 45, 200, 100, 50, 180, 90, 45, 255, 120, 45, 190, 60, 255, 120, 45, 190, 60, 190, 75, 190, 60, 45, 190, 45, 190, 75, 190, 75, 190, 60, 190, 90, 45, 45, 190, 75, 225, 60, 190, 60, 90, 45, 190, 75, 45, 45, 45, 190, 60, 120, 60, 30, 45, 45, 225, 75, 225, 60, 225, 60, 45, 45, 45, 45, 45, 45, 45, 225, 45, 45, 35, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 25, 3, 3, 3, 45, 45, 45, 3, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 255, 90, 255, 90, 255, 90, 255, 90, 90, 190, 75, 190, 150, 170, 190, 75, 190, 75, 235, 120, 45, 45, 190, 75, 65, 45, 255, 120, 45, 45, 235, 120, 75, 255, 90, 45, 45, 30, 70, 45, 225, 45, 60, 190, 75, 190, 60, 25, 190, 75, 45, 25, 190, 45, 60, 120, 60, 190, 75, 225, 75, 60, 190, 75, 45, 25, 25, 120, 45, 45, 120, 60, 45, 45, 45, 75, 45, 45, 45, 45, 45, 30, 3, 3, 3, 45, 45, 45, 3, 3, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 255, 127, 255, 90, 255, 120, 45, 120, 45, 255, 120, 45, 255, 120, 45, 200, 45, 190, 45, 235, 120, 45, 200, 75, 255, 90, 255, 120, 45, 255, 120, 45, 190, 120, 45, 180, 200, 150, 255, 255, 60, 45, 45, 180, 90, 45, 180, 90, 120, 45, 200, 200, 150, 150, 150, 225, 75, 225, 60, 125, 60, 255, 150, 90, 255, 60, 255, 255, 120, 45, 190, 60, 255, 45, 90, 90, 45, 45, 190, 75, 205, 155, 255, 90, 45, 45, 45, 45, 255, 60, 45, 200, 225, 45, 190, 90, 200, 45, 30, 125, 190, 75, 255, 120, 45, 255, 60, 60, 25, 225, 45, 45, 45, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 45, 45, 45, 45, 45, 45, 45, 45, 45, 255, 120, 45, 255, 127, 255, 45, 235, 120, 45, 255, 75, 45, 45, 45, 45, 120, 45, 45, 120, 45, 200, 190, 75, 190, 75, 190, 75, 45, 125, 60, 190, 60, 45, 30, 190, 75, 120, 225, 60, 255, 90, 255, 145, 130, 30, 100, 45, 45, 45, 50, 75, 45, 140, 60, 120, 45, 140, 75, 200, 190, 75, 25, 120, 60, 45, 30, 30, 30, 30, 30, 30, 30, 30, 45, 45, 30, 50, 30, 45, 60, 45, 75, 45, 3, 3, 3, 3, 3, 3, 3, 3, 3, 30, 3, 3, 45, 3, 3, 45, 45, 45, 45, 45, 45, 45, 45, 45, 255, 255, 255, 120, 45, 255, 90, 190, 75, 190, 75, 190, 75, 190, 75, 255, 120, 45, 190, 75, 255, 120, 45, 190, 45, 120, 60, 255, 180, 90, 45, 255, 120, 45, 45, 45, 255, 120, 45, 255, 120, 45, 190, 75, 190, 75, 25, 180, 90, 45, 120, 60, 255, 190, 75, 180, 90, 45, 190, 90, 45, 45, 45, 45, 190, 60, 75, 45, 255, 60,200, 100, 50, 200, 100, 50, 190, 45, 255, 120, 45, 190, 75, 200, 200, 75, 190, 75, 190, 60, 75, 190, 75, 255, 90, 130, 60, 30, 190, 60, 30, 255, 90, 190, 90, 45, 75, 60, 45, 120, 60, 25, 200, 75, 75, 180, 45, 45, 190, 90, 120, 45, 45, 190, 60, 190, 60, 90, 90, 45, 45, 45, 45, 15, 3, 3, 3, 3, 3 ,3, 3, 3, 3, 3, 3, 3, 45, 45, 45, 45, 45, 45, 45, 45, 45, 255, 127, 255, 120, 45, 255, 120, 45, 220, 65, 225, 120, 45, 200, 45, 220, 65, 160, 190, 75, 180, 90, 45, 200, 140, 200, 140, 190, 80, 120, 45, 225, 55, 225, 55, 190, 75, 45, 45, 45, 45, 45, 100, 180, 60, 45, 45, 45, 75, 120, 60, 120, 60, 190, 55, 190, 45, 45, 45, 3, 3, 3, 3};
 	float bonusballvett[9] = {1, 1.5, 2, 3, 3.5, 4, 5, 8, 255};
 	float status[4] = {1, 1.5, 2, 2.5};
+	float captureOgenV[4] = {1, 1.1, 1.2, 1.3};
+	float captureOgenVI[4] = {1, 1.5, 2, 2.5};
+	int captureOindex = 0;
 	
 	int posizione[1] = {0};
-	char cursore[7] = {'^', ' ', ' ', ' ', ' ', ' ', ' '};
+	char cursore[9] = {'^', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '};
 	
 	int number[3] = {0, 0, 1};
 	int HP_perc = 100;
 	int bonusindex = 0;
 	int statusindex = 0;
 	int r = 1;
+	int gen = 6;
 	
 	printf("\x1b[2J");
 	printf("\x1b[47;30m              Catch Rate  Calculator              \x1b[0m");
 	printf("--------------------------------------------------");
-	showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r);
+	showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex);
 	printCursoreC(cursore);
 	
 	int t_frame = 1;
@@ -104,59 +143,71 @@ void catchrate() {
 		if (kDown & KEY_START)
 			break;
 		
-		if ((kDown & KEY_DRIGHT) && (posizione[0] < 6)) {
+		if ((kDown & KEY_DRIGHT) && (posizione[0] < 8)) {
 			posCursore(cursore, posizione, 1);
-			showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r);
+			showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex);
 			printCursoreC(cursore);
 		}
 		
 		if ((kDown & KEY_DLEFT) && (posizione[0] > 0)) {
 			posCursore(cursore, posizione, -1);
-			showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r);
+			showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex);
 			printCursoreC(cursore);
 		}
 		
 		if ((kDown & KEY_DUP) ^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)) {
 			if (posizione[0] == 0) {
-				if (number[posizione[0]] < 7) {
+				if (number[posizione[0]] < 9) {
 					number[posizione[0]]++;
 					check(number);
-					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r);
+					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex);
 				}
 			}
 			if (posizione[0] == 1 || posizione[0] == 2) {
 				if (number[posizione[0]] < 9) {
 					number[posizione[0]]++;
 					check(number);
-					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r);
+					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex);
 				}
 			}
 			if (posizione[0] == 3) {
-				if (HP_perc < 100) {
-					HP_perc += 1;
-					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r);
-				}
-				else if (HP_perc == 100) {
-					HP_perc = 1;
-					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r);
+				if (gen < 6) {
+					gen++;
+					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex);
 				}
 			}
 			if (posizione[0] == 4) {
-				if (bonusindex < 8) {
-					bonusindex++;
-					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r);
+				if (HP_perc < 100) {
+					HP_perc += 1;
+					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex);
+				}
+				else if (HP_perc == 100) {
+					HP_perc = 1;
+					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex);
 				}
 			}
 			if (posizione[0] == 5) {
-				if (statusindex < 3) {
-					statusindex++;
-					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r);
+				if (bonusindex < 8) {
+					bonusindex++;
+					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex);
 				}
 			}
 			if (posizione[0] == 6) {
+				if (statusindex < 3) {
+					statusindex++;
+					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex);
+				}
+			}
+			if (posizione[0] == 7) {
 				if (r < 200) {
 					r++;
-					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r);
+					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex);
+				}
+			}
+			if (posizione[0] == 8) {
+				if (captureOindex < 3) {
+					captureOindex++;
+					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex);
 				}
 			}
 		}
@@ -166,35 +217,47 @@ void catchrate() {
 				if (number[posizione[0]] > 0) {
 					number[posizione[0]]--;
 					check(number);
-					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r);
+					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex);
 				}
 			}
 			if (posizione[0] == 3) {
-				if (HP_perc > 1) {
-					HP_perc -= 1;
-					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r);
-				}
-				else if (HP_perc == 1) {
-					HP_perc = 100;
-					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r);				
+				if (gen > 3) {
+					gen--;
+					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex);
 				}
 			}
 			if (posizione[0] == 4) {
-				if (bonusindex > 0) {
-					bonusindex--;
-					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r);
+				if (HP_perc > 1) {
+					HP_perc -= 1;
+					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex);
+				}
+				else if (HP_perc == 1) {
+					HP_perc = 100;
+					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex);				
 				}
 			}
 			if (posizione[0] == 5) {
-				if (statusindex > 0) {
-					statusindex--;
-					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r);
+				if (bonusindex > 0) {
+					bonusindex--;
+					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex);
 				}
 			}
 			if (posizione[0] == 6) {
+				if (statusindex > 0) {
+					statusindex--;
+					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex);
+				}
+			}
+			if (posizione[0] == 7) {
 				if (r > 1) {
 					r--;
-					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r);
+					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex);
+				}
+			}
+			if (posizione[0] == 8) {
+				if (captureOindex > 0) {
+					captureOindex--;
+					showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex);
 				}
 			}
 		}
@@ -211,10 +274,12 @@ void catchrate() {
 			bonusindex = 0;
 			statusindex = 0;
 			r = 1;
+			gen = 6;
+			captureOindex = 0;
 			printf("\x1b[2J");
 			printf("\x1b[47;30m              Catch Rate  Calculator              \x1b[0m");
 			printf("--------------------------------------------------");
-			showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r);
+			showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex);
 			printCursoreC(cursore);			
 		}
 		
