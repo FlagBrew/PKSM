@@ -11,9 +11,8 @@ This application allows you to make some cool things, like:
 * Seeing **current event distributions** directly from your 3DS. It provides infos about start and end dates of local and wifi distributions, with related codes if there is a general code for the distribution.
 * **Capture probability calculation**: you can now calculate it directly on your 3DS, for every generation starting by the third. You can also calculate how much tries are needed to reach a certain probability of success.
 
-**Is this a hacking application?** 
+# Is this a hacking application? NOPE.
 
-#NOPE.
 It just allows you to stay updated on things and check validity of other things, it doesn't allow to do nothing on your game cartridge, nor to steal events or codes.
 
 You can see [**there**](http://imgur.com/a/YGaH3) some pictures of the application running.
