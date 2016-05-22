@@ -139,9 +139,9 @@ int main() {
 			printf("\x18\x19 - Change values\n");
 			printf("SELECT - Reset values\n");
 			printf("----------------------------------------");
-			printf("\nSleep, freeze - 2x(III/IV), 2.5x(V/VI)");
-			printf("\nBurn, paralysis, poison - 1.5x");
-			printf("\nNo status conditions - 1\n\n");
+			printf("\nSleep, freeze - \x1b[32m2\x1b[0mx (III/IV), \x1b[32m2.5\x1b[0mx (V/VI)");
+			printf("\nBurn, paralysis, poison - \x1b[32m1.5\x1b[0mx");
+			printf("\nNo status conditions - \x1b[32m1\x1b[0mx\n\n");
 			printf("----------------------------------------");
 			printf("\nPoke/Friend/Premier/Luxury/Heal ball- \x1b[32m1\x1b[mx");
 			printf("Mega/Safari/Sport ball - \x1b[32m1.5\x1b[0mx");
