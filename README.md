@@ -15,7 +15,7 @@ This application allows you to make some cool things, like:
 
 It just allows you to stay updated on things and check validity of other things, it doesn't allow to do nothing on your game cartridge, nor to steal events or codes.
 
-You can see [**there**](http://imgur.com/a/YGaH3) some pictures of the application running.
+You can see [**there**](http://imgur.com/a/YGaH3) pictures of a past version of the application running.
 
 **What will come next?**
 
