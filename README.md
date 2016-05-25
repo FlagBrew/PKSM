@@ -24,4 +24,4 @@ You can see [**there**](http://imgur.com/a/YGaH3) some pictures of the applicati
 
 Tell me if you like this work and what you would have featured in the next update! :)
  
-
+*Thanks Shai for the icon :)*
