@@ -8,11 +8,16 @@
 void intro(PrintConsole topScreen, PrintConsole bottomScreen){
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
-	printf("\x1b[47;30m     Pokemon Event Catchers Italia Tool v1.1      \x1b[0m");
-	printf("\nA - PID Checker");
-	printf("\nB - Catch rate calculator");
-	printf("\nX - Worldwide distributions");
-	printf("\nY - Our distributions");
+	printf("\x1b[47;30m     Pokemon Event Catchers Italia Tool v1.2      \x1b[0m");
+	printf("\n\x1b[32mA\x1b[0m - PID Checker");
+	printf("\n\x1b[32mB\x1b[0m - Capture probability calculator");
+	printf("\n\x1b[32mX\x1b[0m - Worldwide distributions");
+	printf("\n\x1b[32mY\x1b[0m - Our distributions");
+	printf("\n\n\n-------------====== \x1b[32mWhat's New\x1b[0m ======-------------");
+	printf("\x1b[9;0H");
+	
+	getText("http://eventcatchersitalia.altervista.org/10/info.txt");
+	
 	printf("\x1b[29;15HPress Start to exit.");	
 	consoleSelect(&bottomScreen);
 	printf("\nECI Tool is the official Homebrew of theFB community '\x1b[32mPokemon Event Catchers\nItalia\x1b[0m'.\n\nThis is meant to be a general purpose   application who could serve both event\ncollectors and classic players of the\ngame.\n\nYou can join us at:\n\x1b[32mfacebook.com/groups/PokemonEventCatchersItalia\x1b[0m");
@@ -46,8 +51,9 @@ int main() {
 			printf("\x18\x19 - Change values (0-9/A-F)\n");
 			printf("SELECT - Reset values\n");
 			printf("----------------------------------------");
-			printf("\x1b[19;0H----------------------------------------");
-			printf("\x1b[20;0HSometimes Highest IV test \x1b[31mdoesn't work\x1b[0m. This isn't related to the implementationof this software, but with the formulas behind this.\nFormulas can be found at:\n\x1b[32mbulbapedia.bulbagarden.net/wiki/Personality_value\x1b[0m");
+			printf("\x1b[16;0H----------------------------------------");
+			printf("About Characteristic's test:");
+			printf("\x1b[19;0HFrom Generation IV onward, Pokemon have a Characteristic which indicates their\nhighest IV. In the case of a tie, the\npersonality value is used to determine  which stat wins the tie.\nThe first stat checked that is tied for highest wins the tie and will determine the Characteristic.");
 			printf("\x1b[27;0H----------------------------------------");
 			printf("\x1b[29;10HPress START to exit.");
 			consoleSelect(&topScreen);
@@ -140,7 +146,7 @@ int main() {
 			printf("SELECT - Reset values\n");
 			printf("----------------------------------------");
 			printf("\nSleep, freeze - \x1b[32m2\x1b[0mx (III/IV), \x1b[32m2.5\x1b[0mx (V/VI)");
-			printf("\nBurn, paralysis, poison - \x1b[32m1.5\x1b[0mx");
+			printf("Burn, paralysis, poison - \x1b[32m1.5\x1b[0mx");
 			printf("\nNo status conditions - \x1b[32m1\x1b[0mx\n\n");
 			printf("----------------------------------------");
 			printf("\nPoke/Friend/Premier/Luxury/Heal ball- \x1b[32m1\x1b[mx");

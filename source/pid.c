@@ -149,6 +149,7 @@ void PIDchecker(char pid_hexa_vett[], int var[]) {
 	int tid_vett[16];
 	int sid_vett[16];
 	int xor_vett[16];
+	char *letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ?!";
 	
 	int i = 0;
 	long unsigned int decimal = 0;
@@ -163,7 +164,7 @@ void PIDchecker(char pid_hexa_vett[], int var[]) {
 		printf("%d", pid_bin_vett[t]);
 	}
 	
-	printf("\x1b[7;0H- Nature (III/IV gen only): ");
+	printf("\x1b[7;0H- Nature (III/IV gen only): \x1b[32m");
 	switch (decimal % 25) {	
 		case 0 : { printf("Hardy   "); break;}
 		case 1 : { printf("Lonely  "); break;}	
@@ -192,7 +193,7 @@ void PIDchecker(char pid_hexa_vett[], int var[]) {
 		case 24 : { printf("Quirky  "); break;}		
 	}
 	
-	printf("\x1b[8;0H- Highest IV(it can fail): ");
+	printf("\x1b[0m\x1b[9;0H- Characteristic: \x1b[32m");
 	switch (decimal % 6) {
 		case 0 : { printf("HP     "); break;}
 		case 1 : { printf("Attack "); break;}	
@@ -201,6 +202,7 @@ void PIDchecker(char pid_hexa_vett[], int var[]) {
 		case 4 : { printf("Sp. Atk"); break;}			
 		case 5 : { printf("Sp. Def"); break;}				
 	}
+	printf("\x1b[0m");
 	
 	//SHINYNESS
 	for (i = 0; i < 16; i++) {
@@ -243,17 +245,33 @@ void PIDchecker(char pid_hexa_vett[], int var[]) {
 		xor_result += xor_vett[15 - i] * pot;	
 	}
 	
-	printf ("\x1b[9;0H- Shiny in III-V gen: ");
+	printf ("\x1b[11;0H- Shiny in III-V gen: ");
 	if (xor_result < 8)
 		printf("\x1b[32mTRUE \x1b[0m");
 	else 
 		printf("\x1b[31mFALSE\x1b[0m");
 	
-	printf ("\x1b[10;0H- Shiny in VI gen: ");
+	printf ("\x1b[13;0H- Shiny in VI gen: ");
 	if (xor_result < 16)
 		printf("\x1b[32mTRUE \x1b[0m");
 	else
 		printf("\x1b[31mFALSE\x1b[0m");
+	
+	int y1 = pid_bin_vett[0] * 8 + pid_bin_vett[1] * 4 + pid_bin_vett[2] * 2 + pid_bin_vett[3];
+	int x1 = pid_bin_vett[4] * 8 + pid_bin_vett[5] * 4 + pid_bin_vett[6] * 2 + pid_bin_vett[7];
+	int y2 = pid_bin_vett[8] * 8 + pid_bin_vett[9] * 4 + pid_bin_vett[10] * 2 + pid_bin_vett[11];
+	int x2 = pid_bin_vett[12] * 8 + pid_bin_vett[13] * 4 + pid_bin_vett[14] * 2 + pid_bin_vett[15];
+	int y3 = pid_bin_vett[16] * 8 + pid_bin_vett[17] * 4 + pid_bin_vett[18] * 2 + pid_bin_vett[19];
+	int x3 = pid_bin_vett[20] * 8 + pid_bin_vett[21] * 4 + pid_bin_vett[22] * 2 + pid_bin_vett[23];
+	int y4 = pid_bin_vett[24] * 8 + pid_bin_vett[25] * 4 + pid_bin_vett[26] * 2 + pid_bin_vett[27];
+	int x4 = pid_bin_vett[28] * 8 + pid_bin_vett[29] * 4 + pid_bin_vett[30] * 2 + pid_bin_vett[31];
+	
+	printf("\x1b[15;0H- Spinda spots: (\x1b[32m%d;%d\x1b[0m), (\x1b[32m%d;%d\x1b[0m), (\x1b[32m%d;%d\x1b[0m), (\x1b[32m%d;%d\x1b[0m)                ", y1, x1, y2, x2, y3, x3, y4, x4);
+
+	int alfa = pid_bin_vett[31] + pid_bin_vett[30] * 2 + pid_bin_vett[23] * 4 + pid_bin_vett[22] * 8 + pid_bin_vett[15] * 16 + pid_bin_vett[14] * 32 + pid_bin_vett[7] * 64 + pid_bin_vett[6] * 128;
+	alfa = alfa % 28;
+	
+	printf("\x1b[17;0H- Unown's letter (Gen III only): \x1b[32m%c\x1b[0m", letters[alfa]);
 }
 
 void posCursore (char cursore[], int pos[], int temp) {
@@ -314,6 +332,7 @@ void PID(){
 	
 	show(var, pid);
 	printCursore(cursore);
+	PIDchecker(pid, var);
 	
 	int t_frame = 0;
 	while (aptMainLoop()) {
@@ -383,7 +402,8 @@ void PID(){
 			printf("\x1b[47;30m                   PID Checker                    \x1b[0m");
 			printf("---------------------------------------------------------");	
 			show(var, pid);
-			printCursore(cursore);						
+			printCursore(cursore);	
+			PIDchecker(pid, var);
 		}
 		
 		if (kDown & KEY_START)
