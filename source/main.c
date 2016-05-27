@@ -6,9 +6,13 @@
 #include "catch.h"
 
 void intro(PrintConsole topScreen, PrintConsole bottomScreen){
+	consoleSelect(&bottomScreen);
+	printf("\nECI Tool is the official Homebrew of theFB community '\x1b[32mPokemon Event Catchers\nItalia\x1b[0m'.\n\nThis is meant to be a general purpose   application who could serve both event\ncollectors and classic players of the\ngame.\n\nYou can join us at:\n\x1b[32mfacebook.com/groups/PokemonEventCatchersItalia\x1b[0m");
+	printf("\x1b[26;0HECI Tool");
+	printf("\n\nDeveloped by Bernardo Giordano.");
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
-	printf("\x1b[47;30m     Pokemon Event Catchers Italia Tool v1.2      \x1b[0m");
+	printf("\x1b[47;30m     Pokemon Event Catchers Italia Tool v1.2.1    \x1b[0m");
 	printf("\n\x1b[32mA\x1b[0m - PID Checker");
 	printf("\n\x1b[32mB\x1b[0m - Capture probability calculator");
 	printf("\n\x1b[32mX\x1b[0m - Worldwide distributions");
@@ -19,10 +23,6 @@ void intro(PrintConsole topScreen, PrintConsole bottomScreen){
 	getText("http://eventcatchersitalia.altervista.org/10/info.txt");
 	
 	printf("\x1b[29;15HPress Start to exit.");	
-	consoleSelect(&bottomScreen);
-	printf("\nECI Tool is the official Homebrew of theFB community '\x1b[32mPokemon Event Catchers\nItalia\x1b[0m'.\n\nThis is meant to be a general purpose   application who could serve both event\ncollectors and classic players of the\ngame.\n\nYou can join us at:\n\x1b[32mfacebook.com/groups/PokemonEventCatchersItalia\x1b[0m");
-	printf("\x1b[26;0HECI Tool");
-	printf("\n\nDeveloped by Bernardo Giordano.");
 }
 
 int main() {	

@@ -204,7 +204,6 @@ void PIDchecker(char pid_hexa_vett[], int var[]) {
 	}
 	printf("\x1b[0m");
 	
-	//SHINYNESS
 	for (i = 0; i < 16; i++) {
 		if ((tid_dec % 2) == 0) 
 			tid_vett[15 - i] = 0;
@@ -335,6 +334,7 @@ void PID(){
 	PIDchecker(pid, var);
 	
 	int t_frame = 0;
+	int refresh = 0;
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
 		hidScanInput();
@@ -354,36 +354,30 @@ void PID(){
 		if (((kDown & KEY_DUP) ^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)) && (var[posizione[0]] < 6) && (posizione[0] == 0)) { // posizione 0
 			incrementa(var, posizione, 1);
 			checkValDec(var);
-			show(var, pid);
-			PIDchecker(pid, var);
+			refresh = 1;
 		}
 		if (((kDown & KEY_DUP) ^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)) && (var[posizione[0]] < 6) && (posizione[0] == 5)) { // posizione 5
 			incrementa(var, posizione, 1);
 			checkValDec(var);
-			show(var, pid);
-			PIDchecker(pid, var);
+			refresh = 1;
 		}
 		if (((kDown & KEY_DUP) ^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)) && (var[posizione[0]] < 9) && (posizione[0] > 0) && (posizione[0] < 10) && (posizione[0] != 5)) { // posizione 1,2,3,4,6,7,8,9
 			incrementa(var, posizione, 1);	
 			checkValDec(var);
-			show(var, pid);	
-			PIDchecker(pid, var);
+			refresh = 1;
 		}
 		if (((kDown & KEY_DUP) ^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)) && (posizione[0] > 9) && (counterPID[posizione[0] - 10] < 15)) {
 			incrementaPID(pid, counterPID, varPID, posizione, 1);
-			show(var, pid);
-			PIDchecker(pid, var);
+			refresh = 1;
 		}
 				
 		if (((kDown & KEY_DDOWN) ^ (hidKeysHeld() & KEY_DDOWN && t_frame % DELAY == 1)) && (var[posizione[0]] > 0) && (posizione[0] >= 0) && (posizione[0] < 10)) { // tutte le posizioni
 			incrementa(var, posizione, -1);
-			show(var, pid);
-			PIDchecker(pid, var);
+			refresh = 1;
 		}
 		if (((kDown & KEY_DDOWN) ^ (hidKeysHeld() & KEY_DDOWN && t_frame % DELAY == 1)) && (posizione[0] > 9) && (counterPID[posizione[0] - 10] > 0)) {
 			incrementaPID(pid, counterPID, varPID, posizione, -1);
-			show(var, pid);
-			PIDchecker(pid, var);
+			refresh = 1;
 		}
 		
 		if (kDown & KEY_SELECT) {
@@ -402,18 +396,24 @@ void PID(){
 			printf("\x1b[47;30m                   PID Checker                    \x1b[0m");
 			printf("---------------------------------------------------------");	
 			show(var, pid);
-			printCursore(cursore);	
 			PIDchecker(pid, var);
+			printCursore(cursore);	
+			
 		}
 		
 		if (kDown & KEY_START)
 			break;
+		
+		if (refresh == 1) {
+			show(var, pid);
+			PIDchecker(pid, var);
+			refresh = 0;
+		}
 		
 		gfxFlushBuffers();
 		gfxSwapBuffers();
 		
 		t_frame++;
 		if (t_frame > 5000) t_frame = 1;
-		
 	}
 }
