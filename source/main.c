@@ -7,9 +7,10 @@
 
 #define ENTRIES 4
 
-void refresh(int currentEntry) {	
+void refresh(int currentEntry, PrintConsole topScreen) {	
 	char *menuEntries[ENTRIES] = {"PID Checker", "Capture probability Calculator", "Worldwide distributions", "Our distributions"};
 
+	consoleSelect(&topScreen);
 	printf("\x1b[2;0H");
 	for (int i = 0; i < ENTRIES; i++) {
 		if (i == currentEntry)
@@ -28,10 +29,11 @@ void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry){
 	printf("\x1b[2J");
 	printf("\x1b[47;30m      Pokemon Event Catchers Italia Tool v1.3     \x1b[0m\n");
 
-	refresh(currentEntry);
+	refresh(currentEntry, topScreen);
 	
-	printf("\x1b[8;0H-------------====== \x1b[32mWhat's New\x1b[0m ======-------------");
-	printf("\x1b[9;0H");
+	consoleSelect(&topScreen);	
+	printf("\x1b[9;0H-------------====== \x1b[32mWhat's New\x1b[0m ======-------------");
+	printf("\x1b[10;0H");
 	
 	getText("http://eventcatchersitalia.altervista.org/10/info.txt");
 	
@@ -44,7 +46,6 @@ int main() {
 	consoleInit(GFX_TOP, &topScreen);
 	consoleInit(GFX_BOTTOM, &bottomScreen);
 	
-	int doAction = 0;
 	int currentEntry = 0;
 	
 	consoleSelect(&topScreen);
@@ -58,36 +59,34 @@ int main() {
 		
 		if ((kDown & KEY_DUP) && (currentEntry > 0)) {
 			currentEntry--;
-			refresh(currentEntry);
+			refresh(currentEntry, topScreen);
 		}
 		
 		if ((kDown & KEY_DDOWN) && (currentEntry < ENTRIES - 1)) {
 			currentEntry++;
-			refresh(currentEntry);
+			refresh(currentEntry, topScreen);
 		}
 		
 		if (kDown & KEY_A) {
-			doAction = currentEntry++;
-		}
-		
-		if (doAction != 0) {
-			if (doAction == 1) {
-				PID();
+			
+			if (currentEntry == 0) {
+				PID(topScreen, bottomScreen);
 				consoleSelect(&bottomScreen);
 				printf("\x1b[2J");
 				consoleSelect(&topScreen);			
 				intro(topScreen, bottomScreen, currentEntry);				
 			}
 			
-			else if (doAction == 2) {
-				catchrate();
+			else if (currentEntry == 1) {
+				consoleSelect(&topScreen);
+				catchrate(topScreen, bottomScreen);
 				consoleSelect(&bottomScreen);
 				printf("\x1b[2J");
 				consoleSelect(&topScreen);
 				intro(topScreen, bottomScreen, currentEntry);
 			}
 			
-			else if (doAction == 3) {
+			else if (currentEntry == 2) {
 				consoleSelect(&bottomScreen);
 				printf("\x1b[2J");
 				printf("----------------------------------------");
@@ -129,7 +128,7 @@ int main() {
 				intro(topScreen, bottomScreen, currentEntry);
 			}
 			
-			else if (doAction == 4) {
+			else if (currentEntry == 3) {
 				consoleSelect(&bottomScreen);
 				printf("\x1b[2J");
 				printf("----------------------------------------");
@@ -159,7 +158,6 @@ int main() {
 				consoleSelect(&topScreen);
 				intro(topScreen, bottomScreen, currentEntry);
 			}
-			doAction = 0;
 		}
 		
 		if (kDown & KEY_START) 

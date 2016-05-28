@@ -10,4 +10,4 @@ void incrementa(int var[], int posizione[], int temp);
 void incrementaPID(char pid[], int counterPID[], char varPID[], int posizione[], int temp);
 void checkValDec(int var[]);
 void printCursore(char cur[]);
-void PID();
+void PID(PrintConsole topScreen, PrintConsole bottomScreen);

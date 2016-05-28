@@ -317,7 +317,7 @@ void show(int var[], char pid[]) {
 	printf("          PID:%c%c%c%c%c%c%c%c", pid[0], pid[1], pid[2], pid[3], pid[4], pid[5], pid[6], pid[7]);
 }
 
-void PID(){
+void PID(PrintConsole topScreen, PrintConsole bottomScreen){
 	int posizione[1] = {0};
 	int var[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 	char pid[8] = {'0', '0', '0', '0', '0', '0', '0', '0'};
@@ -325,7 +325,6 @@ void PID(){
 	char varPID[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 	int counterPID[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 	
-	PrintConsole topScreen, bottomScreen;
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
 	printf("----------------------------------------");
