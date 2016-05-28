@@ -324,7 +324,21 @@ void PID(){
 	char cursore[18] = {'^', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', };
 	char varPID[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 	int counterPID[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-
+	
+	PrintConsole topScreen, bottomScreen;
+	consoleSelect(&bottomScreen);
+	printf("\x1b[2J");
+	printf("----------------------------------------");
+	printf("\x1A\x1B - Move cursor\n");
+	printf("\x18\x19 - Change values (0-9/A-F)\n");
+	printf("SELECT - Reset values\n");
+	printf("----------------------------------------");
+	printf("\x1b[16;0H----------------------------------------");
+	printf("About Characteristic's test:");
+	printf("\x1b[19;0HFrom Generation IV onward, Pokemon have a Characteristic which indicates their\nhighest IV. In the case of a tie, the\npersonality value is used to determine  which stat wins the tie.\nThe first stat checked that is tied for highest wins the tie and will determine the Characteristic.");
+	printf("\x1b[27;0H----------------------------------------");
+	printf("\x1b[29;10HPress START to exit.");
+	consoleSelect(&topScreen);
 	printf("\x1b[2J");
 	printf("\x1b[47;30m                   PID Checker                    \x1b[0m");
 	printf("--------------------------------------------------");	

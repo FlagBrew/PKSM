@@ -5,19 +5,32 @@
 #include "PID.h"
 #include "catch.h"
 
-void intro(PrintConsole topScreen, PrintConsole bottomScreen){
+#define ENTRIES 4
+
+void refresh(int currentEntry) {	
+	char *menuEntries[ENTRIES] = {"PID Checker", "Capture probability Calculator", "Worldwide distributions", "Our distributions"};
+
+	printf("\x1b[2;0H");
+	for (int i = 0; i < ENTRIES; i++) {
+		if (i == currentEntry)
+			printf("\x1b[32m%s\x1b[0m\n", menuEntries[i]);
+		else 
+			printf("%s\n", menuEntries[i]);
+	}
+}
+
+void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry){
 	consoleSelect(&bottomScreen);
 	printf("\nECI Tool is the official Homebrew of theFB community '\x1b[32mPokemon Event Catchers\nItalia\x1b[0m'.\n\nThis is meant to be a general purpose   application who could serve both event\ncollectors and classic players of the\ngame.\n\nYou can join us at:\n\x1b[32mfacebook.com/groups/PokemonEventCatchersItalia\x1b[0m");
 	printf("\x1b[26;0HECI Tool");
 	printf("\n\nDeveloped by Bernardo Giordano.");
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
-	printf("\x1b[47;30m     Pokemon Event Catchers Italia Tool v1.2.1    \x1b[0m");
-	printf("\n\x1b[32mA\x1b[0m - PID Checker");
-	printf("\n\x1b[32mB\x1b[0m - Capture probability calculator");
-	printf("\n\x1b[32mX\x1b[0m - Worldwide distributions");
-	printf("\n\x1b[32mY\x1b[0m - Our distributions");
-	printf("\n\n\n-------------====== \x1b[32mWhat's New\x1b[0m ======-------------");
+	printf("\x1b[47;30m      Pokemon Event Catchers Italia Tool v1.3     \x1b[0m\n");
+
+	refresh(currentEntry);
+	
+	printf("\x1b[8;0H-------------====== \x1b[32mWhat's New\x1b[0m ======-------------");
 	printf("\x1b[9;0H");
 	
 	getText("http://eventcatchersitalia.altervista.org/10/info.txt");
@@ -31,8 +44,11 @@ int main() {
 	consoleInit(GFX_TOP, &topScreen);
 	consoleInit(GFX_BOTTOM, &bottomScreen);
 	
+	int doAction = 0;
+	int currentEntry = 0;
+	
 	consoleSelect(&topScreen);
-	intro(topScreen, bottomScreen);
+	intro(topScreen, bottomScreen, currentEntry);
 	
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
@@ -40,133 +56,115 @@ int main() {
 
 		u32 kDown = hidKeysDown();
 		
+		if ((kDown & KEY_DUP) && (currentEntry > 0)) {
+			currentEntry--;
+			refresh(currentEntry);
+		}
+		
+		if ((kDown & KEY_DDOWN) && (currentEntry < ENTRIES - 1)) {
+			currentEntry++;
+			refresh(currentEntry);
+		}
+		
+		if (kDown & KEY_A) {
+			doAction = currentEntry++;
+		}
+		
+		if (doAction != 0) {
+			if (doAction == 1) {
+				PID();
+				consoleSelect(&bottomScreen);
+				printf("\x1b[2J");
+				consoleSelect(&topScreen);			
+				intro(topScreen, bottomScreen, currentEntry);				
+			}
+			
+			else if (doAction == 2) {
+				catchrate();
+				consoleSelect(&bottomScreen);
+				printf("\x1b[2J");
+				consoleSelect(&topScreen);
+				intro(topScreen, bottomScreen, currentEntry);
+			}
+			
+			else if (doAction == 3) {
+				consoleSelect(&bottomScreen);
+				printf("\x1b[2J");
+				printf("----------------------------------------");
+				printf("NA  - North America");
+				printf("\nPAL - Europe, Australia");
+				printf("\nJPN - Japan");
+				printf("\nKOR - South Korea");
+				printf("\nALL - All regions available\n");
+				printf("----------------------------------------");
+				printf("\x1b[27;0H    Please check your connection....");
+				printf("\x1b[29;10HPress A to continue.");
+				consoleSelect(&topScreen);		
+				printf("\x1b[2J");
+				getText("http://eventcatchersitalia.altervista.org/10/worldwide1.txt");
+				
+				while (aptMainLoop()) {
+					gspWaitForVBlank();
+					hidScanInput();
+
+					u32 kDown = hidKeysDown();
+					if (kDown & KEY_A) 
+						break; 			 
+				}
+				
+				printf("\x1b[2J");
+				getText("http://eventcatchersitalia.altervista.org/10/worldwide2.txt");
+				
+				while (aptMainLoop()) {
+					gspWaitForVBlank();
+					hidScanInput();
+
+					u32 kDown = hidKeysDown();
+					if (kDown & KEY_A) 
+						break; 			 
+				}
+				consoleSelect(&bottomScreen);
+				printf("\x1b[2J");
+				consoleSelect(&topScreen);
+				intro(topScreen, bottomScreen, currentEntry);
+			}
+			
+			else if (doAction == 4) {
+				consoleSelect(&bottomScreen);
+				printf("\x1b[2J");
+				printf("----------------------------------------");
+				printf("NA  - North America");
+				printf("\nPAL - Europe, Australia");
+				printf("\nJPN - Japan");
+				printf("\nKOR - South Korea");
+				printf("\nALL - All regions available\n");
+				printf("----------------------------------------");
+				printf("\x1b[27;0H    Please check your connection....");
+				printf("\x1b[29;10HPress A to continue.");
+				consoleSelect(&topScreen);		
+				printf("\x1b[2J");
+				getText("http://eventcatchersitalia.altervista.org/10/giveaway.txt");
+				
+				while (aptMainLoop()) {
+					gspWaitForVBlank();
+					hidScanInput();
+
+					u32 kDown = hidKeysDown();
+					if (kDown & KEY_A) 
+						break; 			 
+				}
+				
+				consoleSelect(&bottomScreen);
+				printf("\x1b[2J");
+				consoleSelect(&topScreen);
+				intro(topScreen, bottomScreen, currentEntry);
+			}
+			doAction = 0;
+		}
+		
 		if (kDown & KEY_START) 
 			break; 
 		
-		if (kDown & KEY_A) {
-			consoleSelect(&bottomScreen);
-			printf("\x1b[2J");
-			printf("----------------------------------------");
-			printf("\x1A\x1B - Move cursor\n");
-			printf("\x18\x19 - Change values (0-9/A-F)\n");
-			printf("SELECT - Reset values\n");
-			printf("----------------------------------------");
-			printf("\x1b[16;0H----------------------------------------");
-			printf("About Characteristic's test:");
-			printf("\x1b[19;0HFrom Generation IV onward, Pokemon have a Characteristic which indicates their\nhighest IV. In the case of a tie, the\npersonality value is used to determine  which stat wins the tie.\nThe first stat checked that is tied for highest wins the tie and will determine the Characteristic.");
-			printf("\x1b[27;0H----------------------------------------");
-			printf("\x1b[29;10HPress START to exit.");
-			consoleSelect(&topScreen);
-			PID();
-			consoleSelect(&bottomScreen);
-			printf("\x1b[2J");
-			consoleSelect(&topScreen);			
-			intro(topScreen, bottomScreen);
-		}
-		
-		if (kDown & KEY_X) {
-			consoleSelect(&bottomScreen);
-			printf("\x1b[2J");
-			printf("----------------------------------------");
-			printf("NA  - North America");
-			printf("\nPAL - Europe, Australia");
-			printf("\nJPN - Japan");
-			printf("\nKOR - South Korea");
-			printf("\nALL - All regions available\n");
-			printf("----------------------------------------");
-			printf("\x1b[27;0H    Please check your connection....");
-			printf("\x1b[29;10HPress A to continue.");
-			consoleSelect(&topScreen);		
-			printf("\x1b[2J");
-			getText("http://eventcatchersitalia.altervista.org/10/worldwide1.txt");
-			
-			while (aptMainLoop()) {
-				gspWaitForVBlank();
-				hidScanInput();
-
-				u32 kDown = hidKeysDown();
-				if (kDown & KEY_A) 
-					break; 			 
-			}
-			
-			printf("\x1b[2J");
-			getText("http://eventcatchersitalia.altervista.org/10/worldwide2.txt");
-			
-			while (aptMainLoop()) {
-				gspWaitForVBlank();
-				hidScanInput();
-
-				u32 kDown = hidKeysDown();
-				if (kDown & KEY_A) 
-					break; 			 
-			}
-			consoleSelect(&bottomScreen);
-			printf("\x1b[2J");
-			consoleSelect(&topScreen);
-			intro(topScreen, bottomScreen);
-		}
-		
-		if (kDown & KEY_Y) {
-			consoleSelect(&bottomScreen);
-			printf("\x1b[2J");
-			printf("----------------------------------------");
-			printf("NA  - North America");
-			printf("\nPAL - Europe, Australia");
-			printf("\nJPN - Japan");
-			printf("\nKOR - South Korea");
-			printf("\nALL - All regions available\n");
-			printf("----------------------------------------");
-			printf("\x1b[27;0H    Please check your connection....");
-			printf("\x1b[29;10HPress A to continue.");
-			consoleSelect(&topScreen);		
-			printf("\x1b[2J");
-			getText("http://eventcatchersitalia.altervista.org/10/giveaway.txt");
-			
-			while (aptMainLoop()) {
-				gspWaitForVBlank();
-				hidScanInput();
-
-				u32 kDown = hidKeysDown();
-				if (kDown & KEY_A) 
-					break; 			 
-			}
-			
-			consoleSelect(&bottomScreen);
-			printf("\x1b[2J");
-			consoleSelect(&topScreen);
-			intro(topScreen, bottomScreen);
-		}
-		
-		if (kDown & KEY_B) {
-			consoleSelect(&bottomScreen);
-			printf("\x1b[2J");
-			printf("----------------------------------------");
-			printf("\x1A\x1B - Move cursor\n");
-			printf("\x18\x19 - Change values\n");
-			printf("SELECT - Reset values\n");
-			printf("----------------------------------------");
-			printf("\nSleep, freeze - \x1b[32m2\x1b[0mx (III/IV), \x1b[32m2.5\x1b[0mx (V/VI)");
-			printf("Burn, paralysis, poison - \x1b[32m1.5\x1b[0mx");
-			printf("\nNo status conditions - \x1b[32m1\x1b[0mx\n\n");
-			printf("----------------------------------------");
-			printf("\nPoke/Friend/Premier/Luxury/Heal ball- \x1b[32m1\x1b[mx");
-			printf("Mega/Safari/Sport ball - \x1b[32m1.5\x1b[0mx");
-			printf("\nUltra ball - \x1b[32m2\x1b[0mx");
-			printf("\nLure/Net/Repeat ball - \x1b[32m3\x1b[mx (cond. only)");
-			printf("\nDive/Dusk ball - \x1b[32m3.5\x1b[0mx (cond. only)");
-			printf("\nMoon/Fast/Nest/Timer/Quick ball - \x1b[32m4\x1b[mx");
-			printf("\nFirst turn Quick ball - \x1b[32m5\x1b[0mx");
-			printf("\nLove/Level ball - \x1b[32m8\x1b[0mx (cond. only)");
-			printf("\nMaster ball - \x1b[32m255\x1b[0mx");
-			printf("\x1b[29;10HPress START to exit.");
-			consoleSelect(&topScreen);
-			catchrate();
-			consoleSelect(&bottomScreen);
-			printf("\x1b[2J");
-			consoleSelect(&topScreen);
-			intro(topScreen, bottomScreen);
-		}
-					 
 		gfxFlushBuffers();
 		gfxSwapBuffers();
 	}
