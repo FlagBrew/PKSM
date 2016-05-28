@@ -5,10 +5,10 @@
 #include "PID.h"
 #include "catch.h"
 
-#define ENTRIES 4
+#define ENTRIES 7
 
 void refresh(int currentEntry, PrintConsole topScreen) {	
-	char *menuEntries[ENTRIES] = {"PID Checker", "Capture probability Calculator", "Worldwide distributions", "Our distributions"};
+	char *menuEntries[ENTRIES] = {"PID Checker", "Capture probability Calculator", "Wi-Fi distributions", "Code distributions", "Local distributions", "Our distributions", "News"};
 
 	consoleSelect(&topScreen);
 	printf("\x1b[2;0H");
@@ -31,12 +31,7 @@ void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry){
 
 	refresh(currentEntry, topScreen);
 	
-	consoleSelect(&topScreen);	
-	printf("\x1b[9;0H-------------====== \x1b[32mWhat's New\x1b[0m ======-------------");
-	printf("\x1b[10;0H");
-	
-	getText("http://eventcatchersitalia.altervista.org/10/info.txt");
-	
+	consoleSelect(&topScreen);
 	printf("\x1b[29;15HPress Start to exit.");	
 }
 
@@ -57,14 +52,26 @@ int main() {
 
 		u32 kDown = hidKeysDown();
 		
-		if ((kDown & KEY_DUP) && (currentEntry > 0)) {
-			currentEntry--;
-			refresh(currentEntry, topScreen);
+		if (kDown & KEY_DUP) {
+			if (currentEntry == 0) {
+				currentEntry = ENTRIES - 1;
+				refresh(currentEntry, topScreen);
+			}
+			else if (currentEntry > 0) {
+				currentEntry--;
+				refresh(currentEntry, topScreen);
+			}
 		}
 		
-		if ((kDown & KEY_DDOWN) && (currentEntry < ENTRIES - 1)) {
-			currentEntry++;
-			refresh(currentEntry, topScreen);
+		if (kDown & KEY_DDOWN) {
+			if (currentEntry == ENTRIES - 1) {
+				currentEntry = 0;
+				refresh(currentEntry, topScreen);
+			}
+			else if (currentEntry < ENTRIES - 1) {
+				currentEntry++;
+				refresh(currentEntry, topScreen);
+			}
 		}
 		
 		if (kDown & KEY_A) {
@@ -78,7 +85,6 @@ int main() {
 			}
 			
 			else if (currentEntry == 1) {
-				consoleSelect(&topScreen);
 				catchrate(topScreen, bottomScreen);
 				consoleSelect(&bottomScreen);
 				printf("\x1b[2J");
@@ -87,41 +93,7 @@ int main() {
 			}
 			
 			else if (currentEntry == 2) {
-				consoleSelect(&bottomScreen);
-				printf("\x1b[2J");
-				printf("----------------------------------------");
-				printf("NA  - North America");
-				printf("\nPAL - Europe, Australia");
-				printf("\nJPN - Japan");
-				printf("\nKOR - South Korea");
-				printf("\nALL - All regions available\n");
-				printf("----------------------------------------");
-				printf("\x1b[27;0H    Please check your connection....");
-				printf("\x1b[29;10HPress A to continue.");
-				consoleSelect(&topScreen);		
-				printf("\x1b[2J");
-				getText("http://eventcatchersitalia.altervista.org/10/worldwide1.txt");
-				
-				while (aptMainLoop()) {
-					gspWaitForVBlank();
-					hidScanInput();
-
-					u32 kDown = hidKeysDown();
-					if (kDown & KEY_A) 
-						break; 			 
-				}
-				
-				printf("\x1b[2J");
-				getText("http://eventcatchersitalia.altervista.org/10/worldwide2.txt");
-				
-				while (aptMainLoop()) {
-					gspWaitForVBlank();
-					hidScanInput();
-
-					u32 kDown = hidKeysDown();
-					if (kDown & KEY_A) 
-						break; 			 
-				}
+				printDistro(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/worldwide1.txt");
 				consoleSelect(&bottomScreen);
 				printf("\x1b[2J");
 				consoleSelect(&topScreen);
@@ -129,34 +101,35 @@ int main() {
 			}
 			
 			else if (currentEntry == 3) {
-				consoleSelect(&bottomScreen);
-				printf("\x1b[2J");
-				printf("----------------------------------------");
-				printf("NA  - North America");
-				printf("\nPAL - Europe, Australia");
-				printf("\nJPN - Japan");
-				printf("\nKOR - South Korea");
-				printf("\nALL - All regions available\n");
-				printf("----------------------------------------");
-				printf("\x1b[27;0H    Please check your connection....");
-				printf("\x1b[29;10HPress A to continue.");
-				consoleSelect(&topScreen);		
-				printf("\x1b[2J");
-				getText("http://eventcatchersitalia.altervista.org/10/giveaway.txt");
-				
-				while (aptMainLoop()) {
-					gspWaitForVBlank();
-					hidScanInput();
-
-					u32 kDown = hidKeysDown();
-					if (kDown & KEY_A) 
-						break; 			 
-				}
-				
+				printDistro(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/worldwide2.txt");
 				consoleSelect(&bottomScreen);
 				printf("\x1b[2J");
 				consoleSelect(&topScreen);
 				intro(topScreen, bottomScreen, currentEntry);
+			}
+			
+			else if (currentEntry == 4) {
+				printDistro(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/local.txt");
+				consoleSelect(&bottomScreen);
+				printf("\x1b[2J");
+				consoleSelect(&topScreen);
+				intro(topScreen, bottomScreen, currentEntry);
+			}			
+			
+			else if (currentEntry == 5) {
+				printDistro(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/giveaway.txt");
+				consoleSelect(&bottomScreen);
+				printf("\x1b[2J");
+				consoleSelect(&topScreen);
+				intro(topScreen, bottomScreen, currentEntry);
+			}
+			
+			else if (currentEntry == 6) {			
+				printDistro(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/info.txt");
+				consoleSelect(&bottomScreen);
+				printf("\x1b[2J");
+				consoleSelect(&topScreen);
+				intro(topScreen, bottomScreen, currentEntry);				
 			}
 		}
 		
