@@ -20,15 +20,15 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 	int currentEntry = 0;
 	int page = 0;
 	
-	// consoleSelect(&bottomScreen);
-	// printf("\x1b[2J");
-	// printf("----------------------------------------");
-	// printf("\x19\x18 - Move cursor\n");
-	// printf("L/R - Switch page\n");
-	// printf("A - Open/close entry\n");
-	// printf("----------------------------------------");
-	// printf("\x1b[27;0H    Please check your connection....");
-	// printf("\x1b[29;10HPress START to exit.");
+	consoleSelect(&bottomScreen);
+	printf("\x1b[2J");
+	printf("----------------------------------------");
+	printf("\x19\x18 - Move cursor\n");
+	printf("L/R - Switch page\n");
+	printf("A - Open/close entry\n");
+	printf("----------------------------------------");
+	printf("\x1b[27;0H    Please check your connection....");
+	printf("\x1b[29;10HPress START to exit.");
 	consoleSelect(&topScreen);		
 	printf("\x1b[2J");	
 	printf("Page: %d", page);
@@ -69,78 +69,65 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 			}
 		}
 		
-		// if (kDown & KEY_DUP) {
-			// if (page == 0) {
-				// if (currentEntry == 0) {
-					// currentEntry = RIGHE - 1;
-					// refresh(currentEntry, topScreen, database0, RIGHE);
-				// }
-				// else if (currentEntry > 0) {
-					// currentEntry--;
-					// refresh(currentEntry, topScreen, database0, RIGHE);
-				// }
-			// }
-			// if (page == 1) {
-				// if (currentEntry == 0) {
-					// currentEntry = RIGHE - 1;
-					// refresh(currentEntry, topScreen, database1, RIGHE);
-				// }
-				// else if (currentEntry > 0) {
-					// currentEntry--;
-					// refresh(currentEntry, topScreen, database1, RIGHE);
-				// }
-			// }
-		// }
+		if (kDown & KEY_DUP) {
+			if (page == 0) {
+				if (currentEntry == 0) {
+					currentEntry = RIGHE - 1;
+					refresh(currentEntry, topScreen, database0, RIGHE);
+				}
+				else if (currentEntry > 0) {
+					currentEntry -= 1;
+					refresh(currentEntry, topScreen, database0, RIGHE);
+				}
+			}
+			else if (page == 1) {
+				if (currentEntry == 0) {
+					currentEntry = RIGHE - 1;
+					refresh(currentEntry, topScreen, database1, RIGHE);
+				}
+				else if (currentEntry > 0) {
+					currentEntry -= 1;
+					refresh(currentEntry, topScreen, database1, RIGHE);
+				}
+			}
+		}
 		
-		// if (kDown & KEY_DDOWN) {
-			// if (page == 0) {
-				// if (currentEntry == RIGHE - 1) {
-					// currentEntry = 0;
-					// refresh(currentEntry, topScreen, database0, RIGHE);
-				// }
-				// else if (currentEntry < RIGHE - 1) {
-					// currentEntry++;
-					// refresh(currentEntry, topScreen, database0, RIGHE);
-				// }
-			// }
-			// if (page == 1) {
-				// if (currentEntry == RIGHE - 1) {
-					// currentEntry = 0;
-					// refresh(currentEntry, topScreen, database1, RIGHE);
-				// }
-				// else if (currentEntry < RIGHE - 1) {
-					// currentEntry++;
-					// refresh(currentEntry, topScreen, database1, RIGHE);
-				// }
-			// }
-		// }
+		if (kDown & KEY_DDOWN) {
+			if (page == 0) {
+				if (currentEntry == RIGHE - 1) {
+					currentEntry = 0;
+					refresh(currentEntry, topScreen, database0, RIGHE);
+				}
+				else if (currentEntry < RIGHE - 1) {
+					currentEntry++;
+					refresh(currentEntry, topScreen, database0, RIGHE);
+				}
+			}
+			if (page == 1) {
+				if (currentEntry == RIGHE - 1) {
+					currentEntry = 0;
+					refresh(currentEntry, topScreen, database1, RIGHE);
+				}
+				else if (currentEntry < RIGHE - 1) {
+					currentEntry++;
+					refresh(currentEntry, topScreen, database1, RIGHE);
+				}
+			}
+		}
 
- 		// if (kDown & KEY_A)  {
-			// consoleSelect(&topScreen);
-			// printf("\x1b[2J");
-			// if (page == 0)
-				// getText(links0[currentEntry]);
-			// if (page == 1) 
-				// getText(links1[currentEntry]);
-		
-			// while (aptMainLoop()) {
-				// gspWaitForVBlank();
-				// hidScanInput();
-
-				// u32 kDown = hidKeysDown();
-				
-				// if (kDown & KEY_START)
-					// break;
-			// } 
-			// consoleSelect(&topScreen);
-			// printf("\x1b[2J");	
-			// printf("Page: %d", page);			
-			// if (page == 0) 
-				// refresh(currentEntry, topScreen, database0, RIGHE);
-			
-			// if (page == 1)
-				// refresh(currentEntry, topScreen, database1, RIGHE);
-		// } 
+ 		if (kDown & KEY_A)  {
+			consoleSelect(&topScreen);
+			printf("\x1b[2J");
+			if (page == 0) printDistro(topScreen, bottomScreen, links0[currentEntry]);
+			else if (page == 1) printDistro(topScreen, bottomScreen, links1[currentEntry]);
+			consoleSelect(&topScreen);
+			printf("\x1b[2J");	
+			printf("Page: %d", page);			
+			if (page == 0) 
+				refresh(currentEntry, topScreen, database0, RIGHE);
+			else if (page == 1)
+				refresh(currentEntry, topScreen, database1, RIGHE);
+		}	 
 		
 		gfxFlushBuffers();
 		gfxSwapBuffers();

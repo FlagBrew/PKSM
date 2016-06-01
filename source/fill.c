@@ -6,9 +6,9 @@ void fill(char *database0[], char *database1[], char *links0[], char *links1[]) 
 	//database0
 	database0[0] = "0114 - Expo Charizard";
 	links0[0] = "http://eventcatchersitalia.altervista.org/database/0114_Expo_Charizard.txt";
-	database0[1] = "0115 - ";
+	database0[1] = "0115 - Expo Machamp";
 	links0[1] = "";
-	database0[2] = "0116 - ";
+	database0[2] = "0116 - Expo Smeargle";
 	links0[2] = "";
 	database0[3] = "0117 - Expo Zoroark";
 	links0[3] = "http://eventcatchersitalia.altervista.org/database/0117_Expo_Zoroark.txt";
@@ -28,41 +28,39 @@ void fill(char *database0[], char *database1[], char *links0[], char *links1[]) 
 	links0[10] = "http://eventcatchersitalia.altervista.org/database/0149_Scrap_Zapdos.txt";
 	database0[11] = "0150 - Pokescrap Moltres";
 	links0[11] = "http://eventcatchersitalia.altervista.org/database/0150_Scrap_Moltres.txt";
-	database0[12] = "";
+	database0[12] = "0153 - Pokescrap Venusaur";
 	links0[12] = "";
-	database0[13] = "";
+	database0[13] = "0154 - Pokescrap Charizard";
 	links0[13] = "";
-	database0[14] = "";
+	database0[14] = "0155 - Pokescrap Blastoise";
 	links0[14] = "";
-	database0[15] = "";
+	database0[15] = "0156 - Pokescrap Mewtwo";
 	links0[15] = "";
-	database0[16] = "";
+	database0[16] = "0159 - Jade Infernape";
 	links0[16] = "";
-	database0[17] = "";
+	database0[17] = "0161 - Volcanion";
 	links0[17] = "";
-	database0[18] = "";
+	database0[18] = "0166 - With You Pikachu";
 	links0[18] = "";
-	database0[19] = "";
+	database0[19] = "0170 - Singa Cafe Pikachu";
 	links0[19] = "";
-	database0[20] = "";
+	database0[20] = "0504 - Magmar";
 	links0[20] = "";
-	database0[21] = "";
+	database0[21] = "0532 - Bank Celebi";
 	links0[21] = "";
-	database0[22] = "";
+	database0[22] = "0553 - Harry Hoopa";
 	links0[22] = "";
-	database0[23] = "";
+	database0[23] = "0556 - Sly Zoroark";
 	links0[23] = "";
-	database0[24] = "";
+	database0[24] = "0557 - GF Mew";
 	links0[24] = "";
-	database0[25] = "";
+	database0[25] = "0559 - GF Jirachi";
 	links0[25] = "";
-	database0[26] = "";
+	database0[26] = "0560 - GF Darkrai";
 	links0[26] = "";
-	database0[27] = "";
-	links0[27] = "";
 	
 	//database1
-	database1[0] = "";
+	database1[0] = "b";
 	links1[0] = "";
 	database1[1] = "";
 	links1[1] = "";
@@ -114,10 +112,9 @@ void fill(char *database0[], char *database1[], char *links0[], char *links1[]) 
 	links1[24] = "";
 	database1[25] = "";
 	links1[25] = "";
-	database1[26] = "";
+	database1[26] = "b";
 	links1[26] = "";
-	database1[27] = "";
-	links1[27] = "";
+
 	
 	
 	/*database2
@@ -175,7 +172,5 @@ void fill(char *database0[], char *database1[], char *links0[], char *links1[]) 
 	links1[25] = "";
 	database1[26] = "";
 	links1[26] = "";
-	database1[27] = "";
-	links1[27] = "";
 	*/
 }

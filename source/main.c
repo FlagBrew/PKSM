@@ -74,7 +74,7 @@ int main() {
 				intro(topScreen, bottomScreen, currentEntry, menuEntries);			
 			}
 			
-			if (currentEntry == 1) {
+			else if (currentEntry == 1) {
 				catchrate(topScreen, bottomScreen);
 				consoleSelect(&bottomScreen);
 				printf("\x1b[2J");
@@ -82,7 +82,7 @@ int main() {
 				intro(topScreen, bottomScreen, currentEntry, menuEntries);
 			}
 			
-			if (currentEntry == 2) {
+			else if (currentEntry == 2) {
 				printDistro(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/worldwide1.txt");
 				consoleSelect(&bottomScreen);
 				printf("\x1b[2J");
@@ -90,7 +90,7 @@ int main() {
 				intro(topScreen, bottomScreen, currentEntry, menuEntries);
 			}
 			
-			if (currentEntry == 3) {
+			else if (currentEntry == 3) {
 				printDistro(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/worldwide2.txt");
 				consoleSelect(&bottomScreen);
 				printf("\x1b[2J");
@@ -98,7 +98,7 @@ int main() {
 				intro(topScreen, bottomScreen, currentEntry, menuEntries);
 			}
 			
-			if (currentEntry == 4) {
+			else if (currentEntry == 4) {
 				printDistro(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/local.txt");
 				consoleSelect(&bottomScreen);
 				printf("\x1b[2J");
@@ -106,7 +106,7 @@ int main() {
 				intro(topScreen, bottomScreen, currentEntry, menuEntries);
 			}
 			
-			if (currentEntry == 5) {
+			else if (currentEntry == 5) {
 				printDistro(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/giveaway.txt");
 				consoleSelect(&bottomScreen);
 				printf("\x1b[2J");
@@ -114,7 +114,7 @@ int main() {
 				intro(topScreen, bottomScreen, currentEntry, menuEntries);
 			}
 			
-			if (currentEntry == 6) {
+			else if (currentEntry == 6) {
 				eventDatabase(topScreen, bottomScreen);
 				consoleSelect(&bottomScreen);
 				printf("\x1b[2J");
@@ -122,7 +122,7 @@ int main() {
 				intro(topScreen, bottomScreen, currentEntry, menuEntries);
 			}
 			
-			if (currentEntry == 7) {			
+			else if (currentEntry == 7) {			
 				printDistro(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/info.txt");
 				consoleSelect(&bottomScreen);
 				printf("\x1b[2J");
