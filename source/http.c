@@ -1,7 +1,8 @@
 #include <stdlib.h>
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 #include <3ds.h>
+#include "util.h"
 
 Result http_download(httpcContext *context) {
 	Result ret = 0;
