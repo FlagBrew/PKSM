@@ -86,3 +86,18 @@ void printDistro(PrintConsole topScreen, PrintConsole bottomScreen, char *url) {
 			break; 			 
 	}
 }
+
+void printPSdates(PrintConsole topScreen, PrintConsole bottomScreen, char *url) {
+	consoleSelect(&topScreen);		
+	printf("\x1b[2J");
+	getText(url);
+	
+	while (aptMainLoop()) {
+		gspWaitForVBlank();
+		hidScanInput();
+
+		u32 kDown = hidKeysDown();
+		if (kDown & KEY_A) 
+			break; 			 
+	}
+}

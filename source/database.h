@@ -6,3 +6,4 @@
 #include "fill.h"
 
 void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen);
+void psDates(PrintConsole topScreen, PrintConsole bottomScreen);

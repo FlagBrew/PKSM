@@ -15,7 +15,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 	char *database1[RIGHE];
 	char *links1[RIGHE];
 	
-	fill(database0, database1, links0, links1);
+	filldatabase(database0, database1, links0, links1);
 	
 	int currentEntry = 0;
 	int page = 0;
@@ -120,6 +120,15 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 			printf("\x1b[2J");
 			if (page == 0) printDistro(topScreen, bottomScreen, links0[currentEntry]);
 			else if (page == 1) printDistro(topScreen, bottomScreen, links1[currentEntry]);
+			consoleSelect(&bottomScreen);
+			printf("\x1b[2J");
+			printf("----------------------------------------");
+			printf("\x19\x18 - Move cursor\n");
+			printf("L/R - Switch page\n");
+			printf("A - Open/close entry\n");
+			printf("----------------------------------------");
+			printf("\x1b[27;0H    Please check your connection....");
+			printf("\x1b[29;10HPress START to exit.");			
 			consoleSelect(&topScreen);
 			printf("\x1b[2J");	
 			printf("Page: %d", page);			
@@ -132,4 +141,36 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 		gfxFlushBuffers();
 		gfxSwapBuffers();
 	}
+}
+
+void printPage(PrintConsole bottomScreen, int i, int tot) {
+	consoleSelect(&bottomScreen);
+	printf("\x1b[4;0HPage %d/%d", i, tot);
+}
+
+void psDates(PrintConsole topScreen, PrintConsole bottomScreen) {
+	consoleSelect(&bottomScreen);
+	printf("\x1b[2J");
+	printf("----------------------------------------");
+	printf("A - Switch page\n");
+	printf("----------------------------------------");
+	printf("\x1b[28;0H    Please check your connection....");
+	
+	printPage(bottomScreen, 1, 6);
+	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked1.txt");
+	
+	printPage(bottomScreen, 2, 6);
+	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked2.txt");
+	
+	printPage(bottomScreen, 3, 6);
+	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked3.txt");
+	
+	printPage(bottomScreen, 4, 6);
+	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked4.txt");
+	
+	printPage(bottomScreen, 5, 6);
+	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked5.txt");
+	
+	printPage(bottomScreen, 6, 6);
+	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked6.txt");
 }

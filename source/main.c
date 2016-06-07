@@ -7,7 +7,7 @@
 #include "util.h"
 #include "database.h"
 
-#define ENTRIES 8
+#define ENTRIES 9
 
 void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, char* menuEntries[]){
 	consoleSelect(&bottomScreen);
@@ -30,7 +30,7 @@ int main() {
 	consoleInit(GFX_TOP, &topScreen);
 	consoleInit(GFX_BOTTOM, &bottomScreen);
 	
-	char *menuEntries[ENTRIES] = {"PID Checker", "Capture probability Calculator", "Wi-Fi distributions", "Code distributions", "Local distributions", "Our distributions", "Event Database", "News"};
+	char *menuEntries[ENTRIES] = {"PID Checker", "Capture probability Calculator", "Wi-Fi distributions", "Code distributions", "Local distributions", "Our distributions", "Event Database", "News", "PS dates"};
 	
 	int currentEntry = 0;
 	
@@ -113,7 +113,7 @@ int main() {
 				consoleSelect(&topScreen);
 				intro(topScreen, bottomScreen, currentEntry, menuEntries);
 			}
-			
+			/*
 			else if (currentEntry == 6) {
 				eventDatabase(topScreen, bottomScreen);
 				consoleSelect(&bottomScreen);
@@ -121,13 +121,20 @@ int main() {
 				consoleSelect(&topScreen);
 				intro(topScreen, bottomScreen, currentEntry, menuEntries);
 			}
-			
+			*/
 			else if (currentEntry == 7) {			
 				printDistro(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/info.txt");
 				consoleSelect(&bottomScreen);
 				printf("\x1b[2J");
 				consoleSelect(&topScreen);
 				intro(topScreen, bottomScreen, currentEntry, menuEntries);	
+			}
+			else if (currentEntry == 8) {
+				psDates(topScreen, bottomScreen);
+				consoleSelect(&bottomScreen);
+				printf("\x1b[2J");
+				consoleSelect(&topScreen);
+				intro(topScreen, bottomScreen, currentEntry, menuEntries);
 			}
 		}
 		

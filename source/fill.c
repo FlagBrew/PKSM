@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <3ds.h>
 
-void fill(char *database0[], char *database1[], char *links0[], char *links1[]) {
+void filldatabase(char *database0[], char *database1[], char *links0[], char *links1[]) {
 	//database0
 	database0[0] = "0114 - Expo Charizard";
 	links0[0] = "http://eventcatchersitalia.altervista.org/database/0114_Expo_Charizard.txt";
