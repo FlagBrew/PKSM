@@ -10,12 +10,10 @@
 #define MAXPAGES 1
 
 void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {		
-	char *database0[RIGHE];
-	char *links0[RIGHE];
-	char *database1[RIGHE];
-	char *links1[RIGHE];
+	char *database[RIGHE * (MAXPAGES + 1)];
+	char *links[RIGHE * (MAXPAGES + 1)];
 	
-	filldatabase(database0, database1, links0, links1);
+	filldatabase(database, links);
 	
 	int currentEntry = 0;
 	int page = 0;
@@ -33,7 +31,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("\x1b[2J");	
 	printf("Page: %d", page);
 	
-	refresh(currentEntry, topScreen, database0, RIGHE);
+	refreshDB(currentEntry, topScreen, database, RIGHE, page);
 
 	consoleSelect(&topScreen);			
 	while (aptMainLoop()) {
@@ -51,9 +49,8 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 				consoleSelect(&topScreen);	
 				printf("\x1b[2J");
 				printf("Page: %d", page);
-				if (page == 1) {
-					refresh(currentEntry, topScreen, database1, RIGHE);
-				}
+				
+				refreshDB(currentEntry, topScreen, database, RIGHE, page);
 			}
 		}
 		
@@ -63,63 +60,30 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 				consoleSelect(&topScreen);	
 				printf("\x1b[2J");
 				printf("Page: %d", page);
-				if (page == 0) {
-					refresh(currentEntry, topScreen, database0, RIGHE);
-				}
+				
+				refreshDB(currentEntry, topScreen, database, RIGHE, page);
 			}
 		}
 		
 		if (kDown & KEY_DUP) {
-			if (page == 0) {
-				if (currentEntry == 0) {
-					currentEntry = RIGHE - 1;
-					refresh(currentEntry, topScreen, database0, RIGHE);
-				}
-				else if (currentEntry > 0) {
-					currentEntry -= 1;
-					refresh(currentEntry, topScreen, database0, RIGHE);
-				}
-			}
-			else if (page == 1) {
-				if (currentEntry == 0) {
-					currentEntry = RIGHE - 1;
-					refresh(currentEntry, topScreen, database1, RIGHE);
-				}
-				else if (currentEntry > 0) {
-					currentEntry -= 1;
-					refresh(currentEntry, topScreen, database1, RIGHE);
-				}
-			}
+			if (currentEntry == 0) currentEntry = RIGHE - 1;
+			else if (currentEntry > 0) currentEntry -= 1;
+			
+			refreshDB(currentEntry, topScreen, database, RIGHE, page);
 		}
 		
 		if (kDown & KEY_DDOWN) {
-			if (page == 0) {
-				if (currentEntry == RIGHE - 1) {
-					currentEntry = 0;
-					refresh(currentEntry, topScreen, database0, RIGHE);
-				}
-				else if (currentEntry < RIGHE - 1) {
-					currentEntry++;
-					refresh(currentEntry, topScreen, database0, RIGHE);
-				}
-			}
-			if (page == 1) {
-				if (currentEntry == RIGHE - 1) {
-					currentEntry = 0;
-					refresh(currentEntry, topScreen, database1, RIGHE);
-				}
-				else if (currentEntry < RIGHE - 1) {
-					currentEntry++;
-					refresh(currentEntry, topScreen, database1, RIGHE);
-				}
-			}
+			if (currentEntry == RIGHE - 1) currentEntry = 0;
+			else if (currentEntry < RIGHE - 1) currentEntry++;
+			
+			refreshDB(currentEntry, topScreen, database, RIGHE, page);			
 		}
 
  		if (kDown & KEY_A)  {
 			consoleSelect(&topScreen);
 			printf("\x1b[2J");
-			if (page == 0) printDistro(topScreen, bottomScreen, links0[currentEntry]);
-			else if (page == 1) printDistro(topScreen, bottomScreen, links1[currentEntry]);
+			printDistro(topScreen, bottomScreen, links[currentEntry + page * RIGHE]);
+
 			consoleSelect(&bottomScreen);
 			printf("\x1b[2J");
 			printf("----------------------------------------");
@@ -132,20 +96,12 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 			consoleSelect(&topScreen);
 			printf("\x1b[2J");	
 			printf("Page: %d", page);			
-			if (page == 0) 
-				refresh(currentEntry, topScreen, database0, RIGHE);
-			else if (page == 1)
-				refresh(currentEntry, topScreen, database1, RIGHE);
+			refreshDB(currentEntry, topScreen, database, RIGHE, page);
 		}	 
 		
 		gfxFlushBuffers();
 		gfxSwapBuffers();
 	}
-}
-
-void printPage(PrintConsole bottomScreen, int i, int tot) {
-	consoleSelect(&bottomScreen);
-	printf("\x1b[4;0HPage %d/%d", i, tot);
 }
 
 void psDates(PrintConsole topScreen, PrintConsole bottomScreen) {
@@ -156,21 +112,11 @@ void psDates(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("----------------------------------------");
 	printf("\x1b[28;0H    Please check your connection....");
 	
-	printPage(bottomScreen, 1, 6);
 	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked1.txt");
-	
-	printPage(bottomScreen, 2, 6);
 	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked2.txt");
-	
-	printPage(bottomScreen, 3, 6);
 	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked3.txt");
-	
-	printPage(bottomScreen, 4, 6);
 	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked4.txt");
-	
-	printPage(bottomScreen, 5, 6);
 	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked5.txt");
-	
-	printPage(bottomScreen, 6, 6);
 	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked6.txt");
+	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked7.txt");
 }

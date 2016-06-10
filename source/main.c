@@ -113,7 +113,7 @@ int main() {
 				consoleSelect(&topScreen);
 				intro(topScreen, bottomScreen, currentEntry, menuEntries);
 			}
-			/*
+		
 			else if (currentEntry == 6) {
 				eventDatabase(topScreen, bottomScreen);
 				consoleSelect(&bottomScreen);
@@ -121,7 +121,7 @@ int main() {
 				consoleSelect(&topScreen);
 				intro(topScreen, bottomScreen, currentEntry, menuEntries);
 			}
-			*/
+			
 			else if (currentEntry == 7) {			
 				printDistro(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/info.txt");
 				consoleSelect(&bottomScreen);
