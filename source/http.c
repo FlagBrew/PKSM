@@ -4,19 +4,23 @@
 #include <3ds.h>
 #include "util.h"
 
-Result http_download(httpcContext *context) {
+Result http_download(PrintConsole topScreen, PrintConsole bottomScreen, httpcContext *context) {
 	Result ret = 0;
 	u32 statuscode = 0;
 	u32 contentsize = 0;
 	u8 *buf;
 	
+	consoleSelect(&bottomScreen);
+	
 	ret = httpcBeginRequest(context);
-	if (ret != 0) 
+	if (ret != 0)
 		return ret;
 
 	ret = httpcGetResponseStatusCode(context, &statuscode, 0);
 	if (ret != 0)
 		return ret;
+	
+	printf("\x1b[24;0HStatusCode: %d", (int)statuscode);
 
 	if (statuscode != 200) 
 		return -2;
@@ -24,6 +28,8 @@ Result http_download(httpcContext *context) {
 	ret = httpcGetDownloadSizeState(context, NULL, &contentsize);
 	if (ret != 0)
 		return ret;
+	
+	printf("\x1b[25;0HDownload size: %d bytes", (int)contentsize);
 
 	gfxFlushBuffers();
 
@@ -38,12 +44,13 @@ Result http_download(httpcContext *context) {
 		return ret;
 	}
 
+	consoleSelect(&topScreen);
 	printf("%s", buf);
 	free(buf);
 	return 0;
 }
 
-void getText(char *url) {
+void getText(PrintConsole topScreen, PrintConsole bottomScreen, char *url) {
 	Result ret = 0;
 	httpcContext context;
 	
@@ -54,7 +61,7 @@ void getText(char *url) {
 	gfxFlushBuffers();
 	
 	if (ret == 0) {
-		ret = http_download(&context);
+		ret = http_download(topScreen, bottomScreen, &context);
 		gfxFlushBuffers();
 		httpcCloseContext(&context);
 	}
@@ -75,7 +82,7 @@ void printDistro(PrintConsole topScreen, PrintConsole bottomScreen, char *url) {
 	printf("\x1b[29;10HPress A to continue.");
 	consoleSelect(&topScreen);		
 	printf("\x1b[2J");
-	getText(url);
+	getText(topScreen, bottomScreen, url);
 	
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
@@ -90,7 +97,7 @@ void printDistro(PrintConsole topScreen, PrintConsole bottomScreen, char *url) {
 void printPSdates(PrintConsole topScreen, PrintConsole bottomScreen, char *url) {
 	consoleSelect(&topScreen);		
 	printf("\x1b[2J");
-	getText(url);
+	getText(topScreen, bottomScreen, url);
 	
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
