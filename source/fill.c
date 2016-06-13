@@ -1,120 +1,12 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <3ds.h>
+#include "http.h"
 
 void filldatabase(char *database[], char *links[]) {
-	int i = 0;
-
-	database[0 + i] = "";
-	links[0 + i] = "";
-	database[1 + i] = "";
-	links[1 + i] = "";
-	database[2 + i] = "";
-	links[2 + i] = "";
-	database[3 + i] = "";
-	links[3 + i] = "";
-	database[4 + i] = "";
-	links[4 + i] = "";
-	database[5 + i] = "";
-	links[5 + i] = "";
-	database[6 + i] = "";
-	links[6 + i] = "";
-	database[7 + i] = "";
-	links[7 + i] = "";
-	database[8 + i] = "";
-	links[8 + i] = "";
-	database[9 + i] = "";
-	links[9 + i] = "";
-	database[10 + i] = "";
-	links[10 + i] = "";
-	database[11 + i] = "";
-	links[11 + i] = "";
-	database[12 + i] = "";
-	links[12 + i] = "";
-	database[13 + i] = "";
-	links[13 + i] = "";
-	database[14 + i] = "";
-	links[14 + i] = "";
-	database[15 + i] = "";
-	links[15 + i] = "";
-	database[16 + i] = "";
-	links[16 + i] = "";
-	database[17 + i] = "";
-	links[17 + i] = "";
-	database[18 + i] = "";
-	links[18 + i] = "";
-	database[19 + i] = "";
-	links[19 + i] = "";
-	database[20 + i] = "";
-	links[20 + i] = "";
-	database[21 + i] = "";
-	links[21 + i] = "";
-	database[22 + i] = "";
-	links[22 + i] = "";
-	database[23 + i] = "";
-	links[23 + i] = "";
-	database[24 + i] = "";
-	links[24 + i] = "";
-	database[25 + i] = "";
-	links[25 + i] = "";
-	database[26 + i] = "";
-	links[26 + i] = "";
-	
-	i += 27;
-	
-	database[0 + i] = "";
-	links[0 + i] = "";
-	database[1 + i] = "";
-	links[1 + i] = "";
-	database[2 + i] = "";
-	links[2 + i] = "";
-	database[3 + i] = "";
-	links[3 + i] = "";
-	database[4 + i] = "";
-	links[4 + i] = "";
-	database[5 + i] = "";
-	links[5 + i] = "";
-	database[6 + i] = "";
-	links[6 + i] = "";
-	database[7 + i] = "";
-	links[7 + i] = "";
-	database[8 + i] = "";
-	links[8 + i] = "";
-	database[9 + i] = "";
-	links[9 + i] = "";
-	database[10 + i] = "";
-	links[10 + i] = "";
-	database[11 + i] = "";
-	links[11 + i] = "";
-	database[12 + i] = "";
-	links[12 + i] = "";
-	database[13 + i] = "";
-	links[13 + i] = "";
-	database[14 + i] = "";
-	links[14 + i] = "";
-	database[15 + i] = "";
-	links[15 + i] = "";
-	database[16 + i] = "";
-	links[16 + i] = "";
-	database[17 + i] = "";
-	links[17 + i] = "";
-	database[18 + i] = "";
-	links[18 + i] = "";
-	database[19 + i] = "";
-	links[19 + i] = "";
-	database[20 + i] = "";
-	links[20 + i] = "";
-	database[21 + i] = "";
-	links[21 + i] = "";
-	database[22 + i] = "";
-	links[22 + i] = "";
-	database[23 + i] = "";
-	links[23 + i] = "";
-	database[24 + i] = "";
-	links[24 + i] = "";
-	database[25 + i] = "";
-	links[25 + i] = "";
-	database[26 + i] = "";
-	links[26 + i] = "";
-
+	for (int j = 0; j < 27 * 76; j++) {
+		database[j] = "";
+		links[j] = "";
+	}
 }

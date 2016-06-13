@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <3ds.h>
 
-#define DELAY 18
+#define DELAY 20
 
 void hexa2bin (int binary[], char hexadecimal[], int nbit) {
 	int k = 0;

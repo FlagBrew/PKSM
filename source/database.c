@@ -1,14 +1,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <3ds.h>
+#include <string.h>
 #include "util.h"
 #include "http.h"
 #include "fill.h"
 
+#define MAXPAGES 75
 #define RIGHE 27
-#define MAXPAGES 1
 
-void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {		
+void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 	char *database[RIGHE * (MAXPAGES + 1)];
 	char *links[RIGHE * (MAXPAGES + 1)];
 	
@@ -27,6 +28,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("\n\nSpecial thanks to:\n\n- Simona Mastroianni\n- Federico Leuzzi\n- Shai Raba'\n- Cosimo Vivoli");
 	printf("\x1b[27;0H    Please check your connection....");
 	printf("\x1b[29;10HPress START to exit.");
+	
 	consoleSelect(&topScreen);		
 	printf("\x1b[2J");	
 	printf("Page: %d", page);
@@ -44,25 +46,21 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 			break;
 		
 		if (kDown & KEY_R) {
-			if (page < MAXPAGES) {
-				page++;
-				consoleSelect(&topScreen);	
-				printf("\x1b[2J");
-				printf("Page: %d", page);
-				
-				refreshDB(currentEntry, topScreen, database, RIGHE, page);
-			}
+			if (page < MAXPAGES) page++;
+			else if (page == MAXPAGES) page = 0;
+			consoleSelect(&topScreen);	
+			printf("\x1b[2J");
+			printf("Page: %d", page);			
+			refreshDB(currentEntry, topScreen, database, RIGHE, page);
 		}
 		
 		if (kDown & KEY_L) {
-			if (page > 0) {
-				page--;
-				consoleSelect(&topScreen);	
-				printf("\x1b[2J");
-				printf("Page: %d", page);
-				
-				refreshDB(currentEntry, topScreen, database, RIGHE, page);
-			}
+			if (page > 0) page--;
+			else if (page == 0) page = MAXPAGES;
+			consoleSelect(&topScreen);	
+			printf("\x1b[2J");
+			printf("Page: %d", page);				
+			refreshDB(currentEntry, topScreen, database, RIGHE, page);	
 		}
 		
 		if (kDown & KEY_DUP) {

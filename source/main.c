@@ -66,75 +66,86 @@ int main() {
 		}
 		
 		if (kDown & KEY_A) {
-			if (currentEntry == 0) {
-				PID(topScreen, bottomScreen);
-				consoleSelect(&bottomScreen);
-				printf("\x1b[2J");
-				consoleSelect(&topScreen);			
-				intro(topScreen, bottomScreen, currentEntry, menuEntries);			
-			}
+			switch (currentEntry) {
+				case 0 : {
+					PID(topScreen, bottomScreen);
+					consoleSelect(&bottomScreen);
+					printf("\x1b[2J");
+					consoleSelect(&topScreen);			
+					intro(topScreen, bottomScreen, currentEntry, menuEntries);
+					break;
+				}
+				
+				case 1 : {
+					catchrate(topScreen, bottomScreen);
+					consoleSelect(&bottomScreen);
+					printf("\x1b[2J");
+					consoleSelect(&topScreen);
+					intro(topScreen, bottomScreen, currentEntry, menuEntries);
+					break;
+				}
+				
+				case 2 :  {
+					printDistro(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/worldwide1.txt");
+					consoleSelect(&bottomScreen);
+					printf("\x1b[2J");
+					consoleSelect(&topScreen);
+					intro(topScreen, bottomScreen, currentEntry, menuEntries);
+					break;
+				}
+				
+				case 3 : {
+					printDistro(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/worldwide2.txt");
+					consoleSelect(&bottomScreen);
+					printf("\x1b[2J");
+					consoleSelect(&topScreen);
+					intro(topScreen, bottomScreen, currentEntry, menuEntries);
+					break;
+				}
+				
+				case 4 : {
+					printDistro(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/local.txt");
+					consoleSelect(&bottomScreen);
+					printf("\x1b[2J");
+					consoleSelect(&topScreen);
+					intro(topScreen, bottomScreen, currentEntry, menuEntries);
+					break;
+				}
+				
+				case 5 : {
+					printDistro(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/giveaway.txt");
+					consoleSelect(&bottomScreen);
+					printf("\x1b[2J");
+					consoleSelect(&topScreen);
+					intro(topScreen, bottomScreen, currentEntry, menuEntries);
+					break;
+				}
 			
-			else if (currentEntry == 1) {
-				catchrate(topScreen, bottomScreen);
-				consoleSelect(&bottomScreen);
-				printf("\x1b[2J");
-				consoleSelect(&topScreen);
-				intro(topScreen, bottomScreen, currentEntry, menuEntries);
-			}
-			
-			else if (currentEntry == 2) {
-				printDistro(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/worldwide1.txt");
-				consoleSelect(&bottomScreen);
-				printf("\x1b[2J");
-				consoleSelect(&topScreen);
-				intro(topScreen, bottomScreen, currentEntry, menuEntries);
-			}
-			
-			else if (currentEntry == 3) {
-				printDistro(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/worldwide2.txt");
-				consoleSelect(&bottomScreen);
-				printf("\x1b[2J");
-				consoleSelect(&topScreen);
-				intro(topScreen, bottomScreen, currentEntry, menuEntries);
-			}
-			
-			else if (currentEntry == 4) {
-				printDistro(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/local.txt");
-				consoleSelect(&bottomScreen);
-				printf("\x1b[2J");
-				consoleSelect(&topScreen);
-				intro(topScreen, bottomScreen, currentEntry, menuEntries);
-			}
-			
-			else if (currentEntry == 5) {
-				printDistro(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/giveaway.txt");
-				consoleSelect(&bottomScreen);
-				printf("\x1b[2J");
-				consoleSelect(&topScreen);
-				intro(topScreen, bottomScreen, currentEntry, menuEntries);
-			}
-		
-			else if (currentEntry == 6) {
-				eventDatabase(topScreen, bottomScreen);
-				consoleSelect(&bottomScreen);
-				printf("\x1b[2J");
-				consoleSelect(&topScreen);
-				intro(topScreen, bottomScreen, currentEntry, menuEntries);
-			}
-			
-			else if (currentEntry == 7) {			
-				printDistro(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/info.txt");
-				consoleSelect(&bottomScreen);
-				printf("\x1b[2J");
-				consoleSelect(&topScreen);
-				intro(topScreen, bottomScreen, currentEntry, menuEntries);	
-			}
-			else if (currentEntry == 8) {
-				psDates(topScreen, bottomScreen);
-				consoleSelect(&bottomScreen);
-				printf("\x1b[2J");
-				consoleSelect(&topScreen);
-				intro(topScreen, bottomScreen, currentEntry, menuEntries);
+				case 6 : {
+					eventDatabase(topScreen, bottomScreen);
+					consoleSelect(&bottomScreen);
+					printf("\x1b[2J");
+					consoleSelect(&topScreen);
+					intro(topScreen, bottomScreen, currentEntry, menuEntries);
+					break;
+				}
+				
+				case 7 : {			
+					printDistro(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/info.txt");
+					consoleSelect(&bottomScreen);
+					printf("\x1b[2J");
+					consoleSelect(&topScreen);
+					intro(topScreen, bottomScreen, currentEntry, menuEntries);
+					break;					
+				}
+				case 8 : {
+					psDates(topScreen, bottomScreen);
+					consoleSelect(&bottomScreen);
+					printf("\x1b[2J");
+					consoleSelect(&topScreen);
+					intro(topScreen, bottomScreen, currentEntry, menuEntries);
+					break;
+				}
 			}
 		}
 		
