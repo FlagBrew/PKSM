@@ -105,16 +105,15 @@ void psDates(PrintConsole topScreen, PrintConsole bottomScreen) {
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
 	printf("----------------------------------------");
-	printf("A - Switch page\n");
-	printf("----------------------------------------");
 	printf("Source:\n\x1b[32m/r/pokemontrades/wiki/hackedevents\x1b[0m\n");
 	printf("----------------------------------------");
+	printf("\x1b[29;10HPress A to continue.");	
 	
-	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked1.txt");
-	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked2.txt");
-	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked3.txt");
-	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked4.txt");
-	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked5.txt");
-	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked6.txt");
-	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked7.txt");
+	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked1.txt", 1);
+	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked2.txt", 2);
+	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked3.txt", 3);
+	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked4.txt", 4);
+	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked5.txt", 5);
+	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked6.txt", 6);
+	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked7.txt", 7);
 }

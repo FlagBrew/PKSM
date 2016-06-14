@@ -13,12 +13,15 @@ Result http_download(PrintConsole topScreen, PrintConsole bottomScreen, httpcCon
 	consoleSelect(&bottomScreen);
 	
 	ret = httpcBeginRequest(context);
-	if (ret != 0)
+	if (ret != 0) {		
 		return ret;
+	}
 
 	ret = httpcGetResponseStatusCode(context, &statuscode, 0);
-	if (ret != 0)
+	if (ret != 0) {
+		printf("\x1b[26;0HStatus: \x1b[31mNO INTERNET AVAILABLE\x1b[0m");
 		return ret;
+	}
 	
 	if (statuscode == 200)
 		printf("\x1b[26;0HStatus: \x1b[32mOKAY          \x1b[0m");
@@ -63,7 +66,7 @@ void getText(PrintConsole topScreen, PrintConsole bottomScreen, char *url) {
 	ret = httpcOpenContext(&context, url, 1);
 	
 	if (ret != 0) 
-		printf("\x1b[25;0H\x1b[31mURL NOT AVAILABLE\x1b[0m");
+		printf("\x1b[25;0HStatus: \x1b[31mURL NOT AVAILABLE\x1b[0m");
 	gfxFlushBuffers();
 	
 	if (ret == 0) {
@@ -100,7 +103,9 @@ void printDistro(PrintConsole topScreen, PrintConsole bottomScreen, char *url) {
 	}
 }
 
-void printPSdates(PrintConsole topScreen, PrintConsole bottomScreen, char *url) {
+void printPSdates(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int page) {
+	consoleSelect (&bottomScreen);
+	printf("\x1b[5;0HPage %d ", page);
 	consoleSelect(&topScreen);		
 	printf("\x1b[2J");
 	getText(topScreen, bottomScreen, url);
