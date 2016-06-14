@@ -20,7 +20,10 @@ Result http_download(PrintConsole topScreen, PrintConsole bottomScreen, httpcCon
 	if (ret != 0)
 		return ret;
 	
-	printf("\x1b[24;0HStatusCode: %d", (int)statuscode);
+	if (statuscode == 200)
+		printf("\x1b[26;0HStatus: \x1b[32mOKAY          \x1b[0m");
+	else 
+		printf("\x1b[26;0HStatus: \x1b[31mERROR, EXITING\x1b[0m");
 
 	if (statuscode != 200) 
 		return -2;
@@ -29,7 +32,7 @@ Result http_download(PrintConsole topScreen, PrintConsole bottomScreen, httpcCon
 	if (ret != 0)
 		return ret;
 	
-	printf("\x1b[25;0HDownload size: %d bytes", (int)contentsize);
+	printf("\x1b[27;0HDownload size: %d bytes    ", (int)contentsize);
 
 	gfxFlushBuffers();
 
@@ -53,14 +56,18 @@ Result http_download(PrintConsole topScreen, PrintConsole bottomScreen, httpcCon
 void getText(PrintConsole topScreen, PrintConsole bottomScreen, char *url) {
 	Result ret = 0;
 	httpcContext context;
-	
 	httpcInit();
+	consoleSelect(&bottomScreen);	
 	gfxFlushBuffers();
 
 	ret = httpcOpenContext(&context, url, 1);
+	
+	if (ret != 0) 
+		printf("\x1b[25;0H\x1b[31mURL NOT AVAILABLE\x1b[0m");
 	gfxFlushBuffers();
 	
 	if (ret == 0) {
+		printf("\x1b[25;0HDownloading...");
 		ret = http_download(topScreen, bottomScreen, &context);
 		gfxFlushBuffers();
 		httpcCloseContext(&context);
@@ -78,7 +85,6 @@ void printDistro(PrintConsole topScreen, PrintConsole bottomScreen, char *url) {
 	printf("\nKOR - South Korea");
 	printf("\nALL - All regions available\n");
 	printf("----------------------------------------");
-	printf("\x1b[27;0H    Please check your connection....");
 	printf("\x1b[29;10HPress A to continue.");
 	consoleSelect(&topScreen);		
 	printf("\x1b[2J");

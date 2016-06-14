@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <3ds.h>
-#include <string.h>
 #include "util.h"
 #include "http.h"
 #include "fill.h"
@@ -31,7 +30,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 	
 	consoleSelect(&topScreen);		
 	printf("\x1b[2J");	
-	printf("Page: %d", page);
+	printf("Page: %d of %d - from %d to %d        ", page + 1, MAXPAGES + 1, page * 27, (page + 1) * 27);			
 	
 	refreshDB(currentEntry, topScreen, database, RIGHE, page);
 
@@ -50,7 +49,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 			else if (page == MAXPAGES) page = 0;
 			consoleSelect(&topScreen);	
 			printf("\x1b[2J");
-			printf("Page: %d", page);			
+			printf("Page: %d of %d - from %d to %d        ", page + 1, MAXPAGES + 1, page * 27, (page + 1) * 27);			
 			refreshDB(currentEntry, topScreen, database, RIGHE, page);
 		}
 		
@@ -59,7 +58,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 			else if (page == 0) page = MAXPAGES;
 			consoleSelect(&topScreen);	
 			printf("\x1b[2J");
-			printf("Page: %d", page);				
+			printf("Page: %d of %d - from %d to %d        ", page + 1, MAXPAGES + 1, page * 27, (page + 1) * 27);				
 			refreshDB(currentEntry, topScreen, database, RIGHE, page);	
 		}
 		
@@ -93,7 +92,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 			printf("\x1b[29;10HPress START to exit.");			
 			consoleSelect(&topScreen);
 			printf("\x1b[2J");	
-			printf("Page: %d", page);			
+			printf("Page: %d of %d - from %d to %d        ", page + 1, MAXPAGES + 1, page * 27, (page + 1) * 27);			
 			refreshDB(currentEntry, topScreen, database, RIGHE, page);
 		}	 
 		
@@ -108,7 +107,8 @@ void psDates(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("----------------------------------------");
 	printf("A - Switch page\n");
 	printf("----------------------------------------");
-	printf("\x1b[28;0H    Please check your connection....");
+	printf("Source:\n\x1b[32m/r/pokemontrades/wiki/hackedevents\x1b[0m\n");
+	printf("----------------------------------------");
 	
 	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked1.txt");
 	printPSdates(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/hacked2.txt");
