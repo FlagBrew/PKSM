@@ -6,7 +6,7 @@
 #include "pid.h"
 
 #define DEX 721
-#define DELAY 15
+#define DELAY 10
 
 void check(int number[]) {
 	if ((number[0] * 100 + number[1] * 10 + number[2]) > DEX) {
@@ -143,7 +143,7 @@ void catchrate(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("\x1b[29;10HPress START to exit.");
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
-	printf("\x1b[47;32m          Capture Probability Calculator          \x1b[0m");
+	printf("\x1b[47;34m          Capture Probability Calculator          \x1b[0m");
 	printf("--------------------------------------------------");
 	showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex, speed);
 	printCursoreC(cursore);
@@ -413,7 +413,7 @@ void catchrate(PrintConsole topScreen, PrintConsole bottomScreen) {
 			gen = 6;
 			captureOindex = 0;
 			printf("\x1b[2J");
-			printf("\x1b[47;32m          Capture Probability Calculator          \x1b[0m");
+			printf("\x1b[47;34m          Capture Probability Calculator          \x1b[0m");
 			printf("--------------------------------------------------");
 			refresh = 1;
 			printCursoreC(cursore);			
