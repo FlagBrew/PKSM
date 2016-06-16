@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <3ds.h>
 
-#define DELAY 20
+#define DELAY 15
 
 void hexa2bin (int binary[], char hexadecimal[], int nbit) {
 	int k = 0;
@@ -311,10 +311,13 @@ void printCursore(char cur[]) {
 	printf("--------------%c%c%c%c%c%c%c%c",cur[10], cur[11], cur[12], cur[13], cur[14], cur[15], cur[16], cur[17]);
 }
 
-void show(int var[], char pid[]) {
+void show(int var[], char pid[], int speed) {
 	printf("\x1b[2;0HTID:%d%d%d%d%d",var[0], var[1], var[2], var[3], var[4]);
 	printf("          SID:%d%d%d%d%d",var[5], var[6], var[7], var[8], var[9]);
 	printf("          PID:%c%c%c%c%c%c%c%c", pid[0], pid[1], pid[2], pid[3], pid[4], pid[5], pid[6], pid[7]);
+	
+	if (speed == 0) printf("\x1b[28;0HUsage Mode: \x1b[32mFAST\x1b[0m");
+	if (speed == 1) printf("\x1b[28;0HUsage Mode: \x1b[32mSLOW\x1b[0m");
 }
 
 void PID(PrintConsole topScreen, PrintConsole bottomScreen){
@@ -325,11 +328,14 @@ void PID(PrintConsole topScreen, PrintConsole bottomScreen){
 	char varPID[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 	int counterPID[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 	
+	int speed = 0;
+	
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
 	printf("----------------------------------------");
 	printf("\x1A\x1B - Move cursor\n");
 	printf("\x18\x19 - Change values (0-9/A-F)\n");
+	printf("L/R - Change usage mode\n");
 	printf("SELECT - Reset values\n");
 	printf("----------------------------------------");
 	printf("\x1b[16;0H----------------------------------------");
@@ -339,10 +345,10 @@ void PID(PrintConsole topScreen, PrintConsole bottomScreen){
 	printf("\x1b[29;10HPress START to exit.");
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
-	printf("\x1b[47;30m                   PID Checker                    \x1b[0m");
+	printf("\x1b[47;32m                   PID Checker                    \x1b[0m");
 	printf("--------------------------------------------------");	
 	
-	show(var, pid);
+	show(var, pid, speed);
 	printCursore(cursore);
 	PIDchecker(pid, var);
 	
@@ -354,44 +360,97 @@ void PID(PrintConsole topScreen, PrintConsole bottomScreen){
 
 		u32 kDown = hidKeysDown();
 		
-		if (((kDown & KEY_DRIGHT) ^ (hidKeysHeld() & KEY_DRIGHT && t_frame % DELAY == 1)) && (posizione[0] < 17)) {
-			posCursore(cursore, posizione, 1);
-			printCursore(cursore);
+		if (kDown & KEY_R) {
+			speed = 1;
+			show(var, pid, speed);
 		}
 		
-		if (((kDown & KEY_DLEFT) ^ (hidKeysHeld() & KEY_DLEFT && t_frame % DELAY == 1)) && (posizione[0] > 0)) {
-			posCursore(cursore, posizione, -1);
-			printCursore(cursore);
+		if (kDown & KEY_L) {
+			speed = 0;
+			show(var, pid, speed);
 		}
 		
-		if (((kDown & KEY_DUP) ^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)) && (var[posizione[0]] < 6) && (posizione[0] == 0)) { // posizione 0
-			incrementa(var, posizione, 1);
-			checkValDec(var);
-			refresh = 1;
+		if (speed == 0) {
+			if (((kDown & KEY_DRIGHT) ^ (hidKeysHeld() & KEY_DRIGHT && t_frame % DELAY == 1)) && (posizione[0] < 17)) {
+				posCursore(cursore, posizione, 1);
+				printCursore(cursore);
+			}
+			
+			if (((kDown & KEY_DLEFT) ^ (hidKeysHeld() & KEY_DLEFT && t_frame % DELAY == 1)) && (posizione[0] > 0)) {
+				posCursore(cursore, posizione, -1);
+				printCursore(cursore);
+			}
+			
+			if (((kDown & KEY_DUP) ^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)) && (var[posizione[0]] < 6) && (posizione[0] == 0)) { // posizione 0
+				incrementa(var, posizione, 1);
+				checkValDec(var);
+				refresh = 1;
+			}
+			if (((kDown & KEY_DUP) ^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)) && (var[posizione[0]] < 6) && (posizione[0] == 5)) { // posizione 5
+				incrementa(var, posizione, 1);
+				checkValDec(var);
+				refresh = 1;
+			}
+			if (((kDown & KEY_DUP) ^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)) && (var[posizione[0]] < 9) && (posizione[0] > 0) && (posizione[0] < 10) && (posizione[0] != 5)) { // posizione 1,2,3,4,6,7,8,9
+				incrementa(var, posizione, 1);	
+				checkValDec(var);
+				refresh = 1;
+			}
+			if (((kDown & KEY_DUP) ^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)) && (posizione[0] > 9) && (counterPID[posizione[0] - 10] < 15)) {
+				incrementaPID(pid, counterPID, varPID, posizione, 1);
+				refresh = 1;
+			}
+					
+			if (((kDown & KEY_DDOWN) ^ (hidKeysHeld() & KEY_DDOWN && t_frame % DELAY == 1)) && (var[posizione[0]] > 0) && (posizione[0] >= 0) && (posizione[0] < 10)) { // tutte le posizioni
+				incrementa(var, posizione, -1);
+				refresh = 1;
+			}
+			if (((kDown & KEY_DDOWN) ^ (hidKeysHeld() & KEY_DDOWN && t_frame % DELAY == 1)) && (posizione[0] > 9) && (counterPID[posizione[0] - 10] > 0)) {
+				incrementaPID(pid, counterPID, varPID, posizione, -1);
+				refresh = 1;
+			}
 		}
-		if (((kDown & KEY_DUP) ^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)) && (var[posizione[0]] < 6) && (posizione[0] == 5)) { // posizione 5
-			incrementa(var, posizione, 1);
-			checkValDec(var);
-			refresh = 1;
-		}
-		if (((kDown & KEY_DUP) ^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)) && (var[posizione[0]] < 9) && (posizione[0] > 0) && (posizione[0] < 10) && (posizione[0] != 5)) { // posizione 1,2,3,4,6,7,8,9
-			incrementa(var, posizione, 1);	
-			checkValDec(var);
-			refresh = 1;
-		}
-		if (((kDown & KEY_DUP) ^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)) && (posizione[0] > 9) && (counterPID[posizione[0] - 10] < 15)) {
-			incrementaPID(pid, counterPID, varPID, posizione, 1);
-			refresh = 1;
-		}
-				
-		if (((kDown & KEY_DDOWN) ^ (hidKeysHeld() & KEY_DDOWN && t_frame % DELAY == 1)) && (var[posizione[0]] > 0) && (posizione[0] >= 0) && (posizione[0] < 10)) { // tutte le posizioni
-			incrementa(var, posizione, -1);
-			refresh = 1;
-		}
-		if (((kDown & KEY_DDOWN) ^ (hidKeysHeld() & KEY_DDOWN && t_frame % DELAY == 1)) && (posizione[0] > 9) && (counterPID[posizione[0] - 10] > 0)) {
-			incrementaPID(pid, counterPID, varPID, posizione, -1);
-			refresh = 1;
-		}
+		
+		if (speed == 1) {
+			if (((kDown & KEY_DRIGHT) /*^ (hidKeysHeld() & KEY_DRIGHT && t_frame % DELAY == 1)*/) && (posizione[0] < 17)) {
+				posCursore(cursore, posizione, 1);
+				printCursore(cursore);
+			}
+			
+			if (((kDown & KEY_DLEFT) /*^ (hidKeysHeld() & KEY_DLEFT && t_frame % DELAY == 1)*/) && (posizione[0] > 0)) {
+				posCursore(cursore, posizione, -1);
+				printCursore(cursore);
+			}
+			
+			if (((kDown & KEY_DUP) /*^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)*/) && (var[posizione[0]] < 6) && (posizione[0] == 0)) { // posizione 0
+				incrementa(var, posizione, 1);
+				checkValDec(var);
+				refresh = 1;
+			}
+			if (((kDown & KEY_DUP) /*^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)*/) && (var[posizione[0]] < 6) && (posizione[0] == 5)) { // posizione 5
+				incrementa(var, posizione, 1);
+				checkValDec(var);
+				refresh = 1;
+			}
+			if (((kDown & KEY_DUP) /*^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)*/) && (var[posizione[0]] < 9) && (posizione[0] > 0) && (posizione[0] < 10) && (posizione[0] != 5)) { // posizione 1,2,3,4,6,7,8,9
+				incrementa(var, posizione, 1);	
+				checkValDec(var);
+				refresh = 1;
+			}
+			if (((kDown & KEY_DUP) /*^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)*/) && (posizione[0] > 9) && (counterPID[posizione[0] - 10] < 15)) {
+				incrementaPID(pid, counterPID, varPID, posizione, 1);
+				refresh = 1;
+			}
+					
+			if (((kDown & KEY_DDOWN) /*^ (hidKeysHeld() & KEY_DDOWN && t_frame % DELAY == 1)*/) && (var[posizione[0]] > 0) && (posizione[0] >= 0) && (posizione[0] < 10)) { // tutte le posizioni
+				incrementa(var, posizione, -1);
+				refresh = 1;
+			}
+			if (((kDown & KEY_DDOWN) /*^ (hidKeysHeld() & KEY_DDOWN && t_frame % DELAY == 1)*/) && (posizione[0] > 9) && (counterPID[posizione[0] - 10] > 0)) {
+				incrementaPID(pid, counterPID, varPID, posizione, -1);
+				refresh = 1;
+			}
+		}		
 		
 		if (kDown & KEY_SELECT) {
 			int j = 0;
@@ -406,9 +465,9 @@ void PID(PrintConsole topScreen, PrintConsole bottomScreen){
 			for (j = 1; j < 8; j++)
 			counterPID[j] = 0;
 			printf("\x1b[2J");
-			printf("\x1b[47;30m                   PID Checker                    \x1b[0m");
+			printf("\x1b[47;32m                   PID Checker                    \x1b[0m");
 			printf("---------------------------------------------------------");	
-			show(var, pid);
+			show(var, pid, speed);
 			PIDchecker(pid, var);
 			printCursore(cursore);	
 			
@@ -418,7 +477,7 @@ void PID(PrintConsole topScreen, PrintConsole bottomScreen){
 			break;
 		
 		if (refresh == 1) {
-			show(var, pid);
+			show(var, pid, speed);
 			PIDchecker(pid, var);
 			refresh = 0;
 		}

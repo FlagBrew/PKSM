@@ -6,8 +6,7 @@
 #include "pid.h"
 
 #define DEX 721
-
-#define DELAY 25
+#define DELAY 15
 
 void check(int number[]) {
 	if ((number[0] * 100 + number[1] * 10 + number[2]) > DEX) {
@@ -32,8 +31,8 @@ void printCursoreC(char cur[]) {
 	printf("\x1b[17;31H%c", cur[8]);
 }
 
-void showC(int number[], int ratio[], int HP_perc, float bonusballvett[], int bonusindex, float status[], int statusindex, int r, int gen, float captureOgenV[], float captureOgenVI[], int captureOindex) {
-	char *pokemon[721] = {"Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard", "Squirtle", "Wartortle", "Blastoise", "Caterpie", "Metapod", "Butterfree", "Weedle", "Kakuna", "Beedrill", "Pidgey", "Pidgeotto", "Pidgeot", "Rattata", "Raticate", "Spearow", "Fearow", "Ekans", "Arbok", "Pikachu", "Raichu", "Sandshrew", "Sandslash", "Nidoran F", "Nidorina", "Nidoqueen", "Nidoran M", "Nidorino", "Nidoking", "Clefairy", "Clefable", "Vulpix", "Ninetales", "Jigglypuff", "Wigglytuff", "Zubat", "Golbat", "Oddish", "Gloom", "Vileplume", "Paras", "Parasect", "Venonat", "Venomoth", "Diglett", "Dugtrio", "Meowth", "Persian", "Psyduck", "Golduck", "Mankey", "Primeape", "Growlithe", "Arcanine", "Poliwag", "Poliwhirl", "Poliwrath", "Abra", "Kadabra", "Alakazam", "Machop", "Machoke", "Machamp", "Bellsprout", "Weepinbell", "Victreebell", "Tentacool", "Tentacruel", "Geodude", "Graveler", "Golem", "Ponyta", "Rapidash", "Slowpoke", "Slowbro", "Magnemite", "Magneton", "Farfetch'd", "Doduo", "Dodrio", "Seel", "Dewgong", "Grimer", "Muk", "Shellder", "Cloyster", "Gastly", "Haunter", "Gengar", "Onix", "Drowzee", "Hypno", "Krabby", "Kingler", "Voltorb", "Electrode", "Exeggcute", "Exeggutor", "Cubone", "Marowak", "Hitmonlee", "Hitmonchan", "Lickitung", "Koffing", "Weezing", "Rhyhorn", "Rhydon", "Chansey", "Tangela", "Kangaskhan", "Horsea", "Seadra", "Goldeen", "Seaking", "Staryu", "Starmie", "Mr. Mime", "Scyther", "Jynx", "Electabuzz", "Magmar", "Pinsir", "Tauros", "Magikarp", "Gyarados", "Lapras", "Ditto", "Eevee", "Vaporeon", "Jolteon", "Flareon", "Porygon", "Omanyte", "Omastar", "Kabuto", "Kabutops", "Aerodactyl", "Snorlax", "Articuno", "Zapdos", "Moltres", "Dratini", "Dragonair", "Dragonite", "Mewtwo", "Mew", "Chikorita", "Bayleef", "Meganium", "Cyndaquil", "Quilava", "Typhlosion", "Totodile", "Croconaw", "Feraligatr", "Sentret", "Furret", "Hoothoot", "Noctowl", "Ledyba", "Ledian", "Spinarak", "Ariados", "Crobat", "Chinchou", "Lanturn", "Pichu", "Cleffa", "Igglybuff", "Togepi", "Togetic", "Natu", "Xatu", "Mareep", "Flaaffy", "Ampharos", "Bellossom", "Marill", "Azumarill", "Sudowoodo", "Politoed", "Hoppip", "Skiploom", "Jumpluff", "Aipom", "Sunkern", "Sunflora", "Yanma", "Wooper", "Quagsire", "Espeon", "Umbreon", "Murkrow", "Slowking", "Misdreavus", "Unown", "Wobbuffet", "Girafarig", "Pineco", "Forretress", "Dunsparce", "Gligar", "Steelix", "Snubbull", "Granbull", "Qwilfish", "Scizor", "Shuckle", "Heracross", "Sneasel", "Teddiursa", "Ursaring", "Slugma", "Magcargo", "Swinub", "Piloswine", "Corsola", "Remoraid", "Octillery", "Delibird", "Mantine", "Skarmory", "Houndour", "Houndoom", "Kingdra", "Phanpy", "Donphan", "Porygon2", "Stantler", "Smeargle", "Tyrogue", "Hitmontop", "Smoochum", "Elekid", "Magby", "Miltank", "Blissey", "Raikou", "Entei", "Suicune", "Larvitar", "Pupitar", "Tyranitar", "Lugia", "Ho-Oh", "Celebi", "Treecko", "Grovyle", "Sceptile", "Torchic", "Combusken", "Blaziken", "Mudkip", "Marshtomp", "Swampert", "Poochyena", "Mightyena", "Zigzagoon", "Linoone", "Wurmple", "Silcoon", "Beautifly", "Cascoon", "Dustox", "Lotad", "Lombre", "Ludicolo", "Seedot", "Nuzleaf", "Shiftry", "Taillow", "Swellow", "Wingull", "Pelipper", "Ralts", "Kirlia", "Gardevoir", "Surskit", "Masquerain", "Shroomish", "Breloom", "Slakoth", "Vigoroth", "Slaking", "Nincada", "Ninjask", "Shedinja", "Whismur", "Loudred", "Exploud", "Makuhita", "Hariyama", "Azurill", "Nosepass", "Skitty", "Delcatty", "Sableye", "Mawile", "Aron", "Lairon", "Aggron", "Meditite", "Medicham", "Electrike", "Manectric", "Plusle", "Minun", "Volbeat", "Illumise", "Roselia", "Gulpin", "Swalot", "Carvanha", "Sharpedo", "Wailmer", "Wailord", "Numel", "Camerupt", "Torkoal", "Spoink", "Grumpig", "Spinda", "Trapinch", "Vibrava", "Flygon", "Cacnea", "Cacturne", "Swablu", "Altaria", "Zangoose", "Seviper", "Lunatone", "Solrock", "Barboach", "Whiscash", "Corphish", "Crawdaunt", "Baltoy", "Claydol", "Lileep", "Cradily", "Anorith", "Armaldo", "Feebas", "Milotic", "Castform", "Kecleon", "Shuppet", "Banette", "Duskull", "Dusclops", "Tropius", "Chimecho", "Absol", "Wynaut", "Snorunt", "Glalie", "Spheal", "Sealeo", "Walrein", "Clamperl", "Huntail", "Gorebyss", "Relicanth", "Luvdisc", "Bagon", "Shelgon", "Salamence", "Beldum", "Metang", "Metagross", "Regirock", "Regice", "Registeel", "Latias", "Latios", "Kyogre", "Groudon", "Rayquaza", "Jirachi", "Deoxys", "Turtwig", "Grotle", "Torterra", "Chimchar", "Monferno", "Infernape", "Piplup", "Prinplup ", "Empoleon", "Starly", "Staravia", "Staraptor", "Bidoof", "Bibarel", "Kricketot", "Kricketune", "Shinx", "Luxio", "Luxray", "Budew", "Roserade", "Cranidos", "Rampardos", "Shieldon", "Bastiodon", "Burmy", "Wormadam", "Mothim", "Combee", "Vespiquen", "Pachirisu", "Buizel", "Floatzel", "Cherubi", "Cherrim", "Shellos", "Gastrodon", "Ambipom", "Drifloon", "Drifblim", "Buneary", "Lopunny", "Mismagius", "Honchkrow", "Glameow", "Purugly", "Chingling", "Stunky", "Skuntank", "Bronzor", "Bronzong", "Bonsly", "Mime Jr.", "Happiny", "Chatot", "Spiritomb", "Gible", "Gabite", "Garchomp", "Munchlax", "Riolu", "Lucario", "Hippopotas", "Hippowdon", "Skorupi", "Drapion", "Croagunk", "Toxicroak", "Carnivine", "Finneon", "Lumineon", "Mantyke", "Snover", "Abomasnow", "Weavile", "Magnezone", "Lickylicky", "Rhyperior", "Tangrowth", "Electivire", "Magmortar", "Togekiss", "Yanmega", "Leafeon", "Glaceon", "Gliscor", "Mamoswine", "Porygon-Z", "Gallade", "Probopass", "Dusknoir", "Froslass", "Rotom", "Uxie", "Mesprit", "Azelf", "Dialga", "Palkia", "Heatran", "Regigigas", "Giratina", "Cresselia", "Phione", "Manaphy", "Darkrai", "Shaymin", "Arceus", "Victini", "Snivy", "Servine", "Serperior", "Tepig", "Pignite", "Emboar", "Oshawott", "Dewott", "Samurott", "Patrat", "Watchog", "Lillipup", "Herdier", "Stoutland", "Purrloin", "Liepard", "Pansage", "Simisage", "Pansear", "Simisear", "Panpour", "Simipour", "Munna", "Musharna", "Pidove", "Tranquill", "Unfezant", "Blitzle", "Zebstrika", "Roggenrola", "Boldore", "Gigalith", "Woobat", "Swoobat", "Drilbur", "Excadrill", "Audino", "Timburr", "Gurdurr", "Conkeldurr", "Tympole", "Palpitoad", "Seismitoad", "Throh", "Sawk", "Sewaddle", "Swadloon", "Leavanny", "Venipede", "Whirlipede", "Scolipede", "Cottonee", "Whimsicott", "Petilil", "Lilligant", "Basculin", "Sandile", "Krokorok", "Krookodile", "Darumaka", "Darmanitan", "Maractus", "Dwebble", "Crustle", "Scraggy", "Scrafty", "Sigilyph", "Yamask", "Cofagrigus", "Tirtouga", "Carracosta", "Archen", "Archeops", "Trubbish", "Garbodor", "Zorua", "Zoroark", "Minccino", "Cinccino", "Gothita", "Gothorita", "Gothitelle", "Solosis", "Duosion", "Reuniclus", "Ducklett", "Swanna", "Vanillite", "Vanillish", "Vanilluxe", "Deerling", "Sawsbuck", "Emolga", "Karrablast", "Escavalier", "Foongus", "Amoonguss", "Frillish", "Jellicent", "Alomomola", "Joltik", "Galvantula", "Ferroseed", "Ferrothorn", "Klink", "Klang", "Klinklang", "Tynamo", "Eelektrik", "Eelektross", "Elgyem", "Beheeyem", "Litwick", "Lampent", "Chandelure", "Axew", "Fraxure", "Haxorus", "Cubchoo", "Beartic", "Cryogonal", "Shelmet", "Accelgor", "Stunfisk", "Mienfoo", "Mienshao", "Druddigon", "Golett", "Golurk", "Pawniard", "Bisharp", "Bouffalant", "Rufflet", "Braviary", "Vullaby", "Mandibuzz", "Heatmor", "Durant", "Deino", "Zweilous", "Hydreigon", "Larvesta", "Volcarona", "Cobalion", "Terrakion", "Virizon", "Tornadus", "Thundurus", "Reshiram", "Zekrom", "Landorus", "Kyurem", "Keldeo", "Meloetta", "Genesect", "Chespin", "Quilladin", "Chesnaught", "Fennekin", "Braixen", "Delphox", "Froakie", "Frogadier", "Greninja", "Bunnelby", "Diggersby", "Fletchling", "Fletchinder", "Talonflame", "Scatterbug", "Spewpa", "Vivillon", "Litleo", "Pyroar", "Flabébé", "Floette", "Florges", "Skiddo", "Gogoat", "Pancham", "Pangoro", "Furfrou", "Espurr", "Meowstic", "Honedge", "Doublade", "Aegislash", "Spritzee", "Aromatisse", "Swirlix", "Slurpuff", "Inkay", "Malamar", "Binacle", "Barbaracle", "Skrelp", "Dragalge", "Clauncher", "Clawitzer", "Helioptile", "Heliolisk", "Tyrunt", "Tyrantrum", "Amaura", "Aurorus", "Sylveon", "Hawlucha", "Dedenne", "Carbink", "Goomy", "Sliggoo", "Goodra", "Klefki", "Phantump", "Trevenant", "Pumpkaboo", "Gourgeist", "Bergmite", "Avalugg", "Noibat", "Noivern", "Xerneas", "Yveltal", "Zygarde", "Diancie", "Hoopa", "Volcanion"};
+void showC(int number[], int ratio[], int HP_perc, float bonusballvett[], int bonusindex, float status[], int statusindex, int r, int gen, float captureOgenV[], float captureOgenVI[], int captureOindex, int speed) {
+	static char *pokemon[721] = {"Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard", "Squirtle", "Wartortle", "Blastoise", "Caterpie", "Metapod", "Butterfree", "Weedle", "Kakuna", "Beedrill", "Pidgey", "Pidgeotto", "Pidgeot", "Rattata", "Raticate", "Spearow", "Fearow", "Ekans", "Arbok", "Pikachu", "Raichu", "Sandshrew", "Sandslash", "Nidoran F", "Nidorina", "Nidoqueen", "Nidoran M", "Nidorino", "Nidoking", "Clefairy", "Clefable", "Vulpix", "Ninetales", "Jigglypuff", "Wigglytuff", "Zubat", "Golbat", "Oddish", "Gloom", "Vileplume", "Paras", "Parasect", "Venonat", "Venomoth", "Diglett", "Dugtrio", "Meowth", "Persian", "Psyduck", "Golduck", "Mankey", "Primeape", "Growlithe", "Arcanine", "Poliwag", "Poliwhirl", "Poliwrath", "Abra", "Kadabra", "Alakazam", "Machop", "Machoke", "Machamp", "Bellsprout", "Weepinbell", "Victreebell", "Tentacool", "Tentacruel", "Geodude", "Graveler", "Golem", "Ponyta", "Rapidash", "Slowpoke", "Slowbro", "Magnemite", "Magneton", "Farfetch'd", "Doduo", "Dodrio", "Seel", "Dewgong", "Grimer", "Muk", "Shellder", "Cloyster", "Gastly", "Haunter", "Gengar", "Onix", "Drowzee", "Hypno", "Krabby", "Kingler", "Voltorb", "Electrode", "Exeggcute", "Exeggutor", "Cubone", "Marowak", "Hitmonlee", "Hitmonchan", "Lickitung", "Koffing", "Weezing", "Rhyhorn", "Rhydon", "Chansey", "Tangela", "Kangaskhan", "Horsea", "Seadra", "Goldeen", "Seaking", "Staryu", "Starmie", "Mr. Mime", "Scyther", "Jynx", "Electabuzz", "Magmar", "Pinsir", "Tauros", "Magikarp", "Gyarados", "Lapras", "Ditto", "Eevee", "Vaporeon", "Jolteon", "Flareon", "Porygon", "Omanyte", "Omastar", "Kabuto", "Kabutops", "Aerodactyl", "Snorlax", "Articuno", "Zapdos", "Moltres", "Dratini", "Dragonair", "Dragonite", "Mewtwo", "Mew", "Chikorita", "Bayleef", "Meganium", "Cyndaquil", "Quilava", "Typhlosion", "Totodile", "Croconaw", "Feraligatr", "Sentret", "Furret", "Hoothoot", "Noctowl", "Ledyba", "Ledian", "Spinarak", "Ariados", "Crobat", "Chinchou", "Lanturn", "Pichu", "Cleffa", "Igglybuff", "Togepi", "Togetic", "Natu", "Xatu", "Mareep", "Flaaffy", "Ampharos", "Bellossom", "Marill", "Azumarill", "Sudowoodo", "Politoed", "Hoppip", "Skiploom", "Jumpluff", "Aipom", "Sunkern", "Sunflora", "Yanma", "Wooper", "Quagsire", "Espeon", "Umbreon", "Murkrow", "Slowking", "Misdreavus", "Unown", "Wobbuffet", "Girafarig", "Pineco", "Forretress", "Dunsparce", "Gligar", "Steelix", "Snubbull", "Granbull", "Qwilfish", "Scizor", "Shuckle", "Heracross", "Sneasel", "Teddiursa", "Ursaring", "Slugma", "Magcargo", "Swinub", "Piloswine", "Corsola", "Remoraid", "Octillery", "Delibird", "Mantine", "Skarmory", "Houndour", "Houndoom", "Kingdra", "Phanpy", "Donphan", "Porygon2", "Stantler", "Smeargle", "Tyrogue", "Hitmontop", "Smoochum", "Elekid", "Magby", "Miltank", "Blissey", "Raikou", "Entei", "Suicune", "Larvitar", "Pupitar", "Tyranitar", "Lugia", "Ho-Oh", "Celebi", "Treecko", "Grovyle", "Sceptile", "Torchic", "Combusken", "Blaziken", "Mudkip", "Marshtomp", "Swampert", "Poochyena", "Mightyena", "Zigzagoon", "Linoone", "Wurmple", "Silcoon", "Beautifly", "Cascoon", "Dustox", "Lotad", "Lombre", "Ludicolo", "Seedot", "Nuzleaf", "Shiftry", "Taillow", "Swellow", "Wingull", "Pelipper", "Ralts", "Kirlia", "Gardevoir", "Surskit", "Masquerain", "Shroomish", "Breloom", "Slakoth", "Vigoroth", "Slaking", "Nincada", "Ninjask", "Shedinja", "Whismur", "Loudred", "Exploud", "Makuhita", "Hariyama", "Azurill", "Nosepass", "Skitty", "Delcatty", "Sableye", "Mawile", "Aron", "Lairon", "Aggron", "Meditite", "Medicham", "Electrike", "Manectric", "Plusle", "Minun", "Volbeat", "Illumise", "Roselia", "Gulpin", "Swalot", "Carvanha", "Sharpedo", "Wailmer", "Wailord", "Numel", "Camerupt", "Torkoal", "Spoink", "Grumpig", "Spinda", "Trapinch", "Vibrava", "Flygon", "Cacnea", "Cacturne", "Swablu", "Altaria", "Zangoose", "Seviper", "Lunatone", "Solrock", "Barboach", "Whiscash", "Corphish", "Crawdaunt", "Baltoy", "Claydol", "Lileep", "Cradily", "Anorith", "Armaldo", "Feebas", "Milotic", "Castform", "Kecleon", "Shuppet", "Banette", "Duskull", "Dusclops", "Tropius", "Chimecho", "Absol", "Wynaut", "Snorunt", "Glalie", "Spheal", "Sealeo", "Walrein", "Clamperl", "Huntail", "Gorebyss", "Relicanth", "Luvdisc", "Bagon", "Shelgon", "Salamence", "Beldum", "Metang", "Metagross", "Regirock", "Regice", "Registeel", "Latias", "Latios", "Kyogre", "Groudon", "Rayquaza", "Jirachi", "Deoxys", "Turtwig", "Grotle", "Torterra", "Chimchar", "Monferno", "Infernape", "Piplup", "Prinplup ", "Empoleon", "Starly", "Staravia", "Staraptor", "Bidoof", "Bibarel", "Kricketot", "Kricketune", "Shinx", "Luxio", "Luxray", "Budew", "Roserade", "Cranidos", "Rampardos", "Shieldon", "Bastiodon", "Burmy", "Wormadam", "Mothim", "Combee", "Vespiquen", "Pachirisu", "Buizel", "Floatzel", "Cherubi", "Cherrim", "Shellos", "Gastrodon", "Ambipom", "Drifloon", "Drifblim", "Buneary", "Lopunny", "Mismagius", "Honchkrow", "Glameow", "Purugly", "Chingling", "Stunky", "Skuntank", "Bronzor", "Bronzong", "Bonsly", "Mime Jr.", "Happiny", "Chatot", "Spiritomb", "Gible", "Gabite", "Garchomp", "Munchlax", "Riolu", "Lucario", "Hippopotas", "Hippowdon", "Skorupi", "Drapion", "Croagunk", "Toxicroak", "Carnivine", "Finneon", "Lumineon", "Mantyke", "Snover", "Abomasnow", "Weavile", "Magnezone", "Lickylicky", "Rhyperior", "Tangrowth", "Electivire", "Magmortar", "Togekiss", "Yanmega", "Leafeon", "Glaceon", "Gliscor", "Mamoswine", "Porygon-Z", "Gallade", "Probopass", "Dusknoir", "Froslass", "Rotom", "Uxie", "Mesprit", "Azelf", "Dialga", "Palkia", "Heatran", "Regigigas", "Giratina", "Cresselia", "Phione", "Manaphy", "Darkrai", "Shaymin", "Arceus", "Victini", "Snivy", "Servine", "Serperior", "Tepig", "Pignite", "Emboar", "Oshawott", "Dewott", "Samurott", "Patrat", "Watchog", "Lillipup", "Herdier", "Stoutland", "Purrloin", "Liepard", "Pansage", "Simisage", "Pansear", "Simisear", "Panpour", "Simipour", "Munna", "Musharna", "Pidove", "Tranquill", "Unfezant", "Blitzle", "Zebstrika", "Roggenrola", "Boldore", "Gigalith", "Woobat", "Swoobat", "Drilbur", "Excadrill", "Audino", "Timburr", "Gurdurr", "Conkeldurr", "Tympole", "Palpitoad", "Seismitoad", "Throh", "Sawk", "Sewaddle", "Swadloon", "Leavanny", "Venipede", "Whirlipede", "Scolipede", "Cottonee", "Whimsicott", "Petilil", "Lilligant", "Basculin", "Sandile", "Krokorok", "Krookodile", "Darumaka", "Darmanitan", "Maractus", "Dwebble", "Crustle", "Scraggy", "Scrafty", "Sigilyph", "Yamask", "Cofagrigus", "Tirtouga", "Carracosta", "Archen", "Archeops", "Trubbish", "Garbodor", "Zorua", "Zoroark", "Minccino", "Cinccino", "Gothita", "Gothorita", "Gothitelle", "Solosis", "Duosion", "Reuniclus", "Ducklett", "Swanna", "Vanillite", "Vanillish", "Vanilluxe", "Deerling", "Sawsbuck", "Emolga", "Karrablast", "Escavalier", "Foongus", "Amoonguss", "Frillish", "Jellicent", "Alomomola", "Joltik", "Galvantula", "Ferroseed", "Ferrothorn", "Klink", "Klang", "Klinklang", "Tynamo", "Eelektrik", "Eelektross", "Elgyem", "Beheeyem", "Litwick", "Lampent", "Chandelure", "Axew", "Fraxure", "Haxorus", "Cubchoo", "Beartic", "Cryogonal", "Shelmet", "Accelgor", "Stunfisk", "Mienfoo", "Mienshao", "Druddigon", "Golett", "Golurk", "Pawniard", "Bisharp", "Bouffalant", "Rufflet", "Braviary", "Vullaby", "Mandibuzz", "Heatmor", "Durant", "Deino", "Zweilous", "Hydreigon", "Larvesta", "Volcarona", "Cobalion", "Terrakion", "Virizon", "Tornadus", "Thundurus", "Reshiram", "Zekrom", "Landorus", "Kyurem", "Keldeo", "Meloetta", "Genesect", "Chespin", "Quilladin", "Chesnaught", "Fennekin", "Braixen", "Delphox", "Froakie", "Frogadier", "Greninja", "Bunnelby", "Diggersby", "Fletchling", "Fletchinder", "Talonflame", "Scatterbug", "Spewpa", "Vivillon", "Litleo", "Pyroar", "Flabébé", "Floette", "Florges", "Skiddo", "Gogoat", "Pancham", "Pangoro", "Furfrou", "Espurr", "Meowstic", "Honedge", "Doublade", "Aegislash", "Spritzee", "Aromatisse", "Swirlix", "Slurpuff", "Inkay", "Malamar", "Binacle", "Barbaracle", "Skrelp", "Dragalge", "Clauncher", "Clawitzer", "Helioptile", "Heliolisk", "Tyrunt", "Tyrantrum", "Amaura", "Aurorus", "Sylveon", "Hawlucha", "Dedenne", "Carbink", "Goomy", "Sliggoo", "Goodra", "Klefki", "Phantump", "Trevenant", "Pumpkaboo", "Gourgeist", "Bergmite", "Avalugg", "Noibat", "Noivern", "Xerneas", "Yveltal", "Zygarde", "Diancie", "Hoopa", "Volcanion"};
 	
 	printf("\x1b[2;0HNumber in National Dex: \x1b[32m%d%d%d\x1b[0m", number[0], number[1], number[2]);
 	printf("            Gen is: \x1b[32m%d\x1b[0m", gen);
@@ -91,11 +90,12 @@ void showC(int number[], int ratio[], int HP_perc, float bonusballvett[], int bo
 	
 	float P = 1 - temp;
 	
-	if (P > 1) 
-		P = 1;
+	if (P > 1) P = 1;
 	
 	// printf("\n\nModified catch rate: \x1b[32m%Lf\x1b[0m   ", a);
 	printf("\n\nProbability of capture tends to: \x1b[32m%f\x1b[0m%%      ", (P * 100));
+	if (speed == 0) printf("\x1b[28;0HUsage Mode: \x1b[32mFAST\x1b[0m");
+	if (speed == 1) printf("\x1b[28;0HUsage Mode: \x1b[32mSLOW\x1b[0m");
 }
 
 
@@ -117,11 +117,14 @@ void catchrate(PrintConsole topScreen, PrintConsole bottomScreen) {
 	int r = 1;
 	int gen = 6;
 	
+	int speed = 0;
+	
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
 	printf("----------------------------------------");
 	printf("\x1A\x1B - Move cursor\n");
 	printf("\x18\x19 - Change values\n");
+	printf("L/R - Change usage mode\n");
 	printf("SELECT - Reset values\n");
 	printf("----------------------------------------");
 	printf("\nSleep, freeze - \x1b[32m2\x1b[0mx (III/IV), \x1b[32m2.5\x1b[0mx (V/VI)");
@@ -140,13 +143,13 @@ void catchrate(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("\x1b[29;10HPress START to exit.");
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
-	printf("\x1b[47;30m          Capture Probability Calculator          \x1b[0m");
+	printf("\x1b[47;32m          Capture Probability Calculator          \x1b[0m");
 	printf("--------------------------------------------------");
-	showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex);
+	showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex, speed);
 	printCursoreC(cursore);
 	
-	int t_frame = 1;
 	int refresh = 0;
+	int t_frame = 1;
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
 		hidScanInput();
@@ -156,121 +159,241 @@ void catchrate(PrintConsole topScreen, PrintConsole bottomScreen) {
 		if (kDown & KEY_START)
 			break;
 		
+		if (kDown & KEY_R) {
+			speed = 1;
+			showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex, speed);
+		}
+		
+		if (kDown & KEY_L) {
+			speed = 0;
+			showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex, speed);
+		}
+		
 		if ((kDown & KEY_DRIGHT) && (posizione[0] < 8)) {
 			posCursore(cursore, posizione, 1);
-			showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex);
+			showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex, speed);
 			printCursoreC(cursore);
 		}
 		
 		if ((kDown & KEY_DLEFT) && (posizione[0] > 0)) {
 			posCursore(cursore, posizione, -1);
-			showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex);
+			showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex, speed);
 			printCursoreC(cursore);
 		}
-		
-		if ((kDown & KEY_DUP) ^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)) {
-			if (posizione[0] == 0) {
-				if (number[posizione[0]] < 9) {
-					number[posizione[0]]++;
-					check(number);
-					refresh = 1;
+		if (speed == 1) {
+			if ((kDown & KEY_DUP) /*^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)*/) {
+				if (posizione[0] == 0) {
+					if (number[posizione[0]] < 9) {
+						number[posizione[0]]++;
+						check(number);
+						refresh = 1;
+					}
+				}
+				if (posizione[0] == 1 || posizione[0] == 2) {
+					if (number[posizione[0]] < 9) {
+						number[posizione[0]]++;
+						check(number);
+						refresh = 1;
+					}
+				}
+				if (posizione[0] == 3) {
+					if (gen < 6) {
+						gen++;
+						refresh = 1;
+					}
+				}
+				if (posizione[0] == 4) {
+					if (HP_perc < 100) {
+						HP_perc += 1;
+						refresh = 1;
+					}
+					else if (HP_perc == 100) {
+						HP_perc = 1;
+						refresh = 1;
+					}
+				}
+				if (posizione[0] == 5) {
+					if (bonusindex < 8) {
+						bonusindex++;
+						refresh = 1;
+					}
+				}
+				if (posizione[0] == 6) {
+					if (statusindex < 3) {
+						statusindex++;
+						refresh = 1;
+					}
+				}
+				if (posizione[0] == 7) {
+					if (r < 200) {
+						r++;
+						refresh = 1;
+					}
+				}
+				if (posizione[0] == 8) {
+					if (captureOindex < 3) {
+						captureOindex++;
+						refresh = 1;
+					}
 				}
 			}
-			if (posizione[0] == 1 || posizione[0] == 2) {
-				if (number[posizione[0]] < 9) {
-					number[posizione[0]]++;
-					check(number);
-					refresh = 1;
+			
+			if ((kDown & KEY_DDOWN) /*^ (hidKeysHeld() & KEY_DDOWN && t_frame % DELAY == 1)*/) {
+				if (posizione[0] == 0 || posizione[0] == 1 || posizione[0] == 2) {
+					if (number[posizione[0]] > 0) {
+						number[posizione[0]]--;
+						check(number);
+						refresh = 1;
+					}
 				}
-			}
-			if (posizione[0] == 3) {
-				if (gen < 6) {
-					gen++;
-					refresh = 1;
+				if (posizione[0] == 3) {
+					if (gen > 3) {
+						gen--;
+						refresh = 1;
+					}
 				}
-			}
-			if (posizione[0] == 4) {
-				if (HP_perc < 100) {
-					HP_perc += 1;
-					refresh = 1;
+				if (posizione[0] == 4) {
+					if (HP_perc > 1) {
+						HP_perc -= 1;
+						refresh = 1;
+					}
+					else if (HP_perc == 1) {
+						HP_perc = 100;
+						refresh = 1;				
+					}
 				}
-				else if (HP_perc == 100) {
-					HP_perc = 1;
-					refresh = 1;
+				if (posizione[0] == 5) {
+					if (bonusindex > 0) {
+						bonusindex--;
+						refresh = 1;
+					}
 				}
-			}
-			if (posizione[0] == 5) {
-				if (bonusindex < 8) {
-					bonusindex++;
-					refresh = 1;
+				if (posizione[0] == 6) {
+					if (statusindex > 0) {
+						statusindex--;
+						refresh = 1;
+					}
 				}
-			}
-			if (posizione[0] == 6) {
-				if (statusindex < 3) {
-					statusindex++;
-					refresh = 1;
+				if (posizione[0] == 7) {
+					if (r > 1) {
+						r--;
+						refresh = 1;
+					}
 				}
-			}
-			if (posizione[0] == 7) {
-				if (r < 200) {
-					r++;
-					refresh = 1;
-				}
-			}
-			if (posizione[0] == 8) {
-				if (captureOindex < 3) {
-					captureOindex++;
-					refresh = 1;
+				if (posizione[0] == 8) {
+					if (captureOindex > 0) {
+						captureOindex--;
+						refresh = 1;
+					}
 				}
 			}
 		}
 		
-		if ((kDown & KEY_DDOWN) ^ (hidKeysHeld() & KEY_DDOWN && t_frame % DELAY == 1)) {
-			if (posizione[0] == 0 || posizione[0] == 1 || posizione[0] == 2) {
-				if (number[posizione[0]] > 0) {
-					number[posizione[0]]--;
-					check(number);
-					refresh = 1;
+		if (speed == 0) {
+			if ((kDown & KEY_DUP) ^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)) {
+				if (posizione[0] == 0) {
+					if (number[posizione[0]] < 9) {
+						number[posizione[0]]++;
+						check(number);
+						refresh = 1;
+					}
+				}
+				if (posizione[0] == 1 || posizione[0] == 2) {
+					if (number[posizione[0]] < 9) {
+						number[posizione[0]]++;
+						check(number);
+						refresh = 1;
+					}
+				}
+				if (posizione[0] == 3) {
+					if (gen < 6) {
+						gen++;
+						refresh = 1;
+					}
+				}
+				if (posizione[0] == 4) {
+					if (HP_perc < 100) {
+						HP_perc += 1;
+						refresh = 1;
+					}
+					else if (HP_perc == 100) {
+						HP_perc = 1;
+						refresh = 1;
+					}
+				}
+				if (posizione[0] == 5) {
+					if (bonusindex < 8) {
+						bonusindex++;
+						refresh = 1;
+					}
+				}
+				if (posizione[0] == 6) {
+					if (statusindex < 3) {
+						statusindex++;
+						refresh = 1;
+					}
+				}
+				if (posizione[0] == 7) {
+					if (r < 200) {
+						r++;
+						refresh = 1;
+					}
+				}
+				if (posizione[0] == 8) {
+					if (captureOindex < 3) {
+						captureOindex++;
+						refresh = 1;
+					}
 				}
 			}
-			if (posizione[0] == 3) {
-				if (gen > 3) {
-					gen--;
-					refresh = 1;
+			
+			if ((kDown & KEY_DDOWN) ^ (hidKeysHeld() & KEY_DDOWN && t_frame % DELAY == 1)) {
+				if (posizione[0] == 0 || posizione[0] == 1 || posizione[0] == 2) {
+					if (number[posizione[0]] > 0) {
+						number[posizione[0]]--;
+						check(number);
+						refresh = 1;
+					}
 				}
-			}
-			if (posizione[0] == 4) {
-				if (HP_perc > 1) {
-					HP_perc -= 1;
-					refresh = 1;
+				if (posizione[0] == 3) {
+					if (gen > 3) {
+						gen--;
+						refresh = 1;
+					}
 				}
-				else if (HP_perc == 1) {
-					HP_perc = 100;
-					refresh = 1;				
+				if (posizione[0] == 4) {
+					if (HP_perc > 1) {
+						HP_perc -= 1;
+						refresh = 1;
+					}
+					else if (HP_perc == 1) {
+						HP_perc = 100;
+						refresh = 1;				
+					}
 				}
-			}
-			if (posizione[0] == 5) {
-				if (bonusindex > 0) {
-					bonusindex--;
-					refresh = 1;
+				if (posizione[0] == 5) {
+					if (bonusindex > 0) {
+						bonusindex--;
+						refresh = 1;
+					}
 				}
-			}
-			if (posizione[0] == 6) {
-				if (statusindex > 0) {
-					statusindex--;
-					refresh = 1;
+				if (posizione[0] == 6) {
+					if (statusindex > 0) {
+						statusindex--;
+						refresh = 1;
+					}
 				}
-			}
-			if (posizione[0] == 7) {
-				if (r > 1) {
-					r--;
-					refresh = 1;
+				if (posizione[0] == 7) {
+					if (r > 1) {
+						r--;
+						refresh = 1;
+					}
 				}
-			}
-			if (posizione[0] == 8) {
-				if (captureOindex > 0) {
-					captureOindex--;
-					refresh = 1;
+				if (posizione[0] == 8) {
+					if (captureOindex > 0) {
+						captureOindex--;
+						refresh = 1;
+					}
 				}
 			}
 		}
@@ -290,7 +413,7 @@ void catchrate(PrintConsole topScreen, PrintConsole bottomScreen) {
 			gen = 6;
 			captureOindex = 0;
 			printf("\x1b[2J");
-			printf("\x1b[47;30m          Capture Probability Calculator          \x1b[0m");
+			printf("\x1b[47;32m          Capture Probability Calculator          \x1b[0m");
 			printf("--------------------------------------------------");
 			refresh = 1;
 			printCursoreC(cursore);			
@@ -299,11 +422,12 @@ void catchrate(PrintConsole topScreen, PrintConsole bottomScreen) {
 		gfxFlushBuffers();
 		gfxSwapBuffers();
 		
+		
 		t_frame++;
 		if (t_frame > 5000) t_frame = 1;
 		
 		if (refresh == 1) {
-			showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex);
+			showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex, speed);
 			refresh = 0;
 		}
 	}

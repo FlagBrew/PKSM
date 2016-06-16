@@ -4,7 +4,10 @@
 #include <3ds.h>
 #include "util.h"
 
-Result http_download(PrintConsole topScreen, PrintConsole bottomScreen, httpcContext *context) {
+Result http_download(PrintConsole topScreen, PrintConsole bottomScreen, httpcContext *context) {	
+	gfxFlushBuffers();
+	gfxSwapBuffers();
+	
 	Result ret = 0;
 	u32 statuscode = 0;
 	u32 contentsize = 0;
@@ -23,10 +26,16 @@ Result http_download(PrintConsole topScreen, PrintConsole bottomScreen, httpcCon
 		return ret;
 	}
 	
+	gfxFlushBuffers();
+	gfxSwapBuffers();
+	
 	if (statuscode == 200)
-		printf("\x1b[26;0HStatus: \x1b[32mOKAY          \x1b[0m");
+		printf("\x1b[26;0HStatus: \x1b[32mOKAY                  \x1b[0m");
 	else 
-		printf("\x1b[26;0HStatus: \x1b[31mERROR, EXITING\x1b[0m");
+		printf("\x1b[26;0HStatus: \x1b[31mFILE NOT AVAILABLE YET\x1b[0m");
+	
+	gfxFlushBuffers();
+	gfxSwapBuffers();
 
 	if (statuscode != 200) 
 		return -2;
@@ -38,6 +47,7 @@ Result http_download(PrintConsole topScreen, PrintConsole bottomScreen, httpcCon
 	printf("\x1b[27;0HDownload size: %d bytes    ", (int)contentsize);
 
 	gfxFlushBuffers();
+	gfxSwapBuffers();
 
 	buf = (u8*)malloc(contentsize);
 	if (buf == NULL)
@@ -68,6 +78,7 @@ void getText(PrintConsole topScreen, PrintConsole bottomScreen, char *url) {
 	if (ret != 0) 
 		printf("\x1b[25;0HStatus: \x1b[31mURL NOT AVAILABLE\x1b[0m");
 	gfxFlushBuffers();
+	gfxSwapBuffers();
 	
 	if (ret == 0) {
 		printf("\x1b[25;0HDownloading...");

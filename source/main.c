@@ -16,7 +16,7 @@ void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, 
 	printf("\n\nDeveloped by Bernardo Giordano.");
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
-	printf("\x1b[47;30m      Pokemon Event Catchers Italia Tool v1.3     \x1b[0m\n");
+	printf("\x1b[47;32m      Pokemon Event Catchers Italia Tool v1.3     \x1b[0m\n");
 
 	refresh(currentEntry, topScreen, menuEntries, ENTRIES);
 	

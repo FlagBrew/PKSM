@@ -30,7 +30,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 	
 	consoleSelect(&topScreen);		
 	printf("\x1b[2J");	
-	printf("Page: %d of %d - from %d to %d        ", page + 1, MAXPAGES + 1, page * 27, (page + 1) * 27);			
+	printf("\x1b[47;30mPage: \x1b[47;32m%d\x1b[47;30m of \x1b[47;32m%d\x1b[47;30m - from \x1b[47;32m%d\x1b[47;30m to \x1b[47;32m%d\x1b[47;30m                      \x1b[0m\x1b[1;0H      ", page + 1, MAXPAGES + 1, page * 27, (page + 1) * 27 - 1);
 	
 	refreshDB(currentEntry, topScreen, database, RIGHE, page);
 
@@ -49,7 +49,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 			else if (page == MAXPAGES) page = 0;
 			consoleSelect(&topScreen);	
 			printf("\x1b[2J");
-			printf("Page: %d of %d - from %d to %d        ", page + 1, MAXPAGES + 1, page * 27, (page + 1) * 27);			
+			printf("\x1b[47;30mPage: \x1b[47;32m%d\x1b[47;30m of \x1b[47;32m%d\x1b[47;30m - from \x1b[47;32m%d\x1b[47;30m to \x1b[47;32m%d\x1b[47;30m                      \x1b[0m\x1b[1;0H      ", page + 1, MAXPAGES + 1, page * 27, (page + 1) * 27 - 1);
 			refreshDB(currentEntry, topScreen, database, RIGHE, page);
 		}
 		
@@ -58,7 +58,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 			else if (page == 0) page = MAXPAGES;
 			consoleSelect(&topScreen);	
 			printf("\x1b[2J");
-			printf("Page: %d of %d - from %d to %d        ", page + 1, MAXPAGES + 1, page * 27, (page + 1) * 27);				
+			printf("\x1b[47;30mPage: \x1b[47;32m%d\x1b[47;30m of \x1b[47;32m%d\x1b[47;30m - from \x1b[47;32m%d\x1b[47;30m to \x1b[47;32m%d\x1b[47;30m                      \x1b[0m\x1b[1;0H      ", page + 1, MAXPAGES + 1, page * 27, (page + 1) * 27 - 1);
 			refreshDB(currentEntry, topScreen, database, RIGHE, page);	
 		}
 		
@@ -71,7 +71,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 		
 		if (kDown & KEY_DDOWN) {
 			if (currentEntry == RIGHE - 1) currentEntry = 0;
-			else if (currentEntry < RIGHE - 1) currentEntry++;
+			else if (currentEntry < RIGHE - 1) currentEntry += 1;
 			
 			refreshDB(currentEntry, topScreen, database, RIGHE, page);			
 		}
@@ -92,7 +92,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 			printf("\x1b[29;10HPress START to exit.");			
 			consoleSelect(&topScreen);
 			printf("\x1b[2J");	
-			printf("Page: %d of %d - from %d to %d        ", page + 1, MAXPAGES + 1, page * 27, (page + 1) * 27);			
+			printf("\x1b[47;30mPage: \x1b[47;32m%d\x1b[47;30m of \x1b[47;32m%d\x1b[47;30m - from \x1b[47;32m%d\x1b[47;30m to \x1b[47;32m%d\x1b[47;30m                      \x1b[0m\x1b[1;0H      ", page + 1, MAXPAGES + 1, page * 27, (page + 1) * 27 - 1);
 			refreshDB(currentEntry, topScreen, database, RIGHE, page);
 		}	 
 		
