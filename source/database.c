@@ -24,7 +24,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("L/R - Switch page\n");
 	printf("A - Open/close entry\n");
 	printf("----------------------------------------");
-	printf("\n\nSpecial thanks to:\n\n- Simona Mastroianni\n- Federico Leuzzi\n- Shai Raba'\n- Cosimo Vivoli");
+	printf("\n\nSpecial thanks to:\n\n* Simona Mastroianni\n* Federico Leuzzi\n* Shai Raba'\n* Cosimo Vivoli");
 	printf("\x1b[27;0H    Please check your connection....");
 	printf("\x1b[29;10HPress START to exit.");
 	

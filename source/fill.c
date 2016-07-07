@@ -140,6 +140,7 @@ void filldatabase(char *database[], char *links[]) {
 	database[165] = "0165 - Masuda's Psyduck";
 	database[166] = "0166 - Bestow Pikachu";	
 	database[167] = "0167 - Hyadain Landorus";	
+	database[168] = "0168 - Chymia's Shiny Gardevoir";
 	database[170] = "0170 - P-Cafe Pikachu (SG)";
 	database[173] = "0173 - HKTW VGC16 Shiny Mewtwo";
 	database[501] = "0501 - Winter2013 Garchomp";
@@ -169,11 +170,13 @@ void filldatabase(char *database[], char *links[]) {
 	database[559] = "0559 - GF Jirachi";
 	database[560] = "0560 - GF Darkrai";
 	database[561] = "0561 - GF Manaphy";
+	database[562] = "0562 - GF Shaymin";
 	database[563] = "0563 - GF Arceus";
 	database[566] = "0566 - GF Genesect";
 	database[569] = "0569 - Aldora Articuno";
 	database[570] = "0570 - Aldora Zapdos";
 	database[571] = "0571 - Aldora Moltres";
+	database[574] = "0574 - Happy Meowth";
 	database[576] = "0576 - Descartes/XYZ Xerneas";
 	database[577] = "0577 - Descartes/XYZ Yveltal";
 	database[578] = "0578 - Descartes/XYZ Zygarde";
@@ -220,6 +223,7 @@ void filldatabase(char *database[], char *links[]) {
 	database[1066] = "1066 - KOR HA Zapdos";
 	database[1067] = "1067 - KOR HA Moltres";
 	database[1068] = "1068 - KOR HA Mewtwo";
+	database[1070] = "1070 - KOR Naminori Pikachu";
 	database[1501] = "1501 - HA Torchic";
 	database[1503] = "1503 - Fancy Vivillon";
 	database[1504] = "1504 - Shiny Beldum";

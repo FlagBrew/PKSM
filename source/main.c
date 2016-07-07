@@ -9,6 +9,9 @@
 
 #define ENTRIES 9
 
+#define V1 1
+#define V2 3
+
 void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, char* menuEntries[]){
 	consoleSelect(&bottomScreen);
 	printf("\nECI Tool is the official Homebrew of theFB community '\x1b[32mPokemon Event Catchers\nItalia\x1b[0m'.\n\nThis is meant to be a general purpose   application that can serve both event\ncollectors and classic players of the\ngame.\n\nYou can join us at:\n\x1b[32mfacebook.com/groups/PokemonEventCatchersItalia\x1b[0m");
@@ -16,7 +19,7 @@ void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, 
 	printf("\n\nDeveloped by Bernardo Giordano.");
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
-	printf("\x1b[47;34m      Pokemon Event Catchers Italia Tool v1.3     \x1b[0m\n");
+	printf("\x1b[47;34m      Pokemon Event Catchers Italia Tool v%d.%d     \x1b[0m\n", V1, V2);
 
 	refresh(currentEntry, topScreen, menuEntries, ENTRIES);
 	
@@ -30,7 +33,7 @@ int main() {
 	consoleInit(GFX_TOP, &topScreen);
 	consoleInit(GFX_BOTTOM, &bottomScreen);
 	
-	char *menuEntries[ENTRIES] = {"PID Checker", "Capture probability Calculator", "Wi-Fi distributions", "Code distributions", "Local distributions", "Our distributions", "Event Database", "News", "PS dates"};
+	char *menuEntries[ENTRIES] = {"PID Checker", "Capture probability Calculator", "Wi-Fi distributions", "Code distributions", "Local distributions", "Our distributions", "Gen VI Event Database", "News", "PS dates"};
 	
 	int currentEntry = 0;
 	
