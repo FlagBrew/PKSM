@@ -1,0 +1,22 @@
+1503 - GTS Fancy Vivillon
+
+Pokemon:       Vivillon
+Level:         12
+Ability:       Shield Dust/Compound Eyes
+Held Item:     None
+TID:           00108
+SID:           01503
+OT:            GTS
+Met:           an online Present
+Nature:        Random
+Ribbon:        Souvenir
+
+Relearn Moves: Hold Hands
+               Gust
+               Light Screen
+               Struggle Bug
+			   
+Games:         XY
+Method:        WiFi Connection
+Region:        All
+Duration:      8 July to 31 July 2014

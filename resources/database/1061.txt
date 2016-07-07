@@ -1,0 +1,22 @@
+1061 - XY&Z Yveltal
+
+Pokemon:       Yveltal
+Level:         100
+Ability:       Dark Aura
+Held Item:     No Item
+TID:           04206
+SID:           01061
+OT:            XY&Z
+Met:           the Pokémon cartoon
+Nature:        Any Nature
+Ribbon:        Classic
+
+Relearn Moves: Oblivion Wing
+               Sucker Punch
+               Dark Pulse
+               Foul Play
+			   
+Games:         ORAS
+Method:        Universal Serial Code
+Region:        KOR
+Duration:      April 20 to June 30, 2016

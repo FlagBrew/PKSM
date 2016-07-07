@@ -1,0 +1,22 @@
+0114 - Expo Charizard
+
+Pokemon:       Charizard
+Level:         36
+Ability:       Blaze
+Held Item:     Charizardite Y
+TID:           11195
+SID:           00114
+OT:            ??
+Met:           a Pokemon event
+Nature:        Serious
+Ribbon:        Souvenir
+
+Relearn Moves: Flamethrower
+               Ember
+               Fire Spin
+               Flame Burst
+			   
+Games:         XYORAS
+Method:        Serial Code
+Region:        JPN
+Duration:      19 November 2015 to 31 May 2016
