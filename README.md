@@ -37,3 +37,7 @@ It just allows you to stay updated on things and check validity of other things,
 Tell me if you like this work and what you would have featured in the next update! :)
  
 *Thanks Shai for the icon :)*
+
+# How to compile it?
+
+Just make sure you have ctrulib 1.1.0 . I don't know how to update httpc functions to latest ctrulib, because it causes crashes when i try to download stuff from internet if i use that version. If you know how to fix this problem, just pull request.
