@@ -141,7 +141,7 @@ void filldatabase(char *database[], char *links[]) {
 	database[166] = "0166 - Bestow Pikachu";	
 	database[167] = "0167 - Hyadain Landorus";	
 	database[168] = "0168 - Chymia's Shiny Gardevoir";
-	database[169] = "0179 - Jarvis's Gengar";
+	database[169] = "0169 - Jarvis's Gengar";
 	database[170] = "0170 - P-Cafe Pikachu (SG)";
 	database[173] = "0173 - HKTW VGC16 Shiny Mewtwo";
 	database[501] = "0501 - Winter2013 Garchomp";
