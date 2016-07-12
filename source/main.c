@@ -10,7 +10,7 @@
 #define ENTRIES 9
 
 #define V1 1
-#define V2 3
+#define V2 4
 
 void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, char* menuEntries[]){
 	consoleSelect(&bottomScreen);
@@ -89,7 +89,7 @@ int main() {
 				}
 				
 				case 2 :  {
-					printDistro(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/worldwide1.txt");
+					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/ECITool/master/resources/worldwide1.txt");
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
 					consoleSelect(&topScreen);
@@ -98,7 +98,7 @@ int main() {
 				}
 				
 				case 3 : {
-					printDistro(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/worldwide2.txt");
+					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/ECITool/master/resources/worldwide2.txt");
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
 					consoleSelect(&topScreen);
@@ -107,7 +107,7 @@ int main() {
 				}
 				
 				case 4 : {
-					printDistro(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/local.txt");
+					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/ECITool/master/resources/local.txt");
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
 					consoleSelect(&topScreen);
@@ -116,7 +116,7 @@ int main() {
 				}
 				
 				case 5 : {
-					printDistro(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/giveaway.txt");
+					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/ECITool/master/resources/giveaway.txt");
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
 					consoleSelect(&topScreen);
@@ -134,7 +134,7 @@ int main() {
 				}
 				
 				case 7 : {			
-					printDistro(topScreen, bottomScreen, "http://eventcatchersitalia.altervista.org/10/info.txt");
+					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/ECITool/master/resources/info.txt");
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
 					consoleSelect(&topScreen);

@@ -8,8 +8,8 @@ void filldatabase(char *database[], char *links[]) {
 	
 	for (int j = 0; j < 27 * 76; j++) {
 		database[j] = ".";
-		links[j] = (char*)malloc(60*sizeof(char));
-		snprintf(links[j], 60, "http://eventcatchersitalia.altervista.org/database/%d.txt", j);
+		links[j] = (char*)malloc(93*sizeof(char));
+		snprintf(links[j], 93, "https://raw.githubusercontent.com/BernardoGiordano/ECITool/master/resources/database/%d.txt", j);
 	}
 	
     database[8] = "0008 - Lucky Egg";

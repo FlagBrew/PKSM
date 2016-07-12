@@ -3,6 +3,8 @@
 #include <string.h>
 #include <3ds.h>
 #include "util.h"
+#include "certs/cybertrust.h"
+#include "certs/digicert.h"
 
 Result http_download(PrintConsole topScreen, PrintConsole bottomScreen, httpcContext *context) {	
 	gfxFlushBuffers();
@@ -15,10 +17,20 @@ Result http_download(PrintConsole topScreen, PrintConsole bottomScreen, httpcCon
 	
 	consoleSelect(&bottomScreen);
 	
+	ret = httpcAddRequestHeaderField(context, (char*)"User-Agent",  (char*)"ECI-TOOL");
+	if (ret != 0)
+		return ret;  
+		
+	ret = httpcSetSSLOpt(context, 1<<9);
+	if (ret != 0)
+		return ret; 
+		
+	httpcAddTrustedRootCA(context, cybertrust_cer, cybertrust_cer_len);
+	httpcAddTrustedRootCA(context, digicert_cer, digicert_cer_len);
+	
 	ret = httpcBeginRequest(context);
-	if (ret != 0) {		
+	if (ret != 0)		
 		return ret;
-	}
 
 	ret = httpcGetResponseStatusCode(context, &statuscode, 0);
 	if (ret != 0) {
@@ -37,8 +49,18 @@ Result http_download(PrintConsole topScreen, PrintConsole bottomScreen, httpcCon
 	gfxFlushBuffers();
 	gfxSwapBuffers();
 
-	if (statuscode != 200) 
+	if (statuscode != 200) {
+		/*
+		if (statuscode >= 300 && statuscode < 400) {
+			char newUrl[1024];
+			httpcGetResponseHeader(context, (char*)"Location", newUrl, 1024);
+			httpcCloseContext(context);
+			ret = http_download(topScreen, bottomScreen, context);
+			return ret;
+		}
+		*/
 		return -2;
+	}
 
 	ret = httpcGetDownloadSizeState(context, NULL, &contentsize);
 	if (ret != 0)
@@ -73,7 +95,7 @@ void getText(PrintConsole topScreen, PrintConsole bottomScreen, char *url) {
 	consoleSelect(&bottomScreen);	
 	gfxFlushBuffers();
 
-	ret = httpcOpenContext(&context, HTTPC_METHOD_GET, url, 1);
+	ret = httpcOpenContext(&context, HTTPC_METHOD_GET, url, 0);
 	
 	if (ret != 0) 
 		printf("\x1b[25;0HStatus: \x1b[31mURL NOT AVAILABLE\x1b[0m");
@@ -116,7 +138,7 @@ void printDistro(PrintConsole topScreen, PrintConsole bottomScreen, char *url) {
 
 void printPSdates(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int page) {
 	consoleSelect (&bottomScreen);
-	printf("\x1b[5;0HPage %d ", page);
+	printf("\x1b[5;0HPage %d/7 ", page);
 	consoleSelect(&topScreen);		
 	printf("\x1b[2J");
 	getText(topScreen, bottomScreen, url);
