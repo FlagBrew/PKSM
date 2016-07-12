@@ -40,4 +40,4 @@ Tell me if you like this work and what you would have featured in the next updat
 
 # How to compile it?
 
-Just make sure you have ctrulib 1.1.0 . I don't know how to update httpc functions to latest ctrulib, because it causes crashes when i try to download stuff from internet if i use that version. If you know how to fix this problem, just pull request.
+With [this commit](https://github.com/BernardoGiordano/ECITool/commit/b4f8d598b1e550b3cb897afa58ba9ffdaed82651) i upgraded some functions to latest ctrulib commit. It causes system error by the way, so you can help me in finding the bug. If you want to compile it with ctrulib 1.1.0 is everything fine and you only need to revert this commit in the source code.
