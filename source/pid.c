@@ -342,7 +342,7 @@ void PID(PrintConsole topScreen, PrintConsole bottomScreen){
 	printf("About Characteristic's test:");
 	printf("\x1b[19;0HFrom Generation IV onward, Pokemon have a Characteristic which indicates their\nhighest IV. In the case of a tie, the\npersonality value is used to determine  which stat wins the tie.\nThe first stat checked that is tied for highest wins the tie and will determine the Characteristic.");
 	printf("\x1b[27;0H----------------------------------------");
-	printf("\x1b[29;10HPress START to exit.");
+	printf("\x1b[29;12HPress B to exit.");
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
 	printf("\x1b[47;34m                   PID Checker                    \x1b[0m");
@@ -473,7 +473,7 @@ void PID(PrintConsole topScreen, PrintConsole bottomScreen){
 			
 		}
 		
-		if (kDown & KEY_START)
+		if (kDown & KEY_B)
 			break;
 		
 		if (refresh == 1) {

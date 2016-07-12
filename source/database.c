@@ -26,7 +26,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("----------------------------------------");
 	printf("\n\nSpecial thanks to:\n\n* Simona Mastroianni\n* Federico Leuzzi\n* Shai Raba'\n* Cosimo Vivoli");
 	printf("\x1b[27;0H    Please check your connection....");
-	printf("\x1b[29;10HPress START to exit.");
+	printf("\x1b[29;12HPress B to exit.");
 	
 	consoleSelect(&topScreen);		
 	printf("\x1b[2J");	
@@ -41,7 +41,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 		
 		u32 kDown = hidKeysDown();
 		
-		if (kDown & KEY_START)	
+		if (kDown & KEY_B)	
 			break;
 		
 		if (kDown & KEY_R) {
