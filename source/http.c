@@ -69,11 +69,11 @@ Result http_download(PrintConsole topScreen, PrintConsole bottomScreen, httpcCon
 void getText(PrintConsole topScreen, PrintConsole bottomScreen, char *url) {
 	Result ret = 0;
 	httpcContext context;
-	httpcInit();
+	httpcInit(0);
 	consoleSelect(&bottomScreen);	
 	gfxFlushBuffers();
 
-	ret = httpcOpenContext(&context, url, 1);
+	ret = httpcOpenContext(&context, HTTPC_METHOD_GET, url, 1);
 	
 	if (ret != 0) 
 		printf("\x1b[25;0HStatus: \x1b[31mURL NOT AVAILABLE\x1b[0m");
