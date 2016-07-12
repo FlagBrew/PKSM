@@ -1,15 +1,11 @@
 -------------====== What's New ======-------------
-- INSTALL 1.3 major update!
-- Hacked events option;
-- Event database added!
-- New menu and bugfixes.
+- What's new in 1.4 update:
+- Resources are now downloaded from github
+- Event database updated
+- General enhancements
 
 --------------------------------------------------
 ** Database News **
 
-# 0168 Added, will be released in the next update
-# 0169 Added, will be released in the next update
-
-You can build your own ECI Tool using the updated
-commits you can find on github. 
-You need ctrulib 1.1.0 to compile.
+# 0168 Added
+# 0169 Added
