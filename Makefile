@@ -70,7 +70,8 @@ LIBDIRS	:= $(CTRULIB)
 ifneq ($(BUILD),$(notdir $(CURDIR)))
 #---------------------------------------------------------------------------------
 
-export OUTPUT	:=	$(CURDIR)/$(TARGET)
+export OUTPUT	:=	$(CURDIR)/ECITool/$(TARGET)
+export OUTPUT3DSX	:=	$(CURDIR)/ECITool/3ds/ECITool/$(TARGET)
 export TOPDIR	:=	$(CURDIR)
 
 export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) \
@@ -123,7 +124,7 @@ else
 endif
 
 ifeq ($(strip $(NO_SMDH)),)
-	export _3DSXFLAGS += --smdh=$(CURDIR)/$(TARGET).smdh
+	export _3DSXFLAGS += --smdh=$(OUTPUT3DSX).smdh
 endif
 
 ifneq ($(ROMFS),)
@@ -142,7 +143,7 @@ $(BUILD):
 #---------------------------------------------------------------------------------
 clean:
 	@echo clean ...
-	@rm -fr $(BUILD) $(TARGET).3dsx $(OUTPUT).smdh $(TARGET).elf 
+	@rm -fr $(BUILD) $(OUTPUT3DSX).3dsx $(OUTPUT3DSX).smdh $(OUTPUT).elf 
 
 #---------------------------------------------------------------------------------
 else
@@ -153,9 +154,9 @@ DEPENDS	:=	$(OFILES:.o=.d)
 # main targets
 #---------------------------------------------------------------------------------
 ifeq ($(strip $(NO_SMDH)),)
-$(OUTPUT).3dsx	:	$(OUTPUT).elf $(OUTPUT).smdh
+$(OUTPUT3DSX).3dsx	:	$(OUTPUT).elf $(OUTPUT3DSX).smdh
 else
-$(OUTPUT).3dsx	:	$(OUTPUT).elf
+$(OUTPUT3DSX).3dsx	:	$(OUTPUT).elf
 endif
 
 $(OUTPUT).elf	:	$(OFILES)
