@@ -7,7 +7,7 @@
 #include "util.h"
 #include "database.h"
 
-#define ENTRIES 9
+#define ENTRIES 10
 
 #define V1 1
 #define V2 4
@@ -33,7 +33,7 @@ int main() {
 	consoleInit(GFX_TOP, &topScreen);
 	consoleInit(GFX_BOTTOM, &bottomScreen);
 	
-	char *menuEntries[ENTRIES] = {"PID Checker", "Capture probability Calculator", "Wi-Fi distributions", "Code distributions", "Local distributions", "Our distributions", "Gen VI Event Database", "News", "PS dates"};
+	char *menuEntries[ENTRIES] = {"PID Checker", "Capture probability Calculator", "Wi-Fi distributions", "Code distributions", "Local distributions", "Our distributions", "Gen VI Event Database", "News", "PS dates", "Update"};
 	
 	int currentEntry = 0;
 	
@@ -149,6 +149,14 @@ int main() {
 					intro(topScreen, bottomScreen, currentEntry, menuEntries);
 					break;
 				}
+				case 9 : {
+					update(topScreen, bottomScreen);
+					consoleSelect(&bottomScreen);
+					printf("\x1b[2J");
+					consoleSelect(&topScreen);
+					intro(topScreen, bottomScreen, currentEntry, menuEntries);
+					break;
+				}				
 			}
 		}
 		

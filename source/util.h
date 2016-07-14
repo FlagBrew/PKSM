@@ -4,3 +4,4 @@
 
 void refresh(int currentEntry, PrintConsole topScreen, char *lista[], int N);
 void refreshDB(int currentEntry, PrintConsole topScreen, char *lista[], int N, int page);
+void update(PrintConsole topScreen, PrintConsole bottomScreen);

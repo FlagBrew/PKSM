@@ -50,7 +50,6 @@ Result http_download(PrintConsole topScreen, PrintConsole bottomScreen, httpcCon
 	gfxSwapBuffers();
 
 	if (statuscode != 200) {
-		/*
 		if (statuscode >= 300 && statuscode < 400) {
 			char newUrl[1024];
 			httpcGetResponseHeader(context, (char*)"Location", newUrl, 1024);
@@ -58,7 +57,6 @@ Result http_download(PrintConsole topScreen, PrintConsole bottomScreen, httpcCon
 			ret = http_download(topScreen, bottomScreen, context);
 			return ret;
 		}
-		*/
 		return -2;
 	}
 
@@ -151,4 +149,104 @@ void printPSdates(PrintConsole topScreen, PrintConsole bottomScreen, char *url, 
 		if (kDown & KEY_A) 
 			break; 			 
 	}
+}
+
+Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url, char* path) {
+	fsInit();
+	httpcContext context;
+	httpcInit(0);
+	
+	Result ret = 0;
+	u32 statuscode = 0;
+	u32 contentsize = 0;
+	u8 *buf;
+	
+	consoleSelect(&topScreen);
+	printf("Downloading file from: %s to: %s\n", url, path);
+		
+	ret = httpcOpenContext(&context, HTTPC_METHOD_GET, url, 0);
+	if (ret != 0) {
+		printf("Error in: httpcOpenContext. Return: %lx\n", ret);
+		return ret;
+	}
+	
+	ret = httpcAddRequestHeaderField(&context, "User-Agent", "ECI-TOOL");
+	if (ret != 0) {
+		printf("Error in: httpcAddRequestHeaderField. Return: %lx\n", ret);
+		return ret;
+	}
+	
+	ret = httpcSetSSLOpt(&context, 1<<9);
+	if (ret != 0) {
+		printf("Error in: httpcSetSSLOpt. Return: %lx\n", ret);
+		return ret;
+	}
+	
+	httpcAddTrustedRootCA(&context, cybertrust_cer, cybertrust_cer_len);
+	httpcAddTrustedRootCA(&context, digicert_cer, digicert_cer_len);
+	
+	ret = httpcBeginRequest(&context);
+	if(ret != 0) {
+		printf("Error in: httpcBeginRequest. Return: %lx\n", ret);
+		return ret;
+	}
+	
+	ret = httpcGetResponseStatusCode(&context, &statuscode, 0);
+	if (ret != 0) {
+		printf("Error in: httpcGetResponseStatusCode. Return: %lx\n", ret);
+		httpcCloseContext(&context);
+		return ret;
+	}
+	
+	if (statuscode != 200) {
+		if (statuscode >= 300 && statuscode < 400) {
+			char newUrl[1024];
+			ret = httpcGetResponseHeader(&context, (char*)"Location", newUrl, 1024);
+			if (ret != 0) {
+				printf("Could not get relocation header in 3XX http response.\n");
+				return ret;
+			}
+			httpcCloseContext(&context);
+			printf("Retrying to call download function...\n\n");
+			ret = downloadFile(topScreen, bottomScreen, newUrl, path);
+			return ret;
+		}
+		else {
+			printf("Error: status code not 200 or redirection (3XX).\nStatus code: %lu\n", statuscode);
+			httpcCloseContext(&context);
+			return -1;
+		}
+	}
+	
+	ret = httpcGetDownloadSizeState(&context, NULL, &contentsize);
+	if (ret != 0) {
+		printf("Error in: httpcGetDownloadSizeState. Return: %lx\n", ret);
+		httpcCloseContext(&context);
+		return ret;
+	}
+	
+	buf = (u8*)malloc(contentsize);
+	if (buf == NULL) {
+		printf("Failure to malloc buffer.\n");
+		return -2;
+	}
+	memset(buf, 0, contentsize);
+	
+	ret = httpcDownloadData(&context, buf, contentsize, NULL);
+	if(ret != 0) {
+		free(buf);
+		printf("Error in: httpcDownloadData. Return: %lx\n", ret);
+		httpcCloseContext(&context);
+		return ret;
+	}
+	
+	remove(path);
+	FILE *fptr = fopen(path, "wb");
+	fwrite(buf, 1, contentsize, fptr);
+	fclose(fptr);
+	free(buf);
+	httpcCloseContext(&context);
+	httpcExit();
+	fsExit();
+	return 0;
 }
