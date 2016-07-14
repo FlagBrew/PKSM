@@ -43,20 +43,20 @@ void update(PrintConsole topScreen, PrintConsole bottomScreen) {
 	ret = downloadFile(topScreen, bottomScreen, ciaUrl, ciaPath);
 	consoleSelect(&topScreen);
 	if (ret == 0) 
-		printf("\x1b[32m\nDownload of ECITool.cia succeded!\x1b[0m Install it usinga CIA manager.\n\n");
-	else printf("\x1b[31m\nDownload of ECITool.cia failed.\x1b[0m Please report theissue to the dev.\n\n");
+		printf("\nDownload of ECITool.cia \x1b[32msucceded!\x1b[0m Install it usinga CIA manager.\n\n");
+	else printf("\nDownload of ECITool.cia \x1b[31mfailed.\x1b[0m Please report the issue to the dev.\n\n");
 	
 	ret = downloadFile(topScreen, bottomScreen, hblUrl, hblPath);
 	consoleSelect(&topScreen);
 	if (ret == 0) 
-		printf("\x1b[32m\nDownload of ECITool.3dsx succeded!\x1b[0m Open it using  your favourite entrypoint.\n\n");
-	else printf("\x1b[31m\nDownload of ECITool.3dsx failed.\x1b[0m Please report theissue to the dev.\n\n");
+		printf("\nDownload of ECITool.3dsx \x1b[32msucceded!\x1b[0m Open it using  your favourite entrypoint.\n\n");
+	else printf("\nDownload of ECITool.3dsx \x1b[31mfailed.\x1b[0m Please report theissue to the dev.\n\n");
 	
 	ret = downloadFile(topScreen, bottomScreen, smdhUrl, smdhPath);
 	consoleSelect(&topScreen);
 	if (ret == 0) 
-		printf("\x1b[32m\nDownload of ECITool.sdmh succeded!\x1b[0m\n\n");
-	else printf("\x1b[31m\nDownload of ECITool.sdmh failed.\x1b[0m Please report theissue to the dev.\n\n");
+		printf("\nDownload of ECITool.sdmh \x1b[32msucceded!\x1b[0m\n\n");
+	else printf("\nDownload of ECITool.sdmh \x1b[31mfailed.\x1b[0m Please report theissue to the dev.\n\n");
 	
 	printf("\x1b[29;15HPress Start to exit.");
 	httpcExit();
