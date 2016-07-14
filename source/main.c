@@ -24,7 +24,7 @@ void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, 
 	refresh(currentEntry, topScreen, menuEntries, ENTRIES);
 	
 	consoleSelect(&topScreen);
-	printf("\x1b[29;15HPress Start to exit.");	
+	printf("\x1b[29;15HPress Start to exit.");
 }
 
 int main() {	

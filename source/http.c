@@ -153,16 +153,15 @@ void printPSdates(PrintConsole topScreen, PrintConsole bottomScreen, char *url, 
 
 Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url, char* path) {
 	fsInit();
-	httpcContext context;
 	httpcInit(0);
 	
+	httpcContext context;
 	Result ret = 0;
 	u32 statuscode = 0;
 	u32 contentsize = 0;
 	u8 *buf;
 	
-	consoleSelect(&topScreen);
-	printf("Downloading file from: %s to: %s\n", url, path);
+	printf("Downloading file from: \x1b[32m%s\x1b[0m to: \x1b[32m%s\x1b[0m\n", url, path);
 		
 	ret = httpcOpenContext(&context, HTTPC_METHOD_GET, url, 0);
 	if (ret != 0) {
@@ -172,13 +171,13 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
 	
 	ret = httpcAddRequestHeaderField(&context, "User-Agent", "ECI-TOOL");
 	if (ret != 0) {
-		printf("Error in: httpcAddRequestHeaderField. Return: %lx\n", ret);
+		printf("\x1b[31mError in: httpcAddRequestHeaderField.\x1b[0m Return: %lx\n", ret);
 		return ret;
 	}
 	
 	ret = httpcSetSSLOpt(&context, 1<<9);
 	if (ret != 0) {
-		printf("Error in: httpcSetSSLOpt. Return: %lx\n", ret);
+		printf("\x1b[31mError in: httpcSetSSLOpt.\x1b[0m Return: %lx\n", ret);
 		return ret;
 	}
 	
@@ -187,13 +186,13 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
 	
 	ret = httpcBeginRequest(&context);
 	if(ret != 0) {
-		printf("Error in: httpcBeginRequest. Return: %lx\n", ret);
+		printf("\x1b[31mError in: httpcBeginRequest.\x1b[0m Return: %lx\n", ret);
 		return ret;
 	}
 	
 	ret = httpcGetResponseStatusCode(&context, &statuscode, 0);
 	if (ret != 0) {
-		printf("Error in: httpcGetResponseStatusCode. Return: %lx\n", ret);
+		printf("\x1b[31mError in: httpcGetResponseStatusCode.\x1b[0m Return: %lx\n", ret);
 		httpcCloseContext(&context);
 		return ret;
 	}
@@ -203,7 +202,7 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
 			char newUrl[1024];
 			ret = httpcGetResponseHeader(&context, (char*)"Location", newUrl, 1024);
 			if (ret != 0) {
-				printf("Could not get relocation header in 3XX http response.\n");
+				printf("\x1b[31mCould not get relocation header in 3XX http response.\x1b[0m\n");
 				return ret;
 			}
 			httpcCloseContext(&context);
@@ -212,7 +211,7 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
 			return ret;
 		}
 		else {
-			printf("Error: status code not 200 or redirection (3XX).\nStatus code: %lu\n", statuscode);
+			printf("\x1b[31mError: status code not 200 or redirection (3XX).\x1b[0m\nStatus code: %lu\n", statuscode);
 			httpcCloseContext(&context);
 			return -1;
 		}
@@ -220,14 +219,14 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
 	
 	ret = httpcGetDownloadSizeState(&context, NULL, &contentsize);
 	if (ret != 0) {
-		printf("Error in: httpcGetDownloadSizeState. Return: %lx\n", ret);
+		printf("\x1b[31mError in: httpcGetDownloadSizeState.\x1b[0m Return: %lx\n", ret);
 		httpcCloseContext(&context);
 		return ret;
 	}
 	
 	buf = (u8*)malloc(contentsize);
 	if (buf == NULL) {
-		printf("Failure to malloc buffer.\n");
+		printf("\x1b[31mFailure to malloc buffer.\x1b[0m\n");
 		return -2;
 	}
 	memset(buf, 0, contentsize);
@@ -235,7 +234,7 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
 	ret = httpcDownloadData(&context, buf, contentsize, NULL);
 	if(ret != 0) {
 		free(buf);
-		printf("Error in: httpcDownloadData. Return: %lx\n", ret);
+		printf("\x1b[31mError in: httpcDownloadData.\x1b[0m Return: %lx\n", ret);
 		httpcCloseContext(&context);
 		return ret;
 	}
@@ -245,8 +244,10 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
 	fwrite(buf, 1, contentsize, fptr);
 	fclose(fptr);
 	free(buf);
+	
 	httpcCloseContext(&context);
 	httpcExit();
 	fsExit();
+	
 	return 0;
 }

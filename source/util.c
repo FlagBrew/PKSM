@@ -30,39 +30,37 @@ void refreshDB(int currentEntry, PrintConsole topScreen, char *lista[], int N, i
 void update(PrintConsole topScreen, PrintConsole bottomScreen) {
 	char *ciaUrl = "https://raw.githubusercontent.com/BernardoGiordano/ECITool/master/latest/ECITool.cia";
 	char *hblUrl = "https://raw.githubusercontent.com/BernardoGiordano/ECITool/master/latest/ECITool.3dsx";
-	char *smdhUrl = "https://raw.githubusercontent.com/BernardoGiordano/ECITool/master/latest/ECITool.smdh";
+	char *smdhUrl = "https://raw.githubusercontent.com/BernardoGiordano/ECITool/master/latest/ECITool.sdmh";
 	char *ciaPath = "/ECITool.cia";
 	char *hblPath = "/3ds/ECITool/ECITool.3dsx";
-	char *smdhPath = "/3ds/ECITool/ECITool.smdh";
+	char *smdhPath = "/3ds/ECITool/ECITool.sdmh";
 	
 	Result ret = 0;
-	
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
-	printf("\x1b[47;34m                     Updater                      \x1b[0m");
-	printf("---------------------------------------------------------");	
+	printf("\x1b[47;34m                     Updater                      \x1b[0m\n");
 	
 	ret = downloadFile(topScreen, bottomScreen, ciaUrl, ciaPath);
+	consoleSelect(&topScreen);
 	if (ret == 0) 
-		printf("Download of ECITool.cia succeded! Install it using a CIA manager.\n\n");
-	else printf("Download of ECITool.cia failed. Please report the issue to the dev.\n\n");
-	
-	ret = downloadFile(topScreen, bottomScreen, ciaUrl, ciaPath);
-	if (ret == 0) 
-		printf("Download of ECITool.cia succeded! Install it using a CIA manager.\n\n");
-	else printf("Download of ECITool.cia failed. Please report the issue to the dev.\n\n");
+		printf("\x1b[32mDownload of ECITool.cia succeded!\x1b[0m Install it using a CIA manager.\n\n");
+	else printf("\x1b[31mDownload of ECITool.cia failed.\x1b[0m Please report theissue to the dev.\n\n");
 	
 	ret = downloadFile(topScreen, bottomScreen, hblUrl, hblPath);
+	consoleSelect(&topScreen);
 	if (ret == 0) 
-		printf("Download of ECITool.3dsx succeded! Open it using your favourite entrypoint.\n\n");
-	else printf("Download of ECITool.3dsx failed. Please report the issue to the dev.\n\n");
+		printf("\x1b[32mDownload of ECITool.3dsx succeded!\x1b[0m Open it using your favourite entrypoint.\n\n");
+	else printf("\x1b[31mDownload of ECITool.3dsx failed.\x1b[0m Please report theissue to the dev.\n\n");
 	
 	ret = downloadFile(topScreen, bottomScreen, smdhUrl, smdhPath);
+	consoleSelect(&topScreen);
 	if (ret == 0) 
-		printf("Download of ECITool.smdh succeded!\n\n");
-	else printf("Download of ECITool.smdh failed. Please report the issue to the dev.\n\n");
+		printf("\x1b[32mDownload of ECITool.sdmh succeded!\x1b[0m\n\n");
+	else printf("\x1b[31mDownload of ECITool.sdmh failed.\x1b[0m Please report theissue to the dev.\n\n");
 	
-	printf("Press START to exit.");
+	printf("\x1b[29;15HPress Start to exit.");
+	httpcExit();
+	fsExit();
 
 	while (aptMainLoop()) {
 		gspWaitForVBlank();

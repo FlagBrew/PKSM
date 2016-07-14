@@ -412,41 +412,41 @@ void PID(PrintConsole topScreen, PrintConsole bottomScreen){
 		}
 		
 		if (speed == 1) {
-			if (((kDown & KEY_DRIGHT) /*^ (hidKeysHeld() & KEY_DRIGHT && t_frame % DELAY == 1)*/) && (posizione[0] < 17)) {
+			if ((kDown & KEY_DRIGHT) && (posizione[0] < 17)) {
 				posCursore(cursore, posizione, 1);
 				printCursore(cursore);
 			}
 			
-			if (((kDown & KEY_DLEFT) /*^ (hidKeysHeld() & KEY_DLEFT && t_frame % DELAY == 1)*/) && (posizione[0] > 0)) {
+			if ((kDown & KEY_DLEFT) && (posizione[0] > 0)) {
 				posCursore(cursore, posizione, -1);
 				printCursore(cursore);
 			}
 			
-			if (((kDown & KEY_DUP) /*^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)*/) && (var[posizione[0]] < 6) && (posizione[0] == 0)) { // posizione 0
+			if ((kDown & KEY_DUP) && (var[posizione[0]] < 6) && (posizione[0] == 0)) { // posizione 0
 				incrementa(var, posizione, 1);
 				checkValDec(var);
 				refresh = 1;
 			}
-			if (((kDown & KEY_DUP) /*^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)*/) && (var[posizione[0]] < 6) && (posizione[0] == 5)) { // posizione 5
+			if ((kDown & KEY_DUP) && (var[posizione[0]] < 6) && (posizione[0] == 5)) { // posizione 5
 				incrementa(var, posizione, 1);
 				checkValDec(var);
 				refresh = 1;
 			}
-			if (((kDown & KEY_DUP) /*^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)*/) && (var[posizione[0]] < 9) && (posizione[0] > 0) && (posizione[0] < 10) && (posizione[0] != 5)) { // posizione 1,2,3,4,6,7,8,9
+			if ((kDown & KEY_DUP) && (var[posizione[0]] < 9) && (posizione[0] > 0) && (posizione[0] < 10) && (posizione[0] != 5)) { // posizione 1,2,3,4,6,7,8,9
 				incrementa(var, posizione, 1);	
 				checkValDec(var);
 				refresh = 1;
 			}
-			if (((kDown & KEY_DUP) /*^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)*/) && (posizione[0] > 9) && (counterPID[posizione[0] - 10] < 15)) {
+			if ((kDown & KEY_DUP) && (posizione[0] > 9) && (counterPID[posizione[0] - 10] < 15)) {
 				incrementaPID(pid, counterPID, varPID, posizione, 1);
 				refresh = 1;
 			}
 					
-			if (((kDown & KEY_DDOWN) /*^ (hidKeysHeld() & KEY_DDOWN && t_frame % DELAY == 1)*/) && (var[posizione[0]] > 0) && (posizione[0] >= 0) && (posizione[0] < 10)) { // tutte le posizioni
+			if ((kDown & KEY_DDOWN) && (var[posizione[0]] > 0) && (posizione[0] >= 0) && (posizione[0] < 10)) { // tutte le posizioni
 				incrementa(var, posizione, -1);
 				refresh = 1;
 			}
-			if (((kDown & KEY_DDOWN) /*^ (hidKeysHeld() & KEY_DDOWN && t_frame % DELAY == 1)*/) && (posizione[0] > 9) && (counterPID[posizione[0] - 10] > 0)) {
+			if ((kDown & KEY_DDOWN) && (posizione[0] > 9) && (counterPID[posizione[0] - 10] > 0)) {
 				incrementaPID(pid, counterPID, varPID, posizione, -1);
 				refresh = 1;
 			}
