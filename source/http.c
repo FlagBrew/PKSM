@@ -17,7 +17,7 @@ Result http_download(PrintConsole topScreen, PrintConsole bottomScreen, httpcCon
 	
 	consoleSelect(&bottomScreen);
 	
-	ret = httpcAddRequestHeaderField(context, (char*)"User-Agent",  (char*)"ECI-TOOL");
+	ret = httpcAddRequestHeaderField(context, (char*)"User-Agent",  (char*)"EventAssistant");
 	if (ret != 0)
 		return ret;  
 		
@@ -161,7 +161,7 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
 	u32 contentsize = 0;
 	u8 *buf;
 	
-	printf("Downloading file to sdmc\x1b[32m%s\x1b[0m\n", path);
+	printf("Downloading file to sdmc:\x1b[32m%s\x1b[0m\n", path);
 		
 	ret = httpcOpenContext(&context, HTTPC_METHOD_GET, url, 0);
 	if (ret != 0) {
@@ -169,7 +169,7 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
 		return ret;
 	}
 	
-	ret = httpcAddRequestHeaderField(&context, "User-Agent", "ECI-TOOL");
+	ret = httpcAddRequestHeaderField(&context, "User-Agent", "EventAssistant");
 	if (ret != 0) {
 		printf("Error in: \x1b[31mhttpcAddRequestHeaderField\x1b[0m. Return: %lx\n", ret);
 		return ret;
@@ -249,5 +249,135 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
 	httpcExit();
 	fsExit();
 	
+	return 0;
+}
+
+Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int i) {
+	consoleSelect(&bottomScreen);
+	printf("\x1b[2J");
+	printf("----------------------------------------");
+	printf("NA  - North America");
+	printf("\nPAL - Europe, Australia");
+	printf("\nJPN - Japan");
+	printf("\nKOR - South Korea");
+	printf("\nALL - All regions available\n");
+	printf("----------------------------------------");
+	printf("Press SELECT to download and inject in  OR/AS save\n");
+	printf("----------------------------------------");
+	printf("\x1b[29;10HPress A to continue.");
+	consoleSelect(&topScreen);
+	printf("\x1b[2J");
+	getText(topScreen, bottomScreen, url);
+	
+	while (aptMainLoop()) {
+		gspWaitForVBlank();
+		hidScanInput();
+
+		u32 kDown = hidKeysDown();
+		if (kDown & KEY_A) 
+			break; 	
+
+		if (kDown & KEY_SELECT) {
+			//consoleSelect(&topScreen);
+			fsInit();
+			httpcInit(0);
+			
+			httpcContext context;
+			Result ret = 0;
+			u32 statuscode = 0;
+			u32 contentsize = 0;
+			
+			char *wc6url = (char*)malloc(100*sizeof(char));
+			snprintf(wc6url, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/%d.wc6", i);
+					
+			ret = httpcOpenContext(&context, HTTPC_METHOD_GET, wc6url, 0);
+			if (ret != 0) {
+				printf("Error in: \x1b[31mhttpcOpenContext\x1b[0m. Return: %lx\n", ret);
+				return ret;
+			}
+			
+			ret = httpcAddRequestHeaderField(&context, "User-Agent", "EventAssistant");
+			if (ret != 0) {
+				printf("Error in: \x1b[31mhttpcAddRequestHeaderField\x1b[0m. Return: %lx\n", ret);
+				return ret;
+			}
+			
+			ret = httpcSetSSLOpt(&context, 1<<9);
+			if (ret != 0) {
+				printf("Error in: \x1b[31mhttpcSetSSLOpt\x1b[0m. Return: %lx\n", ret);
+				return ret;
+			}
+			
+			httpcAddTrustedRootCA(&context, cybertrust_cer, cybertrust_cer_len);
+			httpcAddTrustedRootCA(&context, digicert_cer, digicert_cer_len);
+			
+			ret = httpcBeginRequest(&context);
+			if(ret != 0) {
+				printf("Error in: \x1b[31mhttpcBeginRequest\x1b[0m. Return: %lx\n", ret);
+				return ret;
+			}
+			
+			ret = httpcGetResponseStatusCode(&context, &statuscode, 0);
+			if (ret != 0) {
+				printf("Error in: \x1b[31mhttpcGetResponseStatusCode\x1b[0m. Return: %lx\n", ret);
+				httpcCloseContext(&context);
+				return ret;
+			}
+			
+			ret = httpcGetDownloadSizeState(&context, NULL, &contentsize);
+			if (ret != 0) {
+				printf("Error in: \x1b[31mhttpcGetDownloadSizeState\x1b[0m. Return: %lx\n", ret);
+				httpcCloseContext(&context);
+				return ret;
+			}
+			
+			u8 *wc6buf;
+			wc6buf = (u8*)malloc(contentsize);
+			if (wc6buf == NULL) {
+				printf("\x1b[31mFailure to malloc buffer\x1b[0m.\n");
+				return -2;
+			}
+			memset(wc6buf, 0, contentsize);
+			
+			ret = httpcDownloadData(&context, wc6buf, contentsize, NULL);
+			if(ret != 0) {
+				free(wc6buf);
+				printf("Error in: \x1b[31mhttpcDownloadData\x1b[0m. Return: %lx\n", ret);
+				httpcCloseContext(&context);
+				return ret;
+			}
+			
+			//reading main
+			FILE *fptr = fopen("/main", "rt");
+			if (fptr == NULL) {
+				return -3;
+			}
+			fseek(fptr, 0, SEEK_END);
+			u32 mainsize = ftell(fptr);
+			u8* mainbuf = malloc(mainsize);
+			rewind(fptr);
+			fread(mainbuf, mainsize, 1, fptr);
+			fclose(fptr);
+			
+			//doing backup
+			FILE *fptr1 = fopen("/main.bak", "wb");
+			fwrite(mainbuf, 1, mainsize, fptr1);
+			fclose(fptr1);
+			
+
+			memcpy((void*)(*(mainbuf+118008)), (const void*)wc6buf, 264);
+			
+			
+			FILE *fptr2 = fopen("/main", "wb");
+			fwrite(mainbuf, 1, mainsize, fptr2);
+			fclose(fptr2);
+			free(mainbuf);
+			free(wc6buf);
+			
+			httpcCloseContext(&context);
+			httpcExit();
+			fsExit();
+		}
+	}
 	return 0;
 }

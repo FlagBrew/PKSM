@@ -76,7 +76,6 @@ void showC(int number[], int ratio[], int HP_perc, float bonusballvett[], int bo
 	
 	if (a >= 255)
 		p = 1;
-	
 	else {
 		float temp = (b + 1) / 65536;
 		for (int i = 0; i < 2; i++)
@@ -181,64 +180,42 @@ void catchrate(PrintConsole topScreen, PrintConsole bottomScreen) {
 			printCursoreC(cursore);
 		}
 		if (speed == 1) {
-			if ((kDown & KEY_DUP) /*^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)*/) {
+			if (kDown & KEY_DUP) {
 				if (posizione[0] == 0) {
 					if (number[posizione[0]] < 9) {
 						number[posizione[0]]++;
 						check(number);
-						refresh = 1;
 					}
 				}
 				if (posizione[0] == 1 || posizione[0] == 2) {
 					if (number[posizione[0]] < 9) {
 						number[posizione[0]]++;
 						check(number);
-						refresh = 1;
 					}
 				}
 				if (posizione[0] == 3) {
-					if (gen < 6) {
-						gen++;
-						refresh = 1;
-					}
+					if (gen < 6) gen++;
 				}
 				if (posizione[0] == 4) {
-					if (HP_perc < 100) {
-						HP_perc += 1;
-						refresh = 1;
-					}
-					else if (HP_perc == 100) {
-						HP_perc = 1;
-						refresh = 1;
-					}
+					if (HP_perc < 100) HP_perc += 1;
+					else if (HP_perc == 100) HP_perc = 1;
 				}
 				if (posizione[0] == 5) {
-					if (bonusindex < 8) {
-						bonusindex++;
-						refresh = 1;
-					}
+					if (bonusindex < 8) bonusindex++;
 				}
 				if (posizione[0] == 6) {
-					if (statusindex < 3) {
-						statusindex++;
-						refresh = 1;
-					}
+					if (statusindex < 3) statusindex++;
 				}
 				if (posizione[0] == 7) {
-					if (r < 200) {
-						r++;
-						refresh = 1;
-					}
+					if (r < 200) r++;
 				}
 				if (posizione[0] == 8) {
-					if (captureOindex < 3) {
-						captureOindex++;
-						refresh = 1;
-					}
+					if (captureOindex < 3) captureOindex++;
 				}
+				refresh = 1;
 			}
 			
-			if ((kDown & KEY_DDOWN) /*^ (hidKeysHeld() & KEY_DDOWN && t_frame % DELAY == 1)*/) {
+			if (kDown & KEY_DDOWN) {
 				if (posizione[0] == 0 || posizione[0] == 1 || posizione[0] == 2) {
 					if (number[posizione[0]] > 0) {
 						number[posizione[0]]--;

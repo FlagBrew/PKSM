@@ -7,19 +7,18 @@
 #include "util.h"
 #include "database.h"
 
-#define ENTRIES 10
+#define ENTRIES 9
 
 #define V1 1
 #define V2 4
 
 void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, char* menuEntries[]){
 	consoleSelect(&bottomScreen);
-	printf("\nECI Tool is the official Homebrew of theFB community '\x1b[32mPokemon Event Catchers\nItalia\x1b[0m'.\n\nThis is meant to be a general purpose   application that can serve both event\ncollectors and classic players of the\ngame.\n\nYou can join us at:\n\x1b[32mfacebook.com/groups/PokemonEventCatchersItalia\x1b[0m");
-	printf("\x1b[26;0HECI Tool");
+	printf("\x1b[26;0HEvent Assistant");
 	printf("\n\nDeveloped by Bernardo Giordano.");
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
-	printf("\x1b[47;34m      Pokemon Event Catchers Italia Tool v%d.%d     \x1b[0m\n", V1, V2);
+	printf("\x1b[47;34m               Event Assistant v%d.%d               \x1b[0m\n", V1, V2);
 
 	refresh(currentEntry, topScreen, menuEntries, ENTRIES);
 	
@@ -33,7 +32,7 @@ int main() {
 	consoleInit(GFX_TOP, &topScreen);
 	consoleInit(GFX_BOTTOM, &bottomScreen);
 	
-	char *menuEntries[ENTRIES] = {"PID Checker", "Capture probability Calculator", "Wi-Fi distributions", "Code distributions", "Local distributions", "Our distributions", "Gen VI Event Database", "News", "PS dates", "Update"};
+	char *menuEntries[ENTRIES] = {"PID Checker", "Capture probability Calculator", "Wi-Fi distributions", "Code distributions", "Local distributions", "Gen VI Event Database", "News", "PS dates", "Update"};
 	
 	int currentEntry = 0;
 	
@@ -89,7 +88,7 @@ int main() {
 				}
 				
 				case 2 :  {
-					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/ECITool/master/resources/worldwide1.txt");
+					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/worldwide1.txt");
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
 					consoleSelect(&topScreen);
@@ -98,7 +97,7 @@ int main() {
 				}
 				
 				case 3 : {
-					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/ECITool/master/resources/worldwide2.txt");
+					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/worldwide2.txt");
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
 					consoleSelect(&topScreen);
@@ -107,24 +106,15 @@ int main() {
 				}
 				
 				case 4 : {
-					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/ECITool/master/resources/local.txt");
+					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/local.txt");
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
 					consoleSelect(&topScreen);
 					intro(topScreen, bottomScreen, currentEntry, menuEntries);
 					break;
 				}
-				
+					
 				case 5 : {
-					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/ECITool/master/resources/giveaway.txt");
-					consoleSelect(&bottomScreen);
-					printf("\x1b[2J");
-					consoleSelect(&topScreen);
-					intro(topScreen, bottomScreen, currentEntry, menuEntries);
-					break;
-				}
-			
-				case 6 : {
 					eventDatabase(topScreen, bottomScreen);
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
@@ -133,15 +123,15 @@ int main() {
 					break;
 				}
 				
-				case 7 : {			
-					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/ECITool/master/resources/info.txt");
+				case 6 : {			
+					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/info.txt");
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
 					consoleSelect(&topScreen);
 					intro(topScreen, bottomScreen, currentEntry, menuEntries);
 					break;					
 				}
-				case 8 : {
+				case 7 : {
 					psDates(topScreen, bottomScreen);
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
@@ -149,7 +139,7 @@ int main() {
 					intro(topScreen, bottomScreen, currentEntry, menuEntries);
 					break;
 				}
-				case 9 : {
+				case 8 : {
 					update(topScreen, bottomScreen);
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");

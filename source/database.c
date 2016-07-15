@@ -65,22 +65,19 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 		if (kDown & KEY_DUP) {
 			if (currentEntry == 0) currentEntry = RIGHE - 1;
 			else if (currentEntry > 0) currentEntry -= 1;
-			
 			refreshDB(currentEntry, topScreen, database, RIGHE, page);
 		}
 		
 		if (kDown & KEY_DDOWN) {
 			if (currentEntry == RIGHE - 1) currentEntry = 0;
 			else if (currentEntry < RIGHE - 1) currentEntry += 1;
-			
 			refreshDB(currentEntry, topScreen, database, RIGHE, page);			
 		}
 
  		if (kDown & KEY_A)  {
 			consoleSelect(&topScreen);
 			printf("\x1b[2J");
-			printDistro(topScreen, bottomScreen, links[currentEntry + page * RIGHE]);
-
+			Result ret = printDB(topScreen, bottomScreen, links[currentEntry + page * RIGHE], (currentEntry + page * RIGHE));
 			consoleSelect(&bottomScreen);
 			printf("\x1b[2J");
 			printf("----------------------------------------");
@@ -109,11 +106,11 @@ void psDates(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("----------------------------------------");
 	printf("\x1b[29;10HPress A to continue.");	
 	
-	printPSdates(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/ECITool/master/resources/hacked1.txt", 1);
-	printPSdates(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/ECITool/master/resources/hacked2.txt", 2);
-	printPSdates(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/ECITool/master/resources/hacked3.txt", 3);
-	printPSdates(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/ECITool/master/resources/hacked4.txt", 4);
-	printPSdates(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/ECITool/master/resources/hacked5.txt", 5);
-	printPSdates(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/ECITool/master/resources/hacked6.txt", 6);
-	printPSdates(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/ECITool/master/resources/hacked7.txt", 7);
+	printPSdates(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/hacked1.txt", 1);
+	printPSdates(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/hacked2.txt", 2);
+	printPSdates(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/hacked3.txt", 3);
+	printPSdates(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/hacked4.txt", 4);
+	printPSdates(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/hacked5.txt", 5);
+	printPSdates(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/hacked6.txt", 6);
+	printPSdates(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/hacked7.txt", 7);
 }
