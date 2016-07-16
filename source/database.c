@@ -86,7 +86,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 			printf("A - Open/close entry\n");
 			printf("----------------------------------------");
 			printf("\x1b[27;0H    Please check your connection....");
-			printf("\x1b[29;10HPress START to exit.");			
+			printf("\x1b[29;12HPress B to exit.");			
 			consoleSelect(&topScreen);
 			printf("\x1b[2J");	
 			printf("\x1b[47;30mPage: \x1b[47;34m%d\x1b[47;30m of \x1b[47;34m%d\x1b[47;30m - from \x1b[47;34m%d\x1b[47;30m to \x1b[47;34m%d\x1b[47;30m                      \x1b[0m\x1b[1;0H      ", page + 1, MAXPAGES + 1, page * 27, (page + 1) * 27 - 1);
