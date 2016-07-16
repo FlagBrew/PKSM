@@ -28,9 +28,9 @@ void refreshDB(int currentEntry, PrintConsole topScreen, char *lista[], int N, i
 }
 
 void update(PrintConsole topScreen, PrintConsole bottomScreen) {
-	char *ciaUrl = "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/latest/EventAssistant.cia";
-	char *hblUrl = "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/latest/EventAssistant.3dsx";
-	char *smdhUrl = "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/latest/EventAssistant.sdmh";
+	char *ciaUrl = "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/EventAssistant/EventAssistant.cia";
+	char *hblUrl = "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/EventAssistant/3ds/EventAssistant/EventAssistant.3dsx";
+	char *smdhUrl = "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/EventAssistant/3ds/EventAssistant/EventAssistant.sdmh";
 	char *ciaPath = "/EventAssistant.cia";
 	char *hblPath = "/3ds/EventAssistant/EventAssistant.3dsx";
 	char *smdhPath = "/3ds/EventAssistant/EventAssistant.sdmh";
