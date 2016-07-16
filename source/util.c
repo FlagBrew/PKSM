@@ -58,6 +58,7 @@ void update(PrintConsole topScreen, PrintConsole bottomScreen) {
 		printf("\nDownload of EventAssistant.smdh \x1b[32msucceded!\x1b[0m\n\n");
 	else printf("\nDownload of EventAssistant.smdh \x1b[31mfailed.\x1b[0m\nPlease report the issue to the dev.\n\n");
 	
+	printf("Install and restart the application!");
 	printf("\x1b[29;15HPress Start to exit.");
 	httpcExit();
 	fsExit();

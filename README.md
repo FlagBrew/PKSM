@@ -1,9 +1,9 @@
-# ECITool
+# EventAssistant
 A general purpose tool mostly oriented to event collectors.
 
-**[ECI Tool](https://github.com/BernardoGiordano/ECITool/releases): what is this?**
+**[EventAssistant](https://github.com/BernardoGiordano/EventAssistant/releases): what is this?**
 
-[**ECI Tool**](https://github.com/BernardoGiordano/ECITool/releases) is a general purpose pokémon application that can be run on your 3DS or PC (you need *Homebrew Launcher* to launch the *.3dsx* version or EmuNAND to run the *.cia* version on the 3DS, or Citra to run the *.3dsx* version on your PC).
+[**EventAssistant**](https://github.com/BernardoGiordano/EventAssistant/releases) is a general purpose pokémon application that can be run on your 3DS or PC (you need *Homebrew Launcher* to launch the *.3dsx* version or EmuNAND to run the *.cia* version on the 3DS, or Citra to run the *.3dsx* version on your PC).
 
 This application allows you to make some cool things, like:
 
@@ -22,22 +22,17 @@ Event Database links are hardcoded in the program, so it knows where to look for
 
 You can use Citra to run the *.3dsx* version of the app. I made a few changes to have a better usability with Citra. As for now, you can only use properly PID Checker and Capture Probability Calculator, because http functions are unimplemented on Citra. To scroll properly values on Citra, just set the program in **SLOW mode**.
 
-
-
-**Is this a hacking application? NOPE.**
-
-It just allows you to stay updated on things and check validity of other things, it doesn't allow to do nothing on your game cartridge, nor to steal events or codes.
-
 **What will come next?**
 
+* **.wc6 download and injection directly from the 3DS**
 * Much more informations related to PID checking;
 * Capture probability calculation support for I-II gens;
 * Regular updates to the Event Database.
 
 Tell me if you like this work and what you would have featured in the next update! :)
  
-*Thanks Shai for the icon :)*
+*Thanks Shai for the icon and Fabrizio for the name!*
 
 # How to compile it?
 
-With [this commit](https://github.com/BernardoGiordano/ECITool/commit/b4f8d598b1e550b3cb897afa58ba9ffdaed82651) i upgraded some functions to latest ctrulib commit. It causes system error by the way, so you can help me in finding the bug. If you want to compile it with ctrulib 1.1.0 is everything fine and you only need to revert this commit in the source code.
+Use latest **ctrulib** and devKitArm.

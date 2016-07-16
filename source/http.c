@@ -262,8 +262,10 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 	printf("\nKOR - South Korea");
 	printf("\nALL - All regions available\n");
 	printf("----------------------------------------");
+	/*
 	printf("Press SELECT to download and inject in  OR/AS save\n");
 	printf("----------------------------------------");
+	*/
 	printf("\x1b[29;10HPress A to continue.");
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
@@ -277,6 +279,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 		if (kDown & KEY_A) 
 			break; 	
 
+		/*
 		if (kDown & KEY_SELECT) {
 			//consoleSelect(&topScreen);
 			fsInit();
@@ -378,6 +381,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 			httpcExit();
 			fsExit();
 		}
+		*/
 	}
 	return 0;
 }
