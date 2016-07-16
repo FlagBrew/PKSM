@@ -365,7 +365,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 			fclose(fptr1);
 			
 
-			memcpy((void*)(mainbuf+118008), (const void*)wc6buf, 264);
+			memcpy((void*)(mainbuf+118016), (const void*)wc6buf, 264);
 			
 			
 			FILE *fptr2 = fopen("/main", "wb");
