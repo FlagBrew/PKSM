@@ -30,10 +30,10 @@ void refreshDB(int currentEntry, PrintConsole topScreen, char *lista[], int N, i
 void update(PrintConsole topScreen, PrintConsole bottomScreen) {
 	char *ciaUrl = "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/EventAssistant/EventAssistant.cia";
 	char *hblUrl = "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/EventAssistant/3ds/EventAssistant/EventAssistant.3dsx";
-	char *smdhUrl = "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/EventAssistant/3ds/EventAssistant/EventAssistant.sdmh";
+	char *smdhUrl = "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/EventAssistant/3ds/EventAssistant/EventAssistant.smdh";
 	char *ciaPath = "/EventAssistant.cia";
 	char *hblPath = "/3ds/EventAssistant/EventAssistant.3dsx";
-	char *smdhPath = "/3ds/EventAssistant/EventAssistant.sdmh";
+	char *smdhPath = "/3ds/EventAssistant/EventAssistant.smdh";
 	
 	Result ret = 0;
 	consoleSelect(&topScreen);
@@ -55,8 +55,8 @@ void update(PrintConsole topScreen, PrintConsole bottomScreen) {
 	ret = downloadFile(topScreen, bottomScreen, smdhUrl, smdhPath);
 	consoleSelect(&topScreen);
 	if (ret == 0) 
-		printf("\nDownload of EventAssistant.sdmh \x1b[32msucceded!\x1b[0m\n\n");
-	else printf("\nDownload of EventAssistant.sdmh \x1b[31mfailed.\x1b[0m\nPlease report the issue to the dev.\n\n");
+		printf("\nDownload of EventAssistant.smdh \x1b[32msucceded!\x1b[0m\n\n");
+	else printf("\nDownload of EventAssistant.smdh \x1b[31mfailed.\x1b[0m\nPlease report the issue to the dev.\n\n");
 	
 	printf("\x1b[29;15HPress Start to exit.");
 	httpcExit();
@@ -66,9 +66,7 @@ void update(PrintConsole topScreen, PrintConsole bottomScreen) {
 		gspWaitForVBlank();
 		hidScanInput();
 
-		u32 kDown = hidKeysDown();
-
-		if (kDown & KEY_START) 
+		if (hidKeysDown() & KEY_START) 
 			break; 
 		
 		gfxFlushBuffers();
