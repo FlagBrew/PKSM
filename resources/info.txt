@@ -3,6 +3,7 @@
 - Resources are now downloaded from github
 - Event database updated
 - General enhancements
+- Auto updating
 
 --------------------------------------------------
 ** Database News **
