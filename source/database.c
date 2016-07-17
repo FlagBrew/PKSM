@@ -24,7 +24,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("L/R - Switch page\n");
 	printf("A - Open/close entry\n");
 	printf("----------------------------------------");
-	printf("\n\nSpecial thanks to:\n\n* Simona Mastroianni\n* Federico Leuzzi\n* Shai Raba'\n* Cosimo Vivoli");
+	printf("\nSpecial thanks to:\n\n* Kaphotics\n* Hamcha\n* LiquidFenrir\n* Simona Mastroianni\n* Federico Leuzzi\n* Shai Raba'\n* Cosimo Vivoli\n* all the guys @ 3dshacks' discord");
 	printf("\x1b[27;0H    Please check your connection....");
 	printf("\x1b[29;12HPress B to exit.");
 	
@@ -85,6 +85,10 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 			printf("L/R - Switch page\n");
 			printf("A - Open/close entry\n");
 			printf("----------------------------------------");
+			if (ret == 1) {
+				printf("\x1b[6;0HInjection went well!");
+			}
+			else if (ret == -1) printf("\x1b[6;0HAn error occurred during injection.");
 			printf("\x1b[27;0H    Please check your connection....");
 			printf("\x1b[29;12HPress B to exit.");			
 			consoleSelect(&topScreen);

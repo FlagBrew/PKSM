@@ -279,18 +279,17 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
 		hidScanInput();
-
-		u32 kDown = hidKeysDown();
-		if (kDown & KEY_A) 
+		
+		if (hidKeysDown() & KEY_A) 
 			break; 	
 		
-		if (kDown & KEY_SELECT) {
+		if (hidKeysDown() & KEY_SELECT) {
 			if (langCont < 6) langCont++;
 			else if (langCont == 6) langCont = 0;
 			printf("\x1b[11;0HLanguage selected: \x1b[32m%s\x1b[0m", language[langCont]);
 		}
 
-		if (kDown & KEY_START) {
+		if (hidKeysDown() & KEY_START) {
 			fsInit();
 			httpcInit(0);
 			
@@ -334,19 +333,19 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 			ret = httpcOpenContext(&context, HTTPC_METHOD_GET, wc6url, 0);
 			if (ret != 0) {
 				printf("Error in: \x1b[31mhttpcOpenContext\x1b[0m. Return: %lx\n", ret);
-				return ret;
+				return -1;
 			}
 			
 			ret = httpcAddRequestHeaderField(&context, "User-Agent", "EventAssistant");
 			if (ret != 0) {
 				printf("Error in: \x1b[31mhttpcAddRequestHeaderField\x1b[0m. Return: %lx\n", ret);
-				return ret;
+				return -1;
 			}
 			
 			ret = httpcSetSSLOpt(&context, 1<<9);
 			if (ret != 0) {
 				printf("Error in: \x1b[31mhttpcSetSSLOpt\x1b[0m. Return: %lx\n", ret);
-				return ret;
+				return -1;
 			}
 			
 			httpcAddTrustedRootCA(&context, cybertrust_cer, cybertrust_cer_len);
@@ -355,28 +354,28 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 			ret = httpcBeginRequest(&context);
 			if(ret != 0) {
 				printf("Error in: \x1b[31mhttpcBeginRequest\x1b[0m. Return: %lx\n", ret);
-				return ret;
+				return -1;
 			}
 			
 			ret = httpcGetResponseStatusCode(&context, &statuscode, 0);
 			if (ret != 0) {
 				printf("Error in: \x1b[31mhttpcGetResponseStatusCode\x1b[0m. Return: %lx\n", ret);
 				httpcCloseContext(&context);
-				return ret;
+				return -1;
 			}
 			
 			ret = httpcGetDownloadSizeState(&context, NULL, &contentsize);
 			if (ret != 0) {
 				printf("Error in: \x1b[31mhttpcGetDownloadSizeState\x1b[0m. Return: %lx\n", ret);
 				httpcCloseContext(&context);
-				return ret;
+				return -1;
 			}
 			
 			u8 *wc6buf;
 			wc6buf = (u8*)malloc(contentsize);
 			if (wc6buf == NULL) {
 				printf("\x1b[31mFailure to malloc buffer\x1b[0m.\n");
-				return -2;
+				return -1;
 			}
 			memset(wc6buf, 0, contentsize);
 			
@@ -385,13 +384,13 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 				free(wc6buf);
 				printf("Error in: \x1b[31mhttpcDownloadData\x1b[0m. Return: %lx\n", ret);
 				httpcCloseContext(&context);
-				return ret;
+				return -1;
 			}
 			
 			//reading main
 			FILE *fptr = fopen("/main", "rt");
 			if (fptr == NULL) {
-				return -3;
+				return -1;
 			}
 			fseek(fptr, 0, SEEK_END);
 			u32 mainsize = ftell(fptr);
@@ -432,7 +431,11 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 			httpcCloseContext(&context);
 			httpcExit();
 			fsExit();
+			return 1;
 		}
+		
+		gfxFlushBuffers();
+		gfxSwapBuffers();
 	}
 	return 0;
 }
