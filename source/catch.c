@@ -220,49 +220,28 @@ void catchrate(PrintConsole topScreen, PrintConsole bottomScreen) {
 					if (number[posizione[0]] > 0) {
 						number[posizione[0]]--;
 						check(number);
-						refresh = 1;
 					}
 				}
 				if (posizione[0] == 3) {
-					if (gen > 3) {
-						gen--;
-						refresh = 1;
-					}
+					if (gen > 3) gen--;
 				}
 				if (posizione[0] == 4) {
-					if (HP_perc > 1) {
-						HP_perc -= 1;
-						refresh = 1;
-					}
-					else if (HP_perc == 1) {
-						HP_perc = 100;
-						refresh = 1;				
-					}
+					if (HP_perc > 1) HP_perc -= 1;
+					else if (HP_perc == 1) HP_perc = 100;
 				}
 				if (posizione[0] == 5) {
-					if (bonusindex > 0) {
-						bonusindex--;
-						refresh = 1;
-					}
+					if (bonusindex > 0) bonusindex--;
 				}
 				if (posizione[0] == 6) {
-					if (statusindex > 0) {
-						statusindex--;
-						refresh = 1;
-					}
+					if (statusindex > 0) statusindex--;
 				}
 				if (posizione[0] == 7) {
-					if (r > 1) {
-						r--;
-						refresh = 1;
-					}
+					if (r > 1) r--;
 				}
 				if (posizione[0] == 8) {
-					if (captureOindex > 0) {
-						captureOindex--;
-						refresh = 1;
-					}
+					if (captureOindex > 0) captureOindex--;
 				}
+				refresh = 1;
 			}
 		}
 		
@@ -272,56 +251,34 @@ void catchrate(PrintConsole topScreen, PrintConsole bottomScreen) {
 					if (number[posizione[0]] < 9) {
 						number[posizione[0]]++;
 						check(number);
-						refresh = 1;
 					}
 				}
 				if (posizione[0] == 1 || posizione[0] == 2) {
 					if (number[posizione[0]] < 9) {
 						number[posizione[0]]++;
 						check(number);
-						refresh = 1;
 					}
 				}
 				if (posizione[0] == 3) {
-					if (gen < 6) {
-						gen++;
-						refresh = 1;
-					}
+					if (gen < 6) gen++;
 				}
 				if (posizione[0] == 4) {
-					if (HP_perc < 100) {
-						HP_perc += 1;
-						refresh = 1;
-					}
-					else if (HP_perc == 100) {
-						HP_perc = 1;
-						refresh = 1;
-					}
+					if (HP_perc < 100) HP_perc += 1;
+					else if (HP_perc == 100) HP_perc = 1;
 				}
 				if (posizione[0] == 5) {
-					if (bonusindex < 8) {
-						bonusindex++;
-						refresh = 1;
-					}
+					if (bonusindex < 8) bonusindex++;
 				}
 				if (posizione[0] == 6) {
-					if (statusindex < 3) {
-						statusindex++;
-						refresh = 1;
-					}
+					if (statusindex < 3) statusindex++;
 				}
 				if (posizione[0] == 7) {
-					if (r < 200) {
-						r++;
-						refresh = 1;
-					}
+					if (r < 200) r++;
 				}
 				if (posizione[0] == 8) {
-					if (captureOindex < 3) {
-						captureOindex++;
-						refresh = 1;
-					}
+					if (captureOindex < 3) captureOindex++;
 				}
+				refresh = 1;
 			}
 			
 			if ((kDown & KEY_DDOWN) ^ (hidKeysHeld() & KEY_DDOWN && t_frame % DELAY == 1)) {
@@ -329,49 +286,28 @@ void catchrate(PrintConsole topScreen, PrintConsole bottomScreen) {
 					if (number[posizione[0]] > 0) {
 						number[posizione[0]]--;
 						check(number);
-						refresh = 1;
 					}
 				}
 				if (posizione[0] == 3) {
-					if (gen > 3) {
-						gen--;
-						refresh = 1;
-					}
+					if (gen > 3) gen--;
 				}
 				if (posizione[0] == 4) {
-					if (HP_perc > 1) {
-						HP_perc -= 1;
-						refresh = 1;
-					}
-					else if (HP_perc == 1) {
-						HP_perc = 100;
-						refresh = 1;				
-					}
+					if (HP_perc > 1) HP_perc -= 1;
+					else if (HP_perc == 1) HP_perc = 100;
 				}
 				if (posizione[0] == 5) {
-					if (bonusindex > 0) {
-						bonusindex--;
-						refresh = 1;
-					}
+					if (bonusindex > 0) bonusindex--;
 				}
 				if (posizione[0] == 6) {
-					if (statusindex > 0) {
-						statusindex--;
-						refresh = 1;
-					}
+					if (statusindex > 0) statusindex--;
 				}
 				if (posizione[0] == 7) {
-					if (r > 1) {
-						r--;
-						refresh = 1;
-					}
+					if (r > 1) r--;
 				}
 				if (posizione[0] == 8) {
-					if (captureOindex > 0) {
-						captureOindex--;
-						refresh = 1;
-					}
+					if (captureOindex > 0) captureOindex--;
 				}
+				refresh = 1;
 			}
 		}
 		

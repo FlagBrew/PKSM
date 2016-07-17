@@ -253,6 +253,10 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
 }
 
 Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int i) {
+
+	char *language[7] = {"ENG", "JPN", "ITA", "FRE", "SPA", "GER", "KOR"};
+	int langCont = 0;
+	
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
 	printf("----------------------------------------");
@@ -262,13 +266,16 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 	printf("\nKOR - South Korea");
 	printf("\nALL - All regions available\n");
 	printf("----------------------------------------");
-	printf("Press SELECT to download and inject in  OR/AS save\n");
+	printf("Press SELECT to change language\n");
+	printf("Press START to inject in OR/AS\n");
 	printf("----------------------------------------");
+	printf("\x1b[11;0HLanguage selected: \x1b[32m%s\x1b[0m", language[langCont]);
 	printf("\x1b[29;10HPress A to continue.");
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
 	getText(topScreen, bottomScreen, url);
 	
+	consoleSelect(&bottomScreen);
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
 		hidScanInput();
@@ -276,9 +283,14 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 		u32 kDown = hidKeysDown();
 		if (kDown & KEY_A) 
 			break; 	
-
+		
 		if (kDown & KEY_SELECT) {
-			//consoleSelect(&topScreen);
+			if (langCont < 6) langCont++;
+			else if (langCont == 6) langCont = 0;
+			printf("\x1b[11;0HLanguage selected: \x1b[32m%s\x1b[0m", language[langCont]);
+		}
+
+		if (kDown & KEY_START) {
 			fsInit();
 			httpcInit(0);
 			
@@ -288,7 +300,36 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 			u32 contentsize = 0;
 			
 			char *wc6url = (char*)malloc(100*sizeof(char));
-			snprintf(wc6url, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/%d.wc6", i);
+			switch (langCont) {
+				case 0 : {
+					snprintf(wc6url, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/eng/%d.wc6", i);
+					break;
+				}
+				case 1 : {
+					snprintf(wc6url, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/jpn/%d.wc6", i);
+					break;
+				}
+				case 2 : {
+					snprintf(wc6url, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/ita/%d.wc6", i);
+					break;
+				}
+				case 3 : {
+					snprintf(wc6url, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/fre/%d.wc6", i);
+					break;
+				}
+				case 4 : {
+					snprintf(wc6url, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/spa/%d.wc6", i);
+					break;
+				}
+				case 5 : {
+					snprintf(wc6url, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/ger/%d.wc6", i);
+					break;
+				}
+				case 6 : {
+					snprintf(wc6url, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/kor/%d.wc6", i);
+					break;
+				}
+			}
 					
 			ret = httpcOpenContext(&context, HTTPC_METHOD_GET, wc6url, 0);
 			if (ret != 0) {
