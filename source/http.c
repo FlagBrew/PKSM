@@ -367,9 +367,9 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 
 			memcpy((void*)(mainbuf+118016), (const void*)wc6buf, 264);
 			
-			//updating checksums for 0x1E690 - 0x1CC00
-			u8 blockCount = 6800; // 0x1E690 - 0x1CC00
-			u32 csoff = 0x1CC00;
+			//updating checksums 
+			u8 blockCount = 58;
+			u32 csoff = 0x7B21A - 0x5400;
 
 			u8* tmp = (u8*)malloc(0x35000*sizeof(u8));
 			u16 cs;
@@ -378,20 +378,6 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 
 			for (u32 i = 0; i < blockCount; i++) {
 				memcpy(tmp, mainbuf + CHKOffset(i), CHKLength(i));
-				cs = ccitt16(tmp, CHKLength(i));
-				memcpy(mainbuf + csoff + i * 8, &cs, 2);
-			}
-
-			//updating 483170 and 483171
-			blockCount = 2;
-			csoff = 0x75f62;
-
-			u8* tmp2 = (u8*)malloc(0x35000*sizeof(u8));
-
-			if (!tmp2) return -1;
-
-			for (u32 i = 0; i < blockCount; i++) {
-				memcpy(tmp2, mainbuf + CHKOffset(i), CHKLength(i));
 				cs = ccitt16(tmp, CHKLength(i));
 				memcpy(mainbuf + csoff + i * 8, &cs, 2);
 			}
