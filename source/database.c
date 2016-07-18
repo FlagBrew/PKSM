@@ -85,10 +85,19 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 			printf("L/R - Switch page\n");
 			printf("A - Open/close entry\n");
 			printf("----------------------------------------");
-			if (ret == 1) {
-				printf("\x1b[6;0HInjection went well!");
-			}
-			else if (ret == -1) printf("\x1b[6;0HAn error occurred during injection.");
+			
+			if (ret == 1) printf("\x1b[6;0H\x1b[32mInjection went well!\x1b[0m");
+			else if (ret == -1) printf("\x1b[6;0HAn error occurred during injection.\n/3ds/EventAssistant/data/main not found.");
+			else if (ret == -2) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcOpenContext\x1b[0m.");
+			else if (ret == -3) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcAddRequestHeaderField\x1b[0m.");
+			else if (ret == -4) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcSetSSLOpt\x1b[0m.");
+			else if (ret == -5) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcBeginRequest\x1b[0m.");
+			else if (ret == -6) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mFile not available\x1b[0m.");
+			else if (ret == -7) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcGetDownloadSizeState\x1b[0m.");
+			else if (ret == -8) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mFailure to malloc wc6 buffer\x1b[0m.");
+			else if (ret == -9) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcDownloadData\x1b[0m.");
+			else if (ret == -10) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mFailure to malloc temp chk var\x1b[0m."); 		
+			
 			printf("\x1b[27;0H    Please check your connection....");
 			printf("\x1b[29;12HPress B to exit.");			
 			consoleSelect(&topScreen);
@@ -108,7 +117,7 @@ void psDates(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("----------------------------------------");
 	printf("Source:\n\x1b[32m/r/pokemontrades/wiki/hackedevents\x1b[0m\n");
 	printf("----------------------------------------");
-	printf("\x1b[29;10HPress A to continue.");	
+	printf("\x1b[29;10HPress A to continue.");
 	
 	printPSdates(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/hacked1.txt", 1);
 	printPSdates(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/hacked2.txt", 2);

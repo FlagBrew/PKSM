@@ -270,6 +270,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 	printf("Press START to inject in OR/AS\n");
 	printf("----------------------------------------");
 	printf("\x1b[11;0HLanguage selected: \x1b[32m%s\x1b[0m", language[langCont]);
+	printf("\x1b[13;0HYou need to have a \x1b[32mmain\x1b[0m located at\n\x1b[32m/3ds/EventAssistant/data/main\x1b[30.");
 	printf("\x1b[29;10HPress A to continue.");
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
@@ -292,6 +293,22 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 		if (hidKeysDown() & KEY_START) {
 			fsInit();
 			httpcInit(0);
+			
+			//reading main
+			FILE *fptr = fopen("/3ds/EventAssistant/data/main", "rt");
+			if (fptr == NULL) return -1;
+
+			fseek(fptr, 0, SEEK_END);
+			u32 mainsize = ftell(fptr);
+			u8* mainbuf = malloc(mainsize);
+			rewind(fptr);
+			fread(mainbuf, mainsize, 1, fptr);
+			fclose(fptr);
+			
+			//doing backup
+			FILE *fptr1 = fopen("/3ds/EventAssistant/data/main.bak", "wb");
+			fwrite(mainbuf, 1, mainsize, fptr1);
+			fclose(fptr1);
 			
 			httpcContext context;
 			Result ret = 0;
@@ -331,79 +348,43 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 			}
 					
 			ret = httpcOpenContext(&context, HTTPC_METHOD_GET, wc6url, 0);
-			if (ret != 0) {
-				printf("Error in: \x1b[31mhttpcOpenContext\x1b[0m. Return: %lx\n", ret);
-				return -1;
-			}
+			if (ret != 0) return -2;
 			
 			ret = httpcAddRequestHeaderField(&context, "User-Agent", "EventAssistant");
-			if (ret != 0) {
-				printf("Error in: \x1b[31mhttpcAddRequestHeaderField\x1b[0m. Return: %lx\n", ret);
-				return -1;
-			}
+			if (ret != 0) return -3;
 			
 			ret = httpcSetSSLOpt(&context, 1<<9);
-			if (ret != 0) {
-				printf("Error in: \x1b[31mhttpcSetSSLOpt\x1b[0m. Return: %lx\n", ret);
-				return -1;
-			}
+			if (ret != 0) return -4;
 			
 			httpcAddTrustedRootCA(&context, cybertrust_cer, cybertrust_cer_len);
 			httpcAddTrustedRootCA(&context, digicert_cer, digicert_cer_len);
 			
 			ret = httpcBeginRequest(&context);
-			if(ret != 0) {
-				printf("Error in: \x1b[31mhttpcBeginRequest\x1b[0m. Return: %lx\n", ret);
-				return -1;
-			}
+			if(ret != 0) return -5;
 			
 			ret = httpcGetResponseStatusCode(&context, &statuscode, 0);
 			if (ret != 0) {
-				printf("Error in: \x1b[31mhttpcGetResponseStatusCode\x1b[0m. Return: %lx\n", ret);
 				httpcCloseContext(&context);
-				return -1;
+				return -6;
 			}
 			
 			ret = httpcGetDownloadSizeState(&context, NULL, &contentsize);
 			if (ret != 0) {
-				printf("Error in: \x1b[31mhttpcGetDownloadSizeState\x1b[0m. Return: %lx\n", ret);
 				httpcCloseContext(&context);
-				return -1;
+				return -7;
 			}
 			
 			u8 *wc6buf;
 			wc6buf = (u8*)malloc(contentsize);
-			if (wc6buf == NULL) {
-				printf("\x1b[31mFailure to malloc buffer\x1b[0m.\n");
-				return -1;
-			}
+			if (wc6buf == NULL) return -8;
 			memset(wc6buf, 0, contentsize);
 			
 			ret = httpcDownloadData(&context, wc6buf, contentsize, NULL);
 			if(ret != 0) {
 				free(wc6buf);
-				printf("Error in: \x1b[31mhttpcDownloadData\x1b[0m. Return: %lx\n", ret);
 				httpcCloseContext(&context);
-				return -1;
+				return -9;
 			}
-			
-			//reading main
-			FILE *fptr = fopen("/main", "rt");
-			if (fptr == NULL) {
-				return -1;
-			}
-			fseek(fptr, 0, SEEK_END);
-			u32 mainsize = ftell(fptr);
-			u8* mainbuf = malloc(mainsize);
-			rewind(fptr);
-			fread(mainbuf, mainsize, 1, fptr);
-			fclose(fptr);
-			
-			//doing backup
-			FILE *fptr1 = fopen("/main.bak", "wb");
-			fwrite(mainbuf, 1, mainsize, fptr1);
-			fclose(fptr1);
-			
 
 			memcpy((void*)(mainbuf+118016), (const void*)wc6buf, 264);
 			
@@ -414,7 +395,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 			u8* tmp = (u8*)malloc(0x35000*sizeof(u8));
 			u16 cs;
 
-			if (!tmp) return -1;
+			if (!tmp) return -10;
 
 			for (u32 i = 0; i < blockCount; i++) {
 				memcpy(tmp, mainbuf + CHKOffset(i), CHKLength(i));
@@ -422,7 +403,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 				memcpy(mainbuf + csoff + i * 8, &cs, 2);
 			}
 			
-			FILE *fptr2 = fopen("/main", "wb");
+			FILE *fptr2 = fopen("/3ds/EventAssistant/data/main", "wb");
 			fwrite(mainbuf, 1, mainsize, fptr2);
 			fclose(fptr2);
 			free(mainbuf);

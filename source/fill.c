@@ -144,6 +144,7 @@ void filldatabase(char *database[], char *links[]) {
 	database[169] = "0169 - Jarvis's Gengar";
 	database[170] = "0170 - P-Cafe Pikachu (SG)";
 	database[173] = "0173 - HKTW VGC16 Shiny Mewtwo";
+	database[175] = "0175 - HKTW Mew";
 	database[501] = "0501 - Winter2013 Garchomp";
 	database[502] = "0502 - Winter2013 Scizor";
 	database[504] = "0504 - Magmar, Electabuzz";	
@@ -182,6 +183,7 @@ void filldatabase(char *database[], char *links[]) {
 	database[577] = "0577 - Descartes/XYZ Yveltal";
 	database[578] = "0578 - Descartes/XYZ Zygarde";
 	database[580] = "0580 - Screenpeekaz Shiny Machamp";
+	database[586] = "0586 - Play! Mewtwo";
 	database[812] = "0812 - Christmas Stantler";
 	database[1001] = "1001 - Eevee House Sylveon";
 	database[1004] = "1004 - Olleh TV Charizard X/Y";
