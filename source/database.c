@@ -90,7 +90,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 			else if (ret == -3) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcAddRequestHeaderField\x1b[0m.");
 			else if (ret == -4) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcSetSSLOpt\x1b[0m.");
 			else if (ret == -5) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcBeginRequest\x1b[0m.");
-			else if (ret == -6) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mFile not available\x1b[0m.");
+			else if (ret == -6) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mWC6 file not available\x1b[0m.");
 			else if (ret == -7) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcGetDownloadSizeState\x1b[0m.");
 			else if (ret == -8) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mFailure to malloc wc6 buffer\x1b[0m.");
 			else if (ret == -9) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcDownloadData\x1b[0m.");
