@@ -24,7 +24,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("L/R - Switch page\n");
 	printf("A - Open/close entry\n");
 	printf("----------------------------------------");
-	printf("\nSpecial thanks to:\n\n* Kaphotics\n* Hamcha\n* LiquidFenrir\n* Simona Mastroianni\n* Federico Leuzzi\n* Shai Raba'\n* Cosimo Vivoli\n* all the guys @ 3dshacks' discord");
+	printf("\nSpecial thanks to:\n\n* Kaphotics\n* Hamcha\n* gocario\n* LiquidFenrir\n* Simona Mastroianni\n* Federico Leuzzi\n* Shai Raba'\n* Cosimo Vivoli\n* all the guys @3dshacks' discord");
 	printf("\x1b[27;0H    Please check your connection....");
 	printf("\x1b[29;12HPress B to exit.");
 	
@@ -39,12 +39,10 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 		gspWaitForVBlank();
 		hidScanInput();
 		
-		u32 kDown = hidKeysDown();
-		
-		if (kDown & KEY_B)	
+		if (hidKeysDown() & KEY_B)	
 			break;
 		
-		if (kDown & KEY_R) {
+		if (hidKeysDown() & KEY_R) {
 			if (page < MAXPAGES) page++;
 			else if (page == MAXPAGES) page = 0;
 			consoleSelect(&topScreen);	
@@ -53,7 +51,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 			refreshDB(currentEntry, topScreen, database, RIGHE, page);
 		}
 		
-		if (kDown & KEY_L) {
+		if (hidKeysDown() & KEY_L) {
 			if (page > 0) page--;
 			else if (page == 0) page = MAXPAGES;
 			consoleSelect(&topScreen);	
@@ -62,19 +60,19 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 			refreshDB(currentEntry, topScreen, database, RIGHE, page);	
 		}
 		
-		if (kDown & KEY_DUP) {
+		if (hidKeysDown() & KEY_DUP) {
 			if (currentEntry == 0) currentEntry = RIGHE - 1;
 			else if (currentEntry > 0) currentEntry -= 1;
 			refreshDB(currentEntry, topScreen, database, RIGHE, page);
 		}
 		
-		if (kDown & KEY_DDOWN) {
+		if (hidKeysDown() & KEY_DDOWN) {
 			if (currentEntry == RIGHE - 1) currentEntry = 0;
 			else if (currentEntry < RIGHE - 1) currentEntry += 1;
 			refreshDB(currentEntry, topScreen, database, RIGHE, page);			
 		}
 
- 		if (kDown & KEY_A)  {
+ 		if (hidKeysDown() & KEY_A)  {
 			consoleSelect(&topScreen);
 			printf("\x1b[2J");
 			Result ret = printDB(topScreen, bottomScreen, links[currentEntry + page * RIGHE], (currentEntry + page * RIGHE));
@@ -112,18 +110,41 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 }
 
 void psDates(PrintConsole topScreen, PrintConsole bottomScreen) {
+	int i = 0;
+	char *tmpUrl = (char*)malloc(100 * sizeof(char));
+	snprintf(tmpUrl, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/hacked%d.txt", i + 1);
+	
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
 	printf("----------------------------------------");
 	printf("Source:\n\x1b[32m/r/pokemontrades/wiki/hackedevents\x1b[0m\n");
 	printf("----------------------------------------");
-	printf("\x1b[29;10HPress A to continue.");
+	printf("\x1b[29;12HPress B to exit.");
 	
-	printPSdates(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/hacked1.txt", 1);
-	printPSdates(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/hacked2.txt", 2);
-	printPSdates(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/hacked3.txt", 3);
-	printPSdates(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/hacked4.txt", 4);
-	printPSdates(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/hacked5.txt", 5);
-	printPSdates(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/hacked6.txt", 6);
-	printPSdates(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/hacked7.txt", 7);
+	printPSdates(topScreen, bottomScreen, tmpUrl, i + 1);
+
+	while (aptMainLoop()) {
+		gspWaitForVBlank();
+		hidScanInput();
+		
+		if (hidKeysDown() & KEY_B)	
+			break;	
+		
+		if (hidKeysDown() & KEY_R) {
+			if (i < 6) i++;
+			else if (i == 6) i = 0;
+			snprintf(tmpUrl, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/hacked%d.txt", i + 1);
+			printPSdates(topScreen, bottomScreen, tmpUrl, i + 1);
+		}
+
+		if (hidKeysDown() & KEY_L) {
+			if (i > 0) i--;
+			else if (i == 0) i = 6;
+			snprintf(tmpUrl, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/hacked%d.txt", i + 1);
+			printPSdates(topScreen, bottomScreen, tmpUrl, i + 1);
+		}
+
+		gfxFlushBuffers();
+		gfxSwapBuffers();
+	}
 }

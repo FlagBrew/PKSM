@@ -42,9 +42,9 @@ Result http_download(PrintConsole topScreen, PrintConsole bottomScreen, httpcCon
 	gfxSwapBuffers();
 	
 	if (statuscode == 200)
-		printf("\x1b[26;0HStatus: \x1b[32mOKAY                  \x1b[0m");
+		printf("\x1b[26;0HStatus: \x1b[32mOKAY                     \x1b[0m");
 	else 
-		printf("\x1b[26;0HStatus: \x1b[31mFILE NOT AVAILABLE YET\x1b[0m");
+		printf("\x1b[26;0HStatus: \x1b[31mPREVIEW NOT AVAILABLE YET\x1b[0m");
 	
 	gfxFlushBuffers();
 	gfxSwapBuffers();
@@ -140,15 +140,6 @@ void printPSdates(PrintConsole topScreen, PrintConsole bottomScreen, char *url, 
 	consoleSelect(&topScreen);		
 	printf("\x1b[2J");
 	getText(topScreen, bottomScreen, url);
-	
-	while (aptMainLoop()) {
-		gspWaitForVBlank();
-		hidScanInput();
-
-		u32 kDown = hidKeysDown();
-		if (kDown & KEY_A) 
-			break; 			 
-	}
 }
 
 Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url, char* path) {
@@ -266,17 +257,20 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 	printf("\nKOR - South Korea");
 	printf("\nALL - All regions available\n");
 	printf("----------------------------------------");
-	printf("Press SELECT to change language\n");
-	printf("Press START to inject in OR/AS\n");
+	printf("Press \x1b[32mSELECT\x1b[0m to change language\n");
+	printf("Press \x1b[31mSTART\x1b[0m to inject in OR/AS\n");
 	printf("----------------------------------------");
 	printf("\x1b[11;0HLanguage selected: \x1b[32m%s\x1b[0m", language[langCont]);
-	printf("\x1b[13;0HYou need to have a \x1b[32mmain\x1b[0m located at\n\x1b[32m/3ds/EventAssistant/data/main\x1b[30.");
+	printf("\x1b[13;0HYou need to have a \x1b[32mmain\x1b[0m located at\n\x1b[32m/3ds/EventAssistant/data/main\x1b[0m.");
+	printf("\x1b[16;0H----------------------------------------");
+	printf("\x1b[17;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this. This is a new way to inject WC6\nand I need time to perfect it, starting from the fact that WC flags are not\nchecked in this way.");
+	printf("\x1b[24;0H----------------------------------------");
 	printf("\x1b[29;10HPress A to continue.");
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
 	getText(topScreen, bottomScreen, url);
-	
 	consoleSelect(&bottomScreen);
+
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
 		hidScanInput();
@@ -360,7 +354,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 			httpcAddTrustedRootCA(&context, digicert_cer, digicert_cer_len);
 			
 			ret = httpcBeginRequest(&context);
-			if(ret != 0) return -5;
+			if (ret != 0) return -5;
 			
 			ret = httpcGetResponseStatusCode(&context, &statuscode, 0);
 			if (ret != 0) {
@@ -368,11 +362,16 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 				return -6;
 			}
 			
+			if (statuscode != 200) 
+				return -6;
+			
 			ret = httpcGetDownloadSizeState(&context, NULL, &contentsize);
 			if (ret != 0) {
 				httpcCloseContext(&context);
 				return -7;
 			}
+			if (contentsize == 0)
+				return -7;
 			
 			u8 *wc6buf;
 			wc6buf = (u8*)malloc(contentsize);
@@ -380,13 +379,13 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 			memset(wc6buf, 0, contentsize);
 			
 			ret = httpcDownloadData(&context, wc6buf, contentsize, NULL);
-			if(ret != 0) {
+			if (ret != 0) {
 				free(wc6buf);
 				httpcCloseContext(&context);
 				return -9;
 			}
 
-			memcpy((void*)(mainbuf+118016), (const void*)wc6buf, 264);
+			memcpy((void*)(mainbuf + 118016), (const void*)wc6buf, 264);
 			
 			//updating checksums 
 			u8 blockCount = 58;

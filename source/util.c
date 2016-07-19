@@ -9,9 +9,9 @@ void refresh(int currentEntry, PrintConsole topScreen, char *lista[], int N) {
 	printf("\x1b[2;0H\x1b[30;0m");
 	for (int i = 0; i < N; i++) {
 		if (i == currentEntry)
-			printf("\x1b[30;32m%s\x1b[0m\n", lista[i]);
+			printf("\x1b[30;32m* %s\x1b[0m\n", lista[i]);
 		else 
-			printf("\x1b[0m%s\n", lista[i]);
+			printf("\x1b[0m* %s\n", lista[i]);
 	}
 }
 
@@ -36,6 +36,7 @@ void update(PrintConsole topScreen, PrintConsole bottomScreen) {
 	char *smdhPath = "/3ds/EventAssistant/EventAssistant.smdh";
 	
 	Result ret = 0;
+	
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
 	printf("\x1b[47;34m                     Updater                      \x1b[0m\n");
