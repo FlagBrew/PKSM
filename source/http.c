@@ -136,7 +136,7 @@ void printDistro(PrintConsole topScreen, PrintConsole bottomScreen, char *url) {
 
 void printPSdates(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int page) {
 	consoleSelect (&bottomScreen);
-	printf("\x1b[5;0HPage %d/7 ", page);
+	printf("\x1b[7;0HPage %d/7 ", page);
 	consoleSelect(&topScreen);		
 	printf("\x1b[2J");
 	getText(topScreen, bottomScreen, url);

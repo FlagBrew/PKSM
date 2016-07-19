@@ -119,6 +119,7 @@ void psDates(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("----------------------------------------");
 	printf("Source:\n\x1b[32m/r/pokemontrades/wiki/hackedevents\x1b[0m\n");
 	printf("----------------------------------------");
+	printf("\nL/R - Switch page");
 	printf("\x1b[29;12HPress B to exit.");
 	
 	printPSdates(topScreen, bottomScreen, tmpUrl, i + 1);

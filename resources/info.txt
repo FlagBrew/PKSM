@@ -1,12 +1,7 @@
 -------------====== What's New ======-------------
-- What's new in 1.4 update:
-- Resources are now downloaded from github
-- Event database updated
+- What's new in 1.5 update:
+- WC6 injection available for OR/AS!
 - General enhancements
-- Auto updating
+- New menu
 
 --------------------------------------------------
-** Database News **
-
-# 0168 Added
-# 0169 Added
