@@ -288,22 +288,6 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 			fsInit();
 			httpcInit(0);
 			
-			//reading main
-			FILE *fptr = fopen("/3ds/EventAssistant/data/main", "rt");
-			if (fptr == NULL) return -1;
-
-			fseek(fptr, 0, SEEK_END);
-			u32 mainsize = ftell(fptr);
-			u8* mainbuf = malloc(mainsize);
-			rewind(fptr);
-			fread(mainbuf, mainsize, 1, fptr);
-			fclose(fptr);
-			
-			//doing backup
-			FILE *fptr1 = fopen("/3ds/EventAssistant/data/main.bak", "wb");
-			fwrite(mainbuf, 1, mainsize, fptr1);
-			fclose(fptr1);
-			
 			httpcContext context;
 			Result ret = 0;
 			u32 statuscode = 0;
@@ -370,8 +354,6 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 				httpcCloseContext(&context);
 				return -7;
 			}
-			if (contentsize == 0)
-				return -7;
 			
 			u8 *wc6buf;
 			wc6buf = (u8*)malloc(contentsize);
@@ -384,7 +366,26 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 				httpcCloseContext(&context);
 				return -9;
 			}
+			
+			//reading main
+			FILE *fptr = fopen("/3ds/EventAssistant/data/main", "rt");
+			if (fptr == NULL) return -1;
 
+			fseek(fptr, 0, SEEK_END);
+			u32 mainsize = ftell(fptr);
+			u8* mainbuf = malloc(mainsize);
+			rewind(fptr);
+			fread(mainbuf, mainsize, 1, fptr);
+			fclose(fptr);
+			
+			//doing backup
+			FILE *fptr1 = fopen("/3ds/EventAssistant/data/main.bak", "wb");
+			fwrite(mainbuf, 1, mainsize, fptr1);
+			fclose(fptr1);
+			
+			//actually modifying the main
+			*(mainbuf + 0x1CC00 + i / 8) |= 0x1 << (i % 8);
+			
 			memcpy((void*)(mainbuf + 118016), (const void*)wc6buf, 264);
 			
 			//updating checksums 
