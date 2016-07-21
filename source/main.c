@@ -14,8 +14,7 @@
 
 void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, char* menuEntries[]){
 	consoleSelect(&bottomScreen);
-	printf("\x1b[26;0HEvent Assistant");
-	printf("\n\nDeveloped by Bernardo Giordano.");
+	printf("\x1b[28;0HEvent Assistant");
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
 	printf("\x1b[47;34m               Event Assistant v%d.%d               \x1b[0m\n", V1, V2);
