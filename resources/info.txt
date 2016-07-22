@@ -1,5 +1,7 @@
 -------------====== What's New ======-------------
-- What's new in 1.5 update:
+- UPDATE to the latest commit version! It actually
+  fixes the issue with wondercard flags!
+
 - WC6 injection available for OR/AS!
 - General enhancements
 - New menu
