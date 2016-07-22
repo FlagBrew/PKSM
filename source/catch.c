@@ -152,35 +152,33 @@ void catchrate(PrintConsole topScreen, PrintConsole bottomScreen) {
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
 		hidScanInput();
-
-		u32 kDown = hidKeysDown();
 		
-		if (kDown & KEY_B)
+		if (hidKeysDown() & KEY_B)
 			break;
 		
-		if (kDown & KEY_R) {
+		if (hidKeysDown() & KEY_R) {
 			speed = 1;
 			showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex, speed);
 		}
 		
-		if (kDown & KEY_L) {
+		if (hidKeysDown() & KEY_L) {
 			speed = 0;
 			showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex, speed);
 		}
 		
-		if ((kDown & KEY_DRIGHT) && (posizione[0] < 8)) {
+		if ((hidKeysDown() & KEY_DRIGHT) && (posizione[0] < 8)) {
 			posCursore(cursore, posizione, 1);
 			showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex, speed);
 			printCursoreC(cursore);
 		}
 		
-		if ((kDown & KEY_DLEFT) && (posizione[0] > 0)) {
+		if ((hidKeysDown() & KEY_DLEFT) && (posizione[0] > 0)) {
 			posCursore(cursore, posizione, -1);
 			showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex, speed);
 			printCursoreC(cursore);
 		}
 		if (speed == 1) {
-			if (kDown & KEY_DUP) {
+			if (hidKeysDown() & KEY_DUP) {
 				if (posizione[0] == 0) {
 					if (number[posizione[0]] < 9) {
 						number[posizione[0]]++;
@@ -215,7 +213,7 @@ void catchrate(PrintConsole topScreen, PrintConsole bottomScreen) {
 				refresh = 1;
 			}
 			
-			if (kDown & KEY_DDOWN) {
+			if (hidKeysDown() & KEY_DDOWN) {
 				if (posizione[0] == 0 || posizione[0] == 1 || posizione[0] == 2) {
 					if (number[posizione[0]] > 0) {
 						number[posizione[0]]--;
@@ -246,7 +244,7 @@ void catchrate(PrintConsole topScreen, PrintConsole bottomScreen) {
 		}
 		
 		if (speed == 0) {
-			if ((kDown & KEY_DUP) ^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)) {
+			if ((hidKeysDown() & KEY_DUP) ^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)) {
 				if (posizione[0] == 0) {
 					if (number[posizione[0]] < 9) {
 						number[posizione[0]]++;
@@ -281,7 +279,7 @@ void catchrate(PrintConsole topScreen, PrintConsole bottomScreen) {
 				refresh = 1;
 			}
 			
-			if ((kDown & KEY_DDOWN) ^ (hidKeysHeld() & KEY_DDOWN && t_frame % DELAY == 1)) {
+			if ((hidKeysDown() & KEY_DDOWN) ^ (hidKeysHeld() & KEY_DDOWN && t_frame % DELAY == 1)) {
 				if (posizione[0] == 0 || posizione[0] == 1 || posizione[0] == 2) {
 					if (number[posizione[0]] > 0) {
 						number[posizione[0]]--;
@@ -311,7 +309,7 @@ void catchrate(PrintConsole topScreen, PrintConsole bottomScreen) {
 			}
 		}
 		
-		if (kDown & KEY_SELECT) {
+		if (hidKeysDown() & KEY_SELECT) {
 			posizione[0] = 0;
 			cursore[0] = '^';
 			for (int i = 1; i < 7; i++)

@@ -41,10 +41,8 @@ int main() {
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
 		hidScanInput();
-
-		u32 kDown = hidKeysDown();
 		
-		if (kDown & KEY_DUP) {
+		if (hidKeysDown() & KEY_DUP) {
 			if (currentEntry == 0) {
 				currentEntry = ENTRIES - 1;
 				refresh(currentEntry, topScreen, menuEntries, ENTRIES);
@@ -55,7 +53,7 @@ int main() {
 			}
 		}
 		
-		if (kDown & KEY_DDOWN) {
+		if (hidKeysDown() & KEY_DDOWN) {
 			if (currentEntry == ENTRIES - 1) {
 				currentEntry = 0;
 				refresh(currentEntry, topScreen, menuEntries, ENTRIES);
@@ -66,7 +64,7 @@ int main() {
 			}
 		}
 		
-		if (kDown & KEY_A) {
+		if (hidKeysDown() & KEY_A) {
 			switch (currentEntry) {
 				case 0 : {
 					eventDatabase(topScreen, bottomScreen);
@@ -151,7 +149,7 @@ int main() {
 			}
 		}
 		
-		if (kDown & KEY_START) 
+		if (hidKeysDown() & KEY_START) 
 			break; 
 		
 		gfxFlushBuffers();

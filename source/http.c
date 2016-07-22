@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <3ds.h>
+#include <time.h>
 #include "util.h"
 #include "certs/cybertrust.h"
 #include "certs/digicert.h"
@@ -128,8 +129,7 @@ void printDistro(PrintConsole topScreen, PrintConsole bottomScreen, char *url) {
 		gspWaitForVBlank();
 		hidScanInput();
 
-		u32 kDown = hidKeysDown();
-		if (kDown & KEY_A) 
+		if (hidKeysDown() & KEY_A) 
 			break; 			 
 	}
 }
@@ -270,11 +270,10 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 	printf("\x1b[2J");
 	getText(topScreen, bottomScreen, url);
 	consoleSelect(&bottomScreen);
-
+	
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
-		hidScanInput();
-		
+		hidScanInput();		
 		if (hidKeysDown() & KEY_A) 
 			break; 	
 		
@@ -294,6 +293,8 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 			u32 contentsize = 0;
 			
 			char *wc6url = (char*)malloc(100*sizeof(char));
+			char *bakPath = (char*)malloc(60*sizeof(char)); 
+			
 			switch (langCont) {
 				case 0 : {
 					snprintf(wc6url, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/eng/%d.wc6", i);
@@ -379,7 +380,8 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 			fclose(fptr);
 			
 			//doing backup
-			FILE *fptr1 = fopen("/3ds/EventAssistant/data/main.bak", "wb");
+			snprintf(bakPath, 60, "/3ds/EventAssistant/data/main_%d.bak", (int)time(NULL));
+			FILE *fptr1 = fopen(bakPath, "wb");
 			fwrite(mainbuf, 1, mainsize, fptr1);
 			fclose(fptr1);
 			
