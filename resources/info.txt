@@ -1,9 +1,8 @@
 -------------====== What's New ======-------------
-- UPDATE to the latest commit version! It actually
-  fixes the issue with wondercard flags!
+- UPDATE to v1.6!
 
-- WC6 injection available for OR/AS!
+- WC6 injection available for XY too!
+- Received flag issue fixed
 - General enhancements
-- New menu
 
 --------------------------------------------------

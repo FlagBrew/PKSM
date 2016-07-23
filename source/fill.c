@@ -37,10 +37,10 @@ void filldatabase(char *database[], char *links[]) {
 	database[1] = "0001 - Birthday Eeveelutions and Pikachu";
 	database[2] = "0002 - CoroCoro Garchomp";
 	database[3] = "0003 - PC Tokyo Bay Inkay";
-	database[4] = "0004 - Tretta Wobbuffet";
+	database[4] = "0004 - Nuketta Wobbuffet";
 	database[11] = "0011 - Alternate Event Garchomp";
 	database[12] = "0012 - Eevee House Sylveon";
-	database[15] = "0015 - Charizard X/Y";
+	database[15] = "0015 - CoroCoro Charizard X/Y";
 	database[17] = "0017 - Garchomp";
 	database[19] = "0019 - PC Scizor";
 	database[20] = "0020 - PC Gengar";
