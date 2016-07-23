@@ -247,6 +247,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 
 	char *language[7] = {"ENG", "JPN", "ITA", "FRE", "SPA", "GER", "KOR"};
 	int langCont = 0;
+	int game = 1;
 	
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
@@ -257,10 +258,13 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 	printf("\nKOR - South Korea");
 	printf("\nALL - All regions available\n");
 	printf("----------------------------------------");
-	printf("Press \x1b[32mSELECT\x1b[0m to change language\n");
-	printf("Press \x1b[31mSTART\x1b[0m to inject in OR/AS\n");
+	printf("\x1b[32mSELECT\x1b[0m: change language | \x1b[32mB\x1b[0m: switch mode");
+	printf("\x1b[31mSTART\x1b[0m: inject in selected save\n");
 	printf("----------------------------------------");
-	printf("\x1b[11;0HLanguage selected: \x1b[32m%s\x1b[0m", language[langCont]);
+	if (game == 0) 
+		printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mXY  \x1b[0m", language[langCont]);
+	else if (game == 1)
+		printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mORAS\x1b[0m", language[langCont]);
 	printf("\x1b[13;0HYou need to have a \x1b[32mmain\x1b[0m located at\n\x1b[32m/3ds/EventAssistant/data/main\x1b[0m.");
 	printf("\x1b[16;0H----------------------------------------");
 	printf("\x1b[17;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this. This is a new way to inject WC6\nand I need time to perfect it, starting from the fact that WC flags are not\nchecked in this way.");
@@ -273,14 +277,29 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 	
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
-		hidScanInput();		
+		hidScanInput();	
+		
 		if (hidKeysDown() & KEY_A) 
 			break; 	
+		
+		if (hidKeysDown() & KEY_B) {
+			if (game == 1) game = 0;
+			else if (game == 0) game = 1;
+			
+			if (game == 0) 
+				printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mXY  \x1b[0m", language[langCont]);
+			else if (game == 1)
+				printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mORAS\x1b[0m", language[langCont]);
+		}
 		
 		if (hidKeysDown() & KEY_SELECT) {
 			if (langCont < 6) langCont++;
 			else if (langCont == 6) langCont = 0;
-			printf("\x1b[11;0HLanguage selected: \x1b[32m%s\x1b[0m", language[langCont]);
+			
+			if (game == 0) 
+				printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mXY  \x1b[0m", language[langCont]);
+			else if (game == 1)
+				printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mORAS\x1b[0m", language[langCont]);
 		}
 
 		if (hidKeysDown() & KEY_START) {
@@ -385,29 +404,14 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 			fwrite(mainbuf, 1, mainsize, fptr1);
 			fclose(fptr1);
 			
-			//actually modifying the main
-			*(mainbuf + 0x1CC00 + i / 8) |= 0x1 << (i % 8);
-			
-			memcpy((void*)(mainbuf + 118016), (const void*)wc6buf, 264);
-			
-			//updating checksums 
-			u8 blockCount = 58;
-			u32 csoff = 0x7B21A - 0x5400;
-
-			u8* tmp = (u8*)malloc(0x35000*sizeof(u8));
-			u16 cs;
-
-			if (!tmp) return -10;
-
-			for (u32 i = 0; i < blockCount; i++) {
-				memcpy(tmp, mainbuf + CHKOffset(i), CHKLength(i));
-				cs = ccitt16(tmp, CHKLength(i));
-				memcpy(mainbuf + csoff + i * 8, &cs, 2);
-			}
+			int rwCHK = rewriteCHK(mainbuf, wc6buf, game, i);
+			if (rwCHK != 0) 
+				return rwCHK;
 			
 			FILE *fptr2 = fopen("/3ds/EventAssistant/data/main", "wb");
 			fwrite(mainbuf, 1, mainsize, fptr2);
 			fclose(fptr2);
+			
 			free(mainbuf);
 			free(wc6buf);
 			
