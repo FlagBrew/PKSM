@@ -102,7 +102,7 @@ void getText(PrintConsole topScreen, PrintConsole bottomScreen, char *url) {
 	gfxSwapBuffers();
 	
 	if (ret == 0) {
-		printf("\x1b[25;0HDownloading...");
+		printf("\x1b[25;0HDownloading textual preview...");
 		ret = http_download(topScreen, bottomScreen, &context);
 		gfxFlushBuffers();
 		httpcCloseContext(&context);
@@ -243,10 +243,9 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
 	return 0;
 }
 
-Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int i) {
+Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int i, int nInjected[], int game[]) {
 	char *language[7] = {"ENG", "JPN", "ITA", "FRE", "SPA", "GER", "KOR"};
 	int langCont = 0;
-	int game = 1;
 	
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
@@ -257,17 +256,21 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 	printf("\nKOR - South Korea");
 	printf("\nALL - All regions available\n");
 	printf("----------------------------------------");
-	printf("\x1b[32mSELECT\x1b[0m: change language | \x1b[32mB\x1b[0m: switch mode");
+	printf("\x1b[32mSELECT\x1b[0m: change language | \x1b[32mB\x1b[0m: switch game");
 	printf("\x1b[31mSTART\x1b[0m: inject in selected save\n");
 	printf("----------------------------------------");
-	if (game == 0) 
-		printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mXY  \x1b[0m", language[langCont]);
-	else if (game == 1)
-		printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mORAS\x1b[0m", language[langCont]);
+	if (game[0] == 0) 
+		printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mX   \x1b[0m", language[langCont]);
+	else if (game[0] == 1)
+		printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mY   \x1b[0m", language[langCont]);
+	else if (game[0] == 2)
+		printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mOR  \x1b[0m", language[langCont]);
+	else if (game[0] == 3)
+		printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mAS  \x1b[0m", language[langCont]);
 	printf("\x1b[13;0HYou need to have a \x1b[32mmain\x1b[0m located at\n\x1b[32m/3ds/EventAssistant/data/main\x1b[0m.");
 	printf("\x1b[16;0H----------------------------------------");
-	printf("\x1b[17;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this. This is a new way to inject WC6\nand I need time to perfect it, starting from the fact that WC flags are not\nchecked in this way.");
-	printf("\x1b[24;0H----------------------------------------");
+	printf("\x1b[17;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this. This is a new way to inject WC6\nand I need time to perfect it.");
+	printf("\x1b[22;0H----------------------------------------");
 	printf("\x1b[29;10HPress A to continue.");
 	consoleSelect(&topScreen);
 	printf("\x1b[2JLanguages available: ");
@@ -345,26 +348,37 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 			break; 	
 		
 		if (hidKeysDown() & KEY_B) {
-			if (game == 1) game = 0;
-			else if (game == 0) game = 1;
+			if (game[0] < 3) game[0] += 1;
+			else if (game[0] == 3) game[0] = 0;
 			
-			if (game == 0) 
-				printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mXY  \x1b[0m", language[langCont]);
-			else if (game == 1)
-				printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mORAS\x1b[0m", language[langCont]);
+		if (game[0] == 0) 
+			printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mX   \x1b[0m", language[langCont]);
+		else if (game[0] == 1)
+			printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mY   \x1b[0m", language[langCont]);
+		else if (game[0] == 2)
+			printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mOR  \x1b[0m", language[langCont]);
+		else if (game[0] == 3)
+			printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mAS  \x1b[0m", language[langCont]);
 		}
 		
 		if (hidKeysDown() & KEY_SELECT) {
 			if (langCont < 6) langCont++;
 			else if (langCont == 6) langCont = 0;
 			
-			if (game == 0) 
-				printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mXY  \x1b[0m", language[langCont]);
-			else if (game == 1)
-				printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mORAS\x1b[0m", language[langCont]);
+		if (game[0] == 0) 
+			printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mX   \x1b[0m", language[langCont]);
+		else if (game[0] == 1)
+			printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mY   \x1b[0m", language[langCont]);
+		else if (game[0] == 2)
+			printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mOR  \x1b[0m", language[langCont]);
+		else if (game[0] == 3)
+			printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mAS  \x1b[0m", language[langCont]);
 		}
 
 		if (hidKeysDown() & KEY_START) {
+			if (nInjected[0] == 23)
+				return -11;
+			
 			fsInit();
 			httpcInit(0);
 			
@@ -374,7 +388,8 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 			u32 contentsize = 0;
 			
 			char *wc6url = (char*)malloc(100*sizeof(char));
-			char *bakPath = (char*)malloc(60*sizeof(char)); 
+			char *path[4] = {"/JKSV/Saves/Pokémon_X/EventAssistant/main", "/JKSV/Saves/Pokémon_Y/EventAssistant/main", "/JKSV/Saves/Pokémon_Omega_Ruby/EventAssistant/main", "/JKSV/Saves/Pokémon_Alpha_Sapphire/EventAssistant/main"};
+			char *bakPath[4] = {"/JKSV/Saves/Pokémon_X/EventAssistant/main.bak", "/JKSV/Saves/Pokémon_Y/EventAssistant/main.bak", "/JKSV/Saves/Pokémon_Omega_Ruby/EventAssistant/main.bak", "/JKSV/Saves/Pokémon_Alpha_Sapphire/EventAssistant/main.bak"};
 			
 			switch (langCont) {
 				case 0 : {
@@ -450,9 +465,8 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 			}
 			
 			//reading main
-			FILE *fptr = fopen("/3ds/EventAssistant/data/main", "rt");
+			FILE *fptr = fopen(path[game[0]], "rt");
 			if (fptr == NULL) return -1;
-
 			fseek(fptr, 0, SEEK_END);
 			u32 mainsize = ftell(fptr);
 			u8* mainbuf = malloc(mainsize);
@@ -461,16 +475,15 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 			fclose(fptr);
 			
 			//doing backup
-			snprintf(bakPath, 60, "/3ds/EventAssistant/data/main_%d.bak", (int)time(NULL));
-			FILE *fptr1 = fopen(bakPath, "wb");
+			FILE *fptr1 = fopen(bakPath[game[0]], "wb");
 			fwrite(mainbuf, 1, mainsize, fptr1);
 			fclose(fptr1);
 			
-			int rwCHK = rewriteCHK(mainbuf, wc6buf, game, i);
+			int rwCHK = rewriteCHK(mainbuf, wc6buf, game[0], i, nInjected);
 			if (rwCHK != 0) 
 				return rwCHK;
 			
-			FILE *fptr2 = fopen("/3ds/EventAssistant/data/main", "wb");
+			FILE *fptr2 = fopen(path[game[0]], "wb");
 			fwrite(mainbuf, 1, mainsize, fptr2);
 			fclose(fptr2);
 			
