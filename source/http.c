@@ -333,6 +333,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 	}	
 	
 	printf("\n\n");
+	
 	getText(topScreen, bottomScreen, url);
 	consoleSelect(&bottomScreen);
 	
