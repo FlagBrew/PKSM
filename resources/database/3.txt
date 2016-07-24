@@ -11,9 +11,9 @@ OT:            PCTB
 Met:           PC Tokyo Bay (fateful encounter)
 Nature:        Random
 Ribbon:        Premier Ribbon
-Relearn Moves: Celebrate
+Relearn Moves: Happy Hour
 Games:         XY
 Method:        local wireless
 Region:        all
-Duration:      November 22, 2013 to January 26, 2014
-               December 26, 2013 to January 26, 2014
+Duration:      November 22,2013 to January 26,2014
+               December 26,2013 to January 26,2014

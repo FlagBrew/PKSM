@@ -14,4 +14,4 @@ Relearn Moves: -
 Games:         XY
 Method:        serial code
 Region:        Japanese
-Duration:      November 15, 2013 to August 29, 2014
+Duration:      November 15, 2013 to August 29,2014
