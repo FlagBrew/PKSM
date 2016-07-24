@@ -1,0 +1,19 @@
+0003 - Pokemon Center Tokyo Bay Inkay
+
+Pokemon:       Inkay
+Level:         10
+Ability:       Contrary 
+               Suction Cups
+Held Item:     Aspear Berry
+TID:           11223
+SID:           00003
+OT:            PCTB
+Met:           PC Tokyo Bay (fateful encounter)
+Nature:        Random
+Ribbon:        Premier Ribbon
+Relearn Moves: Celebrate
+Games:         XY
+Method:        local wireless
+Region:        all
+Duration:      November 22, 2013 to January 26, 2014
+               December 26, 2013 to January 26, 2014
