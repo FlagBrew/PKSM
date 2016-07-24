@@ -124,7 +124,7 @@ int rewriteCHK(u8 *mainbuf, u8* wc6buf, int game, int i, int nInjected[]) {
 	u8 blockCount = 0;
 	u32 csoff = 0;
 	
-	if (game == 0 || game == 1) {
+	if (game == 2 || game == 3) {
 		blockCount = 58;
 		csoff = 0x7B21A - 0x5400;
 		
@@ -132,7 +132,7 @@ int rewriteCHK(u8 *mainbuf, u8* wc6buf, int game, int i, int nInjected[]) {
 		memcpy((void*)(mainbuf + 0x1CD00 + nInjected[0] * 264), (const void*)wc6buf, 264);
 	}
 	
-	if (game == 2 || game == 3) {
+	if (game == 0 || game == 1) {
 		blockCount = 55;
 		csoff = 0x6A81A - 0x5400;
 		
