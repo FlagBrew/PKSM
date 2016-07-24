@@ -244,7 +244,6 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
 }
 
 Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int i) {
-
 	char *language[7] = {"ENG", "JPN", "ITA", "FRE", "SPA", "GER", "KOR"};
 	int langCont = 0;
 	int game = 1;
@@ -271,9 +270,10 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 	printf("\x1b[24;0H----------------------------------------");
 	printf("\x1b[29;10HPress A to continue.");
 	consoleSelect(&topScreen);
-	printf("\x1b[2JLanguages currently available: ");
-	
-	httpcInit(0);
+	printf("\x1b[2JLanguages available: ");
+
+	gfxFlushBuffers();
+	gfxSwapBuffers();
 	
 	char *testurl = (char*)malloc(100*sizeof(char));
 	for (int j = 0; j < 7; j++) {
@@ -308,6 +308,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 			}
 		}	
 		
+		httpcInit(0);
 		httpcContext context;
 		Result ret = 0;
 		u32 statuscode = 0;
@@ -326,11 +327,12 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 		httpcCloseContext(&context);
 		
 		gfxFlushBuffers();
-		gfxSwapBuffers();		
-	}
+		gfxSwapBuffers();	
+
+		httpcExit();		
+	}	
 	
-	httpcExit();
-	
+	printf("\n\n");
 	getText(topScreen, bottomScreen, url);
 	consoleSelect(&bottomScreen);
 	

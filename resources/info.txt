@@ -1,5 +1,8 @@
 -------------====== What's New ======-------------
-- UPDATE to v1.6!
+- Hotfix available!!! Now the app says which 
+  languages are available! Update from the app!!
+
+- What's new in 1.6:
 
 - WC6 injection available for XY too!
 - Received flag issue fixed
