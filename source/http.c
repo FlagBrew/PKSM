@@ -122,7 +122,7 @@ void printDistro(PrintConsole topScreen, PrintConsole bottomScreen, char *url) {
 	printf("----------------------------------------");
 	printf("\x1b[29;10HPress A to continue.");
 	consoleSelect(&topScreen);		
-	printf("\x1b[2J");
+	printf("\x1b[2J");	
 	getText(topScreen, bottomScreen, url);
 	
 	while (aptMainLoop()) {
@@ -271,7 +271,66 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 	printf("\x1b[24;0H----------------------------------------");
 	printf("\x1b[29;10HPress A to continue.");
 	consoleSelect(&topScreen);
-	printf("\x1b[2J");
+	printf("\x1b[2JLanguages currently available: ");
+	
+	httpcInit(0);
+	
+	char *testurl = (char*)malloc(100*sizeof(char));
+	for (int j = 0; j < 7; j++) {
+		switch (j) {
+			case 0 : {
+				snprintf(testurl, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/eng/%d.wc6", i);
+				break;
+			}
+			case 1 : {
+				snprintf(testurl, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/jpn/%d.wc6", i);
+				break;
+			}
+			case 2 : {
+				snprintf(testurl, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/ita/%d.wc6", i);
+				break;
+			}
+			case 3 : {
+				snprintf(testurl, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/fre/%d.wc6", i);
+				break;
+			}
+			case 4 : {
+				snprintf(testurl, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/spa/%d.wc6", i);
+				break;
+			}
+			case 5 : {
+				snprintf(testurl, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/ger/%d.wc6", i);
+				break;
+			}
+			case 6 : {
+				snprintf(testurl, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/kor/%d.wc6", i);
+				break;
+			}
+		}	
+		
+		httpcContext context;
+		Result ret = 0;
+		u32 statuscode = 0;
+
+		ret = httpcOpenContext(&context, HTTPC_METHOD_GET, testurl, 0);		
+		ret = httpcAddRequestHeaderField(&context, "User-Agent", "EventAssistant");		
+		ret = httpcSetSSLOpt(&context, 1<<9);		
+		httpcAddTrustedRootCA(&context, cybertrust_cer, cybertrust_cer_len);
+		httpcAddTrustedRootCA(&context, digicert_cer, digicert_cer_len);		
+		ret = httpcBeginRequest(&context);		
+		ret = httpcGetResponseStatusCode(&context, &statuscode, 0);
+		
+		if (statuscode == 200) 
+			printf("%s ", language[j]);	
+
+		httpcCloseContext(&context);
+		
+		gfxFlushBuffers();
+		gfxSwapBuffers();		
+	}
+	
+	httpcExit();
+	
 	getText(topScreen, bottomScreen, url);
 	consoleSelect(&bottomScreen);
 	
