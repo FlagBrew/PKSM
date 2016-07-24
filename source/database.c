@@ -16,6 +16,8 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 	
 	int currentEntry = 0;
 	int page = 0;
+	int nInjected[1] = {0};
+	int game[1] = {0};
 	
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
@@ -75,7 +77,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
  		if (hidKeysDown() & KEY_A)  {
 			consoleSelect(&topScreen);
 			printf("\x1b[2J");
-			Result ret = printDB(topScreen, bottomScreen, links[currentEntry + page * RIGHE], (currentEntry + page * RIGHE));
+			Result ret = printDB(topScreen, bottomScreen, links[currentEntry + page * RIGHE], (currentEntry + page * RIGHE), nInjected, game);
 			consoleSelect(&bottomScreen);
 			printf("\x1b[2J");
 			printf("----------------------------------------");
@@ -94,7 +96,8 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 			else if (ret == -7) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcGetDownloadSizeState\x1b[0m.");
 			else if (ret == -8) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mFailure to malloc wc6 buffer\x1b[0m.");
 			else if (ret == -9) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcDownloadData\x1b[0m.");
-			else if (ret == -10) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mFailure to malloc temp chk var\x1b[0m."); 		
+			else if (ret == -10) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mFailure to malloc temp chk var\x1b[0m."); 
+			else if (ret == -11) printf("\x1b[6;0HAn error occurred during injection. \n\x1b[31mReached the maximum number of wc6. Restart.\x1b[0m.");
 			
 			printf("\x1b[27;0H    Please check your connection....");
 			printf("\x1b[29;12HPress B to exit.");			
