@@ -223,7 +223,7 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
 	memset(buf, 0, contentsize);
 	
 	ret = httpcDownloadData(&context, buf, contentsize, NULL);
-	if(ret != 0) {
+	if (ret != 0) {
 		free(buf);
 		printf("Error in: \x1b[31mhttpcDownloadData\x1b[0m. Return: %lx\n", ret);
 		httpcCloseContext(&context);

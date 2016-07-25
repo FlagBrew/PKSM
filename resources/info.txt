@@ -1,11 +1,13 @@
 -------------====== What's New ======-------------
-- Hotfix available!!! Now the app says which 
-  languages are available! Update from the app!!
+- Version 1.8 available!
 
-- What's new in 1.6:
+- What's new in 1.8:
 
-- WC6 injection available for XY too!
-- Received flag issue fixed
-- General enhancements
+- multiple injections per session support!
+- support for JKSV save paths!
+- you can now see which languages are available
+  to inject;
+- built-in FAQ and troubleshooting;
+- general improvements and fixes.
 
 --------------------------------------------------
