@@ -5,7 +5,7 @@ A general purpose tool mostly oriented to event collectors.
 
 **[EventAssistant](https://github.com/BernardoGiordano/EventAssistant/releases): what is this?**
 
-[**EventAssistant**](https://github.com/BernardoGiordano/EventAssistant/releases) is a general purpose pokémon application that can be run on your console or PC (you need *Homebrew Launcher* to launch the *.3dsx* version or CFW to run the *cfw* version on the console, or Citra to run the *.3dsx* version on your PC).
+[**EventAssistant**](https://github.com/BernardoGiordano/EventAssistant/releases) is a general purpose pokémon application that can be run on your console or PC (you need *Homebrew Launcher* to launch the *.3dsx* version or CFW to run the *.cia* version on the console, or Citra to run the *.3dsx* version on your PC).
 
 This application allows you to make some cool things, like:
 
