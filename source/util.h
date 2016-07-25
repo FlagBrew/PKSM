@@ -9,3 +9,4 @@ u32 CHKOffset(u32 i, int game);
 u32 CHKLength(u32 i, int game);
 u16 ccitt16(u8* data, u32 len);
 int rewriteCHK(u8 *mainbuf, u8* wc6buf, int game, int i, int nInjected[]);
+void faq(PrintConsole topScreen, PrintConsole bottomScreen);

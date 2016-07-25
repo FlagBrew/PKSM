@@ -328,12 +328,11 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 		
 		if (statuscode == 200) 
 			printf("%s ", language[j]);	
-
-		httpcCloseContext(&context);
 		
 		gfxFlushBuffers();
-		gfxSwapBuffers();	
+		gfxSwapBuffers();
 
+		httpcCloseContext(&context);
 		httpcExit();		
 	}	
 	

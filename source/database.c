@@ -87,7 +87,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 			printf("----------------------------------------");
 			
 			if (ret == 1) printf("\x1b[6;0H\x1b[32mInjection went well!\x1b[0m");
-			else if (ret == -1) printf("\x1b[6;0HAn error occurred during injection.\n/3ds/EventAssistant/data/main not found.");
+			else if (ret == -1) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[32m/JKSV/Saves/[game]/EventAssistant/main\x1b[0m\nnot found.");
 			else if (ret == -2) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcOpenContext\x1b[0m.");
 			else if (ret == -3) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcAddRequestHeaderField\x1b[0m.");
 			else if (ret == -4) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcSetSSLOpt\x1b[0m.");

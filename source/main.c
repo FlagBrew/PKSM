@@ -7,10 +7,10 @@
 #include "util.h"
 #include "database.h"
 
-#define ENTRIES 9
+#define ENTRIES 10
 
 #define V1 1
-#define V2 7
+#define V2 8
 
 void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, char* menuEntries[]){
 	consoleSelect(&bottomScreen);
@@ -32,7 +32,7 @@ int main() {
 	consoleInit(GFX_TOP, &topScreen);
 	consoleInit(GFX_BOTTOM, &bottomScreen);
 	
-	char *menuEntries[ENTRIES] = {"Gen VI's Event Database", "Wi-Fi distributions", "Code distributions", "Local distributions", "Capture probability calculator", "PID Checker", "Common PS dates database", "Changelog", "Update"};
+	char *menuEntries[ENTRIES] = {"Gen VI's Event Database", "Wi-Fi distributions", "Code distributions", "Local distributions", "Capture probability calculator", "PID Checker", "Common PS dates database", "Changelog", "FAQ & instructions", "Update"};
 	
 	int currentEntry = 0;
 	
@@ -42,6 +42,9 @@ int main() {
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
 		hidScanInput();
+		
+		if (hidKeysDown() & KEY_START) 
+			break; 
 		
 		if (hidKeysDown() & KEY_DUP) {
 			if (currentEntry == 0) {
@@ -138,8 +141,17 @@ int main() {
 					intro(topScreen, bottomScreen, currentEntry, menuEntries);
 					break;					
 				}
-
+				
 				case 8 : {
+					faq(topScreen, bottomScreen);
+					consoleSelect(&bottomScreen);
+					printf("\x1b[2J");
+					consoleSelect(&topScreen);
+					intro(topScreen, bottomScreen, currentEntry, menuEntries);
+					break;
+				}	
+
+				case 9 : {
 					update(topScreen, bottomScreen);
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
@@ -149,9 +161,6 @@ int main() {
 				}				
 			}
 		}
-		
-		if (hidKeysDown() & KEY_START) 
-			break; 
 		
 		gfxFlushBuffers();
 		gfxSwapBuffers();
