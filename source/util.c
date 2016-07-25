@@ -196,7 +196,7 @@ void faq(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("     your SD card first.\n");
 	printf("     Later, you need to export using JKSV the\n");
 	printf("     save that you  want  to inject to,  into\n");
-	printf("     the EventASssistant folder in JKSM path.\n\n");
+	printf("     the EventAssistant  folder in JKSM path.\n\n");
 	printf("     Selecting GEN VI's event database,you're\n");
 	printf("     free to inject no more than 23  wc6 into\n");
 	printf("     the same session.  If  you  change  mode\n");
@@ -204,7 +204,7 @@ void faq(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("     reset and you will  start from the first\n");
 	printf("     location of your save.\n\n");
 	printf("     \x1b[32mExplanation of common errors\x1b[0m\n\n");
-	printf("     - \x1b[31mPreview not available yet\x1b[0m.  It is not\n");
+	printf("     - \x1b[31mPreview not available yet\x1b[0m.   It is not\n");
 	printf("     a bug,  but simply the  textual  preview\n");
 	printf("     for the event you selected doesn't exist\n");
 	printf("     yet  on  my  server.  It  doesn't  touch\n");
@@ -214,13 +214,12 @@ void faq(PrintConsole topScreen, PrintConsole bottomScreen) {
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
 	
-		 printf("- \x1b[31mWC6 not available yet\x1b[0m\n\n");
-		 printf("It means that  wc6 for the  selected tag\n");
-		 printf("doesn't exist yet on my server.  You can\n");
-		 printf("inject a language that is available,  if\n");
-		 printf("there is at least one.");
+		 printf("- \x1b[31mWC6 not available yet\x1b[0m.   It means that");
+		 printf("wc6 for the  selected tag doesn't  exist");
+		 printf("yet  on  my  server. You  can  inject  a");
+		 printf("language that is available,  if there isat least one.");
 		 
-	printf("\x1b[29;15HPress Start to exit.");
+	printf("\x1b[29;10HPress Start to exit.");
 	
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
