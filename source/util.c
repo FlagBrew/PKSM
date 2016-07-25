@@ -37,31 +37,18 @@ void update(PrintConsole topScreen, PrintConsole bottomScreen) {
 	char *smdhPath = "/3ds/EventAssistant/EventAssistant.smdh";
 	
 	Result ret = 0;
+	int type = 0;
+	char* label[2] = {"CIA", "HBL"};
 	
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
 	printf("\x1b[47;34m                     Updater                      \x1b[0m\n");
 	
-	ret = downloadFile(topScreen, bottomScreen, ciaUrl, ciaPath);
-	consoleSelect(&topScreen);
-	if (ret == 0) 
-		printf("\nDownload of EventAssistant.cia \x1b[32msucceded!\x1b[0m Install  it using a CIA manager.\n\n");
-	else printf("\nDownload of EventAssistant.cia \x1b[31mfailed.\x1b[0m\nPlease report the issue to the dev.\n\n");
-	
-	ret = downloadFile(topScreen, bottomScreen, hblUrl, hblPath);
-	consoleSelect(&topScreen);
-	if (ret == 0) 
-		printf("\nDownload of EventAssistant.3dsx \x1b[32msucceded!\x1b[0m Open it using your favourite entrypoint.\n\n");
-	else printf("\nDownload of EventAssistant.3dsx \x1b[31mfailed.\x1b[0m\nPlease report the issue to the dev.\n\n");
-	
-	ret = downloadFile(topScreen, bottomScreen, smdhUrl, smdhPath);
-	consoleSelect(&topScreen);
-	if (ret == 0) 
-		printf("\nDownload of EventAssistant.smdh \x1b[32msucceded!\x1b[0m\n\n");
-	else printf("\nDownload of EventAssistant.smdh \x1b[31mfailed.\x1b[0m\nPlease report the issue to the dev.\n\n");
-	
-	printf("Install and restart the application!");
-	printf("\x1b[29;15HPress Start to exit.");
+	consoleSelect(&bottomScreen);
+	printf("\x1b[2J");
+	printf("\x1b[1;0H\x1b[32mSELECT\x1b[0m: switch type | \x1b[32m%s\x1b[0m", label[type]);
+	printf("\n\x1b[32mSTART\x1b[0m: update");
+	printf("\x1b[29;12HPress B to exit.");
 	httpcExit();
 	fsExit();
 
@@ -69,8 +56,48 @@ void update(PrintConsole topScreen, PrintConsole bottomScreen) {
 		gspWaitForVBlank();
 		hidScanInput();
 
-		if (hidKeysDown() & KEY_START) 
+		if (hidKeysDown() & KEY_B) 
 			break; 
+		
+		if (hidKeysDown() & KEY_SELECT) {
+			if (type == 0) type = 1;
+			else if (type == 1) type = 0;
+			
+			consoleSelect(&bottomScreen);
+			printf("\x1b[1;0H\x1b[32mSELECT\x1b[0m: switch type | \x1b[32m%s\x1b[0m", label[type]);
+		}
+		
+		if (hidKeysDown() & KEY_START) {
+			consoleSelect(&topScreen);
+			printf("\x1b[2J");
+			switch (type) {
+				case 0  : {
+					ret = downloadFile(topScreen, bottomScreen, ciaUrl, ciaPath);
+					consoleSelect(&topScreen);
+					if (ret == 0) 
+						printf("\nDownload of EventAssistant.cia \x1b[32msucceded!\x1b[0m Install  it using a CIA manager.\n\n");
+					else printf("\nDownload of EventAssistant.cia \x1b[31mfailed.\x1b[0m\nPlease report the issue to the dev.\n\n");
+					printf("Install and restart the application!");					
+					break;
+				}
+				
+				case 1 : {
+					ret = downloadFile(topScreen, bottomScreen, hblUrl, hblPath);
+					consoleSelect(&topScreen);
+					if (ret == 0) 
+						printf("\nDownload of EventAssistant.3dsx \x1b[32msucceded!\x1b[0m Open it using your favourite entrypoint.\n\n");
+					else printf("\nDownload of EventAssistant.3dsx \x1b[31mfailed.\x1b[0m\nPlease report the issue to the dev.\n\n");
+					
+					ret = downloadFile(topScreen, bottomScreen, smdhUrl, smdhPath);
+					consoleSelect(&topScreen);
+					if (ret == 0) 
+						printf("\nDownload of EventAssistant.smdh \x1b[32msucceded!\x1b[0m\n\n");
+					else printf("\nDownload of EventAssistant.smdh \x1b[31mfailed.\x1b[0m\nPlease report the issue to the dev.\n\n");
+					printf("Restart the application!");
+					break;
+				}
+			}
+		}
 		
 		gfxFlushBuffers();
 		gfxSwapBuffers();
@@ -192,6 +219,8 @@ void faq(PrintConsole topScreen, PrintConsole bottomScreen) {
 		 printf("doesn't exist yet on my server.  You can\n");
 		 printf("inject a language that is available,  if\n");
 		 printf("there is at least one.");
+		 
+	printf("\x1b[29;15HPress Start to exit.");
 	
 	while (aptMainLoop()) {
 		gspWaitForVBlank();

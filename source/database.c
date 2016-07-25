@@ -22,9 +22,9 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
 	printf("----------------------------------------");
-	printf("\x19\x18 - Move cursor\n");
-	printf("L/R - Switch page\n");
-	printf("A - Open/close entry\n");
+	printf("\x1b[32m\x19\x18\x1b[0m - Move cursor\n");
+	printf("\x1b[32mL/R\x1b[0m - Switch page\n");
+	printf("\x1b[32mA\x1b[0m - Open/close entry\n");
 	printf("----------------------------------------");
 	printf("\nSpecial thanks to:\n\n* Kaphotics\n* Hamcha\n* gocario\n* LiquidFenrir\n* Nba_Yoh\n* Simona Mastroianni\n* Federico Leuzzi\n* Shai Raba'\n* Cosimo Vivoli\n* all the guys @3dshacks' discord");
 	printf("\x1b[27;0H    Please check your connection....");
@@ -81,9 +81,9 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 			consoleSelect(&bottomScreen);
 			printf("\x1b[2J");
 			printf("----------------------------------------");
-			printf("\x19\x18 - Move cursor\n");
-			printf("L/R - Switch page\n");
-			printf("A - Open/close entry\n");
+			printf("\x1b[32m\x19\x18\x1b[0m - Move cursor\n");
+			printf("\x1b[32mL/R\x1b[0m - Switch page\n");
+			printf("\x1b[32mA\x1b[0m - Open/close entry\n");
 			printf("----------------------------------------");
 			
 			if (ret == 1) printf("\x1b[6;0H\x1b[32mInjection went well!\x1b[0m");
@@ -122,7 +122,7 @@ void psDates(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("----------------------------------------");
 	printf("Source:\n\x1b[32m/r/pokemontrades/wiki/hackedevents\x1b[0m\n");
 	printf("----------------------------------------");
-	printf("\nL/R - Switch page");
+	printf("\n\x1b[32mL/R\x1b[0m - Switch page");
 	printf("\x1b[29;12HPress B to exit.");
 	
 	printPSdates(topScreen, bottomScreen, tmpUrl, i + 1);

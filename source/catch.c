@@ -121,10 +121,10 @@ void catchrate(PrintConsole topScreen, PrintConsole bottomScreen) {
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
 	printf("----------------------------------------");
-	printf("\x1A\x1B - Move cursor\n");
-	printf("\x18\x19 - Change values\n");
-	printf("L/R - Change usage mode\n");
-	printf("SELECT - Reset values\n");
+	printf("\x1b[32m\x1A\x1B\x1b[0m - Move cursor\n");
+	printf("\x1b[32m\x18\x19\x1b[0m - Change values\n");
+	printf("\x1b[32mL/R\x1b[0m - Change usage mode\n");
+	printf("\x1b[32mSELECT\x1b[0m - Reset values\n");
 	printf("----------------------------------------");
 	printf("\nSleep, freeze - \x1b[32m2\x1b[0mx (III/IV), \x1b[32m2.5\x1b[0mx (V/VI)");
 	printf("Burn, paralysis, poison - \x1b[32m1.5\x1b[0mx");

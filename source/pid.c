@@ -333,10 +333,10 @@ void PID(PrintConsole topScreen, PrintConsole bottomScreen){
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
 	printf("----------------------------------------");
-	printf("\x1A\x1B - Move cursor\n");
-	printf("\x18\x19 - Change values (0-9/A-F)\n");
-	printf("L/R - Change usage mode\n");
-	printf("SELECT - Reset values\n");
+	printf("\x1b[32m\x1A\x1B\x1b[0m - Move cursor\n");
+	printf("\x1b[32m\x18\x19\x1b[0m - Change values (0-9/A-F)\n");
+	printf("\x1b[32mL/R\x1b[0m - Change usage mode\n");
+	printf("\x1b[32mSELECT\x1b[0m - Reset values\n");
 	printf("----------------------------------------");
 	printf("\x1b[16;0H----------------------------------------");
 	printf("About Characteristic's test:");
