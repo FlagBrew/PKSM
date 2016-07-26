@@ -5,7 +5,7 @@ A general purpose tool mostly oriented to event collectors.
 
 **[EventAssistant](https://github.com/BernardoGiordano/EventAssistant/releases): what is this?**
 
-[**EventAssistant**](https://github.com/BernardoGiordano/EventAssistant/releases) is a general purpose pokémon application that can be run on your console or PC (you need *Homebrew Launcher* to launch the *.3dsx* version or CFW to install the *.cia* version on the console and run it from the home menu, or Citra to run the *.3dsx* version on your PC).
+[**EventAssistant**](https://github.com/BernardoGiordano/EventAssistant/releases) is a general purpose pokémon application that can be run on your console or PC (you need *Homebrew Launcher* to launch the *.3dsx* version or *CFW* to install the *.cia* version on the console and run it from the home menu, or Citra to run the *.3dsx* version on your PC).
 
 This application allows you to make some cool things, like:
 
@@ -27,7 +27,7 @@ Event Database links are hardcoded in the program, so it knows where to look for
 
 You can use Citra to run the *.3dsx* version of the app. I made a few changes to have a better usability with Citra. As for now, you can only use properly PID Checker and Capture Probability Calculator, because http functions are unimplemented on Citra. To scroll properly values on Citra, just set the program in **SLOW mode**.
 
-**Where the saves have to be on my sd card?
+**Where the saves have to be on my sd card?**
 
 You need to use JKSM to export your saves into the *JKSV/Saves/[game]/EventAssistant* path. This is done automatically from the app, but you have to copy the JKSV folder of the release zip into the root of the SD card or create the *EventAssistant* folder manually.
 
