@@ -5,7 +5,6 @@
 #include "http.h"
 
 void refresh(int currentEntry, PrintConsole topScreen, char *lista[], int N) {	
-
 	consoleSelect(&topScreen);
 	printf("\x1b[2;0H\x1b[30;0m");
 	for (int i = 0; i < N; i++) {
@@ -17,7 +16,6 @@ void refresh(int currentEntry, PrintConsole topScreen, char *lista[], int N) {
 }
 
 void refreshDB(int currentEntry, PrintConsole topScreen, char *lista[], int N, int page) {
-
 	consoleSelect(&topScreen);
 	printf("\x1b[2;0H\x1b[30;0m");
 	for (int i = 0; i < N; i++) {

@@ -244,7 +244,7 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
 }
 
 Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int i, int nInjected[], int game[]) {
-	char *language[7] = {"ENG", "JPN", "ITA", "FRE", "SPA", "GER", "KOR"};
+	char *language[7] = {"JPN", "ENG", "ITA", "FRE", "SPA", "GER", "KOR"};
 	int langCont = 0;
 	
 	consoleSelect(&bottomScreen);
@@ -275,7 +275,9 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 	printf("\x1b[22;0H----------------------------------------");
 	printf("\x1b[29;10HPress A to continue.");
 	consoleSelect(&topScreen);
-	printf("\x1b[2JLanguages available: ");
+	printf("\x1b[2J");
+	printf("\x1b[0;0HScanning server for available languages...");
+	printf("\x1b[1;0HLanguages available: \x1b[32m");
 
 	gfxFlushBuffers();
 	gfxSwapBuffers();
@@ -284,11 +286,11 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 	for (int j = 0; j < 7; j++) {
 		switch (j) {
 			case 0 : {
-				snprintf(testurl, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/eng/%d.wc6", i);
+				snprintf(testurl, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/jpn/%d.wc6", i);
 				break;
 			}
 			case 1 : {
-				snprintf(testurl, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/jpn/%d.wc6", i);
+				snprintf(testurl, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/eng/%d.wc6", i);
 				break;
 			}
 			case 2 : {
@@ -336,7 +338,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 		httpcExit();		
 	}	
 	
-	printf("\n\n");
+	printf("\x1b[0m\n\n");
 	
 	getText(topScreen, bottomScreen, url);
 	consoleSelect(&bottomScreen);
@@ -386,6 +388,9 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 			if (nInjected[0] == 23)
 				return -11;
 			
+			if (game[0] < 2 && i == 2048)
+				return -12;
+			
 			fsInit();
 			httpcInit(0);
 			
@@ -400,11 +405,11 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 			
 			switch (langCont) {
 				case 0 : {
-					snprintf(wc6url, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/eng/%d.wc6", i);
+					snprintf(wc6url, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/jpn/%d.wc6", i);
 					break;
 				}
 				case 1 : {
-					snprintf(wc6url, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/jpn/%d.wc6", i);
+					snprintf(wc6url, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/eng/%d.wc6", i);
 					break;
 				}
 				case 2 : {
@@ -450,7 +455,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 				return -6;
 			}
 			
-			if (statuscode != 200) 
+			if (statuscode != 200)
 				return -6;
 			
 			ret = httpcGetDownloadSizeState(&context, NULL, &contentsize);
