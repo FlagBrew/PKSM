@@ -181,6 +181,9 @@ void faq(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("     injection  then  feel free  to inject if\n");
 	printf("     there are available languages on the top\n     screen.");
 	
+	consoleSelect(&bottomScreen);
+	printf("\x1b[2J");
+	
 		 printf("\n- \x1b[31mWC6 not available yet\x1b[0m. It  means  thatwc6 for the  selected tag doesn't  existyet  on  my  server. You  can  inject  alanguage that is available,  if there isat least one.\n\n");
 		 printf("- \x1b[31mUpdate crashes\x1b[0m. This  means  that  youdid  not  copy   3ds   folder  containedin the zip package.\n\n");
 		 
