@@ -156,7 +156,7 @@ int rewriteCHK(u8 *mainbuf, u8* wc6buf, int game, int i, int nInjected[]) {
 void faq(PrintConsole topScreen, PrintConsole bottomScreen) {
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
-	printf("\x1b[47;34m                        FAQs                      \x1b[0m\n");
+	printf("\x1b[47;34m                       FAQs                       \x1b[0m\n");
 //		   |     ----------------------------------------     |
 	printf("     \x1b[32mHow to use WC6 injection\x1b[0m\n\n");
 	printf("     WC6  injection  works with ORAS  and  XY\n");
@@ -184,10 +184,8 @@ void faq(PrintConsole topScreen, PrintConsole bottomScreen) {
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
 	
-		 printf("- \x1b[31mWC6 not available yet\x1b[0m.   It means that");
-		 printf("wc6 for the  selected tag doesn't  exist");
-		 printf("yet  on  my  server. You  can  inject  a");
-		 printf("language that is available,  if there isat least one.");
+		 printf("- \x1b[31mWC6 not available yet\x1b[0m. It  means  thatwc6 for the  selected tag doesn't  existyet  on  my  server. You  can  inject  alanguage that is available,  if there isat least one.\n\n");
+		 printf("- \x1b[31mUpdate crashes\x1b[0m. This  means  that  youdon't have copied  3ds  folder containedin the zip package.\n\n");
 		 
 	printf("\x1b[29;10HPress Start to exit.");
 	

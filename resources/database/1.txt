@@ -9,7 +9,7 @@ TID:           10123
                10015
 SID:           00001
 OT:            ?????
-Met:           a Pokemon Center (fateful encounter)
+Met:           a Pokemon Center(fateful encounter)
 Nature:        Random
 Ribbon:        Birthday Ribbon
 Relearn Moves: Celebrate
@@ -18,6 +18,6 @@ Games:         XY
                XYORAS
 Method:        infrared
 Region:        all
-Duration:      October 12,2013 to September 30,2014
-               October 1,2014 to September 30,2015
-               October 1,2015 to December 31,2016
+Duration:     October 12,2013 to September 30,2014
+              October 1,2014 to September 30,2015
+              October 1,2015 to December 31,2016

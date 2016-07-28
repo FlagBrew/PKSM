@@ -1,13 +1,13 @@
 0004 - Nuketta Wobbuffet
 
-Pokémon:       Wobbuffet
+Pokemon:       Wobbuffet
 Level:         10
 Ability:       Shadow Tag
 Held Item:     None
 TID:           12063
 SID:           00004
 OT:            ?
-Met:           a Pokémon event (fateful encounter)
+Met:           a Pokemon event (fateful encounter)
 Nature:        Random
 Ribbon:        Event Ribbon
 Relearn Moves: -

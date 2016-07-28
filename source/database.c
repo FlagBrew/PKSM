@@ -86,7 +86,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 			printf("\x1b[32mA\x1b[0m - Open/close entry\n");
 			printf("----------------------------------------");
 			
-			if (ret == 1) printf("\x1b[6;0H\x1b[32mInjection went well!\x1b[0m");
+			if (ret == 1) printf("\x1b[6;0HInjection of \x1b[32m%s\x1b[0m in location %d \x1b[32msucceeded\x1b[0m!", database[currentEntry + page * RIGHE], nInjected[0]);
 			else if (ret == -1) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[32m/JKSV/Saves/[game]/EventAssistant/main\x1b[0m\nnot found.");
 			else if (ret == -2) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcOpenContext\x1b[0m.");
 			else if (ret == -3) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcAddRequestHeaderField\x1b[0m.");
@@ -98,7 +98,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 			else if (ret == -9) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcDownloadData\x1b[0m.");
 			else if (ret == -10) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mFailure to malloc temp chk var\x1b[0m."); 
 			else if (ret == -11) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mReached the maximum number of injected\nwc6\x1b[0m.Restart.");
-			else if (ret == -12) printf("\x1b[6;0HAn error occurred during injection.\nx1b[31mEon Ticket is not available on XY\x1b[0m.");
+			else if (ret == -12) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mEon Ticket is not available on XY\x1b[0m.");
 			
 			printf("\x1b[27;0H    Please check your connection....");
 			printf("\x1b[29;12HPress B to exit.");			

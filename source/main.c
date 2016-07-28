@@ -11,14 +11,15 @@
 
 #define V1 1
 #define V2 8
+#define V3 1
 
 void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, char* menuEntries[]){
 	consoleSelect(&bottomScreen);
-	printf("\x1b[26;0HEvent Assistant");
+	printf("\x1b[26;0HEvent Assistant v%d.%d.%d", V1, V2, V3);
 	printf("\n\nBernardo Giordano & ctrulib");
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
-	printf("\x1b[47;34m               Event Assistant v%d.%d               \x1b[0m\n", V1, V2);
+	printf("\x1b[47;34m                Event  Assistant                \x1b[0m\n");
 
 	refresh(currentEntry, topScreen, menuEntries, ENTRIES);
 	

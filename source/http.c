@@ -320,13 +320,18 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 		Result ret = 0;
 		u32 statuscode = 0;
 
-		ret = httpcOpenContext(&context, HTTPC_METHOD_GET, testurl, 0);		
-		ret = httpcAddRequestHeaderField(&context, "User-Agent", "EventAssistant");		
+		ret = httpcOpenContext(&context, HTTPC_METHOD_GET, testurl, 0);	
+		if (ret != 0) break;
+		ret = httpcAddRequestHeaderField(&context, "User-Agent", "EventAssistant");
+		if (ret != 0) break;		
 		ret = httpcSetSSLOpt(&context, 1<<9);		
+		if (ret != 0) break;
 		httpcAddTrustedRootCA(&context, cybertrust_cer, cybertrust_cer_len);
 		httpcAddTrustedRootCA(&context, digicert_cer, digicert_cer_len);		
-		ret = httpcBeginRequest(&context);		
+		ret = httpcBeginRequest(&context);	
+		if (ret != 0) break;		
 		ret = httpcGetResponseStatusCode(&context, &statuscode, 0);
+		if (ret != 0) break;
 		
 		if (statuscode == 200) 
 			printf("%s ", language[j]);	
@@ -335,12 +340,13 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 		gfxSwapBuffers();
 
 		httpcCloseContext(&context);
-		httpcExit();		
+		httpcExit();
 	}	
 	
 	printf("\x1b[0m\n\n");
-	
 	getText(topScreen, bottomScreen, url);
+	consoleSelect(&topScreen);
+	printf("\x1b[0;45H\x1b[32mDONE!\x1b[0m");
 	consoleSelect(&bottomScreen);
 	
 	while (aptMainLoop()) {
