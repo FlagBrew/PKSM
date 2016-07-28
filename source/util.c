@@ -28,11 +28,11 @@ void refreshDB(int currentEntry, PrintConsole topScreen, char *lista[], int N, i
 
 void update(PrintConsole topScreen, PrintConsole bottomScreen) {
 	char *ciaUrl = "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/EventAssistant/EventAssistant.cia";
-	char *hblUrl = "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/EventAssistant/3ds/EventAssistant/EventAssistant.3dsx";
-	char *smdhUrl = "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/EventAssistant/3ds/EventAssistant/EventAssistant.smdh";
+	//char *hblUrl = "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/EventAssistant/3ds/EventAssistant/EventAssistant.3dsx";
+	//char *smdhUrl = "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/EventAssistant/3ds/EventAssistant/EventAssistant.smdh";
 	char *ciaPath = "/EventAssistant.cia";
-	char *hblPath = "/3ds/EventAssistant/EventAssistant.3dsx";
-	char *smdhPath = "/3ds/EventAssistant/EventAssistant.smdh";
+	//char *hblPath = "/3ds/EventAssistant/EventAssistant.3dsx";
+	//char *smdhPath = "/3ds/EventAssistant/EventAssistant.smdh";
 	
 	Result ret = 0;
 	
@@ -46,7 +46,7 @@ void update(PrintConsole topScreen, PrintConsole bottomScreen) {
 		printf("\nDownload of EventAssistant.cia \x1b[32msucceded!\x1b[0m Install  it using a CIA manager.\n\n");
 	else printf("\nDownload of EventAssistant.cia \x1b[31mfailed.\x1b[0m\nPlease report the issue to the dev.\n\n");
 	
-	ret = downloadFile(topScreen, bottomScreen, hblUrl, hblPath);
+	/*ret = downloadFile(topScreen, bottomScreen, hblUrl, hblPath);
 	consoleSelect(&topScreen);
 	if (ret == 0) 
 		printf("\nDownload of EventAssistant.3dsx \x1b[32msucceded!\x1b[0m Open it using your favourite entrypoint.\n\n");
@@ -56,7 +56,7 @@ void update(PrintConsole topScreen, PrintConsole bottomScreen) {
 	consoleSelect(&topScreen);
 	if (ret == 0) 
 		printf("\nDownload of EventAssistant.smdh \x1b[32msucceded!\x1b[0m\n\n");
-	else printf("\nDownload of EventAssistant.smdh \x1b[31mfailed.\x1b[0m\nPlease report the issue to the dev.\n\n");
+	else printf("\nDownload of EventAssistant.smdh \x1b[31mfailed.\x1b[0m\nPlease report the issue to the dev.\n\n");*/
 	
 	printf("Install and restart the application!");
 	printf("\x1b[29;15HPress Start to exit.");
