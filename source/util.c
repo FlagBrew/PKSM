@@ -181,11 +181,13 @@ void faq(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("     injection  then  feel free  to inject if\n");
 	printf("     there are available languages on the top\n     screen.");
 	
+	consoleSelect(&topScreen);
+	printf("\x1b[2J");	
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
 	
-		 printf("- \x1b[31mWC6 not available yet\x1b[0m. It  means  thatwc6 for the  selected tag doesn't  existyet  on  my  server. You  can  inject  alanguage that is available,  if there isat least one.\n\n");
-		 printf("- \x1b[31mUpdate crashes\x1b[0m. This  means  that  youdon't have copied  3ds  folder containedin the zip package.\n\n");
+		 printf("\n- \x1b[31mWC6 not available yet\x1b[0m. It  means  thatwc6 for the  selected tag doesn't  existyet  on  my  server. You  can  inject  alanguage that is available,  if there isat least one.\n\n");
+		 printf("- \x1b[31mUpdate crashes\x1b[0m. This  means  that  youdid  not  copy   3ds   folder  containedin the zip package.\n\n");
 		 
 	printf("\x1b[29;10HPress Start to exit.");
 	
@@ -199,4 +201,20 @@ void faq(PrintConsole topScreen, PrintConsole bottomScreen) {
 		gfxFlushBuffers();
 		gfxSwapBuffers();
 	}	
+	
+	consoleSelect(&bottomScreen);
+	printf("\x1b[2J");
+	printf("\nSpecial thanks to:\n\n* Kaphotics for wondercard workaround\n* Hamcha for http certs\n* Gocario for algorithms\n* LiquidFenrir for some http structure\n* Nba_Yoh for received flags\n* Simona Mastroianni for database help\n* Federico Leuzzi for testing\n* Shai Raba' for the icon\n* Cosimo Vivoli for some entries\n* Kian Josh King for some wc6 extraction* all the guys @3dshacks' discord");
+	printf("\x1b[29;10HPress Start to exit.");
+	
+	while (aptMainLoop()) {
+		gspWaitForVBlank();
+		hidScanInput();
+
+		if (hidKeysDown() & KEY_START) 
+			break; 
+		
+		gfxFlushBuffers();
+		gfxSwapBuffers();
+	}
 }

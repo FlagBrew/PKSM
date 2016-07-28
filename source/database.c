@@ -26,7 +26,6 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("\x1b[32mL/R\x1b[0m - Switch page\n");
 	printf("\x1b[32mA\x1b[0m - Open/close entry\n");
 	printf("----------------------------------------");
-	printf("\nSpecial thanks to:\n\n* Kaphotics\n* Hamcha\n* gocario\n* LiquidFenrir\n* Nba_Yoh\n* Simona Mastroianni\n* Federico Leuzzi\n* Shai Raba'\n* Cosimo Vivoli\n* all the guys @3dshacks' discord");
 	printf("\x1b[27;0H    Please check your connection....");
 	printf("\x1b[29;12HPress B to exit.");
 	
