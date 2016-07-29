@@ -205,7 +205,7 @@ void faq(PrintConsole topScreen, PrintConsole bottomScreen) {
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
 	
-	printf("\nSpecial thanks to:\n\n* Kaphotics for wondercard workaround\n* Hamcha for http certs\n* Gocario for algorithms\n* LiquidFenrir for some http structure\n* Nba_Yoh for received flags\n* Simona Mastroianni for database help\n* Federico Leuzzi for testing\n* Shai Raba' for the icon\n* Cosimo Vivoli for some entries\n* Kian Josh King for some wc6 extraction* all the guys @3dshacks' discord");
+	printf("\nThis application exists because of:\n\n* smea for ctrulib\n* Kaphotics for wondercard workaround\n* Hamcha for http certs\n* Gocario for algorithms\n* LiquidFenrir for some http structure\n* Nba_Yoh for received flags\n* Simona Mastroianni for database help\n* Federico Leuzzi for testing\n* Shai Raba' for the icon\n* all the guys @3dshacks' discord\n\nFull list available on github repo");
 	printf("\x1b[29;10HPress Start to exit.");
 	
 	while (aptMainLoop()) {

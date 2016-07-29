@@ -38,16 +38,23 @@ You need to use JKSM to export your saves into the *JKSV/Saves/[game]/EventAssis
 * Regular updates to the Event Database.
 
 Tell me if you like this work and what you would have featured in the next update! :)
+
+---
  
 Thank you to:
-* *Shai for the icon and Fabrizio for the name*
+
+* smea for ctrulib
 * Kaphotics for cool documentation
 * Nba_Yoh for the received flag issue
-* gocario for ccitt CHK algorithms
+* Gocario for ccitt CHK algorithms
 * Hamcha for cybertrust.h and digicert.h
 * LiquidFenrir for useful http source code 
 * all the guys on the 3dshacks discord
+* Simona Mastroianni for fill.c work
 * Federico for testing builds
+* Cosimo Vivoli for some database entries
+* Kian Josh King for some wc6s
+* Shai for the icon and Fabrizio for the name
 
 # How to compile it?
 
