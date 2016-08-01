@@ -1,9 +1,5 @@
      Wifi     | Tag |   Date    |      Code
 -------------------------------------------------
-20th. Shaymin | ALL | 1-24 July | -
-HA Articuno   | KOR | x-31 July | POKEMON144
-HA Zapdos     | KOR | x-31 July | OLLEHTVPOKEMON
-HA Moltres    | KOR | x-31 July | MOVIE2
 20th. Victini | ALL | 1-24 Sept | -
 20th. Keldeo  | ALL | 1-24 Oct  | -
 20th. Meloetta| ALL | 1-24 Dec  | -
@@ -11,5 +7,6 @@ HA Moltres    | KOR | x-31 July | MOVIE2
 
 For TPP Anniversary Crystal players:
 -------------------------------------------------
-Jay Leno Rattata | 12022014
-Adam Porygon     | 2930831
+Jay Leno Rattata   | 12022014
+Adam Porygon       | 2930831
+Crystal Feraligatr | 90d5layR

@@ -33,7 +33,7 @@ Result http_download(PrintConsole topScreen, PrintConsole bottomScreen, httpcCon
 	if (ret != 0)		
 		return ret;
 
-	ret = httpcGetResponseStatusCode(context, &statuscode, 0);
+	ret = httpcGetResponseStatusCode(context, &statuscode);
 	if (ret != 0) {
 		printf("\x1b[26;0HStatus: \x1b[31mNO INTERNET AVAILABLE\x1b[0m");
 		return ret;
@@ -120,7 +120,7 @@ void printDistro(PrintConsole topScreen, PrintConsole bottomScreen, char *url) {
 	printf("\nKOR - South Korea");
 	printf("\nALL - All regions available\n");
 	printf("----------------------------------------");
-	printf("\x1b[29;10HPress A to continue.");
+	printf("\x1b[29;12HPress B to exit.");
 	consoleSelect(&topScreen);		
 	printf("\x1b[2J");	
 	getText(topScreen, bottomScreen, url);
@@ -129,7 +129,7 @@ void printDistro(PrintConsole topScreen, PrintConsole bottomScreen, char *url) {
 		gspWaitForVBlank();
 		hidScanInput();
 
-		if (hidKeysDown() & KEY_A) 
+		if (hidKeysDown() & KEY_B) 
 			break; 			 
 	}
 }
@@ -181,7 +181,7 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
 		return ret;
 	}
 	
-	ret = httpcGetResponseStatusCode(&context, &statuscode, 0);
+	ret = httpcGetResponseStatusCode(&context, &statuscode);
 	if (ret != 0) {
 		printf("Error in: \x1b[31mhttpcGetResponseStatusCode\x1b[0m. Return: %lx\n", ret);
 		httpcCloseContext(&context);
@@ -256,7 +256,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 	printf("\nKOR - South Korea");
 	printf("\nALL - All regions available\n");
 	printf("----------------------------------------");
-	printf("\x1b[32mSELECT\x1b[0m: change language | \x1b[32mB\x1b[0m: switch game");
+	printf("\x1b[32mSELECT\x1b[0m: change language | \x1b[32mA\x1b[0m: switch game");
 	printf("\x1b[31mSTART\x1b[0m: inject in selected save\n");
 	printf("----------------------------------------");
 	
@@ -273,7 +273,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 	printf("\x1b[16;0H----------------------------------------");
 	printf("\x1b[17;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this. This is a new way to inject WC6\nand I need time to perfect it.");
 	printf("\x1b[22;0H----------------------------------------");
-	printf("\x1b[29;10HPress A to continue.");
+	printf("\x1b[29;11HPress B to return.");
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
 	printf("\x1b[0;0HScanning server for available languages...");
@@ -330,7 +330,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 		httpcAddTrustedRootCA(&context, digicert_cer, digicert_cer_len);		
 		ret = httpcBeginRequest(&context);	
 		if (ret != 0) break;		
-		ret = httpcGetResponseStatusCode(&context, &statuscode, 0);
+		ret = httpcGetResponseStatusCode(&context, &statuscode);
 		if (ret != 0) break;
 		
 		if (statuscode == 200) 
@@ -353,10 +353,10 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 		gspWaitForVBlank();
 		hidScanInput();	
 		
-		if (hidKeysDown() & KEY_A) 
+		if (hidKeysDown() & KEY_B) 
 			break; 	
 		
-		if (hidKeysDown() & KEY_B) {
+		if (hidKeysDown() & KEY_A) {
 			if (game[0] < 3) {
 				game[0] += 1;
 				nInjected[0] = 0; 
@@ -455,7 +455,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 			ret = httpcBeginRequest(&context);
 			if (ret != 0) return -5;
 			
-			ret = httpcGetResponseStatusCode(&context, &statuscode, 0);
+			ret = httpcGetResponseStatusCode(&context, &statuscode);
 			if (ret != 0) {
 				httpcCloseContext(&context);
 				return -6;
