@@ -239,5 +239,5 @@ void filldatabase(char *database[], char *links[]) {
 	database[1512] = "1512 - PGL Delibird";
 	database[1513] = "1513 - PGL Dragonite";
 	database[1514] = "1514 - PGL Miltank";
-	database[1515] = "1515 - PGL Darmanitan";
+	database[1515] = "1515 - PGL Garchomp";
 }

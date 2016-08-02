@@ -323,18 +323,18 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 		ret = httpcOpenContext(&context, HTTPC_METHOD_GET, testurl, 0);	
 		if (ret != 0) break;
 		ret = httpcAddRequestHeaderField(&context, "User-Agent", "EventAssistant");
-		if (ret != 0) break;		
-		ret = httpcSetSSLOpt(&context, 1<<9);		
+		if (ret != 0) break;
+		ret = httpcSetSSLOpt(&context, 1<<9);	
 		if (ret != 0) break;
 		httpcAddTrustedRootCA(&context, cybertrust_cer, cybertrust_cer_len);
-		httpcAddTrustedRootCA(&context, digicert_cer, digicert_cer_len);		
-		ret = httpcBeginRequest(&context);	
-		if (ret != 0) break;		
+		httpcAddTrustedRootCA(&context, digicert_cer, digicert_cer_len);
+		ret = httpcBeginRequest(&context);
+		if (ret != 0) break;
 		ret = httpcGetResponseStatusCode(&context, &statuscode);
 		if (ret != 0) break;
 		
-		if (statuscode == 200) 
-			printf("%s ", language[j]);	
+		if (statuscode == 200)
+			printf("%s ", language[j]);
 		
 		gfxFlushBuffers();
 		gfxSwapBuffers();
@@ -351,7 +351,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 	
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
-		hidScanInput();	
+		hidScanInput();
 		
 		if (hidKeysDown() & KEY_B) 
 			break; 	
