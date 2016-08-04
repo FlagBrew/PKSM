@@ -243,7 +243,7 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
 	return 0;
 }
 
-Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int i, int nInjected[], int game[]) {
+Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int i, int nInjected[], int game[], int overwrite[]) {
 	char *language[7] = {"JPN", "ENG", "ITA", "FRE", "SPA", "GER", "KOR"};
 	int langCont = 0;
 	
@@ -257,22 +257,26 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 	printf("\nALL - All regions available\n");
 	printf("----------------------------------------");
 	printf("\x1b[32mSELECT\x1b[0m: change language | \x1b[32mA\x1b[0m: switch game");
-	printf("\x1b[31mSTART\x1b[0m: inject in selected save\n");
-	printf("----------------------------------------");
+	printf("\x1b[31mSTART\x1b[0m: inject in selected save");
+	if (overwrite[0] == 0) 
+		printf("\x1b[9;0H\x1b[32mX\x1b[0m: Overwrite \x1b[32mDISABLED\x1b[0m");
+	if (overwrite[0] == 1) 
+		printf("\x1b[9;0H\x1b[32mX\x1b[0m: Overwrite \x1b[32mENABLED \x1b[0m");
+	printf("\n----------------------------------------");
 	
 	if (game[0] == 0) 
-		printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mX\x1b[0m  | Loc: %d ", language[langCont], nInjected[0]);
+		printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mX\x1b[0m  | Loc: %d ", language[langCont], nInjected[0] + 1);
 	else if (game[0] == 1)
-		printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mY\x1b[0m  | Loc: %d ", language[langCont], nInjected[0]);
+		printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mY\x1b[0m  | Loc: %d ", language[langCont], nInjected[0] + 1);
 	else if (game[0] == 2)
-		printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mOR\x1b[0m | Loc: %d ", language[langCont], nInjected[0]);
+		printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mOR\x1b[0m | Loc: %d ", language[langCont], nInjected[0] + 1);
 	else if (game[0] == 3)
-		printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mAS\x1b[0m | Loc: %d ", language[langCont], nInjected[0]);
+		printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mAS\x1b[0m | Loc: %d ", language[langCont], nInjected[0] + 1);
 	
-	printf("\x1b[13;0HYou need to have a \x1b[32mmain\x1b[0m located at\n\x1b[32m/JKSV/Saves/[game]/EventAssistant/main\x1b[0m.");
-	printf("\x1b[16;0H----------------------------------------");
-	printf("\x1b[17;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this. This is a new way to inject WC6\nand I need time to perfect it.");
-	printf("\x1b[22;0H----------------------------------------");
+	printf("\x1b[14;0HYou need to have a \x1b[32mmain\x1b[0m located at\n\x1b[32m/JKSV/Saves/[game]/EventAssistant/main\x1b[0m.");
+	printf("\x1b[17;0H----------------------------------------");
+	printf("\x1b[18;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this. This is a new way to inject WC6\nand I need time to perfect it.");
+	printf("\x1b[23;0H----------------------------------------");
 	printf("\x1b[29;11HPress B to return.");
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
@@ -354,7 +358,20 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 		hidScanInput();
 		
 		if (hidKeysDown() & KEY_B) 
-			break; 	
+			break; 
+		
+		if (hidKeysDown() & KEY_X) {
+			if (overwrite[0] == 0) overwrite[0] = 1;
+			else if (overwrite[0] == 1) {
+				overwrite[0] = 0;
+				nInjected[0] = 0;
+			}
+			
+			if (overwrite[0] == 0)
+				printf("\x1b[9;0H\x1b[32mX\x1b[0m: Overwrite \x1b[32mDISABLED\x1b[0m");
+			if (overwrite[0] == 1)
+				printf("\x1b[9;0H\x1b[32mX\x1b[0m: Overwrite \x1b[32mENABLED \x1b[0m");
+		}
 		
 		if (hidKeysDown() & KEY_A) {
 			if (game[0] < 3) {
@@ -367,27 +384,27 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 			}
 			
 			if (game[0] == 0) 
-				printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mX\x1b[0m  | Loc: %d ", language[langCont], nInjected[0]);
+				printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mX\x1b[0m  | Loc: %d ", language[langCont], nInjected[0] + 1);
 			else if (game[0] == 1)
-				printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mY\x1b[0m  | Loc: %d ", language[langCont], nInjected[0]);
+				printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mY\x1b[0m  | Loc: %d ", language[langCont], nInjected[0] + 1);
 			else if (game[0] == 2)
-				printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mOR\x1b[0m | Loc: %d ", language[langCont], nInjected[0]);
+				printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mOR\x1b[0m | Loc: %d ", language[langCont], nInjected[0] + 1);
 			else if (game[0] == 3)
-				printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mAS\x1b[0m | Loc: %d ", language[langCont], nInjected[0]);
+				printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mAS\x1b[0m | Loc: %d ", language[langCont], nInjected[0] + 1);
 		}
 		
 		if (hidKeysDown() & KEY_SELECT) {
 			if (langCont < 6) langCont++;
 			else if (langCont == 6) langCont = 0;
 			
-			if (game[0] == 0) 
-				printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mX\x1b[0m  | Loc: %d ", language[langCont], nInjected[0]);
+			if (game[0] == 0)
+				printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mX\x1b[0m  | Loc: %d ", language[langCont], nInjected[0] + 1);
 			else if (game[0] == 1)
-				printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mY\x1b[0m  | Loc: %d ", language[langCont], nInjected[0]);
+				printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mY\x1b[0m  | Loc: %d ", language[langCont], nInjected[0] + 1);
 			else if (game[0] == 2)
-				printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mOR\x1b[0m | Loc: %d ", language[langCont], nInjected[0]);
+				printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mOR\x1b[0m | Loc: %d ", language[langCont], nInjected[0] + 1);
 			else if (game[0] == 3)
-				printf("\x1b[11;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mAS\x1b[0m | Loc: %d ", language[langCont], nInjected[0]);
+				printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mAS\x1b[0m | Loc: %d ", language[langCont], nInjected[0] + 1);
 		}
 
 		if (hidKeysDown() & KEY_START) {
@@ -496,6 +513,24 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 			FILE *fptr1 = fopen(bakPath[game[0]], "wb");
 			fwrite(mainbuf, 1, mainsize, fptr1);
 			fclose(fptr1);
+			
+			//finding first free location
+			if (overwrite[0] == 0) {
+				if (game[0] == 0 || game[0] == 1) {
+					for (int t = 0; t < 23; t++)
+						if (*(mainbuf + 0x1BD00 + t * 264) == 0x00) {
+							nInjected[0] = t;
+							break;
+						}
+				}
+				else if (game[0] == 2 || game[0] == 3) {
+					for (int t = 0; t < 23; t++)
+						if (*(mainbuf + 0x1CD00 + t * 264) == 0x00) {
+							nInjected[0] = t;
+							break;
+						}
+				}
+			}
 			
 			int rwCHK = rewriteCHK(mainbuf, wc6buf, game[0], i, nInjected);
 			if (rwCHK != 0) 
