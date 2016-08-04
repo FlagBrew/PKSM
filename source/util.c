@@ -117,24 +117,18 @@ u16 ccitt16(u8* data, u32 len) {
 	return crc;	
 }
 
-int rewriteCHK(u8 *mainbuf, u8* wc6buf, int game, int i, int nInjected[]) {
+int rewriteCHK(u8 *mainbuf, int game) {
 	u8 blockCount = 0;
 	u32 csoff = 0;
 	
 	if (game == 2 || game == 3) {
 		blockCount = 58;
 		csoff = 0x7B21A - 0x5400;
-		
-		*(mainbuf + 0x1CC00 + i / 8) |= 0x1 << (i % 8);
-		memcpy((void*)(mainbuf + 0x1CD00 + nInjected[0] * 264), (const void*)wc6buf, 264);
 	}
 	
 	if (game == 0 || game == 1) {
 		blockCount = 55;
 		csoff = 0x6A81A - 0x5400;
-		
-		*(mainbuf + 0x1BC00 + i / 8) |= 0x1 << (i % 8);
-		memcpy((void*)(mainbuf + 0x1BD00 + nInjected[0] * 264), (const void*)wc6buf, 264);
 	}
 
 	u8* tmp = (u8*)malloc(0x35000*sizeof(u8));
@@ -149,8 +143,27 @@ int rewriteCHK(u8 *mainbuf, u8* wc6buf, int game, int i, int nInjected[]) {
 	}
 
 	free(tmp);
-	nInjected[0] += 1;
 	return 0;
+}
+
+void injectWC6(u8* mainbuf, u8* wc6buf, int game, int i, int nInjected[]) {
+	if (game == 2 || game == 3) {		
+		*(mainbuf + 0x1CC00 + i / 8) |= 0x1 << (i % 8);
+		memcpy((void*)(mainbuf + 0x1CD00 + nInjected[0] * 264), (const void*)wc6buf, 264);
+	}
+	
+	if (game == 0 || game == 1) {
+		*(mainbuf + 0x1BC00 + i / 8) |= 0x1 << (i % 8);
+		memcpy((void*)(mainbuf + 0x1BD00 + nInjected[0] * 264), (const void*)wc6buf, 264);
+	}
+
+	nInjected[0] += 1;
+}
+
+void injectLanguage(u8* mainbuf, int i) {
+	const u32 value[7] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x07, 0x08};
+
+	*(mainbuf + 0x1402D) = value[i];
 }
 
 void faq(PrintConsole topScreen, PrintConsole bottomScreen) {
@@ -218,4 +231,113 @@ void faq(PrintConsole topScreen, PrintConsole bottomScreen) {
 		gfxFlushBuffers();
 		gfxSwapBuffers();
 	}
+}
+
+int changeLanguage(PrintConsole topScreen, PrintConsole bottomScreen) {
+	char *language[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
+	const char *path[4] = {"/JKSV/Saves/Pokémon_X/EventAssistant/main", "/JKSV/Saves/Pokémon_Y/EventAssistant/main", "/JKSV/Saves/Pokémon_Omega_Ruby/EventAssistant/main", "/JKSV/Saves/Pokémon_Alpha_Sapphire/EventAssistant/main"};
+	const char *bakPath[4] = {"/JKSV/Saves/Pokémon_X/EventAssistant/main.bak", "/JKSV/Saves/Pokémon_Y/EventAssistant/main.bak", "/JKSV/Saves/Pokémon_Omega_Ruby/EventAssistant/main.bak", "/JKSV/Saves/Pokémon_Alpha_Sapphire/EventAssistant/main.bak"};	
+	int game = 0;
+	int langCont = 0;
+	
+	consoleSelect(&bottomScreen);
+	printf("\x1b[2J");
+	printf("----------------------------------------");
+	printf("\x1b[32mA\x1b[0m - Switch game\n");
+	printf("\x1b[32mSELECT\x1b[0m - Switch language\n");
+	printf("\x1b[31mSTART\x1b[0m - Change language\n");
+	printf("----------------------------------------");
+	printf("\x1b[6;0HYou need to have a \x1b[32mmain\x1b[0m located at\n\x1b[32m/JKSV/Saves/[game]/EventAssistant/main\x1b[0m.");
+	printf("\x1b[18;0H----------------------------------------");
+	printf("\x1b[19;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this. This is a new way to inject WC6\nand I need time to perfect it.");
+	printf("\x1b[24;0H----------------------------------------");
+	printf("\x1b[29;12HPress B to exit.");
+	
+	consoleSelect(&topScreen);
+	printf("\x1b[2J");
+	printf("\x1b[47;34m                 Language Changer                 \x1b[0m\n");
+
+	if (game == 0) 
+		printf("\x1b[2;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mX \x1b[0m", language[langCont]);
+	else if (game == 1)
+		printf("\x1b[2;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mY \x1b[0m", language[langCont]);
+	else if (game == 2)
+		printf("\x1b[2;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mOR\x1b[0m", language[langCont]);
+	else if (game == 3)
+		printf("\x1b[2;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mAS\x1b[0m", language[langCont]);	
+	
+	
+	while (aptMainLoop()) {
+		gspWaitForVBlank();
+		hidScanInput();
+		
+		if (hidKeysDown() & KEY_B) 
+			break; 
+		
+		if (hidKeysDown() & KEY_A) {
+			if (game < 3) game += 1;
+			else if (game == 3) game = 0;
+			
+			if (game == 0) 
+				printf("\x1b[2;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mX \x1b[0m", language[langCont]);
+			else if (game == 1)
+				printf("\x1b[2;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mY \x1b[0m", language[langCont]);
+			else if (game == 2)
+				printf("\x1b[2;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mOR\x1b[0m", language[langCont]);
+			else if (game == 3)
+				printf("\x1b[2;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mAS\x1b[0m", language[langCont]);
+		}
+		
+		if (hidKeysDown() & KEY_SELECT) {
+			if (langCont < 6) langCont++;
+			else if (langCont == 6) langCont = 0;
+			
+			if (game == 0) 
+				printf("\x1b[2;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mX \x1b[0m", language[langCont]);
+			else if (game == 1)
+				printf("\x1b[2;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mY \x1b[0m", language[langCont]);
+			else if (game == 2)
+				printf("\x1b[2;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mOR\x1b[0m", language[langCont]);
+			else if (game == 3)
+				printf("\x1b[2;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mAS\x1b[0m", language[langCont]);
+		}
+
+		if (hidKeysDown() & KEY_START) {		
+			fsInit();
+			
+			//reading main
+			FILE *fptr = fopen(path[game], "rt");
+			if (fptr == NULL) return -1;
+			fseek(fptr, 0, SEEK_END);
+			u32 mainsize = ftell(fptr);
+			u8* mainbuf = malloc(mainsize);
+			rewind(fptr);
+			fread(mainbuf, mainsize, 1, fptr);
+			fclose(fptr);
+			
+			//doing backup
+			FILE *fptr1 = fopen(bakPath[game], "wb");
+			fwrite(mainbuf, 1, mainsize, fptr1);
+			fclose(fptr1);
+
+			injectLanguage(mainbuf, langCont);	
+
+			int rwCHK = rewriteCHK(mainbuf, game);
+			if (rwCHK != 0) 
+				return rwCHK;
+			
+			FILE *fptr2 = fopen(path[game], "wb");
+			fwrite(mainbuf, 1, mainsize, fptr2);
+			fclose(fptr2);
+			
+			free(mainbuf);
+
+			fsExit();
+			return 1;
+		}
+		
+		gfxFlushBuffers();
+		gfxSwapBuffers();
+	}
+	return 0;
 }

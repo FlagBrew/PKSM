@@ -244,8 +244,9 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
 }
 
 Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int i, int nInjected[], int game[], int overwrite[]) {
-	char *language[7] = {"JPN", "ENG", "ITA", "FRE", "SPA", "GER", "KOR"};
+	char *language[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
 	int langCont = 0;
+	int adapt = 1;
 	
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
@@ -265,18 +266,23 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 	printf("\n----------------------------------------");
 	
 	if (game[0] == 0) 
-		printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mX\x1b[0m  | Loc: %d ", language[langCont], nInjected[0] + 1);
+		printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mX\x1b[0m  | Location: %d ", language[langCont], nInjected[0] + 1);
 	else if (game[0] == 1)
-		printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mY\x1b[0m  | Loc: %d ", language[langCont], nInjected[0] + 1);
+		printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mY\x1b[0m  | Location: %d ", language[langCont], nInjected[0] + 1);
 	else if (game[0] == 2)
-		printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mOR\x1b[0m | Loc: %d ", language[langCont], nInjected[0] + 1);
+		printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mOR\x1b[0m | Location: %d ", language[langCont], nInjected[0] + 1);
 	else if (game[0] == 3)
-		printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mAS\x1b[0m | Loc: %d ", language[langCont], nInjected[0] + 1);
+		printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mAS\x1b[0m | Location: %d ", language[langCont], nInjected[0] + 1);
 	
-	printf("\x1b[14;0HYou need to have a \x1b[32mmain\x1b[0m located at\n\x1b[32m/JKSV/Saves/[game]/EventAssistant/main\x1b[0m.");
-	printf("\x1b[17;0H----------------------------------------");
-	printf("\x1b[18;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this. This is a new way to inject WC6\nand I need time to perfect it.");
-	printf("\x1b[23;0H----------------------------------------");
+	if (adapt == 0)
+		printf("\x1b[13;0H\x1b[32mY\x1b[0m: Adapt save to language: \x1b[32mNO \x1b[0m");
+	else if (adapt == 1)
+		printf("\x1b[13;0H\x1b[32mY\x1b[0m: Adapt save to language: \x1b[32mYES\x1b[0m");
+	
+	printf("\x1b[15;0HYou need to have a \x1b[32mmain\x1b[0m located at\n\x1b[32m/JKSV/Saves/[game]/EventAssistant/main\x1b[0m.");
+	printf("\x1b[18;0H----------------------------------------");
+	printf("\x1b[19;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this. This is a new way to inject WC6\nand I need time to perfect it.");
+	printf("\x1b[24;0H----------------------------------------");
 	printf("\x1b[29;11HPress B to return.");
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
@@ -298,19 +304,19 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 				break;
 			}
 			case 2 : {
-				snprintf(testurl, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/ita/%d.wc6", i);
-				break;
-			}
-			case 3 : {
 				snprintf(testurl, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/fre/%d.wc6", i);
 				break;
 			}
+			case 3 : {
+				snprintf(testurl, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/ita/%d.wc6", i);
+				break;
+			}
 			case 4 : {
-				snprintf(testurl, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/spa/%d.wc6", i);
+				snprintf(testurl, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/ger/%d.wc6", i);
 				break;
 			}
 			case 5 : {
-				snprintf(testurl, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/ger/%d.wc6", i);
+				snprintf(testurl, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/spa/%d.wc6", i);
 				break;
 			}
 			case 6 : {
@@ -358,7 +364,17 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 		hidScanInput();
 		
 		if (hidKeysDown() & KEY_B) 
-			break; 
+			break;
+		
+		if (hidKeysDown() & KEY_Y) {
+			if (adapt == 0) adapt = 1;
+			else if (adapt == 1) adapt = 0;
+			
+			if (adapt == 0)
+				printf("\x1b[13;0H\x1b[32mY\x1b[0m: Adapt save to language: \x1b[32mNO \x1b[0m");
+			else if (adapt == 1)
+				printf("\x1b[13;0H\x1b[32mY\x1b[0m: Adapt save to language: \x1b[32mYES\x1b[0m");
+		}
 		
 		if (hidKeysDown() & KEY_X) {
 			if (overwrite[0] == 0) overwrite[0] = 1;
@@ -384,27 +400,27 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 			}
 			
 			if (game[0] == 0) 
-				printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mX\x1b[0m  | Loc: %d ", language[langCont], nInjected[0] + 1);
+				printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mX\x1b[0m  | Location: %d ", language[langCont], nInjected[0] + 1);
 			else if (game[0] == 1)
-				printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mY\x1b[0m  | Loc: %d ", language[langCont], nInjected[0] + 1);
+				printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mY\x1b[0m  | Location: %d ", language[langCont], nInjected[0] + 1);
 			else if (game[0] == 2)
-				printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mOR\x1b[0m | Loc: %d ", language[langCont], nInjected[0] + 1);
+				printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mOR\x1b[0m | Location: %d ", language[langCont], nInjected[0] + 1);
 			else if (game[0] == 3)
-				printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mAS\x1b[0m | Loc: %d ", language[langCont], nInjected[0] + 1);
+				printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mAS\x1b[0m | Location: %d ", language[langCont], nInjected[0] + 1);
 		}
 		
 		if (hidKeysDown() & KEY_SELECT) {
 			if (langCont < 6) langCont++;
 			else if (langCont == 6) langCont = 0;
 			
-			if (game[0] == 0)
-				printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mX\x1b[0m  | Loc: %d ", language[langCont], nInjected[0] + 1);
+			if (game[0] == 0) 
+				printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mX\x1b[0m  | Location: %d ", language[langCont], nInjected[0] + 1);
 			else if (game[0] == 1)
-				printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mY\x1b[0m  | Loc: %d ", language[langCont], nInjected[0] + 1);
+				printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mY\x1b[0m  | Location: %d ", language[langCont], nInjected[0] + 1);
 			else if (game[0] == 2)
-				printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mOR\x1b[0m | Loc: %d ", language[langCont], nInjected[0] + 1);
+				printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mOR\x1b[0m | Location: %d ", language[langCont], nInjected[0] + 1);
 			else if (game[0] == 3)
-				printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mAS\x1b[0m | Loc: %d ", language[langCont], nInjected[0] + 1);
+				printf("\x1b[12;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mAS\x1b[0m | Location: %d ", language[langCont], nInjected[0] + 1);
 		}
 
 		if (hidKeysDown() & KEY_START) {
@@ -423,8 +439,8 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 			u32 contentsize = 0;
 			
 			char *wc6url = (char*)malloc(100*sizeof(char));
-			char *path[4] = {"/JKSV/Saves/Pokémon_X/EventAssistant/main", "/JKSV/Saves/Pokémon_Y/EventAssistant/main", "/JKSV/Saves/Pokémon_Omega_Ruby/EventAssistant/main", "/JKSV/Saves/Pokémon_Alpha_Sapphire/EventAssistant/main"};
-			char *bakPath[4] = {"/JKSV/Saves/Pokémon_X/EventAssistant/main.bak", "/JKSV/Saves/Pokémon_Y/EventAssistant/main.bak", "/JKSV/Saves/Pokémon_Omega_Ruby/EventAssistant/main.bak", "/JKSV/Saves/Pokémon_Alpha_Sapphire/EventAssistant/main.bak"};
+			const char *path[4] = {"/JKSV/Saves/Pokémon_X/EventAssistant/main", "/JKSV/Saves/Pokémon_Y/EventAssistant/main", "/JKSV/Saves/Pokémon_Omega_Ruby/EventAssistant/main", "/JKSV/Saves/Pokémon_Alpha_Sapphire/EventAssistant/main"};
+			const char *bakPath[4] = {"/JKSV/Saves/Pokémon_X/EventAssistant/main.bak", "/JKSV/Saves/Pokémon_Y/EventAssistant/main.bak", "/JKSV/Saves/Pokémon_Omega_Ruby/EventAssistant/main.bak", "/JKSV/Saves/Pokémon_Alpha_Sapphire/EventAssistant/main.bak"};
 			
 			switch (langCont) {
 				case 0 : {
@@ -436,19 +452,19 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 					break;
 				}
 				case 2 : {
-					snprintf(wc6url, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/ita/%d.wc6", i);
-					break;
-				}
-				case 3 : {
 					snprintf(wc6url, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/fre/%d.wc6", i);
 					break;
 				}
+				case 3 : {
+					snprintf(wc6url, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/ita/%d.wc6", i);
+					break;
+				}
 				case 4 : {
-					snprintf(wc6url, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/spa/%d.wc6", i);
+					snprintf(wc6url, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/ger/%d.wc6", i);
 					break;
 				}
 				case 5 : {
-					snprintf(wc6url, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/ger/%d.wc6", i);
+					snprintf(wc6url, 100, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/wc6/spa/%d.wc6", i);
 					break;
 				}
 				case 6 : {
@@ -532,7 +548,12 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
 				}
 			}
 			
-			int rwCHK = rewriteCHK(mainbuf, wc6buf, game[0], i, nInjected);
+			if (adapt == 1)
+				injectLanguage(mainbuf, langCont);	
+			
+			injectWC6(mainbuf, wc6buf, game[0], i, nInjected);
+			
+			int rwCHK = rewriteCHK(mainbuf, game[0]);
 			if (rwCHK != 0) 
 				return rwCHK;
 			

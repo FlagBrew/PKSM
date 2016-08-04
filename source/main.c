@@ -7,11 +7,11 @@
 #include "util.h"
 #include "database.h"
 
-#define ENTRIES 10
+#define ENTRIES 11
 
 #define V1 1
 #define V2 8
-#define V3 2
+#define V3 3
 
 void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, char* menuEntries[]){
 	consoleSelect(&bottomScreen);
@@ -33,7 +33,7 @@ int main() {
 	consoleInit(GFX_TOP, &topScreen);
 	consoleInit(GFX_BOTTOM, &bottomScreen);
 	
-	char *menuEntries[ENTRIES] = {"Gen VI's Event Database", "Wi-Fi distributions", "Code distributions", "Local distributions", "Capture probability calculator", "PID Checker", "Common PS dates database", "Changelog", "FAQ & instructions", "Update .cia"};
+	char *menuEntries[ENTRIES] = {"Gen VI's Event Database", "Language changer", "Wi-Fi distributions", "Code distributions", "Local distributions", "Capture probability calculator", "PID Checker", "Common PS dates database", "Changelog", "FAQ & instructions", "Update .cia"};
 	
 	int currentEntry = 0;
 	
@@ -80,7 +80,32 @@ int main() {
 					break;
 				}
 				
-				case 1 :  {
+				case 1 : {
+					int ret = changeLanguage(topScreen, bottomScreen);
+					consoleSelect(&topScreen);
+					if (ret == 1) printf("\x1b[4;0H\x1b[32mLanguage changed correctly\x1b[0m.");
+					else if (ret != 1 && ret != 0) printf("\x1b[4;0H\x1b[31mAn error occurred\x1b[0m.");
+					
+					if (ret != 0) {
+						while (aptMainLoop()) {
+							gspWaitForVBlank();
+							hidScanInput();
+							
+							if (hidKeysDown() & KEY_B) break;
+							
+							gfxFlushBuffers();
+							gfxSwapBuffers();
+						}
+					}
+					
+					consoleSelect(&bottomScreen);
+					printf("\x1b[2J");
+					consoleSelect(&topScreen);
+					intro(topScreen, bottomScreen, currentEntry, menuEntries);
+					break;
+				}
+				
+				case 2 :  {
 					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/worldwide1.txt");
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
@@ -89,7 +114,7 @@ int main() {
 					break;
 				}
 				
-				case 2 : {
+				case 3 : {
 					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/worldwide2.txt");
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
@@ -98,7 +123,7 @@ int main() {
 					break;
 				}
 				
-				case 3 : {
+				case 4 : {
 					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/local.txt");
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
@@ -107,7 +132,7 @@ int main() {
 					break;
 				}
 				
-				case 4 : {
+				case 5 : {
 					catchrate(topScreen, bottomScreen);
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
@@ -116,7 +141,7 @@ int main() {
 					break;
 				}
 				
-				case 5 : {
+				case 6 : {
 					PID(topScreen, bottomScreen);
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
@@ -125,7 +150,7 @@ int main() {
 					break;
 				}
 				
-				case 6 : {
+				case 7 : {
 					psDates(topScreen, bottomScreen);
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
@@ -134,7 +159,7 @@ int main() {
 					break;
 				}
 
-				case 7 : {			
+				case 8 : {			
 					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/info.txt");
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
@@ -143,7 +168,7 @@ int main() {
 					break;					
 				}
 				
-				case 8 : {
+				case 9 : {
 					faq(topScreen, bottomScreen);
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
@@ -152,7 +177,7 @@ int main() {
 					break;
 				}	
 
-				case 9 : {
+				case 10 : {
 					update(topScreen, bottomScreen);
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");

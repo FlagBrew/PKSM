@@ -99,8 +99,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 			else if (ret == -10) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mFailure to malloc temp chk var\x1b[0m."); 
 			else if (ret == -11) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mReached the maximum number of injected\nwc6\x1b[0m.Restart.");
 			else if (ret == -12) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mEon Ticket is not available on XY\x1b[0m.");
-			
-			printf("\x1b[27;0H    Please check your connection....");
+
 			printf("\x1b[29;12HPress B to exit.");			
 			consoleSelect(&topScreen);
 			printf("\x1b[2J");	
