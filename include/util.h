@@ -11,5 +11,7 @@ u16 ccitt16(u8* data, u32 len);
 int rewriteCHK(u8 *mainbuf, int game);
 void injectWC6(u8* mainbuf, u8* wc6buf, int game, int i, int nInjected[]);
 void injectLanguage(u8* mainbuf, int i);
+void injectMoney(u8* mainbuf, int i);
 void faq(PrintConsole topScreen, PrintConsole bottomScreen);
-int changeLanguage(PrintConsole topScreen, PrintConsole bottomScreen);
+void refreshValues(PrintConsole topScreen, int game, int langCont);
+int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen);

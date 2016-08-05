@@ -11,7 +11,7 @@
 
 #define V1 1
 #define V2 8
-#define V3 3
+#define V3 4
 
 void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, char* menuEntries[]){
 	consoleSelect(&bottomScreen);
@@ -33,7 +33,7 @@ int main() {
 	consoleInit(GFX_TOP, &topScreen);
 	consoleInit(GFX_BOTTOM, &bottomScreen);
 	
-	char *menuEntries[ENTRIES] = {"Gen VI's Event Database", "Language changer", "Wi-Fi distributions", "Code distributions", "Local distributions", "Capture probability calculator", "PID Checker", "Common PS dates database", "Changelog", "FAQ & instructions", "Update .cia"};
+	char *menuEntries[ENTRIES] = {"Gen VI's Event Database", "Save file editor", "Wi-Fi distributions", "Code distributions", "Local distributions", "Capture probability calculator", "PID Checker", "Common PS dates database", "Changelog", "FAQ & instructions", "Update .cia"};
 	
 	int currentEntry = 0;
 	
@@ -81,10 +81,10 @@ int main() {
 				}
 				
 				case 1 : {
-					int ret = changeLanguage(topScreen, bottomScreen);
+					int ret = saveFileEditor(topScreen, bottomScreen);
 					consoleSelect(&topScreen);
-					if (ret == 1) printf("\x1b[4;0H\x1b[32mLanguage changed correctly\x1b[0m.");
-					else if (ret != 1 && ret != 0) printf("\x1b[4;0H\x1b[31mAn error occurred\x1b[0m.");
+					if (ret == 1) printf("\x1b[28;0H\x1b[32mSettings changed correctly\x1b[0m.");
+					else if (ret != 1 && ret != 0) printf("\x1b[28;0H\x1b[31mAn error occurred\x1b[0m.");
 					
 					if (ret != 0) {
 						while (aptMainLoop()) {

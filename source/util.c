@@ -4,6 +4,8 @@
 #include <string.h>
 #include "http.h"
 
+#define ENTRIES 3
+
 void refresh(int currentEntry, PrintConsole topScreen, char *lista[], int N) {	
 	consoleSelect(&topScreen);
 	printf("\x1b[2;0H\x1b[30;0m");
@@ -166,6 +168,17 @@ void injectLanguage(u8* mainbuf, int i) {
 	*(mainbuf + 0x1402D) = value[i];
 }
 
+void injectMoney(u8* mainbuf, int i) {
+	switch (i) {
+		case 9999999 : {
+			*(mainbuf + 0x4208) = 0x7F;
+			*(mainbuf + 0x4209) = 0x96;
+			*(mainbuf + 0x420A) = 0x98;
+			break;
+		}
+	}
+}
+
 void faq(PrintConsole topScreen, PrintConsole bottomScreen) {
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
@@ -233,39 +246,57 @@ void faq(PrintConsole topScreen, PrintConsole bottomScreen) {
 	}
 }
 
-int changeLanguage(PrintConsole topScreen, PrintConsole bottomScreen) {
+void refreshValues(PrintConsole topScreen, int game, int langCont) {
 	char *language[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
+	consoleSelect(&topScreen);
+	switch (game) {
+		case 0 : {
+			printf("\x1b[2;8H\x1b[32mX \x1b[0m");
+			break;
+		}
+		case 1 : {
+			printf("\x1b[2;8H\x1b[32mY \x1b[0m");
+			break;
+		}
+		case 2 : {
+			printf("\x1b[2;8H\x1b[32mOR\x1b[0m");
+			break;
+		}
+		case 3 : {
+			printf("\x1b[2;8H\x1b[32mAS\x1b[0m");
+			break;
+		}
+	}
+	printf("\x1b[3;12H\x1b[32m%s\x1b[0m", language[langCont]);
+}
+
+int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen) {
 	const char *path[4] = {"/JKSV/Saves/Pokémon_X/EventAssistant/main", "/JKSV/Saves/Pokémon_Y/EventAssistant/main", "/JKSV/Saves/Pokémon_Omega_Ruby/EventAssistant/main", "/JKSV/Saves/Pokémon_Alpha_Sapphire/EventAssistant/main"};
 	const char *bakPath[4] = {"/JKSV/Saves/Pokémon_X/EventAssistant/main.bak", "/JKSV/Saves/Pokémon_Y/EventAssistant/main.bak", "/JKSV/Saves/Pokémon_Omega_Ruby/EventAssistant/main.bak", "/JKSV/Saves/Pokémon_Alpha_Sapphire/EventAssistant/main.bak"};	
 	int game = 0;
 	int langCont = 0;
 	
+	char *menuEntries[ENTRIES] = {"Game: ", "Language: ", "Set 9999999$"};
+	int currentEntry = 0;
+	
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
 	printf("----------------------------------------");
-	printf("\x1b[32mA\x1b[0m - Switch game\n");
-	printf("\x1b[32mSELECT\x1b[0m - Switch language\n");
-	printf("\x1b[31mSTART\x1b[0m - Change language\n");
+	printf("\x1b[32mA\x1b[0m - Switch setting\n");
+	printf("\x1b[31mSTART\x1b[0m - Start selected change\n");
 	printf("----------------------------------------");
 	printf("\x1b[6;0HYou need to have a \x1b[32mmain\x1b[0m located at\n\x1b[32m/JKSV/Saves/[game]/EventAssistant/main\x1b[0m.");
 	printf("\x1b[18;0H----------------------------------------");
-	printf("\x1b[19;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this. This is a new way to inject WC6\nand I need time to perfect it.");
+	printf("\x1b[19;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this.");
 	printf("\x1b[24;0H----------------------------------------");
 	printf("\x1b[29;12HPress B to exit.");
 	
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
-	printf("\x1b[47;34m                 Language Changer                 \x1b[0m\n");
-
-	if (game == 0) 
-		printf("\x1b[2;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mX \x1b[0m", language[langCont]);
-	else if (game == 1)
-		printf("\x1b[2;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mY \x1b[0m", language[langCont]);
-	else if (game == 2)
-		printf("\x1b[2;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mOR\x1b[0m", language[langCont]);
-	else if (game == 3)
-		printf("\x1b[2;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mAS\x1b[0m", language[langCont]);	
+	printf("\x1b[47;34m                 Save file Editor                 \x1b[0m\n");
 	
+	refresh(currentEntry, topScreen, menuEntries, ENTRIES);
+	refreshValues(topScreen, game, langCont);	
 	
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
@@ -274,32 +305,46 @@ int changeLanguage(PrintConsole topScreen, PrintConsole bottomScreen) {
 		if (hidKeysDown() & KEY_B) 
 			break; 
 		
-		if (hidKeysDown() & KEY_A) {
-			if (game < 3) game += 1;
-			else if (game == 3) game = 0;
-			
-			if (game == 0) 
-				printf("\x1b[2;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mX \x1b[0m", language[langCont]);
-			else if (game == 1)
-				printf("\x1b[2;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mY \x1b[0m", language[langCont]);
-			else if (game == 2)
-				printf("\x1b[2;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mOR\x1b[0m", language[langCont]);
-			else if (game == 3)
-				printf("\x1b[2;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mAS\x1b[0m", language[langCont]);
+		if (hidKeysDown() & KEY_DUP) {
+			if (currentEntry == 0) {
+				currentEntry = ENTRIES - 1;
+				refresh(currentEntry, topScreen, menuEntries, ENTRIES);
+				refreshValues(topScreen, game, langCont);	
+			}
+			else if (currentEntry > 0) {
+				currentEntry--;
+				refresh(currentEntry, topScreen, menuEntries, ENTRIES);
+				refreshValues(topScreen, game, langCont);	
+			}
 		}
 		
-		if (hidKeysDown() & KEY_SELECT) {
-			if (langCont < 6) langCont++;
-			else if (langCont == 6) langCont = 0;
-			
-			if (game == 0) 
-				printf("\x1b[2;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mX \x1b[0m", language[langCont]);
-			else if (game == 1)
-				printf("\x1b[2;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mY \x1b[0m", language[langCont]);
-			else if (game == 2)
-				printf("\x1b[2;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mOR\x1b[0m", language[langCont]);
-			else if (game == 3)
-				printf("\x1b[2;0HLanguage: \x1b[32m%s\x1b[0m | Mode: \x1b[32mAS\x1b[0m", language[langCont]);
+		if (hidKeysDown() & KEY_DDOWN) {
+			if (currentEntry == ENTRIES - 1) {
+				currentEntry = 0;
+				refresh(currentEntry, topScreen, menuEntries, ENTRIES);
+				refreshValues(topScreen, game, langCont);	
+			}
+			else if (currentEntry < ENTRIES - 1) {
+				currentEntry++;
+				refresh(currentEntry, topScreen, menuEntries, ENTRIES);
+				refreshValues(topScreen, game, langCont);
+			}
+		}
+		
+		if (hidKeysDown() & KEY_A) {
+			switch (currentEntry) {
+				case 0 : {
+					if (game < 3) game += 1;
+					else if (game == 3) game = 0;
+					break;
+				}
+				case 1 : {
+					if (langCont < 6) langCont++;
+					else if (langCont == 6) langCont = 0;					
+				}
+			}
+
+			refreshValues(topScreen, game, langCont);	
 		}
 
 		if (hidKeysDown() & KEY_START) {		
@@ -320,7 +365,16 @@ int changeLanguage(PrintConsole topScreen, PrintConsole bottomScreen) {
 			fwrite(mainbuf, 1, mainsize, fptr1);
 			fclose(fptr1);
 
-			injectLanguage(mainbuf, langCont);	
+			switch (currentEntry) {
+				case 1 : {
+					injectLanguage(mainbuf, langCont);
+					break;
+				}
+				case 2 : {
+					injectMoney(mainbuf, 9999999);
+					break;
+				}
+			}
 
 			int rwCHK = rewriteCHK(mainbuf, game);
 			if (rwCHK != 0) 
