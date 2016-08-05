@@ -168,7 +168,7 @@ void injectLanguage(u8* mainbuf, int i) {
 	*(mainbuf + 0x1402D) = value[i];
 }
 
-void injectMoney(u8* mainbuf, int i) {
+void injectMoney(u8* mainbuf, u64 i) {
 	switch (i) {
 		case 9999999 : {
 			*(mainbuf + 0x4208) = 0x7F;
