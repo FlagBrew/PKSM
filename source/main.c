@@ -83,8 +83,8 @@ int main() {
 				case 1 : {
 					int ret = saveFileEditor(topScreen, bottomScreen);
 					consoleSelect(&topScreen);
-					if (ret == 1) printf("\x1b[28;0H\x1b[32mSettings changed correctly\x1b[0m.");
-					else if (ret != 1 && ret != 0) printf("\x1b[28;0H\x1b[31mAn error occurred\x1b[0m.");
+					if (ret == 1) printf("\x1b[28;0H\x1b[32mSettings changed correctly\x1b[0m. Press B to return.");
+					else if (ret != 1 && ret != 0) printf("\x1b[28;0H\x1b[31mAn error occurred\x1b[0m. Press B to return.");
 					
 					if (ret != 0) {
 						while (aptMainLoop()) {

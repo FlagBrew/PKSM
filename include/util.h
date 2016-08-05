@@ -13,5 +13,5 @@ void injectWC6(u8* mainbuf, u8* wc6buf, int game, int i, int nInjected[]);
 void injectLanguage(u8* mainbuf, int i);
 void injectMoney(u8* mainbuf, u64 i);
 void faq(PrintConsole topScreen, PrintConsole bottomScreen);
-void refreshValues(PrintConsole topScreen, int game, int langCont);
+void refreshValues(PrintConsole topScreen, int game, int langCont, u64 money[], int moneyCont);
 int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen);

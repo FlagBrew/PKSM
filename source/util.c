@@ -170,6 +170,24 @@ void injectLanguage(u8* mainbuf, int i) {
 
 void injectMoney(u8* mainbuf, u64 i) {
 	switch (i) {
+		case 0 : {
+			*(mainbuf + 0x4208) = 0x00;
+			*(mainbuf + 0x4209) = 0x00;
+			*(mainbuf + 0x420A) = 0x00;
+			break;			
+		}	
+		case 200000 : {
+			*(mainbuf + 0x4208) = 0x40;
+			*(mainbuf + 0x4209) = 0x0D;
+			*(mainbuf + 0x420A) = 0x03;
+			break;			
+		}	
+		case 1000000 : {
+			*(mainbuf + 0x4208) = 0x40;
+			*(mainbuf + 0x4209) = 0x42;
+			*(mainbuf + 0x420A) = 0x0F;
+			break;			
+		}
 		case 9999999 : {
 			*(mainbuf + 0x4208) = 0x7F;
 			*(mainbuf + 0x4209) = 0x96;
@@ -246,37 +264,41 @@ void faq(PrintConsole topScreen, PrintConsole bottomScreen) {
 	}
 }
 
-void refreshValues(PrintConsole topScreen, int game, int langCont) {
+void refreshValues(PrintConsole topScreen, int game, int langCont, u64 money[], int moneyCont) {
 	char *language[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
 	consoleSelect(&topScreen);
 	switch (game) {
 		case 0 : {
-			printf("\x1b[2;8H\x1b[32mX \x1b[0m");
+			printf("\x1b[2;30H\x1b[32mX \x1b[0m");
 			break;
 		}
 		case 1 : {
-			printf("\x1b[2;8H\x1b[32mY \x1b[0m");
+			printf("\x1b[2;30H\x1b[32mY \x1b[0m");
 			break;
 		}
 		case 2 : {
-			printf("\x1b[2;8H\x1b[32mOR\x1b[0m");
+			printf("\x1b[2;30H\x1b[32mOR\x1b[0m");
 			break;
 		}
 		case 3 : {
-			printf("\x1b[2;8H\x1b[32mAS\x1b[0m");
+			printf("\x1b[2;30H\x1b[32mAS\x1b[0m");
 			break;
 		}
 	}
-	printf("\x1b[3;12H\x1b[32m%s\x1b[0m", language[langCont]);
+	printf("\x1b[3;30H\x1b[32m%s\x1b[0m", language[langCont]);
+	printf("\x1b[4;30H\x1b[32m%llu$       ", money[moneyCont]);
 }
 
 int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen) {
 	const char *path[4] = {"/JKSV/Saves/Pokémon_X/EventAssistant/main", "/JKSV/Saves/Pokémon_Y/EventAssistant/main", "/JKSV/Saves/Pokémon_Omega_Ruby/EventAssistant/main", "/JKSV/Saves/Pokémon_Alpha_Sapphire/EventAssistant/main"};
 	const char *bakPath[4] = {"/JKSV/Saves/Pokémon_X/EventAssistant/main.bak", "/JKSV/Saves/Pokémon_Y/EventAssistant/main.bak", "/JKSV/Saves/Pokémon_Omega_Ruby/EventAssistant/main.bak", "/JKSV/Saves/Pokémon_Alpha_Sapphire/EventAssistant/main.bak"};	
+	u64 money[4] = {0, 200000, 1000000, 9999999};
+	
 	int game = 0;
 	int langCont = 0;
+	int moneyCont = 0;
 	
-	char *menuEntries[ENTRIES] = {"Game: ", "Language: ", "Set 9999999$"};
+	char *menuEntries[ENTRIES] = {"Game:", "Set language to:", "Set money to:"};
 	int currentEntry = 0;
 	
 	consoleSelect(&bottomScreen);
@@ -296,7 +318,7 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("\x1b[47;34m                 Save file Editor                 \x1b[0m\n");
 	
 	refresh(currentEntry, topScreen, menuEntries, ENTRIES);
-	refreshValues(topScreen, game, langCont);	
+	refreshValues(topScreen, game, langCont, money, moneyCont);	
 	
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
@@ -309,12 +331,12 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen) {
 			if (currentEntry == 0) {
 				currentEntry = ENTRIES - 1;
 				refresh(currentEntry, topScreen, menuEntries, ENTRIES);
-				refreshValues(topScreen, game, langCont);	
+				refreshValues(topScreen, game, langCont, money, moneyCont);	
 			}
 			else if (currentEntry > 0) {
 				currentEntry--;
 				refresh(currentEntry, topScreen, menuEntries, ENTRIES);
-				refreshValues(topScreen, game, langCont);	
+				refreshValues(topScreen, game, langCont, money, moneyCont);	
 			}
 		}
 		
@@ -322,12 +344,12 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen) {
 			if (currentEntry == ENTRIES - 1) {
 				currentEntry = 0;
 				refresh(currentEntry, topScreen, menuEntries, ENTRIES);
-				refreshValues(topScreen, game, langCont);	
+				refreshValues(topScreen, game, langCont, money, moneyCont);	
 			}
 			else if (currentEntry < ENTRIES - 1) {
 				currentEntry++;
 				refresh(currentEntry, topScreen, menuEntries, ENTRIES);
-				refreshValues(topScreen, game, langCont);
+				refreshValues(topScreen, game, langCont, money, moneyCont);
 			}
 		}
 		
@@ -340,11 +362,17 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen) {
 				}
 				case 1 : {
 					if (langCont < 6) langCont++;
-					else if (langCont == 6) langCont = 0;					
+					else if (langCont == 6) langCont = 0;
+					break;					
+				}
+				case 2 : {
+					if (moneyCont < 3) moneyCont++;
+					else if (moneyCont == 3) moneyCont = 0;
+					break;					
 				}
 			}
 
-			refreshValues(topScreen, game, langCont);	
+			refreshValues(topScreen, game, langCont, money, moneyCont);	
 		}
 
 		if (hidKeysDown() & KEY_START) {		
@@ -352,7 +380,11 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen) {
 			
 			//reading main
 			FILE *fptr = fopen(path[game], "rt");
-			if (fptr == NULL) return -1;
+			if (fptr == NULL) {
+				fclose(fptr);
+				fsExit();
+				return -1;
+			}
 			fseek(fptr, 0, SEEK_END);
 			u32 mainsize = ftell(fptr);
 			u8* mainbuf = malloc(mainsize);
@@ -371,13 +403,13 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen) {
 					break;
 				}
 				case 2 : {
-					injectMoney(mainbuf, 9999999);
+					injectMoney(mainbuf, money[moneyCont]);
 					break;
 				}
 			}
 
 			int rwCHK = rewriteCHK(mainbuf, game);
-			if (rwCHK != 0) 
+			if (rwCHK != 0)
 				return rwCHK;
 			
 			FILE *fptr2 = fopen(path[game], "wb");
@@ -385,7 +417,6 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen) {
 			fclose(fptr2);
 			
 			free(mainbuf);
-
 			fsExit();
 			return 1;
 		}
