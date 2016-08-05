@@ -4,7 +4,8 @@
 #include <string.h>
 #include "http.h"
 
-#define ENTRIES 3
+#define ENTRIES 4
+#define ITEM 2
 
 void refresh(int currentEntry, PrintConsole topScreen, char *lista[], int N) {	
 	consoleSelect(&topScreen);
@@ -197,6 +198,25 @@ void injectMoney(u8* mainbuf, u64 i) {
 	}
 }
 
+void injectItem(u8* mainbuf, int i) {
+	switch (i) {
+		case 0 : {
+			*(mainbuf + 0x400) = 0x01;
+			*(mainbuf + 0x401) = 0x00;
+			*(mainbuf + 0x402) = 0x01;
+			*(mainbuf + 0x403) = 0x00;
+			break;			
+		}
+		case 1 : {
+			*(mainbuf + 0x400) = 0x01;
+			*(mainbuf + 0x401) = 0x00;
+			*(mainbuf + 0x402) = 0xE3;
+			*(mainbuf + 0x403) = 0x03;
+			break;				
+		}
+	}
+}
+
 void faq(PrintConsole topScreen, PrintConsole bottomScreen) {
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
@@ -264,7 +284,7 @@ void faq(PrintConsole topScreen, PrintConsole bottomScreen) {
 	}
 }
 
-void refreshValues(PrintConsole topScreen, int game, int langCont, u64 money[], int moneyCont) {
+void refreshValues(PrintConsole topScreen, int game, int langCont, u64 money[], int moneyCont, char* item[], int itemCont) {
 	char *language[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
 	consoleSelect(&topScreen);
 	switch (game) {
@@ -287,18 +307,21 @@ void refreshValues(PrintConsole topScreen, int game, int langCont, u64 money[], 
 	}
 	printf("\x1b[3;30H\x1b[32m%s\x1b[0m", language[langCont]);
 	printf("\x1b[4;30H\x1b[32m%llu$       ", money[moneyCont]);
+	printf("\x1b[5;30H\x1b[32m%s      ", item[itemCont]);
 }
 
 int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen) {
 	const char *path[4] = {"/JKSV/Saves/Pokémon_X/EventAssistant/main", "/JKSV/Saves/Pokémon_Y/EventAssistant/main", "/JKSV/Saves/Pokémon_Omega_Ruby/EventAssistant/main", "/JKSV/Saves/Pokémon_Alpha_Sapphire/EventAssistant/main"};
 	const char *bakPath[4] = {"/JKSV/Saves/Pokémon_X/EventAssistant/main.bak", "/JKSV/Saves/Pokémon_Y/EventAssistant/main.bak", "/JKSV/Saves/Pokémon_Omega_Ruby/EventAssistant/main.bak", "/JKSV/Saves/Pokémon_Alpha_Sapphire/EventAssistant/main.bak"};	
 	u64 money[4] = {0, 200000, 1000000, 9999999};
+	char *itemList[ITEM] = {"1x Master Ball", "999x Master Ball"};
 	
 	int game = 0;
 	int langCont = 0;
 	int moneyCont = 0;
+	int itemCont = 0;
 	
-	char *menuEntries[ENTRIES] = {"Game:", "Set language to:", "Set money to:"};
+	char *menuEntries[ENTRIES] = {"Game:", "Set language to:", "Set money to:", "Set item to Slot 1:"};
 	int currentEntry = 0;
 	
 	consoleSelect(&bottomScreen);
@@ -318,7 +341,7 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("\x1b[47;34m                 Save file Editor                 \x1b[0m\n");
 	
 	refresh(currentEntry, topScreen, menuEntries, ENTRIES);
-	refreshValues(topScreen, game, langCont, money, moneyCont);	
+	refreshValues(topScreen, game, langCont, money, moneyCont, itemList, itemCont);	
 	
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
@@ -331,12 +354,12 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen) {
 			if (currentEntry == 0) {
 				currentEntry = ENTRIES - 1;
 				refresh(currentEntry, topScreen, menuEntries, ENTRIES);
-				refreshValues(topScreen, game, langCont, money, moneyCont);	
+				refreshValues(topScreen, game, langCont, money, moneyCont, itemList, itemCont);	
 			}
 			else if (currentEntry > 0) {
 				currentEntry--;
 				refresh(currentEntry, topScreen, menuEntries, ENTRIES);
-				refreshValues(topScreen, game, langCont, money, moneyCont);	
+				refreshValues(topScreen, game, langCont, money, moneyCont, itemList, itemCont);	
 			}
 		}
 		
@@ -344,12 +367,12 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen) {
 			if (currentEntry == ENTRIES - 1) {
 				currentEntry = 0;
 				refresh(currentEntry, topScreen, menuEntries, ENTRIES);
-				refreshValues(topScreen, game, langCont, money, moneyCont);	
+				refreshValues(topScreen, game, langCont, money, moneyCont, itemList, itemCont);	
 			}
 			else if (currentEntry < ENTRIES - 1) {
 				currentEntry++;
 				refresh(currentEntry, topScreen, menuEntries, ENTRIES);
-				refreshValues(topScreen, game, langCont, money, moneyCont);
+				refreshValues(topScreen, game, langCont, money, moneyCont, itemList, itemCont);
 			}
 		}
 		
@@ -370,9 +393,14 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen) {
 					else if (moneyCont == 3) moneyCont = 0;
 					break;					
 				}
+				case 3 : {
+					if (itemCont < ITEM - 1) itemCont++;
+					else if (itemCont == ITEM - 1) itemCont = 0;
+					break;					
+				}
 			}
 
-			refreshValues(topScreen, game, langCont, money, moneyCont);	
+			refreshValues(topScreen, game, langCont, money, moneyCont, itemList, itemCont);	
 		}
 
 		if (hidKeysDown() & KEY_START) {		
@@ -404,6 +432,10 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen) {
 				}
 				case 2 : {
 					injectMoney(mainbuf, money[moneyCont]);
+					break;
+				}
+				case 3 : {
+					injectItem(mainbuf, itemCont);
 					break;
 				}
 			}

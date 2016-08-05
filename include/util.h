@@ -12,6 +12,7 @@ int rewriteCHK(u8 *mainbuf, int game);
 void injectWC6(u8* mainbuf, u8* wc6buf, int game, int i, int nInjected[]);
 void injectLanguage(u8* mainbuf, int i);
 void injectMoney(u8* mainbuf, u64 i);
+void injectItem(u8* mainbuf, int i);
 void faq(PrintConsole topScreen, PrintConsole bottomScreen);
-void refreshValues(PrintConsole topScreen, int game, int langCont, u64 money[], int moneyCont);
+void refreshValues(PrintConsole topScreen, int game, int langCont, u64 money[], int moneyCont, char* item[], int itemCont);
 int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen);
