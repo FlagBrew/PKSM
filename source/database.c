@@ -27,7 +27,6 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("\x1b[32mL/R\x1b[0m - Switch page\n");
 	printf("\x1b[32mA\x1b[0m - Open/close entry\n");
 	printf("----------------------------------------");
-	printf("\x1b[27;0H    Please check your connection....");
 	printf("\x1b[29;12HPress B to exit.");
 	
 	consoleSelect(&topScreen);		
