@@ -35,6 +35,7 @@ int main() {
 	
 	char *menuEntries[ENTRIES] = {"Gen VI's Event Database", "Save file editor", "Wi-Fi distributions", "Code distributions", "Local distributions", "Capture probability calculator", "PID Checker", "Common PS dates database", "Changelog", "FAQ & instructions", "Update .cia"};
 	
+	int game[1] = {0};
 	int currentEntry = 0;
 	
 	consoleSelect(&topScreen);
@@ -81,7 +82,7 @@ int main() {
 				}
 				
 				case 1 : {
-					int ret = saveFileEditor(topScreen, bottomScreen);
+					int ret = saveFileEditor(topScreen, bottomScreen, game);
 					consoleSelect(&topScreen);
 					if (ret == 1) printf("\x1b[28;0H\x1b[32mSettings changed correctly\x1b[0m. Press B to return.");
 					else if (ret != 1 && ret != 0) printf("\x1b[28;0H\x1b[31mAn error occurred\x1b[0m. Press B to return.");

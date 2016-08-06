@@ -4,8 +4,8 @@
 #include <string.h>
 #include "http.h"
 
-#define ENTRIES 4
-#define ITEM 2
+#define ENTRIES 7
+#define ITEM 4
 
 void refresh(int currentEntry, PrintConsole topScreen, char *lista[], int N) {	
 	consoleSelect(&topScreen);
@@ -214,6 +214,54 @@ void injectItem(u8* mainbuf, int i) {
 			*(mainbuf + 0x403) = 0x03;
 			break;				
 		}
+		case 2 : {
+			*(mainbuf + 0xD70) = 0x32;
+			*(mainbuf + 0xD71) = 0x00;
+			*(mainbuf + 0xD72) = 0x01;
+			*(mainbuf + 0xD73) = 0x00;
+			break;
+		}
+		case 3 : {
+			*(mainbuf + 0xD70) = 0x32;
+			*(mainbuf + 0xD71) = 0x00;
+			*(mainbuf + 0xD72) = 0xE3;
+			*(mainbuf + 0xD73) = 0x03;
+			break;
+		}
+	}
+}
+
+void injectBP(u8* mainbuf, int i) {
+	switch (i) {
+		case 0 : {
+			*(mainbuf + 0x4230) = 0x00;
+			*(mainbuf + 0x4231) = 0x00;
+			break;			
+		}
+		case 9999 : {
+			*(mainbuf + 0x4230) = 0x0F;
+			*(mainbuf + 0x4231) = 0x27;
+			break;			
+		}
+	}
+}
+
+void injectBadges(u8* mainbuf, int i) {
+	const u32 value[9] = {0x00, 0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F, 0x7F, 0xFF};
+	
+	*(mainbuf + 0x420C) = value[i];
+}
+
+void injectTM(u8* mainbuf) {
+	const u32 values[] = {0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5A, 0x5B, 0x5C, 0x5D, 0x5E, 0x5F, 0x60, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6A, 0x6B, 0x6C, 0x6D, 0x6E, 0x6F, 0x70, 0x71, 0x72, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 0x79, 0x7A, 0x7B, 0x7C, 0x7D, 0x7E, 0x7F, 0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8A, 0x8B, 0x8C, 0x8D, 0x8E, 0x8F, 0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97, 0x98, 0x99, 0x9A, 0x9B, 0x9C, 0x9D, 0x9E, 0x9F, 0xA0, 0xA1, 0xA2, 0xA3, 0x6A, 0x6B, 0x6C, 0xB2, 0xB3, 0xB4, 0xB5, 0xB6};
+	for (int i = 0; i < 100; i++) {
+		*(mainbuf + 0xBC0 + i * 4) = values[i];
+		*(mainbuf + 0xBC0 + i * 4 + 1) = 0x01;
+		*(mainbuf + 0xBC0 + i * 4 + 2) = 0x01;
+		*(mainbuf + 0xBC0 + i * 4 + 3) = 0x00;
+	}
+	for (int i = 0; i < 8; i++) {
+		*(mainbuf + 0xD31 + i * 4) = 0x02;
 	}
 }
 
@@ -284,7 +332,7 @@ void faq(PrintConsole topScreen, PrintConsole bottomScreen) {
 	}
 }
 
-void refreshValues(PrintConsole topScreen, int game, int langCont, u64 money[], int moneyCont, char* item[], int itemCont) {
+void refreshValues(PrintConsole topScreen, int game, int langCont, u64 money[], int moneyCont, char* item[], int itemCont, int BP[], int BPCont, int badgeCont) {
 	char *language[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
 	consoleSelect(&topScreen);
 	switch (game) {
@@ -306,22 +354,27 @@ void refreshValues(PrintConsole topScreen, int game, int langCont, u64 money[], 
 		}
 	}
 	printf("\x1b[3;30H\x1b[32m%s\x1b[0m", language[langCont]);
-	printf("\x1b[4;30H\x1b[32m%llu$       ", money[moneyCont]);
-	printf("\x1b[5;30H\x1b[32m%s      ", item[itemCont]);
+	printf("\x1b[4;30H\x1b[32m%llu\x1b[0m$       ", money[moneyCont]);
+	printf("\x1b[5;30H\x1b[32m%s\x1b[0m    ", item[itemCont]);
+	printf("\x1b[6;30H\x1b[32m%d\x1b[0m    ", BP[BPCont]);
+	printf("\x1b[7;30H\x1b[32m%d\x1b[0m badges", badgeCont);
 }
 
-int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen) {
+int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[]) {
+	char *menuEntries[ENTRIES] = {"Game:", "Set language to:", "Set money to:", "Set item to Slot 1:", "Set Battle Points to:", "Set number of badges to:", "Set all TMs"};
+	
 	const char *path[4] = {"/JKSV/Saves/Pokémon_X/EventAssistant/main", "/JKSV/Saves/Pokémon_Y/EventAssistant/main", "/JKSV/Saves/Pokémon_Omega_Ruby/EventAssistant/main", "/JKSV/Saves/Pokémon_Alpha_Sapphire/EventAssistant/main"};
 	const char *bakPath[4] = {"/JKSV/Saves/Pokémon_X/EventAssistant/main.bak", "/JKSV/Saves/Pokémon_Y/EventAssistant/main.bak", "/JKSV/Saves/Pokémon_Omega_Ruby/EventAssistant/main.bak", "/JKSV/Saves/Pokémon_Alpha_Sapphire/EventAssistant/main.bak"};	
 	u64 money[4] = {0, 200000, 1000000, 9999999};
-	char *itemList[ITEM] = {"1x Master Ball", "999x Master Ball"};
-	
-	int game = 0;
+	char *itemList[ITEM] = {"1x Master Ball", "995x Master Ball", "1x Rare Candy", "995x Rare Candy"};
+	int BP[2] = {0, 9999};
+
 	int langCont = 0;
 	int moneyCont = 0;
 	int itemCont = 0;
-	
-	char *menuEntries[ENTRIES] = {"Game:", "Set language to:", "Set money to:", "Set item to Slot 1:"};
+	int BPCont = 0;
+	int badgeCont = 0;
+
 	int currentEntry = 0;
 	
 	consoleSelect(&bottomScreen);
@@ -341,7 +394,7 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("\x1b[47;34m                 Save file Editor                 \x1b[0m\n");
 	
 	refresh(currentEntry, topScreen, menuEntries, ENTRIES);
-	refreshValues(topScreen, game, langCont, money, moneyCont, itemList, itemCont);	
+	refreshValues(topScreen, game[0], langCont, money, moneyCont, itemList, itemCont, BP, BPCont, badgeCont);	
 	
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
@@ -354,12 +407,12 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen) {
 			if (currentEntry == 0) {
 				currentEntry = ENTRIES - 1;
 				refresh(currentEntry, topScreen, menuEntries, ENTRIES);
-				refreshValues(topScreen, game, langCont, money, moneyCont, itemList, itemCont);	
+				refreshValues(topScreen, game[0], langCont, money, moneyCont, itemList, itemCont, BP, BPCont, badgeCont);	
 			}
 			else if (currentEntry > 0) {
 				currentEntry--;
 				refresh(currentEntry, topScreen, menuEntries, ENTRIES);
-				refreshValues(topScreen, game, langCont, money, moneyCont, itemList, itemCont);	
+				refreshValues(topScreen, game[0], langCont, money, moneyCont, itemList, itemCont, BP, BPCont, badgeCont);	
 			}
 		}
 		
@@ -367,20 +420,20 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen) {
 			if (currentEntry == ENTRIES - 1) {
 				currentEntry = 0;
 				refresh(currentEntry, topScreen, menuEntries, ENTRIES);
-				refreshValues(topScreen, game, langCont, money, moneyCont, itemList, itemCont);	
+				refreshValues(topScreen, game[0], langCont, money, moneyCont, itemList, itemCont, BP, BPCont, badgeCont);	
 			}
 			else if (currentEntry < ENTRIES - 1) {
 				currentEntry++;
 				refresh(currentEntry, topScreen, menuEntries, ENTRIES);
-				refreshValues(topScreen, game, langCont, money, moneyCont, itemList, itemCont);
+				refreshValues(topScreen, game[0], langCont, money, moneyCont, itemList, itemCont, BP, BPCont, badgeCont);
 			}
 		}
 		
 		if (hidKeysDown() & KEY_A) {
 			switch (currentEntry) {
 				case 0 : {
-					if (game < 3) game += 1;
-					else if (game == 3) game = 0;
+					if (game[0] < 3) game[0] += 1;
+					else if (game[0] == 3) game[0] = 0;
 					break;
 				}
 				case 1 : {
@@ -398,16 +451,25 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen) {
 					else if (itemCont == ITEM - 1) itemCont = 0;
 					break;					
 				}
+				case 4 : {
+					if (BPCont < 1) BPCont++;
+					else if (BPCont == 1) BPCont = 0;
+					break;					
+				}
+				case 5 : {
+					if (badgeCont < 8) badgeCont++;
+					else if (badgeCont == 8) badgeCont = 0;
+					break;
+				}
 			}
-
-			refreshValues(topScreen, game, langCont, money, moneyCont, itemList, itemCont);	
+			refreshValues(topScreen, game[0], langCont, money, moneyCont, itemList, itemCont, BP, BPCont, badgeCont);	
 		}
 
 		if (hidKeysDown() & KEY_START) {		
 			fsInit();
 			
 			//reading main
-			FILE *fptr = fopen(path[game], "rt");
+			FILE *fptr = fopen(path[game[0]], "rt");
 			if (fptr == NULL) {
 				fclose(fptr);
 				fsExit();
@@ -421,7 +483,7 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen) {
 			fclose(fptr);
 			
 			//doing backup
-			FILE *fptr1 = fopen(bakPath[game], "wb");
+			FILE *fptr1 = fopen(bakPath[game[0]], "wb");
 			fwrite(mainbuf, 1, mainsize, fptr1);
 			fclose(fptr1);
 
@@ -438,13 +500,25 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen) {
 					injectItem(mainbuf, itemCont);
 					break;
 				}
+				case 4 : {
+					injectBP(mainbuf, BP[BPCont]);
+					break;
+				}
+				case 5 : {
+					injectBadges(mainbuf, badgeCont);
+					break;
+				}
+				case 6 : {
+					injectTM(mainbuf);
+					break;
+				}
 			}
 
-			int rwCHK = rewriteCHK(mainbuf, game);
+			int rwCHK = rewriteCHK(mainbuf, game[0]);
 			if (rwCHK != 0)
 				return rwCHK;
 			
-			FILE *fptr2 = fopen(path[game], "wb");
+			FILE *fptr2 = fopen(path[game[0]], "wb");
 			fwrite(mainbuf, 1, mainsize, fptr2);
 			fclose(fptr2);
 			
