@@ -4,10 +4,11 @@
 #include <string.h>
 #include "util.h"
 
-#define ENTRIES 9
-#define BALLS 16
+#define ENTRIES 14
+#define BALLS 25
 #define ITEM 18
 #define HEAL 26
+#define BERRIES 64
 
 void injectWC6(u8* mainbuf, u8* wc6buf, int game, int i, int nInjected[]) {
 	if (game == 2 || game == 3) {		
@@ -58,9 +59,11 @@ void injectMoney(u8* mainbuf, u64 i) {
 	}
 }
 
-void injectItem(u8* mainbuf, int i, u32 values[], int type, int nInjected[]) {
-	u32 offset[3] = {0x400, 0xD70, 0xE70};
-	
+void injectItem(u8* mainbuf, int i, u32 values[], int type, int nInjected[], int game) {
+	u32 offset[3] = {0x400, 0xD70, 0xE68};
+	if (game == 2 || game == 3) 
+		offset[2] = 0xE70;
+
 	if (i % 2 == 0) {
 		*(mainbuf + offset[type] + nInjected[type] * 4) = values[i];
 		*(mainbuf + offset[type + 1] + nInjected[type] * 4) = values[i + 1];
@@ -119,11 +122,12 @@ void injectTM(u8* mainbuf) {
 	}
 }
 
-void refreshValues(PrintConsole topScreen, int game, u64 money[], int BP[], int langCont, int moneyCont, int ballCont, int itemCont, int healCont, int BPCont, int badgeCont, int nInjected[]) {
+void refreshValues(PrintConsole topScreen, int game, u64 money[], int BP[], int langCont, int moneyCont, int ballCont, int itemCont, int healCont, int BPCont, int badgeCont, int berryCont, int nInjected[]) {
 	char *language[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
-	char *ballsList[BALLS] = {"Master Ball", "Ultra Ball", "Great Ball", "Poke Ball", "Safari Ball", "Net Ball", "Dive Ball", "Nest Ball", "Repeat Ball", "Timer Ball", "Luxury Ball", "Premier Ball", "Dusk Ball", "Heal Ball", "Quick Ball", "Cherish Ball"};
+	char *ballsList[BALLS] = {"Master Ball", "Ultra Ball", "Great Ball", "Poke Ball", "Safari Ball", "Net Ball", "Dive Ball", "Nest Ball", "Repeat Ball", "Timer Ball", "Luxury Ball", "Premier Ball", "Dusk Ball", "Heal Ball", "Quick Ball", "Cherish Ball", "Fast Ball", "Level Ball", "Lure Ball", "Heavy Ball", "Love Ball", "Friend Ball", "Moon Ball", "Sport Ball", "Park Ball"};
 	char *itemList[ITEM] = {"Mental Herb", "Choice Band", "King's Rock", "Amulet Coin", "Leftovers", "Life Orb", "Power Herb", "Toxic Orb", "Flame Orb", "Focus Sash", "Destiny Knot", "Choice Scarf", "Choice Specs", "Eviolite", "Rocky Helmet", "Air Balloon", "Weakness Policy", "Assault Vest"};
 	char *healList[HEAL] = {"Full Restore", "Max Potion", "Revive", "Max Revive", "Ether", "Max Ether", "Elixir", "Max Elixir", "Sacred Ash", "HP Up   ", "Protein", "Iron   ", "Carbos", "Calcium", "Rare Candy", "PP UP  ", "Zinc   ", "PP Max ", "Health Wing", "Muscle Wing", "Resist Wing", "Genius Wing", "Clever Wing", "Swift Wing", "Pretty Wing", "Ability Capsule"};
+	char *berryList[BERRIES] = {"Cheri", "Chesto", "Pecha", "Rawst", "Aspear", "Leppa", "Oran", "Persim", "Lum", "Sitrus", "Figy", "Wiki", "Mago", "Aguav", "Iapapa", "Razz", "Bluk", "Nanab", "Wepear", "Pinap", "Pomeg", "Kelpsy", "Qualot", "Hondew", "Grepa", "Tamato", "Comn", "Magost", "Rabuta", "Nomel", "Spelon", "Pamtre", "Watmel", "Durin", "Belue", "Occa", "Passho", "Wacan", "Rindo", "Yache", "Chople", "Kebia", "Shuca", "Coba", "Payapa", "Tanga", "Charti", "Kasib", "Haban", "Colbur", "Babiri", "Chilan", "Liechi", "Ganlon", "Salac", "Petaya", "Apicot", "Lansat", "Starf", "Enigma", "Micle", "Custap", "Jaboca", "Rowap"};
 	consoleSelect(&topScreen);
 	
 	switch (game) {
@@ -144,29 +148,38 @@ void refreshValues(PrintConsole topScreen, int game, u64 money[], int BP[], int 
 			break;
 		}
 	}
-	printf("\x1b[3;28H\x1b[33m%s\x1b[0m", language[langCont]);
-	printf("\x1b[4;28H\x1b[33m%llu\x1b[0m$       ", money[moneyCont]);
-	printf("\x1b[5;19H%d:\x1b[5;28H\x1b[33m%s\x1b[0m     ", nInjected[0] + 1,  ballsList[ballCont / 2]);
+	printf("\x1b[3;28H\x1b[1;33m%s\x1b[0m", language[langCont]);
+	printf("\x1b[4;28H\x1b[1;33m%llu\x1b[0m$       ", money[moneyCont]);
+	printf("\x1b[5;19H%d:\x1b[5;28H\x1b[1;33m%s\x1b[0m     ", nInjected[0] + 1,  ballsList[ballCont / 2]);
 	if (ballCont % 2 == 0) printf("\x1b[5;45Hx1  "); else printf("\x1b[5;45Hx995");
-	printf("\x1b[6;19H%d:\x1b[6;28H\x1b[33m%s\x1b[0m     ", nInjected[0] + 1, itemList[itemCont / 2]);
+	printf("\x1b[6;19H%d:\x1b[6;28H\x1b[1;33m%s\x1b[0m     ", nInjected[0] + 1, itemList[itemCont / 2]);
 	if (itemCont % 2 == 0) printf("\x1b[6;45Hx1  "); else printf("\x1b[6;45Hx995");
-	printf("\x1b[7;19H%d:\x1b[7;28H\x1b[33m%s\x1b[0m     ", nInjected[1] + 1, healList[healCont / 2]);
+	printf("\x1b[7;19H%d:\x1b[7;28H\x1b[1;33m%s\x1b[0m     ", nInjected[1] + 1, healList[healCont / 2]);
 	if (healCont % 2 == 0) printf("\x1b[7;45Hx1  "); else printf("\x1b[7;45Hx995");
-	printf("\x1b[8;28H\x1b[33m%d\x1b[0m    ", BP[BPCont]);
-	printf("\x1b[9;28H\x1b[33m%d\x1b[0m badges", badgeCont);
-	printf("\x1b[29;5HInjection locations: \x1b[32m%d\x1b[0m/30 | \x1b[32m%d\x1b[0m/30 | \x1b[32m%d\x1b[0m/30  ", nInjected[0], nInjected[1], nInjected[2]);
+	printf("\x1b[8;19H%d:\x1b[8;28H\x1b[1;33m%s Berry\x1b[0m     ", nInjected[2] + 1, berryList[berryCont / 2]);
+	if (berryCont % 2 == 0) printf("\x1b[8;45Hx1  "); else printf("\x1b[8;45Hx995");
+	printf("\x1b[9;28H\x1b[1;33m%d\x1b[0m    ", BP[BPCont]);
+	printf("\x1b[10;28H\x1b[1;33m%d\x1b[0m badges", badgeCont);
+	printf("\x1b[29;5HInjection locations: \x1b[32m%d\x1b[0m/%d | \x1b[32m%d\x1b[0m/%d | \x1b[32m%d\x1b[0m/%d  ", nInjected[0], BALLS + ITEM, nInjected[1], HEAL, nInjected[2], BERRIES);
 }
 
 int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[], int nInjected[]) {
-	char *menuEntries[ENTRIES] = {"Game:", "Set language to:", "Set money to:", "Set ball to Slot", "Set item to Slot", "Set heal to Slot", "Set Battle Points to:", "Set number of badges to:", "Set all TMs"};
+	char *menuEntries[ENTRIES] = {"Game is:", "Set language to:", "Set money to:", "Set ball to slot", "Set item to slot", "Set heal to slot", "Set berry to slot", "Set Battle Points to:", "Set number of badges to:", "Set all TMs", "Set Poke Balls to max", "Set all available items to max", "Set all available heals to max", "Set all available berries to max"};
 
 	const char *path[4] = {"/JKSV/Saves/Pokémon_X/EventAssistant/main", "/JKSV/Saves/Pokémon_Y/EventAssistant/main", "/JKSV/Saves/Pokémon_Omega_Ruby/EventAssistant/main", "/JKSV/Saves/Pokémon_Alpha_Sapphire/EventAssistant/main"};
 	const char *bakPath[4] = {"/JKSV/Saves/Pokémon_X/EventAssistant/main.bak", "/JKSV/Saves/Pokémon_Y/EventAssistant/main.bak", "/JKSV/Saves/Pokémon_Omega_Ruby/EventAssistant/main.bak", "/JKSV/Saves/Pokémon_Alpha_Sapphire/EventAssistant/main.bak"};	
 
-	u32 balls[BALLS * 2] = {0x01, 0x00, 0x02, 0x00, 0x03, 0x00, 0x04, 0x00, 0x05, 0x00, 0x06, 0x00, 0x07, 0x00, 0x08, 0x00, 0x09, 0x00, 0x0A, 0x00, 0x0B, 0x00, 0x0C, 0x00, 0x0D, 0x00, 0X0E, 0X00, 0x0F, 0x00, 0x10, 0x00};
+	u32 balls[BALLS * 2] = {0x01, 0x00, 0x02, 0x00, 0x03, 0x00, 0x04, 0x00, 0x05, 0x00, 0x06, 0x00, 0x07, 0x00, 0x08, 0x00, 0x09, 0x00, 0x0A, 0x00, 0x0B, 0x00, 0x0C, 0x00, 0x0D, 0x00, 0X0E, 0X00, 0x0F, 0x00, 0x10, 0x00, 0xEC, 0x01, 0xED, 0x01, 0xEE, 0x01, 0xEF, 0x01, 0xF0, 0x01, 0xF2, 0x01, 0xF3, 0x01, 0xF4, 0x01};
 	u32 items[ITEM * 2] = {0xDB, 0x00, 0xDC, 0x00, 0xDD, 0x00, 0xDF, 0x00, 0xEA, 0x00, 0x0E, 0x01, 0x0F, 0x01, 0x10, 0x01, 0x11, 0x01, 0x13, 0x01, 0x18, 0x01, 0x1F, 0x01, 0x29, 0x01, 0x1A, 0x02, 0x1C, 0x02, 0x1D, 0x02, 0x7F, 0x02, 0x80, 0x02};
 	u32 heal[HEAL * 2] = {0x17, 0x00, 0x18, 0x00, 0x1C, 0x00, 0x1D, 0x00, 0x26, 0x00, 0x27, 0x00, 0x28, 0x00, 0x29, 0x00, 0x2C, 0x00, 0x2D, 0x00, 0x2E, 0x00, 0x2F, 0x00, 0x30, 0x00, 0x31, 0x00, 0x32, 0x00, 0x33, 0x00, 0x34, 0x00, 0x35, 0x00, 0x35, 0x02, 0x36, 0x02, 0x37, 0x02, 0x38, 0x02, 0x39, 0x02, 0x3A, 0x02, 0x3B, 0x02, 0x85, 0x02};
 	
+	//fill berries
+	u32 berry[BERRIES * 2];
+	for (int i = 0; i < BERRIES * 2 ; i += 2) {
+		berry[i] = 0x95 + i / 2;
+		berry[i + 1] = 0x00;
+	}
+
 	u64 money[4] = {0, 200000, 1000000, 9999999};
 	int BP[2] = {0, 9999};
 	
@@ -177,6 +190,7 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[]
 	int ballCont = 0;
 	int itemCont = 0;
 	int healCont = 0;
+	int berryCont = 0;
 
 	int currentEntry = 0;
 	
@@ -196,10 +210,10 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[]
 	
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
-	printf("\x1b[47;34m                 Save file Editor                 \x1b[0m\n");
+	printf("\x1b[47;1;34m                 Save file Editor                 \x1b[0m\n");
 	
 	refresh(currentEntry, topScreen, menuEntries, ENTRIES);
-	refreshValues(topScreen, game[0], money, BP, langCont, moneyCont, ballCont, itemCont, healCont, BPCont, badgeCont, nInjected);	
+	refreshValues(topScreen, game[0], money, BP, langCont, moneyCont, ballCont, itemCont, healCont, BPCont, badgeCont, berryCont, nInjected);	
 	
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
@@ -212,12 +226,12 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[]
 			if (currentEntry == 0) {
 				currentEntry = ENTRIES - 1;
 				refresh(currentEntry, topScreen, menuEntries, ENTRIES);
-				refreshValues(topScreen, game[0], money, BP, langCont, moneyCont, ballCont, itemCont, healCont, BPCont, badgeCont, nInjected);	
+				refreshValues(topScreen, game[0], money, BP, langCont, moneyCont, ballCont, itemCont, healCont, BPCont, badgeCont, berryCont, nInjected);	
 			}
 			else if (currentEntry > 0) {
 				currentEntry--;
 				refresh(currentEntry, topScreen, menuEntries, ENTRIES);
-				refreshValues(topScreen, game[0], money, BP, langCont, moneyCont, ballCont, itemCont, healCont, BPCont, badgeCont, nInjected);	
+				refreshValues(topScreen, game[0], money, BP, langCont, moneyCont, ballCont, itemCont, healCont, BPCont, badgeCont, berryCont, nInjected);	
 			}
 		}
 		
@@ -225,12 +239,12 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[]
 			if (currentEntry == ENTRIES - 1) {
 				currentEntry = 0;
 				refresh(currentEntry, topScreen, menuEntries, ENTRIES);
-				refreshValues(topScreen, game[0], money, BP, langCont, moneyCont, ballCont, itemCont, healCont, BPCont, badgeCont, nInjected);	
+				refreshValues(topScreen, game[0], money, BP, langCont, moneyCont, ballCont, itemCont, healCont, BPCont, badgeCont, berryCont, nInjected);	
 			}
 			else if (currentEntry < ENTRIES - 1) {
 				currentEntry++;
 				refresh(currentEntry, topScreen, menuEntries, ENTRIES);
-				refreshValues(topScreen, game[0], money, BP, langCont, moneyCont, ballCont, itemCont, healCont, BPCont, badgeCont, nInjected);
+				refreshValues(topScreen, game[0], money, BP, langCont, moneyCont, ballCont, itemCont, healCont, BPCont, badgeCont, berryCont, nInjected);
 			}
 		}
 		
@@ -267,17 +281,22 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[]
 					break;						
 				}
 				case 6 : {
+					if (berryCont < BERRIES * 2 - 1) berryCont++;
+					else if (berryCont == BERRIES * 2 - 1) berryCont = 0;
+					break;						
+				}
+				case 7 : {
 					if (BPCont < 1) BPCont++;
 					else if (BPCont == 1) BPCont = 0;
 					break;					
 				}
-				case 7 : {
+				case 8 : {
 					if (badgeCont < 8) badgeCont++;
 					else if (badgeCont == 8) badgeCont = 0;
 					break;
 				}
 			}
-			refreshValues(topScreen, game[0], money, BP, langCont, moneyCont, ballCont, itemCont, healCont, BPCont, badgeCont, nInjected);	
+			refreshValues(topScreen, game[0], money, BP, langCont, moneyCont, ballCont, itemCont, healCont, BPCont, badgeCont, berryCont, nInjected);	
 		}
 
 		if (hidKeysDown() & KEY_START) {		
@@ -312,36 +331,67 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[]
 					break;
 				}
 				case 3 : {
-					if (nInjected[0] < 30) {
-						injectItem(mainbuf, ballCont, balls, 0, nInjected);
+					if (nInjected[0] < BALLS + ITEM) {
+						injectItem(mainbuf, ballCont, balls, 0, nInjected, game[0]);
 						break;
 					}
 					else return -1;
 				}
 				case 4 : {
-					if (nInjected[0] < 30) {
-						injectItem(mainbuf, itemCont, items, 0, nInjected);
+					if (nInjected[0] < BALLS + ITEM) {
+						injectItem(mainbuf, itemCont, items, 0, nInjected, game[0]);
 						break;
 					}
 					else return -1;
 				}
 				case 5 : {
-					if (nInjected[1] < 30) {
-						injectItem(mainbuf, healCont, heal, 1, nInjected);
+					if (nInjected[1] < HEAL) {
+						injectItem(mainbuf, healCont, heal, 1, nInjected, game[0]);
 						break;
 					}
 					else return -1;
 				}
 				case 6 : {
+					if (nInjected[2] < BERRIES) {
+						injectItem(mainbuf, berryCont, berry, 2, nInjected, game[0]);
+						break;
+					}
+					else return -1;
+				}
+				case 7 : {
 					injectBP(mainbuf, BP[BPCont]);
 					break;
 				}
-				case 7 : {
+				case 8 : {
 					injectBadges(mainbuf, badgeCont);
 					break;
 				}
-				case 8 : {
+				case 9 : {
 					injectTM(mainbuf);
+					break;
+				}
+				case 10 : {
+					nInjected[0] = 0;
+					for (int i = 1; i < BALLS * 2; i += 2)
+						injectItem(mainbuf, i, balls, 0, nInjected, game[0]);
+					break;
+				}
+				case 11 : {
+					nInjected[0] = 0;
+					for (int i = 1; i < ITEM * 2; i += 2)
+						injectItem(mainbuf, i, items, 0, nInjected, game[0]);
+					break;
+				}
+				case 12 : {
+					nInjected[1] = 0;
+					for (int i = 1; i < HEAL * 2; i += 2)
+						injectItem(mainbuf, i, heal, 1, nInjected, game[0]);
+					break;
+				}
+				case 13 : {
+					nInjected[2] = 0;
+					for (int i = 1; i < BERRIES * 2; i += 2)
+						injectItem(mainbuf, i, berry, 2, nInjected, game[0]);
 					break;
 				}
 			}
