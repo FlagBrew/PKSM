@@ -6,6 +6,7 @@
 #include "catch.h"
 #include "util.h"
 #include "database.h"
+#include "inject.h"
 
 #define ENTRIES 11
 
