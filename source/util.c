@@ -149,7 +149,7 @@ int rewriteCHK(u8 *mainbuf, int game) {
 void faq(PrintConsole topScreen, PrintConsole bottomScreen) {
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
-	printf("\x1b[47;34m                       FAQs                       \x1b[0m\n");
+	printf("\x1b[47;1;34m                       FAQs                       \x1b[0m\n");
 //		   |     ----------------------------------------     |
 	printf("     \x1b[32mHow to use WC6 injection\x1b[0m\n\n");
 	printf("     WC6  injection  works with ORAS  and  XY\n");

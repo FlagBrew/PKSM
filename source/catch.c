@@ -142,7 +142,7 @@ void catchrate(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("\x1b[29;12HPress B to exit.");
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
-	printf("\x1b[47;34m          Capture Probability Calculator          \x1b[0m");
+	printf("\x1b[47;1;34m          Capture Probability Calculator          \x1b[0m");
 	printf("--------------------------------------------------");
 	showC(number, ratio, HP_perc, bonusballvett, bonusindex, status, statusindex, r, gen, captureOgenV, captureOgenVI, captureOindex, speed);
 	printCursoreC(cursore);
@@ -324,7 +324,7 @@ void catchrate(PrintConsole topScreen, PrintConsole bottomScreen) {
 			gen = 6;
 			captureOindex = 0;
 			printf("\x1b[2J");
-			printf("\x1b[47;34m          Capture Probability Calculator          \x1b[0m");
+			printf("\x1b[47;1;34m          Capture Probability Calculator          \x1b[0m");
 			printf("--------------------------------------------------");
 			refresh = 1;
 			printCursoreC(cursore);			

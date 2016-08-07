@@ -345,7 +345,7 @@ void PID(PrintConsole topScreen, PrintConsole bottomScreen){
 	printf("\x1b[29;12HPress B to exit.");
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
-	printf("\x1b[47;34m                   PID Checker                    \x1b[0m");
+	printf("\x1b[47;1;34m                   PID Checker                    \x1b[0m");
 	printf("--------------------------------------------------");	
 	
 	show(var, pid, speed);
@@ -463,7 +463,7 @@ void PID(PrintConsole topScreen, PrintConsole bottomScreen){
 			for (j = 1; j < 8; j++)
 			counterPID[j] = 0;
 			printf("\x1b[2J");
-			printf("\x1b[47;34m                   PID Checker                    \x1b[0m");
+			printf("\x1b[47;1;34m                   PID Checker                    \x1b[0m");
 			printf("---------------------------------------------------------");	
 			show(var, pid, speed);
 			PIDchecker(pid, var);

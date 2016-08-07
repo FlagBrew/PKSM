@@ -20,7 +20,7 @@ void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, 
 	printf("\n\nBernardo Giordano & ctrulib");
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
-	printf("\x1b[47;34m                  EventAssistant                  \x1b[0m\n");
+	printf("\x1b[47;1;34m                  EventAssistant                  \x1b[0m\n");
 
 	refresh(currentEntry, topScreen, menuEntries, ENTRIES);
 	
