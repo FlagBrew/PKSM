@@ -11,8 +11,8 @@
 #define ENTRIES 11
 
 #define V1 1
-#define V2 8
-#define V3 4
+#define V2 9
+#define V3 0
 
 void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, char* menuEntries[]){
 	consoleSelect(&bottomScreen);
