@@ -60,9 +60,11 @@ void injectMoney(u8* mainbuf, u64 i) {
 }
 
 void injectItem(u8* mainbuf, int i, u32 values[], int type, int nInjected[], int game) {
-	u32 offset[3] = {0x400, 0xD70, 0xE68};
-	if (game == 2 || game == 3) 
+	u32 offset[3] = {0x400, 0xD68, 0xE68};
+	if (game == 2 || game == 3) {
+		offset[1] = 0xD70;
 		offset[2] = 0xE70;
+	}
 
 	if (i % 2 == 0) {
 		*(mainbuf + offset[type] + nInjected[type] * 4) = values[i];
