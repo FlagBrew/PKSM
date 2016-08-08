@@ -91,34 +91,22 @@ void injectItem(u8* mainbuf, int i, u32 values[], int type, int nInjected[], int
 }
 
 void injectBP(u8* mainbuf, int i, int game) {
-	if (game == 0 || game == 1) {
-			switch (i) {
-				case 0 : {
-					*(mainbuf + 0x423C) = 0x00;
-					*(mainbuf + 0x423D) = 0x00;
-					break;			
-				}
-				case 9999 : {
-					*(mainbuf + 0x423C) = 0x0F;
-					*(mainbuf + 0x423D) = 0x27;
-					break;			
-				}
-			}
-		}
-	else if (game == 2 || game == 3) {
+	const u32 offset[] = {0x423C, 0x423D, 0x4230, 0x4231};
+	int type = 0;
+	
+	if (game == 2 || game == 3) type = 2;
 		switch (i) {
 			case 0 : {
-				*(mainbuf + 0x4230) = 0x00;
-				*(mainbuf + 0x4231) = 0x00;
+				*(mainbuf + offset[type]) = 0x00;
+				*(mainbuf + offset[type + 1]) = 0x00;
 				break;			
 			}
 			case 9999 : {
-				*(mainbuf + 0x4230) = 0x0F;
-				*(mainbuf + 0x4231) = 0x27;
+				*(mainbuf + offset[type]) = 0x0F;
+				*(mainbuf + offset[type + 1]) = 0x27;
 				break;			
 			}
 		}
-	}
 }
 
 void injectBadges(u8* mainbuf, int i) {
