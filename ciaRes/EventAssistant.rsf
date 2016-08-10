@@ -15,7 +15,7 @@ Option:
   FreeProductCode         : true # Removes limitations on ProductCode
   MediaFootPadding        : false # If true CCI files are created with padding
   EnableCrypt             : false # Enables encryption for NCCH and CIA
-  EnableCompress          : $(APP_COMP) # Compresses where applicable (currently only exefs:/.code)
+  EnableCompress          : true # Compresses where applicable (currently only exefs:/.code)
   
 AccessControlInfo:
   CoreVersion                   : 2
@@ -40,18 +40,18 @@ AccessControlInfo:
    #- Debug
    #- TwlCardBackup
    #- TwlNandData
-   - Boss
+   #- Boss
    - DirectSdmc
    #- Core
    #- CtrNandRo
-   - CtrNandRw
+   #- CtrNandRw
    #- CtrNandRoWrite
    #- CategorySystemSettings
    #- CardBoard
    #- ExportImportIvs
    #- DirectSdmcWrite
    #- SwitchCleanup
-   - SaveDataMove
+   #- SaveDataMove
    #- Shop
    #- Shell
    #- CategoryHomeMenu

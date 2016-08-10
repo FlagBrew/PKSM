@@ -99,7 +99,14 @@ $(BUILD):
 
 clean:
 	@echo clean ...
-	@rm -fr $(BUILD) $(OUTPUT3DSX).3dsx $(OUTPUT3DSX).smdh $(OUTPUT).elf 
+	@rm -fr $(BUILD) $(OUTPUT3DSX).3dsx $(OUTPUT3DSX).smdh $(OUTPUT).elf
+
+$(TARGET)-strip: $(BUILD)
+	@$(STRIP) $(OUTPUT).elf -o $(OUTPUT)-strip.elf
+
+cia: $(TARGET)-strip
+	@makerom -f cia -o $(OUTPUT).cia -elf $(OUTPUT)-strip.elf -rsf ciaRes/EventAssistant.rsf -exefslogo -target t -icon ciaRes/icon.bin -banner ciaRes/banner.bin
+	@echo "Build EventAssistant.cia"
 
 else
 
