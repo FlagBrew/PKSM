@@ -1,3 +1,3 @@
 make
-makerom -f cia -o EventAssistant/EventAssistant.cia -DAPP_ENCRYPTED=false -DAPP_COMP=true -rsf include/EventAssistant.rsf -target t -exefslogo -elf EventAssistant/EventAssistant.elf -icon include/icon.bin -banner include/banner.bin
+makerom -f cia -o EventAssistant/EventAssistant.cia-rsf ciaRes/EventAssistant.rsf -target t -exefslogo -elf EventAssistant/EventAssistant.elf -icon ciaRes/icon.bin -banner ciaRes/banner.bin
 pause
