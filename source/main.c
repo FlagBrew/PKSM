@@ -30,6 +30,8 @@ void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, 
 
 int main() {
 	gfxInitDefault();
+	aptInit();
+
 	PrintConsole topScreen, bottomScreen;
 	consoleInit(GFX_TOP, &topScreen);
 	consoleInit(GFX_BOTTOM, &bottomScreen);
@@ -196,6 +198,7 @@ int main() {
 		gfxSwapBuffers();
 	}
 
+    aptExit();
 	gfxExit();
 	return 0;
 }
