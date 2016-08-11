@@ -84,8 +84,8 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, int game[]
 			printf("\x1b[32mA\x1b[0m - Open/close entry\n");
 			printf("----------------------------------------");
 			
-			if (ret == 1) printf("\x1b[6;0H* Wondercard has been injected:\n\x1b[32m  %s\x1b[0m\n* Location: \x1b[32m%d\x1b[0m\n* Status: \x1b[32msucceeded\x1b[0m!", database[currentEntry + page * RIGHE], nInjected[0]);
-			else if (ret == -1) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[32mGame not found\x1b[0m.");
+			if (ret == 1) printf("\x1b[6;0H* Wondercard has been injected:\n\x1b[32m%s\x1b[0m\n* Location: \x1b[32m%d\x1b[0m\n* Status: \x1b[32msucceeded\x1b[0m!", database[currentEntry + page * RIGHE], nInjected[0]);
+			else if (ret == -1) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mGame not found\x1b[0m.");
 			else if (ret == -2) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcOpenContext\x1b[0m.");
 			else if (ret == -3) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcAddRequestHeaderField\x1b[0m.");
 			else if (ret == -4) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcSetSSLOpt\x1b[0m.");
@@ -97,6 +97,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, int game[]
 			else if (ret == -10) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mFailure to malloc temp chk var\x1b[0m."); 
 			else if (ret == -11) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mReached the maximum number of injected\nwc6\x1b[0m.Restart.");
 			else if (ret == -12) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mEon Ticket is not available on XY\x1b[0m.");
+			else if (ret == -13) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mGame selected doesn't match the game\nchosen previously\x1b[0m.");
 
 			printf("\x1b[29;12HPress B to exit.");			
 			consoleSelect(&topScreen);
