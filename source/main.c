@@ -78,7 +78,7 @@ int main() {
 		if (hidKeysDown() & KEY_A) {
 			switch (currentEntry) {
 				case 0 : {
-					eventDatabase(topScreen, bottomScreen);
+					eventDatabase(topScreen, bottomScreen, game);
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
 					consoleSelect(&topScreen);
@@ -89,10 +89,10 @@ int main() {
 				case 1 : {
 					int ret = saveFileEditor(topScreen, bottomScreen, game, nInjected, injectCont);
 					consoleSelect(&topScreen);
-					if (ret == 1) printf("\x1b[27;0H\x1b[32mSettings changed correctly\x1b[0m. Press B to return.");
-					else if (ret != 1 && ret != 0) printf("\x1b[27;0HAn error occurred.");
+					if (ret == 1) printf("\x1b[26;0H\x1b[32mSettings changed correctly\x1b[0m.");
+					else if (ret != 1 && ret != 0) printf("\x1b[26;0HAn error occurred.");
 					if (ret == -1) printf("\x1b[31m Game not found\x1b[0m.");
-					printf(" Press B to return.");
+					printf("\nPress B to return.");
 
 					if (ret != 0) {
 						while (aptMainLoop()) {

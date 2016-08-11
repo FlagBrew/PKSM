@@ -5,5 +5,5 @@
 #include "http.h"
 #include "fill.h"
 
-void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen);
+void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, int game[]);
 void psDates(PrintConsole topScreen, PrintConsole bottomScreen);
