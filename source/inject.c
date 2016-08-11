@@ -199,8 +199,7 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[]
     printf("\x1b[32mA\x1b[0m - Switch setting\n");
     printf("\x1b[1;31mSTART\x1b[0m - Start selected change\n");
     printf("----------------------------------------");
-    printf("\x1b[5;0HYou need to have a \x1b[32mmain\x1b[0m located at\n\x1b[32m/JKSV/Saves/[game]/EventAssistant/main\x1b[0m.");
-    printf("\n\nYou can perform one edit, then you need to reopen this function to make another one.");
+    printf("\x1b[17;0HYou can perform one edit, then you need to reopen this function to make another one.");
     printf("\x1b[21;0H----------------------------------------");
     printf("\x1b[22;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this.");
     printf("\x1b[26;0H----------------------------------------");
@@ -295,10 +294,10 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[]
             refreshValues(topScreen, game[0], money, BP, injectCont, nInjected);
         }
 
-        if (hidKeysDown() & KEY_START) {
+        if (hidKeysDown() & KEY_START && injectCont[0] != 0) {
             fsStart();
             FS_Archive saveArch;
-            if(injectCont[0] != 0 && openSaveArch(&saveArch, ids[game[0]])) {
+            if(openSaveArch(&saveArch, ids[game[0]])) {
 
                 //Open main
                 Handle mainHandle;
@@ -307,6 +306,29 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[]
                 //Get size
                 u64 mainSize;
                 FSFILE_GetSize(mainHandle, &mainSize);
+				
+				switch(game[0]) {
+					case 0 : {
+						if (mainSize != 415232)
+							return -13;
+						break;
+					}
+					case 1 : {
+						if (mainSize != 415232)
+							return -13;
+						break;
+					}
+					case 2 : {
+						if (mainSize != 483328)
+							return -13;
+						break;
+					}
+					case 3 : {
+						if (mainSize != 483328)
+							return -13;
+						break;
+					}
+				}
 
                 //allocate mainbuf
                 u8 *mainbuf = malloc(mainSize);

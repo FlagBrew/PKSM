@@ -518,6 +518,29 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
                 //size
                 u64 mainSize;
                 FSFILE_GetSize(mainHandle, &mainSize);
+				
+				switch(game[0]) {
+					case 0 : {
+						if (mainSize != 415232)
+							return -13;
+						break;
+					}
+					case 1 : {
+						if (mainSize != 415232)
+							return -13;
+						break;
+					}
+					case 2 : {
+						if (mainSize != 483328)
+							return -13;
+						break;
+					}
+					case 3 : {
+						if (mainSize != 483328)
+							return -13;
+						break;
+					}
+				}
 
                 //buffer
                 u8 *mainbuf = malloc(mainSize);
