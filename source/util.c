@@ -149,7 +149,7 @@ int rewriteCHK(u8 *mainbuf, int game) {
 void credits(PrintConsole topScreen, PrintConsole bottomScreen) {
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
-	printf("\x1b[47;1;34m                     Credits                      \x1b[0m\n");
+	printf("\x1b[47;1;34m                     Credits                      \x1b[0m");
 
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
