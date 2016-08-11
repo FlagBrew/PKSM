@@ -298,7 +298,7 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[]
         if (hidKeysDown() & KEY_START) {
             fsStart();
             FS_Archive saveArch;
-            if(openSaveArch(&saveArch, ids[game[0]])) {
+            if(injectCont[0] != 0 && openSaveArch(&saveArch, ids[game[0]])) {
 
                 //Open main
                 Handle mainHandle;
