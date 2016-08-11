@@ -12,7 +12,7 @@
 
 #define V1 1
 #define V2 9
-#define V3 0
+#define V3 1
 
 void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, char* menuEntries[]){
 	consoleSelect(&bottomScreen);
@@ -36,7 +36,7 @@ int main() {
 	consoleInit(GFX_TOP, &topScreen);
 	consoleInit(GFX_BOTTOM, &bottomScreen);
 
-	char *menuEntries[ENTRIES] = {"Gen VI's Event Database", "Save file editor", "Wi-Fi distributions", "Code distributions", "Local distributions", "Capture probability calculator", "PID Checker", "Common PS dates database", "Changelog", "FAQ & instructions", "Update .cia"};
+	char *menuEntries[ENTRIES] = {"Gen VI's Event Database", "Save file editor", "Wi-Fi distributions", "Code distributions", "Local distributions", "Capture probability calculator", "PID Checker", "Common PS dates database", "Changelog", "Credits", "Update .cia"};
 
 	int game[1] = {0};
 	int nInjected[3] = {0, 0, 0};
@@ -177,7 +177,7 @@ int main() {
 				}
 
 				case 9 : {
-					faq(topScreen, bottomScreen);
+					credits(topScreen, bottomScreen);
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
 					consoleSelect(&topScreen);

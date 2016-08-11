@@ -146,60 +146,17 @@ int rewriteCHK(u8 *mainbuf, int game) {
 	return 0;
 }
 
-void faq(PrintConsole topScreen, PrintConsole bottomScreen) {
+void credits(PrintConsole topScreen, PrintConsole bottomScreen) {
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
-	printf("\x1b[47;1;34m                       FAQs                       \x1b[0m\n");
-//		   |     ----------------------------------------     |
-	printf("     \x1b[32mHow to use WC6 injection\x1b[0m\n\n");
-	printf("     WC6  injection  works with ORAS  and  XY\n");
-	printf("     save files and supports  JKSM paths  for\n");
-	printf("     saves.  Make sure you copied JKSV folder\n");
-	printf("     from EventAssistant.zip into the root of\n");
-	printf("     your SD card first.\n");
-	printf("     Later, you need to export using JKSV the\n");
-	printf("     save that you  want  to inject to,  into\n");
-	printf("     the EventAssistant  folder in JKSM path.\n\n");
-	printf("     Selecting GEN VI's event database,you're\n");
-	printf("     free to inject no more than 23  wc6 into\n");
-	printf("     the same session.  If  you  change  mode\n");
-	printf("     between X, Y, OR or  AS the counter will\n");
-	printf("     reset and you will  start from the first\n");
-	printf("     location of your save.\n\n");
-	printf("     \x1b[32mExplanation of common errors\x1b[0m\n\n");
-	printf("     - \x1b[31mPreview not available yet\x1b[0m.   It is not\n");
-	printf("     a bug,  but simply the  textual  preview\n");
-	printf("     for the event you selected doesn't exist\n");
-	printf("     yet  on  my  server.  It  doesn't  touch\n");
-	printf("     injection  then  feel free  to inject if\n");
-	printf("     there are available languages on the top\n     screen.");
+	printf("\x1b[47;1;34m                     Credits                      \x1b[0m\n");
 
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
-
-		 printf("\n- \x1b[31mWC6 not available yet\x1b[0m. It  means  thatwc6 for the  selected tag doesn't  existyet  on  my  server. You  can  inject  alanguage that is available,  if there isat least one.\n\n");
-		 printf("- \x1b[31mUpdate crashes\x1b[0m. This  means  that  youdid  not  copy   3ds   folder  containedin the zip package.\n\n");
-
-	printf("\x1b[29;12HPress B to exit.");
-
-	while (aptMainLoop()) {
-		gspWaitForVBlank();
-		hidScanInput();
-
-		if (hidKeysDown() & KEY_B)
-			break;
-
-		gfxFlushBuffers();
-		gfxSwapBuffers();
-	}
-
 	consoleSelect(&topScreen);
-	printf("\x1b[2J");
-	consoleSelect(&bottomScreen);
-	printf("\x1b[2J");
 
-	printf("\nThis application exists because of:\n\n* smea for ctrulib\n* Kaphotics for wondercard workaround\n* Hamcha for http certs\n* Gocario for algorithms\n* LiquidFenrir for some http structure\n* Nba_Yoh for received flags\n* Simona Mastroianni for database help\n* Federico Leuzzi for testing\n* Shai Raba' for the icon\n* all the guys @3dshacks' discord\n\nFull list available on github repo");
-	printf("\x1b[29;12HPress B to exit.");
+	printf("\n* smea for ctrulib\n* Kaphotics for PKHeX for wondercard workaround\n* J-D-K for direct save import/export\n* Hamcha for http certs\n* Gocario for algorithms\n* LiquidFenrir for some http structures\n* Nba_Yoh for received flags\n* Simona Mastroianni for database help\n* Federico Leuzzi for testing\n* Shai Raba' for the icon\n* all the guys @3dshacks' discord\n\n  Full list available on github repo");
+	printf("\x1b[29;17HPress B to exit.");
 
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
