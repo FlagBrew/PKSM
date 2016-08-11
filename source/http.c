@@ -289,7 +289,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
     consoleSelect(&topScreen);
     printf("\x1b[2J");
     printf("\x1b[0;0HScanning server for available languages...");
-    printf("\x1b[1;0HLanguages available: \x1b[32m");
+    printf("\x1b[1;0HLanguages available:  \x1b[32m");
 
     gfxFlushBuffers();
     gfxSwapBuffers();
@@ -355,7 +355,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
         httpcExit();
     }
 
-    printf("\x1b[0m\n\n");
+    printf("\x1b[0m\n");
     getText(topScreen, bottomScreen, url);
     consoleSelect(&topScreen);
     printf("\x1b[0;45H\x1b[32mDONE!\x1b[0m");
