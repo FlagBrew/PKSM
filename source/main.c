@@ -90,7 +90,9 @@ int main() {
 					int ret = saveFileEditor(topScreen, bottomScreen, game, nInjected, injectCont);
 					consoleSelect(&topScreen);
 					if (ret == 1) printf("\x1b[27;0H\x1b[32mSettings changed correctly\x1b[0m. Press B to return.");
-					else if (ret != 1 && ret != 0) printf("\x1b[27;0H\x1b[31mAn error occurred\x1b[0m. Press B to return.");
+					else if (ret != 1 && ret != 0) printf("\x1b[27;0HAn error occurred.");
+					if (ret == -1) printf("\x1b[31m Game not found\x1b[0m.");
+					printf(" Press B to return.");
 
 					if (ret != 0) {
 						while (aptMainLoop()) {

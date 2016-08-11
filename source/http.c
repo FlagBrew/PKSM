@@ -570,7 +570,8 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
                 httpcExit();
                 fsEnd();
                 return 1;
-            }
+            } else 
+				return -1;
         }
 
         gfxFlushBuffers();

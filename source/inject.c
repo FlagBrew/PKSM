@@ -164,7 +164,7 @@ void refreshValues(PrintConsole topScreen, int game, u64 money[], int BP[], int 
     printf("\x1b[7;19H%d:\x1b[7;28H\x1b[1;33m%s\x1b[0m     ", nInjected[1] + 1, healList[injectCont[5] / 2]);
     if (injectCont[5] % 2 == 0) printf("\x1b[7;45Hx1  ");
     else printf("\x1b[7;45Hx995");
-    printf("\x1b[8;19H%d:\x1b[8;28H\x1b[1;33m%s Berry\x1b[0m     ", nInjected[2] + 1, berryList[injectCont[6] / 2]);
+    printf("\x1b[8;20H%d:\x1b[8;28H\x1b[1;33m%s Berry\x1b[0m     ", nInjected[2] + 1, berryList[injectCont[6] / 2]);
     if (injectCont[6] % 2 == 0) printf("\x1b[8;45Hx1  ");
     else printf("\x1b[8;45Hx995");
     printf("\x1b[9;28H\x1b[1;33m%d\x1b[0m    ", BP[injectCont[7]]);
@@ -399,7 +399,8 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[]
                 free(mainbuf);
                 fsEnd();
                 return 1;
-            }
+            } else 
+				return -1;
         }
 
         gfxFlushBuffers();
