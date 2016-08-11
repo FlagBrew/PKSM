@@ -4,3 +4,10 @@ build/
 *.layout
 *.exe
 *.zip
+config.txt
+log.txt
+*.jar
+*.cgfx
+*.dll
+*.bat
+*.wav
