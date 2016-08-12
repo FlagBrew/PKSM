@@ -1,4 +1,5 @@
 build/
+.gitignore
 *.elf
 *.cbp
 *.layout
