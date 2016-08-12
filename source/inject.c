@@ -173,7 +173,7 @@ void refreshValues(PrintConsole topScreen, int game, u64 money[], int BP[], int 
 }
 
 int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[], int nInjected[], int injectCont[]) {
-    char *menuEntries[ENTRIES] = {"Game is:", "Set language to:", "Set money to:", "Set ball to slot", "Set item to slot", "Set heal to slot", "Set berry to slot", "Set Battle Points to:", "Set number of badges to:", "Set all TMs", "Set Poke Balls to max", "Set all available items to max", "Set all available heals to max", "Set all available berries to max"};
+    char *menuEntries[ENTRIES] = {"Game is:", "Set language to:", "Set money to:", "Set ball to slot", "Set item to slot", "Set heal to slot", "Set berry to slot", "Set Battle Points to:", "Set number of badges to:", "Set all TMs", "Set Poke Balls to max", "Set all known items to max", "Set all known heals to max", "Set all known berries to max"};
 
     //X, Y, OR, AS
     const u64 ids[4] = { 0x0004000000055E00, 0x0004000000055D00, 0x000400000011C400, 0x000400000011C500 };
@@ -182,7 +182,6 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[]
     u32 items[ITEM * 2] = {0xDB, 0x00, 0xDC, 0x00, 0xDD, 0x00, 0xDF, 0x00, 0xEA, 0x00, 0x0E, 0x01, 0x0F, 0x01, 0x10, 0x01, 0x11, 0x01, 0x13, 0x01, 0x18, 0x01, 0x1F, 0x01, 0x29, 0x01, 0x1A, 0x02, 0x1C, 0x02, 0x1D, 0x02, 0x7F, 0x02, 0x80, 0x02};
     u32 heal[HEAL * 2] = {0x17, 0x00, 0x18, 0x00, 0x1C, 0x00, 0x1D, 0x00, 0x26, 0x00, 0x27, 0x00, 0x28, 0x00, 0x29, 0x00, 0x2C, 0x00, 0x2D, 0x00, 0x2E, 0x00, 0x2F, 0x00, 0x30, 0x00, 0x31, 0x00, 0x32, 0x00, 0x33, 0x00, 0x34, 0x00, 0x35, 0x00, 0x35, 0x02, 0x36, 0x02, 0x37, 0x02, 0x38, 0x02, 0x39, 0x02, 0x3A, 0x02, 0x3B, 0x02, 0x85, 0x02};
 
-    //fill berries
     u32 berry[BERRIES * 2];
     for (int i = 0; i < BERRIES * 2 ; i += 2) {
         berry[i] = 0x95 + i / 2;
