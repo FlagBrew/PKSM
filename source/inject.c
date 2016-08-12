@@ -69,23 +69,14 @@ void injectItem(u8* mainbuf, int i, u32 values[], int type, int nInjected[], int
 	if (i % 2 == 0) {
 		*(mainbuf + offset[type] + nInjected[type] * 4) = values[i];
 		*(mainbuf + offset[type + 1] + nInjected[type] * 4) = values[i + 1];
+		*(mainbuf + offset[type] + 2 + nInjected[type] * 4) = 0x01;
+		*(mainbuf + offset[type] + 3 + nInjected[type] * 4) = 0x00;		
 	}
 	else {
 		*(mainbuf + offset[type] + nInjected[type] * 4) = values[i - 1];
 		*(mainbuf + offset[type] + 1 + nInjected[type] * 4) = values[i];
-	}
-	
-	switch (i % 2) {
-		case 0 : {
-			*(mainbuf + offset[type] + 2 + nInjected[type] * 4) = 0x01;
-			*(mainbuf + offset[type] + 3 + nInjected[type] * 4) = 0x00;
-			break;				
-		}
-		case 1 : {
-			*(mainbuf + offset[type] + 2 + nInjected[type] * 4) = 0xE3;
-			*(mainbuf + offset[type] + 3 + nInjected[type] * 4) = 0x03;
-			break;				
-		}
+		*(mainbuf + offset[type] + 2 + nInjected[type] * 4) = 0xE3;
+		*(mainbuf + offset[type] + 3 + nInjected[type] * 4) = 0x03;	
 	}
 	nInjected[type]++;
 }
@@ -137,21 +128,21 @@ void refreshValues(PrintConsole topScreen, int game, u64 money[], int BP[], int 
 
     switch (game) {
         case 0 : {
-                printf("\x1b[2;28H\x1b[32mX \x1b[0m");
-                break;
-            }
+			printf("\x1b[2;28H\x1b[32mX \x1b[0m");
+			break;
+        }
         case 1 : {
-                printf("\x1b[2;28H\x1b[32mY \x1b[0m");
-                break;
-            }
+			printf("\x1b[2;28H\x1b[32mY \x1b[0m");
+			break;
+        }
         case 2 : {
-                printf("\x1b[2;28H\x1b[32mOR\x1b[0m");
-                break;
-            }
+			printf("\x1b[2;28H\x1b[32mOR\x1b[0m");
+			break;
+        }
         case 3 : {
-                printf("\x1b[2;28H\x1b[32mAS\x1b[0m");
-                break;
-            }
+			printf("\x1b[2;28H\x1b[32mAS\x1b[0m");
+			break;
+        }
     }
     printf("\x1b[3;28H\x1b[1;33m%s\x1b[0m", language[injectCont[1]]);
     printf("\x1b[4;28H\x1b[1;33m%llu\x1b[0m$       ", money[injectCont[2]]);
