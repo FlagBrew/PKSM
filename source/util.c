@@ -155,7 +155,7 @@ void credits(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("\x1b[2J");
 	consoleSelect(&topScreen);
 
-	printf("\n* smea for ctrulib\n* Kaphotics for PKHeX for wondercard workaround\n* J-D-K for direct save import/export\n* Hamcha for http certs\n* Gocario for algorithms\n* LiquidFenrir for some http structures\n* Nba_Yoh for received flags\n* Simona Mastroianni for database help\n* Federico Leuzzi for testing\n* Shai Raba' for the icon\n* all the guys @3dshacks' discord\n\n  Full list available on github repo");
+	printf("\n* smea for ctrulib\n* Kaphotics for PKHeX for wondercard workaround\n* J-D-K for direct save import/export\n* Hamcha for http certs\n* Gocario for algorithms\n* LiquidFenrir for some http structures\n* Nba_Yoh for received flags\n* Simona Mastroianni for database help\n* Federico Leuzzi, YodaDaCoda for testing\n* Shai Raba' for the icon\n* all the guys @3dshacks' discord\n\n  Full list available on github repo");
 	printf("\x1b[29;17HPress B to exit.");
 
 	while (aptMainLoop()) {

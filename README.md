@@ -63,7 +63,7 @@ Thank you to:
 * PPorg for most of wc6s
 * all the guys on the 3dshacks discord
 * Simona Mastroianni for fill.c work
-* Federico for testing builds
+* Federico and YodaDaCoda for testing builds
 * Cosimo Vivoli for some database entries
 * Kian Josh King for some wc6s
 * Shai for the icon and Fabrizio for the name
