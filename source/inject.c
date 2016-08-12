@@ -350,25 +350,25 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[]
                             if (nInjected[0] < BALLS + ITEM) {
                                 injectItem(mainbuf, injectCont[3], balls, 0, nInjected, game[0]);
                                 break;
-                            } else return -1;
+                            } else return -2;
                         }
                     case 4 : {
                             if (nInjected[0] < BALLS + ITEM) {
                                 injectItem(mainbuf, injectCont[4], items, 0, nInjected, game[0]);
                                 break;
-                            } else return -1;
+                            } else return -2;
                         }
                     case 5 : {
                             if (nInjected[1] < HEAL) {
                                 injectItem(mainbuf, injectCont[5], heal, 1, nInjected, game[0]);
                                 break;
-                            } else return -1;
+                            } else return -2;
                         }
                     case 6 : {
                             if (nInjected[2] < BERRIES) {
                                 injectItem(mainbuf, injectCont[6], berry, 2, nInjected, game[0]);
                                 break;
-                            } else return -1;
+                            } else return -2;
                         }
                     case 7 : {
                             injectBP(mainbuf, BP[injectCont[7]], game[0]);

@@ -92,6 +92,7 @@ int main() {
 					if (ret == 1) printf("\x1b[6;0H\x1b[32mSettings changed correctly\x1b[0m.");
 					else if (ret != 1 && ret != 0) printf("\x1b[6;0HAn error occurred.");
 					if (ret == -1) printf("\x1b[31m Game not found\x1b[0m.");
+					else if (ret == -2) printf("\x1b[31m Maximum items reached\x1b[0m.");
 					else if (ret == -13) printf("\x1b[31m Game selected doesn'tmatch the game chosen previously\x1b[0m.");
 					printf("\nPress B to return.");
 
