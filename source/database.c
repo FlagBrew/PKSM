@@ -95,7 +95,6 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, int game[]
 			else if (ret == -8) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mFailure to malloc wc6 buffer\x1b[0m.");
 			else if (ret == -9) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcDownloadData\x1b[0m.");
 			else if (ret == -10) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mFailure to malloc temp chk var\x1b[0m."); 
-			else if (ret == -11) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mReached the maximum number of injected\nwc6\x1b[0m.Restart.");
 			else if (ret == -12) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mEon Ticket is not available on XY\x1b[0m.");
 			else if (ret == -13) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mGame selected doesn't match the game\nchosen previously\x1b[0m.");
 

@@ -273,7 +273,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
     else if (game[0] == 3)
         printf("\x1b[5;0HLanguage: \x1b[32m%s\x1b[0m | Game: \x1b[32mAS\x1b[0m | Location: %d ", language[langCont], nInjected[0] + 1);
 	
-    printf("\n----------------------------------------");
+    printf("\x1b[6;0H----------------------------------------");
 
     printf("\x1b[18;0H----------------------------------------");
     printf("\x1b[19;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this. This is a new way to inject WC6\nand I need time to perfect it.");
@@ -423,8 +423,8 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
             const u64 ids[4] = { 0x0004000000055D00, 0x0004000000055E00, 0x000400000011C400, 0x000400000011C500 };
             FS_Archive saveArch;
             if(openSaveArch(&saveArch, ids[game[0]])) {
-                if (nInjected[0] == 23)
-                    return -11;
+                if (nInjected[0] >= 23)
+                    nInjected[0] = 0;
 
                 if (game[0] < 2 && i == 2048)
                     return -12;
