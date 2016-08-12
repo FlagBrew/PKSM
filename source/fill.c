@@ -135,6 +135,7 @@ void filldatabase(char *database[], char *links[]) {
 	database[156] = "0156 - Scrap Mewtwo";
 	database[159] = "0159 - Jade Infernape";
 	database[161] = "0161 - Movie Volcanion";
+	database[162] = "0162 - 720 Poll Greninja";
 	database[163] = "0163 - Surf and Fly Pikachu";
 	database[164] = "0164 - PC Shiny Ho-Oh";
 	database[165] = "0165 - Masuda's Psyduck";

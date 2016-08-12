@@ -30,9 +30,15 @@ Event Database links are hardcoded in the program, so it knows where to look for
 
 You can use Citra to run the *.3dsx* version of the app. I made a few changes to have a better usability with Citra. As for now, you can only use properly PID Checker and Capture Probability Calculator, because http functions are unimplemented on Citra. To scroll properly values on Citra, just set the program in **SLOW mode**.
 
+---
+
 **Where gamesaves have to be?**
 
-Saves are directly taken/saved from your cartridge/digital copy of the game (thanks @J-K-D).
+Saves are directly taken/saved from your cartridge/digital copy of the game (thanks @J-K-D). Just select the proper game in the application.
+
+**The application will look first for a cartridge, then for a digital copy of the game!**
+
+---
 
 **What will come next?**
 
@@ -54,6 +60,7 @@ Thank you to:
 * Gocario for ccitt CHK algorithms
 * Hamcha for cybertrust.h and digicert.h
 * LiquidFenrir for useful http source code 
+* PPorg for most of wc6s
 * all the guys on the 3dshacks discord
 * Simona Mastroianni for fill.c work
 * Federico for testing builds

@@ -1,9 +1,12 @@
 -------------====== What's New ======-------------
-- Version 1.9.0 available!
+- Version 1.9.1 available!
 
-- What's new in 1.9.0:
+- What's new in 1.9.1:
 
-- Save file Editor. a Powersaves-like function!
-- General improvements
+- Direct save import/export!
+- UI cleanup
+- No more JKSV needed!
 
 --------------------------------------------------
+
+- #0162 wc6 added
