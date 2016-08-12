@@ -420,7 +420,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int
         if (hidKeysDown() & KEY_START) {
             fsStart();
             //X, Y, OR, AS
-            const u64 ids[4] = { 0x0004000000055E00, 0x0004000000055D00, 0x000400000011C400, 0x000400000011C500 };
+            const u64 ids[4] = { 0x0004000000055D00, 0x0004000000055E00, 0x000400000011C400, 0x000400000011C500 };
             FS_Archive saveArch;
             if(openSaveArch(&saveArch, ids[game[0]])) {
                 if (nInjected[0] == 23)
