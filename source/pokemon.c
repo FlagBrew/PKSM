@@ -9,13 +9,13 @@
 
 #define OFFSET 0x5400
 
-#define ENTRIES 1
+#define ENTRIES 2
 
 u32 seedStep(const u32 seed) {
     return (seed*0x41C64E6D + 0x00006073) & 0xFFFFFFFF;
 }
 
-void shuffleArray(char* pkmn, const u32 encryptionkey) {
+void shuffleArray(u8* pkmn, const u32 encryptionkey) {
     const int BLOCKLENGHT = 56;
     
     u8 seed = (((encryptionkey & 0x3E000) >> 0xD) % 24);
@@ -37,7 +37,7 @@ void shuffleArray(char* pkmn, const u32 encryptionkey) {
     }
 }
 
-void decryptPkmn(char* pkmn) {
+void decryptPkmn(u8* pkmn) {
     const int ENCRYPTIONKEYPOS = 0x0;
     const int ENCRYPTIONKEYLENGHT = 4;
     const int CRYPTEDAREAPOS = 0x08;
@@ -80,7 +80,7 @@ int getPkmnAddress(const int boxnumber, const int indexnumber, int game) {
     return boxpos + (PARTYPKMNLENGTH*indexnumber);
 }
 
-void calculatePKMNChecksum(char* data) {
+void calculatePKMNChecksum(u8* data) {
     u16 chk = 0;
 
     for (int i = 8; i < PKMNLENGTH; i += 2)
@@ -89,7 +89,7 @@ void calculatePKMNChecksum(char* data) {
     memcpy(data + 6, &chk, 2);
 }
 
-void encryptPkmn(char* pkmn) {
+void encryptPkmn(u8* pkmn) {
     const int ENCRYPTIONKEYPOS = 0x0;
     const int ENCRYPTIONKEYLENGHT = 4;
     const int CRYPTEDAREAPOS = 0x08;
@@ -110,7 +110,7 @@ void encryptPkmn(char* pkmn) {
     }
 }
 
-void encryptBattleSection(char* pkmn) {
+void encryptBattleSection(u8* pkmn) {
     const int ENCRYPTIONKEYPOS = 0x0;
     const int ENCRYPTIONKEYLENGHT = 4;
     
@@ -127,12 +127,12 @@ void encryptBattleSection(char* pkmn) {
     }
 }
 
-void getPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, char* pkmn, int game) {
-    memcpy(pkmn, &mainbuf[getPkmnAddress(boxnumber, indexnumber, game)], PKMNLENGTH);
+void getPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game) {
+    memcpy((void*)pkmn, (const void*)(mainbuf + getPkmnAddress(boxnumber, indexnumber, game)), PKMNLENGTH);
     decryptPkmn(pkmn);
 }
  
-void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, char* pkmn, int game) {
+void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game) {
     calculatePKMNChecksum(pkmn);
     encryptPkmn(pkmn);
 	
@@ -143,7 +143,7 @@ void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, char* pkmn
         length = PARTYPKMNLENGTH;
     }
         
-    memcpy(&mainbuf[getPkmnAddress(boxnumber, indexnumber, game)], pkmn, length);
+    memcpy((void*)(mainbuf + getPkmnAddress(boxnumber, indexnumber, game)), (const void*)pkmn, length);
 }
 
 void refreshPokemon(PrintConsole topScreen, int game, int pokemonCont[]) {
@@ -169,8 +169,25 @@ void refreshPokemon(PrintConsole topScreen, int game, int pokemonCont[]) {
     }	
 }
 
+void setFriendship(u8* pkmn, u32 value) {
+	switch (value) {
+		case 0 : {
+			*(pkmn + 0xA2) = 0x00;
+			break;
+		}
+		case 255 : {
+			*(pkmn + 0xA2) = 0xFF;
+			break;
+		}
+	}
+	
+}
+
 int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[], int pokemonCont[]) {
-	char *menuEntries[ENTRIES] = {"Game is:"};
+	int boxnumber = 0;
+	int indexnumber = 0;
+	
+	char *menuEntries[ENTRIES] = {"Game is:", "Set friendship to 255"};
 
 	//X, Y, OR, AS
 	const u64 ids[4] = {0x0004000000055D00, 0x0004000000055E00, 0x000400000011C400, 0x000400000011C500};	
@@ -238,10 +255,12 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[],
 			}
 			refreshPokemon(topScreen, game[0], pokemonCont);
 		}
-		if (hidKeysDown() & KEY_START && pokemonCont[0] != 0) {		
+		if (hidKeysDown() & KEY_START && pokemonCont[0] != 0) {
+			
 			fsStart();
 			FS_Archive saveArch;
 			if(openSaveArch(&saveArch, ids[game[0]])) {
+				u8* pkmn = (u8*)malloc(PKMNLENGTH * sizeof(u8));
 				
 				//Open main
 				Handle mainHandle;
@@ -281,7 +300,11 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[],
 				FSFILE_Read(mainHandle, NULL, 0, mainbuf, mainSize);
 			
 				switch (pokemonCont[0]) {
-
+					case 1 : {
+						getPkmn(mainbuf, boxnumber, indexnumber, pkmn, game[0]);
+						setFriendship(pkmn, 255);
+						setPkmn(mainbuf, boxnumber, indexnumber, pkmn, game[0]);
+					}
 				}
 
 				int rwCHK = rewriteCHK(mainbuf, game[0]);
@@ -295,6 +318,7 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[],
 				FSUSER_CloseArchive(saveArch);
 				
 				free(mainbuf);
+				free(pkmn);
 				fsEnd();
 				return 1;
 			} else
