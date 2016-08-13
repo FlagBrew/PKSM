@@ -7,9 +7,9 @@
 #define PARTYPKMNLENGTH 260
 #define BOXMAX 31
 
-#define OFFSET 0x5400
-
 #define ENTRIES 2
+
+const int OFFSET = 0x5400;
 
 u32 seedStep(const u32 seed) {
     return (seed*0x41C64E6D + 0x00006073) & 0xFFFFFFFF;
@@ -128,7 +128,7 @@ void encryptBattleSection(u8* pkmn) {
 }
 
 void getPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game) {
-    memcpy((void*)pkmn, (const void*)(mainbuf + getPkmnAddress(boxnumber, indexnumber, game)), PKMNLENGTH);
+    memcpy(pkmn, &mainbuf[getPkmnAddress(boxnumber, indexnumber, game)], PKMNLENGTH);
     decryptPkmn(pkmn);
 }
  
@@ -143,7 +143,7 @@ void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, 
         length = PARTYPKMNLENGTH;
     }
         
-    memcpy((void*)(mainbuf + getPkmnAddress(boxnumber, indexnumber, game)), (const void*)pkmn, length);
+    memcpy(&mainbuf[getPkmnAddress(boxnumber, indexnumber, game)], pkmn, length);
 }
 
 void refreshPokemon(PrintConsole topScreen, int game, int pokemonCont[]) {
@@ -256,7 +256,6 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[],
 			refreshPokemon(topScreen, game[0], pokemonCont);
 		}
 		if (hidKeysDown() & KEY_START && pokemonCont[0] != 0) {
-			
 			fsStart();
 			FS_Archive saveArch;
 			if(openSaveArch(&saveArch, ids[game[0]])) {
@@ -304,6 +303,7 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[],
 						getPkmn(mainbuf, boxnumber, indexnumber, pkmn, game[0]);
 						setFriendship(pkmn, 255);
 						setPkmn(mainbuf, boxnumber, indexnumber, pkmn, game[0]);
+						break;
 					}
 				}
 
