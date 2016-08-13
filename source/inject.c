@@ -352,11 +352,11 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[]
 						else return -2;
 					}
 					case 6 : {
-						injectBP(mainbuf, BP[injectCont[7]], game[0]);
+						injectBP(mainbuf, BP[injectCont[6]], game[0]);
 						break;
 					}
 					case 7 : {
-						injectBadges(mainbuf, injectCont[8]);
+						injectBadges(mainbuf, injectCont[7]);
 						break;
 					}
 					case 8 : {

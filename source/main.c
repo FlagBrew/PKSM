@@ -12,7 +12,7 @@
 
 #define V1 1
 #define V2 9
-#define V3 1
+#define V3 2
 
 void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, char* menuEntries[]){
 	consoleSelect(&bottomScreen);
@@ -40,7 +40,7 @@ int main() {
 
 	int game[1] = {0};
 	int nInjected[3] = {0, 0, 0};
-	int injectCont[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+	int injectCont[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 	int currentEntry = 0;
 
 	consoleSelect(&topScreen);
