@@ -321,11 +321,11 @@ void refreshPokemon(PrintConsole topScreen, int game, int pokemonCont[]) {
         }
     }
 	
-	printf("\x1b[3;23H\x1b[33m%d\x1b[0m ", pokemonCont[1] + 1);
-	printf("\x1b[4;23H\x1b[33m%d\x1b[0m ", pokemonCont[2] + 1);
-	printf("\x1b[5;23H\x1b[33m%lu  \x1b[0m", friendship[pokemonCont[3]]);
-	printf("\x1b[33m\x1b[7;23H%lu  \x1b[7;27H%lu  \x1b[7;31H%lu  \x1b[7;35H%lu  \x1b[7;39H%lu  \x1b[7;43H%lu  \x1b[0m", evs[pokemonCont[4]][0], evs[pokemonCont[4]][1], evs[pokemonCont[4]][2], evs[pokemonCont[4]][4], evs[pokemonCont[4]][5], evs[pokemonCont[4]][3]);
-	printf("\x1b[9;23H\x1b[33m%s\x1b[0m    ", hpList[pokemonCont[5]]);
+	printf("\x1b[3;23H%d ", pokemonCont[1] + 1);
+	printf("\x1b[4;23H%d", pokemonCont[2] + 1);
+	printf("\x1b[5;23H%lu  ", friendship[pokemonCont[3]]);
+	printf("\x1b[7;23H%lu  \x1b[7;27H%lu  \x1b[7;31H%lu  \x1b[7;35H%lu  \x1b[7;39H%lu  \x1b[7;43H%lu  ", evs[pokemonCont[4]][0], evs[pokemonCont[4]][1], evs[pokemonCont[4]][2], evs[pokemonCont[4]][4], evs[pokemonCont[4]][5], evs[pokemonCont[4]][3]);
+	printf("\x1b[9;23H%s    ", hpList[pokemonCont[5]]);
 }
 
 int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[], int pokemonCont[]) {
