@@ -8,7 +8,8 @@
 #define BOXMAX 31
 #define EVLENGTH 1
 
-#define ENTRIES 5
+#define ENTRIES 6
+#define NEVS 11
 
 const int OFFSET = 0x5400;
 const int EVPOS = 0x1E;
@@ -19,12 +20,22 @@ const int EVPOS = 0x1E;
 // const int SPA = 4;
 // const int SPD = 5;
 
-//X, Y, OR, AS
-const u64 ids[4] = {0x0004000000055D00, 0x0004000000055E00, 0x000400000011C400, 0x000400000011C500};
 const u32 friendship[4] = {0, 70, 75, 255};
 
-					// HP , ATK, DEF, SPE, SPA, SPD
-const u32 evs[1][6] = {{252,   0, 252,   0,   0,   4}};
+const u32 evs[NEVS][6] = {
+  // HP , ATK, DEF, SPE, SPA, SPD
+	{  4, 252,   0, 252,   0,   0},
+	{  4,   0,   0, 252, 252,   0},
+	{252, 252,   4,   0,   0,   0},
+	{252, 252,   0,   0,   0,   4},
+	{252,   0,   4,   0, 252,   0},
+	{252,   0,   0,   0, 252,   4},
+	{  0, 252,   0,   4, 252,   0},
+	{252,   0, 252,   0,   0,   4},
+	{252,   0,   4,   0,   0, 252},
+	{252,   0,   4, 252,   0,   0},
+	{252,   0,   0, 252,   0,   4}
+	};
 
 u32 seedStep(const u32 seed) {
     return (seed*0x41C64E6D + 0x00006073) & 0xFFFFFFFF;
@@ -166,26 +177,30 @@ void refreshPokemon(PrintConsole topScreen, int game, int pokemonCont[]) {
 
     switch (game) {
         case 0 : {
-			printf("\x1b[2;35HX \x1b[0m");
+			printf("\x1b[2;27HX \x1b[0m");
 			break;
         }
         case 1 : {
-			printf("\x1b[2;35HY \x1b[0m");
+			printf("\x1b[2;27HY \x1b[0m");
 			break;
         }
         case 2 : {
-			printf("\x1b[2;35HOR\x1b[0m");
+			printf("\x1b[2;27HOR\x1b[0m");
 			break;
         }
         case 3 : {
-			printf("\x1b[2;35HAS\x1b[0m");
+			printf("\x1b[2;27HAS\x1b[0m");
 			break;
         }
     }
 	
-	printf("\x1b[3;35H\x1b[33m%d\x1b[0m ", pokemonCont[1] + 1);
-	printf("\x1b[4;35H\x1b[33m%d\x1b[0m ", pokemonCont[2] + 1);
-	printf("\x1b[5;20HB%d,S%d:  \x1b[5;35H\x1b[33m%lu\x1b[0m  ", pokemonCont[1] + 1, pokemonCont[2] + 1, friendship[pokemonCont[3]]);
+	printf("\x1b[3;27H\x1b[33m%d\x1b[0m ", pokemonCont[1] + 1);
+	printf("\x1b[4;27H\x1b[33m%d\x1b[0m ", pokemonCont[2] + 1);
+	printf("\x1b[5;20HB%d,S%d:  \x1b[5;27H\x1b[33m%lu\x1b[0m  ", pokemonCont[1] + 1, pokemonCont[2] + 1, friendship[pokemonCont[3]]);
+	if (pokemonCont[0] != 5)
+		printf("\x1b[7;27H%lu  \x1b[7;31H%lu  \x1b[7;35H%lu  \x1b[7;39H%lu  \x1b[7;43H%lu  \x1b[7;47H%lu   ", evs[pokemonCont[4]][0], evs[pokemonCont[4]][1], evs[pokemonCont[4]][2], evs[pokemonCont[4]][4], evs[pokemonCont[4]][5], evs[pokemonCont[4]][3]);
+	else if (pokemonCont[0] == 5)
+		printf("\x1b[32m\x1b[7;27H%lu  \x1b[7;31H%lu  \x1b[7;35H%lu  \x1b[7;39H%lu  \x1b[7;43H%lu  \x1b[7;47H%lu\x1b[0m   ", evs[pokemonCont[4]][0], evs[pokemonCont[4]][1], evs[pokemonCont[4]][2], evs[pokemonCont[4]][4], evs[pokemonCont[4]][5], evs[pokemonCont[4]][3]);
 }
 
 void setFriendship(u8* pkmn, u32 value) {
@@ -214,7 +229,10 @@ void setEV(u8* pkmn, u8 val, const int stat) {
 }
 
 int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[], int pokemonCont[]) {
-	char *menuEntries[ENTRIES] = {"Game is:", "Select box [1-31]:", "Select index [1-30]:", "Set friendship of", "Set EV"};
+	char *menuEntries[ENTRIES] = {"Game is:", "Select box [1-31]:", "Select index [1-30]:", "Set friendship of", "Set EVs:                 HPs|ATK|DEF|SPA|SPD|SPE", " "};
+	
+	//X, Y, OR, AS
+	const u64 ids[4] = {0x0004000000055D00, 0x0004000000055E00, 0x000400000011C400, 0x000400000011C500};
 	
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
@@ -289,6 +307,12 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[],
 				case 3 : {
 					if (pokemonCont[3] < 3) pokemonCont[3] += 1;
 					else if (pokemonCont[3] == 3) pokemonCont[3] = 0;
+					break;
+				}
+				case 5 : {
+					if (pokemonCont[4] < NEVS - 1) pokemonCont[4] += 1;
+					else if (pokemonCont[4] == NEVS - 1) pokemonCont[4] = 0;
+					break;
 				}
 			}
 			refreshPokemon(topScreen, game[0], pokemonCont);
