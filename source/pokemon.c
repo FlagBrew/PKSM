@@ -12,7 +12,7 @@
 #define OTIDLENGTH 2
 #define SOTIDLENGTH 2
 
-#define ENTRIES 10
+#define ENTRIES 9
 #define NEVS 11
 
 const int OFFSET = 0x5400;
@@ -304,32 +304,32 @@ void refreshPokemon(PrintConsole topScreen, int game, int pokemonCont[]) {
 
     switch (game) {
         case 0 : {
-			printf("\x1b[2;23HX ");
+			printf("\x1b[2;23H\x1b[32mX \x1b[0m");
 			break;
         }
         case 1 : {
-			printf("\x1b[2;23HY ");
+			printf("\x1b[2;23H\x1b[32mY \x1b[0m");
 			break;
         }
         case 2 : {
-			printf("\x1b[2;23HOR");
+			printf("\x1b[2;23H\x1b[32mOR\x1b[0m");
 			break;
         }
         case 3 : {
-			printf("\x1b[2;23HAS");
+			printf("\x1b[2;23H\x1b[32mAS\x1b[0m");
 			break;
         }
     }
 	
-	printf("\x1b[3;23H%d ", pokemonCont[1] + 1);
-	printf("\x1b[4;23H%d", pokemonCont[2] + 1);
-	printf("\x1b[5;23H%lu  ", friendship[pokemonCont[3]]);
-	printf("\x1b[7;23H%lu  \x1b[7;27H%lu  \x1b[7;31H%lu  \x1b[7;35H%lu  \x1b[7;39H%lu  \x1b[7;43H%lu  ", evs[pokemonCont[4]][0], evs[pokemonCont[4]][1], evs[pokemonCont[4]][2], evs[pokemonCont[4]][4], evs[pokemonCont[4]][5], evs[pokemonCont[4]][3]);
-	printf("\x1b[9;23H%s    ", hpList[pokemonCont[5]]);
+	printf("\x1b[3;23H\x1b[1;33m%d\x1b[0m ", pokemonCont[1] + 1);
+	printf("\x1b[4;23H\x1b[1;33m%d\x1b[0m", pokemonCont[2] + 1);
+	printf("\x1b[5;23H\x1b[1;33m%lu\x1b[0m  ", friendship[pokemonCont[3]]);
+	printf("\x1b[6;23H\x1b[1;33m%lu/%lu/%lu/%lu/%lu/%lu\x1b[0m", evs[pokemonCont[4]][0], evs[pokemonCont[4]][1], evs[pokemonCont[4]][2], evs[pokemonCont[4]][4], evs[pokemonCont[4]][5], evs[pokemonCont[4]][3]);
+	printf("\x1b[8;23H\x1b[1;33m%s\x1b[0m    ", hpList[pokemonCont[5]]);
 }
 
 int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[], int pokemonCont[]) {
-	char *menuEntries[ENTRIES] = {"Game is:", "Select box (1-31):", "Select index (1-30):", "Set f.ship to:", "Set EVs:             HPs|ATK|DEF|SPA|SPD|SPE  ", " ", "Set all IVs to max", "Set Hidden Power:", "Set shiny", "Set non shiny"};
+	char *menuEntries[ENTRIES] = {"Game is:", "Select box (1-31):", "Select index (1-30):", "Set f.ship to:", "Set EVs to:", "Set all IVs to max", "Set Hidden Power:", "Set shiny", "Set non shiny"};
 	
 	//X, Y, OR, AS
 	const u64 ids[4] = {0x0004000000055D00, 0x0004000000055E00, 0x000400000011C400, 0x000400000011C500};
@@ -409,12 +409,12 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[],
 					else if (pokemonCont[3] == 3) pokemonCont[3] = 0;
 					break;
 				}
-				case 5 : {
+				case 4 : {
 					if (pokemonCont[4] < NEVS - 1) pokemonCont[4] += 1;
 					else if (pokemonCont[4] == NEVS - 1) pokemonCont[4] = 0;
 					break;
 				}
-				case 7 : {
+				case 6 : {
 					if (pokemonCont[5] < 15) pokemonCont[5] += 1;
 					else if (pokemonCont[5] == 15) pokemonCont[5] = 0;
 					break;
@@ -423,7 +423,7 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[],
 			refresh(pokemonCont[0], topScreen, menuEntries, ENTRIES);
 			refreshPokemon(topScreen, game[0], pokemonCont);
 		}
-		if (hidKeysDown() & KEY_START && pokemonCont[0] != 0 && pokemonCont[0] != 1 && pokemonCont[0] != 2 && pokemonCont[0] != 5) {
+		if (hidKeysDown() & KEY_START && pokemonCont[0] != 0 && pokemonCont[0] != 1 && pokemonCont[0] != 2) {
 			fsStart();
 			FS_Archive saveArch;
 			if(openSaveArch(&saveArch, ids[game[0]])) {
@@ -480,26 +480,26 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[],
 						setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game[0]);
 						break;
 					}
-					case 6 : {
+					case 5 : {
 						getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game[0]);
 						for (int i = 0; i < 6; i++) 
 							setIV(pkmn, 31, i);
 						setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game[0]);
 						break;
 					}
-					case 7 : {
+					case 6 : {
 						getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game[0]);
 						setHPType(pkmn, pokemonCont[5]);
 						setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game[0]);
 						break;
 					}
-					case 8 : {
+					case 7 : {
 						getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game[0]);
 						setShiny(pkmn, true);
 						setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game[0]);
 						break;
 					}
-					case 9 : {
+					case 8 : {
 						getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game[0]);
 						setShiny(pkmn, false);
 						setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game[0]);
