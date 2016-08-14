@@ -9,14 +9,19 @@
 #define EVLENGTH 1
 #define PIDLENGTH 4
 #define IVLENGTH 4
+#define OTIDLENGTH 2
+#define SOTIDLENGTH 2
 
-#define ENTRIES 9
+#define ENTRIES 10
 #define NEVS 11
 
 const int OFFSET = 0x5400;
 const int EVPOS = 0x1E;
 const int PIDPOS = 0x18;
 const int IVPOS = 0x74;
+const int OTIDPOS = 0x0C;
+const int SOTIDPOS = 0x0E;
+
 
 const u32 friendship[4] = {0, 70, 75, 255};
 
@@ -172,39 +177,6 @@ void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, 
     memcpy(&mainbuf[getPkmnAddress(boxnumber, indexnumber, game)], pkmn, length);
 }
 
-void refreshPokemon(PrintConsole topScreen, int game, int pokemonCont[]) {
-	consoleSelect(&topScreen);
-
-    switch (game) {
-        case 0 : {
-			printf("\x1b[2;23HX \x1b[0m");
-			break;
-        }
-        case 1 : {
-			printf("\x1b[2;23HY \x1b[0m");
-			break;
-        }
-        case 2 : {
-			printf("\x1b[2;23HOR\x1b[0m");
-			break;
-        }
-        case 3 : {
-			printf("\x1b[2;23HAS\x1b[0m");
-			break;
-        }
-    }
-	
-	printf("\x1b[3;23H\x1b[33m%d\x1b[0m ", pokemonCont[1] + 1);
-	printf("\x1b[4;23H\x1b[33m%d\x1b[0m ", pokemonCont[2] + 1);
-	printf("\x1b[5;23H\x1b[33m%lu\x1b[0m  ", friendship[pokemonCont[3]]);
-	if (pokemonCont[0] != 5)
-		printf("\x1b[7;23H%lu  \x1b[7;27H%lu  \x1b[7;31H%lu  \x1b[7;35H%lu  \x1b[7;39H%lu  \x1b[7;43H%lu  ", evs[pokemonCont[4]][0], evs[pokemonCont[4]][1], evs[pokemonCont[4]][2], evs[pokemonCont[4]][4], evs[pokemonCont[4]][5], evs[pokemonCont[4]][3]);
-	else if (pokemonCont[0] == 5)
-		printf("\x1b[33m\x1b[7;23H%lu  \x1b[7;27H%lu  \x1b[7;31H%lu  \x1b[7;35H%lu  \x1b[7;39H%lu  \x1b[7;43H%lu\x1b[0m  ", evs[pokemonCont[4]][0], evs[pokemonCont[4]][1], evs[pokemonCont[4]][2], evs[pokemonCont[4]][4], evs[pokemonCont[4]][5], evs[pokemonCont[4]][3]);
-
-	printf("\x1b[9;23H\x1b[33m%s\x1b[0m    ", hpList[pokemonCont[5]]);
-}
-
 void setFriendship(u8* pkmn, u32 value) {
 	switch (value) {
 		case 0 : {
@@ -286,11 +258,33 @@ void setHPType(u8* pkmn, const int val) {
         setIV(pkmn, ivstat[i], i);
 }
 
+u16 getOTID(u8* pkmn) {
+    u16 otidbuffer;
+    memcpy(&otidbuffer, &pkmn[OTIDPOS], OTIDLENGTH);
+    
+    return otidbuffer;
+}
+
+u16 getSOTID(u8* pkmn) {
+    u16 sotidbuffer;
+    memcpy(&sotidbuffer, &pkmn[SOTIDPOS], SOTIDLENGTH);
+    
+    return sotidbuffer;
+}
+
 u32 getPID(u8* pkmn) {
     u32 pidbuffer;
     memcpy(&pidbuffer, &pkmn[PIDPOS], PIDLENGTH);
     
     return pidbuffer;
+}
+
+bool isShiny(u8* pkmn) {
+    u16 trainersv = (getOTID(pkmn) ^ getSOTID(pkmn)) >> 4;
+    u16 pkmnv = ((getPID(pkmn) >> 16) ^ (getPID(pkmn) & 0xFFFF)) >> 4;
+    
+    if( trainersv == pkmnv) return true;
+    else return false;
 }
 
 void rerollPID(u8* pkmn) {
@@ -300,12 +294,42 @@ void rerollPID(u8* pkmn) {
     memcpy(&pkmn[PIDPOS], &pidbuffer, PIDLENGTH);
 }
 
-void setShiny(u8* pkmn) {
-    rerollPID(pkmn);
+void setShiny(u8* pkmn, const bool shiny) {
+	while(isShiny(pkmn) != shiny)
+		rerollPID(pkmn);
+}
+
+void refreshPokemon(PrintConsole topScreen, int game, int pokemonCont[]) {
+	consoleSelect(&topScreen);
+
+    switch (game) {
+        case 0 : {
+			printf("\x1b[2;23HX ");
+			break;
+        }
+        case 1 : {
+			printf("\x1b[2;23HY ");
+			break;
+        }
+        case 2 : {
+			printf("\x1b[2;23HOR");
+			break;
+        }
+        case 3 : {
+			printf("\x1b[2;23HAS");
+			break;
+        }
+    }
+	
+	printf("\x1b[3;23H\x1b[33m%d\x1b[0m ", pokemonCont[1] + 1);
+	printf("\x1b[4;23H\x1b[33m%d\x1b[0m ", pokemonCont[2] + 1);
+	printf("\x1b[5;23H\x1b[33m%lu  \x1b[0m", friendship[pokemonCont[3]]);
+	printf("\x1b[33m\x1b[7;23H%lu  \x1b[7;27H%lu  \x1b[7;31H%lu  \x1b[7;35H%lu  \x1b[7;39H%lu  \x1b[7;43H%lu  \x1b[0m", evs[pokemonCont[4]][0], evs[pokemonCont[4]][1], evs[pokemonCont[4]][2], evs[pokemonCont[4]][4], evs[pokemonCont[4]][5], evs[pokemonCont[4]][3]);
+	printf("\x1b[9;23H\x1b[33m%s\x1b[0m    ", hpList[pokemonCont[5]]);
 }
 
 int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[], int pokemonCont[]) {
-	char *menuEntries[ENTRIES] = {"Game is:", "Select box (1-31):", "Select index (1-30):", "Set f.ship to:", "Set EVs:             HPs|ATK|DEF|SPA|SPD|SPE  ", " ", "Set all IVs to max", "Set Hidden Power:", "Set shiny"};
+	char *menuEntries[ENTRIES] = {"Game is:", "Select box (1-31):", "Select index (1-30):", "Set f.ship to:", "Set EVs:             HPs|ATK|DEF|SPA|SPD|SPE  ", " ", "Set all IVs to max", "Set Hidden Power:", "Set shiny", "Set non shiny"};
 	
 	//X, Y, OR, AS
 	const u64 ids[4] = {0x0004000000055D00, 0x0004000000055E00, 0x000400000011C400, 0x000400000011C500};
@@ -396,6 +420,7 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[],
 					break;
 				}
 			}
+			refresh(pokemonCont[0], topScreen, menuEntries, ENTRIES);
 			refreshPokemon(topScreen, game[0], pokemonCont);
 		}
 		if (hidKeysDown() & KEY_START && pokemonCont[0] != 0 && pokemonCont[0] != 1 && pokemonCont[0] != 2 && pokemonCont[0] != 5) {
@@ -470,7 +495,13 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[],
 					}
 					case 8 : {
 						getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game[0]);
-						setShiny(pkmn);
+						setShiny(pkmn, true);
+						setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game[0]);
+						break;
+					}
+					case 9 : {
+						getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game[0]);
+						setShiny(pkmn, false);
 						setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game[0]);
 						break;
 					}
