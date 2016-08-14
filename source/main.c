@@ -47,7 +47,13 @@ int main() {
 	int injectCont[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 	
 	// initializing pokemon editor variables
-	int pokemonCont[1] = {0};
+	int pokemonCont[4] = {0, 0, 0, 0};
+	/*
+		0 : currentEntry
+	    1 : boxnumber
+		2 : indexnumber
+		3 : NotOTfriendship counter
+	*/
 
 	consoleSelect(&topScreen);
 	intro(topScreen, bottomScreen, currentEntry, menuEntries);
