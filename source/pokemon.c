@@ -66,7 +66,7 @@ int getPkmnAddress(const int boxnumber, const int indexnumber, int game) {
         else boxpos = 0x19600 - OFFSET;
     }
     
-    if (game == 3 || game == 4) {
+    if (game == 2 || game == 3) {
         if (boxnumber < 31)
             boxpos = 0x38400 - OFFSET;
         
@@ -297,15 +297,17 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[],
 				
 				//Read main 
 				FSFILE_Read(mainHandle, NULL, 0, mainbuf, mainSize);
+				
+				getPkmn(mainbuf, boxnumber, indexnumber, pkmn, game[0]);
 			
 				switch (pokemonCont[0]) {
 					case 1 : {
-						getPkmn(mainbuf, boxnumber, indexnumber, pkmn, game[0]);
 						setFriendship(pkmn, 255);
-						setPkmn(mainbuf, boxnumber, indexnumber, pkmn, game[0]);
 						break;
 					}
 				}
+				
+				setPkmn(mainbuf, boxnumber, indexnumber, pkmn, game[0]);
 
 				int rwCHK = rewriteCHK(mainbuf, game[0]);
 				if (rwCHK != 0)
