@@ -54,6 +54,7 @@ int main() {
 		2 : indexnumber
 		3 : NotOTfriendship counter
 		4 : EVs counter
+		5 : Hidden Power counter
 	*/
 
 	consoleSelect(&topScreen);

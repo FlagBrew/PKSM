@@ -14,5 +14,11 @@ void refreshPokemon(PrintConsole topScreen, int game, int pokemonCont[]);
 
 void setFriendship(u8* pkmn, u32 value);
 void setEV(u8* pkmn, u8 val, const int stat);
+void setIV(u8* pkmn, u8 val, const int stat);
+u8 getIV(u8* pkmn, const int stat);
+void setHPType(u8* pkmn, const int val);
+u32 getPID(u8* pkmn);
+void rerollPID(u8* pkmn);
+void setShiny(u8* pkmn);
 
 int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[], int pokemonCont[]);
