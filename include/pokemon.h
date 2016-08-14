@@ -10,8 +10,9 @@ void encryptPkmn(u8* pkmn);
 void encryptBattleSection(u8* pkmn);
 void getPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game);
 void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game);
-void refreshPokemon(PrintConsole topScreen, int game, int pokemonCont[], u32 friendship[]);
+void refreshPokemon(PrintConsole topScreen, int game, int pokemonCont[]);
 
 void setFriendship(u8* pkmn, u32 value);
+void setEV(u8* pkmn, u8 val, const int stat);
 
 int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[], int pokemonCont[]);

@@ -10,5 +10,5 @@ void injectItem(u8* mainbuf, int i, u32 values[], int type, int nInjected[], int
 void injectBP(u8* mainbuf, int i, int game);
 void injectBadges(u8* mainbuf, int i);
 void injectTM(u8* mainbuf);
-void refreshValues(PrintConsole topScreen, int game, u64 money[], int BP[], int injectCont[], int nInjected[]);
+void refreshValues(PrintConsole topScreen, int game, int injectCont[], int nInjected[]);
 int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[], int nInjected[], int injectCont[]);

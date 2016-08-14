@@ -6,10 +6,25 @@
 #define PKMNLENGTH 232
 #define PARTYPKMNLENGTH 260
 #define BOXMAX 31
+#define EVLENGTH 1
 
-#define ENTRIES 4
+#define ENTRIES 5
 
 const int OFFSET = 0x5400;
+const int EVPOS = 0x1E;
+// const int HP = 0;
+// const int ATK = 1;
+// const int DEF = 2;
+// const int SPE = 3;
+// const int SPA = 4;
+// const int SPD = 5;
+
+//X, Y, OR, AS
+const u64 ids[4] = {0x0004000000055D00, 0x0004000000055E00, 0x000400000011C400, 0x000400000011C500};
+const u32 friendship[4] = {0, 70, 75, 255};
+
+					// HP , ATK, DEF, SPE, SPA, SPD
+const u32 evs[1][6] = {{252,   0, 252,   0,   0,   4}};
 
 u32 seedStep(const u32 seed) {
     return (seed*0x41C64E6D + 0x00006073) & 0xFFFFFFFF;
@@ -146,7 +161,7 @@ void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, 
     memcpy(&mainbuf[getPkmnAddress(boxnumber, indexnumber, game)], pkmn, length);
 }
 
-void refreshPokemon(PrintConsole topScreen, int game, int pokemonCont[], u32 friendship[]) {
+void refreshPokemon(PrintConsole topScreen, int game, int pokemonCont[]) {
 	consoleSelect(&topScreen);
 
     switch (game) {
@@ -194,13 +209,12 @@ void setFriendship(u8* pkmn, u32 value) {
 	}
 }
 
-int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[], int pokemonCont[]) {	
-	char *menuEntries[ENTRIES] = {"Game is:", "Select box:", "Select index [0-30]", "Set friendship of"};
+void setEV(u8* pkmn, u8 val, const int stat) {
+    memcpy(&pkmn[EVPOS+(EVLENGTH*stat)], &val, EVLENGTH);
+}
 
-	//X, Y, OR, AS
-	const u64 ids[4] = {0x0004000000055D00, 0x0004000000055E00, 0x000400000011C400, 0x000400000011C500};
-	
-	u32 friendship[4] = {0, 70, 75, 255};
+int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[], int pokemonCont[]) {
+	char *menuEntries[ENTRIES] = {"Game is:", "Select box [1-31]:", "Select index [1-30]:", "Set friendship of", "Set EV"};
 	
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
@@ -220,7 +234,7 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[],
 	printf("\x1b[47;1;34m                  Pokemon Editor                  \x1b[0m\n");
 	
 	refresh(pokemonCont[0], topScreen, menuEntries, ENTRIES);
-	refreshPokemon(topScreen, game[0], pokemonCont, friendship);
+	refreshPokemon(topScreen, game[0], pokemonCont);
 	
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
@@ -233,12 +247,12 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[],
 			if (pokemonCont[0] == 0) {
 				pokemonCont[0] = ENTRIES - 1;
 				refresh(pokemonCont[0], topScreen, menuEntries, ENTRIES);
-				refreshPokemon(topScreen, game[0], pokemonCont, friendship);
+				refreshPokemon(topScreen, game[0], pokemonCont);
 			}
 			else if (pokemonCont[0] > 0) {
 				pokemonCont[0]--;
 				refresh(pokemonCont[0], topScreen, menuEntries, ENTRIES);
-				refreshPokemon(topScreen, game[0], pokemonCont, friendship);
+				refreshPokemon(topScreen, game[0], pokemonCont);
 			}
 		}
 		
@@ -246,12 +260,12 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[],
 			if (pokemonCont[0] == ENTRIES - 1) {
 				pokemonCont[0] = 0;
 				refresh(pokemonCont[0], topScreen, menuEntries, ENTRIES);
-				refreshPokemon(topScreen, game[0], pokemonCont, friendship);	
+				refreshPokemon(topScreen, game[0], pokemonCont);	
 			}
 			else if (pokemonCont[0] < ENTRIES - 1) {
 				pokemonCont[0]++;
 				refresh(pokemonCont[0], topScreen, menuEntries, ENTRIES);
-				refreshPokemon(topScreen, game[0], pokemonCont, friendship);
+				refreshPokemon(topScreen, game[0], pokemonCont);
 			}
 		}
 		
@@ -277,7 +291,7 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[],
 					else if (pokemonCont[3] == 3) pokemonCont[3] = 0;
 				}
 			}
-			refreshPokemon(topScreen, game[0], pokemonCont, friendship);
+			refreshPokemon(topScreen, game[0], pokemonCont);
 		}
 		if (hidKeysDown() & KEY_START && pokemonCont[0] != 0 && pokemonCont[0] != 1 && pokemonCont[0] != 2) {
 			fsStart();
@@ -328,6 +342,13 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[],
 						setFriendship(pkmn, friendship[pokemonCont[3]]);
 						setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game[0]);
 						break;
+					}
+					case 4 : {
+						getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game[0]);
+						for (int i = 0; i < 6; i++) {
+							setEV(pkmn, evs[pokemonCont[4]][i], i);
+						}
+						setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game[0]);
 					}
 				}
 				
