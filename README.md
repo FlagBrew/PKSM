@@ -1,4 +1,4 @@
-# EventAssistant
+# EventAssistant [![Github latest downloads](https://img.shields.io/github/downloads/BernardoGiordano/EventAssistant/latest/total.svg?maxAge=86400)](https://github.com/BernardoGiordano/EventAssistant/releases/latest)
 
 *A general purpose Pokémon toolkit*.
 
