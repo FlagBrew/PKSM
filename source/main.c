@@ -47,7 +47,7 @@ int main() {
 	int injectCont[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 	
 	// initializing pokemon editor variables
-	int pokemonCont[5] = {0, 0, 0, 0, 0};
+	int pokemonCont[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 	/*
 		0 : currentEntry
 	    1 : boxnumber
@@ -55,6 +55,8 @@ int main() {
 		3 : NotOTfriendship counter
 		4 : EVs counter
 		5 : Hidden Power counter
+		6 : clone boxnumber
+		7 : clone indexnumber
 	*/
 
 	consoleSelect(&topScreen);
@@ -131,8 +133,11 @@ int main() {
 				case 2 : {
 					int ret = pokemonEditor(topScreen, bottomScreen, game, pokemonCont);
 					consoleSelect(&bottomScreen);
-					if (ret == 1) printf("\x1b[6;0H\x1b[32mPokemon modified correctly\x1b[0m.");
+					if (ret == 1) printf("\x1b[6;0H\x1b[32mChanges applied correctly\x1b[0m.");
 					else if (ret != 1 && ret != 0) printf("\x1b[6;0HAn error occurred.");
+					if (ret == -1) printf("\x1b[31m Game not found\x1b[0m.");
+					else if (ret == -3) printf("\x1b[31m No pokemon found in the selected location\x1b[0m.");
+					else if (ret == -13) printf("\x1b[31m Game selected doesn'tmatch the game chosen previously\x1b[0m.");
 					printf("\nPress B to return.");
 
 					if (ret != 0) {
