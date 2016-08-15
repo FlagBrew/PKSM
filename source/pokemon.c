@@ -517,6 +517,9 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[],
 						if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
 							return -3;
 						
+						for (int i = 0; i < 6; i++) 
+							setIV(pkmn, 31, i);
+						
 						setHPType(pkmn, pokemonCont[5]);
 						setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game[0]);
 						break;
