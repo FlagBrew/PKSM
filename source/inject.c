@@ -137,19 +137,19 @@ void refreshValues(PrintConsole topScreen, int game, int injectCont[], int nInje
 
     switch (game) {
         case 0 : {
-			printf("\x1b[2;28H\x1b[32mX \x1b[0m");
+			printf("\x1b[2;28H\x1b[1;31mX \x1b[0m");
 			break;
         }
         case 1 : {
-			printf("\x1b[2;28H\x1b[32mY \x1b[0m");
+			printf("\x1b[2;28H\x1b[1;31mY \x1b[0m");
 			break;
         }
         case 2 : {
-			printf("\x1b[2;28H\x1b[32mOR\x1b[0m");
+			printf("\x1b[2;28H\x1b[1;31mOR\x1b[0m");
 			break;
         }
         case 3 : {
-			printf("\x1b[2;28H\x1b[32mAS\x1b[0m");
+			printf("\x1b[2;28H\x1b[1;31mAS\x1b[0m");
 			break;
         }
     }
