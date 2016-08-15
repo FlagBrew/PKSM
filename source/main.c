@@ -136,7 +136,7 @@ int main() {
 					if (ret == 1) printf("\x1b[6;0H\x1b[32mChanges applied correctly\x1b[0m.");
 					else if (ret != 1 && ret != 0) printf("\x1b[6;0HAn error occurred.");
 					if (ret == -1) printf("\x1b[31m Game not found\x1b[0m.");
-					else if (ret == -3) printf("\x1b[31m No pokemon found in the selected location\x1b[0m.");
+					else if (ret == -3) printf("\x1b[31m No pokemon found in  the selected location\x1b[0m.");
 					else if (ret == -13) printf("\x1b[31m Game selected doesn'tmatch the game chosen previously\x1b[0m.");
 					printf("\nPress B to return.");
 
