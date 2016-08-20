@@ -5,7 +5,7 @@
 #include "http.h"
 
 void errDisp(PrintConsole screen, int i) {
-	char *errors[] = {"Error!", "Game not found", "OpenContext failed", "AddRequestHeaderField failed", "SSLOpt failed", "BeginRequest failed", "Response code failed", "New header failed", "Redirection failed", "Download size error", "Buffer alloc error", "DownloadData failed", "Eon Ticket N/A in XY", "Switch game also in the app", "Maximum item reached", ".wc6 not available"};
+	char *errors[] = {"Error!", "Game not found", "OpenContext failed", "AddRequestHeaderField failed", "SSLOpt failed", "BeginRequest failed", "Response code failed", "New header failed", "Redirection failed", "Download size error", "Buffer alloc error", "DownloadData failed", "Eon Ticket N/A in XY", "Switch game also in the app", "Maximum item reached", ".wc6 not available", "Selected slot is empty"};
 	int top = 12; // (29 - 5) / 12
 	u16 length = strlen(errors[i]);
 	u16 left = (40 - length - 2) / 2;

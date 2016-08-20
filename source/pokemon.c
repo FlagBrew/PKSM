@@ -370,7 +370,7 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
 					
 					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
-						return -3;
+						return 16;
 					
 					setFriendship(pkmn, friendship[pokemonCont[3]]);
 					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
@@ -380,7 +380,7 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
 					
 					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
-						return -3;
+						return 16;
 					
 					for (int i = 0; i < 6; i++) 
 						setEV(pkmn, evs[pokemonCont[4]][i], i);
@@ -391,7 +391,7 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
 
 					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
-						return -3;
+						return 16;
 					
 					for (int i = 0; i < 6; i++) 
 						setIV(pkmn, 31, i);
@@ -402,7 +402,7 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
 
 					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
-						return -3;
+						return 16;
 					
 					for (int i = 0; i < 6; i++) 
 						setIV(pkmn, 31, i);
@@ -415,7 +415,7 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
 					
 					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
-						return -3;
+						return 16;
 					
 					setShiny(pkmn, true);
 					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
@@ -425,7 +425,7 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
 
 					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
-						return -3;
+						return 16;
 					
 					setShiny(pkmn, false);
 					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);

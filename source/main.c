@@ -226,8 +226,11 @@ int main() {
 				case 1 : {
 					int ret = saveFileEditor(topScreen, bottomScreen, mainbuf, game, nInjected, injectCont);
 					consoleSelect(&bottomScreen);
-					if (ret == 1) infoDisp(bottomScreen, ret);
-					else if (ret != -1 && ret != 1) errDisp(bottomScreen, ret);
+					
+					if (ret == 1) 
+						infoDisp(bottomScreen, 1);
+					else if (ret != -1 && ret != 1) 
+						errDisp(bottomScreen, ret);
 
 					if (ret != -1) {
 						while (aptMainLoop()) {
@@ -252,12 +255,10 @@ int main() {
 				case 2 : {
 					int ret = pokemonEditor(topScreen, bottomScreen, mainbuf, game, pokemonCont);
 					consoleSelect(&bottomScreen);
-					if (ret == 1) printf("\x1b[6;0H\x1b[32mChanges applied correctly\x1b[0m.");
-					else if (ret != 1 && ret != 0) printf("\x1b[6;0HAn error occurred.");
-					if (ret == -1) printf("\x1b[31m Game not found\x1b[0m.");
-					else if (ret == -3) printf("\x1b[31m No pokemon found in  the selected location\x1b[0m.");
-					else if (ret == -13) printf("\x1b[31m Game selected doesn'tmatch the game chosen previously\x1b[0m.");
-					printf("\nPress B to return.");
+					if (ret == 1)
+						infoDisp(bottomScreen, 1);
+					else if (ret != 1 && ret != 0) 
+						errDisp(bottomScreen, ret);
 
 					if (ret != 0) {
 						while (aptMainLoop()) {
