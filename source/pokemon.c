@@ -251,7 +251,7 @@ void refreshPokemon(PrintConsole topScreen, int pokemonCont[]) {
 }
 
 int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int game, int pokemonCont[]) {
-	char *menuEntries[ENTRIES] = {"Select box (1-31):", "Select index (1-30):", "Set f.ship to:", "Set EVs to:", "Set all IVs to max", "Set Hidden Power:", "Set shiny", "Set non shiny", "Clone box in sel. box", "Clone pkmn in sel. index"};
+	char *menuEntries[ENTRIES] = {"Select box (1-31):", "Select index (1-30):", "Set f.ship to:", "Set EVs to:", "Set all IVs to max", "Set Hidden Power:", "Set shiny", "Set non shiny", "Clone box in box", "Clone pkmn in index"};
 	
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
