@@ -4,7 +4,7 @@
 #include <string.h>
 #include "util.h"
 
-#define ENTRIES 13
+#define ENTRIES 12
 #define BALLS 25
 #define ITEM 18
 #define HEAL 26
@@ -121,59 +121,46 @@ void injectBadges(u8* mainbuf, int i) {
 
 void injectTM(u8* mainbuf) {
 	const u32 values[] = {0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5A, 0x5B, 0x5C, 0x5D, 0x5E, 0x5F, 0x60, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6A, 0x6B, 0x6C, 0x6D, 0x6E, 0x6F, 0x70, 0x71, 0x72, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 0x79, 0x7A, 0x7B, 0x7C, 0x7D, 0x7E, 0x7F, 0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8A, 0x8B, 0x8C, 0x8D, 0x8E, 0x8F, 0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97, 0x98, 0x99, 0x9A, 0x9B, 0x9C, 0x9D, 0x9E, 0x9F, 0xA0, 0xA1, 0xA2, 0xA3, 0x6A, 0x6B, 0x6C, 0xB2, 0xB3, 0xB4, 0xB5, 0xB6};
+	
 	for (int i = 0; i < 100; i++) {
 		*(mainbuf + 0xBC0 + i * 4) = values[i];
 		*(mainbuf + 0xBC0 + i * 4 + 1) = 0x01;
 		*(mainbuf + 0xBC0 + i * 4 + 2) = 0x01;
 		*(mainbuf + 0xBC0 + i * 4 + 3) = 0x00;
 	}
+	
 	for (int i = 0; i < 8; i++) {
 		*(mainbuf + 0xD31 + i * 4) = 0x02;
 	}
 }
 
-void refreshValues(PrintConsole topScreen, int game, int injectCont[], int nInjected[]) {
+void refreshValues(PrintConsole topScreen, int injectCont[], int nInjected[]) {
 	consoleSelect(&topScreen);
-
-    switch (game) {
-        case 0 : {
-			printf("\x1b[2;28H\x1b[1;31mX \x1b[0m");
-			break;
-        }
-        case 1 : {
-			printf("\x1b[2;28H\x1b[1;31mY \x1b[0m");
-			break;
-        }
-        case 2 : {
-			printf("\x1b[2;28H\x1b[1;31mOR\x1b[0m");
-			break;
-        }
-        case 3 : {
-			printf("\x1b[2;28H\x1b[1;31mAS\x1b[0m");
-			break;
-        }
-    }
-    printf("\x1b[3;28H\x1b[1;33m%s\x1b[0m", language[injectCont[1]]);
-    printf("\x1b[4;28H\x1b[1;33m%llu\x1b[0m$       ", money[injectCont[2]]);
-    printf("\x1b[5;19H%d:\x1b[5;28H\x1b[1;33m%s\x1b[0m     ", nInjected[0] + 1,  ballsList[injectCont[3] / 2]);
-    if (injectCont[3] % 2 == 0) printf("\x1b[5;45Hx1  ");
+    printf("\x1b[2;28H\x1b[1;33m%s\x1b[0m", language[injectCont[1]]);
+    printf("\x1b[3;28H\x1b[1;33m%llu\x1b[0m$       ", money[injectCont[2]]);
+	
+    printf("\x1b[4;19H%d:\x1b[4;28H\x1b[1;33m%s\x1b[0m     ", nInjected[0] + 1,  ballsList[injectCont[3] / 2]);
+    if (injectCont[3] % 2 == 0) 
+		printf("\x1b[4;45Hx1  ");
+    else printf("\x1b[4;45Hx995");
+	
+    printf("\x1b[5;19H%d:\x1b[5;28H\x1b[1;33m%s\x1b[0m     ", nInjected[0] + 1, itemList[injectCont[4] / 2]);
+    if (injectCont[4] % 2 == 0) 
+		printf("\x1b[5;45Hx1  ");
     else printf("\x1b[5;45Hx995");
-    printf("\x1b[6;19H%d:\x1b[6;28H\x1b[1;33m%s\x1b[0m     ", nInjected[0] + 1, itemList[injectCont[4] / 2]);
-    if (injectCont[4] % 2 == 0) printf("\x1b[6;45Hx1  ");
+	
+    printf("\x1b[6;19H%d:\x1b[6;28H\x1b[1;33m%s\x1b[0m     ", nInjected[1] + 1, healList[injectCont[5] / 2]);
+    if (injectCont[5] % 2 == 0) 
+		printf("\x1b[6;45Hx1  ");
     else printf("\x1b[6;45Hx995");
-    printf("\x1b[7;19H%d:\x1b[7;28H\x1b[1;33m%s\x1b[0m     ", nInjected[1] + 1, healList[injectCont[5] / 2]);
-    if (injectCont[5] % 2 == 0) printf("\x1b[7;45Hx1  ");
-    else printf("\x1b[7;45Hx995");
-    printf("\x1b[8;28H\x1b[1;33m%d\x1b[0m    ", BP[injectCont[6]]);
-    printf("\x1b[9;28H\x1b[1;33m%d\x1b[0m badges", injectCont[7]);
+	
+    printf("\x1b[7;28H\x1b[1;33m%d\x1b[0m    ", BP[injectCont[6]]);
+    printf("\x1b[8;28H\x1b[1;33m%d\x1b[0m badges", injectCont[7]);
     printf("\x1b[29;5HInjection locations: \x1b[32m%d\x1b[0m/%d | \x1b[32m%d\x1b[0m/%d | \x1b[32m%d\x1b[0m/%d  ", nInjected[0], BALLS + ITEM, nInjected[1], HEAL, nInjected[2], BERRIES);
 }
 
-int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[], int nInjected[], int injectCont[]) {
-	char *menuEntries[ENTRIES] = {"Game is:", "Set language to:", "Set money to:", "Set ball to slot", "Set item to slot", "Set heal to slot", "Set Battle Points to:", "Set number of badges to:", "Set all TMs", "Set Poke Balls to max", "Set all available items to max", "Set all available heals to max", "Set all available berries to max"};
-	
-	//X, Y, OR, AS
-	const u64 ids[4] = {0x0004000000055D00, 0x0004000000055E00, 0x000400000011C400, 0x000400000011C500};
+int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int game, int nInjected[], int injectCont[]) {
+	char *menuEntries[ENTRIES] = {"Set language to:", "Set money to:", "Set ball to slot", "Set item to slot", "Set heal to slot", "Set Battle Points to:", "Set number of badges to:", "Set all TMs", "Set Poke Balls to max", "Set all available items to max", "Set all available heals to max", "Set all available berries to max"};
 	
 	//fill berries
 	u32 berry[BERRIES * 2];
@@ -185,22 +172,22 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[]
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
 	printf("----------------------------------------");
-	printf("\x1b[32m\x19\x18\x1b[0m - Move cursor\n");
-	printf("\x1b[32mA\x1b[0m - Switch setting\n");
-	printf("\x1b[1;31mSTART\x1b[0m - Start selected change\n");
+	printf("\x1b[32m\x19\x18\x1b[0m    Move cursor\n");
+	printf("\x1b[32mA\x1b[0m     Switch setting\n");
+	printf("\x1b[1;31mSTART\x1b[0m Apply selected change\n");
 	printf("----------------------------------------");
 	printf("\x1b[17;0HYou can perform one edit, then you need to reopen this function to make another one.");
 	printf("\x1b[21;0H----------------------------------------");
 	printf("\x1b[22;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this.");
 	printf("\x1b[26;0H----------------------------------------");
-	printf("\x1b[29;12HPress B to exit.");
+	printf("\x1b[29;12H\x1b[47;31mPress B to exit.\x1b[0m");
 	
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
 	printf("\x1b[47;1;34m                 Save file Editor                 \x1b[0m\n");
 	
 	refresh(injectCont[0], topScreen, menuEntries, ENTRIES);
-	refreshValues(topScreen, game[0], injectCont, nInjected);
+	refreshValues(topScreen, injectCont, nInjected);
 	
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
@@ -213,12 +200,12 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[]
 			if (injectCont[0] == 0) {
 				injectCont[0] = ENTRIES - 1;
 				refresh(injectCont[0], topScreen, menuEntries, ENTRIES);
-				refreshValues(topScreen, game[0], injectCont, nInjected);	
+				refreshValues(topScreen, injectCont, nInjected);	
 			}
 			else if (injectCont[0] > 0) {
 				injectCont[0]--;
 				refresh(injectCont[0], topScreen, menuEntries, ENTRIES);
-				refreshValues(topScreen, game[0], injectCont, nInjected);	
+				refreshValues(topScreen, injectCont, nInjected);	
 			}
 		}
 		
@@ -226,189 +213,142 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, int game[]
 			if (injectCont[0] == ENTRIES - 1) {
 				injectCont[0] = 0;
 				refresh(injectCont[0], topScreen, menuEntries, ENTRIES);
-				refreshValues(topScreen, game[0], injectCont, nInjected);	
+				refreshValues(topScreen, injectCont, nInjected);	
 			}
 			else if (injectCont[0] < ENTRIES - 1) {
 				injectCont[0]++;
 				refresh(injectCont[0], topScreen, menuEntries, ENTRIES);
-				refreshValues(topScreen, game[0], injectCont, nInjected);
+				refreshValues(topScreen, injectCont, nInjected);
 			}
 		}
 		
 		if (hidKeysDown() & KEY_A) {
 			switch (injectCont[0]) {
 				case 0 : {
-					if (game[0] < 3) game[0] += 1;
-					else if (game[0] == 3) game[0] = 0;
-					break;
+					if (injectCont[1] < 6) 
+						injectCont[1]++;
+					else if (injectCont[1] == 6) 
+						injectCont[1] = 0;
+					break;					
 				}
 				case 1 : {
-					if (injectCont[1] < 6) injectCont[1]++;
-					else if (injectCont[1] == 6) injectCont[1] = 0;
+					if (injectCont[2] < 3) 
+						injectCont[2]++;
+					else if (injectCont[2] == 3) 
+						injectCont[2] = 0;
 					break;					
 				}
 				case 2 : {
-					if (injectCont[2] < 3) injectCont[2]++;
-					else if (injectCont[2] == 3) injectCont[2] = 0;
+					if (injectCont[3] < BALLS * 2 - 1) 
+						injectCont[3]++;
+					else if (injectCont[3] == BALLS * 2 - 1) 
+						injectCont[3] = 0;
 					break;					
 				}
 				case 3 : {
-					if (injectCont[3] < BALLS * 2 - 1) injectCont[3]++;
-					else if (injectCont[3] == BALLS * 2 - 1) injectCont[3] = 0;
-					break;					
+					if (injectCont[4] < ITEM * 2 - 1) 
+						injectCont[4]++;
+					else if (injectCont[4] == ITEM * 2 - 1) 
+						injectCont[4] = 0;
+					break;						
 				}
 				case 4 : {
-					if (injectCont[4] < ITEM * 2 - 1) injectCont[4]++;
-					else if (injectCont[4] == ITEM * 2 - 1) injectCont[4] = 0;
+					if (injectCont[5] < HEAL * 2 - 1) 
+						injectCont[5]++;
+					else if (injectCont[5] == HEAL * 2 - 1) 
+						injectCont[5] = 0;
 					break;						
 				}
 				case 5 : {
-					if (injectCont[5] < HEAL * 2 - 1) injectCont[5]++;
-					else if (injectCont[5] == HEAL * 2 - 1) injectCont[5] = 0;
-					break;						
-				}
-				case 6 : {
-					if (injectCont[6] < 1) injectCont[6]++;
-					else if (injectCont[6] == 1) injectCont[6] = 0;
+					if (injectCont[6] < 1) 
+						injectCont[6]++;
+					else if (injectCont[6] == 1) 
+						injectCont[6] = 0;
 					break;					
 				}
-				case 7 : {
-					if (injectCont[7] < 8) injectCont[7]++;
-					else if (injectCont[7] == 8) injectCont[7] = 0;
+				case 6 : {
+					if (injectCont[7] < 8) 
+						injectCont[7]++;
+					else if (injectCont[7] == 8) 
+						injectCont[7] = 0;
 					break;
 				}
 			}
-			refreshValues(topScreen, game[0], injectCont, nInjected);	
+			refreshValues(topScreen, injectCont, nInjected);	
 		}
 
-		if (hidKeysDown() & KEY_START && injectCont[0] != 0) {		
-			fsStart();
-			FS_Archive saveArch;
-			if(openSaveArch(&saveArch, ids[game[0]])) {
-				
-				//Open main
-				Handle mainHandle;
-				FSUSER_OpenFile(&mainHandle, saveArch, fsMakePath(PATH_ASCII, "/main"), FS_OPEN_READ | FS_OPEN_WRITE, 0);
-			
-				//Get size 
-				u64 mainSize;
-				FSFILE_GetSize(mainHandle, &mainSize);
-				
-				switch(game[0]) {
-					case 0 : {
-						if (mainSize != 415232)
-							return -13;
-						break;
-					}
-					case 1 : {
-						if (mainSize != 415232)
-							return -13;
-						break;
-					}
-					case 2 : {
-						if (mainSize != 483328)
-							return -13;
-						break;
-					}
-					case 3 : {
-						if (mainSize != 483328)
-							return -13;
-						break;
-					}
+		if (hidKeysDown() & KEY_START) {			
+			switch (injectCont[0]) {
+				case 0 : {
+					injectLanguage(mainbuf, injectCont[1]);
+					break;
 				}
-				
-				//allocate mainbuf
-				u8* mainbuf = malloc(mainSize);
-				
-				//Read main 
-				FSFILE_Read(mainHandle, NULL, 0, mainbuf, mainSize);
-			
-				switch (injectCont[0]) {
-					case 1 : {
-						injectLanguage(mainbuf, injectCont[1]);
-						break;
-					}
-					case 2 : {
-						injectMoney(mainbuf, money[injectCont[2]]);
-						break;
-					}
-					case 3 : {
-						if (nInjected[0] < BALLS + ITEM) {
-							injectItem(mainbuf, injectCont[3], balls, 0, nInjected, game[0]);
-							break;
-						}
-						else return -2;
-					}
-					case 4 : {
-						if (nInjected[0] < BALLS + ITEM) {
-							injectItem(mainbuf, injectCont[4], items, 0, nInjected, game[0]);
-							break;
-						}
-						else return -2;
-					}
-					case 5 : {
-						if (nInjected[1] < HEAL) {
-							injectItem(mainbuf, injectCont[5], heal, 1, nInjected, game[0]);
-							break;
-						}
-						else return -2;
-					}
-					case 6 : {
-						injectBP(mainbuf, BP[injectCont[6]], game[0]);
-						break;
-					}
-					case 7 : {
-						injectBadges(mainbuf, injectCont[7]);
-						break;
-					}
-					case 8 : {
-						injectTM(mainbuf);
-						break;
-					}
-					case 9 : {
-						nInjected[0] = 0;
-						for (int i = 1; i < BALLS * 2; i += 2)
-							injectItem(mainbuf, i, balls, 0, nInjected, game[0]);
-						break;
-					}
-					case 10 : {
-						nInjected[0] = 0;
-						for (int i = 1; i < ITEM * 2; i += 2)
-							injectItem(mainbuf, i, items, 0, nInjected, game[0]);
-						break;
-					}
-					case 11 : {
-						nInjected[1] = 0;
-						for (int i = 1; i < HEAL * 2; i += 2)
-							injectItem(mainbuf, i, heal, 1, nInjected, game[0]);
-						break;
-					}
-					case 12 : {
-						nInjected[2] = 0;
-						for (int i = 1; i < BERRIES * 2; i += 2)
-							injectItem(mainbuf, i, berry, 2, nInjected, game[0]);
-						break;
-					}
+				case 1 : {
+					injectMoney(mainbuf, money[injectCont[2]]);
+					break;
 				}
-
-				int rwCHK = rewriteCHK(mainbuf, game[0]);
-				if (rwCHK != 0)
-					return rwCHK;
-				
-				FSFILE_Write(mainHandle, NULL, 0, mainbuf, mainSize, FS_WRITE_FLUSH);
-				FSFILE_Close(mainHandle);
-				
-				FSUSER_ControlArchive(saveArch, ARCHIVE_ACTION_COMMIT_SAVE_DATA, NULL, 0, NULL, 0);
-				FSUSER_CloseArchive(saveArch);
-				
-				free(mainbuf);
-				fsEnd();
-				return 1;
-			} else
-				return -1;
+				case 2 : {
+					if (nInjected[0] < BALLS + ITEM) {
+						injectItem(mainbuf, injectCont[3], balls, 0, nInjected, game);
+						break;
+					}
+					else return 14;
+				}
+				case 3 : {
+					if (nInjected[0] < BALLS + ITEM) {
+						injectItem(mainbuf, injectCont[4], items, 0, nInjected, game);
+						break;
+					}
+					else return 14;
+				}
+				case 4 : {
+					if (nInjected[1] < HEAL) {
+						injectItem(mainbuf, injectCont[5], heal, 1, nInjected, game);
+						break;
+					}
+					else return 14;
+				}
+				case 5 : {
+					injectBP(mainbuf, BP[injectCont[6]], game);
+					break;
+				}
+				case 6 : {
+					injectBadges(mainbuf, injectCont[7]);
+					break;
+				}
+				case 7 : {
+					injectTM(mainbuf);
+					break;
+				}
+				case 8 : {
+					nInjected[0] = 0;
+					for (int i = 1; i < BALLS * 2; i += 2)
+						injectItem(mainbuf, i, balls, 0, nInjected, game);
+					break;
+				}
+				case 9 : {
+					nInjected[0] = 0;
+					for (int i = 1; i < ITEM * 2; i += 2)
+						injectItem(mainbuf, i, items, 0, nInjected, game);
+					break;
+				}
+				case 10 : {
+					nInjected[1] = 0;
+					for (int i = 1; i < HEAL * 2; i += 2)
+						injectItem(mainbuf, i, heal, 1, nInjected, game);
+					break;
+				}
+				case 11 : {
+					nInjected[2] = 0;
+					for (int i = 1; i < BERRIES * 2; i += 2)
+						injectItem(mainbuf, i, berry, 2, nInjected, game);
+					break;
+				}
+			}
+			return 1;
 		}
 		gfxFlushBuffers();
 		gfxSwapBuffers();
 	}
-	return 0;
+	return -1;
 }

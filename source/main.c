@@ -2,21 +2,21 @@
 #include <stdio.h>
 #include <3ds.h>
 #include "http.h"
-#include "pid.h"
 #include "catch.h"
 #include "util.h"
 #include "database.h"
 #include "inject.h"
 #include "pokemon.h"
 
-#define ENTRIES 12
+#define ENTRIES 11
 
-#define V1 1
-#define V2 9
-#define V3 3
+#define V1 2
+#define V2 0
+#define V3 0
 
 void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, char* menuEntries[]){
 	consoleSelect(&bottomScreen);
+	printf("\x1b[2J");
 	printf("\x1b[26;0HEvent Assistant v%d.%d.%d", V1, V2, V3);
 	printf("\n\nBernardo Giordano & ctrulib");
 	consoleSelect(&topScreen);
@@ -26,7 +26,7 @@ void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, 
 	refresh(currentEntry, topScreen, menuEntries, ENTRIES);
 
 	consoleSelect(&topScreen);
-	printf("\x1b[29;15HPress Start to exit.");
+	printf("\x1b[29;10H\x1b[47;32mPress Start to save, B to exit\x1b[0m");
 }
 
 int main() {
@@ -36,11 +36,125 @@ int main() {
 	PrintConsole topScreen, bottomScreen;
 	consoleInit(GFX_TOP, &topScreen);
 	consoleInit(GFX_BOTTOM, &bottomScreen);
-
-	char *menuEntries[ENTRIES] = {"Gen VI's Event Database", "Save file editor", "Pokemon editor", "Wi-Fi distributions", "Code distributions", "Local distributions", "Capture probability calculator", "PID Checker", "Common PS dates database", "Changelog", "Credits", "Update .cia"};
-	int currentEntry = 0;
 	
-	int game[1] = {0};
+	int game = 0;
+	bool save = true;
+	
+	//X, Y, OR, AS
+	const u64 ids[4] = {0x0004000000055D00, 0x0004000000055E00, 0x000400000011C400, 0x000400000011C500};
+	char *gamesList[4] = {"Pokemon X", "Pokemon Y", "Pokemon Omega Ruby", "Pokemon Alpha Sapphire"};
+	
+	consoleSelect(&bottomScreen);
+	printf("\x1b[14;5HPress A to continue, B to exit");
+	
+	consoleSelect(&topScreen);
+	printf("\x1b[31mCHOOSE GAME.\x1b[0m Cart has priority over digital copy.");
+	refresh(game, topScreen, gamesList, 4);
+
+	while (aptMainLoop()) {
+		gspWaitForVBlank();
+		hidScanInput();
+		
+		if (hidKeysDown() & KEY_B) {
+			aptExit();
+			gfxExit();
+			return 0;
+		}
+		
+		if (hidKeysDown() & KEY_DUP) {
+			if (game == 0) {
+				game = 3;
+				refresh(game, topScreen, gamesList, 4);
+			}
+			else if (game > 0) {
+				game--;
+				refresh(game, topScreen, gamesList, 4);	
+			}
+		}
+		
+		if (hidKeysDown() & KEY_DDOWN) {
+			if (game == 3) {
+				game = 0;
+				refresh(game, topScreen, gamesList, 4);	
+			}
+			else if (game < 3) {
+				game++;
+				refresh(game, topScreen, gamesList, 4);
+			}
+		}
+		
+		if (hidKeysDown() & KEY_A)
+			break;
+
+		gfxFlushBuffers();
+		gfxSwapBuffers();
+	}
+	
+	fsStart();
+	FS_Archive saveArch;	
+	
+	if (!(openSaveArch(&saveArch, ids[game]))) {
+		errDisp(bottomScreen, 1);
+		aptExit();
+		gfxExit();
+		return -1;
+	}
+
+	//Open main
+	Handle mainHandle;
+	FSUSER_OpenFile(&mainHandle, saveArch, fsMakePath(PATH_ASCII, "/main"), FS_OPEN_READ | FS_OPEN_WRITE, 0);
+
+	//Get size 
+	u64 mainSize;
+	FSFILE_GetSize(mainHandle, &mainSize);
+	
+	switch(game) {
+		case 0 : {
+			if (mainSize != 415232) {
+				errDisp(bottomScreen, 13);
+				aptExit();
+				gfxExit();
+				return -1;
+			}
+			break;
+		}
+		case 1 : {
+			if (mainSize != 415232) {
+				errDisp(bottomScreen, 13);
+				aptExit();
+				gfxExit();
+				return -1;
+			}
+			break;
+		}
+		case 2 : {
+			if (mainSize != 483328) {
+				errDisp(bottomScreen, 13);
+				aptExit();
+				gfxExit();
+				return -1;
+			}
+			break;
+		}
+		case 3 : {
+			if (mainSize != 483328) {
+				errDisp(bottomScreen, 13);
+				aptExit();
+				gfxExit();
+				return -1;
+			}
+			break;
+		}
+	}
+	
+	//allocate mainbuf
+	u8* mainbuf = malloc(mainSize);
+	
+	//Read main 
+	FSFILE_Read(mainHandle, NULL, 0, mainbuf, mainSize);	
+
+	char *menuEntries[ENTRIES] = {"Gen VI's Event Database", "Gen VI's Save file editor", "Gen VI's Pokemon editor", "Wi-Fi distributions", "Code distributions", "Local distributions", "Capture probability calculator", "Common PS dates database", "Changelog", "Credits", "Update .cia"};
+	int currentEntry = 0;
 	
 	// initializing save file editor variables
 	int nInjected[3] = {0, 0, 0};
@@ -60,14 +174,20 @@ int main() {
 	*/
 
 	consoleSelect(&topScreen);
+	printf("\x1b[0m");
 	intro(topScreen, bottomScreen, currentEntry, menuEntries);
-
+	
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
 		hidScanInput();
 
 		if (hidKeysDown() & KEY_START)
 			break;
+		
+		if (hidKeysDown() & KEY_B) {
+			save = false;
+			break;
+		}
 
 		if (hidKeysDown() & KEY_DUP) {
 			if (currentEntry == 0) {
@@ -94,25 +214,22 @@ int main() {
 		if (hidKeysDown() & KEY_A) {
 			switch (currentEntry) {
 				case 0 : {
-					eventDatabase(topScreen, bottomScreen, game);
+					eventDatabase(topScreen, bottomScreen, mainbuf, game);
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
 					consoleSelect(&topScreen);
+					printf("\x1b[2J");
 					intro(topScreen, bottomScreen, currentEntry, menuEntries);
 					break;
 				}
 
 				case 1 : {
-					int ret = saveFileEditor(topScreen, bottomScreen, game, nInjected, injectCont);
+					int ret = saveFileEditor(topScreen, bottomScreen, mainbuf, game, nInjected, injectCont);
 					consoleSelect(&bottomScreen);
-					if (ret == 1) printf("\x1b[6;0H\x1b[32mSettings changed correctly\x1b[0m.");
-					else if (ret != 1 && ret != 0) printf("\x1b[6;0HAn error occurred.");
-					if (ret == -1) printf("\x1b[31m Game not found\x1b[0m.");
-					else if (ret == -2) printf("\x1b[31m Maximum items reached\x1b[0m");
-					else if (ret == -13) printf("\x1b[31m Game selected doesn'tmatch the game chosen previously\x1b[0m.");
-					printf("\nPress B to return.");
+					if (ret == 1) infoDisp(bottomScreen, ret);
+					else if (ret != -1 && ret != 1) errDisp(bottomScreen, ret);
 
-					if (ret != 0) {
+					if (ret != -1) {
 						while (aptMainLoop()) {
 							gspWaitForVBlank();
 							hidScanInput();
@@ -124,14 +241,16 @@ int main() {
 						}
 					}
 
+					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
 					consoleSelect(&topScreen);
+					printf("\x1b[2J");
 					intro(topScreen, bottomScreen, currentEntry, menuEntries);
 					break;
 				}
 				
 				case 2 : {
-					int ret = pokemonEditor(topScreen, bottomScreen, game, pokemonCont);
+					int ret = pokemonEditor(topScreen, bottomScreen, mainbuf, game, pokemonCont);
 					consoleSelect(&bottomScreen);
 					if (ret == 1) printf("\x1b[6;0H\x1b[32mChanges applied correctly\x1b[0m.");
 					else if (ret != 1 && ret != 0) printf("\x1b[6;0HAn error occurred.");
@@ -152,6 +271,7 @@ int main() {
 						}
 					}
 
+					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
 					consoleSelect(&topScreen);
 					intro(topScreen, bottomScreen, currentEntry, menuEntries);
@@ -195,15 +315,6 @@ int main() {
 				}
 
 				case 7 : {
-					PID(topScreen, bottomScreen);
-					consoleSelect(&bottomScreen);
-					printf("\x1b[2J");
-					consoleSelect(&topScreen);
-					intro(topScreen, bottomScreen, currentEntry, menuEntries);
-					break;
-				}
-
-				case 8 : {
 					psDates(topScreen, bottomScreen);
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
@@ -212,7 +323,7 @@ int main() {
 					break;
 				}
 
-				case 9 : {
+				case 8 : {
 					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/info.txt");
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
@@ -221,7 +332,7 @@ int main() {
 					break;
 				}
 
-				case 10 : {
+				case 9 : {
 					credits(topScreen, bottomScreen);
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
@@ -230,7 +341,7 @@ int main() {
 					break;
 				}
 
-				case 11 : {
+				case 10 : {
 					update(topScreen, bottomScreen);
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
@@ -244,6 +355,26 @@ int main() {
 		gfxFlushBuffers();
 		gfxSwapBuffers();
 	}
+	
+	if (save) {
+		infoDisp(bottomScreen, 2);
+		gfxFlushBuffers();
+		gfxSwapBuffers();
+		
+		rewriteCHK(mainbuf, game);
+
+		FSFILE_Write(mainHandle, NULL, 0, mainbuf, mainSize, FS_WRITE_FLUSH);
+	}
+	
+	FSFILE_Close(mainHandle);
+	
+	if (save)
+		FSUSER_ControlArchive(saveArch, ARCHIVE_ACTION_COMMIT_SAVE_DATA, NULL, 0, NULL, 0);
+	
+	FSUSER_CloseArchive(saveArch);
+	
+	free(mainbuf);
+	fsEnd();
 
     aptExit();
 	gfxExit();

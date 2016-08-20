@@ -8,7 +8,7 @@
 #define MAXPAGES 75
 #define RIGHE 27
 
-void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, int game[]) {
+void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int game) {
 	char *database[RIGHE * (MAXPAGES + 1)];
 	char *links[RIGHE * (MAXPAGES + 1)];
 	
@@ -22,19 +22,20 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, int game[]
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
 	printf("----------------------------------------");
-	printf("\x1b[32m\x19\x18\x1b[0m - Move cursor\n");
-	printf("\x1b[32mL/R\x1b[0m - Switch page\n");
-	printf("\x1b[32mA\x1b[0m - Open/close entry\n");
+	printf("\x1b[32m\x19\x18\x1b[0m  Move cursor\n");
+	printf("\x1b[32mL/R\x1b[0m Switch page\n");
+	printf("\x1b[32mA\x1b[0m   Open/close entry\n");
 	printf("----------------------------------------");
-	printf("\x1b[29;12HPress B to exit.");
+	printf("\x1b[29;12H\x1b[47;31mPress B to exit.\x1b[0m");
 	
 	consoleSelect(&topScreen);		
-	printf("\x1b[2J");	
+	printf("\x1b[2J");
 	printf("\x1b[47;30mPage: \x1b[47;34m%d\x1b[47;30m of \x1b[47;34m%d\x1b[47;30m - from \x1b[47;34m%d\x1b[47;30m to \x1b[47;34m%d\x1b[47;30m                      \x1b[0m\x1b[1;0H      ", page + 1, MAXPAGES + 1, page * 27, (page + 1) * 27 - 1);
 	
 	refreshDB(currentEntry, topScreen, database, RIGHE, page);
 
-	consoleSelect(&topScreen);			
+	consoleSelect(&topScreen);
+	
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
 		hidScanInput();
@@ -75,7 +76,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, int game[]
  		if (hidKeysDown() & KEY_A)  {
 			consoleSelect(&topScreen);
 			printf("\x1b[2J");
-			Result ret = printDB(topScreen, bottomScreen, links[currentEntry + page * RIGHE], (currentEntry + page * RIGHE), nInjected, game, overwrite);
+			Result ret = printDB(topScreen, bottomScreen, mainbuf, links[currentEntry + page * RIGHE], (currentEntry + page * RIGHE), nInjected, game, overwrite);
 			consoleSelect(&bottomScreen);
 			printf("\x1b[2J");
 			printf("----------------------------------------");
@@ -84,21 +85,12 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, int game[]
 			printf("\x1b[32mA\x1b[0m - Open/close entry\n");
 			printf("----------------------------------------");
 			
-			if (ret == 1) printf("\x1b[6;0H* Wondercard has been injected:\n\x1b[32m%s\x1b[0m\n* Location: \x1b[32m%d\x1b[0m\n* Status: \x1b[32msucceeded\x1b[0m!", database[currentEntry + page * RIGHE], nInjected[0]);
-			else if (ret == -1) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mGame not found\x1b[0m.");
-			else if (ret == -2) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcOpenContext\x1b[0m.");
-			else if (ret == -3) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcAddRequestHeaderField\x1b[0m.");
-			else if (ret == -4) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcSetSSLOpt\x1b[0m.");
-			else if (ret == -5) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcBeginRequest\x1b[0m.");
-			else if (ret == -6) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mWC6 file not available\x1b[0m. Try another\nlanguage.");
-			else if (ret == -7) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcGetDownloadSizeState\x1b[0m.");
-			else if (ret == -8) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mFailure to malloc wc6 buffer\x1b[0m.");
-			else if (ret == -9) printf("\x1b[6;0HAn error occurred during injection.\nError in \x1b[31mhttpcDownloadData\x1b[0m.");
-			else if (ret == -10) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mFailure to malloc temp chk var\x1b[0m."); 
-			else if (ret == -12) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mEon Ticket is not available on XY\x1b[0m.");
-			else if (ret == -13) printf("\x1b[6;0HAn error occurred during injection.\n\x1b[31mGame selected doesn't match the game\nchosen previously\x1b[0m.");
+			if (ret == 0) infoDisp(bottomScreen, (int)ret);
+			if (ret != -1 && ret != 0)
+				errDisp(bottomScreen, (int)ret);
 
-			printf("\x1b[29;12HPress B to exit.");			
+			consoleSelect(&bottomScreen);
+			printf("\x1b[29;12H\x1b[47;31mPress B to exit.\x1b[0m");			
 			consoleSelect(&topScreen);
 			printf("\x1b[2J");	
 			printf("\x1b[47;30mPage: \x1b[47;34m%d\x1b[47;30m of \x1b[47;34m%d\x1b[47;30m - from \x1b[47;34m%d\x1b[47;30m to \x1b[47;34m%d\x1b[47;30m                      \x1b[0m\x1b[1;0H      ", page + 1, MAXPAGES + 1, page * 27, (page + 1) * 27 - 1);
@@ -121,7 +113,7 @@ void psDates(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("Source:\n\x1b[32m/r/pokemontrades/wiki/hackedevents\x1b[0m\n");
 	printf("----------------------------------------");
 	printf("\n\x1b[32mL/R\x1b[0m - Switch page");
-	printf("\x1b[29;12HPress B to exit.");
+	printf("\x1b[29;12H\x1b[47;31mPress B to exit.\x1b[0m");
 	
 	printPSdates(topScreen, bottomScreen, tmpUrl, i + 1);
 
@@ -149,4 +141,6 @@ void psDates(PrintConsole topScreen, PrintConsole bottomScreen) {
 		gfxFlushBuffers();
 		gfxSwapBuffers();
 	}
+	
+	free(tmpUrl);
 }
