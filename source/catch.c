@@ -141,7 +141,7 @@ void catchrate(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("\nFirst turn Quick ball - \x1b[32m5\x1b[0mx");
 	printf("\nLove/Level ball - \x1b[32m8\x1b[0mx (cond. only)");
 	printf("\nMaster ball - \x1b[32m255\x1b[0mx");
-	printf("\x1b[29;12H\x1b[47;31mPress B to exit.\x1b[0m");
+	printf("\x1b[29;12H\x1b[47;34mPress B to exit.\x1b[0m");
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
 	printf("\x1b[47;1;34m          Capture Probability Calculator          \x1b[0m\n");

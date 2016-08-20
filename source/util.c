@@ -108,7 +108,7 @@ void update(PrintConsole topScreen, PrintConsole bottomScreen) {
 	}
 
 	consoleSelect(&topScreen);
-	printf("\x1b[29;15H\x1b[47;31mPress Start to exit.\x1b[0m");
+	printf("\x1b[29;15H\x1b[47;34mPress Start to exit.\x1b[0m");
 
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
@@ -199,10 +199,10 @@ void credits(PrintConsole topScreen, PrintConsole bottomScreen) {
 
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
-	printf("\x1b[29;12H\x1b[47;31mPress B to exit.\x1b[0m");
+	printf("\x1b[29;12H\x1b[47;34mPress B to exit.\x1b[0m");
 	consoleSelect(&topScreen);
 
-	printf("\n* smea for ctrulib\n* Kaphotics for PKHeX for wondercard workaround\n* J-D-K for direct save import/export\n* Slashcash for PCHex++ and lots of source code\n* Hamcha for http certs\n* Gocario for algorithms\n* LiquidFenrir for some http structures\n* Nba_Yoh for received flags\n* Simona Mastroianni for database help\n* Federico Leuzzi, YodaDaCoda for testing\n* Shai Raba' for the icon\n* all the guys @3dshacks' discord\n\n  Full list available on github repo");
+	printf("\n* smea for ctrulib\n* Kaphotics for PKHeX for wondercard workaround\n* J-D-K for direct save import/export\n* Slashcash for PCHex++ and lots of source code\n* Hamcha for http certs\n* Gocario for algorithms\n* LiquidFenrir for some http structures\n* Nba_Yoh for received flags\n* Simona Mastroianni for database help\n* Federico Leuzzi, YodaDaCoda, SatansRoommate for testing\n* Shai Raba' for the icon\n* all the guys @3dshacks' discord\n\n  Full list available on github repo");
 
 	while (aptMainLoop()) {
 		gspWaitForVBlank();

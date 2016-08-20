@@ -176,11 +176,11 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbu
 	printf("\x1b[32mA\x1b[0m     Switch setting\n");
 	printf("\x1b[1;31mSTART\x1b[0m Apply selected change\n");
 	printf("----------------------------------------");
-	printf("\x1b[17;0HYou can perform one edit, then you need to reopen this function to make another one.");
+	printf("\x1b[14;0HYou need to have the latest updates for the selected game installed.\n\nYou can perform one edit, then you need to reopen this function to make another one.");
 	printf("\x1b[21;0H----------------------------------------");
 	printf("\x1b[22;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this.");
 	printf("\x1b[26;0H----------------------------------------");
-	printf("\x1b[29;12H\x1b[47;31mPress B to exit.\x1b[0m");
+	printf("\x1b[29;12H\x1b[47;34mPress B to exit.\x1b[0m");
 	
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");

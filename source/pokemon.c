@@ -245,13 +245,13 @@ void refreshPokemon(PrintConsole topScreen, int pokemonCont[]) {
 	printf("\x1b[3;31H\x1b[1;33m%d\x1b[0m ", pokemonCont[2] + 1);
 	printf("\x1b[4;31H\x1b[1;33m%d\x1b[0m  ", friendship[pokemonCont[3]]);
 	printf("\x1b[5;31H\x1b[1;33m%lu/%lu/%lu/%lu/%lu/%lu\x1b[0m", evs[pokemonCont[4]][0], evs[pokemonCont[4]][1], evs[pokemonCont[4]][2], evs[pokemonCont[4]][4], evs[pokemonCont[4]][5], evs[pokemonCont[4]][3]);
-	printf("\x1b[6;31H\x1b[1;33m%s\x1b[0m    ", hpList[pokemonCont[5]]);
+	printf("\x1b[7;31H\x1b[1;33m%s\x1b[0m    ", hpList[pokemonCont[5]]);
 	printf("\x1b[10;31H\x1b[1;33m%d\x1b[0m ", pokemonCont[6] + 1);
-	printf("\x1b[11;31H\x1b[1;33m%d\x1b[0m ", pokemonCont[7] + 1);
+	printf("\x1b[11;31H\x1b[1;33mB%d/S%d\x1b[0m  ", pokemonCont[6] + 1, pokemonCont[7] + 1);
 }
 
 int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int game, int pokemonCont[]) {
-	char *menuEntries[ENTRIES] = {"Select box (1-31):", "Select index (1-30):", "Set f.ship to:", "Set EVs to:", "Set all IVs to max", "Set Hidden Power:", "Set shiny", "Set non shiny", "Clone box in box", "Clone pkmn in index"};
+	char *menuEntries[ENTRIES] = {"Select box (1-31):", "Select index (1-30):", "Set f.ship to:", "Set EVs to:", "Set all IVs to max", "Set Hidden Power:", "Set shiny", "Set non shiny", "Clone box in box", "Clone pokemon in"};
 	
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
@@ -264,7 +264,7 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 	printf("\x1b[21;0H----------------------------------------");
 	printf("\x1b[22;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this.");
 	printf("\x1b[26;0H----------------------------------------");
-	printf("\x1b[29;12HPress B to exit.");
+	printf("\x1b[29;12H\x1b[47;34mPress B to exit.\x1b[0m");
 	
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");

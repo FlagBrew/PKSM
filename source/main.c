@@ -26,7 +26,7 @@ void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, 
 	refresh(currentEntry, topScreen, menuEntries, ENTRIES);
 
 	consoleSelect(&topScreen);
-	printf("\x1b[29;10H\x1b[47;32mPress Start to save, B to exit\x1b[0m");
+	printf("\x1b[29;10H\x1b[47;34mPress Start to save, B to exit\x1b[0m");
 }
 
 int main() {
@@ -153,7 +153,7 @@ int main() {
 	//Read main 
 	FSFILE_Read(mainHandle, NULL, 0, mainbuf, mainSize);	
 
-	char *menuEntries[ENTRIES] = {"Gen VI's Event Database", "Gen VI's Save file editor", "Gen VI's Pokemon editor", "Wi-Fi distributions", "Code distributions", "Local distributions", "Capture probability calculator", "Common PS dates database", "Changelog", "Credits", "Update .cia"};
+	char *menuEntries[ENTRIES] = {"Gen VI's Event Database", "Gen VI's Save file editor", "Gen VI's Pokemon editor", "Wi-Fi distributions", "Code distributions", "Local distributions", "Capture probability calculator", "Common PS dates database", "Changelog", "Credits", "Update .cia to latest commit build"};
 	int currentEntry = 0;
 	
 	// initializing save file editor variables

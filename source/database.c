@@ -26,7 +26,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbu
 	printf("\x1b[32mL/R\x1b[0m Switch page\n");
 	printf("\x1b[32mA\x1b[0m   Open/close entry\n");
 	printf("----------------------------------------");
-	printf("\x1b[29;12H\x1b[47;31mPress B to exit.\x1b[0m");
+	printf("\x1b[29;12H\x1b[47;34mPress B to exit.\x1b[0m");
 	
 	consoleSelect(&topScreen);		
 	printf("\x1b[2J");
@@ -113,7 +113,7 @@ void psDates(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("Source:\n\x1b[32m/r/pokemontrades/wiki/hackedevents\x1b[0m\n");
 	printf("----------------------------------------");
 	printf("\n\x1b[32mL/R\x1b[0m - Switch page");
-	printf("\x1b[29;12H\x1b[47;31mPress B to exit.\x1b[0m");
+	printf("\x1b[29;12H\x1b[47;34mPress B to exit.\x1b[0m");
 	
 	printPSdates(topScreen, bottomScreen, tmpUrl, i + 1);
 

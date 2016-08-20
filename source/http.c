@@ -123,7 +123,7 @@ void printDistro(PrintConsole topScreen, PrintConsole bottomScreen, char *url) {
     printf("\nKOR - South Korea");
     printf("\nALL - All regions available\n");
     printf("----------------------------------------");
-    printf("\x1b[29;12H\x1b[47;31mPress B to exit.\x1b[0m");
+    printf("\x1b[29;12H\x1b[47;34mPress B to exit.\x1b[0m");
     consoleSelect(&topScreen);
     printf("\x1b[2J");
     getText(topScreen, bottomScreen, url);
@@ -269,7 +269,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, c
     printf("\x1b[18;0H----------------------------------------");
     printf("\x1b[19;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this. This is a new way to inject WC6\nand I need time to perfect it.");
     printf("\x1b[24;0H----------------------------------------");
-    printf("\x1b[29;11H\x1b[47;31mPress B to return.\x1b[0m");
+    printf("\x1b[29;11H\x1b[47;34mPress B to return.\x1b[0m");
     consoleSelect(&topScreen);
     printf("\x1b[2J");
     printf("\x1b[0;0HScanning server for available languages...");
