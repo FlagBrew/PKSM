@@ -8,6 +8,8 @@
 #define IVLENGTH 4
 #define OTIDLENGTH 2
 #define SOTIDLENGTH 2
+#define NICKNAMELENGTH 26
+#define POKEDEXNUMBERLENGTH 2
 
 u32 seedStep(const u32 seed);
 void shuffleArray(u8* pkmn, const u32 encryptionkey);
@@ -17,7 +19,10 @@ void calculatePKMNChecksum(u8* data);
 void encryptPkmn(u8* pkmn);
 void getPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game);
 void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game);
-void refreshPokemon(PrintConsole topScreen, int pokemonCont[]);
+u16 getPokedexNumber(u8* pkmn);
+void setNickname(u8* pkmn, char* nick);
+
+void refreshPokemon(PrintConsole topScreen, u8* mainbuf, int pokemonCont[], int game);
 
 void setFriendship(u8* pkmn, const int value);
 void setEV(u8* pkmn, u8 val, const int stat);
