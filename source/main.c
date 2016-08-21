@@ -161,7 +161,7 @@ int main() {
 	int injectCont[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 	
 	// initializing pokemon editor variables
-	int pokemonCont[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+	int pokemonCont[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 	/*
 		0 : currentEntry
 	    1 : boxnumber
@@ -171,6 +171,7 @@ int main() {
 		5 : Hidden Power counter
 		6 : clone boxnumber
 		7 : clone indexnumber
+		8 : nature counter
 	*/
 
 	consoleSelect(&topScreen);

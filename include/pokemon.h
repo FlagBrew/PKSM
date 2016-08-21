@@ -10,6 +10,7 @@
 #define SOTIDLENGTH 2
 #define NICKNAMELENGTH 26
 #define POKEDEXNUMBERLENGTH 2
+#define NATURELENGTH 1
 
 u32 seedStep(const u32 seed);
 void shuffleArray(u8* pkmn, const u32 encryptionkey);
@@ -21,6 +22,8 @@ void getPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, 
 void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game);
 u16 getPokedexNumber(u8* pkmn);
 void setNickname(u8* pkmn, char* nick);
+u8 getNature(u8* pkmn);
+void setNature(u8* pkmn, const u8 nature);
 
 void refreshPokemon(PrintConsole topScreen, u8* mainbuf, int pokemonCont[], int game);
 
