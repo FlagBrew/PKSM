@@ -3,8 +3,7 @@
 #include "pokemon.h"
 #include "util.h"
 
-#define ENTRIES 12
-#define NEVS 11
+#define ENTRIES 14
 
 const int OFFSET = 0x5400;
 const int EVPOS = 0x1E;
@@ -21,21 +20,6 @@ const int friendship[4] = {0, 70, 75, 255};
 char *hpList[16] = {"Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel", "Fire", "Water", "Grass", "Electric", "Psychic", "Ice", "Dragon", "Dark"};
 static char *pokemon[722] = {"None", "Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard", "Squirtle", "Wartortle", "Blastoise", "Caterpie", "Metapod", "Butterfree", "Weedle", "Kakuna", "Beedrill", "Pidgey", "Pidgeotto", "Pidgeot", "Rattata", "Raticate", "Spearow", "Fearow", "Ekans", "Arbok", "Pikachu", "Raichu", "Sandshrew", "Sandslash", "Nidoran F", "Nidorina", "Nidoqueen", "Nidoran M", "Nidorino", "Nidoking", "Clefairy", "Clefable", "Vulpix", "Ninetales", "Jigglypuff", "Wigglytuff", "Zubat", "Golbat", "Oddish", "Gloom", "Vileplume", "Paras", "Parasect", "Venonat", "Venomoth", "Diglett", "Dugtrio", "Meowth", "Persian", "Psyduck", "Golduck", "Mankey", "Primeape", "Growlithe", "Arcanine", "Poliwag", "Poliwhirl", "Poliwrath", "Abra", "Kadabra", "Alakazam", "Machop", "Machoke", "Machamp", "Bellsprout", "Weepinbell", "Victreebell", "Tentacool", "Tentacruel", "Geodude", "Graveler", "Golem", "Ponyta", "Rapidash", "Slowpoke", "Slowbro", "Magnemite", "Magneton", "Farfetch'd", "Doduo", "Dodrio", "Seel", "Dewgong", "Grimer", "Muk", "Shellder", "Cloyster", "Gastly", "Haunter", "Gengar", "Onix", "Drowzee", "Hypno", "Krabby", "Kingler", "Voltorb", "Electrode", "Exeggcute", "Exeggutor", "Cubone", "Marowak", "Hitmonlee", "Hitmonchan", "Lickitung", "Koffing", "Weezing", "Rhyhorn", "Rhydon", "Chansey", "Tangela", "Kangaskhan", "Horsea", "Seadra", "Goldeen", "Seaking", "Staryu", "Starmie", "Mr. Mime", "Scyther", "Jynx", "Electabuzz", "Magmar", "Pinsir", "Tauros", "Magikarp", "Gyarados", "Lapras", "Ditto", "Eevee", "Vaporeon", "Jolteon", "Flareon", "Porygon", "Omanyte", "Omastar", "Kabuto", "Kabutops", "Aerodactyl", "Snorlax", "Articuno", "Zapdos", "Moltres", "Dratini", "Dragonair", "Dragonite", "Mewtwo", "Mew", "Chikorita", "Bayleef", "Meganium", "Cyndaquil", "Quilava", "Typhlosion", "Totodile", "Croconaw", "Feraligatr", "Sentret", "Furret", "Hoothoot", "Noctowl", "Ledyba", "Ledian", "Spinarak", "Ariados", "Crobat", "Chinchou", "Lanturn", "Pichu", "Cleffa", "Igglybuff", "Togepi", "Togetic", "Natu", "Xatu", "Mareep", "Flaaffy", "Ampharos", "Bellossom", "Marill", "Azumarill", "Sudowoodo", "Politoed", "Hoppip", "Skiploom", "Jumpluff", "Aipom", "Sunkern", "Sunflora", "Yanma", "Wooper", "Quagsire", "Espeon", "Umbreon", "Murkrow", "Slowking", "Misdreavus", "Unown", "Wobbuffet", "Girafarig", "Pineco", "Forretress", "Dunsparce", "Gligar", "Steelix", "Snubbull", "Granbull", "Qwilfish", "Scizor", "Shuckle", "Heracross", "Sneasel", "Teddiursa", "Ursaring", "Slugma", "Magcargo", "Swinub", "Piloswine", "Corsola", "Remoraid", "Octillery", "Delibird", "Mantine", "Skarmory", "Houndour", "Houndoom", "Kingdra", "Phanpy", "Donphan", "Porygon2", "Stantler", "Smeargle", "Tyrogue", "Hitmontop", "Smoochum", "Elekid", "Magby", "Miltank", "Blissey", "Raikou", "Entei", "Suicune", "Larvitar", "Pupitar", "Tyranitar", "Lugia", "Ho-Oh", "Celebi", "Treecko", "Grovyle", "Sceptile", "Torchic", "Combusken", "Blaziken", "Mudkip", "Marshtomp", "Swampert", "Poochyena", "Mightyena", "Zigzagoon", "Linoone", "Wurmple", "Silcoon", "Beautifly", "Cascoon", "Dustox", "Lotad", "Lombre", "Ludicolo", "Seedot", "Nuzleaf", "Shiftry", "Taillow", "Swellow", "Wingull", "Pelipper", "Ralts", "Kirlia", "Gardevoir", "Surskit", "Masquerain", "Shroomish", "Breloom", "Slakoth", "Vigoroth", "Slaking", "Nincada", "Ninjask", "Shedinja", "Whismur", "Loudred", "Exploud", "Makuhita", "Hariyama", "Azurill", "Nosepass", "Skitty", "Delcatty", "Sableye", "Mawile", "Aron", "Lairon", "Aggron", "Meditite", "Medicham", "Electrike", "Manectric", "Plusle", "Minun", "Volbeat", "Illumise", "Roselia", "Gulpin", "Swalot", "Carvanha", "Sharpedo", "Wailmer", "Wailord", "Numel", "Camerupt", "Torkoal", "Spoink", "Grumpig", "Spinda", "Trapinch", "Vibrava", "Flygon", "Cacnea", "Cacturne", "Swablu", "Altaria", "Zangoose", "Seviper", "Lunatone", "Solrock", "Barboach", "Whiscash", "Corphish", "Crawdaunt", "Baltoy", "Claydol", "Lileep", "Cradily", "Anorith", "Armaldo", "Feebas", "Milotic", "Castform", "Kecleon", "Shuppet", "Banette", "Duskull", "Dusclops", "Tropius", "Chimecho", "Absol", "Wynaut", "Snorunt", "Glalie", "Spheal", "Sealeo", "Walrein", "Clamperl", "Huntail", "Gorebyss", "Relicanth", "Luvdisc", "Bagon", "Shelgon", "Salamence", "Beldum", "Metang", "Metagross", "Regirock", "Regice", "Registeel", "Latias", "Latios", "Kyogre", "Groudon", "Rayquaza", "Jirachi", "Deoxys", "Turtwig", "Grotle", "Torterra", "Chimchar", "Monferno", "Infernape", "Piplup", "Prinplup ", "Empoleon", "Starly", "Staravia", "Staraptor", "Bidoof", "Bibarel", "Kricketot", "Kricketune", "Shinx", "Luxio", "Luxray", "Budew", "Roserade", "Cranidos", "Rampardos", "Shieldon", "Bastiodon", "Burmy", "Wormadam", "Mothim", "Combee", "Vespiquen", "Pachirisu", "Buizel", "Floatzel", "Cherubi", "Cherrim", "Shellos", "Gastrodon", "Ambipom", "Drifloon", "Drifblim", "Buneary", "Lopunny", "Mismagius", "Honchkrow", "Glameow", "Purugly", "Chingling", "Stunky", "Skuntank", "Bronzor", "Bronzong", "Bonsly", "Mime Jr.", "Happiny", "Chatot", "Spiritomb", "Gible", "Gabite", "Garchomp", "Munchlax", "Riolu", "Lucario", "Hippopotas", "Hippowdon", "Skorupi", "Drapion", "Croagunk", "Toxicroak", "Carnivine", "Finneon", "Lumineon", "Mantyke", "Snover", "Abomasnow", "Weavile", "Magnezone", "Lickylicky", "Rhyperior", "Tangrowth", "Electivire", "Magmortar", "Togekiss", "Yanmega", "Leafeon", "Glaceon", "Gliscor", "Mamoswine", "Porygon-Z", "Gallade", "Probopass", "Dusknoir", "Froslass", "Rotom", "Uxie", "Mesprit", "Azelf", "Dialga", "Palkia", "Heatran", "Regigigas", "Giratina", "Cresselia", "Phione", "Manaphy", "Darkrai", "Shaymin", "Arceus", "Victini", "Snivy", "Servine", "Serperior", "Tepig", "Pignite", "Emboar", "Oshawott", "Dewott", "Samurott", "Patrat", "Watchog", "Lillipup", "Herdier", "Stoutland", "Purrloin", "Liepard", "Pansage", "Simisage", "Pansear", "Simisear", "Panpour", "Simipour", "Munna", "Musharna", "Pidove", "Tranquill", "Unfezant", "Blitzle", "Zebstrika", "Roggenrola", "Boldore", "Gigalith", "Woobat", "Swoobat", "Drilbur", "Excadrill", "Audino", "Timburr", "Gurdurr", "Conkeldurr", "Tympole", "Palpitoad", "Seismitoad", "Throh", "Sawk", "Sewaddle", "Swadloon", "Leavanny", "Venipede", "Whirlipede", "Scolipede", "Cottonee", "Whimsicott", "Petilil", "Lilligant", "Basculin", "Sandile", "Krokorok", "Krookodile", "Darumaka", "Darmanitan", "Maractus", "Dwebble", "Crustle", "Scraggy", "Scrafty", "Sigilyph", "Yamask", "Cofagrigus", "Tirtouga", "Carracosta", "Archen", "Archeops", "Trubbish", "Garbodor", "Zorua", "Zoroark", "Minccino", "Cinccino", "Gothita", "Gothorita", "Gothitelle", "Solosis", "Duosion", "Reuniclus", "Ducklett", "Swanna", "Vanillite", "Vanillish", "Vanilluxe", "Deerling", "Sawsbuck", "Emolga", "Karrablast", "Escavalier", "Foongus", "Amoonguss", "Frillish", "Jellicent", "Alomomola", "Joltik", "Galvantula", "Ferroseed", "Ferrothorn", "Klink", "Klang", "Klinklang", "Tynamo", "Eelektrik", "Eelektross", "Elgyem", "Beheeyem", "Litwick", "Lampent", "Chandelure", "Axew", "Fraxure", "Haxorus", "Cubchoo", "Beartic", "Cryogonal", "Shelmet", "Accelgor", "Stunfisk", "Mienfoo", "Mienshao", "Druddigon", "Golett", "Golurk", "Pawniard", "Bisharp", "Bouffalant", "Rufflet", "Braviary", "Vullaby", "Mandibuzz", "Heatmor", "Durant", "Deino", "Zweilous", "Hydreigon", "Larvesta", "Volcarona", "Cobalion", "Terrakion", "Virizon", "Tornadus", "Thundurus", "Reshiram", "Zekrom", "Landorus", "Kyurem", "Keldeo", "Meloetta", "Genesect", "Chespin", "Quilladin", "Chesnaught", "Fennekin", "Braixen", "Delphox", "Froakie", "Frogadier", "Greninja", "Bunnelby", "Diggersby", "Fletchling", "Fletchinder", "Talonflame", "Scatterbug", "Spewpa", "Vivillon", "Litleo", "Pyroar", "Flabébé", "Floette", "Florges", "Skiddo", "Gogoat", "Pancham", "Pangoro", "Furfrou", "Espurr", "Meowstic", "Honedge", "Doublade", "Aegislash", "Spritzee", "Aromatisse", "Swirlix", "Slurpuff", "Inkay", "Malamar", "Binacle", "Barbaracle", "Skrelp", "Dragalge", "Clauncher", "Clawitzer", "Helioptile", "Heliolisk", "Tyrunt", "Tyrantrum", "Amaura", "Aurorus", "Sylveon", "Hawlucha", "Dedenne", "Carbink", "Goomy", "Sliggoo", "Goodra", "Klefki", "Phantump", "Trevenant", "Pumpkaboo", "Gourgeist", "Bergmite", "Avalugg", "Noibat", "Noivern", "Xerneas", "Yveltal", "Zygarde", "Diancie", "Hoopa", "Volcanion"};
 static char *natures[25] = {"Hardy", "Lonely", "Brave", "Adamant", "Naughty", "Bold", "Docile", "Relaxed", "Impish", "Lax", "Timid", "Hasty", "Serious", "Jolly", "Naive", "Modest", "Mild", "Quiet", "Bashful", "Rash", "Calm", "Gentle", "Sassy", "Careful", "Quirky"};
-
-const u32 evs[NEVS][6] = {
-  // HP , ATK, DEF, SPE, SPA, SPD
-	{  4, 252,   0, 252,   0,   0},
-	{  4,   0,   0, 252, 252,   0},
-	{252, 252,   4,   0,   0,   0},
-	{252, 252,   0,   0,   0,   4},
-	{252,   0,   4,   0, 252,   0},
-	{252,   0,   0,   0, 252,   4},
-	{  0, 252,   0,   4, 252,   0},
-	{252,   0, 252,   0,   0,   4},
-	{252,   0,   4,   0,   0, 252},
-	{252,   0,   4, 252,   0,   0},
-	{252,   0,   0, 252,   0,   4}
-	};
 
 u32 seedStep(const u32 seed) {
     return (seed*0x41C64E6D + 0x00006073) & 0xFFFFFFFF;
@@ -278,12 +262,11 @@ void refreshPokemon(PrintConsole topScreen, u8* mainbuf, int pokemonCont[], int 
 	consoleSelect(&topScreen);	
 	printf("\x1b[2;31H\x1b[1;33m%d\x1b[0m ", pokemonCont[1] + 1);
 	printf("\x1b[3;31H\x1b[1;33m%d\x1b[0m ", pokemonCont[2] + 1);
-	printf("\x1b[4;31H\x1b[1;33m%d\x1b[0m  ", friendship[pokemonCont[3]]);
-	printf("\x1b[5;31H\x1b[1;33m%lu/%lu/%lu/%lu/%lu/%lu\x1b[0m", evs[pokemonCont[4]][0], evs[pokemonCont[4]][1], evs[pokemonCont[4]][2], evs[pokemonCont[4]][4], evs[pokemonCont[4]][5], evs[pokemonCont[4]][3]);
-	printf("\x1b[7;31H\x1b[1;33m%s\x1b[0m    ", hpList[pokemonCont[5]]);
-	printf("\x1b[10;31H\x1b[1;33m%d\x1b[0m ", pokemonCont[6] + 1);
-	printf("\x1b[11;31H\x1b[1;33mB%d/S%d\x1b[0m  ", pokemonCont[6] + 1, pokemonCont[7] + 1);
-	printf("\x1b[13;31H\x1b[1;33m%s\x1b[0m   ", natures[pokemonCont[8]]);
+	printf("\x1b[5;31H\x1b[1;33m%s\x1b[0m   ", natures[pokemonCont[8]]);
+	printf("\x1b[11;31H\x1b[1;33m%s\x1b[0m    ", hpList[pokemonCont[5]]);
+	printf("\x1b[14;31H\x1b[1;33m%d\x1b[0m ", pokemonCont[6] + 1);
+	printf("\x1b[15;31H\x1b[1;33mB%d/S%d\x1b[0m  ", pokemonCont[6] + 1, pokemonCont[7] + 1);
+	
 	
 	printf("\x1b[25;0HSelected pokemon is: %s        ", pokemon[getPokedexNumber(pkmn)]);
 	
@@ -297,7 +280,7 @@ void refreshPokemon(PrintConsole topScreen, u8* mainbuf, int pokemonCont[], int 
 }
 
 int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int game, int pokemonCont[]) {
-	char *menuEntries[ENTRIES] = {"Select box (1-31):", "Select index (1-30):", "Set f.ship to:", "Set EVs to:", "Set all IVs to max", "Set Hidden Power:", "Set shiny", "Set non shiny", "Clone box in box", "Clone pokemon in", "Set nickname", "Set nature:"};
+	char *menuEntries[ENTRIES] = {"Select box (1-31)", "Select index (1-30)", "Set nickname", "Set nature", "Set shiny", "Set non shiny", "Set friendship", "Set IVs", "Set EVs", "Set hidden power", "Set pokerus", "Remove pokerus", "Clone selected box to", "Clone pokemon to"};
 	
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
@@ -368,46 +351,32 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 						pokemonCont[2] = 0;
 					break;
 				}
-				case 2 : {
-					if (pokemonCont[3] < 3) 
-						pokemonCont[3] += 1;
-					else if (pokemonCont[3] == 3) 
-						pokemonCont[3] = 0;
-					break;
-				}
 				case 3 : {
-					if (pokemonCont[4] < NEVS - 1) 
-						pokemonCont[4] += 1;
-					else if (pokemonCont[4] == NEVS - 1) 
-						pokemonCont[4] = 0;
+					if (pokemonCont[8] < 24)
+						pokemonCont[8] += 1;
+					else if (pokemonCont[8] == 24)
+						pokemonCont[8] = 0;
 					break;
 				}
-				case 5 : {
+				case 9 : {
 					if (pokemonCont[5] < 15) 
 						pokemonCont[5] += 1;
 					else if (pokemonCont[5] == 15) 
 						pokemonCont[5] = 0;
 					break;
 				}
-				case 8 : {
+				case 12 : {
 					if (pokemonCont[6] < BOXMAX - 1) 
 						pokemonCont[6] += 1;
 					else if (pokemonCont[6] == BOXMAX - 1) 
 						pokemonCont[6] = 0;
 					break;
 				}
-				case 9 : {
+				case 13 : {
 					if (pokemonCont[7] < 29) 
 						pokemonCont[7] += 1;
 					else if (pokemonCont[7] == 29) 
 						pokemonCont[7] = 0;
-					break;
-				}
-				case 11 : {
-					if (pokemonCont[8] < 24)
-						pokemonCont[8] += 1;
-					else if (pokemonCont[8] == 24)
-						pokemonCont[8] = 0;
 					break;
 				}
 			}
@@ -420,87 +389,6 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 			
 			switch (pokemonCont[0]) {
 				case 2 : {
-					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
-					
-					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
-						return 16;
-					
-					setFriendship(pkmn, friendship[pokemonCont[3]]);
-					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
-					break;
-				}
-				case 3 : {
-					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
-					
-					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
-						return 16;
-					
-					for (int i = 0; i < 6; i++) 
-						setEV(pkmn, evs[pokemonCont[4]][i], i);
-					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
-					break;
-				}
-				case 4 : {
-					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
-
-					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
-						return 16;
-					
-					for (int i = 0; i < 6; i++) 
-						setIV(pkmn, 31, i);
-					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
-					break;
-				}
-				case 5 : {
-					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
-
-					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
-						return 16;
-					
-					for (int i = 0; i < 6; i++) 
-						setIV(pkmn, 31, i);
-					
-					setHPType(pkmn, pokemonCont[5]);
-					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
-					break;
-				}
-				case 6 : {
-					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
-					
-					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
-						return 16;
-					
-					setShiny(pkmn, true);
-					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
-					break;
-				}
-				case 7 : {
-					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
-
-					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
-						return 16;
-					
-					setShiny(pkmn, false);
-					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
-					break;
-				}
-				case 8 : {
-					char pkmncpy[PKMNLENGTH];
-					for (int i = 0; i < 30; i++) {
-						getPkmn(mainbuf, pokemonCont[1], i, pkmn, game);
-						memcpy(&pkmncpy, pkmn, PKMNLENGTH);
-						setPkmn(mainbuf, pokemonCont[6], i, pkmn, game);
-					}
-					break;
-				}
-				case 9 : {
-					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
-					char pkmncpy[PKMNLENGTH];
-					memcpy(&pkmncpy, pkmn, PKMNLENGTH);
-					setPkmn(mainbuf, pokemonCont[6], pokemonCont[7], pkmn, game);
-					break;
-				}
-				case 10 : {
 					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
 
 					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
@@ -524,7 +412,7 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 					
 					break;
 				}
-				case 11 : {
+				case 3 : {
 					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
 					
 					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
@@ -532,6 +420,206 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 					
 					setNature(pkmn, (u8)(pokemonCont[8]));
 					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					break;
+				}
+				case 4 : {
+					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					
+					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
+						return 16;
+					
+					setShiny(pkmn, true);
+					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					break;
+				}
+				case 5 : {
+					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+
+					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
+						return 16;
+					
+					setShiny(pkmn, false);
+					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					break;
+				}
+				case 6 : {
+					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					
+					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
+						return 16;
+					
+					static SwkbdState swkbd;
+					static char mybuf[3] = {'0', '0', '0'};
+
+					SwkbdButton button = SWKBD_BUTTON_NONE;	
+					
+					swkbdInit(&swkbd, SWKBD_TYPE_NUMPAD, 1, 3);
+					swkbdSetValidation(&swkbd, SWKBD_ANYTHING, 0, 0);
+					swkbdSetFeatures(&swkbd, SWKBD_FIXED_WIDTH);
+					button = swkbdInputText(&swkbd, mybuf, sizeof(mybuf));
+					
+					int cent = mybuf[0] - '0';
+					int dec = mybuf[1] - '0';
+					int uni = mybuf[2] - '0';
+					int friendship = cent * 100 + dec * 10 + uni * 1;
+
+					if (friendship > 255)
+						friendship = 255;
+					
+					setFriendship(pkmn, friendship);
+					
+					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					break;
+				}
+				case 7 : {
+					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+
+					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
+						return 16;
+
+					char *statslist[] = {"Health", "Attack", "Defense", "Speed", "Sp. Attack", "Sp. Defense"};
+					static SwkbdState swkbd;
+					static char buf[2];
+					
+					SwkbdButton button = SWKBD_BUTTON_NONE;
+					
+					for (int i = 0; i < 6; i++) {
+						buf[0] = '0';
+						buf[1] = '0';
+						
+						consoleSelect(&topScreen);
+						printf("\x1b[2J");
+						printf("\x1b[15;%uH\x1b[1;33mA\x1b[0m: Set %s IVs", (39 - strlen(statslist[i])) / 2, statslist[i]);
+
+						while (aptMainLoop()) {
+							gspWaitForVBlank();
+							hidScanInput();
+
+							if (hidKeysDown() & KEY_A)
+								break;
+
+							gfxFlushBuffers();
+							gfxSwapBuffers();
+						}
+						
+						swkbdInit(&swkbd, SWKBD_TYPE_NUMPAD, 1, 2);
+						swkbdSetValidation(&swkbd, SWKBD_ANYTHING, 0, 0);
+						swkbdSetFeatures(&swkbd, SWKBD_FIXED_WIDTH);
+						button = swkbdInputText(&swkbd, buf, sizeof(buf));
+						
+						int dec = (buf[0] - '0');
+						int uni = (buf[1] - '0');
+						int iv = dec * 10 + uni * 1;
+						
+						if (iv > 31)
+							iv = 31;
+						setIV(pkmn, iv, i);
+					}					
+
+					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					refresh(pokemonCont[0], topScreen, menuEntries, ENTRIES);
+					refreshPokemon(topScreen, mainbuf, pokemonCont, game);
+					break;
+				}
+				case 8 : {
+					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+
+					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
+						return 16;
+
+					char *statslist[] = {"Health", "Attack", "Defense", "Speed", "Sp. Attack", "Sp. Defense"};
+					static SwkbdState swkbd;
+					static char buf[3];
+					
+					SwkbdButton button = SWKBD_BUTTON_NONE;
+					
+					for (int i = 0; i < 6; i++) {
+						buf[0] = '0';
+						buf[1] = '0';
+						buf[2] = '0';
+						
+						consoleSelect(&topScreen);
+						printf("\x1b[2J");
+						printf("\x1b[15;%uH\x1b[1;33mA\x1b[0m: Set %s EVs", (39 - strlen(statslist[i])) / 2, statslist[i]);
+
+						while (aptMainLoop()) {
+							gspWaitForVBlank();
+							hidScanInput();
+
+							if (hidKeysDown() & KEY_A)
+								break;
+
+							gfxFlushBuffers();
+							gfxSwapBuffers();
+						}
+						
+						swkbdInit(&swkbd, SWKBD_TYPE_NUMPAD, 1, 3);
+						swkbdSetValidation(&swkbd, SWKBD_ANYTHING, 0, 0);
+						swkbdSetFeatures(&swkbd, SWKBD_FIXED_WIDTH);
+						button = swkbdInputText(&swkbd, buf, sizeof(buf));
+						
+						int cent = (buf[0] - '0');
+						int dec = (buf[1] - '0');
+						int uni = (buf[2] - '0');
+						int ev = cent * 100 + dec * 10 + uni * 1;
+
+						if (ev > 252)
+							ev = 252;
+						setEV(pkmn, ev, i);
+					}					
+
+					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					refresh(pokemonCont[0], topScreen, menuEntries, ENTRIES);
+					refreshPokemon(topScreen, mainbuf, pokemonCont, game);
+					break;
+				}
+				case 9 : {
+					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+
+					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
+						return 16;
+					
+					for (int i = 0; i < 6; i++) 
+						setIV(pkmn, 31, i);
+					
+					setHPType(pkmn, pokemonCont[5]);
+					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					break;
+				}
+				case 10 : {
+					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+
+					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
+						return 16;
+					
+					*(pkmn + 0x2B) = 0x11;
+					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					break;
+				}
+				case 11 : {
+					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+
+					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
+						return 16;
+					
+					*(pkmn + 0x2B) = 0x00;
+					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					break;
+				}
+				case 12 : {
+					char pkmncpy[PKMNLENGTH];
+					for (int i = 0; i < 30; i++) {
+						getPkmn(mainbuf, pokemonCont[1], i, pkmn, game);
+						memcpy(&pkmncpy, pkmn, PKMNLENGTH);
+						setPkmn(mainbuf, pokemonCont[6], i, pkmn, game);
+					}
+					break;
+				}
+				case 13 : {
+					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					char pkmncpy[PKMNLENGTH];
+					memcpy(&pkmncpy, pkmn, PKMNLENGTH);
+					setPkmn(mainbuf, pokemonCont[6], pokemonCont[7], pkmn, game);
 					break;
 				}
 			}
