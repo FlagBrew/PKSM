@@ -150,12 +150,26 @@ void setNature(u8* pkmn, const u8 nature) {
     memcpy(&pkmn[NATUREPOS], &nature, NATURELENGTH);
 }
 
+u8 getFriendship(u8* pkmn) {
+    u8 friendship;
+    memcpy(&friendship, &pkmn[0xA2], 1);
+    return friendship;
+}
+
 void setFriendship(u8* pkmn, const int val) {
 	memcpy(&pkmn[0xA2], &val, 1);
 }
 
 void setEV(u8* pkmn, u8 val, const int stat) {
     memcpy(&pkmn[EVPOS+(EVLENGTH*stat)], &val, EVLENGTH);
+}
+
+u8 getEV(u8* pkmn, const int stat) {
+    u8 evbuffer[6];
+    
+    memcpy(evbuffer, &pkmn[EVPOS], EVLENGTH * 6);
+    
+    return evbuffer[stat];
 }
 
 void setIV(u8* pkmn, u8 val, const int stat) {
@@ -262,18 +276,29 @@ void refreshPokemon(PrintConsole topScreen, u8* mainbuf, int pokemonCont[], int 
 	consoleSelect(&topScreen);	
 	printf("\x1b[2;31H\x1b[1;33m%d\x1b[0m ", pokemonCont[1] + 1);
 	printf("\x1b[3;31H\x1b[1;33m%d\x1b[0m ", pokemonCont[2] + 1);
-	printf("\x1b[5;31H\x1b[1;33m%s\x1b[0m   ", natures[pokemonCont[8]]);
-	printf("\x1b[11;31H\x1b[1;33m%s\x1b[0m    ", hpList[pokemonCont[5]]);
-	printf("\x1b[14;31H\x1b[1;33m%d\x1b[0m ", pokemonCont[6] + 1);
-	printf("\x1b[15;31H\x1b[1;33mB%d/S%d\x1b[0m  ", pokemonCont[6] + 1, pokemonCont[7] + 1);
+	printf("\x1b[5;31H\x1b[1;33m%s\x1b[0m   ", natures[pokemonCont[3]]);
+	printf("\x1b[11;31H\x1b[1;33m%s\x1b[0m    ", hpList[pokemonCont[4]]);
+	printf("\x1b[14;31H\x1b[1;33m%d\x1b[0m ", pokemonCont[5] + 1);
+	printf("\x1b[15;31H\x1b[1;33mB%d/S%d\x1b[0m  ", pokemonCont[5] + 1, pokemonCont[6] + 1);
 	
 	
-	printf("\x1b[25;0HSelected pokemon is: %s        ", pokemon[getPokedexNumber(pkmn)]);
+	printf("\x1b[25;0HPokemon: \x1b[32m%s\x1b[0m          ", pokemon[getPokedexNumber(pkmn)]);
 	
 	if (getPokedexNumber(pkmn)) {
-		printf("\x1b[26;0HNature: %s     ", natures[getNature(pkmn)]);
+		printf("\x1b[25;23HNature: %s     ", natures[getNature(pkmn)]);
+		printf("\x1b[26;0HIV: %d/%d/%d/%d/%d/%d      ", getIV(pkmn, 0), getIV(pkmn, 1), getIV(pkmn, 2), getIV(pkmn, 4), getIV(pkmn, 5), getIV(pkmn, 3));
+		printf("\x1b[26;23HEV: %d/%d/%d/%d/%d/%d            ", getEV(pkmn, 0), getEV(pkmn, 1), getEV(pkmn, 2), getEV(pkmn, 4), getEV(pkmn, 5), getEV(pkmn, 3));
+		printf("\x1b[27;0HFriendship: %d  ", getFriendship(pkmn));
+		printf("\x1b[27;23H");
+		if (isShiny(pkmn))
+			printf("Shiny    ");
+		else printf("Non shiny");
 	} else {
+		printf("\x1b[25;23H                           ");
 		printf("\x1b[26;0H                           ");
+		printf("\x1b[26;23H                                 ");
+		printf("\x1b[27;0H               ");
+		printf("\x1b[27;23H          ");
 	}
 	
 	free(pkmn);
@@ -289,6 +314,7 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 	printf("\x1b[32mA\x1b[0m - Switch setting\n");
 	printf("\x1b[1;31mSTART\x1b[0m - Start selected change\n");
 	printf("----------------------------------------");
+	printf("\nYou need to put the whole number\n(ex: 075) into IVs, EVs and friendship\neditor.");
 	printf("\x1b[17;0HYou can perform one edit, then you need to reopen this function to make another one.");
 	printf("\x1b[21;0H----------------------------------------");
 	printf("\x1b[22;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this.");
@@ -352,31 +378,31 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 					break;
 				}
 				case 3 : {
-					if (pokemonCont[8] < 24)
-						pokemonCont[8] += 1;
-					else if (pokemonCont[8] == 24)
-						pokemonCont[8] = 0;
+					if (pokemonCont[3] < 24)
+						pokemonCont[3] += 1;
+					else if (pokemonCont[3] == 24)
+						pokemonCont[3] = 0;
 					break;
 				}
 				case 9 : {
-					if (pokemonCont[5] < 15) 
-						pokemonCont[5] += 1;
-					else if (pokemonCont[5] == 15) 
-						pokemonCont[5] = 0;
+					if (pokemonCont[4] < 15) 
+						pokemonCont[4] += 1;
+					else if (pokemonCont[4] == 15) 
+						pokemonCont[4] = 0;
 					break;
 				}
 				case 12 : {
-					if (pokemonCont[6] < BOXMAX - 1) 
-						pokemonCont[6] += 1;
-					else if (pokemonCont[6] == BOXMAX - 1) 
-						pokemonCont[6] = 0;
+					if (pokemonCont[5] < BOXMAX - 1) 
+						pokemonCont[5] += 1;
+					else if (pokemonCont[5] == BOXMAX - 1) 
+						pokemonCont[5] = 0;
 					break;
 				}
 				case 13 : {
-					if (pokemonCont[7] < 29) 
-						pokemonCont[7] += 1;
-					else if (pokemonCont[7] == 29) 
-						pokemonCont[7] = 0;
+					if (pokemonCont[6] < 29) 
+						pokemonCont[6] += 1;
+					else if (pokemonCont[6] == 29) 
+						pokemonCont[6] = 0;
 					break;
 				}
 			}
@@ -395,7 +421,7 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 						return 16;
 					
 					static SwkbdState swkbd;
-					static char nick[NICKNAMELENGTH];
+					static char nick[NICKNAMELENGTH + 1];
 					
 					SwkbdButton button = SWKBD_BUTTON_NONE;
 					swkbdInit(&swkbd, SWKBD_TYPE_WESTERN, 1, -1);
@@ -418,7 +444,7 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
 						return 16;
 					
-					setNature(pkmn, (u8)(pokemonCont[8]));
+					setNature(pkmn, (u8)(pokemonCont[3]));
 					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
 					break;
 				}
@@ -449,7 +475,7 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 						return 16;
 					
 					static SwkbdState swkbd;
-					static char mybuf[3] = {'0', '0', '0'};
+					static char mybuf[4] = {'0', '0', '0', '\0'};
 
 					SwkbdButton button = SWKBD_BUTTON_NONE;	
 					
@@ -466,7 +492,8 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 					if (friendship > 255)
 						friendship = 255;
 					
-					setFriendship(pkmn, friendship);
+					if (button != SWKBD_BUTTON_NONE)
+						setFriendship(pkmn, friendship);
 					
 					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
 					break;
@@ -479,9 +506,12 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 
 					char *statslist[] = {"Health", "Attack", "Defense", "Speed", "Sp. Attack", "Sp. Defense"};
 					static SwkbdState swkbd;
-					static char buf[2];
+					static char buf[3] = {'0', '0', '\0'};
 					
 					SwkbdButton button = SWKBD_BUTTON_NONE;
+					
+					consoleSelect(&bottomScreen);
+					printf("\x1b[2J");
 					
 					for (int i = 0; i < 6; i++) {
 						buf[0] = '0';
@@ -489,7 +519,7 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 						
 						consoleSelect(&topScreen);
 						printf("\x1b[2J");
-						printf("\x1b[15;%uH\x1b[1;33mA\x1b[0m: Set %s IVs", (39 - strlen(statslist[i])) / 2, statslist[i]);
+						printf("\x1b[15;%uH\x1b[33mA\x1b[0m: Set \x1b[32m%s\x1b[0m IVs", (39 - strlen(statslist[i])) / 2, statslist[i]);
 
 						while (aptMainLoop()) {
 							gspWaitForVBlank();
@@ -513,10 +543,18 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 						
 						if (iv > 31)
 							iv = 31;
-						setIV(pkmn, iv, i);
+						
+						if (button != SWKBD_BUTTON_NONE)
+							setIV(pkmn, iv, i);
 					}					
 
 					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+
+					consoleSelect(&bottomScreen);
+					printf("\x1b[29;12HPress B to exit.");
+					consoleSelect(&topScreen);
+					printf("\x1b[2J");
+					printf("\x1b[47;1;34m                  Pokemon Editor                  \x1b[0m\n");					
 					refresh(pokemonCont[0], topScreen, menuEntries, ENTRIES);
 					refreshPokemon(topScreen, mainbuf, pokemonCont, game);
 					break;
@@ -529,9 +567,12 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 
 					char *statslist[] = {"Health", "Attack", "Defense", "Speed", "Sp. Attack", "Sp. Defense"};
 					static SwkbdState swkbd;
-					static char buf[3];
+					static char buf[4] = {'0', '0', '0', '\0'};
 					
 					SwkbdButton button = SWKBD_BUTTON_NONE;
+					
+					consoleSelect(&bottomScreen);
+					printf("\x1b[2J");
 					
 					for (int i = 0; i < 6; i++) {
 						buf[0] = '0';
@@ -540,7 +581,7 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 						
 						consoleSelect(&topScreen);
 						printf("\x1b[2J");
-						printf("\x1b[15;%uH\x1b[1;33mA\x1b[0m: Set %s EVs", (39 - strlen(statslist[i])) / 2, statslist[i]);
+						printf("\x1b[15;%uH\x1b[33mA\x1b[0m: Set \x1b[32m%s\x1b[0m EVs", (39 - strlen(statslist[i])) / 2, statslist[i]);
 
 						while (aptMainLoop()) {
 							gspWaitForVBlank();
@@ -565,10 +606,18 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 
 						if (ev > 252)
 							ev = 252;
-						setEV(pkmn, ev, i);
+						
+						if (button != SWKBD_BUTTON_NONE)
+							setEV(pkmn, ev, i);
 					}					
 
 					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+
+					consoleSelect(&bottomScreen);
+					printf("\x1b[29;12HPress B to exit.");
+					consoleSelect(&topScreen);
+					printf("\x1b[2J");
+					printf("\x1b[47;1;34m                  Pokemon Editor                  \x1b[0m\n");					
 					refresh(pokemonCont[0], topScreen, menuEntries, ENTRIES);
 					refreshPokemon(topScreen, mainbuf, pokemonCont, game);
 					break;
@@ -582,7 +631,7 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 					for (int i = 0; i < 6; i++) 
 						setIV(pkmn, 31, i);
 					
-					setHPType(pkmn, pokemonCont[5]);
+					setHPType(pkmn, pokemonCont[4]);
 					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
 					break;
 				}
@@ -611,7 +660,7 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 					for (int i = 0; i < 30; i++) {
 						getPkmn(mainbuf, pokemonCont[1], i, pkmn, game);
 						memcpy(&pkmncpy, pkmn, PKMNLENGTH);
-						setPkmn(mainbuf, pokemonCont[6], i, pkmn, game);
+						setPkmn(mainbuf, pokemonCont[5], i, pkmn, game);
 					}
 					break;
 				}
@@ -619,7 +668,7 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
 					char pkmncpy[PKMNLENGTH];
 					memcpy(&pkmncpy, pkmn, PKMNLENGTH);
-					setPkmn(mainbuf, pokemonCont[6], pokemonCont[7], pkmn, game);
+					setPkmn(mainbuf, pokemonCont[5], pokemonCont[6], pkmn, game);
 					break;
 				}
 			}

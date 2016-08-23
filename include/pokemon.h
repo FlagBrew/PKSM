@@ -26,9 +26,10 @@ u8 getNature(u8* pkmn);
 void setNature(u8* pkmn, const u8 nature);
 
 void refreshPokemon(PrintConsole topScreen, u8* mainbuf, int pokemonCont[], int game);
-
+u8 getFriendship(u8* pkmn);
 void setFriendship(u8* pkmn, const int value);
 void setEV(u8* pkmn, u8 val, const int stat);
+u8 getEV(u8* pkmn, const int stat);
 void setIV(u8* pkmn, u8 val, const int stat);
 u8 getIV(u8* pkmn, const int stat);
 void setHPType(u8* pkmn, const int val);
