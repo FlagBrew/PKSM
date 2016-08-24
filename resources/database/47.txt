@@ -1,7 +1,6 @@
-Diancie Present
+0047 - Diancie Present
 
-Pokemon:       Darkrai
-Level:         50
+Pokemon:       Diancie
 Ability:       Clear Body
 Held Item:     Normal Gem
 TID:           8274_
@@ -14,4 +13,4 @@ Relearn Moves: None
 Games:         XY 
 Method:        Serial Code
 Region:        all
-Duration:     August 29,2014 to October 15,2014
+Duration:      August 29,2014 to October 15,2014

@@ -8,7 +8,7 @@
 #include "inject.h"
 #include "pokemon.h"
 
-#define ENTRIES 11
+#define ENTRIES 10
 
 #define V1 2
 #define V2 1
@@ -153,7 +153,7 @@ int main() {
 	//Read main 
 	FSFILE_Read(mainHandle, NULL, 0, mainbuf, mainSize);	
 
-	char *menuEntries[ENTRIES] = {"Gen VI's Event Database", "Gen VI's Save file editor", "Gen VI's Pokemon editor", "Wi-Fi distributions", "Code distributions", "Local distributions", "Capture probability calculator", "Common PS dates database", "Changelog", "Credits", "Update .cia to latest commit build"};
+	char *menuEntries[ENTRIES] = {"Gen VI's Event Database", "Gen VI's Save file editor", "Gen VI's Pokemon editor", "Wi-Fi distributions", "Code distributions", "Local distributions", "Capture probability calculator", "Common PS dates database", "Credits", "Update .cia to latest commit build"};
 	int currentEntry = 0;
 	
 	// initializing save file editor variables
@@ -324,15 +324,6 @@ int main() {
 				}
 
 				case 8 : {
-					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/info.txt");
-					consoleSelect(&bottomScreen);
-					printf("\x1b[2J");
-					consoleSelect(&topScreen);
-					intro(topScreen, bottomScreen, currentEntry, menuEntries);
-					break;
-				}
-
-				case 9 : {
 					credits(topScreen, bottomScreen);
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
@@ -341,7 +332,7 @@ int main() {
 					break;
 				}
 
-				case 10 : {
+				case 9 : {
 					update(topScreen, bottomScreen);
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");

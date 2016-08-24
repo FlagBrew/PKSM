@@ -1,4 +1,4 @@
-Charizard got Charizardite Y!
+0043 - Charizard got Charizardite Y!
 
 Pokemon:       Charizard
 Level:         36
@@ -14,4 +14,4 @@ Relearn Moves: None
 Games:         XY 
 Method:        Serial Code
 Region:        all
-Duration:     July 29,2014 to October 31,2014
+Duration:      July 29,2014 to October 31,2014

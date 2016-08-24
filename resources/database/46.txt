@@ -1,4 +1,4 @@
-Darkrai Present
+0046 - Darkrai Present
 
 Pokemon:       Darkrai
 Level:         50
@@ -14,4 +14,4 @@ Relearn Moves: Phantom Force
 Games:         XY 
 Method:        Serial Code
 Region:        all
-Duration:     August 7,2014 to Septempber 30,2014
+Duration:      August 7,2014 to Septempber 30,2014
