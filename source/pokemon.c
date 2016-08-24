@@ -21,6 +21,178 @@ char *hpList[16] = {"Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Gh
 static char *pokemon[722] = {"None", "Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard", "Squirtle", "Wartortle", "Blastoise", "Caterpie", "Metapod", "Butterfree", "Weedle", "Kakuna", "Beedrill", "Pidgey", "Pidgeotto", "Pidgeot", "Rattata", "Raticate", "Spearow", "Fearow", "Ekans", "Arbok", "Pikachu", "Raichu", "Sandshrew", "Sandslash", "Nidoran F", "Nidorina", "Nidoqueen", "Nidoran M", "Nidorino", "Nidoking", "Clefairy", "Clefable", "Vulpix", "Ninetales", "Jigglypuff", "Wigglytuff", "Zubat", "Golbat", "Oddish", "Gloom", "Vileplume", "Paras", "Parasect", "Venonat", "Venomoth", "Diglett", "Dugtrio", "Meowth", "Persian", "Psyduck", "Golduck", "Mankey", "Primeape", "Growlithe", "Arcanine", "Poliwag", "Poliwhirl", "Poliwrath", "Abra", "Kadabra", "Alakazam", "Machop", "Machoke", "Machamp", "Bellsprout", "Weepinbell", "Victreebell", "Tentacool", "Tentacruel", "Geodude", "Graveler", "Golem", "Ponyta", "Rapidash", "Slowpoke", "Slowbro", "Magnemite", "Magneton", "Farfetch'd", "Doduo", "Dodrio", "Seel", "Dewgong", "Grimer", "Muk", "Shellder", "Cloyster", "Gastly", "Haunter", "Gengar", "Onix", "Drowzee", "Hypno", "Krabby", "Kingler", "Voltorb", "Electrode", "Exeggcute", "Exeggutor", "Cubone", "Marowak", "Hitmonlee", "Hitmonchan", "Lickitung", "Koffing", "Weezing", "Rhyhorn", "Rhydon", "Chansey", "Tangela", "Kangaskhan", "Horsea", "Seadra", "Goldeen", "Seaking", "Staryu", "Starmie", "Mr. Mime", "Scyther", "Jynx", "Electabuzz", "Magmar", "Pinsir", "Tauros", "Magikarp", "Gyarados", "Lapras", "Ditto", "Eevee", "Vaporeon", "Jolteon", "Flareon", "Porygon", "Omanyte", "Omastar", "Kabuto", "Kabutops", "Aerodactyl", "Snorlax", "Articuno", "Zapdos", "Moltres", "Dratini", "Dragonair", "Dragonite", "Mewtwo", "Mew", "Chikorita", "Bayleef", "Meganium", "Cyndaquil", "Quilava", "Typhlosion", "Totodile", "Croconaw", "Feraligatr", "Sentret", "Furret", "Hoothoot", "Noctowl", "Ledyba", "Ledian", "Spinarak", "Ariados", "Crobat", "Chinchou", "Lanturn", "Pichu", "Cleffa", "Igglybuff", "Togepi", "Togetic", "Natu", "Xatu", "Mareep", "Flaaffy", "Ampharos", "Bellossom", "Marill", "Azumarill", "Sudowoodo", "Politoed", "Hoppip", "Skiploom", "Jumpluff", "Aipom", "Sunkern", "Sunflora", "Yanma", "Wooper", "Quagsire", "Espeon", "Umbreon", "Murkrow", "Slowking", "Misdreavus", "Unown", "Wobbuffet", "Girafarig", "Pineco", "Forretress", "Dunsparce", "Gligar", "Steelix", "Snubbull", "Granbull", "Qwilfish", "Scizor", "Shuckle", "Heracross", "Sneasel", "Teddiursa", "Ursaring", "Slugma", "Magcargo", "Swinub", "Piloswine", "Corsola", "Remoraid", "Octillery", "Delibird", "Mantine", "Skarmory", "Houndour", "Houndoom", "Kingdra", "Phanpy", "Donphan", "Porygon2", "Stantler", "Smeargle", "Tyrogue", "Hitmontop", "Smoochum", "Elekid", "Magby", "Miltank", "Blissey", "Raikou", "Entei", "Suicune", "Larvitar", "Pupitar", "Tyranitar", "Lugia", "Ho-Oh", "Celebi", "Treecko", "Grovyle", "Sceptile", "Torchic", "Combusken", "Blaziken", "Mudkip", "Marshtomp", "Swampert", "Poochyena", "Mightyena", "Zigzagoon", "Linoone", "Wurmple", "Silcoon", "Beautifly", "Cascoon", "Dustox", "Lotad", "Lombre", "Ludicolo", "Seedot", "Nuzleaf", "Shiftry", "Taillow", "Swellow", "Wingull", "Pelipper", "Ralts", "Kirlia", "Gardevoir", "Surskit", "Masquerain", "Shroomish", "Breloom", "Slakoth", "Vigoroth", "Slaking", "Nincada", "Ninjask", "Shedinja", "Whismur", "Loudred", "Exploud", "Makuhita", "Hariyama", "Azurill", "Nosepass", "Skitty", "Delcatty", "Sableye", "Mawile", "Aron", "Lairon", "Aggron", "Meditite", "Medicham", "Electrike", "Manectric", "Plusle", "Minun", "Volbeat", "Illumise", "Roselia", "Gulpin", "Swalot", "Carvanha", "Sharpedo", "Wailmer", "Wailord", "Numel", "Camerupt", "Torkoal", "Spoink", "Grumpig", "Spinda", "Trapinch", "Vibrava", "Flygon", "Cacnea", "Cacturne", "Swablu", "Altaria", "Zangoose", "Seviper", "Lunatone", "Solrock", "Barboach", "Whiscash", "Corphish", "Crawdaunt", "Baltoy", "Claydol", "Lileep", "Cradily", "Anorith", "Armaldo", "Feebas", "Milotic", "Castform", "Kecleon", "Shuppet", "Banette", "Duskull", "Dusclops", "Tropius", "Chimecho", "Absol", "Wynaut", "Snorunt", "Glalie", "Spheal", "Sealeo", "Walrein", "Clamperl", "Huntail", "Gorebyss", "Relicanth", "Luvdisc", "Bagon", "Shelgon", "Salamence", "Beldum", "Metang", "Metagross", "Regirock", "Regice", "Registeel", "Latias", "Latios", "Kyogre", "Groudon", "Rayquaza", "Jirachi", "Deoxys", "Turtwig", "Grotle", "Torterra", "Chimchar", "Monferno", "Infernape", "Piplup", "Prinplup ", "Empoleon", "Starly", "Staravia", "Staraptor", "Bidoof", "Bibarel", "Kricketot", "Kricketune", "Shinx", "Luxio", "Luxray", "Budew", "Roserade", "Cranidos", "Rampardos", "Shieldon", "Bastiodon", "Burmy", "Wormadam", "Mothim", "Combee", "Vespiquen", "Pachirisu", "Buizel", "Floatzel", "Cherubi", "Cherrim", "Shellos", "Gastrodon", "Ambipom", "Drifloon", "Drifblim", "Buneary", "Lopunny", "Mismagius", "Honchkrow", "Glameow", "Purugly", "Chingling", "Stunky", "Skuntank", "Bronzor", "Bronzong", "Bonsly", "Mime Jr.", "Happiny", "Chatot", "Spiritomb", "Gible", "Gabite", "Garchomp", "Munchlax", "Riolu", "Lucario", "Hippopotas", "Hippowdon", "Skorupi", "Drapion", "Croagunk", "Toxicroak", "Carnivine", "Finneon", "Lumineon", "Mantyke", "Snover", "Abomasnow", "Weavile", "Magnezone", "Lickylicky", "Rhyperior", "Tangrowth", "Electivire", "Magmortar", "Togekiss", "Yanmega", "Leafeon", "Glaceon", "Gliscor", "Mamoswine", "Porygon-Z", "Gallade", "Probopass", "Dusknoir", "Froslass", "Rotom", "Uxie", "Mesprit", "Azelf", "Dialga", "Palkia", "Heatran", "Regigigas", "Giratina", "Cresselia", "Phione", "Manaphy", "Darkrai", "Shaymin", "Arceus", "Victini", "Snivy", "Servine", "Serperior", "Tepig", "Pignite", "Emboar", "Oshawott", "Dewott", "Samurott", "Patrat", "Watchog", "Lillipup", "Herdier", "Stoutland", "Purrloin", "Liepard", "Pansage", "Simisage", "Pansear", "Simisear", "Panpour", "Simipour", "Munna", "Musharna", "Pidove", "Tranquill", "Unfezant", "Blitzle", "Zebstrika", "Roggenrola", "Boldore", "Gigalith", "Woobat", "Swoobat", "Drilbur", "Excadrill", "Audino", "Timburr", "Gurdurr", "Conkeldurr", "Tympole", "Palpitoad", "Seismitoad", "Throh", "Sawk", "Sewaddle", "Swadloon", "Leavanny", "Venipede", "Whirlipede", "Scolipede", "Cottonee", "Whimsicott", "Petilil", "Lilligant", "Basculin", "Sandile", "Krokorok", "Krookodile", "Darumaka", "Darmanitan", "Maractus", "Dwebble", "Crustle", "Scraggy", "Scrafty", "Sigilyph", "Yamask", "Cofagrigus", "Tirtouga", "Carracosta", "Archen", "Archeops", "Trubbish", "Garbodor", "Zorua", "Zoroark", "Minccino", "Cinccino", "Gothita", "Gothorita", "Gothitelle", "Solosis", "Duosion", "Reuniclus", "Ducklett", "Swanna", "Vanillite", "Vanillish", "Vanilluxe", "Deerling", "Sawsbuck", "Emolga", "Karrablast", "Escavalier", "Foongus", "Amoonguss", "Frillish", "Jellicent", "Alomomola", "Joltik", "Galvantula", "Ferroseed", "Ferrothorn", "Klink", "Klang", "Klinklang", "Tynamo", "Eelektrik", "Eelektross", "Elgyem", "Beheeyem", "Litwick", "Lampent", "Chandelure", "Axew", "Fraxure", "Haxorus", "Cubchoo", "Beartic", "Cryogonal", "Shelmet", "Accelgor", "Stunfisk", "Mienfoo", "Mienshao", "Druddigon", "Golett", "Golurk", "Pawniard", "Bisharp", "Bouffalant", "Rufflet", "Braviary", "Vullaby", "Mandibuzz", "Heatmor", "Durant", "Deino", "Zweilous", "Hydreigon", "Larvesta", "Volcarona", "Cobalion", "Terrakion", "Virizon", "Tornadus", "Thundurus", "Reshiram", "Zekrom", "Landorus", "Kyurem", "Keldeo", "Meloetta", "Genesect", "Chespin", "Quilladin", "Chesnaught", "Fennekin", "Braixen", "Delphox", "Froakie", "Frogadier", "Greninja", "Bunnelby", "Diggersby", "Fletchling", "Fletchinder", "Talonflame", "Scatterbug", "Spewpa", "Vivillon", "Litleo", "Pyroar", "Flabébé", "Floette", "Florges", "Skiddo", "Gogoat", "Pancham", "Pangoro", "Furfrou", "Espurr", "Meowstic", "Honedge", "Doublade", "Aegislash", "Spritzee", "Aromatisse", "Swirlix", "Slurpuff", "Inkay", "Malamar", "Binacle", "Barbaracle", "Skrelp", "Dragalge", "Clauncher", "Clawitzer", "Helioptile", "Heliolisk", "Tyrunt", "Tyrantrum", "Amaura", "Aurorus", "Sylveon", "Hawlucha", "Dedenne", "Carbink", "Goomy", "Sliggoo", "Goodra", "Klefki", "Phantump", "Trevenant", "Pumpkaboo", "Gourgeist", "Bergmite", "Avalugg", "Noibat", "Noivern", "Xerneas", "Yveltal", "Zygarde", "Diancie", "Hoopa", "Volcanion"};
 static char *natures[25] = {"Hardy", "Lonely", "Brave", "Adamant", "Naughty", "Bold", "Docile", "Relaxed", "Impish", "Lax", "Timid", "Hasty", "Serious", "Jolly", "Naive", "Modest", "Mild", "Quiet", "Bashful", "Rash", "Calm", "Gentle", "Sassy", "Careful", "Quirky"};
 
+int getPkmnAddress(const int boxnumber, const int indexnumber, int game) {
+    int boxpos = 0;
+    if (game == 0 || game == 1) 
+		boxpos = 0x27A00 - OFFSET;
+    
+    
+    if (game == 2 || game == 3) 
+		boxpos = 0x38400 - OFFSET;
+
+    const int PKMNNUM = 30;
+    
+	return boxpos + (PKMNLENGTH * PKMNNUM * boxnumber) + (indexnumber * PKMNLENGTH);
+}
+
+u16 getOTID(u8* pkmn) {
+    u16 otidbuffer;
+    memcpy(&otidbuffer, &pkmn[OTIDPOS], OTIDLENGTH);
+    
+    return otidbuffer;
+}
+
+u16 getSOTID(u8* pkmn) {
+    u16 sotidbuffer;
+    memcpy(&sotidbuffer, &pkmn[SOTIDPOS], SOTIDLENGTH);
+    
+    return sotidbuffer;
+}
+
+u32 getPID(u8* pkmn) {
+    u32 pidbuffer;
+    memcpy(&pidbuffer, &pkmn[PIDPOS], PIDLENGTH);
+    
+    return pidbuffer;
+}
+
+void getPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game) {
+    memcpy(pkmn, &mainbuf[getPkmnAddress(boxnumber, indexnumber, game)], PKMNLENGTH);
+    decryptPkmn(pkmn);
+}
+
+u16 getPokedexNumber(u8* pkmn) {
+    u16 pokedexnumber;
+    memcpy(&pokedexnumber, &pkmn[POKEDEXNUMBERPOS], POKEDEXNUMBERLENGTH);
+    return pokedexnumber;
+}
+
+u8 getFriendship(u8* pkmn) {
+    u8 friendship;
+    memcpy(&friendship, &pkmn[0xA2], 1);
+    return friendship;
+}
+
+u8 getNature(u8* pkmn) {
+    u8 nature;
+    memcpy(&nature, &pkmn[NATUREPOS], NATURELENGTH);
+    return nature;
+}
+
+u8 getEV(u8* pkmn, const int stat) {
+    u8 evbuffer[6];
+    
+    memcpy(evbuffer, &pkmn[EVPOS], EVLENGTH * 6);
+    
+    return evbuffer[stat];
+}
+
+u8 getIV(u8* pkmn, const int stat) {
+    u32 buffer;
+    u8 toreturn;
+    
+    memcpy(&buffer, &pkmn[IVPOS], IVLENGTH);
+    buffer = buffer >> 5*stat;
+    buffer = buffer & 0x1F;
+    memcpy(&toreturn, &buffer, 1);
+    
+    return toreturn;
+}
+ 
+void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game) {
+    calculatePKMNChecksum(pkmn);
+    encryptPkmn(pkmn);
+        
+    memcpy(&mainbuf[getPkmnAddress(boxnumber, indexnumber, game)], pkmn, PKMNLENGTH);
+}
+
+void setNickname(u8* pkmn, char* nick) {
+    u8 toinsert[NICKNAMELENGTH];
+    for (int i = 0; i < NICKNAMELENGTH; i++)
+        toinsert[i] = 0;
+    
+    for (u16 i = 0; i < strlen(nick); i++)
+        toinsert[i * 2] = *(nick + i);
+    
+    memcpy(&pkmn[NICKNAMEPOS], toinsert, NICKNAMELENGTH);
+}
+
+void setNature(u8* pkmn, const u8 nature) {
+    memcpy(&pkmn[NATUREPOS], &nature, NATURELENGTH);
+}
+
+void setFriendship(u8* pkmn, const int val) {
+	memcpy(&pkmn[0xA2], &val, 1);
+}
+
+void setEV(u8* pkmn, u8 val, const int stat) {
+    memcpy(&pkmn[EVPOS+(EVLENGTH*stat)], &val, EVLENGTH);
+}
+
+void setIV(u8* pkmn, u8 val, const int stat) {
+	u32 nval = val;
+	u32 mask = 0xFFFFFFFF;
+	mask ^= 0x1F << (5 * stat);
+
+	u32 buffer;
+	memcpy(&buffer, &pkmn[IVPOS], IVLENGTH);
+
+	buffer &= mask;
+	buffer ^= ((nval & 0x1F) << (5 * stat));
+	memcpy(&pkmn[IVPOS], &buffer, IVLENGTH);
+}
+
+void setHPType(u8* pkmn, const int val) {
+    u8 ivstat[6];
+    for(int i = 0; i < 6; i++)
+        ivstat[i] = getIV(pkmn, i);
+    
+    u8 hpivs[16][6] = {
+        { 1, 1, 0, 0, 0, 0 }, // Fighting
+        { 0, 0, 0, 1, 0, 0 }, // Flying
+        { 1, 1, 0, 1, 0, 0 }, // Poison
+        { 1, 1, 1, 1, 0, 0 }, // Ground
+        { 1, 1, 0, 0, 1, 0 }, // Rock
+        { 1, 0, 0, 1, 1, 0 }, // Bug
+        { 1, 0, 1, 1, 1, 0 }, // Ghost
+        { 1, 1, 1, 1, 1, 0 }, // Steel
+        { 1, 0, 1, 0, 0, 1 }, // Fire
+        { 1, 0, 0, 1, 0, 1 }, // Water
+        { 1, 0, 1, 1, 0, 1 }, // Grass
+        { 1, 1, 1, 1, 0, 1 }, // Electric
+        { 1, 0, 1, 0, 1, 1 }, // Psychic
+        { 1, 0, 0, 1, 1, 1 }, // Ice
+        { 1, 0, 1, 1, 1, 1 }, // Dragon
+        { 1, 1, 1, 1, 1, 1 }, // Dark
+    };
+    
+    for(int i = 0; i < 6; i++)
+         ivstat[i] = (ivstat[i] & 0x1E) + hpivs[val][i];
+    
+    for(int i = 0; i < 6; i++)
+        setIV(pkmn, ivstat[i], i);
+}
+
+bool isShiny(u8* pkmn) {
+    u16 trainersv = (getOTID(pkmn) ^ getSOTID(pkmn)) >> 4;
+    u16 pkmnv = ((getPID(pkmn) >> 16) ^ (getPID(pkmn) & 0xFFFF)) >> 4;
+    
+    if( trainersv == pkmnv) return true;
+    else return false;
+}
+
+void rerollPID(u8* pkmn) {
+    srand(getPID(pkmn));
+    u32 pidbuffer = rand();
+    
+    memcpy(&pkmn[PIDPOS], &pidbuffer, PIDLENGTH);
+}
+
+void setShiny(u8* pkmn, const bool shiny) {
+	while(isShiny(pkmn) != shiny)
+		rerollPID(pkmn);
+}
+
 u32 seedStep(const u32 seed) {
     return (seed*0x41C64E6D + 0x00006073) & 0xFFFFFFFF;
 }
@@ -67,20 +239,6 @@ void decryptPkmn(u8* pkmn) {
     shuffleArray(pkmn, encryptionkey);
 }
 
-int getPkmnAddress(const int boxnumber, const int indexnumber, int game) {
-    int boxpos = 0;
-    if (game == 0 || game == 1) 
-		boxpos = 0x27A00 - OFFSET;
-    
-    
-    if (game == 2 || game == 3) 
-		boxpos = 0x38400 - OFFSET;
-
-    const int PKMNNUM = 30;
-    
-	return boxpos + (PKMNLENGTH * PKMNNUM * boxnumber) + (indexnumber * PKMNLENGTH);
-}
-
 void calculatePKMNChecksum(u8* data) {
     u16 chk = 0;
 
@@ -111,164 +269,6 @@ void encryptPkmn(u8* pkmn) {
     }
 }
 
-void getPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game) {
-    memcpy(pkmn, &mainbuf[getPkmnAddress(boxnumber, indexnumber, game)], PKMNLENGTH);
-    decryptPkmn(pkmn);
-}
- 
-void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game) {
-    calculatePKMNChecksum(pkmn);
-    encryptPkmn(pkmn);
-        
-    memcpy(&mainbuf[getPkmnAddress(boxnumber, indexnumber, game)], pkmn, PKMNLENGTH);
-}
-
-u16 getPokedexNumber(u8* pkmn) {
-    u16 pokedexnumber;
-    memcpy(&pokedexnumber, &pkmn[POKEDEXNUMBERPOS], POKEDEXNUMBERLENGTH);
-    return pokedexnumber;
-}
-
-void setNickname(u8* pkmn, char* nick) {
-    u8 toinsert[NICKNAMELENGTH];
-    for (int i = 0; i < NICKNAMELENGTH; i++)
-        toinsert[i] = 0;
-    
-    for (u16 i = 0; i < strlen(nick); i++)
-        toinsert[i * 2] = *(nick + i);
-    
-    memcpy(&pkmn[NICKNAMEPOS], toinsert, NICKNAMELENGTH);
-}
-
-u8 getNature(u8* pkmn) {
-    u8 nature;
-    memcpy(&nature, &pkmn[NATUREPOS], NATURELENGTH);
-    return nature;
-}
-
-void setNature(u8* pkmn, const u8 nature) {
-    memcpy(&pkmn[NATUREPOS], &nature, NATURELENGTH);
-}
-
-u8 getFriendship(u8* pkmn) {
-    u8 friendship;
-    memcpy(&friendship, &pkmn[0xA2], 1);
-    return friendship;
-}
-
-void setFriendship(u8* pkmn, const int val) {
-	memcpy(&pkmn[0xA2], &val, 1);
-}
-
-void setEV(u8* pkmn, u8 val, const int stat) {
-    memcpy(&pkmn[EVPOS+(EVLENGTH*stat)], &val, EVLENGTH);
-}
-
-u8 getEV(u8* pkmn, const int stat) {
-    u8 evbuffer[6];
-    
-    memcpy(evbuffer, &pkmn[EVPOS], EVLENGTH * 6);
-    
-    return evbuffer[stat];
-}
-
-void setIV(u8* pkmn, u8 val, const int stat) {
-	u32 nval = val;
-	u32 mask = 0xFFFFFFFF;
-	mask ^= 0x1F << (5 * stat);
-
-	u32 buffer;
-	memcpy(&buffer, &pkmn[IVPOS], IVLENGTH);
-
-	buffer &= mask;
-	buffer ^= ((nval & 0x1F) << (5 * stat));
-	memcpy(&pkmn[IVPOS], &buffer, IVLENGTH);
-}
-
-u8 getIV(u8* pkmn, const int stat) {
-    u32 buffer;
-    u8 toreturn;
-    
-    memcpy(&buffer, &pkmn[IVPOS], IVLENGTH);
-    buffer = buffer >> 5*stat;
-    buffer = buffer & 0x1F;
-    memcpy(&toreturn, &buffer, 1);
-    
-    return toreturn;
-}
-
-void setHPType(u8* pkmn, const int val) {
-    u8 ivstat[6];
-    for(int i = 0; i < 6; i++)
-        ivstat[i] = getIV(pkmn, i);
-    
-    u8 hpivs[16][6] = {
-        { 1, 1, 0, 0, 0, 0 }, // Fighting
-        { 0, 0, 0, 1, 0, 0 }, // Flying
-        { 1, 1, 0, 1, 0, 0 }, // Poison
-        { 1, 1, 1, 1, 0, 0 }, // Ground
-        { 1, 1, 0, 0, 1, 0 }, // Rock
-        { 1, 0, 0, 1, 1, 0 }, // Bug
-        { 1, 0, 1, 1, 1, 0 }, // Ghost
-        { 1, 1, 1, 1, 1, 0 }, // Steel
-        { 1, 0, 1, 0, 0, 1 }, // Fire
-        { 1, 0, 0, 1, 0, 1 }, // Water
-        { 1, 0, 1, 1, 0, 1 }, // Grass
-        { 1, 1, 1, 1, 0, 1 }, // Electric
-        { 1, 0, 1, 0, 1, 1 }, // Psychic
-        { 1, 0, 0, 1, 1, 1 }, // Ice
-        { 1, 0, 1, 1, 1, 1 }, // Dragon
-        { 1, 1, 1, 1, 1, 1 }, // Dark
-    };
-    
-    for(int i = 0; i < 6; i++)
-         ivstat[i] = (ivstat[i] & 0x1E) + hpivs[val][i];
-    
-    for(int i = 0; i < 6; i++)
-        setIV(pkmn, ivstat[i], i);
-}
-
-u16 getOTID(u8* pkmn) {
-    u16 otidbuffer;
-    memcpy(&otidbuffer, &pkmn[OTIDPOS], OTIDLENGTH);
-    
-    return otidbuffer;
-}
-
-u16 getSOTID(u8* pkmn) {
-    u16 sotidbuffer;
-    memcpy(&sotidbuffer, &pkmn[SOTIDPOS], SOTIDLENGTH);
-    
-    return sotidbuffer;
-}
-
-u32 getPID(u8* pkmn) {
-    u32 pidbuffer;
-    memcpy(&pidbuffer, &pkmn[PIDPOS], PIDLENGTH);
-    
-    return pidbuffer;
-}
-
-bool isShiny(u8* pkmn) {
-    u16 trainersv = (getOTID(pkmn) ^ getSOTID(pkmn)) >> 4;
-    u16 pkmnv = ((getPID(pkmn) >> 16) ^ (getPID(pkmn) & 0xFFFF)) >> 4;
-    
-    if( trainersv == pkmnv) return true;
-    else return false;
-}
-
-void rerollPID(u8* pkmn) {
-    srand(getPID(pkmn));
-    u32 pidbuffer = rand();
-    
-    memcpy(&pkmn[PIDPOS], &pidbuffer, PIDLENGTH);
-}
-
-void setShiny(u8* pkmn, const bool shiny) {
-	while(isShiny(pkmn) != shiny)
-		rerollPID(pkmn);
-}
-
 void refreshPokemon(PrintConsole topScreen, u8* mainbuf, int pokemonCont[], int game) {
 	u8* pkmn = (u8*)malloc(PKMNLENGTH * sizeof(u8));
 	getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
@@ -278,11 +278,11 @@ void refreshPokemon(PrintConsole topScreen, u8* mainbuf, int pokemonCont[], int 
 	printf("\x1b[3;31H\x1b[1;33m%d\x1b[0m ", pokemonCont[2] + 1);
 	printf("\x1b[5;31H\x1b[1;33m%s\x1b[0m   ", natures[pokemonCont[3]]);
 	printf("\x1b[11;31H\x1b[1;33m%s\x1b[0m    ", hpList[pokemonCont[4]]);
-	printf("\x1b[14;31H\x1b[1;33m%d\x1b[0m ", pokemonCont[5] + 1);
+	printf("\x1b[14;31H\x1b[1;33mB%d\x1b[0m ", pokemonCont[5] + 1);
 	printf("\x1b[15;31H\x1b[1;33mB%d/S%d\x1b[0m  ", pokemonCont[5] + 1, pokemonCont[6] + 1);
 	
 	
-	printf("\x1b[25;0HPokemon: \x1b[32m%s\x1b[0m          ", pokemon[getPokedexNumber(pkmn)]);
+	printf("\x1b[25;0HPokemon: \x1b[33m%s\x1b[0m          ", pokemon[getPokedexNumber(pkmn)]);
 	
 	if (getPokedexNumber(pkmn)) {
 		printf("\x1b[25;23HNature: %s     ", natures[getNature(pkmn)]);
@@ -293,12 +293,16 @@ void refreshPokemon(PrintConsole topScreen, u8* mainbuf, int pokemonCont[], int 
 		if (isShiny(pkmn))
 			printf("Shiny    ");
 		else printf("Non shiny");
+		printf("\x1b[28;0HTID: %u ", getOTID(pkmn));
+		printf("\x1b[28;23HTID: %u ", getSOTID(pkmn));
 	} else {
 		printf("\x1b[25;23H                           ");
 		printf("\x1b[26;0H                           ");
 		printf("\x1b[26;23H                                 ");
 		printf("\x1b[27;0H               ");
 		printf("\x1b[27;23H          ");
+		printf("\x1b[28;0H           ");
+		printf("\x1b[28;23H           ");
 	}
 	
 	free(pkmn);
@@ -421,14 +425,20 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 						return 16;
 					
 					static SwkbdState swkbd;
-					static char nick[NICKNAMELENGTH + 1];
+					static char buf[60];
 					
 					SwkbdButton button = SWKBD_BUTTON_NONE;
-					swkbdInit(&swkbd, SWKBD_TYPE_WESTERN, 1, -1);
+					swkbdInit(&swkbd, SWKBD_TYPE_WESTERN, 1, (NICKNAMELENGTH / 2) - 1);
 					swkbdSetValidation(&swkbd, SWKBD_NOTEMPTY_NOTBLANK, SWKBD_FILTER_DIGITS | SWKBD_FILTER_AT | SWKBD_FILTER_PERCENT | SWKBD_FILTER_BACKSLASH | SWKBD_FILTER_PROFANITY, 2);
 					swkbdSetFeatures(&swkbd, SWKBD_MULTILINE);
 					swkbdSetHintText(&swkbd, "Enter your nickname");
-					button = swkbdInputText(&swkbd, nick, sizeof(nick));
+					button = swkbdInputText(&swkbd, buf, sizeof(buf));
+					
+					static char nick[NICKNAMELENGTH];
+					for (int i = 0; i < NICKNAMELENGTH; i++)
+						nick[i] = 0;
+					memcpy(nick, buf, NICKNAMELENGTH);
+					nick[NICKNAMELENGTH - 1] = '\0';
 					
 					if (button != SWKBD_BUTTON_NONE) {
 						setNickname(pkmn, nick);
@@ -480,7 +490,7 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 					SwkbdButton button = SWKBD_BUTTON_NONE;	
 					
 					swkbdInit(&swkbd, SWKBD_TYPE_NUMPAD, 1, 3);
-					swkbdSetValidation(&swkbd, SWKBD_ANYTHING, 0, 0);
+					swkbdSetValidation(&swkbd, SWKBD_FIXEDLEN, 0, 0);
 					swkbdSetFeatures(&swkbd, SWKBD_FIXED_WIDTH);
 					button = swkbdInputText(&swkbd, mybuf, sizeof(mybuf));
 					
@@ -533,7 +543,7 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 						}
 						
 						swkbdInit(&swkbd, SWKBD_TYPE_NUMPAD, 1, 2);
-						swkbdSetValidation(&swkbd, SWKBD_ANYTHING, 0, 0);
+						swkbdSetValidation(&swkbd, SWKBD_FIXEDLEN, 0, 0);
 						swkbdSetFeatures(&swkbd, SWKBD_FIXED_WIDTH);
 						button = swkbdInputText(&swkbd, buf, sizeof(buf));
 						
@@ -595,7 +605,7 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 						}
 						
 						swkbdInit(&swkbd, SWKBD_TYPE_NUMPAD, 1, 3);
-						swkbdSetValidation(&swkbd, SWKBD_ANYTHING, 0, 0);
+						swkbdSetValidation(&swkbd, SWKBD_FIXEDLEN, 0, 0);
 						swkbdSetFeatures(&swkbd, SWKBD_FIXED_WIDTH);
 						button = swkbdInputText(&swkbd, buf, sizeof(buf));
 						
