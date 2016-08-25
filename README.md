@@ -60,7 +60,7 @@ Thank you to:
 * all the guys on the 3dshacks discord
 * Simona Mastroianni for fill.c work
 * Federico, YodaDaCoda and /u/SatansRoommate for testing builds
-* Cosimo Vivoli for some database entries
+* Cosimo Vivoli, Hat3Mond4ys for some database entries
 * Kian Josh King for some wc6s
 * Shai for the icon and Fabrizio for the name
 
