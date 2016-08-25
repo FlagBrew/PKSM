@@ -8,7 +8,7 @@
 #include "certs/cybertrust.h"
 #include "certs/digicert.h"
 
-#define ENTRIES 1
+#define ENTRIES 2
 
 char *overwritechar[2] = {"DISABLED", "ENABLED "};
 char *adaptchar[2] = {"NO ", "YES"};
@@ -249,10 +249,13 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
     return 0;
 }
 
-int injectBoxBin(PrintConsole topScreen, u8* mainbuf, int game, int NBOXES, char* urls[]) {
+int injectBoxBin(PrintConsole screen, u8* mainbuf, int game, int NBOXES, char* urls[]) {
 	for (int i = 0; i < NBOXES; i++) {
-		consoleSelect(&topScreen);
-		printf("\x1b[%d;0HDownloading box %d", 26 + i, i + 1);
+		consoleSelect(&screen);
+		printf("\x1b[%d;0HDownloading box %d", 4 + i, i + 1);
+		gfxFlushBuffers();
+		gfxSwapBuffers();
+	
 		httpcInit(0);
 
 		httpcContext context;
@@ -604,7 +607,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, c
 
 int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int game) {
 	int cont = 0;
-	char *menuEntries[ENTRIES] = {"XD collection + extras (3 boxes)"};
+	char *menuEntries[ENTRIES] = {"XD collection", "Colosseum collection"};
 	
     consoleSelect(&bottomScreen);
     printf("\x1b[2J");
@@ -612,9 +615,10 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 	printf("\x1b[31mSTART\x1b[0m  inject wc6 in slot");	
     printf("\x1b[2;0H----------------------------------------");
 
-    printf("\x1b[18;0H----------------------------------------");
-    printf("\x1b[19;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this.");
-    printf("\x1b[24;0H----------------------------------------");
+	printf("\x1b[18;0HThis will \x1b[31mOVERWRITE\x1b[0m the first N boxes ofyour pcdata.");
+    printf("\x1b[21;0H----------------------------------------");
+    printf("\x1b[22;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this.");
+    printf("\x1b[26;0H----------------------------------------");
     printf("\x1b[29;11H\x1b[47;34mPress B to return.\x1b[0m");
     consoleSelect(&topScreen);
     printf("\x1b[2J");
@@ -654,7 +658,48 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 			switch (cont) {
 				case 0 : {
 					char *urls[3] = {"https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/misc/xd/1.bin", "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/misc/xd/2.bin", "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/misc/xd/3.bin"};
-					int res = injectBoxBin (topScreen, mainbuf, game, 3, urls);
+					
+					consoleSelect(&topScreen);
+					printf("\x1b[15;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m box will be replaced", 9, 3);
+					while (aptMainLoop()) {
+						gspWaitForVBlank();
+						hidScanInput();
+						
+						if (hidKeysDown() & KEY_B)
+							return 0;
+
+						if (hidKeysDown() & KEY_START)
+							break;
+
+						gfxFlushBuffers();
+						gfxSwapBuffers();
+					}
+					
+					int res = injectBoxBin (bottomScreen, mainbuf, game, 3, urls);
+					if (res != 1) 
+						return res;
+					break;
+				}
+				case 1 : {
+					char *urls[2] = {"https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/misc/colosseum/1.bin", "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/misc/colosseum/2.bin"};
+
+					consoleSelect(&topScreen);
+					printf("\x1b[15;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m box will be replaced", 9, 2);
+					while (aptMainLoop()) {
+						gspWaitForVBlank();
+						hidScanInput();
+						
+						if (hidKeysDown() & KEY_B)
+							return 0;
+
+						if (hidKeysDown() & KEY_START)
+							break;
+
+						gfxFlushBuffers();
+						gfxSwapBuffers();
+					}					
+					
+					int res = injectBoxBin (bottomScreen, mainbuf, game, 2, urls);
 					if (res != 1) 
 						return res;
 					break;
