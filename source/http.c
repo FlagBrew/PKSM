@@ -4,8 +4,11 @@
 #include <3ds.h>
 #include "util.h"
 #include "inject.h"
+#include "pokemon.h"
 #include "certs/cybertrust.h"
 #include "certs/digicert.h"
+
+#define ENTRIES 1
 
 char *overwritechar[2] = {"DISABLED", "ENABLED "};
 char *adaptchar[2] = {"NO ", "YES"};
@@ -244,6 +247,81 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
     fsExit();
 
     return 0;
+}
+
+int injectBoxBin(PrintConsole topScreen, u8* mainbuf, int game, int NBOXES, char* urls[]) {
+	for (int i = 0; i < NBOXES; i++) {
+		consoleSelect(&topScreen);
+		printf("\x1b[%d;0HDownloading box %d", 26 + i, i + 1);
+		httpcInit(0);
+
+		httpcContext context;
+		Result ret = 0;
+		u32 statuscode = 0;
+		u32 contentsize = 0;
+		
+		ret = httpcOpenContext(&context, HTTPC_METHOD_GET, urls[i], 0);
+		if (ret != 0) 
+			return 2;
+
+		ret = httpcAddRequestHeaderField(&context, "User-Agent", "EventAssistant");
+		if (ret != 0) 
+			return 3;
+
+		ret = httpcSetSSLOpt(&context, 1 << 9);
+		if (ret != 0) 
+			return 4;
+
+		httpcAddTrustedRootCA(&context, cybertrust_cer, cybertrust_cer_len);
+		httpcAddTrustedRootCA(&context, digicert_cer, digicert_cer_len);
+
+		ret = httpcBeginRequest(&context);
+		if (ret != 0) 
+			return 5;
+
+		ret = httpcGetResponseStatusCode(&context, &statuscode);
+		if (ret != 0) {
+			httpcCloseContext(&context);
+			return 15;
+		}
+
+		if (statuscode != 200)
+			return 15;
+
+		ret = httpcGetDownloadSizeState(&context, NULL, &contentsize);
+		if (ret != 0) {
+			httpcCloseContext(&context);
+			return 7;
+		}
+
+		u8 *buf;
+		buf = (u8*)malloc(contentsize);
+		if (buf == NULL) 
+			return 8;
+		memset(buf, 0, contentsize);
+
+		ret = httpcDownloadData(&context, buf, contentsize, NULL);
+		if (ret != 0) {
+			free(buf);
+			httpcCloseContext(&context);
+			return 9;
+		}
+		
+		int boxpos = 0;
+		if (game == 0 || game == 1) 
+			boxpos = 0x27A00 - 0x5400;
+		
+		
+		if (game == 2 || game == 3) 
+			boxpos = 0x38400 - 0x5400;
+		
+		memcpy((void*)(mainbuf + boxpos + PKMNLENGTH * 30 * i), (const void*)buf, PKMNLENGTH * 30);
+		
+		free(buf);
+		httpcCloseContext(&context);
+		httpcExit();
+	}
+	return 1;
 }
 
 Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, char *url, int i, int nInjected[], int game, int overwrite[]) {	
@@ -522,4 +600,71 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, c
         gfxSwapBuffers();
     }
     return -1;
+}
+
+int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int game) {
+	int cont = 0;
+	char *menuEntries[ENTRIES] = {"XD collection + extras (3 boxes)"};
+	
+    consoleSelect(&bottomScreen);
+    printf("\x1b[2J");
+    printf("----------------------------------------");
+	printf("\x1b[31mSTART\x1b[0m  inject wc6 in slot");	
+    printf("\x1b[2;0H----------------------------------------");
+
+    printf("\x1b[18;0H----------------------------------------");
+    printf("\x1b[19;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this.");
+    printf("\x1b[24;0H----------------------------------------");
+    printf("\x1b[29;11H\x1b[47;34mPress B to return.\x1b[0m");
+    consoleSelect(&topScreen);
+    printf("\x1b[2J");
+	printf("\x1b[47;1;34m                  Mass Injecter                   \x1b[0m\n");	
+	refresh(cont, topScreen, menuEntries, ENTRIES);
+
+    while (aptMainLoop()) {
+        gspWaitForVBlank();
+        hidScanInput();
+
+        if (hidKeysDown() & KEY_B)
+            break;
+
+		if (hidKeysDown() & KEY_DUP) {
+			if (cont == 0) {
+				cont = ENTRIES - 1;
+				refresh(cont, topScreen, menuEntries, ENTRIES);
+			}
+			else if (cont > 0) {
+				cont--;
+				refresh(cont, topScreen, menuEntries, ENTRIES);	
+			}
+		}
+		
+		if (hidKeysDown() & KEY_DDOWN) {
+			if (cont == ENTRIES - 1) {
+				cont = 0;
+				refresh(cont, topScreen, menuEntries, ENTRIES);	
+			}
+			else if (cont < ENTRIES - 1) {
+				cont++;
+				refresh(cont, topScreen, menuEntries, ENTRIES);
+			}
+		}
+
+        if (hidKeysDown() & KEY_START) {
+			switch (cont) {
+				case 0 : {
+					char *urls[3] = {"https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/misc/xd/1.bin", "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/misc/xd/2.bin", "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/misc/xd/3.bin"};
+					int res = injectBoxBin (topScreen, mainbuf, game, 3, urls);
+					if (res != 1) 
+						return res;
+					break;
+				}
+			}
+			return 1;
+        }
+
+        gfxFlushBuffers();
+        gfxSwapBuffers();
+    }
+    return 0;
 }

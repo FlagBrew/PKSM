@@ -8,7 +8,7 @@
 #include "inject.h"
 #include "pokemon.h"
 
-#define ENTRIES 10
+#define ENTRIES 11
 
 #define V1 2
 #define V2 1
@@ -153,7 +153,7 @@ int main() {
 	//Read main 
 	FSFILE_Read(mainHandle, NULL, 0, mainbuf, mainSize);	
 
-	char *menuEntries[ENTRIES] = {"Gen VI's Event Database", "Gen VI's Save file editor", "Gen VI's Pokemon editor", "Wi-Fi distributions", "Code distributions", "Local distributions", "Capture probability calculator", "Common PS dates database", "Credits", "Update .cia to latest commit build"};
+	char *menuEntries[ENTRIES] = {"Gen VI's Event Database", "Gen VI's Save file editor", "Gen VI's Pokemon editor", "Mass injecter", "Wi-Fi distributions", "Code distributions", "Local distributions", "Capture probability calculator", "Common PS dates database", "Credits", "Update .cia to latest commit build"};
 	int currentEntry = 0;
 	
 	// initializing save file editor variables
@@ -277,8 +277,35 @@ int main() {
 					intro(topScreen, bottomScreen, currentEntry, menuEntries);
 					break;
 				}
+				
+				case 3 : {
+					int ret = massInjecter(topScreen, bottomScreen, mainbuf, game);
+					consoleSelect(&bottomScreen);
+					if (ret == 1)
+						infoDisp(bottomScreen, 1);
+					else if (ret != 1 && ret != 0) 
+						errDisp(bottomScreen, ret);
 
-				case 3 :  {
+					if (ret != 0) {
+						while (aptMainLoop()) {
+							gspWaitForVBlank();
+							hidScanInput();
+
+							if (hidKeysDown() & KEY_B) break;
+
+							gfxFlushBuffers();
+							gfxSwapBuffers();
+						}
+					}
+
+					consoleSelect(&bottomScreen);
+					printf("\x1b[2J");
+					consoleSelect(&topScreen);
+					intro(topScreen, bottomScreen, currentEntry, menuEntries);
+					break;
+				}
+
+				case 4 :  {
 					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/worldwide1.txt");
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
@@ -287,7 +314,7 @@ int main() {
 					break;
 				}
 
-				case 4 : {
+				case 5 : {
 					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/worldwide2.txt");
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
@@ -296,7 +323,7 @@ int main() {
 					break;
 				}
 
-				case 5 : {
+				case 6 : {
 					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/local.txt");
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
@@ -305,7 +332,7 @@ int main() {
 					break;
 				}
 
-				case 6 : {
+				case 7 : {
 					catchrate(topScreen, bottomScreen);
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
@@ -314,7 +341,7 @@ int main() {
 					break;
 				}
 
-				case 7 : {
+				case 8 : {
 					psDates(topScreen, bottomScreen);
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
@@ -323,7 +350,7 @@ int main() {
 					break;
 				}
 
-				case 8 : {
+				case 9 : {
 					credits(topScreen, bottomScreen);
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
@@ -332,7 +359,7 @@ int main() {
 					break;
 				}
 
-				case 9 : {
+				case 10 : {
 					update(topScreen, bottomScreen);
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
