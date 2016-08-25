@@ -14,7 +14,8 @@ This application allows you to make some cool things, like:
 
 * Check **Gen VI's Event Database**;
 * **Download and inject WC6s** into a XY or ORAS save file. Multiple injection is allowed;
-* **Edit Pokémon stats**, like friendship, IVs, EVs, Hidden Power, shinyness, and **clone** easily single pokémons or entire boxes;
+* **Mass inject** old gen event distributions or collections!
+* **Edit Pokémon stats**, like friendship, IVs, EVs, hidden Power, shinyness, nickname, pokerus and **clone** easily single pokémons or entire boxes;
 * **Edit you save** like Powersaves does, directly from your 3DS. You can edit *money*, *Battle Points*, *items* and much more;
 * Seeing **current event distributions** directly from your 3DS. It provides infos about start and end dates of local and wifi distributions, with related codes if there is a general code for the distribution;
 * **Capture probability calculation**: you can now calculate it directly on your 3DS, for every generation starting by the third. You can also calculate how much tries are needed to reach a certain probability of success;
