@@ -6,7 +6,7 @@
 
 void errDisp(PrintConsole screen, int i) {
 	char *errors[] = {"Error!", "Game not found", "OpenContext failed", "AddRequestHeaderField failed", "SSLOpt failed", "BeginRequest failed", "Response code failed", "New header failed", "Redirection failed", "Download size error", "Buffer alloc error", "DownloadData failed", "Eon Ticket N/A in XY", "Switch game also in the app", "Maximum item reached", "File not available", "Selected slot is empty"};
-	int top = 12; // (29 - 5) / 12
+	int top = 12;
 	u16 length = strlen(errors[i]);
 	u16 left = (40 - length - 2) / 2;
 	u16 extra = (length - 4) / 2;
@@ -180,7 +180,7 @@ void rewriteCHK(u8 *mainbuf, int game) {
 		csoff = 0x6A81A - 0x5400;
 	}
 
-	u8* tmp = (u8*)malloc(0x35000*sizeof(u8));
+	u8* tmp = (u8*)malloc(0x35000 * sizeof(u8));
 	u16 cs;
 
 	for (u32 i = 0; i < blockCount; i++) {

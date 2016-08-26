@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <3ds.h>
 
+#define WC6LENGTH 264
+
 void injectWC6(u8* mainbuf, u8* wc6buf, int game, int i, int nInjected[]);
 void injectLanguage(u8* mainbuf, int i);
 void injectMoney(u8* mainbuf, u64 i);

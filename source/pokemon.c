@@ -14,6 +14,7 @@ const int SOTIDPOS = 0x0E;
 const int NICKNAMEPOS = 0x40;
 const int POKEDEXNUMBERPOS = 0x08;
 const int NATUREPOS = 0x1C;
+const int FRIENDSHIPPOS = 0xA2;
 
 const int friendship[4] = {0, 70, 75, 255};
 
@@ -25,8 +26,7 @@ int getPkmnAddress(const int boxnumber, const int indexnumber, int game) {
     int boxpos = 0;
     if (game == 0 || game == 1) 
 		boxpos = 0x27A00 - OFFSET;
-    
-    
+   
     if (game == 2 || game == 3) 
 		boxpos = 0x38400 - OFFSET;
 
@@ -69,7 +69,7 @@ u16 getPokedexNumber(u8* pkmn) {
 
 u8 getFriendship(u8* pkmn) {
     u8 friendship;
-    memcpy(&friendship, &pkmn[0xA2], 1);
+    memcpy(&friendship, &pkmn[FRIENDSHIPPOS], 1);
     return friendship;
 }
 
@@ -80,8 +80,7 @@ u8 getNature(u8* pkmn) {
 }
 
 u8 getEV(u8* pkmn, const int stat) {
-    u8 evbuffer[6];
-    
+    u8 evbuffer[6]; 
     memcpy(evbuffer, &pkmn[EVPOS], EVLENGTH * 6);
     
     return evbuffer[stat];
@@ -122,7 +121,7 @@ void setNature(u8* pkmn, const u8 nature) {
 }
 
 void setFriendship(u8* pkmn, const int val) {
-	memcpy(&pkmn[0xA2], &val, 1);
+	memcpy(&pkmn[FRIENDSHIPPOS], &val, 1);
 }
 
 void setEV(u8* pkmn, u8 val, const int stat) {
@@ -194,7 +193,7 @@ void setShiny(u8* pkmn, const bool shiny) {
 }
 
 u32 seedStep(const u32 seed) {
-    return (seed*0x41C64E6D + 0x00006073) & 0xFFFFFFFF;
+    return (seed * 0x41C64E6D + 0x00006073) & 0xFFFFFFFF;
 }
 
 void shuffleArray(u8* pkmn, const u32 encryptionkey) {
@@ -269,17 +268,17 @@ void encryptPkmn(u8* pkmn) {
     }
 }
 
-void refreshPokemon(PrintConsole topScreen, u8* mainbuf, int pokemonCont[], int game) {
+void refreshPokemon(PrintConsole topScreen, u8* mainbuf, int cont[], int game) {
 	u8* pkmn = (u8*)malloc(PKMNLENGTH * sizeof(u8));
-	getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+	getPkmn(mainbuf, cont[1], cont[2], pkmn, game);
 	
 	consoleSelect(&topScreen);	
-	printf("\x1b[2;31H\x1b[1;33m%d\x1b[0m ", pokemonCont[1] + 1);
-	printf("\x1b[3;31H\x1b[1;33m%d\x1b[0m ", pokemonCont[2] + 1);
-	printf("\x1b[5;31H\x1b[1;33m%s\x1b[0m   ", natures[pokemonCont[3]]);
-	printf("\x1b[11;31H\x1b[1;33m%s\x1b[0m    ", hpList[pokemonCont[4]]);
-	printf("\x1b[14;31H\x1b[1;33mB%d\x1b[0m ", pokemonCont[5] + 1);
-	printf("\x1b[15;31H\x1b[1;33mB%d/S%d\x1b[0m  ", pokemonCont[5] + 1, pokemonCont[6] + 1);
+	printf("\x1b[2;31H\x1b[1;33m%d\x1b[0m ", cont[1] + 1);
+	printf("\x1b[3;31H\x1b[1;33m%d\x1b[0m ", cont[2] + 1);
+	printf("\x1b[5;31H\x1b[1;33m%s\x1b[0m   ", natures[cont[3]]);
+	printf("\x1b[11;31H\x1b[1;33m%s\x1b[0m    ", hpList[cont[4]]);
+	printf("\x1b[14;31H\x1b[1;33mB%d\x1b[0m ", cont[5] + 1);
+	printf("\x1b[15;31H\x1b[1;33mB%d/S%d\x1b[0m  ", cont[5] + 1, cont[6] + 1);
 	
 	
 	printf("\x1b[25;0HPokemon: \x1b[33m%s\x1b[0m          ", pokemon[getPokedexNumber(pkmn)]);
@@ -294,7 +293,7 @@ void refreshPokemon(PrintConsole topScreen, u8* mainbuf, int pokemonCont[], int 
 			printf("Shiny    ");
 		else printf("Non shiny");
 		printf("\x1b[28;0HTID: %u ", getOTID(pkmn));
-		printf("\x1b[28;23HTID: %u ", getSOTID(pkmn));
+		printf("\x1b[28;23HSID: %u ", getSOTID(pkmn));
 	} else {
 		printf("\x1b[25;23H                           ");
 		printf("\x1b[26;0H                           ");
@@ -308,7 +307,7 @@ void refreshPokemon(PrintConsole topScreen, u8* mainbuf, int pokemonCont[], int 
 	free(pkmn);
 }
 
-int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int game, int pokemonCont[]) {
+int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int game, int cont[]) {
 	char *menuEntries[ENTRIES] = {"Select box (1-31)", "Select index (1-30)", "Set nickname", "Set nature", "Set shiny", "Set non shiny", "Set friendship", "Set IVs", "Set EVs", "Set hidden power", "Set pokerus", "Remove pokerus", "Clone selected box to", "Clone pokemon to"};
 	
 	consoleSelect(&bottomScreen);
@@ -329,8 +328,8 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 	printf("\x1b[2J");
 	printf("\x1b[47;1;34m                  Pokemon Editor                  \x1b[0m\n");
 	
-	refresh(pokemonCont[0], topScreen, menuEntries, ENTRIES);
-	refreshPokemon(topScreen, mainbuf, pokemonCont, game);
+	refresh(cont[0], topScreen, menuEntries, ENTRIES);
+	refreshPokemon(topScreen, mainbuf, cont, game);
 	
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
@@ -340,86 +339,86 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 			break; 
 		
 		if (hidKeysDown() & KEY_DUP) {
-			if (pokemonCont[0] == 0) {
-				pokemonCont[0] = ENTRIES - 1;
-				refresh(pokemonCont[0], topScreen, menuEntries, ENTRIES);
-				refreshPokemon(topScreen, mainbuf, pokemonCont, game);
+			if (cont[0] == 0) {
+				cont[0] = ENTRIES - 1;
+				refresh(cont[0], topScreen, menuEntries, ENTRIES);
+				refreshPokemon(topScreen, mainbuf, cont, game);
 			}
-			else if (pokemonCont[0] > 0) {
-				pokemonCont[0]--;
-				refresh(pokemonCont[0], topScreen, menuEntries, ENTRIES);
-				refreshPokemon(topScreen, mainbuf, pokemonCont, game);
+			else if (cont[0] > 0) {
+				cont[0]--;
+				refresh(cont[0], topScreen, menuEntries, ENTRIES);
+				refreshPokemon(topScreen, mainbuf, cont, game);
 			}
 		}
 		
 		if (hidKeysDown() & KEY_DDOWN) {
-			if (pokemonCont[0] == ENTRIES - 1) {
-				pokemonCont[0] = 0;
-				refresh(pokemonCont[0], topScreen, menuEntries, ENTRIES);
-				refreshPokemon(topScreen, mainbuf, pokemonCont, game);	
+			if (cont[0] == ENTRIES - 1) {
+				cont[0] = 0;
+				refresh(cont[0], topScreen, menuEntries, ENTRIES);
+				refreshPokemon(topScreen, mainbuf, cont, game);	
 			}
-			else if (pokemonCont[0] < ENTRIES - 1) {
-				pokemonCont[0]++;
-				refresh(pokemonCont[0], topScreen, menuEntries, ENTRIES);
-				refreshPokemon(topScreen, mainbuf, pokemonCont, game);
+			else if (cont[0] < ENTRIES - 1) {
+				cont[0]++;
+				refresh(cont[0], topScreen, menuEntries, ENTRIES);
+				refreshPokemon(topScreen, mainbuf, cont, game);
 			}
 		}
 		
 		if (hidKeysDown() & KEY_A) {
-			switch (pokemonCont[0]) {
+			switch (cont[0]) {
 				case 0 : {
-					if (pokemonCont[1] < BOXMAX - 1) 
-						pokemonCont[1] += 1;
-					else if (pokemonCont[1] == BOXMAX - 1) 
-						pokemonCont[1] = 0;
+					if (cont[1] < BOXMAX - 1) 
+						cont[1] += 1;
+					else if (cont[1] == BOXMAX - 1) 
+						cont[1] = 0;
 					break;
 				}
 				case 1 : {
-					if (pokemonCont[2] < 29) 
-						pokemonCont[2] += 1;
-					else if (pokemonCont[2] == 29) 
-						pokemonCont[2] = 0;
+					if (cont[2] < 29) 
+						cont[2] += 1;
+					else if (cont[2] == 29) 
+						cont[2] = 0;
 					break;
 				}
 				case 3 : {
-					if (pokemonCont[3] < 24)
-						pokemonCont[3] += 1;
-					else if (pokemonCont[3] == 24)
-						pokemonCont[3] = 0;
+					if (cont[3] < 24)
+						cont[3] += 1;
+					else if (cont[3] == 24)
+						cont[3] = 0;
 					break;
 				}
 				case 9 : {
-					if (pokemonCont[4] < 15) 
-						pokemonCont[4] += 1;
-					else if (pokemonCont[4] == 15) 
-						pokemonCont[4] = 0;
+					if (cont[4] < 15) 
+						cont[4] += 1;
+					else if (cont[4] == 15) 
+						cont[4] = 0;
 					break;
 				}
 				case 12 : {
-					if (pokemonCont[5] < BOXMAX - 1) 
-						pokemonCont[5] += 1;
-					else if (pokemonCont[5] == BOXMAX - 1) 
-						pokemonCont[5] = 0;
+					if (cont[5] < BOXMAX - 1) 
+						cont[5] += 1;
+					else if (cont[5] == BOXMAX - 1) 
+						cont[5] = 0;
 					break;
 				}
 				case 13 : {
-					if (pokemonCont[6] < 29) 
-						pokemonCont[6] += 1;
-					else if (pokemonCont[6] == 29) 
-						pokemonCont[6] = 0;
+					if (cont[6] < 29) 
+						cont[6] += 1;
+					else if (cont[6] == 29) 
+						cont[6] = 0;
 					break;
 				}
 			}
-			refresh(pokemonCont[0], topScreen, menuEntries, ENTRIES);
-			refreshPokemon(topScreen, mainbuf, pokemonCont, game);
+			refresh(cont[0], topScreen, menuEntries, ENTRIES);
+			refreshPokemon(topScreen, mainbuf, cont, game);
 		}
 		
-		if (hidKeysDown() & KEY_START && pokemonCont[0] != 0 && pokemonCont[0] != 1) {
+		if (hidKeysDown() & KEY_START && cont[0] != 0 && cont[0] != 1) {
 			u8* pkmn = (u8*)malloc(PKMNLENGTH * sizeof(u8));
 			
-			switch (pokemonCont[0]) {
+			switch (cont[0]) {
 				case 2 : {
-					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					getPkmn(mainbuf, cont[1], cont[2], pkmn, game);
 
 					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
 						return 16;
@@ -442,44 +441,44 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 					
 					if (button != SWKBD_BUTTON_NONE) {
 						setNickname(pkmn, nick);
-						setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+						setPkmn(mainbuf, cont[1], cont[2], pkmn, game);
 					} else 
 						return 0;
 					
 					break;
 				}
 				case 3 : {
-					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					getPkmn(mainbuf, cont[1], cont[2], pkmn, game);
 					
 					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
 						return 16;
 					
-					setNature(pkmn, (u8)(pokemonCont[3]));
-					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					setNature(pkmn, (u8)(cont[3]));
+					setPkmn(mainbuf, cont[1], cont[2], pkmn, game);
 					break;
 				}
 				case 4 : {
-					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					getPkmn(mainbuf, cont[1], cont[2], pkmn, game);
 					
 					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
 						return 16;
 					
 					setShiny(pkmn, true);
-					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					setPkmn(mainbuf, cont[1], cont[2], pkmn, game);
 					break;
 				}
 				case 5 : {
-					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					getPkmn(mainbuf, cont[1], cont[2], pkmn, game);
 
 					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
 						return 16;
 					
 					setShiny(pkmn, false);
-					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					setPkmn(mainbuf, cont[1], cont[2], pkmn, game);
 					break;
 				}
 				case 6 : {
-					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					getPkmn(mainbuf, cont[1], cont[2], pkmn, game);
 					
 					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
 						return 16;
@@ -505,11 +504,11 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 					if (button != SWKBD_BUTTON_NONE)
 						setFriendship(pkmn, friendship);
 					
-					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					setPkmn(mainbuf, cont[1], cont[2], pkmn, game);
 					break;
 				}
 				case 7 : {
-					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					getPkmn(mainbuf, cont[1], cont[2], pkmn, game);
 
 					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
 						return 16;
@@ -558,19 +557,19 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 							setIV(pkmn, iv, i);
 					}					
 
-					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					setPkmn(mainbuf, cont[1], cont[2], pkmn, game);
 
 					consoleSelect(&bottomScreen);
 					printf("\x1b[29;12HPress B to exit.");
 					consoleSelect(&topScreen);
 					printf("\x1b[2J");
 					printf("\x1b[47;1;34m                  Pokemon Editor                  \x1b[0m\n");					
-					refresh(pokemonCont[0], topScreen, menuEntries, ENTRIES);
-					refreshPokemon(topScreen, mainbuf, pokemonCont, game);
+					refresh(cont[0], topScreen, menuEntries, ENTRIES);
+					refreshPokemon(topScreen, mainbuf, cont, game);
 					break;
 				}
 				case 8 : {
-					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					getPkmn(mainbuf, cont[1], cont[2], pkmn, game);
 
 					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
 						return 16;
@@ -621,19 +620,19 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 							setEV(pkmn, ev, i);
 					}					
 
-					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					setPkmn(mainbuf, cont[1], cont[2], pkmn, game);
 
 					consoleSelect(&bottomScreen);
 					printf("\x1b[29;12HPress B to exit.");
 					consoleSelect(&topScreen);
 					printf("\x1b[2J");
 					printf("\x1b[47;1;34m                  Pokemon Editor                  \x1b[0m\n");					
-					refresh(pokemonCont[0], topScreen, menuEntries, ENTRIES);
-					refreshPokemon(topScreen, mainbuf, pokemonCont, game);
+					refresh(cont[0], topScreen, menuEntries, ENTRIES);
+					refreshPokemon(topScreen, mainbuf, cont, game);
 					break;
 				}
 				case 9 : {
-					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					getPkmn(mainbuf, cont[1], cont[2], pkmn, game);
 
 					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
 						return 16;
@@ -641,44 +640,44 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 					for (int i = 0; i < 6; i++) 
 						setIV(pkmn, 31, i);
 					
-					setHPType(pkmn, pokemonCont[4]);
-					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					setHPType(pkmn, cont[4]);
+					setPkmn(mainbuf, cont[1], cont[2], pkmn, game);
 					break;
 				}
 				case 10 : {
-					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					getPkmn(mainbuf, cont[1], cont[2], pkmn, game);
 
 					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
 						return 16;
 					
 					*(pkmn + 0x2B) = 0x11;
-					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					setPkmn(mainbuf, cont[1], cont[2], pkmn, game);
 					break;
 				}
 				case 11 : {
-					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					getPkmn(mainbuf, cont[1], cont[2], pkmn, game);
 
 					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
 						return 16;
 					
 					*(pkmn + 0x2B) = 0x00;
-					setPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					setPkmn(mainbuf, cont[1], cont[2], pkmn, game);
 					break;
 				}
 				case 12 : {
 					char pkmncpy[PKMNLENGTH];
 					for (int i = 0; i < 30; i++) {
-						getPkmn(mainbuf, pokemonCont[1], i, pkmn, game);
+						getPkmn(mainbuf, cont[1], i, pkmn, game);
 						memcpy(&pkmncpy, pkmn, PKMNLENGTH);
-						setPkmn(mainbuf, pokemonCont[5], i, pkmn, game);
+						setPkmn(mainbuf, cont[5], i, pkmn, game);
 					}
 					break;
 				}
 				case 13 : {
-					getPkmn(mainbuf, pokemonCont[1], pokemonCont[2], pkmn, game);
+					getPkmn(mainbuf, cont[1], cont[2], pkmn, game);
 					char pkmncpy[PKMNLENGTH];
 					memcpy(&pkmncpy, pkmn, PKMNLENGTH);
-					setPkmn(mainbuf, pokemonCont[5], pokemonCont[6], pkmn, game);
+					setPkmn(mainbuf, cont[5], cont[6], pkmn, game);
 					break;
 				}
 			}
