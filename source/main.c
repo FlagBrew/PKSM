@@ -253,17 +253,8 @@ int main() {
 					else if (ret != -1 && ret != 1) 
 						errDisp(bottomScreen, ret);
 
-					if (ret != -1) {
-						while (aptMainLoop()) {
-							gspWaitForVBlank();
-							hidScanInput();
-
-							if (hidKeysDown() & KEY_B) break;
-
-							gfxFlushBuffers();
-							gfxSwapBuffers();
-						}
-					}
+					if (ret != -1)
+						waitKey(KEY_B);
 
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
@@ -281,17 +272,8 @@ int main() {
 					else if (ret != 1 && ret != 0) 
 						errDisp(bottomScreen, ret);
 
-					if (ret != 0) {
-						while (aptMainLoop()) {
-							gspWaitForVBlank();
-							hidScanInput();
-
-							if (hidKeysDown() & KEY_B) break;
-
-							gfxFlushBuffers();
-							gfxSwapBuffers();
-						}
-					}
+					if (ret != 0)
+						waitKey(KEY_B);
 
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
@@ -308,17 +290,8 @@ int main() {
 					else if (ret != 1 && ret != 0) 
 						errDisp(bottomScreen, ret);
 
-					if (ret != 0) {
-						while (aptMainLoop()) {
-							gspWaitForVBlank();
-							hidScanInput();
-
-							if (hidKeysDown() & KEY_B) break;
-
-							gfxFlushBuffers();
-							gfxSwapBuffers();
-						}
-					}
+					if (ret != 0)
+						waitKey(KEY_B);
 
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");

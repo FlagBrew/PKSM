@@ -151,13 +151,7 @@ void printDistro(PrintConsole topScreen, PrintConsole bottomScreen, char *url) {
     printf("\x1b[2J");
     getText(topScreen, bottomScreen, url);
 
-    while (aptMainLoop()) {
-        gspWaitForVBlank();
-        hidScanInput();
-
-        if (hidKeysDown() & KEY_B)
-            break;
-    }
+	waitKey(KEY_B);
 }
 
 void printPSdates(PrintConsole topScreen, PrintConsole bottomScreen, char *url, int page) {

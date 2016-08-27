@@ -24,6 +24,19 @@
 #include <string.h>
 #include "http.h"
 
+void waitKey(u32 key) {
+	while (aptMainLoop()) {
+		gspWaitForVBlank();
+		hidScanInput();
+
+		if (hidKeysDown() & key) 
+			break;
+
+		gfxFlushBuffers();
+		gfxSwapBuffers();
+	}
+}
+
 void errDisp(PrintConsole screen, int i) {
 	char *errors[] = {"Error!", "Game not found", "OpenContext failed", "AddRequestHeaderField failed", "SSLOpt failed", "BeginRequest failed", "Response code failed", "New header failed", "Redirection failed", "Download size error", "Buffer alloc error", "DownloadData failed", "Eon Ticket N/A in XY", "Switch game also in the app", "Maximum item reached", "File not available", "Selected slot is empty"};
 	int top = 12;
@@ -130,16 +143,7 @@ void update(PrintConsole topScreen, PrintConsole bottomScreen) {
 	consoleSelect(&topScreen);
 	printf("\x1b[29;15H\x1b[47;34mPress Start to exit.\x1b[0m");
 
-	while (aptMainLoop()) {
-		gspWaitForVBlank();
-		hidScanInput();
-
-		if (hidKeysDown() & KEY_START)
-			break;
-
-		gfxFlushBuffers();
-		gfxSwapBuffers();
-	}
+	waitKey(KEY_START);
 }
 
 
@@ -224,16 +228,7 @@ void credits(PrintConsole topScreen, PrintConsole bottomScreen) {
 
 	printf("\n* smea for ctrulib\n* Kaphotics for PKHeX for wondercard workaround\n* J-D-K for direct save import/export\n* Slashcash for PCHex++ and lots of source code\n* Hamcha for http certs\n* Gocario for algorithms\n* LiquidFenrir for some http structures\n* Nba_Yoh for received flags\n* Simona Mastroianni for database help\n* Federico Leuzzi, YodaDaCoda, SatansRoommate for testing\n* Shai Raba' for the icon\n* all the guys @3dshacks' discord\n\n  Full list available on github repo");
 
-	while (aptMainLoop()) {
-		gspWaitForVBlank();
-		hidScanInput();
-
-		if (hidKeysDown() & KEY_B)
-			break;
-
-		gfxFlushBuffers();
-		gfxSwapBuffers();
-	}
+	waitKey(KEY_B);
 }
 
 bool isHBL() {
