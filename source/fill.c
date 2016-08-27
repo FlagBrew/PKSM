@@ -185,6 +185,7 @@ void filldatabase(char *database[], char *links[]) {
 	database[578] = "0578 - Descartes/XYZ Zygarde";
 	database[580] = "0580 - Screenpeekaz Shiny Machamp";
 	database[586] = "0586 - Play! Mewtwo";
+	database[588] = "0588 - Helen Volcanion";
 	database[812] = "0812 - Christmas Stantler";
 	database[1001] = "1001 - Eevee House Sylveon";
 	database[1004] = "1004 - Olleh TV Charizard X/Y";
