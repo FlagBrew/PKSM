@@ -1,6 +1,6 @@
 # EventAssistant [![Github latest downloads](https://img.shields.io/github/downloads/BernardoGiordano/EventAssistant/latest/total.svg?maxAge=86400)](https://github.com/BernardoGiordano/EventAssistant/releases/latest)
 
-*A general purpose Pokémon save file editor... and more.*
+*A general purpose save file editor for X, Y, Omega Ruby and Alpha Sapphire... and more.*
 
 ---
 
@@ -75,25 +75,21 @@ Use latest [**ctrulib**](https://github.com/smealum/ctrulib) and devKitArm.
 
 # License
 
-* This file is part of EventAssistant
-* Copyright (C) 2016 Bernardo Giordano
+This file is part of EventAssistant
 
+Copyright (C) 2016 Bernardo Giordano
 
-* This software is provided 'as-is', 
-* without any express or implied warranty. 
-* In no event will the authors be held liable for any damages 
-* arising from the use of this software.
+This software is provided 'as-is', without any express or implied warranty.
+ 
+In no event will the authors be held liable for any damages arising from the use of this software.
 
+Permission is granted to anyone to use this software for any purpose, and to alter it and redistribute it freely, subject to the following restrictions:
 
-* Permission is granted to anyone to use this software for any purpose,
-* and to alter it and redistribute it freely, 
-* subject to the following restrictions:
 * 1) The origin of this software must not be misrepresented; 
 * 2) You must not claim that you wrote the original software. 
 
 
-* Altered source versions must be plainly marked as such, 
-* and must not be misrepresented as being the original software.
+Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
 
 ---
 
