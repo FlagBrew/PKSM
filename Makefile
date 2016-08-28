@@ -12,6 +12,7 @@ BUILD		:=	build
 SOURCES		:=	source
 DATA		:=	data
 INCLUDES	:=	include
+#ROMFS       :=  romfs
 
 APP_TITLE 		:= Event Assistant
 APP_DESCRIPTION := Pokemon distributions and utilities.
