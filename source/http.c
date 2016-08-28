@@ -48,10 +48,6 @@ Result http_download(PrintConsole topScreen, PrintConsole bottomScreen, httpcCon
     if (ret != 0)
         return ret;
 
-    ret = httpcSetSSLOpt(context, 1 << 9);
-    if (ret != 0)
-        return ret;
-
     httpcAddTrustedRootCA(context, cybertrust_cer, cybertrust_cer_len);
     httpcAddTrustedRootCA(context, digicert_cer, digicert_cer_len);
 
@@ -187,12 +183,6 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
         return ret;
     }
 
-    ret = httpcSetSSLOpt(&context, 1 << 9);
-    if (ret != 0) {
-        errDisp(bottomScreen, 4);
-        return ret;
-    }
-
     httpcAddTrustedRootCA(&context, cybertrust_cer, cybertrust_cer_len);
     httpcAddTrustedRootCA(&context, digicert_cer, digicert_cer_len);
 
@@ -284,10 +274,6 @@ int injectBoxBin(PrintConsole screen, u8* mainbuf, int game, int NBOXES, char* u
 		ret = httpcAddRequestHeaderField(&context, "User-Agent", "EventAssistant");
 		if (ret != 0) 
 			return 3;
-
-		ret = httpcSetSSLOpt(&context, 1 << 9);
-		if (ret != 0) 
-			return 4;
 
 		httpcAddTrustedRootCA(&context, cybertrust_cer, cybertrust_cer_len);
 		httpcAddTrustedRootCA(&context, digicert_cer, digicert_cer_len);
@@ -420,10 +406,6 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, c
         if (ret != 0) 
 			break;
 		
-        ret = httpcSetSSLOpt(&context, 1 << 9);
-        if (ret != 0) 
-			break;
-		
         httpcAddTrustedRootCA(&context, cybertrust_cer, cybertrust_cer_len);
         httpcAddTrustedRootCA(&context, digicert_cer, digicert_cer_len);
 		
@@ -543,10 +525,6 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, c
 			ret = httpcAddRequestHeaderField(&context, "User-Agent", "EventAssistant");
 			if (ret != 0) 
 				return 3;
-
-			ret = httpcSetSSLOpt(&context, 1 << 9);
-			if (ret != 0) 
-				return 4;
 
 			httpcAddTrustedRootCA(&context, cybertrust_cer, cybertrust_cer_len);
 			httpcAddTrustedRootCA(&context, digicert_cer, digicert_cer_len);
