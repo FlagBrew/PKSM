@@ -333,6 +333,7 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 	printf("----------------------------------------");
 	printf("\x1b[32m\x19\x18\x1b[0m - Move cursor\n");
 	printf("\x1b[32mA\x1b[0m - Switch setting\n");
+	printf("\x1b[32mSELECT\x1b[0m - Reset menu\n");
 	printf("\x1b[1;31mSTART\x1b[0m - Start selected change\n");
 	printf("----------------------------------------");
 	printf("\nYou need to put the whole number\n(ex: 075) into IVs, EVs and friendship\neditor.");
@@ -380,6 +381,13 @@ int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf
 				refresh(cont[0], topScreen, menuEntries, ENTRIES);
 				refreshPokemon(topScreen, mainbuf, cont, game);
 			}
+		}
+		
+		if (hidKeysDown() & KEY_SELECT) {
+			for (int i = 0; i < 7; i++)
+				cont[i] = 0;
+				refresh(cont[0], topScreen, menuEntries, ENTRIES);
+				refreshPokemon(topScreen, mainbuf, cont, game);
 		}
 		
 		if (hidKeysDown() & KEY_A) {
