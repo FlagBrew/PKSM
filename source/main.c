@@ -26,6 +26,9 @@
 
 #define ENTRIES 11
 
+#define citra 1 // 0: citra debug enabled
+				// 1: citra debug disabled: application meant to run correctly on the console
+
 #define V1 2
 #define V2 1
 #define V3 0
@@ -107,6 +110,7 @@ int main() {
 	}
 	
 	fsStart();
+	#if citra
 	FS_Archive saveArch;	
 	
 	if (!(openSaveArch(&saveArch, ids[game]))) {
@@ -119,9 +123,12 @@ int main() {
 	//Open main
 	Handle mainHandle;
 	FSUSER_OpenFile(&mainHandle, saveArch, fsMakePath(PATH_ASCII, "/main"), FS_OPEN_READ | FS_OPEN_WRITE, 0);
-
+	#endif
+	
 	//Get size 
-	u64 mainSize;
+	u64 mainSize = 0;
+	
+	#if citra
 	FSFILE_GetSize(mainHandle, &mainSize);
 	
 	switch(game) {
@@ -162,12 +169,15 @@ int main() {
 			break;
 		}
 	}
+	#endif
 	
 	//allocate mainbuf
 	u8* mainbuf = malloc(mainSize);
 	
+	#if citra
 	//Read main 
 	FSFILE_Read(mainHandle, NULL, 0, mainbuf, mainSize);	
+	#endif
 
 	char *menuEntries[ENTRIES] = {"Gen VI's Event Database", "Gen VI's Save file editor", "Gen VI's Pokemon editor", "Mass injecter", "Wi-Fi distributions", "Code distributions", "Local distributions", "Capture probability calculator", "Common PS dates database", "Credits", "Update .cia to latest commit build"};
 	int currentEntry = 0;
@@ -363,6 +373,7 @@ int main() {
 		gfxSwapBuffers();
 	}
 	
+	#if citra
 	if (save) {
 		infoDisp(bottomScreen, 2);
 		gfxFlushBuffers();
@@ -379,6 +390,7 @@ int main() {
 		FSUSER_ControlArchive(saveArch, ARCHIVE_ACTION_COMMIT_SAVE_DATA, NULL, 0, NULL, 0);
 	
 	FSUSER_CloseArchive(saveArch);
+	#endif 
 	
 	free(mainbuf);
 	fsEnd();
