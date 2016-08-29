@@ -19,7 +19,6 @@
 #include <string.h>
 #include <3ds.h>
 #include "util.h"
-#include "inject.h"
 #include "pokemon.h"
 #include "certs/cybertrust.h"
 #include "certs/digicert.h"

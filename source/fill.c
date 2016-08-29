@@ -18,7 +18,6 @@
 #include <stdio.h>
 #include <3ds.h>
 #include <string.h>
-#include "http.h"
 
 void filldatabase(char *database[], char *links[]) {
 	

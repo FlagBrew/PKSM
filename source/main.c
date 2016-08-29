@@ -21,12 +21,11 @@
 #include "catch.h"
 #include "util.h"
 #include "database.h"
-#include "inject.h"
 #include "pokemon.h"
 
 #define ENTRIES 11
 
-#define citra 1 // 0: citra debug enabled
+#define citra 0 // 0: citra debug enabled
 				// 1: citra debug disabled: application meant to run correctly on the console
 
 #define V1 2
@@ -81,25 +80,21 @@ int main() {
 		}
 		
 		if (hidKeysDown() & KEY_DUP) {
-			if (game == 0) {
+			if (game == 0)
 				game = 3;
-				refresh(game, topScreen, gamesList, 4);
-			}
-			else if (game > 0) {
-				game--;
-				refresh(game, topScreen, gamesList, 4);	
-			}
+			else if (game > 0)
+				game--;	
+			
+			refresh(game, topScreen, gamesList, 4);
 		}
 		
 		if (hidKeysDown() & KEY_DDOWN) {
-			if (game == 3) {
+			if (game == 3)
 				game = 0;
-				refresh(game, topScreen, gamesList, 4);	
-			}
-			else if (game < 3) {
+			else if (game < 3)
 				game++;
-				refresh(game, topScreen, gamesList, 4);
-			}
+			
+			refresh(game, topScreen, gamesList, 4);
 		}
 		
 		if (hidKeysDown() & KEY_A)
@@ -133,41 +128,28 @@ int main() {
 	
 	switch(game) {
 		case 0 : {
-			if (mainSize != 415232) {
+			if (mainSize != 415232)
 				errDisp(bottomScreen, 13);
-				aptExit();
-				gfxExit();
-				return -1;
-			}
 			break;
 		}
 		case 1 : {
-			if (mainSize != 415232) {
+			if (mainSize != 415232)
 				errDisp(bottomScreen, 13);
-				aptExit();
-				gfxExit();
-				return -1;
-			}
 			break;
 		}
 		case 2 : {
-			if (mainSize != 483328) {
+			if (mainSize != 483328)
 				errDisp(bottomScreen, 13);
-				aptExit();
-				gfxExit();
-				return -1;
-			}
 			break;
 		}
 		case 3 : {
-			if (mainSize != 483328) {
+			if (mainSize != 483328)
 				errDisp(bottomScreen, 13);
-				aptExit();
-				gfxExit();
-				return -1;
-			}
 			break;
 		}
+		aptExit();
+		gfxExit();
+		return -1;
 	}
 	#endif
 	
@@ -215,36 +197,27 @@ int main() {
 		}
 
 		if (hidKeysDown() & KEY_DUP) {
-			if (currentEntry == 0) {
+			if (currentEntry == 0)
 				currentEntry = ENTRIES - 1;
-				refresh(currentEntry, topScreen, menuEntries, ENTRIES);
-			}
-			else if (currentEntry > 0) {
+			else if (currentEntry > 0)
 				currentEntry--;
-				refresh(currentEntry, topScreen, menuEntries, ENTRIES);
-			}
+			
+			refresh(currentEntry, topScreen, menuEntries, ENTRIES);
 		}
 
 		if (hidKeysDown() & KEY_DDOWN) {
-			if (currentEntry == ENTRIES - 1) {
+			if (currentEntry == ENTRIES - 1)
 				currentEntry = 0;
-				refresh(currentEntry, topScreen, menuEntries, ENTRIES);
-			}
-			else if (currentEntry < ENTRIES - 1) {
+			else if (currentEntry < ENTRIES - 1)
 				currentEntry++;
-				refresh(currentEntry, topScreen, menuEntries, ENTRIES);
-			}
+
+			refresh(currentEntry, topScreen, menuEntries, ENTRIES);
 		}
 
 		if (hidKeysDown() & KEY_A) {
 			switch (currentEntry) {
 				case 0 : {
 					eventDatabase(topScreen, bottomScreen, mainbuf, game);
-					consoleSelect(&bottomScreen);
-					printf("\x1b[2J");
-					consoleSelect(&topScreen);
-					printf("\x1b[2J");
-					intro(topScreen, bottomScreen, currentEntry, menuEntries);
 					break;
 				}
 
@@ -259,12 +232,7 @@ int main() {
 
 					if (ret != -1)
 						waitKey(KEY_B);
-
-					consoleSelect(&bottomScreen);
-					printf("\x1b[2J");
-					consoleSelect(&topScreen);
-					printf("\x1b[2J");
-					intro(topScreen, bottomScreen, currentEntry, menuEntries);
+					
 					break;
 				}
 				
@@ -278,11 +246,7 @@ int main() {
 
 					if (ret != 0)
 						waitKey(KEY_B);
-
-					consoleSelect(&bottomScreen);
-					printf("\x1b[2J");
-					consoleSelect(&topScreen);
-					intro(topScreen, bottomScreen, currentEntry, menuEntries);
+					
 					break;
 				}
 				
@@ -297,76 +261,49 @@ int main() {
 					if (ret != 0)
 						waitKey(KEY_B);
 
-					consoleSelect(&bottomScreen);
-					printf("\x1b[2J");
-					consoleSelect(&topScreen);
-					intro(topScreen, bottomScreen, currentEntry, menuEntries);
 					break;
 				}
 
 				case 4 :  {
 					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/worldwide1.txt");
-					consoleSelect(&bottomScreen);
-					printf("\x1b[2J");
-					consoleSelect(&topScreen);
-					intro(topScreen, bottomScreen, currentEntry, menuEntries);
 					break;
 				}
 
 				case 5 : {
 					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/worldwide2.txt");
-					consoleSelect(&bottomScreen);
-					printf("\x1b[2J");
-					consoleSelect(&topScreen);
-					intro(topScreen, bottomScreen, currentEntry, menuEntries);
 					break;
 				}
 
 				case 6 : {
 					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/local.txt");
-					consoleSelect(&bottomScreen);
-					printf("\x1b[2J");
-					consoleSelect(&topScreen);
-					intro(topScreen, bottomScreen, currentEntry, menuEntries);
 					break;
 				}
 
 				case 7 : {
 					catchrate(topScreen, bottomScreen);
-					consoleSelect(&bottomScreen);
-					printf("\x1b[2J");
-					consoleSelect(&topScreen);
-					intro(topScreen, bottomScreen, currentEntry, menuEntries);
 					break;
 				}
 
 				case 8 : {
 					psDates(topScreen, bottomScreen);
-					consoleSelect(&bottomScreen);
-					printf("\x1b[2J");
-					consoleSelect(&topScreen);
-					intro(topScreen, bottomScreen, currentEntry, menuEntries);
 					break;
 				}
 
 				case 9 : {
 					credits(topScreen, bottomScreen);
-					consoleSelect(&bottomScreen);
-					printf("\x1b[2J");
-					consoleSelect(&topScreen);
-					intro(topScreen, bottomScreen, currentEntry, menuEntries);
 					break;
 				}
 
 				case 10 : {
 					update(topScreen, bottomScreen);
-					consoleSelect(&bottomScreen);
-					printf("\x1b[2J");
-					consoleSelect(&topScreen);
-					intro(topScreen, bottomScreen, currentEntry, menuEntries);
 					break;
 				}
 			}
+			consoleSelect(&bottomScreen);
+			printf("\x1b[2J");
+			consoleSelect(&topScreen);
+			printf("\x1b[2J");
+			intro(topScreen, bottomScreen, currentEntry, menuEntries);
 		}
 
 		gfxFlushBuffers();
