@@ -258,7 +258,7 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
     return 0;
 }
 
-int injectBoxBin(PrintConsole screen, u8* mainbuf, int game, int NBOXES, char* urls[]) {
+int injectBoxBin(PrintConsole screen, u8* mainbuf, int game, int NBOXES, int N, char* urls[]) {
 	for (int i = 0; i < NBOXES; i++) {
 		consoleSelect(&screen);
 		printf("\x1b[%d;0HDownloading box %d", 4 + i, i + 1);
@@ -322,12 +322,11 @@ int injectBoxBin(PrintConsole screen, u8* mainbuf, int game, int NBOXES, char* u
 		int boxpos = 0;
 		if (game == 0 || game == 1) 
 			boxpos = 0x27A00 - 0x5400;
-		
-		
+	
 		if (game == 2 || game == 3) 
 			boxpos = 0x38400 - 0x5400;
 		
-		memcpy((void*)(mainbuf + boxpos + PKMNLENGTH * 30 * i), (const void*)buf, PKMNLENGTH * 30);
+		memcpy((void*)(mainbuf + boxpos + PKMNLENGTH * 30 * i), (const void*)buf, PKMNLENGTH * N);
 		
 		free(buf);
 		httpcCloseContext(&context);
@@ -684,7 +683,7 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 						gfxSwapBuffers();
 					}
 					
-					int res = injectBoxBin (bottomScreen, mainbuf, game, 3, urls);
+					int res = injectBoxBin (bottomScreen, mainbuf, game, 3, 30, urls);
 					if (res != 1) 
 						return res;
 					break;
@@ -708,7 +707,7 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 						gfxSwapBuffers();
 					}					
 					
-					int res = injectBoxBin (bottomScreen, mainbuf, game, 2, urls);
+					int res = injectBoxBin (bottomScreen, mainbuf, game, 2, 30, urls);
 					if (res != 1) 
 						return res;
 					break;
