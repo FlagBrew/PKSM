@@ -25,7 +25,7 @@
 
 #define ENTRIES 11
 
-#define citra 0 // 0: citra debug enabled
+#define citra 1 // 0: citra debug enabled
 				// 1: citra debug disabled: application meant to run correctly on the console
 
 #define V1 2
@@ -237,7 +237,7 @@ int main() {
 				}
 				
 				case 2 : {
-					int ret = pokemonEditor(topScreen, bottomScreen, mainbuf, game, pokemonCont);
+					int ret = PKEditor(topScreen, bottomScreen, mainbuf, game, pokemonCont);
 					consoleSelect(&bottomScreen);
 					if (ret == 1)
 						infoDisp(bottomScreen, 1);

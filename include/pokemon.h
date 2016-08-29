@@ -17,6 +17,7 @@
 #include <3ds.h>
 #include <stdio.h>
 
+#define WC6LENGTH 264
 #define PKMNLENGTH 232
 #define BOXMAX 31
 #define EVLENGTH 1
@@ -28,6 +29,10 @@
 #define POKEDEXNUMBERLENGTH 2
 #define NATURELENGTH 1
 
+u32 CHKOffset(u32 i, int game);
+u32 CHKLength(u32 i, int game);
+u16 ccitt16(u8* data, u32 len);
+void rewriteCHK(u8 *mainbuf, int game);
 u32 seedStep(const u32 seed);
 void shuffleArray(u8* pkmn, const u32 encryptionkey);
 void decryptPkmn(u8* pkmn);
@@ -36,24 +41,34 @@ void calculatePKMNChecksum(u8* data);
 void encryptPkmn(u8* pkmn);
 void getPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game);
 void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game);
-u16 getPokedexNumber(u8* pkmn);
-void setNickname(u8* pkmn, char* nick);
-u8 getNature(u8* pkmn);
-void setNature(u8* pkmn, const u8 nature);
+bool isShiny(u8* pkmn);
+void rerollPID(u8* pkmn);
 
-void refreshPokemon(PrintConsole topScreen, u8* mainbuf, int pokemonCont[], int game);
-u8 getFriendship(u8* pkmn);
-void setFriendship(u8* pkmn, const int value);
-void setEV(u8* pkmn, u8 val, const int stat);
+u16 getPokedexNumber(u8* pkmn);
+u8 getNature(u8* pkmn);
 u8 getEV(u8* pkmn, const int stat);
-void setIV(u8* pkmn, u8 val, const int stat);
+u8 getFriendship(u8* pkmn);
 u8 getIV(u8* pkmn, const int stat);
-void setHPType(u8* pkmn, const int val);
 u16 getOTID(u8* pkmn);
 u16 getSOTID(u8* pkmn);
 u32 getPID(u8* pkmn);
-bool isShiny(u8* pkmn);
-void rerollPID(u8* pkmn);
-void setShiny(u8* pkmn, const bool shiny);
 
-int pokemonEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int game, int pokemonCont[]);
+void setNature(u8* pkmn, const u8 nature);
+void setNickname(u8* pkmn, char* nick);
+void setShiny(u8* pkmn, const bool shiny);
+void setWC(u8* mainbuf, u8* wc6buf, int game, int i, int nInjected[]);
+void setLanguage(u8* mainbuf, int i);
+void setMoney(u8* mainbuf, u64 i);
+void setItem(u8* mainbuf, int i, u32 values[], int type, int nInjected[], int game);
+void setBP(u8* mainbuf, int i, int game);
+void setBadges(u8* mainbuf, int i);
+void setTM(u8* mainbuf, int game);
+void setFriendship(u8* pkmn, const int value);
+void setEV(u8* pkmn, u8 val, const int stat);
+void setHPType(u8* pkmn, const int val);
+void setIV(u8* pkmn, u8 val, const int stat);
+
+void refreshPK(PrintConsole topScreen, u8* mainbuf, int pokemonCont[], int game);
+void refreshItem(PrintConsole topScreen, int injectCont[], int nInjected[]);
+int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8* mainbuf, int game, int nInjected[], int cont[]);
+int PKEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int game, int cont[]);

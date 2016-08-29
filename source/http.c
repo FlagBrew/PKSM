@@ -596,9 +596,9 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, c
 			}
 
 			if (adapt == 1)
-				injectLanguage(mainbuf, langCont);
+				setLanguage(mainbuf, langCont);
 
-			injectWC6(mainbuf, wc6buf, game, i, nInjected);
+			setWC(mainbuf, wc6buf, game, i, nInjected);
 
 			free(wc6url);
 			free(wc6buf);

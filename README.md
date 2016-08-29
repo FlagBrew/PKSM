@@ -56,7 +56,6 @@ Thank you to:
 * Nba_Yoh for the received flag issue
 * Gocario for ccitt CHK algorithms
 * Hamcha for cybertrust.h and digicert.h
-* LiquidFenrir for useful http source code 
 * PPorg for most of wc6s
 * all the guys on the 3dshacks discord
 * Simona Mastroianni for fill.c work
