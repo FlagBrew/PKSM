@@ -18,12 +18,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <3ds.h>
-#include "util.h"
+#include "http.h"
 #include "pokemon.h"
 #include "certs/cybertrust.h"
 #include "certs/digicert.h"
 
-#define ENTRIES 3
+#define ENTRIES 4
 
 char *overwritechar[2] = {"DISABLED", "ENABLED "};
 char *adaptchar[2] = {"NO ", "YES"};
@@ -141,7 +141,7 @@ void printDistro(PrintConsole topScreen, PrintConsole bottomScreen, char *url) {
     printf("\nKOR - South Korea");
     printf("\nALL - All regions available\n");
     printf("----------------------------------------");
-    printf("\x1b[29;12H\x1b[47;34mPress B to exit.\x1b[0m");
+    printf("\x1b[29;12HPress B to exit.");
     consoleSelect(&topScreen);
     printf("\x1b[2J");
     getText(topScreen, bottomScreen, url);
@@ -172,19 +172,19 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
 	consoleSelect(&bottomScreen);
     ret = httpcOpenContext(&context, HTTPC_METHOD_GET, url, 0);
     if (ret != 0) {
-        errDisp(bottomScreen, 2);
+        errDisp(bottomScreen, 2, BOTTOM);
         return ret;
     }
 
     ret = httpcAddRequestHeaderField(&context, "User-Agent", "EventAssistant");
     if (ret != 0) {
-        errDisp(bottomScreen, 3);
+        errDisp(bottomScreen, 3, BOTTOM);
         return ret;
     }
 	
     ret = httpcSetSSLOpt(&context, 1 << 9);
     if (ret != 0) {
-        errDisp(bottomScreen, 4);
+        errDisp(bottomScreen, 4, BOTTOM);
         return ret;
     }
 
@@ -193,13 +193,13 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
 
     ret = httpcBeginRequest(&context);
     if (ret != 0) {
-        errDisp(bottomScreen, 5);
+        errDisp(bottomScreen, 5, BOTTOM);
         return ret;
     }
 
     ret = httpcGetResponseStatusCode(&context, &statuscode);
     if (ret != 0) {
-        errDisp(bottomScreen, 6);
+        errDisp(bottomScreen, 6, BOTTOM);
         httpcCloseContext(&context);
         return ret;
     }
@@ -209,7 +209,7 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
             char newUrl[1024];
             ret = httpcGetResponseHeader(&context, (char*)"Location", newUrl, 1024);
             if (ret != 0) {
-                errDisp(bottomScreen, 7);
+                errDisp(bottomScreen, 7, BOTTOM);
                 return ret;
             }
             httpcCloseContext(&context);
@@ -217,7 +217,7 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
             ret = downloadFile(topScreen, bottomScreen, newUrl, path);
             return ret;
         } else {
-            errDisp(bottomScreen, 8);
+            errDisp(bottomScreen, 8, BOTTOM);
             httpcCloseContext(&context);
             return -1;
         }
@@ -225,14 +225,14 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
 
     ret = httpcGetDownloadSizeState(&context, NULL, &contentsize);
     if (ret != 0) {
-        errDisp(bottomScreen, 9);
+        errDisp(bottomScreen, 9, BOTTOM);
         httpcCloseContext(&context);
         return ret;
     }
 
     buf = (u8*)malloc(contentsize);
     if (buf == NULL) {
-        errDisp(bottomScreen, 10);
+        errDisp(bottomScreen, 10, BOTTOM);
         return -2;
     }
     memset(buf, 0, contentsize);
@@ -240,7 +240,7 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
     ret = httpcDownloadData(&context, buf, contentsize, NULL);
     if (ret != 0) {
         free(buf);
-        errDisp(bottomScreen, 11);
+        errDisp(bottomScreen, 11, BOTTOM);
         httpcCloseContext(&context);
         return ret;
     }
@@ -335,7 +335,7 @@ int injectBoxBin(PrintConsole screen, u8* mainbuf, int game, int NBOXES, int N, 
 	return 1;
 }
 
-Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, char *url, int i, int nInjected[], int game, int overwrite[]) {	
+Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int i, int nInjected[], int game, int overwrite[]) {	
 	char *language[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
 	
     int langCont = 0;
@@ -349,20 +349,20 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, c
 	printf("\n\x1b[32mY\x1b[0m      adapt save to language");
 	printf("\n\x1b[31mSTART\x1b[0m  inject wc6 in slot");
 	
-	printf("\x1b[1;32H\x1b[32m%s\x1b[0m", language[langCont]);
-	printf("\x1b[2;32H\x1b[32m%s\x1b[0m", overwritechar[overwrite[0]]);
-	printf("\x1b[3;32H\x1b[32m%s\x1b[0m", adaptchar[adapt]);
-	printf("\x1b[4;32H\x1b[32m%d \x1b[0m", nInjected[0] + 1);	
+	printf("\x1b[1;32H%s", language[langCont]);
+	printf("\x1b[2;32H%s", overwritechar[overwrite[0]]);
+	printf("\x1b[3;32H%s", adaptchar[adapt]);
+	printf("\x1b[4;32H%d ", nInjected[0] + 1);	
     printf("\x1b[5;0H----------------------------------------");
 
-    printf("\x1b[18;0H----------------------------------------");
-    printf("\x1b[19;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this. This is a new way to inject WC6\nand I need time to perfect it.");
-    printf("\x1b[24;0H----------------------------------------");
-    printf("\x1b[29;11H\x1b[47;34mPress B to return.\x1b[0m");
+    printf("\x1b[21;0H----------------------------------------");
+    printf("\x1b[22;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this. This is a new way to inject WC6\nand I need time to perfect it.");
+    printf("\x1b[27;0H----------------------------------------");
+    printf("\x1b[29;11HPress B to return.");
     consoleSelect(&topScreen);
     printf("\x1b[2J");
     printf("\x1b[0;0HScanning server for available languages...");
-    printf("\x1b[1;0HLanguages available: \x1b[32m");
+    printf("\x1b[2;0HLanguages available: ");
 
     gfxFlushBuffers();
     gfxSwapBuffers();
@@ -441,10 +441,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, c
 	
 	free(testurl);
 
-    printf("\x1b[0m\n\n");
-    getText(topScreen, bottomScreen, url);
-    consoleSelect(&topScreen);
-    printf("\x1b[0;45H\x1b[32mDONE!\x1b[0m");
+    infoDisp(topScreen, 4, TOP);
     consoleSelect(&bottomScreen);
 
     while (aptMainLoop()) {
@@ -460,7 +457,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, c
             else if (adapt == 1) 
 				adapt = 0;
 
-			printf("\x1b[3;32H\x1b[32m%s\x1b[0m", adaptchar[adapt]);
+			printf("\x1b[3;32H%s", adaptchar[adapt]);
         }
 
         if (hidKeysDown() & KEY_X) {
@@ -471,7 +468,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, c
                 nInjected[0] = 0;
             }
 
-			printf("\x1b[2;32H\x1b[32m%s\x1b[0m", overwritechar[overwrite[0]]);
+			printf("\x1b[2;32H%s", overwritechar[overwrite[0]]);
         }
 
         if (hidKeysDown() & KEY_SELECT) {
@@ -480,7 +477,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, c
             else if (langCont == 6) 
 				langCont = 0;
 
-			printf("\x1b[1;32H\x1b[32m%s\x1b[0m", language[langCont]);
+			printf("\x1b[1;32H%s", language[langCont]);
         }
 
         if (hidKeysDown() & KEY_START) {
@@ -615,19 +612,19 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, c
 
 int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int game) {
 	int cont = 0;
-	char *menuEntries[ENTRIES] = {"XD collection", "Colosseum collection", "10ANNIV collection"};
+	char *menuEntries[ENTRIES] = {"XD collection", "Colosseum collection", "10ANNIV collection", "Wolfe Glick Top1 team Worlds2016"};
 	
     consoleSelect(&bottomScreen);
     printf("\x1b[2J");
     printf("----------------------------------------");
-	printf("\x1b[31mSTART\x1b[0m  inject wc6 in slot");	
+	printf("\x1b[31mSTART\x1b[0m  inject selected entry");	
     printf("\x1b[2;0H----------------------------------------");
 
 	printf("\x1b[18;0HThis will \x1b[31mOVERWRITE\x1b[0m the first N boxes ofyour pcdata.");
     printf("\x1b[21;0H----------------------------------------");
     printf("\x1b[22;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this.");
     printf("\x1b[26;0H----------------------------------------");
-    printf("\x1b[29;11H\x1b[47;34mPress B to return.\x1b[0m");
+    printf("\x1b[29;11HPress B to return.");
     consoleSelect(&topScreen);
     printf("\x1b[2J");
 	printf("\x1b[47;1;34m                  Mass Injecter                   \x1b[0m\n");	
@@ -641,25 +638,21 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
             break;
 
 		if (hidKeysDown() & KEY_DUP) {
-			if (cont == 0) {
+			if (cont == 0)
 				cont = ENTRIES - 1;
-				refresh(cont, topScreen, menuEntries, ENTRIES);
-			}
-			else if (cont > 0) {
+			else if (cont > 0) 
 				cont--;
-				refresh(cont, topScreen, menuEntries, ENTRIES);	
-			}
+
+			refresh(cont, topScreen, menuEntries, ENTRIES);
 		}
 		
 		if (hidKeysDown() & KEY_DDOWN) {
-			if (cont == ENTRIES - 1) {
+			if (cont == ENTRIES - 1)
 				cont = 0;
-				refresh(cont, topScreen, menuEntries, ENTRIES);	
-			}
-			else if (cont < ENTRIES - 1) {
+			else if (cont < ENTRIES - 1) 
 				cont++;
-				refresh(cont, topScreen, menuEntries, ENTRIES);
-			}
+
+			refresh(cont, topScreen, menuEntries, ENTRIES);
 		}
 
         if (hidKeysDown() & KEY_START) {

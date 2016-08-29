@@ -594,7 +594,7 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbu
 	printf("\x1b[21;0H----------------------------------------");
 	printf("\x1b[22;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this.");
 	printf("\x1b[26;0H----------------------------------------");
-	printf("\x1b[29;12H\x1b[47;34mPress B to exit.\x1b[0m");
+	printf("\x1b[29;12HPress B to exit.");
 	
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
@@ -777,7 +777,7 @@ int PKEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int
 	printf("\x1b[21;0H----------------------------------------");
 	printf("\x1b[22;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this.");
 	printf("\x1b[26;0H----------------------------------------");
-	printf("\x1b[29;12H\x1b[47;34mPress B to exit.\x1b[0m");
+	printf("\x1b[29;12HPress B to exit.");
 	
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");

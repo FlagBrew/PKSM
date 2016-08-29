@@ -44,7 +44,7 @@ void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, 
 	refresh(currentEntry, topScreen, menuEntries, ENTRIES);
 
 	consoleSelect(&topScreen);
-	printf("\x1b[29;10H\x1b[47;34mPress Start to save, B to exit\x1b[0m");
+	printf("\x1b[29;10HPress Start to save, B to exit");
 }
 
 int main() {
@@ -109,7 +109,7 @@ int main() {
 	FS_Archive saveArch;	
 	
 	if (!(openSaveArch(&saveArch, ids[game]))) {
-		errDisp(bottomScreen, 1);
+		errDisp(bottomScreen, 1, BOTTOM);
 		aptExit();
 		gfxExit();
 		return -1;
@@ -129,22 +129,22 @@ int main() {
 	switch(game) {
 		case 0 : {
 			if (mainSize != 415232)
-				errDisp(bottomScreen, 13);
+				errDisp(bottomScreen, 13, BOTTOM);
 			break;
 		}
 		case 1 : {
 			if (mainSize != 415232)
-				errDisp(bottomScreen, 13);
+				errDisp(bottomScreen, 13, BOTTOM);
 			break;
 		}
 		case 2 : {
 			if (mainSize != 483328)
-				errDisp(bottomScreen, 13);
+				errDisp(bottomScreen, 13, BOTTOM);
 			break;
 		}
 		case 3 : {
 			if (mainSize != 483328)
-				errDisp(bottomScreen, 13);
+				errDisp(bottomScreen, 13, BOTTOM);
 			break;
 		}
 		aptExit();
@@ -226,9 +226,9 @@ int main() {
 					consoleSelect(&bottomScreen);
 					
 					if (ret == 1) 
-						infoDisp(bottomScreen, 1);
+						infoDisp(bottomScreen, 1, BOTTOM);
 					else if (ret != -1 && ret != 1) 
-						errDisp(bottomScreen, ret);
+						errDisp(bottomScreen, ret, BOTTOM);
 
 					if (ret != -1)
 						waitKey(KEY_B);
@@ -240,9 +240,9 @@ int main() {
 					int ret = PKEditor(topScreen, bottomScreen, mainbuf, game, pokemonCont);
 					consoleSelect(&bottomScreen);
 					if (ret == 1)
-						infoDisp(bottomScreen, 1);
+						infoDisp(bottomScreen, 1, BOTTOM);
 					else if (ret != 1 && ret != 0) 
-						errDisp(bottomScreen, ret);
+						errDisp(bottomScreen, ret, BOTTOM);
 
 					if (ret != 0)
 						waitKey(KEY_B);
@@ -254,9 +254,9 @@ int main() {
 					int ret = massInjecter(topScreen, bottomScreen, mainbuf, game);
 					consoleSelect(&bottomScreen);
 					if (ret == 1)
-						infoDisp(bottomScreen, 1);
+						infoDisp(bottomScreen, 1, BOTTOM);
 					else if (ret != 1 && ret != 0) 
-						errDisp(bottomScreen, ret);
+						errDisp(bottomScreen, ret, BOTTOM);
 
 					if (ret != 0)
 						waitKey(KEY_B);
@@ -312,7 +312,7 @@ int main() {
 	
 	#if citra
 	if (save) {
-		infoDisp(bottomScreen, 2);
+		infoDisp(bottomScreen, 2, BOTTOM);
 		gfxFlushBuffers();
 		gfxSwapBuffers();
 		

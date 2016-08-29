@@ -17,6 +17,9 @@
 #include <stdlib.h>
 #include <3ds.h>
 
+#define TOP 50
+#define BOTTOM 40
+
 void waitKey(u32 key);
 void refresh(int currentEntry, PrintConsole topScreen, char *lista[], int N);
 void refreshDB(int currentEntry, PrintConsole topScreen, char *lista[], int N, int page);
@@ -26,5 +29,5 @@ bool isHBL();
 void fsStart();
 void fsEnd();
 bool openSaveArch(FS_Archive *out, u64 id);
-void errDisp(PrintConsole topScreen, int i);
-void infoDisp(PrintConsole screen, int i);
+void errDisp(PrintConsole screen, int i, u16 columns);
+void infoDisp(PrintConsole screen, int i, u16 columns);

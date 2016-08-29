@@ -26,9 +26,8 @@
 
 void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int game) {
 	char *database[RIGHE * (MAXPAGES + 1)];
-	char *links[RIGHE * (MAXPAGES + 1)];
 	
-	filldatabase(database, links);
+	filldatabase(database);
 	
 	int currentEntry = 0;
 	int page = 0;
@@ -42,7 +41,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbu
 	printf("\x1b[32mL/R\x1b[0m Switch page\n");
 	printf("\x1b[32mA\x1b[0m   Open/close entry\n");
 	printf("----------------------------------------");
-	printf("\x1b[29;12H\x1b[47;34mPress B to exit.\x1b[0m");
+	printf("\x1b[29;12HPress B to exit.");
 	
 	consoleSelect(&topScreen);		
 	printf("\x1b[2J");
@@ -92,7 +91,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbu
  		if (hidKeysDown() & KEY_A)  {
 			consoleSelect(&topScreen);
 			printf("\x1b[2J");
-			Result ret = printDB(topScreen, bottomScreen, mainbuf, links[currentEntry + page * RIGHE], (currentEntry + page * RIGHE), nInjected, game, overwrite);
+			Result ret = printDB(topScreen, bottomScreen, mainbuf, (currentEntry + page * RIGHE), nInjected, game, overwrite);
 			consoleSelect(&bottomScreen);
 			printf("\x1b[2J");
 			printf("----------------------------------------");
@@ -101,12 +100,12 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbu
 			printf("\x1b[32mA\x1b[0m - Open/close entry\n");
 			printf("----------------------------------------");
 			
-			if (ret == 0) infoDisp(bottomScreen, (int)ret);
+			if (ret == 0) infoDisp(bottomScreen, (int)ret, BOTTOM);
 			if (ret != -1 && ret != 0)
-				errDisp(bottomScreen, (int)ret);
+				errDisp(bottomScreen, (int)ret, BOTTOM);
 
 			consoleSelect(&bottomScreen);
-			printf("\x1b[29;12H\x1b[47;31mPress B to exit.\x1b[0m");			
+			printf("\x1b[29;12HPress B to exit.");			
 			consoleSelect(&topScreen);
 			printf("\x1b[2J");	
 			printf("\x1b[47;30mPage: \x1b[47;34m%d\x1b[47;30m of \x1b[47;34m%d\x1b[47;30m - from \x1b[47;34m%d\x1b[47;30m to \x1b[47;34m%d\x1b[47;30m                      \x1b[0m\x1b[1;0H      ", page + 1, MAXPAGES + 1, page * 27, (page + 1) * 27 - 1);
@@ -129,7 +128,7 @@ void psDates(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("Source:\n\x1b[32m/r/pokemontrades/wiki/hackedevents\x1b[0m\n");
 	printf("----------------------------------------");
 	printf("\n\x1b[32mL/R\x1b[0m - Switch page");
-	printf("\x1b[29;12H\x1b[47;34mPress B to exit.\x1b[0m");
+	printf("\x1b[29;12HPress B to exit.");
 	
 	printPSdates(topScreen, bottomScreen, tmpUrl, i + 1);
 

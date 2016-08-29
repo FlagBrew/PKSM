@@ -19,6 +19,7 @@
 #include <3ds.h>
 #include <string.h>
 #include "http.h"
+#include "util.h"
 
 void waitKey(u32 key) {
 	while (aptMainLoop()) {
@@ -33,11 +34,11 @@ void waitKey(u32 key) {
 	}
 }
 
-void errDisp(PrintConsole screen, int i) {
+void errDisp(PrintConsole screen, int i, u16 columns) {
 	char *errors[] = {"Error!", "Game not found", "OpenContext failed", "AddRequestHeaderField failed", "SSLOpt failed", "BeginRequest failed", "Response code failed", "New header failed", "Redirection failed", "Download size error", "Buffer alloc error", "DownloadData failed", "Eon Ticket N/A in XY", "Switch game also in the app", "Maximum item reached", "File not available", "Selected slot is empty"};
 	int top = 12;
 	u16 length = strlen(errors[i]);
-	u16 left = (40 - length - 2) / 2;
+	u16 left = (columns - length - 2) / 2;
 	u16 extra = (length - 4) / 2;
 	
 	consoleSelect(&screen);
@@ -70,11 +71,11 @@ void errDisp(PrintConsole screen, int i) {
 	printf("\x1b[0m");
 }
 
-void infoDisp(PrintConsole screen, int i) {
-	char *infos[] = {"Injection succeeded", "Edit succeeded", "Saving game...", "Download succeeded"};
-	int top = 13; // (29 - 3) / 2
+void infoDisp(PrintConsole screen, int i, u16 columns) {
+	char *infos[] = {"Injection succeeded", "Edit succeeded", "Saving game...", "Download succeeded", "Ready"};
+	int top = 13; 
 	u16 length = strlen(infos[i]);
-	u16 left = (40 - length - 2) / 2;
+	u16 left = (columns - length - 2) / 2;
 	
 	consoleSelect(&screen);
 	printf("\x1b[%d;%uH\x1b[47;32m", top, left);
@@ -95,7 +96,7 @@ void refresh(int currentEntry, PrintConsole topScreen, char *lista[], int N) {
 	printf("\x1b[2;0H\x1b[30;0m");
 	for (int i = 0; i < N; i++) {
 		if (i == currentEntry)
-			printf("\x1b[47;1;34m* %s\x1b[0m\n", lista[i]);
+			printf("\x1b[30;32m* %s\x1b[0m\n", lista[i]);
 		else
 			printf("\x1b[0m* %s\n", lista[i]);
 	}
@@ -129,15 +130,15 @@ void update(PrintConsole topScreen, PrintConsole bottomScreen) {
 	consoleSelect(&topScreen);
 	if (ret == 0) {
 		printf("\nDownload of EventAssistant.cia \x1b[32msucceded!\x1b[0m Install  it using a CIA manager.\n\n");
-		infoDisp(bottomScreen, 3);
+		infoDisp(bottomScreen, 3, BOTTOM);
 	}
 	else {
 		printf("\nDownload of EventAssistant.cia \x1b[31mfailed.\x1b[0m\nPlease report the issue to the dev.\n\n");
-		errDisp(bottomScreen, 11);
+		errDisp(bottomScreen, 11, BOTTOM);
 	}
 
 	consoleSelect(&topScreen);
-	printf("\x1b[29;15H\x1b[47;34mPress Start to exit.\x1b[0m");
+	printf("\x1b[29;15HPress Start to exit.");
 
 	waitKey(KEY_START);
 }
@@ -149,7 +150,7 @@ void credits(PrintConsole topScreen, PrintConsole bottomScreen) {
 
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
-	printf("\x1b[29;12H\x1b[47;34mPress B to exit.\x1b[0m");
+	printf("\x1b[29;12HPress B to exit.");
 	consoleSelect(&topScreen);
 
 	printf("\n* smea for ctrulib\n* Kaphotics for PKHeX for wondercard workaround\n* J-D-K for direct save import/export\n* Slashcash for PCHex++ and lots of source code\n* Hamcha for http certs\n* Gocario for algorithms\n* Nba_Yoh for received flags\n* Simona Mastroianni for database help\n* Federico Leuzzi, YodaDaCoda, SatansRoommate for testing\n* Shai Raba' for the icon\n* all the guys @3dshacks' discord\n\n  Full list available on github repo");

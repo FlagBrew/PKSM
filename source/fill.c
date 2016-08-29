@@ -19,13 +19,10 @@
 #include <3ds.h>
 #include <string.h>
 
-void filldatabase(char *database[], char *links[]) {
+void filldatabase(char *database[]) {
 	
-	for (int j = 0; j < 27 * 76; j++) {
+	for (int j = 0; j < 27 * 76; j++)
 		database[j] = ".";
-		links[j] = (char*)malloc(102 * sizeof(char));
-		snprintf(links[j], 102, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/database/%d.txt", j);
-	}
 	
     database[8] = "0008 - Lucky Egg";
 	database[53] = "0053 - Nugget";
