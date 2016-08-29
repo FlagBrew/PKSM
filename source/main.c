@@ -30,7 +30,7 @@
 
 #define V1 2
 #define V2 1
-#define V3 0
+#define V3 1
 
 void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, char* menuEntries[]){
 	consoleSelect(&bottomScreen);

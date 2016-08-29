@@ -23,7 +23,7 @@
 #include "certs/cybertrust.h"
 #include "certs/digicert.h"
 
-#define ENTRIES 2
+#define ENTRIES 3
 
 char *overwritechar[2] = {"DISABLED", "ENABLED "};
 char *adaptchar[2] = {"NO ", "YES"};
@@ -615,7 +615,7 @@ Result printDB(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, c
 
 int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int game) {
 	int cont = 0;
-	char *menuEntries[ENTRIES] = {"XD collection", "Colosseum collection"};
+	char *menuEntries[ENTRIES] = {"XD collection", "Colosseum collection", "10ANNIV collection"};
 	
     consoleSelect(&bottomScreen);
     printf("\x1b[2J");
@@ -708,6 +708,30 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 					}					
 					
 					int res = injectBoxBin (bottomScreen, mainbuf, game, 2, 30, urls);
+					if (res != 1) 
+						return res;
+					break;
+				}
+				case 2 : {
+					char *urls[1] = {"https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/misc/10anni.bin"};
+
+					consoleSelect(&topScreen);
+					printf("\x1b[15;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m box will be replaced", 9, 1);
+					while (aptMainLoop()) {
+						gspWaitForVBlank();
+						hidScanInput();
+						
+						if (hidKeysDown() & KEY_B)
+							return 0;
+
+						if (hidKeysDown() & KEY_START)
+							break;
+
+						gfxFlushBuffers();
+						gfxSwapBuffers();
+					}					
+					
+					int res = injectBoxBin (bottomScreen, mainbuf, game, 1, 30, urls);
 					if (res != 1) 
 						return res;
 					break;
