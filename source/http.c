@@ -135,7 +135,7 @@ void printDistro(PrintConsole topScreen, PrintConsole bottomScreen, char *url) {
     printf("\nKOR - South Korea");
     printf("\nALL - All regions available\n");
     printf("----------------------------------------");
-    printf("\x1b[29;12HPress B to exit.");
+	printf("\x1b[29;8HTouch or press B to exit");
     consoleSelect(&topScreen);
     printf("\x1b[2J");
     getText(topScreen, bottomScreen, url);

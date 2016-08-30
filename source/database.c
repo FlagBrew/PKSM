@@ -24,6 +24,7 @@
 #include "fill.h"
 
 #define ENTRIES 4
+#define DELAY 30
 
 #define MAXPAGES 75
 #define RIGHE 27
@@ -242,6 +243,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbu
 	
 	filldatabase(database);
 	
+	int t_frame = 1;
 	int currentEntry = 0;
 	int page = 0;
 	int nInjected[1] = {0};
@@ -254,7 +256,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbu
 	printf("\x1b[32mL/R\x1b[0m Switch page\n");
 	printf("\x1b[32mA\x1b[0m   Open/close entry\n");
 	printf("----------------------------------------");
-	printf("\x1b[29;12HPress B to exit.");
+	printf("\x1b[29;8HTouch or press B to exit");
 	
 	consoleSelect(&topScreen);		
 	printf("\x1b[2J");
@@ -268,10 +270,10 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbu
 		gspWaitForVBlank();
 		hidScanInput();
 		
-		if (hidKeysDown() & KEY_B)	
+		if (hidKeysDown() & KEY_B || hidKeysDown() & KEY_TOUCH)	
 			break;
 		
-		if (hidKeysDown() & KEY_R) {
+		if ((hidKeysDown() & KEY_R) ^ (hidKeysHeld() & KEY_R && t_frame % DELAY == 1)) {
 			if (page < MAXPAGES) page++;
 			else if (page == MAXPAGES) page = 0;
 			consoleSelect(&topScreen);	
@@ -280,7 +282,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbu
 			refreshDB(currentEntry, topScreen, database, RIGHE, page);
 		}
 		
-		if (hidKeysDown() & KEY_L) {
+		if ((hidKeysDown() & KEY_L) ^ (hidKeysHeld() & KEY_L && t_frame % DELAY == 1)) {
 			if (page > 0) page--;
 			else if (page == 0) page = MAXPAGES;
 			consoleSelect(&topScreen);	
@@ -323,7 +325,11 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbu
 			printf("\x1b[2J");	
 			printf("\x1b[47;30mPage: \x1b[47;34m%d\x1b[47;30m of \x1b[47;34m%d\x1b[47;30m - from \x1b[47;34m%d\x1b[47;30m to \x1b[47;34m%d\x1b[47;30m                      \x1b[0m\x1b[1;0H      ", page + 1, MAXPAGES + 1, page * 27, (page + 1) * 27 - 1);
 			refreshDB(currentEntry, topScreen, database, RIGHE, page);
-		}	 
+		}
+
+		t_frame++;
+		if (t_frame > 5000) 
+			t_frame = 1;		
 		
 		gfxFlushBuffers();
 		gfxSwapBuffers();
@@ -349,7 +355,7 @@ void psDates(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("Source:\n\x1b[32m/r/pokemontrades/wiki/hackedevents\x1b[0m\n");
 	printf("----------------------------------------");
 	printf("\n\x1b[32mL/R\x1b[0m - Switch page");
-	printf("\x1b[29;12HPress B to exit.");
+	printf("\x1b[29;8HTouch or press B to exit");
 	
 	printPSdates(topScreen, bottomScreen, path, i + 1);
 
@@ -357,7 +363,7 @@ void psDates(PrintConsole topScreen, PrintConsole bottomScreen) {
 		gspWaitForVBlank();
 		hidScanInput();
 		
-		if (hidKeysDown() & KEY_B)	
+		if (hidKeysDown() & KEY_B || hidKeysDown() & KEY_TOUCH)	
 			break;	
 		
 		if (hidKeysDown() & KEY_R) {
@@ -395,7 +401,7 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
     printf("\x1b[21;0H----------------------------------------");
     printf("\x1b[22;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this.");
     printf("\x1b[26;0H----------------------------------------");
-    printf("\x1b[29;11HPress B to return.");
+	printf("\x1b[29;8HTouch or press B to exit");
     consoleSelect(&topScreen);
     printf("\x1b[2J");
 	printf("\x1b[47;1;34m                  Mass Injecter                   \x1b[0m\n");	
@@ -405,7 +411,7 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
         gspWaitForVBlank();
         hidScanInput();
 
-        if (hidKeysDown() & KEY_B)
+        if (hidKeysDown() & KEY_B || hidKeysDown() & KEY_TOUCH)
             break;
 
 		if (hidKeysDown() & KEY_DUP) {
@@ -432,7 +438,7 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 					char *path[3] = {"romfs:/misc/xd/1.bin", "romfs:/misc/xd/2.bin", "romfs:/misc/xd/3.bin"};
 					
 					consoleSelect(&topScreen);
-					printf("\x1b[15;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m box will be replaced", 9, 3);
+					printf("\x1b[15;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m boxes will be replaced", 8, 3);
 					while (aptMainLoop()) {
 						gspWaitForVBlank();
 						hidScanInput();
@@ -456,7 +462,7 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 					char *path[2] = {"romfs:/misc/colosseum/1.bin", "romfs:/misc/colosseum/2.bin"};
 
 					consoleSelect(&topScreen);
-					printf("\x1b[15;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m box will be replaced", 9, 2);
+					printf("\x1b[15;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m boxes will be replaced", 8, 2);
 					while (aptMainLoop()) {
 						gspWaitForVBlank();
 						hidScanInput();

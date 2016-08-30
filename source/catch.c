@@ -157,7 +157,7 @@ void catchrate(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("\nFirst turn Quick ball - \x1b[32m5\x1b[0mx");
 	printf("\nLove/Level ball - \x1b[32m8\x1b[0mx (cond. only)");
 	printf("\nMaster ball - \x1b[32m255\x1b[0mx");
-	printf("\x1b[29;12HPress B to exit.");
+	printf("\x1b[29;8HTouch or press B to exit");
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
 	printf("\x1b[47;1;34m          Capture Probability Calculator          \x1b[0m\n");
@@ -171,7 +171,7 @@ void catchrate(PrintConsole topScreen, PrintConsole bottomScreen) {
 		gspWaitForVBlank();
 		hidScanInput();
 		
-		if (hidKeysDown() & KEY_B)
+		if (hidKeysDown() & KEY_B || hidKeysDown() & KEY_TOUCH)
 			break;
 		
 		if (hidKeysDown() & KEY_R) {

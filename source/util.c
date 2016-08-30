@@ -43,7 +43,7 @@ void waitKey(u32 key) {
 		gspWaitForVBlank();
 		hidScanInput();
 
-		if (hidKeysDown() & key) 
+		if (hidKeysDown() & key || hidKeysDown() & KEY_TOUCH) 
 			break;
 
 		gfxFlushBuffers();
@@ -155,7 +155,7 @@ void update(PrintConsole topScreen, PrintConsole bottomScreen) {
 	}
 
 	consoleSelect(&topScreen);
-	printf("\x1b[29;15HPress Start to exit.");
+	printf("\x1b[29;13HTouch or press B to exit");
 
 	waitKey(KEY_START);
 }
@@ -167,7 +167,7 @@ void credits(PrintConsole topScreen, PrintConsole bottomScreen) {
 
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
-	printf("\x1b[29;12HPress B to exit.");
+	printf("\x1b[29;8HTouch or press B to exit");
 	consoleSelect(&topScreen);
 
 	printf("\n* smea for ctrulib\n* Kaphotics for PKHeX for wondercard workaround\n* J-D-K for direct save import/export\n* Slashcash for PCHex++ and lots of source code\n* MarcusD for romfs support\n* Hamcha for http certs\n* Gocario for algorithms\n* Nba_Yoh for received flags\n* Simona Mastroianni for database help\n* Federico Leuzzi, YodaDaCoda, SatansRoommate for   testing\n* Shai Raba' for the icon\n* all the guys @3dshacks' discord\n\n  Full list available on github repo");
