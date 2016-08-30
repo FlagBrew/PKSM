@@ -50,6 +50,7 @@ const int POKEDEXNUMBERPOS = 0x08;
 const int NATUREPOS = 0x1C;
 const int FRIENDSHIPPOS = 0xA2;
 
+char *stats[] = {"All", "Health", "Attack", "Defense", "Speed", "Sp. Attack", "Sp. Defense"};
 char *language[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
 char *ballsList[BALLS] = {"Master Ball", "Ultra Ball", "Great Ball", "Poke Ball", "Safari Ball", "Net Ball", "Dive Ball", "Nest Ball", "Repeat Ball", "Timer Ball", "Luxury Ball", "Premier Ball", "Dusk Ball", "Heal Ball", "Quick Ball", "Cherish Ball", "Fast Ball", "Level Ball", "Lure Ball", "Heavy Ball", "Love Ball", "Friend Ball", "Moon Ball", "Sport Ball", "Park Ball"};
 char *itemList[ITEM] = {"Mental Herb", "Choice Band", "King's Rock", "Amulet Coin", "Leftovers", "Life Orb", "Power Herb", "Toxic Orb", "Flame Orb", "Focus Sash", "Destiny Knot", "Choice Scarf", "Choice Specs", "Eviolite", "Rocky Helmet", "Air Balloon", "Weakness Policy", "Assault Vest"};
@@ -570,6 +571,8 @@ void refreshPK(PrintConsole topScreen, u8* mainbuf, int cont[], int game) {
 	printf("\x1b[2;31H\x1b[1;33m%d\x1b[0m ", cont[1] + 1);
 	printf("\x1b[3;31H\x1b[1;33m%d\x1b[0m ", cont[2] + 1);
 	printf("\x1b[5;31H\x1b[1;33m%s\x1b[0m   ", natures[cont[3]]);
+	printf("\x1b[9;31H\x1b[1;33m%s\x1b[0m        ", stats[cont[7]]);
+	printf("\x1b[10;31H\x1b[1;33m%s\x1b[0m        ", stats[cont[8]]);
 	printf("\x1b[11;31H\x1b[1;33m%s\x1b[0m    ", hpList[cont[4]]);
 	printf("\x1b[14;31H\x1b[1;33mB%d\x1b[0m ", cont[5] + 1);
 	printf("\x1b[15;31H\x1b[1;33mB%d/S%d\x1b[0m  ", cont[5] + 1, cont[6] + 1);
@@ -586,8 +589,8 @@ void refreshPK(PrintConsole topScreen, u8* mainbuf, int cont[], int game) {
 		if (isShiny(pkmn))
 			printf("Shiny    ");
 		else printf("Non shiny");
-		printf("\x1b[28;0HTID: %u ", getOTID(pkmn));
-		printf("\x1b[28;23HSID: %u ", getSOTID(pkmn));
+		printf("\x1b[28;0HTID: %u     ", getOTID(pkmn));
+		printf("\x1b[28;23HSID: %u     ", getSOTID(pkmn));
 	} else {
 		printf("\x1b[25;23H                           ");
 		printf("\x1b[26;0H                           ");
@@ -618,11 +621,11 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbu
 	printf("\x1b[32mA\x1b[0m     Switch setting\n");
 	printf("\x1b[1;31mSTART\x1b[0m Apply selected change\n");
 	printf("----------------------------------------");
-	printf("\x1b[14;0HYou need to have the latest updates for the selected game installed.\n\nYou can perform one edit, then you need to reopen this function to make another one.");
+	printf("\x1b[6;0HYou need to have the latest updates for the selected game installed.\n\nYou can perform one edit, then you need to reopen this function to make another one.");
 	printf("\x1b[21;0H----------------------------------------");
 	printf("\x1b[22;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this.");
 	printf("\x1b[26;0H----------------------------------------");
-	printf("\x1b[29;12HPress B to exit.");
+	printf("\x1b[29;8HTouch or press B to exit");
 	
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
@@ -635,7 +638,7 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbu
 		gspWaitForVBlank();
 		hidScanInput();
 		
-		if (hidKeysDown() & KEY_B) 
+		if (hidKeysDown() & KEY_B || hidKeysDown() & KEY_TOUCH) 
 			break; 
 		
 		if (hidKeysDown() & KEY_DUP) {
@@ -805,7 +808,7 @@ int PKEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int
 	printf("\x1b[21;0H----------------------------------------");
 	printf("\x1b[22;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this.");
 	printf("\x1b[26;0H----------------------------------------");
-	printf("\x1b[29;12HPress B to exit.");
+	printf("\x1b[29;8HTouch or press B to exit");
 	
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
@@ -818,7 +821,7 @@ int PKEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int
 		gspWaitForVBlank();
 		hidScanInput();
 		
-		if (hidKeysDown() & KEY_B) 
+		if (hidKeysDown() & KEY_B || hidKeysDown() & KEY_TOUCH) 
 			break; 
 		
 		if (hidKeysDown() & KEY_DUP) {
@@ -869,6 +872,20 @@ int PKEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int
 						cont[3] += 1;
 					else if (cont[3] == 24)
 						cont[3] = 0;
+					break;
+				}
+				case 7 : {
+					if (cont[7] < 6)
+						cont[7] += 1;
+					else if (cont[7] == 6)
+						cont[7] = 0;					
+					break;
+				}
+				case 8 : {
+					if (cont[8] < 6)
+						cont[8] += 1;
+					else if (cont[8] == 6)
+						cont[8] = 0;					
 					break;
 				}
 				case 9 : {
@@ -997,6 +1014,7 @@ int PKEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int
 					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
 						return 16;
 
+					bool other = false;
 					char *statslist[] = {"Health", "Attack", "Defense", "Speed", "Sp. Attack", "Sp. Defense"};
 					static SwkbdState swkbd;
 					static char buf[3] = {'0', '0', '\0'};
@@ -1005,25 +1023,75 @@ int PKEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int
 					
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
-					
-					for (int i = 0; i < 6; i++) {
+					printf("\x1b[14;17HTouch!");
+				
+					switch(cont[7]) {
+						case 0 : {
+							for (int i = 0; i < 6; i++) {
+								buf[0] = '0';
+								buf[1] = '0';
+								
+								consoleSelect(&topScreen);
+								printf("\x1b[2J");
+								printf("\x1b[15;%uH\x1b[33mA\x1b[0m: Set \x1b[32m%s\x1b[0m IVs", (39 - strlen(statslist[i])) / 2, statslist[i]);
+
+								while (aptMainLoop()) {
+									gspWaitForVBlank();
+									hidScanInput();
+
+									if (hidKeysDown() & KEY_A || hidKeysDown() & KEY_TOUCH)
+										break;
+
+									gfxFlushBuffers();
+									gfxSwapBuffers();
+								}
+								
+								swkbdInit(&swkbd, SWKBD_TYPE_NUMPAD, 1, 2);
+								swkbdSetValidation(&swkbd, SWKBD_FIXEDLEN, 0, 0);
+								swkbdSetFeatures(&swkbd, SWKBD_FIXED_WIDTH);
+								button = swkbdInputText(&swkbd, buf, sizeof(buf));
+								
+								int dec = (buf[0] - '0');
+								int uni = (buf[1] - '0');
+								int iv = dec * 10 + uni * 1;
+								
+								if (iv > 31)
+									iv = 31;
+								
+								if (button != SWKBD_BUTTON_NONE)
+									setIV(pkmn, iv, i);
+							}
+							break;
+						}
+						case 1 : { 
+							other = true;
+							break;
+						}
+						case 2 : { 
+							other = true;
+							break;
+						}
+						case 3 : { 
+							other = true;
+							break;
+						}
+						case 4 : { 
+							other = true;
+							break;
+						}
+						case 5 : { 
+							other = true;
+							break;
+						}
+						case 6 : { 
+							other = true;
+							break;
+						}
+					}
+
+					if (other) {
 						buf[0] = '0';
 						buf[1] = '0';
-						
-						consoleSelect(&topScreen);
-						printf("\x1b[2J");
-						printf("\x1b[15;%uH\x1b[33mA\x1b[0m: Set \x1b[32m%s\x1b[0m IVs", (39 - strlen(statslist[i])) / 2, statslist[i]);
-
-						while (aptMainLoop()) {
-							gspWaitForVBlank();
-							hidScanInput();
-
-							if (hidKeysDown() & KEY_A)
-								break;
-
-							gfxFlushBuffers();
-							gfxSwapBuffers();
-						}
 						
 						swkbdInit(&swkbd, SWKBD_TYPE_NUMPAD, 1, 2);
 						swkbdSetValidation(&swkbd, SWKBD_FIXEDLEN, 0, 0);
@@ -1038,7 +1106,7 @@ int PKEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int
 							iv = 31;
 						
 						if (button != SWKBD_BUTTON_NONE)
-							setIV(pkmn, iv, i);
+							setIV(pkmn, iv, cont[7] - 1);
 					}					
 
 					setPkmn(mainbuf, cont[1], cont[2], pkmn, game);
@@ -1058,6 +1126,7 @@ int PKEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int
 					if (pkmn[0x08] == 0x00 && pkmn[0x09] == 0x00) 
 						return 16;
 
+					bool other = false;
 					char *statslist[] = {"Health", "Attack", "Defense", "Speed", "Sp. Attack", "Sp. Defense"};
 					static SwkbdState swkbd;
 					static char buf[4] = {'0', '0', '0', '\0'};
@@ -1066,26 +1135,78 @@ int PKEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int
 					
 					consoleSelect(&bottomScreen);
 					printf("\x1b[2J");
-					
-					for (int i = 0; i < 6; i++) {
+					printf("\x1b[14;17HTouch!");
+				
+					switch(cont[8]) {
+						case 0 : {
+							for (int i = 0; i < 6; i++) {
+								buf[0] = '0';
+								buf[1] = '0';
+								buf[2] = '0';
+								
+								consoleSelect(&topScreen);
+								printf("\x1b[2J");
+								printf("\x1b[15;%uH\x1b[33mA\x1b[0m: Set \x1b[32m%s\x1b[0m EVs", (39 - strlen(statslist[i])) / 2, statslist[i]);
+
+								while (aptMainLoop()) {
+									gspWaitForVBlank();
+									hidScanInput();
+
+									if (hidKeysDown() & KEY_A || hidKeysDown() & KEY_TOUCH)
+										break;
+
+									gfxFlushBuffers();
+									gfxSwapBuffers();
+								}
+								
+								swkbdInit(&swkbd, SWKBD_TYPE_NUMPAD, 1, 3);
+								swkbdSetValidation(&swkbd, SWKBD_FIXEDLEN, 0, 0);
+								swkbdSetFeatures(&swkbd, SWKBD_FIXED_WIDTH);
+								button = swkbdInputText(&swkbd, buf, sizeof(buf));
+								
+								int cent = (buf[0] - '0');
+								int dec = (buf[1] - '0');
+								int uni = (buf[2] - '0');
+								int ev = cent * 100 + dec * 10 + uni * 1;
+
+								if (ev > 252)
+									ev = 252;
+								
+								if (button != SWKBD_BUTTON_NONE)
+									setEV(pkmn, ev, i);
+							}
+							break;
+						}
+						case 1 : { 
+							other = true;
+							break;
+						}
+						case 2 : { 
+							other = true;
+							break;
+						}
+						case 3 : { 
+							other = true;
+							break;
+						}
+						case 4 : { 
+							other = true;
+							break;
+						}
+						case 5 : { 
+							other = true;
+							break;
+						}
+						case 6 : { 
+							other = true;
+							break;
+						}
+					}
+
+					if (other) {
 						buf[0] = '0';
 						buf[1] = '0';
 						buf[2] = '0';
-						
-						consoleSelect(&topScreen);
-						printf("\x1b[2J");
-						printf("\x1b[15;%uH\x1b[33mA\x1b[0m: Set \x1b[32m%s\x1b[0m EVs", (39 - strlen(statslist[i])) / 2, statslist[i]);
-
-						while (aptMainLoop()) {
-							gspWaitForVBlank();
-							hidScanInput();
-
-							if (hidKeysDown() & KEY_A)
-								break;
-
-							gfxFlushBuffers();
-							gfxSwapBuffers();
-						}
 						
 						swkbdInit(&swkbd, SWKBD_TYPE_NUMPAD, 1, 3);
 						swkbdSetValidation(&swkbd, SWKBD_FIXEDLEN, 0, 0);
@@ -1101,8 +1222,8 @@ int PKEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int
 							ev = 252;
 						
 						if (button != SWKBD_BUTTON_NONE)
-							setEV(pkmn, ev, i);
-					}					
+							setEV(pkmn, ev, cont[8] - 1);
+					}
 
 					setPkmn(mainbuf, cont[1], cont[2], pkmn, game);
 
