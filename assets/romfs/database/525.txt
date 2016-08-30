@@ -1,0 +1,22 @@
+0525 - NOVEMBRE2014 Diancie
+
+Pokemon:       Diancie
+Level:         50
+Ability:       Clear Body
+Held Item:     Normal Gem
+TID:           11064
+SID:           00525
+OT:            NOVEMBRE14
+Met:           a lovely place
+Nature:        Any nature
+Ribbon:        Wishing
+
+Relearn Moves: Diamond Storm
+               Moonblast
+               Reflect
+               Return
+			   
+Games:         XY
+Method:        Serial Code
+Region:        ITA
+Duration:      October 23, 2014 to February 25, 2015

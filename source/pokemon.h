@@ -67,6 +67,7 @@ void setFriendship(u8* pkmn, const int value);
 void setEV(u8* pkmn, u8 val, const int stat);
 void setHPType(u8* pkmn, const int val);
 void setIV(u8* pkmn, u8 val, const int stat);
+int setBoxBin(PrintConsole topScreen, u8* mainbuf, int game, int NBOXES, int N, char* urls[]);
 
 void refreshPK(PrintConsole topScreen, u8* mainbuf, int pokemonCont[], int game);
 void refreshItem(PrintConsole topScreen, int injectCont[], int nInjected[]);

@@ -1,0 +1,22 @@
+0167 - Hyadain's Landorus
+
+Pokemon:       Landorus
+Level:         50
+Ability:       Sand Force
+Held Item:     Assault Vest
+TID:           14818
+SID:           00167
+OT:            ?????
+Met:           a Pokemon TV program
+Nature:        Adamant
+Ribbon:        Classic
+
+Relearn Moves: Earthquake
+               Knock Off
+               U-Turn
+               Rock Tomb
+			   
+Games:         ORAS
+Method:        serial code
+Region:        JPN
+Duration:      24 May to 30 June 2016

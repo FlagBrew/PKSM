@@ -53,6 +53,7 @@ Thank you to:
 * Kaphotics for PKHeX and useful documentation
 * J-K-D for direct import/export
 * Slashcash for PCHex++ and lots of source code
+* MarcusD for romfs support
 * Nba_Yoh for the received flag issue
 * Gocario for ccitt CHK algorithms
 * Hamcha for cybertrust.h and digicert.h

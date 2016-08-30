@@ -1,0 +1,17 @@
+0002 - CoroCoro Garchomp - X&Y
+
+Pokemon:       Garchomp
+Level:         48
+Ability:       Sand Veil
+Held Item:     Dragon Fang
+TID:           11153
+SID:           00002
+OT:            ????
+Met:           a lovely place (fateful encounter)
+Nature:        Random
+Ribbon:        Classic Ribbon
+Relearn Moves: -
+Games:         XY
+Method:        serial code
+Region:        Japanese
+Duration:      November 15, 2013 to August 29,2014

@@ -1,0 +1,22 @@
+0168 - Chymia's Gardevoir
+
+Pokemon:       Gardevoir
+Level:         50
+Ability:       Synchronize
+Held Item:     Gardevoirite
+TID:           06176
+SID:           00168
+OT:            ???
+Met:           Pokémon Movie 16
+Nature:        Any Nature
+Ribbon:        Wishing Ribbon
+
+Relearn Moves: Dazzling Gleam
+               Moonblast
+               Stored Power
+               Calm Mind
+			   
+Games:         X,Y,OR,AS
+Method:        Serial Code
+Region:        JAP
+Duration:      June 17 to August 31, 2016

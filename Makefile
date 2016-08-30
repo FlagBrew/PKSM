@@ -1,4 +1,6 @@
+#---------------------------------------------------------------------------------
 .SUFFIXES:
+#---------------------------------------------------------------------------------
 
 ifeq ($(strip $(DEVKITARM)),)
 $(error "Please set DEVKITARM in your environment. export DEVKITARM=<path to>devkitARM")
@@ -7,21 +9,49 @@ endif
 TOPDIR ?= $(CURDIR)
 include $(DEVKITARM)/3ds_rules
 
-TARGET		:=	$(notdir $(CURDIR))
-BUILD		:=	build
-SOURCES		:=	source
-DATA		:=	data
-INCLUDES	:=	include
-#ROMFS       :=  romfs
+#---------------------------------------------------------------------------------
+# TARGET is the name of the output
+# BUILD is the directory where object files & intermediate files will be placed
+# SOURCES is a list of directories containing source code
+# DATA is a list of directories containing data files
+# INCLUDES is a list of directories containing header files
+#
+# NO_SMDH: if set to anything, no SMDH file is generated.
+# APP_TITLE is the name of the app stored in the SMDH file (Optional)
+# APP_DESCRIPTION is the description of the app stored in the SMDH file (Optional)
+# APP_AUTHOR is the author of the app stored in the SMDH file (Optional)
+# ICON is the filename of the icon (.png), relative to the project folder.
+#   If not set, it attempts to use one of the following (in this order):
+#     - <Project name>.png
+#     - icon.png
+#     - <libctru folder>/default_icon.png
+#---------------------------------------------------------------------------------
+TARGET		    :=	$(notdir $(CURDIR))
+BUILD		    :=	build
+SOURCES		    :=	source
+DATA		    :=	data
+INCLUDES	    :=	inc
+ROMFS	            :=  assets/romfs
+APP_TITLE       :=  "Event Assistant"
+APP_DESCRIPTION :=  "Event Assistant"
+APP_AUTHOR      :=  "Bernardo Giordano"
+APP_PRODUCT_CODE:=  CTR-HB-EVAS
+APP_UNIQUE_ID   :=  0xEC100
+ICON            :=  assets/icon.png
 
-APP_TITLE 		:= Event Assistant
-APP_DESCRIPTION := Pokemon distributions and utilities.
-APP_AUTHOR 		:= Bernardo Giordano
+APP_TITLE       :=  $(shell echo "$(APP_TITLE)" | cut -c1-128)
+APP_DESCRIPTION :=  $(shell echo "$(APP_DESCRIPTION)" | cut -c1-256)
+APP_AUTHOR      :=  $(shell echo "$(APP_AUTHOR)" | cut -c1-128)
+APP_PRODUCT_CODE:=  $(shell echo $(APP_PRODUCT_CODE) | cut -c1-16)
+APP_UNIQUE_ID   :=  $(shell echo $(APP_UNIQUE_ID) | cut -c1-7)
 
-ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
+#---------------------------------------------------------------------------------
+# options for code generation
+#---------------------------------------------------------------------------------
+ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard
 
 CFLAGS	:=	-g -Wall -O2 -mword-relocations \
-			-fomit-frame-pointer -ffunction-sections \
+			-fomit-frame-pointer -ffast-math \
 			$(ARCH)
 
 CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS
@@ -33,12 +63,21 @@ LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
 LIBS	:= -lctru -lm
 
+#---------------------------------------------------------------------------------
+# list of directories containing libraries, this must be the top level containing
+# include and lib
+#---------------------------------------------------------------------------------
 LIBDIRS	:= $(CTRULIB)
 
-ifneq ($(BUILD),$(notdir $(CURDIR)))
 
-export OUTPUT	:=	$(CURDIR)/EventAssistant/$(TARGET)
-export OUTPUT3DSX	:=	$(CURDIR)/EventAssistant/3ds/EventAssistant/$(TARGET)
+#---------------------------------------------------------------------------------
+# no real need to edit anything past this point unless you need to add additional
+# rules for different file extensions
+#---------------------------------------------------------------------------------
+ifneq ($(BUILD),$(notdir $(CURDIR)))
+#---------------------------------------------------------------------------------
+
+export OUTPUT	:=	$(CURDIR)/$(TARGET)
 export TOPDIR	:=	$(CURDIR)
 
 export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) \
@@ -46,28 +85,35 @@ export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) \
 
 export DEPSDIR	:=	$(CURDIR)/$(BUILD)
 
-CFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
-CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
-SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
-PICAFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.v.pica)))
-SHLISTFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.shlist)))
+CFILES		:=  $(shell find $(SOURCES) -name '*.c' -printf "%P\n")
+CPPFILES	:=  $(shell find $(SOURCES) -name '*.cpp' -printf "%P\n")
+SFILES		:=  $(shell find $(SOURCES) -name '*.s' -printf "%P\n")
 BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
 
+#---------------------------------------------------------------------------------
+# use CXX for linking C++ projects, CC for standard C
+#---------------------------------------------------------------------------------
 ifeq ($(strip $(CPPFILES)),)
+#---------------------------------------------------------------------------------
 	export LD	:=	$(CC)
+#---------------------------------------------------------------------------------
 else
+#---------------------------------------------------------------------------------
 	export LD	:=	$(CXX)
+#---------------------------------------------------------------------------------
 endif
+#---------------------------------------------------------------------------------
 
 export OFILES	:=	$(addsuffix .o,$(BINFILES)) \
-			$(PICAFILES:.v.pica=.shbin.o) $(SHLISTFILES:.shlist=.shbin.o) \
 			$(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)
 
-export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
+export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)/include) \
 			$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
-			-I$(CURDIR)/$(BUILD)
+			-I$(CURDIR)/$(BUILD) \
+			-I-$(CURDIR)/$(SOURCES)
 
-export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
+export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib) \
+			$(foreach dir,$(INCLUDES),-L$(CURDIR)/$(dir)/lib)
 
 ifeq ($(strip $(ICON)),)
 	icons := $(wildcard *.png)
@@ -82,9 +128,7 @@ else
 	export APP_ICON := $(TOPDIR)/$(ICON)
 endif
 
-ifeq ($(strip $(NO_SMDH)),)
-	export _3DSXFLAGS += --smdh=$(OUTPUT3DSX).smdh
-endif
+export _3DSXFLAGS += --smdh=$(OUTPUT).smdh
 
 ifneq ($(ROMFS),)
 	export _3DSXFLAGS += --romfs=$(CURDIR)/$(ROMFS)
@@ -92,60 +136,73 @@ endif
 
 .PHONY: $(BUILD) clean all
 
+#---------------------------------------------------------------------------------
 all: $(BUILD)
 
 $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
-	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
+	@find $(SOURCES) -type d -printf "%P\0" | xargs -0 -I {} mkdir -p $(BUILD)/{}
+	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 
+#---------------------------------------------------------------------------------
 clean:
 	@echo clean ...
-	@rm -fr $(BUILD) $(OUTPUT3DSX).3dsx $(OUTPUT3DSX).smdh $(OUTPUT).elf
+	@rm -rf $(BUILD) $(OUTPUT).3dsx $(OUTPUT).smdh $(OUTPUT).elf $(OUTPUT).cia
 
-$(TARGET)-strip: $(BUILD)
-	@$(STRIP) $(OUTPUT).elf -o $(OUTPUT)-strip.elf
-
-cia: $(TARGET)-strip
-	@makerom -f cia -o $(OUTPUT).cia -elf $(OUTPUT)-strip.elf -rsf ciaRes/EventAssistant.rsf -exefslogo -target t -icon ciaRes/icon.bin -banner ciaRes/banner.bin
-	@echo "Build EventAssistant.cia"
-
+#---------------------------------------------------------------------------------
 else
 
 DEPENDS	:=	$(OFILES:.o=.d)
 
+#---------------------------------------------------------------------------------
+# main targets
+#---------------------------------------------------------------------------------
 ifeq ($(strip $(NO_SMDH)),)
-$(OUTPUT3DSX).3dsx	:	$(OUTPUT).elf $(OUTPUT3DSX).smdh
-else
-$(OUTPUT3DSX).3dsx	:	$(OUTPUT).elf
-endif
+.PHONY: all
+all	:	$(OUTPUT).3dsx $(OUTPUT).smdh $(OUTPUT).cia
+endif 
+
+$(OUTPUT).3dsx	:	$(OUTPUT).elf $(OUTPUT).smdh
 
 $(OUTPUT).elf	:	$(OFILES)
 
+#$(TOPDIR)/assets/banner.bin: $(TOPDIR)/assets/banner.png $(TOPDIR)/assets/banner.wav
+#	@bannertool makebanner -i $(TOPDIR)/assets/banner.png -a $(TOPDIR)/assets/banner.wav -o $(TOPDIR)/assets/banner.bin
+
+$(TOPDIR)/assets/icon.bin: $(TOPDIR)/assets/icon.png
+	@bannertool makesmdh -s "$(APP_TITLE)" -l "$(APP_DESCRIPTION)" -p "$(APP_AUTHOR)" -i $(TOPDIR)/assets/icon.png -o $(TOPDIR)/assets/icon.bin
+
+$(OUTPUT)_stripped.elf: $(OUTPUT).elf
+	@cp $(OUTPUT).elf $(OUTPUT)_stripped.elf
+	@$(PREFIX)strip $(OUTPUT)_stripped.elf
+
+$(OUTPUT).cia: $(OUTPUT)_stripped.elf $(TOPDIR)/assets/banner.bin $(TOPDIR)/assets/icon.bin
+	@makerom -f cia -o $(OUTPUT).cia -rsf $(TOPDIR)/assets/cia.rsf -target t -exefslogo -elf $(OUTPUT)_stripped.elf -icon $(TOPDIR)/assets/icon.bin -banner $(TOPDIR)/assets/banner.bin -DAPP_TITLE="$(APP_TITLE)" -DAPP_PRODUCT_CODE="$(APP_PRODUCT_CODE)" -DAPP_UNIQUE_ID="$(APP_UNIQUE_ID)" -DAPP_ROMFS="$(TOPDIR)/$(ROMFS)"
+	@echo "built ... $(notdir $@)"
+
+#---------------------------------------------------------------------------------
+# you need a rule like this for each extension you use as binary data
+#---------------------------------------------------------------------------------
 %.bin.o	:	%.bin
+#---------------------------------------------------------------------------------
 	@echo $(notdir $<)
 	@$(bin2o)
+	
 
-define shader-as
-	$(eval CURBIN := $(patsubst %.shbin.o,%.shbin,$(notdir $@)))
-	picasso -o $(CURBIN) $1
-	bin2s $(CURBIN) | $(AS) -o $@
-	echo "extern const u8" `(echo $(CURBIN) | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`"_end[];" > `(echo $(CURBIN) | tr . _)`.h
-	echo "extern const u8" `(echo $(CURBIN) | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`"[];" >> `(echo $(CURBIN) | tr . _)`.h
-	echo "extern const u32" `(echo $(CURBIN) | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`_size";" >> `(echo $(CURBIN) | tr . _)`.h
-endef
-
-%.shbin.o : %.v.pica %.g.pica
-	@echo $(notdir $^)
-	@$(call shader-as,$^)
-
-%.shbin.o : %.v.pica
+# WARNING: This is not the right way to do this! TODO: Do it right!
+#---------------------------------------------------------------------------------
+%.vsh.o	:	%.vsh
+#---------------------------------------------------------------------------------
 	@echo $(notdir $<)
-	@$(call shader-as,$<)
-
-%.shbin.o : %.shlist
-	@echo $(notdir $<)
-	@$(call shader-as,$(foreach file,$(shell cat $<),$(dir $<)/$(file)))
+	@python $(AEMSTRO)/aemstro_as.py $< ../$(notdir $<).shbin
+	@bin2s ../$(notdir $<).shbin | $(PREFIX)as -o $@
+	@echo "extern const u8" `(echo $(notdir $<).shbin | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`"_end[];" > `(echo $(notdir $<).shbin | tr . _)`.h
+	@echo "extern const u8" `(echo $(notdir $<).shbin | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`"[];" >> `(echo $(notdir $<).shbin | tr . _)`.h
+	@echo "extern const u32" `(echo $(notdir $<).shbin | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`_size";" >> `(echo $(notdir $<).shbin | tr . _)`.h
+	@rm ../$(notdir $<).shbin
 
 -include $(DEPENDS)
 
+#---------------------------------------------------------------------------------------
 endif
+#---------------------------------------------------------------------------------------

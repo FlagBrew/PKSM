@@ -21,6 +21,23 @@
 #include "http.h"
 #include "util.h"
 
+void printfile(char* path) {
+	FILE* f = fopen(path, "r");
+	if (f) {
+		char mystring[1000];
+		while (fgets(mystring, sizeof(mystring), f)) {
+			int a = strlen(mystring);
+			if (mystring[a-1] == '\n') {
+				mystring[a-1] = 0;
+				if (mystring[a-2] == '\r')
+					mystring[a-2] = 0;
+			}
+			puts(mystring);
+		}
+		fclose(f);
+	}
+}
+
 void waitKey(u32 key) {
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
@@ -153,7 +170,7 @@ void credits(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("\x1b[29;12HPress B to exit.");
 	consoleSelect(&topScreen);
 
-	printf("\n* smea for ctrulib\n* Kaphotics for PKHeX for wondercard workaround\n* J-D-K for direct save import/export\n* Slashcash for PCHex++ and lots of source code\n* Hamcha for http certs\n* Gocario for algorithms\n* Nba_Yoh for received flags\n* Simona Mastroianni for database help\n* Federico Leuzzi, YodaDaCoda, SatansRoommate for testing\n* Shai Raba' for the icon\n* all the guys @3dshacks' discord\n\n  Full list available on github repo");
+	printf("\n* smea for ctrulib\n* Kaphotics for PKHeX for wondercard workaround\n* J-D-K for direct save import/export\n* Slashcash for PCHex++ and lots of source code\n* MarcusD for romfs support\n* Hamcha for http certs\n* Gocario for algorithms\n* Nba_Yoh for received flags\n* Simona Mastroianni for database help\n* Federico Leuzzi, YodaDaCoda, SatansRoommate for   testing\n* Shai Raba' for the icon\n* all the guys @3dshacks' discord\n\n  Full list available on github repo");
 
 	waitKey(KEY_B);
 }

@@ -1,0 +1,17 @@
+0046 - Darkrai Present
+
+Pokemon:       Darkrai
+Level:         50
+Ability:       Bad Dream
+Held Item:     Enigma Berry
+TID:           8074_
+SID:           00046
+OT:            Wonderland
+Met:           Pokémon Movie 14
+Nature:        Random
+Ribbon:        Wishing Ribbon
+Relearn Moves: Phantom Force
+Games:         XY 
+Method:        Serial Code
+Region:        all
+Duration:      August 7,2014 to Septempber 30,2014

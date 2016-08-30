@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <3ds.h>
+#include <unistd.h>
 #include "http.h"
 #include "catch.h"
 #include "util.h"
@@ -29,8 +30,8 @@
 				// 1: citra debug disabled: application meant to run correctly on the console
 
 #define V1 2
-#define V2 1
-#define V3 1
+#define V2 2
+#define V3 0
 
 void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, char* menuEntries[]){
 	consoleSelect(&bottomScreen);
@@ -54,6 +55,10 @@ int main() {
 	PrintConsole topScreen, bottomScreen;
 	consoleInit(GFX_TOP, &topScreen);
 	consoleInit(GFX_BOTTOM, &bottomScreen);
+	
+	Result rc = romfsInit();
+	if (rc)
+		printf("romfsInit error: %08lX\n", rc);
 	
 	int game = 0;
 	bool save = true;
@@ -331,7 +336,8 @@ int main() {
 	
 	free(mainbuf);
 	fsEnd();
-
+	
+	romfsExit();
     aptExit();
 	gfxExit();
 	return 0;

@@ -507,6 +507,34 @@ void setTM(u8* mainbuf, int game) {
 	}
 }
 
+int setBoxBin(PrintConsole screen, u8* mainbuf, int game, int NBOXES, int N, char* path[]) {
+	for (int i = 0; i < NBOXES; i++) {
+		FILE *fptr = fopen(path[i], "rt");
+		if (fptr == NULL) 
+			return 15;
+		fseek(fptr, 0, SEEK_END);
+		u32 contentsize = ftell(fptr);
+		u8 *buf = (u8*)malloc(contentsize);
+		if (buf == NULL) 
+			return 8;
+		rewind(fptr);
+		fread(buf, contentsize, 1, fptr);
+		fclose(fptr);
+
+		int boxpos = 0;
+		if (game == 0 || game == 1) 
+			boxpos = 0x27A00 - 0x5400;
+	
+		if (game == 2 || game == 3) 
+			boxpos = 0x38400 - 0x5400;
+		
+		memcpy((void*)(mainbuf + boxpos + PKMNLENGTH * 30 * i), (const void*)buf, PKMNLENGTH * N);
+		
+		free(buf);
+	}
+	return 1;
+}
+
 /* ************************ graphics ************************ */
 
 void refreshItem(PrintConsole topScreen, int cont[], int nInjected[]) {

@@ -20,6 +20,7 @@
 #define TOP 50
 #define BOTTOM 40
 
+void printfile(char* path);
 void waitKey(u32 key);
 void refresh(int currentEntry, PrintConsole topScreen, char *lista[], int N);
 void refreshDB(int currentEntry, PrintConsole topScreen, char *lista[], int N, int page);
