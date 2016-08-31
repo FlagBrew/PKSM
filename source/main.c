@@ -14,6 +14,18 @@
 *
 */
 
+/* PKCONT 
+	0 : currentEntry
+	1 : boxnumber
+	2 : indexnumber
+	3 : nature counter
+	4 : hidden power counter
+	5 : clone boxnumber
+	6 : clone indexnumber
+	7 : IVs index
+	8 : EVs index
+*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <3ds.h>
@@ -33,9 +45,14 @@
 #define V2 2
 #define V3 0
 
+#define DAY 1
+#define MONTH 9
+#define YEAR 16
+
 void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, char* menuEntries[]){
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
+	printf("\nDatabase definitions updated to %d/%d/%d", DAY, MONTH, YEAR);
 	printf("\x1b[26;0HEvent Assistant v%d.%d.%d", V1, V2, V3);
 	printf("\n\nBernardo Giordano & ctrulib");
 	consoleSelect(&topScreen);
@@ -120,12 +137,10 @@ int main() {
 		return -1;
 	}
 
-	//Open main
 	Handle mainHandle;
 	FSUSER_OpenFile(&mainHandle, saveArch, fsMakePath(PATH_ASCII, "/main"), FS_OPEN_READ | FS_OPEN_WRITE, 0);
 	#endif
 	
-	//Get size 
 	u64 mainSize = 0;
 	
 	#if citra
@@ -158,11 +173,9 @@ int main() {
 	}
 	#endif
 	
-	//allocate mainbuf
 	u8* mainbuf = malloc(mainSize);
 	
 	#if citra
-	//Read main 
 	FSFILE_Read(mainHandle, NULL, 0, mainbuf, mainSize);	
 	#endif
 
@@ -175,17 +188,6 @@ int main() {
 	
 	// initializing pokemon editor variables
 	int pokemonCont[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-	/*
-		0 : currentEntry
-	    1 : boxnumber
-		2 : indexnumber
-		3 : nature counter
-		4 : hidden power counter
-		5 : clone boxnumber
-		6 : clone indexnumber
-		7 : IVs index
-		8 : EVs index
-	*/
 
 	consoleSelect(&topScreen);
 	printf("\x1b[0m");

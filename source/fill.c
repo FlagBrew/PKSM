@@ -187,7 +187,10 @@ void filldatabase(char *database[]) {
 	database[561] = "0561 - GF Manaphy";
 	database[562] = "0562 - GF Shaymin";
 	database[563] = "0563 - GF Arceus";
+	database[564] = "0564 - GF Victini";
+	database[565] = "0565 - GF Keldeo";
 	database[566] = "0566 - GF Genesect";
+	database[567] = "0567 - GF Meloetta";
 	database[569] = "0569 - Aldora Articuno";
 	database[570] = "0570 - Aldora Zapdos";
 	database[571] = "0571 - Aldora Moltres";

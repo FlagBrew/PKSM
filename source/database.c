@@ -58,8 +58,7 @@ int printDB(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int 
     printf("\x1b[29;11HPress B to return.");
     consoleSelect(&topScreen);
     printf("\x1b[2J");
-    printf("\x1b[0;0HScanning server for available languages...");
-    printf("\x1b[1;0HLanguages available: ");
+    printf("\x1b[0;0HLanguages: ");
 
     gfxFlushBuffers();
     gfxSwapBuffers();
@@ -110,7 +109,7 @@ int printDB(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int 
 	char *descpath = (char*)malloc(30 * sizeof(char));
 	snprintf(descpath, 30, "romfs:/database/%d.txt", i);
 	
-	printf("\n\n");
+	printf("\x1b[0;45H\x1b[32mDONE!\x1b[0m\n");
 	printfile(descpath);
 	
 	free(descpath);
@@ -135,14 +134,16 @@ int printDB(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int 
         }
 
         if (hidKeysDown() & KEY_X) {
-            if (overwrite[0] == 0) 
+            if (overwrite[0] == 0) {
 				overwrite[0] = 1;
-            else if (overwrite[0] == 1) {
+				nInjected[0] = 0;
+			} else if (overwrite[0] == 1) {
                 overwrite[0] = 0;
-                nInjected[0] = 0;
+                findFreeLocationWC(mainbuf, game, nInjected);
             }
 
 			printf("\x1b[2;32H%s", overwritechar[overwrite[0]]);
+			printf("\x1b[4;32H%d ", nInjected[0] + 1);
         }
 
         if (hidKeysDown() & KEY_SELECT) {
@@ -206,22 +207,8 @@ int printDB(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int 
 			fread(wc6buf, contentsize, 1, fptr);
 			fclose(fptr);
 
-			//finding first free location
-			if (overwrite[0] == 0) {
-				if (game == 0 || game == 1) {
-					for (int t = 0; t < 23; t++)
-						if (*(mainbuf + 0x1BD00 + t * 264) == 0x00) {
-							nInjected[0] = t;
-							break;
-						}
-				} else if (game == 2 || game == 3) {
-					for (int t = 0; t < 23; t++)
-						if (*(mainbuf + 0x1CD00 + t * 264) == 0x00) {
-							nInjected[0] = t;
-							break;
-						}
-				}
-			}
+			if (overwrite[0] == 0)
+				findFreeLocationWC(mainbuf, game, nInjected);
 
 			if (adapt == 1)
 				setLanguage(mainbuf, langCont);
@@ -247,7 +234,9 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbu
 	int currentEntry = 0;
 	int page = 0;
 	int nInjected[1] = {0};
-	int overwrite[1] = {1};
+	int overwrite[1] = {0};
+	
+	findFreeLocationWC(mainbuf, game, nInjected);
 	
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
@@ -320,7 +309,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbu
 				errDisp(bottomScreen, (int)ret, BOTTOM);
 
 			consoleSelect(&bottomScreen);
-			printf("\x1b[29;12HPress B to exit.");			
+			printf("\x1b[29;8HTouch or press B to exit");		
 			consoleSelect(&topScreen);
 			printf("\x1b[2J");	
 			printf("\x1b[47;30mPage: \x1b[47;34m%d\x1b[47;30m of \x1b[47;34m%d\x1b[47;30m - from \x1b[47;34m%d\x1b[47;30m to \x1b[47;34m%d\x1b[47;30m                      \x1b[0m\x1b[1;0H      ", page + 1, MAXPAGES + 1, page * 27, (page + 1) * 27 - 1);
