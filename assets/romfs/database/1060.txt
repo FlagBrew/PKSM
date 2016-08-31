@@ -7,7 +7,7 @@ Held Item:     No Item
 TID:           03226
 SID:           01060
 OT:            XY&Z
-Met:           a Pokémon Event
+Met:           a Pokemon Event
 Nature:        Any nature
 Ribbon:        Classic
 

@@ -7,7 +7,7 @@ Held Item:     No Item
 TID:           03196
 SID:           01064
 OT:            XY&Z
-Met:           the Pokémon cartoon
+Met:           the Pokemon cartoon
 Nature:        Any nature
 Ribbon:        Classic
 

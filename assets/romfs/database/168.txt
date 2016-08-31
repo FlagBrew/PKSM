@@ -7,7 +7,7 @@ Held Item:     Gardevoirite
 TID:           06176
 SID:           00168
 OT:            ???
-Met:           Pokémon Movie 16
+Met:           Pokemon Movie 16
 Nature:        Any Nature
 Ribbon:        Wishing Ribbon
 
