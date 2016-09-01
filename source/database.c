@@ -23,8 +23,8 @@
 #include "util.h"
 #include "fill.h"
 
-#define ENTRIES 4
-#define DELAY 30
+#define ENTRIES 6
+#define DELAY 27
 
 #define MAXPAGES 75
 #define RIGHE 27
@@ -280,13 +280,13 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbu
 			refreshDB(currentEntry, topScreen, database, RIGHE, page);	
 		}
 		
-		if (hidKeysDown() & KEY_DUP) {
+		if ((hidKeysDown() & KEY_DUP) ^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)) {
 			if (currentEntry == 0) currentEntry = RIGHE - 1;
 			else if (currentEntry > 0) currentEntry -= 1;
 			refreshDB(currentEntry, topScreen, database, RIGHE, page);
 		}
 		
-		if (hidKeysDown() & KEY_DDOWN) {
+		if ((hidKeysDown() & KEY_DDOWN) ^ (hidKeysHeld() & KEY_DDOWN && t_frame % DELAY == 1)) {
 			if (currentEntry == RIGHE - 1) currentEntry = 0;
 			else if (currentEntry < RIGHE - 1) currentEntry += 1;
 			refreshDB(currentEntry, topScreen, database, RIGHE, page);			
@@ -378,7 +378,7 @@ void psDates(PrintConsole topScreen, PrintConsole bottomScreen) {
 
 int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int game) {
 	int cont = 0;
-	char *menuEntries[ENTRIES] = {"XD collection", "Colosseum collection", "10ANNIV collection", "Wolfe Glick Top1 team Worlds2016"};
+	char *menuEntries[ENTRIES] = {"XD collection", "Colosseum collection", "10ANNIV collection", "Mew old school collection", " Jirachi old school collection", "Wolfe Glick Top1 team Worlds2016"};
 	
     consoleSelect(&bottomScreen);
     printf("\x1b[2J");
@@ -386,7 +386,7 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 	printf("\x1b[31mSTART\x1b[0m  inject selected entry");	
     printf("\x1b[2;0H----------------------------------------");
 
-	printf("\x1b[18;0HThis will \x1b[31mOVERWRITE\x1b[0m the first N boxes ofyour pcdata.");
+	printf("\x1b[4;0HThis will \x1b[31mOVERWRITE\x1b[0m the first N boxes ofyour pcdata.");
     printf("\x1b[21;0H----------------------------------------");
     printf("\x1b[22;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this.");
     printf("\x1b[26;0H----------------------------------------");
@@ -491,6 +491,78 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 					}					
 					
 					int res = setBoxBin(bottomScreen, mainbuf, game, 1, 30, path);
+					if (res != 1) 
+						return res;
+					break;
+				}
+				case 3 : {
+					char *path[1] = {"romfs:/misc/coll_mew.bin"};
+
+					consoleSelect(&topScreen);
+					printf("\x1b[15;%dH\x1b[31mSTART\x1b[0m:  \x1b[33m%d\x1b[0m locs will be replaced", 8, 9);
+					while (aptMainLoop()) {
+						gspWaitForVBlank();
+						hidScanInput();
+						
+						if (hidKeysDown() & KEY_B)
+							return 0;
+
+						if (hidKeysDown() & KEY_START)
+							break;
+
+						gfxFlushBuffers();
+						gfxSwapBuffers();
+					}					
+					
+					int res = setBoxBin(bottomScreen, mainbuf, game, 1, 9, path);
+					if (res != 1) 
+						return res;
+					break;
+				}
+				case 4 : {
+					char *path[1] = {"romfs:/misc/coll_jirachi.bin"};
+
+					consoleSelect(&topScreen);
+					printf("\x1b[15;%dH\x1b[31mSTART\x1b[0m:  \x1b[33m%d\x1b[0m locs will be replaced", 8, 14);
+					while (aptMainLoop()) {
+						gspWaitForVBlank();
+						hidScanInput();
+						
+						if (hidKeysDown() & KEY_B)
+							return 0;
+
+						if (hidKeysDown() & KEY_START)
+							break;
+
+						gfxFlushBuffers();
+						gfxSwapBuffers();
+					}					
+					
+					int res = setBoxBin(bottomScreen, mainbuf, game, 1, 14, path);
+					if (res != 1) 
+						return res;
+					break;
+				}
+				case 5 : {
+					char *path[1] = {"romfs:/misc/vgc/wolfeworlds16.bin"};
+
+					consoleSelect(&topScreen);
+					printf("\x1b[15;%dH\x1b[31mSTART\x1b[0m:  \x1b[33m%d\x1b[0m locs will be replaced", 8, 6);
+					while (aptMainLoop()) {
+						gspWaitForVBlank();
+						hidScanInput();
+						
+						if (hidKeysDown() & KEY_B)
+							return 0;
+
+						if (hidKeysDown() & KEY_START)
+							break;
+
+						gfxFlushBuffers();
+						gfxSwapBuffers();
+					}					
+					
+					int res = setBoxBin(bottomScreen, mainbuf, game, 1, 6, path);
 					if (res != 1) 
 						return res;
 					break;
