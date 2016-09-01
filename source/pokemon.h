@@ -43,6 +43,7 @@ void getPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, 
 void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game);
 bool isShiny(u8* pkmn);
 void rerollPID(u8* pkmn);
+void findFreeLocationWC(u8 *mainbuf, int game, int nInjected[]);
 
 u16 getPokedexNumber(u8* pkmn);
 u8 getNature(u8* pkmn);

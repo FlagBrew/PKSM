@@ -256,6 +256,37 @@ void rerollPID(u8* pkmn) {
     memcpy(&pkmn[PIDPOS], &pidbuffer, PIDLENGTH);
 }
 
+void findFreeLocationWC(u8 *mainbuf, int game, int nInjected[]) {
+	nInjected[0] = 0;
+	int temp;
+	
+	if (game == 0 || game == 1) {
+		for (int t = 0; t < 23; t++) {
+			temp = 0;
+			for (int j = 0; j < WC6LENGTH; j++)
+				if (*(mainbuf + XYWC6POS + t * WC6LENGTH + j) == 0x00)
+					temp++;
+				
+			if (temp == WC6LENGTH) {
+				nInjected[0] = t;
+				break;
+			}
+		}
+	} else if (game == 2 || game == 3) {
+		for (int t = 0; t < 23; t++) {
+			temp = 0;
+			for (int j = 0; j < WC6LENGTH; j++)
+				if (*(mainbuf + ORASWC6POS + t * WC6LENGTH + j) == 0x00)
+					temp++;
+				
+			if (temp == WC6LENGTH) {
+				nInjected[0] = t;
+				break;
+			}
+		}
+	}
+}
+
 /* ************************ get ************************ */
 
 u16 getOTID(u8* pkmn) {
