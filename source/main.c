@@ -182,7 +182,7 @@ int main() {
 	FSFILE_Read(mainHandle, NULL, 0, mainbuf, mainSize);
 	
 	mkdir("sdmc:/EventAssistant", 0777);
-	char *bakpath = (char*)malloc(70 * sizeof(char));
+	char *bakpath = (char*)malloc(80 * sizeof(char));
 	
 	time_t unixTime = time(NULL);
 	struct tm* timeStruct = gmtime((const time_t *)&unixTime);
@@ -194,10 +194,10 @@ int main() {
 	int month = timeStruct->tm_mon + 1;
 	int year = timeStruct->tm_year +1900;
 		
-	snprintf(bakpath, 70, "/EventAssistant/main_%s_%i-%i-%i-%02i%02i%02i", gamesList[game], day, month, year, hours, minutes, seconds);
-	FILE *fptr = fopen(bakpath, "wb");
-	fwrite(mainbuf, 1, mainSize, fptr);
-	fclose(fptr);
+	snprintf(bakpath, 80, "/EventAssistant/main_%s_%i-%i-%i-%02i%02i%02i", gamesList[game], day, month, year, hours, minutes, seconds);
+	FILE *f = fopen(bakpath, "wb");
+	fwrite(mainbuf, 1, mainSize, f);
+	fclose(f);
 	
 	free(bakpath);
 	#endif

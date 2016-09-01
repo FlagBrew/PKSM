@@ -24,7 +24,7 @@
 #include "fill.h"
 
 #define ENTRIES 6
-#define DELAY 27
+#define DELAY 30
 
 #define MAXPAGES 75
 #define RIGHE 27
@@ -378,7 +378,7 @@ void psDates(PrintConsole topScreen, PrintConsole bottomScreen) {
 
 int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int game) {
 	int cont = 0;
-	char *menuEntries[ENTRIES] = {"XD collection", "Colosseum collection", "10ANNIV collection", "Mew old school collection", " Jirachi old school collection", "Wolfe Glick Top1 team Worlds2016"};
+	char *menuEntries[ENTRIES] = {"XD collection", "Colosseum collection", "10ANNIV collection", "Mew old school collection", "Jirachi old school collection", "Wolfe Glick Top1 team Worlds2016"};
 	
     consoleSelect(&bottomScreen);
     printf("\x1b[2J");

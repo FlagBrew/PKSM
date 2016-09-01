@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <3ds.h>
 #include <string.h>
+#include <time.h>
 #include "http.h"
 #include "util.h"
 
@@ -133,7 +134,19 @@ void refreshDB(int currentEntry, PrintConsole topScreen, char *lista[], int N, i
 
 void update(PrintConsole topScreen, PrintConsole bottomScreen) {
 	char *ciaUrl = "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/EventAssistant/EventAssistant.cia";
-	char *ciaPath = "/EventAssistant.cia";
+	char *ciaPath = (char*)malloc(80 * sizeof(char));
+	
+	time_t unixTime = time(NULL);
+	struct tm* timeStruct = gmtime((const time_t *)&unixTime);
+
+	int hours = timeStruct->tm_hour;
+	int minutes = timeStruct->tm_min;
+	int seconds = timeStruct->tm_sec;
+	int day = timeStruct->tm_mday;
+	int month = timeStruct->tm_mon + 1;
+	int year = timeStruct->tm_year +1900;
+		
+	snprintf(ciaPath, 80, "/EventAssistant/EventAssistant_%i-%i-%i-%02i%02i%02i.cia", day, month, year, hours, minutes, seconds);
 
 	Result ret = 0;
 	
@@ -154,11 +167,13 @@ void update(PrintConsole topScreen, PrintConsole bottomScreen) {
 		printf("\nDownload of EventAssistant.cia \x1b[31mfailed.\x1b[0m\nPlease report the issue to the dev.\n\n");
 		errDisp(bottomScreen, 11, BOTTOM);
 	}
+	
+	free(ciaPath);
 
 	consoleSelect(&topScreen);
 	printf("\x1b[29;13HTouch or press B to exit");
 
-	waitKey(KEY_START);
+	waitKey(KEY_B);
 }
 
 void credits(PrintConsole topScreen, PrintConsole bottomScreen) {
