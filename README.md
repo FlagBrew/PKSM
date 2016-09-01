@@ -6,6 +6,7 @@
 
 **[EventAssistant](https://github.com/BernardoGiordano/EventAssistant/releases): what is this?**
 
+[**See this awesome overview by Shai from LevelUp Team!** *(italian)*](https://youtu.be/XGq7HydXEX8?t=9m27s);
 [**You can see a little video showcase from @sasori here!**](https://www.youtube.com/watch?v=VNFr81mxjBs)
 
 [**EventAssistant**](https://github.com/BernardoGiordano/EventAssistant/releases) is a general purpose Pokémon save editor and information viewer that can be run on your console (you need *Homebrew Launcher* to launch the *.3dsx* version or *CFW* to install the *.cia* version on the console and run it from the home menu, or Citra to run the *.3dsx* version on your PC).
@@ -13,7 +14,7 @@
 This application allows you to make some cool things, like:
 
 * Check **Gen VI's Event Database**;
-* **Download and inject WC6s** into a XY or ORAS save file. Multiple injection is allowed;
+* **Inject WC6s** into a XY or ORAS save file. Multiple injection is allowed;
 * **Mass inject** old gen event distributions or collections!
 * **Edit Pokémon stats**, like friendship, IVs, EVs, hidden Power, shinyness, nickname, pokerus and **clone** easily single pokémons or entire boxes;
 * **Edit you save** like Powersaves does, directly from your 3DS. You can edit *money*, *Battle Points*, *items* and much more;
@@ -25,7 +26,7 @@ This application allows you to make some cool things, like:
 
 **Important things about Gen VI's Event Database**
 
-Event Database links are hardcoded in the program, so it knows where to look for stuff. The point is that writing this stuff is very difficult to do alone, so lots of event cards are unavailable at the moment. They'll be available when uploaded on the server I use, and you'll be able to see them without any update of the app. Updates are needed if new events are released, basically to update the description of the event.
+Event Database links are hardcoded in the program, so it knows where to look for stuff. The point is that writing this stuff is very difficult to do alone, so lots of event descriptions are unavailable at the moment.
 
 ---
 
@@ -60,7 +61,8 @@ Thank you to:
 * PPorg for most of wc6s
 * all the guys on the 3dshacks discord
 * Simona Mastroianni for fill.c work
-* Federico, YodaDaCoda and /u/SatansRoommate for testing builds
+* Federico, YodaDaCoda, /u/SatansRoommate, Immersion for testing builds
+* Cosimo Vivoli, Hat3Mond4ys for some database entries
 * Kian Josh King for some wc6s
 * Shai for the icon and Fabrizio for the name
 
