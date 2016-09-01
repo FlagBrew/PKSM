@@ -19,6 +19,7 @@
 #include <3ds.h>
 #include <string.h>
 #include <time.h>
+#include <sys/stat.h>
 #include "http.h"
 #include "util.h"
 
@@ -134,7 +135,7 @@ void refreshDB(int currentEntry, PrintConsole topScreen, char *lista[], int N, i
 
 void update(PrintConsole topScreen, PrintConsole bottomScreen) {
 	char *ciaUrl = "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/EventAssistant/EventAssistant.cia";
-	char *ciaPath = (char*)malloc(80 * sizeof(char));
+	char *ciaPath = (char*)malloc(90 * sizeof(char));
 	
 	time_t unixTime = time(NULL);
 	struct tm* timeStruct = gmtime((const time_t *)&unixTime);
@@ -145,8 +146,10 @@ void update(PrintConsole topScreen, PrintConsole bottomScreen) {
 	int day = timeStruct->tm_mday;
 	int month = timeStruct->tm_mon + 1;
 	int year = timeStruct->tm_year +1900;
+	
+	mkdir("sdmc:/EventAssistant/builds", 0777);
 		
-	snprintf(ciaPath, 80, "/EventAssistant/EventAssistant_%i-%i-%i-%02i%02i%02i.cia", day, month, year, hours, minutes, seconds);
+	snprintf(ciaPath, 90, "/EventAssistant/builds/EventAssistant_%i-%i-%i-%02i%02i%02i.cia", day, month, year, hours, minutes, seconds);
 
 	Result ret = 0;
 	
