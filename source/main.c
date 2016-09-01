@@ -30,6 +30,8 @@
 #include <stdio.h>
 #include <3ds.h>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <time.h>
 #include "http.h"
 #include "catch.h"
 #include "util.h"
@@ -68,6 +70,7 @@ void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, 
 int main() {
 	gfxInitDefault();
 	aptInit();
+	sdmcInit();
 
 	PrintConsole topScreen, bottomScreen;
 	consoleInit(GFX_TOP, &topScreen);
@@ -176,7 +179,27 @@ int main() {
 	u8* mainbuf = malloc(mainSize);
 	
 	#if citra
-	FSFILE_Read(mainHandle, NULL, 0, mainbuf, mainSize);	
+	FSFILE_Read(mainHandle, NULL, 0, mainbuf, mainSize);
+	
+	mkdir("sdmc:/EventAssistant", 0777);
+	char *bakpath = (char*)malloc(70 * sizeof(char));
+	
+	time_t unixTime = time(NULL);
+	struct tm* timeStruct = gmtime((const time_t *)&unixTime);
+
+	int hours = timeStruct->tm_hour;
+	int minutes = timeStruct->tm_min;
+	int seconds = timeStruct->tm_sec;
+	int day = timeStruct->tm_mday;
+	int month = timeStruct->tm_mon + 1;
+	int year = timeStruct->tm_year +1900;
+		
+	snprintf(bakpath, 70, "/EventAssistant/main_%s_%i-%i-%i-%02i%02i%02i", gamesList[game], day, month, year, hours, minutes, seconds);
+	FILE *fptr = fopen(bakpath, "wb");
+	fwrite(mainbuf, 1, mainSize, fptr);
+	fclose(fptr);
+	
+	free(bakpath);
 	#endif
 
 	char *menuEntries[ENTRIES] = {"Gen VI's Event Database", "Gen VI's Save file editor", "Gen VI's Pokemon editor", "Mass injecter", "Wi-Fi distributions", "Code distributions", "Local distributions", "Capture probability calculator", "Common PS dates database", "Credits", "Update .cia to latest commit build"};
@@ -342,6 +365,7 @@ int main() {
 	fsEnd();
 	
 	romfsExit();
+	sdmcExit();
     aptExit();
 	gfxExit();
 	return 0;
