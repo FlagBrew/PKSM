@@ -74,7 +74,7 @@ void waitKey(u32 key) {
 }
 
 void errDisp(PrintConsole screen, int i, u16 columns) {
-	char *errors[] = {"Error!", "Game not found", "OpenContext failed", "AddRequestHeaderField failed", "SSLOpt failed", "BeginRequest failed", "Response code failed", "New header failed", "Redirection failed", "Download size error", "Buffer alloc error", "DownloadData failed", "Eon Ticket N/A in XY", "Switch game also in the app", "Maximum item reached", "File not available", "Selected slot is empty"};
+	char *errors[] = {"Error!", "Game not found", "OpenContext failed", "AddRequestHeaderField failed", "SSLOpt failed", "BeginRequest failed", "Response code failed", "New header failed", "Redirection failed", "Download size error", "Buffer alloc error", "DownloadData failed", "Feature N/A in XY", "Switch game also in the app", "Maximum item reached", "File not available", "Selected slot is empty"};
 	int top = 12;
 	u16 length = strlen(errors[i]);
 	u16 left = (columns - length - 2) / 2;
