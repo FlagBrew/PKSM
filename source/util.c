@@ -23,6 +23,25 @@
 #include "http.h"
 #include "util.h"
 
+/* Errors
+	 1: Game not found
+	 2: OpenContext failed
+	 3: AddRequestHeaderField failed
+	 4: SSLOpt failed
+	 5: BeginRequest failed
+	 6: Response code failed
+	 7: New header failed
+	 8: Redirection failed
+	 9: Download size error
+	 10: Buffer alloc error
+	 11: DownloadData failed
+	 12: Feature N/A in XY
+	 13: Switch game also in the app
+	 14: Maximum item reached
+	 15: File not available
+	 16: Selected slot is empty
+ */
+
 void printfile(char* path) {
 	FILE* f = fopen(path, "r");
 	if (f) {
