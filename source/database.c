@@ -58,7 +58,7 @@ int printDB(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int 
     printf("\x1b[29;11HPress B to return.");
     consoleSelect(&topScreen);
     printf("\x1b[2J");
-    printf("\x1b[0;0HLanguages: ");
+    printf("\x1b[0;0HLanguages: None\x1b[0;11H");
 
     gfxFlushBuffers();
     gfxSwapBuffers();
