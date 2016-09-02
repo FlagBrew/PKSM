@@ -4,11 +4,13 @@
 
 ---
 
-**[EventAssistant](https://github.com/BernardoGiordano/EventAssistant/releases): what is this?**
-
 [**See this awesome overview by Shai from LevelUp Team!** *(italian)*](https://youtu.be/XGq7HydXEX8?t=9m27s)
 
 [**You can see a little video showcase from @sasori here!**](https://www.youtube.com/watch?v=VNFr81mxjBs)
+
+---
+
+**[EventAssistant](https://github.com/BernardoGiordano/EventAssistant/releases): what is this?**
 
 [**EventAssistant**](https://github.com/BernardoGiordano/EventAssistant/releases) is a general purpose Pokémon save editor and information viewer that can be run on your console (you need *Homebrew Launcher* to launch the *.3dsx* version or *CFW* to install the *.cia* version on the console and run it from the home menu, or Citra to run the *.3dsx* version on your PC).
 

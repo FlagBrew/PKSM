@@ -1,19 +1,17 @@
      Code     | Tag |   Date    |      End
 -------------------------------------------------
-Scraps (all)  | JPN |     -     | 31 Aug 2016
-Guide Mareep  | KOR |     -     | 31 Aug 2016
-PCO Pikachu   | JPN |     -     | 31 Aug 2016
-20th. Darkrai | ALL | 01-24 May | 31 Aug 2016
 Shiny Yveltal | PAL |     -     | 31 Dec 2016
 20th. Genesect| ALL | 01-24 Nov | 28 Feb 2017
 GF Mew        | JPN |    28 Feb | 31 Mar 2017
 Shiny Xerneas | PAL |    17 Jul | 31 Dec 2016
-Shiny Xerneas | PAL |           | 16 Aug 2016
 Shiny Yveltal | PAL |    30 Sep | 
-Play! Mewtwo  | PAL |       Jul | 21 Aug 2016
-PGL Garchomp  | ALL |           | 
+PGL Garchomp  | ALL |    02 Aug | 29 Sep 2016
 GF Mew        | JPN |    16 Jul | 18 Dec 2016
-Jarvis' Gengar| JPN |    09 Jul | 31 Aug 2016
 Volcanion     | NA  |  October
 Volcanion     | PAL |  October
+Volcanion     | JPN |    16 Apr | 30 Sep 2016
+Birds Trio    | NA  |
+Pokespa Pika  | KOR |    02 Jul | 30 Sep 2016
+20th Arceus   | ALL |           | 30 Nov 2016
+PGL Darmanitan| ALL |
 -------------------------------------------------

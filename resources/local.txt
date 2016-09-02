@@ -5,4 +5,11 @@ Birthday mons   | JPN | 01 Oct 2016 | 31 Dec 2016
 Shiny Yveltal   | PAL | 18 Jul 2016 | 30 Sep 2016
 Pokelab II gen  | JPN | 16 Jul 2016 | 04 Sep 2016
 Shiny Diancie   | KOR | 13 Aug 2016 | 14 Aug 2016
+Elect. Greninja | JPN | 03 Jul 2016 | 30 Sep 2016
+Giov. Nidoqueen | JPN |
+Maxie Camerupt  | JPN |
+Archie Sharpedo | JPN |
+Cyrus Weavile   | JPN |
+Ghetis Hydreigon| JPN |
+Lysandre Pyroar | JPN |
 -------------------------------------------------
