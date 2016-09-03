@@ -109,9 +109,18 @@ int main() {
 			char* ver = (char*)malloc(6 * sizeof(u8));
 			snprintf(ver, 6, "%d.%d.%d", V1, V2, V3);
 
+			remove("/EventAssistant/builds/ver.ver");
+			
 			printf("\x1b[2J");
-			printf("\n\nChecking automatically for updates...\n\n");
+			printf("Checking automatically for updates...\n\n");
 			Result ret = downloadFile(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/ver.ver", "/EventAssistant/builds/ver.ver");	
+			if (ret != 0) {
+				romfsExit();
+				sdmcExit();
+				aptExit();
+				gfxExit();
+				return 0;
+			}
 			
 			printf("\nComparing...");
 			FILE *fptr = fopen("EventAssistant/builds/ver.ver", "rt");
@@ -132,6 +141,8 @@ int main() {
 				
 			if (temp < 5) {
 				update(topScreen, bottomScreen);
+				romfsExit();
+				sdmcExit();
 				aptExit();
 				gfxExit();
 				return 0;
@@ -160,6 +171,8 @@ int main() {
 		hidScanInput();
 		
 		if (hidKeysDown() & KEY_B) {
+			romfsExit();
+			sdmcExit();
 			aptExit();
 			gfxExit();
 			return 0;
@@ -231,6 +244,8 @@ int main() {
 				errDisp(bottomScreen, 13, BOTTOM);
 			break;
 		}
+		romfsExit();
+		sdmcExit();
 		aptExit();
 		gfxExit();
 		return -1;
