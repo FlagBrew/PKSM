@@ -80,6 +80,65 @@ int main() {
 	if (rc)
 		printf("romfsInit error: %08lX\n", rc);
 	
+	mkdir("sdmc:/EventAssistant", 0777);
+	mkdir("sdmc:/EventAssistant/builds", 0777);
+	
+	if (!(isHBL())) {
+		// checking updates
+		bool autoupdate = false;
+		consoleSelect(&topScreen);
+		printf("\x1b[13;9HDo you want to check for updates?\x1b[15;15HSTART: YES | B: SKIP");
+		while (aptMainLoop()) {
+			gspWaitForVBlank();
+			hidScanInput();
+
+			if (hidKeysDown() & KEY_START) {
+				autoupdate = true;
+				break;
+			}
+			
+			if (hidKeysDown() & KEY_B)
+				break;
+
+			gfxFlushBuffers();
+			gfxSwapBuffers();
+		}
+		
+		if (autoupdate) {
+			int temp = 0;
+			char* ver = (char*)malloc(6 * sizeof(u8));
+			snprintf(ver, 6, "%d.%d.%d", V1, V2, V3);
+
+			printf("\x1b[2J");
+			printf("\n\nChecking automatically for updates...\n\n");
+			Result ret = downloadFile(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/ver.ver", "/EventAssistant/builds/ver.ver");	
+			
+			printf("\nComparing...");
+			FILE *fptr = fopen("EventAssistant/builds/ver.ver", "rt");
+			if (fptr == NULL)
+				return 15;
+			fseek(fptr, 0, SEEK_END);
+			u32 contentsize = ftell(fptr);
+			char *verbuf = (char*)malloc(contentsize);
+			if (verbuf == NULL) 
+				return 8;
+			rewind(fptr);
+			fread(verbuf, contentsize, 1, fptr);
+			fclose(fptr);	
+			
+			for (int i = 0; i < 5; i++)
+				if (*(ver + i) == *(verbuf + i))
+					temp++;
+				
+			if (temp < 5) {
+				update(topScreen, bottomScreen);
+				aptExit();
+				gfxExit();
+				return 0;
+			}
+		}
+	}
+
 	int game = 0;
 	bool save = true;
 	
@@ -88,9 +147,11 @@ int main() {
 	char *gamesList[4] = {"Pokemon X", "Pokemon Y", "Pokemon Omega Ruby", "Pokemon Alpha Sapphire"};
 	
 	consoleSelect(&bottomScreen);
+	printf("\x1b[2J");
 	printf("\x1b[14;5HPress A to continue, B to exit");
 	
 	consoleSelect(&topScreen);
+	printf("\x1b[2J");
 	printf("\x1b[31mCHOOSE GAME.\x1b[0m Cart has priority over digital copy.");
 	refresh(game, topScreen, gamesList, 4);
 
@@ -181,7 +242,6 @@ int main() {
 	#if citra
 	FSFILE_Read(mainHandle, NULL, 0, mainbuf, mainSize);
 	
-	mkdir("sdmc:/EventAssistant", 0777);
 	char *bakpath = (char*)malloc(80 * sizeof(char));
 	
 	time_t unixTime = time(NULL);

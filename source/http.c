@@ -144,7 +144,6 @@ void printDistro(PrintConsole topScreen, PrintConsole bottomScreen, char *url) {
 }
 
 Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url, char* path) {
-    fsInit();
     httpcInit(0);
 
     httpcContext context;
@@ -239,7 +238,6 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
 
     httpcCloseContext(&context);
     httpcExit();
-    fsExit();
 
     return 0;
 }
