@@ -143,16 +143,13 @@ void printDistro(PrintConsole topScreen, PrintConsole bottomScreen, char *url) {
 	waitKey(KEY_B);
 }
 
-Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url, char* path) {
+Result downloadFile(PrintConsole bottomScreen, char* url, char* path) {
     httpcInit(0);
-
     httpcContext context;
     Result ret = 0;
     u32 statuscode = 0;
     u32 contentsize = 0;
     u8 *buf;
-
-    printf("Downloading file to sdmc:\x1b[32m%s\x1b[0m\n", path);
 
 	consoleSelect(&bottomScreen);
     ret = httpcOpenContext(&context, HTTPC_METHOD_GET, url, 0);
@@ -199,7 +196,7 @@ Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url
             }
             httpcCloseContext(&context);
             printf("Retrying to call download function...\n\n");
-            ret = downloadFile(topScreen, bottomScreen, newUrl, path);
+            ret = downloadFile(bottomScreen, newUrl, path);
             return ret;
         } else {
             errDisp(bottomScreen, 8, BOTTOM);

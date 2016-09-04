@@ -21,4 +21,4 @@
 Result http_download(PrintConsole topScreen, PrintConsole bottomScreen, httpcContext *context);
 void getText(PrintConsole topScreen, PrintConsole bottomScreen, char *url);
 void printDistro(PrintConsole topScreen, PrintConsole bottomScreen, char *url);
-Result downloadFile(PrintConsole topScreen, PrintConsole bottomScreen, char* url, char* path);
+Result downloadFile(PrintConsole bottomScreen, char* url, char* path);
