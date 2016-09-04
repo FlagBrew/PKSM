@@ -66,7 +66,8 @@ Thank you to:
 * Simona Mastroianni for fill.c work
 * Federico, YodaDaCoda, /u/SatansRoommate, Immersion for testing builds
 * Cosimo Vivoli, Hat3Mond4ys for some database entries
-* Kian Josh King for some wc6s
+* Paul G, Kian Josh King for some wc6s
+* Poutros for N's collection
 * Shai for the icon and Fabrizio for the name
 
 ---

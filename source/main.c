@@ -51,6 +51,13 @@
 #define MONTH 9
 #define YEAR 16
 
+void exitServices() {
+	romfsExit();
+	sdmcExit();
+	aptExit();
+	gfxExit();
+}
+
 void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, char* menuEntries[]){
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
@@ -115,10 +122,7 @@ int main() {
 			printf("Checking automatically for updates...\n\n");
 			Result ret = downloadFile(bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/ver.ver", "/3ds/data/EventAssistant/builds/ver.ver");	
 			if (ret != 0) {
-				romfsExit();
-				sdmcExit();
-				aptExit();
-				gfxExit();
+				exitServices();
 				return 0;
 			}
 			
@@ -143,10 +147,7 @@ int main() {
 			
 			if (temp < 5) {
 				update(topScreen, bottomScreen);
-				romfsExit();
-				sdmcExit();
-				aptExit();
-				gfxExit();
+				exitServices();
 				return 0;
 			}
 		}
@@ -173,10 +174,7 @@ int main() {
 		hidScanInput();
 		
 		if (hidKeysDown() & KEY_B) {
-			romfsExit();
-			sdmcExit();
-			aptExit();
-			gfxExit();
+			exitServices();
 			return 0;
 		}
 		
@@ -205,14 +203,16 @@ int main() {
 		gfxSwapBuffers();
 	}
 	
+	consoleSelect(&topScreen);
+	printf("\x1b[7;0HLoading save...");
+	
 	fsStart();
 	#if citra
 	FS_Archive saveArch;	
 	
 	if (!(openSaveArch(&saveArch, ids[game]))) {
 		errDisp(bottomScreen, 1, BOTTOM);
-		aptExit();
-		gfxExit();
+		exitServices();
 		return -1;
 	}
 
@@ -246,10 +246,7 @@ int main() {
 				errDisp(bottomScreen, 13, BOTTOM);
 			break;
 		}
-		romfsExit();
-		sdmcExit();
-		aptExit();
-		gfxExit();
+		exitServices();
 		return -1;
 	}
 	#endif
@@ -272,6 +269,8 @@ int main() {
 	int year = timeStruct->tm_year +1900;
 		
 	snprintf(bakpath, 80, "/3ds/data/EventAssistant/main_%s_%i-%i-%i-%02i%02i%02i", gamesList[game], day, month, year, hours, minutes, seconds);
+	printf("\n\nSaving backup to %s\n", bakpath);
+	
 	FILE *f = fopen(bakpath, "wb");
 	fwrite(mainbuf, 1, mainSize, f);
 	fclose(f);
@@ -441,9 +440,6 @@ int main() {
 	free(mainbuf);
 	fsEnd();
 	
-	romfsExit();
-	sdmcExit();
-    aptExit();
-	gfxExit();
+	exitServices();
 	return 0;
 }
