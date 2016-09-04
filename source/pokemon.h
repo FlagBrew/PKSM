@@ -53,6 +53,7 @@ u8 getIV(u8* pkmn, const int stat);
 u16 getOTID(u8* pkmn);
 u16 getSOTID(u8* pkmn);
 u32 getPID(u8* pkmn);
+u16 getTSV(u8* pkmn);
 
 void setNature(u8* pkmn, const u8 nature);
 void setNickname(u8* pkmn, char* nick);

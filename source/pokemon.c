@@ -310,6 +310,12 @@ u32 getPID(u8* pkmn) {
     return pidbuffer;
 }
 
+u16 getTSV(u8* pkmn) {
+	u16 TID = getOTID(pkmn);
+	u16 SID = getSOTID(pkmn);
+	return (TID ^ SID) >> 4;
+}
+
 u16 getPokedexNumber(u8* pkmn) {
     u16 pokedexnumber;
     memcpy(&pokedexnumber, &pkmn[POKEDEXNUMBERPOS], POKEDEXNUMBERLENGTH);
@@ -618,10 +624,11 @@ void refreshPK(PrintConsole topScreen, u8* mainbuf, int cont[], int game) {
 		printf("\x1b[27;0HFriendship: %d  ", getFriendship(pkmn));
 		printf("\x1b[27;23H");
 		if (isShiny(pkmn))
-			printf("Shiny    ");
+			 printf("Shiny    ");
 		else printf("Non shiny");
 		printf("\x1b[28;0HTID: %u     ", getOTID(pkmn));
 		printf("\x1b[28;23HSID: %u     ", getSOTID(pkmn));
+		printf("\x1b[29;0HShiny value: %u     ", getTSV(pkmn));
 	} else {
 		printf("\x1b[25;23H                           ");
 		printf("\x1b[26;0H                           ");
@@ -630,6 +637,7 @@ void refreshPK(PrintConsole topScreen, u8* mainbuf, int cont[], int game) {
 		printf("\x1b[27;23H          ");
 		printf("\x1b[28;0H           ");
 		printf("\x1b[28;23H           ");
+		printf("\x1b[29;0H                  ");
 	}
 	
 	free(pkmn);
