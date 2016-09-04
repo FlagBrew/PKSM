@@ -47,7 +47,7 @@
 #define V2 2
 #define V3 1
 
-#define DAY 2
+#define DAY 4
 #define MONTH 9
 #define YEAR 16
 
@@ -80,8 +80,10 @@ int main() {
 	if (rc)
 		printf("romfsInit error: %08lX\n", rc);
 	
-	mkdir("sdmc:/EventAssistant", 0777);
-	mkdir("sdmc:/EventAssistant/builds", 0777);
+	mkdir("sdmc:/3ds", 0777);
+	mkdir("sdmc:/3ds/data", 0777);
+	mkdir("sdmc:/3ds/data/EventAssistant", 0777);
+	mkdir("sdmc:/3ds/data/EventAssistant/builds", 0777);
 	
 	if (!(isHBL())) {
 		// checking updates
@@ -108,12 +110,10 @@ int main() {
 			int temp = 0;
 			char* ver = (char*)malloc(6 * sizeof(u8));
 			snprintf(ver, 6, "%d.%d.%d", V1, V2, V3);
-
-			remove("/EventAssistant/builds/ver.ver");
 			
 			printf("\x1b[2J");
 			printf("Checking automatically for updates...\n\n");
-			Result ret = downloadFile(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/ver.ver", "/EventAssistant/builds/ver.ver");	
+			Result ret = downloadFile(bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/ver.ver", "/3ds/data/EventAssistant/builds/ver.ver");	
 			if (ret != 0) {
 				romfsExit();
 				sdmcExit();
@@ -123,7 +123,7 @@ int main() {
 			}
 			
 			printf("\nComparing...");
-			FILE *fptr = fopen("EventAssistant/builds/ver.ver", "rt");
+			FILE *fptr = fopen("3ds/data/EventAssistant/builds/ver.ver", "rt");
 			if (fptr == NULL)
 				return 15;
 			fseek(fptr, 0, SEEK_END);
@@ -133,12 +133,14 @@ int main() {
 				return 8;
 			rewind(fptr);
 			fread(verbuf, contentsize, 1, fptr);
-			fclose(fptr);	
+			fclose(fptr);
+
+			remove("/3ds/data/EventAssistant/builds/ver.ver");			
 			
 			for (int i = 0; i < 5; i++)
 				if (*(ver + i) == *(verbuf + i))
 					temp++;
-				
+			
 			if (temp < 5) {
 				update(topScreen, bottomScreen);
 				romfsExit();
@@ -269,7 +271,7 @@ int main() {
 	int month = timeStruct->tm_mon + 1;
 	int year = timeStruct->tm_year +1900;
 		
-	snprintf(bakpath, 80, "/EventAssistant/main_%s_%i-%i-%i-%02i%02i%02i", gamesList[game], day, month, year, hours, minutes, seconds);
+	snprintf(bakpath, 80, "/3ds/data/EventAssistant/main_%s_%i-%i-%i-%02i%02i%02i", gamesList[game], day, month, year, hours, minutes, seconds);
 	FILE *f = fopen(bakpath, "wb");
 	fwrite(mainbuf, 1, mainSize, f);
 	fclose(f);

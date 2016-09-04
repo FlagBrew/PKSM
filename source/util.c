@@ -154,7 +154,7 @@ void refreshDB(int currentEntry, PrintConsole topScreen, char *lista[], int N, i
 
 void update(PrintConsole topScreen, PrintConsole bottomScreen) {
 	char *ciaUrl = "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/EventAssistant/EventAssistant.cia";
-	char *ciaPath = (char*)malloc(90 * sizeof(char));
+	char *ciaPath = (char*)malloc(100 * sizeof(char));
 	
 	time_t unixTime = time(NULL);
 	struct tm* timeStruct = gmtime((const time_t *)&unixTime);
@@ -165,10 +165,8 @@ void update(PrintConsole topScreen, PrintConsole bottomScreen) {
 	int day = timeStruct->tm_mday;
 	int month = timeStruct->tm_mon + 1;
 	int year = timeStruct->tm_year +1900;
-	
-	mkdir("sdmc:/EventAssistant/builds", 0777);
 		
-	snprintf(ciaPath, 90, "/EventAssistant/builds/EventAssistant_%i-%i-%i-%02i%02i%02i.cia", day, month, year, hours, minutes, seconds);
+	snprintf(ciaPath, 100, "/3ds/data/EventAssistant/builds/EventAssistant_%i-%i-%i-%02i%02i%02i.cia", day, month, year, hours, minutes, seconds);
 
 	Result ret = 0;
 	
@@ -178,8 +176,8 @@ void update(PrintConsole topScreen, PrintConsole bottomScreen) {
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
 	printf("\x1b[47;34m                     Updater                      \x1b[0m\n");
-
-	ret = downloadFile(topScreen, bottomScreen, ciaUrl, ciaPath);
+	printf("Downloading file to sdmc:\x1b[32m%s\x1b[0m\n", ciaPath);
+	ret = downloadFile(bottomScreen, ciaUrl, ciaPath);
 	consoleSelect(&topScreen);
 	if (ret == 0) {
 		printf("\nDownload of EventAssistant.cia \x1b[32msucceded!\x1b[0m Install  it using a CIA manager.\n\n");
