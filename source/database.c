@@ -23,7 +23,7 @@
 #include "util.h"
 #include "fill.h"
 
-#define ENTRIES 7
+#define ENTRIES 9
 #define DELAY 30
 
 #define MAXPAGES 75
@@ -378,7 +378,7 @@ void psDates(PrintConsole topScreen, PrintConsole bottomScreen) {
 
 int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int game) {
 	int cont = 0;
-	char *menuEntries[ENTRIES] = {"XD collection", "Colosseum collection", "10ANNIV collection", "Mew old school collection", "Jirachi old school collection", "N's collection", "Wolfe Glick Top1 team Worlds2016"};
+	char *menuEntries[ENTRIES] = {"XD collection", "Colosseum collection", "10ANNIV collection", "Mew old school collection", "Jirachi old school collection", "N's collection", "Entree Forest collection", "Dream Radar collection", "Wolfe Glick Top1 team Worlds2016"};
 	
     consoleSelect(&bottomScreen);
     printf("\x1b[2J");
@@ -568,6 +568,54 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 					break;
 				}
 				case 6 : {
+					char *path[1] = {"romfs:/misc/coll_entreeforest.bin"};
+
+					consoleSelect(&topScreen);
+					printf("\x1b[15;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m box will be replaced", 9, 1);
+					while (aptMainLoop()) {
+						gspWaitForVBlank();
+						hidScanInput();
+						
+						if (hidKeysDown() & KEY_B)
+							return 0;
+
+						if (hidKeysDown() & KEY_START)
+							break;
+
+						gfxFlushBuffers();
+						gfxSwapBuffers();
+					}					
+					
+					int res = setBoxBin(bottomScreen, mainbuf, game, 1, 30, path);
+					if (res != 1) 
+						return res;
+					break;
+				}
+				case 7 : {
+					char *path[1] = {"romfs:/misc/coll_dreamradar.bin"};
+
+					consoleSelect(&topScreen);
+					printf("\x1b[15;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m box will be replaced", 9, 1);
+					while (aptMainLoop()) {
+						gspWaitForVBlank();
+						hidScanInput();
+						
+						if (hidKeysDown() & KEY_B)
+							return 0;
+
+						if (hidKeysDown() & KEY_START)
+							break;
+
+						gfxFlushBuffers();
+						gfxSwapBuffers();
+					}					
+					
+					int res = setBoxBin(bottomScreen, mainbuf, game, 1, 30, path);
+					if (res != 1) 
+						return res;
+					break;
+				}
+				case 8 : {
 					if (game == 0 || game == 1)
 						return 12;
 					
