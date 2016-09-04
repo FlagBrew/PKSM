@@ -244,6 +244,7 @@ void filldatabase(char *database[]) {
 	database[1067] = "1067 - KOR HA Moltres";
 	database[1068] = "1068 - KOR HA Mewtwo";
 	database[1070] = "1070 - KOR Naminori Pikachu";
+	database[1071] = "1071 - KOR All Stars Diancie";
 	database[1501] = "1501 - HA Torchic";
 	database[1503] = "1503 - Fancy Vivillon";
 	database[1504] = "1504 - Shiny Beldum";
