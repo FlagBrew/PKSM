@@ -492,23 +492,17 @@ void setWC(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[]) {
 		memcpy((void*)(mainbuf + ORASWC6POS + nInjected[0] * WC6LENGTH), (const void*)wcbuf, WC6LENGTH);
 	}
 	if (game == 4 || game == 5) {
-		u8 wcData[0xA90];
-		//for (u32 i = 0; i < 0xA90; i++)   is this really needed?
-		//	wcData[i] = 0x0;
-		
-		wcData[i / 8] |= 0x1 << (i & 7);
-		memcpy((void*)(wcData + nInjected[0] * PGFLENGTH + 0x100), (const void*)wcbuf, PGFLENGTH);
+		*(mainbuf + PGFSTARTPOS + i / 8) |= 0x1 << (i & 7);
+		memcpy((void*)(mainbuf + PGFSTARTPOS + nInjected[0] * PGFLENGTH + 0x100), (const void*)wcbuf, PGFLENGTH);
 		
 		u32 seed;
 		memcpy(&seed, &mainbuf[0x1D290], sizeof(u32));
-		for (int i = 0; i < 0xA90; i += 2) {
+		for (int i = 0; i < (PGFLENGTH * 12 + 0x100); i += 2) {
 			u16 temp;
-			memcpy(&temp, &wcData[i], 2);
-			temp = temp ^ LCRNG(seed) >> 16;
-			memcpy(&wcData[i], &temp, 2);
+			memcpy(&temp, &mainbuf[PGFSTARTPOS + i], 2);
+			temp ^= (LCRNG(seed) >> 16);
+			memcpy(&mainbuf[PGFSTARTPOS + i], &temp, 2);
 		}
-		memcpy((void*)(mainbuf + PGFSTARTPOS), (const void*)wcData, 0xA90);
-		// I don't know if I should recopy the seed here
 	}
 
 	nInjected[0] += 1;
