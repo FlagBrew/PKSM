@@ -16,7 +16,7 @@
 
 #include <3ds.h>
 #include <stdio.h>
-
+#define PGFLENGTH 204
 #define WC6LENGTH 264
 #define PKMNLENGTH 232
 #define BOXMAX 31
@@ -32,8 +32,11 @@
 u32 CHKOffset(u32 i, int game);
 u32 CHKLength(u32 i, int game);
 u16 ccitt16(u8* data, u32 len);
+u32 BWCHKOff(u32 i, int game);
+u32 BWCHKMirr(u32 i, int game);
 void rewriteCHK(u8 *mainbuf, int game);
 u32 seedStep(const u32 seed);
+u32 LCRNG(u32 seed);
 void shuffleArray(u8* pkmn, const u32 encryptionkey);
 void decryptPkmn(u8* pkmn);
 int getPkmnAddress(const int boxnumber, const int indexnumber, int game);

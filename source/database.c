@@ -24,15 +24,15 @@
 #include "fill.h"
 
 #define ENTRIES 9
-#define DELAY 30
 
-#define MAXPAGES 75
+#define MAXPAGES6 75
+#define MAXPAGES5 6
 #define RIGHE 27
 
 char *overwritechar[2] = {"DISABLED", "ENABLED "};
 char *adaptchar[2] = {"NO ", "YES"};
 
-int printDB(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int i, int nInjected[], int game, int overwrite[]) {	
+int printDB6(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int i, int nInjected[], int game, int overwrite[]) {	
 	char *language[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
 	
     int langCont = 0;
@@ -225,12 +225,186 @@ int printDB(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int 
     return -1;
 }
 
-void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int game) {
-	char *database[RIGHE * (MAXPAGES + 1)];
+int printDB5(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int i, int nInjected[], int game, int overwrite[]) {	
+	char *language[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
 	
-	filldatabase(database);
+    int langCont = 0;
+
+    consoleSelect(&bottomScreen);
+    printf("\x1b[2J");
+    printf("----------------------------------------");
+	printf("\x1b[32mSELECT\x1b[0m change language");
+	printf("\n\x1b[32mX\x1b[0m      overwrite wondercards");
+	printf("\n\x1b[31mSTART\x1b[0m  inject wc in slot");
 	
-	int t_frame = 1;
+	printf("\x1b[1;32H%s", language[langCont]);
+	printf("\x1b[2;32H%s", overwritechar[overwrite[0]]);
+	printf("\x1b[3;32H%d ", nInjected[0] + 1);	
+    printf("\x1b[4;0H----------------------------------------");
+
+    printf("\x1b[21;0H----------------------------------------");
+    printf("\x1b[22;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this. This is a new way to inject WC6\nand I need time to perfect it.");
+    printf("\x1b[27;0H----------------------------------------");
+    printf("\x1b[29;11HPress B to return.");
+    consoleSelect(&topScreen);
+    printf("\x1b[2J");
+    printf("\x1b[0;0HLanguages: None\x1b[0;11H");
+
+    gfxFlushBuffers();
+    gfxSwapBuffers();
+
+    char *testpath = (char*)malloc(30 * sizeof(char));
+	
+    for (int j = 0; j < 7; j++) {
+        switch (j) {
+            case 0 : {
+				snprintf(testpath, 30, "romfs:/pgf/jpn/%d.pgf", i);
+				break;
+            } 
+            case 1 : {
+				snprintf(testpath, 30, "romfs:/pgf/eng/%d.pgf", i);
+				break;
+            }
+            case 2 : {
+				snprintf(testpath, 30, "romfs:/pgf/fre/%d.pgf", i);
+				break;
+            }
+            case 3 : {
+				snprintf(testpath, 30, "romfs:/pgf/ita/%d.pgf", i);
+				break;
+            }
+            case 4 : {
+				snprintf(testpath, 30, "romfs:/pgf/ger/%d.pgf", i);
+				break;
+            }
+            case 5 : {
+				snprintf(testpath, 30, "romfs:/pgf/spa/%d.pgf", i);
+				break;
+            }
+            case 6 : {
+				snprintf(testpath, 30, "romfs:/pgf/kor/%d.pgf", i);
+				break;
+            }
+        }
+		FILE* f = fopen(testpath, "r");
+		if (f) {
+            printf("%s ", language[j]);
+		   	fclose(f);
+		}
+
+        gfxFlushBuffers();
+        gfxSwapBuffers();
+    }
+	
+	//char *descpath = (char*)malloc(30 * sizeof(char));
+	//snprintf(descpath, 30, "romfs:/database/%d.txt", i);
+	
+	printf("\x1b[0;45H\x1b[32mDONE!\x1b[0m\n");
+	//printfile(descpath);
+	
+	//free(descpath);
+	free(testpath);
+
+    consoleSelect(&bottomScreen);
+
+    while (aptMainLoop()) {
+        gspWaitForVBlank();
+        hidScanInput();
+
+        if (hidKeysDown() & KEY_B)
+            break;
+
+        if (hidKeysDown() & KEY_X) {
+            if (overwrite[0] == 0) {
+				overwrite[0] = 1;
+				nInjected[0] = 0;
+			} else if (overwrite[0] == 1) {
+                overwrite[0] = 0;
+                findFreeLocationWC(mainbuf, game, nInjected);
+            }
+
+			printf("\x1b[2;32H%s", overwritechar[overwrite[0]]);
+			printf("\x1b[3;32H%d ", nInjected[0] + 1);
+        }
+
+        if (hidKeysDown() & KEY_SELECT) {
+            if (langCont < 6) 
+				langCont++;
+            else if (langCont == 6) 
+				langCont = 0;
+
+			printf("\x1b[1;32H%s", language[langCont]);
+        }
+
+        if (hidKeysDown() & KEY_START) {
+			if (nInjected[0] >= 12)
+				nInjected[0] = 0;
+
+			char *pgfpath = (char*)malloc(30 * sizeof(char));
+
+			switch (langCont) {
+				case 0 : {
+					snprintf(pgfpath, 30, "romfs:/pgf/jpn/%d.pgf", i);
+					break;
+				} 
+				case 1 : {
+					snprintf(pgfpath, 30, "romfs:/pgf/eng/%d.pgf", i);
+					break;
+				}
+				case 2 : {
+					snprintf(pgfpath, 30, "romfs:/pgf/fre/%d.pgf", i);
+					break;
+				}
+				case 3 : {
+					snprintf(pgfpath, 30, "romfs:/pgf/ita/%d.pgf", i);
+					break;
+				}
+				case 4 : {
+					snprintf(pgfpath, 30, "romfs:/pgf/ger/%d.pgf", i);
+					break;
+				}
+				case 5 : {
+					snprintf(pgfpath, 30, "romfs:/pgf/spa/%d.pgf", i);
+					break;
+				}
+				case 6 : {
+					snprintf(pgfpath, 30, "romfs:/pgf/kor/%d.pgf", i);
+					break;
+				}
+			}
+			
+			FILE *fptr = fopen(pgfpath, "rt");
+			if (fptr == NULL) 
+				return 15;
+			fseek(fptr, 0, SEEK_END);
+			u32 contentsize = ftell(fptr);
+			u8 *pgfbuf = (u8*)malloc(contentsize);
+			if (pgfbuf == NULL) 
+				return 8;
+			rewind(fptr);
+			fread(pgfbuf, contentsize, 1, fptr);
+			fclose(fptr);
+
+			if (overwrite[0] == 0)
+				findFreeLocationWC(mainbuf, game, nInjected);
+
+			setWC(mainbuf, pgfbuf, game, i, nInjected);
+
+			free(pgfpath);
+			free(pgfbuf);
+			return 0;
+        }
+        gfxFlushBuffers();
+        gfxSwapBuffers();
+    }
+    return -1;
+}
+
+void eventDatabase6(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int game) {
+	char *database[RIGHE * (MAXPAGES6 + 1)];
+	
+	filldatabase6(database);
+
 	int currentEntry = 0;
 	int page = 0;
 	int nInjected[1] = {0};
@@ -249,7 +423,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbu
 	
 	consoleSelect(&topScreen);		
 	printf("\x1b[2J");
-	printf("\x1b[47;30mPage: \x1b[47;34m%d\x1b[47;30m of \x1b[47;34m%d\x1b[47;30m - from \x1b[47;34m%d\x1b[47;30m to \x1b[47;34m%d\x1b[47;30m                      \x1b[0m\x1b[1;0H      ", page + 1, MAXPAGES + 1, page * 27, (page + 1) * 27 - 1);
+	printf("\x1b[47;30mPage: \x1b[47;34m%d\x1b[47;30m of \x1b[47;34m%d\x1b[47;30m - from \x1b[47;34m%d\x1b[47;30m to \x1b[47;34m%d\x1b[47;30m                      \x1b[0m\x1b[1;0H      ", page + 1, MAXPAGES6 + 1, page * 27, (page + 1) * 27 - 1);
 	
 	refreshDB(currentEntry, topScreen, database, RIGHE, page);
 
@@ -262,31 +436,31 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbu
 		if (hidKeysDown() & KEY_B || hidKeysDown() & KEY_TOUCH)	
 			break;
 		
-		if ((hidKeysDown() & KEY_R) ^ (hidKeysHeld() & KEY_R && t_frame % DELAY == 1)) {
-			if (page < MAXPAGES) page++;
-			else if (page == MAXPAGES) page = 0;
+		if (hidKeysDown() & KEY_R) {
+			if (page < MAXPAGES6) page++;
+			else if (page == MAXPAGES6) page = 0;
 			consoleSelect(&topScreen);	
 			printf("\x1b[2J");
-			printf("\x1b[47;30mPage: \x1b[47;34m%d\x1b[47;30m of \x1b[47;34m%d\x1b[47;30m - from \x1b[47;34m%d\x1b[47;30m to \x1b[47;34m%d\x1b[47;30m                      \x1b[0m\x1b[1;0H      ", page + 1, MAXPAGES + 1, page * 27, (page + 1) * 27 - 1);
+			printf("\x1b[47;30mPage: \x1b[47;34m%d\x1b[47;30m of \x1b[47;34m%d\x1b[47;30m - from \x1b[47;34m%d\x1b[47;30m to \x1b[47;34m%d\x1b[47;30m                      \x1b[0m\x1b[1;0H      ", page + 1, MAXPAGES6 + 1, page * 27, (page + 1) * 27 - 1);
 			refreshDB(currentEntry, topScreen, database, RIGHE, page);
 		}
 		
-		if ((hidKeysDown() & KEY_L) ^ (hidKeysHeld() & KEY_L && t_frame % DELAY == 1)) {
+		if (hidKeysDown() & KEY_L) {
 			if (page > 0) page--;
-			else if (page == 0) page = MAXPAGES;
+			else if (page == 0) page = MAXPAGES6;
 			consoleSelect(&topScreen);	
 			printf("\x1b[2J");
-			printf("\x1b[47;30mPage: \x1b[47;34m%d\x1b[47;30m of \x1b[47;34m%d\x1b[47;30m - from \x1b[47;34m%d\x1b[47;30m to \x1b[47;34m%d\x1b[47;30m                      \x1b[0m\x1b[1;0H      ", page + 1, MAXPAGES + 1, page * 27, (page + 1) * 27 - 1);
+			printf("\x1b[47;30mPage: \x1b[47;34m%d\x1b[47;30m of \x1b[47;34m%d\x1b[47;30m - from \x1b[47;34m%d\x1b[47;30m to \x1b[47;34m%d\x1b[47;30m                      \x1b[0m\x1b[1;0H      ", page + 1, MAXPAGES6 + 1, page * 27, (page + 1) * 27 - 1);
 			refreshDB(currentEntry, topScreen, database, RIGHE, page);	
 		}
 		
-		if ((hidKeysDown() & KEY_DUP) ^ (hidKeysHeld() & KEY_DUP && t_frame % DELAY == 1)) {
+		if (hidKeysDown() & KEY_DUP) {
 			if (currentEntry == 0) currentEntry = RIGHE - 1;
 			else if (currentEntry > 0) currentEntry -= 1;
 			refreshDB(currentEntry, topScreen, database, RIGHE, page);
 		}
 		
-		if ((hidKeysDown() & KEY_DDOWN) ^ (hidKeysHeld() & KEY_DDOWN && t_frame % DELAY == 1)) {
+		if (hidKeysDown() & KEY_DDOWN) {
 			if (currentEntry == RIGHE - 1) currentEntry = 0;
 			else if (currentEntry < RIGHE - 1) currentEntry += 1;
 			refreshDB(currentEntry, topScreen, database, RIGHE, page);			
@@ -295,7 +469,7 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbu
  		if (hidKeysDown() & KEY_A)  {
 			consoleSelect(&topScreen);
 			printf("\x1b[2J");
-			Result ret = printDB(topScreen, bottomScreen, mainbuf, (currentEntry + page * RIGHE), nInjected, game, overwrite);
+			Result ret = printDB6(topScreen, bottomScreen, mainbuf, (currentEntry + page * RIGHE), nInjected, game, overwrite);
 			consoleSelect(&bottomScreen);
 			printf("\x1b[2J");
 			printf("----------------------------------------");
@@ -312,13 +486,104 @@ void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbu
 			printf("\x1b[29;8HTouch or press B to exit");		
 			consoleSelect(&topScreen);
 			printf("\x1b[2J");	
-			printf("\x1b[47;30mPage: \x1b[47;34m%d\x1b[47;30m of \x1b[47;34m%d\x1b[47;30m - from \x1b[47;34m%d\x1b[47;30m to \x1b[47;34m%d\x1b[47;30m                      \x1b[0m\x1b[1;0H      ", page + 1, MAXPAGES + 1, page * 27, (page + 1) * 27 - 1);
+			printf("\x1b[47;30mPage: \x1b[47;34m%d\x1b[47;30m of \x1b[47;34m%d\x1b[47;30m - from \x1b[47;34m%d\x1b[47;30m to \x1b[47;34m%d\x1b[47;30m                      \x1b[0m\x1b[1;0H      ", page + 1, MAXPAGES6 + 1, page * 27, (page + 1) * 27 - 1);
+			refreshDB(currentEntry, topScreen, database, RIGHE, page);
+		}	
+		
+		gfxFlushBuffers();
+		gfxSwapBuffers();
+	}
+}
+
+void eventDatabase5(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int game) {
+	char *database[RIGHE * (MAXPAGES5 + 1)];
+	
+	filldatabase5(database);
+	
+	int currentEntry = 0;
+	int page = 0;
+	int nInjected[1] = {0};
+	int overwrite[1] = {0};
+	
+	findFreeLocationWC(mainbuf, game, nInjected);
+	
+	consoleSelect(&bottomScreen);
+	printf("\x1b[2J");
+	printf("----------------------------------------");
+	printf("\x1b[32m\x19\x18\x1b[0m  Move cursor\n");
+	printf("\x1b[32mL/R\x1b[0m Switch page\n");
+	printf("\x1b[32mA\x1b[0m   Open/close entry\n");
+	printf("----------------------------------------");
+	printf("\x1b[29;8HTouch or press B to exit");
+	
+	consoleSelect(&topScreen);		
+	printf("\x1b[2J");
+	printf("\x1b[47;30mPage: \x1b[47;34m%d\x1b[47;30m of \x1b[47;34m%d\x1b[47;30m - from \x1b[47;34m%d\x1b[47;30m to \x1b[47;34m%d\x1b[47;30m                       \x1b[0m\x1b[1;0H      ", page + 1, MAXPAGES5 + 1, page * 27, (page + 1) * 27 - 1);
+	
+	refreshDB(currentEntry, topScreen, database, RIGHE, page);
+
+	consoleSelect(&topScreen);
+	
+	while (aptMainLoop()) {
+		gspWaitForVBlank();
+		hidScanInput();
+		
+		if (hidKeysDown() & KEY_B || hidKeysDown() & KEY_TOUCH)	
+			break;
+		
+		if (hidKeysDown() & KEY_R) {
+			if (page < MAXPAGES5) page++;
+			else if (page == MAXPAGES5) page = 0;
+			consoleSelect(&topScreen);	
+			printf("\x1b[2J");
+			printf("\x1b[47;30mPage: \x1b[47;34m%d\x1b[47;30m of \x1b[47;34m%d\x1b[47;30m - from \x1b[47;34m%d\x1b[47;30m to \x1b[47;34m%d\x1b[47;30m                       \x1b[0m\x1b[1;0H      ", page + 1, MAXPAGES5 + 1, page * 27, (page + 1) * 27 - 1);
 			refreshDB(currentEntry, topScreen, database, RIGHE, page);
 		}
+		
+		if (hidKeysDown() & KEY_L) {
+			if (page > 0) page--;
+			else if (page == 0) page = MAXPAGES5;
+			consoleSelect(&topScreen);	
+			printf("\x1b[2J");
+			printf("\x1b[47;30mPage: \x1b[47;34m%d\x1b[47;30m of \x1b[47;34m%d\x1b[47;30m - from \x1b[47;34m%d\x1b[47;30m to \x1b[47;34m%d\x1b[47;30m                       \x1b[0m\x1b[1;0H      ", page + 1, MAXPAGES5 + 1, page * 27, (page + 1) * 27 - 1);
+			refreshDB(currentEntry, topScreen, database, RIGHE, page);	
+		}
+		
+		if (hidKeysDown() & KEY_DUP) {
+			if (currentEntry == 0) currentEntry = RIGHE - 1;
+			else if (currentEntry > 0) currentEntry -= 1;
+			refreshDB(currentEntry, topScreen, database, RIGHE, page);
+		}
+		
+		if (hidKeysDown() & KEY_DDOWN) {
+			if (currentEntry == RIGHE - 1) currentEntry = 0;
+			else if (currentEntry < RIGHE - 1) currentEntry += 1;
+			refreshDB(currentEntry, topScreen, database, RIGHE, page);			
+		}
 
-		t_frame++;
-		if (t_frame > 5000) 
-			t_frame = 1;		
+ 		if (hidKeysDown() & KEY_A)  {
+			consoleSelect(&topScreen);
+			printf("\x1b[2J");
+			Result ret = printDB5(topScreen, bottomScreen, mainbuf, (currentEntry + page * RIGHE), nInjected, game, overwrite);
+			consoleSelect(&bottomScreen);
+			printf("\x1b[2J");
+			printf("----------------------------------------");
+			printf("\x1b[32m\x19\x18\x1b[0m - Move cursor\n");
+			printf("\x1b[32mL/R\x1b[0m - Switch page\n");
+			printf("\x1b[32mA\x1b[0m - Open/close entry\n");
+			printf("----------------------------------------");
+			
+			if (ret == 0) infoDisp(bottomScreen, (int)ret, BOTTOM);
+			if (ret != -1 && ret != 0)
+				errDisp(bottomScreen, (int)ret, BOTTOM);
+
+			consoleSelect(&bottomScreen);
+			printf("\x1b[29;8HTouch or press B to exit");		
+			consoleSelect(&topScreen);
+			printf("\x1b[2J");	
+			printf("\x1b[47;30mPage: \x1b[47;34m%d\x1b[47;30m of \x1b[47;34m%d\x1b[47;30m - from \x1b[47;34m%d\x1b[47;30m to \x1b[47;34m%d\x1b[47;30m                       \x1b[0m\x1b[1;0H      ", page + 1, MAXPAGES5 + 1, page * 27, (page + 1) * 27 - 1);
+			refreshDB(currentEntry, topScreen, database, RIGHE, page);
+		}	
 		
 		gfxFlushBuffers();
 		gfxSwapBuffers();

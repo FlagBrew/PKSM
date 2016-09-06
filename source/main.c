@@ -38,14 +38,12 @@
 #include "database.h"
 #include "pokemon.h"
 
-#define ENTRIES 11
-
-#define citra 1 // 0: citra debug enabled
-				// 1: citra debug disabled: application meant to run correctly on the console
+#define ENTRIES 12
+#define GAMES 6
 
 #define V1 2
-#define V2 2
-#define V3 1
+#define V2 3
+#define V3 0
 
 #define DAY 4
 #define MONTH 9
@@ -56,6 +54,46 @@ void exitServices() {
 	sdmcExit();
 	aptExit();
 	gfxExit();
+}
+
+int autoupdater(PrintConsole topScreen, PrintConsole bottomScreen) {
+	int temp = 0;
+	char* ver = (char*)malloc(6 * sizeof(u8));
+	snprintf(ver, 6, "%d.%d.%d", V1, V2, V3);
+	
+	printf("\x1b[2J");
+	printf("Checking automatically for updates...\n\n");
+	Result ret = downloadFile(bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/ver.ver", "/3ds/data/EventAssistant/builds/ver.ver");	
+	if (ret != 0) {
+		exitServices();
+		return 1;
+	}
+	
+	printf("\nComparing...");
+	FILE *fptr = fopen("3ds/data/EventAssistant/builds/ver.ver", "rt");
+	if (fptr == NULL)
+		return 15;
+	fseek(fptr, 0, SEEK_END);
+	u32 contentsize = ftell(fptr);
+	char *verbuf = (char*)malloc(contentsize);
+	if (verbuf == NULL) 
+		return 8;
+	rewind(fptr);
+	fread(verbuf, contentsize, 1, fptr);
+	fclose(fptr);
+
+	remove("/3ds/data/EventAssistant/builds/ver.ver");			
+	
+	for (int i = 0; i < 5; i++)
+		if (*(ver + i) == *(verbuf + i))
+			temp++;
+	
+	if (temp < 5) {
+		update(topScreen, bottomScreen);
+		exitServices();
+		return 1;
+	}
+	return 0;
 }
 
 void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, char* menuEntries[]){
@@ -114,39 +152,8 @@ int main() {
 		}
 		
 		if (autoupdate) {
-			int temp = 0;
-			char* ver = (char*)malloc(6 * sizeof(u8));
-			snprintf(ver, 6, "%d.%d.%d", V1, V2, V3);
-			
-			printf("\x1b[2J");
-			printf("Checking automatically for updates...\n\n");
-			Result ret = downloadFile(bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/ver.ver", "/3ds/data/EventAssistant/builds/ver.ver");	
-			if (ret != 0) {
-				exitServices();
-				return 0;
-			}
-			
-			printf("\nComparing...");
-			FILE *fptr = fopen("3ds/data/EventAssistant/builds/ver.ver", "rt");
-			if (fptr == NULL)
-				return 15;
-			fseek(fptr, 0, SEEK_END);
-			u32 contentsize = ftell(fptr);
-			char *verbuf = (char*)malloc(contentsize);
-			if (verbuf == NULL) 
-				return 8;
-			rewind(fptr);
-			fread(verbuf, contentsize, 1, fptr);
-			fclose(fptr);
-
-			remove("/3ds/data/EventAssistant/builds/ver.ver");			
-			
-			for (int i = 0; i < 5; i++)
-				if (*(ver + i) == *(verbuf + i))
-					temp++;
-			
-			if (temp < 5) {
-				update(topScreen, bottomScreen);
+			int temp = autoupdater(topScreen, bottomScreen);
+			if (temp != 0) {
 				exitServices();
 				return 0;
 			}
@@ -158,7 +165,7 @@ int main() {
 	
 	//X, Y, OR, AS
 	const u64 ids[4] = {0x0004000000055D00, 0x0004000000055E00, 0x000400000011C400, 0x000400000011C500};
-	char *gamesList[4] = {"Pokemon X", "Pokemon Y", "Pokemon Omega Ruby", "Pokemon Alpha Sapphire"};
+	char *gamesList[GAMES] = {"Pokemon X", "Pokemon Y", "Pokemon Omega Ruby", "Pokemon Alpha Sapphire", "Pokemon Black-White", "Pokemon Black2-White2"};
 	
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
@@ -167,7 +174,7 @@ int main() {
 	consoleSelect(&topScreen);
 	printf("\x1b[2J");
 	printf("\x1b[31mCHOOSE GAME.\x1b[0m Cart has priority over digital copy.");
-	refresh(game, topScreen, gamesList, 4);
+	refresh(game, topScreen, gamesList, GAMES);
 
 	while (aptMainLoop()) {
 		gspWaitForVBlank();
@@ -180,20 +187,20 @@ int main() {
 		
 		if (hidKeysDown() & KEY_DUP) {
 			if (game == 0)
-				game = 3;
+				game = GAMES - 1;
 			else if (game > 0)
 				game--;	
 			
-			refresh(game, topScreen, gamesList, 4);
+			refresh(game, topScreen, gamesList, GAMES);
 		}
 		
 		if (hidKeysDown() & KEY_DDOWN) {
-			if (game == 3)
+			if (game == GAMES - 1)
 				game = 0;
-			else if (game < 3)
+			else if (game < GAMES - 1)
 				game++;
 			
-			refresh(game, topScreen, gamesList, 4);
+			refresh(game, topScreen, gamesList, GAMES);
 		}
 		
 		if (hidKeysDown() & KEY_A)
@@ -204,57 +211,69 @@ int main() {
 	}
 	
 	consoleSelect(&topScreen);
-	printf("\x1b[7;0HLoading save...");
+	printf("\x1b[9;0HLoading save...");
 	
 	fsStart();
-	#if citra
-	FS_Archive saveArch;	
-	
-	if (!(openSaveArch(&saveArch, ids[game]))) {
-		errDisp(bottomScreen, 1, BOTTOM);
-		exitServices();
-		return -1;
-	}
-
-	Handle mainHandle;
-	FSUSER_OpenFile(&mainHandle, saveArch, fsMakePath(PATH_ASCII, "/main"), FS_OPEN_READ | FS_OPEN_WRITE, 0);
-	#endif
-	
 	u64 mainSize = 0;
+	u32 contentsize = 0;
+	Handle mainHandle;
+	FS_Archive saveArch;
+	u8* mainbuf;
 	
-	#if citra
-	FSFILE_GetSize(mainHandle, &mainSize);
-	
-	switch(game) {
-		case 0 : {
-			if (mainSize != 415232)
-				errDisp(bottomScreen, 13, BOTTOM);
-			break;
+	if (game == 0 || game == 1 || game == 2 || game == 3) {	
+		if (!(openSaveArch(&saveArch, ids[game]))) {
+			errDisp(bottomScreen, 1, BOTTOM);
+			exitServices();
+			return -1;
 		}
-		case 1 : {
-			if (mainSize != 415232)
-				errDisp(bottomScreen, 13, BOTTOM);
-			break;
+
+		FSUSER_OpenFile(&mainHandle, saveArch, fsMakePath(PATH_ASCII, "/main"), FS_OPEN_READ | FS_OPEN_WRITE, 0);
+		
+		FSFILE_GetSize(mainHandle, &mainSize);
+		
+		switch(game) {
+			case 0 : {
+				if (mainSize != 415232)
+					errDisp(bottomScreen, 13, BOTTOM);
+				break;
+			}
+			case 1 : {
+				if (mainSize != 415232)
+					errDisp(bottomScreen, 13, BOTTOM);
+				break;
+			}
+			case 2 : {
+				if (mainSize != 483328)
+					errDisp(bottomScreen, 13, BOTTOM);
+				break;
+			}
+			case 3 : {
+				if (mainSize != 483328)
+					errDisp(bottomScreen, 13, BOTTOM);
+				break;
+			}
+			exitServices();
+			return -1;
 		}
-		case 2 : {
-			if (mainSize != 483328)
-				errDisp(bottomScreen, 13, BOTTOM);
-			break;
-		}
-		case 3 : {
-			if (mainSize != 483328)
-				errDisp(bottomScreen, 13, BOTTOM);
-			break;
-		}
-		exitServices();
-		return -1;
+		
+		mainbuf = malloc(mainSize);
+		
+		FSFILE_Read(mainHandle, NULL, 0, mainbuf, mainSize);
 	}
-	#endif
 	
-	u8* mainbuf = malloc(mainSize);
-	
-	#if citra
-	FSFILE_Read(mainHandle, NULL, 0, mainbuf, mainSize);
+	else {
+		FILE *fptr = fopen("TWLSaveTool/a.sav", "rt");		// currently trying changes with a save backup in my SD card. I'm stuck because after I save my modifications, PKHeX says that size is invalid. No changes appears in the game when I try to import the save
+		if (fptr == NULL) 
+			return 15;
+		fseek(fptr, 0, SEEK_END);
+		contentsize = ftell(fptr);
+		mainbuf = (u8*)malloc(contentsize);
+		if (mainbuf == NULL) 
+			return 8;
+		rewind(fptr);
+		fread(mainbuf, contentsize, 1, fptr);
+		fclose(fptr);		
+	}
 	
 	char *bakpath = (char*)malloc(80 * sizeof(char));
 	
@@ -276,9 +295,8 @@ int main() {
 	fclose(f);
 	
 	free(bakpath);
-	#endif
 
-	char *menuEntries[ENTRIES] = {"Gen VI's Event Database", "Gen VI's Save file editor", "Gen VI's Pokemon editor", "Mass injecter", "Wi-Fi distributions", "Code distributions", "Local distributions", "Capture probability calculator", "Common PS dates database", "Credits", "Update .cia to latest commit build"};
+	char *menuEntries[ENTRIES] = {"Gen VI's Event Database", "Gen V's Event Database", "Gen VI's Save file editor", "Gen VI's Pokemon editor", "Mass injecter", "Wi-Fi distributions", "Code distributions", "Local distributions", "Capture probability calculator", "Common PS dates database", "Credits", "Update .cia to latest commit build"};
 	int currentEntry = 0;
 	
 	// initializing save file editor variables
@@ -325,11 +343,16 @@ int main() {
 		if (hidKeysDown() & KEY_A) {
 			switch (currentEntry) {
 				case 0 : {
-					eventDatabase(topScreen, bottomScreen, mainbuf, game);
+					eventDatabase6(topScreen, bottomScreen, mainbuf, game);
+					break;
+				}
+				
+				case 1 : {
+					eventDatabase5(topScreen, bottomScreen, mainbuf, game);
 					break;
 				}
 
-				case 1 : {
+				case 2 : {
 					int ret = saveFileEditor(topScreen, bottomScreen, mainbuf, game, nInjected, injectCont);
 					consoleSelect(&bottomScreen);
 					
@@ -344,7 +367,7 @@ int main() {
 					break;
 				}
 				
-				case 2 : {
+				case 3 : {
 					int ret = PKEditor(topScreen, bottomScreen, mainbuf, game, pokemonCont);
 					consoleSelect(&bottomScreen);
 					if (ret == 1)
@@ -358,7 +381,7 @@ int main() {
 					break;
 				}
 				
-				case 3 : {
+				case 4 : {
 					int ret = massInjecter(topScreen, bottomScreen, mainbuf, game);
 					consoleSelect(&bottomScreen);
 					if (ret == 1)
@@ -372,37 +395,37 @@ int main() {
 					break;
 				}
 
-				case 4 :  {
+				case 5 :  {
 					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/worldwide1.txt");
 					break;
 				}
 
-				case 5 : {
+				case 6 : {
 					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/worldwide2.txt");
 					break;
 				}
 
-				case 6 : {
+				case 7 : {
 					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/local.txt");
 					break;
 				}
 
-				case 7 : {
+				case 8 : {
 					catchrate(topScreen, bottomScreen);
 					break;
 				}
 
-				case 8 : {
+				case 9 : {
 					psDates(topScreen, bottomScreen);
 					break;
 				}
 
-				case 9 : {
+				case 10 : {
 					credits(topScreen, bottomScreen);
 					break;
 				}
 
-				case 10 : {
+				case 11 : {
 					update(topScreen, bottomScreen);
 					break;
 				}
@@ -418,24 +441,27 @@ int main() {
 		gfxSwapBuffers();
 	}
 	
-	#if citra
 	if (save) {
 		infoDisp(bottomScreen, 2, BOTTOM);
 		gfxFlushBuffers();
 		gfxSwapBuffers();
 		
-		rewriteCHK(mainbuf, game);
-
-		FSFILE_Write(mainHandle, NULL, 0, mainbuf, mainSize, FS_WRITE_FLUSH);
+		rewriteCHK(mainbuf, game);	
 	}
 	
-	FSFILE_Close(mainHandle);
-	
-	if (save)
-		FSUSER_ControlArchive(saveArch, ARCHIVE_ACTION_COMMIT_SAVE_DATA, NULL, 0, NULL, 0);
-	
-	FSUSER_CloseArchive(saveArch);
-	#endif 
+	if (game == 0 || game == 1 || game == 2 || game == 3) {
+		FSFILE_Write(mainHandle, NULL, 0, mainbuf, mainSize, FS_WRITE_FLUSH);
+		FSFILE_Close(mainHandle);
+		if (save)
+			FSUSER_ControlArchive(saveArch, ARCHIVE_ACTION_COMMIT_SAVE_DATA, NULL, 0, NULL, 0);
+		FSUSER_CloseArchive(saveArch);
+	}
+	else {
+	FILE *f = fopen("TWLSaveTool/a.sav", "wb");
+	fwrite(mainbuf, 1, contentsize, f);
+	fclose(f);
+	}
+		
 	
 	free(mainbuf);
 	fsEnd();

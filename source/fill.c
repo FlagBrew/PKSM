@@ -19,8 +19,7 @@
 #include <3ds.h>
 #include <string.h>
 
-void filldatabase(char *database[]) {
-	
+void filldatabase6(char *database[]) {
 	for (int j = 0; j < 27 * 76; j++)
 		database[j] = ".";
 	
@@ -258,4 +257,135 @@ void filldatabase(char *database[]) {
 	database[1513] = "1513 - PGL Dragonite";
 	database[1514] = "1514 - PGL Miltank";
 	database[1515] = "1515 - PGL Garchomp";
+}
+
+void filldatabase5(char *database[]) {	
+	for (int j = 0; j < 27 * 7; j++)
+		database[j] = ".";
+	
+	database[1] = "001 - Helpful Cubchoo";
+	database[2] = "002 - Summer Karrablast";
+	database[3] = "003 - Summer Shelmet";
+	database[4] = "004 - Trade for evolution Electabuzz";
+	database[5] = "005 - Trade for evolution Haunter";
+	database[6] = "006 - Trade for evolution Machoke";
+	database[7] = "007 - Trade for evolution Magmar";
+	database[8] = "008 - Trade for evolution Scyther";
+	database[9] = "009 - Trade for evolution Slowpoke";
+	database[10] = "010 - Trade for evolution Karrablast";
+	database[11] = "011 - Trade for evolution Shelmet";
+	database[28] = "028 - Darkrai";
+	database[29] = "029 - Mysterious Egg Pidove";
+	database[30] = "030 - Snarl Zoroark";
+	database[31] = "031 - Satoshi's Scraggy";
+	database[32] = "032 - Movie 2011 Victini";
+	database[33] = "033 - Movie 2011 Reshiram";
+	database[34] = "034 - Searcher Axew";
+	database[35] = "035 - Janta's Golurk";
+	database[36] = "036 - ANA Flying Pikachu";
+	database[37] = "037 - Worlds 2011 Scrafty";
+	database[38] = "038 - Singing Pikachu (ELT)";
+	database[39] = "039 - Singing Pikachu (AAA)";
+	database[40] = "040 - Singing Pikachu (Chisa)";
+	database[41] = "041 - Singing Pikachu (Amigo)";
+	database[42] = "042 - Singing Pikachu (SKE48)";
+	database[43] = "043 - Singing Pikachu (Wasshoi)";
+	database[45] = "045 - Singing Pikachu (Churuno)";
+	database[48] = "048 - Mighty Mewtwo";
+	database[49] = "049 - Tohoku Snivy";
+	database[50] = "050 - BDay Audino 2011";
+	database[51] = "051 - Milos Island Thundurus";
+	database[52] = "052 - Master Ball";
+	database[53] = "053 - Gratitude Shaymin";
+	database[54] = "054 - Year of the dragon egg Bagon";
+	database[55] = "055 - Year of the dragon egg Deino";
+	database[56] = "056 - Year of the dragon egg Druddigon";
+	database[57] = "057 - Year of the dragon egg Swablu";
+	database[58] = "058 - Game Generations Rayquaza";
+	database[59] = "059 - Nobunaga Rayquaza";
+	database[61] = "061 - Nationals 2012 Larvitar";
+	database[62] = "062 - Nagasaki Blaziken";
+	database[63] = "063 - Nagasaki Walrein";
+	database[64] = "064 - Nagasaki Gardevoir";
+	database[65] = "065 - Fukuoka Groudon";
+	database[66] = "066 - Fukuoka Kyogre";
+	database[67] = "067 - Sakura Shinkansen Pikachu";
+	database[68] = "068 - Master Ball";
+	database[69] = "069 - Summer Keldeo";
+	database[70] = "070 - Movie 2012 Meloetta";
+	database[71] = "071 - Strongest Pikachu";
+	database[73] = "073 - Sasebo Ludicolo";
+	database[75] = "075 - Saga Sceptile";
+	database[76] = "076 - Saga Milotic";
+	database[78] = "078 - Kumamoto Swampert";
+	database[89] = "089 - SP Miyazaki Metagross";
+	database[92] = "092 - Kokura Salamence";
+	database[93] = "093 - Searcher Piplup";
+	database[94] = "094 - Nationals 2012 Volcarona";
+	database[95] = "095 - Kanto Starter eggs";
+	database[96] = "096 - Carnival Pikachu";
+	database[97] = "097 - Singing Piplup";
+	database[98] = "098 - Adventure Camp Fossil Aerodactyl";
+	database[99] = "099 - Plasma Genesect";
+	database[100] = "100 - Worlds 2012 Fly Pikachu";
+	database[101] = "101 - Powerful Tag Ninetails";
+	database[102] = "102 - Powerful Tag Chandelure";
+	database[103] = "103 - Powerful Tag Whimsicott";
+	database[104] = "104 - Powerful Tag Lucario";
+	database[105] = "105 - Year of the dragon Horsea";
+	database[106] = "106 - Year of the dragon Trapinch";
+	database[111] = "111 - Single Battle Strongest Dragonite";
+	database[112] = "112 - Single Battle Strongest Garchomp";
+	database[113] = "113 - Single Battle Strongest Metagross";
+	database[114] = "114 - Single Battle Strongest Scizor";
+	database[115] = "115 - Single Battle Strongest Tyranitar";
+	database[118] = "118 - Anniversary Ruby Groudon";
+	database[119] = "119 - Anniversary Sapphire Kyogre";
+	database[120] = "120 - Team Rocket Meowth";
+	database[121] = "121 - Kanto Starter egg Bulbasaur";
+	database[122] = "122 - Kanto Starter egg Charmander";
+	database[123] = "123 - Kanto Starter egg Squirtle";
+	database[124] = "124 - Fukuoka BDay Audino";
+	database[125] = "125 - Tohoku Victini";
+	database[126] = "126 - Masuda Deoxys";
+	database[127] = "127 - P2 Lab Genesect";
+	database[128] = "128 - Winter Keldeo";
+	database[129] = "129 - Spring Meloetta";
+	database[130] = "130 - Abram's Cloyster";
+	database[131] = "131 - Toler's Ludicolo";
+	database[132] = "132 - Ray's Metagross";
+	database[133] = "133 - Plasma Deoxys";
+	database[134] = "134 - Nagoya Magikarp";
+	database[135] = "135 - Movie 2013 Mewtwo";
+	database[136] = "136 - Movie 2013 Genesect";
+	database[137] = "137 - Decolora Jirachi";
+	database[138] = "138 - Singing Eevee";
+	database[139] = "139 - PCS Empoleon";
+	database[140] = "140 - PCTH Serperior";
+	database[141] = "141 - PCT Pikachu";
+	database[142] = "142 - PCY Torterra";
+	database[143] = "143 - PCN Infernape";
+	database[144] = "144 - PCO Emboar";
+	database[145] = "145 - PCF Samurott";
+	database[147] = "147 - Singing Eevee";
+	database[148] = "148 - Summer Shiny Dialga";
+	database[149] = "149 - Summer Shiny Palkia";
+	database[150] = "150 - Summer Shiny Giratina";
+	database[151] = "151 - Tanabata Jirachi";
+	database[152] = "152 - Strongest Pikachu";
+	database[153] = "153 - Character Fair Jirachi";
+	database[154] = "154 - Chilseok Jirachi";
+	database[155] = "155 - Worlds 2013 Smeargle";
+	database[156] = "156 - Alder's Volcarona";
+	database[157] = "157 - Cynthia's Spiritomb";
+	database[158] = "158 - Dento's Pansage";
+	database[159] = "159 - Iris's Axew";
+	database[160] = "160 - Prof Okido's Rotom";
+	database[161] = "161 - Satoshi's Pikachu";
+	database[162] = "162 - Do Heun's Hitmontop";
+	database[163] = "163 - Seung Heon's Cresselia";
+	database[164] = "164 - Sejun's Liepard";
+	database[165] = "165 - Chief's Sableye";
+	database[166] = "166 - Yamamoto's Politoed";
+	database[167] = "167 - Tamamoto's Kingdra";
 }

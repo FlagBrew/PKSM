@@ -17,8 +17,10 @@
 #include <stdlib.h>
 #include <3ds.h>
 
-int printDB(PrintConsole topScreen, PrintConsole bottomScreen, u8* mainbuf, int i, int nInjected[], int game, int overwrite[]);
-void eventDatabase(PrintConsole topScreen, PrintConsole bottomScreen, u8* mainbuf, int game);
+int printDB6(PrintConsole topScreen, PrintConsole bottomScreen, u8* mainbuf, int i, int nInjected[], int game, int overwrite[]);
+int printDB5(PrintConsole topScreen, PrintConsole bottomScreen, u8* mainbuf, int i, int nInjected[], int game, int overwrite[]);
+void eventDatabase6(PrintConsole topScreen, PrintConsole bottomScreen, u8* mainbuf, int game);
+void eventDatabase5(PrintConsole topScreen, PrintConsole bottomScreen, u8* mainbuf, int game);
 void printPSdates(PrintConsole topScreen, PrintConsole bottomScreen, char *path, int n);
 void psDates(PrintConsole topScreen, PrintConsole bottomScreen);
 int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int game);

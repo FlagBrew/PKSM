@@ -18,4 +18,5 @@
 #include <stdio.h>
 #include <3ds.h>
 
-void filldatabase(char *database[]);
+void filldatabase6(char *database[]);
+void filldatabase5(char *database[]);
