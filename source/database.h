@@ -18,7 +18,7 @@
 #include <3ds.h>
 
 int printDB6(PrintConsole topScreen, PrintConsole bottomScreen, u8* mainbuf, int i, int nInjected[], int game, int overwrite[]);
-int printDB5(PrintConsole topScreen, PrintConsole bottomScreen, u8* mainbuf, int i, int nInjected[], int game, int overwrite[]);
+int printDB5(PrintConsole topScreen, PrintConsole bottomScreen, u8* mainbuf, int i, int nInjected[], int game);
 void eventDatabase6(PrintConsole topScreen, PrintConsole bottomScreen, u8* mainbuf, int game);
 void eventDatabase5(PrintConsole topScreen, PrintConsole bottomScreen, u8* mainbuf, int game);
 void printPSdates(PrintConsole topScreen, PrintConsole bottomScreen, char *path, int n);

@@ -225,7 +225,7 @@ int printDB6(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int
     return -1;
 }
 
-int printDB5(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int i, int nInjected[], int game, int overwrite[]) {	
+int printDB5(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int i, int nInjected[], int game) {	
 	char *language[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
 	
     int langCont = 0;
@@ -238,9 +238,8 @@ int printDB5(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int
 	printf("\n\x1b[31mSTART\x1b[0m  inject wc in slot");
 	
 	printf("\x1b[1;32H%s", language[langCont]);
-	printf("\x1b[2;32H%s", overwritechar[overwrite[0]]);
-	printf("\x1b[3;32H%d ", nInjected[0] + 1);	
-    printf("\x1b[4;0H----------------------------------------");
+	printf("\x1b[2;32H%d ", nInjected[0] + 1);	
+    printf("\x1b[3;0H----------------------------------------");
 
     printf("\x1b[21;0H----------------------------------------");
     printf("\x1b[22;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this. This is a new way to inject WC6\nand I need time to perfect it.");
@@ -314,19 +313,6 @@ int printDB5(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int
         if (hidKeysDown() & KEY_B)
             break;
 
-        if (hidKeysDown() & KEY_X) {
-            if (overwrite[0] == 0) {
-				overwrite[0] = 1;
-				nInjected[0] = 0;
-			} else if (overwrite[0] == 1) {
-                overwrite[0] = 0;
-                findFreeLocationWC(mainbuf, game, nInjected);
-            }
-
-			printf("\x1b[2;32H%s", overwritechar[overwrite[0]]);
-			printf("\x1b[3;32H%d ", nInjected[0] + 1);
-        }
-
         if (hidKeysDown() & KEY_SELECT) {
             if (langCont < 6) 
 				langCont++;
@@ -384,9 +370,6 @@ int printDB5(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int
 			rewind(fptr);
 			fread(pgfbuf, contentsize, 1, fptr);
 			fclose(fptr);
-
-			if (overwrite[0] == 0)
-				findFreeLocationWC(mainbuf, game, nInjected);
 
 			setWC(mainbuf, pgfbuf, game, i, nInjected);
 
@@ -503,9 +486,6 @@ void eventDatabase5(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainb
 	int currentEntry = 0;
 	int page = 0;
 	int nInjected[1] = {0};
-	int overwrite[1] = {0};
-	
-	findFreeLocationWC(mainbuf, game, nInjected);
 	
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
@@ -564,7 +544,7 @@ void eventDatabase5(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainb
  		if (hidKeysDown() & KEY_A)  {
 			consoleSelect(&topScreen);
 			printf("\x1b[2J");
-			Result ret = printDB5(topScreen, bottomScreen, mainbuf, (currentEntry + page * RIGHE), nInjected, game, overwrite);
+			Result ret = printDB5(topScreen, bottomScreen, mainbuf, (currentEntry + page * RIGHE), nInjected, game);
 			consoleSelect(&bottomScreen);
 			printf("\x1b[2J");
 			printf("----------------------------------------");
