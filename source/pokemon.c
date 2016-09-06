@@ -50,6 +50,7 @@ const int POKEDEXNUMBERPOS = 0x08;
 const int NATUREPOS = 0x1C;
 const int FRIENDSHIPPOS = 0xA2;
 const int PGFSTARTPOS = 0x1C800;
+const int BWSEEDPOS = 0x1D290;
 
 char *stats[] = {"All", "Health", "Attack", "Defense", "Speed", "Sp. Attack", "Sp. Defense"};
 char *language[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
@@ -497,13 +498,14 @@ void setWC(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[]) {
 		memcpy((void*)(mainbuf + PGFSTARTPOS + nInjected[0] * PGFLENGTH + 0x100), (const void*)wcbuf, PGFLENGTH);
 		
 		u32 seed;
-		memcpy(&seed, &mainbuf[0x1D290], sizeof(u32));
+		memcpy(&seed, &mainbuf[BWSEEDPOS], sizeof(u32));
 		for (int i = 0; i < (PGFLENGTH * 12 + 0x100); i += 2) {
 			u16 temp;
 			memcpy(&temp, &mainbuf[PGFSTARTPOS + i], 2);
-			temp ^= (LCRNG(seed) >> 16);
+			temp = temp ^ LCRNG(seed) >> 16;
 			memcpy(&mainbuf[PGFSTARTPOS + i], &temp, 2);
 		}
+		memcpy(&mainbuf[BWSEEDPOS], &seed, sizeof(u32));
 	}
 
 	nInjected[0] += 1;
