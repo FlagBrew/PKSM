@@ -1,6 +1,6 @@
 # EventAssistant [![Github latest downloads](https://img.shields.io/github/downloads/BernardoGiordano/EventAssistant/latest/total.svg?maxAge=86400)](https://github.com/BernardoGiordano/EventAssistant/releases/latest)
 
-**The original**, *general purpose save file editor for X, Y, Omega Ruby and Alpha Sapphire... and more.*
+*Save file editor for X, Y, Omega Ruby and Alpha Sapphire... and more.*
 
 ---
 
