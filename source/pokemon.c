@@ -494,11 +494,21 @@ void setWC(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[]) {
 		memcpy((void*)(mainbuf + ORASWC6POS + nInjected[0] * WC6LENGTH), (const void*)wcbuf, WC6LENGTH);
 	}
 	if (game == 4 || game == 5) {
-		*(mainbuf + PGFSTARTPOS + i / 8) |= 0x1 << (i & 7);
-		memcpy((void*)(mainbuf + PGFSTARTPOS + nInjected[0] * PGFLENGTH + 0x100), (const void*)wcbuf, PGFLENGTH);
-		
 		u32 seed;
 		memcpy(&seed, &mainbuf[BWSEEDPOS], sizeof(u32));
+		
+		//decrypt
+		for (int i = 0; i < (PGFLENGTH * 12 + 0x100); i += 2) {
+			u16 temp;
+			memcpy(&temp, &mainbuf[PGFSTARTPOS + i], 2);
+			temp = temp ^ LCRNG(seed) >> 16;
+			memcpy(&mainbuf[PGFSTARTPOS + i], &temp, 2);
+		}
+		
+		*(mainbuf + PGFSTARTPOS + i / 8) |= 0x1 << (i & 7);
+		memcpy((void*)(mainbuf + 0x1C900 + nInjected[0] * PGFLENGTH), (const void*)wcbuf, PGFLENGTH);
+		
+		//encrypt
 		for (int i = 0; i < (PGFLENGTH * 12 + 0x100); i += 2) {
 			u16 temp;
 			memcpy(&temp, &mainbuf[PGFSTARTPOS + i], 2);
