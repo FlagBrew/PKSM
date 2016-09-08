@@ -676,21 +676,11 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 					
 					consoleSelect(&topScreen);
 					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m boxes will be replaced", 8, 3);
-					while (aptMainLoop()) {
-						gspWaitForVBlank();
-						hidScanInput();
-						
-						if (hidKeysDown() & KEY_B)
-							return 0;
-
-						if (hidKeysDown() & KEY_START)
-							break;
-
-						gfxFlushBuffers();
-						gfxSwapBuffers();
-					}
+					int res = waitKeyRet();
+					if (res == 0)
+						break;
 					
-					int res = setBoxBin(bottomScreen, mainbuf, game, 3, 30, path);
+					res = setBoxBin(bottomScreen, mainbuf, game, 3, 30, path);
 					if (res != 1) 
 						return res;
 					break;
@@ -700,21 +690,11 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 
 					consoleSelect(&topScreen);
 					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m boxes will be replaced", 8, 2);
-					while (aptMainLoop()) {
-						gspWaitForVBlank();
-						hidScanInput();
-						
-						if (hidKeysDown() & KEY_B)
-							return 0;
-
-						if (hidKeysDown() & KEY_START)
-							break;
-
-						gfxFlushBuffers();
-						gfxSwapBuffers();
-					}					
+					int res = waitKeyRet();
+					if (res == 0)
+						break;				
 					
-					int res = setBoxBin(bottomScreen, mainbuf, game, 2, 30, path);
+					res = setBoxBin(bottomScreen, mainbuf, game, 2, 30, path);
 					if (res != 1) 
 						return res;
 					break;
@@ -724,21 +704,11 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 
 					consoleSelect(&topScreen);
 					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m box will be replaced", 9, 1);
-					while (aptMainLoop()) {
-						gspWaitForVBlank();
-						hidScanInput();
-						
-						if (hidKeysDown() & KEY_B)
-							return 0;
-
-						if (hidKeysDown() & KEY_START)
-							break;
-
-						gfxFlushBuffers();
-						gfxSwapBuffers();
-					}					
+					int res = waitKeyRet();
+					if (res == 0)
+						break;					
 					
-					int res = setBoxBin(bottomScreen, mainbuf, game, 1, 30, path);
+					res = setBoxBin(bottomScreen, mainbuf, game, 1, 30, path);
 					if (res != 1) 
 						return res;
 					break;
@@ -748,21 +718,11 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 
 					consoleSelect(&topScreen);
 					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m:  \x1b[33m%d\x1b[0m locs will be replaced", 8, 9);
-					while (aptMainLoop()) {
-						gspWaitForVBlank();
-						hidScanInput();
-						
-						if (hidKeysDown() & KEY_B)
-							return 0;
-
-						if (hidKeysDown() & KEY_START)
-							break;
-
-						gfxFlushBuffers();
-						gfxSwapBuffers();
-					}					
+					int res = waitKeyRet();
+					if (res == 0)
+						break;					
 					
-					int res = setBoxBin(bottomScreen, mainbuf, game, 1, 9, path);
+					res = setBoxBin(bottomScreen, mainbuf, game, 1, 9, path);
 					if (res != 1) 
 						return res;
 					break;
@@ -772,21 +732,11 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 
 					consoleSelect(&topScreen);
 					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m:  \x1b[33m%d\x1b[0m locs will be replaced", 8, 14);
-					while (aptMainLoop()) {
-						gspWaitForVBlank();
-						hidScanInput();
-						
-						if (hidKeysDown() & KEY_B)
-							return 0;
-
-						if (hidKeysDown() & KEY_START)
-							break;
-
-						gfxFlushBuffers();
-						gfxSwapBuffers();
-					}					
+					int res = waitKeyRet();
+					if (res == 0)
+						break;				
 					
-					int res = setBoxBin(bottomScreen, mainbuf, game, 1, 14, path);
+					res = setBoxBin(bottomScreen, mainbuf, game, 1, 14, path);
 					if (res != 1) 
 						return res;
 					break;
@@ -796,21 +746,11 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 
 					consoleSelect(&topScreen);
 					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m:  \x1b[33m%d\x1b[0m locs will be replaced", 8, 15);
-					while (aptMainLoop()) {
-						gspWaitForVBlank();
-						hidScanInput();
-						
-						if (hidKeysDown() & KEY_B)
-							return 0;
-
-						if (hidKeysDown() & KEY_START)
-							break;
-
-						gfxFlushBuffers();
-						gfxSwapBuffers();
-					}					
+					int res = waitKeyRet();
+					if (res == 0)
+						break;				
 					
-					int res = setBoxBin(bottomScreen, mainbuf, game, 1, 15, path);
+					res = setBoxBin(bottomScreen, mainbuf, game, 1, 15, path);
 					if (res != 1) 
 						return res;
 					break;
@@ -820,21 +760,11 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 
 					consoleSelect(&topScreen);
 					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m box will be replaced", 9, 1);
-					while (aptMainLoop()) {
-						gspWaitForVBlank();
-						hidScanInput();
-						
-						if (hidKeysDown() & KEY_B)
-							return 0;
-
-						if (hidKeysDown() & KEY_START)
-							break;
-
-						gfxFlushBuffers();
-						gfxSwapBuffers();
-					}					
+					int res = waitKeyRet();
+					if (res == 0)
+						break;				
 					
-					int res = setBoxBin(bottomScreen, mainbuf, game, 1, 30, path);
+					res = setBoxBin(bottomScreen, mainbuf, game, 1, 30, path);
 					if (res != 1) 
 						return res;
 					break;
@@ -844,21 +774,11 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 
 					consoleSelect(&topScreen);
 					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m box will be replaced", 9, 1);
-					while (aptMainLoop()) {
-						gspWaitForVBlank();
-						hidScanInput();
-						
-						if (hidKeysDown() & KEY_B)
-							return 0;
-
-						if (hidKeysDown() & KEY_START)
-							break;
-
-						gfxFlushBuffers();
-						gfxSwapBuffers();
-					}					
+					int res = waitKeyRet();
+					if (res == 0)
+						break;					
 					
-					int res = setBoxBin(bottomScreen, mainbuf, game, 1, 30, path);
+					res = setBoxBin(bottomScreen, mainbuf, game, 1, 30, path);
 					if (res != 1) 
 						return res;
 					break;
@@ -871,21 +791,11 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 
 					consoleSelect(&topScreen);
 					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m:  \x1b[33m%d\x1b[0m locs will be replaced", 8, 6);
-					while (aptMainLoop()) {
-						gspWaitForVBlank();
-						hidScanInput();
-						
-						if (hidKeysDown() & KEY_B)
-							return 0;
-
-						if (hidKeysDown() & KEY_START)
-							break;
-
-						gfxFlushBuffers();
-						gfxSwapBuffers();
-					}					
+					int res = waitKeyRet();
+					if (res == 0)
+						break;					
 					
-					int res = setBoxBin(bottomScreen, mainbuf, game, 1, 6, path);
+					res = setBoxBin(bottomScreen, mainbuf, game, 1, 6, path);
 					if (res != 1) 
 						return res;
 					break;
@@ -895,21 +805,11 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 
 					consoleSelect(&topScreen);
 					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m box will be replaced", 9, 24);
-					while (aptMainLoop()) {
-						gspWaitForVBlank();
-						hidScanInput();
-						
-						if (hidKeysDown() & KEY_B)
-							return 0;
-
-						if (hidKeysDown() & KEY_START)
-							break;
-
-						gfxFlushBuffers();
-						gfxSwapBuffers();
-					}					
+					int res = waitKeyRet();
+					if (res == 0)
+						break;				
 					
-					int res = setBoxBin(bottomScreen, mainbuf, game, 24, 30, path);
+					res = setBoxBin(bottomScreen, mainbuf, game, 24, 30, path);
 					if (res != 1) 
 						return res;
 					break;
@@ -919,21 +819,11 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 
 					consoleSelect(&topScreen);
 					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m box will be replaced", 9, 1);
-					while (aptMainLoop()) {
-						gspWaitForVBlank();
-						hidScanInput();
-						
-						if (hidKeysDown() & KEY_B)
-							return 0;
-
-						if (hidKeysDown() & KEY_START)
-							break;
-
-						gfxFlushBuffers();
-						gfxSwapBuffers();
-					}					
+					int res = waitKeyRet();
+					if (res == 0)
+						break;				
 					
-					int res = setBoxBin(bottomScreen, mainbuf, game, 1, 30, path);
+					res = setBoxBin(bottomScreen, mainbuf, game, 1, 30, path);
 					if (res != 1) 
 						return res;
 					break;
@@ -943,21 +833,11 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 
 					consoleSelect(&topScreen);
 					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m box will be replaced", 9, 1);
-					while (aptMainLoop()) {
-						gspWaitForVBlank();
-						hidScanInput();
-						
-						if (hidKeysDown() & KEY_B)
-							return 0;
-
-						if (hidKeysDown() & KEY_START)
-							break;
-
-						gfxFlushBuffers();
-						gfxSwapBuffers();
-					}					
+					int res = waitKeyRet();
+					if (res == 0)
+						break;				
 					
-					int res = setBoxBin(bottomScreen, mainbuf, game, 1, 30, path);
+					res = setBoxBin(bottomScreen, mainbuf, game, 1, 30, path);
 					if (res != 1) 
 						return res;
 					break;
@@ -967,21 +847,11 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 
 					consoleSelect(&topScreen);
 					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m box will be replaced", 9, 1);
-					while (aptMainLoop()) {
-						gspWaitForVBlank();
-						hidScanInput();
-						
-						if (hidKeysDown() & KEY_B)
-							return 0;
-
-						if (hidKeysDown() & KEY_START)
-							break;
-
-						gfxFlushBuffers();
-						gfxSwapBuffers();
-					}					
+					int res = waitKeyRet();
+					if (res == 0)
+						break;					
 					
-					int res = setBoxBin(bottomScreen, mainbuf, game, 1, 30, path);
+					res = setBoxBin(bottomScreen, mainbuf, game, 1, 30, path);
 					if (res != 1) 
 						return res;
 					break;
@@ -991,21 +861,11 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 
 					consoleSelect(&topScreen);
 					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m box will be replaced", 9, 1);
-					while (aptMainLoop()) {
-						gspWaitForVBlank();
-						hidScanInput();
-						
-						if (hidKeysDown() & KEY_B)
-							return 0;
-
-						if (hidKeysDown() & KEY_START)
-							break;
-
-						gfxFlushBuffers();
-						gfxSwapBuffers();
-					}					
+					int res = waitKeyRet();
+					if (res == 0)
+						break;				
 					
-					int res = setBoxBin(bottomScreen, mainbuf, game, 1, 30, path);
+					res = setBoxBin(bottomScreen, mainbuf, game, 1, 30, path);
 					if (res != 1) 
 						return res;
 					break;

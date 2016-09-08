@@ -54,6 +54,23 @@ void waitKey(u32 key) {
 	}
 }
 
+int waitKeyRet() {
+	while (aptMainLoop()) {
+		gspWaitForVBlank();
+		hidScanInput();
+		
+		if (hidKeysDown() & KEY_B)
+			return 0;
+
+		if (hidKeysDown() & KEY_START)
+			return 1;
+
+		gfxFlushBuffers();
+		gfxSwapBuffers();
+	}
+	return 0;
+}
+
 void errDisp(PrintConsole screen, int i, u16 columns) {
 	char *errors[] = {"Error!", "Game not found", "OpenContext failed", "AddRequestHeaderField failed", "SSLOpt failed", "BeginRequest failed", "Response code failed", "New header failed", "Redirection failed", "Download size error", "Buffer alloc error", "DownloadData failed", "Feature N/A in XY", "Switch game also in the app", "Maximum item reached", "File not available", "Selected slot is empty"};
 	int top = 12;
