@@ -23,25 +23,6 @@
 #include "http.h"
 #include "util.h"
 
-/* Errors
-	 1: Game not found
-	 2: OpenContext failed
-	 3: AddRequestHeaderField failed
-	 4: SSLOpt failed
-	 5: BeginRequest failed
-	 6: Response code failed
-	 7: New header failed
-	 8: Redirection failed
-	 9: Download size error
-	 10: Buffer alloc error
-	 11: DownloadData failed
-	 12: Feature N/A in XY
-	 13: Switch game also in the app
-	 14: Maximum item reached
-	 15: File not available
-	 16: Selected slot is empty
- */
-
 void printfile(char* path) {
 	FILE* f = fopen(path, "r");
 	if (f) {
@@ -206,7 +187,7 @@ void credits(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("\x1b[29;8HTouch or press B to exit");
 	consoleSelect(&topScreen);
 
-	printf("\n* smea for ctrulib\n* Kaphotics for PKHeX for wondercard workaround\n* J-D-K for direct save import/export\n* Slashcash for PCHex++ and lots of source code\n* MarcusD for romfs support\n* Hamcha for http certs\n* Gocario for algorithms\n* Nba_Yoh for received flags\n* Simona Mastroianni for database help\n* Federico Leuzzi, YodaDaCoda, SatansRoommate,\n  Immersion for testing\n* Shai Raba' for the icon\n* all the guys @3dshacks' discord\n\n  Full list available on github repo");
+	printf("\n* smea for ctrulib\n* Kaphotics for PKHeX and wondercard support\n* J-D-K for direct save import/export\n* Slashcash for PCHex++ and lots of source code\n* MarcusD for romfs support\n* Hamcha for http certs\n* Gocario for algorithms\n* Nba_Yoh for received flags\n* Simona Mastroianni for database help\n* Federico Leuzzi, YodaDaCoda, SatansRoommate,\n  Immersion for testing\n* Shai Raba' for the icon\n* all the guys @3dshacks' discord\n\n  Full list available on github repo");
 
 	waitKey(KEY_B);
 }
