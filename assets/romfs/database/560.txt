@@ -1,0 +1,24 @@
+0560 - GF Darkrai
+
+Pokemon:       Darkrai
+Level:         100
+Ability:       Bad Dreams
+Held Item:     Enigma Berry
+TID:           05016
+SID:           00560
+OT:            GF
+Met:           a lovely place
+Nature:        Any Nature
+Ribbon:        Classic Ribbon
+
+Relearn Moves: Dark Void
+               Ominous Wind
+               Nightmare
+               Feint Attack
+			   
+Games:         X,Y,OR,AS
+Method:        Serial Code
+Region:        USA - PAL 
+Duration:      May 1 to August 31, 2016
+               September to November 30, 2016 
+               

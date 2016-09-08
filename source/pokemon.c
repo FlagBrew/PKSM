@@ -613,13 +613,18 @@ void setTM(u8* mainbuf, int game) {
 			*(mainbuf + TMSTARTPOS + i * 4 + 3) = 0x00;
 		}
 	
-	if (game == 2 || game == 3) 
+	if (game == 2 || game == 3) {
 		for (int i = 0; i < 106; i++) {
 			*(mainbuf + TMSTARTPOS + i * 4) = values[i];
 			*(mainbuf + TMSTARTPOS + i * 4 + 1) = 0x01;
 			*(mainbuf + TMSTARTPOS + i * 4 + 2) = 0x01;
 			*(mainbuf + TMSTARTPOS + i * 4 + 3) = 0x00;
 		}
+		*(mainbuf + TMSTARTPOS + 4 * 106) = 0xE1;
+		*(mainbuf + TMSTARTPOS + 4 * 106 + 1) = 0x02;
+		*(mainbuf + TMSTARTPOS + 4 * 106 + 2) = 0x01;
+		*(mainbuf + TMSTARTPOS + 4 * 106 + 3) = 0x00;
+	}
 	
 	for (int i = 0; i < 8; i++) {
 		*(mainbuf + 0xD31 + i * 4) = 0x02;

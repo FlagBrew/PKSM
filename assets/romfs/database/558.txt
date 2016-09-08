@@ -1,0 +1,23 @@
+0558 - GF Celebi
+
+Pokemon:       Celebi
+Level:         100
+Ability:       Natural Cure
+Held Item:     None
+TID:           03016
+SID:           00558
+OT:            GF
+Met:           a lovely place
+Nature:        Any Nature
+Ribbon:        Classic Ribbon
+
+Relearn Moves: Confusion
+               Recover
+               Heal Bell
+               Safeguard
+			   
+Games:         X,Y,OR,AS
+Method:        Nintendo Network
+Region:        USA - PAL 
+Duration:      March 1 to 24, 2016
+               

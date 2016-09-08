@@ -1,0 +1,24 @@
+0561 - GF Manaphy
+
+Pokemon:       Manaphy
+Level:         100
+Ability:       Hydration
+Held Item:     King's Rock
+TID:           06016
+SID:           00561
+OT:            GF
+Met:           a lovely place
+Nature:        Any Nature
+Ribbon:        Classic Ribbon
+
+Relearn Moves: Tail Glow
+               Bubble
+               Water Sport
+               -
+			   
+Games:         X,Y,OR,AS
+Method:        Nintendo Network
+Region:        USA - PAL 
+Duration:      June 1 to 24, 2016
+                
+               

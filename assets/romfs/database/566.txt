@@ -1,0 +1,24 @@
+0566 - GF Genesect
+
+Pokemon:       Genesect
+Level:         100
+Ability:       Download
+Held Item:     None
+TID:           11016
+SID:           00566
+OT:            GF
+Met:           a lovely place
+Nature:        Any Nature
+Ribbon:        Classic Ribbon
+
+Relearn Moves: Techno Blast
+               Magnet Bomb
+               Solar Beam
+               Signal Beam
+			   
+Games:         X,Y,OR,AS
+Method:        Serial Code
+Region:        USA - PAL 
+Duration:      November 1, 2016 to February 28. 2017
+                
+               

@@ -1,0 +1,24 @@
+0567 - GF Meloetta
+
+Pokemon:       Meloetta
+Level:         100
+Ability:       Serene Grace
+Held Item:     PP Max
+TID:           12016
+SID:           00567
+OT:            GF
+Met:           a lovely place
+Nature:        Any Nature
+Ribbon:        Classic Ribbon
+
+Relearn Moves: Quick Attack
+               Confusion
+               Round
+               -
+			   
+Games:         X,Y,OR,AS
+Method:        Nintendo Network
+Region:        USA - PAL 
+Duration:      December 1 to 24, 2016
+                
+               

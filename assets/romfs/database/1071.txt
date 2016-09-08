@@ -1,0 +1,22 @@
+1071 - All Stars Diancie
+
+Pokemon:       Diancie
+Level:         50
+Ability:       Clear Body
+Held Item:     Normal Gem
+TID:           08136
+SID:           01071
+OT:            올스타
+Met:           a Pokemon event
+Nature:        Any Nature
+Ribbon:        Event Ribbon
+
+Relearn Moves: Diamon Storm
+               Moonblast
+               Reflect
+               Return
+			   
+Games:         X,Y,OR,AS
+Method:        Local Infared
+Region:        KOR
+Duration:      August 13 to 14, 2016

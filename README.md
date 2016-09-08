@@ -94,7 +94,7 @@ Tell me if you like this work and what you would have featured in the next updat
 * Federico, YodaDaCoda, /u/SatansRoommate, Immersion for testing builds
 * Cosimo Vivoli, Hat3Mond4ys for some database entries
 * Paul G, Kian Josh King for some wc6s
-* Majickhat55 for Entree Forest and Dream Radar collection
+* Majickhat55 for Entree Forest, Dream Radar collection and database entries
 * Poutros for N's collection
 * Shai for the icon and Fabrizio for the name
 
