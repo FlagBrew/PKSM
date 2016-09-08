@@ -39,17 +39,18 @@
 #include "pokemon.h"
 
 #define ENTRIES 12
-#define GAMES 6
+#define GAMES 8
 
 #define V1 2
 #define V2 3
 #define V3 0
 
-#define DAY 4
+#define DAY 8
 #define MONTH 9
 #define YEAR 16
 
 void exitServices() {
+	fsEnd();
 	romfsExit();
 	sdmcExit();
 	aptExit();
@@ -116,12 +117,13 @@ int main() {
 	gfxInitDefault();
 	aptInit();
 	sdmcInit();
-
+	Result rc = romfsInit();
+	fsStart();
+	
 	PrintConsole topScreen, bottomScreen;
 	consoleInit(GFX_TOP, &topScreen);
 	consoleInit(GFX_BOTTOM, &bottomScreen);
 	
-	Result rc = romfsInit();
 	if (rc)
 		printf("romfsInit error: %08lX\n", rc);
 	
@@ -165,7 +167,7 @@ int main() {
 	
 	//X, Y, OR, AS
 	const u64 ids[4] = {0x0004000000055D00, 0x0004000000055E00, 0x000400000011C400, 0x000400000011C500};
-	char *gamesList[GAMES] = {"Pokemon X", "Pokemon Y", "Pokemon Omega Ruby", "Pokemon Alpha Sapphire", "Pokemon Black-White", "Pokemon Black2-White2"};
+	char *gamesList[GAMES] = {"Pokemon X", "Pokemon Y", "Pokemon Omega Ruby", "Pokemon Alpha Sapphire", "Pokemon Black", "Pokemon White", "Pokemon Black 2", "Pokemon White 2"};
 	
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
@@ -211,16 +213,14 @@ int main() {
 	}
 	
 	consoleSelect(&topScreen);
-	printf("\x1b[9;0HLoading save...");
+	printf("\x1b[11;0HLoading save...");
 	
-	fsStart();
 	u64 mainSize = 0;
-	u32 contentsize = 0;
 	Handle mainHandle;
 	FS_Archive saveArch;
 	u8* mainbuf;
 	
-	if (game == 0 || game == 1 || game == 2 || game == 3) {	
+	if (game < 4) {	
 		if (!(openSaveArch(&saveArch, ids[game]))) {
 			errDisp(bottomScreen, 1, BOTTOM);
 			exitServices();
@@ -257,22 +257,28 @@ int main() {
 		}
 		
 		mainbuf = malloc(mainSize);
-		
 		FSFILE_Read(mainHandle, NULL, 0, mainbuf, mainSize);
 	}
 	
-	else {
-		FILE *fptr = fopen("TWLSaveTool/a.sav", "rt");		// currently trying changes with a save backup in my SD card. I'm stuck because after I save my modifications, PKHeX says that size is invalid. No changes appears in the game when I try to import the save
-		if (fptr == NULL) 
+	else if (game == 4 || game == 5 || game == 6 || game == 7) {
+		char* path[] = {"TWLSaveTool/POKEMON B.0.sav", "TWLSaveTool/POKEMON W.0.sav", "TWLSaveTool/POKEMON B2.0.sav", "TWLSaveTool/POKEMON W2.0.sav"};
+		FILE *fptr = fopen(path[game - 4], "rt");
+		if (fptr == NULL) {
+			errDisp(bottomScreen, 15, BOTTOM);
+			exitServices();
 			return 15;
+		}
 		fseek(fptr, 0, SEEK_END);
-		contentsize = ftell(fptr);
-		mainbuf = (u8*)malloc(contentsize);
-		if (mainbuf == NULL) 
+		mainSize = ftell(fptr);
+		mainbuf = (u8*)malloc(mainSize);
+		if (mainbuf == NULL) {
+			errDisp(bottomScreen, 8, BOTTOM);
+			exitServices();
 			return 8;
+		}
 		rewind(fptr);
-		fread(mainbuf, contentsize, 1, fptr);
-		fclose(fptr);		
+		fread(mainbuf, mainSize, 1, fptr);
+		fclose(fptr);
 	}
 	
 	char *bakpath = (char*)malloc(80 * sizeof(char));
@@ -296,7 +302,7 @@ int main() {
 	
 	free(bakpath);
 
-	char *menuEntries[ENTRIES] = {"Gen VI's Event Database", "Gen V's Event Database", "Gen VI's Save file editor", "Gen VI's Pokemon editor", "Mass injecter", "Wi-Fi distributions", "Code distributions", "Local distributions", "Capture probability calculator", "Common PS dates database", "Credits", "Update .cia to latest commit build"};
+	char *menuEntries[ENTRIES] = {"Gen VI's Event Database", "Gen VI's Save file editor", "Gen VI's Pokemon editor", "Gen VI's Mass injecter", "Gen V's Event Database", "Wi-Fi distributions", "Code distributions", "Local distributions", "Capture probability calculator", "Common PS dates database", "Credits", "Update .cia to latest commit build"};
 	int currentEntry = 0;
 	
 	// initializing save file editor variables
@@ -343,16 +349,17 @@ int main() {
 		if (hidKeysDown() & KEY_A) {
 			switch (currentEntry) {
 				case 0 : {
+					if (game > 3)
+						break;
+					
 					eventDatabase6(topScreen, bottomScreen, mainbuf, game);
 					break;
 				}
-				
-				case 1 : {
-					eventDatabase5(topScreen, bottomScreen, mainbuf, game);
-					break;
-				}
 
-				case 2 : {
+				case 1 : {
+					if (game > 3)
+						break;
+					
 					int ret = saveFileEditor(topScreen, bottomScreen, mainbuf, game, nInjected, injectCont);
 					consoleSelect(&bottomScreen);
 					
@@ -367,7 +374,10 @@ int main() {
 					break;
 				}
 				
-				case 3 : {
+				case 2 : {
+					if (game > 3)
+						break;
+					
 					int ret = PKEditor(topScreen, bottomScreen, mainbuf, game, pokemonCont);
 					consoleSelect(&bottomScreen);
 					if (ret == 1)
@@ -381,7 +391,10 @@ int main() {
 					break;
 				}
 				
-				case 4 : {
+				case 3 : {
+					if (game > 3)
+						break;
+					
 					int ret = massInjecter(topScreen, bottomScreen, mainbuf, game);
 					consoleSelect(&bottomScreen);
 					if (ret == 1)
@@ -392,6 +405,14 @@ int main() {
 					if (ret != 0)
 						waitKey(KEY_B);
 
+					break;
+				}
+				
+				case 4 : {
+					if (game < 4 || game > 7)
+						break;
+					
+					eventDatabase5(topScreen, bottomScreen, mainbuf, game);
 					break;
 				}
 
@@ -449,22 +470,21 @@ int main() {
 		rewriteCHK(mainbuf, game);	
 	}
 	
-	if (game == 0 || game == 1 || game == 2 || game == 3) {
+	if (game < 4) {
 		FSFILE_Write(mainHandle, NULL, 0, mainbuf, mainSize, FS_WRITE_FLUSH);
 		FSFILE_Close(mainHandle);
 		if (save)
 			FSUSER_ControlArchive(saveArch, ARCHIVE_ACTION_COMMIT_SAVE_DATA, NULL, 0, NULL, 0);
 		FSUSER_CloseArchive(saveArch);
 	}
-	else {
-	FILE *f = fopen("TWLSaveTool/a.sav", "wb");
-	fwrite(mainbuf, 1, contentsize, f);
-	fclose(f);
+	else if (game == 4 || game == 5 || game == 6 || game == 7) {
+		char* path[] = {"TWLSaveTool/POKEMON B.0.sav", "TWLSaveTool/POKEMON W.0.sav", "TWLSaveTool/POKEMON B2.0.sav", "TWLSaveTool/POKEMON W2.0.sav"};
+		FILE *f = fopen(path[game - 4], "wb");
+		fwrite(mainbuf, 1, mainSize, f);
+		fclose(f);
 	}
-		
-	
+
 	free(mainbuf);
-	fsEnd();
 	
 	exitServices();
 	return 0;

@@ -82,11 +82,11 @@ u32 CHKOffset(u32 i, int game) {
 		const u32 _oras[] = { 0x05400, 0x05800, 0x06400, 0x06600, 0x06800, 0x06A00, 0x06C00, 0x06E00, 0x07000, 0x07200, 0x07400, 0x09600, 0x09800, 0x09E00, 0x0A400, 0x0F400, 0x14400, 0x19400, 0x19600, 0x19E00, 0x1A400, 0x1B600, 0x1BE00, 0x1C000, 0x1C200, 0x1C800, 0x1CA00, 0x1CE00, 0x1D600, 0x1D800, 0x1DA00, 0x1DC00, 0x1DE00, 0x1E000, 0x1E800, 0x1EE00, 0x1F200, 0x20E00, 0x21000, 0x21400, 0x21800, 0x22000, 0x23C00, 0x24000, 0x24800, 0x24C00, 0x25600, 0x25A00, 0x26200, 0x27000, 0x27200, 0x27400, 0x28200, 0x28A00, 0x28E00, 0x30A00, 0x38400, 0x6D000, };
 		return _oras[i] - 0x5400;
 	}
-	else if (game == 4) {
+	else if (game == 4 || game == 5) {
 		const u32 _bw[] = { 0x1C800, 0x23F00 };
 		return _bw[i];
 	}
-	else if (game == 5) {
+	else if (game == 6 || game == 7) {
 		const u32 _b2w2[] = { 0x1C800, 0x25F00 }; 
 		return _b2w2[i];
 	}
@@ -102,11 +102,11 @@ u32 CHKLength(u32 i, int game) {
 		const u32 _oras[] = { 0x002C8, 0x00B90, 0x0002C, 0x00038, 0x00150, 0x00004, 0x00008, 0x001C0, 0x000BE, 0x00024, 0x02100, 0x00130, 0x00440, 0x00574, 0x04E28, 0x04E28, 0x04E28, 0x00170, 0x0061C, 0x00504, 0x011CC, 0x00644, 0x00104, 0x00004, 0x00420, 0x00064, 0x003F0, 0x0070C, 0x00180, 0x00004, 0x0000C, 0x00048, 0x00054, 0x00644, 0x005C8, 0x002F8, 0x01B40, 0x001F4, 0x003E0, 0x00216, 0x00640, 0x01A90, 0x00400, 0x00618, 0x0025C, 0x00834, 0x00318, 0x007D0, 0x00C48, 0x00078, 0x00200, 0x00C84, 0x00628, 0x00400, 0x07AD0, 0x078B0, 0x34AD0, 0x0E058, };
 		return _oras[i];
 	}
-	else if (game == 4) {
+	else if (game == 4 || game == 5) {
 		const u32 _bw[] = { 0x0A94, 0x008C };
 		return _bw[i];
 	}
-	else if (game == 5) {
+	else if (game == 6 || game == 7) {
 		const u32 _b2w2[] = { 0x0A94, 0x0094 };
 		return _b2w2[i];
 	}
@@ -114,11 +114,11 @@ u32 CHKLength(u32 i, int game) {
 }
 
 u32 BWCHKOff(u32 i, int game) {
-	if (game == 4) {
+	if (game == 4 || game == 5) {
 		const u32 _bw[] = { 0x1D296, 0x23F9A };
 		return _bw[i];
 	}
-	else if (game == 5) {
+	else if (game == 6 || game == 7) {
 		const u32 _b2w2[]= { 0x1D296,  0x25FA2 };
 		return _b2w2[i];
 	}
@@ -126,12 +126,12 @@ u32 BWCHKOff(u32 i, int game) {
 }
 
 u32 BWCHKMirr(u32 i, int game) {
-	if (game == 4) {
+	if (game == 4 || game == 5) {
 		const u32 _bw[] = { 0x23F44, 0x23F9A };
 		return _bw[i];
 	}
 	
-	else if (game == 5) {
+	else if (game == 6 || game == 7) {
 		const u32 _b2w2[] = { 0x25F44, 0x25FA2 };
 		return _b2w2[i];
 	}
@@ -170,19 +170,19 @@ void rewriteCHK(u8 *mainbuf, int game) {
 		csoff = 0x7B21A - 0x5400;
 	}
 	
-	if (game == 4 || game == 5)
+	if (game == 4 || game == 5 || game == 6 || game == 7)
 		blockCount = 2;
 
 	u8* tmp = (u8*)malloc(0x35000 * sizeof(u8));
 	u16 cs;
 
-	if (game == 0 || game == 1 || game == 2 || game == 3)
+	if (game < 4)
 		for (u32 i = 0; i < blockCount; i++) {
 			memcpy(tmp, mainbuf + CHKOffset(i, game), CHKLength(i, game));
 			cs = ccitt16(tmp, CHKLength(i, game));
 			memcpy(mainbuf + csoff + i * 8, &cs, 2);
 		}
-	else if (game == 4 || game == 5)
+	else if (game == 4 || game == 5 || game == 6 || game == 7)
 		for (u32 i = 0; i < blockCount; i++) {
 			memcpy(tmp, mainbuf + CHKOffset(i, game), CHKLength(i, game));
 			cs = ccitt16(tmp, CHKLength(i, game));
@@ -197,7 +197,7 @@ u32 seedStep(const u32 seed) {
 }
 
 u32 LCRNG(u32 seed) {
-	return seed = seed * 0x41C64E6D + 0x00006073;
+	return seed * 0x41C64E6D + 0x00006073;
 }
 
 void shuffleArray(u8* pkmn, const u32 encryptionkey) {
@@ -493,15 +493,16 @@ void setWC(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[]) {
 		*(mainbuf + ORASWC6FLAGPOS + i / 8) |= 0x1 << (i % 8);
 		memcpy((void*)(mainbuf + ORASWC6POS + nInjected[0] * WC6LENGTH), (const void*)wcbuf, WC6LENGTH);
 	}
-	if (game == 4 || game == 5) {
+	if (game == 4 || game == 5 || game == 6 || game == 7) {
 		u32 seed;
 		memcpy(&seed, &mainbuf[BWSEEDPOS], sizeof(u32));
 		
 		//decrypt
-		for (int i = 0; i < (PGFLENGTH * 12 + 0x100); i += 2) {
-			u16 temp;
+		u16 temp;
+		for (int i = 0; i < 0xA90; i += 2) {
 			memcpy(&temp, &mainbuf[PGFSTARTPOS + i], 2);
-			temp = temp ^ LCRNG(seed) >> 16;
+			temp ^= (LCRNG(seed) >> 16);
+			seed = LCRNG(seed);
 			memcpy(&mainbuf[PGFSTARTPOS + i], &temp, 2);
 		}
 		
@@ -509,13 +510,13 @@ void setWC(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[]) {
 		memcpy((void*)(mainbuf + 0x1C900 + nInjected[0] * PGFLENGTH), (const void*)wcbuf, PGFLENGTH);
 		
 		//encrypt
-		for (int i = 0; i < (PGFLENGTH * 12 + 0x100); i += 2) {
-			u16 temp;
+		memcpy(&seed, &mainbuf[BWSEEDPOS], sizeof(u32));
+		for (int i = 0; i < 0xA90; i += 2) {
 			memcpy(&temp, &mainbuf[PGFSTARTPOS + i], 2);
-			temp = temp ^ LCRNG(seed) >> 16;
+			temp ^= (LCRNG(seed) >> 16);
+			seed = LCRNG(seed);
 			memcpy(&mainbuf[PGFSTARTPOS + i], &temp, 2);
 		}
-		memcpy(&mainbuf[BWSEEDPOS], &seed, sizeof(u32));
 	}
 
 	nInjected[0] += 1;
