@@ -23,7 +23,7 @@
 #include "util.h"
 #include "fill.h"
 
-#define ENTRIES 9
+#define ENTRIES 14
 
 #define MAXPAGES6 75
 #define MAXPAGES5 6
@@ -225,21 +225,24 @@ int printDB6(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int
     return -1;
 }
 
-int printDB5(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int i, int nInjected[], int game) {	
+int printDB5(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int i, int nInjected[], int game) {
+	char* savepathdesc[] = {"TWLSaveTool/POKEMON B.0.sav", "TWLSaveTool/POKEMON W.0.sav", "TWLSaveTool/POKEMON B2.0.sav", "TWLSaveTool/POKEMON W2.0.sav"};	
 	char *language[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
 	
     int langCont = 0;
+	if (nInjected[0] >= 12)
+		nInjected[0] = 0;
 
     consoleSelect(&bottomScreen);
     printf("\x1b[2J");
     printf("----------------------------------------");
 	printf("\x1b[32mSELECT\x1b[0m change language");
-	printf("\n\x1b[32mX\x1b[0m      overwrite wondercards");
 	printf("\n\x1b[31mSTART\x1b[0m  inject wc in slot");
 	
 	printf("\x1b[1;32H%s", language[langCont]);
 	printf("\x1b[2;32H%d ", nInjected[0] + 1);	
     printf("\x1b[3;0H----------------------------------------");
+	printf("\nSave has to be dumped with TWLSaveTool\nby TuxSH. It has to be named\n\x1b[33m%s\x1b[0m", savepathdesc[game - 4]);
 
     printf("\x1b[21;0H----------------------------------------");
     printf("\x1b[22;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this. This is a new way to inject WC6\nand I need time to perfect it.");
@@ -295,13 +298,13 @@ int printDB5(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int
         gfxSwapBuffers();
     }
 	
-	//char *descpath = (char*)malloc(30 * sizeof(char));
-	//snprintf(descpath, 30, "romfs:/database/%d.txt", i);
+	char *descpath = (char*)malloc(40 * sizeof(char));
+	snprintf(descpath, 40, "romfs:/database/gen5/%d.txt", i);
 	
 	printf("\x1b[0;45H\x1b[32mDONE!\x1b[0m\n");
-	//printfile(descpath);
+	printfile(descpath);
 	
-	//free(descpath);
+	free(descpath);
 	free(testpath);
 
     consoleSelect(&bottomScreen);
@@ -623,7 +626,7 @@ void psDates(PrintConsole topScreen, PrintConsole bottomScreen) {
 
 int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int game) {
 	int cont = 0;
-	char *menuEntries[ENTRIES] = {"XD collection", "Colosseum collection", "10ANNIV collection", "Mew old school collection", "Jirachi old school collection", "N's collection", "Entree Forest collection", "Dream Radar collection", "Wolfe Glick Top1 team Worlds2016"};
+	char *menuEntries[ENTRIES] = {"XD collection", "Colosseum collection", "10ANNIV collection", "Mew old school collection", "Jirachi old school collection", "N's collection", "Entree Forest collection", "Dream Radar collection", "Wolfe Glick Top1 team Worlds2016", "Gen VI's Pokedex (001-721)", "Unown collection", "JPN Oblivia Deoxys collection", "ENG My Pokemon Ranch collection", "Old school KOR events collection"};
 	
     consoleSelect(&bottomScreen);
     printf("\x1b[2J");
@@ -672,7 +675,7 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 					char *path[3] = {"romfs:/misc/xd/1.bin", "romfs:/misc/xd/2.bin", "romfs:/misc/xd/3.bin"};
 					
 					consoleSelect(&topScreen);
-					printf("\x1b[15;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m boxes will be replaced", 8, 3);
+					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m boxes will be replaced", 8, 3);
 					while (aptMainLoop()) {
 						gspWaitForVBlank();
 						hidScanInput();
@@ -696,7 +699,7 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 					char *path[2] = {"romfs:/misc/colosseum/1.bin", "romfs:/misc/colosseum/2.bin"};
 
 					consoleSelect(&topScreen);
-					printf("\x1b[15;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m boxes will be replaced", 8, 2);
+					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m boxes will be replaced", 8, 2);
 					while (aptMainLoop()) {
 						gspWaitForVBlank();
 						hidScanInput();
@@ -720,7 +723,7 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 					char *path[1] = {"romfs:/misc/10anni.bin"};
 
 					consoleSelect(&topScreen);
-					printf("\x1b[15;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m box will be replaced", 9, 1);
+					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m box will be replaced", 9, 1);
 					while (aptMainLoop()) {
 						gspWaitForVBlank();
 						hidScanInput();
@@ -744,7 +747,7 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 					char *path[1] = {"romfs:/misc/coll_mew.bin"};
 
 					consoleSelect(&topScreen);
-					printf("\x1b[15;%dH\x1b[31mSTART\x1b[0m:  \x1b[33m%d\x1b[0m locs will be replaced", 8, 9);
+					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m:  \x1b[33m%d\x1b[0m locs will be replaced", 8, 9);
 					while (aptMainLoop()) {
 						gspWaitForVBlank();
 						hidScanInput();
@@ -768,7 +771,7 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 					char *path[1] = {"romfs:/misc/coll_jirachi.bin"};
 
 					consoleSelect(&topScreen);
-					printf("\x1b[15;%dH\x1b[31mSTART\x1b[0m:  \x1b[33m%d\x1b[0m locs will be replaced", 8, 14);
+					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m:  \x1b[33m%d\x1b[0m locs will be replaced", 8, 14);
 					while (aptMainLoop()) {
 						gspWaitForVBlank();
 						hidScanInput();
@@ -792,7 +795,7 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 					char *path[1] = {"romfs:/misc/coll_n.bin"};
 
 					consoleSelect(&topScreen);
-					printf("\x1b[15;%dH\x1b[31mSTART\x1b[0m:  \x1b[33m%d\x1b[0m locs will be replaced", 8, 15);
+					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m:  \x1b[33m%d\x1b[0m locs will be replaced", 8, 15);
 					while (aptMainLoop()) {
 						gspWaitForVBlank();
 						hidScanInput();
@@ -816,7 +819,7 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 					char *path[1] = {"romfs:/misc/coll_entreeforest.bin"};
 
 					consoleSelect(&topScreen);
-					printf("\x1b[15;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m box will be replaced", 9, 1);
+					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m box will be replaced", 9, 1);
 					while (aptMainLoop()) {
 						gspWaitForVBlank();
 						hidScanInput();
@@ -840,7 +843,7 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 					char *path[1] = {"romfs:/misc/coll_dreamradar.bin"};
 
 					consoleSelect(&topScreen);
-					printf("\x1b[15;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m box will be replaced", 9, 1);
+					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m box will be replaced", 9, 1);
 					while (aptMainLoop()) {
 						gspWaitForVBlank();
 						hidScanInput();
@@ -867,7 +870,7 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 					char *path[1] = {"romfs:/misc/vgc/wolfeworlds16.bin"};
 
 					consoleSelect(&topScreen);
-					printf("\x1b[15;%dH\x1b[31mSTART\x1b[0m:  \x1b[33m%d\x1b[0m locs will be replaced", 8, 6);
+					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m:  \x1b[33m%d\x1b[0m locs will be replaced", 8, 6);
 					while (aptMainLoop()) {
 						gspWaitForVBlank();
 						hidScanInput();
@@ -883,6 +886,126 @@ int massInjecter(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf,
 					}					
 					
 					int res = setBoxBin(bottomScreen, mainbuf, game, 1, 6, path);
+					if (res != 1) 
+						return res;
+					break;
+				}
+				case 9 : {
+					char *path[] = {"romfs:/misc/dexgen6/1.bin", "romfs:/misc/dexgen6/2.bin", "romfs:/misc/dexgen6/3.bin", "romfs:/misc/dexgen6/4.bin", "romfs:/misc/dexgen6/5.bin", "romfs:/misc/dexgen6/6.bin", "romfs:/misc/dexgen6/7.bin", "romfs:/misc/dexgen6/8.bin", "romfs:/misc/dexgen6/9.bin", "romfs:/misc/dexgen6/10.bin", "romfs:/misc/dexgen6/11.bin", "romfs:/misc/dexgen6/12.bin", "romfs:/misc/dexgen6/13.bin", "romfs:/misc/dexgen6/14.bin", "romfs:/misc/dexgen6/15.bin", "romfs:/misc/dexgen6/16.bin", "romfs:/misc/dexgen6/17.bin", "romfs:/misc/dexgen6/18.bin", "romfs:/misc/dexgen6/19.bin", "romfs:/misc/dexgen6/20.bin", "romfs:/misc/dexgen6/21.bin", "romfs:/misc/dexgen6/22.bin", "romfs:/misc/dexgen6/23.bin", "romfs:/misc/dexgen6/24.bin"};
+
+					consoleSelect(&topScreen);
+					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m box will be replaced", 9, 24);
+					while (aptMainLoop()) {
+						gspWaitForVBlank();
+						hidScanInput();
+						
+						if (hidKeysDown() & KEY_B)
+							return 0;
+
+						if (hidKeysDown() & KEY_START)
+							break;
+
+						gfxFlushBuffers();
+						gfxSwapBuffers();
+					}					
+					
+					int res = setBoxBin(bottomScreen, mainbuf, game, 24, 30, path);
+					if (res != 1) 
+						return res;
+					break;
+				}
+				case 10 : {
+					char *path[] = {"romfs:/misc/coll_unown.bin"};
+
+					consoleSelect(&topScreen);
+					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m box will be replaced", 9, 1);
+					while (aptMainLoop()) {
+						gspWaitForVBlank();
+						hidScanInput();
+						
+						if (hidKeysDown() & KEY_B)
+							return 0;
+
+						if (hidKeysDown() & KEY_START)
+							break;
+
+						gfxFlushBuffers();
+						gfxSwapBuffers();
+					}					
+					
+					int res = setBoxBin(bottomScreen, mainbuf, game, 1, 30, path);
+					if (res != 1) 
+						return res;
+					break;
+				}
+				case 11 : {
+					char *path[] = {"romfs:/misc/coll_deoxysoblivia.bin"};
+
+					consoleSelect(&topScreen);
+					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m box will be replaced", 9, 1);
+					while (aptMainLoop()) {
+						gspWaitForVBlank();
+						hidScanInput();
+						
+						if (hidKeysDown() & KEY_B)
+							return 0;
+
+						if (hidKeysDown() & KEY_START)
+							break;
+
+						gfxFlushBuffers();
+						gfxSwapBuffers();
+					}					
+					
+					int res = setBoxBin(bottomScreen, mainbuf, game, 1, 30, path);
+					if (res != 1) 
+						return res;
+					break;
+				}
+				case 12 : {
+					char *path[] = {"romfs:/misc/coll_ranch.bin"};
+
+					consoleSelect(&topScreen);
+					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m box will be replaced", 9, 1);
+					while (aptMainLoop()) {
+						gspWaitForVBlank();
+						hidScanInput();
+						
+						if (hidKeysDown() & KEY_B)
+							return 0;
+
+						if (hidKeysDown() & KEY_START)
+							break;
+
+						gfxFlushBuffers();
+						gfxSwapBuffers();
+					}					
+					
+					int res = setBoxBin(bottomScreen, mainbuf, game, 1, 30, path);
+					if (res != 1) 
+						return res;
+					break;
+				}
+				case 13 : {
+					char *path[] = {"romfs:/misc/coll_oskorea.bin"};
+
+					consoleSelect(&topScreen);
+					printf("\x1b[28;%dH\x1b[31mSTART\x1b[0m: \x1b[33m%d\x1b[0m box will be replaced", 9, 1);
+					while (aptMainLoop()) {
+						gspWaitForVBlank();
+						hidScanInput();
+						
+						if (hidKeysDown() & KEY_B)
+							return 0;
+
+						if (hidKeysDown() & KEY_START)
+							break;
+
+						gfxFlushBuffers();
+						gfxSwapBuffers();
+					}					
+					
+					int res = setBoxBin(bottomScreen, mainbuf, game, 1, 30, path);
 					if (res != 1) 
 						return res;
 					break;

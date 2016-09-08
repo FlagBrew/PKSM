@@ -156,6 +156,7 @@ void filldatabase6(char *database[]) {
 	database[169] = "0169 - Jarvis's Gengar";
 	database[170] = "0170 - P-Cafe Pikachu (SG)";
 	database[173] = "0173 - HKTW VGC16 Shiny Mewtwo";
+	database[174] = "0174 - Tanabata 2016 Jirachi";
 	database[175] = "0175 - HKTW Mew";
 	database[501] = "0501 - Winter2013 Garchomp";
 	database[502] = "0502 - Winter2013 Scizor";
@@ -257,6 +258,7 @@ void filldatabase6(char *database[]) {
 	database[1513] = "1513 - PGL Dragonite";
 	database[1514] = "1514 - PGL Miltank";
 	database[1515] = "1515 - PGL Garchomp";
+	database[1516] = "1516 - PGL N's Darmanitan";
 }
 
 void filldatabase5(char *database[]) {	
