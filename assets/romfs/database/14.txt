@@ -1,0 +1,20 @@
+0011 - Alternate Event Garchomp/Cynthia's Garchomp
+
+Pokemon:       Garchomp
+Level:         66
+Ability:       Sand Veil
+Held Item:     Sitrus Berry
+TID:           07226
+SID:           00011
+OT:            ???
+Met:           Pokémon League (fateful encounter)
+Nature:        Random
+Ribbon:        Classic Ribbon
+Relearn Moves: Dragon Rush
+               Earthquake
+               Brick Break
+               Giga Impact
+Games:         ORAS
+Method:        serial code
+Region:        JPN
+Duration:      August 2 to September 29, 2016
