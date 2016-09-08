@@ -1,4 +1,4 @@
-0011 - Alternate Event Garchomp/Cynthia's Garchomp
+1515 - PGL Cynthia's Garchomp
 
 Pokemon:       Garchomp
 Level:         66
@@ -7,7 +7,7 @@ Held Item:     Sitrus Berry
 TID:           07226
 SID:           00011
 OT:            ???
-Met:           Pokémon League (fateful encounter)
+Met:           Pokemon League (fateful encounter)
 Nature:        Random
 Ribbon:        Classic Ribbon
 Relearn Moves: Dragon Rush
