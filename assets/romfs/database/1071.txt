@@ -11,7 +11,7 @@ Met:           a Pokemon event
 Nature:        Any Nature
 Ribbon:        Event Ribbon
 
-Relearn Moves: Diamon Storm
+Relearn Moves: Diamond Storm
                Moonblast
                Reflect
                Return
