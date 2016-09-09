@@ -1,0 +1,18 @@
+1505 - HA Serperior
+Pokemon:       Serperior
+Level:         50
+Ability:       Contrary
+Held Item:     None
+TID:           01225
+SID:           01505
+OT:            Cadeau
+               Present
+               Regalo
+Met:           a lovely place (fateful encounter)
+Nature:        Random
+Ribbon:        Classic Ribbon Classic Ribbon
+Relearn Moves: Hold Back
+Games:         ORAS
+Method:        serial code
+Region:        all
+Duration:      January 22 to November 30, 2015

@@ -1,0 +1,17 @@
+0547 - Galileo Rayquaza
+Pokemon:       Rayquaza
+Level:         70
+Ability:       Air Lock
+Held Item:     Dragon Fang
+TID:           08055
+SID:           00547
+OT:            Galilée
+            	 Galileo
+Met:           a lovely place (fateful encounter)
+Nature:        Random
+Ribbon:        Classic Ribbon
+Relearn Moves: 
+Games:         ORAS
+Method:        Nintendo Network
+Region:        EU
+Duration:      August 12 to September 14, 2015
