@@ -1,0 +1,16 @@
+0546 - Hope Diancie
+Pokemon:       Diancie
+Level:         50
+Ability:       Various
+Held Item:     None
+TID:           07245
+SID:           00546
+OT:            Hope
+Met:           a lovely place (fateful encounter)
+Nature:        Random
+Ribbon:        Classic Ribbon
+Relearn Moves: 
+Games:         ORAS
+Method:        Nintendo Network
+Region:        all
+Duration:      July 24 to 27, 2015
