@@ -292,7 +292,7 @@ int main() {
 		mainSize = SPIGetCapacity(cardType_);
 		mainbuf = malloc(mainSize);
 		
-		storeSaveFile(mainbuf, cardType_);
+		TWLstoreSaveFile(mainbuf, cardType_);
 	}
 	
 	char *bakpath = (char*)malloc(80 * sizeof(char));
@@ -496,7 +496,7 @@ int main() {
 		FSUSER_CloseArchive(saveArch);
 	}
 	else if (game == 4 || game == 5 || game == 6 || game == 7) {
-		injectSave(mainbuf);
+		TWLinjectSave(mainbuf);
 	}
 
 	free(mainbuf);

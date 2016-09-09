@@ -204,7 +204,7 @@ void credits(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("\x1b[29;8HTouch or press B to exit");
 	consoleSelect(&topScreen);
 
-	printf("\n* smea for ctrulib\n* Kaphotics for PKHeX and wondercard support\n* J-D-K for direct save import/export\n* Slashcash for PCHex++ and lots of source code\n* MarcusD for romfs support\n* Hamcha for http certs\n* Gocario for algorithms\n* Nba_Yoh for received flags\n* Simona Mastroianni for database help\n* Federico Leuzzi, YodaDaCoda, SatansRoommate,\n  Immersion for testing\n* Shai Raba' for the icon\n* all the guys @3dshacks' discord\n\n  Full list available on github repo");
+	printf("\n* smea for ctrulib\n* Kaphotics for PKHeX and wondercard support\n* J-D-K for direct save import/export\n* Slashcash for PCHex++ and lots of source code\n* TuxSH for TWLSaveTool and spi.c\n* MarcusD for romfs support\n* Hamcha for http certs\n* Gocario for algorithms\n* Nba_Yoh for received flags\n* Simona Mastroianni for database help\n* Federico Leuzzi, YodaDaCoda, SatansRoommate,\n  Immersion for testing\n* Shai Raba' for the icon\n* all the guys @3dshacks' discord\n\n  Full list available on github repo");
 
 	waitKey(KEY_B);
 }

@@ -84,6 +84,7 @@ Tell me if you like this work and what you would have featured in the next updat
 * Kaphotics for PKHeX, wondercard support and useful documentation
 * J-K-D for direct import/export
 * Slashcash for PCHex++ and lots of source code
+* TuxSH for TWLSaveTool and spi.c
 * MarcusD for romfs support
 * Nba_Yoh for the received flag issue
 * Gocario for ccitt CHK algorithms
@@ -92,7 +93,7 @@ Tell me if you like this work and what you would have featured in the next updat
 * all the guys on the 3dshacks discord
 * Simona Mastroianni for fill.c work
 * Federico, YodaDaCoda, /u/SatansRoommate, Immersion for testing builds
-* Cosimo Vivoli, Hat3Mond4ys for some database entries
+* Cosimo Vivoli, Hat3Mond4ys, sgtkwol for some database entries
 * Paul G, Kian Josh King for some wc6s
 * Majickhat55 for Entree Forest, Dream Radar collection and database entries
 * Poutros for N's collection

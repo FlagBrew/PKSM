@@ -23,12 +23,12 @@
 
 u8* fill_buf = NULL;
 
-u32 saveSize(CardType cardType_) {
+u32 TWLsaveSize(CardType cardType_) {
 	return SPIGetCapacity(cardType_);
 }
 
-void storeSaveFile(u8* out, CardType cardType_) {
-	u32 sz = saveSize(cardType_);
+void TWLstoreSaveFile(u8* out, CardType cardType_) {
+	u32 sz = TWLsaveSize(cardType_);
 	u32 sectorSize = (sz < 0x10000) ? sz : 0x10000;
 
 	for(u32 i = 0; i < sz / sectorSize; ++i) {
@@ -36,8 +36,8 @@ void storeSaveFile(u8* out, CardType cardType_) {
 	}
 }
 
-void restoreSaveFile(u8* in, CardType cardType_) {
-	u32 sz = saveSize(cardType_);
+void TWLrestoreSaveFile(u8* in, CardType cardType_) {
+	u32 sz = TWLsaveSize(cardType_);
 	u32 pageSize = SPIGetPageSize(cardType_);
 	
 	for(u32 i = 0; i < sz / pageSize; ++i) {
@@ -45,13 +45,13 @@ void restoreSaveFile(u8* in, CardType cardType_) {
 	}
 }
 
-void injectSave(u8* mainbuf) {
+void TWLinjectSave(u8* mainbuf) {
 	u8 data[0x3B4];
 	Result res = FSUSER_GetLegacyRomHeader(MEDIATYPE_GAME_CARD, 0LL, data);
 	CardType cardType_;
 	res = SPIGetCardType(&cardType_, (*(data + 12) == 'I') ? 1 : 0);
 	
-	restoreSaveFile(mainbuf, cardType_);
+	TWLrestoreSaveFile(mainbuf, cardType_);
 }
 
 /*
