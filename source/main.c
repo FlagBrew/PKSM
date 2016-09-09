@@ -32,6 +32,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <time.h>
+#include "spi.h"
 #include "http.h"
 #include "catch.h"
 #include "util.h"
@@ -50,6 +51,9 @@
 #define YEAR 16
 
 void exitServices() {
+	pxiDevExit();
+	hidExit();
+	srvExit();
 	fsEnd();
 	romfsExit();
 	sdmcExit();
@@ -119,6 +123,9 @@ int main() {
 	sdmcInit();
 	Result rc = romfsInit();
 	fsStart();
+	srvInit();
+	hidInit();
+	pxiDevInit();
 	
 	PrintConsole topScreen, bottomScreen;
 	consoleInit(GFX_TOP, &topScreen);
@@ -261,24 +268,25 @@ int main() {
 	}
 	
 	else if (game == 4 || game == 5 || game == 6 || game == 7) {
-		char* path[] = {"TWLSaveTool/POKEMON B.0.sav", "TWLSaveTool/POKEMON W.0.sav", "TWLSaveTool/POKEMON B2.0.sav", "TWLSaveTool/POKEMON W2.0.sav"};
-		FILE *fptr = fopen(path[game - 4], "rt");
-		if (fptr == NULL) {
-			errDisp(bottomScreen, 15, BOTTOM);
-			exitServices();
-			return 15;
-		}
-		fseek(fptr, 0, SEEK_END);
-		mainSize = ftell(fptr);
-		mainbuf = (u8*)malloc(mainSize);
-		if (mainbuf == NULL) {
-			errDisp(bottomScreen, 8, BOTTOM);
-			exitServices();
-			return 8;
-		}
-		rewind(fptr);
-		fread(mainbuf, mainSize, 1, fptr);
-		fclose(fptr);
+		loadSave(mainbuf);
+		// char* path[] = {"TWLSaveTool/POKEMON B.0.sav", "TWLSaveTool/POKEMON W.0.sav", "TWLSaveTool/POKEMON B2.0.sav", "TWLSaveTool/POKEMON W2.0.sav"};
+		// FILE *fptr = fopen(path[game - 4], "rt");
+		// if (fptr == NULL) {
+			// errDisp(bottomScreen, 15, BOTTOM);
+			// exitServices();
+			// return 15;
+		// }
+		// fseek(fptr, 0, SEEK_END);
+		// mainSize = ftell(fptr);
+		// mainbuf = (u8*)malloc(mainSize);
+		// if (mainbuf == NULL) {
+			// errDisp(bottomScreen, 8, BOTTOM);
+			// exitServices();
+			// return 8;
+		// }
+		// rewind(fptr);
+		// fread(mainbuf, mainSize, 1, fptr);
+		// fclose(fptr);
 	}
 	
 	char *bakpath = (char*)malloc(80 * sizeof(char));
@@ -478,10 +486,11 @@ int main() {
 		FSUSER_CloseArchive(saveArch);
 	}
 	else if (game == 4 || game == 5 || game == 6 || game == 7) {
-		char* path[] = {"TWLSaveTool/POKEMON B.0.sav", "TWLSaveTool/POKEMON W.0.sav", "TWLSaveTool/POKEMON B2.0.sav", "TWLSaveTool/POKEMON W2.0.sav"};
-		FILE *f = fopen(path[game - 4], "wb");
-		fwrite(mainbuf, 1, mainSize, f);
-		fclose(f);
+		injectSave(mainbuf);
+		// char* path[] = {"TWLSaveTool/POKEMON B.0.sav", "TWLSaveTool/POKEMON W.0.sav", "TWLSaveTool/POKEMON B2.0.sav", "TWLSaveTool/POKEMON W2.0.sav"};
+		// FILE *f = fopen(path[game - 4], "wb");
+		// fwrite(mainbuf, 1, mainSize, f);
+		// fclose(f);
 	}
 
 	free(mainbuf);
