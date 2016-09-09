@@ -1,0 +1,16 @@
+0502 - Winter2013 Scizor
+Pokemon:       Scizor
+Level:         50
+Ability:       Swarm or Technician
+Held Item:     Silver Powder
+TID:           11153
+SID:           00502
+OT:            WINTER2013
+Met:           a lovely place (fateful encounter)
+Nature:        Random
+Ribbon:        Classic Ribbon
+Relearn Moves:
+Games:         XY
+Method:        serial code
+Region:        all
+Duration:      November 27, 2013 to June 30, 2014
