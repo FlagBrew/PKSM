@@ -35,6 +35,7 @@ const int ORASWC6FLAGPOS = 0x1CC00;
 const int ORASWC6POS = 0x1CD00;
 const int XYWC6FLAGPOS = 0x1BC00;
 const int XYWC6POS = 0x1BD00;
+const int EONFLAGPOS = 0x319B8;
 const int LANGUAGEPOS = 0x1402D;
 const int MONEYPOS = 0x4208;
 const int BADGEPOS = 0x420C;
@@ -492,6 +493,13 @@ void setWC(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[]) {
 	if (game == 2 || game == 3) {		
 		*(mainbuf + ORASWC6FLAGPOS + i / 8) |= 0x1 << (i % 8);
 		memcpy((void*)(mainbuf + ORASWC6POS + nInjected[0] * WC6LENGTH), (const void*)wcbuf, WC6LENGTH);
+		
+		if (i == 2048) {
+			*(mainbuf + EONFLAGPOS) = 0xC2;
+			*(mainbuf + EONFLAGPOS + 1) = 0x73;
+			*(mainbuf + EONFLAGPOS + 2) = 0x5D;
+			*(mainbuf + EONFLAGPOS + 3) = 0x22;
+		}
 	}
 	if (game == 4 || game == 5 || game == 6 || game == 7) {
 		u32 seed;
