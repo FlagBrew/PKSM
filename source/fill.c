@@ -155,9 +155,11 @@ void filldatabase6(char *database[]) {
 	database[168] = "0168 - Chymia's Shiny Gardevoir";
 	database[169] = "0169 - Jarvis's Gengar";
 	database[170] = "0170 - P-Cafe Pikachu (SG)";
+	database[171] = "0171 - Skytree Shiny Rayquaza";
 	database[173] = "0173 - HKTW VGC16 Shiny Mewtwo";
 	database[174] = "0174 - Tanabata 2016 Jirachi";
 	database[175] = "0175 - HKTW Mew";
+	database[176] = "0176 - Poll Simisear";
 	database[501] = "0501 - Winter2013 Garchomp";
 	database[502] = "0502 - Winter2013 Scizor";
 	database[504] = "0504 - Magmar, Electabuzz";	
@@ -242,7 +244,7 @@ void filldatabase6(char *database[]) {
 	database[1065] = "1065 - KOR HA Articuno";
 	database[1066] = "1066 - KOR HA Zapdos";
 	database[1067] = "1067 - KOR HA Moltres";
-	database[1068] = "1068 - KOR HA Mewtwo";
+	database[1068] = "1068 - WCS16K HA Mewtwo";
 	database[1070] = "1070 - KOR Naminori Pikachu";
 	database[1071] = "1071 - KOR All Stars Diancie";
 	database[1501] = "1501 - HA Torchic";
