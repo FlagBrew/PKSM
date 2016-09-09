@@ -268,25 +268,31 @@ int main() {
 	}
 	
 	else if (game == 4 || game == 5 || game == 6 || game == 7) {
-		loadSave(mainbuf);
-		// char* path[] = {"TWLSaveTool/POKEMON B.0.sav", "TWLSaveTool/POKEMON W.0.sav", "TWLSaveTool/POKEMON B2.0.sav", "TWLSaveTool/POKEMON W2.0.sav"};
-		// FILE *fptr = fopen(path[game - 4], "rt");
-		// if (fptr == NULL) {
-			// errDisp(bottomScreen, 15, BOTTOM);
-			// exitServices();
-			// return 15;
-		// }
-		// fseek(fptr, 0, SEEK_END);
-		// mainSize = ftell(fptr);
-		// mainbuf = (u8*)malloc(mainSize);
-		// if (mainbuf == NULL) {
-			// errDisp(bottomScreen, 8, BOTTOM);
-			// exitServices();
-			// return 8;
-		// }
-		// rewind(fptr);
-		// fread(mainbuf, mainSize, 1, fptr);
-		// fclose(fptr);
+		FS_CardType t;
+		Result res = FSUSER_GetCardType(&t);
+		if (res != 0) {
+			errDisp(bottomScreen, 17, BOTTOM);
+			exitServices();
+			return -1;
+		}
+		u8 data[0x3B4];
+		res = FSUSER_GetLegacyRomHeader(MEDIATYPE_GAME_CARD, 0LL, data);
+		
+		bool isTWL = (data[0x12] & 0x2) != 0;
+
+		if (!(isTWL)){
+			errDisp(bottomScreen, 18, BOTTOM);
+			exitServices();
+			return -1;
+		}
+
+		CardType cardType_;
+		res = SPIGetCardType(&cardType_, (*(data + 12) == 'I') ? 1 : 0);
+
+		mainSize = SPIGetCapacity(cardType_);
+		mainbuf = malloc(mainSize);
+		
+		storeSaveFile(mainbuf, cardType_);
 	}
 	
 	char *bakpath = (char*)malloc(80 * sizeof(char));
@@ -471,7 +477,11 @@ int main() {
 	}
 	
 	if (save) {
-		infoDisp(bottomScreen, 2, BOTTOM);
+		if (game < 4) 
+			infoDisp(bottomScreen, 2, BOTTOM);
+		else if (game == 4 || game == 5 || game == 6 || game == 7)
+			infoDisp(bottomScreen, 5, BOTTOM);
+		
 		gfxFlushBuffers();
 		gfxSwapBuffers();
 		
@@ -487,10 +497,6 @@ int main() {
 	}
 	else if (game == 4 || game == 5 || game == 6 || game == 7) {
 		injectSave(mainbuf);
-		// char* path[] = {"TWLSaveTool/POKEMON B.0.sav", "TWLSaveTool/POKEMON W.0.sav", "TWLSaveTool/POKEMON B2.0.sav", "TWLSaveTool/POKEMON W2.0.sav"};
-		// FILE *f = fopen(path[game - 4], "wb");
-		// fwrite(mainbuf, 1, mainSize, f);
-		// fclose(f);
 	}
 
 	free(mainbuf);

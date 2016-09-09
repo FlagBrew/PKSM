@@ -226,7 +226,6 @@ int printDB6(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int
 }
 
 int printDB5(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int i, int nInjected[], int game) {
-	char* savepathdesc[] = {"TWLSaveTool/POKEMON B.0.sav", "TWLSaveTool/POKEMON W.0.sav", "TWLSaveTool/POKEMON B2.0.sav", "TWLSaveTool/POKEMON W2.0.sav"};	
 	char *language[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
 	
     int langCont = 0;
@@ -242,7 +241,6 @@ int printDB5(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int
 	printf("\x1b[1;32H%s", language[langCont]);
 	printf("\x1b[2;32H%d ", nInjected[0] + 1);	
     printf("\x1b[3;0H----------------------------------------");
-	printf("\nSave has to be dumped with TWLSaveTool\nby TuxSH. It has to be named\n\x1b[33m%s\x1b[0m", savepathdesc[game - 4]);
 
     printf("\x1b[21;0H----------------------------------------");
     printf("\x1b[22;14H\x1b[31mDISCLAIMER\x1b[0m\nI'm \x1b[31mNOT responsible\x1b[0m for any data loss,  save corruption or bans if you're using this. This is a new way to inject WC6\nand I need time to perfect it.");

@@ -37,6 +37,8 @@
 	 14: Maximum item reached
 	 15: File not available
 	 16: Selected slot is empty
+	 17: No cart inserted
+	 18: No NDS cart inserted
  */
 
 void printfile(char* path);

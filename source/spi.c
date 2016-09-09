@@ -1,5 +1,61 @@
 /*
- *  This file was part of TWLSaveTool.
+* This file is part of EventAssistant
+* Copyright (C) 2016 Bernardo Giordano
+*
+* It contains mostly works from TuxSH's TWLSaveTool, 
+* that has been simplified and adapted for EventAssistant's purpose.
+*
+* This software is provided 'as-is', 
+* without any express or implied warranty. 
+* In no event will the authors be held liable for any damages 
+* arising from the use of this software.
+*
+* This code is subject to the following restrictions:
+*
+* 1) The origin of this software must not be misrepresented; 
+* 2) You must not claim that you wrote the original software. 
+*
+*/
+
+#include <stdlib.h>
+#include <string.h>
+#include "spi.h"
+
+u8* fill_buf = NULL;
+
+u32 saveSize(CardType cardType_) {
+	return SPIGetCapacity(cardType_);
+}
+
+void storeSaveFile(u8* out, CardType cardType_) {
+	u32 sz = saveSize(cardType_);
+	u32 sectorSize = (sz < 0x10000) ? sz : 0x10000;
+
+	for(u32 i = 0; i < sz / sectorSize; ++i) {
+		Result res = SPIReadSaveData(cardType_, sectorSize * i, out + sectorSize * i, sectorSize);
+	}
+}
+
+void restoreSaveFile(u8* in, CardType cardType_) {
+	u32 sz = saveSize(cardType_);
+	u32 pageSize = SPIGetPageSize(cardType_);
+	
+	for(u32 i = 0; i < sz / pageSize; ++i) {
+		Result res = SPIWriteSaveData(cardType_, pageSize * i, in + pageSize * i, pageSize);
+	}
+}
+
+void injectSave(u8* mainbuf) {
+	u8 data[0x3B4];
+	Result res = FSUSER_GetLegacyRomHeader(MEDIATYPE_GAME_CARD, 0LL, data);
+	CardType cardType_;
+	res = SPIGetCardType(&cardType_, (*(data + 12) == 'I') ? 1 : 0);
+	
+	restoreSaveFile(mainbuf, cardType_);
+}
+
+/*
+ *  Lines under this were part of TWLSaveTool.
  *  Copyright (C) 2015-2016 TuxSH
  *
  *  TWLSaveTool is free software: you can redistribute it and/or modify
@@ -15,13 +71,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-
-#include <stdlib.h>
-#include <string.h>
-#include "spi.h"
-#include "util.h"
-
-u8* fill_buf = NULL;
 
 Result SPIWriteRead(CardType type, void* cmd, u32 cmdSize, void* answer, u32 answerSize, void* data, u32 dataSize) {
 	u8 transferOp = pxiDevMakeTransferOption(BAUDRATE_4MHZ, BUSMODE_1BIT), transferOp2 = pxiDevMakeTransferOption(BAUDRATE_1MHZ, BUSMODE_1BIT);
@@ -43,7 +92,7 @@ Result SPIWaitWriteEnd(CardType type) {
 	u8 cmd = SPI_CMD_RDSR, statusReg = 0;
 	Result res = 0;
 	
-	do{
+	do {
 		res = SPIWriteRead(type, &cmd, 1, &statusReg, 1, 0, 0);
 		if(res) return res;
 	} while(statusReg & SPI_FLG_WIP);
@@ -58,7 +107,7 @@ Result SPIEnableWriting(CardType type) {
 	if(res || type == EEPROM_512B) return res; // Weird, but works (otherwise we're getting an infinite loop for that chip type).
 	cmd = SPI_CMD_RDSR;
 	
-	do{
+	do {
 		res = SPIWriteRead(type, &cmd, 1, &statusReg, 1, 0, 0);
 		if(res) return res;
 	} while(statusReg & ~SPI_FLG_WEL);
@@ -167,7 +216,6 @@ Result SPIWriteSaveData(CardType type, u32 offset, void* data, u32 size) {
 		
 		pos = ((pos / pageSize) + 1) * pageSize; // truncate
 	}
-	
 	return 0;
 }
 
@@ -199,7 +247,6 @@ Result _SPIReadSaveData_512B_impl(u32 pos, void* data, u32 size) {
 
 		if(res) return res;
 	}
-	
 	return 0;
 }
 
@@ -251,7 +298,6 @@ Result SPIReadSaveData(CardType type, u32 offset, void* data, u32 size) {
 }
 
 // The following routine use code from savegame-manager:
-
 /*
  * savegame_manager: a tool to backup and restore savegames from Nintendo
  *  DS cartridges. Nintendo DS and all derivative names are trademarks
@@ -277,7 +323,6 @@ Result SPIReadSaveData(CardType type, u32 offset, void* data, u32 size) {
  * with this program; if not, write to the Free Software Foundation, Inc., 
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
  
 Result _SPIIsDataMirrored(CardType type, int size, bool* mirrored) {
 	u32 offset0 = (size-1);        //      n KB
@@ -360,46 +405,4 @@ Result SPIGetCardType(CardType* type, int infrared) {
 		*type = NO_CHIP;
 		return 0;
 	}
-}
-
-u32 saveSize(CardType cardType_) {
-	return SPIGetCapacity(cardType_);
-}
-
-void storeSaveFile(u8* out, CardType cardType_) {
-	u32 sz = saveSize(cardType_);
-	u32 sectorSize = (sz < 0x10000) ? sz : 0x10000;
-
-	for(u32 i = 0; i < sz / sectorSize; ++i) {
-		Result res = SPIReadSaveData(cardType_, sectorSize * i, out + sectorSize * i, sectorSize);
-	}
-}
-
-void restoreSaveFile(u8* in, CardType cardType_) {
-	u32 sz = saveSize(cardType_);
-	u32 pageSize = SPIGetPageSize(cardType_);
-	
-	for(u32 i = 0; i < sz / pageSize; ++i) {
-		Result res = SPIWriteSaveData(cardType_, pageSize * i, in + pageSize * i, pageSize);
-	}
-}
-
-void loadSave(u8* mainbuf) {
-	u8 data[0x3B4];
-	Result res = FSUSER_GetLegacyRomHeader(MEDIATYPE_GAME_CARD, 0LL, data);
-
-	CardType cardType_;
-	res = SPIGetCardType(&cardType_, (*(data + 12) == 'I') ? 1 : 0);
-
-	mainbuf = (u8*)malloc(SPIGetCapacity(cardType_) * sizeof(u8));
-	storeSaveFile(mainbuf, cardType_);
-}
-
-void injectSave(u8* mainbuf) {
-	u8 data[0x3B4];
-	Result res = FSUSER_GetLegacyRomHeader(MEDIATYPE_GAME_CARD, 0LL, data);
-	CardType cardType_;
-	res = SPIGetCardType(&cardType_, (*(data + 12) == 'I') ? 1 : 0);
-	
-	restoreSaveFile(mainbuf, cardType_);
 }
