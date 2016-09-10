@@ -35,6 +35,12 @@ const int ORASWC6FLAGPOS = 0x1CC00;
 const int ORASWC6POS = 0x1CD00;
 const int XYWC6FLAGPOS = 0x1BC00;
 const int XYWC6POS = 0x1BD00;
+const int DPPGTFLAGPOS = 0xA6D0 + 0x40000;
+const int DPPGTPOS = 0xA7FC + 0x40000;
+const int PTPGTFLAGPOS = 0xB4C0 + 0x40000;
+const int PTPGTPOS = 0xB5C0 + 0x40000;
+const int HGSSPGTFLAGPOS = 0x9D3C + 0x40000;
+const int HGSSPGTPOS = 0x9E3C + 0x40000;
 const int EONFLAGPOS = 0x319B8;
 const int LANGUAGEPOS = 0x1402D;
 const int MONEYPOS = 0x4208;
@@ -52,6 +58,8 @@ const int NATUREPOS = 0x1C;
 const int FRIENDSHIPPOS = 0xA2;
 const int PGFSTARTPOS = 0x1C800;
 const int BWSEEDPOS = 0x1D290;
+const int GBO = 0x40000;
+const int SBO = 0x40000;
 
 char *stats[] = {"All", "Health", "Attack", "Defense", "Speed", "Sp. Attack", "Sp. Defense"};
 char *language[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
@@ -177,19 +185,46 @@ void rewriteCHK(u8 *mainbuf, int game) {
 	u8* tmp = (u8*)malloc(0x35000 * sizeof(u8));
 	u16 cs;
 
-	if (game < 4)
+	if (game < 4) // XYORAS
 		for (u32 i = 0; i < blockCount; i++) {
 			memcpy(tmp, mainbuf + CHKOffset(i, game), CHKLength(i, game));
 			cs = ccitt16(tmp, CHKLength(i, game));
 			memcpy(mainbuf + csoff + i * 8, &cs, 2);
 		}
-	else if (game == 4 || game == 5 || game == 6 || game == 7)
+	else if (game == 4 || game == 5 || game == 6 || game == 7) //BWB2W2
 		for (u32 i = 0; i < blockCount; i++) {
 			memcpy(tmp, mainbuf + CHKOffset(i, game), CHKLength(i, game));
 			cs = ccitt16(tmp, CHKLength(i, game));
 			memcpy(mainbuf + BWCHKOff(i, game), &cs, 2);
 			memcpy(mainbuf + BWCHKMirr(i, game), &cs, 2);
 		}
+	else if (game == 8 || game == 9) { //HGSS
+		memcpy(tmp, mainbuf + GBO, 0xF618);
+		cs = ccitt16(tmp, 0xF618);
+		memcpy(mainbuf + GBO + 0xF626, &cs, 2);
+
+		memcpy(tmp, mainbuf + SBO + 0xF700, 0x12300);
+		cs = ccitt16(tmp, 0x12300);
+		memcpy(mainbuf + SBO + 0x21A0E, &cs, 2);
+	}
+	else if (game == 10) { //PT
+		memcpy(tmp, mainbuf + GBO, 0xCF18);
+		cs = ccitt16(tmp, 0xCF18);
+		memcpy(mainbuf + GBO + 0xCF2A, &cs, 2);
+
+		memcpy(tmp, mainbuf + SBO + 0xCF2C, 0x121D0);
+		cs = ccitt16(tmp, 0x121D0);
+		memcpy(mainbuf + SBO + 0x1F10E, &cs, 2);		
+	}
+	else if (game == 11 || game == 12) { //DP
+		memcpy(tmp, mainbuf + GBO, 0xC0EC);
+		cs = ccitt16(tmp, 0xC0EC);
+		memcpy(mainbuf + GBO + 0xC0FE, &cs, 2);
+
+		memcpy(tmp, mainbuf + SBO + 0xC100, 0x121CC);
+		cs = ccitt16(tmp, 0x121CC);
+		memcpy(mainbuf + SBO + 0x1E2DE, &cs, 2);			
+	}
 	free(tmp);
 }
 
@@ -525,6 +560,18 @@ void setWC(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[]) {
 			seed = LCRNG(seed);
 			memcpy(&mainbuf[PGFSTARTPOS + i], &temp, 2);
 		}
+	}
+	if (game == 8 || game == 9) {
+		*(mainbuf + HGSSPGTFLAGPOS + (i >> 3)) |= 0x1 << (i & 7);
+		memcpy((void*)(mainbuf + HGSSPGTPOS + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
+	}
+	if (game == 10) {
+		*(mainbuf + PTPGTFLAGPOS + (i >> 3)) |= 0x1 << (i & 7);
+		memcpy((void*)(mainbuf + PTPGTPOS + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
+	}
+	if (game == 11 || game == 12) {
+		*(mainbuf + DPPGTFLAGPOS + (i >> 3)) |= 0x1 << (i & 7);
+		memcpy((void*)(mainbuf + DPPGTPOS + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
 	}
 
 	nInjected[0] += 1;

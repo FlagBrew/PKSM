@@ -16,6 +16,8 @@
 
 #include <3ds.h>
 #include <stdio.h>
+
+#define PGTLENGTH 260
 #define PGFLENGTH 204
 #define WC6LENGTH 264
 #define PKMNLENGTH 232
