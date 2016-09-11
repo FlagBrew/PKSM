@@ -35,12 +35,12 @@ const int ORASWC6FLAGPOS = 0x1CC00;
 const int ORASWC6POS = 0x1CD00;
 const int XYWC6FLAGPOS = 0x1BC00;
 const int XYWC6POS = 0x1BD00;
-const int DPPGTFLAGPOS = 0xA6D0 + 0x40000;
-const int DPPGTPOS = 0xA7FC + 0x40000;
-const int PTPGTFLAGPOS = 0xB4C0 + 0x40000;
-const int PTPGTPOS = 0xB5C0 + 0x40000;
-const int HGSSPGTFLAGPOS = 0x9D3C + 0x40000;
-const int HGSSPGTPOS = 0x9E3C + 0x40000;
+const int DPPGTFLAGPOS = 0xA6D0;
+const int DPPGTPOS = 0xA7FC;
+const int PTPGTFLAGPOS = 0xB4C0;
+const int PTPGTPOS = 0xB5C0;
+const int HGSSPGTFLAGPOS = 0x9D3C;
+const int HGSSPGTPOS = 0x9E3C;
 const int EONFLAGPOS = 0x319B8;
 const int LANGUAGEPOS = 0x1402D;
 const int MONEYPOS = 0x4208;
@@ -58,8 +58,6 @@ const int NATUREPOS = 0x1C;
 const int FRIENDSHIPPOS = 0xA2;
 const int PGFSTARTPOS = 0x1C800;
 const int BWSEEDPOS = 0x1D290;
-const int GBO = 0x40000;
-const int SBO = 0x40000;
 
 char *stats[] = {"All", "Health", "Attack", "Defense", "Speed", "Sp. Attack", "Sp. Defense"};
 char *language[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
@@ -81,6 +79,48 @@ static char *pokemon[722] = {"None", "Bulbasaur", "Ivysaur", "Venusaur", "Charma
 static char *natures[25] = {"Hardy", "Lonely", "Brave", "Adamant", "Naughty", "Bold", "Docile", "Relaxed", "Impish", "Lax", "Timid", "Hasty", "Serious", "Jolly", "Naive", "Modest", "Mild", "Quiet", "Bashful", "Rash", "Calm", "Gentle", "Sassy", "Careful", "Quirky"};
 
 /* ************************ utilities ************************ */
+
+int getActiveGBO(u8* mainbuf, int game) {
+	int ofs = 0;
+	int generalBlock = -1;
+	
+	if (game == 8 || game == 9)
+		ofs = 0xF626;
+	else if (game == 10) 
+		ofs = 0xCF1C;
+	else if (game == 11 || game == 12)
+		ofs = 0xC0F0;
+	
+	u16 c1;
+	u16 c2;
+	memcpy(&c1, &mainbuf[ofs], 2);
+	memcpy(&c2, &mainbuf[ofs + 0x40000], 2);
+	
+	generalBlock = c1 >= c2 ? 0 : 1;
+	
+	return generalBlock;
+}
+
+int getActiveSBO(u8* mainbuf, int game) {
+	int ofs = 0;
+	int storageBlock = -1;
+	
+	if (game == 8 || game == 9)
+		ofs = 0x21A00;
+	else if (game == 10) 
+		ofs = 0x1F100;
+	else if (game == 11 || game == 12)
+		ofs = 0x1E2D0;
+	
+	u16 c1;
+	u16 c2;
+	memcpy(&c1, &mainbuf[ofs], 2);
+	memcpy(&c2, &mainbuf[ofs + 0x40000], 2);
+	
+	storageBlock = c1 >= c2 ? 0 : 1;
+	
+	return storageBlock;
+}
 
 u32 CHKOffset(u32 i, int game) {
 	if (game == 0 || game == 1) {
@@ -198,7 +238,15 @@ void rewriteCHK(u8 *mainbuf, int game) {
 			memcpy(mainbuf + BWCHKOff(i, game), &cs, 2);
 			memcpy(mainbuf + BWCHKMirr(i, game), &cs, 2);
 		}
-	else if (game == 8 || game == 9) { //HGSS
+
+	free(tmp);
+}
+
+void rewriteCHK4(u8 *mainbuf, int game, int GBO, int SBO) {
+	u8* tmp = (u8*)malloc(0x35000 * sizeof(u8));
+	u16 cs;
+
+	if (game == 8 || game == 9) { //HGSS	
 		memcpy(tmp, mainbuf + GBO, 0xF618);
 		cs = ccitt16(tmp, 0xF618);
 		memcpy(mainbuf + GBO + 0xF626, &cs, 2);
@@ -561,17 +609,22 @@ void setWC(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[]) {
 			memcpy(&mainbuf[PGFSTARTPOS + i], &temp, 2);
 		}
 	}
+	
+	nInjected[0] += 1;
+}
+
+void setWC4(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[], int GBO, int SBO) {
 	if (game == 8 || game == 9) {
-		*(mainbuf + HGSSPGTFLAGPOS + (i >> 3)) |= 0x1 << (i & 7);
-		memcpy((void*)(mainbuf + HGSSPGTPOS + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
+		*(mainbuf + HGSSPGTFLAGPOS + GBO + (i >> 3)) |= 0x1 << (i & 7);
+		memcpy((void*)(mainbuf + HGSSPGTPOS + GBO + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
 	}
 	if (game == 10) {
-		*(mainbuf + PTPGTFLAGPOS + (i >> 3)) |= 0x1 << (i & 7);
-		memcpy((void*)(mainbuf + PTPGTPOS + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
+		*(mainbuf + PTPGTFLAGPOS + GBO + (i >> 3)) |= 0x1 << (i & 7);
+		memcpy((void*)(mainbuf + PTPGTPOS + GBO + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
 	}
 	if (game == 11 || game == 12) {
-		*(mainbuf + DPPGTFLAGPOS + (i >> 3)) |= 0x1 << (i & 7);
-		memcpy((void*)(mainbuf + DPPGTPOS + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
+		*(mainbuf + DPPGTFLAGPOS + GBO + (i >> 3)) |= 0x1 << (i & 7);
+		memcpy((void*)(mainbuf + DPPGTPOS + GBO + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
 	}
 
 	nInjected[0] += 1;
