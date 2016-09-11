@@ -1,0 +1,23 @@
+0081 - Movie Arceus
+
+Pokemon:       Arceus
+Level:         100
+Ability:       Multitype
+Held Item:     Various
+TID:           03075
+SID:           00081
+OT:            デセルシティ
+Met:           Pokemon Movie 15
+Nature:        Any Nature
+Ribbon:        Wishing Ribbon
+
+Relearn Moves: Judgment
+               Blast Burn
+               Hydro Cannon
+               Earth Power
+			   
+Games:         XYORAS
+Method:        Local Wireless
+Region:        JPN/TWN
+Duration:      March 7 to August 31, 2015
+               November 20 to December 17, 2015 

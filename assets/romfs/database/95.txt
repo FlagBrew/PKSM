@@ -1,0 +1,22 @@
+0095 - Hiroshima PC Shiny Magikarp
+
+Pokemon:       Magikarp
+Level:         1
+Ability:       Swift Swim
+Held Item:     Stardust
+TID:           06265
+SID:           00095
+OT:            ポケセン
+Met:           a Pokemon Center
+Nature:        Any Nature
+Ribbon:        No Ribbon 
+
+Relearn Moves: Splash
+               Celebrate
+               Happy Hour
+               -
+			   
+Games:         XY/ORAS
+Method:        Local Wireless
+Region:        JPN
+Duration:      June 26 to August 31, 2015 

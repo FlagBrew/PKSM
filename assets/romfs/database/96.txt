@@ -1,0 +1,22 @@
+0096 - Pokelab Bulbasaur
+
+Pokemon:       Bulbasaur
+Level:         5
+Ability:       Overgrow
+Held Item:     Venusaurite
+TID:           07085
+SID:           00096
+OT:            ポケモンラボ
+Met:           a Pokemon Event
+Nature:        Any Nature
+Ribbon:        Event Ribbon 
+
+Relearn Moves: Growl
+               Leech Seed
+               Vine Whip
+               Poison Powder
+			   
+Games:         XY/ORAS
+Method:        Serial Code
+Region:        JPN
+Duration:      July 8 to November 30, 2015 

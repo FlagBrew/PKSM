@@ -1,0 +1,22 @@
+0097 - Pokelab Charmander
+
+Pokemon:       Charmander
+Level:         5
+Ability:       Blaze
+Held Item:     Charzardite Y
+TID:           07085
+SID:           00097
+OT:            ポケモンラボ
+Met:           a Pokemon Event
+Nature:        Any Nature
+Ribbon:        Event Ribbon 
+
+Relearn Moves: Growl
+               Ember
+               Smokescreen
+               Dragon Rage
+			   
+Games:         XY/ORAS
+Method:        Serial Code
+Region:        JPN
+Duration:      July 8 to November 30, 2015 

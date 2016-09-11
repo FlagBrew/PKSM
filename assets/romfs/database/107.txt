@@ -1,0 +1,22 @@
+0107 - Yokohama 2015 Shiny Pikachu
+
+Pokemon:       Pikachu
+Level:         10
+Ability:       Static
+Held Item:     Persim Berry
+TID:           08085
+SID:           00107
+OT:            ヨコハマ
+Met:           a Pokemon event
+Nature:        Any Nature
+Ribbon:        Event Ribbon 
+
+Relearn Moves: Teeter Dance
+               Play Nice
+               Tail Whip
+               Nuzzle
+			   
+Games:         XY/ORAS
+Method:        Local Wireless
+Region:        JPN
+Duration:      August 8 to 16, 2015 

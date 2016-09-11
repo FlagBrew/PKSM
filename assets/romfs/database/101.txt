@@ -1,0 +1,22 @@
+0101 - 7/11 Lugia
+
+Pokemon:       Lugia
+Level:         50
+Ability:       Pressure
+Held Item:     Leftovers
+TID:           00711
+SID:           00101
+OT:            ７　ＳＰＯＴ
+Met:           a lovely place
+Nature:        Timid
+Ribbon:        Wishing Ribbon 
+
+Relearn Moves: Aeroblast
+               Hydro Pump
+               Dragon Rush
+               Ice Beam
+			   
+Games:         XY/ORAS
+Method:        Serial Code
+Region:        JPN
+Duration:      August 1 to September 30, 2015 
