@@ -15,9 +15,6 @@
 */
 
 #include <stdlib.h>
-#include <stdio.h>
-#include <3ds.h>
-#include <string.h>
 
 void filldatabase6(char *database[]) {
 	for (int j = 0; j < 27 * 76; j++)
@@ -392,4 +389,101 @@ void filldatabase5(char *database[]) {
 	database[165] = "165 - Chief's Sableye";
 	database[166] = "166 - Yamamoto's Politoed";
 	database[167] = "167 - Tamamoto's Kingdra";
+}
+
+void filldatabase4(char *database[]) {	
+	for (int j = 0; j < 27 * 7; j++)
+		database[j] = ".";
+
+	database[1] = "001 - TRU Manaphy";
+	database[2] = "002 - Festa Electabuzz";
+	database[3] = "003 - Festa Magmar";
+	database[4] = "004 - NWS Manaphy";
+	database[5] = "005 - JBHF Manaphy";
+	database[6] = "006 - E4ALL Manaphy";
+	database[7] = "007 - Sunday Tropius";
+	database[8] = "008 - GameStop Deoxys";
+	database[9] = "009 - Movie Darkrai";
+	database[10] = "010 - Sunday Whiscash";
+	database[11] = "011 - Pal City Lucario";
+	database[12] = "012 - TRU Dragonite";
+	database[13] = "013 - Nzone Pikachu";
+	database[14] = "014 - Tanabata Jirachi 2007";
+	database[15] = "015 - Bday Charmander";
+	database[16] = "016 - Movie Shaymin";
+	database[17] = "017 - Secret Key";
+	database[18] = "018 - Member Card";
+	database[19] = "019 - Movie Arceus";
+	database[20] = "020 - Oak's Letter";
+	database[21] = "021 - Pikachu-Colored Pichu";
+	database[22] = "022 - Almia Darkrai";
+	database[23] = "023 - Kyle Riolu";
+	database[24] = "024 - Night Sky Jirachi";
+	database[25] = "025 - Concert Chatot";
+	database[26] = "026 - Pal City Manaphy";
+	database[27] = "027 - Pal City Mew";
+	database[28] = "028 - Matchup Checker";
+	database[29] = "029 - Sunday Octillery";
+	database[30] = "030 - Strongest Electivire";
+	database[31] = "031 - Strongest Magmortar";
+	database[32] = "032 - Strongest Milotic";
+	database[33] = "033 - Strongest Dragonite";
+	database[34] = "034 - Strongest Salamence";
+	database[35] = "035 - McDonald's Pikachu";
+	database[36] = "036 - Bday Charmander";
+	database[37] = "037 - Tanabata Jirachi 2008";
+	database[38] = "038 - PC Yokohama Pikachu";
+	database[39] = "039 - Bday Pikachu 2008";
+	database[40] = "040 - Eevee Collection";
+	database[41] = "041 - Onemuri Pikachu";
+	database[43] = "043 - Osaka Meowth";
+	database[45] = "045 - Lucario Doll";
+	database[47] = "047 - Bday Charmander 2009";
+	database[48] = "048 - Yellow Forest Course";
+	database[49] = "049 - Bday Chimchar 2009";
+	database[50] = "050 - Kyoto Pikachu";
+	database[51] = "051 - Winner's Path Course";
+	database[52] = "052 - VGC10 Eevee";
+	database[53] = "053 - Anniversary Mew";
+	database[54] = "054 - Enigma Stone";
+	database[55] = "055 - Shopping Course";
+	database[56] = "056 - Ario Pikachu";
+	database[57] = "057 - Bday Pikachu";
+	database[58] = "058 - Event Course";
+	database[59] = "059 - Winter Raikou";
+	database[60] = "060 - Winter Entei";
+	database[61] = "061 - Winter Suicune";
+	database[62] = "062 - GameStop Celebi";
+	database[63] = "063 - Goon's Scizor";
+	database[64] = "064 - Amity Field Course";
+	database[65] = "065 - Ash's Pikachu";
+	database[66] = "066 - NZ Manaphy";
+	database[67] = "067 - Bday Charmander 2010";
+	database[68] = "068 - Worlds 2010 Crobat";
+	database[69] = "069 - 7-Eleven Pikachu";
+	database[70] = "070 - Bday Chimchar 2010";
+	database[71] = "071 - Amity Field Course";
+	database[72] = "072 - Battle Series Arcanine";
+	database[73] = "073 - Hanguk Rayquaza";
+	database[74] = "074 - Shinsegae Munchlax";
+	database[75] = "075 - Shinsegae Feebas";
+	database[76] = "076 - Character Fair Shaymin";
+	database[77] = "077 - Character Fair Pikachu";
+	database[78] = "078 - Sightseeing Course";
+	database[79] = "079 - Manaphy Egg";
+	database[80] = "080 - TCGWC Pikachu";
+	database[108] = "108 - Apicot Berry";
+	database[150] = "150 - Poketopia Pikachu";
+	database[151] = "151 - Poketopia Electivire";
+	database[152] = "152 - Poketopia Magmortar";
+	database[153] = "153 - Worlds 2008 Lucario";
+	database[154] = "154 - VGC09 Milotic";
+	database[180] = "180 - Movie Regigigas";
+	database[181] = "181 - Worlds 2009 Weavile";
+	database[182] = "182 - Oblivia Deoxys (Attack)";
+	database[183] = "183 - Oblivia Heatran";
+	database[184] = "184 - Oblivia Shaymin";
+	database[185] = "185 - Oblivia Deoxys (Defense)";
+	database[186] = "186 - Oblivia Deoxys (Normal)";
+	database[187] = "187 - Oblivia Deoxys (Speed)";
 }

@@ -20,3 +20,4 @@
 
 void filldatabase6(char *database[]);
 void filldatabase5(char *database[]);
+void filldatabase4(char *database[]);

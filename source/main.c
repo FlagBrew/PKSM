@@ -39,8 +39,8 @@
 #include "database.h"
 #include "pokemon.h"
 
-#define ENTRIES 12
-#define GAMES 8
+#define ENTRIES 13
+#define GAMES 13
 
 #define V1 2
 #define V2 3
@@ -147,12 +147,11 @@ int main() {
 		while (aptMainLoop()) {
 			gspWaitForVBlank();
 			hidScanInput();
-
+			
 			if (hidKeysDown() & KEY_START) {
 				autoupdate = true;
 				break;
-			}
-			
+			}		
 			if (hidKeysDown() & KEY_B)
 				break;
 
@@ -171,10 +170,12 @@ int main() {
 
 	int game = 0;
 	bool save = true;
+	int GBO = 0;
+	int SBO = 0;
 	
 	//X, Y, OR, AS
 	const u64 ids[4] = {0x0004000000055D00, 0x0004000000055E00, 0x000400000011C400, 0x000400000011C500};
-	char *gamesList[GAMES] = {"Pokemon X", "Pokemon Y", "Pokemon Omega Ruby", "Pokemon Alpha Sapphire", "Pokemon Black", "Pokemon White", "Pokemon Black 2", "Pokemon White 2"};
+	char *gamesList[GAMES] = {"Pokemon X", "Pokemon Y", "Pokemon Omega Ruby", "Pokemon Alpha Sapphire", "Pokemon Black", "Pokemon White", "Pokemon Black 2", "Pokemon White 2", "Pokemon Heart Gold", "Pokemon Soul Silver", "Pokemon Platinum", "Pokemon Diamond", "Pokemon Pearl"};
 	
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
@@ -220,7 +221,7 @@ int main() {
 	}
 	
 	consoleSelect(&topScreen);
-	printf("\x1b[11;0HLoading save...");
+	printf("\x1b[16;0HLoading save...");
 	
 	u64 mainSize = 0;
 	Handle mainHandle;
@@ -234,8 +235,7 @@ int main() {
 			return -1;
 		}
 
-		FSUSER_OpenFile(&mainHandle, saveArch, fsMakePath(PATH_ASCII, "/main"), FS_OPEN_READ | FS_OPEN_WRITE, 0);
-		
+		FSUSER_OpenFile(&mainHandle, saveArch, fsMakePath(PATH_ASCII, "/main"), FS_OPEN_READ | FS_OPEN_WRITE, 0);		
 		FSFILE_GetSize(mainHandle, &mainSize);
 		
 		switch(game) {
@@ -267,7 +267,7 @@ int main() {
 		FSFILE_Read(mainHandle, NULL, 0, mainbuf, mainSize);
 	}
 	
-	else if (game == 4 || game == 5 || game == 6 || game == 7) {
+	else if (game >= 4) {
 		FS_CardType t;
 		Result res = FSUSER_GetCardType(&t);
 		if (res != 0) {
@@ -278,13 +278,13 @@ int main() {
 		u8 data[0x3B4];
 		res = FSUSER_GetLegacyRomHeader(MEDIATYPE_GAME_CARD, 0LL, data);
 		
-		bool isTWL = (data[0x12] & 0x2) != 0;
+		//bool isTWL = (data[0x12] & 0x2) != 0;
 
-		if (!(isTWL)){
-			errDisp(bottomScreen, 18, BOTTOM);
-			exitServices();
-			return -1;
-		}
+		//if (!(isTWL)){
+		//	errDisp(bottomScreen, 18, BOTTOM);
+		//	exitServices();
+		//	return -1;
+		//}
 
 		CardType cardType_;
 		res = SPIGetCardType(&cardType_, (*(data + 12) == 'I') ? 1 : 0);
@@ -293,6 +293,10 @@ int main() {
 		mainbuf = malloc(mainSize);
 		
 		TWLstoreSaveFile(mainbuf, cardType_);
+		if (game >= 8) {
+			GBO = 0x40000 * getActiveGBO(mainbuf, game);
+			SBO = 0x40000 * getActiveSBO(mainbuf, game);
+		}
 	}
 	
 	char *bakpath = (char*)malloc(80 * sizeof(char));
@@ -316,7 +320,7 @@ int main() {
 	
 	free(bakpath);
 
-	char *menuEntries[ENTRIES] = {"Gen VI's Event Database", "Gen VI's Save file editor", "Gen VI's Pokemon editor", "Gen VI's Mass injecter", "Gen V's Event Database", "Wi-Fi distributions", "Code distributions", "Local distributions", "Capture probability calculator", "Common PS dates database", "Credits", "Update .cia to latest commit build"};
+	char *menuEntries[ENTRIES] = {"Gen VI's Event Database", "Gen VI's Save file editor", "Gen VI's Pokemon editor", "Gen VI's Mass injecter", "Gen V's Event Database", "Gen IV's Event Database", "Wi-Fi distributions", "Code distributions", "Local distributions", "Capture probability calculator", "Common PS dates database", "Credits", "Update .cia to latest commit build"};
 	int currentEntry = 0;
 	
 	// initializing save file editor variables
@@ -429,38 +433,46 @@ int main() {
 					eventDatabase5(topScreen, bottomScreen, mainbuf, game);
 					break;
 				}
+				
+				case 5 : {
+					if (game < 8)
+						break;
+					
+					eventDatabase4(topScreen, bottomScreen, mainbuf, game, GBO, SBO);
+					break;
+				}
 
-				case 5 :  {
+				case 6 :  {
 					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/worldwide1.txt");
 					break;
 				}
 
-				case 6 : {
+				case 7 : {
 					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/worldwide2.txt");
 					break;
 				}
 
-				case 7 : {
+				case 8 : {
 					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/local.txt");
 					break;
 				}
 
-				case 8 : {
+				case 9 : {
 					catchrate(topScreen, bottomScreen);
 					break;
 				}
 
-				case 9 : {
+				case 10 : {
 					psDates(topScreen, bottomScreen);
 					break;
 				}
 
-				case 10 : {
+				case 11 : {
 					credits(topScreen, bottomScreen);
 					break;
 				}
 
-				case 11 : {
+				case 12 : {
 					update(topScreen, bottomScreen);
 					break;
 				}
@@ -479,13 +491,15 @@ int main() {
 	if (save) {
 		if (game < 4) 
 			infoDisp(bottomScreen, 2, BOTTOM);
-		else if (game == 4 || game == 5 || game == 6 || game == 7)
+		else if (game >= 4)
 			infoDisp(bottomScreen, 5, BOTTOM);
 		
 		gfxFlushBuffers();
 		gfxSwapBuffers();
-		
-		rewriteCHK(mainbuf, game);	
+		if (game < 8)
+			rewriteCHK(mainbuf, game);
+		else if (game >= 8)
+			rewriteCHK4(mainbuf, game, GBO, SBO);
 	}
 	
 	if (game < 4) {
@@ -495,7 +509,7 @@ int main() {
 			FSUSER_ControlArchive(saveArch, ARCHIVE_ACTION_COMMIT_SAVE_DATA, NULL, 0, NULL, 0);
 		FSUSER_CloseArchive(saveArch);
 	}
-	else if (game == 4 || game == 5 || game == 6 || game == 7) {
+	else if (game >= 4) {
 		TWLinjectSave(mainbuf);
 	}
 
