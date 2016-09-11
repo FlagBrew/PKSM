@@ -1,0 +1,22 @@
+0090 - SG Rayquaza
+
+Pokemon:       Rayquaza
+Level:         70
+Ability:       Air Lock
+Held Item:     None
+TID:           03145
+SID:           00090
+OT:            SG Summer'15
+Met:           an event site
+Nature:        Any Nature
+Ribbon:        Event Ribbon
+
+Relearn Moves: Dragon Pulse
+               Twister
+               Thunder
+               Extreme Speed
+			   
+Games:         XYORAS
+Method:        Serial Code
+Region:        JPN/USA
+Duration:      May 6 to July 31, 2015 
