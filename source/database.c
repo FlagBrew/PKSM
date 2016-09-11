@@ -32,6 +32,77 @@
 char *overwritechar[2] = {"DISABLED", "ENABLED "};
 char *adaptchar[2] = {"NO ", "YES"};
 
+int checkMultipleWC6(u8* mainbuf, int game, int i, int langCont, int nInjected[], int overwrite[], int adapt) {
+	if (nInjected[0] >= 24)
+		nInjected[0] = 0;
+	
+	int n = 0;
+	
+	if (i == 551)
+		n = 2;
+	
+	if (n == 0)
+		return 0;
+	
+	for (int j = 0; j < n; j++) {
+		char *wc6path = (char*)malloc(40 * sizeof(char));
+		switch (langCont) {
+			case 0 : {
+				snprintf(wc6path, 40, "romfs:/wc6/jpn/%d-%d.wc6", i, j + 1);
+				break;
+			} 
+			case 1 : {
+				snprintf(wc6path, 40, "romfs:/wc6/eng/%d-%d.wc6", i, j + 1);
+				break;
+			}
+			case 2 : {
+				snprintf(wc6path, 40, "romfs:/wc6/fre/%d-%d.wc6", i, j + 1);
+				break;
+			}
+			case 3 : {
+				snprintf(wc6path, 40, "romfs:/wc6/ita/%d-%d.wc6", i, j + 1);
+				break;
+			}
+			case 4 : {
+				snprintf(wc6path, 40, "romfs:/wc6/ger/%d-%d.wc6", i, j + 1);
+				break;
+			}
+			case 5 : {
+				snprintf(wc6path, 40, "romfs:/wc6/spa/%d-%d.wc6", i, j + 1);
+				break;
+			}
+			case 6 : {
+				snprintf(wc6path, 40, "romfs:/wc6/kor/%d-%d.wc6", i, j + 1);
+				break;
+			}
+		}
+		
+		FILE *fptr = fopen(wc6path, "rt");
+		if (fptr == NULL) 
+			return 15;
+		fseek(fptr, 0, SEEK_END);
+		u32 contentsize = ftell(fptr);
+		u8 *wc6buf = (u8*)malloc(contentsize);
+		if (wc6buf == NULL) 
+			return 8;
+		rewind(fptr);
+		fread(wc6buf, contentsize, 1, fptr);
+		fclose(fptr);
+
+		if (overwrite[0] == 0)
+			findFreeLocationWC(mainbuf, game, nInjected);
+
+		if (adapt == 1)
+			setLanguage(mainbuf, langCont);
+
+		setWC(mainbuf, wc6buf, game, i, nInjected);
+
+		free(wc6path);
+		free(wc6buf);
+	}
+	return 1;
+}
+
 int printDB6(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int i, int nInjected[], int game, int overwrite[]) {	
 	char *language[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
 	
@@ -63,36 +134,36 @@ int printDB6(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int
     gfxFlushBuffers();
     gfxSwapBuffers();
 
-    char *testpath = (char*)malloc(30 * sizeof(char));
+    char *testpath = (char*)malloc(40 * sizeof(char));
 	
     for (int j = 0; j < 7; j++) {
         switch (j) {
             case 0 : {
-				snprintf(testpath, 30, "romfs:/wc6/jpn/%d.wc6", i);
+				snprintf(testpath, 40, "romfs:/wc6/jpn/%d.wc6", i);
 				break;
             } 
             case 1 : {
-				snprintf(testpath, 30, "romfs:/wc6/eng/%d.wc6", i);
+				snprintf(testpath, 40, "romfs:/wc6/eng/%d.wc6", i);
 				break;
             }
             case 2 : {
-				snprintf(testpath, 30, "romfs:/wc6/fre/%d.wc6", i);
+				snprintf(testpath, 40, "romfs:/wc6/fre/%d.wc6", i);
 				break;
             }
             case 3 : {
-				snprintf(testpath, 30, "romfs:/wc6/ita/%d.wc6", i);
+				snprintf(testpath, 40, "romfs:/wc6/ita/%d.wc6", i);
 				break;
             }
             case 4 : {
-				snprintf(testpath, 30, "romfs:/wc6/ger/%d.wc6", i);
+				snprintf(testpath, 40, "romfs:/wc6/ger/%d.wc6", i);
 				break;
             }
             case 5 : {
-				snprintf(testpath, 30, "romfs:/wc6/spa/%d.wc6", i);
+				snprintf(testpath, 40, "romfs:/wc6/spa/%d.wc6", i);
 				break;
             }
             case 6 : {
-				snprintf(testpath, 30, "romfs:/wc6/kor/%d.wc6", i);
+				snprintf(testpath, 40, "romfs:/wc6/kor/%d.wc6", i);
 				break;
             }
         }
@@ -101,10 +172,61 @@ int printDB6(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int
             printf("%s ", language[j]);
 		   	fclose(f);
 		}
-
         gfxFlushBuffers();
         gfxSwapBuffers();
     }
+	
+	//check for multiple wc events
+	int n = 0;
+	int k;
+	
+	if (i == 551)
+		n = 2;
+	
+	for (int j = 0; j < 7; j++) {
+		k = 0;
+		for (int t = 0; t < n; t++) {
+			switch (j) {
+				case 0 : {
+					snprintf(testpath, 40, "romfs:/wc6/jpn/%d-%d.wc6", i, t + 1);
+					break;
+				} 
+				case 1 : {
+					snprintf(testpath, 40, "romfs:/wc6/eng/%d-%d.wc6", i, t + 1);
+					break;
+				}
+				case 2 : {
+					snprintf(testpath, 40, "romfs:/wc6/fre/%d-%d.wc6", i, t + 1);
+					break;
+				}
+				case 3 : {
+					snprintf(testpath, 40, "romfs:/wc6/ita/%d-%d.wc6", i, t + 1);
+					break;
+				}
+				case 4 : {
+					snprintf(testpath, 40, "romfs:/wc6/ger/%d-%d.wc6", i, t + 1);
+					break;
+				}
+				case 5 : {
+					snprintf(testpath, 40, "romfs:/wc6/spa/%d-%d.wc6", i, t + 1);
+					break;
+				}
+				case 6 : {
+					snprintf(testpath, 40, "romfs:/wc6/kor/%d-%d.wc6", i, t + 1);
+					break;
+				}
+			}
+			FILE* f = fopen(testpath, "r");
+			if (f) {
+				k++;
+				fclose(f);
+			}
+		}
+		if (k == n)
+			printf("%s ", language[j]);
+		gfxFlushBuffers();
+		gfxSwapBuffers();
+	}
 	
 	char *descpath = (char*)malloc(30 * sizeof(char));
 	snprintf(descpath, 30, "romfs:/database/%d.txt", i);
@@ -161,6 +283,12 @@ int printDB6(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int
 
 			if (game < 2 && i == 2048)
 				return 12;
+			
+			int ret = checkMultipleWC6(mainbuf, game, i, langCont, nInjected, overwrite, adapt);
+			if (ret != 0 && ret != 1)
+				return ret;
+			else if (ret == 1)
+				return 0;
 
 			char *wc6path = (char*)malloc(30 * sizeof(char));
 
