@@ -221,7 +221,7 @@ int main() {
 	}
 	
 	consoleSelect(&topScreen);
-	printf("\x1b[16;0HLoading save...");
+	printf("\x1b[25;0HLoading save...");
 	
 	u64 mainSize = 0;
 	Handle mainHandle;
@@ -293,7 +293,7 @@ int main() {
 		mainbuf = malloc(mainSize);
 		
 		TWLstoreSaveFile(mainbuf, cardType_);
-		if (game >= 8) {
+		if (game > 7) {
 			GBO = 0x40000 * getActiveGBO(mainbuf, game);
 			SBO = 0x40000 * getActiveSBO(mainbuf, game);
 		}
@@ -498,7 +498,7 @@ int main() {
 		gfxSwapBuffers();
 		if (game < 8)
 			rewriteCHK(mainbuf, game);
-		else if (game >= 8)
+		else if (game > 7)
 			rewriteCHK4(mainbuf, game, GBO, SBO);
 	}
 	

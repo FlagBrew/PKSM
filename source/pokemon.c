@@ -96,7 +96,7 @@ int getActiveGBO(u8* mainbuf, int game) {
 	memcpy(&c1, &mainbuf[ofs], 2);
 	memcpy(&c2, &mainbuf[ofs + 0x40000], 2);
 	
-	generalBlock = c1 >= c2 ? 0 : 1;
+	generalBlock = (c1 >= c2) ? 0 : 1;
 	
 	return generalBlock;
 }
@@ -117,7 +117,7 @@ int getActiveSBO(u8* mainbuf, int game) {
 	memcpy(&c1, &mainbuf[ofs], 2);
 	memcpy(&c2, &mainbuf[ofs + 0x40000], 2);
 	
-	storageBlock = c1 >= c2 ? 0 : 1;
+	storageBlock = (c1 >= c2) ? 0 : 1;
 	
 	return storageBlock;
 }
