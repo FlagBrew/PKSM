@@ -17,7 +17,8 @@
 #include <stdlib.h>
 #include <3ds.h>
 
-int checkMultipleWC6(u8* mainbuf, int game, int i, int langCont, int nInjected[], int overwrite[], int adapt);
+int getN(int i);
+int checkMultipleWC6(u8* mainbuf, int game, int i, int langCont, int nInjected[], int adapt);
 int printDB6(PrintConsole topScreen, PrintConsole bottomScreen, u8* mainbuf, int i, int nInjected[], int game, int overwrite[]);
 int printDB5(PrintConsole topScreen, PrintConsole bottomScreen, u8* mainbuf, int i, int nInjected[], int game);
 int printDB4(PrintConsole topScreen, PrintConsole bottomScreen, u8* mainbuf, int i, int nInjected[], int game, int GBO, int SBO);
