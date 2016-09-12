@@ -401,7 +401,7 @@ void findFreeLocationWC(u8 *mainbuf, int game, int nInjected[]) {
 	int temp;
 	
 	if (game == 0 || game == 1) {
-		for (int t = 0; t < 23; t++) {
+		for (int t = 0; t < 24; t++) {
 			temp = 0;
 			for (int j = 0; j < WC6LENGTH; j++)
 				if (*(mainbuf + XYWC6POS + t * WC6LENGTH + j) == 0x00)
@@ -413,7 +413,7 @@ void findFreeLocationWC(u8 *mainbuf, int game, int nInjected[]) {
 			}
 		}
 	} else if (game == 2 || game == 3) {
-		for (int t = 0; t < 23; t++) {
+		for (int t = 0; t < 24; t++) {
 			temp = 0;
 			for (int j = 0; j < WC6LENGTH; j++)
 				if (*(mainbuf + ORASWC6POS + t * WC6LENGTH + j) == 0x00)
@@ -611,6 +611,8 @@ void setWC(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[]) {
 	}
 	
 	nInjected[0] += 1;
+	if (nInjected[0] >= 24)
+		nInjected[0] = 0;
 }
 
 void setWC4(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[], int GBO, int SBO) {
