@@ -40,13 +40,13 @@
 #include "pokemon.h"
 
 #define ENTRIES 13
-#define GAMES 13
+#define GAMES 11
 
 #define V1 2
 #define V2 4
 #define V3 0
 
-#define DAY 8
+#define DAY 12
 #define MONTH 9
 #define YEAR 16
 
@@ -188,7 +188,7 @@ int main() {
 	
 	//X, Y, OR, AS
 	const u64 ids[4] = {0x0004000000055D00, 0x0004000000055E00, 0x000400000011C400, 0x000400000011C500};
-	char *gamesList[GAMES] = {"Pokemon X", "Pokemon Y", "Pokemon Omega Ruby", "Pokemon Alpha Sapphire", "Pokemon Black", "Pokemon White", "Pokemon Black 2", "Pokemon White 2", "Pokemon Heart Gold", "Pokemon Soul Silver", "Pokemon Platinum", "Pokemon Diamond", "Pokemon Pearl"};
+	char *gamesList[GAMES] = {"Pokemon X", "Pokemon Y", "Pokemon Omega Ruby", "Pokemon Alpha Sapphire", "Pokemon Black", "Pokemon White", "Pokemon Black 2", "Pokemon White 2", "Pokemon Heart Gold", "Pokemon Soul Silver", "Pokemon Platinum"/*, "Pokemon Diamond", "Pokemon Pearl"*/};
 	
 	consoleSelect(&bottomScreen);
 	printf("\x1b[2J");
