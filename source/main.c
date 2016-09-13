@@ -43,8 +43,8 @@
 #define GAMES 13
 
 #define V1 2
-#define V2 3
-#define V3 1
+#define V2 4
+#define V3 0
 
 #define DAY 8
 #define MONTH 9
@@ -70,19 +70,29 @@ int autoupdater(PrintConsole topScreen, PrintConsole bottomScreen) {
 	printf("Checking automatically for updates...\n\n");
 	Result ret = downloadFile(bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/ver.ver", "/3ds/data/EventAssistant/builds/ver.ver");	
 	if (ret != 0) {
+		free(ver);
 		exitServices();
 		return 1;
 	}
 	
 	printf("\nComparing...");
 	FILE *fptr = fopen("3ds/data/EventAssistant/builds/ver.ver", "rt");
-	if (fptr == NULL)
+	if (fptr == NULL) {
+		fclose(fptr);
+		free(ver);
+		exitServices();
 		return 15;
+	}
 	fseek(fptr, 0, SEEK_END);
 	u32 contentsize = ftell(fptr);
 	char *verbuf = (char*)malloc(contentsize);
-	if (verbuf == NULL) 
+	if (verbuf == NULL) {
+		fclose(fptr);
+		free(verbuf);
+		free(ver);
+		exitServices();
 		return 8;
+	}
 	rewind(fptr);
 	fread(verbuf, contentsize, 1, fptr);
 	fclose(fptr);
@@ -92,6 +102,9 @@ int autoupdater(PrintConsole topScreen, PrintConsole bottomScreen) {
 	for (int i = 0; i < 5; i++)
 		if (*(ver + i) == *(verbuf + i))
 			temp++;
+		
+	free(ver);
+	free(verbuf);
 	
 	if (temp < 5) {
 		update(topScreen, bottomScreen);

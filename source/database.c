@@ -98,13 +98,20 @@ int checkMultipleWC6(u8* mainbuf, int game, int i, int langCont, int nInjected[]
 		}
 		
 		FILE *fptr = fopen(wc6path, "rt");
-		if (fptr == NULL) 
+		if (fptr == NULL) {
+			fclose(fptr);
+			free(wc6path);
 			return 15;
+		}
 		fseek(fptr, 0, SEEK_END);
 		u32 contentsize = ftell(fptr);
 		u8 *wc6buf = (u8*)malloc(contentsize);
-		if (wc6buf == NULL) 
+		if (wc6buf == NULL) {
+			fclose(fptr);
+			free(wc6buf);
+			free(wc6path);
 			return 8;
+		}
 		rewind(fptr);
 		fread(wc6buf, contentsize, 1, fptr);
 		fclose(fptr);
@@ -339,13 +346,20 @@ int printDB6(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int
 			}
 			
 			FILE *fptr = fopen(wc6path, "rt");
-			if (fptr == NULL) 
+			if (fptr == NULL) {
+				fclose(fptr);
+				free(wc6path);
 				return 15;
+			}
 			fseek(fptr, 0, SEEK_END);
 			u32 contentsize = ftell(fptr);
 			u8 *wc6buf = (u8*)malloc(contentsize);
-			if (wc6buf == NULL) 
+			if (wc6buf == NULL) {
+				fclose(fptr);
+				free(wc6buf);
+				free(wc6path);
 				return 8;
+			}
 			rewind(fptr);
 			fread(wc6buf, contentsize, 1, fptr);
 			fclose(fptr);
@@ -504,13 +518,20 @@ int printDB5(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int
 			}
 			
 			FILE *fptr = fopen(pgfpath, "rt");
-			if (fptr == NULL) 
+			if (fptr == NULL) {
+				fclose(fptr);
+				free(pgfpath);
 				return 15;
+			}
 			fseek(fptr, 0, SEEK_END);
 			u32 contentsize = ftell(fptr);
 			u8 *pgfbuf = (u8*)malloc(contentsize);
-			if (pgfbuf == NULL) 
+			if (pgfbuf == NULL) {
+				fclose(fptr);
+				free(pgfbuf);
+				free(pgfpath);
 				return 8;
+			}
 			rewind(fptr);
 			fread(pgfbuf, contentsize, 1, fptr);
 			fclose(fptr);
@@ -663,13 +684,20 @@ int printDB4(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int
 			}
 			
 			FILE *fptr = fopen(pgtpath, "rt");
-			if (fptr == NULL) 
+			if (fptr == NULL) {
+				fclose(fptr);
+				free(pgtpath);
 				return 15;
+			}
 			fseek(fptr, 0, SEEK_END);
 			u32 contentsize = ftell(fptr);
 			u8 *pgtbuf = (u8*)malloc(contentsize);
-			if (pgtbuf == NULL) 
+			if (pgtbuf == NULL) {
+				fclose(fptr);
+				free(pgtbuf);
+				free(pgtpath);
 				return 8;
+			}
 			rewind(fptr);
 			fread(pgtbuf, contentsize, 1, fptr);
 			fclose(fptr);
