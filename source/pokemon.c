@@ -22,7 +22,7 @@
 #include "util.h"
 
 #define PK6ENTRIES 14
-#define ITEMENTRIES 12
+#define ITEMENTRIES 13
 
 #define BALLS 25
 #define ITEM 18
@@ -246,7 +246,7 @@ void rewriteCHK4(u8 *mainbuf, int game, int GBO, int SBO) {
 	u8* tmp = (u8*)malloc(0x35000 * sizeof(u8));
 	u16 cs;
 
-	if (game == 8 || game == 9) { //HGSS	
+	if (game == 8 || game == 9) { //HGSS
 		memcpy(tmp, mainbuf + GBO, 0xF618);
 		cs = ccitt16(tmp, 0xF618);
 		memcpy(mainbuf + GBO + 0xF626, &cs, 2);
@@ -615,18 +615,42 @@ void setWC(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[]) {
 		nInjected[0] = 0;
 }
 
-void setWC4(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[], int GBO, int SBO) {
+void setWC4(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[], int GBO) {
 	if (game == 8 || game == 9) {
-		*(mainbuf + HGSSPGTFLAGPOS + GBO + (i >> 3)) |= 0x1 << (i & 7);
-		memcpy((void*)(mainbuf + HGSSPGTPOS + GBO + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
+		// I'm not using these (anymore) for now. They represent the correct way to handle wondercard injection,
+		// but they work only the first time. Needing to find a way to fix this.
+		
+		// *(mainbuf + HGSSPGTFLAGPOS + GBO + (i >> 3)) |= 0x1 << (i & 7);
+		// memcpy((void*)(mainbuf + HGSSPGTPOS + GBO + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
+		
+		// Weird but this works. Writing wondercard to both blocks will cause the game to find a corrupted save,
+		// but it restores normally it and shows the correct wondercards, without any save loss.
+		
+		*(mainbuf + HGSSPGTFLAGPOS + (i >> 3)) |= 0x1 << (i & 7);
+		memcpy((void*)(mainbuf + HGSSPGTPOS + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
+		
+		*(mainbuf + HGSSPGTFLAGPOS + 0x40000 + (i >> 3)) |= 0x1 << (i & 7);
+		memcpy((void*)(mainbuf + HGSSPGTPOS + 0x40000 + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
 	}
 	if (game == 10) {
-		*(mainbuf + PTPGTFLAGPOS + GBO + (i >> 3)) |= 0x1 << (i & 7);
-		memcpy((void*)(mainbuf + PTPGTPOS + GBO + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
+		// *(mainbuf + PTPGTFLAGPOS + GBO + (i >> 3)) |= 0x1 << (i & 7);
+		// memcpy((void*)(mainbuf + PTPGTPOS + GBO + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
+		
+		*(mainbuf + PTPGTFLAGPOS + (i >> 3)) |= 0x1 << (i & 7);
+		memcpy((void*)(mainbuf + PTPGTPOS + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
+		
+		*(mainbuf + PTPGTFLAGPOS + 0x40000 + (i >> 3)) |= 0x1 << (i & 7);
+		memcpy((void*)(mainbuf + PTPGTPOS + 0x40000 + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
 	}
 	if (game == 11 || game == 12) {
-		*(mainbuf + DPPGTFLAGPOS + GBO + (i >> 3)) |= 0x1 << (i & 7);
-		memcpy((void*)(mainbuf + DPPGTPOS + GBO + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
+		// *(mainbuf + DPPGTFLAGPOS + GBO + (i >> 3)) |= 0x1 << (i & 7);
+		// memcpy((void*)(mainbuf + DPPGTPOS + GBO + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
+		
+		*(mainbuf + DPPGTFLAGPOS + (i >> 3)) |= 0x1 << (i & 7);
+		memcpy((void*)(mainbuf + DPPGTPOS + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
+		
+		*(mainbuf + DPPGTFLAGPOS + 0x40000 + (i >> 3)) |= 0x1 << (i & 7);
+		memcpy((void*)(mainbuf + DPPGTPOS + 0x40000 + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
 	}
 
 	nInjected[0] += 1;
@@ -840,7 +864,7 @@ void refreshPK(PrintConsole topScreen, u8* mainbuf, int cont[], int game) {
 }
 
 int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int game, int nInjected[], int cont[]) {
-	char *menuEntries[ITEMENTRIES] = {"Set language to:", "Set money to:", "Set ball to slot", "Set item to slot", "Set heal to slot", "Set Battle Points to:", "Set number of badges to:", "Set all TMs", "Set Poke Balls to max", "Set all available items to max", "Set all available heals to max", "Set all available berries to max"};
+	char *menuEntries[ITEMENTRIES] = {"Set language to:", "Set money to:", "Set ball to slot", "Set item to slot", "Set heal to slot", "Set Battle Points to:", "Set number of badges to:", "Set all TMs", "Set Poke Balls to max", "Set all available items to max", "Set all available heals to max", "Set all available berries to max", "Clean Mistery Gift box"};
 	
 	//fill berries
 	u32 berry[BERRIES * 2];
@@ -1016,6 +1040,18 @@ int saveFileEditor(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbu
 					nInjected[2] = 0;
 					for (int i = 1; i < BERRIES * 2; i += 2)
 						setItem(mainbuf, i, berry, 2, nInjected, game);
+					break;
+				}
+				case 12 : {
+					int start = 0;
+					if (game == 0 || game == 1)
+						start = XYWC6FLAGPOS;
+					else if (game == 2 || game == 3)
+						start = ORASWC6FLAGPOS;
+					
+					for (int i = 0; i < (0x100 + 24 * WC6LENGTH); i++)
+						*(mainbuf + start + i) = 0x00;
+					
 					break;
 				}
 			}

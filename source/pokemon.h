@@ -67,7 +67,7 @@ void setNature(u8* pkmn, const u8 nature);
 void setNickname(u8* pkmn, char* nick);
 void setShiny(u8* pkmn, const bool shiny);
 void setWC(u8* mainbuf, u8* wc6buf, int game, int i, int nInjected[]);
-void setWC4(u8* mainbuf, u8* wc6buf, int game, int i, int nInjected[], int GBO, int SBO);
+void setWC4(u8* mainbuf, u8* wc6buf, int game, int i, int nInjected[], int GBO);
 void setLanguage(u8* mainbuf, int i);
 void setMoney(u8* mainbuf, u64 i);
 void setItem(u8* mainbuf, int i, u32 values[], int type, int nInjected[], int game);

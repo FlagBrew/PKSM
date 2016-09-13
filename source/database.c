@@ -674,7 +674,7 @@ int printDB4(PrintConsole topScreen, PrintConsole bottomScreen, u8 *mainbuf, int
 			fread(pgtbuf, contentsize, 1, fptr);
 			fclose(fptr);
 
-			setWC4(mainbuf, pgtbuf, game, i, nInjected, GBO, SBO);
+			setWC4(mainbuf, pgtbuf, game, i, nInjected, GBO);
 
 			free(pgtpath);
 			free(pgtbuf);
