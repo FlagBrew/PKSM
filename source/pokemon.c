@@ -84,6 +84,24 @@ int getActiveGBO(u8* mainbuf, int game) {
 	int ofs = 0;
 	int generalBlock = -1;
 	
+	int k = 0;
+	u8 temp[10];
+	
+	memcpy(&temp, mainbuf, 10);
+	for (int t = 0; t < 10; t++)
+		if (temp[t] == 0xFF)
+			k++;
+	if (k == 10)
+		return 1;
+	
+	k = 0;
+	memcpy(&temp, &mainbuf[0x40000], 10);
+	for (int t = 0; t < 10; t++)
+		if (temp[t] == 0xFF)
+			k++;
+	if (k == 10)
+		return 1;
+	
 	if (game == 8 || game == 9)
 		ofs = 0xF626;
 	else if (game == 10) 
@@ -111,6 +129,24 @@ int getActiveSBO(u8* mainbuf, int game) {
 		ofs = 0x1F100;
 	else if (game == 11 || game == 12)
 		ofs = 0x1E2D0;
+	
+	int k = 0;
+	u8 temp[10];
+	
+	memcpy(&temp, &mainbuf[ofs], 10);
+	for (int t = 0; t < 10; t++)
+		if (temp[t] == 0xFF)
+			k++;
+	if (k == 10)
+		return 1;
+	
+	k = 0;
+	memcpy(&temp, &mainbuf[ofs + 0x40000], 10);
+	for (int t = 0; t < 10; t++)
+		if (temp[t] == 0xFF)
+			k++;
+	if (k == 10)
+		return 0;
 	
 	u16 c1;
 	u16 c2;
@@ -615,11 +651,11 @@ void setWC(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[]) {
 		nInjected[0] = 0;
 }
 
-void setWC4(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[], int GBO) {
-	if (game == 8 || game == 9) {
+void setWC4(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[], int GBO) {	
 		// I'm not using these (anymore) for now. They represent the correct way to handle wondercard injection,
 		// but they work only the first time. Needing to find a way to fix this.
 		
+	if (game == 8 || game == 9) {
 		// *(mainbuf + HGSSPGTFLAGPOS + GBO + (i >> 3)) |= 0x1 << (i & 7);
 		// memcpy((void*)(mainbuf + HGSSPGTPOS + GBO + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
 		
