@@ -1,6 +1,6 @@
 # EventAssistant [![Github latest downloads](https://img.shields.io/github/downloads/BernardoGiordano/EventAssistant/latest/total.svg?maxAge=86400)](https://github.com/BernardoGiordano/EventAssistant/releases/latest)
 
-*Save file editor for X, Y, Omega Ruby and Alpha Sapphire... and more.*
+*Save file editor for HeartGold/SoulSilver, Platinum, Black/White, Black2/White2, X/Y, OmegaRuby/AlphaSapphire... and more.*
 
 ---
 
@@ -17,7 +17,8 @@
 **Cool things you can do**
 
 * **Check Gen VI's Event Database**, and multiple inject more than 400 wondercards into your XY/ORAS games;
-* **Check Gen V's Event Database**, and inject more than 230 wondercard in your Black/White/Black2/White2 games;
+* **Check Gen V's Event Database**, and inject more than 230 wondercards in your Black/White/Black2/White2 games;
+* **Check Gen IV's Event Database**, and inject more than 200 wondercards in your HeartGold/SoulSilver/Platinum games;
 * **Edit pokemons in your boxes**:
  * Edit nickname;
  * Edit nature;
