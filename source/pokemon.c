@@ -536,7 +536,7 @@ void setNickname(u8* pkmn, char* nick) {
     for (int i = 0; i < NICKNAMELENGTH; i++)
         toinsert[i] = 0;
     
-    for (u16 i = 0; i < strlen(nick); i++)
+    for (u16 i = 0, nicklen = strlen(nick); i < nicklen; i++)
         toinsert[i * 2] = *(nick + i);
     
     memcpy(&pkmn[NICKNAMEPOS], toinsert, NICKNAMELENGTH);
