@@ -1,4 +1,4 @@
-# EventAssistant [![Github latest downloads](https://img.shields.io/github/downloads/BernardoGiordano/EventAssistant/total.svg)]
+# EventAssistant ![Github latest downloads](https://img.shields.io/github/downloads/BernardoGiordano/EventAssistant/total.svg)
 
 *Save file editor for HeartGold/SoulSilver, Platinum, Black/White, Black2/White2, X/Y, OmegaRuby/AlphaSapphire... and more.*
 
