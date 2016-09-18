@@ -55,6 +55,8 @@ int getN(int i) {
 		return 2;
 	if (i == 552)
 		return 2;
+	if (i == 2016)
+		return 3;
 	
 	return 0;
 }

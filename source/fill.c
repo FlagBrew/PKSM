@@ -258,6 +258,7 @@ void filldatabase6(char *database[]) {
 	database[1514] = "1514 - PGL Miltank";
 	database[1515] = "1515 - PGL Garchomp";
 	database[1516] = "1516 - PGL N's Darmanitan";
+	database[2016] = "2016 - Worlds 2016 Starters";
 }
 
 void filldatabase5(char *database[]) {	
