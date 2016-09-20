@@ -13,5 +13,6 @@
 
 void autoupdaterMenu(sftd_font *fontRegular, sftd_font *fontBold, sf2d_texture *button);
 void refreshMenu(sftd_font *font, sftd_font *bold, char *menu[], int option, int n);
-int giveTransparence(int trasp, bool vanish[]);
+int giveTransparence();
 void gameSelectorMenu(sftd_font *fontRegular, sftd_font *fontBold, sf2d_texture *button, sf2d_texture *banner, char* gamesList[], int game, int N);
+void mainMenu(sftd_font *fontRegular, sftd_font *fontBold, sf2d_texture *button, char* menuEntries[], int currentEntry, int N);

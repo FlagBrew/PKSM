@@ -3,8 +3,8 @@
 #include <sfil.h>
 #include "graphic.h"
 
-int trasp = 255;
-bool vanish[1] = {true};
+int trasp = 254;
+bool vanish = true;
 
 void refreshMenu(sftd_font *font, sftd_font *bold, char *menu[], int option, int n) {
 	for (int i = 0; i < n; i++) {
@@ -15,15 +15,15 @@ void refreshMenu(sftd_font *font, sftd_font *bold, char *menu[], int option, int
 	}
 }
 
-int giveTransparence(int trasp, bool vanish[]) {
-	if (vanish[0] && trasp > 80)
-		trasp--;
-	if (trasp == 80)
-		vanish[0] = false;
-	if (!(vanish[0]) && trasp < 255)
-		trasp++;
-	if (trasp == 255)
-		vanish[0] = true;
+int giveTransparence() {
+	if (vanish && trasp > 78)
+		trasp -= 4;
+	if (trasp == 78)
+		vanish = false;
+	if (!(vanish) && trasp < 254)
+		trasp += 4;
+	if (trasp == 254)
+		vanish = true;
 	
 	return trasp;
 }
@@ -31,7 +31,7 @@ int giveTransparence(int trasp, bool vanish[]) {
 void autoupdaterMenu(sftd_font *fontRegular, sftd_font *fontBold, sf2d_texture *button) {
 	int button_pos = (400 - FILL - button->width - sftd_get_text_width(fontRegular, SIZE, "Check")) / 2;
 	int scarto = (button->width - sftd_get_text_width(fontRegular, 10, "A")) / 2;
-	trasp = giveTransparence(trasp, vanish);
+	trasp = giveTransparence();
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 	sftd_draw_text(fontBold, (400 - sftd_get_text_width(fontBold, SIZE, "Do you want to check for updates?")) / 2, (240 - 20) / 2, RGBA8(0, 0, 0, trasp), SIZE, "Do you want to check for updates?");
@@ -64,4 +64,29 @@ void gameSelectorMenu(sftd_font *fontRegular, sftd_font *fontBold, sf2d_texture 
 	sftd_draw_text(fontRegular, button_pos + button->width + FILL, (240 - textHeight) / 2 + 18 + (textHeight - button->height) / 2, BLACK, SIZE - 1, "Exit");		
 	sf2d_end_frame();
 	sf2d_swapbuffers();
+}
+
+void mainMenu(sftd_font *fontRegular, sftd_font *fontBold, sf2d_texture *button, char* menuEntries[], int currentEntry, int N) {
+	int button1_pos = (200 - FILL - button->width - sftd_get_text_width(fontRegular, SIZE, "Save")) / 2;
+	int button2_pos = 200 + (200 - FILL - button->width - sftd_get_text_width(fontRegular, SIZE, "Exit without saving")) / 2;
+	int scarto = (button->width - sftd_get_text_width(fontRegular, 10, "Y")) / 2;
+	
+	sf2d_start_frame(GFX_TOP, GFX_LEFT);
+	sftd_draw_text(fontBold, (400 - sftd_get_text_width(fontBold, SIZE, "EventAssistant")) / 2, 0, BLACK, SIZE, "EventAssistant");
+	refreshMenu(fontRegular, fontBold, menuEntries, currentEntry, N);
+	sf2d_draw_texture(button, button1_pos, 240 - button->height);
+	sf2d_draw_texture(button, button2_pos, 240 - button->height);
+	sftd_draw_text(fontRegular, button1_pos + scarto, 240 - button->height + scarto / 2, DARKGREY, 10, "Y");
+	sftd_draw_text(fontRegular, button2_pos + scarto, 240 - button->height + scarto / 2, DARKGREY, 10, "B");
+	sftd_draw_text(fontRegular, button1_pos + button->width + FILL, 240 - button->height + scarto / 2 - 2, BLACK, SIZE - 1, "Save");
+	sftd_draw_text(fontRegular, button2_pos + button->width + FILL, 240 - button->height + scarto / 2 - 2, BLACK, SIZE - 1, "Exit without saving");
+	sf2d_end_frame();
+	
+	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
+	sf2d_end_frame();
+	sf2d_swapbuffers();
+	
+	//printf("\nDatabase definitions updated to %d/%d/%d", DAY, MONTH, YEAR);
+	//printf("\x1b[26;0HEvent Assistant v%d.%d.%d", V1, V2, V3);
+	//printf("\n\nBernardo Giordano & ctrulib");
 }
