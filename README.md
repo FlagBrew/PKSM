@@ -4,6 +4,10 @@
 
 ---
 
+# BIG NEWS AND UPDATES WILL COME IN THE NEXT WEEKS!
+
+![GUI](http://i.imgur.com/VCMH5CU.jpg)
+
 [**See this awesome overview by Shai from LevelUp Team!** *(italian)*](https://youtu.be/XGq7HydXEX8?t=9m27s)
 
 [**You can see a little video showcase from @sasori here!**](https://www.youtube.com/watch?v=VNFr81mxjBs)
