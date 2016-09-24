@@ -103,6 +103,7 @@ Tell me if you like this work and what you would have featured in the next updat
 * Majickhat55 for Entree Forest, Dream Radar collection and database entries
 * Poutros for N's collection
 * Shai for the icon and Fabrizio for the name
+* Xous54 for the Ampharos fanpic
 
 ---
 
