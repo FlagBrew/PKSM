@@ -1,11 +1,11 @@
      Wifi     | Tag |   Date    |      Code
 -------------------------------------------------
-20th. Victini | ALL | 1-24 Sept | -
 20th. Keldeo  | ALL | 1-24 Oct  | -
 20th. Meloetta| ALL | 1-24 Dec  | -
 Happy Meowth  | PAL |           | HAPPY
 GF Darkrai    | PAL |           | DARKRAI2016
 Kor Gardevoir | KOR |           | NEWEPISODE
+GF Darkrai    | NA  |           | DARKRAI20
 -------------------------------------------------
 
 For TPP Anniversary Crystal players:
