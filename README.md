@@ -4,9 +4,9 @@
 
 ---
 
-# BIG NEWS AND UPDATES WILL COME IN THE NEXT WEEKS!
+**I'm working on a complete rewriting of EventAssistant with an outstanding GUI made by [@dsoldier](https://gbatemp.net/members/dsoldier.373871/). Prepare for the next weeks!**
 
-![GUI](http://i.imgur.com/VCMH5CU.jpg)
+![GUI](http://i.imgur.com/6Jt0HzGg.jpg)
 
 [**See this awesome overview by Shai from LevelUp Team!** *(italian)*](https://youtu.be/XGq7HydXEX8?t=9m27s)
 
