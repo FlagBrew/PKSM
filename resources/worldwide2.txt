@@ -5,13 +5,9 @@ Shiny Yveltal | PAL |     -     | 31 Dec 2016
 GF Mew        | JPN |    28 Feb | 31 Mar 2017
 Shiny Xerneas | PAL |    17 Jul | 31 Dec 2016
 Shiny Yveltal | PAL |    30 Sep | 
-PGL Garchomp  | ALL |    02 Aug | 29 Sep 2016
 GF Mew        | JPN |    16 Jul | 18 Dec 2016
 Volcanion     | NA  |  October
 Volcanion     | PAL |  October
-Volcanion     | JPN |    16 Apr | 30 Sep 2016
-Birds Trio    | NA  |
-Pokespa Pika  | KOR |    02 Jul | 30 Sep 2016
+Birds Trio    | PAL |
 20th Arceus   | ALL |           | 30 Nov 2016
-PGL Darmanitan| ALL |
 -------------------------------------------------

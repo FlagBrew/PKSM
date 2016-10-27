@@ -1,13 +1,14 @@
      Wifi     | Tag |   Date    |      Code
 -------------------------------------------------
-20th. Keldeo  | ALL | 1-24 Oct  | -
 20th. Meloetta| ALL | 1-24 Dec  | -
 Happy Meowth  | PAL |           | HAPPY
-GF Darkrai    | PAL |           | DARKRAI2016
-Kor Gardevoir | KOR |           | NEWEPISODE
-GF Darkrai    | NA  |           | DARKRAI20
+GF Darkrai    | PAL |   31 Oct  | DARKRAI2016
+Kor Gardevoir | KOR |   15 Nov  | NEWEPISODE
+GF Darkrai    | NA  |   31 Oct  | DARKRAI20
+XYZ Mawile    | KOR |   15 Nov  | POKEMON4U
+XYZ Gengar    | KOR |   15 Nov  | POKEMON94
+XYZ Tyranitar | KOR |   15 Nov  | MEGAPOKEMON 
 -------------------------------------------------
-
 For TPP Anniversary Crystal players:
 -------------------------------------------------
 Jay Leno Rattata   | 12022014
