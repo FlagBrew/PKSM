@@ -11,13 +11,9 @@ Met:           a lovely place
 Nature:        Random
 Ribbon:        Classic
 
-Relearn Moves: Freeze-Dry
-               Ice Beam
-               Hail
-               Reflect
-			   
-Games:         XYORAS
-Method:        Serial Code
-Region:        JPN
-Duration:      March 1 to August 31, 2016
+                                         Relearn Moves: 
+Games:         XY/ORAS                   - Freeze-Dry
+Method:        Serial Code               - Ice Beam
+Region:        JPN                       - Hail
+Duration:      Mar 1 to Aug 31, 2016     - Reflect
      

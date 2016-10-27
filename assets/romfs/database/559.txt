@@ -11,13 +11,8 @@ Met:           a lovely place
 Nature:        Any Nature
 Ribbon:        Classic Ribbon
 
-Relearn Moves: Wish
-               Confusion
-               Rest
-               -
-			   
-Games:         X,Y,OR,AS
-Method:        Nintendo Network
-Region:        USA - PAL 
+                                         Relearn Moves:
+Games:         XY ORAS                   - Wish
+Method:        Nintendo Network          - Confusion
+Region:        USA                       - Rest
 Duration:      April 1 to 24, 2016
-               

@@ -11,12 +11,8 @@ Met:           a Pokemon event
 Nature:        Serious
 Ribbon:        Souvenir
 
-Relearn Moves: Flamethrower
-               Ember
-               Fire Spin
-               Flame Burst
-			   
-Games:         XYORAS
-Method:        Serial Code
-Region:        JPN
-Duration:      19 November 2015 to 31 May 2016
+                                         Relearn Moves: 
+Games:         XY/ORAS                   - Flamethrower
+Method:        Serial Code               - Ember
+Region:        JPN                       - Fire Spin
+Duration:      19 Nov '15 to 31 May '16  - Flame Burst

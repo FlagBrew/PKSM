@@ -6,17 +6,13 @@ Ability:       Static
 Held Item:     Light Ball
 TID:           00711
 SID:           00099
-OT:            サトシ
+OT:            ???
 Met:           a lovely place
 Nature:        Naughty
 Ribbon:        Wishing Ribbon 
 
-Relearn Moves: Thunderbolt
-               Quick Attack
-               Iron Tail
-               Electro Ball
-			   
-Games:         XY/ORAS
-Method:        Serial Code
-Region:        JPN
-Duration:      July 18 to September 30, 2015 
+                                         Relearn Moves: 
+Games:         XY/ORAS                   - Thunderbolt
+Method:        Serial Code               - Quick Attack
+Region:        JPN                       - Iron Tail
+Duration:      Jul 18 to Sept 30, 2015   - Electro Ball

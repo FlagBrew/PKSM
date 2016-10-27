@@ -1,4 +1,5 @@
 0576 - XYZ Xerneas
+
 Pokemon:       Xerneas
 Level:         100
 Ability:       Fairy Aura
@@ -6,14 +7,12 @@ Held Item:     None
 TID:           5116
 SID:           00578
 OT:            XYZ
-Met:           the Pokémon cartoon (fateful encounter)
-Nature:        Random
-Ribbon:        Classic Ribbon Classic Ribbon
-Relearn Moves: Geomancy
-               Moonblast
-               Aromatherapy
-               Focus Blast
-Games:         XYORAS
-Method:        Nintendo Network
-Region:        all
-Duration:      May 11 to 17, 2016
+Met:           the Pokemon cartoon
+Nature:        Any Nature
+Ribbon:        Classic Ribbon
+
+                                         Relearn Moves:
+Games:         XY ORAS                   - Geomancy
+Method:        Nintendo Network          - Moonblast
+Region:        All                       - Aromatherapy
+Duration:      May 11 to 17, 2016        - Focus Blast

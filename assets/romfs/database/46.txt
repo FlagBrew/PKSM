@@ -4,14 +4,15 @@ Pokemon:       Darkrai
 Level:         50
 Ability:       Bad Dream
 Held Item:     Enigma Berry
-TID:           8074_
+TID:           08074
 SID:           00046
 OT:            Wonderland
-Met:           Pokémon Movie 14
+Met:           Pokemon Movie 14
 Nature:        Random
 Ribbon:        Wishing Ribbon
-Relearn Moves: Phantom Force
-Games:         XY 
+
+                                         Relearn Moves:
+Games:         XY                        - Phantom Force
 Method:        Serial Code
-Region:        all
-Duration:      August 7,2014 to Septempber 30,2014
+Region:        All
+Duration:      Aug 7 '14 to Sep 30 '14

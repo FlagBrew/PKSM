@@ -11,12 +11,8 @@ Met:           a Pokemon Center
 Nature:        Any Nature
 Ribbon:        Classic Ribbon
 
-Relearn Moves: Fake out
-               Return
-               Earthquake
-               Sucker Punch
-			   
-Games:         ORAS
-Method:        Serial Code
-Region:        JPN
-Duration:      April 3 to 9, 2015 
+                                         Relearn Moves: 
+Games:         ORAS                      - Fake Out
+Method:        Serial Code               - Return
+Region:        JPN                       - Earthquake
+Duration:      April 3 to 9, 2015        - Sucker Punch

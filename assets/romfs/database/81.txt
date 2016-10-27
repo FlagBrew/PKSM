@@ -6,18 +6,14 @@ Ability:       Multitype
 Held Item:     Various
 TID:           03075
 SID:           00081
-OT:            デセルシティ
+OT:            ??????
 Met:           Pokemon Movie 15
 Nature:        Any Nature
 Ribbon:        Wishing Ribbon
 
-Relearn Moves: Judgment
-               Blast Burn
-               Hydro Cannon
-               Earth Power
-			   
-Games:         XYORAS
-Method:        Local Wireless
-Region:        JPN/TWN
-Duration:      March 7 to August 31, 2015
-               November 20 to December 17, 2015 
+                                         Relearn Moves: 
+Games:         XY/ORAS                   - Judgment
+Method:        Local Wireless            - Blast Burn
+Region:        JPN/TWN                   - Hydro Cannon
+Duration:      Mar 7 to Aug 31, 2015     - Earth Power
+                

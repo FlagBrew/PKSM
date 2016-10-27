@@ -1,4 +1,5 @@
 0515 - Heracross/Pinsir
+
 Pokemon:       Heracross/Pinsir
 Level:         50
 Ability:       Various
@@ -6,11 +7,12 @@ Held Item:     None
 TID:           08134
 SID:           00515
 OT:            SUM2014
-Met:           a lovely place (fateful encounter)
+Met:           a lovely place
 Nature:        Adamant
 Ribbon:        Event Ribbon
-Relearn Moves: 
-Games:         X/Y
+
+                                         Relearn Moves:
+Games:         XY
 Method:        Nintendo Network
-Region:        all
-Duration:      August 13 to September 17, 2014
+Region:        All
+Duration:      Aug 13 to Sep 17, 2014

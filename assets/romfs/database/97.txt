@@ -6,17 +6,13 @@ Ability:       Blaze
 Held Item:     Charzardite Y
 TID:           07085
 SID:           00097
-OT:            ポケモンラボ
+OT:            ?????
 Met:           a Pokemon Event
 Nature:        Any Nature
 Ribbon:        Event Ribbon 
 
-Relearn Moves: Growl
-               Ember
-               Smokescreen
-               Dragon Rage
-			   
-Games:         XY/ORAS
-Method:        Serial Code
-Region:        JPN
-Duration:      July 8 to November 30, 2015 
+                                         Relearn Moves: 
+Games:         XY/ORAS                   - Growl
+Method:        Serial Code               - Ember
+Region:        JPN                       - Smokescreen
+Duration:      Jul 8 to Nov 30, 2015     - Dragon Rage

@@ -11,12 +11,8 @@ Met:           Pokemon Movie 16
 Nature:        Any Nature
 Ribbon:        Wishing Ribbon
 
-Relearn Moves: Dazzling Gleam
-               Moonblast
-               Stored Power
-               Calm Mind
-			   
-Games:         X,Y,OR,AS
-Method:        Serial Code
-Region:        JAP
-Duration:      June 17 to August 31, 2016
+                                         Relearn Moves:
+Games:         XY/ORAS                   - Dazzling Gleam
+Method:        Serial Code               - Moonblast
+Region:        JAP                       - Stored Power
+Duration:      Jun 17 to Aug 31, 2016    - Calm Mind

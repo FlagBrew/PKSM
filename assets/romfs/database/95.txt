@@ -6,17 +6,13 @@ Ability:       Swift Swim
 Held Item:     Stardust
 TID:           06265
 SID:           00095
-OT:            ポケセン
+OT:            ????
 Met:           a Pokemon Center
 Nature:        Any Nature
 Ribbon:        No Ribbon 
 
-Relearn Moves: Splash
-               Celebrate
-               Happy Hour
-               -
-			   
-Games:         XY/ORAS
-Method:        Local Wireless
-Region:        JPN
-Duration:      June 26 to August 31, 2015 
+                                         Relearn Moves: 
+Games:         XY/ORAS                   - Splash
+Method:        Local Wireless            - Celebrate
+Region:        JPN                       - Happy Hour
+Duration:      Jun 26 to Aug 31, '15 

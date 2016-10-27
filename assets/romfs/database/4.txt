@@ -7,20 +7,13 @@ Held Item:     None
 TID:           12063
 SID:           00004
 OT:            ?
-Met:           a Pokemon event (fateful encounter)
+Met:           a Pokemon event
 Nature:        Random
 Ribbon:        Event Ribbon
-Relearn Moves: -
+                                    
+                                         Relearn Moves:
 Games:         XY
-Method:        infrared
-Region:        all
+Method:        Infrared
+Region:        All
 Duration:      December 15, 2013
-               December 23, 2013
-               January 19, 2014
-               January 20 to 26, 2014
-               January 25 to 26, 2014
-               January 29 to February 2, 2014
-               February 2, 2014
-               February 5 to 9, 2014
-               February 9, 2014
-               February 12 to 16, 2014
+               

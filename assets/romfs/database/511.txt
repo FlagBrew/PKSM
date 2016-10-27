@@ -8,15 +8,11 @@ TID:           06014
 SID:           00511
 OT:            Paris
 Met:           a Pokemon Center
-Nature:        Random
+Nature:        Any Nature
 Ribbon:        Classic
 
-Relearn Moves: Stun Spore
-               Gust
-               Light Screen
-               Struggle Bug
-			   
-Games:         XY
-Method:        Local
-Region:        France
-Duration:      4 June to 21 June 2014
+                                         Relearn Moves:
+Games:         XY                        - Stun Spore
+Method:        Local                     - Gust
+Region:        FRA                       - Light Screen
+Duration:      4 June 4 to 21, 2014      - Struggle Bug

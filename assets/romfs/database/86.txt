@@ -6,17 +6,13 @@ Ability:       Blaze
 Held Item:     Destiny Knot
 TID:           02265
 SID:           00086
-OT:            セレナ
+OT:            ???
 Met:           Lumiose City
 Nature:        Hardy
 Ribbon:        Classic Ribbon
 
-Relearn Moves: Scratch
-               Flamethrower
-               Hidden Power
-               -
-			   
-Games:         XYORAS
-Method:        Serial Code
-Region:        JPN
-Duration:      February 26 to March 31, 2015 
+                                         Relearn Moves:
+Games:         XY/ORAS                   - Scratch
+Method:        Serial Code               - Flamethrower
+Region:        JPN                       - Hidden Power
+Duration:      Feb 26 to Mar 31, 2015 

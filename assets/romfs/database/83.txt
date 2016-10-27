@@ -6,17 +6,13 @@ Ability:       Magican
 Held Item:     Focus Sash
 TID:           07185
 SID:           00083
-OT:            えいがかん
+OT:            ?????
 Met:           Pokemon Movie 15
 Nature:        Any Nature
 Ribbon:        Wishing Ribbon
 
-Relearn Moves: Hyperspace Hole
-               Psychic
-               Astonish
-               Nasty Plot
-			   
-Games:         XYORAS
-Method:        Local Wireless
-Region:        JPN
-Duration:      July 5, July 18 to September 30, 2015 
+                                         Relearn Moves: 
+Games:         XY/ORAS                   - Hyperspace Hole
+Method:        Local Wireless            - Psychic
+Region:        JPN                       - Astonish
+Duration:      Jul 18 to Sep 30, 2015    - Nasty Plot

@@ -1,4 +1,5 @@
 0501 - Winter2013 Garchomp
+
 Pokemon:       Garchomp
 Level:         50
 Ability:       Sand Veil
@@ -6,11 +7,12 @@ Held Item:     Dragon Fang
 TID:           11153
 SID:           00501
 OT:            WINTER2013
-Met:           a lovely place (fateful encounter)
+Met:           a lovely place
 Nature:        Random
 Ribbon:        Classic Ribbon
-Relearn Moves:
-Games:         XY
-Method:        serial code
-Region:        all
-Duration:      November 27, 2013 to June 30, 2014
+
+                                         Relearn Moves:
+Games:         XY                        - 
+Method:        Serial code
+Region:        All
+Duration:      Nov 27 '13 to Jun 30 '14

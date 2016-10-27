@@ -11,12 +11,8 @@ Met:           a Pokemon event
 Nature:        Adamant
 Ribbon:        Event
 
-Relearn Moves: Earthquake
-               Icicle Crash
-               Icicle Spear
-               Rock Slide
-			   
-Games:         XY
-Method:        Local
-Region:        Europe, USA, Australia
-Duration:      3 May to 13 July 2014
+                                         Relearn Moves:
+Games:         XY                        - Earthquake
+Method:        Local                     - Icicle Crash
+Region:        EUR USA AUS               - Icicle Spear
+Duration:      May 3 to July 13, 2014    - Rock Slide

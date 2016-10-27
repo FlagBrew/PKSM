@@ -6,17 +6,13 @@ Ability:       Levitate
 Held Item:     Latiosite
 TID:           00711
 SID:           00102
-OT:            ７　ＳＰＯＴ
+OT:            7 SPOT
 Met:           a lovely place
 Nature:        Modest
 Ribbon:        Wishing Ribbon 
 
-Relearn Moves: Dragon Pulse
-               Luster Purge
-               Psychic
-               Heal Pulse
-			   
-Games:         XY/ORAS
-Method:        Serial Code
-Region:        JPN
-Duration:      August 1 to September 30, 2015 
+                                         Relearn Moves: 
+Games:         XY/ORAS                   - Dragon Pulse
+Method:        Serial Code               - Luster Purge
+Region:        JPN                       - Psychic
+Duration:      Aug 1 to Sep 30, 2015     - Heal Pulse

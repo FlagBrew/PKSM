@@ -6,17 +6,13 @@ Ability:       Air Lock
 Held Item:     None
 TID:           03145
 SID:           00088
-OT:            コロコロ
+OT:            ????
 Met:           an event site
 Nature:        Any Nature
 Ribbon:        Event Ribbon
 
-Relearn Moves: Dragon Pulse
-               Twister
-               Thunder
-               Extreme Speed
-			   
-Games:         XYORAS
-Method:        Serial Code
-Region:        JPN
-Duration:      May 14 to May 15, 2015 
+                                         Relearn Moves: 
+Games:         XY/ORAS                   - Dragon Pulse
+Method:        Serial Code               - Twister
+Region:        JPN                       - Thunder
+Duration:      May 14 to May 15, 2015    - Extreme Speed

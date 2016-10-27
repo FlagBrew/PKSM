@@ -11,12 +11,8 @@ Met:           the Pokemon cartoon
 Nature:        Any Nature
 Ribbon:        Classic
 
-Relearn Moves: Oblivion Wing
-               Sucker Punch
-               Dark Pulse
-               Foul Play
-			   
-Games:         ORAS
-Method:        Universal Serial Code
-Region:        KOR
-Duration:      April 20 to June 30, 2016
+                                         Relearn Moves:
+Games:         ORAS                      - Oblivion Wing
+Method:        Universal Serial Code     - Sucker Punch
+Region:        KOR                       - Dark Pulse
+Duration:      Apr 20 to Jun 30, 2016    - Foul Play

@@ -6,14 +6,13 @@ Ability:       Clear Body
 Held Item:     Metagrossite
 TID:           11214
 SID:           01504
-OT:            Máximo
-               Pierre
-               Steven
-Met:           an online Present (fateful encounter)
-Nature:        Random
+OT:            Maximo, Pierre, Steven
+Met:           an online Present
+Nature:        Any Nature
 Ribbon:        Classic Ribbon
-Relearn Moves: Hold Back
-Games:         ORAS
+
+                                         Relearn Moves:
+Games:         ORAS                      - Hold Back
 Method:        Nintendo Network
-Region:        all
-Duration:      November 21, 2014 to January 14, 2015
+Region:        All
+Duration:      Nov 21 '14 to Jan 14 '15

@@ -8,15 +8,11 @@ TID:           03226
 SID:           01060
 OT:            XY&Z
 Met:           a Pokemon Event
-Nature:        Any nature
+Nature:        Any Nature
 Ribbon:        Classic
 
-Relearn Moves: Geomancy
-               Moonblast
-               Aromatherapy
-               Focus Blast
-			   
-Games:         ORAS
-Method:        Universal Serial Code
-Region:        KOR
-Duration:      22 March to 30 June 2016
+                                         Relearn Moves:
+Games:         ORAS                      - Geomancy
+Method:        Universal Serial Code     - Moonblast
+Region:        KOR                       - Aromatherapy
+Duration:      Mar 22 to Jun 30, 2016    - Focus Blast

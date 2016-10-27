@@ -6,17 +6,13 @@ Ability:       Intimidate
 Held Item:     Gyaradosite
 TID:           06265
 SID:           00094
-OT:            ＰＣひろしま
+OT:            PC????
 Met:           a Pokemon Center
 Nature:        Any Nature
 Ribbon:        Premier Ribbon
 
-Relearn Moves: Waterfall
-               Bite
-               Ice Fang
-               Iron Head
-			   
-Games:         XY/ORAS
-Method:        Local Wireless
-Region:        JPN
-Duration:      June 25, 26 to August 31, 2015 
+                                         Relearn Moves:
+Games:         XY/ORAS                   - Waterfall      
+Method:        Local Wireless            - Bite
+Region:        JPN                       - Ice Fang
+Duration:      Jun 26 to Aug 31, '15     - Iron Head

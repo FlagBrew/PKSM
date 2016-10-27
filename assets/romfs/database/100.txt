@@ -6,17 +6,13 @@ Ability:       Mold Breaker
 Held Item:     Black Glasses
 TID:           00711
 SID:           00100
-OT:            サトシ
+OT:            ???
 Met:           a lovely place
 Nature:        Adamant
 Ribbon:        Wishing Ribbon 
 
-Relearn Moves: Arm Thrust
-               Stone Edge
-               Dark Pulse
-               -
-			   
-Games:         XY/ORAS
-Method:        Serial Code
-Region:        JPN
-Duration:      July 18 to September 30, 2015 
+                                         Relearn Moves: 
+Games:         XY/ORAS                   - Arm Thrust
+Method:        Serial Code               - Stone Edge
+Region:        JPN                       - Dark Pulse
+Duration:      Jul 18 to Sep 30, 2015 

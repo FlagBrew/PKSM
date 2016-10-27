@@ -11,13 +11,8 @@ Met:           a lovely place
 Nature:        Any Nature
 Ribbon:        Classic Ribbon
 
-Relearn Moves: Pound
-               -
-               -
-               -
-			   
-Games:         X,Y,OR,AS
+                                         Relearn Moves:
+Games:         XY ORAS                   - Pound
 Method:        Serial Code
-Region:        USA - PAL 
-Duration:      January 27 to May 31, 2016
-               June 10 to August 31, 2016 
+Region:        USA
+Duration:      Jan 27 to Aug 31, 2016

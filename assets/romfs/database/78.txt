@@ -11,13 +11,9 @@ Met:           an event site
 Nature:        Any Nature
 Ribbon:        Event Ribbon
 
-Relearn Moves: Dragon Pulse
-               Twister
-               Thunder
-               Extreme Speed
-			   
-Games:         XY/ORAS
-Method:        Local Wireless
-Region:        JPN
-Duration:      January 18 to 24/25, 2015
-               February 1/8, 2015 
+                                         Relearn Moves: 
+Games:         XY/ORAS                   - Dragon Pulse
+Method:        Local Wireless            - Twister
+Region:        JPN                       - Thunder
+Duration:      Jan 18 to 24/25 '15       - Extreme Speed
+               

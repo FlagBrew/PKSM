@@ -11,12 +11,8 @@ Met:           a lovely place
 Nature:        Random
 Ribbon:        Classic
 
-Relearn Moves: Discharge
-               Thunder Shock
-               Rain Dance
-               Agility
-			   
-Games:         XYORAS
-Method:        Serial Code
-Region:        JPN
-Duration:      March 1 to August 31, 2016
+                                         Relearn Moves: 
+Games:         XY/ORAS                   - Discharge
+Method:        Serial Code               - Thunder Shock
+Region:        JPN                       - Rain Dance
+Duration:      Mar 1 to Aug 31, 2016     - Agility

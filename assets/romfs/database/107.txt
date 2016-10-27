@@ -6,17 +6,13 @@ Ability:       Static
 Held Item:     Persim Berry
 TID:           08085
 SID:           00107
-OT:            ヨコハマ
+OT:            ????
 Met:           a Pokemon event
 Nature:        Any Nature
 Ribbon:        Event Ribbon 
 
-Relearn Moves: Teeter Dance
-               Play Nice
-               Tail Whip
-               Nuzzle
-			   
-Games:         XY/ORAS
-Method:        Local Wireless
-Region:        JPN
-Duration:      August 8 to 16, 2015 
+                                         Relearn Moves:
+Games:         XY/ORAS                   - Teeter Dance
+Method:        Local Wireless            - Play Nice
+Region:        JPN                       - Tail Whip
+Duration:      August 8 to 16, 2015      - Nuzzle

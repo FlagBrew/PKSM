@@ -11,12 +11,8 @@ Met:           a lovely place
 Nature:        Random
 Ribbon:        Classic
 
-Relearn Moves: Swift
-               Quick Attack
-               Baby-Doll Eyes
-               Helping Hand
-			   
-Games:         XYORAS
-Method:        Serial Code
-Region:        JPN
-Duration:      March 1 to August 31, 2016      
+                                         Relearn Moves: 
+Games:         XY ORAS                   - Swift
+Method:        Serial Code               - Quick Attack
+Region:        JPN                       - Baby-Doll Eyes
+Duration:      Mar 1 to Aug 31, 2016     - Helping Hand      

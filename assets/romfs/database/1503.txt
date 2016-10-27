@@ -8,15 +8,11 @@ TID:           00108
 SID:           01503
 OT:            GTS
 Met:           an online Present
-Nature:        Random
+Nature:        Any Nature
 Ribbon:        Souvenir
 
-Relearn Moves: Hold Hands
-               Gust
-               Light Screen
-               Struggle Bug
-			   
-Games:         XY
-Method:        WiFi Connection
-Region:        All
-Duration:      8 July to 31 July 2014
+                                         Relearn Moves:
+Games:         XY                        - Hold Hands
+Method:        WiFi Connection           - Gust
+Region:        All                       - Light Screen
+Duration:      July 8 to 31, 2014        - Struggle Bug

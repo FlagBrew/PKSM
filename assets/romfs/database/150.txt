@@ -11,12 +11,8 @@ Met:           a lovely place
 Nature:        Random
 Ribbon:        Classic
 
-Relearn Moves: Sky Attack
-               Heat Wave
-               Sunny Day
-               Safeguard
-			   
-Games:         XYORAS
-Method:        Serial code
-Region:        JPN
-Duration:      March 1 to August 31, 2016
+                                         Relearn Moves:
+Games:         XY/ORAS                   - Sky Attack
+Method:        Serial code               - Heat Wave
+Region:        JPN                       - Sunny Day
+Duration:      Mar 1 to Aug 31, 2016     - Safeguard

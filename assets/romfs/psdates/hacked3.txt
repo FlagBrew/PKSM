@@ -15,14 +15,3 @@ Pokemon Lab Bulbasaur            | 2015-07-19 | M
 Movie Hoopa	Japan                | 2015-07-18
 Hiroshima Gyarados               | 2015-06-27 | F
 Hiroshima Magikarp               | 2015-06-30 | M
-GameStop Dragonite               | 2015-06-25 | F
-Movie Legendary Kyurem           | 2015-06-21
-Movie Legendary Giratina         | 2015-06-22
-Movie Legendary Palkia           | 2015-06-20
-Movie Legendary Dialga           | 2015-06-20
-Movie Legendary Groudon          | 2015-06-20
-Movie Legendary Kyogre           | 2015-06-20
-Spring 2015 Kangaskhan           | 2015-06-15 | F
-PGL Amaura                       | 2016-02-26 | F
-CoroCoro Shiny Rayquaza          | 2015-03-15
-7-11 Shiny Arceus                | 2015-03-07

@@ -7,14 +7,12 @@ Held Item:     Sitrus Berry
 TID:           07226
 SID:           00011
 OT:            ???
-Met:           Pokemon League (fateful encounter)
-Nature:        Random
+Met:           Pokemon League
+Nature:        Any Nature
 Ribbon:        Classic Ribbon
-Relearn Moves: Dragon Rush
-               Earthquake
-               Brick Break
-               Giga Impact
-Games:         ORAS
-Method:        serial code
-Region:        JPN
-Duration:      August 2 to September 29, 2016
+
+                                         Relearn Moves:
+Games:         ORAS                      - Dragon Rush
+Method:        Serial Code               - Earthquake
+Region:        JPN                       - Brick Break
+Duration:      Aug 2 to Sep 29, 2016     - Giga Impact

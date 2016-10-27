@@ -11,14 +11,8 @@ Met:           a lovely place
 Nature:        Any Nature
 Ribbon:        Classic Ribbon
 
-Relearn Moves: Aqua Jet
-               Leer
-               Double Kick
-               -
-			   
-Games:         X,Y,OR,AS
-Method:        Nintendo Network
-Region:        USA - PAL 
+                                         Relearn Moves:
+Games:         XY ORAS                   - Aqua Jet
+Method:        Nintendo Network          - Leer
+Region:        USA                       - Double Kick
 Duration:      October 1 to 24, 2016
-                
-               

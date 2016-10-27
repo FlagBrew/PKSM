@@ -6,17 +6,13 @@ Ability:       Clear Body
 Held Item:     Normal Gem
 TID:           08136
 SID:           01071
-OT:            올스타
+OT:            ???
 Met:           a Pokemon event
 Nature:        Any Nature
 Ribbon:        Event Ribbon
 
-Relearn Moves: Diamond Storm
-               Moonblast
-               Reflect
-               Return
-			   
-Games:         X,Y,OR,AS
-Method:        Local Infared
-Region:        KOR
-Duration:      August 13 to 14, 2016
+                                         Relearn Moves:
+Games:         XY ORAS                   - Diamond Storm
+Method:        Local Infared             - Moonblast
+Region:        KOR                       - Reflect
+Duration:      August 13 to 14, 2016     - Return

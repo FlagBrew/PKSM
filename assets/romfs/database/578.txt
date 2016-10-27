@@ -1,4 +1,5 @@
 0578 - XYZ Zygarde
+
 Pokemon:       Zygarde
 Level:         100
 Ability:       Aura Break
@@ -6,14 +7,12 @@ Held Item:     None
 TID:           05026
 SID:           00578
 OT:            XYZ
-Met:           the Pokémon cartoon (fateful encounter)
-Nature:        Random
+Met:           the Pokemon cartoon
+Nature:        Any Nature
 Ribbon:        Classic Ribbon
-Relearn Moves: Land's Wrath
-               Extreme Speed
-               Glare
-               Outrage
-Games:         XYORAS
-Method:        Nintendo Network
-Region:        all
-Duration:      April 30 to May 8, 2016
+
+                                         Relearn Moves:
+Games:         XY ORAS                   - Land's Wrath
+Method:        Nintendo Network          - Extreme Speed
+Region:        All                       - Glare
+Duration:      April 30 to May 8, 2016   - Outrage

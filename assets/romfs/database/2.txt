@@ -7,11 +7,12 @@ Held Item:     Dragon Fang
 TID:           11153
 SID:           00002
 OT:            ????
-Met:           a lovely place (fateful encounter)
+Met:           a lovely place
 Nature:        Random
 Ribbon:        Classic Ribbon
-Relearn Moves: -
+                                     
+                                         Relearn Moves:
 Games:         XY
-Method:        serial code
-Region:        Japanese
-Duration:      November 15, 2013 to August 29,2014
+Method:        Serial Code
+Region:        JAP
+Duration:      Nov 15 '13 to Aug 29 '14

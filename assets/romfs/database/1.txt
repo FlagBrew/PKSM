@@ -4,20 +4,15 @@ Pokemon:       Pikachu & Eevolutions
 Level:         10
 Ability:       Various
 Held Item:     None
-TID:           10123
-               10014
-               10015
+TID:           10123, 10014, 10015
 SID:           00001
 OT:            ?????
-Met:           a Pokemon Center(fateful encounter)
+Met:           a Pokemon Center
 Nature:        Random
 Ribbon:        Birthday Ribbon
-Relearn Moves: Celebrate
-Games:         XY 
-               XYORAS
-               XYORAS
-Method:        infrared
-Region:        all
-Duration:      October 12,'13 to September 30,'14
-               October 1, '14 to September 30,'15
-               October 1, '15 to December 31,'16
+
+                                         Relearn Moves:
+Games:         XY ORAS                   - Celebrate
+Method:        Infrared
+Region:        All
+Duration: 

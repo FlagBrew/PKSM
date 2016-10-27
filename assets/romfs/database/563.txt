@@ -11,14 +11,10 @@ Met:           a lovely place
 Nature:        Any Nature
 Ribbon:        Classic Ribbon
 
-Relearn Moves: Judgment
-               Recover
-               Hyper Beam
-               Perish Song
-			   
-Games:         X,Y,OR,AS
-Method:        Serial Code
-Region:        USA - PAL 
-Duration:      July 30 to November 30, 2016
+                                         Relearn Moves:
+Games:         XY ORAS                   - Judgment
+Method:        Serial Code               - Recover
+Region:        USA                       - Hyper Beam
+Duration:      Jul 30 to Nov 30, 2016    - Perish Song
                 
                

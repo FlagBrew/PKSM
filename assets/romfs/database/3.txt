@@ -2,18 +2,18 @@
 
 Pokemon:       Inkay
 Level:         10
-Ability:       Contrary 
-               Suction Cups
+Ability:       Contrary, Suction Cups
 Held Item:     Aspear Berry
 TID:           11223
 SID:           00003
 OT:            PCTB
-Met:           PC Tokyo Bay (fateful encounter)
+Met:           PC Tokyo Bay
 Nature:        Random
 Ribbon:        Premier Ribbon
-Relearn Moves: Happy Hour
-Games:         XY
+
+                                         Relearn Moves: 
+Games:         XY                        - Happy Hour
 Method:        local wireless
 Region:        all
-Duration:      November 22,2013 to January 26,2014
-               December 26,2013 to January 26,2014
+Duration:      Nov 22 '13 to Jan 26 '14
+               

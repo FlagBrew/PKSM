@@ -11,14 +11,8 @@ Met:           a lovely place
 Nature:        Any Nature
 Ribbon:        Classic Ribbon
 
-Relearn Moves: Seed Flare
-               Aromatherapy
-               Substitute
-               Energy Ball
-			   
-Games:         X,Y,OR,AS
-Method:        Nintendo Network
-Region:        USA - PAL 
-Duration:      July 1 to 24, 2016
-                
-               
+                                         Relearn Moves:
+Games:         XY ORAS                   - Seed Flare
+Method:        Nintendo Network          - Aromatherapy
+Region:        USA                       - Substitute
+Duration:      July 1 to 24, 2016        - Energy Ball

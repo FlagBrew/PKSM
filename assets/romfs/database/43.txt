@@ -4,14 +4,15 @@ Pokemon:       Charizard
 Level:         36
 Ability:       Blaze
 Held Item:     Charizardite Y
-TID:           7274_
+TID:           07274
 SID:           00043
 OT:            XY
 Met:           a lovely place
 Nature:        Random
 Ribbon:        Classic Ribbon
-Relearn Moves: None
-Games:         XY 
+
+                                         Relearn Moves:
+Games:         XY                        -
 Method:        Serial Code
-Region:        all
-Duration:      July 29,2014 to October 31,2014
+Region:        All
+Duration:      Jul 29 '14 to Oct 31 '14

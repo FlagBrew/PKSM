@@ -11,12 +11,8 @@ Met:           a lovely place
 Nature:        Any Nature
 Ribbon:        Special Ribbon
 
-Relearn Moves: Play Nice
-               Charm
-               Nuzzle
-               Sweet Kiss
-			   
-Games:         ORAS
-Method:        Local Wireless
-Region:        JPN
-Duration:      January 9 to March 15, 2015 
+                                         Relearn Moves: 
+Games:         ORAS                      - Play Nice
+Method:        Local Wireless            - Charm
+Region:        JPN                       - Nuzzle
+Duration:      Jan 9 to Mar 15 '15        - Sweet Kiss

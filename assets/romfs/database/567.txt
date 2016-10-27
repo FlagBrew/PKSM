@@ -11,14 +11,8 @@ Met:           a lovely place
 Nature:        Any Nature
 Ribbon:        Classic Ribbon
 
-Relearn Moves: Quick Attack
-               Confusion
-               Round
-               -
-			   
-Games:         X,Y,OR,AS
-Method:        Nintendo Network
-Region:        USA - PAL 
+                                         Relearn Moves:
+Games:         XY ORAS                   - Quick Attack
+Method:        Nintendo Network          - Confusion
+Region:        USA                       - Round
 Duration:      December 1 to 24, 2016
-                
-               
