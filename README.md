@@ -4,6 +4,10 @@
 
 ---
 
+**I'm working on a complete rewriting of EventAssistant with an outstanding GUI made by [@dsoldier](https://gbatemp.net/members/dsoldier.373871/). Prepare for the next weeks!**
+
+![GUI](http://i.imgur.com/6Jt0HzGg.jpg)
+
 [**See this awesome overview by Shai from LevelUp Team!** *(italian)*](https://youtu.be/XGq7HydXEX8?t=9m27s)
 
 [**You can see a little video showcase from @sasori here!**](https://www.youtube.com/watch?v=VNFr81mxjBs)
@@ -99,6 +103,7 @@ Tell me if you like this work and what you would have featured in the next updat
 * Majickhat55 for Entree Forest, Dream Radar collection and database entries
 * Poutros for N's collection
 * Shai for the icon and Fabrizio for the name
+* Xous54 for the Ampharos fanpic
 
 ---
 
