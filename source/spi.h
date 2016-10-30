@@ -82,8 +82,8 @@ typedef enum {
 
 u32 TWLsaveSize(CardType cardType_);
 void TWLstoreSaveFile(u8* out, CardType cardType_);
-void TWLrestoreSaveFile(u8* in, CardType cardType_);
-void TWLinjectSave(u8* mainbuf);
+void TWLrestoreSaveFile(u8* in, CardType cardType_, u64 mainSize);
+void TWLinjectSave(u8* mainbuf, u64 mainSize);
 
 Result SPIWriteRead(CardType type, void* cmd, u32 cmdSize, void* answer, u32 answerSize, void* data, u32 dataSize);
 Result SPIWaitWriteEnd(CardType type);

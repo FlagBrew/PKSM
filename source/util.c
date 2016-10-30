@@ -22,191 +22,83 @@
 #include <sys/stat.h>
 #include "http.h"
 #include "util.h"
+#include "graphic.h"
 
-void printfile(char* path) {
-	FILE* f = fopen(path, "r");
-	if (f) {
-		char mystring[1000];
-		while (fgets(mystring, sizeof(mystring), f)) {
-			int a = strlen(mystring);
-			if (mystring[a-1] == '\n') {
-				mystring[a-1] = 0;
-				if (mystring[a-2] == '\r')
-					mystring[a-2] = 0;
-			}
-			puts(mystring);
-		}
-		fclose(f);
-	}
-	else printf("No textual preview available yet.");
+void loadFile(u8* buf, char* path) {
+	FILE *fptr = fopen(path, "rt");
+	if (fptr == NULL) 
+		return;
+	fseek(fptr, 0, SEEK_END);
+	u32 size = ftell(fptr);
+	memset(buf, 0, 1499);
+	rewind(fptr);
+	fread(buf, size, 1, fptr);
+	fclose(fptr);
 }
 
-void waitKey(u32 key) {
-	while (aptMainLoop()) {
-		gspWaitForVBlank();
-		hidScanInput();
+int autoupdater() {
+	int temp = 0;
+	char* ver = (char*)malloc(6 * sizeof(u8));
+	snprintf(ver, 6, "%d.%d.%d", V1, V2, V3);
 
-		if (hidKeysDown() & key || hidKeysDown() & KEY_TOUCH) 
-			break;
-
-		gfxFlushBuffers();
-		gfxSwapBuffers();
+	Result ret = downloadFile("https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/ver.ver", "/3ds/data/EventAssistant/builds/ver.ver");	
+	if (ret != 0) {
+		free(ver);
+		return 1;
 	}
-}
+	
+	FILE *fptr = fopen("3ds/data/EventAssistant/builds/ver.ver", "rt");
+	if (fptr == NULL) {
+		fclose(fptr);
+		free(ver);
+		return 15;
+	}
+	fseek(fptr, 0, SEEK_END);
+	u32 contentsize = ftell(fptr);
+	char *verbuf = (char*)malloc(contentsize);
+	if (verbuf == NULL) {
+		fclose(fptr);
+		free(verbuf);
+		free(ver);
+		return 8;
+	}
+	rewind(fptr);
+	fread(verbuf, contentsize, 1, fptr);
+	fclose(fptr);
 
-int waitKeyRet() {
-	while (aptMainLoop()) {
-		gspWaitForVBlank();
-		hidScanInput();
+	remove("/3ds/data/EventAssistant/builds/ver.ver");			
+	
+	for (int i = 0; i < 5; i++)
+		if (*(ver + i) == *(verbuf + i))
+			temp++;
 		
-		if (hidKeysDown() & KEY_B)
-			return 0;
-
-		if (hidKeysDown() & KEY_START)
-			return 1;
-
-		gfxFlushBuffers();
-		gfxSwapBuffers();
+	free(ver);
+	free(verbuf);
+	
+	if (temp < 5) {
+		update();
+		return 1;
 	}
 	return 0;
 }
 
-void errDisp(PrintConsole screen, int i, u16 columns) {
-	char *errors[] = {"Error!", "Game not found", "OpenContext failed", "AddRequestHeaderField failed", "SSLOpt failed", "BeginRequest failed", "Response code failed", "New header failed", "Redirection failed", "Download size error", "Buffer alloc error", "DownloadData failed", "Feature N/A in XY", "Switch game also in the app", "Maximum item reached", "File not available", "Selected slot is empty", "No cart inserted", "No NDS cart inserted"};
-	int top = 12;
-	u16 length = strlen(errors[i]);
-	u16 left = (columns - length - 2) / 2;
-	u16 extra = (length - 4) / 2;
-	
-	consoleSelect(&screen);
-	printf("\x1b[%d;%uH\x1b[47;31m", top, left);
-	for (u16 j = 0; j < length + 2; j++)
-		printf(" ");
-	
-	printf("\x1b[%d;%uH", ++top, left);
-	for (u16 j = 0; j < extra; j++)
-		printf(" ");
-	
-	printf("%s", errors[0]);
-	
-	for (u16 j = 0; j < extra; j++)
-		printf(" ");
-	
-	if (extra % 2)
-		printf("\x1b[%d;%uH ", top, left + length + 1);
-	
-	printf("\x1b[%d;%uH", ++top, left);
-	for (u16 j = 0; j < length + 2; j++)
-		printf(" "); 
-	
-	printf("\x1b[%d;%uH %s ", ++top, left, errors[i]);
-	
-	printf("\x1b[%d;%uH", ++top, left);
-	for (u16 j = 0; j < length + 2; j++)
-		printf(" ");
-	
-	printf("\x1b[0m");
-}
-
-void infoDisp(PrintConsole screen, int i, u16 columns) {
-	char *infos[] = {"Injection succeeded", "Edit succeeded", "Saving game...", "Download succeeded", "Ready", "Saving... Will take time"};
-	int top = 13; 
-	u16 length = strlen(infos[i]);
-	u16 left = (columns - length - 2) / 2;
-	
-	consoleSelect(&screen);
-	printf("\x1b[%d;%uH\x1b[47;32m", top, left);
-	for (u16 j = 0; j < length + 2; j++)
-		printf(" ");
-	
-	printf("\x1b[%d;%uH %s ", ++top, left, infos[i]);
-	
-	printf("\x1b[%d;%uH", ++top, left);
-	for (u16 j = 0; j < length + 2; j++)
-		printf(" ");
-	
-	printf("\x1b[0m");
-}
-
-void refresh(int currentEntry, PrintConsole topScreen, char *lista[], int N) {
-	consoleSelect(&topScreen);
-	printf("\x1b[2;0H\x1b[30;0m");
-	for (int i = 0; i < N; i++) {
-		if (i == currentEntry)
-			printf("\x1b[30;32m* %s\x1b[0m\n", lista[i]);
-		else
-			printf("\x1b[0m* %s\n", lista[i]);
-	}
-}
-
-void refreshDB(int currentEntry, PrintConsole topScreen, char *lista[], int N, int page) {
-	consoleSelect(&topScreen);
-	printf("\x1b[2;0H\x1b[30;0m");
-	for (int i = 0; i < N; i++) {
-		if (i == currentEntry)
-			printf("\x1b[30;32m%s\x1b[0m\n", lista[i + page * N]);
-		else
-			printf("\x1b[0m%s\n", lista[i + page * N]);
-	}
-}
-
-void update(PrintConsole topScreen, PrintConsole bottomScreen) {
+void update() {
 	char *ciaUrl = "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/EventAssistant/EventAssistant.cia";
 	char *ciaPath = (char*)malloc(100 * sizeof(char));
 	
 	time_t unixTime = time(NULL);
 	struct tm* timeStruct = gmtime((const time_t *)&unixTime);
-
-	int hours = timeStruct->tm_hour;
-	int minutes = timeStruct->tm_min;
-	int seconds = timeStruct->tm_sec;
-	int day = timeStruct->tm_mday;
-	int month = timeStruct->tm_mon + 1;
-	int year = timeStruct->tm_year +1900;
 		
-	snprintf(ciaPath, 100, "/3ds/data/EventAssistant/builds/EventAssistant_%i-%i-%i-%02i%02i%02i.cia", day, month, year, hours, minutes, seconds);
+	snprintf(ciaPath, 100, "/3ds/data/EventAssistant/builds/EventAssistant_%i-%i-%i-%02i%02i%02i.cia", timeStruct->tm_mday, timeStruct->tm_mon + 1,  timeStruct->tm_year + 1900, timeStruct->tm_hour, timeStruct->tm_min, timeStruct->tm_sec);
 
-	Result ret = 0;
-	
-	consoleSelect(&bottomScreen);
-	printf("\x1b[2J");
+	freezeMsg("Downloading latest build...");
+	Result ret = downloadFile(ciaUrl, ciaPath);
 
-	consoleSelect(&topScreen);
-	printf("\x1b[2J");
-	printf("\x1b[47;34m                     Updater                      \x1b[0m\n");
-	printf("Downloading file to sdmc:\x1b[32m%s\x1b[0m\n", ciaPath);
-	ret = downloadFile(bottomScreen, ciaUrl, ciaPath);
-	consoleSelect(&topScreen);
-	if (ret == 0) {
-		printf("\nDownload of EventAssistant.cia \x1b[32msucceded!\x1b[0m Install  it using a CIA manager.\n\n");
-		infoDisp(bottomScreen, 3, BOTTOM);
-	}
-	else {
-		printf("\nDownload of EventAssistant.cia \x1b[31mfailed.\x1b[0m\nPlease report the issue to the dev.\n\n");
-		errDisp(bottomScreen, 11, BOTTOM);
-	}
+	if (ret == 0) infoDisp("Download succeeded!");
+	else infoDisp("Download failed!");
 	
 	free(ciaPath);
-
-	consoleSelect(&topScreen);
-	printf("\x1b[29;13HTouch or press B to exit");
-
-	waitKey(KEY_B);
-}
-
-void credits(PrintConsole topScreen, PrintConsole bottomScreen) {
-	consoleSelect(&topScreen);
-	printf("\x1b[2J");
-	printf("\x1b[47;1;34m                     Credits                      \x1b[0m");
-
-	consoleSelect(&bottomScreen);
-	printf("\x1b[2J");
-	printf("\x1b[29;8HTouch or press B to exit");
-	consoleSelect(&topScreen);
-
-	printf("\n* smea for ctrulib\n* Kaphotics for PKHeX and wondercard support\n* J-D-K for direct save import/export\n* Slashcash for PCHex++ and lots of source code\n* TuxSH for TWLSaveTool and spi.c\n* MarcusD for romfs support\n* Hamcha for http certs\n* Gocario for algorithms\n* Nba_Yoh for received flags\n* Simona Mastroianni for database help\n* Federico Leuzzi, YodaDaCoda, SatansRoommate,\n  Immersion for testing\n* Shai Raba' for the icon\n* all the guys @3dshacks' discord\n\n  Full list available on github repo");
-
-	waitKey(KEY_B);
+	infoDisp("Close the app!");
 }
 
 bool isHBL() {
@@ -231,29 +123,21 @@ void fsEnd() {
 }
 
 bool openSaveArch(FS_Archive *out, u64 id) {
-    bool ret = false;
-    if(isHBL()) { //3DSX
-        Result res = FSUSER_OpenArchive(out, ARCHIVE_SAVEDATA, fsMakePath(PATH_EMPTY, ""));
+	bool ret = false;
+	//Try cart first
+	u32 path[3] = {MEDIATYPE_GAME_CARD, id, id >> 32};
+	Result res = FSUSER_OpenArchive(out, ARCHIVE_USER_SAVEDATA, (FS_Path){PATH_BINARY, 0xC, path});
+	if (res) {
+		//Try SD
+		u32 path[3] = {MEDIATYPE_SD, id, id >> 32};
+		res = FSUSER_OpenArchive(out, ARCHIVE_USER_SAVEDATA, (FS_Path){PATH_BINARY, 0xC, path});
+		if (res)
+			ret = false;
+		else
+			ret = true;
+	}
+	else
+		ret = true;
 
-        if(res == 0)
-            ret = true;
-    }
-    else { //CIA version
-        //Try cart first
-        u32 path[3] = {MEDIATYPE_GAME_CARD, id, id >> 32};
-        Result res = FSUSER_OpenArchive(out, ARCHIVE_USER_SAVEDATA, (FS_Path){PATH_BINARY, 0xC, path});
-        if(res) {
-            //Try SD
-            u32 path[3] = {MEDIATYPE_SD, id, id >> 32};
-            res = FSUSER_OpenArchive(out, ARCHIVE_USER_SAVEDATA, (FS_Path){PATH_BINARY, 0xC, path});
-            if(res)
-                ret = false;
-            else
-                ret = true;
-        }
-        else
-            ret = true;
-    }
-
-    return ret;
+	return ret;
 }

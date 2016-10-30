@@ -14,11 +14,10 @@
 *
 */
 
+#pragma once
+
 #include <stdlib.h>
 #include <3ds.h>
-#include "util.h"
 
-Result http_download(PrintConsole topScreen, PrintConsole bottomScreen, httpcContext *context);
-void getText(PrintConsole topScreen, PrintConsole bottomScreen, char *url);
-void printDistro(PrintConsole topScreen, PrintConsole bottomScreen, char *url);
-Result downloadFile(PrintConsole bottomScreen, char* url, char* path);
+Result http_download(u8* buf, char *url);
+Result downloadFile(char* url, char* path);

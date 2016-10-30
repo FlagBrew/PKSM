@@ -14,43 +14,40 @@
 *
 */
 
+#pragma once
+
 #include <stdlib.h>
 #include <3ds.h>
 
-#define TOP 50
-#define BOTTOM 40
+#define V1 3
+#define V2 0
+#define V3 0
 
-/* Errors
-	 1: Game not found
-	 2: OpenContext failed
-	 3: AddRequestHeaderField failed
-	 4: SSLOpt failed
-	 5: BeginRequest failed
-	 6: Response code failed
-	 7: New header failed
-	 8: Redirection failed
-	 9: Download size error
-	 10: Buffer alloc error
-	 11: DownloadData failed
-	 12: Feature N/A in XY
-	 13: Switch game also in the app
-	 14: Maximum item reached
-	 15: File not available
-	 16: Selected slot is empty
-	 17: No cart inserted
-	 18: No NDS cart inserted
- */
+#define DAY 12
+#define MONTH 9
+#define YEAR 16
 
+#define GAME_X 0
+#define GAME_Y 1
+#define GAME_OR 2
+#define GAME_AS 3
+#define GAME_SUN 4
+#define GAME_MOON 5
+#define GAME_DIAMOND 6
+#define GAME_PEARL 7
+#define GAME_PLATINUM 8
+#define GAME_HG 9
+#define GAME_SS 10
+#define GAME_B1 11
+#define GAME_W1 12
+#define GAME_B2 13
+#define GAME_W2 14
+
+void loadFile(u8* buf, char* path);
+int autoupdater();
+void update();
 void printfile(char* path);
-void waitKey(u32 key);
-int waitKeyRet();
-void refresh(int currentEntry, PrintConsole topScreen, char *lista[], int N);
-void refreshDB(int currentEntry, PrintConsole topScreen, char *lista[], int N, int page);
-void update(PrintConsole topScreen, PrintConsole bottomScreen);
-void credits(PrintConsole topScreen, PrintConsole bottomScreen);
 bool isHBL();
 void fsStart();
 void fsEnd();
 bool openSaveArch(FS_Archive *out, u64 id);
-void errDisp(PrintConsole screen, int i, u16 columns);
-void infoDisp(PrintConsole screen, int i, u16 columns);

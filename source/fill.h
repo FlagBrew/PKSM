@@ -14,10 +14,11 @@
 *
 */
 
+#pragma once
+
 #include <stdlib.h>
 #include <stdio.h>
-#include <3ds.h>
 
-void filldatabase6(char *database[]);
-void filldatabase5(char *database[]);
-void filldatabase4(char *database[]);
+void filldatabase6(char *database[], int spriteArray[]);
+void filldatabase5(char *database[], int spriteArray[]);
+void filldatabase4(char *database[], int spriteArray[]);
