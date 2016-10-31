@@ -493,6 +493,7 @@ void filldatabase4(char *database[], int spriteArray[]) {
 	database[78] = "078 - Sightseeing Course"; spriteArray[78] = 0;
 	database[79] = "079 - Manaphy Egg"; spriteArray[79] = 490;
 	database[80] = "080 - TCGWC Pikachu"; spriteArray[80] = 25;
+	database[90] = "Placeholder";
 	database[108] = "108 - Apicot Berry"; spriteArray[108] = 0;
 	database[150] = "150 - Poketopia Pikachu"; spriteArray[150] = 25;
 	database[151] = "151 - Poketopia Electivire"; spriteArray[151] = 466;

@@ -14,18 +14,6 @@
 *
 */
 
-/* PKCONT 
-	0 : currentEntry
-	1 : boxnumber
-	2 : indexnumber
-	3 : nature counter
-	4 : hidden power counter
-	5 : clone boxnumber
-	6 : clone indexnumber
-	7 : IVs index
-	8 : EVs index
-*/
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <3ds.h>
@@ -37,170 +25,107 @@
 #include "catch.h"
 #include "util.h"
 #include "database.h"
-#include "pokemon.h"
+#include "editor.h"
+#include "graphic.h"
+#include "bank.h"
 
-#define ENTRIES 13
-#define GAMES 11
-
-#define V1 2
-#define V2 4
-#define V3 0
-
-#define DAY 12
-#define MONTH 9
-#define YEAR 16
-
+#define GAMES 15
+		
 void exitServices() {
+	GUIElementsExit();
 	pxiDevExit();
 	hidExit();
 	srvExit();
 	fsEnd();
-	romfsExit();
 	sdmcExit();
 	aptExit();
-	gfxExit();
+	romfsExit();
+	sftd_fini();
+	sf2d_fini();
 }
 
-int autoupdater(PrintConsole topScreen, PrintConsole bottomScreen) {
-	int temp = 0;
-	char* ver = (char*)malloc(6 * sizeof(u8));
-	snprintf(ver, 6, "%d.%d.%d", V1, V2, V3);
-	
-	printf("\x1b[2J");
-	printf("Checking automatically for updates...\n\n");
-	Result ret = downloadFile(bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/ver.ver", "/3ds/data/EventAssistant/builds/ver.ver");	
-	if (ret != 0) {
-		free(ver);
-		exitServices();
-		return 1;
-	}
-	
-	printf("\nComparing...");
-	FILE *fptr = fopen("3ds/data/EventAssistant/builds/ver.ver", "rt");
-	if (fptr == NULL) {
-		fclose(fptr);
-		free(ver);
-		exitServices();
-		return 15;
-	}
-	fseek(fptr, 0, SEEK_END);
-	u32 contentsize = ftell(fptr);
-	char *verbuf = (char*)malloc(contentsize);
-	if (verbuf == NULL) {
-		fclose(fptr);
-		free(verbuf);
-		free(ver);
-		exitServices();
-		return 8;
-	}
-	rewind(fptr);
-	fread(verbuf, contentsize, 1, fptr);
-	fclose(fptr);
-
-	remove("/3ds/data/EventAssistant/builds/ver.ver");			
-	
-	for (int i = 0; i < 5; i++)
-		if (*(ver + i) == *(verbuf + i))
-			temp++;
-		
-	free(ver);
-	free(verbuf);
-	
-	if (temp < 5) {
-		update(topScreen, bottomScreen);
-		exitServices();
-		return 1;
-	}
-	return 0;
-}
-
-void intro(PrintConsole topScreen, PrintConsole bottomScreen, int currentEntry, char* menuEntries[]){
-	consoleSelect(&bottomScreen);
-	printf("\x1b[2J");
-	printf("\nDatabase definitions updated to %d/%d/%d", DAY, MONTH, YEAR);
-	printf("\x1b[26;0HEvent Assistant v%d.%d.%d", V1, V2, V3);
-	printf("\n\nBernardo Giordano & ctrulib");
-	consoleSelect(&topScreen);
-	printf("\x1b[2J");
-	printf("\x1b[47;1;34m                  EventAssistant                  \x1b[0m\n");
-
-	refresh(currentEntry, topScreen, menuEntries, ENTRIES);
-
-	consoleSelect(&topScreen);
-	printf("\x1b[29;10HPress Start to save, B to exit");
-}
-
-int main() {
-	gfxInitDefault();
+void initServices() {
+	sf2d_init();
+	sftd_init();
+	sf2d_set_clear_color(BLACK);
+	sf2d_set_vblank_wait(1);
 	aptInit();
 	sdmcInit();
-	Result rc = romfsInit();
+	romfsInit();
 	fsStart();
 	srvInit();
 	hidInit();
 	pxiDevInit();
-	
-	PrintConsole topScreen, bottomScreen;
-	consoleInit(GFX_TOP, &topScreen);
-	consoleInit(GFX_BOTTOM, &bottomScreen);
-	
-	if (rc)
-		printf("romfsInit error: %08lX\n", rc);
-	
+	GUIElementsInit();
+	GUIGameElementsInit();
+
 	mkdir("sdmc:/3ds", 0777);
 	mkdir("sdmc:/3ds/data", 0777);
 	mkdir("sdmc:/3ds/data/EventAssistant", 0777);
 	mkdir("sdmc:/3ds/data/EventAssistant/builds", 0777);
+	mkdir("sdmc:/3ds/data/EventAssistant/bank", 0777);
+	mkdir("sdmc:/3ds/data/EventAssistant/backup", 0777);
 	
-	if (!(isHBL())) {
-		// checking updates
-		bool autoupdate = false;
-		consoleSelect(&topScreen);
-		printf("\x1b[13;9HDo you want to check for updates?\x1b[15;15HSTART: YES | B: SKIP");
-		while (aptMainLoop()) {
-			gspWaitForVBlank();
-			hidScanInput();
-			
-			if (hidKeysDown() & KEY_START) {
-				autoupdate = true;
-				break;
-			}		
-			if (hidKeysDown() & KEY_B)
-				break;
-
-			gfxFlushBuffers();
-			gfxSwapBuffers();
-		}
-		
-		if (autoupdate) {
-			int temp = autoupdater(topScreen, bottomScreen);
-			if (temp != 0) {
-				exitServices();
-				return 0;
-			}
-		}
+	FILE *fptr = fopen("romfs:/personal/personal.bin", "rt");
+	if (fptr == NULL) {
+		fclose(fptr);
+		return;
 	}
+	fseek(fptr, 0, SEEK_END);
+	u32 size = ftell(fptr);
+	u8 *buf = (u8*)malloc(size);
+	if (buf == NULL) {
+		fclose(fptr);
+		free(buf);
+		return;
+	}
+	rewind(fptr);
+	fread(buf, size, 1, fptr);
+	fclose(fptr);
+	memcpy(personal.pkmData, buf, size);
+	free(buf);
+	
+	size = BANKBOXMAX * 30 * PKMNLENGTH;
+	u8* bankbuf = (u8*)malloc(size * sizeof(u8));
+		
+	FILE *bank = fopen("/3ds/data/EventAssistant/bank/bank.bin", "rt");
+	if (bank == NULL) {
+		fclose(bank);
+		memset(bankbuf, 0, size);
+		FILE *new = fopen("/3ds/data/EventAssistant/bank/bank.bin", "wb");
+		fwrite(bankbuf, 1, size, new);
+		fclose(new);
+	}
+	FILE *bak = fopen("/3ds/data/EventAssistant/bank/bank.bin", "rt");
+	fseek(bak, 0, SEEK_END);
+	rewind(bak);
+	fread(bankbuf, size, 1, bak);
+	fclose(bak);
+	FILE *new = fopen("/3ds/data/EventAssistant/bank/bank.bak", "wb");
+	fwrite(bankbuf, 1, size, new);
+	fclose(new);
+	
+	free(bankbuf);
+}
 
-	int game = 0;
+int main() {
+	initServices();
+
+	u8* mainbuf;
+	u64 mainSize = 0;
+
+	int game = 0, GBO = 0, SBO = 0;
+	int currentEntry = 0;
+	
 	bool save = true;
-	int GBO = 0;
-	int SBO = 0;
+	Handle mainHandle;
+	FS_Archive saveArch;
 	
 	//X, Y, OR, AS
-	const u64 ids[4] = {0x0004000000055D00, 0x0004000000055E00, 0x000400000011C400, 0x000400000011C500};
-	char *gamesList[GAMES] = {"Pokemon X", "Pokemon Y", "Pokemon Omega Ruby", "Pokemon Alpha Sapphire", "Pokemon Black", "Pokemon White", "Pokemon Black 2", "Pokemon White 2", "Pokemon Heart Gold", "Pokemon Soul Silver", "Pokemon Platinum"/*, "Pokemon Diamond", "Pokemon Pearl"*/};
-	
-	consoleSelect(&bottomScreen);
-	printf("\x1b[2J");
-	printf("\x1b[14;5HPress A to continue, B to exit");
-	
-	consoleSelect(&topScreen);
-	printf("\x1b[2J");
-	printf("\x1b[31mCHOOSE GAME.\x1b[0m Cart has priority over digital copy.");
-	refresh(game, topScreen, gamesList, GAMES);
+	const u64 ids[6] = {0x0004000000055D00, 0x0004000000055E00, 0x000400000011C400, 0x000400000011C500, 0x0004000000164800, 0x0004000000175E00};
+	char *gamesList[GAMES] = {"X", "Y", "OR", "AS", "S", "M", "D", "P", "PL", "HG", "SS", "B", "W", "W2", "B2"};
 
-	while (aptMainLoop()) {
-		gspWaitForVBlank();
+	while (aptMainLoop() && !(hidKeysDown() & KEY_A)) {
 		hidScanInput();
 		
 		if (hidKeysDown() & KEY_B) {
@@ -208,42 +133,24 @@ int main() {
 			return 0;
 		}
 		
-		if (hidKeysDown() & KEY_DUP) {
-			if (game == 0)
-				game = GAMES - 1;
-			else if (game > 0)
-				game--;	
-			
-			refresh(game, topScreen, gamesList, GAMES);
+		if (hidKeysDown() & KEY_DLEFT) {
+			if (game == 0) game = GAMES - 1;
+			else if (game > 0) game--;	
 		}
 		
-		if (hidKeysDown() & KEY_DDOWN) {
-			if (game == GAMES - 1)
-				game = 0;
-			else if (game < GAMES - 1)
-				game++;
-			
-			refresh(game, topScreen, gamesList, GAMES);
+		if (hidKeysDown() & KEY_DRIGHT) {
+			if (game == GAMES - 1) game = 0;
+			else if (game < GAMES - 1) game++;
 		}
 		
-		if (hidKeysDown() & KEY_A)
-			break;
-
-		gfxFlushBuffers();
-		gfxSwapBuffers();
+		gameSelectorMenu(game);
 	}
 	
-	consoleSelect(&topScreen);
-	printf("\x1b[25;0HLoading save...");
+	GUIGameElementsExit();
 	
-	u64 mainSize = 0;
-	Handle mainHandle;
-	FS_Archive saveArch;
-	u8* mainbuf;
-	
-	if (game < 4) {	
+	if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS || game == GAME_SUN || game == GAME_MOON) {	
 		if (!(openSaveArch(&saveArch, ids[game]))) {
-			errDisp(bottomScreen, 1, BOTTOM);
+			infoDisp("Game not found!");
 			exitServices();
 			return -1;
 		}
@@ -252,26 +159,12 @@ int main() {
 		FSFILE_GetSize(mainHandle, &mainSize);
 		
 		switch(game) {
-			case 0 : {
-				if (mainSize != 415232)
-					errDisp(bottomScreen, 13, BOTTOM);
-				break;
-			}
-			case 1 : {
-				if (mainSize != 415232)
-					errDisp(bottomScreen, 13, BOTTOM);
-				break;
-			}
-			case 2 : {
-				if (mainSize != 483328)
-					errDisp(bottomScreen, 13, BOTTOM);
-				break;
-			}
-			case 3 : {
-				if (mainSize != 483328)
-					errDisp(bottomScreen, 13, BOTTOM);
-				break;
-			}
+			case GAME_X : { if (mainSize != 415232) infoDisp("Incorrect size for this game!"); break; }
+			case GAME_Y : { if (mainSize != 415232) infoDisp("Incorrect size for this game!"); break; }
+			case GAME_OR : { if (mainSize != 483328) infoDisp("Incorrect size for this game!"); break; }
+			case GAME_AS : { if (mainSize != 483328) infoDisp("Incorrect size for this game!"); break; }
+			case GAME_SUN : { if (mainSize != 441856) infoDisp("Incorrect size for this game!"); break; }
+			case GAME_MOON : { if (mainSize != 441856) infoDisp("Incorrect size for this game!"); break; }
 			exitServices();
 			return -1;
 		}
@@ -280,33 +173,39 @@ int main() {
 		FSFILE_Read(mainHandle, NULL, 0, mainbuf, mainSize);
 	}
 	
-	else if (game >= 4) {
+	else if (game == GAME_DIAMOND || game == GAME_PEARL || game == GAME_PLATINUM || game == GAME_HG || game == GAME_SS || game == GAME_B1 || game == GAME_W1 || game == GAME_B2 || game == GAME_W2) {
 		FS_CardType t;
 		Result res = FSUSER_GetCardType(&t);
 		if (res != 0) {
-			errDisp(bottomScreen, 17, BOTTOM);
+			infoDisp("No cartridge inserted!");
 			exitServices();
 			return -1;
 		}
 		u8 data[0x3B4];
 		res = FSUSER_GetLegacyRomHeader(MEDIATYPE_GAME_CARD, 0LL, data);
-		
-		//bool isTWL = (data[0x12] & 0x2) != 0;
-
-		//if (!(isTWL)){
-		//	errDisp(bottomScreen, 18, BOTTOM);
-		//	exitServices();
-		//	return -1;
-		//}
 
 		CardType cardType_;
 		res = SPIGetCardType(&cardType_, (*(data + 12) == 'I') ? 1 : 0);
 
 		mainSize = SPIGetCapacity(cardType_);
+		
+		switch(game) {
+			case GAME_DIAMOND  : { if (mainSize != 524288) infoDisp("Incorrect size for this game!"); break; }
+			case GAME_PEARL    : { if (mainSize != 524288) infoDisp("Incorrect size for this game!"); break; }
+			case GAME_PLATINUM : { if (mainSize != 524288) infoDisp("Incorrect size for this game!"); break; }
+			case GAME_HG : { if (mainSize != 524288) infoDisp("Incorrect size for this game!"); break; }
+			case GAME_SS : { if (mainSize != 524288) infoDisp("Incorrect size for this game!"); break; }
+			case GAME_W1 : { if (mainSize != 524288) infoDisp("Incorrect size for this game!"); break; }
+			case GAME_B1 : { if (mainSize != 524288) infoDisp("Incorrect size for this game!"); break; }
+			case GAME_W2 : { if (mainSize != 524288) infoDisp("Incorrect size for this game!"); break; }
+			case GAME_B2 : { if (mainSize != 524288) infoDisp("Incorrect size for this game!"); break; }
+			exitServices();
+			return -1;
+		}
 		mainbuf = malloc(mainSize);
 		
 		TWLstoreSaveFile(mainbuf, cardType_);
-		if (game > 7) {
+		if (game == GAME_DIAMOND || game == GAME_PEARL || game == GAME_PLATINUM || game == GAME_HG || game == GAME_SS) {
 			GBO = 0x40000 * getActiveGBO(mainbuf, game);
 			SBO = 0x40000 * getActiveSBO(mainbuf, game);
 		}
@@ -315,218 +214,294 @@ int main() {
 	char *bakpath = (char*)malloc(80 * sizeof(char));
 	
 	time_t unixTime = time(NULL);
-	struct tm* timeStruct = gmtime((const time_t *)&unixTime);
-
-	int hours = timeStruct->tm_hour;
-	int minutes = timeStruct->tm_min;
-	int seconds = timeStruct->tm_sec;
-	int day = timeStruct->tm_mday;
-	int month = timeStruct->tm_mon + 1;
-	int year = timeStruct->tm_year +1900;
-		
-	snprintf(bakpath, 80, "/3ds/data/EventAssistant/main_%s_%i-%i-%i-%02i%02i%02i", gamesList[game], day, month, year, hours, minutes, seconds);
-	printf("\n\nSaving backup to %s\n", bakpath);
+	struct tm* timeStruct = gmtime((const time_t *)&unixTime);		
+	snprintf(bakpath, 80, "/3ds/data/EventAssistant/backup/main_%s_%i-%i-%i-%02i%02i%02i", gamesList[game], timeStruct->tm_mday, timeStruct->tm_mon + 1, timeStruct->tm_year + 1900, timeStruct->tm_hour, timeStruct->tm_min, timeStruct->tm_sec);
 	
 	FILE *f = fopen(bakpath, "wb");
 	fwrite(mainbuf, 1, mainSize, f);
 	fclose(f);
 	
 	free(bakpath);
-
-	char *menuEntries[ENTRIES] = {"Gen VI's Event Database", "Gen VI's Save file editor", "Gen VI's Pokemon editor", "Gen VI's Mass injecter", "Gen V's Event Database", "Gen IV's Event Database", "Wi-Fi distributions", "Code distributions", "Local distributions", "Capture probability calculator", "Common PS dates database", "Credits", "Update .cia to latest commit build"};
-	int currentEntry = 0;
 	
-	// initializing save file editor variables
-	int nInjected[3] = {0, 0, 0};
-	int injectCont[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+	bool touchPressed = false;
 	
-	// initializing pokemon editor variables
-	int pokemonCont[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-
-	consoleSelect(&topScreen);
-	printf("\x1b[0m");
-	intro(topScreen, bottomScreen, currentEntry, menuEntries);
-	
-	while (aptMainLoop()) {
-		gspWaitForVBlank();
-		hidScanInput();
-
-		if (hidKeysDown() & KEY_START)
-			break;
-		
-		if (hidKeysDown() & KEY_B) {
-			save = false;
-			break;
-		}
-
-		if (hidKeysDown() & KEY_DUP) {
-			if (currentEntry == 0)
-				currentEntry = ENTRIES - 1;
-			else if (currentEntry > 0)
-				currentEntry--;
+	GUIElementsSpecify(game);
+	if (game < 6) {
+		while (aptMainLoop() && !(hidKeysDown() & KEY_START)) {
+			hidScanInput();
+			touchPosition touch;
+			hidTouchRead(&touch);
 			
-			refresh(currentEntry, topScreen, menuEntries, ENTRIES);
-		}
+			if (hidKeysDown() & KEY_X) {
+				save = false;
+				break;
+			}
 
-		if (hidKeysDown() & KEY_DDOWN) {
-			if (currentEntry == ENTRIES - 1)
-				currentEntry = 0;
-			else if (currentEntry < ENTRIES - 1)
-				currentEntry++;
+			if (hidKeysDown() & KEY_DUP) {
+				if (currentEntry == 0) currentEntry = 2;
+				else if (currentEntry > 0) currentEntry--;
+			}
 
-			refresh(currentEntry, topScreen, menuEntries, ENTRIES);
-		}
-
-		if (hidKeysDown() & KEY_A) {
-			switch (currentEntry) {
-				case 0 : {
-					if (game > 3)
-						break;
-					
-					eventDatabase6(topScreen, bottomScreen, mainbuf, game);
-					break;
-				}
-
-				case 1 : {
-					if (game > 3)
-						break;
-					
-					int ret = saveFileEditor(topScreen, bottomScreen, mainbuf, game, nInjected, injectCont);
-					consoleSelect(&bottomScreen);
-					
-					if (ret == 1) 
-						infoDisp(bottomScreen, 1, BOTTOM);
-					else if (ret != -1 && ret != 1) 
-						errDisp(bottomScreen, ret, BOTTOM);
-
-					if (ret != -1)
-						waitKey(KEY_B);
-					
-					break;
-				}
-				
-				case 2 : {
-					if (game > 3)
-						break;
-					
-					int ret = PKEditor(topScreen, bottomScreen, mainbuf, game, pokemonCont);
-					consoleSelect(&bottomScreen);
-					if (ret == 1)
-						infoDisp(bottomScreen, 1, BOTTOM);
-					else if (ret != 1 && ret != 0) 
-						errDisp(bottomScreen, ret, BOTTOM);
-
-					if (ret != 0)
-						waitKey(KEY_B);
-					
-					break;
-				}
-				
-				case 3 : {
-					if (game > 3)
-						break;
-					
-					int ret = massInjecter(topScreen, bottomScreen, mainbuf, game);
-					consoleSelect(&bottomScreen);
-					if (ret == 1)
-						infoDisp(bottomScreen, 1, BOTTOM);
-					else if (ret != 1 && ret != 0) 
-						errDisp(bottomScreen, ret, BOTTOM);
-
-					if (ret != 0)
-						waitKey(KEY_B);
-
-					break;
-				}
-				
-				case 4 : {
-					if (game < 4 || game > 7)
-						break;
-					
-					eventDatabase5(topScreen, bottomScreen, mainbuf, game);
-					break;
-				}
-				
-				case 5 : {
-					if (game < 8)
-						break;
-					
-					eventDatabase4(topScreen, bottomScreen, mainbuf, game, GBO, SBO);
-					break;
-				}
-
-				case 6 :  {
-					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/worldwide1.txt");
-					break;
-				}
-
-				case 7 : {
-					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/worldwide2.txt");
-					break;
-				}
-
-				case 8 : {
-					printDistro(topScreen, bottomScreen, "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/local.txt");
-					break;
-				}
-
-				case 9 : {
-					catchrate(topScreen, bottomScreen);
-					break;
-				}
-
-				case 10 : {
-					psDates(topScreen, bottomScreen);
-					break;
-				}
-
-				case 11 : {
-					credits(topScreen, bottomScreen);
-					break;
-				}
-
-				case 12 : {
-					update(topScreen, bottomScreen);
-					break;
+			if (hidKeysDown() & KEY_DDOWN) {
+				if (currentEntry == 2) currentEntry = 0;
+				else if (currentEntry < 2) currentEntry++;
+			}
+			
+			if (hidKeysDown() & KEY_TOUCH) {
+				if (touch.px > 50 && touch.px < 270) {
+					if (touch.py > 50 && touch.py < 88) { currentEntry = 0; touchPressed = true; }
+					if (touch.py > 98 && touch.py < 136) { currentEntry = 1; touchPressed = true; }
+					if (touch.py > 146 && touch.py < 184) { currentEntry = 2; touchPressed = true; }
 				}
 			}
-			consoleSelect(&bottomScreen);
-			printf("\x1b[2J");
-			consoleSelect(&topScreen);
-			printf("\x1b[2J");
-			intro(topScreen, bottomScreen, currentEntry, menuEntries);
-		}
 
-		gfxFlushBuffers();
-		gfxSwapBuffers();
+			if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS) {
+				if ((hidKeysDown() & KEY_A) || touchPressed) {
+					touchPressed = false;
+					switch (currentEntry) {
+						case 0 : {
+							int option = 0;
+							char* menu[4] = {"EVENT DATABASE", "WI-FI DISTRIBUTIONS", "CODE DISTRIBUTIONS", "LOCAL DISTRIBUTIONS"};
+							while (aptMainLoop()) {
+								hidScanInput();
+								hidTouchRead(&touch);
+								
+								if (hidKeysDown() & KEY_B) break;
+								
+								if (hidKeysDown() & KEY_TOUCH) {
+									if (touch.px > 50 && touch.px < 270) {
+										if (touch.py > 40 && touch.py < 72) { option = 0; touchPressed = true; }
+										if (touch.py > 82 && touch.py < 114) { option = 1; touchPressed = true; }
+										if (touch.py > 124 && touch.py < 156) { option = 2; touchPressed = true; }
+										if (touch.py > 166 && touch.py < 198) { option = 3; touchPressed = true; }
+									}
+								}
+								
+								if (hidKeysDown() & KEY_DUP) {
+									if (option == 0) option = 3;
+									else if (option > 0) option--;
+								}
+
+								if (hidKeysDown() & KEY_DDOWN) {
+									if (option == 3) option = 0;
+									else if (option < 3) option++;
+								}
+								
+								if ((hidKeysDown() & KEY_A) || touchPressed) {
+									touchPressed = false;
+									switch (option) {
+										case 0 : {
+											eventDatabase6(mainbuf, game);
+											break;
+										}
+										case 1 : {
+											printDistribution("https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/worldwide1.txt");
+											break;
+										}
+										case 2 : {
+											printDistribution("https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/worldwide2.txt");
+											break;
+										}
+										case 3 : {
+											printDistribution("https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/local.txt");
+											break;
+										}
+									}
+								}
+								
+								menu4(option, menu, 4);
+							}
+							
+							break;
+						}
+						case 1 : {
+							int option = 0;
+							char* menu[4] = {"POKEMON EDITOR", "SAVE EDITOR", "BANK", "MASS INJECTOR"};
+							while (aptMainLoop()) {
+								hidScanInput();
+								hidTouchRead(&touch);
+
+								if (hidKeysDown() & KEY_B) break;
+								
+								if (hidKeysDown() & KEY_TOUCH) {
+									if (touch.px > 50 && touch.px < 270) {
+										if (touch.py > 40 && touch.py < 72) { option = 0; touchPressed = true; }
+										if (touch.py > 82 && touch.py < 114) { option = 1; touchPressed = true; }
+										if (touch.py > 124 && touch.py < 156) { option = 2; touchPressed = true; }
+										if (touch.py > 166 && touch.py < 198) { option = 3; touchPressed = true; }
+									}
+								}
+								
+								if (hidKeysDown() & KEY_DUP) {
+									if (option == 0) option = 3;
+									else if (option > 0) option--;
+								}
+
+								if (hidKeysDown() & KEY_DDOWN) {
+									if (option == 3) option = 0;
+									else if (option < 3) option++;
+								}
+								
+								if ((hidKeysDown() & KEY_A) || touchPressed) {
+									touchPressed = false;
+									switch (option) {
+										case 0 : {
+											pokemonEditor(mainbuf, game);
+											break;
+										}
+										case 1 : {
+											saveFileEditor(mainbuf, game);
+											break;
+										}
+										case 2 : {
+											bank(mainbuf, game);
+											break;
+										}
+										case 3 : {
+											massInjector(mainbuf, game);
+											break;
+										}
+									}
+								}
+								
+								menu4(option, menu, 4);
+							}
+							break;
+						}
+						case 2 : {
+							int option = 0;
+							char* menu[4] = {"CAPTURE PROB. CALCULATOR", "POWERSAVES DATES", "CREDITS", "UPDATE"};
+							while (aptMainLoop() && !(hidKeysDown() & KEY_B)) {
+								hidScanInput();
+								hidTouchRead(&touch);
+								
+								if (hidKeysDown() & KEY_TOUCH) {
+									if (touch.px > 50 && touch.px < 270) {
+										if (touch.py > 40 && touch.py < 72) { option = 0; touchPressed = true; }
+										if (touch.py > 82 && touch.py < 114) { option = 1; touchPressed = true; }
+										if (touch.py > 124 && touch.py < 156) { option = 2; touchPressed = true; }
+										if (touch.py > 166 && touch.py < 198) { option = 3; touchPressed = true; }
+									}
+								}
+								
+								if (hidKeysDown() & KEY_DUP) {
+									if (option == 0) option = 3;
+									else if (option > 0) option--;
+								}
+
+								if (hidKeysDown() & KEY_DDOWN) {
+									if (option == 3) option = 0;
+									else if (option < 3) option++;
+								}
+								
+								if ((hidKeysDown() & KEY_A) || touchPressed) {
+									touchPressed = false;
+									switch (option) {
+										case 0 : {
+											break;
+										}
+										case 1 : {
+											printPSDates();
+											break;
+										}
+										case 2 : {
+											break;
+										}
+										case 3 : {
+											int temp = autoupdater();
+											if (temp != 0) {
+												exitServices();
+												return 0;
+											}
+											break;
+										}
+									}
+								}
+								
+								menu4(option, menu, 4);
+							}
+							
+							break;
+						}
+					}
+				}
+
+				mainMenu(currentEntry);
+			}
+		}
+	} else {
+		while (aptMainLoop() && !(hidKeysDown() & KEY_START)) {
+			hidScanInput();
+			touchPosition touch;
+			hidTouchRead(&touch);
+			
+			if (hidKeysDown() & KEY_X) {
+				save = false;
+				break;
+			}
+
+			if (hidKeysDown() & KEY_DUP) {
+				if (currentEntry == 0) currentEntry = 1;
+				else if (currentEntry > 0) currentEntry--;
+			}
+
+			if (hidKeysDown() & KEY_DDOWN) {
+				if (currentEntry == 1) currentEntry = 0;
+				else if (currentEntry < 1) currentEntry++;
+			}
+			
+			if (hidKeysDown() & KEY_TOUCH) {
+				if (touch.px > 97 && touch.px < 222) {
+					if (touch.py > 66 && touch.py < 105) { currentEntry = 0; touchPressed = true; }
+					if (touch.py > 123 && touch.py < 164) { currentEntry = 1; touchPressed = true; }
+				}
+			}
+
+			if ((hidKeysDown() & KEY_A) || touchPressed) {
+				touchPressed = false;
+				switch (currentEntry) {
+					case 0 : {
+						if (game == GAME_W1 || game == GAME_B1 || game == GAME_W2 || game == GAME_B2)
+							eventDatabase5(mainbuf, game);
+						if (game == GAME_DIAMOND || game == GAME_PEARL || game == GAME_PLATINUM || game == GAME_HG || game == GAME_SS)
+							eventDatabase4(mainbuf, game);
+						break;
+					}
+					case 1 : {
+						break;
+					}
+				}
+			}
+
+			mainMenuDS(currentEntry);
+		}
 	}
 	
 	if (save) {
-		if (game < 4) 
-			infoDisp(bottomScreen, 2, BOTTOM);
-		else if (game >= 4)
-			infoDisp(bottomScreen, 5, BOTTOM);
-		
-		gfxFlushBuffers();
-		gfxSwapBuffers();
-		if (game < 8)
+		if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS || game == GAME_SUN || game == GAME_MOON) 
+			infoDisp("Save game.");
+		else if (game == GAME_DIAMOND || game == GAME_PEARL || game == GAME_PLATINUM || game == GAME_HG || game == GAME_SS || game == GAME_B1 || game == GAME_W1 || game == GAME_B2 || game == GAME_W2) 
+			infoDisp("Save game. It will take time...");
+
+		if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS || game == GAME_SUN || game == GAME_MOON || game == GAME_B1 || game == GAME_W1 || game == GAME_B2 || game == GAME_W2) 
 			rewriteCHK(mainbuf, game);
-		else if (game > 7)
+		else if (game == GAME_DIAMOND || game == GAME_PEARL || game == GAME_PLATINUM || game == GAME_HG || game == GAME_SS) 
 			rewriteCHK4(mainbuf, game, GBO, SBO);
 	}
 	
-	if (game < 4) {
+	if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS || game == GAME_SUN || game == GAME_MOON) {
 		FSFILE_Write(mainHandle, NULL, 0, mainbuf, mainSize, FS_WRITE_FLUSH);
 		FSFILE_Close(mainHandle);
 		if (save)
 			FSUSER_ControlArchive(saveArch, ARCHIVE_ACTION_COMMIT_SAVE_DATA, NULL, 0, NULL, 0);
 		FSUSER_CloseArchive(saveArch);
 	}
-	else if (game >= 4) {
-		TWLinjectSave(mainbuf);
-	}
-
+	else if ((game == GAME_DIAMOND || game == GAME_PEARL || game == GAME_PLATINUM || game == GAME_HG || game == GAME_SS || game == GAME_B1 || game == GAME_W1 || game == GAME_B2 || game == GAME_W2) && save)
+		TWLinjectSave(mainbuf, mainSize);
+	
 	free(mainbuf);
+	
+	if (!(save))	infoDisp("Exit without saving.");
 	
 	exitServices();
 	return 0;
