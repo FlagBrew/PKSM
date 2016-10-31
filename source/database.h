@@ -24,5 +24,5 @@ void setBoxBin(u8* mainbuf, int game, int NBOXES, int N, char* path[]);
 int checkMultipleWC6(u8* mainbuf, int game, int i, int langCont, int nInjected[], int adapt);
 void eventDatabase6(u8* mainbuf, int game);
 void eventDatabase5(u8* mainbuf, int game);
-void eventDatabase4(u8* mainbuf, int game);
+void eventDatabase4(u8* mainbuf, int game, int GBO, int SBO);
 void massInjector(u8* mainbuf, int game);

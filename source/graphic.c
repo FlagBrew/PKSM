@@ -532,7 +532,7 @@ void printDatabase5(char *database[], int currentEntry, int page, int spriteArra
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(DSEventBottom, 0, 0);
-		sftd_draw_text(fontBold9, (320 - sftd_get_text_width(fontBold9, 9, "Press A to continue, B to return.")) / 2, 222, RGBA8(255, 255, 255, 130), 9, "Press A to continue, B to return.");
+		sftd_draw_text(fontBold9, (320 - sftd_get_text_width(fontBold9, 9, isSelected ? "Press START to inject, B to return" : "Press A to select, B to return.")) / 2, 222, RGBA8(255, 255, 255, 130), 9, isSelected ? "Press START to inject, B to return" : "Press A to select, B to return.");
 		
 		if (isSelected) {
 			char *languages[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
@@ -619,7 +619,7 @@ void printDatabase4(char *database[], int currentEntry, int page, int spriteArra
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(DSEventBottom, 0, 0);
-		sftd_draw_text(fontBold9, (320 - sftd_get_text_width(fontBold9, 9, "Press A to continue, B to return.")) / 2, 222, RGBA8(255, 255, 255, 130), 9, "Press A to continue, B to return.");
+		sftd_draw_text(fontBold9, (320 - sftd_get_text_width(fontBold9, 9, isSelected ? "Press START to inject, B to return" : "Press A to select, B to return.")) / 2, 222, RGBA8(255, 255, 255, 130), 9, isSelected ? "Press START to inject, B to return" : "Press A to select, B to return.");
 		
 		if (isSelected) {
 			char *languages[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};

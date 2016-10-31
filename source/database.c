@@ -702,7 +702,7 @@ void eventDatabase5(u8* mainbuf, int game) {
 	free(spriteArray);
 }
 
-void eventDatabase4(u8* mainbuf, int game) {
+void eventDatabase4(u8* mainbuf, int game, int GBO, int SBO) {
 	char *database[190];
 	int *spriteArray = (int*)malloc(190 * sizeof(int));
 	filldatabase4(database, spriteArray);
@@ -925,7 +925,7 @@ void eventDatabase4(u8* mainbuf, int game) {
 					fread(pgtbuf, contentsize, 1, fptr);
 					fclose(fptr);
 
-					setWC(mainbuf, pgtbuf, game, i, nInjected);
+					setWC4(mainbuf, pgtbuf, game, i, nInjected, GBO);
 
 					free(pgtpath);
 					free(pgtbuf);					

@@ -464,7 +464,7 @@ int main() {
 						if (game == GAME_W1 || game == GAME_B1 || game == GAME_W2 || game == GAME_B2)
 							eventDatabase5(mainbuf, game);
 						if (game == GAME_DIAMOND || game == GAME_PEARL || game == GAME_PLATINUM || game == GAME_HG || game == GAME_SS)
-							eventDatabase4(mainbuf, game);
+							eventDatabase4(mainbuf, game, GBO, SBO);
 						break;
 					}
 					case 1 : {
