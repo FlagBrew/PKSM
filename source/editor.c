@@ -878,16 +878,10 @@ void setWC(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[]) {
 		nInjected[0] = 0;
 }
 
-void setWC4(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[], int GBO) {	
-		// I'm not using these (anymore) for now. They represent the correct way to handle wondercard injection,
-		// but they work only the first time. Needing to find a way to fix this.
-		
+void setWC4(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[], int GBO) {
 	if (game == GAME_HG || game == GAME_SS) {
 		*(mainbuf + HGSSPGTFLAGPOS + GBO + (i >> 3)) |= 0x1 << (i & 7);
 		memcpy((void*)(mainbuf + HGSSPGTPOS + GBO + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
-		
-		// Weird but this works. Writing wondercard to both blocks will cause the game to find a corrupted save,
-		// but it restores normally it and shows the correct wondercards, without any save loss.
 		
 		// *(mainbuf + HGSSPGTFLAGPOS + (i >> 3)) |= 0x1 << (i & 7);
 		// memcpy((void*)(mainbuf + HGSSPGTPOS + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
@@ -896,27 +890,29 @@ void setWC4(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[], int GBO) {
 		// memcpy((void*)(mainbuf + HGSSPGTPOS + 0x40000 + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
 	}
 	if (game == GAME_PLATINUM) {
-		*(mainbuf + PTPGTFLAGPOS + GBO + (i >> 3)) |= 0x1 << (i & 7);
-		memcpy((void*)(mainbuf + PTPGTPOS + GBO + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
+		// *(mainbuf + PTPGTFLAGPOS + GBO + (i >> 3)) |= 0x1 << (i & 7);
+		// memcpy((void*)(mainbuf + PTPGTPOS + GBO + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
 		
-		// *(mainbuf + PTPGTFLAGPOS + (i >> 3)) |= 0x1 << (i & 7);
-		// memcpy((void*)(mainbuf + PTPGTPOS + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
+		*(mainbuf + PTPGTFLAGPOS + (i >> 3)) |= 0x1 << (i & 7);
+		memcpy((void*)(mainbuf + PTPGTPOS + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
 		
-		// *(mainbuf + PTPGTFLAGPOS + 0x40000 + (i >> 3)) |= 0x1 << (i & 7);
-		// memcpy((void*)(mainbuf + PTPGTPOS + 0x40000 + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
+		*(mainbuf + PTPGTFLAGPOS + 0x40000 + (i >> 3)) |= 0x1 << (i & 7);
+		memcpy((void*)(mainbuf + PTPGTPOS + 0x40000 + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
 	}
 	if (game == GAME_DIAMOND || game == GAME_PEARL) {
-		*(mainbuf + DPPGTFLAGPOS + GBO + (i >> 3)) |= 0x1 << (i & 7);
-		memcpy((void*)(mainbuf + DPPGTPOS + GBO + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
+		// *(mainbuf + DPPGTFLAGPOS + GBO + (i >> 3)) |= 0x1 << (i & 7);
+		// memcpy((void*)(mainbuf + DPPGTPOS + GBO + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
 		
-		// *(mainbuf + DPPGTFLAGPOS + (i >> 3)) |= 0x1 << (i & 7);
-		// memcpy((void*)(mainbuf + DPPGTPOS + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
+		*(mainbuf + DPPGTFLAGPOS + (i >> 3)) |= 0x1 << (i & 7);
+		memcpy((void*)(mainbuf + DPPGTPOS + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
 		
-		// *(mainbuf + DPPGTFLAGPOS + 0x40000 + (i >> 3)) |= 0x1 << (i & 7);
-		// memcpy((void*)(mainbuf + DPPGTPOS + 0x40000 + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
+		*(mainbuf + DPPGTFLAGPOS + 0x40000 + (i >> 3)) |= 0x1 << (i & 7);
+		memcpy((void*)(mainbuf + DPPGTPOS + 0x40000 + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
 	}
 
 	nInjected[0] += 1;
+	if (nInjected[0] >= 8)
+		nInjected[0] = 0;
 }
 
 void setLanguage(u8* mainbuf, int i) {
