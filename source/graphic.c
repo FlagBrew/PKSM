@@ -1323,20 +1323,22 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 		sftd_draw_text(fontBold12, 12 + (LRBar->width - sftd_get_text_width(fontBold12, 12, page)) / 2, 15, WHITE, 12, page);
 		sf2d_draw_texture(left, 2, 11);
 		sf2d_draw_texture(right, LRBar->width+7, 11);
-		sf2d_draw_texture(topButton, 214, 22);
-		sf2d_draw_texture(topButton, 214, 54);
-		sf2d_draw_texture(bottomButton, 214, 86);
-		sftd_draw_text(fontBold12, 214 + (106 - sftd_get_text_width(fontBold12, 12, "A: BUFFER")) / 2, 29, BLACK, 12, "A: BUFFER");
-		sftd_draw_text(fontBold12, 214 + (106 - sftd_get_text_width(fontBold12, 12, "X: SWITCH B/S")) / 2, 61, BLACK, 12, "X: SWITCH B/S");
-		sftd_draw_text(fontBold12, 214 + (106 - sftd_get_text_width(fontBold12, 12, "CLEAN")) / 2, 93, BLACK, 12, "CLEAN");
+		sf2d_draw_texture(topButton, 214, 12);
+		sf2d_draw_texture(topButton, 214, 44);
+		sf2d_draw_texture(topButton, 214, 76);
+		sf2d_draw_texture(bottomButton, 214, 108);
+		sftd_draw_text(fontBold12, 214 + (106 - sftd_get_text_width(fontBold12, 12, "A: BUFFER")) / 2, 19, BLACK, 12, "A: BUFFER");
+		sftd_draw_text(fontBold12, 214 + (106 - sftd_get_text_width(fontBold12, 12, "X: SWITCH B/S")) / 2, 51, BLACK, 12, "X: SWITCH B/S");
+		sftd_draw_text(fontBold12, 214 + (106 - sftd_get_text_width(fontBold12, 12, "CLEAN")) / 2, 83, BLACK, 12, "CLEAN");
+		sftd_draw_text(fontBold12, 214 + (106 - sftd_get_text_width(fontBold12, 12, "SHIFT")) / 2, 113, BLACK, 12, "SHIFT");
 
-		sf2d_draw_texture(pokemonBufferBox, 238, 138);
+		sf2d_draw_texture(pokemonBufferBox, 238, 150);
 		u16 n = getPokedexNumber(pkmnbuf);
 		if (n) {
 			if (isShiny(pkmnbuf))
-				sf2d_draw_texture_part(shinySpritesSmall, 250, 147, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30); 
+				sf2d_draw_texture_part(shinySpritesSmall, 250, 159, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30); 
 			else 
-				sf2d_draw_texture_part(spritesSmall, 250, 147, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30);
+				sf2d_draw_texture_part(spritesSmall, 250, 159, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30);
 		}
 		
 		int y = 45;

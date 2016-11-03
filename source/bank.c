@@ -39,7 +39,7 @@ void bank(u8* mainbuf, int game) {
 		
 		if (hidKeysDown() & KEY_B) break;
 		
-		if ((hidKeysDown() & KEY_X) || (hidKeysDown() & KEY_TOUCH && touch.px > 214 && touch.px < 320 && touch.py > 54 && touch.py < 84)) {
+		if ((hidKeysDown() & KEY_X) || (hidKeysDown() & KEY_TOUCH && touch.px > 214 && touch.px < 320 && touch.py > 44 && touch.py < 74)) {
 			int temp = box;
 			box = pastbox;
 			pastbox = temp;
@@ -75,7 +75,7 @@ void bank(u8* mainbuf, int game) {
 				else if (box == boxmax) box = 0;
 			}
 			
-			if (touch.px > 214 && touch.px < 320 && touch.py > 86 && touch.py < 116) {
+			if (touch.px > 214 && touch.px < 320 && touch.py > 76 && touch.py < 106) {
 				u8* tmp = (u8*)malloc(PKMNLENGTH * sizeof(u8));
 				memset(tmp, 0, PKMNLENGTH);
 				for (u32 i = 0; i < 30; i++) {
@@ -83,6 +83,45 @@ void bank(u8* mainbuf, int game) {
 					else setPkmn(mainbuf, box, i, pkmn, game);
 				}
 				free(tmp);
+			}
+			
+			if (touch.px > 214 && touch.px < 320 && touch.py > 106 && touch.py < 136) {
+				u8* buffer = (u8*)malloc(PKMNLENGTH * sizeof(u8));
+				memset(buffer, 0, PKMNLENGTH);
+				
+				if (isBank) {
+					for (u32 i = 0; i < 30; i++) {
+						u32 t = 0;
+						getPkmn(mainbuf, box, i, buffer, game);
+							for (u32 j = 0; j < PKMNLENGTH; j++)
+								if (*(buffer + j) == 0)
+									t++;
+
+						memcpy(buffer, &bankbuf[box * 30 * PKMNLENGTH + i * PKMNLENGTH], PKMNLENGTH); // buffering
+						if (t == PKMNLENGTH && getPokedexNumber(buffer)) { // empty slot
+							setPkmn(mainbuf, box, i, buffer, game);
+							memset(buffer, 0, PKMNLENGTH);
+							memcpy(&bankbuf[box * 30 * PKMNLENGTH + i * PKMNLENGTH], buffer, PKMNLENGTH);
+						}
+					}
+				} else {
+					for (u32 i = 0; i < 30; i++) {
+						u32 t = 0;
+						memcpy(buffer, &bankbuf[box * 30 * PKMNLENGTH + i * PKMNLENGTH], PKMNLENGTH);
+							for (u32 j = 0; j < PKMNLENGTH; j++)
+								if (*(buffer + j) == 0)
+									t++;
+
+						getPkmn(mainbuf, box, i, buffer, game); // buffering
+						if (t == PKMNLENGTH && getPokedexNumber(buffer)) { // empty slot
+							memcpy(&bankbuf[box * 30 * PKMNLENGTH + i * PKMNLENGTH], buffer, PKMNLENGTH);
+							memset(buffer, 0, PKMNLENGTH);
+							setPkmn(mainbuf, box, i, buffer, game);
+						}
+					}
+				}
+				
+				free(buffer);
 			}
 			
 			if (touch.px > 288 && touch.px < 310 && touch.py > 217 && touch.py < 235) break;
@@ -106,7 +145,7 @@ void bank(u8* mainbuf, int game) {
 			if (currentEntry <= 23) currentEntry += 6;
 		}
 		
-		if ((hidKeysDown() & KEY_A) || (hidKeysDown() & KEY_TOUCH && touch.px > 214 && touch.px < 320 && touch.py > 22 && touch.py < 52)) {
+		if ((hidKeysDown() & KEY_A) || (hidKeysDown() & KEY_TOUCH && touch.px > 214 && touch.px < 320 && touch.py > 12 && touch.py < 42)) {
 			if (isBufferized) {
 				int k = 0;
 				u8* tmp = (u8*)malloc(PKMNLENGTH * sizeof(u8));
