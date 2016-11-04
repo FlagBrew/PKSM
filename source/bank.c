@@ -92,14 +92,14 @@ void bank(u8* mainbuf, int game) {
 				if (isBank) {
 					for (u32 i = 0; i < 30; i++) {
 						u32 t = 0;
-						getPkmn(mainbuf, box, i, buffer, game);
+						getPkmn(mainbuf, pastbox, i, buffer, game);
 							for (u32 j = 0; j < PKMNLENGTH; j++)
 								if (*(buffer + j) == 0)
 									t++;
 
 						memcpy(buffer, &bankbuf[box * 30 * PKMNLENGTH + i * PKMNLENGTH], PKMNLENGTH); // buffering
 						if (t == PKMNLENGTH && getPokedexNumber(buffer)) { // empty slot
-							setPkmn(mainbuf, box, i, buffer, game);
+							setPkmn(mainbuf, pastbox, i, buffer, game);
 							memset(buffer, 0, PKMNLENGTH);
 							memcpy(&bankbuf[box * 30 * PKMNLENGTH + i * PKMNLENGTH], buffer, PKMNLENGTH);
 						}
@@ -107,14 +107,14 @@ void bank(u8* mainbuf, int game) {
 				} else {
 					for (u32 i = 0; i < 30; i++) {
 						u32 t = 0;
-						memcpy(buffer, &bankbuf[box * 30 * PKMNLENGTH + i * PKMNLENGTH], PKMNLENGTH);
+						memcpy(buffer, &bankbuf[pastbox * 30 * PKMNLENGTH + i * PKMNLENGTH], PKMNLENGTH);
 							for (u32 j = 0; j < PKMNLENGTH; j++)
 								if (*(buffer + j) == 0)
 									t++;
 
 						getPkmn(mainbuf, box, i, buffer, game); // buffering
 						if (t == PKMNLENGTH && getPokedexNumber(buffer)) { // empty slot
-							memcpy(&bankbuf[box * 30 * PKMNLENGTH + i * PKMNLENGTH], buffer, PKMNLENGTH);
+							memcpy(&bankbuf[pastbox * 30 * PKMNLENGTH + i * PKMNLENGTH], buffer, PKMNLENGTH);
 							memset(buffer, 0, PKMNLENGTH);
 							setPkmn(mainbuf, box, i, buffer, game);
 						}

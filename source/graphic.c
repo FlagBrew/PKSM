@@ -1330,7 +1330,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 		sftd_draw_text(fontBold12, 214 + (106 - sftd_get_text_width(fontBold12, 12, "A: BUFFER")) / 2, 19, BLACK, 12, "A: BUFFER");
 		sftd_draw_text(fontBold12, 214 + (106 - sftd_get_text_width(fontBold12, 12, "X: SWITCH B/S")) / 2, 51, BLACK, 12, "X: SWITCH B/S");
 		sftd_draw_text(fontBold12, 214 + (106 - sftd_get_text_width(fontBold12, 12, "CLEAN")) / 2, 83, BLACK, 12, "CLEAN");
-		sftd_draw_text(fontBold12, 214 + (106 - sftd_get_text_width(fontBold12, 12, "SHIFT")) / 2, 113, BLACK, 12, "SHIFT");
+		sftd_draw_text(fontBold12, 214 + (106 - sftd_get_text_width(fontBold12, 12, "SHIFT")) / 2, 115, BLACK, 12, "SHIFT");
 
 		sf2d_draw_texture(pokemonBufferBox, 238, 150);
 		u16 n = getPokedexNumber(pkmnbuf);
