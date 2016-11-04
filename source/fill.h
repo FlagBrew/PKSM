@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+void filldatabase7(char *database[], int spriteArray[]);
 void filldatabase6(char *database[], int spriteArray[]);
 void filldatabase5(char *database[], int spriteArray[]);
 void filldatabase4(char *database[], int spriteArray[]);

@@ -15,6 +15,14 @@
 */
 
 #include <stdlib.h>
+#include "database.h"
+
+void filldatabase7(char *database[], int spriteArray[]) {
+	for (int j = 0; j < SMCOUNT; j++) {
+		database[j] = " ";
+		spriteArray[j] = -1;
+	}
+}
 
 void filldatabase6(char *database[], int spriteArray[]) {
 	for (int j = 0; j < 2050; j++) {
