@@ -1,6 +1,8 @@
-# EventAssistant [![Github latest downloads](https://img.shields.io/github/downloads/BernardoGiordano/EventAssistant/total.svg)](https://github.com/BernardoGiordano/EventAssistant/releases/latest)
+# EventAssistant 
 
-*AIO tool for HeartGold/SoulSilver, Platinum, Black/White, Black2/White2, X/Y, OmegaRuby/AlphaSapphire... and more.*
+**Latest version downloads:** [![Latest version downloads](https://img.shields.io/github/downloads/BernardoGiordano/EventAssistant/latest/total.svg)](https://github.com/BernardoGiordano/EventAssistant/releases/latest)
+
+*AIO tool for HeartGold/SoulSilver, Black/White, Black2/White2, X/Y, OmegaRuby/AlphaSapphire... and more.*
 
 ---
 
