@@ -1,0 +1,33 @@
+#include <3ds.h>
+#include <stdio.h>
+#include <string.h>
+#include "sound.h"
+
+u8* buffer;
+u32 size;
+
+void audio_load(const char *audio) {
+	FILE *file = fopen(audio, "rb");
+	fseek(file, 0, SEEK_END);
+	off_t size = ftell(file);
+	fseek(file, 0, SEEK_SET);
+	buffer = linearAlloc(size);
+	off_t bytesRead = fread(buffer, 1, size, file);
+	fclose(file);
+	csndPlaySound(16, SOUND_FORMAT_16BIT, 22050, 0.2, 0, buffer, buffer, size);
+	linearFree(buffer);
+}
+
+void audio_stop() {
+	csndExecCmds(true);
+	CSND_SetPlayState(0x8, 0);
+	memset(buffer, 0, size);
+	GSPGPU_FlushDataCache(buffer, size);
+	linearFree(buffer);
+}
+
+void playButtonPressed() {
+	audio_load("romfs:/res/blip.wav");
+	audio_stop();
+	audio_stop();
+}

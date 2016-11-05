@@ -34,6 +34,7 @@
 void exitServices() {
 	GUIElementsExit();
 	pxiDevExit();
+	//csndExit();
 	hidExit();
 	srvExit();
 	fsEnd();
@@ -55,6 +56,7 @@ void initServices() {
 	fsStart();
 	srvInit();
 	hidInit();
+	//csndInit();
 	pxiDevInit();
 	GUIElementsInit();
 	GUIGameElementsInit();
