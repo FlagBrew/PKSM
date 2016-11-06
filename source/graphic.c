@@ -218,6 +218,24 @@ void freezeMsg(char* message) {
 	sf2d_swapbuffers();
 }
 
+void progressBar(char* message, u32 current, u32 sz) {
+	char* progress = (char*)malloc(40 * sizeof(char));
+	snprintf(progress, 40, "Progress: %lu/%lu bytes", current, sz);
+	
+	sf2d_start_frame(GFX_TOP, GFX_LEFT);
+		sf2d_draw_texture(warningTopTrasp, 0, 0);
+		sftd_draw_text(fontBold15, (400 - sftd_get_text_width(fontBold15, 15, message)) / 2, 95, WHITE, 15, message);
+		sftd_draw_text(fontBold12, (400 - sftd_get_text_width(fontBold12, 12, progress)) / 2, 130, WHITE, 12, progress);
+	sf2d_end_frame();
+	
+	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
+		sf2d_draw_texture(warningBottomTrasp, 0, 0);
+	sf2d_end_frame();
+	sf2d_swapbuffers();
+	
+	free(progress);
+}
+
 int giveTransparence() {
 	if (vanish && trasp > 126) trasp -= 1;
 	if (trasp == 126) vanish = false;

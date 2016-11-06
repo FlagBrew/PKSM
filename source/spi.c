@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "spi.h"
+#include "graphic.h"
 
 u8* fill_buf = NULL;
 
@@ -41,6 +42,7 @@ void TWLrestoreSaveFile(u8* in, CardType cardType_, u64 sz) {
 	
 	for (u32 i = 0; i < sz / pageSize; ++i) {
 		SPIWriteSaveData(cardType_, pageSize * i, in + pageSize * i, pageSize);
+		progressBar("Saving...", pageSize * (i + 1), sz);
 	}
 }
 

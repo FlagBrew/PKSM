@@ -27,6 +27,7 @@ void GUIElementsExit();
 void init_font_cache();
 void infoDisp(char* message);
 void freezeMsg(char* message);
+void progressBar(char* message, u32 pagesize, u32 sz);
 void autoupdaterMenu();
 int giveTransparence();
 void printPSDates();
