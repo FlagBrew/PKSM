@@ -17,7 +17,6 @@
 #pragma once
 
 #include <stdlib.h>
-#include <3ds.h>
 
 #define DEX 721
 

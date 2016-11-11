@@ -20,9 +20,31 @@
 #include <string.h>
 #include <time.h>
 #include <sys/stat.h>
+#include "editor.h"
 #include "http.h"
 #include "util.h"
 #include "graphic.h"
+
+void loadPersonal() {
+	FILE *fptr = fopen("romfs:/personal/personal.bin", "rt");
+	if (fptr == NULL) {
+		fclose(fptr);
+		return;
+	}
+	fseek(fptr, 0, SEEK_END);
+	u32 size = ftell(fptr);
+	u8 *buf = (u8*)malloc(size);
+	if (buf == NULL) {
+		fclose(fptr);
+		free(buf);
+		return;
+	}
+	rewind(fptr);
+	fread(buf, size, 1, fptr);
+	fclose(fptr);
+	memcpy(personal.pkmData, buf, size);
+	free(buf);
+}
 
 void loadFile(u8* buf, char* path) {
 	FILE *fptr = fopen(path, "rt");
