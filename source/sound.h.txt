@@ -1,5 +1,0 @@
-#include <3ds.h>
-
-void audio_load(const char *audio);
-void audio_stop();
-void playButtonPressed();
