@@ -75,14 +75,16 @@ void bank(u8* mainbuf, int game) {
 				else if (box == boxmax) box = 0;
 			}
 			
-			if (touch.px > 214 && touch.px < 320 && touch.py > 76 && touch.py < 106) {
-				u8* tmp = (u8*)malloc(PKMNLENGTH * sizeof(u8));
-				memset(tmp, 0, PKMNLENGTH);
+			if ((touch.px > 214 && touch.px < 320 && touch.py > 76 && touch.py < 106) && !(isBufferized)) {
 				for (u32 i = 0; i < 30; i++) {
-					if (isBank) memcpy(&bankbuf[box * 30 * PKMNLENGTH + i * PKMNLENGTH], pkmn, PKMNLENGTH);
-					else setPkmn(mainbuf, box, i, pkmn, game);
+					u8* tmp = (u8*)malloc(PKMNLENGTH * sizeof(u8));
+					memset(tmp, 0, PKMNLENGTH);
+				
+					if (isBank) memcpy(&bankbuf[box * 30 * PKMNLENGTH + i * PKMNLENGTH], tmp, PKMNLENGTH);
+					else setPkmn(mainbuf, box, i, tmp, game);
+					
+					free(tmp);
 				}
-				free(tmp);
 			}
 			
 			if (touch.px > 214 && touch.px < 320 && touch.py > 106 && touch.py < 136) {
