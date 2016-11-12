@@ -34,7 +34,6 @@
 void exitServices() {
 	GUIElementsExit();
 	pxiDevExit();
-	//csndExit();
 	hidExit();
 	srvExit();
 	fsEnd();
@@ -56,7 +55,6 @@ void initServices() {
 	fsStart();
 	srvInit();
 	hidInit();
-	//csndInit();
 	pxiDevInit();
 	GUIElementsInit();
 	GUIGameElementsInit();
@@ -68,26 +66,9 @@ void initServices() {
 	mkdir("sdmc:/3ds/data/EventAssistant/bank", 0777);
 	mkdir("sdmc:/3ds/data/EventAssistant/backup", 0777);
 	
-	FILE *fptr = fopen("romfs:/personal/personal.bin", "rt");
-	if (fptr == NULL) {
-		fclose(fptr);
-		return;
-	}
-	fseek(fptr, 0, SEEK_END);
-	u32 size = ftell(fptr);
-	u8 *buf = (u8*)malloc(size);
-	if (buf == NULL) {
-		fclose(fptr);
-		free(buf);
-		return;
-	}
-	rewind(fptr);
-	fread(buf, size, 1, fptr);
-	fclose(fptr);
-	memcpy(personal.pkmData, buf, size);
-	free(buf);
+	loadPersonal();
 	
-	size = BANKBOXMAX * 30 * PKMNLENGTH;
+	u32 size = BANKBOXMAX * 30 * PKMNLENGTH;
 	u8* bankbuf = (u8*)malloc(size * sizeof(u8));
 		
 	FILE *bank = fopen("/3ds/data/EventAssistant/bank/bank.bin", "rt");
@@ -127,7 +108,7 @@ int main() {
 	const u64 ids[6] = {0x0004000000055D00, 0x0004000000055E00, 0x000400000011C400, 0x000400000011C500, 0x0004000000164800, 0x0004000000175E00};
 	char *gamesList[GAMES] = {"X", "Y", "OR", "AS", "S", "M", "D", "P", "PL", "HG", "SS", "B", "W", "W2", "B2"};
 
-	while (aptMainLoop() && !(hidKeysDown() & KEY_A && (!(game == GAME_DIAMOND || game == GAME_PEARL || game == GAME_PLATINUM)))) {
+	while (aptMainLoop() && !(hidKeysDown() & KEY_A && (!(game == GAME_SUN || game == GAME_MOON || game == GAME_DIAMOND || game == GAME_PEARL || game == GAME_PLATINUM)))) {
 		hidScanInput();
 		
 		if (hidKeysDown() & KEY_B) {
@@ -257,179 +238,178 @@ int main() {
 				}
 			}
 
-			if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS) {
-				if ((hidKeysDown() & KEY_A) || touchPressed) {
-					touchPressed = false;
-					switch (currentEntry) {
-						case 0 : {
-							int option = 0;
-							char* menu[4] = {"EVENT DATABASE", "WI-FI DISTRIBUTIONS", "CODE DISTRIBUTIONS", "LOCAL DISTRIBUTIONS"};
-							while (aptMainLoop()) {
-								hidScanInput();
-								hidTouchRead(&touch);
-								
-								if (hidKeysDown() & KEY_B) break;
-								
-								if (hidKeysDown() & KEY_TOUCH) {
-									if (touch.px > 50 && touch.px < 270) {
-										if (touch.py > 40 && touch.py < 72) { option = 0; touchPressed = true; }
-										if (touch.py > 82 && touch.py < 114) { option = 1; touchPressed = true; }
-										if (touch.py > 124 && touch.py < 156) { option = 2; touchPressed = true; }
-										if (touch.py > 166 && touch.py < 198) { option = 3; touchPressed = true; }
-									}
+			if ((hidKeysDown() & KEY_A) || touchPressed) {
+				touchPressed = false;
+				switch (currentEntry) {
+					case 0 : {
+						int option = 0;
+						char* menu[4] = {"EVENT DATABASE", "WI-FI DISTRIBUTIONS", "CODE DISTRIBUTIONS", "LOCAL DISTRIBUTIONS"};
+						while (aptMainLoop()) {
+							hidScanInput();
+							hidTouchRead(&touch);
+							
+							if (hidKeysDown() & KEY_B) break;
+							
+							if (hidKeysDown() & KEY_TOUCH) {
+								if (touch.px > 50 && touch.px < 270) {
+									if (touch.py > 40 && touch.py < 72) { option = 0; touchPressed = true; }
+									if (touch.py > 82 && touch.py < 114) { option = 1; touchPressed = true; }
+									if (touch.py > 124 && touch.py < 156) { option = 2; touchPressed = true; }
+									if (touch.py > 166 && touch.py < 198) { option = 3; touchPressed = true; }
 								}
-								
-								if (hidKeysDown() & KEY_DUP) {
-									if (option == 0) option = 3;
-									else if (option > 0) option--;
-								}
+							}
+							
+							if (hidKeysDown() & KEY_DUP) {
+								if (option == 0) option = 3;
+								else if (option > 0) option--;
+							}
 
-								if (hidKeysDown() & KEY_DDOWN) {
-									if (option == 3) option = 0;
-									else if (option < 3) option++;
-								}
-								
-								if ((hidKeysDown() & KEY_A) || touchPressed) {
-									touchPressed = false;
-									switch (option) {
-										case 0 : {
+							if (hidKeysDown() & KEY_DDOWN) {
+								if (option == 3) option = 0;
+								else if (option < 3) option++;
+							}
+							
+							if ((hidKeysDown() & KEY_A) || touchPressed) {
+								touchPressed = false;
+								switch (option) {
+									case 0 : {
+										if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS)
 											eventDatabase6(mainbuf, game);
-											break;
-										}
-										case 1 : {
-											printDistribution("https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/worldwide1.txt");
-											break;
-										}
-										case 2 : {
-											printDistribution("https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/worldwide2.txt");
-											break;
-										}
-										case 3 : {
-											printDistribution("https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/local.txt");
-											break;
-										}
+										break;
+									}
+									case 1 : {
+										printDistribution("https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/worldwide1.txt");
+										break;
+									}
+									case 2 : {
+										printDistribution("https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/worldwide2.txt");
+										break;
+									}
+									case 3 : {
+										printDistribution("https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/local.txt");
+										break;
 									}
 								}
-								
-								menu4(option, menu, 4);
 							}
 							
-							break;
+							menu4(option, menu, 4);
 						}
-						case 1 : {
-							int option = 0;
-							char* menu[4] = {"POKEMON EDITOR", "SAVE EDITOR", "BANK", "MASS INJECTOR"};
-							while (aptMainLoop()) {
-								hidScanInput();
-								hidTouchRead(&touch);
+						
+						break;
+					}
+					case 1 : {
+						int option = 0;
+						char* menu[4] = {"POKEMON EDITOR", "SAVE EDITOR", "BANK", "MASS INJECTOR"};
+						while (aptMainLoop()) {
+							hidScanInput();
+							hidTouchRead(&touch);
 
-								if (hidKeysDown() & KEY_B) break;
-								
-								if (hidKeysDown() & KEY_TOUCH) {
-									if (touch.px > 50 && touch.px < 270) {
-										if (touch.py > 40 && touch.py < 72) { option = 0; touchPressed = true; }
-										if (touch.py > 82 && touch.py < 114) { option = 1; touchPressed = true; }
-										if (touch.py > 124 && touch.py < 156) { option = 2; touchPressed = true; }
-										if (touch.py > 166 && touch.py < 198) { option = 3; touchPressed = true; }
-									}
+							if (hidKeysDown() & KEY_B) break;
+							
+							if (hidKeysDown() & KEY_TOUCH) {
+								if (touch.px > 50 && touch.px < 270) {
+									if (touch.py > 40 && touch.py < 72) { option = 0; touchPressed = true; }
+									if (touch.py > 82 && touch.py < 114) { option = 1; touchPressed = true; }
+									if (touch.py > 124 && touch.py < 156) { option = 2; touchPressed = true; }
+									if (touch.py > 166 && touch.py < 198) { option = 3; touchPressed = true; }
 								}
-								
-								if (hidKeysDown() & KEY_DUP) {
-									if (option == 0) option = 3;
-									else if (option > 0) option--;
-								}
-
-								if (hidKeysDown() & KEY_DDOWN) {
-									if (option == 3) option = 0;
-									else if (option < 3) option++;
-								}
-								
-								if ((hidKeysDown() & KEY_A) || touchPressed) {
-									touchPressed = false;
-									switch (option) {
-										case 0 : {
-											pokemonEditor(mainbuf, game);
-											break;
-										}
-										case 1 : {
-											saveFileEditor(mainbuf, game);
-											break;
-										}
-										case 2 : {
-											bank(mainbuf, game);
-											break;
-										}
-										case 3 : {
-											massInjector(mainbuf, game);
-											break;
-										}
-									}
-								}
-								
-								menu4(option, menu, 4);
-							}
-							break;
-						}
-						case 2 : {
-							int option = 0;
-							char* menu[4] = {"CAPTURE PROB. CALCULATOR", "POWERSAVES DATES", "CREDITS", "UPDATE"};
-							while (aptMainLoop() && !(hidKeysDown() & KEY_B)) {
-								hidScanInput();
-								hidTouchRead(&touch);
-								
-								if (hidKeysDown() & KEY_TOUCH) {
-									if (touch.px > 50 && touch.px < 270) {
-										if (touch.py > 40 && touch.py < 72) { option = 0; touchPressed = true; }
-										if (touch.py > 82 && touch.py < 114) { option = 1; touchPressed = true; }
-										if (touch.py > 124 && touch.py < 156) { option = 2; touchPressed = true; }
-										if (touch.py > 166 && touch.py < 198) { option = 3; touchPressed = true; }
-									}
-								}
-								
-								if (hidKeysDown() & KEY_DUP) {
-									if (option == 0) option = 3;
-									else if (option > 0) option--;
-								}
-
-								if (hidKeysDown() & KEY_DDOWN) {
-									if (option == 3) option = 0;
-									else if (option < 3) option++;
-								}
-								
-								if ((hidKeysDown() & KEY_A) || touchPressed) {
-									touchPressed = false;
-									switch (option) {
-										case 0 : {
-											break;
-										}
-										case 1 : {
-											printPSDates();
-											break;
-										}
-										case 2 : {
-											break;
-										}
-										case 3 : {
-											int temp = autoupdater();
-											if (temp != 0) {
-												exitServices();
-												return 0;
-											}
-											break;
-										}
-									}
-								}
-								
-								menu4(option, menu, 4);
 							}
 							
-							break;
+							if (hidKeysDown() & KEY_DUP) {
+								if (option == 0) option = 3;
+								else if (option > 0) option--;
+							}
+
+							if (hidKeysDown() & KEY_DDOWN) {
+								if (option == 3) option = 0;
+								else if (option < 3) option++;
+							}
+							
+							if ((hidKeysDown() & KEY_A) || touchPressed) {
+								touchPressed = false;
+								switch (option) {
+									case 0 : {
+										pokemonEditor(mainbuf, game);
+										break;
+									}
+									case 1 : {
+										saveFileEditor(mainbuf, game);
+										break;
+									}
+									case 2 : {
+										bank(mainbuf, game);
+										break;
+									}
+									case 3 : {
+										massInjector(mainbuf, game);
+										break;
+									}
+								}
+							}
+							
+							menu4(option, menu, 4);
 						}
+						break;
+					}
+					case 2 : {
+						int option = 0;
+						char* menu[4] = {"TBA", "POWERSAVES DATES", "CREDITS", "UPDATE"};
+						while (aptMainLoop() && !(hidKeysDown() & KEY_B)) {
+							hidScanInput();
+							hidTouchRead(&touch);
+							
+							if (hidKeysDown() & KEY_TOUCH) {
+								if (touch.px > 50 && touch.px < 270) {
+									if (touch.py > 40 && touch.py < 72) { option = 0; touchPressed = true; }
+									if (touch.py > 82 && touch.py < 114) { option = 1; touchPressed = true; }
+									if (touch.py > 124 && touch.py < 156) { option = 2; touchPressed = true; }
+									if (touch.py > 166 && touch.py < 198) { option = 3; touchPressed = true; }
+								}
+							}
+							
+							if (hidKeysDown() & KEY_DUP) {
+								if (option == 0) option = 3;
+								else if (option > 0) option--;
+							}
+
+							if (hidKeysDown() & KEY_DDOWN) {
+								if (option == 3) option = 0;
+								else if (option < 3) option++;
+							}
+							
+							if ((hidKeysDown() & KEY_A) || touchPressed) {
+								touchPressed = false;
+								switch (option) {
+									case 0 : {
+										break;
+									}
+									case 1 : {
+										printPSDates();
+										break;
+									}
+									case 2 : {
+										break;
+									}
+									case 3 : {
+										int temp = autoupdater();
+										if (temp != 0) {
+											exitServices();
+											return 0;
+										}
+										break;
+									}
+								}
+							}
+							
+							menu4(option, menu, 4);
+						}
+						
+						break;
 					}
 				}
-
-				mainMenu(currentEntry);
 			}
+
+			mainMenu(currentEntry);
 		}
 	} else {
 		while (aptMainLoop() && !(hidKeysDown() & KEY_START)) {
@@ -503,7 +483,7 @@ int main() {
 	
 	free(mainbuf);
 	
-	if (!(save))	infoDisp("Exit without saving.");
+	if (!(save)) infoDisp("Exit without saving.");
 	
 	exitServices();
 	return 0;
