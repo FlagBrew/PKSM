@@ -22,10 +22,10 @@ void sha1(u8 hash[], u8 data[], size_t len) {
 }
 
 // TO DO
-// MemeCryptoAESDecrypt
 // RSADecrypt (only if I don't reach to find ad-hoc libraries to this)
 // RSAEncrypt (only if I don't reach to find ad-hoc libraries to this)
 // ReverseCrypt
+// finish resign
 
 void Xor(u8 b1[], u8 b2[], u8 output[]) {
 	int sz = sizeof(&b1);
@@ -77,6 +77,60 @@ void MemeCryptoAESEncrypt(u8 key[], u8 data[], u8 output[]) { // output has to b
 		Xor(temp3, temp, temp3);
 		memcpy(&output[(sz / 0x10 - 1 - i) * 0x10], temp3, 0x10);
 		memcpy(temp, temp2, 0x10);	
+	}
+}
+
+void MemeCryptoAESDecrypt(u8 key[], u8 data[], u8 output[]) { // output has to be the same size of data
+	int sz = sizeof(&data);
+	u8 temp[0x10];
+	u8 subkey[0x10];
+
+	memset(temp, 0, 0x10); // maybe?
+	memset(subkey, 0, 0x10); // maybe?
+	
+	for (int i = 0; i < sz / 0x10; i++) {
+		u8 curblock[0x10];
+		memcpy(&curblock[0], &data[(sz / 0x10 - 1 - i) * 0x10], 0x10);
+		Xor(temp, curblock, temp);
+		AES128_ECB_decrypt(temp, key, temp);
+		memcpy(&output[(sz / 0x10 - 1 - i) * 0x10], temp, 0x10);
+	}
+	
+	memcpy(temp, &output[(sz / 0x10 - 1) * 0x10], 0x10);
+	u8 temp1[0x10];
+	memcpy(temp1, &output[0], 0x10);
+	Xor(temp, temp1, temp);
+	for (int ofs = 0; ofs < 0x10; ofs += 2) {
+		u8 b1 = temp[ofs + 0];
+		u8 b2 = temp[ofs + 1];
+		
+		subkey[ofs + 0] = (2 * b1 + (b2 >> 7));
+		subkey[ofs + 1] = (2 * b2);
+		if (ofs + 2 < 0x10)
+			subkey[ofs + 1] += (temp[ofs + 2] >> 7);
+	}
+	if ((temp[0] & 0x80) != 0)
+		subkey[0xF] ^= 0x87;
+	
+	for (int i = 0; i < sz / 0x10; i++) {
+		u8 curblock[0x10];
+		u8 temp[0x10];
+		
+		memcpy(curblock, &output[0x10 * i], 0x10);
+		Xor(curblock, subkey, temp);
+		memcpy(&output[0x10 * i], temp, 0x10);
+	}
+
+	memset(temp, 0, 0x10);
+	for (int i = 0; i < sz / 0x10; i++) {
+		u8 curblock[0x10];
+		u8 temp2[0x10];
+
+		memcpy(curblock, &output[i * 0x10], 0x10);
+		AES128_ECB_decrypt(curblock, key, temp2);
+		Xor(temp2, temp, temp2);
+		memcpy(&output[i * 0x10], temp2, 0x10);
+		memcpy(temp, curblock, 0x10);
 	}
 }
 
