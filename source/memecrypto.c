@@ -22,11 +22,63 @@ void sha1(u8 hash[], u8 data[], size_t len) {
 }
 
 // TO DO
-// MemeCryptoAESEncrypt
 // MemeCryptoAESDecrypt
 // RSADecrypt (only if I don't reach to find ad-hoc libraries to this)
 // RSAEncrypt (only if I don't reach to find ad-hoc libraries to this)
 // ReverseCrypt
+
+void Xor(u8 b1[], u8 b2[], u8 output[]) {
+	int sz = sizeof(&b1);
+	for (int i = 0; i < sz; i++) { // assuming b1 has the same size of b2
+		output[i] = (b1[i] ^ b2[i]);
+	}
+}
+
+void MemeCryptoAESEncrypt(u8 key[], u8 data[], u8 output[]) { // output has to be the same size of data
+	int sz = sizeof(&data);
+	u8 temp[0x10];
+	u8 subkey[0x10];
+
+	memset(temp, 0, 0x10); // maybe?
+	memset(subkey, 0, 0x10); // maybe?
+	
+	for (int i = 0; i < sz / 0x10; i++) {
+		u8 curblock[0x10];
+		memcpy(&curblock[0], &data[i * 0x10], 0x10);
+		Xor(temp, curblock, temp);
+		AES128_ECB_encrypt(temp, key, temp);
+		memcpy(&output[i * 0x10], temp, 0x10);
+	}
+	
+	u8 temp1[0x10];
+	memcpy(temp1, &output[0], 0x10);
+	Xor(temp, temp1, temp);
+	for (int ofs = 0; ofs < 0x10; ofs += 2) {
+		u8 b1 = temp[ofs + 0];
+		u8 b2 = temp[ofs + 1];
+		
+		subkey[ofs + 0] = (2 * b1 + (b2 >> 7));
+		subkey[ofs + 1] = (2 * b2);
+		if (ofs + 2 < 0x10)
+			subkey[ofs + 1] += (temp[ofs + 2] >> 7);
+	}
+	if ((temp[0] & 0x80) != 0)
+		subkey[0xF] ^= 0x87;
+
+	memset(temp, 0, 0x10);
+	for (int i = 0; i < sz / 0x10; i++) {
+		u8 curblock[0x10];
+		u8 temp2[0x10];
+		u8 temp3[0x10];
+		
+		memcpy(curblock, &output[(sz / 0x10 - 1 - i) * 0x10], 0x10);
+		Xor(curblock, subkey, temp2);
+		AES128_ECB_encrypt(temp2, key, temp3);
+		Xor(temp3, temp, temp3);
+		memcpy(&output[(sz / 0x10 - 1 - i) * 0x10], temp3, 0x10);
+		memcpy(temp, temp2, 0x10);	
+	}
+}
 
 void resign(u8* mainbuf) {
 	u8 outSav[0x6BE00];
@@ -49,5 +101,5 @@ void resign(u8* mainbuf) {
 	u8 key[0x10];
 	memcpy(key, &temp[0], 0x10);
 	
-	// continue from 252;
+	// continue from 264;
 }
