@@ -18,7 +18,7 @@ void bank(u8* mainbuf, int game) {
 	fread(bankbuf, 30 * BANKBOXMAX * PKMNLENGTH, 1, fptr);
 	fclose(fptr);
 	
-	int boxmax = 30;
+	int boxmax = (game < 4) ? 30 : 31;
 	
 	bool isBufferized = false;
 	bool isBank = false;
@@ -49,7 +49,7 @@ void bank(u8* mainbuf, int game) {
 				isBank = true;
 			}
 			else {
-				boxmax = 30;
+				boxmax = (game < 4) ? 30 : 31;
 				isBank = false;
 			}
 		}
@@ -76,54 +76,36 @@ void bank(u8* mainbuf, int game) {
 			}
 			
 			if ((touch.px > 214 && touch.px < 320 && touch.py > 76 && touch.py < 106) && !(isBufferized)) {
+				u8 tmp[PKMNLENGTH];
+				memset(tmp, 0, PKMNLENGTH);
 				for (u32 i = 0; i < 30; i++) {
-					u8* tmp = (u8*)malloc(PKMNLENGTH * sizeof(u8));
-					memset(tmp, 0, PKMNLENGTH);
-				
 					if (isBank) memcpy(&bankbuf[box * 30 * PKMNLENGTH + i * PKMNLENGTH], tmp, PKMNLENGTH);
 					else setPkmn(mainbuf, box, i, tmp, game);
-					
-					free(tmp);
 				}
 			}
 			
+			// shift
 			if (touch.px > 214 && touch.px < 320 && touch.py > 106 && touch.py < 136) {
-				u8* buffer = (u8*)malloc(PKMNLENGTH * sizeof(u8));
+				u8 buffer[PKMNLENGTH];
+				u8 temp[PKMNLENGTH];
 				memset(buffer, 0, PKMNLENGTH);
+				memset(temp, 0, PKMNLENGTH);
 				
 				if (isBank) {
 					for (u32 i = 0; i < 30; i++) {
-						u32 t = 0;
-						getPkmn(mainbuf, pastbox, i, buffer, game);
-							for (u32 j = 0; j < PKMNLENGTH; j++)
-								if (*(buffer + j) == 0)
-									t++;
-
-						memcpy(buffer, &bankbuf[box * 30 * PKMNLENGTH + i * PKMNLENGTH], PKMNLENGTH); // buffering
-						if (t == PKMNLENGTH && getPokedexNumber(buffer)) { // empty slot
-							setPkmn(mainbuf, pastbox, i, buffer, game);
-							memset(buffer, 0, PKMNLENGTH);
-							memcpy(&bankbuf[box * 30 * PKMNLENGTH + i * PKMNLENGTH], buffer, PKMNLENGTH);
-						}
+						getPkmn(mainbuf, pastbox, i, buffer, game); // getpkmn -> buffer
+						memcpy(temp, &bankbuf[box * 30 * PKMNLENGTH + i * PKMNLENGTH], PKMNLENGTH); // memcpy bank -> temp
+						setPkmn(mainbuf, pastbox, i, temp, game); // setpkmn -> temp
+						memcpy(&bankbuf[box * 30 * PKMNLENGTH + i * PKMNLENGTH], buffer, PKMNLENGTH); // memcpy bank -> buffer
 					}
 				} else {
 					for (u32 i = 0; i < 30; i++) {
-						u32 t = 0;
 						memcpy(buffer, &bankbuf[pastbox * 30 * PKMNLENGTH + i * PKMNLENGTH], PKMNLENGTH);
-							for (u32 j = 0; j < PKMNLENGTH; j++)
-								if (*(buffer + j) == 0)
-									t++;
-
-						getPkmn(mainbuf, box, i, buffer, game); // buffering
-						if (t == PKMNLENGTH && getPokedexNumber(buffer)) { // empty slot
-							memcpy(&bankbuf[pastbox * 30 * PKMNLENGTH + i * PKMNLENGTH], buffer, PKMNLENGTH);
-							memset(buffer, 0, PKMNLENGTH);
-							setPkmn(mainbuf, box, i, buffer, game);
-						}
+						getPkmn(mainbuf, box, i, temp, game); 
+						memcpy(&bankbuf[pastbox * 30 * PKMNLENGTH + i * PKMNLENGTH], temp, PKMNLENGTH);
+						setPkmn(mainbuf, box, i, buffer, game);
 					}
 				}
-				
-				free(buffer);
 			}
 			
 			if (touch.px > 288 && touch.px < 310 && touch.py > 217 && touch.py < 235) break;
@@ -149,53 +131,25 @@ void bank(u8* mainbuf, int game) {
 		
 		if ((hidKeysDown() & KEY_A) || (hidKeysDown() & KEY_TOUCH && touch.px > 214 && touch.px < 320 && touch.py > 12 && touch.py < 42)) {
 			if (isBufferized) {
-				int k = 0;
-				u8* tmp = (u8*)malloc(PKMNLENGTH * sizeof(u8));
+				u8 tmp[PKMNLENGTH];
 				
-				if (wasBank == isBank && coordinate[0] == box && coordinate[1] == currentEntry) {
+				if (wasBank == isBank && coordinate[0] == box && coordinate[1] == currentEntry)
 					memset(pkmn, 0, PKMNLENGTH);
-					isBufferized = false;					
-				}
-
 				else if (isBank) {
 					memcpy(tmp, &bankbuf[box * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], PKMNLENGTH);
-					for (int i = 0; i < PKMNLENGTH; i++)
-						if (tmp[i] == 0)
-							k++;
-						
-					if (k == PKMNLENGTH) {				
-						memcpy(&bankbuf[box * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], pkmn, PKMNLENGTH);
-						memset(pkmn, 0, PKMNLENGTH);
-						if (wasBank) {
-							memcpy(&bankbuf[coordinate[0] * 30 * PKMNLENGTH + coordinate[1] * PKMNLENGTH], pkmn, PKMNLENGTH);
-						}
-						else {
-							setPkmn(mainbuf, coordinate[0], coordinate[1], pkmn, game);
-						}
-						memset(pkmn, 0, PKMNLENGTH);
-						isBufferized = false;
-					}
+					memcpy(&bankbuf[box * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], pkmn, PKMNLENGTH);
+					if (wasBank) memcpy(&bankbuf[coordinate[0] * 30 * PKMNLENGTH + coordinate[1] * PKMNLENGTH], tmp, PKMNLENGTH);
+					else setPkmn(mainbuf, coordinate[0], coordinate[1], tmp, game);
+					memset(pkmn, 0, PKMNLENGTH);
 				}
 				else {
 					getPkmn(mainbuf, box, currentEntry, tmp, game);
-					for (int i = 0; i < PKMNLENGTH; i++)
-						if (tmp[i] == 0)
-							k++;
-
-					if (k == PKMNLENGTH) {
-						setPkmn(mainbuf, box, currentEntry, pkmn, game);
-						memset(pkmn, 0, PKMNLENGTH);
-						if (wasBank) {
-							memcpy(&bankbuf[coordinate[0] * 30 * PKMNLENGTH + coordinate[1] * PKMNLENGTH], pkmn, PKMNLENGTH);
-						}
-						else {
-							setPkmn(mainbuf, coordinate[0], coordinate[1], pkmn, game);
-						}
-						memset(pkmn, 0, PKMNLENGTH);
-						isBufferized = false;
-					}
+					setPkmn(mainbuf, box, currentEntry, pkmn, game);
+					if (wasBank) memcpy(&bankbuf[coordinate[0] * 30 * PKMNLENGTH + coordinate[1] * PKMNLENGTH], tmp, PKMNLENGTH);
+					else setPkmn(mainbuf, coordinate[0], coordinate[1], tmp, game);
+					memset(pkmn, 0, PKMNLENGTH);
 				}
-				free(tmp);
+				isBufferized = false;
 			}
 			else {
 				int k = 0;
@@ -203,14 +157,10 @@ void bank(u8* mainbuf, int game) {
 				coordinate[0] = box;
 				coordinate[1] = currentEntry;
 				wasBank = isBank;
-				if (isBank) {
-					memcpy(pkmn, &bankbuf[box * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], PKMNLENGTH);
-				}
-				else {
-					getPkmn(mainbuf, box, currentEntry, pkmn, game);
-				}
+				if (isBank) memcpy(pkmn, &bankbuf[box * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], PKMNLENGTH);
+				else getPkmn(mainbuf, box, currentEntry, pkmn, game);
 							
-				u8* tmp = (u8*)malloc(PKMNLENGTH * sizeof(u8));
+				u8 tmp[PKMNLENGTH];
 				memset(tmp, 0, PKMNLENGTH);
 				for (int i = 0; i < PKMNLENGTH; i++)
 					if (pkmn[i] == tmp[i])
@@ -218,8 +168,6 @@ void bank(u8* mainbuf, int game) {
 					
 				if (k != PKMNLENGTH)
 					isBufferized = true;
-				
-				free(tmp);
 			}
 		}
 
