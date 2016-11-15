@@ -2,15 +2,15 @@
 * This file is part of EventAssistant
 * Copyright (C) 2016 Bernardo Giordano
 *
-* This software is provided 'as-is', 
-* without any express or implied warranty. 
-* In no event will the authors be held liable for any damages 
+* This software is provided 'as-is',
+* without any express or implied warranty.
+* In no event will the authors be held liable for any damages
 * arising from the use of this software.
 *
 * This code is subject to the following restrictions:
 *
-* 1) The origin of this software must not be misrepresented; 
-* 2) You must not claim that you wrote the original software. 
+* 1) The origin of this software must not be misrepresented;
+* 2) You must not claim that you wrote the original software.
 *
 */
 
@@ -83,7 +83,7 @@ void setWC(u8* mainbuf, u8* wc6buf, int game, int i, int nInjected[]);
 void setWC4(u8* mainbuf, u8* wc6buf, int game, int i, int nInjected[], int GBO);
 void setLanguage(u8* mainbuf, int game, int i);
 void setMoney(u8* mainbuf, int game, u64 i);
-void setItem(u8* mainbuf, int i, u32 values[], int type, int nInjected[], int game);
+void setItem(u8* mainbuf, int type, int game);
 void setBP(u8* mainbuf, int i, int game);
 void setBadges(u8* mainbuf, int game, int i);
 void setTM(u8* mainbuf, int game);

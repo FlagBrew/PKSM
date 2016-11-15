@@ -4,15 +4,15 @@
 *
 * Credits to SlashCash & PCHex++ for lots of functions redistributed in this software.
 *
-* This software is provided 'as-is', 
-* without any express or implied warranty. 
-* In no event will the authors be held liable for any damages 
+* This software is provided 'as-is',
+* without any express or implied warranty.
+* In no event will the authors be held liable for any damages
 * arising from the use of this software.
 *
 * This code is subject to the following restrictions:
 *
-* 1) The origin of this software must not be misrepresented; 
-* 2) You must not claim that you wrote the original software. 
+* 1) The origin of this software must not be misrepresented;
+* 2) You must not claim that you wrote the original software.
 *
 */
 
@@ -171,11 +171,6 @@ u32 expTable[100][6] = {
   {970299, 591882, 1571884, 1027103, 776239, 1212873},
   {1000000, 600000, 1640000, 1059860, 800000, 1250000}
 };
- 
-u32 langValues[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x07, 0x08, 0x09, 0x0A};
-u32 balls[BALLS * 2] = {0x01, 0x00, 0x02, 0x00, 0x03, 0x00, 0x04, 0x00, 0x05, 0x00, 0x06, 0x00, 0x07, 0x00, 0x08, 0x00, 0x09, 0x00, 0x0A, 0x00, 0x0B, 0x00, 0x0C, 0x00, 0x0D, 0x00, 0X0E, 0X00, 0x0F, 0x00, 0x10, 0x00, 0xEC, 0x01, 0xED, 0x01, 0xEE, 0x01, 0xEF, 0x01, 0xF0, 0x01, 0xF2, 0x01, 0xF3, 0x01, 0xF4, 0x01};
-u32 items[ITEM * 2] = {0xDB, 0x00, 0xDC, 0x00, 0xDD, 0x00, 0xDF, 0x00, 0xEA, 0x00, 0x0E, 0x01, 0x0F, 0x01, 0x10, 0x01, 0x11, 0x01, 0x13, 0x01, 0x18, 0x01, 0x1F, 0x01, 0x29, 0x01, 0x1A, 0x02, 0x1C, 0x02, 0x1D, 0x02, 0x7F, 0x02, 0x80, 0x02};
-u32 heal[HEAL * 2] = {0x17, 0x00, 0x18, 0x00, 0x1C, 0x00, 0x1D, 0x00, 0x26, 0x00, 0x27, 0x00, 0x28, 0x00, 0x29, 0x00, 0x2C, 0x00, 0x2D, 0x00, 0x2E, 0x00, 0x2F, 0x00, 0x30, 0x00, 0x31, 0x00, 0x32, 0x00, 0x33, 0x00, 0x34, 0x00, 0x35, 0x00, 0x35, 0x02, 0x36, 0x02, 0x37, 0x02, 0x38, 0x02, 0x39, 0x02, 0x3A, 0x02, 0x3B, 0x02, 0x85, 0x02};
 
 /* ************************ utilities ************************ */
 
@@ -189,20 +184,20 @@ u32 LCRNG(u32 seed) {
 
 void shuffleArray(u8* pkmn, const u32 encryptionkey) {
     const int BLOCKLENGHT = 56;
-    
+
     u8 seed = (((encryptionkey & 0x3E000) >> 0xD) % 24);
-    
+
     int aloc[24] = { 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 2, 3, 1, 1, 2, 3, 2, 3, 1, 1, 2, 3, 2, 3 };
     int bloc[24] = { 1, 1, 2, 3, 2, 3, 0, 0, 0, 0, 0, 0, 2, 3, 1, 1, 3, 2, 2, 3, 1, 1, 3, 2 };
     int cloc[24] = { 2, 3, 1, 1, 3, 2, 2, 3, 1, 1, 3, 2, 0, 0, 0, 0, 0, 0, 3, 2, 3, 2, 1, 1 };
     int dloc[24] = { 3, 2, 3, 2, 1, 1, 3, 2, 3, 2, 1, 1, 3, 2, 3, 2, 1, 1, 0, 0, 0, 0, 0, 0 };
     int ord[4] = {aloc[seed], bloc[seed], cloc[seed], dloc[seed]};
-    
+
     char pkmncpy[PKMNLENGTH];
     char tmp[BLOCKLENGHT];
 
     memcpy(&pkmncpy, pkmn, PKMNLENGTH);
-    
+
     for (int i = 0; i < 4; i++) {
         memcpy(tmp, pkmncpy + 8 + BLOCKLENGHT * ord[i], BLOCKLENGHT);
         memcpy(pkmn + 8 + BLOCKLENGHT * i, tmp, BLOCKLENGHT);
@@ -213,11 +208,11 @@ void decryptPkmn(u8* pkmn) {
     const int ENCRYPTIONKEYPOS = 0x0;
     const int ENCRYPTIONKEYLENGHT = 4;
     const int CRYPTEDAREAPOS = 0x08;
-    
+
     u32 encryptionkey;
     memcpy(&encryptionkey, &pkmn[ENCRYPTIONKEYPOS], ENCRYPTIONKEYLENGHT);
     u32 seed = encryptionkey;
-    
+
     u16 temp;
     for (int i = CRYPTEDAREAPOS; i < PKMNLENGTH; i += 2) {
         memcpy(&temp, &pkmn[i], 2);
@@ -225,23 +220,23 @@ void decryptPkmn(u8* pkmn) {
         seed = seedStep(seed);
         memcpy(&pkmn[i], &temp, 2);
     }
-    
+
     shuffleArray(pkmn, encryptionkey);
 }
 
 int getPkmnAddress(const int boxnumber, const int indexnumber, int game) {
     int boxpos = 0;
-    if (game == GAME_X || game == GAME_Y) 
+    if (game == GAME_X || game == GAME_Y)
 		boxpos = 0x27A00 - OFFSET;
-   
-    if (game == GAME_OR || game == GAME_AS) 
+
+    if (game == GAME_OR || game == GAME_AS)
 		boxpos = 0x38400 - OFFSET;
-	
+
 	if (game == GAME_SUN || game == GAME_MOON)
 		boxpos = 0x04E00;
 
     const int PKMNNUM = 30;
-    
+
 	return boxpos + (PKMNLENGTH * PKMNNUM * boxnumber) + (indexnumber * PKMNLENGTH);
 }
 
@@ -250,7 +245,7 @@ void calculatePKMNChecksum(u8* data) {
 
     for (int i = 8; i < PKMNLENGTH; i += 2)
         chk += *(u16*)(data + i);
-    
+
     memcpy(data + 6, &chk, 2);
 }
 
@@ -258,14 +253,14 @@ void encryptPkmn(u8* pkmn) {
     const int ENCRYPTIONKEYPOS = 0x0;
     const int ENCRYPTIONKEYLENGHT = 4;
     const int CRYPTEDAREAPOS = 0x08;
-    
+
     u32 encryptionkey;
     memcpy(&encryptionkey, &pkmn[ENCRYPTIONKEYPOS], ENCRYPTIONKEYLENGHT);
     u32 seed = encryptionkey;
-    
+
     for(int i = 0; i < 11; i++)
         shuffleArray(pkmn, encryptionkey);
-        
+
     u16 temp;
     for(int i = CRYPTEDAREAPOS; i < PKMNLENGTH; i += 2) {
         memcpy(&temp, &pkmn[i], 2);
@@ -283,14 +278,14 @@ void getPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, 
 void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game) {
     calculatePKMNChecksum(pkmn);
     encryptPkmn(pkmn);
-        
+
     memcpy(&mainbuf[getPkmnAddress(boxnumber, indexnumber, game)], pkmn, PKMNLENGTH);
 }
 
 bool isShiny(u8* pkmn) {
     u16 trainersv = (getOTID(pkmn) ^ getSOTID(pkmn)) >> 4;
     u16 pkmnv = ((getPID(pkmn) >> 16) ^ (getPID(pkmn) & 0xFFFF)) >> 4;
-    
+
     if (trainersv == pkmnv) return true;
     else return false;
 }
@@ -298,7 +293,7 @@ bool isShiny(u8* pkmn) {
 void rerollPID(u8* pkmn) {
     srand(getPID(pkmn));
     u32 pidbuffer = rand();
-    
+
     memcpy(&pkmn[PIDPOS], &pidbuffer, PIDLENGTH);
 }
 
@@ -315,7 +310,7 @@ u16 getStat(u8* pkmn, const int stat) {
     u16 tempspecies = getPokedexNumber(pkmn);
     if (getForm(pkmn))
         tempspecies = personal.pkmData[getPokedexNumber(pkmn) + getForm(pkmn) - 1][0x20];
-    
+
     u8 mult = 10;
     u16 final;
     u8 basestat = 1;
@@ -325,17 +320,17 @@ u16 getStat(u8* pkmn, const int stat) {
     if (stat == 3) basestat = personal.pkmData[tempspecies][0x3];
     if (stat == 4) basestat = personal.pkmData[tempspecies][0x4];
     if (stat == 5) basestat = personal.pkmData[tempspecies][0x5];
-    
+
     if (stat == 0)
         final = 10 + ((2 * basestat) + getIV(pkmn, stat) + getEV(pkmn, stat) / 4 + 100) * getLevel(pkmn) / 100;
     else
-        final = 5 + (2 * basestat + getIV(pkmn, stat) + getEV(pkmn, stat) / 4) * getLevel(pkmn) / 100; 
-    
+        final = 5 + (2 * basestat + getIV(pkmn, stat) + getEV(pkmn, stat) / 4) * getLevel(pkmn) / 100;
+
     if (getNature(pkmn) / 5 + 1 == stat)
         mult++;
     if (getNature(pkmn) % 5 + 1 == stat)
         mult--;
-  
+
     final = final * mult / 10;
     return final;
 }
@@ -343,21 +338,21 @@ u16 getStat(u8* pkmn, const int stat) {
 u8 getAbility(u8* pkmn) {
     u8 abilitybuffer;
     memcpy(&abilitybuffer, &pkmn[ABILITYNUMPOS], ABILITYNUMLENGTH);
-    
+
     u8 resultset[3] = {0, 0, 0};
 	resultset[0] = personal.pkmData[getPokedexNumber(pkmn)][0x18];
 	resultset[1] = personal.pkmData[getPokedexNumber(pkmn)][0x19];
 	resultset[0] = personal.pkmData[getPokedexNumber(pkmn)][0x1a];
-	
+
     if (abilitybuffer == 1)
         abilitybuffer = 0;
-    
+
     if (abilitybuffer == 2)
         abilitybuffer = 1;
-    
+
     if (abilitybuffer == 4)
         abilitybuffer = 2;
-    
+
     return resultset[abilitybuffer];
 }
 
@@ -409,39 +404,39 @@ u8 getLevel(u8* pkmn) {
 u16 getMove(u8* pkmn, int nmove) {
     u16 movebuffer[4];
     memcpy(&movebuffer, &pkmn[MOVEPOS], MOVELENGTH*4);
-	
+
     return movebuffer[nmove];
 }
 
 u16 getItem(u8* pkmn) {
     u16 itembuffer;
     memcpy(&itembuffer, &pkmn[ITEMPOS], ITEMLENGTH);
-    
+
     return itembuffer;
 }
 
 u8 getHPType(u8* pkmn) {
     return 15 * ((getIV(pkmn, 0)& 1) + 2 * (getIV(pkmn, 1) & 1) + 4 * (getIV(pkmn, 2) & 1) + 8 * (getIV(pkmn, 3) & 1) + 16 * (getIV(pkmn, 4) & 1) + 32 * (getIV(pkmn, 5) & 1)) / 63;
-}   
+}
 
 u16 getOTID(u8* pkmn) {
     u16 otidbuffer;
     memcpy(&otidbuffer, &pkmn[OTIDPOS], OTIDLENGTH);
-    
+
     return otidbuffer;
 }
 
 u16 getSOTID(u8* pkmn) {
     u16 sotidbuffer;
     memcpy(&sotidbuffer, &pkmn[SOTIDPOS], SOTIDLENGTH);
-    
+
     return sotidbuffer;
 }
 
 u32 getPID(u8* pkmn) {
     u32 pidbuffer;
     memcpy(&pidbuffer, &pkmn[PIDPOS], PIDLENGTH);
-    
+
     return pidbuffer;
 }
 
@@ -470,28 +465,28 @@ u8 getNature(u8* pkmn) {
 }
 
 u8 getEV(u8* pkmn, const int stat) {
-    u8 evbuffer[6]; 
+    u8 evbuffer[6];
     memcpy(evbuffer, &pkmn[EVPOS], EVLENGTH * 6);
-    
+
     return evbuffer[stat];
 }
 
 u8 getIV(u8* pkmn, const int stat) {
     u32 buffer;
     u8 toreturn;
-    
+
     memcpy(&buffer, &pkmn[IVPOS], IVLENGTH);
     buffer = buffer >> 5*stat;
     buffer = buffer & 0x1F;
     memcpy(&toreturn, &buffer, 1);
-    
+
     return toreturn;
 }
 
 bool getPokerus(u8* pkmn) {
 	u8 pkrs;
 	memcpy(&pkrs, &pkmn[0x2B], 1);
-	
+
 	return pkrs;
 }
 
@@ -501,10 +496,10 @@ void setNickname(u8* pkmn, char* nick) {
     u8 toinsert[NICKNAMELENGTH];
     for (int i = 0; i < NICKNAMELENGTH; i++)
         toinsert[i] = 0;
-    
+
     for (u16 i = 0, nicklen = strlen(nick); i < nicklen; i++)
         toinsert[i * 2] = *(nick + i);
-    
+
     memcpy(&pkmn[NICKNAMEPOS], toinsert, NICKNAMELENGTH);
 }
 
@@ -537,7 +532,7 @@ void setHPType(u8* pkmn, const int val) {
     u8 ivstat[6];
     for(int i = 0; i < 6; i++)
         ivstat[i] = getIV(pkmn, i);
-    
+
     u8 hpivs[16][6] = {
         { 1, 1, 0, 0, 0, 0 }, // Fighting
         { 0, 0, 0, 1, 0, 0 }, // Flying
@@ -556,10 +551,10 @@ void setHPType(u8* pkmn, const int val) {
         { 1, 0, 1, 1, 1, 1 }, // Dragon
         { 1, 1, 1, 1, 1, 1 }, // Dark
     };
-    
+
     for(int i = 0; i < 6; i++)
          ivstat[i] = (ivstat[i] & 0x1E) + hpivs[val][i];
-    
+
     for(int i = 0; i < 6; i++)
         setIV(pkmn, ivstat[i], i);
 }
@@ -578,12 +573,12 @@ void setWC(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[]) {
 	if (game == GAME_X || game == GAME_Y) {
 		*(mainbuf + XYWC6FLAGPOS + i / 8) |= 0x1 << (i % 8);
 		memcpy((void*)(mainbuf + XYWC6POS + nInjected[0] * WC6LENGTH), (const void*)wcbuf, WC6LENGTH);
-	}	
-	
-	if (game == GAME_OR || game == GAME_AS) {		
+	}
+
+	if (game == GAME_OR || game == GAME_AS) {
 		*(mainbuf + ORASWC6FLAGPOS + i / 8) |= 0x1 << (i % 8);
 		memcpy((void*)(mainbuf + ORASWC6POS + nInjected[0] * WC6LENGTH), (const void*)wcbuf, WC6LENGTH);
-		
+
 		if (i == 2048) {
 			*(mainbuf + EONFLAGPOS)     = 0xC2;
 			*(mainbuf + EONFLAGPOS + 1) = 0x73;
@@ -591,16 +586,16 @@ void setWC(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[]) {
 			*(mainbuf + EONFLAGPOS + 3) = 0x22;
 		}
 	}
-	
+
 	if (game == GAME_SUN || game == GAME_MOON) {
 		*(mainbuf + SMWC7FLAGPOS + i / 8) |= 0x1 << (i % 8);
-		memcpy((void*)(mainbuf + SMWC7POS + nInjected[0] * WC6LENGTH), (const void*)wcbuf, WC6LENGTH);		
+		memcpy((void*)(mainbuf + SMWC7POS + nInjected[0] * WC6LENGTH), (const void*)wcbuf, WC6LENGTH);
 	}
-	
+
 	if (game == GAME_B1 || game == GAME_W1 || game == GAME_B2 || game == GAME_W2) {
 		u32 seed;
 		memcpy(&seed, &mainbuf[BWSEEDPOS], sizeof(u32));
-		
+
 		//decrypt
 		u16 temp;
 		for (int i = 0; i < 0xA90; i += 2) {
@@ -609,10 +604,10 @@ void setWC(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[]) {
 			seed = LCRNG(seed);
 			memcpy(&mainbuf[PGFSTARTPOS + i], &temp, 2);
 		}
-		
+
 		*(mainbuf + PGFSTARTPOS + i / 8) |= 0x1 << (i & 7);
 		memcpy((void*)(mainbuf + 0x1C900 + nInjected[0] * PGFLENGTH), (const void*)wcbuf, PGFLENGTH);
-		
+
 		//encrypt
 		memcpy(&seed, &mainbuf[BWSEEDPOS], sizeof(u32));
 		for (int i = 0; i < 0xA90; i += 2) {
@@ -622,7 +617,7 @@ void setWC(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[]) {
 			memcpy(&mainbuf[PGFSTARTPOS + i], &temp, 2);
 		}
 	}
-	
+
 	nInjected[0] += 1;
 	if (game < 4) {
 		if (nInjected[0] >= 24)
@@ -651,21 +646,17 @@ void setWC4(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[], int GBO) {
 }
 
 void setLanguage(u8* mainbuf, int game, int i) {
+	u32 langValues[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x07, 0x08, 0x09, 0x0A};
+
 	if (game < 4)
 		*(mainbuf + LANGUAGEPOS) = langValues[i];
-	else 
+	else
 		*(mainbuf + 0x1235) = langValues[i];
 }
 
 void setMoney(u8* mainbuf, int game, u64 i) {
 	if (game < 4)
 		switch (i) {
-			case 0 : {
-				*(mainbuf + MONEYPOS)     = 0x00;
-				*(mainbuf + MONEYPOS + 1) = 0x00;
-				*(mainbuf + MONEYPOS + 2) = 0x00;
-				break;			
-			}
 			case 9999999 : {
 				*(mainbuf + MONEYPOS)     = 0x7F;
 				*(mainbuf + MONEYPOS + 1) = 0x96;
@@ -675,47 +666,38 @@ void setMoney(u8* mainbuf, int game, u64 i) {
 		}
 }
 
-void setItem(u8* mainbuf, int i, u32 values[], int type, int nInjected[], int game) {
-	u32 offset[3] = {0x400, 0xD68, 0xE68};
+void setItem(u8* mainbuf, int type, int game) {
 	if (game == GAME_OR || game == GAME_AS) {
-		offset[1] = 0xD70;
-		offset[2] = 0xE70;
-	}
+		char* paths[] = {"romfs:/misc/oras/base.bin", "romfs:/misc/oras/heals.bin", "romfs:/misc/oras/berries.bin"};
+		u32 offset[] = { 0x400, 0xD72, 0xE70 };
 
-	if (i % 2 == 0) {
-		*(mainbuf + offset[type] + nInjected[type] * 4) = values[i];
-		*(mainbuf + offset[type + 1] + nInjected[type] * 4) = values[i + 1];
-		*(mainbuf + offset[type] + 2 + nInjected[type] * 4) = 0x01;
-		*(mainbuf + offset[type] + 3 + nInjected[type] * 4) = 0x00;		
+		injectFromFile(mainbuf, paths[type], offset[type]);
+	} else if (game == GAME_X || game == GAME_Y) {
+
+	} else if (game == GAME_SUN || game == GAME_MOON) {
+
 	}
-	else {
-		*(mainbuf + offset[type] + nInjected[type] * 4) = values[i - 1];
-		*(mainbuf + offset[type] + 1 + nInjected[type] * 4) = values[i];
-		*(mainbuf + offset[type] + 2 + nInjected[type] * 4) = 0xE3;
-		*(mainbuf + offset[type] + 3 + nInjected[type] * 4) = 0x03;	
-	}
-	nInjected[type]++;
 }
 
 void setBP(u8* mainbuf, int i, int game) {
 	const u32 offset[] = {0x423C, 0x423D, 0x4230, 0x4231, 0x0, 0x0}; // add offset for SM
 	int type = 0;
-	
-	if (game == GAME_OR || game == GAME_AS) 
+
+	if (game == GAME_OR || game == GAME_AS)
 		type = 2;
 	else if (game == GAME_SUN || game == GAME_MOON)
 		type = 4;
-	
+
 	switch (i) {
 		case 0 : {
 			*(mainbuf + offset[type])     = 0x00;
 			*(mainbuf + offset[type + 1]) = 0x00;
-			break;			
+			break;
 		}
 		case 9999 : {
 			*(mainbuf + offset[type])     = 0x0F;
 			*(mainbuf + offset[type + 1]) = 0x27;
-			break;			
+			break;
 		}
 	}
 }
@@ -726,7 +708,7 @@ void setPokerus(u8* pkmn) {
 
 void setBadges(u8* mainbuf, int game, int i) {
 	const u32 value[9] = {0x00, 0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F, 0x7F, 0xFF};
-	
+
 	if (game < 4)
 		*(mainbuf + BADGEPOS) = value[i];
 }
@@ -734,14 +716,14 @@ void setBadges(u8* mainbuf, int game, int i) {
 void setTM(u8* mainbuf, int game) {
 	const u32 values[] = {0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5A, 0x5B, 0x5C, 0x5D, 0x5E, 0x5F, 0x60, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6A, 0x6B, 0x6C, 0x6D, 0x6E, 0x6F, 0x70, 0x71, 0x72, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 0x79, 0x7A, 0x7B, 0x7C, 0x7D, 0x7E, 0x7F, 0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8A, 0x8B, 0x8C, 0x8D, 0x8E, 0x8F, 0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97, 0x98, 0x99, 0x9A, 0x9B, 0x9C, 0x9D, 0x9E, 0x9F, 0xA0, 0xA1, 0xA2, 0xA3, 0x6A, 0x6B, 0x6C, 0xB2, 0xB3, 0xB4, 0xB5, 0xB6, 0xA4, 0xA5, 0xA6, 0xA7, 0xA8, 0xA9};
 
-	if (game == GAME_X || game == GAME_Y) 
+	if (game == GAME_X || game == GAME_Y)
 		for (int i = 0; i < 105; i++) {
 			*(mainbuf + TMSTARTPOS + i * 4) = values[i];
 			*(mainbuf + TMSTARTPOS + i * 4 + 1) = 0x01;
 			*(mainbuf + TMSTARTPOS + i * 4 + 2) = 0x01;
 			*(mainbuf + TMSTARTPOS + i * 4 + 3) = 0x00;
 		}
-	
+
 	if (game == GAME_OR || game == GAME_AS) {
 		for (int i = 0; i < 106; i++) {
 			*(mainbuf + TMSTARTPOS + i * 4) = values[i];
@@ -754,48 +736,41 @@ void setTM(u8* mainbuf, int game) {
 		*(mainbuf + TMSTARTPOS + 4 * 106 + 2) = 0x01;
 		*(mainbuf + TMSTARTPOS + 4 * 106 + 3) = 0x00;
 	}
-	
+
 	for (int i = 0; i < 8; i++) {
 		*(mainbuf + 0xD31 + i * 4) = 0x02;
 	}
 }
 
 void saveFileEditor(u8* mainbuf, int game) {
-	u32 berry[BERRIES * 2];
-	for (int i = 0; i < BERRIES * 2 ; i += 2) {
-		berry[i] = 0x95 + i / 2;
-		berry[i + 1] = 0x00;
-	}
-	
-	int nInjected[3] = {0, 0, 0};
 	int currentEntry = 0;
 	int langCont = 0;
 	int badgeCont = 0;
 
 	while(aptMainLoop()) {
 		hidScanInput();
-		
+
 		if (hidKeysDown() & KEY_B)
 			break;
-		
+
 		if (hidKeysDown() & KEY_DUP) {
 			if (currentEntry > 0) currentEntry--;
 			else if (currentEntry == 0) currentEntry = 9;
 		}
-		
+
 		if (hidKeysDown() & KEY_DDOWN) {
 			if (currentEntry < 9) currentEntry++;
 			else if (currentEntry == 9) currentEntry = 0;
 		}
-		
+
 		if (hidKeysDown() & KEY_DLEFT) {
 			if (currentEntry >= 5) currentEntry -= 5;
 		}
-		
+
 		if (hidKeysDown() & KEY_DRIGHT) {
 			if (currentEntry <= 4) currentEntry += 5;
 		}
-		
+
 		if (hidKeysDown() & KEY_A) {
 			switch (currentEntry) {
 				case 0 : {
@@ -811,7 +786,7 @@ void saveFileEditor(u8* mainbuf, int game) {
 				}
 			}
 		}
-		
+
 		if (hidKeysDown() & KEY_START) {
 			switch (currentEntry) {
 				case 0 : {
@@ -825,23 +800,16 @@ void saveFileEditor(u8* mainbuf, int game) {
 					break;
 				}
 				case 2 : {
-					nInjected[0] = 0;
-					for (int i = 1; i < BALLS * 2; i += 2)
-						setItem(mainbuf, i, balls, 0, nInjected, game);
-					infoDisp("Balls injected successfully!");
+				//	infoDisp("Balls injected successfully!");
 					break;
 				}
 				case 3 : {
-					nInjected[1] = 0;
-					for (int i = 1; i < HEAL * 2; i += 2)
-						setItem(mainbuf, i, heal, 1, nInjected, game);
+					setItem(mainbuf, 1, game);
 					infoDisp("Heals injected successfully!");
 					break;
 				}
 				case 4 : {
-					nInjected[0] = 0;
-					for (int i = 1; i < ITEM * 2; i += 2)
-						setItem(mainbuf, i, items, 0, nInjected, game);
+					setItem(mainbuf, 0, game);
 					infoDisp("Items injected successfully!");
 					break;
 				}
@@ -869,50 +837,48 @@ void saveFileEditor(u8* mainbuf, int game) {
 						start = ORASWC6FLAGPOS;
 					else if (game == GAME_SUN || game == GAME_MOON)
 						start = SMWC7FLAGPOS;
-					
+
 					for (int i = 0; i < (0x100 + wcmax * WC6LENGTH); i++)
 						*(mainbuf + start + i) = 0x00;
 					infoDisp("Mistery Gift box cleaned!");
 					break;
 				}
 				case 9 : {
-					nInjected[2] = 0;
-					for (int i = 1; i < BERRIES * 2; i += 2)
-						setItem(mainbuf, i, berry, 2, nInjected, game);
+					setItem(mainbuf, 2, game);
 					infoDisp("Berries set successfully!");
 					break;
 				}
 			}
 		}
-		
+
 		printEditor(currentEntry, langCont, badgeCont);
 	}
 }
 
-void pokemonEditor(u8* mainbuf, int game) {	
+void pokemonEditor(u8* mainbuf, int game) {
 	bool speedy = false;
 	bool cloning = false;
 	int box = 0;
 	int currentEntry = 0;
 	int boxmax = (game < 4) ? 30 : 31;
-	
+
 	while (aptMainLoop()) {
 		hidScanInput();
 		touchPosition touch;
 		hidTouchRead(&touch);
-		
+
 		if (hidKeysDown() & KEY_B) break;
-		
+
 		if (hidKeysDown() & KEY_R) {
 			if (box < boxmax) box++;
 			else if (box == boxmax) box = 0;
 		}
-		
+
 		if (hidKeysDown() & KEY_L) {
 			if (box > 0) box--;
 			else if (box == 0) box = boxmax;
 		}
-		
+
 		if (hidKeysDown() & KEY_TOUCH) {
 			if (touch.px > 2 && touch.px < 17 && touch.py > 11 && touch.py < 33) {
 				if (box > 0) box--;
@@ -924,67 +890,67 @@ void pokemonEditor(u8* mainbuf, int game) {
 			}
 			if (touch.px > 288 && touch.px < 310 && touch.py > 217 && touch.py < 235) break;
 		}
-		
+
 		if (hidKeysDown() & KEY_DRIGHT) {
 			if (currentEntry < 29) currentEntry++;
 			else if (currentEntry == 29) currentEntry = 0;
 		}
-		
+
 		if (hidKeysDown() & KEY_DLEFT) {
 			if (currentEntry > 0) currentEntry--;
 			else if (currentEntry == 0) currentEntry = 29;
 		}
-		
+
 		if (hidKeysDown() & KEY_DUP) {
 			if (currentEntry >= 6) currentEntry -= 6;
 		}
-		
+
 		if (hidKeysDown() & KEY_DDOWN) {
 			if (currentEntry <= 23) currentEntry += 6;
 		}
-		
+
 		if ((hidKeysDown() & KEY_A) || (hidKeysDown() & KEY_TOUCH && touch.px > 214 && touch.px < 320 && touch.py > 89 && touch.py < 120)) {
 			u8* pkmn = (u8*)malloc(PKMNLENGTH * sizeof(u8));
 			getPkmn(mainbuf, box, currentEntry, pkmn, game);
-			
+
 			while (aptMainLoop() && getPokedexNumber(pkmn)) {
 				hidScanInput();
 				hidTouchRead(&touch);
 
 				if (hidKeysDown() & KEY_B) break;
-				
+
 				if (hidKeysDown() & KEY_L)
 					speedy = false;
-				
+
 				if (hidKeysDown() & KEY_R)
 					speedy = true;
-				
+
 				if (hidKeysDown() & KEY_TOUCH) {
 					if (touch.px > 288 && touch.px < 310 && touch.py > 213 && touch.py < 231) break;
-					
+
 					if (touch.px > 126 && touch.px < 141 && touch.py > 60 && touch.py < 72) {
-						if (getNature(pkmn) < 24) 
+						if (getNature(pkmn) < 24)
 							setNature(pkmn, getNature(pkmn) + 1);
 						else if (getNature(pkmn) == 24)
 							setNature(pkmn, 0);
 					}
-					
+
 					if (touch.px > 126 && touch.px < 141 && touch.py > 111 && touch.py < 123) {
-						if (isShiny(pkmn)) 
+						if (isShiny(pkmn))
 							setShiny(pkmn, false);
 						else setShiny(pkmn, true);
 					}
-					
+
 					if (touch.px > 126 && touch.px < 141 && touch.py > 128 && touch.py < 140) {
 						if (!(getPokerus(pkmn)))
 							setPokerus(pkmn);
 						else *(pkmn + 0x2B) = 0x00;
 					}
-					
+
 					if (touch.px > 162 && touch.px < 177 && touch.py > 162 && touch.py < 174) {
 						static SwkbdState swkbd;
 						static char buf[60];
-						
+
 						SwkbdButton button = SWKBD_BUTTON_NONE;
 						swkbdInit(&swkbd, SWKBD_TYPE_NORMAL, 2, (NICKNAMELENGTH / 2) - 1);
 						swkbdSetButton(&swkbd, SWKBD_BUTTON_LEFT, "Cancel", false);
@@ -993,254 +959,254 @@ void pokemonEditor(u8* mainbuf, int game) {
 						swkbdSetFeatures(&swkbd, SWKBD_MULTILINE);
 						swkbdSetHintText(&swkbd, "Enter your nickname");
 						button = swkbdInputText(&swkbd, buf, sizeof(buf));
-						
+
 						static char nick[NICKNAMELENGTH];
 						for (int i = 0; i < NICKNAMELENGTH; i++)
 							nick[i] = 0;
 						memcpy(nick, buf, NICKNAMELENGTH);
 						nick[NICKNAMELENGTH - 1] = '\0';
-						
+
 						if (button != SWKBD_BUTTON_NONE)
 							setNickname(pkmn, nick);
 					}
-					
+
 					if (touch.px > 162 && touch.px < 177 && touch.py > 178 && touch.py < 190) {
-						if (getHPType(pkmn) < 15) 
+						if (getHPType(pkmn) < 15)
 							setHPType(pkmn, getHPType(pkmn) + 1);
 						else if (getHPType(pkmn) == 15)
 							setHPType(pkmn, 0);
 					}
-					
+
 					if (touch.px > 200 && touch.px < 308 && touch.py > 160 && touch.py < 190) {
 						setPkmn(mainbuf, box, currentEntry, pkmn, game);
 						infoDisp("Edits applied!");
 						break;
 					}
 				}
-				
+
 				if ((hidKeysDown() & KEY_TOUCH) && !(speedy)) {
 					if (touch.px > 110 && touch.px < 123 && touch.py > 144 && touch.py < 157) {
 						if (getFriendship(pkmn) > 0)
 							setFriendship(pkmn, getFriendship(pkmn) - 1);
 					}
-					
+
 					if (touch.px > 150 && touch.px < 163 && touch.py > 144 && touch.py < 157) {
 						if (getFriendship(pkmn) < 255)
 							setFriendship(pkmn, getFriendship(pkmn) + 1);
 					}
-					
+
 					// - ivs
-					if (touch.px > 207 && touch.px < 220 && touch.py > 27 && touch.py < 40) 
+					if (touch.px > 207 && touch.px < 220 && touch.py > 27 && touch.py < 40)
 						if (getIV(pkmn, 0) > 0)
 							setIV(pkmn, getIV(pkmn, 0) - 1, 0);
-						
-					if (touch.px > 207 && touch.px < 220 && touch.py > 44 && touch.py < 57) 
+
+					if (touch.px > 207 && touch.px < 220 && touch.py > 44 && touch.py < 57)
 						if (getIV(pkmn, 1) > 0)
 							setIV(pkmn, getIV(pkmn, 1) - 1, 1);
-						
-					if (touch.px > 207 && touch.px < 220 && touch.py > 61 && touch.py < 74) 
+
+					if (touch.px > 207 && touch.px < 220 && touch.py > 61 && touch.py < 74)
 						if (getIV(pkmn, 2) > 0)
 							setIV(pkmn, getIV(pkmn, 2) - 1, 2);
-						
-					if (touch.px > 207 && touch.px < 220 && touch.py > 78 && touch.py < 91) 
+
+					if (touch.px > 207 && touch.px < 220 && touch.py > 78 && touch.py < 91)
 						if (getIV(pkmn, 4) > 0)
 							setIV(pkmn, getIV(pkmn, 4) - 1, 4);
-						
-					if (touch.px > 207 && touch.px < 220 && touch.py > 95 && touch.py < 108) 
+
+					if (touch.px > 207 && touch.px < 220 && touch.py > 95 && touch.py < 108)
 						if (getIV(pkmn, 5) > 0)
 							setIV(pkmn, getIV(pkmn, 5) - 1, 5);
-						
-					if (touch.px > 207 && touch.px < 220 && touch.py > 112 && touch.py < 125) 
+
+					if (touch.px > 207 && touch.px < 220 && touch.py > 112 && touch.py < 125)
 						if (getIV(pkmn, 3) > 0)
 							setIV(pkmn, getIV(pkmn, 3) - 1, 3);
-						
+
 					// + ivs
-					if (touch.px > 242 && touch.px < 255 && touch.py > 27 && touch.py < 40) 
+					if (touch.px > 242 && touch.px < 255 && touch.py > 27 && touch.py < 40)
 						if (getIV(pkmn, 0) < 31)
 							setIV(pkmn, getIV(pkmn, 0) + 1, 0);
-						
-					if (touch.px > 242 && touch.px < 255 && touch.py > 44 && touch.py < 57) 
+
+					if (touch.px > 242 && touch.px < 255 && touch.py > 44 && touch.py < 57)
 						if (getIV(pkmn, 1) < 31)
 							setIV(pkmn, getIV(pkmn, 1) + 1, 1);
-						
-					if (touch.px > 242 && touch.px < 255 && touch.py > 61 && touch.py < 74) 
+
+					if (touch.px > 242 && touch.px < 255 && touch.py > 61 && touch.py < 74)
 						if (getIV(pkmn, 2) < 31)
 							setIV(pkmn, getIV(pkmn, 2) + 1, 2);
-						
-					if (touch.px > 242 && touch.px < 255 && touch.py > 78 && touch.py < 91) 
+
+					if (touch.px > 242 && touch.px < 255 && touch.py > 78 && touch.py < 91)
 						if (getIV(pkmn, 4) < 31)
 							setIV(pkmn, getIV(pkmn, 4) + 1, 4);
-						
-					if (touch.px > 242 && touch.px < 255 && touch.py > 95 && touch.py < 108) 
+
+					if (touch.px > 242 && touch.px < 255 && touch.py > 95 && touch.py < 108)
 						if (getIV(pkmn, 5) < 31)
 							setIV(pkmn, getIV(pkmn, 5) + 1, 5);
-						
-					if (touch.px > 242 && touch.px < 255 && touch.py > 112 && touch.py < 125) 
+
+					if (touch.px > 242 && touch.px < 255 && touch.py > 112 && touch.py < 125)
 						if (getIV(pkmn, 3) < 31)
 							setIV(pkmn, getIV(pkmn, 3) + 1, 3);
 
 					// - evs
-					if (touch.px > 257 && touch.px < 270 && touch.py > 27 && touch.py < 40) 
+					if (touch.px > 257 && touch.px < 270 && touch.py > 27 && touch.py < 40)
 						if (getEV(pkmn, 0) > 0)
 							setEV(pkmn, getEV(pkmn, 0) - 1, 0);
-						
-					if (touch.px > 257 && touch.px < 270 && touch.py > 44 && touch.py < 57) 
+
+					if (touch.px > 257 && touch.px < 270 && touch.py > 44 && touch.py < 57)
 						if (getEV(pkmn, 1) > 0)
 							setEV(pkmn, getEV(pkmn, 1) - 1, 1);
-						
-					if (touch.px > 257 && touch.px < 270 && touch.py > 61 && touch.py < 74) 
+
+					if (touch.px > 257 && touch.px < 270 && touch.py > 61 && touch.py < 74)
 						if (getEV(pkmn, 2) > 0)
 							setEV(pkmn, getEV(pkmn, 2) - 1, 2);
-						
-					if (touch.px > 257 && touch.px < 270 && touch.py > 78 && touch.py < 91) 
+
+					if (touch.px > 257 && touch.px < 270 && touch.py > 78 && touch.py < 91)
 						if (getEV(pkmn, 4) > 0)
 							setEV(pkmn, getEV(pkmn, 4) - 1, 4);
-						
-					if (touch.px > 257 && touch.px < 270 && touch.py > 95 && touch.py < 108) 
+
+					if (touch.px > 257 && touch.px < 270 && touch.py > 95 && touch.py < 108)
 						if (getEV(pkmn, 5) > 0)
 							setEV(pkmn, getEV(pkmn, 5) - 1, 5);
-						
-					if (touch.px > 257 && touch.px < 270 && touch.py > 112 && touch.py < 125) 
+
+					if (touch.px > 257 && touch.px < 270 && touch.py > 112 && touch.py < 125)
 						if (getEV(pkmn, 3) > 0)
 							setEV(pkmn, getEV(pkmn, 3) - 1, 3);
-						
+
 					// + evs
 					if ((getEV(pkmn, 0) + getEV(pkmn, 1) + getEV(pkmn, 2) + getEV(pkmn, 3) + getEV(pkmn, 4) + getEV(pkmn, 5)) < 510) {
-						if (touch.px > 296 && touch.px < 309 && touch.py > 27 && touch.py < 40) 
+						if (touch.px > 296 && touch.px < 309 && touch.py > 27 && touch.py < 40)
 							if (getEV(pkmn, 0) < 252)
 								setEV(pkmn, getEV(pkmn, 0) + 1, 0);
-							
-						if (touch.px > 296 && touch.px < 309 && touch.py > 44 && touch.py < 57) 
+
+						if (touch.px > 296 && touch.px < 309 && touch.py > 44 && touch.py < 57)
 							if (getEV(pkmn, 1) < 252)
 								setEV(pkmn, getEV(pkmn, 1) + 1, 1);
-							
-						if (touch.px > 296 && touch.px < 309 && touch.py > 61 && touch.py < 74) 
+
+						if (touch.px > 296 && touch.px < 309 && touch.py > 61 && touch.py < 74)
 							if (getEV(pkmn, 2) < 252)
 								setEV(pkmn, getEV(pkmn, 2) + 1, 2);
-							
-						if (touch.px > 296 && touch.px < 309 && touch.py > 78 && touch.py < 91) 
+
+						if (touch.px > 296 && touch.px < 309 && touch.py > 78 && touch.py < 91)
 							if (getEV(pkmn, 4) < 252)
 								setEV(pkmn, getEV(pkmn, 4) + 1, 4);
-							
-						if (touch.px > 296 && touch.px < 309 && touch.py > 95 && touch.py < 108) 
+
+						if (touch.px > 296 && touch.px < 309 && touch.py > 95 && touch.py < 108)
 							if (getEV(pkmn, 5) < 252)
 								setEV(pkmn, getEV(pkmn, 5) + 1, 5);
-							
-						if (touch.px > 296 && touch.px < 309 && touch.py > 112 && touch.py < 125) 
+
+						if (touch.px > 296 && touch.px < 309 && touch.py > 112 && touch.py < 125)
 							if (getEV(pkmn, 3) < 252)
 								setEV(pkmn, getEV(pkmn, 3) + 1, 3);
 					}
 				}
-				
+
 				if ((hidKeysHeld() & KEY_TOUCH) && speedy) {
 					if (touch.px > 110 && touch.px < 123 && touch.py > 144 && touch.py < 157) {
 						if (getFriendship(pkmn) > 0)
 							setFriendship(pkmn, getFriendship(pkmn) - 1);
 					}
-					
+
 					if (touch.px > 150 && touch.px < 163 && touch.py > 144 && touch.py < 157) {
 						if (getFriendship(pkmn) < 255)
 							setFriendship(pkmn, getFriendship(pkmn) + 1);
 					}
-					
+
 					// - ivs
-					if (touch.px > 207 && touch.px < 220 && touch.py > 27 && touch.py < 40) 
+					if (touch.px > 207 && touch.px < 220 && touch.py > 27 && touch.py < 40)
 						if (getIV(pkmn, 0) > 0)
 							setIV(pkmn, getIV(pkmn, 0) - 1, 0);
-						
-					if (touch.px > 207 && touch.px < 220 && touch.py > 44 && touch.py < 57) 
+
+					if (touch.px > 207 && touch.px < 220 && touch.py > 44 && touch.py < 57)
 						if (getIV(pkmn, 1) > 0)
 							setIV(pkmn, getIV(pkmn, 1) - 1, 1);
-						
-					if (touch.px > 207 && touch.px < 220 && touch.py > 61 && touch.py < 74) 
+
+					if (touch.px > 207 && touch.px < 220 && touch.py > 61 && touch.py < 74)
 						if (getIV(pkmn, 2) > 0)
 							setIV(pkmn, getIV(pkmn, 2) - 1, 2);
-						
-					if (touch.px > 207 && touch.px < 220 && touch.py > 78 && touch.py < 91) 
+
+					if (touch.px > 207 && touch.px < 220 && touch.py > 78 && touch.py < 91)
 						if (getIV(pkmn, 4) > 0)
 							setIV(pkmn, getIV(pkmn, 4) - 1, 4);
-						
-					if (touch.px > 207 && touch.px < 220 && touch.py > 95 && touch.py < 108) 
+
+					if (touch.px > 207 && touch.px < 220 && touch.py > 95 && touch.py < 108)
 						if (getIV(pkmn, 5) > 0)
 							setIV(pkmn, getIV(pkmn, 5) - 1, 5);
-						
-					if (touch.px > 207 && touch.px < 220 && touch.py > 112 && touch.py < 125) 
+
+					if (touch.px > 207 && touch.px < 220 && touch.py > 112 && touch.py < 125)
 						if (getIV(pkmn, 3) > 0)
 							setIV(pkmn, getIV(pkmn, 3) - 1, 3);
-						
+
 					// + ivs
-					if (touch.px > 242 && touch.px < 255 && touch.py > 27 && touch.py < 40) 
+					if (touch.px > 242 && touch.px < 255 && touch.py > 27 && touch.py < 40)
 						if (getIV(pkmn, 0) < 31)
 							setIV(pkmn, getIV(pkmn, 0) + 1, 0);
-						
-					if (touch.px > 242 && touch.px < 255 && touch.py > 44 && touch.py < 57) 
+
+					if (touch.px > 242 && touch.px < 255 && touch.py > 44 && touch.py < 57)
 						if (getIV(pkmn, 1) < 31)
 							setIV(pkmn, getIV(pkmn, 1) + 1, 1);
-						
-					if (touch.px > 242 && touch.px < 255 && touch.py > 61 && touch.py < 74) 
+
+					if (touch.px > 242 && touch.px < 255 && touch.py > 61 && touch.py < 74)
 						if (getIV(pkmn, 2) < 31)
 							setIV(pkmn, getIV(pkmn, 2) + 1, 2);
-						
-					if (touch.px > 242 && touch.px < 255 && touch.py > 78 && touch.py < 91) 
+
+					if (touch.px > 242 && touch.px < 255 && touch.py > 78 && touch.py < 91)
 						if (getIV(pkmn, 4) < 31)
 							setIV(pkmn, getIV(pkmn, 4) + 1, 4);
-						
-					if (touch.px > 242 && touch.px < 255 && touch.py > 95 && touch.py < 108) 
+
+					if (touch.px > 242 && touch.px < 255 && touch.py > 95 && touch.py < 108)
 						if (getIV(pkmn, 5) < 31)
 							setIV(pkmn, getIV(pkmn, 5) + 1, 5);
-						
-					if (touch.px > 242 && touch.px < 255 && touch.py > 112 && touch.py < 125) 
+
+					if (touch.px > 242 && touch.px < 255 && touch.py > 112 && touch.py < 125)
 						if (getIV(pkmn, 3) < 31)
 							setIV(pkmn, getIV(pkmn, 3) + 1, 3);
 
 					// - evs
-					if (touch.px > 257 && touch.px < 270 && touch.py > 27 && touch.py < 40) 
+					if (touch.px > 257 && touch.px < 270 && touch.py > 27 && touch.py < 40)
 						if (getEV(pkmn, 0) > 0)
 							setEV(pkmn, getEV(pkmn, 0) - 1, 0);
-						
-					if (touch.px > 257 && touch.px < 270 && touch.py > 44 && touch.py < 57) 
+
+					if (touch.px > 257 && touch.px < 270 && touch.py > 44 && touch.py < 57)
 						if (getEV(pkmn, 1) > 0)
 							setEV(pkmn, getEV(pkmn, 1) - 1, 1);
-						
-					if (touch.px > 257 && touch.px < 270 && touch.py > 61 && touch.py < 74) 
+
+					if (touch.px > 257 && touch.px < 270 && touch.py > 61 && touch.py < 74)
 						if (getEV(pkmn, 2) > 0)
 							setEV(pkmn, getEV(pkmn, 2) - 1, 2);
-						
-					if (touch.px > 257 && touch.px < 270 && touch.py > 78 && touch.py < 91) 
+
+					if (touch.px > 257 && touch.px < 270 && touch.py > 78 && touch.py < 91)
 						if (getEV(pkmn, 4) > 0)
 							setEV(pkmn, getEV(pkmn, 4) - 1, 4);
-						
-					if (touch.px > 257 && touch.px < 270 && touch.py > 95 && touch.py < 108) 
+
+					if (touch.px > 257 && touch.px < 270 && touch.py > 95 && touch.py < 108)
 						if (getEV(pkmn, 5) > 0)
 							setEV(pkmn, getEV(pkmn, 5) - 1, 5);
-						
-					if (touch.px > 257 && touch.px < 270 && touch.py > 112 && touch.py < 125) 
+
+					if (touch.px > 257 && touch.px < 270 && touch.py > 112 && touch.py < 125)
 						if (getEV(pkmn, 3) > 0)
 							setEV(pkmn, getEV(pkmn, 3) - 1, 3);
-						
+
 					// + evs
 					if ((getEV(pkmn, 0) + getEV(pkmn, 1) + getEV(pkmn, 2) + getEV(pkmn, 3) + getEV(pkmn, 4) + getEV(pkmn, 5)) < 510) {
-						if (touch.px > 296 && touch.px < 309 && touch.py > 27 && touch.py < 40) 
+						if (touch.px > 296 && touch.px < 309 && touch.py > 27 && touch.py < 40)
 							if (getEV(pkmn, 0) < 252)
 								setEV(pkmn, getEV(pkmn, 0) + 1, 0);
-							
-						if (touch.px > 296 && touch.px < 309 && touch.py > 44 && touch.py < 57) 
+
+						if (touch.px > 296 && touch.px < 309 && touch.py > 44 && touch.py < 57)
 							if (getEV(pkmn, 1) < 252)
 								setEV(pkmn, getEV(pkmn, 1) + 1, 1);
-							
-						if (touch.px > 296 && touch.px < 309 && touch.py > 61 && touch.py < 74) 
+
+						if (touch.px > 296 && touch.px < 309 && touch.py > 61 && touch.py < 74)
 							if (getEV(pkmn, 2) < 252)
 								setEV(pkmn, getEV(pkmn, 2) + 1, 2);
-							
-						if (touch.px > 296 && touch.px < 309 && touch.py > 78 && touch.py < 91) 
+
+						if (touch.px > 296 && touch.px < 309 && touch.py > 78 && touch.py < 91)
 							if (getEV(pkmn, 4) < 252)
 								setEV(pkmn, getEV(pkmn, 4) + 1, 4);
-							
-						if (touch.px > 296 && touch.px < 309 && touch.py > 95 && touch.py < 108) 
+
+						if (touch.px > 296 && touch.px < 309 && touch.py > 95 && touch.py < 108)
 							if (getEV(pkmn, 5) < 252)
 								setEV(pkmn, getEV(pkmn, 5) + 1, 5);
-							
-						if (touch.px > 296 && touch.px < 309 && touch.py > 112 && touch.py < 125) 
+
+						if (touch.px > 296 && touch.px < 309 && touch.py > 112 && touch.py < 125)
 							if (getEV(pkmn, 3) < 252)
 								setEV(pkmn, getEV(pkmn, 3) + 1, 3);
 					}
@@ -1248,7 +1214,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 
 				printPKEditor(pkmn, game, speedy);
 			}
-			
+
 			free(pkmn);
 		}
 
@@ -1282,31 +1248,31 @@ void pokemonEditor(u8* mainbuf, int game) {
 			if (touch.px > 72 && touch.px < 106 && touch.py > 165 && touch.py < 195) currentEntry = 26;
 			if (touch.px > 106 && touch.px < 140 && touch.py > 165 && touch.py < 195) currentEntry = 27;
 			if (touch.px > 140 && touch.px < 174 && touch.py > 165 && touch.py < 195) currentEntry = 28;
-			if (touch.px > 174 && touch.px < 208 && touch.py > 165 && touch.py < 195) currentEntry = 29;			
+			if (touch.px > 174 && touch.px < 208 && touch.py > 165 && touch.py < 195) currentEntry = 29;
 		}
-		
+
 		if ((hidKeysDown() & KEY_Y) || (hidKeysDown() & KEY_TOUCH && touch.px > 214 && touch.px < 320 && touch.py > 121 && touch.py < 151)) {
 			u8* pkmn = (u8*)malloc(PKMNLENGTH * sizeof(u8));
 			getPkmn(mainbuf, box, currentEntry, pkmn, game);
-			
+
 			cloning = true;
 			while(aptMainLoop()) {
 				hidScanInput();
 				touchPosition touch;
 				hidTouchRead(&touch);
-				
+
 				if (hidKeysDown() & KEY_B) break;
-				
+
 				if (hidKeysDown() & KEY_R) {
 					if (box < boxmax) box++;
 					else if (box == boxmax) box = 0;
 				}
-				
+
 				if (hidKeysDown() & KEY_L) {
 					if (box > 0) box--;
 					else if (box == 0) box = boxmax;
 				}
-				
+
 				if (hidKeysDown() & KEY_TOUCH) {
 					if (touch.px > 2 && touch.px < 17 && touch.py > 11 && touch.py < 33) {
 						if (box > 0) box--;
@@ -1317,21 +1283,21 @@ void pokemonEditor(u8* mainbuf, int game) {
 						else if (box == boxmax) box = 0;
 					}
 				}
-				
+
 				if (hidKeysDown() & KEY_DRIGHT) {
 					if (currentEntry < 29) currentEntry++;
 					else if (currentEntry == 29) currentEntry = 0;
 				}
-				
+
 				if (hidKeysDown() & KEY_DLEFT) {
 					if (currentEntry > 0) currentEntry--;
 					else if (currentEntry == 0) currentEntry = 29;
 				}
-				
+
 				if (hidKeysDown() & KEY_DUP) {
 					if (currentEntry >= 6) currentEntry -= 6;
 				}
-				
+
 				if (hidKeysDown() & KEY_DDOWN) {
 					if (currentEntry <= 23) currentEntry += 6;
 				}
@@ -1366,9 +1332,9 @@ void pokemonEditor(u8* mainbuf, int game) {
 					if (touch.px > 72 && touch.px < 106 && touch.py > 165 && touch.py < 195) currentEntry = 26;
 					if (touch.px > 106 && touch.px < 140 && touch.py > 165 && touch.py < 195) currentEntry = 27;
 					if (touch.px > 140 && touch.px < 174 && touch.py > 165 && touch.py < 195) currentEntry = 28;
-					if (touch.px > 174 && touch.px < 208 && touch.py > 165 && touch.py < 195) currentEntry = 29;		
+					if (touch.px > 174 && touch.px < 208 && touch.py > 165 && touch.py < 195) currentEntry = 29;
 				}
-				
+
 				if ((hidKeysDown() & KEY_A) || (hidKeysDown() & KEY_TOUCH && touch.px > 214 && touch.px < 320 && touch.py > 121 && touch.py < 151)) {
 					setPkmn(mainbuf, box, currentEntry, pkmn, game);
 					break;
@@ -1376,11 +1342,11 @@ void pokemonEditor(u8* mainbuf, int game) {
 
 				printPKViewer(mainbuf, game, currentEntry, box, cloning);
 			}
-			
+
 			free(pkmn);
 			cloning = false;
 		}
-		
+
 		printPKViewer(mainbuf, game, currentEntry, box, cloning);
 	}
 }
