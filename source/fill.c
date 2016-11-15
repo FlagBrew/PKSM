@@ -45,6 +45,10 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[2040] = "2040 - SM Stardust"; spriteArray[2040] = 0;
 	database[2041] = "2041 - SM Star Piece"; spriteArray[2041] = 0;
 	database[2042] = "2042 - SM Nugget"; spriteArray[2042] = 0;
+	database[2043] = "2043 - SM Pretty Wings"; spriteArray[2043] = 0;
+	database[2044] = "2044 - SM Balm Mushroom"; spriteArray[2044] = 0;
+	database[2045] = "2045 - SM Comet Shard"; spriteArray[2045] = 0;
+	
 
 	database[1] = "0001 - Birthday events"; spriteArray[1] = 133;
 	database[2] = "0002 - CoroCoro Garchomp"; spriteArray[2] = 445;

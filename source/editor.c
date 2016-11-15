@@ -650,41 +650,29 @@ void setWC4(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[], int GBO) {
 		nInjected[0] = 0;
 }
 
-void setLanguage(u8* mainbuf, int i) {
-	*(mainbuf + LANGUAGEPOS) = langValues[i];
+void setLanguage(u8* mainbuf, int game, int i) {
+	if (game < 4)
+		*(mainbuf + LANGUAGEPOS) = langValues[i];
+	else 
+		*(mainbuf + 0x1235) = langValues[i];
 }
 
-void setLanguage7(u8* mainbuf, int i) {
-	*(mainbuf + 0x1235) = langValues[i];
-}
-
-void setMoney(u8* mainbuf, u64 i) {
-	switch (i) {
-		case 0 : {
-			*(mainbuf + MONEYPOS)     = 0x00;
-			*(mainbuf + MONEYPOS + 1) = 0x00;
-			*(mainbuf + MONEYPOS + 2) = 0x00;
-			break;			
-		}	
-		case 200000 : {
-			*(mainbuf + MONEYPOS)     = 0x40;
-			*(mainbuf + MONEYPOS + 1) = 0x0D;
-			*(mainbuf + MONEYPOS + 2) = 0x03;
-			break;			
-		}	
-		case 1000000 : {
-			*(mainbuf + MONEYPOS)     = 0x40;
-			*(mainbuf + MONEYPOS + 1) = 0x42;
-			*(mainbuf + MONEYPOS + 2) = 0x0F;
-			break;			
+void setMoney(u8* mainbuf, int game, u64 i) {
+	if (game < 4)
+		switch (i) {
+			case 0 : {
+				*(mainbuf + MONEYPOS)     = 0x00;
+				*(mainbuf + MONEYPOS + 1) = 0x00;
+				*(mainbuf + MONEYPOS + 2) = 0x00;
+				break;			
+			}
+			case 9999999 : {
+				*(mainbuf + MONEYPOS)     = 0x7F;
+				*(mainbuf + MONEYPOS + 1) = 0x96;
+				*(mainbuf + MONEYPOS + 2) = 0x98;
+				break;
+			}
 		}
-		case 9999999 : {
-			*(mainbuf + MONEYPOS)     = 0x7F;
-			*(mainbuf + MONEYPOS + 1) = 0x96;
-			*(mainbuf + MONEYPOS + 2) = 0x98;
-			break;
-		}
-	}
 }
 
 void setItem(u8* mainbuf, int i, u32 values[], int type, int nInjected[], int game) {
@@ -710,11 +698,13 @@ void setItem(u8* mainbuf, int i, u32 values[], int type, int nInjected[], int ga
 }
 
 void setBP(u8* mainbuf, int i, int game) {
-	const u32 offset[] = {0x423C, 0x423D, 0x4230, 0x4231};
+	const u32 offset[] = {0x423C, 0x423D, 0x4230, 0x4231, 0x0, 0x0}; // add offset for SM
 	int type = 0;
 	
 	if (game == GAME_OR || game == GAME_AS) 
 		type = 2;
+	else if (game == GAME_SUN || game == GAME_MOON)
+		type = 4;
 	
 	switch (i) {
 		case 0 : {
@@ -734,10 +724,11 @@ void setPokerus(u8* pkmn) {
 	*(pkmn + 0x2B) = POKERUS;
 }
 
-void setBadges(u8* mainbuf, int i) {
+void setBadges(u8* mainbuf, int game, int i) {
 	const u32 value[9] = {0x00, 0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F, 0x7F, 0xFF};
 	
-	*(mainbuf + BADGEPOS) = value[i];
+	if (game < 4)
+		*(mainbuf + BADGEPOS) = value[i];
 }
 
 void setTM(u8* mainbuf, int game) {
@@ -808,8 +799,9 @@ void saveFileEditor(u8* mainbuf, int game) {
 		if (hidKeysDown() & KEY_A) {
 			switch (currentEntry) {
 				case 0 : {
-					if (langCont < 6) langCont++;
-					else if (langCont == 6) langCont = 0;
+					int langMax = (game < 4) ? 6 : 8;
+					if (langCont < langMax) langCont++;
+					else if (langCont == langMax) langCont = 0;
 					break;
 				}
 				case 6 : {
@@ -823,7 +815,7 @@ void saveFileEditor(u8* mainbuf, int game) {
 		if (hidKeysDown() & KEY_START) {
 			switch (currentEntry) {
 				case 0 : {
-					setLanguage(mainbuf, langCont);
+					setLanguage(mainbuf, game, langCont);
 					infoDisp("Language set successfully!");
 					break;
 				}
@@ -854,12 +846,12 @@ void saveFileEditor(u8* mainbuf, int game) {
 					break;
 				}
 				case 5 : {
-					setMoney(mainbuf, 9999999);
+					setMoney(mainbuf, game, 9999999);
 					infoDisp("Money set successfully!");
 					break;
 				}
 				case 6 : {
-					setBadges(mainbuf, badgeCont);
+					setBadges(mainbuf, game, badgeCont);
 					infoDisp("Badges set successfully!");
 					break;
 				}
@@ -870,12 +862,15 @@ void saveFileEditor(u8* mainbuf, int game) {
 				}
 				case 8 : {
 					int start = 0;
+					int wcmax = (game < 4) ? 24 : 48;
 					if (game == GAME_X || game == GAME_Y)
 						start = XYWC6FLAGPOS;
 					else if (game == GAME_OR || game == GAME_AS)
 						start = ORASWC6FLAGPOS;
+					else if (game == GAME_SUN || game == GAME_MOON)
+						start = SMWC7FLAGPOS;
 					
-					for (int i = 0; i < (0x100 + 24 * WC6LENGTH); i++)
+					for (int i = 0; i < (0x100 + wcmax * WC6LENGTH); i++)
 						*(mainbuf + start + i) = 0x00;
 					infoDisp("Mistery Gift box cleaned!");
 					break;

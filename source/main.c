@@ -28,6 +28,7 @@
 #include "editor.h"
 #include "graphic.h"
 #include "bank.h"
+#include "save.h"
 
 #define GAMES 15
 		
@@ -108,7 +109,7 @@ int main() {
 	const u64 ids[6] = {0x0004000000055D00, 0x0004000000055E00, 0x000400000011C400, 0x000400000011C500, 0x0004000000164800, 0x0004000000175E00};
 	char *gamesList[GAMES] = {"X", "Y", "OR", "AS", "S", "M", "D", "P", "PL", "HG", "SS", "B", "W", "W2", "B2"};
 
-	while (aptMainLoop() && !(hidKeysDown() & KEY_A && (!(game == GAME_SUN || game == GAME_MOON || game == GAME_DIAMOND || game == GAME_PEARL || game == GAME_PLATINUM)))) {
+	while (aptMainLoop() && !(hidKeysDown() & KEY_A && (!(game == GAME_DIAMOND || game == GAME_PEARL || game == GAME_PLATINUM)))) {
 		hidScanInput();
 		
 		if (hidKeysDown() & KEY_B) {
@@ -275,6 +276,8 @@ int main() {
 									case 0 : {
 										if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS)
 											eventDatabase6(mainbuf, game);
+										else if (game == GAME_SUN || game == GAME_MOON)
+											eventDatabase7(mainbuf, game);
 										break;
 									}
 									case 1 : {
