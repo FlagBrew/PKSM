@@ -40,18 +40,9 @@
 #define EXPPOINTLENGTH 4
 
 struct {
-  u8 pkmData[826][80];
+	u8 pkmData[961][84];
 } personal;
 
-int getActiveGBO(u8* mainbuf, int game);
-int getActiveSBO(u8* mainbuf, int game);
-u32 CHKOffset(u32 i, int game);
-u32 CHKLength(u32 i, int game);
-u16 ccitt16(u8* data, u32 len);
-u32 BWCHKOff(u32 i, int game);
-u32 BWCHKMirr(u32 i, int game);
-void rewriteCHK(u8 *mainbuf, int game);
-void rewriteCHK4(u8 *mainbuf, int game, int GBO, int SBO);
 u32 seedStep(const u32 seed);
 u32 LCRNG(u32 seed);
 void shuffleArray(u8* pkmn, const u32 encryptionkey);
@@ -63,7 +54,6 @@ void getPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, 
 void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game);
 bool isShiny(u8* pkmn);
 void rerollPID(u8* pkmn);
-void findFreeLocationWC(u8 *mainbuf, int game, int nInjected[]);
 
 u16 getPokedexNumber(u8* pkmn);
 u8 getNature(u8* pkmn);
@@ -92,6 +82,7 @@ void setShiny(u8* pkmn, const bool shiny);
 void setWC(u8* mainbuf, u8* wc6buf, int game, int i, int nInjected[]);
 void setWC4(u8* mainbuf, u8* wc6buf, int game, int i, int nInjected[], int GBO);
 void setLanguage(u8* mainbuf, int i);
+void setLanguage7(u8* mainbuf, int i);
 void setMoney(u8* mainbuf, u64 i);
 void setItem(u8* mainbuf, int i, u32 values[], int type, int nInjected[], int game);
 void setBP(u8* mainbuf, int i, int game);

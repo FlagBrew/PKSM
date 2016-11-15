@@ -23,6 +23,52 @@
 #include "util.h"
 #include "fill.h"
 
+void findFreeLocationWC(u8 *mainbuf, int game, int nInjected[]) {
+	nInjected[0] = 0;
+	int temp;
+	const int SMWC7POS = 0x65C00 + 0x100;
+	const int ORASWC6POS = 0x1CD00;
+	const int XYWC6POS = 0x1BD00;
+	
+	if (game == GAME_X || game == GAME_Y) {
+		for (int t = 0; t < 24; t++) {
+			temp = 0;
+			for (int j = 0; j < WC6LENGTH; j++)
+				if (*(mainbuf + XYWC6POS + t * WC6LENGTH + j) == 0x00)
+					temp++;
+				
+			if (temp == WC6LENGTH) {
+				nInjected[0] = t;
+				break;
+			}
+		}
+	} else if (game == GAME_OR || game == GAME_AS) {
+		for (int t = 0; t < 24; t++) {
+			temp = 0;
+			for (int j = 0; j < WC6LENGTH; j++)
+				if (*(mainbuf + ORASWC6POS + t * WC6LENGTH + j) == 0x00)
+					temp++;
+				
+			if (temp == WC6LENGTH) {
+				nInjected[0] = t;
+				break;
+			}
+		}
+	} else if (game == GAME_SUN || game == GAME_MOON) {
+		for (int t = 0; t < 48; t++) {
+			temp = 0;
+			for (int j = 0; j < WC6LENGTH; j++)
+				if (*(mainbuf + SMWC7POS + t * WC6LENGTH + j) == 0x00)
+					temp++;
+				
+			if (temp == WC6LENGTH) {
+				nInjected[0] = t;
+				break;
+			}
+		}
+	}
+}
+
 int getN(int i) {
 	if (i == 1)    return 10;
 	if (i == 48)   return 4;
@@ -41,6 +87,19 @@ int getN(int i) {
 }
 
 int getN7(int i) {
+	if (i == 1)    return 10;
+	if (i == 48)   return 4;
+	if (i == 71)   return 5;
+	if (i == 81)   return 11;
+	if (i == 82)   return 6;
+	if (i == 108)  return 2;
+	if (i == 136)  return 4;
+	if (i == 504)  return 2;
+	if (i == 515)  return 2;
+	if (i == 551)  return 2;
+	if (i == 552)  return 2;
+	if (i == 2016) return 3;
+	
 	return 0;
 }
 
@@ -64,6 +123,9 @@ void setBoxBin(u8* mainbuf, int game, int NBOXES, int N, char* path[]) {
 	
 		if (game == GAME_OR || game == GAME_AS) 
 			boxpos = 0x38400 - 0x5400;
+		
+		if (game == GAME_SUN || game == GAME_MOON)
+			boxpos = 0x04E00;
 		
 		memcpy((void*)(mainbuf + boxpos + PKMNLENGTH * 30 * i), (const void*)buf, PKMNLENGTH * N);
 		
@@ -108,11 +170,11 @@ int checkMultipleWC7(u8* mainbuf, int game, int i, int langCont, int nInjected[]
 				break;
 			}
 			case 7 : {
-				// chn
+				snprintf(wc7path, 40, "romfs:/wc7/chs/%d-%d.wc7", i, j + 1);
 				break;
 			}
 			case 8 : {
-				// chn simplified
+				snprintf(wc7path, 40, "romfs:/wc7/cht/%d-%d.wc7", i, j + 1);
 				break;
 			}
 		}
@@ -137,7 +199,7 @@ int checkMultipleWC7(u8* mainbuf, int game, int i, int langCont, int nInjected[]
 		fclose(fptr);
 
 		if (adapt)
-			setLanguage(mainbuf, langCont);
+			setLanguage7(mainbuf, langCont);
 
 		setWC(mainbuf, wc7buf, game, i, nInjected);
 
@@ -352,11 +414,11 @@ void eventDatabase7(u8* mainbuf, int game) {
 						break;
 					}
 					case 7 : {
-						// chn
+						snprintf(testpath, 40, "romfs:/wc7/chs/%d.wc7", i);
 						break;
 					}
 					case 8 : {
-						// chn simplified
+						snprintf(testpath, 40, "romfs:/wc7/cht/%d.wc7", i);
 						break;
 					}
 				}
@@ -401,11 +463,11 @@ void eventDatabase7(u8* mainbuf, int game) {
 								break;
 							}
 							case 7 : {
-								// chn
+								snprintf(testpath, 40, "romfs:/wc7/chs/%d-%d.wc7", i, t + 1);
 								break;
 							}
 							case 8 : {
-								// chn simplified
+								snprintf(testpath, 40, "romfs:/wc7/cht/%d-%d.wc7", i, t + 1);
 								break;
 							}
 						}
@@ -434,13 +496,15 @@ void eventDatabase7(u8* mainbuf, int game) {
 				if (hidKeysDown() & KEY_B) break;
 				
 				if (hidKeysHeld() & KEY_TOUCH) {
-					// if (touch.px > 132 && touch.px < 168 && touch.py > 50 && touch.py < 71 && langVett[0]) langSelected = 0;
-					// if (touch.px > 171 && touch.px < 207 && touch.py > 50 && touch.py < 71 && langVett[1]) langSelected = 1;
-					// if (touch.px > 210 && touch.px < 246 && touch.py > 50 && touch.py < 71 && langVett[2]) langSelected = 2;
-					// if (touch.px > 249 && touch.px < 285 && touch.py > 50 && touch.py < 71 && langVett[3]) langSelected = 3;
-					// if (touch.px > 151 && touch.px < 187 && touch.py > 74 && touch.py < 95 && langVett[4]) langSelected = 4;
-					// if (touch.px > 190 && touch.px < 226 && touch.py > 74 && touch.py < 95 && langVett[5]) langSelected = 5;
-					// if (touch.px > 229 && touch.px < 265 && touch.py > 74 && touch.py < 95 && langVett[6]) langSelected = 6;
+					if (touch.px > 114 && touch.px < 150 && touch.py > 50 && touch.py < 71 && langVett[0]) langSelected = 0;
+					if (touch.px > 153 && touch.px < 189 && touch.py > 50 && touch.py < 71 && langVett[1]) langSelected = 1;
+					if (touch.px > 192 && touch.px < 228 && touch.py > 50 && touch.py < 71 && langVett[2]) langSelected = 2;
+					if (touch.px > 231 && touch.px < 267 && touch.py > 50 && touch.py < 71 && langVett[3]) langSelected = 3;
+					if (touch.px > 270 && touch.px < 306 && touch.py > 50 && touch.py < 71 && langVett[3]) langSelected = 4;
+					if (touch.px > 133 && touch.px < 169 && touch.py > 74 && touch.py < 95 && langVett[4]) langSelected = 5;
+					if (touch.px > 172 && touch.px < 208 && touch.py > 74 && touch.py < 95 && langVett[5]) langSelected = 6;
+					if (touch.px > 211 && touch.px < 247 && touch.py > 74 && touch.py < 95 && langVett[6]) langSelected = 7;
+					if (touch.px > 250 && touch.px < 286 && touch.py > 74 && touch.py < 95 && langVett[6]) langSelected = 8;
 					
 					if (touch.px > 210 && touch.px < 246 && touch.py > 110 && touch.py < 131) {
 						overwrite = true;
@@ -456,8 +520,8 @@ void eventDatabase7(u8* mainbuf, int game) {
 				}
 				
 				if (hidKeysDown() & KEY_START) {
-					//if (nInjected[0] >= 24) 
-					//	nInjected[0] = 0;
+					if (nInjected[0] >= 48) 
+						nInjected[0] = 0;
 					
 					int ret = checkMultipleWC7(mainbuf, game, i, langSelected, nInjected, adapt);
 					if (ret != 0 && ret != 1) {
@@ -500,11 +564,11 @@ void eventDatabase7(u8* mainbuf, int game) {
 							break;
 						}
 						case 7 : {
-							// chn
+							snprintf(wc7path, 30, "romfs:/wc7/chs/%d.wc7", i);
 							break;
 						}
 						case 8 : {
-							// chn simplified
+							snprintf(wc7path, 30, "romfs:/wc7/cht/%d.wc7", i);
 							break;
 						}
 					}
@@ -534,7 +598,7 @@ void eventDatabase7(u8* mainbuf, int game) {
 						findFreeLocationWC(mainbuf, game, nInjected);
 
 					if (adapt)
-						setLanguage(mainbuf, langSelected);
+						setLanguage7(mainbuf, langSelected);
 
 					setWC(mainbuf, wc7buf, game, i, nInjected);
 
@@ -544,7 +608,7 @@ void eventDatabase7(u8* mainbuf, int game) {
 					break;
 				}
 				
-				//printDB7(spriteArray[i], i, langVett, adapt, overwrite, langSelected, nInjected[0]);
+				printDB7(spriteArray[i], i, langVett, adapt, overwrite, langSelected, nInjected[0]);
 			}
 			
 			free(testpath);

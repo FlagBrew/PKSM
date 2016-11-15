@@ -19,8 +19,9 @@
 #include <stdlib.h>
 #include <3ds.h>
 
-#define SMCOUNT 100 // placeholder for now
+#define SMCOUNT 2050
 
+void findFreeLocationWC(u8 *mainbuf, int game, int nInjected[]);
 int getN(int i);
 int getN7(int i);
 void setBoxBin(u8* mainbuf, int game, int NBOXES, int N, char* path[]);
