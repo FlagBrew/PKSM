@@ -36,12 +36,15 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[152] = "0152 - Scrap Masterball"; spriteArray[152] = 0;
 	database[157] = "0157 - Max Revive"; spriteArray[157] = 0;
 	database[158] = "0158 - Masterball"; spriteArray[158] = 0;
+	database[202] = "0202 - SM Revival Herb"; spriteArray[202] = 0;
 	database[518] = "0518 - Heracronite"; spriteArray[518] = 0;
 	database[527] = "0527 - 100 Potions"; spriteArray[527] = 0;
 	database[1022] = "1022 - 100 Potions"; spriteArray[1022] = 0;
 	database[1057] = "1057 - 50 Quick Balls"; spriteArray[1057] = 0;
 	database[1502] = "1502 - Quickballs"; spriteArray[1502] = 0;
 	database[1511] = "1511 - Rare Candy"; spriteArray[1511] = 0;
+	database[1602] = "1602 - SM Quick Balls"; spriteArray[1602] = 0;
+	database[1603] = "1603 - SM Poke Balls"; spriteArray[1603] = 0;
 	database[2040] = "2040 - SM Stardust"; spriteArray[2040] = 0;
 	database[2041] = "2041 - SM Star Piece"; spriteArray[2041] = 0;
 	database[2042] = "2042 - SM Nugget"; spriteArray[2042] = 0;
@@ -282,6 +285,7 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[1514] = "1514 - PGL Miltank"; spriteArray[1514] = 241;
 	database[1515] = "1515 - PGL Garchomp"; spriteArray[1515] = 445;
 	database[1516] = "1516 - PGL N's Darmanitan"; spriteArray[1516] = 555;
+	database[1601] = "1601 - Z-stone Munchlax"; spriteArray[1601] = 446;
 	database[2046] = "2046 - Ash Greninja"; spriteArray[2046] = 658;
 }
 
