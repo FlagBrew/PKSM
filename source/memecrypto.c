@@ -6,6 +6,7 @@
 #include "aes.h"
 #include "sha256.h"
 #include "sha1.h"
+#include "mini-gmp.h"
 
 void sha256(u8 hash[], u8 data[], size_t len) {
 	SHA256_CTX ctx;
