@@ -1,5 +1,5 @@
 /*
-* This file is part of EventAssistant
+* This file is part of PKSM
 * Copyright (C) 2016 Bernardo Giordano
 *
 * This software is provided 'as-is', 

@@ -1,5 +1,5 @@
 /*
-* This file is part of EventAssistant
+* This file is part of PKSM
 * Copyright (C) 2016 Bernardo Giordano
 *
 * This software is provided 'as-is', 
@@ -22,7 +22,6 @@
 #include <time.h>
 #include "spi.h"
 #include "http.h"
-#include "catch.h"
 #include "util.h"
 #include "database.h"
 #include "editor.h"
@@ -391,6 +390,7 @@ int main() {
 										break;
 									}
 									case 2 : {
+										printCredits();
 										break;
 									}
 									case 3 : {
@@ -463,18 +463,18 @@ int main() {
 	}
 	
 	if (save) {
-		if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS || game == GAME_SUN || game == GAME_MOON) 
+		if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS/* || game == GAME_SUN || game == GAME_MOON*/) 
 			infoDisp("Save game.");
 		else if (game == GAME_DIAMOND || game == GAME_PEARL || game == GAME_PLATINUM || game == GAME_HG || game == GAME_SS || game == GAME_B1 || game == GAME_W1 || game == GAME_B2 || game == GAME_W2) 
 			infoDisp("Save game. It will take time...");
 
-		if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS || game == GAME_SUN || game == GAME_MOON || game == GAME_B1 || game == GAME_W1 || game == GAME_B2 || game == GAME_W2) 
+		if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS/* || game == GAME_SUN || game == GAME_MOON*/ || game == GAME_B1 || game == GAME_W1 || game == GAME_B2 || game == GAME_W2) 
 			rewriteCHK(mainbuf, game);
 		else if (game == GAME_DIAMOND || game == GAME_PEARL || game == GAME_PLATINUM || game == GAME_HG || game == GAME_SS) 
 			rewriteCHK4(mainbuf, game, GBO, SBO);
 	}
 	
-	if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS || game == GAME_SUN || game == GAME_MOON) {
+	if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS/* || game == GAME_SUN || game == GAME_MOON*/) {
 		FSFILE_Write(mainHandle, NULL, 0, mainbuf, mainSize, FS_WRITE_FLUSH);
 		FSFILE_Close(mainHandle);
 		if (save)

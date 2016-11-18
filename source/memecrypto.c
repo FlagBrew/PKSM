@@ -1,3 +1,21 @@
+/*
+* This file is part of PKSM
+* Copyright (C) 2016 Bernardo Giordano
+*
+* Code is ported from original implementation of memecrypto, by SciresM and Kaphotics
+*
+* This software is provided 'as-is', 
+* without any express or implied warranty. 
+* In no event will the authors be held liable for any damages 
+* arising from the use of this software.
+*
+* This code is subject to the following restrictions:
+*
+* 1) The origin of this software must not be misrepresented; 
+* 2) You must not claim that you wrote the original software. 
+*
+*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -7,6 +25,7 @@
 #include "sha256.h"
 #include "sha1.h"
 #include "mini-gmp.h"
+#include "rsa.h"
 
 void sha256(u8 hash[], u8 data[], size_t len) {
 	SHA256_CTX ctx;
@@ -27,6 +46,44 @@ void sha1(u8 hash[], u8 data[], size_t len) {
 // RSAEncrypt (only if I don't reach to find ad-hoc libraries to this)
 // ReverseCrypt
 // finish resign
+
+void RSADecrypt(u8 data[], u8 output[]) {
+    mpz_t M;  mpz_init(M);
+    mpz_t C;  mpz_init(C);
+    mpz_t DC;  mpz_init(DC);
+	
+    private_key ku;
+    public_key kp;
+
+    mpz_init(kp.n);
+    mpz_init(kp.e); 
+    mpz_init(ku.n); 
+    mpz_init(ku.e); 
+    mpz_init(ku.d);
+	generate_keys(&ku, &kp);
+	
+	mpz_import(M, sizeof(&data), 1, sizeof(data[0]), 0, 0, data);
+	block_decrypt(DC, C, ku);
+	memcpy(output, (u8*)mpz_get_str(NULL, 16, DC), sizeof(&output));
+}
+
+void RSAEncrypt(u8 data[], u8 output[]) {
+    mpz_t M;  mpz_init(M);
+    mpz_t C;  mpz_init(C);
+	
+    private_key ku;
+    public_key kp;
+
+    mpz_init(kp.n);
+    mpz_init(kp.e); 
+    mpz_init(ku.n); 
+    mpz_init(ku.e); 
+    mpz_init(ku.d);
+	generate_keys(&ku, &kp);
+	mpz_import(M, sizeof(&data), 1, sizeof(data[0]), 0, 0, data);
+	block_encrypt(C, M, kp);
+	memcpy(output, (u8*)mpz_get_str(NULL, 16, C), sizeof(&output));
+}
 
 void Xor(u8 b1[], u8 b2[], u8 output[]) {
 	int sz = sizeof(&b1);

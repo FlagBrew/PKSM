@@ -1,3 +1,19 @@
+/*
+* This file is part of PKSM
+* Copyright (C) 2016 Bernardo Giordano
+*
+* This software is provided 'as-is', 
+* without any express or implied warranty. 
+* In no event will the authors be held liable for any damages 
+* arising from the use of this software.
+*
+* This code is subject to the following restrictions:
+*
+* 1) The origin of this software must not be misrepresented; 
+* 2) You must not claim that you wrote the original software. 
+*
+*/
+
 #pragma once
 
 #include <sf2d.h>
@@ -31,6 +47,8 @@ void progressBar(char* message, u32 pagesize, u32 sz);
 void autoupdaterMenu();
 int giveTransparence();
 void printPSDates();
+void printCredits();
+void printTitle(const char* title);
 void gameSelectorMenu(int n);
 void mainMenu(int currentEntry);
 void mainMenuDS(int currentEntry);
@@ -40,6 +58,7 @@ void printDistribution(char *url);
 void printDatabase6(char *database[], int currentEntry, int page, int spriteArray[]);
 void printDatabase5(char *database[], int currentEntry, int page, int spriteArray[], bool isSelected, int langSelected, bool langVett[]);
 void printDatabase4(char *database[], int currentEntry, int page, int spriteArray[], bool isSelected, int langSelected, bool langVett[]);
+void printDB7(int sprite, int i, bool langVett[], bool adapt, bool overwrite, int langSelected, int nInjected);
 void printDB6(int sprite, int i, bool langVett[], bool adapt, bool overwrite, int langSelected, int nInjected);
 void printEditor(int currentEntry, int langCont, int badgeCont);
 void printPKViewer(u8* mainbuf, int game, int currentEntry, int page, bool cloning);

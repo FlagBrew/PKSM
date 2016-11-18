@@ -1,5 +1,5 @@
 /*
-* This file is part of EventAssistant
+* This file is part of PKSM
 * Copyright (C) 2016 Bernardo Giordano
 *
 * This software is provided 'as-is', 
@@ -37,6 +37,7 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[157] = "0157 - Max Revive"; spriteArray[157] = 0;
 	database[158] = "0158 - Masterball"; spriteArray[158] = 0;
 	database[202] = "0202 - SM Revival Herb"; spriteArray[202] = 0;
+	database[210] = "Placeholder";
 	database[518] = "0518 - Heracronite"; spriteArray[518] = 0;
 	database[527] = "0527 - 100 Potions"; spriteArray[527] = 0;
 	database[1022] = "1022 - 100 Potions"; spriteArray[1022] = 0;
@@ -286,6 +287,7 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[1515] = "1515 - PGL Garchomp"; spriteArray[1515] = 445;
 	database[1516] = "1516 - PGL N's Darmanitan"; spriteArray[1516] = 555;
 	database[1601] = "1601 - Z-stone Munchlax"; spriteArray[1601] = 446;
+	database[1610] = "Placeholder";
 	database[2046] = "2046 - Ash Greninja"; spriteArray[2046] = 658;
 }
 

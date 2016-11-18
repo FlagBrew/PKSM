@@ -1,9 +1,9 @@
 /*
-* This file is part of EventAssistant
+* This file is part of PKSM
 * Copyright (C) 2016 Bernardo Giordano
 *
 * It contains mostly works from TuxSH's TWLSaveTool, 
-* that has been simplified and adapted for EventAssistant's purpose.
+* that has been simplified and adapted for PKSM's purpose.
 *
 * This software is provided 'as-is', 
 * without any express or implied warranty. 

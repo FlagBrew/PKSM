@@ -1,5 +1,5 @@
 /*
-* This file is part of EventAssistant
+* This file is part of PKSM
 * Copyright (C) 2016 Bernardo Giordano
 *
 * Credits to SlashCash & PCHex++ for lots of functions redistributed in this software.
@@ -670,10 +670,11 @@ void setItem(u8* mainbuf, int type, int game) {
 	if (game == GAME_OR || game == GAME_AS) {
 		char* paths[] = {"romfs:/misc/oras/base.bin", "romfs:/misc/oras/heals.bin", "romfs:/misc/oras/berries.bin"};
 		u32 offset[] = { 0x400, 0xD72, 0xE70 };
-
 		injectFromFile(mainbuf, paths[type], offset[type]);
 	} else if (game == GAME_X || game == GAME_Y) {
-
+		char* paths[] = {"romfs:/misc/xy/base.bin", "romfs:/misc/xy/heals.bin", "romfs:/misc/xy/berries.bin"};
+		u32 offset[] = { 0x400, 0xD6A, 0xE68 };
+		injectFromFile(mainbuf, paths[type], offset[type]);
 	} else if (game == GAME_SUN || game == GAME_MOON) {
 
 	}
@@ -717,7 +718,7 @@ void setTM(u8* mainbuf, int game) {
 	if (game == GAME_OR || game == GAME_AS)
 		injectFromFile(mainbuf, "romfs:/misc/oras/tm.bin", 0xBC0);
 	else if (game == GAME_X || game == GAME_Y)
-		injectFromFile(mainbuf, "romfs:/misc/xy/tm.bin", 0x0);
+		injectFromFile(mainbuf, "romfs:/misc/xy/tm.bin", 0xBC0);
 	else if (game == GAME_SUN || game == GAME_MOON)
 		injectFromFile(mainbuf, "romfs:/misc/sm/tm.bin", 0x0);
 }
