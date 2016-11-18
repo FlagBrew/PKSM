@@ -14,6 +14,12 @@ Formerly known as **EventAssistant**, this app allows you to:
 * more to discover!
 
 ---
+
+<img src="http://i.imgur.com/8bEucGD.jpg" width="400" /> <img src="http://i.imgur.com/54DGcsk.jpg" width="400" />
+<img src="http://i.imgur.com/VKdTKZb.jpg" width="400" /> <img src="http://i.imgur.com/FpqDecP.jpg" width="400" />
+<img src="http://i.imgur.com/txwEZQ2.jpg" width="400" /> <img src="http://i.imgur.com/msspq0G.jpg" width="400" />
+
+---
  
 **Thanks to**:
 
