@@ -6,7 +6,7 @@
 
 void bank(u8* mainbuf, int game) {
 	// loading bank data
-	FILE *fptr = fopen("/3ds/data/EventAssistant/bank/bank.bin", "rt");
+	FILE *fptr = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
 	fseek(fptr, 0, SEEK_END);
 	u8 *bankbuf = (u8*)malloc(30 * BANKBOXMAX * PKMNLENGTH * sizeof(u8));
 	if (bankbuf == NULL) {
@@ -207,7 +207,7 @@ void bank(u8* mainbuf, int game) {
 		printPKBank(bankbuf, mainbuf, pkmn, game, currentEntry, box, isBank);
 	}
 	
-	FILE *new = fopen("/3ds/data/EventAssistant/bank/bank.bin", "wb");
+	FILE *new = fopen("/3ds/data/PKSM/bank/bank.bin", "wb");
 	fwrite(bankbuf, 1, 30 * BANKBOXMAX * PKMNLENGTH, new);
 	fclose(new);
 	

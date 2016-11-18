@@ -62,30 +62,30 @@ void initServices() {
 
 	mkdir("sdmc:/3ds", 0777);
 	mkdir("sdmc:/3ds/data", 0777);
-	mkdir("sdmc:/3ds/data/EventAssistant", 0777);
-	mkdir("sdmc:/3ds/data/EventAssistant/builds", 0777);
-	mkdir("sdmc:/3ds/data/EventAssistant/bank", 0777);
-	mkdir("sdmc:/3ds/data/EventAssistant/backup", 0777);
+	mkdir("sdmc:/3ds/data/PKSM", 0777);
+	mkdir("sdmc:/3ds/data/PKSM/builds", 0777);
+	mkdir("sdmc:/3ds/data/PKSM/bank", 0777);
+	mkdir("sdmc:/3ds/data/PKSM/backup", 0777);
 	
 	loadPersonal();
 	
 	u32 size = BANKBOXMAX * 30 * PKMNLENGTH;
 	u8* bankbuf = (u8*)malloc(size * sizeof(u8));
 		
-	FILE *bank = fopen("/3ds/data/EventAssistant/bank/bank.bin", "rt");
+	FILE *bank = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
 	if (bank == NULL) {
 		fclose(bank);
 		memset(bankbuf, 0, size);
-		FILE *new = fopen("/3ds/data/EventAssistant/bank/bank.bin", "wb");
+		FILE *new = fopen("/3ds/data/PKSM/bank/bank.bin", "wb");
 		fwrite(bankbuf, 1, size, new);
 		fclose(new);
 	}
-	FILE *bak = fopen("/3ds/data/EventAssistant/bank/bank.bin", "rt");
+	FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
 	fseek(bak, 0, SEEK_END);
 	rewind(bak);
 	fread(bankbuf, size, 1, bak);
 	fclose(bak);
-	FILE *new = fopen("/3ds/data/EventAssistant/bank/bank.bak", "wb");
+	FILE *new = fopen("/3ds/data/PKSM/bank/bank.bak", "wb");
 	fwrite(bankbuf, 1, size, new);
 	fclose(new);
 	
@@ -199,7 +199,7 @@ int main() {
 	
 	time_t unixTime = time(NULL);
 	struct tm* timeStruct = gmtime((const time_t *)&unixTime);		
-	snprintf(bakpath, 80, "/3ds/data/EventAssistant/backup/main_%s_%i-%i-%i-%02i%02i%02i", gamesList[game], timeStruct->tm_mday, timeStruct->tm_mon + 1, timeStruct->tm_year + 1900, timeStruct->tm_hour, timeStruct->tm_min, timeStruct->tm_sec);
+	snprintf(bakpath, 80, "/3ds/data/PKSM/backup/main_%s_%i-%i-%i-%02i%02i%02i", gamesList[game], timeStruct->tm_mday, timeStruct->tm_mon + 1, timeStruct->tm_year + 1900, timeStruct->tm_hour, timeStruct->tm_min, timeStruct->tm_sec);
 	
 	FILE *f = fopen(bakpath, "wb");
 	fwrite(mainbuf, 1, mainSize, f);
@@ -281,15 +281,15 @@ int main() {
 										break;
 									}
 									case 1 : {
-										printDistribution("https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/worldwide1.txt");
+										printDistribution("https://raw.githubusercontent.com/BernardoGiordano/PKSM/master/resources/worldwide1.txt");
 										break;
 									}
 									case 2 : {
-										printDistribution("https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/worldwide2.txt");
+										printDistribution("https://raw.githubusercontent.com/BernardoGiordano/PKSM/master/resources/worldwide2.txt");
 										break;
 									}
 									case 3 : {
-										printDistribution("https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/local.txt");
+										printDistribution("https://raw.githubusercontent.com/BernardoGiordano/PKSM/master/resources/local.txt");
 										break;
 									}
 								}

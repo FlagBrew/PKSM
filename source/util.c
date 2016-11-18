@@ -85,13 +85,13 @@ int autoupdater() {
 	char* ver = (char*)malloc(6 * sizeof(u8));
 	snprintf(ver, 6, "%d.%d.%d", V1, V2, V3);
 
-	Result ret = downloadFile("https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/resources/ver.ver", "/3ds/data/EventAssistant/builds/ver.ver");
+	Result ret = downloadFile("https://raw.githubusercontent.com/BernardoGiordano/PKSM/master/resources/ver.ver", "/3ds/data/PKSM/builds/ver.ver");
 	if (ret != 0) {
 		free(ver);
 		return 1;
 	}
 
-	FILE *fptr = fopen("3ds/data/EventAssistant/builds/ver.ver", "rt");
+	FILE *fptr = fopen("3ds/data/PKSM/builds/ver.ver", "rt");
 	if (fptr == NULL) {
 		fclose(fptr);
 		free(ver);
@@ -110,7 +110,7 @@ int autoupdater() {
 	fread(verbuf, contentsize, 1, fptr);
 	fclose(fptr);
 
-	remove("/3ds/data/EventAssistant/builds/ver.ver");
+	remove("/3ds/data/PKSM/builds/ver.ver");
 
 	for (int i = 0; i < 5; i++)
 		if (*(ver + i) == *(verbuf + i))
@@ -127,13 +127,13 @@ int autoupdater() {
 }
 
 void update() {
-	char *ciaUrl = "https://raw.githubusercontent.com/BernardoGiordano/EventAssistant/master/EventAssistant/EventAssistant.cia";
+	char *ciaUrl = "https://raw.githubusercontent.com/BernardoGiordano/PKSM/master/PKSM/PKSM.cia";
 	char *ciaPath = (char*)malloc(100 * sizeof(char));
 
 	time_t unixTime = time(NULL);
 	struct tm* timeStruct = gmtime((const time_t *)&unixTime);
 
-	snprintf(ciaPath, 100, "/3ds/data/EventAssistant/builds/EventAssistant_%i-%i-%i-%02i%02i%02i.cia", timeStruct->tm_mday, timeStruct->tm_mon + 1,  timeStruct->tm_year + 1900, timeStruct->tm_hour, timeStruct->tm_min, timeStruct->tm_sec);
+	snprintf(ciaPath, 100, "/3ds/data/PKSM/builds/PKSM_%i-%i-%i-%02i%02i%02i.cia", timeStruct->tm_mday, timeStruct->tm_mon + 1,  timeStruct->tm_year + 1900, timeStruct->tm_hour, timeStruct->tm_min, timeStruct->tm_sec);
 
 	freezeMsg("Downloading latest build...");
 	Result ret = downloadFile(ciaUrl, ciaPath);
