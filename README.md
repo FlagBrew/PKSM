@@ -1,44 +1,51 @@
-# EventAssistant 
+# PKSM
 
-*AIO tool for HeartGold/SoulSilver, Black/White, Black2/White2, X/Y, OmegaRuby/AlphaSapphire... and more.*
+*AIO save editor for NDS/3DS pkmn games*
 
 ---
 
-README will be updated when the stable release will be available. There's ***3.0.beta*** available for download.
+Formerly known as **EventAssistant**, this app allows you to:
+
+* **Inject more than 1660 wondercards** in your games, from **HGSS to XYORAS** (and will support Sun/Moon soon);
+* **Edit your boxes and clone** stuff with a intuitive touch interface;
+* **Free integrated bank** with **up to 150 boxes** to store your stuff offline;
+* Editor to **set money, items** and much more;
+* Multiple functions to check which event distribution is active;
+* more to discover!
 
 ---
  
 **Thanks to**:
 
-* dsoldier for the gorgeous graphic
+* @dsoldier for the gorgeous graphic work
 * Smealum for ctrulib, Xerpi for sf2d
 * Kaphotics for PKHeX and being an awesome guy
-* J-K-D for direct import/export and being an awesome guy
-* Slashcash for PCHex++ and lots of source code
-* TuxSH for TWLSaveTool and spi.c
+* J-K-D for direct save import/export and being awesome
+* Slashcash for PCHex++ and Strackeror for PCHex
+* Gocario for PKBrew
+* TuxSH for TWLSaveTool
 * MarcusD for romfs support
-* Nba_Yoh for the received flag issue
+* Nba_Yoh for received flags fix
 * Hamcha for cybertrust.h and digicert.h
-* PPorg for most of wc6s
-* Simona Mastroianni and Carlo Fey for fill.c work
-* Federico, YodaDaCoda, /u/SatansRoommate, for testing builds
-* Alex Morente, Immersion, Hat3Mond4ys, sgtkwol for database entries
-* Paul G, Kian Josh King for a few wc6
-* Majickhat55 for Entree Forest, Dream Radar collection and database entries
+* PPorg for most of wc6/wc7 included here
+* Simona, Carlo, Matteo for fill.c work
+* Shai, Federico, YodaDaCoda, /u/SatansRoommate for tests
+* Alex, Immersion, Hat3Mond4ys, sgtkwol for descriptions
+* Paul, Kian for a few wc6
+* Majickhat55 for few collections and descriptions
 * Poutros for N's collection
-* Shai for the icon and Fabrizio for the name
 
 ---
 
 # How to compile it?
 
-You can't compile it at the moment because it will be closed source until the stable release come out, but prepare your environment to support ctrulib, sftd, sf2d, sfil and Xerpi's portlibs.
+You need latest ctrulib, sf2d, sftd, sfil, citro3d and Xerpi's portlibs. You need a rsf template to be able to compile a .cia build.
 
 ---
 
 # License
 
-This file is part of EventAssistant
+This file is part of PKSM
 
 Copyright (C) 2016 Bernardo Giordano
 

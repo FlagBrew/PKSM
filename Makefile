@@ -32,10 +32,10 @@ SOURCES		    :=	source
 DATA		    :=	data
 INCLUDES	    :=	inc
 ROMFS	            :=  assets/romfs
-APP_TITLE       :=  "Event Assistant"
-APP_DESCRIPTION :=  "A NDS/3DS Pokémon save editor"
+APP_TITLE       :=  "PKSM"
+APP_DESCRIPTION :=  "A NDS/3DS Pokemon save editor"
 APP_AUTHOR      :=  "Bernardo Giordano"
-APP_PRODUCT_CODE:=  CTR-HB-EVAS
+APP_PRODUCT_CODE:=  CTR-HB-PKSM
 APP_UNIQUE_ID   :=  0xEC100
 ICON            :=  assets/icon.png
 
@@ -169,15 +169,15 @@ $(OUTPUT).elf	:	$(OFILES)
 #$(TOPDIR)/assets/banner.bin: $(TOPDIR)/assets/banner.png $(TOPDIR)/assets/banner.wav
 #	@bannertool makebanner -i $(TOPDIR)/assets/banner.png -a $(TOPDIR)/assets/banner.wav -o $(TOPDIR)/assets/banner.bin
 
-$(TOPDIR)/assets/icon.bin: $(TOPDIR)/assets/icon.png
-	@bannertool makesmdh -s "$(APP_TITLE)" -l "$(APP_DESCRIPTION)" -p "$(APP_AUTHOR)" -i $(TOPDIR)/assets/icon.png -o $(TOPDIR)/assets/icon.bin
+#$(TOPDIR)/assets/icon.bin: $(TOPDIR)/assets/icon.png
+#	@bannertool makesmdh -s "$(APP_TITLE)" -l "$(APP_DESCRIPTION)" -p "$(APP_AUTHOR)" -i $(TOPDIR)/assets/icon.png -o $(TOPDIR)/assets/icon.bin
 
 $(OUTPUT)_stripped.elf: $(OUTPUT).elf
 	@cp $(OUTPUT).elf $(OUTPUT)_stripped.elf
 	@$(PREFIX)strip $(OUTPUT)_stripped.elf
 
-$(OUTPUT).cia: $(OUTPUT)_stripped.elf $(TOPDIR)/assets/banner.bin $(TOPDIR)/assets/icon.bin
-	@makerom -f cia -o $(OUTPUT).cia -rsf $(TOPDIR)/assets/cia.rsf -target t -exefslogo -elf $(OUTPUT)_stripped.elf -icon $(TOPDIR)/assets/icon.bin -banner $(TOPDIR)/assets/banner.bin -DAPP_TITLE="$(APP_TITLE)" -DAPP_PRODUCT_CODE="$(APP_PRODUCT_CODE)" -DAPP_UNIQUE_ID="$(APP_UNIQUE_ID)" -DAPP_ROMFS="$(TOPDIR)/$(ROMFS)"
+$(OUTPUT).cia: $(OUTPUT)_stripped.elf $(TOPDIR)/assets/banner.bin $(TOPDIR)/assets/icon.icn
+	@makerom -f cia -o $(OUTPUT).cia -rsf $(TOPDIR)/assets/cia.rsf -target t -exefslogo -elf $(OUTPUT)_stripped.elf -icon $(TOPDIR)/assets/icon.icn -banner $(TOPDIR)/assets/banner.bin -DAPP_TITLE="$(APP_TITLE)" -DAPP_PRODUCT_CODE="$(APP_PRODUCT_CODE)" -DAPP_UNIQUE_ID="$(APP_UNIQUE_ID)" -DAPP_ROMFS="$(TOPDIR)/$(ROMFS)"
 	@echo "built ... $(notdir $@)"
 
 #---------------------------------------------------------------------------------
