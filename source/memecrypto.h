@@ -1,19 +1,21 @@
-/*
-* This file is part of PKSM
-* Copyright (C) 2016 Bernardo Giordano
-*
-* This software is provided 'as-is', 
-* without any express or implied warranty. 
-* In no event will the authors be held liable for any damages 
-* arising from the use of this software.
-*
-* This code is subject to the following restrictions:
-*
-* 1) The origin of this software must not be misrepresented; 
-* 2) You must not claim that you wrote the original software. 
-*
-*/
+#ifndef _MEMECRYPTO_H_
+#define _MEMECRYPTO_H_
 
+#include <string.h>
 #include <3ds.h>
+#include "aes.h"
+#include "rsa.h"
+#include "sha1.h"
+#include "sha256.h"
 
-void resign(u8* mainbuf);
+#define MEME_LEN 0x60
+
+void memecrypto_aes_encrypt(unsigned char *buf, unsigned char *output, unsigned char *key);
+void memecrypto_aes_decrypt(unsigned char *buf, unsigned char *output, unsigned char *key);
+
+int memecrypto_sign(unsigned char *input, unsigned char *output, int len);
+int memecrypto_verify(unsigned char *input, unsigned char *output, int len);
+
+void resign(u8 *mainbuf);
+
+#endif //_MEMECRYPTO_H_

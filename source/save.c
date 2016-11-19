@@ -288,11 +288,11 @@ void rewriteCHK(u8 *mainbuf, int game) {
 		}
 		
 	else if (game == GAME_SUN || game == GAME_MOON) {
-		for (u32 i = 0; i < blockCount; i++) {
-			memcpy(tmp, mainbuf + CHKOffset(i, game), CHKLength(i, game));
-			cs = check16(tmp, getBlockID(mainbuf, csoff, i), CHKLength(i, game));
-			memcpy(mainbuf + csoff + i * 8, &cs, 2);
-		}
+		// for (u32 i = 0; i < blockCount; i++) {
+			// memcpy(tmp, mainbuf + CHKOffset(i, game), CHKLength(i, game));
+			// cs = check16(tmp, getBlockID(mainbuf, csoff, i), CHKLength(i, game));
+			// memcpy(mainbuf + csoff + i * 8, &cs, 2);
+		// }
 		
 		resign(mainbuf);
 	}
