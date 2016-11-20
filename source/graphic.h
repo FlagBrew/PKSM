@@ -42,6 +42,7 @@ void GUIGameElementsExit();
 void GUIElementsExit();
 void init_font_cache();
 void infoDisp(char* message);
+int confirmDisp(char* message);
 void freezeMsg(char* message);
 void progressBar(char* message, u32 pagesize, u32 sz);
 void autoupdaterMenu();

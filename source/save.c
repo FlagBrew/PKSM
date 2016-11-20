@@ -145,7 +145,7 @@ u32 CHKOffset(u32 i, int game) {
 		return _oras[i] - 0x5400;
 	}
 	else if (game == GAME_SUN || game == GAME_MOON) {
-		const u32 _sm[] = { 0x00000, 0x00E00, 0x01200, 0x01400, 0x01C00, 0x02A00, 0x03A00, 0x03E00, 0x04000, 0x04200, 0x04600, 0x04800, 0x04E00, 0x3B400, 0x40C00, 0x65C00, 0x6B400, 0x6B800 };
+		const u32 _sm[] = { 0x00000, 0x00E00, 0x01000, 0x01200, 0x01400, 0x01C00, 0x02A00, 0x03A00, 0x03E00, 0x04000, 0x04200, 0x04400, 0x04600, 0x04800, 0x04E00, 0x3B400, 0x40C00, 0x40E00, 0x42000, 0x43C00, 0x4A200, 0x50800, 0x54200, 0x54400, 0x54600, 0x64C00, 0x65000, 0x65C00, 0x69C00, 0x6A000, 0x6A800, 0x6AA00, 0x6B200, 0x6B400, 0x6B600, 0x6B800, 0x6BA00 };
 		return _sm[i];
 	}
 	else if (game == GAME_B1 || game == GAME_W1) {
@@ -169,7 +169,7 @@ u32 CHKLength(u32 i, int game) {
 		return _oras[i];
 	}
 	else if (game == GAME_SUN || game == GAME_MOON) {
-		const u32 _sm[] = { 0x00DE0, 0x0007C, 0x000C0, 0x0061C, 0x00E00, 0x00F78, 0x00228, 0x00104, 0x00200, 0x00020, 0x00058, 0x005E6, 0x36600, 0x0572C, 0x00008, 0x03F50, 0x00200, 0x001C8 };
+		const u32 _sm[] = { 0xDE0, 0x07C, 0x014, 0x0C0, 0x61C, 0xE00, 0xF78, 0x228, 0x104, 0x200, 0x020, 0x004, 0x058, 0x5E6, 0x36600, 0x572C, 0x008, 0x1080, 0x1A08, 0x6408, 0x6408, 0x3998, 0x100, 0x100, 0x10528, 0x204, 0xB60, 0x3F50, 0x358, 0x728, 0x200, 0x718, 0x1FC, 0x200, 0x120, 0x1C8, 0x200 };
 		return _sm[i];
 	}
 	else if (game == GAME_W1 || game == GAME_B1) {
@@ -183,9 +183,9 @@ u32 CHKLength(u32 i, int game) {
 	else return 0;
 }
 
-u32 getBlockID(u8* mainbuf, int csoff, u32 i) {
-	u32 id;
-	memcpy(&id, &mainbuf[csoff + 8 * i + 4], sizeof(u32));
+u16 getBlockID(u8* mainbuf, int csoff, u32 i) {
+	u16 id;
+	memcpy(&id, &mainbuf[csoff + 8 * i - 2], sizeof(u16));
 	return id;
 }
 
@@ -233,13 +233,15 @@ u16 ccitt16(u8* data, u32 len) {
 }
 
 u16 check16(u8 data[], u32 blockID, u32 len) {
+	u16 initial = 0;
+	
 	if (blockID == 36) {
 		u8 tmp[0x80];
 		memset(tmp, 0, 0x80);
 		memcpy(&data[0x100], tmp, 0x80);
 	}
 
-	u16 chk = 0;
+	u16 chk = ~initial;
 	
 	if (len > 1) {
 		int ofs = -1;
@@ -256,7 +258,7 @@ u16 check16(u8 data[], u32 blockID, u32 len) {
 	if (len > 0)
 		chk = (crc16[(data[len - 1] ^ chk) & 0xFF] ^ chk >> 8);
 
-	return chk;
+	return ~chk;
 }
 
 void rewriteCHK(u8 *mainbuf, int game) {
@@ -276,7 +278,7 @@ void rewriteCHK(u8 *mainbuf, int game) {
 	}
 	
 	else if (game == GAME_SUN || game == GAME_MOON) {
-		blockCount = 18;
+		blockCount = 37;
 		csoff = 0x6BE00 - 0x200 + 0x10 + 0x0A;
 	}
 
@@ -288,11 +290,11 @@ void rewriteCHK(u8 *mainbuf, int game) {
 		}
 		
 	else if (game == GAME_SUN || game == GAME_MOON) {
-		// for (u32 i = 0; i < blockCount; i++) {
-			// memcpy(tmp, mainbuf + CHKOffset(i, game), CHKLength(i, game));
-			// cs = check16(tmp, getBlockID(mainbuf, csoff, i), CHKLength(i, game));
-			// memcpy(mainbuf + csoff + i * 8, &cs, 2);
-		// }
+		for (u32 i = 0; i < blockCount; i++) {
+			memcpy(tmp, mainbuf + CHKOffset(i, game), CHKLength(i, game));
+			cs = check16(tmp, getBlockID(mainbuf, csoff, i), CHKLength(i, game));
+			memcpy(mainbuf + csoff + i * 8, &cs, 2);
+		}
 		
 		resign(mainbuf);
 	}

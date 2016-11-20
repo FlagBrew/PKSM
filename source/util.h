@@ -20,8 +20,8 @@
 #include <3ds.h>
 
 #define V1 3
-#define V2 0
-#define V3 2
+#define V2 1
+#define V3 0
 
 #define DAY 12
 #define MONTH 9

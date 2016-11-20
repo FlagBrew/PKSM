@@ -23,11 +23,6 @@
 #include "util.h"
 #include "save.h"
 
-#define BALLS 25
-#define ITEM 18
-#define HEAL 26
-#define BERRIES 64
-
 /* ************************ local variables ************************ */
 
 const int SMWC7FLAGPOS = 0x65C00;
@@ -655,7 +650,7 @@ void setLanguage(u8* mainbuf, int game, int i) {
 }
 
 void setMoney(u8* mainbuf, int game, u64 i) {
-	if (game < 4)
+	if (game < 4) {
 		switch (i) {
 			case 9999999 : {
 				*(mainbuf + MONEYPOS)     = 0x7F;
@@ -664,6 +659,17 @@ void setMoney(u8* mainbuf, int game, u64 i) {
 				break;
 			}
 		}
+	}
+	else {
+		switch (i) {
+			case 9999999 : {
+				*(mainbuf + 0x4004)     = 0x7F;
+				*(mainbuf + 0x4004 + 1) = 0x96;
+				*(mainbuf + 0x4004 + 2) = 0x98;
+				break;
+			}
+		}		
+	}
 }
 
 void setItem(u8* mainbuf, int type, int game) {
@@ -776,8 +782,11 @@ void saveFileEditor(u8* mainbuf, int game) {
 					break;
 				}
 				case 1 : {
-					setBP(mainbuf, 9999, game);
-					infoDisp("Battle Points set successfully!");
+					if (game < 4) {
+						setBP(mainbuf, 9999, game);
+						infoDisp("Battle Points set successfully!");
+					} else
+						infoDisp("Not currently available for SM");
 					break;
 				}
 				case 2 : {
@@ -785,13 +794,19 @@ void saveFileEditor(u8* mainbuf, int game) {
 					break;
 				}
 				case 3 : {
-					setItem(mainbuf, 1, game);
-					infoDisp("Heals injected successfully!");
+					if (game < 4) {
+						setItem(mainbuf, 1, game);
+						infoDisp("Heals injected successfully!");
+					} else
+						infoDisp("Not currently available for SM");
 					break;
 				}
 				case 4 : {
-					setItem(mainbuf, 0, game);
-					infoDisp("Items injected successfully!");
+					if (game < 4) {
+						setItem(mainbuf, 0, game);
+						infoDisp("Items injected successfully!");
+					} else
+						infoDisp("Not currently available for SM");
 					break;
 				}
 				case 5 : {
@@ -800,13 +815,19 @@ void saveFileEditor(u8* mainbuf, int game) {
 					break;
 				}
 				case 6 : {
-					setBadges(mainbuf, game, badgeCont);
-					infoDisp("Badges set successfully!");
+					if (game < 4) {
+						setBadges(mainbuf, game, badgeCont);
+						infoDisp("Badges set successfully!");
+					} else
+						infoDisp("Not currently available for SM");
 					break;
 				}
 				case 7 : {
-					setTM(mainbuf, game);
-					infoDisp("TMs set successfully!");
+					if (game < 4) {
+						setTM(mainbuf, game);
+						infoDisp("TMs set successfully!");
+					} else
+						infoDisp("Not currently available for SM");
 					break;
 				}
 				case 8 : {
@@ -825,8 +846,11 @@ void saveFileEditor(u8* mainbuf, int game) {
 					break;
 				}
 				case 9 : {
-					setItem(mainbuf, 2, game);
-					infoDisp("Berries set successfully!");
+					if (game < 4) {
+						setItem(mainbuf, 2, game);
+						infoDisp("Berries set successfully!");
+					} else
+						infoDisp("Not currently available for SM");
 					break;
 				}
 			}

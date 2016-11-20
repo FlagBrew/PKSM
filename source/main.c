@@ -68,7 +68,7 @@ void initServices() {
 	
 	loadPersonal();
 	
-	u32 size = BANKBOXMAX * 30 * PKMNLENGTH;
+	u32 size = BANKBOXMAX * 30 * PKMNLENGTH; // this is default size
 	u8* bankbuf = (u8*)malloc(size * sizeof(u8));
 		
 	FILE *bank = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");

@@ -1,6 +1,7 @@
 @dsoldier for the gorgeous graphic work
 Smealum for ctrulib, Xerpi for sf2d
 Kaphotics for PKHeX and being an awesome guy
+SciresM for C-memecrypto, you rock man
 J-K-D for direct save import/export and being awesome
 Slashcash for PCHex++ and Strackeror for PCHex
 Gocario for PKBrew

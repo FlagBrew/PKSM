@@ -220,6 +220,27 @@ void infoDisp(char* message) {
 	}
 }
 
+int confirmDisp(char* message) {
+	while (aptMainLoop()) {
+		hidScanInput();
+
+		if (hidKeysDown() & KEY_A) return 1;
+		if (hidKeysDown() & KEY_B) return 0;
+		
+		sf2d_start_frame(GFX_TOP, GFX_LEFT);
+			sf2d_draw_texture(warningTopTrasp, 0, 0);
+			sftd_draw_text(fontBold15, (400 - sftd_get_text_width(fontBold15, 15, message)) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, message);
+			sftd_draw_text(fontBold12, (400 - sftd_get_text_width(fontBold12, 12, "Press A to continue, B to cancel.")) / 2, 130, WHITE, 12, "Press A to continue, B to cancel.");
+		sf2d_end_frame();
+		
+		sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
+			sf2d_draw_texture(warningBottomTrasp, 0, 0);
+		sf2d_end_frame();
+		sf2d_swapbuffers();
+	}
+	return 0;
+}
+
 void freezeMsg(char* message) {
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		sf2d_draw_texture(warningTopTrasp, 0, 0);
@@ -400,7 +421,7 @@ void printCredits() {
 		sf2d_start_frame(GFX_TOP, GFX_LEFT);
 			sf2d_draw_texture(cleanTop, 0, 0);
 			printTitle("Credits");
-			sftd_draw_text(fontBold11, 32, 33,  DARKGREY, 11, (char*)buf);
+			sftd_draw_text(fontBold11, 32, 29,  DARKGREY, 11, (char*)buf);
 		sf2d_end_frame();
 
 		sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
@@ -1322,6 +1343,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 	char* page = (char*)malloc(9 * sizeof(char));
 	char* entries[13] = {"Species:", "Level:", "OT:", "Nickname:", "Nature:", "Ability:", "Item:", "Shiny:", "Pokerus:", "Friendship:", "TID:", "SID:", "Hidden Power:"};
 	char* values[6] = {"HP:", "Attack:", "Defence:", "Sp. Atk.:", "Sp. Def.:", "Speed:"};
+	
 	if (isBank) snprintf(page, 9, "Bank %d", box + 1);
 	else snprintf(page, 9, "Save %d", box + 1);
 	
@@ -1481,8 +1503,9 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 		sf2d_draw_texture(bottomButton, 214, 108);
 		sftd_draw_text(fontBold12, 214 + (106 - sftd_get_text_width(fontBold12, 12, "A: BUFFER")) / 2, 19, BLACK, 12, "A: BUFFER");
 		sftd_draw_text(fontBold12, 214 + (106 - sftd_get_text_width(fontBold12, 12, "X: SWITCH B/S")) / 2, 51, BLACK, 12, "X: SWITCH B/S");
+		
 		sftd_draw_text(fontBold12, 214 + (106 - sftd_get_text_width(fontBold12, 12, "CLEAN")) / 2, 83, BLACK, 12, "CLEAN");
-		sftd_draw_text(fontBold12, 214 + (106 - sftd_get_text_width(fontBold12, 12, "SHIFT")) / 2, 115, BLACK, 12, "SHIFT");
+		sftd_draw_text(fontBold12, 214 + (106 - sftd_get_text_width(fontBold12, 12, "SWAP")) / 2, 115, BLACK, 12, "SWAP");
 
 		sf2d_draw_texture(pokemonBufferBox, 238, 150);
 		u16 n = getPokedexNumber(pkmnbuf);

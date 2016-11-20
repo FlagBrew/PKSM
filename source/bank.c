@@ -23,14 +23,21 @@
 void bank(u8* mainbuf, int game) {
 	FILE *fptr = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
 	fseek(fptr, 0, SEEK_END);
-	u8 *bankbuf = (u8*)malloc(30 * BANKBOXMAX * PKMNLENGTH * sizeof(u8));
+	u32 size = ftell(fptr);
+	
+	if (size % (30 * PKMNLENGTH)) {
+		fclose(fptr);
+		infoDisp("Bank.bin has a bad size!");
+		return;
+	}
+	u8 *bankbuf = (u8*)malloc(size * sizeof(u8));
 	if (bankbuf == NULL) {
 		fclose(fptr);
 		free(bankbuf);
 		return;
 	}
 	rewind(fptr);
-	fread(bankbuf, 30 * BANKBOXMAX * PKMNLENGTH, 1, fptr);
+	fread(bankbuf, size, 1, fptr);
 	fclose(fptr);
 	
 	int boxmax = (game < 4) ? 30 : 31;
@@ -60,7 +67,7 @@ void bank(u8* mainbuf, int game) {
 			pastbox = temp;
 			
 			if (!(isBank)) {
-				boxmax = BANKBOXMAX - 1;
+				boxmax = size / (30 * PKMNLENGTH) - 1;
 				isBank = true;
 			}
 			else {
@@ -91,11 +98,13 @@ void bank(u8* mainbuf, int game) {
 			}
 			
 			if ((touch.px > 214 && touch.px < 320 && touch.py > 76 && touch.py < 106) && !(isBufferized)) {
-				u8 tmp[PKMNLENGTH];
-				memset(tmp, 0, PKMNLENGTH);
-				for (u32 i = 0; i < 30; i++) {
-					if (isBank) memcpy(&bankbuf[box * 30 * PKMNLENGTH + i * PKMNLENGTH], tmp, PKMNLENGTH);
-					else setPkmn(mainbuf, box, i, tmp, game);
+				if (confirmDisp("Erase the selected box?")) {
+					u8 tmp[PKMNLENGTH];
+					memset(tmp, 0, PKMNLENGTH);
+					for (u32 i = 0; i < 30; i++) {
+						if (isBank) memcpy(&bankbuf[box * 30 * PKMNLENGTH + i * PKMNLENGTH], tmp, PKMNLENGTH);
+						else setPkmn(mainbuf, box, i, tmp, game);
+					}
 				}
 			}
 			
@@ -222,10 +231,12 @@ void bank(u8* mainbuf, int game) {
 		printPKBank(bankbuf, mainbuf, pkmn, game, currentEntry, box, isBank);
 	}
 	
-	FILE *new = fopen("/3ds/data/PKSM/bank/bank.bin", "wb");
-	fwrite(bankbuf, 1, 30 * BANKBOXMAX * PKMNLENGTH, new);
-	fclose(new);
-	
+	if (confirmDisp("Save bank.bin changes?")) {
+		FILE *new = fopen("/3ds/data/PKSM/bank/bank.bin", "wb");
+		fwrite(bankbuf, 1, size, new);
+		fclose(new);
+	}
+
 	free(bankbuf);
 	free(pkmn);
 }

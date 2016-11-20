@@ -6,9 +6,9 @@
 
 Formerly known as **EventAssistant**, this app allows you to:
 
-* **Inject more than 1660 wondercards** in your games, from **HGSS to XYORAS** (and will support Sun/Moon soon);
+* **Inject more than 1660 wondercards** in your games, from **HGSS to Sun/Moon**;
 * **Edit your boxes and clone** stuff with a intuitive touch interface;
-* **Free integrated bank** with **up to 150 boxes** to store your stuff offline;
+* **Free integrated bank** with **up to 150 boxes** to store your stuff offline and **transfer your gen6 stuff to gen7 games!**;
 * Editor to **set money, items** and much more;
 * Multiple functions to check which event distribution is active;
 * more to discover!
@@ -26,6 +26,7 @@ Formerly known as **EventAssistant**, this app allows you to:
 * @dsoldier for the gorgeous graphic work
 * Smealum for ctrulib, Xerpi for sf2d
 * Kaphotics for PKHeX and being an awesome guy
+* SciresM for C-memecrypto, you rock man
 * J-K-D for direct save import/export and being awesome
 * Slashcash for PCHex++ and Strackeror for PCHex
 * Gocario for PKBrew
