@@ -54,7 +54,6 @@ const int OTNAMEPOS = 0xB0;
 const int NICKNAMEPOS = 0x40;
 const int POKEDEXNUMBERPOS = 0x08;
 const int NATUREPOS = 0x1C;
-const int FRIENDSHIPPOS = 0xA2;
 const int ITEMPOS = 0x0A;
 const int EXPPOINTPOS = 0x10;
 const int ABILITYPOS = 0x14;
@@ -449,7 +448,7 @@ u16 getPokedexNumber(u8* pkmn) {
 
 u8 getFriendship(u8* pkmn) {
     u8 friendship;
-    memcpy(&friendship, &pkmn[FRIENDSHIPPOS], 1);
+    memcpy(&friendship, &pkmn[0xA2], 1);
     return friendship;
 }
 
@@ -503,7 +502,8 @@ void setNature(u8* pkmn, const u8 nature) {
 }
 
 void setFriendship(u8* pkmn, const int val) {
-	memcpy(&pkmn[FRIENDSHIPPOS], &val, 1);
+	memcpy(&pkmn[0xA2], &val, 1);
+	memcpy(&pkmn[0xCA], &val, 1);
 }
 
 void setEV(u8* pkmn, u8 val, const int stat) {
