@@ -291,6 +291,17 @@ void rerollPID(u8* pkmn) {
     memcpy(&pkmn[PIDPOS], &pidbuffer, PIDLENGTH);
 }
 
+bool isEgg(u8* pkmn) {
+    u32 eggbuffer;
+    memcpy(&eggbuffer, &pkmn[IVPOS], IVLENGTH);
+    eggbuffer = eggbuffer >> 30;
+    eggbuffer = eggbuffer & 0x1;
+    if (eggbuffer == 1) 
+        return true;
+    
+    else return false;
+}
+
 /* ************************ get ************************ */
 
 u8 getForm(u8* pkmn) {
@@ -331,23 +342,8 @@ u16 getStat(u8* pkmn, const int stat) {
 
 u8 getAbility(u8* pkmn) {
     u8 abilitybuffer;
-    memcpy(&abilitybuffer, &pkmn[ABILITYNUMPOS], ABILITYNUMLENGTH);
-
-    u8 resultset[3] = {0, 0, 0};
-	resultset[0] = personal.pkmData[getPokedexNumber(pkmn)][0x18];
-	resultset[1] = personal.pkmData[getPokedexNumber(pkmn)][0x19];
-	resultset[0] = personal.pkmData[getPokedexNumber(pkmn)][0x1a];
-
-    if (abilitybuffer == 1)
-        abilitybuffer = 0;
-
-    if (abilitybuffer == 2)
-        abilitybuffer = 1;
-
-    if (abilitybuffer == 4)
-        abilitybuffer = 2;
-
-    return resultset[abilitybuffer];
+    memcpy(&abilitybuffer, &pkmn[ABILITYPOS], ABILITYLENGTH);
+	return abilitybuffer;
 }
 
 bool isInfected (u8* pkmn) {

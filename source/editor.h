@@ -53,6 +53,7 @@ void encryptPkmn(u8* pkmn);
 void getPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game);
 void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game);
 bool isShiny(u8* pkmn);
+bool isEgg(u8* pkmn);
 void rerollPID(u8* pkmn);
 
 u16 getPokedexNumber(u8* pkmn);
