@@ -25,6 +25,7 @@
 #define PKMNLENGTH 232
 #define BOXMAX 31
 #define MOVELENGTH 2
+#define EGGMOVELENGTH 2
 #define EVLENGTH 1
 #define PIDLENGTH 4
 #define IVLENGTH 4
@@ -40,7 +41,7 @@
 #define EXPPOINTLENGTH 4
 
 struct {
-	u8 pkmData[961][84];
+	u8 pkmData[961][56];
 } personal;
 
 u32 seedStep(const u32 seed);
@@ -73,10 +74,11 @@ bool isInfected (u8* pkmn);
 u8 getForm(u8* pkmn);
 u16 getStat(u8* pkmn, const int stat);
 bool getPokerus(u8* pkmn);
-
 u8 getAbility(u8* pkmn);
 char *getOT(u8* pkmn, char* dst);
 char *getNickname(u8* pkmn, char* dst);
+u16 getEggmove(u8 *pkmn, const int nmove);
+
 void setNature(u8* pkmn, const u8 nature);
 void setNickname(u8* pkmn, char* nick);
 void setShiny(u8* pkmn, const bool shiny);
@@ -94,6 +96,8 @@ void setHPType(u8* pkmn, const int val);
 void setIV(u8* pkmn, u8 val, const int stat);
 void setPokerus(u8* pkmn);
 void setLevel(u8* pkmn, int lv);
+void setMove(u8* pkmn, const u16 move, const int nmove);
+void setEggmove(u8* pkmn, const u16 move, const int nmove);
 
 void saveFileEditor(u8* mainbuf, int game);
 void pokemonEditor(u8* mainbuf, int game);
