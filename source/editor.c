@@ -978,7 +978,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 							setHPType(pkmn, 0);
 					}
 
-					if (touch.px > 200 && touch.px < 308 && touch.py > 160 && touch.py < 190) {
+					if (touch.px > 200 && touch.px < 308 && touch.py > 170 && touch.py < 200) {
 						setPkmn(mainbuf, box, currentEntry, pkmn, game);
 						infoDisp("Edits applied!");
 						break;

@@ -23,7 +23,7 @@
 #include "http.h"
 
 sftd_font *fontBold18, *fontBold15, *fontBold14, *fontBold12, *fontBold11, *fontBold9, *fontFixed; 
-sf2d_texture *topBorder, *distributionsBottom, *distributionsTop, *bottomBorder, *slimDarkBar, *slimRedBar, *gameSelectorBottom, *gameSelectorTop, *mainMenuBottom, *darkBar, *redBar, *mainMenuTop, *darkButton, *eventTop, *left, *leftTop, *lightButton, *redButton, *right, *rightTop, *spritesSmall, *shinySpritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *eventMenuTop, *warningTopTrasp, *warningBottomTrasp, *PSDates, *editorBar, *boxView, *infoView, *LRBar, *selector, *editorBG, *plus, *minus, *buttonSave, *back, *setting, *selectorCloning, *bankBottomBG, *topButton, *bottomButton, *bottomPopUp, *pokemonBufferBox, *cleanTop, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR;
+sf2d_texture *topBorder, *distributionsBottom, *distributionsTop, *bottomBorder, *slimDarkBar, *slimRedBar, *gameSelectorBottom, *gameSelectorTop, *mainMenuBottom, *darkBar, *redBar, *mainMenuTop, *darkButton, *eventTop, *left, *leftTop, *lightButton, *redButton, *right, *rightTop, *spritesSmall, *shinySpritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *eventMenuTop, *warningTopTrasp, *warningBottomTrasp, *PSDates, *editorBar, *boxView, *infoView, *LRBar, *selector, *editorBG, *plus, *minus, *buttonSave, *back, *setting, *selectorCloning, *bankBottomBG, *topButton, *bottomButton, *bottomPopUp, *pokemonBufferBox, *cleanTop, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR, *bottomMovesBar, *bottomMovesBarCut, *bottomMovesBG, *topMovesBG, *topSelectedMove;
 
 int trasp = 254;
 bool vanish = true;
@@ -93,6 +93,11 @@ void GUIElementsSpecify(int game) {
 		bottomPopUp = sfil_load_PNG_file("romfs:/res/Bottom Pop-Up.png", SF2D_PLACE_RAM);
 		pokemonBufferBox = sfil_load_PNG_file("romfs:/res/Pokemon Box.png", SF2D_PLACE_RAM);
 		cleanTop = sfil_load_PNG_file("romfs:/res/Clean Top.png", SF2D_PLACE_RAM);
+		bottomMovesBar = sfil_load_PNG_file("romfs:/res/Bottom Moves Bar.png", SF2D_PLACE_RAM);
+		bottomMovesBarCut = sfil_load_PNG_file("romfs:/res/Bottom Moves Bar2.png", SF2D_PLACE_RAM);
+		bottomMovesBG = sfil_load_PNG_file("romfs:/res/Bottom Moves BG.png", SF2D_PLACE_RAM);
+		topMovesBG = sfil_load_PNG_file("romfs:/res/Top Moves.png", SF2D_PLACE_RAM);
+		topSelectedMove = sfil_load_PNG_file("romfs:/res/Top Selected Move.png", SF2D_PLACE_RAM);
 	} else {
 		DSBottomBG = sfil_load_PNG_file("romfs:/res/Bottom BG.png", SF2D_PLACE_RAM);
 		DSTopBG = sfil_load_PNG_file("romfs:/res/Top BG.png", SF2D_PLACE_RAM);
@@ -124,6 +129,11 @@ void GUIGameElementsExit() {
 }
 
 void GUIElementsExit() {
+	sf2d_free_texture(bottomMovesBG);
+	sf2d_free_texture(bottomMovesBar);
+	sf2d_free_texture(bottomMovesBarCut);
+	sf2d_free_texture(topMovesBG);
+	sf2d_free_texture(topSelectedMove);
 	sf2d_free_texture(DSEventBottom);
 	sf2d_free_texture(DSLangSelected);
 	sf2d_free_texture(DSLang);
@@ -1206,8 +1216,10 @@ void printPKEditor(u8* pkmn, int game, bool speedy) {
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(editorBG, 0, 0);
-		sf2d_draw_texture(buttonSave, 200, 160);
-		sftd_draw_text(fontBold12, 236, 167, BLACK, 12, "SAVE");
+		sf2d_draw_texture(bottomButton, 200, 140);
+		sf2d_draw_texture(buttonSave, 200, 170);
+		sftd_draw_text(fontBold12, 230, 147, BLACK, 12, "MOVES");
+		sftd_draw_text(fontBold12, 236, 177, BLACK, 12, "SAVE");
 		
 		if (isShiny(pkmn))
 			sf2d_draw_texture_part(shinySpritesSmall, 1, -2, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30); 
