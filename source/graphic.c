@@ -287,7 +287,6 @@ void drawMenuTop(int game) {
 	
 	if (game < 6) {
 		sf2d_draw_texture(mainMenuTop, 0, 0);
-		printTitle("PKSM");
 	}
 	else 
 		sf2d_draw_texture(DSTopBG, 0, 0);
@@ -1030,30 +1029,30 @@ void printPKViewer(u8* mainbuf, int game, int currentEntry, int box, bool clonin
 		}
 		
 		if (getPokedexNumber(pkmn)) {
-			sftd_draw_text(fontBold12, 86, 33, GOLD, 12, pokemon[getPokedexNumber(pkmn)]);
+			sftd_draw_text(fontBold12, 86, 33, WHITE, 12, pokemon[getPokedexNumber(pkmn)]);
 			
 			char* level = (char*)malloc(4 * sizeof(char));
 			snprintf(level, 4, "%u", getLevel(pkmn));
-			sftd_draw_text(fontBold12, 86, 48, GOLD, 12, level);
+			sftd_draw_text(fontBold12, 86, 48, WHITE, 12, level);
 			free(level);
 			
 			char *ot_name = (char*)malloc(0x17 * sizeof(char));
-			sftd_draw_text(fontBold12, 86, 63, GOLD, 12, getOT(pkmn, ot_name));
+			sftd_draw_text(fontBold12, 86, 63, WHITE, 12, getOT(pkmn, ot_name));
 			free(ot_name);
 			
 			char *nick = (char*)malloc(26 * sizeof(char));
-			sftd_draw_text(fontBold12, 86, 78, GOLD, 12, getNickname(pkmn, nick));
+			sftd_draw_text(fontBold12, 86, 78, WHITE, 12, getNickname(pkmn, nick));
 			free(nick);
 			
-			sftd_draw_text(fontBold12, 86, 93, GOLD, 12, natures[getNature(pkmn)]);
-			sftd_draw_text(fontBold12, 86, 108, GOLD, 12, abilities[getAbility(pkmn)]);
-			sftd_draw_text(fontBold12, 86, 123, GOLD, 12, items[getItem(pkmn)]);
-			sftd_draw_text(fontBold12, 86, 138, GOLD, 12, isShiny(pkmn) ? "Yes" : "No");
-			sftd_draw_text(fontBold12, 86, 153, GOLD, 12, isInfected(pkmn) ? "Yes" : "No");
-			sftd_draw_textf(fontBold12, 86, 168, GOLD, 12, "%u", getFriendship(pkmn));
-			sftd_draw_textf(fontBold12, 86, 183, GOLD, 12, "%u", getOTID(pkmn));
-			sftd_draw_textf(fontBold12, 86, 198, GOLD, 12, "%u", getSOTID(pkmn));
-			sftd_draw_text(fontBold12, 100, 213, GOLD, 12, hpList[getHPType(pkmn)]);
+			sftd_draw_text(fontBold12, 86, 93, WHITE, 12, natures[getNature(pkmn)]);
+			sftd_draw_text(fontBold12, 86, 108, WHITE, 12, abilities[getAbility(pkmn)]);
+			sftd_draw_text(fontBold12, 86, 123, WHITE, 12, items[getItem(pkmn)]);
+			sftd_draw_text(fontBold12, 86, 138, WHITE, 12, isShiny(pkmn) ? "Yes" : "No");
+			sftd_draw_text(fontBold12, 86, 153, WHITE, 12, isInfected(pkmn) ? "Yes" : "No");
+			sftd_draw_textf(fontBold12, 86, 168, WHITE, 12, "%u", getFriendship(pkmn));
+			sftd_draw_textf(fontBold12, 86, 183, WHITE, 12, "%u", getOTID(pkmn));
+			sftd_draw_textf(fontBold12, 86, 198, WHITE, 12, "%u", getSOTID(pkmn));
+			sftd_draw_text(fontBold12, 100, 213, WHITE, 12, hpList[getHPType(pkmn)]);
 			
 			int pos = 279;
 			int max = sftd_get_text_width(fontBold12, 12, "252");
@@ -1093,31 +1092,31 @@ void printPKViewer(u8* mainbuf, int game, int currentEntry, int box, bool clonin
 			snprintf(spa_stat, 4, "%d", getStat(pkmn, 4));
 			snprintf(spd_stat, 4, "%d", getStat(pkmn, 5));
 			snprintf(spe_stat, 4, "%d", getStat(pkmn, 3));
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, hp_iv)) / 2, 48, GOLD, 12, hp_iv);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, atk_iv)) / 2, 63, GOLD, 12, atk_iv);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, def_iv)) / 2, 78, GOLD, 12, def_iv);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spa_iv)) / 2, 93, GOLD, 12, spa_iv);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spd_iv)) / 2, 108, GOLD, 12, spd_iv);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spe_iv)) / 2, 123, GOLD, 12, spe_iv);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, hp_iv)) / 2, 48, WHITE, 12, hp_iv);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, atk_iv)) / 2, 63, WHITE, 12, atk_iv);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, def_iv)) / 2, 78, WHITE, 12, def_iv);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spa_iv)) / 2, 93, WHITE, 12, spa_iv);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spd_iv)) / 2, 108, WHITE, 12, spd_iv);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spe_iv)) / 2, 123, WHITE, 12, spe_iv);
 			pos = 311;
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, hp_ev)) / 2, 48, GOLD, 12, hp_ev);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, atk_ev)) / 2, 63, GOLD, 12, atk_ev);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, def_ev)) / 2, 78, GOLD, 12, def_ev);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spa_ev)) / 2, 93, GOLD, 12, spa_ev);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spd_ev)) / 2, 108, GOLD, 12, spd_ev);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spe_ev)) / 2, 123, GOLD, 12, spe_ev);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, hp_ev)) / 2, 48, WHITE, 12, hp_ev);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, atk_ev)) / 2, 63, WHITE, 12, atk_ev);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, def_ev)) / 2, 78, WHITE, 12, def_ev);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spa_ev)) / 2, 93, WHITE, 12, spa_ev);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spd_ev)) / 2, 108, WHITE, 12, spd_ev);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spe_ev)) / 2, 123, WHITE, 12, spe_ev);
 			pos = 354;
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, hp_stat)) / 2, 48, GOLD, 12, hp_stat);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, atk_stat)) / 2, 63, GOLD, 12, atk_stat);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, def_stat)) / 2, 78, GOLD, 12, def_stat);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spa_stat)) / 2, 93, GOLD, 12, spa_stat);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spd_stat)) / 2, 108, GOLD, 12, spd_stat);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spe_stat)) / 2, 123, GOLD, 12, spe_stat);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, hp_stat)) / 2, 48, WHITE, 12, hp_stat);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, atk_stat)) / 2, 63, WHITE, 12, atk_stat);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, def_stat)) / 2, 78, WHITE, 12, def_stat);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spa_stat)) / 2, 93, WHITE, 12, spa_stat);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spd_stat)) / 2, 108, WHITE, 12, spd_stat);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spe_stat)) / 2, 123, WHITE, 12, spe_stat);
 			
 			int y_moves = 168;
 			for (int i = 0; i < 4; i++) {
 				if (getMove(pkmn, i)) {
-					sftd_draw_text(fontBold12, 216, y_moves, GOLD, 12, moves[getMove(pkmn, i)]);
+					sftd_draw_text(fontBold12, 216, y_moves, WHITE, 12, moves[getMove(pkmn, i)]);
 				}
 				y_moves += 15;
 			}
@@ -1247,26 +1246,26 @@ void printPKEditor(u8* pkmn, int game, bool speedy) {
 
 		char* level = (char*)malloc(4 * sizeof(char));
 		snprintf(level, 4, "%u", getLevel(pkmn));
-		//sftd_draw_text(fontBold12, 100 + (max - sftd_get_text_width(fontBold12, 12, level)) / 2, 41, GOLD, 12, level);
-		sftd_draw_text(fontBold12, 124 - sftd_get_text_width(fontBold12, 12, level), 41, GOLD, 12, level);
+		//sftd_draw_text(fontBold12, 100 + (max - sftd_get_text_width(fontBold12, 12, level)) / 2, 41, WHITE, 12, level);
+		sftd_draw_text(fontBold12, 124 - sftd_get_text_width(fontBold12, 12, level), 41, WHITE, 12, level);
 		free(level);
 			
-		sftd_draw_text(fontBold12, 124 - sftd_get_text_width(fontBold12, 12, natures[getNature(pkmn)]), 58, GOLD, 12, natures[getNature(pkmn)]);
-		sftd_draw_text(fontBold12, 124 - sftd_get_text_width(fontBold12, 12, abilities[getAbility(pkmn)]), 75, GOLD, 12, abilities[getAbility(pkmn)]);
+		sftd_draw_text(fontBold12, 124 - sftd_get_text_width(fontBold12, 12, natures[getNature(pkmn)]), 58, WHITE, 12, natures[getNature(pkmn)]);
+		sftd_draw_text(fontBold12, 124 - sftd_get_text_width(fontBold12, 12, abilities[getAbility(pkmn)]), 75, WHITE, 12, abilities[getAbility(pkmn)]);
 		sftd_draw_text(fontBold12, 124 - sftd_get_text_width(fontBold12, 12, items[getItem(pkmn)]), 92, WHITE, 12, items[getItem(pkmn)]);
-		sftd_draw_text(fontBold12, 124 - sftd_get_text_width(fontBold12, 12, isShiny(pkmn) ? "Yes" : "No"), 109, GOLD, 12, isShiny(pkmn) ? "Yes" : "No");
-		sftd_draw_text(fontBold12, 124 - sftd_get_text_width(fontBold12, 12, isInfected(pkmn) ? "Yes" : "No"), 126, GOLD, 12, isInfected(pkmn) ? "Yes" : "No");
+		sftd_draw_text(fontBold12, 124 - sftd_get_text_width(fontBold12, 12, isShiny(pkmn) ? "Yes" : "No"), 109, WHITE, 12, isShiny(pkmn) ? "Yes" : "No");
+		sftd_draw_text(fontBold12, 124 - sftd_get_text_width(fontBold12, 12, isInfected(pkmn) ? "Yes" : "No"), 126, WHITE, 12, isInfected(pkmn) ? "Yes" : "No");
 		
 		char* friendship = (char*)malloc(4 * sizeof(char));
 		snprintf(friendship, 4, "%u", getFriendship(pkmn));
-		sftd_draw_text(fontBold12, 124 + (max - sftd_get_text_width(fontBold12, 12, friendship)) / 2, 143, GOLD, 12, friendship);
+		sftd_draw_text(fontBold12, 124 + (max - sftd_get_text_width(fontBold12, 12, friendship)) / 2, 143, WHITE, 12, friendship);
 		free(friendship);
 		
 		char *nick = (char*)malloc(26 * sizeof(char));
-		sftd_draw_text(fontBold12, 72, 160, GOLD, 12, getNickname(pkmn, nick));
+		sftd_draw_text(fontBold12, 72, 160, WHITE, 12, getNickname(pkmn, nick));
 		free(nick);
 		
-		sftd_draw_text(fontBold12, 159 - sftd_get_text_width(fontBold12, 12, hpList[getHPType(pkmn)]), 177, GOLD, 12, hpList[getHPType(pkmn)]);
+		sftd_draw_text(fontBold12, 159 - sftd_get_text_width(fontBold12, 12, hpList[getHPType(pkmn)]), 177, WHITE, 12, hpList[getHPType(pkmn)]);
 		
 		char* hp_iv = (char*)malloc(3 * sizeof(char));
 		char* atk_iv = (char*)malloc(3 * sizeof(char));
@@ -1294,19 +1293,19 @@ void printPKEditor(u8* pkmn, int game, bool speedy) {
 		snprintf(spe_ev, 4, "%d", getEV(pkmn, 3));
 		
 		int pos = 219;
-		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, hp_iv)) / 2, 27, GOLD, 12, hp_iv);
-		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, atk_iv)) / 2, 44, GOLD, 12, atk_iv);
-		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, def_iv)) / 2, 61, GOLD, 12, def_iv);
-		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spa_iv)) / 2, 78, GOLD, 12, spa_iv);
-		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spd_iv)) / 2, 95, GOLD, 12, spd_iv);
-		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spe_iv)) / 2, 112, GOLD, 12, spe_iv);
+		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, hp_iv)) / 2, 27, WHITE, 12, hp_iv);
+		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, atk_iv)) / 2, 44, WHITE, 12, atk_iv);
+		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, def_iv)) / 2, 61, WHITE, 12, def_iv);
+		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spa_iv)) / 2, 78, WHITE, 12, spa_iv);
+		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spd_iv)) / 2, 95, WHITE, 12, spd_iv);
+		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spe_iv)) / 2, 112, WHITE, 12, spe_iv);
 		pos = 270;
-		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, hp_ev)) / 2, 27, GOLD, 12, hp_ev);
-		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, atk_ev)) / 2, 44, GOLD, 12, atk_ev);
-		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, def_ev)) / 2, 61, GOLD, 12, def_ev);
-		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spa_ev)) / 2, 78, GOLD, 12, spa_ev);
-		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spd_ev)) / 2, 95, GOLD, 12, spd_ev);
-		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spe_ev)) / 2, 112, GOLD, 12, spe_ev);
+		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, hp_ev)) / 2, 27, WHITE, 12, hp_ev);
+		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, atk_ev)) / 2, 44, WHITE, 12, atk_ev);
+		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, def_ev)) / 2, 61, WHITE, 12, def_ev);
+		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spa_ev)) / 2, 78, WHITE, 12, spa_ev);
+		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spd_ev)) / 2, 95, WHITE, 12, spd_ev);
+		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spe_ev)) / 2, 112, WHITE, 12, spe_ev);
 		
 		y_desc = 27;
 		for (int i = 0; i < 6; i++) {
@@ -1375,30 +1374,30 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 		}
 		
 		if (getPokedexNumber(pkmn)) {
-			sftd_draw_text(fontBold12, 86, 33, GOLD, 12, pokemon[getPokedexNumber(pkmn)]);
+			sftd_draw_text(fontBold12, 86, 33, WHITE, 12, pokemon[getPokedexNumber(pkmn)]);
 			
 			char* level = (char*)malloc(4 * sizeof(char));
 			snprintf(level, 4, "%u", getLevel(pkmn));
-			sftd_draw_text(fontBold12, 86, 48, GOLD, 12, level);
+			sftd_draw_text(fontBold12, 86, 48, WHITE, 12, level);
 			free(level);
 			
 			char *ot_name = (char*)malloc(0x17 * sizeof(char));
-			sftd_draw_text(fontBold12, 86, 63, GOLD, 12, getOT(pkmn, ot_name));
+			sftd_draw_text(fontBold12, 86, 63, WHITE, 12, getOT(pkmn, ot_name));
 			free(ot_name);
 			
 			char *nick = (char*)malloc(26 * sizeof(char));
-			sftd_draw_text(fontBold12, 86, 78, GOLD, 12, getNickname(pkmn, nick));
+			sftd_draw_text(fontBold12, 86, 78, WHITE, 12, getNickname(pkmn, nick));
 			free(nick);
 			
-			sftd_draw_text(fontBold12, 86, 93, GOLD, 12, natures[getNature(pkmn)]);
-			sftd_draw_text(fontBold12, 86, 108, GOLD, 12, abilities[getAbility(pkmn)]);
-			sftd_draw_text(fontBold12, 86, 123, GOLD, 12, items[getItem(pkmn)]);
-			sftd_draw_text(fontBold12, 86, 138, GOLD, 12, isShiny(pkmn) ? "Yes" : "No");
-			sftd_draw_text(fontBold12, 86, 153, GOLD, 12, isInfected(pkmn) ? "Yes" : "No");
-			sftd_draw_textf(fontBold12, 86, 168, GOLD, 12, "%u", getFriendship(pkmn));
-			sftd_draw_textf(fontBold12, 86, 183, GOLD, 12, "%u", getOTID(pkmn));
-			sftd_draw_textf(fontBold12, 86, 198, GOLD, 12, "%u", getSOTID(pkmn));
-			sftd_draw_text(fontBold12, 100, 213, GOLD, 12, hpList[getHPType(pkmn)]);
+			sftd_draw_text(fontBold12, 86, 93, WHITE, 12, natures[getNature(pkmn)]);
+			sftd_draw_text(fontBold12, 86, 108, WHITE, 12, abilities[getAbility(pkmn)]);
+			sftd_draw_text(fontBold12, 86, 123, WHITE, 12, items[getItem(pkmn)]);
+			sftd_draw_text(fontBold12, 86, 138, WHITE, 12, isShiny(pkmn) ? "Yes" : "No");
+			sftd_draw_text(fontBold12, 86, 153, WHITE, 12, isInfected(pkmn) ? "Yes" : "No");
+			sftd_draw_textf(fontBold12, 86, 168, WHITE, 12, "%u", getFriendship(pkmn));
+			sftd_draw_textf(fontBold12, 86, 183, WHITE, 12, "%u", getOTID(pkmn));
+			sftd_draw_textf(fontBold12, 86, 198, WHITE, 12, "%u", getSOTID(pkmn));
+			sftd_draw_text(fontBold12, 100, 213, WHITE, 12, hpList[getHPType(pkmn)]);
 			
 			int pos = 279;
 			int max = sftd_get_text_width(fontBold12, 12, "252");
@@ -1438,31 +1437,31 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 			snprintf(spa_stat, 4, "%d", getStat(pkmn, 4));
 			snprintf(spd_stat, 4, "%d", getStat(pkmn, 5));
 			snprintf(spe_stat, 4, "%d", getStat(pkmn, 3));
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, hp_iv)) / 2, 48, GOLD, 12, hp_iv);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, atk_iv)) / 2, 63, GOLD, 12, atk_iv);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, def_iv)) / 2, 78, GOLD, 12, def_iv);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spa_iv)) / 2, 93, GOLD, 12, spa_iv);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spd_iv)) / 2, 108, GOLD, 12, spd_iv);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spe_iv)) / 2, 123, GOLD, 12, spe_iv);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, hp_iv)) / 2, 48, WHITE, 12, hp_iv);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, atk_iv)) / 2, 63, WHITE, 12, atk_iv);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, def_iv)) / 2, 78, WHITE, 12, def_iv);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spa_iv)) / 2, 93, WHITE, 12, spa_iv);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spd_iv)) / 2, 108, WHITE, 12, spd_iv);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spe_iv)) / 2, 123, WHITE, 12, spe_iv);
 			pos = 311;
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, hp_ev)) / 2, 48, GOLD, 12, hp_ev);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, atk_ev)) / 2, 63, GOLD, 12, atk_ev);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, def_ev)) / 2, 78, GOLD, 12, def_ev);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spa_ev)) / 2, 93, GOLD, 12, spa_ev);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spd_ev)) / 2, 108, GOLD, 12, spd_ev);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spe_ev)) / 2, 123, GOLD, 12, spe_ev);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, hp_ev)) / 2, 48, WHITE, 12, hp_ev);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, atk_ev)) / 2, 63, WHITE, 12, atk_ev);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, def_ev)) / 2, 78, WHITE, 12, def_ev);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spa_ev)) / 2, 93, WHITE, 12, spa_ev);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spd_ev)) / 2, 108, WHITE, 12, spd_ev);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spe_ev)) / 2, 123, WHITE, 12, spe_ev);
 			pos = 354;
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, hp_stat)) / 2, 48, GOLD, 12, hp_stat);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, atk_stat)) / 2, 63, GOLD, 12, atk_stat);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, def_stat)) / 2, 78, GOLD, 12, def_stat);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spa_stat)) / 2, 93, GOLD, 12, spa_stat);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spd_stat)) / 2, 108, GOLD, 12, spd_stat);
-			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spe_stat)) / 2, 123, GOLD, 12, spe_stat);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, hp_stat)) / 2, 48, WHITE, 12, hp_stat);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, atk_stat)) / 2, 63, WHITE, 12, atk_stat);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, def_stat)) / 2, 78, WHITE, 12, def_stat);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spa_stat)) / 2, 93, WHITE, 12, spa_stat);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spd_stat)) / 2, 108, WHITE, 12, spd_stat);
+			sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spe_stat)) / 2, 123, WHITE, 12, spe_stat);
 			
 			int y_moves = 168;
 			for (int i = 0; i < 4; i++) {
 				if (getMove(pkmn, i)) {
-					sftd_draw_text(fontBold12, 216, y_moves, GOLD, 12, moves[getMove(pkmn, i)]);
+					sftd_draw_text(fontBold12, 216, y_moves, WHITE, 12, moves[getMove(pkmn, i)]);
 				}
 				y_moves += 15;
 			}

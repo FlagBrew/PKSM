@@ -29,7 +29,6 @@
 #define AZZURRO RGBA8(0x33, 0x99, 0xFF, 0xFF)
 #define TRASPWHITE RGBA8(255,255,255,170)
 #define DARKBLUE RGBA8(0, 0, 102, 0xFF)
-#define GOLD RGBA8(254, 234, 60, 255)
 #define DS RGBA8(48, 48, 48, 255)
 
 #define FILL 5
