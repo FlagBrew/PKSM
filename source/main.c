@@ -397,6 +397,7 @@ int main() {
 										if (!isHBL()) {
 											int temp = autoupdater();
 											if (temp != 0) {
+												free(mainbuf);
 												exitServices();
 												return 0;
 											}
