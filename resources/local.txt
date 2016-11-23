@@ -1,12 +1,6 @@
     In-Life     | Tag |    Date     |    End
 -------------------------------------------------
 Birthday mons   | JPN | 01 Oct 2016 | 31 Dec 2016
-Shiny Yveltal   | PAL | 18 Jul 2016 | 30 Sep 2016
-Elect. Greninja | JPN | 03 Jul 2016 | 30 Sep 2016
-Giov. Nidoqueen | JPN |
-Maxie Camerupt  | JPN |
-Archie Sharpedo | JPN |
-Cyrus Weavile   | JPN |
-Ghetis Hydreigon| JPN |
-Lysandre Pyroar | JPN |
+PC Vulpix       | JPN | 30 Nov 2016 | 31 Jan 2017
+Birthday mons SM| JPN | 18 Nov 2016 | ???
 -------------------------------------------------

@@ -1,13 +1,9 @@
-     Wifi     | Tag |   Date    |      Code
+     Wifi     | Tag |   Date     |     Code
 -------------------------------------------------
-20th. Meloetta| ALL | 1-24 Dec  | -
-Happy Meowth  | PAL |           | HAPPY
-GF Darkrai    | PAL |   31 Oct  | DARKRAI2016
-Kor Gardevoir | KOR |   15 Nov  | NEWEPISODE
-GF Darkrai    | NA  |   31 Oct  | DARKRAI20
-XYZ Mawile    | KOR |   15 Nov  | POKEMON4U
-XYZ Gengar    | KOR |   15 Nov  | POKEMON94
-XYZ Tyranitar | KOR |   15 Nov  | MEGAPOKEMON 
+20th. Meloetta| ALL | 1-24 Dec   | -
+Happy Meowth  | PAL |            | HAPPY
+SM Munchlax   | ALL | to 11 Jan  |
+M19 Magearna  | JPN |  available indefinitely
 -------------------------------------------------
 For TPP Anniversary Crystal players:
 -------------------------------------------------
@@ -15,3 +11,5 @@ Jay Leno Rattata   | 12022014
 Adam Porygon       | 2930831
 Crystal Feraligatr | 90d5layR
 Best Typhlosion    | w4-47802
+Red Gastly         | rICKrOLL
+PikalaxALT Pikachu | d3v3Lop5
