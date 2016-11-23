@@ -44,6 +44,7 @@ const int BADGEPOS = 0x420C;
 const int TMSTARTPOS = 0xBC0;
 const int OFFSET = 0x5400;
 const int MOVEPOS = 0x5A;
+const int EGGMOVEPOS = 0x6A;
 const int EVPOS = 0x1E;
 const int PIDPOS = 0x18;
 const int IVPOS = 0x74;
@@ -304,6 +305,13 @@ bool isEgg(u8* pkmn) {
 
 /* ************************ get ************************ */
 
+u16 getEggmove(u8 *pkmn, const int nmove) {
+    u16 eggmovebuffer[4];
+    memcpy(&eggmovebuffer, &pkmn[EGGMOVEPOS], EGGMOVELENGTH*4);
+    
+    return eggmovebuffer[nmove];
+}
+
 u8 getForm(u8* pkmn) {
     u8 bufferform;
     memcpy(&bufferform, &pkmn[GENDERPOS], GENDERLENGTH);
@@ -481,6 +489,14 @@ bool getPokerus(u8* pkmn) {
 }
 
 /* ************************ set ************************ */
+
+void setMove(u8* pkmn, const u16 move, const int nmove) {
+    memcpy(&pkmn[MOVEPOS + (MOVELENGTH * nmove)], &move, MOVELENGTH);
+}
+
+void setEggmove(u8* pkmn, const u16 move, const int nmove) {
+    memcpy(&pkmn[EGGMOVEPOS + (EGGMOVELENGTH * nmove)], &move, EGGMOVELENGTH);
+}
 
 void setNickname(u8* pkmn, char* nick) {
     u8 toinsert[NICKNAMELENGTH];
