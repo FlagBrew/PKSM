@@ -394,10 +394,12 @@ int main() {
 										break;
 									}
 									case 3 : {
-										int temp = autoupdater();
-										if (temp != 0) {
-											exitServices();
-											return 0;
+										if (!isHBL()) {
+											int temp = autoupdater();
+											if (temp != 0) {
+												exitServices();
+												return 0;
+											}
 										}
 										break;
 									}
