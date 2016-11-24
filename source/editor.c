@@ -490,6 +490,16 @@ bool getPokerus(u8* pkmn) {
 
 /* ************************ set ************************ */
 
+void setAbility(u8* pkmn, const u8 ability) {
+	u8 abilitynum = 0;
+	if (ability == 0)      abilitynum = 1;
+	else if (ability == 1) abilitynum = 2;
+	else                   abilitynum = 4;
+	
+	memcpy(&pkmn[ABILITYNUMPOS], &abilitynum, ABILITYNUMLENGTH);
+	memcpy(&pkmn[ABILITYPOS], &personal.pkmData[getPokedexNumber(pkmn)][0x18 + ability], ABILITYLENGTH);
+}
+
 void setMove(u8* pkmn, const u16 move, const int nmove) {
     memcpy(&pkmn[MOVEPOS + (MOVELENGTH * nmove)], &move, MOVELENGTH);
 }
@@ -878,6 +888,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 	int box = 0;
 	int currentEntry = 0;
 	int boxmax = (game < 4) ? 30 : 31;
+	int ability = 2;
 
 	while (aptMainLoop()) {
 		hidScanInput();
@@ -950,6 +961,12 @@ void pokemonEditor(u8* mainbuf, int game) {
 							setNature(pkmn, getNature(pkmn) + 1);
 						else if (getNature(pkmn) == 24)
 							setNature(pkmn, 0);
+					}
+					
+					if (touch.px > 126 && touch.px < 141 && touch.py > 77 && touch.py < 89) {
+						if (ability < 2) ability++;
+						else if (ability == 2) ability = 0;
+						setAbility(pkmn, ability);
 					}
 
 					if (touch.px > 126 && touch.px < 141 && touch.py > 111 && touch.py < 123) {
