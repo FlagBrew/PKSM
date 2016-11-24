@@ -68,22 +68,34 @@ void initServices() {
 	
 	loadPersonal();
 	
-	u32 size = BANKBOXMAX * 30 * PKMNLENGTH; // this is default size
-	u8* bankbuf = (u8*)malloc(size * sizeof(u8));
-		
+	u32 defaultSize = BANKBOXMAX * 30 * PKMNLENGTH;
+	u32 size = 0;
+	u8* bankbuf, *defaultBank;
+	
 	FILE *bank = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
 	if (bank == NULL) {
 		fclose(bank);
-		memset(bankbuf, 0, size);
+		
+		size = defaultSize;
+		defaultBank = (u8*)malloc(size * sizeof(u8));
+		memset(defaultBank, 0, size);
+		
 		FILE *new = fopen("/3ds/data/PKSM/bank/bank.bin", "wb");
-		fwrite(bankbuf, 1, size, new);
+		fwrite(defaultBank, 1, size, new);
 		fclose(new);
+		
+		free(defaultBank);
 	}
+	
 	FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
 	fseek(bak, 0, SEEK_END);
+	size = ftell(bak);
+	bankbuf = (u8*)malloc(size * sizeof(u8));
+	
 	rewind(bak);
 	fread(bankbuf, size, 1, bak);
 	fclose(bak);
+	
 	FILE *new = fopen("/3ds/data/PKSM/bank/bank.bak", "wb");
 	fwrite(bankbuf, 1, size, new);
 	fclose(new);
