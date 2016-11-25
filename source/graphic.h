@@ -65,3 +65,4 @@ void printPKViewer(u8* mainbuf, int game, int currentEntry, int page, bool cloni
 void printPKEditor(u8* pkmn, int game, bool speedy);
 void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEntry, int box, bool isBank);
 void printMassInjector(int currentEntry);
+void printMoves(u8* pkmn, int currentEntry, int entryBottom, int page);

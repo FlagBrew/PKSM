@@ -77,7 +77,7 @@ bool getPokerus(u8* pkmn);
 u8 getAbility(u8* pkmn);
 char *getOT(u8* pkmn, char* dst);
 char *getNickname(u8* pkmn, char* dst);
-u16 getEggmove(u8 *pkmn, const int nmove);
+u16 getEggMove(u8 *pkmn, const int nmove);
 
 void setNature(u8* pkmn, const u8 nature);
 void setNickname(u8* pkmn, char* nick);
@@ -97,7 +97,8 @@ void setIV(u8* pkmn, u8 val, const int stat);
 void setPokerus(u8* pkmn);
 void setLevel(u8* pkmn, int lv);
 void setMove(u8* pkmn, const u16 move, const int nmove);
-void setEggmove(u8* pkmn, const u16 move, const int nmove);
+void setEggMove(u8* pkmn, const u16 move, const int nmove);
 
+void movesEditor(u8* pkmn, int game);
 void saveFileEditor(u8* mainbuf, int game);
 void pokemonEditor(u8* mainbuf, int game);

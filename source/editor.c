@@ -305,7 +305,7 @@ bool isEgg(u8* pkmn) {
 
 /* ************************ get ************************ */
 
-u16 getEggmove(u8 *pkmn, const int nmove) {
+u16 getEggMove(u8 *pkmn, const int nmove) {
     u16 eggmovebuffer[4];
     memcpy(&eggmovebuffer, &pkmn[EGGMOVEPOS], EGGMOVELENGTH*4);
     
@@ -504,7 +504,7 @@ void setMove(u8* pkmn, const u16 move, const int nmove) {
     memcpy(&pkmn[MOVEPOS + (MOVELENGTH * nmove)], &move, MOVELENGTH);
 }
 
-void setEggmove(u8* pkmn, const u16 move, const int nmove) {
+void setEggMove(u8* pkmn, const u16 move, const int nmove) {
     memcpy(&pkmn[EGGMOVEPOS + (EGGMOVELENGTH * nmove)], &move, EGGMOVELENGTH);
 }
 
@@ -882,6 +882,80 @@ void saveFileEditor(u8* mainbuf, int game) {
 	}
 }
 
+void movesEditor(u8* pkmn, int game) {
+	int currentEntry = 0;
+	int entryBottom = 0;
+	int page = 0, maxpages = 18;
+	
+	while (aptMainLoop()) {
+		hidScanInput();
+		touchPosition touch;
+		hidTouchRead(&touch);
+		
+		if (hidKeysDown() & KEY_B) break;
+		
+		if (hidKeysDown() & KEY_L) {
+			if (page > 0) page--;
+			else if (page == 0) page = maxpages - 1;
+		}
+		
+		if (hidKeysDown() & KEY_R) {
+			if (page < maxpages - 1) page++;
+			else if (page == maxpages - 1) page = 0;
+		}
+		
+		if (hidKeysDown() & KEY_DUP) {
+			if (currentEntry > 0) currentEntry--;
+			else if (currentEntry == 0) currentEntry = 39;
+		}
+		
+		if (hidKeysDown() & KEY_DDOWN) {
+			if (currentEntry < 39) currentEntry++;
+			else if (currentEntry == 39) currentEntry = 0;
+		}
+		
+		if (hidKeysDown() & KEY_DLEFT) {
+			if (currentEntry <= 19)	{
+				page--;
+				if (page < 0) 
+					page = maxpages - 1;
+			}
+			else if (currentEntry >= 20) currentEntry -= 20;
+		}
+		
+		if (hidKeysDown() & KEY_DRIGHT) {
+			if (currentEntry <= 19) currentEntry += 20;
+			else if (currentEntry >= 20) {
+				page++;
+				if (page > maxpages - 1)
+					page = 0;
+			}
+		}
+		
+		if (hidKeysDown() & KEY_TOUCH) {
+			if (touch.px > 123 && touch.px < 301 && touch.py > 10 && touch.py < 36)   entryBottom = 0;
+			if (touch.px > 123 && touch.px < 301 && touch.py > 36 && touch.py < 62)   entryBottom = 1;
+			if (touch.px > 123 && touch.px < 301 && touch.py > 62 && touch.py < 88)   entryBottom = 2;
+			if (touch.px > 123 && touch.px < 301 && touch.py > 88 && touch.py < 114)  entryBottom = 3;
+			if (touch.px > 123 && touch.px < 301 && touch.py > 129 && touch.py < 155) entryBottom = 4;
+			if (touch.px > 123 && touch.px < 301 && touch.py > 155 && touch.py < 181) entryBottom = 5;
+			if (touch.px > 123 && touch.px < 301 && touch.py > 181 && touch.py < 207) entryBottom = 6;
+			if (touch.px > 123 && touch.px < 301 && touch.py > 207 && touch.py < 233) entryBottom = 7;
+		}
+		
+		if (hidKeysDown() & KEY_A) {
+			if (!(game < 4 && (currentEntry + page * 40) < 622)) { // prevent that gen7 moves are injected in gen6 games
+				if (entryBottom < 4)
+					setMove(pkmn, currentEntry + page * 40, entryBottom);
+				else
+					setEggMove(pkmn, currentEntry + page * 40, entryBottom - 4);
+			}
+		}
+		
+		printMoves(pkmn, currentEntry, entryBottom, page);
+	}
+}
+
 void pokemonEditor(u8* mainbuf, int game) {
 	bool speedy = false;
 	bool cloning = false;
@@ -1015,6 +1089,10 @@ void pokemonEditor(u8* mainbuf, int game) {
 						setPkmn(mainbuf, box, currentEntry, pkmn, game);
 						infoDisp("Edits applied!");
 						break;
+					}
+
+					if (touch.px > 200 && touch.px < 308 && touch.py > 140 && touch.py < 170) {
+						movesEditor(pkmn, game);
 					}
 				}
 
