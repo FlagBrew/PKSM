@@ -142,7 +142,7 @@ void update() {
 	else infoDisp("Download failed!");
 
 	free(ciaPath);
-	infoDisp("Close the app!");
+	infoDisp("Install the build through FBI!");
 }
 
 bool isHBL() {
