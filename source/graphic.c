@@ -1245,8 +1245,8 @@ void printPKEditor(u8* pkmn, int game, bool speedy) {
 		sftd_draw_text(fontBold12, 225, 10, WHITE, 12, "IV");
 		sftd_draw_text(fontBold12, 274, 10, WHITE, 12, "EV");
 
-		//sf2d_draw_texture(minus, 87, 42);
-		//sf2d_draw_texture(plus, 127, 42);
+		sf2d_draw_texture(minus, 86, 42);
+		sf2d_draw_texture(plus, 127, 42);
 		
 		y_desc = 60;
 		for (int i = 0; i < 5; i++) {
@@ -1261,8 +1261,7 @@ void printPKEditor(u8* pkmn, int game, bool speedy) {
 
 		char* level = (char*)malloc(4 * sizeof(char));
 		snprintf(level, 4, "%u", getLevel(pkmn));
-		//sftd_draw_text(fontBold12, 100 + (max - sftd_get_text_width(fontBold12, 12, level)) / 2, 41, WHITE, 12, level);
-		sftd_draw_text(fontBold12, 124 - sftd_get_text_width(fontBold12, 12, level), 41, WHITE, 12, level);
+		sftd_draw_text(fontBold12, 100 + (max - sftd_get_text_width(fontBold12, 12, level)) / 2, 41, WHITE, 12, level);
 		free(level);
 			
 		sftd_draw_text(fontBold12, 124 - sftd_get_text_width(fontBold12, 12, natures[getNature(pkmn)]), 58, WHITE, 12, natures[getNature(pkmn)]);

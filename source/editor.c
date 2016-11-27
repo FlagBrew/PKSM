@@ -1090,9 +1090,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 				if (hidKeysDown() & KEY_R)
 					speedy = true;
 
-				if (hidKeysDown() & KEY_TOUCH) {
-					if (touch.px > 288 && touch.px < 310 && touch.py > 213 && touch.py < 231) break;
-
+				if ((hidKeysDown() & KEY_TOUCH) && !(touch.px > 288 && touch.px < 310 && touch.py > 213 && touch.py < 231)) {
 					if (touch.px > 126 && touch.px < 141 && touch.py > 60 && touch.py < 72) {
 						if (getNature(pkmn) < 24)
 							setNature(pkmn, getNature(pkmn) + 1);
@@ -1164,6 +1162,20 @@ void pokemonEditor(u8* mainbuf, int game) {
 				}
 
 				if ((hidKeysDown() & KEY_TOUCH) && !(speedy)) {
+					if (touch.px > 127 && touch.px < 140 && touch.py > 42 && touch.py < 55) {
+						if (getLevel(pkmn) < 100)
+							setLevel(pkmn, getLevel(pkmn) + 1);
+						else if (getLevel(pkmn) == 100)
+							setLevel(pkmn, 1);
+					}
+					
+					if (touch.px > 86 && touch.px < 99 && touch.py > 42 && touch.py < 55) {
+						if (getLevel(pkmn) > 1)
+							setLevel(pkmn, getLevel(pkmn) - 1);
+						else if (getLevel(pkmn) == 1)
+							setLevel(pkmn, 100);
+					}
+					
 					if (touch.px > 110 && touch.px < 123 && touch.py > 144 && touch.py < 157) {
 						if (getFriendship(pkmn) > 0)
 							setFriendship(pkmn, getFriendship(pkmn) - 1);
@@ -1278,6 +1290,20 @@ void pokemonEditor(u8* mainbuf, int game) {
 				}
 
 				if ((hidKeysHeld() & KEY_TOUCH) && speedy) {
+					if (touch.px > 127 && touch.px < 140 && touch.py > 42 && touch.py < 55) {
+						if (getLevel(pkmn) < 100)
+							setLevel(pkmn, getLevel(pkmn) + 1);
+						else if (getLevel(pkmn) == 100)
+							setLevel(pkmn, 1);
+					}
+					
+					if (touch.px > 86 && touch.px < 99 && touch.py > 42 && touch.py < 55) {
+						if (getLevel(pkmn) > 1)
+							setLevel(pkmn, getLevel(pkmn) - 1);
+						else if (getLevel(pkmn) == 1)
+							setLevel(pkmn, 100);
+					}
+					
 					if (touch.px > 110 && touch.px < 123 && touch.py > 144 && touch.py < 157) {
 						if (getFriendship(pkmn) > 0)
 							setFriendship(pkmn, getFriendship(pkmn) - 1);
