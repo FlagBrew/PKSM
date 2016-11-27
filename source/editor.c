@@ -490,6 +490,10 @@ bool getPokerus(u8* pkmn) {
 
 /* ************************ set ************************ */
 
+void setItemEditor(u8* pkmn, u16 item) {
+    memcpy(&pkmn[ITEMPOS], &item, ITEMLENGTH);
+}
+
 void setAbility(u8* pkmn, const u8 ability) {
 	u8 abilitynum = 0;
 	if (ability == 0)      abilitynum = 1;
@@ -882,6 +886,65 @@ void saveFileEditor(u8* mainbuf, int game) {
 	}
 }
 
+void itemEditor(u8* pkmn, int game) {
+	int currentEntry = 0;
+	int page = 0, maxpages = 23;
+	
+	while (aptMainLoop()) {
+		hidScanInput();
+		touchPosition touch;
+		hidTouchRead(&touch);
+		
+		if (hidKeysDown() & KEY_B) break;
+		
+		if (hidKeysDown() & KEY_L) {
+			if (page > 0) page--;
+			else if (page == 0) page = maxpages - 1;
+		}
+		
+		if (hidKeysDown() & KEY_R) {
+			if (page < maxpages - 1) page++;
+			else if (page == maxpages - 1) page = 0;
+		}
+		
+		if (hidKeysDown() & KEY_DUP) {
+			if (currentEntry > 0) currentEntry--;
+			else if (currentEntry == 0) currentEntry = 39;
+		}
+		
+		if (hidKeysDown() & KEY_DDOWN) {
+			if (currentEntry < 39) currentEntry++;
+			else if (currentEntry == 39) currentEntry = 0;
+		}
+		
+		if (hidKeysDown() & KEY_DLEFT) {
+			if (currentEntry <= 19)	{
+				page--;
+				if (page < 0) 
+					page = maxpages - 1;
+			}
+			else if (currentEntry >= 20) currentEntry -= 20;
+		}
+		
+		if (hidKeysDown() & KEY_DRIGHT) {
+			if (currentEntry <= 19) currentEntry += 20;
+			else if (currentEntry >= 20) {
+				page++;
+				if (page > maxpages - 1)
+					page = 0;
+			}
+		}
+		
+		if (hidKeysDown() & KEY_A) {
+			if (!(game < 4 && (currentEntry + page * 40) < 771)) { // prevent that gen7 items are injected in gen6 games
+				setItemEditor(pkmn, currentEntry + page * 40);
+			}
+		}
+		
+		printItems(pkmn, currentEntry, page);
+	}
+}
+
 void movesEditor(u8* pkmn, int game) {
 	int currentEntry = 0;
 	int entryBottom = 0;
@@ -1041,6 +1104,10 @@ void pokemonEditor(u8* mainbuf, int game) {
 						if (ability < 2) ability++;
 						else if (ability == 2) ability = 0;
 						setAbility(pkmn, ability);
+					}
+					
+					if (touch.px > 126 && touch.px < 141 && touch.py > 94 && touch.py < 106) {
+						itemEditor(pkmn, game);
 					}
 
 					if (touch.px > 126 && touch.px < 141 && touch.py > 111 && touch.py < 123) {

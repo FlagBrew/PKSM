@@ -1657,3 +1657,38 @@ void printMoves(u8* pkmn, int currentEntry, int entryBottom, int page) {
 	sf2d_end_frame();
 	sf2d_swapbuffers();	
 }
+
+void printItems(u8* pkmn, int currentEntry, int page) {
+	int y = 0, x = 30;
+	sf2d_start_frame(GFX_TOP, GFX_LEFT);
+		sf2d_draw_texture(topMovesBG, 0, 0);
+		
+		for (int i = 0; i < 20; i++) {
+			if (i == currentEntry) sf2d_draw_texture(topSelectedMove, x, y);
+			sftd_draw_textf(fontBold9, x + 2, y, WHITE, 9, "%d - %s", 40 * page + i, items[40 * page + i]);
+			y += topSelectedMove->height;
+		}
+		
+		y = 0;
+		x = 200;
+		
+		for (int i = 20; i < 40; i++) {
+			if (i == currentEntry) sf2d_draw_texture(topSelectedMove, x, y);
+			sftd_draw_textf(fontBold9, x + 2, y, WHITE, 9, "%d - %s", 40 * page + i, items[40 * page + i]);
+			y += topSelectedMove->height;
+		}
+		
+	sf2d_end_frame();
+
+	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
+		sf2d_draw_texture(bottomMovesBG, 0, 0);
+		
+		x = (320 - bottomMovesBar->width) / 2;
+		y = (240 - bottomMovesBar->height) / 2;
+
+		sf2d_draw_texture(bottomMovesBar, x, y);
+		sftd_draw_text(fontBold11, (320 - sftd_get_text_width(fontBold11, 11, items[getItem(pkmn)])) / 2, y + 5, WHITE, 11, items[getItem(pkmn)]);
+
+	sf2d_end_frame();
+	sf2d_swapbuffers();	
+}

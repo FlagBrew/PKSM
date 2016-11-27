@@ -98,7 +98,9 @@ void setPokerus(u8* pkmn);
 void setLevel(u8* pkmn, int lv);
 void setMove(u8* pkmn, const u16 move, const int nmove);
 void setEggMove(u8* pkmn, const u16 move, const int nmove);
+void setItemEditor(u8* pkmn, u16 item);
 
+void itemEditor(u8* pkmn, int game);
 void movesEditor(u8* pkmn, int game);
 void saveFileEditor(u8* mainbuf, int game);
 void pokemonEditor(u8* mainbuf, int game);
