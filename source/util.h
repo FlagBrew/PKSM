@@ -19,9 +19,11 @@
 #include <stdlib.h>
 #include <3ds.h>
 
+#define POKEBANK 0x00040000000C9B00
+
 #define V1 3
 #define V2 1
-#define V3 0
+#define V3 1
 
 #define DAY 12
 #define MONTH 9
@@ -53,3 +55,4 @@ bool isHBL();
 void fsStart();
 void fsEnd();
 bool openSaveArch(FS_Archive *out, u64 id);
+void settingsMenu(u8* mainbuf, int game);

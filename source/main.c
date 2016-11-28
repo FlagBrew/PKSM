@@ -248,6 +248,9 @@ int main() {
 					if (touch.py > 98 && touch.py < 136) { currentEntry = 1; touchPressed = true; }
 					if (touch.py > 146 && touch.py < 184) { currentEntry = 2; touchPressed = true; }
 				}
+				
+				if (touch.px > 298 && touch.px < 318 && touch.py > 205 && touch.py < 225)
+					settingsMenu(mainbuf, game);
 			}
 
 			if ((hidKeysDown() & KEY_A) || touchPressed) {

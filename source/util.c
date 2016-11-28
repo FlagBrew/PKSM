@@ -185,3 +185,109 @@ bool openSaveArch(FS_Archive *out, u64 id) {
 
 	return ret;
 }
+
+void settingsMenu(u8* mainbuf, int game) {
+	bool speedy = false;
+	
+	FILE *bank = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
+	fseek(bank, 0, SEEK_END);
+	u32 size = ftell(bank);
+	fclose(bank);
+	
+	u32 box = size / (30 * PKMNLENGTH);
+	u32 boxmax = 1000;
+
+	while (aptMainLoop()) {
+		hidScanInput();
+		touchPosition touch;
+		hidTouchRead(&touch);
+
+		if (hidKeysDown() & KEY_B) break;
+		
+		if (hidKeysDown() & KEY_L)
+			speedy = false;
+
+		if (hidKeysDown() & KEY_R)
+			speedy = true;
+		
+		if ((hidKeysDown() & KEY_TOUCH) && !speedy) {
+			if (touch.px > 173 && touch.px < 186 && touch.py > 46 && touch.py < 59) {
+				if (box > 2) box--;
+				else if (box == 2) box = boxmax;
+			}
+			
+			if (touch.px > 190 && touch.px < 203 && touch.py > 46 && touch.py < 59) {
+				if (box < boxmax) box++;
+				else if (box == boxmax) box = 2;
+			}
+		}
+		
+		if ((hidKeysHeld() & KEY_TOUCH) && speedy) {
+			if (touch.px > 173 && touch.px < 186 && touch.py > 46 && touch.py < 59) {
+				if (box > 2) box--;
+				else if (box == 2) box = boxmax;
+			}
+			
+			if (touch.px > 190 && touch.px < 203 && touch.py > 46 && touch.py < 59) {
+				if (box < boxmax) box++;
+				else if (box == boxmax) box = 2;
+			}
+		}
+		
+		if (hidKeysDown() & KEY_TOUCH) {
+			if (touch.px > 260 && touch.px < 296 && touch.py > 42 && touch.py < 63) {
+				if (size < box * 30 * PKMNLENGTH) { // i box sono maggiori
+					FILE *buf = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
+					fseek(buf, 0, SEEK_END);
+					u32 size_temp = ftell(buf);
+					u8 *bankbuf = (u8*)malloc(size_temp * sizeof(u8));
+					rewind(buf);
+					fread(bankbuf, size_temp, 1, buf);
+					fclose(buf);
+					
+					FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bak", "wb");
+					fwrite(bankbuf, 1, size_temp, bak);
+					fclose(bak);
+					
+					u8* newbank = (u8*)malloc(box * 30 * PKMNLENGTH);
+					memset(newbank, 0, box * 30 * PKMNLENGTH);
+					memcpy(newbank, bankbuf, size_temp);
+					
+					FILE *newbankfile = fopen("/3ds/data/PKSM/bank/bank.bin", "wb");
+					fwrite(newbank, 1, box * 30 * PKMNLENGTH, newbankfile);
+					fclose(newbankfile);
+					
+					free(bankbuf);
+					free(newbank);					
+				}
+				else if (size > box * 30 * PKMNLENGTH) { // i box sono minori
+					FILE *buf = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
+					fseek(buf, 0, SEEK_END);
+					u32 size_temp = ftell(buf);
+					u8 *bankbuf = (u8*)malloc(size_temp * sizeof(u8));
+					rewind(buf);
+					fread(bankbuf, size_temp, 1, buf);
+					fclose(buf);
+					
+					FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bak", "wb");
+					fwrite(bankbuf, 1, size_temp, bak);
+					fclose(bak);
+					
+					u8* newbank = (u8*)malloc(box * 30 * PKMNLENGTH);
+					memset(newbank, 0, box * 30 * PKMNLENGTH);
+					memcpy(newbank, bankbuf, box * 30 * PKMNLENGTH);
+					
+					FILE *newbankfile = fopen("/3ds/data/PKSM/bank/bank.bin", "wb");
+					fwrite(newbank, 1, box * 30 * PKMNLENGTH, newbankfile);
+					fclose(newbankfile);
+					
+					free(bankbuf);
+					free(newbank);					
+				}
+				infoDisp("Size changed!");
+			}
+		}
+
+		printSettings(box);
+	}
+}

@@ -23,7 +23,7 @@
 #include "http.h"
 
 sftd_font *fontBold18, *fontBold15, *fontBold14, *fontBold12, *fontBold11, *fontBold9, *fontFixed; 
-sf2d_texture *topBorder, *distributionsBottom, *distributionsTop, *bottomBorder, *slimDarkBar, *slimRedBar, *gameSelectorBottom, *gameSelectorTop, *mainMenuBottom, *darkBar, *redBar, *mainMenuTop, *darkButton, *eventTop, *left, *leftTop, *lightButton, *redButton, *right, *rightTop, *spritesSmall, *shinySpritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *eventMenuTop, *warningTopTrasp, *warningBottomTrasp, *PSDates, *editorBar, *boxView, *infoView, *LRBar, *selector, *editorBG, *plus, *minus, *buttonSave, *back, *setting, *selectorCloning, *bankBottomBG, *topButton, *bottomButton, *bottomPopUp, *pokemonBufferBox, *cleanTop, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR, *bottomMovesBar, *bottomMovesBarCut, *bottomMovesBG, *topMovesBG, *topSelectedMove;
+sf2d_texture *topBorder, *distributionsBottom, *distributionsTop, *bottomBorder, *slimDarkBar, *slimRedBar, *gameSelectorBottom, *gameSelectorTop, *mainMenuBottom, *darkBar, *redBar, *mainMenuTop, *darkButton, *eventTop, *left, *leftTop, *lightButton, *redButton, *right, *rightTop, *spritesSmall, *shinySpritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *eventMenuTop, *warningTopTrasp, *warningBottomTrasp, *PSDates, *editorBar, *boxView, *infoView, *LRBar, *selector, *editorBG, *plus, *minus, *buttonSave, *back, *setting, *selectorCloning, *bankBottomBG, *topButton, *bottomButton, *bottomPopUp, *pokemonBufferBox, *cleanTop, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR, *bottomMovesBar, *bottomMovesBarCut, *bottomMovesBG, *topMovesBG, *topSelectedMove, *settings;
 
 int trasp = 254;
 bool vanish = true;
@@ -52,6 +52,7 @@ void GUIElementsInit() {
 void GUIElementsSpecify(int game) {
 	spritesSmall = sfil_load_PNG_file("romfs:/res/spritesSmall.png", SF2D_PLACE_RAM);
 	shinySpritesSmall = sfil_load_PNG_file("romfs:/res/shinySpritesSmall.png", SF2D_PLACE_RAM);
+	settings = sfil_load_PNG_file("romfs:/res/Settings.png", SF2D_PLACE_RAM);
 	
 	if (game < 6) {
 		distributionsBottom = sfil_load_PNG_file("romfs:/res/Distributions Bottom.png", SF2D_PLACE_RAM);
@@ -129,6 +130,7 @@ void GUIGameElementsExit() {
 }
 
 void GUIElementsExit() {
+	sf2d_free_texture(settings);
 	sf2d_free_texture(bottomMovesBG);
 	sf2d_free_texture(bottomMovesBar);
 	sf2d_free_texture(bottomMovesBarCut);
@@ -300,7 +302,7 @@ void drawMenuTop(int game) {
 	}
 	else 
 		sf2d_draw_texture(DSTopBG, 0, 0);
-	sftd_draw_text(fontBold9, 2, 229, RGBA8(255, 255, 255, 130), 9, "Support the project!");
+	//sftd_draw_text(fontBold9, 2, 229, RGBA8(255, 255, 255, 130), 9, "Support the project!");
 	sftd_draw_text(fontBold9, (398 - sftd_get_text_width(fontBold9, 9, version)), 229, RGBA8(255, 255, 255, 130), 9, version);
 	
 	free(version);
@@ -353,6 +355,7 @@ void mainMenu(int currentEntry) {
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(mainMenuBottom, 0, 0);
+		sf2d_draw_texture(settings, 298, 205);
 		for (int i = 0; i < 3; i++) {
 			if (i == currentEntry)
 				sf2d_draw_texture(redBar, (320 - redBar->width) / 2, 50 + i * (redBar->height + 10));
@@ -1690,4 +1693,25 @@ void printItems(u8* pkmn, int currentEntry, int page) {
 
 	sf2d_end_frame();
 	sf2d_swapbuffers();	
+}
+
+void printSettings(int box) {
+	int y = 45;
+	
+	sf2d_start_frame(GFX_TOP, GFX_LEFT);
+		drawMenuTop(0);
+	sf2d_end_frame();
+	
+	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
+		sf2d_draw_texture(mainMenuBottom, 0, 0);
+		
+		sftd_draw_textf(fontBold12, 15, y, BLACK, 12, "Bank size: %d boxes", box);
+		sf2d_draw_texture(darkButton, 170, y - 3);
+		sf2d_draw_texture(minus, 173, y + 1);
+		sf2d_draw_texture(plus, 190, y + 1);
+		sf2d_draw_texture(darkButton, 260, y - 3);
+
+		sftd_draw_text(fontBold9, (320 - sftd_get_text_width(fontBold9, 9, "Press B to return.")) / 2, 226, WHITE, 9, "Press B to return.");
+	sf2d_end_frame();
+	sf2d_swapbuffers();
 }
