@@ -20,6 +20,10 @@
 #include "editor.h"
 #include "bank.h"
 
+void setDex(u8* mainbuf, int game, u8* pkmn) {
+	
+}
+
 void bank(u8* mainbuf, int game) {
 	FILE *fptr = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
 	fseek(fptr, 0, SEEK_END);
@@ -155,25 +159,27 @@ void bank(u8* mainbuf, int game) {
 		
 		if ((hidKeysDown() & KEY_A) || (hidKeysDown() & KEY_TOUCH && touch.px > 214 && touch.px < 320 && touch.py > 12 && touch.py < 42)) {
 			if (isBufferized) {
-				u8 tmp[PKMNLENGTH];
-				
-				if (wasBank == isBank && coordinate[0] == box && coordinate[1] == currentEntry)
-					memset(pkmn, 0, PKMNLENGTH);
-				else if (isBank) {
-					memcpy(tmp, &bankbuf[box * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], PKMNLENGTH);
-					memcpy(&bankbuf[box * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], pkmn, PKMNLENGTH);
-					if (wasBank) memcpy(&bankbuf[coordinate[0] * 30 * PKMNLENGTH + coordinate[1] * PKMNLENGTH], tmp, PKMNLENGTH);
-					else setPkmn(mainbuf, coordinate[0], coordinate[1], tmp, game);
-					memset(pkmn, 0, PKMNLENGTH);
+				if (!(game < 4 && getPokedexNumber(pkmn) > 721)) { // prevent that gen7 stuff goes into gen6 save
+					u8 tmp[PKMNLENGTH];
+					
+					if (wasBank == isBank && coordinate[0] == box && coordinate[1] == currentEntry)
+						memset(pkmn, 0, PKMNLENGTH);
+					else if (isBank) {
+						memcpy(tmp, &bankbuf[box * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], PKMNLENGTH);
+						memcpy(&bankbuf[box * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], pkmn, PKMNLENGTH);
+						if (wasBank) memcpy(&bankbuf[coordinate[0] * 30 * PKMNLENGTH + coordinate[1] * PKMNLENGTH], tmp, PKMNLENGTH);
+						else setPkmn(mainbuf, coordinate[0], coordinate[1], tmp, game);
+						memset(pkmn, 0, PKMNLENGTH);
+					}
+					else {
+						getPkmn(mainbuf, box, currentEntry, tmp, game);
+						setPkmn(mainbuf, box, currentEntry, pkmn, game);
+						if (wasBank) memcpy(&bankbuf[coordinate[0] * 30 * PKMNLENGTH + coordinate[1] * PKMNLENGTH], tmp, PKMNLENGTH);
+						else setPkmn(mainbuf, coordinate[0], coordinate[1], tmp, game);
+						memset(pkmn, 0, PKMNLENGTH);
+					}
+					isBufferized = false;
 				}
-				else {
-					getPkmn(mainbuf, box, currentEntry, tmp, game);
-					setPkmn(mainbuf, box, currentEntry, pkmn, game);
-					if (wasBank) memcpy(&bankbuf[coordinate[0] * 30 * PKMNLENGTH + coordinate[1] * PKMNLENGTH], tmp, PKMNLENGTH);
-					else setPkmn(mainbuf, coordinate[0], coordinate[1], tmp, game);
-					memset(pkmn, 0, PKMNLENGTH);
-				}
-				isBufferized = false;
 			}
 			else {
 				int k = 0;
