@@ -195,7 +195,7 @@ void settingsMenu(u8* mainbuf, int game) {
 	fclose(bank);
 	
 	u32 box = size / (30 * PKMNLENGTH);
-	u32 boxmax = 1000;
+	u32 boxmax = 150;
 
 	while (aptMainLoop()) {
 		hidScanInput();
@@ -236,58 +236,34 @@ void settingsMenu(u8* mainbuf, int game) {
 		
 		if (hidKeysDown() & KEY_TOUCH) {
 			if (touch.px > 260 && touch.px < 296 && touch.py > 42 && touch.py < 63) {
-				if (size < box * 30 * PKMNLENGTH) { // i box sono maggiori
-					FILE *buf = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
-					fseek(buf, 0, SEEK_END);
-					u32 size_temp = ftell(buf);
-					u8 *bankbuf = (u8*)malloc(size_temp * sizeof(u8));
-					rewind(buf);
-					fread(bankbuf, size_temp, 1, buf);
-					fclose(buf);
-					
-					FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bak", "wb");
-					fwrite(bankbuf, 1, size_temp, bak);
-					fclose(bak);
-					
-					u8* newbank = (u8*)malloc(box * 30 * PKMNLENGTH);
-					memset(newbank, 0, box * 30 * PKMNLENGTH);
-					memcpy(newbank, bankbuf, size_temp);
-					
-					FILE *newbankfile = fopen("/3ds/data/PKSM/bank/bank.bin", "wb");
-					fwrite(newbank, 1, box * 30 * PKMNLENGTH, newbankfile);
-					fclose(newbankfile);
-					
-					free(bankbuf);
-					free(newbank);					
-				}
-				else if (size > box * 30 * PKMNLENGTH) { // i box sono minori
-					FILE *buf = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
-					fseek(buf, 0, SEEK_END);
-					u32 size_temp = ftell(buf);
-					u8 *bankbuf = (u8*)malloc(size_temp * sizeof(u8));
-					rewind(buf);
-					fread(bankbuf, size_temp, 1, buf);
-					fclose(buf);
-					
-					FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bak", "wb");
-					fwrite(bankbuf, 1, size_temp, bak);
-					fclose(bak);
-					
-					u8* newbank = (u8*)malloc(box * 30 * PKMNLENGTH);
-					memset(newbank, 0, box * 30 * PKMNLENGTH);
-					memcpy(newbank, bankbuf, box * 30 * PKMNLENGTH);
-					
-					FILE *newbankfile = fopen("/3ds/data/PKSM/bank/bank.bin", "wb");
-					fwrite(newbank, 1, box * 30 * PKMNLENGTH, newbankfile);
-					fclose(newbankfile);
-					
-					free(bankbuf);
-					free(newbank);					
-				}
+				FILE *buf = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
+				fseek(buf, 0, SEEK_END);
+				u32 size_temp = ftell(buf);
+				u8 *bankbuf = (u8*)malloc(size_temp * sizeof(u8));
+				rewind(buf);
+				fread(bankbuf, size_temp, 1, buf);
+				fclose(buf);
+				
+				FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bak", "wb");
+				fwrite(bankbuf, 1, size_temp, bak);
+				fclose(bak);
+				
+				u8* newbank = (u8*)malloc(box * 30 * PKMNLENGTH);
+				memset(newbank, 0, box * 30 * PKMNLENGTH);
+				int tostore = (size <= box * 30 * PKMNLENGTH) ? size_temp : box * 30 * PKMNLENGTH;
+				memcpy(newbank, bankbuf, tostore);
+				
+				FILE *newbankfile = fopen("/3ds/data/PKSM/bank/bank.bin", "wb");
+				fwrite(newbank, 1, box * 30 * PKMNLENGTH, newbankfile);
+				fclose(newbankfile);
+				
+				free(bankbuf);
+				free(newbank);					
+
 				infoDisp("Size changed!");
 			}
 		}
 
-		printSettings(box);
+		printSettings(box, speedy);
 	}
 }
