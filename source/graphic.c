@@ -18,6 +18,7 @@
 #include <sftd.h>
 #include <sfil.h>
 #include <stdio.h>
+#include <time.h>
 #include "graphic.h"
 #include "editor.h"
 #include "http.h"
@@ -1699,7 +1700,14 @@ void printItems(u8* pkmn, int currentEntry, int page) {
 	sf2d_swapbuffers();	
 }
 
-void printSettings(int box, bool speedy) {
+void printSettings(int box, bool speedy, int game) {
+	char *gamesList[] = {"X", "Y", "OR", "AS", "S", "M", "D", "P", "PL", "HG", "SS", "B", "W", "W2", "B2"};
+	char *bakpath = (char*)malloc(80 * sizeof(char));
+	
+	time_t unixTime = time(NULL);
+	struct tm* timeStruct = gmtime((const time_t *)&unixTime);		
+	snprintf(bakpath, 80, "main_%s_%i%i%i%02i%02i%02i", gamesList[game], timeStruct->tm_mday, timeStruct->tm_mon + 1, timeStruct->tm_year + 1900, timeStruct->tm_hour, timeStruct->tm_min, timeStruct->tm_sec);
+
 	int y = 45;
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
@@ -1710,11 +1718,16 @@ void printSettings(int box, bool speedy) {
 		sf2d_draw_texture(mainMenuBottom, 0, 0);
 		
 		// bank size
-		sftd_draw_textf(fontBold12, 15, y, BLACK, 12, "Bank size: %d boxes", box);
-		sf2d_draw_texture(darkButton, 170, y - 3);
-		sf2d_draw_texture(minus, 173, y + 1);
-		sf2d_draw_texture(plus, 190, y + 1);
+		sftd_draw_textf(fontBold11, 15, y + 1, BLACK, 11, "Bank size: %d boxes", box);
+		sf2d_draw_texture(darkButton, 220, y - 3);
+		sf2d_draw_texture(minus, 223, y + 1);
+		sf2d_draw_texture(plus, 240, y + 1);
+		sf2d_draw_texture(darkButton, 260, y - 3);
+		sftd_draw_text(fontBold12, 268, y, WHITE, 12, "OK"); 
 		
+		// save backup
+		y += 27;
+		sftd_draw_textf(fontBold11, 15, y + 1, BLACK, 11, "Backup save: %s", bakpath);
 		sf2d_draw_texture(darkButton, 260, y - 3);
 		sftd_draw_text(fontBold12, 268, y, WHITE, 12, "OK");
 
@@ -1722,4 +1735,6 @@ void printSettings(int box, bool speedy) {
 		sftd_draw_text(fontBold9, (320 - sftd_get_text_width(fontBold9, 9, "Press B to return.")) / 2, 226, WHITE, 9, "Press B to return.");
 	sf2d_end_frame();
 	sf2d_swapbuffers();
+	
+	free(bakpath);
 }
