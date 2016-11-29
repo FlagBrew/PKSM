@@ -289,7 +289,7 @@ void settingsMenu(u8* mainbuf, int game) {
 					free(bankbuf);
 					free(newbank);					
 				}
-				infoDisp("Size changed!");
+				infoDisp("Bank size changed!");
 			}
 			if (touch.px > 260 && touch.px < 296 && touch.py > 69 && touch.py < 90) {
 				char *bakpath = (char*)malloc(80 * sizeof(char));
@@ -304,7 +304,25 @@ void settingsMenu(u8* mainbuf, int game) {
 				
 				free(bakpath);
 				
-				infoDisp("Backup created!");
+				infoDisp("Save backup created!");
+			}
+			if (touch.px > 260 && touch.px < 296 && touch.py > 96 && touch.py < 117) {
+				FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
+				fseek(bak, 0, SEEK_END);
+				size = ftell(bak);
+				u8* bankbuf = (u8*)malloc(size * sizeof(u8));
+				
+				rewind(bak);
+				fread(bankbuf, size, 1, bak);
+				fclose(bak);
+				
+				FILE *new = fopen("/3ds/data/PKSM/bank/bank.bak", "wb");
+				fwrite(bankbuf, 1, size, new);
+				fclose(new);
+				
+				free(bankbuf);	
+
+				infoDisp("Bank backup created!");
 			}
 		}
 

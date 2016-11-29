@@ -1703,11 +1703,13 @@ void printItems(u8* pkmn, int currentEntry, int page) {
 void printSettings(int box, bool speedy, int game) {
 	char *gamesList[] = {"X", "Y", "OR", "AS", "S", "M", "D", "P", "PL", "HG", "SS", "B", "W", "W2", "B2"};
 	char *bakpath = (char*)malloc(80 * sizeof(char));
+	char *bankbakpath = (char*)malloc(80 * sizeof(char));
 	
 	time_t unixTime = time(NULL);
 	struct tm* timeStruct = gmtime((const time_t *)&unixTime);		
 	snprintf(bakpath, 80, "main_%s_%i%i%i%02i%02i%02i", gamesList[game], timeStruct->tm_mday, timeStruct->tm_mon + 1, timeStruct->tm_year + 1900, timeStruct->tm_hour, timeStruct->tm_min, timeStruct->tm_sec);
-
+	snprintf(bankbakpath, 80, "bank_%i%i%i%02i%02i%02i", timeStruct->tm_mday, timeStruct->tm_mon + 1, timeStruct->tm_year + 1900, timeStruct->tm_hour, timeStruct->tm_min, timeStruct->tm_sec);
+	
 	int y = 45;
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
@@ -1730,6 +1732,12 @@ void printSettings(int box, bool speedy, int game) {
 		sftd_draw_textf(fontBold11, 15, y + 1, BLACK, 11, "Backup save: %s", bakpath);
 		sf2d_draw_texture(darkButton, 260, y - 3);
 		sftd_draw_text(fontBold12, 268, y, WHITE, 12, "OK");
+		
+		// save bank backup
+		y += 27;
+		sftd_draw_textf(fontBold11, 15, y + 1, BLACK, 11, "Backup bank: %s", bankbakpath);
+		sf2d_draw_texture(darkButton, 260, y - 3);
+		sftd_draw_text(fontBold12, 268, y, WHITE, 12, "OK");
 
 		sftd_draw_textf(fontBold9, 15, 200, DARKGREY, 9, "You can switch speed using (L/R): %s", speedy ? "FAST" : "SLOW");
 		sftd_draw_text(fontBold9, (320 - sftd_get_text_width(fontBold9, 9, "Press B to return.")) / 2, 226, WHITE, 9, "Press B to return.");
@@ -1737,4 +1745,5 @@ void printSettings(int box, bool speedy, int game) {
 	sf2d_swapbuffers();
 	
 	free(bakpath);
+	free(bankbakpath);
 }
