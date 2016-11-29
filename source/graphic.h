@@ -30,9 +30,9 @@
 #define TRASPWHITE RGBA8(255,255,255,170)
 #define DARKBLUE RGBA8(0, 0, 102, 0xFF)
 #define DS RGBA8(48, 48, 48, 255)
+#define GOLD RGBA8(254, 234, 60, 255)
 
-#define FILL 5
-#define SIZE 12
+#define EGGSPRITEPOS 803
 
 void GUIElementsInit();
 void GUIElementsSpecify(int game);
@@ -67,4 +67,4 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 void printMassInjector(int currentEntry);
 void printMoves(u8* pkmn, int currentEntry, int entryBottom, int page);
 void printItems(u8* pkmn, int currentEntry, int page);
-void printSettings(int box);
+void printSettings(int box, bool speedy);

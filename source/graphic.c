@@ -1179,11 +1179,13 @@ void printPKViewer(u8* mainbuf, int game, int currentEntry, int box, bool clonin
 			for (int j = 0; j < 6; j++) {
 				getPkmn(mainbuf, box, i*6+j, pkmn, game);
 				u16 n = getPokedexNumber(pkmn);
-				if (n) {
+				if (n) { 
 					if (isShiny(pkmn))
 						sf2d_draw_texture_part(shinySpritesSmall, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30); 
 					else 
 						sf2d_draw_texture_part(spritesSmall, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30);
+					if (isEgg(pkmn))
+						sf2d_draw_texture_part(spritesSmall, x + 6, y + 6, 40 * (EGGSPRITEPOS % 25) + 4, 30 * (EGGSPRITEPOS / 25), 34, 30);
 				}
 				if (currentEntry == (i*6+j)) {
 					pointer[0] = x + 18;
@@ -1264,25 +1266,25 @@ void printPKEditor(u8* pkmn, int game, bool speedy) {
 
 		char* level = (char*)malloc(4 * sizeof(char));
 		snprintf(level, 4, "%u", getLevel(pkmn));
-		sftd_draw_text(fontBold12, 100 + (max - sftd_get_text_width(fontBold12, 12, level)) / 2, 41, WHITE, 12, level);
+		sftd_draw_text(fontBold12, 100 + (max - sftd_get_text_width(fontBold12, 12, level)) / 2, 41, GOLD, 12, level);
 		free(level);
 			
-		sftd_draw_text(fontBold12, 124 - sftd_get_text_width(fontBold12, 12, natures[getNature(pkmn)]), 58, WHITE, 12, natures[getNature(pkmn)]);
-		sftd_draw_text(fontBold12, 124 - sftd_get_text_width(fontBold12, 12, abilities[getAbility(pkmn)]), 75, WHITE, 12, abilities[getAbility(pkmn)]);
-		sftd_draw_text(fontBold12, 124 - sftd_get_text_width(fontBold12, 12, items[getItem(pkmn)]), 92, WHITE, 12, items[getItem(pkmn)]);
-		sftd_draw_text(fontBold12, 124 - sftd_get_text_width(fontBold12, 12, isShiny(pkmn) ? "Yes" : "No"), 109, WHITE, 12, isShiny(pkmn) ? "Yes" : "No");
-		sftd_draw_text(fontBold12, 124 - sftd_get_text_width(fontBold12, 12, isInfected(pkmn) ? "Yes" : "No"), 126, WHITE, 12, isInfected(pkmn) ? "Yes" : "No");
+		sftd_draw_text(fontBold12, 124 - sftd_get_text_width(fontBold12, 12, natures[getNature(pkmn)]), 58, GOLD, 12, natures[getNature(pkmn)]);
+		sftd_draw_text(fontBold12, 124 - sftd_get_text_width(fontBold12, 12, abilities[getAbility(pkmn)]), 75, GOLD, 12, abilities[getAbility(pkmn)]);
+		sftd_draw_text(fontBold12, 124 - sftd_get_text_width(fontBold12, 12, items[getItem(pkmn)]), 92, GOLD, 12, items[getItem(pkmn)]);
+		sftd_draw_text(fontBold12, 124 - sftd_get_text_width(fontBold12, 12, isShiny(pkmn) ? "Yes" : "No"), 109, GOLD, 12, isShiny(pkmn) ? "Yes" : "No");
+		sftd_draw_text(fontBold12, 124 - sftd_get_text_width(fontBold12, 12, isInfected(pkmn) ? "Yes" : "No"), 126, GOLD, 12, isInfected(pkmn) ? "Yes" : "No");
 		
 		char* friendship = (char*)malloc(4 * sizeof(char));
 		snprintf(friendship, 4, "%u", getFriendship(pkmn));
-		sftd_draw_text(fontBold12, 124 + (max - sftd_get_text_width(fontBold12, 12, friendship)) / 2, 143, WHITE, 12, friendship);
+		sftd_draw_text(fontBold12, 124 + (max - sftd_get_text_width(fontBold12, 12, friendship)) / 2, 143, GOLD, 12, friendship);
 		free(friendship);
 		
 		char *nick = (char*)malloc(26 * sizeof(char));
-		sftd_draw_text(fontBold12, 72, 160, WHITE, 12, getNickname(pkmn, nick));
+		sftd_draw_text(fontBold12, 72, 160, GOLD, 12, getNickname(pkmn, nick));
 		free(nick);
 		
-		sftd_draw_text(fontBold12, 159 - sftd_get_text_width(fontBold12, 12, hpList[getHPType(pkmn)]), 177, WHITE, 12, hpList[getHPType(pkmn)]);
+		sftd_draw_text(fontBold12, 159 - sftd_get_text_width(fontBold12, 12, hpList[getHPType(pkmn)]), 177, GOLD, 12, hpList[getHPType(pkmn)]);
 		
 		char* hp_iv = (char*)malloc(3 * sizeof(char));
 		char* atk_iv = (char*)malloc(3 * sizeof(char));
@@ -1310,19 +1312,19 @@ void printPKEditor(u8* pkmn, int game, bool speedy) {
 		snprintf(spe_ev, 4, "%d", getEV(pkmn, 3));
 		
 		int pos = 219;
-		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, hp_iv)) / 2, 27, WHITE, 12, hp_iv);
-		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, atk_iv)) / 2, 44, WHITE, 12, atk_iv);
-		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, def_iv)) / 2, 61, WHITE, 12, def_iv);
-		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spa_iv)) / 2, 78, WHITE, 12, spa_iv);
-		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spd_iv)) / 2, 95, WHITE, 12, spd_iv);
-		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spe_iv)) / 2, 112, WHITE, 12, spe_iv);
+		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, hp_iv)) / 2, 27, GOLD, 12, hp_iv);
+		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, atk_iv)) / 2, 44, GOLD, 12, atk_iv);
+		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, def_iv)) / 2, 61, GOLD, 12, def_iv);
+		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spa_iv)) / 2, 78, GOLD, 12, spa_iv);
+		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spd_iv)) / 2, 95, GOLD, 12, spd_iv);
+		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spe_iv)) / 2, 112, GOLD, 12, spe_iv);
 		pos = 270;
-		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, hp_ev)) / 2, 27, WHITE, 12, hp_ev);
-		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, atk_ev)) / 2, 44, WHITE, 12, atk_ev);
-		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, def_ev)) / 2, 61, WHITE, 12, def_ev);
-		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spa_ev)) / 2, 78, WHITE, 12, spa_ev);
-		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spd_ev)) / 2, 95, WHITE, 12, spd_ev);
-		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spe_ev)) / 2, 112, WHITE, 12, spe_ev);
+		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, hp_ev)) / 2, 27, GOLD, 12, hp_ev);
+		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, atk_ev)) / 2, 44, GOLD, 12, atk_ev);
+		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, def_ev)) / 2, 61, GOLD, 12, def_ev);
+		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spa_ev)) / 2, 78, GOLD, 12, spa_ev);
+		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spd_ev)) / 2, 95, GOLD, 12, spd_ev);
+		sftd_draw_text(fontBold12, pos + (max - sftd_get_text_width(fontBold12, 12, spe_ev)) / 2, 112, GOLD, 12, spe_ev);
 		
 		y_desc = 27;
 		for (int i = 0; i < 6; i++) {
@@ -1356,12 +1358,12 @@ void printPKEditor(u8* pkmn, int game, bool speedy) {
 
 void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEntry, int box, bool isBank) {
 	int x, y_desc = 33;
-	char* page = (char*)malloc(9 * sizeof(char));
+	char* page = (char*)malloc(10 * sizeof(char));
 	char* entries[13] = {"Species:", "Level:", "OT:", "Nickname:", "Nature:", "Ability:", "Item:", "Shiny:", "Pokerus:", "Friendship:", "TID:", "SID:", "Hidden Power:"};
 	char* values[6] = {"HP:", "Attack:", "Defence:", "Sp. Atk.:", "Sp. Def.:", "Speed:"};
 	
-	if (isBank) snprintf(page, 9, "Bank %d", box + 1);
-	else snprintf(page, 9, "Save %d", box + 1);
+	if (isBank) snprintf(page, 10, "Bank %d", box + 1);
+	else snprintf(page, 10, "Save %d", box + 1);
 	
 	u8* pkmn = (u8*)malloc(PKMNLENGTH * sizeof(u8));
 	if (isBank) {
@@ -1545,6 +1547,8 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 						sf2d_draw_texture_part(shinySpritesSmall, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30); 
 					else 
 						sf2d_draw_texture_part(spritesSmall, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30);
+					if (isEgg(pkmn))
+						sf2d_draw_texture_part(spritesSmall, x + 6, y + 6, 40 * (EGGSPRITEPOS % 25) + 4, 30 * (EGGSPRITEPOS / 25), 34, 30);
 				}
 				if (currentEntry == (i*6+j)) {
 					pointer[0] = x + 18;
@@ -1695,7 +1699,7 @@ void printItems(u8* pkmn, int currentEntry, int page) {
 	sf2d_swapbuffers();	
 }
 
-void printSettings(int box) {
+void printSettings(int box, bool speedy) {
 	int y = 45;
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
@@ -1705,12 +1709,16 @@ void printSettings(int box) {
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(mainMenuBottom, 0, 0);
 		
+		// bank size
 		sftd_draw_textf(fontBold12, 15, y, BLACK, 12, "Bank size: %d boxes", box);
 		sf2d_draw_texture(darkButton, 170, y - 3);
 		sf2d_draw_texture(minus, 173, y + 1);
 		sf2d_draw_texture(plus, 190, y + 1);
+		
 		sf2d_draw_texture(darkButton, 260, y - 3);
+		sftd_draw_text(fontBold12, 268, y, WHITE, 12, "OK");
 
+		sftd_draw_textf(fontBold9, 15, 200, DARKGREY, 9, "You can switch speed using (L/R): %s", speedy ? "FAST" : "SLOW");
 		sftd_draw_text(fontBold9, (320 - sftd_get_text_width(fontBold9, 9, "Press B to return.")) / 2, 226, WHITE, 9, "Press B to return.");
 	sf2d_end_frame();
 	sf2d_swapbuffers();
