@@ -936,7 +936,7 @@ void itemEditor(u8* pkmn, int game) {
 		}
 		
 		if (hidKeysDown() & KEY_A) {
-			if (!(game < 4 && (currentEntry + page * 40) < 771)) { // prevent that gen7 items are injected in gen6 games
+			if (!(game < 4 && (currentEntry + page * 40) > 771)) { // prevent that gen7 items are injected in gen6 games
 				setItemEditor(pkmn, currentEntry + page * 40);
 			}
 		}
