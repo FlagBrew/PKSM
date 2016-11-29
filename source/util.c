@@ -167,26 +167,31 @@ void fsEnd() {
 }
 
 bool openSaveArch(FS_Archive *out, u64 id) {
-	bool ret = false;
-	//Try cart first
-	u32 path[3] = {MEDIATYPE_GAME_CARD, id, id >> 32};
-	Result res = FSUSER_OpenArchive(out, ARCHIVE_USER_SAVEDATA, (FS_Path){PATH_BINARY, 0xC, path});
-	if (res) {
-		//Try SD
-		u32 path[3] = {MEDIATYPE_SD, id, id >> 32};
-		res = FSUSER_OpenArchive(out, ARCHIVE_USER_SAVEDATA, (FS_Path){PATH_BINARY, 0xC, path});
-		if (res)
-			ret = false;
+	if (id == POKEBANK || !isHBL()) { //If we're using Pokebank or CIA
+		u32 cardPath[3] = {MEDIATYPE_GAME_CARD, id, id >> 32}; //Card
+		if (R_FAILED(FSUSER_OpenArchive(out, ARCHIVE_USER_SAVEDATA, (FS_Path){PATH_BINARY, 0xC, cardPath}))) { //If that fails, try digital
+			u32 sdPath[3] = {MEDIATYPE_SD, id, id >> 32};
+			if (R_FAILED(FSUSER_OpenArchive(out, ARCHIVE_USER_SAVEDATA, (FS_Path){PATH_BINARY, 0xC, sdPath})))
+				return false;
+			else
+				return true;
+		}
 		else
-			ret = true;
+			return true;
 	}
-	else
-		ret = true;
+	else {
+		if (R_SUCCEEDED(FSUSER_OpenArchive(out, ARCHIVE_SAVEDATA, fsMakePath(PATH_EMPTY, ""))))
+			return true;
+		else
+			return false;
+	}
 
-	return ret;
+	return false;
 }
 
 void settingsMenu(u8* mainbuf, int game) {
+	char *gamesList[] = {"X", "Y", "OR", "AS", "S", "M", "D", "P", "PL", "HG", "SS", "B", "W", "W2", "B2"};
+	
 	bool speedy = false;
 	
 	FILE *bank = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
@@ -195,7 +200,7 @@ void settingsMenu(u8* mainbuf, int game) {
 	fclose(bank);
 	
 	u32 box = size / (30 * PKMNLENGTH);
-	u32 boxmax = 150;
+	u32 boxmax = 1000;
 
 	while (aptMainLoop()) {
 		hidScanInput();
@@ -211,24 +216,24 @@ void settingsMenu(u8* mainbuf, int game) {
 			speedy = true;
 		
 		if ((hidKeysDown() & KEY_TOUCH) && !speedy) {
-			if (touch.px > 173 && touch.px < 186 && touch.py > 46 && touch.py < 59) {
+			if (touch.px > 223 && touch.px < 236 && touch.py > 46 && touch.py < 59) {
 				if (box > 2) box--;
 				else if (box == 2) box = boxmax;
 			}
 			
-			if (touch.px > 190 && touch.px < 203 && touch.py > 46 && touch.py < 59) {
+			if (touch.px > 240 && touch.px < 253 && touch.py > 46 && touch.py < 59) {
 				if (box < boxmax) box++;
 				else if (box == boxmax) box = 2;
 			}
 		}
 		
 		if ((hidKeysHeld() & KEY_TOUCH) && speedy) {
-			if (touch.px > 173 && touch.px < 186 && touch.py > 46 && touch.py < 59) {
+			if (touch.px > 223 && touch.px < 236 && touch.py > 46 && touch.py < 59) {
 				if (box > 2) box--;
 				else if (box == 2) box = boxmax;
 			}
 			
-			if (touch.px > 190 && touch.px < 203 && touch.py > 46 && touch.py < 59) {
+			if (touch.px > 240 && touch.px < 253 && touch.py > 46 && touch.py < 59) {
 				if (box < boxmax) box++;
 				else if (box == boxmax) box = 2;
 			}
@@ -236,34 +241,73 @@ void settingsMenu(u8* mainbuf, int game) {
 		
 		if (hidKeysDown() & KEY_TOUCH) {
 			if (touch.px > 260 && touch.px < 296 && touch.py > 42 && touch.py < 63) {
-				FILE *buf = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
-				fseek(buf, 0, SEEK_END);
-				u32 size_temp = ftell(buf);
-				u8 *bankbuf = (u8*)malloc(size_temp * sizeof(u8));
-				rewind(buf);
-				fread(bankbuf, size_temp, 1, buf);
-				fclose(buf);
-				
-				FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bak", "wb");
-				fwrite(bankbuf, 1, size_temp, bak);
-				fclose(bak);
-				
-				u8* newbank = (u8*)malloc(box * 30 * PKMNLENGTH);
-				memset(newbank, 0, box * 30 * PKMNLENGTH);
-				int tostore = (size <= box * 30 * PKMNLENGTH) ? size_temp : box * 30 * PKMNLENGTH;
-				memcpy(newbank, bankbuf, tostore);
-				
-				FILE *newbankfile = fopen("/3ds/data/PKSM/bank/bank.bin", "wb");
-				fwrite(newbank, 1, box * 30 * PKMNLENGTH, newbankfile);
-				fclose(newbankfile);
-				
-				free(bankbuf);
-				free(newbank);					
-
+				if (size < box * 30 * PKMNLENGTH) { // i box sono maggiori
+					FILE *buf = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
+					fseek(buf, 0, SEEK_END);
+					u32 size_temp = ftell(buf);
+					u8 *bankbuf = (u8*)malloc(size_temp * sizeof(u8));
+					rewind(buf);
+					fread(bankbuf, size_temp, 1, buf);
+					fclose(buf);
+					
+					FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bak", "wb");
+					fwrite(bankbuf, 1, size_temp, bak);
+					fclose(bak);
+					
+					u8* newbank = (u8*)malloc(box * 30 * PKMNLENGTH);
+					memset(newbank, 0, box * 30 * PKMNLENGTH);
+					memcpy(newbank, bankbuf, size_temp);
+					
+					FILE *newbankfile = fopen("/3ds/data/PKSM/bank/bank.bin", "wb");
+					fwrite(newbank, 1, box * 30 * PKMNLENGTH, newbankfile);
+					fclose(newbankfile);
+ 					
+					free(bankbuf);
+					free(newbank);					
+				}
+				else if (size > box * 30 * PKMNLENGTH) { // i box sono minori
+					FILE *buf = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
+					fseek(buf, 0, SEEK_END);
+					u32 size_temp = ftell(buf);
+					u8 *bankbuf = (u8*)malloc(size_temp * sizeof(u8));
+					rewind(buf);
+					fread(bankbuf, size_temp, 1, buf);
+					fclose(buf);
+					
+					FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bak", "wb");
+					fwrite(bankbuf, 1, size_temp, bak);
+					fclose(bak);
+					
+					u8* newbank = (u8*)malloc(box * 30 * PKMNLENGTH);
+					memset(newbank, 0, box * 30 * PKMNLENGTH);
+					memcpy(newbank, bankbuf, box * 30 * PKMNLENGTH);
+					
+					FILE *newbankfile = fopen("/3ds/data/PKSM/bank/bank.bin", "wb");
+					fwrite(newbank, 1, box * 30 * PKMNLENGTH, newbankfile);
+					fclose(newbankfile);
+					
+					free(bankbuf);
+					free(newbank);					
+				}
 				infoDisp("Size changed!");
+			}
+			if (touch.px > 260 && touch.px < 296 && touch.py > 69 && touch.py < 90) {
+				char *bakpath = (char*)malloc(80 * sizeof(char));
+				
+				time_t unixTime = time(NULL);
+				struct tm* timeStruct = gmtime((const time_t *)&unixTime);		
+				snprintf(bakpath, 80, "/3ds/data/PKSM/backup/main_%s_%i%i%i%02i%02i%02i", gamesList[game], timeStruct->tm_mday, timeStruct->tm_mon + 1, timeStruct->tm_year + 1900, timeStruct->tm_hour, timeStruct->tm_min, timeStruct->tm_sec);
+				
+				FILE *f = fopen(bakpath, "wb");
+				fwrite(mainbuf, 1, sizeof(&mainbuf), f);
+				fclose(f);
+				
+				free(bakpath);
+				
+				infoDisp("Backup created!");
 			}
 		}
 
-		printSettings(box, speedy);
+		printSettings(box, speedy, game);
 	}
 }
