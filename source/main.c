@@ -272,6 +272,7 @@ int main() {
 									if (touch.py > 124 && touch.py < 156) { option = 2; touchPressed = true; }
 									if (touch.py > 166 && touch.py < 198) { option = 3; touchPressed = true; }
 								}
+								if (touch.px > 298 && touch.px < 320 && touch.py > 207 && touch.py < 225) break;
 							}
 							
 							if (hidKeysDown() & KEY_DUP) {
@@ -330,6 +331,7 @@ int main() {
 									if (touch.py > 124 && touch.py < 156) { option = 2; touchPressed = true; }
 									if (touch.py > 166 && touch.py < 198) { option = 3; touchPressed = true; }
 								}
+								if (touch.px > 298 && touch.px < 320 && touch.py > 207 && touch.py < 225) break;
 							}
 							
 							if (hidKeysDown() & KEY_DUP) {
@@ -382,6 +384,7 @@ int main() {
 									if (touch.py > 124 && touch.py < 156) { option = 2; touchPressed = true; }
 									if (touch.py > 166 && touch.py < 198) { option = 3; touchPressed = true; }
 								}
+								if (touch.px > 298 && touch.px < 320 && touch.py > 207 && touch.py < 225) break;
 							}
 							
 							if (hidKeysDown() & KEY_DUP) {

@@ -324,6 +324,8 @@ void settingsMenu(u8* mainbuf, int game) {
 
 				infoDisp("Bank backup created!");
 			}
+			
+			if (touch.px > 298 && touch.px < 320 && touch.py > 207 && touch.py < 225) break;
 		}
 
 		printSettings(box, speedy, game);

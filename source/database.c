@@ -295,6 +295,9 @@ void eventDatabase7(u8* mainbuf, int game) {
 	
 	while(aptMainLoop()) {
 		hidScanInput();
+		touchPosition touch;
+		hidTouchRead(&touch);		
+		if ((hidKeysDown() & KEY_TOUCH) && touch.px > 298 && touch.px < 320 && touch.py > 207 && touch.py < 225) break;
 		
 		if (hidKeysDown() & KEY_B)
 			break;
@@ -638,6 +641,9 @@ void eventDatabase6(u8* mainbuf, int game) {
 	
 	while(aptMainLoop()) {
 		hidScanInput();
+		touchPosition touch;
+		hidTouchRead(&touch);		
+		if ((hidKeysDown() & KEY_TOUCH) && touch.px > 298 && touch.px < 320 && touch.py > 207 && touch.py < 225) break;
 		
 		if (hidKeysDown() & KEY_B)
 			break;
@@ -1435,6 +1441,9 @@ void massInjector(u8* mainbuf, int game) {
 
 	while(aptMainLoop()) {
 		hidScanInput();
+		touchPosition touch;
+		hidTouchRead(&touch);		
+		if ((hidKeysDown() & KEY_TOUCH) && touch.px > 298 && touch.px < 320 && touch.py > 207 && touch.py < 225) break;
 		
 		if (hidKeysDown() & KEY_B)
 			break;

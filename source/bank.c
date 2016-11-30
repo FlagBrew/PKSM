@@ -159,7 +159,7 @@ void bank(u8* mainbuf, int game) {
 		
 		if ((hidKeysDown() & KEY_A) || (hidKeysDown() & KEY_TOUCH && touch.px > 214 && touch.px < 320 && touch.py > 12 && touch.py < 42)) {
 			if (isBufferized) {
-				if (!(game < 4 && getPokedexNumber(pkmn) > 721)) { // prevent that gen7 stuff goes into gen6 save
+				if (!(game < 4 && getPokedexNumber(pkmn) > 721 && !isBank)) { // prevent that gen7 stuff goes into gen6 save
 					u8 tmp[PKMNLENGTH];
 					
 					if (wasBank == isBank && coordinate[0] == box && coordinate[1] == currentEntry)

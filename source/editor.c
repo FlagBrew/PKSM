@@ -713,13 +713,22 @@ void setItem(u8* mainbuf, int type, int game) {
 }
 
 void setBP(u8* mainbuf, int i, int game) {
-	const u32 offset[] = {0x423C, 0x423D, 0x4230, 0x4231, 0x0, 0x0}; // add offset for SM
+	const u32 offset[] = {0x423C, 0x423D, 0x4230, 0x4231, 0x411C, 0x411D}; // add offset for SM
 	int type = 0;
 
 	if (game == GAME_OR || game == GAME_AS)
 		type = 2;
-	else if (game == GAME_SUN || game == GAME_MOON)
+	else if (game == GAME_SUN || game == GAME_MOON) {
 		type = 4;
+		
+		*(mainbuf + 0x50D0C) = 0x7F;
+		*(mainbuf + 0x50D0C + 1) = 0x96;
+		*(mainbuf + 0x50D0C + 2) = 0x98;
+		
+		*(mainbuf + 0x50D10) = 0x7F;
+		*(mainbuf + 0x50D10 + 1) = 0x96;
+		*(mainbuf + 0x50D10 + 2) = 0x98;
+	}
 
 	switch (i) {
 		case 0 : {
@@ -762,6 +771,9 @@ void saveFileEditor(u8* mainbuf, int game) {
 
 	while(aptMainLoop()) {
 		hidScanInput();
+		touchPosition touch;
+		hidTouchRead(&touch);		
+		if ((hidKeysDown() & KEY_TOUCH) && touch.px > 301 && touch.px < 320 && touch.py > 205 && touch.py < 223) break;
 
 		if (hidKeysDown() & KEY_B)
 			break;
@@ -808,11 +820,8 @@ void saveFileEditor(u8* mainbuf, int game) {
 					break;
 				}
 				case 1 : {
-					if (game < 4) {
-						setBP(mainbuf, 9999, game);
-						infoDisp("Battle Points set successfully!");
-					} else
-						infoDisp("Not currently available for SM");
+					setBP(mainbuf, 9999, game);
+					infoDisp("Battle Points set successfully!");
 					break;
 				}
 				case 2 : {
@@ -1007,7 +1016,7 @@ void movesEditor(u8* pkmn, int game) {
 		}
 		
 		if (hidKeysDown() & KEY_A) {
-			if (!(game < 4 && (currentEntry + page * 40) < 622)) { // prevent that gen7 moves are injected in gen6 games
+			if (!(game < 4 && (currentEntry + page * 40) > 622)) { // prevent that gen7 moves are injected in gen6 games
 				if (entryBottom < 4)
 					setMove(pkmn, currentEntry + page * 40, entryBottom);
 				else
@@ -1098,7 +1107,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 							setNature(pkmn, 0);
 					}
 					
-					if (touch.px > 126 && touch.px < 141 && touch.py > 77 && touch.py < 89) {
+					if (touch.px > 150 && touch.px < 165 && touch.py > 144 && touch.py < 156) {
 						if (ability < 2) ability++;
 						else if (ability == 2) ability = 0;
 						setAbility(pkmn, ability);
@@ -1176,12 +1185,12 @@ void pokemonEditor(u8* mainbuf, int game) {
 							setLevel(pkmn, 100);
 					}
 					
-					if (touch.px > 110 && touch.px < 123 && touch.py > 144 && touch.py < 157) {
+					if (touch.px > 86 && touch.px < 99 && touch.py > 76 && touch.py < 89) {
 						if (getFriendship(pkmn) > 0)
 							setFriendship(pkmn, getFriendship(pkmn) - 1);
 					}
 
-					if (touch.px > 150 && touch.px < 163 && touch.py > 144 && touch.py < 157) {
+					if (touch.px > 127 && touch.px < 140 && touch.py > 76 && touch.py < 89) {
 						if (getFriendship(pkmn) < 255)
 							setFriendship(pkmn, getFriendship(pkmn) + 1);
 					}
@@ -1304,12 +1313,12 @@ void pokemonEditor(u8* mainbuf, int game) {
 							setLevel(pkmn, 100);
 					}
 					
-					if (touch.px > 110 && touch.px < 123 && touch.py > 144 && touch.py < 157) {
+					if (touch.px > 86 && touch.px < 99 && touch.py > 76 && touch.py < 89) {
 						if (getFriendship(pkmn) > 0)
 							setFriendship(pkmn, getFriendship(pkmn) - 1);
 					}
 
-					if (touch.px > 150 && touch.px < 163 && touch.py > 144 && touch.py < 157) {
+					if (touch.px > 127 && touch.px < 140 && touch.py > 76 && touch.py < 89) {
 						if (getFriendship(pkmn) < 255)
 							setFriendship(pkmn, getFriendship(pkmn) + 1);
 					}
