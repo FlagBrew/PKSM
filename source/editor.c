@@ -495,13 +495,17 @@ void setItemEditor(u8* pkmn, u16 item) {
 }
 
 void setAbility(u8* pkmn, const u8 ability) {
+    u16 tempspecies = getPokedexNumber(pkmn);
+    if (getForm(pkmn))
+        tempspecies = getPokedexNumber(pkmn) + getForm(pkmn) - 1;
+	
 	u8 abilitynum = 0;
 	if (ability == 0)      abilitynum = 1;
 	else if (ability == 1) abilitynum = 2;
 	else                   abilitynum = 4;
 	
 	memcpy(&pkmn[ABILITYNUMPOS], &abilitynum, ABILITYNUMLENGTH);
-	memcpy(&pkmn[ABILITYPOS], &personal.pkmData[getPokedexNumber(pkmn)][0x18 + ability], ABILITYLENGTH);
+	memcpy(&pkmn[ABILITYPOS], &personal.pkmData[tempspecies][0x18 + ability], ABILITYLENGTH);
 }
 
 void setMove(u8* pkmn, const u16 move, const int nmove) {
@@ -1099,7 +1103,9 @@ void pokemonEditor(u8* mainbuf, int game) {
 				if (hidKeysDown() & KEY_R)
 					speedy = true;
 
-				if ((hidKeysDown() & KEY_TOUCH) && !(touch.px > 288 && touch.px < 310 && touch.py > 213 && touch.py < 231)) {
+				if (hidKeysDown() & KEY_TOUCH) {
+					if (touch.px > 288 && touch.px < 310 && touch.py > 213 && touch.py < 231) break;
+					
 					if (touch.px > 126 && touch.px < 141 && touch.py > 60 && touch.py < 72) {
 						if (getNature(pkmn) < 24)
 							setNature(pkmn, getNature(pkmn) + 1);
