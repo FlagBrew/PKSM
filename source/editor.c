@@ -497,7 +497,7 @@ void setItemEditor(u8* pkmn, u16 item) {
 void setAbility(u8* pkmn, const u8 ability) {
     u16 tempspecies = getPokedexNumber(pkmn);
     if (getForm(pkmn))
-        tempspecies = getPokedexNumber(pkmn) + getForm(pkmn) - 1;
+        tempspecies = personal.pkmData[getPokedexNumber(pkmn) + getForm(pkmn) - 1][0x20];
 	
 	u8 abilitynum = 0;
 	if (ability == 0)      abilitynum = 1;
