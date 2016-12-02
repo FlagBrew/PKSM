@@ -322,7 +322,7 @@ u8 getForm(u8* pkmn) {
 u16 getStat(u8* pkmn, const int stat) {
     u16 tempspecies = getPokedexNumber(pkmn);
     if (getForm(pkmn))
-        tempspecies = personal.pkmData[getPokedexNumber(pkmn) + getForm(pkmn) - 1][0x20];
+		memcpy(&tempspecies, &personal.pkmData[getPokedexNumber(pkmn)][0x1C], 2);
 
     u8 mult = 10;
     u16 final;
@@ -497,7 +497,7 @@ void setItemEditor(u8* pkmn, u16 item) {
 void setAbility(u8* pkmn, const u8 ability) {
     u16 tempspecies = getPokedexNumber(pkmn);
     if (getForm(pkmn))
-        tempspecies = personal.pkmData[getPokedexNumber(pkmn) + getForm(pkmn) - 1][0x20];
+		memcpy(&tempspecies, &personal.pkmData[getPokedexNumber(pkmn)][0x1C], 2);
 	
 	u8 abilitynum = 0;
 	if (ability == 0)      abilitynum = 1;
