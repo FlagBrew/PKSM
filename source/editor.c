@@ -900,6 +900,7 @@ void saveFileEditor(u8* mainbuf, int game) {
 }
 
 void itemEditor(u8* pkmn, int game) {
+	int itemsSorted[] = {0};
 	int currentEntry = 0;
 	int page = 0, maxpages = 23;
 	
@@ -948,17 +949,15 @@ void itemEditor(u8* pkmn, int game) {
 			}
 		}
 		
-		if (hidKeysDown() & KEY_A) {
-			if (!(game < 4 && (currentEntry + page * 40) > 771)) { // prevent that gen7 items are injected in gen6 games
-				setItemEditor(pkmn, currentEntry + page * 40);
-			}
-		}
+		if (hidKeysDown() & KEY_A)
+			setItemEditor(pkmn, itemsSorted[currentEntry + page * 40]);
 		
 		printItems(pkmn, currentEntry, page);
 	}
 }
 
 void movesEditor(u8* pkmn, int game) {
+	int movesSorted[] = {0};
 	int currentEntry = 0;
 	int entryBottom = 0;
 	int page = 0, maxpages = 18;
@@ -1020,12 +1019,10 @@ void movesEditor(u8* pkmn, int game) {
 		}
 		
 		if (hidKeysDown() & KEY_A) {
-			if (!(game < 4 && (currentEntry + page * 40) > 622)) { // prevent that gen7 moves are injected in gen6 games
-				if (entryBottom < 4)
-					setMove(pkmn, currentEntry + page * 40, entryBottom);
-				else
-					setEggMove(pkmn, currentEntry + page * 40, entryBottom - 4);
-			}
+			if (entryBottom < 4)
+				setMove(pkmn, movesSorted[currentEntry + page * 40], entryBottom);
+			else
+				setEggMove(pkmn, movesSorted[currentEntry + page * 40], entryBottom - 4);
 		}
 		
 		printMoves(pkmn, currentEntry, entryBottom, page);
