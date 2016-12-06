@@ -2,6 +2,8 @@
 
 *AIO save editor for NDS/3DS pkmn games*
 
+# CURRENTLY UNDER MAINTENANCE
+
 ---
 
 Formerly known as **EventAssistant**, this app allows you to:
