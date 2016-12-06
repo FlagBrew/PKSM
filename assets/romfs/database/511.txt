@@ -1,0 +1,18 @@
+0511 - Paris Vivillon
+
+Pokemon:       Vivillon
+Level:         12
+Ability:       Shield Dust/Compound Eyes
+Held Item:     None
+TID:           06014
+SID:           00511
+OT:            Paris
+Met:           a Pokemon Center
+Nature:        Any Nature
+Ribbon:        Classic
+
+                                         Relearn Moves:
+Games:         XY                        - Stun Spore
+Method:        Local                     - Gust
+Region:        FRA                       - Light Screen
+Duration:      4 June 4 to 21, 2014      - Struggle Bug

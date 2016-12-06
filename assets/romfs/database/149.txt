@@ -1,0 +1,18 @@
+0149 - Pokescrap Zapdos
+
+Pokemon:       Zapdos
+Level:         70
+Ability:       Static
+Held Item:     None
+TID:           03016
+SID:           00147
+OT:            ??????
+Met:           a lovely place
+Nature:        Random
+Ribbon:        Classic
+
+                                         Relearn Moves: 
+Games:         XY/ORAS                   - Discharge
+Method:        Serial Code               - Thunder Shock
+Region:        JPN                       - Rain Dance
+Duration:      Mar 1 to Aug 31, 2016     - Agility

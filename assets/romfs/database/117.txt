@@ -1,0 +1,18 @@
+0117 - Expo Zoroark
+
+Pokemon:       Zoroark
+Level:         45
+Ability:       Illusion
+Held Item:     Expert Belt
+TID:           11195
+SID:           00117
+OT:            ??
+Met:           a Pokemon event
+Nature:        Naughty
+Ribbon:        Souvenir
+
+                                         Relearn Moves:
+Games:         XY/ORAS                   - Scary Face
+Method:        Serial code               - Fury Swipes
+Region:        JPN                       - Nasty Plot
+Duration:      19 Nov '15 to 31 May '15  - Punishment

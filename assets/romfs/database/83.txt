@@ -1,0 +1,18 @@
+0083 - Movie Hoopa 
+
+Pokemon:       Hoopa
+Level:         50
+Ability:       Magican
+Held Item:     Focus Sash
+TID:           07185
+SID:           00083
+OT:            ?????
+Met:           Pokemon Movie 15
+Nature:        Any Nature
+Ribbon:        Wishing Ribbon
+
+                                         Relearn Moves: 
+Games:         XY/ORAS                   - Hyperspace Hole
+Method:        Local Wireless            - Psychic
+Region:        JPN                       - Astonish
+Duration:      Jul 18 to Sep 30, 2015    - Nasty Plot

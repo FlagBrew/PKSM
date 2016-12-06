@@ -1,0 +1,18 @@
+0047 - Diancie Present
+
+Pokemon:       Diancie
+Level:         50
+Ability:       Clear Body
+Held Item:     Normal Gem
+TID:           08274
+SID:           00047
+OT:            MovieTheater
+Met:           Pokémon Movie 14
+Nature:        Random
+Ribbon:        Wishing Ribbon
+
+                                         Relearn Moves:
+Games:         XY                        - 
+Method:        Serial Code
+Region:        All
+Duration:      Aug 29 '14 to Oct 15 '14

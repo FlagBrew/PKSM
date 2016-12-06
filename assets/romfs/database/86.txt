@@ -1,0 +1,18 @@
+0086 - Serena's Fennekin
+
+Pokemon:       Fennekin
+Level:         15
+Ability:       Blaze
+Held Item:     Destiny Knot
+TID:           02265
+SID:           00086
+OT:            ???
+Met:           Lumiose City
+Nature:        Hardy
+Ribbon:        Classic Ribbon
+
+                                         Relearn Moves:
+Games:         XY/ORAS                   - Scratch
+Method:        Serial Code               - Flamethrower
+Region:        JPN                       - Hidden Power
+Duration:      Feb 26 to Mar 31, 2015 

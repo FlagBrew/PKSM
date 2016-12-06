@@ -1,0 +1,18 @@
+0562 - GF Shaymin
+
+Pokemon:       Shaymin
+Level:         100
+Ability:       Natural Cure
+Held Item:     Micle Berry
+TID:           07016
+SID:           00562
+OT:            GF
+Met:           a lovely place
+Nature:        Any Nature
+Ribbon:        Classic Ribbon
+
+                                         Relearn Moves:
+Games:         XY ORAS                   - Seed Flare
+Method:        Nintendo Network          - Aromatherapy
+Region:        USA                       - Substitute
+Duration:      July 1 to 24, 2016        - Energy Ball
