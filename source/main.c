@@ -352,7 +352,7 @@ int main() {
 										break;
 									}
 									case 1 : {
-										saveEditorMenu(mainbuf, game);
+										saveFileEditor(mainbuf, game);
 										break;
 									}
 									case 2 : {

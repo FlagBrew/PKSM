@@ -107,4 +107,3 @@ void itemEditor(u8* pkmn, int game);
 void movesEditor(u8* pkmn, int game);
 void saveFileEditor(u8* mainbuf, int game);
 void pokemonEditor(u8* mainbuf, int game);
-void saveEditorMenu(u8* mainbuf, int game);

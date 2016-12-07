@@ -60,7 +60,7 @@ void printDatabase5(char *database[], int currentEntry, int page, int spriteArra
 void printDatabase4(char *database[], int currentEntry, int page, int spriteArray[], bool isSelected, int langSelected, bool langVett[]);
 void printDB7(int sprite, int i, bool langVett[], bool adapt, bool overwrite, int langSelected, int nInjected);
 void printDB6(int sprite, int i, bool langVett[], bool adapt, bool overwrite, int langSelected, int nInjected);
-void printEditor(int currentEntry, int langCont, int badgeCont);
+void printEditor(u8* mainbuf, int game, int currentEntry, int langCont, int badgeCont);
 void printPKViewer(u8* mainbuf, int game, int currentEntry, int page, bool cloning);
 void printPKEditor(u8* pkmn, int game, bool speedy);
 void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEntry, int box, bool isBank);
@@ -70,4 +70,3 @@ void printMoves(u8* pkmn, int currentEntry, int entryBottom, int page);
 void printItems(u8* pkmn, int currentEntry, int page);
 void printSettings(int box, bool speedy, int game);
 void infoViewer(u8* pkmn, const char* title);
-void printSaveEditorMenu(u8* mainbuf, int game, bool speedy);

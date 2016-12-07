@@ -731,9 +731,14 @@ void saveFileEditor(u8* mainbuf, int game) {
 	while(aptMainLoop()) {
 		hidScanInput();
 		touchPosition touch;
-		hidTouchRead(&touch);		
-		if ((hidKeysDown() & KEY_TOUCH) && touch.px > 301 && touch.px < 320 && touch.py > 205 && touch.py < 223) break;
-
+		hidTouchRead(&touch);
+		
+		if (hidKeysDown() & KEY_TOUCH) {
+			
+			if (touch.px > 301 && touch.px < 320 && touch.py > 205 && touch.py < 223) 
+				break;
+		}
+		
 		if (hidKeysDown() & KEY_B)
 			break;
 
@@ -763,7 +768,7 @@ void saveFileEditor(u8* mainbuf, int game) {
 					else if (langCont == langMax) langCont = 0;
 					break;
 				}
-				case 6 : {
+				case 5 : {
 					if (badgeCont < 8) badgeCont++;
 					else if (badgeCont == 8) badgeCont = 0;
 					break;
@@ -779,15 +784,6 @@ void saveFileEditor(u8* mainbuf, int game) {
 					break;
 				}
 				case 1 : {
-					setBP(mainbuf, 9999, game);
-					infoDisp("Battle Points set successfully!");
-					break;
-				}
-				case 2 : {
-				//	infoDisp("Balls injected successfully!");
-					break;
-				}
-				case 3 : {
 					if (game < 4) {
 						setItem(mainbuf, 1, game);
 						infoDisp("Heals injected successfully!");
@@ -795,7 +791,7 @@ void saveFileEditor(u8* mainbuf, int game) {
 						infoDisp("Not currently available for SM");
 					break;
 				}
-				case 4 : {
+				case 2 : {
 					if (game < 4) {
 						setItem(mainbuf, 0, game);
 						infoDisp("Items injected successfully!");
@@ -803,20 +799,15 @@ void saveFileEditor(u8* mainbuf, int game) {
 						infoDisp("Not currently available for SM");
 					break;
 				}
-				case 5 : {
-					setMoney(mainbuf, game, 9999999);
-					infoDisp("Money set successfully!");
-					break;
-				}
-				case 6 : {
+				case 3 : {
 					if (game < 4) {
-						setBadges(mainbuf, game, badgeCont);
-						infoDisp("Badges set successfully!");
+						setItem(mainbuf, 2, game);
+						infoDisp("Berries set successfully!");
 					} else
 						infoDisp("Not currently available for SM");
 					break;
 				}
-				case 7 : {
+				case 4 : {
 					if (game < 4) {
 						setTM(mainbuf, game);
 						infoDisp("TMs set successfully!");
@@ -824,7 +815,15 @@ void saveFileEditor(u8* mainbuf, int game) {
 						infoDisp("Not currently available for SM");
 					break;
 				}
-				case 8 : {
+				case 5 : {
+					if (game < 4) {
+						setBadges(mainbuf, game, badgeCont);
+						infoDisp("Badges set successfully!");
+					} else
+						infoDisp("Not currently available for SM");
+					break;
+				}
+				case 6 : {
 					int start = 0;
 					int wcmax = (game < 4) ? 24 : 48;
 					if (game == GAME_X || game == GAME_Y)
@@ -839,18 +838,10 @@ void saveFileEditor(u8* mainbuf, int game) {
 					infoDisp("Mistery Gift box cleaned!");
 					break;
 				}
-				case 9 : {
-					if (game < 4) {
-						setItem(mainbuf, 2, game);
-						infoDisp("Berries set successfully!");
-					} else
-						infoDisp("Not currently available for SM");
-					break;
-				}
 			}
 		}
 
-		printEditor(currentEntry, langCont, badgeCont);
+		printEditor(mainbuf, game, currentEntry, langCont, badgeCont);
 	}
 }
 
@@ -1520,38 +1511,5 @@ void pokemonEditor(u8* mainbuf, int game) {
 		}
 
 		printPKViewer(mainbuf, game, currentEntry, box, cloning);
-	}
-}
-
-void saveEditorMenu(u8* mainbuf, int game) {
-	bool speedy = false;
-
-	while (aptMainLoop()) {
-		hidScanInput();
-		touchPosition touch;
-		hidTouchRead(&touch);
-
-		if (hidKeysDown() & KEY_B) break;
-		
-		if (hidKeysDown() & KEY_L)
-			speedy = false;
-
-		if (hidKeysDown() & KEY_R)
-			speedy = true;
-		
-		if ((hidKeysDown() & KEY_TOUCH) && !speedy) {
-
-		}
-		
-		if ((hidKeysHeld() & KEY_TOUCH) && speedy) {
-
-		}
-		
-		if (hidKeysDown() & KEY_TOUCH) {
-			
-			if (touch.px > 298 && touch.px < 320 && touch.py > 207 && touch.py < 225) break;
-		}
-
-		printSaveEditorMenu(mainbuf, game, speedy);
 	}
 }
