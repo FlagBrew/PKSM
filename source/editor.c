@@ -835,7 +835,7 @@ void saveFileEditor(u8* mainbuf, int game) {
 
 					for (int i = 0; i < (0x100 + wcmax * WC6LENGTH); i++)
 						*(mainbuf + start + i) = 0x00;
-					infoDisp("Mistery Gift box cleaned!");
+					infoDisp("Mystery Gift box cleaned!");
 					break;
 				}
 			}
