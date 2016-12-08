@@ -1018,7 +1018,7 @@ void printEditor(int currentEntry, int langCont, int badgeCont) {
 					break;
 				}
 				case 8 : {
-					sftd_draw_text(fontBold12, 200 + (182 - sftd_get_text_width(fontBold12, 12, "Clear Mystery Gift box")) / 2, y + 13, DARKGREY, 12, "Clear Mistery Gift box");
+					sftd_draw_text(fontBold12, 200 + (182 - sftd_get_text_width(fontBold12, 12, "Clear Mystery Gift box")) / 2, y + 13, DARKGREY, 12, "Clear Mystery Gift box");
 					break;
 				}
 				case 9 : {
