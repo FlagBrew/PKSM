@@ -1,0 +1,18 @@
+0150 - Pokescrap Moltres
+
+Pokemon:       Moltres
+Level:         70
+Ability:       Flame Body
+Held Item:     None
+TID:           03016
+SID:           00150
+OT:            ??????
+Met:           a lovely place
+Nature:        Random
+Ribbon:        Classic
+
+                                         Relearn Moves:
+Games:         XY/ORAS                   - Sky Attack
+Method:        Serial code               - Heat Wave
+Region:        JPN                       - Sunny Day
+Duration:      Mar 1 to Aug 31, 2016     - Safeguard

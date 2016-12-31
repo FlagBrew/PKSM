@@ -1,0 +1,18 @@
+1064 - XY&Z Zygarde
+
+Pokemon:       Zygarde
+Level:         100
+Ability:       Aura Break
+Held Item:     No Item
+TID:           03196
+SID:           01064
+OT:            XY&Z
+Met:           the Pokemon cartoon
+Nature:        Any Nature
+Ribbon:        Classic
+
+                                         Relearn Moves:
+Games:         ORAS                      - Land's Wrath
+Method:        Universal Serial Code     - Extreme Speed
+Region:        KOR                       - Glare
+Duration:      Apr 20 to Jun 30, 2016    - Outrage

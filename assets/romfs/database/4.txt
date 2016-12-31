@@ -1,0 +1,19 @@
+0004 - Nuketta Wobbuffet
+
+Pokemon:       Wobbuffet
+Level:         10
+Ability:       Shadow Tag
+Held Item:     None
+TID:           12063
+SID:           00004
+OT:            ?
+Met:           a Pokemon event
+Nature:        Random
+Ribbon:        Event Ribbon
+                                    
+                                         Relearn Moves:
+Games:         XY
+Method:        Infrared
+Region:        All
+Duration:      December 15, 2013
+               

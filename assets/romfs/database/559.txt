@@ -1,0 +1,18 @@
+0559 - GF Jirachi
+
+Pokemon:       Jirachi
+Level:         100
+Ability:       Serene Grace
+Held Item:     Salac Berry
+TID:           04016
+SID:           00559
+OT:            GF
+Met:           a lovely place
+Nature:        Any Nature
+Ribbon:        Classic Ribbon
+
+                                         Relearn Moves:
+Games:         XY ORAS                   - Wish
+Method:        Nintendo Network          - Confusion
+Region:        USA                       - Rest
+Duration:      April 1 to 24, 2016

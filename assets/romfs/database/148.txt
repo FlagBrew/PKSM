@@ -1,0 +1,19 @@
+0148 - Pokescrap Articuno
+
+Pokemon:       Articuno
+Level:         70
+Ability:       Snow Cloak
+Held Item:     None
+TID:           03016
+SID:           00147
+OT:            ??????
+Met:           a lovely place
+Nature:        Random
+Ribbon:        Classic
+
+                                         Relearn Moves: 
+Games:         XY/ORAS                   - Freeze-Dry
+Method:        Serial Code               - Ice Beam
+Region:        JPN                       - Hail
+Duration:      Mar 1 to Aug 31, 2016     - Reflect
+     

@@ -1,0 +1,18 @@
+0043 - Charizard got Charizardite Y!
+
+Pokemon:       Charizard
+Level:         36
+Ability:       Blaze
+Held Item:     Charizardite Y
+TID:           07274
+SID:           00043
+OT:            XY
+Met:           a lovely place
+Nature:        Random
+Ribbon:        Classic Ribbon
+
+                                         Relearn Moves:
+Games:         XY                        -
+Method:        Serial Code
+Region:        All
+Duration:      Jul 29 '14 to Oct 31 '14

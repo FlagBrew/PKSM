@@ -1,0 +1,18 @@
+0577 - XYZ Yveltal
+
+Pokemon:       Yveltal
+Level:         100
+Ability:       Dark Aura
+Held Item:     None
+TID:           5206
+SID:           00577
+OT:            XYZ
+Met:           the Pokemon cartoon
+Nature:        Any Nature
+Ribbon:        Classic Ribbon
+
+                                         Relearn Moves:
+Games:         XY ORAS                   - Oblivion Wing
+Method:        Nintendo Network          - Sucker Punch
+Region:        All                       - Dark Pulse
+Duration:      May 20 to 26, 2016        - Foul Play

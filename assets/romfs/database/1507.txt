@@ -1,0 +1,18 @@
+1507 - HA Samurott
+
+Pokemon:       Samurott
+Level:         50
+Ability:       Shell Armor
+Held Item:     None
+TID:           02105
+SID:           01507
+OT:            Cadeau, Present, Regalo
+Met:           a lovely place
+Nature:        Any Nature
+Ribbon:        Classic Ribbon
+
+                                         Relearn Moves:
+Games:         ORAS                      - Hold Back
+Method:        Serial Code
+Region:        All
+Duration:      Feb 9 to Nov 30, 2015

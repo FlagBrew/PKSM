@@ -1,0 +1,18 @@
+0510 - Arash's Mamoswine
+
+Pokemon:       Mamoswine
+Level:         50
+Ability:       Sand Force
+Held Item:     Choice Scarf
+TID:           05034
+SID:           00510
+OT:            Arash
+Met:           a Pokemon event
+Nature:        Adamant
+Ribbon:        Event
+
+                                         Relearn Moves:
+Games:         XY                        - Earthquake
+Method:        Local                     - Icicle Crash
+Region:        EUR USA AUS               - Icicle Spear
+Duration:      May 3 to July 13, 2014    - Rock Slide
