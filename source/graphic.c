@@ -1057,7 +1057,7 @@ void infoViewer(u8* pkmn) {
 	
 	if (getPokedexNumber(pkmn)) {
 		sf2d_draw_texture_part(balls, -2, -5, 32 * (getBall(pkmn) % 8), 32 * (getBall(pkmn) / 8), 32, 32);
-		sftd_draw_text(fontBold12, 30, 6, WHITE, 12, pokemon[getPokedexNumber(pkmn)]);
+		sftd_draw_text(fontBold12, 30, 6, WHITE, 12, (char*)personal.species[getPokedexNumber(pkmn)]);
 		
 		if (getGender(pkmn) == 0)
 			sf2d_draw_texture(male, 146, 7);
@@ -1197,7 +1197,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 		if (mode == ED_MENU) {
 			sf2d_draw_texture(bottomMask, 0, 0);
 			sf2d_draw_texture(bottomPopUp, 1, 214);
-			sftd_draw_textf(fontBold11, 8, 220, WHITE, 11, "%s has been selected.", pokemon[getPokedexNumber(tmp)]);
+			sftd_draw_textf(fontBold11, 8, 220, WHITE, 11, "%s has been selected.", (char*)personal.species[getPokedexNumber(tmp)]);
 			for (int i = 0; i < 5; i++) {
 				sf2d_draw_texture(button, 208, 42 + i * 27);
 				if (i == menuEntry)
@@ -1311,7 +1311,7 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 			sf2d_draw_texture(editorBG, 0, 1);
 			sf2d_draw_texture(editorBar, 0, 210);
 			
-			sftd_draw_text(fontBold12, 27, 4, WHITE, 12, pokemon[n]);
+			sftd_draw_text(fontBold12, 27, 4, WHITE, 12, (char*)personal.species[n]);
 			sf2d_draw_texture_part(balls, -2, -6, 32 * (getBall(pkmn) % 8), 32 * (getBall(pkmn) / 8), 32, 32);
 			
 			u16 t = getAlternativeSprite(pkmn);
@@ -1382,7 +1382,7 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 			sftd_draw_text(fontBold12, 256, 28, DARKBLUE, 12, "TOTAL");
 			sftd_draw_text(fontBold12, 2, 173, LIGHTBLUE, 12, "Hidden Power:");
 			
-			sftd_draw_text(fontBold12, 27, 4, WHITE, 12, pokemon[n]);
+			sftd_draw_text(fontBold12, 27, 4, WHITE, 12, (char*)personal.species[n]);
 			sf2d_draw_texture_part(balls, -2, -6, 32 * (getBall(pkmn) % 8), 32 * (getBall(pkmn) / 8), 32, 32);
 			
 			if (getGender(pkmn) == 0)
@@ -1511,7 +1511,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 				sftd_draw_text(fontBold12, 372 - sftd_get_text_width(fontBold12, 12, otid), 163, WHITE, 12, otid);
 				free(otid);
 				
-				sftd_draw_text(fontBold12, 273, 104, WHITE, 12, pokemon[getPokedexNumber(pkmn)]);
+				sftd_draw_text(fontBold12, 273, 104, WHITE, 12, (char*)personal.species[getPokedexNumber(pkmn)]);
 			}
 			y = 45;
 			for (int i = 0; i < 5; i++) {

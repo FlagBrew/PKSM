@@ -28,6 +28,23 @@ Copyright (C) 2016 Bernardo Giordano
 #include "util.h"
 #include "graphic.h"
 
+void loadLines(u8 *src, u8 *dst, u8 strlen,  u32 size) {
+  u16 	readnum = 3;
+  u16 	line = 0, chr; 
+
+  while (readnum < size) {
+    chr = 0;
+    while (readnum < size && src[readnum] != '\n') {
+      dst[line * strlen + chr] = src[readnum];
+      readnum++;
+      chr++;
+    }
+    dst[line * strlen + chr] = 0;
+    readnum++;
+    line++;
+  }
+}
+
 bool checkFile(char* path) {
 	FILE *temp = fopen(path, "rt");
 	if (temp == NULL) {
@@ -65,7 +82,7 @@ void loadFile(u8* buf, char* path) {
 		return;
 	fseek(fptr, 0, SEEK_END);
 	u32 size = ftell(fptr);
-	memset(buf, 0, 1499);
+	memset(buf, 0, size);
 	rewind(fptr);
 	fread(buf, size, 1, fptr);
 	fclose(fptr);

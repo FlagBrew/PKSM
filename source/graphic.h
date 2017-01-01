@@ -43,8 +43,6 @@ Copyright (C) 2016 Bernardo Giordano
 
 #define MOVEMENTSPEED 4
 
-static char* species[802];
-
 void GUIElementsInit();
 void GUIElementsSpecify(int game);
 void GUIGameElementsInit();

@@ -34,6 +34,7 @@ Copyright (C) 2016 Bernardo Giordano
 #include "save.h"
 
 #define GAMES 15
+#define ASSETS 10
 
 char* path[] =    { "/3ds/data/PKSM/additionalassets/3dsicons.png",
 					"/3ds/data/PKSM/additionalassets/alternative_icons_spritesheet.png",
@@ -44,7 +45,7 @@ char* path[] =    { "/3ds/data/PKSM/additionalassets/3dsicons.png",
 					"/3ds/data/PKSM/additionalassets/editor_bottom.png",
 					"/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheet.png",
 					"/3ds/data/PKSM/additionalassets/types_sheet.png",
-					/* */,
+					"/3ds/data/PKSM/additionalassets/species_en.txt",
 };
 char* url[] = { "https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/3dsicons.png", 
 				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/alternative_icons_spritesheet.png",
@@ -55,7 +56,7 @@ char* url[] = { "https://raw.githubusercontent.com/dsoldier/PKResources/master/a
 				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/editor_bottom.png",
 				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/pokemon_icons_spritesheet.png",
 				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/types_sheet.png",
-				/* */,
+				"https://raw.githubusercontent.com/gocario/PKBrew/master/pk/data/en/species_en.txt",
 };
 		
 void exitServices() {
@@ -98,7 +99,7 @@ bool initServices() {
 	mkdir("sdmc:/3ds/data/PKSM/additionalassets", 0777);
 	
 	char* str = (char*)malloc(30);
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < ASSETS; i++) {
 		FILE *temp1 = fopen(path[i], "rt");
 		if (temp1 == NULL) {
 			fclose(temp1);
@@ -113,8 +114,22 @@ bool initServices() {
 	
 	loadPersonal();
 	
+    u8 tmp[12000];
+	FILE *fptr = fopen(path[9], "rt");
+	if (fptr == NULL) {
+		fclose(fptr);
+		return true;
+	}
+	fseek(fptr, 0, SEEK_END);
+	u32 size = ftell(fptr);
+	memset(tmp, 0, size);
+	rewind(fptr);
+	fread(tmp, size, 1, fptr);
+	fclose(fptr);
+	loadLines(tmp, personal.species[0], 12, size);
+	
 	u32 defaultSize = BANKBOXMAX * 30 * PKMNLENGTH;
-	u32 size = 0;
+	size = 0;
 	u8* bankbuf, *defaultBank;
 	
 	FILE *bank = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
@@ -158,7 +173,7 @@ int main() {
 		return 0;
 	}
 	
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < ASSETS; i++) {
 		if(!checkFile(path[i])) {
 			infoDisp("You're missing a few assets!");
 			exitServices();

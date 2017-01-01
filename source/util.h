@@ -48,6 +48,7 @@ Copyright (C) 2016 Bernardo Giordano
 #define GAME_B2 13
 #define GAME_W2 14
 
+void loadLines(u8 *src, u8 *dst, u8 strlen,  u32 size);
 bool checkFile(char* path);
 void loadPersonal();
 void loadFile(u8* buf, char* path);

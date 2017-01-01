@@ -57,6 +57,7 @@ Copyright (C) 2016 Bernardo Giordano
 #define ED_HIDDENPOWER 6
 
 struct {
+	u8 species[803][12];
 	u8 pkmData[961][56];
 } personal;
 
