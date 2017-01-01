@@ -1151,7 +1151,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 															int tot = 0;
 															for (int i = 0; i < 6; i++)
 																tot += getEV(pkmn, i);
-															if (tot < 508)
+															if (tot < 510)
 																setEV(pkmn, getEV(pkmn, lookup[i]) + 1, lookup[i]);
 														}
 													}
@@ -1174,7 +1174,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 															int tot = 0;
 															for (int i = 0; i < 6; i++)
 																tot += getEV(pkmn, i);
-															if (tot < 508)
+															if (tot < 510)
 																setEV(pkmn, getEV(pkmn, lookup[i]) + 1, lookup[i]);
 														}
 													}
@@ -1521,7 +1521,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 						}
 						case 1 : {
 							isTeam = false;
-							currentEntry = 0;
+							int cloneEntry = currentEntry;
 							while(aptMainLoop() && !operationDone) {
 								hidScanInput();
 								touchPosition touch;
@@ -1546,11 +1546,11 @@ void pokemonEditor(u8* mainbuf, int game) {
 
 								if (hidKeysDown() & KEY_TOUCH) {
 									if (touch.px > 210 && touch.px < 320 && touch.py > 0 && touch.py < 210) {
-										currentEntry = 0;
+										cloneEntry = 0;
 										isTeam = true;
 									}
 									if (touch.px > 0 && touch.px < 210 && touch.py > 0 && touch.py < 210) {
-										currentEntry = 0;
+										cloneEntry = 0;
 										isTeam = false;
 									}
 									
@@ -1571,83 +1571,83 @@ void pokemonEditor(u8* mainbuf, int game) {
 								} 
 
 								if (hidKeysDown() & KEY_DRIGHT && !isTeam) {
-									if (currentEntry < 29) 
-										currentEntry++;
-									else if (currentEntry == 29) 
-										currentEntry = 0;
+									if (cloneEntry < 29) 
+										cloneEntry++;
+									else if (cloneEntry == 29) 
+										cloneEntry = 0;
 								}
 
 								if (hidKeysDown() & KEY_DLEFT && !isTeam) {
-									if (currentEntry > 0) 
-										currentEntry--;
-									else if (currentEntry == 0) 
-										currentEntry = 29;
+									if (cloneEntry > 0) 
+										cloneEntry--;
+									else if (cloneEntry == 0) 
+										cloneEntry = 29;
 								}
 
 								if (hidKeysDown() & KEY_DUP) {
 									if (!isTeam) {
-										if (currentEntry >= 6) 
-											currentEntry -= 6;
-									} else if (currentEntry > 0)
-										currentEntry--;
+										if (cloneEntry >= 6) 
+											cloneEntry -= 6;
+									} else if (cloneEntry > 0)
+										cloneEntry--;
 								}
 
 								if (hidKeysDown() & KEY_DDOWN) {
 									if (!isTeam) {
-										if (currentEntry <= 23) 
-											currentEntry += 6;
-									} else if (currentEntry < 5)
-										currentEntry++;
+										if (cloneEntry <= 23) 
+											cloneEntry += 6;
+									} else if (cloneEntry < 5)
+										cloneEntry++;
 								}
 			
 								if (hidKeysHeld() & KEY_TOUCH) {
 									if (!isTeam) {
-										if (touch.px > 4 && touch.px < 38 && touch.py > 45 && touch.py < 75) currentEntry = 0;
-										if (touch.px > 38 && touch.px < 72 && touch.py > 45 && touch.py < 75) currentEntry = 1;
-										if (touch.px > 72 && touch.px < 106 && touch.py > 45 && touch.py < 75) currentEntry = 2;
-										if (touch.px > 106 && touch.px < 140 && touch.py > 45 && touch.py < 75) currentEntry = 3;
-										if (touch.px > 140 && touch.px < 174 && touch.py > 45 && touch.py < 75) currentEntry = 4;
-										if (touch.px > 174 && touch.px < 208 && touch.py > 45 && touch.py < 75) currentEntry = 5;
-										if (touch.px > 4 && touch.px < 38 && touch.py > 75 && touch.py < 105) currentEntry = 6;
-										if (touch.px > 38 && touch.px < 72 && touch.py > 75 && touch.py < 105) currentEntry = 7;
-										if (touch.px > 72 && touch.px < 106 && touch.py > 75 && touch.py < 105) currentEntry = 8;
-										if (touch.px > 106 && touch.px < 140 && touch.py > 75 && touch.py < 105) currentEntry = 9;
-										if (touch.px > 140 && touch.px < 174 && touch.py > 75 && touch.py < 105) currentEntry = 10;
-										if (touch.px > 174 && touch.px < 208 && touch.py > 75 && touch.py < 105) currentEntry = 11;
-										if (touch.px > 4 && touch.px < 38 && touch.py > 105 && touch.py < 135) currentEntry = 12;
-										if (touch.px > 38 && touch.px < 72 && touch.py > 105 && touch.py < 135) currentEntry = 13;
-										if (touch.px > 72 && touch.px < 106 && touch.py > 105 && touch.py < 135) currentEntry = 14;
-										if (touch.px > 106 && touch.px < 140 && touch.py > 105 && touch.py < 135) currentEntry = 15;
-										if (touch.px > 140 && touch.px < 174 && touch.py > 105 && touch.py < 135) currentEntry = 16;
-										if (touch.px > 174 && touch.px < 208 && touch.py > 105 && touch.py < 135) currentEntry = 17;
-										if (touch.px > 4 && touch.px < 38 && touch.py > 135 && touch.py < 165) currentEntry = 18;
-										if (touch.px > 38 && touch.px < 72 && touch.py > 135 && touch.py < 165) currentEntry = 19;
-										if (touch.px > 72 && touch.px < 106 && touch.py > 135 && touch.py < 165) currentEntry = 20;
-										if (touch.px > 106 && touch.px < 140 && touch.py > 135 && touch.py < 165) currentEntry = 21;
-										if (touch.px > 140 && touch.px < 174 && touch.py > 135 && touch.py < 165) currentEntry = 22;
-										if (touch.px > 174 && touch.px < 208 && touch.py > 135 && touch.py < 165) currentEntry = 23;
-										if (touch.px > 4 && touch.px < 38 && touch.py > 165 && touch.py < 195) currentEntry = 24;
-										if (touch.px > 38 && touch.px < 72 && touch.py > 165 && touch.py < 195) currentEntry = 25;
-										if (touch.px > 72 && touch.px < 106 && touch.py > 165 && touch.py < 195) currentEntry = 26;
-										if (touch.px > 106 && touch.px < 140 && touch.py > 165 && touch.py < 195) currentEntry = 27;
-										if (touch.px > 140 && touch.px < 174 && touch.py > 165 && touch.py < 195) currentEntry = 28;
-										if (touch.px > 174 && touch.px < 208 && touch.py > 165 && touch.py < 195) currentEntry = 29;
+										if (touch.px > 4 && touch.px < 38 && touch.py > 45 && touch.py < 75) cloneEntry = 0;
+										if (touch.px > 38 && touch.px < 72 && touch.py > 45 && touch.py < 75) cloneEntry = 1;
+										if (touch.px > 72 && touch.px < 106 && touch.py > 45 && touch.py < 75) cloneEntry = 2;
+										if (touch.px > 106 && touch.px < 140 && touch.py > 45 && touch.py < 75) cloneEntry = 3;
+										if (touch.px > 140 && touch.px < 174 && touch.py > 45 && touch.py < 75) cloneEntry = 4;
+										if (touch.px > 174 && touch.px < 208 && touch.py > 45 && touch.py < 75) cloneEntry = 5;
+										if (touch.px > 4 && touch.px < 38 && touch.py > 75 && touch.py < 105) cloneEntry = 6;
+										if (touch.px > 38 && touch.px < 72 && touch.py > 75 && touch.py < 105) cloneEntry = 7;
+										if (touch.px > 72 && touch.px < 106 && touch.py > 75 && touch.py < 105) cloneEntry = 8;
+										if (touch.px > 106 && touch.px < 140 && touch.py > 75 && touch.py < 105) cloneEntry = 9;
+										if (touch.px > 140 && touch.px < 174 && touch.py > 75 && touch.py < 105) cloneEntry = 10;
+										if (touch.px > 174 && touch.px < 208 && touch.py > 75 && touch.py < 105) cloneEntry = 11;
+										if (touch.px > 4 && touch.px < 38 && touch.py > 105 && touch.py < 135) cloneEntry = 12;
+										if (touch.px > 38 && touch.px < 72 && touch.py > 105 && touch.py < 135) cloneEntry = 13;
+										if (touch.px > 72 && touch.px < 106 && touch.py > 105 && touch.py < 135) cloneEntry = 14;
+										if (touch.px > 106 && touch.px < 140 && touch.py > 105 && touch.py < 135) cloneEntry = 15;
+										if (touch.px > 140 && touch.px < 174 && touch.py > 105 && touch.py < 135) cloneEntry = 16;
+										if (touch.px > 174 && touch.px < 208 && touch.py > 105 && touch.py < 135) cloneEntry = 17;
+										if (touch.px > 4 && touch.px < 38 && touch.py > 135 && touch.py < 165) cloneEntry = 18;
+										if (touch.px > 38 && touch.px < 72 && touch.py > 135 && touch.py < 165) cloneEntry = 19;
+										if (touch.px > 72 && touch.px < 106 && touch.py > 135 && touch.py < 165) cloneEntry = 20;
+										if (touch.px > 106 && touch.px < 140 && touch.py > 135 && touch.py < 165) cloneEntry = 21;
+										if (touch.px > 140 && touch.px < 174 && touch.py > 135 && touch.py < 165) cloneEntry = 22;
+										if (touch.px > 174 && touch.px < 208 && touch.py > 135 && touch.py < 165) cloneEntry = 23;
+										if (touch.px > 4 && touch.px < 38 && touch.py > 165 && touch.py < 195) cloneEntry = 24;
+										if (touch.px > 38 && touch.px < 72 && touch.py > 165 && touch.py < 195) cloneEntry = 25;
+										if (touch.px > 72 && touch.px < 106 && touch.py > 165 && touch.py < 195) cloneEntry = 26;
+										if (touch.px > 106 && touch.px < 140 && touch.py > 165 && touch.py < 195) cloneEntry = 27;
+										if (touch.px > 140 && touch.px < 174 && touch.py > 165 && touch.py < 195) cloneEntry = 28;
+										if (touch.px > 174 && touch.px < 208 && touch.py > 165 && touch.py < 195) cloneEntry = 29;
 									} else {
-										if (touch.px > 214 && touch.px < 265 && touch.py > 40 && touch.py < 85) currentEntry = 0;
-										if (touch.px > 266 && touch.px < 317 && touch.py > 60 && touch.py < 105) currentEntry = 1;
-										if (touch.px > 214 && touch.px < 265 && touch.py > 85 && touch.py < 130) currentEntry = 2;
-										if (touch.px > 266 && touch.px < 317 && touch.py > 105 && touch.py < 150) currentEntry = 3;
-										if (touch.px > 214 && touch.px < 265 && touch.py > 130 && touch.py < 175) currentEntry = 4;
-										if (touch.px > 266 && touch.px < 317 && touch.py > 150 && touch.py < 195) currentEntry = 5;				
+										if (touch.px > 214 && touch.px < 265 && touch.py > 40 && touch.py < 85) cloneEntry = 0;
+										if (touch.px > 266 && touch.px < 317 && touch.py > 60 && touch.py < 105) cloneEntry = 1;
+										if (touch.px > 214 && touch.px < 265 && touch.py > 85 && touch.py < 130) cloneEntry = 2;
+										if (touch.px > 266 && touch.px < 317 && touch.py > 105 && touch.py < 150) cloneEntry = 3;
+										if (touch.px > 214 && touch.px < 265 && touch.py > 130 && touch.py < 175) cloneEntry = 4;
+										if (touch.px > 266 && touch.px < 317 && touch.py > 150 && touch.py < 195) cloneEntry = 5;				
 									}
 								}
 								if (hidKeysDown() & KEY_A) {
-									setPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
+									setPkmn(mainbuf, (isTeam) ? 33 : box, cloneEntry, pkmn, game);
 									operationDone = true;
 									break;
 								}
 
-								printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_CLONE, speedy, 0);
+								printPKViewer(mainbuf, pkmn, isTeam, game, cloneEntry, menuEntry, box, ED_CLONE, speedy, 0);
 							}
 							break;
 						}
