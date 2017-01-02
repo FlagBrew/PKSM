@@ -388,21 +388,30 @@ u16 getEggMove(u8 *pkmn, const int nmove) {
 }
 
 u16 getStat(u8* pkmn, const int stat) {
-	u8 vett[] = {0x0, 0x1, 0x2, 0x4, 0x5, 0x3};
     u16 tempspecies = getPokedexNumber(pkmn);
     if (getForm(pkmn))
 		memcpy(&tempspecies, &personal.pkmData[getPokedexNumber(pkmn)][0x1C], 2);
 
-	u16 final;
     u8 mult = 10;
-    u8 basestat = personal.pkmData[tempspecies][vett[stat]];
-
-    if (stat == 0) final = 10 + ((2 * basestat) + getIV(pkmn, stat) + getEV(pkmn, stat) / 4 + 100) * getLevel(pkmn) / 100;
-    else           final = 5 + (2 * basestat + getIV(pkmn, stat) + getEV(pkmn, stat) / 4) * getLevel(pkmn) / 100;
-
-    if (getNature(pkmn) / 5 + 1 == stat) mult++;
-    if (getNature(pkmn) % 5 + 1 == stat) mult--;
-
+    u16 final;
+    u8 basestat = 0;
+    if (stat == 0) basestat = personal.pkmData[tempspecies][0x0];
+    if (stat == 1) basestat = personal.pkmData[tempspecies][0x1];
+    if (stat == 2) basestat = personal.pkmData[tempspecies][0x2];
+    if (stat == 3) basestat = personal.pkmData[tempspecies][0x3];
+    if (stat == 4) basestat = personal.pkmData[tempspecies][0x4];
+    if (stat == 5) basestat = personal.pkmData[tempspecies][0x5];
+    
+    if (stat == 0)
+        final = 10 + ((2 * basestat) + getIV(pkmn, stat) + getEV(pkmn, stat) / 4 + 100) * getLevel(pkmn) / 100;
+    else
+        final = 5 + (2 * basestat + getIV(pkmn, stat) + getEV(pkmn, stat) / 4) * getLevel(pkmn) / 100; 
+    
+    if (getNature(pkmn) / 5 + 1 == stat)
+        mult++;
+    if (getNature(pkmn) % 5 + 1 == stat)
+        mult--;
+  
     final = final * mult / 10;
     return final;
 }

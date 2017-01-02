@@ -27,7 +27,7 @@ Copyright (C) 2016 Bernardo Giordano
 #include "editor.h"
 #include "http.h"
 
-int lookup[] = {0, 1, 2, 4, 5, 3};
+int lookup[] = {0x0, 0x1, 0x2, 0x4, 0x5, 0x3};
 
 sftd_font *fontBold18, *fontBold15, *fontBold14, *fontBold12, *fontBold11, *fontBold9, *fontFixed; 
 sf2d_texture *upperTextGS, *lowerTextGS, *dexBox, *dexN, *hiddenPowerBG, *hiddenPowerButton, *selectBoxButton, *ballsBG, *ballButton, *male, *female, *naturesButton, *naturestx, *movesBottom, *topMovesBG, *editorBar, *editorStatsBG, *subArrow, *backgroundTop, *miniBox, *plusButton, *minusButton, *balls, *typesSheet, *bottomMask, *transferButton, *bankTop, *shinyStar, *normalBar, *LButton, *RButton, *creditsTop, *pokeball, *topBorder, *bottomBorder, *gameSelectorBottom, *gameSelectorTop, *mainMenuBottom, *menuBar, *menuSelectedBar, *darkButton, *eventTop, *left, *lightButton, *redButton, *right, *spritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *warningTop, *warningBottom, *boxView, *infoView, *LRBar, *selector, *editorBG, *plus, *minus, *back, *setting, *selectorCloning, *button, *bottomPopUp, *pokemonBufferBox, *cleanTop, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR, *topSelectedMove, *settings, *item, *alternativeSpritesSmall;
@@ -951,7 +951,7 @@ void printEditor(u8* mainbuf, int game, int currentEntry, int langCont) {
 				sf2d_draw_texture(eventMenuTopBar, 200, y);
 			
 			switch (i) {
-				case 5 : { sftd_draw_text(fontBold12, 200 + (182 - sftd_get_text_width(fontBold12, 12, "Clear Mystery Gift box")) / 2, y + 10, (i == currentEntry) ? DARKBLUE : YELLOW, 12, "Clear Mistery Gift box"); break; }
+				case 5 : { sftd_draw_text(fontBold12, 200 + (182 - sftd_get_text_width(fontBold12, 12, "Clear Mystery Gift box")) / 2, y + 10, (i == currentEntry) ? DARKBLUE : YELLOW, 12, "Clear Mystery Gift box"); break; }
 			}
 			y += 37;
 		}
