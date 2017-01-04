@@ -180,6 +180,7 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[180] = "0180 - Cyrus' Weavile"; spriteArray[180] = 461;
 	database[181] = "0181 - Ghetsis' Hydreigon"; spriteArray[181] = 635;
 	database[182] = "0182 - Lysandre's Pyroar"; spriteArray[182] = 668;
+	database[203] = "0203 - PC Alolan Vulpix"; spriteArray[203] = 37;
 	database[501] = "0501 - Winter2013 Garchomp"; spriteArray[501] = 445;
 	database[502] = "0502 - Winter2013 Scizor"; spriteArray[502] = 212;
 	database[504] = "0504 - Magmar, Electabuzz"; spriteArray[504] = 125;
