@@ -1,7 +1,5 @@
 /* This file is part of PKSM
-
 Copyright (C) 2016 Bernardo Giordano
-
 >    This program is free software: you can redistribute it and/or modify
 >    it under the terms of the GNU General Public License as published by
 >    the Free Software Foundation, either version 3 of the License, or
@@ -1046,7 +1044,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 				hidScanInput();
 				hidTouchRead(&touch);
 				
-				printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_MENU, speedy, 0);
+				printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_MENU, speedy, 0, 0);
 				
 				if (hidKeysDown() & KEY_B)
 					break;
@@ -1653,10 +1651,11 @@ void pokemonEditor(u8* mainbuf, int game) {
 								if (hidKeysDown() & KEY_A) {
 									setPkmn(mainbuf, (isTeam) ? 33 : box, cloneEntry, pkmn, game);
 									operationDone = true;
+									currentEntry = cloneEntry;
 									break;
 								}
 
-								printPKViewer(mainbuf, pkmn, isTeam, game, cloneEntry, menuEntry, box, ED_CLONE, speedy, 0);
+								printPKViewer(mainbuf, pkmn, isTeam, game, cloneEntry, menuEntry, box, ED_CLONE, speedy, 0, 0);
 							}
 							break;
 						}
@@ -1672,58 +1671,72 @@ void pokemonEditor(u8* mainbuf, int game) {
 							break;
 						}
 						case 3 : {
-							int index = (int)getPokedexNumber(pkmn);
-							while(aptMainLoop() && !operationDone) {
-								hidScanInput();
-								touchPosition touch;
-								hidTouchRead(&touch);
-
-								if (hidKeysDown() & KEY_B) 
-									break;
+							if (!isTeam) {
+								int genEntry = ((int)getPokedexNumber(pkmn) - 1) % 16;
+								int page = ((int)getPokedexNumber(pkmn) - 1) / 16, maxpages = 50;
 								
-								if (hidKeysDown() & KEY_L)
-									speedy = false;
-								
-								if (hidKeysDown() & KEY_R)
-									speedy = true;
-
-								if (hidKeysDown() & KEY_TOUCH && !speedy) {
-									if (touch.px > 48 && touch.px < 64 && touch.py > 91 && touch.py < 210)
-										if (index > 1)
-											index--;
-										
-									if (touch.px > 145 && touch.px < 161 && touch.py > 91 && touch.py < 210)
-										if (index < ((game < 4) ? 721 : 802))
-											index++;
+								while (aptMainLoop()) {
+									hidScanInput();
+									
+									if (hidKeysDown() & KEY_B) break;
+									
+									if (hidKeysDown() & KEY_L) {
+										if (page > 0) page--;
+										else if (page == 0) page = maxpages - 1;
+									}
+									
+									if (hidKeysDown() & KEY_R) {
+										if (page < maxpages - 1) page++;
+										else if (page == maxpages - 1) page = 0;
+									}
+									
+									if (hidKeysDown() & KEY_DLEFT) {
+										if (genEntry > 0) genEntry--;
+										else if (genEntry == 0) genEntry = 15;
+									}
+									
+									if (hidKeysDown() & KEY_DRIGHT) {
+										if (genEntry < 15) genEntry++;
+										else if (genEntry == 15) genEntry = 0;
+									}
+									
+									if (hidKeysDown() & KEY_DUP) {
+										if (genEntry <= 3)	{
+											page--;
+											if (page < 0) 
+												page = maxpages - 1;
+										}
+										else if (genEntry >= 4) genEntry -= 4;
+									}
+									
+									if (hidKeysDown() & KEY_DOWN) {
+										if (genEntry <= 11) genEntry += 4;
+										else if (genEntry >= 12) {
+											page++;
+											if (page > maxpages - 1)
+												page = 0;
+										}
+									}
+									
+									if (hidKeysDown() & KEY_A) {
+										FILE *fptr = fopen("romfs:/misc/living.bin", "rt");
+										fseek(fptr, 0, SEEK_END);
+										u32 size = ftell(fptr);
+										u8* livingbuf = (u8*)malloc(size);
+										memset(livingbuf, 0, size);
+										rewind(fptr);
+										fread(livingbuf, size, 1, fptr);
+										fclose(fptr);
+										memcpy(&mainbuf[getPkmnAddress((isTeam)? 33 : box, currentEntry, game)], &livingbuf[(page * 16 + genEntry) * 232], 232);
+										free(livingbuf);
+										operationDone = true;
+										break;
+									}
+									
+									printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_GENERATE, speedy, genEntry, page);
 								}
-								
-								if (hidKeysHeld() & KEY_TOUCH && speedy) {
-									if (touch.px > 48 && touch.px < 64 && touch.py > 91 && touch.py < 210)
-										if (index > 1)
-											index--;
-										
-									if (touch.px > 145 && touch.px < 161 && touch.py > 91 && touch.py < 210)
-										if (index < ((game < 4) ? 721 : 802))
-											index++;
-								}
-
-								if (hidKeysDown() & KEY_A) {
-									FILE *fptr = fopen("romfs:/misc/living.bin", "rt");
-									fseek(fptr, 0, SEEK_END);
-									u32 size = ftell(fptr);
-									u8* livingbuf = (u8*)malloc(size);
-									memset(livingbuf, 0, size);
-									rewind(fptr);
-									fread(livingbuf, size, 1, fptr);
-									fclose(fptr);
-									memcpy(&mainbuf[getPkmnAddress((isTeam)? 33 : box, currentEntry, game)], &livingbuf[(index - 1) * 232], 232);
-									free(livingbuf);
-									operationDone = true;
-									break;
-								}
-
-								printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_GENERATE, speedy, index);
-							}
+							} else
+								infoDisp("Can't generate in party!");
 							break;
 						}
 					}
@@ -1732,42 +1745,53 @@ void pokemonEditor(u8* mainbuf, int game) {
 				if (hidKeysDown() & KEY_A && menuEntry == 4)
 					break;
 			}
-			if (!getPokedexNumber(pkmn)) {
-				int index = 1;
-				while(aptMainLoop() && !operationDone) {
+			if (!getPokedexNumber(pkmn) && !isTeam) {
+				int genEntry = 0;
+				int page = 0, maxpages = 50;
+				
+				while (aptMainLoop()) {
 					hidScanInput();
-					touchPosition touch;
-					hidTouchRead(&touch);
-
-					if (hidKeysDown() & KEY_B) 
-						break;
 					
-					if (hidKeysDown() & KEY_L)
-						speedy = false;
+					if (hidKeysDown() & KEY_B) break;
 					
-					if (hidKeysDown() & KEY_R)
-						speedy = true;
-
-					if (hidKeysDown() & KEY_TOUCH && !speedy) {
-						if (touch.px > 48 && touch.px < 64 && touch.py > 91 && touch.py < 210)
-							if (index > 1)
-								index--;
-							
-						if (touch.px > 145 && touch.px < 161 && touch.py > 91 && touch.py < 210)
-							if (index < ((game < 4) ? 721 : 802))
-								index++;
+					if (hidKeysDown() & KEY_L) {
+						if (page > 0) page--;
+						else if (page == 0) page = maxpages - 1;
 					}
 					
-					if (hidKeysHeld() & KEY_TOUCH && speedy) {
-						if (touch.px > 48 && touch.px < 64 && touch.py > 91 && touch.py < 210)
-							if (index > 1)
-								index--;
-							
-						if (touch.px > 145 && touch.px < 161 && touch.py > 91 && touch.py < 210)
-							if (index < ((game < 4) ? 721 : 802))
-								index++;
+					if (hidKeysDown() & KEY_R) {
+						if (page < maxpages - 1) page++;
+						else if (page == maxpages - 1) page = 0;
 					}
-
+					
+					if (hidKeysDown() & KEY_DLEFT) {
+						if (genEntry > 0) genEntry--;
+						else if (genEntry == 0) genEntry = 15;
+					}
+					
+					if (hidKeysDown() & KEY_DRIGHT) {
+						if (genEntry < 15) genEntry++;
+						else if (genEntry == 15) genEntry = 0;
+					}
+					
+					if (hidKeysDown() & KEY_DUP) {
+						if (genEntry <= 3)	{
+							page--;
+							if (page < 0) 
+								page = maxpages - 1;
+						}
+						else if (genEntry >= 4) genEntry -= 4;
+					}
+					
+					if (hidKeysDown() & KEY_DOWN) {
+						if (genEntry <= 11) genEntry += 4;
+						else if (genEntry >= 12) {
+							page++;
+							if (page > maxpages - 1)
+								page = 0;
+						}
+					}
+					
 					if (hidKeysDown() & KEY_A) {
 						FILE *fptr = fopen("romfs:/misc/living.bin", "rt");
 						fseek(fptr, 0, SEEK_END);
@@ -1777,17 +1801,17 @@ void pokemonEditor(u8* mainbuf, int game) {
 						rewind(fptr);
 						fread(livingbuf, size, 1, fptr);
 						fclose(fptr);
-						memcpy(&mainbuf[getPkmnAddress((isTeam)? 33 : box, currentEntry, game)], &livingbuf[(index - 1) * 232], 232);
+						memcpy(&mainbuf[getPkmnAddress((isTeam)? 33 : box, currentEntry, game)], &livingbuf[(page * 16 + genEntry) * 232], 232);
 						free(livingbuf);
 						operationDone = true;
 						break;
 					}
-
-					printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_GENERATE, speedy, index);
+					
+					printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_GENERATE, speedy, genEntry, page);
 				}
 			}
 		}
-		printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_STANDARD, speedy, 0);
+		printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_STANDARD, speedy, 0, 0);
 	}
 	free(pkmn);
 }

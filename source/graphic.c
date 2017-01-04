@@ -1122,7 +1122,7 @@ void infoViewer(u8* pkmn) {
 	}
 }
 
-void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry, int menuEntry, int box, int mode, bool speedy, int additional1) {
+void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry, int menuEntry, int box, int mode, bool speedy, int additional1, int additional2) {
 	char* menuEntries[] = {"EDIT", "CLONE", "RELEASE", "GENERATE", "EXIT"};
 	int x;
 	char* page = (char*)malloc(7 * sizeof(char));
@@ -1132,7 +1132,21 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 	getPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
-		infoViewer(pkmn);
+		if (mode == ED_GENERATE) {
+			char* temp = (char*)malloc(40);
+			sf2d_draw_texture(hiddenPowerBG, 0, 0);
+			for (int i = 0; i < 4; i++) {
+				for (int j = 0; j < 4; j++) {
+					if (additional1 == i * 4 + j)
+						sf2d_draw_texture(hiddenPowerButton, j * 99 + j, + i * 59 + i);
+					sf2d_draw_texture_part(spritesSmall, 32 + 99 * j + j, 7 + 59 * i + i, 40 * ((16 * additional2 + i * 4 + j + 1) % 25) + 4, 30 * ((16 * additional2 + i * 4 + j + 1) / 25), 34, 30);
+					snprintf(temp, 40, "%d - %s", 16 * additional2 + i * 4 + j + 1, personal.species[16 * additional2 + i * 4 + j + 1]);
+					sftd_draw_text(fontBold9, 99 * j + (99 - sftd_get_text_width(fontBold9, 9, temp)) / 2 + j, 40 + i * 59 + i, WHITE, 9, temp);
+				}
+			}
+			free(temp);
+		} else
+			infoViewer(pkmn);
 	sf2d_end_frame();
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
@@ -1206,14 +1220,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 			}
 		} else if (mode == ED_GENERATE) {
 			sf2d_draw_texture(bottomMask, 0, 0);
-			sf2d_draw_texture(bottomPopUp, 1, 214);
-			sftd_draw_textf(fontBold11, 8, 220, WHITE, 11, "You can switch speed with L/R: %s", (speedy) ? "FAST" : "SLOW");
-			sf2d_draw_texture(left, 48, 91);
-			sf2d_draw_texture(right, 145, 91);
-			sf2d_draw_texture(dexBox, 79, 82);
-			//sf2d_draw_texture(dexN, 50, 147);
-			sf2d_draw_texture_part(spritesSmall, 87, 89, 40 * (additional1 % 25) + 4, 30 * (additional1 / 25), 34, 30);
-			//sftd_draw_text(fontBold12, 50 + (109 - sftd_get_text_width(fontBold12, 12, "DEX N.")) / 2, 156, BLACK, 12, "DEX N.");
+			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Generate with A in the top screen.")) / 2, 105, WHITE, 14, "Generate with A in the top screen.");
 		}
 		
 	sf2d_end_frame();
