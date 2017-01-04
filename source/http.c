@@ -38,7 +38,7 @@ Result downloadFile(char* url, char* path, bool install) {
         return -1;
     }
 
-    if (httpcAddRequestHeaderField(&context, "User-Agent", "EventAssistant")) {
+    if (httpcAddRequestHeaderField(&context, "User-Agent", "PKSM")) {
         infoDisp("Failed to add a request header field!");
         return -1;
     }

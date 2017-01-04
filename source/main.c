@@ -130,7 +130,7 @@ bool initServices() {
 	
 	u32 defaultSize = BANKBOXMAX * 30 * PKMNLENGTH;
 	size = 0;
-	u8* bankbuf, *defaultBank;
+	u8 *bankbuf, *defaultBank;
 	
 	FILE *bank = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
 	if (bank == NULL) {
