@@ -58,7 +58,7 @@ Copyright (C) 2016 Bernardo Giordano
 
 struct {
 	u8 species[803][12];
-	u8 pkmData[961][56];
+	u8 pkmData[961][42];
 } personal;
 
 u32 seedStep(const u32 seed);
