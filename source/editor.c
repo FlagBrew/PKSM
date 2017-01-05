@@ -1719,7 +1719,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 									}
 									
 									if (hidKeysDown() & KEY_A) {
-										FILE *fptr = fopen("romfs:/misc/living.bin", "rt");
+										FILE *fptr = fopen((game < 4) ? "romfs:/misc/living6.bin" : "romfs:/misc/living7.bin", "rt");
 										fseek(fptr, 0, SEEK_END);
 										u32 size = ftell(fptr);
 										u8* livingbuf = (u8*)malloc(size);
@@ -1793,7 +1793,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 					}
 					
 					if (hidKeysDown() & KEY_A) {
-						FILE *fptr = fopen("romfs:/misc/living.bin", "rt");
+						FILE *fptr = fopen((game < 4) ? "romfs:/misc/living6.bin" : "romfs:/misc/living7.bin", "rt");
 						fseek(fptr, 0, SEEK_END);
 						u32 size = ftell(fptr);
 						u8* livingbuf = (u8*)malloc(size);
