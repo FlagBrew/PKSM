@@ -1114,8 +1114,10 @@ void pokemonEditor(u8* mainbuf, int game) {
 															if (hpEntry <= 11)
 																hpEntry += 4;
 															
-														if (hidKeysDown() & KEY_A)
+														if (hidKeysDown() & KEY_A) {
 															setHPType(pkmn, (u8)hpEntry);
+															break;
+														}
 														
 														printPKEditor(pkmn, game, speedy, hpEntry, 0, 0, ED_HIDDENPOWER);
 													}
@@ -1196,8 +1198,10 @@ void pokemonEditor(u8* mainbuf, int game) {
 												if (natureEntry <= 19) 
 													natureEntry += 5;
 												
-											if (hidKeysDown() & KEY_A)
+											if (hidKeysDown() & KEY_A) {
 												setNature(pkmn, natureEntry);
+												break;
+											}
 											
 											printPKEditor(pkmn, game, speedy, natureEntry, 0, 0, ED_NATURES);
 										}
@@ -1227,8 +1231,10 @@ void pokemonEditor(u8* mainbuf, int game) {
 												if (ballEntry <= 19)
 													ballEntry += 6;
 												
-											if (hidKeysDown() & KEY_A)
+											if (hidKeysDown() & KEY_A) {
 												setBall(pkmn, (u8)ballEntry + 1);
+												break;
+											}
 											
 											printPKEditor(pkmn, game, speedy, ballEntry, 0, 0, ED_BALLS);
 										}
@@ -1442,8 +1448,10 @@ void pokemonEditor(u8* mainbuf, int game) {
 												}
 											}
 											
-											if (hidKeysDown() & KEY_A)
+											if (hidKeysDown() & KEY_A) {
 												setItemEditor(pkmn, itemsSorted[itemEntry + page * 40]);
+												break;
+											}
 											
 											printPKEditor(pkmn, game, speedy, itemEntry, page, 0, ED_ITEMS);
 										}
@@ -1454,15 +1462,11 @@ void pokemonEditor(u8* mainbuf, int game) {
 									if (touch.px > 180 && touch.px < 193 && touch.py > 29 && touch.py < 42) {
 										if (getLevel(pkmn) < 100)
 											setLevel(pkmn, getLevel(pkmn) + 1);
-										else if (getLevel(pkmn) == 100)
-											setLevel(pkmn, 1);
 									}
 									
 									if (touch.px > 137 && touch.px < 150 && touch.py > 29 && touch.py < 42) {
 										if (getLevel(pkmn) > 1)
 											setLevel(pkmn, getLevel(pkmn) - 1);
-										else if (getLevel(pkmn) == 1)
-											setLevel(pkmn, 100);
 									}
 									
 									if (touch.px > 137 && touch.px < 150 && touch.py > 189 && touch.py < 202) {
@@ -1480,15 +1484,11 @@ void pokemonEditor(u8* mainbuf, int game) {
 									if (touch.px > 180 && touch.px < 193 && touch.py > 29 && touch.py < 42) {
 										if (getLevel(pkmn) < 100)
 											setLevel(pkmn, getLevel(pkmn) + 1);
-										else if (getLevel(pkmn) == 100)
-											setLevel(pkmn, 1);
 									}
 									
 									if (touch.px > 137 && touch.px < 150 && touch.py > 29 && touch.py < 42) {
 										if (getLevel(pkmn) > 1)
 											setLevel(pkmn, getLevel(pkmn) - 1);
-										else if (getLevel(pkmn) == 1)
-											setLevel(pkmn, 100);
 									}
 									
 									if (touch.px > 137 && touch.px < 150 && touch.py > 189 && touch.py < 202) {
@@ -1679,17 +1679,19 @@ void pokemonEditor(u8* mainbuf, int game) {
 									}
 									
 									if (hidKeysDown() & KEY_A) {
-										FILE *fptr = fopen((game < 4) ? "romfs:/misc/living6.bin" : "romfs:/misc/living7.bin", "rt");
-										fseek(fptr, 0, SEEK_END);
-										u32 size = ftell(fptr);
-										u8* livingbuf = (u8*)malloc(size);
-										memset(livingbuf, 0, size);
-										rewind(fptr);
-										fread(livingbuf, size, 1, fptr);
-										fclose(fptr);
-										memcpy(&mainbuf[getPkmnAddress((isTeam)? 33 : box, currentEntry, game)], &livingbuf[(page * 16 + genEntry) * 232], 232);
-										free(livingbuf);
-										operationDone = true;
+										if (!((game < 4) && ((genEntry + 1) > 721))) {
+											FILE *fptr = fopen((game < 4) ? "romfs:/misc/living6.bin" : "romfs:/misc/living7.bin", "rt");
+											fseek(fptr, 0, SEEK_END);
+											u32 size = ftell(fptr);
+											u8* livingbuf = (u8*)malloc(size);
+											memset(livingbuf, 0, size);
+											rewind(fptr);
+											fread(livingbuf, size, 1, fptr);
+											fclose(fptr);
+											memcpy(&mainbuf[getPkmnAddress((isTeam)? 33 : box, currentEntry, game)], &livingbuf[(page * 16 + genEntry) * 232], 232);
+											free(livingbuf);
+											operationDone = true;
+										}
 										break;
 									}
 									
@@ -1753,17 +1755,19 @@ void pokemonEditor(u8* mainbuf, int game) {
 					}
 					
 					if (hidKeysDown() & KEY_A) {
-						FILE *fptr = fopen((game < 4) ? "romfs:/misc/living6.bin" : "romfs:/misc/living7.bin", "rt");
-						fseek(fptr, 0, SEEK_END);
-						u32 size = ftell(fptr);
-						u8* livingbuf = (u8*)malloc(size);
-						memset(livingbuf, 0, size);
-						rewind(fptr);
-						fread(livingbuf, size, 1, fptr);
-						fclose(fptr);
-						memcpy(&mainbuf[getPkmnAddress((isTeam)? 33 : box, currentEntry, game)], &livingbuf[(page * 16 + genEntry) * 232], 232);
-						free(livingbuf);
-						operationDone = true;
+						if (!((game < 4) && ((genEntry + 1) > 721))) {
+							FILE *fptr = fopen((game < 4) ? "romfs:/misc/living6.bin" : "romfs:/misc/living7.bin", "rt");
+							fseek(fptr, 0, SEEK_END);
+							u32 size = ftell(fptr);
+							u8* livingbuf = (u8*)malloc(size);
+							memset(livingbuf, 0, size);
+							rewind(fptr);
+							fread(livingbuf, size, 1, fptr);
+							fclose(fptr);
+							memcpy(&mainbuf[getPkmnAddress((isTeam)? 33 : box, currentEntry, game)], &livingbuf[(page * 16 + genEntry) * 232], 232);
+							free(livingbuf);
+							operationDone = true;
+						}
 						break;
 					}
 					
