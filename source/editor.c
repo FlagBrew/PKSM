@@ -996,36 +996,16 @@ void pokemonEditor(u8* mainbuf, int game) {
 		
  		if (hidKeysHeld() & KEY_TOUCH) {
 			if (!isTeam) {
-				if (touch.px > 4 && touch.px < 38 && touch.py > 45 && touch.py < 75) currentEntry = 0;
-				if (touch.px > 38 && touch.px < 72 && touch.py > 45 && touch.py < 75) currentEntry = 1;
-				if (touch.px > 72 && touch.px < 106 && touch.py > 45 && touch.py < 75) currentEntry = 2;
-				if (touch.px > 106 && touch.px < 140 && touch.py > 45 && touch.py < 75) currentEntry = 3;
-				if (touch.px > 140 && touch.px < 174 && touch.py > 45 && touch.py < 75) currentEntry = 4;
-				if (touch.px > 174 && touch.px < 208 && touch.py > 45 && touch.py < 75) currentEntry = 5;
-				if (touch.px > 4 && touch.px < 38 && touch.py > 75 && touch.py < 105) currentEntry = 6;
-				if (touch.px > 38 && touch.px < 72 && touch.py > 75 && touch.py < 105) currentEntry = 7;
-				if (touch.px > 72 && touch.px < 106 && touch.py > 75 && touch.py < 105) currentEntry = 8;
-				if (touch.px > 106 && touch.px < 140 && touch.py > 75 && touch.py < 105) currentEntry = 9;
-				if (touch.px > 140 && touch.px < 174 && touch.py > 75 && touch.py < 105) currentEntry = 10;
-				if (touch.px > 174 && touch.px < 208 && touch.py > 75 && touch.py < 105) currentEntry = 11;
-				if (touch.px > 4 && touch.px < 38 && touch.py > 105 && touch.py < 135) currentEntry = 12;
-				if (touch.px > 38 && touch.px < 72 && touch.py > 105 && touch.py < 135) currentEntry = 13;
-				if (touch.px > 72 && touch.px < 106 && touch.py > 105 && touch.py < 135) currentEntry = 14;
-				if (touch.px > 106 && touch.px < 140 && touch.py > 105 && touch.py < 135) currentEntry = 15;
-				if (touch.px > 140 && touch.px < 174 && touch.py > 105 && touch.py < 135) currentEntry = 16;
-				if (touch.px > 174 && touch.px < 208 && touch.py > 105 && touch.py < 135) currentEntry = 17;
-				if (touch.px > 4 && touch.px < 38 && touch.py > 135 && touch.py < 165) currentEntry = 18;
-				if (touch.px > 38 && touch.px < 72 && touch.py > 135 && touch.py < 165) currentEntry = 19;
-				if (touch.px > 72 && touch.px < 106 && touch.py > 135 && touch.py < 165) currentEntry = 20;
-				if (touch.px > 106 && touch.px < 140 && touch.py > 135 && touch.py < 165) currentEntry = 21;
-				if (touch.px > 140 && touch.px < 174 && touch.py > 135 && touch.py < 165) currentEntry = 22;
-				if (touch.px > 174 && touch.px < 208 && touch.py > 135 && touch.py < 165) currentEntry = 23;
-				if (touch.px > 4 && touch.px < 38 && touch.py > 165 && touch.py < 195) currentEntry = 24;
-				if (touch.px > 38 && touch.px < 72 && touch.py > 165 && touch.py < 195) currentEntry = 25;
-				if (touch.px > 72 && touch.px < 106 && touch.py > 165 && touch.py < 195) currentEntry = 26;
-				if (touch.px > 106 && touch.px < 140 && touch.py > 165 && touch.py < 195) currentEntry = 27;
-				if (touch.px > 140 && touch.px < 174 && touch.py > 165 && touch.py < 195) currentEntry = 28;
-				if (touch.px > 174 && touch.px < 208 && touch.py > 165 && touch.py < 195) currentEntry = 29;
+				int x_start, y_start = 45;	
+				for (int i = 0; i < 5; i++) {
+					x_start = 4;
+					for (int j = 0; j < 6; j++) {
+						if ((touch.px > x_start) && (touch.px < (x_start + 34)) && (touch.py > y_start) && (touch.py < (y_start + 30)))
+							currentEntry = i * 6 + j;
+						x_start += 34;
+					}
+					y_start += 30;
+				}
 			} else {
 				if (touch.px > 214 && touch.px < 265 && touch.py > 40 && touch.py < 85) currentEntry = 0;
 				if (touch.px > 266 && touch.px < 317 && touch.py > 60 && touch.py < 105) currentEntry = 1;
@@ -1609,36 +1589,16 @@ void pokemonEditor(u8* mainbuf, int game) {
 			
 								if (hidKeysHeld() & KEY_TOUCH) {
 									if (!isTeam) {
-										if (touch.px > 4 && touch.px < 38 && touch.py > 45 && touch.py < 75) cloneEntry = 0;
-										if (touch.px > 38 && touch.px < 72 && touch.py > 45 && touch.py < 75) cloneEntry = 1;
-										if (touch.px > 72 && touch.px < 106 && touch.py > 45 && touch.py < 75) cloneEntry = 2;
-										if (touch.px > 106 && touch.px < 140 && touch.py > 45 && touch.py < 75) cloneEntry = 3;
-										if (touch.px > 140 && touch.px < 174 && touch.py > 45 && touch.py < 75) cloneEntry = 4;
-										if (touch.px > 174 && touch.px < 208 && touch.py > 45 && touch.py < 75) cloneEntry = 5;
-										if (touch.px > 4 && touch.px < 38 && touch.py > 75 && touch.py < 105) cloneEntry = 6;
-										if (touch.px > 38 && touch.px < 72 && touch.py > 75 && touch.py < 105) cloneEntry = 7;
-										if (touch.px > 72 && touch.px < 106 && touch.py > 75 && touch.py < 105) cloneEntry = 8;
-										if (touch.px > 106 && touch.px < 140 && touch.py > 75 && touch.py < 105) cloneEntry = 9;
-										if (touch.px > 140 && touch.px < 174 && touch.py > 75 && touch.py < 105) cloneEntry = 10;
-										if (touch.px > 174 && touch.px < 208 && touch.py > 75 && touch.py < 105) cloneEntry = 11;
-										if (touch.px > 4 && touch.px < 38 && touch.py > 105 && touch.py < 135) cloneEntry = 12;
-										if (touch.px > 38 && touch.px < 72 && touch.py > 105 && touch.py < 135) cloneEntry = 13;
-										if (touch.px > 72 && touch.px < 106 && touch.py > 105 && touch.py < 135) cloneEntry = 14;
-										if (touch.px > 106 && touch.px < 140 && touch.py > 105 && touch.py < 135) cloneEntry = 15;
-										if (touch.px > 140 && touch.px < 174 && touch.py > 105 && touch.py < 135) cloneEntry = 16;
-										if (touch.px > 174 && touch.px < 208 && touch.py > 105 && touch.py < 135) cloneEntry = 17;
-										if (touch.px > 4 && touch.px < 38 && touch.py > 135 && touch.py < 165) cloneEntry = 18;
-										if (touch.px > 38 && touch.px < 72 && touch.py > 135 && touch.py < 165) cloneEntry = 19;
-										if (touch.px > 72 && touch.px < 106 && touch.py > 135 && touch.py < 165) cloneEntry = 20;
-										if (touch.px > 106 && touch.px < 140 && touch.py > 135 && touch.py < 165) cloneEntry = 21;
-										if (touch.px > 140 && touch.px < 174 && touch.py > 135 && touch.py < 165) cloneEntry = 22;
-										if (touch.px > 174 && touch.px < 208 && touch.py > 135 && touch.py < 165) cloneEntry = 23;
-										if (touch.px > 4 && touch.px < 38 && touch.py > 165 && touch.py < 195) cloneEntry = 24;
-										if (touch.px > 38 && touch.px < 72 && touch.py > 165 && touch.py < 195) cloneEntry = 25;
-										if (touch.px > 72 && touch.px < 106 && touch.py > 165 && touch.py < 195) cloneEntry = 26;
-										if (touch.px > 106 && touch.px < 140 && touch.py > 165 && touch.py < 195) cloneEntry = 27;
-										if (touch.px > 140 && touch.px < 174 && touch.py > 165 && touch.py < 195) cloneEntry = 28;
-										if (touch.px > 174 && touch.px < 208 && touch.py > 165 && touch.py < 195) cloneEntry = 29;
+										int x_start, y_start = 45;
+										for (int i = 0; i < 5; i++) {
+											x_start = 4;
+											for (int j = 0; j < 6; j++) {
+												if ((touch.px > x_start) && (touch.px < (x_start + 34)) && (touch.py > y_start) && (touch.py < (y_start + 30)))
+													cloneEntry = i * 6 + j;
+												x_start += 34;
+											}
+											y_start += 30;
+										}
 									} else {
 										if (touch.px > 214 && touch.px < 265 && touch.py > 40 && touch.py < 85) cloneEntry = 0;
 										if (touch.px > 266 && touch.px < 317 && touch.py > 60 && touch.py < 105) cloneEntry = 1;
