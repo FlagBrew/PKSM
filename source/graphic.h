@@ -31,6 +31,7 @@ Copyright (C) 2016 Bernardo Giordano
 
 #define BLACK RGBA8(0, 0, 0, 255)
 #define RED RGBA8(255, 0, 0, 255)
+#define SHINYRED RGBA8(255, 17, 17, 255)
 #define GREY RGBA8(0xF0, 0xF0, 0xF0, 0xFF)
 #define DARKGREY RGBA8(0x0, 0x0, 0x0, 150)
 #define WHITE RGBA8(255, 255, 255, 255)
