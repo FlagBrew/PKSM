@@ -298,13 +298,14 @@ int main() {
 	
 	GUIElementsSpecify(game);
 	if (game < 6) {
-		while (aptMainLoop() && !(hidKeysDown() & KEY_START)) {
+		while (aptMainLoop()) {
 			hidScanInput();
 			touchPosition touch;
 			hidTouchRead(&touch);
 			
-			if (hidKeysDown() & KEY_X) {
-				save = false;
+			if (hidKeysDown() & KEY_START) {
+				if (!confirmDisp("Save changes?"))
+					save = false;
 				break;
 			}
 
@@ -451,13 +452,14 @@ int main() {
 			mainMenu(currentEntry);
 		}
 	} else {
-		while (aptMainLoop() && !(hidKeysDown() & KEY_START)) {
+		while (aptMainLoop()) {
 			hidScanInput();
 			touchPosition touch;
 			hidTouchRead(&touch);
 			
-			if (hidKeysDown() & KEY_X) {
-				save = false;
+			if (hidKeysDown() & KEY_START) {
+				if (!confirmDisp("Save changes?"))
+					save = false;
 				break;
 			}
 
@@ -499,11 +501,6 @@ int main() {
 	}
 	
 	if (save) {
-		if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS || game == GAME_SUN || game == GAME_MOON) 
-			infoDisp("Save game.");
-		else if (game == GAME_DIAMOND || game == GAME_PEARL || game == GAME_PLATINUM || game == GAME_HG || game == GAME_SS || game == GAME_B1 || game == GAME_W1 || game == GAME_B2 || game == GAME_W2) 
-			infoDisp("Save game. It will take time...");
-
 		if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS || game == GAME_SUN || game == GAME_MOON || game == GAME_B1 || game == GAME_W1 || game == GAME_B2 || game == GAME_W2) 
 			rewriteCHK(mainbuf, game);
 		else if (game == GAME_DIAMOND || game == GAME_PEARL || game == GAME_PLATINUM || game == GAME_HG || game == GAME_SS) 
@@ -521,9 +518,6 @@ int main() {
 		TWLinjectSave(mainbuf, mainSize);
 	
 	free(mainbuf);
-	
-	if (!(save)) 
-		infoDisp("Exit without saving.");
 	
 	exitServices();
 	return 0;

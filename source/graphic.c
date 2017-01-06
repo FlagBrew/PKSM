@@ -415,7 +415,7 @@ void mainMenu(int currentEntry) {
 				sf2d_draw_texture(menuBar, (320 - menuBar->width) / 2, 60 + i * (menuBar->height));
 			sftd_draw_text(fontBold18, (320 - sftd_get_text_width(fontBold18, 18, menu[i])) / 2 - 4, 53 + (menuBar->height - 18) / 2 + i * (menuBar->height), (i == currentEntry) ? DARKBLUE : YELLOW, 18, menu[i]);
 		}
-		printBottomIndications("Press START to save, X to exit.");
+		printBottomIndications("Press START to quit.");
 	sf2d_end_frame();
 	sf2d_swapbuffers();
 }
@@ -435,7 +435,7 @@ void mainMenuDS(int currentEntry) {
 				sf2d_draw_texture(DSBar, (320 - DSBar->width) / 2, 66 + i * (DSBar->height + 16));
 			sftd_draw_text(fontBold18, (320 - sftd_get_text_width(fontBold18, 18, menu[i])) / 2, 67 + (DSBar->height - 18) / 2 + i * (DSBar->height + 16), WHITE, 18, menu[i]);
 		}
-		printBottomIndications("Press START to save, X to exit.");
+		printBottomIndications("Press START to quit.");
 	sf2d_end_frame();
 	sf2d_swapbuffers();
 }
