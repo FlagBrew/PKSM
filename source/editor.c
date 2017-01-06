@@ -446,6 +446,11 @@ u16 getTSV(u8* pkmn) {
 	return (TID ^ SID) >> 4;
 }
 
+u16 getPSV(u8* pkmn) {
+	u32 PID = getPID(pkmn);
+	return ((PID >> 16) ^ (PID & 0xFFFF)) >> 4;
+}
+
 u16 getPokedexNumber(u8* pkmn) {
     u16 pokedexnumber;
     memcpy(&pokedexnumber, &pkmn[0x08], POKEDEXNUMBERLENGTH);

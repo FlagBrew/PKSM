@@ -1028,7 +1028,7 @@ void printElementBlend(u8* pkmn, u16 n, int x, int y) {
 
 void infoViewer(u8* pkmn) {
 	int y_desc = 29;
-	char* entries[] = {"Nickname:", "OT:", "Pokerus:", "Nature", "Ability:", "Item:", "TID:", "SID:", "Friendship:", "Hidden Power:"};
+	char* entries[] = {"Nickname:", "OT:", "Pokerus:", "Nature", "Ability:", "Item:", "TID / SID:", "PSV / TSV:", "Friendship:", "Hidden Power:"};
 	char* values[] = {"HP", "Attack", "Defence", "Sp. Atk", "Sp. Def", "Speed"};
 	
 	printAnimatedBG(true);
@@ -1090,10 +1090,10 @@ void infoViewer(u8* pkmn) {
 		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, friendship), 200, WHITE, 12, friendship);
 		free(friendship);
 		
-		char* otid = (char*)malloc(7 * sizeof(char));
-		snprintf(otid, 7, "%u", getOTID(pkmn));
+		char* otid = (char*)malloc(15 * sizeof(char));
+		snprintf(otid, 15, "%u / %u", getOTID(pkmn), getSOTID(pkmn));
 		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, otid), 160, WHITE, 12, otid);
-		snprintf(otid, 7, "%u", getSOTID(pkmn));
+		snprintf(otid, 15, "%u / %u", getPSV(pkmn), getTSV(pkmn));
 		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, otid), 180, WHITE, 12, otid);
 		free(otid);
 
