@@ -1026,7 +1026,7 @@ void printElementBlend(u8* pkmn, u16 n, int x, int y) {
 		sf2d_draw_texture_blend(item, x + 3, y + 21, RGBA8(0x0, 0x0, 0x0, 100));
 }
 
-void infoViewer(u8* pkmn) {
+void infoViewer(u8* pkmn, int game) {
 	int y_desc = 29;
 	char* entries[] = {"Nickname:", "OT:", "Pokerus:", "Nature", "Ability:", "Item:", "PSV / TSV:", "TID / SID:", "Friendship:", "Hidden Power:"};
 	char* values[] = {"HP", "Attack", "Defence", "Sp. Atk", "Sp. Def", "Speed"};
@@ -1090,10 +1090,10 @@ void infoViewer(u8* pkmn) {
 		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, friendship), 200, WHITE, 12, friendship);
 		free(friendship);
 		
-		char* otid = (char*)malloc(15 * sizeof(char));
-		snprintf(otid, 15, "%u / %u", getPSV(pkmn), getTSV(pkmn));
+		char* otid = (char*)malloc(18 * sizeof(char));
+		snprintf(otid, 18, "%u / %u", getPSV(pkmn), getTSV(pkmn));
 		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, otid), 160, (getPSV(pkmn) == getTSV(pkmn)) ? SHINYRED : WHITE, 12, otid);
-		snprintf(otid, 15, "%u / %u", getOTID(pkmn), getSOTID(pkmn));
+		snprintf(otid, 18, "%lu / %u", (game < 4) ? (u32)getOTID(pkmn) : (((u32)(getSOTID(pkmn) * 65536) + getOTID(pkmn)) % 1000000), getSOTID(pkmn));
 		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, otid), 180, WHITE, 12, otid);
 		free(otid);
 
@@ -1144,7 +1144,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 			}
 			free(temp);
 		} else
-			infoViewer(pkmn);
+			infoViewer(pkmn, game);
 	sf2d_end_frame();
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
@@ -1470,7 +1470,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		if (isSeen) {
-			infoViewer(pkmnbuf);
+			infoViewer(pkmnbuf, game);
 		} else {
 			printAnimatedBG(true);
 			sf2d_draw_texture(bankTop, 34, 5);
