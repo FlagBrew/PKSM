@@ -24,45 +24,6 @@ Copyright (C) 2016 Bernardo Giordano
 
 /* ************************ local variables ************************ */
 
-const int SMWC7FLAGPOS = 0x65C00;
-const int SMWC7POS = 0x65C00 + 0x100;
-const int ORASWC6FLAGPOS = 0x1CC00;
-const int ORASWC6POS = 0x1CD00;
-const int XYWC6FLAGPOS = 0x1BC00;
-const int XYWC6POS = 0x1BD00;
-const int DPPGTFLAGPOS = 0xA6D0;
-const int DPPGTPOS = 0xA7FC;
-const int PTPGTFLAGPOS = 0xB4C0;
-const int PTPGTPOS = 0xB5C0;
-const int HGSSPGTFLAGPOS = 0x9D3C;
-const int HGSSPGTPOS = 0x9E3C;
-const int EONFLAGPOS = 0x319B8;
-const int LANGUAGEPOS = 0x1402D;
-const int MONEYPOS = 0x4208;
-const int BADGEPOS = 0x420C;
-const int TMSTARTPOS = 0xBC0;
-const int OFFSET = 0x5400;
-const int MOVEPOS = 0x5A;
-const int EGGMOVEPOS = 0x6A;
-const int EVPOS = 0x1E;
-const int PIDPOS = 0x18;
-const int IVPOS = 0x74;
-const int OTIDPOS = 0x0C;
-const int SOTIDPOS = 0x0E;
-const int OTNAMELENGTH = 0x17;
-const int OTNAMEPOS = 0xB0;
-const int NICKNAMEPOS = 0x40;
-const int POKEDEXNUMBERPOS = 0x08;
-const int NATUREPOS = 0x1C;
-const int ITEMPOS = 0x0A;
-const int EXPPOINTPOS = 0x10;
-const int ABILITYPOS = 0x14;
-const int ABILITYNUMPOS = 0x15;
-const int GENDERPOS = 0x1D;
-const int POKERUS = 0x11;
-const int PGFSTARTPOS = 0x1C800;
-const int BWSEEDPOS = 0x1D290;
-
 u32 expTable[100][6] = {
   {0, 0, 0, 0, 0, 0},
   {8, 15, 4, 9, 6, 10},
@@ -356,12 +317,12 @@ void rerollPID(u8* pkmn) {
     srand(getPID(pkmn));
     u32 pidbuffer = rand();
 
-    memcpy(&pkmn[PIDPOS], &pidbuffer, PIDLENGTH);
+    memcpy(&pkmn[0x18], &pidbuffer, PIDLENGTH);
 }
 
 bool isEgg(u8* pkmn) {
     u32 eggbuffer;
-    memcpy(&eggbuffer, &pkmn[IVPOS], IVLENGTH);
+    memcpy(&eggbuffer, &pkmn[0x74], IVLENGTH);
     eggbuffer = eggbuffer >> 30;
     eggbuffer = eggbuffer & 0x1;
     if (eggbuffer == 1) return true;
@@ -371,17 +332,15 @@ bool isEgg(u8* pkmn) {
 /* ************************ get ************************ */
 
 u8 getGender(u8* pkmn) { return ((*(u8*)(pkmn + 0x1D)) >> 1) & 0x3; }
-void setGender(u8* pkmn, u8 val) { pkmn[0x1D] = (u8)((pkmn[0x1D] & ~0x06) | (val << 1)); }
 u8 getLanguage(u8* pkmn) { return *(u8*)(pkmn + 0xE3); }
 u8 getAbility(u8* pkmn) { return *(u8*)(pkmn + 0x14); }
 u8 getForm(u8* pkmn) { return ((*(u8*)(pkmn + 0x1D)) >> 3); }
 u16 getItem(u8* pkmn) { return *(u16*)(pkmn + 0x0A); }
-void setBall(u8* pkmn, u8 val) { pkmn[0xDC] = val; }
 u8 getHPType(u8* pkmn) { return 15 * ((getIV(pkmn, 0)& 1) + 2 * (getIV(pkmn, 1) & 1) + 4 * (getIV(pkmn, 2) & 1) + 8 * (getIV(pkmn, 3) & 1) + 16 * (getIV(pkmn, 4) & 1) + 32 * (getIV(pkmn, 5) & 1)) / 63; }
 
 u16 getEggMove(u8 *pkmn, const int nmove) { 
     u16 eggmovebuffer[4];
-    memcpy(&eggmovebuffer, &pkmn[EGGMOVEPOS], EGGMOVELENGTH*4);
+    memcpy(&eggmovebuffer, &pkmn[0x6A], EGGMOVELENGTH*4);
     return eggmovebuffer[nmove];
 }
 
@@ -422,8 +381,8 @@ bool isInfected (u8* pkmn) {
 }
 
 char *getOT(u8* pkmn, char* dst) {
-	u16 src[OTNAMELENGTH];
-	memcpy(src, &pkmn[OTNAMEPOS], OTNAMELENGTH);
+	u16 src[0x17];
+	memcpy(src, &pkmn[0xB0], 0x17);
 	
 	int cnt = 0;
 	while (src[cnt] && cnt < 24) {
@@ -436,7 +395,7 @@ char *getOT(u8* pkmn, char* dst) {
 
 char *getNickname(u8* pkmn, char* dst) {
 	u16 src[NICKNAMELENGTH];
-	memcpy(src, &pkmn[NICKNAMEPOS], NICKNAMELENGTH);
+	memcpy(src, &pkmn[0x40], NICKNAMELENGTH);
 	
 	int cnt = 0;
 	while (src[cnt] && cnt < NICKNAMELENGTH) {
@@ -451,7 +410,7 @@ u8 getLevel(u8* pkmn) {
 	u32 exp;
 	u8 xpType = personal.pkmData[getPokedexNumber(pkmn)][0x15];
 	u8 iterLevel = 1;
-	memcpy(&exp, &pkmn[EXPPOINTPOS], EXPPOINTLENGTH);
+	memcpy(&exp, &pkmn[0x10], EXPPOINTLENGTH);
 
 	while (iterLevel < 100 && exp >= expTable[iterLevel][xpType]) iterLevel++;
 	return iterLevel;
@@ -459,25 +418,25 @@ u8 getLevel(u8* pkmn) {
 
 u16 getMove(u8* pkmn, int nmove) {
     u16 movebuffer[4];
-    memcpy(&movebuffer, &pkmn[MOVEPOS], MOVELENGTH*4);
+    memcpy(&movebuffer, &pkmn[0x5A], MOVELENGTH*4);
     return movebuffer[nmove];
 }
 
 u16 getOTID(u8* pkmn) {
     u16 otidbuffer;
-    memcpy(&otidbuffer, &pkmn[OTIDPOS], OTIDLENGTH);
+    memcpy(&otidbuffer, &pkmn[0x0C], OTIDLENGTH);
     return otidbuffer;
 }
 
 u16 getSOTID(u8* pkmn) {
     u16 sotidbuffer;
-    memcpy(&sotidbuffer, &pkmn[SOTIDPOS], SOTIDLENGTH);
+    memcpy(&sotidbuffer, &pkmn[0x0E], SOTIDLENGTH);
     return sotidbuffer;
 }
 
 u32 getPID(u8* pkmn) {
     u32 pidbuffer;
-    memcpy(&pidbuffer, &pkmn[PIDPOS], PIDLENGTH);
+    memcpy(&pidbuffer, &pkmn[0x18], PIDLENGTH);
     return pidbuffer;
 }
 
@@ -489,7 +448,7 @@ u16 getTSV(u8* pkmn) {
 
 u16 getPokedexNumber(u8* pkmn) {
     u16 pokedexnumber;
-    memcpy(&pokedexnumber, &pkmn[POKEDEXNUMBERPOS], POKEDEXNUMBERLENGTH);
+    memcpy(&pokedexnumber, &pkmn[0x08], POKEDEXNUMBERLENGTH);
     return pokedexnumber;
 }
 
@@ -501,13 +460,13 @@ u8 getFriendship(u8* pkmn) {
 
 u8 getNature(u8* pkmn) {
     u8 nature;
-    memcpy(&nature, &pkmn[NATUREPOS], NATURELENGTH);
+    memcpy(&nature, &pkmn[0x1C], NATURELENGTH);
     return nature;
 }
 
 u8 getEV(u8* pkmn, const int stat) {
     u8 evbuffer[6];
-    memcpy(evbuffer, &pkmn[EVPOS], EVLENGTH * 6);
+    memcpy(evbuffer, &pkmn[0x1E], EVLENGTH * 6);
     return evbuffer[stat];
 }
 
@@ -515,7 +474,7 @@ u8 getIV(u8* pkmn, const int stat) {
     u32 buffer;
     u8 toreturn;
 
-    memcpy(&buffer, &pkmn[IVPOS], IVLENGTH);
+    memcpy(&buffer, &pkmn[0x74], IVLENGTH);
     buffer = buffer >> 5 * stat;
     buffer = buffer & 0x1F;
     memcpy(&toreturn, &buffer, 1);
@@ -550,8 +509,11 @@ u8 getBall(u8* pkmn) {
 /* ************************ set ************************ */
 
 void setItemEditor(u8* pkmn, u16 item) {
-    memcpy(&pkmn[ITEMPOS], &item, ITEMLENGTH);
+    memcpy(&pkmn[0x0A], &item, ITEMLENGTH);
 }
+
+void setGender(u8* pkmn, u8 val) { pkmn[0x1D] = (u8)((pkmn[0x1D] & ~0x06) | (val << 1)); }
+void setBall(u8* pkmn, u8 val) { pkmn[0xDC] = val; }
 
 void setAbility(u8* pkmn, const u8 ability) {
     u16 tempspecies = getPokedexNumber(pkmn);
@@ -563,16 +525,16 @@ void setAbility(u8* pkmn, const u8 ability) {
 	else if (ability == 1) abilitynum = 2;
 	else                   abilitynum = 4;
 	
-	memcpy(&pkmn[ABILITYNUMPOS], &abilitynum, ABILITYNUMLENGTH);
-	memcpy(&pkmn[ABILITYPOS], &personal.pkmData[tempspecies][0x18 + ability], ABILITYLENGTH);
+	memcpy(&pkmn[0x15], &abilitynum, ABILITYNUMLENGTH);
+	memcpy(&pkmn[0x14], &personal.pkmData[tempspecies][0x18 + ability], ABILITYLENGTH);
 }
 
 void setMove(u8* pkmn, const u16 move, const int nmove) {
-    memcpy(&pkmn[MOVEPOS + (MOVELENGTH * nmove)], &move, MOVELENGTH);
+    memcpy(&pkmn[0x5A + (MOVELENGTH * nmove)], &move, MOVELENGTH);
 }
 
 void setEggMove(u8* pkmn, const u16 move, const int nmove) {
-    memcpy(&pkmn[EGGMOVEPOS + (EGGMOVELENGTH * nmove)], &move, EGGMOVELENGTH);
+    memcpy(&pkmn[0x6A + (EGGMOVELENGTH * nmove)], &move, EGGMOVELENGTH);
 }
 
 void setNickname(u8* pkmn, char* nick) {
@@ -582,7 +544,7 @@ void setNickname(u8* pkmn, char* nick) {
     for (u16 i = 0, nicklen = strlen(nick); i < nicklen; i++)
         toinsert[i * 2] = *(nick + i);
 
-    memcpy(&pkmn[NICKNAMEPOS], toinsert, NICKNAMELENGTH);
+    memcpy(&pkmn[0x40], toinsert, NICKNAMELENGTH);
 }
 
 void setOT(u8* pkmn, char* nick) {
@@ -592,11 +554,11 @@ void setOT(u8* pkmn, char* nick) {
     for (u16 i = 0, nicklen = strlen(nick); i < nicklen; i++)
         toinsert[i * 2] = *(nick + i);
 
-    memcpy(&pkmn[OTNAMEPOS], toinsert, NICKNAMELENGTH);
+    memcpy(&pkmn[0xB0], toinsert, NICKNAMELENGTH);
 }
 
 void setNature(u8* pkmn, const u8 nature) {
-    memcpy(&pkmn[NATUREPOS], &nature, NATURELENGTH);
+    memcpy(&pkmn[0x1C], &nature, NATURELENGTH);
 }
 
 void setFriendship(u8* pkmn, const int val) {
@@ -605,7 +567,7 @@ void setFriendship(u8* pkmn, const int val) {
 }
 
 void setEV(u8* pkmn, u8 val, const int stat) {
-    memcpy(&pkmn[EVPOS+(EVLENGTH*stat)], &val, EVLENGTH);
+    memcpy(&pkmn[0x1E + (EVLENGTH*stat)], &val, EVLENGTH);
 }
 
 void setIV(u8* pkmn, u8 val, const int stat) {
@@ -614,11 +576,11 @@ void setIV(u8* pkmn, u8 val, const int stat) {
 	mask ^= 0x1F << (5 * stat);
 
 	u32 buffer;
-	memcpy(&buffer, &pkmn[IVPOS], IVLENGTH);
+	memcpy(&buffer, &pkmn[0x74], IVLENGTH);
 
 	buffer &= mask;
 	buffer ^= ((nval & 0x1F) << (5 * stat));
-	memcpy(&pkmn[IVPOS], &buffer, IVLENGTH);
+	memcpy(&pkmn[0x74], &buffer, IVLENGTH);
 }
 
 void setHPType(u8* pkmn, const int val) {
@@ -659,55 +621,55 @@ void setShiny(u8* pkmn, const bool shiny) {
 
 void setLevel(u8* pkmn, int lv) {
     u32 towrite = expTable[lv - 1][personal.pkmData[getPokedexNumber(pkmn)][0x15]];
-    memcpy(&pkmn[EXPPOINTPOS], &towrite, EXPPOINTLENGTH);
+    memcpy(&pkmn[0x10], &towrite, EXPPOINTLENGTH);
 }
 
 void setWC(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[]) {
 	if (game == GAME_X || game == GAME_Y) {
-		*(mainbuf + XYWC6FLAGPOS + i / 8) |= 0x1 << (i % 8);
-		memcpy((void*)(mainbuf + XYWC6POS + nInjected[0] * WC6LENGTH), (const void*)wcbuf, WC6LENGTH);
+		*(mainbuf + 0x1BC00 + i / 8) |= 0x1 << (i % 8);
+		memcpy((void*)(mainbuf + 0x1BD00 + nInjected[0] * WC6LENGTH), (const void*)wcbuf, WC6LENGTH);
 	}
 
 	if (game == GAME_OR || game == GAME_AS) {
-		*(mainbuf + ORASWC6FLAGPOS + i / 8) |= 0x1 << (i % 8);
-		memcpy((void*)(mainbuf + ORASWC6POS + nInjected[0] * WC6LENGTH), (const void*)wcbuf, WC6LENGTH);
+		*(mainbuf + 0x1CC00 + i / 8) |= 0x1 << (i % 8);
+		memcpy((void*)(mainbuf + 0x1CD00 + nInjected[0] * WC6LENGTH), (const void*)wcbuf, WC6LENGTH);
 
 		if (i == 2048) {
-			*(mainbuf + EONFLAGPOS)     = 0xC2;
-			*(mainbuf + EONFLAGPOS + 1) = 0x73;
-			*(mainbuf + EONFLAGPOS + 2) = 0x5D;
-			*(mainbuf + EONFLAGPOS + 3) = 0x22;
+			*(mainbuf + 0x319B8)     = 0xC2;
+			*(mainbuf + 0x319B8 + 1) = 0x73;
+			*(mainbuf + 0x319B8 + 2) = 0x5D;
+			*(mainbuf + 0x319B8 + 3) = 0x22;
 		}
 	}
 
 	if (game == GAME_SUN || game == GAME_MOON) {
-		*(mainbuf + SMWC7FLAGPOS + i / 8) |= 0x1 << (i % 8);
-		memcpy((void*)(mainbuf + SMWC7POS + nInjected[0] * WC6LENGTH), (const void*)wcbuf, WC6LENGTH);
+		*(mainbuf + 0x65C00 + i / 8) |= 0x1 << (i % 8);
+		memcpy((void*)(mainbuf + 0x65C00 + 0x100 + nInjected[0] * WC6LENGTH), (const void*)wcbuf, WC6LENGTH);
 	}
 
 	if (game == GAME_B1 || game == GAME_W1 || game == GAME_B2 || game == GAME_W2) {
 		u32 seed;
-		memcpy(&seed, &mainbuf[BWSEEDPOS], sizeof(u32));
+		memcpy(&seed, &mainbuf[0x1D290], sizeof(u32));
 
 		//decrypt
 		u16 temp;
 		for (int i = 0; i < 0xA90; i += 2) {
-			memcpy(&temp, &mainbuf[PGFSTARTPOS + i], 2);
+			memcpy(&temp, &mainbuf[0x1C800 + i], 2);
 			temp ^= (LCRNG(seed) >> 16);
 			seed = LCRNG(seed);
-			memcpy(&mainbuf[PGFSTARTPOS + i], &temp, 2);
+			memcpy(&mainbuf[0x1C800 + i], &temp, 2);
 		}
 
-		*(mainbuf + PGFSTARTPOS + i / 8) |= 0x1 << (i & 7);
+		*(mainbuf + 0x1C800 + i / 8) |= 0x1 << (i & 7);
 		memcpy((void*)(mainbuf + 0x1C900 + nInjected[0] * PGFLENGTH), (const void*)wcbuf, PGFLENGTH);
 
 		//encrypt
-		memcpy(&seed, &mainbuf[BWSEEDPOS], sizeof(u32));
+		memcpy(&seed, &mainbuf[0x1D290], sizeof(u32));
 		for (int i = 0; i < 0xA90; i += 2) {
-			memcpy(&temp, &mainbuf[PGFSTARTPOS + i], 2);
+			memcpy(&temp, &mainbuf[0x1C800 + i], 2);
 			temp ^= (LCRNG(seed) >> 16);
 			seed = LCRNG(seed);
-			memcpy(&mainbuf[PGFSTARTPOS + i], &temp, 2);
+			memcpy(&mainbuf[0x1C800 + i], &temp, 2);
 		}
 	}
 
@@ -721,16 +683,16 @@ void setWC(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[]) {
 
 void setWC4(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[], int GBO) {
 	if (game == GAME_HG || game == GAME_SS) {
-		*(mainbuf + HGSSPGTFLAGPOS + GBO + (i >> 3)) |= 0x1 << (i & 7);
-		memcpy((void*)(mainbuf + HGSSPGTPOS + GBO + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
+		*(mainbuf + 0x9D3C + GBO + (i >> 3)) |= 0x1 << (i & 7);
+		memcpy((void*)(mainbuf + 0x9E3C + GBO + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
 	}
 	else if (game == GAME_PLATINUM) {
-		*(mainbuf + PTPGTFLAGPOS + GBO + (i >> 3)) |= 0x1 << (i & 7);
-		memcpy((void*)(mainbuf + PTPGTPOS + GBO + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
+		*(mainbuf + 0xB4C0 + GBO + (i >> 3)) |= 0x1 << (i & 7);
+		memcpy((void*)(mainbuf + 0xB5C0 + GBO + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
 	}
 	else if (game == GAME_DIAMOND || game == GAME_PEARL) {
-		*(mainbuf + DPPGTFLAGPOS + GBO + (i >> 3)) |= 0x1 << (i & 7);
-		memcpy((void*)(mainbuf + DPPGTPOS + GBO + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
+		*(mainbuf + 0xA6D0 + GBO + (i >> 3)) |= 0x1 << (i & 7);
+		memcpy((void*)(mainbuf + 0xA7FC + GBO + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
 	}
 
 	nInjected[0] += 1;
@@ -785,7 +747,7 @@ void setBP(u8* mainbuf, int i, int game) {
 }
 
 void setPokerus(u8* pkmn) {
-	*(pkmn + 0x2B) = POKERUS;
+	*(pkmn + 0x2B) = 0x11;
 }
 
 void setTM(u8* mainbuf, int game) {
@@ -885,11 +847,11 @@ void saveFileEditor(u8* mainbuf, int game) {
 					int start = 0;
 					int wcmax = (game < 4) ? 24 : 48;
 					if (game == GAME_X || game == GAME_Y)
-						start = XYWC6FLAGPOS;
+						start = 0x1BC00;
 					else if (game == GAME_OR || game == GAME_AS)
-						start = ORASWC6FLAGPOS;
+						start = 0x1CC00;
 					else if (game == GAME_SUN || game == GAME_MOON)
-						start = SMWC7FLAGPOS;
+						start = 0x65C00;
 
 					for (int i = 0; i < (0x100 + wcmax * WC6LENGTH); i++)
 						*(mainbuf + start + i) = 0x00;
