@@ -511,6 +511,24 @@ u8 getBall(u8* pkmn) {
     return ballbuffer;
 }
 
+u16 getSaveTID(u8* mainbuf, int game) {
+    u16 buffer;
+    memcpy(&buffer, &mainbuf[(game < 4) ? 0x14000 : 0x01200], 2);
+    return buffer;
+}
+
+u16 getSaveSID(u8* mainbuf, int game) {
+    u16 buffer;
+    memcpy(&buffer, &mainbuf[((game < 4) ? 0x14000 : 0x01200) + 2], 2);
+    return buffer;
+}
+
+u16 getSaveTSV(u8* mainbuf, int game) {
+	u16 TID = getSaveTID(mainbuf, game);
+	u16 SID = getSaveSID(mainbuf, game);
+	return (TID ^ SID) >> 4;
+}
+
 /* ************************ set ************************ */
 
 void setItemEditor(u8* pkmn, u16 item) {

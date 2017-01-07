@@ -77,7 +77,6 @@ void GUIElementsSpecify(int game) {
 		hiddenPowerBG = sfil_load_PNG_file("romfs:/res/Hidden Power BG.png", SF2D_PLACE_RAM);
 		hiddenPowerButton = sfil_load_PNG_file("romfs:/res/Hidden Power Button.png", SF2D_PLACE_RAM);
 		selectBoxButton = sfil_load_PNG_file("romfs:/res/Select Box Button.png", SF2D_PLACE_RAM);
-		selectBoxButton = sfil_load_PNG_file("romfs:/res/Select Box Button.png", SF2D_PLACE_RAM);
 		ballsBG = sfil_load_PNG_file("romfs:/res/BallsBG.png", SF2D_PLACE_RAM);
 		ballButton = sfil_load_PNG_file("romfs:/res/Ball Button.png", SF2D_PLACE_RAM);
 		male = sfil_load_PNG_file("romfs:/res/Male.png", SF2D_PLACE_RAM);
@@ -394,7 +393,7 @@ void gameSelectorMenu(int n) {
 		sf2d_draw_rectangle(60, 68, 32, 32, RGBA8(0, 0, 0, 210));
 		sf2d_draw_rectangle(102, 68, 32, 32, RGBA8(0, 0, 0, 210));
 		sf2d_draw_rectangle(144, 68, 32, 32, RGBA8(0, 0, 0, 210));
-		printBottomIndications("Press A continue, B to exit.");
+		printBottomIndications("Move your DPAD. Press A to continue, B to exit.");
 	sf2d_end_frame();
 	sf2d_swapbuffers();
 }
@@ -1028,7 +1027,7 @@ void printElementBlend(u8* pkmn, u16 n, int x, int y) {
 
 void infoViewer(u8* pkmn, int game) {
 	int y_desc = 29;
-	char* entries[] = {"Nickname:", "OT:", "Pokerus:", "Nature", "Ability:", "Item:", "PSV / TSV:", "TID / SID:", "Friendship:", "Hidden Power:"};
+	char* entries[] = {"Nickname:", "OT:", "Pokerus:", "Nature", "Ability:", "Item:", "PSV / ESV:", "TID / SID:", "Friendship:", "Hidden Power:"};
 	char* values[] = {"HP", "Attack", "Defence", "Sp. Atk", "Sp. Def", "Speed"};
 	
 	printAnimatedBG(true);
@@ -1219,7 +1218,8 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 		} else if (mode == ED_GENERATE) {
 			sf2d_draw_texture(bottomMask, 0, 0);
 			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Generate with A in the top screen.")) / 2, 105, WHITE, 14, "Generate with A in the top screen.");
-		}
+		} else 
+			sftd_draw_textf(fontBold9, 16, 220, WHITE, 9, "TID: %lu / SID: %u / TSV: %u", (game < 4) ? (u32)getSaveTID(mainbuf, game) : (((u32)(getSaveSID(mainbuf, game) * 65536) + getSaveTID(mainbuf, game)) % 1000000), getSaveSID(mainbuf, game), getSaveTSV(mainbuf, game));
 		
 	sf2d_end_frame();
 	sf2d_swapbuffers();
