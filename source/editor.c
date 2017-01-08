@@ -544,6 +544,14 @@ void setItemEditor(u8* pkmn, u16 item) {
 void setGender(u8* pkmn, u8 val) { pkmn[0x1D] = (u8)((pkmn[0x1D] & ~0x06) | (val << 1)); }
 void setBall(u8* pkmn, u8 val) { pkmn[0xDC] = val; }
 
+void setTID(u8* pkmn, u16 tid) {
+    memcpy(&pkmn[0x0C], &tid, 2);
+}
+
+void setSID(u8* pkmn, u16 sid) {
+    memcpy(&pkmn[0x0E], &sid, 2);
+}
+
 void setAbility(u8* pkmn, const u8 ability) {
     u16 tempspecies = getPokedexNumber(pkmn);
     if (getForm(pkmn))
@@ -1031,6 +1039,14 @@ void pokemonEditor(u8* mainbuf, int game) {
 				}
 				
 				if (hidKeysHeld() & KEY_TOUCH) {
+					if (touch.px > 242 && touch.px < 283 && touch.py > 5 && touch.py < 25) {
+						setTID(pkmn, getSaveTID(mainbuf, game));
+						setSID(pkmn, getSaveSID(mainbuf, game));
+						setPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
+						operationDone = true;
+						break;
+					}
+					
 					if (touch.px > 208 && touch.px < 317) {
 						if (touch.py > 42 && touch.py < 69) menuEntry = 0;
 						if (touch.py > 69 && touch.py < 96) menuEntry = 1;

@@ -1210,6 +1210,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 		if (mode == ED_MENU) {
 			sf2d_draw_texture(bottomMask, 0, 0);
 			sf2d_draw_texture(bottomPopUp, 1, 214);
+			sf2d_draw_texture(includeInfoButton, 242, 5);
 			sftd_draw_textf(fontBold11, 8, 220, WHITE, 11, "%s has been selected.", (char*)personal.species[getPokedexNumber(tmp)]);
 			for (int i = 0; i < 5; i++) {
 				sf2d_draw_texture(button, 208, 42 + i * 27);
@@ -1669,7 +1670,7 @@ void printSettings(int box, bool speedy) {
 		sftd_draw_text(fontBold11, 189 + (36 - (sftd_get_text_width(fontBold11, 11, size))) / 2, 68, WHITE, 11, size);
 		free(size);
 		
-		sftd_draw_textf(fontBold9, 40, 225, LIGHTBLUE, 9, "Tap the number to change size. Speed (L/R): %s", speedy ? "FAST" : "SLOW");
+		sftd_draw_textf(fontBold9, 35, 225, LIGHTBLUE, 9, "Tap the number to change size. Speed (L/R): %s", speedy ? "FAST" : "SLOW");
 	sf2d_end_frame();
 	sf2d_swapbuffers();
 }

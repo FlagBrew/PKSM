@@ -131,6 +131,8 @@ void setMove(u8* pkmn, const u16 move, const int nmove);
 void setEggMove(u8* pkmn, const u16 move, const int nmove);
 void setItemEditor(u8* pkmn, u16 item);
 void setBall(u8* pkmn, u8 val);
+void setSID(u8* pkmn, u16 sid);
+void setTID(u8* pkmn, u16 tid);
 
 void saveFileEditor(u8* mainbuf, int game);
 void pokemonEditor(u8* mainbuf, int game);
