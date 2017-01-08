@@ -463,6 +463,12 @@ u8 getFriendship(u8* pkmn) {
     return friendship;
 }
 
+u8 getOTFriendship(u8* pkmn) {
+    u8 friendship;
+    memcpy(&friendship, &pkmn[0xCA], 1);
+    return friendship;
+}
+
 u8 getNature(u8* pkmn) {
     u8 nature;
     memcpy(&nature, &pkmn[0x1C], NATURELENGTH);
@@ -1617,8 +1623,8 @@ void pokemonEditor(u8* mainbuf, int game) {
 						}
 						case 3 : {
 							if (!isTeam) {
-								int genEntry = ((int)getPokedexNumber(pkmn) - 1) % 16;
-								int page = ((int)getPokedexNumber(pkmn) - 1) / 16, maxpages = 50;
+								int genEntry = ((int)getPokedexNumber(pkmn) - 1) % 40;
+								int page = ((int)getPokedexNumber(pkmn) - 1) / 40, maxpages = 20;
 								
 								while (aptMainLoop()) {
 									hidScanInput();
@@ -1637,26 +1643,26 @@ void pokemonEditor(u8* mainbuf, int game) {
 									
 									if (hidKeysDown() & KEY_DLEFT) {
 										if (genEntry > 0) genEntry--;
-										else if (genEntry == 0) genEntry = 15;
+										else if (genEntry == 0) genEntry = 39;
 									}
 									
 									if (hidKeysDown() & KEY_DRIGHT) {
-										if (genEntry < 15) genEntry++;
-										else if (genEntry == 15) genEntry = 0;
+										if (genEntry < 39) genEntry++;
+										else if (genEntry == 39) genEntry = 0;
 									}
 									
 									if (hidKeysDown() & KEY_DUP) {
-										if (genEntry <= 3)	{
+										if (genEntry <= 7)	{
 											page--;
 											if (page < 0) 
 												page = maxpages - 1;
 										}
-										else if (genEntry >= 4) genEntry -= 4;
+										else if (genEntry >= 8) genEntry -= 8;
 									}
 									
 									if (hidKeysDown() & KEY_DOWN) {
-										if (genEntry <= 11) genEntry += 4;
-										else if (genEntry >= 12) {
+										if (genEntry <= 31) genEntry += 8;
+										else if (genEntry >= 32) {
 											page++;
 											if (page > maxpages - 1)
 												page = 0;
@@ -1673,7 +1679,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 											rewind(fptr);
 											fread(livingbuf, size, 1, fptr);
 											fclose(fptr);
-											memcpy(&mainbuf[getPkmnAddress((isTeam)? 33 : box, currentEntry, game)], &livingbuf[(page * 16 + genEntry) * 232], 232);
+											memcpy(&mainbuf[getPkmnAddress((isTeam)? 33 : box, currentEntry, game)], &livingbuf[(page * 40 + genEntry) * 232], 232);
 											free(livingbuf);
 											operationDone = true;
 										}
@@ -1694,7 +1700,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 			}
 			if (!getPokedexNumber(pkmn) && !isTeam) {
 				int genEntry = 0;
-				int page = 0, maxpages = 50;
+				int page = 0, maxpages = 20;
 				
 				while (aptMainLoop()) {
 					hidScanInput();
@@ -1713,26 +1719,26 @@ void pokemonEditor(u8* mainbuf, int game) {
 					
 					if (hidKeysDown() & KEY_DLEFT) {
 						if (genEntry > 0) genEntry--;
-						else if (genEntry == 0) genEntry = 15;
+						else if (genEntry == 0) genEntry = 39;
 					}
 					
 					if (hidKeysDown() & KEY_DRIGHT) {
-						if (genEntry < 15) genEntry++;
-						else if (genEntry == 15) genEntry = 0;
+						if (genEntry < 39) genEntry++;
+						else if (genEntry == 39) genEntry = 0;
 					}
 					
 					if (hidKeysDown() & KEY_DUP) {
-						if (genEntry <= 3)	{
+						if (genEntry <= 7)	{
 							page--;
 							if (page < 0) 
 								page = maxpages - 1;
 						}
-						else if (genEntry >= 4) genEntry -= 4;
+						else if (genEntry >= 8) genEntry -= 8;
 					}
 					
 					if (hidKeysDown() & KEY_DOWN) {
-						if (genEntry <= 11) genEntry += 4;
-						else if (genEntry >= 12) {
+						if (genEntry <= 31) genEntry += 8;
+						else if (genEntry >= 32) {
 							page++;
 							if (page > maxpages - 1)
 								page = 0;
@@ -1749,7 +1755,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 							rewind(fptr);
 							fread(livingbuf, size, 1, fptr);
 							fclose(fptr);
-							memcpy(&mainbuf[getPkmnAddress((isTeam)? 33 : box, currentEntry, game)], &livingbuf[(page * 16 + genEntry) * 232], 232);
+							memcpy(&mainbuf[getPkmnAddress((isTeam)? 33 : box, currentEntry, game)], &livingbuf[(page * 40 + genEntry) * 232], 232);
 							free(livingbuf);
 							operationDone = true;
 						}

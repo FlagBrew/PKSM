@@ -55,7 +55,6 @@ int confirmDisp(char* message);
 void freezeMsg(char* message);
 void progressBar(char* message, u32 pagesize, u32 sz);
 void autoupdaterMenu();
-void printPSDates();
 void printCredits();
 void printTitle(const char* title);
 void gameSelectorMenu(int n);
@@ -74,7 +73,5 @@ void printPKViewer(u8* mainbuf, u8* pkmn, bool isTeam, int game, int currentEntr
 void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEntry, int saveBox, int bankBox, bool isBufferized, bool isSeen);
 void printMassInjector(int currentEntry);
 void printElement(u8* pkmn, u16 n, int x, int y);
-void printMoves(u8* pkmn, int currentEntry, int entryBottom, int page);
-void printItems(u8* pkmn, int currentEntry, int page);
 void printSettings(int box, bool speedy);
 void infoViewer(u8* pkmn, int game);

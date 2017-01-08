@@ -82,6 +82,7 @@ u16 getPokedexNumber(u8* pkmn);
 u8 getNature(u8* pkmn);
 u8 getEV(u8* pkmn, const int stat);
 u8 getFriendship(u8* pkmn);
+u8 getOTFriendship(u8* pkmn);
 u8 getIV(u8* pkmn, const int stat);
 u16 getOTID(u8* pkmn);
 u16 getSOTID(u8* pkmn);

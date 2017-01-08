@@ -29,20 +29,20 @@ Copyright (C) 2016 Bernardo Giordano
 #include "graphic.h"
 
 void loadLines(u8 *src, u8 *dst, u8 strlen,  u32 size) {
-  u16 	readnum = 3;
-  u16 	line = 0, chr; 
+	u16 readnum = 3;
+	u16 line = 0, chr; 
 
-  while (readnum < size) {
-    chr = 0;
-    while (readnum < size && src[readnum] != '\n') {
-      dst[line * strlen + chr] = src[readnum];
-      readnum++;
-      chr++;
-    }
-    dst[line * strlen + chr] = 0;
-    readnum++;
-    line++;
-  }
+	while (readnum < size) {
+		chr = 0;
+		while (readnum < size && src[readnum] != '\n') {
+		  dst[line * strlen + chr] = src[readnum];
+		  readnum++;
+		  chr++;
+		}
+		dst[line * strlen + chr] = 0;
+		readnum++;
+		line++;
+	}
 }
 
 bool checkFile(char* path) {
