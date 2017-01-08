@@ -56,7 +56,7 @@ char* url[] = { "https://raw.githubusercontent.com/dsoldier/PKResources/master/a
 				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/editor_bottom.png",
 				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/pokemon_icons_spritesheet.png",
 				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/types_sheet.png",
-				"https://raw.githubusercontent.com/gocario/PKBrew/master/pk/data/en/species_en.txt",
+				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/species_en.txt",
 };
 		
 void exitServices() {

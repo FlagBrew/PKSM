@@ -1,12 +1,12 @@
-# ![pksm](assets/bannersite.png) ![pksm](assets/banner.png)
+![pksm](assets/banner.png)
 
-**Editor**, **wondercard injector** and **offline homebrew bank**. 
+**Editor**, **wondercard injector** and **offline extra storage**.
+
+If you want a non-invasive homebrew to see your save's infos, check out [**PKSV**](https://github.com/BernardoGiordano/PKSV)
 
 ## Installation
 
-**If you already installed the 4.0.0alpha**: remove your ` /3ds/data/PKSM/additionalassets/ ` folder before installing, in order to avoid edge-case graphic glitches.
-
-Download and install the latest release (4.0.0) with your favourite installation method. When booted, the application will download automatically the required additional assets from a third party source. You can provide your own assets, if you want.
+Download and install the latest release (4.0.1) with your favourite installation method. When booted, the application will download automatically the required additional assets from a third party source. You can provide your own assets, if you want.
 
 If you're using Homebrew Launcher, make sure you have it updated to the [latest version](https://smealum.github.io/ninjhax2/starter.zip).
 
@@ -24,7 +24,6 @@ You need devKitPro, ctrulib, sf2d, sfil, sftd and Xerpi's portlibs to be able to
 ![pksm](resources/07.png) ![pksm](resources/08.png)
 ![pksm](resources/09.png) ![pksm](resources/10.png)
 ![pksm](resources/11.png) ![pksm](resources/12.png)
-![pksm](resources/13.png)
  
 ## Credits
 

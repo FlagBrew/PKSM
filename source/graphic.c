@@ -1198,7 +1198,6 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 			}
 			y += 45;
 		}
-		
 		if (mode != ED_CLONE)
 			sf2d_draw_texture(selector, pointer[0], pointer[1] - ((mode == ED_STANDARD) ? movementOffsetSlow(3) : 0));
 		else {
@@ -1221,9 +1220,8 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 		} else if (mode == ED_GENERATE) {
 			sf2d_draw_texture(bottomMask, 0, 0);
 			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Generate with A in the top screen.")) / 2, 105, WHITE, 14, "Generate with A in the top screen.");
-		} else 
-			sftd_draw_textf(fontBold9, 16, 220, WHITE, 9, "TID: %lu / SID: %u / TSV: %u", (game < 4) ? (u32)getSaveTID(mainbuf, game) : (((u32)(getSaveSID(mainbuf, game) * 65536) + getSaveTID(mainbuf, game)) % 1000000), getSaveSID(mainbuf, game), getSaveTSV(mainbuf, game));
-		
+		} else if (mode != ED_CLONE)
+			sftd_draw_textf(fontBold9, 16, 220, WHITE, 9, "TID: %lu / SID: %u / TSV: %u", (game < 4) ? (u32)getSaveTID(mainbuf, game) : (((u32)(getSaveSID(mainbuf, game) * 65536) + getSaveTID(mainbuf, game)) % 1000000), getSaveSID(mainbuf, game), getSaveTSV(mainbuf, game));	
 	sf2d_end_frame();
 	sf2d_swapbuffers();
 	

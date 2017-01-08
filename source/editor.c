@@ -1042,6 +1042,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 					if (touch.px > 242 && touch.px < 283 && touch.py > 5 && touch.py < 25) {
 						setTID(pkmn, getSaveTID(mainbuf, game));
 						setSID(pkmn, getSaveSID(mainbuf, game));
+						memcpy(&pkmn[0xE3], &mainbuf[(game < 4) ? 0x1402D : 0x1235], 1);
 						setPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
 						operationDone = true;
 						break;
@@ -1615,8 +1616,8 @@ void pokemonEditor(u8* mainbuf, int game) {
 										if (touch.px > 266 && touch.px < 317 && touch.py > 150 && touch.py < 195) cloneEntry = 5;				
 									}
 								}
-								if (hidKeysDown() & KEY_A) {
-									setPkmn(mainbuf, (isTeam) ? 33 : box, cloneEntry, pkmn, game);
+								if ((hidKeysDown() & KEY_A) && !isTeam) {
+									setPkmn(mainbuf, box, cloneEntry, pkmn, game);
 									operationDone = true;
 									currentEntry = cloneEntry;
 									break;
