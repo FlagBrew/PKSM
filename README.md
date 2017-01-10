@@ -65,3 +65,7 @@ Copyright (C) 2016 Bernardo Giordano
 >    You should have received a copy of the GNU General Public License
 >    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 >    See LICENSE for information.
+
+---
+
+**If you appreciate my work, I appreciate [a coffee](https://www.paypal.me/BernardoGiordano) :)** 
