@@ -21,5 +21,31 @@ Copyright (C) 2016 Bernardo Giordano
 
 #include <stdlib.h>
 #include <3ds.h>
+#include <malloc.h>
+#include <errno.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <string.h>
+#include <netinet/in.h>
 
+#define PAYLOADSIZE 	232
+#define SOC_ALIGN       0x1000
+#define SOC_BUFFERSIZE  0x100000
+
+typedef struct {
+	u8					running;
+	struct sockaddr_in	client_addr;
+	struct sockaddr_in	server_addr;
+	u32					client_length;
+	s32					server_id;
+	s32					client_id;
+} http_server;
+
+void shutDownSoc();
+void closeOnExit();
+int init();
+int	processing(u8* mainbuf, int game, int box, int index);
 Result downloadFile(char* url, char* path, bool install);

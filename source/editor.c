@@ -17,6 +17,7 @@ Copyright (C) 2016 Bernardo Giordano
 
 #include <3ds.h>
 #include <string.h>
+#include "http.h"
 #include "graphic.h"
 #include "editor.h"
 #include "util.h"
@@ -1013,6 +1014,17 @@ void pokemonEditor(u8* mainbuf, int game) {
 				if (touch.px > 214 && touch.px < 265 && touch.py > 130 && touch.py < 175) currentEntry = 4;
 				if (touch.px > 266 && touch.px < 317 && touch.py > 150 && touch.py < 195) currentEntry = 5;				
 			}
+		}
+		
+		if ((hidKeysDown() & KEY_Y) && !isTeam) {
+			if (!init())
+				break;
+			do {
+				hidScanInput();
+				if (hidKeysDown() & KEY_B)
+					break;
+			} while (aptMainLoop() && processing(mainbuf, game, box, currentEntry));
+			shutDownSoc();
 		}
 		
 		if (hidKeysDown() & KEY_A) {

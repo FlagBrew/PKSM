@@ -21,10 +21,105 @@ Copyright (C) 2016 Bernardo Giordano
 #include <stdio.h>
 #include <string.h>
 #include <3ds.h>
+#include "editor.h"
 #include "http.h"
 #include "graphic.h"
 #include "certs/cybertrust.h"
 #include "certs/digicert.h"
+
+static u32			*socket_buffer = NULL;
+static http_server	data;
+http_server			*app_data = &data;
+static char			payload[PAYLOADSIZE];
+
+void shutDownSoc() {
+	close(data.server_id);
+	socExit();
+}
+
+void closeOnExit() {
+	if (app_data->server_id > 0) 
+		close(app_data->server_id);
+	if (app_data->client_id > 0) 
+		close(app_data->client_id);	
+}
+
+int init() {
+	socket_buffer = (u32*)memalign(SOC_ALIGN, SOC_BUFFERSIZE);
+	if (socket_buffer == NULL) {
+		infoDisp("Buffer allocation failed!");
+		closeOnExit();
+		return 0;
+	}
+	if (socInit(socket_buffer, SOC_BUFFERSIZE)) {
+		infoDisp("socInit failed!");
+		closeOnExit();
+		return 0;
+	}
+	
+	// Make sure the struct is clear
+	memset(&data, 0, sizeof(data));
+	data.client_id = -1;
+	data.server_id = -1;
+	data.server_id = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
+
+	// Is socket accessible?
+	if (data.server_id < 0) {
+		infoDisp("Socket unaccesible!");
+		closeOnExit();
+		return 0;
+	}
+	
+	data.server_addr.sin_family = AF_INET;
+	data.server_addr.sin_port = htons(8081);
+	data.server_addr.sin_addr.s_addr = gethostid();
+	data.client_length = sizeof(data.client_addr);
+	
+	if (bind(data.server_id, (struct sockaddr *) &data.server_addr, sizeof(data.server_addr))) {
+		close(data.server_id);
+		infoDisp("Binding failed!");
+		closeOnExit();
+		return 0;
+	}
+	
+	// Set socket non blocking so we can still read input to exit
+	fcntl(data.server_id, F_SETFL, fcntl(data.server_id, F_GETFL, 0) | O_NONBLOCK);
+
+	if (listen(data.server_id, 5)) {
+		infoDisp("Listening failed!");
+		closeOnExit();
+		return 0;		
+	}
+	data.running = 1;
+	return 1;
+}
+
+int	processing(u8* mainbuf, int game, int box, int index) {
+	data.client_id = accept(data.server_id, (struct sockaddr *) &data.client_addr, &data.client_length);
+	if (data.client_id < 0 && errno != EAGAIN) {
+		infoDisp("Error during processing phase!");
+		closeOnExit();
+		return 0;		
+	} else {
+		char dummy[PAYLOADSIZE];
+		memset(dummy, 0, PAYLOADSIZE);
+		memset(payload, 0, PAYLOADSIZE);
+		// set client socket to blocking to simplify sending data back
+		fcntl(data.client_id, F_SETFL, fcntl(data.client_id, F_GETFL, 0) & ~O_NONBLOCK);
+
+		recv(data.client_id, payload, PAYLOADSIZE, 0);
+		if (memcmp(dummy, payload, PAYLOADSIZE)) {
+			u8 pkmn[PKMNLENGTH];
+			memcpy(pkmn, payload, PKMNLENGTH);
+			setPkmn(mainbuf, box, index, pkmn, game);
+			data.running = 0;
+		}
+
+		close(data.client_id);
+		data.client_id = -1;
+	}
+	return data.running;
+}
 
 Result downloadFile(char* url, char* path, bool install) {
     httpcInit(0);
