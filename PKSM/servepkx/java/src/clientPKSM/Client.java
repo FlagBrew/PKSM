@@ -13,6 +13,11 @@ public class Client {
 	private int port;
 	private String host;
 
+	public Client(String host){
+		this.host=host;
+		this.port=9000;
+	}
+	
 	public Client(String host, int port) {
 		this.port = port;
 		this.host = host;
