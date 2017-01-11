@@ -10,7 +10,7 @@ jar file works when PKSM's server is actually running.
 
 ### Usage (GUI)
 
-Start the server on PKSM and enter the 3DS' IP address and the port number (optional) in servepkx. The default port nr. is 8081.
+Start the server on PKSM and enter the 3DS' IP address and the port number (optional) in servepkx. The default port nr. is 9000.
 
 Press "Confirm host and port", then press "Select .pk6/.pk7 files" and select your files.
 
