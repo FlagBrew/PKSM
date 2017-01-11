@@ -34,7 +34,7 @@ http_server			*app_data = &data;
 static char			payload[PAYLOADSIZE];
 
 void drawIP(sftd_font *fontBold9) {
-	sftd_draw_textf(fontBold9, 16, 220, WHITE, 9, "Server running at http://%s:8081", inet_ntoa(data.server_addr.sin_addr));	
+	sftd_draw_textf(fontBold9, 16, 220, WHITE, 9, "Server running at http://%s:9000", inet_ntoa(data.server_addr.sin_addr));	
 }
 
 void shutDownSoc() {
@@ -76,7 +76,7 @@ int init() {
 	}
 	
 	data.server_addr.sin_family = AF_INET;
-	data.server_addr.sin_port = htons(8081);
+	data.server_addr.sin_port = htons(9000);
 	data.server_addr.sin_addr.s_addr = gethostid();
 	data.client_length = sizeof(data.client_addr);
 	

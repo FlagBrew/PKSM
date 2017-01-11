@@ -13,11 +13,6 @@ public class Client {
 	private int port;
 	private String host;
 
-	public Client(String host) {
-		this.port = 8081;
-		this.host = host;
-	}
-
 	public Client(String host, int port) {
 		this.port = port;
 		this.host = host;
@@ -32,11 +27,9 @@ public class Client {
 
 			InputStream in = new FileInputStream(PKM);
 			OutputStream out = socket.getOutputStream();
-			//System.out.println("Connection created! Sending "+PKM.getAbsolutePath()+"...");
 			while ((count = in.read(buffer)) > 0) {
 				out.write(buffer, 0, count);
 			}
-			//System.out.println(PKM.getAbsolutePath()+" sent successfully!");
 			out.close();
 			in.close();
 			socket.close();

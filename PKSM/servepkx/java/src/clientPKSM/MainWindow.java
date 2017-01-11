@@ -86,7 +86,7 @@ public class MainWindow {
 				} else {
 					host = txtHost.getText();
 					if (txtPort.getText().isEmpty()) {
-						port = 8081;
+						port = 9000;
 					} else {
 						port = Integer.parseInt(txtPort.getText());
 					}
