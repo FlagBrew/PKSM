@@ -49,5 +49,5 @@ void drawIP(sftd_font *fontBold9);
 void shutDownSoc();
 void closeOnExit();
 int init();
-int	processing(u8* mainbuf, int game, int box, int index);
+void processing(u8* mainbuf, int game, int tempVett[]);
 Result downloadFile(char* url, char* path, bool install);

@@ -94,16 +94,15 @@ int init() {
 		closeOnExit();
 		return 0;		
 	}
-	data.running = 1;
 	return 1;
 }
 
-int	processing(u8* mainbuf, int game, int box, int index) {
+void processing(u8* mainbuf, int game, int tempVett[]) {
 	data.client_id = accept(data.server_id, (struct sockaddr *) &data.client_addr, &data.client_length);
 	if (data.client_id < 0 && errno != EAGAIN) {
 		infoDisp("Error during processing phase!");
 		closeOnExit();
-		return 0;		
+		return;		
 	} else {
 		char dummy[PAYLOADSIZE];
 		memset(dummy, 0, PAYLOADSIZE);
@@ -115,14 +114,25 @@ int	processing(u8* mainbuf, int game, int box, int index) {
 		if (memcmp(dummy, payload, PAYLOADSIZE)) {
 			u8 pkmn[PKMNLENGTH];
 			memcpy(pkmn, payload, PKMNLENGTH);
-			setPkmn(mainbuf, box, index, pkmn, game);
-			data.running = 0;
+			setPkmn(mainbuf, tempVett[0], tempVett[1], pkmn, game);
+			
+			do {
+				tempVett[1]++;
+				if (tempVett[1] == 30) {
+					tempVett[0]++;
+					tempVett[1] = 0;
+				}
+				int boxmax = (game < 4) ? 30 : 31;
+				if (tempVett[0] > boxmax)
+					tempVett[0] = 0;
+				
+				getPkmn(mainbuf, tempVett[0], tempVett[1], pkmn, game);
+			} while (!(getPokedexNumber(pkmn)));
 		}
 
 		close(data.client_id);
 		data.client_id = -1;
 	}
-	return data.running;
 }
 
 Result downloadFile(char* url, char* path, bool install) {

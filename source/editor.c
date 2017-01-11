@@ -1019,14 +1019,39 @@ void pokemonEditor(u8* mainbuf, int game) {
 		if (((hidKeysDown() & KEY_Y) || ((hidKeysDown() & KEY_TOUCH) && touch.px > 244 && touch.px < 280 && touch.py > 210 && touch.py < 240)) && !isTeam) {
 			if (!init())
 				break;
+			
+			// work in temporary variable
+			int tempVett[2]; // box, currentEntry
+			tempVett[0] = box;
+			tempVett[1] = currentEntry;
+			
 			do {
 				hidScanInput();
 				if (hidKeysDown() & KEY_B) 
 					break;
-			
-				printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_OTA, speedy, 0, 0);	
-			} while (aptMainLoop() && processing(mainbuf, game, box, currentEntry));
+				
+				if (hidKeysDown() & KEY_R) {
+					if (tempVett[0] < boxmax) 
+						tempVett[0]++;
+					else if (tempVett[0] == boxmax) 
+						tempVett[0] = 0;
+				}
+
+				if (hidKeysDown() & KEY_L) {
+					if (tempVett[0] > 0) 
+						tempVett[0]--;
+					else if (tempVett[0] == 0) 
+						tempVett[0] = boxmax;
+				}
+		
+				processing(mainbuf, game, tempVett);
+				printPKViewer(mainbuf, pkmn, isTeam, game, tempVett[1], menuEntry, tempVett[0], ED_OTA, speedy, 0, 0);	
+			} while (aptMainLoop());
 			shutDownSoc();
+			
+			//swap
+			box = tempVett[0];
+			currentEntry = tempVett[1];
 		}
 		
 		if (hidKeysDown() & KEY_A) {
