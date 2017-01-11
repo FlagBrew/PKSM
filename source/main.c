@@ -409,13 +409,13 @@ int main() {
 							}
 							
 							if (hidKeysDown() & KEY_DUP) {
-								if (option == 0) option = 3;
+								if (option == 0) option = 2;
 								else if (option > 0) option--;
 							}
 
 							if (hidKeysDown() & KEY_DDOWN) {
-								if (option == 3) option = 0;
-								else if (option < 3) option++;
+								if (option == 2) option = 0;
+								else if (option < 2) option++;
 							}
 							
 							if ((hidKeysDown() & KEY_A) || touchPressed) {
