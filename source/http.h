@@ -30,6 +30,7 @@ Copyright (C) 2016 Bernardo Giordano
 #include <arpa/inet.h>
 #include <string.h>
 #include <netinet/in.h>
+#include "graphic.h"
 
 #define PAYLOADSIZE 	232
 #define SOC_ALIGN       0x1000
@@ -44,6 +45,7 @@ typedef struct {
 	s32					client_id;
 } http_server;
 
+void drawIP(sftd_font *fontBold9);
 void shutDownSoc();
 void closeOnExit();
 int init();

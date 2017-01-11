@@ -1016,13 +1016,15 @@ void pokemonEditor(u8* mainbuf, int game) {
 			}
 		}
 		
-		if ((hidKeysDown() & KEY_Y) && !isTeam) {
+		if (((hidKeysDown() & KEY_Y) || ((hidKeysDown() & KEY_TOUCH) && touch.px > 244 && touch.px < 280 && touch.py > 210 && touch.py < 240)) && !isTeam) {
 			if (!init())
 				break;
 			do {
 				hidScanInput();
-				if (hidKeysDown() & KEY_B)
+				if (hidKeysDown() & KEY_B) 
 					break;
+			
+				printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_OTA, speedy, 0, 0);	
 			} while (aptMainLoop() && processing(mainbuf, game, box, currentEntry));
 			shutDownSoc();
 		}

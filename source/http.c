@@ -32,6 +32,10 @@ static http_server	data;
 http_server			*app_data = &data;
 static char			payload[PAYLOADSIZE];
 
+void drawIP(sftd_font *fontBold9) {
+	sftd_draw_textf(fontBold9, 16, 220, WHITE, 9, "Server running at http://%s:8081", inet_ntoa(data.server_addr.sin_addr));	
+}
+
 void shutDownSoc() {
 	close(data.server_id);
 	socExit();

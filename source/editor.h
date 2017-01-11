@@ -47,6 +47,7 @@ Copyright (C) 2016 Bernardo Giordano
 #define ED_MENU 1
 #define ED_CLONE 2
 #define ED_GENERATE 3
+#define ED_OTA 4
 
 #define ED_BASE 0
 #define ED_STATS 1
