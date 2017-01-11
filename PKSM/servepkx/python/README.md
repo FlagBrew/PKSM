@@ -16,7 +16,7 @@ python servepkx.py [console ip address] [path1] [path2] ...
 
 ### Usage (batch)
 
-Edit your `servepkx.bat` file with a notepad to replace your console IP address.
+**Edit** your `servepkx.bat` file with a notepad **to replace your console IP address**.
 
 Then, drag&drop files on `servepkx.bat` while PKSM's server is running.
 
