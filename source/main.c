@@ -282,16 +282,15 @@ int main() {
 		}
 	}
 	
-	char *bakpath = (char*)malloc(80 * sizeof(char));
-	
+	char *bakpath = (char*)malloc(100 * sizeof(char));
 	time_t unixTime = time(NULL);
 	struct tm* timeStruct = gmtime((const time_t *)&unixTime);		
-	snprintf(bakpath, 80, "/3ds/data/PKSM/backup/main_%s_%i%i%i%02i%02i%02i", gamesList[game], timeStruct->tm_mday, timeStruct->tm_mon + 1, timeStruct->tm_year + 1900, timeStruct->tm_hour, timeStruct->tm_min, timeStruct->tm_sec);
-	
-	FILE *f = fopen(bakpath, "wb");
+	snprintf(bakpath, 100, "sdmc:/3ds/data/PKSM/backup/%s_%02i%02i%02i%02i%02i%02i", gamesList[game], timeStruct->tm_year + 1900, timeStruct->tm_mon + 1, timeStruct->tm_mday, timeStruct->tm_hour, timeStruct->tm_min, timeStruct->tm_sec);
+	mkdir(bakpath, 0777);
+	chdir(bakpath);
+	FILE *f = fopen("main", "wb");
 	fwrite(mainbuf, 1, mainSize, f);
 	fclose(f);
-	
 	free(bakpath);
 	
 	bool touchPressed = false;

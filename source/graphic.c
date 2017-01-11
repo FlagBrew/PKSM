@@ -502,7 +502,7 @@ void printCredits() {
 
 		sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 			sf2d_draw_texture(mainMenuBottom, 0, 0);
-			sftd_draw_text(fontBold9, 20, 35, LIGHTBLUE, 9, (char*)buf);
+			sftd_draw_text(fontBold9, 20, 30, LIGHTBLUE, 9, (char*)buf);
 			printBottomIndications("Press B to return.");
 		sf2d_end_frame();
 		sf2d_swapbuffers();
