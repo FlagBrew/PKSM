@@ -536,6 +536,12 @@ u16 getSaveTSV(u8* mainbuf, int game) {
 	return (TID ^ SID) >> 4;
 }
 
+u32 getSaveSeed(u8* mainbuf, int game, int index) {
+    u32 buffer;
+    memcpy(&buffer, &mainbuf[((game < 4) ? 0 : 0x6B5DC) + index * 0x4], 4);
+    return buffer;
+} 
+
 /* ************************ set ************************ */
 
 void setItemEditor(u8* pkmn, u16 item) {
@@ -906,6 +912,7 @@ void saveFileEditor(u8* mainbuf, int game) {
 void pokemonEditor(u8* mainbuf, int game) {
 	int lookup[] = {0, 1, 2, 4, 5, 3};
 	
+	int modeFlag = ED_STANDARD;
 	bool isTeam = false;
 	bool speedy = false;
 	int box = 0;
@@ -960,6 +967,14 @@ void pokemonEditor(u8* mainbuf, int game) {
 				else if (box == boxmax) 
 					box = 0;
 			}
+			
+			if (touch.px > 0 && touch.px < 210 && touch.py > 210 && touch.py < 240) {
+				if (modeFlag == ED_STANDARD)
+					modeFlag = ED_SEED;
+				else 
+					modeFlag = ED_STANDARD;
+			}
+			
 			if (touch.px > 280 && touch.px < 318 && touch.py > 210 && touch.py < 240) 
 				break;
 		} 
@@ -1823,7 +1838,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 				}
 			}
 		}
-		printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_STANDARD, speedy, 0, 0);
+		printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, modeFlag, speedy, 0, 0);
 	}
 	free(pkmn);
 }

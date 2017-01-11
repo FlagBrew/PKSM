@@ -26,7 +26,7 @@ Copyright (C) 2016 Bernardo Giordano
 
 #define V1 4
 #define V2 0
-#define V3 1
+#define V3 2
 
 #define DAY 12
 #define MONTH 9

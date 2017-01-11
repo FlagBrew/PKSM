@@ -48,6 +48,7 @@ Copyright (C) 2016 Bernardo Giordano
 #define ED_CLONE 2
 #define ED_GENERATE 3
 #define ED_OTA 4
+#define ED_SEED 5
 
 #define ED_BASE 0
 #define ED_STATS 1
@@ -106,6 +107,7 @@ u16 getPSV(u8* pkmn);
 u16 getSaveTID(u8* mainbuf, int game);
 u16 getSaveSID(u8* mainbuf, int game);
 u16 getSaveTSV(u8* mainbuf, int game);
+u32 getSaveSeed(u8* mainbuf, int game, int index);
 
 u32 getMoney(u8* mainbuf, int game);
 u16 getBP(u8* mainbuf, int game);

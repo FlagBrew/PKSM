@@ -1,12 +1,21 @@
 ![pksm](assets/banner.png)
 
-**Editor**, **wondercard injector** and **offline extra storage**.
+**Editor**, **wondercard injector**, **offline extra storage** and **OTA injector**.
 
 If you want a non-invasive homebrew to see your save's infos, check out [**PKSV**](https://github.com/BernardoGiordano/PKSV)
 
+## Backups
+
+Automatic backups are located at ` /3ds/data/PKSM/backup/[GAME_DATE]/main `
+
+## OTA injection
+
+* **Java: [Usage](https://github.com/BernardoGiordano/PKSM/servepkx/java/README.md)**
+* **Python: [Usage](https://github.com/BernardoGiordano/PKSM/servepkx/python/README.md)**
+
 ## Installation
 
-Download and install the latest release (4.0.1) with your favourite installation method. When booted, the application will download automatically the required additional assets from a third party source. You can provide your own assets, if you want.
+Download and install the latest release (4.0.2) with your favourite installation method. When booted, the application will download automatically the required additional assets from a third party source. You can provide your own assets, if you want.
 
 If you're using Homebrew Launcher, make sure you have it updated to the [latest version](https://smealum.github.io/ninjhax2/starter.zip).
 
@@ -32,12 +41,14 @@ You need devKitPro, ctrulib, sf2d, sfil, sftd and Xerpi's portlibs to be able to
 * Kaphotics for PKHeX and being an awesome guy
 * SciresM for C-memecrypto, you rock man
 * J-K-D for direct save import/export and being awesome
+* Slownic for java servepkx
 * Slashcash for PCHex++ and Strackeror for PCHex
 * Gocario for PKBrew
 * TuxSH for TWLSaveTool
 * MarcusD for romfs support
 * Nba_Yoh for received flags fix
 * Hamcha for cybertrust.h and digicert.h
+* hirakujira for RNG seed function
 * PPorg for most of wc6/wc7 included here
 * Simona, Carlo, Matteo for fill.c work
 * Shai, Federico, YodaDaCoda, /u/SatansRoommate for tests

@@ -1235,8 +1235,12 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 		} else if (mode == ED_OTA) {
 			sf2d_draw_texture(bottomMask, 0, 0);
 			drawIP(fontBold9);
-		} else if (mode != ED_CLONE)
-			sftd_draw_textf(fontBold9, 16, 220, WHITE, 9, "TID: %lu / SID: %u / TSV: %u", (game < 4) ? (u32)getSaveTID(mainbuf, game) : (((u32)(getSaveSID(mainbuf, game) * 65536) + getSaveTID(mainbuf, game)) % 1000000), getSaveSID(mainbuf, game), getSaveTSV(mainbuf, game));	
+		} else if (mode != ED_CLONE) {
+			if (mode == ED_STANDARD)
+				sftd_draw_textf(fontBold9, 16, 220, WHITE, 9, "TID: %lu / SID: %u / TSV: %u", (game < 4) ? (u32)getSaveTID(mainbuf, game) : (((u32)(getSaveSID(mainbuf, game) * 65536) + getSaveTID(mainbuf, game)) % 1000000), getSaveSID(mainbuf, game), getSaveTSV(mainbuf, game));	
+			else
+				sftd_draw_textf(fontBold9, 16, 220, WHITE, 9, "Seed: %lx %lx %lx %lx", getSaveSeed(mainbuf, game, 3), getSaveSeed(mainbuf, game, 2), getSaveSeed(mainbuf, game, 1), getSaveSeed(mainbuf, game, 0));	
+		}
 	sf2d_end_frame();
 	sf2d_swapbuffers();
 	
