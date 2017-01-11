@@ -27,6 +27,7 @@ Copyright (C) 2016 Bernardo Giordano
 #include "certs/cybertrust.h"
 #include "certs/digicert.h"
 
+int panic = 0;
 static u32			*socket_buffer = NULL;
 static http_server	data;
 http_server			*app_data = &data;
@@ -104,6 +105,8 @@ void processing(u8* mainbuf, int game, int tempVett[]) {
 		closeOnExit();
 		return;		
 	} else {
+		panic = 0;
+		int boxmax = (game < 4) ? 30 : 31;
 		char dummy[PAYLOADSIZE];
 		memset(dummy, 0, PAYLOADSIZE);
 		memset(payload, 0, PAYLOADSIZE);
@@ -122,12 +125,12 @@ void processing(u8* mainbuf, int game, int tempVett[]) {
 					tempVett[0]++;
 					tempVett[1] = 0;
 				}
-				int boxmax = (game < 4) ? 30 : 31;
 				if (tempVett[0] > boxmax)
 					tempVett[0] = 0;
 				
 				getPkmn(mainbuf, tempVett[0], tempVett[1], pkmn, game);
-			} while (!(getPokedexNumber(pkmn)));
+				panic++;
+			} while (getPokedexNumber(pkmn) && (panic < boxmax * 30));
 		}
 
 		close(data.client_id);
