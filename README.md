@@ -10,8 +10,8 @@ Automatic backups are located at ` /3ds/data/PKSM/backup/[GAME_DATE]/main `
 
 ## OTA injection
 
-* **Java: [Usage](https://github.com/BernardoGiordano/PKSM/servepkx/java/README.md)**
-* **Python: [Usage](https://github.com/BernardoGiordano/PKSM/servepkx/python/README.md)**
+* **Java: [Usage](https://github.com/BernardoGiordano/PKSM/tree/master/servepkx/java)**
+* **Python: [Usage](https://github.com/BernardoGiordano/PKSM/tree/master/servepkx/python)**
 
 ## Installation
 
