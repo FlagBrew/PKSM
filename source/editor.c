@@ -1082,6 +1082,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 						setTID(pkmn, getSaveTID(mainbuf, game));
 						setSID(pkmn, getSaveSID(mainbuf, game));
 						memcpy(&pkmn[0xE3], &mainbuf[(game < 4) ? 0x1402D : 0x1235], 1);
+						memcpy(&pkmn[0x1D], &mainbuf[(game < 4) ? 0x14005 : 0x1205], 1); // trainer gender
 						setPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
 						operationDone = true;
 						break;
