@@ -6,22 +6,9 @@ Java Client to send .pk6/.pk7 files to a server running on [PKSM](https://github
 
 JRE 1.6+ installed.
 
-Script works when PKSM's server is actually running.
-
-### Usage (script)
-
-```
-java -jar servepkx.jar [console ip address] [path1] [path2] ...
-```
-
-### Usage (batch)
-
-Edit your `servepkx.bat` file with a notepad to replace your console IP address.
-
-Then, drag&drop files on `servepkx.bat` while PKSM's server is running.
+jar file works when PKSM's server is actually running.
 
 ### Usage (GUI)
-
 
 Start the server on PKSM and enter the 3DS' IP address and the port number (optional) in servepkx. The default port nr. is 8081.
 

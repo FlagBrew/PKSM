@@ -23,21 +23,20 @@ public class Client {
 		this.host = host;
 	}
 
-	public void sendPKM(String PKMLocation) {
+	public void sendPKM(File PKM) {
 		try {
 
 			this.socket = new Socket(this.host, this.port);
-			File PKM = new File(PKMLocation);
 			int count;
 			byte[] buffer = new byte[8192];
 
 			InputStream in = new FileInputStream(PKM);
 			OutputStream out = socket.getOutputStream();
-			System.out.println("Connection created! Sending "+PKMLocation+"...");
+			//System.out.println("Connection created! Sending "+PKM.getAbsolutePath()+"...");
 			while ((count = in.read(buffer)) > 0) {
 				out.write(buffer, 0, count);
 			}
-			System.out.println(PKMLocation+" sent successfully!");
+			//System.out.println(PKM.getAbsolutePath()+" sent successfully!");
 			out.close();
 			in.close();
 			socket.close();
