@@ -15,7 +15,7 @@ Automatic backups are located at ` /3ds/data/PKSM/backup/[GAME_DATE]/main `
 
 ## Installation
 
-Download and install the latest release (4.0.2) with your favourite installation method. When booted, the application will download automatically the required additional assets from a third party source. You can provide your own assets, if you want.
+Download and install the latest release (4.0.3) with your favourite installation method. When booted, the application will download automatically the required additional assets from a third party source. You can provide your own assets, if you want.
 
 If you're using Homebrew Launcher, make sure you have it updated to the [latest version](https://smealum.github.io/ninjhax2/starter.zip).
 
