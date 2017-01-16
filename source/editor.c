@@ -1770,7 +1770,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 				if (hidKeysDown() & KEY_A && menuEntry == 4)
 					break;
 			}
-			if (!getPokedexNumber(pkmn) && !isTeam) {
+			if (!getPokedexNumber(pkmn) && !isTeam && !operationDone) {
 				int genEntry = 0;
 				int page = 0, maxpages = 20;
 				
