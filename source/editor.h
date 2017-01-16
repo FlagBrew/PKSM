@@ -105,6 +105,8 @@ char *getNickname(u8* pkmn, char* dst);
 u16 getEggMove(u8 *pkmn, const int nmove);
 u8 getBall(u8* pkmn);
 u16 getPSV(u8* pkmn);
+char *getSaveUT(u8* mainbuf, int game, char* dst);
+u8 getSaveGender(u8* mainbuf, int game);
 u16 getSaveTID(u8* mainbuf, int game);
 u16 getSaveSID(u8* mainbuf, int game);
 u16 getSaveTSV(u8* mainbuf, int game);
@@ -115,6 +117,8 @@ u16 getBP(u8* mainbuf, int game);
 
 void setGender(u8* pkmn, u8 val);
 void setOT(u8* pkmn, char* nick);
+void setHT(u8* pkmn, char* nick);
+void setHTGender(u8* pkmn, const u8 gender);
 void setNature(u8* pkmn, const u8 nature);
 void setNickname(u8* pkmn, char* nick);
 void setShiny(u8* pkmn, const bool shiny);
