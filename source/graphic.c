@@ -1034,7 +1034,7 @@ void printElementBlend(u8* pkmn, u16 n, int x, int y) {
 void infoViewer(u8* pkmn, int game) {
 	int y_desc = 29;
 	char* entries[] = {"Nickname:", "OT:", "Pokerus:", "Nature", "Ability:", "Item:", "ESV / TSV:", "TID / SID:", "HT/OT Fr.ship:", "Hidden Power:"};
-	char* values[] = {"HP", "Attack", "Defence", "Sp. Atk", "Sp. Def", "Speed"};
+	char* values[] = {"HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed"};
 	
 	printAnimatedBG(true);
 	sf2d_draw_texture(infoView, 0, 0);
@@ -1253,7 +1253,7 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 	char* entries[] = {"Level:", "Nature:", "Ability:", "Item:", "Shiny:", "Pokerus:", "OT:", "Nickname:", "Friendship:"};
 	char* options[] = {"STATS", "MOVES", "SAVE"};
 	
-	char* values[6] = {"HP:", "Attack:", "Defense:", "Sp. Attack:", "Sp. Defence:", "Speed:"};
+	char* values[6] = {"HP:", "Attack:", "Defense:", "Sp. Attack:", "Sp. Defense:", "Speed:"};
 	u16 n = getPokedexNumber(pkmn);
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
@@ -1290,8 +1290,8 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 			y += (topSelectedMove->height + 1);
 		}	
 	} else if (mode == ED_NATURES) {
-		char* hor[] = {"Neutral", "-Attack", "-Defence", "-Speed", "-Sp. Atk.", "-Sp. Def."};
-		char* ver[] = {"+Attack", "+Defence", "+Speed", "+Sp. Atk.", "+Sp. Def."};
+		char* hor[] = {"Neutral", "-Attack", "-Defense", "-Speed", "-Sp. Atk.", "-Sp. Def."};
+		char* ver[] = {"+Attack", "+Defense", "+Speed", "+Sp. Atk.", "+Sp. Def."};
 		
 		sf2d_draw_texture(naturestx, 0, 0);
 		for (int i = 0; i < 6; i++)
