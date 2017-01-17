@@ -297,6 +297,11 @@ void getPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, 
 }
 
 void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game) {
+	char *ht_name = (char*)malloc(NICKNAMELENGTH * sizeof(char));
+	setHT(pkmn, ht_name);
+	free(ht_name);
+	setHTGender(pkmn, getSaveGender(mainbuf, game));
+
     calculatePKMNChecksum(pkmn);
 	if (boxnumber == 33) {
 		fillBattleSection(mainbuf, pkmn, game, indexnumber);
@@ -1128,17 +1133,11 @@ void pokemonEditor(u8* mainbuf, int game) {
 				}
 				
 				if (hidKeysHeld() & KEY_TOUCH) {
-					// this adapts a mon to your save's metadatas
 					if (touch.px > 242 && touch.px < 283 && touch.py > 5 && touch.py < 25 && !isTeam) {
 						setTID(pkmn, getSaveTID(mainbuf, game));
 						setSID(pkmn, getSaveSID(mainbuf, game));
 						memcpy(&pkmn[0xE3], &mainbuf[(game < 4) ? 0x1402D : 0x1235], 1); // nats
 
-						char *ht_name = (char*)malloc(NICKNAMELENGTH * sizeof(char));
-						setHT(pkmn, ht_name);
-						free(ht_name);
-						setHTGender(pkmn, getSaveGender(mainbuf, game));
-						
 						setPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
 						operationDone = true;
 						break;
