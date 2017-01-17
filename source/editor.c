@@ -297,6 +297,11 @@ void getPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, 
 }
 
 void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game) {
+	char *ht_name = (char*)malloc(NICKNAMELENGTH * sizeof(char));
+	setHT(pkmn, ht_name);
+	free(ht_name);
+	setHTGender(pkmn, getSaveGender(mainbuf, game));
+
     calculatePKMNChecksum(pkmn);
 	if (boxnumber == 33) {
 		fillBattleSection(mainbuf, pkmn, game, indexnumber);
@@ -384,8 +389,8 @@ bool isInfected (u8* pkmn) {
 }
 
 char *getOT(u8* pkmn, char* dst) {
-	u16 src[0x17];
-	memcpy(src, &pkmn[0xB0], 0x17);
+	u16 src[NICKNAMELENGTH];
+	memcpy(src, &pkmn[0xB0], NICKNAMELENGTH);
 	
 	int cnt = 0;
 	while (src[cnt] && cnt < 24) {
@@ -520,6 +525,25 @@ u8 getBall(u8* pkmn) {
     return ballbuffer;
 }
 
+char *getSaveOT(u8* mainbuf, int game, char* dst) {
+	u16 src[NICKNAMELENGTH];
+	memcpy(src, &mainbuf[((game < 4) ? 0x14000 : 0x01200) + 0x38], NICKNAMELENGTH);
+	
+	int cnt = 0;
+	while (src[cnt] && cnt < 24) {
+		dst[cnt] = src[cnt];
+		cnt += 1;
+	}
+	dst[cnt] = 0;
+	return dst;
+}
+
+u8 getSaveGender(u8* mainbuf, int game) {
+	u8 buffer;
+    memcpy(&buffer, &mainbuf[((game < 4) ? 0x14000 : 0x01200) + 5], 1);
+    return buffer;
+}
+
 u16 getSaveTID(u8* mainbuf, int game) {
     u16 buffer;
     memcpy(&buffer, &mainbuf[(game < 4) ? 0x14000 : 0x01200], 2);
@@ -601,6 +625,20 @@ void setOT(u8* pkmn, char* nick) {
         toinsert[i * 2] = *(nick + i);
 
     memcpy(&pkmn[0xB0], toinsert, NICKNAMELENGTH);
+}
+
+void setHT(u8* pkmn, char* nick) {
+    u8 toinsert[NICKNAMELENGTH];
+	memset(toinsert, 0, NICKNAMELENGTH);
+
+    for (u16 i = 0, nicklen = strlen(nick); i < nicklen; i++)
+        toinsert[i * 2] = *(nick + i);
+
+    memcpy(&pkmn[0x78], toinsert, NICKNAMELENGTH);
+}
+
+void setHTGender(u8* pkmn, const u8 gender) {
+	memcpy(&pkmn[0x92], &gender, 1);
 }
 
 void setNature(u8* pkmn, const u8 nature) {
