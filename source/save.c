@@ -295,8 +295,8 @@ void rewriteCHK4(u8 *mainbuf, int game, int GBO, int SBO) {
 	u16 cs;
 	
 	// start, end, chkoffset
-	int general[3];
-	int storage[3];
+	int general[3] = {0, 0, 0};
+	int storage[3] = {0, 0, 0};
 
 	if (game == GAME_DIAMOND || game == GAME_PEARL) {
 		general[0] = 0x0000; general[1] = 0xC0EC; general[2] = 0xC0FE;
