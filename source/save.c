@@ -63,24 +63,18 @@ u16 crc16[] = {
 int getActiveGBO(u8* mainbuf, int game) {
 	int ofs = 0;
 	int generalBlock = -1;
-	
-	int k = 0;
+
 	u8 temp[10];
+	u8 dummy[10];
+	memset(dummy, 0XFF, 10);
 	
 	memcpy(&temp, mainbuf, 10);
-	for (int t = 0; t < 10; t++)
-		if (temp[t] == 0xFF)
-			k++;
-	if (k == 10)
+	if (!memcmp(temp, dummy, 10))
 		return 1;
 	
-	k = 0;
 	memcpy(&temp, &mainbuf[0x40000], 10);
-	for (int t = 0; t < 10; t++)
-		if (temp[t] == 0xFF)
-			k++;
-	if (k == 10)
-		return 1;
+	if (!memcmp(temp, dummy, 10))
+		return 0;
 	
 	if (game == GAME_HG || game == GAME_SS)
 		ofs = 0xF618;
@@ -109,23 +103,17 @@ int getActiveSBO(u8* mainbuf, int game) {
 		ofs = 0x1F100;
 	else if (game == GAME_DIAMOND || game == GAME_PEARL)
 		ofs = 0x1E2D0;
-	
-	int k = 0;
+
 	u8 temp[10];
+	u8 dummy[10];
+	memset(dummy, 0XFF, 10);
 	
 	memcpy(&temp, &mainbuf[ofs], 10);
-	for (int t = 0; t < 10; t++)
-		if (temp[t] == 0xFF)
-			k++;
-	if (k == 10)
+	if (!memcmp(temp, dummy, 10))
 		return 1;
-	
-	k = 0;
+
 	memcpy(&temp, &mainbuf[ofs + 0x40000], 10);
-	for (int t = 0; t < 10; t++)
-		if (temp[t] == 0xFF)
-			k++;
-	if (k == 10)
+	if (!memcmp(temp, dummy, 10))
 		return 0;
 	
 	u16 c1;
@@ -305,33 +293,31 @@ void rewriteCHK(u8 *mainbuf, int game) {
 void rewriteCHK4(u8 *mainbuf, int game, int GBO, int SBO) {
 	u8* tmp = (u8*)malloc(0x35000 * sizeof(u8));
 	u16 cs;
+	
+	// start, end, chkoffset
+	int general[3];
+	int storage[3];
 
 	if (game == GAME_DIAMOND || game == GAME_PEARL) {
-		memcpy(tmp, mainbuf + GBO, 0xC0EC);
-		cs = ccitt16(tmp, 0xC0EC);
-		memcpy(mainbuf + GBO + 0xC0FE, &cs, 2);
-
-		memcpy(tmp, mainbuf + SBO + 0xC100, 0x121CC);
-		cs = ccitt16(tmp, 0x121CC);
-		memcpy(mainbuf + SBO + 0x1E2DE, &cs, 2);			
-	}
+		general[0] = 0x0000; general[1] = 0xC0EC; general[2] = 0xC0FE;
+		storage[0] = 0xC100; storage[1] = 0x1E2CC; storage[2] = 0x1E2DE;
+	} 
 	else if (game == GAME_PLATINUM) {
-		memcpy(tmp, mainbuf + GBO, 0xCF18);
-		cs = ccitt16(tmp, 0xCF18);
-		memcpy(mainbuf + GBO + 0xCF2A, &cs, 2);
-
-		memcpy(tmp, mainbuf + SBO + 0xCF2C, 0x121D0);
-		cs = ccitt16(tmp, 0x121D0);
-		memcpy(mainbuf + SBO + 0x1F10E, &cs, 2);		
+		general[0] = 0x0000; general[1] = 0xCF18; general[2] = 0xCF2A;
+		storage[0] = 0xCF2C; storage[1] = 0x1F0FC; storage[2] = 0x1F10E;
 	}
 	else if (game == GAME_HG || game == GAME_SS) {
-		memcpy(tmp, mainbuf + GBO, 0xF618);
-		cs = ccitt16(tmp, 0xF618);
-		memcpy(mainbuf + GBO + 0xF626, &cs, 2);
-
-		memcpy(tmp, mainbuf + SBO + 0xF700, 0x12300);
-		cs = ccitt16(tmp, 0x12300);
-		memcpy(mainbuf + SBO + 0x21A0E, &cs, 2);
+		general[0] = 0x0000; general[1] = 0xF618; general[2] = 0xF626;
+		storage[0] = 0xF700; storage[1] = 0x12300; storage[2] = 0x21A0E;		
 	}
+	
+	memcpy(tmp, mainbuf + GBO + general[0], general[1]);
+	cs = ccitt16(tmp, general[1]);
+	memcpy(mainbuf + GBO + general[2], &cs, 2);
+
+	memcpy(tmp, mainbuf + SBO + storage[0], storage[1]);
+	cs = ccitt16(tmp, storage[1]);
+	memcpy(mainbuf + SBO + storage[2], &cs, 2);
+
 	free(tmp);
 }
