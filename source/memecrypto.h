@@ -13,7 +13,7 @@
 void memecrypto_aes_encrypt(unsigned char *buf, unsigned char *output, unsigned char *key);
 void memecrypto_aes_decrypt(unsigned char *buf, unsigned char *output, unsigned char *key);
 
-int memecrypto_sign(unsigned char *input, unsigned char *output, int len);
+Result memecrypto_sign(unsigned char *input, unsigned char *output, int len);
 int memecrypto_verify(unsigned char *input, unsigned char *output, int len);
 
 void resign(u8 *mainbuf);
