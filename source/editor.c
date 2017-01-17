@@ -1128,8 +1128,8 @@ void pokemonEditor(u8* mainbuf, int game) {
 				}
 				
 				if (hidKeysHeld() & KEY_TOUCH) {
-					// this adapts a mon to your save's metadatas
 					if (touch.px > 242 && touch.px < 283 && touch.py > 5 && touch.py < 25 && !isTeam) {
+						// this adapts a mon to your save's metadatas
 						setTID(pkmn, getSaveTID(mainbuf, game));
 						setSID(pkmn, getSaveSID(mainbuf, game));
 						memcpy(&pkmn[0xE3], &mainbuf[(game < 4) ? 0x1402D : 0x1235], 1); // nats
