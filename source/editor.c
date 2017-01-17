@@ -24,6 +24,7 @@ Copyright (C) 2016 Bernardo Giordano
 #include "save.h"
 
 /* ************************ local variables ************************ */
+int lookupHT[] = {0, 1, 2, 5, 3, 4};
 
 u32 expTable[100][6] = {
   {0, 0, 0, 0, 0, 0},
@@ -332,6 +333,7 @@ bool isEgg(u8* pkmn) {
 
 /* ************************ get ************************ */
 
+u8 getHT(u8* pkmn) { return *(u8*)(pkmn + 0xDE); }
 u8 getGender(u8* pkmn) { return ((*(u8*)(pkmn + 0x1D)) >> 1) & 0x3; }
 u8 getLanguage(u8* pkmn) { return *(u8*)(pkmn + 0xE3); }
 u8 getAbility(u8* pkmn) { return *(u8*)(pkmn + 0x14); }
@@ -361,9 +363,9 @@ u16 getStat(u8* pkmn, const int stat) {
     if (stat == 5) basestat = personal.pkmData[tempspecies][0x5];
     
     if (stat == 0)
-        final = 10 + ((2 * basestat) + getIV(pkmn, stat) + getEV(pkmn, stat) / 4 + 100) * getLevel(pkmn) / 100;
+        final = 10 + ((2 * basestat) + ((((getHT(pkmn) >> lookupHT[stat]) & 1) == 1) ? 31 : getIV(pkmn, stat)) + getEV(pkmn, stat) / 4 + 100) * getLevel(pkmn) / 100;
     else
-        final = 5 + (2 * basestat + getIV(pkmn, stat) + getEV(pkmn, stat) / 4) * getLevel(pkmn) / 100; 
+        final = 5 + (2 * basestat + ((((getHT(pkmn) >> lookupHT[stat]) & 1) == 1) ? 31 : getIV(pkmn, stat)) + getEV(pkmn, stat) / 4) * getLevel(pkmn) / 100; 
     
     if (getNature(pkmn) / 5 + 1 == stat)
         mult++;

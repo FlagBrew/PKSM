@@ -78,6 +78,7 @@ void rerollPID(u8* pkmn);
 void encryptBattleSection(u8* mainbuf, u8* pkmn, int game, int currentEntry);
 void fillBattleSection(u8* mainbuf, u8* pkmn, int game, int currentEntry);
 
+u8 getHPType(u8* pkmn);
 u8 getGender(u8* pkmn);
 u8 getLanguage(u8* pkmn);
 u16 getPokedexNumber(u8* pkmn);
