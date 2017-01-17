@@ -245,21 +245,8 @@ u16 check16(u8 data[], u32 blockID, u32 len) {
 	}
 
 	u16 chk = ~initial;
-	
-	if (len > 1) {
-		int ofs = -1;
-		if (len % 2 == 0) {
-			ofs = 0;
-			chk = (crc16[(data[0] ^ chk) & 0xFF] ^ chk >> 8);
-		}
-
-		for (int i = (len - 1) / 2; i != 0; i--, ofs += 2) {
-			u16 temp = crc16[(data[ofs + 1] ^ chk) & 0xFF];
-			chk = (crc16[(data[ofs + 2] ^ temp ^ chk >> 8) & 0xFF] ^ (temp ^ chk >> 8) >> 8);
-		}
-	}
-	if (len > 0)
-		chk = (crc16[(data[len - 1] ^ chk) & 0xFF] ^ chk >> 8);
+	for (u32 i = 0; i < len; i++)
+		chk = (crc16[(data[i] ^ chk) & 0xFF] ^ chk >> 8);
 
 	return ~chk;
 }
