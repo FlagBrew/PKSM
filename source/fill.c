@@ -41,7 +41,9 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[158] = "0158 - Masterball"; spriteArray[158] = 0;
 	database[190] = "Placeholder";
 	database[202] = "0202 - SM Revival Herb"; spriteArray[202] = 0;
+	database[204] = "0204 - SM Item Bundle"; spriteArray[204] = 0;
 	database[205] = "0205 - SM Choice Band/Scarf"; spriteArray[205] = 0;
+	database[208] = "0208 - SM Rare Candy"; spriteArray[208] = 0;
 	database[210] = "0210 - Gold Bottle Cap"; spriteArray[210] = 0;
 	database[518] = "0518 - Heracronite"; spriteArray[518] = 0;
 	database[527] = "0527 - 100 Potions"; spriteArray[527] = 0;
@@ -57,7 +59,7 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[2043] = "2043 - SM Pretty Wings"; spriteArray[2043] = 0;
 	database[2044] = "2044 - SM Balm Mushroom"; spriteArray[2044] = 0;
 	database[2045] = "2045 - SM Comet Shard"; spriteArray[2045] = 0;
-	
+	database[2047] = "2047 - PGL 50BP"; spriteArray[2047] = 0;
 
 	database[1] = "0001 - Birthday events"; spriteArray[1] = 133;
 	database[2] = "0002 - CoroCoro Garchomp"; spriteArray[2] = 445;
@@ -148,6 +150,7 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[137] = "0137 - VC Mew"; spriteArray[137] = 151;
 	database[138] = "0138 - Happy Hour Pikachu"; spriteArray[138] = 25;
 	database[141] = "0141 - Repeat Halloween Gengar"; spriteArray[141] = 94;
+	database[142] = "0142 - PC Eggs"; spriteArray[142] = 322;
 	database[145] = "0145 - HK Shiny Jirachi"; spriteArray[145] = 385;
 	database[146] = "0146 - SG Arceus"; spriteArray[146] = 493;
 	database[147] = "0147 - Scrap Eevee"; spriteArray[147] = 133;
@@ -180,6 +183,7 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[180] = "0180 - Cyrus' Weavile"; spriteArray[180] = 461;
 	database[181] = "0181 - Ghetsis' Hydreigon"; spriteArray[181] = 635;
 	database[182] = "0182 - Lysandre's Pyroar"; spriteArray[182] = 668;
+	database[184] = "0184 - PC Bday 2016"; spriteArray[182] = 133;
 	database[203] = "0203 - PC Alolan Vulpix"; spriteArray[203] = 37;
 	database[501] = "0501 - Winter2013 Garchomp"; spriteArray[501] = 445;
 	database[502] = "0502 - Winter2013 Scizor"; spriteArray[502] = 212;
@@ -414,6 +418,7 @@ void filldatabase6(char *database[], int spriteArray[]) {
 	database[137] = "0137 - VC Mew"; spriteArray[137] = 151;
 	database[138] = "0138 - Happy Hour Pikachu"; spriteArray[138] = 25;
 	database[141] = "0141 - Repeat Halloween Gengar"; spriteArray[141] = 94;
+	database[142] = "0142 - PC Eggs"; spriteArray[142] = 322;
 	database[145] = "0145 - HK Shiny Jirachi"; spriteArray[145] = 385;
 	database[146] = "0146 - SG Arceus"; spriteArray[146] = 493;
 	database[147] = "0147 - Scrap Eevee"; spriteArray[147] = 133;
@@ -446,6 +451,7 @@ void filldatabase6(char *database[], int spriteArray[]) {
 	database[180] = "0180 - Cyrus' Weavile"; spriteArray[180] = 461;
 	database[181] = "0181 - Ghetsis' Hydreigon"; spriteArray[181] = 635;
 	database[182] = "0182 - Lysandre's Pyroar"; spriteArray[182] = 668;
+	database[184] = "0184 - PC Bday 2016"; spriteArray[182] = 133;
 	database[501] = "0501 - Winter2013 Garchomp"; spriteArray[501] = 445;
 	database[502] = "0502 - Winter2013 Scizor"; spriteArray[502] = 212;
 	database[504] = "0504 - Magmar, Electabuzz"; spriteArray[504] = 125;
