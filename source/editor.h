@@ -77,6 +77,7 @@ bool isEgg(u8* pkmn);
 void rerollPID(u8* pkmn);
 void encryptBattleSection(u8* mainbuf, u8* pkmn, int game, int currentEntry);
 void fillBattleSection(u8* mainbuf, u8* pkmn, int game, int currentEntry);
+bool isBattleBoxed(u8* mainbuf, int game, int box, int slot);
 
 u8 getHPType(u8* pkmn);
 u8 getGender(u8* pkmn);

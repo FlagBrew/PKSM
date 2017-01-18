@@ -336,6 +336,21 @@ bool isEgg(u8* pkmn) {
     else return false;
 }
 
+bool isBattleBoxed(u8* mainbuf, int game, int box, int slot) {
+	if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS) //don't care about obsolete titles
+		return false;
+		
+	if (game == GAME_SUN || game == GAME_MOON) {
+		u8 team_lookup[72];
+		memcpy(&team_lookup[0], &mainbuf[0x4CC4], 72);
+		for (int i = 0; i < 72; i += 2)
+			if ((team_lookup[i] == (u8)slot) && (team_lookup[i + 1] == (u8)box))
+				return true;
+	}
+	
+	return false;
+}
+
 /* ************************ get ************************ */
 
 u8 getHT(u8* pkmn) { return *(u8*)(pkmn + 0xDE); }
@@ -1109,7 +1124,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 			currentEntry = tempVett[1];
 		}
 		
-		if (hidKeysDown() & KEY_A) {
+		if (hidKeysDown() & KEY_A && !isBattleBoxed(mainbuf, game, box, currentEntry)) {
 			getPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
 			bool operationDone = false;
 
