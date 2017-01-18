@@ -117,6 +117,7 @@ u32 getMoney(u8* mainbuf, int game);
 u16 getBP(u8* mainbuf, int game);
 
 void setGender(u8* pkmn, u8 val);
+void setForm(u8* pkmn, u8 val);
 void setOT(u8* pkmn, char* nick);
 void setHT(u8* pkmn, char* nick);
 void setHTGender(u8* pkmn, const u8 gender);

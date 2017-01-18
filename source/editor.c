@@ -591,6 +591,7 @@ void setItemEditor(u8* pkmn, u16 item) {
 }
 
 void setGender(u8* pkmn, u8 val) { pkmn[0x1D] = (u8)((pkmn[0x1D] & ~0x06) | (val << 1)); }
+void setForm(u8* pkmn, u8 val) { pkmn[0x1D] = (u8)((pkmn[0x1D] & 0x07) | (val << 3)); }
 void setBall(u8* pkmn, u8 val) { pkmn[0xDC] = val; }
 
 void setTID(u8* pkmn, u16 tid) {
