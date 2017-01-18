@@ -106,7 +106,7 @@ char *getNickname(u8* pkmn, char* dst);
 u16 getEggMove(u8 *pkmn, const int nmove);
 u8 getBall(u8* pkmn);
 u16 getPSV(u8* pkmn);
-char *getSaveUT(u8* mainbuf, int game, char* dst);
+char *getSaveOT(u8* mainbuf, int game, char* dst);
 u8 getSaveGender(u8* mainbuf, int game);
 u16 getSaveTID(u8* mainbuf, int game);
 u16 getSaveSID(u8* mainbuf, int game);
