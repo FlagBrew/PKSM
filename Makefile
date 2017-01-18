@@ -1,207 +1,74 @@
-#---------------------------------------------------------------------------------
-.SUFFIXES:
-#---------------------------------------------------------------------------------
+# TARGET #
 
-ifeq ($(strip $(DEVKITARM)),)
-$(error "Please set DEVKITARM in your environment. export DEVKITARM=<path to>devkitARM")
+TARGET := 3DS
+LIBRARY := 0
+
+ifeq ($(TARGET),$(filter $(TARGET),3DS WIIU))
+    ifeq ($(strip $(DEVKITPRO)),)
+        $(error "Please set DEVKITPRO in your environment. export DEVKITPRO=<path to>devkitPro")
+    endif
 endif
 
-TOPDIR ?= $(CURDIR)
-include $(DEVKITARM)/3ds_rules
+# COMMON CONFIGURATION #
 
-#---------------------------------------------------------------------------------
-# TARGET is the name of the output
-# BUILD is the directory where object files & intermediate files will be placed
-# SOURCES is a list of directories containing source code
-# DATA is a list of directories containing data files
-# INCLUDES is a list of directories containing header files
-#
-# NO_SMDH: if set to anything, no SMDH file is generated.
-# APP_TITLE is the name of the app stored in the SMDH file (Optional)
-# APP_DESCRIPTION is the description of the app stored in the SMDH file (Optional)
-# APP_AUTHOR is the author of the app stored in the SMDH file (Optional)
-# ICON is the filename of the icon (.png), relative to the project folder.
-#   If not set, it attempts to use one of the following (in this order):
-#     - <Project name>.png
-#     - icon.png
-#     - <libctru folder>/default_icon.png
-#---------------------------------------------------------------------------------
-TARGET		    :=	$(notdir $(CURDIR))
-BUILD		    :=	build
-SOURCES		    :=	source
-DATA		    :=	data
-INCLUDES	    :=	inc
-ROMFS	            :=  assets/romfs
-APP_TITLE       :=  "PKSM"
-APP_DESCRIPTION :=  "AIO tool for Pokemon games"
-APP_AUTHOR      :=  "Bernardo Giordano"
-APP_PRODUCT_CODE:=  CTR-HB-PKSM
-APP_UNIQUE_ID   :=  0xEC100
-ICON            :=  assets/icon.png
+NAME := PKSM
 
-APP_TITLE       :=  $(shell echo "$(APP_TITLE)" | cut -c1-128)
-APP_DESCRIPTION :=  $(shell echo "$(APP_DESCRIPTION)" | cut -c1-256)
-APP_AUTHOR      :=  $(shell echo "$(APP_AUTHOR)" | cut -c1-128)
-APP_PRODUCT_CODE:=  $(shell echo $(APP_PRODUCT_CODE) | cut -c1-16)
-APP_UNIQUE_ID   :=  $(shell echo $(APP_UNIQUE_ID) | cut -c1-7)
+BUILD_DIR := build
+OUTPUT_DIR := output
+INCLUDE_DIRS := 
+SOURCE_DIRS := source source/certs
 
-#---------------------------------------------------------------------------------
-# options for code generation
-#---------------------------------------------------------------------------------
-ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard
+EXTRA_OUTPUT_FILES :=
 
-CFLAGS	:=	-g -Wall -O2 -mword-relocations \
+LIBRARY_DIRS := $(PORTLIBS) $(CTRULIB)
+LIBRARIES := sfil sftd freetype png z sf2d citro3d ctru m
+
+BUILD_FLAGS := -march=armv6k -mtune=mpcore -mfloat-abi=hard
+BUILD_FLAGS_CC := -g -Wall -O2 -mword-relocations \
 			-fomit-frame-pointer -ffast-math \
-			$(ARCH)
+			$(BUILD_FLAGS) $(INCLUDE) -DARM11 -D_3DS
+BUILD_FLAGS_CXX := $(BUILD_FLAGS_CC) -fno-rtti -fno-exceptions -std=gnu++11
+RUN_FLAGS :=
 
-CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS
+VERSION_MAJOR := 4
+VERSION_MINOR := 0
+VERSION_MICRO := 4
 
-CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++11
+# 3DS/Wii U CONFIGURATION #
 
-ASFLAGS	:=	-g $(ARCH)
-LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
-
-LIBS	:= -lsfil -lsftd -lfreetype -lpng -lz -lsf2d -lcitro3d -lctru -lm
-
-#---------------------------------------------------------------------------------
-# list of directories containing libraries, this must be the top level containing
-# include and lib
-#---------------------------------------------------------------------------------
-LIBDIRS	:= $(CTRULIB) $(PORTLIBS)
-
-
-#---------------------------------------------------------------------------------
-# no real need to edit anything past this point unless you need to add additional
-# rules for different file extensions
-#---------------------------------------------------------------------------------
-ifneq ($(BUILD),$(notdir $(CURDIR)))
-#---------------------------------------------------------------------------------
-
-export OUTPUT	:=	$(CURDIR)/$(TARGET)
-export TOPDIR	:=	$(CURDIR)
-
-export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) \
-			$(foreach dir,$(DATA),$(CURDIR)/$(dir))
-
-export DEPSDIR	:=	$(CURDIR)/$(BUILD)
-
-CFILES		:=  $(shell find $(SOURCES) -name '*.c' -printf "%P\n")
-CPPFILES	:=  $(shell find $(SOURCES) -name '*.cpp' -printf "%P\n")
-SFILES		:=  $(shell find $(SOURCES) -name '*.s' -printf "%P\n")
-BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
-
-#---------------------------------------------------------------------------------
-# use CXX for linking C++ projects, CC for standard C
-#---------------------------------------------------------------------------------
-ifeq ($(strip $(CPPFILES)),)
-#---------------------------------------------------------------------------------
-	export LD	:=	$(CC)
-#---------------------------------------------------------------------------------
-else
-#---------------------------------------------------------------------------------
-	export LD	:=	$(CXX)
-#---------------------------------------------------------------------------------
-endif
-#---------------------------------------------------------------------------------
-
-export OFILES	:=	$(addsuffix .o,$(BINFILES)) \
-			$(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)
-
-export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)/include) \
-			$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
-			-I$(CURDIR)/$(BUILD) \
-			-I-$(CURDIR)/$(SOURCES)
-
-export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib) \
-			$(foreach dir,$(INCLUDES),-L$(CURDIR)/$(dir)/lib)
-
-ifeq ($(strip $(ICON)),)
-	icons := $(wildcard *.png)
-	ifneq (,$(findstring $(TARGET).png,$(icons)))
-		export APP_ICON := $(TOPDIR)/$(TARGET).png
-	else
-		ifneq (,$(findstring icon.png,$(icons)))
-			export APP_ICON := $(TOPDIR)/icon.png
-		endif
-	endif
-else
-	export APP_ICON := $(TOPDIR)/$(ICON)
+ifeq ($(TARGET),$(filter $(TARGET),3DS WIIU))
+    TITLE := $(NAME)
+    DESCRIPTION := AIO tool for Pokemon games
+    AUTHOR := Bernardo Giordano
 endif
 
-export _3DSXFLAGS += --smdh=$(OUTPUT).smdh
+# 3DS CONFIGURATION #
 
-ifneq ($(ROMFS),)
-	export _3DSXFLAGS += --romfs=$(CURDIR)/$(ROMFS)
+ifeq ($(TARGET),3DS)
+    LIBRARY_DIRS +=
+    LIBRARIES +=
+
+    PRODUCT_CODE := CTR-HB-PKSM
+    UNIQUE_ID := 0xEC100
+
+    CATEGORY := Application
+    USE_ON_SD := true
+
+    MEMORY_TYPE := Application
+    SYSTEM_MODE := 64MB
+    SYSTEM_MODE_EXT := Legacy
+    CPU_SPEED := 268MHz
+    ENABLE_L2_CACHE := true
+
+    ICON_FLAGS := --flags visible,ratingrequired,recordusage --cero 153 --esrb 153 --usk 153 --pegigen 153 --pegiptr 153 --pegibbfc 153 --cob 153 --grb 153 --cgsrr 153
+
+    ROMFS_DIR := assets/romfs
+    BANNER_AUDIO := assets/audio.wav
+    BANNER_IMAGE := assets/banner.png
+    ICON := assets/icon.png
+	LOGO := 
 endif
 
-.PHONY: $(BUILD) clean all
+# INTERNAL #
 
-#---------------------------------------------------------------------------------
-all: $(BUILD)
-
-$(BUILD):
-	@[ -d $@ ] || mkdir -p $@
-	@find $(SOURCES) -type d -printf "%P\0" | xargs -0 -I {} mkdir -p $(BUILD)/{}
-	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
-
-#---------------------------------------------------------------------------------
-clean:
-	@echo clean ...
-	@rm -rf $(BUILD) $(OUTPUT).3dsx $(OUTPUT).smdh $(OUTPUT).elf $(OUTPUT).cia
-
-#---------------------------------------------------------------------------------
-else
-
-DEPENDS	:=	$(OFILES:.o=.d)
-
-#---------------------------------------------------------------------------------
-# main targets
-#---------------------------------------------------------------------------------
-ifeq ($(strip $(NO_SMDH)),)
-.PHONY: all
-all	:	$(OUTPUT).3dsx $(OUTPUT).smdh $(OUTPUT).cia
-endif 
-
-$(OUTPUT).3dsx	:	$(OUTPUT).elf $(OUTPUT).smdh
-
-$(OUTPUT).elf	:	$(OFILES)
-
-#$(TOPDIR)/assets/banner.bin: $(TOPDIR)/assets/banner.png $(TOPDIR)/assets/banner.wav
-#	@bannertool makebanner -i $(TOPDIR)/assets/banner.png -a $(TOPDIR)/assets/banner.wav -o $(TOPDIR)/assets/banner.bin
-
-#$(TOPDIR)/assets/icon.bin: $(TOPDIR)/assets/icon.png
-#	@bannertool makesmdh -s "$(APP_TITLE)" -l "$(APP_DESCRIPTION)" -p "$(APP_AUTHOR)" -i $(TOPDIR)/assets/icon.png -o $(TOPDIR)/assets/icon.bin
-
-$(OUTPUT)_stripped.elf: $(OUTPUT).elf
-	@cp $(OUTPUT).elf $(OUTPUT)_stripped.elf
-	@$(PREFIX)strip $(OUTPUT)_stripped.elf
-
-$(OUTPUT).cia: $(OUTPUT)_stripped.elf $(TOPDIR)/assets/banner.bin $(TOPDIR)/assets/icon.icn
-	@makerom -f cia -o $(OUTPUT).cia -rsf $(TOPDIR)/assets/cia.rsf -target t -exefslogo -elf $(OUTPUT)_stripped.elf -icon $(TOPDIR)/assets/icon.icn -banner $(TOPDIR)/assets/banner.bin -DAPP_TITLE="$(APP_TITLE)" -DAPP_PRODUCT_CODE="$(APP_PRODUCT_CODE)" -DAPP_UNIQUE_ID="$(APP_UNIQUE_ID)" -DAPP_ROMFS="$(TOPDIR)/$(ROMFS)"
-	@echo "built ... $(notdir $@)"
-
-#---------------------------------------------------------------------------------
-# you need a rule like this for each extension you use as binary data
-#---------------------------------------------------------------------------------
-%.bin.o	:	%.bin
-#---------------------------------------------------------------------------------
-	@echo $(notdir $<)
-	@$(bin2o)
-
-# WARNING: This is not the right way to do this! TODO: Do it right!
-#---------------------------------------------------------------------------------
-%.vsh.o	:	%.vsh
-#---------------------------------------------------------------------------------
-	@echo $(notdir $<)
-	@python $(AEMSTRO)/aemstro_as.py $< ../$(notdir $<).shbin
-	@bin2s ../$(notdir $<).shbin | $(PREFIX)as -o $@
-	@echo "extern const u8" `(echo $(notdir $<).shbin | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`"_end[];" > `(echo $(notdir $<).shbin | tr . _)`.h
-	@echo "extern const u8" `(echo $(notdir $<).shbin | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`"[];" >> `(echo $(notdir $<).shbin | tr . _)`.h
-	@echo "extern const u32" `(echo $(notdir $<).shbin | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`_size";" >> `(echo $(notdir $<).shbin | tr . _)`.h
-	@rm ../$(notdir $<).shbin
-
--include $(DEPENDS)
-
-#---------------------------------------------------------------------------------------
-endif
-#---------------------------------------------------------------------------------------
+include buildtools/make_base

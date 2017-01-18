@@ -24,6 +24,7 @@ If you're using Homebrew Launcher and you don't have the latest firmware on your
 ## Compiling
 
 You need devKitPro, ctrulib, sf2d, sfil, sftd and Xerpi's portlibs to be able to compile this.
+When cloning the repo make sure to use `git clone --recursive` in order to also get buildtools.
 
 ## Screenshots
 
