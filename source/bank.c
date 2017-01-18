@@ -237,7 +237,7 @@ void bank(u8* mainbuf, int game) {
 				}
 			}
 			else {
-				if (!isBattleBoxed(mainbuf, game, box, currentEntry)) {
+				if (!isBattleBoxed(mainbuf, game, saveBox, currentEntry)) {
 					u8 tmp[PKMNLENGTH];
 					memset(tmp, 0, PKMNLENGTH);
 				
