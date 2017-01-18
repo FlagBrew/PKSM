@@ -24,6 +24,9 @@ If you're using Homebrew Launcher and you don't have the latest firmware on your
 ## Compiling
 
 You need devKitPro, ctrulib, sf2d, sfil, sftd and Xerpi's portlibs to be able to compile this.
+When cloning the repo make sure to use `git clone --recursive` in order to also get buildtools.
+
+Lastly in case you're compiling for homebrew usage ensure you also create an xml file with `<targets selectable="true"></targets>` and put it along side the `.3dsx` file with matching names.
 
 ## Screenshots
 

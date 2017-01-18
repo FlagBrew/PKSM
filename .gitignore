@@ -1,10 +1,5 @@
 build/
-PKSM/*.cia
-PKSM/3ds/PKSV
-PKSM/3ds/PKSM/*.3dsx
-PKSM/3ds/PKSM/*.smdh
-*.elf
-*.rsf
+output/
+Release/
 Boop.exe
 Bannertool.exe
-PKSM/servepkx

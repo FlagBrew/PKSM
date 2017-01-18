@@ -1,0 +1,3 @@
+[submodule "buildtools"]
+	path = buildtools
+	url = git@github.com:Steveice10/buildtools.git
