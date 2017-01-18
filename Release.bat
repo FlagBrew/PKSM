@@ -10,6 +10,8 @@ copy servepkx\java\servepkx.exe Release\servepx\java
 copy servepkx\java\README.md Release\servepx\java
 copy servepkx\python\servepkx.py Release\servepx\python
 copy servepkx\python\README.md Release\servepx\python
+@echo ^<targets selectable="true"^>^</targets^> > Release\3ds\PKSM\PKSM.xml
+@echo ^<targets selectable="true"^>^</targets^> > Release\3ds\PKSV\PKSV.xml
 cd Release
 zip -r PKSM.zip .
 cd ..\
