@@ -20,6 +20,10 @@ SOURCE_DIRS := source source/certs
 
 EXTRA_OUTPUT_FILES :=
 
+PORTLIBS_PATH := $(DEVKITPRO)/portlibs
+PORTLIBS := $(PORTLIBS_PATH)/armv6k $(PORTLIBS_PATH)/3ds
+CTRULIB ?= $(DEVKITPRO)/libctru
+
 LIBRARY_DIRS := $(PORTLIBS) $(CTRULIB)
 LIBRARIES := sfil sftd freetype png z sf2d citro3d ctru m
 
