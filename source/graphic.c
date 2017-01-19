@@ -959,10 +959,13 @@ void printEditor(u8* mainbuf, int game, int currentEntry, int langCont) {
 
 u16 getAlternativeSprite(u8* pkmn) {
     u16 tempspecies;
-    if (getForm(pkmn)) {
+	u8 form = getForm(pkmn);
+	if (form) {
 		memcpy(&tempspecies, &personal.pkmData[getPokedexNumber(pkmn)][0x1C], 2);
+		tempspecies += form - 1;
 		
 		switch (tempspecies) {
+			case 824 : return 1;
 			case 829 : return 2;
 			case 922 : return 3;
 			case 828 : return 4;
@@ -970,6 +973,7 @@ u16 getAlternativeSprite(u8* pkmn) {
 			case 945 : return 6;
 			case 917 : return 7;
 			case 916 : return 8;
+			case 825 : return 9;
 			case 921 : return 10;
 			case 920 : return 11;
 			case 826 : return 12;
@@ -989,7 +993,14 @@ u16 getAlternativeSprite(u8* pkmn) {
 			case 924 : return 26;
 			case 914 : return 27;
 			case 915 : return 28;
+			case 813 : return 29;
 			case 809 : return 30;
+			case 814 : return 31;
+			case 812 : return 32;
+			case 811 : return 33;
+			case 803 : return 34;
+			case 810 : return 35;
+			case 804 : return 36;
 		}
 	}
 	

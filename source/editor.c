@@ -370,8 +370,11 @@ u16 getEggMove(u8 *pkmn, const int nmove) {
 
 u16 getStat(u8* pkmn, const int stat) {
     u16 tempspecies = getPokedexNumber(pkmn);
-    if (getForm(pkmn))
+	u8 form = getForm(pkmn);
+    if (form) {
 		memcpy(&tempspecies, &personal.pkmData[getPokedexNumber(pkmn)][0x1C], 2);
+		tempspecies += form - 1;
+	}
 
     u8 mult = 10;
     u16 final;
@@ -604,8 +607,11 @@ void setSID(u8* pkmn, u16 sid) {
 
 void setAbility(u8* pkmn, const u8 ability) {
     u16 tempspecies = getPokedexNumber(pkmn);
-    if (getForm(pkmn))
+    u8 form = getForm(pkmn);
+    if (form) {
 		memcpy(&tempspecies, &personal.pkmData[getPokedexNumber(pkmn)][0x1C], 2);
+		tempspecies += form - 1;
+	}
 	
 	u8 abilitynum = 0;
 	if (ability == 0)      abilitynum = 1;
