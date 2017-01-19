@@ -30,12 +30,12 @@ Lastly in case you're compiling for homebrew usage ensure you also create an xml
 
 ## Screenshots
 
-![pksm](resources/01.png) ![pksm](resources/02.png)
-![pksm](resources/03.png) ![pksm](resources/04.png)
-![pksm](resources/05.png) ![pksm](resources/06.png)
-![pksm](resources/07.png) ![pksm](resources/08.png)
-![pksm](resources/09.png) ![pksm](resources/10.png)
-![pksm](resources/11.png) ![pksm](resources/12.png)
+![pksm](assets/site/01.png) ![pksm](assets/site/02.png)
+![pksm](assets/site/03.png) ![pksm](assets/site/04.png)
+![pksm](assets/site/05.png) ![pksm](assets/site/06.png)
+![pksm](assets/site/07.png) ![pksm](assets/site/08.png)
+![pksm](assets/site/09.png) ![pksm](assets/site/10.png)
+![pksm](assets/site/11.png) ![pksm](assets/site/12.png)
  
 ## Credits
 

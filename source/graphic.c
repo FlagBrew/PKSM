@@ -405,7 +405,7 @@ void gameSelectorMenu(int n) {
 }
 
 void mainMenu(int currentEntry) {
-	char* menu[3] = {"EVENTS", "MANAGEMENT", "OTHER"};
+	char* menu[3] = {"EVENTS", "MANAGEMENT", "CREDITS"};
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		drawMenuTop(0);
 	sf2d_end_frame();

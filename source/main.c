@@ -93,7 +93,6 @@ bool initServices() {
 	mkdir("sdmc:/3ds", 0777);
 	mkdir("sdmc:/3ds/data", 0777);
 	mkdir("sdmc:/3ds/data/PKSM", 0777);
-	mkdir("sdmc:/3ds/data/PKSM/builds", 0777);
 	mkdir("sdmc:/3ds/data/PKSM/bank", 0777);
 	mkdir("sdmc:/3ds/data/PKSM/backup", 0777);
 	mkdir("sdmc:/3ds/data/PKSM/additionalassets", 0777);
@@ -395,61 +394,11 @@ int main() {
 						break;
 					}
 					case 2 : {
-						int option = 0;
-						char* menu[3] = {"(TBA)", "CREDITS", "UPDATE"};
-						while (aptMainLoop() && !(hidKeysDown() & KEY_B)) {
-							hidScanInput();
-							hidTouchRead(&touch);
-							
-							if (hidKeysDown() & KEY_TOUCH) {
-								if (touch.px > 60 && touch.px < 260) {
-									if (touch.py > 60 && touch.py < 100) { currentEntry = 0; touchPressed = true; }
-									if (touch.py > 100 && touch.py < 140) { currentEntry = 1; touchPressed = true; }
-									if (touch.py > 140 && touch.py < 180) { currentEntry = 2; touchPressed = true; }
-								}
-							}
-							
-							if (hidKeysDown() & KEY_DUP) {
-								if (option == 0) option = 2;
-								else if (option > 0) option--;
-							}
-
-							if (hidKeysDown() & KEY_DDOWN) {
-								if (option == 2) option = 0;
-								else if (option < 2) option++;
-							}
-							
-							if ((hidKeysDown() & KEY_A) || touchPressed) {
-								touchPressed = false;
-								switch (option) {
-									case 0 : {
-										break;
-									}
-									case 1 : {
-										printCredits();
-										break;
-									}
-									case 2 : {
-										if (!isHBL()) {
-											int temp = autoupdater();
-											if (temp != 0) {
-												free(mainbuf);
-												exitServices();
-												return 0;
-											}
-										}
-										break;
-									}
-								}
-							}
-							menu3(option, menu, 3);
-						}
-						
+						printCredits();					
 						break;
 					}
 				}
 			}
-
 			mainMenu(currentEntry);
 		}
 	} else {

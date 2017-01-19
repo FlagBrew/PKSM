@@ -53,8 +53,6 @@ bool checkFile(char* path);
 void loadPersonal();
 void loadFile(u8* buf, char* path);
 void injectFromFile(u8* mainbuf, char* path, u32 offset);
-int autoupdater();
-void update();
 void printfile(char* path);
 bool isHBL();
 void fsStart();
