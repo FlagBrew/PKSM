@@ -308,7 +308,7 @@ void rewriteCHK4(u8 *mainbuf, int game, int GBO, int SBO) {
 	}
 	else if (game == GAME_HG || game == GAME_SS) {
 		general[0] = 0x0000; general[1] = 0xF618; general[2] = 0xF626;
-		storage[0] = 0xF700; storage[1] = 0x12300; storage[2] = 0x21A0E;		
+		storage[0] = 0xF700; storage[1] = 0x21A00; storage[2] = 0x21A0E;		
 	}
 	
 	memcpy(tmp, mainbuf + GBO + general[0], general[1] - general[0]);
