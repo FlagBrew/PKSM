@@ -311,11 +311,11 @@ void rewriteCHK4(u8 *mainbuf, int game, int GBO, int SBO) {
 		storage[0] = 0xF700; storage[1] = 0x12300; storage[2] = 0x21A0E;		
 	}
 	
-	memcpy(tmp, mainbuf + GBO + general[0], general[1]);
+	memcpy(tmp, mainbuf + GBO + general[0], general[1] - general[0]);
 	cs = ccitt16(tmp, general[1]);
 	memcpy(mainbuf + GBO + general[2], &cs, 2);
 
-	memcpy(tmp, mainbuf + SBO + storage[0], storage[1]);
+	memcpy(tmp, mainbuf + SBO + storage[0], storage[1] - storage[0]);
 	cs = ccitt16(tmp, storage[1]);
 	memcpy(mainbuf + SBO + storage[2], &cs, 2);
 
