@@ -781,17 +781,18 @@ void setWC(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[]) {
 }
 
 void setWC4(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[], int GBO) {
+	mainbuf[GBO + 72] = (u8)((mainbuf[GBO + 72] & 0xFE) | 1);
 	if (game == GAME_HG || game == GAME_SS) {
-		*(mainbuf + 0x9D3C + GBO + (i >> 3)) |= 0x1 << (i & 7);
-		memcpy((void*)(mainbuf + 0x9E3C + GBO + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
+		*(mainbuf + 0x9D3C + GBO + (2047 >> 3)) = 0x80;
+		memcpy(&mainbuf[0x9E3C + GBO + nInjected[0] * PGTLENGTH], wcbuf, PGTLENGTH);
 	}
 	else if (game == GAME_PLATINUM) {
-		*(mainbuf + 0xB4C0 + GBO + (i >> 3)) |= 0x1 << (i & 7);
-		memcpy((void*)(mainbuf + 0xB5C0 + GBO + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
+		*(mainbuf + 0xB4C0 + GBO + (2047 >> 3)) = 0x80;
+		memcpy(&mainbuf[0xB5C0 + GBO + nInjected[0] * PGTLENGTH], wcbuf, PGTLENGTH);
 	}
 	else if (game == GAME_DIAMOND || game == GAME_PEARL) {
-		*(mainbuf + 0xA6D0 + GBO + (i >> 3)) |= 0x1 << (i & 7);
-		memcpy((void*)(mainbuf + 0xA7FC + GBO + nInjected[0] * PGTLENGTH), (const void*)wcbuf, PGTLENGTH);
+		*(mainbuf + 0xA6D0 + GBO + (2047 >> 3)) = 0x80;
+		memcpy(&mainbuf[0xA7FC + GBO + nInjected[0] * PGTLENGTH], wcbuf, PGTLENGTH);
 	}
 
 	nInjected[0] += 1;
