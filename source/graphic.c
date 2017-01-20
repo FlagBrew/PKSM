@@ -1001,6 +1001,25 @@ u16 getAlternativeSprite(u8* pkmn) {
 			case 803 : return 34;
 			case 810 : return 35;
 			case 804 : return 36;
+			case 805 : return 37;
+			case 806 : return 40;
+			case 807 : return 41;
+			case 819 : return 42;
+			case 820 : return 43;
+			case 821 : return 44;
+			case 877 : return 78;
+			case 832 : return 83;
+			case 833 : return 84;
+			case 834 : return 85;
+			case 835 : return 86;
+			case 836 : return 87;
+			case 837 : return 88;
+			case 838 : return 89;
+			case 839 : return 90;
+			case 840 : return 91;
+			case 904 : return 94;
+			case 905 : return 95;
+			case 906 : return 96;
 		}
 	}
 	
