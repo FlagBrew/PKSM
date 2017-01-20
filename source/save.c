@@ -68,7 +68,7 @@ int getActiveGBO(u8* mainbuf, int game) {
 	u8 dummy[10];
 	memset(dummy, 0XFF, 10);
 	
-	memcpy(&temp, mainbuf, 10);
+	memcpy(&temp, &mainbuf[0x00000], 10);
 	if (!memcmp(temp, dummy, 10))
 		return 1;
 	
@@ -312,11 +312,11 @@ void rewriteCHK4(u8 *mainbuf, int game, int GBO, int SBO) {
 	}
 	
 	memcpy(tmp, mainbuf + GBO + general[0], general[1] - general[0]);
-	cs = ccitt16(tmp, general[1]);
+	cs = ccitt16(tmp, general[1] - general[0]);
 	memcpy(mainbuf + GBO + general[2], &cs, 2);
 
 	memcpy(tmp, mainbuf + SBO + storage[0], storage[1] - storage[0]);
-	cs = ccitt16(tmp, storage[1]);
+	cs = ccitt16(tmp, storage[1] - storage[0]);
 	memcpy(mainbuf + SBO + storage[2], &cs, 2);
 
 	free(tmp);
