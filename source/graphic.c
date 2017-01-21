@@ -1539,8 +1539,12 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 
 			if (getPokedexNumber(pkmn)) {
 				u16 tempspecies = getPokedexNumber(pkmn);
-				if (getForm(pkmn))
+				u8 form = getForm(pkmn);
+				if (form) {
 					memcpy(&tempspecies, &personal.pkmData[getPokedexNumber(pkmn)][0x1C], 2);
+					tempspecies += form - 1;
+				}
+
 				u8 type1 = personal.pkmData[tempspecies][0x6];
 				u8 type2 = personal.pkmData[tempspecies][0x7];
 				
