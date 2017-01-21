@@ -362,6 +362,16 @@ u8 getForm(u8* pkmn) { return ((*(u8*)(pkmn + 0x1D)) >> 3); }
 u16 getItem(u8* pkmn) { return *(u16*)(pkmn + 0x0A); }
 u8 getHPType(u8* pkmn) { return 15 * ((getIV(pkmn, 0)& 1) + 2 * (getIV(pkmn, 1) & 1) + 4 * (getIV(pkmn, 2) & 1) + 8 * (getIV(pkmn, 3) & 1) + 16 * (getIV(pkmn, 4) & 1) + 32 * (getIV(pkmn, 5) & 1)) / 63; }
 
+u16 getFormSpeciesNumber(u8 *pkmn) {	
+	u16 tempspecies = getPokedexNumber(pkmn);
+	u8 form = getForm(pkmn);
+	if (form) {
+		memcpy(&tempspecies, &personal.pkmData[getPokedexNumber(pkmn)][0x1C], 2);
+		tempspecies += form - 1;
+	}
+	return tempspecies;
+}
+
 u16 getEggMove(u8 *pkmn, const int nmove) { 
     u16 eggmovebuffer[4];
     memcpy(&eggmovebuffer, &pkmn[0x6A], EGGMOVELENGTH*4);
@@ -369,12 +379,7 @@ u16 getEggMove(u8 *pkmn, const int nmove) {
 }
 
 u16 getStat(u8* pkmn, const int stat) {
-    u16 tempspecies = getPokedexNumber(pkmn);
-	u8 form = getForm(pkmn);
-    if (form) {
-		memcpy(&tempspecies, &personal.pkmData[getPokedexNumber(pkmn)][0x1C], 2);
-		tempspecies += form - 1;
-	}
+    u16 tempspecies = getFormSpeciesNumber(pkmn);
 
     u8 mult = 10;
     u16 final;
@@ -606,12 +611,7 @@ void setSID(u8* pkmn, u16 sid) {
 }
 
 void setAbility(u8* pkmn, const u8 ability) {
-    u16 tempspecies = getPokedexNumber(pkmn);
-    u8 form = getForm(pkmn);
-    if (form) {
-		memcpy(&tempspecies, &personal.pkmData[getPokedexNumber(pkmn)][0x1C], 2);
-		tempspecies += form - 1;
-	}
+    u16 tempspecies = getFormSpeciesNumber(pkmn);
 	
 	u8 abilitynum = 0;
 	if (ability == 0)      abilitynum = 1;

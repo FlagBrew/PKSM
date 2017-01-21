@@ -958,13 +958,10 @@ void printEditor(u8* mainbuf, int game, int currentEntry, int langCont) {
 }
 
 u16 getAlternativeSprite(u8* pkmn, int game) {
-    u16 tempspecies;
 	u8 form = getForm(pkmn);
 	bool isGen7 = game == GAME_SUN || game == GAME_MOON;
 	if (form) {
-		memcpy(&tempspecies, &personal.pkmData[getPokedexNumber(pkmn)][0x1C], 2);
-		tempspecies += form - 1;
-		
+		u16 tempspecies = getFormSpeciesNumber(pkmn);
 		switch (tempspecies) {
 			case 824 : return 1;
 			case 829 : return 2;
