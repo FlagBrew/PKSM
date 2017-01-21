@@ -25,6 +25,7 @@ Copyright (C) 2016 Bernardo Giordano
 
 /* ************************ local variables ************************ */
 int lookupHT[] = {0, 1, 2, 5, 3, 4};
+u8 DPActiveFlag[] = {0x20, 0x83, 0xB8, 0xED};
 
 u32 expTable[100][6] = {
   {0, 0, 0, 0, 0, 0},
@@ -791,7 +792,7 @@ void setWC4(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[], int GBO) {
 		memcpy(&mainbuf[0xB5C0 + GBO + nInjected[0] * PGTLENGTH], wcbuf, PGTLENGTH);
 	}
 	else if (game == GAME_DIAMOND || game == GAME_PEARL) {
-		*(mainbuf + 0xA6D0 + GBO + (2047 >> 3)) = 0x80;
+		memcpy(&mainbuf[0xA7D0 + GBO + nInjected[0] * 4], &DPActiveFlag[0], 4);
 		memcpy(&mainbuf[0xA7FC + GBO + nInjected[0] * PGTLENGTH], wcbuf, PGTLENGTH);
 	}
 
