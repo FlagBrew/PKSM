@@ -365,10 +365,16 @@ u8 getHPType(u8* pkmn) { return 15 * ((getIV(pkmn, 0)& 1) + 2 * (getIV(pkmn, 1) 
 u16 getFormSpeciesNumber(u8 *pkmn) {	
 	u16 tempspecies = getPokedexNumber(pkmn);
 	u8 form = getForm(pkmn);
-	if (form) {
-		memcpy(&tempspecies, &personal.pkmData[getPokedexNumber(pkmn)][0x1C], 2);
-		tempspecies += form - 1;
-	}
+	u8 formcnt = personal.pkmData[tempspecies][0x20];
+
+	if (form && form < formcnt) {
+		u16 backspecies = tempspecies;
+		memcpy(&tempspecies, &personal.pkmData[tempspecies][0x1C], 2);
+		if (!tempspecies)
+			tempspecies = backspecies;
+		else if (form < formcnt)
+			tempspecies += form - 1;
+	}	
 	return tempspecies;
 }
 
