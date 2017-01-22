@@ -1009,8 +1009,8 @@ u16 getAlternativeSprite(u8* pkmn, int game) {
 			case 671 : return form < 5 ? (115 + form) : 0;
 			case 676 : return form < 10 ? (119 + form) : 0;
 			case 718 : return form < 3 ? (128 + form) : 0;
-			case 741 : return form < 4 ? (130 + form) : 0;
-			case 720 : return 134;
+			case 720 : return 131;
+			case 741 : return form < 4 ? (131 + form) : 0;
 			case 745 : return 135;
 			case 774 : return form < 7 ? 0 : (form < 14 ? (129 + form) : 0);
 			case 801 : return 143;
