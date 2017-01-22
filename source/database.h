@@ -27,8 +27,7 @@ Copyright (C) 2016 Bernardo Giordano
 void findFreeLocationWC(u8 *mainbuf, int game, int nInjected[]);
 int getN(int i);
 void setBoxBin(u8* mainbuf, int game, int NBOXES, int N, char* path[]);
-int checkMultipleWC6(u8* mainbuf, int game, int i, int langCont, int nInjected[], int adapt);
-int checkMultipleWC7(u8* mainbuf, int game, int i, int langCont, int nInjected[], int adapt);
+int checkMultipleWCX(u8* mainbuf, int game, int i, int langCont, int nInjected[], int adapt);
 void eventDatabase7(u8* mainbuf, int game);
 void eventDatabase6(u8* mainbuf, int game);
 void eventDatabase5(u8* mainbuf, int game);

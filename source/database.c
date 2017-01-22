@@ -104,146 +104,139 @@ void setBoxBin(u8* mainbuf, int game, int NBOXES, int N, char* path[]) {
 	}
 }
 
-int checkMultipleWC7(u8* mainbuf, int game, int i, int langCont, int nInjected[], int adapt) {
+int checkMultipleWCX(u8* mainbuf, int game, int i, int langCont, int nInjected[], int adapt) {
 	int n = getN(i);
 	if (n == 0)
 		return 0;
 	
-	for (int j = 0; j < n; j++) {
-		char *wc7path = (char*)malloc(40 * sizeof(char));
+	if (game < 4) {
+		for (int j = 0; j < n; j++) {
+			char *wcxpath = (char*)malloc(40 * sizeof(char));
+			switch (langCont) {
+				case 0 : {
+					snprintf(wcxpath, 40, "romfs:/wcx/jpn/%d-%d.wcx", i, j + 1);
+					break;
+				} 
+				case 1 : {
+					snprintf(wcxpath, 40, "romfs:/wcx/eng/%d-%d.wcx", i, j + 1);
+					break;
+				}
+				case 2 : {
+					snprintf(wcxpath, 40, "romfs:/wcx/fre/%d-%d.wcx", i, j + 1);
+					break;
+				}
+				case 3 : {
+					snprintf(wcxpath, 40, "romfs:/wcx/ita/%d-%d.wcx", i, j + 1);
+					break;
+				}
+				case 4 : {
+					snprintf(wcxpath, 40, "romfs:/wcx/ger/%d-%d.wcx", i, j + 1);
+					break;
+				}
+				case 5 : {
+					snprintf(wcxpath, 40, "romfs:/wcx/spa/%d-%d.wcx", i, j + 1);
+					break;
+				}
+				case 6 : {
+					snprintf(wcxpath, 40, "romfs:/wcx/kor/%d-%d.wcx", i, j + 1);
+					break;
+				}
+			}
+			
+			FILE *fptr = fopen(wcxpath, "rt");
+			if (fptr == NULL) {
+				fclose(fptr);
+				free(wcxpath);
+				return 15;
+			}
+			fseek(fptr, 0, SEEK_END);
+			u32 contentsize = ftell(fptr);
+			u8 *wcxbuf = (u8*)malloc(contentsize);
+			if (wcxbuf == NULL) {
+				fclose(fptr);
+				free(wcxbuf);
+				free(wcxpath);
+				return 8;
+			}
+			rewind(fptr);
+			fread(wcxbuf, contentsize, 1, fptr);
+			fclose(fptr);
+
+			if (adapt)
+				setLanguage(mainbuf, game, langCont);
+
+			setWC(mainbuf, wcxbuf, game, i, nInjected);
+
+			free(wcxpath);
+			free(wcxbuf);
+		}		
+	} else for (int j = 0; j < n; j++) {
+		char *wcxpath = (char*)malloc(40 * sizeof(char));
 		switch (langCont) {
 			case 0 : {
-				snprintf(wc7path, 40, "romfs:/wc7/jpn/%d-%d.wc7", i, j + 1);
+				snprintf(wcxpath, 40, "romfs:/wcx/jpn/%d-%d.wcx", i, j + 1);
 				break;
 			} 
 			case 1 : {
-				snprintf(wc7path, 40, "romfs:/wc7/eng/%d-%d.wc7", i, j + 1);
+				snprintf(wcxpath, 40, "romfs:/wcx/eng/%d-%d.wcx", i, j + 1);
 				break;
 			}
 			case 2 : {
-				snprintf(wc7path, 40, "romfs:/wc7/fre/%d-%d.wc7", i, j + 1);
+				snprintf(wcxpath, 40, "romfs:/wcx/fre/%d-%d.wcx", i, j + 1);
 				break;
 			}
 			case 3 : {
-				snprintf(wc7path, 40, "romfs:/wc7/ita/%d-%d.wc7", i, j + 1);
+				snprintf(wcxpath, 40, "romfs:/wcx/ita/%d-%d.wcx", i, j + 1);
 				break;
 			}
 			case 4 : {
-				snprintf(wc7path, 40, "romfs:/wc7/ger/%d-%d.wc7", i, j + 1);
+				snprintf(wcxpath, 40, "romfs:/wcx/ger/%d-%d.wcx", i, j + 1);
 				break;
 			}
 			case 5 : {
-				snprintf(wc7path, 40, "romfs:/wc7/spa/%d-%d.wc7", i, j + 1);
+				snprintf(wcxpath, 40, "romfs:/wcx/spa/%d-%d.wcx", i, j + 1);
 				break;
 			}
 			case 6 : {
-				snprintf(wc7path, 40, "romfs:/wc7/kor/%d-%d.wc7", i, j + 1);
+				snprintf(wcxpath, 40, "romfs:/wcx/kor/%d-%d.wcx", i, j + 1);
 				break;
 			}
 			case 7 : {
-				snprintf(wc7path, 40, "romfs:/wc7/chs/%d-%d.wc7", i, j + 1);
+				snprintf(wcxpath, 40, "romfs:/wcx/chs/%d-%d.wcx", i, j + 1);
 				break;
 			}
 			case 8 : {
-				snprintf(wc7path, 40, "romfs:/wc7/cht/%d-%d.wc7", i, j + 1);
+				snprintf(wcxpath, 40, "romfs:/wcx/cht/%d-%d.wcx", i, j + 1);
 				break;
 			}
 		}
 		
-		FILE *fptr = fopen(wc7path, "rt");
+		FILE *fptr = fopen(wcxpath, "rt");
 		if (fptr == NULL) {
 			fclose(fptr);
-			free(wc7path);
+			free(wcxpath);
 			return 15;
 		}
 		fseek(fptr, 0, SEEK_END);
 		u32 contentsize = ftell(fptr);
-		u8 *wc7buf = (u8*)malloc(contentsize);
-		if (wc7buf == NULL) {
+		u8 *wcxbuf = (u8*)malloc(contentsize);
+		if (wcxbuf == NULL) {
 			fclose(fptr);
-			free(wc7buf);
-			free(wc7path);
+			free(wcxbuf);
+			free(wcxpath);
 			return 8;
 		}
 		rewind(fptr);
-		fread(wc7buf, contentsize, 1, fptr);
+		fread(wcxbuf, contentsize, 1, fptr);
 		fclose(fptr);
 
 		if (adapt)
 			setLanguage(mainbuf, game, langCont);
 
-		setWC(mainbuf, wc7buf, game, i, nInjected);
+		setWC(mainbuf, wcxbuf, game, i, nInjected);
 
-		free(wc7path);
-		free(wc7buf);
-	}
-	return 1;
-}
-
-int checkMultipleWC6(u8* mainbuf, int game, int i, int langCont, int nInjected[], int adapt) {
-	int n = getN(i);
-	if (n == 0)
-		return 0;
-	
-	for (int j = 0; j < n; j++) {
-		char *wc6path = (char*)malloc(40 * sizeof(char));
-		switch (langCont) {
-			case 0 : {
-				snprintf(wc6path, 40, "romfs:/wc6/jpn/%d-%d.wc6", i, j + 1);
-				break;
-			} 
-			case 1 : {
-				snprintf(wc6path, 40, "romfs:/wc6/eng/%d-%d.wc6", i, j + 1);
-				break;
-			}
-			case 2 : {
-				snprintf(wc6path, 40, "romfs:/wc6/fre/%d-%d.wc6", i, j + 1);
-				break;
-			}
-			case 3 : {
-				snprintf(wc6path, 40, "romfs:/wc6/ita/%d-%d.wc6", i, j + 1);
-				break;
-			}
-			case 4 : {
-				snprintf(wc6path, 40, "romfs:/wc6/ger/%d-%d.wc6", i, j + 1);
-				break;
-			}
-			case 5 : {
-				snprintf(wc6path, 40, "romfs:/wc6/spa/%d-%d.wc6", i, j + 1);
-				break;
-			}
-			case 6 : {
-				snprintf(wc6path, 40, "romfs:/wc6/kor/%d-%d.wc6", i, j + 1);
-				break;
-			}
-		}
-		
-		FILE *fptr = fopen(wc6path, "rt");
-		if (fptr == NULL) {
-			fclose(fptr);
-			free(wc6path);
-			return 15;
-		}
-		fseek(fptr, 0, SEEK_END);
-		u32 contentsize = ftell(fptr);
-		u8 *wc6buf = (u8*)malloc(contentsize);
-		if (wc6buf == NULL) {
-			fclose(fptr);
-			free(wc6buf);
-			free(wc6path);
-			return 8;
-		}
-		rewind(fptr);
-		fread(wc6buf, contentsize, 1, fptr);
-		fclose(fptr);
-
-		if (adapt)
-			setLanguage(mainbuf, game, langCont);
-
-		setWC(mainbuf, wc6buf, game, i, nInjected);
-
-		free(wc6path);
-		free(wc6buf);
+		free(wcxpath);
+		free(wcxbuf);
 	}
 	return 1;
 }
@@ -266,9 +259,6 @@ void eventDatabase7(u8* mainbuf, int game) {
 	
 	while(aptMainLoop()) {
 		hidScanInput();
-		touchPosition touch;
-		hidTouchRead(&touch);		
-		if ((hidKeysDown() & KEY_TOUCH) && touch.px > 298 && touch.px < 320 && touch.py > 207 && touch.py < 225) break;
 		
 		if (hidKeysDown() & KEY_B)
 			break;
@@ -355,44 +345,44 @@ void eventDatabase7(u8* mainbuf, int game) {
 		
 		if (hidKeysDown() & KEY_A && spriteArray[page*10+currentEntry] != -1) {
 			int i = page * 10 + currentEntry;
-			// check for single wc7 events
+			// check for single wcx events
 			char *testpath = (char*)malloc(40 * sizeof(char));
 			for (int j = 0; j < 9; j++) {
 				switch (j) {
 					case 0 : {
-						snprintf(testpath, 40, "romfs:/wc7/jpn/%d.wc7", i);
+						snprintf(testpath, 40, "romfs:/wcx/jpn/%d.wcx", i);
 						break;
 					} 
 					case 1 : {
-						snprintf(testpath, 40, "romfs:/wc7/eng/%d.wc7", i);
+						snprintf(testpath, 40, "romfs:/wcx/eng/%d.wcx", i);
 						break;
 					}
 					case 2 : {
-						snprintf(testpath, 40, "romfs:/wc7/fre/%d.wc7", i);
+						snprintf(testpath, 40, "romfs:/wcx/fre/%d.wcx", i);
 						break;
 					}
 					case 3 : {
-						snprintf(testpath, 40, "romfs:/wc7/ita/%d.wc7", i);
+						snprintf(testpath, 40, "romfs:/wcx/ita/%d.wcx", i);
 						break;
 					}
 					case 4 : {
-						snprintf(testpath, 40, "romfs:/wc7/ger/%d.wc7", i);
+						snprintf(testpath, 40, "romfs:/wcx/ger/%d.wcx", i);
 						break;
 					}
 					case 5 : {
-						snprintf(testpath, 40, "romfs:/wc7/spa/%d.wc7", i);
+						snprintf(testpath, 40, "romfs:/wcx/spa/%d.wcx", i);
 						break;
 					}
 					case 6 : {
-						snprintf(testpath, 40, "romfs:/wc7/kor/%d.wc7", i);
+						snprintf(testpath, 40, "romfs:/wcx/kor/%d.wcx", i);
 						break;
 					}
 					case 7 : {
-						snprintf(testpath, 40, "romfs:/wc7/chs/%d.wc7", i);
+						snprintf(testpath, 40, "romfs:/wcx/chs/%d.wcx", i);
 						break;
 					}
 					case 8 : {
-						snprintf(testpath, 40, "romfs:/wc7/cht/%d.wc7", i);
+						snprintf(testpath, 40, "romfs:/wcx/cht/%d.wcx", i);
 						break;
 					}
 				}
@@ -401,7 +391,7 @@ void eventDatabase7(u8* mainbuf, int game) {
 				else { langVett[j] = false; fclose(f); }
 			}
 			
-			//check for multiple wc7 events
+			//check for multiple wcx events
 			int k, n = getN(i);
 			if (n != 0) {
 				for (int j = 0; j < 9; j++) {
@@ -409,39 +399,39 @@ void eventDatabase7(u8* mainbuf, int game) {
 					for (int t = 0; t < n; t++) {
 						switch (j) {
 							case 0 : {
-								snprintf(testpath, 40, "romfs:/wc7/jpn/%d-%d.wc7", i, t + 1);
+								snprintf(testpath, 40, "romfs:/wcx/jpn/%d-%d.wcx", i, t + 1);
 								break;
 							} 
 							case 1 : {
-								snprintf(testpath, 40, "romfs:/wc7/eng/%d-%d.wc7", i, t + 1);
+								snprintf(testpath, 40, "romfs:/wcx/eng/%d-%d.wcx", i, t + 1);
 								break;
 							}
 							case 2 : {
-								snprintf(testpath, 40, "romfs:/wc7/fre/%d-%d.wc7", i, t + 1);
+								snprintf(testpath, 40, "romfs:/wcx/fre/%d-%d.wcx", i, t + 1);
 								break;
 							}
 							case 3 : {
-								snprintf(testpath, 40, "romfs:/wc7/ita/%d-%d.wc7", i, t + 1);
+								snprintf(testpath, 40, "romfs:/wcx/ita/%d-%d.wcx", i, t + 1);
 								break;
 							}
 							case 4 : {
-								snprintf(testpath, 40, "romfs:/wc7/ger/%d-%d.wc7", i, t + 1);
+								snprintf(testpath, 40, "romfs:/wcx/ger/%d-%d.wcx", i, t + 1);
 								break;
 							}
 							case 5 : {
-								snprintf(testpath, 40, "romfs:/wc7/spa/%d-%d.wc7", i, t + 1);
+								snprintf(testpath, 40, "romfs:/wcx/spa/%d-%d.wcx", i, t + 1);
 								break;
 							}
 							case 6 : {
-								snprintf(testpath, 40, "romfs:/wc7/kor/%d-%d.wc7", i, t + 1);
+								snprintf(testpath, 40, "romfs:/wcx/kor/%d-%d.wcx", i, t + 1);
 								break;
 							}
 							case 7 : {
-								snprintf(testpath, 40, "romfs:/wc7/chs/%d-%d.wc7", i, t + 1);
+								snprintf(testpath, 40, "romfs:/wcx/chs/%d-%d.wcx", i, t + 1);
 								break;
 							}
 							case 8 : {
-								snprintf(testpath, 40, "romfs:/wc7/cht/%d-%d.wc7", i, t + 1);
+								snprintf(testpath, 40, "romfs:/wcx/cht/%d-%d.wcx", i, t + 1);
 								break;
 							}
 						}
@@ -497,7 +487,7 @@ void eventDatabase7(u8* mainbuf, int game) {
 					if (nInjected[0] >= 48) 
 						nInjected[0] = 0;
 					
-					int ret = checkMultipleWC7(mainbuf, game, i, langSelected, nInjected, adapt);
+					int ret = checkMultipleWCX(mainbuf, game, i, langSelected, nInjected, adapt);
 					if (ret != 0 && ret != 1) {
 						infoDisp("Error during injection!");
 						break;
@@ -507,65 +497,65 @@ void eventDatabase7(u8* mainbuf, int game) {
 						break;
 					}
 					
-					char *wc7path = (char*)malloc(30 * sizeof(char));
+					char *wcxpath = (char*)malloc(30 * sizeof(char));
 					switch (langSelected) {
 						case 0 : {
-							snprintf(wc7path, 30, "romfs:/wc7/jpn/%d.wc7", i);
+							snprintf(wcxpath, 30, "romfs:/wcx/jpn/%d.wcx", i);
 							break;
 						} 
 						case 1 : {
-							snprintf(wc7path, 30, "romfs:/wc7/eng/%d.wc7", i);
+							snprintf(wcxpath, 30, "romfs:/wcx/eng/%d.wcx", i);
 							break;
 						}
 						case 2 : {
-							snprintf(wc7path, 30, "romfs:/wc7/fre/%d.wc7", i);
+							snprintf(wcxpath, 30, "romfs:/wcx/fre/%d.wcx", i);
 							break;
 						}
 						case 3 : {
-							snprintf(wc7path, 30, "romfs:/wc7/ita/%d.wc7", i);
+							snprintf(wcxpath, 30, "romfs:/wcx/ita/%d.wcx", i);
 							break;
 						}
 						case 4 : {
-							snprintf(wc7path, 30, "romfs:/wc7/ger/%d.wc7", i);
+							snprintf(wcxpath, 30, "romfs:/wcx/ger/%d.wcx", i);
 							break;
 						}
 						case 5 : {
-							snprintf(wc7path, 30, "romfs:/wc7/spa/%d.wc7", i);
+							snprintf(wcxpath, 30, "romfs:/wcx/spa/%d.wcx", i);
 							break;
 						}
 						case 6 : {
-							snprintf(wc7path, 30, "romfs:/wc7/kor/%d.wc7", i);
+							snprintf(wcxpath, 30, "romfs:/wcx/kor/%d.wcx", i);
 							break;
 						}
 						case 7 : {
-							snprintf(wc7path, 30, "romfs:/wc7/chs/%d.wc7", i);
+							snprintf(wcxpath, 30, "romfs:/wcx/chs/%d.wcx", i);
 							break;
 						}
 						case 8 : {
-							snprintf(wc7path, 30, "romfs:/wc7/cht/%d.wc7", i);
+							snprintf(wcxpath, 30, "romfs:/wcx/cht/%d.wcx", i);
 							break;
 						}
 					}
 					
-					FILE *fptr = fopen(wc7path, "rt");
+					FILE *fptr = fopen(wcxpath, "rt");
 					if (fptr == NULL) {
 						fclose(fptr);
-						free(wc7path);
+						free(wcxpath);
 						infoDisp("Error during injection!");
 						break;
 					}
 					fseek(fptr, 0, SEEK_END);
 					u32 contentsize = ftell(fptr);
-					u8 *wc7buf = (u8*)malloc(contentsize);
-					if (wc7buf == NULL) {
+					u8 *wcxbuf = (u8*)malloc(contentsize);
+					if (wcxbuf == NULL) {
 						fclose(fptr);
-						free(wc7buf);
-						free(wc7path);
+						free(wcxbuf);
+						free(wcxpath);
 						infoDisp("Error during injection!");
 						break;
 					}
 					rewind(fptr);
-					fread(wc7buf, contentsize, 1, fptr);
+					fread(wcxbuf, contentsize, 1, fptr);
 					fclose(fptr);
 
 					if (!(overwrite))
@@ -574,10 +564,10 @@ void eventDatabase7(u8* mainbuf, int game) {
 					if (adapt)
 						setLanguage(mainbuf, game, langSelected);
 
-					setWC(mainbuf, wc7buf, game, i, nInjected);
+					setWC(mainbuf, wcxbuf, game, i, nInjected);
 
-					free(wc7path);
-					free(wc7buf);					
+					free(wcxpath);
+					free(wcxbuf);					
 					infoDisp("Injection succeeded!");
 					break;
 				}
@@ -612,9 +602,6 @@ void eventDatabase6(u8* mainbuf, int game) {
 	
 	while(aptMainLoop()) {
 		hidScanInput();
-		touchPosition touch;
-		hidTouchRead(&touch);		
-		if ((hidKeysDown() & KEY_TOUCH) && touch.px > 298 && touch.px < 320 && touch.py > 207 && touch.py < 225) break;
 		
 		if (hidKeysDown() & KEY_B)
 			break;
@@ -701,36 +688,36 @@ void eventDatabase6(u8* mainbuf, int game) {
 		
 		if (hidKeysDown() & KEY_A && spriteArray[page*10+currentEntry] != -1) {
 			int i = page * 10 + currentEntry;
-			// check for single wc6 events
+			// check for single wcx events
 			char *testpath = (char*)malloc(40 * sizeof(char));
 			for (int j = 0; j < 7; j++) {
 				switch (j) {
 					case 0 : {
-						snprintf(testpath, 40, "romfs:/wc6/jpn/%d.wc6", i);
+						snprintf(testpath, 40, "romfs:/wcx/jpn/%d.wcx", i);
 						break;
 					} 
 					case 1 : {
-						snprintf(testpath, 40, "romfs:/wc6/eng/%d.wc6", i);
+						snprintf(testpath, 40, "romfs:/wcx/eng/%d.wcx", i);
 						break;
 					}
 					case 2 : {
-						snprintf(testpath, 40, "romfs:/wc6/fre/%d.wc6", i);
+						snprintf(testpath, 40, "romfs:/wcx/fre/%d.wcx", i);
 						break;
 					}
 					case 3 : {
-						snprintf(testpath, 40, "romfs:/wc6/ita/%d.wc6", i);
+						snprintf(testpath, 40, "romfs:/wcx/ita/%d.wcx", i);
 						break;
 					}
 					case 4 : {
-						snprintf(testpath, 40, "romfs:/wc6/ger/%d.wc6", i);
+						snprintf(testpath, 40, "romfs:/wcx/ger/%d.wcx", i);
 						break;
 					}
 					case 5 : {
-						snprintf(testpath, 40, "romfs:/wc6/spa/%d.wc6", i);
+						snprintf(testpath, 40, "romfs:/wcx/spa/%d.wcx", i);
 						break;
 					}
 					case 6 : {
-						snprintf(testpath, 40, "romfs:/wc6/kor/%d.wc6", i);
+						snprintf(testpath, 40, "romfs:/wcx/kor/%d.wcx", i);
 						break;
 					}
 				}
@@ -739,7 +726,7 @@ void eventDatabase6(u8* mainbuf, int game) {
 				else { langVett[j] = false; fclose(f); }
 			}
 			
-			//check for multiple wc6 events
+			//check for multiple wcx events
 			int k, n = getN(i);
 			if (n != 0) {
 				for (int j = 0; j < 7; j++) {
@@ -747,31 +734,31 @@ void eventDatabase6(u8* mainbuf, int game) {
 					for (int t = 0; t < n; t++) {
 						switch (j) {
 							case 0 : {
-								snprintf(testpath, 40, "romfs:/wc6/jpn/%d-%d.wc6", i, t + 1);
+								snprintf(testpath, 40, "romfs:/wcx/jpn/%d-%d.wcx", i, t + 1);
 								break;
 							} 
 							case 1 : {
-								snprintf(testpath, 40, "romfs:/wc6/eng/%d-%d.wc6", i, t + 1);
+								snprintf(testpath, 40, "romfs:/wcx/eng/%d-%d.wcx", i, t + 1);
 								break;
 							}
 							case 2 : {
-								snprintf(testpath, 40, "romfs:/wc6/fre/%d-%d.wc6", i, t + 1);
+								snprintf(testpath, 40, "romfs:/wcx/fre/%d-%d.wcx", i, t + 1);
 								break;
 							}
 							case 3 : {
-								snprintf(testpath, 40, "romfs:/wc6/ita/%d-%d.wc6", i, t + 1);
+								snprintf(testpath, 40, "romfs:/wcx/ita/%d-%d.wcx", i, t + 1);
 								break;
 							}
 							case 4 : {
-								snprintf(testpath, 40, "romfs:/wc6/ger/%d-%d.wc6", i, t + 1);
+								snprintf(testpath, 40, "romfs:/wcx/ger/%d-%d.wcx", i, t + 1);
 								break;
 							}
 							case 5 : {
-								snprintf(testpath, 40, "romfs:/wc6/spa/%d-%d.wc6", i, t + 1);
+								snprintf(testpath, 40, "romfs:/wcx/spa/%d-%d.wcx", i, t + 1);
 								break;
 							}
 							case 6 : {
-								snprintf(testpath, 40, "romfs:/wc6/kor/%d-%d.wc6", i, t + 1);
+								snprintf(testpath, 40, "romfs:/wcx/kor/%d-%d.wcx", i, t + 1);
 								break;
 							}
 						}
@@ -830,7 +817,7 @@ void eventDatabase6(u8* mainbuf, int game) {
 						break;
 					}
 					
-					int ret = checkMultipleWC6(mainbuf, game, i, langSelected, nInjected, adapt);
+					int ret = checkMultipleWCX(mainbuf, game, i, langSelected, nInjected, adapt);
 					if (ret != 0 && ret != 1) {
 						infoDisp("Error during injection!");
 						break;
@@ -840,57 +827,57 @@ void eventDatabase6(u8* mainbuf, int game) {
 						break;
 					}
 					
-					char *wc6path = (char*)malloc(30 * sizeof(char));
+					char *wcxpath = (char*)malloc(30 * sizeof(char));
 					switch (langSelected) {
 						case 0 : {
-							snprintf(wc6path, 30, "romfs:/wc6/jpn/%d.wc6", i);
+							snprintf(wcxpath, 30, "romfs:/wcx/jpn/%d.wcx", i);
 							break;
 						} 
 						case 1 : {
-							snprintf(wc6path, 30, "romfs:/wc6/eng/%d.wc6", i);
+							snprintf(wcxpath, 30, "romfs:/wcx/eng/%d.wcx", i);
 							break;
 						}
 						case 2 : {
-							snprintf(wc6path, 30, "romfs:/wc6/fre/%d.wc6", i);
+							snprintf(wcxpath, 30, "romfs:/wcx/fre/%d.wcx", i);
 							break;
 						}
 						case 3 : {
-							snprintf(wc6path, 30, "romfs:/wc6/ita/%d.wc6", i);
+							snprintf(wcxpath, 30, "romfs:/wcx/ita/%d.wcx", i);
 							break;
 						}
 						case 4 : {
-							snprintf(wc6path, 30, "romfs:/wc6/ger/%d.wc6", i);
+							snprintf(wcxpath, 30, "romfs:/wcx/ger/%d.wcx", i);
 							break;
 						}
 						case 5 : {
-							snprintf(wc6path, 30, "romfs:/wc6/spa/%d.wc6", i);
+							snprintf(wcxpath, 30, "romfs:/wcx/spa/%d.wcx", i);
 							break;
 						}
 						case 6 : {
-							snprintf(wc6path, 30, "romfs:/wc6/kor/%d.wc6", i);
+							snprintf(wcxpath, 30, "romfs:/wcx/kor/%d.wcx", i);
 							break;
 						}
 					}
 					
-					FILE *fptr = fopen(wc6path, "rt");
+					FILE *fptr = fopen(wcxpath, "rt");
 					if (fptr == NULL) {
 						fclose(fptr);
-						free(wc6path);
+						free(wcxpath);
 						infoDisp("Error during injection!");
 						break;
 					}
 					fseek(fptr, 0, SEEK_END);
 					u32 contentsize = ftell(fptr);
-					u8 *wc6buf = (u8*)malloc(contentsize);
-					if (wc6buf == NULL) {
+					u8 *wcxbuf = (u8*)malloc(contentsize);
+					if (wcxbuf == NULL) {
 						fclose(fptr);
-						free(wc6buf);
-						free(wc6path);
+						free(wcxbuf);
+						free(wcxpath);
 						infoDisp("Error during injection!");
 						break;
 					}
 					rewind(fptr);
-					fread(wc6buf, contentsize, 1, fptr);
+					fread(wcxbuf, contentsize, 1, fptr);
 					fclose(fptr);
 
 					if (!(overwrite))
@@ -899,10 +886,10 @@ void eventDatabase6(u8* mainbuf, int game) {
 					if (adapt)
 						setLanguage(mainbuf, game, langSelected);
 
-					setWC(mainbuf, wc6buf, game, i, nInjected);
+					setWC(mainbuf, wcxbuf, game, i, nInjected);
 
-					free(wc6path);
-					free(wc6buf);					
+					free(wcxpath);
+					free(wcxbuf);					
 					infoDisp("Injection succeeded!");
 					break;
 				}
