@@ -961,86 +961,59 @@ u16 getAlternativeSprite(u8* pkmn, int game) {
 	u8 form = getForm(pkmn);
 	if (form) {
 		switch (getPokedexNumber(pkmn)) {
-			case 19 : return 25;
-			case 20 : return 23;
+			case 19 : return 1;
+			case 20 : return 2;
 			case 25 :
 				if (form < 7) {
 					bool isGen7 = (game == GAME_SUN || game == GAME_MOON);
-					return (isGen7 ? 138 : 132) + form - 1;
+					return (isGen7 ? 2 : 8) + form;
 				}
 				break;
-			case 26 : return 22;
-			case 27 : return 20;
-			case 28 : return 19;
-			case 37 : return 27;
-			case 38 : return 28;
-			case 50 : return 18;
-			case 51 : return 6;
-			case 52 : return 8;
-			case 53 : return 7;
-			case 74 : return 16;
-			case 75 : return 13;
-			case 76 : return 11;
-			case 88 : return 10;
-			case 89 : return 3;
-			case 103 : return 24;
-			case 105 : return 26;
-			case 201 : return form < 28 ? (104 + form) : 0;
-			case 386 :
-				switch (form) {
-					case 1 : return 34;
-					case 2 : return 36;
-					case 3 : return 37;
-				}
-				break;
-			case 412 : return form < 3 ? (37 + form) : 0;
-			case 413 : return form < 3 ? (39 + form) : 0;
-			case 422 : return 42;
-			case 423 : return 43;
-			case 479 :
-				switch (form) {
-					case 1 : return 35;
-					case 2 : return 33;
-					case 3 : return 32;
-					case 4 : return 29;
-					case 5 : return 31;
-				}
-				break;
-			case 487 : return 30;
-			case 492 : return 21;
-			case 550 : return 44;
-			case 585 : return form < 4 ? (44 + form) : 0;
-			case 586 : return form < 4 ? (47 + form) : 0;
-			case 641 : return 5;
-			case 642 : return 4;
-			case 645 : return 2;
-			case 646 :
-				switch (form) {
-					case 1 : return 1;
-					case 2 : return 9;
-				}
-				break;
-			case 647 : return 12;
-			case 648 : return 15;
-			case 666 : return form < 20 ? (50 + form) : 0;
-			case 669 : return form < 5 ? (69 + form) : 0;
-			case 670 : return form < 6 ? (73 + form) : 0;
-			case 671 : return form < 5 ? (78 + form) : 0;
-			case 676 : return form < 10 ? (82 + form) : 0;
-			case 718 :
-				switch (form) {
-					case 1 :
-					case 2 :
-						return 92;
-					case 3 : return 0;
-					case 4 : return 93;
-				}
-				break;
-			case 741 : return form < 4 ? (93 + form) : 0;
-			case 720 : return 17;
-			case 745 : return 14;
-			case 774 : return form < 7 ? 0 : (form < 14 ? (96 + form) : 0);
-			case 801 : return 104;
+			case 26 : return 15;
+			case 27 : return 16;
+			case 28 : return 17;
+			case 37 : return 18;
+			case 38 : return 19;
+			case 50 : return 20;
+			case 51 : return 21;
+			case 52 : return 22;
+			case 53 : return 23;
+			case 74 : return 24;
+			case 75 : return 25;
+			case 76 : return 26;
+			case 88 : return 27;
+			case 89 : return 28;
+			case 103 : return 29;
+			case 105 : return 30;
+			case 201 : return form < 28 ? (30 + form) : 0;
+			case 386 : return form < 4 ? (57 + form) : 0;
+			case 412 : return form < 3 ? (60 + form) : 0;
+			case 413 : return form < 3 ? (62 + form) : 0;
+			case 422 : return 65;
+			case 423 : return 66;
+			case 479 : return form < 6 ? (66 + form) : 0;
+			case 487 : return 72;
+			case 492 : return 73;
+			case 550 : return 74;
+			case 585 : return form < 4 ? (74 + form) : 0;
+			case 586 : return form < 4 ? (77 + form) : 0;
+			case 641 : return 81;
+			case 642 : return 82;
+			case 645 : return 83;
+			case 646 : return form < 3 ? (83 + form) : 0;
+			case 647 : return 86;
+			case 648 : return 87;
+			case 666 : return form < 20 ? (87 + form) : 0;
+			case 669 : return form < 5 ? (106 + form) : 0;
+			case 670 : return form < 6 ? (110 + form) : 0;
+			case 671 : return form < 5 ? (115 + form) : 0;
+			case 676 : return form < 10 ? (119 + form) : 0;
+			case 718 : return form < 3 ? (128 + form) : 0;
+			case 741 : return form < 4 ? (130 + form) : 0;
+			case 720 : return 134;
+			case 745 : return 135;
+			case 774 : return form < 7 ? 0 : (form < 14 ? (129 + form) : 0);
+			case 801 : return 143;
 		}
 	}
 	
