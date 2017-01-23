@@ -30,15 +30,9 @@ Copyright (C) 2016 Bernardo Giordano
 #define HIGHBLUE  RGBA8( 28,  45,  86, 255) 
 
 #define BLACK RGBA8(0, 0, 0, 255)
-#define RED RGBA8(255, 0, 0, 255)
 #define SHINYRED RGBA8(255, 17, 17, 255)
-#define GREY RGBA8(0xF0, 0xF0, 0xF0, 0xFF)
-#define DARKGREY RGBA8(0x0, 0x0, 0x0, 150)
 #define WHITE RGBA8(255, 255, 255, 255)
-#define AZZURRO RGBA8(0x33, 0x99, 0xFF, 0xFF)
-#define TRASPWHITE RGBA8(255,255,255,170)
 #define DS RGBA8(48, 48, 48, 255)
-#define GOLD RGBA8(254, 234, 60, 255)
 
 #define EGGSPRITEPOS 803
 
@@ -54,7 +48,6 @@ void infoDisp(char* message);
 int confirmDisp(char* message);
 void freezeMsg(char* message);
 void progressBar(char* message, u32 pagesize, u32 sz);
-void autoupdaterMenu();
 void printCredits();
 void printTitle(const char* title);
 void gameSelectorMenu(int n);

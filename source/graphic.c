@@ -330,9 +330,6 @@ void progressBar(char* message, u32 current, u32 sz) {
 }
 
 void drawMenuTop(int game) {
-	char* version = (char*)malloc(12 * sizeof(char));
-	snprintf(version, 12, "v%d.%d.%d", V1, V2, V3);
-	
 	if (game < 6) {
 		sf2d_draw_texture(cleanTop, 0, 0);
 		printTitle("PKSM");
@@ -341,9 +338,7 @@ void drawMenuTop(int game) {
 	else 
 		sf2d_draw_texture(DSTopBG, 0, 0);
 	
-	sftd_draw_text(fontBold9, (398 - sftd_get_text_width(fontBold9, 9, version)), 229, LIGHTBLUE, 9, version);
-	
-	free(version);
+	sftd_draw_text(fontBold9, (398 - sftd_get_text_width(fontBold9, 9, VERSION)), 229, LIGHTBLUE, 9, VERSION);
 }
 
 void printAnimatedBG(bool isUp) {
@@ -395,10 +390,7 @@ void gameSelectorMenu(int n) {
 		
 		for (int i = 11; i < 15; i++)
 			sftd_draw_text(fontBold15, 82 + 42 * (i - 11) + (32 - sftd_get_text_width(fontBold15, 15, gamesList[i])) / 2, 163, LIGHTBLUE, 15, gamesList[i]);
-		
-		sf2d_draw_rectangle(60, 68, 32, 32, RGBA8(0, 0, 0, 210));
-		sf2d_draw_rectangle(102, 68, 32, 32, RGBA8(0, 0, 0, 210));
-		sf2d_draw_rectangle(144, 68, 32, 32, RGBA8(0, 0, 0, 210));
+
 		printBottomIndications("Move your DPAD. Press A to continue, B to exit.");
 	sf2d_end_frame();
 	sf2d_swapbuffers();
@@ -933,7 +925,7 @@ void printEditor(u8* mainbuf, int game, int currentEntry, int langCont) {
 			switch (i) {
 				case 0 : {
 					int x = 140;
-					sftd_draw_text(fontBold12, 40, y + 10, DARKGREY, 12, "Language:");
+					sftd_draw_text(fontBold12, 40, y + 10, BLACK, 12, "Language:");
 					sf2d_draw_texture(miniBox, x, y + 7);
 					sftd_draw_text(fontBold12, x + (36 - sftd_get_text_width(fontBold12, 12, languages[langCont])) / 2, y + 10, YELLOW, 12, languages[langCont]);
 					break;
