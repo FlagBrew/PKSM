@@ -99,6 +99,7 @@ u8 getLevel(u8* pkmn);
 bool isInfected (u8* pkmn);
 u8 getForm(u8* pkmn);
 u16 getFormSpeciesNumber(u8* pkmn);
+int getLegalFormData(u16 species, int game, int *o_minform, int *o_maxform);
 u16 getStat(u8* pkmn, const int stat);
 bool getPokerus(u8* pkmn);
 u8 getAbility(u8* pkmn);

@@ -960,63 +960,12 @@ void printEditor(u8* mainbuf, int game, int currentEntry, int langCont) {
 u16 getAlternativeSprite(u8* pkmn, int game) {
 	u8 form = getForm(pkmn);
 	if (form) {
-		switch (getPokedexNumber(pkmn)) {
-			case 19 : return 1;
-			case 20 : return 2;
-			case 25 :
-				if (form < 7) {
-					bool isGen7 = (game == GAME_SUN || game == GAME_MOON);
-					return (isGen7 ? 2 : 8) + form;
-				}
-				break;
-			case 26 : return 15;
-			case 27 : return 16;
-			case 28 : return 17;
-			case 37 : return 18;
-			case 38 : return 19;
-			case 50 : return 20;
-			case 51 : return 21;
-			case 52 : return 22;
-			case 53 : return 23;
-			case 74 : return 24;
-			case 75 : return 25;
-			case 76 : return 26;
-			case 88 : return 27;
-			case 89 : return 28;
-			case 103 : return 29;
-			case 105 : return 30;
-			case 201 : return form < 28 ? (30 + form) : 0;
-			case 386 : return form < 4 ? (57 + form) : 0;
-			case 412 : return form < 3 ? (60 + form) : 0;
-			case 413 : return form < 3 ? (62 + form) : 0;
-			case 422 : return 65;
-			case 423 : return 66;
-			case 479 : return form < 6 ? (66 + form) : 0;
-			case 487 : return 72;
-			case 492 : return 73;
-			case 550 : return 74;
-			case 585 : return form < 4 ? (74 + form) : 0;
-			case 586 : return form < 4 ? (77 + form) : 0;
-			case 641 : return 81;
-			case 642 : return 82;
-			case 645 : return 83;
-			case 646 : return form < 3 ? (83 + form) : 0;
-			case 647 : return 86;
-			case 648 : return 87;
-			case 666 : return form < 20 ? (87 + form) : 0;
-			case 669 : return form < 5 ? (106 + form) : 0;
-			case 670 : return form < 6 ? (110 + form) : 0;
-			case 671 : return form < 5 ? (115 + form) : 0;
-			case 676 : return form < 10 ? (119 + form) : 0;
-			case 718 : return form < 3 ? (128 + form) : 0;
-			case 720 : return 131;
-			case 741 : return form < 4 ? (131 + form) : 0;
-			case 745 : return 135;
-			case 774 : return form < 7 ? 0 : (form < 14 ? (129 + form) : 0);
-			case 801 : return 143;
-		}
+		int minform, maxform;
+		int spritenum = getLegalFormData(getPokedexNumber(pkmn), game, &minform, &maxform);
+		if (form >= minform && form <= maxform)
+			spritenum += form - minform;
+		return spritenum;
 	}
-	
 	return 0;
 }
 
@@ -1568,7 +1517,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 					memcpy(pkmn, &bankbuf[bankBox * 30 * PKMNLENGTH + (i * 6 + j) * PKMNLENGTH], PKMNLENGTH);
 					u16 n = getPokedexNumber(pkmn);
 					if (n)
-						printElement(pkmn, game, n, x, y);
+						printElement(pkmn, GAME_SUN, n, x, y);
 
 					if (currentEntry == (i * 6 + j)) {
 						pointer[0] = x + 18;
@@ -1581,8 +1530,8 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 			
 			if (currentEntry < 30) {
 				u16 n = getPokedexNumber(pkmnbuf);
-				if (n) printElementBlend(pkmnbuf, game, n, pointer[0] - 14, pointer[1] + 8);
-				if (n) printElement(pkmnbuf, game, n, pointer[0] - 18, pointer[1] + 3);
+				if (n) printElementBlend(pkmnbuf, GAME_SUN, n, pointer[0] - 14, pointer[1] + 8);
+				if (n) printElement(pkmnbuf, GAME_SUN, n, pointer[0] - 18, pointer[1] + 3);
 				sf2d_draw_texture(selector, pointer[0], pointer[1] - 2 - ((!isBufferized) ? movementOffsetSlow(3) : 0));
 			}
 		}		
@@ -1625,8 +1574,8 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 		if (currentEntry > 29) {
 			if (!isSeen) {
 				u16 n = getPokedexNumber(pkmnbuf);
-				if (n) printElementBlend(pkmnbuf, game, n, pointer[0] - 14, pointer[1] + 8);
-				if (n) printElement(pkmnbuf, game, n, pointer[0] - 18, pointer[1] + 3);
+				if (n) printElementBlend(pkmnbuf, GAME_SUN, n, pointer[0] - 14, pointer[1] + 8);
+				if (n) printElement(pkmnbuf, GAME_SUN, n, pointer[0] - 18, pointer[1] + 3);
 				sf2d_draw_texture(selector, pointer[0], pointer[1] - 2 - ((!isBufferized) ? movementOffsetSlow(3) : 0));
 			} else
 				sf2d_draw_texture(selector, pointer[0], pointer[1] - 2);

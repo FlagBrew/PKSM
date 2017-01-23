@@ -378,6 +378,88 @@ u16 getFormSpeciesNumber(u8 *pkmn) {
 	return tempspecies;
 }
 
+int getLegalFormData(u16 species, int game, int *o_minform, int *o_maxform) {
+	*o_minform = 1;
+	*o_maxform = 1;
+
+	bool sumo = false, oras = false, b2w2 = false, plat = false;
+
+	switch (game)
+	{
+		case GAME_SUN:
+		case GAME_MOON:
+			sumo = true;
+		case GAME_OR:
+		case GAME_AS:
+			oras = true;
+		case GAME_X:
+		case GAME_Y:
+		case GAME_B2:
+		case GAME_W2:
+			b2w2 = true;
+		case GAME_B1:
+		case GAME_W1:
+		case GAME_HG:
+		case GAME_SS:
+		case GAME_PLATINUM:
+			plat = true;
+	}
+
+	switch (species) {
+		// should probably add this info to personal.bin
+		case 19 : return sumo ? 1 : 0;
+		case 20 : return sumo ? 2 : 0;
+		case 25 : *o_maxform = 6; return sumo ? 3 : (oras ? 9 : 0);
+		case 26 : return sumo ? 15 : 0;
+		case 27 : return sumo ? 16 : 0;
+		case 28 : return sumo ? 17 : 0;
+		case 37 : return sumo ? 18 : 0;
+		case 38 : return sumo ? 19 : 0;
+		case 50 : return sumo ? 20 : 0;
+		case 51 : return sumo ? 21 : 0;
+		case 52 : return sumo ? 22 : 0;
+		case 53 : return sumo ? 23 : 0;
+		case 74 : return sumo ? 24 : 0;
+		case 75 : return sumo ? 25 : 0;
+		case 76 : return sumo ? 26 : 0;
+		case 88 : return sumo ? 27 : 0;
+		case 89 : return sumo ? 28 : 0;
+		case 103 : return sumo ? 29 : 0;
+		case 105 : return sumo ? 30 : 0;
+		case 201 : *o_maxform = 27; return 31;
+		case 386 : *o_maxform = 3; return 58;
+		case 412 : *o_maxform = 2; return 61;
+		case 413 : *o_maxform = 2; return 63;
+		case 422 : return 65;
+		case 423 : return 66;
+		case 479 : *o_maxform = 5; return plat ? 67 : 0;
+		case 487 : return plat ? 72 : 0;
+		case 492 : return plat ? 73 : 0;
+		case 550 : return 74;
+		case 585 : *o_maxform = 3; return 75;
+		case 586 : *o_maxform = 3; return 78;
+		case 641 : return b2w2 ? 81 : 0;
+		case 642 : return b2w2 ? 82 : 0;
+		case 645 : return b2w2 ? 83 : 0;
+		case 646 : *o_maxform = 2; return b2w2 ? 84 : 0;
+		case 647 : return b2w2 ? 86 : 0;
+		case 648 : return 87;
+		case 666 : *o_maxform = 19; return 88;
+		case 669 : *o_maxform = 4; return 107;
+		case 670 : *o_maxform = 5; return 111;
+		case 671 : *o_maxform = 4; return 116;
+		case 676 : *o_maxform = 9; return 120;
+		case 718 : *o_maxform = 3; return sumo ? 129 : 0;
+		case 720 : return sumo ? 131 : 0;
+		case 741 : *o_maxform = 3; return 132;
+		case 745 : return 135;
+		case 774 : *o_minform = 7; *o_maxform = 13; return 136;
+		case 801 : return 143;
+	}
+
+	return 0;
+}
+
 u16 getEggMove(u8 *pkmn, const int nmove) { 
     u16 eggmovebuffer[4];
     memcpy(&eggmovebuffer, &pkmn[0x6A], EGGMOVELENGTH*4);
