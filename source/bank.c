@@ -136,9 +136,9 @@ void bank(u8* mainbuf, int game) {
 					u8 tmp[PKMNLENGTH];
 					memset(tmp, 0, PKMNLENGTH);
 					for (u32 i = 0; i < 30; i++) {
-						if (currentEntry < 30) 
+						if (currentEntry < 30)
 							memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + i * PKMNLENGTH], tmp, PKMNLENGTH);
-						else 
+						else if (!isBattleBoxed(mainbuf, game, saveBox, i))
 							setPkmn(mainbuf, saveBox, i, tmp, game);
 					}
 				}
@@ -151,10 +151,12 @@ void bank(u8* mainbuf, int game) {
 				memset(temp, 0, PKMNLENGTH);
 				
 				for (u32 i = 0; i < 30; i++) {
-					getPkmn(mainbuf, saveBox, i, buffer, game); // getpkmn -> buffer
-					memcpy(temp, &bankbuf[bankBox * 30 * PKMNLENGTH + i * PKMNLENGTH], PKMNLENGTH); // memcpy bank -> temp
-					setPkmn(mainbuf, saveBox, i, temp, game); // setpkmn -> temp
-					memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + i * PKMNLENGTH], buffer, PKMNLENGTH); // memcpy bank -> buffer
+					if (!isBattleBoxed(mainbuf, game, saveBox, i)) {
+						getPkmn(mainbuf, saveBox, i, buffer, game); // getpkmn -> buffer
+						memcpy(temp, &bankbuf[bankBox * 30 * PKMNLENGTH + i * PKMNLENGTH], PKMNLENGTH); // memcpy bank -> temp
+						setPkmn(mainbuf, saveBox, i, temp, game); // setpkmn -> temp
+						memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + i * PKMNLENGTH], buffer, PKMNLENGTH); // memcpy bank -> buffer
+					}
 				}
 			}
 			
@@ -163,7 +165,7 @@ void bank(u8* mainbuf, int game) {
 				memset(tmp, 0, PKMNLENGTH);
 				if (currentEntry < 30) 
 					memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], tmp, PKMNLENGTH);
-				else 
+				else if (!isBattleBoxed(mainbuf, game, saveBox, currentEntry - 30))
 					setPkmn(mainbuf, saveBox, currentEntry - 30, tmp, game);
 			}
 				
@@ -212,16 +214,16 @@ void bank(u8* mainbuf, int game) {
 				if (!(game < 4 && getPokedexNumber(pkmn) > 721 && currentEntry > 29)) { // prevent that gen7 stuff goes into gen6 save
 					u8 tmp[PKMNLENGTH];
 					
-					if ((bufferizedfrombank == (currentEntry < 30)) && (coordinate[0] == ((currentEntry < 30) ? bankBox : saveBox)) && (coordinate[1] == currentEntry))
+					if ((bufferizedfrombank == (currentEntry < 30)) && (coordinate[0] == ((currentEntry < 30) ? bankBox : saveBox)) && (coordinate[1] == currentEntry)) //remains at the same place
 						memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], pkmn, PKMNLENGTH);
-					else if ((!bufferizedfrombank == (currentEntry > 29)) && (coordinate[0] == ((currentEntry < 30) ? bankBox : saveBox)) && (coordinate[1] == currentEntry - 30))
+					else if ((!bufferizedfrombank == (currentEntry > 29)) && (coordinate[0] == ((currentEntry < 30) ? bankBox : saveBox)) && (coordinate[1] == currentEntry - 30)) //remains at the same place
 						setPkmn(mainbuf, saveBox, currentEntry - 30, pkmn, game);
 					else if (currentEntry < 30) {
 						memcpy(tmp, &bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], PKMNLENGTH);
 						memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], pkmn, PKMNLENGTH);
 						if (bufferizedfrombank) 
 							memcpy(&bankbuf[coordinate[0] * 30 * PKMNLENGTH + coordinate[1] * PKMNLENGTH], tmp, PKMNLENGTH);
-						else 
+						else
 							setPkmn(mainbuf, coordinate[0], coordinate[1], tmp, game);
 					}
 					else {
@@ -237,7 +239,7 @@ void bank(u8* mainbuf, int game) {
 				}
 			}
 			else {
-				if (!isBattleBoxed(mainbuf, game, saveBox, currentEntry - 30)) {
+				if (!(isBattleBoxed(mainbuf, game, saveBox, currentEntry - 30) && (currentEntry > 29))) {
 					u8 tmp[PKMNLENGTH];
 					memset(tmp, 0, PKMNLENGTH);
 				
