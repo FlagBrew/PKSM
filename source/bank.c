@@ -237,7 +237,7 @@ void bank(u8* mainbuf, int game) {
 				}
 			}
 			else {
-				if (!isBattleBoxed(mainbuf, game, saveBox, currentEntry)) {
+				if (!isBattleBoxed(mainbuf, game, saveBox, currentEntry - 30)) {
 					u8 tmp[PKMNLENGTH];
 					memset(tmp, 0, PKMNLENGTH);
 				
@@ -246,14 +246,26 @@ void bank(u8* mainbuf, int game) {
 					
 					if (currentEntry < 30) {
 						memcpy(pkmn, &bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], PKMNLENGTH);
-						memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], tmp, PKMNLENGTH);
+						if (!getPokedexNumber(pkmn)) {
+							memset(pkmn, 0, PKMNLENGTH);
+							isBufferized = false;
+						} else {
+							memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], tmp, PKMNLENGTH);
+							isBufferized = true;
+						}
 					} else {
 						getPkmn(mainbuf, saveBox, currentEntry - 30, pkmn, game);
-						setPkmn(mainbuf, saveBox, currentEntry - 30, tmp, game);
+						if (!getPokedexNumber(pkmn)) {
+							memset(pkmn, 0, PKMNLENGTH);
+							isBufferized = false;
+						} else {
+							setPkmn(mainbuf, saveBox, currentEntry - 30, tmp, game);
+							isBufferized = true;
+						}
 					}
-								
-					isBufferized = true;
-					bufferizedfrombank = (currentEntry < 30) ? true : false;
+					
+					if (isBufferized)					
+						bufferizedfrombank = (currentEntry < 30) ? true : false;
 				}
 			}
 		}
