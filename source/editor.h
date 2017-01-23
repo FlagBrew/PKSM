@@ -57,6 +57,7 @@ Copyright (C) 2016 Bernardo Giordano
 #define ED_NATURES 4
 #define ED_BALLS 5
 #define ED_HIDDENPOWER 6
+#define ED_FORMS 7
 
 struct {
 	u8 species[803][12];

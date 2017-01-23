@@ -450,11 +450,11 @@ int getLegalFormData(u16 species, int game, int *o_minform, int *o_maxform) {
 		case 671 : *o_maxform = 4; return 116;
 		case 676 : *o_maxform = 9; return 120;
 		case 718 : *o_maxform = 3; return sumo ? 129 : 0;
-		case 720 : return sumo ? 131 : 0;
-		case 741 : *o_maxform = 3; return 132;
-		case 745 : return 135;
-		case 774 : *o_minform = 7; *o_maxform = 13; return 136;
-		case 801 : return 143;
+		case 720 : return sumo ? 132 : 0;
+		case 741 : *o_maxform = 3; return 133;
+		case 745 : return 136;
+		case 774 : *o_minform = 7; *o_maxform = 13; return 137;
+		case 801 : return 144;
 	}
 
 	return 0;
@@ -1455,6 +1455,51 @@ void pokemonEditor(u8* mainbuf, int game) {
 										}
 									}
 									
+									if (touch.px > 227 && touch.px < 300 && touch.py > 24 && touch.py < 92) {
+										u16 species = getPokedexNumber(pkmn);
+										int minform, maxform;
+										if (getLegalFormData(species, game, &minform, &maxform) > 0) {
+											int numforms = maxform - minform + 1;
+											int columns;
+											if (numforms <= 16)
+												columns = 4;
+											else
+												columns = 6;
+											
+											u8 form = getForm(pkmn);
+											int formEntry = form >= minform && form <= maxform ? form - minform + 1 : 0;
+											while(aptMainLoop()) {
+												hidScanInput();
+												
+												if (hidKeysDown() & KEY_B)
+													break;
+
+												if (hidKeysDown() & KEY_DRIGHT)
+													if (formEntry < maxform) 
+														formEntry++;
+												
+												if (hidKeysDown() & KEY_DLEFT)
+													if (formEntry > 0) 
+														formEntry--;
+												
+												if (hidKeysDown() & KEY_DUP)
+													if (formEntry >= columns) 
+														formEntry -= columns;
+												
+												if (hidKeysDown() & KEY_DDOWN)
+													if (formEntry <= numforms - columns)
+														formEntry += columns;
+													
+												if (hidKeysDown() & KEY_A) {
+													setForm(pkmn, (u8)formEntry);
+													break;
+												}
+												
+												printPKEditor(pkmn, game, speedy, formEntry, (int)species, 0, ED_FORMS);
+											}
+										}
+									}
+
 									if (touch.px > 180 && touch.px < 195 && touch.py > 71 && touch.py < 83) {
 										if (ability < 2) 
 											ability++;

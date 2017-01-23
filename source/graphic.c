@@ -1295,12 +1295,49 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 				sf2d_draw_texture_part(typesSheet, 24 + 99 * j + j, 20 + 59 * i + i, 50 * (i * 4 + j + 1), 0, 50, 18); 
 			}
 		}
+	} else if (mode == ED_FORMS) {
+		char* entries[] = {"Alolan", "Alolan", "Rock Star", "Belle", "Pop Star", "Ph.D", "Libre", "Cosplay", "Original", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola", "Alolan", "Alolan", "Alolan", "Alolan", "Alolan", "Alolan", "Alolan", "Alolan", "Alolan", "Alolan", "Alolan", "Alolan", "Alolan", "Alolan", "Alolan", "Alolan", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "!", "?", "Attack", "Defense", "Speed", "Sand", "Trash", "Sand", "Trash", "East Sea", "East Sea", "Heat", "Wash", "Fridge", "Fan", "Mow", "Origin", "Sky", "Blue-Striped", "Summer", "Autumn", "Winter", "Summer", "Autumn", "Winter", "Therian", "Therian", "Therian", "White", "Black", "Resolute", "Pirouette", "Polar", "Tundra", "Continental", "Garden", "Elegant", "Meadow", "Modern", "Marine", "Archipelago", "High Plains", "Sandstorm", "River", "Monsoon", "Savanna", "Sun", "Ocean", "Jungle", "Fancy", "Poké Ball", "Yellow", "Orange", "Blue", "White", "Yellow", "Orange", "Blue", "White", "Eternal Flower", "Yellow", "Orange", "Blue", "White", "Heart", "Star", "Diamond", "Debutante", "Matron", "Dandy", "La Reine", "Kabuki", "Pharaoh", "10%", "10%-PC", "50%-PC", "Unbound", "Pom-Pom", "Pa'u", "Sensu", "Midnight", "Red", "Orange", "Yellow", "Green", "Blue", "Indigo", "Violet", "Original Color"};
+		int minform, maxform;
+		int spritenum = getLegalFormData((u16)additional2, game, &minform, &maxform);
+		int numforms = maxform - minform + 1;
+		
+		int rows, columns, width, height;
+		sf2d_texture *button = NULL;
+		if (numforms <= 16) {
+			columns = 4; rows = 4;
+			width = 99; height = 59;
+			button = hiddenPowerButton;
+			sf2d_draw_texture(hiddenPowerBG, 0, 0);
+		} else {
+			columns = 6; rows = 5;
+			width = 66; height = 47;
+			button = ballButton;
+			sf2d_draw_texture(ballsBG, 0, 0);
+		}
+
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < columns; j++) {
+				if (additional1 == i * columns + j)
+					sf2d_draw_texture(button, j * width + j, i * height + i);
+
+				int form = i * columns + j;
+				if (form <= numforms) {
+					int entry = spritenum + form - 2;
+					char *str = form == 0 ? "Default" : entries[entry];
+					if (form == 0)
+						sf2d_draw_texture_part(spritesSmall, (width - 34) / 2 + width * j + j, 2 * (height - 44) / 3 + i * height, 40 * (additional2 % 25) + 4, 30 * (additional2 / 25), 34, 30);
+					else
+						sf2d_draw_texture_part(alternativeSpritesSmall, (width - 34) / 2 + width * j + j, 2 * (height - 44) / 3 + i * height + i, 40 * (entry % 6) + 4, 30 * (entry / 6), 34, 30);
+					sftd_draw_text(fontBold9, width * j + (width - sftd_get_text_width(fontBold9, 9, str)) / 2 + j, (height * 5) / 7 + i * height + i, WHITE, 9, str);
+				}
+			}
+		}
 	}
 	sf2d_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		printAnimatedBG(false);
-		if (mode == ED_BASE || mode == ED_ITEMS || mode == ED_NATURES || mode == ED_BALLS) {
+		if (mode == ED_BASE || mode == ED_ITEMS || mode == ED_NATURES || mode == ED_BALLS || mode == ED_FORMS) {
 			sf2d_draw_texture(editorBG, 0, 1);
 			sf2d_draw_texture(editorBar, 0, 210);
 			
@@ -1439,6 +1476,9 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 		} else if (mode == ED_HIDDENPOWER) {
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
 			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Select a HP type with A in the top screen.")) / 2, 105, WHITE, 14, "Select a HP type with A in the top screen.");
+		} else if (mode == ED_FORMS) {
+			sf2d_draw_texture(bottomMask, 0, 0);
+			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Select a form with A in the top screen.")) / 2, 105, WHITE, 14, "Select a form with A in the top screen.");
 		}
 		
 	sf2d_end_frame();
