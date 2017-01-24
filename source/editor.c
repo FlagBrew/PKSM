@@ -409,7 +409,7 @@ int getLegalFormData(u16 species, int game, int *o_minform, int *o_maxform) {
 	switch (species) {
 		case 19 : return sumo ? 1 : 0;
 		case 20 : return sumo ? 2 : 0;
-		case 25 : *o_maxform = 6; return sumo ? 3 : (oras ? 9 : 0);
+		case 25 : *o_maxform = 6; return sumo ? 9 : (oras ? 3 : 0);
 		case 26 : return sumo ? 15 : 0;
 		case 27 : return sumo ? 16 : 0;
 		case 28 : return sumo ? 17 : 0;
