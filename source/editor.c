@@ -358,6 +358,7 @@ u8 getHT(u8* pkmn) { return *(u8*)(pkmn + 0xDE); }
 u8 getGender(u8* pkmn) { return ((*(u8*)(pkmn + 0x1D)) >> 1) & 0x3; }
 u8 getLanguage(u8* pkmn) { return *(u8*)(pkmn + 0xE3); }
 u8 getAbility(u8* pkmn) { return *(u8*)(pkmn + 0x14); }
+u8 getAbilityNum(u8* pkmn) { return *(u8*)(pkmn + 0x15); }
 u8 getForm(u8* pkmn) { return ((*(u8*)(pkmn + 0x1D)) >> 3); }
 u16 getItem(u8* pkmn) { return *(u16*)(pkmn + 0x0A); }
 u8 getHPType(u8* pkmn) { return 15 * ((getIV(pkmn, 0)& 1) + 2 * (getIV(pkmn, 1) & 1) + 4 * (getIV(pkmn, 2) & 1) + 8 * (getIV(pkmn, 3) & 1) + 16 * (getIV(pkmn, 4) & 1) + 32 * (getIV(pkmn, 5) & 1)) / 63; }
@@ -1070,9 +1071,9 @@ void pokemonEditor(u8* mainbuf, int game) {
 	int currentEntry = 0;
 	int menuEntry = 0;
 	int boxmax = (game < 4) ? 30 : 31;
-	int ability = 2;
 	
 	u8* pkmn = (u8*)malloc(PKMNLENGTH * sizeof(u8));
+	int ability = (int)getAbilityNum(pkmn);
 
 	while (aptMainLoop()) {
 		hidScanInput();
@@ -1491,6 +1492,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 													
 												if (hidKeysDown() & KEY_A) {
 													setForm(pkmn, (u8)(formEntry + minform));
+													setAbility(pkmn, ability);
 													break;
 												}
 												
@@ -1500,10 +1502,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 									}
 
 									if (touch.px > 180 && touch.px < 195 && touch.py > 71 && touch.py < 83) {
-										if (ability < 2) 
-											ability++;
-										else if (ability == 2) 
-											ability = 0;
+										ability = (ability + 1) % 3;
 										setAbility(pkmn, ability);
 									}
 									

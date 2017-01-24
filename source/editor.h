@@ -104,6 +104,7 @@ int getLegalFormData(u16 species, int game, int *o_minform, int *o_maxform);
 u16 getStat(u8* pkmn, const int stat);
 bool getPokerus(u8* pkmn);
 u8 getAbility(u8* pkmn);
+u8 getAbilityNum(u8* pkmn);
 char *getOT(u8* pkmn, char* dst);
 char *getNickname(u8* pkmn, char* dst);
 u16 getEggMove(u8 *pkmn, const int nmove);
