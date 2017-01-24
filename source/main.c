@@ -245,30 +245,21 @@ int main() {
 	
 	else if (game == GAME_DIAMOND || game == GAME_PEARL || game == GAME_PLATINUM || game == GAME_HG || game == GAME_SS || game == GAME_B1 || game == GAME_W1 || game == GAME_B2 || game == GAME_W2) {
 		FS_CardType t;
-		Result res = FSUSER_GetCardType(&t);
-		if (res != 0) {
+		if (!FSUSER_GetCardType(&t)) {
 			infoDisp("No cartridge inserted!");
 			exitServices();
 			return -1;
 		}
 		u8 data[0x3B4];
-		res = FSUSER_GetLegacyRomHeader(MEDIATYPE_GAME_CARD, 0LL, data);
+		FSUSER_GetLegacyRomHeader(MEDIATYPE_GAME_CARD, 0LL, data);
 
 		CardType cardType_;
-		res = SPIGetCardType(&cardType_, (*(data + 12) == 'I') ? 1 : 0);
+		SPIGetCardType(&cardType_, (*(data + 12) == 'I') ? 1 : 0);
 
 		mainSize = SPIGetCapacity(cardType_);
 		
-		switch(game) {
-			case GAME_DIAMOND  : { if (mainSize != 524288) infoDisp("Incorrect size for this game!"); break; }
-			case GAME_PEARL    : { if (mainSize != 524288) infoDisp("Incorrect size for this game!"); break; }
-			case GAME_PLATINUM : { if (mainSize != 524288) infoDisp("Incorrect size for this game!"); break; }
-			case GAME_HG : { if (mainSize != 524288) infoDisp("Incorrect size for this game!"); break; }
-			case GAME_SS : { if (mainSize != 524288) infoDisp("Incorrect size for this game!"); break; }
-			case GAME_W1 : { if (mainSize != 524288) infoDisp("Incorrect size for this game!"); break; }
-			case GAME_B1 : { if (mainSize != 524288) infoDisp("Incorrect size for this game!"); break; }
-			case GAME_W2 : { if (mainSize != 524288) infoDisp("Incorrect size for this game!"); break; }
-			case GAME_B2 : { if (mainSize != 524288) infoDisp("Incorrect size for this game!"); break; }
+		if (mainSize != 524288) {
+			infoDisp("Incorrect size for this game!");
 			exitServices();
 			return -1;
 		}
