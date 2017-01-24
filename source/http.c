@@ -24,8 +24,6 @@ Copyright (C) 2016 Bernardo Giordano
 #include "editor.h"
 #include "http.h"
 #include "graphic.h"
-#include "certs/cybertrust.h"
-#include "certs/digicert.h"
 
 int panic = 0;
 static u32			*socket_buffer = NULL;
@@ -155,13 +153,12 @@ Result downloadFile(char* url, char* path, bool install) {
         return -1;
     }
 	
-    if (httpcSetSSLOpt(&context, 1 << 9)) {
+    if (httpcSetSSLOpt(&context, SSLCOPT_DisableVerify)) {
         infoDisp("Failed to set SSLOpt!");
         return -1;
     }
-
-    httpcAddTrustedRootCA(&context, cybertrust_cer, cybertrust_cer_len);
-    httpcAddTrustedRootCA(&context, digicert_cer, digicert_cer_len);
+	
+	httpcAddRequestHeaderField(&context, "Connection", "Keep-Alive");
 
     if (httpcBeginRequest(&context)) {
         infoDisp("Failed to begin a http request!");

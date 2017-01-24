@@ -16,7 +16,7 @@ NAME := PKSM
 BUILD_DIR := build
 OUTPUT_DIR := output
 INCLUDE_DIRS := 
-SOURCE_DIRS := source source/certs
+SOURCE_DIRS := source
 
 EXTRA_OUTPUT_FILES :=
 
@@ -35,8 +35,8 @@ BUILD_FLAGS_CXX := $(BUILD_FLAGS_CC) -fno-rtti -fno-exceptions -std=gnu++11
 RUN_FLAGS :=
 
 VERSION_MAJOR := 4
-VERSION_MINOR := 0
-VERSION_MICRO := 4
+VERSION_MINOR := 1
+VERSION_MICRO := 0
 
 # 3DS/Wii U CONFIGURATION #
 
@@ -70,7 +70,7 @@ ifeq ($(TARGET),3DS)
     BANNER_AUDIO := assets/audio.wav
     BANNER_IMAGE := assets/banner.png
     ICON := assets/icon.png
-	LOGO := 
+	LOGO :=
 endif
 
 # INTERNAL #
