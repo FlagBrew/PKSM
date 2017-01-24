@@ -102,6 +102,13 @@ void bank(u8* mainbuf, int game) {
 			}
 		}
 		
+		if (hidKeysDown() & KEY_ZR) {
+			if (bankBox < size / (30 * PKMNLENGTH) - 1) 
+				bankBox++;
+			else if (bankBox == size / (30 * PKMNLENGTH) - 1) 
+				bankBox = 0;
+		}
+		
 		if (hidKeysDown() & KEY_L) {
 			if (currentEntry < 30) {
 				if (bankBox > 0) 
@@ -114,6 +121,13 @@ void bank(u8* mainbuf, int game) {
 				else if (saveBox == 0) 
 					saveBox = (game < 4) ? 30 : 31;	
 			}
+		}
+		
+		if (hidKeysDown() & KEY_ZL) {
+			if (bankBox > 0) 
+				bankBox--;
+			else if (bankBox == 0) 
+				bankBox = size / (30 * PKMNLENGTH) - 1;
 		}
 		
 		if (hidKeysDown() & KEY_TOUCH) {
