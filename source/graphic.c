@@ -834,6 +834,7 @@ void printDB6(int sprite, int i, bool langVett[], bool adapt, bool overwrite, in
 	loadFile(buf, path);
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
+		printAnimatedBG(true);
 		sf2d_draw_texture(eventTop, 0, 24);
 		if (sprite != -1)
 			sf2d_draw_texture_part_scale(spritesSmall, 282, 46 - movementOffsetLong(6), 40 * (sprite % 25) + 4, 30 * (sprite / 25), 34, 30, 2, 2);
