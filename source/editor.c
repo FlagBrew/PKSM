@@ -379,7 +379,7 @@ u16 getFormSpeciesNumber(u8 *pkmn) {
 }
 
 int getLegalFormData(u16 species, int game, int *o_minform, int *o_maxform) {
-	*o_minform = 1;
+	*o_minform = 0;
 	*o_maxform = 1;
 
 	bool sumo = false, oras = false, b2w2 = false, plat = false;
@@ -1467,7 +1467,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 												columns = 6;
 											
 											u8 form = getForm(pkmn);
-											int formEntry = form >= minform && form <= maxform ? form - minform + 1 : 0;
+											int formEntry = form >= minform && form <= maxform ? form - minform : 0;
 											while(aptMainLoop()) {
 												hidScanInput();
 												
@@ -1475,7 +1475,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 													break;
 
 												if (hidKeysDown() & KEY_DRIGHT)
-													if (formEntry < maxform) 
+													if (formEntry + 1 < numforms) 
 														formEntry++;
 												
 												if (hidKeysDown() & KEY_DLEFT)
@@ -1487,11 +1487,11 @@ void pokemonEditor(u8* mainbuf, int game) {
 														formEntry -= columns;
 												
 												if (hidKeysDown() & KEY_DDOWN)
-													if (formEntry <= numforms - columns)
+													if (formEntry + columns < numforms)
 														formEntry += columns;
 													
 												if (hidKeysDown() & KEY_A) {
-													setForm(pkmn, (u8)formEntry);
+													setForm(pkmn, (u8)(formEntry + minform));
 													break;
 												}
 												

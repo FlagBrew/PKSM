@@ -963,7 +963,7 @@ u16 getAlternativeSprite(u8* pkmn, int game) {
 		int minform, maxform;
 		int spritenum = getLegalFormData(getPokedexNumber(pkmn), game, &minform, &maxform);
 		if (form >= minform && form <= maxform)
-			spritenum += form - minform;
+			spritenum += form - (minform > 0 ? minform : 1);
 		return spritenum;
 	}
 	return 0;
@@ -1320,8 +1320,8 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 				if (additional1 == i * columns + j)
 					sf2d_draw_texture(button, j * width + j, i * height + i);
 
-				int form = i * columns + j;
-				if (form <= numforms) {
+				int form = i * columns + j + (minform > 1 ? 1 : 0);
+				if (form < numforms + (minform > 1 ? 1 : 0)) {
 					int entry = spritenum + form - 2;
 					char *str = form == 0 ? "Default" : entries[entry];
 					if (form == 0)
