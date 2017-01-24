@@ -104,7 +104,7 @@ bool initServices() {
 			fclose(temp1);
 			snprintf(str, 30, "Downloading assets #%d...", i + 1);
 			freezeMsg(str);
-			downloadFile(url[i], path[i], false);
+			downloadFile(url[i], path[i]);
 			isDownloaded = true;
 		} else
 			fclose(temp1);

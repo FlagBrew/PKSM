@@ -136,7 +136,7 @@ void processing(u8* mainbuf, int game, int tempVett[]) {
 	}
 }
 
-Result downloadFile(char* url, char* path, bool install) {
+Result downloadFile(char* url, char* path) {
     httpcInit(0);
     httpcContext context;
     u32 statuscode = 0;
@@ -179,7 +179,7 @@ Result downloadFile(char* url, char* path, bool install) {
                 return -1;
             }
             httpcCloseContext(&context);
-            downloadFile(newUrl, path, install);
+            downloadFile(newUrl, path);
             return -1;
         } else {
             infoDisp("Redirection failed!");
@@ -208,16 +208,6 @@ Result downloadFile(char* url, char* path, bool install) {
         httpcCloseContext(&context);
         return -1;
     }
-	
-	if (install) {
-		amInit();
-		Handle handle;
-		AM_QueryAvailableExternalTitleDatabase(NULL);
-		AM_StartCiaInstall(MEDIATYPE_SD, &handle);
-		FSFILE_Write(handle, NULL, 0, buf, contentsize, 0);
-		AM_FinishCiaInstall(handle);
-		amExit();
-	}
 
     remove(path);
     FILE *fptr = fopen(path, "wb");

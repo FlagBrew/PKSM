@@ -50,4 +50,4 @@ void shutDownSoc();
 void closeOnExit();
 int init();
 void processing(u8* mainbuf, int game, int tempVett[]);
-Result downloadFile(char* url, char* path, bool install);
+Result downloadFile(char* url, char* path);
