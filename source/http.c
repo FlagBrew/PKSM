@@ -145,16 +145,19 @@ Result downloadFile(char* url, char* path) {
 
     if (httpcOpenContext(&context, HTTPC_METHOD_GET, url, 0)) {
         infoDisp("Failed to open http context!");
+		infoDisp("Failed to download assets!");
         return -1;
     }
 
     if (httpcAddRequestHeaderField(&context, "User-Agent", "PKSM")) {
         infoDisp("Failed to add a request header field!");
+		infoDisp("Failed to download assets!");
         return -1;
     }
 	
     if (httpcSetSSLOpt(&context, SSLCOPT_DisableVerify)) {
         infoDisp("Failed to set SSLOpt!");
+		infoDisp("Failed to download assets!");
         return -1;
     }
 	
@@ -162,11 +165,13 @@ Result downloadFile(char* url, char* path) {
 
     if (httpcBeginRequest(&context)) {
         infoDisp("Failed to begin a http request!");
+		infoDisp("Failed to download assets!");
         return -1;
     }
 
     if (httpcGetResponseStatusCode(&context, &statuscode)) {
         infoDisp("Failed to receive a status code!");
+		infoDisp("Failed to download assets!");
         httpcCloseContext(&context);
         return -1;
     }
@@ -176,6 +181,7 @@ Result downloadFile(char* url, char* path) {
             char newUrl[1024];
             if (httpcGetResponseHeader(&context, (char*)"Location", newUrl, 1024)) {
                 infoDisp("Redirection failed!");
+				infoDisp("Failed to download assets!");
                 return -1;
             }
             httpcCloseContext(&context);
@@ -183,6 +189,7 @@ Result downloadFile(char* url, char* path) {
             return -1;
         } else {
             infoDisp("Redirection failed!");
+			infoDisp("Failed to download assets!");
             httpcCloseContext(&context);
             return -1;
         }
@@ -190,6 +197,7 @@ Result downloadFile(char* url, char* path) {
 
     if (httpcGetDownloadSizeState(&context, NULL, &contentsize)) {
         infoDisp("Failed to receive download size!");
+		infoDisp("Failed to download assets!");
         httpcCloseContext(&context);
         return -1;
     }
@@ -198,13 +206,14 @@ Result downloadFile(char* url, char* path) {
     if (buf == NULL) {
 		free(buf);
         infoDisp("Failed to alloc memory!");
+		infoDisp("Failed to download assets!");
         return -1;
     }
     memset(buf, 0, contentsize);
 
     if (httpcDownloadData(&context, buf, contentsize, NULL)) {
         free(buf);
-        infoDisp("Failed to download file!");
+		infoDisp("Failed to download assets!");
         httpcCloseContext(&context);
         return -1;
     }
