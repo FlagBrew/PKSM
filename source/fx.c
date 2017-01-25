@@ -28,7 +28,7 @@ int trasp = 254;
 bool vanish = true;
 bool up = true;
 
-int x[11] = {0, 50, 186, 244, 484, 660, 10, 572, 128, 272, 300};
+int x[11] = {0, 50, 186, 200, 484, 660, 10, 572, 128, 272, 360};
 float rad = 0.0f;
 
 void FXElementsInit() {
@@ -88,7 +88,7 @@ void animateBG(bool isUp) {
 	x[0] = (x[0] > maxrange * 2) ? 0 : (x[0] + 1);
 	
 	for (int i = 1; i < 11; i++)
-		x[i] = (x[i] >= maxrange * 2 + 45) ? (x[i] - (181 + maxrange * 2)) : (x[i] + 1);
+		x[i] = (x[i] >= maxrange * 2 + 45) ? (x[i] - (181 + maxrange * 2) - (rand() % 100)) : (x[i] + 1);
 	
 	rad = (rad >= 360) ? 0.0f : (rad + 0.005f);
 }

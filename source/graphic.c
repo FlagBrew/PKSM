@@ -31,7 +31,7 @@ Copyright (C) 2016 Bernardo Giordano
 int lookup[] = {0x0, 0x1, 0x2, 0x4, 0x5, 0x3};
 
 sftd_font *fontBold18, *fontBold15, *fontBold14, *fontBold12, *fontBold11, *fontBold9, *fontFixed; 
-sf2d_texture *maskTop, *otaButton, *generationBG, *generationButton, *includeInfoButton, *upperTextGS, *lowerTextGS, *hiddenPowerBG, *hiddenPowerButton, *selectBoxButton, *ballsBG, *ballButton, *male, *female, *naturesButton, *naturestx, *movesBottom, *topMovesBG, *editorBar, *editorStatsBG, *subArrow, *backgroundTop, *miniBox, *plusButton, *minusButton, *balls, *typesSheet, *bottomMask, *transferButton, *bankTop, *shinyStar, *normalBar, *LButton, *RButton, *creditsTop, *pokeball, *topBorder, *bottomBorder, *gameSelectorBottom, *gameSelectorTop, *mainMenuBottom, *menuBar, *menuSelectedBar, *darkButton, *eventTop, *left, *lightButton, *redButton, *right, *spritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *warningTop, *warningBottom, *boxView, *infoView, *selector, *editorBG, *plus, *minus, *back, *setting, *selectorCloning, *button, *bottomPopUp, *pokemonBufferBox, *cleanTop, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR, *topSelectedMove, *settings, *item, *alternativeSpritesSmall;
+sf2d_texture *otaButton, *generationBG, *generationButton, *includeInfoButton, *upperTextGS, *lowerTextGS, *hiddenPowerBG, *hiddenPowerButton, *selectBoxButton, *ballsBG, *ballButton, *male, *female, *naturesButton, *naturestx, *movesBottom, *topMovesBG, *editorBar, *editorStatsBG, *subArrow, *backgroundTop, *miniBox, *plusButton, *minusButton, *balls, *typesSheet, *transferButton, *bankTop, *shinyStar, *normalBar, *LButton, *RButton, *creditsTop, *pokeball, *topBorder, *bottomBorder, *gameSelectorBottom, *gameSelectorTop, *mainMenuBottom, *menuBar, *menuSelectedBar, *darkButton, *eventTop, *left, *lightButton, *redButton, *right, *spritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *warningTop, *warningBottom, *boxView, *infoView, *selector, *editorBG, *plus, *minus, *back, *setting, *selectorCloning, *button, *bottomPopUp, *pokemonBufferBox, *cleanTop, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR, *topSelectedMove, *settings, *item, *alternativeSpritesSmall;
 
 char *gamesList[] = {"X", "Y", "OR", "AS", "S", "M", "D", "P", "PL", "HG", "SS", "B", "W", "B2", "W2"};
 
@@ -73,7 +73,6 @@ void GUIElementsSpecify(int game) {
 		boxView = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/editor_bottom.png", SF2D_PLACE_RAM);
 		back = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/back_button.png", SF2D_PLACE_RAM);
 
-		maskTop = sfil_load_PNG_file("romfs:/res/Mask Top.png", SF2D_PLACE_RAM);
 		otaButton = sfil_load_PNG_file("romfs:/res/OTA Button.png", SF2D_PLACE_RAM);
 		includeInfoButton = sfil_load_PNG_file("romfs:/res/Include Info.png", SF2D_PLACE_RAM);
 		generationButton = sfil_load_PNG_file("romfs:/res/Generation Button.png", SF2D_PLACE_RAM);
@@ -95,7 +94,6 @@ void GUIElementsSpecify(int game) {
 		miniBox = sfil_load_PNG_file("romfs:/res/Mini Box.png", SF2D_PLACE_RAM);
 		minusButton = sfil_load_PNG_file("romfs:/res/Minus Button.png", SF2D_PLACE_RAM);
 		plusButton = sfil_load_PNG_file("romfs:/res/Plus Button.png", SF2D_PLACE_RAM);
-		bottomMask = sfil_load_PNG_file("romfs:/res/Mask Bottom.png", SF2D_PLACE_RAM);
 		transferButton = sfil_load_PNG_file("romfs:/res/Transfer Button.png", SF2D_PLACE_RAM);
 		bankTop = sfil_load_PNG_file("romfs:/res/Bank Top.png", SF2D_PLACE_RAM);
 		shinyStar = sfil_load_PNG_file("romfs:/res/Shiny.png", SF2D_PLACE_RAM);
@@ -162,7 +160,6 @@ void GUIGameElementsExit() {
 }
 
 void GUIElementsExit() {
-	sf2d_free_texture(maskTop);
 	sf2d_free_texture(otaButton);
 	sf2d_free_texture(generationBG);
 	sf2d_free_texture(generationButton);
@@ -187,7 +184,6 @@ void GUIElementsExit() {
 	sf2d_free_texture(plusButton);
 	sf2d_free_texture(balls);
 	sf2d_free_texture(typesSheet);
-	sf2d_free_texture(bottomMask);
 	sf2d_free_texture(transferButton);
 	sf2d_free_texture(bankTop);
 	sf2d_free_texture(shinyStar);
@@ -1151,8 +1147,8 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 			infoViewer(pkmn, game);
 		
 		if (mode == ED_OTA) {
-			sf2d_draw_texture(maskTop, 0, 0);
-			sf2d_draw_texture(maskTop, 0, 0);
+			sf2d_draw_rectangle(0, 0, 400, 240, MASKBLACK);
+			sf2d_draw_rectangle(0, 0, 400, 240, MASKBLACK);
 			sftd_draw_text(fontBold15, (400 - sftd_get_text_width(fontBold15, 15, "Launch the client on your PC...")) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, "Launch the client on your PC...");
 			sftd_draw_text(fontBold12, (400 - sftd_get_text_width(fontBold12, 12, "Press B to exit.")) / 2, 130, WHITE, 12, "Press B to exit.");
 		}
@@ -1218,7 +1214,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 		}
 		
 		if (mode == ED_MENU) {
-			sf2d_draw_texture(bottomMask, 0, 0);
+			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
 			sf2d_draw_texture(bottomPopUp, 1, 214);
 			sf2d_draw_texture(includeInfoButton, 242, 5);
 			sftd_draw_textf(fontBold11, 8, 220, WHITE, 11, "%s has been selected.", (char*)personal.species[getPokedexNumber(tmp)]);
@@ -1229,10 +1225,10 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 				sftd_draw_text(fontBold12, 208 + (109 - sftd_get_text_width(fontBold12, 12, menuEntries[i])) / 2, 49 + i * 27, BLACK, 12, menuEntries[i]);
 			}
 		} else if (mode == ED_GENERATE) {
-			sf2d_draw_texture(bottomMask, 0, 0);
+			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
 			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Generate with A in the top screen.")) / 2, 105, WHITE, 14, "Generate with A in the top screen.");
 		} else if (mode == ED_OTA) {
-			sf2d_draw_texture(bottomMask, 0, 0);
+			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
 			drawIP(fontBold9);
 		} else if (mode != ED_CLONE) {
 			if (mode == ED_STANDARD)
@@ -1459,16 +1455,16 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 		
 		// apply masks
 		if (mode == ED_ITEMS) {
-			sf2d_draw_texture(bottomMask, 0, 0);
+			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
 			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Select an item with A in the top screen.")) / 2, 105, WHITE, 14, "Select an item with A in the top screen.");
 		} else if (mode == ED_NATURES) {
-			sf2d_draw_texture(bottomMask, 0, 0);
+			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
 			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Select a nature with A in the top screen.")) / 2, 105, WHITE, 14, "Select a nature with A in the top screen.");
 		} else if (mode == ED_BALLS) {
-			sf2d_draw_texture(bottomMask, 0, 0);
+			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
 			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Select a ball with A in the top screen.")) / 2, 105, WHITE, 14, "Select a ball with A in the top screen.");
 		} else if (mode == ED_HIDDENPOWER) {
-			sf2d_draw_texture(bottomMask, 0, 0);
+			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
 			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Select a HP type with A in the top screen.")) / 2, 105, WHITE, 14, "Select a HP type with A in the top screen.");
 		}
 		
@@ -1609,7 +1605,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 		}
 		
 		if (isSeen)
-			sf2d_draw_texture(bottomMask, 0, -30);
+			sf2d_draw_rectangle(0, -30, 320, 240, MASKBLACK);
 	sf2d_end_frame();
 	sf2d_swapbuffers();
 	

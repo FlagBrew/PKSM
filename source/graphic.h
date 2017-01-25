@@ -27,7 +27,8 @@ Copyright (C) 2016 Bernardo Giordano
 #define YELLOW    RGBA8(237, 247, 157, 255)
 #define LIGHTBLUE RGBA8(187, 208, 254, 255)
 #define DARKBLUE  RGBA8( 35,  69, 167, 255)
-#define HIGHBLUE  RGBA8( 28,  45,  86, 255) 
+#define HIGHBLUE  RGBA8( 28,  45,  86, 255)
+#define MASKBLACK RGBA8(  0,   0,   0, 180)
 
 #define BLACK RGBA8(0, 0, 0, 255)
 #define SHINYRED RGBA8(255, 17, 17, 255)
