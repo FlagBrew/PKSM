@@ -23,10 +23,12 @@ Copyright (C) 2016 Bernardo Giordano
 void filldatabase7(char *database[], int spriteArray[]) {
 	filldatabase6(database, spriteArray);
 	
+	database[0] = "0000 - Mewnium Z"; spriteArray[0] = 0;
 	database[190] = "Placeholder";
 	database[202] = "0202 - SM Revival Herb"; spriteArray[202] = 0;
 	database[204] = "0204 - SM Item Bundle"; spriteArray[204] = 0;
 	database[205] = "0205 - SM Choice Band/Scarf"; spriteArray[205] = 0;
+	database[207] = "0207 - SM Big Nugget"; spriteArray[207] = 0;
 	database[208] = "0208 - SM Rare Candy"; spriteArray[208] = 0;
 	database[210] = "0210 - Gold Bottle Cap"; spriteArray[210] = 0;
 	database[1602] = "1602 - SM Quick Balls"; spriteArray[1602] = 0;
