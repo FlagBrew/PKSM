@@ -25,6 +25,7 @@ Copyright (C) 2016 Bernardo Giordano
 #include "graphic.h"
 #include "fx.h"
 #include "editor.h"
+#include "bank.h"
 #include "http.h"
 
 int lookup[] = {0x0, 0x1, 0x2, 0x4, 0x5, 0x3};
@@ -1010,6 +1011,11 @@ void printElement(u8* pkmn, u16 n, int x, int y) {
 		sf2d_draw_texture_part(spritesSmall, x + 6, y + 6, 40 * (EGGSPRITEPOS % 25) + 4, 30 * (EGGSPRITEPOS / 25), 34, 30);
 	if (getItem(pkmn))
 		sf2d_draw_texture(item, x + 3, y + 21);
+
+	if (!(areMarksZero(pkmn) /* && game == GAME_SM */)) {
+		sf2d_draw_rectangle_rotate(x + 6, y + 13, 22, 4, SHINYRED, 0.785f);
+		sf2d_draw_rectangle_rotate(x + 15, y + 4, 4, 22, SHINYRED, 0.785f);
+	}
 }
 void printElementBlend(u8* pkmn, u16 n, int x, int y) {
 	u16 t = getAlternativeSprite(pkmn);

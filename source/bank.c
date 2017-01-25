@@ -24,6 +24,42 @@ Copyright (C) 2016 Bernardo Giordano
 #include "bank.h"
 #include "dex.h"
 
+void clearMarkings(u8* pkmn) {
+	u8 version = pkmn[0xDF];
+	if (!(version == 30 || version == 31)) { // not SM
+		pkmn[0x2A] = 0;
+		pkmn[0x72] &= 0xFC;
+		pkmn[0xDE] = 0;
+		
+		for (int i = 0x94; i < 0x9E; i++)
+			pkmn[i] = 0;
+		for (int i = 0xAA; i < 0xB0; i++)
+			pkmn[i] = 0;
+		for (int i = 0xE4; i < 0xE8; i++)
+			pkmn[i] = 0;
+	}
+}
+
+bool areMarksZero(u8* pkmn) {
+	u8 version = pkmn[0xDF];
+	if (!(version == 30 || version == 31)) { // SM
+		if (pkmn[0x2A])
+			return false;
+		if (pkmn[0xDE])
+			return false;
+		for (int i = 0x94; i < 0x9E; i++)
+			if (pkmn[i])
+				return false;
+		for (int i = 0xAA; i < 0xB0; i++)
+			if (pkmn[i])
+				return false;
+		for (int i = 0xE4; i < 0xE8; i++)
+			if (pkmn[i])
+				return false;
+	}
+	return true;
+}
+
 void bank(u8* mainbuf, int game) {
 	FILE *fptr = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
 	fseek(fptr, 0, SEEK_END);
@@ -262,6 +298,7 @@ void bank(u8* mainbuf, int game) {
 					
 					if (currentEntry < 30) {
 						memcpy(pkmn, &bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], PKMNLENGTH);
+						clearMarkings(pkmn);
 						if (!getPokedexNumber(pkmn)) {
 							memset(pkmn, 0, PKMNLENGTH);
 							isBufferized = false;
@@ -271,6 +308,7 @@ void bank(u8* mainbuf, int game) {
 						}
 					} else {
 						getPkmn(mainbuf, saveBox, currentEntry - 30, pkmn, game);
+						clearMarkings(pkmn);
 						if (!getPokedexNumber(pkmn)) {
 							memset(pkmn, 0, PKMNLENGTH);
 							isBufferized = false;

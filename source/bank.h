@@ -22,4 +22,6 @@ Copyright (C) 2016 Bernardo Giordano
 
 #define BANKBOXMAX 150
 
+bool areMarksZero(u8* pkmn);
+void clearMarkings(u8* pkmn);
 void bank(u8* mainbuf, int game);
