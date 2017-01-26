@@ -204,8 +204,18 @@ void bank(u8* mainbuf, int game) {
 					if (!isBattleBoxed(mainbuf, game, saveBox, i)) {
 						getPkmn(mainbuf, saveBox, i, buffer, game); // getpkmn -> buffer
 						memcpy(temp, &bankbuf[bankBox * 30 * PKMNLENGTH + i * PKMNLENGTH], PKMNLENGTH); // memcpy bank -> temp
-						setPkmn(mainbuf, saveBox, i, temp, game); // setpkmn -> temp
-						memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + i * PKMNLENGTH], buffer, PKMNLENGTH); // memcpy bank -> buffer
+						
+						u16 species = getPokedexNumber(temp);
+						u8 form = getForm(temp);
+						FormData *forms = getLegalFormData(species, game);
+						bool illegalform = form < forms->min || form > forms->max;
+						bool illegalspecies = game < 4 && species > 721;
+						free(forms);
+
+						if (!(illegalspecies || illegalform)) { // prevent that gen7 stuff goes into gen6 save
+							setPkmn(mainbuf, saveBox, i, temp, game); // setpkmn -> temp
+							memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + i * PKMNLENGTH], buffer, PKMNLENGTH); // memcpy bank -> buffer
+						}
 					}
 				}
 			}
