@@ -61,7 +61,7 @@ Copyright (C) 2016 Bernardo Giordano
 
 struct {
 	u8 species[803][12];
-	u8 pkmData[961][34];
+	u8 pkmData[961][15];
 } personal;
 
 typedef struct FormData {
