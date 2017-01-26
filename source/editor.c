@@ -526,7 +526,7 @@ FormData *getLegalFormData(u16 species, int game) {
 			forms->max = 2;
 			break;
 		case 413 :
-			forms->spriteNum = 61;
+			forms->spriteNum = 63;
 			forms->stringNum = 48;
 			forms->max = 2;
 			break;
