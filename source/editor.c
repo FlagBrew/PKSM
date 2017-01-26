@@ -609,10 +609,11 @@ FormData *getLegalFormData(u16 species, int game) {
 			forms->max = 1;
 			break;
 		case 658 :
-			forms->spriteNum = 0;
-			forms->stringNum = 78;
-			forms->max = 1;
-			break;
+			if (sumo) {
+				forms->spriteNum = 0;
+				forms->stringNum = 78;
+				forms->max = 1;
+			} break;
 		case 664 :
 		case 665 :
 			forms->spriteNum = 0;
