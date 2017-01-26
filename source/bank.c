@@ -262,9 +262,11 @@ void bank(u8* mainbuf, int game) {
  		if (hidKeysDown() & KEY_A) {
 			if (isBufferized) {
 				u16 species = getPokedexNumber(pkmn);
-				int unused1, unused2;
-				bool illegalform = getForm(pkmn) > 0 && getLegalFormData(species, game, &unused1, &unused2) == 0;
+				u8 form = getForm(pkmn);
+				FormData *forms = getLegalFormData(species, game);
+				bool illegalform = form < forms->min || form > forms->max;
 				bool illegalspecies = game < 4 && species > 721;
+				free(forms);
 
 				if (!((illegalspecies || illegalform) && currentEntry > 29)) { // prevent that gen7 stuff goes into gen6 save
 					u8 tmp[PKMNLENGTH];

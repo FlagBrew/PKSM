@@ -960,10 +960,11 @@ void printEditor(u8* mainbuf, int game, int currentEntry, int langCont) {
 u16 getAlternativeSprite(u8* pkmn, int game) {
 	u8 form = getForm(pkmn);
 	if (form) {
-		int minform, maxform;
-		int spritenum = getLegalFormData(getPokedexNumber(pkmn), game, &minform, &maxform);
-		if (form >= minform && form <= maxform)
-			spritenum += form - (minform > 0 ? minform : 1);
+		FormData *forms = getLegalFormData(getPokedexNumber(pkmn), game);
+		int spritenum = forms->spriteNum;
+		if (spritenum > 0 && form >= forms->min && form <= forms->max)
+			spritenum += form - (forms->min > 0 ? forms->min : 1);
+		free(forms);
 		return spritenum;
 	}
 	return 0;
@@ -1296,10 +1297,9 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 			}
 		}
 	} else if (mode == ED_FORMS) {
-		char* entries[] = {"Alolan", "Alolan", "Rock Star", "Belle", "Pop Star", "Ph.D", "Libre", "Cosplay", "Original", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola", "Alolan", "Alolan", "Alolan", "Alolan", "Alolan", "Alolan", "Alolan", "Alolan", "Alolan", "Alolan", "Alolan", "Alolan", "Alolan", "Alolan", "Alolan", "Alolan", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "!", "?", "Attack", "Defense", "Speed", "Sand", "Trash", "Sand", "Trash", "East Sea", "East Sea", "Heat", "Wash", "Fridge", "Fan", "Mow", "Origin", "Sky", "Blue-Striped", "Summer", "Autumn", "Winter", "Summer", "Autumn", "Winter", "Therian", "Therian", "Therian", "White", "Black", "Resolute", "Pirouette", "Polar", "Tundra", "Continental", "Garden", "Elegant", "Meadow", "Modern", "Marine", "Archipelago", "High Plains", "Sandstorm", "River", "Monsoon", "Savanna", "Sun", "Ocean", "Jungle", "Fancy", "Poké Ball", "Yellow", "Orange", "Blue", "White", "Yellow", "Orange", "Blue", "White", "Eternal Flower", "Yellow", "Orange", "Blue", "White", "Heart", "Star", "Diamond", "Debutante", "Matron", "Dandy", "La Reine", "Kabuki", "Pharaoh", "10%", "10%-PC", "50%-PC", "Unbound", "Pom-Pom", "Pa'u", "Sensu", "Midnight", "Red", "Orange", "Yellow", "Green", "Blue", "Indigo", "Violet", "Original Color"};
-		int minform, maxform;
-		int spritenum = getLegalFormData((u16)additional2, game, &minform, &maxform);
-		int numforms = maxform - minform + 1;
+		char* entries[] = {"Default", "Alolan", "Default", "Rock Star", "Belle", "Pop Star", "Ph.D", "Libre", "Cosplay", "Default", "Original", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "!", "?", "Normal", "Attack", "Defense", "Speed", "Plant", "Sandy", "Trash", "West Sea", "East Sea", "Default", "Heat", "Wash", "Fridge", "Fan", "Mow", "Altered", "Origin", "Land", "Sky", "Red-Striped", "Blue-Striped", "Spring", "Summer", "Autumn", "Winter", "Incarnate", "Therian", "Default", "White", "Black", "Ordinary", "Resolute", "Aria", "Pirouette", "Default", "Battle Bond", "Default", "Polar", "Tundra", "Continental", "Garden", "Elegant", "Meadow", "Modern", "Marine", "Archipelago", "High Plains", "Sandstorm", "River", "Monsoon", "Savanna", "Sun", "Ocean", "Jungle", "Fancy", "Poke Ball", "Red", "Yellow", "Orange", "Blue", "White", "Eternal Flower", "Natural", "Heart", "Star", "Diamond", "Debutante", "Matron", "Dandy", "La Reine", "Kabuki", "Pharaoh", "50%", "10%", "10%-PC", "50%-PC", "Confined", "Unbound", "Baile", "Pom-Pom", "Pa'u", "Sensu", "Midday", "Midnight", "Red", "Orange", "Yellow", "Green", "Blue", "Indigo", "Violet", "Default", "Original Color"};
+		FormData *forms = getLegalFormData((u16)additional2, game);
+		int numforms = forms->max - forms->min + 1;
 		
 		int rows, columns, width, height;
 		sf2d_texture *button = NULL;
@@ -1320,14 +1320,17 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 				if (additional1 == i * columns + j)
 					sf2d_draw_texture(button, j * width + j, i * height + i);
 
-				int form = i * columns + j + (minform > 1 ? 1 : 0);
-				if (form < numforms + (minform > 1 ? 1 : 0)) {
-					int entry = spritenum + form - 2;
-					char *str = form == 0 ? "Default" : entries[entry];
-					if (form == 0)
+				int form = i * columns + j;
+				if (form < numforms) {
+					char *str = entries[forms->stringNum + form];
+					if (forms->min > 0)
+						form++;
+					if (form == 0 || forms->spriteNum == 0)
 						sf2d_draw_texture_part(spritesSmall, (width - 34) / 2 + width * j + j, 2 * (height - 44) / 3 + i * height, 40 * (additional2 % 25) + 4, 30 * (additional2 / 25), 34, 30);
-					else
-						sf2d_draw_texture_part(alternativeSpritesSmall, (width - 34) / 2 + width * j + j, 2 * (height - 44) / 3 + i * height + i, 40 * (entry % 6) + 4, 30 * (entry / 6), 34, 30);
+					else {
+						int sprite = forms->spriteNum + form - 2;
+						sf2d_draw_texture_part(alternativeSpritesSmall, (width - 34) / 2 + width * j + j, 2 * (height - 44) / 3 + i * height + i, 40 * (sprite % 6) + 4, 30 * (sprite / 6), 34, 30);
+					}
 					sftd_draw_text(fontBold9, width * j + (width - sftd_get_text_width(fontBold9, 9, str)) / 2 + j, (height * 5) / 7 + i * height + i, WHITE, 9, str);
 				}
 			}

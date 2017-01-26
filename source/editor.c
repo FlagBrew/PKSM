@@ -379,9 +379,12 @@ u16 getFormSpeciesNumber(u8 *pkmn) {
 	return tempspecies;
 }
 
-int getLegalFormData(u16 species, int game, int *o_minform, int *o_maxform) {
-	*o_minform = 0;
-	*o_maxform = 1;
+FormData *getLegalFormData(u16 species, int game) {
+	FormData *forms = malloc(sizeof(FormData));
+	forms->spriteNum = 0;
+	forms->stringNum = 0;
+	forms->min = 0;
+	forms->max = 0;
 
 	bool sumo = false, oras = false, b2w2 = false, plat = false;
 
@@ -407,57 +410,274 @@ int getLegalFormData(u16 species, int game, int *o_minform, int *o_maxform) {
 	}
 
 	switch (species) {
-		case 19 : return sumo ? 1 : 0;
-		case 20 : return sumo ? 2 : 0;
-		case 25 : *o_maxform = 6; return sumo ? 9 : (oras ? 3 : 0);
-		case 26 : return sumo ? 15 : 0;
-		case 27 : return sumo ? 16 : 0;
-		case 28 : return sumo ? 17 : 0;
-		case 37 : return sumo ? 18 : 0;
-		case 38 : return sumo ? 19 : 0;
-		case 50 : return sumo ? 20 : 0;
-		case 51 : return sumo ? 21 : 0;
-		case 52 : return sumo ? 22 : 0;
-		case 53 : return sumo ? 23 : 0;
-		case 74 : return sumo ? 24 : 0;
-		case 75 : return sumo ? 25 : 0;
-		case 76 : return sumo ? 26 : 0;
-		case 88 : return sumo ? 27 : 0;
-		case 89 : return sumo ? 28 : 0;
-		case 103 : return sumo ? 29 : 0;
-		case 105 : return sumo ? 30 : 0;
-		case 201 : *o_maxform = 27; return 31;
-		case 386 : *o_maxform = 3; return 58;
-		case 412 : *o_maxform = 2; return 61;
-		case 413 : *o_maxform = 2; return 63;
-		case 422 : return 65;
-		case 423 : return 66;
-		case 479 : *o_maxform = 5; return plat ? 67 : 0;
-		case 487 : return plat ? 72 : 0;
-		case 492 : return plat ? 73 : 0;
-		case 550 : return 74;
-		case 585 : *o_maxform = 3; return 75;
-		case 586 : *o_maxform = 3; return 78;
-		case 641 : return b2w2 ? 81 : 0;
-		case 642 : return b2w2 ? 82 : 0;
-		case 645 : return b2w2 ? 83 : 0;
-		case 646 : *o_maxform = 2; return b2w2 ? 84 : 0;
-		case 647 : return b2w2 ? 86 : 0;
-		case 648 : return 87;
-		case 666 : *o_maxform = 19; return 88;
-		case 669 : *o_maxform = 4; return 107;
-		case 670 : *o_maxform = 5; return 111;
-		case 671 : *o_maxform = 4; return 116;
-		case 676 : *o_maxform = 9; return 120;
-		case 718 : *o_maxform = 3; return sumo ? 129 : 0;
-		case 720 : return sumo ? 132 : 0;
-		case 741 : *o_maxform = 3; return 133;
-		case 745 : return 136;
-		case 774 : *o_minform = 7; *o_maxform = 13; return 137;
-		case 801 : return 144;
+		case 19 :
+			if (sumo) {
+				forms->spriteNum = 1;
+				forms->max = 1;
+			} break;
+		case 20 :
+			if (sumo) {
+				forms->spriteNum = 2;
+				forms->max = 1;
+			} break;
+		case 25 :
+			if (sumo) {
+				forms->spriteNum = 9;
+				forms->stringNum = 9;
+				forms->max = 6;
+			} else if (oras) {
+				forms->spriteNum = 3;
+				forms->stringNum = 2;
+				forms->max = 6;
+			} break;
+		case 26 :
+			if (sumo) {
+				forms->spriteNum = 15;
+				forms->max = 1;
+			}
+		case 27 :
+			if (sumo) {
+				forms->spriteNum = 16;
+				forms->max = 1;
+			} break;
+		case 28 :
+			if (sumo) {
+				forms->spriteNum = 17;
+				forms->max = 1;
+			} break;
+		case 37 :
+			if (sumo) {
+				forms->spriteNum = 18;
+				forms->max = 1;
+			} break;
+		case 38 :
+			if (sumo) {
+				forms->spriteNum = 19;
+				forms->max = 1;
+			} break;
+		case 50 :
+			if (sumo) {
+				forms->spriteNum = 20;
+				forms->max = 1;
+			} break;
+		case 51 :
+			if (sumo) {
+				forms->spriteNum = 21;
+				forms->max = 1;
+			} break;
+		case 52 :
+			if (sumo) {
+				forms->spriteNum = 22;
+				forms->max = 1;
+			} break;
+		case 53 :
+			if (sumo) {
+				forms->spriteNum = 23;
+				forms->max = 1;
+			} break;
+		case 74 :
+			if (sumo) {
+				forms->spriteNum = 24;
+				forms->max = 1;
+			} break;
+		case 75 :
+			if (sumo) {
+				forms->spriteNum = 25;
+				forms->max = 1;
+			} break;
+		case 76 :
+			if (sumo) {
+				forms->spriteNum = 26;
+				forms->max = 1;
+			} break;
+		case 88 :
+			if (sumo) {
+				forms->spriteNum = 27;
+				forms->max = 1;
+			} break;
+		case 89 :
+			if (sumo) {
+				forms->spriteNum = 28;
+				forms->max = 1;
+			} break;
+		case 103 :
+			if (sumo) {
+				forms->spriteNum = 29;
+				forms->max = 1;
+			} break;
+		case 105 :
+			if (sumo) {
+				forms->spriteNum = 30;
+				forms->max = 1;
+			} break;
+		case 201 :
+			forms->spriteNum = 31;
+			forms->stringNum = 16;
+			forms->max = 27;
+			break;
+		case 386 :
+			forms->spriteNum = 58;
+			forms->stringNum = 44;
+			forms->max = 3;
+			break;
+		case 412 :
+			forms->spriteNum = 61;
+			forms->stringNum = 48;
+			forms->max = 2;
+			break;
+		case 413 :
+			forms->spriteNum = 61;
+			forms->stringNum = 48;
+			forms->max = 2;
+			break;
+		case 422 :
+			forms->spriteNum = 65;
+			forms->stringNum = 51;
+			forms->max = 1;
+			break;
+		case 423 :
+			forms->spriteNum = 66;
+			forms->stringNum = 51;
+			forms->max = 1;
+			break;
+		case 479 :
+			if (plat) {
+				forms->spriteNum = 67;
+				forms->stringNum = 52;
+				forms->max = 1;
+			} break;
+		case 487 :
+			if (plat) {
+				forms->spriteNum = 72;
+				forms->stringNum = 59;
+				forms->max = 1;
+			} break;
+		case 492 :
+			if (plat) {
+				forms->spriteNum = 73;
+				forms->stringNum = 61;
+				forms->max = 1;
+			} break;
+		case 550 :
+			forms->spriteNum = 74;
+			forms->stringNum = 63;
+			forms->max = 1;
+			break;
+		case 585 :
+			forms->spriteNum = 75;
+			forms->stringNum = 65;
+			forms->max = 3;
+			break;
+		case 586 :
+			forms->spriteNum = 78;
+			forms->stringNum = 65;
+			forms->max = 3;
+			break;
+		case 641 :
+			if (b2w2) {
+				forms->spriteNum = 81;
+				forms->stringNum = 69;
+				forms->max = 1;
+			} break;
+		case 642 :
+			if (b2w2) {
+				forms->spriteNum = 82;
+				forms->stringNum = 69;
+				forms->max = 1;
+			} break;
+		case 645 :
+			if (b2w2) {
+				forms->spriteNum = 83;
+				forms->stringNum = 69;
+				forms->max = 1;
+			} break;
+		case 646 :
+			if (b2w2) {
+				forms->spriteNum = 84;
+				forms->stringNum = 71;
+				forms->max = 2;
+			} break;
+		case 647 :
+			if (b2w2) {
+				forms->spriteNum = 86;
+				forms->stringNum = 74;
+				forms->max = 1;
+			} break;
+		case 648 :
+			forms->spriteNum = 87;
+			forms->stringNum = 76;
+			forms->max = 1;
+			break;
+		case 658 :
+			forms->spriteNum = 0;
+			forms->stringNum = 78;
+			forms->max = 1;
+			break;
+		case 664 :
+		case 665 :
+			forms->spriteNum = 0;
+			forms->stringNum = 80;
+			forms->max = 19;
+			break;
+		case 666 :
+			forms->spriteNum = 88;
+			forms->stringNum = 80;
+			forms->max = 19;
+			break;
+		case 669 :
+			forms->spriteNum = 107;
+			forms->stringNum = 100;
+			forms->max = 4;
+			break;
+		case 670 :
+			forms->spriteNum = 111;
+			forms->stringNum = 100;
+			forms->max = 5;
+			break;
+		case 671 :
+			forms->spriteNum = 116;
+			forms->stringNum = 100;
+			forms->max = 4;
+			break;
+		case 676 :
+			forms->spriteNum = 120;
+			forms->stringNum = 106;
+			forms->max = 9;
+			break;
+		case 718 :
+			forms->spriteNum = 129;
+			forms->stringNum = 116;
+			forms->max = 3;
+			break;
+		case 720 :
+			forms->spriteNum = 132;
+			forms->stringNum = 120;
+			forms->max = 1;
+			break;
+		case 741 :
+			forms->spriteNum = 133;
+			forms->stringNum = 122;
+			forms->max = 3;
+			break;
+		case 745 :
+			forms->spriteNum = 136;
+			forms->stringNum = 126;
+			forms->max = 1;
+			break;
+		case 774 :
+			forms->spriteNum = 137;
+			forms->stringNum = 128;
+			forms->min = 7;
+			forms->max = 13;
+			break;
+		case 801 :
+			forms->spriteNum = 144;
+			forms->stringNum = 135;
+			forms->max = 1;
+			break;
 	}
 
-	return 0;
+	return forms;
 }
 
 u16 getEggMove(u8 *pkmn, const int nmove) { 
@@ -1457,9 +1677,9 @@ void pokemonEditor(u8* mainbuf, int game) {
 									
 									if (touch.px > 227 && touch.px < 300 && touch.py > 24 && touch.py < 92) {
 										u16 species = getPokedexNumber(pkmn);
-										int minform, maxform;
-										if (getLegalFormData(species, game, &minform, &maxform) > 0) {
-											int numforms = maxform - minform + 1;
+										FormData *forms = getLegalFormData(species, game);
+										if (forms->max > 0) {
+											int numforms = forms->max - forms->min + 1;
 											int columns;
 											if (numforms <= 16)
 												columns = 4;
@@ -1467,7 +1687,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 												columns = 6;
 											
 											u8 form = getForm(pkmn);
-											int formEntry = form >= minform && form <= maxform ? form - minform : 0;
+											int formEntry = form >= forms->min && form <= forms->max ? form - forms->min : 0;
 											while(aptMainLoop()) {
 												hidScanInput();
 												
@@ -1491,7 +1711,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 														formEntry += columns;
 													
 												if (hidKeysDown() & KEY_A) {
-													setForm(pkmn, (u8)(formEntry + minform));
+													setForm(pkmn, (u8)(formEntry + forms->min));
 													setAbility(pkmn, ability);
 													break;
 												}
@@ -1499,6 +1719,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 												printPKEditor(pkmn, game, speedy, formEntry, (int)species, 0, ED_FORMS);
 											}
 										}
+										free(forms);
 									}
 
 									if (touch.px > 180 && touch.px < 195 && touch.py > 71 && touch.py < 83) {

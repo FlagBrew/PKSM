@@ -64,6 +64,13 @@ struct {
 	u8 pkmData[961][34];
 } personal;
 
+typedef struct FormData {
+	int spriteNum;
+	int stringNum;
+	int min;
+	int max;
+} FormData;
+
 u32 seedStep(const u32 seed);
 u32 LCRNG(u32 seed);
 void shuffleArray(u8* pkmn, const u32 encryptionkey);
@@ -100,7 +107,7 @@ u8 getLevel(u8* pkmn);
 bool isInfected (u8* pkmn);
 u8 getForm(u8* pkmn);
 u16 getFormSpeciesNumber(u8* pkmn);
-int getLegalFormData(u16 species, int game, int *o_minform, int *o_maxform);
+FormData *getLegalFormData(u16 species, int game);
 u16 getStat(u8* pkmn, const int stat);
 bool getPokerus(u8* pkmn);
 u8 getAbility(u8* pkmn);
