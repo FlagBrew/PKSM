@@ -185,7 +185,7 @@ void setDex(u8 mainbuf[], u8* pkmn, int game) {
 		int bitIndex = bit;
 		if (form > 0) {
 			u8 temp;
-			memcpy(&temp, &personal.pkmData[getPokedexNumber(pkmn)][0x1C], 1);
+			memcpy(&temp, &personal.pkmData[getPokedexNumber(pkmn)][0x0C], 1);
 			if ((int)temp > 1) { // actually has forms
 				int f = getDexFormIndexSM(getPokedexNumber(pkmn), (int)temp, MaxSpeciesID - 1);
 				if (f >= 0) // bit index valid

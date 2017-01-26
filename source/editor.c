@@ -366,11 +366,11 @@ u8 getHPType(u8* pkmn) { return 15 * ((getIV(pkmn, 0)& 1) + 2 * (getIV(pkmn, 1) 
 u16 getFormSpeciesNumber(u8 *pkmn) {	
 	u16 tempspecies = getPokedexNumber(pkmn);
 	u8 form = getForm(pkmn);
-	u8 formcnt = personal.pkmData[tempspecies][0x20];
+	u8 formcnt = personal.pkmData[tempspecies][0x0E];
 
 	if (form && form < formcnt) {
 		u16 backspecies = tempspecies;
-		memcpy(&tempspecies, &personal.pkmData[tempspecies][0x1C], 2);
+		memcpy(&tempspecies, &personal.pkmData[tempspecies][0x0C], 2);
 		if (!tempspecies)
 			tempspecies = backspecies;
 		else if (form < formcnt)
@@ -749,7 +749,7 @@ char *getNickname(u8* pkmn, char* dst) {
 
 u8 getLevel(u8* pkmn) {
 	u32 exp;
-	u8 xpType = personal.pkmData[getPokedexNumber(pkmn)][0x15];
+	u8 xpType = personal.pkmData[getPokedexNumber(pkmn)][0x08];
 	u8 iterLevel = 1;
 	memcpy(&exp, &pkmn[0x10], EXPPOINTLENGTH);
 
@@ -928,7 +928,7 @@ void setAbility(u8* pkmn, const u8 ability) {
 	else                   abilitynum = 4;
 	
 	memcpy(&pkmn[0x15], &abilitynum, ABILITYNUMLENGTH);
-	memcpy(&pkmn[0x14], &personal.pkmData[tempspecies][0x18 + ability], ABILITYLENGTH);
+	memcpy(&pkmn[0x14], &personal.pkmData[tempspecies][0x09 + ability], ABILITYLENGTH);
 }
 
 void setMove(u8* pkmn, const u16 move, const int nmove) {
@@ -1036,7 +1036,7 @@ void setShiny(u8* pkmn, const bool shiny) {
 }
 
 void setLevel(u8* pkmn, int lv) {
-    u32 towrite = expTable[lv - 1][personal.pkmData[getPokedexNumber(pkmn)][0x15]];
+    u32 towrite = expTable[lv - 1][personal.pkmData[getPokedexNumber(pkmn)][0x08]];
     memcpy(&pkmn[0x10], &towrite, EXPPOINTLENGTH);
 }
 
