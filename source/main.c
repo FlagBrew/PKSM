@@ -245,7 +245,7 @@ int main() {
 	
 	else if (game == GAME_DIAMOND || game == GAME_PEARL || game == GAME_PLATINUM || game == GAME_HG || game == GAME_SS || game == GAME_B1 || game == GAME_W1 || game == GAME_B2 || game == GAME_W2) {
 		FS_CardType t;
-		if (!FSUSER_GetCardType(&t)) {
+		if (FSUSER_GetCardType(&t)) {
 			infoDisp("No cartridge inserted!");
 			exitServices();
 			return -1;
