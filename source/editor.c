@@ -434,7 +434,7 @@ FormData *getLegalFormData(u16 species, int game) {
 			if (sumo) {
 				forms->spriteNum = 15;
 				forms->max = 1;
-			}
+			} break;
 		case 27 :
 			if (sumo) {
 				forms->spriteNum = 16;
