@@ -57,11 +57,19 @@ Copyright (C) 2016 Bernardo Giordano
 #define ED_NATURES 4
 #define ED_BALLS 5
 #define ED_HIDDENPOWER 6
+#define ED_FORMS 7
 
 struct {
 	u8 species[803][12];
-	u8 pkmData[961][42];
+	u8 pkmData[961][34];
 } personal;
+
+typedef struct FormData {
+	int spriteNum;
+	int stringNum;
+	int min;
+	int max;
+} FormData;
 
 u32 seedStep(const u32 seed);
 u32 LCRNG(u32 seed);
@@ -98,15 +106,18 @@ u8 getHPType(u8* pkmn);
 u8 getLevel(u8* pkmn);
 bool isInfected (u8* pkmn);
 u8 getForm(u8* pkmn);
+u16 getFormSpeciesNumber(u8* pkmn);
+FormData *getLegalFormData(u16 species, int game);
 u16 getStat(u8* pkmn, const int stat);
 bool getPokerus(u8* pkmn);
 u8 getAbility(u8* pkmn);
+u8 getAbilityNum(u8* pkmn);
 char *getOT(u8* pkmn, char* dst);
 char *getNickname(u8* pkmn, char* dst);
 u16 getEggMove(u8 *pkmn, const int nmove);
 u8 getBall(u8* pkmn);
 u16 getPSV(u8* pkmn);
-char *getSaveUT(u8* mainbuf, int game, char* dst);
+char *getSaveOT(u8* mainbuf, int game, char* dst);
 u8 getSaveGender(u8* mainbuf, int game);
 u16 getSaveTID(u8* mainbuf, int game);
 u16 getSaveSID(u8* mainbuf, int game);
@@ -117,6 +128,7 @@ u32 getMoney(u8* mainbuf, int game);
 u16 getBP(u8* mainbuf, int game);
 
 void setGender(u8* pkmn, u8 val);
+void setForm(u8* pkmn, u8 val);
 void setOT(u8* pkmn, char* nick);
 void setHT(u8* pkmn, char* nick);
 void setHTGender(u8* pkmn, const u8 gender);

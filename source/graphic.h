@@ -66,6 +66,6 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 void printPKViewer(u8* mainbuf, u8* pkmn, bool isTeam, int game, int currentEntry, int menuEntry, int box, int mode, bool speedy, int additional1, int additional2);
 void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEntry, int saveBox, int bankBox, bool isBufferized, bool isSeen);
 void printMassInjector(int currentEntry);
-void printElement(u8* pkmn, u16 n, int x, int y);
+void printElement(u8* pkmn, int game, u16 n, int x, int y);
 void printSettings(int box, bool speedy);
 void infoViewer(u8* pkmn, int game);

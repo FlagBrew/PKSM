@@ -957,47 +957,21 @@ void printEditor(u8* mainbuf, int game, int currentEntry, int langCont) {
 	sf2d_swapbuffers();
 }
 
-u16 getAlternativeSprite(u8* pkmn) {
-    u16 tempspecies;
-    if (getForm(pkmn)) {
-		memcpy(&tempspecies, &personal.pkmData[getPokedexNumber(pkmn)][0x1C], 2);
-		
-		switch (tempspecies) {
-			case 829 : return 2;
-			case 922 : return 3;
-			case 828 : return 4;
-			case 827 : return 5;
-			case 945 : return 6;
-			case 917 : return 7;
-			case 916 : return 8;
-			case 921 : return 10;
-			case 920 : return 11;
-			case 826 : return 12;
-			case 919 : return 13;
-			case 907 : return 14;
-			case 823 : return 15;
-			case 918 : return 16;
-			case 898 : return 17;
-			case 944 : return 18;
-			case 913 : return 19;
-			case 912 : return 20;
-			case 808 : return 21;
-			case 911 : return 22;
-			case 909 : return 23;
-			case 923 : return 24;
-			case 908 : return 25;
-			case 924 : return 26;
-			case 914 : return 27;
-			case 915 : return 28;
-			case 809 : return 30;
-		}
+u16 getAlternativeSprite(u8* pkmn, int game) {
+	u8 form = getForm(pkmn);
+	if (form) {
+		FormData *forms = getLegalFormData(getPokedexNumber(pkmn), game);
+		int spritenum = forms->spriteNum;
+		if (spritenum > 0 && form >= forms->min && form <= forms->max)
+			spritenum += form - (forms->min > 0 ? forms->min : 1);
+		free(forms);
+		return spritenum;
 	}
-	
 	return 0;
 }
 
-void printElement(u8* pkmn, u16 n, int x, int y) {
-	u16 t = getAlternativeSprite(pkmn);
+void printElement(u8* pkmn, int game, u16 n, int x, int y) {
+	u16 t = getAlternativeSprite(pkmn, game);
 	if (t) {
 		t -= 1;
 		sf2d_draw_texture_part(alternativeSpritesSmall, x, y, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30); 
@@ -1008,13 +982,13 @@ void printElement(u8* pkmn, u16 n, int x, int y) {
 	if (getItem(pkmn))
 		sf2d_draw_texture(item, x + 3, y + 21);
 
-	if (!(areMarksZero(pkmn) /* && game == GAME_SM */)) {
+	if (!(areMarksZero(pkmn) && (game == GAME_SUN || game == GAME_MOON))) {
 		sf2d_draw_rectangle_rotate(x + 6, y + 13, 22, 4, SHINYRED, 0.785f);
 		sf2d_draw_rectangle_rotate(x + 15, y + 4, 4, 22, SHINYRED, 0.785f);
 	}
 }
-void printElementBlend(u8* pkmn, u16 n, int x, int y) {
-	u16 t = getAlternativeSprite(pkmn);
+void printElementBlend(u8* pkmn, int game, u16 n, int x, int y) {
+	u16 t = getAlternativeSprite(pkmn, game);
 	if (t) {
 		t -= 1;
 		sf2d_draw_texture_part_blend(alternativeSpritesSmall, x, y, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30, RGBA8(0x0, 0x0, 0x0, 100)); 
@@ -1172,7 +1146,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 				getPkmn(mainbuf, box, i * 6 + j, pkmn, game);
 				u16 n = getPokedexNumber(pkmn);
 				if (n)
-					printElement(pkmn, n, x, y);
+					printElement(pkmn, game, n, x, y);
 
 				if ((currentEntry == (i * 6 + j)) && !isTeam) {
 					pointer[0] = x + 18;
@@ -1195,7 +1169,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 				getPkmn(mainbuf, 33, i * 2 + j, pkmn, game);
 				u16 n = getPokedexNumber(pkmn);
 				if (n)
-					printElement(pkmn, n, x, (j == 1) ? y + 20 : y);
+					printElement(pkmn, game, n, x, (j == 1) ? y + 20 : y);
 
 				if ((currentEntry == (i * 2 + j)) && isTeam) {
 					pointer[0] = x + 18;
@@ -1322,19 +1296,58 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 				sf2d_draw_texture_part(typesSheet, 24 + 99 * j + j, 20 + 59 * i + i, 50 * (i * 4 + j + 1), 0, 50, 18); 
 			}
 		}
+	} else if (mode == ED_FORMS) {
+		char* entries[] = {"Default", "Alolan", "Default", "Rock Star", "Belle", "Pop Star", "Ph.D", "Libre", "Cosplay", "Default", "Original", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "!", "?", "Normal", "Attack", "Defense", "Speed", "Plant", "Sandy", "Trash", "West Sea", "East Sea", "Default", "Heat", "Wash", "Fridge", "Fan", "Mow", "Altered", "Origin", "Land", "Sky", "Red-Striped", "Blue-Striped", "Spring", "Summer", "Autumn", "Winter", "Incarnate", "Therian", "Default", "White", "Black", "Ordinary", "Resolute", "Aria", "Pirouette", "Default", "Battle Bond", "Default", "Polar", "Tundra", "Continental", "Garden", "Elegant", "Meadow", "Modern", "Marine", "Archipelago", "High Plains", "Sandstorm", "River", "Monsoon", "Savanna", "Sun", "Ocean", "Jungle", "Fancy", "Poke Ball", "Red", "Yellow", "Orange", "Blue", "White", "Eternal Flower", "Natural", "Heart", "Star", "Diamond", "Debutante", "Matron", "Dandy", "La Reine", "Kabuki", "Pharaoh", "50%", "10%", "10%-PC", "50%-PC", "Confined", "Unbound", "Baile", "Pom-Pom", "Pa'u", "Sensu", "Midday", "Midnight", "Red", "Orange", "Yellow", "Green", "Blue", "Indigo", "Violet", "Default", "Original Color"};
+		FormData *forms = getLegalFormData((u16)additional2, game);
+		int numforms = forms->max - forms->min + 1;
+		
+		int rows, columns, width, height;
+		sf2d_texture *button = NULL;
+		if (numforms <= 16) {
+			columns = 4; rows = 4;
+			width = 99; height = 59;
+			button = hiddenPowerButton;
+			sf2d_draw_texture(hiddenPowerBG, 0, 0);
+		} else {
+			columns = 6; rows = 5;
+			width = 66; height = 47;
+			button = ballButton;
+			sf2d_draw_texture(ballsBG, 0, 0);
+		}
+
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < columns; j++) {
+				if (additional1 == i * columns + j)
+					sf2d_draw_texture(button, j * width + j, i * height + i);
+
+				int form = i * columns + j;
+				if (form < numforms) {
+					char *str = entries[forms->stringNum + form];
+					if (forms->min > 0)
+						form++;
+					if (form == 0 || forms->spriteNum == 0)
+						sf2d_draw_texture_part(spritesSmall, (width - 34) / 2 + width * j + j, 2 * (height - 44) / 3 + i * height, 40 * (additional2 % 25) + 4, 30 * (additional2 / 25), 34, 30);
+					else {
+						int sprite = forms->spriteNum + form - 2;
+						sf2d_draw_texture_part(alternativeSpritesSmall, (width - 34) / 2 + width * j + j, 2 * (height - 44) / 3 + i * height + i, 40 * (sprite % 6) + 4, 30 * (sprite / 6), 34, 30);
+					}
+					sftd_draw_text(fontBold9, width * j + (width - sftd_get_text_width(fontBold9, 9, str)) / 2 + j, (height * 5) / 7 + i * height + i, WHITE, 9, str);
+				}
+			}
+		}
 	}
 	sf2d_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		printAnimatedBG(false);
-		if (mode == ED_BASE || mode == ED_ITEMS || mode == ED_NATURES || mode == ED_BALLS) {
+		if (mode == ED_BASE || mode == ED_ITEMS || mode == ED_NATURES || mode == ED_BALLS || mode == ED_FORMS) {
 			sf2d_draw_texture(editorBG, 0, 1);
 			sf2d_draw_texture(editorBar, 0, 210);
 			
 			sftd_draw_text(fontBold12, 27, 4, WHITE, 12, (char*)personal.species[n]);
 			sf2d_draw_texture_part(balls, -2, -6, 32 * (getBall(pkmn) % 8), 32 * (getBall(pkmn) / 8), 32, 32);
 			
-			u16 t = getAlternativeSprite(pkmn);
+			u16 t = getAlternativeSprite(pkmn, game);
 			int ofs = movementOffsetSlow(3);
 			if (t) {
 				t -= 1;
@@ -1466,6 +1479,9 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 		} else if (mode == ED_HIDDENPOWER) {
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
 			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Select a HP type with A in the top screen.")) / 2, 105, WHITE, 14, "Select a HP type with A in the top screen.");
+		} else if (mode == ED_FORMS) {
+			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
+			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Select a form with A in the top screen.")) / 2, 105, WHITE, 14, "Select a form with A in the top screen.");
 		}
 		
 	sf2d_end_frame();
@@ -1494,8 +1510,12 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 
 			if (getPokedexNumber(pkmn)) {
 				u16 tempspecies = getPokedexNumber(pkmn);
-				if (getForm(pkmn))
+				u8 form = getForm(pkmn);
+				if (form) {
 					memcpy(&tempspecies, &personal.pkmData[getPokedexNumber(pkmn)][0x1C], 2);
+					tempspecies += form - 1;
+				}
+
 				u8 type1 = personal.pkmData[tempspecies][0x6];
 				u8 type2 = personal.pkmData[tempspecies][0x7];
 				
@@ -1540,7 +1560,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 					memcpy(pkmn, &bankbuf[bankBox * 30 * PKMNLENGTH + (i * 6 + j) * PKMNLENGTH], PKMNLENGTH);
 					u16 n = getPokedexNumber(pkmn);
 					if (n)
-						printElement(pkmn, n, x, y);
+						printElement(pkmn, GAME_SUN, n, x, y);
 
 					if (currentEntry == (i * 6 + j)) {
 						pointer[0] = x + 18;
@@ -1553,8 +1573,8 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 			
 			if (currentEntry < 30) {
 				u16 n = getPokedexNumber(pkmnbuf);
-				if (n) printElementBlend(pkmnbuf, n, pointer[0] - 14, pointer[1] + 8);
-				if (n) printElement(pkmnbuf, n, pointer[0] - 18, pointer[1] + 3);
+				if (n) printElementBlend(pkmnbuf, GAME_SUN, n, pointer[0] - 14, pointer[1] + 8);
+				if (n) printElement(pkmnbuf, GAME_SUN, n, pointer[0] - 18, pointer[1] + 3);
 				sf2d_draw_texture(selector, pointer[0], pointer[1] - 2 - ((!isBufferized) ? movementOffsetSlow(3) : 0));
 			}
 		}		
@@ -1583,7 +1603,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 				getPkmn(mainbuf, saveBox, i*6+j, pkmn, game);
 				u16 n = getPokedexNumber(pkmn);
 				if (n)
-					printElement(pkmn, n, x, y);
+					printElement(pkmn, game, n, x, y);
 
 				if ((currentEntry - 30) == (i * 6 + j)) {
 					pointer[0] = x + 18;
@@ -1597,8 +1617,8 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 		if (currentEntry > 29) {
 			if (!isSeen) {
 				u16 n = getPokedexNumber(pkmnbuf);
-				if (n) printElementBlend(pkmnbuf, n, pointer[0] - 14, pointer[1] + 8);
-				if (n) printElement(pkmnbuf, n, pointer[0] - 18, pointer[1] + 3);
+				if (n) printElementBlend(pkmnbuf, GAME_SUN, n, pointer[0] - 14, pointer[1] + 8);
+				if (n) printElement(pkmnbuf, GAME_SUN, n, pointer[0] - 18, pointer[1] + 3);
 				sf2d_draw_texture(selector, pointer[0], pointer[1] - 2 - ((!isBufferized) ? movementOffsetSlow(3) : 0));
 			} else
 				sf2d_draw_texture(selector, pointer[0], pointer[1] - 2);

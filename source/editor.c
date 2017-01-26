@@ -358,9 +358,328 @@ u8 getHT(u8* pkmn) { return *(u8*)(pkmn + 0xDE); }
 u8 getGender(u8* pkmn) { return ((*(u8*)(pkmn + 0x1D)) >> 1) & 0x3; }
 u8 getLanguage(u8* pkmn) { return *(u8*)(pkmn + 0xE3); }
 u8 getAbility(u8* pkmn) { return *(u8*)(pkmn + 0x14); }
+u8 getAbilityNum(u8* pkmn) { return *(u8*)(pkmn + 0x15); }
 u8 getForm(u8* pkmn) { return ((*(u8*)(pkmn + 0x1D)) >> 3); }
 u16 getItem(u8* pkmn) { return *(u16*)(pkmn + 0x0A); }
 u8 getHPType(u8* pkmn) { return 15 * ((getIV(pkmn, 0)& 1) + 2 * (getIV(pkmn, 1) & 1) + 4 * (getIV(pkmn, 2) & 1) + 8 * (getIV(pkmn, 3) & 1) + 16 * (getIV(pkmn, 4) & 1) + 32 * (getIV(pkmn, 5) & 1)) / 63; }
+
+u16 getFormSpeciesNumber(u8 *pkmn) {	
+	u16 tempspecies = getPokedexNumber(pkmn);
+	u8 form = getForm(pkmn);
+	u8 formcnt = personal.pkmData[tempspecies][0x20];
+
+	if (form && form < formcnt) {
+		u16 backspecies = tempspecies;
+		memcpy(&tempspecies, &personal.pkmData[tempspecies][0x1C], 2);
+		if (!tempspecies)
+			tempspecies = backspecies;
+		else if (form < formcnt)
+			tempspecies += form - 1;
+	}	
+	return tempspecies;
+}
+
+FormData *getLegalFormData(u16 species, int game) {
+	FormData *forms = malloc(sizeof(FormData));
+	forms->spriteNum = 0;
+	forms->stringNum = 0;
+	forms->min = 0;
+	forms->max = 0;
+
+	bool sumo = false, oras = false, b2w2 = false, plat = false;
+
+	switch (game)
+	{
+		case GAME_SUN:
+		case GAME_MOON:
+			sumo = true;
+		case GAME_OR:
+		case GAME_AS:
+			oras = true;
+		case GAME_X:
+		case GAME_Y:
+		case GAME_B2:
+		case GAME_W2:
+			b2w2 = true;
+		case GAME_B1:
+		case GAME_W1:
+		case GAME_HG:
+		case GAME_SS:
+		case GAME_PLATINUM:
+			plat = true;
+	}
+
+	switch (species) {
+		case 19 :
+			if (sumo) {
+				forms->spriteNum = 1;
+				forms->max = 1;
+			} break;
+		case 20 :
+			if (sumo) {
+				forms->spriteNum = 2;
+				forms->max = 1;
+			} break;
+		case 25 :
+			if (sumo) {
+				forms->spriteNum = 9;
+				forms->stringNum = 9;
+				forms->max = 6;
+			} else if (oras) {
+				forms->spriteNum = 3;
+				forms->stringNum = 2;
+				forms->max = 6;
+			} break;
+		case 26 :
+			if (sumo) {
+				forms->spriteNum = 15;
+				forms->max = 1;
+			}
+		case 27 :
+			if (sumo) {
+				forms->spriteNum = 16;
+				forms->max = 1;
+			} break;
+		case 28 :
+			if (sumo) {
+				forms->spriteNum = 17;
+				forms->max = 1;
+			} break;
+		case 37 :
+			if (sumo) {
+				forms->spriteNum = 18;
+				forms->max = 1;
+			} break;
+		case 38 :
+			if (sumo) {
+				forms->spriteNum = 19;
+				forms->max = 1;
+			} break;
+		case 50 :
+			if (sumo) {
+				forms->spriteNum = 20;
+				forms->max = 1;
+			} break;
+		case 51 :
+			if (sumo) {
+				forms->spriteNum = 21;
+				forms->max = 1;
+			} break;
+		case 52 :
+			if (sumo) {
+				forms->spriteNum = 22;
+				forms->max = 1;
+			} break;
+		case 53 :
+			if (sumo) {
+				forms->spriteNum = 23;
+				forms->max = 1;
+			} break;
+		case 74 :
+			if (sumo) {
+				forms->spriteNum = 24;
+				forms->max = 1;
+			} break;
+		case 75 :
+			if (sumo) {
+				forms->spriteNum = 25;
+				forms->max = 1;
+			} break;
+		case 76 :
+			if (sumo) {
+				forms->spriteNum = 26;
+				forms->max = 1;
+			} break;
+		case 88 :
+			if (sumo) {
+				forms->spriteNum = 27;
+				forms->max = 1;
+			} break;
+		case 89 :
+			if (sumo) {
+				forms->spriteNum = 28;
+				forms->max = 1;
+			} break;
+		case 103 :
+			if (sumo) {
+				forms->spriteNum = 29;
+				forms->max = 1;
+			} break;
+		case 105 :
+			if (sumo) {
+				forms->spriteNum = 30;
+				forms->max = 1;
+			} break;
+		case 201 :
+			forms->spriteNum = 31;
+			forms->stringNum = 16;
+			forms->max = 27;
+			break;
+		case 386 :
+			forms->spriteNum = 58;
+			forms->stringNum = 44;
+			forms->max = 3;
+			break;
+		case 412 :
+			forms->spriteNum = 61;
+			forms->stringNum = 48;
+			forms->max = 2;
+			break;
+		case 413 :
+			forms->spriteNum = 63;
+			forms->stringNum = 48;
+			forms->max = 2;
+			break;
+		case 422 :
+			forms->spriteNum = 65;
+			forms->stringNum = 51;
+			forms->max = 1;
+			break;
+		case 423 :
+			forms->spriteNum = 66;
+			forms->stringNum = 51;
+			forms->max = 1;
+			break;
+		case 479 :
+			if (plat) {
+				forms->spriteNum = 67;
+				forms->stringNum = 53;
+				forms->max = 5;
+			} break;
+		case 487 :
+			if (plat) {
+				forms->spriteNum = 72;
+				forms->stringNum = 59;
+				forms->max = 1;
+			} break;
+		case 492 :
+			if (plat) {
+				forms->spriteNum = 73;
+				forms->stringNum = 61;
+				forms->max = 1;
+			} break;
+		case 550 :
+			forms->spriteNum = 74;
+			forms->stringNum = 63;
+			forms->max = 1;
+			break;
+		case 585 :
+			forms->spriteNum = 75;
+			forms->stringNum = 65;
+			forms->max = 3;
+			break;
+		case 586 :
+			forms->spriteNum = 78;
+			forms->stringNum = 65;
+			forms->max = 3;
+			break;
+		case 641 :
+			if (b2w2) {
+				forms->spriteNum = 81;
+				forms->stringNum = 69;
+				forms->max = 1;
+			} break;
+		case 642 :
+			if (b2w2) {
+				forms->spriteNum = 82;
+				forms->stringNum = 69;
+				forms->max = 1;
+			} break;
+		case 645 :
+			if (b2w2) {
+				forms->spriteNum = 83;
+				forms->stringNum = 69;
+				forms->max = 1;
+			} break;
+		case 646 :
+			if (b2w2) {
+				forms->spriteNum = 84;
+				forms->stringNum = 71;
+				forms->max = 2;
+			} break;
+		case 647 :
+			if (b2w2) {
+				forms->spriteNum = 86;
+				forms->stringNum = 74;
+				forms->max = 1;
+			} break;
+		case 648 :
+			forms->spriteNum = 87;
+			forms->stringNum = 76;
+			forms->max = 1;
+			break;
+		case 658 :
+			if (sumo) {
+				forms->spriteNum = 0;
+				forms->stringNum = 78;
+				forms->max = 1;
+			} break;
+		case 664 :
+		case 665 :
+			forms->spriteNum = 0;
+			forms->stringNum = 80;
+			forms->max = 19;
+			break;
+		case 666 :
+			forms->spriteNum = 88;
+			forms->stringNum = 80;
+			forms->max = 19;
+			break;
+		case 669 :
+			forms->spriteNum = 107;
+			forms->stringNum = 100;
+			forms->max = 4;
+			break;
+		case 670 :
+			forms->spriteNum = 111;
+			forms->stringNum = 100;
+			forms->max = 5;
+			break;
+		case 671 :
+			forms->spriteNum = 116;
+			forms->stringNum = 100;
+			forms->max = 4;
+			break;
+		case 676 :
+			forms->spriteNum = 120;
+			forms->stringNum = 106;
+			forms->max = 9;
+			break;
+		case 718 :
+			forms->spriteNum = 129;
+			forms->stringNum = 116;
+			forms->max = 3;
+			break;
+		case 720 :
+			forms->spriteNum = 132;
+			forms->stringNum = 120;
+			forms->max = 1;
+			break;
+		case 741 :
+			forms->spriteNum = 133;
+			forms->stringNum = 122;
+			forms->max = 3;
+			break;
+		case 745 :
+			forms->spriteNum = 136;
+			forms->stringNum = 126;
+			forms->max = 1;
+			break;
+		case 774 :
+			forms->spriteNum = 137;
+			forms->stringNum = 128;
+			forms->min = 7;
+			forms->max = 13;
+			break;
+		case 801 :
+			forms->spriteNum = 144;
+			forms->stringNum = 135;
+			forms->max = 1;
+			break;
+	}
+
+	return forms;
+}
 
 u16 getEggMove(u8 *pkmn, const int nmove) { 
     u16 eggmovebuffer[4];
@@ -369,9 +688,7 @@ u16 getEggMove(u8 *pkmn, const int nmove) {
 }
 
 u16 getStat(u8* pkmn, const int stat) {
-    u16 tempspecies = getPokedexNumber(pkmn);
-    if (getForm(pkmn))
-		memcpy(&tempspecies, &personal.pkmData[getPokedexNumber(pkmn)][0x1C], 2);
+    u16 tempspecies = getFormSpeciesNumber(pkmn);
 
     u8 mult = 10;
     u16 final;
@@ -591,6 +908,7 @@ void setItemEditor(u8* pkmn, u16 item) {
 }
 
 void setGender(u8* pkmn, u8 val) { pkmn[0x1D] = (u8)((pkmn[0x1D] & ~0x06) | (val << 1)); }
+void setForm(u8* pkmn, u8 val) { pkmn[0x1D] = (u8)((pkmn[0x1D] & 0x07) | (val << 3)); }
 void setBall(u8* pkmn, u8 val) { pkmn[0xDC] = val; }
 
 void setTID(u8* pkmn, u16 tid) {
@@ -602,9 +920,7 @@ void setSID(u8* pkmn, u16 sid) {
 }
 
 void setAbility(u8* pkmn, const u8 ability) {
-    u16 tempspecies = getPokedexNumber(pkmn);
-    if (getForm(pkmn))
-		memcpy(&tempspecies, &personal.pkmData[getPokedexNumber(pkmn)][0x1C], 2);
+    u16 tempspecies = getFormSpeciesNumber(pkmn);
 	
 	u8 abilitynum = 0;
 	if (ability == 0)      abilitynum = 1;
@@ -976,9 +1292,9 @@ void pokemonEditor(u8* mainbuf, int game) {
 	int currentEntry = 0;
 	int menuEntry = 0;
 	int boxmax = (game < 4) ? 30 : 31;
-	int ability = 2;
 	
 	u8* pkmn = (u8*)malloc(PKMNLENGTH * sizeof(u8));
+	int ability = (int)getAbilityNum(pkmn);
 
 	while (aptMainLoop()) {
 		hidScanInput();
@@ -1360,11 +1676,55 @@ void pokemonEditor(u8* mainbuf, int game) {
 										}
 									}
 									
+									if (touch.px > 227 && touch.px < 300 && touch.py > 24 && touch.py < 92) {
+										u16 species = getPokedexNumber(pkmn);
+										FormData *forms = getLegalFormData(species, game);
+										if (forms->max > 0) {
+											int numforms = forms->max - forms->min + 1;
+											int columns;
+											if (numforms <= 16)
+												columns = 4;
+											else
+												columns = 6;
+											
+											u8 form = getForm(pkmn);
+											int formEntry = form >= forms->min && form <= forms->max ? form - forms->min : 0;
+											while(aptMainLoop()) {
+												hidScanInput();
+												
+												if (hidKeysDown() & KEY_B)
+													break;
+
+												if (hidKeysDown() & KEY_DRIGHT)
+													if (formEntry + 1 < numforms) 
+														formEntry++;
+												
+												if (hidKeysDown() & KEY_DLEFT)
+													if (formEntry > 0) 
+														formEntry--;
+												
+												if (hidKeysDown() & KEY_DUP)
+													if (formEntry >= columns) 
+														formEntry -= columns;
+												
+												if (hidKeysDown() & KEY_DDOWN)
+													if (formEntry + columns < numforms)
+														formEntry += columns;
+													
+												if (hidKeysDown() & KEY_A) {
+													setForm(pkmn, (u8)(formEntry + forms->min));
+													setAbility(pkmn, ability);
+													break;
+												}
+												
+												printPKEditor(pkmn, game, speedy, formEntry, (int)species, 0, ED_FORMS);
+											}
+										}
+										free(forms);
+									}
+
 									if (touch.px > 180 && touch.px < 195 && touch.py > 71 && touch.py < 83) {
-										if (ability < 2) 
-											ability++;
-										else if (ability == 2) 
-											ability = 0;
+										ability = (ability + 1) % 3;
 										setAbility(pkmn, ability);
 									}
 									
