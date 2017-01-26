@@ -1,3 +1,4 @@
+Anty-Lemon for joining the dev team!
 Smealum for ctrulib, Xerpi for sf2d
 Kaphotics for PKHeX and being an awesome guy
 SciresM for C-memecrypto, you rock man
@@ -8,7 +9,6 @@ Gocario for PKBrew
 TuxSH for TWLSaveTool
 MarcusD for romfs support
 Nba_Yoh for received flags fix
-Hamcha for cybertrust.h and digicert.h
 PPorg for most of wc6/wc7 included here
 Simona, Carlo, Matteo for fill.c work
 Shai, Federico, YodaDaCoda, /u/SatansRoommate for tests
