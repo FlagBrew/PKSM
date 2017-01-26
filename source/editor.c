@@ -2168,7 +2168,13 @@ void pokemonEditor(u8* mainbuf, int game) {
 											rewind(fptr);
 											fread(livingbuf, size, 1, fptr);
 											fclose(fptr);
-											memcpy(&mainbuf[getPkmnAddress((isTeam)? 33 : box, currentEntry, game)], &livingbuf[(page * 40 + genEntry) * 232], 232);
+											
+											memcpy(&mainbuf[getPkmnAddress((isTeam) ? 33 : box, currentEntry, game)], &livingbuf[(page * 40 + genEntry) * 232], 232);
+											u8 tempkmn[PKMNLENGTH];
+											getPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
+											memcpy(&tempkmn[0xE3], &mainbuf[(game < 4) ? 0x1402D : 0x1235], 1); // nats
+											setPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
+											
 											free(livingbuf);
 											operationDone = true;
 										}
@@ -2244,7 +2250,13 @@ void pokemonEditor(u8* mainbuf, int game) {
 							rewind(fptr);
 							fread(livingbuf, size, 1, fptr);
 							fclose(fptr);
-							memcpy(&mainbuf[getPkmnAddress((isTeam)? 33 : box, currentEntry, game)], &livingbuf[(page * 40 + genEntry) * 232], 232);
+
+							memcpy(&mainbuf[getPkmnAddress((isTeam) ? 33 : box, currentEntry, game)], &livingbuf[(page * 40 + genEntry) * 232], 232);
+							u8 tempkmn[PKMNLENGTH];
+							getPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
+							memcpy(&tempkmn[0xE3], &mainbuf[(game < 4) ? 0x1402D : 0x1235], 1); // nats
+							setPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
+											
 							free(livingbuf);
 							operationDone = true;
 						}
