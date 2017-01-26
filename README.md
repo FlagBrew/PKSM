@@ -1,8 +1,17 @@
-![pksm](assets/banner.png)
+<p align="center">
+  <br><br>
+  <img src="https://raw.githubusercontent.com/BernardoGiordano/PKSM/master/assets/banner.png">
+</p>
 
 **Editor**, **wondercard injector**, **offline extra storage** and **OTA injector**.
 
 If you want a non-invasive homebrew to see your save's infos, check out [**PKSV**](https://github.com/BernardoGiordano/PKSV)
+
+| Downloads | Links |
+| :-------: | :---: |
+| Latest 3dsx build | [direct](https://github.com/BernardoGiordano/PKSM/releases/download/4.1.0/PKSM.zip) |
+| Latest cfw build | [direct](https://github.com/BernardoGiordano/PKSM/releases/download/4.1.0/PKSM.cia) |
+| Latest QR code | [qr](https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=https://github.com/BernardoGiordano/PKSM/releases/download/4.1.0/PKSM.cia&choe=UTF-8.png) |
 
 ## Backups
 
@@ -10,12 +19,14 @@ Automatic backups are located at ` /3ds/data/PKSM/backup/[GAME_DATE]/main `
 
 ## OTA injection
 
+You can use servepkx to inject things from your PC to PKSM directly. Use your favourite version between the ones proposed here:
+
 * **Java: [Usage](https://github.com/BernardoGiordano/PKSM/tree/master/servepkx/java)**
 * **Python: [Usage](https://github.com/BernardoGiordano/PKSM/tree/master/servepkx/python)**
 
 ## Installation
 
-Download and install the latest release (4.0.3) with your favourite installation method. When booted, the application will download automatically the required additional assets from a third party source. You can provide your own assets, if you want.
+Download and install the latest release (4.1.0) with your favourite installation method. When booted, the application will download automatically the required additional assets from a third party source. You can provide your own assets, if you want.
 
 If you're using Homebrew Launcher, make sure you have it updated to the [latest version](https://smealum.github.io/ninjhax2/starter.zip).
 
@@ -30,16 +41,17 @@ Lastly in case you're compiling for homebrew usage ensure you also create an xml
 
 ## Screenshots
 
-![pksm](assets/page/01.png) ![pksm](assets/page/02.png)
-![pksm](assets/page/03.png) ![pksm](assets/page/04.png)
-![pksm](assets/page/05.png) ![pksm](assets/page/06.png)
-![pksm](assets/page/07.png) ![pksm](assets/page/08.png)
-![pksm](assets/page/09.png) ![pksm](assets/page/10.png)
-![pksm](assets/page/11.png) ![pksm](assets/page/12.png)
+<img src="assets/page/01.png" width="350"> <img src="assets/page/02.png" width="350">
+<img src="assets/page/03.png" width="350"> <img src="assets/page/04.png" width="350">
+<img src="assets/page/05.png" width="350"> <img src="assets/page/06.png" width="350">
+<img src="assets/page/07.png" width="350"> <img src="assets/page/08.png" width="350">
+<img src="assets/page/09.png" width="350"> <img src="assets/page/10.png" width="350">
+<img src="assets/page/11.png" width="350"> <img src="assets/page/12.png" width="350">
  
 ## Credits
 
 * @dsoldier for the gorgeous graphic work
+* @Anty-Lemon for joining the dev team
 * Smealum for ctrulib, Xerpi for sf2d
 * Kaphotics for PKHeX and being an awesome guy
 * SciresM for C-memecrypto, you rock man
@@ -64,7 +76,7 @@ Lastly in case you're compiling for homebrew usage ensure you also create an xml
 
 This file is part of PKSM
 
-Copyright (C) 2016 Bernardo Giordano
+Copyright (C) 2016/2017 Bernardo Giordano
 
 >    This program is free software: you can redistribute it and/or modify
 >    it under the terms of the GNU General Public License as published by
