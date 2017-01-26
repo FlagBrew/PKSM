@@ -982,7 +982,7 @@ void printElement(u8* pkmn, int game, u16 n, int x, int y) {
 	if (getItem(pkmn))
 		sf2d_draw_texture(item, x + 3, y + 21);
 
-	if (!(areMarksZero(pkmn) /* && game == GAME_SM */)) {
+	if (!(areMarksZero(pkmn) && (game == GAME_SUN || game == GAME_MOON))) {
 		sf2d_draw_rectangle_rotate(x + 6, y + 13, 22, 4, SHINYRED, 0.785f);
 		sf2d_draw_rectangle_rotate(x + 15, y + 4, 4, 22, SHINYRED, 0.785f);
 	}
@@ -1480,7 +1480,7 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
 			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Select a HP type with A in the top screen.")) / 2, 105, WHITE, 14, "Select a HP type with A in the top screen.");
 		} else if (mode == ED_FORMS) {
-			sf2d_draw_texture(bottomMask, 0, 0);
+			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
 			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Select a form with A in the top screen.")) / 2, 105, WHITE, 14, "Select a form with A in the top screen.");
 		}
 		
