@@ -62,16 +62,16 @@ void GUIElementsInit() {
 
 void GUIElementsSpecify(int game) {
 	freezeMsg("Loading graphics...");
-	alternativeSpritesSmall = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/alternative_icons_spritesheet.png", SF2D_PLACE_RAM);
-	spritesSmall = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheet.png", SF2D_PLACE_RAM);
-	balls = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/balls_spritesheet.png", SF2D_PLACE_RAM);
+	alternativeSpritesSmall = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/alternative_icons_spritesheetv2.png", SF2D_PLACE_RAM);
+	spritesSmall = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheetv2.png", SF2D_PLACE_RAM);
+	balls = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/balls_spritesheetv2.png", SF2D_PLACE_RAM);
 	settings = sfil_load_PNG_file("romfs:/res/Settings.png", SF2D_PLACE_RAM);
 	
 	if (game < 6) {
-		editorBar = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/editor_bar.png", SF2D_PLACE_RAM);
-		typesSheet = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/types_sheet.png", SF2D_PLACE_RAM);
-		boxView = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/editor_bottom.png", SF2D_PLACE_RAM);
-		back = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/back_button.png", SF2D_PLACE_RAM);
+		editorBar = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/editor_barv2.png", SF2D_PLACE_RAM);
+		typesSheet = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/types_sheetv2.png", SF2D_PLACE_RAM);
+		boxView = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/editor_bottomv2.png", SF2D_PLACE_RAM);
+		back = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/back_buttonv2.png", SF2D_PLACE_RAM);
 
 		otaButton = sfil_load_PNG_file("romfs:/res/OTA Button.png", SF2D_PLACE_RAM);
 		includeInfoButton = sfil_load_PNG_file("romfs:/res/Include Info.png", SF2D_PLACE_RAM);
@@ -146,8 +146,8 @@ void GUIGameElementsInit() {
 	lowerTextGS = sfil_load_PNG_file("romfs:/res/DS.png", SF2D_PLACE_RAM);
 	topBorder = sfil_load_PNG_file("romfs:/res/3dsborder.png", SF2D_PLACE_RAM);
 	bottomBorder = sfil_load_PNG_file("romfs:/res/dsborder.png", SF2D_PLACE_RAM);
-	gameSelectorBottom = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/dsicons.png", SF2D_PLACE_RAM);
-	gameSelectorTop = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/3dsicons.png", SF2D_PLACE_RAM);
+	gameSelectorBottom = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/dsiconsv2.png", SF2D_PLACE_RAM);
+	gameSelectorTop = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/3dsiconsv2.png", SF2D_PLACE_RAM);
 }
 
 void GUIGameElementsExit() {
@@ -982,7 +982,7 @@ void printElement(u8* pkmn, int game, u16 n, int x, int y) {
 	if (getItem(pkmn))
 		sf2d_draw_texture(item, x + 3, y + 21);
 
-	if (!(areMarksZero(pkmn) && (game == GAME_SUN || game == GAME_MOON))) {
+	if (!areMarksZero(pkmn) && (game == GAME_SUN || game == GAME_MOON)) {
 		sf2d_draw_rectangle_rotate(x + 6, y + 13, 22, 4, SHINYRED, 0.785f);
 		sf2d_draw_rectangle_rotate(x + 15, y + 4, 4, 22, SHINYRED, 0.785f);
 	}
