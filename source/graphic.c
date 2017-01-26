@@ -1067,7 +1067,7 @@ void infoViewer(u8* pkmn, int game) {
 		char* otid = (char*)malloc(18 * sizeof(char));
 		snprintf(otid, 18, "%u / %u", getPSV(pkmn), getTSV(pkmn));
 		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, otid), 160, (getPSV(pkmn) == getTSV(pkmn)) ? SHINYRED : WHITE, 12, otid);
-		snprintf(otid, 18, "%lu / %u", (game < 4) ? (u32)getOTID(pkmn) : (((u32)(getSOTID(pkmn) * 65536) + getOTID(pkmn)) % 1000000), getSOTID(pkmn));
+		snprintf(otid, 18, "%u / %u", getOTID(pkmn), getSOTID(pkmn));
 		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, otid), 180, WHITE, 12, otid);
 		free(otid);
 
@@ -1206,7 +1206,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 			drawIP(fontBold9);
 		} else if (mode != ED_CLONE) {
 			if (mode == ED_STANDARD)
-				sftd_draw_textf(fontBold9, 16, 220, WHITE, 9, "TID: %lu / SID: %u / TSV: %u", (game < 4) ? (u32)getSaveTID(mainbuf, game) : (((u32)(getSaveSID(mainbuf, game) * 65536) + getSaveTID(mainbuf, game)) % 1000000), getSaveSID(mainbuf, game), getSaveTSV(mainbuf, game));	
+				sftd_draw_textf(fontBold9, 16, 220, WHITE, 9, "TID: %u / SID: %u / TSV: %u", getSaveTID(mainbuf, game), getSaveSID(mainbuf, game), getSaveTSV(mainbuf, game));	
 			else
 				sftd_draw_textf(fontBold9, 16, 220, WHITE, 9, "Seed: %lx %lx %lx %lx", getSaveSeed(mainbuf, game, 3), getSaveSeed(mainbuf, game, 2), getSaveSeed(mainbuf, game, 1), getSaveSeed(mainbuf, game, 0));	
 		}
