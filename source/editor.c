@@ -543,8 +543,8 @@ FormData *getLegalFormData(u16 species, int game) {
 		case 479 :
 			if (plat) {
 				forms->spriteNum = 67;
-				forms->stringNum = 52;
-				forms->max = 1;
+				forms->stringNum = 53;
+				forms->max = 5;
 			} break;
 		case 487 :
 			if (plat) {
