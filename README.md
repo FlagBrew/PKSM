@@ -9,9 +9,9 @@ If you want a non-invasive homebrew to see your save's infos, check out [**PKSV*
 
 | Downloads | Links |
 | :-------: | :---: |
-| Latest 3dsx build | [direct](https://github.com/BernardoGiordano/PKSM/releases/download/4.1.0/PKSM.zip) |
-| Latest cfw build | [direct](https://github.com/BernardoGiordano/PKSM/releases/download/4.1.0/PKSM.cia) |
-| Latest QR code | [qr](https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=https://github.com/BernardoGiordano/PKSM/releases/download/4.1.0/PKSM.cia&choe=UTF-8.png) |
+| Latest 3dsx build | [direct](https://github.com/BernardoGiordano/PKSM/releases/download/4.1.1/PKSM.zip) |
+| Latest cfw build | [direct](https://github.com/BernardoGiordano/PKSM/releases/download/4.1.1/PKSM.cia) |
+| Latest QR code | [qr](https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=https://github.com/BernardoGiordano/PKSM/releases/download/4.1.1/PKSM.cia&choe=UTF-8.png) |
 
 ## Backups
 
@@ -26,7 +26,7 @@ You can use servepkx to inject things from your PC to PKSM directly. Use your fa
 
 ## Installation
 
-Download and install the latest release (4.1.0) with your favourite installation method. When booted, the application will download automatically the required additional assets from a third party source. You can provide your own assets, if you want.
+Download and install the latest release (4.1.1) with your favourite installation method. When booted, the application will download automatically the required additional assets from a third party source. You can provide your own assets, if you want.
 
 If you're using Homebrew Launcher, make sure you have it updated to the [latest version](https://smealum.github.io/ninjhax2/starter.zip).
 
