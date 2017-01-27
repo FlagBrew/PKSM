@@ -298,7 +298,9 @@ void getPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, 
 }
 
 void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game) {
-	char *ht_name = (char*)malloc(NICKNAMELENGTH * sizeof(char));
+	char *ht_name = (char*)malloc(NICKNAMELENGTH);
+	memset(ht_name, 0, NICKNAMELENGTH);
+	getSaveOT(mainbuf, game, ht_name);
 	setHT(pkmn, ht_name);
 	free(ht_name);
 	setHTGender(pkmn, getSaveGender(mainbuf, game));
@@ -734,6 +736,19 @@ char *getOT(u8* pkmn, char* dst) {
 	return dst;
 }
 
+char *getSaveOT(u8* mainbuf, int game, char* dst) {
+	u16 src[NICKNAMELENGTH];
+	memcpy(src, &mainbuf[(game < 4) ? 0x14048 : 0X1238], NICKNAMELENGTH);
+	
+	int cnt = 0;
+	while (src[cnt] && cnt < 24) {
+		dst[cnt] = src[cnt];
+		cnt += 1;
+	}
+	dst[cnt] = 0;
+	return dst;
+}
+
 char *getNickname(u8* pkmn, char* dst) {
 	u16 src[NICKNAMELENGTH];
 	memcpy(src, &pkmn[0x40], NICKNAMELENGTH);
@@ -856,19 +871,6 @@ u8 getBall(u8* pkmn) {
     memcpy(&ballbuffer, &pkmn[0xDC], 1);
     
     return ballbuffer;
-}
-
-char *getSaveOT(u8* mainbuf, int game, char* dst) {
-	u16 src[NICKNAMELENGTH];
-	memcpy(src, &mainbuf[((game < 4) ? 0x14000 : 0x01200) + 0x38], NICKNAMELENGTH);
-	
-	int cnt = 0;
-	while (src[cnt] && cnt < 24) {
-		dst[cnt] = src[cnt];
-		cnt += 1;
-	}
-	dst[cnt] = 0;
-	return dst;
 }
 
 u8 getSaveGender(u8* mainbuf, int game) {
