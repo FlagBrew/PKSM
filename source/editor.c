@@ -388,7 +388,7 @@ FormData *getLegalFormData(u16 species, int game) {
 	forms->min = 0;
 	forms->max = 0;
 
-	bool sumo = false, oras = false, b2w2 = false, plat = false;
+	bool sumo = false, oras = false, b2w2 = false, bw = false, hgss = false, plat = false;
 
 	switch (game)
 	{
@@ -405,8 +405,10 @@ FormData *getLegalFormData(u16 species, int game) {
 			b2w2 = true;
 		case GAME_B1:
 		case GAME_W1:
+			bw = true;
 		case GAME_HG:
 		case GAME_SS:
+			hgss = true;
 		case GAME_PLATINUM:
 			plat = true;
 	}
@@ -510,6 +512,12 @@ FormData *getLegalFormData(u16 species, int game) {
 		case 105 :
 			if (sumo) {
 				forms->spriteNum = 30;
+				forms->max = 1;
+			} break;
+		case 172 :
+			if (hgss && !bw) {
+				forms->spriteNum = 0;
+				forms->stringNum = 141;
 				forms->max = 1;
 			} break;
 		case 201 :
