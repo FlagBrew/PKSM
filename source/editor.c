@@ -647,35 +647,41 @@ FormData *getLegalFormData(u16 species, int game) {
 			forms->stringNum = 106;
 			forms->max = 9;
 			break;
+		case 710 :
+		case 711 :
+			forms->spriteNum = 0;
+			forms->stringNum = 116;
+			forms->max = 3;
+			break;
 		case 718 :
 			forms->spriteNum = 129;
-			forms->stringNum = 116;
+			forms->stringNum = 120;
 			forms->max = 3;
 			break;
 		case 720 :
 			forms->spriteNum = 132;
-			forms->stringNum = 120;
+			forms->stringNum = 124;
 			forms->max = 1;
 			break;
 		case 741 :
 			forms->spriteNum = 133;
-			forms->stringNum = 122;
+			forms->stringNum = 126;
 			forms->max = 3;
 			break;
 		case 745 :
 			forms->spriteNum = 136;
-			forms->stringNum = 126;
+			forms->stringNum = 130;
 			forms->max = 1;
 			break;
 		case 774 :
 			forms->spriteNum = 137;
-			forms->stringNum = 128;
+			forms->stringNum = 132;
 			forms->min = 7;
 			forms->max = 13;
 			break;
 		case 801 :
 			forms->spriteNum = 144;
-			forms->stringNum = 135;
+			forms->stringNum = 139;
 			forms->max = 1;
 			break;
 	}
