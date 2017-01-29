@@ -387,8 +387,9 @@ FormData *getLegalFormData(u16 species, int game) {
 	forms->stringNum = 0;
 	forms->min = 0;
 	forms->max = 0;
+	forms->editable = true;
 
-	bool sumo = false, oras = false, b2w2 = false, bw = false, hgss = false, plat = false;
+	bool sumo = false, oras = false, xy = false, b2w2 = false, bw = false, hgss = false, plat = false;
 
 	switch (game)
 	{
@@ -400,6 +401,7 @@ FormData *getLegalFormData(u16 species, int game) {
 			oras = true;
 		case GAME_X:
 		case GAME_Y:
+			xy = true;
 		case GAME_B2:
 		case GAME_W2:
 			b2w2 = true;
@@ -568,6 +570,11 @@ FormData *getLegalFormData(u16 species, int game) {
 				forms->stringNum = 61;
 				forms->max = 1;
 			} break;
+		case 493 :
+			forms->spriteNum = 0;
+			forms->max = (xy || (hgss && !bw)) ? 17 : 16;
+			forms->editable = false;
+			break;
 		case 550 :
 			forms->spriteNum = 74;
 			forms->stringNum = 63;
@@ -617,6 +624,11 @@ FormData *getLegalFormData(u16 species, int game) {
 			forms->spriteNum = 87;
 			forms->stringNum = 76;
 			forms->max = 1;
+			break;
+		case 649 :
+			forms->spriteNum = 0;
+			forms->max = 4;
+			forms->editable = false;
 			break;
 		case 658 :
 			if (sumo) {
@@ -681,6 +693,11 @@ FormData *getLegalFormData(u16 species, int game) {
 			forms->stringNum = 130;
 			forms->max = 1;
 			break;
+		case 773 :
+			forms->spriteNum = 0;
+			forms->max = 17;
+			forms->editable = false;
+			break;
 		case 774 :
 			forms->spriteNum = 137;
 			forms->stringNum = 132;
@@ -694,6 +711,7 @@ FormData *getLegalFormData(u16 species, int game) {
 			break;
 	}
 
+	forms->editable = forms->editable && forms->max > 0;
 	return forms;
 }
 
@@ -1695,7 +1713,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 									if (touch.px > 227 && touch.px < 300 && touch.py > 24 && touch.py < 92) {
 										u16 species = getPokedexNumber(pkmn);
 										FormData *forms = getLegalFormData(species, game);
-										if (forms->max > 0) {
+										if (forms->editable) {
 											int numforms = forms->max - forms->min + 1;
 											int columns;
 											if (numforms <= 16)

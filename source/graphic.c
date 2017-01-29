@@ -1509,15 +1509,18 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 			sftd_draw_text(fontBold12, 55 + (178 - sftd_get_text_width(fontBold12, 12, page)) / 2, 9, WHITE, 12, page);
 
 			if (getPokedexNumber(pkmn)) {
-				u16 tempspecies = getPokedexNumber(pkmn);
-				u8 form = getForm(pkmn);
-				if (form) {
-					memcpy(&tempspecies, &personal.pkmData[getPokedexNumber(pkmn)][0x0C], 2);
-					tempspecies += form - 1;
-				}
+				u16 tempspecies = getFormSpeciesNumber(pkmn);
+				u8 type1 = 0, type2 = 0;
 
-				u8 type1 = personal.pkmData[tempspecies][0x6];
-				u8 type2 = personal.pkmData[tempspecies][0x7];
+				if (tempspecies == 493 || tempspecies == 773) {
+					type1 = getForm(pkmn);
+					if (game >= GAME_DIAMOND && game <= GAME_SS && type1 > 9)
+						type1--;
+					type2 = type1;
+				} else {
+					type1 = personal.pkmData[tempspecies][0x6];
+					type2 = personal.pkmData[tempspecies][0x7];
+				}
 				
 				sf2d_draw_texture_part(typesSheet, 273, 120, 50 * type1, 0, 50, 18); 
 				if (type1 != type2)

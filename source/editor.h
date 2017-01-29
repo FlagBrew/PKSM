@@ -69,6 +69,7 @@ typedef struct FormData {
 	int stringNum;
 	int min;
 	int max;
+	bool editable;
 } FormData;
 
 u32 seedStep(const u32 seed);
