@@ -6,10 +6,10 @@ void fillDescriptions(char *descriptions[]) {
 	for (int j = 0; j < PKMNLENGTH; j++)
 		descriptions[j] = " ";
 	
-	descriptions[0x00] = "0x00 - Encryption Constant; byte1";
-	descriptions[0x01] = "0x01 - Encryption Constant; byte2";
-	descriptions[0x02] = "0x02 - Encryption Constant; byte3";
-	descriptions[0x03] = "0x03 - Encryption Constant; byte4";
+	descriptions[0x00] = "Encryption Constant, byte 1";
+	descriptions[0x01] = "Encryption Constant, byte 2";
+	descriptions[0x02] = "Encryption Constant, byte 3";
+	descriptions[0x03] = "Encryption Constant, byte 4";
 }
 
 void fillSectors(bool sector[][2]) {

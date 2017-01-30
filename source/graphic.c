@@ -1354,11 +1354,12 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 				int byte = rows*16 + columns;
 				if (additional1 == byte)
 					sf2d_draw_texture(hexButton, columns*25, rows*15);
-				sftd_draw_textf(fontBold11, 4 + 25*columns, 15*rows, (sector[byte][0])? WHITE : DS, 11, "%02hhX", pkmn[byte]);
+				sftd_draw_textf(fontBold11, 4 + 25*columns, 15*rows, (sector[byte][0]) ? WHITE : DS, 11, "%02hhX", pkmn[byte]);
 				
 				if (byte == 231) break;
 			}
 		}
+		sftd_draw_textf(fontBold11, 4, 225, LIGHTBLUE, 11, "%s", descriptions[additional1]);
 	}
 	sf2d_end_frame();
 	
@@ -1487,10 +1488,25 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 					sf2d_draw_texture_rotate(subArrow, 198 - movementOffsetSlow(3), 137 + i * 20, 3.1415f);
 			}
 		}
+		if (mode == ED_HEX) {
+			sf2d_draw_texture(mainMenuBottom, 0, 0);
+			sftd_draw_textf(fontBold14, 50, 30, LIGHTBLUE, 14, "Selected byte:");
+			sf2d_draw_texture(blueTextBox, 165, 28);
+			sftd_draw_textf(fontBold14, 171, 30, WHITE, 14, "0x%02hhX", additional1);
+			sftd_draw_textf(fontBold9, 60, 225, LIGHTBLUE, 9, "You can switch speed using (L/R): %s", speedy ? "FAST" : "SLOW");
+			
+			if (sector[additional1][0] && !(sector[additional1][1])) {
+				sf2d_draw_texture(minusButton, 224, 31);
+				sf2d_draw_texture(plusButton, 247, 31);
+			} else if (sector[additional1][0] && sector[additional1][1]) {
+				
+			}
+		}
 
-		if (mode != ED_HEX)
+		if (mode != ED_HEX) {
 			sf2d_draw_texture(back, 280, 210);
-		sftd_draw_textf(fontBold9, 55, 220, WHITE, 9, "You can switch speed using (L/R): %s", speedy ? "FAST" : "SLOW");
+			sftd_draw_textf(fontBold9, 55, 220, WHITE, 9, "You can switch speed using (L/R): %s", speedy ? "FAST" : "SLOW");
+		}
 		
 		// apply masks
 		if (mode == ED_ITEMS) {
@@ -1508,10 +1524,6 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 		} else if (mode == ED_FORMS) {
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
 			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Select a form with A in the top screen.")) / 2, 105, WHITE, 14, "Select a form with A in the top screen.");
-		} else if (mode == ED_HEX) {
-			sf2d_draw_texture(mainMenuBottom, 0, 0);
-			//sftd_draw_text_wrap(fontBold11, 4, 160, WHITE, 11, 332, descriptions[additional1]);
-			sftd_draw_textf(fontBold11, 4, 160, BLACK, 11, "%hhX", additional1);
 		}
 		
 	sf2d_end_frame();

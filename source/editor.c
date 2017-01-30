@@ -309,7 +309,7 @@ void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, 
 	
 	if ((getSaveTID(mainbuf, game) == getOTID(pkmn)) && (getSaveSID(mainbuf, game) == getSOTID(pkmn)) && !memcmp(ot_name, save_name, NICKNAMELENGTH)) { //you're the owner
 		setHT(pkmn, ht_name);
-		setHTGender(pkmn, 4);
+		setHTGender(pkmn, 0);
 	} else {
 		setHT(pkmn, save_name);
 		setHTGender(pkmn, getSaveGender(mainbuf, game));
@@ -1592,6 +1592,12 @@ void pokemonEditor(u8* mainbuf, int game) {
 										if (hidKeysDown() & KEY_B)
 											break;
 										
+										if (hidKeysDown() & KEY_L)
+											speedy = false;
+
+										if (hidKeysDown() & KEY_R)
+											speedy = true;
+										
 										if (hidKeysDown() & KEY_DRIGHT)
 											if (byteEntry < 231) 
 												byteEntry++;
@@ -1607,6 +1613,24 @@ void pokemonEditor(u8* mainbuf, int game) {
 										if (hidKeysDown() & KEY_DDOWN)
 											if (byteEntry <= 215) 
 												byteEntry += 16;
+											
+										if (!speedy && sector[byteEntry][0] && !sector[byteEntry][1] && (hidKeysDown() & KEY_TOUCH) && (touch.px > 224 && touch.px < 241 && touch.py > 31 && touch.py < 49)) {
+											if (pkmn[byteEntry] > 0)
+												pkmn[byteEntry]--;
+										}
+										else if (speedy && sector[byteEntry][0] && !sector[byteEntry][1] && (hidKeysHeld() & KEY_TOUCH) && (touch.px > 224 && touch.px < 241 && touch.py > 31 && touch.py < 49)) {
+											if (pkmn[byteEntry] > 0)
+												pkmn[byteEntry]--;
+										}
+										
+										if (!speedy && sector[byteEntry][0] && !sector[byteEntry][1] && (hidKeysDown() & KEY_TOUCH) && (touch.px > 247 && touch.px < 264 && touch.py > 31 && touch.py < 49)) {
+											if (pkmn[byteEntry] < 0xFF)
+												pkmn[byteEntry]++;
+										}
+										else if (speedy && sector[byteEntry][0] && !sector[byteEntry][1] && (hidKeysHeld() & KEY_TOUCH) && (touch.px > 247 && touch.px < 264 && touch.py > 31 && touch.py < 49)) {
+											if (pkmn[byteEntry] < 0xFF)
+												pkmn[byteEntry]++;
+										}
 										
 										printPKEditor(pkmn, game, speedy, byteEntry, 0, 0, ED_HEX, descriptions);
 									}
