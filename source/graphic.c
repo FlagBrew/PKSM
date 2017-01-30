@@ -27,11 +27,12 @@ Copyright (C) 2016 Bernardo Giordano
 #include "editor.h"
 #include "bank.h"
 #include "http.h"
+#include "hex.h"
 
 int lookup[] = {0x0, 0x1, 0x2, 0x4, 0x5, 0x3};
 
 sftd_font *fontBold18, *fontBold15, *fontBold14, *fontBold12, *fontBold11, *fontBold9, *fontFixed; 
-sf2d_texture *otaButton, *generationBG, *generationButton, *includeInfoButton, *upperTextGS, *lowerTextGS, *hiddenPowerBG, *hiddenPowerButton, *selectBoxButton, *ballsBG, *ballButton, *male, *female, *naturesButton, *naturestx, *movesBottom, *topMovesBG, *editorBar, *editorStatsBG, *subArrow, *backgroundTop, *miniBox, *plusButton, *minusButton, *balls, *typesSheet, *transferButton, *bankTop, *shinyStar, *normalBar, *LButton, *RButton, *creditsTop, *pokeball, *topBorder, *bottomBorder, *gameSelectorBottom, *gameSelectorTop, *mainMenuBottom, *menuBar, *menuSelectedBar, *darkButton, *eventTop, *left, *lightButton, *redButton, *right, *spritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *warningTop, *warningBottom, *boxView, *infoView, *selector, *editorBG, *plus, *minus, *back, *setting, *selectorCloning, *button, *bottomPopUp, *pokemonBufferBox, *cleanTop, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR, *topSelectedMove, *settings, *item, *alternativeSpritesSmall;
+sf2d_texture *hexBG, *hexButton, *blueTextBox, *otaButton, *generationBG, *generationButton, *includeInfoButton, *upperTextGS, *lowerTextGS, *hiddenPowerBG, *hiddenPowerButton, *selectBoxButton, *ballsBG, *ballButton, *male, *female, *naturesButton, *naturestx, *movesBottom, *topMovesBG, *editorBar, *editorStatsBG, *subArrow, *backgroundTop, *miniBox, *plusButton, *minusButton, *balls, *typesSheet, *transferButton, *bankTop, *shinyStar, *normalBar, *LButton, *RButton, *creditsTop, *pokeball, *topBorder, *bottomBorder, *gameSelectorBottom, *gameSelectorTop, *mainMenuBottom, *menuBar, *menuSelectedBar, *darkButton, *eventTop, *left, *lightButton, *redButton, *right, *spritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *warningTop, *warningBottom, *boxView, *infoView, *selector, *editorBG, *plus, *minus, *back, *setting, *selectorCloning, *button, *bottomPopUp, *pokemonBufferBox, *cleanTop, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR, *topSelectedMove, *settings, *item, *alternativeSpritesSmall;
 
 char *gamesList[] = {"X", "Y", "OR", "AS", "S", "M", "D", "P", "PL", "HG", "SS", "B", "W", "B2", "W2"};
 
@@ -73,6 +74,9 @@ void GUIElementsSpecify(int game) {
 		boxView = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/editor_bottomv2.png", SF2D_PLACE_RAM);
 		back = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/back_buttonv2.png", SF2D_PLACE_RAM);
 
+		hexBG = sfil_load_PNG_file("romfs:/res/Hex BG.png", SF2D_PLACE_RAM);
+		hexButton = sfil_load_PNG_file("romfs:/res/Selected Byte.png", SF2D_PLACE_RAM);
+		blueTextBox = sfil_load_PNG_file("romfs:/res/Blue Textbox.png", SF2D_PLACE_RAM);
 		otaButton = sfil_load_PNG_file("romfs:/res/OTA Button.png", SF2D_PLACE_RAM);
 		includeInfoButton = sfil_load_PNG_file("romfs:/res/Include Info.png", SF2D_PLACE_RAM);
 		generationButton = sfil_load_PNG_file("romfs:/res/Generation Button.png", SF2D_PLACE_RAM);
@@ -160,6 +164,9 @@ void GUIGameElementsExit() {
 }
 
 void GUIElementsExit() {
+	sf2d_free_texture(hexBG);
+	sf2d_free_texture(hexButton);
+	sf2d_free_texture(blueTextBox);
 	sf2d_free_texture(otaButton);
 	sf2d_free_texture(generationBG);
 	sf2d_free_texture(generationButton);
@@ -970,7 +977,7 @@ u16 getAlternativeSprite(u8* pkmn, int game) {
 	return 0;
 }
 
-void printElement(u8* pkmn, int game, u16 n, int x, int y) {
+void printElement(u8* mainbuf, u8* pkmn, int game, u16 n, int x, int y) {
 	u16 t = getAlternativeSprite(pkmn, game);
 	if (t) {
 		t -= 1;
@@ -985,6 +992,11 @@ void printElement(u8* pkmn, int game, u16 n, int x, int y) {
 	if (!areMarksZero(pkmn) && (game == GAME_SUN || game == GAME_MOON)) {
 		sf2d_draw_rectangle_rotate(x + 6, y + 13, 22, 4, SHINYRED, 0.785f);
 		sf2d_draw_rectangle_rotate(x + 15, y + 4, 4, 22, SHINYRED, 0.785f);
+	}
+	
+	if (!checkHTLegality(mainbuf, pkmn, game)) {
+		sf2d_draw_rectangle_rotate(x + 6, y + 13, 22, 4, DARKBLUE, 0.785f);
+		sf2d_draw_rectangle_rotate(x + 15, y + 4, 4, 22, DARKBLUE, 0.785f);
 	}
 }
 void printElementBlend(u8* pkmn, int game, u16 n, int x, int y) {
@@ -1146,7 +1158,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 				getPkmn(mainbuf, box, i * 6 + j, pkmn, game);
 				u16 n = getPokedexNumber(pkmn);
 				if (n)
-					printElement(pkmn, game, n, x, y);
+					printElement(mainbuf, pkmn, game, n, x, y);
 
 				if ((currentEntry == (i * 6 + j)) && !isTeam) {
 					pointer[0] = x + 18;
@@ -1169,7 +1181,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 				getPkmn(mainbuf, 33, i * 2 + j, pkmn, game);
 				u16 n = getPokedexNumber(pkmn);
 				if (n)
-					printElement(pkmn, game, n, x, (j == 1) ? y + 20 : y);
+					printElement(mainbuf, pkmn, game, n, x, (j == 1) ? y + 20 : y);
 
 				if ((currentEntry == (i * 2 + j)) && isTeam) {
 					pointer[0] = x + 18;
@@ -1217,7 +1229,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 	free(page);
 }
 
-void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additional2, int additional3, int mode) {
+void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additional2, int additional3, int mode, char* descriptions[]) {
 	int max = sftd_get_text_width(fontBold12, 12, "252");
 	char* entries[] = {"Level:", "Nature:", "Ability:", "Item:", "Shiny:", "Pokerus:", "OT:", "Nickname:", "Friendship:"};
 	char* options[] = {"STATS", "MOVES", "SAVE"};
@@ -1335,11 +1347,24 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 				}
 			}
 		}
+	} else if (mode == ED_HEX) {
+		sf2d_draw_texture(hexBG, 0, 0);
+		for (int rows = 0; rows < 15; rows++) {
+			for (int columns = 0; columns < 16; columns++) {
+				int byte = rows*16 + columns;
+				if (additional1 == byte)
+					sf2d_draw_texture(hexButton, columns*25, rows*15);
+				sftd_draw_textf(fontBold11, 4 + 25*columns, 15*rows, (sector[byte][0])? WHITE : DS, 11, "%02hhX", pkmn[byte]);
+				
+				if (byte == 231) break;
+			}
+		}
 	}
 	sf2d_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-		printAnimatedBG(false);
+		if (mode != ED_HEX)
+			printAnimatedBG(false);
 		if (mode == ED_BASE || mode == ED_ITEMS || mode == ED_NATURES || mode == ED_BALLS || mode == ED_FORMS) {
 			sf2d_draw_texture(editorBG, 0, 1);
 			sf2d_draw_texture(editorBar, 0, 210);
@@ -1463,7 +1488,8 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 			}
 		}
 
-		sf2d_draw_texture(back, 280, 210);
+		if (mode != ED_HEX)
+			sf2d_draw_texture(back, 280, 210);
 		sftd_draw_textf(fontBold9, 55, 220, WHITE, 9, "You can switch speed using (L/R): %s", speedy ? "FAST" : "SLOW");
 		
 		// apply masks
@@ -1482,6 +1508,10 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 		} else if (mode == ED_FORMS) {
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
 			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Select a form with A in the top screen.")) / 2, 105, WHITE, 14, "Select a form with A in the top screen.");
+		} else if (mode == ED_HEX) {
+			sf2d_draw_texture(mainMenuBottom, 0, 0);
+			//sftd_draw_text_wrap(fontBold11, 4, 160, WHITE, 11, 332, descriptions[additional1]);
+			sftd_draw_textf(fontBold11, 4, 160, BLACK, 11, "%hhX", additional1);
 		}
 		
 	sf2d_end_frame();
@@ -1563,7 +1593,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 					memcpy(pkmn, &bankbuf[bankBox * 30 * PKMNLENGTH + (i * 6 + j) * PKMNLENGTH], PKMNLENGTH);
 					u16 n = getPokedexNumber(pkmn);
 					if (n)
-						printElement(pkmn, GAME_SUN, n, x, y);
+						printElement(mainbuf, pkmn, GAME_SUN, n, x, y);
 
 					if (currentEntry == (i * 6 + j)) {
 						pointer[0] = x + 18;
@@ -1577,7 +1607,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 			if (currentEntry < 30) {
 				u16 n = getPokedexNumber(pkmnbuf);
 				if (n) printElementBlend(pkmnbuf, GAME_SUN, n, pointer[0] - 14, pointer[1] + 8);
-				if (n) printElement(pkmnbuf, GAME_SUN, n, pointer[0] - 18, pointer[1] + 3);
+				if (n) printElement(mainbuf, pkmnbuf, GAME_SUN, n, pointer[0] - 18, pointer[1] + 3);
 				sf2d_draw_texture(selector, pointer[0], pointer[1] - 2 - ((!isBufferized) ? movementOffsetSlow(3) : 0));
 			}
 		}		
@@ -1606,7 +1636,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 				getPkmn(mainbuf, saveBox, i*6+j, pkmn, game);
 				u16 n = getPokedexNumber(pkmn);
 				if (n)
-					printElement(pkmn, game, n, x, y);
+					printElement(mainbuf, pkmn, game, n, x, y);
 
 				if ((currentEntry - 30) == (i * 6 + j)) {
 					pointer[0] = x + 18;
@@ -1621,7 +1651,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 			if (!isSeen) {
 				u16 n = getPokedexNumber(pkmnbuf);
 				if (n) printElementBlend(pkmnbuf, GAME_SUN, n, pointer[0] - 14, pointer[1] + 8);
-				if (n) printElement(pkmnbuf, GAME_SUN, n, pointer[0] - 18, pointer[1] + 3);
+				if (n) printElement(mainbuf, pkmnbuf, GAME_SUN, n, pointer[0] - 18, pointer[1] + 3);
 				sf2d_draw_texture(selector, pointer[0], pointer[1] - 2 - ((!isBufferized) ? movementOffsetSlow(3) : 0));
 			} else
 				sf2d_draw_texture(selector, pointer[0], pointer[1] - 2);

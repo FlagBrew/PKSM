@@ -34,7 +34,7 @@ Copyright (C) 2016 Bernardo Giordano
 #define IVLENGTH 4
 #define OTIDLENGTH 2
 #define SOTIDLENGTH 2
-#define NICKNAMELENGTH 26
+#define NICKNAMELENGTH 24
 #define POKEDEXNUMBERLENGTH 2
 #define ABILITYLENGTH 1
 #define ABILITYNUMLENGTH 1
@@ -58,6 +58,7 @@ Copyright (C) 2016 Bernardo Giordano
 #define ED_BALLS 5
 #define ED_HIDDENPOWER 6
 #define ED_FORMS 7
+#define ED_HEX 8
 
 struct {
 	u8 species[803][12];
@@ -87,7 +88,9 @@ void rerollPID(u8* pkmn);
 void encryptBattleSection(u8* mainbuf, u8* pkmn, int game, int currentEntry);
 void fillBattleSection(u8* mainbuf, u8* pkmn, int game, int currentEntry);
 bool isBattleBoxed(u8* mainbuf, int game, int box, int slot);
+bool checkHTLegality(u8* mainbuf, u8* pkmn, int game);
 
+u8 getOTGender(u8* pkmn);
 u8 getHPType(u8* pkmn);
 u8 getGender(u8* pkmn);
 u8 getLanguage(u8* pkmn);
@@ -114,6 +117,7 @@ bool getPokerus(u8* pkmn);
 u8 getAbility(u8* pkmn);
 u8 getAbilityNum(u8* pkmn);
 char *getOT(u8* pkmn, char* dst);
+char *getHTName(u8* pkmn, char* dst);
 char *getNickname(u8* pkmn, char* dst);
 u16 getEggMove(u8 *pkmn, const int nmove);
 u8 getBall(u8* pkmn);

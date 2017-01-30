@@ -315,7 +315,7 @@ void bank(u8* mainbuf, int game) {
 					
 					if (currentEntry < 30) {
 						memcpy(pkmn, &bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], PKMNLENGTH);
-						//clearMarkings(pkmn);
+						clearMarkings(pkmn);
 						if (!getPokedexNumber(pkmn)) {
 							memset(pkmn, 0, PKMNLENGTH);
 							isBufferized = false;
@@ -325,7 +325,7 @@ void bank(u8* mainbuf, int game) {
 						}
 					} else {
 						getPkmn(mainbuf, saveBox, currentEntry - 30, pkmn, game);
-						//clearMarkings(pkmn);
+						clearMarkings(pkmn);
 						if (!getPokedexNumber(pkmn)) {
 							memset(pkmn, 0, PKMNLENGTH);
 							isBufferized = false;

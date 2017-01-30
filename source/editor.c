@@ -22,6 +22,7 @@ Copyright (C) 2016 Bernardo Giordano
 #include "editor.h"
 #include "util.h"
 #include "save.h"
+#include "hex.h"
 
 /* ************************ local variables ************************ */
 int lookupHT[] = {0, 1, 2, 5, 3, 4};
@@ -298,12 +299,21 @@ void getPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, 
 }
 
 void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game) {
-	char *ht_name = (char*)malloc(NICKNAMELENGTH);
+	char ot_name[NICKNAMELENGTH];
+	char save_name[NICKNAMELENGTH];
+	char ht_name[NICKNAMELENGTH];
 	memset(ht_name, 0, NICKNAMELENGTH);
-	getSaveOT(mainbuf, game, ht_name);
-	setHT(pkmn, ht_name);
-	free(ht_name);
-	setHTGender(pkmn, getSaveGender(mainbuf, game));
+
+	memcpy(ot_name, &pkmn[0xB0], NICKNAMELENGTH);
+	memcpy(save_name, &mainbuf[(game < 4) ? 0x14048 : 0X1238], NICKNAMELENGTH);
+	
+	if ((getSaveTID(mainbuf, game) == getOTID(pkmn)) && (getSaveSID(mainbuf, game) == getSOTID(pkmn)) && !memcmp(ot_name, save_name, NICKNAMELENGTH)) { //you're the owner
+		setHT(pkmn, ht_name);
+		setHTGender(pkmn, 4);
+	} else {
+		setHT(pkmn, save_name);
+		setHTGender(pkmn, getSaveGender(mainbuf, game));
+	}
 
     calculatePKMNChecksum(pkmn);
 	if (boxnumber == 33) {
@@ -313,6 +323,27 @@ void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, 
     encryptPkmn(pkmn);
 
     memcpy(&mainbuf[getPkmnAddress(boxnumber, indexnumber, game)], pkmn, PKMNLENGTH);
+}
+
+bool checkHTLegality(u8* mainbuf, u8* pkmn, int game) {
+	u8 ot_name[NICKNAMELENGTH];
+	u8 save_name[NICKNAMELENGTH];
+	u8 ht_name[NICKNAMELENGTH];
+	u8 dummy[NICKNAMELENGTH];
+	
+	memset(dummy, 0, NICKNAMELENGTH);
+
+	memcpy(ot_name, &pkmn[0xB0], NICKNAMELENGTH);
+	memcpy(ht_name, &pkmn[0x78], NICKNAMELENGTH);
+	memcpy(save_name, &mainbuf[(game < 4) ? 0x14048 : 0X1238], NICKNAMELENGTH);
+	
+	if ((getSaveTID(mainbuf, game) == getOTID(pkmn)) && (getSaveSID(mainbuf, game) == getSOTID(pkmn)) && !memcmp(ot_name, save_name, NICKNAMELENGTH)) {//you're the owner
+		if (!memcmp(dummy, ht_name, NICKNAMELENGTH))
+			return true;
+	} else if (!memcmp(ht_name, save_name, NICKNAMELENGTH))
+		return true;
+	
+	return false;
 }
 
 bool isShiny(u8* pkmn) {
@@ -364,6 +395,7 @@ u8 getAbilityNum(u8* pkmn) { return *(u8*)(pkmn + 0x15); }
 u8 getForm(u8* pkmn) { return ((*(u8*)(pkmn + 0x1D)) >> 3); }
 u16 getItem(u8* pkmn) { return *(u16*)(pkmn + 0x0A); }
 u8 getHPType(u8* pkmn) { return 15 * ((getIV(pkmn, 0)& 1) + 2 * (getIV(pkmn, 1) & 1) + 4 * (getIV(pkmn, 2) & 1) + 8 * (getIV(pkmn, 3) & 1) + 16 * (getIV(pkmn, 4) & 1) + 32 * (getIV(pkmn, 5) & 1)) / 63; }
+u8 getOTGender(u8* pkmn) { return ((*(u8*)(pkmn + 0xDD)) >> 7); }
 
 u16 getFormSpeciesNumber(u8 *pkmn) {	
 	u16 tempspecies = getPokedexNumber(pkmn);
@@ -784,6 +816,19 @@ char *getSaveOT(u8* mainbuf, int game, char* dst) {
 char *getNickname(u8* pkmn, char* dst) {
 	u16 src[NICKNAMELENGTH];
 	memcpy(src, &pkmn[0x40], NICKNAMELENGTH);
+	
+	int cnt = 0;
+	while (src[cnt] && cnt < NICKNAMELENGTH) {
+		dst[cnt] = src[cnt];
+		cnt += 1;
+	}
+	dst[cnt] = 0;
+	return dst;
+}
+
+char *getHTName(u8* pkmn, char* dst) {
+	u16 src[NICKNAMELENGTH];
+	memcpy(src, &pkmn[0x78], NICKNAMELENGTH);
 	
 	int cnt = 0;
 	while (src[cnt] && cnt < NICKNAMELENGTH) {
@@ -1327,6 +1372,8 @@ void pokemonEditor(u8* mainbuf, int game) {
 	int menuEntry = 0;
 	int boxmax = (game < 4) ? 30 : 31;
 	
+	char* descriptions[PKMNLENGTH];
+	
 	u8* pkmn = (u8*)malloc(PKMNLENGTH * sizeof(u8));
 	int ability = (int)getAbilityNum(pkmn);
 
@@ -1531,6 +1578,39 @@ void pokemonEditor(u8* mainbuf, int game) {
 									operationDone = true;
 									break;
 								}
+								
+								// hex editor
+								if ((hidKeysDown() & KEY_TOUCH) && touch.px > 0 && touch.px < 180 && touch.py > 210 && touch.py < 240)  {// random for now
+									int byteEntry = 0;
+									fillSectors(sector);
+									fillDescriptions(descriptions);
+									
+									while(aptMainLoop()) {
+										hidScanInput();
+										hidTouchRead(&touch);
+										
+										if (hidKeysDown() & KEY_B)
+											break;
+										
+										if (hidKeysDown() & KEY_DRIGHT)
+											if (byteEntry < 231) 
+												byteEntry++;
+										
+										if (hidKeysDown() & KEY_DLEFT)
+											if (byteEntry > 0) 
+												byteEntry--;
+										
+										if (hidKeysDown() & KEY_DUP)
+											if (byteEntry >= 16) 
+												byteEntry -= 16;
+										
+										if (hidKeysDown() & KEY_DDOWN)
+											if (byteEntry <= 215) 
+												byteEntry += 16;
+										
+										printPKEditor(pkmn, game, speedy, byteEntry, 0, 0, ED_HEX, descriptions);
+									}
+								}
 
 								if (hidKeysDown() & KEY_L)
 									speedy = false;
@@ -1589,7 +1669,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 															break;
 														}
 														
-														printPKEditor(pkmn, game, speedy, hpEntry, 0, 0, ED_HIDDENPOWER);
+														printPKEditor(pkmn, game, speedy, hpEntry, 0, 0, ED_HIDDENPOWER, descriptions);
 													}
 												}												
 											}
@@ -1640,7 +1720,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 												}
 											}
 											
-											printPKEditor(pkmn, game, speedy, 0, 0, 0, ED_STATS);
+											printPKEditor(pkmn, game, speedy, 0, 0, 0, ED_STATS, descriptions);
 										}
 									}
 									
@@ -1673,7 +1753,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 												break;
 											}
 											
-											printPKEditor(pkmn, game, speedy, natureEntry, 0, 0, ED_NATURES);
+											printPKEditor(pkmn, game, speedy, natureEntry, 0, 0, ED_NATURES, descriptions);
 										}
 									}
 									
@@ -1706,7 +1786,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 												break;
 											}
 											
-											printPKEditor(pkmn, game, speedy, ballEntry, 0, 0, ED_BALLS);
+											printPKEditor(pkmn, game, speedy, ballEntry, 0, 0, ED_BALLS, descriptions);
 										}
 									}
 									
@@ -1751,7 +1831,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 													break;
 												}
 												
-												printPKEditor(pkmn, game, speedy, formEntry, (int)species, 0, ED_FORMS);
+												printPKEditor(pkmn, game, speedy, formEntry, (int)species, 0, ED_FORMS, descriptions);
 											}
 										}
 										free(forms);
@@ -1905,7 +1985,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 													setEggMove(pkmn, movesSorted[moveEntry + page * 40], entryBottom - 4);
 											}
 											
-											printPKEditor(pkmn, game, speedy, moveEntry, page, entryBottom, ED_MOVES);
+											printPKEditor(pkmn, game, speedy, moveEntry, page, entryBottom, ED_MOVES, descriptions);
 										}										
 									}
 									
@@ -1967,7 +2047,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 												break;
 											}
 											
-											printPKEditor(pkmn, game, speedy, itemEntry, page, 0, ED_ITEMS);
+											printPKEditor(pkmn, game, speedy, itemEntry, page, 0, ED_ITEMS, descriptions);
 										}
 									}
 								}
@@ -2016,7 +2096,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 									}
 								}								
 								
-								printPKEditor(pkmn, game, speedy, 0, 0, 0, ED_BASE);
+								printPKEditor(pkmn, game, speedy, 0, 0, 0, ED_BASE, descriptions);
 							}
 							break;
 						}
