@@ -28,6 +28,13 @@ Copyright (C) 2016 Bernardo Giordano
 #include "util.h"
 #include "graphic.h"
 
+void checkMaxValue(u8* pkmn, int byteEntry, int value, int max) {
+	u8 temp = pkmn[byteEntry];
+	pkmn[byteEntry]++;
+	if (value > max)
+		pkmn[byteEntry] = temp;
+}
+
 void loadLines(u8 *src, u8 *dst, u8 strlen,  u32 size) {
 	u16 readnum = 3;
 	u16 line = 0, chr; 

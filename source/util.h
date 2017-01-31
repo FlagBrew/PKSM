@@ -42,6 +42,7 @@ Copyright (C) 2016 Bernardo Giordano
 #define GAME_B2 13
 #define GAME_W2 14
 
+void checkMaxValue(u8* pkmn, int byteEntry, int value, int max);
 void loadLines(u8 *src, u8 *dst, u8 strlen,  u32 size);
 bool checkFile(char* path);
 void loadPersonal();

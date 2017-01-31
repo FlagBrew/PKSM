@@ -1581,7 +1581,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 								}
 								
 								// hex editor
-								if ((hidKeysDown() & KEY_TOUCH) && touch.px > 0 && touch.px < 180 && touch.py > 210 && touch.py < 240)  {// random for now
+								if ((hidKeysDown() & KEY_TOUCH) && touch.px > 290 && touch.px < 320 && touch.py > 0 && touch.py < 24)  {
 									fillSectors(sector);
 									fillDescriptions(descriptions);
 									
@@ -1614,34 +1614,26 @@ void pokemonEditor(u8* mainbuf, int game) {
 											if (byteEntry <= 215) 
 												byteEntry += 16;
 											
-										if (!speedy && sector[byteEntry][0] && !sector[byteEntry][1] && ((hidKeysDown() & KEY_TOUCH) && touch.px > 224 && touch.px < 241 && touch.py > 31 && touch.py < 49)) {
+										if (!speedy && sector[byteEntry][0] && !sector[byteEntry][1] && (((hidKeysDown() & KEY_TOUCH) && touch.px > 224 && touch.px < 241 && touch.py > 31 && touch.py < 49) || (hidKeysDown() & KEY_X))) {
 											if (pkmn[byteEntry] > 0)
 												pkmn[byteEntry]--;
 										}
-										else if (speedy && sector[byteEntry][0] && !sector[byteEntry][1] && ((hidKeysHeld() & KEY_TOUCH) && touch.px > 224 && touch.px < 241 && touch.py > 31 && touch.py < 49)) {
+										else if (speedy && sector[byteEntry][0] && !sector[byteEntry][1] && (((hidKeysHeld() & KEY_TOUCH) && touch.px > 224 && touch.px < 241 && touch.py > 31 && touch.py < 49) || (hidKeysHeld() & KEY_X))) {
 											if (pkmn[byteEntry] > 0)
 												pkmn[byteEntry]--;
 										}
 										
-										if (!speedy && sector[byteEntry][0] && !sector[byteEntry][1] && ((hidKeysDown() & KEY_TOUCH) && touch.px > 247 && touch.px < 264 && touch.py > 31 && touch.py < 49)) {
+										if (!speedy && sector[byteEntry][0] && !sector[byteEntry][1] && (((hidKeysDown() & KEY_TOUCH) && touch.px > 247 && touch.px < 264 && touch.py > 31 && touch.py < 49) || (hidKeysDown() & KEY_A))) {
 											if (pkmn[byteEntry] < 0xFF) {
-												if (byteEntry == 0x0A || byteEntry == 0x0B) {// Held Item exception
-													u8 temp = pkmn[byteEntry];
-													pkmn[byteEntry]++;
-													if (getItem(pkmn) > 920)
-														pkmn[byteEntry] = temp;
-												} else
+												if (byteEntry == 0x0A || byteEntry == 0x0B)	checkMaxValue(pkmn, byteEntry, getItem(pkmn), 920);
+												else
 													pkmn[byteEntry]++;
 											}
 										}
-										else if (speedy && sector[byteEntry][0] && !sector[byteEntry][1] && ((hidKeysHeld() & KEY_TOUCH) && touch.px > 247 && touch.px < 264 && touch.py > 31 && touch.py < 49)) {
+										else if (speedy && sector[byteEntry][0] && !sector[byteEntry][1] && (((hidKeysHeld() & KEY_TOUCH) && touch.px > 247 && touch.px < 264 && touch.py > 31 && touch.py < 49) || (hidKeysHeld() & KEY_A))) {
 											if (pkmn[byteEntry] < 0xFF) {
-												if (byteEntry == 0x0A || byteEntry == 0x0B) {// Held Item exception
-													u8 temp = pkmn[byteEntry];
-													pkmn[byteEntry]++;
-													if (getItem(pkmn) > 920)
-														pkmn[byteEntry] = temp;
-												} else
+												if (byteEntry == 0x0A || byteEntry == 0x0B)	checkMaxValue(pkmn, byteEntry, getItem(pkmn), 920);
+												else
 													pkmn[byteEntry]++;
 											}
 										}
