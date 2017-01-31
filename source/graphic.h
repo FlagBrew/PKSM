@@ -69,3 +69,4 @@ void printMassInjector(int currentEntry);
 void printElement(u8* mainbuf, u8* pkmn, int game, u16 n, int x, int y);
 void printSettings(int box, bool speedy);
 void infoViewer(u8* pkmn, int game);
+void printfHexEditorInfo(u8* pkmn, int byte);

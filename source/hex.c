@@ -94,12 +94,15 @@ void fillSectors(bool sector[][2]) {
 	sector[0x1A][0] = true; // PID byte3
 	sector[0x1B][0] = true; // PID byte4
 	
-	sector[0x1D][0] = true; sector[0x1D][1] = true; // fateful encounter
+	//sector[0x1D][0] = true; sector[0x1D][1] = true; // fateful encounter
 	
 	for (int j = 0x1E; j <= 0x2A; j++) // EV_HP to Pelago Status
 		sector[j][0] = true;
 		
 	for (int j = 0x62; j <= 0x69; j++) // Move1_PP to Move4_PPUps
+		sector[j][0] = true;
+
+	for (int j = 0x78; j <= 0x78 + 24; j++) // Held Trainer Name
 		sector[j][0] = true;
 		
 	for (int j = 0xA2; j <= 0xA6; j++) // HT_Friendship to HT_Feeling

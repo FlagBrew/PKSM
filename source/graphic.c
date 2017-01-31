@@ -1020,7 +1020,7 @@ void infoViewer(u8* pkmn, int game) {
 	char* values[] = {"HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed"};
 	
 	printAnimatedBG(true);
-	sf2d_draw_texture(infoView, 0, 1);
+	sf2d_draw_texture(infoView, 0, 2);
 
 	sf2d_draw_texture(normalBar, 252, 155);
 	sf2d_draw_texture(normalBar, 252, 176);
@@ -1504,6 +1504,8 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 			} else if (sector[additional1][0] && sector[additional1][1]) {
 				
 			}
+			
+			printfHexEditorInfo(pkmn, additional1);
 		}
 
 		if (mode != ED_HEX) {
@@ -1753,4 +1755,55 @@ void printSettings(int box, bool speedy) {
 		sftd_draw_textf(fontBold9, 35, 225, LIGHTBLUE, 9, "Tap the number to change size. Speed (L/R): %s", speedy ? "FAST" : "SLOW");
 	sf2d_end_frame();
 	sf2d_swapbuffers();
+}
+
+void printfHexEditorInfo(u8* pkmn, int byte) {
+	int y = 70, x = 8;
+	char string[NICKNAMELENGTH];
+	
+	switch (byte) {
+		case 0x08 :
+		case 0x09 :
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Species: #%d - %s", getPokedexNumber(pkmn), personal.species[getPokedexNumber(pkmn)]);
+			break;
+		case 0x0A :
+		case 0x0B :
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Held Item: %s", items[getItem(pkmn)]);
+			break;
+		case 0x0C :
+		case 0x0D :
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "TID: %d", getOTID(pkmn));
+			break;
+		case 0x0E :
+		case 0x0F :
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "SID: %d", getSOTID(pkmn));
+			break;
+		case 0x78 :
+		case 0x79 :
+		case 0x7A :
+		case 0x7B :
+		case 0x7C :
+		case 0x7D :
+		case 0x7E :
+		case 0x7F :
+		case 0x80 :
+		case 0x81 :
+		case 0x82 :
+		case 0x83 :
+		case 0x84 :
+		case 0x85 :
+		case 0x86 :
+		case 0x87 :
+		case 0x88 :
+		case 0x89 :
+		case 0x8A :
+		case 0x8B :	
+		case 0x8C :
+		case 0x8D :
+		case 0x8E :
+		case 0x8F :	
+			getHTName(pkmn, string);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Held Trainer: %s", string);
+			break;
+	}
 }
