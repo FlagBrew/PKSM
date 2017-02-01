@@ -118,7 +118,7 @@ u8 getAbility(u8* pkmn);
 u8 getAbilityNum(u8* pkmn);
 char *getOT(u8* pkmn, char* dst);
 char *getHTName(u8* pkmn, char* dst);
-wchar_t *getNickname(u8* pkmn, wchar_t* dst);
+u32 *getNickname(u8* pkmn, u32* dst);
 u16 getEggMove(u8 *pkmn, const int nmove);
 u8 getBall(u8* pkmn);
 u16 getPSV(u8* pkmn);
