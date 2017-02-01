@@ -68,6 +68,90 @@ void fillDescriptions(char *descriptions[]) {
 	descriptions[0x38] = "Ribbon Memory Contest";
 	descriptions[0x39] = "Ribbon Memory Battle";
 	descriptions[0x3A] = "Dist byte";
+	
+	descriptions[0x40] = "Nickname, byte 1";
+	descriptions[0x41] = "Nickname, byte 2";
+	descriptions[0x42] = "Nickname, byte 3";
+	descriptions[0x43] = "Nickname, byte 4";
+	descriptions[0x44] = "Nickname, byte 5";
+	descriptions[0x45] = "Nickname, byte 6";
+	descriptions[0x46] = "Nickname, byte 7";
+	descriptions[0x47] = "Nickname, byte 8";
+	descriptions[0x48] = "Nickname, byte 9";
+	descriptions[0x49] = "Nickname, byte 10";
+	descriptions[0x4A] = "Nickname, byte 11";
+	descriptions[0x4B] = "Nickname, byte 12";
+	descriptions[0x4C] = "Nickname, byte 13";
+	descriptions[0x4D] = "Nickname, byte 14";
+	descriptions[0x4E] = "Nickname, byte 15";
+	descriptions[0x4F] = "Nickname, byte 16";
+	
+	descriptions[0x50] = "Nickname, byte 17";
+	descriptions[0x51] = "Nickname, byte 18";
+	descriptions[0x52] = "Nickname, byte 19";
+	descriptions[0x53] = "Nickname, byte 20";
+	descriptions[0x54] = "Nickname, byte 21";
+	descriptions[0x55] = "Nickname, byte 22";
+	descriptions[0x56] = "Nickname, byte 23";
+	descriptions[0x57] = "Nickname, byte 24";
+	
+	descriptions[0x5A] = "Move 1, byte 1";
+	descriptions[0x5B] = "Move 1, byte 2";
+	descriptions[0x5C] = "Move 2, byte 1";
+	descriptions[0x5D] = "Move 2, byte 2";
+	descriptions[0x5E] = "Move 3, byte 1";
+	descriptions[0x5F] = "Move 3, byte 2";
+	
+	descriptions[0x60] = "Move 4, byte 1";
+	descriptions[0x61] = "Move 4, byte 2";
+	descriptions[0x62] = "Move 1 PP";
+	descriptions[0x63] = "Move 2 PP";
+	descriptions[0x64] = "Move 3 PP";
+	descriptions[0x65] = "Move 4 PP";
+	descriptions[0x66] = "Move 1 PP Up";
+	descriptions[0x67] = "Move 2 PP Up";
+	descriptions[0x68] = "Move 3 PP Up";
+	descriptions[0x69] = "Move 4 PP Up";
+	descriptions[0x6A] = "Relearn Move 1, byte 1";
+	descriptions[0x6B] = "Relearn Move 1, byte 2";
+	descriptions[0x6C] = "Relearn Move 2, byte 1";
+	descriptions[0x6D] = "Relearn Move 2, byte 2";
+	descriptions[0x6E] = "Relearn Move 3, byte 1";
+	descriptions[0x6F] = "Relearn Move 3, byte 2";
+	
+	descriptions[0x70] = "Relearn Move 4, byte 1";
+	descriptions[0x71] = "Relearn Move 4, byte 2";
+	descriptions[0x72] = "Secret Super Training Flag";
+	
+	descriptions[0x74] = "IV, byte 1";
+	descriptions[0x75] = "IV, byte 2";
+	descriptions[0x76] = "IV, byte 3";
+	descriptions[0x77] = "IV, byte 4";
+	descriptions[0x78] = "Held Trainer Nickname, byte 1";
+	descriptions[0x79] = "Held Trainer Nickname, byte 2";
+	descriptions[0x7A] = "Held Trainer Nickname, byte 3";
+	descriptions[0x7B] = "Held Trainer Nickname, byte 4";
+	descriptions[0x7C] = "Held Trainer Nickname, byte 5";
+	descriptions[0x7D] = "Held Trainer Nickname, byte 6";
+	descriptions[0x7E] = "Held Trainer Nickname, byte 7";
+	descriptions[0x7F] = "Held Trainer Nickname, byte 8";
+	
+	descriptions[0x80] = "Held Trainer Nickname, byte 9";
+	descriptions[0x81] = "Held Trainer Nickname, byte 10";
+	descriptions[0x82] = "Held Trainer Nickname, byte 11";
+	descriptions[0x83] = "Held Trainer Nickname, byte 12";
+	descriptions[0x84] = "Held Trainer Nickname, byte 13";
+	descriptions[0x85] = "Held Trainer Nickname, byte 14";
+	descriptions[0x86] = "Held Trainer Nickname, byte 15";
+	descriptions[0x87] = "Held Trainer Nickname, byte 16";
+	descriptions[0x88] = "Held Trainer Nickname, byte 17";
+	descriptions[0x89] = "Held Trainer Nickname, byte 18";
+	descriptions[0x8A] = "Held Trainer Nickname, byte 19";
+	descriptions[0x8B] = "Held Trainer Nickname, byte 20";
+	descriptions[0x8C] = "Held Trainer Nickname, byte 21";
+	descriptions[0x8D] = "Held Trainer Nickname, byte 22";
+	descriptions[0x8E] = "Held Trainer Nickname, byte 23";
+	descriptions[0x8F] = "Held Trainer Nickname, byte 24";
 }
 
 void fillSectors(bool sector[][2]) {
@@ -102,7 +186,7 @@ void fillSectors(bool sector[][2]) {
 	for (int j = 0x62; j <= 0x69; j++) // Move1_PP to Move4_PPUps
 		sector[j][0] = true;
 
-	for (int j = 0x78; j <= 0x78 + 24; j++) // Held Trainer Name
+	for (int j = 0x78; j <= 0x8F; j++) // Held Trainer Name
 		sector[j][0] = true;
 		
 	for (int j = 0xA2; j <= 0xA6; j++) // HT_Friendship to HT_Feeling
