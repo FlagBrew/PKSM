@@ -19,6 +19,7 @@ Copyright (C) 2016 Bernardo Giordano
 
 #include <3ds.h>
 #include <string.h>
+#include <time.h>
 #include "graphic.h"
 #include "editor.h"
 #include "bank.h"
@@ -37,6 +38,16 @@ void clearMarkings(u8* pkmn) {
 			pkmn[i] = 0;
 		for (int i = 0xE4; i < 0xE8; i++)
 			pkmn[i] = 0;
+		
+		pkmn[0x94] = 7; // geo1 region
+		pkmn[0x95] = 49; // geo1 country
+		
+		// trade memory
+		u16 textvar = 0; // from bank
+		pkmn[0xA4] = 1; 
+		pkmn[0xA5] = 4; 
+		pkmn[0xA6] = rand() % 10; // 0-9 bank 
+		memcpy(&pkmn[0xA8], &textvar, 2);
 	}
 }
 
