@@ -34,7 +34,7 @@ Copyright (C) 2016 Bernardo Giordano
 #define IVLENGTH 4
 #define OTIDLENGTH 2
 #define SOTIDLENGTH 2
-#define NICKNAMELENGTH 24
+#define NICKNAMELENGTH 26
 #define POKEDEXNUMBERLENGTH 2
 #define ABILITYLENGTH 1
 #define ABILITYNUMLENGTH 1

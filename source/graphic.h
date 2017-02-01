@@ -67,6 +67,7 @@ void printPKViewer(u8* mainbuf, u8* pkmn, bool isTeam, int game, int currentEntr
 void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEntry, int saveBox, int bankBox, bool isBufferized, bool isSeen);
 void printMassInjector(int currentEntry);
 void printElement(u8* mainbuf, u8* pkmn, int game, u16 n, int x, int y);
+void printElementBlend(u8* pkmn, int game, u16 n, int x, int y, u32 color);
 void printSettings(int box, bool speedy);
 void infoViewer(u8* pkmn, int game);
 void printfHexEditorInfo(u8* pkmn, int byte);

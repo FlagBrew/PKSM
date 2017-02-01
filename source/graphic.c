@@ -980,38 +980,32 @@ u16 getAlternativeSprite(u8* pkmn, int game) {
 }
 
 void printElement(u8* mainbuf, u8* pkmn, int game, u16 n, int x, int y) {
-	u16 t = getAlternativeSprite(pkmn, game);
-	if (t) {
-		t -= 1;
-		sf2d_draw_texture_part(alternativeSpritesSmall, x, y, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30); 
-	} else 
-		sf2d_draw_texture_part(spritesSmall, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30);
-	if (isEgg(pkmn))
-		sf2d_draw_texture_part(spritesSmall, x + 6, y + 6, 40 * (EGGSPRITEPOS % 25) + 4, 30 * (EGGSPRITEPOS / 25), 34, 30);
-	if (getItem(pkmn))
-		sf2d_draw_texture(item, x + 3, y + 21);
-
-	if (!areMarksZero(pkmn) && (game == GAME_SUN || game == GAME_MOON)) {
-		sf2d_draw_rectangle_rotate(x + 6, y + 13, 22, 4, SHINYRED, 0.785f);
-		sf2d_draw_rectangle_rotate(x + 15, y + 4, 4, 22, SHINYRED, 0.785f);
-	}
-	
-	if (!checkHTLegality(mainbuf, pkmn, game)) {
-		sf2d_draw_rectangle_rotate(x + 6, y + 13, 22, 4, DARKBLUE, 0.785f);
-		sf2d_draw_rectangle_rotate(x + 15, y + 4, 4, 22, DARKBLUE, 0.785f);
+	if (!areMarksZero(pkmn) && (game == GAME_SUN || game == GAME_MOON))
+		printElementBlend(pkmn, game, n, x, y, SHINYRED);
+	else {
+		u16 t = getAlternativeSprite(pkmn, game);
+		if (t) {
+			t -= 1;
+			sf2d_draw_texture_part(alternativeSpritesSmall, x, y, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30); 
+		} else 
+			sf2d_draw_texture_part(spritesSmall, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30);
+		if (isEgg(pkmn))
+			sf2d_draw_texture_part(spritesSmall, x + 6, y + 6, 40 * (EGGSPRITEPOS % 25) + 4, 30 * (EGGSPRITEPOS / 25), 34, 30);
+		if (getItem(pkmn))
+			sf2d_draw_texture(item, x + 3, y + 21);
 	}
 }
-void printElementBlend(u8* pkmn, int game, u16 n, int x, int y) {
+void printElementBlend(u8* pkmn, int game, u16 n, int x, int y, u32 color) {
 	u16 t = getAlternativeSprite(pkmn, game);
 	if (t) {
 		t -= 1;
-		sf2d_draw_texture_part_blend(alternativeSpritesSmall, x, y, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30, RGBA8(0x0, 0x0, 0x0, 100)); 
+		sf2d_draw_texture_part_blend(alternativeSpritesSmall, x, y, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30, color); 
 	} else
-		sf2d_draw_texture_part_blend(spritesSmall, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30, RGBA8(0x0, 0x0, 0x0, 100));
+		sf2d_draw_texture_part_blend(spritesSmall, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30, color);
 	if (isEgg(pkmn))
-		sf2d_draw_texture_part_blend(spritesSmall, x + 6, y + 6, 40 * (EGGSPRITEPOS % 25) + 4, 30 * (EGGSPRITEPOS / 25), 34, 30, RGBA8(0x0, 0x0, 0x0, 100));
+		sf2d_draw_texture_part_blend(spritesSmall, x + 6, y + 6, 40 * (EGGSPRITEPOS % 25) + 4, 30 * (EGGSPRITEPOS / 25), 34, 30, color);
 	if (getItem(pkmn))
-		sf2d_draw_texture_blend(item, x + 3, y + 21, RGBA8(0x0, 0x0, 0x0, 100));
+		sf2d_draw_texture_blend(item, x + 3, y + 21, color);
 }
 
 void infoViewer(u8* pkmn, int game) {
@@ -1623,7 +1617,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 			
 			if (currentEntry < 30) {
 				u16 n = getPokedexNumber(pkmnbuf);
-				if (n) printElementBlend(pkmnbuf, GAME_SUN, n, pointer[0] - 14, pointer[1] + 8);
+				if (n) printElementBlend(pkmnbuf, GAME_SUN, n, pointer[0] - 14, pointer[1] + 8, RGBA8(0x0, 0x0, 0x0, 100));
 				if (n) printElement(mainbuf, pkmnbuf, GAME_SUN, n, pointer[0] - 18, pointer[1] + 3);
 				sf2d_draw_texture(selector, pointer[0], pointer[1] - 2 - ((!isBufferized) ? movementOffsetSlow(3) : 0));
 			}
@@ -1667,7 +1661,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 		if (currentEntry > 29) {
 			if (!isSeen) {
 				u16 n = getPokedexNumber(pkmnbuf);
-				if (n) printElementBlend(pkmnbuf, GAME_SUN, n, pointer[0] - 14, pointer[1] + 8);
+				if (n) printElementBlend(pkmnbuf, GAME_SUN, n, pointer[0] - 14, pointer[1] + 8, RGBA8(0x0, 0x0, 0x0, 100));
 				if (n) printElement(mainbuf, pkmnbuf, GAME_SUN, n, pointer[0] - 18, pointer[1] + 3);
 				sf2d_draw_texture(selector, pointer[0], pointer[1] - 2 - ((!isBufferized) ? movementOffsetSlow(3) : 0));
 			} else

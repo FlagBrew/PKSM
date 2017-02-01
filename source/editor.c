@@ -305,7 +305,7 @@ void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, 
 	memset(ht_name, 0, NICKNAMELENGTH);
 
 	memcpy(ot_name, &pkmn[0xB0], NICKNAMELENGTH);
-	memcpy(save_name, &mainbuf[(game < 4) ? 0x14048 : 0X1238], NICKNAMELENGTH);
+	memcpy(save_name, &mainbuf[(game < 4) ? 0x14048 : 0x1238], NICKNAMELENGTH);
 	
 	if ((getSaveTID(mainbuf, game) == getOTID(pkmn)) && (getSaveSID(mainbuf, game) == getSOTID(pkmn)) && !memcmp(ot_name, save_name, NICKNAMELENGTH)) { //you're the owner
 		setHT(pkmn, ht_name);
@@ -323,27 +323,6 @@ void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, 
     encryptPkmn(pkmn);
 
     memcpy(&mainbuf[getPkmnAddress(boxnumber, indexnumber, game)], pkmn, PKMNLENGTH);
-}
-
-bool checkHTLegality(u8* mainbuf, u8* pkmn, int game) {
-	u8 ot_name[NICKNAMELENGTH];
-	u8 save_name[NICKNAMELENGTH];
-	u8 ht_name[NICKNAMELENGTH];
-	u8 dummy[NICKNAMELENGTH];
-	
-	memset(dummy, 0, NICKNAMELENGTH);
-
-	memcpy(ot_name, &pkmn[0xB0], NICKNAMELENGTH);
-	memcpy(ht_name, &pkmn[0x78], NICKNAMELENGTH);
-	memcpy(save_name, &mainbuf[(game < 4) ? 0x14048 : 0X1238], NICKNAMELENGTH);
-	
-	if ((getSaveTID(mainbuf, game) == getOTID(pkmn)) && (getSaveSID(mainbuf, game) == getSOTID(pkmn)) && !memcmp(ot_name, save_name, NICKNAMELENGTH)) {//you're the owner
-		if (!memcmp(dummy, ht_name, NICKNAMELENGTH))
-			return true;
-	} else if (!memcmp(ht_name, save_name, NICKNAMELENGTH))
-		return true;
-	
-	return false;
 }
 
 bool isShiny(u8* pkmn) {
@@ -1896,7 +1875,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 										static char buf[60];
 
 										SwkbdButton button = SWKBD_BUTTON_NONE;
-										swkbdInit(&swkbd, SWKBD_TYPE_NORMAL, 2, (NICKNAMELENGTH / 2) - 1);
+										swkbdInit(&swkbd, SWKBD_TYPE_NORMAL, 2, 12);
 										swkbdSetButton(&swkbd, SWKBD_BUTTON_LEFT, "Cancel", false);
 										swkbdSetButton(&swkbd, SWKBD_BUTTON_RIGHT, "Set", true);
 										swkbdSetValidation(&swkbd, SWKBD_NOTEMPTY_NOTBLANK, SWKBD_FILTER_DIGITS | SWKBD_FILTER_AT | SWKBD_FILTER_PERCENT | SWKBD_FILTER_BACKSLASH | SWKBD_FILTER_PROFANITY, 2);
@@ -1919,7 +1898,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 										static char buf[60];
 
 										SwkbdButton button = SWKBD_BUTTON_NONE;
-										swkbdInit(&swkbd, SWKBD_TYPE_NORMAL, 2, (NICKNAMELENGTH / 2) - 1);
+										swkbdInit(&swkbd, SWKBD_TYPE_NORMAL, 2, 12);
 										swkbdSetButton(&swkbd, SWKBD_BUTTON_LEFT, "Cancel", false);
 										swkbdSetButton(&swkbd, SWKBD_BUTTON_RIGHT, "Set", true);
 										swkbdSetValidation(&swkbd, SWKBD_NOTEMPTY_NOTBLANK, SWKBD_FILTER_DIGITS | SWKBD_FILTER_AT | SWKBD_FILTER_PERCENT | SWKBD_FILTER_BACKSLASH | SWKBD_FILTER_PROFANITY, 2);
