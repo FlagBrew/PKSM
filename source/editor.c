@@ -1004,6 +1004,11 @@ void setNickname(u8* pkmn, char* nick) {
     for (u16 i = 0, nicklen = strlen(nick); i < nicklen; i++)
         toinsert[i * 2] = *(nick + i);
 
+	u8 isnicknamed;
+	memcpy(&isnicknamed, &pkmn[0x77], 1);
+	isnicknamed |= 0x80;
+	memcpy(&pkmn[0x77], &isnicknamed, 1);
+
     memcpy(&pkmn[0x40], toinsert, NICKNAMELENGTH);
 }
 
