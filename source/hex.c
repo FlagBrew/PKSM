@@ -152,6 +152,28 @@ void fillDescriptions(char *descriptions[]) {
 	descriptions[0x8D] = "Held Trainer Nickname, byte 22";
 	descriptions[0x8E] = "Held Trainer Nickname, byte 23";
 	descriptions[0x8F] = "Held Trainer Nickname, byte 24";
+	
+	descriptions[0x92] = "Held Trainer Gender";
+	descriptions[0x93] = "Current Handler";
+	descriptions[0x94] = "Latest Handlers 1 Region";
+	descriptions[0x95] = "Latest Handlers 1 Country";
+	descriptions[0x96] = "Latest Handlers 2 Region";
+	descriptions[0x97] = "Latest Handlers 2 Country";
+	descriptions[0x98] = "Latest Handlers 3 Region";
+	descriptions[0x99] = "Latest Handlers 3 Country";
+	descriptions[0x9A] = "Latest Handlers 4 Region";
+	descriptions[0x9B] = "Latest Handlers 4 Country";
+	descriptions[0x9C] = "Latest Handlers 5 Region";
+	descriptions[0x9D] = "Latest Handlers 5 Country";
+	
+	descriptions[0xA2] = "Held Trainer Friendship";
+	descriptions[0xA3] = "Held Trainer Affection";
+	descriptions[0xA4] = "Held Trainer Intensity";
+	descriptions[0xA5] = "Held Trainer Memory";
+	descriptions[0xA6] = "Held Trainer Feeling";
+	
+	descriptions[0xA8] = "Held Trainer TextVar, byte 1";
+	descriptions[0xA9] = "Held Trainer TextVar, byte 2";
 }
 
 void fillSectors(bool sector[][2]) {

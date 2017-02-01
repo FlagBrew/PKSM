@@ -31,7 +31,7 @@ Copyright (C) 2016 Bernardo Giordano
 
 int lookup[] = {0x0, 0x1, 0x2, 0x4, 0x5, 0x3};
 
-sftd_font *fontBold18, *fontBold15, *fontBold14, *fontBold12, *fontBold11, *fontBold9, *fontFixed; 
+sftd_font *unicode12, *fontBold18, *fontBold15, *fontBold14, *fontBold12, *fontBold11, *fontBold9, *fontFixed; 
 sf2d_texture *hexIcon, *hexBG, *hexButton, *blueTextBox, *otaButton, *generationBG, *generationButton, *includeInfoButton, *upperTextGS, *lowerTextGS, *hiddenPowerBG, *hiddenPowerButton, *selectBoxButton, *ballsBG, *ballButton, *male, *female, *naturesButton, *naturestx, *movesBottom, *topMovesBG, *editorBar, *editorStatsBG, *subArrow, *backgroundTop, *miniBox, *plusButton, *minusButton, *balls, *typesSheet, *transferButton, *bankTop, *shinyStar, *normalBar, *LButton, *RButton, *creditsTop, *pokeball, *topBorder, *bottomBorder, *gameSelectorBottom, *gameSelectorTop, *mainMenuBottom, *menuBar, *menuSelectedBar, *darkButton, *eventTop, *left, *lightButton, *redButton, *right, *spritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *warningTop, *warningBottom, *boxView, *infoView, *selector, *editorBG, *plus, *minus, *back, *setting, *selectorCloning, *button, *bottomPopUp, *pokemonBufferBox, *cleanTop, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR, *topSelectedMove, *settings, *item, *alternativeSpritesSmall;
 
 char *gamesList[] = {"X", "Y", "OR", "AS", "S", "M", "D", "P", "PL", "HG", "SS", "B", "W", "B2", "W2"};
@@ -45,6 +45,7 @@ static char *itemsSorted[] = {"None", "Ability Capsule", "Ability Urge", "Abomas
 char *hpList[] = {"Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel", "Fire", "Water", "Grass", "Electric", "Psychic", "Ice", "Dragon", "Dark", " ", " "};
 
 void GUIElementsInit() {
+	unicode12 = sftd_load_font_file("romfs:/res/Unicode.otf");
 	fontBold18 = sftd_load_font_file("romfs:/res/Bold.ttf");
 	fontBold15 = sftd_load_font_file("romfs:/res/Bold.ttf");
 	fontBold14 = sftd_load_font_file("romfs:/res/Bold.ttf");
@@ -252,9 +253,11 @@ void GUIElementsExit() {
 	sftd_free_font(fontBold15);
 	sftd_free_font(fontBold18);
 	sftd_free_font(fontFixed);
+	sftd_free_font(unicode12);
 }
 
 void init_font_cache() {
+	sftd_draw_text(unicode12, 0, 0, RGBA8(0, 0, 0, 0), 12, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
 	sftd_draw_text(fontBold18, 0, 0, RGBA8(0, 0, 0, 0), 18, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
 	sftd_draw_text(fontBold14, 0, 0, RGBA8(0, 0, 0, 0), 14, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
 	sftd_draw_text(fontBold15, 0, 0, RGBA8(0, 0, 0, 0), 15, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
@@ -1021,7 +1024,7 @@ void infoViewer(u8* pkmn, int game) {
 	sf2d_draw_texture(normalBar, 252, 197);
 	sf2d_draw_texture(normalBar, 252, 218);
 	
-	sftd_draw_text(fontBold12, 251, 138, WHITE, 12, "Moves");		
+	sftd_draw_text(fontBold12, 251, 138, WHITE, 12, "Moves");
 	for (int i = 0; i < 10; i++) {
 		sftd_draw_text(fontBold12, 2, y_desc, BLUE, 12, entries[i]);
 		y_desc += 20;
@@ -1049,12 +1052,12 @@ void infoViewer(u8* pkmn, int game) {
 		sftd_draw_text(fontBold12, 160, 6, WHITE, 12, level);
 		free(level);
 		
-		char *nick = (char*)malloc(26 * sizeof(char));
+		wchar_t *nick = (wchar_t*)malloc(NICKNAMELENGTH);
 		getNickname(pkmn, nick);
-		sftd_draw_text(fontBold12, 215 - (sftd_get_text_width(fontBold12, 12, nick)), 29, WHITE, 12, nick);
+		sftd_draw_wtext(unicode12, 215 - (sftd_get_wtext_width(unicode12, 12, nick)), 29, WHITE, 12, nick);
 		free(nick);
 		
-		char *ot_name = (char*)malloc(0x17 * sizeof(char));
+		char *ot_name = (char*)malloc(NICKNAMELENGTH);
 		getOT(pkmn, ot_name);
 		sftd_draw_text(fontBold12, 215 - (sftd_get_text_width(fontBold12, 12, ot_name)), 49, WHITE, 12, ot_name);
 		free(ot_name);	
@@ -1418,9 +1421,9 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 			sftd_draw_text(fontBold12, 180 - max - 3 + (max - sftd_get_text_width(fontBold12, 12, friendship)) / 2, 189, WHITE, 12, friendship);
 			free(friendship);
 			
-			char *nick = (char*)malloc(26 * sizeof(char));
+			wchar_t *nick = (wchar_t*)malloc(NICKNAMELENGTH);
 			getNickname(pkmn, nick);
-			sftd_draw_text(fontBold12, 178 - (sftd_get_text_width(fontBold12, 12, nick)), 169, WHITE, 12, nick);
+			sftd_draw_wtext(unicode12, 178 - (sftd_get_wtext_width(unicode12, 12, nick)), 169, WHITE, 12, nick);
 			free(nick);
 			
 			char *ot_name = (char*)malloc(0x17 * sizeof(char));
@@ -1567,9 +1570,9 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 				if (type1 != type2)
 					sf2d_draw_texture_part(typesSheet, 325, 120, 50 * type2, 0, 50, 18); 
 				
-				char *nick = (char*)malloc(26 * sizeof(char));
+				wchar_t *nick = (wchar_t*)malloc(NICKNAMELENGTH);
 				getNickname(pkmn, nick);
-				sftd_draw_text(fontBold12, 273, 69, WHITE, 12, nick);
+				sftd_draw_wtext(unicode12, 273, 69, WHITE, 12, nick);
 				free(nick);
 				
 				char* level = (char*)malloc(8 * sizeof(char));

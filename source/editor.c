@@ -792,7 +792,7 @@ char *getSaveOT(u8* mainbuf, int game, char* dst) {
 	return dst;
 }
 
-char *getNickname(u8* pkmn, char* dst) {
+wchar_t *getNickname(u8* pkmn, wchar_t* dst) {
 	u16 src[NICKNAMELENGTH];
 	memcpy(src, &pkmn[0x40], NICKNAMELENGTH);
 	
