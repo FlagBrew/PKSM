@@ -980,6 +980,9 @@ void setEggMove(u8* pkmn, const u16 move, const int nmove) {
 void setNickname(u8* pkmn, char* nick) {
     u8 toinsert[NICKNAMELENGTH];
 	memset(toinsert, 0, NICKNAMELENGTH);
+	
+	if (!memcmp(nick, toinsert, NICKNAMELENGTH))
+		return;
 
     for (u16 i = 0, nicklen = strlen(nick); i < nicklen; i++) {
         toinsert[i * 2] = *(nick + i);
@@ -997,6 +1000,9 @@ void setOT(u8* pkmn, char* nick) {
     u8 toinsert[NICKNAMELENGTH];
 	memset(toinsert, 0, NICKNAMELENGTH);
 
+	if (!memcmp(nick, toinsert, NICKNAMELENGTH))
+		return;
+	
     for (u16 i = 0, nicklen = strlen(nick); i < nicklen; i++)
         toinsert[i * 2] = *(nick + i);
 
@@ -1891,7 +1897,8 @@ void pokemonEditor(u8* mainbuf, int game) {
 									
 									if (touch.px > 180 && touch.px < 195 && touch.py > 171 && touch.py < 183) {
 										static SwkbdState swkbd;
-										static char buf[60];
+										static char nick[NICKNAMELENGTH];
+										memset(nick, 0, NICKNAMELENGTH);
 
 										SwkbdButton button = SWKBD_BUTTON_NONE;
 										swkbdInit(&swkbd, SWKBD_TYPE_NORMAL, 2, 12);
@@ -1900,12 +1907,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 										swkbdSetValidation(&swkbd, SWKBD_NOTEMPTY_NOTBLANK, SWKBD_FILTER_DIGITS | SWKBD_FILTER_AT | SWKBD_FILTER_PERCENT | SWKBD_FILTER_BACKSLASH | SWKBD_FILTER_PROFANITY, 2);
 										swkbdSetFeatures(&swkbd, SWKBD_MULTILINE);
 										swkbdSetHintText(&swkbd, "Enter your nickname");
-										button = swkbdInputText(&swkbd, buf, sizeof(buf));
-
-										static char nick[NICKNAMELENGTH];
-										for (int i = 0; i < NICKNAMELENGTH; i++)
-											nick[i] = 0;
-										memcpy(nick, buf, NICKNAMELENGTH);
+										button = swkbdInputText(&swkbd, nick, NICKNAMELENGTH);
 										nick[NICKNAMELENGTH - 1] = '\0';
 
 										if (button != SWKBD_BUTTON_NONE)
@@ -1914,8 +1916,9 @@ void pokemonEditor(u8* mainbuf, int game) {
 									
 									if (touch.px > 180 && touch.px < 195 && touch.py > 151 && touch.py < 163) {
 										static SwkbdState swkbd;
-										static char buf[60];
-
+										static char nick[NICKNAMELENGTH];
+										memset(nick, 0, NICKNAMELENGTH);
+										
 										SwkbdButton button = SWKBD_BUTTON_NONE;
 										swkbdInit(&swkbd, SWKBD_TYPE_NORMAL, 2, 12);
 										swkbdSetButton(&swkbd, SWKBD_BUTTON_LEFT, "Cancel", false);
@@ -1923,12 +1926,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 										swkbdSetValidation(&swkbd, SWKBD_NOTEMPTY_NOTBLANK, SWKBD_FILTER_DIGITS | SWKBD_FILTER_AT | SWKBD_FILTER_PERCENT | SWKBD_FILTER_BACKSLASH | SWKBD_FILTER_PROFANITY, 2);
 										swkbdSetFeatures(&swkbd, SWKBD_MULTILINE);
 										swkbdSetHintText(&swkbd, "Enter your OT name");
-										button = swkbdInputText(&swkbd, buf, sizeof(buf));
-
-										static char nick[NICKNAMELENGTH];
-										for (int i = 0; i < NICKNAMELENGTH; i++)
-											nick[i] = 0;
-										memcpy(nick, buf, NICKNAMELENGTH);
+										button = swkbdInputText(&swkbd, nick, NICKNAMELENGTH);
 										nick[NICKNAMELENGTH - 1] = '\0';
 
 										if (button != SWKBD_BUTTON_NONE)
