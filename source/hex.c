@@ -241,13 +241,11 @@ void fillSectors(bool sector[][2]) {
 	for (int j = 0x00; j <= 0x03; j++) // encryption constant
 		sector[j][0] = true;	
 
-	for (int j = 0x0A; j <= 0x0F; j++) // species to sid
+	for (int j = 0x0C; j <= 0x0F; j++) // tid to sid
 		sector[j][0] = true;
 	
 	for (int j = 0x18; j <= 0x1B; j++) // pid
-		sector[j][0] = true;	
-	
-	sector[0xDC][0] = true; // Ball
+		sector[j][0] = true;
 
 	for (int j = 0x40; j <= 0x57; j++) // Nickname
 		sector[j][0] = true;	

@@ -1326,6 +1326,45 @@ void saveFileEditor(u8* mainbuf, int game) {
 	}
 }
 
+void parseHexEditor(u8* pkmn, int game, int byteEntry) {
+	int maxItemID = (game < 2) ? 717 : ((game < 4) ? 775 : 920);
+	int maxMoveID = (game < 2) ? 617 : ((game < 4) ? 621 : 720);
+	
+	if (byteEntry == 0x08 || byteEntry == 0x09)
+		checkMaxValue(pkmn, byteEntry, getPokedexNumber(pkmn), (game < 4) ? 721 : 802);
+	else if (byteEntry == 0x0A || byteEntry == 0x0B)							
+		checkMaxValue(pkmn, byteEntry, getItem(pkmn), maxItemID);
+	else if (byteEntry == 0x1C)
+		checkMaxValue(pkmn, byteEntry, getNature(pkmn), 25);
+	else if (byteEntry == 0x1E || byteEntry == 0x1F || byteEntry == 0x20 || byteEntry == 0x21 || byteEntry == 0x22 || byteEntry == 0x23) {
+		int tot = 0;
+		for (int i = 0; i < 6; i++)
+			tot += getEV(pkmn, i);
+		if (tot < 510)
+			pkmn[byteEntry]++;
+	}
+	else if (byteEntry == 0x5A || byteEntry == 0x5B)
+		checkMaxValue(pkmn, byteEntry, getMove(pkmn, 0), maxMoveID);
+	else if (byteEntry == 0x5C || byteEntry == 0x5D)
+		checkMaxValue(pkmn, byteEntry, getMove(pkmn, 1), maxMoveID);
+	else if (byteEntry == 0x5E || byteEntry == 0x5F)
+		checkMaxValue(pkmn, byteEntry, getMove(pkmn, 2), maxMoveID);
+	else if (byteEntry == 0x60 || byteEntry == 0x61)
+		checkMaxValue(pkmn, byteEntry, getMove(pkmn, 3), maxMoveID);
+	else if (byteEntry == 0x6A || byteEntry == 0x6B)
+		checkMaxValue(pkmn, byteEntry, getEggMove(pkmn, 0), maxMoveID);
+	else if (byteEntry == 0x6C || byteEntry == 0x6D)
+		checkMaxValue(pkmn, byteEntry, getEggMove(pkmn, 1), maxMoveID);
+	else if (byteEntry == 0x6E || byteEntry == 0x6F)
+		checkMaxValue(pkmn, byteEntry, getEggMove(pkmn, 2), maxMoveID);
+	else if (byteEntry == 0x70 || byteEntry == 0x71)
+		checkMaxValue(pkmn, byteEntry, getEggMove(pkmn, 3), maxMoveID);
+	else if (byteEntry == 0xDC)
+		checkMaxValue(pkmn, byteEntry, getBall(pkmn), (game < 4) ? 25 : 26);
+	else
+		pkmn[byteEntry]++;	
+}
+
 void pokemonEditor(u8* mainbuf, int game) {
 	int lookup[] = {0, 1, 2, 4, 5, 3};
 	
@@ -1589,18 +1628,12 @@ void pokemonEditor(u8* mainbuf, int game) {
 										}
 										
 										if (!speedy && sector[byteEntry][0] && !sector[byteEntry][1] && (((hidKeysDown() & KEY_TOUCH) && touch.px > 247 && touch.px < 264 && touch.py > 31 && touch.py < 49) || (hidKeysDown() & KEY_A))) {
-											if (pkmn[byteEntry] < 0xFF) {
-												if (byteEntry == 0x0A || byteEntry == 0x0B)	checkMaxValue(pkmn, byteEntry, getItem(pkmn), 920);
-												else
-													pkmn[byteEntry]++;
-											}
+											if (pkmn[byteEntry] < 0xFF)
+												parseHexEditor(pkmn, game, byteEntry);
 										}
 										else if (speedy && sector[byteEntry][0] && !sector[byteEntry][1] && (((hidKeysHeld() & KEY_TOUCH) && touch.px > 247 && touch.px < 264 && touch.py > 31 && touch.py < 49) || (hidKeysHeld() & KEY_A))) {
-											if (pkmn[byteEntry] < 0xFF) {
-												if (byteEntry == 0x0A || byteEntry == 0x0B)	checkMaxValue(pkmn, byteEntry, getItem(pkmn), 920);
-												else
-													pkmn[byteEntry]++;
-											}
+											if (pkmn[byteEntry] < 0xFF)
+												parseHexEditor(pkmn, game, byteEntry);
 										}
 										
 										printPKEditor(pkmn, game, speedy, byteEntry, 0, 0, ED_HEX, descriptions);

@@ -1783,6 +1783,129 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0x0F :
 			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "SID: %d", getSOTID(pkmn));
 			break;
+		case 0x14 :
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Ability: %s", abilities[getAbility(pkmn)]);
+			break;
+		case 0x1E : 
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "HP EV: %d", pkmn[byte]);
+			break;
+		case 0x1F : 
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "ATK EV: %d", pkmn[byte]);
+			break;
+		case 0x20 : 
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "DEF EV: %d", pkmn[byte]);
+			break;	
+		case 0x21 : 
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "SPE EV: %d", pkmn[byte]);
+			break;
+		case 0x22 : 
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "SPA EV: %d", pkmn[byte]);
+			break;	
+		case 0x23 : 
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "SPD EV: %d", pkmn[byte]);
+			break;	
+		case 0x24 : 
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Contest Value Cool: %d", pkmn[byte]);
+			break;	
+		case 0x25 : 
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Contest Value Beauty: %d", pkmn[byte]);
+			break;	
+		case 0x26 : 
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Contest Value Cute: %d", pkmn[byte]);
+			break;	
+		case 0x27 : 
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Contest Value Smart: %d", pkmn[byte]);
+			break;	
+		case 0x28 : 
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Contest Value Tough: %d", pkmn[byte]);
+			break;	
+		case 0x29 : 
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Contest Value Sheen: %d", pkmn[byte]);
+			break;
+		case 0x40 :
+		case 0x41 :
+		case 0x42 :
+		case 0x43 :
+		case 0x44 :
+		case 0x45 :
+		case 0x46 :
+		case 0x47 :
+		case 0x48 :
+		case 0x49 :
+		case 0x4A :
+		case 0x4B :
+		case 0x4C :
+		case 0x4D :
+		case 0x4E :
+		case 0x4F :
+		case 0x50 :
+		case 0x51 :
+		case 0x52 :
+		case 0x53 :
+		case 0x54 :
+		case 0x55 :
+		case 0x56 :
+		case 0x57 :
+			getNickname(pkmn, string);
+			sftd_draw_text(fontBold12, x, y, WHITE, 12, "Nickname: ");
+			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, x + sftd_get_text_width(fontBold12, 12, "Nickname: "), y, WHITE, 12, (wchar_t*)string);
+			break;
+		case 0x5A :
+		case 0x5B :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Move 1: %s", moves[getMove(pkmn, 0)]);
+			break;
+		case 0x5C :
+		case 0x5D :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Move 2: %s", moves[getMove(pkmn, 1)]);
+			break;
+		case 0x5E :
+		case 0x5F :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Move 3: %s", moves[getMove(pkmn, 2)]);
+			break;
+		case 0x60 :
+		case 0x61 :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Move 4: %s", moves[getMove(pkmn, 3)]);
+			break;
+		case 0x62 :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Move 1 PP: %d", pkmn[byte]);
+			break;
+		case 0x63 :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Move 2 PP: %d", pkmn[byte]);
+			break;
+		case 0x64 :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Move 3 PP: %d", pkmn[byte]);
+			break;
+		case 0x65 :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Move 4 PP: %d", pkmn[byte]);
+			break;
+		case 0x66 :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Move 1 PP Up: %d", pkmn[byte]);
+			break;
+		case 0x67 :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Move 2 PP Up: %d", pkmn[byte]);
+			break;
+		case 0x68 :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Move 3 PP Up: %d", pkmn[byte]);
+			break;
+		case 0x69 :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Move 4 PP Up: %d", pkmn[byte]);
+			break;
+		case 0x6A :
+		case 0x6B :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Relearn Move 1: %s", moves[getEggMove(pkmn, 0)]);
+			break;
+		case 0x6C :
+		case 0x6D :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Relearn Move 2: %s", moves[getEggMove(pkmn, 1)]);
+			break;
+		case 0x6E :
+		case 0x6F :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Relearn Move 3: %s", moves[getEggMove(pkmn, 2)]);
+			break;
+		case 0x70 :
+		case 0x71 :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Relearn Move 4: %s", moves[getEggMove(pkmn, 3)]);
+			break;
 		case 0x78 :
 		case 0x79 :
 		case 0x7A :
@@ -1807,8 +1930,73 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0x8D :
 		case 0x8E :
 		case 0x8F :	
-			getNickname(pkmn, string);
-			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, x, y, WHITE, 12, (wchar_t*)string);
+			getHTName(pkmn, string);
+			sftd_draw_text(fontBold12, x, y, WHITE, 12, "Held Trainer name: ");
+			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, x + sftd_get_text_width(fontBold12, 12, "Held Trainer name: "), y, WHITE, 12, (wchar_t*)string);
+			break;
+		case 0xA2 :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Held Trainer Friendship: %d", pkmn[byte]);
+			break;
+		case 0xA3 :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Held Trainer Affection: %d", pkmn[byte]);
+			break;
+		case 0xA4 :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Held Trainer Intensity: %d", pkmn[byte]);
+			break;
+		case 0xA5 :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Held Trainer Memory: %d", pkmn[byte]);
+			break;	
+		case 0xA6 :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Held Trainer Feeling: %d", pkmn[byte]);
+			break;
+		case 0xAE :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Fullness: %d", pkmn[byte]);
+			break;	
+		case 0xAF :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Enjoyment: %d", pkmn[byte]);
+			break;
+		case 0xB0 :
+		case 0xB1 :
+		case 0xB2 :
+		case 0xB3 :
+		case 0xB4 :
+		case 0xB5 :
+		case 0xB6 :
+		case 0xB7 :
+		case 0xB8 :
+		case 0xB9 :
+		case 0xBA :
+		case 0xBB :
+		case 0xBC :
+		case 0xBD :
+		case 0xBE :
+		case 0xBF :
+		case 0xC0 :
+		case 0xC1 :
+		case 0xC2 :
+		case 0xC3 :
+		case 0xC4 :
+		case 0xC5 :
+		case 0xC6 :
+		case 0xC7 :
+			getOT(pkmn, string);
+			sftd_draw_text(fontBold12, x, y, WHITE, 12, "Original Trainer Name: ");
+			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, x + sftd_get_text_width(fontBold12, 12, "Original Trainer Name: "), y, WHITE, 12, (wchar_t*)string);
+			break;
+		case 0xCA :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Original Trainer Friendship: %d", pkmn[byte]);
+			break;
+		case 0xCB :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Original Trainer Affection: %d", pkmn[byte]);
+			break;
+		case 0xCC :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Original Trainer Intensity: %d", pkmn[byte]);
+			break;
+		case 0xCD :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Original Trainer Memory: %d", pkmn[byte]);
+			break;	
+		case 0xD0 :
+			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Original Trainer Feeling: %d", pkmn[byte]);
 			break;
 	}
 }
