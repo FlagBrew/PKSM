@@ -1089,7 +1089,7 @@ void infoViewer(u8* pkmn, int game) {
 		
 		char* otid = (char*)malloc(18 * sizeof(char));
 		snprintf(otid, 18, "%u / %u", getPSV(pkmn), getTSV(pkmn));
-		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, otid), 160, (getPSV(pkmn) == getTSV(pkmn)) ? SHINYRED : WHITE, 12, otid);
+		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, otid), 160, WHITE, 12, otid);
 		snprintf(otid, 18, "%u / %u", getOTID(pkmn), getSOTID(pkmn));
 		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, otid), 180, WHITE, 12, otid);
 		free(otid);
@@ -1855,64 +1855,64 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0x56 :
 		case 0x57 :
 			getNickname(pkmn, string);
-			sftd_draw_text(fontBold12, x, y, WHITE, 12, "Nickname: ");
-			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, x + sftd_get_text_width(fontBold12, 12, "Nickname: "), y, WHITE, 12, (wchar_t*)string);
+			sftd_draw_text(fontBold12, x, y, LIGHTBLUE, 12, "Nickname: ");
+			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, x + sftd_get_text_width(fontBold12, 12, "Nickname: "), y, LIGHTBLUE, 12, (wchar_t*)string);
 			break;
 		case 0x5A :
 		case 0x5B :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Move 1: %s", moves[getMove(pkmn, 0)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 1: %s", moves[getMove(pkmn, 0)]);
 			break;
 		case 0x5C :
 		case 0x5D :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Move 2: %s", moves[getMove(pkmn, 1)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 2: %s", moves[getMove(pkmn, 1)]);
 			break;
 		case 0x5E :
 		case 0x5F :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Move 3: %s", moves[getMove(pkmn, 2)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 3: %s", moves[getMove(pkmn, 2)]);
 			break;
 		case 0x60 :
 		case 0x61 :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Move 4: %s", moves[getMove(pkmn, 3)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 4: %s", moves[getMove(pkmn, 3)]);
 			break;
 		case 0x62 :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Move 1 PP: %d", pkmn[byte]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 1 PP: %d", pkmn[byte]);
 			break;
 		case 0x63 :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Move 2 PP: %d", pkmn[byte]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 2 PP: %d", pkmn[byte]);
 			break;
 		case 0x64 :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Move 3 PP: %d", pkmn[byte]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 3 PP: %d", pkmn[byte]);
 			break;
 		case 0x65 :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Move 4 PP: %d", pkmn[byte]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 4 PP: %d", pkmn[byte]);
 			break;
 		case 0x66 :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Move 1 PP Up: %d", pkmn[byte]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 1 PP Up: %d", pkmn[byte]);
 			break;
 		case 0x67 :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Move 2 PP Up: %d", pkmn[byte]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 2 PP Up: %d", pkmn[byte]);
 			break;
 		case 0x68 :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Move 3 PP Up: %d", pkmn[byte]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 3 PP Up: %d", pkmn[byte]);
 			break;
 		case 0x69 :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Move 4 PP Up: %d", pkmn[byte]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 4 PP Up: %d", pkmn[byte]);
 			break;
 		case 0x6A :
 		case 0x6B :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Relearn Move 1: %s", moves[getEggMove(pkmn, 0)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 1: %s", moves[getEggMove(pkmn, 0)]);
 			break;
 		case 0x6C :
 		case 0x6D :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Relearn Move 2: %s", moves[getEggMove(pkmn, 1)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 2: %s", moves[getEggMove(pkmn, 1)]);
 			break;
 		case 0x6E :
 		case 0x6F :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Relearn Move 3: %s", moves[getEggMove(pkmn, 2)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 3: %s", moves[getEggMove(pkmn, 2)]);
 			break;
 		case 0x70 :
 		case 0x71 :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Relearn Move 4: %s", moves[getEggMove(pkmn, 3)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 4: %s", moves[getEggMove(pkmn, 3)]);
 			break;
 		case 0x78 :
 		case 0x79 :
@@ -1939,29 +1939,29 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0x8E :
 		case 0x8F :	
 			getHTName(pkmn, string);
-			sftd_draw_text(fontBold12, x, y, WHITE, 12, "Held Trainer name: ");
-			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, x + sftd_get_text_width(fontBold12, 12, "Held Trainer name: "), y, WHITE, 12, (wchar_t*)string);
+			sftd_draw_text(fontBold12, x, y, LIGHTBLUE, 12, "Held Trainer name: ");
+			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, x + sftd_get_text_width(fontBold12, 12, "Held Trainer name: "), y, LIGHTBLUE, 12, (wchar_t*)string);
 			break;
 		case 0xA2 :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Held Trainer Friendship: %d", pkmn[byte]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Held Trainer Friendship: %d", pkmn[byte]);
 			break;
 		case 0xA3 :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Held Trainer Affection: %d", pkmn[byte]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Held Trainer Affection: %d", pkmn[byte]);
 			break;
 		case 0xA4 :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Held Trainer Intensity: %d", pkmn[byte]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Held Trainer Intensity: %d", pkmn[byte]);
 			break;
 		case 0xA5 :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Held Trainer Memory: %d", pkmn[byte]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Held Trainer Memory: %d", pkmn[byte]);
 			break;	
 		case 0xA6 :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Held Trainer Feeling: %d", pkmn[byte]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Held Trainer Feeling: %d", pkmn[byte]);
 			break;
 		case 0xAE :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Fullness: %d", pkmn[byte]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Fullness: %d", pkmn[byte]);
 			break;	
 		case 0xAF :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Enjoyment: %d", pkmn[byte]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Enjoyment: %d", pkmn[byte]);
 			break;
 		case 0xB0 :
 		case 0xB1 :
@@ -1988,23 +1988,23 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0xC6 :
 		case 0xC7 :
 			getOT(pkmn, string);
-			sftd_draw_text(fontBold12, x, y, WHITE, 12, "Original Trainer Name: ");
-			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, x + sftd_get_text_width(fontBold12, 12, "Original Trainer Name: "), y, WHITE, 12, (wchar_t*)string);
+			sftd_draw_text(fontBold12, x, y, LIGHTBLUE, 12, "Original Trainer Name: ");
+			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, x + sftd_get_text_width(fontBold12, 12, "Original Trainer Name: "), y, LIGHTBLUE, 12, (wchar_t*)string);
 			break;
 		case 0xCA :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Original Trainer Friendship: %d", pkmn[byte]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Original Trainer Friendship: %d", pkmn[byte]);
 			break;
 		case 0xCB :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Original Trainer Affection: %d", pkmn[byte]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Original Trainer Affection: %d", pkmn[byte]);
 			break;
 		case 0xCC :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Original Trainer Intensity: %d", pkmn[byte]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Original Trainer Intensity: %d", pkmn[byte]);
 			break;
 		case 0xCD :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Original Trainer Memory: %d", pkmn[byte]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Original Trainer Memory: %d", pkmn[byte]);
 			break;	
 		case 0xD0 :
-			sftd_draw_textf(fontBold12, x, y, WHITE, 12, "Original Trainer Feeling: %d", pkmn[byte]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Original Trainer Feeling: %d", pkmn[byte]);
 			break;
 	}
 }
