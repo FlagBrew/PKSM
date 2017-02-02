@@ -1532,7 +1532,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 			getPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
 			bool operationDone = false;
 
-			while (aptMainLoop() && getPokedexNumber(pkmn) && !operationDone) {
+			while (aptMainLoop() && (getPokedexNumber(pkmn) > 0 && getPokedexNumber(pkmn) < 822) && !operationDone) {
 				hidScanInput();
 				hidTouchRead(&touch);
 				

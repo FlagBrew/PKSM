@@ -993,8 +993,12 @@ void printElement(u8* mainbuf, u8* pkmn, int game, u16 n, int x, int y) {
 		if (t) {
 			t -= 1;
 			sf2d_draw_texture_part(alternativeSpritesSmall, x, y, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30); 
-		} else 
-			sf2d_draw_texture_part(spritesSmall, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30);
+		} else {
+			if (getPokedexNumber(pkmn) < 0 || getPokedexNumber(pkmn) > 821)
+				sf2d_draw_texture_part(spritesSmall, x, y, 0, 0, 34, 30);
+			else
+				sf2d_draw_texture_part(spritesSmall, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30);
+		}
 		if (isEgg(pkmn))
 			sf2d_draw_texture_part(spritesSmall, x + 6, y + 6, 40 * (EGGSPRITEPOS % 25) + 4, 30 * (EGGSPRITEPOS / 25), 34, 30);
 		if (getItem(pkmn))
@@ -1006,8 +1010,12 @@ void printElementBlend(u8* pkmn, int game, u16 n, int x, int y, u32 color) {
 	if (t) {
 		t -= 1;
 		sf2d_draw_texture_part_blend(alternativeSpritesSmall, x, y, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30, color); 
-	} else
-		sf2d_draw_texture_part_blend(spritesSmall, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30, color);
+	} else {
+		if (getPokedexNumber(pkmn) < 0 || getPokedexNumber(pkmn) > 821)
+			sf2d_draw_texture_part_blend(spritesSmall, x, y, 0, 0, 34, 30, color);
+		else
+			sf2d_draw_texture_part_blend(spritesSmall, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30, color);
+	}
 	if (isEgg(pkmn))
 		sf2d_draw_texture_part_blend(spritesSmall, x + 6, y + 6, 40 * (EGGSPRITEPOS % 25) + 4, 30 * (EGGSPRITEPOS / 25), 34, 30, color);
 	if (getItem(pkmn))
@@ -1042,7 +1050,7 @@ void infoViewer(u8* pkmn, int game) {
 		y_desc += 20;
 	}
 	
-	if (getPokedexNumber(pkmn)) {
+	if (getPokedexNumber(pkmn) > 0 && getPokedexNumber(pkmn) < 822) {
 		sf2d_draw_texture_part(balls, -2, -5, 32 * (getBall(pkmn) % 8), 32 * (getBall(pkmn) / 8), 32, 32);
 		sftd_draw_text(fontBold12, 30, 6, WHITE, 12, (char*)personal.species[getPokedexNumber(pkmn)]);
 		
@@ -1160,7 +1168,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 			for (int j = 0; j < 6; j++) {
 				getPkmn(mainbuf, box, i * 6 + j, pkmn, game);
 				u16 n = getPokedexNumber(pkmn);
-				if (n)
+				if (n > 0 && n < 822)
 					printElement(mainbuf, pkmn, game, n, x, y);
 
 				if ((currentEntry == (i * 6 + j)) && !isTeam) {
@@ -1558,7 +1566,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 			snprintf(page, 10, "Bank %d", bankBox + 1);
 			sftd_draw_text(fontBold12, 55 + (178 - sftd_get_text_width(fontBold12, 12, page)) / 2, 9, WHITE, 12, page);
 
-			if (getPokedexNumber(pkmn)) {
+			if (getPokedexNumber(pkmn) > 0 && getPokedexNumber(pkmn) < 822) {
 				u16 tempspecies = getFormSpeciesNumber(pkmn);
 				u8 type1 = 0, type2 = 0;
 
