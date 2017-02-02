@@ -1332,6 +1332,17 @@ void saveFileEditor(u8* mainbuf, int game) {
 	}
 }
 
+void setRibbons(u8* pkmn, int ribcat, int ribnumber, bool value) {
+	u8 tmp;
+	memcpy(&tmp, &pkmn[0x30 + ribcat], 1);
+	tmp = (u8)((tmp & ~(1 << ribnumber)) | (value ? 1 << ribnumber : 0));
+	memcpy(&pkmn[0x30 + ribcat], &tmp, 1);
+}
+
+bool getRibbons(u8* pkmn, int ribcat, int ribnumber) {
+	return (pkmn[0x30 + ribcat] & (1 << ribnumber)) == 1 << ribnumber;
+}
+
 void parseHexEditor(u8* pkmn, int game, int byteEntry) {
 	int maxItemID = (game < 2) ? 717 : ((game < 4) ? 775 : 920);
 	int maxMoveID = (game < 2) ? 617 : ((game < 4) ? 621 : 720);
@@ -1357,6 +1368,10 @@ void parseHexEditor(u8* pkmn, int game, int byteEntry) {
 		checkMaxValue(pkmn, byteEntry, getMove(pkmn, 2), maxMoveID);
 	else if (byteEntry == 0x60 || byteEntry == 0x61)
 		checkMaxValue(pkmn, byteEntry, getMove(pkmn, 3), maxMoveID);
+	else if (byteEntry == 0x62 || byteEntry == 0x63 || byteEntry == 0x64 || byteEntry == 0x65)
+		checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 40);
+	else if (byteEntry == 0x66 || byteEntry == 0x67 || byteEntry == 0x68 || byteEntry == 0x69)
+		checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 4);
 	else if (byteEntry == 0x6A || byteEntry == 0x6B)
 		checkMaxValue(pkmn, byteEntry, getEggMove(pkmn, 0), maxMoveID);
 	else if (byteEntry == 0x6C || byteEntry == 0x6D)
@@ -1623,7 +1638,14 @@ void pokemonEditor(u8* mainbuf, int game) {
 										if (hidKeysDown() & KEY_DDOWN)
 											if (byteEntry <= 215) 
 												byteEntry += 16;
-											
+
+										if (sector[byteEntry][0] && sector[byteEntry][1]) {
+											for (int i = 0; i < 8; i++) {
+												if ((hidKeysDown() & KEY_TOUCH) && touch.px > 163 && touch.px < 176 && touch.py > 70 + i*15 && touch.py < 83 + i*15)
+													setRibbons(pkmn, byteEntry - 0x30, i, !getRibbons(pkmn, byteEntry - 0x30, i));
+											}
+										}
+										
 										if (!speedy && sector[byteEntry][0] && !sector[byteEntry][1] && (((hidKeysDown() & KEY_TOUCH) && touch.px > 224 && touch.px < 241 && touch.py > 31 && touch.py < 49) || (hidKeysDown() & KEY_X))) {
 											if (pkmn[byteEntry] > 0)
 												pkmn[byteEntry]--;

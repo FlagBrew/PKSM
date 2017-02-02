@@ -160,5 +160,8 @@ void setBall(u8* pkmn, u8 val);
 void setSID(u8* pkmn, u16 sid);
 void setTID(u8* pkmn, u16 tid);
 
+void setRibbons(u8* pkmn, int ribcat, int ribnumber, bool value);
+bool getRibbons(u8* pkmn, int ribcat, int ribnumber);
+
 void saveFileEditor(u8* mainbuf, int game);
 void pokemonEditor(u8* mainbuf, int game);

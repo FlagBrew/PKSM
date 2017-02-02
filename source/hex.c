@@ -237,7 +237,12 @@ void fillSectors(bool sector[][2]) {
 		sector[j][0] = false;
 		sector[j][1] = false;
 	}
-
+	
+	for (int j = 0x30; j <= 0x36; j++) { // ribbons 1-6
+		sector[j][0] = true;
+		sector[j][1] = true;
+	}
+		
 	for (int j = 0x00; j <= 0x03; j++) // encryption constant
 		sector[j][0] = true;	
 

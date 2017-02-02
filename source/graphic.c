@@ -1511,8 +1511,6 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 			if (sector[additional1][0] && !(sector[additional1][1])) {
 				sf2d_draw_texture(minusButton, 224, 31);
 				sf2d_draw_texture(plusButton, 247, 31);
-			} else if (sector[additional1][0] && sector[additional1][1]) {
-				
 			}
 			
 			printfHexEditorInfo(pkmn, additional1);
@@ -1830,6 +1828,62 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0x29 : 
 			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Contest Value Sheen: %d", pkmn[byte]);
 			break;
+		case 0x30 : {
+			char* entries[] = {"Champion Kalos", "Champion G3 Hoenn", "Champion Sinnoh", "Best Friends", "Training", "Skillful Battler", "Battler Expert", "Effort"};
+			for (int i = 0; i < 8; i++) {
+				sftd_draw_text(fontBold12, x, y + 15*i, LIGHTBLUE, 12, entries[i]);
+				sf2d_draw_rectangle(163, y + 15*i, 13, 13, (getRibbons(pkmn, 0, i)) ? GREEN : SHINYRED);
+			}
+			break;
+		}
+		case 0x31 : {
+			char* entries[] = {"Alert", "Shock", "Downcast", "Careless", "Relax", "Snooze", "Smile", "Gorgeous"};
+			for (int i = 0; i < 8; i++) {
+				sftd_draw_text(fontBold12, x, y + 15*i, LIGHTBLUE, 12, entries[i]);
+				sf2d_draw_rectangle(163, y + 15*i, 13, 13, (getRibbons(pkmn, 1, i)) ? GREEN : SHINYRED);
+			}
+			break;
+		}
+		case 0x32 : {
+			char* entries[] = {"Royal", "Gorgeous Royal", "Artist", "Footprint", "Record", "Legend", "Country", "National"};
+			for (int i = 0; i < 8; i++) {
+				sftd_draw_text(fontBold12, x, y + 15*i, LIGHTBLUE, 12, entries[i]);
+				sf2d_draw_rectangle(163, y + 15*i, 13, 13, (getRibbons(pkmn, 2, i)) ? GREEN : SHINYRED);
+			}
+			break;
+		}
+		case 0x33 : {
+			char* entries[] = {"Earth", "World", "Classic", "Premier", "Event", "Birthday", "Special", "Souvenir"};
+			for (int i = 0; i < 8; i++) {
+				sftd_draw_text(fontBold12, x, y + 15*i, LIGHTBLUE, 12, entries[i]);
+				sf2d_draw_rectangle(163, y + 15*i, 13, 13, (getRibbons(pkmn, 3, i)) ? GREEN : SHINYRED);
+			}
+			break;
+		}
+		case 0x34 : {
+			char* entries[] = {"Wishing", "Champion Battle", "Champion Regional", "Champion National", "Champion World", "-", "-", "Champion G6 Hoenn"};
+			for (int i = 0; i < 8; i++) {
+				sftd_draw_text(fontBold12, x, y + 15*i, LIGHTBLUE, 12, entries[i]);
+				sf2d_draw_rectangle(163, y + 15*i, 13, 13, (getRibbons(pkmn, 4, i)) ? GREEN : SHINYRED);
+			}
+			break;
+		}
+		case 0x35 : {
+			char* entries[] = {"Contest Star", "Master Coolness", "Master Beauty", "Master Cuteness", "Master Cleverness", "Master Toughness", "Champion Alola", "Battle Royale"};
+			for (int i = 0; i < 8; i++) {
+				sftd_draw_text(fontBold12, x, y + 15*i, LIGHTBLUE, 12, entries[i]);
+				sf2d_draw_rectangle(163, y + 15*i, 13, 13, (getRibbons(pkmn, 5, i)) ? GREEN : SHINYRED);
+			}
+			break;
+		}
+		case 0x36 : {
+			char* entries[] = {"Battle Tree Great", "Battle Tree Master", "-", "-", "-", "-", "-", "-"};
+			for (int i = 0; i < 8; i++) {
+				sftd_draw_text(fontBold12, x, y + 15*i, LIGHTBLUE, 12, entries[i]);
+				sf2d_draw_rectangle(163, y + 15*i, 13, 13, (getRibbons(pkmn, 6, i)) ? GREEN : SHINYRED);
+			}
+			break;
+		}
 		case 0x40 :
 		case 0x41 :
 		case 0x42 :
