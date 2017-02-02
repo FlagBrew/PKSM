@@ -174,38 +174,88 @@ void fillDescriptions(char *descriptions[]) {
 	
 	descriptions[0xA8] = "Held Trainer TextVar, byte 1";
 	descriptions[0xA9] = "Held Trainer TextVar, byte 2";
+	descriptions[0xAE] = "Fullness";
+	descriptions[0xAF] = "Enjoyment";
+	
+	descriptions[0xB0] = "Original Trainer Name, byte 1";
+	descriptions[0xB1] = "Original Trainer Name, byte 2";
+	descriptions[0xB2] = "Original Trainer Name, byte 3";
+	descriptions[0xB3] = "Original Trainer Name, byte 4";
+	descriptions[0xB4] = "Original Trainer Name, byte 5";
+	descriptions[0xB5] = "Original Trainer Name, byte 6";
+	descriptions[0xB6] = "Original Trainer Name, byte 7";
+	descriptions[0xB7] = "Original Trainer Name, byte 8";
+	descriptions[0xB8] = "Original Trainer Name, byte 9";
+	descriptions[0xB9] = "Original Trainer Name, byte 10";
+	descriptions[0xBA] = "Original Trainer Name, byte 11";
+	descriptions[0xBB] = "Original Trainer Name, byte 12";
+	descriptions[0xBC] = "Original Trainer Name, byte 13";
+	descriptions[0xBD] = "Original Trainer Name, byte 14";
+	descriptions[0xBE] = "Original Trainer Name, byte 15";
+	descriptions[0xBF] = "Original Trainer Name, byte 16";
+	
+	descriptions[0xC0] = "Original Trainer Name, byte 17";
+	descriptions[0xC1] = "Original Trainer Name, byte 18";
+	descriptions[0xC2] = "Original Trainer Name, byte 19";
+	descriptions[0xC3] = "Original Trainer Name, byte 20";
+	descriptions[0xC4] = "Original Trainer Name, byte 21";
+	descriptions[0xC5] = "Original Trainer Name, byte 22";
+	descriptions[0xC6] = "Original Trainer Name, byte 23";
+	descriptions[0xC7] = "Original Trainer Name, byte 24";
+	
+	descriptions[0xCA] = "Original Trainer Friendship";
+	descriptions[0xCB] = "Original Trainer Affection";
+	descriptions[0xCC] = "Original Trainer Intensity";
+	descriptions[0xCD] = "Original Trainer Memory";
+	descriptions[0xCE] = "Original Trainer TextVar";
+	
+	descriptions[0xD0] = "Original Trainer Feeling";
+	descriptions[0xD1] = "Egg Year";
+	descriptions[0xD2] = "Egg Month";
+	descriptions[0xD3] = "Egg Day";
+	descriptions[0xD4] = "Met Year";
+	descriptions[0xD5] = "Met Month";
+	descriptions[0xD6] = "Met Day";
+
+	descriptions[0xD8] = "Egg Location";
+	descriptions[0xDA] = "Met Location";
+	
+	descriptions[0xDC] = "Ball";
+	descriptions[0xDD] = "Met Level / Original Trainer Gender";
+	descriptions[0xDE] = "Hyper Train Flags";
+	descriptions[0xDF] = "Version";
+	
+	descriptions[0xE0] = "Country";
+	descriptions[0xE1] = "Region";
+	descriptions[0xE2] = "Console Region";
+	descriptions[0xE3] = "Language";
 }
 
 void fillSectors(bool sector[][2]) {
+	// editable, requires Boolean
 	for (int j = 0; j < PKMNLENGTH; j++) {
 		sector[j][0] = false;
 		sector[j][1] = false;
 	}
 
-	// editable, requires Boolean
-	sector[0x00][0] = true; // encryption constant byte1
-	sector[0x01][0] = true; // encryption constant byte2
-	sector[0x02][0] = true; // encryption constant byte3
-	sector[0x03][0] = true; // encryption constant byte4
+	for (int j = 0x00; j <= 0x03; j++) // encryption constant
+		sector[j][0] = true;	
 
-	sector[0x0A][0] = true; // item byte1
-	sector[0x0B][0] = true; // item byte2	
-	sector[0x0C][0] = true; // TID byte1
-	sector[0x0D][0] = true; // TID byte2
-	sector[0x0E][0] = true; // SID byte1
-	sector[0x0F][0] = true; // SID byte2
+	for (int j = 0x0A; j <= 0x0F; j++) // species to sid
+		sector[j][0] = true;
 	
-	sector[0x18][0] = true; // PID byte1
-	sector[0x19][0] = true; // PID byte2
-	sector[0x1A][0] = true; // PID byte3
-	sector[0x1B][0] = true; // PID byte4
+	for (int j = 0x18; j <= 0x1B; j++) // pid
+		sector[j][0] = true;	
 	
-	//sector[0x1D][0] = true; sector[0x1D][1] = true; // fateful encounter
-	
-	for (int j = 0x1E; j <= 0x2A; j++) // EV_HP to Pelago Status
+	sector[0xDC][0] = true; // Ball
+
+	for (int j = 0x40; j <= 0x57; j++) // Nickname
+		sector[j][0] = true;	
+		
+	for (int j = 0x1E; j <= 0x29; j++) // EV_HP to Contest Value Sheen
 		sector[j][0] = true;
 		
-	for (int j = 0x62; j <= 0x69; j++) // Move1_PP to Move4_PPUps
+	for (int j = 0x5A; j <= 0x71; j++) // Move 1 to Relearn Move 4
 		sector[j][0] = true;
 
 	for (int j = 0x78; j <= 0x8F; j++) // Held Trainer Name
@@ -217,12 +267,12 @@ void fillSectors(bool sector[][2]) {
 	for (int j = 0xAE; j <= 0xAF; j++) // Fullness to Enjoyment
 		sector[j][0] = true;
 		
+	for (int j = 0xB0; j <= 0xC7; j++) // OT Name
+		sector[j][0] = true;
+		
 	for (int j = 0xCA; j <= 0xCD; j++) // OT_Friendship to OT_Memory
 		sector[j][0] = true;
 		
 	for (int j = 0xD0; j <= 0xD6; j++) // OT_Feeling to Met Day
-		sector[j][0] = true;
-		
-	for (int j = 0xDF; j <= 0xE3; j++) // Version to Language
 		sector[j][0] = true;
 }
