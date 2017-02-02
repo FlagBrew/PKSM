@@ -766,29 +766,19 @@ bool isInfected (u8* pkmn) {
 	return pkrs > 0;
 }
 
-char *getOT(u8* pkmn, char* dst) {
+u32 *getOT(u8* pkmn, u32* dst) {
 	u16 src[NICKNAMELENGTH];
 	memcpy(src, &pkmn[0xB0], NICKNAMELENGTH);
 	
-	int cnt = 0;
-	while (src[cnt] && cnt < 24) {
-		dst[cnt] = src[cnt];
-		cnt += 1;
-	}
-	dst[cnt] = 0;
+	utf16_to_utf32(dst, src, NICKNAMELENGTH);
 	return dst;
 }
 
-char *getSaveOT(u8* mainbuf, int game, char* dst) {
+u32 *getSaveOT(u8* mainbuf, int game, u32* dst) {
 	u16 src[NICKNAMELENGTH];
 	memcpy(src, &mainbuf[(game < 4) ? 0x14048 : 0X1238], NICKNAMELENGTH);
 	
-	int cnt = 0;
-	while (src[cnt] && cnt < 24) {
-		dst[cnt] = src[cnt];
-		cnt += 1;
-	}
-	dst[cnt] = 0;
+	utf16_to_utf32(dst, src, NICKNAMELENGTH);
 	return dst;
 }
 
@@ -800,16 +790,11 @@ u32 *getNickname(u8* pkmn, u32* dst) {
 	return dst;
 }
 
-char *getHTName(u8* pkmn, char* dst) {
+u32 *getHTName(u8* pkmn, u32* dst) {
 	u16 src[NICKNAMELENGTH];
 	memcpy(src, &pkmn[0x78], NICKNAMELENGTH);
-	
-	int cnt = 0;
-	while (src[cnt] && cnt < NICKNAMELENGTH) {
-		dst[cnt] = src[cnt];
-		cnt += 1;
-	}
-	dst[cnt] = 0;
+
+	utf16_to_utf32(dst, src, NICKNAMELENGTH);
 	return dst;
 }
 

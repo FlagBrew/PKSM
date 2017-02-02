@@ -1056,16 +1056,15 @@ void infoViewer(u8* pkmn, int game) {
 		sftd_draw_text(fontBold12, 160, 6, WHITE, 12, level);
 		free(level);
 		
-		u32 *nick = (u32*)malloc(NICKNAMELENGTH * 2);
-		memset(nick, 0, NICKNAMELENGTH * 2);
+		u32 nick[NICKNAMELENGTH*2];
+		memset(nick, 0, NICKNAMELENGTH*2);
 		getNickname(pkmn, nick);
 		sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, 215 - (sftd_get_wtext_width((isKor) ? unicodeKOR12 : unicodeJPN12, 12, (wchar_t*)nick)), 29, WHITE, 12, (wchar_t*)nick);
-		free(nick);
 		
-		char *ot_name = (char*)malloc(NICKNAMELENGTH);
+		u32 ot_name[NICKNAMELENGTH*2];
+		memset(ot_name, 0, NICKNAMELENGTH*2);
 		getOT(pkmn, ot_name);
-		sftd_draw_text(fontBold12, 215 - (sftd_get_text_width(fontBold12, 12, ot_name)), 49, WHITE, 12, ot_name);
-		free(ot_name);	
+		sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, 215 - (sftd_get_wtext_width((isKor) ? unicodeKOR12 : unicodeJPN12, 12, (wchar_t*)ot_name)), 49, WHITE, 12, (wchar_t*)ot_name);
 		
 		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, (isInfected(pkmn) ? "Yes" : "No")), 69, WHITE, 12, isInfected(pkmn) ? "Yes" : "No");
 		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, natures[getNature(pkmn)]), 94, WHITE, 12, natures[getNature(pkmn)]);
@@ -1240,6 +1239,7 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 	
 	char* values[6] = {"HP:", "Attack:", "Defense:", "Sp. Attack:", "Sp. Defense:", "Speed:"};
 	u16 n = getPokedexNumber(pkmn);
+	bool isKor = (pkmn[0xE3] == 0x08) ? true : false;
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 	if (mode == ED_BASE || mode == ED_STATS) {
@@ -1426,15 +1426,15 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 			sftd_draw_text(fontBold12, 180 - max - 3 + (max - sftd_get_text_width(fontBold12, 12, friendship)) / 2, 189, WHITE, 12, friendship);
 			free(friendship);
 			
-			/*wchar_t *nick = (wchar_t*)malloc(NICKNAMELENGTH);
+			u32 nick[NICKNAMELENGTH*2];
+			memset(nick, 0, NICKNAMELENGTH*2);
 			getNickname(pkmn, nick);
-			sftd_draw_wtext(unicode12, 178 - (sftd_get_wtext_width(unicode12, 12, nick)), 169, WHITE, 12, nick);
-			free(nick);*/
-			
-			char *ot_name = (char*)malloc(0x17 * sizeof(char));
+			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, 178 - (sftd_get_wtext_width((isKor) ? unicodeKOR12 : unicodeJPN12, 12, (wchar_t*)nick)), 169, WHITE, 12, (wchar_t*)nick);
+
+			u32 ot_name[NICKNAMELENGTH*2];
+			memset(ot_name, 0, NICKNAMELENGTH*2);
 			getOT(pkmn, ot_name);
-			sftd_draw_text(fontBold12, 178 - (sftd_get_text_width(fontBold12, 12, ot_name)), 149, WHITE, 12, ot_name);
-			free(ot_name);
+			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, 178 - (sftd_get_wtext_width((isKor) ? unicodeKOR12 : unicodeJPN12, 12, (wchar_t*)ot_name)), 149, WHITE, 12, (wchar_t*)ot_name);
 		}
 		if (mode == ED_STATS || mode == ED_HIDDENPOWER) {
 			sf2d_draw_texture(editorStatsBG, 0, 1);
@@ -1541,6 +1541,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 	int x, y;
 	int pointer[2] = {0, 0};
 	char* page = (char*)malloc(10 * sizeof(char));
+	bool isKor = (pkmnbuf[0xE3] == 0x08) ? true : false;
 	
 	u8* pkmn = (u8*)malloc(PKMNLENGTH * sizeof(u8));
 	if (currentEntry < 30)
@@ -1575,10 +1576,10 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 				if (type1 != type2)
 					sf2d_draw_texture_part(typesSheet, 325, 120, 50 * type2, 0, 50, 18); 
 				
-				/*wchar_t *nick = (wchar_t*)malloc(NICKNAMELENGTH);
+				u32 nick[NICKNAMELENGTH*2];
+				memset(nick, 0, NICKNAMELENGTH*2);
 				getNickname(pkmn, nick);
-				sftd_draw_wtext(unicode12, 273, 69, WHITE, 12, nick);
-				free(nick);*/
+				sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, 273, 69, WHITE, 12, (wchar_t*)nick);
 				
 				char* level = (char*)malloc(8 * sizeof(char));
 				snprintf(level, 8, "Lv.%u", getLevel(pkmn));
@@ -1593,10 +1594,10 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 				
 				free(level);
 				
-				char *ot_name = (char*)malloc(0x17 * sizeof(char));
-				getOT(pkmn, ot_name);
-				sftd_draw_text(fontBold12, 273, 146, WHITE, 12, ot_name);
-				free(ot_name);
+				u32 ot_name[NICKNAMELENGTH*2];
+				memset(ot_name, 0, NICKNAMELENGTH*2);
+				getNickname(pkmn, ot_name);
+				sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, 273, 146, WHITE, 12, (wchar_t*)ot_name);
 
 				char* otid = (char*)malloc(12 * sizeof(char));
 				snprintf(otid, 12, "ID. %u", getOTID(pkmn));
@@ -1761,7 +1762,9 @@ void printSettings(int box, bool speedy) {
 
 void printfHexEditorInfo(u8* pkmn, int byte) {
 	int y = 70, x = 8;
-	char string[NICKNAMELENGTH];
+	bool isKor = (pkmn[0xE3] == 0x08) ? true : false;
+	u32 string[NICKNAMELENGTH*2];
+	memset(string, 0, NICKNAMELENGTH*2);
 	
 	switch (byte) {
 		case 0x08 :
@@ -1804,8 +1807,8 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0x8D :
 		case 0x8E :
 		case 0x8F :	
-			getHTName(pkmn, string);
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Held Trainer: %s", string);
+			getNickname(pkmn, string);
+			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, x, y, WHITE, 12, (wchar_t*)string);
 			break;
 	}
 }
