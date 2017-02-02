@@ -43,6 +43,7 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[2048] = " "; spriteArray[2048] = -1; // no Eon Ticket in gen7
 	
 	database[203] = "0203 - PC Alolan Vulpix"; spriteArray[203] = 37;
+	database[218] = "0218 - Lunar Shiny Magikarp"; spriteArray[218] = 129;
 	database[1601] = "1601 - Z-stone Munchlax"; spriteArray[1601] = 446;
 	database[1610] = "Placeholder";
 	database[2046] = "2046 - Ash Greninja"; spriteArray[2046] = 658;
