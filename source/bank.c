@@ -39,9 +39,6 @@ void clearMarkings(u8* pkmn) {
 		for (int i = 0xE4; i < 0xE8; i++)
 			pkmn[i] = 0;
 		
-		pkmn[0x94] = 7; // geo1 region
-		pkmn[0x95] = 49; // geo1 country
-		
 		// trade memory
 		u16 textvar = 0; // from bank
 		pkmn[0xA4] = 1; 
@@ -327,7 +324,7 @@ void bank(u8* mainbuf, int game) {
 					if (currentEntry < 30) {
 						memcpy(pkmn, &bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], PKMNLENGTH);
 						clearMarkings(pkmn);
-						if (getPokedexNumber(pkmn) < 0 || getPokedexNumber(pkmn) > 821) {
+						if (getPokedexNumber(pkmn) <= 0 || getPokedexNumber(pkmn) > 821) {
 							memset(pkmn, 0, PKMNLENGTH);
 							isBufferized = false;
 						} else {
@@ -337,7 +334,7 @@ void bank(u8* mainbuf, int game) {
 					} else {
 						getPkmn(mainbuf, saveBox, currentEntry - 30, pkmn, game);
 						clearMarkings(pkmn);
-						if (getPokedexNumber(pkmn) < 0 || getPokedexNumber(pkmn) > 821) {
+						if (getPokedexNumber(pkmn) <= 0 || getPokedexNumber(pkmn) > 821) {
 							memset(pkmn, 0, PKMNLENGTH);
 							isBufferized = false;
 						} else {

@@ -213,6 +213,7 @@ void settingsMenu(u8* mainbuf, int game) {
 		
 		if (hidKeysDown() & KEY_TOUCH) {
 			if (touch.px > 189 && touch.px < 225 && touch.py > 64 && touch.py < 85) {
+				freezeMsg("Changing size...");
 				if (size < box * 30 * PKMNLENGTH) { // i box sono maggiori
 					FILE *buf = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
 					fseek(buf, 0, SEEK_END);

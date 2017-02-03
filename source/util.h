@@ -24,7 +24,7 @@ Copyright (C) 2016 Bernardo Giordano
 
 #define POKEBANK 0x00040000000C9B00
 
-#define VERSION "v4.1.2"
+#define VERSION "v4.2.0"
 
 #define GAME_X 0
 #define GAME_Y 1

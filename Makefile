@@ -35,7 +35,7 @@ BUILD_FLAGS_CXX := $(BUILD_FLAGS_CC) -fno-rtti -fno-exceptions -std=gnu++11
 RUN_FLAGS :=
 
 VERSION_MAJOR := 4
-VERSION_MINOR := 1
+VERSION_MINOR := 2
 VERSION_MICRO := 0
 
 REMOTE_IP := 192.168.1.8

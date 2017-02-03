@@ -1506,7 +1506,7 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 			sftd_draw_textf(fontBold14, 50, 30, LIGHTBLUE, 14, "Selected byte:");
 			sf2d_draw_texture(blueTextBox, 165, 28);
 			sftd_draw_textf(fontBold14, 171, 30, WHITE, 14, "0x%02hhX", additional1);
-			sftd_draw_textf(fontBold9, 60, 225, LIGHTBLUE, 9, "You can switch speed using (L/R): %s", speedy ? "FAST" : "SLOW");
+			sftd_draw_textf(fontBold9, 40, 225, LIGHTBLUE, 9, "(A + / - X) You can switch speed using (L/R): %s", speedy ? "FAST" : "SLOW");
 			
 			if (sector[additional1][0] && !(sector[additional1][1])) {
 				sf2d_draw_texture(minusButton, 224, 31);
