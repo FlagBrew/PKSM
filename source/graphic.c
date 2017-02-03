@@ -1767,7 +1767,7 @@ void printSettings(int box, bool speedy) {
 }
 
 void printfHexEditorInfo(u8* pkmn, int byte) {
-	int y = 70, x = 8;
+	int y = 70, x = 8, xribbon = 90;
 	bool isKor = (pkmn[0xE3] == 0x08) ? true : false;
 	u32 string[NICKNAMELENGTH*2];
 	memset(string, 0, NICKNAMELENGTH*2);
@@ -1779,7 +1779,7 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			break;
 		case 0x0A :
 		case 0x0B :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Held Item: %s", items[getItem(pkmn)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Held Item: #%d - %s", getItem(pkmn), items[getItem(pkmn)]);
 			break;
 		case 0x0C :
 		case 0x0D :
@@ -1791,6 +1791,9 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			break;
 		case 0x14 :
 			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Ability: %s", abilities[getAbility(pkmn)]);
+			break;
+		case 0x1C :
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Nature: %s", natures[getNature(pkmn)]);
 			break;
 		case 0x1E : 
 			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "HP EV: %d", pkmn[byte]);
@@ -1831,56 +1834,56 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0x30 : {
 			char* entries[] = {"Champion Kalos", "Champion G3 Hoenn", "Champion Sinnoh", "Best Friends", "Training", "Skillful Battler", "Battler Expert", "Effort"};
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_text(fontBold12, x, y + 15*i, LIGHTBLUE, 12, entries[i]);
-				sf2d_draw_rectangle(163, y + 15*i, 13, 13, (getRibbons(pkmn, 0, i)) ? GREEN : SHINYRED);
+				sftd_draw_text(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, entries[i]);
+				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 0, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
 		case 0x31 : {
 			char* entries[] = {"Alert", "Shock", "Downcast", "Careless", "Relax", "Snooze", "Smile", "Gorgeous"};
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_text(fontBold12, x, y + 15*i, LIGHTBLUE, 12, entries[i]);
-				sf2d_draw_rectangle(163, y + 15*i, 13, 13, (getRibbons(pkmn, 1, i)) ? GREEN : SHINYRED);
+				sftd_draw_text(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, entries[i]);
+				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 1, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
 		case 0x32 : {
 			char* entries[] = {"Royal", "Gorgeous Royal", "Artist", "Footprint", "Record", "Legend", "Country", "National"};
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_text(fontBold12, x, y + 15*i, LIGHTBLUE, 12, entries[i]);
-				sf2d_draw_rectangle(163, y + 15*i, 13, 13, (getRibbons(pkmn, 2, i)) ? GREEN : SHINYRED);
+				sftd_draw_text(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, entries[i]);
+				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 2, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
 		case 0x33 : {
 			char* entries[] = {"Earth", "World", "Classic", "Premier", "Event", "Birthday", "Special", "Souvenir"};
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_text(fontBold12, x, y + 15*i, LIGHTBLUE, 12, entries[i]);
-				sf2d_draw_rectangle(163, y + 15*i, 13, 13, (getRibbons(pkmn, 3, i)) ? GREEN : SHINYRED);
+				sftd_draw_text(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, entries[i]);
+				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 3, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
 		case 0x34 : {
 			char* entries[] = {"Wishing", "Champion Battle", "Champion Regional", "Champion National", "Champion World", "-", "-", "Champion G6 Hoenn"};
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_text(fontBold12, x, y + 15*i, LIGHTBLUE, 12, entries[i]);
-				sf2d_draw_rectangle(163, y + 15*i, 13, 13, (getRibbons(pkmn, 4, i)) ? GREEN : SHINYRED);
+				sftd_draw_text(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, entries[i]);
+				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 4, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
 		case 0x35 : {
 			char* entries[] = {"Contest Star", "Master Coolness", "Master Beauty", "Master Cuteness", "Master Cleverness", "Master Toughness", "Champion Alola", "Battle Royale"};
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_text(fontBold12, x, y + 15*i, LIGHTBLUE, 12, entries[i]);
-				sf2d_draw_rectangle(163, y + 15*i, 13, 13, (getRibbons(pkmn, 5, i)) ? GREEN : SHINYRED);
+				sftd_draw_text(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, entries[i]);
+				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 5, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
 		case 0x36 : {
 			char* entries[] = {"Battle Tree Great", "Battle Tree Master", "-", "-", "-", "-", "-", "-"};
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_text(fontBold12, x, y + 15*i, LIGHTBLUE, 12, entries[i]);
-				sf2d_draw_rectangle(163, y + 15*i, 13, 13, (getRibbons(pkmn, 6, i)) ? GREEN : SHINYRED);
+				sftd_draw_text(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, entries[i]);
+				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 6, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
@@ -1914,19 +1917,19 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			break;
 		case 0x5A :
 		case 0x5B :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 1: %s", moves[getMove(pkmn, 0)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 1: #%d - %s", getMove(pkmn, 0), moves[getMove(pkmn, 0)]);
 			break;
 		case 0x5C :
 		case 0x5D :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 2: %s", moves[getMove(pkmn, 1)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 2: #%d - %s", getMove(pkmn, 1), moves[getMove(pkmn, 1)]);
 			break;
 		case 0x5E :
 		case 0x5F :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 3: %s", moves[getMove(pkmn, 2)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 3: #%d - %s", getMove(pkmn, 2), moves[getMove(pkmn, 2)]);
 			break;
 		case 0x60 :
 		case 0x61 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 4: %s", moves[getMove(pkmn, 3)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 4: #%d - %s", getMove(pkmn, 3), moves[getMove(pkmn, 3)]);
 			break;
 		case 0x62 :
 			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 1 PP: %d", pkmn[byte]);
@@ -1954,19 +1957,19 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			break;
 		case 0x6A :
 		case 0x6B :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 1: %s", moves[getEggMove(pkmn, 0)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 1: #%d - %s", getEggMove(pkmn, 0), moves[getEggMove(pkmn, 0)]);
 			break;
 		case 0x6C :
 		case 0x6D :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 2: %s", moves[getEggMove(pkmn, 1)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 2: #%d - %s", getEggMove(pkmn, 1), moves[getEggMove(pkmn, 1)]);
 			break;
 		case 0x6E :
 		case 0x6F :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 3: %s", moves[getEggMove(pkmn, 2)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 3: #%d - %s", getEggMove(pkmn, 2), moves[getEggMove(pkmn, 2)]);
 			break;
 		case 0x70 :
 		case 0x71 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 4: %s", moves[getEggMove(pkmn, 3)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 4: #%d - %s", getEggMove(pkmn, 3), moves[getEggMove(pkmn, 3)]);
 			break;
 		case 0x78 :
 		case 0x79 :

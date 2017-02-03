@@ -1343,45 +1343,18 @@ bool getRibbons(u8* pkmn, int ribcat, int ribnumber) {
 	return (pkmn[0x30 + ribcat] & (1 << ribnumber)) == 1 << ribnumber;
 }
 
-void parseHexEditor(u8* pkmn, int game, int byteEntry) {
-	int maxItemID = (game < 2) ? 717 : ((game < 4) ? 775 : 920);
-	int maxMoveID = (game < 2) ? 617 : ((game < 4) ? 621 : 720);
-	
-	if (byteEntry == 0x08 || byteEntry == 0x09)
-		checkMaxValue(pkmn, byteEntry, getPokedexNumber(pkmn), (game < 4) ? 721 : 802);
-	else if (byteEntry == 0x0A || byteEntry == 0x0B)							
-		checkMaxValue(pkmn, byteEntry, getItem(pkmn), maxItemID);
-	else if (byteEntry == 0x1C)
-		checkMaxValue(pkmn, byteEntry, getNature(pkmn), 25);
-	else if (byteEntry == 0x1E || byteEntry == 0x1F || byteEntry == 0x20 || byteEntry == 0x21 || byteEntry == 0x22 || byteEntry == 0x23) {
+void parseHexEditor(u8* pkmn, int game, int byteEntry) {	
+	if (byteEntry == 0x1E || byteEntry == 0x1F || byteEntry == 0x20 || byteEntry == 0x21 || byteEntry == 0x22 || byteEntry == 0x23) {
 		int tot = 0;
 		for (int i = 0; i < 6; i++)
 			tot += getEV(pkmn, i);
 		if (tot < 510)
 			pkmn[byteEntry]++;
 	}
-	else if (byteEntry == 0x5A || byteEntry == 0x5B)
-		checkMaxValue(pkmn, byteEntry, getMove(pkmn, 0), maxMoveID);
-	else if (byteEntry == 0x5C || byteEntry == 0x5D)
-		checkMaxValue(pkmn, byteEntry, getMove(pkmn, 1), maxMoveID);
-	else if (byteEntry == 0x5E || byteEntry == 0x5F)
-		checkMaxValue(pkmn, byteEntry, getMove(pkmn, 2), maxMoveID);
-	else if (byteEntry == 0x60 || byteEntry == 0x61)
-		checkMaxValue(pkmn, byteEntry, getMove(pkmn, 3), maxMoveID);
 	else if (byteEntry == 0x62 || byteEntry == 0x63 || byteEntry == 0x64 || byteEntry == 0x65)
-		checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 40);
+		checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 39);
 	else if (byteEntry == 0x66 || byteEntry == 0x67 || byteEntry == 0x68 || byteEntry == 0x69)
-		checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 4);
-	else if (byteEntry == 0x6A || byteEntry == 0x6B)
-		checkMaxValue(pkmn, byteEntry, getEggMove(pkmn, 0), maxMoveID);
-	else if (byteEntry == 0x6C || byteEntry == 0x6D)
-		checkMaxValue(pkmn, byteEntry, getEggMove(pkmn, 1), maxMoveID);
-	else if (byteEntry == 0x6E || byteEntry == 0x6F)
-		checkMaxValue(pkmn, byteEntry, getEggMove(pkmn, 2), maxMoveID);
-	else if (byteEntry == 0x70 || byteEntry == 0x71)
-		checkMaxValue(pkmn, byteEntry, getEggMove(pkmn, 3), maxMoveID);
-	else if (byteEntry == 0xDC)
-		checkMaxValue(pkmn, byteEntry, getBall(pkmn), (game < 4) ? 25 : 26);
+		checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 2);
 	else
 		pkmn[byteEntry]++;	
 }
@@ -1640,9 +1613,11 @@ void pokemonEditor(u8* mainbuf, int game) {
 												byteEntry += 16;
 
 										if (sector[byteEntry][0] && sector[byteEntry][1]) {
-											for (int i = 0; i < 8; i++) {
-												if ((hidKeysDown() & KEY_TOUCH) && touch.px > 163 && touch.px < 176 && touch.py > 70 + i*15 && touch.py < 83 + i*15)
-													setRibbons(pkmn, byteEntry - 0x30, i, !getRibbons(pkmn, byteEntry - 0x30, i));
+											if (byteEntry == 0x30 || byteEntry == 0x31 || byteEntry == 0x32 || byteEntry == 0x33 || byteEntry == 0x34 || byteEntry == 0x35) {
+												for (int i = 0; i < 8; i++) {
+													if ((hidKeysDown() & KEY_TOUCH) && touch.px > 90 && touch.px < 103 && touch.py > 70 + i*17 && touch.py < 83 + i*17)
+														setRibbons(pkmn, byteEntry - 0x30, i, !getRibbons(pkmn, byteEntry - 0x30, i));
+												}
 											}
 										}
 										

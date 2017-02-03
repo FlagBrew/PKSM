@@ -258,7 +258,7 @@ void fillSectors(bool sector[][2]) {
 	for (int j = 0x1E; j <= 0x29; j++) // EV_HP to Contest Value Sheen
 		sector[j][0] = true;
 		
-	for (int j = 0x5A; j <= 0x71; j++) // Move 1 to Relearn Move 4
+	for (int j = 0x62; j <= 0x69; j++) // Move 1 PP to Move 4 PP Up
 		sector[j][0] = true;
 
 	for (int j = 0x78; j <= 0x8F; j++) // Held Trainer Name

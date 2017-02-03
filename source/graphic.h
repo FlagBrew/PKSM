@@ -31,7 +31,8 @@ Copyright (C) 2016 Bernardo Giordano
 #define MASKBLACK RGBA8(  0,   0,   0, 180)
 
 #define BLACK RGBA8(0, 0, 0, 255)
-#define GREEN RGBA8(0, 255, 0, 255)
+#define BUTTONGREEN RGBA8(116, 222, 126, 255)
+#define BUTTONRED RGBA8(228, 109, 117, 255)
 #define SHINYRED RGBA8(255, 17, 17, 255)
 #define WHITE RGBA8(255, 255, 255, 255)
 #define DS RGBA8(48, 48, 48, 255)
