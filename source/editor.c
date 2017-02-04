@@ -1607,7 +1607,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 												fillSectorsHaxMode(sector);
 											else
 												fillSectors(sector);
-											hax = ~hax;
+											hax = (hax) ? false : true;
 											for (int i = 0; i < 4; i++) pattern[i] = false;
 										}
 										

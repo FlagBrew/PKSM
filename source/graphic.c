@@ -1144,8 +1144,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 			infoViewer(pkmn, game);
 		
 		if (mode == ED_OTA) {
-			sf2d_draw_rectangle(0, 0, 400, 240, MASKBLACK);
-			sf2d_draw_rectangle(0, 0, 400, 240, MASKBLACK);
+			sf2d_draw_rectangle(0, 0, 400, 240, RGBA8(0, 0, 0, 60));
 			sftd_draw_text(fontBold15, (400 - sftd_get_text_width(fontBold15, 15, "Launch the client on your PC...")) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, "Launch the client on your PC...");
 			sftd_draw_text(fontBold12, (400 - sftd_get_text_width(fontBold12, 12, "Press B to exit.")) / 2, 130, WHITE, 12, "Press B to exit.");
 		}
@@ -1363,6 +1362,8 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 		}
 	} else if (mode == ED_HEX) {
 		sf2d_draw_texture(hexBG, 0, 0);
+		if (hax)
+			sf2d_draw_rectangle(0, 0, 400, 240, RGBA8(255, 0, 0, 100));
 		for (int rows = 0; rows < 15; rows++) {
 			for (int columns = 0; columns < 16; columns++) {
 				int byte = rows*16 + columns;
@@ -1505,6 +1506,8 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 		}
 		if (mode == ED_HEX) {
 			sf2d_draw_texture(mainMenuBottom, 0, 0);
+			if (hax)
+				sf2d_draw_rectangle(0, 0, 320, 240, RGBA8(255, 0, 0, 100));
 			sftd_draw_textf(fontBold14, 50, 30, LIGHTBLUE, 14, "Selected byte:");
 			sf2d_draw_texture(blueTextBox, 165, 28);
 			sftd_draw_textf(fontBold14, 171, 30, WHITE, 14, "0x%02hhX", additional1);
