@@ -2257,10 +2257,9 @@ void pokemonEditor(u8* mainbuf, int game) {
 							break;
 						}
 						case 2 : {
-							if (isTeam) {
-								infoDisp("You can't release a team member!");
+							if (isTeam)
 								break;
-							}
+
 							memset(pkmn, 0, PKMNLENGTH);
 							setPkmn(mainbuf, box, currentEntry, pkmn, game);
 							infoDisp("Changes applied!");
@@ -2340,8 +2339,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 									
 									printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_GENERATE, speedy, genEntry, page);
 								}
-							} else
-								infoDisp("Can't generate in party!");
+							}
 							break;
 						}
 					}

@@ -1217,9 +1217,11 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 			sftd_draw_textf(fontBold11, 8, 220, WHITE, 11, "%s has been selected.", (char*)personal.species[getPokedexNumber(tmp)]);
 			for (int i = 0; i < 5; i++) {
 				sf2d_draw_texture(button, 208, 42 + i * 27);
+				if (isTeam && (i == 0 || i == 2 || i == 3))
+					sf2d_draw_texture_blend(button, 208, 42 + i * 27, RGBA8(0, 0, 0, 100));
+				sftd_draw_text(fontBold12, 208 + (109 - sftd_get_text_width(fontBold12, 12, menuEntries[i])) / 2, 49 + i * 27, BLACK, 12, menuEntries[i]);
 				if (i == menuEntry)
 					sf2d_draw_texture(subArrow, 203 - movementOffsetSlow(3), 46 + i * 27);
-				sftd_draw_text(fontBold12, 208 + (109 - sftd_get_text_width(fontBold12, 12, menuEntries[i])) / 2, 49 + i * 27, BLACK, 12, menuEntries[i]);
 			}
 		} else if (mode == ED_GENERATE) {
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
@@ -1543,7 +1545,7 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 	sf2d_swapbuffers();
 }
 
-void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEntry, int saveBox, int bankBox, bool isBufferized, bool isSeen) {
+void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEntry, int saveBox, int bankBox, bool isBufferized, bool isSeen, bool speedy) {
 	int x, y;
 	int pointer[2] = {0, 0};
 	char* page = (char*)malloc(10 * sizeof(char));
@@ -1685,6 +1687,8 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 		
 		if (isSeen)
 			sf2d_draw_rectangle(0, -30, 320, 240, MASKBLACK);
+		
+		sftd_draw_textf(fontBold9, 45, 220, WHITE, 9, "You can switch speed touching here: %s", speedy ? "FAST" : "SLOW");
 	sf2d_end_frame();
 	sf2d_swapbuffers();
 	
