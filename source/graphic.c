@@ -2067,5 +2067,23 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0xD0 :
 			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Original Trainer Feeling: %d", pkmn[byte]);
 			break;
+		case 0xD1 :
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Egg Year: %d", 2000 + pkmn[byte]);
+			break;
+		case 0xD2 :
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Egg Month: %d", pkmn[byte]);
+			break;
+		case 0xD3 :
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Egg Day: %d", pkmn[byte]);
+			break;
+		case 0xD4 :
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Met Year: %d", 2000 + pkmn[byte]);
+			break;
+		case 0xD5 :
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Met Month: %d", pkmn[byte]);
+			break;
+		case 0xD6 :
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Met Day: %d", pkmn[byte]);
+			break;
 	}
 }

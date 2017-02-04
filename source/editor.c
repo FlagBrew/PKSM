@@ -1356,6 +1356,10 @@ void parseHexEditor(u8* pkmn, int game, int byteEntry) {
 			checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 39);
 		else if (byteEntry == 0x66 || byteEntry == 0x67 || byteEntry == 0x68 || byteEntry == 0x69)
 			checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 2);
+		else if (byteEntry == 0xD2 || byteEntry == 0xD5) // month
+			checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 11);
+		else if (byteEntry == 0xD3 || byteEntry == 0xD6) // day; yes, this is shitty as fuck
+			checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 30);
 		else
 			pkmn[byteEntry]++;
 	} else
