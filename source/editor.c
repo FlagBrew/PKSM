@@ -1344,19 +1344,22 @@ bool getRibbons(u8* pkmn, int ribcat, int ribnumber) {
 }
 
 void parseHexEditor(u8* pkmn, int game, int byteEntry) {	
-	if (byteEntry == 0x1E || byteEntry == 0x1F || byteEntry == 0x20 || byteEntry == 0x21 || byteEntry == 0x22 || byteEntry == 0x23) {
-		int tot = 0;
-		for (int i = 0; i < 6; i++)
-			tot += getEV(pkmn, i);
-		if (tot < 510)
+	if (!hax) {
+		if (byteEntry == 0x1E || byteEntry == 0x1F || byteEntry == 0x20 || byteEntry == 0x21 || byteEntry == 0x22 || byteEntry == 0x23) {
+			int tot = 0;
+			for (int i = 0; i < 6; i++)
+				tot += getEV(pkmn, i);
+			if (tot < 510)
+				pkmn[byteEntry]++;
+		}
+		else if (byteEntry == 0x62 || byteEntry == 0x63 || byteEntry == 0x64 || byteEntry == 0x65)
+			checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 39);
+		else if (byteEntry == 0x66 || byteEntry == 0x67 || byteEntry == 0x68 || byteEntry == 0x69)
+			checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 2);
+		else
 			pkmn[byteEntry]++;
-	}
-	else if (byteEntry == 0x62 || byteEntry == 0x63 || byteEntry == 0x64 || byteEntry == 0x65)
-		checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 39);
-	else if (byteEntry == 0x66 || byteEntry == 0x67 || byteEntry == 0x68 || byteEntry == 0x69)
-		checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 2);
-	else
-		pkmn[byteEntry]++;	
+	} else
+		pkmn[byteEntry]++;
 }
 
 void pokemonEditor(u8* mainbuf, int game) {
@@ -1582,10 +1585,27 @@ void pokemonEditor(u8* mainbuf, int game) {
 								if ((hidKeysDown() & KEY_TOUCH) && touch.px > 290 && touch.px < 320 && touch.py > 0 && touch.py < 24)  {
 									fillSectors(sector);
 									fillDescriptions(descriptions);
+									hax = false;
 									
 									while(aptMainLoop()) {
 										hidScanInput();
 										hidTouchRead(&touch);
+										
+										if (hidKeysDown() & KEY_TOUCH) {
+											if (touch.px > 0 && touch.px < 20 && touch.py > 0 && touch.py < 20) pattern[0] = true;
+											if (touch.px > 300 && touch.px < 320 && touch.py > 0 && touch.py < 20) pattern[1] = true;
+											if (touch.px > 0 && touch.px < 20 && touch.py > 220 && touch.py < 240) pattern[2] = true;
+											if (touch.px > 300 && touch.px < 320 && touch.py > 220 && touch.py < 240) pattern[3] = true;
+										}
+										
+										if (pattern[0] && pattern[1] && pattern[2] && pattern[3]) {
+											if (!hax)
+												fillSectorsHaxMode(sector);
+											else
+												fillSectors(sector);
+											hax = ~hax;
+											for (int i = 0; i < 4; i++) pattern[i] = false;
+										}
 										
 										if (hidKeysDown() & KEY_B)
 											break;

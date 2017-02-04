@@ -1775,11 +1775,11 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 	switch (byte) {
 		case 0x08 :
 		case 0x09 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Species: #%d - %s", getPokedexNumber(pkmn), personal.species[getPokedexNumber(pkmn)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Species: #%d - %s", getPokedexNumber(pkmn), (getPokedexNumber(pkmn) < 821) ? (char*)personal.species[getPokedexNumber(pkmn)] : "WARNING");
 			break;
 		case 0x0A :
 		case 0x0B :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Held Item: #%d - %s", getItem(pkmn), items[getItem(pkmn)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Held Item: #%d - %s", getItem(pkmn), (getItem(pkmn) < 919) ? items[getItem(pkmn)] : "WARNING");
 			break;
 		case 0x0C :
 		case 0x0D :
@@ -1790,10 +1790,10 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "SID: %d", getSOTID(pkmn));
 			break;
 		case 0x14 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Ability: %s", abilities[getAbility(pkmn)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Ability: %s", (getAbility(pkmn) < 210) ? abilities[getAbility(pkmn)] : "WARNING");
 			break;
 		case 0x1C :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Nature: %s", natures[getNature(pkmn)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Nature: %s", (getNature(pkmn) < 24) ? natures[getNature(pkmn)] : "WARNING");
 			break;
 		case 0x1E : 
 			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "HP EV: %d", pkmn[byte]);
@@ -1917,19 +1917,19 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			break;
 		case 0x5A :
 		case 0x5B :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 1: #%d - %s", getMove(pkmn, 0), moves[getMove(pkmn, 0)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 1: #%d - %s", getMove(pkmn, 0), (getMove(pkmn, 0) < 719) ? moves[getMove(pkmn, 0)] : "WARNING");
 			break;
 		case 0x5C :
 		case 0x5D :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 2: #%d - %s", getMove(pkmn, 1), moves[getMove(pkmn, 1)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 2: #%d - %s", getMove(pkmn, 1), (getMove(pkmn, 1) < 719) ? moves[getMove(pkmn, 1)] : "WARNING");
 			break;
 		case 0x5E :
 		case 0x5F :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 3: #%d - %s", getMove(pkmn, 2), moves[getMove(pkmn, 2)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 3: #%d - %s", getMove(pkmn, 2), (getMove(pkmn, 2) < 719) ? moves[getMove(pkmn, 2)] : "WARNING");
 			break;
 		case 0x60 :
 		case 0x61 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 4: #%d - %s", getMove(pkmn, 3), moves[getMove(pkmn, 3)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 4: #%d - %s", getMove(pkmn, 3), (getMove(pkmn, 3) < 719) ? moves[getMove(pkmn, 3)] : "WARNING");
 			break;
 		case 0x62 :
 			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 1 PP: %d", pkmn[byte]);
@@ -1957,19 +1957,19 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			break;
 		case 0x6A :
 		case 0x6B :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 1: #%d - %s", getEggMove(pkmn, 0), moves[getEggMove(pkmn, 0)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 1: #%d - %s", getEggMove(pkmn, 0), (getEggMove(pkmn, 0) < 719) ? moves[getEggMove(pkmn, 0)] : "WARNING");
 			break;
 		case 0x6C :
 		case 0x6D :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 2: #%d - %s", getEggMove(pkmn, 1), moves[getEggMove(pkmn, 1)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 2: #%d - %s", getEggMove(pkmn, 1), (getEggMove(pkmn, 1) < 719) ? moves[getEggMove(pkmn, 1)] : "WARNING");
 			break;
 		case 0x6E :
 		case 0x6F :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 3: #%d - %s", getEggMove(pkmn, 2), moves[getEggMove(pkmn, 2)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 3: #%d - %s", getEggMove(pkmn, 2), (getEggMove(pkmn, 2) < 719) ? moves[getEggMove(pkmn, 2)] : "WARNING");
 			break;
 		case 0x70 :
 		case 0x71 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 4: #%d - %s", getEggMove(pkmn, 3), moves[getEggMove(pkmn, 3)]);
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 4: #%d - %s", getEggMove(pkmn, 3), (getEggMove(pkmn, 3) < 719) ? moves[getEggMove(pkmn, 3)] : "WARNING");
 			break;
 		case 0x78 :
 		case 0x79 :

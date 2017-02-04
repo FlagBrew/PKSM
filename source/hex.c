@@ -279,3 +279,26 @@ void fillSectors(bool sector[][2]) {
 	for (int j = 0xD0; j <= 0xD6; j++) // OT_Feeling to Met Day
 		sector[j][0] = true;
 }
+
+void fillSectorsHaxMode(bool sector[][2]) {
+	for (int j = 0; j < PKMNLENGTH; j++) {
+		sector[j][0] = true;
+		sector[j][1] = false;
+	}
+	
+	for (int j = 0x08; j <= 0x0B; j++)
+		sector[j][0] = false;
+		
+	sector[0x14][0] = false;
+	sector[0x1C][0] = false;
+	sector[0xDC][0] = false;
+	
+	for (int j = 0x5A; j <= 0x61; j++) 
+		sector[j][0] = false;
+	
+	for (int j = 0x6A; j <= 0x71; j++)
+		sector[j][0] = false;
+		
+	for (int j = 0x30; j <= 0x36; j++)
+		sector[j][1] = true;
+}
