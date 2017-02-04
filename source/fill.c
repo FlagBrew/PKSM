@@ -70,6 +70,7 @@ void filldatabase6(char *database[], int spriteArray[]) {
 	database[158] = "0158 - Masterball"; spriteArray[158] = 0;
 	database[518] = "0518 - Heracronite"; spriteArray[518] = 0;
 	database[527] = "0527 - 100 Potions"; spriteArray[527] = 0;
+	database[599] = "0599 - Bottle Caps"; spriteArray[599] = 0;
 	database[1022] = "1022 - 100 Potions"; spriteArray[1022] = 0;
 	database[1057] = "1057 - 50 Quick Balls"; spriteArray[1057] = 0;
 	database[1502] = "1502 - Quickballs"; spriteArray[1502] = 0;
