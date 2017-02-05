@@ -1010,13 +1010,7 @@ void setOT(u8* pkmn, char* nick) {
 }
 
 void setHT(u8* pkmn, char* nick) {
-    u8 toinsert[NICKNAMELENGTH];
-	memset(toinsert, 0, NICKNAMELENGTH);
-
-    for (u16 i = 0, nicklen = strlen(nick); i < nicklen; i++)
-        toinsert[i * 2] = *(nick + i);
-
-    memcpy(&pkmn[0x78], toinsert, NICKNAMELENGTH);
+    memcpy(&pkmn[0x78], nick, NICKNAMELENGTH);
 }
 
 void setHTGender(u8* pkmn, const u8 gender) {
