@@ -27,7 +27,7 @@ Copyright (C) 2016 Bernardo Giordano
 
 void clearMarkings(u8* pkmn) {
 	u8 version = pkmn[0xDF];
-	if (!(version == 30 || version == 31)) { // not SM
+	if (!(version == 30 || version == 31) && !(version >= 35 && version <= 41)) { // not SM
 		pkmn[0x2A] = 0;
 		pkmn[0x72] &= 0xFC;
 		pkmn[0xDE] = 0;
@@ -50,7 +50,7 @@ void clearMarkings(u8* pkmn) {
 
 bool areMarksZero(u8* pkmn) {
 	u8 version = pkmn[0xDF];
-	if (!(version == 30 || version == 31)) { // SM
+	if (!(version == 30 || version == 31) && !(version >= 35 && version <= 41)) {
 		if (pkmn[0x2A])
 			return false;
 		if (pkmn[0xDE])
