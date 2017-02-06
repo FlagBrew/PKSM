@@ -1607,7 +1607,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 				
 				u32 ot_name[NICKNAMELENGTH*2];
 				memset(ot_name, 0, NICKNAMELENGTH*2);
-				getNickname(pkmn, ot_name);
+				getOT(pkmn, ot_name);
 				sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, 273, 146, WHITE, 12, (wchar_t*)ot_name);
 
 				char* otid = (char*)malloc(12 * sizeof(char));

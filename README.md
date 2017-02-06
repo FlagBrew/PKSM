@@ -24,7 +24,6 @@ You can use servepkx to inject things from your PC to PKSM directly. Use your fa
 
 | Downloads | Links |
 | :-------: | :---: |
-
 | **Java** | [Usage](https://github.com/BernardoGiordano/PKSM/tree/master/servepkx/java) |
 | **Python** | [Usage](https://github.com/BernardoGiordano/PKSM/tree/master/servepkx/python) |
 
