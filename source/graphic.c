@@ -1232,7 +1232,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 			if (mode == ED_STANDARD)
 				sftd_draw_textf(fontBold9, 16, 220, WHITE, 9, "TID: %u / SID: %u / TSV: %u", getSaveTID(mainbuf, game), getSaveSID(mainbuf, game), getSaveTSV(mainbuf, game));	
 			else
-				sftd_draw_textf(fontBold9, 16, 220, WHITE, 9, "Seed: %lx %lx %lx %lx", getSaveSeed(mainbuf, game, 3), getSaveSeed(mainbuf, game, 2), getSaveSeed(mainbuf, game, 1), getSaveSeed(mainbuf, game, 0));	
+				sftd_draw_textf(fontBold9, 16, 220, WHITE, 9, "Seed: %lX %lX %lX %lX", getSaveSeed(mainbuf, game, 3), getSaveSeed(mainbuf, game, 2), getSaveSeed(mainbuf, game, 1), getSaveSeed(mainbuf, game, 0));	
 		}
 	sf2d_end_frame();
 	sf2d_swapbuffers();
