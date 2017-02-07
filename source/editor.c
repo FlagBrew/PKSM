@@ -1168,10 +1168,6 @@ void setLanguage(u8* mainbuf, int game, int i) {
 	memcpy(&mainbuf[(game < 4) ? 0x1402D : 0x1235], &langValues[i], sizeof(u8));
 }
 
-void setMoney(u8* mainbuf, int game, u32 money) {
-	memcpy(&mainbuf[(game < 4) ? 0x4208 : 0x4004], &money, sizeof(u32));
-}
-
 void setItem(u8* mainbuf, int type, int game) {
 	if (game == GAME_OR || game == GAME_AS) {
 		char* paths[] = {"romfs:/misc/oras/base.bin", "romfs:/misc/oras/heals.bin", "romfs:/misc/oras/berries.bin"};
@@ -1183,29 +1179,6 @@ void setItem(u8* mainbuf, int type, int game) {
 		injectFromFile(mainbuf, paths[type], offset[type]);
 	} else if (game == GAME_SUN || game == GAME_MOON) {
 
-	}
-}
-
-void setBP(u8* mainbuf, int i, int game) {
-	const u32 offset[] = {0x423C, 0x423D, 0x4230, 0x4231, 0x411C, 0x411D};
-	int type = 0;
-
-	if (game == GAME_OR || game == GAME_AS)
-		type = 2;
-	else if (game == GAME_SUN || game == GAME_MOON)
-		type = 4;
-
-	switch (i) {
-		case 0 : {
-			*(mainbuf + offset[type])     = 0x00;
-			*(mainbuf + offset[type + 1]) = 0x00;
-			break;
-		}
-		case 9999 : {
-			*(mainbuf + offset[type])     = 0x0F;
-			*(mainbuf + offset[type + 1]) = 0x27;
-			break;
-		}
 	}
 }
 
