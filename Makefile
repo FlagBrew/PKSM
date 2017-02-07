@@ -16,7 +16,7 @@ NAME := PKSM
 BUILD_DIR := build
 OUTPUT_DIR := output
 INCLUDE_DIRS := 
-SOURCE_DIRS := source
+SOURCE_DIRS := source/memecrypto/source source
 
 EXTRA_OUTPUT_FILES :=
 

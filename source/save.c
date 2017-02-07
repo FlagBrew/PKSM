@@ -22,7 +22,7 @@ Copyright (C) 2016 Bernardo Giordano
 #include "graphic.h"
 #include "editor.h"
 #include "util.h"
-#include "memecrypto.h"
+#include "memecrypto/source/memecrypto.h"
 #include "save.h"
 
 u16 crc16[] = {
@@ -320,4 +320,22 @@ void rewriteCHK4(u8 *mainbuf, int game, int GBO, int SBO) {
 	memcpy(mainbuf + SBO + storage[2], &cs, 2);
 
 	free(tmp);
+}
+
+void resign(u8 *mainbuf) {
+	u8 CurSig[0x80];
+	memcpy(CurSig, &mainbuf[0x6BB00], 0x80);
+
+	u8 ChecksumTable[0x140];
+	memcpy(ChecksumTable, &mainbuf[0x6BC00], 0x140);
+	
+	u8 Hash[SHA256_BLOCK_SIZE];
+	sha256(Hash, ChecksumTable, 0x140);
+	
+	u8 DecSig[0x80];
+	reverseCrypt(CurSig, DecSig);
+	memcpy(DecSig, Hash, SHA256_BLOCK_SIZE);
+	
+	int k = memecrypto_sign(DecSig, CurSig, 0x80);
+	memcpy(&mainbuf[0x6BB00], CurSig, 0x80);
 }

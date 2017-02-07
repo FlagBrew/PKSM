@@ -30,3 +30,4 @@ u32 BWCHKOff(u32 i, int game);
 u32 BWCHKMirr(u32 i, int game);
 void rewriteCHK(u8 *mainbuf, int game);
 void rewriteCHK4(u8 *mainbuf, int game, int GBO, int SBO);
+void resign(u8 *mainbuf);
