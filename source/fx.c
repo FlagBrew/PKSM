@@ -29,6 +29,9 @@ bool vanish = true;
 bool up = true;
 
 int x[11] = {0, 50, 186, 200, 484, 660, 10, 572, 128, 272, 360};
+u16 sprites_n[5] = {1, 101, 201, 401, 801};
+int sprites_x[5] = {20, 120, 180, 240, 360};
+int sprites_y[5] = {20, 50, 100, 150, 210};
 float rad = 0.0f;
 
 void FXElementsInit() {
@@ -89,6 +92,16 @@ void animateBG(bool isUp) {
 	
 	for (int i = 1; i < 11; i++)
 		x[i] = (x[i] >= maxrange * 2 + 45) ? (x[i] - (181 + maxrange * 2) - (rand() % 100)) : (x[i] + 1);
+	
+	for (int i = 0; i < 5; i++) {
+		if (sprites_x[i] >= maxrange * 2 + 40) {
+			sprites_x[i] = sprites_x[i] - (60 + maxrange * 2) - (rand() % 40);
+			sprites_n[i] = rand() % 802 + 1;
+			sprites_y[i] = rand() % 210;
+		} else
+			sprites_x[i] += 1;
+		printElementFX(sprites_n[i], sprites_x[i], sprites_y[i]);
+	}
 	
 	rad = (rad >= 360) ? 0.0f : (rad + 0.005f);
 }

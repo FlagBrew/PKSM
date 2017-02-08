@@ -981,6 +981,11 @@ u16 getAlternativeSprite(u8* pkmn, int game) {
 	return 0;
 }
 
+void printElementFX(u16 n, int x, int y) {
+	sf2d_draw_texture_part(spritesSmall, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30);
+	sf2d_draw_texture_part_blend(spritesSmall, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30, RGBA8(0, 0, 0, 100));
+}
+
 void printElement(u8* mainbuf, u8* pkmn, int game, u16 n, int x, int y) {
 	if (!areMarksZero(pkmn) && (game == GAME_SUN || game == GAME_MOON))
 		printElementBlend(pkmn, game, n, x, y, SHINYRED);
@@ -1140,7 +1145,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 			infoViewer(pkmn, game);
 		
 		if (mode == ED_OTA) {
-			sf2d_draw_rectangle(0, 0, 400, 240, RGBA8(0, 0, 0, 60));
+			sf2d_draw_rectangle(0, 0, 400, 240, RGBA8(0, 0, 0, 220));
 			sftd_draw_text(fontBold15, (400 - sftd_get_text_width(fontBold15, 15, "Launch the client on your PC...")) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, "Launch the client on your PC...");
 			sftd_draw_text(fontBold12, (400 - sftd_get_text_width(fontBold12, 12, "Press B to exit.")) / 2, 130, WHITE, 12, "Press B to exit.");
 		}

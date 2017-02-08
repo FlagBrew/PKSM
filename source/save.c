@@ -337,6 +337,6 @@ void resign(u8 *mainbuf) {
 	reverseCrypt(CurSig, DecSig);
 	memcpy(DecSig, Hash, SHA256_BLOCK_SIZE);
 	
-	int k = memecrypto_sign(DecSig, CurSig, 0x80);
+	memecrypto_sign(DecSig, CurSig, 0x80);
 	memcpy(&mainbuf[0x6BB00], CurSig, 0x80);
 }
