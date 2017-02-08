@@ -943,10 +943,6 @@ void printEditor(u8* mainbuf, int game, int currentEntry, int langCont) {
 					sftd_draw_text(fontBold12, x + (36 - sftd_get_text_width(fontBold12, 12, languages[langCont])) / 2, y + 10, YELLOW, 12, languages[langCont]);
 					break;
 				}
-				case 1 : { sftd_draw_text(fontBold12, 18 + (182 - sftd_get_text_width(fontBold12, 12, "Set Heals to max")) / 2, y + 10, (i == currentEntry) ? DARKBLUE : YELLOW, 12, "Set Heals to max"); break; }
-				case 2 : { sftd_draw_text(fontBold12, 18 + (182 - sftd_get_text_width(fontBold12, 12, "Set Items to max")) / 2, y + 10, (i == currentEntry) ? DARKBLUE : YELLOW, 12, "Set Items to max"); break; }
-				case 3 : { sftd_draw_text(fontBold12, 18 + (182 - sftd_get_text_width(fontBold12, 12, "Set Berries to max")) / 2, y + 10, (i == currentEntry) ? DARKBLUE : YELLOW, 12, "Set Berries to max"); break; }
-				case 4 : { sftd_draw_text(fontBold12, 18 + (182 - sftd_get_text_width(fontBold12, 12, "Set all TMs")) / 2, y + 10, (i == currentEntry) ? DARKBLUE : YELLOW, 12, "Set all TMs"); break; }
 			}
 			y += 37;
 		}

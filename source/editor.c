@@ -1173,31 +1173,8 @@ void setLanguage(u8* mainbuf, int game, int i) {
 	memcpy(&mainbuf[(game < 4) ? 0x1402D : 0x1235], &langValues[i], sizeof(u8));
 }
 
-void setItem(u8* mainbuf, int type, int game) {
-	if (game == GAME_OR || game == GAME_AS) {
-		char* paths[] = {"romfs:/misc/oras/base.bin", "romfs:/misc/oras/heals.bin", "romfs:/misc/oras/berries.bin"};
-		u32 offset[] = { 0x400, 0xD72, 0xE70 };
-		injectFromFile(mainbuf, paths[type], offset[type]);
-	} else if (game == GAME_X || game == GAME_Y) {
-		char* paths[] = {"romfs:/misc/xy/base.bin", "romfs:/misc/xy/heals.bin", "romfs:/misc/xy/berries.bin"};
-		u32 offset[] = { 0x400, 0xD6A, 0xE68 };
-		injectFromFile(mainbuf, paths[type], offset[type]);
-	} else if (game == GAME_SUN || game == GAME_MOON) {
-
-	}
-}
-
 void setPokerus(u8* pkmn) {
 	*(pkmn + 0x2B) = 0x11;
-}
-
-void setTM(u8* mainbuf, int game) {
-	if (game == GAME_OR || game == GAME_AS)
-		injectFromFile(mainbuf, "romfs:/misc/oras/tm.bin", 0xBC0);
-	else if (game == GAME_X || game == GAME_Y)
-		injectFromFile(mainbuf, "romfs:/misc/xy/tm.bin", 0xBC0);
-	else if (game == GAME_SUN || game == GAME_MOON)
-		injectFromFile(mainbuf, "romfs:/misc/sm/tm.bin", 0x0);
 }
 
 void saveFileEditor(u8* mainbuf, int game) {
@@ -1250,38 +1227,6 @@ void saveFileEditor(u8* mainbuf, int game) {
 				case 0 : {
 					setLanguage(mainbuf, game, langCont);
 					infoDisp("Language set successfully!");
-					break;
-				}
-				case 1 : {
-					if (game < 4) {
-						setItem(mainbuf, 1, game);
-						infoDisp("Heals injected successfully!");
-					} else
-						infoDisp("Not currently available for SM");
-					break;
-				}
-				case 2 : {
-					if (game < 4) {
-						setItem(mainbuf, 0, game);
-						infoDisp("Items injected successfully!");
-					} else
-						infoDisp("Not currently available for SM");
-					break;
-				}
-				case 3 : {
-					if (game < 4) {
-						setItem(mainbuf, 2, game);
-						infoDisp("Berries set successfully!");
-					} else
-						infoDisp("Not currently available for SM");
-					break;
-				}
-				case 4 : {
-					if (game < 4) {
-						setTM(mainbuf, game);
-						infoDisp("TMs set successfully!");
-					} else
-						infoDisp("Not currently available for SM");
 					break;
 				}
 				case 5 : {
