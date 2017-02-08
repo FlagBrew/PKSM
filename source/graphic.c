@@ -29,6 +29,8 @@ Copyright (C) 2016 Bernardo Giordano
 #include "http.h"
 #include "hex.h"
 
+#define DEBUG 1
+
 int lookup[] = {0x0, 0x1, 0x2, 0x4, 0x5, 0x3};
 
 sftd_font *unicodeJPN12, *unicodeKOR12, *fontBold18, *fontBold15, *fontBold14, *fontBold12, *fontBold11, *fontBold9, *fontFixed; 
@@ -270,6 +272,18 @@ void init_font_cache() {
 	sftd_draw_text(fontFixed, 0, 0, RGBA8(0, 0, 0, 0), 10, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
 }
 
+void drawFPSDebug() {
+	sf2d_draw_rectangle(10, 10, 105, 20, RGBA8(0, 0, 0, 200));
+	sftd_draw_textf(fontBold12, 12, 12, WHITE, 12, "FPS: %2.6f", sf2d_get_fps());
+}
+
+void pksm_end_frame() {
+	#if DEBUG
+		drawFPSDebug();
+	#endif
+	sf2d_end_frame();
+}
+
 void infoDisp(char* message) {
 	while (aptMainLoop()) {
 		hidScanInput();
@@ -280,11 +294,11 @@ void infoDisp(char* message) {
 			sf2d_draw_texture(warningTop, 0, 0);
 			sftd_draw_text(fontBold15, (400 - sftd_get_text_width(fontBold15, 15, message)) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, message);
 			sftd_draw_text(fontBold12, (400 - sftd_get_text_width(fontBold12, 12, "Press A to continue.")) / 2, 130, WHITE, 12, "Press A to continue.");
-		sf2d_end_frame();
+		pksm_end_frame();
 		
 		sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 			sf2d_draw_texture(warningBottom, 0, 0);
-		sf2d_end_frame();
+		pksm_end_frame();
 		sf2d_swapbuffers();
 	}
 }
@@ -300,11 +314,11 @@ int confirmDisp(char* message) {
 			sf2d_draw_texture(warningTop, 0, 0);
 			sftd_draw_text(fontBold15, (400 - sftd_get_text_width(fontBold15, 15, message)) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, message);
 			sftd_draw_text(fontBold12, (400 - sftd_get_text_width(fontBold12, 12, "Press A to continue, B to cancel.")) / 2, 130, WHITE, 12, "Press A to continue, B to cancel.");
-		sf2d_end_frame();
+		pksm_end_frame();
 		
 		sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 			sf2d_draw_texture(warningBottom, 0, 0);
-		sf2d_end_frame();
+		pksm_end_frame();
 		sf2d_swapbuffers();
 	}
 	return 0;
@@ -315,11 +329,11 @@ void freezeMsg(char* message) {
 		sf2d_draw_texture(warningTop, 0, 0);
 		sftd_draw_text(fontBold15, (400 - sftd_get_text_width(fontBold15, 15, message)) / 2, 95, WHITE, 15, message);
 		sftd_draw_text(fontBold12, (400 - sftd_get_text_width(fontBold12, 12, "Please wait.")) / 2, 130, WHITE, 12, "Please wait.");
-	sf2d_end_frame();
+	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(warningBottom, 0, 0);
-	sf2d_end_frame();
+	pksm_end_frame();
 	sf2d_swapbuffers();
 }
 
@@ -331,11 +345,11 @@ void progressBar(char* message, u32 current, u32 sz) {
 		sf2d_draw_texture(warningTop, 0, 0);
 		sftd_draw_text(fontBold15, (400 - sftd_get_text_width(fontBold15, 15, message)) / 2, 95, WHITE, 15, message);
 		sftd_draw_text(fontBold12, (400 - sftd_get_text_width(fontBold12, 12, progress)) / 2, 130, WHITE, 12, progress);
-	sf2d_end_frame();
+	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(warningBottom, 0, 0);
-	sf2d_end_frame();
+	pksm_end_frame();
 	sf2d_swapbuffers();
 	
 	free(progress);
@@ -379,7 +393,7 @@ void gameSelectorMenu(int n) {
 		for (int i = 0; i < 6; i++) 
 			sftd_draw_text(fontBold18, 17 + 60 * i + (68 - sftd_get_text_width(fontBold18, 18, gamesList[i])) / 2, 170, LIGHTBLUE, 18, gamesList[i]);
 		
-	sf2d_end_frame();
+	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(mainMenuBottom, 0, 0);
@@ -404,7 +418,7 @@ void gameSelectorMenu(int n) {
 			sftd_draw_text(fontBold15, 82 + 42 * (i - 11) + (32 - sftd_get_text_width(fontBold15, 15, gamesList[i])) / 2, 163, LIGHTBLUE, 15, gamesList[i]);
 
 		printBottomIndications("Move your DPAD. Press A to continue, B to exit.");
-	sf2d_end_frame();
+	pksm_end_frame();
 	sf2d_swapbuffers();
 }
 
@@ -412,7 +426,7 @@ void mainMenu(int currentEntry) {
 	char* menu[3] = {"EVENTS", "MANAGEMENT", "CREDITS"};
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		drawMenuTop(0);
-	sf2d_end_frame();
+	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(mainMenuBottom, 0, 0);
@@ -425,7 +439,7 @@ void mainMenu(int currentEntry) {
 			sftd_draw_text(fontBold18, (320 - sftd_get_text_width(fontBold18, 18, menu[i])) / 2 - 4, 53 + (menuBar->height - 18) / 2 + i * (menuBar->height), (i == currentEntry) ? DARKBLUE : YELLOW, 18, menu[i]);
 		}
 		printBottomIndications("Press START to quit.");
-	sf2d_end_frame();
+	pksm_end_frame();
 	sf2d_swapbuffers();
 }
 
@@ -433,7 +447,7 @@ void mainMenuDS(int currentEntry) {
 	char* menu[2] = {"EVENTS", "OTHER"};
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		drawMenuTop(7);
-	sf2d_end_frame();
+	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(DSBottomBG, 0, 0);
@@ -445,14 +459,14 @@ void mainMenuDS(int currentEntry) {
 			sftd_draw_text(fontBold18, (320 - sftd_get_text_width(fontBold18, 18, menu[i])) / 2, 67 + (DSBar->height - 18) / 2 + i * (DSBar->height + 16), WHITE, 18, menu[i]);
 		}
 		printBottomIndications("Press START to quit.");
-	sf2d_end_frame();
+	pksm_end_frame();
 	sf2d_swapbuffers();
 }
 
 void menu4(int currentEntry, char* menu[], int n) {
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		drawMenuTop(0);
-	sf2d_end_frame();
+	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(mainMenuBottom, 0, 0);
@@ -465,14 +479,14 @@ void menu4(int currentEntry, char* menu[], int n) {
 			sftd_draw_text(fontBold18, (320 - sftd_get_text_width(fontBold18, 18, menu[i])) / 2 - 4, 44 + i * (menuBar->height), (i == currentEntry) ? DARKBLUE : YELLOW, 18, menu[i]);
 		}
 		printBottomIndications("Press A to select an option.");
-	sf2d_end_frame();
+	pksm_end_frame();
 	sf2d_swapbuffers();
 }
 
 void menu3(int currentEntry, char* menu[], int n) {
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		drawMenuTop(0);
-	sf2d_end_frame();
+	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(mainMenuBottom, 0, 0);
@@ -485,7 +499,7 @@ void menu3(int currentEntry, char* menu[], int n) {
 			sftd_draw_text(fontBold18, (320 - sftd_get_text_width(fontBold18, 18, menu[i])) / 2 - 4, 53 + (menuBar->height - 18) / 2 + i * (menuBar->height), (i == currentEntry) ? DARKBLUE : YELLOW, 18, menu[i]);
 		}
 		printBottomIndications("Press A to select an option.");
-	sf2d_end_frame();
+	pksm_end_frame();
 	sf2d_swapbuffers();
 }
 
@@ -502,13 +516,13 @@ void printCredits() {
 			sf2d_draw_texture(creditsTop, 0, 45);
 			sftd_draw_text(fontBold15, 18, 77, LIGHTBLUE, 15,  "Bernardo Giordano");
 			sftd_draw_text(fontBold15, 64, 174, LIGHTBLUE, 15,  "dsoldier for the complete GUI design");
-		sf2d_end_frame();
+		pksm_end_frame();
 
 		sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 			sf2d_draw_texture(mainMenuBottom, 0, 0);
 			sftd_draw_text(fontBold9, 20, 30, LIGHTBLUE, 9, (char*)buf);
 			printBottomIndications("Press B to return.");
-		sf2d_end_frame();
+		pksm_end_frame();
 		sf2d_swapbuffers();
 	}
 	
@@ -558,7 +572,7 @@ void printDatabase6(char *database[], int currentEntry, int page, int spriteArra
 			
 			y += 37;
 		}
-	sf2d_end_frame();
+	pksm_end_frame();
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(mainMenuBottom, 0, 0);
@@ -567,7 +581,7 @@ void printDatabase6(char *database[], int currentEntry, int page, int spriteArra
 		sf2d_draw_texture(RButton, 221, 52);
 		sftd_draw_text(fontBold12, (320 - sftd_get_text_width(fontBold12, 12, pages)) / 2, 52, WHITE, 12, pages);
 		printBottomIndications("Press A to continue, B to return.");
-	sf2d_end_frame();
+	pksm_end_frame();
 	sf2d_swapbuffers();
 	
 	free(pages);
@@ -613,7 +627,7 @@ void printDatabase5(char *database[], int currentEntry, int page, int spriteArra
 			
 			y += DSSelectedBarR->height;
 		}
-	sf2d_end_frame();
+	pksm_end_frame();
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(DSEventBottom, 0, 0);
@@ -656,7 +670,7 @@ void printDatabase5(char *database[], int currentEntry, int page, int spriteArra
 			free(buf);
 		}
 	
-	sf2d_end_frame();
+	pksm_end_frame();
 	sf2d_swapbuffers();
 }
 
@@ -700,7 +714,7 @@ void printDatabase4(char *database[], int currentEntry, int page, int spriteArra
 			
 			y += DSSelectedBarR->height;
 		}
-	sf2d_end_frame();
+	pksm_end_frame();
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(DSEventBottom, 0, 0);
@@ -743,7 +757,7 @@ void printDatabase4(char *database[], int currentEntry, int page, int spriteArra
 			free(buf);
 		}
 	
-	sf2d_end_frame();
+	pksm_end_frame();
 	sf2d_swapbuffers();
 }
 
@@ -763,7 +777,7 @@ void printDB7(int sprite, int i, bool langVett[], bool adapt, bool overwrite, in
 		if (sprite != -1)
 			sf2d_draw_texture_part_scale(spritesSmall, 282, 46 - movementOffsetLong(6), 40 * (sprite % 25) + 4, 30 * (sprite / 25), 34, 30, 2, 2);
 		sftd_draw_text(fontFixed, 5, 28,  WHITE, 10, (char*)buf);
-	sf2d_end_frame();
+	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(mainMenuBottom, 0, 0);
@@ -827,7 +841,7 @@ void printDB7(int sprite, int i, bool langVett[], bool adapt, bool overwrite, in
 		sftd_draw_text(fontBold14, 229 + (36 - sftd_get_text_width(fontBold14, 14, cont)) / 2, 170, YELLOW, 14, cont);
 		
 		printBottomIndications("Press START to inject, B to return.");
-		sf2d_end_frame();
+		pksm_end_frame();
 	sf2d_swapbuffers();
 	
 	free(buf);
@@ -851,7 +865,7 @@ void printDB6(int sprite, int i, bool langVett[], bool adapt, bool overwrite, in
 		if (sprite != -1)
 			sf2d_draw_texture_part_scale(spritesSmall, 282, 46 - movementOffsetLong(6), 40 * (sprite % 25) + 4, 30 * (sprite / 25), 34, 30, 2, 2);
 		sftd_draw_text(fontFixed, 5, 28,  WHITE, 10, (char*)buf);
-	sf2d_end_frame();
+	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(mainMenuBottom, 0, 0);
@@ -913,7 +927,7 @@ void printDB6(int sprite, int i, bool langVett[], bool adapt, bool overwrite, in
 		sftd_draw_text(fontBold14, 229 + (36 - sftd_get_text_width(fontBold14, 14, cont)) / 2, 170, YELLOW, 14, cont);
 		
 		printBottomIndications("Press START to inject, B to return.");
-	sf2d_end_frame();
+	pksm_end_frame();
 	sf2d_swapbuffers();
 	
 	free(buf);
@@ -959,12 +973,12 @@ void printEditor(u8* mainbuf, int game, int currentEntry, int langCont) {
 			}
 			y += 37;
 		}
-	sf2d_end_frame();
+	pksm_end_frame();
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(mainMenuBottom, 0, 0);
 		printBottomIndications("Press START to edit, A to toggle, B to exit.");
-	sf2d_end_frame();
+	pksm_end_frame();
 	sf2d_swapbuffers();
 }
 
@@ -1149,7 +1163,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 			sftd_draw_text(fontBold15, (400 - sftd_get_text_width(fontBold15, 15, "Launch the client on your PC...")) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, "Launch the client on your PC...");
 			sftd_draw_text(fontBold12, (400 - sftd_get_text_width(fontBold12, 12, "Press B to exit.")) / 2, 130, WHITE, 12, "Press B to exit.");
 		}
-	sf2d_end_frame();
+	pksm_end_frame();
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(boxView, 0, 0);
@@ -1235,7 +1249,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 			else
 				sftd_draw_textf(fontBold9, 16, 220, WHITE, 9, "Seed: %lX %lX %lX %lX", getSaveSeed(mainbuf, game, 3), getSaveSeed(mainbuf, game, 2), getSaveSeed(mainbuf, game, 1), getSaveSeed(mainbuf, game, 0));	
 		}
-	sf2d_end_frame();
+	pksm_end_frame();
 	sf2d_swapbuffers();
 	
 	free(pkmn);
@@ -1377,7 +1391,7 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 		}
 		sftd_draw_textf(fontBold11, 4, 225, LIGHTBLUE, 11, "%s", descriptions[additional1]);
 	}
-	sf2d_end_frame();
+	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		if (mode != ED_HEX)
@@ -1545,7 +1559,7 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Select a form with A in the top screen.")) / 2, 105, WHITE, 14, "Select a form with A in the top screen.");
 		}
 		
-	sf2d_end_frame();
+	pksm_end_frame();
 	sf2d_swapbuffers();
 }
 
@@ -1643,7 +1657,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 				sf2d_draw_texture(selector, pointer[0], pointer[1] - 2 - ((!isBufferized) ? movementOffsetSlow(3) : 0));
 			}
 		}		
-	sf2d_end_frame();
+	pksm_end_frame();
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(boxView, 0, 0);
@@ -1693,7 +1707,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 			sf2d_draw_rectangle(0, -30, 320, 240, MASKBLACK);
 		
 		sftd_draw_textf(fontBold9, 45, 220, WHITE, 9, "You can switch speed touching here: %s", speedy ? "FAST" : "SLOW");
-	sf2d_end_frame();
+	pksm_end_frame();
 	sf2d_swapbuffers();
 	
 	free(pkmn);
@@ -1734,13 +1748,13 @@ void printMassInjector(int currentEntry) {
 			
 			y += 37;
 		}
-	sf2d_end_frame();
+	pksm_end_frame();
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(mainMenuBottom, 0, 0);
 		sftd_draw_text(fontBold12, (320 - sftd_get_text_width(fontBold12, 12, message)) / 2, 12, LIGHTBLUE, 12, message);
 		printBottomIndications("Press START to inject, B to exit.");
-	sf2d_end_frame();
+	pksm_end_frame();
 	sf2d_swapbuffers();
 	
 	free(message);
@@ -1750,7 +1764,7 @@ void printSettings(int box, bool speedy) {
 	char *menu[] = {"Bank Size:                   ", "Backup Save", "Backup Bank"};
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		drawMenuTop(0);
-	sf2d_end_frame();
+	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(mainMenuBottom, 0, 0);
@@ -1770,7 +1784,7 @@ void printSettings(int box, bool speedy) {
 		free(size);
 		
 		sftd_draw_textf(fontBold9, 35, 225, LIGHTBLUE, 9, "Tap the number to change size. Speed (L/R): %s", speedy ? "FAST" : "SLOW");
-	sf2d_end_frame();
+	pksm_end_frame();
 	sf2d_swapbuffers();
 }
 
