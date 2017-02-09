@@ -1270,34 +1270,33 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 		sftd_draw_text(fontBold15, (400 - sftd_get_text_width(fontBold15, 15, "Edit your Pokemon in the bottom screen")) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, "Edit your Pokemon in the bottom screen");
 		sftd_draw_text(fontBold15, (400 - sftd_get_text_width(fontBold15, 15, "Tap SAVE when you're done")) / 2, 115, RGBA8(255, 255, 255, giveTransparence()), 15, "Tap SAVE when you're done");
 	} else if (mode == ED_ITEMS) {
-		int y = 0, x = 0;
+		int entry;
+		int y = 0;
 		sf2d_draw_texture(topMovesBG, 0, 0);
 		for (int i = 0; i < 20; i++) {
+			entry = 40 * additional2 + i;
 			if (i == additional1) 
-				sf2d_draw_texture(topSelectedMove, x + 2, y);
-			sftd_draw_textf(fontBold9, x + 2, y, WHITE, 9, "%d - %s", 40 * additional2 + i, itemsSorted[40 * additional2 + i]);
-			y += (topSelectedMove->height + 1);
-		}
-		y = 0; x = 200;
-		for (int i = 20; i < 40; i++) {
-			if (i == additional1) sf2d_draw_texture(topSelectedMove, x, y);
-			sftd_draw_textf(fontBold9, x + 2, y, WHITE, 9, "%d - %s", 40 * additional2 + i, itemsSorted[40 * additional2 + i]);
-			y += (topSelectedMove->height + 1);
-		}		
-	} else if (mode == ED_MOVES) {
-		int y = 0, x = 0;
-		sf2d_draw_texture(topMovesBG, 0, 0);
-		for (int i = 0; i < 20; i++) {
-			if (i == additional1) sf2d_draw_texture(topSelectedMove, x + 2, y);
-			sftd_draw_textf(fontBold9, x + 2, y, WHITE, 9, "%d - %s", 40 * additional2 + i, movesSorted[40 * additional2 + i]);
-			y += (topSelectedMove->height + 1);
-		}
-		y = 0; x = 200;
-		for (int i = 20; i < 40; i++) {
-			if (i == additional1) sf2d_draw_texture(topSelectedMove, x, y);
-			sftd_draw_textf(fontBold9, x + 2, y, WHITE, 9, "%d - %s", 40 * additional2 + i, movesSorted[40 * additional2 + i]);
+				sf2d_draw_texture(topSelectedMove, 2, y);
+			else if (i + 20 == additional1) 
+				sf2d_draw_texture(topSelectedMove, 200, y);
+			sftd_draw_textf(fontBold9, 2, y, WHITE, 9, "%d - %s", entry, itemsSorted[entry]);
+			sftd_draw_textf(fontBold9, 200, y, WHITE, 9, "%d - %s", entry + 20, itemsSorted[entry + 20]);
 			y += (topSelectedMove->height + 1);
 		}	
+	} else if (mode == ED_MOVES) {
+		int entry;
+		int y = 0;
+		sf2d_draw_texture(topMovesBG, 0, 0);
+		for (int i = 0; i < 20; i++) {
+			entry = 40 * additional2 + i;
+			if (i == additional1) 
+				sf2d_draw_texture(topSelectedMove, 2, y);
+			else if (i + 20 == additional1) 
+				sf2d_draw_texture(topSelectedMove, 200, y);
+			sftd_draw_textf(fontBold9, 2, y, WHITE, 9, "%d - %s", entry, movesSorted[entry]);
+			sftd_draw_textf(fontBold9, 200, y, WHITE, 9, "%d - %s", entry + 20, movesSorted[entry + 20]);
+			y += (topSelectedMove->height + 1);
+		}
 	} else if (mode == ED_NATURES) {
 		char* hor[] = {"Neutral", "-Attack", "-Defense", "-Speed", "-Sp. Atk.", "-Sp. Def."};
 		char* ver[] = {"+Attack", "+Defense", "+Speed", "+Sp. Atk.", "+Sp. Def."};
