@@ -164,7 +164,7 @@ bool openSaveArch(FS_Archive *out, u64 id) {
 void settingsMenu(u8* mainbuf, int game) {
 	char *gamesList[] = {"X", "Y", "OR", "AS", "S", "M", "D", "P", "PL", "HG", "SS", "B", "W", "W2", "B2"};
 	
-	bool speedy = false;
+	int speed = 0;
 	bool operationDone = false;
 	FILE *bank = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
 	fseek(bank, 0, SEEK_END);
@@ -181,35 +181,35 @@ void settingsMenu(u8* mainbuf, int game) {
 
 		if (hidKeysDown() & KEY_B) break;
 		
-		if (hidKeysDown() & KEY_L)
-			speedy = false;
+		if (hidKeysDown() & KEY_TOUCH) {
+			if (touch.px > 169 && touch.px < 186 && touch.py > 65 && touch.py < 83) {
+				if (box > 2) box--;
+				else if (box == 2) box = boxmax;
+			}
 
-		if (hidKeysDown() & KEY_R)
-			speedy = true;
-		
-		if ((hidKeysDown() & KEY_TOUCH) && !speedy) {
-			if (touch.px > 169 && touch.px < 186 && touch.py > 65 && touch.py < 83) {
-				if (box > 2) box--;
-				else if (box == 2) box = boxmax;
-			}
-			
 			if (touch.px > 228 && touch.px < 245 && touch.py > 65 && touch.py < 83) {
 				if (box < boxmax) box++;
 				else if (box == boxmax) box = 2;
 			}
 		}
 		
-		if ((hidKeysHeld() & KEY_TOUCH) && speedy) {
+		if (hidKeysHeld() & KEY_TOUCH) {
 			if (touch.px > 169 && touch.px < 186 && touch.py > 65 && touch.py < 83) {
-				if (box > 2) box--;
-				else if (box == 2) box = boxmax;
-			}
-			
-			if (touch.px > 228 && touch.px < 245 && touch.py > 65 && touch.py < 83) {
-				if (box < boxmax) box++;
-				else if (box == boxmax) box = 2;
-			}
-		}
+				if (speed < -30) {
+					if (box > 2) box--;
+					else if (box == 2) box = boxmax;
+				} else
+					speed--;
+			} else if (touch.px > 228 && touch.px < 245 && touch.py > 65 && touch.py < 83) {
+				if (speed > 30) {
+					if (box < boxmax) box++;
+					else if (box == boxmax) box = 2;
+				} else
+					speed++;
+			} else
+				speed = 0;
+		} else
+			speed = 0;
 		
 		if (hidKeysDown() & KEY_TOUCH) {
 			if (touch.px > 189 && touch.px < 225 && touch.py > 64 && touch.py < 85) {
@@ -300,6 +300,6 @@ void settingsMenu(u8* mainbuf, int game) {
 				operationDone = true;
 			}
 		}
-		printSettings(box, speedy);
+		printSettings(box);
 	}
 }

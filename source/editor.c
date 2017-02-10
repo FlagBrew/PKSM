@@ -1292,7 +1292,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 	
 	int modeFlag = ED_STANDARD;
 	bool isTeam = false;
-	bool speedy = false;
+	int speed = 0;
 	int box = 0;
 	int currentEntry = 0;
 	int menuEntry = 0;
@@ -1441,7 +1441,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 				}
 		
 				processing(mainbuf, game, tempVett);
-				printPKViewer(mainbuf, pkmn, isTeam, game, tempVett[1], menuEntry, tempVett[0], ED_OTA, speedy, 0, 0);	
+				printPKViewer(mainbuf, pkmn, isTeam, game, tempVett[1], menuEntry, tempVett[0], ED_OTA, 0, 0);	
 			} while (aptMainLoop());
 			shutDownSoc();
 			
@@ -1458,7 +1458,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 				hidScanInput();
 				hidTouchRead(&touch);
 				
-				printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_MENU, speedy, 0, 0);
+				printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_MENU, 0, 0);
 				
 				if (hidKeysDown() & KEY_B)
 					break;
@@ -1535,12 +1535,6 @@ void pokemonEditor(u8* mainbuf, int game) {
 										if (hidKeysDown() & KEY_B)
 											break;
 										
-										if (hidKeysDown() & KEY_L)
-											speedy = false;
-
-										if (hidKeysDown() & KEY_R)
-											speedy = true;
-										
 										if (hidKeysDown() & KEY_DRIGHT)
 											if (byteEntry < 231) 
 												byteEntry++;
@@ -1565,34 +1559,40 @@ void pokemonEditor(u8* mainbuf, int game) {
 												}
 											}
 										}
+
+										bool downPlus = ((hidKeysDown() & KEY_TOUCH) && touch.px > 247 && touch.px < 264 && touch.py > 31 && touch.py < 49) || (hidKeysDown() & KEY_A);
+										bool downMinus = ((hidKeysDown() & KEY_TOUCH) && touch.px > 224 && touch.px < 241 && touch.py > 31 && touch.py < 49) || (hidKeysDown() & KEY_X);
+										bool heldPlus = ((hidKeysHeld() & KEY_TOUCH) && touch.px > 247 && touch.px < 264 && touch.py > 31 && touch.py < 49) || (hidKeysHeld() & KEY_A);
+										bool heldMinus = ((hidKeysHeld() & KEY_TOUCH) && touch.px > 224 && touch.px < 241 && touch.py > 31 && touch.py < 49) || (hidKeysHeld() & KEY_X);
 										
-										if (!speedy && sector[byteEntry][0] && !sector[byteEntry][1] && (((hidKeysDown() & KEY_TOUCH) && touch.px > 224 && touch.px < 241 && touch.py > 31 && touch.py < 49) || (hidKeysDown() & KEY_X))) {
+										if (heldMinus && heldPlus)
+											speed = 0;
+										else if (sector[byteEntry][0] && !sector[byteEntry][1] && downMinus) {
 											if (pkmn[byteEntry] > 0)
 												pkmn[byteEntry]--;
 										}
-										else if (speedy && sector[byteEntry][0] && !sector[byteEntry][1] && (((hidKeysHeld() & KEY_TOUCH) && touch.px > 224 && touch.px < 241 && touch.py > 31 && touch.py < 49) || (hidKeysHeld() & KEY_X))) {
-											if (pkmn[byteEntry] > 0)
+										else if (sector[byteEntry][0] && !sector[byteEntry][1] && heldMinus) {
+											if (speed < -30 && pkmn[byteEntry] > 0)
 												pkmn[byteEntry]--;
+											else
+												speed--;
 										}
-										
-										if (!speedy && sector[byteEntry][0] && !sector[byteEntry][1] && (((hidKeysDown() & KEY_TOUCH) && touch.px > 247 && touch.px < 264 && touch.py > 31 && touch.py < 49) || (hidKeysDown() & KEY_A))) {
+										else if (sector[byteEntry][0] && !sector[byteEntry][1] && downPlus) {
 											if (pkmn[byteEntry] < 0xFF)
 												parseHexEditor(pkmn, game, byteEntry);
 										}
-										else if (speedy && sector[byteEntry][0] && !sector[byteEntry][1] && (((hidKeysHeld() & KEY_TOUCH) && touch.px > 247 && touch.px < 264 && touch.py > 31 && touch.py < 49) || (hidKeysHeld() & KEY_A))) {
-											if (pkmn[byteEntry] < 0xFF)
+										else if (sector[byteEntry][0] && !sector[byteEntry][1] && heldPlus) {
+											if (speed > 30 && pkmn[byteEntry] < 0xFF)
 												parseHexEditor(pkmn, game, byteEntry);
+											else
+												speed++;
 										}
+										else
+											speed = 0;
 										
-										printPKEditor(pkmn, game, speedy, byteEntry, 0, 0, ED_HEX, descriptions);
+										printPKEditor(pkmn, game, byteEntry, 0, 0, ED_HEX, descriptions);
 									}
 								}
-
-								if (hidKeysDown() & KEY_L)
-									speedy = false;
-
-								if (hidKeysDown() & KEY_R)
-									speedy = true;
 								
 								if (hidKeysDown() & KEY_TOUCH) {
 									if (touch.px > 280 && touch.px < 318 && touch.py > 210 && touch.py < 240) 
@@ -1606,12 +1606,6 @@ void pokemonEditor(u8* mainbuf, int game) {
 
 											if (hidKeysDown() & KEY_B)
 												break;
-
-											if (hidKeysDown() & KEY_L)
-												speedy = false;
-
-											if (hidKeysDown() & KEY_R)
-												speedy = true;
 											
 											if (hidKeysDown() & KEY_TOUCH) {
 												if (touch.px > 280 && touch.px < 318 && touch.py > 210 && touch.py < 240) 
@@ -1645,12 +1639,12 @@ void pokemonEditor(u8* mainbuf, int game) {
 															break;
 														}
 														
-														printPKEditor(pkmn, game, speedy, hpEntry, 0, 0, ED_HIDDENPOWER, descriptions);
+														printPKEditor(pkmn, game, hpEntry, 0, 0, ED_HIDDENPOWER, descriptions);
 													}
 												}												
 											}
 											
-											if (hidKeysDown() & KEY_TOUCH && !(speedy)) {
+											if (hidKeysDown() & KEY_TOUCH) {
 												for (int i = 0; i < 6; i++) {
 													if (touch.px > 96 && touch.px < 109 && touch.py > 49 + i * 20 && touch.py < 62 + i * 20)
 														if (getIV(pkmn, lookup[i]) > 0)
@@ -1673,30 +1667,52 @@ void pokemonEditor(u8* mainbuf, int game) {
 												}
 											}
 											
-											else if (hidKeysHeld() & KEY_TOUCH && speedy) {
+											else if (hidKeysHeld() & KEY_TOUCH) {
+												bool touched = false;
+
 												for (int i = 0; i < 6; i++) {
-													if (touch.px > 96 && touch.px < 109 && touch.py > 49 + i * 20 && touch.py < 62 + i * 20)
-														if (getIV(pkmn, lookup[i]) > 0)
+													if (touch.px > 96 && touch.px < 109 && touch.py > 49 + i * 20 && touch.py < 62 + i * 20) {
+														touched = true;
+														if (speed < -30 && getIV(pkmn, lookup[i]) > 0)
 															setIV(pkmn, getIV(pkmn, lookup[i]) - 1, lookup[i]);
-													if (touch.px > 139 && touch.px < 152 && touch.py > 49 + i * 20 && touch.py < 62 + i * 20)
-														if (getIV(pkmn, lookup[i]) < 31)
+														else
+															speed--;
+													}
+													else if (touch.px > 139 && touch.px < 152 && touch.py > 49 + i * 20 && touch.py < 62 + i * 20) {
+														touched = true;
+														if (speed > 30 && getIV(pkmn, lookup[i]) < 31)
 															setIV(pkmn, getIV(pkmn, lookup[i]) + 1, lookup[i]);
-													if (touch.px > 177 && touch.px < 190 && touch.py > 49 + i * 20 && touch.py < 62 + i * 20)
-														if (getEV(pkmn, lookup[i]) > 0)
+														else
+															speed++;
+													}
+													else if (touch.px > 177 && touch.px < 190 && touch.py > 49 + i * 20 && touch.py < 62 + i * 20) {
+														touched = true;
+														if (speed < -30 && getEV(pkmn, lookup[i]) > 0)
 															setEV(pkmn, getEV(pkmn, lookup[i]) - 1, lookup[i]);
-													if (touch.px > 218 && touch.px < 231 && touch.py > 49 + i * 20 && touch.py < 62 + i * 20) {
-														if (getEV(pkmn, lookup[i]) < 252) {
+														else
+															speed--;
+													}
+													else if (touch.px > 218 && touch.px < 231 && touch.py > 49 + i * 20 && touch.py < 62 + i * 20) {
+														touched = true;
+														if (speed > 30 && getEV(pkmn, lookup[i]) < 252) {
 															int tot = 0;
 															for (int i = 0; i < 6; i++)
 																tot += getEV(pkmn, i);
 															if (tot < 510)
 																setEV(pkmn, getEV(pkmn, lookup[i]) + 1, lookup[i]);
 														}
+														else
+															speed++;
 													}
 												}
+
+												if (!touched)
+													speed = 0;
 											}
+											else
+												speed = 0;
 											
-											printPKEditor(pkmn, game, speedy, 0, 0, 0, ED_STATS, descriptions);
+											printPKEditor(pkmn, game, 0, 0, 0, ED_STATS, descriptions);
 										}
 									}
 									
@@ -1729,7 +1745,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 												break;
 											}
 											
-											printPKEditor(pkmn, game, speedy, natureEntry, 0, 0, ED_NATURES, descriptions);
+											printPKEditor(pkmn, game, natureEntry, 0, 0, ED_NATURES, descriptions);
 										}
 									}
 									
@@ -1762,7 +1778,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 												break;
 											}
 											
-											printPKEditor(pkmn, game, speedy, ballEntry, 0, 0, ED_BALLS, descriptions);
+											printPKEditor(pkmn, game, ballEntry, 0, 0, ED_BALLS, descriptions);
 										}
 									}
 									
@@ -1807,7 +1823,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 													break;
 												}
 												
-												printPKEditor(pkmn, game, speedy, formEntry, (int)species, 0, ED_FORMS, descriptions);
+												printPKEditor(pkmn, game, formEntry, (int)species, 0, ED_FORMS, descriptions);
 											}
 										}
 										free(forms);
@@ -1953,7 +1969,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 													setEggMove(pkmn, movesSorted[moveEntry + page * 40], entryBottom - 4);
 											}
 											
-											printPKEditor(pkmn, game, speedy, moveEntry, page, entryBottom, ED_MOVES, descriptions);
+											printPKEditor(pkmn, game, moveEntry, page, entryBottom, ED_MOVES, descriptions);
 										}										
 									}
 									
@@ -2015,12 +2031,12 @@ void pokemonEditor(u8* mainbuf, int game) {
 												break;
 											}
 											
-											printPKEditor(pkmn, game, speedy, itemEntry, page, 0, ED_ITEMS, descriptions);
+											printPKEditor(pkmn, game, itemEntry, page, 0, ED_ITEMS, descriptions);
 										}
 									}
 								}
 								
-								if ((hidKeysDown() & KEY_TOUCH) && !(speedy)) {
+								if (hidKeysDown() & KEY_TOUCH) {
 									if (touch.px > 180 && touch.px < 193 && touch.py > 29 && touch.py < 42) {
 										if (getLevel(pkmn) < 100)
 											setLevel(pkmn, getLevel(pkmn) + 1);
@@ -2042,29 +2058,38 @@ void pokemonEditor(u8* mainbuf, int game) {
 									}
 								}
 
-								if ((hidKeysHeld() & KEY_TOUCH) && speedy) {
+								if (hidKeysHeld() & KEY_TOUCH) {
 									if (touch.px > 180 && touch.px < 193 && touch.py > 29 && touch.py < 42) {
-										if (getLevel(pkmn) < 100)
+										if (speed > 30 && getLevel(pkmn) < 100)
 											setLevel(pkmn, getLevel(pkmn) + 1);
+										else
+											speed++;
 									}
-									
-									if (touch.px > 137 && touch.px < 150 && touch.py > 29 && touch.py < 42) {
-										if (getLevel(pkmn) > 1)
+									else if (touch.px > 137 && touch.px < 150 && touch.py > 29 && touch.py < 42) {
+										if (speed < -30 && getLevel(pkmn) > 1)
 											setLevel(pkmn, getLevel(pkmn) - 1);
+										else
+											speed--;
 									}
-									
-									if (touch.px > 137 && touch.px < 150 && touch.py > 189 && touch.py < 202) {
-										if (getFriendship(pkmn) > 0)
+									else if (touch.px > 137 && touch.px < 150 && touch.py > 189 && touch.py < 202) {
+										if (speed < -30 && getFriendship(pkmn) > 0)
 											setFriendship(pkmn, getFriendship(pkmn) - 1);
+										else
+											speed--;
 									}
-
-									if (touch.px > 180&& touch.px < 193 && touch.py > 189 && touch.py < 202) {
-										if (getFriendship(pkmn) < 255)
+									else if (touch.px > 180&& touch.px < 193 && touch.py > 189 && touch.py < 202) {
+										if (speed > 30 && getFriendship(pkmn) < 255)
 											setFriendship(pkmn, getFriendship(pkmn) + 1);
+										else
+											speed++;
 									}
-								}								
+									else
+										speed = 0;
+								}				
+								else
+									speed = 0;
 								
-								printPKEditor(pkmn, game, speedy, 0, 0, 0, ED_BASE, descriptions);
+								printPKEditor(pkmn, game, 0, 0, 0, ED_BASE, descriptions);
 							}
 							break;
 						}
@@ -2177,7 +2202,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 									break;
 								}
 
-								printPKViewer(mainbuf, pkmn, isTeam, game, cloneEntry, menuEntry, box, ED_CLONE, speedy, 0, 0);
+								printPKViewer(mainbuf, pkmn, isTeam, game, cloneEntry, menuEntry, box, ED_CLONE, 0, 0);
 							}
 							break;
 						}
@@ -2262,7 +2287,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 										break;
 									}
 									
-									printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_GENERATE, speedy, genEntry, page);
+									printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_GENERATE, genEntry, page);
 								}
 							}
 							break;
@@ -2343,11 +2368,11 @@ void pokemonEditor(u8* mainbuf, int game) {
 						break;
 					}
 					
-					printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_GENERATE, speedy, genEntry, page);
+					printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_GENERATE, genEntry, page);
 				}
 			}
 		}
-		printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, modeFlag, speedy, 0, 0);
+		printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, modeFlag, 0, 0);
 	}
 	free(pkmn);
 }

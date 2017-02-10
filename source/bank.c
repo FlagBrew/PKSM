@@ -88,7 +88,8 @@ void bank(u8* mainbuf, int game) {
 	fread(bankbuf, size, 1, fptr);
 	fclose(fptr);
 
-	bool speedy = false;
+	int speed = 0;
+	int zSpeed = 0;
 	bool isSeen = false;
 	bool bufferizedfrombank = false;
 	bool isBufferized = false;
@@ -103,9 +104,6 @@ void bank(u8* mainbuf, int game) {
 		hidScanInput();
 		touchPosition touch;
 		hidTouchRead(&touch);
-		
-		if ((hidKeysDown() & KEY_TOUCH) && touch.px > 0 && touch.px < 270 && touch.py > 210 && touch.py < 240)
-			speedy = (speedy) ? false : true;
 		
 		if (hidKeysDown() & KEY_B) {
 			if (isBufferized) {
@@ -135,8 +133,8 @@ void bank(u8* mainbuf, int game) {
 		if (hidKeysDown() & KEY_DDOWN)
 			if (currentEntry <= 53) 
 				currentEntry += 6;
-		
-		if (!speedy && (hidKeysDown() & KEY_R)) {
+
+		if (speed >= -30 && (hidKeysDown() & KEY_R)) {
 			if (currentEntry < 30) {
 				if (bankBox < size / (30 * PKMNLENGTH) - 1) 
 					bankBox++;
@@ -150,75 +148,97 @@ void bank(u8* mainbuf, int game) {
 			}
 		}
 		
-		if (speedy && (hidKeysHeld() & KEY_R)) {
+		if (speed <= 30 && (hidKeysDown() & KEY_L)) {
 			if (currentEntry < 30) {
+				if (bankBox > 0) 
+					bankBox--;
+				else if (bankBox == 0) 
+					bankBox = size / (30 * PKMNLENGTH) - 1;
+			} else {
+				if (saveBox > 0) 
+					saveBox--;
+				else if (saveBox == 0) 
+					saveBox = (game < 4) ? 30 : 31;	
+			}
+		}
+		
+		if (hidKeysHeld() & KEY_R && hidKeysHeld() & KEY_L)
+			speed = 0;
+		else if (hidKeysHeld() & KEY_R) {
+			if (speed > 30) {
+				if (currentEntry < 30) {
+					if (bankBox < size / (30 * PKMNLENGTH) - 1) 
+						bankBox++;
+					else if (bankBox == size / (30 * PKMNLENGTH) - 1) 
+						bankBox = 0;
+				} else {
+					if (saveBox < ((game < 4) ? 30 : 31)) 
+						saveBox++;
+					else if (saveBox == ((game < 4) ? 30 : 31)) 
+						saveBox = 0;
+				}
+			}
+			else
+				speed++;
+		}
+		else if (hidKeysHeld() & KEY_L) {
+			if (speed < -30) {
+				if (currentEntry < 30) {
+					if (bankBox > 0) 
+						bankBox--;
+					else if (bankBox == 0) 
+						bankBox = size / (30 * PKMNLENGTH) - 1;
+				} else {
+					if (saveBox > 0) 
+						saveBox--;
+					else if (saveBox == 0) 
+						saveBox = (game < 4) ? 30 : 31;	
+				}
+			}
+			else
+				speed--;
+		}
+		else
+			speed = 0;
+
+		if (zSpeed >= -30 && (hidKeysDown() & KEY_ZR)) {
+			if (bankBox < size / (30 * PKMNLENGTH) - 1) 
+				bankBox++;
+			else if (bankBox == size / (30 * PKMNLENGTH) - 1) 
+				bankBox = 0;
+		}
+		
+		if (zSpeed <= 30 && (hidKeysDown() & KEY_ZL)) {
+			if (bankBox > 0) 
+				bankBox--;
+			else if (bankBox == 0) 
+				bankBox = size / (30 * PKMNLENGTH) - 1;
+		}
+		
+		if (hidKeysHeld() & KEY_ZR && hidKeysHeld() & KEY_ZL)
+			zSpeed = 0;
+		else if (hidKeysHeld() & KEY_ZR) {
+			if (zSpeed > 30) {
 				if (bankBox < size / (30 * PKMNLENGTH) - 1) 
 					bankBox++;
 				else if (bankBox == size / (30 * PKMNLENGTH) - 1) 
 					bankBox = 0;
-			} else {
-				if (saveBox < ((game < 4) ? 30 : 31)) 
-					saveBox++;
-				else if (saveBox == ((game < 4) ? 30 : 31)) 
-					saveBox = 0;
 			}
+			else
+				zSpeed++;
 		}
-		
-		if (!speedy && (hidKeysDown() & KEY_ZR)) {
-			if (bankBox < size / (30 * PKMNLENGTH) - 1) 
-				bankBox++;
-			else if (bankBox == size / (30 * PKMNLENGTH) - 1) 
-				bankBox = 0;
-		}
-		
-		if (speedy && (hidKeysHeld() & KEY_ZR)) {
-			if (bankBox < size / (30 * PKMNLENGTH) - 1) 
-				bankBox++;
-			else if (bankBox == size / (30 * PKMNLENGTH) - 1) 
-				bankBox = 0;
-		}
-		
-		if (!speedy && (hidKeysDown() & KEY_L)) {
-			if (currentEntry < 30) {
+		else if (hidKeysHeld() & KEY_ZL) {
+			if (zSpeed < -30) {
 				if (bankBox > 0) 
 					bankBox--;
 				else if (bankBox == 0) 
 					bankBox = size / (30 * PKMNLENGTH) - 1;
-			} else {
-				if (saveBox > 0) 
-					saveBox--;
-				else if (saveBox == 0) 
-					saveBox = (game < 4) ? 30 : 31;	
 			}
+			else
+				zSpeed--;
 		}
-		
-		if (speedy && (hidKeysHeld() & KEY_L)) {
-			if (currentEntry < 30) {
-				if (bankBox > 0) 
-					bankBox--;
-				else if (bankBox == 0) 
-					bankBox = size / (30 * PKMNLENGTH) - 1;
-			} else {
-				if (saveBox > 0) 
-					saveBox--;
-				else if (saveBox == 0) 
-					saveBox = (game < 4) ? 30 : 31;	
-			}
-		}
-		
-		if (!speedy && (hidKeysDown() & KEY_ZL)) {
-			if (bankBox > 0) 
-				bankBox--;
-			else if (bankBox == 0) 
-				bankBox = size / (30 * PKMNLENGTH) - 1;
-		}
-		
-		if (speedy && (hidKeysHeld() & KEY_ZL)) {
-			if (bankBox > 0) 
-				bankBox--;
-			else if (bankBox == 0) 
-				bankBox = size / (30 * PKMNLENGTH) - 1;
-		}
+		else
+			zSpeed = 0;
 		
 		if (hidKeysDown() & KEY_TOUCH) {
 			if (touch.px > 7 && touch.px < 23 && touch.py > 17 && touch.py < 37) {
@@ -317,7 +337,7 @@ void bank(u8* mainbuf, int game) {
 				if ((hidKeysDown() & KEY_B) || (hidKeysDown() & KEY_TOUCH && touch.px > 280 && touch.px < 318 && touch.py > 210 && touch.py < 240)) 
 					break;
 				
-				printPKBank(bankbuf, mainbuf, tmp, game, currentEntry, saveBox, bankBox, isBufferized, isSeen, speedy);
+				printPKBank(bankbuf, mainbuf, tmp, game, currentEntry, saveBox, bankBox, isBufferized, isSeen);
 			}
 			
 			isSeen = false;
@@ -394,7 +414,7 @@ void bank(u8* mainbuf, int game) {
 				}
 			}
 		}
-		printPKBank(bankbuf, mainbuf, pkmn, game, currentEntry, saveBox, bankBox, isBufferized, isSeen, speedy);
+		printPKBank(bankbuf, mainbuf, pkmn, game, currentEntry, saveBox, bankBox, isBufferized, isSeen);
 	}
 	
 	if (confirmDisp("Save bank.bin changes?")) {

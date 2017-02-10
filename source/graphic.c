@@ -1132,7 +1132,7 @@ void infoViewer(u8* pkmn, int game) {
 	}
 }
 
-void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry, int menuEntry, int box, int mode, bool speedy, int additional1, int additional2) {
+void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry, int menuEntry, int box, int mode, int additional1, int additional2) {
 	char* menuEntries[] = {"EDIT", "CLONE", "RELEASE", "GENERATE", "EXIT"};
 	int x;
 	char* page = (char*)malloc(7 * sizeof(char));
@@ -1256,7 +1256,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 	free(page);
 }
 
-void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additional2, int additional3, int mode, char* descriptions[]) {
+void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int additional3, int mode, char* descriptions[]) {
 	int max = sftd_get_text_width(fontBold12, 12, "252");
 	char* entries[] = {"Level:", "Nature:", "Ability:", "Item:", "Shiny:", "Pokerus:", "OT:", "Nickname:", "Friendship:"};
 	char* options[] = {"STATS", "MOVES", "SAVE"};
@@ -1530,15 +1530,12 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 			
 			sftd_draw_textf(fontBold14, 50, 30, LIGHTBLUE, 14, "Selected byte:");
 			sftd_draw_textf(fontBold14, 171, 30, WHITE, 14, "0x%02hhX", additional1);
-			sftd_draw_textf(fontBold9, 40, 225, LIGHTBLUE, 9, "(A + / - X) You can switch speed using (L/R): %s", speedy ? "FAST" : "SLOW");
 			
 			printfHexEditorInfo(pkmn, additional1);
 		}
 
-		if (mode != ED_HEX) {
+		if (mode != ED_HEX)
 			sf2d_draw_texture(back, 280, 210);
-			sftd_draw_textf(fontBold9, 55, 220, WHITE, 9, "You can switch speed using (L/R): %s", speedy ? "FAST" : "SLOW");
-		}
 		
 		// apply masks
 		if (mode == ED_ITEMS) {
@@ -1562,7 +1559,7 @@ void printPKEditor(u8* pkmn, int game, bool speedy, int additional1, int additio
 	sf2d_swapbuffers();
 }
 
-void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEntry, int saveBox, int bankBox, bool isBufferized, bool isSeen, bool speedy) {
+void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEntry, int saveBox, int bankBox, bool isBufferized, bool isSeen) {
 	int x, y;
 	int pointer[2] = {0, 0};
 	char* page = (char*)malloc(10 * sizeof(char));
@@ -1659,53 +1656,52 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 	pksm_end_frame();
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-		sf2d_draw_texture(boxView, 0, 0);
-		sf2d_draw_texture(editorBar, 0, 210);
-		snprintf(page, 10, "Save %d", saveBox + 1);
-		sftd_draw_text(fontBold12, 12 + (178 - sftd_get_text_width(fontBold12, 12, page)) / 2, 19, WHITE, 12, page);
-		sf2d_draw_texture(left, 7, 17);
-		sf2d_draw_texture(right, 185, 17);
-		sf2d_draw_texture(transferButton, 242, 5);
-		sf2d_draw_texture(back, 280, 210);
-		sf2d_draw_texture(button, 208, 43);
-		sf2d_draw_texture(button, 208, 70);
-		sf2d_draw_texture(button, 208, 97);
-		sftd_draw_text(fontBold12, 208 + (109 - sftd_get_text_width(fontBold12, 12, "Y: VIEW")) / 2, 50, BLACK, 12, "Y: VIEW");
-		sftd_draw_text(fontBold12, 208 + (109 - sftd_get_text_width(fontBold12, 12, "CLEAR BOX")) / 2, 77, BLACK, 12, "CLEAR BOX");
-		sftd_draw_text(fontBold12, 208 + (109 - sftd_get_text_width(fontBold12, 12, "RELEASE")) / 2, 104, BLACK, 12, "RELEASE");
-				
-		y = 45;
-		for (int i = 0; i < 5; i++) {
-			x = 4;
-			for (int j = 0; j < 6; j++) {
-				getPkmn(mainbuf, saveBox, i*6+j, pkmn, game);
-				u16 n = getPokedexNumber(pkmn);
-				if (n)
-					printElement(mainbuf, pkmn, game, n, x, y);
+	sf2d_draw_texture(boxView, 0, 0);
+	sf2d_draw_texture(editorBar, 0, 210);
+	snprintf(page, 10, "Save %d", saveBox + 1);
+	sftd_draw_text(fontBold12, 12 + (178 - sftd_get_text_width(fontBold12, 12, page)) / 2, 19, WHITE, 12, page);
+	sf2d_draw_texture(left, 7, 17);
+	sf2d_draw_texture(right, 185, 17);
+	sf2d_draw_texture(transferButton, 242, 5);
+	sf2d_draw_texture(back, 280, 210);
+	sf2d_draw_texture(button, 208, 43);
+	sf2d_draw_texture(button, 208, 70);
+	sf2d_draw_texture(button, 208, 97);
+	sftd_draw_text(fontBold12, 208 + (109 - sftd_get_text_width(fontBold12, 12, "Y: VIEW")) / 2, 50, BLACK, 12, "Y: VIEW");
+	sftd_draw_text(fontBold12, 208 + (109 - sftd_get_text_width(fontBold12, 12, "CLEAR BOX")) / 2, 77, BLACK, 12, "CLEAR BOX");
+	sftd_draw_text(fontBold12, 208 + (109 - sftd_get_text_width(fontBold12, 12, "RELEASE")) / 2, 104, BLACK, 12, "RELEASE");
+			
+	y = 45;
+	for (int i = 0; i < 5; i++) {
+		x = 4;
+		for (int j = 0; j < 6; j++) {
+			getPkmn(mainbuf, saveBox, i*6+j, pkmn, game);
+			u16 n = getPokedexNumber(pkmn);
+			if (n)
+				printElement(mainbuf, pkmn, game, n, x, y);
 
-				if ((currentEntry - 30) == (i * 6 + j)) {
-					pointer[0] = x + 18;
-					pointer[1] = y - 8;
-				}
-				x += 34;
+			if ((currentEntry - 30) == (i * 6 + j)) {
+				pointer[0] = x + 18;
+				pointer[1] = y - 8;
 			}
-			y += 30;
+			x += 34;
 		}
-		
-		if (currentEntry > 29) {
-			if (!isSeen) {
-				u16 n = getPokedexNumber(pkmnbuf);
-				if (n) printElementBlend(pkmnbuf, GAME_SUN, n, pointer[0] - 14, pointer[1] + 8, RGBA8(0x0, 0x0, 0x0, 100));
-				if (n) printElement(mainbuf, pkmnbuf, GAME_SUN, n, pointer[0] - 18, pointer[1] + 3);
-				sf2d_draw_texture(selector, pointer[0], pointer[1] - 2 - ((!isBufferized) ? movementOffsetSlow(3) : 0));
-			} else
-				sf2d_draw_texture(selector, pointer[0], pointer[1] - 2);
-		}
-		
-		if (isSeen)
-			sf2d_draw_rectangle(0, -30, 320, 240, MASKBLACK);
-		
-		sftd_draw_textf(fontBold9, 45, 220, WHITE, 9, "You can switch speed touching here: %s", speedy ? "FAST" : "SLOW");
+		y += 30;
+	}
+	
+	if (currentEntry > 29) {
+		if (!isSeen) {
+			u16 n = getPokedexNumber(pkmnbuf);
+			if (n) printElementBlend(pkmnbuf, GAME_SUN, n, pointer[0] - 14, pointer[1] + 8, RGBA8(0x0, 0x0, 0x0, 100));
+			if (n) printElement(mainbuf, pkmnbuf, GAME_SUN, n, pointer[0] - 18, pointer[1] + 3);
+			sf2d_draw_texture(selector, pointer[0], pointer[1] - 2 - ((!isBufferized) ? movementOffsetSlow(3) : 0));
+		} else
+			sf2d_draw_texture(selector, pointer[0], pointer[1] - 2);
+	}
+	
+	if (isSeen)
+		sf2d_draw_rectangle(0, -30, 320, 240, MASKBLACK);
+	
 	pksm_end_frame();
 	sf2d_swapbuffers();
 	
@@ -1759,7 +1755,7 @@ void printMassInjector(int currentEntry) {
 	free(message);
 }
 
-void printSettings(int box, bool speedy) {
+void printSettings(int box) {
 	char *menu[] = {"Bank Size:                   ", "Backup Save", "Backup Bank"};
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		drawMenuTop(0);
@@ -1781,8 +1777,7 @@ void printSettings(int box, bool speedy) {
 		snprintf(size, 5, "%d", box);
 		sftd_draw_text(fontBold11, 189 + (36 - (sftd_get_text_width(fontBold11, 11, size))) / 2, 68, WHITE, 11, size);
 		free(size);
-		
-		sftd_draw_textf(fontBold9, 35, 225, LIGHTBLUE, 9, "Tap the number to change size. Speed (L/R): %s", speedy ? "FAST" : "SLOW");
+
 	pksm_end_frame();
 	sf2d_swapbuffers();
 }
