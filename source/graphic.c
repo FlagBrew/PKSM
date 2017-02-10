@@ -1656,52 +1656,51 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 	pksm_end_frame();
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-	sf2d_draw_texture(boxView, 0, 0);
-	sf2d_draw_texture(editorBar, 0, 210);
-	snprintf(page, 10, "Save %d", saveBox + 1);
-	sftd_draw_text(fontBold12, 12 + (178 - sftd_get_text_width(fontBold12, 12, page)) / 2, 19, WHITE, 12, page);
-	sf2d_draw_texture(left, 7, 17);
-	sf2d_draw_texture(right, 185, 17);
-	sf2d_draw_texture(transferButton, 242, 5);
-	sf2d_draw_texture(back, 280, 210);
-	sf2d_draw_texture(button, 208, 43);
-	sf2d_draw_texture(button, 208, 70);
-	sf2d_draw_texture(button, 208, 97);
-	sftd_draw_text(fontBold12, 208 + (109 - sftd_get_text_width(fontBold12, 12, "Y: VIEW")) / 2, 50, BLACK, 12, "Y: VIEW");
-	sftd_draw_text(fontBold12, 208 + (109 - sftd_get_text_width(fontBold12, 12, "CLEAR BOX")) / 2, 77, BLACK, 12, "CLEAR BOX");
-	sftd_draw_text(fontBold12, 208 + (109 - sftd_get_text_width(fontBold12, 12, "RELEASE")) / 2, 104, BLACK, 12, "RELEASE");
-			
-	y = 45;
-	for (int i = 0; i < 5; i++) {
-		x = 4;
-		for (int j = 0; j < 6; j++) {
-			getPkmn(mainbuf, saveBox, i*6+j, pkmn, game);
-			u16 n = getPokedexNumber(pkmn);
-			if (n)
-				printElement(mainbuf, pkmn, game, n, x, y);
+		sf2d_draw_texture(boxView, 0, 0);
+		sf2d_draw_texture(editorBar, 0, 210);
+		snprintf(page, 10, "Save %d", saveBox + 1);
+		sftd_draw_text(fontBold12, 12 + (178 - sftd_get_text_width(fontBold12, 12, page)) / 2, 19, WHITE, 12, page);
+		sf2d_draw_texture(left, 7, 17);
+		sf2d_draw_texture(right, 185, 17);
+		sf2d_draw_texture(transferButton, 242, 5);
+		sf2d_draw_texture(back, 280, 210);
+		sf2d_draw_texture(button, 208, 43);
+		sf2d_draw_texture(button, 208, 70);
+		sf2d_draw_texture(button, 208, 97);
+		sftd_draw_text(fontBold12, 208 + (109 - sftd_get_text_width(fontBold12, 12, "Y: VIEW")) / 2, 50, BLACK, 12, "Y: VIEW");
+		sftd_draw_text(fontBold12, 208 + (109 - sftd_get_text_width(fontBold12, 12, "CLEAR BOX")) / 2, 77, BLACK, 12, "CLEAR BOX");
+		sftd_draw_text(fontBold12, 208 + (109 - sftd_get_text_width(fontBold12, 12, "RELEASE")) / 2, 104, BLACK, 12, "RELEASE");
+				
+		y = 45;
+		for (int i = 0; i < 5; i++) {
+			x = 4;
+			for (int j = 0; j < 6; j++) {
+				getPkmn(mainbuf, saveBox, i*6+j, pkmn, game);
+				u16 n = getPokedexNumber(pkmn);
+				if (n)
+					printElement(mainbuf, pkmn, game, n, x, y);
 
-			if ((currentEntry - 30) == (i * 6 + j)) {
-				pointer[0] = x + 18;
-				pointer[1] = y - 8;
+				if ((currentEntry - 30) == (i * 6 + j)) {
+					pointer[0] = x + 18;
+					pointer[1] = y - 8;
+				}
+				x += 34;
 			}
-			x += 34;
+			y += 30;
 		}
-		y += 30;
-	}
-	
-	if (currentEntry > 29) {
-		if (!isSeen) {
-			u16 n = getPokedexNumber(pkmnbuf);
-			if (n) printElementBlend(pkmnbuf, GAME_SUN, n, pointer[0] - 14, pointer[1] + 8, RGBA8(0x0, 0x0, 0x0, 100));
-			if (n) printElement(mainbuf, pkmnbuf, GAME_SUN, n, pointer[0] - 18, pointer[1] + 3);
-			sf2d_draw_texture(selector, pointer[0], pointer[1] - 2 - ((!isBufferized) ? movementOffsetSlow(3) : 0));
-		} else
-			sf2d_draw_texture(selector, pointer[0], pointer[1] - 2);
-	}
-	
-	if (isSeen)
-		sf2d_draw_rectangle(0, -30, 320, 240, MASKBLACK);
-	
+
+		if (currentEntry > 29) {
+			if (!isSeen) {
+				u16 n = getPokedexNumber(pkmnbuf);
+				if (n) printElementBlend(pkmnbuf, GAME_SUN, n, pointer[0] - 14, pointer[1] + 8, RGBA8(0x0, 0x0, 0x0, 100));
+				if (n) printElement(mainbuf, pkmnbuf, GAME_SUN, n, pointer[0] - 18, pointer[1] + 3);
+				sf2d_draw_texture(selector, pointer[0], pointer[1] - 2 - ((!isBufferized) ? movementOffsetSlow(3) : 0));
+			} else
+				sf2d_draw_texture(selector, pointer[0], pointer[1] - 2);
+		}
+
+		if (isSeen)
+			sf2d_draw_rectangle(0, -30, 320, 240, MASKBLACK);
 	pksm_end_frame();
 	sf2d_swapbuffers();
 	
@@ -1777,6 +1776,8 @@ void printSettings(int box) {
 		snprintf(size, 5, "%d", box);
 		sftd_draw_text(fontBold11, 189 + (36 - (sftd_get_text_width(fontBold11, 11, size))) / 2, 68, WHITE, 11, size);
 		free(size);
+
+
 
 	pksm_end_frame();
 	sf2d_swapbuffers();
