@@ -1688,7 +1688,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 			}
 			y += 30;
 		}
-
+		
 		if (currentEntry > 29) {
 			if (!isSeen) {
 				u16 n = getPokedexNumber(pkmnbuf);
@@ -1698,7 +1698,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 			} else
 				sf2d_draw_texture(selector, pointer[0], pointer[1] - 2);
 		}
-
+		
 		if (isSeen)
 			sf2d_draw_rectangle(0, -30, 320, 240, MASKBLACK);
 	pksm_end_frame();
@@ -1777,8 +1777,7 @@ void printSettings(int box) {
 		sftd_draw_text(fontBold11, 189 + (36 - (sftd_get_text_width(fontBold11, 11, size))) / 2, 68, WHITE, 11, size);
 		free(size);
 
-
-
+		sftd_draw_text(fontBold9, 85, 225, LIGHTBLUE, 9, "Tap the number to change size.");
 	pksm_end_frame();
 	sf2d_swapbuffers();
 }
