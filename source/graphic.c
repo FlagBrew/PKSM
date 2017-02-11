@@ -1001,7 +1001,7 @@ void printElementFX(u16 n, int x, int y) {
 }
 
 void printElement(u8* mainbuf, u8* pkmn, int game, u16 n, int x, int y) {
-	if (!areMarksZero(pkmn) && (game == GAME_SUN || game == GAME_MOON))
+	if (!areMarksZero(pkmn, game) && (game == GAME_SUN || game == GAME_MOON))
 		printElementBlend(pkmn, game, n, x, y, SHINYRED);
 	else {
 		u16 t = getAlternativeSprite(pkmn, game);

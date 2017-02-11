@@ -25,10 +25,11 @@ Copyright (C) 2016 Bernardo Giordano
 #include "bank.h"
 #include "dex.h"
 
-void clearMarkings(u8* pkmn) {
+void clearMarkings(u8* pkmn, int game) {
 	u8 version = pkmn[0xDF];
 	if (!(version == 30 || version == 31) && !(version >= 35 && version <= 41)) { // not SM
-		pkmn[0x2A] = 0;
+		if (game == GAME_SUN || game == GAME_MOON)
+			pkmn[0x2A] = 0;
 		pkmn[0x72] &= 0xFC;
 		pkmn[0xDE] = 0;
 		
@@ -48,10 +49,10 @@ void clearMarkings(u8* pkmn) {
 	}
 }
 
-bool areMarksZero(u8* pkmn) {
+bool areMarksZero(u8* pkmn, int game) {
 	u8 version = pkmn[0xDF];
 	if (!(version == 30 || version == 31) && !(version >= 35 && version <= 41)) {
-		if (pkmn[0x2A])
+		if (pkmn[0x2A] && (game == GAME_SUN || game == GAME_MOON))
 			return false;
 		if (pkmn[0xDE])
 			return false;
@@ -389,7 +390,7 @@ void bank(u8* mainbuf, int game) {
 					
 					if (currentEntry < 30) {
 						memcpy(pkmn, &bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], PKMNLENGTH);
-						clearMarkings(pkmn);
+						clearMarkings(pkmn, game);
 						if (getPokedexNumber(pkmn) <= 0 || getPokedexNumber(pkmn) > 821) {
 							memset(pkmn, 0, PKMNLENGTH);
 							isBufferized = false;
@@ -399,7 +400,7 @@ void bank(u8* mainbuf, int game) {
 						}
 					} else {
 						getPkmn(mainbuf, saveBox, currentEntry - 30, pkmn, game);
-						clearMarkings(pkmn);
+						clearMarkings(pkmn, game);
 						if (getPokedexNumber(pkmn) <= 0 || getPokedexNumber(pkmn) > 821) {
 							memset(pkmn, 0, PKMNLENGTH);
 							isBufferized = false;
