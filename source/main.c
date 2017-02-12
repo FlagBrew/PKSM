@@ -336,32 +336,27 @@ int main() {
 							if ((hidKeysDown() & KEY_A) || touchPressed) {
 								touchPressed = false;
 								switch (option) {
-									case 0 : {
+									case 0 :
 										pokemonEditor(mainbuf, game);
 										break;
-									}
-									case 1 : {
+									case 1 :
 										saveFileEditor(mainbuf, game);
 										break;
-									}
-									case 2 : {
+									case 2 :
 										bank(mainbuf, game);
 										break;
-									}
-									case 3 : {
+									case 3 :
 										massInjector(mainbuf, game);
 										break;
-									}
 								}
 							}
 							menu4(option, menu, 4);
 						}
 						break;
 					}
-					case 2 : {
+					case 2 :
 						printCredits();					
 						break;
-					}
 				}
 			}
 			mainMenu(currentEntry);

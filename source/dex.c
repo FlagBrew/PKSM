@@ -106,30 +106,24 @@ void setDexFlags(u8 mainbuf[], int index, int gender, int shiny, int baseSpecies
 
 bool sanitizeFormsToIterate(int species, int fsfe[], int formIn) {
 	switch (species) {
-		case 351:  { // Castform
+		case 351 : // Castform
 			fsfe[0] = 0;
 			fsfe[1] = 3;
 			return true;
-		}
-		case 778: { // Mimikyu
+		case 778 : // Mimikyu
 			fsfe[0] = 0;
 			fsfe[1] = 1;
 			return true;
-		}
-		case 774: { // Minior
-			return formIn > 6;
-		}
-			
-		case 718: {
+		case 774 : // Minior
+			return formIn > 6;			
+		case 718 :
 			if (formIn == 3) // complete
 				return true; // 0/0
 			if (formIn != 2) // give
 				return false;
-
 			fsfe[0] = 1; 
 			fsfe[1] = 1;
 			return true;
-		}
 	}
 	return false;
 }

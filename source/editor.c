@@ -1287,7 +1287,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 		touchPosition touch;
 		hidTouchRead(&touch);
 		if (!isTeam)
-			calcCurrentEntryMorePages(&currentEntry, &box, boxmax, 29, 6);
+			calcCurrentEntryMorePages(&currentEntry, &box, boxmax + 1, 29, 6);
 		
 		if (hidKeysDown() & KEY_B) 
 			break;
@@ -1315,12 +1315,8 @@ void pokemonEditor(u8* mainbuf, int game) {
 					box = 0;
 			}
 			
-			if (touch.px > 0 && touch.px < 210 && touch.py > 210 && touch.py < 240) {
-				if (modeFlag == ED_STANDARD)
-					modeFlag = ED_SEED;
-				else 
-					modeFlag = ED_STANDARD;
-			}
+			if (touch.px > 0 && touch.px < 210 && touch.py > 210 && touch.py < 240)
+				modeFlag = (modeFlag == ED_STANDARD) ? ED_SEED : ED_STANDARD;
 			
 			if (touch.px > 280 && touch.px < 318 && touch.py > 210 && touch.py < 240) 
 				break;
@@ -1359,26 +1355,11 @@ void pokemonEditor(u8* mainbuf, int game) {
 			
 			do {
 				hidScanInput();
-				if (hidKeysDown() & KEY_B) 
-					break;
-				
-				if (hidKeysDown() & KEY_R) {
-					if (tempVett[0] < boxmax) 
-						tempVett[0]++;
-					else if (tempVett[0] == boxmax) 
-						tempVett[0] = 0;
-				}
-
-				if (hidKeysDown() & KEY_L) {
-					if (tempVett[0] > 0) 
-						tempVett[0]--;
-					else if (tempVett[0] == 0) 
-						tempVett[0] = boxmax;
-				}
+				calcCurrentEntryMorePages(&tempVett[1], &tempVett[0], boxmax + 1, 29, 6);
 		
 				processing(mainbuf, game, tempVett);
 				printPKViewer(mainbuf, pkmn, isTeam, game, tempVett[1], menuEntry, tempVett[0], ED_OTA, 0, 0);	
-			} while (aptMainLoop());
+			} while (aptMainLoop() && !(hidKeysDown() & KEY_B));
 			shutDownSoc();
 			
 			//swap
@@ -1852,7 +1833,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 								touchPosition touch;
 								hidTouchRead(&touch);
 								if (!isTeam)
-									calcCurrentEntryMorePages(&cloneEntry, &box, boxmax, 29, 6);
+									calcCurrentEntryMorePages(&cloneEntry, &box, boxmax + 1, 29, 6);
 
 								if (hidKeysDown() & KEY_TOUCH) {
 									if (touch.px > 210 && touch.px < 320 && touch.py > 0 && touch.py < 210) {
