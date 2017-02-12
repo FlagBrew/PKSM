@@ -997,7 +997,6 @@ u16 getAlternativeSprite(u8* pkmn, int game) {
 
 void printElementFX(u16 n, int x, int y) {
 	sf2d_draw_texture_part(spritesSmall, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30);
-	sf2d_draw_texture_part_blend(spritesSmall, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30, RGBA8(0, 0, 0, 100));
 }
 
 void printElement(u8* mainbuf, u8* pkmn, int game, u16 n, int x, int y) {

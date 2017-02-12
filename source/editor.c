@@ -23,6 +23,7 @@ Copyright (C) 2016 Bernardo Giordano
 #include "util.h"
 #include "save.h"
 #include "hex.h"
+#include "hid.h"
 
 /* ************************ local variables ************************ */
 int lookupHT[] = {0, 1, 2, 5, 3, 4};
@@ -1454,14 +1455,11 @@ void pokemonEditor(u8* mainbuf, int game) {
 			getPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
 			bool operationDone = false;
 
-			while (aptMainLoop() && (getPokedexNumber(pkmn) > 0 && getPokedexNumber(pkmn) < 822) && !operationDone) {
+			while (aptMainLoop() && (getPokedexNumber(pkmn) > 0 && getPokedexNumber(pkmn) < 822) && !operationDone && !(hidKeysDown() & KEY_B)) {
 				hidScanInput();
 				hidTouchRead(&touch);
 				
 				printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_MENU, 0, 0);
-				
-				if (hidKeysDown() & KEY_B)
-					break;
 				
 				if (hidKeysDown() & KEY_DUP) {
 					if (menuEntry > 0)
@@ -1512,28 +1510,9 @@ void pokemonEditor(u8* mainbuf, int game) {
 									fillDescriptions(descriptions);
 									hax = false;
 									
-									while(aptMainLoop()) {
+									while(aptMainLoop() && !(hidKeysDown() & KEY_B)) {
 										hidScanInput();
 										hidTouchRead(&touch);
-										
-										if (hidKeysDown() & KEY_TOUCH) {
-											if (touch.px > 0 && touch.px < 20 && touch.py > 0 && touch.py < 20) pattern[0] = true;
-											if (touch.px > 300 && touch.px < 320 && touch.py > 0 && touch.py < 20) pattern[1] = true;
-											if (touch.px > 0 && touch.px < 20 && touch.py > 220 && touch.py < 240) pattern[2] = true;
-											if (touch.px > 300 && touch.px < 320 && touch.py > 220 && touch.py < 240) pattern[3] = true;
-										}
-										
-										if (pattern[0] && pattern[1] && pattern[2] && pattern[3]) {
-											if (!hax)
-												fillSectorsHaxMode(sector);
-											else
-												fillSectors(sector);
-											hax = (hax) ? false : true;
-											for (int i = 0; i < 4; i++) pattern[i] = false;
-										}
-										
-										if (hidKeysDown() & KEY_B)
-											break;
 										
 										if (hidKeysDown() & KEY_DRIGHT)
 											if (byteEntry < 231) 
@@ -1550,6 +1529,22 @@ void pokemonEditor(u8* mainbuf, int game) {
 										if (hidKeysDown() & KEY_DDOWN)
 											if (byteEntry <= 215) 
 												byteEntry += 16;
+										
+										if (hidKeysDown() & KEY_TOUCH) {
+											if (touch.px > 0 && touch.px < 20 && touch.py > 0 && touch.py < 20) pattern[0] = true;
+											if (touch.px > 300 && touch.px < 320 && touch.py > 0 && touch.py < 20) pattern[1] = true;
+											if (touch.px > 0 && touch.px < 20 && touch.py > 220 && touch.py < 240) pattern[2] = true;
+											if (touch.px > 300 && touch.px < 320 && touch.py > 220 && touch.py < 240) pattern[3] = true;
+										}
+										
+										if (pattern[0] && pattern[1] && pattern[2] && pattern[3]) {
+											if (!hax)
+												fillSectorsHaxMode(sector);
+											else
+												fillSectors(sector);
+											hax = (hax) ? false : true;
+											for (int i = 0; i < 4; i++) pattern[i] = false;
+										}
 
 										if (sector[byteEntry][0] && sector[byteEntry][1]) {
 											if (byteEntry == 0x30 || byteEntry == 0x31 || byteEntry == 0x32 || byteEntry == 0x33 || byteEntry == 0x34 || byteEntry == 0x35 || byteEntry == 0x36) {
@@ -1599,41 +1594,19 @@ void pokemonEditor(u8* mainbuf, int game) {
 										break;
 			
 									if (touch.px > 206 && touch.px < 317 && touch.py > 116 && touch.py < 143) {
-										while(aptMainLoop()) {
+										while(aptMainLoop() && !(hidKeysDown() & KEY_B)) {
 											hidScanInput();
 											touchPosition touch;
 											hidTouchRead(&touch);
-
-											if (hidKeysDown() & KEY_B)
-												break;
 											
 											if (hidKeysDown() & KEY_TOUCH) {
 												if (touch.px > 280 && touch.px < 318 && touch.py > 210 && touch.py < 240) 
 													break;
 												if (touch.px > 291 && touch.px < 316 && touch.py > 175 && touch.py < 187) {
 													int hpEntry = 0;
-													while(aptMainLoop()) {
-														hidScanInput();
-														
-														if (hidKeysDown() & KEY_B)
-															break;
-
-														if (hidKeysDown() & KEY_DRIGHT)
-															if (hpEntry < 15)
-																hpEntry++;
-														
-														if (hidKeysDown() & KEY_DLEFT)
-															if (hpEntry > 0) 
-																hpEntry--;
-														
-														if (hidKeysDown() & KEY_DUP)
-															if (hpEntry >= 4) 
-																hpEntry -= 4;
-														
-														if (hidKeysDown() & KEY_DDOWN)
-															if (hpEntry <= 11)
-																hpEntry += 4;
-															
+													while(aptMainLoop() && !(hidKeysDown() & KEY_B)) {							
+														hpEntry = calcCurrentEntryOneScreen(hpEntry, 15, 4);
+	
 														if (hidKeysDown() & KEY_A) {
 															setHPType(pkmn, (u8)hpEntry);
 															break;
@@ -1718,28 +1691,9 @@ void pokemonEditor(u8* mainbuf, int game) {
 									
 									if (touch.px > 180 && touch.px < 195 && touch.py > 51 && touch.py < 63) {
 										int natureEntry = 0;
-										while(aptMainLoop()) {
-											hidScanInput();
+										while(aptMainLoop() && !(hidKeysDown() & KEY_B)) {
+											natureEntry = calcCurrentEntryOneScreen(natureEntry, 24, 5);
 											
-											if (hidKeysDown() & KEY_B)
-												break;
-
-											if (hidKeysDown() & KEY_DRIGHT)
-												if (natureEntry < 24) 
-													natureEntry++;
-											
-											if (hidKeysDown() & KEY_DLEFT)
-												if (natureEntry > 0) 
-													natureEntry--;
-											
-											if (hidKeysDown() & KEY_DUP)
-												if (natureEntry >= 5) 
-													natureEntry -= 5;
-											
-											if (hidKeysDown() & KEY_DDOWN)
-												if (natureEntry <= 19) 
-													natureEntry += 5;
-												
 											if (hidKeysDown() & KEY_A) {
 												setNature(pkmn, natureEntry);
 												break;
@@ -1751,28 +1705,9 @@ void pokemonEditor(u8* mainbuf, int game) {
 									
 									if (touch.px > 0 && touch.px < 26 && touch.py > 0 && touch.py < 20) {
 										int ballEntry = 0;
-										while(aptMainLoop()) {
-											hidScanInput();
-											
-											if (hidKeysDown() & KEY_B)
-												break;
+										while(aptMainLoop() && !(hidKeysDown() & KEY_B)) {
+											ballEntry = calcCurrentEntryOneScreen(ballEntry, 25, 6);
 
-											if (hidKeysDown() & KEY_DRIGHT)
-												if (ballEntry < 25) 
-													ballEntry++;
-											
-											if (hidKeysDown() & KEY_DLEFT)
-												if (ballEntry > 0) 
-													ballEntry--;
-											
-											if (hidKeysDown() & KEY_DUP)
-												if (ballEntry >= 6) 
-													ballEntry -= 6;
-											
-											if (hidKeysDown() & KEY_DDOWN)
-												if (ballEntry <= 19)
-													ballEntry += 6;
-												
 											if (hidKeysDown() & KEY_A) {
 												setBall(pkmn, (u8)ballEntry + 1);
 												break;
@@ -1795,11 +1730,8 @@ void pokemonEditor(u8* mainbuf, int game) {
 											
 											u8 form = getForm(pkmn);
 											int formEntry = form >= forms->min && form <= forms->max ? form - forms->min : 0;
-											while(aptMainLoop()) {
+											while(aptMainLoop() && !(hidKeysDown() & KEY_B)) {
 												hidScanInput();
-												
-												if (hidKeysDown() & KEY_B)
-													break;
 
 												if (hidKeysDown() & KEY_DRIGHT)
 													if (formEntry + 1 < numforms) 
@@ -1899,12 +1831,10 @@ void pokemonEditor(u8* mainbuf, int game) {
 										int entryBottom = 0;
 										int page = 0, maxpages = 18;
 										
-										while (aptMainLoop()) {
+										while (aptMainLoop() && !(hidKeysDown() & KEY_B)) {
 											hidScanInput();
 											touchPosition touch;
 											hidTouchRead(&touch);
-											
-											if (hidKeysDown() & KEY_B) break;
 											
 											if (hidKeysDown() & KEY_L) {
 												if (page > 0) page--;
@@ -1974,15 +1904,13 @@ void pokemonEditor(u8* mainbuf, int game) {
 										int itemEntry = 0;
 										int page = 0, maxpages = 23;
 										
-										while (aptMainLoop()) {
+										while (aptMainLoop() && !(hidKeysDown() & KEY_B)) {
 											hidScanInput();
 											touchPosition touch;
 											hidTouchRead(&touch);
 											
 											if (hidKeysDown() & KEY_TOUCH && touch.px > 280 && touch.px < 318 && touch.py > 210 && touch.py < 240) 
 												break;
-											
-											if (hidKeysDown() & KEY_B) break;
 											
 											if (hidKeysDown() & KEY_L) {
 												if (page > 0) page--;
@@ -2084,13 +2012,10 @@ void pokemonEditor(u8* mainbuf, int game) {
 						case 1 : {
 							isTeam = false;
 							int cloneEntry = currentEntry;
-							while(aptMainLoop() && !operationDone) {
+							while(aptMainLoop() && !operationDone && !(hidKeysDown() & KEY_B)) {
 								hidScanInput();
 								touchPosition touch;
 								hidTouchRead(&touch);
-
-								if (hidKeysDown() & KEY_B) 
-									break;
 
 								if (hidKeysDown() & KEY_R) {
 									if (box < boxmax) 
@@ -2209,11 +2134,9 @@ void pokemonEditor(u8* mainbuf, int game) {
 								int genEntry = ((int)getPokedexNumber(pkmn) - 1) % 40;
 								int page = ((int)getPokedexNumber(pkmn) - 1) / 40, maxpages = 20;
 								
-								while (aptMainLoop()) {
+								while (aptMainLoop() && !(hidKeysDown() & KEY_B)) {
 									hidScanInput();
-									
-									if (hidKeysDown() & KEY_B) break;
-									
+
 									if (hidKeysDown() & KEY_L) {
 										if (page > 0) page--;
 										else if (page == 0) page = maxpages - 1;
@@ -2290,10 +2213,8 @@ void pokemonEditor(u8* mainbuf, int game) {
 				int genEntry = 0;
 				int page = 0, maxpages = 20;
 				
-				while (aptMainLoop()) {
+				while (aptMainLoop() && !(hidKeysDown() & KEY_B)) {
 					hidScanInput();
-					
-					if (hidKeysDown() & KEY_B) break;
 					
 					if (hidKeysDown() & KEY_L) {
 						if (page > 0) page--;
