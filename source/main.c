@@ -32,8 +32,8 @@ Copyright (C) 2016 Bernardo Giordano
 #include "fx.h"
 #include "bank.h"
 #include "save.h"
+#include "hid.h"
 
-#define GAMES 15
 #define ASSETS 10
 
 char* path[] =    { "/3ds/data/PKSM/additionalassets/3dsiconsv2.png",
@@ -196,20 +196,11 @@ int main() {
 
 	while (aptMainLoop() && !(hidKeysDown() & KEY_A)) {
 		hidScanInput();
+		game = calcCurrentEntryOneScreen(game, 14, 4);
 		
 		if (hidKeysDown() & KEY_B) {
 			exitServices();
 			return 0;
-		}
-		
-		if (hidKeysDown() & KEY_DLEFT) {
-			if (game == 0) game = GAMES - 1;
-			else if (game > 0) game--;	
-		}
-		
-		if (hidKeysDown() & KEY_DRIGHT) {
-			if (game == GAMES - 1) game = 0;
-			else if (game < GAMES - 1) game++;
 		}
 		
 		gameSelectorMenu(game);
@@ -291,21 +282,12 @@ int main() {
 			hidScanInput();
 			touchPosition touch;
 			hidTouchRead(&touch);
+			currentEntry = calcCurrentEntryOneScreen(currentEntry, 2, 1);
 			
 			if (hidKeysDown() & KEY_START) {
 				if (!confirmDisp("Save changes?"))
 					save = false;
 				break;
-			}
-
-			if (hidKeysDown() & KEY_DUP) {
-				if (currentEntry == 0) currentEntry = 2;
-				else if (currentEntry > 0) currentEntry--;
-			}
-
-			if (hidKeysDown() & KEY_DDOWN) {
-				if (currentEntry == 2) currentEntry = 0;
-				else if (currentEntry < 2) currentEntry++;
 			}
 			
 			if (hidKeysDown() & KEY_TOUCH) {
@@ -337,9 +319,11 @@ int main() {
 						while (aptMainLoop()) {
 							hidScanInput();
 							hidTouchRead(&touch);
-
-							if (hidKeysDown() & KEY_B) break;
+							option = calcCurrentEntryOneScreen(option, 3, 1);
 							
+							if (hidKeysDown() & KEY_B)
+								break;
+
 							if (hidKeysDown() & KEY_TOUCH) {
 								if (touch.px > 60 && touch.px < 260) {
 									if (touch.py > 40 && touch.py < 80) { option = 0; touchPressed = true; }
@@ -347,16 +331,6 @@ int main() {
 									if (touch.py > 120 && touch.py < 160) { option = 2; touchPressed = true; }
 									if (touch.py > 160 && touch.py < 200) { option = 3; touchPressed = true; }
 								}
-							}
-							
-							if (hidKeysDown() & KEY_DUP) {
-								if (option == 0) option = 3;
-								else if (option > 0) option--;
-							}
-
-							if (hidKeysDown() & KEY_DDOWN) {
-								if (option == 3) option = 0;
-								else if (option < 3) option++;
 							}
 							
 							if ((hidKeysDown() & KEY_A) || touchPressed) {
@@ -397,21 +371,12 @@ int main() {
 			hidScanInput();
 			touchPosition touch;
 			hidTouchRead(&touch);
+			currentEntry = calcCurrentEntryOneScreen(currentEntry, 2, 1);
 			
 			if (hidKeysDown() & KEY_START) {
 				if (!confirmDisp("Save changes?"))
 					save = false;
 				break;
-			}
-
-			if (hidKeysDown() & KEY_DUP) {
-				if (currentEntry == 0) currentEntry = 1;
-				else if (currentEntry > 0) currentEntry--;
-			}
-
-			if (hidKeysDown() & KEY_DDOWN) {
-				if (currentEntry == 1) currentEntry = 0;
-				else if (currentEntry < 1) currentEntry++;
 			}
 			
 			if (hidKeysDown() & KEY_TOUCH) {

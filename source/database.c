@@ -26,6 +26,7 @@ Copyright (C) 2016 Bernardo Giordano
 #include "util.h"
 #include "fill.h"
 #include "dex.h"
+#include "hid.h"
 
 void findFreeLocationWC(u8 *mainbuf, int game, int nInjected[]) {
 	nInjected[0] = 0;
@@ -1399,7 +1400,8 @@ void massInjector(u8* mainbuf, int game) {
 
 	while(aptMainLoop()) {
 		hidScanInput();
-
+		currentEntry = calcCurrentEntryOneScreenReversed(currentEntry, 9, 5);
+		
 		if (hidKeysDown() & KEY_B) {
 			if (game == GAME_SUN || game == GAME_MOON) {
 				if (confirmDisp("Save PokeDex flags?")) {
@@ -1419,24 +1421,6 @@ void massInjector(u8* mainbuf, int game) {
 				}
 			}
 			break;
-		}
-		
- 		if (hidKeysDown() & KEY_DUP) {
-			if (currentEntry > 0) currentEntry--;
-			else if (currentEntry == 0) currentEntry = 9;
-		}
-		
-		if (hidKeysDown() & KEY_DDOWN) {
-			if (currentEntry < 9) currentEntry++;
-			else if (currentEntry == 9) currentEntry = 0;
-		}
-		
-		if (hidKeysDown() & KEY_DLEFT) {
-			if (currentEntry >= 5) currentEntry -= 5;
-		}
-		
-		if (hidKeysDown() & KEY_DRIGHT) {
-			if (currentEntry <= 4) currentEntry += 5;
 		}
 		
 		if (hidKeysDown() & KEY_START) {

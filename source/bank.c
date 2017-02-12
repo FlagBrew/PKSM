@@ -24,6 +24,7 @@ Copyright (C) 2016 Bernardo Giordano
 #include "editor.h"
 #include "bank.h"
 #include "dex.h"
+#include "hid.h"
 
 void clearMarkings(u8* pkmn, int game) {
 	u8 version = pkmn[0xDF];
@@ -105,35 +106,7 @@ void bank(u8* mainbuf, int game) {
 		hidScanInput();
 		touchPosition touch;
 		hidTouchRead(&touch);
-		
-		if (hidKeysDown() & KEY_B) {
-			if (isBufferized) {
-				if (bufferizedfrombank)
-					memcpy(&bankbuf[coordinate[0] * 30 * PKMNLENGTH + coordinate[1] * PKMNLENGTH], pkmn, PKMNLENGTH);
-				else 
-					setPkmn(mainbuf, coordinate[0], coordinate[1], pkmn, game);
-				
-				memset(pkmn, 0, PKMNLENGTH);
-				isBufferized = false;
-			} else
-				break;
-		}
-		
-		if (hidKeysDown() & KEY_DRIGHT)
-			if (currentEntry < 59) 
-				currentEntry++;
-		
-		if (hidKeysDown() & KEY_DLEFT)
-			if (currentEntry > 0) 
-				currentEntry--;
-		
-		if (hidKeysDown() & KEY_DUP)
-			if (currentEntry >= 6) 
-				currentEntry -= 6;
-		
-		if (hidKeysDown() & KEY_DDOWN)
-			if (currentEntry <= 53) 
-				currentEntry += 6;
+		currentEntry = calcCurrentEntryOneScreen(currentEntry, 59, 6);
 
 		if (speed >= -30 && (hidKeysDown() & KEY_R)) {
 			if (currentEntry < 30) {
@@ -240,6 +213,19 @@ void bank(u8* mainbuf, int game) {
 		}
 		else
 			zSpeed = 0;
+		
+		if (hidKeysDown() & KEY_B) {
+			if (isBufferized) {
+				if (bufferizedfrombank)
+					memcpy(&bankbuf[coordinate[0] * 30 * PKMNLENGTH + coordinate[1] * PKMNLENGTH], pkmn, PKMNLENGTH);
+				else 
+					setPkmn(mainbuf, coordinate[0], coordinate[1], pkmn, game);
+				
+				memset(pkmn, 0, PKMNLENGTH);
+				isBufferized = false;
+			} else
+				break;
+		}
 		
 		if (hidKeysDown() & KEY_TOUCH) {
 			if (touch.px > 7 && touch.px < 23 && touch.py > 17 && touch.py < 37) {
