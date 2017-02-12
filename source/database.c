@@ -64,8 +64,10 @@ int getN(int i) {
 		case 136 : return 4;
 		case 142 : return 5;
 		case 184 : return 11;
+		case 201 : return 3;
 		case 204 : return 6; 		
 		case 205 : return 2;
+		case 211 : return 7;
 		case 504 : return 2;
 		case 515 : return 2;
 		case 551 : return 2;

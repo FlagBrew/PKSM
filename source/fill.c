@@ -31,7 +31,7 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[207] = "0207 - SM Big Nugget"; spriteArray[207] = 0;
 	database[208] = "0208 - SM Rare Candy"; spriteArray[208] = 0;
 	database[210] = "0210 - Gold Bottle Cap"; spriteArray[210] = 0;
-	database[219] = "0219 - 7-11 Machamp"; spriteArray[219] = 68;
+	database[211] = "0211 - SM PC Icy items"; spriteArray[211] = 0;
 	database[1602] = "1602 - SM Quick Balls"; spriteArray[1602] = 0;
 	database[1603] = "1603 - SM Poke Balls"; spriteArray[1603] = 0;
 	database[2040] = "2040 - SM Stardust"; spriteArray[2040] = 0;
@@ -43,8 +43,10 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[2047] = "2047 - PGL 50BP"; spriteArray[2047] = 0;
 	database[2048] = " "; spriteArray[2048] = -1; // no Eon Ticket in gen7
 	
+	database[201] = "0201 - SM Birthday Events"; spriteArray[201] = 764;
 	database[203] = "0203 - PC Alolan Vulpix"; spriteArray[203] = 37;
 	database[218] = "0218 - Lunar Shiny Magikarp"; spriteArray[218] = 129;
+	database[219] = "0219 - 7-11 Machamp"; spriteArray[219] = 68;
 	database[1601] = "1601 - Z-stone Munchlax"; spriteArray[1601] = 446;
 	database[1610] = "Placeholder";
 	database[2046] = "2046 - Ash Greninja"; spriteArray[2046] = 658;

@@ -1439,16 +1439,6 @@ void pokemonEditor(u8* mainbuf, int game) {
 				
 				printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_MENU, 0, 0);
 				
-				/*if (hidKeysDown() & KEY_DUP) {
-					if (menuEntry > 0)
-						menuEntry--;
-				}
-
-				if (hidKeysDown() & KEY_DDOWN) {
-					if (menuEntry < 4) 
-						menuEntry++;
-				}*/
-				
 				if (hidKeysHeld() & KEY_TOUCH) {
 					if (touch.px > 242 && touch.px < 283 && touch.py > 5 && touch.py < 25 && !isTeam) {
 						setTID(pkmn, getSaveTID(mainbuf, game));
