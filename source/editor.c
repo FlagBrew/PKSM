@@ -1646,24 +1646,24 @@ void pokemonEditor(u8* mainbuf, int game) {
 											
 											if (hidKeysDown() & KEY_TOUCH) {
 												for (int i = 0; i < 6; i++) {
+													int iv = getIV(pkmn, lookup[i]);
+													int ev = getEV(pkmn, lookup[i]);
+													int oldev = ev;
+													int tot = 0;
+													
 													if (touch.px > 96 && touch.px < 109 && touch.py > 49 + i * 20 && touch.py < 62 + i * 20)
-														if (getIV(pkmn, lookup[i]) > 0)
-															setIV(pkmn, getIV(pkmn, lookup[i]) - 1, lookup[i]);
+														setIV(pkmn, (iv > 0) ? iv - 1 : 31, lookup[i]);
 													if (touch.px > 139 && touch.px < 152 && touch.py > 49 + i * 20 && touch.py < 62 + i * 20)
-														if (getIV(pkmn, lookup[i]) < 31)
-															setIV(pkmn, getIV(pkmn, lookup[i]) + 1, lookup[i]);
+														setIV(pkmn, (iv < 31) ? iv + 1 : 0, lookup[i]);
 													if (touch.px > 177 && touch.px < 190 && touch.py > 49 + i * 20 && touch.py < 62 + i * 20)
-														if (getEV(pkmn, lookup[i]) > 0)
-															setEV(pkmn, getEV(pkmn, lookup[i]) - 1, lookup[i]);
-													if (touch.px > 218 && touch.px < 231 && touch.py > 49 + i * 20 && touch.py < 62 + i * 20) {
-														if (getEV(pkmn, lookup[i]) < 252) {
-															int tot = 0;
-															for (int i = 0; i < 6; i++)
-																tot += getEV(pkmn, i);
-															if (tot < 510)
-																setEV(pkmn, getEV(pkmn, lookup[i]) + 1, lookup[i]);
-														}
-													}
+														setEV(pkmn, (ev > 0) ? ev - 1 : 252, lookup[i]);
+													if (touch.px > 218 && touch.px < 231 && touch.py > 49 + i * 20 && touch.py < 62 + i * 20)
+														setEV(pkmn, (ev < 252) ? ev + 1 : 0, lookup[i]);
+													
+													for (int i = 0; i < 6; i++)
+														tot += getEV(pkmn, i);
+													if (tot > 510)
+														setEV(pkmn, oldev, lookup[i]);
 												}
 											}
 											
@@ -1839,12 +1839,8 @@ void pokemonEditor(u8* mainbuf, int game) {
 											setGender(pkmn, ((getGender(pkmn) == 0) ? 1 : 0));
 									}
 									
-									if (touch.px > 180 && touch.px < 195 && touch.py > 111 && touch.py < 123) {
-										if (isShiny(pkmn))
-											setShiny(pkmn, false);
-										else 
-											setShiny(pkmn, true);
-									}
+									if (touch.px > 180 && touch.px < 195 && touch.py > 111 && touch.py < 123)
+										setShiny(pkmn, isShiny(pkmn) ? false : true);									
 									
 									if (touch.px > 180 && touch.px < 195 && touch.py > 131 && touch.py < 143) {
 										if (!(getPokerus(pkmn)))
@@ -2037,25 +2033,17 @@ void pokemonEditor(u8* mainbuf, int game) {
 								}
 								
 								if (hidKeysDown() & KEY_TOUCH) {
-									if (touch.px > 180 && touch.px < 193 && touch.py > 29 && touch.py < 42) {
-										if (getLevel(pkmn) < 100)
-											setLevel(pkmn, getLevel(pkmn) + 1);
-									}
+									if (touch.px > 180 && touch.px < 193 && touch.py > 29 && touch.py < 42)
+										setLevel(pkmn, (getLevel(pkmn) < 100) ? getLevel(pkmn) + 1 : 1);
 									
-									if (touch.px > 137 && touch.px < 150 && touch.py > 29 && touch.py < 42) {
-										if (getLevel(pkmn) > 1)
-											setLevel(pkmn, getLevel(pkmn) - 1);
-									}
+									if (touch.px > 137 && touch.px < 150 && touch.py > 29 && touch.py < 42)
+										setLevel(pkmn, (getLevel(pkmn) > 1) ? getLevel(pkmn) - 1 : 100);
 									
-									if (touch.px > 137 && touch.px < 150 && touch.py > 189 && touch.py < 202) {
-										if (getFriendship(pkmn) > 0)
-											setFriendship(pkmn, getFriendship(pkmn) - 1);
-									}
+									if (touch.px > 137 && touch.px < 150 && touch.py > 189 && touch.py < 202)
+										setFriendship(pkmn, (getFriendship(pkmn) > 0) ? getFriendship(pkmn) - 1 : 255);
 
-									if (touch.px > 180&& touch.px < 193 && touch.py > 189 && touch.py < 202) {
-										if (getFriendship(pkmn) < 255)
-											setFriendship(pkmn, getFriendship(pkmn) + 1);
-									}
+									if (touch.px > 180&& touch.px < 193 && touch.py > 189 && touch.py < 202)
+										setFriendship(pkmn, (getFriendship(pkmn) < 255) ? getFriendship(pkmn) + 1 : 0);
 								}
 
 								if (hidKeysHeld() & KEY_TOUCH) {
