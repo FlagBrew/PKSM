@@ -1286,23 +1286,11 @@ void pokemonEditor(u8* mainbuf, int game) {
 		hidScanInput();
 		touchPosition touch;
 		hidTouchRead(&touch);
-
+		if (!isTeam)
+			calcCurrentEntryMorePages(&currentEntry, &box, boxmax, 29, 6);
+		
 		if (hidKeysDown() & KEY_B) 
 			break;
-
-		if (hidKeysDown() & KEY_R) {
-			if (box < boxmax) 
-				box++;
-			else if (box == boxmax) 
-				box = 0;
-		}
-
-		if (hidKeysDown() & KEY_L) {
-			if (box > 0) 
-				box--;
-			else if (box == 0) 
-				box = boxmax;
-		}
 
  		if (hidKeysDown() & KEY_TOUCH) {
 			if (touch.px > 210 && touch.px < 320 && touch.py > 0 && touch.py < 210) {
@@ -1336,36 +1324,6 @@ void pokemonEditor(u8* mainbuf, int game) {
 			
 			if (touch.px > 280 && touch.px < 318 && touch.py > 210 && touch.py < 240) 
 				break;
-		} 
-
-		if (hidKeysDown() & KEY_DRIGHT && !isTeam) {
-			if (currentEntry < 29) 
-				currentEntry++;
-			else if (currentEntry == 29) 
-				currentEntry = 0;
-		}
-
-		if (hidKeysDown() & KEY_DLEFT && !isTeam) {
-			if (currentEntry > 0) 
-				currentEntry--;
-			else if (currentEntry == 0) 
-				currentEntry = 29;
-		}
-
-		if (hidKeysDown() & KEY_DUP) {
-			if (!isTeam) {
-				if (currentEntry >= 6) 
-					currentEntry -= 6;
-			} else if (currentEntry > 0)
-				currentEntry--;
-		}
-
-		if (hidKeysDown() & KEY_DDOWN) {
-			if (!isTeam) {
-				if (currentEntry <= 23) 
-					currentEntry += 6;
-			} else if (currentEntry < 5)
-				currentEntry++;
 		}
 		
  		if (hidKeysHeld() & KEY_TOUCH) {
@@ -1791,44 +1749,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 											hidScanInput();
 											touchPosition touch;
 											hidTouchRead(&touch);
-											
-											if (hidKeysDown() & KEY_L) {
-												if (page > 0) page--;
-												else if (page == 0) page = maxpages - 1;
-											}
-											
-											if (hidKeysDown() & KEY_R) {
-												if (page < maxpages - 1) page++;
-												else if (page == maxpages - 1) page = 0;
-											}
-											
-											if (hidKeysDown() & KEY_DUP) {
-												if (moveEntry > 0) moveEntry--;
-												else if (moveEntry == 0) moveEntry = 39;
-											}
-											
-											if (hidKeysDown() & KEY_DDOWN) {
-												if (moveEntry < 39) moveEntry++;
-												else if (moveEntry == 39) moveEntry = 0;
-											}
-											
-											if (hidKeysDown() & KEY_DLEFT) {
-												if (moveEntry <= 19)	{
-													page--;
-													if (page < 0) 
-														page = maxpages - 1;
-												}
-												else if (moveEntry >= 20) moveEntry -= 20;
-											}
-											
-											if (hidKeysDown() & KEY_DRIGHT) {
-												if (moveEntry <= 19) moveEntry += 20;
-												else if (moveEntry >= 20) {
-													page++;
-													if (page > maxpages - 1)
-														page = 0;
-												}
-											}
+											calcCurrentEntryMorePagesReversed(&moveEntry, &page, maxpages, 39, 20);
 											
 											if (hidKeysHeld() & KEY_TOUCH) {
 												if (touch.px > 0 && touch.px < 198 && touch.py > 25 && touch.py < 45)   entryBottom = 0;
@@ -1862,49 +1783,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 										
 										while (aptMainLoop() && !(hidKeysDown() & KEY_B)) {
 											hidScanInput();
-											touchPosition touch;
-											hidTouchRead(&touch);
-											
-											if (hidKeysDown() & KEY_TOUCH && touch.px > 280 && touch.px < 318 && touch.py > 210 && touch.py < 240) 
-												break;
-											
-											if (hidKeysDown() & KEY_L) {
-												if (page > 0) page--;
-												else if (page == 0) page = maxpages - 1;
-											}
-											
-											if (hidKeysDown() & KEY_R) {
-												if (page < maxpages - 1) page++;
-												else if (page == maxpages - 1) page = 0;
-											}
-											
-											if (hidKeysDown() & KEY_DUP) {
-												if (itemEntry > 0) itemEntry--;
-												else if (itemEntry == 0) itemEntry = 39;
-											}
-											
-											if (hidKeysDown() & KEY_DDOWN) {
-												if (itemEntry < 39) itemEntry++;
-												else if (itemEntry == 39) itemEntry = 0;
-											}
-											
-											if (hidKeysDown() & KEY_DLEFT) {
-												if (itemEntry <= 19)	{
-													page--;
-													if (page < 0) 
-														page = maxpages - 1;
-												}
-												else if (itemEntry >= 20) itemEntry -= 20;
-											}
-											
-											if (hidKeysDown() & KEY_DRIGHT) {
-												if (itemEntry <= 19) itemEntry += 20;
-												else if (itemEntry >= 20) {
-													page++;
-													if (page > maxpages - 1)
-														page = 0;
-												}
-											}
+											calcCurrentEntryMorePagesReversed(&itemEntry, &page, maxpages, 39, 20);
 											
 											if (hidKeysDown() & KEY_A) {
 												setItemEditor(pkmn, itemsSorted[itemEntry + page * 40]);
@@ -1972,20 +1851,8 @@ void pokemonEditor(u8* mainbuf, int game) {
 								hidScanInput();
 								touchPosition touch;
 								hidTouchRead(&touch);
-
-								if (hidKeysDown() & KEY_R) {
-									if (box < boxmax) 
-										box++;
-									else if (box == boxmax) 
-										box = 0;
-								}
-
-								if (hidKeysDown() & KEY_L) {
-									if (box > 0) 
-										box--;
-									else if (box == 0) 
-										box = boxmax;
-								}
+								if (!isTeam)
+									calcCurrentEntryMorePages(&cloneEntry, &box, boxmax, 29, 6);
 
 								if (hidKeysDown() & KEY_TOUCH) {
 									if (touch.px > 210 && touch.px < 320 && touch.py > 0 && touch.py < 210) {
@@ -2011,36 +1878,6 @@ void pokemonEditor(u8* mainbuf, int game) {
 									}
 									if (touch.px > 280 && touch.px < 318 && touch.py > 210 && touch.py < 240) 
 										break;
-								} 
-
-								if (hidKeysDown() & KEY_DRIGHT && !isTeam) {
-									if (cloneEntry < 29) 
-										cloneEntry++;
-									else if (cloneEntry == 29) 
-										cloneEntry = 0;
-								}
-
-								if (hidKeysDown() & KEY_DLEFT && !isTeam) {
-									if (cloneEntry > 0) 
-										cloneEntry--;
-									else if (cloneEntry == 0) 
-										cloneEntry = 29;
-								}
-
-								if (hidKeysDown() & KEY_DUP) {
-									if (!isTeam) {
-										if (cloneEntry >= 6) 
-											cloneEntry -= 6;
-									} else if (cloneEntry > 0)
-										cloneEntry--;
-								}
-
-								if (hidKeysDown() & KEY_DDOWN) {
-									if (!isTeam) {
-										if (cloneEntry <= 23) 
-											cloneEntry += 6;
-									} else if (cloneEntry < 5)
-										cloneEntry++;
 								}
 			
 								if (hidKeysHeld() & KEY_TOUCH) {
@@ -2092,44 +1929,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 								
 								while (aptMainLoop() && !(hidKeysDown() & KEY_B)) {
 									hidScanInput();
-
-									if (hidKeysDown() & KEY_L) {
-										if (page > 0) page--;
-										else if (page == 0) page = maxpages - 1;
-									}
-									
-									if (hidKeysDown() & KEY_R) {
-										if (page < maxpages - 1) page++;
-										else if (page == maxpages - 1) page = 0;
-									}
-									
-									if (hidKeysDown() & KEY_DLEFT) {
-										if (genEntry > 0) genEntry--;
-										else if (genEntry == 0) genEntry = 39;
-									}
-									
-									if (hidKeysDown() & KEY_DRIGHT) {
-										if (genEntry < 39) genEntry++;
-										else if (genEntry == 39) genEntry = 0;
-									}
-									
-									if (hidKeysDown() & KEY_DUP) {
-										if (genEntry <= 7)	{
-											page--;
-											if (page < 0) 
-												page = maxpages - 1;
-										}
-										else if (genEntry >= 8) genEntry -= 8;
-									}
-									
-									if (hidKeysDown() & KEY_DOWN) {
-										if (genEntry <= 31) genEntry += 8;
-										else if (genEntry >= 32) {
-											page++;
-											if (page > maxpages - 1)
-												page = 0;
-										}
-									}
+									calcCurrentEntryMorePages(&genEntry, &page, maxpages, 39, 8);
 									
 									if (hidKeysDown() & KEY_A) {
 										if (!((game < 4) && ((genEntry + 1) > 721))) {
@@ -2171,44 +1971,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 				
 				while (aptMainLoop() && !(hidKeysDown() & KEY_B)) {
 					hidScanInput();
-					
-					if (hidKeysDown() & KEY_L) {
-						if (page > 0) page--;
-						else if (page == 0) page = maxpages - 1;
-					}
-					
-					if (hidKeysDown() & KEY_R) {
-						if (page < maxpages - 1) page++;
-						else if (page == maxpages - 1) page = 0;
-					}
-					
-					if (hidKeysDown() & KEY_DLEFT) {
-						if (genEntry > 0) genEntry--;
-						else if (genEntry == 0) genEntry = 39;
-					}
-					
-					if (hidKeysDown() & KEY_DRIGHT) {
-						if (genEntry < 39) genEntry++;
-						else if (genEntry == 39) genEntry = 0;
-					}
-					
-					if (hidKeysDown() & KEY_DUP) {
-						if (genEntry <= 7)	{
-							page--;
-							if (page < 0) 
-								page = maxpages - 1;
-						}
-						else if (genEntry >= 8) genEntry -= 8;
-					}
-					
-					if (hidKeysDown() & KEY_DOWN) {
-						if (genEntry <= 31) genEntry += 8;
-						else if (genEntry >= 32) {
-							page++;
-							if (page > maxpages - 1)
-								page = 0;
-						}
-					}
+					calcCurrentEntryMorePages(&genEntry, &page, maxpages, 39, 8);
 					
 					if (hidKeysDown() & KEY_A) {
 						if (!((game < 4) && ((genEntry + 1) > 721))) {
