@@ -13,7 +13,7 @@ def sendpkx(ip, filename):
         s.connect((ip, 9000))
         with open(filename, 'rb') as f:
             l = f.read(232)
-            while l != '':
+            while l != b'':
                 s.send(l)
                 l = f.read(232)
         s.close()
