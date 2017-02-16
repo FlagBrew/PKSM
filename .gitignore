@@ -1,4 +1,7 @@
 build/
 output/
 Release/
-Boop.exe
+badsectors/build
+*.elf
+*.smdh
+*.3dsx
