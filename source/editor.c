@@ -339,7 +339,6 @@ bool isShiny(u8* pkmn) {
 void rerollPID(u8* pkmn) {
     srand(getPID(pkmn));
     u32 pidbuffer = rand();
-
     memcpy(&pkmn[0x18], &pidbuffer, PIDLENGTH);
 }
 
@@ -1083,8 +1082,13 @@ void setHPType(u8* pkmn, const int val) {
 }
 
 void setShiny(u8* pkmn, const bool shiny) {
-	while(isShiny(pkmn) != shiny)
+	if (!shiny)
 		rerollPID(pkmn);
+	else {
+		u16 tsv = (getOTID(pkmn) ^ getSOTID(pkmn)) >> 4;
+		u16 buffer = (getPID(pkmn) >> 16) ^ (tsv << 4);
+		memcpy(&pkmn[0x18], &buffer, 2);
+	}
 }
 
 void setLevel(u8* pkmn, int lv) {
