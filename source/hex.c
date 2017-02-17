@@ -239,7 +239,7 @@ void fillSectors(bool sector[][2]) {
 	}
 	
 	for (int j = 0x30; j <= 0x36; j++) { // ribbons 1-6
-		sector[j][0] = true;
+//		sector[j][0] = true;
 		sector[j][1] = true;
 	}
 		
@@ -278,6 +278,10 @@ void fillSectors(bool sector[][2]) {
 		
 	for (int j = 0xD0; j <= 0xD6; j++) // OT_Feeling to Met Day
 		sector[j][0] = true;
+
+	sector[0x77][1] = true; // IV4 / isEgg / isNicknamed
+	sector[0xDD][0] = true; // Met Level / OT Gender
+	sector[0xDD][1] = true;
 }
 
 void fillSectorsHaxMode(bool sector[][2]) {
