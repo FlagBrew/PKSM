@@ -422,15 +422,15 @@ void gameSelectorMenu(int n) {
 	sf2d_swapbuffers();
 }
 
-void mainMenu(int currentEntry) {
-	char* menu[3] = {"EVENTS", "MANAGEMENT", "CREDITS"};
+void menu3(int currentEntry, char* menu[], int n, bool isMain) {
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		drawMenuTop(0);
 	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(mainMenuBottom, 0, 0);
-		sf2d_draw_texture(settings, 292, 194);
+		if (isMain)
+			sf2d_draw_texture(settings, 292, 194);
 		for (int i = 0; i < 3; i++) {
 			if (i == currentEntry)
 				sf2d_draw_texture(menuSelectedBar, (320 - menuSelectedBar->width) / 2, 60 + i * (menuSelectedBar->height));
@@ -438,7 +438,7 @@ void mainMenu(int currentEntry) {
 				sf2d_draw_texture(menuBar, (320 - menuBar->width) / 2, 60 + i * (menuBar->height));
 			sftd_draw_text(fontBold18, (320 - sftd_get_text_width(fontBold18, 18, menu[i])) / 2 - 4, 53 + (menuBar->height - 18) / 2 + i * (menuBar->height), (i == currentEntry) ? DARKBLUE : YELLOW, 18, menu[i]);
 		}
-		printBottomIndications("Press START to quit.");
+		printBottomIndications(isMain ? "Press START to quit." : "Press A to select an option.");
 	pksm_end_frame();
 	sf2d_swapbuffers();
 }
@@ -477,26 +477,6 @@ void menu4(int currentEntry, char* menu[], int n) {
 			else
 				sf2d_draw_texture(menuBar, (320 - menuBar->width) / 2, 40 + i * (menuBar->height));
 			sftd_draw_text(fontBold18, (320 - sftd_get_text_width(fontBold18, 18, menu[i])) / 2 - 4, 44 + i * (menuBar->height), (i == currentEntry) ? DARKBLUE : YELLOW, 18, menu[i]);
-		}
-		printBottomIndications("Press A to select an option.");
-	pksm_end_frame();
-	sf2d_swapbuffers();
-}
-
-void menu3(int currentEntry, char* menu[], int n) {
-	sf2d_start_frame(GFX_TOP, GFX_LEFT);
-		drawMenuTop(0);
-	pksm_end_frame();
-	
-	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-		sf2d_draw_texture(mainMenuBottom, 0, 0);
-		
-		for (int i = 0; i < 3; i++) {
-			if (i == currentEntry)
-				sf2d_draw_texture(menuSelectedBar, (320 - menuSelectedBar->width) / 2, 60 + i * (menuSelectedBar->height));
-			else
-				sf2d_draw_texture(menuBar, (320 - menuBar->width) / 2, 60 + i * (menuBar->height));
-			sftd_draw_text(fontBold18, (320 - sftd_get_text_width(fontBold18, 18, menu[i])) / 2 - 4, 53 + (menuBar->height - 18) / 2 + i * (menuBar->height), (i == currentEntry) ? DARKBLUE : YELLOW, 18, menu[i]);
 		}
 		printBottomIndications("Press A to select an option.");
 	pksm_end_frame();
@@ -1246,7 +1226,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 			if (mode == ED_STANDARD)
 				sftd_draw_textf(fontBold9, 16, 220, WHITE, 9, "TID: %u / SID: %u / TSV: %u", getSaveTID(mainbuf, game), getSaveSID(mainbuf, game), getSaveTSV(mainbuf, game));	
 			else
-				sftd_draw_textf(fontBold9, 16, 220, WHITE, 9, "Seed: %lX %lX %lX %lX", getSaveSeed(mainbuf, game, 3), getSaveSeed(mainbuf, game, 2), getSaveSeed(mainbuf, game, 1), getSaveSeed(mainbuf, game, 0));	
+				sftd_draw_textf(fontBold9, 16, 220, WHITE, 9, "Seed: %lx %lx %lx %lx", getSaveSeed(mainbuf, game, 3), getSaveSeed(mainbuf, game, 2), getSaveSeed(mainbuf, game, 1), getSaveSeed(mainbuf, game, 0));	
 		}
 	pksm_end_frame();
 	sf2d_swapbuffers();

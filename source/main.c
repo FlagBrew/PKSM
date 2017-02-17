@@ -278,6 +278,7 @@ int main() {
 	
 	GUIElementsSpecify(game);
 	if (game < 6) {
+		char* mainMenu[3] = {"MANAGEMENT", "EVENTS", "CREDITS"};
 		while (aptMainLoop()) {
 			hidScanInput();
 			touchPosition touch;
@@ -307,13 +308,6 @@ int main() {
 				touchPressed = false;
 				switch (currentEntry) {
 					case 0 : {
-						if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS)
-							eventDatabase6(mainbuf, game);
-						else if (game == GAME_SUN || game == GAME_MOON)
-							eventDatabase7(mainbuf, game);
-						break;
-					}
-					case 1 : {
 						int option = 0;
 						char* menu[4] = {"POKEMON EDITOR", "SAVE INFO", "EXTRA STORAGE", "MASS INJECTOR"};
 						while (aptMainLoop()) {
@@ -354,12 +348,19 @@ int main() {
 						}
 						break;
 					}
+					case 1 : {
+						if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS)
+							eventDatabase6(mainbuf, game);
+						else if (game == GAME_SUN || game == GAME_MOON)
+							eventDatabase7(mainbuf, game);
+						break;
+					}
 					case 2 :
 						printCredits();					
 						break;
 				}
 			}
-			mainMenu(currentEntry);
+			menu3(currentEntry, mainMenu, 3, true);
 		}
 	} else {
 		while (aptMainLoop()) {
