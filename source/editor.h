@@ -84,6 +84,7 @@ void getPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, 
 void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game);
 bool isShiny(u8* pkmn);
 bool isEgg(u8* pkmn);
+bool isNicknameF(u8* pkmn);
 void rerollPID(u8* pkmn);
 void encryptBattleSection(u8* mainbuf, u8* pkmn, int game, int currentEntry);
 void fillBattleSection(u8* mainbuf, u8* pkmn, int game, int currentEntry);
@@ -160,6 +161,8 @@ void setTID(u8* pkmn, u16 tid);
 
 void setRibbons(u8* pkmn, int ribcat, int ribnumber, bool value);
 bool getRibbons(u8* pkmn, int ribcat, int ribnumber);
+
+void setFlag(u8* pkmn, int flgaddr, int flgshift, bool value);
 
 void saveFileEditor(u8* mainbuf, int game);
 void pokemonEditor(u8* mainbuf, int game);

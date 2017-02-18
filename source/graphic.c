@@ -1966,6 +1966,14 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0x71 :
 			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 4: #%d - %s", getEggMove(pkmn, 3), moves[getEggMove(pkmn, 3)]);
 			break;
+		case 0x77: {
+			char* entries[] = { "is Nicknamed", "is Egg" };
+			sftd_draw_text(fontBold12, xribbon + 27, y, LIGHTBLUE, 12, entries[0]);
+			sf2d_draw_rectangle(xribbon, y, 13, 13, (isNicknameF(pkmn)) ? BUTTONGREEN : BUTTONRED);
+			sftd_draw_text(fontBold12, xribbon + 27, y + 17, LIGHTBLUE, 12, entries[1]);
+			sf2d_draw_rectangle(xribbon, y + 17, 13, 13, (isEgg(pkmn)) ? BUTTONGREEN : BUTTONRED);
+			break;
+		}
 		case 0x78 :
 		case 0x79 :
 		case 0x7A :
@@ -2076,5 +2084,14 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0xD6 :
 			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Met Day: %d", pkmn[byte]);
 			break;
+		case 0xDD: {
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Met Level: %d", (pkmn[byte] & 0x7f));
+			sftd_draw_textf(fontBold12, xribbon + 27, y + 17, LIGHTBLUE, 12, ": Original Trainer Gender");
+			if (getOTGender(pkmn) == 0)
+				sf2d_draw_texture(male, xribbon + 10, y + 17 + 2);
+			else if (getOTGender(pkmn) == 1)
+				sf2d_draw_texture(female, xribbon + 10 + 2, y + 17 + 2);
+			break;
+		}
 	}
 }

@@ -351,6 +351,17 @@ bool isEgg(u8* pkmn) {
     else return false;
 }
 
+bool isNicknameF(u8* pkmn) {
+	// this just returns flag-data
+	// also we need to compare name and id
+	u32 nicbuffer;
+	memcpy(&nicbuffer, &pkmn[0x77], 1);
+	nicbuffer = nicbuffer >> 7;
+	nicbuffer = nicbuffer & 0x1;
+	if (nicbuffer == 1) return true;
+	else return false;
+}
+
 bool isBattleBoxed(u8* mainbuf, int game, int box, int slot) {
 	if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS) //don't care about obsolete titles
 		return false;
@@ -1244,6 +1255,14 @@ bool getRibbons(u8* pkmn, int ribcat, int ribnumber) {
 	return (pkmn[0x30 + ribcat] & (1 << ribnumber)) == 1 << ribnumber;
 }
 
+void setFlag(u8* pkmn, int flgaddr, int flgshift, bool value) {
+	if (flgaddr < 0 || PKMNLENGTH <= flgaddr || flgshift < 0 || 8 <= flgshift)return;
+	u8 tmp;
+	memcpy(&tmp, &pkmn[flgaddr], 1);
+	tmp = (u8)((tmp & ~(1 << flgshift)) | (value ? 1 << flgshift : 0));
+	memcpy(&pkmn[flgaddr], &tmp, 1);
+}
+
 void parseHexEditor(u8* pkmn, int game, int byteEntry) {	
 	if (!hax) {
 		if (byteEntry == 0x1E || byteEntry == 0x1F || byteEntry == 0x20 || byteEntry == 0x21 || byteEntry == 0x22 || byteEntry == 0x23) {
@@ -1263,6 +1282,10 @@ void parseHexEditor(u8* pkmn, int game, int byteEntry) {
 			checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 11);
 		else if (byteEntry == 0xD3 || byteEntry == 0xD6) // day; yes, this is shitty as fuck
 			checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 30);
+		else if (byteEntry == 0xDD) { // Met Level & OT Gender
+			int metLV = pkmn[byteEntry] & 0x7f;
+			if (metLV < 100) pkmn[byteEntry]++;
+		}
 		else
 			pkmn[byteEntry]++;
 	} else
@@ -1442,12 +1465,22 @@ void pokemonEditor(u8* mainbuf, int game) {
 											for (int i = 0; i < 4; i++) pattern[i] = false;
 										}
 
-										if (sector[byteEntry][0] && sector[byteEntry][1]) {
+										if (sector[byteEntry][1]) {
 											if (byteEntry == 0x30 || byteEntry == 0x31 || byteEntry == 0x32 || byteEntry == 0x33 || byteEntry == 0x34 || byteEntry == 0x35 || byteEntry == 0x36) {
 												for (int i = 0; i < 8; i++) {
 													if ((hidKeysDown() & KEY_TOUCH) && touch.px > 90 && touch.px < 103 && touch.py > 70 + i*17 && touch.py < 83 + i*17 && !(byteEntry == 0x36 && i > 1))
 														setRibbons(pkmn, byteEntry - 0x30, i, !getRibbons(pkmn, byteEntry - 0x30, i));
 												}
+											}
+											if (byteEntry == 0x77) {
+												if ((hidKeysDown() & KEY_TOUCH) && touch.px > 90 && touch.px < 103 && touch.py > 70 && touch.py < 83)
+													setFlag(pkmn, 0x77, 7, !isNicknameF(pkmn));
+												if ((hidKeysDown() & KEY_TOUCH) && touch.px > 90 && touch.px < 103 && touch.py > 70 + 17 && touch.py < 83 + 17)
+													setFlag(pkmn, 0x77, 6, !isEgg(pkmn));
+											}
+											if (byteEntry == 0xDD) {
+												if ((hidKeysDown() & KEY_TOUCH) && touch.px > 100 - 3 && touch.px < 100 + 15 && touch.py > 89 - 6 && touch.py < 89 + 14)
+													setFlag(pkmn, 0xdd, 7, !getOTGender(pkmn));
 											}
 										}
 
@@ -1458,21 +1491,21 @@ void pokemonEditor(u8* mainbuf, int game) {
 										
 										if (heldMinus && heldPlus)
 											speed = 0;
-										else if (sector[byteEntry][0] && !sector[byteEntry][1] && downMinus) {
+										else if (sector[byteEntry][0] && downMinus) {
 											if (pkmn[byteEntry] > 0)
 												pkmn[byteEntry]--;
 										}
-										else if (sector[byteEntry][0] && !sector[byteEntry][1] && heldMinus) {
+										else if (sector[byteEntry][0] && heldMinus) {
 											if (speed < -30 && pkmn[byteEntry] > 0)
 												pkmn[byteEntry]--;
 											else
 												speed--;
 										}
-										else if (sector[byteEntry][0] && !sector[byteEntry][1] && downPlus) {
+										else if (sector[byteEntry][0] && downPlus) {
 											if (pkmn[byteEntry] < 0xFF)
 												parseHexEditor(pkmn, game, byteEntry);
 										}
-										else if (sector[byteEntry][0] && !sector[byteEntry][1] && heldPlus) {
+										else if (sector[byteEntry][0] && heldPlus) {
 											if (speed > 30 && pkmn[byteEntry] < 0xFF)
 												parseHexEditor(pkmn, game, byteEntry);
 											else
