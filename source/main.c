@@ -147,21 +147,27 @@ bool initServices() {
 		free(defaultBank);
 	}
 	
-	freezeMsg("Backing up bank...");
-	FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
-	fseek(bak, 0, SEEK_END);
-	size = ftell(bak);
-	bankbuf = (u8*)malloc(size * sizeof(u8));
-	
-	rewind(bak);
-	fread(bankbuf, size, 1, bak);
-	fclose(bak);
-	
-	FILE *new = fopen("/3ds/data/PKSM/bank/bank.bak", "wb");
-	fwrite(bankbuf, 1, size, new);
-	fclose(new);
-	
-	free(bankbuf);
+	FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bak", "rt");
+	if (bak) {
+		fclose(bak);
+		return isDownloaded;
+	} else {
+		fclose(bak);
+		freezeMsg("Backing up bank...");
+		FILE *dobak = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
+		fseek(dobak, 0, SEEK_END);
+		size = ftell(dobak);
+		bankbuf = (u8*)malloc(size * sizeof(u8));
+		
+		rewind(dobak);
+		fread(bankbuf, size, 1, dobak);
+		fclose(dobak);
+		
+		FILE *new = fopen("/3ds/data/PKSM/bank/bank.bak", "wb");
+		fwrite(bankbuf, 1, size, new);
+		fclose(new);
+		free(bankbuf);
+	}
 	return isDownloaded;
 }
 
