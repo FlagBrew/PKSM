@@ -239,7 +239,7 @@ void fillSectors(bool sector[][2]) {
 	}
 	
 	for (int j = 0x30; j <= 0x36; j++) { // ribbons 1-6
-//		sector[j][0] = true;
+		sector[j][0] = true;
 		sector[j][1] = true;
 	}
 		
@@ -261,7 +261,7 @@ void fillSectors(bool sector[][2]) {
 	for (int j = 0x62; j <= 0x69; j++) // Move 1 PP to Move 4 PP Up
 		sector[j][0] = true;
 
-	for (int j = 0x78; j <= 0x8F; j++) // Held Trainer Name
+	for (int j = 0x74; j <= 0x8F; j++) // IV to Held Trainer Name
 		sector[j][0] = true;
 		
 	for (int j = 0xA2; j <= 0xA6; j++) // HT_Friendship to HT_Feeling
@@ -279,7 +279,7 @@ void fillSectors(bool sector[][2]) {
 	for (int j = 0xD0; j <= 0xD6; j++) // OT_Feeling to Met Day
 		sector[j][0] = true;
 
-	sector[0x77][1] = true; // IV4 / isEgg / isNicknamed
+	sector[0x77][1] = true; // Egg / Nickname flag
 	sector[0xDD][0] = true; // Met Level / OT Gender
 	sector[0xDD][1] = true;
 }

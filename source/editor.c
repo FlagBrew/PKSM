@@ -1265,7 +1265,9 @@ void setFlag(u8* pkmn, int flgaddr, int flgshift, bool value) {
 
 void parseHexEditor(u8* pkmn, int game, int byteEntry) {	
 	if (!hax) {
-		if (byteEntry == 0x1E || byteEntry == 0x1F || byteEntry == 0x20 || byteEntry == 0x21 || byteEntry == 0x22 || byteEntry == 0x23) {
+		if (byteEntry == 0x36)
+			checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 2);
+		else if (byteEntry == 0x1E || byteEntry == 0x1F || byteEntry == 0x20 || byteEntry == 0x21 || byteEntry == 0x22 || byteEntry == 0x23) {
 			int tot = 0;
 			for (int i = 0; i < 6; i++)
 				tot += getEV(pkmn, i);
