@@ -23,7 +23,8 @@ Copyright (C) 2016 Bernardo Giordano
 #include <sfil.h>
 #include "util.h"
 
-
+#define BUTTONGREY RGBA8( 99, 110, 133, 255)
+#define BUTTONBORD RGBA8(160, 164, 173, 255)
 
 #define BLUE      RGBA8(104, 137, 205, 255)
 #define YELLOW    RGBA8(237, 247, 157, 255)
@@ -78,5 +79,6 @@ void printSettings(int box);
 void infoViewer(u8* pkmn, int game);
 void printfHexEditorInfo(u8* pkmn, int byte);
 
+void printSelector(int x, int y, int width, int height);
 void printMenuTop();
 void printMenuBottom();
