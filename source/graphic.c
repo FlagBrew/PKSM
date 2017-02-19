@@ -34,7 +34,7 @@ Copyright (C) 2016 Bernardo Giordano
 int lookup[] = {0x0, 0x1, 0x2, 0x4, 0x5, 0x3};
 
 sftd_font *unicodeJPN12, *unicodeKOR12, *fontBold18, *fontBold15, *fontBold14, *fontBold12, *fontBold11, *fontBold9, *fontFixed; 
-sf2d_texture *hexIcon, *hexBG, *hexButton, *blueTextBox, *otaButton, *generationBG, *generationButton, *includeInfoButton, *upperTextGS, *lowerTextGS, *hiddenPowerBG, *hiddenPowerButton, *selectBoxButton, *ballsBG, *ballButton, *male, *female, *naturesButton, *naturestx, *movesBottom, *topMovesBG, *editorBar, *editorStatsBG, *subArrow, *backgroundTop, *miniBox, *plusButton, *minusButton, *balls, *typesSheet, *transferButton, *bankTop, *shinyStar, *normalBar, *LButton, *RButton, *creditsTop, *pokeball, *topBorder, *bottomBorder, *gameSelectorBottom, *gameSelectorTop, *mainMenuBottom, *menuBar, *menuSelectedBar, *darkButton, *eventTop, *left, *lightButton, *redButton, *right, *spritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *warningTop, *warningBottom, *boxView, *infoView, *selector, *editorBG, *plus, *minus, *back, *setting, *selectorCloning, *button, *bottomPopUp, *pokemonBufferBox, *cleanTop, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR, *topSelectedMove, *settings, *item, *alternativeSpritesSmall;
+sf2d_texture *hexIcon, *hexBG, *hexButton, *blueTextBox, *otaButton, *generationBG, *generationButton, *includeInfoButton, *upperTextGS, *lowerTextGS, *hiddenPowerBG, *hiddenPowerButton, *selectBoxButton, *ballsBG, *ballButton, *male, *female, *naturesButton, *naturestx, *movesBottom, *topMovesBG, *editorBar, *editorStatsBG, *subArrow, *backgroundTop, *miniBox, *plusButton, *minusButton, *balls, *typesSheet, *transferButton, *bankTop, *shinyStar, *normalBar, *LButton, *RButton, *creditsTop, *pokeball, *topBorder, *bottomBorder, *gameSelectorBottom, *gameSelectorTop, *menuBar, *menuSelectedBar, *darkButton, *eventTop, *left, *lightButton, *redButton, *right, *spritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *warningTop, *warningBottom, *boxView, *infoView, *selector, *editorBG, *plus, *minus, *back, *setting, *selectorCloning, *button, *bottomPopUp, *pokemonBufferBox, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR, *topSelectedMove, *settings, *item, *alternativeSpritesSmall;
 
 char *gamesList[] = {"X", "Y", "OR", "AS", "S", "M", "D", "P", "PL", "HG", "SS", "B", "W", "B2", "W2"};
 
@@ -61,8 +61,6 @@ void GUIElementsInit() {
 	freezeMsg("Loading graphics...");
 	
 	init_font_cache();
-	cleanTop = sfil_load_PNG_file("romfs:/res/Clean Top.png", SF2D_PLACE_RAM);
-	mainMenuBottom = sfil_load_PNG_file("romfs:/res/Main Menu Bottom.png", SF2D_PLACE_RAM);
 }
 
 void GUIElementsSpecify(int game) {
@@ -221,7 +219,6 @@ void GUIElementsExit() {
 	sf2d_free_texture(DSTopBG);
 	sf2d_free_texture(DSBarSelected);
 	sf2d_free_texture(DSBar);
-	sf2d_free_texture(cleanTop);
 	sf2d_free_texture(bottomPopUp);
 	sf2d_free_texture(pokemonBufferBox);
 	sf2d_free_texture(selectorCloning);
@@ -246,7 +243,6 @@ void GUIElementsExit() {
 	sf2d_free_texture(lightButton);
 	sf2d_free_texture(redButton);
 	sf2d_free_texture(right);
-	sf2d_free_texture(mainMenuBottom);
 	sf2d_free_texture(menuBar);
 	sf2d_free_texture(menuSelectedBar);
 	sftd_free_font(fontBold9);
@@ -282,6 +278,16 @@ void pksm_end_frame() {
 		drawFPSDebug();
 	#endif
 	sf2d_end_frame();
+}
+
+void printMenuTop() {
+	sf2d_draw_rectangle(0, 0, 400, 240, HIGHBLUE);
+	sf2d_draw_rectangle(0, 0, 400, 25, MENUBLUE);
+}
+
+void printMenuBottom() {
+	sf2d_draw_rectangle(0, 0, 320, 240, PALEBLUE);
+	sf2d_draw_rectangle(219, 0, 320, 21, MENUBLUE);
 }
 
 void infoDisp(char* message) {
@@ -357,7 +363,7 @@ void progressBar(char* message, u32 current, u32 sz) {
 
 void drawMenuTop(int game) {
 	if (game < 6) {
-		sf2d_draw_texture(cleanTop, 0, 0);
+		printMenuTop();
 		printTitle("PKSM");
 		sf2d_draw_texture(pokeball, (400 - pokeball->width) / 2 + 5, (240 - pokeball->height) / 2 + 10);
 	}
@@ -382,7 +388,7 @@ void printBottomIndications(const char* message) {
 
 void gameSelectorMenu(int n) {
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
-		sf2d_draw_texture(cleanTop, 0, 0);
+		printMenuTop();
 		sf2d_draw_texture(upperTextGS, 172, 65);
 		
 		sftd_draw_text(fontBold9, (400 - sftd_get_text_width(fontBold9, 9, "Cart has priority over digital copy.")) / 2, 6, BLUE, 9, "Cart has priority over digital copy.");
@@ -396,7 +402,7 @@ void gameSelectorMenu(int n) {
 	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-		sf2d_draw_texture(mainMenuBottom, 0, 0);
+		printMenuBottom();
 		sf2d_draw_texture(lowerTextGS, 142, 25);
 		switch (n) {
 			case GAME_DIAMOND  : { sf2d_draw_texture(bottomBorder, 56, 64); break; }
@@ -428,7 +434,7 @@ void menu3(int currentEntry, char* menu[], int n, bool isMain) {
 	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-		sf2d_draw_texture(mainMenuBottom, 0, 0);
+		printMenuBottom();
 		if (isMain)
 			sf2d_draw_texture(settings, 292, 194);
 		for (int i = 0; i < 3; i++) {
@@ -469,7 +475,7 @@ void menu4(int currentEntry, char* menu[], int n) {
 	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-		sf2d_draw_texture(mainMenuBottom, 0, 0);
+		printMenuBottom();
 		
 		for (int i = 0; i < n; i++) {
 			if (i == currentEntry)
@@ -491,7 +497,7 @@ void printCredits() {
 		hidScanInput();
 		
 		sf2d_start_frame(GFX_TOP, GFX_LEFT);
-			sf2d_draw_texture(cleanTop, 0, 0);
+			printMenuTop();
 			printTitle("Credits");
 			sf2d_draw_texture(creditsTop, 0, 45);
 			sftd_draw_text(fontBold15, 18, 77, LIGHTBLUE, 15,  "Bernardo Giordano");
@@ -499,7 +505,7 @@ void printCredits() {
 		pksm_end_frame();
 
 		sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-			sf2d_draw_texture(mainMenuBottom, 0, 0);
+			printMenuBottom();
 			sftd_draw_text(fontBold9, 20, 30, LIGHTBLUE, 9, (char*)buf);
 			printBottomIndications("Press B to return.");
 		pksm_end_frame();
@@ -515,7 +521,7 @@ void printDatabase6(char *database[], int currentEntry, int page, int spriteArra
 	snprintf(pages, 10, "%d/%d", page + 1, 205);
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
-		sf2d_draw_texture(cleanTop, 0, 0);
+		printMenuTop();
 		printTitle("Event Database");
 		
 		for (int i = 0; i < 5; i++) {
@@ -555,7 +561,7 @@ void printDatabase6(char *database[], int currentEntry, int page, int spriteArra
 	pksm_end_frame();
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-		sf2d_draw_texture(mainMenuBottom, 0, 0);
+		printMenuBottom();
 		sf2d_draw_texture(eventMenuBottomBar, (320 - eventMenuBottomBar->width) / 2, 45);
 		sf2d_draw_texture(LButton, 83, 52);
 		sf2d_draw_texture(RButton, 221, 52);
@@ -760,7 +766,7 @@ void printDB7(int sprite, int i, bool langVett[], bool adapt, bool overwrite, in
 	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-		sf2d_draw_texture(mainMenuBottom, 0, 0);
+		printMenuBottom();
 		sftd_draw_text(fontBold14, 16, 50, LIGHTBLUE, 14, "Languages:");
 		sftd_draw_text(fontBold14, 33, 112, LIGHTBLUE, 14, "Overwrite Wondercard:");
 		sftd_draw_text(fontBold14, 33, 140, LIGHTBLUE, 14, "Adapt language to WC:");
@@ -848,7 +854,7 @@ void printDB6(int sprite, int i, bool langVett[], bool adapt, bool overwrite, in
 	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-		sf2d_draw_texture(mainMenuBottom, 0, 0);
+		printMenuBottom();
 		sftd_draw_text(fontBold14, 33, 50, LIGHTBLUE, 14, "Languages:");
 		sftd_draw_text(fontBold14, 33, 112, LIGHTBLUE, 14, "Overwrite Wondercard:");
 		sftd_draw_text(fontBold14, 33, 140, LIGHTBLUE, 14, "Adapt language to WC:");
@@ -920,7 +926,7 @@ void printEditor(u8* mainbuf, int game, int currentEntry, int langCont) {
 	char *languages[] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR", "CHS", "CHT"};
 
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
-		sf2d_draw_texture(cleanTop, 0, 0);
+		printMenuTop();
 		printTitle("Save File Editor");
 		
 		for (int i = 0; i < 5; i++) {
@@ -956,7 +962,7 @@ void printEditor(u8* mainbuf, int game, int currentEntry, int langCont) {
 	pksm_end_frame();
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-		sf2d_draw_texture(mainMenuBottom, 0, 0);
+		printMenuBottom();
 		printBottomIndications("Press START to edit, A to toggle, B to exit.");
 	pksm_end_frame();
 	sf2d_swapbuffers();
@@ -1498,7 +1504,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			}
 		}
 		if (mode == ED_HEX) {
-			sf2d_draw_texture(mainMenuBottom, 0, 0);
+			printMenuBottom();
 			sf2d_draw_texture(blueTextBox, 165, 28);
 			if (sector[additional1][0] && !(sector[additional1][1])) {
 				sf2d_draw_texture(minusButton, 224, 31);
@@ -1696,7 +1702,7 @@ void printMassInjector(int currentEntry) {
 	snprintf(message, 30, "%d boxes will be replaced.", boxes[currentEntry]);
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
-		sf2d_draw_texture(cleanTop, 0, 0);
+		printMenuTop();
 		printTitle("Mass Injector");
 		
 		for (int i = 0; i < 5; i++) {
@@ -1724,7 +1730,7 @@ void printMassInjector(int currentEntry) {
 	pksm_end_frame();
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-		sf2d_draw_texture(mainMenuBottom, 0, 0);
+		printMenuBottom();
 		sftd_draw_text(fontBold12, (320 - sftd_get_text_width(fontBold12, 12, message)) / 2, 12, LIGHTBLUE, 12, message);
 		printBottomIndications("Press START to inject, B to exit.");
 	pksm_end_frame();
@@ -1740,7 +1746,7 @@ void printSettings(int box) {
 	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-		sf2d_draw_texture(mainMenuBottom, 0, 0);
+		printMenuBottom();
 
 		for (int i = 0; i < 3; i++) {
 			sf2d_draw_texture(menuBar, (320 - menuBar->width) / 2, 60 + i * (menuBar->height));

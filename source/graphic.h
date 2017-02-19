@@ -23,12 +23,16 @@ Copyright (C) 2016 Bernardo Giordano
 #include <sfil.h>
 #include "util.h"
 
+
+
 #define BLUE      RGBA8(104, 137, 205, 255)
 #define YELLOW    RGBA8(237, 247, 157, 255)
 #define LIGHTBLUE RGBA8(187, 208, 254, 255)
 #define DARKBLUE  RGBA8( 35,  69, 167, 255)
 #define HIGHBLUE  RGBA8( 28,  45,  86, 255)
 #define MASKBLACK RGBA8(  0,   0,   0, 180)
+#define PALEBLUE  RGBA8( 70,  95, 144, 255)
+#define MENUBLUE  RGBA8( 35,  69, 137, 255)
 
 #define BLACK RGBA8(0, 0, 0, 255)
 #define BUTTONGREEN RGBA8(116, 222, 126, 255)
