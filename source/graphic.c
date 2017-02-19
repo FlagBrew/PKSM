@@ -58,9 +58,10 @@ void GUIElementsInit() {
 	fontFixed = sftd_load_font_file("romfs:/res/VeraMono.ttf");
 	warningTop = sfil_load_PNG_file("romfs:/res/Warning Top.png", SF2D_PLACE_RAM);
 	warningBottom = sfil_load_PNG_file("romfs:/res/Warning Bottom.png", SF2D_PLACE_RAM);
-	freezeMsg("Loading graphics...");
+	freezeMsg("Loading fonts...");
 	
 	init_font_cache();
+	freezeMsg("Done!");
 }
 
 void GUIElementsSpecify(int game) {
@@ -269,7 +270,7 @@ void init_font_cache() {
 }
 
 void drawFPSDebug() {
-	sf2d_draw_rectangle(10, 10, 105, 20, RGBA8(0, 0, 0, 200));
+	sf2d_draw_rectangle(10, 10, 108, 20, RGBA8(0, 0, 0, 200));
 	sftd_draw_textf(fontBold12, 12, 13, WHITE, 12, "FPS: %2.6f", sf2d_get_fps());
 }
 
@@ -281,13 +282,13 @@ void pksm_end_frame() {
 }
 
 void printMenuTop() {
-	sf2d_draw_rectangle(0, 0, 400, 240, HIGHBLUE);
-	sf2d_draw_rectangle(0, 0, 400, 25, MENUBLUE);
+	sf2d_draw_rectangle(0, 0, 400, 240, MENUBLUE);
+	sf2d_draw_rectangle(0, 0, 400, 25, HIGHBLUE);
 }
 
 void printMenuBottom() {
 	sf2d_draw_rectangle(0, 0, 320, 240, PALEBLUE);
-	sf2d_draw_rectangle(219, 0, 320, 21, MENUBLUE);
+	sf2d_draw_rectangle(0, 219, 320, 21, MENUBLUE);
 }
 
 void infoDisp(char* message) {
