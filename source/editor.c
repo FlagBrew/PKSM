@@ -868,6 +868,10 @@ u16 getPokedexNumber(u8* pkmn) {
 }
 
 u8 getFriendship(u8* pkmn) {
+	return (pkmn[0x93] == 0) ? getOTFriendship(pkmn) : getHTFriendship(pkmn);
+}
+
+u8 getHTFriendship(u8* pkmn) {
     u8 friendship;
     memcpy(&friendship, &pkmn[0xA2], 1);
     return friendship;
@@ -995,6 +999,59 @@ void setEggMove(u8* pkmn, const u16 move, const int nmove) {
     memcpy(&pkmn[0x6A + (EGGMOVELENGTH * nmove)], &move, EGGMOVELENGTH);
 }
 
+void setNicknameZ(u8* pkmn, char* nick, int dst) {
+	// dst 0x40(Nickname) 0xB0(OT) 0x78(HT)
+	u8 toinsert[NICKNAMELENGTH];
+	memset(toinsert, 0, NICKNAMELENGTH);
+
+	if (!memcmp(nick, toinsert, NICKNAMELENGTH))
+		return;
+
+	char buf;
+	int nicklen = strlen(nick);
+	int r = 0, w = 0, i = 0;
+	while (r < nicklen) {
+		buf = *(nick + r);
+		r++;
+		if ((buf & 0x80) == 0) {
+			toinsert[w] = buf & 0x7f;
+			i = 0;
+		//	w += 2;
+		}
+		else if ((buf & 0xe0) == 0xc0) {
+			toinsert[w] = buf & 0x1f;
+			i = 1;
+		}
+		else if ((buf & 0xf0) == 0xe0) {
+			toinsert[w] = buf & 0x0f;
+			i = 2;
+		}
+		else break;
+		for (int j = 0; j < i; j++) {
+			buf = *(nick + r);
+			r++;
+			if (toinsert[w] > 0x04) {
+				toinsert[w + 1] = (toinsert[w + 1] << 6) | (((toinsert[w] & 0xfc) >> 2) & 0x3f);
+				toinsert[w] &= 0x03;
+			}
+			toinsert[w] = (toinsert[w] << 6) | (buf & 0x3f);
+		}
+		// r++;
+		w += 2;
+		if (w > NICKNAMELENGTH)
+			break;
+	}
+
+	if (dst == 0x40) {
+		u8 isnicknamed;
+		memcpy(&isnicknamed, &pkmn[0x77], 1);
+		isnicknamed |= 0x80;
+		memcpy(&pkmn[0x77], &isnicknamed, 1);
+	}
+
+	memcpy(&pkmn[dst], toinsert, NICKNAMELENGTH);
+}
+
 void setNickname(u8* pkmn, char* nick) {
     u8 toinsert[NICKNAMELENGTH];
 	memset(toinsert, 0, NICKNAMELENGTH);
@@ -1040,7 +1097,17 @@ void setNature(u8* pkmn, const u8 nature) {
 }
 
 void setFriendship(u8* pkmn, const int val) {
+	if (pkmn[0x93] == 0)
+		setOTFriendship(pkmn, val);
+	else
+		setHTFriendship(pkmn, val);
+}
+
+void setHTFriendship(u8* pkmn, const int val) {
 	memcpy(&pkmn[0xA2], &val, 1);
+}
+
+void setOTFriendship(u8* pkmn, const int val) {
 	memcpy(&pkmn[0xCA], &val, 1);
 }
 
@@ -1253,6 +1320,19 @@ void setRibbons(u8* pkmn, int ribcat, int ribnumber, bool value) {
 
 bool getRibbons(u8* pkmn, int ribcat, int ribnumber) {
 	return (pkmn[0x30 + ribcat] & (1 << ribnumber)) == 1 << ribnumber;
+}
+
+void setHTi(u8* pkmn, int htnumber, bool value) {
+	// HyperTrains htnumber HP,ATK,SPATK,SPDEF,SPEED
+	u8 tmp;
+	memcpy(&tmp, &pkmn[0xDE], 1);
+	tmp = (u8)((tmp & ~(1 << htnumber)) | (value ? 1 << htnumber : 0));
+	memcpy(&pkmn[0xDE], &tmp, 1);
+}
+
+bool getHTi(u8* pkmn, int htnumber) {
+	//	return ((getHT(pkmn) >> htnumber) & 1) == 1;
+	return (pkmn[0xDE] & (1 << htnumber)) == 1 << htnumber;
 }
 
 void setFlag(u8* pkmn, int flgaddr, int flgshift, bool value) {
@@ -1483,6 +1563,16 @@ void pokemonEditor(u8* mainbuf, int game) {
 											if (byteEntry == 0xDD) {
 												if ((hidKeysDown() & KEY_TOUCH) && touch.px > 100 - 3 && touch.px < 100 + 15 && touch.py > 89 - 6 && touch.py < 89 + 14)
 													setFlag(pkmn, 0xdd, 7, !getOTGender(pkmn));
+											}
+											if (byteEntry == 0xDE) {
+												for (int i = 0; i < 6; i++) {
+													if ((hidKeysDown() & KEY_TOUCH) && touch.px > 90 && touch.px < 103 && touch.py > 70 + i * 17 && touch.py < 83 + i * 17)
+														setHTi(pkmn, i, !getHTi(pkmn, i));
+												}
+											}
+											if (byteEntry == 0x1D) {
+												if ((hidKeysDown() & KEY_TOUCH) && touch.px > 90 && touch.px < 103 && touch.py > 70 && touch.py < 83)
+													setFlag(pkmn, 0x1D, 0, !((pkmn[byteEntry] & 1) == 1));
 											}
 										}
 
@@ -1731,7 +1821,8 @@ void pokemonEditor(u8* mainbuf, int game) {
 										nick[NICKNAMELENGTH - 1] = '\0';
 
 										if (button != SWKBD_BUTTON_NONE)
-											setNickname(pkmn, nick);
+											//setNickname(pkmn, nick);
+											setNicknameZ(pkmn, nick, 0x40);
 									}
 									
 									if (touch.px > 180 && touch.px < 195 && touch.py > 151 && touch.py < 163) {
@@ -1750,7 +1841,8 @@ void pokemonEditor(u8* mainbuf, int game) {
 										nick[NICKNAMELENGTH - 1] = '\0';
 
 										if (button != SWKBD_BUTTON_NONE)
-											setOT(pkmn, nick);
+											//setOT(pkmn, nick);
+											setNicknameZ(pkmn, nick, 0xb0);
 									}
 									
 									if (touch.px > 206 && touch.px < 315 && touch.py > 170 && touch.py < 197) {
@@ -1764,13 +1856,13 @@ void pokemonEditor(u8* mainbuf, int game) {
 										int moveEntry = 0;
 										int entryBottom = 0;
 										int page = 0, maxpages = 18;
-										
+
 										while (aptMainLoop() && !(hidKeysDown() & KEY_B)) {
 											hidScanInput();
 											touchPosition touch;
 											hidTouchRead(&touch);
 											calcCurrentEntryMorePagesReversed(&moveEntry, &page, maxpages, 39, 20);
-											
+
 											if (hidKeysHeld() & KEY_TOUCH) {
 												if (touch.px > 0 && touch.px < 198 && touch.py > 25 && touch.py < 45)   entryBottom = 0;
 												if (touch.px > 0 && touch.px < 198 && touch.py > 45 && touch.py < 65)   entryBottom = 1;
@@ -1780,20 +1872,20 @@ void pokemonEditor(u8* mainbuf, int game) {
 												if (touch.px > 0 && touch.px < 198 && touch.py > 149 && touch.py < 169) entryBottom = 5;
 												if (touch.px > 0 && touch.px < 198 && touch.py > 169 && touch.py < 189) entryBottom = 6;
 												if (touch.px > 0 && touch.px < 198 && touch.py > 189 && touch.py < 209) entryBottom = 7;
-												
-												if (touch.px > 280 && touch.px < 318 && touch.py > 210 && touch.py < 240) 
+
+												if (touch.px > 280 && touch.px < 318 && touch.py > 210 && touch.py < 240)
 													break;
 											}
-											
+
 											if (hidKeysDown() & KEY_A) {
 												if (entryBottom < 4)
 													setMove(pkmn, movesSorted[moveEntry + page * 40], entryBottom);
 												else
 													setEggMove(pkmn, movesSorted[moveEntry + page * 40], entryBottom - 4);
 											}
-											
+
 											printPKEditor(pkmn, game, moveEntry, page, entryBottom, ED_MOVES, descriptions);
-										}										
+										}
 									}
 									
 									if (touch.px > 180 && touch.px < 195 && touch.py > 90 && touch.py < 102) {
@@ -1822,11 +1914,19 @@ void pokemonEditor(u8* mainbuf, int game) {
 									if (touch.px > 137 && touch.px < 150 && touch.py > 29 && touch.py < 42)
 										setLevel(pkmn, (getLevel(pkmn) > 1) ? getLevel(pkmn) - 1 : 100);
 									
-									if (touch.px > 137 && touch.px < 150 && touch.py > 189 && touch.py < 202)
-										setFriendship(pkmn, (getFriendship(pkmn) > 0) ? getFriendship(pkmn) - 1 : 255);
+									if (touch.px > 137 && touch.px < 150 && touch.py > 189 && touch.py < 202) {
+										if (isEgg(pkmn))
+											setOTFriendship(pkmn, (getOTFriendship(pkmn) > 0) ? getOTFriendship(pkmn) - 1 : 255);
+										else
+											setFriendship(pkmn, (getFriendship(pkmn) > 0) ? getFriendship(pkmn) - 1 : 255);
+									}
 
-									if (touch.px > 180&& touch.px < 193 && touch.py > 189 && touch.py < 202)
-										setFriendship(pkmn, (getFriendship(pkmn) < 255) ? getFriendship(pkmn) + 1 : 0);
+									if (touch.px > 180 && touch.px < 193 && touch.py > 189 && touch.py < 202) {
+										if (isEgg(pkmn))
+											setOTFriendship(pkmn, (getOTFriendship(pkmn) < 255) ? getOTFriendship(pkmn) + 1 : 0);
+										else
+											setFriendship(pkmn, (getFriendship(pkmn) < 255) ? getFriendship(pkmn) + 1 : 0);
+									}
 								}
 
 								if (hidKeysHeld() & KEY_TOUCH) {
@@ -1843,16 +1943,32 @@ void pokemonEditor(u8* mainbuf, int game) {
 											speed--;
 									}
 									else if (touch.px > 137 && touch.px < 150 && touch.py > 189 && touch.py < 202) {
-										if (speed < -30 && getFriendship(pkmn) > 0)
-											setFriendship(pkmn, getFriendship(pkmn) - 1);
-										else
-											speed--;
+										if (isEgg(pkmn)) {
+											if (speed < -30 && getOTFriendship(pkmn) > 0)
+												setOTFriendship(pkmn, getOTFriendship(pkmn) - 1);
+											else
+												speed--;
+										}
+										else {
+											if (speed < -30 && getFriendship(pkmn) > 0)
+												setFriendship(pkmn, getFriendship(pkmn) - 1);
+											else
+												speed--;
+										}
 									}
-									else if (touch.px > 180&& touch.px < 193 && touch.py > 189 && touch.py < 202) {
-										if (speed > 30 && getFriendship(pkmn) < 255)
-											setFriendship(pkmn, getFriendship(pkmn) + 1);
-										else
-											speed++;
+									else if (touch.px > 180 && touch.px < 193 && touch.py > 189 && touch.py < 202) {
+										if (isEgg(pkmn)) {
+											if (speed > 30 && getOTFriendship(pkmn) < 255)
+												setOTFriendship(pkmn, getOTFriendship(pkmn) + 1);
+											else
+												speed++;
+										}
+										else {
+											if (speed > 30 && getFriendship(pkmn) < 255)
+												setFriendship(pkmn, getFriendship(pkmn) + 1);
+											else
+												speed++;
+										}
 									}
 									else
 										speed = 0;
