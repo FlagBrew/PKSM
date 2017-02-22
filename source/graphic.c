@@ -1797,7 +1797,7 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0x1C :
 			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Nature: %s", natures[getNature(pkmn)]);
 			break;
-		case 0x1D: {
+		case 0x1D : {
 			char* entries[] = { "Fateful Encounter flag" };
 			int i = sftd_get_text_width(fontBold12, 12, "Gender: ");
 			sftd_draw_text(fontBold12, xribbon + 27, y, LIGHTBLUE, 12, entries[0]);
@@ -2106,7 +2106,7 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0xD6 :
 			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Met Day: %d", pkmn[byte]);
 			break;
-		case 0xDD: {
+		case 0xDD : {
 			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Met Level: %d", (pkmn[byte] & 0x7f));
 			sftd_draw_textf(fontBold12, xribbon + 27, y + 17, LIGHTBLUE, 12, ": Original Trainer Gender");
 			if (getOTGender(pkmn) == 0)
@@ -2115,7 +2115,7 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 				sf2d_draw_texture(female, xribbon + 10 + 2, y + 17 + 2);
 			break;
 		}
-		case 0xDE: {
+		case 0xDE : {
 			char* entries[] = { "HP Hyper Trained", "ATK Hyper Trained", "DEF Hyper Trained", "SP.ATK Hyper Trained", "SP.DEF Hyper Trained", "SPEED Hyper Trained" };
 			for (int i = 0; i < 6; i++) {
 				sftd_draw_text(fontBold12, xribbon + 27, y + 17 * i, LIGHTBLUE, 12, entries[i]);

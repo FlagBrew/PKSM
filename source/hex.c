@@ -255,7 +255,7 @@ void fillSectors(bool sector[][2]) {
 	for (int j = 0x40; j <= 0x57; j++) // Nickname
 		sector[j][0] = true;	
 		
-	for (int j = 0x1E; j <= 0x29; j++) // EV_HP to Contest Value Sheen
+	for (int j = 0x1D; j <= 0x29; j++) // Fateful encounter to Contest Value Sheen
 		sector[j][0] = true;
 		
 	for (int j = 0x62; j <= 0x69; j++) // Move 1 PP to Move 4 PP Up
@@ -279,9 +279,11 @@ void fillSectors(bool sector[][2]) {
 	for (int j = 0xD0; j <= 0xD6; j++) // OT_Feeling to Met Day
 		sector[j][0] = true;
 
+	sector[0x77][0] = true; // Egg / Nickname flag
 	sector[0x77][1] = true; // Egg / Nickname flag
 	sector[0xDD][0] = true; // Met Level / OT Gender
 	sector[0xDD][1] = true;
+	sector[0xDE][0] = true; // Hyper Train Flags
 	sector[0xDE][1] = true; // Hyper Train Flags
 	sector[0x1D][1] = true; // Fateful encounter
 }

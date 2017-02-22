@@ -136,11 +136,9 @@ u16 getBP(u8* mainbuf, int game);
 
 void setGender(u8* pkmn, u8 val);
 void setForm(u8* pkmn, u8 val);
-void setOT(u8* pkmn, char* nick);
 void setHT(u8* pkmn, char* nick);
 void setHTGender(u8* pkmn, const u8 gender);
 void setNature(u8* pkmn, const u8 nature);
-void setNickname(u8* pkmn, char* nick);
 void setNicknameZ(u8* pkmn, char* nick, int dst);
 void setShiny(u8* pkmn, const bool shiny);
 void setWC(u8* mainbuf, u8* wc6buf, int game, int i, int nInjected[]);

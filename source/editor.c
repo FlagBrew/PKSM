@@ -1052,38 +1052,6 @@ void setNicknameZ(u8* pkmn, char* nick, int dst) {
 	memcpy(&pkmn[dst], toinsert, NICKNAMELENGTH);
 }
 
-void setNickname(u8* pkmn, char* nick) {
-    u8 toinsert[NICKNAMELENGTH];
-	memset(toinsert, 0, NICKNAMELENGTH);
-	
-	if (!memcmp(nick, toinsert, NICKNAMELENGTH))
-		return;
-
-    for (u16 i = 0, nicklen = strlen(nick); i < nicklen; i++) {
-        toinsert[i * 2] = *(nick + i);
-	}
-	
-	u8 isnicknamed;
-	memcpy(&isnicknamed, &pkmn[0x77], 1);
-	isnicknamed |= 0x80;
-	memcpy(&pkmn[0x77], &isnicknamed, 1);
-
-    memcpy(&pkmn[0x40], toinsert, NICKNAMELENGTH);
-}
-
-void setOT(u8* pkmn, char* nick) {
-    u8 toinsert[NICKNAMELENGTH];
-	memset(toinsert, 0, NICKNAMELENGTH);
-
-	if (!memcmp(nick, toinsert, NICKNAMELENGTH))
-		return;
-	
-    for (u16 i = 0, nicklen = strlen(nick); i < nicklen; i++)
-        toinsert[i * 2] = *(nick + i);
-
-    memcpy(&pkmn[0xB0], toinsert, NICKNAMELENGTH);
-}
-
 void setHT(u8* pkmn, char* nick) {
     memcpy(&pkmn[0x78], nick, NICKNAMELENGTH);
 }
@@ -1345,7 +1313,9 @@ void setFlag(u8* pkmn, int flgaddr, int flgshift, bool value) {
 
 void parseHexEditor(u8* pkmn, int game, int byteEntry) {	
 	if (!hax) {
-		if (byteEntry == 0x36)
+		if (byteEntry == 0x1D)
+			checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 1);
+		else if (byteEntry == 0x36)
 			checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 2);
 		else if (byteEntry == 0x1E || byteEntry == 0x1F || byteEntry == 0x20 || byteEntry == 0x21 || byteEntry == 0x22 || byteEntry == 0x23) {
 			int tot = 0;
@@ -1368,6 +1338,8 @@ void parseHexEditor(u8* pkmn, int game, int byteEntry) {
 			int metLV = pkmn[byteEntry] & 0x7f;
 			if (metLV < 100) pkmn[byteEntry]++;
 		}
+		else if (byteEntry == 0xDE)
+			checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 0x3E);
 		else
 			pkmn[byteEntry]++;
 	} else
@@ -1821,7 +1793,6 @@ void pokemonEditor(u8* mainbuf, int game) {
 										nick[NICKNAMELENGTH - 1] = '\0';
 
 										if (button != SWKBD_BUTTON_NONE)
-											//setNickname(pkmn, nick);
 											setNicknameZ(pkmn, nick, 0x40);
 									}
 									
@@ -1841,7 +1812,6 @@ void pokemonEditor(u8* mainbuf, int game) {
 										nick[NICKNAMELENGTH - 1] = '\0';
 
 										if (button != SWKBD_BUTTON_NONE)
-											//setOT(pkmn, nick);
 											setNicknameZ(pkmn, nick, 0xb0);
 									}
 									
