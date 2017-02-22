@@ -4,6 +4,6 @@
 [submodule "source/memecrypto"]
 	path = source/memecrypto
 	url = https://github.com/BernardoGiordano/memecrypto.git
-[submodule "servepkx/PKSMBrowserInject"]
-	path = servepkx/PKSMBrowserInject
+[submodule "servepkx/webbrowser"]
+	path = servepkx/webbrowser
 	url = https://github.com/zaksabeast/PKSMBrowserInject
