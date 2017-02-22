@@ -32,7 +32,7 @@ Copyright (C) 2016 Bernardo Giordano
 #include <netinet/in.h>
 #include "graphic.h"
 
-#define PAYLOADSIZE 	232
+#define PAYLOADSIZE 	0x400
 #define SOC_ALIGN       0x1000
 #define SOC_BUFFERSIZE  0x100000
 
