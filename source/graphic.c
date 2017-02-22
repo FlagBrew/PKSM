@@ -1030,7 +1030,10 @@ void infoViewer(u8* pkmn, int game) {
 	
 	sftd_draw_text(fontBold12, 251, 138, WHITE, 12, "Moves");
 	for (int i = 0; i < 10; i++) {
-		sftd_draw_text(fontBold12, 2, y_desc, BLUE, 12, entries[i]);
+		if (i == 8 && isEgg(pkmn))
+			sftd_draw_text(fontBold12, 2, y_desc, BLUE, 12, "Egg cycle:");
+		else
+			sftd_draw_text(fontBold12, 2, y_desc, BLUE, 12, entries[i]);
 		y_desc += 20;
 		if (i == 2) y_desc += 5;
 		if (i == 5) y_desc += 6;
@@ -1075,7 +1078,10 @@ void infoViewer(u8* pkmn, int game) {
 			sf2d_draw_texture(shinyStar, 205, 9);
 		
 		char* friendship = (char*)malloc(11 * sizeof(char));
-		snprintf(friendship, 11, "%u / %u", getFriendship(pkmn), getOTFriendship(pkmn));
+		if (isEgg(pkmn))
+			snprintf(friendship, 11, "%u", getOTFriendship(pkmn));
+		else
+			snprintf(friendship, 11, "%u / %u", getFriendship(pkmn), getOTFriendship(pkmn));
 		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, friendship), 200, WHITE, 12, friendship);
 		free(friendship);
 		
@@ -1399,7 +1405,10 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			}
 			
 			for (int i = 0; i < 9; i++)
-				sftd_draw_text(fontBold12, 2, 29 + i * 20, LIGHTBLUE, 12, entries[i]);
+				if (i == 8 && isEgg(pkmn))
+					sftd_draw_text(fontBold12, 2, 29 + i * 20, LIGHTBLUE, 12, "Egg cycle:");
+				else
+					sftd_draw_text(fontBold12, 2, 29 + i * 20, LIGHTBLUE, 12, entries[i]);
 
 			for (int i = 0; i < 7; i++)
 				sf2d_draw_texture(setting, 180, 51 + i * 20);
@@ -1421,7 +1430,10 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			sftd_draw_text(fontBold12, 178 - sftd_get_text_width(fontBold12, 12, isInfected(pkmn) ? "Yes" : "No"), 129, WHITE, 12, isInfected(pkmn) ? "Yes" : "No");
 			
 			char* friendship = (char*)malloc(4 * sizeof(char));
-			snprintf(friendship, 4, "%u", getFriendship(pkmn));
+			if (isEgg(pkmn))
+				snprintf(friendship, 4, "%u", getOTFriendship(pkmn));
+			else
+				snprintf(friendship, 4, "%u", getFriendship(pkmn));
 			sftd_draw_text(fontBold12, 180 - max - 3 + (max - sftd_get_text_width(fontBold12, 12, friendship)) / 2, 189, WHITE, 12, friendship);
 			free(friendship);
 			
@@ -1785,7 +1797,22 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0x1C :
 			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Nature: %s", natures[getNature(pkmn)]);
 			break;
-		case 0x1E : 
+		case 0x1D: {
+			char* entries[] = { "Fateful Encounter flag" };
+			int i = sftd_get_text_width(fontBold12, 12, "Gender: ");
+			sftd_draw_text(fontBold12, xribbon + 27, y, LIGHTBLUE, 12, entries[0]);
+			sf2d_draw_rectangle(xribbon, y, 13, 13, (pkmn[byte] & 1) ? BUTTONGREEN : BUTTONRED);
+			sftd_draw_text(fontBold12, x, y + 17, LIGHTBLUE, 12, "Gender: ");
+			if (getGender(pkmn) == 0)
+				sftd_draw_text(fontBold12, x + i, y + 17, LIGHTBLUE, 12, "male");
+			else if (getGender(pkmn) == 1)
+				sftd_draw_text(fontBold12, x + i, y + 17, LIGHTBLUE, 12, "female");
+			else
+				sftd_draw_text(fontBold12, x + i, y + 17, LIGHTBLUE, 12, "genderless");
+			sftd_draw_textf(fontBold12, x, y + 17 * 2, LIGHTBLUE, 12, "Alternative Form: #%d", pkmn[byte] >> 3);
+			break;
+		}
+		case 0x1E :
 			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "HP EV: %d", pkmn[byte]);
 			break;
 		case 0x1F : 
@@ -2086,6 +2113,14 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 				sf2d_draw_texture(male, xribbon + 10, y + 17 + 2);
 			else if (getOTGender(pkmn) == 1)
 				sf2d_draw_texture(female, xribbon + 10 + 2, y + 17 + 2);
+			break;
+		}
+		case 0xDE: {
+			char* entries[] = { "HP Hyper Trained", "ATK Hyper Trained", "DEF Hyper Trained", "SP.ATK Hyper Trained", "SP.DEF Hyper Trained", "SPEED Hyper Trained" };
+			for (int i = 0; i < 6; i++) {
+				sftd_draw_text(fontBold12, xribbon + 27, y + 17 * i, LIGHTBLUE, 12, entries[i]);
+				sf2d_draw_rectangle(xribbon, y + 17 * i, 13, 13, (getHTi(pkmn, i)) ? BUTTONGREEN : BUTTONRED);
+			}
 			break;
 		}
 	}

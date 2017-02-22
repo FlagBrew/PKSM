@@ -282,6 +282,8 @@ void fillSectors(bool sector[][2]) {
 	sector[0x77][1] = true; // Egg / Nickname flag
 	sector[0xDD][0] = true; // Met Level / OT Gender
 	sector[0xDD][1] = true;
+	sector[0xDE][1] = true; // Hyper Train Flags
+	sector[0x1D][1] = true; // Fateful encounter
 }
 
 void fillSectorsHaxMode(bool sector[][2]) {
@@ -305,4 +307,9 @@ void fillSectorsHaxMode(bool sector[][2]) {
 		
 	for (int j = 0x30; j <= 0x36; j++)
 		sector[j][1] = true;
+
+	sector[0x77][1] = true; // Egg / Nickname flag
+	sector[0xDD][1] = true;
+	sector[0xDE][1] = true; // Hyper Train Flags
+	sector[0x1D][1] = true; // Fateful encounter
 }
