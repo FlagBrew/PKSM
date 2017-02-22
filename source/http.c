@@ -105,35 +105,34 @@ void processing(u8* mainbuf, int game, int tempVett[]) {
 	} else {
 		panic = 0;
 		int boxmax = (game < 4) ? 30 : 31;
-		char dummy[PAYLOADSIZE];
-		memset(dummy, 0, PAYLOADSIZE);
+		char *dummy;
 		memset(payload, 0, PAYLOADSIZE);
 		// set client socket to blocking to simplify sending data back
 		fcntl(data.client_id, F_SETFL, fcntl(data.client_id, F_GETFL, 0) & ~O_NONBLOCK);
 
-		recv(data.client_id, payload, PAYLOADSIZE, 0);
-		if (memcmp(dummy, payload, PAYLOADSIZE)) {
-			u8 pkmn[PKMNLENGTH];
-			memcpy(pkmn, payload, PKMNLENGTH);
-			setPkmn(mainbuf, tempVett[0], tempVett[1], pkmn, game);
-			
-			do {
-				tempVett[1]++;
-				if (tempVett[1] == 30) {
-					tempVett[0]++;
-					tempVett[1] = 0;
-				}
-				if (tempVett[0] > boxmax)
-					tempVett[0] = 0;
-				
-				getPkmn(mainbuf, tempVett[0], tempVett[1], pkmn, game);
-				panic++;
-			} while (getPokedexNumber(pkmn) && (panic < boxmax * 30));
-		}
+        recv(data.client_id, payload, PAYLOADSIZE, 0);
+        if (strstr(payload,"PKSMOTA")!=NULL && (hidKeysDown() != KEY_B)) {
+            u8 pkmn[PKMNLENGTH];
+            dummy = strstr(payload,"PKSMOTA");
+            memcpy(pkmn, &dummy[7], PKMNLENGTH);
+            setPkmn(mainbuf, tempVett[0], tempVett[1], pkmn, game);
 
-		close(data.client_id);
-		data.client_id = -1;
-	}
+            do {
+                tempVett[1]++;
+                if (tempVett[1] == 30) {
+                    tempVett[0]++;
+                    tempVett[1] = 0;
+                }
+                if (tempVett[0] > boxmax)
+                    tempVett[0] = 0;
+
+                getPkmn(mainbuf, tempVett[0], tempVett[1], pkmn, game);
+                panic++;
+            } while (getPokedexNumber(pkmn) && (panic < boxmax * 30));
+        }
+    }
+    close(data.client_id);
+    data.client_id = -1;
 }
 
 Result downloadFile(char* url, char* path) {
