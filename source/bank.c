@@ -50,26 +50,6 @@ void clearMarkings(u8* pkmn, int game) {
 	}
 }
 
-bool areMarksZero(u8* pkmn, int game) {
-	u8 version = pkmn[0xDF];
-	if (!(version == 30 || version == 31) && !(version >= 35 && version <= 41)) {
-		if (pkmn[0x2A] && (game == GAME_SUN || game == GAME_MOON))
-			return false;
-		if (pkmn[0xDE])
-			return false;
-		for (int i = 0x94; i < 0x9E; i++)
-			if (pkmn[i])
-				return false;
-		for (int i = 0xAA; i < 0xB0; i++)
-			if (pkmn[i])
-				return false;
-		for (int i = 0xE4; i < 0xE8; i++)
-			if (pkmn[i])
-				return false;
-	}
-	return true;
-}
-
 void bank(u8* mainbuf, int game) {
 	FILE *fptr = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
 	fseek(fptr, 0, SEEK_END);

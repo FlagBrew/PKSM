@@ -977,25 +977,21 @@ void printElementFX(u16 n, int x, int y) {
 	sf2d_draw_texture_part(spritesSmall, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30);
 }
 
-void printElement(u8* mainbuf, u8* pkmn, int game, u16 n, int x, int y) {
-	if (!areMarksZero(pkmn, game) && (game == GAME_SUN || game == GAME_MOON))
-		printElementBlend(pkmn, game, n, x, y, SHINYRED);
-	else {
-		u16 t = getAlternativeSprite(pkmn, game);
-		if (t) {
-			t -= 1;
-			sf2d_draw_texture_part(alternativeSpritesSmall, x, y, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30); 
-		} else {
-			if (getPokedexNumber(pkmn) < 0 || getPokedexNumber(pkmn) > 821)
-				sf2d_draw_texture_part(spritesSmall, x, y, 0, 0, 34, 30);
-			else
-				sf2d_draw_texture_part(spritesSmall, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30);
-		}
-		if (isEgg(pkmn))
-			sf2d_draw_texture_part(spritesSmall, x + 6, y + 6, 40 * (EGGSPRITEPOS % 25) + 4, 30 * (EGGSPRITEPOS / 25), 34, 30);
-		if (getItem(pkmn))
-			sf2d_draw_texture(item, x + 3, y + 21);
+void printElement(u8* pkmn, int game, u16 n, int x, int y) {
+	u16 t = getAlternativeSprite(pkmn, game);
+	if (t) {
+		t -= 1;
+		sf2d_draw_texture_part(alternativeSpritesSmall, x, y, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30); 
+	} else {
+		if (getPokedexNumber(pkmn) < 0 || getPokedexNumber(pkmn) > 821)
+			sf2d_draw_texture_part(spritesSmall, x, y, 0, 0, 34, 30);
+		else
+			sf2d_draw_texture_part(spritesSmall, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30);
 	}
+	if (isEgg(pkmn))
+		sf2d_draw_texture_part(spritesSmall, x + 6, y + 6, 40 * (EGGSPRITEPOS % 25) + 4, 30 * (EGGSPRITEPOS / 25), 34, 30);
+	if (getItem(pkmn))
+		sf2d_draw_texture(item, x + 3, y + 21);
 }
 void printElementBlend(u8* pkmn, int game, u16 n, int x, int y, u32 color) {
 	u16 t = getAlternativeSprite(pkmn, game);
@@ -1166,7 +1162,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 				getPkmn(mainbuf, box, i * 6 + j, pkmn, game);
 				u16 n = getPokedexNumber(pkmn);
 				if (n > 0 && n < 822)
-					printElement(mainbuf, pkmn, game, n, x, y);
+					printElement(pkmn, game, n, x, y);
 
 				if ((currentEntry == (i * 6 + j)) && !isTeam) {
 					pointer[0] = x + 18;
@@ -1189,7 +1185,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 				getPkmn(mainbuf, 33, i * 2 + j, pkmn, game);
 				u16 n = getPokedexNumber(pkmn);
 				if (n)
-					printElement(mainbuf, pkmn, game, n, x, (j == 1) ? y + 20 : y);
+					printElement(pkmn, game, n, x, (j == 1) ? y + 20 : y);
 
 				if ((currentEntry == (i * 2 + j)) && isTeam) {
 					pointer[0] = x + 18;
@@ -1621,7 +1617,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 					memcpy(pkmn, &bankbuf[bankBox * 30 * PKMNLENGTH + (i * 6 + j) * PKMNLENGTH], PKMNLENGTH);
 					u16 n = getPokedexNumber(pkmn);
 					if (n)
-						printElement(mainbuf, pkmn, GAME_SUN, n, x, y);
+						printElement(pkmn, GAME_SUN, n, x, y);
 
 					if (currentEntry == (i * 6 + j)) {
 						pointer[0] = x + 18;
@@ -1635,7 +1631,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 			if (currentEntry < 30) {
 				u16 n = getPokedexNumber(pkmnbuf);
 				if (n) printElementBlend(pkmnbuf, GAME_SUN, n, pointer[0] - 14, pointer[1] + 8, RGBA8(0x0, 0x0, 0x0, 100));
-				if (n) printElement(mainbuf, pkmnbuf, GAME_SUN, n, pointer[0] - 18, pointer[1] + 3);
+				if (n) printElement(pkmnbuf, GAME_SUN, n, pointer[0] - 18, pointer[1] + 3);
 				sf2d_draw_texture(selector, pointer[0], pointer[1] - 2 - ((!isBufferized) ? movementOffsetSlow(3) : 0));
 			}
 		}		
@@ -1664,7 +1660,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 				getPkmn(mainbuf, saveBox, i*6+j, pkmn, game);
 				u16 n = getPokedexNumber(pkmn);
 				if (n)
-					printElement(mainbuf, pkmn, game, n, x, y);
+					printElement(pkmn, game, n, x, y);
 
 				if ((currentEntry - 30) == (i * 6 + j)) {
 					pointer[0] = x + 18;
@@ -1679,7 +1675,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 			if (!isSeen) {
 				u16 n = getPokedexNumber(pkmnbuf);
 				if (n) printElementBlend(pkmnbuf, GAME_SUN, n, pointer[0] - 14, pointer[1] + 8, RGBA8(0x0, 0x0, 0x0, 100));
-				if (n) printElement(mainbuf, pkmnbuf, GAME_SUN, n, pointer[0] - 18, pointer[1] + 3);
+				if (n) printElement(pkmnbuf, GAME_SUN, n, pointer[0] - 18, pointer[1] + 3);
 				sf2d_draw_texture(selector, pointer[0], pointer[1] - 2 - ((!isBufferized) ? movementOffsetSlow(3) : 0));
 			} else
 				sf2d_draw_texture(selector, pointer[0], pointer[1] - 2);
