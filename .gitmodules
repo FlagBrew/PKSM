@@ -3,7 +3,7 @@
 	url = https://github.com/Steveice10/buildtools.git
 [submodule "source/memecrypto"]
 	path = source/memecrypto
-	url = https://github.com/BernardoGiordano/memecrypto.git
+	url = https://github.com/dsoldier/memecrypto.git
 [submodule "servepkx/webbrowser"]
 	path = servepkx/webbrowser
 	url = https://github.com/zaksabeast/PKSMBrowserInject
