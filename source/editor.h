@@ -1,26 +1,23 @@
-/* This file is part of PKSM
-
-Copyright (C) 2016 Bernardo Giordano
-
->    This program is free software: you can redistribute it and/or modify
->    it under the terms of the GNU General Public License as published by
->    the Free Software Foundation, either version 3 of the License, or
->    (at your option) any later version.
+/*  This file is part of PKSM
+>	Copyright (C) 2016/2017 Bernardo Giordano
 >
->    This program is distributed in the hope that it will be useful,
->    but WITHOUT ANY WARRANTY; without even the implied warranty of
->    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->    GNU General Public License for more details.
+>   This program is free software: you can redistribute it and/or modify
+>   it under the terms of the GNU General Public License as published by
+>   the Free Software Foundation, either version 3 of the License, or
+>   (at your option) any later version.
 >
->    You should have received a copy of the GNU General Public License
->    along with this program.  If not, see <http://www.gnu.org/licenses/>.
->    See LICENSE for information.
+>   This program is distributed in the hope that it will be useful,
+>   but WITHOUT ANY WARRANTY; without even the implied warranty of
+>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+>   GNU General Public License for more details.
+>
+>   You should have received a copy of the GNU General Public License
+>   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+>   See LICENSE for information.
 */
 
 #pragma once
-
-#include <3ds.h>
-#include <stdio.h>
+#include "common.h"
 
 #define PGTLENGTH 260
 #define PGFLENGTH 204
@@ -144,8 +141,6 @@ void setShiny(u8* pkmn, const bool shiny);
 void setWC(u8* mainbuf, u8* wc6buf, int game, int i, int nInjected[]);
 void setWC4(u8* mainbuf, u8* wc6buf, int game, int i, int nInjected[], int GBO);
 void setLanguage(u8* mainbuf, int game, int i);
-void setItem(u8* mainbuf, int type, int game);
-void setTM(u8* mainbuf, int game);
 void setFriendship(u8* pkmn, const int value);
 void setHTFriendship(u8* pkmn, const int value);
 void setOTFriendship(u8* pkmn, const int value);
