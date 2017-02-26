@@ -1350,6 +1350,8 @@ void pokemonEditor(u8* mainbuf, int game) {
 	int menuEntry = 0;
 	int byteEntry = 0;
 	int boxmax = (game < 4) ? 30 : 31;
+	int touchExecuting = 0;
+	int oldEntry = 0;
 	
 	char* descriptions[PKMNLENGTH];
 	
@@ -1360,19 +1362,27 @@ void pokemonEditor(u8* mainbuf, int game) {
 		hidScanInput();
 		touchPosition touch;
 		hidTouchRead(&touch);
-		if (!isTeam)
+		if (!isTeam) {
+			oldEntry = currentEntry;
 			calcCurrentEntryMorePages(&currentEntry, &box, boxmax + 1, 29, 6);
+			if (oldEntry != currentEntry)
+				touchExecuting = currentEntry;
+		}
 		
 		if (hidKeysDown() & KEY_B) 
 			break;
 
  		if (hidKeysDown() & KEY_TOUCH) {
 			if (touch.px > 210 && touch.px < 320 && touch.py > 0 && touch.py < 210) {
-				currentEntry = 0;
+				currentEntry = -1;
+				if (!isTeam)
+					touchExecuting = -1;
 				isTeam = true;
 			}
 			if (touch.px > 0 && touch.px < 210 && touch.py > 0 && touch.py < 210) {
-				currentEntry = 0;
+				currentEntry = -1;
+				if (isTeam)
+					touchExecuting = -1;
 				isTeam = false;
 			}
 			
@@ -1402,19 +1412,34 @@ void pokemonEditor(u8* mainbuf, int game) {
 				for (int i = 0; i < 5; i++) {
 					x_start = 4;
 					for (int j = 0; j < 6; j++) {
-						if ((touch.px > x_start) && (touch.px < (x_start + 34)) && (touch.py > y_start) && (touch.py < (y_start + 30)))
+						if ((touch.px > x_start) && (touch.px < (x_start + 34)) && (touch.py > y_start) && (touch.py < (y_start + 30))) {
 							currentEntry = i * 6 + j;
+							if (touchExecuting == currentEntry + 40)
+								touchExecuting += 40;
+							else
+								touchExecuting = currentEntry;
+						}
 						x_start += 34;
 					}
 					y_start += 30;
 				}
 			} else {
-				if (touch.px > 214 && touch.px < 265 && touch.py > 40 && touch.py < 85) currentEntry = 0;
-				if (touch.px > 266 && touch.px < 317 && touch.py > 60 && touch.py < 105) currentEntry = 1;
-				if (touch.px > 214 && touch.px < 265 && touch.py > 85 && touch.py < 130) currentEntry = 2;
-				if (touch.px > 266 && touch.px < 317 && touch.py > 105 && touch.py < 150) currentEntry = 3;
-				if (touch.px > 214 && touch.px < 265 && touch.py > 130 && touch.py < 175) currentEntry = 4;
-				if (touch.px > 266 && touch.px < 317 && touch.py > 150 && touch.py < 195) currentEntry = 5;				
+				for (int i = 0, j = 0, k = 0; i < 6; i++) {
+					if (touch.px > 214 + j && touch.px < 265 + j && touch.py > 40 + k && touch.py < 85 + k) {
+						currentEntry = i;
+						if (touchExecuting == currentEntry + 40)
+							touchExecuting += 40;
+						else
+							touchExecuting = currentEntry;
+					}
+					if (i % 2 == 0) {
+						j = 52;
+						k += 20;
+					} else {
+						j = 0;
+						k += 25;
+					}
+				}
 			}
 		}
 		
@@ -1440,15 +1465,29 @@ void pokemonEditor(u8* mainbuf, int game) {
 			box = tempVett[0];
 			currentEntry = tempVett[1];
 		}
-		
-		if (hidKeysDown() & KEY_A && !isBattleBoxed(mainbuf, game, box, currentEntry)) {
+
+		if (!(hidKeysDown() & KEY_TOUCH) && !(hidKeysHeld() & KEY_TOUCH) && touchExecuting >= 0 && touchExecuting / 40 == 0)// && !teamChanged)
+			touchExecuting += 40;
+
+		if (currentEntry < 0) {
+			currentEntry = 0;
+			touchExecuting = 0;
+		}
+
+		if (((hidKeysDown() & KEY_A) || touchExecuting / 40 == 2) && !isBattleBoxed(mainbuf, game, box, currentEntry)) {
+			touchExecuting = currentEntry;
+
 			getPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
 			bool operationDone = false;
 
+			touchExecuting = menuEntry;
 			while (aptMainLoop() && (getPokedexNumber(pkmn) > 0 && getPokedexNumber(pkmn) < 822) && !operationDone && !(hidKeysDown() & KEY_B)) {
 				hidScanInput();
 				hidTouchRead(&touch);
+				oldEntry = menuEntry;
 				menuEntry = calcCurrentEntryOneScreen(menuEntry, 4, 1);
+				if (oldEntry != menuEntry)
+					touchExecuting = menuEntry;
 				
 				printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_MENU, 0, 0);
 				
@@ -1464,18 +1503,25 @@ void pokemonEditor(u8* mainbuf, int game) {
 					}
 					
 					if (touch.px > 208 && touch.px < 317) {
-						if (touch.py > 42 && touch.py < 69) menuEntry = 0;
-						if (touch.py > 69 && touch.py < 96) menuEntry = 1;
-						if (touch.py > 96 && touch.py < 123) menuEntry = 2;
-						if (touch.py > 123 && touch.py < 150) menuEntry = 3;
-						if (touch.py > 150 && touch.py < 177) menuEntry = 4;
+						for (int i = 0; i < 5; i++) {
+							if (touch.py > 42 + 27 * i && touch.py < 69 + 27 * i) {
+								menuEntry = i;
+								if (touchExecuting == menuEntry + 40)
+									touchExecuting += 40;
+								else
+									touchExecuting = menuEntry;
+							}
+						}
 					}
 				}
-				
-				if (hidKeysDown() & KEY_A) {
-					switch(menuEntry) {
-						case 0 : {
-							while(aptMainLoop() && !operationDone &&!isTeam) {
+				if (!(hidKeysDown() & KEY_TOUCH) && !(hidKeysHeld() & KEY_TOUCH) && touchExecuting / 40 == 0)
+					touchExecuting += 40;
+
+				if (((hidKeysDown() & KEY_A) || touchExecuting / 40 == 2) && menuEntry < 4) {
+					touchExecuting = menuEntry;
+					switch (menuEntry) {
+						case 0: {
+							while (aptMainLoop() && !operationDone && !isTeam) {
 								hidScanInput();
 								touchPosition touch;
 								hidTouchRead(&touch);
@@ -1493,7 +1539,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 									
 									while(aptMainLoop() && !(hidKeysDown() & KEY_B)) {
 										hidScanInput();
-										hidTouchRead(&touch);										
+										hidTouchRead(&touch);
 										byteEntry = calcCurrentEntryOneScreen(byteEntry, 231, 16);
 
 										if (hidKeysDown() & KEY_TOUCH) {
@@ -1591,7 +1637,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 												if (touch.px > 291 && touch.px < 316 && touch.py > 175 && touch.py < 187) {
 													int hpEntry = 0;
 													while(aptMainLoop() && !(hidKeysDown() & KEY_B)) {
-														hidScanInput();														
+														hidScanInput();
 														hpEntry = calcCurrentEntryOneScreen(hpEntry, 15, 4);
 	
 														if (hidKeysDown() & KEY_A) {
@@ -1601,7 +1647,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 														
 														printPKEditor(pkmn, game, hpEntry, 0, 0, ED_HIDDENPOWER, descriptions);
 													}
-												}												
+												}
 											}
 											
 											if (hidKeysDown() & KEY_TOUCH) {
@@ -1761,7 +1807,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 									}
 									
 									if (touch.px > 180 && touch.px < 195 && touch.py > 111 && touch.py < 123)
-										setShiny(pkmn, isShiny(pkmn) ? false : true);									
+										setShiny(pkmn, isShiny(pkmn) ? false : true);
 									
 									if (touch.px > 180 && touch.px < 195 && touch.py > 131 && touch.py < 143) {
 										if (!(getPokerus(pkmn)))
@@ -1852,7 +1898,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 									}
 									
 									if (touch.px > 180 && touch.px < 195 && touch.py > 90 && touch.py < 102) {
-										int itemsSorted[] = {0, 645, 611, 674, 677, 545, 719, 135, 846, 703, 672, 667, 162, 541, 679, 803, 831, 755, 655, 658, 223, 18, 205, 468, 742, 104, 153, 640, 757, 21, 455, 199, 580, 668, 476, 723, 851, 770, 183, 43, 470, 852, 87, 581, 89, 296, 450, 713, 544, 491, 241, 68, 240, 281, 661, 664, 486, 472, 65, 535, 261, 73, 165, 654, 795, 145, 148, 144, 146, 147, 213, 558, 909, 787, 818, 118, 19, 49, 767, 48, 475, 591, 546, 249, 660, 678, 195, 149, 16, 150, 200, 119, 220, 287, 297, 189, 100, 224, 474, 569, 192, 444, 198, 635, 583, 698, 739, 740, 457, 175, 460, 461, 462, 572, 210, 96, 285, 562, 919, 617, 791, 822, 505, 506, 507, 508, 509, 510, 511, 512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525, 526, 527, 528, 529, 530, 531, 109, 798, 826, 227, 226, 280, 721, 735, 738, 764, 56, 592, 615, 699, 7, 628, 629, 102, 116, 471, 311, 250, 561, 918, 235, 579, 790, 821, 312, 576, 636, 637, 324, 182, 13, 108, 305, 805, 833, 547, 322, 550, 915, 881, 779, 810, 700, 40, 34, 35, 208, 536, 860, 775, 726, 78, 38, 229, 538, 216, 268, 428, 793, 824, 715, 920, 435, 492, 138, 844, 553, 904, 782, 813, 159, 548, 912, 82, 777, 808, 842, 303, 273, 298, 539, 64, 556, 905, 785, 816, 230, 275, 841, 30, 497, 27, 316, 23, 440, 756, 202, 683, 657, 502, 656, 568, 560, 910, 789, 820, 763, 728, 796, 446, 98, 466, 623, 624, 625, 551, 914, 780, 811, 884, 3, 488, 263, 75, 137, 173, 286, 112, 555, 907, 784, 815, 95, 634, 55, 676, 197, 238, 14, 36, 565, 93, 284, 495, 101, 680, 420, 421, 422, 423, 424, 425, 737, 641, 714, 172, 94, 702, 666, 45, 25, 163, 552, 20, 917, 849, 302, 781, 812, 282, 799, 827, 141, 308, 697, 47, 278, 313, 612, 613, 211, 532, 710, 433, 675, 196, 190, 687, 170, 773, 730, 731, 732, 733, 221, 279, 206, 684, 685, 42, 255, 85, 234, 32, 705, 154, 725, 493, 574, 201, 270, 236, 269, 616, 142, 533, 712, 429, 768, 479, 496, 673, 319, 231, 256, 157, 648, 708, 453, 494, 136, 11, 718, 481, 215, 458, 741, 323, 242, 161, 176, 706, 682, 688, 802, 830, 1, 681, 41, 39, 24, 77, 29, 301, 627, 665, 747, 750, 744, 716, 766, 746, 717, 745, 696, 748, 749, 454, 219, 758, 233, 257, 729, 751, 771, 772, 774, 277, 806, 834, 662, 663, 209, 307, 239, 883, 33, 498, 858, 81, 266, 566, 484, 243, 166, 8, 6, 246, 178, 564, 776, 807, 92, 452, 184, 314, 111, 103, 439, 54, 445, 155, 631, 110, 743, 437, 180, 22, 459, 500, 480, 575, 185, 193, 88, 582, 151, 630, 156, 204, 501, 762, 794, 825, 835, 836, 168, 489, 855, 262, 671, 644, 633, 573, 449, 432, 245, 554, 906, 783, 814, 4, 63, 651, 431, 577, 724, 169, 17, 293, 292, 290, 289, 271, 291, 695, 294, 53, 51, 12, 571, 800, 828, 537, 765, 642, 843, 578, 880, 321, 46, 557, 916, 882, 786, 817, 320, 856, 171, 15, 217, 274, 177, 504, 483, 106, 50, 152, 326, 327, 164, 325, 485, 542, 441, 67, 853, 534, 478, 260, 72, 588, 584, 590, 586, 585, 589, 587, 9, 79, 143, 614, 567, 638, 37, 28, 652, 850, 187, 543, 559, 315, 908, 788, 819, 540, 643, 99, 318, 686, 212, 139, 430, 456, 736, 754, 647, 44, 5, 650, 711, 203, 769, 727, 753, 670, 232, 254, 436, 434, 467, 464, 709, 244, 759, 295, 253, 632, 107, 70, 71, 117, 191, 251, 222, 482, 158, 105, 306, 760, 473, 228, 283, 804, 832, 649, 31, 237, 722, 218, 225, 845, 247, 179, 299, 310, 499, 448, 689, 477, 97, 91, 90, 207, 563, 911, 792, 823, 761, 259, 288, 309, 463, 734, 704, 451, 857, 80, 26, 76, 447, 653, 752, 134, 570, 174, 194, 801, 829, 879, 140, 258, 83, 503, 10, 86, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 694, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396, 397, 398, 399, 400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 618, 619, 620, 690, 691, 692, 693, 701, 442, 272, 304, 707, 248, 669, 2, 469, 252, 659, 465, 443, 186, 720, 549, 913, 84, 778, 809, 181, 317, 639, 167, 646, 490, 69, 214, 265, 160, 267, 438, 60, 598, 604, 610, 57, 597, 603, 609, 58, 596, 602, 608, 61, 594, 600, 606, 62, 595, 601, 607, 59, 593, 599, 605, 621, 626, 188, 487, 66, 854, 264, 74, 797, 300, 52, 276, 847, 113, 114, 115, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 426, 427, 622, 837, 838, 839, 840, 848, 859, 861, 862, 863, 864, 865, 866, 867, 868, 869, 870, 871, 872, 873, 874, 875, 876, 877, 878, 885, 886, 887, 888, 889, 890, 891, 892, 893, 894, 895, 896, 897, 898, 899, 900, 901, 902, 903};	
+										int itemsSorted[] = {0, 645, 611, 674, 677, 545, 719, 135, 846, 703, 672, 667, 162, 541, 679, 803, 831, 755, 655, 658, 223, 18, 205, 468, 742, 104, 153, 640, 757, 21, 455, 199, 580, 668, 476, 723, 851, 770, 183, 43, 470, 852, 87, 581, 89, 296, 450, 713, 544, 491, 241, 68, 240, 281, 661, 664, 486, 472, 65, 535, 261, 73, 165, 654, 795, 145, 148, 144, 146, 147, 213, 558, 909, 787, 818, 118, 19, 49, 767, 48, 475, 591, 546, 249, 660, 678, 195, 149, 16, 150, 200, 119, 220, 287, 297, 189, 100, 224, 474, 569, 192, 444, 198, 635, 583, 698, 739, 740, 457, 175, 460, 461, 462, 572, 210, 96, 285, 562, 919, 617, 791, 822, 505, 506, 507, 508, 509, 510, 511, 512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525, 526, 527, 528, 529, 530, 531, 109, 798, 826, 227, 226, 280, 721, 735, 738, 764, 56, 592, 615, 699, 7, 628, 629, 102, 116, 471, 311, 250, 561, 918, 235, 579, 790, 821, 312, 576, 636, 637, 324, 182, 13, 108, 305, 805, 833, 547, 322, 550, 915, 881, 779, 810, 700, 40, 34, 35, 208, 536, 860, 775, 726, 78, 38, 229, 538, 216, 268, 428, 793, 824, 715, 920, 435, 492, 138, 844, 553, 904, 782, 813, 159, 548, 912, 82, 777, 808, 842, 303, 273, 298, 539, 64, 556, 905, 785, 816, 230, 275, 841, 30, 497, 27, 316, 23, 440, 756, 202, 683, 657, 502, 656, 568, 560, 910, 789, 820, 763, 728, 796, 446, 98, 466, 623, 624, 625, 551, 914, 780, 811, 884, 3, 488, 263, 75, 137, 173, 286, 112, 555, 907, 784, 815, 95, 634, 55, 676, 197, 238, 14, 36, 565, 93, 284, 495, 101, 680, 420, 421, 422, 423, 424, 425, 737, 641, 714, 172, 94, 702, 666, 45, 25, 163, 552, 20, 917, 849, 302, 781, 812, 282, 799, 827, 141, 308, 697, 47, 278, 313, 612, 613, 211, 532, 710, 433, 675, 196, 190, 687, 170, 773, 730, 731, 732, 733, 221, 279, 206, 684, 685, 42, 255, 85, 234, 32, 705, 154, 725, 493, 574, 201, 270, 236, 269, 616, 142, 533, 712, 429, 768, 479, 496, 673, 319, 231, 256, 157, 648, 708, 453, 494, 136, 11, 718, 481, 215, 458, 741, 323, 242, 161, 176, 706, 682, 688, 802, 830, 1, 681, 41, 39, 24, 77, 29, 301, 627, 665, 747, 750, 744, 716, 766, 746, 717, 745, 696, 748, 749, 454, 219, 758, 233, 257, 729, 751, 771, 772, 774, 277, 806, 834, 662, 663, 209, 307, 239, 883, 33, 498, 858, 81, 266, 566, 484, 243, 166, 8, 6, 246, 178, 564, 776, 807, 92, 452, 184, 314, 111, 103, 439, 54, 445, 155, 631, 110, 743, 437, 180, 22, 459, 500, 480, 575, 185, 193, 88, 582, 151, 630, 156, 204, 501, 762, 794, 825, 835, 836, 168, 489, 855, 262, 671, 644, 633, 573, 449, 432, 245, 554, 906, 783, 814, 4, 63, 651, 431, 577, 724, 169, 17, 293, 292, 290, 289, 271, 291, 695, 294, 53, 51, 12, 571, 800, 828, 537, 765, 642, 843, 578, 880, 321, 46, 557, 916, 882, 786, 817, 320, 856, 171, 15, 217, 274, 177, 504, 483, 106, 50, 152, 326, 327, 164, 325, 485, 542, 441, 67, 853, 534, 478, 260, 72, 588, 584, 590, 586, 585, 589, 587, 9, 79, 143, 614, 567, 638, 37, 28, 652, 850, 187, 543, 559, 315, 908, 788, 819, 540, 643, 99, 318, 686, 212, 139, 430, 456, 736, 754, 647, 44, 5, 650, 711, 203, 769, 727, 753, 670, 232, 254, 436, 434, 467, 464, 709, 244, 759, 295, 253, 632, 107, 70, 71, 117, 191, 251, 222, 482, 158, 105, 306, 760, 473, 228, 283, 804, 832, 649, 31, 237, 722, 218, 225, 845, 247, 179, 299, 310, 499, 448, 689, 477, 97, 91, 90, 207, 563, 911, 792, 823, 761, 259, 288, 309, 463, 734, 704, 451, 857, 80, 26, 76, 447, 653, 752, 134, 570, 174, 194, 801, 829, 879, 140, 258, 83, 503, 10, 86, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 694, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396, 397, 398, 399, 400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 618, 619, 620, 690, 691, 692, 693, 701, 442, 272, 304, 707, 248, 669, 2, 469, 252, 659, 465, 443, 186, 720, 549, 913, 84, 778, 809, 181, 317, 639, 167, 646, 490, 69, 214, 265, 160, 267, 438, 60, 598, 604, 610, 57, 597, 603, 609, 58, 596, 602, 608, 61, 594, 600, 606, 62, 595, 601, 607, 59, 593, 599, 605, 621, 626, 188, 487, 66, 854, 264, 74, 797, 300, 52, 276, 847, 113, 114, 115, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 426, 427, 622, 837, 838, 839, 840, 848, 859, 861, 862, 863, 864, 865, 866, 867, 868, 869, 870, 871, 872, 873, 874, 875, 876, 877, 878, 885, 886, 887, 888, 889, 890, 891, 892, 893, 894, 895, 896, 897, 898, 899, 900, 901, 902, 903};
 										int itemEntry = 0;
 										int page = 0, maxpages = 23;
 										
@@ -1935,7 +1981,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 									}
 									else
 										speed = 0;
-								}				
+								}
 								else
 									speed = 0;
 								
@@ -1997,7 +2043,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 										if (touch.px > 214 && touch.px < 265 && touch.py > 85 && touch.py < 130) cloneEntry = 2;
 										if (touch.px > 266 && touch.px < 317 && touch.py > 105 && touch.py < 150) cloneEntry = 3;
 										if (touch.px > 214 && touch.px < 265 && touch.py > 130 && touch.py < 175) cloneEntry = 4;
-										if (touch.px > 266 && touch.px < 317 && touch.py > 150 && touch.py < 195) cloneEntry = 5;				
+										if (touch.px > 266 && touch.px < 317 && touch.py > 150 && touch.py < 195) cloneEntry = 5;
 									}
 								}
 								if ((hidKeysDown() & KEY_A) && !isTeam) {
@@ -2014,11 +2060,51 @@ void pokemonEditor(u8* mainbuf, int game) {
 						case 2 : {
 							if (isTeam)
 								break;
+							menuEntry = 1;
+							touchExecuting = 1;
+							while (aptMainLoop() && !operationDone && !(hidKeysDown() & KEY_B)) {
+								hidScanInput();
+								touchPosition touch;
+								hidTouchRead(&touch);
+								oldEntry = menuEntry;
+								menuEntry = calcCurrentEntryOneScreen(menuEntry, 1, 1);
+								if (oldEntry != menuEntry)
+									touchExecuting = menuEntry;
 
-							memset(pkmn, 0, PKMNLENGTH);
-							setPkmn(mainbuf, box, currentEntry, pkmn, game);
-							infoDisp("Changes applied!");
-							operationDone = true;
+								printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_RELEASECONFIRM, 0, 0);
+								if ((hidKeysHeld() & KEY_TOUCH) && touch.px > 208 && touch.px < 317) {
+									for (int i = 0; i < 2; i++) {
+										if (touch.py > 42 + 54 * i && touch.py < 69 + 54 * i) {
+											menuEntry = i;
+											if (touchExecuting == menuEntry + 40)
+												touchExecuting += 40;
+											else
+												touchExecuting = menuEntry;
+										}
+									}
+								}
+								if (!(hidKeysDown() & KEY_TOUCH) && !(hidKeysHeld() & KEY_TOUCH) && touchExecuting / 40 == 0)
+									touchExecuting += 40;
+								if (((hidKeysDown() & KEY_A) || touchExecuting / 40 == 2) && menuEntry < 1) {
+									touchExecuting = menuEntry;
+									switch (menuEntry) {
+										case 0:
+											memset(pkmn, 0, PKMNLENGTH);
+											setPkmn(mainbuf, box, currentEntry, pkmn, game);
+											infoDisp("Changes applied!");
+											operationDone = true;
+											break;
+									}
+								}
+								if (((hidKeysDown() & KEY_A) || touchExecuting / 40 == 2) && menuEntry == 1) {
+									touchExecuting = menuEntry;
+									break;
+								}
+								if (touch.px > 280 && touch.px < 318 && touch.py > 210 && touch.py < 240)
+									break;
+							}
+							menuEntry = 2;
+							touchExecuting = 2;
 							break;
 						}
 						case 3 : {
@@ -2061,8 +2147,14 @@ void pokemonEditor(u8* mainbuf, int game) {
 					}
 				}
 				
-				if (hidKeysDown() & KEY_A && menuEntry == 4)
+				if (((hidKeysDown() & KEY_A) || touchExecuting / 40 == 2) && menuEntry == 4) {
+					touchExecuting = currentEntry;
 					break;
+				}
+				if (operationDone || (hidKeysDown() & KEY_B)) {
+					touchExecuting = currentEntry;
+					break;
+				}
 			}
 			if (!getPokedexNumber(pkmn) && !isTeam && !operationDone) {
 				int genEntry = 0;
