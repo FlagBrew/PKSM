@@ -46,7 +46,6 @@
 #define ED_GENERATE 3
 #define ED_OTA 4
 #define ED_SEED 5
-#define ED_RELEASECONFIRM 6
 
 #define ED_BASE 0
 #define ED_STATS 1

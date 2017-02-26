@@ -1100,7 +1100,6 @@ void infoViewer(u8* pkmn, int game) {
 
 void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry, int menuEntry, int box, int mode, int additional1, int additional2) {
 	char* menuEntries[] = {"EDIT", "CLONE", "RELEASE", "GENERATE", "EXIT"};
-	char* menuRelConf[] = { "RELEASE!","CANCEL" };
 	int x;
 	char* page = (char*)malloc(7 * sizeof(char));
 	snprintf(page, 7, "Box %d", box + 1);
@@ -1191,30 +1190,18 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 			sftd_draw_text(fontBold11, 8, 220, WHITE, 11, "Press A to clone in selected slot, B to cancel");
 		}
 		
-		if (mode == ED_MENU || mode == ED_RELEASECONFIRM) {
+		if (mode == ED_MENU) {
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
 			sf2d_draw_texture(bottomPopUp, 1, 214);
-			if (mode == ED_MENU) {
-				sf2d_draw_texture(includeInfoButton, 242, 5);
-				sftd_draw_textf(fontBold11, 8, 220, WHITE, 11, "%s has been selected.", (char*)personal.species[getPokedexNumber(tmp)]);
-				for (int i = 0; i < 5; i++) {
-					sf2d_draw_texture(button, 208, 42 + i * 27);
-					if (isTeam && (i == 0 || i == 2 || i == 3))
-						sf2d_draw_texture_blend(button, 208, 42 + i * 27, RGBA8(0, 0, 0, 100));
-					sftd_draw_text(fontBold12, 208 + (109 - sftd_get_text_width(fontBold12, 12, menuEntries[i])) / 2, 49 + i * 27, BLACK, 12, menuEntries[i]);
-					if (i == menuEntry)
-						sf2d_draw_texture(subArrow, 203 - movementOffsetSlow(3), 46 + i * 27);
-				}
-			}
-			else if (mode == ED_RELEASECONFIRM) {
-				sf2d_draw_texture(back, 280, 210);
-				sftd_draw_textf(fontBold11, 8, 220, WHITE, 11, "You really want to release %s ?", (char*)personal.species[getPokedexNumber(tmp)]);
-				for (int i = 0; i < 2; i++) {
-					sf2d_draw_texture(button, 208, 42 + i * 54);
-					sftd_draw_text(fontBold12, 208 + (109 - sftd_get_text_width(fontBold12, 12, menuRelConf[i])) / 2, 49 + i * 54, BLACK, 12, menuRelConf[i]);
-					if (i == menuEntry)
-						sf2d_draw_texture(subArrow, 203 - movementOffsetSlow(3), 46 + i * 54);
-				}
+			sf2d_draw_texture(includeInfoButton, 242, 5);
+			sftd_draw_textf(fontBold11, 8, 220, WHITE, 11, "%s has been selected.", (char*)personal.species[getPokedexNumber(tmp)]);
+			for (int i = 0; i < 5; i++) {
+				sf2d_draw_texture(button, 208, 42 + i * 27);
+				if (isTeam && (i == 0 || i == 2 || i == 3))
+					sf2d_draw_texture_blend(button, 208, 42 + i * 27, RGBA8(0, 0, 0, 100));
+				sftd_draw_text(fontBold12, 208 + (109 - sftd_get_text_width(fontBold12, 12, menuEntries[i])) / 2, 49 + i * 27, BLACK, 12, menuEntries[i]);
+				if (i == menuEntry)
+					sf2d_draw_texture(subArrow, 203 - movementOffsetSlow(3), 46 + i * 27);
 			}
 		} else if (mode == ED_GENERATE) {
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);

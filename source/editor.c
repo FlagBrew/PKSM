@@ -2058,53 +2058,12 @@ void pokemonEditor(u8* mainbuf, int game) {
 							break;
 						}
 						case 2 : {
-							if (isTeam)
-								break;
-							menuEntry = 1;
-							touchExecuting = 1;
-							while (aptMainLoop() && !operationDone && !(hidKeysDown() & KEY_B)) {
-								hidScanInput();
-								touchPosition touch;
-								hidTouchRead(&touch);
-								oldEntry = menuEntry;
-								menuEntry = calcCurrentEntryOneScreen(menuEntry, 1, 1);
-								if (oldEntry != menuEntry)
-									touchExecuting = menuEntry;
-
-								printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_RELEASECONFIRM, 0, 0);
-								if ((hidKeysHeld() & KEY_TOUCH) && touch.px > 208 && touch.px < 317) {
-									for (int i = 0; i < 2; i++) {
-										if (touch.py > 42 + 54 * i && touch.py < 69 + 54 * i) {
-											menuEntry = i;
-											if (touchExecuting == menuEntry + 40)
-												touchExecuting += 40;
-											else
-												touchExecuting = menuEntry;
-										}
-									}
-								}
-								if (!(hidKeysDown() & KEY_TOUCH) && !(hidKeysHeld() & KEY_TOUCH) && touchExecuting / 40 == 0)
-									touchExecuting += 40;
-								if (((hidKeysDown() & KEY_A) || touchExecuting / 40 == 2) && menuEntry < 1) {
-									touchExecuting = menuEntry;
-									switch (menuEntry) {
-										case 0:
-											memset(pkmn, 0, PKMNLENGTH);
-											setPkmn(mainbuf, box, currentEntry, pkmn, game);
-											infoDisp("Changes applied!");
-											operationDone = true;
-											break;
-									}
-								}
-								if (((hidKeysDown() & KEY_A) || touchExecuting / 40 == 2) && menuEntry == 1) {
-									touchExecuting = menuEntry;
-									break;
-								}
-								if (touch.px > 280 && touch.px < 318 && touch.py > 210 && touch.py < 240)
-									break;
+							if (!isTeam && confirmDisp("Confirm release?")) {
+								memset(pkmn, 0, PKMNLENGTH);
+								setPkmn(mainbuf, box, currentEntry, pkmn, game);
+								infoDisp("Released!");
+								operationDone = true;
 							}
-							menuEntry = 2;
-							touchExecuting = 2;
 							break;
 						}
 						case 3 : {
