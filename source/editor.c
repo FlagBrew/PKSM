@@ -2071,7 +2071,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 								if (oldEntry != menuEntry)
 									touchExecuting = menuEntry;
 
-								printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_RELEASECONFIRM, 0, 0, touchExecuting);
+								printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_RELEASECONFIRM, 0, 0);
 								if ((hidKeysHeld() & KEY_TOUCH) && touch.px > 208 && touch.px < 317) {
 									for (int i = 0; i < 2; i++) {
 										if (touch.py > 42 + 54 * i && touch.py < 69 + 54 * i) {
