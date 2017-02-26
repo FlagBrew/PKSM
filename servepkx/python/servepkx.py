@@ -12,10 +12,10 @@ def sendpkx(ip, filename):
     try:
         s.connect((ip, 9000))
         with open(filename, 'rb') as f:
-            l = f.read(232)
-            while l != b'':
+            l = b"PKSMOTA" + f.read(232)
+            while l != b'PKSMOTA':
                 s.send(l)
-                l = f.read(232)
+                l = b"PKSMOTA" + f.read(232)
         s.close()
     except Exception as e:
         s.close()  # close this socket at all cost
