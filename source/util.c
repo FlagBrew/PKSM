@@ -154,6 +154,10 @@ bool openSaveArch(FS_Archive *out, u64 id) {
 void settingsMenu(u8* mainbuf, int game) {
 	char *gamesList[] = {"X", "Y", "OR", "AS", "S", "M", "D", "P", "PL", "HG", "SS", "B", "W", "W2", "B2"};
 	
+	char *bakpath = (char*)malloc(80 * sizeof(char));
+	time_t unixTime = time(NULL);
+	struct tm* timeStruct = gmtime((const time_t *)&unixTime);	
+	
 	int speed = 0;
 	bool operationDone = false;
 	FILE *bank = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
@@ -256,10 +260,6 @@ void settingsMenu(u8* mainbuf, int game) {
 				infoDisp("Bank size changed!");
 			}
 			if (touch.px > 60 && touch.px < 260 && touch.py > 100 && touch.py < 140) {
-				char *bakpath = (char*)malloc(80 * sizeof(char));
-				
-				time_t unixTime = time(NULL);
-				struct tm* timeStruct = gmtime((const time_t *)&unixTime);		
 				snprintf(bakpath, 80, "/3ds/data/PKSM/backup/main_%s_%i%i%i%02i%02i%02i", gamesList[game], timeStruct->tm_mday, timeStruct->tm_mon + 1, timeStruct->tm_year + 1900, timeStruct->tm_hour, timeStruct->tm_min, timeStruct->tm_sec);
 				
 				FILE *f = fopen(bakpath, "wb");
@@ -275,12 +275,12 @@ void settingsMenu(u8* mainbuf, int game) {
 				fseek(bak, 0, SEEK_END);
 				size = ftell(bak);
 				u8* bankbuf = (u8*)malloc(size * sizeof(u8));
-				
 				rewind(bak);
 				fread(bankbuf, size, 1, bak);
 				fclose(bak);
 				
-				FILE *new = fopen("/3ds/data/PKSM/bank/bank.bak", "wb");
+				snprintf(bakpath, 80, "/3ds/data/PKSM/bank/bank_%i%i%i%02i%02i%02i.bak", timeStruct->tm_mday, timeStruct->tm_mon + 1, timeStruct->tm_year + 1900, timeStruct->tm_hour, timeStruct->tm_min, timeStruct->tm_sec);
+				FILE *new = fopen(bakpath, "wb");
 				fwrite(bankbuf, 1, size, new);
 				fclose(new);
 				
