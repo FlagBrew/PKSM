@@ -1,32 +1,22 @@
-/* This file is part of PKSM
-
-Copyright (C) 2016 Bernardo Giordano
-
->    This program is free software: you can redistribute it and/or modify
->    it under the terms of the GNU General Public License as published by
->    the Free Software Foundation, either version 3 of the License, or
->    (at your option) any later version.
+/*  This file is part of PKSM
+>	Copyright (C) 2016/2017 Bernardo Giordano
 >
->    This program is distributed in the hope that it will be useful,
->    but WITHOUT ANY WARRANTY; without even the implied warranty of
->    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->    GNU General Public License for more details.
+>   This program is free software: you can redistribute it and/or modify
+>   it under the terms of the GNU General Public License as published by
+>   the Free Software Foundation, either version 3 of the License, or
+>   (at your option) any later version.
 >
->    You should have received a copy of the GNU General Public License
->    along with this program.  If not, see <http://www.gnu.org/licenses/>.
->    See LICENSE for information.
+>   This program is distributed in the hope that it will be useful,
+>   but WITHOUT ANY WARRANTY; without even the implied warranty of
+>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+>   GNU General Public License for more details.
+>
+>   You should have received a copy of the GNU General Public License
+>   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+>   See LICENSE for information.
 */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <3ds.h>
-#include "graphic.h"
 #include "database.h"
-#include "editor.h"
-#include "util.h"
-#include "fill.h"
-#include "dex.h"
-#include "hid.h"
 
 void findFreeLocationWC(u8 *mainbuf, int game, int nInjected[]) {
 	nInjected[0] = 0;

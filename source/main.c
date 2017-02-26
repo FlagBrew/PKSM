@@ -1,38 +1,22 @@
-/* This file is part of PKSM
-
-Copyright (C) 2016 Bernardo Giordano
-
->    This program is free software: you can redistribute it and/or modify
->    it under the terms of the GNU General Public License as published by
->    the Free Software Foundation, either version 3 of the License, or
->    (at your option) any later version.
+/*  This file is part of PKSM
+>	Copyright (C) 2016/2017 Bernardo Giordano
 >
->    This program is distributed in the hope that it will be useful,
->    but WITHOUT ANY WARRANTY; without even the implied warranty of
->    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->    GNU General Public License for more details.
+>   This program is free software: you can redistribute it and/or modify
+>   it under the terms of the GNU General Public License as published by
+>   the Free Software Foundation, either version 3 of the License, or
+>   (at your option) any later version.
 >
->    You should have received a copy of the GNU General Public License
->    along with this program.  If not, see <http://www.gnu.org/licenses/>.
->    See LICENSE for information.
+>   This program is distributed in the hope that it will be useful,
+>   but WITHOUT ANY WARRANTY; without even the implied warranty of
+>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+>   GNU General Public License for more details.
+>
+>   You should have received a copy of the GNU General Public License
+>   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+>   See LICENSE for information.
 */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <3ds.h>
-#include <unistd.h>
-#include <sys/stat.h>
-#include <time.h>
-#include "spi.h"
-#include "http.h"
-#include "util.h"
-#include "database.h"
-#include "editor.h"
-#include "graphic.h"
-#include "fx.h"
-#include "bank.h"
-#include "save.h"
-#include "hid.h"
+#include "common.h"
 
 #define ASSETS 10
 
@@ -127,7 +111,7 @@ bool initServices() {
 	fclose(fptr);
 	loadLines(tmp, personal.species[0], 12, size);
 	
-	u32 defaultSize = BANKBOXMAX * 30 * PKMNLENGTH;
+	u32 defaultSize = 150 * 30 * PKMNLENGTH;
 	size = 0;
 	u8 *bankbuf, *defaultBank;
 	
@@ -147,21 +131,27 @@ bool initServices() {
 		free(defaultBank);
 	}
 	
-	freezeMsg("Backing up bank...");
-	FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
-	fseek(bak, 0, SEEK_END);
-	size = ftell(bak);
-	bankbuf = (u8*)malloc(size * sizeof(u8));
-	
-	rewind(bak);
-	fread(bankbuf, size, 1, bak);
-	fclose(bak);
-	
-	FILE *new = fopen("/3ds/data/PKSM/bank/bank.bak", "wb");
-	fwrite(bankbuf, 1, size, new);
-	fclose(new);
-	
-	free(bankbuf);
+	FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bak", "rt");
+	if (bak) {
+		fclose(bak);
+		return isDownloaded;
+	} else {
+		fclose(bak);
+		freezeMsg("Backing up bank...");
+		FILE *dobak = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
+		fseek(dobak, 0, SEEK_END);
+		size = ftell(dobak);
+		bankbuf = (u8*)malloc(size * sizeof(u8));
+		
+		rewind(dobak);
+		fread(bankbuf, size, 1, dobak);
+		fclose(dobak);
+		
+		FILE *new = fopen("/3ds/data/PKSM/bank/bank.bak", "wb");
+		fwrite(bankbuf, 1, size, new);
+		fclose(new);
+		free(bankbuf);
+	}
 	return isDownloaded;
 }
 

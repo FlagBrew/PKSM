@@ -1,23 +1,21 @@
-/* This file is part of PKSM
-
-Copyright (C) 2016 Bernardo Giordano
-
->    This program is free software: you can redistribute it and/or modify
->    it under the terms of the GNU General Public License as published by
->    the Free Software Foundation, either version 3 of the License, or
->    (at your option) any later version.
+/*  This file is part of PKSM
+>	Copyright (C) 2016/2017 Bernardo Giordano
 >
->    This program is distributed in the hope that it will be useful,
->    but WITHOUT ANY WARRANTY; without even the implied warranty of
->    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->    GNU General Public License for more details.
+>   This program is free software: you can redistribute it and/or modify
+>   it under the terms of the GNU General Public License as published by
+>   the Free Software Foundation, either version 3 of the License, or
+>   (at your option) any later version.
 >
->    You should have received a copy of the GNU General Public License
->    along with this program.  If not, see <http://www.gnu.org/licenses/>.
->    See LICENSE for information.
+>   This program is distributed in the hope that it will be useful,
+>   but WITHOUT ANY WARRANTY; without even the implied warranty of
+>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+>   GNU General Public License for more details.
+>
+>   You should have received a copy of the GNU General Public License
+>   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+>   See LICENSE for information.
 */
 
-#include <stdlib.h>
 #include "fill.h"
 
 void filldatabase7(char *database[], int spriteArray[]) {
@@ -34,6 +32,7 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[211] = "0211 - SM PC Icy items"; spriteArray[211] = 0;
 	database[1602] = "1602 - SM Quick Balls"; spriteArray[1602] = 0;
 	database[1603] = "1603 - SM Poke Balls"; spriteArray[1603] = 0;
+	database[1604] = "1604 - SM Rare Candy"; spriteArray[1604] = 0;
 	database[2040] = "2040 - SM Stardust"; spriteArray[2040] = 0;
 	database[2041] = "2041 - SM Star Piece"; spriteArray[2041] = 0;
 	database[2042] = "2042 - SM Nugget"; spriteArray[2042] = 0;

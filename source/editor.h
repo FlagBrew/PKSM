@@ -1,26 +1,23 @@
-/* This file is part of PKSM
-
-Copyright (C) 2016 Bernardo Giordano
-
->    This program is free software: you can redistribute it and/or modify
->    it under the terms of the GNU General Public License as published by
->    the Free Software Foundation, either version 3 of the License, or
->    (at your option) any later version.
+/*  This file is part of PKSM
+>	Copyright (C) 2016/2017 Bernardo Giordano
 >
->    This program is distributed in the hope that it will be useful,
->    but WITHOUT ANY WARRANTY; without even the implied warranty of
->    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->    GNU General Public License for more details.
+>   This program is free software: you can redistribute it and/or modify
+>   it under the terms of the GNU General Public License as published by
+>   the Free Software Foundation, either version 3 of the License, or
+>   (at your option) any later version.
 >
->    You should have received a copy of the GNU General Public License
->    along with this program.  If not, see <http://www.gnu.org/licenses/>.
->    See LICENSE for information.
+>   This program is distributed in the hope that it will be useful,
+>   but WITHOUT ANY WARRANTY; without even the implied warranty of
+>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+>   GNU General Public License for more details.
+>
+>   You should have received a copy of the GNU General Public License
+>   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+>   See LICENSE for information.
 */
 
 #pragma once
-
-#include <3ds.h>
-#include <stdio.h>
+#include "common.h"
 
 #define PGTLENGTH 260
 #define PGFLENGTH 204
@@ -84,6 +81,7 @@ void getPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, 
 void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game);
 bool isShiny(u8* pkmn);
 bool isEgg(u8* pkmn);
+bool isNicknameF(u8* pkmn);
 void rerollPID(u8* pkmn);
 void encryptBattleSection(u8* mainbuf, u8* pkmn, int game, int currentEntry);
 void fillBattleSection(u8* mainbuf, u8* pkmn, int game, int currentEntry);
@@ -98,6 +96,7 @@ u16 getPokedexNumber(u8* pkmn);
 u8 getNature(u8* pkmn);
 u8 getEV(u8* pkmn, const int stat);
 u8 getFriendship(u8* pkmn);
+u8 getHTFriendship(u8* pkmn);
 u8 getOTFriendship(u8* pkmn);
 u8 getIV(u8* pkmn, const int stat);
 u16 getOTID(u8* pkmn);
@@ -134,18 +133,17 @@ u16 getBP(u8* mainbuf, int game);
 
 void setGender(u8* pkmn, u8 val);
 void setForm(u8* pkmn, u8 val);
-void setOT(u8* pkmn, char* nick);
 void setHT(u8* pkmn, char* nick);
 void setHTGender(u8* pkmn, const u8 gender);
 void setNature(u8* pkmn, const u8 nature);
-void setNickname(u8* pkmn, char* nick);
+void setNicknameZ(u8* pkmn, char* nick, int dst);
 void setShiny(u8* pkmn, const bool shiny);
 void setWC(u8* mainbuf, u8* wc6buf, int game, int i, int nInjected[]);
 void setWC4(u8* mainbuf, u8* wc6buf, int game, int i, int nInjected[], int GBO);
 void setLanguage(u8* mainbuf, int game, int i);
-void setItem(u8* mainbuf, int type, int game);
-void setTM(u8* mainbuf, int game);
 void setFriendship(u8* pkmn, const int value);
+void setHTFriendship(u8* pkmn, const int value);
+void setOTFriendship(u8* pkmn, const int value);
 void setEV(u8* pkmn, u8 val, const int stat);
 void setHPType(u8* pkmn, const int val);
 void setIV(u8* pkmn, u8 val, const int stat);
@@ -160,6 +158,10 @@ void setTID(u8* pkmn, u16 tid);
 
 void setRibbons(u8* pkmn, int ribcat, int ribnumber, bool value);
 bool getRibbons(u8* pkmn, int ribcat, int ribnumber);
+
+void setHTi(u8* pkmn, int htnumber, bool value);
+bool getHTi(u8* pkmn, int htnumber);
+void setFlag(u8* pkmn, int flgaddr, int flgshift, bool value);
 
 void saveFileEditor(u8* mainbuf, int game);
 void pokemonEditor(u8* mainbuf, int game);

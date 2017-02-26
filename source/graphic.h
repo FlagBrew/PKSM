@@ -1,27 +1,26 @@
-/* This file is part of PKSM
-
-Copyright (C) 2016 Bernardo Giordano
-
->    This program is free software: you can redistribute it and/or modify
->    it under the terms of the GNU General Public License as published by
->    the Free Software Foundation, either version 3 of the License, or
->    (at your option) any later version.
+/*  This file is part of PKSM
+>	Copyright (C) 2016/2017 Bernardo Giordano
 >
->    This program is distributed in the hope that it will be useful,
->    but WITHOUT ANY WARRANTY; without even the implied warranty of
->    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->    GNU General Public License for more details.
+>   This program is free software: you can redistribute it and/or modify
+>   it under the terms of the GNU General Public License as published by
+>   the Free Software Foundation, either version 3 of the License, or
+>   (at your option) any later version.
 >
->    You should have received a copy of the GNU General Public License
->    along with this program.  If not, see <http://www.gnu.org/licenses/>.
->    See LICENSE for information.
+>   This program is distributed in the hope that it will be useful,
+>   but WITHOUT ANY WARRANTY; without even the implied warranty of
+>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+>   GNU General Public License for more details.
+>
+>   You should have received a copy of the GNU General Public License
+>   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+>   See LICENSE for information.
 */
-#pragma once
 
-#include <sf2d.h>
-#include <sftd.h>
-#include <sfil.h>
-#include "util.h"
+#pragma once
+#include "common.h"
+
+#define BUTTONGREY RGBA8( 99, 110, 133, 255)
+#define BUTTONBORD RGBA8(160, 164, 173, 255)
 
 #define BLUE      RGBA8(104, 137, 205, 255)
 #define YELLOW    RGBA8(237, 247, 157, 255)
@@ -29,6 +28,8 @@ Copyright (C) 2016 Bernardo Giordano
 #define DARKBLUE  RGBA8( 35,  69, 167, 255)
 #define HIGHBLUE  RGBA8( 28,  45,  86, 255)
 #define MASKBLACK RGBA8(  0,   0,   0, 180)
+#define PALEBLUE  RGBA8( 70,  95, 144, 255)
+#define MENUBLUE  RGBA8( 35,  69, 137, 255)
 
 #define BLACK RGBA8(0, 0, 0, 255)
 #define BUTTONGREEN RGBA8(116, 222, 126, 255)
@@ -68,8 +69,12 @@ void printPKViewer(u8* mainbuf, u8* pkmn, bool isTeam, int game, int currentEntr
 void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEntry, int saveBox, int bankBox, bool isBufferized, bool isSeen);
 void printMassInjector(int currentEntry);
 void printElementFX(u16 n, int x, int y);
-void printElement(u8* mainbuf, u8* pkmn, int game, u16 n, int x, int y);
+void printElement(u8* pkmn, int game, u16 n, int x, int y);
 void printElementBlend(u8* pkmn, int game, u16 n, int x, int y, u32 color);
 void printSettings(int box);
 void infoViewer(u8* pkmn, int game);
 void printfHexEditorInfo(u8* pkmn, int byte);
+
+void printSelector(int x, int y, int width, int height);
+void printMenuTop();
+void printMenuBottom();

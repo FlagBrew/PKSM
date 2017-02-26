@@ -1,5 +1,21 @@
-#include <3ds.h>
-#include "editor.h"
+/*  This file is part of PKSM
+>	Copyright (C) 2016/2017 Bernardo Giordano
+>
+>   This program is free software: you can redistribute it and/or modify
+>   it under the terms of the GNU General Public License as published by
+>   the Free Software Foundation, either version 3 of the License, or
+>   (at your option) any later version.
+>
+>   This program is distributed in the hope that it will be useful,
+>   but WITHOUT ANY WARRANTY; without even the implied warranty of
+>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+>   GNU General Public License for more details.
+>
+>   You should have received a copy of the GNU General Public License
+>   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+>   See LICENSE for information.
+*/
+
 #include "hex.h"
 
 void fillDescriptions(char *descriptions[]) {
@@ -255,13 +271,13 @@ void fillSectors(bool sector[][2]) {
 	for (int j = 0x40; j <= 0x57; j++) // Nickname
 		sector[j][0] = true;	
 		
-	for (int j = 0x1E; j <= 0x29; j++) // EV_HP to Contest Value Sheen
+	for (int j = 0x1D; j <= 0x29; j++) // Fateful encounter to Contest Value Sheen
 		sector[j][0] = true;
 		
 	for (int j = 0x62; j <= 0x69; j++) // Move 1 PP to Move 4 PP Up
 		sector[j][0] = true;
 
-	for (int j = 0x78; j <= 0x8F; j++) // Held Trainer Name
+	for (int j = 0x74; j <= 0x8F; j++) // IV to Held Trainer Name
 		sector[j][0] = true;
 		
 	for (int j = 0xA2; j <= 0xA6; j++) // HT_Friendship to HT_Feeling
@@ -278,6 +294,14 @@ void fillSectors(bool sector[][2]) {
 		
 	for (int j = 0xD0; j <= 0xD6; j++) // OT_Feeling to Met Day
 		sector[j][0] = true;
+
+	sector[0x77][0] = true; // Egg / Nickname flag
+	sector[0x77][1] = true; // Egg / Nickname flag
+	sector[0xDD][0] = true; // Met Level / OT Gender
+	sector[0xDD][1] = true;
+	sector[0xDE][0] = true; // Hyper Train Flags
+	sector[0xDE][1] = true; // Hyper Train Flags
+	sector[0x1D][1] = true; // Fateful encounter
 }
 
 void fillSectorsHaxMode(bool sector[][2]) {
@@ -301,4 +325,9 @@ void fillSectorsHaxMode(bool sector[][2]) {
 		
 	for (int j = 0x30; j <= 0x36; j++)
 		sector[j][1] = true;
+
+	sector[0x77][1] = true; // Egg / Nickname flag
+	sector[0xDD][1] = true;
+	sector[0xDE][1] = true; // Hyper Train Flags
+	sector[0x1D][1] = true; // Fateful encounter
 }
