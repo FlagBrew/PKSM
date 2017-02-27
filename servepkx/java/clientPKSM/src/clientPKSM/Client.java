@@ -29,9 +29,10 @@ public class Client {
 			this.socket = new Socket(this.host, this.port);
 			int count;
 			byte[] buffer = new byte[8192];
-
+			String header = "PKSMOTA";
 			InputStream in = new FileInputStream(PKM);
 			OutputStream out = socket.getOutputStream();
+			out.write(header.getBytes(), 0, 7);
 			while ((count = in.read(buffer)) > 0) {
 				out.write(buffer, 0, count);
 			}

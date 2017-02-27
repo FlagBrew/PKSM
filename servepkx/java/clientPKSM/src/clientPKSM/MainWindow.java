@@ -104,7 +104,7 @@ public class MainWindow {
 		btnSendFiles.setBounds(150, 240, 191, 52);
 		frmPksmClient.getContentPane().add(btnSendFiles);
 		
-		JLabel lblPksmClientV = new JLabel("servepkx v1.0 - Made by Slownic. To use with PKSM, by Bernardo Giordano.");
+		JLabel lblPksmClientV = new JLabel("servepkx v1.1 - Made by Slownic. To use with PKSM, by Bernardo Giordano.");
 		lblPksmClientV.setBounds(20, 338, 450, 14);
 		frmPksmClient.getContentPane().add(lblPksmClientV);
 		btnSendFiles.addActionListener(new ActionListener() {

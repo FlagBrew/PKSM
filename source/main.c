@@ -18,14 +18,12 @@
 
 #include "common.h"
 
-#define ASSETS 10
+#define ASSETS 8
 
 char* path[] =    { "/3ds/data/PKSM/additionalassets/3dsiconsv2.png",
 					"/3ds/data/PKSM/additionalassets/alternative_icons_spritesheetv2.png",
-					"/3ds/data/PKSM/additionalassets/back_buttonv2.png",
 					"/3ds/data/PKSM/additionalassets/balls_spritesheetv2.png",
 					"/3ds/data/PKSM/additionalassets/dsiconsv2.png",
-					"/3ds/data/PKSM/additionalassets/editor_barv2.png",
 					"/3ds/data/PKSM/additionalassets/editor_bottomv2.png",
 					"/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheetv2.png",
 					"/3ds/data/PKSM/additionalassets/types_sheetv2.png",
@@ -33,10 +31,8 @@ char* path[] =    { "/3ds/data/PKSM/additionalassets/3dsiconsv2.png",
 };
 char* url[] = { "https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/3dsiconsv2.png", 
 				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/alternative_icons_spritesheetv2.png",
-				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/back_buttonv2.png",
 				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/balls_spritesheetv2.png",
 				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/dsiconsv2.png",
-				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/editor_barv2.png",
 				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/editor_bottomv2.png",
 				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/pokemon_icons_spritesheetv2.png",
 				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/types_sheetv2.png",
@@ -98,7 +94,7 @@ bool initServices() {
 	loadPersonal();
 	
     u8 tmp[12000];
-	FILE *fptr = fopen(path[9], "rt");
+	FILE *fptr = fopen("/3ds/data/PKSM/additionalassets/species_en.txt", "rt");
 	if (fptr == NULL) {
 		fclose(fptr);
 		return true;

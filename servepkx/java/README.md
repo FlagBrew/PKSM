@@ -8,7 +8,7 @@ JRE 1.6+ installed.
 
 jar file works when PKSM's server is actually running.
 
-### Usage (GUI)
+### Usage
 
 Start the server on PKSM and enter the 3DS' IP address and the port number (optional) in servepkx. The default port nr. is 9000.
 

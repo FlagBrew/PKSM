@@ -21,7 +21,7 @@
 int lookup[] = {0x0, 0x1, 0x2, 0x4, 0x5, 0x3};
 
 sftd_font *unicodeJPN12, *unicodeKOR12, *fontBold18, *fontBold15, *fontBold14, *fontBold12, *fontBold11, *fontBold9, *fontFixed; 
-sf2d_texture *hexIcon, *hexBG, *blueTextBox, *otaButton, *generationBG, *includeInfoButton, *upperTextGS, *lowerTextGS, *hiddenPowerBG, *ballsBG, *male, *female, *naturestx, *movesBottom, *topMovesBG, *editorBar, *editorStatsBG, *subArrow, *backgroundTop, *miniBox, *plusButton, *minusButton, *balls, *typesSheet, *transferButton, *bankTop, *shinyStar, *normalBar, *LButton, *RButton, *creditsTop, *pokeball, *topBorder, *bottomBorder, *gameSelectorBottom, *gameSelectorTop, *menuBar, *menuSelectedBar, *darkButton, *eventTop, *left, *lightButton, *redButton, *right, *spritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *warningTop, *warningBottom, *boxView, *infoView, *selector, *editorBG, *plus, *minus, *back, *setting, *selectorCloning, *button, *bottomPopUp, *pokemonBufferBox, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR, *settings, *item, *alternativeSpritesSmall;
+sf2d_texture *noMove, *hexIcon, *hexBG, *blueTextBox, *otaButton, *generationBG, *includeInfoButton, *upperTextGS, *lowerTextGS, *hiddenPowerBG, *ballsBG, *male, *female, *naturestx, *movesBottom, *topMovesBG, *editorBar, *editorStatsBG, *subArrow, *backgroundTop, *miniBox, *plusButton, *minusButton, *balls, *typesSheet, *transferButton, *bankTop, *shinyStar, *normalBar, *LButton, *RButton, *creditsTop, *pokeball, *topBorder, *bottomBorder, *gameSelectorBottom, *gameSelectorTop, *menuBar, *menuSelectedBar, *darkButton, *eventTop, *left, *lightButton, *redButton, *right, *spritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *warningTop, *warningBottom, *boxView, *infoView, *selector, *editorBG, *plus, *minus, *back, *setting, *selectorCloning, *button, *bottomPopUp, *pokemonBufferBox, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR, *settings, *item, *alternativeSpritesSmall;
 
 char *gamesList[] = {"X", "Y", "OR", "AS", "S", "M", "D", "P", "PL", "HG", "SS", "B", "W", "B2", "W2"};
 
@@ -59,11 +59,12 @@ void GUIElementsSpecify(int game) {
 	settings = sfil_load_PNG_file("romfs:/res/Settings.png", SF2D_PLACE_RAM);
 	
 	if (game < 6) {
-		editorBar = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/editor_barv2.png", SF2D_PLACE_RAM);
 		typesSheet = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/types_sheetv2.png", SF2D_PLACE_RAM);
 		boxView = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/editor_bottomv2.png", SF2D_PLACE_RAM);
-		back = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/back_buttonv2.png", SF2D_PLACE_RAM);
-
+		
+		noMove = sfil_load_PNG_file("romfs:/res/No Move.png", SF2D_PLACE_RAM);
+		back = sfil_load_PNG_file("romfs:/res/Back Button.png", SF2D_PLACE_RAM);
+		editorBar = sfil_load_PNG_file("romfs:/res/Bottom Bar.png", SF2D_PLACE_RAM);
 		hexIcon = sfil_load_PNG_file("romfs:/res/Hex Button.png", SF2D_PLACE_RAM);
 		hexBG = sfil_load_PNG_file("romfs:/res/Hex BG.png", SF2D_PLACE_RAM);
 		blueTextBox = sfil_load_PNG_file("romfs:/res/Blue Textbox.png", SF2D_PLACE_RAM);
@@ -148,6 +149,7 @@ void GUIGameElementsExit() {
 }
 
 void GUIElementsExit() {
+	sf2d_free_texture(noMove);
 	sf2d_free_texture(hexIcon);
 	sf2d_free_texture(hexBG);
 	sf2d_free_texture(blueTextBox);
@@ -1006,10 +1008,10 @@ void infoViewer(u8* pkmn, int game) {
 	printAnimatedBG(true);
 	sf2d_draw_texture(infoView, 0, 2);
 
-	sf2d_draw_texture(normalBar, 252, 155);
-	sf2d_draw_texture(normalBar, 252, 176);
-	sf2d_draw_texture(normalBar, 252, 197);
-	sf2d_draw_texture(normalBar, 252, 218);
+	sf2d_draw_texture((getMove(pkmn, 0)) ? normalBar : noMove, 252, 155);
+	sf2d_draw_texture((getMove(pkmn, 1)) ? normalBar : noMove, 252, 176);
+	sf2d_draw_texture((getMove(pkmn, 2)) ? normalBar : noMove, 252, 197);
+	sf2d_draw_texture((getMove(pkmn, 3)) ? normalBar : noMove, 252, 218);
 	
 	sftd_draw_text(fontBold12, 251, 138, WHITE, 12, "Moves");
 	for (int i = 0; i < 10; i++) {
@@ -1137,8 +1139,8 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 		sftd_draw_text(fontBold12, 12 + (178 - sftd_get_text_width(fontBold12, 12, page)) / 2, 19, WHITE, 12, page);
 		sf2d_draw_texture(left, 7, 17);
 		sf2d_draw_texture(right, 185, 17);
-		sf2d_draw_texture(otaButton, 244, 210);
-		sf2d_draw_texture(back, 280, 210);
+		sf2d_draw_texture(otaButton, 240, 211);
+		sf2d_draw_texture(back, 283, 211);
 		sftd_draw_text(fontBold12, 247, 7, WHITE, 12, "Team");
 		
 		int y = 45;
@@ -1196,12 +1198,12 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 			sf2d_draw_texture(includeInfoButton, 242, 5);
 			sftd_draw_textf(fontBold11, 8, 220, WHITE, 11, "%s has been selected.", (char*)personal.species[getPokedexNumber(tmp)]);
 			for (int i = 0; i < 5; i++) {
-				sf2d_draw_texture(button, 208, 42 + i * 27);
+				sf2d_draw_texture(button, 208, 42 + i * 27 + i*4);
 				if (isTeam && (i == 0 || i == 2 || i == 3))
-					sf2d_draw_texture_blend(button, 208, 42 + i * 27, RGBA8(0, 0, 0, 100));
-				sftd_draw_text(fontBold12, 208 + (109 - sftd_get_text_width(fontBold12, 12, menuEntries[i])) / 2, 49 + i * 27, BLACK, 12, menuEntries[i]);
+					sf2d_draw_texture_blend(button, 208, 42 + i * 27 + i*4, RGBA8(0, 0, 0, 100));
+				sftd_draw_text(fontBold12, 208 + (109 - sftd_get_text_width(fontBold12, 12, menuEntries[i])) / 2, 49 + i * 27 + i*4, BLACK, 12, menuEntries[i]);
 				if (i == menuEntry)
-					sf2d_draw_texture(subArrow, 203 - movementOffsetSlow(3), 46 + i * 27);
+					sf2d_draw_texture(subArrow, 203 - movementOffsetSlow(3), 46 + i * 27 + i*4);
 			}
 		} else if (mode == ED_GENERATE) {
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
@@ -1211,9 +1213,9 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 			drawIP(fontBold9);
 		} else if (mode != ED_CLONE) {
 			if (mode == ED_STANDARD)
-				sftd_draw_textf(fontBold9, 16, 220, WHITE, 9, "TID: %u / SID: %u / TSV: %u", getSaveTID(mainbuf, game), getSaveSID(mainbuf, game), getSaveTSV(mainbuf, game));	
+				sftd_draw_textf(fontBold9, 10, 220, BARTEXT, 9, "TID: %u / SID: %u / TSV: %u", getSaveTID(mainbuf, game), getSaveSID(mainbuf, game), getSaveTSV(mainbuf, game));	
 			else
-				sftd_draw_textf(fontBold9, 16, 220, WHITE, 9, "Seed: %lx %lx %lx %lx", getSaveSeed(mainbuf, game, 3), getSaveSeed(mainbuf, game, 2), getSaveSeed(mainbuf, game, 1), getSaveSeed(mainbuf, game, 0));	
+				sftd_draw_textf(fontBold9, 10, 220, BARTEXT, 9, "Seed: %lx %lx %lx %lx", getSaveSeed(mainbuf, game, 3), getSaveSeed(mainbuf, game, 2), getSaveSeed(mainbuf, game, 1), getSaveSeed(mainbuf, game, 0));	
 		}
 	pksm_end_frame();
 	sf2d_swapbuffers();
@@ -1383,8 +1385,8 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 				sf2d_draw_texture(female, 161, 6);
 			
 			for (int i = 0; i < 3; i++) {
-				sf2d_draw_texture(button, 206, 116 + i * 27);
-				sftd_draw_text(fontBold12, 206 + (109 - sftd_get_text_width(fontBold12, 12, options[i])) / 2, 123 + i * 27, BLACK, 12, options[i]);
+				sf2d_draw_texture(button, 206, 110 + i * 27 + i*4);
+				sftd_draw_text(fontBold12, 206 + (109 - sftd_get_text_width(fontBold12, 12, options[i])) / 2, 117 + i * 27 + i*4, BLACK, 12, options[i]);
 			}
 			
 			for (int i = 0; i < 9; i++)
@@ -1504,7 +1506,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 		}
 
 		if (mode != ED_HEX)
-			sf2d_draw_texture(back, 280, 210);
+			sf2d_draw_texture(back, 283, 211);
 		
 		// apply masks
 		if (mode == ED_ITEMS) {
@@ -1632,7 +1634,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 		sf2d_draw_texture(left, 7, 17);
 		sf2d_draw_texture(right, 185, 17);
 		sf2d_draw_texture(transferButton, 242, 5);
-		sf2d_draw_texture(back, 280, 210);
+		sf2d_draw_texture(back, 283, 211);
 		sf2d_draw_texture(button, 208, 43);
 		sf2d_draw_texture(button, 208, 70);
 		sf2d_draw_texture(button, 208, 97);
