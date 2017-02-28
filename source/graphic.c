@@ -485,6 +485,7 @@ void menu4(int currentEntry, char* menu[], int n) {
 
 void printCredits() {
 	u8* buf = (u8*)malloc(1500 * sizeof(u8));
+	memset(buf, 0, 1500);
 	loadFile(buf, "romfs:/res/credits.txt");
 	
 	while (aptMainLoop() && !(hidKeysUp() & KEY_B)) {
@@ -493,9 +494,11 @@ void printCredits() {
 		sf2d_start_frame(GFX_TOP, GFX_LEFT);
 			printMenuTop();
 			printTitle("Credits");
+			sf2d_draw_texture_part(creditsTop, 16, 101, 0, 22, 181, 46);
 			sf2d_draw_texture(creditsTop, 0, 45);
-			sftd_draw_text(fontBold15, 18, 77, LIGHTBLUE, 15,  "Bernardo Giordano");
-			sftd_draw_text(fontBold15, 64, 174, LIGHTBLUE, 15,  "dsoldier for the complete GUI design");
+			sftd_draw_text(fontBold15, 18, 77, LIGHTBLUE, 15, "Bernardo Giordano");
+			sftd_draw_text(fontBold15, 34, 113, LIGHTBLUE, 15, "Anty-Lemon");
+			sftd_draw_text(fontBold15, 64, 174, LIGHTBLUE, 15, "dsoldier for the complete GUI design");
 		pksm_end_frame();
 
 		sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
