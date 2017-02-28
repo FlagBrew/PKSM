@@ -2069,7 +2069,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 						case 3 : {
 							if (!isTeam) {
 								int genEntry = ((int)getPokedexNumber(pkmn) - 1) % 40;
-								int page = ((int)getPokedexNumber(pkmn) - 1) / 40, maxpages = 20;
+								int page = ((int)getPokedexNumber(pkmn) - 1) / 40, maxpages = (game < 4) ? 18 : 20;
 								
 								while (aptMainLoop() && !(hidKeysDown() & KEY_B)) {
 									hidScanInput();
@@ -2117,7 +2117,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 			}
 			if (!getPokedexNumber(pkmn) && !isTeam && !operationDone) {
 				int genEntry = 0;
-				int page = 0, maxpages = 20;
+				int page = 0, maxpages = (game < 4) ? 18 : 20;
 				
 				while (aptMainLoop() && !(hidKeysDown() & KEY_B)) {
 					hidScanInput();
