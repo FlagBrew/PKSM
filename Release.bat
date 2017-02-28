@@ -9,7 +9,6 @@ make
 @copy C:\Users\Bernardo\Documents\GitHub\PKSV\output\3ds-arm\3ds\PKSV\PKSV.3dsx Release\3ds\PKSV
 
 @copy servepkx\java\servepkx.jar Release\servepkx\java
-@copy servepkx\java\servepkx.exe Release\servepkx\java
 @copy servepkx\java\README.md Release\servepkx\java
 
 @copy servepkx\python\servepkx.py Release\servepkx\python

@@ -423,7 +423,7 @@ void menu3(int currentEntry, char* menu[], int n, bool isMain) {
 				sf2d_draw_texture(menuSelectedBar, (320 - menuSelectedBar->width) / 2, 60 + i * (menuSelectedBar->height));
 			else
 				sf2d_draw_texture(menuBar, (320 - menuBar->width) / 2, 60 + i * (menuBar->height));
-			sftd_draw_text(fontBold18, (320 - sftd_get_text_width(fontBold18, 18, menu[i])) / 2 - 4, 53 + (menuBar->height - 18) / 2 + i * (menuBar->height), (i == currentEntry) ? DARKBLUE : YELLOW, 18, menu[i]);
+			sftd_draw_text(fontBold18, (320 - sftd_get_text_width(fontBold18, 18, menu[i])) / 2, 56 + (menuBar->height - 18) / 2 + i * (menuBar->height), (i == currentEntry) ? DARKBLUE : YELLOW, 18, menu[i]);
 		}
 		printBottomIndications(isMain ? "Press START to quit." : "Press A to select an option.");
 	pksm_end_frame();
@@ -463,7 +463,7 @@ void menu4(int currentEntry, char* menu[], int n) {
 				sf2d_draw_texture(menuSelectedBar, (320 - menuSelectedBar->width) / 2, 40 + i * (menuSelectedBar->height));
 			else
 				sf2d_draw_texture(menuBar, (320 - menuBar->width) / 2, 40 + i * (menuBar->height));
-			sftd_draw_text(fontBold18, (320 - sftd_get_text_width(fontBold18, 18, menu[i])) / 2 - 4, 44 + i * (menuBar->height), (i == currentEntry) ? DARKBLUE : YELLOW, 18, menu[i]);
+			sftd_draw_text(fontBold18, (320 - sftd_get_text_width(fontBold18, 18, menu[i])) / 2, 44 + i * (menuBar->height), (i == currentEntry) ? DARKBLUE : YELLOW, 18, menu[i]);
 		}
 		printBottomIndications("Press A to select an option.");
 	pksm_end_frame();
@@ -515,7 +515,7 @@ void printDatabase6(char *database[], int currentEntry, int page, int spriteArra
 			if (pk != -1)
 				sf2d_draw_texture_part(spritesSmall, 20, y - ((i == currentEntry) ? movementOffsetSlow(2) : 0), 40 * (pk % 25) + 4, 30 * (pk / 25), 34, 30);
 			if (sftd_get_text_width(fontBold9, 9, database[page * 10 + i]) <= 148)
-				sftd_draw_text(fontBold9, 54, y + 14, (i == currentEntry) ? HIGHBLUE : YELLOW, 9, database[page * 10 + i]);
+				sftd_draw_text(fontBold9, 54, y + 12, (i == currentEntry) ? HIGHBLUE : YELLOW, 9, database[page * 10 + i]);
 			else
 				sftd_draw_text_wrap(fontBold9, 54, y + 3, (i == currentEntry) ? HIGHBLUE : YELLOW, 9, 148, database[page * 10 + i]);
 			
@@ -1736,7 +1736,7 @@ void printSettings(int box) {
 
 		for (int i = 0; i < 3; i++) {
 			sf2d_draw_texture(menuBar, (320 - menuBar->width) / 2, 60 + i * (menuBar->height));
-			sftd_draw_text(fontBold15, (320 - sftd_get_text_width(fontBold15, 15, menu[i])) / 2 - 4, 55 + (menuBar->height - 18) / 2 + i * (menuBar->height), DARKBLUE, 15, menu[i]);
+			sftd_draw_text(fontBold15, (320 - sftd_get_text_width(fontBold15, 15, menu[i])) / 2, 58 + (menuBar->height - 18) / 2 + i * (menuBar->height), DARKBLUE, 15, menu[i]);
 		}
 		
 		sf2d_draw_texture(miniBox, 189, 64);
