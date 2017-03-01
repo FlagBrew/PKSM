@@ -74,8 +74,8 @@ void GUIElementsInit() {
 
 void GUIElementsSpecify(int game) {
 	freezeMsg("Loading graphics...");
-	alternativeSpritesSmall = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/alternative_icons_spritesheetv2.png", SF2D_PLACE_RAM);
-	spritesSmall = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheetv2.png", SF2D_PLACE_RAM);
+	alternativeSpritesSmall = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/alternative_icons_spritesheetv3.png", SF2D_PLACE_RAM);
+	spritesSmall = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheetv3.png", SF2D_PLACE_RAM);
 	balls = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/balls_spritesheetv2.png", SF2D_PLACE_RAM);
 	settings = sfil_load_PNG_file("romfs:/res/Settings.png", SF2D_PLACE_RAM);
 	

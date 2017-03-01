@@ -52,7 +52,7 @@
 #include "spi.h"
 #include "util.h"
 
-#define DEBUG 1
+#define DEBUG 0
 
 #define GAME_X 		  0
 #define GAME_Y 		  1
@@ -70,4 +70,4 @@
 #define GAME_B2 	 13
 #define GAME_W2 	 14
 
-#define VERSION "v4.2.0"
+#define VERSION "v4.2.1"

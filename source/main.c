@@ -20,15 +20,15 @@
 
 #define ASSETS 5
 
-char* path[] =    { "/3ds/data/PKSM/additionalassets/alternative_icons_spritesheetv2.png",
+char* path[] =    { "/3ds/data/PKSM/additionalassets/alternative_icons_spritesheetv3.png",
 					"/3ds/data/PKSM/additionalassets/balls_spritesheetv2.png",
-					"/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheetv2.png",
+					"/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheetv3.png",
 					"/3ds/data/PKSM/additionalassets/types_sheetv2.png",
 					"/3ds/data/PKSM/additionalassets/species_en.txt",
 };
-char* url[] = { "https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/alternative_icons_spritesheetv2.png",
+char* url[] = { "https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/alternative_icons_spritesheetv3.png",
 				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/balls_spritesheetv2.png",
-				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/pokemon_icons_spritesheetv2.png",
+				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/pokemon_icons_spritesheetv3.png",
 				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/types_sheetv2.png",
 				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/species_en.txt",
 };
