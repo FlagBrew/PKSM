@@ -228,7 +228,7 @@ void encryptPkmn(u8* pkmn) {
 }
 
 void encryptBattleSection(u8* mainbuf, u8* pkmn, int game, int currentEntry) {
-	int boxpos = 0;
+	/*int boxpos = 0;
     if (game == GAME_X || game == GAME_Y)
 		boxpos = 0x14200;
 	else if (game == GAME_OR || game == GAME_AS)
@@ -249,42 +249,19 @@ void encryptBattleSection(u8* mainbuf, u8* pkmn, int game, int currentEntry) {
         temp ^= (seedStep(seed) >> 16);
         seed = seedStep(seed);
         memcpy(&mainbuf[boxpos + 260 * currentEntry + i], &temp, 2);
-    }
+    }*/
 }
 
 void fillBattleSection(u8* mainbuf, u8* pkmn, int game, int currentEntry) {
-	int boxpos = 0;
+	/*int boxpos = 0;
     if (game == GAME_X || game == GAME_Y)
 		boxpos = 0x14200;
 	else if (game == GAME_OR || game == GAME_AS)
 		boxpos = 0x14200;
 	else if (game == GAME_SUN || game == GAME_MOON) 
-		boxpos = 0x01400;
+		boxpos = 0x01400;*/
 		
-    u8 battle = 0;
-    memcpy(&mainbuf[boxpos + 260 * currentEntry + 0xE8], &battle, 1);
-    
-    u8 level = getLevel(pkmn);
-    memcpy(&mainbuf[boxpos + 260 * currentEntry + 0xEC], &level, 1);
-    
-    u16 currenthp = getStat(pkmn, 0);
-    memcpy(&mainbuf[boxpos + 260 * currentEntry + 0xF0], &currenthp, 2);
-    memcpy(&mainbuf[boxpos + 260 * currentEntry + 0xF2], &currenthp, 2);
-    
-    u16 atk = getStat(pkmn, 1);
-    memcpy(&mainbuf[boxpos + 260 * currentEntry + 0xF4], &atk, 2);
-    
-    u16 def = getStat(pkmn, 2);
-    memcpy(&mainbuf[boxpos + 260 * currentEntry + 0xF6], &def, 2);
-    
-    u16 spe = getStat(pkmn, 3);
-    memcpy(&mainbuf[boxpos + 260 * currentEntry + 0xF8], &spe, 2);
-    
-    u16 satk = getStat(pkmn, 4);
-    memcpy(&mainbuf[boxpos + 260 * currentEntry + 0xFA], &satk, 2);
-    
-    u16 sdef = getStat(pkmn, 5);
-    memcpy(&mainbuf[boxpos + 260 * currentEntry + 0xFC], &sdef, 2);
+	// things
 }
 
 void getPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game) {
