@@ -1,0 +1,18 @@
+0012 - XY Sylveon
+
+Pokemon: Sylveon      
+Level: 10        
+Ability: Cute Charm      
+Held Item: Weakness Policy     
+TID: 01044          
+SID: 00012    
+OT: XY            
+Met: a Pokemon event          
+Nature: Random       
+Ribbon: Event Ribbon       
+
+                                         Relearn Moves:
+Games: XY                                -
+Method: Local Wireless                   -                   
+Region: All                              -      
+Duration: Jan 4 to 19, 2014              -                  

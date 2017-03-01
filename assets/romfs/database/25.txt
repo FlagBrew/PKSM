@@ -1,0 +1,18 @@
+0025 - PC Battle Championship Gyarados
+
+Pokemon: Gyarados     
+Level: 50        
+Ability: Intimidate     
+Held Item: Gyaradosite     
+TID: 05104         
+SID: 00025    
+OT: ?????        
+Met: a Pokemon Center         
+Nature: Random       
+Ribbon: Classic Ribbon     
+
+                                         Relearn Moves:
+Games: XY                                
+Method: Local Wireless                                      
+Region: All                                    
+Duration: May 10 to 18, 2014                            

@@ -1,0 +1,18 @@
+0028 - PC Battle Championship Gengar
+
+Pokemon: Gengar
+Level: 50
+Ability: Levitate
+Held Item: Gengarite
+TID: 06024
+SID: 00028
+OT: ?????
+Met: a Pokemon Center
+Nature: Random
+Ribbon: Classic Ribbon
+
+                                         Relearn Moves:
+Games: XY
+Method: Local Wireless
+Region: All
+Duration: Jun 2 to 8, 2014

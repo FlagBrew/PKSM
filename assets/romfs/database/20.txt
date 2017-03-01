@@ -1,0 +1,18 @@
+0020 - PC Gengar
+
+Pokemon: Gengar     
+Level: 25        
+Ability: Levitate     
+Held Item: None     
+TID: 02014         
+SID: 00020    
+OT: ?????         
+Met: a Pokemon Center          
+Nature: Random       
+Ribbon: Classic Ribbon       
+
+                                         Relearn Moves:
+Games: XY                                
+Method: Local Wireless                                       
+Region: All                                    
+Duration: Feb 1 to 28, 2014                            

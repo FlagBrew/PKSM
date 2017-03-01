@@ -1,0 +1,18 @@
+0021 - Wonderland Darkrai
+
+Pokemon: Darkrai     
+Level: 50        
+Ability: Bad Dreams     
+Held Item: Enigma Berry     
+TID: 04194         
+SID: 00021    
+OT: ?????       
+Met: Pokemon Movie 14          
+Nature: Random       
+Ribbon: Wishing Ribbon       
+
+                                         Relearn Moves:
+Games: XY                                - Phantom Force
+Method: Serial Code                                      
+Region: JPN                                    
+Duration: Apr 19 to Sep 30, 2014                            

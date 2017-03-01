@@ -1,0 +1,18 @@
+﻿0015 - CoroCoro Charizardite Y Charizard
+
+Pokemon: Charizard     
+Level: 36        
+Ability: Blaze     
+Held Item: Charizardite Y     
+TID: 03154         
+SID: 00015    
+OT: ?????          
+Met: a lovely place          
+Nature: Random       
+Ribbon: Classic Ribbon       
+
+                                         Relearn Moves:
+Games: X                                 -
+Method: Serial Code                      -                   
+Region: JPN                              -      
+Duration: Mar 4 to Aug 29, 2014          -                  

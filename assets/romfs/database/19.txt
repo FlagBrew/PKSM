@@ -1,0 +1,18 @@
+﻿0019 - PC Scizor
+
+Pokemon: Scizor     
+Level: 25        
+Ability: Swarm or Technician     
+Held Item: None     
+TID: 02014         
+SID: 00019    
+OT: ?????     
+Met: a Pokemon Center          
+Nature: Random       
+Ribbon: Classic Ribbon       
+
+                                         Relearn Moves:
+Games: XY                                
+Method: Local Wireless                                       
+Region: All                                    
+Duration: Feb 1 to 28, 2014                            
