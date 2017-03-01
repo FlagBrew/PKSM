@@ -18,8 +18,6 @@
 
 #include "fx.h"
 
-#define NSPRITES 8
-
 sf2d_texture *cubesSheet, *boxesSheet;
 
 int movementLong = 0;
@@ -30,9 +28,6 @@ bool up = true;
 
 int x[11];
 int y[11];
-u16 sprites_n[NSPRITES];
-int sprites_x[NSPRITES];
-int sprites_y[NSPRITES];
 float rad = 0.0f;
 
 void FXElementsInit() {
@@ -45,12 +40,6 @@ void FXElementsInit() {
 	for (int i = 1; i < 11; i++) {
 		x[i] = rand() % 800;
 		y[i] = rand() % 200;
-	}
-	
-	for (int i = 0; i < NSPRITES; i++) {
-		sprites_n[i] = rand() % 802 + 1;
-		sprites_x[i] = rand() % 400;
-		sprites_y[i] = rand() % 210;
 	}
 }
 
@@ -112,16 +101,6 @@ void animateBG(bool isUp) {
 		} else 
 			x[i] += 1;
 	}
-	
-	for (int i = 0; i < NSPRITES; i++) {
-		if (sprites_x[i] >= maxrange * 2 + 40) {
-			sprites_x[i] = sprites_x[i] - (60 + maxrange * 2) - (rand() % 40);
-			sprites_n[i] = rand() % 802 + 1;
-			sprites_y[i] = rand() % 210;
-		} else
-			sprites_x[i] += 1;
-		printElementFX(sprites_n[i], sprites_x[i], sprites_y[i]);
-	}
-	
+
 	rad = (rad >= 360) ? 0.0f : (rad + 0.005f);
 }

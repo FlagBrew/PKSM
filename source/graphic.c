@@ -978,10 +978,6 @@ u16 getAlternativeSprite(u8* pkmn, int game) {
 	return 0;
 }
 
-void printElementFX(u16 n, int x, int y) {
-	sf2d_draw_texture_part(spritesSmall, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30);
-}
-
 void printElement(u8* pkmn, int game, u16 n, int x, int y) {
 	u16 t = getAlternativeSprite(pkmn, game);
 	if (t) {
