@@ -1,0 +1,1 @@
+gcc -o badsectors.exe main.c sha256.c memecrypto/source/aes.c memecrypto/source/memecrypto.c memecrypto/source/mini-gmp.c memecrypto/source/rsa.c memecrypto/source/sha1.c
