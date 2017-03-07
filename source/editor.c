@@ -2067,16 +2067,18 @@ void pokemonEditor(u8* mainbuf, int game) {
 											u8 tempkmn[PKMNLENGTH];
 											getPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
 											memcpy(&tempkmn[0xE3], &mainbuf[(game < 4) ? 0x1402D : 0x1235], 1); // nats
-											setPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
+
+											// Correct Nickname of current language
 											char nick[NICKNAMELENGTH];
-											utf32_to_utf8((unsigned char*)nick, (uint32_t*)listSpecies.items[getPokedexNumber(pkmn)], NICKNAMELENGTH);
+											utf32_to_utf8((unsigned char*)nick, (uint32_t*)listSpecies.items[getPokedexNumber(tempkmn)], NICKNAMELENGTH);
 											setNicknameZ(pkmn, nick, 0x40);
+
+											setPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
 											free(livingbuf);
 											operationDone = true;
 										}
 										break;
 									}
-									
 									printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_GENERATE, genEntry, page);
 								}
 							}
@@ -2117,11 +2119,14 @@ void pokemonEditor(u8* mainbuf, int game) {
 							u8 tempkmn[PKMNLENGTH];
 							getPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
 							memcpy(&tempkmn[0xE3], &mainbuf[(game < 4) ? 0x1402D : 0x1235], 1); // nats
+
+							// Correct Nickname of current language
+							char nick[NICKNAMELENGTH];
+							utf32_to_utf8((unsigned char*)nick, (uint32_t*)listSpecies.items[getPokedexNumber(tempkmn)], NICKNAMELENGTH);
+							setNicknameZ(tempkmn, nick, 0x40);
+
 							setPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
 
-							char nick[NICKNAMELENGTH];
-							utf32_to_utf8((unsigned char*)nick, (uint32_t*)listSpecies.items[getPokedexNumber(pkmn)], NICKNAMELENGTH);
-							setNicknameZ(pkmn, nick, 0x40);
 							free(livingbuf);
 							operationDone = true;
 						}
