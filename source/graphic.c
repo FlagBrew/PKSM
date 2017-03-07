@@ -304,9 +304,39 @@ void drawFPSDebug() {
 	sftd_draw_textf(fontBold12, 12, 13, WHITE, 12, "FPS: %2.6f", sf2d_get_fps());
 }
 
+char* messageDebug;
+bool hasDebugMessage = false;
+time_t lastDebugMessageTime = 0;
+char* lastMessage;
+
+void consoleMsg(char* message) {
+	messageDebug = message;
+	hasDebugMessage = true;
+}
+
+void drawConsoleDebug() {
+	if (hasDebugMessage) {
+		time_t currentTime = time(NULL);
+		if (sf2d_get_current_screen() == GFX_BOTTOM) {
+			if ((lastDebugMessageTime == 0 || (currentTime - lastDebugMessageTime) < 5)) {
+				sf2d_draw_rectangle(0, 0, 400, 20, RGBA8(0, 0, 0, 200));
+				sftd_draw_textf(fontBold12, 2, 3, WHITE, 12, "Debug: %s", messageDebug);
+				if (lastDebugMessageTime == 0) {
+					lastDebugMessageTime = currentTime;
+				}
+			} else {
+				hasDebugMessage = false;
+				lastDebugMessageTime = 0;
+			}
+		}
+	}
+}
 void pksm_end_frame() {
 	#if DEBUG
 		drawFPSDebug();
+	#endif
+	#if DEBUG_I18N
+		drawConsoleDebug();
 	#endif
 	sf2d_end_frame();
 }
@@ -365,7 +395,6 @@ int confirmDisp(char* message) {
 	}
 	return 0;
 }
-char* lastMessage;
 
 void _freezeMsgWithDetails(char* message, char* details, bool useLastMessage) {
 	if (!useLastMessage) {

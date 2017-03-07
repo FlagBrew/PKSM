@@ -54,6 +54,7 @@ void infoDisp(char* message);
 int confirmDisp(char* message);
 void freezeMsg(char* message);
 void freezeMsgDetails(char* details);
+void consoleMsg(char* details);
 void progressBar(char* message, u32 pagesize, u32 sz);
 void printCredits();
 void printTitle(const char* title);
