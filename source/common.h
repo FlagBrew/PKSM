@@ -51,6 +51,7 @@
 #include "sha256.h"
 #include "spi.h"
 #include "util.h"
+#include "i18n.h"
 
 #define DEBUG 0
 
@@ -71,3 +72,7 @@
 #define GAME_W2 	 14
 
 #define VERSION "v4.2.1"
+
+struct ArrayUTF32 listMoves;
+struct ArrayUTF32 listItems;
+struct ArrayUTF32 listSpecies;

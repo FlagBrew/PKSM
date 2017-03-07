@@ -18,19 +18,19 @@
 
 #include "common.h"
 
-#define ASSETS 5
+#define ASSETS 4
 
 char* path[] =    { "/3ds/data/PKSM/additionalassets/alternative_icons_spritesheetv3.png",
 					"/3ds/data/PKSM/additionalassets/balls_spritesheetv2.png",
 					"/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheetv3.png",
 					"/3ds/data/PKSM/additionalassets/types_sheetv2.png",
-					"/3ds/data/PKSM/additionalassets/species_en.txt",
+					//"/3ds/data/PKSM/additionalassets/species_en.txt",
 };
 char* url[] = { "https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/alternative_icons_spritesheetv3.png",
 				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/balls_spritesheetv2.png",
 				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/pokemon_icons_spritesheetv3.png",
 				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/types_sheetv2.png",
-				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/species_en.txt",
+				//"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/species_en.txt",
 };
 		
 void exitServices() {
@@ -45,10 +45,12 @@ void exitServices() {
 	romfsExit();
 	sftd_fini();
 	sf2d_fini();
+	cfguExit();
 }
 
 bool initServices() {
 	bool isDownloaded = false;
+	cfguInit();
 	sf2d_init();
 	sftd_init();
 	sf2d_set_clear_color(BLACK);
@@ -88,7 +90,8 @@ bool initServices() {
 	loadPersonal();
 	
     u8 tmp[12000];
-	FILE *fptr = fopen("/3ds/data/PKSM/additionalassets/species_en.txt", "rt");
+	struct i18n_files listFiles = i18n_getFilesPath();
+	FILE *fptr = fopen(listFiles.species, "rt");
 	if (fptr == NULL) {
 		fclose(fptr);
 		return true;
@@ -100,7 +103,7 @@ bool initServices() {
 	fread(tmp, size, 1, fptr);
 	fclose(fptr);
 	loadLines(tmp, personal.species[0], 12, size);
-	
+	listSpecies = i18n_FileToArrayUTF32(listFiles.species);
 	u32 defaultSize = 150 * 30 * PKMNLENGTH;
 	size = 0;
 	u8 *bankbuf, *defaultBank;

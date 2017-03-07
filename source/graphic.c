@@ -46,28 +46,59 @@ sf2d_texture *noMove, *hexIcon, *hexBG, *blueTextBox, *otaButton, *generationBG,
 
 char *gamesList[] = {"X", "Y", "Omega Ruby", "Alpha Sapphire", "Sun", "Moon", "Diamond", "Pearl", "Platinum", "Heart Gold", "Soul Silver", "Black", "White", "Black 2", "White 2"};
 
-static char *abilities[] = {"None", "Stench", "Drizzle", "Speed Boost", "Battle Armor", "Sturdy", "Damp", "Limber", "Sand Veil", "Static", "Volt Absorb", "Water Absorb", "Oblivious", "Cloud Nine", "Compound Eyes", "Insomnia", "Color Change", "Immunity", "Flash Fire", "Shield Dust", "Own Tempo", "Suction Cups", "Intimidate", "Shadow Tag", "Rough Skin", "Wonder Guard", "Levitate", "Effect Spore", "Synchronize", "Clear Body", "Natural Cure", "Lightning Rod", "Serene Grace", "Swift Swim", "Chlorophyll", "Illuminate", "Trace", "Huge Power", "Poison Point", "Inner Focus", "Magma Armor", "Water Veil", "Magnet Pull", "Soundproof", "Rain Dish", "Sand Stream", "Pressure", "Thick Fat", "Early Bird", "Flame Body", "Run Away", "Keen Eye", "Hyper Cutter", "Pickup", "Truant", "Hustle", "Cute Charm", "Plus", "Minus", "Forecast", "Sticky Hold", "Shed Skin", "Guts", "Marvel Scale", "Liquid Ooze", "Overgrow", "Blaze", "Torrent", "Swarm", "Rock Head", "Drought", "Arena Trap", "Vital Spirit", "White Smoke", "Pure Power", "Shell Armor", "Air Lock", "Tangled Feet", "Motor Drive", "Rivalry", "Steadfast", "Snow Cloak", "Gluttony", "Anger Point", "Unburden", "Heatproof", "Simple", "Dry Skin", "Download", "Iron Fist", "Poison Heal", "Adaptability", "Skill Link", "Hydration", "Solar Power", "Quick Feet", "Normalize", "Sniper", "Magic Guard", "No Guard", "Stall", "Technician", "Leaf Guard", "Klutz", "Mold Breaker", "Super Luck", "Aftermath", "Anticipation", "Forewarn", "Unaware", "Tinted Lens", "Filter", "Slow Start", "Scrappy", "Storm Drain", "Ice Body", "Solid Rock", "Snow Warning", "Honey Gather", "Frisk", "Reckless", "Multitype", "Flower Gift", "Bad Dreams", "Pickpocket", "Sheer Force", "Contrary", "Unnerve", "Defiant", "Defeatist", "Cursed Body", "Healer", "Friend Guard", "Weak Armor", "Heavy Metal", "Light Metal", "Multiscale", "Toxic Boost", "Flare Boost", "Harvest", "Telepathy", "Moody", "Overcoat", "Poison Touch", "Regenerator", "Big Pecks", "Sand Rush", "Wonder Skin", "Analytic", "Illusion", "Imposter", "Infiltrator", "Mummy", "Moxie", "Justified", "Rattled", "Magic Bounce", "Sap Sipper", "Prankster", "Sand Force", "Iron Barbs", "Zen Mode", "Victory Star", "Turboblaze", "Teravolt", "Aroma Veil", "Flower Veil", "Cheek Pouch", "Protean", "Fur Coat", "Magician", "Bulletproof", "Competitive", "Strong Jaw", "Refrigerate", "Sweet Veil", "Stance Change", "Gale Wings", "Mega Launcher", "Grass Pelt", "Symbiosis", "Tough Claws", "Pixilate", "Gooey", "Aerilate", "Parental Bond", "Dark Aura", "Fairy Aura", "Aura Break", "Primordial Sea", "Desolate Land", "Delta Stream", "Stamina", "Wimp Out", "Emergency Exit", "Water Compaction", "Merciless", "Shields Down", "Stakeout", "Water Bubble", "Steelworker", "Berserk", "Slush Rush", "Long Reach", "Liquid Voice", "Triage", "Galvanize", "Surge Surfer", "Schooling", "Disguise", "Battle Bond", "Power Construct", "Corrosion", "Comatose", "Queenly Majesty", "Innards Out", "Dancer", "Battery", "Fluffy", "Dazzling", "Soul-Heart", "Tangling Hair", "Receiver", "Power of Alchemy", "Beast Boost", "RKS System", "Electric Surge", "Psychic Surge", "Misty Surge", "Grassy Surge", "Full Metal Body", "Shadow Shield", "Prism Armor"};
-static char *moves[] = {"None", "Pound", "Karate Chop", "Double Slap", "Comet Punch", "Mega Punch", "Pay Day", "Fire Punch", "Ice Punch", "Thunder Punch", "Scratch", "Vice Grip", "Guillotine", "Razor Wind", "Swords Dance", "Cut", "Gust", "Wing Attack", "Whirlwind", "Fly", "Bind", "Slam", "Vine Whip", "Stomp", "Double Kick", "Mega Kick", "Jump Kick", "Rolling Kick", "Sand Attack", "Headbutt", "Horn Attack", "Fury Attack", "Horn Drill", "Tackle", "Body Slam", "Wrap", "Take Down", "Thrash", "Double-Edge", "Tail Whip", "Poison Sting", "Twineedle", "Pin Missile", "Leer", "Bite", "Growl", "Roar", "Sing", "Supersonic", "Sonic Boom", "Disable", "Acid", "Ember", "Flamethrower", "Mist", "Water Gun", "Hydro Pump", "Surf", "Ice Beam", "Blizzard", "Psybeam", "Bubble Beam", "Aurora Beam", "Hyper Beam", "Peck", "Drill Peck", "Submission", "Low Kick", "Counter", "Seismic Toss", "Strength", "Absorb", "Mega Drain", "Leech Seed", "Growth", "Razor Leaf", "Solar Beam", "Poison Powder", "Stun Spore", "Sleep Powder", "Petal Dance", "String Shot", "Dragon Rage", "Fire Spin", "Thunder Shock", "Thunderbolt", "Thunder Wave", "Thunder", "Rock Throw", "Earthquake", "Fissure", "Dig", "Toxic", "Confusion", "Psychic", "Hypnosis", "Meditate", "Agility", "Quick Attack", "Rage", "Teleport", "Night Shade", "Mimic", "Screech", "Double Team", "Recover", "Harden", "Minimize", "Smokescreen", "Confuse Ray", "Withdraw", "Defense Curl", "Barrier", "Light Screen", "Haze", "Reflect", "Focus Energy", "Bide", "Metronome", "Mirror Move", "Self-Destruct", "Egg Bomb", "Lick", "Smog", "Sludge", "Bone Club", "Fire Blast", "Waterfall", "Clamp", "Swift", "Skull Bash", "Spike Cannon", "Constrict", "Amnesia", "Kinesis", "Soft-Boiled", "High Jump Kick", "Glare", "Dream Eater", "Poison Gas", "Barrage", "Leech Life", "Lovely Kiss", "Sky Attack", "Transform", "Bubble", "Dizzy Punch", "Spore", "Flash", "Psywave", "Splash", "Acid Armor", "Crabhammer", "Explosion", "Fury Swipes", "Bonemerang", "Rest", "Rock Slide", "Hyper Fang", "Sharpen", "Conversion", "Tri Attack", "Super Fang", "Slash", "Substitute", "Struggle", "Sketch", "Triple Kick", "Thief", "Spider Web", "Mind Reader", "Nightmare", "Flame Wheel", "Snore", "Curse", "Flail", "Conversion 2", "Aeroblast", "Cotton Spore", "Reversal", "Spite", "Powder Snow", "Protect", "Mach Punch", "Scary Face", "Feint Attack", "Sweet Kiss", "Belly Drum", "Sludge Bomb", "Mud-Slap", "Octazooka", "Spikes", "Zap Cannon", "Foresight", "Destiny Bond", "Perish Song", "Icy Wind", "Detect", "Bone Rush", "Lock-On", "Outrage", "Sandstorm", "Giga Drain", "Endure", "Charm", "Rollout", "False Swipe", "Swagger", "Milk Drink", "Spark", "Fury Cutter", "Steel Wing", "Mean Look", "Attract", "Sleep Talk", "Heal Bell", "Return", "Present", "Frustration", "Safeguard", "Pain Split", "Sacred Fire", "Magnitude", "Dynamic Punch", "Megahorn", "Dragon Breath", "Baton Pass", "Encore", "Pursuit", "Rapid Spin", "Sweet Scent", "Iron Tail", "Metal Claw", "Vital Throw", "Morning Sun", "Synthesis", "Moonlight", "Hidden Power", "Cross Chop", "Twister", "Rain Dance", "Sunny Day", "Crunch", "Mirror Coat", "Psych Up", "Extreme Speed", "Ancient Power", "Shadow Ball", "Future Sight", "Rock Smash", "Whirlpool", "Beat Up", "Fake Out", "Uproar", "Stockpile", "Spit Up", "Swallow", "Heat Wave", "Hail", "Torment", "Flatter", "Will-O-Wisp", "Memento", "Facade", "Focus Punch", "Smelling Salts", "Follow Me", "Nature Power", "Charge", "Taunt", "Helping Hand", "Trick", "Role Play", "Wish", "Assist", "Ingrain", "Superpower", "Magic Coat", "Recycle", "Revenge", "Brick Break", "Yawn", "Knock Off", "Endeavor", "Eruption", "Skill Swap", "Imprison", "Refresh", "Grudge", "Snatch", "Secret Power", "Dive", "Arm Thrust", "Camouflage", "Tail Glow", "Luster Purge", "Mist Ball", "Feather Dance", "Teeter Dance", "Blaze Kick", "Mud Sport", "Ice Ball", "Needle Arm", "Slack Off", "Hyper Voice", "Poison Fang", "Crush Claw", "Blast Burn", "Hydro Cannon", "Meteor Mash", "Astonish", "Weather Ball", "Aromatherapy", "Fake Tears", "Air Cutter", "Overheat", "Odor Sleuth", "Rock Tomb", "Silver Wind", "Metal Sound", "Grass Whistle", "Tickle", "Cosmic Power", "Water Spout", "Signal Beam", "Shadow Punch", "Extrasensory", "Sky Uppercut", "Sand Tomb", "Sheer Cold", "Muddy Water", "Bullet Seed", "Aerial Ace", "Icicle Spear", "Iron Defense", "Block", "Howl", "Dragon Claw", "Frenzy Plant", "Bulk Up", "Bounce", "Mud Shot", "Poison Tail", "Covet", "Volt Tackle", "Magical Leaf", "Water Sport", "Calm Mind", "Leaf Blade", "Dragon Dance", "Rock Blast", "Shock Wave", "Water Pulse", "Doom Desire", "Psycho Boost", "Roost", "Gravity", "Miracle Eye", "Wake-Up Slap", "Hammer Arm", "Gyro Ball", "Healing Wish", "Brine", "Natural Gift", "Feint", "Pluck", "Tailwind", "Acupressure", "Metal Burst", "U-turn", "Close Combat", "Payback", "Assurance", "Embargo", "Fling", "Psycho Shift", "Trump Card", "Heal Block", "Wring Out", "Power Trick", "Gastro Acid", "Lucky Chant", "Me First", "Copycat", "Power Swap", "Guard Swap", "Punishment", "Last Resort", "Worry Seed", "Sucker Punch", "Toxic Spikes", "Heart Swap", "Aqua Ring", "Magnet Rise", "Flare Blitz", "Force Palm", "Aura Sphere", "Rock Polish", "Poison Jab", "Dark Pulse", "Night Slash", "Aqua Tail", "Seed Bomb", "Air Slash", "X-Scissor", "Bug Buzz", "Dragon Pulse", "Dragon Rush", "Power Gem", "Drain Punch", "Vacuum Wave", "Focus Blast", "Energy Ball", "Brave Bird", "Earth Power", "Switcheroo", "Giga Impact", "Nasty Plot", "Bullet Punch", "Avalanche", "Ice Shard", "Shadow Claw", "Thunder Fang", "Ice Fang", "Fire Fang", "Shadow Sneak", "Mud Bomb", "Psycho Cut", "Zen Headbutt", "Mirror Shot", "Flash Cannon", "Rock Climb", "Defog", "Trick Room", "Draco Meteor", "Discharge", "Lava Plume", "Leaf Storm", "Power Whip", "Rock Wrecker", "Cross Poison", "Gunk Shot", "Iron Head", "Magnet Bomb", "Stone Edge", "Captivate", "Stealth Rock", "Grass Knot", "Chatter", "Judgment", "Bug Bite", "Charge Beam", "Wood Hammer", "Aqua Jet", "Attack Order", "Defend Order", "Heal Order", "Head Smash", "Double Hit", "Roar of Time", "Spacial Rend", "Lunar Dance", "Crush Grip", "Magma Storm", "Dark Void", "Seed Flare", "Ominous Wind", "Shadow Force", "Hone Claws", "Wide Guard", "Guard Split", "Power Split", "Wonder Room", "Psyshock", "Venoshock", "Autotomize", "Rage Powder", "Telekinesis", "Magic Room", "Smack Down", "Storm Throw", "Flame Burst", "Sludge Wave", "Quiver Dance", "Heavy Slam", "Synchronoise", "Electro Ball", "Soak", "Flame Charge", "Coil", "Low Sweep", "Acid Spray", "Foul Play", "Simple Beam", "Entrainment", "After You", "Round", "Echoed Voice", "Chip Away", "Clear Smog", "Stored Power", "Quick Guard", "Ally Switch", "Scald", "Shell Smash", "Heal Pulse", "Hex", "Sky Drop", "Shift Gear", "Circle Throw", "Incinerate", "Quash", "Acrobatics", "Reflect Type", "Retaliate", "Final Gambit", "Bestow", "Inferno", "Water Pledge", "Fire Pledge", "Grass Pledge", "Volt Switch", "Struggle Bug", "Bulldoze", "Frost Breath", "Dragon Tail", "Work Up", "Electroweb", "Wild Charge", "Drill Run", "Dual Chop", "Heart Stamp", "Horn Leech", "Sacred Sword", "Razor Shell", "Heat Crash", "Leaf Tornado", "Steamroller", "Cotton Guard", "Night Daze", "Psystrike", "Tail Slap", "Hurricane", "Head Charge", "Gear Grind", "Searing Shot", "Techno Blast", "Relic Song", "Secret Sword", "Glaciate", "Bolt Strike", "Blue Flare", "Fiery Dance", "Freeze Shock", "Ice Burn", "Snarl", "Icicle Crash", "V-create", "Fusion Flare", "Fusion Bolt", "Flying Press", "Mat Block", "Belch", "Rototiller", "Sticky Web", "Fell Stinger", "Phantom Force", "Trick-or-Treat", "Noble Roar", "Ion Deluge", "Parabolic Charge", "Forest's Curse", "Petal Blizzard", "Freeze-Dry", "Disarming Voice", "Parting Shot", "Topsy-Turvy", "Draining Kiss", "Crafty Shield", "Flower Shield", "Grassy Terrain", "Misty Terrain", "Electrify", "Play Rough", "Fairy Wind", "Moonblast", "Boomburst", "Fairy Lock", "King's Shield", "Play Nice", "Confide", "Diamond Storm", "Steam Eruption", "Hyperspace Hole", "Water Shuriken", "Mystical Fire", "Spiky Shield", "Aromatic Mist", "Eerie Impulse", "Venom Drench", "Powder", "Geomancy", "Magnetic Flux", "Happy Hour", "Electric Terrain", "Dazzling Gleam", "Celebrate", "Hold Hands", "Baby-Doll Eyes", "Nuzzle", "Hold Back", "Infestation", "Power-Up Punch", "Oblivion Wing", "Thousand Arrows", "Thousand Waves", "Land's Wrath", "Light of Ruin", "Origin Pulse", "Precipice Blades", "Dragon Ascent", "Hyperspace Fury", "Breakneck Blitz", "Breakneck Blitz", "All-Out Pummeling", "All-Out Pummeling", "Supersonic Skystrike", "Supersonic Skystrike", "Acid Downpour", "Acid Downpour", "Tectonic Rage", "Tectonic Rage", "Continental Crush", "Continental Crush", "Savage Spin-Out", "Savage Spin-Out", "Never-Ending Nightmare", "Never-Ending Nightmare", "Corkscrew Crash", "Corkscrew Crash", "Inferno Overdrive", "Inferno Overdrive", "Hydro Vortex", "Hydro Vortex", "Bloom Doom", "Bloom Doom", "Gigavolt Havoc", "Gigavolt Havoc", "Shattered Psyche", "Shattered Psyche", "Subzero Slammer", "Subzero Slammer", "Devastating Drake", "Devastating Drake", "Black Hole Eclipse", "Black Hole Eclipse", "Twinkle Tackle", "Twinkle Tackle", "Catastropika", "Shore Up", "First Impression", "Baneful Bunker", "Spirit Shackle", "Darkest Lariat", "Sparkling Aria", "Ice Hammer", "Floral Healing", "High Horsepower", "Strength Sap", "Solar Blade", "Leafage", "Spotlight", "Toxic Thread", "Laser Focus", "Gear Up", "Throat Chop", "Pollen Puff", "Anchor Shot", "Psychic Terrain", "Lunge", "Fire Lash", "Power Trip", "Burn Up", "Speed Swap", "Smart Strike", "Purify", "Revelation Dance", "Core Enforcer", "Trop Kick", "Instruct", "Beak Blast", "Clanging Scales", "Dragon Hammer", "Brutal Swing", "Aurora Veil", "Sinister Arrow Raid", "Malicious Moonsault", "Oceanic Operetta", "Guardian of Alola", "Soul-Stealing 7-Star Strike", "Stoked Sparksurfer", "Pulverizing Pancake", "Extreme Evoboost", "Genesis Supernova", "Shell Trap", "Fleur Cannon", "Psychic Fangs", "Stomping Tantrum", "Shadow Bone", "Accelerock", "Liquidation", "Prismatic Laser", "Spectral Thief", "Sunsteel Strike", "Moongeist Beam", "Tearful Look", "Zing Zap", "Nature's Madness", "Multi-Attack", "10,000,000 Volt Thunderbolt"};
-static char *movesSorted[] = {"None", "Absorb", "Accelerock", "Acid", "Acid Armor", "Acid Downpour", "Acid Downpour", "Acid Spray", "Acrobatics", "Acupressure", "Aerial Ace", "Aeroblast", "After You", "Agility", "Air Cutter", "Air Slash", "All-Out Pummeling", "All-Out Pummeling", "Ally Switch", "Amnesia", "Anchor Shot", "Ancient Power", "Aqua Jet", "Aqua Ring", "Aqua Tail", "Arm Thrust", "Aromatherapy", "Aromatic Mist", "Assist", "Assurance", "Astonish", "Attack Order", "Attract", "Aura Sphere", "Aurora Beam", "Aurora Veil", "Autotomize", "Avalanche", "Baby-Doll Eyes", "Baneful Bunker", "Barrage", "Barrier", "Baton Pass", "Beak Blast", "Beat Up", "Belch", "Belly Drum", "Bestow", "Bide", "Bind", "Bite", "Black Hole Eclipse", "Black Hole Eclipse", "Blast Burn", "Blaze Kick", "Blizzard", "Block", "Bloom Doom", "Bloom Doom", "Blue Flare", "Body Slam", "Bolt Strike", "Bone Club", "Bone Rush", "Bonemerang", "Boomburst", "Bounce", "Brave Bird", "Breakneck Blitz", "Breakneck Blitz", "Brick Break", "Brine", "Brutal Swing", "Bubble", "Bubble Beam", "Bug Bite", "Bug Buzz", "Bulk Up", "Bulldoze", "Bullet Punch", "Bullet Seed", "Burn Up", "Calm Mind", "Camouflage", "Captivate", "Catastropika", "Celebrate", "Charge", "Charge Beam", "Charm", "Chatter", "Chip Away", "Circle Throw", "Clamp", "Clanging Scales", "Clear Smog", "Close Combat", "Coil", "Comet Punch", "Confide", "Confuse Ray", "Confusion", "Constrict", "Continental Crush", "Continental Crush", "Conversion", "Conversion 2", "Copycat", "Core Enforcer", "Corkscrew Crash", "Corkscrew Crash", "Cosmic Power", "Cotton Guard", "Cotton Spore", "Counter", "Covet", "Crabhammer", "Crafty Shield", "Cross Chop", "Cross Poison", "Crunch", "Crush Claw", "Crush Grip", "Curse", "Cut", "Dark Pulse", "Dark Void", "Darkest Lariat", "Dazzling Gleam", "Defend Order", "Defense Curl", "Defog", "Destiny Bond", "Detect", "Devastating Drake", "Devastating Drake", "Diamond Storm", "Dig", "Disable", "Disarming Voice", "Discharge", "Dive", "Dizzy Punch", "Doom Desire", "Double Hit", "Double Kick", "Double Slap", "Double Team", "Double-Edge", "Draco Meteor", "Dragon Ascent", "Dragon Breath", "Dragon Claw", "Dragon Dance", "Dragon Hammer", "Dragon Pulse", "Dragon Rage", "Dragon Rush", "Dragon Tail", "Drain Punch", "Draining Kiss", "Dream Eater", "Drill Peck", "Drill Run", "Dual Chop", "Dynamic Punch", "Earth Power", "Earthquake", "Echoed Voice", "Eerie Impulse", "Egg Bomb", "Electric Terrain", "Electrify", "Electro Ball", "Electroweb", "Embargo", "Ember", "Encore", "Endeavor", "Endure", "Energy Ball", "Entrainment", "Eruption", "Explosion", "Extrasensory", "Extreme Evoboost", "Extreme Speed", "Facade", "Fairy Lock", "Fairy Wind", "Fake Out", "Fake Tears", "False Swipe", "Feather Dance", "Feint", "Feint Attack", "Fell Stinger", "Fiery Dance", "Final Gambit", "Fire Blast", "Fire Fang", "Fire Lash", "Fire Pledge", "Fire Punch", "Fire Spin", "First Impression", "Fissure", "Flail", "Flame Burst", "Flame Charge", "Flame Wheel", "Flamethrower", "Flare Blitz", "Flash", "Flash Cannon", "Flatter", "Fleur Cannon", "Fling", "Floral Healing", "Flower Shield", "Fly", "Flying Press", "Focus Blast", "Focus Energy", "Focus Punch", "Follow Me", "Force Palm", "Foresight", "Forest's Curse", "Foul Play", "Freeze Shock", "Freeze-Dry", "Frenzy Plant", "Frost Breath", "Frustration", "Fury Attack", "Fury Cutter", "Fury Swipes", "Fusion Bolt", "Fusion Flare", "Future Sight", "Gastro Acid", "Gear Grind", "Gear Up", "Genesis Supernova", "Geomancy", "Giga Drain", "Giga Impact", "Gigavolt Havoc", "Gigavolt Havoc", "Glaciate", "Glare", "Grass Knot", "Grass Pledge", "Grass Whistle", "Grassy Terrain", "Gravity", "Growl", "Growth", "Grudge", "Guard Split", "Guard Swap", "Guardian of Alola", "Guillotine", "Gunk Shot", "Gust", "Gyro Ball", "Hail", "Hammer Arm", "Happy Hour", "Harden", "Haze", "Head Charge", "Head Smash", "Headbutt", "Heal Bell", "Heal Block", "Heal Order", "Heal Pulse", "Healing Wish", "Heart Stamp", "Heart Swap", "Heat Crash", "Heat Wave", "Heavy Slam", "Helping Hand", "Hex", "Hidden Power", "High Horsepower", "High Jump Kick", "Hold Back", "Hold Hands", "Hone Claws", "Horn Attack", "Horn Drill", "Horn Leech", "Howl", "Hurricane", "Hydro Cannon", "Hydro Pump", "Hydro Vortex", "Hydro Vortex", "Hyper Beam", "Hyper Fang", "Hyper Voice", "Hyperspace Fury", "Hyperspace Hole", "Hypnosis", "Ice Ball", "Ice Beam", "Ice Burn", "Ice Fang", "Ice Hammer", "Ice Punch", "Ice Shard", "Icicle Crash", "Icicle Spear", "Icy Wind", "Imprison", "Incinerate", "Inferno", "Inferno Overdrive", "Inferno Overdrive", "Infestation", "Ingrain", "Instruct", "Ion Deluge", "Iron Defense", "Iron Head", "Iron Tail", "Judgment", "Jump Kick", "Karate Chop", "Kinesis", "King's Shield", "Knock Off", "Land's Wrath", "Laser Focus", "Last Resort", "Lava Plume", "Leaf Blade", "Leaf Storm", "Leaf Tornado", "Leafage", "Leech Life", "Leech Seed", "Leer", "Lick", "Light of Ruin", "Light Screen", "Liquidation", "Lock-On", "Lovely Kiss", "Low Kick", "Low Sweep", "Lucky Chant", "Lunar Dance", "Lunge", "Luster Purge", "Mach Punch", "Magic Coat", "Magic Room", "Magical Leaf", "Magma Storm", "Magnet Bomb", "Magnet Rise", "Magnetic Flux", "Magnitude", "Malicious Moonsault", "Mat Block", "Me First", "Mean Look", "Meditate", "Mega Drain", "Mega Kick", "Mega Punch", "Megahorn", "Memento", "Metal Burst", "Metal Claw", "Metal Sound", "Meteor Mash", "Metronome", "Milk Drink", "Mimic", "Mind Reader", "Minimize", "Miracle Eye", "Mirror Coat", "Mirror Move", "Mirror Shot", "Mist", "Mist Ball", "Misty Terrain", "Moonblast", "Moongeist Beam", "Moonlight", "Morning Sun", "Mud Bomb", "Mud Shot", "Mud Sport", "Mud-Slap", "Muddy Water", "Multi-Attack", "Mystical Fire", "Nasty Plot", "Natural Gift", "Nature Power", "Nature's Madness", "Needle Arm", "Never-Ending Nightmare", "Never-Ending Nightmare", "Night Daze", "Night Shade", "Night Slash", "Nightmare", "Noble Roar", "Nuzzle", "Oblivion Wing", "Oceanic Operetta", "Octazooka", "Odor Sleuth", "Ominous Wind", "Origin Pulse", "Outrage", "Overheat", "Pain Split", "Parabolic Charge", "Parting Shot", "Pay Day", "Payback", "Peck", "Perish Song", "Petal Blizzard", "Petal Dance", "Phantom Force", "Pin Missile", "Play Nice", "Play Rough", "Pluck", "Poison Fang", "Poison Gas", "Poison Jab", "Poison Powder", "Poison Sting", "Poison Tail", "Pollen Puff", "Pound", "Powder", "Powder Snow", "Power Gem", "Power Split", "Power Swap", "Power Trick", "Power Trip", "Power Whip", "Power-Up Punch", "Precipice Blades", "Present", "Prismatic Laser", "Protect", "Psybeam", "Psych Up", "Psychic", "Psychic Fangs", "Psychic Terrain", "Psycho Boost", "Psycho Cut", "Psycho Shift", "Psyshock", "Psystrike", "Psywave", "Pulverizing Pancake", "Punishment", "Purify", "Pursuit", "Quash", "Quick Attack", "Quick Guard", "Quiver Dance", "Rage", "Rage Powder", "Rain Dance", "Rapid Spin", "Razor Leaf", "Razor Shell", "Razor Wind", "Recover", "Recycle", "Reflect", "Reflect Type", "Refresh", "Relic Song", "Rest", "Retaliate", "Return", "Revelation Dance", "Revenge", "Reversal", "Roar", "Roar of Time", "Rock Blast", "Rock Climb", "Rock Polish", "Rock Slide", "Rock Smash", "Rock Throw", "Rock Tomb", "Rock Wrecker", "Role Play", "Rolling Kick", "Rollout", "Roost", "Rototiller", "Round", "Sacred Fire", "Sacred Sword", "Safeguard", "Sand Attack", "Sand Tomb", "Sandstorm", "Savage Spin-Out", "Savage Spin-Out", "Scald", "Scary Face", "Scratch", "Screech", "Searing Shot", "Secret Power", "Secret Sword", "Seed Bomb", "Seed Flare", "Seismic Toss", "Self-Destruct", "Shadow Ball", "Shadow Bone", "Shadow Claw", "Shadow Force", "Shadow Punch", "Shadow Sneak", "Sharpen", "Shattered Psyche", "Shattered Psyche", "Sheer Cold", "Shell Smash", "Shell Trap", "Shift Gear", "Shock Wave", "Shore Up", "Signal Beam", "Silver Wind", "Simple Beam", "Sing", "Sinister Arrow Raid", "Sketch", "Skill Swap", "Skull Bash", "Sky Attack", "Sky Drop", "Sky Uppercut", "Slack Off", "Slam", "Slash", "Sleep Powder", "Sleep Talk", "Sludge", "Sludge Bomb", "Sludge Wave", "Smack Down", "Smart Strike", "Smelling Salts", "Smog", "Smokescreen", "Snarl", "Snatch", "Snore", "Soak", "Soft-Boiled", "Solar Beam", "Solar Blade", "Sonic Boom", "Soul-Stealing 7-Star Strike", "Spacial Rend", "Spark", "Sparkling Aria", "Spectral Thief", "Speed Swap", "Spider Web", "Spike Cannon", "Spikes", "Spiky Shield", "Spirit Shackle", "Spit Up", "Spite", "Splash", "Spore", "Spotlight", "Stealth Rock", "Steam Eruption", "Steamroller", "Steel Wing", "Sticky Web", "Stockpile", "Stoked Sparksurfer", "Stomp", "Stomping Tantrum", "Stone Edge", "Stored Power", "Storm Throw", "Strength", "Strength Sap", "String Shot", "Struggle", "Struggle Bug", "Stun Spore", "Submission", "Substitute", "Subzero Slammer", "Subzero Slammer", "Sucker Punch", "Sunny Day", "Sunsteel Strike", "Super Fang", "Superpower", "Supersonic", "Supersonic Skystrike", "Supersonic Skystrike", "Surf", "Swagger", "Swallow", "Sweet Kiss", "Sweet Scent", "Swift", "Switcheroo", "Swords Dance", "Synchronoise", "Synthesis", "Tackle", "Tail Glow", "Tail Slap", "Tail Whip", "Tailwind", "Take Down", "Taunt", "Tearful Look", "Techno Blast", "Tectonic Rage", "Tectonic Rage", "Teeter Dance", "Telekinesis", "Teleport", "Thief", "Thousand Arrows", "Thousand Waves", "Thrash", "Throat Chop", "Thunder", "Thunder Fang", "Thunder Punch", "Thunder Shock", "Thunder Wave", "Thunderbolt", "Tickle", "Topsy-Turvy", "Torment", "Toxic", "Toxic Spikes", "Toxic Thread", "Transform", "Tri Attack", "Trick", "Trick Room", "Trick-or-Treat", "Triple Kick", "Trop Kick", "Trump Card", "Twineedle", "Twinkle Tackle", "Twinkle Tackle", "Twister", "U-turn", "Uproar", "V-create", "Vacuum Wave", "Venom Drench", "Venoshock", "Vice Grip", "Vine Whip", "Vital Throw", "Volt Switch", "Volt Tackle", "Wake-Up Slap", "Water Gun", "Water Pledge", "Water Pulse", "Water Shuriken", "Water Sport", "Water Spout", "Waterfall", "Weather Ball", "Whirlpool", "Whirlwind", "Wide Guard", "Wild Charge", "Will-O-Wisp", "Wing Attack", "Wish", "Withdraw", "Wonder Room", "Wood Hammer", "Work Up", "Worry Seed", "Wrap", "Wring Out", "X-Scissor", "Yawn", "Zap Cannon", "Zen Headbutt", "Zing Zap", "10,000,000 Volt Thunderbolt"};
-static char *natures[] = {"Hardy", "Lonely", "Brave", "Adamant", "Naughty", "Bold", "Docile", "Relaxed", "Impish", "Lax", "Timid", "Hasty", "Serious", "Jolly", "Naive", "Modest", "Mild", "Quiet", "Bashful", "Rash", "Calm", "Gentle", "Sassy", "Careful", "Quirky"};
-static char *items[] = {"None", "Master Ball", "Ultra Ball", "Great Ball", "Poke Ball", "Safari Ball", "Net Ball", "Dive Ball", "Nest Ball", "Repeat Ball", "Timer Ball", "Luxury Ball", "Premier Ball", "Dusk Ball", "Heal Ball", "Quick Ball", "Cherish Ball", "Potion", "Antidote", "Burn Heal", "Ice Heal", "Awakening", "Paralyze Heal", "Full Restore", "Max Potion", "Hyper Potion", "Super Potion", "Full Heal", "Revive", "Max Revive", "Fresh Water", "Soda Pop", "Lemonade", "Moomoo Milk", "Energy Powder", "Energy Root", "Heal Powder", "Revival Herb", "Ether", "Max Ether", "Elixir", "Max Elixir", "Lava Cookie", "Berry Juice", "Sacred Ash", "HP Up", "Protein", "Iron", "Carbos", "Calcium", "Rare Candy", "PP Up", "Zinc", "PP Max", "Old Gateau", "Guard Spec.", "Dire Hit", "X Attack", "X Defense", "X Speed", "X Accuracy", "X Sp. Atk", "X Sp. Def", "Poké Doll", "Fluffy Tail", "Blue Flute", "Yellow Flute", "Red Flute", "Black Flute", "White Flute", "Shoal Salt", "Shoal Shell", "Red Shard", "Blue Shard", "Yellow Shard", "Green Shard", "Super Repel", "Max Repel", "Escape Rope", "Repel", "Sun Stone", "Moon Stone", "Fire Stone", "Thunder Stone", "Water Stone", "Leaf Stone", "Tiny Mushroom", "Big Mushroom", "Pearl", "Big Pearl", "Stardust", "Star Piece", "Nugget", "Heart Scale", "Honey", "Growth Mulch", "Damp Mulch", "Stable Mulch", "Gooey Mulch", "Root Fossil", "Claw Fossil", "Helix Fossil", "Dome Fossil", "Old Amber", "Armor Fossil", "Skull Fossil", "Rare Bone", "Shiny Stone", "Dusk Stone", "Dawn Stone", "Oval Stone", "Odd Keystone", "Griseous Orb", "???", "???", "???", "Douse Drive", "Shock Drive", "Burn Drive", "Chill Drive", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "Sweet Heart", "Adamant Orb", "Lustrous Orb", "Greet Mail", "Favored Mail", "RSVP Mail", "Thanks Mail", "Inquiry Mail", "Like Mail", "Reply Mail", "Bridge Mail S", "Bridge Mail D", "Bridge Mail T", "Bridge Mail V", "Bridge Mail M", "Cheri Berry", "Chesto Berry", "Pecha Berry", "Rawst Berry", "Aspear Berry", "Leppa Berry", "Oran Berry", "Persim Berry", "Lum Berry", "Sitrus Berry", "Figy Berry", "Wiki Berry", "Mago Berry", "Aguav Berry", "Iapapa Berry", "Razz Berry", "Bluk Berry", "Nanab Berry", "Wepear Berry", "Pinap Berry", "Pomeg Berry", "Kelpsy Berry", "Qualot Berry", "Hondew Berry", "Grepa Berry", "Tamato Berry", "Cornn Berry", "Magost Berry", "Rabuta Berry", "Nomel Berry", "Spelon Berry", "Pamtre Berry", "Watmel Berry", "Durin Berry", "Belue Berry", "Occa Berry", "Passho Berry", "Wacan Berry", "Rindo Berry", "Yache Berry", "Chople Berry", "Kebia Berry", "Shuca Berry", "Coba Berry", "Payapa Berry", "Tanga Berry", "Charti Berry", "Kasib Berry", "Haban Berry", "Colbur Berry", "Babiri Berry", "Chilan Berry", "Liechi Berry", "Ganlon Berry", "Salac Berry", "Petaya Berry", "Apicot Berry", "Lansat Berry", "Starf Berry", "Enigma Berry", "Micle Berry", "Custap Berry", "Jaboca Berry", "Rowap Berry", "Bright Powder", "White Herb", "Macho Brace", "Exp. Share", "Quick Claw", "Soothe Bell", "Mental Herb", "Choice Band", "King's Rock", "Silver Powder", "Amulet Coin", "Cleanse Tag", "Soul Dew", "Deep Sea Tooth", "Deep Sea Scale", "Smoke Ball", "Everstone", "Focus Band", "Lucky Egg", "Scope Lens", "Metal Coat", "Leftovers", "Dragon Scale", "Light Ball", "Soft Sand", "Hard Stone", "Miracle Seed", "Black Glasses", "Black Belt", "Magnet", "Mystic Water", "Sharp Beak", "Poison Barb", "Never-Melt Ice", "Spell Tag", "Twisted Spoon", "Charcoal", "Dragon Fang", "Silk Scarf", "Up-Grade", "Shell Bell", "Sea Incense", "Lax Incense", "Lucky Punch", "Metal Powder", "Thick Club", "Stick", "Red Scarf", "Blue Scarf", "Pink Scarf", "Green Scarf", "Yellow Scarf", "Wide Lens", "Muscle Band", "Wise Glasses", "Expert Belt", "Light Clay", "Life Orb", "Power Herb", "Toxic Orb", "Flame Orb", "Quick Powder", "Focus Sash", "Zoom Lens", "Metronome", "Iron Ball", "Lagging Tail", "Destiny Knot", "Black Sludge", "Icy Rock", "Smooth Rock", "Heat Rock", "Damp Rock", "Grip Claw", "Choice Scarf", "Sticky Barb", "Power Bracer", "Power Belt", "Power Lens", "Power Band", "Power Anklet", "Power Weight", "Shed Shell", "Big Root", "Choice Specs", "Flame Plate", "Splash Plate", "Zap Plate", "Meadow Plate", "Icicle Plate", "Fist Plate", "Toxic Plate", "Earth Plate", "Sky Plate", "Mind Plate", "Insect Plate", "Stone Plate", "Spooky Plate", "Draco Plate", "Dread Plate", "Iron Plate", "Odd Incense", "Rock Incense", "Full Incense", "Wave Incense", "Rose Incense", "Luck Incense", "Pure Incense", "Protector", "Electirizer", "Magmarizer", "Dubious Disc", "Reaper Cloth", "Razor Claw", "Razor Fang", "TM01", "TM02", "TM03", "TM04", "TM05", "TM06", "TM07", "TM08", "TM09", "TM10", "TM11", "TM12", "TM13", "TM14", "TM15", "TM16", "TM17", "TM18", "TM19", "TM20", "TM21", "TM22", "TM23", "TM24", "TM25", "TM26", "TM27", "TM28", "TM29", "TM30", "TM31", "TM32", "TM33", "TM34", "TM35", "TM36", "TM37", "TM38", "TM39", "TM40", "TM41", "TM42", "TM43", "TM44", "TM45", "TM46", "TM47", "TM48", "TM49", "TM50", "TM51", "TM52", "TM53", "TM54", "TM55", "TM56", "TM57", "TM58", "TM59", "TM60", "TM61", "TM62", "TM63", "TM64", "TM65", "TM66", "TM67", "TM68", "TM69", "TM70", "TM71", "TM72", "TM73", "TM74", "TM75", "TM76", "TM77", "TM78", "TM79", "TM80", "TM81", "TM82", "TM83", "TM84", "TM85", "TM86", "TM87", "TM88", "TM89", "TM90", "TM91", "TM92", "HM01", "HM02", "HM03", "HM04", "HM05", "HM06", "???", "???", "Explorer Kit", "Loot Sack", "Rule Book", "Poké Radar", "Point Card", "Journal", "Seal Case", "Fashion Case", "Seal Bag", "Pal Pad", "Works Key", "Old Charm", "Galactic Key", "Red Chain", "Town Map", "Vs. Seeker", "Coin Case", "Old Rod", "Good Rod", "Super Rod", "Sprayduck", "Poffin Case", "Bike", "Suite Key", "Oak's Letter", "Lunar Wing", "Member Card", "Azure Flute", "S.S. Ticket", "Contest Pass", "Magma Stone", "Parcel", "Coupon 1", "Coupon 2", "Coupon 3", "Storage Key", "Secret Potion", "Vs. Recorder", "Gracidea", "Secret Key", "Apricorn Box", "Unown Report", "Berry Pots", "Dowsing Machine", "Blue Card", "Slowpoke Tail", "Clear Bell", "Card Key", "Basement Key", "Squirt Bottle", "Red Scale", "Lost Item", "Pass", "Machine Part", "Silver Wing", "Rainbow Wing", "Mystery Egg", "Red Apricorn", "Blue Apricorn", "Yellow Apricorn", "Green Apricorn", "Pink Apricorn", "White Apricorn", "Black Apricorn", "Fast Ball", "Level Ball", "Lure Ball", "Heavy Ball", "Love Ball", "Friend Ball", "Moon Ball", "Sport Ball", "Park Ball", "Photo Album", "GB Sounds", "Tidal Bell", "Rage Candy Bar", "Data Card 01", "Data Card 02", "Data Card 03", "Data Card 04", "Data Card 05", "Data Card 06", "Data Card 07", "Data Card 08", "Data Card 09", "Data Card 10", "Data Card 11", "Data Card 12", "Data Card 13", "Data Card 14", "Data Card 15", "Data Card 16", "Data Card 17", "Data Card 18", "Data Card 19", "Data Card 20", "Data Card 21", "Data Card 22", "Data Card 23", "Data Card 24", "Data Card 25", "Data Card 26", "Data Card 27", "Jade Orb", "Lock Capsule", "Red Orb", "Blue Orb", "Enigma Stone", "Prism Scale", "Eviolite", "Float Stone", "Rocky Helmet", "Air Balloon", "Red Card", "Ring Target", "Binding Band", "Absorb Bulb", "Cell Battery", "Eject Button", "Fire Gem", "Water Gem", "Electric Gem", "Grass Gem", "Ice Gem", "Fighting Gem", "Poison Gem", "Ground Gem", "Flying Gem", "Psychic Gem", "Bug Gem", "Rock Gem", "Ghost Gem", "Dragon Gem", "Dark Gem", "Steel Gem", "Normal Gem", "Health Wing", "Muscle Wing", "Resist Wing", "Genius Wing", "Clever Wing", "Swift Wing", "Pretty Wing", "Cover Fossil", "Plume Fossil", "Liberty Pass", "Pass Orb", "Dream Ball", "Poké Toy", "Prop Case", "Dragon Skull", "Balm Mushroom", "Big Nugget", "Pearl String", "Comet Shard", "Relic Copper", "Relic Silver", "Relic Gold", "Relic Vase", "Relic Band", "Relic Statue", "Relic Crown", "Casteliacone", "Dire Hit 2", "X Speed 2", "X Sp. Atk 2", "X Sp. Def 2", "X Defense 2", "X Attack 2", "X Accuracy 2", "X Speed 3", "X Sp. Atk 3", "X Sp. Def 3", "X Defense 3", "X Attack 3", "X Accuracy 3", "X Speed 6", "X Sp. Atk 6", "X Sp. Def 6", "X Defense 6", "X Attack 6", "X Accuracy 6", "Ability Urge", "Item Drop", "Item Urge", "Reset Urge", "Dire Hit 3", "Light Stone", "Dark Stone", "TM93", "TM94", "TM95", "Xtransceiver", "???", "Gram 1", "Gram 2", "Gram 3", "Xtransceiver", "Medal Box", "DNA Splicers", "DNA Splicers", "Permit", "Oval Charm", "Shiny Charm", "Plasma Card", "Grubby Hanky", "Colress Machine", "Dropped Item", "Dropped Item", "Reveal Glass", "Weakness Policy", "Assault Vest", "Holo Caster", "Prof's Letter", "Roller Skates", "Pixie Plate", "Ability Capsule", "Whipped Dream", "Sachet", "Luminous Moss", "Snowball", "Safety Goggles", "Poké Flute", "Rich Mulch", "Surprise Mulch", "Boost Mulch", "Amaze Mulch", "Gengarite", "Gardevoirite", "Ampharosite", "Venusaurite", "Charizardite X", "Blastoisinite", "Mewtwonite X", "Mewtwonite Y", "Blazikenite", "Medichamite", "Houndoominite", "Aggronite", "Banettite", "Tyranitarite", "Scizorite", "Pinsirite", "Aerodactylite", "Lucarionite", "Abomasite", "Kangaskhanite", "Gyaradosite", "Absolite", "Charizardite Y", "Alakazite", "Heracronite", "Mawilite", "Manectite", "Garchompite", "Latiasite", "Latiosite", "Roseli Berry", "Kee Berry", "Maranga Berry", "Sprinklotad", "TM96", "TM97", "TM98", "TM99", "TM100", "Power Plant Pass", "Mega Ring", "Intriguing Stone", "Common Stone", "Discount Coupon", "Elevator Key", "TMV Pass", "Honor of Kalos", "Adventure Rules", "Strange Souvenir", "Lens Case", "Makeup Bag", "Travel Trunk", "Lumiose Galette", "Shalour Sable", "Jaw Fossil", "Sail Fossil", "Looker Ticket", "Bike", "Holo Caster", "Fairy Gem", "Mega Charm", "Mega Glove", "Mach Bike", "Acro Bike", "Wailmer Pail", "Devon Parts", "Soot Sack", "Basement Key", "Pokéblock Kit", "Letter", "Eon Ticket", "Scanner", "Go-Goggles", "Meteorite", "Key to Room 1", "Key to Room 2", "Key to Room 4", "Key to Room 6", "Storage Key", "Devon Scope", "S.S. Ticket", "HM07", "Devon Scuba Gear", "Contest Costume", "Contest Costume", "Magma Suit", "Aqua Suit", "Pair of Tickets", "Mega Bracelet", "Mega Pendant", "Mega Glasses", "Mega Anchor", "Mega Stickpin", "Mega Tiara", "Mega Anklet", "Meteorite", "Swampertite", "Sceptilite", "Sablenite", "Altarianite", "Galladite", "Audinite", "Metagrossite", "Sharpedonite", "Slowbronite", "Steelixite", "Pidgeotite", "Glalitite", "Diancite", "Prison Bottle", "Mega Cuff", "Cameruptite", "Lopunnite", "Salamencite", "Beedrillite", "Meteorite", "Meteorite", "Key Stone", "Meteorite Shard", "Eon Flute", "Normalium Z", "Firium Z", "Waterium Z", "Electrium Z", "Grassium Z", "Icium Z", "Fightinium Z", "Poisonium Z", "Groundium Z", "Flyinium Z", "Psychium Z", "Buginium Z", "Rockium Z", "Ghostium Z", "Dragonium Z", "Darkinium Z", "Steelium Z", "Fairium Z", "Pikanium Z", "Bottle Cap", "Gold Bottle Cap", "Z-Ring", "Decidium Z", "Incinium Z", "Primarium Z", "Tapunium Z", "Marshadium Z", "Aloraichium Z", "Snorlium Z", "Eevium Z", "Mewnium Z", "Normalium Z", "Firium Z", "Waterium Z", "Electrium Z", "Grassium Z", "Icium Z", "Fightinium Z", "Poisonium Z", "Groundium Z", "Flyinium Z", "Psychium Z", "Buginium Z", "Rockium Z", "Ghostium Z", "Dragonium Z", "Darkinium Z", "Steelium Z", "Fairium Z", "Pikanium Z", "Decidium Z", "Incinium Z", "Primarium Z", "Tapunium Z", "Marshadium Z", "Aloraichium Z", "Snorlium Z", "Eevium Z", "Mewnium Z", "Pikashunium Z", "Pikashunium Z", "???", "???", "???", "???", "Forage Bag", "Fishing Rod", "Professor's Mask", "Festival Ticket", "Sparkling Stone", "Adrenaline Orb", "Zygarde Cube", "???", "Ice Stone", "Ride Pager", "Beast Ball", "Big Malasada", "Red Nectar", "Yellow Nectar", "Pink Nectar", "Purple Nectar", "Sun Flute", "Moon Flute", "???", "Enigmatic Card", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "Terrain Extender", "Protective Pads", "Electric Seed", "Psychic Seed", "Misty Seed", "Grassy Seed", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "Fighting Memory", "Flying Memory", "Poison Memory", "Ground Memory", "Rock Memory", "Bug Memory", "Ghost Memory", "Steel Memory", "Fire Memory", "Water Memory", "Grass Memory", "Electric Memory", "Psychic Memory", "Ice Memory", "Dragon Memory", "Dark Memory", "Fairy Memory"};
-static char *itemsSorted[] = {"None", "Ability Capsule", "Ability Urge", "Abomasite", "Absolite", "Absorb Bulb", "Acro Bike", "Adamant Orb", "Adrenaline Orb", "Adventure Rules", "Aerodactylite", "Aggronite", "Aguav Berry", "Air Balloon", "Alakazite", "Aloraichium Z", "Aloraichium Z", "Altarianite", "Amaze Mulch", "Ampharosite", "Amulet Coin", "Antidote", "Apicot Berry", "Apricorn Box", "Aqua Suit", "Armor Fossil", "Aspear Berry", "Assault Vest", "Audinite", "Awakening", "Azure Flute", "Babiri Berry", "Balm Mushroom", "Banettite", "Basement Key", "Basement Key", "Beast Ball", "Beedrillite", "Belue Berry", "Berry Juice", "Berry Pots", "Big Malasada", "Big Mushroom", "Big Nugget", "Big Pearl", "Big Root", "Bike", "Bike", "Binding Band", "Black Apricorn", "Black Belt", "Black Flute", "Black Glasses", "Black Sludge", "Blastoisinite", "Blazikenite", "Blue Apricorn", "Blue Card", "Blue Flute", "Blue Orb", "Blue Scarf", "Blue Shard", "Bluk Berry", "Boost Mulch", "Bottle Cap", "Bridge Mail D", "Bridge Mail M", "Bridge Mail S", "Bridge Mail T", "Bridge Mail V", "Bright Powder", "Bug Gem", "Bug Memory", "Buginium Z", "Buginium Z", "Burn Drive", "Burn Heal", "Calcium", "Cameruptite", "Carbos", "Card Key", "Casteliacone", "Cell Battery", "Charcoal", "Charizardite X", "Charizardite Y", "Charti Berry", "Cheri Berry", "Cherish Ball", "Chesto Berry", "Chilan Berry", "Chill Drive", "Choice Band", "Choice Scarf", "Choice Specs", "Chople Berry", "Claw Fossil", "Cleanse Tag", "Clear Bell", "Clever Wing", "Coba Berry", "Coin Case", "Colbur Berry", "Colress Machine", "Comet Shard", "Common Stone", "Contest Costume", "Contest Costume", "Contest Pass", "Cornn Berry", "Coupon 1", "Coupon 2", "Coupon 3", "Cover Fossil", "Custap Berry", "Damp Mulch", "Damp Rock", "Dark Gem", "Dark Memory", "Dark Stone", "Darkinium Z", "Darkinium Z", "Data Card 01", "Data Card 02", "Data Card 03", "Data Card 04", "Data Card 05", "Data Card 06", "Data Card 07", "Data Card 08", "Data Card 09", "Data Card 10", "Data Card 11", "Data Card 12", "Data Card 13", "Data Card 14", "Data Card 15", "Data Card 16", "Data Card 17", "Data Card 18", "Data Card 19", "Data Card 20", "Data Card 21", "Data Card 22", "Data Card 23", "Data Card 24", "Data Card 25", "Data Card 26", "Data Card 27", "Dawn Stone", "Decidium Z", "Decidium Z", "Deep Sea Scale", "Deep Sea Tooth", "Destiny Knot", "Devon Parts", "Devon Scope", "Devon Scuba Gear", "Diancite", "Dire Hit", "Dire Hit 2", "Dire Hit 3", "Discount Coupon", "Dive Ball", "DNA Splicers", "DNA Splicers", "Dome Fossil", "Douse Drive", "Dowsing Machine", "Draco Plate", "Dragon Fang", "Dragon Gem", "Dragon Memory", "Dragon Scale", "Dragon Skull", "Dragonium Z", "Dragonium Z", "Dread Plate", "Dream Ball", "Dropped Item", "Dropped Item", "Dubious Disc", "Durin Berry", "Dusk Ball", "Dusk Stone", "Earth Plate", "Eevium Z", "Eevium Z", "Eject Button", "Electirizer", "Electric Gem", "Electric Memory", "Electric Seed", "Electrium Z", "Electrium Z", "Elevator Key", "Elixir", "Energy Powder", "Energy Root", "Enigma Berry", "Enigma Stone", "Enigmatic Card", "Eon Flute", "Eon Ticket", "Escape Rope", "Ether", "Everstone", "Eviolite", "Exp. Share", "Expert Belt", "Explorer Kit", "Fairium Z", "Fairium Z", "Fairy Gem", "Fairy Memory", "Fashion Case", "Fast Ball", "Favored Mail", "Festival Ticket", "Fighting Gem", "Fighting Memory", "Fightinium Z", "Fightinium Z", "Figy Berry", "Fire Gem", "Fire Memory", "Fire Stone", "Firium Z", "Firium Z", "Fishing Rod", "Fist Plate", "Flame Orb", "Flame Plate", "Float Stone", "Fluffy Tail", "Flying Gem", "Flying Memory", "Flyinium Z", "Flyinium Z", "Focus Band", "Focus Sash", "Forage Bag", "Fresh Water", "Friend Ball", "Full Heal", "Full Incense", "Full Restore", "Galactic Key", "Galladite", "Ganlon Berry", "Garchompite", "Gardevoirite", "GB Sounds", "Gengarite", "Genius Wing", "Ghost Gem", "Ghost Memory", "Ghostium Z", "Ghostium Z", "Glalitite", "Go-Goggles", "Gold Bottle Cap", "Good Rod", "Gooey Mulch", "Gracidea", "Gram 1", "Gram 2", "Gram 3", "Grass Gem", "Grass Memory", "Grassium Z", "Grassium Z", "Grassy Seed", "Great Ball", "Green Apricorn", "Green Scarf", "Green Shard", "Greet Mail", "Grepa Berry", "Grip Claw", "Griseous Orb", "Ground Gem", "Ground Memory", "Groundium Z", "Groundium Z", "Growth Mulch", "Grubby Hanky", "Guard Spec.", "Gyaradosite", "Haban Berry", "Hard Stone", "Heal Ball", "Heal Powder", "Health Wing", "Heart Scale", "Heat Rock", "Heavy Ball", "Helix Fossil", "Heracronite", "HM01", "HM02", "HM03", "HM04", "HM05", "HM06", "HM07", "Holo Caster", "Holo Caster", "Hondew Berry", "Honey", "Honor of Kalos", "Houndoominite", "HP Up", "Hyper Potion", "Iapapa Berry", "Ice Gem", "Ice Heal", "Ice Memory", "Ice Stone", "Icicle Plate", "Icium Z", "Icium Z", "Icy Rock", "Incinium Z", "Incinium Z", "Inquiry Mail", "Insect Plate", "Intriguing Stone", "Iron", "Iron Ball", "Iron Plate", "Item Drop", "Item Urge", "Jaboca Berry", "Jade Orb", "Jaw Fossil", "Journal", "Kangaskhanite", "Kasib Berry", "Kebia Berry", "Kee Berry", "Kelpsy Berry", "Key Stone", "Key to Room 1", "Key to Room 2", "Key to Room 4", "Key to Room 6", "King's Rock", "Lagging Tail", "Lansat Berry", "Latiasite", "Latiosite", "Lava Cookie", "Lax Incense", "Leaf Stone", "Leftovers", "Lemonade", "Lens Case", "Leppa Berry", "Letter", "Level Ball", "Liberty Pass", "Liechi Berry", "Life Orb", "Light Ball", "Light Clay", "Light Stone", "Like Mail", "Lock Capsule", "Looker Ticket", "Loot Sack", "Lopunnite", "Lost Item", "Love Ball", "Lucarionite", "Luck Incense", "Lucky Egg", "Lucky Punch", "Lum Berry", "Luminous Moss", "Lumiose Galette", "Lunar Wing", "Lure Ball", "Lustrous Orb", "Luxury Ball", "Mach Bike", "Machine Part", "Macho Brace", "Magma Stone", "Magma Suit", "Magmarizer", "Magnet", "Mago Berry", "Magost Berry", "Makeup Bag", "Manectite", "Maranga Berry", "Marshadium Z", "Marshadium Z", "Master Ball", "Mawilite", "Max Elixir", "Max Ether", "Max Potion", "Max Repel", "Max Revive", "Meadow Plate", "Medal Box", "Medichamite", "Mega Anchor", "Mega Anklet", "Mega Bracelet", "Mega Charm", "Mega Cuff", "Mega Glasses", "Mega Glove", "Mega Pendant", "Mega Ring", "Mega Stickpin", "Mega Tiara", "Member Card", "Mental Herb", "Metagrossite", "Metal Coat", "Metal Powder", "Meteorite", "Meteorite", "Meteorite", "Meteorite", "Meteorite Shard", "Metronome", "Mewnium Z", "Mewnium Z", "Mewtwonite X", "Mewtwonite Y", "Micle Berry", "Mind Plate", "Miracle Seed", "Misty Seed", "Moomoo Milk", "Moon Ball", "Moon Flute", "Moon Stone", "Muscle Band", "Muscle Wing", "Mystery Egg", "Mystic Water", "Nanab Berry", "Nest Ball", "Net Ball", "Never-Melt Ice", "Nomel Berry", "Normal Gem", "Normalium Z", "Normalium Z", "Nugget", "Oak's Letter", "Occa Berry", "Odd Incense", "Odd Keystone", "Old Amber", "Old Charm", "Old Gateau", "Old Rod", "Oran Berry", "Oval Charm", "Oval Stone", "Pair of Tickets", "Pal Pad", "Pamtre Berry", "Paralyze Heal", "Parcel", "Park Ball", "Pass", "Pass Orb", "Passho Berry", "Payapa Berry", "Pearl", "Pearl String", "Pecha Berry", "Permit", "Persim Berry", "Petaya Berry", "Photo Album", "Pidgeotite", "Pikanium Z", "Pikanium Z", "Pikashunium Z", "Pikashunium Z", "Pinap Berry", "Pink Apricorn", "Pink Nectar", "Pink Scarf", "Pinsirite", "Pixie Plate", "Plasma Card", "Plume Fossil", "Poffin Case", "Point Card", "Poison Barb", "Poison Gem", "Poison Memory", "Poisonium Z", "Poisonium Z", "Poké Ball", "Poké Doll", "Poké Flute", "Poké Radar", "Poké Toy", "Pokéblock Kit", "Pomeg Berry", "Potion", "Power Anklet", "Power Band", "Power Belt", "Power Bracer", "Power Herb", "Power Lens", "Power Plant Pass", "Power Weight", "PP Max", "PP Up", "Premier Ball", "Pretty Wing", "Primarium Z", "Primarium Z", "Prism Scale", "Prison Bottle", "Prof's Letter", "Professor's Mask", "Prop Case", "Protective Pads", "Protector", "Protein", "Psychic Gem", "Psychic Memory", "Psychic Seed", "Psychium Z", "Psychium Z", "Pure Incense", "Purple Nectar", "Qualot Berry", "Quick Ball", "Quick Claw", "Quick Powder", "Rabuta Berry", "Rage Candy Bar", "Rainbow Wing", "Rare Bone", "Rare Candy", "Rawst Berry", "Razor Claw", "Razor Fang", "Razz Berry", "Reaper Cloth", "Red Apricorn", "Red Card", "Red Chain", "Red Flute", "Red Nectar", "Red Orb", "Red Scale", "Red Scarf", "Red Shard", "Relic Band", "Relic Copper", "Relic Crown", "Relic Gold", "Relic Silver", "Relic Statue", "Relic Vase", "Repeat Ball", "Repel", "Reply Mail", "Reset Urge", "Resist Wing", "Reveal Glass", "Revival Herb", "Revive", "Rich Mulch", "Ride Pager", "Rindo Berry", "Ring Target", "Rock Gem", "Rock Incense", "Rock Memory", "Rockium Z", "Rockium Z", "Rocky Helmet", "Roller Skates", "Root Fossil", "Rose Incense", "Roseli Berry", "Rowap Berry", "RSVP Mail", "Rule Book", "S.S. Ticket", "S.S. Ticket", "Sablenite", "Sachet", "Sacred Ash", "Safari Ball", "Safety Goggles", "Sail Fossil", "Salac Berry", "Salamencite", "Scanner", "Sceptilite", "Scizorite", "Scope Lens", "Sea Incense", "Seal Bag", "Seal Case", "Secret Key", "Secret Potion", "Shalour Sable", "Sharp Beak", "Sharpedonite", "Shed Shell", "Shell Bell", "Shiny Charm", "Shiny Stone", "Shoal Salt", "Shoal Shell", "Shock Drive", "Shuca Berry", "Silk Scarf", "Silver Powder", "Silver Wing", "Sitrus Berry", "Skull Fossil", "Sky Plate", "Slowbronite", "Slowpoke Tail", "Smoke Ball", "Smooth Rock", "Snorlium Z", "Snorlium Z", "Snowball", "Soda Pop", "Soft Sand", "Soot Sack", "Soothe Bell", "Soul Dew", "Sparkling Stone", "Spell Tag", "Spelon Berry", "Splash Plate", "Spooky Plate", "Sport Ball", "Sprayduck", "Sprinklotad", "Squirt Bottle", "Stable Mulch", "Star Piece", "Stardust", "Starf Berry", "Steel Gem", "Steel Memory", "Steelium Z", "Steelium Z", "Steelixite", "Stick", "Sticky Barb", "Stone Plate", "Storage Key", "Storage Key", "Strange Souvenir", "Suite Key", "Sun Flute", "Sun Stone", "Super Potion", "Super Repel", "Super Rod", "Surprise Mulch", "Swampertite", "Sweet Heart", "Swift Wing", "Tamato Berry", "Tanga Berry", "Tapunium Z", "Tapunium Z", "Terrain Extender", "Thanks Mail", "Thick Club", "Thunder Stone", "Tidal Bell", "Timer Ball", "Tiny Mushroom", "TM01", "TM02", "TM03", "TM04", "TM05", "TM06", "TM07", "TM08", "TM09", "TM10", "TM100", "TM11", "TM12", "TM13", "TM14", "TM15", "TM16", "TM17", "TM18", "TM19", "TM20", "TM21", "TM22", "TM23", "TM24", "TM25", "TM26", "TM27", "TM28", "TM29", "TM30", "TM31", "TM32", "TM33", "TM34", "TM35", "TM36", "TM37", "TM38", "TM39", "TM40", "TM41", "TM42", "TM43", "TM44", "TM45", "TM46", "TM47", "TM48", "TM49", "TM50", "TM51", "TM52", "TM53", "TM54", "TM55", "TM56", "TM57", "TM58", "TM59", "TM60", "TM61", "TM62", "TM63", "TM64", "TM65", "TM66", "TM67", "TM68", "TM69", "TM70", "TM71", "TM72", "TM73", "TM74", "TM75", "TM76", "TM77", "TM78", "TM79", "TM80", "TM81", "TM82", "TM83", "TM84", "TM85", "TM86", "TM87", "TM88", "TM89", "TM90", "TM91", "TM92", "TM93", "TM94", "TM95", "TM96", "TM97", "TM98", "TM99", "TMV Pass", "Town Map", "Toxic Orb", "Toxic Plate", "Travel Trunk", "Twisted Spoon", "Tyranitarite", "Ultra Ball", "Unown Report", "Up-Grade", "Venusaurite", "Vs. Recorder", "Vs. Seeker", "Wacan Berry", "Wailmer Pail", "Water Gem", "Water Memory", "Water Stone", "Waterium Z", "Waterium Z", "Watmel Berry", "Wave Incense", "Weakness Policy", "Wepear Berry", "Whipped Dream", "White Apricorn", "White Flute", "White Herb", "Wide Lens", "Wiki Berry", "Wise Glasses", "Works Key", "X Accuracy", "X Accuracy 2", "X Accuracy 3", "X Accuracy 6", "X Attack", "X Attack 2", "X Attack 3", "X Attack 6", "X Defense", "X Defense 2", "X Defense 3", "X Defense 6", "X Sp. Atk", "X Sp. Atk 2", "X Sp. Atk 3", "X Sp. Atk 6", "X Sp. Def", "X Sp. Def 2", "X Sp. Def 3", "X Sp. Def 6", "X Speed", "X Speed 2", "X Speed 3", "X Speed 6", "Xtransceiver", "Xtransceiver", "Yache Berry", "Yellow Apricorn", "Yellow Flute", "Yellow Nectar", "Yellow Scarf", "Yellow Shard", "Z-Ring", "Zap Plate", "Zinc", "Zoom Lens", "Zygarde Cube", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???"};
-char *hpList[] = {"Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel", "Fire", "Water", "Grass", "Electric", "Psychic", "Ice", "Dragon", "Dark", " ", " "};
+wchar_t **abilities;
+wchar_t **moves;
+wchar_t **movesSorted;
+wchar_t **natures;
+
+wchar_t **items;
+wchar_t **itemsSorted;
+wchar_t **hpList;
+
+// char *hpList[] = {"Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel", "Fire", "Water", "Grass", "Electric", "Psychic", "Ice", "Dragon", "Dark", " ", " "};
 
 void GUIElementsInit() {
+	fontBold15 = sftd_load_font_file("romfs:/res/Bold.ttf");
+	fontBold12 = sftd_load_font_file("romfs:/res/Bold.ttf");
+	warningTop = sfil_load_PNG_file("romfs:/res/Warning Top.png", SF2D_PLACE_RAM);
+	warningBottom = sfil_load_PNG_file("romfs:/res/Warning Bottom.png", SF2D_PLACE_RAM);
+	freezeMsg("Loading files...");
+
 	unicodeJPN12 = sftd_load_font_file("romfs:/res/UnicodeJPN.otf");
 	unicodeKOR12 = sftd_load_font_file("romfs:/res/UnicodeKOR.ttf");
 	fontBold18 = sftd_load_font_file("romfs:/res/Bold.ttf");
-	fontBold15 = sftd_load_font_file("romfs:/res/Bold.ttf");
 	fontBold14 = sftd_load_font_file("romfs:/res/Bold.ttf");
-	fontBold12 = sftd_load_font_file("romfs:/res/Bold.ttf");
 	fontBold11 = sftd_load_font_file("romfs:/res/Bold.ttf");
 	fontBold9 = sftd_load_font_file("romfs:/res/Bold.ttf");
 	fontFixed = sftd_load_font_file("romfs:/res/VeraMono.ttf");
-	warningTop = sfil_load_PNG_file("romfs:/res/Warning Top.png", SF2D_PLACE_RAM);
-	warningBottom = sfil_load_PNG_file("romfs:/res/Warning Bottom.png", SF2D_PLACE_RAM);
-	freezeMsg("Loading fonts...");
 	
+	freezeMsg("Loading locales assets...");
+	struct i18n_files listFiles = i18n_getFilesPath();
+	freezeMsgDetails("Loading abilities");
+	struct ArrayUTF32 listAbilities = i18n_FileToArrayUTF32(listFiles.abilities);
+	freezeMsgDetails("Loading moves");
+	listMoves = i18n_FileToArrayUTF32(listFiles.moves);
+	freezeMsgDetails("Sorting moves");
+	ArrayUTF32_sort_starting_index(&listMoves, 1);
+	freezeMsgDetails("Loading natures");
+	struct ArrayUTF32 listNatures = i18n_FileToArrayUTF32(listFiles.natures);
+	natures = listNatures.items;
+	freezeMsgDetails("Loading items");
+	listItems = i18n_FileToArrayUTF32(listFiles.items);
+	freezeMsgDetails("Sorting items");
+	ArrayUTF32_sort_starting_index(&listItems, 1);
+	freezeMsgDetails("Loading Hidden powers");
+	struct ArrayUTF32 listHPs = i18n_FileToArrayUTF32(listFiles.hp);
+
+	abilities = listAbilities.items;
+	moves = listMoves.items;
+	movesSorted = listMoves.sortedItems;
+	natures = listNatures.items;
+	items = listItems.items;
+	itemsSorted = listItems.sortedItems;
+	hpList = listHPs.items;
+
+	freezeMsg("Loading fonts...");
 	init_font_cache();
 	freezeMsg("Done!");
 }
@@ -248,14 +279,23 @@ void GUIElementsExit() {
 }
 
 void init_font_cache() {
+	freezeMsgDetails("Caching font 1/9...");
 	sftd_draw_text(unicodeJPN12, 0, 0, RGBA8(0, 0, 0, 0), 12, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
+	freezeMsgDetails("Caching font 2/9...");
 	sftd_draw_text(unicodeKOR12, 0, 0, RGBA8(0, 0, 0, 0), 12, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
+	freezeMsgDetails("Caching font 3/9...");
 	sftd_draw_text(fontBold18, 0, 0, RGBA8(0, 0, 0, 0), 18, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
+	freezeMsgDetails("Caching font 4/9...");
 	sftd_draw_text(fontBold14, 0, 0, RGBA8(0, 0, 0, 0), 14, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
+	freezeMsgDetails("Caching font 5/9...");
 	sftd_draw_text(fontBold15, 0, 0, RGBA8(0, 0, 0, 0), 15, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
+	freezeMsgDetails("Caching font 6/9...");
 	sftd_draw_text(fontBold12, 0, 0, RGBA8(0, 0, 0, 0), 12, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
+	freezeMsgDetails("Caching font 7/9...");
 	sftd_draw_text(fontBold11, 0, 0, RGBA8(0, 0, 0, 0), 11, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
+	freezeMsgDetails("Caching font 8/9...");
 	sftd_draw_text(fontBold9, 0, 0, RGBA8(0, 0, 0, 0), 9, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
+	freezeMsgDetails("Caching font 9/9...");
 	sftd_draw_text(fontFixed, 0, 0, RGBA8(0, 0, 0, 0), 10, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
 }
 
@@ -325,12 +365,20 @@ int confirmDisp(char* message) {
 	}
 	return 0;
 }
+char* lastMessage;
 
-void freezeMsg(char* message) {
+void _freezeMsgWithDetails(char* message, char* details, bool useLastMessage) {
+	if (!useLastMessage) {
+		free(lastMessage);
+		lastMessage = malloc(strlen(message)*sizeof(char)+1);
+		strcpy(lastMessage, message);
+		lastMessage[strlen(message)] = '\0';
+	}
+
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		sf2d_draw_texture(warningTop, 0, 0);
-		sftd_draw_text(fontBold15, (400 - sftd_get_text_width(fontBold15, 15, message)) / 2, 95, WHITE, 15, message);
-		sftd_draw_text(fontBold12, (400 - sftd_get_text_width(fontBold12, 12, "Please wait.")) / 2, 130, WHITE, 12, "Please wait.");
+		sftd_draw_text(fontBold15, (400 - sftd_get_text_width(fontBold15, 15, lastMessage)) / 2, 95, WHITE, 15, lastMessage);
+		sftd_draw_text(fontBold12, (400 - sftd_get_text_width(fontBold12, 12, details)) / 2, 130, WHITE, 12, details);
 	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
@@ -338,6 +386,10 @@ void freezeMsg(char* message) {
 	pksm_end_frame();
 	sf2d_swapbuffers();
 }
+
+void freezeMsgDetails(char* details) { _freezeMsgWithDetails("", details, true); }
+void freezeMsg(char* message) { _freezeMsgWithDetails(message, "Please wait.", false); }
+void freezeMsgWithDetails(char* message, char* details) { _freezeMsgWithDetails(message, details, false); }
 
 void progressBar(char* message, u32 current, u32 sz) {
 	char* progress = (char*)malloc(40 * sizeof(char));
@@ -1044,7 +1096,7 @@ void infoViewer(u8* pkmn, int game) {
 	
 	if (getPokedexNumber(pkmn) > 0 && getPokedexNumber(pkmn) < 822) {
 		sf2d_draw_texture_part(balls, -2, -5, 32 * (getBall(pkmn) % 8), 32 * (getBall(pkmn) / 8), 32, 32);
-		sftd_draw_text(fontBold12, 30, 6, WHITE, 12, (char*)personal.species[getPokedexNumber(pkmn)]);
+		sftd_draw_wtext(fontBold12, 30, 6, WHITE, 12, listSpecies.items[getPokedexNumber(pkmn)]);
 		
 		if (getGender(pkmn) == 0)
 			sf2d_draw_texture(male, 146, 7);
@@ -1067,9 +1119,9 @@ void infoViewer(u8* pkmn, int game) {
 		sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, 215 - (sftd_get_wtext_width((isKor) ? unicodeKOR12 : unicodeJPN12, 12, (wchar_t*)ot_name)), 49, WHITE, 12, (wchar_t*)ot_name);
 		
 		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, (isInfected(pkmn) ? "Yes" : "No")), 69, WHITE, 12, isInfected(pkmn) ? "Yes" : "No");
-		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, natures[getNature(pkmn)]), 94, WHITE, 12, natures[getNature(pkmn)]);
-		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, abilities[getAbility(pkmn)]), 114, WHITE, 12, abilities[getAbility(pkmn)]);
-		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, items[getItem(pkmn)]), 134, WHITE, 12, items[getItem(pkmn)]);
+		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, natures[getNature(pkmn)]), 94, WHITE, 12, natures[getNature(pkmn)]);
+		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, abilities[getAbility(pkmn)]), 114, WHITE, 12, abilities[getAbility(pkmn)]);
+		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, items[getItem(pkmn)]), 134, WHITE, 12, items[getItem(pkmn)]);
 		
 		if (isShiny(pkmn))
 			sf2d_draw_texture(shinyStar, 205, 9);
@@ -1089,13 +1141,13 @@ void infoViewer(u8* pkmn, int game) {
 		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, otid), 180, WHITE, 12, otid);
 		free(otid);
 
-		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, hpList[getHPType(pkmn)]), 220, WHITE, 12, hpList[getHPType(pkmn)]);
+		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, hpList[getHPType(pkmn)]), 220, WHITE, 12, hpList[getHPType(pkmn)]);
 		
 		int max = sftd_get_text_width(fontBold12, 12, "252");		
 		int y_moves = 159;
 		for (int i = 0; i < 4; i++) {
 			if (getMove(pkmn, i))
-				sftd_draw_text(fontBold12, 396 - sftd_get_text_width(fontBold12, 12, moves[getMove(pkmn, i)]), y_moves, WHITE, 12, moves[getMove(pkmn, i)]);
+				sftd_draw_wtext(fontBold12, 396 - sftd_get_wtext_width(fontBold12, 12, moves[getMove(pkmn, i)]), y_moves, WHITE, 12, moves[getMove(pkmn, i)]);
 			y_moves += 21;
 		}
 		
@@ -1208,7 +1260,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
 			sf2d_draw_texture(bottomPopUp, 1, 214);
 			sf2d_draw_texture(includeInfoButton, 242, 5);
-			sftd_draw_textf(fontBold11, 8, 220, WHITE, 11, "%s has been selected.", (char*)personal.species[getPokedexNumber(tmp)]);
+			sftd_draw_wtextf(fontBold11, 8, 220, WHITE, 11, L"%s has been selected.", listSpecies.items[getPokedexNumber(tmp)]);
 			for (int i = 0; i < 5; i++) {
 				sf2d_draw_texture(button, 208, 42 + i * 27 + i*4);
 				if (isTeam && (i == 0 || i == 2 || i == 3))
@@ -1259,11 +1311,12 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 				printSelector(2, y, 198, 11);
 			else if (i + 20 == additional1) 
 				printSelector(200, y, 198, 11);
-			sftd_draw_textf(fontBold9, 2, y, WHITE, 9, "%d - %s", entry, itemsSorted[entry]);
-			sftd_draw_textf(fontBold9, 200, y, WHITE, 9, "%d - %s", entry + 20, itemsSorted[entry + 20]);
+			sftd_draw_wtextf(fontBold9, 2, y, WHITE, 9, L"%d - %ls", entry, itemsSorted[entry]);
+			sftd_draw_wtextf(fontBold9, 200, y, WHITE, 9, L"%d - %ls", entry + 20, itemsSorted[entry + 20]);
 			y += 12;
 		}	
 	} else if (mode == ED_MOVES) {
+
 		int entry;
 		int y = 0;
 		sf2d_draw_texture(topMovesBG, 0, 0);
@@ -1273,8 +1326,8 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 				printSelector(2, y, 198, 11);
 			else if (i + 20 == additional1) 
 				printSelector(200, y, 198, 11);
-			sftd_draw_textf(fontBold9, 2, y, WHITE, 9, "%d - %s", entry, movesSorted[entry]);
-			sftd_draw_textf(fontBold9, 200, y, WHITE, 9, "%d - %s", entry + 20, movesSorted[entry + 20]);
+			sftd_draw_wtextf(fontBold9, 2, y, WHITE, 9, L"%d - %ls", entry, movesSorted[entry]);
+			sftd_draw_wtextf(fontBold9, 200, y, WHITE, 9, L"%d - %ls", entry + 20, movesSorted[entry + 20]);
 			y += 12;
 		}
 	} else if (mode == ED_NATURES) {
@@ -1291,7 +1344,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			for (int j = 0; j < 5; j++) {
 				if (additional1 == i * 5 + j)
 					printSelector(66*j + 66 + j, 40*i + 40, 66, 39);
-				sftd_draw_text(fontBold12, 66 + 66 * j + (66 - sftd_get_text_width(fontBold12, 12, natures[i * 5 + j])) / 2 + j, 53 + i * 40, (i == j) ? YELLOW : WHITE, 12, natures[i * 5 + j]);
+				sftd_draw_wtext(fontBold12, 66 + 66 * j + (66 - sftd_get_wtext_width(fontBold12, 12, natures[i * 5 + j])) / 2 + j, 53 + i * 40, (i == j) ? YELLOW : WHITE, 12, natures[i * 5 + j]);
 			}
 		}
 	} else if (mode == ED_BALLS) {
@@ -1377,7 +1430,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			sf2d_draw_texture(editorBar, 0, 210);
 			sf2d_draw_texture(hexIcon, 290, 1);
 			
-			sftd_draw_text(fontBold12, 27, 4, WHITE, 12, (char*)personal.species[n]);
+			sftd_draw_wtext(fontBold12, 27, 4, WHITE, 12, listSpecies.items[n]);
 			sf2d_draw_texture_part(balls, -2, -6, 32 * (getBall(pkmn) % 8), 32 * (getBall(pkmn) / 8), 32, 32);
 			
 			u16 t = getAlternativeSprite(pkmn, game);
@@ -1420,9 +1473,9 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			sftd_draw_text(fontBold12, 180 - max - 3 + (max - sftd_get_text_width(fontBold12, 12, level)) / 2, 29, WHITE, 12, level);
 			free(level);
 				
-			sftd_draw_text(fontBold12, 178 - sftd_get_text_width(fontBold12, 12, natures[getNature(pkmn)]), 49, WHITE, 12, natures[getNature(pkmn)]);
-			sftd_draw_text(fontBold12, 178 - sftd_get_text_width(fontBold12, 12, abilities[getAbility(pkmn)]), 69, WHITE, 12, abilities[getAbility(pkmn)]);
-			sftd_draw_text(fontBold12, 178 - sftd_get_text_width(fontBold12, 12, items[getItem(pkmn)]), 89, WHITE, 12, items[getItem(pkmn)]);
+			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, natures[getNature(pkmn)]), 49, WHITE, 12, natures[getNature(pkmn)]);
+			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, abilities[getAbility(pkmn)]), 69, WHITE, 12, abilities[getAbility(pkmn)]);
+			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, items[getItem(pkmn)]), 89, WHITE, 12, items[getItem(pkmn)]);
 			sftd_draw_text(fontBold12, 178 - sftd_get_text_width(fontBold12, 12, isShiny(pkmn) ? "Yes" : "No"), 109, WHITE, 12, isShiny(pkmn) ? "Yes" : "No");
 			sftd_draw_text(fontBold12, 178 - sftd_get_text_width(fontBold12, 12, isInfected(pkmn) ? "Yes" : "No"), 129, WHITE, 12, isInfected(pkmn) ? "Yes" : "No");
 			
@@ -1454,7 +1507,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			sftd_draw_text(fontBold12, 256, 28, DARKBLUE, 12, "TOTAL");
 			sftd_draw_text(fontBold12, 2, 173, LIGHTBLUE, 12, "Hidden Power:");
 			
-			sftd_draw_text(fontBold12, 27, 4, WHITE, 12, (char*)personal.species[n]);
+			sftd_draw_wtext(fontBold12, 27, 4, WHITE, 12, listSpecies.items[n]);
 			sf2d_draw_texture_part(balls, -2, -6, 32 * (getBall(pkmn) % 8), 32 * (getBall(pkmn) / 8), 32, 32);
 			
 			if (getGender(pkmn) == 0)
@@ -1476,7 +1529,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			}
 			free(tmp);
 			
-			sftd_draw_text(fontBold12, 288 - sftd_get_text_width(fontBold12, 12, hpList[getHPType(pkmn)]), 173, WHITE, 12, hpList[getHPType(pkmn)]);	
+			sftd_draw_wtext(fontBold12, 288 - sftd_get_wtext_width(fontBold12, 12, hpList[getHPType(pkmn)]), 173, WHITE, 12, hpList[getHPType(pkmn)]);
 
 			for (int i = 0; i < 6; i++) {
 				sf2d_draw_texture(minus, 96, 49 + i * 20);
@@ -1486,6 +1539,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			}
 		}
 		if (mode == ED_MOVES) {
+
 			sf2d_draw_texture(movesBottom, 0, 1);
 			sf2d_draw_texture(movesBottom, 0, 2 + movesBottom->height);
 			sf2d_draw_texture(editorBar, 0, 210);
@@ -1493,13 +1547,14 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			sftd_draw_text(fontBold12, 2, 110, LIGHTBLUE, 12, "Relearn Moves");
 			
 			for (int i = 0; i < 4; i++) {
-				sftd_draw_text(fontBold12, 2, 28 + i * 20, (i == additional3) ? YELLOW : WHITE, 12, moves[getMove(pkmn, i)]);
-				sftd_draw_text(fontBold12, 2, 132 + i * 20, (i == additional3 - 4) ? YELLOW: WHITE, 12, moves[getEggMove(pkmn, i)]);
+				sftd_draw_wtext(fontBold12, 2, 28 + i * 20, (i == additional3) ? YELLOW : WHITE, 12, moves[getMove(pkmn, i)]);
+				sftd_draw_wtext(fontBold12, 2, 132 + i * 20, (i == additional3 - 4) ? YELLOW: WHITE, 12, moves[getEggMove(pkmn, i)]);
 				if (i == additional3)
 					sf2d_draw_texture_rotate(subArrow, 198 - movementOffsetSlow(3), 33 + i * 20, 3.1415f);
 				else if (i == additional3 - 4)
 					sf2d_draw_texture_rotate(subArrow, 198 - movementOffsetSlow(3), 137 + i * 20, 3.1415f);
 			}
+
 		}
 		if (mode == ED_HEX) {
 			printMenuBottom();
@@ -1609,7 +1664,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 				sftd_draw_text(fontBold12, 372 - sftd_get_text_width(fontBold12, 12, otid), 163, WHITE, 12, otid);
 				free(otid);
 				
-				sftd_draw_text(fontBold12, 273, 104, WHITE, 12, (char*)personal.species[getPokedexNumber(pkmn)]);
+				sftd_draw_wtext(fontBold12, 273, 104, WHITE, 12, listSpecies.items[getPokedexNumber(pkmn)]);
 			}
 			y = 45;
 			for (int i = 0; i < 5; i++) {
@@ -1774,11 +1829,11 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 	switch (byte) {
 		case 0x08 :
 		case 0x09 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Species: #%d - %s", getPokedexNumber(pkmn), (char*)personal.species[getPokedexNumber(pkmn)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, L"Species: #%d - %ls", getPokedexNumber(pkmn), listSpecies.items[getPokedexNumber(pkmn)]);
 			break;
 		case 0x0A :
 		case 0x0B :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Held Item: #%d - %s", getItem(pkmn), items[getItem(pkmn)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, L"Held Item: #%d - %ls", getItem(pkmn), items[getItem(pkmn)]);
 			break;
 		case 0x0C :
 		case 0x0D :
@@ -1789,10 +1844,10 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "SID: %d", getSOTID(pkmn));
 			break;
 		case 0x14 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Ability: %s", abilities[getAbility(pkmn)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, L"Ability: %ls", abilities[getAbility(pkmn)]);
 			break;
 		case 0x1C :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Nature: %s", natures[getNature(pkmn)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, L"Nature: %ls", natures[getNature(pkmn)]);
 			break;
 		case 0x1D : {
 			char* entries[] = { "Fateful Encounter flag" };
@@ -1931,19 +1986,19 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			break;
 		case 0x5A :
 		case 0x5B :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 1: #%d - %s", getMove(pkmn, 0), moves[getMove(pkmn, 0)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, L"Move 1: #%d - %ls", getMove(pkmn, 0), moves[getMove(pkmn, 0)]);
 			break;
 		case 0x5C :
 		case 0x5D :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 2: #%d - %s", getMove(pkmn, 1), moves[getMove(pkmn, 1)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, L"Move 2: #%d - %ls", getMove(pkmn, 1), moves[getMove(pkmn, 1)]);
 			break;
 		case 0x5E :
 		case 0x5F :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 3: #%d - %s", getMove(pkmn, 2), moves[getMove(pkmn, 2)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, L"Move 3: #%d - %ls", getMove(pkmn, 2), moves[getMove(pkmn, 2)]);
 			break;
 		case 0x60 :
 		case 0x61 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 4: #%d - %s", getMove(pkmn, 3), moves[getMove(pkmn, 3)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, L"Move 4: #%d - %ls", getMove(pkmn, 3), moves[getMove(pkmn, 3)]);
 			break;
 		case 0x62 :
 			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 1 PP: %d", pkmn[byte]);
@@ -1971,19 +2026,19 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			break;
 		case 0x6A :
 		case 0x6B :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 1: #%d - %s", getEggMove(pkmn, 0), moves[getEggMove(pkmn, 0)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, L"Relearn Move 1: #%d - %ls", getEggMove(pkmn, 0), moves[getEggMove(pkmn, 0)]);
 			break;
 		case 0x6C :
 		case 0x6D :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 2: #%d - %s", getEggMove(pkmn, 1), moves[getEggMove(pkmn, 1)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, L"Relearn Move 2: #%d - %ls", getEggMove(pkmn, 1), moves[getEggMove(pkmn, 1)]);
 			break;
 		case 0x6E :
 		case 0x6F :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 3: #%d - %s", getEggMove(pkmn, 2), moves[getEggMove(pkmn, 2)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, L"Relearn Move 3: #%d - %ls", getEggMove(pkmn, 2), moves[getEggMove(pkmn, 2)]);
 			break;
 		case 0x70 :
 		case 0x71 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 4: #%d - %s", getEggMove(pkmn, 3), moves[getEggMove(pkmn, 3)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, L"Relearn Move 4: #%d - %ls", getEggMove(pkmn, 3), moves[getEggMove(pkmn, 3)]);
 			break;
 		case 0x77: {
 			char* entries[] = { "is Nicknamed", "is Egg" };
