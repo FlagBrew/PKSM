@@ -19,8 +19,10 @@
 */
 #include "i18n.h"
 
-static char* ACCENTED_CHAR_REPLACE_FROM = "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ";
-static char* ACCENTED_CHAR_REPLACE_TO = "AAAAAAECEEEEIIIIDNOOOOOx0UUUUYPsaaaaaaeceeeeiiiiOnooooo/0uuuuypy";
+static wchar_t* ACCENTED_CHAR_REPLACE_FROM = L"ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ";
+static wchar_t* ACCENTED_CHAR_REPLACE_TO = L"AAAAAAECEEEEIIIIDNOOOOOx0UUUUYPsaaaaaaeceeeeiiiiOnooooo/0uuuuypy";
+
+const int MAXLENGTH_LINE_TRANSLATION = 255;
 
 /**
  * English Localization files
@@ -58,10 +60,9 @@ void debuglogf(const char* format, ...) {
 	va_list args;
     va_start(args, format);
 	#ifdef VERSION
-		char* str = malloc(255*sizeof(char));
+		char str[255];
 		vsprintf(str, format, args);
 		consoleMsg(str);
-		//free(str);
 	#else
 		vprintf(format, args);
 	#endif
@@ -168,10 +169,11 @@ void i18n_removeEndline(char* str) {
  */
 struct ArrayUTF32 i18n_FileToArrayUTF32(char* filepath) {
     struct i18n_FileInfo fileinfo = i18n_getInfoFile(filepath);
+	int BUFFER_SIZE = MAXLENGTH_LINE_TRANSLATION;
     wchar_t **arrwc = malloc(fileinfo.numberOfLines * sizeof(wchar_t*));
 
     FILE* fp = fopen(filepath, "rt");
-    char *line = malloc((fileinfo.maxCharPerLine+1)*sizeof(char));
+    char line[BUFFER_SIZE];
 	int index = 0;
 	// debuglogf("Reading file [%s]...\n", filepath);
     while (fgets(line, (fileinfo.maxCharPerLine+1)*sizeof(char), fp) != 0) {
@@ -194,30 +196,8 @@ struct ArrayUTF32 i18n_FileToArrayUTF32(char* filepath) {
 	arr.sorted = false;
 
 	// debuglogf("Freeing memory line...\n");
-	free(line);
 	return arr;
 }
-/**
- * Copy an array
- */
-/*
-struct ArrayUTF32 ArrayUTF32_copy(struct ArrayUTF32 from) {
-	struct ArrayUTF32 to;
-	to.length = from.length;
-	wchar_t **arrwc = malloc(from.length * sizeof(wchar_t*));
-
-	for (int i = 0; i < from.length; i++) {
-		int strlen = wcslen(from.items[i]);
-		wchar_t *strcp = malloc((strlen+1)*sizeof(wchar_t));
-		wcscpy(strcp, from.items[i]);
-		strcp[strlen] = '\0';
-		arrwc[i] = strcp;
-	}
-	to.items = arrwc;
-	return to;
-}
-*/
-
 
 /**
  * Replace the character Œ by Oe for string comparison
@@ -263,8 +243,8 @@ wchar_t* UTF32_ReplaceOE(const wchar_t *str) {
  * Replace the accented characters by the normal ones for string comparison
  */
 wchar_t* UTF32_ReplaceAccentedChar(const wchar_t *str) {
-	wchar_t *from = s_utf32(ACCENTED_CHAR_REPLACE_FROM);
-	wchar_t *to   = s_utf32(ACCENTED_CHAR_REPLACE_TO);
+	wchar_t *from = ACCENTED_CHAR_REPLACE_FROM;
+	wchar_t *to   = ACCENTED_CHAR_REPLACE_TO;
 	int totalChars = 64;
 
 	wchar_t *newstr = malloc(wcslen(str)*sizeof(wchar_t)+1);
