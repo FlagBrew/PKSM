@@ -82,13 +82,6 @@ int utf8_strlen(char* s) {
 }
 
 /**
- * Transform the first char of a string in UTF8 to UTF32
- */
-wchar_t c_utf32(char* c) {
-	return s_utf32(c)[0];
-}
-
-/**
  * Transform a string from UTF8 (char*) to UTF32 (wchar_t*)
  */
 wchar_t* s_utf32(char* str) { return ss_utf32(str, 0); }
@@ -239,19 +232,19 @@ wchar_t* UTF32_ReplaceOE(const wchar_t *str) {
 		replaced = false;
 		for (int i = 0; i < wcslen(newstr); i++) {
 			wchar_t* newstr2;
-			if (newstr[i] == c_utf32("Œ")) {
+			if (newstr[i] == L'Œ') {
 				newstr2 = malloc((wcslen(newstr)+2)*sizeof(wchar_t));
 				wcsncpy(newstr2, newstr, i);
-				newstr2[i] = c_utf32("O");
-				newstr2[i+1] = c_utf32("e");
+				newstr2[i] = L'O';
+				newstr2[i+1] = L'e';
 				wcscpy(newstr2+i+2, newstr+i+1);
 				newstr2[wcslen(newstr)+1] = '\0';
 				replaced = true;
-			} else if (newstr[i] == c_utf32("œ")) {
+			} else if (newstr[i] == L'œ') {
 				newstr2 = malloc((wcslen(newstr)+2)*sizeof(wchar_t));
 				wcsncpy(newstr2, newstr, i);
-				newstr2[i] = c_utf32("o");
-				newstr2[i+1] = c_utf32("e");
+				newstr2[i] = L'o';
+				newstr2[i+1] = L'e';
 				wcscpy(newstr2+i+2, newstr+i+1);
 				newstr2[wcslen(newstr)+1] = '\0';
 				replaced = true;
