@@ -44,7 +44,7 @@ int lookup[] = {0x0, 0x1, 0x2, 0x4, 0x5, 0x3};
 sftd_font *unicodeJPN12, *unicodeKOR12, *fontBold18, *fontBold15, *fontBold14, *fontBold12, *fontBold11, *fontBold9, *fontFixed; 
 sf2d_texture *noMove, *hexIcon, *hexBG, *blueTextBox, *otaButton, *generationBG, *includeInfoButton, *hiddenPowerBG, *ballsBG, *male, *female, *naturestx, *movesBottom, *topMovesBG, *editorBar, *editorStatsBG, *subArrow, *backgroundTop, *miniBox, *plusButton, *minusButton, *balls, *typesSheet, *transferButton, *bankTop, *shinyStar, *normalBar, *LButton, *RButton, *creditsTop, *pokeball, *gameSelectorBottom1, *gameSelectorBottom2, *gameSelectorTop, *menuBar, *menuSelectedBar, *darkButton, *eventTop, *left, *lightButton, *redButton, *right, *spritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *warningTop, *warningBottom, *boxView, *infoView, *selector, *editorBG, *plus, *minus, *back, *setting, *selectorCloning, *button, *bottomPopUp, *pokemonBufferBox, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR, *settings, *item, *alternativeSpritesSmall;
 
-char *gamesList[] = {"X", "Y", "Omega Ruby", "Alpha Sapphire", "Sun", "Moon", "Diamond", "Pearl", "Platinum", "Heart Gold", "Soul Silver", "Black", "White", "Black 2", "White 2"};
+AppTextCode gamesList[] = {S_GRAPHIC_GAME_SELECTOR_GAME_X, S_GRAPHIC_GAME_SELECTOR_GAME_Y, S_GRAPHIC_GAME_SELECTOR_GAME_OS, S_GRAPHIC_GAME_SELECTOR_GAME_AS, S_GRAPHIC_GAME_SELECTOR_GAME_SUN, S_GRAPHIC_GAME_SELECTOR_GAME_MOON, S_GRAPHIC_GAME_SELECTOR_GAME_DIAMOND, S_GRAPHIC_GAME_SELECTOR_GAME_PEARL, S_GRAPHIC_GAME_SELECTOR_GAME_PLATINUM, S_GRAPHIC_GAME_SELECTOR_GAME_HG, S_GRAPHIC_GAME_SELECTOR_GAME_SS, S_GRAPHIC_GAME_SELECTOR_GAME_B, S_GRAPHIC_GAME_SELECTOR_GAME_W, S_GRAPHIC_GAME_SELECTOR_GAME_B2, S_GRAPHIC_GAME_SELECTOR_GAME_W2};
 
 wchar_t **abilities;
 wchar_t **moves;
@@ -62,7 +62,7 @@ void GUIElementsInit() {
 	fontBold12 = sftd_load_font_file("romfs:/res/Bold.ttf");
 	warningTop = sfil_load_PNG_file("romfs:/res/Warning Top.png", SF2D_PLACE_RAM);
 	warningBottom = sfil_load_PNG_file("romfs:/res/Warning Bottom.png", SF2D_PLACE_RAM);
-	freezeMsg("Loading files...");
+	freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_FILES));
 
 	unicodeJPN12 = sftd_load_font_file("romfs:/res/UnicodeJPN.otf");
 	unicodeKOR12 = sftd_load_font_file("romfs:/res/UnicodeKOR.ttf");
@@ -72,22 +72,22 @@ void GUIElementsInit() {
 	fontBold9 = sftd_load_font_file("romfs:/res/Bold.ttf");
 	fontFixed = sftd_load_font_file("romfs:/res/VeraMono.ttf");
 	
-	freezeMsg("Loading locales assets...");
+	freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_LOCALES));
 	struct i18n_files listFiles = i18n_getFilesPath();
-	freezeMsgDetails("Loading abilities");
+	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_ABILITIES));
 	struct ArrayUTF32 listAbilities = i18n_FileToArrayUTF32(listFiles.abilities);
-	freezeMsgDetails("Loading moves");
+	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_MOVES));
 	listMoves = i18n_FileToArrayUTF32(listFiles.moves);
-	freezeMsgDetails("Sorting moves");
+	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_SORTING_MOVES));
 	ArrayUTF32_sort_starting_index(&listMoves, 1);
-	freezeMsgDetails("Loading natures");
+	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_NATURES));
 	struct ArrayUTF32 listNatures = i18n_FileToArrayUTF32(listFiles.natures);
 	natures = listNatures.items;
-	freezeMsgDetails("Loading items");
+	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_ITEMS));
 	listItems = i18n_FileToArrayUTF32(listFiles.items);
-	freezeMsgDetails("Sorting items");
+	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_SORTING_ITEMS));
 	ArrayUTF32_sort_starting_index(&listItems, 1);
-	freezeMsgDetails("Loading Hidden powers");
+	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_HP));
 	struct ArrayUTF32 listHPs = i18n_FileToArrayUTF32(listFiles.hp);
 
 	abilities = listAbilities.items;
@@ -98,87 +98,103 @@ void GUIElementsInit() {
 	itemsSorted = listItems.sortedItems;
 	hpList = listHPs.items;
 
-	freezeMsg("Loading fonts...");
+	freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_FONTS));
 	init_font_cache();
-	freezeMsg("Done!");
+	freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_DONE));
 }
-
+int num_element = 1;
+int total_elements = 1;
+sf2d_texture *loadPNGInRAM(const char* filepath) {
+	wchar_t* str = malloc(sizeof(wchar_t*)*60);
+	swprintf(str, 60, i18n(S_GRAPHIC_GUI_ELEMENTS_SPECIFY_LOADING_DETAILS), num_element, total_elements);
+	freezeMsgDetails(str);
+	num_element++;
+	free(str);
+	return sfil_load_PNG_file(filepath, SF2D_PLACE_RAM);
+}
 void GUIElementsSpecify(int game) {
-	freezeMsg("Loading graphics...");
-	alternativeSpritesSmall = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/alternative_icons_spritesheetv3.png", SF2D_PLACE_RAM);
-	spritesSmall = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheetv3.png", SF2D_PLACE_RAM);
-	balls = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/balls_spritesheetv2.png", SF2D_PLACE_RAM);
-	settings = sfil_load_PNG_file("romfs:/res/Settings.png", SF2D_PLACE_RAM);
+	num_element = 1;
+	total_elements = 4;
+	if (game < 6) {
+		total_elements += 53;
+	} else {
+		total_elements += 12;
+	}
+	freezeMsg(i18n(S_GRAPHIC_GUI_ELEMENTS_SPECIFY_LOADING));
+	alternativeSpritesSmall = loadPNGInRAM("/3ds/data/PKSM/additionalassets/alternative_icons_spritesheetv3.png");
+	spritesSmall = loadPNGInRAM("/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheetv3.png");
+	balls = loadPNGInRAM("/3ds/data/PKSM/additionalassets/balls_spritesheetv2.png");
+	settings = loadPNGInRAM("romfs:/res/Settings.png");
 	
 	if (game < 6) {
-		typesSheet = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/types_sheetv2.png", SF2D_PLACE_RAM);
+		typesSheet = loadPNGInRAM("/3ds/data/PKSM/additionalassets/types_sheetv2.png");
 		
-		boxView = sfil_load_PNG_file("romfs:/res/Box View.png", SF2D_PLACE_RAM);
-		noMove = sfil_load_PNG_file("romfs:/res/No Move.png", SF2D_PLACE_RAM);
-		back = sfil_load_PNG_file("romfs:/res/Back Button.png", SF2D_PLACE_RAM);
-		editorBar = sfil_load_PNG_file("romfs:/res/Bottom Bar.png", SF2D_PLACE_RAM);
-		hexIcon = sfil_load_PNG_file("romfs:/res/Hex Button.png", SF2D_PLACE_RAM);
-		hexBG = sfil_load_PNG_file("romfs:/res/Hex BG.png", SF2D_PLACE_RAM);
-		blueTextBox = sfil_load_PNG_file("romfs:/res/Blue Textbox.png", SF2D_PLACE_RAM);
-		otaButton = sfil_load_PNG_file("romfs:/res/OTA Button.png", SF2D_PLACE_RAM);
-		includeInfoButton = sfil_load_PNG_file("romfs:/res/Include Info.png", SF2D_PLACE_RAM);
-		generationBG = sfil_load_PNG_file("romfs:/res/Generation BG.png", SF2D_PLACE_RAM);
-		hiddenPowerBG = sfil_load_PNG_file("romfs:/res/Hidden Power BG.png", SF2D_PLACE_RAM);
-		ballsBG = sfil_load_PNG_file("romfs:/res/BallsBG.png", SF2D_PLACE_RAM);
-		male = sfil_load_PNG_file("romfs:/res/Male.png", SF2D_PLACE_RAM);
-		female = sfil_load_PNG_file("romfs:/res/Female.png", SF2D_PLACE_RAM);
-		naturestx = sfil_load_PNG_file("romfs:/res/Natures.png", SF2D_PLACE_RAM);
-		movesBottom = sfil_load_PNG_file("romfs:/res/Moves Bottom.png", SF2D_PLACE_RAM);
-		topMovesBG = sfil_load_PNG_file("romfs:/res/Top Moves.png", SF2D_PLACE_RAM);
-		editorStatsBG = sfil_load_PNG_file("romfs:/res/Editor Stats.png", SF2D_PLACE_RAM);
-		subArrow = sfil_load_PNG_file("romfs:/res/Sub Arrow.png", SF2D_PLACE_RAM);
-		backgroundTop = sfil_load_PNG_file("romfs:/res/Background.png", SF2D_PLACE_RAM);
-		miniBox = sfil_load_PNG_file("romfs:/res/Mini Box.png", SF2D_PLACE_RAM);
-		minusButton = sfil_load_PNG_file("romfs:/res/Minus Button.png", SF2D_PLACE_RAM);
-		plusButton = sfil_load_PNG_file("romfs:/res/Plus Button.png", SF2D_PLACE_RAM);
-		transferButton = sfil_load_PNG_file("romfs:/res/Transfer Button.png", SF2D_PLACE_RAM);
-		bankTop = sfil_load_PNG_file("romfs:/res/Bank Top.png", SF2D_PLACE_RAM);
-		shinyStar = sfil_load_PNG_file("romfs:/res/Shiny.png", SF2D_PLACE_RAM);
-		normalBar = sfil_load_PNG_file("romfs:/res/Normal Bar.png", SF2D_PLACE_RAM);
-		RButton = sfil_load_PNG_file("romfs:/res/R Button.png", SF2D_PLACE_RAM);
-		LButton = sfil_load_PNG_file("romfs:/res/L Button.png", SF2D_PLACE_RAM);
-		creditsTop = sfil_load_PNG_file("romfs:/res/Credits Top.png", SF2D_PLACE_RAM);
-		pokeball = sfil_load_PNG_file("romfs:/res/Pokeball.png", SF2D_PLACE_RAM);
-		menuBar = sfil_load_PNG_file("romfs:/res/Main Menu Dark Bar.png", SF2D_PLACE_RAM);
-		menuSelectedBar = sfil_load_PNG_file("romfs:/res/Main Menu Red Bar.png", SF2D_PLACE_RAM);
-		darkButton = sfil_load_PNG_file("romfs:/res/Dark Button.png", SF2D_PLACE_RAM);
-		eventTop = sfil_load_PNG_file("romfs:/res/Event Top.png", SF2D_PLACE_RAM);
-		left = sfil_load_PNG_file("romfs:/res/Left.png", SF2D_PLACE_RAM);
-		lightButton = sfil_load_PNG_file("romfs:/res/Light Button.png", SF2D_PLACE_RAM);
-		redButton = sfil_load_PNG_file("romfs:/res/Red Button.png", SF2D_PLACE_RAM);
-		right = sfil_load_PNG_file("romfs:/res/Right.png", SF2D_PLACE_RAM);
-		eventMenuBottomBar = sfil_load_PNG_file("romfs:/res/Event Menu Bottom Bar.png", SF2D_PLACE_RAM);
-		eventMenuTopBarSelected = sfil_load_PNG_file("romfs:/res/Event Menu Top Bar Selected.png", SF2D_PLACE_RAM);
-		eventMenuTopBar = sfil_load_PNG_file("romfs:/res/Event Menu Top Bar.png", SF2D_PLACE_RAM);
-		infoView = sfil_load_PNG_file("romfs:/res/Info View.png", SF2D_PLACE_RAM);
-		selector = sfil_load_PNG_file("romfs:/res/Selector.png", SF2D_PLACE_RAM);
-		selectorCloning = sfil_load_PNG_file("romfs:/res/Selector (cloning).png", SF2D_PLACE_RAM);
-		editorBG = sfil_load_PNG_file("romfs:/res/Editor Bottom BG.png", SF2D_PLACE_RAM);
-		plus = sfil_load_PNG_file("romfs:/res/Plus.png", SF2D_PLACE_RAM);
-		minus = sfil_load_PNG_file("romfs:/res/Minus.png", SF2D_PLACE_RAM);
-		button = sfil_load_PNG_file("romfs:/res/Button.png", SF2D_PLACE_RAM);
-		setting = sfil_load_PNG_file("romfs:/res/Setting.png", SF2D_PLACE_RAM);
-		bottomPopUp = sfil_load_PNG_file("romfs:/res/Bottom Pop-Up.png", SF2D_PLACE_RAM);
-		pokemonBufferBox = sfil_load_PNG_file("romfs:/res/Pokemon Box.png", SF2D_PLACE_RAM);
-		item = sfil_load_PNG_file("romfs:/res/item.png", SF2D_PLACE_RAM);
+		boxView = loadPNGInRAM("romfs:/res/Box View.png");
+		noMove = loadPNGInRAM("romfs:/res/No Move.png");
+		back = loadPNGInRAM("romfs:/res/Back Button.png");
+		editorBar = loadPNGInRAM("romfs:/res/Bottom Bar.png");
+		hexIcon = loadPNGInRAM("romfs:/res/Hex Button.png");
+		hexBG = loadPNGInRAM("romfs:/res/Hex BG.png");
+		blueTextBox = loadPNGInRAM("romfs:/res/Blue Textbox.png");
+		otaButton = loadPNGInRAM("romfs:/res/OTA Button.png");
+		includeInfoButton = loadPNGInRAM("romfs:/res/Include Info.png");
+		generationBG = loadPNGInRAM("romfs:/res/Generation BG.png");
+		hiddenPowerBG = loadPNGInRAM("romfs:/res/Hidden Power BG.png");
+		ballsBG = loadPNGInRAM("romfs:/res/BallsBG.png");
+		male = loadPNGInRAM("romfs:/res/Male.png");
+		female = loadPNGInRAM("romfs:/res/Female.png");
+		naturestx = loadPNGInRAM("romfs:/res/Natures.png");
+		movesBottom = loadPNGInRAM("romfs:/res/Moves Bottom.png");
+		topMovesBG = loadPNGInRAM("romfs:/res/Top Moves.png");
+		editorStatsBG = loadPNGInRAM("romfs:/res/Editor Stats.png");
+		subArrow = loadPNGInRAM("romfs:/res/Sub Arrow.png");
+		backgroundTop = loadPNGInRAM("romfs:/res/Background.png");
+		miniBox = loadPNGInRAM("romfs:/res/Mini Box.png");
+		minusButton = loadPNGInRAM("romfs:/res/Minus Button.png");
+		plusButton = loadPNGInRAM("romfs:/res/Plus Button.png");
+		transferButton = loadPNGInRAM("romfs:/res/Transfer Button.png");
+		bankTop = loadPNGInRAM("romfs:/res/Bank Top.png");
+		shinyStar = loadPNGInRAM("romfs:/res/Shiny.png");
+		normalBar = loadPNGInRAM("romfs:/res/Normal Bar.png");
+		RButton = loadPNGInRAM("romfs:/res/R Button.png");
+		LButton = loadPNGInRAM("romfs:/res/L Button.png");
+		creditsTop = loadPNGInRAM("romfs:/res/Credits Top.png");
+		pokeball = loadPNGInRAM("romfs:/res/Pokeball.png");
+		menuBar = loadPNGInRAM("romfs:/res/Main Menu Dark Bar.png");
+		menuSelectedBar = loadPNGInRAM("romfs:/res/Main Menu Red Bar.png");
+		darkButton = loadPNGInRAM("romfs:/res/Dark Button.png");
+		eventTop = loadPNGInRAM("romfs:/res/Event Top.png");
+		left = loadPNGInRAM("romfs:/res/Left.png");
+		lightButton = loadPNGInRAM("romfs:/res/Light Button.png");
+		redButton = loadPNGInRAM("romfs:/res/Red Button.png");
+		right = loadPNGInRAM("romfs:/res/Right.png");
+		eventMenuBottomBar = loadPNGInRAM("romfs:/res/Event Menu Bottom Bar.png");
+		eventMenuTopBarSelected = loadPNGInRAM("romfs:/res/Event Menu Top Bar Selected.png");
+		eventMenuTopBar = loadPNGInRAM("romfs:/res/Event Menu Top Bar.png");
+		infoView = loadPNGInRAM("romfs:/res/Info View.png");
+		selector = loadPNGInRAM("romfs:/res/Selector.png");
+		selectorCloning = loadPNGInRAM("romfs:/res/Selector (cloning).png");
+		editorBG = loadPNGInRAM("romfs:/res/Editor Bottom BG.png");
+		plus = loadPNGInRAM("romfs:/res/Plus.png");
+		minus = loadPNGInRAM("romfs:/res/Minus.png");
+		button = loadPNGInRAM("romfs:/res/Button.png");
+		setting = loadPNGInRAM("romfs:/res/Setting.png");
+		bottomPopUp = loadPNGInRAM("romfs:/res/Bottom Pop-Up.png");
+		pokemonBufferBox = loadPNGInRAM("romfs:/res/Pokemon Box.png");
+		item = loadPNGInRAM("romfs:/res/item.png");
 	} else {
-		DSBottomBG = sfil_load_PNG_file("romfs:/res/Bottom BG.png", SF2D_PLACE_RAM);
-		DSTopBG = sfil_load_PNG_file("romfs:/res/Top BG.png", SF2D_PLACE_RAM);
-		DSBarSelected = sfil_load_PNG_file("romfs:/res/Bar Selected.png", SF2D_PLACE_RAM);
-		DSBar = sfil_load_PNG_file("romfs:/res/Bar.png", SF2D_PLACE_RAM);
-		DSEventBottom = sfil_load_PNG_file("romfs:/res/DS Menu Bottom BG.png", SF2D_PLACE_RAM);
-		DSLangSelected = sfil_load_PNG_file("romfs:/res/Language Button Selected.png", SF2D_PLACE_RAM);
-		DSLang = sfil_load_PNG_file("romfs:/res/Language Button.png", SF2D_PLACE_RAM);
-		DSEventTop = sfil_load_PNG_file("romfs:/res/Event Database BG.png", SF2D_PLACE_RAM);
-		DSNormalBarL = sfil_load_PNG_file("romfs:/res/Normal L.png", SF2D_PLACE_RAM);
-		DSNormalBarR = sfil_load_PNG_file("romfs:/res/Normal R.png", SF2D_PLACE_RAM);
-		DSSelectedBarL = sfil_load_PNG_file("romfs:/res/Selected L.png", SF2D_PLACE_RAM);
-		DSSelectedBarR = sfil_load_PNG_file("romfs:/res/Selected R.png", SF2D_PLACE_RAM);
+		DSBottomBG = loadPNGInRAM("romfs:/res/Bottom BG.png");
+		DSTopBG = loadPNGInRAM("romfs:/res/Top BG.png");
+		DSBarSelected = loadPNGInRAM("romfs:/res/Bar Selected.png");
+		DSBar = loadPNGInRAM("romfs:/res/Bar.png");
+		DSEventBottom = loadPNGInRAM("romfs:/res/DS Menu Bottom BG.png");
+		DSLangSelected = loadPNGInRAM("romfs:/res/Language Button Selected.png");
+		DSLang = loadPNGInRAM("romfs:/res/Language Button.png");
+		DSEventTop = loadPNGInRAM("romfs:/res/Event Database BG.png");
+		DSNormalBarL = loadPNGInRAM("romfs:/res/Normal L.png");
+		DSNormalBarR = loadPNGInRAM("romfs:/res/Normal R.png");
+		DSSelectedBarL = loadPNGInRAM("romfs:/res/Selected L.png");
+		DSSelectedBarR = loadPNGInRAM("romfs:/res/Selected R.png");
 	}
 }
 
@@ -278,25 +294,27 @@ void GUIElementsExit() {
 	sftd_free_font(unicodeKOR12);
 }
 
+void create_font_cache(sftd_font* font, unsigned int size, int total_fonts, int* num_font) {
+	wchar_t* str = malloc(sizeof(wchar_t*)*60);
+	swprintf(str, 60, i18n(S_GUI_ELEMENTS_LOADING_FONTS_CACHE_FONT), *num_font, total_fonts);
+	freezeMsgDetails(str);
+	sftd_draw_text(font, 0, 0, RGBA8(0, 0, 0, 0), size, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
+	*num_font = *num_font + 1;
+	free(str);
+}
+
 void init_font_cache() {
-	freezeMsgDetails("Caching font 1/9...");
-	sftd_draw_text(unicodeJPN12, 0, 0, RGBA8(0, 0, 0, 0), 12, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
-	freezeMsgDetails("Caching font 2/9...");
-	sftd_draw_text(unicodeKOR12, 0, 0, RGBA8(0, 0, 0, 0), 12, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
-	freezeMsgDetails("Caching font 3/9...");
-	sftd_draw_text(fontBold18, 0, 0, RGBA8(0, 0, 0, 0), 18, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
-	freezeMsgDetails("Caching font 4/9...");
-	sftd_draw_text(fontBold14, 0, 0, RGBA8(0, 0, 0, 0), 14, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
-	freezeMsgDetails("Caching font 5/9...");
-	sftd_draw_text(fontBold15, 0, 0, RGBA8(0, 0, 0, 0), 15, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
-	freezeMsgDetails("Caching font 6/9...");
-	sftd_draw_text(fontBold12, 0, 0, RGBA8(0, 0, 0, 0), 12, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
-	freezeMsgDetails("Caching font 7/9...");
-	sftd_draw_text(fontBold11, 0, 0, RGBA8(0, 0, 0, 0), 11, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
-	freezeMsgDetails("Caching font 8/9...");
-	sftd_draw_text(fontBold9, 0, 0, RGBA8(0, 0, 0, 0), 9, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
-	freezeMsgDetails("Caching font 9/9...");
-	sftd_draw_text(fontFixed, 0, 0, RGBA8(0, 0, 0, 0), 10, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
+	int num_font = 1;
+	int total_fonts = 9;
+	create_font_cache(unicodeJPN12, 12, total_fonts, &num_font);
+	create_font_cache(unicodeKOR12, 12, total_fonts, &num_font);
+	create_font_cache(fontBold18, 18, total_fonts, &num_font);
+	create_font_cache(fontBold14, 14, total_fonts, &num_font);
+	create_font_cache(fontBold15, 15, total_fonts, &num_font);
+	create_font_cache(fontBold12, 12, total_fonts, &num_font);
+	create_font_cache(fontBold11, 11, total_fonts, &num_font);
+	create_font_cache(fontBold9,  9, total_fonts, &num_font);
+	create_font_cache(fontFixed,  10, total_fonts, &num_font);
 }
 
 void drawFPSDebug() {
@@ -307,9 +325,12 @@ void drawFPSDebug() {
 char* messageDebug;
 bool hasDebugMessage = false;
 time_t lastDebugMessageTime = 0;
-char* lastMessage;
+wchar_t* lastMessage;
 
 void consoleMsg(char* message) {
+	if (messageDebug != message) {
+		free(messageDebug);
+	}
 	messageDebug = message;
 	hasDebugMessage = true;
 }
@@ -356,7 +377,7 @@ void printMenuBottom() {
 	sf2d_draw_rectangle(0, 219, 320, 21, MENUBLUE);
 }
 
-void infoDisp(char* message) {
+void infoDisp(wchar_t* message) {
 	while (aptMainLoop()) {
 		hidScanInput();
 
@@ -364,8 +385,8 @@ void infoDisp(char* message) {
 		
 		sf2d_start_frame(GFX_TOP, GFX_LEFT);
 			sf2d_draw_texture(warningTop, 0, 0);
-			sftd_draw_text(fontBold15, (400 - sftd_get_text_width(fontBold15, 15, message)) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, message);
-			sftd_draw_text(fontBold12, (400 - sftd_get_text_width(fontBold12, 12, "Press A to continue.")) / 2, 130, WHITE, 12, "Press A to continue.");
+			sftd_draw_wtext(fontBold15, (400 - sftd_get_wtext_width(fontBold15, 15, message)) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, message);
+			sftd_draw_wtext(fontBold12, (400 - sftd_get_wtext_width(fontBold12, 12, i18n(S_INFORMATION_MESSAGE_PRESS_A))) / 2, 130, WHITE, 12, i18n(S_INFORMATION_MESSAGE_PRESS_A));
 		pksm_end_frame();
 		
 		sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
@@ -375,7 +396,7 @@ void infoDisp(char* message) {
 	}
 }
 
-int confirmDisp(char* message) {
+int confirmDisp(wchar_t* message) {
 	while (aptMainLoop()) {
 		hidScanInput();
 
@@ -384,8 +405,8 @@ int confirmDisp(char* message) {
 		
 		sf2d_start_frame(GFX_TOP, GFX_LEFT);
 			sf2d_draw_texture(warningTop, 0, 0);
-			sftd_draw_text(fontBold15, (400 - sftd_get_text_width(fontBold15, 15, message)) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, message);
-			sftd_draw_text(fontBold12, (400 - sftd_get_text_width(fontBold12, 12, "Press A to continue, B to cancel.")) / 2, 130, WHITE, 12, "Press A to continue, B to cancel.");
+			sftd_draw_wtext(fontBold15, (400 - sftd_get_wtext_width(fontBold15, 15, message)) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, message);
+			sftd_draw_wtext(fontBold12, (400 - sftd_get_wtext_width(fontBold12, 12, i18n(S_CONFIRMATION_MESSAGE_PRESS_A_OR_B))) / 2, 130, WHITE, 12, i18n(S_CONFIRMATION_MESSAGE_PRESS_A_OR_B));
 		pksm_end_frame();
 		
 		sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
@@ -396,18 +417,18 @@ int confirmDisp(char* message) {
 	return 0;
 }
 
-void _freezeMsgWithDetails(char* message, char* details, bool useLastMessage) {
+void _freezeMsgWithDetails(wchar_t* message, wchar_t* details, bool useLastMessage) {
 	if (!useLastMessage) {
 		free(lastMessage);
-		lastMessage = malloc(strlen(message)*sizeof(char)+1);
-		strcpy(lastMessage, message);
-		lastMessage[strlen(message)] = '\0';
+		lastMessage = malloc(wcslen(message)*sizeof(wchar_t)+1);
+		wcscpy(lastMessage, message);
+		lastMessage[wcslen(message)] = '\0';
 	}
 
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		sf2d_draw_texture(warningTop, 0, 0);
-		sftd_draw_text(fontBold15, (400 - sftd_get_text_width(fontBold15, 15, lastMessage)) / 2, 95, WHITE, 15, lastMessage);
-		sftd_draw_text(fontBold12, (400 - sftd_get_text_width(fontBold12, 12, details)) / 2, 130, WHITE, 12, details);
+		sftd_draw_wtext(fontBold15, (400 - sftd_get_wtext_width(fontBold15, 15, lastMessage)) / 2, 95, WHITE, 15, lastMessage);
+		sftd_draw_wtext(fontBold12, (400 - sftd_get_wtext_width(fontBold12, 12, details)) / 2, 130, WHITE, 12, details);
 	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
@@ -416,9 +437,9 @@ void _freezeMsgWithDetails(char* message, char* details, bool useLastMessage) {
 	sf2d_swapbuffers();
 }
 
-void freezeMsgDetails(char* details) { _freezeMsgWithDetails("", details, true); }
-void freezeMsg(char* message) { _freezeMsgWithDetails(message, "Please wait.", false); }
-void freezeMsgWithDetails(char* message, char* details) { _freezeMsgWithDetails(message, details, false); }
+void freezeMsgDetails(wchar_t* details) { _freezeMsgWithDetails(L"", details, true); }
+void freezeMsg(wchar_t* message) { _freezeMsgWithDetails(message, i18n(S_FREEZEMSG_DEFAULT_DETAILS), false); }
+void freezeMsgWithDetails(wchar_t* message, wchar_t* details) { _freezeMsgWithDetails(message, details, false); }
 
 void progressBar(char* message, u32 current, u32 sz) {
 	char* progress = (char*)malloc(40 * sizeof(char));
@@ -459,14 +480,14 @@ void printTitle(const char* title) {
 	sftd_draw_text(fontBold14, (400 - sftd_get_text_width(fontBold14, 14, title)) / 2, 4, BLUE, 14, title);
 }
 
-void printBottomIndications(const char* message) {
-	sftd_draw_text(fontBold9, (320 - sftd_get_text_width(fontBold9, 9, message)) / 2, 225, LIGHTBLUE, 9, message);
+void printBottomIndications(const wchar_t* message) {
+	sftd_draw_wtext(fontBold9, (320 - sftd_get_wtext_width(fontBold9, 9, message)) / 2, 225, LIGHTBLUE, 9, message);
 }
 
 void gameSelectorMenu(int n) {
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		printMenuTop();
-		sftd_draw_text(fontBold9, (400 - sftd_get_text_width(fontBold9, 9, "Cart has priority over digital copy.")) / 2, 6, BLUE, 9, "Cart has priority over digital copy.");
+		sftd_draw_wtext(fontBold9, (400 - sftd_get_wtext_width(fontBold9, 9, i18n(S_GRAPHIC_GAME_SELECTOR_INFO_CART_HAS_PRIO))) / 2, 6, BLUE, 9, i18n(S_GRAPHIC_GAME_SELECTOR_INFO_CART_HAS_PRIO));
 		
 		for (int i = 0; i < 6; i++) {
 			if (n == i) {
@@ -476,7 +497,7 @@ void gameSelectorMenu(int n) {
 				sf2d_draw_texture_part(gameSelectorTop, 26 + i*60, 80, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70);
 		}
 
-		sftd_draw_text(fontBold18, (400 - sftd_get_text_width(fontBold18, 18, gamesList[n])) / 2, 185, logoColors[n], 18, gamesList[n]);
+		sftd_draw_wtext(fontBold18, (400 - sftd_get_wtext_width(fontBold18, 18, i18n(gamesList[n]))) / 2, 185, logoColors[n], 18, i18n(gamesList[n]));
 	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
@@ -498,12 +519,12 @@ void gameSelectorMenu(int n) {
 				sf2d_draw_texture_part(gameSelectorBottom2, 40 + (i - 11)*60, 115, logo_lookup5[i - 11], 0, logo_lookup5[i - 10] - logo_lookup5[i - 11] - 1, 63);
 		}
 
-		printBottomIndications("Move your DPAD. Press A to continue, B to exit.");
+		printBottomIndications(i18n(S_GRAPHIC_GAME_SELECTOR_INDICATIONS));
 	pksm_end_frame();
 	sf2d_swapbuffers();
 }
 
-void menu3(int currentEntry, char* menu[], int n, bool isMain) {
+void menu3(int currentEntry, wchar_t* menu[], int n, bool isMain) {
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		drawMenuTop(0);
 	pksm_end_frame();
@@ -517,9 +538,9 @@ void menu3(int currentEntry, char* menu[], int n, bool isMain) {
 				sf2d_draw_texture(menuSelectedBar, (320 - menuSelectedBar->width) / 2, 60 + i * (menuSelectedBar->height));
 			else
 				sf2d_draw_texture(menuBar, (320 - menuBar->width) / 2, 60 + i * (menuBar->height));
-			sftd_draw_text(fontBold18, (320 - sftd_get_text_width(fontBold18, 18, menu[i])) / 2, 56 + (menuBar->height - 18) / 2 + i * (menuBar->height), (i == currentEntry) ? DARKBLUE : YELLOW, 18, menu[i]);
+			sftd_draw_wtext(fontBold18, (320 - sftd_get_wtext_width(fontBold18, 18, menu[i])) / 2, 56 + (menuBar->height - 18) / 2 + i * (menuBar->height), (i == currentEntry) ? DARKBLUE : YELLOW, 18, menu[i]);
 		}
-		printBottomIndications(isMain ? "Press START to quit." : "Press A to select an option.");
+		printBottomIndications(isMain ? i18n(S_MAIN_MENU_INDICATION_EXIT) : i18n(S_MAIN_MENU_INDICATION));
 	pksm_end_frame();
 	sf2d_swapbuffers();
 }
@@ -539,12 +560,12 @@ void mainMenuDS(int currentEntry) {
 				sf2d_draw_texture(DSBar, (320 - DSBar->width) / 2, 66 + i * (DSBar->height + 16));
 			sftd_draw_text(fontBold18, (320 - sftd_get_text_width(fontBold18, 18, menu[i])) / 2, 67 + (DSBar->height - 18) / 2 + i * (DSBar->height + 16), WHITE, 18, menu[i]);
 		}
-		printBottomIndications("Press START to quit.");
+		printBottomIndications(L"Press START to quit.");
 	pksm_end_frame();
 	sf2d_swapbuffers();
 }
 
-void menu4(int currentEntry, char* menu[], int n) {
+void menu4(int currentEntry, wchar_t* menu[], int n) {
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		drawMenuTop(0);
 	pksm_end_frame();
@@ -557,9 +578,9 @@ void menu4(int currentEntry, char* menu[], int n) {
 				sf2d_draw_texture(menuSelectedBar, (320 - menuSelectedBar->width) / 2, 40 + i * (menuSelectedBar->height));
 			else
 				sf2d_draw_texture(menuBar, (320 - menuBar->width) / 2, 40 + i * (menuBar->height));
-			sftd_draw_text(fontBold18, (320 - sftd_get_text_width(fontBold18, 18, menu[i])) / 2, 44 + i * (menuBar->height), (i == currentEntry) ? DARKBLUE : YELLOW, 18, menu[i]);
+			sftd_draw_wtext(fontBold18, (320 - sftd_get_wtext_width(fontBold18, 18, menu[i])) / 2, 44 + i * (menuBar->height), (i == currentEntry) ? DARKBLUE : YELLOW, 18, menu[i]);
 		}
-		printBottomIndications("Press A to select an option.");
+		printBottomIndications(i18n(S_MAIN_MENU_INDICATION));
 	pksm_end_frame();
 	sf2d_swapbuffers();
 }
@@ -585,7 +606,7 @@ void printCredits() {
 		sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 			printMenuBottom();
 			sftd_draw_text(fontBold9, 20, 30, LIGHTBLUE, 9, (char*)buf);
-			printBottomIndications("Press B to return.");
+			printBottomIndications(L"Press B to return.");
 		pksm_end_frame();
 		sf2d_swapbuffers();
 	}
@@ -644,7 +665,7 @@ void printDatabase6(char *database[], int currentEntry, int page, int spriteArra
 		sf2d_draw_texture(LButton, 83, 52);
 		sf2d_draw_texture(RButton, 221, 52);
 		sftd_draw_text(fontBold12, (320 - sftd_get_text_width(fontBold12, 12, pages)) / 2, 52, WHITE, 12, pages);
-		printBottomIndications("Press A to continue, B to return.");
+		printBottomIndications(L"Press A to continue, B to return.");
 	pksm_end_frame();
 	sf2d_swapbuffers();
 	
@@ -904,7 +925,7 @@ void printDB7(int sprite, int i, bool langVett[], bool adapt, bool overwrite, in
 		sftd_draw_text(fontBold14, 249 + (36 - sftd_get_text_width(fontBold14, 14, "No")) / 2, 140, (!adapt) ? DARKBLUE : YELLOW, 14, "No");
 		sftd_draw_text(fontBold14, 229 + (36 - sftd_get_text_width(fontBold14, 14, cont)) / 2, 170, YELLOW, 14, cont);
 		
-		printBottomIndications("Press START to inject, B to return.");
+		printBottomIndications(L"Press START to inject, B to return.");
 		pksm_end_frame();
 	sf2d_swapbuffers();
 	
@@ -990,7 +1011,7 @@ void printDB6(int sprite, int i, bool langVett[], bool adapt, bool overwrite, in
 		sftd_draw_text(fontBold14, 249 + (36 - sftd_get_text_width(fontBold14, 14, "No")) / 2, 140, (!adapt) ? DARKBLUE : YELLOW, 14, "No");
 		sftd_draw_text(fontBold14, 229 + (36 - sftd_get_text_width(fontBold14, 14, cont)) / 2, 170, YELLOW, 14, cont);
 		
-		printBottomIndications("Press START to inject, B to return.");
+		printBottomIndications(L"Press START to inject, B to return.");
 	pksm_end_frame();
 	sf2d_swapbuffers();
 	
@@ -1041,7 +1062,7 @@ void printEditor(u8* mainbuf, int game, int currentEntry, int langCont) {
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		printMenuBottom();
-		printBottomIndications("Press START to edit, A to toggle, B to exit.");
+		printBottomIndications(L"Press START to edit, A to toggle, B to exit.");
 	pksm_end_frame();
 	sf2d_swapbuffers();
 }
@@ -1814,7 +1835,7 @@ void printMassInjector(int currentEntry) {
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		printMenuBottom();
 		sftd_draw_text(fontBold12, (320 - sftd_get_text_width(fontBold12, 12, message)) / 2, 12, LIGHTBLUE, 12, message);
-		printBottomIndications("Press START to inject, B to exit.");
+		printBottomIndications(L"Press START to inject, B to exit.");
 	pksm_end_frame();
 	sf2d_swapbuffers();
 	

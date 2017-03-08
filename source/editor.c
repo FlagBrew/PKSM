@@ -1224,7 +1224,7 @@ void saveFileEditor(u8* mainbuf, int game) {
 			switch (currentEntry) {
 				case 0 : {
 					setLanguage(mainbuf, game, langCont);
-					infoDisp("Language set successfully!");
+					infoDisp(L"Language set successfully!");
 					break;
 				}
 				case 5 : {
@@ -1239,7 +1239,7 @@ void saveFileEditor(u8* mainbuf, int game) {
 
 					for (int i = 0; i < (0x100 + wcmax * WC6LENGTH); i++)
 						*(mainbuf + start + i) = 0x00;
-					infoDisp("Mistery Gift box cleaned!");
+					infoDisp(L"Mistery Gift box cleaned!");
 					break;
 				}
 			}
@@ -2035,10 +2035,10 @@ void pokemonEditor(u8* mainbuf, int game) {
 							break;
 						}
 						case 2 : {
-							if (!isTeam && confirmDisp("Confirm release?")) {
+							if (!isTeam && confirmDisp(L"Confirm release?")) {
 								memset(pkmn, 0, PKMNLENGTH);
 								setPkmn(mainbuf, box, currentEntry, pkmn, game);
-								infoDisp("Released!");
+								infoDisp(L"Released!");
 								operationDone = true;
 							}
 							break;

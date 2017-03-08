@@ -1,0 +1,53 @@
+Téléchargement du fichier supp. n°#%d...
+Chargement des fichiers...
+Chargement des traductions...
+Chargement des talents
+Chargement des capacités
+Tri des capacités
+Chargement des natures
+Chargement des objets
+Tri des objets
+Chargement des p. cachés
+Chargement des polices...
+Mise en cache police %i/%i
+Terminé!
+Création de la banque...
+Sauvegarde de la banque...
+Relancez l'app!
+Des fichiers sont manquants!
+Chargement de la sauvegarde...
+Jeu non trouvé !
+Taille incorrect de la sauvegarde!
+Pas de cartouche inséré !
+GESTION
+EVENTS
+CREDITS
+Appuie sur A pour choisir un menu.
+Appuie sur START pour quitter.
+EDITEUR POKEMON
+INFO SAUV.
+STOCKAGE SUPP.
+INJECTION AUTO.
+Sauvegarder modifs ?
+Appuie sur A pour confirmer.
+Touche A pour confirmer, B pour annuler.
+Veuillez patienter.
+Le jeu cartouche est prioritaire au jeu digital.
+Utilise la croix +. Appuie A pour confirmer, B pour quitter.
+X
+Y
+Rubis Omega
+Saphir Alpha
+Soleil
+Lune
+Diamant
+Perle
+Platine
+Or HeartGold
+Argent SoulSilver
+Blanc
+Noir
+Blanc 2
+Noir 2
+Chargement de l'interface...
+Chargement image %i / %i

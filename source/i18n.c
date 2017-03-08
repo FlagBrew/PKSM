@@ -48,6 +48,8 @@ struct i18n_files i18n_files_fr = {
 	"romfs:/i18n/fr/app.txt"
 };
 
+struct ArrayUTF32 i18n_AppTexts;
+
 /**
  * Log debug with format
  */
@@ -58,8 +60,8 @@ void debuglogf(const char* format, ...) {
 	#ifdef VERSION
 		char* str = malloc(255*sizeof(char));
 		vsprintf(str, format, args);
-		freezeMsgDetails(str);
-		free(str);
+		consoleMsg(str);
+		//free(str);
 	#else
 		vprintf(format, args);
 	#endif
@@ -414,3 +416,21 @@ struct i18n_files i18n_getFilesPath() {
 	}
 	return files;
 }
+
+void i18n_init() {
+	struct i18n_files files = i18n_getFilesPath();
+	i18n_AppTexts = i18n_FileToArrayUTF32(files.app);
+}
+
+wchar_t* i18n(AppTextCode code) {
+	wchar_t *s;
+	if (code >= i18n_AppTexts.length) {
+		s = L"??? (TnF)";
+	} else {
+		s = i18n_AppTexts.items[code];
+	}
+	return s;
+}
+
+
+

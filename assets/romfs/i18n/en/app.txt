@@ -1,0 +1,53 @@
+Downloading assets #%d...
+Loading files...
+Loading locales assets...
+Loading abilities
+Loading moves
+Sorting moves
+Loading natures
+Loading items
+Sorting items
+Loading Hidden powers
+Loading fonts...
+Caching font %i/%i
+Done!
+Creating a default bank...
+Backing up bank...
+Restart the application!
+You're missing a few assets!
+Loading save...
+Game not found!
+Incorrect size for this game!
+No cartridge inserted!
+MANAGEMENT
+EVENTS
+CREDITS
+Press A to select an option.
+Press START to quit.
+POKEMON EDITOR
+SAVE INFO
+EXTRA STORAGE
+MASS INJECTOR
+Save changes?
+Press A to continue.
+Press A to continue, B to cancel.
+Please wait.
+Cart has priority over digital copy.
+Move your DPAD. Press A to continue, B to exit.
+X
+Y
+Omega Ruby
+Alpha Sapphire
+Sun
+Moon
+Diamond
+Pearl
+Platinum
+Heart Gold
+Soul Silver
+Black
+White
+Black 2
+White 2
+Loading graphics...
+Loading image %i / %i
