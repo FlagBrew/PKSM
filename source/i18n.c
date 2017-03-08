@@ -285,7 +285,10 @@ wchar_t* UTF32_ReplaceAccentedChar(const wchar_t *str) {
  * Replace Œ and accented characters
  */
 wchar_t* UTF32_ReplaceAllComplexChars(const wchar_t *str) {
-	return UTF32_ReplaceOE(UTF32_ReplaceAccentedChar(str));
+	wchar_t* stringReplacedChar = UTF32_ReplaceAccentedChar(str);
+	wchar_t* stringReplacedCharAndOE = UTF32_ReplaceOE(stringReplacedChar);
+	free(stringReplacedChar);
+	return stringReplacedCharAndOE;
 }
 
 /**
