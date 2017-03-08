@@ -1,0 +1,53 @@
+Download dell'asset #%d...
+Caricamento dei files...
+Caricamento delle lingue...
+Caricamento delle abilità
+Caricamento delle mosse
+Ordinamento delle mosse
+Caricamento delle nature
+Caricamento degli strumenti
+Ordinamento degli strumenti
+Caricamento delle introforze
+Caricamento fonts...
+Caching del font #%i/%i
+Fatto!
+Creazione di uno storage di default...
+Backup dello storage di default...
+Riavvia l'applicazione!
+Ti mancano degli assets!
+Caricamento del salvataggio...
+Gioco non trovato!
+Dimensione del salvataggio errata!
+Nessuna cartuccia valida inserita!
+GESTIONE
+EVENTI
+RICONOSCIMENTI
+Premi A per selezionare un'opzione.
+Premi START per uscire.
+POKEMON EDITOR
+SAVE INFO
+SPAZIO AGGIUNTIVO
+MASS INJECTOR
+Salvare?
+Premi A per continuare.
+Press A per continuare, B per annullare.
+Attendi.
+La cartuccia ha precedenza sullo stesso titolo digitale.
+Muovi il DPAD. Premi A per continuare, B per uscire.
+X
+Y
+Rubino Omega
+Zaffiro Alpha
+Sole
+Luna
+Diamante
+Perla
+Platino
+Heart Gold
+Soul Silver
+Nero
+Bianco
+Nero 2
+Bianco 2
+Caricamento della grafica...
+Caricamento asset #%i / %i
