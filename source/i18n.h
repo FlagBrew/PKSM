@@ -39,7 +39,7 @@
 // CFG_LANGUAGE_PT = 9
 // CFG_LANGUAGE_RU = 10
 // CFG_LANGUAGE_TW = 11
-#define DEBUG_I18N_LANG 4
+// #define DEBUG_I18N_LANG 4
 
 
 /**
