@@ -23,33 +23,28 @@ static wchar_t* ACCENTED_CHAR_REPLACE_FROM = L"ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏ�
 static wchar_t* ACCENTED_CHAR_REPLACE_TO = L"AAAAAAECEEEEIIIIDNOOOOOx0UUUUYPsaaaaaaeceeeeiiiiOnooooo/0uuuuypy";
 
 const int MAXLENGTH_LINE_TRANSLATION = 255;
+const int DEFAULT_LANG = 1;
+const int MAXLENGTH_PATH = 255;
+
+static char* LANG_PREFIX[] = { "jp", "en", "fr", "de", "it", "es", "zh", "ko", "nl", "pt", "ru", "tw" };
 
 /**
- * English Localization files
+ * Generic path for Localization files
  */
-struct i18n_files i18n_files_en = {
-	"romfs:/i18n/en/abilities.txt",
-	"romfs:/i18n/en/species.txt",
-	"romfs:/i18n/en/natures.txt",
-	"romfs:/i18n/en/moves.txt",
-	"romfs:/i18n/en/items.txt",
-	"romfs:/i18n/en/hp.txt",
-	"romfs:/i18n/en/app.txt"
+struct i18n_files i18n_files_generic_paths = {
+	"romfs:/i18n/%s/abilities.txt",
+	"romfs:/i18n/%s/species.txt",
+	"romfs:/i18n/%s/natures.txt",
+	"romfs:/i18n/%s/moves.txt",
+	"romfs:/i18n/%s/items.txt",
+	"romfs:/i18n/%s/hp.txt",
+	"romfs:/i18n/%s/app.txt"
 };
 
 /**
- * French Localization files
+ * Current localization files loaded
  */
-struct i18n_files i18n_files_fr = {
-	"romfs:/i18n/fr/abilities.txt",
-	"romfs:/i18n/fr/species.txt",
-	"romfs:/i18n/fr/natures.txt",
-	"romfs:/i18n/fr/moves.txt",
-	"romfs:/i18n/fr/items.txt",
-	"romfs:/i18n/fr/hp.txt",
-	"romfs:/i18n/fr/app.txt"
-};
-
+struct i18n_files i18n_files_loaded;
 struct ArrayUTF32 i18n_AppTexts;
 
 /**
@@ -120,26 +115,26 @@ struct i18n_FileInfo i18n_getInfoFile(char* filepath) {
     int maxChar = 0;
     int currentMaxChar = 0;
     int totalChars = 0;
-    char ch = ' ';
+    char ch = ' ', lastch = ch;
     FILE *fp = fopen(filepath, "r");
-    while(!feof(fp)) {
-        ch = fgetc(fp);
-        currentMaxChar++;
-        if(ch == '\n') {
-            lines++;
-            if (currentMaxChar > maxChar) {
-                maxChar = currentMaxChar;
-            }
-            currentMaxChar = 0;
-        } else if (ch != '\r' && ch != '\n') {
-            totalChars++;
-        }
+    while((ch = fgetc(fp)) && !feof(fp)) {
+		currentMaxChar++;
+		if(ch == '\n') {
+			lines++;
+			if (currentMaxChar > maxChar) {
+				maxChar = currentMaxChar;
+			}
+			currentMaxChar = 0;
+		} else if (ch != '\r' && ch != '\n' && ch > 0) {
+			totalChars++;
+		}
+		lastch = ch;
     }
     if (currentMaxChar > maxChar) {
         maxChar = currentMaxChar;
     }
 	// The last line
-	if (totalChars > 0 && ch != '\r' && ch != '\n') {
+	if (totalChars > 0 && lastch != '\r' && lastch != '\n') {
 		lines++;
 	}
     fclose(fp);
@@ -175,16 +170,17 @@ struct ArrayUTF32 i18n_FileToArrayUTF32(char* filepath) {
     FILE* fp = fopen(filepath, "rt");
     char line[BUFFER_SIZE];
 	int index = 0;
-	// debuglogf("Reading file [%s]...\n", filepath);
-    while (fgets(line, (fileinfo.maxCharPerLine+1)*sizeof(char), fp) != 0) {
-		i18n_removeEndline(line);
-		wchar_t* lineutf32 = s_utf32(line);
-		arrwc[index] = lineutf32;
-		index++;
+
+    while (fgets(line, BUFFER_SIZE, fp) != 0) {
+		if (index < fileinfo.numberOfLines) {
+			i18n_removeEndline(line);
+			wchar_t* lineutf32 = s_utf32(line);
+			arrwc[index] = lineutf32;
+			index++;
+		}
+
     }
-	rewind(fp);
-	// debuglogf("Last ID: %i / %s.\n", index, line);
-	// debuglogf("Reading file ended, closing file.\n");
+
     if (fclose(fp)) {
 		// debuglogf("Error closing file !\n");
 	}
@@ -195,7 +191,6 @@ struct ArrayUTF32 i18n_FileToArrayUTF32(char* filepath) {
 	arr.items = arrwc;
 	arr.sorted = false;
 
-	// debuglogf("Freeing memory line...\n");
 	return arr;
 }
 
@@ -340,7 +335,6 @@ void ArrayUTF32_sort_starting_index(struct ArrayUTF32 *arr, int index) {
 			}
 			if (asort) {
 				lastIndex++;
-				// debuglogf("%i / %i (it: %i)...\n", lastIndex, nitems, iteration);
 				break;
 			}
 		}
@@ -369,33 +363,63 @@ void ArrayUTF32_sort(struct ArrayUTF32 *arr) { ArrayUTF32_sort_starting_index(ar
  * Use the internal system language to detect the correct one
  */
 struct i18n_files i18n_getFilesPath() {
-	u8 language = 0;
-	CFGU_GetSystemLanguage(&language);
+	return i18n_files_loaded;
+}
 
-	struct i18n_files files = i18n_files_en;
+void i18n_set_language_filepath(u8 language, const char* generic_path, char* path) {
+	int BUFFER_SIZE = 255;
+	char defaultlang_path[BUFFER_SIZE];
+	char *correctlang_path;
 
-	switch(language) {
-		case CFG_LANGUAGE_FR:
-			files = i18n_files_fr;
-			break;
+	sprintf(defaultlang_path, generic_path, LANG_PREFIX[DEFAULT_LANG]);
+	if (language == DEFAULT_LANG) {
+		correctlang_path = defaultlang_path;
+	} else {
+		char lang_path[BUFFER_SIZE];
+		sprintf(lang_path, generic_path, LANG_PREFIX[language]);
+		struct i18n_FileInfo finfoLang = i18n_getInfoFile(lang_path);
+		struct i18n_FileInfo finfoDefaultLang = i18n_getInfoFile(defaultlang_path);
+
+		if (finfoLang.numberOfLines != finfoDefaultLang.numberOfLines) {
+			// debuglogf("File [%s] haven't the correct number of lines : %i != %i!", lang_path, finfoDefaultLang.numberOfLines, finfoLang.numberOfLines);
+			correctlang_path = defaultlang_path;
+		} else {
+			correctlang_path = lang_path;
+		}
 	}
-	// If a file don't exist, we use the english localization to avoid bugs
-	if((access( files.abilities, F_OK ) == -1) ||
-	   (access( files.species, F_OK ) == -1) ||
-	   (access( files.natures, F_OK ) == -1) ||
-	   (access( files.moves, F_OK ) == -1) ||
-	   (access( files.items, F_OK ) == -1) ||
-	   (access( files.hp, F_OK ) == -1) ||
-	   (access( files.app, F_OK ) == -1)
-	   ){
-		files = i18n_files_en;
-	}
-	return files;
+	strcpy(path, correctlang_path);
+	path[strlen(correctlang_path)] = '\0';
+}
+
+
+void i18n_load(u8 language) {
+	struct i18n_files files = i18n_files_generic_paths;
+	i18n_set_language_filepath(language, files.abilities, i18n_files_loaded.abilities);
+	i18n_set_language_filepath(language, files.species, i18n_files_loaded.species);
+	i18n_set_language_filepath(language, files.natures, i18n_files_loaded.natures);
+	i18n_set_language_filepath(language, files.moves, i18n_files_loaded.moves);
+	i18n_set_language_filepath(language, files.items, i18n_files_loaded.items);
+	i18n_set_language_filepath(language, files.hp, i18n_files_loaded.hp);
+	i18n_set_language_filepath(language, files.app, i18n_files_loaded.app);
+
+	i18n_AppTexts = i18n_FileToArrayUTF32(i18n_files_loaded.app);
 }
 
 void i18n_init() {
-	struct i18n_files files = i18n_getFilesPath();
-	i18n_AppTexts = i18n_FileToArrayUTF32(files.app);
+	u8 language = 0;
+	CFGU_GetSystemLanguage(&language);
+	#ifdef DEBUG_I18N_LANG
+		language = (u8)DEBUG_I18N_LANG;
+	#endif
+	int sizefilepath = sizeof(char)*MAXLENGTH_PATH;
+	i18n_files_loaded.abilities = malloc(sizefilepath);
+	i18n_files_loaded.species = malloc(sizefilepath);
+	i18n_files_loaded.natures = malloc(sizefilepath);
+	i18n_files_loaded.moves = malloc(sizefilepath);
+	i18n_files_loaded.items = malloc(sizefilepath);
+	i18n_files_loaded.hp = malloc(sizefilepath);
+	i18n_files_loaded.app = malloc(sizefilepath);
+	i18n_load(language);
 }
 
 wchar_t* i18n(AppTextCode code) {

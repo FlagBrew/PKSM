@@ -23,19 +23,36 @@
 #include <stdarg.h>
 #include <wchar.h>
 
+// debuglogf displays message on the app if defined to 1
 #define DEBUG_I18N 1
+// Force the lang to display in PKSM. Useful when debugging another lang than the 3DS lang
+// Langs ID are defined in ctrulib : https://smealum.github.io/ctrulib/cfgu_8h.html
+// CFG_LANGUAGE_JP = 0
+// CFG_LANGUAGE_EN = 1
+// CFG_LANGUAGE_FR = 2
+// CFG_LANGUAGE_DE = 3
+// CFG_LANGUAGE_IT = 4
+// CFG_LANGUAGE_ES = 5
+// CFG_LANGUAGE_ZH = 6
+// CFG_LANGUAGE_KO = 7
+// CFG_LANGUAGE_NL = 8
+// CFG_LANGUAGE_PT = 9
+// CFG_LANGUAGE_RU = 10
+// CFG_LANGUAGE_TW = 11
+#define DEBUG_I18N_LANG 4
+
 
 /**
  * Localization files
  */
 struct i18n_files {
-	char* abilities;
-	char* species;
-	char* natures;
-	char* moves;
-	char* items;
-	char* hp;
-	char* app;
+	char *abilities;
+	char *species;
+	char *natures;
+	char *moves;
+	char *items;
+	char *hp;
+	char *app;
 };
 
 /**
