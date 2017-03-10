@@ -51,3 +51,23 @@ Black 2
 White 2
 Loading graphics...
 Loading image %i / %i
+Bank.bin has a bad size!
+Erase the selected box?
+Save bank.bin changes?
+Save PokeDex flags?
+Box %lu / Slot %lu
+Error during injection!
+Injection succeeded!
+Item not available in XY!
+Save PokeDex flags?
+Box %lu / Slot %lu
+XD collection set successfully!
+Colosseum col. set successfully!
+10th Anniversary set successfully!
+N's collection injected successfully!
+Entree Forest col. set successfully!
+Dream Radar col. set successfully!
+Living dex set successfully!
+Deoxys collection set successfully!
+My Pokemon Ranch set successfully!
+Korean collection set successfully!
