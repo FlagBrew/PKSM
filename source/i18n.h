@@ -152,6 +152,17 @@ typedef enum {
 	S_DATABASE_DEOXYS_COLLECTION_SUCCESS,          // Line 71,
 	S_DATABASE_MY_POKEMON_RANCH_COLLECTION_SUCCESS,// Line 72,
 	S_DATABASE_KOREAN_COLLECTION_SUCCESS,          // Line 73,
+
+	S_EDITOR_LANGUAGE_SET_SUCCESS,                 // Line 74,
+	S_EDITOR_MISTERY_GIFT_CLEANED,                 // Line 75,
+	S_EDITOR_TEXT_CANCEL,                          // Line 76,
+	S_EDITOR_TEXT_SET,                             // Line 77,
+	S_EDITOR_TEXT_ENTER_NICKNAME_POKEMON,          // Line 78,
+	S_EDITOR_TEXT_ENTER_TRAINER_NAME,              // Line 79,
+
+	S_EDITOR_Q_CONFIRM_RELEASE,                    // Line 80,
+	S_EDITOR_RELEASED,                             // Line 81
+
 } AppTextCode;
 
 

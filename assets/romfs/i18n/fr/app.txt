@@ -51,3 +51,31 @@ Blanc 2
 Noir 2
 Chargement de l'interface...
 Chargement image %i / %i
+Bank.bin a une taille incorrecte!
+Effacer la boîte sélectionnée ?
+Sauver les changements de bank.bin ?
+Sauver les flags du PokeDex ?
+Boîte %lu / Case %lu
+Erreur durant l'ajout auto. !
+Ajout auto. effectué !
+Objet non dispo. sur XY !
+Sauver les flags PokéDex ?
+Boîte %lu / Case %lu
+Pokémons de XD collection ajoutés !
+Pokémons de Colosseum col. ajoutés !
+Pokémons du 10ème anniv. ajoutés !
+Pokémons de N ajoutés !
+Pokémons de Entree Forest ajoutés !
+Pokémons du Dream Radar ajoutés !
+Tous les Pokémons existants ont été ajoutés !
+Pokémons du Set Deoxys ajoutés !
+Pokémons de My Pokemon Ranch ajoutés !
+Pokémons coréens ajoutés !
+La langue du jeu a été changée !
+La boîte cadeau mystère a été vidée !
+Annuler
+OK
+Entrez le surnom du Pokémon
+Entrez le nom du dresseur
+Voulez-vous vraiment relâcher ?
+Pokémon relâché !

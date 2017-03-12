@@ -71,3 +71,11 @@ Living dex set successfully!
 Deoxys collection set successfully!
 My Pokemon Ranch set successfully!
 Korean collection set successfully!
+Language set successfully!
+Mistery Gift box cleaned!
+Cancel
+Set
+Enter your nickname
+Enter your OT name
+Confirm release?
+Released!

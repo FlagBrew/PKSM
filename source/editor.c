@@ -1224,7 +1224,7 @@ void saveFileEditor(u8* mainbuf, int game) {
 			switch (currentEntry) {
 				case 0 : {
 					setLanguage(mainbuf, game, langCont);
-					infoDisp(L"Language set successfully!");
+					infoDisp(i18n(S_EDITOR_LANGUAGE_SET_SUCCESS));
 					break;
 				}
 				case 5 : {
@@ -1239,7 +1239,7 @@ void saveFileEditor(u8* mainbuf, int game) {
 
 					for (int i = 0; i < (0x100 + wcmax * WC6LENGTH); i++)
 						*(mainbuf + start + i) = 0x00;
-					infoDisp(L"Mistery Gift box cleaned!");
+					infoDisp(i18n(S_EDITOR_MISTERY_GIFT_CLEANED));
 					break;
 				}
 			}
@@ -1800,11 +1800,11 @@ void pokemonEditor(u8* mainbuf, int game) {
 
 										SwkbdButton button = SWKBD_BUTTON_NONE;
 										swkbdInit(&swkbd, SWKBD_TYPE_NORMAL, 2, 12);
-										swkbdSetButton(&swkbd, SWKBD_BUTTON_LEFT, "Cancel", false);
-										swkbdSetButton(&swkbd, SWKBD_BUTTON_RIGHT, "Set", true);
+										swkbdSetButton(&swkbd, SWKBD_BUTTON_LEFT, i18n(S_EDITOR_TEXT_CANCEL), false);
+										swkbdSetButton(&swkbd, SWKBD_BUTTON_RIGHT, i18n(S_EDITOR_TEXT_SET), true);
 										swkbdSetValidation(&swkbd, SWKBD_NOTEMPTY_NOTBLANK, SWKBD_FILTER_DIGITS | SWKBD_FILTER_AT | SWKBD_FILTER_PERCENT | SWKBD_FILTER_BACKSLASH | SWKBD_FILTER_PROFANITY, 2);
 										swkbdSetFeatures(&swkbd, SWKBD_MULTILINE);
-										swkbdSetHintText(&swkbd, "Enter your nickname");
+										swkbdSetHintText(&swkbd, i18n(S_EDITOR_TEXT_ENTER_NICKNAME_POKEMON));
 										button = swkbdInputText(&swkbd, nick, NICKNAMELENGTH);
 										nick[NICKNAMELENGTH - 1] = '\0';
 
@@ -1819,11 +1819,11 @@ void pokemonEditor(u8* mainbuf, int game) {
 										
 										SwkbdButton button = SWKBD_BUTTON_NONE;
 										swkbdInit(&swkbd, SWKBD_TYPE_NORMAL, 2, 12);
-										swkbdSetButton(&swkbd, SWKBD_BUTTON_LEFT, "Cancel", false);
-										swkbdSetButton(&swkbd, SWKBD_BUTTON_RIGHT, "Set", true);
+										swkbdSetButton(&swkbd, SWKBD_BUTTON_LEFT, i18n(S_EDITOR_TEXT_CANCEL), false);
+										swkbdSetButton(&swkbd, SWKBD_BUTTON_RIGHT, i18n(S_EDITOR_TEXT_SET), true);
 										swkbdSetValidation(&swkbd, SWKBD_NOTEMPTY_NOTBLANK, SWKBD_FILTER_DIGITS | SWKBD_FILTER_AT | SWKBD_FILTER_PERCENT | SWKBD_FILTER_BACKSLASH | SWKBD_FILTER_PROFANITY, 2);
 										swkbdSetFeatures(&swkbd, SWKBD_MULTILINE);
-										swkbdSetHintText(&swkbd, "Enter your OT name");
+										swkbdSetHintText(&swkbd, i18n(S_EDITOR_TEXT_ENTER_TRAINER_NAME));
 										button = swkbdInputText(&swkbd, nick, NICKNAMELENGTH);
 										nick[NICKNAMELENGTH - 1] = '\0';
 
@@ -2035,10 +2035,10 @@ void pokemonEditor(u8* mainbuf, int game) {
 							break;
 						}
 						case 2 : {
-							if (!isTeam && confirmDisp(L"Confirm release?")) {
+							if (!isTeam && confirmDisp(i18n(S_EDITOR_Q_CONFIRM_RELEASE))) {
 								memset(pkmn, 0, PKMNLENGTH);
 								setPkmn(mainbuf, box, currentEntry, pkmn, game);
-								infoDisp(L"Released!");
+								infoDisp(i18n(S_EDITOR_RELEASED));
 								operationDone = true;
 							}
 							break;
