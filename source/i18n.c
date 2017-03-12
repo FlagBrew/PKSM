@@ -432,5 +432,27 @@ wchar_t* i18n(AppTextCode code) {
 	return s;
 }
 
+void i18n_initTextSwkbd(SwkbdState* swkbd, AppTextCode leftButtonTextCode, AppTextCode rightButtonTextCode, AppTextCode hintTextCode) {
+	wchar_t* leftButtonWText = i18n(leftButtonTextCode);
+	wchar_t* rightButtonWText = i18n(rightButtonTextCode);
+	wchar_t* hintWText = i18n(hintTextCode);
+	static unsigned char leftButtonText[SWKBD_MAX_BUTTON_TEXT_LEN+1];
+	static unsigned char rightButtonText[SWKBD_MAX_BUTTON_TEXT_LEN+1];
+	static unsigned char hintText[SWKBD_MAX_HINT_TEXT_LEN+1];
+	leftButtonText[SWKBD_MAX_BUTTON_TEXT_LEN] = '\0';
+	rightButtonText[SWKBD_MAX_BUTTON_TEXT_LEN] = '\0';
+	hintText[SWKBD_MAX_HINT_TEXT_LEN] = '\0';
 
 
+	int sizeLeftButtonText = (int)utf32_to_utf8(leftButtonText, (uint32_t*)leftButtonWText, SWKBD_MAX_BUTTON_TEXT_LEN+1);
+	int sizeRightButtonText = (int)utf32_to_utf8(rightButtonText, (uint32_t*)rightButtonWText, SWKBD_MAX_BUTTON_TEXT_LEN+1);
+	int sizeHintText = (int)utf32_to_utf8(hintText, (uint32_t*)hintWText, SWKBD_MAX_HINT_TEXT_LEN+1);
+
+	leftButtonText[sizeLeftButtonText] = '\0';
+	rightButtonText[sizeRightButtonText] = '\0';
+	hintText[sizeHintText] = '\0';
+
+	swkbdSetButton(swkbd, SWKBD_BUTTON_LEFT, (char*)leftButtonText, false);
+	swkbdSetButton(swkbd, SWKBD_BUTTON_RIGHT, (char*)rightButtonText, true);
+	swkbdSetHintText(swkbd, (char*)hintText);
+}

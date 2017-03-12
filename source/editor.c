@@ -1800,11 +1800,12 @@ void pokemonEditor(u8* mainbuf, int game) {
 
 										SwkbdButton button = SWKBD_BUTTON_NONE;
 										swkbdInit(&swkbd, SWKBD_TYPE_NORMAL, 2, 12);
-										swkbdSetButton(&swkbd, SWKBD_BUTTON_LEFT, i18n(S_EDITOR_TEXT_CANCEL), false);
-										swkbdSetButton(&swkbd, SWKBD_BUTTON_RIGHT, i18n(S_EDITOR_TEXT_SET), true);
 										swkbdSetValidation(&swkbd, SWKBD_NOTEMPTY_NOTBLANK, SWKBD_FILTER_DIGITS | SWKBD_FILTER_AT | SWKBD_FILTER_PERCENT | SWKBD_FILTER_BACKSLASH | SWKBD_FILTER_PROFANITY, 2);
 										swkbdSetFeatures(&swkbd, SWKBD_MULTILINE);
-										swkbdSetHintText(&swkbd, i18n(S_EDITOR_TEXT_ENTER_NICKNAME_POKEMON));
+
+										// Fix for swkKeyboard being in UTF8 only (char*)
+										i18n_initTextSwkbd(&swkbd, S_EDITOR_TEXT_CANCEL, S_EDITOR_TEXT_SET, S_EDITOR_TEXT_ENTER_NICKNAME_POKEMON);
+
 										button = swkbdInputText(&swkbd, nick, NICKNAMELENGTH);
 										nick[NICKNAMELENGTH - 1] = '\0';
 
@@ -1819,11 +1820,12 @@ void pokemonEditor(u8* mainbuf, int game) {
 										
 										SwkbdButton button = SWKBD_BUTTON_NONE;
 										swkbdInit(&swkbd, SWKBD_TYPE_NORMAL, 2, 12);
-										swkbdSetButton(&swkbd, SWKBD_BUTTON_LEFT, i18n(S_EDITOR_TEXT_CANCEL), false);
-										swkbdSetButton(&swkbd, SWKBD_BUTTON_RIGHT, i18n(S_EDITOR_TEXT_SET), true);
 										swkbdSetValidation(&swkbd, SWKBD_NOTEMPTY_NOTBLANK, SWKBD_FILTER_DIGITS | SWKBD_FILTER_AT | SWKBD_FILTER_PERCENT | SWKBD_FILTER_BACKSLASH | SWKBD_FILTER_PROFANITY, 2);
 										swkbdSetFeatures(&swkbd, SWKBD_MULTILINE);
-										swkbdSetHintText(&swkbd, i18n(S_EDITOR_TEXT_ENTER_TRAINER_NAME));
+
+										// Fix for swkKeyboard being in UTF8 only (char*)
+										i18n_initTextSwkbd(&swkbd, S_EDITOR_TEXT_CANCEL, S_EDITOR_TEXT_SET, S_EDITOR_TEXT_ENTER_TRAINER_NAME);
+
 										button = swkbdInputText(&swkbd, nick, NICKNAMELENGTH);
 										nick[NICKNAMELENGTH - 1] = '\0';
 
