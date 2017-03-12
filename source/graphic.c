@@ -441,14 +441,14 @@ void freezeMsgDetails(wchar_t* details) { _freezeMsgWithDetails(L"", details, tr
 void freezeMsg(wchar_t* message) { _freezeMsgWithDetails(message, i18n(S_FREEZEMSG_DEFAULT_DETAILS), false); }
 void freezeMsgWithDetails(wchar_t* message, wchar_t* details) { _freezeMsgWithDetails(message, details, false); }
 
-void progressBar(char* message, u32 current, u32 sz) {
-	char* progress = (char*)malloc(40 * sizeof(char));
-	snprintf(progress, 40, "Progress: %lu/%lu bytes", current, sz);
+void progressBar(wchar_t* message, u32 current, u32 sz) {
+	wchar_t* progress = (wchar_t*)malloc(40 * sizeof(wchar_t));
+	swprintf(progress, 40, i18n(S_GRAPHIC_PROGRESSBAR_MESSAGE), current, sz);
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		sf2d_draw_texture(warningTop, 0, 0);
-		sftd_draw_text(fontBold15, (400 - sftd_get_text_width(fontBold15, 15, message)) / 2, 95, WHITE, 15, message);
-		sftd_draw_text(fontBold12, (400 - sftd_get_text_width(fontBold12, 12, progress)) / 2, 130, WHITE, 12, progress);
+		sftd_draw_wtext(fontBold15, (400 - sftd_get_wtext_width(fontBold15, 15, message)) / 2, 95, WHITE, 15, message);
+		sftd_draw_wtext(fontBold12, (400 - sftd_get_wtext_width(fontBold12, 12, progress)) / 2, 130, WHITE, 12, progress);
 	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
@@ -462,7 +462,7 @@ void progressBar(char* message, u32 current, u32 sz) {
 void drawMenuTop(int game) {
 	if (game < 6) {
 		printMenuTop();
-		printTitle("PKSM");
+		printTitle(L"PKSM");
 		sf2d_draw_texture(pokeball, (400 - pokeball->width) / 2 + 5, (240 - pokeball->height) / 2 + 10);
 	}
 	else 
@@ -476,8 +476,8 @@ void printAnimatedBG(bool isUp) {
 	animateBG(isUp);
 }
 
-void printTitle(const char* title) {
-	sftd_draw_text(fontBold14, (400 - sftd_get_text_width(fontBold14, 14, title)) / 2, 4, BLUE, 14, title);
+void printTitle(const wchar_t* title) {
+	sftd_draw_wtext(fontBold14, (400 - sftd_get_wtext_width(fontBold14, 14, title)) / 2, 4, BLUE, 14, title);
 }
 
 void printBottomIndications(const wchar_t* message) {
@@ -546,7 +546,7 @@ void menu3(int currentEntry, wchar_t* menu[], int n, bool isMain) {
 }
 
 void mainMenuDS(int currentEntry) {
-	char* menu[2] = {"EVENTS", "OTHER"};
+	wchar_t* menu[2] = { i18n(S_GRAPHIC_MENUDS_EVENTS), i18n(S_GRAPHIC_MENUDS_OTHER)};
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		drawMenuTop(7);
 	pksm_end_frame();
@@ -558,9 +558,9 @@ void mainMenuDS(int currentEntry) {
 				sf2d_draw_texture(DSBarSelected, (320 - DSBarSelected->width) / 2, 66 + i * (DSBarSelected->height + 16) + i + 1);
 			else
 				sf2d_draw_texture(DSBar, (320 - DSBar->width) / 2, 66 + i * (DSBar->height + 16));
-			sftd_draw_text(fontBold18, (320 - sftd_get_text_width(fontBold18, 18, menu[i])) / 2, 67 + (DSBar->height - 18) / 2 + i * (DSBar->height + 16), WHITE, 18, menu[i]);
+			sftd_draw_wtext(fontBold18, (320 - sftd_get_wtext_width(fontBold18, 18, menu[i])) / 2, 67 + (DSBar->height - 18) / 2 + i * (DSBar->height + 16), WHITE, 18, menu[i]);
 		}
-		printBottomIndications(L"Press START to quit.");
+		printBottomIndications(i18n(S_GRAPHIC_MENUDS_INDICATIONS));
 	pksm_end_frame();
 	sf2d_swapbuffers();
 }
@@ -595,7 +595,7 @@ void printCredits() {
 		
 		sf2d_start_frame(GFX_TOP, GFX_LEFT);
 			printMenuTop();
-			printTitle("Credits");
+			printTitle(i18n(S_GRAPHIC_CREDITS_TITLE));
 			sf2d_draw_texture_part(creditsTop, 16, 101, 0, 22, 181, 46);
 			sf2d_draw_texture(creditsTop, 0, 45);
 			sftd_draw_text(fontBold15, 18, 77, LIGHTBLUE, 15, "Bernardo Giordano");
@@ -606,7 +606,7 @@ void printCredits() {
 		sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 			printMenuBottom();
 			sftd_draw_text(fontBold9, 20, 30, LIGHTBLUE, 9, (char*)buf);
-			printBottomIndications(L"Press B to return.");
+			printBottomIndications(i18n(S_GRAPHIC_CREDITS_INDICATIONS));
 		pksm_end_frame();
 		sf2d_swapbuffers();
 	}
@@ -621,7 +621,7 @@ void printDatabase6(char *database[], int currentEntry, int page, int spriteArra
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		printMenuTop();
-		printTitle("Event Database");
+		printTitle(i18n(S_GRAPHIC_DB6_TITLE));
 		
 		for (int i = 0; i < 5; i++) {
 			pk = spriteArray[page * 10 + i];
@@ -665,7 +665,7 @@ void printDatabase6(char *database[], int currentEntry, int page, int spriteArra
 		sf2d_draw_texture(LButton, 83, 52);
 		sf2d_draw_texture(RButton, 221, 52);
 		sftd_draw_text(fontBold12, (320 - sftd_get_text_width(fontBold12, 12, pages)) / 2, 52, WHITE, 12, pages);
-		printBottomIndications(L"Press A to continue, B to return.");
+		printBottomIndications(i18n(S_GRAPHIC_DB6_INDICATIONS));
 	pksm_end_frame();
 	sf2d_swapbuffers();
 	
@@ -716,7 +716,7 @@ void printDatabase5(char *database[], int currentEntry, int page, int spriteArra
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(DSEventBottom, 0, 0);
-		sftd_draw_text(fontBold9, (320 - sftd_get_text_width(fontBold9, 9, isSelected ? "Press START to inject, B to return" : "Press A to select, B to return.")) / 2, 222, RGBA8(255, 255, 255, 130), 9, isSelected ? "Press START to inject, B to return" : "Press A to select, B to return.");
+		sftd_draw_wtext(fontBold9, (320 - sftd_get_wtext_width(fontBold9, 9, isSelected ? i18n(S_GRAPHIC_DB_INDICATIONS_INJECT) : i18n(S_GRAPHIC_DB_INDICATIONS_SELECT))) / 2, 222, RGBA8(255, 255, 255, 130), 9, isSelected ? i18n(S_GRAPHIC_DB_INDICATIONS_INJECT) : i18n(S_GRAPHIC_DB_INDICATIONS_SELECT));
 		
 		if (isSelected) {
 			char *languages[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
@@ -803,7 +803,7 @@ void printDatabase4(char *database[], int currentEntry, int page, int spriteArra
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(DSEventBottom, 0, 0);
-		sftd_draw_text(fontBold9, (320 - sftd_get_text_width(fontBold9, 9, isSelected ? "Press START to inject, B to return" : "Press A to select, B to return.")) / 2, 222, RGBA8(255, 255, 255, 130), 9, isSelected ? "Press START to inject, B to return" : "Press A to select, B to return.");
+		sftd_draw_wtext(fontBold9, (320 - sftd_get_wtext_width(fontBold9, 9, isSelected ? i18n(S_GRAPHIC_DB_INDICATIONS_INJECT) : i18n(S_GRAPHIC_DB_INDICATIONS_SELECT))) / 2, 222, RGBA8(255, 255, 255, 130), 9, isSelected ? i18n(S_GRAPHIC_DB_INDICATIONS_INJECT) : i18n(S_GRAPHIC_DB_INDICATIONS_SELECT));
 		
 		if (isSelected) {
 			char *languages[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
@@ -866,10 +866,10 @@ void printDB7(int sprite, int i, bool langVett[], bool adapt, bool overwrite, in
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		printMenuBottom();
-		sftd_draw_text(fontBold14, 16, 50, LIGHTBLUE, 14, "Languages:");
-		sftd_draw_text(fontBold14, 33, 112, LIGHTBLUE, 14, "Overwrite Wondercard:");
-		sftd_draw_text(fontBold14, 33, 140, LIGHTBLUE, 14, "Adapt language to WC:");
-		sftd_draw_text(fontBold14, 33, 170, LIGHTBLUE, 14, "Inject WC in slot:");
+		sftd_draw_wtext(fontBold14, 16, 50, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_LANGUAGES));
+		sftd_draw_wtext(fontBold14, 33, 112, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_OVERWRITE_WC));
+		sftd_draw_wtext(fontBold14, 33, 140, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_ADAPT_LANGUAGE_WC));
+		sftd_draw_wtext(fontBold14, 33, 170, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_INJECT_WC_SLOT));
 		
 		for (int t = 0; t < 9; t++) {
 			int x = 0, y = 0;
@@ -925,7 +925,7 @@ void printDB7(int sprite, int i, bool langVett[], bool adapt, bool overwrite, in
 		sftd_draw_text(fontBold14, 249 + (36 - sftd_get_text_width(fontBold14, 14, "No")) / 2, 140, (!adapt) ? DARKBLUE : YELLOW, 14, "No");
 		sftd_draw_text(fontBold14, 229 + (36 - sftd_get_text_width(fontBold14, 14, cont)) / 2, 170, YELLOW, 14, cont);
 		
-		printBottomIndications(L"Press START to inject, B to return.");
+		printBottomIndications(i18n(S_GRAPHIC_DB_INDICATIONS_INJECT));
 		pksm_end_frame();
 	sf2d_swapbuffers();
 	
@@ -954,10 +954,10 @@ void printDB6(int sprite, int i, bool langVett[], bool adapt, bool overwrite, in
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		printMenuBottom();
-		sftd_draw_text(fontBold14, 33, 50, LIGHTBLUE, 14, "Languages:");
-		sftd_draw_text(fontBold14, 33, 112, LIGHTBLUE, 14, "Overwrite Wondercard:");
-		sftd_draw_text(fontBold14, 33, 140, LIGHTBLUE, 14, "Adapt language to WC:");
-		sftd_draw_text(fontBold14, 33, 170, LIGHTBLUE, 14, "Inject WC in slot:");
+		sftd_draw_wtext(fontBold14, 33, 50, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_LANGUAGES));
+		sftd_draw_wtext(fontBold14, 33, 112, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_OVERWRITE_WC));
+		sftd_draw_wtext(fontBold14, 33, 140, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_ADAPT_LANGUAGE_WC));
+		sftd_draw_wtext(fontBold14, 33, 170, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_INJECT_WC_SLOT));
 		
 		for (int t = 0; t < 7; t++) {
 			int x = 0, y = 0;
@@ -1011,7 +1011,7 @@ void printDB6(int sprite, int i, bool langVett[], bool adapt, bool overwrite, in
 		sftd_draw_text(fontBold14, 249 + (36 - sftd_get_text_width(fontBold14, 14, "No")) / 2, 140, (!adapt) ? DARKBLUE : YELLOW, 14, "No");
 		sftd_draw_text(fontBold14, 229 + (36 - sftd_get_text_width(fontBold14, 14, cont)) / 2, 170, YELLOW, 14, cont);
 		
-		printBottomIndications(L"Press START to inject, B to return.");
+		printBottomIndications(i18n(S_GRAPHIC_DB_INDICATIONS_INJECT));
 	pksm_end_frame();
 	sf2d_swapbuffers();
 	
@@ -1026,7 +1026,7 @@ void printEditor(u8* mainbuf, int game, int currentEntry, int langCont) {
 
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		printMenuTop();
-		printTitle("Save File Editor");
+		printTitle(i18n(S_GRAPHIC_EDITOR_TITLE));
 		
 		for (int i = 0; i < 5; i++) {
 			if (i == currentEntry)
@@ -1037,7 +1037,7 @@ void printEditor(u8* mainbuf, int game, int currentEntry, int langCont) {
 			switch (i) {
 				case 0 : {
 					int x = 140;
-					sftd_draw_text(fontBold12, 40, y + 10, BLACK, 12, "Language:");
+					sftd_draw_wtext(fontBold12, 40, y + 10, BLACK, 12, i18n(S_GRAPHIC_EDITOR_LANGUAGE));
 					sf2d_draw_texture(miniBox, x, y + 7);
 					sftd_draw_text(fontBold12, x + (36 - sftd_get_text_width(fontBold12, 12, languages[langCont])) / 2, y + 10, YELLOW, 12, languages[langCont]);
 					break;
@@ -1054,7 +1054,7 @@ void printEditor(u8* mainbuf, int game, int currentEntry, int langCont) {
 				sf2d_draw_texture(eventMenuTopBar, 200, y);
 			
 			switch (i) {
-				case 5 : { sftd_draw_text(fontBold12, 200 + (182 - sftd_get_text_width(fontBold12, 12, "Clear Mystery Gift box")) / 2, y + 10, (i == currentEntry) ? DARKBLUE : YELLOW, 12, "Clear Mystery Gift box"); break; }
+				case 5 : { sftd_draw_wtext(fontBold12, 200 + (182 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_EDITOR_CLEAR_MYSTERY_GIFT_BOX))) / 2, y + 10, (i == currentEntry) ? DARKBLUE : YELLOW, 12, i18n(S_GRAPHIC_EDITOR_CLEAR_MYSTERY_GIFT_BOX)); break; }
 			}
 			y += 37;
 		}
@@ -1062,7 +1062,7 @@ void printEditor(u8* mainbuf, int game, int currentEntry, int langCont) {
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		printMenuBottom();
-		printBottomIndications(L"Press START to edit, A to toggle, B to exit.");
+		printBottomIndications(i18n(S_GRAPHIC_EDITOR_INDICATIONS));
 	pksm_end_frame();
 	sf2d_swapbuffers();
 }
@@ -1806,7 +1806,7 @@ void printMassInjector(int currentEntry) {
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		printMenuTop();
-		printTitle("Mass Injector");
+		printTitle(L"Mass Injector");
 		
 		for (int i = 0; i < 5; i++) {
 			if (i == currentEntry)

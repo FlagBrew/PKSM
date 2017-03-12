@@ -79,3 +79,21 @@ Enter your nickname
 Enter your OT name
 Confirm release?
 Released!
+Progress: %lu/%lu bytes
+EVENTS
+OTHER
+Press START to quit.
+Credits
+Press B to return.
+Event Database
+Press A to continue, B to return.
+Press START to inject, B to return
+Press A to select, B to return.
+Languages:
+Overwrite Wondercard:
+Adapt language to WC:
+Inject WC in slot:
+Save File Editor
+Language:
+Clear Mystery Gift box
+Press START to edit, A to toggle, B to exit.

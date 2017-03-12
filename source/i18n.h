@@ -161,7 +161,30 @@ typedef enum {
 	S_EDITOR_TEXT_ENTER_TRAINER_NAME,              // Line 79,
 
 	S_EDITOR_Q_CONFIRM_RELEASE,                    // Line 80,
-	S_EDITOR_RELEASED,                             // Line 81
+	S_EDITOR_RELEASED,                             // Line 81,
+
+	S_GRAPHIC_PROGRESSBAR_MESSAGE,                 // Line 82,
+	S_GRAPHIC_MENUDS_EVENTS,                       // Line 83,
+	S_GRAPHIC_MENUDS_OTHER,                        // Line 84,
+	S_GRAPHIC_MENUDS_INDICATIONS,                  // Line 85,
+
+	S_GRAPHIC_CREDITS_TITLE,                       // Line 86,
+	S_GRAPHIC_CREDITS_INDICATIONS,                 // Line 87,
+
+	S_GRAPHIC_DB6_TITLE,                           // Line 88,
+	S_GRAPHIC_DB6_INDICATIONS,                     // Line 89,
+
+	S_GRAPHIC_DB_INDICATIONS_INJECT,               // Line 90,
+	S_GRAPHIC_DB_INDICATIONS_SELECT,               // Line 91,
+	S_GRAPHIC_DB_LANGUAGES,                        // Line 92,
+	S_GRAPHIC_DB_OVERWRITE_WC,                     // Line 93,
+	S_GRAPHIC_DB_ADAPT_LANGUAGE_WC,                // Line 94,
+	S_GRAPHIC_DB_INJECT_WC_SLOT,                   // Line 95,
+
+	S_GRAPHIC_EDITOR_TITLE,                        // Line 96,
+	S_GRAPHIC_EDITOR_LANGUAGE,	                   // Line 97,
+	S_GRAPHIC_EDITOR_CLEAR_MYSTERY_GIFT_BOX,       // Line 98,
+	S_GRAPHIC_EDITOR_INDICATIONS,                  // Line 99,
 
 } AppTextCode;
 
