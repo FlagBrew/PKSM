@@ -97,3 +97,38 @@ Save File Editor
 Language:
 Clear Mystery Gift box
 Press START to edit, A to toggle, B to exit.
+Nickname:
+OT:
+Pokerus:
+Nature
+Ability:
+Item:
+ESV / TSV:
+TID / SID:
+HT/OT Fr.ship:
+Hidden Power:
+HP
+Attack
+Defense
+Sp. Atk
+Sp. Def
+Speed
+Lv.%u
+Moves
+Egg cycle:
+Yes
+No
+EDIT
+CLONE
+RELEASE
+GENERATE
+EXIT
+Box %d
+Launch the client on your PC...
+Press B to exit.
+Team
+Press A to clone in selected slot, B to cancel
+%ls has been selected.
+Generate with A in the top screen.
+TID: %u / SID: %u / TSV: %u
+Seed: %lx %lx %lx %lx

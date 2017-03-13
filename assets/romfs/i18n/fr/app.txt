@@ -24,13 +24,13 @@ EVENTS
 CREDITS
 Appuie sur A pour choisir un menu.
 Appuie sur START pour quitter.
-EDITEUR POKEMON
+EDITEUR POKÉMON
 INFO SAUV.
 STOCKAGE SUPP.
 INJECTION AUTO.
 Sauvegarder modifs ?
 Appuie sur A pour confirmer.
-Touche A pour confirmer, B pour annuler.
+A pour confirmer, B pour annuler.
 Veuillez patienter.
 Le jeu cartouche est prioritaire au jeu digital.
 Utilise la croix +. Appuie A pour confirmer, B pour quitter.
@@ -53,8 +53,8 @@ Chargement de l'interface...
 Chargement image %i / %i
 Bank.bin a une taille incorrecte!
 Effacer la boîte sélectionnée ?
-Sauver les changements de bank.bin ?
-Sauver les flags du PokeDex ?
+Sauver les modifs de bank.bin ?
+Sauver les flags du Pokédex ?
 Boîte %lu / Case %lu
 Erreur durant l'ajout auto. !
 Ajout auto. effectué !
@@ -91,9 +91,44 @@ Appuie sur START pour les ajouter, B pour revenir en arr.
 Appuie sur A pour sélectionner, B pour revenir en arr.
 Langues:
 Écraser WonderCard:
-Adapter la langue à la WC:
+Adapter langue à la WC:
 Ajouter la WC à la case:
 Éditeur de sauvegarde
-Langue;
-Nettoyer la boîte Cadeau Mystère
-Appuie sur START pour éditer, A pour changer, B pour quitter.
+Langue:
+Effacer Cadeau Mystère
+START pour éditer, A pour changer, B pour quitter.
+Surnom:
+DO:
+Pokérus:
+Nature:
+Talent:
+Objet:
+ESV / TSV:
+TID / SID:
+HT/OT Bonheur:
+Puiss. Cachée:
+PV
+Attaque
+Défense
+Atq. Spé.
+Déf. Spé.
+Vitesse
+L.%u
+Capacités
+Cycle œuf:
+Oui
+Non
+MODIFIER
+CLONER
+RELÂCHER
+GÉNÉRER
+QUITTER
+Boîte %d
+Lance le client sur ton PC...
+Appuie sur B pour quitter.
+Équipe
+A sur une case pour le cloner, B pour annuler
+%ls a été sélectionné.
+Génère avec A dans l'écran du haut.
+TID: %u / SID: %u / TSV: %u
+Seed: %lx %lx %lx %lx

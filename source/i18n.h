@@ -107,84 +107,128 @@ typedef enum {
 	S_MAIN_Q_SAVE_CHANGES,                         // Line 31
 	S_INFORMATION_MESSAGE_PRESS_A,                 // Line 32
 	S_CONFIRMATION_MESSAGE_PRESS_A_OR_B,           // Line 33
-	S_FREEZEMSG_DEFAULT_DETAILS,				   // Line 34,
+	S_FREEZEMSG_DEFAULT_DETAILS,				   // Line 34
 
-	S_GRAPHIC_GAME_SELECTOR_INFO_CART_HAS_PRIO,    // Line 35,
-	S_GRAPHIC_GAME_SELECTOR_INDICATIONS,           // Line 36,
-	S_GRAPHIC_GAME_SELECTOR_GAME_X,                // Line 37,
-	S_GRAPHIC_GAME_SELECTOR_GAME_Y,                // Line 38,
-	S_GRAPHIC_GAME_SELECTOR_GAME_OS,               // Line 39,
-	S_GRAPHIC_GAME_SELECTOR_GAME_AS,               // Line 40,
-	S_GRAPHIC_GAME_SELECTOR_GAME_SUN,              // Line 41,
-	S_GRAPHIC_GAME_SELECTOR_GAME_MOON,             // Line 42,
+	S_GRAPHIC_GAME_SELECTOR_INFO_CART_HAS_PRIO,    // Line 35
+	S_GRAPHIC_GAME_SELECTOR_INDICATIONS,           // Line 36
+	S_GRAPHIC_GAME_SELECTOR_GAME_X,                // Line 37
+	S_GRAPHIC_GAME_SELECTOR_GAME_Y,                // Line 38
+	S_GRAPHIC_GAME_SELECTOR_GAME_OS,               // Line 39
+	S_GRAPHIC_GAME_SELECTOR_GAME_AS,               // Line 40
+	S_GRAPHIC_GAME_SELECTOR_GAME_SUN,              // Line 41
+	S_GRAPHIC_GAME_SELECTOR_GAME_MOON,             // Line 42
 
-	S_GRAPHIC_GAME_SELECTOR_GAME_DIAMOND,          // Line 43,
-	S_GRAPHIC_GAME_SELECTOR_GAME_PEARL,            // Line 44,
-	S_GRAPHIC_GAME_SELECTOR_GAME_PLATINUM,         // Line 45,
-	S_GRAPHIC_GAME_SELECTOR_GAME_HG,               // Line 46,
-	S_GRAPHIC_GAME_SELECTOR_GAME_SS,               // Line 47,
-	S_GRAPHIC_GAME_SELECTOR_GAME_B,                // Line 48,
-	S_GRAPHIC_GAME_SELECTOR_GAME_W,                // Line 49,
-	S_GRAPHIC_GAME_SELECTOR_GAME_B2,               // Line 50,
-	S_GRAPHIC_GAME_SELECTOR_GAME_W2,               // Line 51,
+	S_GRAPHIC_GAME_SELECTOR_GAME_DIAMOND,          // Line 43
+	S_GRAPHIC_GAME_SELECTOR_GAME_PEARL,            // Line 44
+	S_GRAPHIC_GAME_SELECTOR_GAME_PLATINUM,         // Line 45
+	S_GRAPHIC_GAME_SELECTOR_GAME_HG,               // Line 46
+	S_GRAPHIC_GAME_SELECTOR_GAME_SS,               // Line 47
+	S_GRAPHIC_GAME_SELECTOR_GAME_B,                // Line 48
+	S_GRAPHIC_GAME_SELECTOR_GAME_W,                // Line 49
+	S_GRAPHIC_GAME_SELECTOR_GAME_B2,               // Line 50
+	S_GRAPHIC_GAME_SELECTOR_GAME_W2,               // Line 51
 
-	S_GRAPHIC_GUI_ELEMENTS_SPECIFY_LOADING,        // Line 52,
-	S_GRAPHIC_GUI_ELEMENTS_SPECIFY_LOADING_DETAILS,// Line 53,
+	S_GRAPHIC_GUI_ELEMENTS_SPECIFY_LOADING,        // Line 52
+	S_GRAPHIC_GUI_ELEMENTS_SPECIFY_LOADING_DETAILS,// Line 53
 
-	S_BANK_SIZE_ERROR,                             // Line 54,
-	S_BANK_Q_ERASE_SELECTED_BOX,                   // Line 55,
-	S_BANK_Q_SAVE_CHANGES,                         // Line 56,
-	S_BANK_Q_SAVE_POKEDEX_FLAGS,                   // Line 57,
-	S_BANK_PROGRESS_MESSAGE,                       // Line 58,
+	S_BANK_SIZE_ERROR,                             // Line 54
+	S_BANK_Q_ERASE_SELECTED_BOX,                   // Line 55
+	S_BANK_Q_SAVE_CHANGES,                         // Line 56
+	S_BANK_Q_SAVE_POKEDEX_FLAGS,                   // Line 57
+	S_BANK_PROGRESS_MESSAGE,                       // Line 58
 
-	S_DATABASE_ERROR_INJECTION,                    // Line 59,
-	S_DATABASE_SUCCESS_INJECTION,                  // Line 60,
-	S_DATABASE_ITEM_NOT_AVAILABLE_XY,              // Line 61,
-	S_DATABASE_Q_SAVE_POKEDEX_FLAGS,               // Line 62,
-	S_DATABASE_PROGRESS_MESSAGE,                   // Line 63,
-	S_DATABASE_XD_COLLECTION_SUCCESS,              // Line 64,
-	S_DATABASE_COLOSSEUM_COLLECTION_SUCCESS,       // Line 65,
-	S_DATABASE_10TH_ANNIVERSARY_SUCCESS,           // Line 66,
-	S_DATABASE_N_COLLECTION_SUCCESS,               // Line 67,
-	S_DATABASE_ENTREE_FOREST_COLLECTION_SUCCESS,   // Line 68,
-	S_DATABASE_DREAM_RADAR_COLLECTION_SUCCESS,     // Line 69,
-	S_DATABASE_LIVING_DEX_SUCCESS,                 // Line 70,
-	S_DATABASE_DEOXYS_COLLECTION_SUCCESS,          // Line 71,
-	S_DATABASE_MY_POKEMON_RANCH_COLLECTION_SUCCESS,// Line 72,
-	S_DATABASE_KOREAN_COLLECTION_SUCCESS,          // Line 73,
+	S_DATABASE_ERROR_INJECTION,                    // Line 59
+	S_DATABASE_SUCCESS_INJECTION,                  // Line 60
+	S_DATABASE_ITEM_NOT_AVAILABLE_XY,              // Line 61
+	S_DATABASE_Q_SAVE_POKEDEX_FLAGS,               // Line 62
+	S_DATABASE_PROGRESS_MESSAGE,                   // Line 63
+	S_DATABASE_XD_COLLECTION_SUCCESS,              // Line 64
+	S_DATABASE_COLOSSEUM_COLLECTION_SUCCESS,       // Line 65
+	S_DATABASE_10TH_ANNIVERSARY_SUCCESS,           // Line 66
+	S_DATABASE_N_COLLECTION_SUCCESS,               // Line 67
+	S_DATABASE_ENTREE_FOREST_COLLECTION_SUCCESS,   // Line 68
+	S_DATABASE_DREAM_RADAR_COLLECTION_SUCCESS,     // Line 69
+	S_DATABASE_LIVING_DEX_SUCCESS,                 // Line 70
+	S_DATABASE_DEOXYS_COLLECTION_SUCCESS,          // Line 71
+	S_DATABASE_MY_POKEMON_RANCH_COLLECTION_SUCCESS,// Line 72
+	S_DATABASE_KOREAN_COLLECTION_SUCCESS,          // Line 73
 
-	S_EDITOR_LANGUAGE_SET_SUCCESS,                 // Line 74,
-	S_EDITOR_MISTERY_GIFT_CLEANED,                 // Line 75,
-	S_EDITOR_TEXT_CANCEL,                          // Line 76,
-	S_EDITOR_TEXT_SET,                             // Line 77,
-	S_EDITOR_TEXT_ENTER_NICKNAME_POKEMON,          // Line 78,
-	S_EDITOR_TEXT_ENTER_TRAINER_NAME,              // Line 79,
+	S_EDITOR_LANGUAGE_SET_SUCCESS,                 // Line 74
+	S_EDITOR_MISTERY_GIFT_CLEANED,                 // Line 75
+	S_EDITOR_TEXT_CANCEL,                          // Line 76
+	S_EDITOR_TEXT_SET,                             // Line 77
+	S_EDITOR_TEXT_ENTER_NICKNAME_POKEMON,          // Line 78
+	S_EDITOR_TEXT_ENTER_TRAINER_NAME,              // Line 79
 
-	S_EDITOR_Q_CONFIRM_RELEASE,                    // Line 80,
-	S_EDITOR_RELEASED,                             // Line 81,
+	S_EDITOR_Q_CONFIRM_RELEASE,                    // Line 80
+	S_EDITOR_RELEASED,                             // Line 81
 
-	S_GRAPHIC_PROGRESSBAR_MESSAGE,                 // Line 82,
-	S_GRAPHIC_MENUDS_EVENTS,                       // Line 83,
-	S_GRAPHIC_MENUDS_OTHER,                        // Line 84,
-	S_GRAPHIC_MENUDS_INDICATIONS,                  // Line 85,
+	S_GRAPHIC_PROGRESSBAR_MESSAGE,                 // Line 82
+	S_GRAPHIC_MENUDS_EVENTS,                       // Line 83
+	S_GRAPHIC_MENUDS_OTHER,                        // Line 84
+	S_GRAPHIC_MENUDS_INDICATIONS,                  // Line 85
 
-	S_GRAPHIC_CREDITS_TITLE,                       // Line 86,
-	S_GRAPHIC_CREDITS_INDICATIONS,                 // Line 87,
+	S_GRAPHIC_CREDITS_TITLE,                       // Line 86
+	S_GRAPHIC_CREDITS_INDICATIONS,                 // Line 87
 
-	S_GRAPHIC_DB6_TITLE,                           // Line 88,
-	S_GRAPHIC_DB6_INDICATIONS,                     // Line 89,
+	S_GRAPHIC_DB6_TITLE,                           // Line 88
+	S_GRAPHIC_DB6_INDICATIONS,                     // Line 89
 
-	S_GRAPHIC_DB_INDICATIONS_INJECT,               // Line 90,
-	S_GRAPHIC_DB_INDICATIONS_SELECT,               // Line 91,
-	S_GRAPHIC_DB_LANGUAGES,                        // Line 92,
-	S_GRAPHIC_DB_OVERWRITE_WC,                     // Line 93,
-	S_GRAPHIC_DB_ADAPT_LANGUAGE_WC,                // Line 94,
-	S_GRAPHIC_DB_INJECT_WC_SLOT,                   // Line 95,
+	S_GRAPHIC_DB_INDICATIONS_INJECT,               // Line 90
+	S_GRAPHIC_DB_INDICATIONS_SELECT,               // Line 91
+	S_GRAPHIC_DB_LANGUAGES,                        // Line 92
+	S_GRAPHIC_DB_OVERWRITE_WC,                     // Line 93
+	S_GRAPHIC_DB_ADAPT_LANGUAGE_WC,                // Line 94
+	S_GRAPHIC_DB_INJECT_WC_SLOT,                   // Line 95
 
-	S_GRAPHIC_EDITOR_TITLE,                        // Line 96,
-	S_GRAPHIC_EDITOR_LANGUAGE,	                   // Line 97,
-	S_GRAPHIC_EDITOR_CLEAR_MYSTERY_GIFT_BOX,       // Line 98,
-	S_GRAPHIC_EDITOR_INDICATIONS,                  // Line 99,
+	S_GRAPHIC_EDITOR_TITLE,                        // Line 96
+	S_GRAPHIC_EDITOR_LANGUAGE,	                   // Line 97
+	S_GRAPHIC_EDITOR_CLEAR_MYSTERY_GIFT_BOX,       // Line 98
+	S_GRAPHIC_EDITOR_INDICATIONS,                  // Line 99
+
+	S_GRAPHIC_INFOVIEWER_NICKNAME,                 // Line 100
+	S_GRAPHIC_INFOVIEWER_OT,                       // Line 101
+	S_GRAPHIC_INFOVIEWER_POKERUS,                  // Line 102
+	S_GRAPHIC_INFOVIEWER_NATURE,                   // Line 103
+	S_GRAPHIC_INFOVIEWER_ABILITY,                  // Line 104
+	S_GRAPHIC_INFOVIEWER_ITEM,                     // Line 105
+	S_GRAPHIC_INFOVIEWER_ESVTSV,                   // Line 106
+	S_GRAPHIC_INFOVIEWER_TIDSID,                   // Line 107
+	S_GRAPHIC_INFOVIEWER_HTOT_FRIENDSHIP,          // Line 108
+	S_GRAPHIC_INFOVIEWER_HTOT_HIDDEN_POWER,        // Line 109
+
+	S_GRAPHIC_INFOVIEWER_VALUE_HP,                 // Line 110
+	S_GRAPHIC_INFOVIEWER_VALUE_ATTACK,             // Line 111
+	S_GRAPHIC_INFOVIEWER_VALUE_DEFENSE,            // Line 112
+	S_GRAPHIC_INFOVIEWER_VALUE_SP_ATK,             // Line 113
+	S_GRAPHIC_INFOVIEWER_VALUE_SP_DEF,             // Line 114
+	S_GRAPHIC_INFOVIEWER_VALUE_SPEED,              // Line 115
+	S_GRAPHIC_INFOVIEWER_LV,                       // Line 116
+
+	S_GRAPHIC_INFOVIEWER_MOVES,                    // Line 117
+	S_GRAPHIC_INFOVIEWER_EGG_CYCLE,                // Line 118
+
+	S_GRAPHIC_INFOVIEWER_YES,                      // Line 119
+	S_GRAPHIC_INFOVIEWER_NO,                       // Line 120
+
+	S_GRAPHIC_PKVIEWER_MENU_EDIT,                  // Line 121
+	S_GRAPHIC_PKVIEWER_MENU_CLONE,                 // Line 122
+	S_GRAPHIC_PKVIEWER_MENU_RELEASE,               // Line 123
+	S_GRAPHIC_PKVIEWER_MENU_GENERATE,              // Line 124
+	S_GRAPHIC_PKVIEWER_MENU_EXIT,                  // Line 125
+	S_GRAPHIC_PKVIEWER_BOX,                        // Line 126
+	S_GRAPHIC_PKVIEWER_OTA_LAUNCH_CLIENT,          // Line 127
+	S_GRAPHIC_PKVIEWER_OTA_INDICATIONS,            // Line 128
+	S_GRAPHIC_PKVIEWER_TEAM,                       // Line 129
+
+	S_GRAPHIC_PKVIEWER_CLONE_INDICATIONS,          // Line 130
+
+	S_GRAPHIC_PKVIEWER_MENU_POKEMON_SELECTED,      // Line 131
+
+	S_GRAPHIC_PKVIEWER_GENERATE_INDICATIONS,       // Line 132
+
+	S_GRAPHIC_PKVIEWER_TIDSIDTSV,                  // Line 133
+	S_GRAPHIC_PKVIEWER_SEED,                       // Line 134
 
 } AppTextCode;
 
