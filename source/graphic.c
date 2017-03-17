@@ -1783,6 +1783,7 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0x0C :
 		case 0x0D :
 			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "TID: %d", getOTID(pkmn));
+			sftd_draw_textf(fontBold12, x, y + 16, LIGHTBLUE, 12, "Gen7 TID: %d", (getOTID(pkmn) + getSOTID(pkmn)*65536) % 1000000);
 			break;
 		case 0x0E :
 		case 0x0F :
