@@ -70,4 +70,4 @@
 #define GAME_B2 	 13
 #define GAME_W2 	 14
 
-#define VERSION "v4.2.1"
+#define VERSION "v4.2.2"
