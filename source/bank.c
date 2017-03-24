@@ -20,9 +20,9 @@
 
 void clearMarkings(u8* pkmn, int game) {
 	u8 version = pkmn[0xDF];
-	if (!(version == 30 || version == 31) && !(version >= 35 && version <= 41)) { // not SM
-		if (game == GAME_SUN || game == GAME_MOON)
-			pkmn[0x2A] = 0;
+	if (!(version == 30 || version == 31) && !(version >= 35 && version <= 41) && (game != GAME_SUN && game != GAME_MOON)) { // not SM
+		//if (game == GAME_SUN || game == GAME_MOON)
+		pkmn[0x2A] = 0;
 		pkmn[0x72] &= 0xFC;
 		pkmn[0xDE] = 0;
 		

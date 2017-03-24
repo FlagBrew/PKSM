@@ -35,6 +35,7 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[1604] = "1604 - SM Rare Candy"; spriteArray[1604] = 0;
 	database[1605] = "1605 - Mewtwoite X/Y"; spriteArray[1605] = 0;
 	database[1606] = "1606 - Mawilite"; spriteArray[1606] = 0;
+	database[1607] = "1607 - SM Rare Candy"; spriteArray[1607] = 0;
 	database[2040] = "2040 - SM Stardust"; spriteArray[2040] = 0;
 	database[2041] = "2041 - SM Star Piece"; spriteArray[2041] = 0;
 	database[2042] = "2042 - SM Nugget"; spriteArray[2042] = 0;
@@ -51,6 +52,7 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[220] = "0220 - Shiny Tapu Koko"; spriteArray[220] = 785;
 	database[224] = "0224 - CoroCoro Charizard"; spriteArray[224] = 6;
 	database[227] = "0227 - Bestow Pikachu"; spriteArray[227] = 25;
+	database[606] = "0606 - Rocky Lycanroc"; spriteArray[606] = 745;
 	database[1601] = "1601 - Z-stone Munchlax"; spriteArray[1601] = 446;
 	database[1610] = "Placeholder";
 	database[2046] = "2046 - Ash Greninja"; spriteArray[2046] = 658;
@@ -327,6 +329,7 @@ void filldatabase5(char *database[], int spriteArray[]) {
 			spriteArray[j] = -1;
 	}
 	
+	database[0] = "000 - Liberty Pass"; spriteArray[0] = 0;
 	database[1] = "001 - Helpful Cubchoo"; spriteArray[1] = 613;
 	database[2] = "002 - Summer Karrablast"; spriteArray[2] = 588;
 	database[3] = "003 - Summer Shelmet"; spriteArray[3] = 617;
