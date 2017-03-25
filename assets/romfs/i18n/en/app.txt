@@ -132,3 +132,52 @@ Press A to clone in selected slot, B to cancel
 Generate with A in the top screen.
 TID: %u / SID: %u / TSV: %u
 Seed: %lx %lx %lx %lx
+Level:
+Nature:
+Ability:
+Item:
+Shiny:
+Pokerus:
+OT:
+Nickname:
+Friendship:
+STATS
+MOVES
+SAVE
+HP:
+Attack:
+Defense:
+Sp. Attack:
+Sp. Defense:
+Speed:
+Edit your Pokemon in the bottom screen
+Tap SAVE when you're done
+Neutral
+-Attack
+-Defense
+-Speed
+-Sp. Atk.
+-Sp. Def.
++Attack
++Defense
++Speed
++Sp. Atk.
++Sp. Def.
+Egg cycle:
+STATS
+IV
+EV
+TOTAL
+Hidden Power:
+Yes
+No
+Yes
+No
+Moves
+Relearn Moves
+Selected byte:
+Select an item with A in the top screen.
+Select a nature with A in the top screen.
+Select a ball with A in the top screen.
+Select a HP type with A in the top screen.
+Select a form with A in the top screen.

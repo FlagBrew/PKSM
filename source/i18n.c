@@ -38,6 +38,8 @@ struct i18n_files i18n_files_generic_paths = {
 	"romfs:/i18n/%s/moves.txt",
 	"romfs:/i18n/%s/items.txt",
 	"romfs:/i18n/%s/hp.txt",
+	"romfs:/i18n/%s/forms.txt",
+	"romfs:/i18n/%s/balls.txt",
 	"romfs:/i18n/%s/app.txt"
 };
 
@@ -400,6 +402,8 @@ void i18n_load(u8 language) {
 	i18n_set_language_filepath(language, files.moves, i18n_files_loaded.moves);
 	i18n_set_language_filepath(language, files.items, i18n_files_loaded.items);
 	i18n_set_language_filepath(language, files.hp, i18n_files_loaded.hp);
+	i18n_set_language_filepath(language, files.forms, i18n_files_loaded.forms);
+	i18n_set_language_filepath(language, files.balls, i18n_files_loaded.balls);
 	i18n_set_language_filepath(language, files.app, i18n_files_loaded.app);
 
 	i18n_AppTexts = i18n_FileToArrayUTF32(i18n_files_loaded.app);
@@ -418,9 +422,12 @@ void i18n_init() {
 	i18n_files_loaded.moves = malloc(sizefilepath);
 	i18n_files_loaded.items = malloc(sizefilepath);
 	i18n_files_loaded.hp = malloc(sizefilepath);
+	i18n_files_loaded.forms = malloc(sizefilepath);
+	i18n_files_loaded.balls = malloc(sizefilepath);
 	i18n_files_loaded.app = malloc(sizefilepath);
 	i18n_load(language);
 }
+
 
 wchar_t* i18n(AppTextCode code) {
 	wchar_t *s;

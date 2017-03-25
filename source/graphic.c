@@ -57,6 +57,9 @@ wchar_t **items;
 wchar_t **itemsSorted;
 wchar_t **hpList;
 
+wchar_t **balls;
+wchar_t **forms;
+
 void GUIElementsInit() {
 	fontBold15 = sftd_load_font_file("romfs:/res/Bold.ttf");
 	fontBold12 = sftd_load_font_file("romfs:/res/Bold.ttf");
@@ -85,10 +88,16 @@ void GUIElementsInit() {
 	natures = listNatures.items;
 	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_ITEMS));
 	listItems = i18n_FileToArrayUTF32(listFiles.items);
+	struct ArrayUTF32 listBalls = i18n_FileToArrayUTF32(listFiles.balls);
+	balls = listBalls.items;
 	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_SORTING_ITEMS));
 	ArrayUTF32_sort_starting_index(&listItems, 1);
 	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_HP));
 	struct ArrayUTF32 listHPs = i18n_FileToArrayUTF32(listFiles.hp);
+
+	// Need loading message for forms
+	struct ArrayUTF32 listForms = i18n_FileToArrayUTF32(listFiles.forms);
+	forms = listForms.items;
 
 	abilities = listAbilities.items;
 	moves = listMoves.items;
@@ -1341,17 +1350,17 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 
 void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int additional3, int mode, char* descriptions[]) {
 	int max = sftd_get_text_width(fontBold12, 12, "252");
-	char* entries[] = {"Level:", "Nature:", "Ability:", "Item:", "Shiny:", "Pokerus:", "OT:", "Nickname:", "Friendship:"};
-	char* options[] = {"STATS", "MOVES", "SAVE"};
+	wchar_t* entries[] = {i18n(S_GRAPHIC_PKEDITOR_LEVEL), i18n(S_GRAPHIC_PKEDITOR_NATURE), i18n(S_GRAPHIC_PKEDITOR_ABILITY), i18n(S_GRAPHIC_PKEDITOR_ITEM), i18n(S_GRAPHIC_PKEDITOR_SHINY), i18n(S_GRAPHIC_PKEDITOR_POKERUS), i18n(S_GRAPHIC_PKEDITOR_OT), i18n(S_GRAPHIC_PKEDITOR_NICKNAME), i18n(S_GRAPHIC_PKEDITOR_FRIENDSHIP)};
+	wchar_t* options[] = {i18n(S_GRAPHIC_PKEDITOR_MENU_STATS), i18n(S_GRAPHIC_PKEDITOR_MENU_MOVES), i18n(S_GRAPHIC_PKEDITOR_MENU_SAVE)};
 	
-	char* values[6] = {"HP:", "Attack:", "Defense:", "Sp. Attack:", "Sp. Defense:", "Speed:"};
+	wchar_t* values[6] = {i18n(S_GRAPHIC_PKEDITOR_STATS_HP), i18n(S_GRAPHIC_PKEDITOR_STATS_ATTACK), i18n(S_GRAPHIC_PKEDITOR_STATS_DEFENSE), i18n(S_GRAPHIC_PKEDITOR_STATS_SP_ATTACK), i18n(S_GRAPHIC_PKEDITOR_STATS_SP_DEFENSE), i18n(S_GRAPHIC_PKEDITOR_STATS_SPEED)};
 	u16 n = getPokedexNumber(pkmn);
 	bool isKor = (pkmn[0xE3] == 0x08) ? true : false;
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 	if (mode == ED_BASE || mode == ED_STATS) {
-		sftd_draw_text(fontBold15, (400 - sftd_get_text_width(fontBold15, 15, "Edit your Pokemon in the bottom screen")) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, "Edit your Pokemon in the bottom screen");
-		sftd_draw_text(fontBold15, (400 - sftd_get_text_width(fontBold15, 15, "Tap SAVE when you're done")) / 2, 115, RGBA8(255, 255, 255, giveTransparence()), 15, "Tap SAVE when you're done");
+		sftd_draw_wtext(fontBold15, (400 - sftd_get_wtext_width(fontBold15, 15, i18n(S_GRAPHIC_PKEDITOR_BASE_STATS_INDICATIONS_1))) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, i18n(S_GRAPHIC_PKEDITOR_BASE_STATS_INDICATIONS_1));
+		sftd_draw_wtext(fontBold15, (400 - sftd_get_wtext_width(fontBold15, 15, i18n(S_GRAPHIC_PKEDITOR_BASE_STATS_INDICATIONS_2))) / 2, 115, RGBA8(255, 255, 255, giveTransparence()), 15, i18n(S_GRAPHIC_PKEDITOR_BASE_STATS_INDICATIONS_2));
 	} else if (mode == ED_ITEMS) {
 		int entry;
 		int y = 0;
@@ -1382,8 +1391,8 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			y += 12;
 		}
 	} else if (mode == ED_NATURES) {
-		char* hor[] = {"Neutral", "-Attack", "-Defense", "-Speed", "-Sp. Atk.", "-Sp. Def."};
-		char* ver[] = {"+Attack", "+Defense", "+Speed", "+Sp. Atk.", "+Sp. Def."};
+		wchar_t* hor[] = {i18n(S_GRAPHIC_PKEDITOR_NATURE_NEUTRAL), i18n(S_GRAPHIC_PKEDITOR_NATURE_MIN_ATTACK), i18n(S_GRAPHIC_PKEDITOR_NATURE_MIN_DEFENSE), i18n(S_GRAPHIC_PKEDITOR_NATURE_MIN_SPEED), i18n(S_GRAPHIC_PKEDITOR_NATURE_MIN_SP_ATTACK), i18n(S_GRAPHIC_PKEDITOR_NATURE_MIN_SP_DEFENSE)};
+		wchar_t* ver[] = {i18n(S_GRAPHIC_PKEDITOR_NATURE_PLUS_ATTACK), i18n(S_GRAPHIC_PKEDITOR_NATURE_PLUS_DEFENSE), i18n(S_GRAPHIC_PKEDITOR_NATURE_PLUS_SPEED), i18n(S_GRAPHIC_PKEDITOR_NATURE_PLUS_SP_ATTACK), i18n(S_GRAPHIC_PKEDITOR_NATURE_PLUS_SP_DEFENSE)};
 		
 		sf2d_draw_texture(naturestx, 0, 0);
 		for (int i = 0; i < 6; i++)
@@ -1399,7 +1408,6 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			}
 		}
 	} else if (mode == ED_BALLS) {
-		char* entries[] = {"Master Ball", "Ultra Ball", "Great Ball", "Poke Ball", "Safari Ball", "Net Ball", "Dive Ball", "Nest Ball", "Repeat Ball", "Timer Ball", "Luxury Ball", "Premier Ball", "Dusk Ball", "Heal Ball", "Quick Ball", "Cherish Ball", "Fast Ball", "Level Ball", "Lure Ball", "Heavy Ball", "Love Ball", "Friend Ball", "Moon Ball", "Sport Ball", "Dream Ball", "Beast Ball", " ", " ", " ", " "};
 		sf2d_draw_texture(ballsBG, 0, 0);
 		
 		for (int i = 0; i < 5; i++) {
@@ -1407,7 +1415,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 				if (additional1 == i * 6 + j)
 					printSelector(66*j + j, 47*i + i, 66, 47);
 				sf2d_draw_texture_part(balls, 17 + 66 * j + j, 2 + i * 47, 32 * ((i * 6 + j + 1) % 8), 32 * ((i * 6 + j + 1) / 8), 32, 32);
-				sftd_draw_text(fontBold9, 66 * j + (66 - sftd_get_text_width(fontBold9, 9, entries[i * 6 + j])) / 2 + j, 30 + i * 47 + i, WHITE, 9, entries[i * 6 + j]);
+				sftd_draw_wtext(fontBold9, 66 * j + (66 - sftd_get_wtext_width(fontBold9, 9, balls[i * 6 + j])) / 2 + j, 30 + i * 47 + i, WHITE, 9, balls[i * 6 + j]);
 			}
 		}
 	} else if (mode == ED_HIDDENPOWER) {
@@ -1420,7 +1428,6 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			}
 		}
 	} else if (mode == ED_FORMS) {
-		char* entries[] = {"Default", "Alolan", "Default", "Rock Star", "Belle", "Pop Star", "Ph.D", "Libre", "Cosplay", "Default", "Original", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "!", "?", "Normal", "Attack", "Defense", "Speed", "Plant", "Sandy", "Trash", "West Sea", "East Sea", "Default", "Heat", "Wash", "Fridge", "Fan", "Mow", "Altered", "Origin", "Land", "Sky", "Red-Striped", "Blue-Striped", "Spring", "Summer", "Autumn", "Winter", "Incarnate", "Therian", "Default", "White", "Black", "Ordinary", "Resolute", "Aria", "Pirouette", "Default", "Battle Bond", "Icy Snow", "Polar", "Tundra", "Continental", "Garden", "Elegant", "Meadow", "Modern", "Marine", "Archipelago", "High Plains", "Sandstorm", "River", "Monsoon", "Savanna", "Sun", "Ocean", "Jungle", "Fancy", "Poke Ball", "Red", "Yellow", "Orange", "Blue", "White", "Eternal Flower", "Natural", "Heart", "Star", "Diamond", "Debutante", "Matron", "Dandy", "La Reine", "Kabuki", "Pharaoh", "Average", "Small", "Large", "Super", "50%", "10%", "10%-PC", "50%-PC", "Confined", "Unbound", "Baile", "Pom-Pom", "Pa'u", "Sensu", "Midday", "Midnight", "Red", "Orange", "Yellow", "Green", "Blue", "Indigo", "Violet", "Default", "Original Color", "Default", "Spiky-Eared", "Default", "Female"};
 		FormData *forms = getLegalFormData((u16)additional2, game);
 		int numforms = forms->max - forms->min + 1;
 		
@@ -1442,7 +1449,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 
 				int form = i * columns + j;
 				if (form < numforms) {
-					char *str = entries[forms->stringNum + form];
+					wchar_t *str = forms[forms->stringNum + form];
 					if (forms->min > 0)
 						form++;
 					if (form == 0 || forms->spriteNum == 0)
@@ -1451,7 +1458,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 						int sprite = forms->spriteNum + form - 2;
 						sf2d_draw_texture_part(alternativeSpritesSmall, (width - 34) / 2 + width * j + j, 2 * (height - 44) / 3 + i * height + i, 40 * (sprite % 6) + 4, 30 * (sprite / 6), 34, 30);
 					}
-					sftd_draw_text(fontBold9, width * j + (width - sftd_get_text_width(fontBold9, 9, str)) / 2 + j, (height * 5) / 7 + i * height + i, WHITE, 9, str);
+					sftd_draw_wtext(fontBold9, width * j + (width - sftd_get_wtext_width(fontBold9, 9, str)) / 2 + j, (height * 5) / 7 + i * height + i, WHITE, 9, str);
 				}
 			}
 		}
@@ -1502,14 +1509,14 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			
 			for (int i = 0; i < 3; i++) {
 				sf2d_draw_texture(button, 206, 110 + i * 27 + i*4);
-				sftd_draw_text(fontBold12, 206 + (109 - sftd_get_text_width(fontBold12, 12, options[i])) / 2, 117 + i * 27 + i*4, BLACK, 12, options[i]);
+				sftd_draw_wtext(fontBold12, 206 + (109 - sftd_get_wtext_width(fontBold12, 12, options[i])) / 2, 117 + i * 27 + i*4, BLACK, 12, options[i]);
 			}
 			
 			for (int i = 0; i < 9; i++)
 				if (i == 8 && isEgg(pkmn))
-					sftd_draw_text(fontBold12, 2, 29 + i * 20, LIGHTBLUE, 12, "Egg cycle:");
+					sftd_draw_wtext(fontBold12, 2, 29 + i * 20, LIGHTBLUE, 12, i18n(S_GRAPHIC_PKEDITOR_EGG_CYCLE));
 				else
-					sftd_draw_text(fontBold12, 2, 29 + i * 20, LIGHTBLUE, 12, entries[i]);
+					sftd_draw_wtext(fontBold12, 2, 29 + i * 20, LIGHTBLUE, 12, entries[i]);
 
 			for (int i = 0; i < 7; i++)
 				sf2d_draw_texture(setting, 180, 51 + i * 20);
@@ -1527,8 +1534,8 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, natures[getNature(pkmn)]), 49, WHITE, 12, natures[getNature(pkmn)]);
 			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, abilities[getAbility(pkmn)]), 69, WHITE, 12, abilities[getAbility(pkmn)]);
 			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, items[getItem(pkmn)]), 89, WHITE, 12, items[getItem(pkmn)]);
-			sftd_draw_text(fontBold12, 178 - sftd_get_text_width(fontBold12, 12, isShiny(pkmn) ? "Yes" : "No"), 109, WHITE, 12, isShiny(pkmn) ? "Yes" : "No");
-			sftd_draw_text(fontBold12, 178 - sftd_get_text_width(fontBold12, 12, isInfected(pkmn) ? "Yes" : "No"), 129, WHITE, 12, isInfected(pkmn) ? "Yes" : "No");
+			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, isShiny(pkmn) ? i18n(S_GRAPHIC_PKEDITOR_SHINY_YES) : i18n(S_GRAPHIC_PKEDITOR_SHINY_NO)), 109, WHITE, 12, isShiny(pkmn) ? i18n(S_GRAPHIC_PKEDITOR_SHINY_YES) : i18n(S_GRAPHIC_PKEDITOR_SHINY_NO));
+			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, isInfected(pkmn) ? i18n(S_GRAPHIC_PKEDITOR_POKERUS_YES) : i18n(S_GRAPHIC_PKEDITOR_POKERUS_NO)), 129, WHITE, 12, isInfected(pkmn) ? i18n(S_GRAPHIC_PKEDITOR_POKERUS_YES) : i18n(S_GRAPHIC_PKEDITOR_POKERUS_NO));
 			
 			char* friendship = (char*)malloc(4 * sizeof(char));
 			if (isEgg(pkmn))
@@ -1552,11 +1559,11 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			sf2d_draw_texture(editorStatsBG, 0, 1);
 			sf2d_draw_texture(editorBar, 0, 210);
 			sf2d_draw_texture(setting, 291, 175);
-			sftd_draw_text(fontBold12, 2, 28, LIGHTBLUE, 12, "STATS");
-			sftd_draw_text(fontBold12, 118, 28, DARKBLUE, 12, "IV");
-			sftd_draw_text(fontBold12, 197, 28, DARKBLUE, 12, "EV");
-			sftd_draw_text(fontBold12, 256, 28, DARKBLUE, 12, "TOTAL");
-			sftd_draw_text(fontBold12, 2, 173, LIGHTBLUE, 12, "Hidden Power:");
+			sftd_draw_wtext(fontBold12, 2, 28, LIGHTBLUE, 12, i18n(S_GRAPHIC_PKEDITOR_LBL_STATS));
+			sftd_draw_wtext(fontBold12, 118, 28, DARKBLUE, 12, i18n(S_GRAPHIC_PKEDITOR_LBL_IV));
+			sftd_draw_wtext(fontBold12, 197, 28, DARKBLUE, 12, i18n(S_GRAPHIC_PKEDITOR_LBL_EV));
+			sftd_draw_wtext(fontBold12, 256, 28, DARKBLUE, 12, i18n(S_GRAPHIC_PKEDITOR_LBL_TOTAL));
+			sftd_draw_wtext(fontBold12, 2, 173, LIGHTBLUE, 12, i18n(S_GRAPHIC_PKEDITOR_HIDDEN_POWER));
 			
 			sftd_draw_wtext(fontBold12, 27, 4, WHITE, 12, listSpecies.items[n]);
 			sf2d_draw_texture_part(balls, -2, -6, 32 * (getBall(pkmn) % 8), 32 * (getBall(pkmn) / 8), 32, 32);
@@ -1594,8 +1601,8 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			sf2d_draw_texture(movesBottom, 0, 1);
 			sf2d_draw_texture(movesBottom, 0, 2 + movesBottom->height);
 			sf2d_draw_texture(editorBar, 0, 210);
-			sftd_draw_text(fontBold12, 2, 5, LIGHTBLUE, 12, "Moves");
-			sftd_draw_text(fontBold12, 2, 110, LIGHTBLUE, 12, "Relearn Moves");
+			sftd_draw_wtext(fontBold12, 2, 5, LIGHTBLUE, 12, i18n(S_GRAPHIC_PKEDITOR_MOVES));
+			sftd_draw_wtext(fontBold12, 2, 110, LIGHTBLUE, 12, i18n(S_GRAPHIC_PKEDITOR_RELEARN_MOVES));
 			
 			for (int i = 0; i < 4; i++) {
 				sftd_draw_wtext(fontBold12, 2, 28 + i * 20, (i == additional3) ? YELLOW : WHITE, 12, moves[getMove(pkmn, i)]);
@@ -1617,7 +1624,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			if (hax)
 				sf2d_draw_rectangle(0, 0, 320, 240, RGBA8(255, 0, 0, 100));
 			
-			sftd_draw_textf(fontBold14, 50, 30, LIGHTBLUE, 14, "Selected byte:");
+			sftd_draw_wtextf(fontBold14, 50, 30, LIGHTBLUE, 14, i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE));
 			sftd_draw_textf(fontBold14, 171, 30, WHITE, 14, "0x%02hhX", additional1);
 			
 			printfHexEditorInfo(pkmn, additional1);
@@ -1629,19 +1636,19 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 		// apply masks
 		if (mode == ED_ITEMS) {
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
-			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Select an item with A in the top screen.")) / 2, 105, WHITE, 14, "Select an item with A in the top screen.");
+			sftd_draw_wtext(fontBold14, (320 - sftd_get_wtext_width(fontBold14, 14, i18n(S_GRAPHIC_PKEDITOR_ITEM_INDICATION))) / 2, 105, WHITE, 14, i18n(S_GRAPHIC_PKEDITOR_ITEM_INDICATION));
 		} else if (mode == ED_NATURES) {
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
-			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Select a nature with A in the top screen.")) / 2, 105, WHITE, 14, "Select a nature with A in the top screen.");
+			sftd_draw_wtext(fontBold14, (320 - sftd_get_wtext_width(fontBold14, 14, i18n(S_GRAPHIC_PKEDITOR_NATURE_INDICATION))) / 2, 105, WHITE, 14, i18n(S_GRAPHIC_PKEDITOR_NATURE_INDICATION));
 		} else if (mode == ED_BALLS) {
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
-			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Select a ball with A in the top screen.")) / 2, 105, WHITE, 14, "Select a ball with A in the top screen.");
+			sftd_draw_wtext(fontBold14, (320 - sftd_get_wtext_width(fontBold14, 14, i18n(S_GRAPHIC_PKEDITOR_BALL_INDICATION))) / 2, 105, WHITE, 14, i18n(S_GRAPHIC_PKEDITOR_BALL_INDICATION));
 		} else if (mode == ED_HIDDENPOWER) {
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
-			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Select a HP type with A in the top screen.")) / 2, 105, WHITE, 14, "Select a HP type with A in the top screen.");
+			sftd_draw_wtext(fontBold14, (320 - sftd_get_wtext_width(fontBold14, 14, i18n(S_GRAPHIC_PKEDITOR_HP_INDICATION))) / 2, 105, WHITE, 14, i18n(S_GRAPHIC_PKEDITOR_HP_INDICATION));
 		} else if (mode == ED_FORMS) {
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
-			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Select a form with A in the top screen.")) / 2, 105, WHITE, 14, "Select a form with A in the top screen.");
+			sftd_draw_wtext(fontBold14, (320 - sftd_get_wtext_width(fontBold14, 14, i18n(S_GRAPHIC_PKEDITOR_FORM_INDICATION))) / 2, 105, WHITE, 14, i18n(S_GRAPHIC_PKEDITOR_FORM_INDICATION));
 		}
 		
 	pksm_end_frame();

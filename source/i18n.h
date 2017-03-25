@@ -52,6 +52,8 @@ struct i18n_files {
 	char *moves;
 	char *items;
 	char *hp;
+	char *forms;
+	char *balls;
 	char *app;
 };
 
@@ -229,6 +231,65 @@ typedef enum {
 
 	S_GRAPHIC_PKVIEWER_TIDSIDTSV,                  // Line 133
 	S_GRAPHIC_PKVIEWER_SEED,                       // Line 134
+
+	S_GRAPHIC_PKEDITOR_LEVEL,                      // Line 135
+	S_GRAPHIC_PKEDITOR_NATURE,                     // Line 136
+	S_GRAPHIC_PKEDITOR_ABILITY,                    // Line 137
+	S_GRAPHIC_PKEDITOR_ITEM,                       // Line 138
+	S_GRAPHIC_PKEDITOR_SHINY,                      // Line 139
+	S_GRAPHIC_PKEDITOR_POKERUS,                    // Line 140
+	S_GRAPHIC_PKEDITOR_OT,                         // Line 141
+	S_GRAPHIC_PKEDITOR_NICKNAME,                   // Line 142
+	S_GRAPHIC_PKEDITOR_FRIENDSHIP,                 // Line 143
+
+	S_GRAPHIC_PKEDITOR_MENU_STATS,                 // Line 144
+	S_GRAPHIC_PKEDITOR_MENU_MOVES,                 // Line 145
+	S_GRAPHIC_PKEDITOR_MENU_SAVE,                  // Line 146
+
+	S_GRAPHIC_PKEDITOR_STATS_HP,                   // Line 147
+	S_GRAPHIC_PKEDITOR_STATS_ATTACK,               // Line 148
+	S_GRAPHIC_PKEDITOR_STATS_DEFENSE,              // Line 149
+	S_GRAPHIC_PKEDITOR_STATS_SP_ATTACK,            // Line 150
+	S_GRAPHIC_PKEDITOR_STATS_SP_DEFENSE,           // Line 151
+	S_GRAPHIC_PKEDITOR_STATS_SPEED,                // Line 152
+
+	S_GRAPHIC_PKEDITOR_BASE_STATS_INDICATIONS_1,   // Line 153
+	S_GRAPHIC_PKEDITOR_BASE_STATS_INDICATIONS_2,   // Line 154
+
+	S_GRAPHIC_PKEDITOR_NATURE_NEUTRAL,             // Line 155
+	S_GRAPHIC_PKEDITOR_NATURE_MIN_ATTACK,          // Line 156
+	S_GRAPHIC_PKEDITOR_NATURE_MIN_DEFENSE,         // Line 157
+	S_GRAPHIC_PKEDITOR_NATURE_MIN_SPEED,           // Line 158
+	S_GRAPHIC_PKEDITOR_NATURE_MIN_SP_ATTACK,       // Line 159
+	S_GRAPHIC_PKEDITOR_NATURE_MIN_SP_DEFENSE,      // Line 160
+	S_GRAPHIC_PKEDITOR_NATURE_PLUS_ATTACK,         // Line 161
+	S_GRAPHIC_PKEDITOR_NATURE_PLUS_DEFENSE,        // Line 162
+	S_GRAPHIC_PKEDITOR_NATURE_PLUS_SPEED,          // Line 163
+	S_GRAPHIC_PKEDITOR_NATURE_PLUS_SP_ATTACK,      // Line 164
+	S_GRAPHIC_PKEDITOR_NATURE_PLUS_SP_DEFENSE,     // Line 165
+
+	S_GRAPHIC_PKEDITOR_EGG_CYCLE,                  // Line 166
+	S_GRAPHIC_PKEDITOR_SHINY_YES,                  // Line 167
+	S_GRAPHIC_PKEDITOR_SHINY_NO,                   // Line 168
+	S_GRAPHIC_PKEDITOR_POKERUS_YES,                // Line 169
+	S_GRAPHIC_PKEDITOR_POKERUS_NO,                 // Line 170
+
+	S_GRAPHIC_PKEDITOR_LBL_STATS,                  // Line 171
+	S_GRAPHIC_PKEDITOR_LBL_IV,                     // Line 172
+	S_GRAPHIC_PKEDITOR_LBL_EV,                     // Line 173
+	S_GRAPHIC_PKEDITOR_LBL_TOTAL,                  // Line 174
+	S_GRAPHIC_PKEDITOR_HIDDEN_POWER,               // Line 175
+
+	S_GRAPHIC_PKEDITOR_MOVES,                      // Line 176
+	S_GRAPHIC_PKEDITOR_RELEARN_MOVES,              // Line 177
+	S_GRAPHIC_PKEDITOR_SELECTED_BYTE,              // Line 178
+
+	S_GRAPHIC_PKEDITOR_ITEM_INDICATION,            // Line 179
+	S_GRAPHIC_PKEDITOR_NATURE_INDICATION,          // Line 180
+	S_GRAPHIC_PKEDITOR_BALL_INDICATION,            // Line 181
+	S_GRAPHIC_PKEDITOR_HP_INDICATION,              // Line 182
+	S_GRAPHIC_PKEDITOR_FORM_INDICATION,            // Line 183
+
 
 } AppTextCode;
 
