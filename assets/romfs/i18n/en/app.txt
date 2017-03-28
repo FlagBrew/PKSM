@@ -164,15 +164,15 @@ Neutral
 +Sp. Atk.
 +Sp. Def.
 Egg cycle:
+Yes
+No
+Yes
+No
 STATS
 IV
 EV
 TOTAL
 Hidden Power:
-Yes
-No
-Yes
-No
 Moves
 Relearn Moves
 Selected byte:
@@ -181,3 +181,4 @@ Select a nature with A in the top screen.
 Select a ball with A in the top screen.
 Select a HP type with A in the top screen.
 Select a form with A in the top screen.
+Bank %d

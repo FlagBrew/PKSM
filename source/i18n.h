@@ -22,6 +22,7 @@
 #include "common.h"
 #include <stdarg.h>
 #include <wchar.h>
+#include <unistd.h>
 
 // debuglogf displays message on the app if defined to 1
 #define DEBUG_I18N 1
@@ -289,6 +290,8 @@ typedef enum {
 	S_GRAPHIC_PKEDITOR_BALL_INDICATION,            // Line 181
 	S_GRAPHIC_PKEDITOR_HP_INDICATION,              // Line 182
 	S_GRAPHIC_PKEDITOR_FORM_INDICATION,            // Line 183
+
+	S_GRAPHIC_PKBANK_BANK_TITLE,                   // Line 184
 
 
 } AppTextCode;

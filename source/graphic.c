@@ -57,8 +57,8 @@ wchar_t **items;
 wchar_t **itemsSorted;
 wchar_t **hpList;
 
-wchar_t **balls;
-wchar_t **forms;
+wchar_t **ballList;
+wchar_t **formList;
 
 void GUIElementsInit() {
 	fontBold15 = sftd_load_font_file("romfs:/res/Bold.ttf");
@@ -89,7 +89,6 @@ void GUIElementsInit() {
 	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_ITEMS));
 	listItems = i18n_FileToArrayUTF32(listFiles.items);
 	struct ArrayUTF32 listBalls = i18n_FileToArrayUTF32(listFiles.balls);
-	balls = listBalls.items;
 	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_SORTING_ITEMS));
 	ArrayUTF32_sort_starting_index(&listItems, 1);
 	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_HP));
@@ -97,7 +96,6 @@ void GUIElementsInit() {
 
 	// Need loading message for forms
 	struct ArrayUTF32 listForms = i18n_FileToArrayUTF32(listFiles.forms);
-	forms = listForms.items;
 
 	abilities = listAbilities.items;
 	moves = listMoves.items;
@@ -106,6 +104,8 @@ void GUIElementsInit() {
 	items = listItems.items;
 	itemsSorted = listItems.sortedItems;
 	hpList = listHPs.items;
+	formList = listForms.items;
+	ballList = listBalls.items;
 
 	freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_FONTS));
 	init_font_cache();
@@ -1396,9 +1396,9 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 		
 		sf2d_draw_texture(naturestx, 0, 0);
 		for (int i = 0; i < 6; i++)
-			sftd_draw_text(fontBold12, 66 * i + (66 - sftd_get_text_width(fontBold12, 12, hor[i])) / 2, 13, (i == 0) ? YELLOW : BLUE, 12, hor[i]);
+			sftd_draw_wtext(fontBold12, 66 * i + (66 - sftd_get_wtext_width(fontBold12, 12, hor[i])) / 2, 13, (i == 0) ? YELLOW : BLUE, 12, hor[i]);
 		for (int i = 0; i < 5; i++)
-			sftd_draw_text(fontBold12, (66 - sftd_get_text_width(fontBold12, 12, ver[i])) / 2, 53 + i * 40, BLUE, 12, ver[i]);
+			sftd_draw_wtext(fontBold12, (66 - sftd_get_wtext_width(fontBold12, 12, ver[i])) / 2, 53 + i * 40, BLUE, 12, ver[i]);
 		
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 5; j++) {
@@ -1415,7 +1415,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 				if (additional1 == i * 6 + j)
 					printSelector(66*j + j, 47*i + i, 66, 47);
 				sf2d_draw_texture_part(balls, 17 + 66 * j + j, 2 + i * 47, 32 * ((i * 6 + j + 1) % 8), 32 * ((i * 6 + j + 1) / 8), 32, 32);
-				sftd_draw_wtext(fontBold9, 66 * j + (66 - sftd_get_wtext_width(fontBold9, 9, balls[i * 6 + j])) / 2 + j, 30 + i * 47 + i, WHITE, 9, balls[i * 6 + j]);
+				sftd_draw_wtext(fontBold9, 66 * j + (66 - sftd_get_wtext_width(fontBold9, 9, ballList[i * 6 + j])) / 2 + j, 30 + i * 47 + i, WHITE, 9, ballList[i * 6 + j]);
 			}
 		}
 	} else if (mode == ED_HIDDENPOWER) {
@@ -1449,7 +1449,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 
 				int form = i * columns + j;
 				if (form < numforms) {
-					wchar_t *str = forms[forms->stringNum + form];
+					wchar_t *str = formList[forms->stringNum + form];
 					if (forms->min > 0)
 						form++;
 					if (form == 0 || forms->spriteNum == 0)
@@ -1574,7 +1574,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 				sf2d_draw_texture(female, 161, 6);
 			
 			for (int i = 0; i < 6; i++)
-				sftd_draw_text(fontBold12, 2, 49 + i * 20, LIGHTBLUE, 12, values[i]);
+				sftd_draw_wtext(fontBold12, 2, 49 + i * 20, LIGHTBLUE, 12, values[i]);
 
 			char* tmp = (char*)malloc(4);
 			for (int i = 0; i < 6; i++) {

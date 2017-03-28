@@ -118,28 +118,30 @@ struct i18n_FileInfo i18n_getInfoFile(char* filepath) {
     int currentMaxChar = 0;
     int totalChars = 0;
     char ch = ' ', lastch = ch;
-    FILE *fp = fopen(filepath, "r");
-    while((ch = fgetc(fp)) && !feof(fp)) {
-		currentMaxChar++;
-		if(ch == '\n') {
-			lines++;
-			if (currentMaxChar > maxChar) {
-				maxChar = currentMaxChar;
+	if( access( filepath, F_OK ) != -1 ) {
+		FILE *fp = fopen(filepath, "r");
+		while((ch = fgetc(fp)) && !feof(fp)) {
+			currentMaxChar++;
+			if(ch == '\n') {
+				lines++;
+				if (currentMaxChar > maxChar) {
+					maxChar = currentMaxChar;
+				}
+				currentMaxChar = 0;
+			} else if (ch != '\r' && ch != '\n' && ch > 0) {
+				totalChars++;
 			}
-			currentMaxChar = 0;
-		} else if (ch != '\r' && ch != '\n' && ch > 0) {
-			totalChars++;
+			lastch = ch;
 		}
-		lastch = ch;
-    }
-    if (currentMaxChar > maxChar) {
-        maxChar = currentMaxChar;
-    }
-	// The last line
-	if (totalChars > 0 && lastch != '\r' && lastch != '\n') {
-		lines++;
+		if (currentMaxChar > maxChar) {
+			maxChar = currentMaxChar;
+		}
+		// The last line
+		if (totalChars > 0 && lastch != '\r' && lastch != '\n') {
+			lines++;
+		}
+		fclose(fp);
 	}
-    fclose(fp);
 
     struct i18n_FileInfo fileinfo;
     fileinfo.numberOfLines = lines;
@@ -168,23 +170,24 @@ struct ArrayUTF32 i18n_FileToArrayUTF32(char* filepath) {
     struct i18n_FileInfo fileinfo = i18n_getInfoFile(filepath);
 	int BUFFER_SIZE = MAXLENGTH_LINE_TRANSLATION;
     wchar_t **arrwc = malloc(fileinfo.numberOfLines * sizeof(wchar_t*));
+	if( access( filepath, F_OK ) != -1 ) {
+		FILE* fp = fopen(filepath, "rt");
+		char line[BUFFER_SIZE];
+		int index = 0;
 
-    FILE* fp = fopen(filepath, "rt");
-    char line[BUFFER_SIZE];
-	int index = 0;
+		while (fgets(line, BUFFER_SIZE, fp) != 0) {
+			if (index < fileinfo.numberOfLines) {
+				i18n_removeEndline(line);
+				wchar_t* lineutf32 = s_utf32(line);
+				arrwc[index] = lineutf32;
+				index++;
+			}
 
-    while (fgets(line, BUFFER_SIZE, fp) != 0) {
-		if (index < fileinfo.numberOfLines) {
-			i18n_removeEndline(line);
-			wchar_t* lineutf32 = s_utf32(line);
-			arrwc[index] = lineutf32;
-			index++;
 		}
 
-    }
-
-    if (fclose(fp)) {
-		// debuglogf("Error closing file !\n");
+		if (fclose(fp)) {
+			// debuglogf("Error closing file !\n");
+		}
 	}
 
 	// debuglogf("Creating array...\n");
