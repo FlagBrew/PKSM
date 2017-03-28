@@ -1806,15 +1806,15 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 
 void printMassInjector(int currentEntry) {
 	int y = 41;
-	char* entries[] = {"XD Collection", "Colosseum Collection", "10th Anniversary Collection", "N's Collection", "Entree Forest Collection", "Dream Radar Collection", "Living Dex", "Oblivia Deoxys Collection", "Pokemon Ranch Collection", "KOR Events Collection"};
+	wchar_t* entries[] = {i18n(S_GRAPHIC_MASSINJECTOR_XD_COLLECTION), i18n(S_GRAPHIC_MASSINJECTOR_COLOSSEUM_COLLECTION), i18n(S_GRAPHIC_MASSINJECTOR_10TH_ANNIV_COLLECTION), i18n(S_GRAPHIC_MASSINJECTOR_N_COLLECTION), i18n(S_GRAPHIC_MASSINJECTOR_ENTREE_FOREST_COLLECTION), i18n(S_GRAPHIC_MASSINJECTOR_DREAM_RADAR_COLLECTION), i18n(S_GRAPHIC_MASSINJECTOR_LIVING_DEX), i18n(S_GRAPHIC_MASSINJECTOR_OBLIVIA_DEOXYS_COLLECTION), i18n(S_GRAPHIC_MASSINJECTOR_PKMN_RANCH_COLLECTION), i18n(S_GRAPHIC_MASSINJECTOR_KOR_EVENTS_COLLECTION)};
 	int boxes[] = {3, 2, 1, 1, 1, 1, 27, 1, 1, 1};
 	
-	char* message = (char*)malloc(30 * sizeof(char));
-	snprintf(message, 30, "%d boxes will be replaced.", boxes[currentEntry]);
+	wchar_t* message = (wchar_t*)malloc(30 * sizeof(wchar_t));
+	swprintf(message, 30, i18n(S_GRAPHIC_MASSINJECTOR_MESSAGE_REPLACE_BOXES), boxes[currentEntry]);
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		printMenuTop();
-		printTitle(L"Mass Injector");
+		printTitle(i18n(S_GRAPHIC_MASSINJECTOR_TITLE));
 		
 		for (int i = 0; i < 5; i++) {
 			if (i == currentEntry)
@@ -1843,7 +1843,7 @@ void printMassInjector(int currentEntry) {
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		printMenuBottom();
 		sftd_draw_text(fontBold12, (320 - sftd_get_text_width(fontBold12, 12, message)) / 2, 12, LIGHTBLUE, 12, message);
-		printBottomIndications(L"Press START to inject, B to exit.");
+		printBottomIndications(i18n(S_GRAPHIC_MASSINJECTOR_INDICATION));
 	pksm_end_frame();
 	sf2d_swapbuffers();
 	
