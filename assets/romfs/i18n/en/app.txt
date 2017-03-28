@@ -182,3 +182,9 @@ Select a ball with A in the top screen.
 Select a HP type with A in the top screen.
 Select a form with A in the top screen.
 Bank %d
+Lv.%u
+ID. %u
+Save %d
+Y: VIEW
+CLEAR BOX
+RELEASE

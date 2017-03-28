@@ -292,6 +292,13 @@ typedef enum {
 	S_GRAPHIC_PKEDITOR_FORM_INDICATION,            // Line 183
 
 	S_GRAPHIC_PKBANK_BANK_TITLE,                   // Line 184
+	S_GRAPHIC_PKBANK_LV_PKMN,                      // Line 185
+	S_GRAPHIC_PKBANK_OTID_PKMN,                    // Line 185
+	S_GRAPHIC_PKBANK_SAVED_BOX_TITLE,              // Line 185
+
+	S_GRAPHIC_PKBANK_MENU_VIEW,                    // Line 185
+	S_GRAPHIC_PKBANK_MENU_CLEARBOX,                // Line 185
+	S_GRAPHIC_PKBANK_MENU_RELEASE,                 // Line 185
 
 
 } AppTextCode;

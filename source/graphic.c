@@ -1658,7 +1658,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEntry, int saveBox, int bankBox, bool isBufferized, bool isSeen) {
 	int x, y;
 	int pointer[2] = {0, 0};
-	char* page = (char*)malloc(10 * sizeof(char));
+	wchar_t* page = (wchar_t*)malloc(10 * sizeof(wchar_t));
 	bool isKor = (pkmnbuf[0xE3] == 0x08) ? true : false;
 	
 	u8* pkmn = (u8*)malloc(PKMNLENGTH * sizeof(u8));
@@ -1673,8 +1673,8 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 		} else {
 			printAnimatedBG(true);
 			sf2d_draw_texture(bankTop, 34, 5);
-			snprintf(page, 10, "Bank %d", bankBox + 1);
-			sftd_draw_text(fontBold12, 55 + (178 - sftd_get_text_width(fontBold12, 12, page)) / 2, 9, WHITE, 12, page);
+			swprintf(page, 10, i18n(S_GRAPHIC_PKBANK_BANK_TITLE), bankBox + 1);
+			sftd_draw_wtext(fontBold12, 55 + (178 - sftd_get_wtext_width(fontBold12, 12, page)) / 2, 9, WHITE, 12, page);
 
 			if (getPokedexNumber(pkmn) > 0 && getPokedexNumber(pkmn) < 822) {
 				u16 tempspecies = getFormSpeciesNumber(pkmn);
@@ -1699,16 +1699,16 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 				getNickname(pkmn, nick);
 				sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, 273, 69, WHITE, 12, (wchar_t*)nick);
 				
-				char* level = (char*)malloc(8 * sizeof(char));
-				snprintf(level, 8, "Lv.%u", getLevel(pkmn));
-				sftd_draw_text(fontBold12, 372 - sftd_get_text_width(fontBold12, 12, level), 86, WHITE, 12, level);
+				wchar_t* level = (wchar_t*)malloc(8 * sizeof(wchar_t));
+				swprintf(level, 8, i18n(S_GRAPHIC_PKBANK_LV_PKMN), getLevel(pkmn));
+				sftd_draw_wtext(fontBold12, 372 - sftd_get_wtext_width(fontBold12, 12, level), 86, WHITE, 12, level);
 				
 				if (getGender(pkmn) == 0)
-					sf2d_draw_texture(male, 358 - sftd_get_text_width(fontBold12, 12, level), 86);
+					sf2d_draw_texture(male, 358 - sftd_get_wtext_width(fontBold12, 12, level), 86);
 				else if (getGender(pkmn) == 1)
-					sf2d_draw_texture(female, 360 - sftd_get_text_width(fontBold12, 12, level), 86);
+					sf2d_draw_texture(female, 360 - sftd_get_wtext_width(fontBold12, 12, level), 86);
 				if (isShiny(pkmn))
-					sf2d_draw_texture(shinyStar, 360 - sftd_get_text_width(fontBold12, 12, level) - 14, 88);
+					sf2d_draw_texture(shinyStar, 360 - sftd_get_wtext_width(fontBold12, 12, level) - 14, 88);
 				
 				free(level);
 				
@@ -1717,9 +1717,9 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 				getOT(pkmn, ot_name);
 				sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, 273, 146, WHITE, 12, (wchar_t*)ot_name);
 
-				char* otid = (char*)malloc(12 * sizeof(char));
-				snprintf(otid, 12, "ID. %u", getOTID(pkmn));
-				sftd_draw_text(fontBold12, 372 - sftd_get_text_width(fontBold12, 12, otid), 163, WHITE, 12, otid);
+				wchar_t* otid = (wchar_t*)malloc(12 * sizeof(wchar_t));
+				swprintf(otid, 12, i18n(S_GRAPHIC_PKBANK_OTID_PKMN), getOTID(pkmn));
+				sftd_draw_wtext(fontBold12, 372 - sftd_get_wtext_width(fontBold12, 12, otid), 163, WHITE, 12, otid);
 				free(otid);
 				
 				sftd_draw_wtext(fontBold12, 273, 104, WHITE, 12, listSpecies.items[getPokedexNumber(pkmn)]);
@@ -1754,8 +1754,8 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(boxView, 0, 0);
 		sf2d_draw_texture(editorBar, 0, 210);
-		snprintf(page, 10, "Save %d", saveBox + 1);
-		sftd_draw_text(fontBold12, 12 + (178 - sftd_get_text_width(fontBold12, 12, page)) / 2, 19, WHITE, 12, page);
+		swprintf(page, 10, i18n(S_GRAPHIC_PKBANK_SAVED_BOX_TITLE), saveBox + 1);
+		sftd_draw_wtext(fontBold12, 12 + (178 - sftd_get_wtext_width(fontBold12, 12, page)) / 2, 19, WHITE, 12, page);
 		sf2d_draw_texture(left, 7, 17);
 		sf2d_draw_texture(right, 185, 17);
 		sf2d_draw_texture(transferButton, 242, 5);
@@ -1763,9 +1763,9 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 		sf2d_draw_texture(button, 208, 43);
 		sf2d_draw_texture(button, 208, 70);
 		sf2d_draw_texture(button, 208, 97);
-		sftd_draw_text(fontBold12, 208 + (109 - sftd_get_text_width(fontBold12, 12, "Y: VIEW")) / 2, 50, BLACK, 12, "Y: VIEW");
-		sftd_draw_text(fontBold12, 208 + (109 - sftd_get_text_width(fontBold12, 12, "CLEAR BOX")) / 2, 77, BLACK, 12, "CLEAR BOX");
-		sftd_draw_text(fontBold12, 208 + (109 - sftd_get_text_width(fontBold12, 12, "RELEASE")) / 2, 104, BLACK, 12, "RELEASE");
+		sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKBANK_MENU_VIEW))) / 2, 50, BLACK, 12, i18n(S_GRAPHIC_PKBANK_MENU_VIEW));
+		sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKBANK_MENU_CLEARBOX))) / 2, 77, BLACK, 12, i18n(S_GRAPHIC_PKBANK_MENU_CLEARBOX));
+		sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKBANK_MENU_RELEASE))) / 2, 104, BLACK, 12, i18n(S_GRAPHIC_PKBANK_MENU_RELEASE));
 				
 		y = 45;
 		for (int i = 0; i < 5; i++) {
