@@ -1822,7 +1822,7 @@ void printMassInjector(int currentEntry) {
 			else
 				sf2d_draw_texture(eventMenuTopBar, 18, y);
 			
-			sftd_draw_text(fontBold12, 18 + (182 - sftd_get_text_width(fontBold12, 12, entries[i])) / 2, y + 10, (i == currentEntry) ? DARKBLUE : YELLOW, 12, entries[i]);
+			sftd_draw_wtext(fontBold12, 18 + (182 - sftd_get_wtext_width(fontBold12, 12, entries[i])) / 2, y + 10, (i == currentEntry) ? DARKBLUE : YELLOW, 12, entries[i]);
 			
 			y += 37;
 		}
@@ -1834,7 +1834,7 @@ void printMassInjector(int currentEntry) {
 			else
 				sf2d_draw_texture(eventMenuTopBar, 200, y);
 			
-			sftd_draw_text(fontBold12, 200 + (182 - sftd_get_text_width(fontBold12, 12, entries[i])) / 2, y + 10, (i == currentEntry) ? DARKBLUE : YELLOW, 12, entries[i]);
+			sftd_draw_wtext(fontBold12, 200 + (182 - sftd_get_wtext_width(fontBold12, 12, entries[i])) / 2, y + 10, (i == currentEntry) ? DARKBLUE : YELLOW, 12, entries[i]);
 			
 			y += 37;
 		}
@@ -1842,7 +1842,7 @@ void printMassInjector(int currentEntry) {
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		printMenuBottom();
-		sftd_draw_text(fontBold12, (320 - sftd_get_text_width(fontBold12, 12, message)) / 2, 12, LIGHTBLUE, 12, message);
+		sftd_draw_wtext(fontBold12, (320 - sftd_get_wtext_width(fontBold12, 12, message)) / 2, 12, LIGHTBLUE, 12, message);
 		printBottomIndications(i18n(S_GRAPHIC_MASSINJECTOR_INDICATION));
 	pksm_end_frame();
 	sf2d_swapbuffers();
