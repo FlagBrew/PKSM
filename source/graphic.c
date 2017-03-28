@@ -1851,7 +1851,7 @@ void printMassInjector(int currentEntry) {
 }
 
 void printSettings(int box) {
-	char *menu[] = {"Bank Size:                   ", "Backup Save", "Backup Bank"};
+	wchar_t *menu[] = {i18n(S_GRAPHIC_SETTINGS_BANK_SIZE), i18n(S_GRAPHIC_SETTINGS_BACKUP_SAVE), i18n(S_GRAPHIC_SETTINGS_BACKUP_BANK)};
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		drawMenuTop(0);
 	pksm_end_frame();
@@ -1861,7 +1861,7 @@ void printSettings(int box) {
 
 		for (int i = 0; i < 3; i++) {
 			sf2d_draw_texture(menuBar, (320 - menuBar->width) / 2, 60 + i * (menuBar->height));
-			sftd_draw_text(fontBold15, (320 - sftd_get_text_width(fontBold15, 15, menu[i])) / 2, 58 + (menuBar->height - 18) / 2 + i * (menuBar->height), DARKBLUE, 15, menu[i]);
+			sftd_draw_wtext(fontBold15, (320 - sftd_get_wtext_width(fontBold15, 15, menu[i])) / 2, 58 + (menuBar->height - 18) / 2 + i * (menuBar->height), DARKBLUE, 15, menu[i]);
 		}
 		
 		sf2d_draw_texture(miniBox, 189, 64);
@@ -1873,7 +1873,7 @@ void printSettings(int box) {
 		sftd_draw_text(fontBold11, 189 + (36 - (sftd_get_text_width(fontBold11, 11, size))) / 2, 68, WHITE, 11, size);
 		free(size);
 
-		sftd_draw_text(fontBold9, 85, 225, LIGHTBLUE, 9, "Tap the number to change size.");
+		sftd_draw_wtext(fontBold9, 85, 225, LIGHTBLUE, 9, i18n(S_GRAPHIC_SETTINGS_INDICATION));
 	pksm_end_frame();
 	sf2d_swapbuffers();
 }

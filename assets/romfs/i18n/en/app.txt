@@ -201,3 +201,7 @@ KOR Events Collection
 %d boxes will be replaced.
 Mass Injector
 Press START to inject, B to exit.
+Bank Size:                   
+Backup Save
+Backup Bank
+Tap the number to change size.

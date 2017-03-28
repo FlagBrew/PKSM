@@ -315,6 +315,10 @@ typedef enum {
 	S_GRAPHIC_MASSINJECTOR_TITLE,                     // Line 202
 	S_GRAPHIC_MASSINJECTOR_INDICATION,                // Line 203
 
+	S_GRAPHIC_SETTINGS_BANK_SIZE,                     // Line 204
+	S_GRAPHIC_SETTINGS_BACKUP_SAVE,                   // Line 205
+	S_GRAPHIC_SETTINGS_BACKUP_BANK,                   // Line 206
+	S_GRAPHIC_SETTINGS_INDICATION,                    // Line 207
 
 } AppTextCode;
 
