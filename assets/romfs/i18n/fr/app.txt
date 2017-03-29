@@ -9,7 +9,7 @@ Chargement des objets
 Tri des objets
 Chargement des p. cachés
 Chargement des polices...
-Mise en cache police %i/%i
+Mise en cache police de car. %i/%i
 Terminé!
 Création de la banque...
 Sauvegarde de la banque...
@@ -132,3 +132,78 @@ A sur une case pour le cloner, B pour annuler
 Génère avec A dans l'écran du haut.
 TID: %u / SID: %u / TSV: %u
 Seed: %lx %lx %lx %lx
+Niveau:
+Nature:
+Talent:
+Objet:
+Chroma.:
+Pokérus:
+DO:
+Surnom:
+Bonheur:
+STATS
+CAPACITÉS
+ENREGISTRER
+PV:
+Attaque:
+Défense:
+Attaque Spé.
+Défense Spé.
+Vitesse:
+Édite le Pokémon dans l'écran du bas
+Appuie sur ENREGISTRER quand tu as terminé
+Neutre
+-Attaque
+-Défense
+-Vitesse
+-Att. Spé.
+-Déf. Spé.
++Attaque
++Défense
++Vitesse
++Att. Spé.
++Déf. Spé.
+Cycle œuf
+Oui
+Non
+Oui
+Non
+STATS
+IV
+EV
+TOTAL
+Puissance cachée:
+Capacités
+Capacités ré-apprises:
+Byte sélectionné:
+Choisis un objet avec A dans l'écran du haut.
+Choisis une nature avec A dans l'écran du haut.
+Choisis une Ball avec A dans l'écran du haut.
+Choisis une p. cachée avec A dans l'écran du haut.
+Choisis une forme avec A dans l'écran du haut.
+Banque n°%d
+Niv.%u
+ID. %u
+Boîte du jeu %d
+Y: VOIR
+VIDER BOÎTE
+RELÂCHER
+XD Collection
+Colosseum Collection
+10ème anniversaire Collection
+N's Collection
+Entree Forest Collection
+Dream Radar Collection
+Living Dex
+Oblivia Deoxys Collection
+Pokémon Ranch Collection
+KOR Events Collection
+%d boîtes vont être remplacés.
+Injection auto.
+Appuie sur START pour injecter, B pour quitter.
+Boxs banque:               
+Backup Jeu
+Backup Banque
+Appuie à côté du nombre pour changer la taille.
+Oui
+Non

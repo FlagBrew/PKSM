@@ -320,6 +320,23 @@ typedef enum {
 	S_GRAPHIC_SETTINGS_BACKUP_BANK,                   // Line 206
 	S_GRAPHIC_SETTINGS_INDICATION,                    // Line 207
 
+	S_BUTTON_YES,                                     // Line 208
+	S_BUTTON_NO,                                      // Line 209
+
+	S_GRAPHIC_HEXEDITOR_SPECIES,                      // Line 210
+	S_GRAPHIC_HEXEDITOR_HELD_ITEM,                    // Line 211
+	S_GRAPHIC_HEXEDITOR_TID,                          // Line 212
+	S_GRAPHIC_HEXEDITOR_SID,                          // Line 213
+	S_GRAPHIC_HEXEDITOR_ABILITY,                      // Line 214
+	S_GRAPHIC_HEXEDITOR_NATURE,                       // Line 215
+
+	S_GRAPHIC_HEXEDITOR_FATEFUL_ENCOUNTER_FLAG,       // Line 216
+	S_GRAPHIC_HEXEDITOR_GENDER,                       // Line 217
+	S_GRAPHIC_HEXEDITOR_GENDER_MALE,                  // Line 218
+	S_GRAPHIC_HEXEDITOR_GENDER_FEMALE,                // Line 219
+	S_GRAPHIC_HEXEDITOR_GENDER_GENDERLESS,            // Line 220
+	S_GRAPHIC_HEXEDITOR_ALTERNATIVE_FORM,             // Line 221
+
 } AppTextCode;
 
 

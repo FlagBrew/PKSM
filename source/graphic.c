@@ -41,7 +41,7 @@ int logo_lookup5[5] = {0, 53, 104, 176, 252};
 
 int lookup[] = {0x0, 0x1, 0x2, 0x4, 0x5, 0x3};
 
-int MAX_LENGTH_BOX_NAME = 12;
+int MAX_LENGTH_BOX_NAME = 15;
 
 sftd_font *unicodeJPN12, *unicodeKOR12, *fontBold18, *fontBold15, *fontBold14, *fontBold12, *fontBold11, *fontBold9, *fontFixed; 
 sf2d_texture *noMove, *hexIcon, *hexBG, *blueTextBox, *otaButton, *generationBG, *includeInfoButton, *hiddenPowerBG, *ballsBG, *male, *female, *naturestx, *movesBottom, *topMovesBG, *editorBar, *editorStatsBG, *subArrow, *backgroundTop, *miniBox, *plusButton, *minusButton, *balls, *typesSheet, *transferButton, *bankTop, *shinyStar, *normalBar, *LButton, *RButton, *creditsTop, *pokeball, *gameSelectorBottom1, *gameSelectorBottom2, *gameSelectorTop, *menuBar, *menuSelectedBar, *darkButton, *eventTop, *left, *lightButton, *redButton, *right, *spritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *warningTop, *warningBottom, *boxView, *infoView, *selector, *editorBG, *plus, *minus, *back, *setting, *selectorCloning, *button, *bottomPopUp, *pokemonBufferBox, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR, *settings, *item, *alternativeSpritesSmall;
@@ -928,10 +928,10 @@ void printDB7(int sprite, int i, bool langVett[], bool adapt, bool overwrite, in
 		
 		sf2d_draw_texture(darkButton, 229, 168);	
 		
-		sftd_draw_text(fontBold14, 210 + (36 - sftd_get_text_width(fontBold14, 14, "Yes")) / 2, 112, (overwrite) ? DARKBLUE : YELLOW, 14, "Yes");
-		sftd_draw_text(fontBold14, 249 + (36 - sftd_get_text_width(fontBold14, 14, "No")) / 2, 112, (!overwrite) ? DARKBLUE : YELLOW, 14, "No");
-		sftd_draw_text(fontBold14, 210 + (36 - sftd_get_text_width(fontBold14, 14, "Yes")) / 2, 140, (adapt) ? DARKBLUE : YELLOW, 14, "Yes");
-		sftd_draw_text(fontBold14, 249 + (36 - sftd_get_text_width(fontBold14, 14, "No")) / 2, 140, (!adapt) ? DARKBLUE : YELLOW, 14, "No");
+		sftd_draw_wtext(fontBold14, 210 + (36 - sftd_get_wtext_width(fontBold14, 14, i18n(S_BUTTON_YES))) / 2, 112, (overwrite) ? DARKBLUE : YELLOW, 14, i18n(S_BUTTON_YES));
+		sftd_draw_wtext(fontBold14, 249 + (36 - sftd_get_wtext_width(fontBold14, 14, i18n(S_BUTTON_NO))) / 2, 112, (!overwrite) ? DARKBLUE : YELLOW, 14, i18n(S_BUTTON_NO));
+		sftd_draw_wtext(fontBold14, 210 + (36 - sftd_get_wtext_width(fontBold14, 14, i18n(S_BUTTON_YES))) / 2, 140, (adapt) ? DARKBLUE : YELLOW, 14, i18n(S_BUTTON_YES));
+		sftd_draw_wtext(fontBold14, 249 + (36 - sftd_get_wtext_width(fontBold14, 14, i18n(S_BUTTON_NO))) / 2, 140, (!adapt) ? DARKBLUE : YELLOW, 14, i18n(S_BUTTON_NO));
 		sftd_draw_text(fontBold14, 229 + (36 - sftd_get_text_width(fontBold14, 14, cont)) / 2, 170, YELLOW, 14, cont);
 		
 		printBottomIndications(i18n(S_GRAPHIC_DB_INDICATIONS_INJECT));
@@ -1658,7 +1658,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEntry, int saveBox, int bankBox, bool isBufferized, bool isSeen) {
 	int x, y;
 	int pointer[2] = {0, 0};
-	wchar_t* page = (wchar_t*)malloc(10 * sizeof(wchar_t));
+	wchar_t* page = (wchar_t*)malloc(MAX_LENGTH_BOX_NAME+1 * sizeof(wchar_t));
 	bool isKor = (pkmnbuf[0xE3] == 0x08) ? true : false;
 	
 	u8* pkmn = (u8*)malloc(PKMNLENGTH * sizeof(u8));
@@ -1673,7 +1673,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 		} else {
 			printAnimatedBG(true);
 			sf2d_draw_texture(bankTop, 34, 5);
-			swprintf(page, 10, i18n(S_GRAPHIC_PKBANK_BANK_TITLE), bankBox + 1);
+			swprintf(page, MAX_LENGTH_BOX_NAME+1, i18n(S_GRAPHIC_PKBANK_BANK_TITLE), bankBox + 1);
 			sftd_draw_wtext(fontBold12, 55 + (178 - sftd_get_wtext_width(fontBold12, 12, page)) / 2, 9, WHITE, 12, page);
 
 			if (getPokedexNumber(pkmn) > 0 && getPokedexNumber(pkmn) < 822) {
@@ -1754,7 +1754,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(boxView, 0, 0);
 		sf2d_draw_texture(editorBar, 0, 210);
-		swprintf(page, 10, i18n(S_GRAPHIC_PKBANK_SAVED_BOX_TITLE), saveBox + 1);
+		swprintf(page, MAX_LENGTH_BOX_NAME+1, i18n(S_GRAPHIC_PKBANK_SAVED_BOX_TITLE), saveBox + 1);
 		sftd_draw_wtext(fontBold12, 12 + (178 - sftd_get_wtext_width(fontBold12, 12, page)) / 2, 19, WHITE, 12, page);
 		sf2d_draw_texture(left, 7, 17);
 		sf2d_draw_texture(right, 185, 17);
@@ -1872,8 +1872,7 @@ void printSettings(int box) {
 		snprintf(size, 5, "%d", box);
 		sftd_draw_text(fontBold11, 189 + (36 - (sftd_get_text_width(fontBold11, 11, size))) / 2, 68, WHITE, 11, size);
 		free(size);
-
-		sftd_draw_wtext(fontBold9, 85, 225, LIGHTBLUE, 9, i18n(S_GRAPHIC_SETTINGS_INDICATION));
+		printBottomIndications(i18n(S_GRAPHIC_SETTINGS_INDICATION));
 	pksm_end_frame();
 	sf2d_swapbuffers();
 }
@@ -1887,39 +1886,39 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 	switch (byte) {
 		case 0x08 :
 		case 0x09 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, L"Species: #%d - %ls", getPokedexNumber(pkmn), listSpecies.items[getPokedexNumber(pkmn)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_SPECIES), getPokedexNumber(pkmn), listSpecies.items[getPokedexNumber(pkmn)]);
 			break;
 		case 0x0A :
 		case 0x0B :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, L"Held Item: #%d - %ls", getItem(pkmn), items[getItem(pkmn)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_ITEM), getItem(pkmn), items[getItem(pkmn)]);
 			break;
 		case 0x0C :
 		case 0x0D :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "TID: %d", getOTID(pkmn));
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_TID), getOTID(pkmn));
 			break;
 		case 0x0E :
 		case 0x0F :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "SID: %d", getSOTID(pkmn));
+			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_SID), getSOTID(pkmn));
 			break;
 		case 0x14 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, L"Ability: %ls", abilities[getAbility(pkmn)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ABILITY), abilities[getAbility(pkmn)]);
 			break;
 		case 0x1C :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, L"Nature: %ls", natures[getNature(pkmn)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_NATURE), natures[getNature(pkmn)]);
 			break;
 		case 0x1D : {
-			char* entries[] = { "Fateful Encounter flag" };
-			int i = sftd_get_text_width(fontBold12, 12, "Gender: ");
-			sftd_draw_text(fontBold12, xribbon + 27, y, LIGHTBLUE, 12, entries[0]);
+			wchar_t* entries[] = { i18n(S_GRAPHIC_HEXEDITOR_FATEFUL_ENCOUNTER_FLAG) };
+			int i = sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_HEXEDITOR_GENDER));
+			sftd_draw_wtext(fontBold12, xribbon + 27, y, LIGHTBLUE, 12, entries[0]);
 			sf2d_draw_rectangle(xribbon, y, 13, 13, (pkmn[byte] & 1) ? BUTTONGREEN : BUTTONRED);
-			sftd_draw_text(fontBold12, x, y + 17, LIGHTBLUE, 12, "Gender: ");
+			sftd_draw_wtext(fontBold12, x, y + 17, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_GENDER));
 			if (getGender(pkmn) == 0)
-				sftd_draw_text(fontBold12, x + i, y + 17, LIGHTBLUE, 12, "male");
+				sftd_draw_wtext(fontBold12, x + i, y + 17, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_GENDER_MALE));
 			else if (getGender(pkmn) == 1)
-				sftd_draw_text(fontBold12, x + i, y + 17, LIGHTBLUE, 12, "female");
+				sftd_draw_wtext(fontBold12, x + i, y + 17, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_GENDER_FEMALE));
 			else
-				sftd_draw_text(fontBold12, x + i, y + 17, LIGHTBLUE, 12, "genderless");
-			sftd_draw_textf(fontBold12, x, y + 17 * 2, LIGHTBLUE, 12, "Alternative Form: #%d", pkmn[byte] >> 3);
+				sftd_draw_wtext(fontBold12, x + i, y + 17, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_GENDER_GENDERLESS));
+			sftd_draw_wtextf(fontBold12, x, y + 17 * 2, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ALTERNATIVE_FORM), pkmn[byte] >> 3);
 			break;
 		}
 		case 0x1E :

@@ -205,3 +205,17 @@ Bank Size:
 Backup Save
 Backup Bank
 Tap the number to change size.
+Yes
+No
+Species: #%d - %ls
+Held Item: #%d - %ls
+TID: %d
+SID: %d
+Ability: %ls
+Nature: %ls
+Fateful Encounter flag
+Gender: 
+male
+female
+genderless
+Alternative Form: #%d
