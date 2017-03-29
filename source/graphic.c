@@ -1894,11 +1894,11 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			break;
 		case 0x0C :
 		case 0x0D :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_TID), getOTID(pkmn));
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_TID), getOTID(pkmn));
 			break;
 		case 0x0E :
 		case 0x0F :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_SID), getSOTID(pkmn));
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_SID), getSOTID(pkmn));
 			break;
 		case 0x14 :
 			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ABILITY), abilities[getAbility(pkmn)]);
@@ -1922,93 +1922,93 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			break;
 		}
 		case 0x1E :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "HP EV: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_EV_HP), pkmn[byte]);
 			break;
 		case 0x1F : 
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "ATK EV: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_EV_ATK), pkmn[byte]);
 			break;
 		case 0x20 : 
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "DEF EV: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_EV_DEF), pkmn[byte]);
 			break;	
 		case 0x21 : 
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "SPE EV: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_EV_SPE), pkmn[byte]);
 			break;
 		case 0x22 : 
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "SPA EV: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_EV_SPA), pkmn[byte]);
 			break;	
 		case 0x23 : 
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "SPD EV: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_EV_SPD), pkmn[byte]);
 			break;	
 		case 0x24 : 
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Contest Value Cool: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_CONTEST_VALUE_COOL), pkmn[byte]);
 			break;	
 		case 0x25 : 
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Contest Value Beauty: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_CONTEST_VALUE_BEAUTY), pkmn[byte]);
 			break;	
 		case 0x26 : 
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Contest Value Cute: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_CONTEST_VALUE_CUTE), pkmn[byte]);
 			break;	
 		case 0x27 : 
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Contest Value Smart: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_CONTEST_VALUE_SMART), pkmn[byte]);
 			break;	
 		case 0x28 : 
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Contest Value Tough: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_CONTEST_VALUE_TOUGH), pkmn[byte]);
 			break;	
 		case 0x29 : 
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Contest Value Sheen: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_CONTEST_VALUE_SHEEN), pkmn[byte]);
 			break;
 		case 0x30 : {
-			char* entries[] = {"Champion Kalos", "Champion G3 Hoenn", "Champion Sinnoh", "Best Friends", "Training", "Skillful Battler", "Battler Expert", "Effort"};
+			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_KALOS, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_G3_HOENN, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_SINNOH, S_GRAPHIC_HEXEDITOR_RIBBON_BEST_FRIENDS, S_GRAPHIC_HEXEDITOR_RIBBON_TRAINING,S_GRAPHIC_HEXEDITOR_RIBBON_SKILLFUL_BATTLER, S_GRAPHIC_HEXEDITOR_RIBBON_BATTLER_EXPERT, S_GRAPHIC_HEXEDITOR_RIBBON_EFFORT };
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_text(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, entries[i]);
+				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
 				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 0, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
 		case 0x31 : {
-			char* entries[] = {"Alert", "Shock", "Downcast", "Careless", "Relax", "Snooze", "Smile", "Gorgeous"};
+			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_ALERT, S_GRAPHIC_HEXEDITOR_RIBBON_SHOCK, S_GRAPHIC_HEXEDITOR_RIBBON_DOWNCAST, S_GRAPHIC_HEXEDITOR_RIBBON_CARELESS, S_GRAPHIC_HEXEDITOR_RIBBON_RELAX, S_GRAPHIC_HEXEDITOR_RIBBON_SNOOZE, S_GRAPHIC_HEXEDITOR_RIBBON_SMILE, S_GRAPHIC_HEXEDITOR_RIBBON_GORGEOUS };
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_text(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, entries[i]);
+				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
 				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 1, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
 		case 0x32 : {
-			char* entries[] = {"Royal", "Gorgeous Royal", "Artist", "Footprint", "Record", "Legend", "Country", "National"};
+			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_ROYAL, S_GRAPHIC_HEXEDITOR_RIBBON_GORGEOUS_ROYAL, S_GRAPHIC_HEXEDITOR_RIBBON_ARTIST, S_GRAPHIC_HEXEDITOR_RIBBON_FOOTPRINT, S_GRAPHIC_HEXEDITOR_RIBBON_RECORD, S_GRAPHIC_HEXEDITOR_RIBBON_LEGEND, S_GRAPHIC_HEXEDITOR_RIBBON_COUNTRY, S_GRAPHIC_HEXEDITOR_RIBBON_NATIONAL };
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_text(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, entries[i]);
+				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
 				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 2, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
 		case 0x33 : {
-			char* entries[] = {"Earth", "World", "Classic", "Premier", "Event", "Birthday", "Special", "Souvenir"};
+			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_EARTH, S_GRAPHIC_HEXEDITOR_RIBBON_WORLD, S_GRAPHIC_HEXEDITOR_RIBBON_CLASSIC, S_GRAPHIC_HEXEDITOR_RIBBON_PREMIER, S_GRAPHIC_HEXEDITOR_RIBBON_EVENT, S_GRAPHIC_HEXEDITOR_RIBBON_BIRTHDAY, S_GRAPHIC_HEXEDITOR_RIBBON_SPECIAL, S_GRAPHIC_HEXEDITOR_RIBBON_SOUVENIR };
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_text(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, entries[i]);
+				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
 				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 3, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
 		case 0x34 : {
-			char* entries[] = {"Wishing", "Champion Battle", "Champion Regional", "Champion National", "Champion World", "-", "-", "Champion G6 Hoenn"};
+			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_WISHING, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_BATTLE, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_REGIONAL, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_NATIONAL, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_WORLD, S_GRAPHIC_HEXEDITOR_RIBBON_38, S_GRAPHIC_HEXEDITOR_RIBBON_39, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_G6_HOENN };
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_text(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, entries[i]);
+				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
 				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 4, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
 		case 0x35 : {
-			char* entries[] = {"Contest Star", "Master Coolness", "Master Beauty", "Master Cuteness", "Master Cleverness", "Master Toughness", "Champion Alola", "Battle Royale"};
+			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_CONTEST_STAR, S_GRAPHIC_HEXEDITOR_RIBBON_MASTER_COOLNESS, S_GRAPHIC_HEXEDITOR_RIBBON_MASTER_BEAUTY, S_GRAPHIC_HEXEDITOR_RIBBON_MASTER_CUTENESS, S_GRAPHIC_HEXEDITOR_RIBBON_MASTER_CLEVERNESS, S_GRAPHIC_HEXEDITOR_RIBBON_MASTER_TOUGHNESS, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_ALOLA, S_GRAPHIC_HEXEDITOR_RIBBON_BATTLE_ROYALE };
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_text(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, entries[i]);
+				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
 				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 5, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
 		case 0x36 : {
-			char* entries[] = {"Battle Tree Great", "Battle Tree Master", "-", "-", "-", "-", "-", "-"};
+			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_BATTLE_TREE_GREAT, S_GRAPHIC_HEXEDITOR_RIBBON_BATTLE_TREE_MASTER, S_GRAPHIC_HEXEDITOR_RIBBON_51, S_GRAPHIC_HEXEDITOR_RIBBON_52, S_GRAPHIC_HEXEDITOR_RIBBON_53, S_GRAPHIC_HEXEDITOR_RIBBON_54, S_GRAPHIC_HEXEDITOR_RIBBON_55, S_GRAPHIC_HEXEDITOR_RIBBON_56 };
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_text(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, entries[i]);
+				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
 				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 6, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
@@ -2038,70 +2038,70 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0x56 :
 		case 0x57 :
 			getNickname(pkmn, string);
-			sftd_draw_text(fontBold12, x, y, LIGHTBLUE, 12, "Nickname: ");
-			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, x + sftd_get_text_width(fontBold12, 12, "Nickname: "), y, LIGHTBLUE, 12, (wchar_t*)string);
+			sftd_draw_wtext(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_NICKNAME));
+			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, x + sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_HEXEDITOR_NICKNAME)), y, LIGHTBLUE, 12, (wchar_t*)string);
 			break;
 		case 0x5A :
 		case 0x5B :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, L"Move 1: #%d - %ls", getMove(pkmn, 0), moves[getMove(pkmn, 0)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE1), getMove(pkmn, 0), moves[getMove(pkmn, 0)]);
 			break;
 		case 0x5C :
 		case 0x5D :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, L"Move 2: #%d - %ls", getMove(pkmn, 1), moves[getMove(pkmn, 1)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE2), getMove(pkmn, 1), moves[getMove(pkmn, 1)]);
 			break;
 		case 0x5E :
 		case 0x5F :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, L"Move 3: #%d - %ls", getMove(pkmn, 2), moves[getMove(pkmn, 2)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE3), getMove(pkmn, 2), moves[getMove(pkmn, 2)]);
 			break;
 		case 0x60 :
 		case 0x61 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, L"Move 4: #%d - %ls", getMove(pkmn, 3), moves[getMove(pkmn, 3)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE4), getMove(pkmn, 3), moves[getMove(pkmn, 3)]);
 			break;
 		case 0x62 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 1 PP: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE1_PP), pkmn[byte]);
 			break;
 		case 0x63 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 2 PP: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE2_PP), pkmn[byte]);
 			break;
 		case 0x64 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 3 PP: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE3_PP), pkmn[byte]);
 			break;
 		case 0x65 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 4 PP: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE4_PP), pkmn[byte]);
 			break;
 		case 0x66 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 1 PP Up: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE1_PPUP), pkmn[byte]);
 			break;
 		case 0x67 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 2 PP Up: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE2_PPUP), pkmn[byte]);
 			break;
 		case 0x68 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 3 PP Up: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE3_PPUP), pkmn[byte]);
 			break;
 		case 0x69 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 4 PP Up: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE4_PPUP), pkmn[byte]);
 			break;
 		case 0x6A :
 		case 0x6B :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, L"Relearn Move 1: #%d - %ls", getEggMove(pkmn, 0), moves[getEggMove(pkmn, 0)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_RELEARN_MOVE1), getEggMove(pkmn, 0), moves[getEggMove(pkmn, 0)]);
 			break;
 		case 0x6C :
 		case 0x6D :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, L"Relearn Move 2: #%d - %ls", getEggMove(pkmn, 1), moves[getEggMove(pkmn, 1)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_RELEARN_MOVE2), getEggMove(pkmn, 1), moves[getEggMove(pkmn, 1)]);
 			break;
 		case 0x6E :
 		case 0x6F :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, L"Relearn Move 3: #%d - %ls", getEggMove(pkmn, 2), moves[getEggMove(pkmn, 2)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_RELEARN_MOVE3), getEggMove(pkmn, 2), moves[getEggMove(pkmn, 2)]);
 			break;
 		case 0x70 :
 		case 0x71 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, L"Relearn Move 4: #%d - %ls", getEggMove(pkmn, 3), moves[getEggMove(pkmn, 3)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_RELEARN_MOVE4), getEggMove(pkmn, 3), moves[getEggMove(pkmn, 3)]);
 			break;
 		case 0x77: {
-			char* entries[] = { "is Nicknamed", "is Egg" };
-			sftd_draw_text(fontBold12, xribbon + 27, y, LIGHTBLUE, 12, entries[0]);
+			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_IS_NICKNAMED, S_GRAPHIC_HEXEDITOR_IS_EGG };
+			sftd_draw_wtext(fontBold12, xribbon + 27, y, LIGHTBLUE, 12, i18n(entries[0]));
 			sf2d_draw_rectangle(xribbon, y, 13, 13, (isNicknameF(pkmn)) ? BUTTONGREEN : BUTTONRED);
-			sftd_draw_text(fontBold12, xribbon + 27, y + 17, LIGHTBLUE, 12, entries[1]);
+			sftd_draw_wtext(fontBold12, xribbon + 27, y + 17, LIGHTBLUE, 12, i18n(entries[1]));
 			sf2d_draw_rectangle(xribbon, y + 17, 13, 13, (isEgg(pkmn)) ? BUTTONGREEN : BUTTONRED);
 			break;
 		}
@@ -2130,29 +2130,29 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0x8E :
 		case 0x8F :	
 			getHTName(pkmn, string);
-			sftd_draw_text(fontBold12, x, y, LIGHTBLUE, 12, "Held Trainer name: ");
-			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, x + sftd_get_text_width(fontBold12, 12, "Held Trainer name: "), y, LIGHTBLUE, 12, (wchar_t*)string);
+			sftd_draw_wtext(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_NAME));
+			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, x + sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_NAME)), y, LIGHTBLUE, 12, (wchar_t*)string);
 			break;
 		case 0xA2 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Held Trainer Friendship: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_FRIENDSHIP), pkmn[byte]);
 			break;
 		case 0xA3 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Held Trainer Affection: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_AFFECTION), pkmn[byte]);
 			break;
 		case 0xA4 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Held Trainer Intensity: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_INTENSITY), pkmn[byte]);
 			break;
 		case 0xA5 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Held Trainer Memory: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_MEMORY), pkmn[byte]);
 			break;	
 		case 0xA6 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Held Trainer Feeling: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_FEELING), pkmn[byte]);
 			break;
 		case 0xAE :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Fullness: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_FULLNESS), pkmn[byte]);
 			break;	
 		case 0xAF :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Enjoyment: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ENJOYMENT), pkmn[byte]);
 			break;
 		case 0xB0 :
 		case 0xB1 :
@@ -2179,45 +2179,45 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0xC6 :
 		case 0xC7 :
 			getOT(pkmn, string);
-			sftd_draw_text(fontBold12, x, y, LIGHTBLUE, 12, "Original Trainer Name: ");
-			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, x + sftd_get_text_width(fontBold12, 12, "Original Trainer Name: "), y, LIGHTBLUE, 12, (wchar_t*)string);
+			sftd_draw_wtext(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_NAME));
+			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, x + sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_NAME)), y, LIGHTBLUE, 12, (wchar_t*)string);
 			break;
 		case 0xCA :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Original Trainer Friendship: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_FRIENDSHIP), pkmn[byte]);
 			break;
 		case 0xCB :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Original Trainer Affection: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_AFFECTION), pkmn[byte]);
 			break;
 		case 0xCC :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Original Trainer Intensity: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_INTENSITY), pkmn[byte]);
 			break;
 		case 0xCD :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Original Trainer Memory: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_MEMORY), pkmn[byte]);
 			break;	
 		case 0xD0 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Original Trainer Feeling: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_FEELING), pkmn[byte]);
 			break;
 		case 0xD1 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Egg Year: %d", 2000 + pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_EGG_YEAR), 2000 + pkmn[byte]);
 			break;
 		case 0xD2 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Egg Month: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_EGG_MONTH), pkmn[byte]);
 			break;
 		case 0xD3 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Egg Day: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_EGG_DAY), pkmn[byte]);
 			break;
 		case 0xD4 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Met Year: %d", 2000 + pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MET_YEAR), 2000 + pkmn[byte]);
 			break;
 		case 0xD5 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Met Month: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MET_MONTH), pkmn[byte]);
 			break;
 		case 0xD6 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Met Day: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MET_DAY), pkmn[byte]);
 			break;
 		case 0xDD : {
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Met Level: %d", (pkmn[byte] & 0x7f));
-			sftd_draw_textf(fontBold12, xribbon + 27, y + 17, LIGHTBLUE, 12, ": Original Trainer Gender");
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MET_LEVEL), (pkmn[byte] & 0x7f));
+			sftd_draw_wtextf(fontBold12, xribbon + 27, y + 17, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_GENDER));
 			if (getOTGender(pkmn) == 0)
 				sf2d_draw_texture(male, xribbon + 10, y + 17 + 2);
 			else if (getOTGender(pkmn) == 1)
@@ -2225,9 +2225,9 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			break;
 		}
 		case 0xDE : {
-			char* entries[] = { "HP Hyper Trained", "ATK Hyper Trained", "DEF Hyper Trained", "SP.ATK Hyper Trained", "SP.DEF Hyper Trained", "SPEED Hyper Trained" };
+			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_HYPER_TRAINED_HP, S_GRAPHIC_HEXEDITOR_HYPER_TRAINED_ATK, S_GRAPHIC_HEXEDITOR_HYPER_TRAINED_DEF, S_GRAPHIC_HEXEDITOR_HYPER_TRAINED_SPATK, S_GRAPHIC_HEXEDITOR_HYPER_TRAINED_SPDEF, S_GRAPHIC_HEXEDITOR_HYPER_TRAINED_SPEED };
 			for (int i = 0; i < 6; i++) {
-				sftd_draw_text(fontBold12, xribbon + 27, y + 17 * i, LIGHTBLUE, 12, entries[i]);
+				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17 * i, LIGHTBLUE, 12, i18n(entries[i]));
 				sf2d_draw_rectangle(xribbon, y + 17 * i, 13, 13, (getHTi(pkmn, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;

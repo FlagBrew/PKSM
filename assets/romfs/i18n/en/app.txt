@@ -219,3 +219,118 @@ male
 female
 genderless
 Alternative Form: #%d
+HP EV: %d
+ATK EV: %d
+DEF EV: %d
+SPE EV: %d
+SPA EV: %d
+SPD EV: %d
+Contest Value Cool: %d
+Contest Value Beauty: %d
+Contest Value Cute: %d
+Contest Value Smart: %d
+Contest Value Tough: %d
+Contest Value Sheen: %d
+Champion Kalos
+Champion G3 Hoenn
+Champion Sinnoh
+Best Friends
+Training
+Skillful Battler
+Battler Expert
+Effort
+Alert
+Shock
+Downcast
+Careless
+Relax
+Snooze
+Smile
+Gorgeous
+Royal
+Gorgeous Royal
+Artist
+Footprint
+Record
+Legend
+Country
+National
+Earth
+World
+Classic
+Premier
+Event
+Birthday
+Special
+Souvenir
+Wishing
+Champion Battle
+Champion Regional
+Champion National
+Champion World
+-
+-
+Champion G6 Hoenn
+Contest Star
+Master Coolness
+Master Beauty
+Master Cuteness
+Master Cleverness
+Master Toughness
+Champion Alola
+Battle Royale
+Battle Tree Great
+Battle Tree Master
+-
+-
+-
+-
+-
+-
+Nickname: 
+Move 1: #%d - %ls
+Move 2: #%d - %ls
+Move 3: #%d - %ls
+Move 4: #%d - %ls
+Move 1 PP: %d
+Move 2 PP: %d
+Move 3 PP: %d
+Move 4 PP: %d
+Move 1 PP Up: %d
+Move 2 PP Up: %d
+Move 3 PP Up: %d
+Move 4 PP Up: %d
+Relearn Move 1: #%d - %ls
+Relearn Move 2: #%d - %ls
+Relearn Move 3: #%d - %ls
+Relearn Move 4: #%d - %ls
+is Nicknamed
+is Egg
+Held Trainer name: 
+Held Trainer Friendship: %d
+Held Trainer Affection: %d
+Held Trainer Intensity: %d
+Held Trainer Memory: %d
+Held Trainer Feeling: %d
+Fullness: %d
+Enjoyment: %d
+Original Trainer Name: 
+Original Trainer Friendship: %d
+Original Trainer Affection: %d
+Original Trainer Intensity: %d
+Original Trainer Memory: %d
+Original Trainer Feeling: %d
+Egg Year: %d
+Egg Month: %d
+Egg Day: %d
+Met Year: %d
+Met Month: %d
+Met Day: %d
+Met Level: %d
+: Original Trainer Gender
+HP Hyper Trained
+ATK Hyper Trained
+DEF Hyper Trained
+SP.ATK Hyper Trained
+SP.DEF Hyper Trained
+SPEED Hyper Trained
