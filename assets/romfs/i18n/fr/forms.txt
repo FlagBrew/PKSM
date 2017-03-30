@@ -1,0 +1,145 @@
+Défault
+Alola
+Défault
+Rockeur
+Lady
+Star
+Docteur
+Catcheur
+Cosplayeur
+Défault
+Casquette Originale
+Casquette de Hoenn
+Casquette de Sinnoh
+Casquette d'Unys
+Casquette de Kalos
+Casquette d’Alola
+A
+B
+C
+D
+E
+F
+G
+H
+I
+J
+K
+L
+M
+N
+O
+P
+Q
+R
+S
+T
+U
+V
+W
+X
+Y
+Z
+!
+?
+Normal
+Forme Attaque
+Forme Défense
+Forme Vitesse
+Cape Plante
+Cape Sable
+Cape Déchet
+Mer Occident
+Mer Orient
+Défault
+Motisma Chaleur
+Motisma Lavage
+Motisma Froid
+Motisma Hélice
+Motisma Tonte
+Forme Alternative
+Forme Origine
+Land
+Sky
+Red-Striped
+Blue-Striped
+Spring
+Summer
+Autumn
+Winter
+Incarnate
+Therian
+Default
+White
+Black
+Ordinary
+Resolute
+Aria
+Pirouette
+Default
+Battle Bond
+Icy Snow
+Polar
+Tundra
+Continental
+Garden
+Elegant
+Meadow
+Modern
+Marine
+Archipelago
+High Plains
+Sandstorm
+River
+Monsoon
+Savanna
+Sun
+Ocean
+Jungle
+Fancy
+Poke Ball
+Red
+Yellow
+Orange
+Blue
+White
+Eternal Flower
+Natural
+Heart
+Star
+Diamond
+Debutante
+Matron
+Dandy
+La Reine
+Kabuki
+Pharaoh
+Average
+Small
+Large
+Super
+50%
+10%
+10%-PC
+50%-PC
+Confined
+Unbound
+Baile
+Pom-Pom
+Pa'u
+Sensu
+Midday
+Midnight
+Red
+Orange
+Yellow
+Green
+Blue
+Indigo
+Violet
+Default
+Original Color
+Default
+Spiky-Eared
+Default
+Female

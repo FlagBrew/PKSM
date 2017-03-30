@@ -174,7 +174,7 @@ EV
 TOTAL
 Puissance cachée:
 Capacités
-Capacités ré-apprises:
+Capacités réapprises:
 Byte sélectionné:
 Choisis un objet avec A dans l'écran du haut.
 Choisis une nature avec A dans l'écran du haut.
@@ -207,3 +207,353 @@ Backup Banque
 Appuie à côté du nombre pour changer la taille.
 Oui
 Non
+Créature: #%d - %ls
+Objet tenu: #%d - %ls
+TID: %d
+SID: %d
+Talent: %ls
+Nature: %ls
+Drapeau Rencontre Fatidique
+Sexe: 
+mâle
+femelle
+sans genre
+Forme alternative: #%d
+PV EV: %d
+ATQ EV: %d
+DEF EV: %d
+VIT EV: %d
+A.SPE EV: %d
+D.SPE EV: %d
+Concours Pkmn - Sang-Froid: %d
+Concours Pkmn - Beauté: %d
+Concours Pkmn - Grâce: %d
+Concours Pkmn - Intelligence: %d
+Concours Pkmn - Robustesse: %d
+Concours Pkmn - Beauté Superficielle: %d
+Maître de Kalos
+Maître de Hoenn 3G
+Maître de Sinnoh
+Affection
+Perfectionnement
+Élite du Combat
+Génie du Combat
+Effort
+Alerte
+Choc
+Déprime
+Négligence
+Détente
+Sieste
+Sourire
+Sublime
+Royal
+Royal Sublime
+Artiste
+Empreinte
+Record
+Légende
+Pays
+National
+Terre
+Monde
+Classique
+Premier
+Événement
+Anniversaire
+Spécial
+Souvenir
+Souhait
+Vainqueur Championnat
+Champion Régional
+Champion National
+Champion du Monde
+-
+-
+Maître de Hoenn 6G
+Star des Concours
+Maître Sang-froid
+Maître Beauté
+Maître Grâce
+Maître Intelligence
+Maître Robustesse
+Maître d’Alola
+Champion Royal
+Élite de l’Arbre
+Maître de l’Arbre
+-
+-
+-
+-
+-
+-
+Surnom: 
+Capacité 1: #%d - %ls
+Capacité 2: #%d - %ls
+Capacité 3: #%d - %ls
+Capacité 4: #%d - %ls
+Capacité 1 PP: %d
+Capacité 2 PP: %d
+Capacité 3 PP: %d
+Capacité 4 PP: %d
+Capacité 1 PP Up: %d
+Capacité 2 PP Up: %d
+Capacité 3 PP Up: %d
+Capacité 4 PP Up: %d
+Capacité réapprise 1: #%d - %ls
+Capacité réapprise 2: #%d - %ls
+Capacité réapprise 3: #%d - %ls
+Capacité réapprise 4: #%d - %ls
+est surnommé
+est un œuf
+Dresseur actuel - Nom: 
+Dresseur actuel - Bonheur: %d
+Dresseur actuel - Affection: %d
+Dresseur actuel - Intensité: %d
+Dresseur actuel - Mémoire: %d
+Dresseur actuel - Sentiments: %d
+Satiété 6G (Poké-Récré): %d
+Satiété 7G (Poké-Détente): %d
+Dresseur d'Origine - Nom: 
+Dresseur d'Origine - Bonheur: %d
+Dresseur d'Origine - Affection: %d
+Dresseur d'Origine - Intensité: %d
+Dresseur d'Origine - Mémoire: %d
+Dresseur d'Origine - Sentiments: %d
+Année d'éclosion de l'œuf: %d
+Mois d'éclosion de l'œuf: %d
+Jour d'éclosion de l'œuf: %d
+Année de rencontre: %d
+Mois de rencontre: %d
+Jour de rencontre: %d
+Rencontré au niveau: %d
+: Sexe du Dresseur d'Origine
+PV Entraînement Ultime
+ATQ Entraînement Ultime
+DEF Entraînement Ultime
+ATQ.SPE Entraînement Ultime
+DEF.SPE Entraînement Ultime
+VITESSE Entraînement Ultime
+Valeur constante de cryptage, byte 1
+Valeur constante de cryptage, byte 2
+Valeur constante de cryptage, byte 3
+Valeur constante de cryptage, byte 4
+Sanity, byte 1
+Sanity, byte 2
+Checksum, byte 1
+Checksum, byte 2
+Créature, byte 1
+Créature, byte 2
+Objet tenu, byte 1
+Objet tenu, byte 2
+TID, byte 1
+TID, byte 2
+SID, byte 1
+SID, byte 2
+Expérience, byte 1
+Expérience, byte 2
+Expérience, byte 3
+Expérience, byte 4
+Talent
+ID du Talent
+MarkValue, byte 1
+MarkValue, byte 2
+PID, byte 1
+PID, byte 2
+PID, byte 3
+PID, byte 4
+Nature
+Drapeau de Rencontre Fatidique / Sexe / Forme alternative
+PV Effort Value
+ATQ Effort Value
+DEF Effort Value
+VIT Effort Value
+A.SPE Effort Value
+D.SPE Effort Value
+Concours Pkmn - Sang-Froid
+Concours Pkmn - Beauté
+Concours Pkmn - Grâce
+Concours Pkmn - Intelligence
+Concours Pkmn - Robustesse
+Concours Pkmn - Beauté Superficielle
+Drapeau Poké-Loisir
+Pokérus
+Drapeau SPV , byte 1
+Drapeau SPV , byte 2
+Drapeau SPV , byte 3
+Drapeau SPV , byte 4
+Rubans, byte 1
+Rubans, byte 2
+Rubans, byte 3
+Rubans, byte 4
+Rubans, byte 5
+Rubans, byte 6
+Rubans, byte 7
+Rubans, byte 8
+Ruban Concours Mémoire
+Ruban Combat Mémoire
+Dist byte
+Surnom, byte 1
+Surnom, byte 2
+Surnom, byte 3
+Surnom, byte 4
+Surnom, byte 5
+Surnom, byte 6
+Surnom, byte 7
+Surnom, byte 8
+Surnom, byte 9
+Surnom, byte 10
+Surnom, byte 11
+Surnom, byte 12
+Surnom, byte 13
+Surnom, byte 14
+Surnom, byte 15
+Surnom, byte 16
+Surnom, byte 17
+Surnom, byte 18
+Surnom, byte 19
+Surnom, byte 20
+Surnom, byte 21
+Surnom, byte 22
+Surnom, byte 23
+Surnom, byte 24
+Capacité 1, byte 1
+Capacité 1, byte 2
+Capacité 2, byte 1
+Capacité 2, byte 2
+Capacité 3, byte 1
+Capacité 3, byte 2
+Capacité 4, byte 1
+Capacité 4, byte 2
+Capacité 1 PP
+Capacité 2 PP
+Capacité 3 PP
+Capacité 4 PP
+Capacité 1 PP+
+Capacité 2 PP+
+Capacité 3 PP+
+Capacité 4 PP+
+Capacité réapprise 1, byte 1
+Capacité réapprise 1, byte 2
+Capacité réapprise 2, byte 1
+Capacité réapprise 2, byte 2
+Capacité réapprise 3, byte 1
+Capacité réapprise 3, byte 2
+Capacité réapprise 4, byte 1
+Capacité réapprise 4, byte 2
+Challenge secret SPV
+IV, byte 1
+IV, byte 2
+IV, byte 3
+IV, byte 4
+Nom dresseur actuel, byte 1
+Nom dresseur actuel, byte 2
+Nom dresseur actuel, byte 3
+Nom dresseur actuel, byte 4
+Nom dresseur actuel, byte 5
+Nom dresseur actuel, byte 6
+Nom dresseur actuel, byte 7
+Nom dresseur actuel, byte 8
+Nom dresseur actuel, byte 9
+Nom dresseur actuel, byte 10
+Nom dresseur actuel, byte 11
+Nom dresseur actuel, byte 12
+Nom dresseur actuel, byte 13
+Nom dresseur actuel, byte 14
+Nom dresseur actuel, byte 15
+Nom dresseur actuel, byte 16
+Nom dresseur actuel, byte 17
+Nom dresseur actuel, byte 18
+Nom dresseur actuel, byte 19
+Nom dresseur actuel, byte 20
+Nom dresseur actuel, byte 21
+Nom dresseur actuel, byte 22
+Nom dresseur actuel, byte 23
+Nom dresseur actuel, byte 24
+Sexe dresseur actuel
+Dresseur actuel
+Dernier Dresseur 1 Région
+Dernier Dresseur 1 Pays
+Dernier Dresseur 2 Région
+Dernier Dresseur 2 Pays
+Dernier Dresseur 3 Région
+Dernier Dresseur 3 Pays
+Dernier Dresseur 4 Région
+Dernier Dresseur 4 Pays
+Dernier Dresseur 5 Région
+Dernier Dresseur 5 Pays
+Dresseur actuel Bonheur
+Dresseur actuel Affection
+Dresseur actuel Intensité
+Dresseur actuel Mémoire
+Dresseur actuel Sentiments
+Dresseur actuel TextVar, byte 1
+Dresseur actuel TextVar, byte 2
+Satiété 6G (Poké-Récré): %d
+Satiété 7G (Poké-Détente): %d
+Dresseur d'Origine Nom, byte 1
+Dresseur d'Origine Nom, byte 2
+Dresseur d'Origine Nom, byte 3
+Dresseur d'Origine Nom, byte 4
+Dresseur d'Origine Nom, byte 5
+Dresseur d'Origine Nom, byte 6
+Dresseur d'Origine Nom, byte 7
+Dresseur d'Origine Nom, byte 8
+Dresseur d'Origine Nom, byte 9
+Dresseur d'Origine Nom, byte 10
+Dresseur d'Origine Nom, byte 11
+Dresseur d'Origine Nom, byte 12
+Dresseur d'Origine Nom, byte 13
+Dresseur d'Origine Nom, byte 14
+Dresseur d'Origine Nom, byte 15
+Dresseur d'Origine Nom, byte 16
+Dresseur d'Origine Nom, byte 17
+Dresseur d'Origine Nom, byte 18
+Dresseur d'Origine Nom, byte 19
+Dresseur d'Origine Nom, byte 20
+Dresseur d'Origine Nom, byte 21
+Dresseur d'Origine Nom, byte 22
+Dresseur d'Origine Nom, byte 23
+Dresseur d'Origine Nom, byte 24
+Dresseur d'Origine Bonheur
+Dresseur d'Origine Affection
+Dresseur d'Origine Intensité
+Dresseur d'Origine Mémoire
+Dresseur d'Origine TextVar
+Dresseur d'Origine Sentiments
+Année d'éclosion de l'œuf: %d
+Mois d'éclosion de l'œuf
+Jour d'éclosion de l'œuf
+Année de rencontre
+Mois de rencontre
+Jour de rencontre
+Lieu d'éclosion de l'œuf
+Lieu de rencontre
+Ball
+Rencontré au niveau / Sexe Dresseur d'Origine
+Drapeaux Entraînement Ultime
+Version
+Pays
+Région
+Région de la console
+Langue
+Le serveur pk7 écoute sur le port http://%s:9000
+Échec allocation buffer!
+Échec socInit!
+Socket indisponible!
+Échec binding!
+Échec listening!
+Erreur durant le parsing de la requête!
+Échec open http context!
+Échec du téléchargement des extras!
+Échec de l'ajout d'un champ dans request header!
+Échec de l'initialisation de SSLOpt!
+Échec du démarrage d'une http request!
+Impossible de récupérer le status code!
+Échec de la redirection
+Impossible de recevoir la taille du téléchargement!
+Échec allocation mémoire!
+Changement de la taille...
+La taille totale de la banque a été changée!
+Backup du jeu créé!
+Backup de la banque créé!
