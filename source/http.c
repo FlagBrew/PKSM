@@ -25,7 +25,7 @@ http_server			*app_data = &data;
 static char			payload[PAYLOADSIZE];
 
 void drawIP(sftd_font *fontBold9) {
-	sftd_draw_textf(fontBold9, 10, 220, WHITE, 9, "Server running at http://%s:9000", inet_ntoa(data.server_addr.sin_addr));	
+	sftd_draw_wtextf(fontBold9, 10, 220, WHITE, 9, i18n(S_HTTP_SERVER_RUNNING), inet_ntoa(data.server_addr.sin_addr));
 }
 
 void shutDownSoc() {
@@ -43,12 +43,12 @@ void closeOnExit() {
 int init() {
 	socket_buffer = (u32*)memalign(SOC_ALIGN, SOC_BUFFERSIZE);
 	if (socket_buffer == NULL) {
-		infoDisp(L"Buffer allocation failed!");
+		infoDisp(i18n(S_HTTP_BUFFER_ALLOC_FAILED));
 		closeOnExit();
 		return 0;
 	}
 	if (socInit(socket_buffer, SOC_BUFFERSIZE)) {
-		infoDisp(L"socInit failed!");
+		infoDisp(i18n(S_HTTP_SOCINIT_FAILED));
 		closeOnExit();
 		return 0;
 	}
@@ -61,7 +61,7 @@ int init() {
 
 	// Is socket accessible?
 	if (data.server_id < 0) {
-		infoDisp(L"Socket unaccesible!");
+		infoDisp(i18n(S_HTTP_SOCKET_UNACCESSIBLE));
 		closeOnExit();
 		return 0;
 	}
@@ -73,7 +73,7 @@ int init() {
 	
 	if (bind(data.server_id, (struct sockaddr *) &data.server_addr, sizeof(data.server_addr))) {
 		close(data.server_id);
-		infoDisp(L"Binding failed!");
+		infoDisp(i18n(S_HTTP_BINDING_FAILED));
 		closeOnExit();
 		return 0;
 	}
@@ -82,7 +82,7 @@ int init() {
 	fcntl(data.server_id, F_SETFL, fcntl(data.server_id, F_GETFL, 0) | O_NONBLOCK);
 
 	if (listen(data.server_id, 5)) {
-		infoDisp(L"Listening failed!");
+		infoDisp(i18n(S_HTTP_LISTENING_FAILED));
 		closeOnExit();
 		return 0;		
 	}
@@ -92,7 +92,7 @@ int init() {
 void processing(u8* mainbuf, int game, int tempVett[]) {
 	data.client_id = accept(data.server_id, (struct sockaddr *) &data.client_addr, &data.client_length);
 	if (data.client_id < 0 && errno != EAGAIN) {
-		infoDisp(L"Error during processing phase!");
+		infoDisp(i18n(S_HTTP_ERROR_PROCESSING_PHASE));
 		closeOnExit();
 		return;		
 	} else {
@@ -136,34 +136,34 @@ Result downloadFile(char* url, char* path) {
     u8 *buf;
 
     if (httpcOpenContext(&context, HTTPC_METHOD_GET, url, 0)) {
-        infoDisp(L"Failed to open http context!");
-		infoDisp(L"Failed to download assets!");
+        infoDisp(i18n(S_HTTP_HTTP_CONTEXT_OPEN_FAILED));
+		infoDisp(i18n(S_HTTP_DOWNLOAD_ASSETS_FAILED));
         return -1;
     }
 
     if (httpcAddRequestHeaderField(&context, "User-Agent", "PKSM")) {
-        infoDisp(L"Failed to add a request header field!");
-		infoDisp(L"Failed to download assets!");
+        infoDisp(i18n(S_HTTP_ADD_REQUEST_HEADER_FIELD_FAILED));
+		infoDisp(i18n(S_HTTP_DOWNLOAD_ASSETS_FAILED));
         return -1;
     }
 	
     if (httpcSetSSLOpt(&context, SSLCOPT_DisableVerify)) {
-        infoDisp(L"Failed to set SSLOpt!");
-		infoDisp(L"Failed to download assets!");
+        infoDisp(i18n(S_HTTP_SET_SSLOPT_FAILED));
+		infoDisp(i18n(S_HTTP_DOWNLOAD_ASSETS_FAILED));
         return -1;
     }
 	
 	httpcAddRequestHeaderField(&context, "Connection", "Keep-Alive");
 
     if (httpcBeginRequest(&context)) {
-        infoDisp(L"Failed to begin a http request!");
-		infoDisp(L"Failed to download assets!");
+        infoDisp(i18n(S_HTTP_BEGIN_HTTP_REQUEST_FAILED));
+		infoDisp(i18n(S_HTTP_DOWNLOAD_ASSETS_FAILED));
         return -1;
     }
 
     if (httpcGetResponseStatusCode(&context, &statuscode)) {
-        infoDisp(L"Failed to receive a status code!");
-		infoDisp(L"Failed to download assets!");
+        infoDisp(i18n(S_HTTP_RECEIVE_STATUS_CODE_FAILED));
+		infoDisp(i18n(S_HTTP_DOWNLOAD_ASSETS_FAILED));
         httpcCloseContext(&context);
         return -1;
     }
@@ -172,24 +172,24 @@ Result downloadFile(char* url, char* path) {
         if (statuscode >= 300 && statuscode < 400) {
             char newUrl[1024];
             if (httpcGetResponseHeader(&context, (char*)"Location", newUrl, 1024)) {
-                infoDisp(L"Redirection failed!");
-				infoDisp(L"Failed to download assets!");
+                infoDisp(i18n(S_HTTP_REDIRECTION_FAILED));
+				infoDisp(i18n(S_HTTP_DOWNLOAD_ASSETS_FAILED));
                 return -1;
             }
             httpcCloseContext(&context);
             downloadFile(newUrl, path);
             return -1;
         } else {
-            infoDisp(L"Redirection failed!");
-			infoDisp(L"Failed to download assets!");
+            infoDisp(i18n(S_HTTP_REDIRECTION_FAILED));
+			infoDisp(i18n(S_HTTP_DOWNLOAD_ASSETS_FAILED));
             httpcCloseContext(&context);
             return -1;
         }
     }
 
     if (httpcGetDownloadSizeState(&context, NULL, &contentsize)) {
-        infoDisp(L"Failed to receive download size!");
-		infoDisp(L"Failed to download assets!");
+        infoDisp(i18n(S_HTTP_RECEIVE_DOWNLOAD_SIZE_FAILED));
+		infoDisp(i18n(S_HTTP_DOWNLOAD_ASSETS_FAILED));
         httpcCloseContext(&context);
         return -1;
     }
@@ -197,15 +197,15 @@ Result downloadFile(char* url, char* path) {
     buf = (u8*)malloc(contentsize);
     if (buf == NULL) {
 		free(buf);
-        infoDisp(L"Failed to alloc memory!");
-		infoDisp(L"Failed to download assets!");
+        infoDisp(i18n(S_HTTP_ALLOC_MEMORY_FAILED));
+		infoDisp(i18n(S_HTTP_DOWNLOAD_ASSETS_FAILED));
         return -1;
     }
     memset(buf, 0, contentsize);
 
     if (httpcDownloadData(&context, buf, contentsize, NULL)) {
         free(buf);
-		infoDisp(L"Failed to download assets!");
+		infoDisp(i18n(S_HTTP_DOWNLOAD_ASSETS_FAILED));
         httpcCloseContext(&context);
         return -1;
     }

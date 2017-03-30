@@ -537,3 +537,19 @@ Country
 Region
 Console Region
 Language
+Server running at http://%s:9000
+Buffer allocation failed!
+socInit failed!
+Socket unaccesible!
+Binding failed!
+Listening failed!
+Error during processing phase!
+Failed to open http context!
+Failed to download assets!
+Failed to add a request header field!
+Failed to set SSLOpt!
+Failed to begin a http request!
+Failed to receive a status code!
+Redirection failed!
+Failed to receive download size!
+Failed to alloc memory!

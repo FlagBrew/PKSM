@@ -678,6 +678,24 @@ typedef enum {
 	S_HEXEDITOR_DESC_0xE1,                            // Line 537
 	S_HEXEDITOR_DESC_0xE2,                            // Line 538
 	S_HEXEDITOR_DESC_0xE3,                            // Line 539
+
+	S_HTTP_SERVER_RUNNING,                            // Line 540
+	S_HTTP_BUFFER_ALLOC_FAILED,                       // Line 541
+	S_HTTP_SOCINIT_FAILED,                            // Line 542
+	S_HTTP_SOCKET_UNACCESSIBLE,                       // Line 543
+	S_HTTP_BINDING_FAILED,                            // Line 544
+	S_HTTP_LISTENING_FAILED,                          // Line 545
+	S_HTTP_ERROR_PROCESSING_PHASE,                    // Line 546
+
+	S_HTTP_HTTP_CONTEXT_OPEN_FAILED,                  // Line 547
+	S_HTTP_DOWNLOAD_ASSETS_FAILED,                    // Line 548
+	S_HTTP_ADD_REQUEST_HEADER_FIELD_FAILED,           // Line 549
+	S_HTTP_SET_SSLOPT_FAILED,                         // Line 550
+	S_HTTP_BEGIN_HTTP_REQUEST_FAILED,                 // Line 551
+	S_HTTP_RECEIVE_STATUS_CODE_FAILED,                // Line 552
+	S_HTTP_REDIRECTION_FAILED,                        // Line 553
+	S_HTTP_RECEIVE_DOWNLOAD_SIZE_FAILED,              // Line 554
+	S_HTTP_ALLOC_MEMORY_FAILED,                       // Line 555
 } AppTextCode;
 
 
