@@ -9,7 +9,7 @@ Chargement des objets
 Tri des objets
 Chargement des p. cachés
 Chargement des polices...
-Mise en cache police de car. %i/%i
+Pré-chargement police de caractère #%i / %i
 Terminé!
 Création de la banque...
 Sauvegarde de la banque...
@@ -113,7 +113,7 @@ Défense
 Atq. Spé.
 Déf. Spé.
 Vitesse
-L.%u
+Nv.%u
 Capacités
 Cycle œuf:
 Oui
@@ -136,7 +136,7 @@ Niveau:
 Nature:
 Talent:
 Objet:
-Chroma.:
+Chroma. :
 Pokérus:
 DO:
 Surnom:
@@ -175,7 +175,7 @@ TOTAL
 Puissance cachée:
 Capacités
 Capacités réapprises:
-Byte sélectionné:
+Byte séléctionné:
 Choisis un objet avec A dans l'écran du haut.
 Choisis une nature avec A dans l'écran du haut.
 Choisis une Ball avec A dans l'écran du haut.
@@ -213,7 +213,7 @@ TID: %d
 SID: %d
 Talent: %ls
 Nature: %ls
-Drapeau Rencontre Fatidique
+Indicateur Rencontre Fatidique
 Sexe: 
 mâle
 femelle
@@ -306,14 +306,14 @@ Capacité réapprise 3: #%d - %ls
 Capacité réapprise 4: #%d - %ls
 est surnommé
 est un œuf
-Dresseur actuel - Nom: 
-Dresseur actuel - Bonheur: %d
-Dresseur actuel - Affection: %d
-Dresseur actuel - Intensité: %d
-Dresseur actuel - Mémoire: %d
-Dresseur actuel - Sentiments: %d
-Satiété 6G (Poké-Récré): %d
-Satiété 7G (Poké-Détente): %d
+Dernier dresseur - Nom: 
+Dernier dresseur - Bonheur: %d
+Dernier dresseur - Affection: %d
+Dernier dresseur - Intensité: %d
+Dernier dresseur - Mémoire: %d
+Dernier dresseur - Sentiments: %d
+Satiété
+Gaieté
 Dresseur d'Origine - Nom: 
 Dresseur d'Origine - Bonheur: %d
 Dresseur d'Origine - Affection: %d
@@ -363,7 +363,7 @@ PID, byte 2
 PID, byte 3
 PID, byte 4
 Nature
-Drapeau de Rencontre Fatidique / Sexe / Forme alternative
+Indicateur de Rencontre Fatidique / Sexe / Forme alternative
 PV Effort Value
 ATQ Effort Value
 DEF Effort Value
@@ -376,12 +376,12 @@ Concours Pkmn - Grâce
 Concours Pkmn - Intelligence
 Concours Pkmn - Robustesse
 Concours Pkmn - Beauté Superficielle
-Drapeau Poké-Loisir
+Indicateur Poké-Loisir
 Pokérus
-Drapeau SPV , byte 1
-Drapeau SPV , byte 2
-Drapeau SPV , byte 3
-Drapeau SPV , byte 4
+Indicateur SPV , byte 1
+Indicateur SPV , byte 2
+Indicateur SPV , byte 3
+Indicateur SPV , byte 4
 Rubans, byte 1
 Rubans, byte 2
 Rubans, byte 3
@@ -446,81 +446,81 @@ IV, byte 1
 IV, byte 2
 IV, byte 3
 IV, byte 4
-Nom dresseur actuel, byte 1
-Nom dresseur actuel, byte 2
-Nom dresseur actuel, byte 3
-Nom dresseur actuel, byte 4
-Nom dresseur actuel, byte 5
-Nom dresseur actuel, byte 6
-Nom dresseur actuel, byte 7
-Nom dresseur actuel, byte 8
-Nom dresseur actuel, byte 9
-Nom dresseur actuel, byte 10
-Nom dresseur actuel, byte 11
-Nom dresseur actuel, byte 12
-Nom dresseur actuel, byte 13
-Nom dresseur actuel, byte 14
-Nom dresseur actuel, byte 15
-Nom dresseur actuel, byte 16
-Nom dresseur actuel, byte 17
-Nom dresseur actuel, byte 18
-Nom dresseur actuel, byte 19
-Nom dresseur actuel, byte 20
-Nom dresseur actuel, byte 21
-Nom dresseur actuel, byte 22
-Nom dresseur actuel, byte 23
-Nom dresseur actuel, byte 24
-Sexe dresseur actuel
-Dresseur actuel
-Dernier Dresseur 1 Région
-Dernier Dresseur 1 Pays
-Dernier Dresseur 2 Région
-Dernier Dresseur 2 Pays
-Dernier Dresseur 3 Région
-Dernier Dresseur 3 Pays
-Dernier Dresseur 4 Région
-Dernier Dresseur 4 Pays
-Dernier Dresseur 5 Région
-Dernier Dresseur 5 Pays
-Dresseur actuel Bonheur
-Dresseur actuel Affection
-Dresseur actuel Intensité
-Dresseur actuel Mémoire
-Dresseur actuel Sentiments
-Dresseur actuel TextVar, byte 1
-Dresseur actuel TextVar, byte 2
-Satiété 6G (Poké-Récré): %d
-Satiété 7G (Poké-Détente): %d
-Dresseur d'Origine Nom, byte 1
-Dresseur d'Origine Nom, byte 2
-Dresseur d'Origine Nom, byte 3
-Dresseur d'Origine Nom, byte 4
-Dresseur d'Origine Nom, byte 5
-Dresseur d'Origine Nom, byte 6
-Dresseur d'Origine Nom, byte 7
-Dresseur d'Origine Nom, byte 8
-Dresseur d'Origine Nom, byte 9
-Dresseur d'Origine Nom, byte 10
-Dresseur d'Origine Nom, byte 11
-Dresseur d'Origine Nom, byte 12
-Dresseur d'Origine Nom, byte 13
-Dresseur d'Origine Nom, byte 14
-Dresseur d'Origine Nom, byte 15
-Dresseur d'Origine Nom, byte 16
-Dresseur d'Origine Nom, byte 17
-Dresseur d'Origine Nom, byte 18
-Dresseur d'Origine Nom, byte 19
-Dresseur d'Origine Nom, byte 20
-Dresseur d'Origine Nom, byte 21
-Dresseur d'Origine Nom, byte 22
-Dresseur d'Origine Nom, byte 23
-Dresseur d'Origine Nom, byte 24
-Dresseur d'Origine Bonheur
-Dresseur d'Origine Affection
-Dresseur d'Origine Intensité
-Dresseur d'Origine Mémoire
-Dresseur d'Origine TextVar
-Dresseur d'Origine Sentiments
+Dernier Dresseur - Nom, byte 1
+Dernier Dresseur - Nom, byte 2
+Dernier Dresseur - Nom, byte 3
+Dernier Dresseur - Nom, byte 4
+Dernier Dresseur - Nom, byte 5
+Dernier Dresseur - Nom, byte 6
+Dernier Dresseur - Nom, byte 7
+Dernier Dresseur - Nom, byte 8
+Dernier Dresseur - Nom, byte 9
+Dernier Dresseur - Nom, byte 10
+Dernier Dresseur - Nom, byte 11
+Dernier Dresseur - Nom, byte 12
+Dernier Dresseur - Nom, byte 13
+Dernier Dresseur - Nom, byte 14
+Dernier Dresseur - Nom, byte 15
+Dernier Dresseur - Nom, byte 16
+Dernier Dresseur - Nom, byte 17
+Dernier Dresseur - Nom, byte 18
+Dernier Dresseur - Nom, byte 19
+Dernier Dresseur - Nom, byte 20
+Dernier Dresseur - Nom, byte 21
+Dernier Dresseur - Nom, byte 22
+Dernier Dresseur - Nom, byte 23
+Dernier Dresseur - Nom, byte 24
+Sexe Dernier Dresseur
+Dernier Dresseur
+Dernier Dresseur 1 - Région
+Dernier Dresseur 1 - Pays
+Dernier Dresseur 2 - Région
+Dernier Dresseur 2 - Pays
+Dernier Dresseur 3 - Région
+Dernier Dresseur 3 - Pays
+Dernier Dresseur 4 - Région
+Dernier Dresseur 4 - Pays
+Dernier Dresseur 5 - Région
+Dernier Dresseur 5 - Pays
+Dernier Dresseur - Bonheur
+Dernier Dresseur - Affection
+Dernier Dresseur - Intensité
+Dernier Dresseur - Mémoire
+Dernier Dresseur - Sentiments
+Dernier Dresseur - TextVar, byte 1
+Dernier Dresseur - TextVar, byte 2
+Satiété
+Gaieté
+Dresseur d'Origine - Nom, byte 1
+Dresseur d'Origine - Nom, byte 2
+Dresseur d'Origine - Nom, byte 3
+Dresseur d'Origine - Nom, byte 4
+Dresseur d'Origine - Nom, byte 5
+Dresseur d'Origine - Nom, byte 6
+Dresseur d'Origine - Nom, byte 7
+Dresseur d'Origine - Nom, byte 8
+Dresseur d'Origine - Nom, byte 9
+Dresseur d'Origine - Nom, byte 10
+Dresseur d'Origine - Nom, byte 11
+Dresseur d'Origine - Nom, byte 12
+Dresseur d'Origine - Nom, byte 13
+Dresseur d'Origine - Nom, byte 14
+Dresseur d'Origine - Nom, byte 15
+Dresseur d'Origine - Nom, byte 16
+Dresseur d'Origine - Nom, byte 17
+Dresseur d'Origine - Nom, byte 18
+Dresseur d'Origine - Nom, byte 19
+Dresseur d'Origine - Nom, byte 20
+Dresseur d'Origine - Nom, byte 21
+Dresseur d'Origine - Nom, byte 22
+Dresseur d'Origine - Nom, byte 23
+Dresseur d'Origine - Nom, byte 24
+Dresseur d'Origine - Bonheur
+Dresseur d'Origine - Affection
+Dresseur d'Origine - Intensity
+Dresseur d'Origine - Memory
+Dresseur d'Origine - TextVar
+Dresseur d'Origine - Feeling
 Année d'éclosion de l'œuf: %d
 Mois d'éclosion de l'œuf
 Jour d'éclosion de l'œuf
@@ -531,7 +531,7 @@ Lieu d'éclosion de l'œuf
 Lieu de rencontre
 Ball
 Rencontré au niveau / Sexe Dresseur d'Origine
-Drapeaux Entraînement Ultime
+Indicateurs Entraînement Ultime
 Version
 Pays
 Région
