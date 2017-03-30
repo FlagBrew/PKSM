@@ -1330,7 +1330,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 	int touchExecuting = 0;
 	int oldEntry = 0;
 	
-	char* descriptions[PKMNLENGTH];
+	wchar_t* descriptions[PKMNLENGTH];
 	
 	u8* pkmn = (u8*)malloc(PKMNLENGTH * sizeof(u8));
 	int ability = (int)getAbilityNum(pkmn);

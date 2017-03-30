@@ -1348,7 +1348,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 	free(page);
 }
 
-void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int additional3, int mode, char* descriptions[]) {
+void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int additional3, int mode, wchar_t* descriptions[]) {
 	int max = sftd_get_text_width(fontBold12, 12, "252");
 	wchar_t* entries[] = {i18n(S_GRAPHIC_PKEDITOR_LEVEL), i18n(S_GRAPHIC_PKEDITOR_NATURE), i18n(S_GRAPHIC_PKEDITOR_ABILITY), i18n(S_GRAPHIC_PKEDITOR_ITEM), i18n(S_GRAPHIC_PKEDITOR_SHINY), i18n(S_GRAPHIC_PKEDITOR_POKERUS), i18n(S_GRAPHIC_PKEDITOR_OT), i18n(S_GRAPHIC_PKEDITOR_NICKNAME), i18n(S_GRAPHIC_PKEDITOR_FRIENDSHIP)};
 	wchar_t* options[] = {i18n(S_GRAPHIC_PKEDITOR_MENU_STATS), i18n(S_GRAPHIC_PKEDITOR_MENU_MOVES), i18n(S_GRAPHIC_PKEDITOR_MENU_SAVE)};
@@ -1476,7 +1476,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 				if (byte == 231) break;
 			}
 		}
-		sftd_draw_textf(fontBold11, 4, 225, LIGHTBLUE, 11, "%s", descriptions[additional1]);
+		sftd_draw_wtextf(fontBold11, 4, 225, LIGHTBLUE, 11, L"%ls", descriptions[additional1]);
 	}
 	pksm_end_frame();
 	

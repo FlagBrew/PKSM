@@ -24,5 +24,5 @@ bool pattern[4];
 bool sector[232][2];
 
 void fillSectorsHaxMode(bool sector[][2]);
-void fillDescriptions(char *descriptions[]);
+void fillDescriptions(wchar_t *descriptions[]);
 void fillSectors(bool sector[][2]);

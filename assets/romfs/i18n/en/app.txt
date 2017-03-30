@@ -334,3 +334,206 @@ DEF Hyper Trained
 SP.ATK Hyper Trained
 SP.DEF Hyper Trained
 SPEED Hyper Trained
+Encryption Constant, byte 1
+Encryption Constant, byte 2
+Encryption Constant, byte 3
+Encryption Constant, byte 4
+Sanity, byte 1
+Sanity, byte 2
+Checksum, byte 1
+Checksum, byte 2
+Species, byte 1
+Species, byte 2
+Held Item, byte 1
+Held Item, byte 2
+TID, byte 1
+TID, byte 2
+SID, byte 1
+SID, byte 2
+Experience, byte 1
+Experience, byte 2
+Experience, byte 3
+Experience, byte 4
+Ability
+Ability Number
+MarkValue, byte 1
+MarkValue, byte 2
+PID, byte 1
+PID, byte 2
+PID, byte 3
+PID, byte 4
+Nature
+Fateful Encounter flag / Gender / Alternative Form
+HP Effort Value
+ATK Effort Value
+DEF Effort Value
+SPE Effort Value
+SPA Effort Value
+SPD Effort Value
+Contest value Cool
+Contest value Beauty
+Contest value Cute
+Contest value Smart
+Contest value Tough
+Contest value Sheen
+PokePelago Event Status flag
+Pokerus
+Super Train flag , byte 1
+Super Train flag , byte 2
+Super Train flag , byte 3
+Super Train flag , byte 4
+Ribbon flag, byte 1
+Ribbon flag, byte 2
+Ribbon flag, byte 3
+Ribbon flag, byte 4
+Ribbon flag, byte 5
+Ribbon flag, byte 6
+Ribbon flag, byte 7
+Ribbon flag, byte 8
+Ribbon Memory Contest
+Ribbon Memory Battle
+Dist byte
+Nickname, byte 1
+Nickname, byte 2
+Nickname, byte 3
+Nickname, byte 4
+Nickname, byte 5
+Nickname, byte 6
+Nickname, byte 7
+Nickname, byte 8
+Nickname, byte 9
+Nickname, byte 10
+Nickname, byte 11
+Nickname, byte 12
+Nickname, byte 13
+Nickname, byte 14
+Nickname, byte 15
+Nickname, byte 16
+Nickname, byte 17
+Nickname, byte 18
+Nickname, byte 19
+Nickname, byte 20
+Nickname, byte 21
+Nickname, byte 22
+Nickname, byte 23
+Nickname, byte 24
+Move 1, byte 1
+Move 1, byte 2
+Move 2, byte 1
+Move 2, byte 2
+Move 3, byte 1
+Move 3, byte 2
+Move 4, byte 1
+Move 4, byte 2
+Move 1 PP
+Move 2 PP
+Move 3 PP
+Move 4 PP
+Move 1 PP Up
+Move 2 PP Up
+Move 3 PP Up
+Move 4 PP Up
+Relearn Move 1, byte 1
+Relearn Move 1, byte 2
+Relearn Move 2, byte 1
+Relearn Move 2, byte 2
+Relearn Move 3, byte 1
+Relearn Move 3, byte 2
+Relearn Move 4, byte 1
+Relearn Move 4, byte 2
+Secret Super Training Flag
+IV, byte 1
+IV, byte 2
+IV, byte 3
+IV, byte 4
+Held Trainer Nickname, byte 1
+Held Trainer Nickname, byte 2
+Held Trainer Nickname, byte 3
+Held Trainer Nickname, byte 4
+Held Trainer Nickname, byte 5
+Held Trainer Nickname, byte 6
+Held Trainer Nickname, byte 7
+Held Trainer Nickname, byte 8
+Held Trainer Nickname, byte 9
+Held Trainer Nickname, byte 10
+Held Trainer Nickname, byte 11
+Held Trainer Nickname, byte 12
+Held Trainer Nickname, byte 13
+Held Trainer Nickname, byte 14
+Held Trainer Nickname, byte 15
+Held Trainer Nickname, byte 16
+Held Trainer Nickname, byte 17
+Held Trainer Nickname, byte 18
+Held Trainer Nickname, byte 19
+Held Trainer Nickname, byte 20
+Held Trainer Nickname, byte 21
+Held Trainer Nickname, byte 22
+Held Trainer Nickname, byte 23
+Held Trainer Nickname, byte 24
+Held Trainer Gender
+Current Handler
+Latest Handlers 1 Region
+Latest Handlers 1 Country
+Latest Handlers 2 Region
+Latest Handlers 2 Country
+Latest Handlers 3 Region
+Latest Handlers 3 Country
+Latest Handlers 4 Region
+Latest Handlers 4 Country
+Latest Handlers 5 Region
+Latest Handlers 5 Country
+Held Trainer Friendship
+Held Trainer Affection
+Held Trainer Intensity
+Held Trainer Memory
+Held Trainer Feeling
+Held Trainer TextVar, byte 1
+Held Trainer TextVar, byte 2
+Fullness
+Enjoyment
+Original Trainer Name, byte 1
+Original Trainer Name, byte 2
+Original Trainer Name, byte 3
+Original Trainer Name, byte 4
+Original Trainer Name, byte 5
+Original Trainer Name, byte 6
+Original Trainer Name, byte 7
+Original Trainer Name, byte 8
+Original Trainer Name, byte 9
+Original Trainer Name, byte 10
+Original Trainer Name, byte 11
+Original Trainer Name, byte 12
+Original Trainer Name, byte 13
+Original Trainer Name, byte 14
+Original Trainer Name, byte 15
+Original Trainer Name, byte 16
+Original Trainer Name, byte 17
+Original Trainer Name, byte 18
+Original Trainer Name, byte 19
+Original Trainer Name, byte 20
+Original Trainer Name, byte 21
+Original Trainer Name, byte 22
+Original Trainer Name, byte 23
+Original Trainer Name, byte 24
+Original Trainer Friendship
+Original Trainer Affection
+Original Trainer Intensity
+Original Trainer Memory
+Original Trainer TextVar
+Original Trainer Feeling
+Egg Year
+Egg Month
+Egg Day
+Met Year
+Met Month
+Met Day
+Egg Location
+Met Location
+Ball
+Met Level / Original Trainer Gender
+Hyper Train Flags
+Version
+Country
+Region
+Console Region
+Language
