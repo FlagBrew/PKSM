@@ -1624,7 +1624,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			if (hax)
 				sf2d_draw_rectangle(0, 0, 320, 240, RGBA8(255, 0, 0, 100));
 			
-			sftd_draw_wtextf(fontBold14, 50, 30, LIGHTBLUE, 14, i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE));
+			sftd_draw_wtextf(fontBold14, (165 - sftd_get_wtext_width(fontBold14, 14, i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE))), 30, LIGHTBLUE, 14, i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE));
 			sftd_draw_textf(fontBold14, 171, 30, WHITE, 14, "0x%02hhX", additional1);
 			
 			printfHexEditorInfo(pkmn, additional1);
