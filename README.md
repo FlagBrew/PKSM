@@ -9,13 +9,13 @@ If you want a non-invasive homebrew to see your save's infos, check out [**PKSV*
 
 | Downloads | Links |
 | :-------: | :---: |
-| Latest 3dsx build | [direct](https://github.com/BernardoGiordano/PKSM/releases/download/4.2.1/PKSM.zip) |
-| Latest cfw build | [direct](https://github.com/BernardoGiordano/PKSM/releases/download/4.2.1/PKSM.cia) |
-| Latest QR code | [qr](https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=https://github.com/BernardoGiordano/PKSM/releases/download/4.2.1/PKSM.cia&choe=UTF-8.png) |
+| Latest 3dsx build | [direct](https://github.com/BernardoGiordano/PKSM/releases/download/4.2.2/PKSM.zip) |
+| Latest cfw build | [direct](https://github.com/BernardoGiordano/PKSM/releases/download/4.2.2/PKSM.cia) |
+| Latest QR code | [qr](https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=https://github.com/BernardoGiordano/PKSM/releases/download/4.2.2/PKSM.cia&choe=UTF-8.png) |
 
 ## Installation
 
-Download the latest release (4.2.1) and install it with your favourite installation method. You should only copy/paste the whole content of the release zip into the root of your sd-card, most of the time. When booted, the application will automatically download the required additional assets from an external source. You can provide your own assets, if you want.
+Download the latest release (4.2.2) and install it with your favourite installation method. You should only copy/paste the whole content of the release zip into the root of your sd-card, most of the time. When booted, the application will automatically download the required additional assets from an external source. You can provide your own assets, if you want.
 
 If you're using Homebrew Launcher, make sure you have it updated to the [latest version](https://smealum.github.io/ninjhax2/starter.zip).
 
