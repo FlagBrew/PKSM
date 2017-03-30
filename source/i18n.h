@@ -696,6 +696,11 @@ typedef enum {
 	S_HTTP_REDIRECTION_FAILED,                        // Line 553
 	S_HTTP_RECEIVE_DOWNLOAD_SIZE_FAILED,              // Line 554
 	S_HTTP_ALLOC_MEMORY_FAILED,                       // Line 555
+
+	S_UTIL_BANK_CHANGING_SIZE,                        // Line 556
+	S_UTIL_BANK_SIZE_CHANGED,                         // Line 557
+	S_UTIL_BACKUP_SAVE_CREATED,                       // Line 558
+	S_UTIL_BACKUP_BANK_CREATED,                       // Line 559
 } AppTextCode;
 
 

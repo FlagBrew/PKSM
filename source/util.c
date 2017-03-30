@@ -207,7 +207,7 @@ void settingsMenu(u8* mainbuf, int game) {
 		
 		if (hidKeysDown() & KEY_TOUCH) {
 			if (touch.px > 189 && touch.px < 225 && touch.py > 64 && touch.py < 85) {
-				freezeMsg(L"Changing size...");
+				freezeMsg(i18n(S_UTIL_BANK_CHANGING_SIZE));
 				if (size < box * 30 * PKMNLENGTH) { // i box sono maggiori
 					FILE *buf = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
 					fseek(buf, 0, SEEK_END);
@@ -257,7 +257,7 @@ void settingsMenu(u8* mainbuf, int game) {
 					free(newbank);					
 				}
 				operationDone = true;
-				infoDisp(L"Bank size changed!");
+				infoDisp(i18n(S_UTIL_BANK_SIZE_CHANGED));
 			}
 			if (touch.px > 60 && touch.px < 260 && touch.py > 100 && touch.py < 140) {
 				snprintf(bakpath, 80, "/3ds/data/PKSM/backup/main_%s_%i%i%i%02i%02i%02i", gamesList[game], timeStruct->tm_mday, timeStruct->tm_mon + 1, timeStruct->tm_year + 1900, timeStruct->tm_hour, timeStruct->tm_min, timeStruct->tm_sec);
@@ -268,7 +268,7 @@ void settingsMenu(u8* mainbuf, int game) {
 				
 				free(bakpath);
 				operationDone = true;
-				infoDisp(L"Save backup created!");
+				infoDisp(i18n(S_UTIL_BACKUP_SAVE_CREATED));
 			}
 			if (touch.px > 60 && touch.px < 260 && touch.py > 140 && touch.py < 180) {
 				FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
@@ -286,7 +286,7 @@ void settingsMenu(u8* mainbuf, int game) {
 				
 				free(bankbuf);	
 
-				infoDisp(L"Bank backup created!");
+				infoDisp(i18n(S_UTIL_BACKUP_BANK_CREATED));
 				operationDone = true;
 			}
 		}

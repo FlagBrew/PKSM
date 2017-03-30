@@ -553,3 +553,7 @@ Failed to receive a status code!
 Redirection failed!
 Failed to receive download size!
 Failed to alloc memory!
+Changing size...
+Bank size changed!
+Save backup created!
+Bank backup created!
