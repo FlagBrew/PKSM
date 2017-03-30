@@ -278,13 +278,13 @@ int ArrayUTF32_sort_cmp(const wchar_t *a,const wchar_t *b) {
 	return (wcscmp(a,b));
 }
 
-
 /**
  * Sort an ArrayUTF32 and starting at an index
  * This function set the sortedItems and dont change the items attribute
  * Original IDs of sortedItems are stored in sortedItemsID
+ * You can specify a custom function to compare 2 items
  */
-void ArrayUTF32_sort_starting_index(struct ArrayUTF32 *arr, int index) {
+void ArrayUTF32_sort_starting_index_with_sort_func(struct ArrayUTF32 *arr, int index, int (*fsort)(const wchar_t *a,const wchar_t *b)) {
 	int nitems = arr->length;
 
 	// On initialise un nouveau tableau de pointeur, ainsi qu'un nouveau tableau d'ID si aucun sort n'a été effectué
@@ -320,7 +320,7 @@ void ArrayUTF32_sort_starting_index(struct ArrayUTF32 *arr, int index) {
 			wchar_t *item2 = convertedItems[i+1];
 			int idItem1 = arr->sortedItemsID[i];
 			int idItem2 = arr->sortedItemsID[i+1];
-			while (ArrayUTF32_sort_cmp(item1, item2) > 0) {
+			while (fsort(item1, item2) > 0) {
 				asort = true;
 				convertedItems[i] = item2;
 				convertedItems[i+1] = item1;
@@ -353,6 +353,16 @@ void ArrayUTF32_sort_starting_index(struct ArrayUTF32 *arr, int index) {
 	}
 
 	free(convertedItems);
+}
+
+/**
+ * Sort an ArrayUTF32 and starting at an index
+ * This function set the sortedItems and dont change the items attribute
+ * Original IDs of sortedItems are stored in sortedItemsID
+ * Use the default function of sorting UTF32 strings
+ */
+void ArrayUTF32_sort_starting_index(struct ArrayUTF32 *arr, int index) {
+	ArrayUTF32_sort_starting_index_with_sort_func(arr, index, ArrayUTF32_sort_cmp);
 }
 
 /**

@@ -711,6 +711,7 @@ wchar_t* ss_utf32(char* str, int size);
 
 // struct ArrayUTF32 ArrayUTF32_copy(struct ArrayUTF32 from);
 void ArrayUTF32_sort_starting_index(struct ArrayUTF32 *arr, int index);
+void ArrayUTF32_sort_starting_index_with_sort_func(struct ArrayUTF32 *arr, int index, int (*f)(const wchar_t *a,const wchar_t *b));
 void ArrayUTF32_sort(struct ArrayUTF32 *arr);
 void debuglogf(const char* format, ...);
 

@@ -90,7 +90,7 @@ void GUIElementsInit() {
 	listItems = i18n_FileToArrayUTF32(listFiles.items);
 	struct ArrayUTF32 listBalls = i18n_FileToArrayUTF32(listFiles.balls);
 	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_SORTING_ITEMS));
-	ArrayUTF32_sort_starting_index(&listItems, 1);
+	ArrayUTF32_sort_starting_index_with_sort_func(&listItems, 1, ArrayUTF32_sort_cmp_PKMN_Things_List);
 	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_HP));
 	struct ArrayUTF32 listHPs = i18n_FileToArrayUTF32(listFiles.hp);
 

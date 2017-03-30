@@ -293,3 +293,17 @@ void settingsMenu(u8* mainbuf, int game) {
 		printSettings(box);
 	}
 }
+
+/**
+ * Comparison function used for sorting items, abilities and all things
+ */
+int ArrayUTF32_sort_cmp_PKMN_Things_List(const wchar_t *a,const wchar_t *b) {
+	int result = wcscmp(a, b);
+
+	// We inversed the result when there is 1 "???", so "???" will be always at the end of the list
+	if ((wcscmp(a, L"???") == 0 && wcscmp(b, L"???") != 0)
+	   	|| (wcscmp(b, L"???") == 0 && wcscmp(a, L"???") != 0)) {
+		result = -1*result;
+	}
+	return result;
+}
