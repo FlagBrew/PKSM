@@ -1658,7 +1658,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEntry, int saveBox, int bankBox, bool isBufferized, bool isSeen) {
 	int x, y;
 	int pointer[2] = {0, 0};
-	wchar_t* page = (wchar_t*)malloc(MAX_LENGTH_BOX_NAME+1 * sizeof(wchar_t));
+	wchar_t* page = (wchar_t*)malloc((MAX_LENGTH_BOX_NAME+1) * sizeof(wchar_t));
 	bool isKor = (pkmnbuf[0xE3] == 0x08) ? true : false;
 	
 	u8* pkmn = (u8*)malloc(PKMNLENGTH * sizeof(u8));
