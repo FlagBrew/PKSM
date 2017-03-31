@@ -926,10 +926,10 @@ void printDB7(int sprite, int i, bool langVett[], bool adapt, bool overwrite, in
 		
 		sf2d_draw_texture(darkButton, 229, 168);	
 		
-		sftd_draw_wtext(fontBold14, 210 + (36 - sftd_get_wtext_width(fontBold14, 14, i18n(S_BUTTON_YES))) / 2, 112, (overwrite) ? DARKBLUE : YELLOW, 14, i18n(S_BUTTON_YES));
-		sftd_draw_wtext(fontBold14, 249 + (36 - sftd_get_wtext_width(fontBold14, 14, i18n(S_BUTTON_NO))) / 2, 112, (!overwrite) ? DARKBLUE : YELLOW, 14, i18n(S_BUTTON_NO));
-		sftd_draw_wtext(fontBold14, 210 + (36 - sftd_get_wtext_width(fontBold14, 14, i18n(S_BUTTON_YES))) / 2, 140, (adapt) ? DARKBLUE : YELLOW, 14, i18n(S_BUTTON_YES));
-		sftd_draw_wtext(fontBold14, 249 + (36 - sftd_get_wtext_width(fontBold14, 14, i18n(S_BUTTON_NO))) / 2, 140, (!adapt) ? DARKBLUE : YELLOW, 14, i18n(S_BUTTON_NO));
+		sftd_draw_wtext(fontBold14, 210 + (36 - sftd_get_wtext_width(fontBold14, 14, i18n(S_YES))) / 2, 112, (overwrite) ? DARKBLUE : YELLOW, 14, i18n(S_YES));
+		sftd_draw_wtext(fontBold14, 249 + (36 - sftd_get_wtext_width(fontBold14, 14, i18n(S_NO))) / 2, 112, (!overwrite) ? DARKBLUE : YELLOW, 14, i18n(S_NO));
+		sftd_draw_wtext(fontBold14, 210 + (36 - sftd_get_wtext_width(fontBold14, 14, i18n(S_YES))) / 2, 140, (adapt) ? DARKBLUE : YELLOW, 14, i18n(S_YES));
+		sftd_draw_wtext(fontBold14, 249 + (36 - sftd_get_wtext_width(fontBold14, 14, i18n(S_NO))) / 2, 140, (!adapt) ? DARKBLUE : YELLOW, 14, i18n(S_NO));
 		sftd_draw_text(fontBold14, 229 + (36 - sftd_get_text_width(fontBold14, 14, cont)) / 2, 170, YELLOW, 14, cont);
 		
 		printBottomIndications(i18n(S_GRAPHIC_DB_INDICATIONS_INJECT));
@@ -1175,7 +1175,7 @@ void infoViewer(u8* pkmn, int game) {
 		getOT(pkmn, ot_name);
 		sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, 215 - (sftd_get_wtext_width((isKor) ? unicodeKOR12 : unicodeJPN12, 12, (wchar_t*)ot_name)), 49, WHITE, 12, (wchar_t*)ot_name);
 		
-		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, (isInfected(pkmn) ? i18n(S_GRAPHIC_INFOVIEWER_YES) : i18n(S_GRAPHIC_INFOVIEWER_NO))), 69, WHITE, 12, isInfected(pkmn) ? i18n(S_GRAPHIC_INFOVIEWER_YES) : i18n(S_GRAPHIC_INFOVIEWER_NO));
+		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, (isInfected(pkmn) ? i18n(S_YES) : i18n(S_NO))), 69, WHITE, 12, isInfected(pkmn) ? i18n(S_YES) : i18n(S_NO));
 		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, natures[getNature(pkmn)]), 94, WHITE, 12, natures[getNature(pkmn)]);
 		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, abilities[getAbility(pkmn)]), 114, WHITE, 12, abilities[getAbility(pkmn)]);
 		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, items[getItem(pkmn)]), 134, WHITE, 12, items[getItem(pkmn)]);
@@ -1532,8 +1532,8 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, natures[getNature(pkmn)]), 49, WHITE, 12, natures[getNature(pkmn)]);
 			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, abilities[getAbility(pkmn)]), 69, WHITE, 12, abilities[getAbility(pkmn)]);
 			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, items[getItem(pkmn)]), 89, WHITE, 12, items[getItem(pkmn)]);
-			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, isShiny(pkmn) ? i18n(S_GRAPHIC_PKEDITOR_SHINY_YES) : i18n(S_GRAPHIC_PKEDITOR_SHINY_NO)), 109, WHITE, 12, isShiny(pkmn) ? i18n(S_GRAPHIC_PKEDITOR_SHINY_YES) : i18n(S_GRAPHIC_PKEDITOR_SHINY_NO));
-			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, isInfected(pkmn) ? i18n(S_GRAPHIC_PKEDITOR_POKERUS_YES) : i18n(S_GRAPHIC_PKEDITOR_POKERUS_NO)), 129, WHITE, 12, isInfected(pkmn) ? i18n(S_GRAPHIC_PKEDITOR_POKERUS_YES) : i18n(S_GRAPHIC_PKEDITOR_POKERUS_NO));
+			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, isShiny(pkmn) ? i18n(S_YES) : i18n(S_NO)), 109, WHITE, 12, isShiny(pkmn) ? i18n(S_YES) : i18n(S_NO));
+			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, isInfected(pkmn) ? i18n(S_YES) : i18n(S_NO)), 129, WHITE, 12, isInfected(pkmn) ? i18n(S_YES) : i18n(S_NO));
 			
 			char* friendship = (char*)malloc(4 * sizeof(char));
 			if (isEgg(pkmn))

@@ -116,8 +116,6 @@ Speed
 Lv.%u
 Moves
 Egg cycle:
-Yes
-No
 EDIT
 CLONE
 RELEASE
@@ -164,10 +162,6 @@ Neutral
 +Sp. Atk.
 +Sp. Def.
 Egg cycle:
-Yes
-No
-Yes
-No
 STATS
 IV
 EV

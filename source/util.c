@@ -299,11 +299,16 @@ void settingsMenu(u8* mainbuf, int game) {
  */
 int ArrayUTF32_sort_cmp_PKMN_Things_List(const wchar_t *a,const wchar_t *b) {
 	int result = wcscmp(a, b);
+	wchar_t* unknownStrings[] = { L"???", L"？？？", L"(?)" };
+	int totalUnknownStrings = 3;
 
-	// We inversed the result when there is 1 "???", so "???" will be always at the end of the list
-	if ((wcscmp(a, L"???") == 0 && wcscmp(b, L"???") != 0)
-	   	|| (wcscmp(b, L"???") == 0 && wcscmp(a, L"???") != 0)) {
-		result = -1*result;
+	for (int i = 0; i < totalUnknownStrings; i++) {
+		if ((wcscmp(a, unknownStrings[i]) == 0 && wcscmp(b, unknownStrings[i]) != 0)
+			|| (wcscmp(b, unknownStrings[i]) == 0 && wcscmp(a, unknownStrings[i]) != 0)) {
+			result = -1*result;
+		}
+
 	}
+	// We inversed the result when there is 1 "???", so "???" will be always at the end of the list
 	return result;
 }
