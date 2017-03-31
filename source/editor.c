@@ -2071,8 +2071,10 @@ void pokemonEditor(u8* mainbuf, int game) {
 											memcpy(&tempkmn[0xE3], &mainbuf[(game < 4) ? 0x1402D : 0x1235], 1); // nats
 
 											// Correct Nickname of current language
-											char nick[NICKNAMELENGTH];
+											char nick[NICKNAMELENGTH] = "";
 											utf32_to_utf8((unsigned char*)nick, (uint32_t*)listSpecies.items[getPokedexNumber(tempkmn)], NICKNAMELENGTH);
+											nick[NICKNAMELENGTH - 1] = '\0';
+
 											setNicknameZ(pkmn, nick, 0x40);
 
 											setPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
@@ -2123,8 +2125,11 @@ void pokemonEditor(u8* mainbuf, int game) {
 							memcpy(&tempkmn[0xE3], &mainbuf[(game < 4) ? 0x1402D : 0x1235], 1); // nats
 
 							// Correct Nickname of current language
-							char nick[NICKNAMELENGTH];
+							char nick[NICKNAMELENGTH] = "";
+
 							utf32_to_utf8((unsigned char*)nick, (uint32_t*)listSpecies.items[getPokedexNumber(tempkmn)], NICKNAMELENGTH);
+							nick[NICKNAMELENGTH - 1] = '\0';
+
 							setNicknameZ(tempkmn, nick, 0x40);
 
 							setPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);

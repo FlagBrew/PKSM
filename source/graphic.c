@@ -122,6 +122,7 @@ sf2d_texture *loadPNGInRAM(const char* filepath) {
 	return sfil_load_PNG_file(filepath, SF2D_PLACE_RAM);
 }
 void GUIElementsSpecify(int game) {
+	struct i18n_files languageSpecificFiles = i18n_getFilesPath();
 	num_element = 1;
 	total_elements = 4;
 	if (game < 6) {
@@ -136,7 +137,7 @@ void GUIElementsSpecify(int game) {
 	settings = loadPNGInRAM("romfs:/res/Settings.png");
 	
 	if (game < 6) {
-		typesSheet = loadPNGInRAM("/3ds/data/PKSM/additionalassets/types_sheetv2.png");
+		typesSheet = loadPNGInRAM(languageSpecificFiles.types);
 		
 		boxView = loadPNGInRAM("romfs:/res/Box View.png");
 		noMove = loadPNGInRAM("romfs:/res/No Move.png");
@@ -331,16 +332,13 @@ void drawFPSDebug() {
 	sftd_draw_textf(fontBold12, 12, 13, WHITE, 12, "FPS: %2.6f", sf2d_get_fps());
 }
 
-char* messageDebug;
+char messageDebug[255];
 bool hasDebugMessage = false;
 time_t lastDebugMessageTime = 0;
 wchar_t* lastMessage;
 
 void consoleMsg(char* message) {
-	if (messageDebug != message) {
-		free(messageDebug);
-	}
-	messageDebug = message;
+	strcpy(messageDebug, message);
 	hasDebugMessage = true;
 }
 
