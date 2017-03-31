@@ -45,7 +45,7 @@ REMOTE_IP := 192.168.1.7
 ifeq ($(TARGET),$(filter $(TARGET),3DS WIIU))
     TITLE := $(NAME)
     DESCRIPTION := AIO tool for Pokemon games
-    AUTHOR := Bernardo Giordano / ML Sup. by Naxann
+    AUTHOR := Bernardo Giordano
 endif
 
 # 3DS CONFIGURATION #
