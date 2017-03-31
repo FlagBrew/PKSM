@@ -38,7 +38,7 @@ void TWLrestoreSaveFile(u8* in, CardType cardType_, u64 sz) {
 	
 	for (u32 i = 0; i < sz / pageSize; ++i) {
 		SPIWriteSaveData(cardType_, pageSize * i, in + pageSize * i, pageSize);
-		progressBar("Saving...", pageSize * (i + 1), sz);
+		progressBar(L"Saving...", pageSize * (i + 1), sz);
 	}
 }
 

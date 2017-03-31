@@ -482,11 +482,11 @@ void eventDatabase7(u8* mainbuf, int game) {
 					
 					int ret = checkMultipleWCX(mainbuf, game, i, langSelected, nInjected, adapt);
 					if (ret != 0 && ret != 1) {
-						infoDisp("Error during injection!");
+						infoDisp(i18n(S_DATABASE_ERROR_INJECTION));
 						break;
 					}
 					else if (ret == 1) {
-						infoDisp("Injection succeeded!");
+						infoDisp(i18n(S_DATABASE_SUCCESS_INJECTION));
 						break;
 					}
 					
@@ -534,7 +534,7 @@ void eventDatabase7(u8* mainbuf, int game) {
 					if (fptr == NULL) {
 						fclose(fptr);
 						free(wcxpath);
-						infoDisp("Error during injection!");
+						infoDisp(i18n(S_DATABASE_ERROR_INJECTION));
 						break;
 					}
 					fseek(fptr, 0, SEEK_END);
@@ -544,7 +544,7 @@ void eventDatabase7(u8* mainbuf, int game) {
 						fclose(fptr);
 						free(wcxbuf);
 						free(wcxpath);
-						infoDisp("Error during injection!");
+						infoDisp(i18n(S_DATABASE_ERROR_INJECTION));
 						break;
 					}
 					rewind(fptr);
@@ -561,7 +561,7 @@ void eventDatabase7(u8* mainbuf, int game) {
 
 					free(wcxpath);
 					free(wcxbuf);					
-					infoDisp("Injection succeeded!");
+					infoDisp(i18n(S_DATABASE_SUCCESS_INJECTION));
 					break;
 				}
 				
@@ -806,17 +806,17 @@ void eventDatabase6(u8* mainbuf, int game) {
 						nInjected[0] = 0;
 
 					if ((game == GAME_X || game == GAME_Y) && i == 2048) {
-						infoDisp("Item not available in XY!");
+						infoDisp(i18n(S_DATABASE_ITEM_NOT_AVAILABLE_XY));
 						break;
 					}
 					
 					int ret = checkMultipleWCX(mainbuf, game, i, langSelected, nInjected, adapt);
 					if (ret != 0 && ret != 1) {
-						infoDisp("Error during injection!");
+						infoDisp(i18n(S_DATABASE_ERROR_INJECTION));
 						break;
 					}
 					else if (ret == 1) {
-						infoDisp("Injection succeeded!");
+						infoDisp(i18n(S_DATABASE_SUCCESS_INJECTION));
 						break;
 					}
 					
@@ -856,7 +856,7 @@ void eventDatabase6(u8* mainbuf, int game) {
 					if (fptr == NULL) {
 						fclose(fptr);
 						free(wcxpath);
-						infoDisp("Error during injection!");
+						infoDisp(i18n(S_DATABASE_ERROR_INJECTION));
 						break;
 					}
 					fseek(fptr, 0, SEEK_END);
@@ -866,7 +866,7 @@ void eventDatabase6(u8* mainbuf, int game) {
 						fclose(fptr);
 						free(wcxbuf);
 						free(wcxpath);
-						infoDisp("Error during injection!");
+						infoDisp(i18n(S_DATABASE_ERROR_INJECTION));
 						break;
 					}
 					rewind(fptr);
@@ -883,7 +883,7 @@ void eventDatabase6(u8* mainbuf, int game) {
 
 					free(wcxpath);
 					free(wcxbuf);					
-					infoDisp("Injection succeeded!");
+					infoDisp(i18n(S_DATABASE_SUCCESS_INJECTION));
 					break;
 				}
 				
@@ -1105,7 +1105,7 @@ void eventDatabase5(u8* mainbuf, int game) {
 					if (fptr == NULL) {
 						fclose(fptr);
 						free(pgfpath);
-						infoDisp("Error during injection!");
+						infoDisp(i18n(S_DATABASE_ERROR_INJECTION));
 						break;
 					}
 					fseek(fptr, 0, SEEK_END);
@@ -1115,7 +1115,7 @@ void eventDatabase5(u8* mainbuf, int game) {
 						fclose(fptr);
 						free(pgfbuf);
 						free(pgfpath);
-						infoDisp("Error during injection!");
+						infoDisp(i18n(S_DATABASE_ERROR_INJECTION));
 						break;
 					}
 					rewind(fptr);
@@ -1126,7 +1126,7 @@ void eventDatabase5(u8* mainbuf, int game) {
 
 					free(pgfpath);
 					free(pgfbuf);					
-					infoDisp("Injection succeeded!");
+					infoDisp(i18n(S_DATABASE_SUCCESS_INJECTION));
 					break;
 				}
 				
@@ -1349,7 +1349,7 @@ void eventDatabase4(u8* mainbuf, int game, int GBO, int SBO) {
 					if (fptr == NULL) {
 						fclose(fptr);
 						free(pgtpath);
-						infoDisp("Error during injection!");
+						infoDisp(i18n(S_DATABASE_ERROR_INJECTION));
 						break;
 					}
 					fseek(fptr, 0, SEEK_END);
@@ -1359,7 +1359,7 @@ void eventDatabase4(u8* mainbuf, int game, int GBO, int SBO) {
 						fclose(fptr);
 						free(pgtbuf);
 						free(pgtpath);
-						infoDisp("Error during injection!");
+						infoDisp(i18n(S_DATABASE_ERROR_INJECTION));
 						break;
 					}
 					rewind(fptr);
@@ -1370,7 +1370,7 @@ void eventDatabase4(u8* mainbuf, int game, int GBO, int SBO) {
 
 					free(pgtpath);
 					free(pgtbuf);					
-					infoDisp("Injection succeeded!");
+					infoDisp(i18n(S_DATABASE_SUCCESS_INJECTION));
 					break;
 				}
 				
@@ -1396,14 +1396,14 @@ void massInjector(u8* mainbuf, int game) {
 		
 		if (hidKeysDown() & KEY_B) {
 			if (game == GAME_SUN || game == GAME_MOON) {
-				if (confirmDisp("Save PokeDex flags?")) {
+				if (confirmDisp(i18n(S_DATABASE_Q_SAVE_POKEDEX_FLAGS))) {
 					u8 pkmn[PKMNLENGTH];
 					int end = (game < 4) ? 31 : 32;
-					char* step = (char*)malloc(20);
+					wchar_t* step = (wchar_t*)malloc(20);
 					
 					for (u32 i = 0; i < end; i++) {
 						for (u32 j = 0; j < 30; j++) {
-							snprintf(step, 20, "Box %lu / Slot %lu", i + 1, j + 1);
+							swprintf(step, 20, i18n(S_DATABASE_PROGRESS_MESSAGE), i + 1, j + 1);
 							freezeMsg(step);
 							getPkmn(mainbuf, i, j, pkmn, game);
 							setDex(mainbuf, pkmn, game);
@@ -1420,37 +1420,37 @@ void massInjector(u8* mainbuf, int game) {
 				case 0 : {
 					char *path[3] = {"romfs:/misc/xd/1.bin", "romfs:/misc/xd/2.bin", "romfs:/misc/xd/3.bin"};
 					setBoxBin(mainbuf, game, 3, 30, path);
-					infoDisp("XD collection set successfully!");
+					infoDisp(i18n(S_DATABASE_XD_COLLECTION_SUCCESS));
 					break;
 				}
 				case 1 : {
 					char *path[2] = {"romfs:/misc/colosseum/1.bin", "romfs:/misc/colosseum/2.bin"};
 					setBoxBin(mainbuf, game, 2, 30, path);
-					infoDisp("Colosseum col. set successfully!");
+					infoDisp(i18n(S_DATABASE_COLOSSEUM_COLLECTION_SUCCESS));
 					break;
 				}
 				case 2 : {
 					char *path[1] = {"romfs:/misc/10anni.bin"};
 					setBoxBin(mainbuf, game, 1, 30, path);
-					infoDisp("10th Anniversary set successfully!");
+					infoDisp(i18n(S_DATABASE_10TH_ANNIVERSARY_SUCCESS));
 					break;
 				}
 				case 3 : {
 					char *path[1] = {"romfs:/misc/coll_n.bin"};
 					setBoxBin(mainbuf, game, 1, 15, path);
-					infoDisp("N's collection injected successfully!");
+					infoDisp(i18n(S_DATABASE_N_COLLECTION_SUCCESS));
 					break;
 				}
 				case 4 : {
 					char *path[1] = {"romfs:/misc/coll_entreeforest.bin"};
 					setBoxBin(mainbuf, game, 1, 30, path);
-					infoDisp("Entree Forest col. set successfully!");
+					infoDisp(i18n(S_DATABASE_ENTREE_FOREST_COLLECTION_SUCCESS));
 					break;
 				}
 				case 5 : {
 					char *path[1] = {"romfs:/misc/coll_dreamradar.bin"};
 					setBoxBin(mainbuf, game, 1, 30, path);
-					infoDisp("Dream Radar col. set successfully!");
+					infoDisp(i18n(S_DATABASE_DREAM_RADAR_COLLECTION_SUCCESS));
 					break;
 				}
 				case 6 : {
@@ -1464,25 +1464,25 @@ void massInjector(u8* mainbuf, int game) {
 					fclose(fptr);
 					memcpy(&mainbuf[getPkmnAddress(0, 0, game)], &livingbuf[0], (game < 4) ? 167272 : 186064);
 					free(livingbuf);
-					infoDisp("Living dex set successfully!");
+					infoDisp(i18n(S_DATABASE_LIVING_DEX_SUCCESS));
 					break;
 				}
 				case 7 : {
 					char *path[] = {"romfs:/misc/coll_deoxysoblivia.bin"};
 					setBoxBin(mainbuf, game, 1, 30, path);
-					infoDisp("Deoxys collection set successfully!");
+					infoDisp(i18n(S_DATABASE_DEOXYS_COLLECTION_SUCCESS));
 					break;
 				}
 				case 8 : {
 					char *path[] = {"romfs:/misc/coll_ranch.bin"};
 					setBoxBin(mainbuf, game, 1, 30, path);
-					infoDisp("My Pokemon Ranch set successfully!");
+					infoDisp(i18n(S_DATABASE_MY_POKEMON_RANCH_COLLECTION_SUCCESS));
 					break;
 				}
 				case 9 : {
 					char *path[] = {"romfs:/misc/coll_oskorea.bin"};
 					setBoxBin(mainbuf, game, 1, 30, path);
-					infoDisp("Korean collection set successfully!");
+					infoDisp(i18n(S_DATABASE_KOREAN_COLLECTION_SUCCESS));
 					break;
 				}
 			}

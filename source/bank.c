@@ -49,7 +49,7 @@ void bank(u8* mainbuf, int game) {
 	
 	if (size % (30 * PKMNLENGTH)) {
 		fclose(fptr);
-		infoDisp("Bank.bin has a bad size!");
+		infoDisp(i18n(S_BANK_SIZE_ERROR));
 		return;
 	}
 	u8 *bankbuf = (u8*)malloc(size * sizeof(u8));
@@ -215,7 +215,7 @@ void bank(u8* mainbuf, int game) {
 			}
 			
 			if ((touch.px > 208 && touch.px < 317 && touch.py > 70 && touch.py < 97) && !(isBufferized)) {
-				if (confirmDisp("Erase the selected box?")) {
+				if (confirmDisp(i18n(S_BANK_Q_ERASE_SELECTED_BOX))) {
 					u8 tmp[PKMNLENGTH];
 					memset(tmp, 0, PKMNLENGTH);
 					for (u32 i = 0; i < 30; i++) {
@@ -376,7 +376,7 @@ void bank(u8* mainbuf, int game) {
 		printPKBank(bankbuf, mainbuf, pkmn, game, currentEntry, saveBox, bankBox, isBufferized, isSeen);
 	}
 	
-	if (confirmDisp("Save bank.bin changes?")) {
+	if (confirmDisp(i18n(S_BANK_Q_SAVE_CHANGES))) {
 		FILE *new = fopen("/3ds/data/PKSM/bank/bank.bin", "wb");
 		fwrite(bankbuf, 1, size, new);
 		fclose(new);
@@ -384,13 +384,13 @@ void bank(u8* mainbuf, int game) {
 	free(bankbuf);
 
 	if (game == GAME_SUN || game == GAME_MOON) {
-		if (confirmDisp("Save PokeDex flags?")) {
+		if (confirmDisp(i18n(S_BANK_Q_SAVE_POKEDEX_FLAGS))) {
 			int end = (game < 4) ? 31 : 32;
-			char* step = (char*)malloc(20);
+			wchar_t* step = (wchar_t*)malloc(20);
 			
 			for (u32 i = 0; i < end; i++) {
 				for (u32 j = 0; j < 30; j++) {
-					snprintf(step, 20, "Box %lu / Slot %lu", i + 1, j + 1);
+					swprintf(step, 20, i18n(S_BANK_PROGRESS_MESSAGE), i + 1, j + 1);
 					freezeMsg(step);
 					getPkmn(mainbuf, i, j, pkmn, game);
 					setDex(mainbuf, pkmn, game);

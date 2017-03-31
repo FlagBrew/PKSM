@@ -18,19 +18,19 @@
 
 #include "common.h"
 
-#define ASSETS 5
+#define ASSETS 3
 
 char* path[] =    { "/3ds/data/PKSM/additionalassets/alternative_icons_spritesheetv3.png",
 					"/3ds/data/PKSM/additionalassets/balls_spritesheetv2.png",
 					"/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheetv3.png",
-					"/3ds/data/PKSM/additionalassets/types_sheetv2.png",
-					"/3ds/data/PKSM/additionalassets/species_en.txt",
+					//"/3ds/data/PKSM/additionalassets/types_sheetv2.png",
+					//"/3ds/data/PKSM/additionalassets/species_en.txt",
 };
 char* url[] = { "https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/alternative_icons_spritesheetv3.png",
 				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/balls_spritesheetv2.png",
 				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/pokemon_icons_spritesheetv3.png",
-				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/types_sheetv2.png",
-				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/species_en.txt",
+				//"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/types_sheetv2.png",
+				//"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/species_en.txt",
 };
 		
 void exitServices() {
@@ -45,10 +45,12 @@ void exitServices() {
 	romfsExit();
 	sftd_fini();
 	sf2d_fini();
+	cfguExit();
 }
 
 bool initServices() {
 	bool isDownloaded = false;
+	cfguInit();
 	sf2d_init();
 	sftd_init();
 	sf2d_set_clear_color(BLACK);
@@ -56,10 +58,12 @@ bool initServices() {
 	aptInit();
 	sdmcInit();
 	romfsInit();
+	i18n_init();
 	fsStart();
 	srvInit();
 	hidInit();
 	pxiDevInit();
+
 	GUIElementsInit();
 	FXElementsInit();
 	GUIGameElementsInit();
@@ -71,12 +75,12 @@ bool initServices() {
 	mkdir("sdmc:/3ds/data/PKSM/backup", 0777);
 	mkdir("sdmc:/3ds/data/PKSM/additionalassets", 0777);
 	
-	char* str = (char*)malloc(30);
+	wchar_t* str = malloc(60*sizeof(wchar_t*));
 	for (int i = 0; i < ASSETS; i++) {
 		FILE *temp1 = fopen(path[i], "rt");
 		if (temp1 == NULL) {
 			fclose(temp1);
-			snprintf(str, 30, "Downloading assets #%d...", i + 1);
+			swprintf(str, 60, i18n(S_DOWNLOADING_ASSETS), i + 1);
 			freezeMsg(str);
 			downloadFile(url[i], path[i]);
 			isDownloaded = true;
@@ -88,7 +92,8 @@ bool initServices() {
 	loadPersonal();
 	
     u8 tmp[12000];
-	FILE *fptr = fopen("/3ds/data/PKSM/additionalassets/species_en.txt", "rt");
+	struct i18n_files listFiles = i18n_getFilesPath();
+	FILE *fptr = fopen(listFiles.species, "rt");
 	if (fptr == NULL) {
 		fclose(fptr);
 		return true;
@@ -100,14 +105,14 @@ bool initServices() {
 	fread(tmp, size, 1, fptr);
 	fclose(fptr);
 	loadLines(tmp, personal.species[0], 12, size);
-	
+	listSpecies = i18n_FileToArrayUTF32(listFiles.species);
 	u32 defaultSize = 150 * 30 * PKMNLENGTH;
 	size = 0;
 	u8 *bankbuf, *defaultBank;
 	
 	FILE *bank = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
 	if (bank == NULL) {
-		freezeMsg("Creating a default bank...");
+		freezeMsg(i18n(S_MAIN_CREATING_DEFAULT_BANK));
 		fclose(bank);
 		
 		size = defaultSize;
@@ -127,7 +132,7 @@ bool initServices() {
 		return isDownloaded;
 	} else {
 		fclose(bak);
-		freezeMsg("Backing up bank...");
+		freezeMsg(i18n(S_MAIN_BACKING_UP_BANK));
 		FILE *dobak = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
 		fseek(dobak, 0, SEEK_END);
 		size = ftell(dobak);
@@ -147,14 +152,14 @@ bool initServices() {
 
 int main() {
 	if (initServices()) {
-		infoDisp("Restart the application!");
+		infoDisp(i18n(S_MAIN_RESTART_APP));
 		exitServices();
 		return 0;
 	}
 	
 	for (int i = 0; i < ASSETS; i++) {
 		if(!checkFile(path[i])) {
-			infoDisp("You're missing a few assets!");
+			infoDisp(i18n(S_MAIN_MISSING_ASSETS));
 			exitServices();
 			return -1;
 		}
@@ -187,11 +192,11 @@ int main() {
 	}
 	
 	GUIGameElementsExit();
-	freezeMsg("Loading save...");
+	freezeMsg(i18n(S_MAIN_LOADING_SAVE));
 	
 	if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS || game == GAME_SUN || game == GAME_MOON) {	
 		if (!(openSaveArch(&saveArch, ids[game]))) {
-			infoDisp("Game not found!");
+			infoDisp(i18n(S_MAIN_GAME_NOT_FOUND));
 			exitServices();
 			return -1;
 		}
@@ -200,12 +205,12 @@ int main() {
 		FSFILE_GetSize(mainHandle, &mainSize);
 		
 		switch(game) {
-			case GAME_X : { if (mainSize != 415232) infoDisp("Incorrect size for this game!"); break; }
-			case GAME_Y : { if (mainSize != 415232) infoDisp("Incorrect size for this game!"); break; }
-			case GAME_OR : { if (mainSize != 483328) infoDisp("Incorrect size for this game!"); break; }
-			case GAME_AS : { if (mainSize != 483328) infoDisp("Incorrect size for this game!"); break; }
-			case GAME_SUN : { if (mainSize != 441856) infoDisp("Incorrect size for this game!"); break; }
-			case GAME_MOON : { if (mainSize != 441856) infoDisp("Incorrect size for this game!"); break; }
+			case GAME_X : { if (mainSize != 415232)    infoDisp(i18n(S_MAIN_INCORRECT_SAVE_SIZE)); break; }
+			case GAME_Y : { if (mainSize != 415232)    infoDisp(i18n(S_MAIN_INCORRECT_SAVE_SIZE)); break; }
+			case GAME_OR : { if (mainSize != 483328)   infoDisp(i18n(S_MAIN_INCORRECT_SAVE_SIZE)); break; }
+			case GAME_AS : { if (mainSize != 483328)   infoDisp(i18n(S_MAIN_INCORRECT_SAVE_SIZE)); break; }
+			case GAME_SUN : { if (mainSize != 441856)  infoDisp(i18n(S_MAIN_INCORRECT_SAVE_SIZE)); break; }
+			case GAME_MOON : { if (mainSize != 441856) infoDisp(i18n(S_MAIN_INCORRECT_SAVE_SIZE)); break; }
 			exitServices();
 			return -1;
 		}
@@ -217,7 +222,7 @@ int main() {
 	else if (game == GAME_DIAMOND || game == GAME_PEARL || game == GAME_PLATINUM || game == GAME_HG || game == GAME_SS || game == GAME_B1 || game == GAME_W1 || game == GAME_B2 || game == GAME_W2) {
 		FS_CardType t;
 		if (FSUSER_GetCardType(&t)) {
-			infoDisp("No cartridge inserted!");
+			infoDisp(i18n(S_MAIN_NO_CARTRIDGE));
 			exitServices();
 			return -1;
 		}
@@ -230,7 +235,7 @@ int main() {
 		mainSize = SPIGetCapacity(cardType_);
 		
 		if (mainSize != 524288) {
-			infoDisp("Incorrect size for this game!");
+			infoDisp(i18n(S_MAIN_INCORRECT_SAVE_SIZE));
 			exitServices();
 			return -1;
 		}
@@ -258,7 +263,7 @@ int main() {
 	
 	GUIElementsSpecify(game);
 	if (game < 6) {
-		char* mainMenu[3] = {"MANAGEMENT", "EVENTS", "CREDITS"};
+		wchar_t* mainMenu[3] = {i18n(S_MAIN_MENU_MANAGEMENT), i18n(S_MAIN_MENU_EVENTS), i18n(S_MAIN_MENU_CREDITS)};
 		while (aptMainLoop()) {
 			hidScanInput();
 			touchPosition touch;
@@ -266,7 +271,7 @@ int main() {
 			currentEntry = calcCurrentEntryOneScreen(currentEntry, 2, 1);
 			
 			if (hidKeysDown() & KEY_START) {
-				if (!confirmDisp("Save changes?"))
+				if (!confirmDisp(i18n(S_MAIN_Q_SAVE_CHANGES)))
 					save = false;
 				break;
 			}
@@ -289,7 +294,7 @@ int main() {
 				switch (currentEntry) {
 					case 0 : {
 						int option = 0;
-						char* menu[4] = {"POKEMON EDITOR", "SAVE INFO", "EXTRA STORAGE", "MASS INJECTOR"};
+						wchar_t* menu[4] = {i18n(S_MAIN_MENU_MANAGEMENT_MENU_EDITOR), i18n(S_MAIN_MENU_MANAGEMENT_SAVE_INFO), i18n(S_MAIN_MENU_MANAGEMENT_EXTRA_STORAGE), i18n(S_MAIN_MENU_MANAGEMENT_MASS_INJECTOR)};
 						while (aptMainLoop()) {
 							hidScanInput();
 							hidTouchRead(&touch);
@@ -350,7 +355,7 @@ int main() {
 			currentEntry = calcCurrentEntryOneScreen(currentEntry, 2, 1);
 			
 			if (hidKeysDown() & KEY_START) {
-				if (!confirmDisp("Save changes?"))
+				if (!confirmDisp(i18n(S_MAIN_Q_SAVE_CHANGES)))
 					save = false;
 				break;
 			}

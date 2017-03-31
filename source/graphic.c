@@ -41,113 +41,170 @@ int logo_lookup5[5] = {0, 53, 104, 176, 252};
 
 int lookup[] = {0x0, 0x1, 0x2, 0x4, 0x5, 0x3};
 
+int MAX_LENGTH_BOX_NAME = 15;
+
 sftd_font *unicodeJPN12, *unicodeKOR12, *fontBold18, *fontBold15, *fontBold14, *fontBold12, *fontBold11, *fontBold9, *fontFixed; 
 sf2d_texture *noMove, *hexIcon, *hexBG, *blueTextBox, *otaButton, *generationBG, *includeInfoButton, *hiddenPowerBG, *ballsBG, *male, *female, *naturestx, *movesBottom, *topMovesBG, *editorBar, *editorStatsBG, *subArrow, *backgroundTop, *miniBox, *plusButton, *minusButton, *balls, *typesSheet, *transferButton, *bankTop, *shinyStar, *normalBar, *LButton, *RButton, *creditsTop, *pokeball, *gameSelectorBottom1, *gameSelectorBottom2, *gameSelectorTop, *menuBar, *menuSelectedBar, *darkButton, *eventTop, *left, *lightButton, *redButton, *right, *spritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *warningTop, *warningBottom, *boxView, *infoView, *selector, *editorBG, *plus, *minus, *back, *setting, *selectorCloning, *button, *bottomPopUp, *pokemonBufferBox, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR, *settings, *item, *alternativeSpritesSmall;
 
-char *gamesList[] = {"X", "Y", "Omega Ruby", "Alpha Sapphire", "Sun", "Moon", "Diamond", "Pearl", "Platinum", "Heart Gold", "Soul Silver", "Black", "White", "Black 2", "White 2"};
+AppTextCode gamesList[] = {S_GRAPHIC_GAME_SELECTOR_GAME_X, S_GRAPHIC_GAME_SELECTOR_GAME_Y, S_GRAPHIC_GAME_SELECTOR_GAME_OS, S_GRAPHIC_GAME_SELECTOR_GAME_AS, S_GRAPHIC_GAME_SELECTOR_GAME_SUN, S_GRAPHIC_GAME_SELECTOR_GAME_MOON, S_GRAPHIC_GAME_SELECTOR_GAME_DIAMOND, S_GRAPHIC_GAME_SELECTOR_GAME_PEARL, S_GRAPHIC_GAME_SELECTOR_GAME_PLATINUM, S_GRAPHIC_GAME_SELECTOR_GAME_HG, S_GRAPHIC_GAME_SELECTOR_GAME_SS, S_GRAPHIC_GAME_SELECTOR_GAME_B, S_GRAPHIC_GAME_SELECTOR_GAME_W, S_GRAPHIC_GAME_SELECTOR_GAME_B2, S_GRAPHIC_GAME_SELECTOR_GAME_W2};
 
-static char *abilities[] = {"None", "Stench", "Drizzle", "Speed Boost", "Battle Armor", "Sturdy", "Damp", "Limber", "Sand Veil", "Static", "Volt Absorb", "Water Absorb", "Oblivious", "Cloud Nine", "Compound Eyes", "Insomnia", "Color Change", "Immunity", "Flash Fire", "Shield Dust", "Own Tempo", "Suction Cups", "Intimidate", "Shadow Tag", "Rough Skin", "Wonder Guard", "Levitate", "Effect Spore", "Synchronize", "Clear Body", "Natural Cure", "Lightning Rod", "Serene Grace", "Swift Swim", "Chlorophyll", "Illuminate", "Trace", "Huge Power", "Poison Point", "Inner Focus", "Magma Armor", "Water Veil", "Magnet Pull", "Soundproof", "Rain Dish", "Sand Stream", "Pressure", "Thick Fat", "Early Bird", "Flame Body", "Run Away", "Keen Eye", "Hyper Cutter", "Pickup", "Truant", "Hustle", "Cute Charm", "Plus", "Minus", "Forecast", "Sticky Hold", "Shed Skin", "Guts", "Marvel Scale", "Liquid Ooze", "Overgrow", "Blaze", "Torrent", "Swarm", "Rock Head", "Drought", "Arena Trap", "Vital Spirit", "White Smoke", "Pure Power", "Shell Armor", "Air Lock", "Tangled Feet", "Motor Drive", "Rivalry", "Steadfast", "Snow Cloak", "Gluttony", "Anger Point", "Unburden", "Heatproof", "Simple", "Dry Skin", "Download", "Iron Fist", "Poison Heal", "Adaptability", "Skill Link", "Hydration", "Solar Power", "Quick Feet", "Normalize", "Sniper", "Magic Guard", "No Guard", "Stall", "Technician", "Leaf Guard", "Klutz", "Mold Breaker", "Super Luck", "Aftermath", "Anticipation", "Forewarn", "Unaware", "Tinted Lens", "Filter", "Slow Start", "Scrappy", "Storm Drain", "Ice Body", "Solid Rock", "Snow Warning", "Honey Gather", "Frisk", "Reckless", "Multitype", "Flower Gift", "Bad Dreams", "Pickpocket", "Sheer Force", "Contrary", "Unnerve", "Defiant", "Defeatist", "Cursed Body", "Healer", "Friend Guard", "Weak Armor", "Heavy Metal", "Light Metal", "Multiscale", "Toxic Boost", "Flare Boost", "Harvest", "Telepathy", "Moody", "Overcoat", "Poison Touch", "Regenerator", "Big Pecks", "Sand Rush", "Wonder Skin", "Analytic", "Illusion", "Imposter", "Infiltrator", "Mummy", "Moxie", "Justified", "Rattled", "Magic Bounce", "Sap Sipper", "Prankster", "Sand Force", "Iron Barbs", "Zen Mode", "Victory Star", "Turboblaze", "Teravolt", "Aroma Veil", "Flower Veil", "Cheek Pouch", "Protean", "Fur Coat", "Magician", "Bulletproof", "Competitive", "Strong Jaw", "Refrigerate", "Sweet Veil", "Stance Change", "Gale Wings", "Mega Launcher", "Grass Pelt", "Symbiosis", "Tough Claws", "Pixilate", "Gooey", "Aerilate", "Parental Bond", "Dark Aura", "Fairy Aura", "Aura Break", "Primordial Sea", "Desolate Land", "Delta Stream", "Stamina", "Wimp Out", "Emergency Exit", "Water Compaction", "Merciless", "Shields Down", "Stakeout", "Water Bubble", "Steelworker", "Berserk", "Slush Rush", "Long Reach", "Liquid Voice", "Triage", "Galvanize", "Surge Surfer", "Schooling", "Disguise", "Battle Bond", "Power Construct", "Corrosion", "Comatose", "Queenly Majesty", "Innards Out", "Dancer", "Battery", "Fluffy", "Dazzling", "Soul-Heart", "Tangling Hair", "Receiver", "Power of Alchemy", "Beast Boost", "RKS System", "Electric Surge", "Psychic Surge", "Misty Surge", "Grassy Surge", "Full Metal Body", "Shadow Shield", "Prism Armor"};
-static char *moves[] = {"None", "Pound", "Karate Chop", "Double Slap", "Comet Punch", "Mega Punch", "Pay Day", "Fire Punch", "Ice Punch", "Thunder Punch", "Scratch", "Vice Grip", "Guillotine", "Razor Wind", "Swords Dance", "Cut", "Gust", "Wing Attack", "Whirlwind", "Fly", "Bind", "Slam", "Vine Whip", "Stomp", "Double Kick", "Mega Kick", "Jump Kick", "Rolling Kick", "Sand Attack", "Headbutt", "Horn Attack", "Fury Attack", "Horn Drill", "Tackle", "Body Slam", "Wrap", "Take Down", "Thrash", "Double-Edge", "Tail Whip", "Poison Sting", "Twineedle", "Pin Missile", "Leer", "Bite", "Growl", "Roar", "Sing", "Supersonic", "Sonic Boom", "Disable", "Acid", "Ember", "Flamethrower", "Mist", "Water Gun", "Hydro Pump", "Surf", "Ice Beam", "Blizzard", "Psybeam", "Bubble Beam", "Aurora Beam", "Hyper Beam", "Peck", "Drill Peck", "Submission", "Low Kick", "Counter", "Seismic Toss", "Strength", "Absorb", "Mega Drain", "Leech Seed", "Growth", "Razor Leaf", "Solar Beam", "Poison Powder", "Stun Spore", "Sleep Powder", "Petal Dance", "String Shot", "Dragon Rage", "Fire Spin", "Thunder Shock", "Thunderbolt", "Thunder Wave", "Thunder", "Rock Throw", "Earthquake", "Fissure", "Dig", "Toxic", "Confusion", "Psychic", "Hypnosis", "Meditate", "Agility", "Quick Attack", "Rage", "Teleport", "Night Shade", "Mimic", "Screech", "Double Team", "Recover", "Harden", "Minimize", "Smokescreen", "Confuse Ray", "Withdraw", "Defense Curl", "Barrier", "Light Screen", "Haze", "Reflect", "Focus Energy", "Bide", "Metronome", "Mirror Move", "Self-Destruct", "Egg Bomb", "Lick", "Smog", "Sludge", "Bone Club", "Fire Blast", "Waterfall", "Clamp", "Swift", "Skull Bash", "Spike Cannon", "Constrict", "Amnesia", "Kinesis", "Soft-Boiled", "High Jump Kick", "Glare", "Dream Eater", "Poison Gas", "Barrage", "Leech Life", "Lovely Kiss", "Sky Attack", "Transform", "Bubble", "Dizzy Punch", "Spore", "Flash", "Psywave", "Splash", "Acid Armor", "Crabhammer", "Explosion", "Fury Swipes", "Bonemerang", "Rest", "Rock Slide", "Hyper Fang", "Sharpen", "Conversion", "Tri Attack", "Super Fang", "Slash", "Substitute", "Struggle", "Sketch", "Triple Kick", "Thief", "Spider Web", "Mind Reader", "Nightmare", "Flame Wheel", "Snore", "Curse", "Flail", "Conversion 2", "Aeroblast", "Cotton Spore", "Reversal", "Spite", "Powder Snow", "Protect", "Mach Punch", "Scary Face", "Feint Attack", "Sweet Kiss", "Belly Drum", "Sludge Bomb", "Mud-Slap", "Octazooka", "Spikes", "Zap Cannon", "Foresight", "Destiny Bond", "Perish Song", "Icy Wind", "Detect", "Bone Rush", "Lock-On", "Outrage", "Sandstorm", "Giga Drain", "Endure", "Charm", "Rollout", "False Swipe", "Swagger", "Milk Drink", "Spark", "Fury Cutter", "Steel Wing", "Mean Look", "Attract", "Sleep Talk", "Heal Bell", "Return", "Present", "Frustration", "Safeguard", "Pain Split", "Sacred Fire", "Magnitude", "Dynamic Punch", "Megahorn", "Dragon Breath", "Baton Pass", "Encore", "Pursuit", "Rapid Spin", "Sweet Scent", "Iron Tail", "Metal Claw", "Vital Throw", "Morning Sun", "Synthesis", "Moonlight", "Hidden Power", "Cross Chop", "Twister", "Rain Dance", "Sunny Day", "Crunch", "Mirror Coat", "Psych Up", "Extreme Speed", "Ancient Power", "Shadow Ball", "Future Sight", "Rock Smash", "Whirlpool", "Beat Up", "Fake Out", "Uproar", "Stockpile", "Spit Up", "Swallow", "Heat Wave", "Hail", "Torment", "Flatter", "Will-O-Wisp", "Memento", "Facade", "Focus Punch", "Smelling Salts", "Follow Me", "Nature Power", "Charge", "Taunt", "Helping Hand", "Trick", "Role Play", "Wish", "Assist", "Ingrain", "Superpower", "Magic Coat", "Recycle", "Revenge", "Brick Break", "Yawn", "Knock Off", "Endeavor", "Eruption", "Skill Swap", "Imprison", "Refresh", "Grudge", "Snatch", "Secret Power", "Dive", "Arm Thrust", "Camouflage", "Tail Glow", "Luster Purge", "Mist Ball", "Feather Dance", "Teeter Dance", "Blaze Kick", "Mud Sport", "Ice Ball", "Needle Arm", "Slack Off", "Hyper Voice", "Poison Fang", "Crush Claw", "Blast Burn", "Hydro Cannon", "Meteor Mash", "Astonish", "Weather Ball", "Aromatherapy", "Fake Tears", "Air Cutter", "Overheat", "Odor Sleuth", "Rock Tomb", "Silver Wind", "Metal Sound", "Grass Whistle", "Tickle", "Cosmic Power", "Water Spout", "Signal Beam", "Shadow Punch", "Extrasensory", "Sky Uppercut", "Sand Tomb", "Sheer Cold", "Muddy Water", "Bullet Seed", "Aerial Ace", "Icicle Spear", "Iron Defense", "Block", "Howl", "Dragon Claw", "Frenzy Plant", "Bulk Up", "Bounce", "Mud Shot", "Poison Tail", "Covet", "Volt Tackle", "Magical Leaf", "Water Sport", "Calm Mind", "Leaf Blade", "Dragon Dance", "Rock Blast", "Shock Wave", "Water Pulse", "Doom Desire", "Psycho Boost", "Roost", "Gravity", "Miracle Eye", "Wake-Up Slap", "Hammer Arm", "Gyro Ball", "Healing Wish", "Brine", "Natural Gift", "Feint", "Pluck", "Tailwind", "Acupressure", "Metal Burst", "U-turn", "Close Combat", "Payback", "Assurance", "Embargo", "Fling", "Psycho Shift", "Trump Card", "Heal Block", "Wring Out", "Power Trick", "Gastro Acid", "Lucky Chant", "Me First", "Copycat", "Power Swap", "Guard Swap", "Punishment", "Last Resort", "Worry Seed", "Sucker Punch", "Toxic Spikes", "Heart Swap", "Aqua Ring", "Magnet Rise", "Flare Blitz", "Force Palm", "Aura Sphere", "Rock Polish", "Poison Jab", "Dark Pulse", "Night Slash", "Aqua Tail", "Seed Bomb", "Air Slash", "X-Scissor", "Bug Buzz", "Dragon Pulse", "Dragon Rush", "Power Gem", "Drain Punch", "Vacuum Wave", "Focus Blast", "Energy Ball", "Brave Bird", "Earth Power", "Switcheroo", "Giga Impact", "Nasty Plot", "Bullet Punch", "Avalanche", "Ice Shard", "Shadow Claw", "Thunder Fang", "Ice Fang", "Fire Fang", "Shadow Sneak", "Mud Bomb", "Psycho Cut", "Zen Headbutt", "Mirror Shot", "Flash Cannon", "Rock Climb", "Defog", "Trick Room", "Draco Meteor", "Discharge", "Lava Plume", "Leaf Storm", "Power Whip", "Rock Wrecker", "Cross Poison", "Gunk Shot", "Iron Head", "Magnet Bomb", "Stone Edge", "Captivate", "Stealth Rock", "Grass Knot", "Chatter", "Judgment", "Bug Bite", "Charge Beam", "Wood Hammer", "Aqua Jet", "Attack Order", "Defend Order", "Heal Order", "Head Smash", "Double Hit", "Roar of Time", "Spacial Rend", "Lunar Dance", "Crush Grip", "Magma Storm", "Dark Void", "Seed Flare", "Ominous Wind", "Shadow Force", "Hone Claws", "Wide Guard", "Guard Split", "Power Split", "Wonder Room", "Psyshock", "Venoshock", "Autotomize", "Rage Powder", "Telekinesis", "Magic Room", "Smack Down", "Storm Throw", "Flame Burst", "Sludge Wave", "Quiver Dance", "Heavy Slam", "Synchronoise", "Electro Ball", "Soak", "Flame Charge", "Coil", "Low Sweep", "Acid Spray", "Foul Play", "Simple Beam", "Entrainment", "After You", "Round", "Echoed Voice", "Chip Away", "Clear Smog", "Stored Power", "Quick Guard", "Ally Switch", "Scald", "Shell Smash", "Heal Pulse", "Hex", "Sky Drop", "Shift Gear", "Circle Throw", "Incinerate", "Quash", "Acrobatics", "Reflect Type", "Retaliate", "Final Gambit", "Bestow", "Inferno", "Water Pledge", "Fire Pledge", "Grass Pledge", "Volt Switch", "Struggle Bug", "Bulldoze", "Frost Breath", "Dragon Tail", "Work Up", "Electroweb", "Wild Charge", "Drill Run", "Dual Chop", "Heart Stamp", "Horn Leech", "Sacred Sword", "Razor Shell", "Heat Crash", "Leaf Tornado", "Steamroller", "Cotton Guard", "Night Daze", "Psystrike", "Tail Slap", "Hurricane", "Head Charge", "Gear Grind", "Searing Shot", "Techno Blast", "Relic Song", "Secret Sword", "Glaciate", "Bolt Strike", "Blue Flare", "Fiery Dance", "Freeze Shock", "Ice Burn", "Snarl", "Icicle Crash", "V-create", "Fusion Flare", "Fusion Bolt", "Flying Press", "Mat Block", "Belch", "Rototiller", "Sticky Web", "Fell Stinger", "Phantom Force", "Trick-or-Treat", "Noble Roar", "Ion Deluge", "Parabolic Charge", "Forest's Curse", "Petal Blizzard", "Freeze-Dry", "Disarming Voice", "Parting Shot", "Topsy-Turvy", "Draining Kiss", "Crafty Shield", "Flower Shield", "Grassy Terrain", "Misty Terrain", "Electrify", "Play Rough", "Fairy Wind", "Moonblast", "Boomburst", "Fairy Lock", "King's Shield", "Play Nice", "Confide", "Diamond Storm", "Steam Eruption", "Hyperspace Hole", "Water Shuriken", "Mystical Fire", "Spiky Shield", "Aromatic Mist", "Eerie Impulse", "Venom Drench", "Powder", "Geomancy", "Magnetic Flux", "Happy Hour", "Electric Terrain", "Dazzling Gleam", "Celebrate", "Hold Hands", "Baby-Doll Eyes", "Nuzzle", "Hold Back", "Infestation", "Power-Up Punch", "Oblivion Wing", "Thousand Arrows", "Thousand Waves", "Land's Wrath", "Light of Ruin", "Origin Pulse", "Precipice Blades", "Dragon Ascent", "Hyperspace Fury", "Breakneck Blitz", "Breakneck Blitz", "All-Out Pummeling", "All-Out Pummeling", "Supersonic Skystrike", "Supersonic Skystrike", "Acid Downpour", "Acid Downpour", "Tectonic Rage", "Tectonic Rage", "Continental Crush", "Continental Crush", "Savage Spin-Out", "Savage Spin-Out", "Never-Ending Nightmare", "Never-Ending Nightmare", "Corkscrew Crash", "Corkscrew Crash", "Inferno Overdrive", "Inferno Overdrive", "Hydro Vortex", "Hydro Vortex", "Bloom Doom", "Bloom Doom", "Gigavolt Havoc", "Gigavolt Havoc", "Shattered Psyche", "Shattered Psyche", "Subzero Slammer", "Subzero Slammer", "Devastating Drake", "Devastating Drake", "Black Hole Eclipse", "Black Hole Eclipse", "Twinkle Tackle", "Twinkle Tackle", "Catastropika", "Shore Up", "First Impression", "Baneful Bunker", "Spirit Shackle", "Darkest Lariat", "Sparkling Aria", "Ice Hammer", "Floral Healing", "High Horsepower", "Strength Sap", "Solar Blade", "Leafage", "Spotlight", "Toxic Thread", "Laser Focus", "Gear Up", "Throat Chop", "Pollen Puff", "Anchor Shot", "Psychic Terrain", "Lunge", "Fire Lash", "Power Trip", "Burn Up", "Speed Swap", "Smart Strike", "Purify", "Revelation Dance", "Core Enforcer", "Trop Kick", "Instruct", "Beak Blast", "Clanging Scales", "Dragon Hammer", "Brutal Swing", "Aurora Veil", "Sinister Arrow Raid", "Malicious Moonsault", "Oceanic Operetta", "Guardian of Alola", "Soul-Stealing 7-Star Strike", "Stoked Sparksurfer", "Pulverizing Pancake", "Extreme Evoboost", "Genesis Supernova", "Shell Trap", "Fleur Cannon", "Psychic Fangs", "Stomping Tantrum", "Shadow Bone", "Accelerock", "Liquidation", "Prismatic Laser", "Spectral Thief", "Sunsteel Strike", "Moongeist Beam", "Tearful Look", "Zing Zap", "Nature's Madness", "Multi-Attack", "10,000,000 Volt Thunderbolt"};
-static char *movesSorted[] = {"None", "Absorb", "Accelerock", "Acid", "Acid Armor", "Acid Downpour", "Acid Downpour", "Acid Spray", "Acrobatics", "Acupressure", "Aerial Ace", "Aeroblast", "After You", "Agility", "Air Cutter", "Air Slash", "All-Out Pummeling", "All-Out Pummeling", "Ally Switch", "Amnesia", "Anchor Shot", "Ancient Power", "Aqua Jet", "Aqua Ring", "Aqua Tail", "Arm Thrust", "Aromatherapy", "Aromatic Mist", "Assist", "Assurance", "Astonish", "Attack Order", "Attract", "Aura Sphere", "Aurora Beam", "Aurora Veil", "Autotomize", "Avalanche", "Baby-Doll Eyes", "Baneful Bunker", "Barrage", "Barrier", "Baton Pass", "Beak Blast", "Beat Up", "Belch", "Belly Drum", "Bestow", "Bide", "Bind", "Bite", "Black Hole Eclipse", "Black Hole Eclipse", "Blast Burn", "Blaze Kick", "Blizzard", "Block", "Bloom Doom", "Bloom Doom", "Blue Flare", "Body Slam", "Bolt Strike", "Bone Club", "Bone Rush", "Bonemerang", "Boomburst", "Bounce", "Brave Bird", "Breakneck Blitz", "Breakneck Blitz", "Brick Break", "Brine", "Brutal Swing", "Bubble", "Bubble Beam", "Bug Bite", "Bug Buzz", "Bulk Up", "Bulldoze", "Bullet Punch", "Bullet Seed", "Burn Up", "Calm Mind", "Camouflage", "Captivate", "Catastropika", "Celebrate", "Charge", "Charge Beam", "Charm", "Chatter", "Chip Away", "Circle Throw", "Clamp", "Clanging Scales", "Clear Smog", "Close Combat", "Coil", "Comet Punch", "Confide", "Confuse Ray", "Confusion", "Constrict", "Continental Crush", "Continental Crush", "Conversion", "Conversion 2", "Copycat", "Core Enforcer", "Corkscrew Crash", "Corkscrew Crash", "Cosmic Power", "Cotton Guard", "Cotton Spore", "Counter", "Covet", "Crabhammer", "Crafty Shield", "Cross Chop", "Cross Poison", "Crunch", "Crush Claw", "Crush Grip", "Curse", "Cut", "Dark Pulse", "Dark Void", "Darkest Lariat", "Dazzling Gleam", "Defend Order", "Defense Curl", "Defog", "Destiny Bond", "Detect", "Devastating Drake", "Devastating Drake", "Diamond Storm", "Dig", "Disable", "Disarming Voice", "Discharge", "Dive", "Dizzy Punch", "Doom Desire", "Double Hit", "Double Kick", "Double Slap", "Double Team", "Double-Edge", "Draco Meteor", "Dragon Ascent", "Dragon Breath", "Dragon Claw", "Dragon Dance", "Dragon Hammer", "Dragon Pulse", "Dragon Rage", "Dragon Rush", "Dragon Tail", "Drain Punch", "Draining Kiss", "Dream Eater", "Drill Peck", "Drill Run", "Dual Chop", "Dynamic Punch", "Earth Power", "Earthquake", "Echoed Voice", "Eerie Impulse", "Egg Bomb", "Electric Terrain", "Electrify", "Electro Ball", "Electroweb", "Embargo", "Ember", "Encore", "Endeavor", "Endure", "Energy Ball", "Entrainment", "Eruption", "Explosion", "Extrasensory", "Extreme Evoboost", "Extreme Speed", "Facade", "Fairy Lock", "Fairy Wind", "Fake Out", "Fake Tears", "False Swipe", "Feather Dance", "Feint", "Feint Attack", "Fell Stinger", "Fiery Dance", "Final Gambit", "Fire Blast", "Fire Fang", "Fire Lash", "Fire Pledge", "Fire Punch", "Fire Spin", "First Impression", "Fissure", "Flail", "Flame Burst", "Flame Charge", "Flame Wheel", "Flamethrower", "Flare Blitz", "Flash", "Flash Cannon", "Flatter", "Fleur Cannon", "Fling", "Floral Healing", "Flower Shield", "Fly", "Flying Press", "Focus Blast", "Focus Energy", "Focus Punch", "Follow Me", "Force Palm", "Foresight", "Forest's Curse", "Foul Play", "Freeze Shock", "Freeze-Dry", "Frenzy Plant", "Frost Breath", "Frustration", "Fury Attack", "Fury Cutter", "Fury Swipes", "Fusion Bolt", "Fusion Flare", "Future Sight", "Gastro Acid", "Gear Grind", "Gear Up", "Genesis Supernova", "Geomancy", "Giga Drain", "Giga Impact", "Gigavolt Havoc", "Gigavolt Havoc", "Glaciate", "Glare", "Grass Knot", "Grass Pledge", "Grass Whistle", "Grassy Terrain", "Gravity", "Growl", "Growth", "Grudge", "Guard Split", "Guard Swap", "Guardian of Alola", "Guillotine", "Gunk Shot", "Gust", "Gyro Ball", "Hail", "Hammer Arm", "Happy Hour", "Harden", "Haze", "Head Charge", "Head Smash", "Headbutt", "Heal Bell", "Heal Block", "Heal Order", "Heal Pulse", "Healing Wish", "Heart Stamp", "Heart Swap", "Heat Crash", "Heat Wave", "Heavy Slam", "Helping Hand", "Hex", "Hidden Power", "High Horsepower", "High Jump Kick", "Hold Back", "Hold Hands", "Hone Claws", "Horn Attack", "Horn Drill", "Horn Leech", "Howl", "Hurricane", "Hydro Cannon", "Hydro Pump", "Hydro Vortex", "Hydro Vortex", "Hyper Beam", "Hyper Fang", "Hyper Voice", "Hyperspace Fury", "Hyperspace Hole", "Hypnosis", "Ice Ball", "Ice Beam", "Ice Burn", "Ice Fang", "Ice Hammer", "Ice Punch", "Ice Shard", "Icicle Crash", "Icicle Spear", "Icy Wind", "Imprison", "Incinerate", "Inferno", "Inferno Overdrive", "Inferno Overdrive", "Infestation", "Ingrain", "Instruct", "Ion Deluge", "Iron Defense", "Iron Head", "Iron Tail", "Judgment", "Jump Kick", "Karate Chop", "Kinesis", "King's Shield", "Knock Off", "Land's Wrath", "Laser Focus", "Last Resort", "Lava Plume", "Leaf Blade", "Leaf Storm", "Leaf Tornado", "Leafage", "Leech Life", "Leech Seed", "Leer", "Lick", "Light of Ruin", "Light Screen", "Liquidation", "Lock-On", "Lovely Kiss", "Low Kick", "Low Sweep", "Lucky Chant", "Lunar Dance", "Lunge", "Luster Purge", "Mach Punch", "Magic Coat", "Magic Room", "Magical Leaf", "Magma Storm", "Magnet Bomb", "Magnet Rise", "Magnetic Flux", "Magnitude", "Malicious Moonsault", "Mat Block", "Me First", "Mean Look", "Meditate", "Mega Drain", "Mega Kick", "Mega Punch", "Megahorn", "Memento", "Metal Burst", "Metal Claw", "Metal Sound", "Meteor Mash", "Metronome", "Milk Drink", "Mimic", "Mind Reader", "Minimize", "Miracle Eye", "Mirror Coat", "Mirror Move", "Mirror Shot", "Mist", "Mist Ball", "Misty Terrain", "Moonblast", "Moongeist Beam", "Moonlight", "Morning Sun", "Mud Bomb", "Mud Shot", "Mud Sport", "Mud-Slap", "Muddy Water", "Multi-Attack", "Mystical Fire", "Nasty Plot", "Natural Gift", "Nature Power", "Nature's Madness", "Needle Arm", "Never-Ending Nightmare", "Never-Ending Nightmare", "Night Daze", "Night Shade", "Night Slash", "Nightmare", "Noble Roar", "Nuzzle", "Oblivion Wing", "Oceanic Operetta", "Octazooka", "Odor Sleuth", "Ominous Wind", "Origin Pulse", "Outrage", "Overheat", "Pain Split", "Parabolic Charge", "Parting Shot", "Pay Day", "Payback", "Peck", "Perish Song", "Petal Blizzard", "Petal Dance", "Phantom Force", "Pin Missile", "Play Nice", "Play Rough", "Pluck", "Poison Fang", "Poison Gas", "Poison Jab", "Poison Powder", "Poison Sting", "Poison Tail", "Pollen Puff", "Pound", "Powder", "Powder Snow", "Power Gem", "Power Split", "Power Swap", "Power Trick", "Power Trip", "Power Whip", "Power-Up Punch", "Precipice Blades", "Present", "Prismatic Laser", "Protect", "Psybeam", "Psych Up", "Psychic", "Psychic Fangs", "Psychic Terrain", "Psycho Boost", "Psycho Cut", "Psycho Shift", "Psyshock", "Psystrike", "Psywave", "Pulverizing Pancake", "Punishment", "Purify", "Pursuit", "Quash", "Quick Attack", "Quick Guard", "Quiver Dance", "Rage", "Rage Powder", "Rain Dance", "Rapid Spin", "Razor Leaf", "Razor Shell", "Razor Wind", "Recover", "Recycle", "Reflect", "Reflect Type", "Refresh", "Relic Song", "Rest", "Retaliate", "Return", "Revelation Dance", "Revenge", "Reversal", "Roar", "Roar of Time", "Rock Blast", "Rock Climb", "Rock Polish", "Rock Slide", "Rock Smash", "Rock Throw", "Rock Tomb", "Rock Wrecker", "Role Play", "Rolling Kick", "Rollout", "Roost", "Rototiller", "Round", "Sacred Fire", "Sacred Sword", "Safeguard", "Sand Attack", "Sand Tomb", "Sandstorm", "Savage Spin-Out", "Savage Spin-Out", "Scald", "Scary Face", "Scratch", "Screech", "Searing Shot", "Secret Power", "Secret Sword", "Seed Bomb", "Seed Flare", "Seismic Toss", "Self-Destruct", "Shadow Ball", "Shadow Bone", "Shadow Claw", "Shadow Force", "Shadow Punch", "Shadow Sneak", "Sharpen", "Shattered Psyche", "Shattered Psyche", "Sheer Cold", "Shell Smash", "Shell Trap", "Shift Gear", "Shock Wave", "Shore Up", "Signal Beam", "Silver Wind", "Simple Beam", "Sing", "Sinister Arrow Raid", "Sketch", "Skill Swap", "Skull Bash", "Sky Attack", "Sky Drop", "Sky Uppercut", "Slack Off", "Slam", "Slash", "Sleep Powder", "Sleep Talk", "Sludge", "Sludge Bomb", "Sludge Wave", "Smack Down", "Smart Strike", "Smelling Salts", "Smog", "Smokescreen", "Snarl", "Snatch", "Snore", "Soak", "Soft-Boiled", "Solar Beam", "Solar Blade", "Sonic Boom", "Soul-Stealing 7-Star Strike", "Spacial Rend", "Spark", "Sparkling Aria", "Spectral Thief", "Speed Swap", "Spider Web", "Spike Cannon", "Spikes", "Spiky Shield", "Spirit Shackle", "Spit Up", "Spite", "Splash", "Spore", "Spotlight", "Stealth Rock", "Steam Eruption", "Steamroller", "Steel Wing", "Sticky Web", "Stockpile", "Stoked Sparksurfer", "Stomp", "Stomping Tantrum", "Stone Edge", "Stored Power", "Storm Throw", "Strength", "Strength Sap", "String Shot", "Struggle", "Struggle Bug", "Stun Spore", "Submission", "Substitute", "Subzero Slammer", "Subzero Slammer", "Sucker Punch", "Sunny Day", "Sunsteel Strike", "Super Fang", "Superpower", "Supersonic", "Supersonic Skystrike", "Supersonic Skystrike", "Surf", "Swagger", "Swallow", "Sweet Kiss", "Sweet Scent", "Swift", "Switcheroo", "Swords Dance", "Synchronoise", "Synthesis", "Tackle", "Tail Glow", "Tail Slap", "Tail Whip", "Tailwind", "Take Down", "Taunt", "Tearful Look", "Techno Blast", "Tectonic Rage", "Tectonic Rage", "Teeter Dance", "Telekinesis", "Teleport", "Thief", "Thousand Arrows", "Thousand Waves", "Thrash", "Throat Chop", "Thunder", "Thunder Fang", "Thunder Punch", "Thunder Shock", "Thunder Wave", "Thunderbolt", "Tickle", "Topsy-Turvy", "Torment", "Toxic", "Toxic Spikes", "Toxic Thread", "Transform", "Tri Attack", "Trick", "Trick Room", "Trick-or-Treat", "Triple Kick", "Trop Kick", "Trump Card", "Twineedle", "Twinkle Tackle", "Twinkle Tackle", "Twister", "U-turn", "Uproar", "V-create", "Vacuum Wave", "Venom Drench", "Venoshock", "Vice Grip", "Vine Whip", "Vital Throw", "Volt Switch", "Volt Tackle", "Wake-Up Slap", "Water Gun", "Water Pledge", "Water Pulse", "Water Shuriken", "Water Sport", "Water Spout", "Waterfall", "Weather Ball", "Whirlpool", "Whirlwind", "Wide Guard", "Wild Charge", "Will-O-Wisp", "Wing Attack", "Wish", "Withdraw", "Wonder Room", "Wood Hammer", "Work Up", "Worry Seed", "Wrap", "Wring Out", "X-Scissor", "Yawn", "Zap Cannon", "Zen Headbutt", "Zing Zap", "10,000,000 Volt Thunderbolt"};
-static char *natures[] = {"Hardy", "Lonely", "Brave", "Adamant", "Naughty", "Bold", "Docile", "Relaxed", "Impish", "Lax", "Timid", "Hasty", "Serious", "Jolly", "Naive", "Modest", "Mild", "Quiet", "Bashful", "Rash", "Calm", "Gentle", "Sassy", "Careful", "Quirky"};
-static char *items[] = {"None", "Master Ball", "Ultra Ball", "Great Ball", "Poke Ball", "Safari Ball", "Net Ball", "Dive Ball", "Nest Ball", "Repeat Ball", "Timer Ball", "Luxury Ball", "Premier Ball", "Dusk Ball", "Heal Ball", "Quick Ball", "Cherish Ball", "Potion", "Antidote", "Burn Heal", "Ice Heal", "Awakening", "Paralyze Heal", "Full Restore", "Max Potion", "Hyper Potion", "Super Potion", "Full Heal", "Revive", "Max Revive", "Fresh Water", "Soda Pop", "Lemonade", "Moomoo Milk", "Energy Powder", "Energy Root", "Heal Powder", "Revival Herb", "Ether", "Max Ether", "Elixir", "Max Elixir", "Lava Cookie", "Berry Juice", "Sacred Ash", "HP Up", "Protein", "Iron", "Carbos", "Calcium", "Rare Candy", "PP Up", "Zinc", "PP Max", "Old Gateau", "Guard Spec.", "Dire Hit", "X Attack", "X Defense", "X Speed", "X Accuracy", "X Sp. Atk", "X Sp. Def", "Poké Doll", "Fluffy Tail", "Blue Flute", "Yellow Flute", "Red Flute", "Black Flute", "White Flute", "Shoal Salt", "Shoal Shell", "Red Shard", "Blue Shard", "Yellow Shard", "Green Shard", "Super Repel", "Max Repel", "Escape Rope", "Repel", "Sun Stone", "Moon Stone", "Fire Stone", "Thunder Stone", "Water Stone", "Leaf Stone", "Tiny Mushroom", "Big Mushroom", "Pearl", "Big Pearl", "Stardust", "Star Piece", "Nugget", "Heart Scale", "Honey", "Growth Mulch", "Damp Mulch", "Stable Mulch", "Gooey Mulch", "Root Fossil", "Claw Fossil", "Helix Fossil", "Dome Fossil", "Old Amber", "Armor Fossil", "Skull Fossil", "Rare Bone", "Shiny Stone", "Dusk Stone", "Dawn Stone", "Oval Stone", "Odd Keystone", "Griseous Orb", "???", "???", "???", "Douse Drive", "Shock Drive", "Burn Drive", "Chill Drive", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "Sweet Heart", "Adamant Orb", "Lustrous Orb", "Greet Mail", "Favored Mail", "RSVP Mail", "Thanks Mail", "Inquiry Mail", "Like Mail", "Reply Mail", "Bridge Mail S", "Bridge Mail D", "Bridge Mail T", "Bridge Mail V", "Bridge Mail M", "Cheri Berry", "Chesto Berry", "Pecha Berry", "Rawst Berry", "Aspear Berry", "Leppa Berry", "Oran Berry", "Persim Berry", "Lum Berry", "Sitrus Berry", "Figy Berry", "Wiki Berry", "Mago Berry", "Aguav Berry", "Iapapa Berry", "Razz Berry", "Bluk Berry", "Nanab Berry", "Wepear Berry", "Pinap Berry", "Pomeg Berry", "Kelpsy Berry", "Qualot Berry", "Hondew Berry", "Grepa Berry", "Tamato Berry", "Cornn Berry", "Magost Berry", "Rabuta Berry", "Nomel Berry", "Spelon Berry", "Pamtre Berry", "Watmel Berry", "Durin Berry", "Belue Berry", "Occa Berry", "Passho Berry", "Wacan Berry", "Rindo Berry", "Yache Berry", "Chople Berry", "Kebia Berry", "Shuca Berry", "Coba Berry", "Payapa Berry", "Tanga Berry", "Charti Berry", "Kasib Berry", "Haban Berry", "Colbur Berry", "Babiri Berry", "Chilan Berry", "Liechi Berry", "Ganlon Berry", "Salac Berry", "Petaya Berry", "Apicot Berry", "Lansat Berry", "Starf Berry", "Enigma Berry", "Micle Berry", "Custap Berry", "Jaboca Berry", "Rowap Berry", "Bright Powder", "White Herb", "Macho Brace", "Exp. Share", "Quick Claw", "Soothe Bell", "Mental Herb", "Choice Band", "King's Rock", "Silver Powder", "Amulet Coin", "Cleanse Tag", "Soul Dew", "Deep Sea Tooth", "Deep Sea Scale", "Smoke Ball", "Everstone", "Focus Band", "Lucky Egg", "Scope Lens", "Metal Coat", "Leftovers", "Dragon Scale", "Light Ball", "Soft Sand", "Hard Stone", "Miracle Seed", "Black Glasses", "Black Belt", "Magnet", "Mystic Water", "Sharp Beak", "Poison Barb", "Never-Melt Ice", "Spell Tag", "Twisted Spoon", "Charcoal", "Dragon Fang", "Silk Scarf", "Up-Grade", "Shell Bell", "Sea Incense", "Lax Incense", "Lucky Punch", "Metal Powder", "Thick Club", "Stick", "Red Scarf", "Blue Scarf", "Pink Scarf", "Green Scarf", "Yellow Scarf", "Wide Lens", "Muscle Band", "Wise Glasses", "Expert Belt", "Light Clay", "Life Orb", "Power Herb", "Toxic Orb", "Flame Orb", "Quick Powder", "Focus Sash", "Zoom Lens", "Metronome", "Iron Ball", "Lagging Tail", "Destiny Knot", "Black Sludge", "Icy Rock", "Smooth Rock", "Heat Rock", "Damp Rock", "Grip Claw", "Choice Scarf", "Sticky Barb", "Power Bracer", "Power Belt", "Power Lens", "Power Band", "Power Anklet", "Power Weight", "Shed Shell", "Big Root", "Choice Specs", "Flame Plate", "Splash Plate", "Zap Plate", "Meadow Plate", "Icicle Plate", "Fist Plate", "Toxic Plate", "Earth Plate", "Sky Plate", "Mind Plate", "Insect Plate", "Stone Plate", "Spooky Plate", "Draco Plate", "Dread Plate", "Iron Plate", "Odd Incense", "Rock Incense", "Full Incense", "Wave Incense", "Rose Incense", "Luck Incense", "Pure Incense", "Protector", "Electirizer", "Magmarizer", "Dubious Disc", "Reaper Cloth", "Razor Claw", "Razor Fang", "TM01", "TM02", "TM03", "TM04", "TM05", "TM06", "TM07", "TM08", "TM09", "TM10", "TM11", "TM12", "TM13", "TM14", "TM15", "TM16", "TM17", "TM18", "TM19", "TM20", "TM21", "TM22", "TM23", "TM24", "TM25", "TM26", "TM27", "TM28", "TM29", "TM30", "TM31", "TM32", "TM33", "TM34", "TM35", "TM36", "TM37", "TM38", "TM39", "TM40", "TM41", "TM42", "TM43", "TM44", "TM45", "TM46", "TM47", "TM48", "TM49", "TM50", "TM51", "TM52", "TM53", "TM54", "TM55", "TM56", "TM57", "TM58", "TM59", "TM60", "TM61", "TM62", "TM63", "TM64", "TM65", "TM66", "TM67", "TM68", "TM69", "TM70", "TM71", "TM72", "TM73", "TM74", "TM75", "TM76", "TM77", "TM78", "TM79", "TM80", "TM81", "TM82", "TM83", "TM84", "TM85", "TM86", "TM87", "TM88", "TM89", "TM90", "TM91", "TM92", "HM01", "HM02", "HM03", "HM04", "HM05", "HM06", "???", "???", "Explorer Kit", "Loot Sack", "Rule Book", "Poké Radar", "Point Card", "Journal", "Seal Case", "Fashion Case", "Seal Bag", "Pal Pad", "Works Key", "Old Charm", "Galactic Key", "Red Chain", "Town Map", "Vs. Seeker", "Coin Case", "Old Rod", "Good Rod", "Super Rod", "Sprayduck", "Poffin Case", "Bike", "Suite Key", "Oak's Letter", "Lunar Wing", "Member Card", "Azure Flute", "S.S. Ticket", "Contest Pass", "Magma Stone", "Parcel", "Coupon 1", "Coupon 2", "Coupon 3", "Storage Key", "Secret Potion", "Vs. Recorder", "Gracidea", "Secret Key", "Apricorn Box", "Unown Report", "Berry Pots", "Dowsing Machine", "Blue Card", "Slowpoke Tail", "Clear Bell", "Card Key", "Basement Key", "Squirt Bottle", "Red Scale", "Lost Item", "Pass", "Machine Part", "Silver Wing", "Rainbow Wing", "Mystery Egg", "Red Apricorn", "Blue Apricorn", "Yellow Apricorn", "Green Apricorn", "Pink Apricorn", "White Apricorn", "Black Apricorn", "Fast Ball", "Level Ball", "Lure Ball", "Heavy Ball", "Love Ball", "Friend Ball", "Moon Ball", "Sport Ball", "Park Ball", "Photo Album", "GB Sounds", "Tidal Bell", "Rage Candy Bar", "Data Card 01", "Data Card 02", "Data Card 03", "Data Card 04", "Data Card 05", "Data Card 06", "Data Card 07", "Data Card 08", "Data Card 09", "Data Card 10", "Data Card 11", "Data Card 12", "Data Card 13", "Data Card 14", "Data Card 15", "Data Card 16", "Data Card 17", "Data Card 18", "Data Card 19", "Data Card 20", "Data Card 21", "Data Card 22", "Data Card 23", "Data Card 24", "Data Card 25", "Data Card 26", "Data Card 27", "Jade Orb", "Lock Capsule", "Red Orb", "Blue Orb", "Enigma Stone", "Prism Scale", "Eviolite", "Float Stone", "Rocky Helmet", "Air Balloon", "Red Card", "Ring Target", "Binding Band", "Absorb Bulb", "Cell Battery", "Eject Button", "Fire Gem", "Water Gem", "Electric Gem", "Grass Gem", "Ice Gem", "Fighting Gem", "Poison Gem", "Ground Gem", "Flying Gem", "Psychic Gem", "Bug Gem", "Rock Gem", "Ghost Gem", "Dragon Gem", "Dark Gem", "Steel Gem", "Normal Gem", "Health Wing", "Muscle Wing", "Resist Wing", "Genius Wing", "Clever Wing", "Swift Wing", "Pretty Wing", "Cover Fossil", "Plume Fossil", "Liberty Pass", "Pass Orb", "Dream Ball", "Poké Toy", "Prop Case", "Dragon Skull", "Balm Mushroom", "Big Nugget", "Pearl String", "Comet Shard", "Relic Copper", "Relic Silver", "Relic Gold", "Relic Vase", "Relic Band", "Relic Statue", "Relic Crown", "Casteliacone", "Dire Hit 2", "X Speed 2", "X Sp. Atk 2", "X Sp. Def 2", "X Defense 2", "X Attack 2", "X Accuracy 2", "X Speed 3", "X Sp. Atk 3", "X Sp. Def 3", "X Defense 3", "X Attack 3", "X Accuracy 3", "X Speed 6", "X Sp. Atk 6", "X Sp. Def 6", "X Defense 6", "X Attack 6", "X Accuracy 6", "Ability Urge", "Item Drop", "Item Urge", "Reset Urge", "Dire Hit 3", "Light Stone", "Dark Stone", "TM93", "TM94", "TM95", "Xtransceiver", "???", "Gram 1", "Gram 2", "Gram 3", "Xtransceiver", "Medal Box", "DNA Splicers", "DNA Splicers", "Permit", "Oval Charm", "Shiny Charm", "Plasma Card", "Grubby Hanky", "Colress Machine", "Dropped Item", "Dropped Item", "Reveal Glass", "Weakness Policy", "Assault Vest", "Holo Caster", "Prof's Letter", "Roller Skates", "Pixie Plate", "Ability Capsule", "Whipped Dream", "Sachet", "Luminous Moss", "Snowball", "Safety Goggles", "Poké Flute", "Rich Mulch", "Surprise Mulch", "Boost Mulch", "Amaze Mulch", "Gengarite", "Gardevoirite", "Ampharosite", "Venusaurite", "Charizardite X", "Blastoisinite", "Mewtwonite X", "Mewtwonite Y", "Blazikenite", "Medichamite", "Houndoominite", "Aggronite", "Banettite", "Tyranitarite", "Scizorite", "Pinsirite", "Aerodactylite", "Lucarionite", "Abomasite", "Kangaskhanite", "Gyaradosite", "Absolite", "Charizardite Y", "Alakazite", "Heracronite", "Mawilite", "Manectite", "Garchompite", "Latiasite", "Latiosite", "Roseli Berry", "Kee Berry", "Maranga Berry", "Sprinklotad", "TM96", "TM97", "TM98", "TM99", "TM100", "Power Plant Pass", "Mega Ring", "Intriguing Stone", "Common Stone", "Discount Coupon", "Elevator Key", "TMV Pass", "Honor of Kalos", "Adventure Rules", "Strange Souvenir", "Lens Case", "Makeup Bag", "Travel Trunk", "Lumiose Galette", "Shalour Sable", "Jaw Fossil", "Sail Fossil", "Looker Ticket", "Bike", "Holo Caster", "Fairy Gem", "Mega Charm", "Mega Glove", "Mach Bike", "Acro Bike", "Wailmer Pail", "Devon Parts", "Soot Sack", "Basement Key", "Pokéblock Kit", "Letter", "Eon Ticket", "Scanner", "Go-Goggles", "Meteorite", "Key to Room 1", "Key to Room 2", "Key to Room 4", "Key to Room 6", "Storage Key", "Devon Scope", "S.S. Ticket", "HM07", "Devon Scuba Gear", "Contest Costume", "Contest Costume", "Magma Suit", "Aqua Suit", "Pair of Tickets", "Mega Bracelet", "Mega Pendant", "Mega Glasses", "Mega Anchor", "Mega Stickpin", "Mega Tiara", "Mega Anklet", "Meteorite", "Swampertite", "Sceptilite", "Sablenite", "Altarianite", "Galladite", "Audinite", "Metagrossite", "Sharpedonite", "Slowbronite", "Steelixite", "Pidgeotite", "Glalitite", "Diancite", "Prison Bottle", "Mega Cuff", "Cameruptite", "Lopunnite", "Salamencite", "Beedrillite", "Meteorite", "Meteorite", "Key Stone", "Meteorite Shard", "Eon Flute", "Normalium Z", "Firium Z", "Waterium Z", "Electrium Z", "Grassium Z", "Icium Z", "Fightinium Z", "Poisonium Z", "Groundium Z", "Flyinium Z", "Psychium Z", "Buginium Z", "Rockium Z", "Ghostium Z", "Dragonium Z", "Darkinium Z", "Steelium Z", "Fairium Z", "Pikanium Z", "Bottle Cap", "Gold Bottle Cap", "Z-Ring", "Decidium Z", "Incinium Z", "Primarium Z", "Tapunium Z", "Marshadium Z", "Aloraichium Z", "Snorlium Z", "Eevium Z", "Mewnium Z", "Normalium Z", "Firium Z", "Waterium Z", "Electrium Z", "Grassium Z", "Icium Z", "Fightinium Z", "Poisonium Z", "Groundium Z", "Flyinium Z", "Psychium Z", "Buginium Z", "Rockium Z", "Ghostium Z", "Dragonium Z", "Darkinium Z", "Steelium Z", "Fairium Z", "Pikanium Z", "Decidium Z", "Incinium Z", "Primarium Z", "Tapunium Z", "Marshadium Z", "Aloraichium Z", "Snorlium Z", "Eevium Z", "Mewnium Z", "Pikashunium Z", "Pikashunium Z", "???", "???", "???", "???", "Forage Bag", "Fishing Rod", "Professor's Mask", "Festival Ticket", "Sparkling Stone", "Adrenaline Orb", "Zygarde Cube", "???", "Ice Stone", "Ride Pager", "Beast Ball", "Big Malasada", "Red Nectar", "Yellow Nectar", "Pink Nectar", "Purple Nectar", "Sun Flute", "Moon Flute", "???", "Enigmatic Card", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "Terrain Extender", "Protective Pads", "Electric Seed", "Psychic Seed", "Misty Seed", "Grassy Seed", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "Fighting Memory", "Flying Memory", "Poison Memory", "Ground Memory", "Rock Memory", "Bug Memory", "Ghost Memory", "Steel Memory", "Fire Memory", "Water Memory", "Grass Memory", "Electric Memory", "Psychic Memory", "Ice Memory", "Dragon Memory", "Dark Memory", "Fairy Memory"};
-static char *itemsSorted[] = {"None", "Ability Capsule", "Ability Urge", "Abomasite", "Absolite", "Absorb Bulb", "Acro Bike", "Adamant Orb", "Adrenaline Orb", "Adventure Rules", "Aerodactylite", "Aggronite", "Aguav Berry", "Air Balloon", "Alakazite", "Aloraichium Z", "Aloraichium Z", "Altarianite", "Amaze Mulch", "Ampharosite", "Amulet Coin", "Antidote", "Apicot Berry", "Apricorn Box", "Aqua Suit", "Armor Fossil", "Aspear Berry", "Assault Vest", "Audinite", "Awakening", "Azure Flute", "Babiri Berry", "Balm Mushroom", "Banettite", "Basement Key", "Basement Key", "Beast Ball", "Beedrillite", "Belue Berry", "Berry Juice", "Berry Pots", "Big Malasada", "Big Mushroom", "Big Nugget", "Big Pearl", "Big Root", "Bike", "Bike", "Binding Band", "Black Apricorn", "Black Belt", "Black Flute", "Black Glasses", "Black Sludge", "Blastoisinite", "Blazikenite", "Blue Apricorn", "Blue Card", "Blue Flute", "Blue Orb", "Blue Scarf", "Blue Shard", "Bluk Berry", "Boost Mulch", "Bottle Cap", "Bridge Mail D", "Bridge Mail M", "Bridge Mail S", "Bridge Mail T", "Bridge Mail V", "Bright Powder", "Bug Gem", "Bug Memory", "Buginium Z", "Buginium Z", "Burn Drive", "Burn Heal", "Calcium", "Cameruptite", "Carbos", "Card Key", "Casteliacone", "Cell Battery", "Charcoal", "Charizardite X", "Charizardite Y", "Charti Berry", "Cheri Berry", "Cherish Ball", "Chesto Berry", "Chilan Berry", "Chill Drive", "Choice Band", "Choice Scarf", "Choice Specs", "Chople Berry", "Claw Fossil", "Cleanse Tag", "Clear Bell", "Clever Wing", "Coba Berry", "Coin Case", "Colbur Berry", "Colress Machine", "Comet Shard", "Common Stone", "Contest Costume", "Contest Costume", "Contest Pass", "Cornn Berry", "Coupon 1", "Coupon 2", "Coupon 3", "Cover Fossil", "Custap Berry", "Damp Mulch", "Damp Rock", "Dark Gem", "Dark Memory", "Dark Stone", "Darkinium Z", "Darkinium Z", "Data Card 01", "Data Card 02", "Data Card 03", "Data Card 04", "Data Card 05", "Data Card 06", "Data Card 07", "Data Card 08", "Data Card 09", "Data Card 10", "Data Card 11", "Data Card 12", "Data Card 13", "Data Card 14", "Data Card 15", "Data Card 16", "Data Card 17", "Data Card 18", "Data Card 19", "Data Card 20", "Data Card 21", "Data Card 22", "Data Card 23", "Data Card 24", "Data Card 25", "Data Card 26", "Data Card 27", "Dawn Stone", "Decidium Z", "Decidium Z", "Deep Sea Scale", "Deep Sea Tooth", "Destiny Knot", "Devon Parts", "Devon Scope", "Devon Scuba Gear", "Diancite", "Dire Hit", "Dire Hit 2", "Dire Hit 3", "Discount Coupon", "Dive Ball", "DNA Splicers", "DNA Splicers", "Dome Fossil", "Douse Drive", "Dowsing Machine", "Draco Plate", "Dragon Fang", "Dragon Gem", "Dragon Memory", "Dragon Scale", "Dragon Skull", "Dragonium Z", "Dragonium Z", "Dread Plate", "Dream Ball", "Dropped Item", "Dropped Item", "Dubious Disc", "Durin Berry", "Dusk Ball", "Dusk Stone", "Earth Plate", "Eevium Z", "Eevium Z", "Eject Button", "Electirizer", "Electric Gem", "Electric Memory", "Electric Seed", "Electrium Z", "Electrium Z", "Elevator Key", "Elixir", "Energy Powder", "Energy Root", "Enigma Berry", "Enigma Stone", "Enigmatic Card", "Eon Flute", "Eon Ticket", "Escape Rope", "Ether", "Everstone", "Eviolite", "Exp. Share", "Expert Belt", "Explorer Kit", "Fairium Z", "Fairium Z", "Fairy Gem", "Fairy Memory", "Fashion Case", "Fast Ball", "Favored Mail", "Festival Ticket", "Fighting Gem", "Fighting Memory", "Fightinium Z", "Fightinium Z", "Figy Berry", "Fire Gem", "Fire Memory", "Fire Stone", "Firium Z", "Firium Z", "Fishing Rod", "Fist Plate", "Flame Orb", "Flame Plate", "Float Stone", "Fluffy Tail", "Flying Gem", "Flying Memory", "Flyinium Z", "Flyinium Z", "Focus Band", "Focus Sash", "Forage Bag", "Fresh Water", "Friend Ball", "Full Heal", "Full Incense", "Full Restore", "Galactic Key", "Galladite", "Ganlon Berry", "Garchompite", "Gardevoirite", "GB Sounds", "Gengarite", "Genius Wing", "Ghost Gem", "Ghost Memory", "Ghostium Z", "Ghostium Z", "Glalitite", "Go-Goggles", "Gold Bottle Cap", "Good Rod", "Gooey Mulch", "Gracidea", "Gram 1", "Gram 2", "Gram 3", "Grass Gem", "Grass Memory", "Grassium Z", "Grassium Z", "Grassy Seed", "Great Ball", "Green Apricorn", "Green Scarf", "Green Shard", "Greet Mail", "Grepa Berry", "Grip Claw", "Griseous Orb", "Ground Gem", "Ground Memory", "Groundium Z", "Groundium Z", "Growth Mulch", "Grubby Hanky", "Guard Spec.", "Gyaradosite", "Haban Berry", "Hard Stone", "Heal Ball", "Heal Powder", "Health Wing", "Heart Scale", "Heat Rock", "Heavy Ball", "Helix Fossil", "Heracronite", "HM01", "HM02", "HM03", "HM04", "HM05", "HM06", "HM07", "Holo Caster", "Holo Caster", "Hondew Berry", "Honey", "Honor of Kalos", "Houndoominite", "HP Up", "Hyper Potion", "Iapapa Berry", "Ice Gem", "Ice Heal", "Ice Memory", "Ice Stone", "Icicle Plate", "Icium Z", "Icium Z", "Icy Rock", "Incinium Z", "Incinium Z", "Inquiry Mail", "Insect Plate", "Intriguing Stone", "Iron", "Iron Ball", "Iron Plate", "Item Drop", "Item Urge", "Jaboca Berry", "Jade Orb", "Jaw Fossil", "Journal", "Kangaskhanite", "Kasib Berry", "Kebia Berry", "Kee Berry", "Kelpsy Berry", "Key Stone", "Key to Room 1", "Key to Room 2", "Key to Room 4", "Key to Room 6", "King's Rock", "Lagging Tail", "Lansat Berry", "Latiasite", "Latiosite", "Lava Cookie", "Lax Incense", "Leaf Stone", "Leftovers", "Lemonade", "Lens Case", "Leppa Berry", "Letter", "Level Ball", "Liberty Pass", "Liechi Berry", "Life Orb", "Light Ball", "Light Clay", "Light Stone", "Like Mail", "Lock Capsule", "Looker Ticket", "Loot Sack", "Lopunnite", "Lost Item", "Love Ball", "Lucarionite", "Luck Incense", "Lucky Egg", "Lucky Punch", "Lum Berry", "Luminous Moss", "Lumiose Galette", "Lunar Wing", "Lure Ball", "Lustrous Orb", "Luxury Ball", "Mach Bike", "Machine Part", "Macho Brace", "Magma Stone", "Magma Suit", "Magmarizer", "Magnet", "Mago Berry", "Magost Berry", "Makeup Bag", "Manectite", "Maranga Berry", "Marshadium Z", "Marshadium Z", "Master Ball", "Mawilite", "Max Elixir", "Max Ether", "Max Potion", "Max Repel", "Max Revive", "Meadow Plate", "Medal Box", "Medichamite", "Mega Anchor", "Mega Anklet", "Mega Bracelet", "Mega Charm", "Mega Cuff", "Mega Glasses", "Mega Glove", "Mega Pendant", "Mega Ring", "Mega Stickpin", "Mega Tiara", "Member Card", "Mental Herb", "Metagrossite", "Metal Coat", "Metal Powder", "Meteorite", "Meteorite", "Meteorite", "Meteorite", "Meteorite Shard", "Metronome", "Mewnium Z", "Mewnium Z", "Mewtwonite X", "Mewtwonite Y", "Micle Berry", "Mind Plate", "Miracle Seed", "Misty Seed", "Moomoo Milk", "Moon Ball", "Moon Flute", "Moon Stone", "Muscle Band", "Muscle Wing", "Mystery Egg", "Mystic Water", "Nanab Berry", "Nest Ball", "Net Ball", "Never-Melt Ice", "Nomel Berry", "Normal Gem", "Normalium Z", "Normalium Z", "Nugget", "Oak's Letter", "Occa Berry", "Odd Incense", "Odd Keystone", "Old Amber", "Old Charm", "Old Gateau", "Old Rod", "Oran Berry", "Oval Charm", "Oval Stone", "Pair of Tickets", "Pal Pad", "Pamtre Berry", "Paralyze Heal", "Parcel", "Park Ball", "Pass", "Pass Orb", "Passho Berry", "Payapa Berry", "Pearl", "Pearl String", "Pecha Berry", "Permit", "Persim Berry", "Petaya Berry", "Photo Album", "Pidgeotite", "Pikanium Z", "Pikanium Z", "Pikashunium Z", "Pikashunium Z", "Pinap Berry", "Pink Apricorn", "Pink Nectar", "Pink Scarf", "Pinsirite", "Pixie Plate", "Plasma Card", "Plume Fossil", "Poffin Case", "Point Card", "Poison Barb", "Poison Gem", "Poison Memory", "Poisonium Z", "Poisonium Z", "Poké Ball", "Poké Doll", "Poké Flute", "Poké Radar", "Poké Toy", "Pokéblock Kit", "Pomeg Berry", "Potion", "Power Anklet", "Power Band", "Power Belt", "Power Bracer", "Power Herb", "Power Lens", "Power Plant Pass", "Power Weight", "PP Max", "PP Up", "Premier Ball", "Pretty Wing", "Primarium Z", "Primarium Z", "Prism Scale", "Prison Bottle", "Prof's Letter", "Professor's Mask", "Prop Case", "Protective Pads", "Protector", "Protein", "Psychic Gem", "Psychic Memory", "Psychic Seed", "Psychium Z", "Psychium Z", "Pure Incense", "Purple Nectar", "Qualot Berry", "Quick Ball", "Quick Claw", "Quick Powder", "Rabuta Berry", "Rage Candy Bar", "Rainbow Wing", "Rare Bone", "Rare Candy", "Rawst Berry", "Razor Claw", "Razor Fang", "Razz Berry", "Reaper Cloth", "Red Apricorn", "Red Card", "Red Chain", "Red Flute", "Red Nectar", "Red Orb", "Red Scale", "Red Scarf", "Red Shard", "Relic Band", "Relic Copper", "Relic Crown", "Relic Gold", "Relic Silver", "Relic Statue", "Relic Vase", "Repeat Ball", "Repel", "Reply Mail", "Reset Urge", "Resist Wing", "Reveal Glass", "Revival Herb", "Revive", "Rich Mulch", "Ride Pager", "Rindo Berry", "Ring Target", "Rock Gem", "Rock Incense", "Rock Memory", "Rockium Z", "Rockium Z", "Rocky Helmet", "Roller Skates", "Root Fossil", "Rose Incense", "Roseli Berry", "Rowap Berry", "RSVP Mail", "Rule Book", "S.S. Ticket", "S.S. Ticket", "Sablenite", "Sachet", "Sacred Ash", "Safari Ball", "Safety Goggles", "Sail Fossil", "Salac Berry", "Salamencite", "Scanner", "Sceptilite", "Scizorite", "Scope Lens", "Sea Incense", "Seal Bag", "Seal Case", "Secret Key", "Secret Potion", "Shalour Sable", "Sharp Beak", "Sharpedonite", "Shed Shell", "Shell Bell", "Shiny Charm", "Shiny Stone", "Shoal Salt", "Shoal Shell", "Shock Drive", "Shuca Berry", "Silk Scarf", "Silver Powder", "Silver Wing", "Sitrus Berry", "Skull Fossil", "Sky Plate", "Slowbronite", "Slowpoke Tail", "Smoke Ball", "Smooth Rock", "Snorlium Z", "Snorlium Z", "Snowball", "Soda Pop", "Soft Sand", "Soot Sack", "Soothe Bell", "Soul Dew", "Sparkling Stone", "Spell Tag", "Spelon Berry", "Splash Plate", "Spooky Plate", "Sport Ball", "Sprayduck", "Sprinklotad", "Squirt Bottle", "Stable Mulch", "Star Piece", "Stardust", "Starf Berry", "Steel Gem", "Steel Memory", "Steelium Z", "Steelium Z", "Steelixite", "Stick", "Sticky Barb", "Stone Plate", "Storage Key", "Storage Key", "Strange Souvenir", "Suite Key", "Sun Flute", "Sun Stone", "Super Potion", "Super Repel", "Super Rod", "Surprise Mulch", "Swampertite", "Sweet Heart", "Swift Wing", "Tamato Berry", "Tanga Berry", "Tapunium Z", "Tapunium Z", "Terrain Extender", "Thanks Mail", "Thick Club", "Thunder Stone", "Tidal Bell", "Timer Ball", "Tiny Mushroom", "TM01", "TM02", "TM03", "TM04", "TM05", "TM06", "TM07", "TM08", "TM09", "TM10", "TM100", "TM11", "TM12", "TM13", "TM14", "TM15", "TM16", "TM17", "TM18", "TM19", "TM20", "TM21", "TM22", "TM23", "TM24", "TM25", "TM26", "TM27", "TM28", "TM29", "TM30", "TM31", "TM32", "TM33", "TM34", "TM35", "TM36", "TM37", "TM38", "TM39", "TM40", "TM41", "TM42", "TM43", "TM44", "TM45", "TM46", "TM47", "TM48", "TM49", "TM50", "TM51", "TM52", "TM53", "TM54", "TM55", "TM56", "TM57", "TM58", "TM59", "TM60", "TM61", "TM62", "TM63", "TM64", "TM65", "TM66", "TM67", "TM68", "TM69", "TM70", "TM71", "TM72", "TM73", "TM74", "TM75", "TM76", "TM77", "TM78", "TM79", "TM80", "TM81", "TM82", "TM83", "TM84", "TM85", "TM86", "TM87", "TM88", "TM89", "TM90", "TM91", "TM92", "TM93", "TM94", "TM95", "TM96", "TM97", "TM98", "TM99", "TMV Pass", "Town Map", "Toxic Orb", "Toxic Plate", "Travel Trunk", "Twisted Spoon", "Tyranitarite", "Ultra Ball", "Unown Report", "Up-Grade", "Venusaurite", "Vs. Recorder", "Vs. Seeker", "Wacan Berry", "Wailmer Pail", "Water Gem", "Water Memory", "Water Stone", "Waterium Z", "Waterium Z", "Watmel Berry", "Wave Incense", "Weakness Policy", "Wepear Berry", "Whipped Dream", "White Apricorn", "White Flute", "White Herb", "Wide Lens", "Wiki Berry", "Wise Glasses", "Works Key", "X Accuracy", "X Accuracy 2", "X Accuracy 3", "X Accuracy 6", "X Attack", "X Attack 2", "X Attack 3", "X Attack 6", "X Defense", "X Defense 2", "X Defense 3", "X Defense 6", "X Sp. Atk", "X Sp. Atk 2", "X Sp. Atk 3", "X Sp. Atk 6", "X Sp. Def", "X Sp. Def 2", "X Sp. Def 3", "X Sp. Def 6", "X Speed", "X Speed 2", "X Speed 3", "X Speed 6", "Xtransceiver", "Xtransceiver", "Yache Berry", "Yellow Apricorn", "Yellow Flute", "Yellow Nectar", "Yellow Scarf", "Yellow Shard", "Z-Ring", "Zap Plate", "Zinc", "Zoom Lens", "Zygarde Cube", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???", "???"};
-char *hpList[] = {"Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel", "Fire", "Water", "Grass", "Electric", "Psychic", "Ice", "Dragon", "Dark", " ", " "};
+wchar_t **abilities;
+wchar_t **moves;
+wchar_t **movesSorted;
+wchar_t **natures;
+
+wchar_t **items;
+wchar_t **itemsSorted;
+wchar_t **hpList;
+
+wchar_t **ballList;
+wchar_t **formList;
 
 void GUIElementsInit() {
+	fontBold15 = sftd_load_font_file("romfs:/res/Bold.ttf");
+	fontBold12 = sftd_load_font_file("romfs:/res/Bold.ttf");
+	warningTop = sfil_load_PNG_file("romfs:/res/Warning Top.png", SF2D_PLACE_RAM);
+	warningBottom = sfil_load_PNG_file("romfs:/res/Warning Bottom.png", SF2D_PLACE_RAM);
+	freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_FILES));
+
 	unicodeJPN12 = sftd_load_font_file("romfs:/res/UnicodeJPN.otf");
 	unicodeKOR12 = sftd_load_font_file("romfs:/res/UnicodeKOR.ttf");
 	fontBold18 = sftd_load_font_file("romfs:/res/Bold.ttf");
-	fontBold15 = sftd_load_font_file("romfs:/res/Bold.ttf");
 	fontBold14 = sftd_load_font_file("romfs:/res/Bold.ttf");
-	fontBold12 = sftd_load_font_file("romfs:/res/Bold.ttf");
 	fontBold11 = sftd_load_font_file("romfs:/res/Bold.ttf");
 	fontBold9 = sftd_load_font_file("romfs:/res/Bold.ttf");
 	fontFixed = sftd_load_font_file("romfs:/res/VeraMono.ttf");
-	warningTop = sfil_load_PNG_file("romfs:/res/Warning Top.png", SF2D_PLACE_RAM);
-	warningBottom = sfil_load_PNG_file("romfs:/res/Warning Bottom.png", SF2D_PLACE_RAM);
-	freezeMsg("Loading fonts...");
 	
-	init_font_cache();
-	freezeMsg("Done!");
-}
+	freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_LOCALES));
+	struct i18n_files listFiles = i18n_getFilesPath();
+	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_ABILITIES));
+	struct ArrayUTF32 listAbilities = i18n_FileToArrayUTF32(listFiles.abilities);
+	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_MOVES));
+	listMoves = i18n_FileToArrayUTF32(listFiles.moves);
+	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_SORTING_MOVES));
+	ArrayUTF32_sort_starting_index(&listMoves, 1);
+	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_NATURES));
+	struct ArrayUTF32 listNatures = i18n_FileToArrayUTF32(listFiles.natures);
+	natures = listNatures.items;
+	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_ITEMS));
+	listItems = i18n_FileToArrayUTF32(listFiles.items);
+	struct ArrayUTF32 listBalls = i18n_FileToArrayUTF32(listFiles.balls);
+	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_SORTING_ITEMS));
+	ArrayUTF32_sort_starting_index_with_sort_func(&listItems, 1, ArrayUTF32_sort_cmp_PKMN_Things_List);
+	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_HP));
+	struct ArrayUTF32 listHPs = i18n_FileToArrayUTF32(listFiles.hp);
 
+	// Need loading message for forms
+	struct ArrayUTF32 listForms = i18n_FileToArrayUTF32(listFiles.forms);
+
+	abilities = listAbilities.items;
+	moves = listMoves.items;
+	movesSorted = listMoves.sortedItems;
+	natures = listNatures.items;
+	items = listItems.items;
+	itemsSorted = listItems.sortedItems;
+	hpList = listHPs.items;
+	formList = listForms.items;
+	ballList = listBalls.items;
+
+	freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_FONTS));
+	init_font_cache();
+	freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_DONE));
+}
+int num_element = 1;
+int total_elements = 1;
+sf2d_texture *loadPNGInRAM(const char* filepath) {
+	wchar_t* str = malloc(sizeof(wchar_t*)*60);
+	swprintf(str, 60, i18n(S_GRAPHIC_GUI_ELEMENTS_SPECIFY_LOADING_DETAILS), num_element, total_elements);
+	freezeMsgDetails(str);
+	num_element++;
+	free(str);
+	return sfil_load_PNG_file(filepath, SF2D_PLACE_RAM);
+}
 void GUIElementsSpecify(int game) {
-	freezeMsg("Loading graphics...");
-	alternativeSpritesSmall = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/alternative_icons_spritesheetv3.png", SF2D_PLACE_RAM);
-	spritesSmall = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheetv3.png", SF2D_PLACE_RAM);
-	balls = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/balls_spritesheetv2.png", SF2D_PLACE_RAM);
-	settings = sfil_load_PNG_file("romfs:/res/Settings.png", SF2D_PLACE_RAM);
+	struct i18n_files languageSpecificFiles = i18n_getFilesPath();
+	num_element = 1;
+	total_elements = 4;
+	if (game < 6) {
+		total_elements += 53;
+	} else {
+		total_elements += 12;
+	}
+	freezeMsg(i18n(S_GRAPHIC_GUI_ELEMENTS_SPECIFY_LOADING));
+	alternativeSpritesSmall = loadPNGInRAM("/3ds/data/PKSM/additionalassets/alternative_icons_spritesheetv3.png");
+	spritesSmall = loadPNGInRAM("/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheetv3.png");
+	balls = loadPNGInRAM("/3ds/data/PKSM/additionalassets/balls_spritesheetv2.png");
+	settings = loadPNGInRAM("romfs:/res/Settings.png");
 	
 	if (game < 6) {
-		typesSheet = sfil_load_PNG_file("/3ds/data/PKSM/additionalassets/types_sheetv2.png", SF2D_PLACE_RAM);
+		typesSheet = loadPNGInRAM(languageSpecificFiles.types);
 		
-		boxView = sfil_load_PNG_file("romfs:/res/Box View.png", SF2D_PLACE_RAM);
-		noMove = sfil_load_PNG_file("romfs:/res/No Move.png", SF2D_PLACE_RAM);
-		back = sfil_load_PNG_file("romfs:/res/Back Button.png", SF2D_PLACE_RAM);
-		editorBar = sfil_load_PNG_file("romfs:/res/Bottom Bar.png", SF2D_PLACE_RAM);
-		hexIcon = sfil_load_PNG_file("romfs:/res/Hex Button.png", SF2D_PLACE_RAM);
-		hexBG = sfil_load_PNG_file("romfs:/res/Hex BG.png", SF2D_PLACE_RAM);
-		blueTextBox = sfil_load_PNG_file("romfs:/res/Blue Textbox.png", SF2D_PLACE_RAM);
-		otaButton = sfil_load_PNG_file("romfs:/res/OTA Button.png", SF2D_PLACE_RAM);
-		includeInfoButton = sfil_load_PNG_file("romfs:/res/Include Info.png", SF2D_PLACE_RAM);
-		generationBG = sfil_load_PNG_file("romfs:/res/Generation BG.png", SF2D_PLACE_RAM);
-		hiddenPowerBG = sfil_load_PNG_file("romfs:/res/Hidden Power BG.png", SF2D_PLACE_RAM);
-		ballsBG = sfil_load_PNG_file("romfs:/res/BallsBG.png", SF2D_PLACE_RAM);
-		male = sfil_load_PNG_file("romfs:/res/Male.png", SF2D_PLACE_RAM);
-		female = sfil_load_PNG_file("romfs:/res/Female.png", SF2D_PLACE_RAM);
-		naturestx = sfil_load_PNG_file("romfs:/res/Natures.png", SF2D_PLACE_RAM);
-		movesBottom = sfil_load_PNG_file("romfs:/res/Moves Bottom.png", SF2D_PLACE_RAM);
-		topMovesBG = sfil_load_PNG_file("romfs:/res/Top Moves.png", SF2D_PLACE_RAM);
-		editorStatsBG = sfil_load_PNG_file("romfs:/res/Editor Stats.png", SF2D_PLACE_RAM);
-		subArrow = sfil_load_PNG_file("romfs:/res/Sub Arrow.png", SF2D_PLACE_RAM);
-		backgroundTop = sfil_load_PNG_file("romfs:/res/Background.png", SF2D_PLACE_RAM);
-		miniBox = sfil_load_PNG_file("romfs:/res/Mini Box.png", SF2D_PLACE_RAM);
-		minusButton = sfil_load_PNG_file("romfs:/res/Minus Button.png", SF2D_PLACE_RAM);
-		plusButton = sfil_load_PNG_file("romfs:/res/Plus Button.png", SF2D_PLACE_RAM);
-		transferButton = sfil_load_PNG_file("romfs:/res/Transfer Button.png", SF2D_PLACE_RAM);
-		bankTop = sfil_load_PNG_file("romfs:/res/Bank Top.png", SF2D_PLACE_RAM);
-		shinyStar = sfil_load_PNG_file("romfs:/res/Shiny.png", SF2D_PLACE_RAM);
-		normalBar = sfil_load_PNG_file("romfs:/res/Normal Bar.png", SF2D_PLACE_RAM);
-		RButton = sfil_load_PNG_file("romfs:/res/R Button.png", SF2D_PLACE_RAM);
-		LButton = sfil_load_PNG_file("romfs:/res/L Button.png", SF2D_PLACE_RAM);
-		creditsTop = sfil_load_PNG_file("romfs:/res/Credits Top.png", SF2D_PLACE_RAM);
-		pokeball = sfil_load_PNG_file("romfs:/res/Pokeball.png", SF2D_PLACE_RAM);
-		menuBar = sfil_load_PNG_file("romfs:/res/Main Menu Dark Bar.png", SF2D_PLACE_RAM);
-		menuSelectedBar = sfil_load_PNG_file("romfs:/res/Main Menu Red Bar.png", SF2D_PLACE_RAM);
-		darkButton = sfil_load_PNG_file("romfs:/res/Dark Button.png", SF2D_PLACE_RAM);
-		eventTop = sfil_load_PNG_file("romfs:/res/Event Top.png", SF2D_PLACE_RAM);
-		left = sfil_load_PNG_file("romfs:/res/Left.png", SF2D_PLACE_RAM);
-		lightButton = sfil_load_PNG_file("romfs:/res/Light Button.png", SF2D_PLACE_RAM);
-		redButton = sfil_load_PNG_file("romfs:/res/Red Button.png", SF2D_PLACE_RAM);
-		right = sfil_load_PNG_file("romfs:/res/Right.png", SF2D_PLACE_RAM);
-		eventMenuBottomBar = sfil_load_PNG_file("romfs:/res/Event Menu Bottom Bar.png", SF2D_PLACE_RAM);
-		eventMenuTopBarSelected = sfil_load_PNG_file("romfs:/res/Event Menu Top Bar Selected.png", SF2D_PLACE_RAM);
-		eventMenuTopBar = sfil_load_PNG_file("romfs:/res/Event Menu Top Bar.png", SF2D_PLACE_RAM);
-		infoView = sfil_load_PNG_file("romfs:/res/Info View.png", SF2D_PLACE_RAM);
-		selector = sfil_load_PNG_file("romfs:/res/Selector.png", SF2D_PLACE_RAM);
-		selectorCloning = sfil_load_PNG_file("romfs:/res/Selector (cloning).png", SF2D_PLACE_RAM);
-		editorBG = sfil_load_PNG_file("romfs:/res/Editor Bottom BG.png", SF2D_PLACE_RAM);
-		plus = sfil_load_PNG_file("romfs:/res/Plus.png", SF2D_PLACE_RAM);
-		minus = sfil_load_PNG_file("romfs:/res/Minus.png", SF2D_PLACE_RAM);
-		button = sfil_load_PNG_file("romfs:/res/Button.png", SF2D_PLACE_RAM);
-		setting = sfil_load_PNG_file("romfs:/res/Setting.png", SF2D_PLACE_RAM);
-		bottomPopUp = sfil_load_PNG_file("romfs:/res/Bottom Pop-Up.png", SF2D_PLACE_RAM);
-		pokemonBufferBox = sfil_load_PNG_file("romfs:/res/Pokemon Box.png", SF2D_PLACE_RAM);
-		item = sfil_load_PNG_file("romfs:/res/item.png", SF2D_PLACE_RAM);
+		boxView = loadPNGInRAM("romfs:/res/Box View.png");
+		noMove = loadPNGInRAM("romfs:/res/No Move.png");
+		back = loadPNGInRAM("romfs:/res/Back Button.png");
+		editorBar = loadPNGInRAM("romfs:/res/Bottom Bar.png");
+		hexIcon = loadPNGInRAM("romfs:/res/Hex Button.png");
+		hexBG = loadPNGInRAM("romfs:/res/Hex BG.png");
+		blueTextBox = loadPNGInRAM("romfs:/res/Blue Textbox.png");
+		otaButton = loadPNGInRAM("romfs:/res/OTA Button.png");
+		includeInfoButton = loadPNGInRAM("romfs:/res/Include Info.png");
+		generationBG = loadPNGInRAM("romfs:/res/Generation BG.png");
+		hiddenPowerBG = loadPNGInRAM("romfs:/res/Hidden Power BG.png");
+		ballsBG = loadPNGInRAM("romfs:/res/BallsBG.png");
+		male = loadPNGInRAM("romfs:/res/Male.png");
+		female = loadPNGInRAM("romfs:/res/Female.png");
+		naturestx = loadPNGInRAM("romfs:/res/Natures.png");
+		movesBottom = loadPNGInRAM("romfs:/res/Moves Bottom.png");
+		topMovesBG = loadPNGInRAM("romfs:/res/Top Moves.png");
+		editorStatsBG = loadPNGInRAM("romfs:/res/Editor Stats.png");
+		subArrow = loadPNGInRAM("romfs:/res/Sub Arrow.png");
+		backgroundTop = loadPNGInRAM("romfs:/res/Background.png");
+		miniBox = loadPNGInRAM("romfs:/res/Mini Box.png");
+		minusButton = loadPNGInRAM("romfs:/res/Minus Button.png");
+		plusButton = loadPNGInRAM("romfs:/res/Plus Button.png");
+		transferButton = loadPNGInRAM("romfs:/res/Transfer Button.png");
+		bankTop = loadPNGInRAM("romfs:/res/Bank Top.png");
+		shinyStar = loadPNGInRAM("romfs:/res/Shiny.png");
+		normalBar = loadPNGInRAM("romfs:/res/Normal Bar.png");
+		RButton = loadPNGInRAM("romfs:/res/R Button.png");
+		LButton = loadPNGInRAM("romfs:/res/L Button.png");
+		creditsTop = loadPNGInRAM("romfs:/res/Credits Top.png");
+		pokeball = loadPNGInRAM("romfs:/res/Pokeball.png");
+		menuBar = loadPNGInRAM("romfs:/res/Main Menu Dark Bar.png");
+		menuSelectedBar = loadPNGInRAM("romfs:/res/Main Menu Red Bar.png");
+		darkButton = loadPNGInRAM("romfs:/res/Dark Button.png");
+		eventTop = loadPNGInRAM("romfs:/res/Event Top.png");
+		left = loadPNGInRAM("romfs:/res/Left.png");
+		lightButton = loadPNGInRAM("romfs:/res/Light Button.png");
+		redButton = loadPNGInRAM("romfs:/res/Red Button.png");
+		right = loadPNGInRAM("romfs:/res/Right.png");
+		eventMenuBottomBar = loadPNGInRAM("romfs:/res/Event Menu Bottom Bar.png");
+		eventMenuTopBarSelected = loadPNGInRAM("romfs:/res/Event Menu Top Bar Selected.png");
+		eventMenuTopBar = loadPNGInRAM("romfs:/res/Event Menu Top Bar.png");
+		infoView = loadPNGInRAM("romfs:/res/Info View.png");
+		selector = loadPNGInRAM("romfs:/res/Selector.png");
+		selectorCloning = loadPNGInRAM("romfs:/res/Selector (cloning).png");
+		editorBG = loadPNGInRAM("romfs:/res/Editor Bottom BG.png");
+		plus = loadPNGInRAM("romfs:/res/Plus.png");
+		minus = loadPNGInRAM("romfs:/res/Minus.png");
+		button = loadPNGInRAM("romfs:/res/Button.png");
+		setting = loadPNGInRAM("romfs:/res/Setting.png");
+		bottomPopUp = loadPNGInRAM("romfs:/res/Bottom Pop-Up.png");
+		pokemonBufferBox = loadPNGInRAM("romfs:/res/Pokemon Box.png");
+		item = loadPNGInRAM("romfs:/res/item.png");
 	} else {
-		DSBottomBG = sfil_load_PNG_file("romfs:/res/Bottom BG.png", SF2D_PLACE_RAM);
-		DSTopBG = sfil_load_PNG_file("romfs:/res/Top BG.png", SF2D_PLACE_RAM);
-		DSBarSelected = sfil_load_PNG_file("romfs:/res/Bar Selected.png", SF2D_PLACE_RAM);
-		DSBar = sfil_load_PNG_file("romfs:/res/Bar.png", SF2D_PLACE_RAM);
-		DSEventBottom = sfil_load_PNG_file("romfs:/res/DS Menu Bottom BG.png", SF2D_PLACE_RAM);
-		DSLangSelected = sfil_load_PNG_file("romfs:/res/Language Button Selected.png", SF2D_PLACE_RAM);
-		DSLang = sfil_load_PNG_file("romfs:/res/Language Button.png", SF2D_PLACE_RAM);
-		DSEventTop = sfil_load_PNG_file("romfs:/res/Event Database BG.png", SF2D_PLACE_RAM);
-		DSNormalBarL = sfil_load_PNG_file("romfs:/res/Normal L.png", SF2D_PLACE_RAM);
-		DSNormalBarR = sfil_load_PNG_file("romfs:/res/Normal R.png", SF2D_PLACE_RAM);
-		DSSelectedBarL = sfil_load_PNG_file("romfs:/res/Selected L.png", SF2D_PLACE_RAM);
-		DSSelectedBarR = sfil_load_PNG_file("romfs:/res/Selected R.png", SF2D_PLACE_RAM);
+		DSBottomBG = loadPNGInRAM("romfs:/res/Bottom BG.png");
+		DSTopBG = loadPNGInRAM("romfs:/res/Top BG.png");
+		DSBarSelected = loadPNGInRAM("romfs:/res/Bar Selected.png");
+		DSBar = loadPNGInRAM("romfs:/res/Bar.png");
+		DSEventBottom = loadPNGInRAM("romfs:/res/DS Menu Bottom BG.png");
+		DSLangSelected = loadPNGInRAM("romfs:/res/Language Button Selected.png");
+		DSLang = loadPNGInRAM("romfs:/res/Language Button.png");
+		DSEventTop = loadPNGInRAM("romfs:/res/Event Database BG.png");
+		DSNormalBarL = loadPNGInRAM("romfs:/res/Normal L.png");
+		DSNormalBarR = loadPNGInRAM("romfs:/res/Normal R.png");
+		DSSelectedBarL = loadPNGInRAM("romfs:/res/Selected L.png");
+		DSSelectedBarR = loadPNGInRAM("romfs:/res/Selected R.png");
 	}
 }
 
@@ -247,16 +304,27 @@ void GUIElementsExit() {
 	sftd_free_font(unicodeKOR12);
 }
 
+void create_font_cache(sftd_font* font, unsigned int size, int total_fonts, int* num_font) {
+	wchar_t* str = malloc(sizeof(wchar_t*)*60);
+	swprintf(str, 60, i18n(S_GUI_ELEMENTS_LOADING_FONTS_CACHE_FONT), *num_font, total_fonts);
+	freezeMsgDetails(str);
+	sftd_draw_text(font, 0, 0, RGBA8(0, 0, 0, 0), size, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
+	*num_font = *num_font + 1;
+	free(str);
+}
+
 void init_font_cache() {
-	sftd_draw_text(unicodeJPN12, 0, 0, RGBA8(0, 0, 0, 0), 12, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
-	sftd_draw_text(unicodeKOR12, 0, 0, RGBA8(0, 0, 0, 0), 12, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
-	sftd_draw_text(fontBold18, 0, 0, RGBA8(0, 0, 0, 0), 18, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
-	sftd_draw_text(fontBold14, 0, 0, RGBA8(0, 0, 0, 0), 14, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
-	sftd_draw_text(fontBold15, 0, 0, RGBA8(0, 0, 0, 0), 15, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
-	sftd_draw_text(fontBold12, 0, 0, RGBA8(0, 0, 0, 0), 12, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
-	sftd_draw_text(fontBold11, 0, 0, RGBA8(0, 0, 0, 0), 11, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
-	sftd_draw_text(fontBold9, 0, 0, RGBA8(0, 0, 0, 0), 9, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
-	sftd_draw_text(fontFixed, 0, 0, RGBA8(0, 0, 0, 0), 10, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
+	int num_font = 1;
+	int total_fonts = 9;
+	create_font_cache(unicodeJPN12, 12, total_fonts, &num_font);
+	create_font_cache(unicodeKOR12, 12, total_fonts, &num_font);
+	create_font_cache(fontBold18, 18, total_fonts, &num_font);
+	create_font_cache(fontBold14, 14, total_fonts, &num_font);
+	create_font_cache(fontBold15, 15, total_fonts, &num_font);
+	create_font_cache(fontBold12, 12, total_fonts, &num_font);
+	create_font_cache(fontBold11, 11, total_fonts, &num_font);
+	create_font_cache(fontBold9,  9, total_fonts, &num_font);
+	create_font_cache(fontFixed,  10, total_fonts, &num_font);
 }
 
 void drawFPSDebug() {
@@ -264,9 +332,39 @@ void drawFPSDebug() {
 	sftd_draw_textf(fontBold12, 12, 13, WHITE, 12, "FPS: %2.6f", sf2d_get_fps());
 }
 
+char messageDebug[255];
+bool hasDebugMessage = false;
+time_t lastDebugMessageTime = 0;
+wchar_t* lastMessage;
+
+void consoleMsg(char* message) {
+	strcpy(messageDebug, message);
+	hasDebugMessage = true;
+}
+
+void drawConsoleDebug() {
+	if (hasDebugMessage) {
+		time_t currentTime = time(NULL);
+		if (sf2d_get_current_screen() == GFX_BOTTOM) {
+			if ((lastDebugMessageTime == 0 || (currentTime - lastDebugMessageTime) < 5)) {
+				sf2d_draw_rectangle(0, 0, 400, 20, RGBA8(0, 0, 0, 200));
+				sftd_draw_textf(fontBold12, 2, 3, WHITE, 12, "Debug: %s", messageDebug);
+				if (lastDebugMessageTime == 0) {
+					lastDebugMessageTime = currentTime;
+				}
+			} else {
+				hasDebugMessage = false;
+				lastDebugMessageTime = 0;
+			}
+		}
+	}
+}
 void pksm_end_frame() {
 	#if DEBUG
 		drawFPSDebug();
+	#endif
+	#if DEBUG_I18N
+		drawConsoleDebug();
 	#endif
 	sf2d_end_frame();
 }
@@ -286,7 +384,7 @@ void printMenuBottom() {
 	sf2d_draw_rectangle(0, 219, 320, 21, MENUBLUE);
 }
 
-void infoDisp(char* message) {
+void infoDisp(wchar_t* message) {
 	while (aptMainLoop()) {
 		hidScanInput();
 
@@ -294,8 +392,8 @@ void infoDisp(char* message) {
 		
 		sf2d_start_frame(GFX_TOP, GFX_LEFT);
 			sf2d_draw_texture(warningTop, 0, 0);
-			sftd_draw_text(fontBold15, (400 - sftd_get_text_width(fontBold15, 15, message)) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, message);
-			sftd_draw_text(fontBold12, (400 - sftd_get_text_width(fontBold12, 12, "Press A to continue.")) / 2, 130, WHITE, 12, "Press A to continue.");
+			sftd_draw_wtext(fontBold15, (400 - sftd_get_wtext_width(fontBold15, 15, message)) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, message);
+			sftd_draw_wtext(fontBold12, (400 - sftd_get_wtext_width(fontBold12, 12, i18n(S_INFORMATION_MESSAGE_PRESS_A))) / 2, 130, WHITE, 12, i18n(S_INFORMATION_MESSAGE_PRESS_A));
 		pksm_end_frame();
 		
 		sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
@@ -305,7 +403,7 @@ void infoDisp(char* message) {
 	}
 }
 
-int confirmDisp(char* message) {
+int confirmDisp(wchar_t* message) {
 	while (aptMainLoop()) {
 		hidScanInput();
 
@@ -314,8 +412,8 @@ int confirmDisp(char* message) {
 		
 		sf2d_start_frame(GFX_TOP, GFX_LEFT);
 			sf2d_draw_texture(warningTop, 0, 0);
-			sftd_draw_text(fontBold15, (400 - sftd_get_text_width(fontBold15, 15, message)) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, message);
-			sftd_draw_text(fontBold12, (400 - sftd_get_text_width(fontBold12, 12, "Press A to continue, B to cancel.")) / 2, 130, WHITE, 12, "Press A to continue, B to cancel.");
+			sftd_draw_wtext(fontBold15, (400 - sftd_get_wtext_width(fontBold15, 15, message)) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, message);
+			sftd_draw_wtext(fontBold12, (400 - sftd_get_wtext_width(fontBold12, 12, i18n(S_CONFIRMATION_MESSAGE_PRESS_A_OR_B))) / 2, 130, WHITE, 12, i18n(S_CONFIRMATION_MESSAGE_PRESS_A_OR_B));
 		pksm_end_frame();
 		
 		sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
@@ -326,11 +424,18 @@ int confirmDisp(char* message) {
 	return 0;
 }
 
-void freezeMsg(char* message) {
+void _freezeMsgWithDetails(wchar_t* message, wchar_t* details, bool useLastMessage) {
+	if (!useLastMessage) {
+		free(lastMessage);
+		lastMessage = malloc(wcslen(message)*sizeof(wchar_t)+1);
+		wcscpy(lastMessage, message);
+		lastMessage[wcslen(message)] = '\0';
+	}
+
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		sf2d_draw_texture(warningTop, 0, 0);
-		sftd_draw_text(fontBold15, (400 - sftd_get_text_width(fontBold15, 15, message)) / 2, 95, WHITE, 15, message);
-		sftd_draw_text(fontBold12, (400 - sftd_get_text_width(fontBold12, 12, "Please wait.")) / 2, 130, WHITE, 12, "Please wait.");
+		sftd_draw_wtext(fontBold15, (400 - sftd_get_wtext_width(fontBold15, 15, lastMessage)) / 2, 95, WHITE, 15, lastMessage);
+		sftd_draw_wtext(fontBold12, (400 - sftd_get_wtext_width(fontBold12, 12, details)) / 2, 130, WHITE, 12, details);
 	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
@@ -339,14 +444,18 @@ void freezeMsg(char* message) {
 	sf2d_swapbuffers();
 }
 
-void progressBar(char* message, u32 current, u32 sz) {
-	char* progress = (char*)malloc(40 * sizeof(char));
-	snprintf(progress, 40, "Progress: %lu/%lu bytes", current, sz);
+void freezeMsgDetails(wchar_t* details) { _freezeMsgWithDetails(L"", details, true); }
+void freezeMsg(wchar_t* message) { _freezeMsgWithDetails(message, i18n(S_FREEZEMSG_DEFAULT_DETAILS), false); }
+void freezeMsgWithDetails(wchar_t* message, wchar_t* details) { _freezeMsgWithDetails(message, details, false); }
+
+void progressBar(wchar_t* message, u32 current, u32 sz) {
+	wchar_t* progress = (wchar_t*)malloc(40 * sizeof(wchar_t));
+	swprintf(progress, 40, i18n(S_GRAPHIC_PROGRESSBAR_MESSAGE), current, sz);
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		sf2d_draw_texture(warningTop, 0, 0);
-		sftd_draw_text(fontBold15, (400 - sftd_get_text_width(fontBold15, 15, message)) / 2, 95, WHITE, 15, message);
-		sftd_draw_text(fontBold12, (400 - sftd_get_text_width(fontBold12, 12, progress)) / 2, 130, WHITE, 12, progress);
+		sftd_draw_wtext(fontBold15, (400 - sftd_get_wtext_width(fontBold15, 15, message)) / 2, 95, WHITE, 15, message);
+		sftd_draw_wtext(fontBold12, (400 - sftd_get_wtext_width(fontBold12, 12, progress)) / 2, 130, WHITE, 12, progress);
 	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
@@ -360,7 +469,7 @@ void progressBar(char* message, u32 current, u32 sz) {
 void drawMenuTop(int game) {
 	if (game < 6) {
 		printMenuTop();
-		printTitle("PKSM");
+		printTitle(L"PKSM");
 		sf2d_draw_texture(pokeball, (400 - pokeball->width) / 2 + 5, (240 - pokeball->height) / 2 + 10);
 	}
 	else 
@@ -374,18 +483,18 @@ void printAnimatedBG(bool isUp) {
 	animateBG(isUp);
 }
 
-void printTitle(const char* title) {
-	sftd_draw_text(fontBold14, (400 - sftd_get_text_width(fontBold14, 14, title)) / 2, 4, BLUE, 14, title);
+void printTitle(const wchar_t* title) {
+	sftd_draw_wtext(fontBold14, (400 - sftd_get_wtext_width(fontBold14, 14, title)) / 2, 4, BLUE, 14, title);
 }
 
-void printBottomIndications(const char* message) {
-	sftd_draw_text(fontBold9, (320 - sftd_get_text_width(fontBold9, 9, message)) / 2, 225, LIGHTBLUE, 9, message);
+void printBottomIndications(const wchar_t* message) {
+	sftd_draw_wtext(fontBold9, (320 - sftd_get_wtext_width(fontBold9, 9, message)) / 2, 225, LIGHTBLUE, 9, message);
 }
 
 void gameSelectorMenu(int n) {
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		printMenuTop();
-		sftd_draw_text(fontBold9, (400 - sftd_get_text_width(fontBold9, 9, "Cart has priority over digital copy.")) / 2, 6, BLUE, 9, "Cart has priority over digital copy.");
+		sftd_draw_wtext(fontBold9, (400 - sftd_get_wtext_width(fontBold9, 9, i18n(S_GRAPHIC_GAME_SELECTOR_INFO_CART_HAS_PRIO))) / 2, 6, BLUE, 9, i18n(S_GRAPHIC_GAME_SELECTOR_INFO_CART_HAS_PRIO));
 		
 		for (int i = 0; i < 6; i++) {
 			if (n == i) {
@@ -395,7 +504,7 @@ void gameSelectorMenu(int n) {
 				sf2d_draw_texture_part(gameSelectorTop, 26 + i*60, 80, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70);
 		}
 
-		sftd_draw_text(fontBold18, (400 - sftd_get_text_width(fontBold18, 18, gamesList[n])) / 2, 185, logoColors[n], 18, gamesList[n]);
+		sftd_draw_wtext(fontBold18, (400 - sftd_get_wtext_width(fontBold18, 18, i18n(gamesList[n]))) / 2, 185, logoColors[n], 18, i18n(gamesList[n]));
 	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
@@ -417,12 +526,12 @@ void gameSelectorMenu(int n) {
 				sf2d_draw_texture_part(gameSelectorBottom2, 40 + (i - 11)*60, 115, logo_lookup5[i - 11], 0, logo_lookup5[i - 10] - logo_lookup5[i - 11] - 1, 63);
 		}
 
-		printBottomIndications("Move your DPAD. Press A to continue, B to exit.");
+		printBottomIndications(i18n(S_GRAPHIC_GAME_SELECTOR_INDICATIONS));
 	pksm_end_frame();
 	sf2d_swapbuffers();
 }
 
-void menu3(int currentEntry, char* menu[], int n, bool isMain) {
+void menu3(int currentEntry, wchar_t* menu[], int n, bool isMain) {
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		drawMenuTop(0);
 	pksm_end_frame();
@@ -436,15 +545,15 @@ void menu3(int currentEntry, char* menu[], int n, bool isMain) {
 				sf2d_draw_texture(menuSelectedBar, (320 - menuSelectedBar->width) / 2, 60 + i * (menuSelectedBar->height));
 			else
 				sf2d_draw_texture(menuBar, (320 - menuBar->width) / 2, 60 + i * (menuBar->height));
-			sftd_draw_text(fontBold18, (320 - sftd_get_text_width(fontBold18, 18, menu[i])) / 2, 56 + (menuBar->height - 18) / 2 + i * (menuBar->height), (i == currentEntry) ? DARKBLUE : YELLOW, 18, menu[i]);
+			sftd_draw_wtext(fontBold18, (320 - sftd_get_wtext_width(fontBold18, 18, menu[i])) / 2, 56 + (menuBar->height - 18) / 2 + i * (menuBar->height), (i == currentEntry) ? DARKBLUE : YELLOW, 18, menu[i]);
 		}
-		printBottomIndications(isMain ? "Press START to quit." : "Press A to select an option.");
+		printBottomIndications(isMain ? i18n(S_MAIN_MENU_INDICATION_EXIT) : i18n(S_MAIN_MENU_INDICATION));
 	pksm_end_frame();
 	sf2d_swapbuffers();
 }
 
 void mainMenuDS(int currentEntry) {
-	char* menu[2] = {"EVENTS", "OTHER"};
+	wchar_t* menu[2] = { i18n(S_GRAPHIC_MENUDS_EVENTS), i18n(S_GRAPHIC_MENUDS_OTHER)};
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		drawMenuTop(7);
 	pksm_end_frame();
@@ -456,14 +565,14 @@ void mainMenuDS(int currentEntry) {
 				sf2d_draw_texture(DSBarSelected, (320 - DSBarSelected->width) / 2, 66 + i * (DSBarSelected->height + 16) + i + 1);
 			else
 				sf2d_draw_texture(DSBar, (320 - DSBar->width) / 2, 66 + i * (DSBar->height + 16));
-			sftd_draw_text(fontBold18, (320 - sftd_get_text_width(fontBold18, 18, menu[i])) / 2, 67 + (DSBar->height - 18) / 2 + i * (DSBar->height + 16), WHITE, 18, menu[i]);
+			sftd_draw_wtext(fontBold18, (320 - sftd_get_wtext_width(fontBold18, 18, menu[i])) / 2, 67 + (DSBar->height - 18) / 2 + i * (DSBar->height + 16), WHITE, 18, menu[i]);
 		}
-		printBottomIndications("Press START to quit.");
+		printBottomIndications(i18n(S_GRAPHIC_MENUDS_INDICATIONS));
 	pksm_end_frame();
 	sf2d_swapbuffers();
 }
 
-void menu4(int currentEntry, char* menu[], int n) {
+void menu4(int currentEntry, wchar_t* menu[], int n) {
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		drawMenuTop(0);
 	pksm_end_frame();
@@ -476,9 +585,9 @@ void menu4(int currentEntry, char* menu[], int n) {
 				sf2d_draw_texture(menuSelectedBar, (320 - menuSelectedBar->width) / 2, 40 + i * (menuSelectedBar->height));
 			else
 				sf2d_draw_texture(menuBar, (320 - menuBar->width) / 2, 40 + i * (menuBar->height));
-			sftd_draw_text(fontBold18, (320 - sftd_get_text_width(fontBold18, 18, menu[i])) / 2, 44 + i * (menuBar->height), (i == currentEntry) ? DARKBLUE : YELLOW, 18, menu[i]);
+			sftd_draw_wtext(fontBold18, (320 - sftd_get_wtext_width(fontBold18, 18, menu[i])) / 2, 44 + i * (menuBar->height), (i == currentEntry) ? DARKBLUE : YELLOW, 18, menu[i]);
 		}
-		printBottomIndications("Press A to select an option.");
+		printBottomIndications(i18n(S_MAIN_MENU_INDICATION));
 	pksm_end_frame();
 	sf2d_swapbuffers();
 }
@@ -493,7 +602,7 @@ void printCredits() {
 		
 		sf2d_start_frame(GFX_TOP, GFX_LEFT);
 			printMenuTop();
-			printTitle("Credits");
+			printTitle(i18n(S_GRAPHIC_CREDITS_TITLE));
 			sf2d_draw_texture_part(creditsTop, 16, 101, 0, 22, 181, 46);
 			sf2d_draw_texture(creditsTop, 0, 45);
 			sftd_draw_text(fontBold15, 18, 77, LIGHTBLUE, 15, "Bernardo Giordano");
@@ -504,7 +613,7 @@ void printCredits() {
 		sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 			printMenuBottom();
 			sftd_draw_text(fontBold9, 20, 30, LIGHTBLUE, 9, (char*)buf);
-			printBottomIndications("Press B to return.");
+			printBottomIndications(i18n(S_GRAPHIC_CREDITS_INDICATIONS));
 		pksm_end_frame();
 		sf2d_swapbuffers();
 	}
@@ -519,7 +628,7 @@ void printDatabase6(char *database[], int currentEntry, int page, int spriteArra
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		printMenuTop();
-		printTitle("Event Database");
+		printTitle(i18n(S_GRAPHIC_DB6_TITLE));
 		
 		for (int i = 0; i < 5; i++) {
 			pk = spriteArray[page * 10 + i];
@@ -563,7 +672,7 @@ void printDatabase6(char *database[], int currentEntry, int page, int spriteArra
 		sf2d_draw_texture(LButton, 83, 52);
 		sf2d_draw_texture(RButton, 221, 52);
 		sftd_draw_text(fontBold12, (320 - sftd_get_text_width(fontBold12, 12, pages)) / 2, 52, WHITE, 12, pages);
-		printBottomIndications("Press A to continue, B to return.");
+		printBottomIndications(i18n(S_GRAPHIC_DB6_INDICATIONS));
 	pksm_end_frame();
 	sf2d_swapbuffers();
 	
@@ -614,7 +723,7 @@ void printDatabase5(char *database[], int currentEntry, int page, int spriteArra
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(DSEventBottom, 0, 0);
-		sftd_draw_text(fontBold9, (320 - sftd_get_text_width(fontBold9, 9, isSelected ? "Press START to inject, B to return" : "Press A to select, B to return.")) / 2, 222, RGBA8(255, 255, 255, 130), 9, isSelected ? "Press START to inject, B to return" : "Press A to select, B to return.");
+		sftd_draw_wtext(fontBold9, (320 - sftd_get_wtext_width(fontBold9, 9, isSelected ? i18n(S_GRAPHIC_DB_INDICATIONS_INJECT) : i18n(S_GRAPHIC_DB_INDICATIONS_SELECT))) / 2, 222, RGBA8(255, 255, 255, 130), 9, isSelected ? i18n(S_GRAPHIC_DB_INDICATIONS_INJECT) : i18n(S_GRAPHIC_DB_INDICATIONS_SELECT));
 		
 		if (isSelected) {
 			char *languages[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
@@ -701,7 +810,7 @@ void printDatabase4(char *database[], int currentEntry, int page, int spriteArra
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(DSEventBottom, 0, 0);
-		sftd_draw_text(fontBold9, (320 - sftd_get_text_width(fontBold9, 9, isSelected ? "Press START to inject, B to return" : "Press A to select, B to return.")) / 2, 222, RGBA8(255, 255, 255, 130), 9, isSelected ? "Press START to inject, B to return" : "Press A to select, B to return.");
+		sftd_draw_wtext(fontBold9, (320 - sftd_get_wtext_width(fontBold9, 9, isSelected ? i18n(S_GRAPHIC_DB_INDICATIONS_INJECT) : i18n(S_GRAPHIC_DB_INDICATIONS_SELECT))) / 2, 222, RGBA8(255, 255, 255, 130), 9, isSelected ? i18n(S_GRAPHIC_DB_INDICATIONS_INJECT) : i18n(S_GRAPHIC_DB_INDICATIONS_SELECT));
 		
 		if (isSelected) {
 			char *languages[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
@@ -764,10 +873,10 @@ void printDB7(int sprite, int i, bool langVett[], bool adapt, bool overwrite, in
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		printMenuBottom();
-		sftd_draw_text(fontBold14, 16, 50, LIGHTBLUE, 14, "Languages:");
-		sftd_draw_text(fontBold14, 33, 112, LIGHTBLUE, 14, "Overwrite Wondercard:");
-		sftd_draw_text(fontBold14, 33, 140, LIGHTBLUE, 14, "Adapt language to WC:");
-		sftd_draw_text(fontBold14, 33, 170, LIGHTBLUE, 14, "Inject WC in slot:");
+		sftd_draw_wtext(fontBold14, 16, 50, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_LANGUAGES));
+		sftd_draw_wtext(fontBold14, 33, 112, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_OVERWRITE_WC));
+		sftd_draw_wtext(fontBold14, 33, 140, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_ADAPT_LANGUAGE_WC));
+		sftd_draw_wtext(fontBold14, 33, 170, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_INJECT_WC_SLOT));
 		
 		for (int t = 0; t < 9; t++) {
 			int x = 0, y = 0;
@@ -817,13 +926,13 @@ void printDB7(int sprite, int i, bool langVett[], bool adapt, bool overwrite, in
 		
 		sf2d_draw_texture(darkButton, 229, 168);	
 		
-		sftd_draw_text(fontBold14, 210 + (36 - sftd_get_text_width(fontBold14, 14, "Yes")) / 2, 112, (overwrite) ? DARKBLUE : YELLOW, 14, "Yes");
-		sftd_draw_text(fontBold14, 249 + (36 - sftd_get_text_width(fontBold14, 14, "No")) / 2, 112, (!overwrite) ? DARKBLUE : YELLOW, 14, "No");
-		sftd_draw_text(fontBold14, 210 + (36 - sftd_get_text_width(fontBold14, 14, "Yes")) / 2, 140, (adapt) ? DARKBLUE : YELLOW, 14, "Yes");
-		sftd_draw_text(fontBold14, 249 + (36 - sftd_get_text_width(fontBold14, 14, "No")) / 2, 140, (!adapt) ? DARKBLUE : YELLOW, 14, "No");
+		sftd_draw_wtext(fontBold14, 210 + (36 - sftd_get_wtext_width(fontBold14, 14, i18n(S_YES))) / 2, 112, (overwrite) ? DARKBLUE : YELLOW, 14, i18n(S_YES));
+		sftd_draw_wtext(fontBold14, 249 + (36 - sftd_get_wtext_width(fontBold14, 14, i18n(S_NO))) / 2, 112, (!overwrite) ? DARKBLUE : YELLOW, 14, i18n(S_NO));
+		sftd_draw_wtext(fontBold14, 210 + (36 - sftd_get_wtext_width(fontBold14, 14, i18n(S_YES))) / 2, 140, (adapt) ? DARKBLUE : YELLOW, 14, i18n(S_YES));
+		sftd_draw_wtext(fontBold14, 249 + (36 - sftd_get_wtext_width(fontBold14, 14, i18n(S_NO))) / 2, 140, (!adapt) ? DARKBLUE : YELLOW, 14, i18n(S_NO));
 		sftd_draw_text(fontBold14, 229 + (36 - sftd_get_text_width(fontBold14, 14, cont)) / 2, 170, YELLOW, 14, cont);
 		
-		printBottomIndications("Press START to inject, B to return.");
+		printBottomIndications(i18n(S_GRAPHIC_DB_INDICATIONS_INJECT));
 		pksm_end_frame();
 	sf2d_swapbuffers();
 	
@@ -852,10 +961,10 @@ void printDB6(int sprite, int i, bool langVett[], bool adapt, bool overwrite, in
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		printMenuBottom();
-		sftd_draw_text(fontBold14, 33, 50, LIGHTBLUE, 14, "Languages:");
-		sftd_draw_text(fontBold14, 33, 112, LIGHTBLUE, 14, "Overwrite Wondercard:");
-		sftd_draw_text(fontBold14, 33, 140, LIGHTBLUE, 14, "Adapt language to WC:");
-		sftd_draw_text(fontBold14, 33, 170, LIGHTBLUE, 14, "Inject WC in slot:");
+		sftd_draw_wtext(fontBold14, 33, 50, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_LANGUAGES));
+		sftd_draw_wtext(fontBold14, 33, 112, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_OVERWRITE_WC));
+		sftd_draw_wtext(fontBold14, 33, 140, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_ADAPT_LANGUAGE_WC));
+		sftd_draw_wtext(fontBold14, 33, 170, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_INJECT_WC_SLOT));
 		
 		for (int t = 0; t < 7; t++) {
 			int x = 0, y = 0;
@@ -909,7 +1018,7 @@ void printDB6(int sprite, int i, bool langVett[], bool adapt, bool overwrite, in
 		sftd_draw_text(fontBold14, 249 + (36 - sftd_get_text_width(fontBold14, 14, "No")) / 2, 140, (!adapt) ? DARKBLUE : YELLOW, 14, "No");
 		sftd_draw_text(fontBold14, 229 + (36 - sftd_get_text_width(fontBold14, 14, cont)) / 2, 170, YELLOW, 14, cont);
 		
-		printBottomIndications("Press START to inject, B to return.");
+		printBottomIndications(i18n(S_GRAPHIC_DB_INDICATIONS_INJECT));
 	pksm_end_frame();
 	sf2d_swapbuffers();
 	
@@ -924,7 +1033,7 @@ void printEditor(u8* mainbuf, int game, int currentEntry, int langCont) {
 
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		printMenuTop();
-		printTitle("Save File Editor");
+		printTitle(i18n(S_GRAPHIC_EDITOR_TITLE));
 		
 		for (int i = 0; i < 5; i++) {
 			if (i == currentEntry)
@@ -935,7 +1044,7 @@ void printEditor(u8* mainbuf, int game, int currentEntry, int langCont) {
 			switch (i) {
 				case 0 : {
 					int x = 140;
-					sftd_draw_text(fontBold12, 40, y + 10, BLACK, 12, "Language:");
+					sftd_draw_wtext(fontBold12, 40, y + 10, BLACK, 12, i18n(S_GRAPHIC_EDITOR_LANGUAGE));
 					sf2d_draw_texture(miniBox, x, y + 7);
 					sftd_draw_text(fontBold12, x + (36 - sftd_get_text_width(fontBold12, 12, languages[langCont])) / 2, y + 10, YELLOW, 12, languages[langCont]);
 					break;
@@ -952,7 +1061,7 @@ void printEditor(u8* mainbuf, int game, int currentEntry, int langCont) {
 				sf2d_draw_texture(eventMenuTopBar, 200, y);
 			
 			switch (i) {
-				case 5 : { sftd_draw_text(fontBold12, 200 + (182 - sftd_get_text_width(fontBold12, 12, "Clear Mystery Gift box")) / 2, y + 10, (i == currentEntry) ? DARKBLUE : YELLOW, 12, "Clear Mystery Gift box"); break; }
+				case 5 : { sftd_draw_wtext(fontBold12, 200 + (182 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_EDITOR_CLEAR_MYSTERY_GIFT_BOX))) / 2, y + 10, (i == currentEntry) ? DARKBLUE : YELLOW, 12, i18n(S_GRAPHIC_EDITOR_CLEAR_MYSTERY_GIFT_BOX)); break; }
 			}
 			y += 37;
 		}
@@ -960,7 +1069,7 @@ void printEditor(u8* mainbuf, int game, int currentEntry, int langCont) {
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		printMenuBottom();
-		printBottomIndications("Press START to edit, A to toggle, B to exit.");
+		printBottomIndications(i18n(S_GRAPHIC_EDITOR_INDICATIONS));
 	pksm_end_frame();
 	sf2d_swapbuffers();
 }
@@ -1014,8 +1123,8 @@ void printElementBlend(u8* pkmn, int game, u16 n, int x, int y, u32 color) {
 void infoViewer(u8* pkmn, int game) {
 	bool isKor = (pkmn[0xE3] == 0x08) ? true : false;
 	int y_desc = 29;
-	char* entries[] = {"Nickname:", "OT:", "Pokerus:", "Nature", "Ability:", "Item:", "ESV / TSV:", "TID / SID:", "HT/OT Fr.ship:", "Hidden Power:"};
-	char* values[] = {"HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed"};
+	wchar_t* entries[] = {i18n(S_GRAPHIC_INFOVIEWER_NICKNAME), i18n(S_GRAPHIC_INFOVIEWER_OT), i18n(S_GRAPHIC_INFOVIEWER_POKERUS), i18n(S_GRAPHIC_INFOVIEWER_NATURE), i18n(S_GRAPHIC_INFOVIEWER_ABILITY), i18n(S_GRAPHIC_INFOVIEWER_ITEM), i18n(S_GRAPHIC_INFOVIEWER_ESVTSV), i18n(S_GRAPHIC_INFOVIEWER_TIDSID), i18n(S_GRAPHIC_INFOVIEWER_HTOT_FRIENDSHIP), i18n(S_GRAPHIC_INFOVIEWER_HTOT_HIDDEN_POWER)};
+	wchar_t* values[] =  {i18n(S_GRAPHIC_INFOVIEWER_VALUE_HP), i18n(S_GRAPHIC_INFOVIEWER_VALUE_ATTACK), i18n(S_GRAPHIC_INFOVIEWER_VALUE_DEFENSE), i18n(S_GRAPHIC_INFOVIEWER_VALUE_SP_ATK), i18n(S_GRAPHIC_INFOVIEWER_VALUE_SP_DEF), i18n(S_GRAPHIC_INFOVIEWER_VALUE_SPEED)};
 	
 	printAnimatedBG(true);
 	sf2d_draw_texture(infoView, 0, 2);
@@ -1025,12 +1134,12 @@ void infoViewer(u8* pkmn, int game) {
 	sf2d_draw_texture((getMove(pkmn, 2)) ? normalBar : noMove, 252, 197);
 	sf2d_draw_texture((getMove(pkmn, 3)) ? normalBar : noMove, 252, 218);
 	
-	sftd_draw_text(fontBold12, 251, 138, WHITE, 12, "Moves");
+	sftd_draw_wtext(fontBold12, 251, 138, WHITE, 12, i18n(S_GRAPHIC_INFOVIEWER_MOVES));
 	for (int i = 0; i < 10; i++) {
 		if (i == 8 && isEgg(pkmn))
-			sftd_draw_text(fontBold12, 2, y_desc, BLUE, 12, "Egg cycle:");
+			sftd_draw_wtext(fontBold12, 2, y_desc, BLUE, 12, i18n(S_GRAPHIC_INFOVIEWER_EGG_CYCLE));
 		else
-			sftd_draw_text(fontBold12, 2, y_desc, BLUE, 12, entries[i]);
+			sftd_draw_wtext(fontBold12, 2, y_desc, BLUE, 12, entries[i]);
 		y_desc += 20;
 		if (i == 2) y_desc += 5;
 		if (i == 5) y_desc += 6;
@@ -1038,22 +1147,22 @@ void infoViewer(u8* pkmn, int game) {
 	
 	y_desc = 8;
 	for (int i = 0; i < 6; i++) {
-		sftd_draw_text(fontBold12, 225, y_desc, LIGHTBLUE, 12, values[i]);
+		sftd_draw_wtext(fontBold12, 225, y_desc, LIGHTBLUE, 12, values[i]);
 		y_desc += 20;
 	}
 	
 	if (getPokedexNumber(pkmn) > 0 && getPokedexNumber(pkmn) < 822) {
 		sf2d_draw_texture_part(balls, -2, -5, 32 * (getBall(pkmn) % 8), 32 * (getBall(pkmn) / 8), 32, 32);
-		sftd_draw_text(fontBold12, 30, 6, WHITE, 12, (char*)personal.species[getPokedexNumber(pkmn)]);
+		sftd_draw_wtext(fontBold12, 30, 6, WHITE, 12, listSpecies.items[getPokedexNumber(pkmn)]);
 		
 		if (getGender(pkmn) == 0)
 			sf2d_draw_texture(male, 146, 7);
 		else if (getGender(pkmn) == 1)
 			sf2d_draw_texture(female, 148, 7);
 		
-		char* level = (char*)malloc(8 * sizeof(char));
-		snprintf(level, 8, "Lv.%u", getLevel(pkmn));
-		sftd_draw_text(fontBold12, 160, 6, WHITE, 12, level);
+		wchar_t* level = (wchar_t*)malloc(8 * sizeof(wchar_t));
+		swprintf(level, 8, i18n(S_GRAPHIC_INFOVIEWER_LV), getLevel(pkmn));
+		sftd_draw_wtext(fontBold12, 160, 6, WHITE, 12, level);
 		free(level);
 		
 		u32 nick[NICKNAMELENGTH*2];
@@ -1066,10 +1175,10 @@ void infoViewer(u8* pkmn, int game) {
 		getOT(pkmn, ot_name);
 		sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, 215 - (sftd_get_wtext_width((isKor) ? unicodeKOR12 : unicodeJPN12, 12, (wchar_t*)ot_name)), 49, WHITE, 12, (wchar_t*)ot_name);
 		
-		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, (isInfected(pkmn) ? "Yes" : "No")), 69, WHITE, 12, isInfected(pkmn) ? "Yes" : "No");
-		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, natures[getNature(pkmn)]), 94, WHITE, 12, natures[getNature(pkmn)]);
-		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, abilities[getAbility(pkmn)]), 114, WHITE, 12, abilities[getAbility(pkmn)]);
-		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, items[getItem(pkmn)]), 134, WHITE, 12, items[getItem(pkmn)]);
+		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, (isInfected(pkmn) ? i18n(S_YES) : i18n(S_NO))), 69, WHITE, 12, isInfected(pkmn) ? i18n(S_YES) : i18n(S_NO));
+		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, natures[getNature(pkmn)]), 94, WHITE, 12, natures[getNature(pkmn)]);
+		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, abilities[getAbility(pkmn)]), 114, WHITE, 12, abilities[getAbility(pkmn)]);
+		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, items[getItem(pkmn)]), 134, WHITE, 12, items[getItem(pkmn)]);
 		
 		if (isShiny(pkmn))
 			sf2d_draw_texture(shinyStar, 205, 9);
@@ -1089,13 +1198,13 @@ void infoViewer(u8* pkmn, int game) {
 		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, otid), 180, WHITE, 12, otid);
 		free(otid);
 
-		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, hpList[getHPType(pkmn)]), 220, WHITE, 12, hpList[getHPType(pkmn)]);
+		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, hpList[getHPType(pkmn)]), 220, WHITE, 12, hpList[getHPType(pkmn)]);
 		
 		int max = sftd_get_text_width(fontBold12, 12, "252");		
 		int y_moves = 159;
 		for (int i = 0; i < 4; i++) {
 			if (getMove(pkmn, i))
-				sftd_draw_text(fontBold12, 396 - sftd_get_text_width(fontBold12, 12, moves[getMove(pkmn, i)]), y_moves, WHITE, 12, moves[getMove(pkmn, i)]);
+				sftd_draw_wtext(fontBold12, 396 - sftd_get_wtext_width(fontBold12, 12, moves[getMove(pkmn, i)]), y_moves, WHITE, 12, moves[getMove(pkmn, i)]);
 			y_moves += 21;
 		}
 		
@@ -1113,10 +1222,11 @@ void infoViewer(u8* pkmn, int game) {
 }
 
 void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry, int menuEntry, int box, int mode, int additional1, int additional2) {
-	char* menuEntries[] = {"EDIT", "CLONE", "RELEASE", "GENERATE", "EXIT"};
+	wchar_t* menuEntries[] = {i18n(S_GRAPHIC_PKVIEWER_MENU_EDIT), i18n(S_GRAPHIC_PKVIEWER_MENU_CLONE), i18n(S_GRAPHIC_PKVIEWER_MENU_RELEASE), i18n(S_GRAPHIC_PKVIEWER_MENU_GENERATE), i18n(S_GRAPHIC_PKVIEWER_MENU_EXIT)};
 	int x;
-	char* page = (char*)malloc(7 * sizeof(char));
-	snprintf(page, 7, "Box %d", box + 1);
+
+	wchar_t* page = (wchar_t*)malloc((MAX_LENGTH_BOX_NAME+1) * sizeof(wchar_t));
+	swprintf(page, MAX_LENGTH_BOX_NAME+1, i18n(S_GRAPHIC_PKVIEWER_BOX), box + 1);
 	
 	u8* pkmn = (u8*)malloc(PKMNLENGTH * sizeof(u8));
 	getPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
@@ -1140,20 +1250,20 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 		
 		if (mode == ED_OTA) {
 			sf2d_draw_rectangle(0, 0, 400, 240, RGBA8(0, 0, 0, 220));
-			sftd_draw_text(fontBold15, (400 - sftd_get_text_width(fontBold15, 15, "Launch the client on your PC...")) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, "Launch the client on your PC...");
-			sftd_draw_text(fontBold12, (400 - sftd_get_text_width(fontBold12, 12, "Press B to exit.")) / 2, 130, WHITE, 12, "Press B to exit.");
+			sftd_draw_wtext(fontBold15, (400 - sftd_get_wtext_width(fontBold15, 15, i18n(S_GRAPHIC_PKVIEWER_OTA_LAUNCH_CLIENT))) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, i18n(S_GRAPHIC_PKVIEWER_OTA_LAUNCH_CLIENT));
+			sftd_draw_wtext(fontBold12, (400 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKVIEWER_OTA_INDICATIONS))) / 2, 130, WHITE, 12, i18n(S_GRAPHIC_PKVIEWER_OTA_INDICATIONS));
 		}
 	pksm_end_frame();
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(boxView, 0, 0);
 		sf2d_draw_texture(editorBar, 0, 210);
-		sftd_draw_text(fontBold12, 12 + (178 - sftd_get_text_width(fontBold12, 12, page)) / 2, 19, WHITE, 12, page);
+		sftd_draw_wtext(fontBold12, 12 + (178 - sftd_get_wtext_width(fontBold12, 12, page)) / 2, 19, WHITE, 12, page);
 		sf2d_draw_texture(left, 7, 17);
 		sf2d_draw_texture(right, 185, 17);
 		sf2d_draw_texture(otaButton, 240, 211);
 		sf2d_draw_texture(back, 283, 211);
-		sftd_draw_text(fontBold12, 247, 7, WHITE, 12, "Team");
+		sftd_draw_wtext(fontBold12, 247, 7, WHITE, 12, i18n(S_GRAPHIC_PKVIEWER_TEAM));
 		
 		int y = 45;
 		int pointer[2] = {0, 0};
@@ -1201,33 +1311,33 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 		else {
 			sf2d_draw_texture(selectorCloning, pointer[0], pointer[1] - movementOffsetSlow(3));			
 			sf2d_draw_texture(bottomPopUp, 1, 214);
-			sftd_draw_text(fontBold11, 8, 220, WHITE, 11, "Press A to clone in selected slot, B to cancel");
+			sftd_draw_wtext(fontBold11, 8, 220, WHITE, 11, i18n(S_GRAPHIC_PKVIEWER_CLONE_INDICATIONS));
 		}
 		
 		if (mode == ED_MENU) {
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
 			sf2d_draw_texture(bottomPopUp, 1, 214);
 			sf2d_draw_texture(includeInfoButton, 242, 5);
-			sftd_draw_textf(fontBold11, 8, 220, WHITE, 11, "%s has been selected.", (char*)personal.species[getPokedexNumber(tmp)]);
+			sftd_draw_wtextf(fontBold11, 8, 220, WHITE, 11, i18n(S_GRAPHIC_PKVIEWER_MENU_POKEMON_SELECTED), listSpecies.items[getPokedexNumber(tmp)]);
 			for (int i = 0; i < 5; i++) {
 				sf2d_draw_texture(button, 208, 42 + i * 27 + i*4);
 				if (isTeam && (i == 0 || i == 2 || i == 3))
 					sf2d_draw_texture_blend(button, 208, 42 + i * 27 + i*4, RGBA8(0, 0, 0, 100));
-				sftd_draw_text(fontBold12, 208 + (109 - sftd_get_text_width(fontBold12, 12, menuEntries[i])) / 2, 49 + i * 27 + i*4, BLACK, 12, menuEntries[i]);
+				sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, menuEntries[i])) / 2, 49 + i * 27 + i*4, BLACK, 12, menuEntries[i]);
 				if (i == menuEntry)
 					sf2d_draw_texture(subArrow, 203 - movementOffsetSlow(3), 46 + i * 27 + i*4);
 			}
 		} else if (mode == ED_GENERATE) {
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
-			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Generate with A in the top screen.")) / 2, 105, WHITE, 14, "Generate with A in the top screen.");
+			sftd_draw_wtext(fontBold14, (320 - sftd_get_wtext_width(fontBold14, 14, i18n(S_GRAPHIC_PKVIEWER_GENERATE_INDICATIONS))) / 2, 105, WHITE, 14, i18n(S_GRAPHIC_PKVIEWER_GENERATE_INDICATIONS));
 		} else if (mode == ED_OTA) {
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
 			drawIP(fontBold9);
 		} else if (mode != ED_CLONE) {
 			if (mode == ED_STANDARD)
-				sftd_draw_textf(fontBold9, 10, 220, BARTEXT, 9, "TID: %u / SID: %u / TSV: %u", getSaveTID(mainbuf, game), getSaveSID(mainbuf, game), getSaveTSV(mainbuf, game));	
+				sftd_draw_wtextf(fontBold9, 10, 220, BARTEXT, 9, i18n(S_GRAPHIC_PKVIEWER_TIDSIDTSV), getSaveTID(mainbuf, game), getSaveSID(mainbuf, game), getSaveTSV(mainbuf, game));
 			else
-				sftd_draw_textf(fontBold9, 10, 220, BARTEXT, 9, "Seed: %lx %lx %lx %lx", getSaveSeed(mainbuf, game, 3), getSaveSeed(mainbuf, game, 2), getSaveSeed(mainbuf, game, 1), getSaveSeed(mainbuf, game, 0));	
+				sftd_draw_wtextf(fontBold9, 10, 220, BARTEXT, 9, i18n(S_GRAPHIC_PKVIEWER_SEED), getSaveSeed(mainbuf, game, 3), getSaveSeed(mainbuf, game, 2), getSaveSeed(mainbuf, game, 1), getSaveSeed(mainbuf, game, 0));
 		}
 	pksm_end_frame();
 	sf2d_swapbuffers();
@@ -1236,19 +1346,19 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 	free(page);
 }
 
-void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int additional3, int mode, char* descriptions[]) {
+void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int additional3, int mode, wchar_t* descriptions[]) {
 	int max = sftd_get_text_width(fontBold12, 12, "252");
-	char* entries[] = {"Level:", "Nature:", "Ability:", "Item:", "Shiny:", "Pokerus:", "OT:", "Nickname:", "Friendship:"};
-	char* options[] = {"STATS", "MOVES", "SAVE"};
+	wchar_t* entries[] = {i18n(S_GRAPHIC_PKEDITOR_LEVEL), i18n(S_GRAPHIC_PKEDITOR_NATURE), i18n(S_GRAPHIC_PKEDITOR_ABILITY), i18n(S_GRAPHIC_PKEDITOR_ITEM), i18n(S_GRAPHIC_PKEDITOR_SHINY), i18n(S_GRAPHIC_PKEDITOR_POKERUS), i18n(S_GRAPHIC_PKEDITOR_OT), i18n(S_GRAPHIC_PKEDITOR_NICKNAME), i18n(S_GRAPHIC_PKEDITOR_FRIENDSHIP)};
+	wchar_t* options[] = {i18n(S_GRAPHIC_PKEDITOR_MENU_STATS), i18n(S_GRAPHIC_PKEDITOR_MENU_MOVES), i18n(S_GRAPHIC_PKEDITOR_MENU_SAVE)};
 	
-	char* values[6] = {"HP:", "Attack:", "Defense:", "Sp. Attack:", "Sp. Defense:", "Speed:"};
+	wchar_t* values[6] = {i18n(S_GRAPHIC_PKEDITOR_STATS_HP), i18n(S_GRAPHIC_PKEDITOR_STATS_ATTACK), i18n(S_GRAPHIC_PKEDITOR_STATS_DEFENSE), i18n(S_GRAPHIC_PKEDITOR_STATS_SP_ATTACK), i18n(S_GRAPHIC_PKEDITOR_STATS_SP_DEFENSE), i18n(S_GRAPHIC_PKEDITOR_STATS_SPEED)};
 	u16 n = getPokedexNumber(pkmn);
 	bool isKor = (pkmn[0xE3] == 0x08) ? true : false;
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 	if (mode == ED_BASE || mode == ED_STATS) {
-		sftd_draw_text(fontBold15, (400 - sftd_get_text_width(fontBold15, 15, "Edit your Pokemon in the bottom screen")) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, "Edit your Pokemon in the bottom screen");
-		sftd_draw_text(fontBold15, (400 - sftd_get_text_width(fontBold15, 15, "Tap SAVE when you're done")) / 2, 115, RGBA8(255, 255, 255, giveTransparence()), 15, "Tap SAVE when you're done");
+		sftd_draw_wtext(fontBold15, (400 - sftd_get_wtext_width(fontBold15, 15, i18n(S_GRAPHIC_PKEDITOR_BASE_STATS_INDICATIONS_1))) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, i18n(S_GRAPHIC_PKEDITOR_BASE_STATS_INDICATIONS_1));
+		sftd_draw_wtext(fontBold15, (400 - sftd_get_wtext_width(fontBold15, 15, i18n(S_GRAPHIC_PKEDITOR_BASE_STATS_INDICATIONS_2))) / 2, 115, RGBA8(255, 255, 255, giveTransparence()), 15, i18n(S_GRAPHIC_PKEDITOR_BASE_STATS_INDICATIONS_2));
 	} else if (mode == ED_ITEMS) {
 		int entry;
 		int y = 0;
@@ -1259,11 +1369,12 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 				printSelector(2, y, 198, 11);
 			else if (i + 20 == additional1) 
 				printSelector(200, y, 198, 11);
-			sftd_draw_textf(fontBold9, 2, y, WHITE, 9, "%d - %s", entry, itemsSorted[entry]);
-			sftd_draw_textf(fontBold9, 200, y, WHITE, 9, "%d - %s", entry + 20, itemsSorted[entry + 20]);
+			sftd_draw_wtextf(fontBold9, 2, y, WHITE, 9, L"%d - %ls", entry, itemsSorted[entry]);
+			sftd_draw_wtextf(fontBold9, 200, y, WHITE, 9, L"%d - %ls", entry + 20, itemsSorted[entry + 20]);
 			y += 12;
 		}	
 	} else if (mode == ED_MOVES) {
+
 		int entry;
 		int y = 0;
 		sf2d_draw_texture(topMovesBG, 0, 0);
@@ -1273,29 +1384,28 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 				printSelector(2, y, 198, 11);
 			else if (i + 20 == additional1) 
 				printSelector(200, y, 198, 11);
-			sftd_draw_textf(fontBold9, 2, y, WHITE, 9, "%d - %s", entry, movesSorted[entry]);
-			sftd_draw_textf(fontBold9, 200, y, WHITE, 9, "%d - %s", entry + 20, movesSorted[entry + 20]);
+			sftd_draw_wtextf(fontBold9, 2, y, WHITE, 9, L"%d - %ls", entry, movesSorted[entry]);
+			sftd_draw_wtextf(fontBold9, 200, y, WHITE, 9, L"%d - %ls", entry + 20, movesSorted[entry + 20]);
 			y += 12;
 		}
 	} else if (mode == ED_NATURES) {
-		char* hor[] = {"Neutral", "-Attack", "-Defense", "-Speed", "-Sp. Atk.", "-Sp. Def."};
-		char* ver[] = {"+Attack", "+Defense", "+Speed", "+Sp. Atk.", "+Sp. Def."};
+		wchar_t* hor[] = {i18n(S_GRAPHIC_PKEDITOR_NATURE_NEUTRAL), i18n(S_GRAPHIC_PKEDITOR_NATURE_MIN_ATTACK), i18n(S_GRAPHIC_PKEDITOR_NATURE_MIN_DEFENSE), i18n(S_GRAPHIC_PKEDITOR_NATURE_MIN_SPEED), i18n(S_GRAPHIC_PKEDITOR_NATURE_MIN_SP_ATTACK), i18n(S_GRAPHIC_PKEDITOR_NATURE_MIN_SP_DEFENSE)};
+		wchar_t* ver[] = {i18n(S_GRAPHIC_PKEDITOR_NATURE_PLUS_ATTACK), i18n(S_GRAPHIC_PKEDITOR_NATURE_PLUS_DEFENSE), i18n(S_GRAPHIC_PKEDITOR_NATURE_PLUS_SPEED), i18n(S_GRAPHIC_PKEDITOR_NATURE_PLUS_SP_ATTACK), i18n(S_GRAPHIC_PKEDITOR_NATURE_PLUS_SP_DEFENSE)};
 		
 		sf2d_draw_texture(naturestx, 0, 0);
 		for (int i = 0; i < 6; i++)
-			sftd_draw_text(fontBold12, 66 * i + (66 - sftd_get_text_width(fontBold12, 12, hor[i])) / 2, 13, (i == 0) ? YELLOW : BLUE, 12, hor[i]);
+			sftd_draw_wtext(fontBold12, 66 * i + (66 - sftd_get_wtext_width(fontBold12, 12, hor[i])) / 2, 13, (i == 0) ? YELLOW : BLUE, 12, hor[i]);
 		for (int i = 0; i < 5; i++)
-			sftd_draw_text(fontBold12, (66 - sftd_get_text_width(fontBold12, 12, ver[i])) / 2, 53 + i * 40, BLUE, 12, ver[i]);
+			sftd_draw_wtext(fontBold12, (66 - sftd_get_wtext_width(fontBold12, 12, ver[i])) / 2, 53 + i * 40, BLUE, 12, ver[i]);
 		
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 5; j++) {
 				if (additional1 == i * 5 + j)
 					printSelector(66*j + 66 + j, 40*i + 40, 66, 39);
-				sftd_draw_text(fontBold12, 66 + 66 * j + (66 - sftd_get_text_width(fontBold12, 12, natures[i * 5 + j])) / 2 + j, 53 + i * 40, (i == j) ? YELLOW : WHITE, 12, natures[i * 5 + j]);
+				sftd_draw_wtext(fontBold12, 66 + 66 * j + (66 - sftd_get_wtext_width(fontBold12, 12, natures[i * 5 + j])) / 2 + j, 53 + i * 40, (i == j) ? YELLOW : WHITE, 12, natures[i * 5 + j]);
 			}
 		}
 	} else if (mode == ED_BALLS) {
-		char* entries[] = {"Master Ball", "Ultra Ball", "Great Ball", "Poke Ball", "Safari Ball", "Net Ball", "Dive Ball", "Nest Ball", "Repeat Ball", "Timer Ball", "Luxury Ball", "Premier Ball", "Dusk Ball", "Heal Ball", "Quick Ball", "Cherish Ball", "Fast Ball", "Level Ball", "Lure Ball", "Heavy Ball", "Love Ball", "Friend Ball", "Moon Ball", "Sport Ball", "Dream Ball", "Beast Ball", " ", " ", " ", " "};
 		sf2d_draw_texture(ballsBG, 0, 0);
 		
 		for (int i = 0; i < 5; i++) {
@@ -1303,7 +1413,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 				if (additional1 == i * 6 + j)
 					printSelector(66*j + j, 47*i + i, 66, 47);
 				sf2d_draw_texture_part(balls, 17 + 66 * j + j, 2 + i * 47, 32 * ((i * 6 + j + 1) % 8), 32 * ((i * 6 + j + 1) / 8), 32, 32);
-				sftd_draw_text(fontBold9, 66 * j + (66 - sftd_get_text_width(fontBold9, 9, entries[i * 6 + j])) / 2 + j, 30 + i * 47 + i, WHITE, 9, entries[i * 6 + j]);
+				sftd_draw_wtext(fontBold9, 66 * j + (66 - sftd_get_wtext_width(fontBold9, 9, ballList[i * 6 + j])) / 2 + j, 30 + i * 47 + i, WHITE, 9, ballList[i * 6 + j]);
 			}
 		}
 	} else if (mode == ED_HIDDENPOWER) {
@@ -1316,7 +1426,6 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			}
 		}
 	} else if (mode == ED_FORMS) {
-		char* entries[] = {"Default", "Alolan", "Default", "Rock Star", "Belle", "Pop Star", "Ph.D", "Libre", "Cosplay", "Default", "Original", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "!", "?", "Normal", "Attack", "Defense", "Speed", "Plant", "Sandy", "Trash", "West Sea", "East Sea", "Default", "Heat", "Wash", "Fridge", "Fan", "Mow", "Altered", "Origin", "Land", "Sky", "Red-Striped", "Blue-Striped", "Spring", "Summer", "Autumn", "Winter", "Incarnate", "Therian", "Default", "White", "Black", "Ordinary", "Resolute", "Aria", "Pirouette", "Default", "Battle Bond", "Icy Snow", "Polar", "Tundra", "Continental", "Garden", "Elegant", "Meadow", "Modern", "Marine", "Archipelago", "High Plains", "Sandstorm", "River", "Monsoon", "Savanna", "Sun", "Ocean", "Jungle", "Fancy", "Poke Ball", "Red", "Yellow", "Orange", "Blue", "White", "Eternal Flower", "Natural", "Heart", "Star", "Diamond", "Debutante", "Matron", "Dandy", "La Reine", "Kabuki", "Pharaoh", "Average", "Small", "Large", "Super", "50%", "10%", "10%-PC", "50%-PC", "Confined", "Unbound", "Baile", "Pom-Pom", "Pa'u", "Sensu", "Midday", "Midnight", "Red", "Orange", "Yellow", "Green", "Blue", "Indigo", "Violet", "Default", "Original Color", "Default", "Spiky-Eared", "Default", "Female"};
 		FormData *forms = getLegalFormData((u16)additional2, game);
 		int numforms = forms->max - forms->min + 1;
 		
@@ -1338,7 +1447,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 
 				int form = i * columns + j;
 				if (form < numforms) {
-					char *str = entries[forms->stringNum + form];
+					wchar_t *str = formList[forms->stringNum + form];
 					if (forms->min > 0)
 						form++;
 					if (form == 0 || forms->spriteNum == 0)
@@ -1347,7 +1456,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 						int sprite = forms->spriteNum + form - 2;
 						sf2d_draw_texture_part(alternativeSpritesSmall, (width - 34) / 2 + width * j + j, 2 * (height - 44) / 3 + i * height + i, 40 * (sprite % 6) + 4, 30 * (sprite / 6), 34, 30);
 					}
-					sftd_draw_text(fontBold9, width * j + (width - sftd_get_text_width(fontBold9, 9, str)) / 2 + j, (height * 5) / 7 + i * height + i, WHITE, 9, str);
+					sftd_draw_wtext(fontBold9, width * j + (width - sftd_get_wtext_width(fontBold9, 9, str)) / 2 + j, (height * 5) / 7 + i * height + i, WHITE, 9, str);
 				}
 			}
 		}
@@ -1365,7 +1474,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 				if (byte == 231) break;
 			}
 		}
-		sftd_draw_textf(fontBold11, 4, 225, LIGHTBLUE, 11, "%s", descriptions[additional1]);
+		sftd_draw_wtextf(fontBold11, 4, 225, LIGHTBLUE, 11, L"%ls", descriptions[additional1]);
 	}
 	pksm_end_frame();
 	
@@ -1377,7 +1486,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			sf2d_draw_texture(editorBar, 0, 210);
 			sf2d_draw_texture(hexIcon, 290, 1);
 			
-			sftd_draw_text(fontBold12, 27, 4, WHITE, 12, (char*)personal.species[n]);
+			sftd_draw_wtext(fontBold12, 27, 4, WHITE, 12, listSpecies.items[n]);
 			sf2d_draw_texture_part(balls, -2, -6, 32 * (getBall(pkmn) % 8), 32 * (getBall(pkmn) / 8), 32, 32);
 			
 			u16 t = getAlternativeSprite(pkmn, game);
@@ -1398,14 +1507,14 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			
 			for (int i = 0; i < 3; i++) {
 				sf2d_draw_texture(button, 206, 110 + i * 27 + i*4);
-				sftd_draw_text(fontBold12, 206 + (109 - sftd_get_text_width(fontBold12, 12, options[i])) / 2, 117 + i * 27 + i*4, BLACK, 12, options[i]);
+				sftd_draw_wtext(fontBold12, 206 + (109 - sftd_get_wtext_width(fontBold12, 12, options[i])) / 2, 117 + i * 27 + i*4, BLACK, 12, options[i]);
 			}
 			
 			for (int i = 0; i < 9; i++)
 				if (i == 8 && isEgg(pkmn))
-					sftd_draw_text(fontBold12, 2, 29 + i * 20, LIGHTBLUE, 12, "Egg cycle:");
+					sftd_draw_wtext(fontBold12, 2, 29 + i * 20, LIGHTBLUE, 12, i18n(S_GRAPHIC_PKEDITOR_EGG_CYCLE));
 				else
-					sftd_draw_text(fontBold12, 2, 29 + i * 20, LIGHTBLUE, 12, entries[i]);
+					sftd_draw_wtext(fontBold12, 2, 29 + i * 20, LIGHTBLUE, 12, entries[i]);
 
 			for (int i = 0; i < 7; i++)
 				sf2d_draw_texture(setting, 180, 51 + i * 20);
@@ -1420,11 +1529,11 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			sftd_draw_text(fontBold12, 180 - max - 3 + (max - sftd_get_text_width(fontBold12, 12, level)) / 2, 29, WHITE, 12, level);
 			free(level);
 				
-			sftd_draw_text(fontBold12, 178 - sftd_get_text_width(fontBold12, 12, natures[getNature(pkmn)]), 49, WHITE, 12, natures[getNature(pkmn)]);
-			sftd_draw_text(fontBold12, 178 - sftd_get_text_width(fontBold12, 12, abilities[getAbility(pkmn)]), 69, WHITE, 12, abilities[getAbility(pkmn)]);
-			sftd_draw_text(fontBold12, 178 - sftd_get_text_width(fontBold12, 12, items[getItem(pkmn)]), 89, WHITE, 12, items[getItem(pkmn)]);
-			sftd_draw_text(fontBold12, 178 - sftd_get_text_width(fontBold12, 12, isShiny(pkmn) ? "Yes" : "No"), 109, WHITE, 12, isShiny(pkmn) ? "Yes" : "No");
-			sftd_draw_text(fontBold12, 178 - sftd_get_text_width(fontBold12, 12, isInfected(pkmn) ? "Yes" : "No"), 129, WHITE, 12, isInfected(pkmn) ? "Yes" : "No");
+			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, natures[getNature(pkmn)]), 49, WHITE, 12, natures[getNature(pkmn)]);
+			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, abilities[getAbility(pkmn)]), 69, WHITE, 12, abilities[getAbility(pkmn)]);
+			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, items[getItem(pkmn)]), 89, WHITE, 12, items[getItem(pkmn)]);
+			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, isShiny(pkmn) ? i18n(S_YES) : i18n(S_NO)), 109, WHITE, 12, isShiny(pkmn) ? i18n(S_YES) : i18n(S_NO));
+			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, isInfected(pkmn) ? i18n(S_YES) : i18n(S_NO)), 129, WHITE, 12, isInfected(pkmn) ? i18n(S_YES) : i18n(S_NO));
 			
 			char* friendship = (char*)malloc(4 * sizeof(char));
 			if (isEgg(pkmn))
@@ -1448,13 +1557,13 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			sf2d_draw_texture(editorStatsBG, 0, 1);
 			sf2d_draw_texture(editorBar, 0, 210);
 			sf2d_draw_texture(setting, 291, 175);
-			sftd_draw_text(fontBold12, 2, 28, LIGHTBLUE, 12, "STATS");
-			sftd_draw_text(fontBold12, 118, 28, DARKBLUE, 12, "IV");
-			sftd_draw_text(fontBold12, 197, 28, DARKBLUE, 12, "EV");
-			sftd_draw_text(fontBold12, 256, 28, DARKBLUE, 12, "TOTAL");
-			sftd_draw_text(fontBold12, 2, 173, LIGHTBLUE, 12, "Hidden Power:");
+			sftd_draw_wtext(fontBold12, 2, 28, LIGHTBLUE, 12, i18n(S_GRAPHIC_PKEDITOR_LBL_STATS));
+			sftd_draw_wtext(fontBold12, 118, 28, DARKBLUE, 12, i18n(S_GRAPHIC_PKEDITOR_LBL_IV));
+			sftd_draw_wtext(fontBold12, 197, 28, DARKBLUE, 12, i18n(S_GRAPHIC_PKEDITOR_LBL_EV));
+			sftd_draw_wtext(fontBold12, 256, 28, DARKBLUE, 12, i18n(S_GRAPHIC_PKEDITOR_LBL_TOTAL));
+			sftd_draw_wtext(fontBold12, 2, 173, LIGHTBLUE, 12, i18n(S_GRAPHIC_PKEDITOR_HIDDEN_POWER));
 			
-			sftd_draw_text(fontBold12, 27, 4, WHITE, 12, (char*)personal.species[n]);
+			sftd_draw_wtext(fontBold12, 27, 4, WHITE, 12, listSpecies.items[n]);
 			sf2d_draw_texture_part(balls, -2, -6, 32 * (getBall(pkmn) % 8), 32 * (getBall(pkmn) / 8), 32, 32);
 			
 			if (getGender(pkmn) == 0)
@@ -1463,7 +1572,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 				sf2d_draw_texture(female, 161, 6);
 			
 			for (int i = 0; i < 6; i++)
-				sftd_draw_text(fontBold12, 2, 49 + i * 20, LIGHTBLUE, 12, values[i]);
+				sftd_draw_wtext(fontBold12, 2, 49 + i * 20, LIGHTBLUE, 12, values[i]);
 
 			char* tmp = (char*)malloc(4);
 			for (int i = 0; i < 6; i++) {
@@ -1476,7 +1585,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			}
 			free(tmp);
 			
-			sftd_draw_text(fontBold12, 288 - sftd_get_text_width(fontBold12, 12, hpList[getHPType(pkmn)]), 173, WHITE, 12, hpList[getHPType(pkmn)]);	
+			sftd_draw_wtext(fontBold12, 288 - sftd_get_wtext_width(fontBold12, 12, hpList[getHPType(pkmn)]), 173, WHITE, 12, hpList[getHPType(pkmn)]);
 
 			for (int i = 0; i < 6; i++) {
 				sf2d_draw_texture(minus, 96, 49 + i * 20);
@@ -1486,20 +1595,22 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			}
 		}
 		if (mode == ED_MOVES) {
+
 			sf2d_draw_texture(movesBottom, 0, 1);
 			sf2d_draw_texture(movesBottom, 0, 2 + movesBottom->height);
 			sf2d_draw_texture(editorBar, 0, 210);
-			sftd_draw_text(fontBold12, 2, 5, LIGHTBLUE, 12, "Moves");
-			sftd_draw_text(fontBold12, 2, 110, LIGHTBLUE, 12, "Relearn Moves");
+			sftd_draw_wtext(fontBold12, 2, 5, LIGHTBLUE, 12, i18n(S_GRAPHIC_PKEDITOR_MOVES));
+			sftd_draw_wtext(fontBold12, 2, 110, LIGHTBLUE, 12, i18n(S_GRAPHIC_PKEDITOR_RELEARN_MOVES));
 			
 			for (int i = 0; i < 4; i++) {
-				sftd_draw_text(fontBold12, 2, 28 + i * 20, (i == additional3) ? YELLOW : WHITE, 12, moves[getMove(pkmn, i)]);
-				sftd_draw_text(fontBold12, 2, 132 + i * 20, (i == additional3 - 4) ? YELLOW: WHITE, 12, moves[getEggMove(pkmn, i)]);
+				sftd_draw_wtext(fontBold12, 2, 28 + i * 20, (i == additional3) ? YELLOW : WHITE, 12, moves[getMove(pkmn, i)]);
+				sftd_draw_wtext(fontBold12, 2, 132 + i * 20, (i == additional3 - 4) ? YELLOW: WHITE, 12, moves[getEggMove(pkmn, i)]);
 				if (i == additional3)
 					sf2d_draw_texture_rotate(subArrow, 198 - movementOffsetSlow(3), 33 + i * 20, 3.1415f);
 				else if (i == additional3 - 4)
 					sf2d_draw_texture_rotate(subArrow, 198 - movementOffsetSlow(3), 137 + i * 20, 3.1415f);
 			}
+
 		}
 		if (mode == ED_HEX) {
 			printMenuBottom();
@@ -1511,7 +1622,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			if (hax)
 				sf2d_draw_rectangle(0, 0, 320, 240, RGBA8(255, 0, 0, 100));
 			
-			sftd_draw_textf(fontBold14, 50, 30, LIGHTBLUE, 14, "Selected byte:");
+			sftd_draw_wtextf(fontBold14, (165 - sftd_get_wtext_width(fontBold14, 14, i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE))), 30, LIGHTBLUE, 14, i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE));
 			sftd_draw_textf(fontBold14, 171, 30, WHITE, 14, "0x%02hhX", additional1);
 			
 			printfHexEditorInfo(pkmn, additional1);
@@ -1523,19 +1634,19 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 		// apply masks
 		if (mode == ED_ITEMS) {
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
-			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Select an item with A in the top screen.")) / 2, 105, WHITE, 14, "Select an item with A in the top screen.");
+			sftd_draw_wtext(fontBold14, (320 - sftd_get_wtext_width(fontBold14, 14, i18n(S_GRAPHIC_PKEDITOR_ITEM_INDICATION))) / 2, 105, WHITE, 14, i18n(S_GRAPHIC_PKEDITOR_ITEM_INDICATION));
 		} else if (mode == ED_NATURES) {
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
-			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Select a nature with A in the top screen.")) / 2, 105, WHITE, 14, "Select a nature with A in the top screen.");
+			sftd_draw_wtext(fontBold14, (320 - sftd_get_wtext_width(fontBold14, 14, i18n(S_GRAPHIC_PKEDITOR_NATURE_INDICATION))) / 2, 105, WHITE, 14, i18n(S_GRAPHIC_PKEDITOR_NATURE_INDICATION));
 		} else if (mode == ED_BALLS) {
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
-			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Select a ball with A in the top screen.")) / 2, 105, WHITE, 14, "Select a ball with A in the top screen.");
+			sftd_draw_wtext(fontBold14, (320 - sftd_get_wtext_width(fontBold14, 14, i18n(S_GRAPHIC_PKEDITOR_BALL_INDICATION))) / 2, 105, WHITE, 14, i18n(S_GRAPHIC_PKEDITOR_BALL_INDICATION));
 		} else if (mode == ED_HIDDENPOWER) {
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
-			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Select a HP type with A in the top screen.")) / 2, 105, WHITE, 14, "Select a HP type with A in the top screen.");
+			sftd_draw_wtext(fontBold14, (320 - sftd_get_wtext_width(fontBold14, 14, i18n(S_GRAPHIC_PKEDITOR_HP_INDICATION))) / 2, 105, WHITE, 14, i18n(S_GRAPHIC_PKEDITOR_HP_INDICATION));
 		} else if (mode == ED_FORMS) {
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
-			sftd_draw_text(fontBold14, (320 - sftd_get_text_width(fontBold14, 14, "Select a form with A in the top screen.")) / 2, 105, WHITE, 14, "Select a form with A in the top screen.");
+			sftd_draw_wtext(fontBold14, (320 - sftd_get_wtext_width(fontBold14, 14, i18n(S_GRAPHIC_PKEDITOR_FORM_INDICATION))) / 2, 105, WHITE, 14, i18n(S_GRAPHIC_PKEDITOR_FORM_INDICATION));
 		}
 		
 	pksm_end_frame();
@@ -1545,7 +1656,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEntry, int saveBox, int bankBox, bool isBufferized, bool isSeen) {
 	int x, y;
 	int pointer[2] = {0, 0};
-	char* page = (char*)malloc(10 * sizeof(char));
+	wchar_t* page = (wchar_t*)malloc((MAX_LENGTH_BOX_NAME+1) * sizeof(wchar_t));
 	bool isKor = (pkmnbuf[0xE3] == 0x08) ? true : false;
 	
 	u8* pkmn = (u8*)malloc(PKMNLENGTH * sizeof(u8));
@@ -1560,8 +1671,8 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 		} else {
 			printAnimatedBG(true);
 			sf2d_draw_texture(bankTop, 34, 5);
-			snprintf(page, 10, "Bank %d", bankBox + 1);
-			sftd_draw_text(fontBold12, 55 + (178 - sftd_get_text_width(fontBold12, 12, page)) / 2, 9, WHITE, 12, page);
+			swprintf(page, MAX_LENGTH_BOX_NAME+1, i18n(S_GRAPHIC_PKBANK_BANK_TITLE), bankBox + 1);
+			sftd_draw_wtext(fontBold12, 55 + (178 - sftd_get_wtext_width(fontBold12, 12, page)) / 2, 9, WHITE, 12, page);
 
 			if (getPokedexNumber(pkmn) > 0 && getPokedexNumber(pkmn) < 822) {
 				u16 tempspecies = getFormSpeciesNumber(pkmn);
@@ -1586,16 +1697,16 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 				getNickname(pkmn, nick);
 				sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, 273, 69, WHITE, 12, (wchar_t*)nick);
 				
-				char* level = (char*)malloc(8 * sizeof(char));
-				snprintf(level, 8, "Lv.%u", getLevel(pkmn));
-				sftd_draw_text(fontBold12, 372 - sftd_get_text_width(fontBold12, 12, level), 86, WHITE, 12, level);
+				wchar_t* level = (wchar_t*)malloc(8 * sizeof(wchar_t));
+				swprintf(level, 8, i18n(S_GRAPHIC_PKBANK_LV_PKMN), getLevel(pkmn));
+				sftd_draw_wtext(fontBold12, 372 - sftd_get_wtext_width(fontBold12, 12, level), 86, WHITE, 12, level);
 				
 				if (getGender(pkmn) == 0)
-					sf2d_draw_texture(male, 358 - sftd_get_text_width(fontBold12, 12, level), 86);
+					sf2d_draw_texture(male, 358 - sftd_get_wtext_width(fontBold12, 12, level), 86);
 				else if (getGender(pkmn) == 1)
-					sf2d_draw_texture(female, 360 - sftd_get_text_width(fontBold12, 12, level), 86);
+					sf2d_draw_texture(female, 360 - sftd_get_wtext_width(fontBold12, 12, level), 86);
 				if (isShiny(pkmn))
-					sf2d_draw_texture(shinyStar, 360 - sftd_get_text_width(fontBold12, 12, level) - 14, 88);
+					sf2d_draw_texture(shinyStar, 360 - sftd_get_wtext_width(fontBold12, 12, level) - 14, 88);
 				
 				free(level);
 				
@@ -1604,12 +1715,12 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 				getOT(pkmn, ot_name);
 				sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, 273, 146, WHITE, 12, (wchar_t*)ot_name);
 
-				char* otid = (char*)malloc(12 * sizeof(char));
-				snprintf(otid, 12, "ID. %u", getOTID(pkmn));
-				sftd_draw_text(fontBold12, 372 - sftd_get_text_width(fontBold12, 12, otid), 163, WHITE, 12, otid);
+				wchar_t* otid = (wchar_t*)malloc(12 * sizeof(wchar_t));
+				swprintf(otid, 12, i18n(S_GRAPHIC_PKBANK_OTID_PKMN), getOTID(pkmn));
+				sftd_draw_wtext(fontBold12, 372 - sftd_get_wtext_width(fontBold12, 12, otid), 163, WHITE, 12, otid);
 				free(otid);
 				
-				sftd_draw_text(fontBold12, 273, 104, WHITE, 12, (char*)personal.species[getPokedexNumber(pkmn)]);
+				sftd_draw_wtext(fontBold12, 273, 104, WHITE, 12, listSpecies.items[getPokedexNumber(pkmn)]);
 			}
 			y = 45;
 			for (int i = 0; i < 5; i++) {
@@ -1641,8 +1752,8 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(boxView, 0, 0);
 		sf2d_draw_texture(editorBar, 0, 210);
-		snprintf(page, 10, "Save %d", saveBox + 1);
-		sftd_draw_text(fontBold12, 12 + (178 - sftd_get_text_width(fontBold12, 12, page)) / 2, 19, WHITE, 12, page);
+		swprintf(page, MAX_LENGTH_BOX_NAME+1, i18n(S_GRAPHIC_PKBANK_SAVED_BOX_TITLE), saveBox + 1);
+		sftd_draw_wtext(fontBold12, 12 + (178 - sftd_get_wtext_width(fontBold12, 12, page)) / 2, 19, WHITE, 12, page);
 		sf2d_draw_texture(left, 7, 17);
 		sf2d_draw_texture(right, 185, 17);
 		sf2d_draw_texture(transferButton, 242, 5);
@@ -1650,9 +1761,9 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 		sf2d_draw_texture(button, 208, 43);
 		sf2d_draw_texture(button, 208, 70);
 		sf2d_draw_texture(button, 208, 97);
-		sftd_draw_text(fontBold12, 208 + (109 - sftd_get_text_width(fontBold12, 12, "Y: VIEW")) / 2, 50, BLACK, 12, "Y: VIEW");
-		sftd_draw_text(fontBold12, 208 + (109 - sftd_get_text_width(fontBold12, 12, "CLEAR BOX")) / 2, 77, BLACK, 12, "CLEAR BOX");
-		sftd_draw_text(fontBold12, 208 + (109 - sftd_get_text_width(fontBold12, 12, "RELEASE")) / 2, 104, BLACK, 12, "RELEASE");
+		sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKBANK_MENU_VIEW))) / 2, 50, BLACK, 12, i18n(S_GRAPHIC_PKBANK_MENU_VIEW));
+		sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKBANK_MENU_CLEARBOX))) / 2, 77, BLACK, 12, i18n(S_GRAPHIC_PKBANK_MENU_CLEARBOX));
+		sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKBANK_MENU_RELEASE))) / 2, 104, BLACK, 12, i18n(S_GRAPHIC_PKBANK_MENU_RELEASE));
 				
 		y = 45;
 		for (int i = 0; i < 5; i++) {
@@ -1693,15 +1804,15 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 
 void printMassInjector(int currentEntry) {
 	int y = 41;
-	char* entries[] = {"XD Collection", "Colosseum Collection", "10th Anniversary Collection", "N's Collection", "Entree Forest Collection", "Dream Radar Collection", "Living Dex", "Oblivia Deoxys Collection", "Pokemon Ranch Collection", "KOR Events Collection"};
+	wchar_t* entries[] = {i18n(S_GRAPHIC_MASSINJECTOR_XD_COLLECTION), i18n(S_GRAPHIC_MASSINJECTOR_COLOSSEUM_COLLECTION), i18n(S_GRAPHIC_MASSINJECTOR_10TH_ANNIV_COLLECTION), i18n(S_GRAPHIC_MASSINJECTOR_N_COLLECTION), i18n(S_GRAPHIC_MASSINJECTOR_ENTREE_FOREST_COLLECTION), i18n(S_GRAPHIC_MASSINJECTOR_DREAM_RADAR_COLLECTION), i18n(S_GRAPHIC_MASSINJECTOR_LIVING_DEX), i18n(S_GRAPHIC_MASSINJECTOR_OBLIVIA_DEOXYS_COLLECTION), i18n(S_GRAPHIC_MASSINJECTOR_PKMN_RANCH_COLLECTION), i18n(S_GRAPHIC_MASSINJECTOR_KOR_EVENTS_COLLECTION)};
 	int boxes[] = {3, 2, 1, 1, 1, 1, 27, 1, 1, 1};
 	
-	char* message = (char*)malloc(30 * sizeof(char));
-	snprintf(message, 30, "%d boxes will be replaced.", boxes[currentEntry]);
+	wchar_t* message = (wchar_t*)malloc(30 * sizeof(wchar_t));
+	swprintf(message, 30, i18n(S_GRAPHIC_MASSINJECTOR_MESSAGE_REPLACE_BOXES), boxes[currentEntry]);
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		printMenuTop();
-		printTitle("Mass Injector");
+		printTitle(i18n(S_GRAPHIC_MASSINJECTOR_TITLE));
 		
 		for (int i = 0; i < 5; i++) {
 			if (i == currentEntry)
@@ -1709,7 +1820,7 @@ void printMassInjector(int currentEntry) {
 			else
 				sf2d_draw_texture(eventMenuTopBar, 18, y);
 			
-			sftd_draw_text(fontBold12, 18 + (182 - sftd_get_text_width(fontBold12, 12, entries[i])) / 2, y + 10, (i == currentEntry) ? DARKBLUE : YELLOW, 12, entries[i]);
+			sftd_draw_wtext(fontBold12, 18 + (182 - sftd_get_wtext_width(fontBold12, 12, entries[i])) / 2, y + 10, (i == currentEntry) ? DARKBLUE : YELLOW, 12, entries[i]);
 			
 			y += 37;
 		}
@@ -1721,7 +1832,7 @@ void printMassInjector(int currentEntry) {
 			else
 				sf2d_draw_texture(eventMenuTopBar, 200, y);
 			
-			sftd_draw_text(fontBold12, 200 + (182 - sftd_get_text_width(fontBold12, 12, entries[i])) / 2, y + 10, (i == currentEntry) ? DARKBLUE : YELLOW, 12, entries[i]);
+			sftd_draw_wtext(fontBold12, 200 + (182 - sftd_get_wtext_width(fontBold12, 12, entries[i])) / 2, y + 10, (i == currentEntry) ? DARKBLUE : YELLOW, 12, entries[i]);
 			
 			y += 37;
 		}
@@ -1729,8 +1840,8 @@ void printMassInjector(int currentEntry) {
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		printMenuBottom();
-		sftd_draw_text(fontBold12, (320 - sftd_get_text_width(fontBold12, 12, message)) / 2, 12, LIGHTBLUE, 12, message);
-		printBottomIndications("Press START to inject, B to exit.");
+		sftd_draw_wtext(fontBold12, (320 - sftd_get_wtext_width(fontBold12, 12, message)) / 2, 12, LIGHTBLUE, 12, message);
+		printBottomIndications(i18n(S_GRAPHIC_MASSINJECTOR_INDICATION));
 	pksm_end_frame();
 	sf2d_swapbuffers();
 	
@@ -1738,7 +1849,7 @@ void printMassInjector(int currentEntry) {
 }
 
 void printSettings(int box) {
-	char *menu[] = {"Bank Size:                   ", "Backup Save", "Backup Bank"};
+	wchar_t *menu[] = {i18n(S_GRAPHIC_SETTINGS_BANK_SIZE), i18n(S_GRAPHIC_SETTINGS_BACKUP_SAVE), i18n(S_GRAPHIC_SETTINGS_BACKUP_BANK)};
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		drawMenuTop(0);
 	pksm_end_frame();
@@ -1748,7 +1859,7 @@ void printSettings(int box) {
 
 		for (int i = 0; i < 3; i++) {
 			sf2d_draw_texture(menuBar, (320 - menuBar->width) / 2, 60 + i * (menuBar->height));
-			sftd_draw_text(fontBold15, (320 - sftd_get_text_width(fontBold15, 15, menu[i])) / 2, 58 + (menuBar->height - 18) / 2 + i * (menuBar->height), DARKBLUE, 15, menu[i]);
+			sftd_draw_wtext(fontBold15, (320 - sftd_get_wtext_width(fontBold15, 15, menu[i])) / 2, 58 + (menuBar->height - 18) / 2 + i * (menuBar->height), DARKBLUE, 15, menu[i]);
 		}
 		
 		sf2d_draw_texture(miniBox, 189, 64);
@@ -1759,8 +1870,7 @@ void printSettings(int box) {
 		snprintf(size, 5, "%d", box);
 		sftd_draw_text(fontBold11, 189 + (36 - (sftd_get_text_width(fontBold11, 11, size))) / 2, 68, WHITE, 11, size);
 		free(size);
-
-		sftd_draw_text(fontBold9, 85, 225, LIGHTBLUE, 9, "Tap the number to change size.");
+		printBottomIndications(i18n(S_GRAPHIC_SETTINGS_INDICATION));
 	pksm_end_frame();
 	sf2d_swapbuffers();
 }
@@ -1774,130 +1884,130 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 	switch (byte) {
 		case 0x08 :
 		case 0x09 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Species: #%d - %s", getPokedexNumber(pkmn), (char*)personal.species[getPokedexNumber(pkmn)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_SPECIES), getPokedexNumber(pkmn), listSpecies.items[getPokedexNumber(pkmn)]);
 			break;
 		case 0x0A :
 		case 0x0B :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Held Item: #%d - %s", getItem(pkmn), items[getItem(pkmn)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_ITEM), getItem(pkmn), items[getItem(pkmn)]);
 			break;
 		case 0x0C :
 		case 0x0D :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "TID: %d", getOTID(pkmn));
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_TID), getOTID(pkmn));
 			sftd_draw_textf(fontBold12, x, y + 16, LIGHTBLUE, 12, "Gen7 TID: %d", (getOTID(pkmn) + getSOTID(pkmn)*65536) % 1000000);
 			break;
 		case 0x0E :
 		case 0x0F :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "SID: %d", getSOTID(pkmn));
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_SID), getSOTID(pkmn));
 			break;
 		case 0x14 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Ability: %s", abilities[getAbility(pkmn)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ABILITY), abilities[getAbility(pkmn)]);
 			break;
 		case 0x1C :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Nature: %s", natures[getNature(pkmn)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_NATURE), natures[getNature(pkmn)]);
 			break;
 		case 0x1D : {
-			char* entries[] = { "Fateful Encounter flag" };
-			int i = sftd_get_text_width(fontBold12, 12, "Gender: ");
-			sftd_draw_text(fontBold12, xribbon + 27, y, LIGHTBLUE, 12, entries[0]);
+			wchar_t* entries[] = { i18n(S_GRAPHIC_HEXEDITOR_FATEFUL_ENCOUNTER_FLAG) };
+			int i = sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_HEXEDITOR_GENDER));
+			sftd_draw_wtext(fontBold12, xribbon + 27, y, LIGHTBLUE, 12, entries[0]);
 			sf2d_draw_rectangle(xribbon, y, 13, 13, (pkmn[byte] & 1) ? BUTTONGREEN : BUTTONRED);
-			sftd_draw_text(fontBold12, x, y + 17, LIGHTBLUE, 12, "Gender: ");
+			sftd_draw_wtext(fontBold12, x, y + 17, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_GENDER));
 			if (getGender(pkmn) == 0)
-				sftd_draw_text(fontBold12, x + i, y + 17, LIGHTBLUE, 12, "male");
+				sftd_draw_wtext(fontBold12, x + i, y + 17, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_GENDER_MALE));
 			else if (getGender(pkmn) == 1)
-				sftd_draw_text(fontBold12, x + i, y + 17, LIGHTBLUE, 12, "female");
+				sftd_draw_wtext(fontBold12, x + i, y + 17, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_GENDER_FEMALE));
 			else
-				sftd_draw_text(fontBold12, x + i, y + 17, LIGHTBLUE, 12, "genderless");
-			sftd_draw_textf(fontBold12, x, y + 17 * 2, LIGHTBLUE, 12, "Alternative Form: #%d", pkmn[byte] >> 3);
+				sftd_draw_wtext(fontBold12, x + i, y + 17, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_GENDER_GENDERLESS));
+			sftd_draw_wtextf(fontBold12, x, y + 17 * 2, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ALTERNATIVE_FORM), pkmn[byte] >> 3);
 			break;
 		}
 		case 0x1E :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "HP EV: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_EV_HP), pkmn[byte]);
 			break;
 		case 0x1F : 
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "ATK EV: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_EV_ATK), pkmn[byte]);
 			break;
 		case 0x20 : 
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "DEF EV: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_EV_DEF), pkmn[byte]);
 			break;	
 		case 0x21 : 
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "SPE EV: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_EV_SPE), pkmn[byte]);
 			break;
 		case 0x22 : 
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "SPA EV: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_EV_SPA), pkmn[byte]);
 			break;	
 		case 0x23 : 
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "SPD EV: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_EV_SPD), pkmn[byte]);
 			break;	
 		case 0x24 : 
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Contest Value Cool: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_CONTEST_VALUE_COOL), pkmn[byte]);
 			break;	
 		case 0x25 : 
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Contest Value Beauty: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_CONTEST_VALUE_BEAUTY), pkmn[byte]);
 			break;	
 		case 0x26 : 
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Contest Value Cute: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_CONTEST_VALUE_CUTE), pkmn[byte]);
 			break;	
 		case 0x27 : 
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Contest Value Smart: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_CONTEST_VALUE_SMART), pkmn[byte]);
 			break;	
 		case 0x28 : 
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Contest Value Tough: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_CONTEST_VALUE_TOUGH), pkmn[byte]);
 			break;	
 		case 0x29 : 
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Contest Value Sheen: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_CONTEST_VALUE_SHEEN), pkmn[byte]);
 			break;
 		case 0x30 : {
-			char* entries[] = {"Champion Kalos", "Champion G3 Hoenn", "Champion Sinnoh", "Best Friends", "Training", "Skillful Battler", "Battler Expert", "Effort"};
+			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_KALOS, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_G3_HOENN, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_SINNOH, S_GRAPHIC_HEXEDITOR_RIBBON_BEST_FRIENDS, S_GRAPHIC_HEXEDITOR_RIBBON_TRAINING,S_GRAPHIC_HEXEDITOR_RIBBON_SKILLFUL_BATTLER, S_GRAPHIC_HEXEDITOR_RIBBON_BATTLER_EXPERT, S_GRAPHIC_HEXEDITOR_RIBBON_EFFORT };
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_text(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, entries[i]);
+				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
 				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 0, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
 		case 0x31 : {
-			char* entries[] = {"Alert", "Shock", "Downcast", "Careless", "Relax", "Snooze", "Smile", "Gorgeous"};
+			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_ALERT, S_GRAPHIC_HEXEDITOR_RIBBON_SHOCK, S_GRAPHIC_HEXEDITOR_RIBBON_DOWNCAST, S_GRAPHIC_HEXEDITOR_RIBBON_CARELESS, S_GRAPHIC_HEXEDITOR_RIBBON_RELAX, S_GRAPHIC_HEXEDITOR_RIBBON_SNOOZE, S_GRAPHIC_HEXEDITOR_RIBBON_SMILE, S_GRAPHIC_HEXEDITOR_RIBBON_GORGEOUS };
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_text(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, entries[i]);
+				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
 				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 1, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
 		case 0x32 : {
-			char* entries[] = {"Royal", "Gorgeous Royal", "Artist", "Footprint", "Record", "Legend", "Country", "National"};
+			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_ROYAL, S_GRAPHIC_HEXEDITOR_RIBBON_GORGEOUS_ROYAL, S_GRAPHIC_HEXEDITOR_RIBBON_ARTIST, S_GRAPHIC_HEXEDITOR_RIBBON_FOOTPRINT, S_GRAPHIC_HEXEDITOR_RIBBON_RECORD, S_GRAPHIC_HEXEDITOR_RIBBON_LEGEND, S_GRAPHIC_HEXEDITOR_RIBBON_COUNTRY, S_GRAPHIC_HEXEDITOR_RIBBON_NATIONAL };
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_text(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, entries[i]);
+				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
 				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 2, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
 		case 0x33 : {
-			char* entries[] = {"Earth", "World", "Classic", "Premier", "Event", "Birthday", "Special", "Souvenir"};
+			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_EARTH, S_GRAPHIC_HEXEDITOR_RIBBON_WORLD, S_GRAPHIC_HEXEDITOR_RIBBON_CLASSIC, S_GRAPHIC_HEXEDITOR_RIBBON_PREMIER, S_GRAPHIC_HEXEDITOR_RIBBON_EVENT, S_GRAPHIC_HEXEDITOR_RIBBON_BIRTHDAY, S_GRAPHIC_HEXEDITOR_RIBBON_SPECIAL, S_GRAPHIC_HEXEDITOR_RIBBON_SOUVENIR };
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_text(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, entries[i]);
+				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
 				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 3, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
 		case 0x34 : {
-			char* entries[] = {"Wishing", "Champion Battle", "Champion Regional", "Champion National", "Champion World", "-", "-", "Champion G6 Hoenn"};
+			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_WISHING, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_BATTLE, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_REGIONAL, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_NATIONAL, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_WORLD, S_GRAPHIC_HEXEDITOR_RIBBON_38, S_GRAPHIC_HEXEDITOR_RIBBON_39, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_G6_HOENN };
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_text(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, entries[i]);
+				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
 				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 4, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
 		case 0x35 : {
-			char* entries[] = {"Contest Star", "Master Coolness", "Master Beauty", "Master Cuteness", "Master Cleverness", "Master Toughness", "Champion Alola", "Battle Royale"};
+			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_CONTEST_STAR, S_GRAPHIC_HEXEDITOR_RIBBON_MASTER_COOLNESS, S_GRAPHIC_HEXEDITOR_RIBBON_MASTER_BEAUTY, S_GRAPHIC_HEXEDITOR_RIBBON_MASTER_CUTENESS, S_GRAPHIC_HEXEDITOR_RIBBON_MASTER_CLEVERNESS, S_GRAPHIC_HEXEDITOR_RIBBON_MASTER_TOUGHNESS, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_ALOLA, S_GRAPHIC_HEXEDITOR_RIBBON_BATTLE_ROYALE };
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_text(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, entries[i]);
+				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
 				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 5, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
 		case 0x36 : {
-			char* entries[] = {"Battle Tree Great", "Battle Tree Master", "-", "-", "-", "-", "-", "-"};
+			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_BATTLE_TREE_GREAT, S_GRAPHIC_HEXEDITOR_RIBBON_BATTLE_TREE_MASTER, S_GRAPHIC_HEXEDITOR_RIBBON_51, S_GRAPHIC_HEXEDITOR_RIBBON_52, S_GRAPHIC_HEXEDITOR_RIBBON_53, S_GRAPHIC_HEXEDITOR_RIBBON_54, S_GRAPHIC_HEXEDITOR_RIBBON_55, S_GRAPHIC_HEXEDITOR_RIBBON_56 };
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_text(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, entries[i]);
+				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
 				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 6, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
@@ -1927,70 +2037,70 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0x56 :
 		case 0x57 :
 			getNickname(pkmn, string);
-			sftd_draw_text(fontBold12, x, y, LIGHTBLUE, 12, "Nickname: ");
-			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, x + sftd_get_text_width(fontBold12, 12, "Nickname: "), y, LIGHTBLUE, 12, (wchar_t*)string);
+			sftd_draw_wtext(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_NICKNAME));
+			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, x + sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_HEXEDITOR_NICKNAME)), y, LIGHTBLUE, 12, (wchar_t*)string);
 			break;
 		case 0x5A :
 		case 0x5B :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 1: #%d - %s", getMove(pkmn, 0), moves[getMove(pkmn, 0)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE1), getMove(pkmn, 0), moves[getMove(pkmn, 0)]);
 			break;
 		case 0x5C :
 		case 0x5D :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 2: #%d - %s", getMove(pkmn, 1), moves[getMove(pkmn, 1)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE2), getMove(pkmn, 1), moves[getMove(pkmn, 1)]);
 			break;
 		case 0x5E :
 		case 0x5F :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 3: #%d - %s", getMove(pkmn, 2), moves[getMove(pkmn, 2)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE3), getMove(pkmn, 2), moves[getMove(pkmn, 2)]);
 			break;
 		case 0x60 :
 		case 0x61 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 4: #%d - %s", getMove(pkmn, 3), moves[getMove(pkmn, 3)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE4), getMove(pkmn, 3), moves[getMove(pkmn, 3)]);
 			break;
 		case 0x62 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 1 PP: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE1_PP), pkmn[byte]);
 			break;
 		case 0x63 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 2 PP: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE2_PP), pkmn[byte]);
 			break;
 		case 0x64 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 3 PP: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE3_PP), pkmn[byte]);
 			break;
 		case 0x65 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 4 PP: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE4_PP), pkmn[byte]);
 			break;
 		case 0x66 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 1 PP Up: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE1_PPUP), pkmn[byte]);
 			break;
 		case 0x67 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 2 PP Up: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE2_PPUP), pkmn[byte]);
 			break;
 		case 0x68 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 3 PP Up: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE3_PPUP), pkmn[byte]);
 			break;
 		case 0x69 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Move 4 PP Up: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE4_PPUP), pkmn[byte]);
 			break;
 		case 0x6A :
 		case 0x6B :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 1: #%d - %s", getEggMove(pkmn, 0), moves[getEggMove(pkmn, 0)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_RELEARN_MOVE1), getEggMove(pkmn, 0), moves[getEggMove(pkmn, 0)]);
 			break;
 		case 0x6C :
 		case 0x6D :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 2: #%d - %s", getEggMove(pkmn, 1), moves[getEggMove(pkmn, 1)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_RELEARN_MOVE2), getEggMove(pkmn, 1), moves[getEggMove(pkmn, 1)]);
 			break;
 		case 0x6E :
 		case 0x6F :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 3: #%d - %s", getEggMove(pkmn, 2), moves[getEggMove(pkmn, 2)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_RELEARN_MOVE3), getEggMove(pkmn, 2), moves[getEggMove(pkmn, 2)]);
 			break;
 		case 0x70 :
 		case 0x71 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Relearn Move 4: #%d - %s", getEggMove(pkmn, 3), moves[getEggMove(pkmn, 3)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_RELEARN_MOVE4), getEggMove(pkmn, 3), moves[getEggMove(pkmn, 3)]);
 			break;
 		case 0x77: {
-			char* entries[] = { "is Nicknamed", "is Egg" };
-			sftd_draw_text(fontBold12, xribbon + 27, y, LIGHTBLUE, 12, entries[0]);
+			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_IS_NICKNAMED, S_GRAPHIC_HEXEDITOR_IS_EGG };
+			sftd_draw_wtext(fontBold12, xribbon + 27, y, LIGHTBLUE, 12, i18n(entries[0]));
 			sf2d_draw_rectangle(xribbon, y, 13, 13, (isNicknameF(pkmn)) ? BUTTONGREEN : BUTTONRED);
-			sftd_draw_text(fontBold12, xribbon + 27, y + 17, LIGHTBLUE, 12, entries[1]);
+			sftd_draw_wtext(fontBold12, xribbon + 27, y + 17, LIGHTBLUE, 12, i18n(entries[1]));
 			sf2d_draw_rectangle(xribbon, y + 17, 13, 13, (isEgg(pkmn)) ? BUTTONGREEN : BUTTONRED);
 			break;
 		}
@@ -2019,29 +2129,29 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0x8E :
 		case 0x8F :	
 			getHTName(pkmn, string);
-			sftd_draw_text(fontBold12, x, y, LIGHTBLUE, 12, "Held Trainer name: ");
-			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, x + sftd_get_text_width(fontBold12, 12, "Held Trainer name: "), y, LIGHTBLUE, 12, (wchar_t*)string);
+			sftd_draw_wtext(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_NAME));
+			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, x + sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_NAME)), y, LIGHTBLUE, 12, (wchar_t*)string);
 			break;
 		case 0xA2 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Held Trainer Friendship: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_FRIENDSHIP), pkmn[byte]);
 			break;
 		case 0xA3 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Held Trainer Affection: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_AFFECTION), pkmn[byte]);
 			break;
 		case 0xA4 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Held Trainer Intensity: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_INTENSITY), pkmn[byte]);
 			break;
 		case 0xA5 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Held Trainer Memory: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_MEMORY), pkmn[byte]);
 			break;	
 		case 0xA6 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Held Trainer Feeling: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_FEELING), pkmn[byte]);
 			break;
 		case 0xAE :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Fullness: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_FULLNESS), pkmn[byte]);
 			break;	
 		case 0xAF :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Enjoyment: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ENJOYMENT), pkmn[byte]);
 			break;
 		case 0xB0 :
 		case 0xB1 :
@@ -2068,45 +2178,45 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0xC6 :
 		case 0xC7 :
 			getOT(pkmn, string);
-			sftd_draw_text(fontBold12, x, y, LIGHTBLUE, 12, "Original Trainer Name: ");
-			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, x + sftd_get_text_width(fontBold12, 12, "Original Trainer Name: "), y, LIGHTBLUE, 12, (wchar_t*)string);
+			sftd_draw_wtext(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_NAME));
+			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, x + sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_NAME)), y, LIGHTBLUE, 12, (wchar_t*)string);
 			break;
 		case 0xCA :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Original Trainer Friendship: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_FRIENDSHIP), pkmn[byte]);
 			break;
 		case 0xCB :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Original Trainer Affection: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_AFFECTION), pkmn[byte]);
 			break;
 		case 0xCC :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Original Trainer Intensity: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_INTENSITY), pkmn[byte]);
 			break;
 		case 0xCD :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Original Trainer Memory: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_MEMORY), pkmn[byte]);
 			break;	
 		case 0xD0 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Original Trainer Feeling: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_FEELING), pkmn[byte]);
 			break;
 		case 0xD1 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Egg Year: %d", 2000 + pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_EGG_YEAR), 2000 + pkmn[byte]);
 			break;
 		case 0xD2 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Egg Month: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_EGG_MONTH), pkmn[byte]);
 			break;
 		case 0xD3 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Egg Day: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_EGG_DAY), pkmn[byte]);
 			break;
 		case 0xD4 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Met Year: %d", 2000 + pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MET_YEAR), 2000 + pkmn[byte]);
 			break;
 		case 0xD5 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Met Month: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MET_MONTH), pkmn[byte]);
 			break;
 		case 0xD6 :
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Met Day: %d", pkmn[byte]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MET_DAY), pkmn[byte]);
 			break;
 		case 0xDD : {
-			sftd_draw_textf(fontBold12, x, y, LIGHTBLUE, 12, "Met Level: %d", (pkmn[byte] & 0x7f));
-			sftd_draw_textf(fontBold12, xribbon + 27, y + 17, LIGHTBLUE, 12, ": Original Trainer Gender");
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MET_LEVEL), (pkmn[byte] & 0x7f));
+			sftd_draw_wtextf(fontBold12, xribbon + 27, y + 17, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_GENDER));
 			if (getOTGender(pkmn) == 0)
 				sf2d_draw_texture(male, xribbon + 10, y + 17 + 2);
 			else if (getOTGender(pkmn) == 1)
@@ -2114,9 +2224,9 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			break;
 		}
 		case 0xDE : {
-			char* entries[] = { "HP Hyper Trained", "ATK Hyper Trained", "DEF Hyper Trained", "SP.ATK Hyper Trained", "SP.DEF Hyper Trained", "SPEED Hyper Trained" };
+			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_HYPER_TRAINED_HP, S_GRAPHIC_HEXEDITOR_HYPER_TRAINED_ATK, S_GRAPHIC_HEXEDITOR_HYPER_TRAINED_DEF, S_GRAPHIC_HEXEDITOR_HYPER_TRAINED_SPATK, S_GRAPHIC_HEXEDITOR_HYPER_TRAINED_SPDEF, S_GRAPHIC_HEXEDITOR_HYPER_TRAINED_SPEED };
 			for (int i = 0; i < 6; i++) {
-				sftd_draw_text(fontBold12, xribbon + 27, y + 17 * i, LIGHTBLUE, 12, entries[i]);
+				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17 * i, LIGHTBLUE, 12, i18n(entries[i]));
 				sf2d_draw_rectangle(xribbon, y + 17 * i, 13, 13, (getHTi(pkmn, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
