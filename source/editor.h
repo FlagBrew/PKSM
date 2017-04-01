@@ -127,6 +127,7 @@ u16 getSaveTID(u8* mainbuf, int game);
 u16 getSaveSID(u8* mainbuf, int game);
 u16 getSaveTSV(u8* mainbuf, int game);
 u32 getSaveSeed(u8* mainbuf, int game, int index);
+u8 getSaveLanguage(u8* mainbuf, int game);
 
 u32 getMoney(u8* mainbuf, int game);
 u16 getBP(u8* mainbuf, int game);
@@ -140,7 +141,7 @@ void setNicknameZ(u8* pkmn, char* nick, int dst);
 void setShiny(u8* pkmn, const bool shiny);
 void setWC(u8* mainbuf, u8* wc6buf, int game, int i, int nInjected[]);
 void setWC4(u8* mainbuf, u8* wc6buf, int game, int i, int nInjected[], int GBO);
-void setLanguage(u8* mainbuf, int game, int i);
+void setSaveLanguage(u8* mainbuf, int game, int i);
 void setFriendship(u8* pkmn, const int value);
 void setHTFriendship(u8* pkmn, const int value);
 void setOTFriendship(u8* pkmn, const int value);

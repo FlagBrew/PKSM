@@ -156,7 +156,7 @@ int checkMultipleWCX(u8* mainbuf, int game, int i, int langCont, int nInjected[]
 			fclose(fptr);
 
 			if (adapt)
-				setLanguage(mainbuf, game, langCont);
+				setSaveLanguage(mainbuf, game, langCont);
 
 			setWC(mainbuf, wcxbuf, game, i, nInjected);
 
@@ -224,7 +224,7 @@ int checkMultipleWCX(u8* mainbuf, int game, int i, int langCont, int nInjected[]
 		fclose(fptr);
 
 		if (adapt)
-			setLanguage(mainbuf, game, langCont);
+			setSaveLanguage(mainbuf, game, langCont);
 
 		setWC(mainbuf, wcxbuf, game, i, nInjected);
 
@@ -555,7 +555,7 @@ void eventDatabase7(u8* mainbuf, int game) {
 						findFreeLocationWC(mainbuf, game, nInjected);
 
 					if (adapt)
-						setLanguage(mainbuf, game, langSelected);
+						setSaveLanguage(mainbuf, game, langSelected);
 
 					setWC(mainbuf, wcxbuf, game, i, nInjected);
 
@@ -877,7 +877,7 @@ void eventDatabase6(u8* mainbuf, int game) {
 						findFreeLocationWC(mainbuf, game, nInjected);
 
 					if (adapt)
-						setLanguage(mainbuf, game, langSelected);
+						setSaveLanguage(mainbuf, game, langSelected);
 
 					setWC(mainbuf, wcxbuf, game, i, nInjected);
 

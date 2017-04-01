@@ -1189,10 +1189,28 @@ void setWC4(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[], int GBO) {
 		nInjected[0] = 0;
 }
 
-void setLanguage(u8* mainbuf, int game, int i) {
-	u8 langValues[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x07, 0x08, 0x09, 0x0A};
-	memcpy(&mainbuf[(game < 4) ? 0x1402D : 0x1235], &langValues[i], sizeof(u8));
+int getSaveLanguageAddress(u8* mainbuf, int game) {
+	int address = 0;
+	if (game == GAME_X || game == GAME_Y)
+		address = 0x14000 + 0x2D;
+	else if (game == GAME_OR || game == GAME_AS)
+		address = 0x14000 + 0x2D;
+	else if (game == GAME_SUN || game == GAME_MOON)
+		address = 0x01200 + 0x35;
+
+	return address;
 }
+
+void setSaveLanguage(u8* mainbuf, int game, int i) {
+	u8 langValues[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x07, 0x08, 0x09, 0x0A};
+	memcpy(&mainbuf[getSaveLanguageAddress(mainbuf, game)], &langValues[i], sizeof(u8));
+}
+
+
+u8 getSaveLanguage(u8* mainbuf, int game) {
+	return mainbuf[getSaveLanguageAddress(mainbuf, game)];
+}
+
 
 void setPokerus(u8* pkmn) {
 	*(pkmn + 0x2B) = 0x11;
@@ -1201,6 +1219,15 @@ void setPokerus(u8* pkmn) {
 void saveFileEditor(u8* mainbuf, int game) {
 	int currentEntry = 0;
 	int langCont = 0;
+	u8 langValues[] = {0x01,  0x02,  0x03,  0x04,  0x05,  0x07,  0x08,  0x09,  0x0A};
+	u8 langSave = getSaveLanguage(mainbuf, game);
+
+	for (int i = 0; i < 9; i++) {
+		if (langValues[i] == langSave) {
+			langCont = i;
+			break;
+		}
+	}
 
 	while(aptMainLoop()) {
 		hidScanInput();
@@ -1223,7 +1250,7 @@ void saveFileEditor(u8* mainbuf, int game) {
 		if (hidKeysDown() & KEY_START) {
 			switch (currentEntry) {
 				case 0 : {
-					setLanguage(mainbuf, game, langCont);
+					setSaveLanguage(mainbuf, game, langCont);
 					infoDisp(i18n(S_EDITOR_LANGUAGE_SET_SUCCESS));
 					break;
 				}
