@@ -168,6 +168,15 @@ void settingsMenu(u8* mainbuf, int game) {
 	u32 box = size / (30 * PKMNLENGTH);
 	u32 boxmax = 1000;
 
+	// getting language
+	FILE *conf = fopen("sdmc:/3ds/data/PKSM/i18n.bin", "rt");
+	fseek(conf, 0, SEEK_END);
+	u8 localeConfig[1];
+	rewind(conf);
+	fread(localeConfig, 1, 1, conf);
+	fclose(conf);
+	int language = localeConfig[0];
+		
 	while (aptMainLoop() && !operationDone) {
 		hidScanInput();
 		touchPosition touch;
@@ -184,6 +193,14 @@ void settingsMenu(u8* mainbuf, int game) {
 			if (touch.px > 228 && touch.px < 245 && touch.py > 65 && touch.py < 83) {
 				if (box < boxmax) box++;
 				else if (box == boxmax) box = 2;
+			}
+			
+			if (touch.px > 281 && touch.px < 317 && touch.py > 188 && touch.py < 214) {
+				language = (language + 1) % 5 + 1;
+				localeConfig[0] = language;
+				FILE *conf = fopen("sdmc:/3ds/data/PKSM/i18n.bin", "wb");
+				fwrite(localeConfig, 1, 1, conf);
+				fclose(conf);
 			}
 		}
 		
@@ -290,7 +307,7 @@ void settingsMenu(u8* mainbuf, int game) {
 				operationDone = true;
 			}
 		}
-		printSettings(box);
+		printSettings(box, language);
 	}
 }
 

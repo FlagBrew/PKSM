@@ -74,7 +74,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 void printMassInjector(int currentEntry);
 void printElement(u8* pkmn, int game, u16 n, int x, int y);
 void printElementBlend(u8* pkmn, int game, u16 n, int x, int y, u32 color);
-void printSettings(int box);
+void printSettings(int box, int language);
 void infoViewer(u8* pkmn, int game);
 void printfHexEditorInfo(u8* pkmn, int byte);
 

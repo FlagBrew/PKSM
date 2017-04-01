@@ -711,4 +711,4 @@ void debuglogf(const char* format, ...);
 wchar_t* i18n(AppTextCode code);
 void i18n_init();
 void i18n_initTextSwkbd(SwkbdState* swkbd, AppTextCode leftButtonTextCode, AppTextCode rightButtonTextCode, AppTextCode hintTextCode);
-
+void i18n_exit();

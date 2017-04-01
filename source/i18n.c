@@ -426,7 +426,25 @@ void i18n_load(u8 language) {
 
 void i18n_init() {
 	u8 language = 0;
-	CFGU_GetSystemLanguage(&language);
+	if (!checkFile("sdmc:/3ds/data/PKSM/i18n.bin")) {
+		CFGU_GetSystemLanguage(&language);
+		u8 localeConfig[1];
+		localeConfig[0] = language;
+		
+		FILE *conf = fopen("sdmc:/3ds/data/PKSM/i18n.bin", "wb");
+		fwrite(localeConfig, 1, 1, conf);
+		fclose(conf);
+	} else {
+		FILE *conf = fopen("sdmc:/3ds/data/PKSM/i18n.bin", "rt");
+		fseek(conf, 0, SEEK_END);
+		u8 localeConfig[1];
+		rewind(conf);
+		fread(localeConfig, 1, 1, conf);
+		fclose(conf);
+	
+		language = localeConfig[0];
+	}
+	
 	#ifdef DEBUG_I18N_LANG
 		language = (u8)DEBUG_I18N_LANG;
 	#endif
@@ -466,7 +484,6 @@ void i18n_initTextSwkbd(SwkbdState* swkbd, AppTextCode leftButtonTextCode, AppTe
 	rightButtonText[SWKBD_MAX_BUTTON_TEXT_LEN] = '\0';
 	hintText[SWKBD_MAX_HINT_TEXT_LEN] = '\0';
 
-
 	int sizeLeftButtonText = (int)utf32_to_utf8(leftButtonText, (uint32_t*)leftButtonWText, SWKBD_MAX_BUTTON_TEXT_LEN+1);
 	int sizeRightButtonText = (int)utf32_to_utf8(rightButtonText, (uint32_t*)rightButtonWText, SWKBD_MAX_BUTTON_TEXT_LEN+1);
 	int sizeHintText = (int)utf32_to_utf8(hintText, (uint32_t*)hintWText, SWKBD_MAX_HINT_TEXT_LEN+1);
@@ -478,4 +495,17 @@ void i18n_initTextSwkbd(SwkbdState* swkbd, AppTextCode leftButtonTextCode, AppTe
 	swkbdSetButton(swkbd, SWKBD_BUTTON_LEFT, (char*)leftButtonText, false);
 	swkbdSetButton(swkbd, SWKBD_BUTTON_RIGHT, (char*)rightButtonText, true);
 	swkbdSetHintText(swkbd, (char*)hintText);
+}
+
+void i18n_exit() {
+	free(i18n_files_loaded.abilities);
+	free(i18n_files_loaded.species);
+	free(i18n_files_loaded.natures);
+	free(i18n_files_loaded.moves);
+	free(i18n_files_loaded.items);
+	free(i18n_files_loaded.hp);
+	free(i18n_files_loaded.forms);
+	free(i18n_files_loaded.balls);
+	free(i18n_files_loaded.types);
+	free(i18n_files_loaded.app);
 }

@@ -111,8 +111,10 @@ void GUIElementsInit() {
 	init_font_cache();
 	freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_DONE));
 }
+
 int num_element = 1;
 int total_elements = 1;
+
 sf2d_texture *loadPNGInRAM(const char* filepath) {
 	wchar_t* str = malloc(sizeof(wchar_t*)*60);
 	swprintf(str, 60, i18n(S_GRAPHIC_GUI_ELEMENTS_SPECIFY_LOADING_DETAILS), num_element, total_elements);
@@ -121,6 +123,7 @@ sf2d_texture *loadPNGInRAM(const char* filepath) {
 	free(str);
 	return sfil_load_PNG_file(filepath, SF2D_PLACE_RAM);
 }
+
 void GUIElementsSpecify(int game) {
 	struct i18n_files languageSpecificFiles = i18n_getFilesPath();
 	num_element = 1;
@@ -1848,7 +1851,8 @@ void printMassInjector(int currentEntry) {
 	free(message);
 }
 
-void printSettings(int box) {
+void printSettings(int box, int language) {
+	char* langs[] = {"JP", "EN", "FR", "DE", "IT", "ES", "ZH", "KO", "NL", "PT", "RU", "TW"}; 
 	wchar_t *menu[] = {i18n(S_GRAPHIC_SETTINGS_BANK_SIZE), i18n(S_GRAPHIC_SETTINGS_BACKUP_SAVE), i18n(S_GRAPHIC_SETTINGS_BACKUP_BANK)};
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		drawMenuTop(0);
@@ -1865,11 +1869,12 @@ void printSettings(int box) {
 		sf2d_draw_texture(miniBox, 189, 64);
 		sf2d_draw_texture(minusButton, 169, 65);
 		sf2d_draw_texture(plusButton, 228, 65);
+		sf2d_draw_texture(miniBox, 281, 188);
+		sftd_draw_text(fontBold11, 281 + (36 - (sftd_get_text_width(fontBold11, 11, langs[language]))) / 2, 192, DARKBLUE, 11, langs[language]);
 		
-		char* size = (char*)malloc(5);
+		char size[5];
 		snprintf(size, 5, "%d", box);
 		sftd_draw_text(fontBold11, 189 + (36 - (sftd_get_text_width(fontBold11, 11, size))) / 2, 68, WHITE, 11, size);
-		free(size);
 		printBottomIndications(i18n(S_GRAPHIC_SETTINGS_INDICATION));
 	pksm_end_frame();
 	sf2d_swapbuffers();
