@@ -9,8 +9,8 @@ Chargement des objets
 Tri des objets
 Chargement des p. cachés
 Chargement des polices...
-Pré-chargement police de caractère #%i / %i
-Terminé!
+Préchargement police de caractère %i / %i
+Chargement initial terminé !
 Création de la banque...
 Sauvegarde de la banque...
 Relancez l'app!
@@ -26,9 +26,9 @@ Appuie sur A pour choisir un menu.
 Appuie sur START pour quitter.
 EDITEUR POKÉMON
 INFO SAUV.
-STOCKAGE SUPP.
-INJECTION AUTO.
-Sauvegarder modifs ?
+BANQUE
+GÉNÉRATION
+Enregistrer les modifications ?
 Appuie sur A pour confirmer.
 A pour confirmer, B pour annuler.
 Veuillez patienter.
@@ -53,26 +53,26 @@ Chargement de l'interface...
 Chargement image %i / %i
 Bank.bin a une taille incorrecte!
 Effacer la boîte sélectionnée ?
-Sauver les modifs de bank.bin ?
-Sauver les flags du Pokédex ?
+Enreg. les modif. de bank.bin ?
+Enreg. les entrées du Pokédex ?
 Boîte %lu / Case %lu
-Erreur durant l'ajout auto. !
-Ajout auto. effectué !
+Erreur durant l'ajout de la Carte M. !
+Carte Miracle ajoutée !
 Objet non dispo. sur XY !
-Sauver les flags PokéDex ?
+Enreg. les entrées du Pokédex ?
 Boîte %lu / Case %lu
-Pokémons de XD collection ajoutés !
-Pokémons de Colosseum col. ajoutés !
-Pokémons du 10ème anniv. ajoutés !
-Pokémons de N ajoutés !
-Pokémons de Entree Forest ajoutés !
-Pokémons du Dream Radar ajoutés !
-Tous les Pokémons existants ont été ajoutés !
-Pokémons du Set Deoxys ajoutés !
-Pokémons de My Pokemon Ranch ajoutés !
-Pokémons coréens ajoutés !
+Pkmns de Pkmn XD ajoutés !
+Pkmns de Colosseum ajoutés !
+Pkmns du 10ème anniv. ajoutés !
+Pkmns de N ajoutés !
+Pkmns du Heylink ajoutés !
+Pkmns du RAdar PKMN ajoutés !
+Pokédex National généré !
+Pkmns Oblivia Deoxys ajoutés !
+Pkmns de Pkmn Ranch ajoutés !
+Pkmns Events coréens ajoutés !
 La langue du jeu a été changée !
-La boîte cadeau mystère a été vidée !
+Cadeaux mystères effacés !
 Annuler
 OK
 Entrez le surnom du Pokémon
@@ -85,18 +85,18 @@ AUTRES
 Appuie sur START pour quitter.
 Crédits
 Appuie sur B pour revenir en arr.
-Event Database
+Liste des évènements
 Appuie sur A pour confirmer, B pour revenir en arr.
 Appuie sur START pour les ajouter, B pour revenir en arr.
 Appuie sur A pour sélectionner, B pour revenir en arr.
 Langues:
-Écraser WonderCard:
-Adapter langue à la WC:
-Ajouter la WC à la case:
+Écraser Carte Miracle:
+Adapter langue à la CM:
+Ajouter la CM à l'index:
 Éditeur de sauvegarde
 Langue:
-Effacer Cadeau Mystère
-START pour éditer, A pour changer, B pour quitter.
+Effacer Cadeaux Mystères
+START pour valider, A pour modifier, B pour quitter.
 Surnom:
 DO:
 Pokérus:
@@ -182,18 +182,18 @@ Boîte du jeu %d
 Y: VOIR
 VIDER BOÎTE
 RELÂCHER
-XD Collection
-Colosseum Collection
-10ème ann. Collection
-N's Collection
-Entree Forest Collection
-Dream Radar Collection
-Living Dex
-Oblivia Deoxys Collection
-Pokémon Ranch Collection
-KOR Events Collection
+Pokémon XD
+Pokémon Colosseum
+10ème anniversaire
+Pokémons de N
+Pokémons du Heylink
+RAdar Pokémon
+Pokédex National
+Oblivia Deoxys
+My Pokémon Ranch
+Events Corréens 
 %d boîtes vont être remplacés.
-Injection auto.
+Génération automatique de Pokémons
 Appuie sur START pour injecter, B pour quitter.
 Boxs banque:               
 Backup Jeu
@@ -480,7 +480,7 @@ Dernier Dresseur - Bonheur
 Dernier Dresseur - Affection
 Dernier Dresseur - Intensité
 Dernier Dresseur - Mémoire
-Dernier Dresseur - Sentiments
+Dernier Dresseur - Ressentiment
 Dernier Dresseur - TextVar, byte 1
 Dernier Dresseur - TextVar, byte 2
 Satiété
@@ -511,11 +511,11 @@ Dresseur d'Origine - Nom, byte 23
 Dresseur d'Origine - Nom, byte 24
 Dresseur d'Origine - Bonheur
 Dresseur d'Origine - Affection
-Dresseur d'Origine - Intensity
-Dresseur d'Origine - Memory
+Dresseur d'Origine - Intensité
+Dresseur d'Origine - Memoire
 Dresseur d'Origine - TextVar
-Dresseur d'Origine - Feeling
-Année d'éclosion de l'œuf: %d
+Dresseur d'Origine - Ressentiment
+Année d'éclosion de l'œuf
 Mois d'éclosion de l'œuf
 Jour d'éclosion de l'œuf
 Année de rencontre
