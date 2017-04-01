@@ -141,5 +141,5 @@ Default Magearna
 Colore Antico
 Default Pichu
 Spiky-Eared Pichu
-Default Mistigrix
+Default
 Femmina

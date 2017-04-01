@@ -372,10 +372,10 @@ Contest value Tough
 Contest value Sheen
 PokePelago Event Status flag
 Pokerus
-Super Train flag , byte 1
-Super Train flag , byte 2
-Super Train flag , byte 3
-Super Train flag , byte 4
+Super Train flag, byte 1
+Super Train flag, byte 2
+Super Train flag, byte 3
+Super Train flag, byte 4
 Ribbon flag, byte 1
 Ribbon flag, byte 2
 Ribbon flag, byte 3
