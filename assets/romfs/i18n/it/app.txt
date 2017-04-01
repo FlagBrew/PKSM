@@ -195,7 +195,7 @@ Raccolta eventi Koreani
 %d box saranno sovrascritti.
 Mass Injector
 Premi START per iniettare, B per uscire.
-Dimensione:                   
+Bank size:                   
 Backup salvataggio
 Backup storage
 Clicca il numero per cambiare dimensione.
