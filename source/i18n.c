@@ -25,6 +25,7 @@ static wchar_t* ACCENTED_CHAR_REPLACE_TO = L"AAAAAAECEEEEIIIIDNOOOOOx0UUUUYPsaaa
 const int MAXLENGTH_LINE_TRANSLATION = 255;
 const int DEFAULT_LANG = 1;
 const int MAXLENGTH_PATH = 255;
+const int MAXLENGTH_NAMES_POKEMON = 32;
 
 static char* LANG_PREFIX[] = { "jp", "en", "fr", "de", "it", "es", "zh", "ko", "nl", "pt", "ru", "tw" };
 
@@ -206,78 +207,75 @@ void i18n_free_ArrayUTF32(ArrayUTF32 *arr) {
 		free(arr->items[i]);
 	}
 	free(arr->items);
+
+	if (arr->sorted) {
+		free(arr->sortedItems);
+		free(arr->sortedItemsID);
+	}
 }
 
 /**
  * Replace the character Œ by Oe for string comparison
  */
-wchar_t* UTF32_ReplaceOE(const wchar_t *str) {
+void UTF32_ReplaceOE(const wchar_t *str, wchar_t *replacement) {
 	bool replaced = true;
-	wchar_t *newstr = malloc(wcslen(str)*sizeof(wchar_t)+1);
-	wcscpy(newstr, str);
-	newstr[wcslen(str)] = '\0';
+	wchar_t tempstr[MAXLENGTH_NAMES_POKEMON];
+
+	wcscpy(replacement, str);
+	replacement[wcslen(str)] = '\0';
 
 	while (replaced) {
 		replaced = false;
-		for (int i = 0; i < wcslen(newstr); i++) {
-			wchar_t* newstr2;
-			if (newstr[i] == L'Œ') {
-				newstr2 = malloc((wcslen(newstr)+2)*sizeof(wchar_t));
-				wcsncpy(newstr2, newstr, i);
-				newstr2[i] = L'O';
-				newstr2[i+1] = L'e';
-				wcscpy(newstr2+i+2, newstr+i+1);
-				newstr2[wcslen(newstr)+1] = '\0';
+		for (int i = 0; i < wcslen(replacement); i++) {
+			if (replacement[i] == L'Œ') {
+				wcsncpy(tempstr, replacement, i);
+				tempstr[i] = L'O';
+				tempstr[i+1] = L'e';
+				wcscpy(tempstr+i+2, replacement+i+1);
+				tempstr[wcslen(replacement)+1] = '\0';
 				replaced = true;
-			} else if (newstr[i] == L'œ') {
-				newstr2 = malloc((wcslen(newstr)+2)*sizeof(wchar_t));
-				wcsncpy(newstr2, newstr, i);
-				newstr2[i] = L'o';
-				newstr2[i+1] = L'e';
-				wcscpy(newstr2+i+2, newstr+i+1);
-				newstr2[wcslen(newstr)+1] = '\0';
+			} else if (replacement[i] == L'œ') {
+				wcsncpy(tempstr, replacement, i);
+				tempstr[i] = L'o';
+				tempstr[i+1] = L'e';
+				wcscpy(tempstr+i+2, replacement+i+1);
+				tempstr[wcslen(replacement)+1] = '\0';
 				replaced = true;
 			}
 			if (replaced) {
-				free(newstr);
-				newstr = newstr2;
+				wcscpy(replacement, tempstr);
 				break;
 			}
 		}
 	}
-	return newstr;
 }
 
 /**
  * Replace the accented characters by the normal ones for string comparison
  */
-wchar_t* UTF32_ReplaceAccentedChar(const wchar_t *str) {
+void UTF32_ReplaceAccentedChar(const wchar_t *str, wchar_t *replacement) {
 	wchar_t *from = ACCENTED_CHAR_REPLACE_FROM;
 	wchar_t *to   = ACCENTED_CHAR_REPLACE_TO;
 	int totalChars = 64;
 
-	wchar_t *newstr = malloc(wcslen(str)*sizeof(wchar_t)+1);
-	wcscpy(newstr, str);
-	newstr[wcslen(str)] = '\0';
+	wcscpy(replacement, str);
+	replacement[wcslen(str)] = '\0';
 
 	for (int i = 0; i < totalChars; i++) {
-		for (int j = 0; j < wcslen(newstr); j++) {
-			if (newstr[j] == from[i]) {
-				newstr[j] = to[i];
+		for (int j = 0; j < wcslen(str); j++) {
+			if (str[j] == from[i]) {
+				replacement[j] = to[i];
 			}
 		}
 	}
-	return newstr;
 }
 
 /**
  * Replace Œ and accented characters
  */
-wchar_t* UTF32_ReplaceAllComplexChars(const wchar_t *str) {
-	wchar_t* stringReplacedChar = UTF32_ReplaceAccentedChar(str);
-	wchar_t* stringReplacedCharAndOE = UTF32_ReplaceOE(stringReplacedChar);
-	free(stringReplacedChar);
-	return stringReplacedCharAndOE;
+void UTF32_ReplaceAllComplexChars(const wchar_t *str, wchar_t* replacement) {
+	UTF32_ReplaceAccentedChar(str, replacement);
+	UTF32_ReplaceOE(replacement, replacement);
 }
 
 /**
@@ -296,7 +294,7 @@ int ArrayUTF32_sort_cmp(const wchar_t *a,const wchar_t *b) {
 void ArrayUTF32_sort_starting_index_with_sort_func(ArrayUTF32 *arr, int index, int (*fsort)(const wchar_t *a,const wchar_t *b)) {
 	int nitems = arr->length;
 
-	// On initialise un nouveau tableau de pointeur, ainsi qu'un nouveau tableau d'ID si aucun sort n'a été effectué
+	// Allocating memory for pointers and array of ids if sorting have not been made yet
 	if (!arr->sorted) {
 		wchar_t** sortedItems = malloc(arr->length*sizeof(wchar_t*));
 		int* sortedItemsID = malloc(arr->length*sizeof(int));
@@ -310,12 +308,13 @@ void ArrayUTF32_sort_starting_index_with_sort_func(ArrayUTF32 *arr, int index, i
 		arr->sorted = true;
 	}
 
-
-	// On crée un tableau avec les caractères convertis, pour le trier par la suite
+	// Creating an array with the non-ASCII Latin characters converted in ASCII Latin characters to sort them correctly
 	wchar_t** convertedItems = malloc(arr->length*sizeof(wchar_t*));
 	for (int i = 0; i < arr->length; i++) {
 		wchar_t* item = arr->items[i];
-		convertedItems[i] = UTF32_ReplaceAllComplexChars(item);
+		wchar_t* convertedItem = malloc(MAXLENGTH_NAMES_POKEMON*sizeof(wchar_t));
+		UTF32_ReplaceAllComplexChars(item, convertedItem);
+		convertedItems[i] = convertedItem;
 	}
 
 	bool asort = true;
@@ -353,7 +352,6 @@ void ArrayUTF32_sort_starting_index_with_sort_func(ArrayUTF32 *arr, int index, i
 			}
 		}
 	}
-	// debuglogf("Setting sortedItems and freeing memory...\n");
 	for (int i = 0; i < arr->length; i++) {
 		int idSortedItem = arr->sortedItemsID[i];
 		wchar_t* item = arr->items[idSortedItem];
