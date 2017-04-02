@@ -201,7 +201,7 @@ AR搜寻器收藏
 点击数值改变大小.             
 是
 否
-Species: #%d - %ls
+种类: #%d - %ls
 携带物品: #%d - %ls
 训练家ID: %d
 里ID: %d
@@ -219,335 +219,335 @@ Species: #%d - %ls
 速度努力: %d
 特攻努力: %d
 特防努力: %d
-Contest Value Cool: %d
-Contest Value Beauty: %d
-Contest Value Cute: %d
-Contest Value Smart: %d
-Contest Value Tough: %d
-Contest Value Sheen: %d
-Champion Kalos
-Champion G3 Hoenn
-Champion Sinnoh
-Best Friends
-Training
-Skillful Battler
-Battler Expert
-Effort
-Alert
-Shock
-Downcast
-Careless
-Relax
-Snooze
-Smile
-Gorgeous
-Royal
-Gorgeous Royal
-Artist
-Footprint
-Record
-Legend
-Country
-National
-Earth
-World
-Classic
-Premier
-Event
-Birthday
-Special
-Souvenir
-Wishing
-Champion Battle
-Champion Regional
-Champion National
-Champion World
+华丽大赛帅气: %d
+华丽大赛美丽: %d
+华丽大赛可爱: %d
+华丽大赛聪明: %d
+华丽大赛强壮: %d
+华丽大赛光泽: %d
+卡洛斯冠军
+丰缘冠军(RSE)
+神奥冠军
+友谊
+苦练
+战技
+战王
+努力
+警告
+震惊
+低落
+疏忽
+放松
+小憩
+微笑
+光辉
+皇家
+光辉皇家
+肖像
+足迹
+记录
+传说
+国家
+国际
+大地
+世界
+经典
+首席
+事件
+生日
+特别
+纪念
+希望
+对战冠军
+地区冠军
+国家冠军
+世界冠军
 -
 -
-Champion G6 Hoenn
-Contest Star
-Master Coolness
-Master Beauty
-Master Cuteness
-Master Cleverness
-Master Toughness
-Champion Alola
-Battle Royale
-Battle Tree Great
-Battle Tree Master
--
--
--
+丰缘冠军（ORAS）
+华丽大赛之心
+帅气大师
+美丽大师
+可爱大师
+聪明大师
+强壮大师
+阿罗拉冠军
+皇家对战
+超级对战
+对战树大师
 -
 -
 -
-Nickname: 
-Move 1: #%d - %ls
-Move 2: #%d - %ls
-Move 3: #%d - %ls
-Move 4: #%d - %ls
-Move 1 PP: %d
-Move 2 PP: %d
-Move 3 PP: %d
-Move 4 PP: %d
-Move 1 PP Up: %d
-Move 2 PP Up: %d
-Move 3 PP Up: %d
-Move 4 PP Up: %d
-Relearn Move 1: #%d - %ls
-Relearn Move 2: #%d - %ls
-Relearn Move 3: #%d - %ls
-Relearn Move 4: #%d - %ls
-is Nicknamed
-is Egg
-Held Trainer name: 
-Held Trainer Friendship: %d
-Held Trainer Affection: %d
-Held Trainer Intensity: %d
-Held Trainer Memory: %d
-Held Trainer Feeling: %d
-Fullness: %d
-Enjoyment: %d
-Original Trainer Name: 
-Original Trainer Friendship: %d
-Original Trainer Affection: %d
-Original Trainer Intensity: %d
-Original Trainer Memory: %d
-Original Trainer Feeling: %d
-Egg Year: %d
-Egg Month: %d
-Egg Day: %d
-Met Year: %d
-Met Month: %d
-Met Day: %d
-Met Level: %d
-: Original Trainer Gender
-HP Hyper Trained
-ATK Hyper Trained
-DEF Hyper Trained
-SP.ATK Hyper Trained
-SP.DEF Hyper Trained
-SPEED Hyper Trained
-Encryption Constant, byte 1
-Encryption Constant, byte 2
-Encryption Constant, byte 3
-Encryption Constant, byte 4
-Sanity, byte 1
-Sanity, byte 2
-Checksum, byte 1
-Checksum, byte 2
-Species, byte 1
-Species, byte 2
-Held Item, byte 1
-Held Item, byte 2
-TID, byte 1
-TID, byte 2
-SID, byte 1
-SID, byte 2
-Experience, byte 1
-Experience, byte 2
-Experience, byte 3
-Experience, byte 4
-Ability
-Ability Number
-MarkValue, byte 1
-MarkValue, byte 2
-PID, byte 1
-PID, byte 2
-PID, byte 3
-PID, byte 4
-Nature
-Fateful Encounter flag / Gender / Alternative Form
-HP Effort Value
-ATK Effort Value
-DEF Effort Value
-SPE Effort Value
-SPA Effort Value
-SPD Effort Value
-Contest value Cool
-Contest value Beauty
-Contest value Cute
-Contest value Smart
-Contest value Tough
-Contest value Sheen
-PokePelago Event Status flag
-Pokerus
-Super Train flag, byte 1
-Super Train flag, byte 2
-Super Train flag, byte 3
-Super Train flag, byte 4
-Ribbon flag, byte 1
-Ribbon flag, byte 2
-Ribbon flag, byte 3
-Ribbon flag, byte 4
-Ribbon flag, byte 5
-Ribbon flag, byte 6
-Ribbon flag, byte 7
-Ribbon flag, byte 8
-Ribbon Memory Contest
-Ribbon Memory Battle
-Dist byte
-Nickname, byte 1
-Nickname, byte 2
-Nickname, byte 3
-Nickname, byte 4
-Nickname, byte 5
-Nickname, byte 6
-Nickname, byte 7
-Nickname, byte 8
-Nickname, byte 9
-Nickname, byte 10
-Nickname, byte 11
-Nickname, byte 12
-Nickname, byte 13
-Nickname, byte 14
-Nickname, byte 15
-Nickname, byte 16
-Nickname, byte 17
-Nickname, byte 18
-Nickname, byte 19
-Nickname, byte 20
-Nickname, byte 21
-Nickname, byte 22
-Nickname, byte 23
-Nickname, byte 24
-Move 1, byte 1
-Move 1, byte 2
-Move 2, byte 1
-Move 2, byte 2
-Move 3, byte 1
-Move 3, byte 2
-Move 4, byte 1
-Move 4, byte 2
-Move 1 PP
-Move 2 PP
-Move 3 PP
-Move 4 PP
-Move 1 PP Up
-Move 2 PP Up
-Move 3 PP Up
-Move 4 PP Up
-Relearn Move 1, byte 1
-Relearn Move 1, byte 2
-Relearn Move 2, byte 1
-Relearn Move 2, byte 2
-Relearn Move 3, byte 1
-Relearn Move 3, byte 2
-Relearn Move 4, byte 1
-Relearn Move 4, byte 2
-Secret Super Training Flag
-IV, byte 1
-IV, byte 2
-IV, byte 3
-IV, byte 4
-Held Trainer Nickname, byte 1
-Held Trainer Nickname, byte 2
-Held Trainer Nickname, byte 3
-Held Trainer Nickname, byte 4
-Held Trainer Nickname, byte 5
-Held Trainer Nickname, byte 6
-Held Trainer Nickname, byte 7
-Held Trainer Nickname, byte 8
-Held Trainer Nickname, byte 9
-Held Trainer Nickname, byte 10
-Held Trainer Nickname, byte 11
-Held Trainer Nickname, byte 12
-Held Trainer Nickname, byte 13
-Held Trainer Nickname, byte 14
-Held Trainer Nickname, byte 15
-Held Trainer Nickname, byte 16
-Held Trainer Nickname, byte 17
-Held Trainer Nickname, byte 18
-Held Trainer Nickname, byte 19
-Held Trainer Nickname, byte 20
-Held Trainer Nickname, byte 21
-Held Trainer Nickname, byte 22
-Held Trainer Nickname, byte 23
-Held Trainer Nickname, byte 24
-Held Trainer Gender
-Current Handler
-Latest Handlers 1 Region
-Latest Handlers 1 Country
-Latest Handlers 2 Region
-Latest Handlers 2 Country
-Latest Handlers 3 Region
-Latest Handlers 3 Country
-Latest Handlers 4 Region
-Latest Handlers 4 Country
-Latest Handlers 5 Region
-Latest Handlers 5 Country
-Held Trainer Friendship
-Held Trainer Affection
-Held Trainer Intensity
-Held Trainer Memory
-Held Trainer Feeling
-Held Trainer TextVar, byte 1
-Held Trainer TextVar, byte 2
-Fullness
-Enjoyment
-Original Trainer Name, byte 1
-Original Trainer Name, byte 2
-Original Trainer Name, byte 3
-Original Trainer Name, byte 4
-Original Trainer Name, byte 5
-Original Trainer Name, byte 6
-Original Trainer Name, byte 7
-Original Trainer Name, byte 8
-Original Trainer Name, byte 9
-Original Trainer Name, byte 10
-Original Trainer Name, byte 11
-Original Trainer Name, byte 12
-Original Trainer Name, byte 13
-Original Trainer Name, byte 14
-Original Trainer Name, byte 15
-Original Trainer Name, byte 16
-Original Trainer Name, byte 17
-Original Trainer Name, byte 18
-Original Trainer Name, byte 19
-Original Trainer Name, byte 20
-Original Trainer Name, byte 21
-Original Trainer Name, byte 22
-Original Trainer Name, byte 23
-Original Trainer Name, byte 24
-Original Trainer Friendship
-Original Trainer Affection
-Original Trainer Intensity
-Original Trainer Memory
-Original Trainer TextVar
-Original Trainer Feeling
-Egg Year
-Egg Month
-Egg Day
-Met Year
-Met Month
-Met Day
-Egg Location
-Met Location
-Ball
-Met Level / Original Trainer Gender
+-
+-
+-
+名称: 
+招式 1: #%d - %ls
+招式 2: #%d - %ls
+招式 3: #%d - %ls
+招式 4: #%d - %ls
+招式 1 PP: %d
+招式 2 PP: %d
+招式 3 PP: %d
+招式 4 PP: %d
+招式 1 PP Up: %d
+招式 2 PP Up: %d
+招式 3 PP Up: %d
+招式 4 PP Up: %d
+回忆 招式 1: #%d - %ls
+回忆 招式 2: #%d - %ls
+回忆 招式 3: #%d - %ls
+回忆 招式 4: #%d - %ls
+已昵称
+是蛋
+最近持有人: 
+最近持有人 亲密值: %d
+最近持有人 羁绊值: %d
+最近持有人 记忆程度: %d
+最近持有人 回忆: %d
+最近持有人 愉快度感受: %d
+饱胀程度: %d
+愉快度: %d
+初训家名称: 
+初训家亲密值: %d
+初训家 羁绊值: %d
+初训家记忆程度: %d
+初训家回忆: %d
+初训家感受: %d
+孵化年: %d
+孵化月: %d
+孵化日: %d
+相遇年: %d
+相遇月: %d
+相遇日: %d
+相遇登记: %d
+: 初训家性别
+完成体力超级训练
+完成物攻超级训练
+完成物防超级训练
+完成特攻超级训练
+完成特防超级训练
+完成速度超级训练
+加密常数, 字节 1
+加密常数, 字节 2
+加密常数, 字节 3
+加密常数, 字节 4
+Sanity, 字节 1
+Sanity, 字节 2
+检查和, 字节 1
+检查和, 字节 2
+种类, 字节 1
+种类, 字节 2
+持有物, 字节 1
+持有物, 字节 2
+表ID, 字节 1
+表ID, 字节 2
+里ID, 字节 1
+里ID, 字节 2
+Experience, 字节 1
+Experience, 字节 2
+Experience, 字节 3
+Experience, 字节 4
+特性
+特性数值
+MarkValue, 字节 1
+MarkValue, 字节 2
+性格值, 字节 1
+性格值, 字节 2
+性格值, 字节 3
+性格值, 字节 4
+性格
+命运相遇标记 / 性别 / 其他形态
+体力努力值
+物攻努力值
+物防努力值
+速度努力值
+特攻努力值
+特防努力值
+华丽大赛帅气
+华丽大赛美丽
+华丽大赛可爱
+华丽大赛聪明
+华丽大赛强壮
+华丽大赛光泽
+宝可度假地事件状态标记
+宝可病毒
+超级训练标记, 字节 1
+超级训练标记, 字节 2
+超级训练标记, 字节 3
+超级训练标记, 字节 4
+奖章标记, 字节 1
+奖章标记, 字节 2
+奖章标记, 字节 3
+奖章标记, 字节 4
+奖章标记, 字节 5
+奖章标记, 字节 6
+奖章标记, 字节 7
+奖章标记, 字节 8
+以前的华丽大赛奖章
+以前的的对战塔奖章
+Dist 字节
+昵称, 字节 1
+昵称, 字节 2
+昵称, 字节 3
+昵称, 字节 4
+昵称, 字节 5
+昵称, 字节 6
+昵称, 字节 7
+昵称, 字节 8
+昵称, 字节 9
+昵称, 字节 10
+昵称, 字节 11
+昵称, 字节 12
+昵称, 字节 13
+昵称, 字节 14
+昵称, 字节 15
+昵称, 字节 16
+昵称, 字节 17
+昵称, 字节 18
+昵称, 字节 19
+昵称, 字节 20
+昵称, 字节 21
+昵称, 字节 22
+昵称, 字节 23
+昵称, 字节 24
+招式 1, 字节 1
+招式 1, 字节 2
+招式 2, 字节 1
+招式 2, 字节 2
+招式 3, 字节 1
+招式 3, 字节 2
+招式 4, 字节 1
+招式 4, 字节 2
+招式 1 PP
+招式 2 PP
+招式 3 PP
+招式 4 PP
+招式 1 PP 提升
+招式 2 PP 提升
+招式 3 PP 提升
+招式 4 PP 提升
+回忆 招式 1, 字节 1
+回忆 招式 1, 字节 2
+回忆 招式 2, 字节 1
+回忆 招式 2, 字节 2
+回忆 招式 3, 字节 1
+回忆 招式 3, 字节 2
+回忆 招式 4, 字节 1
+回忆 招式 4, 字节 2
+秘密超级训练标记
+个体值, 字节 1
+个体值, 字节 2
+个体值, 字节 3
+个体值, 字节 4
+最近持有人昵称, 字节 1
+最近持有人昵称, 字节 2
+最近持有人昵称, 字节 3
+最近持有人昵称, 字节 4
+最近持有人昵称, 字节 5
+最近持有人昵称, 字节 6
+最近持有人昵称, 字节 7
+最近持有人昵称, 字节 8
+最近持有人昵称, 字节 9
+最近持有人昵称, 字节 10
+最近持有人昵称, 字节 11
+最近持有人昵称, 字节 12
+最近持有人昵称, 字节 13
+最近持有人昵称, 字节 14
+最近持有人昵称, 字节 15
+最近持有人昵称, 字节 16
+最近持有人昵称, 字节 17
+最近持有人昵称, 字节 18
+最近持有人昵称, 字节 19
+最近持有人昵称, 字节 20
+最近持有人昵称, 字节 21
+最近持有人昵称, 字节 22
+最近持有人昵称, 字节 23
+最近持有人昵称, 字节 24
+最近持有人性别
+目前持有人
+上一个持有人 1 地区
+上一个持有人 1 国家
+上一个持有人 2 地区
+上一个持有人 2 国家
+上一个持有人 3 地区
+上一个持有人 3 国家
+上一个持有人 4 地区
+上一个持有人 4 国家
+上一个持有人 5 地区
+上一个持有人 5 国家
+最近持有人 亲密值
+最近持有人 羁绊值
+最近持有人 记忆程度
+最近持有人 回忆
+最近持有人 感受
+最近持有人 TextVar, 字节 1
+最近持有人 TextVar, 字节 2
+饱胀程度
+愉快度
+初训家名称, 字节 1
+初训家名称, 字节 2
+初训家名称, 字节 3
+初训家名称, 字节 4
+初训家名称, 字节 5
+初训家名称, 字节 6
+初训家名称, 字节 7
+初训家名称, 字节 8
+初训家名称, 字节 9
+初训家名称, 字节 10
+初训家名称, 字节 11
+初训家名称, 字节 12
+初训家名称, 字节 13
+初训家名称, 字节 14
+初训家名称, 字节 15
+初训家名称, 字节 16
+初训家名称, 字节 17
+初训家名称, 字节 18
+初训家名称, 字节 19
+初训家名称, 字节 20
+初训家名称, 字节 21
+初训家名称, 字节 22
+初训家名称, 字节 23
+初训家名称, 字节 24
+初训家亲密值
+初训家羁绊值
+初训家记忆程度
+初训家回忆
+初训家TextVar
+初训家感受
+孵化年
+孵化月
+孵化日
+相遇年
+相遇月
+相遇日
+孵化地点
+相遇地点
+球种
+相遇登记 / 初训家 性别
 Hyper Train Flags
 Version
-Country
-Region
-Console Region
-Language
-Server running at http://%s:9000
-Buffer allocation failed!
-socInit failed!
-Socket unaccesible!
-Binding failed!
-Listening failed!
-Error during processing phase!
-Failed to open http context!
-Failed to download assets!
-Failed to add a request header field!
-Failed to set SSLOpt!
-Failed to begin a http request!
-Failed to receive a status code!
-Redirection failed!
-Failed to receive download size!
-Failed to alloc memory!
-Changing size...
-Bank size changed!
-Save backup created!
-Bank backup created!
+国家
+地区
+主机地区
+语言
+服务器运行在 http://%s:9000
+缓冲分配失败!
+socInit 失败!
+Socket 不可获得!
+Binding 失败!
+Listening 失败!
+阶段运行错误!
+打开http内容失败!
+下载资源失败!
+请求标题区域失败!
+设置SSLOpt失败!
+请求http失败!
+获取状态代码失败!
+重新定向失败!
+获取下载大小失败!
+分配内存失败!
+改变大小...
+银行大小已改变!
+存档备份已建立!
+银行备份已建立!
