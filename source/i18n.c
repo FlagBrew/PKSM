@@ -49,6 +49,7 @@ struct i18n_files i18n_files_generic_paths = {
  */
 struct i18n_files i18n_files_loaded;
 ArrayUTF32 i18n_AppTexts;
+u32 *text;
 
 /**
  * Log debug with format
@@ -87,7 +88,7 @@ wchar_t* ss_utf32(char* str, int size) {
 	if (size == 0) {
 		size = length;
 	}
-	u32 *text = malloc(size*sizeof(u32));
+	text = malloc(size*sizeof(u32));
 	utf8_to_utf32(text, (unsigned char*)str, length-1);
 	text[length-1] = '\0';
 	return (wchar_t*)text;
@@ -505,6 +506,7 @@ void i18n_initTextSwkbd(SwkbdState* swkbd, AppTextCode leftButtonTextCode, AppTe
 }
 
 void i18n_exit() {
+	free(text);
 	
 	free(i18n_files_loaded.abilities);
 	free(i18n_files_loaded.species);
