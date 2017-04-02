@@ -28,9 +28,6 @@ const int MAXLENGTH_PATH = 255;
 
 static char* LANG_PREFIX[] = { "jp", "en", "fr", "de", "it", "es", "zh", "ko", "nl", "pt", "ru", "tw" };
 
-// pointers who needs allocated memory
-u32 *text;
-
 /**
  * Generic path for Localization files
  */
@@ -51,7 +48,7 @@ struct i18n_files i18n_files_generic_paths = {
  * Current localization files loaded
  */
 struct i18n_files i18n_files_loaded;
-struct ArrayUTF32 i18n_AppTexts;
+ArrayUTF32 i18n_AppTexts;
 
 /**
  * Log debug with format
@@ -96,7 +93,7 @@ wchar_t* ss_utf32(char* str, int size) {
 	if (size == 0) {
 		size = length;
 	}
-	text = malloc(size*sizeof(u32));
+	u32 *text = malloc(size*sizeof(u32));
 	utf8_to_utf32(text, (unsigned char*)str, length-1);
 	text[length-1] = '\0';
 	return (wchar_t*)text;
@@ -170,7 +167,7 @@ void i18n_removeEndline(char* str) {
  * Get an ArrayUTF32 from a File
  * Items are the lines of the file
  */
-struct ArrayUTF32 i18n_FileToArrayUTF32(char* filepath) {
+ArrayUTF32 i18n_FileToArrayUTF32(char* filepath) {
     struct i18n_FileInfo fileinfo = i18n_getInfoFile(filepath);
 	int BUFFER_SIZE = MAXLENGTH_LINE_TRANSLATION;
     wchar_t **arrwc = malloc(fileinfo.numberOfLines * sizeof(wchar_t*));
@@ -195,12 +192,21 @@ struct ArrayUTF32 i18n_FileToArrayUTF32(char* filepath) {
 	}
 
 	// debuglogf("Creating array...\n");
-	struct ArrayUTF32 arr;
+	ArrayUTF32 arr;
 	arr.length = fileinfo.numberOfLines;
 	arr.items = arrwc;
 	arr.sorted = false;
 
 	return arr;
+}
+/**
+ * Free an arrayUTF32
+ */
+void i18n_free_ArrayUTF32(ArrayUTF32 *arr) {
+    for (int i = 0; i < arr->length; i++) {
+		free(arr->items[i]);
+	}
+	free(arr->items);
 }
 
 /**
@@ -288,7 +294,7 @@ int ArrayUTF32_sort_cmp(const wchar_t *a,const wchar_t *b) {
  * Original IDs of sortedItems are stored in sortedItemsID
  * You can specify a custom function to compare 2 items
  */
-void ArrayUTF32_sort_starting_index_with_sort_func(struct ArrayUTF32 *arr, int index, int (*fsort)(const wchar_t *a,const wchar_t *b)) {
+void ArrayUTF32_sort_starting_index_with_sort_func(ArrayUTF32 *arr, int index, int (*fsort)(const wchar_t *a,const wchar_t *b)) {
 	int nitems = arr->length;
 
 	// On initialise un nouveau tableau de pointeur, ainsi qu'un nouveau tableau d'ID si aucun sort n'a été effectué
@@ -365,14 +371,14 @@ void ArrayUTF32_sort_starting_index_with_sort_func(struct ArrayUTF32 *arr, int i
  * Original IDs of sortedItems are stored in sortedItemsID
  * Use the default function of sorting UTF32 strings
  */
-void ArrayUTF32_sort_starting_index(struct ArrayUTF32 *arr, int index) {
+void ArrayUTF32_sort_starting_index(ArrayUTF32 *arr, int index) {
 	ArrayUTF32_sort_starting_index_with_sort_func(arr, index, ArrayUTF32_sort_cmp);
 }
 
 /**
  * Sort an ArrayUTF32 from the beginning
  */
-void ArrayUTF32_sort(struct ArrayUTF32 *arr) { ArrayUTF32_sort_starting_index(arr, 0); }
+void ArrayUTF32_sort(ArrayUTF32 *arr) { ArrayUTF32_sort_starting_index(arr, 0); }
 
 
 /**
@@ -501,7 +507,6 @@ void i18n_initTextSwkbd(SwkbdState* swkbd, AppTextCode leftButtonTextCode, AppTe
 }
 
 void i18n_exit() {
-	free(text);
 	
 	free(i18n_files_loaded.abilities);
 	free(i18n_files_loaded.species);
@@ -513,4 +518,7 @@ void i18n_exit() {
 	free(i18n_files_loaded.balls);
 	free(i18n_files_loaded.types);
 	free(i18n_files_loaded.app);
+
+	i18n_free_ArrayUTF32(&i18n_AppTexts);
+
 }

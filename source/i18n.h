@@ -62,13 +62,13 @@ struct i18n_files {
 /**
  * Array of strings in UTF32
  */
-struct ArrayUTF32 {
+typedef struct ArrayUTF32 {
 	int length;
 	wchar_t** items;
 	wchar_t** sortedItems;
 	int* sortedItemsID;
 	bool sorted;
-};
+} ArrayUTF32;
 
 
 /**
@@ -698,17 +698,20 @@ typedef enum {
 
 
 struct ArrayUTF32 i18n_FileToArrayUTF32(char* filepath);
+void i18n_free_ArrayUTF32(ArrayUTF32 *arr);
+
 struct i18n_files i18n_getFilesPath();
 wchar_t* s_utf32(char* str);
 wchar_t* ss_utf32(char* str, int size);
 
 // struct ArrayUTF32 ArrayUTF32_copy(struct ArrayUTF32 from);
-void ArrayUTF32_sort_starting_index(struct ArrayUTF32 *arr, int index);
+void ArrayUTF32_sort_starting_index(ArrayUTF32 *arr, int index);
 void ArrayUTF32_sort_starting_index_with_sort_func(struct ArrayUTF32 *arr, int index, int (*f)(const wchar_t *a,const wchar_t *b));
-void ArrayUTF32_sort(struct ArrayUTF32 *arr);
+void ArrayUTF32_sort(ArrayUTF32 *arr);
 void debuglogf(const char* format, ...);
 
 wchar_t* i18n(AppTextCode code);
 void i18n_init();
 void i18n_initTextSwkbd(SwkbdState* swkbd, AppTextCode leftButtonTextCode, AppTextCode rightButtonTextCode, AppTextCode hintTextCode);
 void i18n_exit();
+

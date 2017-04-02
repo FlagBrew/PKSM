@@ -102,7 +102,6 @@ bool initServices() {
 	fread(tmp, size, 1, fptr);
 	fclose(fptr);
 	loadLines(tmp, personal.species[0], 12, size);
-	listSpecies = i18n_FileToArrayUTF32(listFiles.species);
 	u32 defaultSize = 150 * 30 * PKMNLENGTH;
 	size = 0;
 	u8 *bankbuf, *defaultBank;

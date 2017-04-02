@@ -60,6 +60,52 @@ wchar_t **hpList;
 wchar_t **ballList;
 wchar_t **formList;
 
+ArrayUTF32 listAbilities, listNatures, listBalls, listHPs, listForms;
+
+
+void GUITextsInit() {
+	freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_LOCALES));
+	struct i18n_files listFiles = i18n_getFilesPath();
+
+	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_ABILITIES));
+	listAbilities = i18n_FileToArrayUTF32(listFiles.abilities);
+
+	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_MOVES));
+	listMoves = i18n_FileToArrayUTF32(listFiles.moves);
+
+	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_SORTING_MOVES));
+	ArrayUTF32_sort_starting_index(&listMoves, 1);
+
+	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_NATURES));
+	listNatures = i18n_FileToArrayUTF32(listFiles.natures);
+
+
+	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_ITEMS));
+	listItems = i18n_FileToArrayUTF32(listFiles.items);
+	listBalls = i18n_FileToArrayUTF32(listFiles.balls);
+
+	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_SORTING_ITEMS));
+	ArrayUTF32_sort_starting_index_with_sort_func(&listItems, 1, ArrayUTF32_sort_cmp_PKMN_Things_List);
+
+	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_HP));
+	listHPs = i18n_FileToArrayUTF32(listFiles.hp);
+
+	// Need loading message for forms and species
+	listForms = i18n_FileToArrayUTF32(listFiles.forms);
+	listSpecies = i18n_FileToArrayUTF32(listFiles.species);
+
+	abilities = listAbilities.items;
+	moves = listMoves.items;
+	movesSorted = listMoves.sortedItems;
+	natures = listNatures.items;
+	items = listItems.items;
+	itemsSorted = listItems.sortedItems;
+	hpList = listHPs.items;
+	formList = listForms.items;
+	ballList = listBalls.items;
+	natures = listNatures.items;
+}
+
 void GUIElementsInit() {
 	fontBold15 = sftd_load_font_file("romfs:/res/Bold.ttf");
 	fontBold12 = sftd_load_font_file("romfs:/res/Bold.ttf");
@@ -74,43 +120,14 @@ void GUIElementsInit() {
 	fontBold11 = sftd_load_font_file("romfs:/res/Bold.ttf");
 	fontBold9 = sftd_load_font_file("romfs:/res/Bold.ttf");
 	fontFixed = sftd_load_font_file("romfs:/res/VeraMono.ttf");
-	
-	freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_LOCALES));
-	struct i18n_files listFiles = i18n_getFilesPath();
-	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_ABILITIES));
-	struct ArrayUTF32 listAbilities = i18n_FileToArrayUTF32(listFiles.abilities);
-	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_MOVES));
-	listMoves = i18n_FileToArrayUTF32(listFiles.moves);
-	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_SORTING_MOVES));
-	ArrayUTF32_sort_starting_index(&listMoves, 1);
-	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_NATURES));
-	struct ArrayUTF32 listNatures = i18n_FileToArrayUTF32(listFiles.natures);
-	natures = listNatures.items;
-	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_ITEMS));
-	listItems = i18n_FileToArrayUTF32(listFiles.items);
-	struct ArrayUTF32 listBalls = i18n_FileToArrayUTF32(listFiles.balls);
-	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_SORTING_ITEMS));
-	ArrayUTF32_sort_starting_index_with_sort_func(&listItems, 1, ArrayUTF32_sort_cmp_PKMN_Things_List);
-	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_HP));
-	struct ArrayUTF32 listHPs = i18n_FileToArrayUTF32(listFiles.hp);
 
-	// Need loading message for forms
-	struct ArrayUTF32 listForms = i18n_FileToArrayUTF32(listFiles.forms);
-
-	abilities = listAbilities.items;
-	moves = listMoves.items;
-	movesSorted = listMoves.sortedItems;
-	natures = listNatures.items;
-	items = listItems.items;
-	itemsSorted = listItems.sortedItems;
-	hpList = listHPs.items;
-	formList = listForms.items;
-	ballList = listBalls.items;
+	GUITextsInit();
 
 	freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_FONTS));
 	init_font_cache();
 	freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_DONE));
 }
+
 
 int num_element = 1;
 int total_elements = 1;
@@ -305,6 +322,19 @@ void GUIElementsExit() {
 	sftd_free_font(fontFixed);
 	sftd_free_font(unicodeJPN12);
 	sftd_free_font(unicodeKOR12);
+
+	GUITextsExit();
+}
+
+void GUITextsExit() {
+	i18n_free_ArrayUTF32(&listAbilities);
+	i18n_free_ArrayUTF32(&listMoves);
+	i18n_free_ArrayUTF32(&listNatures);
+	i18n_free_ArrayUTF32(&listItems);
+	i18n_free_ArrayUTF32(&listBalls);
+	i18n_free_ArrayUTF32(&listHPs);
+	i18n_free_ArrayUTF32(&listForms);
+	i18n_free_ArrayUTF32(&listSpecies);
 }
 
 void create_font_cache(sftd_font* font, unsigned int size, int total_fonts, int* num_font) {

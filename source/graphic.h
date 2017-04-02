@@ -44,11 +44,14 @@
 
 #define MOVEMENTSPEED 4
 
+
 void GUIElementsInit();
+void GUITextsInit(); // Needed for util.c while reloading an locale
 void GUIElementsSpecify(int game);
 void GUIGameElementsInit();
 void GUIGameElementsExit();
 void GUIElementsExit();
+void GUITextsExit(); // Needed for util.c while reloading an locale
 void init_font_cache();
 void infoDisp(wchar_t* message);
 int confirmDisp(wchar_t* message);
