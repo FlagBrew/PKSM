@@ -105,7 +105,7 @@ AR搜寻器收藏设定成功!
 道具:
 蛋闪值 / 训练家闪值:
 训练家ID / 里ID:
-HT/OT Fr.ship:
+HT/OT 亲密值:
 觉醒力量:
 体力
 物攻
@@ -122,12 +122,12 @@ Lv.%u
 生成
 退出
 箱子 %d
-Launch the client on your PC...
+在PC中载入对象...
 按B退出.
 队伍
 按A复制到当前格子, B取消
 %ls 被选中.
-Generate with A in the top screen.
+在上屏按A生成.
 训练家ID: %u / 里ID: %u / 闪值: %u
 Seed: %lx %lx %lx %lx
 等级:
@@ -182,43 +182,43 @@ ID. %u
 Y: 浏览
 清空箱子
 放生
-XD Collection
-Colosseum Collection
-10th Anniversary Collection
-N's Collection
-Entree Forest Collection
-Dream Radar Collection
-Living Dex
-Oblivia Deoxys Collection
-Pokemon Ranch Collection
-KOR Events Collection
-%d boxes will be replaced.
-Mass Injector
-Press START to inject, B to exit.
-Bank Size:                   
-Backup Save
-Backup Bank
-Tap the number to change size.
-Yes
-No
+XD收藏
+竞技场收藏
+10周年收藏
+N的收藏
+连入之森收藏
+AR搜寻器收藏
+当前图鉴
+奥卜利比亚代欧奇希斯收藏
+牧场设定
+韩国配信收藏
+%d 箱子将被替换.
+大规模注入器
+按START导入，B退出.
+银行大小:
+备份存档             
+备份银行                         
+点击数值改变大小.             
+是
+否
 Species: #%d - %ls
-Held Item: #%d - %ls
-TID: %d
-SID: %d
-Ability: %ls
-Nature: %ls
-Fateful Encounter flag
-Gender: 
-male
-female
-genderless
-Alternative Form: #%d
-HP EV: %d
-ATK EV: %d
-DEF EV: %d
-SPE EV: %d
-SPA EV: %d
-SPD EV: %d
+携带物品: #%d - %ls
+训练家ID: %d
+里ID: %d
+特性: %ls
+性格: %ls
+命运相遇标记
+性别: 
+公
+母
+无性别
+可选形态: #%d
+体力努力: %d
+物攻努力: %d
+物防努力: %d
+速度努力: %d
+特攻努力: %d
+特防努力: %d
 Contest Value Cool: %d
 Contest Value Beauty: %d
 Contest Value Cute: %d
