@@ -36,6 +36,7 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[1605] = "1605 - Mewtwoite X/Y"; spriteArray[1605] = 0;
 	database[1606] = "1606 - Mawilite"; spriteArray[1606] = 0;
 	database[1607] = "1607 - SM Rare Candy"; spriteArray[1607] = 0;
+	database[1608] = "1608 - Pidgeot-Steelixite"; spriteArray[1608] = 0;
 	database[2040] = "2040 - SM Stardust"; spriteArray[2040] = 0;
 	database[2041] = "2041 - SM Star Piece"; spriteArray[2041] = 0;
 	database[2042] = "2042 - SM Nugget"; spriteArray[2042] = 0;
@@ -341,6 +342,9 @@ void filldatabase5(char *database[], int spriteArray[]) {
 	database[9] = "009 - TFE Slowpoke"; spriteArray[9] = 79;
 	database[10] = "010 - TFE Karrablast"; spriteArray[10] = 588;
 	database[11] = "011 - TFE Shelmet"; spriteArray[11] = 616;
+	database[25] = "025 - Milos Island Tornadus"; spriteArray[25] = 641;
+	database[26] = "026 - Kalita's Hydreigon"; spriteArray[26] = 635;
+	database[27] = "027 - Spring 2012 Zekrom"; spriteArray[27] = 644;
 	database[28] = "028 - Darkrai"; spriteArray[28] = 491;
 	database[29] = "029 - Mysterious Egg Pidove"; spriteArray[29] = 519;
 	database[30] = "030 - Snarl Zoroark"; spriteArray[30] = 571;
