@@ -45,104 +45,104 @@ Y
 白金
 心金
 魂银
-Black
-White
-Black 2
-White 2
-Loading graphics...
-Loading image %i / %i
-Bank.bin has a bad size!
-Erase the selected box?
-Save bank.bin changes?
-Save PokeDex flags?
-Box %lu / Slot %lu
-Error during injection!
-Injection succeeded!
-Item not available in XY!
-Save PokeDex flags?
-Box %lu / Slot %lu
-XD collection set successfully!
-Colosseum col. set successfully!
-10th Anniversary set successfully!
-N's collection injected successfully!
-Entree Forest col. set successfully!
-Dream Radar col. set successfully!
-Living dex set successfully!
-Deoxys collection set successfully!
-My Pokemon Ranch set successfully!
-Korean collection set successfully!
-Language set successfully!
-Mistery Gift box cleaned!
-Cancel
-Set
-Enter your nickname
-Enter your OT name
-Confirm release?
-Released!
-Progress: %lu/%lu bytes
-EVENTS
-OTHER
-Press START to quit.
-Credits
-Press B to return.
-Event Database
-Press A to continue, B to return.
-Press START to inject, B to return
-Press A to select, B to return.
-Languages:
-Overwrite Wondercard:
-Adapt language to WC:
-Inject WC in slot:
-Save File Editor
-Language:
-Clear Mystery Gift box
-Press START to edit, A to toggle, B to exit.
-Nickname:
-OT:
-Pokerus:
-Nature
-Ability:
-Item:
-ESV / TSV:
-TID / SID:
+黑
+白
+黑2
+白2
+载入图像...
+载入图片 %i / %i
+Bank.bin大小错误!
+清空选定的箱子?
+保存bank.bin的修改?
+保存图鉴标记?
+箱子 %lu / Slot %lu
+注入发生错误!
+注入成功!
+XY中不可获得这些道具!
+保存图鉴标记?
+箱子 %lu / Slot %lu
+XD收藏注入成功!
+竞技场收藏设定成功!
+10周年收藏设定成功!
+N的收藏设定成功!
+连入之森收藏设定成功!
+AR搜寻器收藏设定成功!
+当前图鉴设定成功!
+代欧奇希斯收藏设定成功!
+牧场设定成功!
+韩国收藏设定成功!
+语言设定成功!
+神秘礼物箱子清空!
+取消
+设定
+输入你的昵称
+输入你的初始训练家
+确认放生?
+已放生!
+当前进程: %lu/%lu 字节
+配信
+其他
+按START退出.
+贡献
+按B返回.
+配信数据库
+按A继续, B返回.
+按START导入, B返回.
+按A选择, B返回.
+语言:
+覆盖神秘卡片:
+设定卡片语言:
+在这格注入卡片:
+存档修改器
+语言:
+清空神秘礼物箱子
+按START编辑, A切换, B退出.
+昵称:
+初始训练家:
+宝可病毒:
+性格
+特性:
+道具:
+蛋闪值 / 训练家闪值:
+训练家ID / 里ID:
 HT/OT Fr.ship:
-Hidden Power:
-HP
-Attack
-Defense
-Sp. Atk
-Sp. Def
-Speed
+觉醒力量:
+体力
+物攻
+物防
+特攻
+特防
+速度
 Lv.%u
-Moves
-Egg cycle:
-EDIT
-CLONE
-RELEASE
-GENERATE
-EXIT
-Box %d
+招式
+孵化周期:
+编辑
+复制复制
+放生
+生成
+退出
+箱子 %d
 Launch the client on your PC...
-Press B to exit.
-Team
-Press A to clone in selected slot, B to cancel
-%ls has been selected.
+按B退出.
+队伍
+按A复制到当前格子, B取消
+%ls 被选中.
 Generate with A in the top screen.
-TID: %u / SID: %u / TSV: %u
+训练家ID: %u / 里ID: %u / 闪值: %u
 Seed: %lx %lx %lx %lx
-Level:
-Nature:
-Ability:
-Item:
-Shiny:
-Pokerus:
-OT:
-Nickname:
-Friendship:
-STATS
-MOVES
-SAVE
-HP:
+等级:
+性格:
+特性:
+道具:
+闪:
+宝可病毒:
+初训家:
+昵称:
+亲密度:
+能力值
+招式
+保存
+体力:
 Attack:
 Defense:
 Sp. Attack:
