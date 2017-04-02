@@ -55,12 +55,12 @@ Bank.bin大小错误!
 清空选定的箱子?
 保存bank.bin的修改?
 保存图鉴标记?
-箱子 %lu / Slot %lu
+箱子 %lu / 格子 %lu
 注入发生错误!
 注入成功!
 XY中不可获得这些道具!
 保存图鉴标记?
-箱子 %lu / Slot %lu
+箱子 %lu / 格子 %lu
 XD收藏注入成功!
 竞技场收藏设定成功!
 10周年收藏设定成功!
@@ -139,49 +139,49 @@ Seed: %lx %lx %lx %lx
 初训家:
 昵称:
 亲密度:
-能力值
+数值
 招式
 保存
 体力:
-Attack:
-Defense:
-Sp. Attack:
-Sp. Defense:
-Speed:
-Edit your Pokemon in the bottom screen
-Tap SAVE when you're done
-Neutral
--Attack
--Defense
--Speed
--Sp. Atk.
--Sp. Def.
-+Attack
-+Defense
-+Speed
-+Sp. Atk.
-+Sp. Def.
-Egg cycle:
-STATS
-IV
-EV
-TOTAL
-Hidden Power:
-Moves
-Relearn Moves
-Selected byte:
-Select an item with A in the top screen.
-Select a nature with A in the top screen.
-Select a ball with A in the top screen.
-Select a HP type with A in the top screen.
-Select a form with A in the top screen.
-Bank %d
+物攻:
+物防:
+特攻:
+特防:
+速度:
+在下屏修改精灵
+完成后点击保存
+无变化
+-物攻
+-物防
+-速度
+-特攻.
+-特防.
++物攻
++物防
++速度
++特攻
++特防
+孵化周期:
+数值
+个体值
+努力值
+总合
+觉醒力量:
+招式
+回忆招式
+所选字节:
+在上屏用A选择一个道具.
+在上屏用A选择一个性格.
+在上屏用A选择一个精灵球.
+在上屏用A选择一个道具HP种类.
+在上屏用A选择一个形态.
+银行 %d
 Lv.%u
 ID. %u
-Save %d
-Y: VIEW
-CLEAR BOX
-RELEASE
+保存 %d
+Y: 浏览
+清空箱子
+放生
 XD Collection
 Colosseum Collection
 10th Anniversary Collection
