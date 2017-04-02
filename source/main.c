@@ -259,7 +259,6 @@ int main() {
 	
 	GUIElementsSpecify(game);
 	if (game < 6) {
-		wchar_t* mainMenu[3] = {i18n(S_MAIN_MENU_MANAGEMENT), i18n(S_MAIN_MENU_EVENTS), i18n(S_MAIN_MENU_CREDITS)};
 		while (aptMainLoop()) {
 			hidScanInput();
 			touchPosition touch;
@@ -341,6 +340,7 @@ int main() {
 						break;
 				}
 			}
+			wchar_t* mainMenu[3] = { i18n(S_MAIN_MENU_MANAGEMENT), i18n(S_MAIN_MENU_EVENTS), i18n(S_MAIN_MENU_CREDITS)}; // Needed here if we change the language in settings
 			menu3(currentEntry, mainMenu, 3, true);
 		}
 	} else {

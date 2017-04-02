@@ -201,6 +201,14 @@ void settingsMenu(u8* mainbuf, int game) {
 				FILE *conf = fopen("sdmc:/3ds/data/PKSM/i18n.bin", "wb");
 				fwrite(localeConfig, 1, 1, conf);
 				fclose(conf);
+
+				GUITextsExit();
+				i18n_exit();
+
+				i18n_init();
+				GUITextsInit();
+
+				// FIXME: Need to reload the img of the type of the lang selected
 			}
 		}
 		
