@@ -88,22 +88,8 @@ bool initServices() {
 	
 	loadPersonal();
 	
-    u8 tmp[12000];
-	struct i18n_files listFiles = i18n_getFilesPath();
-	FILE *fptr = fopen(listFiles.species, "rt");
-	if (fptr == NULL) {
-		fclose(fptr);
-		return true;
-	}
-	fseek(fptr, 0, SEEK_END);
-	u32 size = ftell(fptr);
-	memset(tmp, 0, size);
-	rewind(fptr);
-	fread(tmp, size, 1, fptr);
-	fclose(fptr);
-	loadLines(tmp, personal.species[0], 12, size);
 	u32 defaultSize = 150 * 30 * PKMNLENGTH;
-	size = 0;
+	u32 size = 0;
 	u8 *bankbuf, *defaultBank;
 	
 	FILE *bank = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
