@@ -701,8 +701,6 @@ struct ArrayUTF32 i18n_FileToArrayUTF32(char* filepath);
 void i18n_free_ArrayUTF32(ArrayUTF32 *arr);
 
 struct i18n_files i18n_getFilesPath();
-wchar_t* s_utf32(char* str);
-wchar_t* ss_utf32(char* str, int size);
 
 // struct ArrayUTF32 ArrayUTF32_copy(struct ArrayUTF32 from);
 void ArrayUTF32_sort_starting_index(ArrayUTF32 *arr, int index);

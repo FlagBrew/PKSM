@@ -79,12 +79,6 @@ int utf8_strlen(char* s) {
    }
    return j;
 }
-
-/**
- * Transform a string from UTF8 (char*) to UTF32 (wchar_t*)
- */
-wchar_t* s_utf32(char* str) { return ss_utf32(str, 0); }
-
 /**
  * Transform a string from UTF8 (char*) to UTF32 with a specified memory size
  */
@@ -99,6 +93,10 @@ wchar_t* ss_utf32(char* str, int size) {
 	return (wchar_t*)text;
 }
 
+/**
+ * Transform a string from UTF8 (char*) to UTF32 (wchar_t*)
+ */
+wchar_t* s_utf32(char* str) { return ss_utf32(str, 0); }
 
 
 /**
