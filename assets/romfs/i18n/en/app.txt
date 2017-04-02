@@ -1,50 +1,50 @@
-Downloading assets %d...
-Loading files...
-Loading locales assets...
-Loading abilities
-Loading moves
-Sorting moves
-Loading natures
-Loading items
-Sorting items
-Loading Hidden powers
-Loading fonts...
-Caching font %i/%i
-Done!
-Creating a default bank...
-Backing up bank...
-Restart the application!
-You're missing a few assets!
-Loading save...
-Game not found!
-Incorrect size for this game!
-No cartridge inserted!
-MANAGEMENT
-EVENTS
-CREDITS
-Press A to select an option.
-Press START to quit.
-POKEMON EDITOR
-SAVE INFO
-EXTRA STORAGE
-MASS INJECTOR
-Save changes?
-Press A to continue.
-Press A to continue, B to cancel.
-Please wait.
-Cart has priority over digital copy.
-Move your DPAD. Press A to continue, B to exit.
+下载资源 %d...
+载入文件...
+载入本地资源...
+载入特性
+载入招式
+招式排序
+载入性格
+载入道具
+道具排序
+载入觉醒力量
+载入字体...
+缓存字体 %i/%i
+完成!
+创建一个默认的银行...
+备份银行...
+重启应用!
+你缺失了一些资源!
+载入存档...
+未找到游戏!
+该游戏大小错误!
+未插入卡带!
+管理
+配信
+贡献
+按A选择选项.
+按START退出.
+宝可梦编辑器
+存档信息
+离线银行
+大规模注入器
+保存修改?
+按A继续.
+按A继续, 按B取消.
+请等待.
+卡带优先于下载版.
+十字键移动. 按A继续, B退出.
 X
 Y
-Omega Ruby
-Alpha Sapphire
-Sun
-Moon
-Diamond
-Pearl
-Platinum
-Heart Gold
-Soul Silver
+终极红宝石
+始源蓝宝石
+日
+月
+钻石
+珍珠
+白金
+心金
+魂银
 Black
 White
 Black 2
