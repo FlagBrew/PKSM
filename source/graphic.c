@@ -1869,8 +1869,8 @@ void printSettings(int box, int language) {
 		sf2d_draw_texture(miniBox, 189, 64);
 		sf2d_draw_texture(minusButton, 169, 65);
 		sf2d_draw_texture(plusButton, 228, 65);
-		sf2d_draw_texture(miniBox, 281, 188);
-		sftd_draw_text(fontBold11, 281 + (36 - (sftd_get_text_width(fontBold11, 11, langs[language]))) / 2, 192, DARKBLUE, 11, langs[language]);
+		sf2d_draw_texture(miniBox, 281, 191);
+		sftd_draw_text(fontBold11, 281 + (36 - (sftd_get_text_width(fontBold11, 11, langs[language]))) / 2, 195, DARKBLUE, 11, langs[language]);
 		
 		char size[5];
 		snprintf(size, 5, "%d", box);

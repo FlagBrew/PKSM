@@ -195,7 +195,7 @@ void settingsMenu(u8* mainbuf, int game) {
 				else if (box == boxmax) box = 2;
 			}
 			
-			if (touch.px > 281 && touch.px < 317 && touch.py > 188 && touch.py < 214) {
+			if (touch.px > 281 && touch.px < 317 && touch.py > 191 && touch.py < 212) {
 				language = (language + 1) % 5 + 1;
 				localeConfig[0] = language;
 				FILE *conf = fopen("sdmc:/3ds/data/PKSM/i18n.bin", "wb");
