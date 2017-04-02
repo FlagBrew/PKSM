@@ -58,7 +58,6 @@
 #define ED_HEX 8
 
 struct {
-	u8 species[803][12];
 	u8 pkmData[961][15];
 } personal;
 

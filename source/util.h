@@ -20,7 +20,6 @@
 #include "common.h"
 
 void checkMaxValue(u8* pkmn, int byteEntry, int value, int max);
-void loadLines(u8 *src, u8 *dst, u8 strlen,  u32 size);
 bool checkFile(char* path);
 void loadPersonal();
 void loadFile(u8* buf, char* path);
