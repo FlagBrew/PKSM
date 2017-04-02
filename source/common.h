@@ -71,7 +71,7 @@
 #define GAME_B2 	 13
 #define GAME_W2 	 14
 
-#define VERSION "v4.2.2"
+#define VERSION "v4.2.3"
 
 struct ArrayUTF32 listMoves;
 struct ArrayUTF32 listItems;

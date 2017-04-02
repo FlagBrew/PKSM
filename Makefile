@@ -36,7 +36,7 @@ RUN_FLAGS :=
 
 VERSION_MAJOR := 4
 VERSION_MINOR := 2
-VERSION_MICRO := 2
+VERSION_MICRO := 3
 
 REMOTE_IP := 192.168.1.7
 
@@ -45,7 +45,7 @@ REMOTE_IP := 192.168.1.7
 ifeq ($(TARGET),$(filter $(TARGET),3DS WIIU))
     TITLE := $(NAME)
     DESCRIPTION := AIO tool for Pokemon games
-    AUTHOR := Bernardo Giordano
+    AUTHOR := Bernardo Giordano, PKSM devs
 endif
 
 # 3DS CONFIGURATION #
