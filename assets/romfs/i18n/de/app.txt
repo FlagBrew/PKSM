@@ -9,7 +9,7 @@ Lade Items...
 Sortiere Items...
 Lade Kraftreserven...
 Lade Schriftarten...
-Erstelle Schriftartenpuffer (%i/%i)...
+Erstelle Schriftartencache (%i/%i)...
 Fertig!
 Erstelle eine Standard-Bank...
 Sichere Bank...
@@ -18,7 +18,7 @@ Dir fehlen einige Zusatzdaten!
 Lade Spielstand...
 Spiel nicht gefunden!
 Falsche Größe für dieses Spiel!
-Kein Modul eingesteckt!
+Keine Karte eingesteckt!
 VERWALTUNG
 EVENTS
 DANKSAGUNGEN
@@ -32,7 +32,7 @@ MASSENEINFÜGEN
 Drücke A zum Fortfahren.
 Drücke A zum Fortfahren, B zum Abbrechen.
 Bitte warten.
-Modul hat Priorität über Downloadversion.
+Karte hat Priorität über Downloadversion.
 Bewege dein DPAD. Drücke A zum Fortfahren, B zum Beenden.
 X
 Y
@@ -54,12 +54,12 @@ Lade Bild %i / %i
 Bank.bin hat eine ungültige Größe!
 Ausgewählte Box löschen?
 Änderungen an bank.bin speichern?
-Pokédex-Einträge Bitschalter Speichern?
+Pokédex-Einträge freischalten?
 Box %lu / Slot %lu
 Fehler beim Einfügen!
 Einfügen erfolgreich!
 Item nicht verfügbar in XY!
-Pokédex-Einträge Bitschalter Speichern?
+Pokédex-Einträge freischalten?
 Box %lu / Slot %lu
 XD-Sammlung übernommen!
 Colosseum-Samml. übernommen!
@@ -168,7 +168,7 @@ EV
 GESAMT
 Versteckte Fähigk.:
 Angriffe
-Wieder erlernbare Angriffe
+Ei-Attacken
 Ausgewählter Byte:
 Wähle auf dem oberen Bildschirm ein Item mit A aus.
 Wähle auf dem oberen Bildschirm ein Wesen mit A aus.
@@ -281,7 +281,7 @@ Baum-Meisterband
 -
 -
 -
-Spitzname:
+Spitzname: 
 Attacke 1: #%d - %ls
 Attacke 2: #%d - %ls
 Attacke 3: #%d - %ls
@@ -300,7 +300,7 @@ Ei-Attacke 3: #%d - %ls
 Ei-Attacke 4: #%d - %ls
 hat einen Spitznamen
 ist ein Ei
-Aktueller Trainer Name:
+Aktueller Trainer Name: 
 Aktueller Trainer Freundschaft: %d
 Aktueller Trainer Zutraulichkeit: %d
 Aktueller Trainer Intensität: %d
@@ -308,7 +308,7 @@ Aktueller Trainer Erinnerung: %d
 Aktueller Trainer Gefühl: %d
 Sattheit: %d
 Zuwendung: %d
-Originaltrainer Name:
+Originaltrainer Name: 
 Originaltrainer Freundschaft: %d
 Originaltrainer Zutraulichkeit: %d
 Originaltrainer Intensität: %d
@@ -510,7 +510,7 @@ Originaltrainer Name, Byte 22
 Originaltrainer Name, Byte 23
 Originaltrainer Name, Byte 24
 Originaltrainer Freundschaft
-Originaltrainer Zuneigung
+Originaltrainer Zutraulichkeit
 Originaltrainer Intensität
 Originaltrainer Erinnerung
 Originaltrainer TextVar
