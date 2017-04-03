@@ -81,7 +81,7 @@ Wirklich freilassen?
 Freigelassen!
 Fortschritt: %lu/%lu Bytes
 EVENTS
-ANDERES
+SONSTIGES
 Drücke START zum Beenden.
 Credits
 Drücke B zum zurückkehren.
@@ -134,7 +134,7 @@ Level:
 Wesen:
 Fähigk.:
 Item:
-Shiny:
+Schillernd:
 Pokérus:
 OT:
 Spitzname:
@@ -168,7 +168,7 @@ EV
 GESAMT
 Versteckte Fähigk.:
 Angriffe
-Wieder erlernbare Angriffe
+Ei-Attacken
 Ausgewählter Byte:
 Wähle oben ein Item mit A aus.
 Wähle oben ein Wesen mit A aus.
@@ -281,7 +281,7 @@ Baum-Meisterband
 -
 -
 -
-Spitzname:
+Spitzname: 
 Attacke 1: #%d - %ls
 Attacke 2: #%d - %ls
 Attacke 3: #%d - %ls
@@ -294,13 +294,13 @@ Attacke 1 AP-Plus: %d
 Attacke 2 AP-Plus: %d
 Attacke 3 AP-Plus: %d
 Attacke 4 AP-Plus: %d
-Wieder erlernbare Attacke 1: #%d - %ls
-Wieder erlernbare Attacke 2: #%d - %ls
-Wieder erlernbare Attacke 3: #%d - %ls
-Wieder erlernbare Attacke 4: #%d - %ls
+Ei-Attacke 1: #%d - %ls
+Ei-Attacke 2: #%d - %ls
+Ei-Attacke 3: #%d - %ls
+Ei-Attacke 4: #%d - %ls
 hat einen Spitznamen
 ist ein Ei
-Aktueller Trainer Name:
+Aktueller Trainer Name: 
 Aktueller Trainer Freundschaft: %d
 Aktueller Trainer Zutraulichkeit: %d
 Aktueller Trainer Intensität: %d
@@ -308,7 +308,7 @@ Aktueller Trainer Erinnerung: %d
 Aktueller Trainer Gefühl: %d
 Sattheit: %d
 Zuwendung: %d
-Originaltrainer Name:
+Originaltrainer Name: 
 Originaltrainer Freundschaft: %d
 Originaltrainer Zutraulichkeit: %d
 Originaltrainer Intensität: %d
@@ -427,14 +427,14 @@ Attacke 1 PP Up
 Attacke 2 PP Up
 Attacke 3 PP Up
 Attacke 4 PP Up
-Wieder erlernbare Attacke 1, Byte 1
-Wieder erlernbare Attacke 1, Byte 2
-Wieder erlernbare Attacke 2, Byte 1
-Wieder erlernbare Attacke 2, Byte 2
-Wieder erlernbare Attacke 3, Byte 1
-Wieder erlernbare Attacke 3, Byte 2
-Wieder erlernbare Attacke 4, Byte 1
-Wieder erlernbare Attacke 4, Byte 2
+Ei-Attacke 1, Byte 1
+Ei-Attacke 1, Byte 2
+Ei-Attacke 2, Byte 1
+Ei-Attacke 2, Byte 2
+Ei-Attacke 3, Byte 1
+Ei-Attacke 3, Byte 2
+Ei-Attacke 4, Byte 1
+Ei-Attacke 4, Byte 2
 Geheimer Supertraininging-Bitschalter
 IV, Byte 1
 IV, Byte 2
@@ -509,12 +509,12 @@ Originaltrainer Name, Byte 21
 Originaltrainer Name, Byte 22
 Originaltrainer Name, Byte 23
 Originaltrainer Name, Byte 24
-Originaltrainer Friendship
-Originaltrainer Affection
-Originaltrainer Intensity
-Originaltrainer Memory
+Originaltrainer Freundschaft
+Originaltrainer Zutraulichkeit
+Originaltrainer Intensität
+Originaltrainer Erinnerung
 Originaltrainer TextVar
-Originaltrainer Feeling
+Originaltrainer Gefühl
 Ei (Jahr)
 Ei (Monat)
 Ei (Tag)
