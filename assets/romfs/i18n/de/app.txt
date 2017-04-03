@@ -215,10 +215,10 @@ geschlechtslos
 Alternative Form: #%d
 KP FP: %d
 Angriff FP: %d
-Verteidigung FP: %d
+Vert. FP: %d
 Initiative FP: %d
-Spezial-Angriff FP: %d
-Spezial-Verteidigung FP: %d
+Sp.-Ang. FP: %d
+Sp.-Vert. FP: %d
 Wettbewerbswert Coolness: %d
 Wettbewerbswert Schönheit: %d
 Wettbewerbswert Anmut/Putzigkeit: %d
@@ -360,10 +360,10 @@ Wesen
 Schicksalhafte Begegnung Bitschalter / Geschlecht / Alternative Form
 KP Fleißpunkte
 Angriff Fleißpunkte
-Verteidigung Fleißpunkte
+Vert. Fleißpunkte
 Initiative Fleißpunkte
-Spezial-Angriff Fleißpunkte
-Spezial-Verteidigung Fleißpunkte
+Sp.-Ang. Fleißpunkte
+Sp.-Vert. Fleißpunkte
 Wettbewerbswert Coolness
 Wettbewerbswert Schönheit
 Wettbewerbswert Anmut/Putzigkeit
