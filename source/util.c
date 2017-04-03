@@ -186,13 +186,11 @@ void settingsMenu(u8* mainbuf, int game) {
 				fclose(conf);
 
 				// FIXME: Loading in real-time crash the app the second time the lang changed
-				/*
 				GUITextsExit();
 				i18n_exit();
 
 				i18n_init();
 				GUITextsInit();
-				*/
 
 				// FIXME: Need to reload the img of the type of the lang selected
 			}

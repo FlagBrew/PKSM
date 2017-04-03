@@ -81,25 +81,6 @@ int utf8_strlen(char* s) {
    }
    return j;
 }
-/**
- * Transform a string from UTF8 (char*) to UTF32 with a specified memory size
- */
-wchar_t* ss_utf32(char* str, int size) {
-	int length = utf8_strlen(str)+1;
-	if (size == 0) {
-		size = length;
-	}
-	text = malloc(size*sizeof(u32));
-	utf8_to_utf32(text, (unsigned char*)str, length-1);
-	text[length-1] = '\0';
-	return (wchar_t*)text;
-}
-
-/**
- * Transform a string from UTF8 (char*) to UTF32 (wchar_t*)
- */
-wchar_t* s_utf32(char* str) { return ss_utf32(str, 0); }
-
 
 /**
  * File information : lines and chars
@@ -179,8 +160,12 @@ ArrayUTF32 i18n_FileToArrayUTF32(char* filepath) {
 		while (fgets(line, BUFFER_SIZE, fp) != 0) {
 			if (index < fileinfo.numberOfLines) {
 				i18n_removeEndline(line);
-				wchar_t* lineutf32 = s_utf32(line);
-				arrwc[index] = lineutf32;
+
+				int length = utf8_strlen(line);
+				u32* lineutf32 = malloc((length+1)*sizeof(u32)); // Freeing will be done in i18n_free_ArrayUTF32
+				utf8_to_utf32(lineutf32, (unsigned char*)line, length);
+				lineutf32[length] = '\0';
+				arrwc[index] = (wchar_t*)lineutf32;
 				index++;
 			}
 
@@ -431,7 +416,8 @@ void i18n_load(u8 language) {
 }
 
 void i18n_init() {
-	u8 language = 0;
+	u8 language = 1; // English by default
+
 	if (!checkFile("sdmc:/3ds/data/PKSM/i18n.bin")) {
 		CFGU_GetSystemLanguage(&language);
 		u8 localeConfig[1];
@@ -504,8 +490,7 @@ void i18n_initTextSwkbd(SwkbdState* swkbd, AppTextCode leftButtonTextCode, AppTe
 }
 
 void i18n_exit() {
-	free(text);
-	
+
 	free(i18n_files_loaded.abilities);
 	free(i18n_files_loaded.species);
 	free(i18n_files_loaded.natures);
