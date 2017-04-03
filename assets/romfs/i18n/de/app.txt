@@ -7,9 +7,9 @@ Sortiere Attacken...
 Lade Wesen...
 Lade Items...
 Sortiere Items...
-Lade versteckte Fähigkeiten...
+Lade Kraftreserven...
 Lade Schriftarten...
-Erstelle Schriftcache (%i/%i)...
+Erstelle Schriftartencache (%i/%i)...
 Fertig!
 Erstelle eine Standard-Bank...
 Sichere Bank...
@@ -21,7 +21,7 @@ Falsche Größe für dieses Spiel!
 Keine Karte eingesteckt!
 VERWALTUNG
 EVENTS
-CREDITS
+DANKSAGUNGEN
 Drücke A, um eine Option auszuwählen.
 Drücke START zum Beenden.
 POKEMON EDITOR
@@ -83,7 +83,7 @@ Fortschritt: %lu/%lu Bytes
 EVENTS
 SONSTIGES
 Drücke START zum Beenden.
-Credits
+Danksagungen
 Drücke B zum zurückkehren.
 Event-Datenbank
 Drücke A zum Fortfahren, B für zurück.
@@ -109,7 +109,7 @@ HT/OT Freundsch.:
 Verst. Fähigk.:
 KP
 Angriff
-Verteidg.
+Vert.
 Sp.-Angr.
 Sp.-Vert.
 Initiative
@@ -146,21 +146,21 @@ KP:
 Angriff:
 Verteidigung:
 Sp.-Angriff:
-Sp.-Vertdg.:
+Sp.-Vert.:
 Initiative:
-Bearbeite dein Pokémon unten.
+Bearbeite dein Pokémon auf dem unteren Bildschirm.
 Drücke SPEICHERN, wenn du fertig bist
 Neutral
 -Angriff
--Verteidg.
+-Vert.
 -Init.
 -Sp.-Ang.
--Sp.-Ver.
+-Sp.-Vert.
 +Angriff
-+Verteidg.
++Vert.
 +Init.
 +Sp.-Ang.
-+Sp.-Ver.
++Sp.-Vert.
 Ei-Schritte:
 STATUSWERT
 IV
@@ -170,11 +170,11 @@ Versteckte Fähigk.:
 Angriffe
 Ei-Attacken
 Ausgewählter Byte:
-Wähle oben ein Item mit A aus.
-Wähle oben ein Wesen mit A aus.
-Wähle oben einen Pokéball mit A aus.
-Wähle oben einen KP-Typ mit A aus.
-Wähle oben eine Form mit A aus.
+Wähle auf dem oberen Bildschirm ein Item mit A aus.
+Wähle auf dem oberen Bildschirm ein Wesen mit A aus.
+Wähle auf dem oberen Bildschirm einen Pokéball mit A aus.
+Wähle auf dem oberen Bildschirm einen KP-Typ mit A aus.
+Wähle auf dem oberen Bildschirm eine Form mit A aus.
 Bank %d
 Lv.%u
 ID. %u
@@ -213,12 +213,12 @@ männlich
 weiblich
 geschlechtslos
 Alternative Form: #%d
-KP EV: %d
-Angriff EV: %d
-Verteidigung EV: %d
-Initiative EV: %d
-Spezial-Angriff EV: %d
-Spezial-Verteidigung EV: %d
+KP FP: %d
+Angriff FP: %d
+Vert. FP: %d
+Initiative FP: %d
+Sp.-Ang. FP: %d
+Sp.-Vert. FP: %d
 Wettbewerbswert Coolness: %d
 Wettbewerbswert Schönheit: %d
 Wettbewerbswert Anmut/Putzigkeit: %d
@@ -358,12 +358,12 @@ PID, Byte 3
 PID, Byte 4
 Wesen
 Schicksalhafte Begegnung Bitschalter / Geschlecht / Alternative Form
-KP Fleißwert
-Angriff Fleißwert
-Verteidigung Fleißwert
-Initiative Fleißwert
-Spezial-Angriff Fleißwert
-Spezial-Verteidigung Fleißwert
+KP Fleißpunkte
+Angriff Fleißpunkte
+Vert. Fleißpunkte
+Initiative Fleißpunkte
+Sp.-Ang. Fleißpunkte
+Sp.-Vert. Fleißpunkte
 Wettbewerbswert Coolness
 Wettbewerbswert Schönheit
 Wettbewerbswert Anmut/Putzigkeit
