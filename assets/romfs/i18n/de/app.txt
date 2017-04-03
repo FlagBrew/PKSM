@@ -1,0 +1,553 @@
+Lade Zusatzdaten herunter (%d)...
+Lade Dateien...
+Lade Sprachdaten...
+Lade Fähigkeiten...
+Lade Attacken...
+Sortiere Attacken...
+Lade Wesen...
+Lade Items...
+Sortiere Items...
+Lade versteckte Fähigkeiten...
+Lade Schriftarten...
+Erstelle Schriftcache (%i/%i)...
+Fertig!
+Erstelle eine Standard-Bank...
+Sichere Bank...
+Starte die Anwendung neu!
+Dir fehlen einige Zusatzdaten!
+Lade Spielstand...
+Spiel nicht gefunden!
+Falsche Größe für dieses Spiel!
+Keine Karte eingesteckt!
+VERWALTUNG
+EVENTS
+CREDITS
+Drücke A, um eine Option auszuwählen.
+Drücke START zum Beenden.
+POKEMON EDITOR
+SPIELSTAND INFO
+ZUSATZLAGER
+MASSENEINFÜGEN
+Änderungen speichern?
+Drücke A zum Fortfahren.
+Drücke A zum Fortfahren, B zum Abbrechen.
+Bitte warten.
+Karte hat Priorität über Downloadversion.
+Bewege dein DPAD. Drücke A zum Fortfahren, B zum Beenden.
+X
+Y
+Omega Rubin
+Alpha Saphir
+Sonne
+Mond
+Diamant
+Perl
+Platin
+Heart Gold
+Soul Siver
+Schwarz
+Weiß
+Schwarz 2
+Weiß 2
+Lade Grafiken...
+Lade Bild %i / %i
+Bank.bin hat eine ungültige Größe!
+Ausgewählte Box löschen?
+Änderungen an bank.bin speichern?
+Pokédex-Einträge freischalten?
+Box %lu / Slot %lu
+Fehler beim Einfügen!
+Einfügen erfolgreich!
+Item nicht verfügbar in XY!
+Pokédex-Einträge freischalten?
+Box %lu / Slot %lu
+XD-Sammlung übernommen!
+Colosseum-Samml. übernommen!
+10. Jubiläum übernommen!
+Ns Sammlung übernommen!
+Kontakthain-Sammlg. übernommen!
+Traumradar-Sammlung übernommen!
+Living-Dex übernommen!
+Deoxys-Sammlung übernommen!
+My Pokémon Ranch übernommen!
+Koreanische Sammlung übernommen!
+Sprache erfolgreich festgelegt!
+Geheimgeschehen-Box geleert!
+Abbrechen
+Festlegen
+Spitznamen eingeben
+OT-Namen eingeben
+Wirklich freilassen?
+Freigelassen!
+Fortschritt: %lu/%lu Bytes
+EVENTS
+ANDERES
+Drücke START zum Beenden.
+Credits
+Drücke B zum zurückkehren.
+Event-Datenbank
+Drücke A zum Fortfahren, B für zurück.
+Drücke START zum Einfügen, B für zurück.
+Drücke A zum Auswählen, B für zurück.
+Sprachen:
+Überschr. Wunderkarte:
+Sprache a. WK anwenden:
+WK einfügen in Slot:
+Spielstand-Editor
+Sprache:
+Geheimgeschehen-Box leeren
+Drücke START zum Bearbeiten, A zum Umschalten, B zum Beenden.
+Spitzname:
+OT:
+Pokérus
+Wesen:
+Fähigkeit:
+Item:
+ESV / TSV:
+TID / SID:
+HT/OT Freundsch.:
+Verst. Fähigk.:
+KP
+Angriff
+Verteidg.
+Sp.-Angr.
+Sp.-Vert.
+Initiative
+Lv.%u
+Attacken
+Ei-Schritte:
+BEARBEITEN
+KLONEN
+FREILASSEN
+GENERIEREN
+ZURÜCK
+Box %d
+Starte den Client auf deinem PC...
+Drücke B zum Abbrechen.
+Team
+Drücke A zum Klonen in ausgw. Slot, B zum Abbrechen.
+%ls wurde ausgewählt.
+Wähle mit A auf dem oberen Bildschirm aus.
+TID: %u / SID: %u / TSV: %u
+Seed: %lx %lx %lx %lx
+Level:
+Wesen:
+Fähigk.:
+Item:
+Shiny:
+Pokérus:
+OT:
+Spitzname:
+Freundschaft:
+STATUSW.
+ATTACKEN
+SPEICHERN
+KP:
+Angriff:
+Verteidigung:
+Sp.-Angriff:
+Sp.-Vertdg.:
+Initiative:
+Bearbeite dein Pokémon unten.
+Drücke SPEICHERN, wenn du fertig bist
+Neutral
+-Angriff
+-Verteidg.
+-Init.
+-Sp.-Ang.
+-Sp.-Ver.
++Angriff
++Verteidg.
++Init.
++Sp.-Ang.
++Sp.-Ver.
+Ei-Schritte:
+STATUSWERT
+IV
+EV
+GESAMT
+Versteckte Fähigk.:
+Angriffe
+Wieder erlernbare Angriffe
+Ausgewählter Byte:
+Wähle oben ein Item mit A aus.
+Wähle oben ein Wesen mit A aus.
+Wähle oben einen Pokéball mit A aus.
+Wähle oben einen KP-Typ mit A aus.
+Wähle oben eine Form mit A aus.
+Bank %d
+Lv.%u
+ID. %u
+Speichern %d
+Y: BERICHT
+BOX LEEREN
+FREILASSEN
+XD-Sammlung
+Colosseum-Sammlung
+10. Jubiläum Sammlung
+Ns Sammlung
+Kontaktebenenhain-Sammlg.
+Traumradar-Sammlung
+Living-Dex
+Oblivia Deoxys-Sammlung
+Pokémon Ranch-Sammlung
+KOR Events Sammlung
+%d Boxen werden ersetzt.
+Masseneinfügen
+Drücke START zum Einfügen, B zum Verlassen.
+Bank-Größe:
+Spielstand sichern
+Bank sichern
+Drücke auf -/+ zum Ändern der Größe.
+Ja
+Nein
+Spezies: #%d - %ls
+Getragenes Item: #%d - %ls
+TID: %d
+SID: %d
+Fähigkeit: %ls
+Wesen: %ls
+Schicksalhafte Begegnung Bitschalter
+Geschlecht:
+männlich
+weiblich
+geschlechtslos
+Alternative Form: #%d
+KP EV: %d
+Angriff EV: %d
+Verteidigung EV: %d
+Initiative EV: %d
+Spezial-Angriff EV: %d
+Spezial-Verteidigung EV: %d
+Wettbewerbswert Coolness: %d
+Wettbewerbswert Schönheit: %d
+Wettbewerbswert Anmut/Putzigkeit: %d
+Wettbewerbswert Klugheit: %d
+Wettbewerbswert Stärke: %d
+Wettbewerbswert Glanz: %d
+Band des Kalos-Champs
+Band des Hoenn-Champs (G3)
+Band des Sinnoh-Champs
+Zutraulichkeitsband
+Trainingsband
+Profikampfband
+Meisterkampfband
+Fleiß-Band
+Band der Wachsamkeit
+Band des Schocks
+Band der Traurigkeit
+Band der Sorglosigkeit
+Band der Entspannung
+Band des Schlafens
+Band des Lächelns
+Hinreißendes Band
+Königliches Band
+Hinreißendes Königliches Band
+Band des Künstlers
+Fußabdruck-Band
+Rekordband
+Band der Legende
+Band des Landes
+Band der Nation
+Band der Erde
+Band der Welt
+Klassisches Band
+Premierband
+Veranstaltungsband
+Geburtstagsband
+Sonderband
+Gedenkband
+Wunschband
+Kampfmeisterband
+Regionalmeisterband
+Nationalmeisterband
+Weltmeisterband
+-
+-
+Band des Hoenn-Champs (G6)
+Band des Wettbewerbsstars
+Coolnessmeisterband
+Schönheitsmeisterband
+Putzigkeitsmeisterband
+Klugheitsmeisterband
+Stärkemeisterband
+Band des Alola-Champs
+Battle-Royale-Meisterband
+Baum-Eliteband
+Baum-Meisterband
+-
+-
+-
+-
+-
+-
+Spitzname:
+Attacke 1: #%d - %ls
+Attacke 2: #%d - %ls
+Attacke 3: #%d - %ls
+Attacke 4: #%d - %ls
+Attacke 1 AP: %d
+Attacke 2 AP: %d
+Attacke 3 AP: %d
+Attacke 4 AP: %d
+Attacke 1 AP-Plus: %d
+Attacke 2 AP-Plus: %d
+Attacke 3 AP-Plus: %d
+Attacke 4 AP-Plus: %d
+Wieder erlernbare Attacke 1: #%d - %ls
+Wieder erlernbare Attacke 2: #%d - %ls
+Wieder erlernbare Attacke 3: #%d - %ls
+Wieder erlernbare Attacke 4: #%d - %ls
+hat einen Spitznamen
+ist ein Ei
+Aktueller Trainer Name:
+Aktueller Trainer Freundschaft: %d
+Aktueller Trainer Zutraulichkeit: %d
+Aktueller Trainer Intensität: %d
+Aktueller Trainer Erinnerung: %d
+Aktueller Trainer Gefühl: %d
+Sattheit: %d
+Zuwendung: %d
+Originaltrainer Name:
+Originaltrainer Freundschaft: %d
+Originaltrainer Zutraulichkeit: %d
+Originaltrainer Intensität: %d
+Originaltrainer Erinnerung: %d
+Originaltrainer Gefühl: %d
+Ei (Jahr): %d
+Ei (Monat): %d
+Ei (Tag): %d
+Getroffen (Jahr): %d
+Getroffen (Monat): %d
+Getroffen (Tag): %d
+Getroffen (Level): %d
+: Originaltrainer Geschlecht
+KP mit Super-Spezialtraining trainiert
+Angriff mit Super-Spezialtraining trainiert
+Verteidigung mit Super-Spezialtraining trainiert
+Spezial-Angriff mit Super-Spezialtraining trainiert
+Spezial-Verteidigung mit Super-Spezialtraining trainiert
+Initiative mit Super-Spezialtraining trainiert
+Verschlüsselungskonstante, Byte 1
+Verschlüsselungskonstante, Byte 2
+Verschlüsselungskonstante, Byte 3
+Verschlüsselungskonstante, Byte 4
+Plausibilität, Byte 1
+Plausibilität, Byte 2
+Prüfsumme, Byte 1
+Prüfsumme, Byte 2
+Spezies, Byte 1
+Spezies, Byte 2
+Getragenes Item, Byte 1
+Getragenes Item, Byte 2
+TID, Byte 1
+TID, Byte 2
+SID, Byte 1
+SID, Byte 2
+Erfahrung, Byte 1
+Erfahrung, Byte 2
+Erfahrung, Byte 3
+Erfahrung, Byte 4
+Fähigkeit
+Fähigkeitsnummer
+MarkValue, Byte 1
+MarkValue, Byte 2
+PID, Byte 1
+PID, Byte 2
+PID, Byte 3
+PID, Byte 4
+Wesen
+Schicksalhafte Begegnung Bitschalter / Geschlecht / Alternative Form
+KP Fleißwert
+Angriff Fleißwert
+Verteidigung Fleißwert
+Initiative Fleißwert
+Spezial-Angriff Fleißwert
+Spezial-Verteidigung Fleißwert
+Wettbewerbswert Coolness
+Wettbewerbswert Schönheit
+Wettbewerbswert Anmut/Putzigkeit
+Wettbewerbswert Klugheit
+Wettbewerbswert Stärke
+Wettbewerbswert Glanz
+Pokémon-Resort Eventstatus Bitschalter
+Pokérus
+Supertraining Bitschalter, Byte 1
+Supertraining Bitschalter, Byte 2
+Supertraining Bitschalter, Byte 3
+Supertraining Bitschalter, Byte 4
+Band Bitschalter, Byte 1
+Band Bitschalter, Byte 2
+Band Bitschalter, Byte 3
+Band Bitschalter, Byte 4
+Band Bitschalter, Byte 5
+Band Bitschalter, Byte 6
+Band Bitschalter, Byte 7
+Band Bitschalter, Byte 8
+Band Speicher Wettbewerb
+Band Speicher Kampf
+Dist Byte
+Spitzname, Byte 1
+Spitzname, Byte 2
+Spitzname, Byte 3
+Spitzname, Byte 4
+Spitzname, Byte 5
+Spitzname, Byte 6
+Spitzname, Byte 7
+Spitzname, Byte 8
+Spitzname, Byte 9
+Spitzname, Byte 10
+Spitzname, Byte 11
+Spitzname, Byte 12
+Spitzname, Byte 13
+Spitzname, Byte 14
+Spitzname, Byte 15
+Spitzname, Byte 16
+Spitzname, Byte 17
+Spitzname, Byte 18
+Spitzname, Byte 19
+Spitzname, Byte 20
+Spitzname, Byte 21
+Spitzname, Byte 22
+Spitzname, Byte 23
+Spitzname, Byte 24
+Attacke 1, Byte 1
+Attacke 1, Byte 2
+Attacke 2, Byte 1
+Attacke 2, Byte 2
+Attacke 3, Byte 1
+Attacke 3, Byte 2
+Attacke 4, Byte 1
+Attacke 4, Byte 2
+Attacke 1 PP
+Attacke 2 PP
+Attacke 3 PP
+Attacke 4 PP
+Attacke 1 PP Up
+Attacke 2 PP Up
+Attacke 3 PP Up
+Attacke 4 PP Up
+Wieder erlernbare Attacke 1, Byte 1
+Wieder erlernbare Attacke 1, Byte 2
+Wieder erlernbare Attacke 2, Byte 1
+Wieder erlernbare Attacke 2, Byte 2
+Wieder erlernbare Attacke 3, Byte 1
+Wieder erlernbare Attacke 3, Byte 2
+Wieder erlernbare Attacke 4, Byte 1
+Wieder erlernbare Attacke 4, Byte 2
+Geheimer Supertraininging-Bitschalter
+IV, Byte 1
+IV, Byte 2
+IV, Byte 3
+IV, Byte 4
+Aktueller Trainer Name, Byte 1
+Aktueller Trainer Name, Byte 2
+Aktueller Trainer Name, Byte 3
+Aktueller Trainer Name, Byte 4
+Aktueller Trainer Name, Byte 5
+Aktueller Trainer Name, Byte 6
+Aktueller Trainer Name, Byte 7
+Aktueller Trainer Name, Byte 8
+Aktueller Trainer Name, Byte 9
+Aktueller Trainer Name, Byte 10
+Aktueller Trainer Name, Byte 11
+Aktueller Trainer Name, Byte 12
+Aktueller Trainer Name, Byte 13
+Aktueller Trainer Name, Byte 14
+Aktueller Trainer Name, Byte 15
+Aktueller Trainer Name, Byte 16
+Aktueller Trainer Name, Byte 17
+Aktueller Trainer Name, Byte 18
+Aktueller Trainer Name, Byte 19
+Aktueller Trainer Name, Byte 20
+Aktueller Trainer Name, Byte 21
+Aktueller Trainer Name, Byte 22
+Aktueller Trainer Name, Byte 23
+Aktueller Trainer Name, Byte 24
+Aktueller Trainer Geschlecht
+Aktueller Handler
+Letzter Handler 1 Region
+Letzter Handler 1 Land
+Letzter Handler 2 Region
+Letzter Handler 2 Land
+Letzter Handler 3 Region
+Letzter Handler 3 Land
+Letzter Handler 4 Region
+Letzter Handler 4 Land
+Letzter Handler 5 Region
+Letzter Handler 5 Land
+Aktueller Trainer Freundschaft
+Aktueller Trainer Zutraulichkeit
+Aktueller Trainer Intensität
+Aktueller Trainer Erinnerung
+Aktueller Trainer Gefühl
+Aktueller Trainer TextVar, Byte 1
+Aktueller Trainer TextVar, Byte 2
+Sattheit
+Zuwendung
+Originaltrainer Name, Byte 1
+Originaltrainer Name, Byte 2
+Originaltrainer Name, Byte 3
+Originaltrainer Name, Byte 4
+Originaltrainer Name, Byte 5
+Originaltrainer Name, Byte 6
+Originaltrainer Name, Byte 7
+Originaltrainer Name, Byte 8
+Originaltrainer Name, Byte 9
+Originaltrainer Name, Byte 10
+Originaltrainer Name, Byte 11
+Originaltrainer Name, Byte 12
+Originaltrainer Name, Byte 13
+Originaltrainer Name, Byte 14
+Originaltrainer Name, Byte 15
+Originaltrainer Name, Byte 16
+Originaltrainer Name, Byte 17
+Originaltrainer Name, Byte 18
+Originaltrainer Name, Byte 19
+Originaltrainer Name, Byte 20
+Originaltrainer Name, Byte 21
+Originaltrainer Name, Byte 22
+Originaltrainer Name, Byte 23
+Originaltrainer Name, Byte 24
+Originaltrainer Friendship
+Originaltrainer Affection
+Originaltrainer Intensity
+Originaltrainer Memory
+Originaltrainer TextVar
+Originaltrainer Feeling
+Ei (Jahr)
+Ei (Monat)
+Ei (Tag)
+Begegnung (Jahr)
+Begegnung (Monat)
+Begegnung (Tag)
+Ei (Ort)
+Begegnung (Ort)
+Ball
+Begegnung Level / Originaltrainer Geschlecht
+Hyper-Spezialtraining Bitschalter
+Version
+Land
+Region
+Konsolenregion
+Sprache
+Server läuft unter http://%s:9000
+Bufferzuweisung fehlgeschlagen!
+socInit fehlgeschlagen!
+Sockel nicht verfügbar!
+Binden fehlgeschlagen!
+Lauschen fehlgeschlagen!
+Fehler während Verarbeitungsphase!
+http-Kontext öffnen fehlgeschlagen!
+Herunterladen der Zusatzdaten fehlgeschlagen!
+Request Handler Field hinzufügen ist fehlgeschlagen!
+SSLOpt festlegen fehlgeschlagen!
+Start einer http-Anfrage fehlgeschlagen!
+Erhalten eines Statuscodes fehlgeschlagen!
+Weiterleitung fehlgeschlagen!
+Empfang der Downloadgröße fehlgeschlagen!
+Speicherzuweisung fehlgeschlagen!
+Ändere Größe...
+Bank-Größe geändert!
+Spielstand-Sicherung erstellt!
+Bank-Sicherung erstellt!
