@@ -1,0 +1,553 @@
+Assets aan het downloaden...
+Bestanden aan het downloaden...
+Locale assets aan het laden...
+Abilities aan het laden
+Moves aan het laden
+Moves aan het sorteren
+Natures aan het sorteren
+Items aan het laden
+Items aan het sorteren
+Hidden powers aan het laden
+Lettertypen aan het laden...
+Lettertypen aan het cacheren %i/%i
+Klaar!
+Default bank aan het maken...
+Bank backup aan het creëren...
+Herstart de applicatie!
+Je mist een aantal Assets!
+Save aan het laden...
+Spel niet gevonden!
+Verkeerde grootte voor dit spel!
+Geen cartridge aanwezig!
+MANAGEMENT
+EVENTS
+CREDITS
+Druk op A om een optie te selecteren.
+Druk op START om te stoppen.
+POKEMON EDITOR
+SAVE INFO
+EXTRA STORAGE
+MASSALE INJECTOR
+Aanpassingen opslaan?
+Druk op A om door te gaan.
+Druk op A om door te gaan, B om te annuleren.
+Even wachten alstublieft.
+Cartridge heeft prioriteit over een digitale versie.
+Beweeg je DPAD. Druk op A om door te gaan, B om te annuleren.
+X
+Y
+Omega Ruby
+Alpha Sapphire
+Sun
+Moon
+Diamond
+Pearl
+Platinum
+Heart Gold
+Soul Silver
+Black
+White
+Black 2
+White 2
+Graphics aan het laden...
+Beeld aan het laden %i / %i
+Bank.bin heeft een verkeerde grootte!
+Verwijder de geselecteerde box?
+Bank.bin veranderingen bewaren?
+PokeDex flags bewaren?
+Box %lu / Slot %lu
+Error tijdens injectie!
+Injectie voltooid!
+Item niet beschikbaar in XY!
+PokeDex flags bewaren?
+Box %lu / Slot %lu
+XD collectie succesvol geplaatst!
+Collosseum col. succesvol geplaatst!
+10th Anniversary succesvol geplaatst!
+N's collection injectie succesvol!
+Entree Forest col. succesvol geplaatst!
+Dream Radar col. succesvol geplaatst!
+Living dex set succesvol geplaatst!
+Deoxys collection succesvol geplaatst!
+My Pokemon Ranch succesvol geplaatst!
+Korean collection succesvol geplaatst!
+Taal succesvol geplaatst!
+Mystery Gift box opgeschoond!
+Annuleren
+Set
+Vul je nickname in
+Vul je OT name in
+Vrijlating bevestigen?
+Vrijgelaten!
+Voortgang: %lu/%lu bytes
+EVENTS
+OTHER
+druk op START om te stoppen.
+Credits
+Druk op B om terug te gaan.
+Event Database
+Druk op A om door te gaan, B om terug te gaan.
+Druk op START om je injecteren, B om terug te gaan.
+Druk op A om te selecteren, B om terug te gaan.
+Talen:
+Wondercard overschrijven:
+Taal aanpassen aan WC:
+Injecteer WC in slot:
+Save File Editor
+Taal:
+Mystery Gift box legen
+Druk op START om aan te passen, A om te wisselen, B om te stoppen.
+Nickname:
+OT:
+Pokerus:
+Nature
+Ability:
+Item:
+ESV / TSV:
+TID / SID:
+HT/OT Fr.ship:
+Hidden Power:
+HP
+Attack
+Defense
+Sp. Atk
+Sp. Def
+Speed
+Lv.%u
+Moves
+Egg cycle:
+AANPASSEN
+KLONEN
+VRIJLATEN
+GENEREREN
+STOPPEN
+Box %d
+Start het programma op je PC...
+Druk B om te stoppen
+Team
+Druk op A om te klonen in het geselecteerde slot, B om te annuleren.
+%ls is geselecteerd.
+Genereer met A in het bovenste scherm.
+TID: %u / SID: %u / TSV: %u
+Seed: %lx %lx %lx %lx
+Level:
+Nature:
+Ability:
+Item:
+Shiny:
+Pokerus:
+OT:
+Nickname:
+Friendship:
+STATS
+MOVES
+SAVE
+HP:
+Attack:
+Defense:
+Sp. Attack:
+Sp. Defense:
+Speed:
+Pas je pokemon aan in het onderste scherm
+Druk SAVE wanneer je klaar bent
+Neutral
+-Attack
+-Defense
+-Speed
+-Sp. Atk.
+-Sp. Def.
++Attack
++Defense
++Speed
++Sp. Atk.
++Sp. Def.
+Egg cycle:
+STATS
+IV
+EV
+TOTAL
+Hidden Power:
+Moves
+Moves opnieuw leren
+Geselecteerde byte:
+Selecteer een item met A in het bovenste scherm.
+Selecteer een nature met A in het bovenste scherm.
+Selecteer een ball met A in het bovenste scherm.
+Selecteer een HP type met A in het bovenste scherm.
+Selecteer een form met A in het bovenste scherm.
+Bank %d
+Lv.%u
+ID. %u
+Save %d
+Y: BEKIJKEN
+BOX LEGEN
+VRIJLATEN
+XD Collection
+Colosseum Collection
+10th Anniversary Collection
+N's Collection
+Entree Forest Collection
+Dream Radar Collection
+Living Dex
+Oblivia Deoxys Collection
+Pokemon Ranch Collection
+KOR Events Collection
+%d boxen worden vervangen.
+Massale Injector
+Druk START om te injecteren, B om te stoppen.
+Bank Grootte:                  
+Save Back-uppen
+Bank Back-uppen
+Tik het getal aan om de grootte te veranderen.
+Ja
+Nee
+Pokémon soort: #%d - %ls
+Vastgehouden Item: #%d - %ls
+TID: %d
+SID: %d
+Ability: %ls
+Nature: %ls
+Fateful Encounter flag
+Geslacht:
+man
+vrouw
+genderloos
+Alternatieve Form: #%d
+HP EV: %d
+ATK EV: %d
+DEF EV: %d
+SPE EV: %d
+SPA EV: %d
+SPD EV: %d
+Contest Value Cool: %d
+Contest Value Beauty: %d
+Contest Value Cute: %d
+Contest Value Smart: %d
+Contest Value Tough: %d
+Contest Value Sheen: %d
+Champion Kalos
+Champion G3 Hoenn
+Champion Sinnoh
+Best Friends
+Training
+Skillful Battler
+Battler Expert
+Effort
+Alert
+Shock
+Downcast
+Careless
+Relax
+Snooze
+Smile
+Gorgeous
+Royal
+Gorgeous Royal
+Artist
+Footprint
+Record
+Legend
+Country
+National
+Earth
+World
+Classic
+Premier
+Event
+Birthday
+Special
+Souvenir
+Wishing
+Champion Battle
+Champion Regional
+Champion National
+Champion World
+-
+-
+Champion G6 Hoenn
+Contest Star
+Master Coolness
+Master Beauty
+Master Cuteness
+Master Cleverness
+Master Toughness
+Champion Alola
+Battle Royale
+Battle Tree Great
+Battle Tree Master
+-
+-
+-
+-
+-
+-
+Nickname: 
+Move 1: #%d - %ls
+Move 2: #%d - %ls
+Move 3: #%d - %ls
+Move 4: #%d - %ls
+Move 1 PP: %d
+Move 2 PP: %d
+Move 3 PP: %d
+Move 4 PP: %d
+Move 1 PP Up: %d
+Move 2 PP Up: %d
+Move 3 PP Up: %d
+Move 4 PP Up: %d
+Relearn Move 1: #%d - %ls
+Relearn Move 2: #%d - %ls
+Relearn Move 3: #%d - %ls
+Relearn Move 4: #%d - %ls
+is Nicknamed
+is Egg
+Held Trainer name: 
+Held Trainer Friendship: %d
+Held Trainer Affection: %d
+Held Trainer Intensity: %d
+Held Trainer Memory: %d
+Held Trainer Feeling: %d
+Fullness: %d
+Enjoyment: %d
+Original Trainer Name: 
+Original Trainer Friendship: %d
+Original Trainer Affection: %d
+Original Trainer Intensity: %d
+Original Trainer Memory: %d
+Original Trainer Feeling: %d
+Egg Year: %d
+Egg Month: %d
+Egg Day: %d
+Met Year: %d
+Met Month: %d
+Met Day: %d
+Met Level: %d
+: Original Trainer Gender
+HP Hyper Trained
+ATK Hyper Trained
+DEF Hyper Trained
+SP.ATK Hyper Trained
+SP.DEF Hyper Trained
+SPEED Hyper Trained
+Encryption Constant, byte 1
+Encryption Constant, byte 2
+Encryption Constant, byte 3
+Encryption Constant, byte 4
+Sanity, byte 1
+Sanity, byte 2
+Checksum, byte 1
+Checksum, byte 2
+Species, byte 1
+Species, byte 2
+Held Item, byte 1
+Held Item, byte 2
+TID, byte 1
+TID, byte 2
+SID, byte 1
+SID, byte 2
+Experience, byte 1
+Experience, byte 2
+Experience, byte 3
+Experience, byte 4
+Ability
+Ability Number
+MarkValue, byte 1
+MarkValue, byte 2
+PID, byte 1
+PID, byte 2
+PID, byte 3
+PID, byte 4
+Nature
+Fateful Encounter flag / Gender / Alternative Form
+HP Effort Value
+ATK Effort Value
+DEF Effort Value
+SPE Effort Value
+SPA Effort Value
+SPD Effort Value
+Contest value Cool
+Contest value Beauty
+Contest value Cute
+Contest value Smart
+Contest value Tough
+Contest value Sheen
+PokePelago Event Status flag
+Pokerus
+Super Train flag, byte 1
+Super Train flag, byte 2
+Super Train flag, byte 3
+Super Train flag, byte 4
+Ribbon flag, byte 1
+Ribbon flag, byte 2
+Ribbon flag, byte 3
+Ribbon flag, byte 4
+Ribbon flag, byte 5
+Ribbon flag, byte 6
+Ribbon flag, byte 7
+Ribbon flag, byte 8
+Ribbon Memory Contest
+Ribbon Memory Battle
+Dist byte
+Nickname, byte 1
+Nickname, byte 2
+Nickname, byte 3
+Nickname, byte 4
+Nickname, byte 5
+Nickname, byte 6
+Nickname, byte 7
+Nickname, byte 8
+Nickname, byte 9
+Nickname, byte 10
+Nickname, byte 11
+Nickname, byte 12
+Nickname, byte 13
+Nickname, byte 14
+Nickname, byte 15
+Nickname, byte 16
+Nickname, byte 17
+Nickname, byte 18
+Nickname, byte 19
+Nickname, byte 20
+Nickname, byte 21
+Nickname, byte 22
+Nickname, byte 23
+Nickname, byte 24
+Move 1, byte 1
+Move 1, byte 2
+Move 2, byte 1
+Move 2, byte 2
+Move 3, byte 1
+Move 3, byte 2
+Move 4, byte 1
+Move 4, byte 2
+Move 1 PP
+Move 2 PP
+Move 3 PP
+Move 4 PP
+Move 1 PP Up
+Move 2 PP Up
+Move 3 PP Up
+Move 4 PP Up
+Relearn Move 1, byte 1
+Relearn Move 1, byte 2
+Relearn Move 2, byte 1
+Relearn Move 2, byte 2
+Relearn Move 3, byte 1
+Relearn Move 3, byte 2
+Relearn Move 4, byte 1
+Relearn Move 4, byte 2
+Secret Super Training Flag
+IV, byte 1
+IV, byte 2
+IV, byte 3
+IV, byte 4
+Held Trainer Nickname, byte 1
+Held Trainer Nickname, byte 2
+Held Trainer Nickname, byte 3
+Held Trainer Nickname, byte 4
+Held Trainer Nickname, byte 5
+Held Trainer Nickname, byte 6
+Held Trainer Nickname, byte 7
+Held Trainer Nickname, byte 8
+Held Trainer Nickname, byte 9
+Held Trainer Nickname, byte 10
+Held Trainer Nickname, byte 11
+Held Trainer Nickname, byte 12
+Held Trainer Nickname, byte 13
+Held Trainer Nickname, byte 14
+Held Trainer Nickname, byte 15
+Held Trainer Nickname, byte 16
+Held Trainer Nickname, byte 17
+Held Trainer Nickname, byte 18
+Held Trainer Nickname, byte 19
+Held Trainer Nickname, byte 20
+Held Trainer Nickname, byte 21
+Held Trainer Nickname, byte 22
+Held Trainer Nickname, byte 23
+Held Trainer Nickname, byte 24
+Held Trainer Gender
+Current Handler
+Latest Handlers 1 Region
+Latest Handlers 1 Country
+Latest Handlers 2 Region
+Latest Handlers 2 Country
+Latest Handlers 3 Region
+Latest Handlers 3 Country
+Latest Handlers 4 Region
+Latest Handlers 4 Country
+Latest Handlers 5 Region
+Latest Handlers 5 Country
+Held Trainer Friendship
+Held Trainer Affection
+Held Trainer Intensity
+Held Trainer Memory
+Held Trainer Feeling
+Held Trainer TextVar, byte 1
+Held Trainer TextVar, byte 2
+Fullness
+Enjoyment
+Original Trainer Name, byte 1
+Original Trainer Name, byte 2
+Original Trainer Name, byte 3
+Original Trainer Name, byte 4
+Original Trainer Name, byte 5
+Original Trainer Name, byte 6
+Original Trainer Name, byte 7
+Original Trainer Name, byte 8
+Original Trainer Name, byte 9
+Original Trainer Name, byte 10
+Original Trainer Name, byte 11
+Original Trainer Name, byte 12
+Original Trainer Name, byte 13
+Original Trainer Name, byte 14
+Original Trainer Name, byte 15
+Original Trainer Name, byte 16
+Original Trainer Name, byte 17
+Original Trainer Name, byte 18
+Original Trainer Name, byte 19
+Original Trainer Name, byte 20
+Original Trainer Name, byte 21
+Original Trainer Name, byte 22
+Original Trainer Name, byte 23
+Original Trainer Name, byte 24
+Original Trainer Friendship
+Original Trainer Affection
+Original Trainer Intensity
+Original Trainer Memory
+Original Trainer TextVar
+Original Trainer Feeling
+Egg Year
+Egg Month
+Egg Day
+Met Year
+Met Month
+Met Day
+Egg Location
+Met Location
+Ball
+Met Level / Original Trainer Gender
+Hyper Train Flags
+Versie
+Land
+Regio
+Console Regio
+Taal
+Server draait op http://%s:9000
+Buffer allocatie mislukt!
+socInit mislukt!
+Socket niet toegankelijk!
+Binding mislukt!
+Listening mislukt!
+Error tijdens processing phase!
+Niet gelukt om http context te openen!
+Niet gelukt om assets te downloaden!
+Niet gelukt om een request header field toe te voegen!
+Niet gelukt om SSLOpt te plaatsen!
+Niet gelukt om een http request te beginnen!
+Niet gelukt om een status code te ontvangen!
+Redirection mislukt!
+Niet gelukt om download grootte te ontvangen!
+Niet gelukt om geheugen toe te wijzen!
+Grootte aan het veranderen...
+Bank grootte aangepast!
+Save backup aangepast!
+Bank backup aangepast!
