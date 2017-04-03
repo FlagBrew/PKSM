@@ -7,9 +7,9 @@ Sortiere Attacken...
 Lade Wesen...
 Lade Items...
 Sortiere Items...
-Lade versteckte Fähigkeiten...
+Lade Kraftreserven...
 Lade Schriftarten...
-Erstelle Schriftcache (%i/%i)...
+Erstelle Schriftartenpuffer (%i/%i)...
 Fertig!
 Erstelle eine Standard-Bank...
 Sichere Bank...
@@ -18,10 +18,10 @@ Dir fehlen einige Zusatzdaten!
 Lade Spielstand...
 Spiel nicht gefunden!
 Falsche Größe für dieses Spiel!
-Keine Karte eingesteckt!
+Kein Modul eingesteckt!
 VERWALTUNG
 EVENTS
-CREDITS
+DANKSAGUNGEN
 Drücke A, um eine Option auszuwählen.
 Drücke START zum Beenden.
 POKEMON EDITOR
@@ -32,7 +32,7 @@ MASSENEINFÜGEN
 Drücke A zum Fortfahren.
 Drücke A zum Fortfahren, B zum Abbrechen.
 Bitte warten.
-Karte hat Priorität über Downloadversion.
+Modul hat Priorität über Downloadversion.
 Bewege dein DPAD. Drücke A zum Fortfahren, B zum Beenden.
 X
 Y
@@ -54,12 +54,12 @@ Lade Bild %i / %i
 Bank.bin hat eine ungültige Größe!
 Ausgewählte Box löschen?
 Änderungen an bank.bin speichern?
-Pokédex-Einträge freischalten?
+Pokédex-Einträge Bitschalter Speichern?
 Box %lu / Slot %lu
 Fehler beim Einfügen!
 Einfügen erfolgreich!
 Item nicht verfügbar in XY!
-Pokédex-Einträge freischalten?
+Pokédex-Einträge Bitschalter Speichern?
 Box %lu / Slot %lu
 XD-Sammlung übernommen!
 Colosseum-Samml. übernommen!
@@ -81,9 +81,9 @@ Wirklich freilassen?
 Freigelassen!
 Fortschritt: %lu/%lu Bytes
 EVENTS
-ANDERES
+SONSTIGES
 Drücke START zum Beenden.
-Credits
+Danksagungen
 Drücke B zum zurückkehren.
 Event-Datenbank
 Drücke A zum Fortfahren, B für zurück.
@@ -109,7 +109,7 @@ HT/OT Freundsch.:
 Verst. Fähigk.:
 KP
 Angriff
-Verteidg.
+Vert.
 Sp.-Angr.
 Sp.-Vert.
 Initiative
@@ -134,7 +134,7 @@ Level:
 Wesen:
 Fähigk.:
 Item:
-Shiny:
+Schillernd:
 Pokérus:
 OT:
 Spitzname:
@@ -146,21 +146,21 @@ KP:
 Angriff:
 Verteidigung:
 Sp.-Angriff:
-Sp.-Vertdg.:
+Sp.-Vert.:
 Initiative:
-Bearbeite dein Pokémon unten.
+Bearbeite dein Pokémon auf dem unteren Bildschirm.
 Drücke SPEICHERN, wenn du fertig bist
 Neutral
 -Angriff
--Verteidg.
+-Vert.
 -Init.
 -Sp.-Ang.
--Sp.-Ver.
+-Sp.-Vert.
 +Angriff
-+Verteidg.
++Vert.
 +Init.
 +Sp.-Ang.
-+Sp.-Ver.
++Sp.-Vert.
 Ei-Schritte:
 STATUSWERT
 IV
@@ -170,11 +170,11 @@ Versteckte Fähigk.:
 Angriffe
 Wieder erlernbare Angriffe
 Ausgewählter Byte:
-Wähle oben ein Item mit A aus.
-Wähle oben ein Wesen mit A aus.
-Wähle oben einen Pokéball mit A aus.
-Wähle oben einen KP-Typ mit A aus.
-Wähle oben eine Form mit A aus.
+Wähle auf dem oberen Bildschirm ein Item mit A aus.
+Wähle auf dem oberen Bildschirm ein Wesen mit A aus.
+Wähle auf dem oberen Bildschirm einen Pokéball mit A aus.
+Wähle auf dem oberen Bildschirm einen KP-Typ mit A aus.
+Wähle auf dem oberen Bildschirm eine Form mit A aus.
 Bank %d
 Lv.%u
 ID. %u
@@ -213,12 +213,12 @@ männlich
 weiblich
 geschlechtslos
 Alternative Form: #%d
-KP EV: %d
-Angriff EV: %d
-Verteidigung EV: %d
-Initiative EV: %d
-Spezial-Angriff EV: %d
-Spezial-Verteidigung EV: %d
+KP FP: %d
+Angriff FP: %d
+Verteidigung FP: %d
+Initiative FP: %d
+Spezial-Angriff FP: %d
+Spezial-Verteidigung FP: %d
 Wettbewerbswert Coolness: %d
 Wettbewerbswert Schönheit: %d
 Wettbewerbswert Anmut/Putzigkeit: %d
@@ -294,10 +294,10 @@ Attacke 1 AP-Plus: %d
 Attacke 2 AP-Plus: %d
 Attacke 3 AP-Plus: %d
 Attacke 4 AP-Plus: %d
-Wieder erlernbare Attacke 1: #%d - %ls
-Wieder erlernbare Attacke 2: #%d - %ls
-Wieder erlernbare Attacke 3: #%d - %ls
-Wieder erlernbare Attacke 4: #%d - %ls
+Ei-Attacke 1: #%d - %ls
+Ei-Attacke 2: #%d - %ls
+Ei-Attacke 3: #%d - %ls
+Ei-Attacke 4: #%d - %ls
 hat einen Spitznamen
 ist ein Ei
 Aktueller Trainer Name:
@@ -358,12 +358,12 @@ PID, Byte 3
 PID, Byte 4
 Wesen
 Schicksalhafte Begegnung Bitschalter / Geschlecht / Alternative Form
-KP Fleißwert
-Angriff Fleißwert
-Verteidigung Fleißwert
-Initiative Fleißwert
-Spezial-Angriff Fleißwert
-Spezial-Verteidigung Fleißwert
+KP Fleißpunkte
+Angriff Fleißpunkte
+Verteidigung Fleißpunkte
+Initiative Fleißpunkte
+Spezial-Angriff Fleißpunkte
+Spezial-Verteidigung Fleißpunkte
 Wettbewerbswert Coolness
 Wettbewerbswert Schönheit
 Wettbewerbswert Anmut/Putzigkeit
@@ -427,14 +427,14 @@ Attacke 1 PP Up
 Attacke 2 PP Up
 Attacke 3 PP Up
 Attacke 4 PP Up
-Wieder erlernbare Attacke 1, Byte 1
-Wieder erlernbare Attacke 1, Byte 2
-Wieder erlernbare Attacke 2, Byte 1
-Wieder erlernbare Attacke 2, Byte 2
-Wieder erlernbare Attacke 3, Byte 1
-Wieder erlernbare Attacke 3, Byte 2
-Wieder erlernbare Attacke 4, Byte 1
-Wieder erlernbare Attacke 4, Byte 2
+Ei-Attacke 1, Byte 1
+Ei-Attacke 1, Byte 2
+Ei-Attacke 2, Byte 1
+Ei-Attacke 2, Byte 2
+Ei-Attacke 3, Byte 1
+Ei-Attacke 3, Byte 2
+Ei-Attacke 4, Byte 1
+Ei-Attacke 4, Byte 2
 Geheimer Supertraininging-Bitschalter
 IV, Byte 1
 IV, Byte 2
@@ -509,12 +509,12 @@ Originaltrainer Name, Byte 21
 Originaltrainer Name, Byte 22
 Originaltrainer Name, Byte 23
 Originaltrainer Name, Byte 24
-Originaltrainer Friendship
-Originaltrainer Affection
-Originaltrainer Intensity
-Originaltrainer Memory
+Originaltrainer Freundschaft
+Originaltrainer Zuneigung
+Originaltrainer Intensität
+Originaltrainer Erinnerung
 Originaltrainer TextVar
-Originaltrainer Feeling
+Originaltrainer Gefühl
 Ei (Jahr)
 Ei (Monat)
 Ei (Tag)
