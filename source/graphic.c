@@ -43,7 +43,7 @@ int lookup[] = {0x0, 0x1, 0x2, 0x4, 0x5, 0x3};
 
 int MAX_LENGTH_BOX_NAME = 15;
 
-sftd_font *unicodeJPN12, *unicodeKOR12, *fontBold18, *fontBold15, *fontBold14, *fontBold12, *fontBold11, *fontBold9, *fontFixed; 
+sftd_font *fontBold18, *fontBold15, *fontBold14, *fontBold12, *fontBold11, *fontBold9, *fontFixed; 
 sf2d_texture *noMove, *hexIcon, *hexBG, *blueTextBox, *otaButton, *generationBG, *includeInfoButton, *hiddenPowerBG, *ballsBG, *male, *female, *naturestx, *movesBottom, *topMovesBG, *editorBar, *editorStatsBG, *subArrow, *backgroundTop, *miniBox, *plusButton, *minusButton, *balls, *typesSheet, *transferButton, *bankTop, *shinyStar, *normalBar, *LButton, *RButton, *creditsTop, *pokeball, *gameSelectorBottom1, *gameSelectorBottom2, *gameSelectorTop, *menuBar, *menuSelectedBar, *darkButton, *eventTop, *left, *lightButton, *redButton, *right, *spritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *warningTop, *warningBottom, *boxView, *infoView, *selector, *editorBG, *plus, *minus, *back, *setting, *selectorCloning, *button, *bottomPopUp, *pokemonBufferBox, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR, *settings, *item, *alternativeSpritesSmall;
 
 AppTextCode gamesList[] = {S_GRAPHIC_GAME_SELECTOR_GAME_X, S_GRAPHIC_GAME_SELECTOR_GAME_Y, S_GRAPHIC_GAME_SELECTOR_GAME_OS, S_GRAPHIC_GAME_SELECTOR_GAME_AS, S_GRAPHIC_GAME_SELECTOR_GAME_SUN, S_GRAPHIC_GAME_SELECTOR_GAME_MOON, S_GRAPHIC_GAME_SELECTOR_GAME_DIAMOND, S_GRAPHIC_GAME_SELECTOR_GAME_PEARL, S_GRAPHIC_GAME_SELECTOR_GAME_PLATINUM, S_GRAPHIC_GAME_SELECTOR_GAME_HG, S_GRAPHIC_GAME_SELECTOR_GAME_SS, S_GRAPHIC_GAME_SELECTOR_GAME_B, S_GRAPHIC_GAME_SELECTOR_GAME_W, S_GRAPHIC_GAME_SELECTOR_GAME_B2, S_GRAPHIC_GAME_SELECTOR_GAME_W2};
@@ -114,8 +114,6 @@ void GUIElementsInit() {
 	warningBottom = sfil_load_PNG_file("romfs:/res/Warning Bottom.png", SF2D_PLACE_RAM);
 	freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_FILES));
 
-	unicodeJPN12 = sftd_load_font_file("romfs:/res/UnicodeJPN.otf");
-	unicodeKOR12 = sftd_load_font_file("romfs:/res/UnicodeKOR.ttf");
 	fontBold18 = sftd_load_font_file("romfs:/res/Bold.ttf");
 	fontBold14 = sftd_load_font_file("romfs:/res/Bold.ttf");
 	fontBold11 = sftd_load_font_file("romfs:/res/Bold.ttf");
@@ -321,8 +319,6 @@ void GUIElementsExit() {
 	sftd_free_font(fontBold15);
 	sftd_free_font(fontBold18);
 	sftd_free_font(fontFixed);
-	sftd_free_font(unicodeJPN12);
-	sftd_free_font(unicodeKOR12);
 
 	GUITextsExit();
 }
@@ -349,9 +345,8 @@ void create_font_cache(sftd_font* font, unsigned int size, int total_fonts, int*
 
 void init_font_cache() {
 	int num_font = 1;
-	int total_fonts = 9;
-	create_font_cache(unicodeJPN12, 12, total_fonts, &num_font);
-	create_font_cache(unicodeKOR12, 12, total_fonts, &num_font);
+	int total_fonts = 7;
+	
 	create_font_cache(fontBold18, 18, total_fonts, &num_font);
 	create_font_cache(fontBold14, 14, total_fonts, &num_font);
 	create_font_cache(fontBold15, 15, total_fonts, &num_font);
@@ -1155,7 +1150,6 @@ void printElementBlend(u8* pkmn, int game, u16 n, int x, int y, u32 color) {
 }
 
 void infoViewer(u8* pkmn, int game) {
-	bool isKor = (pkmn[0xE3] == 0x08) ? true : false;
 	int y_desc = 29;
 	wchar_t* entries[] = {i18n(S_GRAPHIC_INFOVIEWER_NICKNAME), i18n(S_GRAPHIC_INFOVIEWER_OT), i18n(S_GRAPHIC_INFOVIEWER_POKERUS), i18n(S_GRAPHIC_INFOVIEWER_NATURE), i18n(S_GRAPHIC_INFOVIEWER_ABILITY), i18n(S_GRAPHIC_INFOVIEWER_ITEM), i18n(S_GRAPHIC_INFOVIEWER_ESVTSV), i18n(S_GRAPHIC_INFOVIEWER_TIDSID), i18n(S_GRAPHIC_INFOVIEWER_HTOT_FRIENDSHIP), i18n(S_GRAPHIC_INFOVIEWER_HTOT_HIDDEN_POWER)};
 	wchar_t* values[] =  {i18n(S_GRAPHIC_INFOVIEWER_VALUE_HP), i18n(S_GRAPHIC_INFOVIEWER_VALUE_ATTACK), i18n(S_GRAPHIC_INFOVIEWER_VALUE_DEFENSE), i18n(S_GRAPHIC_INFOVIEWER_VALUE_SP_ATK), i18n(S_GRAPHIC_INFOVIEWER_VALUE_SP_DEF), i18n(S_GRAPHIC_INFOVIEWER_VALUE_SPEED)};
@@ -1202,12 +1196,12 @@ void infoViewer(u8* pkmn, int game) {
 		u32 nick[NICKNAMELENGTH*2];
 		memset(nick, 0, NICKNAMELENGTH*2);
 		getNickname(pkmn, nick);
-		sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, 215 - (sftd_get_wtext_width((isKor) ? unicodeKOR12 : unicodeJPN12, 12, (wchar_t*)nick)), 29, WHITE, 12, (wchar_t*)nick);
+		sftd_draw_wtext(fontBold12, 215 - (sftd_get_wtext_width(fontBold12, 12, (wchar_t*)nick)), 29, WHITE, 12, (wchar_t*)nick);
 		
 		u32 ot_name[NICKNAMELENGTH*2];
 		memset(ot_name, 0, NICKNAMELENGTH*2);
 		getOT(pkmn, ot_name);
-		sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, 215 - (sftd_get_wtext_width((isKor) ? unicodeKOR12 : unicodeJPN12, 12, (wchar_t*)ot_name)), 49, WHITE, 12, (wchar_t*)ot_name);
+		sftd_draw_wtext(fontBold12, 215 - (sftd_get_wtext_width(fontBold12, 12, (wchar_t*)ot_name)), 49, WHITE, 12, (wchar_t*)ot_name);
 		
 		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, (isInfected(pkmn) ? i18n(S_YES) : i18n(S_NO))), 69, WHITE, 12, isInfected(pkmn) ? i18n(S_YES) : i18n(S_NO));
 		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, natures[getNature(pkmn)]), 94, WHITE, 12, natures[getNature(pkmn)]);
@@ -1387,7 +1381,6 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 	
 	wchar_t* values[6] = {i18n(S_GRAPHIC_PKEDITOR_STATS_HP), i18n(S_GRAPHIC_PKEDITOR_STATS_ATTACK), i18n(S_GRAPHIC_PKEDITOR_STATS_DEFENSE), i18n(S_GRAPHIC_PKEDITOR_STATS_SP_ATTACK), i18n(S_GRAPHIC_PKEDITOR_STATS_SP_DEFENSE), i18n(S_GRAPHIC_PKEDITOR_STATS_SPEED)};
 	u16 n = getPokedexNumber(pkmn);
-	bool isKor = (pkmn[0xE3] == 0x08) ? true : false;
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 	if (mode == ED_BASE || mode == ED_STATS) {
@@ -1580,12 +1573,12 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			u32 nick[NICKNAMELENGTH*2];
 			memset(nick, 0, NICKNAMELENGTH*2);
 			getNickname(pkmn, nick);
-			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, 178 - (sftd_get_wtext_width((isKor) ? unicodeKOR12 : unicodeJPN12, 12, (wchar_t*)nick)), 169, WHITE, 12, (wchar_t*)nick);
+			sftd_draw_wtext(fontBold12, 178 - (sftd_get_wtext_width(fontBold12, 12, (wchar_t*)nick)), 169, WHITE, 12, (wchar_t*)nick);
 
 			u32 ot_name[NICKNAMELENGTH*2];
 			memset(ot_name, 0, NICKNAMELENGTH*2);
 			getOT(pkmn, ot_name);
-			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, 178 - (sftd_get_wtext_width((isKor) ? unicodeKOR12 : unicodeJPN12, 12, (wchar_t*)ot_name)), 149, WHITE, 12, (wchar_t*)ot_name);
+			sftd_draw_wtext(fontBold12, 178 - (sftd_get_wtext_width(fontBold12, 12, (wchar_t*)ot_name)), 149, WHITE, 12, (wchar_t*)ot_name);
 		}
 		if (mode == ED_STATS || mode == ED_HIDDENPOWER) {
 			sf2d_draw_texture(editorStatsBG, 0, 1);
@@ -1691,7 +1684,6 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 	int x, y;
 	int pointer[2] = {0, 0};
 	wchar_t* page = (wchar_t*)malloc((MAX_LENGTH_BOX_NAME+1) * sizeof(wchar_t));
-	bool isKor = (pkmnbuf[0xE3] == 0x08) ? true : false;
 	
 	u8* pkmn = (u8*)malloc(PKMNLENGTH * sizeof(u8));
 	if (currentEntry < 30)
@@ -1729,7 +1721,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 				u32 nick[NICKNAMELENGTH*2];
 				memset(nick, 0, NICKNAMELENGTH*2);
 				getNickname(pkmn, nick);
-				sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, 273, 69, WHITE, 12, (wchar_t*)nick);
+				sftd_draw_wtext(fontBold12, 273, 69, WHITE, 12, (wchar_t*)nick);
 				
 				wchar_t* level = (wchar_t*)malloc(8 * sizeof(wchar_t));
 				swprintf(level, 8, i18n(S_GRAPHIC_PKBANK_LV_PKMN), getLevel(pkmn));
@@ -1747,7 +1739,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 				u32 ot_name[NICKNAMELENGTH*2];
 				memset(ot_name, 0, NICKNAMELENGTH*2);
 				getOT(pkmn, ot_name);
-				sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, 273, 146, WHITE, 12, (wchar_t*)ot_name);
+				sftd_draw_wtext(fontBold12, 273, 146, WHITE, 12, (wchar_t*)ot_name);
 
 				wchar_t* otid = (wchar_t*)malloc(12 * sizeof(wchar_t));
 				swprintf(otid, 12, i18n(S_GRAPHIC_PKBANK_OTID_PKMN), getOTID(pkmn));
@@ -1912,7 +1904,6 @@ void printSettings(int box, int language) {
 
 void printfHexEditorInfo(u8* pkmn, int byte) {
 	int y = 70, x = 8, xribbon = 90;
-	bool isKor = (pkmn[0xE3] == 0x08) ? true : false;
 	u32 string[NICKNAMELENGTH*2];
 	memset(string, 0, NICKNAMELENGTH*2);
 	
@@ -2073,7 +2064,7 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0x57 :
 			getNickname(pkmn, string);
 			sftd_draw_wtext(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_NICKNAME));
-			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, x + sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_HEXEDITOR_NICKNAME)), y, LIGHTBLUE, 12, (wchar_t*)string);
+			sftd_draw_wtext(fontBold12, x + sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_HEXEDITOR_NICKNAME)), y, LIGHTBLUE, 12, (wchar_t*)string);
 			break;
 		case 0x5A :
 		case 0x5B :
@@ -2165,7 +2156,7 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0x8F :	
 			getHTName(pkmn, string);
 			sftd_draw_wtext(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_NAME));
-			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, x + sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_NAME)), y, LIGHTBLUE, 12, (wchar_t*)string);
+			sftd_draw_wtext(fontBold12, x + sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_NAME)), y, LIGHTBLUE, 12, (wchar_t*)string);
 			break;
 		case 0xA2 :
 			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_FRIENDSHIP), pkmn[byte]);
@@ -2214,7 +2205,7 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0xC7 :
 			getOT(pkmn, string);
 			sftd_draw_wtext(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_NAME));
-			sftd_draw_wtext((isKor) ? unicodeKOR12 : unicodeJPN12, x + sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_NAME)), y, LIGHTBLUE, 12, (wchar_t*)string);
+			sftd_draw_wtext(fontBold12, x + sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_NAME)), y, LIGHTBLUE, 12, (wchar_t*)string);
 			break;
 		case 0xCA :
 			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_FRIENDSHIP), pkmn[byte]);
