@@ -63,6 +63,9 @@ wchar_t **formList;
 
 ArrayUTF32 listAbilities, listNatures, listBalls, listHPs, listForms;
 
+int loadPNGInRAM_current_element = 1;
+int loadPNGInRAM_elements = 1;
+
 
 void GUITextsInit() {
 	freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_LOCALES));
@@ -127,28 +130,45 @@ void GUIElementsInit() {
 	freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_DONE));
 }
 
-
-int num_element = 1;
-int total_elements = 1;
-
 sf2d_texture *loadPNGInRAM(const char* filepath) {
 	wchar_t* str = malloc(sizeof(wchar_t*)*60);
-	swprintf(str, 60, i18n(S_GRAPHIC_GUI_ELEMENTS_SPECIFY_LOADING_DETAILS), num_element, total_elements);
+	swprintf(str, 60, i18n(S_GRAPHIC_GUI_ELEMENTS_SPECIFY_LOADING_DETAILS), loadPNGInRAM_current_element, loadPNGInRAM_elements);
 	freezeMsgDetails(str);
-	num_element++;
+	loadPNGInRAM_current_element++;
 	free(str);
 	return sfil_load_PNG_file(filepath, SF2D_PLACE_RAM);
 }
 
-void GUIElementsSpecify(int game) {
+void initProgressLoadPNGInRAM(int total) {
+	loadPNGInRAM_current_element = 1;
+	loadPNGInRAM_elements = total;
+}
+
+
+int getGUIElementsI18nSpecifyTotalElements(int game) {
+	return (game < 6) ? 1 : 0;
+}
+
+void GUIElementsI18nSpecify(int game) {
 	struct i18n_files languageSpecificFiles = i18n_getFilesPath();
-	num_element = 1;
-	total_elements = 4;
 	if (game < 6) {
-		total_elements += 53;
-	} else {
-		total_elements += 12;
+		typesSheet = loadPNGInRAM(languageSpecificFiles.types);
 	}
+}
+
+
+void GUIElementsSpecify(int game) {
+
+	int elements = 4;
+	if (game < 6) {
+		elements += 53;
+	} else {
+		elements += 12;
+	}
+
+	elements += getGUIElementsI18nSpecifyTotalElements(game);
+	initProgressLoadPNGInRAM(elements);
+
 	freezeMsg(i18n(S_GRAPHIC_GUI_ELEMENTS_SPECIFY_LOADING));
 	alternativeSpritesSmall = loadPNGInRAM("/3ds/data/PKSM/additionalassets/alternative_icons_spritesheetv3.png");
 	spritesSmall = loadPNGInRAM("/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheetv3.png");
@@ -156,8 +176,6 @@ void GUIElementsSpecify(int game) {
 	settings = loadPNGInRAM("romfs:/res/Settings.png");
 	
 	if (game < 6) {
-		typesSheet = loadPNGInRAM(languageSpecificFiles.types);
-		
 		boxView = loadPNGInRAM("romfs:/res/Box View.png");
 		noMove = loadPNGInRAM("romfs:/res/No Move.png");
 		back = loadPNGInRAM("romfs:/res/Back Button.png");
@@ -225,7 +243,10 @@ void GUIElementsSpecify(int game) {
 		DSSelectedBarL = loadPNGInRAM("romfs:/res/Selected L.png");
 		DSSelectedBarR = loadPNGInRAM("romfs:/res/Selected R.png");
 	}
+
+	GUIElementsI18nSpecify(game);
 }
+
 
 void GUIGameElementsInit() {
 	gameSelectorBottom2 = sfil_load_PNG_file("romfs:/res/LogosGen5.png", SF2D_PLACE_RAM);
@@ -262,7 +283,6 @@ void GUIElementsExit() {
 	sf2d_free_texture(minusButton);
 	sf2d_free_texture(plusButton);
 	sf2d_free_texture(balls);
-	sf2d_free_texture(typesSheet);
 	sf2d_free_texture(transferButton);
 	sf2d_free_texture(bankTop);
 	sf2d_free_texture(shinyStar);
@@ -320,7 +340,7 @@ void GUIElementsExit() {
 	sftd_free_font(fontBold18);
 	sftd_free_font(fontFixed);
 
-	GUITextsExit();
+	GUIElementsI18nExit();
 }
 
 void GUITextsExit() {
@@ -333,6 +353,12 @@ void GUITextsExit() {
 	i18n_free_ArrayUTF32(&listForms);
 	i18n_free_ArrayUTF32(&listSpecies);
 }
+
+void GUIElementsI18nExit() {
+	sf2d_free_texture(typesSheet);
+	GUITextsExit();
+}
+
 
 void create_font_cache(sftd_font* font, unsigned int size, int total_fonts, int* num_font) {
 	wchar_t* str = malloc(sizeof(wchar_t*)*60);

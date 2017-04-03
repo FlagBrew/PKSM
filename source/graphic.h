@@ -44,14 +44,16 @@
 
 #define MOVEMENTSPEED 4
 
-
 void GUIElementsInit();
-void GUITextsInit(); // Needed for util.c while reloading an locale
 void GUIElementsSpecify(int game);
+int getGUIElementsI18nSpecifyTotalElements(int game);
+void GUIElementsI18nSpecify(int game); // Needed for util.c when changing language
+void GUITextsInit(); // Needed for util.c when changing language
 void GUIGameElementsInit();
+void initProgressLoadPNGInRAM(int total);
 void GUIGameElementsExit();
 void GUIElementsExit();
-void GUITextsExit(); // Needed for util.c while reloading an locale
+void GUIElementsI18nExit(); // Needed for util.c when changing language
 void init_font_cache();
 void infoDisp(wchar_t* message);
 int confirmDisp(wchar_t* message);
@@ -84,3 +86,4 @@ void printfHexEditorInfo(u8* pkmn, int byte);
 void printSelector(int x, int y, int width, int height);
 void printMenuTop();
 void printMenuBottom();
+
