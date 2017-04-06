@@ -403,7 +403,7 @@ void drawConsoleDebug() {
 		if (sf2d_get_current_screen() == GFX_BOTTOM) {
 			if ((lastDebugMessageTime == 0 || (currentTime - lastDebugMessageTime) < 5)) {
 				sf2d_draw_rectangle(0, 0, 400, 20, RGBA8(0, 0, 0, 200));
-				sftd_draw_textf(fontBold12, 2, 3, WHITE, 12, "Debug: %s", messageDebug);
+				sftd_draw_textf(fontBold12, 2, 3, WHITE, 12, "[Debug] %s", messageDebug);
 				if (lastDebugMessageTime == 0) {
 					lastDebugMessageTime = currentTime;
 				}
@@ -1369,9 +1369,14 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 		}
 		
 		if (mode == ED_MENU) {
+			getPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
+
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
 			sf2d_draw_texture(bottomPopUp, 1, 214);
-			sf2d_draw_texture(includeInfoButton, 242, 5);
+
+			if (getBall(pkmn) != CHERISH_BALL && !isTeam) {
+				sf2d_draw_texture(includeInfoButton, 242, 5);
+			}
 			sftd_draw_wtextf(fontBold11, 8, 220, WHITE, 11, i18n(S_GRAPHIC_PKVIEWER_MENU_POKEMON_SELECTED), listSpecies.items[getPokedexNumber(tmp)]);
 			for (int i = 0; i < 5; i++) {
 				sf2d_draw_texture(button, 208, 42 + i * 27 + i*4);

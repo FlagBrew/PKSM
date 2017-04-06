@@ -940,6 +940,7 @@ void setItemEditor(u8* pkmn, u16 item) {
 void setGender(u8* pkmn, u8 val) { pkmn[0x1D] = (u8)((pkmn[0x1D] & ~0x06) | (val << 1)); }
 void setForm(u8* pkmn, u8 val) { pkmn[0x1D] = (u8)((pkmn[0x1D] & 0x07) | (val << 3)); }
 void setBall(u8* pkmn, u8 val) { pkmn[0xDC] = val; }
+void setOTGender(u8* pkmn, u8 val) { setFlag(pkmn, 0xDD, 7, (val == 1) ? true : false); }
 
 void setTID(u8* pkmn, u16 tid) {
     memcpy(&pkmn[0x0C], &tid, 2);
@@ -1496,10 +1497,22 @@ void pokemonEditor(u8* mainbuf, int game) {
 				printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_MENU, 0, 0);
 				
 				if (hidKeysHeld() & KEY_TOUCH) {
-					if (touch.px > 242 && touch.px < 283 && touch.py > 5 && touch.py < 25 && !isTeam) {
+					if (touch.px > 242 && touch.px < 283 && touch.py > 5 && touch.py < 25 && !isTeam && getBall(pkmn) != CHERISH_BALL) {
 						setTID(pkmn, getSaveTID(mainbuf, game));
 						setSID(pkmn, getSaveSID(mainbuf, game));
-						memcpy(&pkmn[0xE3], &mainbuf[(game < 4) ? 0x1402D : 0x1235], 1); // nats
+
+						int language =  getSaveLanguage(mainbuf, game);
+						memcpy(&pkmn[0xE3], &language, 1); // nats
+
+						u32 nick32[NICKNAMELENGTH];
+						u8 nick[NICKNAMELENGTH];
+						memset(nick32, 0, NICKNAMELENGTH);
+						memset(nick, 0, NICKNAMELENGTH);
+						getSaveOT(mainbuf, game, nick32);
+						utf32_to_utf8(nick, nick32, NICKNAMELENGTH);
+
+						setNicknameZ(pkmn, (char*)nick, 0xb0);
+						setOTGender(pkmn, (getSaveGender(mainbuf, game)));
 
 						setPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
 						operationDone = true;

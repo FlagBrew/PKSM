@@ -57,6 +57,8 @@
 #define ED_FORMS 7
 #define ED_HEX 8
 
+#define CHERISH_BALL 16
+
 struct {
 	u8 pkmData[961][15];
 } personal;
@@ -155,6 +157,7 @@ void setItemEditor(u8* pkmn, u16 item);
 void setBall(u8* pkmn, u8 val);
 void setSID(u8* pkmn, u16 sid);
 void setTID(u8* pkmn, u16 tid);
+void setOTGender(u8* pkmn, u8 val);
 
 void setRibbons(u8* pkmn, int ribcat, int ribnumber, bool value);
 bool getRibbons(u8* pkmn, int ribcat, int ribnumber);
