@@ -43,6 +43,8 @@
 // #define DEBUG_I18N_LANG 5
 
 
+#define MAX_LANGUAGE 12
+
 /**
  * Localization files
  */

@@ -31,3 +31,8 @@ void fsEnd();
 bool openSaveArch(FS_Archive *out, u64 id);
 void settingsMenu(u8* mainbuf, int game);
 int ArrayUTF32_sort_cmp_PKMN_Things_List(const wchar_t *a,const wchar_t *b);
+
+bool hasExternI18nFile();
+bool hasI18nConfig();
+u8 loadI18nConfig();
+void saveI18nConfig(u8 language);

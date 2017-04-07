@@ -152,13 +152,7 @@ void settingsMenu(u8* mainbuf, int game) {
 	u32 boxmax = 1000;
 
 	// getting language
-	FILE *conf = fopen("sdmc:/3ds/data/PKSM/i18n.bin", "rt");
-	fseek(conf, 0, SEEK_END);
-	u8 localeConfig[1];
-	rewind(conf);
-	fread(localeConfig, 1, 1, conf);
-	fclose(conf);
-	int language = localeConfig[0];
+	int language = loadI18nConfig();
 		
 	while (aptMainLoop() && !operationDone) {
 		hidScanInput();
@@ -179,11 +173,15 @@ void settingsMenu(u8* mainbuf, int game) {
 			}
 			
 			if (touch.px > 281 && touch.px < 317 && touch.py > 191 && touch.py < 212) {
-				language = (language + 1) % 12;
-				localeConfig[0] = language;
-				FILE *conf = fopen("sdmc:/3ds/data/PKSM/i18n.bin", "wb");
-				fwrite(localeConfig, 1, 1, conf);
-				fclose(conf);
+				int max_language = MAX_LANGUAGE;
+				if (hasExternI18nFile()) {
+					max_language++;
+				}
+				language = (language + 1) % max_language;
+				saveI18nConfig(language);
+
+				freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_LOCALES));
+				usleep(500);
 
 				GUIElementsI18nExit();
 				i18n_exit();
@@ -322,4 +320,30 @@ int ArrayUTF32_sort_cmp_PKMN_Things_List(const wchar_t *a,const wchar_t *b) {
 	}
 	// We inversed the result when there is 1 "???", so "???" will be always at the end of the list
 	return result;
+}
+
+bool hasI18nConfig() {
+	return checkFile("sdmc:/3ds/data/PKSM/i18n.bin");
+}
+
+u8 loadI18nConfig() {
+	FILE *conf = fopen("sdmc:/3ds/data/PKSM/i18n.bin", "rt");
+	fseek(conf, 0, SEEK_END);
+	u8 localeConfig[1];
+	rewind(conf);
+	fread(localeConfig, 1, 1, conf);
+	fclose(conf);
+	return localeConfig[0];
+}
+void saveI18nConfig(u8 language) {
+	u8 localeConfig[1];
+	localeConfig[0] = language;
+	FILE *conf = fopen("sdmc:/3ds/data/PKSM/i18n.bin", "wb");
+	fwrite(localeConfig, 1, 1, conf);
+	fclose(conf);
+}
+
+
+bool hasExternI18nFile() {
+	return checkFile("sdmc:/3ds/data/PKSM/i18n/app.txt");
 }

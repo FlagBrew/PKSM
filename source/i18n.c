@@ -29,6 +29,7 @@ const int MAXLENGTH_NAMES_POKEMON = 32;
 
 static char* LANG_PREFIX[] = { "jp", "en", "fr", "de", "it", "es", "zh", "ko", "nl", "pt", "ru", "tw" };
 
+
 /**
  * Generic path for Localization files
  */
@@ -44,6 +45,23 @@ struct i18n_files i18n_files_generic_paths = {
 	"romfs:/i18n/%s/types.png",
 	"romfs:/i18n/%s/app.txt"
 };
+
+/**
+ * Generic path for Localization files
+ */
+struct i18n_files i18n_files_extern_paths = {
+	"sdmc:/3ds/data/PKSM/i18n/abilities.txt",
+	"sdmc:/3ds/data/PKSM/i18n/species.txt",
+	"sdmc:/3ds/data/PKSM/i18n/natures.txt",
+	"sdmc:/3ds/data/PKSM/i18n/moves.txt",
+	"sdmc:/3ds/data/PKSM/i18n/items.txt",
+	"sdmc:/3ds/data/PKSM/i18n/hp.txt",
+	"sdmc:/3ds/data/PKSM/i18n/forms.txt",
+	"sdmc:/3ds/data/PKSM/i18n/balls.txt",
+	"sdmc:/3ds/data/PKSM/i18n/types.png",
+	"sdmc:/3ds/data/PKSM/i18n/app.txt"
+};
+
 
 /**
  * Current localization files loaded
@@ -377,18 +395,40 @@ void i18n_set_language_filepath(u8 language, const char* generic_path, char* pat
 	int BUFFER_SIZE = 255;
 	char defaultlang_path[BUFFER_SIZE];
 	char *correctlang_path;
-
 	sprintf(defaultlang_path, generic_path, LANG_PREFIX[DEFAULT_LANG]);
+
 	if (language == DEFAULT_LANG) {
 		correctlang_path = defaultlang_path;
 	} else {
 		char lang_path[BUFFER_SIZE];
-		sprintf(lang_path, generic_path, LANG_PREFIX[language]);
-		struct i18n_FileInfo finfoLang = i18n_getInfoFile(lang_path);
-		struct i18n_FileInfo finfoDefaultLang = i18n_getInfoFile(defaultlang_path);
+		if (language == MAX_LANGUAGE) {
+			strcpy(lang_path, path); // We have already strcpy in the path before
+			lang_path[strlen(path)] = '\0';
+		} else {
+			sprintf(lang_path, generic_path, LANG_PREFIX[language]);
+		}
 
-		if (finfoLang.numberOfLines != finfoDefaultLang.numberOfLines) {
-			// debuglogf("File [%s] haven't the correct number of lines : %i != %i!", lang_path, finfoDefaultLang.numberOfLines, finfoLang.numberOfLines);
+		char fileExtension[5];
+		strncpy(fileExtension, generic_path+strlen(generic_path)-4, 4);
+		fileExtension[4] = '\0';
+		bool putDefaultLang = false;
+
+		if (strcmp(fileExtension, ".txt") == 0) { // Checking number of lines of TXT files
+			struct i18n_FileInfo finfoLang = i18n_getInfoFile(lang_path);
+			struct i18n_FileInfo finfoDefaultLang = i18n_getInfoFile(defaultlang_path);
+
+			if (finfoLang.numberOfLines != finfoDefaultLang.numberOfLines) {
+				// debuglogf("File [%s] haven't the correct number of lines : %i != %i!", lang_path, finfoDefaultLang.numberOfLines, finfoLang.numberOfLines);
+				putDefaultLang = true;
+			}
+
+		} else { // For other files, we check only if file exists
+			if (!checkFile(lang_path)) {
+				putDefaultLang = true;
+			}
+		}
+
+		if (putDefaultLang) {
 			correctlang_path = defaultlang_path;
 		} else {
 			correctlang_path = lang_path;
@@ -401,6 +441,18 @@ void i18n_set_language_filepath(u8 language, const char* generic_path, char* pat
 
 void i18n_load(u8 language) {
 	struct i18n_files files = i18n_files_generic_paths;
+	if (language == MAX_LANGUAGE) { // We load directly paths in i18n_files_loaded
+		strcpy(i18n_files_loaded.abilities, i18n_files_extern_paths.abilities);
+		strcpy(i18n_files_loaded.species, i18n_files_extern_paths.species);
+		strcpy(i18n_files_loaded.natures, i18n_files_extern_paths.natures);
+		strcpy(i18n_files_loaded.moves, i18n_files_extern_paths.moves);
+		strcpy(i18n_files_loaded.items, i18n_files_extern_paths.items);
+		strcpy(i18n_files_loaded.hp, i18n_files_extern_paths.hp);
+		strcpy(i18n_files_loaded.forms, i18n_files_extern_paths.forms);
+		strcpy(i18n_files_loaded.balls, i18n_files_extern_paths.balls);
+		strcpy(i18n_files_loaded.types, i18n_files_extern_paths.types);
+		strcpy(i18n_files_loaded.app, i18n_files_extern_paths.app);
+	}
 	i18n_set_language_filepath(language, files.abilities, i18n_files_loaded.abilities);
 	i18n_set_language_filepath(language, files.species, i18n_files_loaded.species);
 	i18n_set_language_filepath(language, files.natures, i18n_files_loaded.natures);
@@ -417,24 +469,22 @@ void i18n_load(u8 language) {
 
 void i18n_init() {
 	u8 language = 1; // English by default
+	bool writeToConfig = !hasI18nConfig();
 
-	if (!checkFile("sdmc:/3ds/data/PKSM/i18n.bin")) {
-		CFGU_GetSystemLanguage(&language);
-		u8 localeConfig[1];
-		localeConfig[0] = language;
-		
-		FILE *conf = fopen("sdmc:/3ds/data/PKSM/i18n.bin", "wb");
-		fwrite(localeConfig, 1, 1, conf);
-		fclose(conf);
+	if (hasI18nConfig() && !hasExternI18nFile() && loadI18nConfig() == MAX_LANGUAGE) { // We have saved extern language but the file does not exist anymore, returning to English
+		writeToConfig = true;
+	}
+
+	if (writeToConfig) {
+		if (hasExternI18nFile()) { // Initializing to extern translation if no configuration at all and files are present
+			language = MAX_LANGUAGE;
+		} else {
+			CFGU_GetSystemLanguage(&language);
+		}
+		saveI18nConfig(language);
+
 	} else {
-		FILE *conf = fopen("sdmc:/3ds/data/PKSM/i18n.bin", "rt");
-		fseek(conf, 0, SEEK_END);
-		u8 localeConfig[1];
-		rewind(conf);
-		fread(localeConfig, 1, 1, conf);
-		fclose(conf);
-	
-		language = localeConfig[0];
+		language = loadI18nConfig();
 	}
 	
 	#ifdef DEBUG_I18N_LANG
