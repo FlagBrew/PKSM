@@ -312,6 +312,15 @@ void rerollPID(u8* pkmn) {
     memcpy(&pkmn[0x18], &pidbuffer, PIDLENGTH);
 }
 
+void rerollEncryptionKey(u8* pkmn) {
+    const int ENCRYPTIONKEYPOS = 0x0;
+    const int ENCRYPTIONKEYLENGTH = 4;
+
+	srand(time(NULL));
+	u32 encryptbuffer = rand();
+	memcpy(&pkmn[ENCRYPTIONKEYPOS], &encryptbuffer, ENCRYPTIONKEYLENGTH);
+}
+
 bool isEgg(u8* pkmn) {
     u32 eggbuffer;
     memcpy(&eggbuffer, &pkmn[0x74], IVLENGTH);
@@ -2117,6 +2126,9 @@ void pokemonEditor(u8* mainbuf, int game) {
 
 											setNicknameZ(pkmn, nick, 0x40);
 
+											// Randomizing the encryption constant
+											rerollEncryptionKey(tempkmn);
+
 											setPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
 											free(livingbuf);
 											operationDone = true;
@@ -2171,6 +2183,9 @@ void pokemonEditor(u8* mainbuf, int game) {
 							nick[NICKNAMELENGTH - 1] = '\0';
 
 							setNicknameZ(tempkmn, nick, 0x40);
+
+							// Randomizing the encryption constant
+							rerollEncryptionKey(tempkmn);
 
 							setPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
 
