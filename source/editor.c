@@ -2088,14 +2088,14 @@ void pokemonEditor(u8* mainbuf, int game) {
 						case 3 : {
 							if (!isTeam) {
 								int genEntry = ((int)getPokedexNumber(pkmn) - 1) % 40;
-								int page = ((int)getPokedexNumber(pkmn) - 1) / 40, maxpages = (game < 4) ? 18 : 20;
+								int page = ((int)getPokedexNumber(pkmn) - 1) / 40, maxpages = (game < 4) ? 18 : 21;
 								
 								while (aptMainLoop() && !(hidKeysDown() & KEY_B)) {
 									hidScanInput();
 									calcCurrentEntryMorePages(&genEntry, &page, maxpages, 39, 8);
 									
 									if (hidKeysDown() & KEY_A) {
-										if (!((game < 4) && ((genEntry + 1) > 721))) {
+										if (!((game < 4) && ((genEntry + 1) > 721)) && (page*40 + genEntry < 802)) {
 											FILE *fptr = fopen((game < 4) ? "romfs:/misc/living6.bin" : "romfs:/misc/living7.bin", "rt");
 											fseek(fptr, 0, SEEK_END);
 											u32 size = ftell(fptr);
@@ -2142,14 +2142,14 @@ void pokemonEditor(u8* mainbuf, int game) {
 			}
 			if (!getPokedexNumber(pkmn) && !isTeam && !operationDone) {
 				int genEntry = 0;
-				int page = 0, maxpages = (game < 4) ? 18 : 20;
+				int page = 0, maxpages = (game < 4) ? 18 : 21;
 				
 				while (aptMainLoop() && !(hidKeysDown() & KEY_B)) {
 					hidScanInput();
 					calcCurrentEntryMorePages(&genEntry, &page, maxpages, 39, 8);
 					
 					if (hidKeysDown() & KEY_A) {
-						if (!((game < 4) && ((genEntry + 1) > 721))) {
+						if (!((game < 4) && ((genEntry + 1) > 721)) && (page*40 + genEntry < 802)) {
 							FILE *fptr = fopen((game < 4) ? "romfs:/misc/living6.bin" : "romfs:/misc/living7.bin", "rt");
 							fseek(fptr, 0, SEEK_END);
 							u32 size = ftell(fptr);

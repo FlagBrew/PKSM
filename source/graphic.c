@@ -1293,9 +1293,12 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 				for (int j = 0; j < 8; j++) {
 					if (additional1 == i * 8 + j)
 						printSelector(j*49 + j, i*47 + i, 49, 47);
-					sf2d_draw_texture_part(spritesSmall, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((40 * additional2 + i * 8 + j + 1) % 25) + 4, 30 * ((40 * additional2 + i * 8 + j + 1) / 25), 34, 30);
-					snprintf(temp, 4, "%d", 40 * additional2 + i * 8 + j + 1);
-					sftd_draw_text(fontBold9, 49 * j + (49 - sftd_get_text_width(fontBold9, 9, temp)) / 2 + j, 34 + i * 47 + i, WHITE, 9, temp);
+					
+					if ((i*8+j + 40*additional2) < 802) {
+						sf2d_draw_texture_part(spritesSmall, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((40 * additional2 + i * 8 + j + 1) % 25) + 4, 30 * ((40 * additional2 + i * 8 + j + 1) / 25), 34, 30);
+						snprintf(temp, 4, "%d", 40 * additional2 + i * 8 + j + 1);
+						sftd_draw_text(fontBold9, 49 * j + (49 - sftd_get_text_width(fontBold9, 9, temp)) / 2 + j, 34 + i * 47 + i, WHITE, 9, temp);
+					}
 				}
 			}
 			free(temp);
