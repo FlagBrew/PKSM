@@ -25,7 +25,7 @@ You need internet access to download the additional assets. If you can't still d
 
 GenVI to GenVII games: trigger the right game when prompted (you will do it twice if using homebrew launcher).
 
-GenIV to GenV games: if using homebrew launcher, you must trigger Poketrasporter or Dream Radar. Otherwise, use as always.
+GenIV to GenV games: if using homebrew launcher, you must trigger Poketrasporter. Otherwise, use as always.
 
 ## Backups
 
