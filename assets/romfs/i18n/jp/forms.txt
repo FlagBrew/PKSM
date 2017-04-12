@@ -1,13 +1,13 @@
-Default
+デフォルト
 アローラのすがた
-Default Pikachu Cosplay
-Rock Star
-Belle
-Pop Star
-Ph.D
-Libre
-Cosplay
-Default Pikachu
+デフォルト
+ハードロック・ピカチュウ
+マダム・ピカチュウ
+アイドル・ピカチュウ
+ドクター・ピカチュウ
+マスクド・ピカチュウ
+おきがえピカチュウ
+デフォルト
 オリジナルキャップ
 ホウエンキャップ
 シンオウキャップ
@@ -42,7 +42,7 @@ Y
 Z
 !
 ?
-Normal Deoxys
+ノーマルフォルム
 アタックフォルム
 ディフェンスフォルム
 スピードフォルム
@@ -51,7 +51,7 @@ Normal Deoxys
 ゴミのミノ
 にしのうみ
 ひがしのうみ
-Default Rotom
+デフォルト
 ヒートロトム
 ウォッシュロトム
 フロストロトム
@@ -69,14 +69,14 @@ Default Rotom
 ふゆのすがた
 けしんフォルム
 れいじゅうフォルム
-Default Kyurem
+デフォルト
 ホワイトキュレム
 ブラックキュレム
 いつものすがた
 かくごのすがた
 ボイスフォルム
 ステップフォルム
-Default Greninja
+デフォルト
 サトシゲッコウガ
 ひょうせつのもよう
 ゆきぐにのもよう
@@ -137,9 +137,9 @@ Default Greninja
 みずいろのコア
 あおいろのコア
 むらさきいろのコア
-Default Magearna
+デフォルト
 ５００ねんまえのいろ
-Default Pichu
-Spiky-Eared Pichu
-Default Mistigrix
+デフォルト
+ギザみみピチュー
+オスのすがた
 メスのすがた
