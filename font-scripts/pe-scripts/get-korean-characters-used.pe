@@ -1,0 +1,43 @@
+#!/usr/local/bin/fontforge
+
+# Check if all characters in Pokémon nicknames are present in the font
+#
+# Characters missing will be displayed
+#
+# This script needs FontForge installed
+# How to use :
+# [Path to fontforge executable]fontforge -script check-pokemon-nickname-characters.pe font.ttf
+#
+# Ex:
+# fontforge.exe -script remove-chars.pe Bold.ttf 4e00 9fff Bold-Modified.ttf
+
+font = $1
+Open(font)
+
+minRange = 0xac00
+maxRange = 0xd7a3
+
+i = minRange
+while (i < maxRange)
+	unicode = i
+	Select(unicode)
+	ttfIndex = GlyphInfo("GlyphIndex")
+	if (ttfIndex != 65535)
+		Print(unicode)
+	endif
+	++i
+endloop
+
+minRange = 0x3131
+maxRange = 0x318e
+
+i = minRange
+while (i < maxRange)
+	unicode = i
+	Select(unicode)
+	ttfIndex = GlyphInfo("GlyphIndex")
+	if (ttfIndex != 65535)
+		Print(unicode)
+	endif
+	++i
+endloop

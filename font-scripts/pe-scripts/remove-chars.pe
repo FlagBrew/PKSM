@@ -1,0 +1,35 @@
+#!/usr/local/bin/fontforge
+
+# Add characters from a font to another font
+# 
+# This script needs FontForge installed
+# How to use :
+# [Path to fontforge executable]fontforge -script remove-chars.pe font-from.ttf min-range-hex max-range-hex font-save.ttf
+#
+# Ex:
+# fontforge.exe -script remove-chars.pe Bold.ttf 4e00 9fff Bold-Modified.ttf
+
+fontFrom = $1
+minRange = Strtol($2, 16)
+maxRange = Strtol($3, 16)
+total = maxRange - minRange
+
+Print("Opening font "+fontFrom+"...")
+Open(fontFrom)
+
+i = minRange
+j = 0
+while (i <= maxRange)
+	if (j%1000 == 0)
+		Print("Deleting char "+j+" / "+total)
+	endif
+
+	Select(i)
+	Clear()
+	++i
+	++j
+endloop
+
+Generate($4)
+Print("The file " +$4+" has been generated !")
+Close()
