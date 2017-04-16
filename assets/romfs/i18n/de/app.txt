@@ -33,7 +33,7 @@ Drücke A zum Fortfahren.
 Drücke A zum Fortfahren, B zum Abbrechen.
 Bitte warten.
 Karte hat Priorität über Downloadversion.
-Bewege dein DPAD. Drücke A zum Fortfahren, B zum Beenden.
+Auswahl mit Steuerkreuz. A zum Auswählen, B zum Beenden.
 X
 Y
 Omega Rubin
@@ -110,8 +110,8 @@ Verst. Fähigk.:
 KP
 Angriff
 Vert.
-Sp.-Angr.
-Sp.-Vert.
+Sp.-Ang.
+Sp.-Ver.
 Initiative
 Lv.%u
 Attacken
@@ -132,24 +132,24 @@ TID: %u / SID: %u / TSV: %u
 Seed: %lx %lx %lx %lx
 Level:
 Wesen:
-Fähigk.:
+Fähigkeit:
 Item:
-Schillernd:
+Schillern:
 Pokérus:
 OT:
 Spitzname:
-Freundschaft:
-STATUSW.
+Freundsch.:
+STATUSWERTE
 ATTACKEN
 SPEICHERN
 KP:
 Angriff:
 Verteidigung:
 Sp.-Angriff:
-Sp.-Vert.:
+Sp.-Ver.:
 Initiative:
-Bearbeite dein Pokémon auf dem unteren Bildschirm.
-Drücke SPEICHERN, wenn du fertig bist
+Bearbeite dein Pokémon am unteren Bildschirm
+und tippe auf SPEICHERN, sobald du fertig bist.
 Neutral
 -Angriff
 -Vert.
@@ -162,12 +162,12 @@ Neutral
 +Sp.-Ang.
 +Sp.-Vert.
 Ei-Schritte:
-STATUSWERT
+WERT
 IV
 EV
-GESAMT
+SUMME
 Versteckte Fähigk.:
-Angriffe
+Attacken
 Ei-Attacken
 Ausgewählter Byte:
 Wähle auf dem oberen Bildschirm ein Item mit A aus.
@@ -198,7 +198,7 @@ Drücke START zum Einfügen, B zum Verlassen.
 Bank-Größe:
 Spielstand sichern
 Bank sichern
-Drücke auf -/+ zum Ändern der Größe.
+Tippe auf -/+ zum Ändern der Größe.
 Ja
 Nein
 Spezies: #%d - %ls
@@ -207,18 +207,18 @@ TID: %d
 SID: %d
 Fähigkeit: %ls
 Wesen: %ls
-Schicksalhafte Begegnung Bitschalter
-Geschlecht:
+Schicksalhafte Begegnung
+Geschlecht: 
 männlich
 weiblich
 geschlechtslos
 Alternative Form: #%d
 KP FP: %d
 Angriff FP: %d
-Vert. FP: %d
+Verteidigung FP: %d
 Initiative FP: %d
-Sp.-Ang. FP: %d
-Sp.-Vert. FP: %d
+Spezial-Angriff FP: %d
+Spezial-Verteidigung FP: %d
 Wettbewerbswert Coolness: %d
 Wettbewerbswert Schönheit: %d
 Wettbewerbswert Anmut/Putzigkeit: %d
@@ -322,12 +322,12 @@ Getroffen (Monat): %d
 Getroffen (Tag): %d
 Getroffen (Level): %d
 : Originaltrainer Geschlecht
-KP mit Super-Spezialtraining trainiert
-Angriff mit Super-Spezialtraining trainiert
-Verteidigung mit Super-Spezialtraining trainiert
-Spezial-Angriff mit Super-Spezialtraining trainiert
-Spezial-Verteidigung mit Super-Spezialtraining trainiert
-Initiative mit Super-Spezialtraining trainiert
+KP hypertrainiert
+Angriff hypertrainiert
+Verteidigung hypertrainiert
+Spezial-Angriff hypertrainiert
+Spezial-Verteidigung hypertrainiert
+Initiative hypertrainiert
 Verschlüsselungskonstante, Byte 1
 Verschlüsselungskonstante, Byte 2
 Verschlüsselungskonstante, Byte 3
@@ -360,10 +360,10 @@ Wesen
 Schicksalhafte Begegnung Bitschalter / Geschlecht / Alternative Form
 KP Fleißpunkte
 Angriff Fleißpunkte
-Vert. Fleißpunkte
+Verteidigung Fleißpunkte
 Initiative Fleißpunkte
-Sp.-Ang. Fleißpunkte
-Sp.-Vert. Fleißpunkte
+Spezial-Angriff Fleißpunkte
+Spezial-Verteidigung Fleißpunkte
 Wettbewerbswert Coolness
 Wettbewerbswert Schönheit
 Wettbewerbswert Anmut/Putzigkeit
@@ -419,14 +419,14 @@ Attacke 3, Byte 1
 Attacke 3, Byte 2
 Attacke 4, Byte 1
 Attacke 4, Byte 2
-Attacke 1 PP
-Attacke 2 PP
-Attacke 3 PP
-Attacke 4 PP
-Attacke 1 PP Up
-Attacke 2 PP Up
-Attacke 3 PP Up
-Attacke 4 PP Up
+Attacke 1 AP
+Attacke 2 AP
+Attacke 3 AP
+Attacke 4 AP
+Attacke 1 AP-Plus
+Attacke 2 AP-Plus
+Attacke 3 AP-Plus
+Attacke 4 AP-Plus
 Ei-Attacke 1, Byte 1
 Ei-Attacke 1, Byte 2
 Ei-Attacke 2, Byte 1
@@ -435,7 +435,7 @@ Ei-Attacke 3, Byte 1
 Ei-Attacke 3, Byte 2
 Ei-Attacke 4, Byte 1
 Ei-Attacke 4, Byte 2
-Geheimer Supertraininging-Bitschalter
+Geheimer Supertraining Bitschalter
 IV, Byte 1
 IV, Byte 2
 IV, Byte 3
@@ -465,17 +465,17 @@ Aktueller Trainer Name, Byte 22
 Aktueller Trainer Name, Byte 23
 Aktueller Trainer Name, Byte 24
 Aktueller Trainer Geschlecht
-Aktueller Handler
-Letzter Handler 1 Region
-Letzter Handler 1 Land
-Letzter Handler 2 Region
-Letzter Handler 2 Land
-Letzter Handler 3 Region
-Letzter Handler 3 Land
-Letzter Handler 4 Region
-Letzter Handler 4 Land
-Letzter Handler 5 Region
-Letzter Handler 5 Land
+Aktueller Halter
+Letzter Halter 1 Region
+Letzter Halter 1 Land
+Letzter Halter 2 Region
+Letzter Halter 2 Land
+Letzter Halter 3 Region
+Letzter Halter 3 Land
+Letzter Halter 4 Region
+Letzter Halter 4 Land
+Letzter Halter 5 Region
+Letzter Halter 5 Land
 Aktueller Trainer Freundschaft
 Aktueller Trainer Zutraulichkeit
 Aktueller Trainer Intensität
