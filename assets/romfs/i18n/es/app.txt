@@ -10,30 +10,30 @@ Ordenando objetos
 Cargano poderes ocultos
 Cargando fuentes...
 Guardando fuente en caché %i/%i
-Listo!
+¡Listo!
 Creando banco predeterminado...
 Respaldando banco...
-Reinicia la aplicación!
-Te faltan algunos archivos!
+¡Reinicia la aplicación!
+¡Te faltan algunos archivos!
 Cargando partida...
-Juego no encontrado!
-Tamaño incorrecto para este juego!
-No se ha insertado ningún cartucho!
+¡Juego no encontrado!
+¡Tamaño incorrecto para este juego!
+¡No se ha insertado ningún cartucho!
 EDITOR
 EVENTOS
-CREDITOS
-Presiona A para seleccionar esta opción.
-Presiona START para salir.
-EDITOR DE POKÉMON
-EDITOR DE PARTIDA
-BANCO DE POKÉMON
-INYECTOR DE CAJAS
+CRÉDITOS
+Pulsa A para seleccionar esta opción.
+Pulsa START para salir.
+EDITAR POKÉMON
+EDITAR PARTIDA
+BANCO POKÉMON
+INYECTAR CAJAS
 ¿Guardar cambios?
-Presiona A para continuar.
-Presiona A para continuar, B para cancelar.
+Pulsa A para continuar.
+Pulsa A para continuar, B para cancelar.
 Espere por favor.
-Cartuchos tienen prioridad sobre copia digital.
-Mueve tu DPAD. Presiona A para continuar, B para salir.
+Los cartuchos tienen prioridad sobre la copia digital.
+Mueve tu cruceta. Pulsa A para continuar, B para salir.
 X
 Y
 Rubí Omega
@@ -49,54 +49,54 @@ Negro
 Blanco
 Negro 2
 Blanco 2
-Cargando graficos...
+Cargando gráficos...
 Cargando imagen %i / %i
-Bank.bin tiene un tamaño incorrecto!
-Vaciar la caja seleccionada?
-Guardar cambios en bank.bin?
-Guardar cambios en la PokeDex?
+¡Bank.bin tiene un tamaño incorrecto!
+¿Vaciar la caja seleccionada?
+¿Guardar cambios en bank.bin?
+¿Guardar cambios en la PokéDex?
 Caja %lu / Espacio %lu
-Ha ocurrido un error durante la inyección!
-La inyección tuvo éxito!
-Objeto no disponible en XY!
-Guardar cambios en la PokeDex?
+¡Ha ocurrido un error durante la inyección!
+¡La inyección tuvo éxito!
+¡Objeto no disponible en XY!
+¿Guardar cambios en la PokéDex?
 Caja %lu / Espacio %lu
-XD collection inyectada correctamente!
-Colosseum col. inyectada correctamente!
-10th Anniversary inyectada correctamente!
-N's collection inyectada correctamente!
-Entree Forest col. inyectada correctamente!
-Dream Radar col. inyectada correctamente!
-Living dex inyectada correctamente!
-Deoxys collection inyectada correctamente!
-My Pokemon Ranch inyectada correctamente!
-Korean collection inyectada correctamente!
-Idioma seleccionado correctamente!
-Regalo misterioso borrado!
+¡Col. XD inyectada!
+¡Col. Colosseum inyectada!
+¡10º Aniversario inyectada!
+¡Col. de N inyectada!
+¡Col. Bosque Nexo inyectada!
+¡Col. RAdar Pokémon inyectada!
+¡Living dex inyectada!
+¡Col. Deoxys inyectada!
+¡Pokemon Ranch inyectada!
+¡Colección Coreana inyectada!
+¡Idioma seleccionado!
+¡Álbum r. misterioso vaciado!
 Cancelar
 Seleccionar
 Pon tu nombre
 Pon el nombre del EO
-Liberar?
-Liberado!
+¿Liberar?
+¡Liberado!
 Progreso: %lu/%lu bytes
 EVENTOS
 OTROS
-Presiona START para salir.
-Creditos
-Presiona B para salir.
+Pulsa START para salir.
+Créditos
+Pulsa B para salir.
 Base de datos de eventos
-Presiona A para continuar, B para volver.
-Presiona START para inyectar, B para volver.
-Presiona A para seleccionar, B para volver.
+Pulsa A para continuar, B para volver.
+Pulsa START para inyectar, B para volver.
+Pulsa A para seleccionar, B para volver.
 Idiomas:
 Sobreescribir regalo misterioso:
 Adaptar idioma de el RM:
 Inyectar RM en el espacio:
 Editor de partida
 Idioma:
-Borrar regalo misterioso
-Presiona START para editar, A para activar, B para salir.
+Vaciar Álbum R. Misterioso
+Pulsa START para editar, A para activar, B para salir.
 Apodo:
 EO:
 Pokérus:
@@ -123,9 +123,9 @@ GENERAR
 SALIR
 Caja %d
 Abre el cliente en tu PC...
-Presiona B para salir.
+Pulsa B para salir.
 Equipo
-Presiona A para clonar, B para cancelar.
+Pulsa A para clonar, B para cancelar.
 %ls ha sido seleccionado.
 Generar con A en la pantalla superior.
 TID: %u / SID: %u / TSV: %u
@@ -139,7 +139,7 @@ Pokérus:
 EO:
 Apodo:
 Amistad:
-ESTADISTICAS
+ESTADÍSTICAS
 MOVIMIENTOS
 GUARDAR
 PS:
@@ -149,7 +149,7 @@ Atq. Spe.:
 Def. Spe.:
 Velocidad:
 Edita tu Pokémon en la pantalla inferior.
-Toca GUARDAR cuando estes listo.
+Toca GUARDAR cuando estés listo.
 Neutral
 -Ataque
 -Defensa
@@ -162,7 +162,7 @@ Neutral
 +Atq. Spe.
 +Def. Spe.
 Ciclos de eclosión:
-Estadisticas
+Estadísticas
 IV
 EV
 TOTAL
@@ -172,7 +172,7 @@ Movimientos recordables
 Byte seleccionado:
 Selecciona un objeto con A en la pantalla superior.
 Selecciona una naturaleza con A en la pantalla superior.
-Selecciona una bola con A en la pantalla superior.
+Selecciona una ball con A en la pantalla superior.
 Selecciona un tipo de PO con A en la pantalla superior.
 Selecciona una forma con A en la pantalla superior.
 Banco %d
@@ -182,24 +182,24 @@ Caja %d
 Y: VER
 LIMPIAR CAJA
 LIBERAR
-XD Collection
-Colosseum Collection
-10th Anniversary Collection
-N's Collection
-Entree Forest Collection
-Dream Radar Collection
+Colección XD
+Colección Colosseum
+Colección 10º aniversario
+Colección de N
+Colección Bosque Nexo
+Colección RAdar Pokémon
 Living Dex
-Oblivia Deoxys Collection
-Pokemon Ranch Collection
-KOR Events Collection
+Colección Deoxys de Oblivia
+Colección Pokémon Ranch
+Colección eventos KOR
 %d seran reemplazadas.
 Inyector de cajas
-Presiona START para inyectar, B para salir.
-Tamaño del banco:                   
-Copia de seguridad: Partida
-Copia de seguridad: Banco
+Pulsa START para inyectar, B para salir.
+Tmño banco                  
+C. de seguridad: Partida
+C. de seguridad: Banco
 Toca el número para cambiar el tamaño.
-Si
+Sí
 No
 Especie: #%d - %ls
 Objeto: #%d - %ls
@@ -208,10 +208,10 @@ SID: %d
 Habilidad: %ls
 Naturaleza: %ls
 Encuentro fatídico
-Genero: 
+Género: 
 macho
 hembra
-sin genero
+sin género
 Forma alternativa: #%d
 PS EV: %d
 ATQ EV: %d
@@ -306,8 +306,8 @@ Afecto con el Entrenador Actual: %d
 Intensidad con el Entrenador Actual: %d
 Memoria con el Entrenador Actual: %d
 Sentimiento con el Entrenador Actual: %d
-Fullness: %d
-Enjoyment: %d
+Saciedad: %d
+Diversión: %d
 Nombre del Entrenador Original: 
 Amistad con el Entrenador Original: %d
 Afecto con el Entrenador Original: %d
@@ -321,7 +321,7 @@ Año de encuentro: %d
 Mes de encuentro: %d
 Día de encuentro: %d
 Nivel de encuentro: %d
-: Genero del Entrenador Original
+: Género del Entrenador Original
 PS Entrenado al Extremo
 ATQ Entrenado al Extremo
 DEF Entrenado al Extremo
@@ -334,8 +334,8 @@ Constante de cifrado, byte 3
 Constante de cifrado, byte 4
 Cordura, byte 1
 Cordura, byte 2
-Checksum, byte 1
-Checksum, byte 2
+Suma de Verificación, byte 1
+Suma de Verificación, byte 2
 Especie, byte 1
 Especie, byte 2
 Objeto, byte 1
@@ -357,7 +357,7 @@ PID, byte 2
 PID, byte 3
 PID, byte 4
 Naturaleza
-Encuentro Fatídico / Genero / Forma Alternativa
+Encuentro Fatídico / Género / Forma Alternativa
 PS EV
 ATQ EV
 DEF EV
@@ -466,16 +466,16 @@ Nombre Entrenador Actual, byte 23
 Nombre Entrenador Actual, byte 24
 Genero Entrenador
 Entrenador Actual
-Ultimo Dueño 1 Region
-Ultimo Dueño 1 País
-Ultimo Dueño 2 Region
-Ultimo Dueño 2 País
-Ultimo Dueño 3 Region
-Ultimo Dueño 3 País
-Ultimo Dueño 4 Region
-Ultimo Dueño 4 País
-Ultimo Dueño 5 Region
-Ultimo Dueño 5 País
+Último Dueño 1 Región
+Último Dueño 1 País
+Último Dueño 2 Región
+Último Dueño 2 País
+Último Dueño 3 Región
+Último Dueño 3 País
+Último Dueño 4 Región
+Último Dueño 4 País
+Último Dueño 5 Región
+Último Dueño 5 País
 Amistad Entrenador Actual
 Afecto Entrenador Actual
 Intensidad Entrenador Actual
@@ -483,8 +483,8 @@ Memoria Entrenador Actual
 Sentimiento Entrenador Actual
 TextVar Entrenador Actual, byte 1
 TextVar Entrenador Actual, byte 2
-Plenitud
-Disfrute
+Saciedad
+Diversión
 Nombre Entrenador Original, byte 1
 Nombre Entrenador Original, byte 2
 Nombre Entrenador Original, byte 3
@@ -523,8 +523,8 @@ Mes de encuentro
 Día de encuentro
 Ubicación del huevo
 Ubicación de encuentro
-Bola
-Nivel de encuentro / Genero Entrenador Original
+Ball
+Nivel de encuentro / Género Entrenador Original
 Flags Entrenamiento Extremo
 Versión
 País
@@ -532,22 +532,22 @@ Región
 Región de la consola
 Idioma
 Servidor corriendo en http://%s:9000
-Error en la asignación de búfer!
-socInit falló!
-Socket no accesible!
-Falló la unión!
-Falló la recepción!
-Error durante la fase de proceso!
-Falló al abrir el contenido http!
-Descarga de archivos adicionales fallida!
-Falló al añadir una solicitud al campo de encabezado!
-Falló al seleccionar el SSLOpt!
-Falló al empezar a pedir una solicitud http!
-Falló al recibir el codigo de estado!
-Redirección fallida!
-Falló al recibir el tamaño de descarga!
-Falló al asignar memoria!
+¡Error en la asignación de búfer!
+¡socInit falló!
+¡Socket no accesible!
+¡Falló la unión!
+¡Falló la recepción!
+¡Error durante la fase de proceso!
+¡Falló al abrir el contenido http!
+¡Descarga de archivos adicionales fallida!
+¡Falló al añadir una solicitud al campo de encabezado!
+¡Falló al seleccionar el SSLOpt!
+¡Falló al empezar a pedir una solicitud http!
+¡Falló al recibir el código de estado!
+¡Redirección fallida!
+¡Falló al recibir el tamaño de descarga!
+¡Falló al asignar memoria!
 Cambiando tamaño...
-Tamaño del banco cambiado!
-Copia de seguridad de la partida creada!
-Copia de seguridad del banco creada!
+¡Tamaño del banco cambiado!
+¡Copia de seguridad de la partida creada!
+¡Copia de seguridad del banco creada!
