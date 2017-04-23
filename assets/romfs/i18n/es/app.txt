@@ -90,9 +90,9 @@ Pulsa A para continuar, B para volver.
 Pulsa START para inyectar, B para volver.
 Pulsa A para seleccionar, B para volver.
 Idiomas:
-Sobreescribir regalo misterioso:
-Adaptar idioma de el RM:
-Inyectar RM en el espacio:
+Sustituir r. misterioso:
+Adaptar idioma tarjeta:
+Inyectar tarjeta en hueco:
 Editor de partida
 Idioma:
 Vaciar Álbum R. Misterioso
