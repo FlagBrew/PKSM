@@ -8,8 +8,8 @@ Lade Wesen...
 Lade Items...
 Sortiere Items...
 Lade Kraftreserven...
-Lade Schriftarten...
-Erstelle Schriftartencache (%i/%i)...
+Erstelle Schriftartencache...
+Schriftart %i von %i...
 Fertig!
 Erstelle eine Standard-Bank...
 Sichere Bank...
@@ -22,18 +22,18 @@ Keine Karte eingesteckt!
 VERWALTUNG
 EVENTS
 DANKSAGUNGEN
-Drücke A, um eine Option auszuwählen.
-Drücke START zum Beenden.
+A: Auswählen
+START: Beenden
 POKEMON EDITOR
 SPIELSTAND INFO
 ZUSATZLAGER
 MASSENEINFÜGEN
 Änderungen speichern?
-Drücke A zum Fortfahren.
-Drücke A zum Fortfahren, B zum Abbrechen.
+A: Fortfahren
+A: Fortfahren  B: Abbrechen
 Bitte warten.
 Karte hat Priorität über Downloadversion.
-Auswahl mit Steuerkreuz. A zum Auswählen, B zum Beenden.
+Steuerkreuz: Auswählen  A: Bestätigen  B: Beenden
 X
 Y
 Omega Rubin
@@ -50,10 +50,10 @@ Weiß
 Schwarz 2
 Weiß 2
 Lade Grafiken...
-Lade Bild %i / %i
+Grafik %i von %i...
 Bank.bin hat eine ungültige Größe!
 Ausgewählte Box löschen?
-Änderungen an bank.bin speichern?
+Änderungen an Bank speichern?
 Pokédex-Einträge freischalten?
 Box %lu / Slot %lu
 Fehler beim Einfügen!
@@ -65,12 +65,12 @@ XD-Sammlung übernommen!
 Colosseum-Samml. übernommen!
 10. Jubiläum übernommen!
 Ns Sammlung übernommen!
-Kontakthain-Sammlg. übernommen!
-Traumradar-Sammlung übernommen!
+Kontaktebenenhain übernommen!
+Traumradar-Sammlg. übernommen!
 Living-Dex übernommen!
 Deoxys-Sammlung übernommen!
 My Pokémon Ranch übernommen!
-Koreanische Sammlung übernommen!
+Koreanische Sammlg. übernommen!
 Sprache erfolgreich festgelegt!
 Geheimgeschehen-Box geleert!
 Abbrechen
@@ -82,31 +82,31 @@ Freigelassen!
 Fortschritt: %lu/%lu Bytes
 EVENTS
 SONSTIGES
-Drücke START zum Beenden.
+START: Beenden
 Danksagungen
-Drücke B zum zurückkehren.
+B: Zurück
 Event-Datenbank
-Drücke A zum Fortfahren, B für zurück.
-Drücke START zum Einfügen, B für zurück.
-Drücke A zum Auswählen, B für zurück.
+A: Fortfahren  B: Zurück
+START: Einfügen  B: Zurück
+A: Auswählen  B: Zurück
 Sprachen:
 Überschr. Wunderkarte:
-Sprache a. WK anwenden:
+WK an Sprache anpassen:
 WK einfügen in Slot:
 Spielstand-Editor
 Sprache:
-Geheimgeschehen-Box leeren
-Drücke START zum Bearbeiten, A zum Umschalten, B zum Beenden.
-Spitzname:
-OT:
+Geheimgesch.-Box leeren
+START: Änderung übernehmen  A: Umschalten  B: Zurück
+Spitzname
+OT
 Pokérus
-Wesen:
-Fähigkeit:
-Item:
-ESV / TSV:
-TID / SID:
-HT/OT Freundsch.:
-Verst. Fähigk.:
+Wesen
+Fähigkeit
+Item
+ESV / TSV
+TID / SID
+HT / OT Freund.
+Verst. Fähigkeit
 KP
 Angriff
 Vert.
@@ -115,7 +115,7 @@ Sp.-Ver.
 Initiative
 Lv.%u
 Attacken
-Ei-Schritte:
+Ei-Schritte
 BEARBEITEN
 KLONEN
 FREILASSEN
@@ -123,39 +123,39 @@ GENERIEREN
 ZURÜCK
 Box %d
 Starte den Client auf deinem PC...
-Drücke B zum Abbrechen.
+B: Beenden
 Team
-Drücke A zum Klonen in ausgw. Slot, B zum Abbrechen.
+A: Klonen in ausgwählten Slot  B: Abbrechen
 %ls wurde ausgewählt.
 Wähle mit A auf dem oberen Bildschirm aus.
 TID: %u / SID: %u / TSV: %u
 Seed: %lx %lx %lx %lx
-Level:
-Wesen:
-Fähigkeit:
-Item:
-Schillern:
-Pokérus:
-OT:
-Spitzname:
-Freundsch.:
-STATUSWERTE
+Level
+Wesen
+Fähigkeit
+Item
+Schillernd
+Pokérus
+OT
+Spitzname
+Freundschaft
+STATUS
 ATTACKEN
 SPEICHERN
-KP:
-Angriff:
-Verteidigung:
-Sp.-Angriff:
-Sp.-Ver.:
-Initiative:
+KP
+Angriff
+Verteidigung
+Sp.-Angriff
+Sp.-Ver.
+Initiative
 Bearbeite dein Pokémon am unteren Bildschirm
 und tippe auf SPEICHERN, sobald du fertig bist.
 Neutral
 -Angriff
 -Vert.
 -Init.
--Sp.-Ang.
--Sp.-Vert.
+  -Sp.-Ang.
+  -Sp.-Vert.
 +Angriff
 +Vert.
 +Init.
@@ -170,11 +170,11 @@ Versteckte Fähigk.:
 Attacken
 Ei-Attacken
 Ausgewählter Byte:
-Wähle auf dem oberen Bildschirm ein Item mit A aus.
-Wähle auf dem oberen Bildschirm ein Wesen mit A aus.
-Wähle auf dem oberen Bildschirm einen Pokéball mit A aus.
-Wähle auf dem oberen Bildschirm einen KP-Typ mit A aus.
-Wähle auf dem oberen Bildschirm eine Form mit A aus.
+Wähle oben ein Item mit A aus.
+Wähle oben ein Wesen mit A aus.
+Wähle oben einen Pokéball mit A aus.
+Wähle oben KP-Typ mit A aus.
+Wähle oben eine Form mit A aus.
 Bank %d
 Lv.%u
 ID. %u
@@ -194,8 +194,8 @@ Pokémon Ranch-Sammlung
 KOR Events Sammlung
 %d Boxen werden ersetzt.
 Masseneinfügen
-Drücke START zum Einfügen, B zum Verlassen.
-Bank-Größe:
+START: Einfügen  B: Zurück
+Bank-Größe                  
 Spielstand sichern
 Bank sichern
 Tippe auf -/+ zum Ändern der Größe.
