@@ -110,10 +110,10 @@ Poder oculto:
 PS
 Ataque
 Defensa
-Atq. Spe.
-Def. Spe.
-Velocidad
-Nv.%u
+At. Esp.
+De. Esp.
+Vel.
+Nv.%u	 
 Movimientos
 Ciclos para eclosión:
 EDITAR
@@ -139,28 +139,28 @@ Pokérus:
 EO:
 Apodo:
 Amistad:
-ESTADÍSTICAS
-MOVIMIENTOS
+ESTAD.
+ATAQUES
 GUARDAR
 PS:
 Ataque:
 Defensa:
-Atq. Spe.:
-Def. Spe.:
+Atq. Esp.:
+Def. Esp.:
 Velocidad:
 Edita tu Pokémon en la pantalla inferior.
 Toca GUARDAR cuando estés listo.
 Neutral
 -Ataque
 -Defensa
--Velocidad
--Atq. Spe.
--Def. Spe.
+-Vel.
+-At. Esp.
+-De. Esp.
 +Ataque
 +Defensa
-+Velocidad
-+Atq. Spe.
-+Def. Spe.
++Vel.
++At. Esp.
++De. Esp.
 Ciclos de eclosión:
 Estadísticas
 IV
@@ -170,11 +170,11 @@ Poder oculto:
 Movimientos
 Movimientos recordables
 Byte seleccionado:
-Selecciona un objeto con A en la pantalla superior.
-Selecciona una naturaleza con A en la pantalla superior.
-Selecciona una ball con A en la pantalla superior.
-Selecciona un tipo de PO con A en la pantalla superior.
-Selecciona una forma con A en la pantalla superior.
+Selecciona un objeto con A.
+Selecciona una naturaleza con A.
+Selecciona una ball con A.
+Selecciona un tipo de PO con A.
+Selecciona una forma con A.
 Banco %d
 Nv.%u
 ID. %u
