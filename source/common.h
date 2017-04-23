@@ -53,7 +53,7 @@
 #include "util.h"
 #include "i18n.h"
 
-#define DEBUG 0
+#define DEBUG 1
 
 #define GAME_X 		  0
 #define GAME_Y 		  1
@@ -71,7 +71,7 @@
 #define GAME_B2 	 13
 #define GAME_W2 	 14
 
-#define VERSION "v4.2.3"
+#define VERSION "v4.2.3_TESTBUILD"
 
 struct ArrayUTF32 listMoves;
 struct ArrayUTF32 listItems;

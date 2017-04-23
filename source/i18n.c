@@ -42,7 +42,7 @@ struct i18n_files i18n_files_generic_paths = {
 	"romfs:/i18n/%s/hp.txt",
 	"romfs:/i18n/%s/forms.txt",
 	"romfs:/i18n/%s/balls.txt",
-	"romfs:/i18n/%s/types.png",
+	"sdmc:/3ds/data/PKSM/additionalassets/i18n/%s/types.png",
 	"romfs:/i18n/%s/app.txt"
 };
 
@@ -58,7 +58,7 @@ struct i18n_files i18n_files_extern_paths = {
 	"sdmc:/3ds/data/PKSM/i18n/hp.txt",
 	"sdmc:/3ds/data/PKSM/i18n/forms.txt",
 	"sdmc:/3ds/data/PKSM/i18n/balls.txt",
-	"sdmc:/3ds/data/PKSM/i18n/types.png",
+	"sdmc:/3ds/data/PKSM/additionalassets/i18n/types.png",
 	"sdmc:/3ds/data/PKSM/i18n/app.txt"
 };
 

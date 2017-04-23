@@ -383,7 +383,7 @@ void init_font_cache() {
 }
 
 void drawFPSDebug() {
-	sf2d_draw_rectangle(10, 10, 108, 20, RGBA8(0, 0, 0, 200));
+	sf2d_draw_rectangle(10, 10, 108, 20, RGBA8(0, 0, 0, 160));
 	sftd_draw_textf(fontBold12, 12, 13, WHITE, 12, "FPS: %2.6f", sf2d_get_fps());
 }
 

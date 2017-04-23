@@ -18,16 +18,34 @@
 
 #include "common.h"
 
-#define ASSETS 3
+#define ASSETS 11
 
 char* path[] =    { "/3ds/data/PKSM/additionalassets/alternative_icons_spritesheetv3.png",
 					"/3ds/data/PKSM/additionalassets/balls_spritesheetv2.png",
 					"/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheetv3.png",
+					"/3ds/data/PKSM/additionalassets/i18n/de/types.png",
+					"/3ds/data/PKSM/additionalassets/i18n/en/types.png",
+					"/3ds/data/PKSM/additionalassets/i18n/es/types.png",
+					"/3ds/data/PKSM/additionalassets/i18n/fr/types.png",
+					"/3ds/data/PKSM/additionalassets/i18n/it/types.png",
+					"/3ds/data/PKSM/additionalassets/i18n/jp/types.png",
+					"/3ds/data/PKSM/additionalassets/i18n/ko/types.png",
+					"/3ds/data/PKSM/additionalassets/i18n/zh/types.png",
 };
 char* url[] = { "https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/alternative_icons_spritesheetv3.png",
 				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/balls_spritesheetv2.png",
 				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/pokemon_icons_spritesheetv3.png",
+				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_de.png",
+				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_en.png",
+				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_es.png",
+				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_fr.png",
+				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_it.png",
+				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_jp.png",
+				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_ko.png",
+				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_zh.png",
 };
+
+char* LANG_PREFIX[] = { "jp", "en", "fr", "de", "it", "es", "zh", "ko", "nl", "pt", "ru", "tw" };
 		
 void exitServices() {
 	FXElementsExit();
@@ -55,6 +73,21 @@ bool initServices() {
 	aptInit();
 	sdmcInit();
 	romfsInit();
+	
+	mkdir("sdmc:/3ds", 0777);
+	mkdir("sdmc:/3ds/data", 0777);
+	mkdir("sdmc:/3ds/data/PKSM", 0777);
+	mkdir("sdmc:/3ds/data/PKSM/bank", 0777);
+	mkdir("sdmc:/3ds/data/PKSM/backup", 0777);
+	mkdir("sdmc:/3ds/data/PKSM/additionalassets", 0777);
+	mkdir("sdmc:/3ds/data/PKSM/additionalassets/i18n", 0777);
+	
+	char i18npath[80];
+	for (unsigned int i = 0; i < 11; i++) {
+		snprintf(i18npath, 80, "sdmc:/3ds/data/PKSM/additionalassets/i18n/%s", LANG_PREFIX[i]);
+		mkdir(i18npath, 0777);
+	}
+	
 	i18n_init();
 	fsStart();
 	srvInit();
@@ -65,13 +98,6 @@ bool initServices() {
 	FXElementsInit();
 	GUIGameElementsInit();
 
-	mkdir("sdmc:/3ds", 0777);
-	mkdir("sdmc:/3ds/data", 0777);
-	mkdir("sdmc:/3ds/data/PKSM", 0777);
-	mkdir("sdmc:/3ds/data/PKSM/bank", 0777);
-	mkdir("sdmc:/3ds/data/PKSM/backup", 0777);
-	mkdir("sdmc:/3ds/data/PKSM/additionalassets", 0777);
-	
 	wchar_t* str = malloc(60*sizeof(wchar_t*));
 	for (int i = 0; i < ASSETS; i++) {
 		FILE *temp1 = fopen(path[i], "rt");
