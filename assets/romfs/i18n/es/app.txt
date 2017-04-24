@@ -180,7 +180,7 @@ Nv.%u
 ID. %u
 Caja %d
 Y: VER
-LIMPIAR CAJA
+VACIAR CAJA
 LIBERAR
 Colección XD
 Colección Colosseum

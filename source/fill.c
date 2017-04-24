@@ -38,8 +38,8 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[1606] = "1606 - Mawilite"; spriteArray[1606] = 0;
 	database[1607] = "1607 - SM Rare Candy"; spriteArray[1607] = 0;
 	database[1608] = "1608 - Pidgeot-Steelixite"; spriteArray[1608] = 0;
-	database[1609] = "1609 - Mega Stone Gift"; spriteArray[1609] = 0;
-	database[1610] = "1610 - Mega Stone Gift"; spriteArray[1610] = 0;
+	database[1609] = "1609 - Mawilite"; spriteArray[1609] = 0;
+	database[1610] = "1610 - SM Rare Candy"; spriteArray[1610] = 0;
 	database[2040] = "2040 - SM Stardust"; spriteArray[2040] = 0;
 	database[2041] = "2041 - SM Star Piece"; spriteArray[2041] = 0;
 	database[2042] = "2042 - SM Nugget"; spriteArray[2042] = 0;
@@ -54,11 +54,16 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[218] = "0218 - Lunar Shiny Magikarp"; spriteArray[218] = 129;
 	database[219] = "0219 - 7-11 Machamp"; spriteArray[219] = 68;
 	database[220] = "0220 - Shiny Tapu Koko"; spriteArray[220] = 785;
+	database[222] = "0222 - JPN Bewear"; spriteArray[222] = 760;
 	database[223] = "0223 - Ash-hat Pikachu"; spriteArray[223] = 25;
 	database[224] = "0224 - CoroCoro Charizard"; spriteArray[224] = 6;
 	database[227] = "0227 - Bestow Pikachu"; spriteArray[227] = 25;
 	database[606] = "0606 - Rocky Lycanroc"; spriteArray[606] = 745;
-	database[1107] = "1107 - KOR Alolan Vulpix"; spriteArray[1107] = 37;
+	database[1105] = "1105 - Shiny Tapu Koko"; spriteArray[1105] = 785;
+	database[1107] = "1107 - Alolan Vulpix"; spriteArray[1107] = 37;
+	database[1108] = "1108 - Alolan Sandshrew"; spriteArray[1108] = 27;
+	database[1109] = "1109 - Alolan Diglett"; spriteArray[1109] = 50;
+	database[1110] = "1110 - Alolan Grimer"; spriteArray[1110] = 88;
 	database[1601] = "1601 - Z-stone Munchlax"; spriteArray[1601] = 446;
 	database[1610] = "Placeholder";
 	database[2046] = "2046 - Ash Greninja"; spriteArray[2046] = 658;
