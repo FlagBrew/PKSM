@@ -91,7 +91,7 @@ START: Einfügen  B: Zurück
 A: Auswählen  B: Zurück
 Sprachen:
 Überschr. Wunderkarte:
-WK an Sprache anpassen:
+An Sprache anpassen:
 WK einfügen in Slot:
 Spielstand-Editor
 Sprache:
