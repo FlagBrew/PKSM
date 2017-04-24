@@ -1320,7 +1320,11 @@ void setFlag(u8* pkmn, int flgaddr, int flgshift, bool value) {
 
 void parseHexEditor(u8* pkmn, int game, int byteEntry) {	
 	if (!hax) {
-		if (byteEntry == 0x1D)
+		if (byteEntry == 0x14)
+			checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 231);
+		else if (byteEntry == 0x15)
+			checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 1);
+		else if (byteEntry == 0x1D)
 			checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 1);
 		else if (byteEntry == 0x36)
 			checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 2);
@@ -1349,8 +1353,10 @@ void parseHexEditor(u8* pkmn, int game, int byteEntry) {
 			checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 0x3E);
 		else
 			pkmn[byteEntry]++;
-	} else
-		pkmn[byteEntry]++;
+	} else if (byteEntry == 0x14) // ability needs a dedicated check for hax mode too
+			checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 231);
+		else 
+			pkmn[byteEntry]++;
 }
 
 void pokemonEditor(u8* mainbuf, int game) {

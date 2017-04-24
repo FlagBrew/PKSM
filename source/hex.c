@@ -264,6 +264,9 @@ void fillSectors(bool sector[][2]) {
 
 	for (int j = 0x0C; j <= 0x0F; j++) // tid to sid
 		sector[j][0] = true;
+		
+	for (int j = 0x14; j <= 0x15; j++) // ability to ability number
+		sector[j][0] = true;
 	
 	for (int j = 0x18; j <= 0x1B; j++) // pid
 		sector[j][0] = true;
@@ -312,8 +315,7 @@ void fillSectorsHaxMode(bool sector[][2]) {
 	
 	for (int j = 0x08; j <= 0x0B; j++)
 		sector[j][0] = false;
-		
-	sector[0x14][0] = false;
+
 	sector[0x1C][0] = false;
 	sector[0xDC][0] = false;
 	
