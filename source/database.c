@@ -291,17 +291,17 @@ void eventDatabase7(u8* mainbuf, int game) {
 			else if (page == SMCOUNT / 10 - 1) page = 0;
 		}
 		
-		if (hidKeysDown() & KEY_DUP) {
+		if (hidKeysDown() & KEY_UP) {
 			if (currentEntry > 0) currentEntry--;
 			else if (currentEntry == 0) currentEntry = 9;
 		}
 		
-		if (hidKeysDown() & KEY_DDOWN) {
+		if (hidKeysDown() & KEY_DOWN) {
 			if (currentEntry < 9) currentEntry++;
 			else if (currentEntry == 9) currentEntry = 0;
 		}
 		
-		if (hidKeysDown() & KEY_DLEFT) {
+		if (hidKeysDown() & KEY_LEFT) {
 			if (currentEntry <= 4) {
 				int temp;
 				do {
@@ -319,7 +319,7 @@ void eventDatabase7(u8* mainbuf, int game) {
 			else if (currentEntry >= 5) currentEntry -= 5;
 		}
 		
-		if (hidKeysDown() & KEY_DRIGHT) {
+		if (hidKeysDown() & KEY_RIGHT) {
 			if (currentEntry <= 4) currentEntry += 5;
 			else if (currentEntry >= 5) {
 				int temp;
@@ -634,17 +634,17 @@ void eventDatabase6(u8* mainbuf, int game) {
 			else if (page == 204) page = 0;
 		}
 		
-		if (hidKeysDown() & KEY_DUP) {
+		if (hidKeysDown() & KEY_UP) {
 			if (currentEntry > 0) currentEntry--;
 			else if (currentEntry == 0) currentEntry = 9;
 		}
 		
-		if (hidKeysDown() & KEY_DDOWN) {
+		if (hidKeysDown() & KEY_DOWN) {
 			if (currentEntry < 9) currentEntry++;
 			else if (currentEntry == 9) currentEntry = 0;
 		}
 		
-		if (hidKeysDown() & KEY_DLEFT) {
+		if (hidKeysDown() & KEY_LEFT) {
 			if (currentEntry <= 4) {
 				int temp;
 				do {
@@ -662,7 +662,7 @@ void eventDatabase6(u8* mainbuf, int game) {
 			else if (currentEntry >= 5) currentEntry -= 5;
 		}
 		
-		if (hidKeysDown() & KEY_DRIGHT) {
+		if (hidKeysDown() & KEY_RIGHT) {
 			if (currentEntry <= 4) currentEntry += 5;
 			else if (currentEntry >= 5) {
 				int temp;
@@ -953,17 +953,17 @@ void eventDatabase5(u8* mainbuf, int game) {
 			else if (page == 16) page = 0;
 		}
 		
-		if (hidKeysDown() & KEY_DUP) {
+		if (hidKeysDown() & KEY_UP) {
 			if (currentEntry > 0) currentEntry--;
 			else if (currentEntry == 0) currentEntry = 9;
 		}
 		
-		if (hidKeysDown() & KEY_DDOWN) {
+		if (hidKeysDown() & KEY_DOWN) {
 			if (currentEntry < 9) currentEntry++;
 			else if (currentEntry == 9) currentEntry = 0;
 		}
 		
-		if (hidKeysDown() & KEY_DLEFT) {
+		if (hidKeysDown() & KEY_LEFT) {
 			if (currentEntry <= 4) {
 				int temp;
 				do {
@@ -981,7 +981,7 @@ void eventDatabase5(u8* mainbuf, int game) {
 			else if (currentEntry >= 5) currentEntry -= 5;
 		}
 		
-		if (hidKeysDown() & KEY_DRIGHT) {
+		if (hidKeysDown() & KEY_RIGHT) {
 			if (currentEntry <= 4) currentEntry += 5;
 			else if (currentEntry >= 5) {
 				int temp;
@@ -1197,17 +1197,17 @@ void eventDatabase4(u8* mainbuf, int game, int GBO, int SBO) {
 			else if (page == 18) page = 0;
 		}
 		
-		if (hidKeysDown() & KEY_DUP) {
+		if (hidKeysDown() & KEY_UP) {
 			if (currentEntry > 0) currentEntry--;
 			else if (currentEntry == 0) currentEntry = 9;
 		}
 		
-		if (hidKeysDown() & KEY_DDOWN) {
+		if (hidKeysDown() & KEY_DOWN) {
 			if (currentEntry < 9) currentEntry++;
 			else if (currentEntry == 9) currentEntry = 0;
 		}
 		
-		if (hidKeysDown() & KEY_DLEFT) {
+		if (hidKeysDown() & KEY_LEFT) {
 			if (currentEntry <= 4) {
 				int temp;
 				do {
@@ -1225,7 +1225,7 @@ void eventDatabase4(u8* mainbuf, int game, int GBO, int SBO) {
 			else if (currentEntry >= 5) currentEntry -= 5;
 		}
 		
-		if (hidKeysDown() & KEY_DRIGHT) {
+		if (hidKeysDown() & KEY_RIGHT) {
 			if (currentEntry <= 4) currentEntry += 5;
 			else if (currentEntry >= 5) {
 				int temp;

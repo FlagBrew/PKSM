@@ -1800,19 +1800,19 @@ void pokemonEditor(u8* mainbuf, int game) {
 											while(aptMainLoop() && !(hidKeysDown() & KEY_B)) {
 												hidScanInput();
 
-												if (hidKeysDown() & KEY_DRIGHT)
+												if (hidKeysDown() & KEY_RIGHT)
 													if (formEntry + 1 < numforms) 
 														formEntry++;
 												
-												if (hidKeysDown() & KEY_DLEFT)
+												if (hidKeysDown() & KEY_LEFT)
 													if (formEntry > 0) 
 														formEntry--;
 												
-												if (hidKeysDown() & KEY_DUP)
+												if (hidKeysDown() & KEY_UP)
 													if (formEntry >= columns) 
 														formEntry -= columns;
 												
-												if (hidKeysDown() & KEY_DDOWN)
+												if (hidKeysDown() & KEY_DOWN)
 													if (formEntry + columns < numforms)
 														formEntry += columns;
 													

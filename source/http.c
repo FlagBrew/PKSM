@@ -104,7 +104,7 @@ void processing(u8* mainbuf, int game, int tempVett[]) {
 		fcntl(data.client_id, F_SETFL, fcntl(data.client_id, F_GETFL, 0) & ~O_NONBLOCK);
 
         recv(data.client_id, payload, PAYLOADSIZE, 0);
-        if (strstr(payload,"PKSMOTA")!=NULL && (hidKeysDown() != KEY_B)) {
+        if (strstr(payload,"PKSMOTA") != NULL && (hidKeysDown() != KEY_B)) {
             u8 pkmn[PKMNLENGTH];
             dummy = strstr(payload,"PKSMOTA");
             memcpy(pkmn, &dummy[7], PKMNLENGTH);

@@ -19,19 +19,19 @@
 #include "hid.h"
 
 int calcCurrentEntryOneScreen(int currentEntry, int max, int columns) {
-	if (hidKeysDown() & KEY_DRIGHT)
+	if (hidKeysDown() & KEY_RIGHT)
 		if (currentEntry < max)
 			currentEntry++;
 	
-	if (hidKeysDown() & KEY_DLEFT)
+	if (hidKeysDown() & KEY_LEFT)
 		if (currentEntry > 0) 
 			currentEntry--;
 	
-	if (hidKeysDown() & KEY_DUP)
+	if (hidKeysDown() & KEY_UP)
 		if (currentEntry >= columns) 
 			currentEntry -= columns;
 	
-	if (hidKeysDown() & KEY_DDOWN)
+	if (hidKeysDown() & KEY_DOWN)
 		if (currentEntry <= max - columns)
 			currentEntry += columns;
 		
@@ -39,19 +39,19 @@ int calcCurrentEntryOneScreen(int currentEntry, int max, int columns) {
 }
 
 int calcCurrentEntryOneScreenReversed(int currentEntry, int max, int rows) {
-	if (hidKeysDown() & KEY_DDOWN)
+	if (hidKeysDown() & KEY_DOWN)
 		if (currentEntry < max)
 			currentEntry++;
 	
-	if (hidKeysDown() & KEY_DUP)
+	if (hidKeysDown() & KEY_UP)
 		if (currentEntry > 0) 
 			currentEntry--;
 	
-	if (hidKeysDown() & KEY_DLEFT)
+	if (hidKeysDown() & KEY_LEFT)
 		if (currentEntry >= rows) 
 			currentEntry -= rows;
 	
-	if (hidKeysDown() & KEY_DRIGHT)
+	if (hidKeysDown() & KEY_RIGHT)
 		if (currentEntry <= max - rows)
 			currentEntry += rows;
 		
@@ -76,21 +76,21 @@ void calcCurrentEntryMorePages(int *currentEntryP, int *pageP, int maxpages, int
 			page = 0;
 	}
 	
-	if (hidKeysDown() & KEY_DLEFT) {
+	if (hidKeysDown() & KEY_LEFT) {
 		if (currentEntry > 0) 
 			currentEntry--;
 		else if (currentEntry == 0) 
 			currentEntry = maxentries;
 	}
 	
-	if (hidKeysDown() & KEY_DRIGHT) {
+	if (hidKeysDown() & KEY_RIGHT) {
 		if (currentEntry < maxentries) 
 			currentEntry++;
 		else if (currentEntry == maxentries) 
 			currentEntry = 0;
 	}
 	
-	if (hidKeysDown() & KEY_DUP) {
+	if (hidKeysDown() & KEY_UP) {
 		if (currentEntry <= columns - 1)	{
 			page--;
 			if (page < 0) 
@@ -132,21 +132,21 @@ void calcCurrentEntryMorePagesReversed(int *currentEntryP, int *pageP, int maxpa
 			page = 0;
 	}
 	
-	if (hidKeysDown() & KEY_DUP) {
+	if (hidKeysDown() & KEY_UP) {
 		if (currentEntry > 0) 
 			currentEntry--;
 		else if (currentEntry == 0) 
 			currentEntry = maxentries;
 	}
 	
-	if (hidKeysDown() & KEY_DDOWN) {
+	if (hidKeysDown() & KEY_DOWN) {
 		if (currentEntry < maxentries) 
 			currentEntry++;
 		else if (currentEntry == maxentries) 
 			currentEntry = 0;
 	}
 	
-	if (hidKeysDown() & KEY_DLEFT) {
+	if (hidKeysDown() & KEY_LEFT) {
 		if (currentEntry <= maxentries - rows)	{
 			page--;
 			if (page < 0) 
@@ -156,7 +156,7 @@ void calcCurrentEntryMorePagesReversed(int *currentEntryP, int *pageP, int maxpa
 			currentEntry -= rows;
 	}
 	
-	if (hidKeysDown() & KEY_DRIGHT) {
+	if (hidKeysDown() & KEY_RIGHT) {
 		if (currentEntry <= maxentries - rows) 
 			currentEntry += rows;
 		else if (currentEntry >= rows) {
