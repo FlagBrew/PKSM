@@ -326,7 +326,7 @@ int main() {
 										pokemonEditor(mainbuf, game);
 										break;
 									case 1 :
-										saveFileEditor(mainbuf, game);
+										saveFileEditor(mainbuf, game, mainSize);
 										break;
 									case 2 :
 										bank(mainbuf, game);

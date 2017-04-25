@@ -333,3 +333,10 @@ void fillSectorsHaxMode(bool sector[][2]) {
 	sector[0xDE][1] = true; // Hyper Train Flags
 	sector[0x1D][1] = true; // Fateful encounter
 }
+
+void fillSaveSectors(bool saveSectors[][2]) {
+	for (int j = 0; j < 0x76000; j++) {
+		saveSectors[j][0] = true;
+		saveSectors[j][1] = false;
+	}
+}

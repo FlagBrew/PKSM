@@ -1082,51 +1082,39 @@ void printDB6(int sprite, int i, bool langVett[], bool adapt, bool overwrite, in
 	free(path);
 }
 
-void printEditor(u8* mainbuf, int game, int currentEntry, int langCont) {
-	int y = 41;
-	char *languages[] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR", "CHS", "CHT"};
-
+void printEditor(u8* mainbuf, int game, u64 size, int currentEntry, int page) {
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
-		printMenuTop();
-		printTitle(i18n(S_GRAPHIC_EDITOR_TITLE));
-		
-		for (int i = 0; i < 5; i++) {
-			if (i == currentEntry)
-				sf2d_draw_texture(eventMenuTopBarSelected, 18, y);
-			else
-				sf2d_draw_texture(eventMenuTopBar, 18, y);
-			
-			switch (i) {
-				case 0 : {
-					int x = 140;
-					sftd_draw_wtext(fontBold12, 40, y + 10, BLACK, 12, i18n(S_GRAPHIC_EDITOR_LANGUAGE));
-					sf2d_draw_texture(miniBox, x, y + 7);
-					sftd_draw_text(fontBold12, x + (36 - sftd_get_text_width(fontBold12, 12, languages[langCont])) / 2, y + 10, YELLOW, 12, languages[langCont]);
-					break;
-				}
+		sf2d_draw_texture(hexBG, 0, 0);
+		for (int rows = 0; rows < 15; rows++) {
+			for (int columns = 0; columns < 16; columns++) {
+				int byte = rows*16 + columns;
+				if (currentEntry == byte)
+					printSelector(columns*25, rows*15, 24, 14);
+				sftd_draw_textf(fontBold11, 4 + 25*columns, 15*rows, (saveSectors[byte + 240*page][0]) ? WHITE : DS, 11, "%02hhX", mainbuf[byte + 240*page]);
+				
+				if (byte + 240*page == size) break;
 			}
-			y += 37;
 		}
-		
-		y = 41;
-		for (int i = 5; i < 10; i++) {
-			if (i == currentEntry)
-				sf2d_draw_texture(eventMenuTopBarSelected, 200, y);
-			else
-				sf2d_draw_texture(eventMenuTopBar, 200, y);
-			
-			switch (i) {
-				case 5 : { sftd_draw_wtext(fontBold12, 200 + (182 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_EDITOR_CLEAR_MYSTERY_GIFT_BOX))) / 2, y + 10, (i == currentEntry) ? DARKBLUE : YELLOW, 12, i18n(S_GRAPHIC_EDITOR_CLEAR_MYSTERY_GIFT_BOX)); break; }
-			}
-			y += 37;
-		}
+		//sftd_draw_wtextf(fontBold11, 4, 225, LIGHTBLUE, 11, L"%ls", descriptions[additional1]);
 	pksm_end_frame();
-
+		
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		printMenuBottom();
-		printBottomIndications(i18n(S_GRAPHIC_EDITOR_INDICATIONS));
+		sf2d_draw_texture(blueTextBox, 165, 28);
+		if (saveSectors[currentEntry + 240*page][0] && !(saveSectors[currentEntry + 240*page][1])) {
+			sf2d_draw_texture(minusButton, 224, 31);
+			sf2d_draw_texture(plusButton, 247, 31);
+		}
+		
+		sftd_draw_wtextf(fontBold14, (155 - sftd_get_wtext_width(fontBold14, 14, i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE))), 30, LIGHTBLUE, 14, i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE));
+		sftd_draw_textf(fontBold14, 171, 30, WHITE, 14, "0x%05hhX", currentEntry + 240*page);
+		
+		sftd_draw_textf(fontBold14, 171, 60, WHITE, 14, "CE: %d", currentEntry);
+		sftd_draw_textf(fontBold14, 171, 100, WHITE, 14, "page: %d", page);
+		
+		//printfHexEditorInfo(pkmn, additional1);
 	pksm_end_frame();
-	sf2d_swapbuffers();
+	sf2d_swapbuffers();		
 }
 
 u16 getAlternativeSprite(u8* pkmn, int game) {

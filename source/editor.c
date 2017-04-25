@@ -1226,63 +1226,50 @@ void setPokerus(u8* pkmn) {
 	*(pkmn + 0x2B) = 0x11;
 }
 
-void saveFileEditor(u8* mainbuf, int game) {
+void saveFileEditor(u8* mainbuf, int game, u64 size) {
 	int currentEntry = 0;
-	int langCont = 0;
-	u8 langValues[] = {0x01,  0x02,  0x03,  0x04,  0x05,  0x07,  0x08,  0x09,  0x0A};
-	u8 langSave = getSaveLanguage(mainbuf, game);
-
-	for (int i = 0; i < 9; i++) {
-		if (langValues[i] == langSave) {
-			langCont = i;
-			break;
-		}
-	}
-
-	while(aptMainLoop()) {
+	int page = 0;
+	int maxpages = (size % 240 == 0) ? size/240 : size/240 + 1;
+	int speed = 0;
+	
+	fillSaveSectors(saveSectors);
+	while (aptMainLoop() & !(hidKeysDown() & KEY_B)) {
 		hidScanInput();
-		currentEntry = calcCurrentEntryOneScreenReversed(currentEntry, 9, 5);
+		touchPosition touch;
+		hidTouchRead(&touch);
+		calcCurrentEntryMorePages(&currentEntry, &page, maxpages, 239, 16);
+
+		bool downPlus = ((hidKeysDown() & KEY_TOUCH) && touch.px > 247 && touch.px < 264 && touch.py > 31 && touch.py < 49) || (hidKeysDown() & KEY_A);
+		bool downMinus = ((hidKeysDown() & KEY_TOUCH) && touch.px > 224 && touch.px < 241 && touch.py > 31 && touch.py < 49) || (hidKeysDown() & KEY_X);
+		bool heldPlus = ((hidKeysHeld() & KEY_TOUCH) && touch.px > 247 && touch.px < 264 && touch.py > 31 && touch.py < 49) || (hidKeysHeld() & KEY_A);
+		bool heldMinus = ((hidKeysHeld() & KEY_TOUCH) && touch.px > 224 && touch.px < 241 && touch.py > 31 && touch.py < 49) || (hidKeysHeld() & KEY_X);
 		
-		if (hidKeysDown() & KEY_B)
-			break;
-
-		if (hidKeysDown() & KEY_A) {
-			switch (currentEntry) {
-				case 0 : {
-					int langMax = (game < 4) ? 6 : 8;
-					if (langCont < langMax) langCont++;
-					else if (langCont == langMax) langCont = 0;
-					break;
-				}
-			}
+		if (heldMinus && heldPlus)
+			speed = 0;
+		else if (saveSectors[currentEntry + 240*page][0] && downMinus) {
+			if (mainbuf[currentEntry + 240*page] > 0)
+				mainbuf[currentEntry + 240*page]--;
 		}
-
-		if (hidKeysDown() & KEY_START) {
-			switch (currentEntry) {
-				case 0 : {
-					setSaveLanguage(mainbuf, game, langCont);
-					infoDisp(i18n(S_EDITOR_LANGUAGE_SET_SUCCESS));
-					break;
-				}
-				case 5 : {
-					int start = 0;
-					int wcmax = (game < 4) ? 24 : 48;
-					if (game == GAME_X || game == GAME_Y)
-						start = 0x1BC00;
-					else if (game == GAME_OR || game == GAME_AS)
-						start = 0x1CC00;
-					else if (game == GAME_SUN || game == GAME_MOON)
-						start = 0x65C00;
-
-					for (int i = 0; i < (0x100 + wcmax * WC6LENGTH); i++)
-						*(mainbuf + start + i) = 0x00;
-					infoDisp(i18n(S_EDITOR_MISTERY_GIFT_CLEANED));
-					break;
-				}
-			}
+		else if (saveSectors[currentEntry + 240*page][0] && heldMinus) {
+			if (speed < -30 && mainbuf[currentEntry + 240*page] > 0)
+				mainbuf[currentEntry + 240*page]--;
+			else
+				speed--;
 		}
+		else if (saveSectors[currentEntry + 240*page][0] && downPlus) {
+			if (mainbuf[currentEntry + 240*page] < 0xFF)
+				parseSaveHexEditor(mainbuf, game, currentEntry + 240*page);
+		}
+		else if (saveSectors[currentEntry + 240*page][0] && heldPlus) {
+			if (speed > 30 && mainbuf[currentEntry + 240*page] < 0xFF)
+				parseSaveHexEditor(mainbuf, game, currentEntry + 240*page);
+			else
+				speed++;
+		}
+		else
+			speed = 0;	
 
-		printEditor(mainbuf, game, currentEntry, langCont);
+		printEditor(mainbuf, game, size, currentEntry, page);
 	}
 }
 
@@ -1357,6 +1344,10 @@ void parseHexEditor(u8* pkmn, int game, int byteEntry) {
 			checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 231);
 		else 
 			pkmn[byteEntry]++;
+}
+
+void parseSaveHexEditor(u8* mainbuf, int game, int byte) {	
+	mainbuf[byte]++;
 }
 
 void pokemonEditor(u8* mainbuf, int game) {

@@ -166,5 +166,7 @@ void setHTi(u8* pkmn, int htnumber, bool value);
 bool getHTi(u8* pkmn, int htnumber);
 void setFlag(u8* pkmn, int flgaddr, int flgshift, bool value);
 
-void saveFileEditor(u8* mainbuf, int game);
+void parseSaveHexEditor(u8* mainbuf, int game, int byte);
+
+void saveFileEditor(u8* mainbuf, int game, u64 size);
 void pokemonEditor(u8* mainbuf, int game);
