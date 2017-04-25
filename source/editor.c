@@ -1229,20 +1229,20 @@ void setPokerus(u8* pkmn) {
 void saveFileEditor(u8* mainbuf, int game, u64 size) {
 	int currentEntry = 0;
 	int page = 0;
-	int maxpages = (size % 240 == 0) ? size/240 : size/240 + 1;
+	int maxpages = size/240;
 	int speed = 0;
 	
-	fillSaveSectors(saveSectors);
+	fillSaveSectors(saveSectors, size);
 	while (aptMainLoop() & !(hidKeysDown() & KEY_B)) {
 		hidScanInput();
 		touchPosition touch;
 		hidTouchRead(&touch);
 		calcCurrentEntryMorePages(&currentEntry, &page, maxpages, 239, 16);
 
-		bool downPlus = ((hidKeysDown() & KEY_TOUCH) && touch.px > 247 && touch.px < 264 && touch.py > 31 && touch.py < 49) || (hidKeysDown() & KEY_A);
-		bool downMinus = ((hidKeysDown() & KEY_TOUCH) && touch.px > 224 && touch.px < 241 && touch.py > 31 && touch.py < 49) || (hidKeysDown() & KEY_X);
-		bool heldPlus = ((hidKeysHeld() & KEY_TOUCH) && touch.px > 247 && touch.px < 264 && touch.py > 31 && touch.py < 49) || (hidKeysHeld() & KEY_A);
-		bool heldMinus = ((hidKeysHeld() & KEY_TOUCH) && touch.px > 224 && touch.px < 241 && touch.py > 31 && touch.py < 49) || (hidKeysHeld() & KEY_X);
+		bool downPlus = ((hidKeysDown() & KEY_TOUCH) && touch.px > 267 && touch.px < 284 && touch.py > 30 && touch.py < 48) || (hidKeysDown() & KEY_A);
+		bool downMinus = ((hidKeysDown() & KEY_TOUCH) && touch.px > 244 && touch.px < 261 && touch.py > 30 && touch.py < 48) || (hidKeysDown() & KEY_X);
+		bool heldPlus = ((hidKeysHeld() & KEY_TOUCH) && touch.px > 267 && touch.px < 284 && touch.py > 30 && touch.py < 48) || (hidKeysHeld() & KEY_A);
+		bool heldMinus = ((hidKeysHeld() & KEY_TOUCH) && touch.px > 244 && touch.px < 261 && touch.py > 30 && touch.py < 48) || (hidKeysHeld() & KEY_X);
 		
 		if (heldMinus && heldPlus)
 			speed = 0;

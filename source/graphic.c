@@ -1100,17 +1100,13 @@ void printEditor(u8* mainbuf, int game, u64 size, int currentEntry, int page) {
 		
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		printMenuBottom();
-		sf2d_draw_texture(blueTextBox, 165, 28);
 		if (saveSectors[currentEntry + 240*page][0] && !(saveSectors[currentEntry + 240*page][1])) {
-			sf2d_draw_texture(minusButton, 224, 31);
-			sf2d_draw_texture(plusButton, 247, 31);
+			sf2d_draw_texture(minusButton, 244, 30);
+			sf2d_draw_texture(plusButton, 267, 30);
 		}
 		
 		sftd_draw_wtextf(fontBold14, (155 - sftd_get_wtext_width(fontBold14, 14, i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE))), 30, LIGHTBLUE, 14, i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE));
-		sftd_draw_textf(fontBold14, 171, 30, WHITE, 14, "0x%05hhX", currentEntry + 240*page);
-		
-		sftd_draw_textf(fontBold14, 171, 60, WHITE, 14, "CE: %d", currentEntry);
-		sftd_draw_textf(fontBold14, 171, 100, WHITE, 14, "page: %d", page);
+		sftd_draw_textf(fontBold14, 165, 30, WHITE, 14, "0x%05X", currentEntry + 240*page);
 		
 		//printfHexEditorInfo(pkmn, additional1);
 	pksm_end_frame();

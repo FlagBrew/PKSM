@@ -334,9 +334,23 @@ void fillSectorsHaxMode(bool sector[][2]) {
 	sector[0x1D][1] = true; // Fateful encounter
 }
 
-void fillSaveSectors(bool saveSectors[][2]) {
+void fillSaveSectors(bool saveSectors[][2], u64 size) {
 	for (int j = 0; j < 0x76000; j++) {
-		saveSectors[j][0] = true;
+		saveSectors[j][0] = false;
 		saveSectors[j][1] = false;
+	}
+	
+	if (size == 0x6BE00) { 
+		// SM
+		for (int i = 0x4004; i <= 0x4008; i++)
+			saveSectors[i][0] = true; // money
+	} else if (size == 0x76000) { 
+		// ORAS
+		for (int i = 0x4208; i <= 0x420B; i++)
+			saveSectors[i][0] = true; // money
+	} else if (size == 0x65600) { 
+		// XY
+		for (int i = 0x4208; i <= 0x420B; i++)
+			saveSectors[i][0] = true; // money
 	}
 }
