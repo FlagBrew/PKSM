@@ -334,23 +334,36 @@ void fillSectorsHaxMode(bool sector[][2]) {
 	sector[0x1D][1] = true; // Fateful encounter
 }
 
-void fillSaveSectors(bool saveSectors[][2], u64 size) {
-	for (int j = 0; j < 0x76000; j++) {
+void fillSaveSectors(bool saveSectors[][2], int game) {
+	for (int j = 0; j < SAVE_SIZE_MAX; j++) {
 		saveSectors[j][0] = false;
 		saveSectors[j][1] = false;
 	}
 	
-	if (size == 0x6BE00) { 
-		// SM
-		for (int i = 0x4004; i <= 0x4008; i++)
-			saveSectors[i][0] = true; // money
-	} else if (size == 0x76000) { 
-		// ORAS
-		for (int i = 0x4208; i <= 0x420B; i++)
-			saveSectors[i][0] = true; // money
-	} else if (size == 0x65600) { 
-		// XY
-		for (int i = 0x4208; i <= 0x420B; i++)
-			saveSectors[i][0] = true; // money
+	if (game == GAME_SUN || game == GAME_MOON) { 
+	
+		for (int i = SAVE_SM_MONEY; i < SAVE_SM_MONEY + 4; i++)
+			saveSectors[i][0] = true;
+		
+	} else if (game == GAME_OR || game == GAME_AS) { 
+	
+		for (int i = SAVE_ORAS_MONEY; i < SAVE_ORAS_MONEY + 4; i++)
+			saveSectors[i][0] = true;
+		
+	} else if (game == GAME_X || game == GAME_Y) { 
+	
+		for (int i = SAVE_XY_MONEY; i < SAVE_XY_MONEY + 4; i++)
+			saveSectors[i][0] = true;
+		
+	} else if (game == GAME_B2 || game == GAME_W2) {
+		
+	} else if (game == GAME_B1 || game == GAME_W1) {
+		
+	} else if (game == GAME_DIAMOND) {
+		
+	} else if (game == GAME_HG || game == GAME_SS) {
+		
+	} else if (game == GAME_PEARL || game == GAME_DIAMOND) {
+		
 	}
 }

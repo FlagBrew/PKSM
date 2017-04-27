@@ -73,6 +73,14 @@
 
 #define VERSION "v4.2.3_TESTBUILD"
 
+/**
+ * OFFSETS
+ */
+#define SAVE_SIZE_MAX 0x80000
+#define SAVE_SM_MONEY 0x4004
+#define SAVE_ORAS_MONEY 0x4208
+#define SAVE_XY_MONEY 0x4208
+
 struct ArrayUTF32 listMoves;
 struct ArrayUTF32 listItems;
 struct ArrayUTF32 listSpecies;

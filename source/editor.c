@@ -1232,7 +1232,7 @@ void saveFileEditor(u8* mainbuf, int game, u64 size) {
 	int maxpages = size/240;
 	int speed = 0;
 	
-	fillSaveSectors(saveSectors, size);
+	fillSaveSectors(saveSectors, game);
 	while (aptMainLoop() & !(hidKeysDown() & KEY_B)) {
 		hidScanInput();
 		touchPosition touch;

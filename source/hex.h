@@ -22,9 +22,9 @@
 bool hax;
 bool pattern[4];
 bool sector[232][2];
-bool saveSectors[0x76000][2];
+bool saveSectors[0x80000][2];
 
 void fillSectorsHaxMode(bool sector[][2]);
 void fillDescriptions(wchar_t *descriptions[]);
 void fillSectors(bool sector[][2]);
-void fillSaveSectors(bool saveSectors[][2], u64 size);
+void fillSaveSectors(bool saveSectors[][2], int game);
