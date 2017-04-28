@@ -18,6 +18,23 @@
 
 #include "util.h"
 
+void checkMaxValueBetweenBounds(u8* buf, int byte, int start, int len, int max) {
+	u16 buf2 = 0;
+	int buf4 = 0;
+	
+	if (len == 2) {
+		buf[byte]++;
+		memcpy(&buf2, &buf[start], len);
+		if (buf2 > (u16)max)
+			buf[byte]--;
+	} else if (len == 4) {
+		buf[byte]++;
+		memcpy(&buf4, &buf[start], len);
+		if (buf4 > max)
+			buf[byte]--;	
+	}
+}
+
 void checkMaxValue(u8* pkmn, int byteEntry, int value, int max) {
 	u8 temp = pkmn[byteEntry];
 	pkmn[byteEntry]++;

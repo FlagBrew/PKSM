@@ -19,6 +19,7 @@
 #pragma once
 #include "common.h"
 
+void checkMaxValueBetweenBounds(u8* buf, int byte, int start, int len, int max);
 void checkMaxValue(u8* pkmn, int byteEntry, int value, int max);
 bool checkFile(char* path);
 void loadPersonal();
