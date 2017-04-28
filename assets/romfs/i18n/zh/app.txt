@@ -178,7 +178,7 @@ Seed: %lx %lx %lx %lx
 银行 %d
 Lv.%u
 ID. %u
-保存 %d
+箱子 %d
 Y: 浏览
 清空箱子
 放生
