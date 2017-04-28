@@ -1293,12 +1293,13 @@ void setHTi(u8* pkmn, int htnumber, bool value) {
 }
 
 bool getHTi(u8* pkmn, int htnumber) {
-	//	return ((getHT(pkmn) >> htnumber) & 1) == 1;
 	return (pkmn[0xDE] & (1 << htnumber)) == 1 << htnumber;
 }
 
 void setFlag(u8* pkmn, int flgaddr, int flgshift, bool value) {
-	if (flgaddr < 0 || PKMNLENGTH <= flgaddr || flgshift < 0 || 8 <= flgshift)return;
+	if (flgaddr < 0 || PKMNLENGTH <= flgaddr || flgshift < 0 || 8 <= flgshift) 
+		return;
+	
 	u8 tmp;
 	memcpy(&tmp, &pkmn[flgaddr], 1);
 	tmp = (u8)((tmp & ~(1 << flgshift)) | (value ? 1 << flgshift : 0));
@@ -1347,7 +1348,39 @@ void parseHexEditor(u8* pkmn, int game, int byteEntry) {
 }
 
 void parseSaveHexEditor(u8* mainbuf, int game, int byte) {	
-	mainbuf[byte]++;
+	if (game == GAME_SUN || game == GAME_MOON) { 
+		if (byte >= SAVE_SM_MONEY && byte < SAVE_SM_MONEY + 4)
+			checkMaxValueBetweenBounds(mainbuf, byte, SAVE_SM_MONEY, 4, 9999999);
+		else
+			mainbuf[byte]++;
+	} 
+	else if (game == GAME_OR || game == GAME_AS) {
+		if (byte >= SAVE_ORAS_MONEY && byte < SAVE_ORAS_MONEY + 4)
+			checkMaxValueBetweenBounds(mainbuf, byte, SAVE_ORAS_MONEY, 4, 9999999);
+		else
+			mainbuf[byte]++;		
+	} 
+	else if (game == GAME_X || game == GAME_Y) {
+		if (byte >= SAVE_XY_MONEY && byte < SAVE_XY_MONEY + 4)
+			checkMaxValueBetweenBounds(mainbuf, byte, SAVE_XY_MONEY, 4, 9999999);
+		else
+			mainbuf[byte]++;		
+	} 
+	else if (game == GAME_B2 || game == GAME_W2) {
+		
+	} 
+	else if (game == GAME_B1 || game == GAME_W1) {
+		
+	} 
+	else if (game == GAME_DIAMOND) {
+		
+	} 
+	else if (game == GAME_HG || game == GAME_SS) {
+		
+	} 
+	else if (game == GAME_PEARL || game == GAME_DIAMOND) {
+		
+	}
 }
 
 void pokemonEditor(u8* mainbuf, int game) {

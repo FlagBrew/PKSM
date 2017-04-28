@@ -163,7 +163,7 @@ void GUIElementsSpecify(int game) {
 	if (game < 6) {
 		elements += 53;
 	} else {
-		elements += 12;
+		elements += 15;
 	}
 
 	elements += getGUIElementsI18nSpecifyTotalElements(game);
@@ -242,6 +242,10 @@ void GUIElementsSpecify(int game) {
 		DSNormalBarR = loadPNGInRAM("romfs:/res/Normal R.png");
 		DSSelectedBarL = loadPNGInRAM("romfs:/res/Selected L.png");
 		DSSelectedBarR = loadPNGInRAM("romfs:/res/Selected R.png");
+		
+		hexBG = loadPNGInRAM("romfs:/res/Hex BG.png");
+		minusButton = loadPNGInRAM("romfs:/res/Minus Button.png");
+		plusButton = loadPNGInRAM("romfs:/res/Plus Button.png");
 	}
 
 	GUIElementsI18nSpecify(game);

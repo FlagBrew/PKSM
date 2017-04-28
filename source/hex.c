@@ -341,29 +341,33 @@ void fillSaveSectors(bool saveSectors[][2], int game) {
 	}
 	
 	if (game == GAME_SUN || game == GAME_MOON) { 
-	
 		for (int i = SAVE_SM_MONEY; i < SAVE_SM_MONEY + 4; i++)
 			saveSectors[i][0] = true;
 		
-	} else if (game == GAME_OR || game == GAME_AS) { 
-	
+	} 
+	else if (game == GAME_OR || game == GAME_AS) { 
 		for (int i = SAVE_ORAS_MONEY; i < SAVE_ORAS_MONEY + 4; i++)
 			saveSectors[i][0] = true;
 		
-	} else if (game == GAME_X || game == GAME_Y) { 
-	
+	} 
+	else if (game == GAME_X || game == GAME_Y) { 
 		for (int i = SAVE_XY_MONEY; i < SAVE_XY_MONEY + 4; i++)
 			saveSectors[i][0] = true;
 		
-	} else if (game == GAME_B2 || game == GAME_W2) {
+	} 
+	else if (game == GAME_B2 || game == GAME_W2) {
 		
-	} else if (game == GAME_B1 || game == GAME_W1) {
+	} 
+	else if (game == GAME_B1 || game == GAME_W1) {
 		
-	} else if (game == GAME_DIAMOND) {
+	} 
+	else if (game == GAME_DIAMOND) {
 		
-	} else if (game == GAME_HG || game == GAME_SS) {
+	} 
+	else if (game == GAME_HG || game == GAME_SS) {
 		
-	} else if (game == GAME_PEARL || game == GAME_DIAMOND) {
+	} 
+	else if (game == GAME_PEARL || game == GAME_DIAMOND) {
 		
 	}
 }

@@ -386,6 +386,7 @@ int main() {
 						break;
 					}
 					case 1 : {
+						saveFileEditor(mainbuf, game, mainSize);
 						break;
 					}
 				}
