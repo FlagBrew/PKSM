@@ -1809,9 +1809,11 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 		sf2d_draw_texture(button, 208, 43);
 		sf2d_draw_texture(button, 208, 70);
 		sf2d_draw_texture(button, 208, 97);
+		sf2d_draw_texture(button, 208, 124);
 		sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKBANK_MENU_VIEW))) / 2, 50, BLACK, 12, i18n(S_GRAPHIC_PKBANK_MENU_VIEW));
 		sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKBANK_MENU_CLEARBOX))) / 2, 77, BLACK, 12, i18n(S_GRAPHIC_PKBANK_MENU_CLEARBOX));
 		sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKBANK_MENU_RELEASE))) / 2, 104, BLACK, 12, i18n(S_GRAPHIC_PKBANK_MENU_RELEASE));
+		sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKBANK_MENU_DUMP))) / 2, 131, BLACK, 12, i18n(S_GRAPHIC_PKBANK_MENU_DUMP));
 				
 		y = 45;
 		for (int i = 0; i < 5; i++) {

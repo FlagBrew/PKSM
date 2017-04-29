@@ -551,3 +551,6 @@ A mudar o tamanho...
 O tamanho do banco foi mudado!
 Cópia de segurança da gravação criada!
 Cópia de segurança do banco criada!
+DUMP
+Confirm for a full storage dump?
+Step %d/%d

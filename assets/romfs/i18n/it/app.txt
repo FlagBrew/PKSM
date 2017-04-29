@@ -195,7 +195,7 @@ Raccolta eventi Koreani
 %d box saranno sovrascritti.
 Mass Injector
 Premi START per iniettare, B per uscire.
-Bank size:                   
+Bank size:
 Backup salvataggio
 Backup storage
 Clicca il numero per cambiare dimensione.
@@ -208,7 +208,7 @@ SID: %d
 Abilità: %ls
 Natura: %ls
 Fateful Encounter flag
-Sesso: 
+Sesso:
 maschio
 femmina
 neutro
@@ -281,7 +281,7 @@ Fiocco Genio dell'Albero
 -
 -
 -
-Soprannome: 
+Soprannome:
 Mossa 1: #%d - %ls
 Mossa 2: #%d - %ls
 Mossa 3: #%d - %ls
@@ -300,7 +300,7 @@ Mossa Uovo 3: #%d - %ls
 Mossa Uovo 4: #%d - %ls
 Soprannominato?
 Uovo?
-Nome allenatore attuale: 
+Nome allenatore attuale:
 Felicità allenatore attuale: %d
 Affection allenatore attuale: %d
 Intensità allenatore attuale: %d
@@ -308,7 +308,7 @@ Ricordi allenatore attuale: %d
 Sentimenti allenatore attuale: %d
 Sazietà: %d
 Divertimento: %d
-Nome allenatore originale: 
+Nome allenatore originale:
 Felicità allenatore originario: %d
 Affection allenatore originario: %d
 Intensità allenatore originario: %d
@@ -551,3 +551,6 @@ Ridimensionando...
 Storage ridimensionato!
 Backup del salvataggio creato!
 Backup dello storage creato!
+DUMP
+Consenti il full dump della banca?
+Passo %d/%d

@@ -195,7 +195,7 @@ KOR Events Collection
 %d boxes will be replaced.
 Mass Injector
 Press START to inject, B to exit.
-Bank Size:                   
+Bank Size:
 Backup Save
 Backup Bank
 Tap the number to change size.
@@ -208,7 +208,7 @@ SID: %d
 Ability: %ls
 Nature: %ls
 Fateful Encounter flag
-Gender: 
+Gender:
 male
 female
 genderless
@@ -281,7 +281,7 @@ Battle Tree Master
 -
 -
 -
-Nickname: 
+Nickname:
 Move 1: #%d - %ls
 Move 2: #%d - %ls
 Move 3: #%d - %ls
@@ -300,7 +300,7 @@ Relearn Move 3: #%d - %ls
 Relearn Move 4: #%d - %ls
 is Nicknamed
 is Egg
-Held Trainer name: 
+Held Trainer name:
 Held Trainer Friendship: %d
 Held Trainer Affection: %d
 Held Trainer Intensity: %d
@@ -308,7 +308,7 @@ Held Trainer Memory: %d
 Held Trainer Feeling: %d
 Fullness: %d
 Enjoyment: %d
-Original Trainer Name: 
+Original Trainer Name:
 Original Trainer Friendship: %d
 Original Trainer Affection: %d
 Original Trainer Intensity: %d
@@ -551,3 +551,6 @@ Changing size...
 Bank size changed!
 Save backup created!
 Bank backup created!
+DUMP
+Confirm for a full storage dump?
+Step %d/%d

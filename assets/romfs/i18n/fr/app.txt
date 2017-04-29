@@ -191,11 +191,11 @@ RAdar Pokémon
 Pokédex National
 Oblivia Deoxys
 My Pokémon Ranch
-Events Corréens 
+Events Corréens
 %d boîtes vont être remplacés.
 Génération automatique de Pokémons
 Appuie sur START pour injecter, B pour quitter.
-Boxs banque:               
+Boxs banque:
 Backup Jeu
 Backup Banque
 Appuie à côté du nombre pour changer la taille.
@@ -208,7 +208,7 @@ SID: %d
 Talent: %ls
 Nature: %ls
 Indicateur Rencontre Fatidique
-Sexe: 
+Sexe:
 mâle
 femelle
 sans genre
@@ -281,7 +281,7 @@ Maître de l’Arbre
 -
 -
 -
-Surnom: 
+Surnom:
 Capacité 1: #%d - %ls
 Capacité 2: #%d - %ls
 Capacité 3: #%d - %ls
@@ -300,7 +300,7 @@ Capacité réapprise 3: #%d - %ls
 Capacité réapprise 4: #%d - %ls
 est surnommé
 est un œuf
-Dernier dresseur - Nom: 
+Dernier dresseur - Nom:
 Dernier dresseur - Bonheur: %d
 Dernier dresseur - Affection: %d
 Dernier dresseur - Intensité: %d
@@ -308,7 +308,7 @@ Dernier dresseur - Mémoire: %d
 Dernier dresseur - Sentiments: %d
 Satiété
 Gaieté
-Dresseur d'Origine - Nom: 
+Dresseur d'Origine - Nom:
 Dresseur d'Origine - Bonheur: %d
 Dresseur d'Origine - Affection: %d
 Dresseur d'Origine - Intensité: %d
@@ -551,3 +551,6 @@ Changement de la taille...
 La taille totale de la banque a été changée!
 Backup du jeu créé!
 Backup de la banque créé!
+DUMP
+Confirm for a full storage dump?
+Step %d/%d

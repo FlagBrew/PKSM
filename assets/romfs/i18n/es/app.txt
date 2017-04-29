@@ -113,7 +113,7 @@ Defensa
 At. Esp.
 De. Esp.
 Vel.
-Nv.%u	 
+Nv.%u
 Movimientos
 Ciclos para eclosión:
 EDITAR
@@ -195,7 +195,7 @@ Colección eventos KOR
 %d seran reemplazadas.
 Inyector de cajas
 Pulsa START para inyectar, B para salir.
-Tmño banco                  
+Tmño banco
 C. de seguridad: Partida
 C. de seguridad: Banco
 Toca el número para cambiar el tamaño.
@@ -208,7 +208,7 @@ SID: %d
 Habilidad: %ls
 Naturaleza: %ls
 Encuentro fatídico
-Género: 
+Género:
 macho
 hembra
 sin género
@@ -281,7 +281,7 @@ Maestro del Árbol
 -
 -
 -
-Apodo: 
+Apodo:
 Movimiento 1: #%d - %ls
 Movimiento 2: #%d - %ls
 Movimiento 3: #%d - %ls
@@ -300,7 +300,7 @@ Movimiento recordable 3: #%d - %ls
 Movimiento recordable 4: #%d - %ls
 Tiene un apodo
 Es un huevo
-Nombre del Entrenador Actual: 
+Nombre del Entrenador Actual:
 Amistad con el Entrenador Actual: %d
 Afecto con el Entrenador Actual: %d
 Intensidad con el Entrenador Actual: %d
@@ -308,7 +308,7 @@ Memoria con el Entrenador Actual: %d
 Sentimiento con el Entrenador Actual: %d
 Saciedad: %d
 Diversión: %d
-Nombre del Entrenador Original: 
+Nombre del Entrenador Original:
 Amistad con el Entrenador Original: %d
 Afecto con el Entrenador Original: %d
 Intensidad con el Entrenador Original: %d
@@ -551,3 +551,6 @@ Cambiando tamaño...
 ¡Tamaño del banco cambiado!
 ¡Copia de seguridad de la partida creada!
 ¡Copia de seguridad del banco creada!
+DUMP
+Confirm for a full storage dump?
+Step %d/%d

@@ -74,13 +74,14 @@ bool initServices() {
 	sdmcInit();
 	romfsInit();
 	
-	mkdir("sdmc:/3ds", 0777);
-	mkdir("sdmc:/3ds/data", 0777);
-	mkdir("sdmc:/3ds/data/PKSM", 0777);
-	mkdir("sdmc:/3ds/data/PKSM/bank", 0777);
-	mkdir("sdmc:/3ds/data/PKSM/backup", 0777);
-	mkdir("sdmc:/3ds/data/PKSM/additionalassets", 0777);
-	mkdir("sdmc:/3ds/data/PKSM/additionalassets/i18n", 0777);
+	mkdir("sdmc:/3ds", 777);
+	mkdir("sdmc:/3ds/data", 777);
+	mkdir("sdmc:/3ds/data/PKSM", 777);
+	mkdir("sdmc:/3ds/data/PKSM/bank", 777);
+	mkdir("sdmc:/3ds/data/PKSM/dump", 777);
+	mkdir("sdmc:/3ds/data/PKSM/backup", 777);
+	mkdir("sdmc:/3ds/data/PKSM/additionalassets", 777);
+	mkdir("sdmc:/3ds/data/PKSM/additionalassets/i18n", 777);
 	
 	char i18npath[80];
 	for (unsigned int i = 0; i < 11; i++) {
@@ -260,7 +261,7 @@ int main() {
 	time_t unixTime = time(NULL);
 	struct tm* timeStruct = gmtime((const time_t *)&unixTime);		
 	snprintf(bakpath, 100, "sdmc:/3ds/data/PKSM/backup/%s_%02i%02i%02i%02i%02i%02i", gamesList[game], timeStruct->tm_year + 1900, timeStruct->tm_mon + 1, timeStruct->tm_mday, timeStruct->tm_hour, timeStruct->tm_min, timeStruct->tm_sec);
-	mkdir(bakpath, 0777);
+	mkdir(bakpath, 777);
 	chdir(bakpath);
 	FILE *f = fopen("main", "wb");
 	fwrite(mainbuf, 1, mainSize, f);

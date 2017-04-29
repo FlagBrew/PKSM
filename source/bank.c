@@ -42,6 +42,47 @@ void clearMarkings(u8* pkmn, int game) {
 	}
 }
 
+void dumpStorage2pk7(u8* bankbuf, u32 size) {
+	char dmppath[100];
+	time_t unixTime = time(NULL);
+	struct tm* timeStruct = gmtime((const time_t *)&unixTime);		
+	snprintf(dmppath, 100, "sdmc:/3ds/data/PKSM/dump/storagedump_%02i%02i%02i%02i%02i%02i", 
+			timeStruct->tm_year + 1900, 
+			timeStruct->tm_mon + 1, 
+			timeStruct->tm_mday, 
+			timeStruct->tm_hour, 
+			timeStruct->tm_min, 
+			timeStruct->tm_sec);
+	mkdir(dmppath, 777);
+	chdir(dmppath);
+	
+	wchar_t step[20];		
+	for (int i = 0, tot = size/PKMNLENGTH; i < tot; i++) {
+		swprintf(step, 20, i18n(S_BANK_PROGRESS_MESSAGE), i + 1, tot);
+		freezeMsg(step);
+		
+		u8 tmp[PKMNLENGTH];
+		memcpy(&tmp[0], &bankbuf[i*PKMNLENGTH], PKMNLENGTH);
+		if (getPokedexNumber(tmp) > 0 && getPokedexNumber(tmp) < 802) {
+			char path[30];
+			wchar_t str[100];
+			u32 nick[NICKNAMELENGTH*2];
+			
+			memset(nick, 0, NICKNAMELENGTH*2);
+			memset(path, 0, 30);
+			memset(str, 0, 100);
+			
+			getNickname(tmp, nick);
+			swprintf(str, 100, L"%X - %ls.pk7", (int)getPID(tmp), nick);
+			utf32_to_utf8((uint8_t*)path, (uint32_t*)str, 25);
+
+			FILE *dmp = fopen(path, "wb");
+			fwrite(tmp, 1, PKMNLENGTH, dmp);
+			fclose(dmp);
+		}
+	}
+}
+
 void bank(u8* mainbuf, int game) {
 	FILE *fptr = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
 	fseek(fptr, 0, SEEK_END);
@@ -260,6 +301,16 @@ void bank(u8* mainbuf, int game) {
 					memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], tmp, PKMNLENGTH);
 				else if (!isBattleBoxed(mainbuf, game, saveBox, currentEntry - 30))
 					setPkmn(mainbuf, saveBox, currentEntry - 30, tmp, game);
+			}
+			
+			if (touch.px > 208 && touch.px < 317 && touch.py > 124 && touch.py < 151) {
+				if (confirmDisp(i18n(S_GRAPHIC_PKBANK_MESSAGE_CONFIRM_DUMP))) {
+					dumpStorage2pk7(bankbuf, size);
+				} else {
+					
+				}
+				
+				hidScanInput();
 			}
 				
 			if (touch.px > 280 && touch.px < 318 && touch.py > 210 && touch.py < 240) break;
