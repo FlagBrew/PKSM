@@ -2158,7 +2158,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 
 											// Randomizing the encryption constant
 											rerollEncryptionKey(tempkmn);
-
+											setDex(mainbuf, tempkmn, game);
 											setPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
 											free(livingbuf);
 											operationDone = true;
@@ -2216,7 +2216,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 
 							// Randomizing the encryption constant
 							rerollEncryptionKey(tempkmn);
-
+							setDex(mainbuf, tempkmn, game);
 							setPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
 
 							free(livingbuf);

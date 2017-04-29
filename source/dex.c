@@ -124,6 +124,9 @@ bool sanitizeFormsToIterate(int species, int fsfe[], int formIn) {
 }
 
 void setDex(u8 mainbuf[], u8* pkmn, int game) {
+	if (!(game == GAME_SUN || game == GAME_MOON))
+		return;
+	
 	int n = getPokedexNumber(pkmn);
 	int MaxSpeciesID;
 	int PokeDex;

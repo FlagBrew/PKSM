@@ -374,16 +374,20 @@ void bank(u8* mainbuf, int game) {
 						memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], pkmn, PKMNLENGTH);
 						if (bufferizedfrombank) 
 							memcpy(&bankbuf[coordinate[0] * 30 * PKMNLENGTH + coordinate[1] * PKMNLENGTH], tmp, PKMNLENGTH);
-						else
+						else {
 							setPkmn(mainbuf, coordinate[0], coordinate[1], tmp, game);
+							setDex(mainbuf, tmp, game);
+						}
 					}
 					else {
 						getPkmn(mainbuf, saveBox, currentEntry - 30, tmp, game);
 						setPkmn(mainbuf, saveBox, currentEntry - 30, pkmn, game);
 						if (bufferizedfrombank) 
 							memcpy(&bankbuf[coordinate[0] * 30 * PKMNLENGTH + coordinate[1] * PKMNLENGTH], tmp, PKMNLENGTH);
-						else 
+						else {
 							setPkmn(mainbuf, coordinate[0], coordinate[1], tmp, game);
+							setDex(mainbuf, tmp, game);
+						}
 					}
 					memset(pkmn, 0, PKMNLENGTH);
 					isBufferized = false;
@@ -433,22 +437,4 @@ void bank(u8* mainbuf, int game) {
 		fclose(new);
 	}
 	free(bankbuf);
-
-	if (game == GAME_SUN || game == GAME_MOON) {
-		if (confirmDisp(i18n(S_BANK_Q_SAVE_POKEDEX_FLAGS))) {
-			int end = (game < 4) ? 31 : 32;
-			wchar_t* step = (wchar_t*)malloc(20);
-			
-			for (u32 i = 0; i < end; i++) {
-				for (u32 j = 0; j < 30; j++) {
-					swprintf(step, 20, i18n(S_BANK_PROGRESS_MESSAGE), i + 1, j + 1);
-					freezeMsg(step);
-					getPkmn(mainbuf, i, j, pkmn, game);
-					setDex(mainbuf, pkmn, game);
-				}
-			}
-			free(step);
-		}
-	}
-	free(pkmn);
 }

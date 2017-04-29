@@ -1396,7 +1396,7 @@ void massInjector(u8* mainbuf, int game) {
 		currentEntry = calcCurrentEntryOneScreenReversed(currentEntry, 9, 5);
 		
 		if (hidKeysDown() & KEY_B) {
-			if (game == GAME_SUN || game == GAME_MOON) {
+			/*if (game == GAME_SUN || game == GAME_MOON) {
 				if (confirmDisp(i18n(S_DATABASE_Q_SAVE_POKEDEX_FLAGS))) {
 					u8 pkmn[PKMNLENGTH];
 					int end = (game < 4) ? 31 : 32;
@@ -1412,7 +1412,7 @@ void massInjector(u8* mainbuf, int game) {
 					}
 					free(step);
 				}
-			}
+			}*/
 			break;
 		}
 		
