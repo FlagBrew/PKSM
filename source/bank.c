@@ -386,20 +386,17 @@ void bank(u8* mainbuf, int game) {
 						memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], pkmn, PKMNLENGTH);
 						if (bufferizedfrombank) 
 							memcpy(&bankbuf[coordinate[0] * 30 * PKMNLENGTH + coordinate[1] * PKMNLENGTH], tmp, PKMNLENGTH);
-						else {
+						else
 							setPkmn(mainbuf, coordinate[0], coordinate[1], tmp, game);
-							setDex(mainbuf, tmp, game);
-						}
 					}
 					else {
 						getPkmn(mainbuf, saveBox, currentEntry - 30, tmp, game);
+						setDex(mainbuf, pkmn, game);
 						setPkmn(mainbuf, saveBox, currentEntry - 30, pkmn, game);
 						if (bufferizedfrombank) 
 							memcpy(&bankbuf[coordinate[0] * 30 * PKMNLENGTH + coordinate[1] * PKMNLENGTH], tmp, PKMNLENGTH);
-						else {
+						else
 							setPkmn(mainbuf, coordinate[0], coordinate[1], tmp, game);
-							setDex(mainbuf, tmp, game);
-						}
 					}
 					memset(pkmn, 0, PKMNLENGTH);
 					isBufferized = false;
