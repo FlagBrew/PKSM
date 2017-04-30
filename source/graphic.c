@@ -156,7 +156,6 @@ void GUIElementsI18nSpecify(int game) {
 	}
 }
 
-
 void GUIElementsSpecify(int game) {
 	int elements = 4;
 	if (game < 6) {
@@ -1893,52 +1892,6 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 	
 	free(pkmn);
 	free(page);
-}
-
-void printMassInjector(int currentEntry) {
-	int y = 41;
-	wchar_t* entries[] = {i18n(S_GRAPHIC_MASSINJECTOR_XD_COLLECTION), i18n(S_GRAPHIC_MASSINJECTOR_COLOSSEUM_COLLECTION), i18n(S_GRAPHIC_MASSINJECTOR_10TH_ANNIV_COLLECTION), i18n(S_GRAPHIC_MASSINJECTOR_N_COLLECTION), i18n(S_GRAPHIC_MASSINJECTOR_ENTREE_FOREST_COLLECTION), i18n(S_GRAPHIC_MASSINJECTOR_DREAM_RADAR_COLLECTION), i18n(S_GRAPHIC_MASSINJECTOR_LIVING_DEX), i18n(S_GRAPHIC_MASSINJECTOR_OBLIVIA_DEOXYS_COLLECTION), i18n(S_GRAPHIC_MASSINJECTOR_PKMN_RANCH_COLLECTION), i18n(S_GRAPHIC_MASSINJECTOR_KOR_EVENTS_COLLECTION)};
-	int boxes[] = {3, 2, 1, 1, 1, 1, 27, 1, 1, 1};
-	
-	wchar_t* message = (wchar_t*)malloc(30 * sizeof(wchar_t));
-	swprintf(message, 30, i18n(S_GRAPHIC_MASSINJECTOR_MESSAGE_REPLACE_BOXES), boxes[currentEntry]);
-	
-	sf2d_start_frame(GFX_TOP, GFX_LEFT);
-		printMenuTop();
-		printTitle(i18n(S_GRAPHIC_MASSINJECTOR_TITLE));
-		
-		for (int i = 0; i < 5; i++) {
-			if (i == currentEntry)
-				sf2d_draw_texture(eventMenuTopBarSelected, 18, y);
-			else
-				sf2d_draw_texture(eventMenuTopBar, 18, y);
-			
-			sftd_draw_wtext(fontBold12, 18 + (182 - sftd_get_wtext_width(fontBold12, 12, entries[i])) / 2, y + 10, (i == currentEntry) ? DARKBLUE : YELLOW, 12, entries[i]);
-			
-			y += 37;
-		}
-		
-		y = 41;
-		for (int i = 5; i < 10; i++) {
-			if (i == currentEntry)
-				sf2d_draw_texture(eventMenuTopBarSelected, 200, y);
-			else
-				sf2d_draw_texture(eventMenuTopBar, 200, y);
-			
-			sftd_draw_wtext(fontBold12, 200 + (182 - sftd_get_wtext_width(fontBold12, 12, entries[i])) / 2, y + 10, (i == currentEntry) ? DARKBLUE : YELLOW, 12, entries[i]);
-			
-			y += 37;
-		}
-	pksm_end_frame();
-
-	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-		printMenuBottom();
-		sftd_draw_wtext(fontBold12, (320 - sftd_get_wtext_width(fontBold12, 12, message)) / 2, 12, LIGHTBLUE, 12, message);
-		printBottomIndications(i18n(S_GRAPHIC_MASSINJECTOR_INDICATION));
-	pksm_end_frame();
-	sf2d_swapbuffers();
-	
-	free(message);
 }
 
 void printSettings(int box, int language) {

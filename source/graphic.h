@@ -75,7 +75,6 @@ void printEditor(u8* mainbuf, int game, u64 size, int currentEntry, int page);
 void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int additional3, int mode, wchar_t* descriptions[]);
 void printPKViewer(u8* mainbuf, u8* pkmn, bool isTeam, int game, int currentEntry, int menuEntry, int box, int mode, int additional1, int additional2);
 void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEntry, int saveBox, int bankBox, bool isBufferized, bool isSeen);
-void printMassInjector(int currentEntry);
 void printElement(u8* pkmn, int game, u16 n, int x, int y);
 void printElementBlend(u8* pkmn, int game, u16 n, int x, int y, u32 color);
 void printSettings(int box, int language);
