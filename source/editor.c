@@ -1383,6 +1383,37 @@ void parseSaveHexEditor(u8* mainbuf, int game, int byte) {
 	}
 }
 
+void generate(u8* mainbuf, int game, bool isTeam, int box, int currentEntry, int page, int genEntry) {
+	FILE *fptr = fopen((game < 4) ? "romfs:/misc/living6.bin" : "romfs:/misc/living7.bin", "rt");
+	fseek(fptr, 0, SEEK_END);
+	u32 size = ftell(fptr);
+	u8* livingbuf = (u8*)malloc(size);
+	memset(livingbuf, 0, size);
+	rewind(fptr);
+	fread(livingbuf, size, 1, fptr);
+	fclose(fptr);
+
+	memcpy(&mainbuf[getPkmnAddress((isTeam) ? 33 : box, currentEntry, game)], &livingbuf[(page * 40 + genEntry) * 232], 232);
+	u8 tempkmn[PKMNLENGTH];
+	getPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
+	memcpy(&tempkmn[0xE3], &mainbuf[(game < 4) ? 0x1402D : 0x1235], 1); // nats
+
+	// Correct Nickname of current language
+	char nick[NICKNAMELENGTH] = "";
+
+	utf32_to_utf8((unsigned char*)nick, (uint32_t*)listSpecies.items[getPokedexNumber(tempkmn)], NICKNAMELENGTH);
+	nick[NICKNAMELENGTH - 1] = '\0';
+
+	setNicknameZ(tempkmn, nick, 0x40);
+
+	// Randomizing the encryption constant
+	rerollEncryptionKey(tempkmn);
+	setDex(mainbuf, tempkmn, game);
+	setPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
+
+	free(livingbuf);	
+}
+
 void pokemonEditor(u8* mainbuf, int game) {
 	int lookup[] = {0, 1, 2, 4, 5, 3};
 	
@@ -2135,32 +2166,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 									
 									if (hidKeysDown() & KEY_A) {
 										if (!((game < 4) && ((genEntry + 1) > 721)) && (page*40 + genEntry < 802)) {
-											FILE *fptr = fopen((game < 4) ? "romfs:/misc/living6.bin" : "romfs:/misc/living7.bin", "rt");
-											fseek(fptr, 0, SEEK_END);
-											u32 size = ftell(fptr);
-											u8* livingbuf = (u8*)malloc(size);
-											memset(livingbuf, 0, size);
-											rewind(fptr);
-											fread(livingbuf, size, 1, fptr);
-											fclose(fptr);
-											
-											memcpy(&mainbuf[getPkmnAddress((isTeam) ? 33 : box, currentEntry, game)], &livingbuf[(page * 40 + genEntry) * 232], 232);
-											u8 tempkmn[PKMNLENGTH];
-											getPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
-											memcpy(&tempkmn[0xE3], &mainbuf[(game < 4) ? 0x1402D : 0x1235], 1); // nats
-
-											// Correct Nickname of current language
-											char nick[NICKNAMELENGTH] = "";
-											utf32_to_utf8((unsigned char*)nick, (uint32_t*)listSpecies.items[getPokedexNumber(tempkmn)], NICKNAMELENGTH);
-											nick[NICKNAMELENGTH - 1] = '\0';
-
-											setNicknameZ(pkmn, nick, 0x40);
-
-											// Randomizing the encryption constant
-											rerollEncryptionKey(tempkmn);
-											setDex(mainbuf, tempkmn, game);
-											setPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
-											free(livingbuf);
+											generate(mainbuf, game, isTeam, box, currentEntry, page, genEntry);
 											operationDone = true;
 										}
 										break;
@@ -2192,34 +2198,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 					
 					if (hidKeysDown() & KEY_A) {
 						if (!((game < 4) && ((genEntry + 1) > 721)) && (page*40 + genEntry < 802)) {
-							FILE *fptr = fopen((game < 4) ? "romfs:/misc/living6.bin" : "romfs:/misc/living7.bin", "rt");
-							fseek(fptr, 0, SEEK_END);
-							u32 size = ftell(fptr);
-							u8* livingbuf = (u8*)malloc(size);
-							memset(livingbuf, 0, size);
-							rewind(fptr);
-							fread(livingbuf, size, 1, fptr);
-							fclose(fptr);
-
-							memcpy(&mainbuf[getPkmnAddress((isTeam) ? 33 : box, currentEntry, game)], &livingbuf[(page * 40 + genEntry) * 232], 232);
-							u8 tempkmn[PKMNLENGTH];
-							getPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
-							memcpy(&tempkmn[0xE3], &mainbuf[(game < 4) ? 0x1402D : 0x1235], 1); // nats
-
-							// Correct Nickname of current language
-							char nick[NICKNAMELENGTH] = "";
-
-							utf32_to_utf8((unsigned char*)nick, (uint32_t*)listSpecies.items[getPokedexNumber(tempkmn)], NICKNAMELENGTH);
-							nick[NICKNAMELENGTH - 1] = '\0';
-
-							setNicknameZ(tempkmn, nick, 0x40);
-
-							// Randomizing the encryption constant
-							rerollEncryptionKey(tempkmn);
-							setDex(mainbuf, tempkmn, game);
-							setPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
-
-							free(livingbuf);
+							generate(mainbuf, game, isTeam, box, currentEntry, page, genEntry);
 							operationDone = true;
 						}
 						break;
