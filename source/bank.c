@@ -303,7 +303,19 @@ void bank(u8* mainbuf, int game) {
 					setPkmn(mainbuf, saveBox, currentEntry - 30, tmp, game);
 			}
 			
-			if (touch.px > 208 && touch.px < 317 && touch.py > 124 && touch.py < 151) {
+			if (touch.px > 208 && touch.px < 317 && touch.py > 153 && touch.py < 180) {
+				int dexEntry = 0;
+				int page = 0, maxpages = (game < 4) ? 18 : 21;
+				
+				while (aptMainLoop() && !(hidKeysDown() & KEY_B)) {
+					hidScanInput();
+					calcCurrentEntryMorePages(&dexEntry, &page, maxpages, 39, 8);
+					
+					printDexViewer(mainbuf, game, dexEntry, page);
+				}
+			}
+			
+			if (touch.px > 208 && touch.px < 317 && touch.py > 180 && touch.py < 210) {
 				if (confirmDisp(i18n(S_GRAPHIC_PKBANK_MESSAGE_CONFIRM_DUMP))) {
 					dumpStorage2pk7(bankbuf, size);
 				} else {

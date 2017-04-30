@@ -554,3 +554,4 @@ HP努力値
 DUMP
 Confirm for a full storage dump?
 Step %d/%d
+DEX

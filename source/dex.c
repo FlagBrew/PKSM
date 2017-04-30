@@ -199,3 +199,62 @@ void setDex(u8 mainbuf[], u8* pkmn, int game) {
 			mainbuf[PokeDexLanguageFlags + (lbit >> 3)] |= (u8)(1 << (lbit & 7));
 	}
 }
+
+bool getCaught(u8* mainbuf, int game, int species) {
+	int PokeDex = 0;
+	int miscdata = 0;
+	if (game == GAME_SUN || game == GAME_MOON) {
+		PokeDex = 0x02A00;
+		miscdata = 0x80;
+	} else if (game == GAME_OR || game == GAME_AS) {
+		PokeDex = 0x15000;
+	} else if (game == GAME_X || game == GAME_Y) {
+		PokeDex = 0x15000;
+	}
+	
+	int bit = species - 1;
+	int bd = bit >> 3;
+	int bm = bit & 7; 
+	int ofs = PokeDex + 0x08 + miscdata;
+			  
+	if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS) {
+		if ((1 << bm & mainbuf[ofs + bd]) != 0)
+			return true;
+
+		if (game == GAME_OR || game == GAME_AS || bit >= 649)
+			return false;
+		
+		return (1 << bm & mainbuf[ofs + bd + 0x644]) != 0;		
+	}
+
+	return (1 << bm & mainbuf[ofs + bd]) != 0;
+}
+
+bool getSeen(u8* mainbuf, int game, int species) {
+	int PokeDex = 0;
+	int miscdata = 0;
+	int brSize = 0;
+	
+	if (game == GAME_SUN || game == GAME_MOON) {
+		PokeDex = 0x02A00;
+		miscdata = 0x80;
+		brSize = 0x8C;
+	} else if (game == GAME_OR || game == GAME_AS) {
+		PokeDex = 0x15000;
+		brSize = 0x60;
+	} else if (game == GAME_X || game == GAME_Y) {
+		PokeDex = 0x15000;
+		brSize = 0x60;
+	}
+
+	int bit = species - 1;
+	int bd = bit >> 3;
+	int bm = bit & 7;
+	u8 mask = (u8)(1 << bm);
+	int ofs = PokeDex + 0x08 + miscdata; 
+
+	for (int i = 1; i <= 4; i++)
+		if ((mainbuf[ofs + bd + i * brSize] & mask) != 0)
+			return true;
+	return false;
+}

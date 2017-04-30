@@ -1263,6 +1263,39 @@ void infoViewer(u8* pkmn, int game) {
 	}
 }
 
+void printDexViewer(u8* mainbuf, int game, int currentEntry, int page) {
+	char* temp = (char*)malloc(4);
+	
+	sf2d_start_frame(GFX_TOP, GFX_LEFT);
+		sf2d_draw_texture(generationBG, 0, 0);
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 8; j++) {
+				if (currentEntry == i * 8 + j)
+					printSelector(j*49 + j, i*47 + i, 49, 47);
+				
+				int entry = i*8+j + 40*page;
+				if ((entry) < 802) {
+					if (getCaught(mainbuf, game, entry + 1))
+						sf2d_draw_texture_part(spritesSmall, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((entry + 1) % 25) + 4, 30 * ((entry + 1) / 25), 34, 30);
+					else if (getSeen(mainbuf, game, entry + 1)) {
+						sf2d_draw_texture_part(spritesSmall, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((entry + 1) % 25) + 4, 30 * ((entry + 1) / 25), 34, 30);
+						sf2d_draw_texture_part_blend(spritesSmall, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((entry + 1) % 25) + 4, 30 * ((entry + 1) / 25), 34, 30, RGBA8(0,0,0,160));
+					} else
+						sf2d_draw_texture_part_blend(spritesSmall, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((entry + 1) % 25) + 4, 30 * ((entry + 1) / 25), 34, 30, RGBA8(0,0,0,255));
+					snprintf(temp, 4, "%d", entry + 1);
+					sftd_draw_text(fontBold9, 49 * j + (49 - sftd_get_text_width(fontBold9, 9, temp)) / 2 + j, 34 + i * 47 + i, WHITE, 9, temp);
+				}
+			}
+		}
+	pksm_end_frame();
+
+	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
+	pksm_end_frame();
+	sf2d_swapbuffers();	
+	
+	free(temp);
+}
+
 void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry, int menuEntry, int box, int mode, int additional1, int additional2) {
 	wchar_t* menuEntries[] = {i18n(S_GRAPHIC_PKVIEWER_MENU_EDIT), i18n(S_GRAPHIC_PKVIEWER_MENU_CLONE), i18n(S_GRAPHIC_PKVIEWER_MENU_RELEASE), i18n(S_GRAPHIC_PKVIEWER_MENU_GENERATE), i18n(S_GRAPHIC_PKVIEWER_MENU_EXIT)};
 	int x;
@@ -1809,11 +1842,13 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 		sf2d_draw_texture(button, 208, 43);
 		sf2d_draw_texture(button, 208, 70);
 		sf2d_draw_texture(button, 208, 97);
-		sf2d_draw_texture(button, 208, 124);
+		sf2d_draw_texture(button, 208, 153);
+		sf2d_draw_texture(button, 208, 180);
 		sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKBANK_MENU_VIEW))) / 2, 50, BLACK, 12, i18n(S_GRAPHIC_PKBANK_MENU_VIEW));
 		sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKBANK_MENU_CLEARBOX))) / 2, 77, BLACK, 12, i18n(S_GRAPHIC_PKBANK_MENU_CLEARBOX));
 		sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKBANK_MENU_RELEASE))) / 2, 104, BLACK, 12, i18n(S_GRAPHIC_PKBANK_MENU_RELEASE));
-		sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKBANK_MENU_DUMP))) / 2, 131, BLACK, 12, i18n(S_GRAPHIC_PKBANK_MENU_DUMP));
+		sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKBANK_MENU_DEX))) / 2, 160, BLACK, 12, i18n(S_GRAPHIC_PKBANK_MENU_DEX));
+		sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKBANK_MENU_DUMP))) / 2, 187, BLACK, 12, i18n(S_GRAPHIC_PKBANK_MENU_DUMP));
 				
 		y = 45;
 		for (int i = 0; i < 5; i++) {

@@ -82,6 +82,7 @@ void printElementBlend(u8* pkmn, int game, u16 n, int x, int y, u32 color);
 void printSettings(int box, int language);
 void infoViewer(u8* pkmn, int game);
 void printfHexEditorInfo(u8* pkmn, int byte);
+void printDexViewer(u8* mainbuf, int game, int currentEntry, int page);
 
 void printSelector(int x, int y, int width, int height);
 void printMenuTop();
