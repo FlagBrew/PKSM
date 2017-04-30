@@ -44,7 +44,7 @@ int lookup[] = {0x0, 0x1, 0x2, 0x4, 0x5, 0x3};
 int MAX_LENGTH_BOX_NAME = 15;
 
 sftd_font *fontBold18, *fontBold15, *fontBold14, *fontBold12, *fontBold11, *fontBold9, *fontFixed; 
-sf2d_texture *noMove, *hexIcon, *hexBG, *blueTextBox, *otaButton, *generationBG, *includeInfoButton, *hiddenPowerBG, *ballsBG, *male, *female, *naturestx, *movesBottom, *topMovesBG, *editorBar, *editorStatsBG, *subArrow, *backgroundTop, *miniBox, *plusButton, *minusButton, *balls, *typesSheet, *transferButton, *bankTop, *shinyStar, *normalBar, *LButton, *RButton, *creditsTop, *pokeball, *gameSelectorBottom1, *gameSelectorBottom2, *gameSelectorTop, *menuBar, *menuSelectedBar, *darkButton, *eventTop, *left, *lightButton, *redButton, *right, *spritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *warningTop, *warningBottom, *boxView, *infoView, *selector, *editorBG, *plus, *minus, *back, *setting, *selectorCloning, *button, *bottomPopUp, *pokemonBufferBox, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR, *settings, *item, *alternativeSpritesSmall;
+sf2d_texture *iconBank, *iconEditor, *iconEvents, *iconSave, *iconSettings, *iconCredits, *mainMenuButton, *noMove, *hexIcon, *hexBG, *blueTextBox, *otaButton, *generationBG, *includeInfoButton, *hiddenPowerBG, *ballsBG, *male, *female, *naturestx, *movesBottom, *topMovesBG, *editorBar, *editorStatsBG, *subArrow, *backgroundTop, *miniBox, *plusButton, *minusButton, *balls, *typesSheet, *transferButton, *bankTop, *shinyStar, *normalBar, *LButton, *RButton, *creditsTop, *pokeball, *gameSelectorBottom1, *gameSelectorBottom2, *gameSelectorTop, *menuBar, *darkButton, *eventTop, *left, *lightButton, *redButton, *right, *spritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *warningTop, *warningBottom, *boxView, *infoView, *selector, *editorBG, *plus, *minus, *back, *setting, *selectorCloning, *button, *bottomPopUp, *pokemonBufferBox, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR, *item, *alternativeSpritesSmall;
 
 AppTextCode gamesList[] = {S_GRAPHIC_GAME_SELECTOR_GAME_X, S_GRAPHIC_GAME_SELECTOR_GAME_Y, S_GRAPHIC_GAME_SELECTOR_GAME_OS, S_GRAPHIC_GAME_SELECTOR_GAME_AS, S_GRAPHIC_GAME_SELECTOR_GAME_SUN, S_GRAPHIC_GAME_SELECTOR_GAME_MOON, S_GRAPHIC_GAME_SELECTOR_GAME_DIAMOND, S_GRAPHIC_GAME_SELECTOR_GAME_PEARL, S_GRAPHIC_GAME_SELECTOR_GAME_PLATINUM, S_GRAPHIC_GAME_SELECTOR_GAME_HG, S_GRAPHIC_GAME_SELECTOR_GAME_SS, S_GRAPHIC_GAME_SELECTOR_GAME_B, S_GRAPHIC_GAME_SELECTOR_GAME_W, S_GRAPHIC_GAME_SELECTOR_GAME_B2, S_GRAPHIC_GAME_SELECTOR_GAME_W2};
 char* langs[] = { "JP", "EN", "FR", "DE", "IT", "ES", "ZH", "KO", "NL", "PT", "RU", "TW", "SD C." };
@@ -158,10 +158,9 @@ void GUIElementsI18nSpecify(int game) {
 
 
 void GUIElementsSpecify(int game) {
-
 	int elements = 4;
 	if (game < 6) {
-		elements += 53;
+		elements += 58;
 	} else {
 		elements += 15;
 	}
@@ -173,9 +172,16 @@ void GUIElementsSpecify(int game) {
 	alternativeSpritesSmall = loadPNGInRAM("/3ds/data/PKSM/additionalassets/alternative_icons_spritesheetv3.png");
 	spritesSmall = loadPNGInRAM("/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheetv3.png");
 	balls = loadPNGInRAM("/3ds/data/PKSM/additionalassets/balls_spritesheetv2.png");
-	settings = loadPNGInRAM("romfs:/res/Settings.png");
 	
 	if (game < 6) {
+		iconBank = loadPNGInRAM("romfs:/res/Icon Bank.png");
+		iconEditor = loadPNGInRAM("romfs:/res/Icon Editor.png");
+		iconEvents = loadPNGInRAM("romfs:/res/Icon Events.png");
+		iconSave = loadPNGInRAM("romfs:/res/Icon Save.png");
+		iconSettings = loadPNGInRAM("romfs:/res/Icon Settings.png");
+		iconCredits = loadPNGInRAM("romfs:/res/Icon Credits.png");
+		mainMenuButton = loadPNGInRAM("romfs:/res/Main Menu Button.png");
+		
 		boxView = loadPNGInRAM("romfs:/res/Box View.png");
 		noMove = loadPNGInRAM("romfs:/res/No Move.png");
 		back = loadPNGInRAM("romfs:/res/Back Button.png");
@@ -208,7 +214,6 @@ void GUIElementsSpecify(int game) {
 		creditsTop = loadPNGInRAM("romfs:/res/Credits Top.png");
 		pokeball = loadPNGInRAM("romfs:/res/Pokeball.png");
 		menuBar = loadPNGInRAM("romfs:/res/Main Menu Dark Bar.png");
-		menuSelectedBar = loadPNGInRAM("romfs:/res/Main Menu Red Bar.png");
 		darkButton = loadPNGInRAM("romfs:/res/Dark Button.png");
 		eventTop = loadPNGInRAM("romfs:/res/Event Top.png");
 		left = loadPNGInRAM("romfs:/res/Left.png");
@@ -265,6 +270,14 @@ void GUIGameElementsExit() {
 }
 
 void GUIElementsExit() {
+	sf2d_free_texture(iconBank);
+	sf2d_free_texture(iconCredits);
+	sf2d_free_texture(iconEditor);
+	sf2d_free_texture(iconEvents);
+	sf2d_free_texture(iconSave);
+	sf2d_free_texture(iconSettings);
+	sf2d_free_texture(mainMenuButton);
+	
 	sf2d_free_texture(noMove);
 	sf2d_free_texture(hexIcon);
 	sf2d_free_texture(hexBG);
@@ -297,7 +310,6 @@ void GUIElementsExit() {
 	sf2d_free_texture(pokeball);
 	sf2d_free_texture(alternativeSpritesSmall);
 	sf2d_free_texture(item);
-	sf2d_free_texture(settings);
 	sf2d_free_texture(DSEventBottom);
 	sf2d_free_texture(DSLangSelected);
 	sf2d_free_texture(DSLang);
@@ -335,7 +347,6 @@ void GUIElementsExit() {
 	sf2d_free_texture(redButton);
 	sf2d_free_texture(right);
 	sf2d_free_texture(menuBar);
-	sf2d_free_texture(menuSelectedBar);
 	sftd_free_font(fontBold9);
 	sftd_free_font(fontBold11);
 	sftd_free_font(fontBold12);
@@ -590,23 +601,40 @@ void gameSelectorMenu(int n) {
 	sf2d_swapbuffers();
 }
 
-void menu3(int currentEntry, wchar_t* menu[], int n, bool isMain) {
+void menu(wchar_t* menu[]) {
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		drawMenuTop(0);
 	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-		printMenuBottom();
-		if (isMain)
-			sf2d_draw_texture(settings, 292, 194);
+		printMenuBottom();		
 		for (int i = 0; i < 3; i++) {
-			if (i == currentEntry)
-				sf2d_draw_texture(menuSelectedBar, (320 - menuSelectedBar->width) / 2, 60 + i * (menuSelectedBar->height));
-			else
-				sf2d_draw_texture(menuBar, (320 - menuBar->width) / 2, 60 + i * (menuBar->height));
-			sftd_draw_wtext(fontBold18, (320 - sftd_get_wtext_width(fontBold18, 18, menu[i])) / 2, 56 + (menuBar->height - 18) / 2 + i * (menuBar->height), (i == currentEntry) ? DARKBLUE : YELLOW, 18, menu[i]);
+			for (int j = 0; j < 2; j++) {
+				sf2d_draw_texture(mainMenuButton, 15 + j*150, 20 + i*63);
+				sftd_draw_wtext(fontBold18, 15 + j*150 + 52 + (84 - sftd_get_wtext_width(fontBold18, 18, menu[i*2+j])) / 2, 17 + i*63 + (mainMenuButton->height - 18) / 2, LIGHTBLUE, 18, menu[i*2+j]);
+				switch (i*2+j) {
+					case 0: 
+						sf2d_draw_texture(iconBank, 25, 18 + (53 - iconBank->height)/2);
+						break;
+					case 1: 
+						sf2d_draw_texture(iconEditor, 175, 18 + (53 - iconEditor->height)/2);
+						break;
+					case 2: 
+						sf2d_draw_texture(iconEvents, 25, 81 + (53 - iconEvents->height)/2);
+						break;
+					case 3: 
+						sf2d_draw_texture(iconSave, 175, 81 + (53 - iconSave->height)/2);
+						break;
+					case 4: 
+						sf2d_draw_texture(iconSettings, 25, 144 + (53 - iconSettings->height)/2);
+						break;
+					case 5: 
+						sf2d_draw_texture(iconCredits, 175, 144 + (53 - iconCredits->height)/2);
+						break;
+				}
+			}
 		}
-		printBottomIndications(isMain ? i18n(S_MAIN_MENU_INDICATION_EXIT) : i18n(S_MAIN_MENU_INDICATION));
+		printBottomIndications(i18n(S_MAIN_MENU_INDICATION_EXIT));
 	pksm_end_frame();
 	sf2d_swapbuffers();
 }
@@ -627,26 +655,6 @@ void mainMenuDS(int currentEntry) {
 			sftd_draw_wtext(fontBold18, (320 - sftd_get_wtext_width(fontBold18, 18, menu[i])) / 2, 67 + (DSBar->height - 18) / 2 + i * (DSBar->height + 16), WHITE, 18, menu[i]);
 		}
 		printBottomIndications(i18n(S_GRAPHIC_MENUDS_INDICATIONS));
-	pksm_end_frame();
-	sf2d_swapbuffers();
-}
-
-void menu4(int currentEntry, wchar_t* menu[], int n) {
-	sf2d_start_frame(GFX_TOP, GFX_LEFT);
-		drawMenuTop(0);
-	pksm_end_frame();
-	
-	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-		printMenuBottom();
-		
-		for (int i = 0; i < n; i++) {
-			if (i == currentEntry)
-				sf2d_draw_texture(menuSelectedBar, (320 - menuSelectedBar->width) / 2, 40 + i * (menuSelectedBar->height));
-			else
-				sf2d_draw_texture(menuBar, (320 - menuBar->width) / 2, 40 + i * (menuBar->height));
-			sftd_draw_wtext(fontBold18, (320 - sftd_get_wtext_width(fontBold18, 18, menu[i])) / 2, 44 + i * (menuBar->height), (i == currentEntry) ? DARKBLUE : YELLOW, 18, menu[i]);
-		}
-		printBottomIndications(i18n(S_MAIN_MENU_INDICATION));
 	pksm_end_frame();
 	sf2d_swapbuffers();
 }

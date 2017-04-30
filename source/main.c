@@ -272,11 +272,11 @@ int main() {
 	
 	GUIElementsSpecify(game);
 	if (game < 6) {
+		wchar_t* mainMenu[] = {i18n(S_MAIN_MENU_EXTRA_STORAGE), i18n(S_MAIN_MENU_EDITOR), i18n(S_MAIN_MENU_EVENTS), i18n(S_MAIN_MENU_SAVE_INFO), i18n(S_MAIN_MENU_SETTINGS), i18n(S_MAIN_MENU_CREDITS)};
 		while (aptMainLoop()) {
 			hidScanInput();
 			touchPosition touch;
 			hidTouchRead(&touch);
-			currentEntry = calcCurrentEntryOneScreen(currentEntry, 2, 1);
 			
 			if (hidKeysDown() & KEY_START) {
 				if (!confirmDisp(i18n(S_MAIN_Q_SAVE_CHANGES)))
@@ -285,76 +285,36 @@ int main() {
 			}
 			
 			if (hidKeysDown() & KEY_TOUCH) {
-				if (touch.px > 60 && touch.px < 260) {
-					if (touch.py > 60 && touch.py < 100) { currentEntry = 0; touchPressed = true; }
-					if (touch.py > 100 && touch.py < 140) { currentEntry = 1; touchPressed = true; }
-					if (touch.py > 140 && touch.py < 180) { currentEntry = 2; touchPressed = true; }
+				if (touch.px > 15 && touch.px < 155 && touch.py > 20 && touch.py < 73) {
+					bank(mainbuf, game);
+				}
+
+				if (touch.px > 165 && touch.px < 305 && touch.py > 20 && touch.py < 73) {
+					pokemonEditor(mainbuf, game);
+				}
+
+				if (touch.px > 15 && touch.px < 155 && touch.py > 83 && touch.py < 136) {
+					if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS)
+						eventDatabase6(mainbuf, game);
+					else if (game == GAME_SUN || game == GAME_MOON)
+						eventDatabase7(mainbuf, game);
+				}
+
+				if (touch.px > 165 && touch.px < 305 && touch.py > 83 && touch.py < 136) {
+					saveFileEditor(mainbuf, game, mainSize);
 				}
 				
-				if (touch.px > 292 && touch.px < 314 && touch.py > 194 && touch.py < 216) {
+				if (touch.px > 15 && touch.px < 155 && touch.py > 146 && touch.py < 199) {
 					settingsMenu(mainbuf, game);
 					continue;
 				}
-			}
-
-			if ((hidKeysDown() & KEY_A) || touchPressed) {
-				touchPressed = false;
-				switch (currentEntry) {
-					case 0 : {
-						int option = 0;
-						wchar_t* menu[4] = {i18n(S_MAIN_MENU_MANAGEMENT_MENU_EDITOR), i18n(S_MAIN_MENU_MANAGEMENT_SAVE_INFO), i18n(S_MAIN_MENU_MANAGEMENT_EXTRA_STORAGE), i18n(S_MAIN_MENU_MANAGEMENT_MASS_INJECTOR)};
-						while (aptMainLoop()) {
-							hidScanInput();
-							hidTouchRead(&touch);
-							option = calcCurrentEntryOneScreen(option, 3, 1);
-							
-							if (hidKeysDown() & KEY_B)
-								break;
-
-							if (hidKeysDown() & KEY_TOUCH) {
-								if (touch.px > 60 && touch.px < 260) {
-									if (touch.py > 40 && touch.py < 80) { option = 0; touchPressed = true; }
-									if (touch.py > 80 && touch.py < 120) { option = 1; touchPressed = true; }
-									if (touch.py > 120 && touch.py < 160) { option = 2; touchPressed = true; }
-									if (touch.py > 160 && touch.py < 200) { option = 3; touchPressed = true; }
-								}
-							}
-							
-							if ((hidKeysDown() & KEY_A) || touchPressed) {
-								touchPressed = false;
-								switch (option) {
-									case 0 :
-										pokemonEditor(mainbuf, game);
-										break;
-									case 1 :
-										saveFileEditor(mainbuf, game, mainSize);
-										break;
-									case 2 :
-										bank(mainbuf, game);
-										break;
-									case 3 :
-										massInjector(mainbuf, game);
-										break;
-								}
-							}
-							menu4(option, menu, 4);
-						}
-						break;
-					}
-					case 1 : {
-						if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS)
-							eventDatabase6(mainbuf, game);
-						else if (game == GAME_SUN || game == GAME_MOON)
-							eventDatabase7(mainbuf, game);
-						break;
-					}
-					case 2 :
-						printCredits();					
-						break;
+				
+				if (touch.px > 165 && touch.px < 305 && touch.py > 146 && touch.py < 199) {
+					printCredits();
 				}
 			}
-			wchar_t* mainMenu[3] = { i18n(S_MAIN_MENU_MANAGEMENT), i18n(S_MAIN_MENU_EVENTS), i18n(S_MAIN_MENU_CREDITS)}; // Needed here if we change the language in settings
-			menu3(currentEntry, mainMenu, 3, true);
+
+			menu(mainMenu);
 		}
 	} else {
 		while (aptMainLoop()) {

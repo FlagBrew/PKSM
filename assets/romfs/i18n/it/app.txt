@@ -19,14 +19,14 @@ Caricamento del salvataggio...
 Gioco non trovato!
 Dimensione del salvataggio errata!
 Nessuna cartuccia valida inserita!
-GESTIONE
-EVENTI
-RICONOSCIMENTI
+Opzioni
+Eventi
+Crediti
 Premi A per selezionare un'opzione.
 Premi START per uscire.
-POKEMON EDITOR
-SAVE INFO
-SPAZIO EXTRA
+Editor
+Save info
+Storage
 MASS INJECTOR
 Salvare?
 Premi A per continuare.
