@@ -19,15 +19,15 @@ Cargando partida...
 ¡Juego no encontrado!
 ¡Tamaño incorrecto para este juego!
 ¡No se ha insertado ningún cartucho!
-EDITOR
-EVENTOS
-CRÉDITOS
+Ajustes
+Eventos
+Créditos
 Pulsa A para seleccionar esta opción.
 Pulsa START para salir.
-EDITAR POKÉMON
-EDITAR PARTIDA
-BANCO POKÉMON
-INYECTAR CAJAS
+Editor
+Partida
+Banco
+Inyector
 ¿Guardar cambios?
 Pulsa A para continuar.
 Pulsa A para continuar, B para cancelar.
@@ -90,9 +90,9 @@ Pulsa A para continuar, B para volver.
 Pulsa START para inyectar, B para volver.
 Pulsa A para seleccionar, B para volver.
 Idiomas:
-Sustituir r. misterioso:
-Adaptar idioma tarjeta:
-Inyectar tarjeta en hueco:
+Sobreescribir regalo:
+Adaptar idioma:
+Inyectar regalo en hueco:
 Editor de partida
 Idioma:
 Vaciar Álbum R. Misterioso
@@ -116,11 +116,11 @@ Vel.
 Nv.%u
 Movimientos
 Ciclos para eclosión:
-EDITAR
-CLONAR
-LIBERAR
-GENERAR
-SALIR
+Editar
+Clonar
+Liberar
+Generar
+Salir
 Caja %d
 Abre el cliente en tu PC...
 Pulsa B para salir.
@@ -139,9 +139,9 @@ Pokérus:
 EO:
 Apodo:
 Amistad:
-ESTAD.
-ATAQUES
-GUARDAR
+Estadíst.
+Ataques
+Guardar
 PS:
 Ataque:
 Defensa:
@@ -179,9 +179,9 @@ Banco %d
 Nv.%u
 ID. %u
 Caja %d
-Y: VER
-VACIAR CAJA
-LIBERAR
+Y: Ver
+Vaciar Caja
+Liberar
 Colección XD
 Colección Colosseum
 Colección 10º aniversario
@@ -551,7 +551,7 @@ Cambiando tamaño...
 ¡Tamaño del banco cambiado!
 ¡Copia de seguridad de la partida creada!
 ¡Copia de seguridad del banco creada!
-DUMP
-Confirm for a full storage dump?
-Step %d/%d
-DEX
+Exportar
+¿Deseas exportar todas tus cajas?
+Paso %d/%d
+PokéDex
