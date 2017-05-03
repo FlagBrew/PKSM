@@ -58,7 +58,7 @@ int getN(int i) {
 		case 204 : return 6; 		
 		case 205 : return 2;
 		case 211 : return 7;
-		case 223 : return 1;
+		case 223 : return 2;
 		case 504 : return 2;
 		case 515 : return 2;
 		case 551 : return 2;
@@ -73,68 +73,7 @@ int checkMultipleWCX(u8* mainbuf, int game, int i, int langCont, int nInjected[]
 	if (n == 0)
 		return 0;
 	
-	if (game < 4) {
-		for (int j = 0; j < n; j++) {
-			char *wcxpath = (char*)malloc(40 * sizeof(char));
-			switch (langCont) {
-				case 0 : {
-					snprintf(wcxpath, 40, "romfs:/wcx/jpn/%d-%d.wcx", i, j + 1);
-					break;
-				} 
-				case 1 : {
-					snprintf(wcxpath, 40, "romfs:/wcx/eng/%d-%d.wcx", i, j + 1);
-					break;
-				}
-				case 2 : {
-					snprintf(wcxpath, 40, "romfs:/wcx/fre/%d-%d.wcx", i, j + 1);
-					break;
-				}
-				case 3 : {
-					snprintf(wcxpath, 40, "romfs:/wcx/ita/%d-%d.wcx", i, j + 1);
-					break;
-				}
-				case 4 : {
-					snprintf(wcxpath, 40, "romfs:/wcx/ger/%d-%d.wcx", i, j + 1);
-					break;
-				}
-				case 5 : {
-					snprintf(wcxpath, 40, "romfs:/wcx/spa/%d-%d.wcx", i, j + 1);
-					break;
-				}
-				case 6 : {
-					snprintf(wcxpath, 40, "romfs:/wcx/kor/%d-%d.wcx", i, j + 1);
-					break;
-				}
-			}
-			
-			FILE *fptr = fopen(wcxpath, "rt");
-			if (fptr == NULL) {
-				fclose(fptr);
-				free(wcxpath);
-				return 15;
-			}
-			fseek(fptr, 0, SEEK_END);
-			u32 contentsize = ftell(fptr);
-			u8 *wcxbuf = (u8*)malloc(contentsize);
-			if (wcxbuf == NULL) {
-				fclose(fptr);
-				free(wcxbuf);
-				free(wcxpath);
-				return 8;
-			}
-			rewind(fptr);
-			fread(wcxbuf, contentsize, 1, fptr);
-			fclose(fptr);
-
-			if (adapt)
-				setSaveLanguage(mainbuf, game, langCont);
-
-			setWC(mainbuf, wcxbuf, game, i, nInjected);
-
-			free(wcxpath);
-			free(wcxbuf);
-		}		
-	} else for (int j = 0; j < n; j++) {
+	for (int j = 0; j < n; j++) {
 		char *wcxpath = (char*)malloc(40 * sizeof(char));
 		switch (langCont) {
 			case 0 : {
