@@ -76,9 +76,7 @@ void dumpStorage2pk7(u8* bankbuf, u32 size) {
 			swprintf(str, 100, L"%X - %ls.pk7", (int)getPID(tmp), nick);
 			utf32_to_utf8((uint8_t*)path, (uint32_t*)str, 25);
 
-			FILE *dmp = fopen(path, "wb");
-			fwrite(tmp, 1, PKMNLENGTH, dmp);
-			fclose(dmp);
+			file_write(path, tmp, PKMNLENGTH);
 		}
 	}
 }

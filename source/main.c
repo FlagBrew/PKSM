@@ -98,7 +98,7 @@ bool initServices() {
 	GUIElementsInit();
 	FXElementsInit();
 	GUIGameElementsInit();
-
+	
 	wchar_t* str = malloc(60*sizeof(wchar_t*));
 	for (int i = 0; i < ASSETS; i++) {
 		FILE *temp1 = fopen(path[i], "rt");

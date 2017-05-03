@@ -41,6 +41,7 @@
 #include "dex.h"
 #include "editor.h"
 #include "fill.h"
+#include "files.h"
 #include "fx.h"
 #include "graphic.h"
 #include "hex.h"
@@ -53,7 +54,7 @@
 #include "util.h"
 #include "i18n.h"
 
-#define DEBUG 1
+#define DEBUG 0
 
 #define GAME_X 		  0
 #define GAME_Y 		  1

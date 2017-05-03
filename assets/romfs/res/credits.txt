@@ -1,17 +1,10 @@
 Smealum for ctrulib, Xerpi for sf2d
-Kaphotics for PKHeX and being an awesome guy
-SciresM for C-memecrypto, you rock man
-J-K-D for direct save import/export and being awesome
+Kaphotics and SciresM for PKHeX and memecrypto
+J-K-D for direct save import/export
 Slownic for java servepkx
-Slashcash for PCHex++ and Strackeror for PCHex
+Slashcash for PCHex++
 Gocario for PKBrew
 TuxSH for TWLSaveTool
 MarcusD for romfs support
-Nba_Yoh for received flags fix
-PPorg for most of wc6/wc7 included here
+PPorg for most of wc6/wc7 bundled in the application
 Simona, Carlo, Matteo for fill.c work
-Shai, Federico, YodaDaCoda, /u/SatansRoommate for tests
-Alex, Immersion, Hat3Mond4ys, sgtkwol for descriptions
-Paul, Kian for a few wc6
-Majickhat55 for few collections and descriptions
-Poutros for N's collection

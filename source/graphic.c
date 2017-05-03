@@ -43,7 +43,7 @@ int lookup[] = {0x0, 0x1, 0x2, 0x4, 0x5, 0x3};
 
 int MAX_LENGTH_BOX_NAME = 15;
 
-sftd_font *fontBold18, *fontBold15, *fontBold14, *fontBold12, *fontBold11, *fontBold9, *fontFixed; 
+sftd_font *fontBold15, *fontBold14, *fontBold12, *fontBold11, *fontBold9, *fontFixed; 
 sf2d_texture *iconBank, *iconEditor, *iconEvents, *iconSave, *iconSettings, *iconCredits, *mainMenuButton, *noMove, *hexIcon, *hexBG, *blueTextBox, *otaButton, *generationBG, *includeInfoButton, *hiddenPowerBG, *ballsBG, *male, *female, *naturestx, *movesBottom, *topMovesBG, *editorBar, *editorStatsBG, *subArrow, *backgroundTop, *miniBox, *plusButton, *minusButton, *balls, *typesSheet, *transferButton, *bankTop, *shinyStar, *normalBar, *LButton, *RButton, *creditsTop, *pokeball, *gameSelectorBottom1, *gameSelectorBottom2, *gameSelectorTop, *menuBar, *darkButton, *eventTop, *left, *lightButton, *redButton, *right, *spritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *warningTop, *warningBottom, *boxView, *infoView, *selector, *editorBG, *plus, *minus, *back, *setting, *selectorCloning, *button, *bottomPopUp, *pokemonBufferBox, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR, *item, *alternativeSpritesSmall;
 
 AppTextCode gamesList[] = {S_GRAPHIC_GAME_SELECTOR_GAME_X, S_GRAPHIC_GAME_SELECTOR_GAME_Y, S_GRAPHIC_GAME_SELECTOR_GAME_OS, S_GRAPHIC_GAME_SELECTOR_GAME_AS, S_GRAPHIC_GAME_SELECTOR_GAME_SUN, S_GRAPHIC_GAME_SELECTOR_GAME_MOON, S_GRAPHIC_GAME_SELECTOR_GAME_DIAMOND, S_GRAPHIC_GAME_SELECTOR_GAME_PEARL, S_GRAPHIC_GAME_SELECTOR_GAME_PLATINUM, S_GRAPHIC_GAME_SELECTOR_GAME_HG, S_GRAPHIC_GAME_SELECTOR_GAME_SS, S_GRAPHIC_GAME_SELECTOR_GAME_B, S_GRAPHIC_GAME_SELECTOR_GAME_W, S_GRAPHIC_GAME_SELECTOR_GAME_B2, S_GRAPHIC_GAME_SELECTOR_GAME_W2};
@@ -66,7 +66,6 @@ ArrayUTF32 listAbilities, listNatures, listBalls, listHPs, listForms;
 int loadPNGInRAM_current_element = 1;
 int loadPNGInRAM_elements = 1;
 
-
 void GUITextsInit() {
 	freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_LOCALES));
 	struct i18n_files listFiles = i18n_getFilesPath();
@@ -82,7 +81,6 @@ void GUITextsInit() {
 
 	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_NATURES));
 	listNatures = i18n_FileToArrayUTF32(listFiles.natures);
-
 
 	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_ITEMS));
 	listItems = i18n_FileToArrayUTF32(listFiles.items);
@@ -117,7 +115,6 @@ void GUIElementsInit() {
 	warningBottom = sfil_load_PNG_file("romfs:/res/Warning Bottom.png", SF2D_PLACE_RAM);
 	freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_FILES));
 
-	fontBold18 = sftd_load_font_file("romfs:/res/Bold.ttf");
 	fontBold14 = sftd_load_font_file("romfs:/res/Bold.ttf");
 	fontBold11 = sftd_load_font_file("romfs:/res/Bold.ttf");
 	fontBold9 = sftd_load_font_file("romfs:/res/Bold.ttf");
@@ -161,7 +158,7 @@ void GUIElementsSpecify(int game) {
 	if (game < 6) {
 		elements += 58;
 	} else {
-		elements += 15;
+		elements += 16;
 	}
 
 	elements += getGUIElementsI18nSpecifyTotalElements(game);
@@ -234,6 +231,7 @@ void GUIElementsSpecify(int game) {
 		pokemonBufferBox = loadPNGInRAM("romfs:/res/Pokemon Box.png");
 		item = loadPNGInRAM("romfs:/res/item.png");
 	} else {
+		pokeball = loadPNGInRAM("romfs:/res/DS Pokeball.png");
 		DSBottomBG = loadPNGInRAM("romfs:/res/Bottom BG.png");
 		DSTopBG = loadPNGInRAM("romfs:/res/Top BG.png");
 		DSBarSelected = loadPNGInRAM("romfs:/res/Bar Selected.png");
@@ -351,7 +349,6 @@ void GUIElementsExit() {
 	sftd_free_font(fontBold12);
 	sftd_free_font(fontBold14);
 	sftd_free_font(fontBold15);
-	sftd_free_font(fontBold18);
 	sftd_free_font(fontFixed);
 
 	GUIElementsI18nExit();
@@ -385,9 +382,8 @@ void create_font_cache(sftd_font* font, unsigned int size, int total_fonts, int*
 
 void init_font_cache() {
 	int num_font = 1;
-	int total_fonts = 7;
-	
-	create_font_cache(fontBold18, 18, total_fonts, &num_font);
+	int total_fonts = 6;
+
 	create_font_cache(fontBold14, 14, total_fonts, &num_font);
 	create_font_cache(fontBold15, 15, total_fonts, &num_font);
 	create_font_cache(fontBold12, 12, total_fonts, &num_font);
@@ -535,14 +531,10 @@ void progressBar(wchar_t* message, u32 current, u32 sz) {
 	free(progress);
 }
 
-void drawMenuTop(int game) {
-	if (game < 6) {
-		printMenuTop();
-		printTitle(L"PKSM");
-		sf2d_draw_texture(pokeball, (400 - pokeball->width) / 2 + 5, (240 - pokeball->height) / 2 + 10);
-	}
-	else 
-		sf2d_draw_texture(DSTopBG, 0, 0);
+void drawMenuTop() {
+	printMenuTop();
+	printTitle(L"PKSM");
+	sf2d_draw_texture(pokeball, (400 - pokeball->width) / 2 + 5, (240 - pokeball->height) / 2 + 10);
 	
 	sftd_draw_text(fontBold9, (398 - sftd_get_text_width(fontBold9, 9, VERSION)), 229, LIGHTBLUE, 9, VERSION);
 }
@@ -573,7 +565,7 @@ void gameSelectorMenu(int n) {
 				sf2d_draw_texture_part(gameSelectorTop, 26 + i*60, 80, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70);
 		}
 
-		sftd_draw_wtext(fontBold18, (400 - sftd_get_wtext_width(fontBold18, 18, i18n(gamesList[n]))) / 2, 185, logoColors[n], 18, i18n(gamesList[n]));
+		sftd_draw_wtext(fontBold15, (400 - sftd_get_wtext_width(fontBold15, 15, i18n(gamesList[n]))) / 2, 185, logoColors[n], 15, i18n(gamesList[n]));
 	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
@@ -602,7 +594,7 @@ void gameSelectorMenu(int n) {
 
 void menu(wchar_t* menu[]) {
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
-		drawMenuTop(0);
+		drawMenuTop();
 	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
@@ -610,7 +602,7 @@ void menu(wchar_t* menu[]) {
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 2; j++) {
 				sf2d_draw_texture(mainMenuButton, 15 + j*150, 20 + i*63);
-				sftd_draw_wtext(fontBold18, 15 + j*150 + 52 + (84 - sftd_get_wtext_width(fontBold18, 18, menu[i*2+j])) / 2, 17 + i*63 + (mainMenuButton->height - 18) / 2, LIGHTBLUE, 18, menu[i*2+j]);
+				sftd_draw_wtext(fontBold15, 15 + j*150 + 52 + (84 - sftd_get_wtext_width(fontBold15, 15, menu[i*2+j])) / 2, 17 + i*63 + (mainMenuButton->height - 15) / 2, LIGHTBLUE, 15, menu[i*2+j]);
 				switch (i*2+j) {
 					case 0: 
 						sf2d_draw_texture(iconBank, 25, 18 + (53 - iconBank->height)/2);
@@ -641,19 +633,15 @@ void menu(wchar_t* menu[]) {
 void mainMenuDS(int currentEntry) {
 	wchar_t* menu[2] = { i18n(S_GRAPHIC_MENUDS_EVENTS), i18n(S_GRAPHIC_MENUDS_OTHER)};
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
-		drawMenuTop(7);
+		sf2d_draw_texture(DSTopBG, 0, 0);
+		sf2d_draw_texture(pokeball, (400 - pokeball->width) / 2, (240 - pokeball->height) / 2 + 3);
 	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(DSBottomBG, 0, 0);
-		for (int i = 0; i < 2; i++) {
-			if (i == currentEntry)
-				sf2d_draw_texture(DSBarSelected, (320 - DSBarSelected->width) / 2, 66 + i * (DSBarSelected->height + 16) + i + 1);
-			else
-				sf2d_draw_texture(DSBar, (320 - DSBar->width) / 2, 66 + i * (DSBar->height + 16));
-			sftd_draw_wtext(fontBold18, (320 - sftd_get_wtext_width(fontBold18, 18, menu[i])) / 2, 67 + (DSBar->height - 18) / 2 + i * (DSBar->height + 16), WHITE, 18, menu[i]);
-		}
-		printBottomIndications(i18n(S_GRAPHIC_MENUDS_INDICATIONS));
+		for (int i = 0; i < 3; i++) 
+			sf2d_draw_texture((i == currentEntry) ? DSBarSelected : DSBar, 0, 33 + i*56);
+		sftd_draw_wtext(fontBold9, (320 - sftd_get_wtext_width(fontBold9, 9, i18n(S_GRAPHIC_MENUDS_INDICATIONS))) / 2, 225, RED, 9, i18n(S_GRAPHIC_MENUDS_INDICATIONS));
 	pksm_end_frame();
 	sf2d_swapbuffers();
 }
@@ -1897,7 +1885,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 void printSettings(int box, int language) {
 	wchar_t *menu[] = {i18n(S_GRAPHIC_SETTINGS_BANK_SIZE), i18n(S_GRAPHIC_SETTINGS_BACKUP_SAVE), i18n(S_GRAPHIC_SETTINGS_BACKUP_BANK)};
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
-		drawMenuTop(0);
+		drawMenuTop();
 	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
