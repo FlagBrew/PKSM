@@ -551,7 +551,7 @@ HP努力値
 バンクサイズを変更しました。
 バックアップを作成しました。
 バックアップを作成しました。
-DUMP
-Confirm for a full storage dump?
-Step %d/%d
-DEX
+ダンプ
+バンクを全てダンプしますか?
+ステップ %d/%d
+図鑑
