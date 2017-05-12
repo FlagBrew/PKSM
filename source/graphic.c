@@ -43,8 +43,8 @@ int lookup[] = {0x0, 0x1, 0x2, 0x4, 0x5, 0x3};
 
 int MAX_LENGTH_BOX_NAME = 15;
 
-sftd_font *fontBold15, *fontBold14, *fontBold12, *fontBold11, *fontBold9, *fontFixed; 
-sf2d_texture *iconBank, *iconEditor, *iconEvents, *iconSave, *iconSettings, *iconCredits, *mainMenuButton, *noMove, *hexIcon, *hexBG, *blueTextBox, *otaButton, *generationBG, *includeInfoButton, *hiddenPowerBG, *ballsBG, *male, *female, *naturestx, *movesBottom, *topMovesBG, *editorBar, *editorStatsBG, *subArrow, *backgroundTop, *miniBox, *plusButton, *minusButton, *balls, *typesSheet, *transferButton, *bankTop, *shinyStar, *normalBar, *LButton, *RButton, *creditsTop, *pokeball, *gameSelectorBottom1, *gameSelectorBottom2, *gameSelectorTop, *menuBar, *darkButton, *eventTop, *left, *lightButton, *redButton, *right, *spritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *warningTop, *warningBottom, *boxView, *infoView, *selector, *editorBG, *plus, *minus, *back, *setting, *selectorCloning, *button, *bottomPopUp, *pokemonBufferBox, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR, *item, *alternativeSpritesSmall;
+sftd_font *fontBold15, *fontBold14, *fontBold12, *fontBold11, *fontBold9; 
+sf2d_texture *iconBank, *iconEditor, *iconEvents, *iconSave, *iconSettings, *iconCredits, *mainMenuButton, *noMove, *hexIcon, *hexBG, *blueTextBox, *otaButton, *generationBG, *includeInfoButton, *hiddenPowerBG, *ballsBG, *male, *female, *naturestx, *movesBottom, *topMovesBG, *editorBar, *editorStatsBG, *subArrow, *backgroundTop, *miniBox, *plusButton, *minusButton, *balls, *typesSheet, *transferButton, *bankTop, *shinyStar, *normalBar, *LButton, *RButton, *creditsTop, *pokeball, *gameSelectorBottom1, *gameSelectorBottom2, *gameSelectorTop, *menuBar, *darkButton, *left, *lightButton, *redButton, *right, *spritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *warningTop, *warningBottom, *boxView, *infoView, *selector, *editorBG, *plus, *minus, *back, *setting, *selectorCloning, *button, *bottomPopUp, *pokemonBufferBox, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR, *item, *alternativeSpritesSmall;
 
 AppTextCode gamesList[] = {S_GRAPHIC_GAME_SELECTOR_GAME_X, S_GRAPHIC_GAME_SELECTOR_GAME_Y, S_GRAPHIC_GAME_SELECTOR_GAME_OS, S_GRAPHIC_GAME_SELECTOR_GAME_AS, S_GRAPHIC_GAME_SELECTOR_GAME_SUN, S_GRAPHIC_GAME_SELECTOR_GAME_MOON, S_GRAPHIC_GAME_SELECTOR_GAME_DIAMOND, S_GRAPHIC_GAME_SELECTOR_GAME_PEARL, S_GRAPHIC_GAME_SELECTOR_GAME_PLATINUM, S_GRAPHIC_GAME_SELECTOR_GAME_HG, S_GRAPHIC_GAME_SELECTOR_GAME_SS, S_GRAPHIC_GAME_SELECTOR_GAME_B, S_GRAPHIC_GAME_SELECTOR_GAME_W, S_GRAPHIC_GAME_SELECTOR_GAME_B2, S_GRAPHIC_GAME_SELECTOR_GAME_W2};
 char* langs[] = { "JP", "EN", "FR", "DE", "IT", "ES", "ZH", "KO", "NL", "PT", "RU", "TW", "SD C." };
@@ -118,7 +118,6 @@ void GUIElementsInit() {
 	fontBold14 = sftd_load_font_file("romfs:/res/Bold.ttf");
 	fontBold11 = sftd_load_font_file("romfs:/res/Bold.ttf");
 	fontBold9 = sftd_load_font_file("romfs:/res/Bold.ttf");
-	fontFixed = sftd_load_font_file("romfs:/res/VeraMono.ttf");
 
 	GUITextsInit();
 
@@ -156,7 +155,7 @@ void GUIElementsI18nSpecify(int game) {
 void GUIElementsSpecify(int game) {
 	int elements = 4;
 	if (game < 6) {
-		elements += 58;
+		elements += 57;
 	} else {
 		elements += 16;
 	}
@@ -211,7 +210,6 @@ void GUIElementsSpecify(int game) {
 		pokeball = loadPNGInRAM("romfs:/res/Pokeball.png");
 		menuBar = loadPNGInRAM("romfs:/res/Main Menu Dark Bar.png");
 		darkButton = loadPNGInRAM("romfs:/res/Dark Button.png");
-		eventTop = loadPNGInRAM("romfs:/res/Event Top.png");
 		left = loadPNGInRAM("romfs:/res/Left.png");
 		lightButton = loadPNGInRAM("romfs:/res/Light Button.png");
 		redButton = loadPNGInRAM("romfs:/res/Red Button.png");
@@ -338,7 +336,6 @@ void GUIElementsExit() {
 	sf2d_free_texture(eventMenuTopBar);
 	sf2d_free_texture(spritesSmall);
 	sf2d_free_texture(darkButton);
-	sf2d_free_texture(eventTop);
 	sf2d_free_texture(left);
 	sf2d_free_texture(lightButton);
 	sf2d_free_texture(redButton);
@@ -349,7 +346,6 @@ void GUIElementsExit() {
 	sftd_free_font(fontBold12);
 	sftd_free_font(fontBold14);
 	sftd_free_font(fontBold15);
-	sftd_free_font(fontFixed);
 
 	GUIElementsI18nExit();
 }
@@ -382,14 +378,13 @@ void create_font_cache(sftd_font* font, unsigned int size, int total_fonts, int*
 
 void init_font_cache() {
 	int num_font = 1;
-	int total_fonts = 6;
+	int total_fonts = 5;
 
 	create_font_cache(fontBold14, 14, total_fonts, &num_font);
 	create_font_cache(fontBold15, 15, total_fonts, &num_font);
 	create_font_cache(fontBold12, 12, total_fonts, &num_font);
 	create_font_cache(fontBold11, 11, total_fonts, &num_font);
 	create_font_cache(fontBold9,  9, total_fonts, &num_font);
-	create_font_cache(fontFixed,  10, total_fonts, &num_font);
 }
 
 void drawFPSDebug() {
@@ -641,7 +636,7 @@ void mainMenuDS(int currentEntry) {
 		sf2d_draw_texture(DSBottomBG, 0, 0);
 		for (int i = 0; i < 3; i++) 
 			sf2d_draw_texture((i == currentEntry) ? DSBarSelected : DSBar, 0, 33 + i*56);
-		sftd_draw_wtext(fontBold9, (320 - sftd_get_wtext_width(fontBold9, 9, i18n(S_GRAPHIC_MENUDS_INDICATIONS))) / 2, 225, RED, 9, i18n(S_GRAPHIC_MENUDS_INDICATIONS));
+		sftd_draw_wtext(fontBold9, (320 - sftd_get_wtext_width(fontBold9, 9, i18n(S_GRAPHIC_MENUDS_INDICATIONS))) / 2, 224, RED, 9, i18n(S_GRAPHIC_MENUDS_INDICATIONS));
 	pksm_end_frame();
 	sf2d_swapbuffers();
 }
@@ -780,14 +775,7 @@ void printDatabase5(char *database[], int currentEntry, int page, int spriteArra
 		sftd_draw_wtext(fontBold9, (320 - sftd_get_wtext_width(fontBold9, 9, isSelected ? i18n(S_GRAPHIC_DB_INDICATIONS_INJECT) : i18n(S_GRAPHIC_DB_INDICATIONS_SELECT))) / 2, 222, RGBA8(255, 255, 255, 130), 9, isSelected ? i18n(S_GRAPHIC_DB_INDICATIONS_INJECT) : i18n(S_GRAPHIC_DB_INDICATIONS_SELECT));
 		
 		if (isSelected) {
-			char *languages[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
-			char *path = (char*)malloc(40 * sizeof(char));
-			u8* buf = (u8*)malloc(1500 * sizeof(u8));
-			memset(buf, 0, 1500);
-			snprintf(path, 40, "romfs:/database/gen5/%d.txt", page * 10 + currentEntry);
-			loadFile(buf, path);
-			
-			sftd_draw_text(fontFixed, 8, 2,  WHITE, 10, (char*)buf);
+			char *languages[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};			
 			
 			for (int t = 0; t < 7; t++) {
 				int x = 0, y = 178;
@@ -811,9 +799,6 @@ void printDatabase5(char *database[], int currentEntry, int page, int spriteArra
 					sftd_draw_text(fontBold12, x + (36 - sftd_get_text_width(fontBold12, 12, languages[t])) / 2, y + 4, RGBA8(255, 255, 255, 100), 12, languages[t]);
 				}
 			}
-
-			free(path);
-			free(buf);
 		}
 	
 	pksm_end_frame();
@@ -868,13 +853,6 @@ void printDatabase4(char *database[], int currentEntry, int page, int spriteArra
 		
 		if (isSelected) {
 			char *languages[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
-			char *path = (char*)malloc(40 * sizeof(char));
-			u8* buf = (u8*)malloc(1500 * sizeof(u8));
-			memset(buf, 0, 1500);
-			snprintf(path, 40, "romfs:/database/gen4/%d.txt", page * 10 + currentEntry);
-			loadFile(buf, path);
-			
-			sftd_draw_text(fontFixed, 8, 2,  WHITE, 10, (char*)buf);
 			
 			for (int t = 0; t < 7; t++) {
 				int x = 0, y = 178;
@@ -898,9 +876,6 @@ void printDatabase4(char *database[], int currentEntry, int page, int spriteArra
 					sftd_draw_text(fontBold12, x + (36 - sftd_get_text_width(fontBold12, 12, languages[t])) / 2, y + 4, RGBA8(255, 255, 255, 100), 12, languages[t]);
 				}
 			}
-
-			free(path);
-			free(buf);
 		}
 	
 	pksm_end_frame();
@@ -909,20 +884,13 @@ void printDatabase4(char *database[], int currentEntry, int page, int spriteArra
 
 void printDB7(int sprite, int i, bool langVett[], bool adapt, bool overwrite, int langSelected, int nInjected) {
 	char *languages[] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR", "CHS", "CHT"};
-	char *path = (char*)malloc(30 * sizeof(char));
 	char *cont = (char*)malloc(3 * sizeof(char));
-	u8* buf = (u8*)malloc(1500 * sizeof(u8));
-	memset(buf, 0, 1499);
-	snprintf(path, 30, "romfs:/database/%d.txt", i);
 	snprintf(cont, 3, "%d", nInjected + 1);
-	loadFile(buf, path);
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		printAnimatedBG(true);
-		sf2d_draw_texture(eventTop, 0, 24);
-		if (sprite != -1)
-			sf2d_draw_texture_part_scale(spritesSmall, 282, 46 - movementOffsetLong(6), 40 * (sprite % 25) + 4, 30 * (sprite / 25), 34, 30, 2, 2);
-		sftd_draw_text(fontFixed, 5, 28,  WHITE, 10, (char*)buf);
+		//if (sprite != -1)
+		//	sf2d_draw_texture_part_scale(spritesSmall, 282, 46 - movementOffsetLong(6), 40 * (sprite % 25) + 4, 30 * (sprite / 25), 34, 30, 2, 2);
 	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
@@ -990,27 +958,18 @@ void printDB7(int sprite, int i, bool langVett[], bool adapt, bool overwrite, in
 		pksm_end_frame();
 	sf2d_swapbuffers();
 	
-	free(buf);
 	free(cont);
-	free(path);
 }
 
 void printDB6(int sprite, int i, bool langVett[], bool adapt, bool overwrite, int langSelected, int nInjected) {
 	char *languages[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
-	char *path = (char*)malloc(30 * sizeof(char));
 	char *cont = (char*)malloc(3 * sizeof(char));
-	u8* buf = (u8*)malloc(1500 * sizeof(u8));
-	memset(buf, 0, 1499);
-	snprintf(path, 30, "romfs:/database/%d.txt", i);
 	snprintf(cont, 3, "%d", nInjected + 1);
-	loadFile(buf, path);
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		printAnimatedBG(true);
-		sf2d_draw_texture(eventTop, 0, 24);
-		if (sprite != -1)
-			sf2d_draw_texture_part_scale(spritesSmall, 282, 46 - movementOffsetLong(6), 40 * (sprite % 25) + 4, 30 * (sprite / 25), 34, 30, 2, 2);
-		sftd_draw_text(fontFixed, 5, 28,  WHITE, 10, (char*)buf);
+		//if (sprite != -1)
+		//	sf2d_draw_texture_part_scale(spritesSmall, 282, 46 - movementOffsetLong(6), 40 * (sprite % 25) + 4, 30 * (sprite / 25), 34, 30, 2, 2);
 	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
@@ -1076,9 +1035,7 @@ void printDB6(int sprite, int i, bool langVett[], bool adapt, bool overwrite, in
 	pksm_end_frame();
 	sf2d_swapbuffers();
 	
-	free(buf);
 	free(cont);
-	free(path);
 }
 
 void printEditor(u8* mainbuf, int game, u64 size, int currentEntry, int page) {
