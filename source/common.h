@@ -47,14 +47,15 @@
 #include "hex.h"
 #include "hid.h"
 #include "http.h"
+#include "i18n.h"
 #include "memecrypto/source/memecrypto.h"
 #include "save.h"
 #include "sha256.h"
 #include "spi.h"
 #include "util.h"
-#include "i18n.h"
+#include "wcx.h"
 
-#define DEBUG 0
+#define DEBUG 1
 
 #define GAME_X 		  0
 #define GAME_Y 		  1
@@ -81,6 +82,8 @@
 #define SAVE_SM_MONEY 0x4004
 #define SAVE_ORAS_MONEY 0x4208
 #define SAVE_XY_MONEY 0x4208
+#define SAVE_SM_ITEM 0x0
+#define SAVE_SM_ITEM_SIZE 0xDE0
 
 struct ArrayUTF32 listMoves;
 struct ArrayUTF32 listItems;
