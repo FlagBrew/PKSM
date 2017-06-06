@@ -43,6 +43,7 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[1611] = "1611 - SM 4 Mega Stones"; spriteArray[1611] = 0;
 	database[1612] = "1612 - SM PGL Prize"; spriteArray[1612] = 0;
 	database[1613] = "1613 - SM PGL Prize"; spriteArray[1613] = 0;
+	database[1614] = "1614 - SM PGL Prize"; spriteArray[1614] = 0;
 	database[2040] = "2040 - SM Stardust"; spriteArray[2040] = 0;
 	database[2041] = "2041 - SM Star Piece"; spriteArray[2041] = 0;
 	database[2042] = "2042 - SM Nugget"; spriteArray[2042] = 0;
@@ -226,6 +227,7 @@ void filldatabase6(char *database[], int spriteArray[]) {
 	database[180] = "0180 - Cyrus' Weavile"; spriteArray[180] = 461;
 	database[181] = "0181 - Ghetsis' Hydreigon"; spriteArray[181] = 635;
 	database[182] = "0182 - Lysandre's Pyroar"; spriteArray[182] = 668;
+	database[183] = "0183 - Singa Volcanion"; spriteArray[183] = 721;
 	database[184] = "0184 - PC Bday 2016"; spriteArray[184] = 133;
 	database[501] = "0501 - Winter2013 Garchomp"; spriteArray[501] = 445;
 	database[502] = "0502 - Winter2013 Scizor"; spriteArray[502] = 212;
