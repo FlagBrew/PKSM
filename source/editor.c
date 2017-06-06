@@ -1348,8 +1348,18 @@ void parseHexEditor(u8* pkmn, int game, int byteEntry) {
 }
 
 void parseSaveHexEditor(u8* mainbuf, int game, int byte) {	
-	if (game == GAME_SUN || game == GAME_MOON) { 
-		if (byte >= SAVE_SM_MONEY && byte < SAVE_SM_MONEY + 4)
+	if (game == GAME_SUN || game == GAME_MOON) {
+		if (byte >= SAVE_SM_ITEM && byte < SAVE_SM_ITEM_SIZE) {
+			// check items
+			for (unsigned int offset = SAVE_SM_ITEM; offset < SAVE_SM_ITEM_SIZE; offset += 4) {
+				for (unsigned int cursor = offset; cursor <= offset + 1; cursor++) {
+					unsigned int pos = offset + cursor;
+					if (byte == pos)
+						checkMaxValueBetweenBounds(mainbuf, byte, (pos % 2 == 0) ? pos : pos - 1, 2, 919);
+				}
+			}
+		}
+		else if (byte >= SAVE_SM_MONEY && byte < SAVE_SM_MONEY + 4)
 			checkMaxValueBetweenBounds(mainbuf, byte, SAVE_SM_MONEY, 4, 9999999);
 		else
 			mainbuf[byte]++;

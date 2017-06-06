@@ -89,24 +89,24 @@ Base de datos de eventos
 Pulsa A para continuar, B para volver.
 Pulsa START para inyectar, B para volver.
 Pulsa A para seleccionar, B para volver.
-Idiomas:
-Sobreescribir regalo:
-Adaptar idioma:
-Inyectar regalo en hueco:
+Idiomas
+Sobreescribir regalo
+Adaptar idioma
+Inyectar regalo en hueco
 Editor de partida
-Idioma:
+Idioma
 Vaciar Álbum R. Misterioso
 Pulsa START para editar, A para activar, B para salir.
-Apodo:
-EO:
-Pokérus:
-Naturaleza:
-Habilidad:
-Objeto:
-ESV / TSV:
-TID / SID:
-EA/EO amistad:
-Poder oculto:
+Apodo
+EO
+Pokérus
+Naturaleza
+Habilidad
+Objeto
+ESV / TSV
+TID / SID
+EA/EO amistad
+Poder oculto
 PS
 Ataque
 Defensa
@@ -115,7 +115,7 @@ De. Esp.
 Vel.
 Nv.%u
 Movimientos
-Ciclos para eclosión:
+Ciclos para eclosión
 Editar
 Clonar
 Liberar
@@ -130,24 +130,24 @@ Pulsa A para clonar, B para cancelar.
 Generar con A en la pantalla superior.
 TID: %u / SID: %u / TSV: %u
 Semilla: %lx %lx %lx %lx
-Nivel:
-Naturaleza:
-Habilidad:
-Objeto:
-Variocolor:
-Pokérus:
-EO:
-Apodo:
-Amistad:
+Nivel
+Naturaleza
+Habilidad
+Objeto
+Variocolor
+Pokérus
+EO
+Apodo
+Amistad
 Estadíst.
 Ataques
 Guardar
-PS:
-Ataque:
-Defensa:
-Atq. Esp.:
-Def. Esp.:
-Velocidad:
+PS
+Ataque
+Defensa
+Atq. Esp.
+Def. Esp.
+Velocidad
 Edita tu Pokémon en la pantalla inferior.
 Toca GUARDAR cuando estés listo.
 Neutral
@@ -161,15 +161,15 @@ Neutral
 +Vel.
 +At. Esp.
 +De. Esp.
-Ciclos de eclosión:
+Ciclos de eclosión
 Estadísticas
 IV
 EV
 TOTAL
-Poder oculto:
+Poder oculto
 Movimientos
 Movimientos recordables
-Byte seleccionado:
+Byte seleccionado
 Selecciona un objeto con A.
 Selecciona una naturaleza con A.
 Selecciona una ball con A.
@@ -195,7 +195,7 @@ Colección eventos KOR
 %d seran reemplazadas.
 Inyector de cajas
 Pulsa START para inyectar, B para salir.
-Tmño banco
+Tmño banco           
 C. de seguridad: Partida
 C. de seguridad: Banco
 Toca el número para cambiar el tamaño.

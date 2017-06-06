@@ -58,7 +58,7 @@ void dumpStorage2pk7(u8* bankbuf, u32 size) {
 	
 	wchar_t step[20];		
 	for (int i = 0, tot = size/PKMNLENGTH; i < tot; i++) {
-		swprintf(step, 20, i18n(S_BANK_PROGRESS_MESSAGE), i + 1, tot);
+		swprintf(step, 20, i18n(S_GRAPHIC_PKBANK_MESSAGE_DUMP), i + 1, tot);
 		freezeMsg(step);
 		
 		u8 tmp[PKMNLENGTH];
