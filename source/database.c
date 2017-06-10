@@ -58,11 +58,13 @@ int getN(int i) {
 		case 204 : return 6; 		
 		case 205 : return 2;
 		case 211 : return 7;
-		case 223 : return 2;
+		case 221 : return 6;
+		case 223 : return 4;
 		case 504 : return 2;
 		case 515 : return 2;
 		case 551 : return 2;
 		case 552 : return 2;
+		case 1111 : return 6;
 		case 2016 : return 3;		
 	}	
 	return 0;
@@ -147,6 +149,9 @@ int checkMultipleWCX(u8* mainbuf, int game, int i, int langCont, int nInjected[]
 void eventDatabase7(u8* mainbuf, int game) {
 	char *database[SMCOUNT];
 	int *spriteArray = (int*)malloc(SMCOUNT * sizeof(int));
+	u8 *previewbuf = (u8*)malloc(WCX_SIZE);
+	memset(previewbuf, 0, WCX_SIZE);
+	
 	filldatabase7(database, spriteArray);
 	
 	int currentEntry = 0;
@@ -290,8 +295,21 @@ void eventDatabase7(u8* mainbuf, int game) {
 					}
 				}
 				FILE* f = fopen(testpath, "r");
-				if (f) { langVett[j] = true; fclose(f); }
-				else { langVett[j] = false; fclose(f); }
+				if (f) { 
+					langVett[j] = true;
+					//if (!previewbuf) {
+						//previewbuf = (u8*)malloc(WCX_SIZE);
+						fseek(f, 0, SEEK_END);
+						u32 sz = ftell(f);
+						memset(previewbuf, 0, sz);
+						rewind(f);
+						fread(previewbuf, sz, 1, f);
+					//}
+					fclose(f); 
+				} else { 
+					langVett[j] = false; 
+					fclose(f); 
+				}
 			}
 			
 			//check for multiple wcx events
@@ -339,7 +357,18 @@ void eventDatabase7(u8* mainbuf, int game) {
 							}
 						}
 						FILE* f = fopen(testpath, "r");
-						if (f) { k++; fclose(f); }
+						if (f) { 
+							k++; 
+							//if (!previewbuf) {
+								//previewbuf = (u8*)malloc(WCX_SIZE);
+								fseek(f, 0, SEEK_END);
+								u32 sz = ftell(f);
+								memset(previewbuf, 0, sz);
+								rewind(f);
+								fread(previewbuf, sz, 1, f);
+							//}
+							fclose(f); 
+						}
 					}
 					if (k == n) langVett[j] = true;
 					else langVett[j] = false;
@@ -475,7 +504,7 @@ void eventDatabase7(u8* mainbuf, int game) {
 					break;
 				}
 				
-				printDB7(spriteArray[i], i, langVett, adapt, overwrite, langSelected, nInjected[0]);
+				printDB7(previewbuf, spriteArray[i], i, langVett, adapt, overwrite, langSelected, nInjected[0]);
 			}
 			
 			free(testpath);
@@ -485,6 +514,7 @@ void eventDatabase7(u8* mainbuf, int game) {
 	}
 	
 	free(spriteArray);
+	free(previewbuf);
 }
 
 void eventDatabase6(u8* mainbuf, int game) {

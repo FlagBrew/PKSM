@@ -19,15 +19,13 @@
 #pragma once
 #include "common.h"
 
-#define WCX_SIZE 0x108
-#define WCX_SIZEFULL 0x310
-
 bool wcx_is_bean(u8* wcx);
 bool wcx_is_bp(u8* wcx);
 bool wcx_is_egg(u8* wcx);
 bool wcx_is_item(u8* wcx);
 bool wcx_is_pokemon(u8* wcx);
 bool wcx_is_shiny(u8* wcx);
+u16 wcx_get_ability(u8* wcx);
 u8 wcx_get_ability_type(u8* wcx);
 u8 wcx_get_ball(u8* wcx);
 u32 wcx_get_day(u8* wcx);

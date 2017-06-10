@@ -146,6 +146,20 @@ u8 wcx_get_gender(u8* wcx) {
 	return *(u8*)(wcx + 0xA1); 
 }
 
+u16 wcx_get_ability(u8* wcx) {
+	u16 ability = 0;
+	u8 abilitynum = 0;
+	u8 type = wcx_get_ability_type(wcx);
+	if (type == 2)
+		abilitynum = 2;
+	else if (type == 4)
+		abilitynum = 2;
+	else
+		abilitynum = 0;
+	memcpy(&ability, &personal.pkmData[wcx_get_species(wcx)][0x09 + abilitynum], ABILITYLENGTH);
+	return ability;
+}
+
 u8 wcx_get_ability_type(u8* wcx) { 
 	return *(u8*)(wcx + 0xA2); 
 }

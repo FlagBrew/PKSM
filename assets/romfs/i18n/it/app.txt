@@ -11,8 +11,8 @@ Caricamento delle introforze
 Caricamento fonts...
 Caching del font %i/%i
 Fatto!
-Creazione di uno storage di default...
-Backup dello storage di default...
+Creazione dello storage...
+Backup dello storage...
 Riavvia l'applicazione!
 Ti mancano degli assets!
 Caricamento del salvataggio...
@@ -30,7 +30,7 @@ Storage
 MASS INJECTOR
 Salvare?
 Premi A per continuare.
-Press A per continuare, B per annullare.
+Premi A per continuare, B per annullare.
 Attendi.
 La cartuccia ha precedenza sullo stesso titolo digitale.
 Muovi il DPAD. Premi A per continuare, B per uscire.
@@ -88,25 +88,25 @@ Premi B per tornare indietro.
 Database Eventi
 Premi A per continuare, B per tornare indietro.
 Premi START per iniettare, B per tornare indietro.
-Press A per selezionare, B per tornare indietro.
-Lingue:
-Sovrascrivi wondercard:
-Adatta lingua alla WC:
-Inietta WC nello slot:
+Premi A per selezionare, B per tornare indietro.
+Lingue
+Sovrascrivi wondercard
+Adatta lingua alla WC
+Inietta WC nello slot
 Editor del salvataggio
-Lingua:
+Lingua
 Svuota il dono segreto
 Premi START per modificare, A per switchare, B per uscire.
-Soprannome:
-OT:
-Pokerus:
+Nickname
+OT
+Pokerus
 Natura
-Abilità:
-Oggetto:
-ESV / TSV:
-TID / SID:
-Felicità HT/OT:
-Introforza:
+Abilità
+Oggetto
+ESV / TSV
+TID / SID
+Felicità HT/OT
+Introforza
 HP
 Attacco
 Difesa
@@ -115,7 +115,7 @@ Dif. Sp
 Velocità
 Lv.%u
 Mosse
-Cicli uova:
+Cicli uova
 MODIFICA
 CLONA
 LIBERA
@@ -130,24 +130,24 @@ Hai selezionato %ls.
 Genera con A dallo schermo superiore.
 TID: %u / SID: %u / TSV: %u
 Seme: %lx %lx %lx %lx
-Livello:
-Natura:
-Abilità:
-Oggetto:
-Shiny:
-Pokerus:
-OT:
-Soprannome:
-Felicità:
+Livello
+Natura
+Abilità
+Oggetto
+Shiny
+Pokerus
+OT
+Nickname
+Felicità
 STATS
 MOSSE
 SALVA
-PS:
-Attacco:
-Difesa:
-Attacco Sp.:
-Difesa Sp.:
-Velocità:
+PS
+Attacco
+Difesa
+Attacco Sp.
+Difesa Sp.
+Velocità
 Modifica il pokemon nello schermo inferiore
 Clicca SALVA quando hai finito
 Neutra
@@ -161,20 +161,20 @@ Neutra
 +Velocità
 +Att. Sp.
 +Dif. Sp.
-Cicli uova:
+Cicli uova
 STATS
 IV
 EV
 TOTALE
-Introforza:
+Introforza
 Mosse
 Mosse Uovo
 Byte selezionato
-Seleziona un'oggetto con A nello schermo su
-Seleziona una natura con A nello schermo su
-Seleziona una ball con A nello schermo su
-Seleziona una introforza con A nello schermo su
-Seleziona una forma con A nello schermo su
+Seleziona un'oggetto con A
+Seleziona una natura con A
+Seleziona una ball con A
+Seleziona una introforza con A
+Seleziona una forma con A
 Banca %d
 Lv.%u
 ID. %u
@@ -195,7 +195,7 @@ Raccolta eventi Koreani
 %d box saranno sovrascritti.
 Mass Injector
 Premi START per iniettare, B per uscire.
-Bank size:
+Bank size                
 Backup salvataggio
 Backup storage
 Clicca il numero per cambiare dimensione.
@@ -281,7 +281,7 @@ Fiocco Genio dell'Albero
 -
 -
 -
-Soprannome:
+Nickname:
 Mossa 1: #%d - %ls
 Mossa 2: #%d - %ls
 Mossa 3: #%d - %ls
@@ -387,30 +387,30 @@ Flag Fiocchi, byte 8
 Memoria Fiocchi Contest
 Memoria Fiocchi Battaglia
 Dist byte
-Soprannome, byte 1
-Soprannome, byte 2
-Soprannome, byte 3
-Soprannome, byte 4
-Soprannome, byte 5
-Soprannome, byte 6
-Soprannome, byte 7
-Soprannome, byte 8
-Soprannome, byte 9
-Soprannome, byte 10
-Soprannome, byte 11
-Soprannome, byte 12
-Soprannome, byte 13
-Soprannome, byte 14
-Soprannome, byte 15
-Soprannome, byte 16
-Soprannome, byte 17
-Soprannome, byte 18
-Soprannome, byte 19
-Soprannome, byte 20
-Soprannome, byte 21
-Soprannome, byte 22
-Soprannome, byte 23
-Soprannome, byte 24
+Nickname, byte 1
+Nickname, byte 2
+Nickname, byte 3
+Nickname, byte 4
+Nickname, byte 5
+Nickname, byte 6
+Nickname, byte 7
+Nickname, byte 8
+Nickname, byte 9
+Nickname, byte 10
+Nickname, byte 11
+Nickname, byte 12
+Nickname, byte 13
+Nickname, byte 14
+Nickname, byte 15
+Nickname, byte 16
+Nickname, byte 17
+Nickname, byte 18
+Nickname, byte 19
+Nickname, byte 20
+Nickname, byte 21
+Nickname, byte 22
+Nickname, byte 23
+Nickname, byte 24
 Mossa 1, byte 1
 Mossa 1, byte 2
 Mossa 2, byte 1
@@ -440,30 +440,30 @@ IV, byte 1
 IV, byte 2
 IV, byte 3
 IV, byte 4
-Soprannome allenatore attuale, byte 1
-Soprannome allenatore attuale, byte 2
-Soprannome allenatore attuale, byte 3
-Soprannome allenatore attuale, byte 4
-Soprannome allenatore attuale, byte 5
-Soprannome allenatore attuale, byte 6
-Soprannome allenatore attuale, byte 7
-Soprannome allenatore attuale, byte 8
-Soprannome allenatore attuale, byte 9
-Soprannome allenatore attuale, byte 10
-Soprannome allenatore attuale, byte 11
-Soprannome allenatore attuale, byte 12
-Soprannome allenatore attuale, byte 13
-Soprannome allenatore attuale, byte 14
-Soprannome allenatore attuale, byte 15
-Soprannome allenatore attuale, byte 16
-Soprannome allenatore attuale, byte 17
-Soprannome allenatore attuale, byte 18
-Soprannome allenatore attuale, byte 19
-Soprannome allenatore attuale, byte 20
-Soprannome allenatore attuale, byte 21
-Soprannome allenatore attuale, byte 22
-Soprannome allenatore attuale, byte 23
-Soprannome allenatore attuale, byte 24
+Nickname allenatore attuale, byte 1
+Nickname allenatore attuale, byte 2
+Nickname allenatore attuale, byte 3
+Nickname allenatore attuale, byte 4
+Nickname allenatore attuale, byte 5
+Nickname allenatore attuale, byte 6
+Nickname allenatore attuale, byte 7
+Nickname allenatore attuale, byte 8
+Nickname allenatore attuale, byte 9
+Nickname allenatore attuale, byte 10
+Nickname allenatore attuale, byte 11
+Nickname allenatore attuale, byte 12
+Nickname allenatore attuale, byte 13
+Nickname allenatore attuale, byte 14
+Nickname allenatore attuale, byte 15
+Nickname allenatore attuale, byte 16
+Nickname allenatore attuale, byte 17
+Nickname allenatore attuale, byte 18
+Nickname allenatore attuale, byte 19
+Nickname allenatore attuale, byte 20
+Nickname allenatore attuale, byte 21
+Nickname allenatore attuale, byte 22
+Nickname allenatore attuale, byte 23
+Nickname allenatore attuale, byte 24
 Sesso allenatore attuale
 Allenatore corrente
 Ultimo allenatore 1 Regione

@@ -55,7 +55,7 @@
 #include "util.h"
 #include "wcx.h"
 
-#define DEBUG 1
+#define DEBUG 0
 
 #define GAME_X 		  0
 #define GAME_Y 		  1
@@ -73,7 +73,7 @@
 #define GAME_B2 	 13
 #define GAME_W2 	 14
 
-#define VERSION "v4.2.3_TESTBUILD"
+#define VERSION "v4.3.0"
 
 /**
  * OFFSETS
@@ -84,6 +84,11 @@
 #define SAVE_XY_MONEY 0x4208
 #define SAVE_SM_ITEM 0x0
 #define SAVE_SM_ITEM_SIZE 0xDE0
+
+
+#define WCX_SIZE 0x108
+#define WCX_SIZEFULL 0x310
+
 
 struct ArrayUTF32 listMoves;
 struct ArrayUTF32 listItems;
