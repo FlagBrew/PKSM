@@ -24,9 +24,9 @@ Eventos
 Créditos
 Aperte A para escolher uma opção.
 Aperte START para sair.
-Editor de Pokémon
-Info do SAVE
-Banco Extra
+Editor
+Save
+Storage
 Injetor em massa
 Deseja salvar as alterações?
 Pressione A para continuar.
@@ -50,7 +50,7 @@ White
 Black 2
 White 2
 Carregado gráficos
-Carregando imagens
+Carregando imagens %i / %i
 Bank.bin com tamanho incorreto
 Apagar os boxes selecionados?
 Salvar mudanças no bank.bin?
@@ -89,24 +89,24 @@ Banco de dados dos eventos
 A: continuar, B: voltar.
 START: injetar, B: voltar
 A: selecionar, B: voltar.
-Idiomas:
-Substituir Wondercard:
-Adaptar o idioma à WC:
-Injetar WC no espaço:
+Idiomas
+Substituir Wondercard
+Adaptar o idioma à WC
+Injetar WC no espaço
 Editor de Configurações
-Idioma:
+Idioma
 Limpar o Mystery Gift
 Aperte START confirmar, A para mudar ou B para voltar.
-Nome:
-TO:
-Pokerus:
+Nome
+TO
+Pokerus
 Natureza
-Habilidade:
-Item:
-ESV/TSV:
-TID/SID:
-Amizade HT/OT:
-Poder Oculto:
+Habilidade
+Item
+ESV/TSV
+TID/SID
+Amizade HT/OT
+Poder Oculto
 Vida
 Ataque
 Defesa
@@ -115,7 +115,7 @@ Def Esp.
 Veloc.
 Nv.%u
 Ataques
-Ciclo ovo:
+Ciclo ovo
 EDITAR
 CLONAR
 SOLTAR
@@ -130,24 +130,24 @@ A: Clonar no espaço selecionado, B: Cancelar.
 A: Gerar pokémon escolhido, B: Cancelar.
 TID: %u / SID: %u / TSV: %u
 Semente: %lx %lx %lx %lx
-Nivel:
-Natureza:
-Habilidade:
-Item:
-Shiny:
-Pokerus:
-OT:
-Nome:
-Amizade:
+Nivel
+Natureza
+Habilidade
+Item
+Shiny
+Pokerus
+OT
+Nome
+Amizade
 ESTADO
 ATAQUES
 GRAVAR
-Vida:
-Ataque:
-Defesa:
-Atq Especial:
-Def Especial:
-Velocidade:
+Vida
+Ataque
+Defesa
+Atq Especial
+Def Especial
+Velocidade
 Edite o Pokemon na tela inferior
 Clique em GRAVAR quando terminar.
 Neutro
@@ -161,20 +161,20 @@ Neutro
 +Velocid.
 +Atq Esp.
 +Def Esp.
-Ciclo do ovo:
+Ciclo do ovo
 ESTADO
 IV
 EV
 TOTAL
-Poder Oculto:
+Poder Oculto
 Ataques
-Ataques para reaprender:
-Byte escolhido:
-Escolha um item na tela superior.
-Escolha a natureza na tela superior.
-Escolha a bola com o A na tela superior.
-Escolha o tipo de PO na tela superior.
-Escolha a forma na tela superior.
+Ataques para reaprender
+Byte escolhido
+Escolha um item com o A.
+Escolha a natureza com o A.
+Escolha a bola com o A.
+Escolha o tipo de PO com o A.
+Escolha a forma com o A.
 Banco %d
 Nv. %u
 ID. %u
@@ -195,7 +195,7 @@ KOR Events Collections
 %d box vão ser substituidas.
 Injetor em massa
 Carregue START para injetar, B para sair.
-Banco:        
+Banco              
 Backup do Save
 Backup do Banco
 Ajuste o número de espaços do banco extra.
