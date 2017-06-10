@@ -1,39 +1,39 @@
 A sacar assets %d...
-Carregar ficheiros...
-Carregar os assets locais...
-Carregar habilidades
-Carregar ataques
-Ordenar ataques
-Carregar naturezas
-Carregar items
-Ordenar items
-Carregar poderes ocultos
-Carregar fontes...
-Caching fontes %i/%i
-Acabado!
-A criar um banco padrâo...
-A fazer cópia de segurança do banco...
-Reinicie a aplicação!
-Estão a faltar alguns assets!
-A carregar gravação...
-Jogo não encontrado!
+Carregando arquivos...
+Carregando os assets locais...
+Carregando habilidades
+Carregando ataques
+Ordenando ataques
+Carregando naturezas
+Carregando items
+Ordenando items
+Carregando poderes ocultos
+Carregando fontes...
+Carregando cache de fontes %i/%i
+Pronto!
+Criando um banco de dados padrão...
+Fazendo cópia de segurança...
+Reinicie o aplicativo!
+Estão faltando alguns assets!
+Carregando gravação...
+Jogo não localizado!
 Tamanho incorreto para este jogo!
 Nenhum cartucho inserido!
-Gestão
+Gerenciar
 Eventos
 Créditos
-Carregue no A para escolher uma opção.
-Carregue no START para sair.
+Aperte A para escolher uma opção.
+Aperte START para sair.
 Editor de Pokémon
-Informaçoês da gravação
-Armazenamento extra
+Info do SAVE
+Banco Extra
 Injetor em massa
-Gravar mudanças?
-Carregue no A para continuar.
-Carregue no A para continuar, B para cancelar.
-Espere por favor.
-Cartucho tem prioridade sobre a versão digital.
-Mexe o teu DPAD, Carrega a para continuar, B para sair.
+Deseja salvar as alterações?
+Pressione A para continuar.
+A: Continuar / B: Cancelar.
+Aguarde por favor.
+Os cartuchos tem prioridade sobre as versões digitais.
+Navegue pelo direcional, pressione A para continuar e B para sair.
 X
 Y
 Omega Ruby
@@ -49,18 +49,18 @@ Black
 White
 Black 2
 White 2
-Carregar gráficos
-Carregar imagem
-Bank.bin tem o tamanho errado
-Apagar as box selecionadas?
-Gravar as mudanças do bank.bin?
-Gravar PokeDex flags?
-Box %lu / Ranhura %lu
+Carregado gráficos
+Carregando imagens
+Bank.bin com tamanho incorreto
+Apagar os boxes selecionados?
+Salvar mudanças no bank.bin?
+Gravar flags na PokeDex?
+Box %lu / Espaço %lu
 Erro durante a injeção!
-Injeção completa!
+Injeção concluída!
 Item não disponivel em XY!
-Gravas as bandeiras do PokeDex?
-Box %lu / Ranhura %lu
+Gravas as flags no PokeDex?
+Box %lu / Espaço %lu
 Conjunto XD collection injetado com sucesso!
 Conjunto Colosseum col. injetado com sucesso!
 Conjunto 10th Anniversary injetado com sucesso!
@@ -71,32 +71,32 @@ Conjunto Living dex injetado com sucesso!
 Conjunto Deoxys collection injetado com sucesso!
 Conjunto My Pokemon Ranch injetado com sucesso!
 Conjunto Korean collection injetado com sucesso!
-Linguagem escolhida com sucesso!
-Box do Mistery Gift apagada!
+Idioma escolhido com sucesso!
+Mistery Gifts apagados!
 Cancelar
 Conjunto
-Escreve o teu nome
-Escreve o nome para o TO
-Confirmar a libertação?
-Libertado!
+Insira seu nome
+Insira o nome para o TO
+Tem certeza?
+Pokémon solto!
 Progresso: %lu %lu bytes
 EVENTOS
 OUTROS
-Carregue START para sair.
+Aperte START para sair.
 Créditos
-Carregue B para voltar
-Base de dados dos eventos
-Carregue A para continuar, B para voltar.
-Carregue START para injetar, B para voltar
-Carregue A para escolher, B para voltar.
-Línguas:
+Aperte B para voltar.
+Banco de dados dos eventos
+A: continuar, B: voltar.
+START: injetar, B: voltar
+A: selecionar, B: voltar.
+Idiomas:
 Substituir Wondercard:
-Adaptar a língua a WC:
-Injetar WC na ranhura:
-Gravar o editor de ficheiro
-Língua:
-Apagar a box da Mystery Gift
-Carregue START para editar, A para alternar, B para sair.
+Adaptar o idioma à WC:
+Injetar WC no espaço:
+Editor de Configurações
+Idioma:
+Limpar o Mystery Gift
+Aperte START confirmar, A para mudar ou B para voltar.
 Nome:
 TO:
 Pokerus:
@@ -105,29 +105,29 @@ Habilidade:
 Item:
 ESV/TSV:
 TID/SID:
-HT/OT amizade:
+Amizade HT/OT:
 Poder Oculto:
 Vida
 Ataque
 Defesa
-At.Especial
-Def.Especial
-Velociade
+Atq Esp.
+Def Esp.
+Veloc.
 Nv.%u
 Ataques
-Ciclo do ovo:
+Ciclo ovo:
 EDITAR
-CLONE
-LIBERTAR
+CLONAR
+SOLTAR
 GERAR
 SAIR
 Box %d
-Lançar o cliente no teu PC...
-Carregue B para sair.
-Equipa
-Carregue A para clonar na ranhura seleccionada, B para cancelar.
-%ls foi escolhido.
-Gerar com A no ecrã superior.
+Abra o cliente no seu PC...
+Aperte B para sair.
+Time
+A: Clonar no espaço selecionado, B: Cancelar.
+%ls selecionado.
+A: Gerar pokémon escolhido, B: Cancelar.
 TID: %u / SID: %u / TSV: %u
 Semente: %lx %lx %lx %lx
 Nivel:
@@ -139,30 +139,30 @@ Pokerus:
 OT:
 Nome:
 Amizade:
-STATUS:
-ATAQUES:
-GRAVAR:
+ESTADO
+ATAQUES
+GRAVAR
 Vida:
 Ataque:
 Defesa:
-At. Especial:
-Def. Especial:
+Atq Especial:
+Def Especial:
 Velocidade:
-Edite o Pokemon no ecrã inferior
-Carregue GRAVAR quanda acabar
+Edite o Pokemon na tela inferior
+Clique em GRAVAR quando terminar.
 Neutro
 -Ataque
 -Defesa
--Velocidade
--At. Especial.
--Def. Especial.
+-Velocid.
+-Atq Esp.
+-Def Esp.
 +Ataque
 +Defesa
-+Velocidade
-+At. Especial.
-+Def. Especial.
++Velocid.
++Atq Esp.
++Def Esp.
 Ciclo do ovo:
-STATUS
+ESTADO
 IV
 EV
 TOTAL
@@ -170,16 +170,16 @@ Poder Oculto:
 Ataques
 Ataques para reaprender:
 Byte escolhido:
-Escolha um item com A no ecrã superior.
-Escolha a natureza com A no ecrã superior.
-Escolha a bola com A no ecrã superior.
-Escolha o tipo de PO com A no ecrã superior.
-Escolha a forma com A no ecrã superior.
+Escolha um item na tela superior.
+Escolha a natureza na tela superior.
+Escolha a bola com o A na tela superior.
+Escolha o tipo de PO na tela superior.
+Escolha a forma na tela superior.
 Banco %d
 Nv. %u
 ID. %u
 Gravar %d
-Y: VER
+Y: ESTADO
 APAGAR BOX
 LIBERTAR
 XD Collection
@@ -195,10 +195,10 @@ KOR Events Collections
 %d box vão ser substituidas.
 Injetor em massa
 Carregue START para injetar, B para sair.
-Tamanho do banco:
-Cópia de segurança da gravação
-Cópia de segurança do banco
-Carregue no número para mudar o tamanho.
+Banco:        
+Backup do Save
+Backup do Banco
+Ajuste o número de espaços do banco extra.
 Sim
 Não
 Espécies: #%d - %ls
@@ -531,7 +531,7 @@ País
 Região
 Região da Consola
 Língua
-Servidor a correr em http://%s:9000
+Servidor: http://%s:9000
 Falha no alocação do buffer
 Falha no soclnit!
 Socket inacessíve!l
@@ -549,8 +549,8 @@ Falha em receber o tamanha certo para sacar!
 Falha a alocar memória!
 A mudar o tamanho...
 O tamanho do banco foi mudado!
-Cópia de segurança da gravação criada!
-Cópia de segurança do banco criada!
+Backup do save criado!
+Backup do banco criado!
 DUMP
 Confirm for a full storage dump?
 Step %d/%d
