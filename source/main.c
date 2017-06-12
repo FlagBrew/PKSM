@@ -272,7 +272,7 @@ int main() {
 	
 	GUIElementsSpecify(game);
 	if (game < 6) {
-		wchar_t* mainMenu[] = {i18n(S_MAIN_MENU_EXTRA_STORAGE), i18n(S_MAIN_MENU_EDITOR), i18n(S_MAIN_MENU_EVENTS), i18n(S_MAIN_MENU_SAVE_INFO), i18n(S_MAIN_MENU_SETTINGS), i18n(S_MAIN_MENU_CREDITS)};
+		AppTextCode mainMenu[] = {S_MAIN_MENU_EXTRA_STORAGE, S_MAIN_MENU_EDITOR, S_MAIN_MENU_EVENTS, S_MAIN_MENU_SAVE_INFO, S_MAIN_MENU_SETTINGS, S_MAIN_MENU_CREDITS};
 		while (aptMainLoop()) {
 			hidScanInput();
 			touchPosition touch;

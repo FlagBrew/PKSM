@@ -587,7 +587,7 @@ void gameSelectorMenu(int n) {
 	sf2d_swapbuffers();
 }
 
-void menu(wchar_t* menu[]) {
+void menu(int menu[]) {
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		drawMenuTop();
 	pksm_end_frame();
@@ -597,7 +597,7 @@ void menu(wchar_t* menu[]) {
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 2; j++) {
 				sf2d_draw_texture(mainMenuButton, 15 + j*150, 20 + i*63);
-				sftd_draw_wtext(fontBold15, 15 + j*150 + 52 + (84 - sftd_get_wtext_width(fontBold15, 15, menu[i*2+j])) / 2, 17 + i*63 + (mainMenuButton->height - 15) / 2, LIGHTBLUE, 15, menu[i*2+j]);
+				sftd_draw_wtext(fontBold15, 15 + j*150 + 52 + (84 - sftd_get_wtext_width(fontBold15, 15, i18n(menu[i*2+j]))) / 2, 17 + i*63 + (mainMenuButton->height - 15) / 2, LIGHTBLUE, 15, i18n(menu[i*2+j]));
 				switch (i*2+j) {
 					case 0: 
 						sf2d_draw_texture(iconBank, 25, 18 + (53 - iconBank->height)/2);

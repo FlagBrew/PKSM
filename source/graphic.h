@@ -66,7 +66,7 @@ void printCredits();
 void printTitle(const wchar_t* title);
 void gameSelectorMenu(int n);
 void mainMenuDS(int currentEntry);
-void menu(wchar_t* menu[]);
+void menu(int menu[]);
 void printDatabase6(char *database[], int currentEntry, int page, int spriteArray[]);
 void printDatabase5(char *database[], int currentEntry, int page, int spriteArray[], bool isSelected, int langSelected, bool langVett[]);
 void printDatabase4(char *database[], int currentEntry, int page, int spriteArray[], bool isSelected, int langSelected, bool langVett[]);
