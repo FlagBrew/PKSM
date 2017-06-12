@@ -24,7 +24,7 @@ EVENTS
 CREDITS
 Appuie sur A pour choisir un menu.
 Appuie sur START pour quitter.
-EDITEUR POKÉMON
+EDITEUR
 INFO SAUV.
 BANQUE
 GÉNÉRATION
