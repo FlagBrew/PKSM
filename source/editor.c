@@ -1583,6 +1583,9 @@ void pokemonEditor(u8* mainbuf, int game) {
 
 						int language =  getSaveLanguage(mainbuf, game);
 						memcpy(&pkmn[0xE3], &language, 1); // nats
+						
+						pkmn[0x93] = 0; // current handler to 0
+						pkmn[0xA2] = 0; // held trainer friendship to 0
 
 						u32 nick32[NICKNAMELENGTH];
 						u8 nick[NICKNAMELENGTH];

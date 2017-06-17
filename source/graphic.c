@@ -1693,6 +1693,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			sftd_draw_textf(fontBold14, 171, 30, WHITE, 14, "0x%02hhX", additional1);
 			
 			printfHexEditorInfo(pkmn, additional1);
+			printBottomIndications(i18n(S_GRAPHIC_CREDITS_INDICATIONS));
 		}
 
 		if (mode != ED_HEX)
