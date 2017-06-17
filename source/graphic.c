@@ -1934,11 +1934,12 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0x0C :
 		case 0x0D :
 			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_TID), getOTID(pkmn));
-			sftd_draw_textf(fontBold12, x, y + 16, LIGHTBLUE, 12, "Gen7 TID: %d", (getOTID(pkmn) + getSOTID(pkmn)*65536) % 1000000);
+			sftd_draw_textf(fontBold12, x, y + 16, LIGHTBLUE, 12, "Gen7 TID: %d", ((unsigned int)(getOTID(pkmn) + getSOTID(pkmn)*65536) % 1000000));
 			break;
 		case 0x0E :
 		case 0x0F :
 			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_SID), getSOTID(pkmn));
+			sftd_draw_textf(fontBold12, x, y + 16, LIGHTBLUE, 12, "Gen7 TID: %d", ((unsigned int)(getOTID(pkmn) + getSOTID(pkmn)*65536) % 1000000));
 			break;
 		case 0x14 :
 			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ABILITY), abilities[getAbility(pkmn)]);
