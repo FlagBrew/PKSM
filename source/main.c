@@ -294,10 +294,7 @@ int main() {
 				}
 
 				if (touch.px > 15 && touch.px < 155 && touch.py > 83 && touch.py < 136) {
-					if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS)
-						eventDatabase6(mainbuf, game);
-					else if (game == GAME_SUN || game == GAME_MOON)
-						eventDatabase7(mainbuf, game);
+					eventDatabase7(mainbuf, game);
 				}
 
 				if (touch.px > 165 && touch.px < 305 && touch.py > 83 && touch.py < 136) {

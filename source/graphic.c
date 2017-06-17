@@ -882,13 +882,14 @@ void printDatabase4(char *database[], int currentEntry, int page, int spriteArra
 	sf2d_swapbuffers();
 }
 
-void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bool overwrite, int langSelected, int nInjected) {
+void printDB7(u8* previewbuf, int game, int sprite, int i, bool langVett[], bool adapt, bool overwrite, int langSelected, int nInjected) {
 	char *languages[] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR", "CHS", "CHT"};
 	char *cont = (char*)malloc(3 * sizeof(char));
 	snprintf(cont, 3, "%d", nInjected + 1);
 	
+	int total = (game == GAME_SUN || game == GAME_MOON) ? 9 : 7;
+	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
-		//printAnimatedBG(true);
 		wcxInfoViewer(previewbuf);
 		//if (sprite != -1)
 		//	sf2d_draw_texture_part_scale(spritesSmall, 282, 46 - movementOffsetLong(6), 40 * (sprite % 25) + 4, 30 * (sprite / 25), 34, 30, 2, 2);
@@ -897,11 +898,11 @@ void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bo
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		printMenuBottom();
 		sftd_draw_wtext(fontBold14, 16, 50, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_LANGUAGES));
-		sftd_draw_wtext(fontBold14, 33, 112, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_OVERWRITE_WC));
-		sftd_draw_wtext(fontBold14, 33, 140, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_ADAPT_LANGUAGE_WC));
-		sftd_draw_wtext(fontBold14, 33, 170, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_INJECT_WC_SLOT));
+		sftd_draw_wtext(fontBold14, 16, 112, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_OVERWRITE_WC));
+		sftd_draw_wtext(fontBold14, 16, 140, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_ADAPT_LANGUAGE_WC));
+		sftd_draw_wtext(fontBold14, 16, 170, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_INJECT_WC_SLOT));
 		
-		for (int t = 0; t < 9; t++) {
+		for (int t = 0; t < total; t++) {
 			int x = 0, y = 0;
 			switch (t) {
 				case 0 : { x = 114; y = 50; break; }
@@ -909,10 +910,10 @@ void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bo
 				case 2 : { x = 192; y = 50; break; }
 				case 3 : { x = 231; y = 50; break; }
 				case 4 : { x = 270; y = 50; break; }
-				case 5 : { x = 133; y = 74; break; }
-				case 6 : { x = 172; y = 74; break; }
-				case 7 : { x = 211; y = 74; break; }
-				case 8 : { x = 250; y = 74; break; }
+				case 5 : { x = 153; y = 74; break; }
+				case 6 : { x = 192; y = 74; break; }
+				case 7 : { x = 231; y = 74; break; }
+				case 8 : { x = 270; y = 74; break; }
 			}
 			if (langVett[t]) {
 				if (t == langSelected) {
@@ -930,110 +931,33 @@ void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bo
 		}
 			
 		if (overwrite) {
-			sf2d_draw_texture(redButton, 210, 110);
-			sf2d_draw_texture(darkButton, 249, 110);
+			sf2d_draw_texture(redButton, 231, 110);
+			sf2d_draw_texture(darkButton, 270, 110);
 		}
 		else {
-			sf2d_draw_texture(darkButton, 210, 110);
-			sf2d_draw_texture(redButton, 249, 110);			
+			sf2d_draw_texture(darkButton, 231, 110);
+			sf2d_draw_texture(redButton, 270, 110);			
 		}
 		
 		if (adapt) {
-			sf2d_draw_texture(redButton, 210, 138);
-			sf2d_draw_texture(darkButton, 249, 138);
+			sf2d_draw_texture(redButton, 231, 138);
+			sf2d_draw_texture(darkButton, 270, 138);
 		}
 		else {
-			sf2d_draw_texture(darkButton, 210, 138);
-			sf2d_draw_texture(redButton, 249, 138);
+			sf2d_draw_texture(darkButton, 231, 138);
+			sf2d_draw_texture(redButton, 270, 138);
 		}
 		
-		sf2d_draw_texture(darkButton, 229, 168);	
+		sf2d_draw_texture(darkButton, 251, 168);	
 		
-		sftd_draw_wtext(fontBold14, 210 + (36 - sftd_get_wtext_width(fontBold14, 14, i18n(S_YES))) / 2, 112, (overwrite) ? DARKBLUE : YELLOW, 14, i18n(S_YES));
-		sftd_draw_wtext(fontBold14, 249 + (36 - sftd_get_wtext_width(fontBold14, 14, i18n(S_NO))) / 2, 112, (!overwrite) ? DARKBLUE : YELLOW, 14, i18n(S_NO));
-		sftd_draw_wtext(fontBold14, 210 + (36 - sftd_get_wtext_width(fontBold14, 14, i18n(S_YES))) / 2, 140, (adapt) ? DARKBLUE : YELLOW, 14, i18n(S_YES));
-		sftd_draw_wtext(fontBold14, 249 + (36 - sftd_get_wtext_width(fontBold14, 14, i18n(S_NO))) / 2, 140, (!adapt) ? DARKBLUE : YELLOW, 14, i18n(S_NO));
-		sftd_draw_text(fontBold14, 229 + (36 - sftd_get_text_width(fontBold14, 14, cont)) / 2, 170, YELLOW, 14, cont);
+		sftd_draw_wtext(fontBold12, 231 + (36 - sftd_get_wtext_width(fontBold12, 12, i18n(S_YES))) / 2, 113, (overwrite) ? DARKBLUE : YELLOW, 12, i18n(S_YES));
+		sftd_draw_wtext(fontBold12, 270 + (36 - sftd_get_wtext_width(fontBold12, 12, i18n(S_NO))) / 2, 113, (!overwrite) ? DARKBLUE : YELLOW, 12, i18n(S_NO));
+		sftd_draw_wtext(fontBold12, 231 + (36 - sftd_get_wtext_width(fontBold12, 12, i18n(S_YES))) / 2, 141, (adapt) ? DARKBLUE : YELLOW, 12, i18n(S_YES));
+		sftd_draw_wtext(fontBold12, 270 + (36 - sftd_get_wtext_width(fontBold12, 12, i18n(S_NO))) / 2, 141, (!adapt) ? DARKBLUE : YELLOW, 12, i18n(S_NO));
+		sftd_draw_text(fontBold12, 251 + (36 - sftd_get_text_width(fontBold12, 12, cont)) / 2, 171, YELLOW, 12, cont);
 		
 		printBottomIndications(i18n(S_GRAPHIC_DB_INDICATIONS_INJECT));
 		pksm_end_frame();
-	sf2d_swapbuffers();
-	
-	free(cont);
-}
-
-void printDB6(int sprite, int i, bool langVett[], bool adapt, bool overwrite, int langSelected, int nInjected) {
-	char *languages[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
-	char *cont = (char*)malloc(3 * sizeof(char));
-	snprintf(cont, 3, "%d", nInjected + 1);
-	
-	sf2d_start_frame(GFX_TOP, GFX_LEFT);
-		printAnimatedBG(true);
-		//if (sprite != -1)
-		//	sf2d_draw_texture_part_scale(spritesSmall, 282, 46 - movementOffsetLong(6), 40 * (sprite % 25) + 4, 30 * (sprite / 25), 34, 30, 2, 2);
-	pksm_end_frame();
-	
-	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-		printMenuBottom();
-		sftd_draw_wtext(fontBold14, 33, 50, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_LANGUAGES));
-		sftd_draw_wtext(fontBold14, 33, 112, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_OVERWRITE_WC));
-		sftd_draw_wtext(fontBold14, 33, 140, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_ADAPT_LANGUAGE_WC));
-		sftd_draw_wtext(fontBold14, 33, 170, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_INJECT_WC_SLOT));
-		
-		for (int t = 0; t < 7; t++) {
-			int x = 0, y = 0;
-			switch (t) {
-				case 0 : { x = 132; y = 50; break; }
-				case 1 : { x = 171; y = 50; break; }
-				case 2 : { x = 210; y = 50; break; }
-				case 3 : { x = 249; y = 50; break; }
-				case 4 : { x = 151; y = 74; break; }
-				case 5 : { x = 190; y = 74; break; }
-				case 6 : { x = 229; y = 74; break; }
-			}
-			if (langVett[t]) {
-				if (t == langSelected) {
-					sf2d_draw_texture(redButton, x, y);
-					sftd_draw_text(fontBold14, x + (36 - sftd_get_text_width(fontBold14, 14, languages[t])) / 2, y + 2, DARKBLUE, 14, languages[t]);
-				} else {
-					sf2d_draw_texture(darkButton, x, y);
-					sftd_draw_text(fontBold14, x + (36 - sftd_get_text_width(fontBold14, 14, languages[t])) / 2, y + 2, YELLOW, 14, languages[t]);
-				}
-			}
-			else {
-				sf2d_draw_texture(lightButton, x, y);
-				sftd_draw_text(fontBold14, x + (36 - sftd_get_text_width(fontBold14, 14, languages[t])) / 2, y + 2, DARKBLUE, 14, languages[t]);
-			}
-		}
-			
-		if (overwrite) {
-			sf2d_draw_texture(redButton, 210, 110);
-			sf2d_draw_texture(darkButton, 249, 110);
-		}
-		else {
-			sf2d_draw_texture(darkButton, 210, 110);
-			sf2d_draw_texture(redButton, 249, 110);			
-		}
-		
-		if (adapt) {
-			sf2d_draw_texture(redButton, 210, 138);
-			sf2d_draw_texture(darkButton, 249, 138);
-		}
-		else {
-			sf2d_draw_texture(darkButton, 210, 138);
-			sf2d_draw_texture(redButton, 249, 138);
-		}
-		
-		sf2d_draw_texture(darkButton, 229, 168);	
-		
-		sftd_draw_text(fontBold14, 210 + (36 - sftd_get_text_width(fontBold14, 14, "Yes")) / 2, 112, (overwrite) ? DARKBLUE : YELLOW, 14, "Yes");
-		sftd_draw_text(fontBold14, 249 + (36 - sftd_get_text_width(fontBold14, 14, "No")) / 2, 112, (!overwrite) ? DARKBLUE : YELLOW, 14, "No");
-		sftd_draw_text(fontBold14, 210 + (36 - sftd_get_text_width(fontBold14, 14, "Yes")) / 2, 140, (adapt) ? DARKBLUE : YELLOW, 14, "Yes");
-		sftd_draw_text(fontBold14, 249 + (36 - sftd_get_text_width(fontBold14, 14, "No")) / 2, 140, (!adapt) ? DARKBLUE : YELLOW, 14, "No");
-		sftd_draw_text(fontBold14, 229 + (36 - sftd_get_text_width(fontBold14, 14, cont)) / 2, 170, YELLOW, 14, cont);
-		
-		printBottomIndications(i18n(S_GRAPHIC_DB_INDICATIONS_INJECT));
-	pksm_end_frame();
 	sf2d_swapbuffers();
 	
 	free(cont);
