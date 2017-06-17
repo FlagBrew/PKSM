@@ -1274,7 +1274,7 @@ void printDexViewer(u8* mainbuf, int game, int currentEntry, int page, int seen,
 		printMenuBottom();
 		sftd_draw_wtextf(fontBold14, 16, 32, WHITE, 14, i18n(S_GRAPHIC_PKBANK_SEEN), seen);
 		sftd_draw_wtextf(fontBold14, 16, 48, WHITE, 14, i18n(S_GRAPHIC_PKBANK_CAUGHT), caught);
-		printBottomIndications(i18n(S_MAIN_MENU_INDICATION_EXIT));
+		printBottomIndications(i18n(S_GRAPHIC_CREDITS_INDICATIONS));
 	pksm_end_frame();
 	sf2d_swapbuffers();	
 	
