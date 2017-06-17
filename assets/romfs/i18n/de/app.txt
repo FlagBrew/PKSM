@@ -19,14 +19,14 @@ Lade Spielstand...
 Spiel nicht gefunden!
 Falsche Größe für dieses Spiel!
 Keine Karte eingesteckt!
-VERWALTUNG
-EVENTS
-DANKSAGUNGEN
+Options
+Events
+Credits
 A: Auswählen
 START: Beenden
-POKEMON EDITOR
-SPIELSTAND INFO
-ZUSATZLAGER
+Editor
+Save Info
+Storage
 MASSENEINFÜGEN
 Änderungen speichern?
 A: Fortfahren
@@ -116,11 +116,11 @@ Initiative
 Lv.%u
 Attacken
 Ei-Schritte
-BEARBEITEN
-KLONEN
-FREILASSEN
-GENERIEREN
-ZURÜCK
+Bearbeiten
+Klonen
+Freilassen
+Generieren
+Zurück
 Box %d
 Starte den Client auf deinem PC...
 B: Beenden
@@ -138,10 +138,10 @@ Schillernd
 Pokérus
 OT
 Spitzname
-Freundschaft
-STATUS
-ATTACKEN
-SPEICHERN
+F.ndschaft
+Status
+Attacken
+Speichern
 KP
 Angriff
 Verteidigung
@@ -179,9 +179,9 @@ Bank %d
 Lv.%u
 ID. %u
 Speichern %d
-Y: BERICHT
-BOX LEEREN
-FREILASSEN
+Y: Bericht
+Box Leeren
+Freilassen
 XD-Sammlung
 Colosseum-Sammlung
 10. Jubiläum Sammlung
@@ -195,7 +195,7 @@ KOR Events Sammlung
 %d Boxen werden ersetzt.
 Masseneinfügen
 START: Einfügen  B: Zurück
-Bank-Größe
+Bank-Größe          
 Spielstand sichern
 Bank sichern
 Tippe auf -/+ zum Ändern der Größe.
@@ -551,7 +551,7 @@ Speicherzuweisung fehlgeschlagen!
 Bank-Größe geändert!
 Spielstand-Sicherung erstellt!
 Bank-Sicherung erstellt!
-DUMP
+Dump
 Confirm for a full storage dump?
 Step %d/%d
-DEX
+PokéDex

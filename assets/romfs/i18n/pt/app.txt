@@ -25,7 +25,7 @@ Créditos
 Aperte A para escolher uma opção.
 Aperte START para sair.
 Editor
-Save
+Save Info
 Storage
 Injetor em massa
 Deseja salvar as alterações?
@@ -116,11 +116,11 @@ Veloc.
 Nv.%u
 Ataques
 Ciclo ovo
-EDITAR
-CLONAR
-SOLTAR
-GERAR
-SAIR
+Editar
+Clonar
+Soltar
+Gerar
+Sair
 Box %d
 Abra o cliente no seu PC...
 Aperte B para sair.
@@ -139,9 +139,9 @@ Pokerus
 OT
 Nome
 Amizade
-ESTADO
-ATAQUES
-GRAVAR
+Estado
+Ataques
+Gravar
 Vida
 Ataque
 Defesa
@@ -179,9 +179,9 @@ Banco %d
 Nv. %u
 ID. %u
 Gravar %d
-Y: ESTADO
-APAGAR BOX
-LIBERTAR
+Y: Estado
+Apagar Box
+Libertar
 XD Collection
 Colosseum Collection
 10th Anniversary Collection
@@ -551,7 +551,7 @@ A mudar o tamanho...
 O tamanho do banco foi mudado!
 Backup do save criado!
 Backup do banco criado!
-DUMP
+Dump
 Confirm for a full storage dump?
 Step %d/%d
-DEX
+PokéDex

@@ -19,14 +19,14 @@ Chargement de la sauvegarde...
 Jeu non trouvé !
 Taille incorrect de la sauvegarde!
 Pas de cartouche inséré !
-GESTION
-EVENTS
-CREDITS
+Gestion
+Events
+Credits
 Appuie sur A pour choisir un menu.
 Appuie sur START pour quitter.
-EDITEUR
-INFO SAUV.
-BANQUE
+Editeur
+Info sauv.
+Banque
 GÉNÉRATION
 Enregistrer les modifications ?
 Appuie sur A pour confirmer.
@@ -89,24 +89,24 @@ Liste des évènements
 Appuie sur A pour confirmer, B pour revenir en arr.
 Appuie sur START pour les ajouter, B pour revenir en arr.
 Appuie sur A pour sélectionner, B pour revenir en arr.
-Langues:
-Écraser Carte Miracle:
-Adapter langue à la CM:
-Ajouter la CM à l'index:
+Langues
+Écraser Carte Miracle
+Adapter langue à la CM
+Ajouter la CM à l'index
 Éditeur de sauvegarde
-Langue:
+Langue
 Effacer Cadeaux Mystères
 START pour valider, A pour modifier, B pour quitter.
-Surnom:
-DO:
-Pokérus:
-Nature:
-Talent:
-Objet:
-ESV / TSV:
-TID / SID:
-HT/OT Bonheur:
-Puiss. Cachée:
+Surnom
+DO
+Pokérus
+Nature
+Talent
+Objet
+ESV / TSV
+TID / SID
+HT/OT Bonheur
+Puiss. Cachée
 PV
 Attaque
 Défense
@@ -115,12 +115,12 @@ Déf. Spé.
 Vitesse
 Nv.%u
 Capacités
-Cycle œuf:
-MODIFIER
-CLONER
-RELÂCHER
-GÉNÉRER
-QUITTER
+Cycle œuf
+Modifier
+Cloner
+Relâcher
+Générer
+Quitter
 Boîte %d
 Lance le client sur ton PC...
 Appuie sur B pour quitter.
@@ -130,24 +130,24 @@ A sur une case pour le cloner, B pour annuler
 Génère avec A dans l'écran du haut.
 TID: %u / SID: %u / TSV: %u
 Seed: %lx %lx %lx %lx
-Niveau:
-Nature:
-Talent:
-Objet:
-Chroma. :
-Pokérus:
-DO:
-Surnom:
-Bonheur:
-STATS
-CAPACITÉS
-ENREGISTRER
-PV:
-Attaque:
-Défense:
+Niveau
+Nature
+Talent
+Objet
+Chroma. 
+Pokérus
+DO
+Surnom
+Bonheur
+Stats
+Capacités
+Enregistrer
+PV
+Attaque
+Défense
 Attaque Spé.
 Défense Spé.
-Vitesse:
+Vitesse
 Édite le Pokémon dans l'écran du bas
 Appuie sur ENREGISTRER quand tu as terminé
 Neutre
@@ -166,10 +166,10 @@ STATS
 IV
 EV
 TOTAL
-Puissance cachée:
+Puissance cachée
 Capacités
-Capacités réapprises:
-Byte séléctionné:
+Capacités réapprises
+Byte séléctionné
 Choisis un objet avec A dans l'écran du haut.
 Choisis une nature avec A dans l'écran du haut.
 Choisis une Ball avec A dans l'écran du haut.
@@ -179,9 +179,9 @@ Banque n°%d
 Niv.%u
 ID. %u
 Boîte du jeu %d
-Y: VOIR
-VIDER BOÎTE
-RELÂCHER
+Y: Voir
+Vider Boîte
+Relâcher
 Pokémon XD
 Pokémon Colosseum
 10ème anniversaire
@@ -195,7 +195,7 @@ Events Corréens
 %d boîtes vont être remplacés.
 Génération automatique de Pokémons
 Appuie sur START pour injecter, B pour quitter.
-Boxs banque:
+Boxs banque           
 Backup Jeu
 Backup Banque
 Appuie à côté du nombre pour changer la taille.
@@ -551,7 +551,7 @@ Changement de la taille...
 La taille totale de la banque a été changée!
 Backup du jeu créé!
 Backup de la banque créé!
-DUMP
+Dump
 Confirm for a full storage dump?
 Step %d/%d
-DEX
+PokéDex

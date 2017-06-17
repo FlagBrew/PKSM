@@ -116,18 +116,18 @@ Velocità
 Lv.%u
 Mosse
 Cicli uova
-MODIFICA
-CLONA
-LIBERA
-GENERA
-ESCI
+Modifica
+Clona
+Libera
+Genera
+Esci
 Box %d
 Lancia il client sul tuo pc...
 Premi B per uscire.
 Team
 Premi A per clonare nel box selezionato, B per annullare
 Hai selezionato %ls.
-Genera con A dallo schermo superiore.
+Genera con A.
 TID: %u / SID: %u / TSV: %u
 Seme: %lx %lx %lx %lx
 Livello
@@ -170,18 +170,18 @@ Introforza
 Mosse
 Mosse Uovo
 Byte selezionato
-Seleziona un'oggetto con A
-Seleziona una natura con A
-Seleziona una ball con A
-Seleziona una introforza con A
-Seleziona una forma con A
+Seleziona un'oggetto con A.
+Seleziona una natura con A.
+Seleziona una ball con A.
+Seleziona una introforza con A.
+Seleziona una forma con A.
 Banca %d
 Lv.%u
 ID. %u
 Save %d
-Y: INFO
-SVUOTA BOX
-RILASCIA
+Y: Info
+Svuota Box
+Rilascia
 Raccolta XD
 Raccolta Colosseum
 Raccolta 10th Anniversary
@@ -551,7 +551,7 @@ Ridimensionando...
 Storage ridimensionato!
 Backup del salvataggio creato!
 Backup dello storage creato!
-DUMP
+Dump
 Consenti il full dump della banca?
 Passo %d/%d
-DEX
+PokéDex

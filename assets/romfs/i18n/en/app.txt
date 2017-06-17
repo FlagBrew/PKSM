@@ -19,14 +19,14 @@ Loading save...
 Game not found!
 Incorrect size for this game!
 No cartridge inserted!
-MANAGEMENT
-EVENTS
-CREDITS
+Options
+Events
+Credits
 Press A to select an option.
 Press START to quit.
-POKEMON EDITOR
-SAVE INFO
-EXTRA STORAGE
+Editor
+Save Info
+Storage
 MASS INJECTOR
 Save changes?
 Press A to continue.
@@ -89,24 +89,24 @@ Event Database
 Press A to continue, B to return.
 Press START to inject, B to return
 Press A to select, B to return.
-Languages:
-Overwrite Wondercard:
-Adapt language to WC:
-Inject WC in slot:
+Languages
+Overwrite Wondercard
+Adapt language to WC
+Inject WC in slot
 Save File Editor
-Language:
+Language
 Clear Mystery Gift box
 Press START to edit, A to toggle, B to exit.
-Nickname:
-OT:
-Pokerus:
+Nickname
+OT
+Pokerus
 Nature
-Ability:
-Item:
-ESV / TSV:
-TID / SID:
-HT/OT Fr.ship:
-Hidden Power:
+Ability
+Item
+ESV / TSV
+TID / SID
+HT/OT Fr.ship
+Hidden Power
 HP
 Attack
 Defense
@@ -115,39 +115,39 @@ Sp. Def
 Speed
 Lv.%u
 Moves
-Egg cycle:
-EDIT
-CLONE
-RELEASE
-GENERATE
-EXIT
+Egg cycle
+Edit
+Clone
+Release
+Generate
+Exit
 Box %d
 Launch the client on your PC...
 Press B to exit.
 Team
 Press A to clone in selected slot, B to cancel
 %ls has been selected.
-Generate with A in the top screen.
+Generate with A.
 TID: %u / SID: %u / TSV: %u
 Seed: %lx %lx %lx %lx
-Level:
-Nature:
-Ability:
-Item:
-Shiny:
-Pokerus:
-OT:
-Nickname:
-Friendship:
-STATS
-MOVES
-SAVE
-HP:
-Attack:
-Defense:
-Sp. Attack:
-Sp. Defense:
-Speed:
+Level
+Nature
+Ability
+Item
+Shiny
+Pokerus
+OT
+Nickname
+Friendship
+Stats
+Moves
+Save
+HP
+Attack
+Defense
+Sp. Attack
+Sp. Defense
+Speed
 Edit your Pokemon in the bottom screen
 Tap SAVE when you're done
 Neutral
@@ -161,27 +161,27 @@ Neutral
 +Speed
 +Sp. Atk.
 +Sp. Def.
-Egg cycle:
+Egg cycle
 STATS
 IV
 EV
 TOTAL
-Hidden Power:
+Hidden Power
 Moves
 Relearn Moves
-Selected byte:
-Select an item with A in the top screen.
-Select a nature with A in the top screen.
-Select a ball with A in the top screen.
-Select a HP type with A in the top screen.
-Select a form with A in the top screen.
+Selected byte
+Select an item with A.
+Select a nature with A.
+Select a ball with A.
+Select a HP type with A.
+Select a form with A.
 Bank %d
 Lv.%u
 ID. %u
 Save %d
-Y: VIEW
-CLEAR BOX
-RELEASE
+Y: View
+Clear Box
+Release
 XD Collection
 Colosseum Collection
 10th Anniversary Collection
@@ -195,7 +195,7 @@ KOR Events Collection
 %d boxes will be replaced.
 Mass Injector
 Press START to inject, B to exit.
-Bank Size:
+Bank Size              
 Backup Save
 Backup Bank
 Tap the number to change size.
@@ -551,7 +551,7 @@ Changing size...
 Bank size changed!
 Save backup created!
 Bank backup created!
-DUMP
+Dump
 Confirm for a full storage dump?
 Step %d/%d
-DEX
+PokéDex

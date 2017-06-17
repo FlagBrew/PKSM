@@ -195,7 +195,7 @@ KOR Events Collection
 %d boxen worden vervangen.
 Massale Injector
 Druk START om te injecteren, B om te stoppen.
-Bank Grootte:        
+Bank Grootte             
 Save Back-uppen
 Bank Back-uppen
 Tik het getal aan om de grootte te veranderen.
