@@ -304,12 +304,20 @@ void bank(u8* mainbuf, int game) {
 			if (touch.px > 208 && touch.px < 317 && touch.py > 153 && touch.py < 180) {
 				int dexEntry = 0;
 				int page = 0, maxpages = (game < 4) ? 18 : 21;
+				int total = (game == GAME_SUN || game == GAME_MOON) ? 802 : 721;
+				int seen = 0;
+				int caught = 0;
+				
+				for (int i = 1; i <= total; i++) {
+					seen = getSeen(mainbuf, game, i) ? seen + 1 : seen;
+					caught = getCaught(mainbuf, game, i) ? caught + 1 : caught;
+				}
 				
 				while (aptMainLoop() && !(hidKeysDown() & KEY_B)) {
 					hidScanInput();
 					calcCurrentEntryMorePages(&dexEntry, &page, maxpages, 39, 8);
 					
-					printDexViewer(mainbuf, game, dexEntry, page);
+					printDexViewer(mainbuf, game, dexEntry, page, seen, caught);
 				}
 			}
 			

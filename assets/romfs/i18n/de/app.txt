@@ -195,7 +195,7 @@ KOR Events Sammlung
 %d Boxen werden ersetzt.
 Masseneinfügen
 START: Einfügen  B: Zurück
-Bank-Größe          
+Bank-Größe
 Spielstand sichern
 Bank sichern
 Tippe auf -/+ zum Ändern der Größe.
@@ -555,3 +555,5 @@ Dump
 Confirm for a full storage dump?
 Step %d/%d
 PokéDex
+Caught: %d
+Seen: %d

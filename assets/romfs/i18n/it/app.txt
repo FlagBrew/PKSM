@@ -195,7 +195,7 @@ Raccolta eventi Koreani
 %d box saranno sovrascritti.
 Mass Injector
 Premi START per iniettare, B per uscire.
-Bank size                
+Bank size
 Backup salvataggio
 Backup storage
 Clicca il numero per cambiare dimensione.
@@ -555,3 +555,5 @@ Dump
 Consenti il full dump della banca?
 Passo %d/%d
 PokéDex
+Catturati: %d
+Visti: %d

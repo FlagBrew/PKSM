@@ -1244,7 +1244,7 @@ void wcxInfoViewer(u8* buf) {
 	}
 }
 
-void printDexViewer(u8* mainbuf, int game, int currentEntry, int page) {
+void printDexViewer(u8* mainbuf, int game, int currentEntry, int page, int seen, int caught) {
 	char* temp = (char*)malloc(4);
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
@@ -1264,13 +1264,17 @@ void printDexViewer(u8* mainbuf, int game, int currentEntry, int page) {
 					} else
 						sf2d_draw_texture_part_blend(spritesSmall, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((entry + 1) % 25) + 4, 30 * ((entry + 1) / 25), 34, 30, RGBA8(0,0,0,255));
 					snprintf(temp, 4, "%d", entry + 1);
-					sftd_draw_text(fontBold9, 49 * j + (49 - sftd_get_text_width(fontBold9, 9, temp)) / 2 + j, 34 + i * 47 + i, WHITE, 9, temp);
+					sftd_draw_text(fontBold9, 49 * j + (49 - sftd_get_text_width(fontBold9, 9, temp)) / 2 + j, 34 + i * 47 + i, getCaught(mainbuf, game, entry + 1) ? WHITE : DS, 9, temp);
 				}
 			}
 		}
 	pksm_end_frame();
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
+		printMenuBottom();
+		sftd_draw_wtextf(fontBold14, 16, 32, WHITE, 14, i18n(S_GRAPHIC_PKBANK_SEEN), seen);
+		sftd_draw_wtextf(fontBold14, 16, 48, WHITE, 14, i18n(S_GRAPHIC_PKBANK_CAUGHT), caught);
+		printBottomIndications(i18n(S_MAIN_MENU_INDICATION_EXIT));
 	pksm_end_frame();
 	sf2d_swapbuffers();	
 	

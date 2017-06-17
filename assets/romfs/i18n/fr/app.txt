@@ -134,7 +134,7 @@ Niveau
 Nature
 Talent
 Objet
-Chroma. 
+Chroma.
 Pokérus
 DO
 Surnom
@@ -195,7 +195,7 @@ Events Corréens
 %d boîtes vont être remplacés.
 Génération automatique de Pokémons
 Appuie sur START pour injecter, B pour quitter.
-Boxs banque           
+Boxs banque
 Backup Jeu
 Backup Banque
 Appuie à côté du nombre pour changer la taille.
@@ -555,3 +555,5 @@ Dump
 Confirm for a full storage dump?
 Step %d/%d
 PokéDex
+Caught: %d
+Seen: %d

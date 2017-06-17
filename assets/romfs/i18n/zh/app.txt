@@ -195,7 +195,7 @@ AR搜寻器收藏
 %d 个盒子将被替换.
 大规模注入器
 按START导入，B退出.
-银行大小            
+银行大小
 备份存档
 备份银行
 点击数值改变大小.
@@ -555,3 +555,5 @@ DUMP
 Confirm for a full storage dump?
 Step %d/%d
 DEX
+Caught: %d
+Seen: %d

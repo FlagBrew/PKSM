@@ -195,7 +195,7 @@ KOR Events Collections
 %d box vão ser substituidas.
 Injetor em massa
 Carregue START para injetar, B para sair.
-Banco              
+Banco
 Backup do Save
 Backup do Banco
 Ajuste o número de espaços do banco extra.
@@ -555,3 +555,5 @@ Dump
 Confirm for a full storage dump?
 Step %d/%d
 PokéDex
+Caught: %d
+Seen: %d

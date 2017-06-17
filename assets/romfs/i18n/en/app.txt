@@ -195,7 +195,7 @@ KOR Events Collection
 %d boxes will be replaced.
 Mass Injector
 Press START to inject, B to exit.
-Bank Size              
+Bank Size
 Backup Save
 Backup Bank
 Tap the number to change size.
@@ -555,3 +555,5 @@ Dump
 Confirm for a full storage dump?
 Step %d/%d
 PokéDex
+Caught: %d
+Seen: %d

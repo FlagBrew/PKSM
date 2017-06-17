@@ -195,7 +195,7 @@ Colección eventos KOR
 %d seran reemplazadas.
 Inyector de cajas
 Pulsa START para inyectar, B para salir.
-Tmño banco               
+Tmño banco
 C. de seguridad: Partida
 C. de seguridad: Banco
 Toca el número para cambiar el tamaño.
@@ -555,3 +555,5 @@ Exportar
 ¿Deseas exportar todas tus cajas?
 Paso %d/%d
 PokéDex
+Caught: %d
+Seen: %d
