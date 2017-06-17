@@ -19,18 +19,18 @@ Save aan het laden...
 Spel niet gevonden!
 Verkeerde grootte voor dit spel!
 Geen cartridge aanwezig!
-MANAGEMENT
-EVENTS
-CREDITS
+Options
+Events
+Credits
 Druk op A om een optie te selecteren.
 Druk op START om te stoppen.
-POKEMON EDITOR
-SAVE INFO
-EXTRA STORAGE
+Editor
+Save Info
+Storage
 MASSALE INJECTOR
 Aanpassingen opslaan?
 Druk op A om door te gaan.
-Druk op A om door te gaan, B om te annuleren.
+A om door te gaan, B om te annuleren.
 Even wachten alstublieft.
 Cartridge heeft prioriteit over een digitale versie.
 Beweeg je DPAD. Druk op A om door te gaan, B om te annuleren.
@@ -89,24 +89,24 @@ Event Database
 Druk op A om door te gaan, B om terug te gaan.
 Druk op START om je injecteren, B om terug te gaan.
 Druk op A om te selecteren, B om terug te gaan.
-Talen:
-Wondercard overschrijven:
-Taal aanpassen aan WC:
-Injecteer WC in slot:
+Talen
+Wondercard overschrijven
+Taal aanpassen aan WC
+Injecteer WC in slot
 Save File Editor
-Taal:
+Taal
 Mystery Gift box legen
 Druk op START om aan te passen, A om te wisselen, B om te stoppen.
-Nickname:
-OT:
-Pokerus:
+Nickname
+OT
+Pokerus
 Nature
-Ability:
-Item:
-ESV / TSV:
-TID / SID:
-HT/OT Fr.ship:
-Hidden Power:
+Ability
+Item
+ESV / TSV
+TID / SID
+HT/OT Fr.ship
+Hidden Power
 HP
 Attack
 Defense
@@ -115,39 +115,39 @@ Sp. Def
 Speed
 Lv.%u
 Moves
-Egg cycle:
-AANPASSEN
-KLONEN
-VRIJLATEN
-GENEREREN
-STOPPEN
+Egg cycle
+Aanpassen
+Klonen
+Vrijlaten
+Genereren
+Stoppen
 Box %d
 Start het programma op je PC...
 Druk B om te stoppen
 Team
 Druk op A om te klonen in het geselecteerde slot, B om te annuleren.
 %ls is geselecteerd.
-Genereer met A in het bovenste scherm.
+Genereer met A.
 TID: %u / SID: %u / TSV: %u
 Seed: %lx %lx %lx %lx
-Level:
-Nature:
-Ability:
-Item:
-Shiny:
-Pokerus:
-OT:
-Nickname:
-Friendship:
-STATS
-MOVES
-SAVE
-HP:
-Attack:
-Defense:
-Sp. Attack:
-Sp. Defense:
-Speed:
+Level
+Nature
+Ability
+Item
+Shiny
+Pokerus
+OT
+Nickname
+Friendship
+Stats
+Moves
+Save
+HP
+Attack
+Defense
+Sp. Attack
+Sp. Defense
+Speed
 Pas je pokemon aan in het onderste scherm
 Druk SAVE wanneer je klaar bent
 Neutral
@@ -161,27 +161,27 @@ Neutral
 +Speed
 +Sp. Atk.
 +Sp. Def.
-Egg cycle:
+Egg cycle
 STATS
 IV
 EV
 TOTAL
-Hidden Power:
+Hidden Power
 Moves
 Moves opnieuw leren
-Geselecteerde byte:
-Selecteer een item met A in het bovenste scherm.
-Selecteer een nature met A in het bovenste scherm.
-Selecteer een ball met A in het bovenste scherm.
-Selecteer een HP type met A in het bovenste scherm.
-Selecteer een form met A in het bovenste scherm.
+Geselecteerde byte
+Selecteer een item met A.
+Selecteer een nature met A.
+Selecteer een ball met A.
+Selecteer een HP type met.
+Selecteer een form met A.
 Bank %d
 Lv.%u
 ID. %u
 Save %d
-Y: BEKIJKEN
-BOX LEGEN
-VRIJLATEN
+Y: Bekijken
+Box Legen
+Vrijlaten
 XD Collection
 Colosseum Collection
 10th Anniversary Collection
@@ -195,7 +195,7 @@ KOR Events Collection
 %d boxen worden vervangen.
 Massale Injector
 Druk START om te injecteren, B om te stoppen.
-Bank Grootte:
+Bank Grootte:        
 Save Back-uppen
 Bank Back-uppen
 Tik het getal aan om de grootte te veranderen.
@@ -551,7 +551,7 @@ Grootte aan het veranderen...
 Bank grootte aangepast!
 Save backup aangepast!
 Bank backup aangepast!
-DUMP
+Dump
 Confirm for a full storage dump?
 Step %d/%d
-DEX
+PokéDex
