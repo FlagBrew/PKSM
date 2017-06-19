@@ -108,11 +108,16 @@ void injectFromFile(u8* mainbuf, char* path, u32 offset) {
 }
 
 bool isHBL() {
-    u64 id;
-    APT_GetProgramID(&id);
+#ifdef ROSALINA_3DSX
+	return false;
+#else
+	u64 id;
+	APT_GetProgramID(&id);
 
-    return id != 0x000400000EC10000;
+	return id != 0x000400000EC10000;
+#endif
 }
+
 
 void fsStart() {
     if(isHBL()) {
