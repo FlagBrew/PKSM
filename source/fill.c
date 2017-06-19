@@ -286,9 +286,9 @@ void filldatabase6(char *database[], int spriteArray[]) {
 	database[1006] = "1006 - WCS14K Heracross"; spriteArray[1006] = 214;
 	database[1007] = "1007 - WCS14K Manectric"; spriteArray[1007] = 310;
 	database[1008] = "1008 - WCS14K Tyranitar"; spriteArray[1008] = 248;
-	database[1012] = "1012 - WCS14K Pinsir"; spriteArray[1012] = 127;
-	database[1013] = "1013 - WCS14K Houndoom"; spriteArray[1013] = 229;
-	database[1014] = "1014 - WCS14K Aggron"; spriteArray[1014] = 306;
+	//database[1012] = "1012 - WCS14K Pinsir"; spriteArray[1012] = 127;
+	//database[1013] = "1013 - WCS14K Houndoom"; spriteArray[1013] = 229;
+	//database[1014] = "1014 - WCS14K Aggron"; spriteArray[1014] = 306;
 	database[1015] = "1015 - Wishing Star Jirachi"; spriteArray[1015] = 385;
 	database[1016] = "1016 - Shiny Gengar"; spriteArray[1016] = 94;
 	database[1017] = "1017 - Movie Darkrai"; spriteArray[1017] = 491;

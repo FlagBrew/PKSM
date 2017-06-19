@@ -44,7 +44,7 @@ int lookup[] = {0x0, 0x1, 0x2, 0x4, 0x5, 0x3};
 int MAX_LENGTH_BOX_NAME = 15;
 
 sftd_font *fontBold15, *fontBold14, *fontBold12, *fontBold11, *fontBold9; 
-sf2d_texture *iconBank, *iconEditor, *iconEvents, *iconSave, *iconSettings, *iconCredits, *mainMenuButton, *noMove, *hexIcon, *hexBG, *blueTextBox, *otaButton, *generationBG, *includeInfoButton, *hiddenPowerBG, *ballsBG, *male, *female, *naturestx, *movesBottom, *topMovesBG, *editorBar, *editorStatsBG, *subArrow, *backgroundTop, *miniBox, *plusButton, *minusButton, *balls, *typesSheet, *transferButton, *bankTop, *shinyStar, *normalBar, *LButton, *RButton, *creditsTop, *pokeball, *gameSelectorBottom1, *gameSelectorBottom2, *gameSelectorTop, *menuBar, *darkButton, *left, *lightButton, *redButton, *right, *spritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *warningTop, *warningBottom, *boxView, *infoView, *selector, *editorBG, *plus, *minus, *back, *setting, *selectorCloning, *button, *bottomPopUp, *pokemonBufferBox, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR, *item, *alternativeSpritesSmall;
+sf2d_texture *eventView, *iconBank, *iconEditor, *iconEvents, *iconSave, *iconSettings, *iconCredits, *mainMenuButton, *noMove, *hexIcon, *hexBG, *blueTextBox, *otaButton, *generationBG, *includeInfoButton, *hiddenPowerBG, *ballsBG, *male, *female, *naturestx, *movesBottom, *topMovesBG, *editorBar, *editorStatsBG, *subArrow, *backgroundTop, *miniBox, *plusButton, *minusButton, *balls, *typesSheet, *transferButton, *bankTop, *shinyStar, *normalBar, *LButton, *RButton, *creditsTop, *pokeball, *gameSelectorBottom1, *gameSelectorBottom2, *gameSelectorTop, *menuBar, *darkButton, *left, *lightButton, *redButton, *right, *spritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *warningTop, *warningBottom, *boxView, *infoView, *selector, *editorBG, *plus, *minus, *back, *setting, *selectorCloning, *button, *bottomPopUp, *pokemonBufferBox, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR, *item, *alternativeSpritesSmall;
 
 AppTextCode gamesList[] = {S_GRAPHIC_GAME_SELECTOR_GAME_X, S_GRAPHIC_GAME_SELECTOR_GAME_Y, S_GRAPHIC_GAME_SELECTOR_GAME_OS, S_GRAPHIC_GAME_SELECTOR_GAME_AS, S_GRAPHIC_GAME_SELECTOR_GAME_SUN, S_GRAPHIC_GAME_SELECTOR_GAME_MOON, S_GRAPHIC_GAME_SELECTOR_GAME_DIAMOND, S_GRAPHIC_GAME_SELECTOR_GAME_PEARL, S_GRAPHIC_GAME_SELECTOR_GAME_PLATINUM, S_GRAPHIC_GAME_SELECTOR_GAME_HG, S_GRAPHIC_GAME_SELECTOR_GAME_SS, S_GRAPHIC_GAME_SELECTOR_GAME_B, S_GRAPHIC_GAME_SELECTOR_GAME_W, S_GRAPHIC_GAME_SELECTOR_GAME_B2, S_GRAPHIC_GAME_SELECTOR_GAME_W2};
 char* langs[] = { "JP", "EN", "FR", "DE", "IT", "ES", "ZH", "KO", "NL", "PT", "RU", "TW", "SD C." };
@@ -155,7 +155,7 @@ void GUIElementsI18nSpecify(int game) {
 void GUIElementsSpecify(int game) {
 	int elements = 4;
 	if (game < 6) {
-		elements += 57;
+		elements += 58;
 	} else {
 		elements += 16;
 	}
@@ -169,6 +169,7 @@ void GUIElementsSpecify(int game) {
 	balls = loadPNGInRAM("/3ds/data/PKSM/additionalassets/balls_spritesheetv2.png");
 	
 	if (game < 6) {
+		eventView = loadPNGInRAM("romfs:/res/Event View.png");
 		iconBank = loadPNGInRAM("romfs:/res/Icon Bank.png");
 		iconEditor = loadPNGInRAM("romfs:/res/Icon Editor.png");
 		iconEvents = loadPNGInRAM("romfs:/res/Icon Events.png");
@@ -265,6 +266,8 @@ void GUIGameElementsExit() {
 }
 
 void GUIElementsExit() {
+	sf2d_free_texture(eventView);
+	
 	sf2d_free_texture(iconBank);
 	sf2d_free_texture(iconCredits);
 	sf2d_free_texture(iconEditor);
@@ -891,8 +894,8 @@ void printDB7(u8* previewbuf, int game, int sprite, int i, bool langVett[], bool
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		wcxInfoViewer(previewbuf);
-		//if (sprite != -1)
-		//	sf2d_draw_texture_part_scale(spritesSmall, 282, 46 - movementOffsetLong(6), 40 * (sprite % 25) + 4, 30 * (sprite / 25), 34, 30, 2, 2);
+		if (sprite != -1)
+			sf2d_draw_texture_part_scale(spritesSmall, 282, 41 - movementOffsetLong(6), 40 * (sprite % 25) + 4, 30 * (sprite / 25), 34, 30, 2, 2);
 	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
@@ -1142,11 +1145,10 @@ void infoViewer(u8* pkmn, int game) {
 
 void wcxInfoViewer(u8* buf) {
 	int y_desc = 29;
-	wchar_t* entries[] = {i18n(S_GRAPHIC_INFOVIEWER_NICKNAME), i18n(S_GRAPHIC_INFOVIEWER_OT), i18n(S_GRAPHIC_INFOVIEWER_POKERUS), i18n(S_GRAPHIC_INFOVIEWER_NATURE), i18n(S_GRAPHIC_INFOVIEWER_ABILITY), i18n(S_GRAPHIC_INFOVIEWER_ITEM), i18n(S_GRAPHIC_INFOVIEWER_ESVTSV), i18n(S_GRAPHIC_INFOVIEWER_TIDSID), i18n(S_GRAPHIC_INFOVIEWER_HTOT_FRIENDSHIP), i18n(S_GRAPHIC_INFOVIEWER_HTOT_HIDDEN_POWER)};
-	wchar_t* values[] =  {i18n(S_GRAPHIC_INFOVIEWER_VALUE_HP), i18n(S_GRAPHIC_INFOVIEWER_VALUE_ATTACK), i18n(S_GRAPHIC_INFOVIEWER_VALUE_DEFENSE), i18n(S_GRAPHIC_INFOVIEWER_VALUE_SP_ATK), i18n(S_GRAPHIC_INFOVIEWER_VALUE_SP_DEF), i18n(S_GRAPHIC_INFOVIEWER_VALUE_SPEED)};
-	
+	wchar_t* entries[] = {L"Species", L"OT", L"TID/SID", L"Held Item", L"Game", L"Met Date"};
+
 	printAnimatedBG(true);
-	sf2d_draw_texture(infoView, 0, 2);
+	sf2d_draw_texture(eventView, 0, 2);
 
 	sf2d_draw_texture((wcx_get_move(buf, 0)) ? normalBar : noMove, 252, 155);
 	sf2d_draw_texture((wcx_get_move(buf, 1)) ? normalBar : noMove, 252, 176);
@@ -1154,17 +1156,12 @@ void wcxInfoViewer(u8* buf) {
 	sf2d_draw_texture((wcx_get_move(buf, 3)) ? normalBar : noMove, 252, 218);
 	
 	sftd_draw_wtext(fontBold12, 251, 138, WHITE, 12, i18n(S_GRAPHIC_INFOVIEWER_MOVES));
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < 6; i++) {
 		sftd_draw_wtext(fontBold12, 2, y_desc, BLUE, 12, entries[i]);
 		y_desc += 20;
-		if (i == 2) y_desc += 5;
+		if (i == 2) y_desc += 6;
+		if (i == 3) y_desc -= 1;
 		if (i == 5) y_desc += 6;
-	}
-	
-	y_desc = 8;
-	for (int i = 0; i < 6; i++) {
-		sftd_draw_wtext(fontBold12, 225, y_desc, LIGHTBLUE, 12, values[i]);
-		y_desc += 20;
 	}
 	
 	if (!wcx_is_item(buf)) {
@@ -1174,73 +1171,42 @@ void wcxInfoViewer(u8* buf) {
 		sftd_draw_wtext(fontBold12, 30, 6, WHITE, 12, (wchar_t*)title);
 		
 		sf2d_draw_texture_part(balls, -2, -5, 32 * (wcx_get_ball(buf) % 8), 32 * (wcx_get_ball(buf) / 8), 32, 32);
-		//sftd_draw_wtext(fontBold12, 30, 6, WHITE, 12, listSpecies.items[wcx_get_species(buf)]);
 		
 		if (wcx_get_gender(buf) == 0)
-			sf2d_draw_texture(male, 146, 7);
+			sf2d_draw_texture(male, 288, 7);
 		else if (wcx_get_gender(buf) == 1)
-			sf2d_draw_texture(female, 148, 7);
+			sf2d_draw_texture(female, 290, 7);
 		
 		wchar_t* level = (wchar_t*)malloc(8 * sizeof(wchar_t));
 		swprintf(level, 8, i18n(S_GRAPHIC_INFOVIEWER_LV), wcx_get_level(buf));
-		sftd_draw_wtext(fontBold12, 160, 6, WHITE, 12, level);
+		sftd_draw_wtext(fontBold12, 302, 6, WHITE, 12, level);
 		free(level);
-		
-		u32 nick[NICKNAMELENGTH*2];
-		memset(nick, 0, NICKNAMELENGTH*2);
-		wcx_get_nickname(buf, nick);
-		sftd_draw_wtext(fontBold12, 215 - (sftd_get_wtext_width(fontBold12, 12, (wchar_t*)nick)), 29, WHITE, 12, (wchar_t*)nick);
 		
 		u32 ot_name[NICKNAMELENGTH*2];
 		memset(ot_name, 0, NICKNAMELENGTH*2);
 		wcx_get_ot(buf, ot_name);
 		sftd_draw_wtext(fontBold12, 215 - (sftd_get_wtext_width(fontBold12, 12, (wchar_t*)ot_name)), 49, WHITE, 12, (wchar_t*)ot_name);
 		
-		//sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, (isInfected(buf) ? i18n(S_YES) : i18n(S_NO))), 69, WHITE, 12, isInfected(buf) ? i18n(S_YES) : i18n(S_NO));
-		//sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, natures[wcx_get_nature(buf)]), 94, WHITE, 12, natures[wcx_get_nature(buf)]);
-		//sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, abilities[wcx_get_ability(buf)]), 114, WHITE, 12, abilities[wcx_get_ability(buf)]);
-		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, items[wcx_get_held_item(buf)]), 134, WHITE, 12, items[wcx_get_held_item(buf)]);
+		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, items[wcx_get_held_item(buf)]), 94, WHITE, 12, items[wcx_get_held_item(buf)]);
 		
-		
-		if (wcx_is_shiny(buf))
-			sf2d_draw_texture(shinyStar, 205, 9);
-		
-		//char* friendship = (char*)malloc(11 * sizeof(char));
-		//if (isEgg(buf))
-		//	snprintf(friendship, 11, "%u", getOTFriendship(buf));
-		//else
-		//	snprintf(friendship, 11, "%u / %u", getHTFriendship(buf), getOTFriendship(buf));
-		//sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, friendship), 200, WHITE, 12, friendship);
-		//free(friendship);
+		if (wcx_is_shiny(buf)) {
+			sf2d_draw_texture(shinyStar, 206, 32);
+			sftd_draw_wtext(fontBold12, 202 - sftd_get_wtext_width(fontBold12, 12, listSpecies.items[wcx_get_species(buf)]), 29, WHITE, 12, listSpecies.items[wcx_get_species(buf)]);
+		} else {
+			sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, listSpecies.items[wcx_get_species(buf)]), 29, WHITE, 12, listSpecies.items[wcx_get_species(buf)]);
+		}
 		
 		char* otid = (char*)malloc(18 * sizeof(char));
-		//snprintf(otid, 18, "%u / %u", getPSV(buf), getTSV(buf));
-		//sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, otid), 160, WHITE, 12, otid);
 		snprintf(otid, 18, "%u / %u", wcx_get_tid(buf), wcx_get_sid(buf));
-		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, otid), 180, WHITE, 12, otid);
+		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, otid), 71, WHITE, 12, otid);
 		free(otid);
-
-		//sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, hpList[getHPType(buf)]), 220, WHITE, 12, hpList[getHPType(buf)]);
-		
-		int max = sftd_get_text_width(fontBold12, 12, "252");		
+	
 		int y_moves = 159;
 		for (int i = 0; i < 4; i++) {
 			if (wcx_get_move(buf, i))
 				sftd_draw_wtext(fontBold12, 396 - sftd_get_wtext_width(fontBold12, 12, moves[wcx_get_move(buf, i)]), y_moves, WHITE, 12, moves[wcx_get_move(buf, i)]);
 			y_moves += 21;
-		}
-		
-		//char* tmp = (char*)malloc(4);
-		//for (int i = 0; i < 6; i++) {
-		//	snprintf(tmp, 4, "%d", getIV(buf, lookup[i]));
-		//	sftd_draw_text(fontBold12, 289 + (max - sftd_get_text_width(fontBold12, 12, tmp)) / 2, 8 + i * 20, WHITE, 12, tmp);
-		//	snprintf(tmp, 4, "%d", getEV(buf, lookup[i]));
-		//	sftd_draw_text(fontBold12, 328 + (max - sftd_get_text_width(fontBold12, 12, tmp)) / 2, 8 + i * 20, WHITE, 12, tmp);
-		//	snprintf(tmp, 4, "%d", getStat(buf, lookup[i]));
-		//	sftd_draw_text(fontBold12, 369 + (max - sftd_get_text_width(fontBold12, 12, tmp)) / 2, 8 + i * 20, WHITE, 12, tmp);
-		//}
-		//free(tmp);
-		
+		}	
 	}
 }
 
