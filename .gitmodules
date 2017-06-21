@@ -10,6 +10,3 @@
 [submodule "source/memecrypto"]
 	path = source/memecrypto
 	url = https://github.com/dsoldier/memecrypto.git
-[submodule "extrastorage/badsectors-save/memecrypto"]
-	path = extrastorage/badsectors-save/memecrypto
-	url = https://github.com/dsoldier/memecrypto.git
