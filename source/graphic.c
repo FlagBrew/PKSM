@@ -1169,11 +1169,27 @@ void wcxInfoViewer(u8* buf) {
 		if (i == 5) y_desc += 6;
 	}
 	
+	u32 title[72];
+	memset(title, 0, 72);
+	wcx_get_title(buf, title);
+	sftd_draw_wtext(fontBold12, 30, 6, WHITE, 12, (wchar_t*)title);
+	
 	if (!wcx_is_item(buf)) {
-		u32 title[72];
-		memset(title, 0, 72);
-		wcx_get_title(buf, title);
-		sftd_draw_wtext(fontBold12, 30, 6, WHITE, 12, (wchar_t*)title);
+		wchar_t *version = L"WIP";
+		switch (wcx_get_origin_game(buf)) {
+			case 24:
+				version = L"X"; break;
+			case 25:
+				version = L"Y"; break;
+			case 26:
+				version = L"Alpha Sapphire"; break;
+			case 27:
+				version = L"Omega Ruby"; break;
+			case 30:
+				version = L"Sun"; break;
+			case 31:
+				version = L"Moon"; break;
+		}
 		
 		sf2d_draw_texture_part(balls, -2, -5, 32 * (wcx_get_ball(buf) % 8), 32 * (wcx_get_ball(buf) / 8), 32, 32);
 		
@@ -1193,6 +1209,13 @@ void wcxInfoViewer(u8* buf) {
 		sftd_draw_wtext(fontBold12, 215 - (sftd_get_wtext_width(fontBold12, 12, (wchar_t*)ot_name)), 49, WHITE, 12, (wchar_t*)ot_name);
 		
 		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, items[wcx_get_held_item(buf)]), 94, WHITE, 12, items[wcx_get_held_item(buf)]);
+		
+		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, version), 113, DS, 12, version);
+		
+		u32 date[12];
+		memset(date, 0, 12);
+		swprintf((wchar_t*)date, 12, L"%u/%u/%u", wcx_get_year(buf), wcx_get_month(buf), wcx_get_day(buf));
+		sftd_draw_wtext(fontBold12, 215 - (sftd_get_wtext_width(fontBold12, 12, (wchar_t*)date)), 134, WHITE, 12, (wchar_t*)date);
 		
 		if (wcx_is_shiny(buf)) {
 			sf2d_draw_texture(shinyStar, 206, 32);
@@ -1873,20 +1896,15 @@ void printSettings(int box, int language) {
 }
 
 void printSaveEditorInfo(u8* mainbuf, int game, int byte) {
-	int y = 70, x = 8;
+	/*int y = 70, x = 8;
 	u32 string[NICKNAMELENGTH*2];
 	memset(string, 0, NICKNAMELENGTH*2);
 
 	if (game == GAME_SUN || game == GAME_MOON) {
 		if (byte >= SAVE_SM_ITEM && byte < SAVE_SM_ITEM_SIZE) {
-			if (byte % 4 == 0 || byte % 4 == 1) {
-				u16 item = 0;
-				memcpy(&item, &mainbuf[(byte % 2 == 0) ? byte : byte - 1], 2);
-				if (item < 920)
-					sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_ITEM), item, items[item]);
-			}
+
 		}
-	}
+	}*/
 }
 
 void printfHexEditorInfo(u8* pkmn, int byte) {

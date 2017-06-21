@@ -35,7 +35,8 @@ u32 wcx_get_rawdate(u8* wcx) {
 }
 
 u32 wcx_get_year(u8* wcx) { 
-	return wcx_get_rawdate(wcx) / 10000 + 2000; 
+	u32 year = wcx_get_rawdate(wcx) / 10000;
+	return year < 2000 ? year + 2000 : year;
 }
 
 u32 wcx_get_month(u8* wcx) { 
