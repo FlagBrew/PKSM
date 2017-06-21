@@ -1528,6 +1528,8 @@ void pokemonEditor(u8* mainbuf, int game) {
 			}
 		}
 		
+		#ifdef PKSV
+		#else
 		if (((hidKeysDown() & KEY_Y) || ((hidKeysDown() & KEY_TOUCH) && touch.px > 240 && touch.px < 276 && touch.py > 210 && touch.py < 240)) && !isTeam) {
 			if (!init())
 				break;
@@ -1550,6 +1552,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 			box = tempVett[0];
 			currentEntry = tempVett[1];
 		}
+		#endif
 
 		if (!(hidKeysDown() & KEY_TOUCH) && !(hidKeysHeld() & KEY_TOUCH) && touchExecuting >= 0 && touchExecuting / 40 == 0)// && !teamChanged)
 			touchExecuting += 40;
@@ -1559,6 +1562,8 @@ void pokemonEditor(u8* mainbuf, int game) {
 			touchExecuting = 0;
 		}
 
+		#ifdef PKSV
+		#else
 		if (((hidKeysDown() & KEY_A) || touchExecuting / 40 == 2) && !isBattleBoxed(mainbuf, game, box, currentEntry)) {
 			touchExecuting = currentEntry;
 
@@ -2221,6 +2226,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 				}
 			}
 		}
+		#endif
 		printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, modeFlag, 0, 0);
 	}
 	free(pkmn);

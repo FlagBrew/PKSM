@@ -23,10 +23,10 @@ u16 wcx_get_id(u8* wcx) {
 }
 
 u32 *wcx_get_title(u8* wcx, u32* dst) {
-	u16 src[36];
-	memcpy(src, &wcx[0x2], 36);
+	u16 src[72];
+	memcpy(src, &wcx[0x2], 72);
 	
-	utf16_to_utf32(dst, src, 36);
+	utf16_to_utf32(dst, src, 72);
 	return dst;
 }
 

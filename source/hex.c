@@ -340,11 +340,13 @@ void fillSaveSectors(bool saveSectors[][2], int game) {
 		saveSectors[j][1] = false;
 	}
 	
+	#ifdef PKSV
+	#else
 	if (game == GAME_SUN || game == GAME_MOON) { 
 		for (int i = SAVE_SM_MONEY; i < SAVE_SM_MONEY + 4; i++)
 			saveSectors[i][0] = true;
-		for (int i = SAVE_SM_ITEM; i < SAVE_SM_ITEM_SIZE; i++)
-			saveSectors[i][0] = true;
+		//for (int i = SAVE_SM_ITEM; i < SAVE_SM_ITEM_SIZE; i++)
+		//	saveSectors[i][0] = true;
 	} 
 	else if (game == GAME_OR || game == GAME_AS) { 
 		for (int i = SAVE_ORAS_MONEY; i < SAVE_ORAS_MONEY + 4; i++)
@@ -371,4 +373,5 @@ void fillSaveSectors(bool saveSectors[][2], int game) {
 	else if (game == GAME_PEARL || game == GAME_DIAMOND) {
 		
 	}
+	#endif
 }

@@ -502,6 +502,8 @@ void eventDatabase7(u8* mainbuf, int game) {
 					if (touch.px > 270 && touch.px < 306 && touch.py > 138 && touch.py < 159) adapt = false;
 				}
 				
+				#ifdef PKSV
+				#else
 				if (hidKeysDown() & KEY_START) {
 					if (nInjected[0] >= 48) 
 						nInjected[0] = 0;
@@ -533,6 +535,7 @@ void eventDatabase7(u8* mainbuf, int game) {
 					infoDisp(i18n(S_DATABASE_SUCCESS_INJECTION));
 					break;
 				}
+				#endif
 				
 				printDB7(previewbuf, game, spriteArray[i], i, langVett, adapt, overwrite, langSelected, nInjected[0]);
 			}
@@ -713,6 +716,8 @@ void eventDatabase5(u8* mainbuf, int game) {
 					if (touch.px > 253 && touch.px < 289 && touch.py > 178 && touch.py < 202 && langVett[6]) langSelected = 6;
 				}
 				
+				#ifdef PKSV
+				#else
 				if (hidKeysDown() & KEY_START) {
 					if (nInjected[0] >= 12) 
 						nInjected[0] = 0;
@@ -777,6 +782,7 @@ void eventDatabase5(u8* mainbuf, int game) {
 					infoDisp(i18n(S_DATABASE_SUCCESS_INJECTION));
 					break;
 				}
+				#endif
 				
 				printDatabase5(database, currentEntry, page, spriteArray, isSelected, langSelected, langVett);
 			}
@@ -957,6 +963,8 @@ void eventDatabase4(u8* mainbuf, int game, int GBO, int SBO) {
 					if (touch.px > 253 && touch.px < 289 && touch.py > 178 && touch.py < 202 && langVett[6]) langSelected = 6;
 				}
 				
+				#ifdef PKSV
+				#else
 				if (hidKeysDown() & KEY_START) {
 					if (nInjected[0] >= 8) 
 						nInjected[0] = 0;
@@ -1021,6 +1029,7 @@ void eventDatabase4(u8* mainbuf, int game, int GBO, int SBO) {
 					infoDisp(i18n(S_DATABASE_SUCCESS_INJECTION));
 					break;
 				}
+				#endif
 				
 				printDatabase4(database, currentEntry, page, spriteArray, isSelected, langSelected, langVett);
 			}

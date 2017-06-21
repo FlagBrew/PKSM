@@ -271,6 +271,7 @@ int main() {
 	bool touchPressed = false;
 	
 	GUIElementsSpecify(game);
+
 	if (game < 6) {
 		int mainMenu[] = {S_MAIN_MENU_EXTRA_STORAGE, S_MAIN_MENU_EDITOR, S_MAIN_MENU_EVENTS, S_MAIN_MENU_SAVE_INFO, S_MAIN_MENU_SETTINGS, S_MAIN_MENU_CREDITS};
 		while (aptMainLoop()) {
@@ -370,7 +371,7 @@ int main() {
 	}
 	else if ((game == GAME_DIAMOND || game == GAME_PEARL || game == GAME_PLATINUM || game == GAME_HG || game == GAME_SS || game == GAME_B1 || game == GAME_W1 || game == GAME_B2 || game == GAME_W2) && save)
 		TWLinjectSave(mainbuf, mainSize);
-	
+
 	free(mainbuf);
 	
 	exitServices();

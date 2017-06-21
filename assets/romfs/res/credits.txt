@@ -1,10 +1,10 @@
-Smealum for ctrulib, Xerpi for sf2d
+Smealum for ctrulib, Xerpi for sf2d, sftd and sfil
 Kaphotics and SciresM for PKHeX and memecrypto
 J-K-D for direct save import/export
 Slownic for java servepkx
 Slashcash for PCHex++
 Gocario for PKBrew
 TuxSH for TWLSaveTool
-MarcusD for romfs support
-PPorg for most of wc6/wc7 bundled in the application
+PPorg for most of the wcx bundled in the application
 Simona, Carlo, Matteo for fill.c work
+All the countless translators who worked on the localization

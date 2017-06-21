@@ -1,31 +1,50 @@
+make install
+@rename Makefile PKSM.Makefile
+
+@rename PKSV.Makefile Makefile
+make install
+@rename MakeFile PKSV.Makefile
+
+@rename RosalinaPKSM.Makefile Makefile
 make
-@rd Release /s /q
-@mkdir Release\3ds\PKSM Release\3ds\PKSV Release\servepkx\java Release\servepkx\python Release\servepkx\webbrowser Release\extrastorage Release\extrastorage\badsectors Release\extrastorage\phbank2pksm  
+@rename MakeFile RosalinaPKSM.Makefile
 
-@copy output\3ds-arm\PKSM.cia Release
-@copy output\3ds-arm\3ds\PKSM\PKSM.3dsx Release\3ds\PKSM
+@rename RosalinaPKSV.Makefile Makefile
+make
+@rename MakeFile RosalinaPKSV.Makefile
 
-@copy C:\Users\Bernardo\Documents\GitHub\PKSV\output\3ds-arm\PKSV.cia Release
-@copy C:\Users\Bernardo\Documents\GitHub\PKSV\output\3ds-arm\3ds\PKSV\PKSV.3dsx Release\3ds\PKSV
+@rename PKSM.Makefile Makefile
 
-@copy servepkx\java\servepkx.jar Release\servepkx\java
-@copy servepkx\java\README.md Release\servepkx\java
+@rd release /s /q
+@mkdir release\standard\PKSM\3ds\PKSM release\standard\PKSV\3ds\PKSV release\rosalina\3ds\PKSM release\rosalina\3ds\PKSV release\servepkx\java release\servepkx\python release\servepkx\webbrowser release\extrastorage\badsectors release\extrastorage\phbank2pksm
 
-@copy servepkx\python\servepkx.py Release\servepkx\python
-@copy servepkx\python\README.md Release\servepkx\python
+@copy output\PKSM\3ds-arm\PKSM.cia release\standard\PKSM
+@copy output\PKSM\3ds-arm\3ds\PKSM\PKSM.3dsx release\standard\PKSM\3ds\PKSM
+@echo ^<targets selectable="true"^>^</targets^> > release\standard\PKSM\3ds\PKSM\PKSM.xml
 
-@copy extrastorage\badsectors\badsectors.3dsx Release\extrastorage\badsectors
+@copy output\PKSV\3ds-arm\PKSV.cia release\standard\PKSV
+@copy output\PKSV\3ds-arm\3ds\PKSV\PKSV.3dsx release\standard\PKSV\3ds\PKSV
+@echo ^<targets selectable="true"^>^</targets^> > release\standard\PKSV\3ds\PKSV\PKSV.xml
 
-@copy extrastorage\phbank2pksm\index.html Release\extrastorage\phbank2pksm
-@copy extrastorage\phbank2pksm\style.css Release\extrastorage\phbank2pksm
-@copy extrastorage\phbank2pksm\README.md Release\extrastorage\phbank2pksm
+@copy output\rosalina\PKSV\3ds-arm\3ds\PKSV\PKSV.3dsx release\rosalina\3ds\PKSV
+@copy output\rosalina\PKSM\3ds-arm\3ds\PKSM\PKSM.3dsx release\rosalina\3ds\PKSM
 
-@copy servepkx\webbrowser\index.html Release\servepkx\webbrowser
-@copy servepkx\webbrowser\style.css Release\servepkx\webbrowser
-@copy servepkx\webbrowser\README.md Release\servepkx\webbrowser
+@copy servepkx\java\servepkx.jar release\servepkx\java
+@copy servepkx\java\README.md release\servepkx\java
 
-@echo ^<targets selectable="true"^>^</targets^> > Release\3ds\PKSM\PKSM.xml
-@echo ^<targets selectable="true"^>^</targets^> > Release\3ds\PKSV\PKSV.xml
-@cd Release
+@copy servepkx\python\servepkx.py release\servepkx\python
+@copy servepkx\python\README.md release\servepkx\python
+
+@copy extrastorage\badsectors\badsectors.3dsx release\extrastorage\badsectors
+
+@copy extrastorage\phbank2pksm\index.html release\extrastorage\phbank2pksm
+@copy extrastorage\phbank2pksm\style.css release\extrastorage\phbank2pksm
+@copy extrastorage\phbank2pksm\README.md release\extrastorage\phbank2pksm
+
+@copy servepkx\webbrowser\index.html release\servepkx\webbrowser
+@copy servepkx\webbrowser\style.css release\servepkx\webbrowser
+@copy servepkx\webbrowser\README.md release\servepkx\webbrowser
+
+@cd release
 @zip -r PKSM.zip .
 @cd ..\

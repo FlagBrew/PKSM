@@ -73,7 +73,12 @@
 #define GAME_B2 	 13
 #define GAME_W2 	 14
 
+#ifdef PKSV
+#define VERSION "v2.0.0"
+#else
 #define VERSION "v4.3.0"
+#endif
+
 
 /**
  * OFFSETS

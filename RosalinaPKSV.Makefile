@@ -11,31 +11,27 @@ endif
 
 # COMMON CONFIGURATION #
 
-NAME := PKSM
+NAME := PKSV
 
-BUILD_DIR := build/PKSM
-OUTPUT_DIR := output/PKSM
+BUILD_DIR := build/rosalina/PKSV
+OUTPUT_DIR := output/rosalina/PKSV
 INCLUDE_DIRS := 
 SOURCE_DIRS := source/memecrypto/source source
 
 EXTRA_OUTPUT_FILES :=
 
-PORTLIBS_PATH := $(DEVKITPRO)/portlibs
-PORTLIBS := $(PORTLIBS_PATH)/armv6k $(PORTLIBS_PATH)/3ds
-CTRULIB ?= $(DEVKITPRO)/libctru
-
 LIBRARY_DIRS := $(PORTLIBS) $(CTRULIB)
 LIBRARIES := sfil sftd freetype png z sf2d citro3d ctru m
 
-BUILD_FLAGS := -march=armv6k -mtune=mpcore -mfloat-abi=hard
+BUILD_FLAGS := -DPKSV -DROSALINA_3DSX -march=armv6k -mtune=mpcore -mfloat-abi=hard
 BUILD_FLAGS_CC := -g -Wall -O2 -mword-relocations \
 			-fomit-frame-pointer -ffast-math \
 			$(BUILD_FLAGS) $(INCLUDE) -DARM11 -D_3DS
 BUILD_FLAGS_CXX := $(BUILD_FLAGS_CC) -fno-rtti -fno-exceptions -std=gnu++11
 RUN_FLAGS :=
 
-VERSION_MAJOR := 4
-VERSION_MINOR := 3
+VERSION_MAJOR := 2
+VERSION_MINOR := 0
 VERSION_MICRO := 0
 
 REMOTE_IP := 192.168.1.7
@@ -44,7 +40,7 @@ REMOTE_IP := 192.168.1.7
 
 ifeq ($(TARGET),$(filter $(TARGET),3DS WIIU))
     TITLE := $(NAME)
-    DESCRIPTION := AIO tool for Pokemon games
+    DESCRIPTION := Gen6+ Pokemon info viewer
     AUTHOR := Bernardo Giordano, PKSM devs
 endif
 
@@ -54,8 +50,8 @@ ifeq ($(TARGET),3DS)
     LIBRARY_DIRS +=
     LIBRARIES +=
 
-    PRODUCT_CODE := CTR-HB-PKSM
-    UNIQUE_ID := 0xEC100
+    PRODUCT_CODE := CTR-HB-PKSV
+    UNIQUE_ID := 0xEC200
 
     CATEGORY := Application
     USE_ON_SD := true
@@ -70,9 +66,9 @@ ifeq ($(TARGET),3DS)
 
     ROMFS_DIR := assets/romfs
     BANNER_AUDIO := assets/audio.wav
-    BANNER_IMAGE := assets/banner.png
-    ICON := assets/icon.png
-	LOGO :=
+    BANNER_IMAGE := assets/banner_pksv.png
+    ICON := assets/icon_pksv.png
+	LOGO := 
 endif
 
 # INTERNAL #

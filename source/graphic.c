@@ -531,7 +531,11 @@ void progressBar(wchar_t* message, u32 current, u32 sz) {
 
 void drawMenuTop() {
 	printMenuTop();
+	#ifdef PKSV
+	printTitle(L"PKSV");
+	#else
 	printTitle(L"PKSM");
+	#endif
 	sf2d_draw_texture(pokeball, (400 - pokeball->width) / 2 + 5, (240 - pokeball->height) / 2 + 10);
 	
 	sftd_draw_text(fontBold9, (398 - sftd_get_text_width(fontBold9, 9, VERSION)), 229, LIGHTBLUE, 9, VERSION);
@@ -655,10 +659,11 @@ void printCredits() {
 		sf2d_start_frame(GFX_TOP, GFX_LEFT);
 			printMenuTop();
 			printTitle(i18n(S_GRAPHIC_CREDITS_TITLE));
-			sf2d_draw_texture_part(creditsTop, 16, 101, 0, 22, 181, 46);
+			sf2d_draw_texture_part(creditsTop, 16, 104, 0, 22, 181, 46);
+			sf2d_draw_texture_part(creditsTop, 36, 104, 0, 22, 181, 46);
 			sf2d_draw_texture(creditsTop, 0, 45);
-			sftd_draw_text(fontBold15, 18, 77, LIGHTBLUE, 15, "Bernardo Giordano");
-			sftd_draw_text(fontBold15, 34, 113, LIGHTBLUE, 15, "Anty-Lemon");
+			sftd_draw_text(fontBold15, 18, 79, LIGHTBLUE, 15, "Bernardo Giordano");
+			sftd_draw_text(fontBold15, 34, 117, LIGHTBLUE, 15, "Naxann, Anty-Lemon");
 			sftd_draw_text(fontBold15, 64, 174, LIGHTBLUE, 15, "dsoldier for the complete GUI design");
 		pksm_end_frame();
 
@@ -1198,7 +1203,7 @@ void wcxInfoViewer(u8* buf) {
 		
 		char* otid = (char*)malloc(18 * sizeof(char));
 		snprintf(otid, 18, "%u / %u", wcx_get_tid(buf), wcx_get_sid(buf));
-		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, otid), 71, WHITE, 12, otid);
+		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, otid), 69, WHITE, 12, otid);
 		free(otid);
 	
 		int y_moves = 159;
@@ -1850,7 +1855,7 @@ void printSettings(int box, int language) {
 
 		for (int i = 0; i < 3; i++) {
 			sf2d_draw_texture(menuBar, (320 - menuBar->width) / 2, 60 + i * (menuBar->height));
-			sftd_draw_wtext(fontBold15, (320 - sftd_get_wtext_width(fontBold15, 15, menu[i])) / 2, 58 + (menuBar->height - 18) / 2 + i * (menuBar->height), DARKBLUE, 15, menu[i]);
+			sftd_draw_wtext(fontBold15, i == 0 ? 69 : (320 - sftd_get_wtext_width(fontBold15, 15, menu[i])) / 2, 58 + (menuBar->height - 18) / 2 + i * (menuBar->height), DARKBLUE, 15, menu[i]);
 		}
 		
 		sf2d_draw_texture(miniBox, 189, 64);

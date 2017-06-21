@@ -113,8 +113,12 @@ bool isHBL() {
 #else
 	u64 id;
 	APT_GetProgramID(&id);
-
+	
+#ifdef PKSV
+	return id != 0x000400000EC20000;
+#else
 	return id != 0x000400000EC10000;
+#endif
 #endif
 }
 

@@ -1,6 +1,6 @@
 build/
 output/
-Release/
+release/
 badsectors/build
 *.elf
 *.smdh

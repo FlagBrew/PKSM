@@ -13,8 +13,8 @@ endif
 
 NAME := PKSM
 
-BUILD_DIR := build/PKSM
-OUTPUT_DIR := output/PKSM
+BUILD_DIR := build/rosalina/PKSM
+OUTPUT_DIR := output/rosalina/PKSM
 INCLUDE_DIRS := 
 SOURCE_DIRS := source/memecrypto/source source
 
@@ -27,7 +27,7 @@ CTRULIB ?= $(DEVKITPRO)/libctru
 LIBRARY_DIRS := $(PORTLIBS) $(CTRULIB)
 LIBRARIES := sfil sftd freetype png z sf2d citro3d ctru m
 
-BUILD_FLAGS := -march=armv6k -mtune=mpcore -mfloat-abi=hard
+BUILD_FLAGS := -DROSALINA_3DSX -march=armv6k -mtune=mpcore -mfloat-abi=hard
 BUILD_FLAGS_CC := -g -Wall -O2 -mword-relocations \
 			-fomit-frame-pointer -ffast-math \
 			$(BUILD_FLAGS) $(INCLUDE) -DARM11 -D_3DS
