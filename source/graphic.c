@@ -900,11 +900,15 @@ void printDB7(u8* previewbuf, int game, int sprite, int i, bool langVett[], bool
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		wcxInfoViewer(previewbuf);
 		if (sprite != -1)
-			sf2d_draw_texture_part_scale(spritesSmall, 282, 41 - movementOffsetLong(6), 40 * (sprite % 25) + 4, 30 * (sprite / 25), 34, 30, 2, 2);
+			sf2d_draw_texture_part_scale(spritesSmall, 282, 41 - movementOffsetLong(6), 40 * (wcx_get_species(previewbuf) % 25) + 4, 30 * (wcx_get_species(previewbuf) / 25), 34, 30, 2, 2);
 	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		printMenuBottom();
+		
+		if (getN(i) > 1)
+			sftd_draw_text(fontBold11, (320 - sftd_get_text_width(fontBold11, 11, "Press L/R to switch multiple wondercards.")) / 2, 19, LIGHTBLUE, 11, "Press L/R to switch multiple wondercards.");
+		
 		sftd_draw_wtext(fontBold14, 16, 50, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_LANGUAGES));
 		sftd_draw_wtext(fontBold14, 16, 112, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_OVERWRITE_WC));
 		sftd_draw_wtext(fontBold14, 16, 140, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_ADAPT_LANGUAGE_WC));
@@ -1169,28 +1173,35 @@ void wcxInfoViewer(u8* buf) {
 		if (i == 5) y_desc += 6;
 	}
 	
+	wchar_t *version = L"WIP";
+	switch (wcx_get_origin_game(buf)) {
+		case 24:
+			version = L"X"; break;
+		case 25:
+			version = L"Y"; break;
+		case 26:
+			version = L"Alpha Sapphire"; break;
+		case 27:
+			version = L"Omega Ruby"; break;
+		case 30:
+			version = L"Sun"; break;
+		case 31:
+			version = L"Moon"; break;
+	}
+	
+	sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, version), 115, DS, 12, version);
+	
 	u32 title[72];
 	memset(title, 0, 72);
 	wcx_get_title(buf, title);
-	sftd_draw_wtext(fontBold12, 30, 6, WHITE, 12, (wchar_t*)title);
+	sftd_draw_wtext(fontBold12, !wcx_is_pokemon(buf) ? 4 : 30, 6, WHITE, 12, (wchar_t*)title);
 	
-	if (!wcx_is_item(buf)) {
-		wchar_t *version = L"WIP";
-		switch (wcx_get_origin_game(buf)) {
-			case 24:
-				version = L"X"; break;
-			case 25:
-				version = L"Y"; break;
-			case 26:
-				version = L"Alpha Sapphire"; break;
-			case 27:
-				version = L"Omega Ruby"; break;
-			case 30:
-				version = L"Sun"; break;
-			case 31:
-				version = L"Moon"; break;
-		}
-		
+	u32 date[12];
+	memset(date, 0, 12);
+	swprintf((wchar_t*)date, 12, L"%u/%u/%u", wcx_get_year(buf), wcx_get_month(buf), wcx_get_day(buf));
+	sftd_draw_wtext(fontBold12, 215 - (sftd_get_wtext_width(fontBold12, 12, (wchar_t*)date)), 134, WHITE, 12, (wchar_t*)date);
+	
+	if (wcx_is_pokemon(buf)) {
 		sf2d_draw_texture_part(balls, -2, -5, 32 * (wcx_get_ball(buf) % 8), 32 * (wcx_get_ball(buf) / 8), 32, 32);
 		
 		if (wcx_get_gender(buf) == 0)
@@ -1210,13 +1221,6 @@ void wcxInfoViewer(u8* buf) {
 		
 		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, items[wcx_get_held_item(buf)]), 94, WHITE, 12, items[wcx_get_held_item(buf)]);
 		
-		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, version), 113, DS, 12, version);
-		
-		u32 date[12];
-		memset(date, 0, 12);
-		swprintf((wchar_t*)date, 12, L"%u/%u/%u", wcx_get_year(buf), wcx_get_month(buf), wcx_get_day(buf));
-		sftd_draw_wtext(fontBold12, 215 - (sftd_get_wtext_width(fontBold12, 12, (wchar_t*)date)), 134, WHITE, 12, (wchar_t*)date);
-		
 		if (wcx_is_shiny(buf)) {
 			sf2d_draw_texture(shinyStar, 206, 32);
 			sftd_draw_wtext(fontBold12, 202 - sftd_get_wtext_width(fontBold12, 12, listSpecies.items[wcx_get_species(buf)]), 29, WHITE, 12, listSpecies.items[wcx_get_species(buf)]);
@@ -1235,6 +1239,16 @@ void wcxInfoViewer(u8* buf) {
 				sftd_draw_wtext(fontBold12, 396 - sftd_get_wtext_width(fontBold12, 12, moves[wcx_get_move(buf, i)]), y_moves, WHITE, 12, moves[wcx_get_move(buf, i)]);
 			y_moves += 21;
 		}	
+	} else if (wcx_is_item(buf)) {
+		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, "None"), 29, WHITE, 12, "None");
+		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, "None"), 49, WHITE, 12, "None");
+		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, "None"), 69, WHITE, 12, "None");
+		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, items[wcx_get_item(buf)]), 94, WHITE, 12, items[wcx_get_item(buf)]);
+	}  else if (wcx_is_bp(buf)) {
+		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, "None"), 29, WHITE, 12, "None");
+		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, "None"), 49, WHITE, 12, "None");
+		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, "None"), 69, WHITE, 12, "None");
+		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, "Battle Points"), 94, WHITE, 12, "Battle Points");
 	}
 }
 

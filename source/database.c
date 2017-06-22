@@ -74,6 +74,62 @@ void reloadPreviewBuf(u8* previewBuf, int i, int n) {
 	free(testpath);	
 }
 
+void reloadMultiplePreviewBuf(u8* previewBuf, int i, int n, int j) {
+	char *testpath = (char*)malloc(40 * sizeof(char));
+	switch (n) {
+		case 0 : {
+			snprintf(testpath, 40, "romfs:/wcx/jpn/%d-%d.wcx", i, j);
+			break;
+		} 
+		case 1 : {
+			snprintf(testpath, 40, "romfs:/wcx/eng/%d-%d.wcx", i, j);
+			break;
+		}
+		case 2 : {
+			snprintf(testpath, 40, "romfs:/wcx/fre/%d-%d.wcx", i, j);
+			break;
+		}
+		case 3 : {
+			snprintf(testpath, 40, "romfs:/wcx/ita/%d-%d.wcx", i, j);
+			break;
+		}
+		case 4 : {
+			snprintf(testpath, 40, "romfs:/wcx/ger/%d-%d.wcx", i, j);
+			break;
+		}
+		case 5 : {
+			snprintf(testpath, 40, "romfs:/wcx/spa/%d-%d.wcx", i, j);
+			break;
+		}
+		case 6 : {
+			snprintf(testpath, 40, "romfs:/wcx/kor/%d-%d.wcx", i, j);
+			break;
+		}
+		case 7 : {
+			snprintf(testpath, 40, "romfs:/wcx/chs/%d-%d.wcx", i, j);
+			break;
+		}
+		case 8 : {
+			snprintf(testpath, 40, "romfs:/wcx/cht/%d-%d.wcx", i, j);
+			break;
+		}
+	}
+	
+	FILE* f = fopen(testpath, "r");
+	if (f) { 
+		fseek(f, 0, SEEK_END);
+		u32 sz = ftell(f);
+		memset(previewBuf, 0, sz);
+		rewind(f);
+		fread(previewBuf, sz, 1, f);
+		fclose(f); 
+	} else { 
+		fclose(f); 
+	}
+
+	free(testpath);	
+}
+
 void findFreeLocationWC(u8 *mainbuf, int game, int nInjected[]) {
 	nInjected[0] = 0;
 	int len = (game < 4) ? 24 : 48;
@@ -225,6 +281,8 @@ void eventDatabase7(u8* mainbuf, int game) {
 	bool overwrite = false;
 	int nInjected[1] = {0};
 	int langSelected = -1;
+	
+	int currentMultipleWCSelected = 0;
 	
 	findFreeLocationWC(mainbuf, game, nInjected);
 	
@@ -415,12 +473,8 @@ void eventDatabase7(u8* mainbuf, int game) {
 						FILE* f = fopen(testpath, "r");
 						if (f) {
 							k++;
-							
-							fseek(f, 0, SEEK_END);
-							u32 sz = ftell(f);
-							memset(previewbuf, 0, sz);
-							rewind(f);
-							fread(previewbuf, sz, 1, f);
+							if (currentMultipleWCSelected == 0)
+								currentMultipleWCSelected = t + 1;
 							fclose(f); 
 						}
 					}
@@ -438,54 +492,86 @@ void eventDatabase7(u8* mainbuf, int game) {
 				}
 			}
 			
-			if (langSelected != -1)
+			if (langSelected != -1) {
 				reloadPreviewBuf(previewbuf, i, langSelected);
+				reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
+			}
 			
 			while (aptMainLoop()) {
 				hidScanInput();
 				touchPosition touch;
 				hidTouchRead(&touch);
 				
-				if (hidKeysDown() & KEY_B) break;
+				if (hidKeysDown() & KEY_B) {
+					currentMultipleWCSelected = 0;
+					break;
+				}
+				
+				if (hidKeysDown() & KEY_L) {
+					int n = getN(i);
+					if (n != 0) {
+						currentMultipleWCSelected--;
+						if (currentMultipleWCSelected == 0) currentMultipleWCSelected = n;
+						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
+					}
+				}
+				
+				if (hidKeysDown() & KEY_R) {
+					int n = getN(i);
+					if (n != 0) {
+						currentMultipleWCSelected = (currentMultipleWCSelected + 1) % n;
+						if (currentMultipleWCSelected == 0) currentMultipleWCSelected = 1;
+						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
+					}
+				}
 				
 				if (hidKeysHeld() & KEY_TOUCH) {
 					if (touch.px > 114 && touch.px < 150 && touch.py > 50 && touch.py < 71 && langVett[0]) {
 						langSelected = 0;
 						reloadPreviewBuf(previewbuf, i, langSelected);
+						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
 					}
 					if (touch.px > 153 && touch.px < 189 && touch.py > 50 && touch.py < 71 && langVett[1]) {
 						langSelected = 1;
 						reloadPreviewBuf(previewbuf, i, langSelected);
+						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
 					}
 					if (touch.px > 192 && touch.px < 228 && touch.py > 50 && touch.py < 71 && langVett[2]) {
 						langSelected = 2;
 						reloadPreviewBuf(previewbuf, i, langSelected);
+						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
 					}
 					if (touch.px > 231 && touch.px < 267 && touch.py > 50 && touch.py < 71 && langVett[3]) {
 						langSelected = 3;
 						reloadPreviewBuf(previewbuf, i, langSelected);
+						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
 					}
 					if (touch.px > 270 && touch.px < 306 && touch.py > 50 && touch.py < 71 && langVett[4]) {
 						langSelected = 4;
 						reloadPreviewBuf(previewbuf, i, langSelected);
+						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
 					}
 					if (touch.px > 153 && touch.px < 189 && touch.py > 74 && touch.py < 95 && langVett[5]) {
 						langSelected = 5;
 						reloadPreviewBuf(previewbuf, i, langSelected);
+						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
 					}
 					if (touch.px > 192 && touch.px < 228 && touch.py > 74 && touch.py < 95 && langVett[6]) {
 						langSelected = 6;
 						reloadPreviewBuf(previewbuf, i, langSelected);
+						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
 					}
 					
 					if (total == 9) {
 						if (touch.px > 231 && touch.px < 267 && touch.py > 74 && touch.py < 95 && langVett[7]) {
 							langSelected = 7;
 							reloadPreviewBuf(previewbuf, i, langSelected);
+							reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
 						}
 						if (touch.px > 270 && touch.px < 306 && touch.py > 74 && touch.py < 95 && langVett[8]) {
 							langSelected = 8;
 							reloadPreviewBuf(previewbuf, i, langSelected);
+							reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
 						}
 					}
 					
