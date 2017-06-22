@@ -5,27 +5,29 @@
 
 **Editor**, **wondercard injector**, **offline extra storage** and **OTA injector**.
 
-If you want a non-invasive homebrew to see your save's infos, check out [**PKSV**](https://github.com/BernardoGiordano/PKSV)
+If you want a non-invasive homebrew to see your save's infos, check out **PKSV** in the releases page.
 
 | Downloads | Links |
 | :-------: | :---: |
-| Latest 3dsx build | [direct](https://github.com/BernardoGiordano/PKSM/releases/download/4.2.2/PKSM.zip) |
-| Latest cfw build | [direct](https://github.com/BernardoGiordano/PKSM/releases/download/4.2.2/PKSM.cia) |
-| Latest QR code | [qr](https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=https://github.com/BernardoGiordano/PKSM/releases/download/4.2.2/PKSM.cia&choe=UTF-8.png) |
+| Latest 3dsx build | [direct](https://github.com/BernardoGiordano/PKSM/releases/download/4.3.0/PKSM.zip) |
+| Latest cfw build | [direct](https://github.com/BernardoGiordano/PKSM/releases/download/4.3.0/PKSM.cia) |
+| Latest QR code | [qr](https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=https://github.com/BernardoGiordano/PKSM/releases/download/4.3.0/PKSM.cia&choe=UTF-8.png) |
 
 ## Installation
 
-Download the latest release (4.2.2) and install it with your favourite installation method. You should only copy/paste the whole content of the release zip into the root of your sd-card, most of the time. When booted, the application will automatically download the required additional assets from an external source. You can provide your own assets, if you want.
+Download the latest release (4.3.0) and install it with your favourite installation method. You should only copy/paste the whole content of the release zip into the root of your sd-card, most of the time. When booted, the application will automatically download the required additional assets from an external source. You can provide your own assets, if you want.
 
-If you're using Homebrew Launcher, make sure you have it updated to the [latest version](https://smealum.github.io/ninjhax2/starter.zip).
+PKSM works with Rosalina-based Homebrew Launchers, too.
 
-You need internet access to download the additional assets. If you can't still download them through the application, you can put them manually in the SD card, putting the external [additionalassets](https://github.com/dsoldier/PKResources) folder in your SD card, located at ` /3ds/data/PKSM/ `. To avoid troubles, the final result should be a folder filled with assets, located at ` /3ds/data/PKSM/additionalassets/ `.
+If you're using Homebrew Launcher with a *hax exploit, make sure you have it updated to the [latest version](https://smealum.github.io/ninjhax2/starter.zip).
+
+You need internet access to download the additional assets. If you can't still download them through the application, you can put them manually in the SD card, putting the external [additionalassets](https://github.com/Naxann/PKRessources/releases/tag/PKSM-4.3.0) folder in your SD card, located at ` /3ds/data/PKSM/ `. To avoid troubles, the final result should be a folder filled with assets, located at ` /3ds/data/PKSM/additionalassets/ `.
 
 ## Usage
 
-GenVI to GenVII games: trigger the right game when prompted (you will do it twice if using homebrew launcher).
+GenVI to GenVII games: trigger the right game when prompted (you will do it twice if using a *hax-based homebrew launcher).
 
-GenIV to GenV games: if using homebrew launcher, you must trigger Poketrasporter. Otherwise, use as always.
+GenIV to GenV games: if using a *hax-based homebrew launcher, you must trigger Poketrasporter. Otherwise, use as always.
 
 ## Backups
 
@@ -56,7 +58,7 @@ Before submitting an issue, look for it into the issues page, because it could h
 
 Please only do consistent issues (submitting your environment and which version of PKSM you're running), without asking for the moon: we're working for free here. Duplicate issues will be closed without answer by our part.
 
-We'll not reply to issues related to versions of PKSM different from the latest release currently available.
+We'll not reply to issues related to versions of PKSM different from the latest stable release currently available.
 
 ## Contributing
 
@@ -64,11 +66,21 @@ Pull Requests are greatly appreciated. If you're planning to add features that r
 
 ## Compiling
 
-You need devKitPro, ctrulib, sf2d, sfil, sftd and Xerpi's portlibs to be able to compile this.
+You will need:
+
+* devKitArm r46
+* ctrulib 1.2.1
+* citro3D (commit 3ae31ad)
+* libpng 1.6.19
+* libJPEGTurbo 1.5.1
+* freetype 2.7.1
+* sf2dlib
+* sftdlib
+* sfillib
 
 When cloning the repo make sure to use `git clone --recursive` in order to also get buildtools and the other dependencies.
 
-Lastly in case you're compiling for homebrew usage ensure you also create an xml file with `<targets selectable="true"></targets>` and put it along side the `.3dsx` file with matching names.
+Lastly in case you're compiling for *hax-based homebrew launchers ensure you also create an xml file with `<targets selectable="true"></targets>` and put it along side the `.3dsx` file with matching names.
 
 ## Screenshots
 
@@ -81,26 +93,17 @@ Lastly in case you're compiling for homebrew usage ensure you also create an xml
  
 ## Credits
 
-* @dsoldier for the gorgeous graphic work
-* @Anty-Lemon for joining the dev team
-* Smealum for ctrulib, Xerpi for sf2d
-* Kaphotics for PKHeX and being an awesome guy
-* SciresM for C-memecrypto, you rock man
-* J-K-D for direct save import/export and being awesome
+* dsoldier for the gorgeous graphic work
+* Naxann and Anty-Lemon for their contributions to the project
+* Smealum for ctrulib, Xerpi for sf2d, sftd and sfil
+* Kaphotics and SciresM for PKHeX and memecrypto
+* J-K-D for direct save import/export
 * Slownic for java servepkx
-* Slashcash for PCHex++ and Strackeror for PCHex
+* Slashcash for PCHex++
 * Gocario for PKBrew
 * TuxSH for TWLSaveTool
-* MarcusD for romfs support
-* Nba_Yoh for received flags fix
-* hirakujira for RNG seed function
-* PPorg for most of wc6/wc7 included here
+* PPorg for most of the wcx included here
 * Simona, Carlo, Matteo for fill.c work
-* Shai, Federico, YodaDaCoda, /u/SatansRoommate for tests
-* Alex, Immersion, Hat3Mond4ys, sgtkwol for descriptions
-* Paul, Kian for a few wc6
-* Majickhat55 for few collections and descriptions
-* Poutros for N's collection
 
 **If you appreciate my work, I appreciate [a coffee](https://www.paypal.me/BernardoGiordano) :)** 
 
