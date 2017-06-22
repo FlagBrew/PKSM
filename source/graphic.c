@@ -633,7 +633,7 @@ void menu(int menu[]) {
 }
 
 void mainMenuDS(int currentEntry) {
-	wchar_t* menu[2] = { i18n(S_GRAPHIC_MENUDS_EVENTS), i18n(S_GRAPHIC_MENUDS_OTHER)};
+	wchar_t* menu[] = { L"Events", L"Save Info", L"Other"};
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		sf2d_draw_texture(DSTopBG, 0, 0);
 		sf2d_draw_texture(pokeball, (400 - pokeball->width) / 2, (240 - pokeball->height) / 2 + 3);
@@ -641,8 +641,10 @@ void mainMenuDS(int currentEntry) {
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(DSBottomBG, 0, 0);
-		for (int i = 0; i < 3; i++) 
+		for (int i = 0; i < 3; i++) {
 			sf2d_draw_texture((i == currentEntry) ? DSBarSelected : DSBar, 0, 33 + i*56);
+			sftd_draw_wtext(fontBold14, (320 - sftd_get_wtext_width(fontBold14, 14, menu[i])) / 2, (i == currentEntry) ? 43 + i*56 : 45 + i*56, (i == currentEntry) ? WHITE : DS, 14, menu[i]);
+		}
 		sftd_draw_wtext(fontBold9, (320 - sftd_get_wtext_width(fontBold9, 9, i18n(S_GRAPHIC_MENUDS_INDICATIONS))) / 2, 224, RED, 9, i18n(S_GRAPHIC_MENUDS_INDICATIONS));
 	pksm_end_frame();
 	sf2d_swapbuffers();
@@ -899,8 +901,9 @@ void printDB7(u8* previewbuf, int game, int sprite, int i, bool langVett[], bool
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		wcxInfoViewer(previewbuf);
-		if (sprite != -1)
+		if (sprite != -1) {
 			sf2d_draw_texture_part_scale(spritesSmall, 282, 41 - movementOffsetLong(6), 40 * (wcx_get_species(previewbuf) % 25) + 4, 30 * (wcx_get_species(previewbuf) / 25), 34, 30, 2, 2);
+		}
 	pksm_end_frame();
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
