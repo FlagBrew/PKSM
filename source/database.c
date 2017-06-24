@@ -18,46 +18,19 @@
 
 #include "database.h"
 
+char *tags[] = {"jpn", "eng", "fre", "ita", "ger", "spa", "kor", "chs", "cht"};
+
+void getSinglePathWCX(char* path, int lang, int i) {
+	sprintf(path, "romfs:/wcx/%s/%d.wcx", tags[lang], i);
+}
+
+void getMultiplePathWCX(char* path, int lang, int i, int j) {
+	sprintf(path, "romfs:/wcx/%s/%d-%d.wcx", tags[lang], i, j);
+}
+
 void reloadPreviewBuf(u8* previewBuf, int i, int n) {
 	char *testpath = (char*)malloc(40 * sizeof(char));
-	switch (n) {
-		case 0 : {
-			snprintf(testpath, 40, "romfs:/wcx/jpn/%d.wcx", i);
-			break;
-		} 
-		case 1 : {
-			snprintf(testpath, 40, "romfs:/wcx/eng/%d.wcx", i);
-			break;
-		}
-		case 2 : {
-			snprintf(testpath, 40, "romfs:/wcx/fre/%d.wcx", i);
-			break;
-		}
-		case 3 : {
-			snprintf(testpath, 40, "romfs:/wcx/ita/%d.wcx", i);
-			break;
-		}
-		case 4 : {
-			snprintf(testpath, 40, "romfs:/wcx/ger/%d.wcx", i);
-			break;
-		}
-		case 5 : {
-			snprintf(testpath, 40, "romfs:/wcx/spa/%d.wcx", i);
-			break;
-		}
-		case 6 : {
-			snprintf(testpath, 40, "romfs:/wcx/kor/%d.wcx", i);
-			break;
-		}
-		case 7 : {
-			snprintf(testpath, 40, "romfs:/wcx/chs/%d.wcx", i);
-			break;
-		}
-		case 8 : {
-			snprintf(testpath, 40, "romfs:/wcx/cht/%d.wcx", i);
-			break;
-		}
-	}
+	getSinglePathWCX(testpath, n, i);
 	
 	FILE* f = fopen(testpath, "r");
 	if (f) { 
@@ -76,44 +49,7 @@ void reloadPreviewBuf(u8* previewBuf, int i, int n) {
 
 void reloadMultiplePreviewBuf(u8* previewBuf, int i, int n, int j) {
 	char *testpath = (char*)malloc(40 * sizeof(char));
-	switch (n) {
-		case 0 : {
-			snprintf(testpath, 40, "romfs:/wcx/jpn/%d-%d.wcx", i, j);
-			break;
-		} 
-		case 1 : {
-			snprintf(testpath, 40, "romfs:/wcx/eng/%d-%d.wcx", i, j);
-			break;
-		}
-		case 2 : {
-			snprintf(testpath, 40, "romfs:/wcx/fre/%d-%d.wcx", i, j);
-			break;
-		}
-		case 3 : {
-			snprintf(testpath, 40, "romfs:/wcx/ita/%d-%d.wcx", i, j);
-			break;
-		}
-		case 4 : {
-			snprintf(testpath, 40, "romfs:/wcx/ger/%d-%d.wcx", i, j);
-			break;
-		}
-		case 5 : {
-			snprintf(testpath, 40, "romfs:/wcx/spa/%d-%d.wcx", i, j);
-			break;
-		}
-		case 6 : {
-			snprintf(testpath, 40, "romfs:/wcx/kor/%d-%d.wcx", i, j);
-			break;
-		}
-		case 7 : {
-			snprintf(testpath, 40, "romfs:/wcx/chs/%d-%d.wcx", i, j);
-			break;
-		}
-		case 8 : {
-			snprintf(testpath, 40, "romfs:/wcx/cht/%d-%d.wcx", i, j);
-			break;
-		}
-	}
+	getMultiplePathWCX(testpath, n, i, j);
 	
 	FILE* f = fopen(testpath, "r");
 	if (f) { 
@@ -301,45 +237,10 @@ void eventDatabase7(u8* mainbuf, int game) {
 			int i = page * 10 + currentEntry;
 			// check for single wcx events
 			char *testpath = (char*)malloc(40 * sizeof(char));
+			
 			for (int j = 0; j < total; j++) {
-				switch (j) {
-					case 0 : {
-						snprintf(testpath, 40, "romfs:/wcx/jpn/%d.wcx", i);
-						break;
-					} 
-					case 1 : {
-						snprintf(testpath, 40, "romfs:/wcx/eng/%d.wcx", i);
-						break;
-					}
-					case 2 : {
-						snprintf(testpath, 40, "romfs:/wcx/fre/%d.wcx", i);
-						break;
-					}
-					case 3 : {
-						snprintf(testpath, 40, "romfs:/wcx/ita/%d.wcx", i);
-						break;
-					}
-					case 4 : {
-						snprintf(testpath, 40, "romfs:/wcx/ger/%d.wcx", i);
-						break;
-					}
-					case 5 : {
-						snprintf(testpath, 40, "romfs:/wcx/spa/%d.wcx", i);
-						break;
-					}
-					case 6 : {
-						snprintf(testpath, 40, "romfs:/wcx/kor/%d.wcx", i);
-						break;
-					}
-					case 7 : {
-						snprintf(testpath, 40, "romfs:/wcx/chs/%d.wcx", i);
-						break;
-					}
-					case 8 : {
-						snprintf(testpath, 40, "romfs:/wcx/cht/%d.wcx", i);
-						break;
-					}
-				}
+				getSinglePathWCX(testpath, j, i);
+
 				FILE* f = fopen(testpath, "r");
 				if (f) { 
 					langVett[j] = true;
@@ -355,45 +256,9 @@ void eventDatabase7(u8* mainbuf, int game) {
 			if (n != 0) {
 				for (int j = 0; j < total; j++) {
 					k = 0;
-					for (int t = 0; t < n; t++) {
-						switch (j) {
-							case 0 : {
-								snprintf(testpath, 40, "romfs:/wcx/jpn/%d-%d.wcx", i, t + 1);
-								break;
-							} 
-							case 1 : {
-								snprintf(testpath, 40, "romfs:/wcx/eng/%d-%d.wcx", i, t + 1);
-								break;
-							}
-							case 2 : {
-								snprintf(testpath, 40, "romfs:/wcx/fre/%d-%d.wcx", i, t + 1);
-								break;
-							}
-							case 3 : {
-								snprintf(testpath, 40, "romfs:/wcx/ita/%d-%d.wcx", i, t + 1);
-								break;
-							}
-							case 4 : {
-								snprintf(testpath, 40, "romfs:/wcx/ger/%d-%d.wcx", i, t + 1);
-								break;
-							}
-							case 5 : {
-								snprintf(testpath, 40, "romfs:/wcx/spa/%d-%d.wcx", i, t + 1);
-								break;
-							}
-							case 6 : {
-								snprintf(testpath, 40, "romfs:/wcx/kor/%d-%d.wcx", i, t + 1);
-								break;
-							}
-							case 7 : {
-								snprintf(testpath, 40, "romfs:/wcx/chs/%d-%d.wcx", i, t + 1);
-								break;
-							}
-							case 8 : {
-								snprintf(testpath, 40, "romfs:/wcx/cht/%d-%d.wcx", i, t + 1);
-								break;
-							}
-						}
+					for (int t = 0; t < n; t++) {	
+						getMultiplePathWCX(testpath, j, i, t + 1);
+
 						FILE* f = fopen(testpath, "r");
 						if (f) {
 							k++;
