@@ -900,7 +900,7 @@ void printDB7(u8* previewbuf, int game, int sprite, int i, bool langVett[], bool
 	int total = (game == GAME_SUN || game == GAME_MOON) ? 9 : 7;
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
-		wcxInfoViewer(previewbuf);
+		wcxInfoViewer(previewbuf, game);
 		if (sprite != -1) {
 			sf2d_draw_texture_part_scale(spritesSmall, 282, 41 - movementOffsetLong(6), 40 * (wcx_get_species(previewbuf) % 25) + 4, 30 * (wcx_get_species(previewbuf) / 25), 34, 30, 2, 2);
 		}
@@ -908,7 +908,7 @@ void printDB7(u8* previewbuf, int game, int sprite, int i, bool langVett[], bool
 	
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		printMenuBottom();
-		
+
 		if (getN(i) > 1)
 			sftd_draw_text(fontBold11, (320 - sftd_get_text_width(fontBold11, 11, "Press L/R to switch multiple wondercards.")) / 2, 19, LIGHTBLUE, 11, "Press L/R to switch multiple wondercards.");
 		
@@ -1155,7 +1155,7 @@ void infoViewer(u8* pkmn, int game) {
 	}
 }
 
-void wcxInfoViewer(u8* buf) {
+void wcxInfoViewer(u8* buf, int game) {
 	int y_desc = 29;
 	wchar_t* entries[] = {L"Species", L"OT", L"TID/SID", L"Held Item", L"Game", L"Met Date"};
 
@@ -1176,23 +1176,41 @@ void wcxInfoViewer(u8* buf) {
 		if (i == 5) y_desc += 6;
 	}
 	
-	wchar_t *version = L"WIP";
-	switch (wcx_get_origin_game(buf)) {
-		case 24:
-			version = L"X"; break;
-		case 25:
-			version = L"Y"; break;
-		case 26:
-			version = L"Alpha Sapphire"; break;
-		case 27:
-			version = L"Omega Ruby"; break;
-		case 30:
-			version = L"Sun"; break;
-		case 31:
-			version = L"Moon"; break;
+	wchar_t *version;
+	if (wcx_get_origin_game(buf) != 0) {
+		switch (wcx_get_origin_game(buf)) {
+			case 24:
+				version = L"X"; break;
+			case 25:
+				version = L"Y"; break;
+			case 26:
+				version = L"Alpha Sapphire"; break;
+			case 27:
+				version = L"Omega Ruby"; break;
+			case 30:
+				version = L"Sun"; break;
+			case 31:
+				version = L"Moon"; break;
+			default: 
+				version = L"WIP";
+		}
+	} else {
+		switch (game) {
+			case GAME_X:
+			case GAME_Y:
+				version = L"X/Y compatible"; break;
+			case GAME_OR:
+			case GAME_AS:
+				version = L"OR/AS compatible"; break;
+			case GAME_SUN:
+			case GAME_MOON:
+				version = L"Sun/Moon compatible"; break;
+			default:
+				version = L"WIP"; break;
+		}
 	}
 	
-	sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, version), 115, DS, 12, version);
+	sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, version), 115, WHITE, 12, version);
 	
 	u32 title[72];
 	memset(title, 0, 72);

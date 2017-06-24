@@ -79,7 +79,7 @@ void printElement(u8* pkmn, int game, u16 n, int x, int y);
 void printElementBlend(u8* pkmn, int game, u16 n, int x, int y, u32 color);
 void printSettings(int box, int language);
 void infoViewer(u8* pkmn, int game);
-void wcxInfoViewer(u8* buf);
+void wcxInfoViewer(u8* buf, int game);
 void printfHexEditorInfo(u8* pkmn, int byte);
 void printSaveEditorInfo(u8* pkmn, int game, int byte);
 void printDexViewer(u8* mainbuf, int game, int currentEntry, int page, int seen, int caught);

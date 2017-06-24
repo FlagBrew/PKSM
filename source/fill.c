@@ -113,10 +113,10 @@ void filldatabase6(char *database[], int spriteArray[]) {
 	database[2] = "0002 - CoroCoro Garchomp"; spriteArray[2] = 445;
 	database[3] = "0003 - PC Tokyo Bay Inkay"; spriteArray[3] = 686;
 	database[4] = "0004 - Nuketta Wobbuffet"; spriteArray[4] = 202;
-	database[11] = "0011 - Alternate Event Garchomp"; spriteArray[11] = 445;
-	database[12] = "0012 - Eevee House Sylveon"; spriteArray[12] = 133;
+	//database[11] = "0011 - Alternate Event Garchomp"; spriteArray[11] = 445;
+	database[12] = "0012 - Eevee House Sylveon"; spriteArray[12] = 700;
 	database[15] = "0015 - CoroCoro Charizard"; spriteArray[15] = 6;
-	database[17] = "0017 - Garchomp"; spriteArray[17] = 445;
+	//database[17] = "0017 - Garchomp"; spriteArray[17] = 445;
 	database[19] = "0019 - PC Scizor"; spriteArray[19] = 212;
 	database[20] = "0020 - PC Gengar"; spriteArray[20] = 94;
 	database[21] = "0021 - Darkrai"; spriteArray[21] = 491;
