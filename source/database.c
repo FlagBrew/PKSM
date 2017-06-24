@@ -186,82 +186,6 @@ int getN(int i) {
 	return 0;
 }
 
-int checkMultipleWCX(u8* mainbuf, int game, int i, int langCont, int nInjected[], int adapt) {
-	int n = getN(i);
-	if (n == 0)
-		return 0;
-	
-	for (int j = 0; j < n; j++) {
-		char *wcxpath = (char*)malloc(40 * sizeof(char));
-		switch (langCont) {
-			case 0 : {
-				snprintf(wcxpath, 40, "romfs:/wcx/jpn/%d-%d.wcx", i, j + 1);
-				break;
-			} 
-			case 1 : {
-				snprintf(wcxpath, 40, "romfs:/wcx/eng/%d-%d.wcx", i, j + 1);
-				break;
-			}
-			case 2 : {
-				snprintf(wcxpath, 40, "romfs:/wcx/fre/%d-%d.wcx", i, j + 1);
-				break;
-			}
-			case 3 : {
-				snprintf(wcxpath, 40, "romfs:/wcx/ita/%d-%d.wcx", i, j + 1);
-				break;
-			}
-			case 4 : {
-				snprintf(wcxpath, 40, "romfs:/wcx/ger/%d-%d.wcx", i, j + 1);
-				break;
-			}
-			case 5 : {
-				snprintf(wcxpath, 40, "romfs:/wcx/spa/%d-%d.wcx", i, j + 1);
-				break;
-			}
-			case 6 : {
-				snprintf(wcxpath, 40, "romfs:/wcx/kor/%d-%d.wcx", i, j + 1);
-				break;
-			}
-			case 7 : {
-				snprintf(wcxpath, 40, "romfs:/wcx/chs/%d-%d.wcx", i, j + 1);
-				break;
-			}
-			case 8 : {
-				snprintf(wcxpath, 40, "romfs:/wcx/cht/%d-%d.wcx", i, j + 1);
-				break;
-			}
-		}
-		
-		FILE *fptr = fopen(wcxpath, "rt");
-		if (fptr == NULL) {
-			fclose(fptr);
-			free(wcxpath);
-			return 15;
-		}
-		fseek(fptr, 0, SEEK_END);
-		u32 contentsize = ftell(fptr);
-		u8 *wcxbuf = (u8*)malloc(contentsize);
-		if (wcxbuf == NULL) {
-			fclose(fptr);
-			free(wcxbuf);
-			free(wcxpath);
-			return 8;
-		}
-		rewind(fptr);
-		fread(wcxbuf, contentsize, 1, fptr);
-		fclose(fptr);
-
-		if (adapt)
-			setSaveLanguage(mainbuf, game, langCont);
-
-		setWC(mainbuf, wcxbuf, game, i, nInjected);
-
-		free(wcxpath);
-		free(wcxbuf);
-	}
-	return 1;
-}
-
 void eventDatabase7(u8* mainbuf, int game) {
 	char *database[SMCOUNT];
 	int *spriteArray = (int*)malloc(SMCOUNT * sizeof(int));
@@ -596,17 +520,6 @@ void eventDatabase7(u8* mainbuf, int game) {
 					
 					if ((game == GAME_X || game == GAME_Y) && i == 2048) {
 						infoDisp(i18n(S_DATABASE_ITEM_NOT_AVAILABLE_XY));
-						break;
-					}
-					
-					int ret = checkMultipleWCX(mainbuf, game, i, langSelected, nInjected, adapt);
-					if (ret != 0 && ret != 1) {
-						infoDisp(i18n(S_DATABASE_ERROR_INJECTION));
-						break;
-					}
-					
-					else if (ret == 1) {
-						infoDisp(i18n(S_DATABASE_SUCCESS_INJECTION));
 						break;
 					}
 
