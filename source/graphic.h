@@ -70,7 +70,7 @@ void menu(int menu[]);
 void printDatabase6(char *database[], int currentEntry, int page, int spriteArray[]);
 void printDatabase5(char *database[], int currentEntry, int page, int spriteArray[], bool isSelected, int langSelected, bool langVett[]);
 void printDatabase4(char *database[], int currentEntry, int page, int spriteArray[], bool isSelected, int langSelected, bool langVett[]);
-void printDB7(u8* previewbuf, int game, int sprite, int i, bool langVett[], bool adapt, bool overwrite, int langSelected, int nInjected);
+void printDB7(u8* previewbuf, int game, int sprite, int i, bool langVett[], bool adapt, bool overwrite, int langSelected, int nInjected, bool ota);
 void printEditor(u8* mainbuf, int game, u64 size, int currentEntry, int page);
 void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int additional3, int mode, wchar_t* descriptions[]);
 void printPKViewer(u8* mainbuf, u8* pkmn, bool isTeam, int game, int currentEntry, int menuEntry, int box, int mode, int additional1, int additional2);

@@ -892,7 +892,7 @@ void printDatabase4(char *database[], int currentEntry, int page, int spriteArra
 	sf2d_swapbuffers();
 }
 
-void printDB7(u8* previewbuf, int game, int sprite, int i, bool langVett[], bool adapt, bool overwrite, int langSelected, int nInjected) {
+void printDB7(u8* previewbuf, int game, int sprite, int i, bool langVett[], bool adapt, bool overwrite, int langSelected, int nInjected, bool ota) {
 	char *languages[] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR", "CHS", "CHT"};
 	char *cont = (char*)malloc(3 * sizeof(char));
 	snprintf(cont, 3, "%d", nInjected + 1);
@@ -901,8 +901,16 @@ void printDB7(u8* previewbuf, int game, int sprite, int i, bool langVett[], bool
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		wcxInfoViewer(previewbuf, game);
+		sf2d_draw_texture(otaButton, 360, 2);
+		
 		if (sprite != -1) {
 			sf2d_draw_texture_part_scale(spritesSmall, 282, 41 - movementOffsetLong(6), 40 * (wcx_get_species(previewbuf) % 25) + 4, 30 * (wcx_get_species(previewbuf) / 25), 34, 30, 2, 2);
+		}
+		
+		if (ota) {
+			sf2d_draw_rectangle(0, 0, 400, 240, RGBA8(0, 0, 0, 220));
+			sftd_draw_wtext(fontBold15, (400 - sftd_get_wtext_width(fontBold15, 15, i18n(S_GRAPHIC_PKVIEWER_OTA_LAUNCH_CLIENT))) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, i18n(S_GRAPHIC_PKVIEWER_OTA_LAUNCH_CLIENT));
+			sftd_draw_wtext(fontBold12, (400 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKVIEWER_OTA_INDICATIONS))) / 2, 130, WHITE, 12, i18n(S_GRAPHIC_PKVIEWER_OTA_INDICATIONS));
 		}
 	pksm_end_frame();
 	
@@ -971,7 +979,12 @@ void printDB7(u8* previewbuf, int game, int sprite, int i, bool langVett[], bool
 		sftd_draw_wtext(fontBold12, 270 + (36 - sftd_get_wtext_width(fontBold12, 12, i18n(S_NO))) / 2, 141, (!adapt) ? DARKBLUE : YELLOW, 12, i18n(S_NO));
 		sftd_draw_text(fontBold12, 251 + (36 - sftd_get_text_width(fontBold12, 12, cont)) / 2, 171, YELLOW, 12, cont);
 		
-		printBottomIndications(i18n(S_GRAPHIC_DB_INDICATIONS_INJECT));
+		if (ota) {
+			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
+			drawIPBottom(fontBold9);
+		} else
+			printBottomIndications(i18n(S_GRAPHIC_DB_INDICATIONS_INJECT));
+		
 		pksm_end_frame();
 	sf2d_swapbuffers();
 	

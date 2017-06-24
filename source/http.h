@@ -33,8 +33,10 @@ typedef struct {
 } http_server;
 
 void drawIP(sftd_font *fontBold9);
+void drawIPBottom(sftd_font *fontBold9);
 void shutDownSoc();
 void closeOnExit();
 int init();
-void processing(u8* mainbuf, int game, int tempVett[]);
+void process_pkx(u8* mainbuf, int game, int tempVett[]);
+void process_wcx(u8* buf);
 Result downloadFile(char* url, char* path);

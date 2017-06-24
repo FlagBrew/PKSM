@@ -313,6 +313,18 @@ void eventDatabase7(u8* mainbuf, int game) {
 						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
 					}
 				}
+
+				if (hidKeysDown() & KEY_Y) {
+					if (!init())
+						break;
+					
+					do {
+						hidScanInput();
+						process_wcx(previewbuf);
+						printDB7(previewbuf, game, spriteArray[i], i, langVett, adapt, overwrite, langSelected, nInjected[0], true);
+					} while (aptMainLoop() && !(hidKeysDown() & KEY_B));
+					shutDownSoc();
+				}
 				
 				if (hidKeysHeld() & KEY_TOUCH) {
 					if (touch.px > 114 && touch.px < 150 && touch.py > 50 && touch.py < 71 && langVett[0]) {
@@ -401,7 +413,7 @@ void eventDatabase7(u8* mainbuf, int game) {
 				}
 				#endif
 				
-				printDB7(previewbuf, game, spriteArray[i], i, langVett, adapt, overwrite, langSelected, nInjected[0]);
+				printDB7(previewbuf, game, spriteArray[i], i, langVett, adapt, overwrite, langSelected, nInjected[0], false);
 			}
 			
 			free(testpath);

@@ -1551,7 +1551,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 				hidScanInput();
 				calcCurrentEntryMorePages(&tempVett[1], &tempVett[0], boxmax + 1, 29, 6);
 		
-				processing(mainbuf, game, tempVett);
+				process_pkx(mainbuf, game, tempVett);
 				printPKViewer(mainbuf, pkmn, isTeam, game, tempVett[1], menuEntry, tempVett[0], ED_OTA, 0, 0);	
 			} while (aptMainLoop() && !(hidKeysDown() & KEY_B));
 			shutDownSoc();

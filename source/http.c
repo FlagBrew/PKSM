@@ -28,6 +28,10 @@ void drawIP(sftd_font *fontBold9) {
 	sftd_draw_wtextf(fontBold9, 10, 220, WHITE, 9, i18n(S_HTTP_SERVER_RUNNING), inet_ntoa(data.server_addr.sin_addr));
 }
 
+void drawIPBottom(sftd_font *fontBold9) {
+	sftd_draw_wtextf(fontBold9, 10, 225, WHITE, 9, i18n(S_HTTP_SERVER_RUNNING), inet_ntoa(data.server_addr.sin_addr));
+}
+
 void shutDownSoc() {
 	close(data.server_id);
 	socExit();
@@ -89,7 +93,29 @@ int init() {
 	return 1;
 }
 
-void processing(u8* mainbuf, int game, int tempVett[]) {
+void process_wcx(u8* buf) {
+	data.client_id = accept(data.server_id, (struct sockaddr *) &data.client_addr, &data.client_length);
+	if (data.client_id < 0 && errno != EAGAIN) {
+		infoDisp(i18n(S_HTTP_ERROR_PROCESSING_PHASE));
+		closeOnExit();
+		return;		
+	} else {
+		char *dummy;
+		memset(payload, 0, PAYLOADSIZE);
+		// set client socket to blocking to simplify sending data back
+		fcntl(data.client_id, F_SETFL, fcntl(data.client_id, F_GETFL, 0) & ~O_NONBLOCK);
+
+        recv(data.client_id, payload, PAYLOADSIZE, 0);
+        if (strstr(payload, "PKSMOTA") != NULL && (hidKeysDown() != KEY_B)) {
+            dummy = strstr(payload, "PKSMOTA");
+            memcpy(buf, &dummy[7], 264);
+        }
+    }
+    close(data.client_id);
+    data.client_id = -1;
+}
+
+void process_pkx(u8* mainbuf, int game, int tempVett[]) {
 	data.client_id = accept(data.server_id, (struct sockaddr *) &data.client_addr, &data.client_length);
 	if (data.client_id < 0 && errno != EAGAIN) {
 		infoDisp(i18n(S_HTTP_ERROR_PROCESSING_PHASE));
