@@ -260,7 +260,10 @@ void fillSectors(bool sector[][2]) {
 	}
 		
 	for (int j = 0x00; j <= 0x03; j++) // encryption constant
-		sector[j][0] = true;	
+		sector[j][0] = true;
+		
+	for (int j = 0x08; j <= 0x09; j++) // species
+		sector[j][0] = true;
 
 	for (int j = 0x0C; j <= 0x0F; j++) // tid to sid
 		sector[j][0] = true;

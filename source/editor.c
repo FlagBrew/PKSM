@@ -1308,7 +1308,9 @@ void setFlag(u8* pkmn, int flgaddr, int flgshift, bool value) {
 
 void parseHexEditor(u8* pkmn, int game, int byteEntry) {	
 	if (!hax) {
-		if (byteEntry == 0x14)
+		if (byteEntry == 0x08 || byteEntry == 0x09)
+			checkMaxValueBetweenBounds(pkmn, byteEntry, 0x08, 2, 802);
+		else if (byteEntry == 0x14)
 			checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 231);
 		else if (byteEntry == 0x15)
 			checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 1);
