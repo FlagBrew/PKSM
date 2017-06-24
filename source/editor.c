@@ -1458,6 +1458,12 @@ void pokemonEditor(u8* mainbuf, int game) {
 		
 		if (hidKeysDown() & KEY_B) 
 			break;
+		
+		if (hidKeysDown() & KEY_X) {
+			isTeam = isTeam ? false : true;
+			if (isTeam)
+				currentEntry = currentEntry > 5 ? 5 : currentEntry;
+		}
 
  		if (hidKeysDown() & KEY_TOUCH) {
 			if (touch.px > 210 && touch.px < 320 && touch.py > 0 && touch.py < 210) {
