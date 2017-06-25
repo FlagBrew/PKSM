@@ -738,7 +738,7 @@ void printDatabase6(char *database[], int currentEntry, int page, int spriteArra
 	free(pages);
 }
 
-void printDatabase5(char *database[], int currentEntry, int page, int spriteArray[], bool isSelected, int langSelected, bool langVett[]) {
+void printDatabaseListDS(char *database[], int currentEntry, int page, int spriteArray[], bool isSelected, int langSelected, bool langVett[]) {
 	int pk, y = 41;
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
@@ -786,83 +786,6 @@ void printDatabase5(char *database[], int currentEntry, int page, int spriteArra
 		
 		if (isSelected) {
 			char *languages[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};			
-			
-			for (int t = 0; t < 7; t++) {
-				int x = 0, y = 178;
-				switch (t) {
-					case 0 : { x = 25; break; }
-					case 1 : { x = 63; break; }
-					case 2 : { x = 101; break; }
-					case 3 : { x = 139; break; }
-					case 4 : { x = 177; break; }
-					case 5 : { x = 215; break; }
-					case 6 : { x = 253; break; }
-				}
-				
-				sf2d_draw_texture(DSLang, x, y);
-				if (langVett[t]) {
-					if (t == langSelected) sf2d_draw_texture(DSLangSelected, x, y);
-					sftd_draw_text(fontBold12, x + (36 - sftd_get_text_width(fontBold12, 12, languages[t])) / 2, y + 4, WHITE, 12, languages[t]);
-				}
-				else {
-					if (t == langSelected) sf2d_draw_texture(DSLangSelected, x, y);
-					sftd_draw_text(fontBold12, x + (36 - sftd_get_text_width(fontBold12, 12, languages[t])) / 2, y + 4, RGBA8(255, 255, 255, 100), 12, languages[t]);
-				}
-			}
-		}
-	
-	pksm_end_frame();
-	sf2d_swapbuffers();
-}
-
-void printDatabase4(char *database[], int currentEntry, int page, int spriteArray[], bool isSelected, int langSelected, bool langVett[]) {
-	int pk, y = 41;
-	
-	sf2d_start_frame(GFX_TOP, GFX_LEFT);
-		sf2d_draw_texture(DSEventTop, 0, 0);
-		
-		for (int i = 0; i < 5; i++) {
-			pk = spriteArray[page * 10 + i];
-			if (i == currentEntry)
-				sf2d_draw_texture(DSSelectedBarL, 18, y);
-			else
-				sf2d_draw_texture(DSNormalBarL, 18, y);
-			
-			if (pk != -1)
-				sf2d_draw_texture_part(spritesSmall, 22, y + 2, 40 * (pk % 25) + 4, 30 * (pk / 25), 34, 30);
-			if (sftd_get_text_width(fontBold9, 9, database[page * 10 + i]) <= 148)
-				sftd_draw_text(fontBold9, 55, y + 14, WHITE, 9, database[page * 10 + i]);
-			else
-				sftd_draw_text_wrap(fontBold9, 55, y + 3, WHITE, 9, 148, database[page * 10 + i]);
-			
-			y += DSSelectedBarL->height;
-		}
-		
-		y = 41;
-		for (int i = 5; i < 10; i++) {
-			pk = spriteArray[page * 10 + i];
-			if (i == currentEntry)
-				sf2d_draw_texture(DSSelectedBarR, 200, y);
-			else
-				sf2d_draw_texture(DSNormalBarR, 200, y);
-			
-			if (pk != -1)
-				sf2d_draw_texture_part(spritesSmall, 204, y + 2, 40 * (pk % 25) + 4, 30 * (pk / 25), 34, 30);
-			if (sftd_get_text_width(fontBold9, 9, database[page * 10 + i]) <= 148)
-				sftd_draw_text(fontBold9, 235, y + 14, WHITE, 9, database[page * 10 + i]);
-			else
-				sftd_draw_text_wrap(fontBold9, 235, y + 3, WHITE, 9, 148, database[page * 10 + i]);
-			
-			y += DSSelectedBarR->height;
-		}
-	pksm_end_frame();
-
-	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-		sf2d_draw_texture(DSEventBottom, 0, 0);
-		sftd_draw_wtext(fontBold9, (320 - sftd_get_wtext_width(fontBold9, 9, isSelected ? i18n(S_GRAPHIC_DB_INDICATIONS_INJECT) : i18n(S_GRAPHIC_DB_INDICATIONS_SELECT))) / 2, 222, RGBA8(255, 255, 255, 130), 9, isSelected ? i18n(S_GRAPHIC_DB_INDICATIONS_INJECT) : i18n(S_GRAPHIC_DB_INDICATIONS_SELECT));
-		
-		if (isSelected) {
-			char *languages[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};
 			
 			for (int t = 0; t < 7; t++) {
 				int x = 0, y = 178;

@@ -25,4 +25,3 @@ void findFreeLocationWC(u8 *mainbuf, int game, int nInjected[]);
 int getN(int i);
 void eventDatabase7(u8* mainbuf, int game);
 void eventDatabase5(u8* mainbuf, int game);
-void eventDatabase4(u8* mainbuf, int game, int GBO, int SBO);

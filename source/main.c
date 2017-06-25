@@ -338,10 +338,7 @@ int main() {
 				touchPressed = false;
 				switch (currentEntry) {
 					case 0 : {
-						if (game == GAME_W1 || game == GAME_B1 || game == GAME_W2 || game == GAME_B2)
-							eventDatabase5(mainbuf, game);
-						if (game == GAME_DIAMOND || game == GAME_PEARL || game == GAME_PLATINUM || game == GAME_HG || game == GAME_SS)
-							eventDatabase4(mainbuf, game, GBO, SBO);
+						eventDatabase5(mainbuf, game);
 						break;
 					}
 					case 1 : {

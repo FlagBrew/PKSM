@@ -20,6 +20,14 @@
 
 char *tags[] = {"jpn", "eng", "fre", "ita", "ger", "spa", "kor", "chs", "cht"};
 
+void getSinglePathPGF(char* path, int lang, int i) {
+	sprintf(path, "romfs:/pgf/%s/%d.pgf", tags[lang], i);
+}
+
+void getSinglePathPGT(char* path, int lang, int i) {
+	sprintf(path, "romfs:/pgt/%s/%d.pgt", tags[lang], i);
+}
+
 void getSinglePathWCX(char* path, int lang, int i) {
 	sprintf(path, "romfs:/wcx/%s/%d.wcx", tags[lang], i);
 }
@@ -427,9 +435,15 @@ void eventDatabase7(u8* mainbuf, int game) {
 }
 
 void eventDatabase5(u8* mainbuf, int game) {
-	char *database[170];
-	int *spriteArray = (int*)malloc(170 * sizeof(int));
-	filldatabase5(database, spriteArray);
+	bool isGen5 = game == GAME_B1 || game == GAME_B2 || game == GAME_W1 || game == GAME_W2;
+	int sz = isGen5 ? 170 : 190;
+	char *database[sz];
+	int *spriteArray = (int*)malloc(sz * sizeof(int));
+	
+	if (isGen5)
+		filldatabase5(database, spriteArray);
+	else
+		filldatabase4(database, spriteArray);
 	
 	int currentEntry = 0;
 	int page = 0;
@@ -459,11 +473,11 @@ void eventDatabase5(u8* mainbuf, int game) {
 						page--;
 				} while (temp == 10);
 			}
-			else if (page == 0) page = 16;
+			else if (page == 0) page = isGen5 ? 16 : 18;
 		}
 		
 		if (hidKeysDown() & KEY_R) {
-			if (page < 16) {
+			if (page < (isGen5 ? 16 : 18)) {
 				int temp;
 				do {
 					page++;
@@ -476,7 +490,7 @@ void eventDatabase5(u8* mainbuf, int game) {
 						page++;
 				} while (temp == 10);
 			}
-			else if (page == 16) page = 0;
+			else if (page == (isGen5 ? 16 : 18)) page = 0;
 		}
 		
 		if (hidKeysDown() & KEY_UP) {
@@ -494,7 +508,7 @@ void eventDatabase5(u8* mainbuf, int game) {
 				int temp;
 				do {
 					page--;
-					if (page < 0) page = 16;
+					if (page < 0) page = (isGen5 ? 16 : 18);
 					temp = 0;
 					for (int i = 0; i < 10; i++)
 						if (strcmp(database[page*10+i], " ") == 0)
@@ -513,7 +527,7 @@ void eventDatabase5(u8* mainbuf, int game) {
 				int temp;
 				do {
 					page++;
-					if (page > 16) page = 0;
+					if (page > (isGen5 ? 16 : 18)) page = 0;
 					temp = 0;
 					for (int i = 0; i < 10; i++)
 						if (strcmp(database[page*10+i], " ") == 0)
@@ -531,36 +545,11 @@ void eventDatabase5(u8* mainbuf, int game) {
 
 			char *testpath = (char*)malloc(40 * sizeof(char));
 			for (int j = 0; j < 7; j++) {
-				switch (j) {
-					case 0 : {
-						snprintf(testpath, 40, "romfs:/pgf/jpn/%d.pgf", i);
-						break;
-					} 
-					case 1 : {
-						snprintf(testpath, 40, "romfs:/pgf/eng/%d.pgf", i);
-						break;
-					}
-					case 2 : {
-						snprintf(testpath, 40, "romfs:/pgf/fre/%d.pgf", i);
-						break;
-					}
-					case 3 : {
-						snprintf(testpath, 40, "romfs:/pgf/ita/%d.pgf", i);
-						break;
-					}
-					case 4 : {
-						snprintf(testpath, 40, "romfs:/pgf/ger/%d.pgf", i);
-						break;
-					}
-					case 5 : {
-						snprintf(testpath, 40, "romfs:/pgf/spa/%d.pgf", i);
-						break;
-					}
-					case 6 : {
-						snprintf(testpath, 40, "romfs:/pgf/kor/%d.pgf", i);
-						break;
-					}
-				}
+				if (isGen5)
+					getSinglePathPGF(testpath, j, i);
+				else
+					getSinglePathPGT(testpath, j, i);
+
 				FILE* f = fopen(testpath, "r");
 				if (f) { langVett[j] = true; fclose(f); }
 				else { langVett[j] = false; fclose(f); }
@@ -595,326 +584,53 @@ void eventDatabase5(u8* mainbuf, int game) {
 				#ifdef PKSV
 				#else
 				if (hidKeysDown() & KEY_START) {
-					if (nInjected[0] >= 12) 
+					if (nInjected[0] >= (isGen5 ? 12 : 8)) 
 						nInjected[0] = 0;
 					
-					char *pgfpath = (char*)malloc(30 * sizeof(char));
-					switch (langSelected) {
-						case 0 : {
-							snprintf(pgfpath, 30, "romfs:/pgf/jpn/%d.pgf", i);
-							break;
-						} 
-						case 1 : {
-							snprintf(pgfpath, 30, "romfs:/pgf/eng/%d.pgf", i);
-							break;
-						}
-						case 2 : {
-							snprintf(pgfpath, 30, "romfs:/pgf/fre/%d.pgf", i);
-							break;
-						}
-						case 3 : {
-							snprintf(pgfpath, 30, "romfs:/pgf/ita/%d.pgf", i);
-							break;
-						}
-						case 4 : {
-							snprintf(pgfpath, 30, "romfs:/pgf/ger/%d.pgf", i);
-							break;
-						}
-						case 5 : {
-							snprintf(pgfpath, 30, "romfs:/pgf/spa/%d.pgf", i);
-							break;
-						}
-						case 6 : {
-							snprintf(pgfpath, 30, "romfs:/pgf/kor/%d.pgf", i);
-							break;
-						}
-					}
+					char *path = (char*)malloc(30 * sizeof(char));
+					if (isGen5)
+						getSinglePathPGF(path, langSelected, i);
+					else
+						getSinglePathPGT(path, langSelected, i);
 					
-					FILE *fptr = fopen(pgfpath, "rt");
+					FILE *fptr = fopen(path, "rt");
 					if (fptr == NULL) {
 						fclose(fptr);
-						free(pgfpath);
+						free(path);
 						infoDisp(i18n(S_DATABASE_ERROR_INJECTION));
 						break;
 					}
 					fseek(fptr, 0, SEEK_END);
 					u32 contentsize = ftell(fptr);
-					u8 *pgfbuf = (u8*)malloc(contentsize);
-					if (pgfbuf == NULL) {
+					u8 *buf = (u8*)malloc(contentsize);
+					if (buf == NULL) {
 						fclose(fptr);
-						free(pgfbuf);
-						free(pgfpath);
+						free(buf);
+						free(path);
 						infoDisp(i18n(S_DATABASE_ERROR_INJECTION));
 						break;
 					}
 					rewind(fptr);
-					fread(pgfbuf, contentsize, 1, fptr);
+					fread(buf, contentsize, 1, fptr);
 					fclose(fptr);
 
-					setWC(mainbuf, pgfbuf, game, i, nInjected);
+					setWC(mainbuf, buf, game, i, nInjected);
 
-					free(pgfpath);
-					free(pgfbuf);					
+					free(path);
+					free(buf);					
 					infoDisp(i18n(S_DATABASE_SUCCESS_INJECTION));
 					break;
 				}
 				#endif
 				
-				printDatabase5(database, currentEntry, page, spriteArray, isSelected, langSelected, langVett);
+				printDatabaseListDS(database, currentEntry, page, spriteArray, isSelected, langSelected, langVett);
 			}
 			
 			isSelected = false;
 			free(testpath);
 		}
 		
-		printDatabase5(database, currentEntry, page, spriteArray, isSelected, langSelected, langVett);
-	}
-	
-	free(spriteArray);
-}
-
-void eventDatabase4(u8* mainbuf, int game, int GBO, int SBO) {
-	char *database[190];
-	int *spriteArray = (int*)malloc(190 * sizeof(int));
-	filldatabase4(database, spriteArray);
-	
-	int currentEntry = 0;
-	int page = 0;
-
-	int nInjected[1] = {0};
-	bool langVett[7];
-	bool isSelected = false;
-	int langSelected = -1;
-	
-	while(aptMainLoop()) {
-		hidScanInput();
-		
-		if (hidKeysDown() & KEY_B)
-			break;
-		
-		if (hidKeysDown() & KEY_L) {
-			if (page > 0) {
-				int temp;
-				do {
-					page--;
-					temp = 0;
-					for (int i = 0; i < 10; i++)
-						if (strcmp(database[page*10+i], " ") == 0)
-							temp++;
-					
-					if (temp == 10) 
-						page--;
-				} while (temp == 10);
-			}
-			else if (page == 0) page = 18;
-		}
-		
-		if (hidKeysDown() & KEY_R) {
-			if (page < 18) {
-				int temp;
-				do {
-					page++;
-					temp = 0;
-					for (int i = 0; i < 10; i++)
-						if (strcmp(database[page*10+i], " ") == 0)
-							temp++;
-					
-					if (temp == 10) 
-						page++;
-				} while (temp == 10);
-			}
-			else if (page == 18) page = 0;
-		}
-		
-		if (hidKeysDown() & KEY_UP) {
-			if (currentEntry > 0) currentEntry--;
-			else if (currentEntry == 0) currentEntry = 9;
-		}
-		
-		if (hidKeysDown() & KEY_DOWN) {
-			if (currentEntry < 9) currentEntry++;
-			else if (currentEntry == 9) currentEntry = 0;
-		}
-		
-		if (hidKeysDown() & KEY_LEFT) {
-			if (currentEntry <= 4) {
-				int temp;
-				do {
-					page--;
-					if (page < 0) page = 18;
-					temp = 0;
-					for (int i = 0; i < 10; i++)
-						if (strcmp(database[page*10+i], " ") == 0)
-							temp++;
-					
-					if (temp == 10) 
-						page--;
-				} while (temp == 10);
-			}
-			else if (currentEntry >= 5) currentEntry -= 5;
-		}
-		
-		if (hidKeysDown() & KEY_RIGHT) {
-			if (currentEntry <= 4) currentEntry += 5;
-			else if (currentEntry >= 5) {
-				int temp;
-				do {
-					page++;
-					if (page > 18) page = 0;
-					temp = 0;
-					for (int i = 0; i < 10; i++)
-						if (strcmp(database[page*10+i], " ") == 0)
-							temp++;
-					
-					if (temp == 10) 
-						page++;
-				} while (temp == 10);
-			}
-		}
-		
-		if (hidKeysDown() & KEY_A && spriteArray[page*10+currentEntry] != -1) {
-			isSelected = true;
-			int i = page * 10 + currentEntry;
-
-			char *testpath = (char*)malloc(40 * sizeof(char));
-			for (int j = 0; j < 7; j++) {
-				switch (j) {
-					case 0 : {
-						snprintf(testpath, 40, "romfs:/pgt/jpn/%d.pgt", i);
-						break;
-					} 
-					case 1 : {
-						snprintf(testpath, 40, "romfs:/pgt/eng/%d.pgt", i);
-						break;
-					}
-					case 2 : {
-						snprintf(testpath, 40, "romfs:/pgt/fre/%d.pgt", i);
-						break;
-					}
-					case 3 : {
-						snprintf(testpath, 40, "romfs:/pgt/ita/%d.pgt", i);
-						break;
-					}
-					case 4 : {
-						snprintf(testpath, 40, "romfs:/pgt/ger/%d.pgt", i);
-						break;
-					}
-					case 5 : {
-						snprintf(testpath, 40, "romfs:/pgt/spa/%d.pgt", i);
-						break;
-					}
-					case 6 : {
-						snprintf(testpath, 40, "romfs:/pgt/kor/%d.pgt", i);
-						break;
-					}
-				}
-				FILE* f = fopen(testpath, "r");
-				if (f) { langVett[j] = true; fclose(f); }
-				else { langVett[j] = false; fclose(f); }
-			}
-			
-			// set first lang selected
-			langSelected = -1;
-			for (int i = 0; i < 7; i++) {
-				if (langVett[i]) {
-					langSelected = i;
-					break;
-				}
-			}
-			
-			while (aptMainLoop()) {
-				hidScanInput();
-				touchPosition touch;
-				hidTouchRead(&touch);
-				
-				if (hidKeysDown() & KEY_B) break;
-				
-				if (hidKeysHeld() & KEY_TOUCH) {
-					if (touch.px > 25 && touch.px < 61 && touch.py > 178 && touch.py < 202 && langVett[0]) langSelected = 0;
-					if (touch.px > 63 && touch.px < 99 && touch.py > 178 && touch.py < 202 && langVett[1]) langSelected = 1;
-					if (touch.px > 101 && touch.px < 137 && touch.py > 178 && touch.py < 202 && langVett[2]) langSelected = 2;
-					if (touch.px > 139 && touch.px < 175 && touch.py > 178 && touch.py < 202 && langVett[3]) langSelected = 3;
-					if (touch.px > 177 && touch.px < 213 && touch.py > 178 && touch.py < 202 && langVett[4]) langSelected = 4;
-					if (touch.px > 215 && touch.px < 251 && touch.py > 178 && touch.py < 202 && langVett[5]) langSelected = 5;
-					if (touch.px > 253 && touch.px < 289 && touch.py > 178 && touch.py < 202 && langVett[6]) langSelected = 6;
-				}
-				
-				#ifdef PKSV
-				#else
-				if (hidKeysDown() & KEY_START) {
-					if (nInjected[0] >= 8) 
-						nInjected[0] = 0;
-					
-					char *pgtpath = (char*)malloc(30 * sizeof(char));
-					switch (langSelected) {
-						case 0 : {
-							snprintf(pgtpath, 30, "romfs:/pgt/jpn/%d.pgt", i);
-							break;
-						} 
-						case 1 : {
-							snprintf(pgtpath, 30, "romfs:/pgt/eng/%d.pgt", i);
-							break;
-						}
-						case 2 : {
-							snprintf(pgtpath, 30, "romfs:/pgt/fre/%d.pgt", i);
-							break;
-						}
-						case 3 : {
-							snprintf(pgtpath, 30, "romfs:/pgt/ita/%d.pgt", i);
-							break;
-						}
-						case 4 : {
-							snprintf(pgtpath, 30, "romfs:/pgt/ger/%d.pgt", i);
-							break;
-						}
-						case 5 : {
-							snprintf(pgtpath, 30, "romfs:/pgt/spa/%d.pgt", i);
-							break;
-						}
-						case 6 : {
-							snprintf(pgtpath, 30, "romfs:/pgt/kor/%d.pgt", i);
-							break;
-						}
-					}
-					
-					FILE *fptr = fopen(pgtpath, "rt");
-					if (fptr == NULL) {
-						fclose(fptr);
-						free(pgtpath);
-						infoDisp(i18n(S_DATABASE_ERROR_INJECTION));
-						break;
-					}
-					fseek(fptr, 0, SEEK_END);
-					u32 contentsize = ftell(fptr);
-					u8 *pgtbuf = (u8*)malloc(contentsize);
-					if (pgtbuf == NULL) {
-						fclose(fptr);
-						free(pgtbuf);
-						free(pgtpath);
-						infoDisp(i18n(S_DATABASE_ERROR_INJECTION));
-						break;
-					}
-					rewind(fptr);
-					fread(pgtbuf, contentsize, 1, fptr);
-					fclose(fptr);
-
-					setWC4(mainbuf, pgtbuf, game, i, nInjected, GBO);
-
-					free(pgtpath);
-					free(pgtbuf);					
-					infoDisp(i18n(S_DATABASE_SUCCESS_INJECTION));
-					break;
-				}
-				#endif
-				
-				printDatabase4(database, currentEntry, page, spriteArray, isSelected, langSelected, langVett);
-			}
-			
-			isSelected = false;
-			free(testpath);
-		}
-		
-		printDatabase4(database, currentEntry, page, spriteArray, isSelected, langSelected, langVett);
+		printDatabaseListDS(database, currentEntry, page, spriteArray, isSelected, langSelected, langVett);
 	}
 	
 	free(spriteArray);
