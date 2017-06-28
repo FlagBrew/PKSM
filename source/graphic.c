@@ -824,7 +824,10 @@ void printDB7(u8* previewbuf, int game, int sprite, int i, bool langVett[], bool
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		wcxInfoViewer(previewbuf, game);
+#ifdef PKSV
+#else
 		sf2d_draw_texture(otaButton, 360, 2);
+#endif
 		
 		if (sprite != -1) {
 			sf2d_draw_texture_part_scale(spritesSmall, 282, 41 - movementOffsetLong(6), 40 * (wcx_get_species(previewbuf) % 25) + 4, 30 * (wcx_get_species(previewbuf) / 25), 34, 30, 2, 2);
@@ -1289,7 +1292,10 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 		sftd_draw_wtext(fontBold12, 12 + (178 - sftd_get_wtext_width(fontBold12, 12, page)) / 2, 19, WHITE, 12, page);
 		sf2d_draw_texture(left, 7, 17);
 		sf2d_draw_texture(right, 185, 17);
+#ifdef PKSV
+#else
 		sf2d_draw_texture(otaButton, 240, 211);
+#endif
 		sf2d_draw_texture(back, 283, 211);
 		sftd_draw_wtext(fontBold12, 247, 7, WHITE, 12, i18n(S_GRAPHIC_PKVIEWER_TEAM));
 		

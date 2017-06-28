@@ -119,7 +119,8 @@ int getN(int i) {
 		case 205 : return 2;
 		case 211 : return 7;
 		case 221 : return 6;
-		case 223 : return 5;
+		case 223 : return 6;
+		case 230 : return 8;
 		case 504 : return 2;
 		case 515 : return 2;
 		case 551 : return 2;
@@ -322,6 +323,8 @@ void eventDatabase7(u8* mainbuf, int game) {
 					}
 				}
 
+#ifdef PKSV
+#else
 				if (hidKeysDown() & KEY_Y) {
 					if (!init())
 						break;
@@ -333,6 +336,7 @@ void eventDatabase7(u8* mainbuf, int game) {
 					} while (aptMainLoop() && !(hidKeysDown() & KEY_B));
 					shutDownSoc();
 				}
+#endif
 				
 				if (hidKeysHeld() & KEY_TOUCH) {
 					if (touch.px > 114 && touch.px < 150 && touch.py > 50 && touch.py < 71 && langVett[0]) {
