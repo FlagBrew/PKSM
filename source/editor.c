@@ -252,13 +252,14 @@ void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, 
 	}
 
     calculatePKMNChecksum(pkmn);
-	if (boxnumber == 33) {
-		//fillBattleSection(mainbuf, pkmn, game, indexnumber);
-		//encryptBattleSection(mainbuf, pkmn, game, indexnumber);
-	}
     encryptPkmn(pkmn);
 
     memcpy(&mainbuf[getPkmnAddress(boxnumber, indexnumber, game)], pkmn, PKMNLENGTH);
+	
+	//if (boxnumber == 33) {
+		//fillBattleSection(mainbuf, pkmn, game, indexnumber);
+		//encryptBattleSection(mainbuf, pkmn, game, indexnumber);
+	//}
 }
 
 bool isShiny(u8* pkmn) {
