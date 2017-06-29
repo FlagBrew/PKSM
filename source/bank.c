@@ -20,8 +20,7 @@
 
 void clearMarkings(u8* pkmn, int game) {
 	u8 version = pkmn[0xDF];
-	if (!(version == 30 || version == 31) && !(version >= 35 && version <= 41) && (game != GAME_SUN && game != GAME_MOON)) { // not SM
-		//if (game == GAME_SUN || game == GAME_MOON)
+	if (!(version == 30 || version == 31) && !(version >= 35 && version <= 41) && !ISGEN7) { // not SM
 		pkmn[0x2A] = 0;
 		pkmn[0x72] &= 0xFC;
 		pkmn[0xDE] = 0;
@@ -73,7 +72,7 @@ void dumpStorage2pk7(u8* bankbuf, u32 size) {
 			memset(str, 0, 100);
 			
 			getNickname(tmp, nick);
-			swprintf(str, 100, L"%X - %ls.pk7", (int)getPID(tmp), nick);
+			swprintf(str, 100, L"%d - %ls - %X.pk7", (int)getPokedexNumber(tmp), nick, (int)getPID(tmp));
 			utf32_to_utf8((uint8_t*)path, (uint32_t*)str, 25);
 
 			file_write(path, tmp, PKMNLENGTH);
@@ -126,9 +125,9 @@ void bank(u8* mainbuf, int game) {
 				else if (bankBox == size / (30 * PKMNLENGTH) - 1) 
 					bankBox = 0;
 			} else {
-				if (saveBox < ((game < 4) ? 30 : 31)) 
+				if (saveBox < (ISGEN6 ? 30 : 31)) 
 					saveBox++;
-				else if (saveBox == ((game < 4) ? 30 : 31)) 
+				else if (saveBox == (ISGEN6 ? 30 : 31)) 
 					saveBox = 0;
 			}
 		}
@@ -143,7 +142,7 @@ void bank(u8* mainbuf, int game) {
 				if (saveBox > 0) 
 					saveBox--;
 				else if (saveBox == 0) 
-					saveBox = (game < 4) ? 30 : 31;	
+					saveBox = ISGEN6 ? 30 : 31;	
 			}
 		}
 		
@@ -157,9 +156,9 @@ void bank(u8* mainbuf, int game) {
 					else if (bankBox == size / (30 * PKMNLENGTH) - 1) 
 						bankBox = 0;
 				} else {
-					if (saveBox < ((game < 4) ? 30 : 31)) 
+					if (saveBox < (ISGEN6 ? 30 : 31)) 
 						saveBox++;
-					else if (saveBox == ((game < 4) ? 30 : 31)) 
+					else if (saveBox == (ISGEN6 ? 30 : 31)) 
 						saveBox = 0;
 				}
 			}
@@ -177,7 +176,7 @@ void bank(u8* mainbuf, int game) {
 					if (saveBox > 0) 
 						saveBox--;
 					else if (saveBox == 0) 
-						saveBox = (game < 4) ? 30 : 31;	
+						saveBox = ISGEN6 ? 30 : 31;	
 				}
 			}
 			else
@@ -243,13 +242,13 @@ void bank(u8* mainbuf, int game) {
 				if (saveBox > 0) 
 					saveBox--;
 				else if (saveBox == 0) 
-					saveBox = (game < 4) ? 30 : 31;
+					saveBox = ISGEN6 ? 30 : 31;
 			}
 			
 			if (touch.px > 185 && touch.px < 201 && touch.py > 17 && touch.py < 37) {
-				if (saveBox < ((game < 4) ? 30 : 31)) 
+				if (saveBox < (ISGEN6 ? 30 : 31)) 
 					saveBox++;
-				else if (saveBox == ((game < 4) ? 30 : 31)) 
+				else if (saveBox == (ISGEN6 ? 30 : 31)) 
 					saveBox = 0;
 			}
 			
@@ -303,8 +302,8 @@ void bank(u8* mainbuf, int game) {
 			
 			if (touch.px > 208 && touch.px < 317 && touch.py > 153 && touch.py < 180) {
 				int dexEntry = 0;
-				int page = 0, maxpages = (game < 4) ? 18 : 21;
-				int total = (game == GAME_SUN || game == GAME_MOON) ? 802 : 721;
+				int page = 0, maxpages = ISGEN6 ? 18 : 21;
+				int total = ISGEN7 ? 802 : 721;
 				int seen = 0;
 				int caught = 0;
 				
@@ -377,7 +376,7 @@ void bank(u8* mainbuf, int game) {
 				u8 form = getForm(pkmn);
 				FormData *forms = getLegalFormData(species, game);
 				bool illegalform = form < forms->min || form > forms->max;
-				bool illegalspecies = game < 4 && species > 721;
+				bool illegalspecies = ISGEN6 && species > 721;
 				free(forms);
 
 				if (!((illegalspecies || illegalform) && currentEntry > 29)) { // prevent that gen7 stuff goes into gen6 save

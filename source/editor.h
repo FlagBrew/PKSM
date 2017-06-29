@@ -84,8 +84,6 @@ bool isShiny(u8* pkmn);
 bool isEgg(u8* pkmn);
 bool isNicknameF(u8* pkmn);
 void rerollPID(u8* pkmn);
-void encryptBattleSection(u8* mainbuf, u8* pkmn, int game, int currentEntry);
-void fillBattleSection(u8* mainbuf, u8* pkmn, int game, int currentEntry);
 bool isBattleBoxed(u8* mainbuf, int game, int box, int slot);
 bool checkHTLegality(u8* mainbuf, u8* pkmn, int game);
 
@@ -129,9 +127,6 @@ u16 getSaveSID(u8* mainbuf, int game);
 u16 getSaveTSV(u8* mainbuf, int game);
 u32 getSaveSeed(u8* mainbuf, int game, int index);
 u8 getSaveLanguage(u8* mainbuf, int game);
-
-u32 getMoney(u8* mainbuf, int game);
-u16 getBP(u8* mainbuf, int game);
 
 void setGender(u8* pkmn, u8 val);
 void setForm(u8* pkmn, u8 val);

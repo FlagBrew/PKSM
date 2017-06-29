@@ -76,14 +76,14 @@ void reloadMultiplePreviewBuf(u8* previewBuf, int i, int n, int j) {
 
 void findFreeLocationWC(u8 *mainbuf, int game, int nInjected[]) {
 	nInjected[0] = 0;
-	int len = (game < 4) ? 24 : 48;
+	int len = ISGEN6 ? 24 : 48;
 	int temp;
 	int offset = 0;
-	if (game == GAME_X || game == GAME_Y)
+	if (ISXY)
 		offset = 0x1BD00;
-	else if (game == GAME_OR || game == GAME_AS)
+	else if (ISORAS)
 		offset = 0x1CD00;
-	else if (game == GAME_SUN || game == GAME_MOON)
+	else if (ISSUMO)
 		offset = 0x65C00 + 0x100;
 	
 	for (int t = 0; t < len; t++) {
@@ -137,7 +137,7 @@ void eventDatabase7(u8* mainbuf, int game) {
 	u8 *previewbuf = (u8*)malloc(WCX_SIZE);
 	memset(previewbuf, 0, WCX_SIZE);
 	
-	if (game == GAME_SUN || game == GAME_MOON)
+	if (ISGEN7)
 		filldatabase7(database, spriteArray);
 	else
 		filldatabase6(database, spriteArray);
@@ -242,7 +242,7 @@ void eventDatabase7(u8* mainbuf, int game) {
 		}
 		
 		if (hidKeysDown() & KEY_A && spriteArray[page*10+currentEntry] != -1) {
-			int total = (game == GAME_SUN || game == GAME_MOON) ? 9 : 7;
+			int total = (ISGEN7) ? 9 : 7;
 			int i = page * 10 + currentEntry;
 			// check for single wcx events
 			char *testpath = (char*)malloc(40 * sizeof(char));
@@ -407,7 +407,7 @@ void eventDatabase7(u8* mainbuf, int game) {
 					if (nInjected[0] >= 48) 
 						nInjected[0] = 0;
 					
-					if ((game == GAME_X || game == GAME_Y) && i == 2048) {
+					if (ISXY && i == 2048) {
 						infoDisp(i18n(S_DATABASE_ITEM_NOT_AVAILABLE_XY));
 						break;
 					}
@@ -439,12 +439,11 @@ void eventDatabase7(u8* mainbuf, int game) {
 }
 
 void eventDatabase5(u8* mainbuf, int game) {
-	bool isGen5 = game == GAME_B1 || game == GAME_B2 || game == GAME_W1 || game == GAME_W2;
-	int sz = isGen5 ? 170 : 190;
+	int sz = ISGEN5 ? 170 : 190;
 	char *database[sz];
 	int *spriteArray = (int*)malloc(sz * sizeof(int));
 	
-	if (isGen5)
+	if (ISGEN5)
 		filldatabase5(database, spriteArray);
 	else
 		filldatabase4(database, spriteArray);
@@ -477,11 +476,11 @@ void eventDatabase5(u8* mainbuf, int game) {
 						page--;
 				} while (temp == 10);
 			}
-			else if (page == 0) page = isGen5 ? 16 : 18;
+			else if (page == 0) page = ISGEN5 ? 16 : 18;
 		}
 		
 		if (hidKeysDown() & KEY_R) {
-			if (page < (isGen5 ? 16 : 18)) {
+			if (page < (ISGEN5 ? 16 : 18)) {
 				int temp;
 				do {
 					page++;
@@ -494,7 +493,7 @@ void eventDatabase5(u8* mainbuf, int game) {
 						page++;
 				} while (temp == 10);
 			}
-			else if (page == (isGen5 ? 16 : 18)) page = 0;
+			else if (page == (ISGEN5 ? 16 : 18)) page = 0;
 		}
 		
 		if (hidKeysDown() & KEY_UP) {
@@ -512,7 +511,7 @@ void eventDatabase5(u8* mainbuf, int game) {
 				int temp;
 				do {
 					page--;
-					if (page < 0) page = (isGen5 ? 16 : 18);
+					if (page < 0) page = (ISGEN5 ? 16 : 18);
 					temp = 0;
 					for (int i = 0; i < 10; i++)
 						if (strcmp(database[page*10+i], " ") == 0)
@@ -531,7 +530,7 @@ void eventDatabase5(u8* mainbuf, int game) {
 				int temp;
 				do {
 					page++;
-					if (page > (isGen5 ? 16 : 18)) page = 0;
+					if (page > (ISGEN5 ? 16 : 18)) page = 0;
 					temp = 0;
 					for (int i = 0; i < 10; i++)
 						if (strcmp(database[page*10+i], " ") == 0)
@@ -549,7 +548,7 @@ void eventDatabase5(u8* mainbuf, int game) {
 
 			char *testpath = (char*)malloc(40 * sizeof(char));
 			for (int j = 0; j < 7; j++) {
-				if (isGen5)
+				if (ISGEN5)
 					getSinglePathPGF(testpath, j, i);
 				else
 					getSinglePathPGT(testpath, j, i);
@@ -588,11 +587,11 @@ void eventDatabase5(u8* mainbuf, int game) {
 				#ifdef PKSV
 				#else
 				if (hidKeysDown() & KEY_START) {
-					if (nInjected[0] >= (isGen5 ? 12 : 8)) 
+					if (nInjected[0] >= (ISGEN5 ? 12 : 8)) 
 						nInjected[0] = 0;
 					
 					char *path = (char*)malloc(30 * sizeof(char));
-					if (isGen5)
+					if (ISGEN5)
 						getSinglePathPGF(path, langSelected, i);
 					else
 						getSinglePathPGT(path, langSelected, i);

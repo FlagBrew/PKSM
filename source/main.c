@@ -203,7 +203,7 @@ int main() {
 	GUIGameElementsExit();
 	freezeMsg(i18n(S_MAIN_LOADING_SAVE));
 	
-	if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS || game == GAME_SUN || game == GAME_MOON) {	
+	if (IS3DS) {	
 		if (!(openSaveArch(&saveArch, ids[game]))) {
 			infoDisp(i18n(S_MAIN_GAME_NOT_FOUND));
 			exitServices();
@@ -228,7 +228,7 @@ int main() {
 		FSFILE_Read(mainHandle, NULL, 0, mainbuf, mainSize);
 	}
 	
-	else if (game == GAME_DIAMOND || game == GAME_PEARL || game == GAME_PLATINUM || game == GAME_HG || game == GAME_SS || game == GAME_B1 || game == GAME_W1 || game == GAME_B2 || game == GAME_W2) {
+	else if (ISDS) {
 		FS_CardType t;
 		if (FSUSER_GetCardType(&t)) {
 			infoDisp(i18n(S_MAIN_NO_CARTRIDGE));
@@ -251,7 +251,7 @@ int main() {
 		mainbuf = malloc(mainSize);
 		
 		TWLstoreSaveFile(mainbuf, cardType_);
-		if (game == GAME_DIAMOND || game == GAME_PEARL || game == GAME_PLATINUM || game == GAME_HG || game == GAME_SS) {
+		if (ISGEN4) {
 			GBO = 0x40000 * getActiveGBO(mainbuf, game);
 			SBO = 0x40000 * getActiveSBO(mainbuf, game);
 		}
@@ -272,7 +272,7 @@ int main() {
 	
 	GUIElementsSpecify(game);
 
-	if (game < 6) {
+	if (IS3DS) {
 		int mainMenu[] = {S_MAIN_MENU_EXTRA_STORAGE, S_MAIN_MENU_EDITOR, S_MAIN_MENU_EVENTS, S_MAIN_MENU_SAVE_INFO, S_MAIN_MENU_SETTINGS, S_MAIN_MENU_CREDITS};
 		while (aptMainLoop()) {
 			hidScanInput();
@@ -353,20 +353,20 @@ int main() {
 	}
 	
 	if (save) {
-		if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS || game == GAME_SUN || game == GAME_MOON || game == GAME_B1 || game == GAME_W1 || game == GAME_B2 || game == GAME_W2) 
+		if (IS3DS || ISGEN5) 
 			rewriteCHK(mainbuf, game);
-		else if (game == GAME_DIAMOND || game == GAME_PEARL || game == GAME_PLATINUM || game == GAME_HG || game == GAME_SS) 
+		else if (ISGEN4) 
 			rewriteCHK4(mainbuf, game, GBO, SBO);
 	}
 	
-	if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS || game == GAME_SUN || game == GAME_MOON) {
+	if (IS3DS) {
 		FSFILE_Write(mainHandle, NULL, 0, mainbuf, mainSize, FS_WRITE_FLUSH);
 		FSFILE_Close(mainHandle);
 		if (save)
 			FSUSER_ControlArchive(saveArch, ARCHIVE_ACTION_COMMIT_SAVE_DATA, NULL, 0, NULL, 0);
 		FSUSER_CloseArchive(saveArch);
 	}
-	else if ((game == GAME_DIAMOND || game == GAME_PEARL || game == GAME_PLATINUM || game == GAME_HG || game == GAME_SS || game == GAME_B1 || game == GAME_W1 || game == GAME_B2 || game == GAME_W2) && save)
+	else if (ISDS && save)
 		TWLinjectSave(mainbuf, mainSize);
 
 	free(mainbuf);

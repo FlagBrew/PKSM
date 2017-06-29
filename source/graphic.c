@@ -142,19 +142,19 @@ void initProgressLoadPNGInRAM(int total) {
 
 
 int getGUIElementsI18nSpecifyTotalElements(int game) {
-	return (game < 6) ? 1 : 0;
+	return IS3DS ? 1 : 0;
 }
 
 void GUIElementsI18nSpecify(int game) {
 	struct i18n_files languageSpecificFiles = i18n_getFilesPath();
-	if (game < 6) {
+	if (IS3DS) {
 		typesSheet = loadPNGInRAM(languageSpecificFiles.types);
 	}
 }
 
 void GUIElementsSpecify(int game) {
 	int elements = 4;
-	if (game < 6) {
+	if (IS3DS) {
 		elements += 58;
 	} else {
 		elements += 16;
@@ -168,7 +168,7 @@ void GUIElementsSpecify(int game) {
 	spritesSmall = loadPNGInRAM("/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheetv3.png");
 	balls = loadPNGInRAM("/3ds/data/PKSM/additionalassets/balls_spritesheetv2.png");
 	
-	if (game < 6) {
+	if (IS3DS) {
 		eventView = loadPNGInRAM("romfs:/res/Event View.png");
 		iconBank = loadPNGInRAM("romfs:/res/Icon Bank.png");
 		iconEditor = loadPNGInRAM("romfs:/res/Icon Editor.png");
@@ -820,7 +820,7 @@ void printDB7(u8* previewbuf, int game, int sprite, int i, bool langVett[], bool
 	char *cont = (char*)malloc(3 * sizeof(char));
 	snprintf(cont, 3, "%d", nInjected + 1);
 	
-	int total = (game == GAME_SUN || game == GAME_MOON) ? 9 : 7;
+	int total = ISGEN7 ? 9 : 7;
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		wcxInfoViewer(previewbuf, game);
@@ -1718,7 +1718,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 
 				if (tempspecies == 493 || tempspecies == 773) {
 					type1 = getForm(pkmn);
-					if (game >= GAME_DIAMOND && game <= GAME_SS && type1 > 9)
+					if (ISGEN4 && type1 > 9)
 						type1--;
 					type2 = type1;
 				} else {

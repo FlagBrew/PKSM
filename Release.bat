@@ -1,16 +1,16 @@
-make -j 4 install
+make -j install
 @rename Makefile PKSM.Makefile
 
 @rename PKSV.Makefile Makefile
-make -j 4 install
+make -j install
 @rename MakeFile PKSV.Makefile
 
 @rename RosalinaPKSM.Makefile Makefile
-make -j 4 
+make -j 
 @rename MakeFile RosalinaPKSM.Makefile
 
 @rename RosalinaPKSV.Makefile Makefile
-make -j 4 
+make -j
 @rename MakeFile RosalinaPKSV.Makefile
 
 @rename PKSM.Makefile Makefile

@@ -174,17 +174,17 @@ void decryptPkmn(u8* pkmn) {
 
 int getPkmnAddress(const int boxnumber, const int indexnumber, int game) {
     int boxpos = 0;
-    if (game == GAME_X || game == GAME_Y) {
+    if (ISXY) {
 		if (boxnumber < 33)
 			boxpos = 0x22600;
 		else
 			boxpos = 0x14200;
-	} else if (game == GAME_OR || game == GAME_AS) {
+	} else if (ISORAS) {
 		if (boxnumber < 33)
 			boxpos = 0x33000;
 		else
 			boxpos = 0x14200;
-	} else if (game == GAME_SUN || game == GAME_MOON) {
+	} else if (ISSUMO) {
 		if (boxnumber < 33) 
 			boxpos = 0x04E00;
 		else 
@@ -227,43 +227,6 @@ void encryptPkmn(u8* pkmn) {
     }
 }
 
-void encryptBattleSection(u8* mainbuf, u8* pkmn, int game, int currentEntry) {
-	/*int boxpos = 0;
-    if (game == GAME_X || game == GAME_Y)
-		boxpos = 0x14200;
-	else if (game == GAME_OR || game == GAME_AS)
-		boxpos = 0x14200;
-	else if (game == GAME_SUN || game == GAME_MOON) 
-		boxpos = 0x01400;
-	
-    const int ENCRYPTIONKEYPOS = 0x0;
-    const int ENCRYPTIONKEYLENGHT = 4;
-    
-    u32 encryptionkey;
-    memcpy(&encryptionkey, &pkmn[ENCRYPTIONKEYPOS], ENCRYPTIONKEYLENGHT);
-    u32 seed = encryptionkey;
-    
-    u16 temp;
-    for (int i = 232; i < 260; i += 2) {
-        memcpy(&temp, &mainbuf[boxpos + 260 * currentEntry + i], 2);
-        temp ^= (seedStep(seed) >> 16);
-        seed = seedStep(seed);
-        memcpy(&mainbuf[boxpos + 260 * currentEntry + i], &temp, 2);
-    }*/
-}
-
-void fillBattleSection(u8* mainbuf, u8* pkmn, int game, int currentEntry) {
-	/*int boxpos = 0;
-    if (game == GAME_X || game == GAME_Y)
-		boxpos = 0x14200;
-	else if (game == GAME_OR || game == GAME_AS)
-		boxpos = 0x14200;
-	else if (game == GAME_SUN || game == GAME_MOON) 
-		boxpos = 0x01400;*/
-		
-	// things
-}
-
 void getPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game) {
     memcpy(pkmn, &mainbuf[getPkmnAddress(boxnumber, indexnumber, game)], PKMNLENGTH);
     decryptPkmn(pkmn);
@@ -278,7 +241,7 @@ void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, 
 
 	memcpy(latestHandlers, &pkmn[0x94], 10);
 	memcpy(ot_name, &pkmn[0xB0], NICKNAMELENGTH);
-	memcpy(save_name, &mainbuf[(game < 4) ? 0x14048 : 0x1238], NICKNAMELENGTH);
+	memcpy(save_name, &mainbuf[ISGEN6 ? 0x14048 : 0x1238], NICKNAMELENGTH);
 	
 	if ((getSaveTID(mainbuf, game) == getOTID(pkmn)) && (getSaveSID(mainbuf, game) == getSOTID(pkmn)) && !memcmp(ot_name, save_name, NICKNAMELENGTH) && !memcmp(latestHandlers, ht_name, 10)) { //you're the first owner
 		setHT(pkmn, ht_name);
@@ -290,8 +253,8 @@ void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, 
 
     calculatePKMNChecksum(pkmn);
 	if (boxnumber == 33) {
-		fillBattleSection(mainbuf, pkmn, game, indexnumber);
-		encryptBattleSection(mainbuf, pkmn, game, indexnumber);
+		//fillBattleSection(mainbuf, pkmn, game, indexnumber);
+		//encryptBattleSection(mainbuf, pkmn, game, indexnumber);
 	}
     encryptPkmn(pkmn);
 
@@ -342,10 +305,10 @@ bool isNicknameF(u8* pkmn) {
 }
 
 bool isBattleBoxed(u8* mainbuf, int game, int box, int slot) {
-	if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS) //don't care about obsolete titles
+	if (ISGEN6) //don't care about obsolete titles
 		return false;
 		
-	if (game == GAME_SUN || game == GAME_MOON) {
+	if (ISSUMO) {
 		u8 team_lookup[72];
 		memcpy(&team_lookup[0], &mainbuf[0x4CC4], 72);
 		for (int i = 0; i < 72; i += 2)
@@ -773,7 +736,7 @@ u32 *getOT(u8* pkmn, u32* dst) {
 
 u32 *getSaveOT(u8* mainbuf, int game, u32* dst) {
 	u16 src[NICKNAMELENGTH];
-	memcpy(src, &mainbuf[(game < 4) ? 0x14048 : 0X1238], NICKNAMELENGTH);
+	memcpy(src, &mainbuf[ISGEN6 ? 0x14048 : 0X1238], NICKNAMELENGTH);
 	
 	utf16_to_utf32(dst, src, NICKNAMELENGTH);
 	return dst;
@@ -891,18 +854,6 @@ bool getPokerus(u8* pkmn) {
 	return pkrs;
 }
 
-u32 getMoney(u8* mainbuf, int game) {
-	u32 money;
-	memcpy(&money, &mainbuf[(game < 4) ? 0x4208 : 0x4004], sizeof(u32));
-	return money;
-}
-
-u16 getBP(u8* mainbuf, int game) {
-	u16 bp;
-	memcpy(&bp, &mainbuf[(game == GAME_X || game == GAME_Y) ? 0x423C : (game == GAME_OR || game == GAME_AS) ? 0x4230 : 0x411D], sizeof(u16));
-	return bp;
-}
-
 u8 getBall(u8* pkmn) {
     u8 ballbuffer;
     memcpy(&ballbuffer, &pkmn[0xDC], 1);
@@ -912,19 +863,19 @@ u8 getBall(u8* pkmn) {
 
 u8 getSaveGender(u8* mainbuf, int game) {
 	u8 buffer;
-    memcpy(&buffer, &mainbuf[((game < 4) ? 0x14000 : 0x01200) + 5], 1);
+    memcpy(&buffer, &mainbuf[(ISGEN6 ? 0x14000 : 0x01200) + 5], 1);
     return buffer;
 }
 
 u16 getSaveTID(u8* mainbuf, int game) {
     u16 buffer;
-    memcpy(&buffer, &mainbuf[(game < 4) ? 0x14000 : 0x01200], 2);
+    memcpy(&buffer, &mainbuf[ISGEN6 ? 0x14000 : 0x01200], 2);
     return buffer;
 }
 
 u16 getSaveSID(u8* mainbuf, int game) {
     u16 buffer;
-    memcpy(&buffer, &mainbuf[((game < 4) ? 0x14000 : 0x01200) + 2], 2);
+    memcpy(&buffer, &mainbuf[(ISGEN6 ? 0x14000 : 0x01200) + 2], 2);
     return buffer;
 }
 
@@ -936,7 +887,7 @@ u16 getSaveTSV(u8* mainbuf, int game) {
 
 u32 getSaveSeed(u8* mainbuf, int game, int index) {
     u32 buffer;
-    memcpy(&buffer, &mainbuf[((game < 4) ? 0 : 0x6B5DC) + index * 0x4], 4);
+    memcpy(&buffer, &mainbuf[(ISGEN6 ? 0 : 0x6B5DC) + index * 0x4], 4);
     return buffer;
 } 
 
@@ -1123,12 +1074,12 @@ void setLevel(u8* pkmn, int lv) {
 }
 
 void setWC(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[]) {
-	if (game == GAME_X || game == GAME_Y) {
+	if (ISXY) {
 		*(mainbuf + 0x1BC00 + i / 8) |= 0x1 << (i % 8);
 		memcpy((void*)(mainbuf + 0x1BD00 + nInjected[0] * WC6LENGTH), (const void*)wcbuf, WC6LENGTH);
 	}
 
-	if (game == GAME_OR || game == GAME_AS) {
+	if (ISORAS) {
 		*(mainbuf + 0x1CC00 + i / 8) |= 0x1 << (i % 8);
 		memcpy((void*)(mainbuf + 0x1CD00 + nInjected[0] * WC6LENGTH), (const void*)wcbuf, WC6LENGTH);
 
@@ -1140,12 +1091,12 @@ void setWC(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[]) {
 		}
 	}
 
-	if (game == GAME_SUN || game == GAME_MOON) {
+	if (ISSUMO) {
 		*(mainbuf + 0x65C00 + i / 8) |= 0x1 << (i % 8);
 		memcpy((void*)(mainbuf + 0x65C00 + 0x100 + nInjected[0] * WC6LENGTH), (const void*)wcbuf, WC6LENGTH);
 	}
 
-	if (game == GAME_B1 || game == GAME_W1 || game == GAME_B2 || game == GAME_W2) {
+	if (ISGEN5) {
 		u32 seed;
 		memcpy(&seed, &mainbuf[0x1D290], sizeof(u32));
 
@@ -1172,7 +1123,7 @@ void setWC(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[]) {
 	}
 
 	nInjected[0] += 1;
-	if (game < 4) {
+	if (ISGEN6) {
 		if (nInjected[0] >= 24)
 			nInjected[0] = 0;
 	} else if (nInjected[0] >= 48)
@@ -1201,11 +1152,11 @@ void setWC4(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[], int GBO) {
 
 int getSaveLanguageAddress(u8* mainbuf, int game) {
 	int address = 0;
-	if (game == GAME_X || game == GAME_Y)
+	if (ISXY)
 		address = 0x14000 + 0x2D;
-	else if (game == GAME_OR || game == GAME_AS)
+	else if (ISORAS)
 		address = 0x14000 + 0x2D;
-	else if (game == GAME_SUN || game == GAME_MOON)
+	else if (ISSUMO)
 		address = 0x01200 + 0x35;
 
 	return address;
@@ -1350,7 +1301,7 @@ void parseHexEditor(u8* pkmn, int game, int byteEntry) {
 }
 
 void parseSaveHexEditor(u8* mainbuf, int game, int byte) {	
-	if (game == GAME_SUN || game == GAME_MOON) {
+	if (ISSUMO) {
 		if (byte >= SAVE_SM_ITEM && byte < SAVE_SM_ITEM_SIZE) {
 			// check items
 			for (unsigned int offset = SAVE_SM_ITEM; offset < SAVE_SM_ITEM_SIZE; offset += 4) {
@@ -1366,13 +1317,13 @@ void parseSaveHexEditor(u8* mainbuf, int game, int byte) {
 		else
 			mainbuf[byte]++;
 	} 
-	else if (game == GAME_OR || game == GAME_AS) {
+	else if (ISORAS) {
 		if (byte >= SAVE_ORAS_MONEY && byte < SAVE_ORAS_MONEY + 4)
 			checkMaxValueBetweenBounds(mainbuf, byte, SAVE_ORAS_MONEY, 4, 9999999);
 		else
 			mainbuf[byte]++;		
 	} 
-	else if (game == GAME_X || game == GAME_Y) {
+	else if (ISXY) {
 		if (byte >= SAVE_XY_MONEY && byte < SAVE_XY_MONEY + 4)
 			checkMaxValueBetweenBounds(mainbuf, byte, SAVE_XY_MONEY, 4, 9999999);
 		else
@@ -1396,7 +1347,7 @@ void parseSaveHexEditor(u8* mainbuf, int game, int byte) {
 }
 
 void generate(u8* mainbuf, int game, bool isTeam, int box, int currentEntry, int page, int genEntry) {
-	FILE *fptr = fopen((game < 4) ? "romfs:/misc/living6.bin" : "romfs:/misc/living7.bin", "rt");
+	FILE *fptr = fopen(ISGEN6 ? "romfs:/misc/living6.bin" : "romfs:/misc/living7.bin", "rt");
 	fseek(fptr, 0, SEEK_END);
 	u32 size = ftell(fptr);
 	u8* livingbuf = (u8*)malloc(size);
@@ -1408,7 +1359,7 @@ void generate(u8* mainbuf, int game, bool isTeam, int box, int currentEntry, int
 	memcpy(&mainbuf[getPkmnAddress((isTeam) ? 33 : box, currentEntry, game)], &livingbuf[(page * 40 + genEntry) * 232], 232);
 	u8 tempkmn[PKMNLENGTH];
 	getPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
-	memcpy(&tempkmn[0xE3], &mainbuf[(game < 4) ? 0x1402D : 0x1235], 1); // nats
+	memcpy(&tempkmn[0xE3], &mainbuf[ISGEN6 ? 0x1402D : 0x1235], 1); // nats
 
 	// Correct Nickname of current language
 	char nick[NICKNAMELENGTH] = "";
@@ -1436,7 +1387,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 	int currentEntry = 0;
 	int menuEntry = 0;
 	int byteEntry = 0;
-	int boxmax = (game < 4) ? 30 : 31;
+	int boxmax = ISGEN6 ? 30 : 31;
 	int touchExecuting = 0;
 	int oldEntry = 0;
 	
@@ -2184,14 +2135,14 @@ void pokemonEditor(u8* mainbuf, int game) {
 						case 3 : {
 							if (!isTeam) {
 								int genEntry = ((int)getPokedexNumber(pkmn) - 1) % 40;
-								int page = ((int)getPokedexNumber(pkmn) - 1) / 40, maxpages = (game < 4) ? 18 : 21;
+								int page = ((int)getPokedexNumber(pkmn) - 1) / 40, maxpages = ISGEN6 ? 18 : 21;
 								
 								while (aptMainLoop() && !(hidKeysDown() & KEY_B)) {
 									hidScanInput();
 									calcCurrentEntryMorePages(&genEntry, &page, maxpages, 39, 8);
 									
 									if (hidKeysDown() & KEY_A) {
-										if (!((game < 4) && ((genEntry + 1) > 721)) && (page*40 + genEntry < 802)) {
+										if (!(ISGEN6 && ((genEntry + 1) > 721)) && (page*40 + genEntry < 802)) {
 											generate(mainbuf, game, isTeam, box, currentEntry, page, genEntry);
 											operationDone = true;
 										}
@@ -2216,14 +2167,14 @@ void pokemonEditor(u8* mainbuf, int game) {
 			}
 			if (!getPokedexNumber(pkmn) && !isTeam && !operationDone) {
 				int genEntry = 0;
-				int page = 0, maxpages = (game < 4) ? 18 : 21;
+				int page = 0, maxpages = ISGEN6 ? 18 : 21;
 				
 				while (aptMainLoop() && !(hidKeysDown() & KEY_B)) {
 					hidScanInput();
 					calcCurrentEntryMorePages(&genEntry, &page, maxpages, 39, 8);
 					
 					if (hidKeysDown() & KEY_A) {
-						if (!((game < 4) && ((genEntry + 1) > 721)) && (page*40 + genEntry < 802)) {
+						if (!(ISGEN6 && ((genEntry + 1) > 721)) && (page*40 + genEntry < 802)) {
 							generate(mainbuf, game, isTeam, box, currentEntry, page, genEntry);
 							operationDone = true;
 						}

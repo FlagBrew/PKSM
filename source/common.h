@@ -73,10 +73,20 @@
 #define GAME_B2 	 13
 #define GAME_W2 	 14
 
+#define ISGEN7 (game == GAME_SUN || game == GAME_MOON)
+#define ISGEN6 (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS)
+#define ISGEN5 (game == GAME_B1 || game == GAME_B2 || game == GAME_W1 || game == GAME_W2)
+#define ISGEN4 (game == GAME_DIAMOND || game == GAME_PEARL || game == GAME_PLATINUM || game == GAME_HG || game == GAME_SS)
+#define IS3DS (ISGEN6 || ISGEN7)
+#define ISDS (ISGEN5 || ISGEN4)
+#define ISXY (game == GAME_X || game == GAME_Y)
+#define ISORAS (game == GAME_OR || game == GAME_AS)
+#define ISSUMO (game == GAME_SUN || game == GAME_MOON)
+
 #ifdef PKSV
-#define VERSION "v2.0.0"
+#define VERSION "v2.0.1"
 #else
-#define VERSION "v4.3.0"
+#define VERSION "v4.3.1"
 #endif
 
 

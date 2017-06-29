@@ -67,7 +67,7 @@ int getDexFormIndexSM(int species, int formct, int start) {
 void setDexFlags(u8 mainbuf[], int index, int gender, int shiny, int baseSpecies, int game) {
 	int PokeDex;
 	
-	if (game == GAME_SUN || game == GAME_MOON) {
+	if (ISSUMO) {
 		PokeDex = 0x02A00;
 	}
 	const int brSize = 0x8C;
@@ -124,7 +124,7 @@ bool sanitizeFormsToIterate(int species, int fsfe[], int formIn) {
 }
 
 void setDex(u8 mainbuf[], u8* pkmn, int game) {
-	if (!(game == GAME_SUN || game == GAME_MOON))
+	if (!ISSUMO)
 		return;
 	
 	int n = getPokedexNumber(pkmn);
@@ -132,7 +132,7 @@ void setDex(u8 mainbuf[], u8* pkmn, int game) {
 	int PokeDex;
 	int PokeDexLanguageFlags;
 	
-	if (game == GAME_SUN || game == GAME_MOON) {
+	if (ISSUMO) {
 		MaxSpeciesID = 802;
 		PokeDex = 0x02A00;
 		PokeDexLanguageFlags = PokeDex + 0x550;
@@ -203,12 +203,12 @@ void setDex(u8 mainbuf[], u8* pkmn, int game) {
 bool getCaught(u8* mainbuf, int game, int species) {
 	int PokeDex = 0;
 	int miscdata = 0;
-	if (game == GAME_SUN || game == GAME_MOON) {
+	if (ISSUMO) {
 		PokeDex = 0x02A00;
 		miscdata = 0x80;
-	} else if (game == GAME_OR || game == GAME_AS) {
+	} else if (ISORAS) {
 		PokeDex = 0x15000;
-	} else if (game == GAME_X || game == GAME_Y) {
+	} else if (ISXY) {
 		PokeDex = 0x15000;
 	}
 	
@@ -217,11 +217,11 @@ bool getCaught(u8* mainbuf, int game, int species) {
 	int bm = bit & 7; 
 	int ofs = PokeDex + 0x08 + miscdata;
 			  
-	if (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS) {
+	if (ISGEN6) {
 		if ((1 << bm & mainbuf[ofs + bd]) != 0)
 			return true;
 
-		if (game == GAME_OR || game == GAME_AS || bit >= 649)
+		if (ISORAS || bit >= 649)
 			return false;
 		
 		return (1 << bm & mainbuf[ofs + bd + 0x644]) != 0;		
@@ -235,14 +235,14 @@ bool getSeen(u8* mainbuf, int game, int species) {
 	int miscdata = 0;
 	int brSize = 0;
 	
-	if (game == GAME_SUN || game == GAME_MOON) {
+	if (ISSUMO) {
 		PokeDex = 0x02A00;
 		miscdata = 0x80;
 		brSize = 0x8C;
-	} else if (game == GAME_OR || game == GAME_AS) {
+	} else if (ISORAS) {
 		PokeDex = 0x15000;
 		brSize = 0x60;
-	} else if (game == GAME_X || game == GAME_Y) {
+	} else if (ISXY) {
 		PokeDex = 0x15000;
 		brSize = 0x60;
 	}

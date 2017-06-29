@@ -123,7 +123,7 @@ void process_pkx(u8* mainbuf, int game, int tempVett[]) {
 		return;		
 	} else {
 		panic = 0;
-		int boxmax = (game < 4) ? 30 : 31;
+		int boxmax = ISGEN6 ? 30 : 31;
 		char *dummy;
 		memset(payload, 0, PAYLOADSIZE);
 		// set client socket to blocking to simplify sending data back
