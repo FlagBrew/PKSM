@@ -49,6 +49,7 @@
 #include "http.h"
 #include "i18n.h"
 #include "memecrypto/source/memecrypto.h"
+#include "pkx.h"
 #include "save.h"
 #include "sha256.h"
 #include "spi.h"

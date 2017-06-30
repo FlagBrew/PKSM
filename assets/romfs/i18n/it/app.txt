@@ -125,7 +125,7 @@ Box %d
 Lancia il client sul tuo pc...
 Premi B per uscire.
 Team
-Premi A per clonare nel box selezionato, B per annullare
+Premi A per clonare, B per annullare.
 Hai selezionato %ls.
 Genera con A.
 TID: %u / SID: %u / TSV: %u

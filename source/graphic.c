@@ -949,7 +949,7 @@ void printEditor(u8* mainbuf, int game, u64 size, int currentEntry, int page) {
 }
 
 u16 getAlternativeSprite(u8* pkmn, int game) {
-	u8 form = getForm(pkmn);
+	u8 form = pkx_get_form(pkmn);
 	if (form) {
 		FormData *forms = getLegalFormData(getPokedexNumber(pkmn), game);
 		int spritenum = forms->spriteNum;
@@ -974,7 +974,7 @@ void printElement(u8* pkmn, int game, u16 n, int x, int y) {
 	}
 	if (isEgg(pkmn))
 		sf2d_draw_texture_part(spritesSmall, x + 6, y + 6, 40 * (EGGSPRITEPOS % 25) + 4, 30 * (EGGSPRITEPOS / 25), 34, 30);
-	if (getItem(pkmn))
+	if (pkx_get_item(pkmn))
 		sf2d_draw_texture(item, x + 3, y + 21);
 }
 void printElementBlend(u8* pkmn, int game, u16 n, int x, int y, u32 color) {
@@ -990,7 +990,7 @@ void printElementBlend(u8* pkmn, int game, u16 n, int x, int y, u32 color) {
 	}
 	if (isEgg(pkmn))
 		sf2d_draw_texture_part_blend(spritesSmall, x + 6, y + 6, 40 * (EGGSPRITEPOS % 25) + 4, 30 * (EGGSPRITEPOS / 25), 34, 30, color);
-	if (getItem(pkmn))
+	if (pkx_get_item(pkmn))
 		sf2d_draw_texture_blend(item, x + 3, y + 21, color);
 }
 
@@ -1028,9 +1028,9 @@ void infoViewer(u8* pkmn, int game) {
 		sf2d_draw_texture_part(balls, -2, -5, 32 * (getBall(pkmn) % 8), 32 * (getBall(pkmn) / 8), 32, 32);
 		sftd_draw_wtext(fontBold12, 30, 6, WHITE, 12, listSpecies.items[getPokedexNumber(pkmn)]);
 		
-		if (getGender(pkmn) == 0)
+		if (pkx_get_gender(pkmn) == 0)
 			sf2d_draw_texture(male, 146, 7);
-		else if (getGender(pkmn) == 1)
+		else if (pkx_get_gender(pkmn) == 1)
 			sf2d_draw_texture(female, 148, 7);
 		
 		wchar_t* level = (wchar_t*)malloc(8 * sizeof(wchar_t));
@@ -1050,8 +1050,8 @@ void infoViewer(u8* pkmn, int game) {
 		
 		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, (isInfected(pkmn) ? i18n(S_YES) : i18n(S_NO))), 69, WHITE, 12, isInfected(pkmn) ? i18n(S_YES) : i18n(S_NO));
 		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, natures[getNature(pkmn)]), 94, WHITE, 12, natures[getNature(pkmn)]);
-		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, abilities[getAbility(pkmn)]), 114, WHITE, 12, abilities[getAbility(pkmn)]);
-		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, items[getItem(pkmn)]), 134, WHITE, 12, items[getItem(pkmn)]);
+		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, abilities[pkx_get_ability(pkmn)]), 114, WHITE, 12, abilities[pkx_get_ability(pkmn)]);
+		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, items[pkx_get_item(pkmn)]), 134, WHITE, 12, items[pkx_get_item(pkmn)]);
 		
 		if (isShiny(pkmn))
 			sf2d_draw_texture(shinyStar, 205, 9);
@@ -1071,7 +1071,7 @@ void infoViewer(u8* pkmn, int game) {
 		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, otid), 180, WHITE, 12, otid);
 		free(otid);
 
-		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, hpList[getHPType(pkmn)]), 220, WHITE, 12, hpList[getHPType(pkmn)]);
+		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, hpList[pkx_get_hp_type(pkmn)]), 220, WHITE, 12, hpList[pkx_get_hp_type(pkmn)]);
 		
 		int max = sftd_get_text_width(fontBold12, 12, "252");		
 		int y_moves = 159;
@@ -1538,9 +1538,9 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 				sf2d_draw_texture_part_scale(spritesSmall, 227, 27 - ofs, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30, 2, 2);
 			}
 			
-			if (getGender(pkmn) == 0)
+			if (pkx_get_gender(pkmn) == 0)
 				sf2d_draw_texture(male, 159, 6);
-			else if (getGender(pkmn) == 1)
+			else if (pkx_get_gender(pkmn) == 1)
 				sf2d_draw_texture(female, 161, 6);
 			
 			for (int i = 0; i < 3; i++) {
@@ -1568,8 +1568,8 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			free(level);
 				
 			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, natures[getNature(pkmn)]), 49, WHITE, 12, natures[getNature(pkmn)]);
-			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, abilities[getAbility(pkmn)]), 69, WHITE, 12, abilities[getAbility(pkmn)]);
-			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, items[getItem(pkmn)]), 89, WHITE, 12, items[getItem(pkmn)]);
+			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, abilities[pkx_get_ability(pkmn)]), 69, WHITE, 12, abilities[pkx_get_ability(pkmn)]);
+			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, items[pkx_get_item(pkmn)]), 89, WHITE, 12, items[pkx_get_item(pkmn)]);
 			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, isShiny(pkmn) ? i18n(S_YES) : i18n(S_NO)), 109, WHITE, 12, isShiny(pkmn) ? i18n(S_YES) : i18n(S_NO));
 			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, isInfected(pkmn) ? i18n(S_YES) : i18n(S_NO)), 129, WHITE, 12, isInfected(pkmn) ? i18n(S_YES) : i18n(S_NO));
 			
@@ -1604,9 +1604,9 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			sftd_draw_wtext(fontBold12, 27, 4, WHITE, 12, listSpecies.items[n]);
 			sf2d_draw_texture_part(balls, -2, -6, 32 * (getBall(pkmn) % 8), 32 * (getBall(pkmn) / 8), 32, 32);
 			
-			if (getGender(pkmn) == 0)
+			if (pkx_get_gender(pkmn) == 0)
 				sf2d_draw_texture(male, 159, 6);
-			else if (getGender(pkmn) == 1)
+			else if (pkx_get_gender(pkmn) == 1)
 				sf2d_draw_texture(female, 161, 6);
 			
 			for (int i = 0; i < 6; i++)
@@ -1623,7 +1623,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			}
 			free(tmp);
 			
-			sftd_draw_wtext(fontBold12, 288 - sftd_get_wtext_width(fontBold12, 12, hpList[getHPType(pkmn)]), 173, WHITE, 12, hpList[getHPType(pkmn)]);
+			sftd_draw_wtext(fontBold12, 288 - sftd_get_wtext_width(fontBold12, 12, hpList[pkx_get_hp_type(pkmn)]), 173, WHITE, 12, hpList[pkx_get_hp_type(pkmn)]);
 
 			for (int i = 0; i < 6; i++) {
 				sf2d_draw_texture(minus, 96, 49 + i * 20);
@@ -1717,7 +1717,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 				u8 type1 = 0, type2 = 0;
 
 				if (tempspecies == 493 || tempspecies == 773) {
-					type1 = getForm(pkmn);
+					type1 = pkx_get_form(pkmn);
 					if (ISGEN4 && type1 > 9)
 						type1--;
 					type2 = type1;
@@ -1739,9 +1739,9 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 				swprintf(level, 8, i18n(S_GRAPHIC_PKBANK_LV_PKMN), getLevel(pkmn));
 				sftd_draw_wtext(fontBold12, 372 - sftd_get_wtext_width(fontBold12, 12, level), 86, WHITE, 12, level);
 				
-				if (getGender(pkmn) == 0)
+				if (pkx_get_gender(pkmn) == 0)
 					sf2d_draw_texture(male, 358 - sftd_get_wtext_width(fontBold12, 12, level), 86);
-				else if (getGender(pkmn) == 1)
+				else if (pkx_get_gender(pkmn) == 1)
 					sf2d_draw_texture(female, 360 - sftd_get_wtext_width(fontBold12, 12, level), 86);
 				if (isShiny(pkmn))
 					sf2d_draw_texture(shinyStar, 360 - sftd_get_wtext_width(fontBold12, 12, level) - 14, 88);
@@ -1896,7 +1896,7 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			break;
 		case 0x0A :
 		case 0x0B :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_ITEM), getItem(pkmn), items[getItem(pkmn)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_ITEM), pkx_get_item(pkmn), items[pkx_get_item(pkmn)]);
 			break;
 		case 0x0C :
 		case 0x0D :
@@ -1909,7 +1909,7 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			sftd_draw_textf(fontBold12, x, y + 16, LIGHTBLUE, 12, "Gen7 TID: %d", ((unsigned int)(getOTID(pkmn) + getSOTID(pkmn)*65536) % 1000000));
 			break;
 		case 0x14 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ABILITY), abilities[getAbility(pkmn)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ABILITY), abilities[pkx_get_ability(pkmn)]);
 			break;
 		case 0x1C :
 			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_NATURE), natures[getNature(pkmn)]);
@@ -1920,9 +1920,9 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			sftd_draw_wtext(fontBold12, xribbon + 27, y, LIGHTBLUE, 12, entries[0]);
 			sf2d_draw_rectangle(xribbon, y, 13, 13, (pkmn[byte] & 1) ? BUTTONGREEN : BUTTONRED);
 			sftd_draw_wtext(fontBold12, x, y + 17, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_GENDER));
-			if (getGender(pkmn) == 0)
+			if (pkx_get_gender(pkmn) == 0)
 				sftd_draw_wtext(fontBold12, x + i, y + 17, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_GENDER_MALE));
-			else if (getGender(pkmn) == 1)
+			else if (pkx_get_gender(pkmn) == 1)
 				sftd_draw_wtext(fontBold12, x + i, y + 17, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_GENDER_FEMALE));
 			else
 				sftd_draw_wtext(fontBold12, x + i, y + 17, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_GENDER_GENDERLESS));
@@ -2226,9 +2226,9 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0xDD : {
 			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MET_LEVEL), (pkmn[byte] & 0x7f));
 			sftd_draw_wtextf(fontBold12, xribbon + 27, y + 17, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_GENDER));
-			if (getOTGender(pkmn) == 0)
+			if (pkx_get_ot_gender(pkmn) == 0)
 				sf2d_draw_texture(male, xribbon + 10, y + 17 + 2);
-			else if (getOTGender(pkmn) == 1)
+			else if (pkx_get_ot_gender(pkmn) == 1)
 				sf2d_draw_texture(female, xribbon + 10 + 2, y + 17 + 2);
 			break;
 		}

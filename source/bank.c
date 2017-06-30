@@ -277,7 +277,7 @@ void bank(u8* mainbuf, int game) {
 						memcpy(temp, &bankbuf[bankBox * 30 * PKMNLENGTH + i * PKMNLENGTH], PKMNLENGTH); // memcpy bank -> temp
 						
 						u16 species = getPokedexNumber(temp);
-						u8 form = getForm(temp);
+						u8 form = pkx_get_form(temp);
 						FormData *forms = getLegalFormData(species, game);
 						bool illegalform = form < forms->min || form > forms->max;
 						bool illegalspecies = game < 4 && species > 721;
@@ -373,7 +373,7 @@ void bank(u8* mainbuf, int game) {
  		if (hidKeysDown() & KEY_A) {
 			if (isBufferized) {
 				u16 species = getPokedexNumber(pkmn);
-				u8 form = getForm(pkmn);
+				u8 form = pkx_get_form(pkmn);
 				FormData *forms = getLegalFormData(species, game);
 				bool illegalform = form < forms->min || form > forms->max;
 				bool illegalspecies = ISGEN6 && species > 721;

@@ -320,21 +320,9 @@ bool isBattleBoxed(u8* mainbuf, int game, int box, int slot) {
 	return false;
 }
 
-/* ************************ get ************************ */
-
-u8 getHT(u8* pkmn) { return *(u8*)(pkmn + 0xDE); }
-u8 getGender(u8* pkmn) { return ((*(u8*)(pkmn + 0x1D)) >> 1) & 0x3; }
-u8 getLanguage(u8* pkmn) { return *(u8*)(pkmn + 0xE3); }
-u8 getAbility(u8* pkmn) { return *(u8*)(pkmn + 0x14); }
-u8 getAbilityNum(u8* pkmn) { return *(u8*)(pkmn + 0x15); }
-u8 getForm(u8* pkmn) { return ((*(u8*)(pkmn + 0x1D)) >> 3); }
-u16 getItem(u8* pkmn) { return *(u16*)(pkmn + 0x0A); }
-u8 getHPType(u8* pkmn) { return 15 * ((getIV(pkmn, 0)& 1) + 2 * (getIV(pkmn, 1) & 1) + 4 * (getIV(pkmn, 2) & 1) + 8 * (getIV(pkmn, 3) & 1) + 16 * (getIV(pkmn, 4) & 1) + 32 * (getIV(pkmn, 5) & 1)) / 63; }
-u8 getOTGender(u8* pkmn) { return ((*(u8*)(pkmn + 0xDD)) >> 7); }
-
 u16 getFormSpeciesNumber(u8 *pkmn) {	
 	u16 tempspecies = getPokedexNumber(pkmn);
-	u8 form = getForm(pkmn);
+	u8 form = pkx_get_form(pkmn);
 	u8 formcnt = personal.pkmData[tempspecies][0x0E];
 
 	if (form && form < formcnt) {
@@ -707,9 +695,9 @@ u16 getStat(u8* pkmn, const int stat) {
     if (stat == 5) basestat = personal.pkmData[tempspecies][0x5];
     
     if (stat == 0)
-        final = 10 + ((2 * basestat) + ((((getHT(pkmn) >> lookupHT[stat]) & 1) == 1) ? 31 : getIV(pkmn, stat)) + getEV(pkmn, stat) / 4 + 100) * getLevel(pkmn) / 100;
+        final = 10 + ((2 * basestat) + ((((pkx_get_HT(pkmn) >> lookupHT[stat]) & 1) == 1) ? 31 : getIV(pkmn, stat)) + getEV(pkmn, stat) / 4 + 100) * getLevel(pkmn) / 100;
     else
-        final = 5 + (2 * basestat + ((((getHT(pkmn) >> lookupHT[stat]) & 1) == 1) ? 31 : getIV(pkmn, stat)) + getEV(pkmn, stat) / 4) * getLevel(pkmn) / 100; 
+        final = 5 + (2 * basestat + ((((pkx_get_HT(pkmn) >> lookupHT[stat]) & 1) == 1) ? 31 : getIV(pkmn, stat)) + getEV(pkmn, stat) / 4) * getLevel(pkmn) / 100; 
     
     if (getNature(pkmn) / 5 + 1 == stat)
         mult++;
@@ -1395,7 +1383,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 	wchar_t* descriptions[PKMNLENGTH];
 	
 	u8* pkmn = (u8*)malloc(PKMNLENGTH * sizeof(u8));
-	int ability = (int)getAbilityNum(pkmn);
+	int ability = (int)pkx_get_ability_number(pkmn);
 
 	while (aptMainLoop()) {
 		hidScanInput();
@@ -1638,7 +1626,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 											}
 											if (byteEntry == 0xDD) {
 												if ((hidKeysDown() & KEY_TOUCH) && touch.px > 100 - 3 && touch.px < 100 + 15 && touch.py > 89 - 6 && touch.py < 89 + 14)
-													setFlag(pkmn, 0xdd, 7, !getOTGender(pkmn));
+													setFlag(pkmn, 0xdd, 7, !pkx_get_ot_gender(pkmn));
 											}
 											if (byteEntry == 0xDE) {
 												for (int i = 0; i < 6; i++) {
@@ -1828,7 +1816,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 											else
 												columns = 6;
 											
-											u8 form = getForm(pkmn);
+											u8 form = pkx_get_form(pkmn);
 											int formEntry = form >= forms->min && form <= forms->max ? form - forms->min : 0;
 											while(aptMainLoop() && !(hidKeysDown() & KEY_B)) {
 												hidScanInput();
@@ -1867,8 +1855,8 @@ void pokemonEditor(u8* mainbuf, int game) {
 									}
 									
 									if (touch.px > 156 && touch.px < 174 && touch.py > 0 && touch.py < 20) {
-										if (getGender(pkmn) != 2) 
-											setGender(pkmn, ((getGender(pkmn) == 0) ? 1 : 0));
+										if (pkx_get_gender(pkmn) != 2) 
+											setGender(pkmn, ((pkx_get_gender(pkmn) == 0) ? 1 : 0));
 									}
 									
 									if (touch.px > 180 && touch.px < 195 && touch.py > 111 && touch.py < 123)

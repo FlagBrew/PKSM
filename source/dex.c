@@ -146,7 +146,7 @@ void setDex(u8 mainbuf[], u8* pkmn, int game) {
 	int bit = n - 1;
 	int bd = bit >> 3;
 	int bm = bit & 7;
-	int gender = getGender(pkmn) % 2;
+	int gender = pkx_get_gender(pkmn) % 2;
 	int shiny = isShiny(pkmn) ? 1 : 0;
 	if (n == 351)
 		shiny = 0;
@@ -164,7 +164,7 @@ void setDex(u8 mainbuf[], u8* pkmn, int game) {
 	int ofs = PokeDex + 0x08 + 0x80;
 	mainbuf[ofs + bd] |= (u8)(1 << bm);
 
-	int formstart = getForm(pkmn);
+	int formstart = pkx_get_form(pkmn);
 	int formend = formstart;
 	int fsfe[2] = {0, 0};
 
@@ -187,7 +187,7 @@ void setDex(u8 mainbuf[], u8* pkmn, int game) {
 		setDexFlags(mainbuf, bitIndex, gender, shiny, getPokedexNumber(pkmn) - 1, game);
 	}
 
-	int lang = getLanguage(pkmn);
+	int lang = pkx_get_language(pkmn);
 	const int langCount = 9;
 	if (lang <= 10 && lang != 6 && lang != 0) {
 		if (lang >= 7)
