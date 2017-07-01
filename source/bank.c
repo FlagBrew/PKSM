@@ -229,7 +229,7 @@ void bank(u8* mainbuf, int game) {
 				if (bufferizedfrombank)
 					memcpy(&bankbuf[coordinate[0] * 30 * PKMNLENGTH + coordinate[1] * PKMNLENGTH], pkmn, PKMNLENGTH);
 				else 
-					setPkmn(mainbuf, coordinate[0], coordinate[1], pkmn, game);
+					pkx_set(mainbuf, coordinate[0], coordinate[1], pkmn, game);
 				
 				memset(pkmn, 0, PKMNLENGTH);
 				isBufferized = false;
@@ -260,7 +260,7 @@ void bank(u8* mainbuf, int game) {
 						if (currentEntry < 30)
 							memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + i * PKMNLENGTH], tmp, PKMNLENGTH);
 						else if (!isBattleBoxed(mainbuf, game, saveBox, i))
-							setPkmn(mainbuf, saveBox, i, tmp, game);
+							pkx_set(mainbuf, saveBox, i, tmp, game);
 					}
 				}
 			}
@@ -273,7 +273,7 @@ void bank(u8* mainbuf, int game) {
 				
 				for (u32 i = 0; i < 30; i++) {
 					if (!isBattleBoxed(mainbuf, game, saveBox, i)) {
-						getPkmn(mainbuf, saveBox, i, buffer, game); // getpkmn -> buffer
+						pkx_get(mainbuf, saveBox, i, buffer, game); // pkx_get -> buffer
 						memcpy(temp, &bankbuf[bankBox * 30 * PKMNLENGTH + i * PKMNLENGTH], PKMNLENGTH); // memcpy bank -> temp
 						
 						u16 species = getPokedexNumber(temp);
@@ -284,7 +284,7 @@ void bank(u8* mainbuf, int game) {
 						free(forms);
 
 						if (!(illegalspecies || illegalform)) { // prevent that gen7 stuff goes into gen6 save
-							setPkmn(mainbuf, saveBox, i, temp, game); // setpkmn -> temp
+							pkx_set(mainbuf, saveBox, i, temp, game); // pkx_set -> temp
 							memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + i * PKMNLENGTH], buffer, PKMNLENGTH); // memcpy bank -> buffer
 						}
 					}
@@ -297,7 +297,7 @@ void bank(u8* mainbuf, int game) {
 				if (currentEntry < 30) 
 					memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], tmp, PKMNLENGTH);
 				else if (!isBattleBoxed(mainbuf, game, saveBox, currentEntry - 30))
-					setPkmn(mainbuf, saveBox, currentEntry - 30, tmp, game);
+					pkx_set(mainbuf, saveBox, currentEntry - 30, tmp, game);
 			}
 			
 			if (touch.px > 208 && touch.px < 317 && touch.py > 153 && touch.py < 180) {
@@ -354,7 +354,7 @@ void bank(u8* mainbuf, int game) {
 			if (currentEntry < 30)
 				memcpy(tmp, &bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], PKMNLENGTH);
 			else 
-				getPkmn(mainbuf, saveBox, currentEntry - 30, tmp, game);
+				pkx_get(mainbuf, saveBox, currentEntry - 30, tmp, game);
 			
 			while (aptMainLoop() && getPokedexNumber(tmp)) {
 				hidScanInput();
@@ -385,23 +385,23 @@ void bank(u8* mainbuf, int game) {
 					if ((bufferizedfrombank == (currentEntry < 30)) && (coordinate[0] == ((currentEntry < 30) ? bankBox : saveBox)) && (coordinate[1] == currentEntry)) //remains at the same place
 						memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], pkmn, PKMNLENGTH);
 					else if ((!bufferizedfrombank == (currentEntry > 29)) && (coordinate[0] == ((currentEntry < 30) ? bankBox : saveBox)) && (coordinate[1] == currentEntry - 30)) //remains at the same place
-						setPkmn(mainbuf, saveBox, currentEntry - 30, pkmn, game);
+						pkx_set(mainbuf, saveBox, currentEntry - 30, pkmn, game);
 					else if (currentEntry < 30) {
 						memcpy(tmp, &bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], PKMNLENGTH);
 						memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], pkmn, PKMNLENGTH);
 						if (bufferizedfrombank) 
 							memcpy(&bankbuf[coordinate[0] * 30 * PKMNLENGTH + coordinate[1] * PKMNLENGTH], tmp, PKMNLENGTH);
 						else
-							setPkmn(mainbuf, coordinate[0], coordinate[1], tmp, game);
+							pkx_set(mainbuf, coordinate[0], coordinate[1], tmp, game);
 					}
 					else {
-						getPkmn(mainbuf, saveBox, currentEntry - 30, tmp, game);
+						pkx_get(mainbuf, saveBox, currentEntry - 30, tmp, game);
 						setDex(mainbuf, pkmn, game);
-						setPkmn(mainbuf, saveBox, currentEntry - 30, pkmn, game);
+						pkx_set(mainbuf, saveBox, currentEntry - 30, pkmn, game);
 						if (bufferizedfrombank) 
 							memcpy(&bankbuf[coordinate[0] * 30 * PKMNLENGTH + coordinate[1] * PKMNLENGTH], tmp, PKMNLENGTH);
 						else
-							setPkmn(mainbuf, coordinate[0], coordinate[1], tmp, game);
+							pkx_set(mainbuf, coordinate[0], coordinate[1], tmp, game);
 					}
 					memset(pkmn, 0, PKMNLENGTH);
 					isBufferized = false;
@@ -426,13 +426,13 @@ void bank(u8* mainbuf, int game) {
 							isBufferized = true;
 						}
 					} else {
-						getPkmn(mainbuf, saveBox, currentEntry - 30, pkmn, game);
+						pkx_get(mainbuf, saveBox, currentEntry - 30, pkmn, game);
 						clearMarkings(pkmn, game);
 						if (getPokedexNumber(pkmn) <= 0 || getPokedexNumber(pkmn) > 821) {
 							memset(pkmn, 0, PKMNLENGTH);
 							isBufferized = false;
 						} else {
-							setPkmn(mainbuf, saveBox, currentEntry - 30, tmp, game);
+							pkx_set(mainbuf, saveBox, currentEntry - 30, tmp, game);
 							isBufferized = true;
 						}
 					}

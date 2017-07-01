@@ -134,7 +134,7 @@ void process_pkx(u8* mainbuf, int game, int tempVett[]) {
             u8 pkmn[PKMNLENGTH];
             dummy = strstr(payload,"PKSMOTA");
             memcpy(pkmn, &dummy[7], PKMNLENGTH);
-            setPkmn(mainbuf, tempVett[0], tempVett[1], pkmn, game);
+            pkx_set(mainbuf, tempVett[0], tempVett[1], pkmn, game);
 
             do {
                 tempVett[1]++;
@@ -145,7 +145,7 @@ void process_pkx(u8* mainbuf, int game, int tempVett[]) {
                 if (tempVett[0] > boxmax)
                     tempVett[0] = 0;
 
-                getPkmn(mainbuf, tempVett[0], tempVett[1], pkmn, game);
+                pkx_get(mainbuf, tempVett[0], tempVett[1], pkmn, game);
                 panic++;
             } while (getPokedexNumber(pkmn) && (panic < boxmax * 30));
         }

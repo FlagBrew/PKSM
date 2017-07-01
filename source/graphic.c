@@ -972,7 +972,7 @@ void printElement(u8* pkmn, int game, u16 n, int x, int y) {
 		else
 			sf2d_draw_texture_part(spritesSmall, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30);
 	}
-	if (isEgg(pkmn))
+	if (pkx_is_egg(pkmn))
 		sf2d_draw_texture_part(spritesSmall, x + 6, y + 6, 40 * (EGGSPRITEPOS % 25) + 4, 30 * (EGGSPRITEPOS / 25), 34, 30);
 	if (pkx_get_item(pkmn))
 		sf2d_draw_texture(item, x + 3, y + 21);
@@ -988,7 +988,7 @@ void printElementBlend(u8* pkmn, int game, u16 n, int x, int y, u32 color) {
 		else
 			sf2d_draw_texture_part_blend(spritesSmall, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30, color);
 	}
-	if (isEgg(pkmn))
+	if (pkx_is_egg(pkmn))
 		sf2d_draw_texture_part_blend(spritesSmall, x + 6, y + 6, 40 * (EGGSPRITEPOS % 25) + 4, 30 * (EGGSPRITEPOS / 25), 34, 30, color);
 	if (pkx_get_item(pkmn))
 		sf2d_draw_texture_blend(item, x + 3, y + 21, color);
@@ -1009,7 +1009,7 @@ void infoViewer(u8* pkmn, int game) {
 	
 	sftd_draw_wtext(fontBold12, 251, 138, WHITE, 12, i18n(S_GRAPHIC_INFOVIEWER_MOVES));
 	for (int i = 0; i < 10; i++) {
-		if (i == 8 && isEgg(pkmn))
+		if (i == 8 && pkx_is_egg(pkmn))
 			sftd_draw_wtext(fontBold12, 2, y_desc, BLUE, 12, i18n(S_GRAPHIC_INFOVIEWER_EGG_CYCLE));
 		else
 			sftd_draw_wtext(fontBold12, 2, y_desc, BLUE, 12, entries[i]);
@@ -1057,7 +1057,7 @@ void infoViewer(u8* pkmn, int game) {
 			sf2d_draw_texture(shinyStar, 205, 9);
 		
 		char* friendship = (char*)malloc(11 * sizeof(char));
-		if (isEgg(pkmn))
+		if (pkx_is_egg(pkmn))
 			snprintf(friendship, 11, "%u", getOTFriendship(pkmn));
 		else
 			snprintf(friendship, 11, "%u / %u", getHTFriendship(pkmn), getOTFriendship(pkmn));
@@ -1257,7 +1257,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 	swprintf(page, MAX_LENGTH_BOX_NAME+1, i18n(S_GRAPHIC_PKVIEWER_BOX), box + 1);
 	
 	u8* pkmn = (u8*)malloc(PKMNLENGTH * sizeof(u8));
-	getPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
+	pkx_get(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		if (mode == ED_GENERATE) {
@@ -1304,7 +1304,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 		for (int i = 0; i < 5; i++) {
 			x = 4;
 			for (int j = 0; j < 6; j++) {
-				getPkmn(mainbuf, box, i * 6 + j, pkmn, game);
+				pkx_get(mainbuf, box, i * 6 + j, pkmn, game);
 				u16 n = getPokedexNumber(pkmn);
 				if (n > 0 && n < 822)
 					printElement(pkmn, game, n, x, y);
@@ -1327,7 +1327,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 		for (int i = 0; i < 3; i++) {
 			x = 222;
 			for (int j = 0; j < 2; j++) {
-				getPkmn(mainbuf, 33, i * 2 + j, pkmn, game);
+				pkx_get(mainbuf, 33, i * 2 + j, pkmn, game);
 				u16 n = getPokedexNumber(pkmn);
 				if (n)
 					printElement(pkmn, game, n, x, (j == 1) ? y + 20 : y);
@@ -1349,7 +1349,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 		}
 		
 		if (mode == ED_MENU) {
-			getPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
+			pkx_get(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
 
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
 			sf2d_draw_texture(bottomPopUp, 1, 214);
@@ -1549,7 +1549,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			}
 			
 			for (int i = 0; i < 9; i++)
-				if (i == 8 && isEgg(pkmn))
+				if (i == 8 && pkx_is_egg(pkmn))
 					sftd_draw_wtext(fontBold12, 2, 29 + i * 20, LIGHTBLUE, 12, i18n(S_GRAPHIC_PKEDITOR_EGG_CYCLE));
 				else
 					sftd_draw_wtext(fontBold12, 2, 29 + i * 20, LIGHTBLUE, 12, entries[i]);
@@ -1574,7 +1574,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, isInfected(pkmn) ? i18n(S_YES) : i18n(S_NO)), 129, WHITE, 12, isInfected(pkmn) ? i18n(S_YES) : i18n(S_NO));
 			
 			char* friendship = (char*)malloc(4 * sizeof(char));
-			if (isEgg(pkmn))
+			if (pkx_is_egg(pkmn))
 				snprintf(friendship, 4, "%u", getOTFriendship(pkmn));
 			else
 				snprintf(friendship, 4, "%u", getFriendship(pkmn));
@@ -1701,7 +1701,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 	if (currentEntry < 30)
 		memcpy(pkmn, &bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], PKMNLENGTH);
 	else
-		getPkmn(mainbuf, saveBox, currentEntry - 30, pkmn, game);
+		pkx_get(mainbuf, saveBox, currentEntry - 30, pkmn, game);
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		if (isSeen) {
@@ -1811,7 +1811,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 		for (int i = 0; i < 5; i++) {
 			x = 4;
 			for (int j = 0; j < 6; j++) {
-				getPkmn(mainbuf, saveBox, i*6+j, pkmn, game);
+				pkx_get(mainbuf, saveBox, i*6+j, pkmn, game);
 				u16 n = getPokedexNumber(pkmn);
 				if (n)
 					printElement(pkmn, game, n, x, y);
@@ -2110,7 +2110,7 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			sftd_draw_wtext(fontBold12, xribbon + 27, y, LIGHTBLUE, 12, i18n(entries[0]));
 			sf2d_draw_rectangle(xribbon, y, 13, 13, (isNicknameF(pkmn)) ? BUTTONGREEN : BUTTONRED);
 			sftd_draw_wtext(fontBold12, xribbon + 27, y + 17, LIGHTBLUE, 12, i18n(entries[1]));
-			sf2d_draw_rectangle(xribbon, y + 17, 13, 13, (isEgg(pkmn)) ? BUTTONGREEN : BUTTONRED);
+			sf2d_draw_rectangle(xribbon, y + 17, 13, 13, (pkx_is_egg(pkmn)) ? BUTTONGREEN : BUTTONRED);
 			break;
 		}
 		case 0x78 :

@@ -125,143 +125,6 @@ u32 expTable[100][6] = {
   {1000000, 600000, 1640000, 1059860, 800000, 1250000}
 };
 
-/* ************************ utilities ************************ */
-
-u32 seedStep(const u32 seed) { return (seed * 0x41C64E6D + 0x00006073) & 0xFFFFFFFF; }
-u32 LCRNG(u32 seed) { return seed * 0x41C64E6D + 0x00006073; }
-
-void shuffleArray(u8* pkmn, const u32 encryptionkey) {
-    const int BLOCKLENGHT = 56;
-
-    u8 seed = (((encryptionkey & 0x3E000) >> 0xD) % 24);
-
-    int aloc[24] = { 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 2, 3, 1, 1, 2, 3, 2, 3, 1, 1, 2, 3, 2, 3 };
-    int bloc[24] = { 1, 1, 2, 3, 2, 3, 0, 0, 0, 0, 0, 0, 2, 3, 1, 1, 3, 2, 2, 3, 1, 1, 3, 2 };
-    int cloc[24] = { 2, 3, 1, 1, 3, 2, 2, 3, 1, 1, 3, 2, 0, 0, 0, 0, 0, 0, 3, 2, 3, 2, 1, 1 };
-    int dloc[24] = { 3, 2, 3, 2, 1, 1, 3, 2, 3, 2, 1, 1, 3, 2, 3, 2, 1, 1, 0, 0, 0, 0, 0, 0 };
-    int ord[4] = {aloc[seed], bloc[seed], cloc[seed], dloc[seed]};
-
-    char pkmncpy[PKMNLENGTH];
-    char tmp[BLOCKLENGHT];
-
-    memcpy(&pkmncpy, pkmn, PKMNLENGTH);
-
-    for (int i = 0; i < 4; i++) {
-        memcpy(tmp, pkmncpy + 8 + BLOCKLENGHT * ord[i], BLOCKLENGHT);
-        memcpy(pkmn + 8 + BLOCKLENGHT * i, tmp, BLOCKLENGHT);
-    }
-}
-
-void decryptPkmn(u8* pkmn) {
-    const int ENCRYPTIONKEYPOS = 0x0;
-    const int ENCRYPTIONKEYLENGHT = 4;
-    const int CRYPTEDAREAPOS = 0x08;
-
-    u32 encryptionkey;
-    memcpy(&encryptionkey, &pkmn[ENCRYPTIONKEYPOS], ENCRYPTIONKEYLENGHT);
-    u32 seed = encryptionkey;
-
-    u16 temp;
-    for (int i = CRYPTEDAREAPOS; i < PKMNLENGTH; i += 2) {
-        memcpy(&temp, &pkmn[i], 2);
-        temp ^= (seedStep(seed) >> 16);
-        seed = seedStep(seed);
-        memcpy(&pkmn[i], &temp, 2);
-    }
-
-    shuffleArray(pkmn, encryptionkey);
-}
-
-int getPkmnAddress(const int boxnumber, const int indexnumber, int game) {
-    int boxpos = 0;
-    if (ISXY) {
-		if (boxnumber < 33)
-			boxpos = 0x22600;
-		else
-			boxpos = 0x14200;
-	} else if (ISORAS) {
-		if (boxnumber < 33)
-			boxpos = 0x33000;
-		else
-			boxpos = 0x14200;
-	} else if (ISSUMO) {
-		if (boxnumber < 33) 
-			boxpos = 0x04E00;
-		else 
-			boxpos = 0x01400;
-	}
-
-	if (boxnumber < 33)
-		return boxpos + (PKMNLENGTH * 30 * boxnumber) + (indexnumber * PKMNLENGTH);
-
-	return boxpos + indexnumber * 260;
-}
-
-void calculatePKMNChecksum(u8* data) {
-    u16 chk = 0;
-
-    for (int i = 8; i < PKMNLENGTH; i += 2)
-        chk += *(u16*)(data + i);
-
-    memcpy(data + 6, &chk, 2);
-}
-
-void encryptPkmn(u8* pkmn) {
-    const int ENCRYPTIONKEYPOS = 0x0;
-    const int ENCRYPTIONKEYLENGHT = 4;
-    const int CRYPTEDAREAPOS = 0x08;
-
-    u32 encryptionkey;
-    memcpy(&encryptionkey, &pkmn[ENCRYPTIONKEYPOS], ENCRYPTIONKEYLENGHT);
-    u32 seed = encryptionkey;
-
-    for(int i = 0; i < 11; i++)
-        shuffleArray(pkmn, encryptionkey);
-
-    u16 temp;
-    for(int i = CRYPTEDAREAPOS; i < PKMNLENGTH; i += 2) {
-        memcpy(&temp, &pkmn[i], 2);
-        temp ^= (seedStep(seed) >> 16);
-        seed = seedStep(seed);
-        memcpy(&pkmn[i], &temp, 2);
-    }
-}
-
-void getPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game) {
-    memcpy(pkmn, &mainbuf[getPkmnAddress(boxnumber, indexnumber, game)], PKMNLENGTH);
-    decryptPkmn(pkmn);
-}
-
-void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game) {
-	u8 latestHandlers[10];
-	char ot_name[NICKNAMELENGTH];
-	char save_name[NICKNAMELENGTH];
-	char ht_name[NICKNAMELENGTH];
-	memset(ht_name, 0, NICKNAMELENGTH);
-
-	memcpy(latestHandlers, &pkmn[0x94], 10);
-	memcpy(ot_name, &pkmn[0xB0], NICKNAMELENGTH);
-	memcpy(save_name, &mainbuf[ISGEN6 ? 0x14048 : 0x1238], NICKNAMELENGTH);
-	
-	if ((getSaveTID(mainbuf, game) == getOTID(pkmn)) && (getSaveSID(mainbuf, game) == getSOTID(pkmn)) && !memcmp(ot_name, save_name, NICKNAMELENGTH) && !memcmp(latestHandlers, ht_name, 10)) { //you're the first owner
-		setHT(pkmn, ht_name);
-		setHTGender(pkmn, 0);
-	} else {
-		setHT(pkmn, save_name);
-		setHTGender(pkmn, getSaveGender(mainbuf, game));
-	}
-
-    calculatePKMNChecksum(pkmn);
-    encryptPkmn(pkmn);
-
-    memcpy(&mainbuf[getPkmnAddress(boxnumber, indexnumber, game)], pkmn, PKMNLENGTH);
-	
-	//if (boxnumber == 33) {
-		//fillBattleSection(mainbuf, pkmn, game, indexnumber);
-		//encryptBattleSection(mainbuf, pkmn, game, indexnumber);
-	//}
-}
-
 bool isShiny(u8* pkmn) {
     u16 trainersv = (getOTID(pkmn) ^ getSOTID(pkmn)) >> 4;
     u16 pkmnv = ((getPID(pkmn) >> 16) ^ (getPID(pkmn) & 0xFFFF)) >> 4;
@@ -274,24 +137,6 @@ void rerollPID(u8* pkmn) {
     srand(getPID(pkmn));
     u32 pidbuffer = rand();
     memcpy(&pkmn[0x18], &pidbuffer, PIDLENGTH);
-}
-
-void rerollEncryptionKey(u8* pkmn) {
-    const int ENCRYPTIONKEYPOS = 0x0;
-    const int ENCRYPTIONKEYLENGTH = 4;
-
-	srand(time(NULL));
-	u32 encryptbuffer = rand();
-	memcpy(&pkmn[ENCRYPTIONKEYPOS], &encryptbuffer, ENCRYPTIONKEYLENGTH);
-}
-
-bool isEgg(u8* pkmn) {
-    u32 eggbuffer;
-    memcpy(&eggbuffer, &pkmn[0x74], IVLENGTH);
-    eggbuffer = eggbuffer >> 30;
-    eggbuffer = eggbuffer & 0x1;
-    if (eggbuffer == 1) return true;
-    else return false;
 }
 
 bool isNicknameF(u8* pkmn) {
@@ -1093,8 +938,8 @@ void setWC(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[]) {
 		u16 temp;
 		for (int i = 0; i < 0xA90; i += 2) {
 			memcpy(&temp, &mainbuf[0x1C800 + i], 2);
-			temp ^= (LCRNG(seed) >> 16);
-			seed = LCRNG(seed);
+			temp ^= (pkx_lcrng(seed) >> 16);
+			seed = pkx_lcrng(seed);
 			memcpy(&mainbuf[0x1C800 + i], &temp, 2);
 		}
 
@@ -1105,8 +950,8 @@ void setWC(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[]) {
 		memcpy(&seed, &mainbuf[0x1D290], sizeof(u32));
 		for (int i = 0; i < 0xA90; i += 2) {
 			memcpy(&temp, &mainbuf[0x1C800 + i], 2);
-			temp ^= (LCRNG(seed) >> 16);
-			seed = LCRNG(seed);
+			temp ^= (pkx_lcrng(seed) >> 16);
+			seed = pkx_lcrng(seed);
 			memcpy(&mainbuf[0x1C800 + i], &temp, 2);
 		}
 	}
@@ -1345,9 +1190,9 @@ void generate(u8* mainbuf, int game, bool isTeam, int box, int currentEntry, int
 	fread(livingbuf, size, 1, fptr);
 	fclose(fptr);
 
-	memcpy(&mainbuf[getPkmnAddress((isTeam) ? 33 : box, currentEntry, game)], &livingbuf[(page * 40 + genEntry) * 232], 232);
+	memcpy(&mainbuf[pkx_get_save_address((isTeam) ? 33 : box, currentEntry, game)], &livingbuf[(page * 40 + genEntry) * 232], 232);
 	u8 tempkmn[PKMNLENGTH];
-	getPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
+	pkx_get(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
 	memcpy(&tempkmn[0xE3], &mainbuf[ISGEN6 ? 0x1402D : 0x1235], 1); // nats
 
 	// Correct Nickname of current language
@@ -1359,9 +1204,9 @@ void generate(u8* mainbuf, int game, bool isTeam, int box, int currentEntry, int
 	setNicknameZ(tempkmn, nick, 0x40);
 
 	// Randomizing the encryption constant
-	rerollEncryptionKey(tempkmn);
+	pkx_reroll_encryption_key(tempkmn);
 	setDex(mainbuf, tempkmn, game);
-	setPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
+	pkx_set(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
 
 	free(livingbuf);	
 }
@@ -1515,7 +1360,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 		if (((hidKeysDown() & KEY_A) || touchExecuting / 40 == 2) && !isBattleBoxed(mainbuf, game, box, currentEntry)) {
 			touchExecuting = currentEntry;
 
-			getPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
+			pkx_get(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
 			bool operationDone = false;
 
 			touchExecuting = menuEntry;
@@ -1550,7 +1395,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 						setNicknameZ(pkmn, (char*)nick, 0xb0);
 						setOTGender(pkmn, (getSaveGender(mainbuf, game)));
 
-						setPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
+						pkx_set(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
 						operationDone = true;
 						break;
 					}
@@ -1622,7 +1467,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 												if ((hidKeysDown() & KEY_TOUCH) && touch.px > 90 && touch.px < 103 && touch.py > 70 && touch.py < 83)
 													setFlag(pkmn, 0x77, 7, !isNicknameF(pkmn));
 												if ((hidKeysDown() & KEY_TOUCH) && touch.px > 90 && touch.px < 103 && touch.py > 70 + 17 && touch.py < 83 + 17)
-													setFlag(pkmn, 0x77, 6, !isEgg(pkmn));
+													setFlag(pkmn, 0x77, 6, !pkx_is_egg(pkmn));
 											}
 											if (byteEntry == 0xDD) {
 												if ((hidKeysDown() & KEY_TOUCH) && touch.px > 100 - 3 && touch.px < 100 + 15 && touch.py > 89 - 6 && touch.py < 89 + 14)
@@ -1910,7 +1755,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 									}
 									
 									if (touch.px > 206 && touch.px < 315 && touch.py > 172 && touch.py < 203) {
-										setPkmn(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
+										pkx_set(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
 										operationDone = true;
 										break;
 									}
@@ -1979,14 +1824,14 @@ void pokemonEditor(u8* mainbuf, int game) {
 										setLevel(pkmn, (getLevel(pkmn) > 1) ? getLevel(pkmn) - 1 : 100);
 									
 									if (touch.px > 137 && touch.px < 150 && touch.py > 189 && touch.py < 202) {
-										if (isEgg(pkmn))
+										if (pkx_is_egg(pkmn))
 											setOTFriendship(pkmn, (getOTFriendship(pkmn) > 0) ? getOTFriendship(pkmn) - 1 : 255);
 										else
 											setFriendship(pkmn, (getFriendship(pkmn) > 0) ? getFriendship(pkmn) - 1 : 255);
 									}
 
 									if (touch.px > 180 && touch.px < 193 && touch.py > 189 && touch.py < 202) {
-										if (isEgg(pkmn))
+										if (pkx_is_egg(pkmn))
 											setOTFriendship(pkmn, (getOTFriendship(pkmn) < 255) ? getOTFriendship(pkmn) + 1 : 0);
 										else
 											setFriendship(pkmn, (getFriendship(pkmn) < 255) ? getFriendship(pkmn) + 1 : 0);
@@ -2007,7 +1852,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 											speed--;
 									}
 									else if (touch.px > 137 && touch.px < 150 && touch.py > 189 && touch.py < 202) {
-										if (isEgg(pkmn)) {
+										if (pkx_is_egg(pkmn)) {
 											if (speed < -30 && getOTFriendship(pkmn) > 0)
 												setOTFriendship(pkmn, getOTFriendship(pkmn) - 1);
 											else
@@ -2021,7 +1866,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 										}
 									}
 									else if (touch.px > 180 && touch.px < 193 && touch.py > 189 && touch.py < 202) {
-										if (isEgg(pkmn)) {
+										if (pkx_is_egg(pkmn)) {
 											if (speed > 30 && getOTFriendship(pkmn) < 255)
 												setOTFriendship(pkmn, getOTFriendship(pkmn) + 1);
 											else
@@ -2102,7 +1947,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 									}
 								}
 								if ((hidKeysDown() & KEY_A) && !isTeam) {
-									setPkmn(mainbuf, box, cloneEntry, pkmn, game);
+									pkx_set(mainbuf, box, cloneEntry, pkmn, game);
 									operationDone = true;
 									currentEntry = cloneEntry;
 									break;
@@ -2115,7 +1960,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 						case 2 : {
 							if (!isTeam && confirmDisp(i18n(S_EDITOR_Q_CONFIRM_RELEASE))) {
 								memset(pkmn, 0, PKMNLENGTH);
-								setPkmn(mainbuf, box, currentEntry, pkmn, game);
+								pkx_set(mainbuf, box, currentEntry, pkmn, game);
 								infoDisp(i18n(S_EDITOR_RELEASED));
 								operationDone = true;
 							}

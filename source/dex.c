@@ -140,7 +140,7 @@ void setDex(u8 mainbuf[], u8* pkmn, int game) {
 	
 	if (n == 0 || n > MaxSpeciesID)
 		return;
-	if (isEgg(pkmn))
+	if (pkx_is_egg(pkmn))
 		return;
 
 	int bit = n - 1;

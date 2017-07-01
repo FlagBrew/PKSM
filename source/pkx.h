@@ -19,6 +19,12 @@
 #pragma once
 #include "common.h"
 
+void pkx_set(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, const int game);
+void pkx_get(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, const int game);
+
+u32 pkx_lcrng(u32 seed);
+u32 pkx_get_save_address(const int boxnumber, const int indexnumber, const int game);
+
 u8 pkx_get_HT(u8* pkmn);
 u8 pkx_get_gender(u8* pkmn);
 u8 pkx_get_language(u8* pkmn);
@@ -28,3 +34,5 @@ u8 pkx_get_form(u8* pkmn);
 u16 pkx_get_item(u8* pkmn);
 u8 pkx_get_hp_type(u8* pkmn);
 u8 pkx_get_ot_gender(u8* pkmn);
+bool pkx_is_egg(u8* pkmn);
+void pkx_reroll_encryption_key(u8* pkmn);

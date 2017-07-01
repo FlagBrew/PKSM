@@ -71,17 +71,7 @@ typedef struct FormData {
 	bool editable;
 } FormData;
 
-u32 seedStep(const u32 seed);
-u32 LCRNG(u32 seed);
-void shuffleArray(u8* pkmn, const u32 encryptionkey);
-void decryptPkmn(u8* pkmn);
-int getPkmnAddress(const int boxnumber, const int indexnumber, int game);
-void calculatePKMNChecksum(u8* data);
-void encryptPkmn(u8* pkmn);
-void getPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game);
-void setPkmn(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, int game);
 bool isShiny(u8* pkmn);
-bool isEgg(u8* pkmn);
 bool isNicknameF(u8* pkmn);
 void rerollPID(u8* pkmn);
 bool isBattleBoxed(u8* mainbuf, int game, int box, int slot);
