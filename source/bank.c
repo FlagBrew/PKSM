@@ -62,7 +62,7 @@ void dumpStorage2pk7(u8* bankbuf, u32 size) {
 		
 		u8 tmp[PKMNLENGTH];
 		memcpy(&tmp[0], &bankbuf[i*PKMNLENGTH], PKMNLENGTH);
-		if (getPokedexNumber(tmp) > 0 && getPokedexNumber(tmp) < 802) {
+		if (pkx_get_species(tmp) > 0 && pkx_get_species(tmp) < 802) {
 			char path[30];
 			wchar_t str[100];
 			u32 nick[NICKNAMELENGTH*2];
@@ -71,8 +71,8 @@ void dumpStorage2pk7(u8* bankbuf, u32 size) {
 			memset(path, 0, 30);
 			memset(str, 0, 100);
 			
-			getNickname(tmp, nick);
-			swprintf(str, 100, L"%d - %ls - %X.pk7", (int)getPokedexNumber(tmp), nick, (int)getPID(tmp));
+			pkx_get_nickname(tmp, nick);
+			swprintf(str, 100, L"%d - %ls - %X.pk7", (int)pkx_get_species(tmp), nick, (int)pkx_get_pid(tmp));
 			utf32_to_utf8((uint8_t*)path, (uint32_t*)str, 25);
 
 			file_write(path, tmp, PKMNLENGTH);
@@ -276,7 +276,7 @@ void bank(u8* mainbuf, int game) {
 						pkx_get(mainbuf, saveBox, i, buffer, game); // pkx_get -> buffer
 						memcpy(temp, &bankbuf[bankBox * 30 * PKMNLENGTH + i * PKMNLENGTH], PKMNLENGTH); // memcpy bank -> temp
 						
-						u16 species = getPokedexNumber(temp);
+						u16 species = pkx_get_species(temp);
 						u8 form = pkx_get_form(temp);
 						FormData *forms = getLegalFormData(species, game);
 						bool illegalform = form < forms->min || form > forms->max;
@@ -356,7 +356,7 @@ void bank(u8* mainbuf, int game) {
 			else 
 				pkx_get(mainbuf, saveBox, currentEntry - 30, tmp, game);
 			
-			while (aptMainLoop() && getPokedexNumber(tmp)) {
+			while (aptMainLoop() && pkx_get_species(tmp)) {
 				hidScanInput();
 				touchPosition touch;
 				hidTouchRead(&touch);
@@ -372,7 +372,7 @@ void bank(u8* mainbuf, int game) {
 		
  		if (hidKeysDown() & KEY_A) {
 			if (isBufferized) {
-				u16 species = getPokedexNumber(pkmn);
+				u16 species = pkx_get_species(pkmn);
 				u8 form = pkx_get_form(pkmn);
 				FormData *forms = getLegalFormData(species, game);
 				bool illegalform = form < forms->min || form > forms->max;
@@ -418,7 +418,7 @@ void bank(u8* mainbuf, int game) {
 					if (currentEntry < 30) {
 						memcpy(pkmn, &bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], PKMNLENGTH);
 						clearMarkings(pkmn, game);
-						if (getPokedexNumber(pkmn) <= 0 || getPokedexNumber(pkmn) > 821) {
+						if (pkx_get_species(pkmn) <= 0 || pkx_get_species(pkmn) > 821) {
 							memset(pkmn, 0, PKMNLENGTH);
 							isBufferized = false;
 						} else {
@@ -428,7 +428,7 @@ void bank(u8* mainbuf, int game) {
 					} else {
 						pkx_get(mainbuf, saveBox, currentEntry - 30, pkmn, game);
 						clearMarkings(pkmn, game);
-						if (getPokedexNumber(pkmn) <= 0 || getPokedexNumber(pkmn) > 821) {
+						if (pkx_get_species(pkmn) <= 0 || pkx_get_species(pkmn) > 821) {
 							memset(pkmn, 0, PKMNLENGTH);
 							isBufferized = false;
 						} else {

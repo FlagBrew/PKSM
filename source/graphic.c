@@ -951,7 +951,7 @@ void printEditor(u8* mainbuf, int game, u64 size, int currentEntry, int page) {
 u16 getAlternativeSprite(u8* pkmn, int game) {
 	u8 form = pkx_get_form(pkmn);
 	if (form) {
-		FormData *forms = getLegalFormData(getPokedexNumber(pkmn), game);
+		FormData *forms = getLegalFormData(pkx_get_species(pkmn), game);
 		int spritenum = forms->spriteNum;
 		if (spritenum > 0 && form >= forms->min && form <= forms->max)
 			spritenum += form - (forms->min > 0 ? forms->min : 1);
@@ -967,7 +967,7 @@ void printElement(u8* pkmn, int game, u16 n, int x, int y) {
 		t -= 1;
 		sf2d_draw_texture_part(alternativeSpritesSmall, x, y, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30); 
 	} else {
-		if (getPokedexNumber(pkmn) < 0 || getPokedexNumber(pkmn) > 821)
+		if (pkx_get_species(pkmn) < 0 || pkx_get_species(pkmn) > 821)
 			sf2d_draw_texture_part(spritesSmall, x, y, 0, 0, 34, 30);
 		else
 			sf2d_draw_texture_part(spritesSmall, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30);
@@ -983,7 +983,7 @@ void printElementBlend(u8* pkmn, int game, u16 n, int x, int y, u32 color) {
 		t -= 1;
 		sf2d_draw_texture_part_blend(alternativeSpritesSmall, x, y, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30, color); 
 	} else {
-		if (getPokedexNumber(pkmn) < 0 || getPokedexNumber(pkmn) > 821)
+		if (pkx_get_species(pkmn) < 0 || pkx_get_species(pkmn) > 821)
 			sf2d_draw_texture_part_blend(spritesSmall, x, y, 0, 0, 34, 30, color);
 		else
 			sf2d_draw_texture_part_blend(spritesSmall, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30, color);
@@ -1002,10 +1002,10 @@ void infoViewer(u8* pkmn, int game) {
 	printAnimatedBG(true);
 	sf2d_draw_texture(infoView, 0, 2);
 
-	sf2d_draw_texture((getMove(pkmn, 0)) ? normalBar : noMove, 252, 155);
-	sf2d_draw_texture((getMove(pkmn, 1)) ? normalBar : noMove, 252, 176);
-	sf2d_draw_texture((getMove(pkmn, 2)) ? normalBar : noMove, 252, 197);
-	sf2d_draw_texture((getMove(pkmn, 3)) ? normalBar : noMove, 252, 218);
+	sf2d_draw_texture((pkx_get_move(pkmn, 0)) ? normalBar : noMove, 252, 155);
+	sf2d_draw_texture((pkx_get_move(pkmn, 1)) ? normalBar : noMove, 252, 176);
+	sf2d_draw_texture((pkx_get_move(pkmn, 2)) ? normalBar : noMove, 252, 197);
+	sf2d_draw_texture((pkx_get_move(pkmn, 3)) ? normalBar : noMove, 252, 218);
 	
 	sftd_draw_wtext(fontBold12, 251, 138, WHITE, 12, i18n(S_GRAPHIC_INFOVIEWER_MOVES));
 	for (int i = 0; i < 10; i++) {
@@ -1024,9 +1024,9 @@ void infoViewer(u8* pkmn, int game) {
 		y_desc += 20;
 	}
 	
-	if (getPokedexNumber(pkmn) > 0 && getPokedexNumber(pkmn) < 822) {
+	if (pkx_get_species(pkmn) > 0 && pkx_get_species(pkmn) < 822) {
 		sf2d_draw_texture_part(balls, -2, -5, 32 * (getBall(pkmn) % 8), 32 * (getBall(pkmn) / 8), 32, 32);
-		sftd_draw_wtext(fontBold12, 30, 6, WHITE, 12, listSpecies.items[getPokedexNumber(pkmn)]);
+		sftd_draw_wtext(fontBold12, 30, 6, WHITE, 12, listSpecies.items[pkx_get_species(pkmn)]);
 		
 		if (pkx_get_gender(pkmn) == 0)
 			sf2d_draw_texture(male, 146, 7);
@@ -1034,21 +1034,21 @@ void infoViewer(u8* pkmn, int game) {
 			sf2d_draw_texture(female, 148, 7);
 		
 		wchar_t* level = (wchar_t*)malloc(8 * sizeof(wchar_t));
-		swprintf(level, 8, i18n(S_GRAPHIC_INFOVIEWER_LV), getLevel(pkmn));
+		swprintf(level, 8, i18n(S_GRAPHIC_INFOVIEWER_LV), pkx_get_level(pkmn));
 		sftd_draw_wtext(fontBold12, 160, 6, WHITE, 12, level);
 		free(level);
 		
 		u32 nick[NICKNAMELENGTH*2];
 		memset(nick, 0, NICKNAMELENGTH*2);
-		getNickname(pkmn, nick);
+		pkx_get_nickname(pkmn, nick);
 		sftd_draw_wtext(fontBold12, 215 - (sftd_get_wtext_width(fontBold12, 12, (wchar_t*)nick)), 29, WHITE, 12, (wchar_t*)nick);
 		
 		u32 ot_name[NICKNAMELENGTH*2];
 		memset(ot_name, 0, NICKNAMELENGTH*2);
-		getOT(pkmn, ot_name);
+		pkx_get_ot(pkmn, ot_name);
 		sftd_draw_wtext(fontBold12, 215 - (sftd_get_wtext_width(fontBold12, 12, (wchar_t*)ot_name)), 49, WHITE, 12, (wchar_t*)ot_name);
 		
-		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, (isInfected(pkmn) ? i18n(S_YES) : i18n(S_NO))), 69, WHITE, 12, isInfected(pkmn) ? i18n(S_YES) : i18n(S_NO));
+		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, (pkx_get_pokerus(pkmn) ? i18n(S_YES) : i18n(S_NO))), 69, WHITE, 12, pkx_get_pokerus(pkmn) ? i18n(S_YES) : i18n(S_NO));
 		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, natures[getNature(pkmn)]), 94, WHITE, 12, natures[getNature(pkmn)]);
 		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, abilities[pkx_get_ability(pkmn)]), 114, WHITE, 12, abilities[pkx_get_ability(pkmn)]);
 		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, items[pkx_get_item(pkmn)]), 134, WHITE, 12, items[pkx_get_item(pkmn)]);
@@ -1065,9 +1065,9 @@ void infoViewer(u8* pkmn, int game) {
 		free(friendship);
 		
 		char* otid = (char*)malloc(18 * sizeof(char));
-		snprintf(otid, 18, "%u / %u", getPSV(pkmn), getTSV(pkmn));
+		snprintf(otid, 18, "%u / %u", pkx_get_psv(pkmn), pkx_get_tsv(pkmn));
 		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, otid), 160, WHITE, 12, otid);
-		snprintf(otid, 18, "%u / %u", getOTID(pkmn), getSOTID(pkmn));
+		snprintf(otid, 18, "%u / %u", pkx_get_tid(pkmn), pkx_get_sid(pkmn));
 		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, otid), 180, WHITE, 12, otid);
 		free(otid);
 
@@ -1076,8 +1076,8 @@ void infoViewer(u8* pkmn, int game) {
 		int max = sftd_get_text_width(fontBold12, 12, "252");		
 		int y_moves = 159;
 		for (int i = 0; i < 4; i++) {
-			if (getMove(pkmn, i))
-				sftd_draw_wtext(fontBold12, 396 - sftd_get_wtext_width(fontBold12, 12, moves[getMove(pkmn, i)]), y_moves, WHITE, 12, moves[getMove(pkmn, i)]);
+			if (pkx_get_move(pkmn, i))
+				sftd_draw_wtext(fontBold12, 396 - sftd_get_wtext_width(fontBold12, 12, moves[pkx_get_move(pkmn, i)]), y_moves, WHITE, 12, moves[pkx_get_move(pkmn, i)]);
 			y_moves += 21;
 		}
 		
@@ -1305,7 +1305,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 			x = 4;
 			for (int j = 0; j < 6; j++) {
 				pkx_get(mainbuf, box, i * 6 + j, pkmn, game);
-				u16 n = getPokedexNumber(pkmn);
+				u16 n = pkx_get_species(pkmn);
 				if (n > 0 && n < 822)
 					printElement(pkmn, game, n, x, y);
 
@@ -1328,7 +1328,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 			x = 222;
 			for (int j = 0; j < 2; j++) {
 				pkx_get(mainbuf, 33, i * 2 + j, pkmn, game);
-				u16 n = getPokedexNumber(pkmn);
+				u16 n = pkx_get_species(pkmn);
 				if (n)
 					printElement(pkmn, game, n, x, (j == 1) ? y + 20 : y);
 
@@ -1357,7 +1357,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 			if (getBall(pkmn) != CHERISH_BALL && !isTeam) {
 				sf2d_draw_texture(includeInfoButton, 242, 5);
 			}
-			sftd_draw_wtextf(fontBold11, 8, 220, WHITE, 11, i18n(S_GRAPHIC_PKVIEWER_MENU_POKEMON_SELECTED), listSpecies.items[getPokedexNumber(tmp)]);
+			sftd_draw_wtextf(fontBold11, 8, 220, WHITE, 11, i18n(S_GRAPHIC_PKVIEWER_MENU_POKEMON_SELECTED), listSpecies.items[pkx_get_species(tmp)]);
 			for (int i = 0; i < 5; i++) {
 				sf2d_draw_texture(button, 208, 42 + i * 27 + i*4);
 				if (isTeam && (i == 0 || i == 2 || i == 3))
@@ -1391,7 +1391,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 	wchar_t* options[] = {i18n(S_GRAPHIC_PKEDITOR_MENU_STATS), i18n(S_GRAPHIC_PKEDITOR_MENU_MOVES), i18n(S_GRAPHIC_PKEDITOR_MENU_SAVE)};
 	
 	wchar_t* values[6] = {i18n(S_GRAPHIC_PKEDITOR_STATS_HP), i18n(S_GRAPHIC_PKEDITOR_STATS_ATTACK), i18n(S_GRAPHIC_PKEDITOR_STATS_DEFENSE), i18n(S_GRAPHIC_PKEDITOR_STATS_SP_ATTACK), i18n(S_GRAPHIC_PKEDITOR_STATS_SP_DEFENSE), i18n(S_GRAPHIC_PKEDITOR_STATS_SPEED)};
-	u16 n = getPokedexNumber(pkmn);
+	u16 n = pkx_get_species(pkmn);
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 	if (mode == ED_BASE || mode == ED_STATS) {
@@ -1563,7 +1563,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			sf2d_draw_texture(plus, 180, 189);
 
 			char* level = (char*)malloc(4 * sizeof(char));
-			snprintf(level, 4, "%u", getLevel(pkmn));
+			snprintf(level, 4, "%u", pkx_get_level(pkmn));
 			sftd_draw_text(fontBold12, 180 - max - 3 + (max - sftd_get_text_width(fontBold12, 12, level)) / 2, 29, WHITE, 12, level);
 			free(level);
 				
@@ -1571,7 +1571,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, abilities[pkx_get_ability(pkmn)]), 69, WHITE, 12, abilities[pkx_get_ability(pkmn)]);
 			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, items[pkx_get_item(pkmn)]), 89, WHITE, 12, items[pkx_get_item(pkmn)]);
 			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, isShiny(pkmn) ? i18n(S_YES) : i18n(S_NO)), 109, WHITE, 12, isShiny(pkmn) ? i18n(S_YES) : i18n(S_NO));
-			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, isInfected(pkmn) ? i18n(S_YES) : i18n(S_NO)), 129, WHITE, 12, isInfected(pkmn) ? i18n(S_YES) : i18n(S_NO));
+			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, pkx_get_pokerus(pkmn) ? i18n(S_YES) : i18n(S_NO)), 129, WHITE, 12, pkx_get_pokerus(pkmn) ? i18n(S_YES) : i18n(S_NO));
 			
 			char* friendship = (char*)malloc(4 * sizeof(char));
 			if (pkx_is_egg(pkmn))
@@ -1583,12 +1583,12 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			
 			u32 nick[NICKNAMELENGTH*2];
 			memset(nick, 0, NICKNAMELENGTH*2);
-			getNickname(pkmn, nick);
+			pkx_get_nickname(pkmn, nick);
 			sftd_draw_wtext(fontBold12, 178 - (sftd_get_wtext_width(fontBold12, 12, (wchar_t*)nick)), 169, WHITE, 12, (wchar_t*)nick);
 
 			u32 ot_name[NICKNAMELENGTH*2];
 			memset(ot_name, 0, NICKNAMELENGTH*2);
-			getOT(pkmn, ot_name);
+			pkx_get_ot(pkmn, ot_name);
 			sftd_draw_wtext(fontBold12, 178 - (sftd_get_wtext_width(fontBold12, 12, (wchar_t*)ot_name)), 149, WHITE, 12, (wchar_t*)ot_name);
 		}
 		if (mode == ED_STATS || mode == ED_HIDDENPOWER) {
@@ -1641,8 +1641,8 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			sftd_draw_wtext(fontBold12, 2, 110, LIGHTBLUE, 12, i18n(S_GRAPHIC_PKEDITOR_RELEARN_MOVES));
 			
 			for (int i = 0; i < 4; i++) {
-				sftd_draw_wtext(fontBold12, 2, 28 + i * 20, (i == additional3) ? YELLOW : WHITE, 12, moves[getMove(pkmn, i)]);
-				sftd_draw_wtext(fontBold12, 2, 132 + i * 20, (i == additional3 - 4) ? YELLOW: WHITE, 12, moves[getEggMove(pkmn, i)]);
+				sftd_draw_wtext(fontBold12, 2, 28 + i * 20, (i == additional3) ? YELLOW : WHITE, 12, moves[pkx_get_move(pkmn, i)]);
+				sftd_draw_wtext(fontBold12, 2, 132 + i * 20, (i == additional3 - 4) ? YELLOW: WHITE, 12, moves[pkx_get_egg_move(pkmn, i)]);
 				if (i == additional3)
 					sf2d_draw_texture_rotate(subArrow, 198 - movementOffsetSlow(3), 33 + i * 20, 3.1415f);
 				else if (i == additional3 - 4)
@@ -1712,7 +1712,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 			swprintf(page, MAX_LENGTH_BOX_NAME+1, i18n(S_GRAPHIC_PKBANK_BANK_TITLE), bankBox + 1);
 			sftd_draw_wtext(fontBold12, 55 + (178 - sftd_get_wtext_width(fontBold12, 12, page)) / 2, 9, WHITE, 12, page);
 
-			if (getPokedexNumber(pkmn) > 0 && getPokedexNumber(pkmn) < 822) {
+			if (pkx_get_species(pkmn) > 0 && pkx_get_species(pkmn) < 822) {
 				u16 tempspecies = getFormSpeciesNumber(pkmn);
 				u8 type1 = 0, type2 = 0;
 
@@ -1732,11 +1732,11 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 				
 				u32 nick[NICKNAMELENGTH*2];
 				memset(nick, 0, NICKNAMELENGTH*2);
-				getNickname(pkmn, nick);
+				pkx_get_nickname(pkmn, nick);
 				sftd_draw_wtext(fontBold12, 273, 69, WHITE, 12, (wchar_t*)nick);
 				
 				wchar_t* level = (wchar_t*)malloc(8 * sizeof(wchar_t));
-				swprintf(level, 8, i18n(S_GRAPHIC_PKBANK_LV_PKMN), getLevel(pkmn));
+				swprintf(level, 8, i18n(S_GRAPHIC_PKBANK_LV_PKMN), pkx_get_level(pkmn));
 				sftd_draw_wtext(fontBold12, 372 - sftd_get_wtext_width(fontBold12, 12, level), 86, WHITE, 12, level);
 				
 				if (pkx_get_gender(pkmn) == 0)
@@ -1750,22 +1750,22 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 				
 				u32 ot_name[NICKNAMELENGTH*2];
 				memset(ot_name, 0, NICKNAMELENGTH*2);
-				getOT(pkmn, ot_name);
+				pkx_get_ot(pkmn, ot_name);
 				sftd_draw_wtext(fontBold12, 273, 146, WHITE, 12, (wchar_t*)ot_name);
 
 				wchar_t* otid = (wchar_t*)malloc(12 * sizeof(wchar_t));
-				swprintf(otid, 12, i18n(S_GRAPHIC_PKBANK_OTID_PKMN), getOTID(pkmn));
+				swprintf(otid, 12, i18n(S_GRAPHIC_PKBANK_OTID_PKMN), pkx_get_tid(pkmn));
 				sftd_draw_wtext(fontBold12, 372 - sftd_get_wtext_width(fontBold12, 12, otid), 163, WHITE, 12, otid);
 				free(otid);
 				
-				sftd_draw_wtext(fontBold12, 273, 104, WHITE, 12, listSpecies.items[getPokedexNumber(pkmn)]);
+				sftd_draw_wtext(fontBold12, 273, 104, WHITE, 12, listSpecies.items[pkx_get_species(pkmn)]);
 			}
 			y = 45;
 			for (int i = 0; i < 5; i++) {
 				x = 44;
 				for (int j = 0; j < 6; j++) {
 					memcpy(pkmn, &bankbuf[bankBox * 30 * PKMNLENGTH + (i * 6 + j) * PKMNLENGTH], PKMNLENGTH);
-					u16 n = getPokedexNumber(pkmn);
+					u16 n = pkx_get_species(pkmn);
 					if (n)
 						printElement(pkmn, GAME_SUN, n, x, y);
 
@@ -1779,7 +1779,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 			}
 			
 			if (currentEntry < 30) {
-				u16 n = getPokedexNumber(pkmnbuf);
+				u16 n = pkx_get_species(pkmnbuf);
 				if (n) printElementBlend(pkmnbuf, GAME_SUN, n, pointer[0] - 14, pointer[1] + 8, RGBA8(0x0, 0x0, 0x0, 100));
 				if (n) printElement(pkmnbuf, GAME_SUN, n, pointer[0] - 18, pointer[1] + 3);
 				sf2d_draw_texture(selector, pointer[0], pointer[1] - 2 - ((!isBufferized) ? movementOffsetSlow(3) : 0));
@@ -1812,7 +1812,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 			x = 4;
 			for (int j = 0; j < 6; j++) {
 				pkx_get(mainbuf, saveBox, i*6+j, pkmn, game);
-				u16 n = getPokedexNumber(pkmn);
+				u16 n = pkx_get_species(pkmn);
 				if (n)
 					printElement(pkmn, game, n, x, y);
 
@@ -1827,7 +1827,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 		
 		if (currentEntry > 29) {
 			if (!isSeen) {
-				u16 n = getPokedexNumber(pkmnbuf);
+				u16 n = pkx_get_species(pkmnbuf);
 				if (n) printElementBlend(pkmnbuf, GAME_SUN, n, pointer[0] - 14, pointer[1] + 8, RGBA8(0x0, 0x0, 0x0, 100));
 				if (n) printElement(pkmnbuf, GAME_SUN, n, pointer[0] - 18, pointer[1] + 3);
 				sf2d_draw_texture(selector, pointer[0], pointer[1] - 2 - ((!isBufferized) ? movementOffsetSlow(3) : 0));
@@ -1892,7 +1892,7 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 	switch (byte) {
 		case 0x08 :
 		case 0x09 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_SPECIES), getPokedexNumber(pkmn), listSpecies.items[getPokedexNumber(pkmn)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_SPECIES), pkx_get_species(pkmn), listSpecies.items[pkx_get_species(pkmn)]);
 			break;
 		case 0x0A :
 		case 0x0B :
@@ -1900,13 +1900,13 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			break;
 		case 0x0C :
 		case 0x0D :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_TID), getOTID(pkmn));
-			sftd_draw_textf(fontBold12, x, y + 16, LIGHTBLUE, 12, "Gen7 TID: %d", ((unsigned int)(getOTID(pkmn) + getSOTID(pkmn)*65536) % 1000000));
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_TID), pkx_get_tid(pkmn));
+			sftd_draw_textf(fontBold12, x, y + 16, LIGHTBLUE, 12, "Gen7 TID: %d", ((unsigned int)(pkx_get_tid(pkmn) + pkx_get_sid(pkmn)*65536) % 1000000));
 			break;
 		case 0x0E :
 		case 0x0F :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_SID), getSOTID(pkmn));
-			sftd_draw_textf(fontBold12, x, y + 16, LIGHTBLUE, 12, "Gen7 TID: %d", ((unsigned int)(getOTID(pkmn) + getSOTID(pkmn)*65536) % 1000000));
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_SID), pkx_get_sid(pkmn));
+			sftd_draw_textf(fontBold12, x, y + 16, LIGHTBLUE, 12, "Gen7 TID: %d", ((unsigned int)(pkx_get_tid(pkmn) + pkx_get_sid(pkmn)*65536) % 1000000));
 			break;
 		case 0x14 :
 			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ABILITY), abilities[pkx_get_ability(pkmn)]);
@@ -2045,25 +2045,25 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0x55 :
 		case 0x56 :
 		case 0x57 :
-			getNickname(pkmn, string);
+			pkx_get_nickname(pkmn, string);
 			sftd_draw_wtext(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_NICKNAME));
 			sftd_draw_wtext(fontBold12, x + sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_HEXEDITOR_NICKNAME)), y, LIGHTBLUE, 12, (wchar_t*)string);
 			break;
 		case 0x5A :
 		case 0x5B :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE1), getMove(pkmn, 0), moves[getMove(pkmn, 0)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE1), pkx_get_move(pkmn, 0), moves[pkx_get_move(pkmn, 0)]);
 			break;
 		case 0x5C :
 		case 0x5D :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE2), getMove(pkmn, 1), moves[getMove(pkmn, 1)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE2), pkx_get_move(pkmn, 1), moves[pkx_get_move(pkmn, 1)]);
 			break;
 		case 0x5E :
 		case 0x5F :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE3), getMove(pkmn, 2), moves[getMove(pkmn, 2)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE3), pkx_get_move(pkmn, 2), moves[pkx_get_move(pkmn, 2)]);
 			break;
 		case 0x60 :
 		case 0x61 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE4), getMove(pkmn, 3), moves[getMove(pkmn, 3)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE4), pkx_get_move(pkmn, 3), moves[pkx_get_move(pkmn, 3)]);
 			break;
 		case 0x62 :
 			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE1_PP), pkmn[byte]);
@@ -2091,24 +2091,24 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			break;
 		case 0x6A :
 		case 0x6B :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_RELEARN_MOVE1), getEggMove(pkmn, 0), moves[getEggMove(pkmn, 0)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_RELEARN_MOVE1), pkx_get_egg_move(pkmn, 0), moves[pkx_get_egg_move(pkmn, 0)]);
 			break;
 		case 0x6C :
 		case 0x6D :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_RELEARN_MOVE2), getEggMove(pkmn, 1), moves[getEggMove(pkmn, 1)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_RELEARN_MOVE2), pkx_get_egg_move(pkmn, 1), moves[pkx_get_egg_move(pkmn, 1)]);
 			break;
 		case 0x6E :
 		case 0x6F :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_RELEARN_MOVE3), getEggMove(pkmn, 2), moves[getEggMove(pkmn, 2)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_RELEARN_MOVE3), pkx_get_egg_move(pkmn, 2), moves[pkx_get_egg_move(pkmn, 2)]);
 			break;
 		case 0x70 :
 		case 0x71 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_RELEARN_MOVE4), getEggMove(pkmn, 3), moves[getEggMove(pkmn, 3)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_RELEARN_MOVE4), pkx_get_egg_move(pkmn, 3), moves[pkx_get_egg_move(pkmn, 3)]);
 			break;
 		case 0x77: {
 			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_IS_NICKNAMED, S_GRAPHIC_HEXEDITOR_IS_EGG };
 			sftd_draw_wtext(fontBold12, xribbon + 27, y, LIGHTBLUE, 12, i18n(entries[0]));
-			sf2d_draw_rectangle(xribbon, y, 13, 13, (isNicknameF(pkmn)) ? BUTTONGREEN : BUTTONRED);
+			sf2d_draw_rectangle(xribbon, y, 13, 13, (pkx_get_nickname_flag(pkmn)) ? BUTTONGREEN : BUTTONRED);
 			sftd_draw_wtext(fontBold12, xribbon + 27, y + 17, LIGHTBLUE, 12, i18n(entries[1]));
 			sf2d_draw_rectangle(xribbon, y + 17, 13, 13, (pkx_is_egg(pkmn)) ? BUTTONGREEN : BUTTONRED);
 			break;
@@ -2137,7 +2137,7 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0x8D :
 		case 0x8E :
 		case 0x8F :	
-			getHTName(pkmn, string);
+			pkx_get_ht(pkmn, string);
 			sftd_draw_wtext(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_NAME));
 			sftd_draw_wtext(fontBold12, x + sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_NAME)), y, LIGHTBLUE, 12, (wchar_t*)string);
 			break;
@@ -2186,7 +2186,7 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0xC5 :
 		case 0xC6 :
 		case 0xC7 :
-			getOT(pkmn, string);
+			pkx_get_ot(pkmn, string);
 			sftd_draw_wtext(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_NAME));
 			sftd_draw_wtext(fontBold12, x + sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_NAME)), y, LIGHTBLUE, 12, (wchar_t*)string);
 			break;

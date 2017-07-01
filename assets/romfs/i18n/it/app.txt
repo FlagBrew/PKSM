@@ -58,7 +58,7 @@ Salvare le flag del pokedex?
 Box %lu / Slot %lu
 Errore durante l'iniezione!
 Iniezione effettuata correttamente!
-Oggetto non presente in XY!
+Strumento non presente in XY!
 Salvare le flag del pokedex?
 Box %lu / Slot %lu
 Box XD iniettato!
@@ -102,7 +102,7 @@ OT
 Pokerus
 Natura
 Abilità
-Oggetto
+Strumento
 ESV / TSV
 TID / SID
 Felicità HT/OT
@@ -133,7 +133,7 @@ Seme: %lx %lx %lx %lx
 Livello
 Natura
 Abilità
-Oggetto
+Strumento
 Shiny
 Pokerus
 OT
@@ -170,7 +170,7 @@ Introforza
 Mosse
 Mosse Uovo
 Byte selezionato
-Seleziona un'oggetto con A.
+Seleziona uno strumento con A.
 Seleziona una natura con A.
 Seleziona una ball con A.
 Seleziona una introforza con A.
@@ -202,7 +202,7 @@ Clicca il numero per cambiare dimensione.
 Si
 No
 Specie: #%d - %ls
-Oggetto tenuto: #%d - %ls
+Strumento tenuto: #%d - %ls
 TID: %d
 SID: %d
 Abilità: %ls
@@ -338,8 +338,8 @@ Checksum, byte 1
 Checksum, byte 2
 Specie, byte 1
 Specie, byte 2
-Oggetto tenuto, byte 1
-Oggetto tenuto, byte 2
+Strumento tenuto, byte 1
+Strumento tenuto, byte 2
 TID, byte 1
 TID, byte 2
 SID, byte 1

@@ -284,8 +284,8 @@ void filldatabase6(char *database[], int spriteArray[]) {
 	database[598] = "0598 - Alexander Hoopa"; spriteArray[598] = 720;
 	database[812] = "0812 - Christmas Stantler"; spriteArray[812] = 234;
 	database[1001] = "1001 - Eevee House Sylveon"; spriteArray[1001] = 700;
-	database[1004] = "1004 - Olleh TV Charizard X/Y"; spriteArray[1004] = 6;
-	database[1005] = "1005 - Alt. Event Garchomp"; spriteArray[1005] = 445;
+	//database[1004] = "1004 - Olleh TV Charizard X/Y"; spriteArray[1004] = 6;
+	//database[1005] = "1005 - Alt. Event Garchomp"; spriteArray[1005] = 445;
 	database[1006] = "1006 - WCS14K Heracross"; spriteArray[1006] = 214;
 	database[1007] = "1007 - WCS14K Manectric"; spriteArray[1007] = 310;
 	database[1008] = "1008 - WCS14K Tyranitar"; spriteArray[1008] = 248;

@@ -147,7 +147,7 @@ void process_pkx(u8* mainbuf, int game, int tempVett[]) {
 
                 pkx_get(mainbuf, tempVett[0], tempVett[1], pkmn, game);
                 panic++;
-            } while (getPokedexNumber(pkmn) && (panic < boxmax * 30));
+            } while (pkx_get_species(pkmn) && (panic < boxmax * 30));
         }
     }
     close(data.client_id);

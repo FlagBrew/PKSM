@@ -127,7 +127,7 @@ void setDex(u8 mainbuf[], u8* pkmn, int game) {
 	if (!ISSUMO)
 		return;
 	
-	int n = getPokedexNumber(pkmn);
+	int n = pkx_get_species(pkmn);
 	int MaxSpeciesID;
 	int PokeDex;
 	int PokeDexLanguageFlags;
@@ -168,7 +168,7 @@ void setDex(u8 mainbuf[], u8* pkmn, int game) {
 	int formend = formstart;
 	int fsfe[2] = {0, 0};
 
-	if (sanitizeFormsToIterate(getPokedexNumber(pkmn), fsfe, formstart)) {
+	if (sanitizeFormsToIterate(pkx_get_species(pkmn), fsfe, formstart)) {
 		formstart = fsfe[0];
 		formend = fsfe[1];
 	}
@@ -177,14 +177,14 @@ void setDex(u8 mainbuf[], u8* pkmn, int game) {
 		int bitIndex = bit;
 		if (form > 0) {
 			u8 temp;
-			memcpy(&temp, &personal.pkmData[getPokedexNumber(pkmn)][0x0C], 1);
+			memcpy(&temp, &personal.pkmData[pkx_get_species(pkmn)][0x0C], 1);
 			if ((int)temp > 1) { // actually has forms
-				int f = getDexFormIndexSM(getPokedexNumber(pkmn), (int)temp, MaxSpeciesID - 1);
+				int f = getDexFormIndexSM(pkx_get_species(pkmn), (int)temp, MaxSpeciesID - 1);
 				if (f >= 0) // bit index valid
 					bitIndex = f + form;
 			}
 		}
-		setDexFlags(mainbuf, bitIndex, gender, shiny, getPokedexNumber(pkmn) - 1, game);
+		setDexFlags(mainbuf, bitIndex, gender, shiny, pkx_get_species(pkmn) - 1, game);
 	}
 
 	int lang = pkx_get_language(pkmn);

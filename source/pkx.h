@@ -36,3 +36,21 @@ u8 pkx_get_hp_type(u8* pkmn);
 u8 pkx_get_ot_gender(u8* pkmn);
 bool pkx_is_egg(u8* pkmn);
 void pkx_reroll_encryption_key(u8* pkmn);
+
+void pkx_reroll_pid(u8* pkmn);
+u32 pkx_get_pid(u8* pkmn);
+
+bool pkx_get_nickname_flag(u8* pkmn);
+u16 pkx_get_egg_move(u8 *pkmn, const int nmove);
+bool pkx_get_pokerus(u8* pkmn);
+u16 pkx_get_move(u8* pkmn, const int nmove);
+u32 *pkx_get_ot(u8* pkmn, u32* dst);
+u32 *pkx_get_nickname(u8* pkmn, u32* dst);
+u32 *pkx_get_ht(u8* pkmn, u32* dst);
+u16 pkx_get_tid(u8* pkmn);
+u16 pkx_get_sid(u8* pkmn);
+u16 pkx_get_tsv(u8* pkmn);
+u16 pkx_get_psv(u8* pkmn);
+u16 pkx_get_species(u8* pkmn);
+u8 pkx_get_level(u8* pkmn);
+void pkx_set_level(u8* pkmn, const int lv);
