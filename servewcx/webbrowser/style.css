@@ -1,0 +1,118 @@
+@import url('https://fonts.googleapis.com/css?family=Gruppo');
+
+body{
+    font-family: 'Gruppo', cursive;
+    font-size: 30px;
+}
+
+input{
+    position: absolute;
+    width: 300px;
+    height: 40px;
+    box-sizing: border-box;
+    text-align: center;
+    outline: none;
+    border: 1px solid lightgray;
+    border-radius: 3px;
+    padding: 10px;
+    bottom: 40%;
+    right: 43%;
+    margin-top: 10px;
+}
+
+.info{
+    position: absolute;
+    width: 300px;
+    height: 40px;
+    box-sizing: border-box;
+    text-align: center;
+    outline: none;
+    padding: 10px;
+    bottom: 30%;
+    right: 43%;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.controls {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  right: 50%;
+  bottom: 50%;
+}
+.controls:hover {
+  height: 90px;
+}
+.controls .new-post,
+.controls .live {
+  border-radius: 50%;
+  text-align: center;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+}
+.controls .new-post .icon,
+.controls .live .icon {
+  font-size: 27px;
+  color: #fff;
+  line-height: 100px;
+  -webkit-transition: all 700ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 700ms cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+.controls .new-post .icon.icon-plus,
+.controls .live .icon.icon-plus {
+  position: absolute;
+  margin-left: 1px;
+  margin-top: 1px;
+}
+.controls .new-post .icon.icon-plus.unactive,
+.controls .live .icon.icon-plus.unactive {
+  opacity: 0;
+  -webkit-transform: rotate(-225deg);
+          transform: rotate(-225deg);
+}
+.controls .new-post .icon.icon-pencil,
+.controls .live .icon.icon-pencil {
+  opacity: 0;
+}
+.controls .new-post .icon.icon-pencil.active,
+.controls .live .icon.icon-pencil.active {
+  opacity: 1;
+  -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+}
+.controls .new-post {
+  width: 100px;
+  height: 100px;
+}
+.controls .live {
+  width: 35px;
+  height: 35px;
+  background: #23c8d1;
+  z-index: 1;
+  bottom: 29;
+  opacity: 1;
+  right: 30px;
+  -webkit-transition: all 1500ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transition: all 1500ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+.controls .live .icon-record {
+  line-height: 40px;
+  font-size: 15px;
+}
+.controls .live.active {
+  bottom: 800px;
+  opacity: 1;
+}
+.controls .live:hover {
+  width: 60px;
+  height: 60px;
+  right: 1px;
+}
+.controls .live:hover .icon-record {
+  line-height: 60px;
+  font-size: 20px;
+}
