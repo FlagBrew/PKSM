@@ -65,12 +65,15 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[223] = "0223 - Ash-hat Pikachu"; spriteArray[223] = 25;
 	database[224] = "0224 - CoroCoro Charizard"; spriteArray[224] = 6;
 	database[227] = "0227 - Bestow Pikachu"; spriteArray[227] = 25;
+	database[228] = "0228 - Prerelease Marshadow"; spriteArray[228] = 802;
 	database[230] = "0230 - Colorful Friends"; spriteArray[230] = 133;
+	database[231] = "0231 - Tohoku Victini"; spriteArray[231] = 494;
 	database[233] = "0233 - HK Shiny Tapu Koko"; spriteArray[233] = 785;
 	database[234] = "0234 - Anime Steenee"; spriteArray[234] = 762;
 	database[235] = "0235 - Anime Turtonator"; spriteArray[235] = 776;
 	database[236] = "0236 - Anime Vulpix"; spriteArray[236] = 37;
 	database[606] = "0606 - Rocky Lycanroc"; spriteArray[606] = 745;
+	database[615] = "0615 - Nats Arcanine"; spriteArray[615] = 59;
 	database[1105] = "1105 - Shiny Tapu Koko"; spriteArray[1105] = 785;
 	database[1107] = "1107 - Alolan Vulpix"; spriteArray[1107] = 37;
 	database[1108] = "1108 - Alolan Sandshrew"; spriteArray[1108] = 27;
