@@ -531,7 +531,7 @@ País
 Región
 Región de la consola
 Idioma
-Servidor corriendo en http://%s:9000
+Servidor corriendo en %s:9000
 ¡Error en la asignación de búfer!
 ¡socInit falló!
 ¡Socket no accesible!

@@ -326,7 +326,7 @@ void eventDatabase7(u8* mainbuf, int game) {
 #ifdef PKSV
 #else
 				if (hidKeysDown() & KEY_Y) {
-					if (!init())
+					if (!socket_init())
 						break;
 					
 					do {
@@ -334,7 +334,7 @@ void eventDatabase7(u8* mainbuf, int game) {
 						process_wcx(previewbuf);
 						printDB7(previewbuf, game, spriteArray[i], i, langVett, adapt, overwrite, langSelected, nInjected[0], true);
 					} while (aptMainLoop() && !(hidKeysDown() & KEY_B));
-					shutDownSoc();
+					socket_shutdown();
 				}
 #endif
 				

@@ -531,7 +531,7 @@ País
 Região
 Região da Consola
 Língua
-Servidor: http://%s:9000
+Servidor: %s:9000
 Falha no alocação do buffer
 Falha no soclnit!
 Socket inacessíve!l

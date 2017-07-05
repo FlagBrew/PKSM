@@ -1105,7 +1105,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 		#ifdef PKSV
 		#else
 		if (((hidKeysDown() & KEY_Y) || ((hidKeysDown() & KEY_TOUCH) && touch.px > 240 && touch.px < 276 && touch.py > 210 && touch.py < 240)) && !isTeam) {
-			if (!init())
+			if (!socket_init())
 				break;
 			
 			// work in temporary variable
@@ -1120,7 +1120,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 				process_pkx(mainbuf, game, tempVett);
 				printPKViewer(mainbuf, pkmn, isTeam, game, tempVett[1], menuEntry, tempVett[0], ED_OTA, 0, 0);	
 			} while (aptMainLoop() && !(hidKeysDown() & KEY_B));
-			shutDownSoc();
+			socket_shutdown();
 			
 			//swap
 			box = tempVett[0];

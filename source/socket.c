@@ -1,0 +1,166 @@
+/*  This file is part of PKSM
+>	Copyright (C) 2016/2017 Bernardo Giordano
+>
+>   This program is free software: you can redistribute it and/or modify
+>   it under the terms of the GNU General Public License as published by
+>   the Free Software Foundation, either version 3 of the License, or
+>   (at your option) any later version.
+>
+>   This program is distributed in the hope that it will be useful,
+>   but WITHOUT ANY WARRANTY; without even the implied warranty of
+>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+>   GNU General Public License for more details.
+>
+>   You should have received a copy of the GNU General Public License
+>   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+>   See LICENSE for information.
+*/
+
+#include "socket.h"
+
+int panic = 0;
+static u32 *socket_buffer = NULL;
+static socket_server data;
+socket_server *app_data = &data;
+static char	payload[PAYLOADSIZE];
+
+char* socket_get_ip() {
+	return inet_ntoa(data.server_addr.sin_addr);
+}
+
+void socket_shutdown() {
+	close(data.server_id);
+	socExit();
+}
+
+void socket_close() {
+	if (app_data->server_id > 0) 
+		close(app_data->server_id);
+	if (app_data->client_id > 0) 
+		close(app_data->client_id);	
+}
+
+int socket_init() {
+	socket_buffer = (u32*)memalign(SOC_ALIGN, SOC_BUFFERSIZE);
+	if (socket_buffer == NULL) {
+		infoDisp(i18n(S_HTTP_BUFFER_ALLOC_FAILED));
+		socket_close();
+		return 0;
+	}
+	// inizializzo il servizio soc:U, che accetta un u32* relativo a un page-aligned buffer da usare (0x1000 bytes).
+	// la dimensione del buffer p un multiplo di 0x1000 bytes
+	if (socInit(socket_buffer, SOC_BUFFERSIZE)) {
+		infoDisp(i18n(S_HTTP_SOCINIT_FAILED));
+		socket_close();
+		return 0;
+	}
+	
+	// Inizializzo la struct del server http
+	memset(&data, 0, sizeof(data));
+	data.client_id = -1;
+	// socket(int domain, int type, int protocol)
+	// domain specifica la famiglia di indirizzi usati nel dominio di comunicazione
+	// sockstream utilizza tcp per inviare streams di byte
+	// socket ritorna -1 in caso di fallimento, o un intero non negativo in caso di successo
+	// il numero in caso di successo è il socket file descriptor
+	data.server_id = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
+
+	// controllo se c'è stato un insuccesso nella creazione della socket
+	if (data.server_id < 0) {
+		infoDisp(i18n(S_HTTP_SOCKET_UNACCESSIBLE));
+		socket_close();
+		return 0;
+	}
+	
+	// la famiglia è quella di indirizzi IPv4
+	data.server_addr.sin_family = AF_INET;
+	// htons converte un u16 da host byte order a network byte order (big endian)
+	data.server_addr.sin_port = htons(9000);
+	// ritorna l'identificativo 32bit della macchina
+	data.server_addr.sin_addr.s_addr = gethostid();
+	data.client_length = sizeof(data.client_addr);
+	
+	// quando una socket viene creata con socket(...), essa esiste in una famiglia di indirizzi
+	// ma non ha alcun indirizzo legato ad essa. con bind assegno l'indirizzo giusto
+	if (bind(data.server_id, (struct sockaddr *) &data.server_addr, sizeof(data.server_addr))) {
+		close(data.server_id);
+		infoDisp(i18n(S_HTTP_BINDING_FAILED));
+		socket_close();
+		return 0;
+	}
+	
+	// setto la socket a non-blocking in modo tale da poter uscire successivamente con un segnale di input
+	// fcntl manipola un file descriptor. 
+	fcntl(data.server_id, F_SETFL, fcntl(data.server_id, F_GETFL, 0) | O_NONBLOCK);
+
+	// ascolta per connessioni su una socket. il primo parametro è il file descriptor, il secondo definisce la massima lunghezza fino alla quale
+	// la coda di connessioni in coda per la socket può crescere
+	if (listen(data.server_id, 5)) {
+		infoDisp(i18n(S_HTTP_LISTENING_FAILED));
+		socket_close();
+		return 0;		
+	}
+	return 1;
+}
+
+void process_wcx(u8* buf) {
+	// accetto la connessione su una socket
+	data.client_id = accept(data.server_id, (struct sockaddr *) &data.client_addr, &data.client_length);
+	if (data.client_id < 0 && errno != EAGAIN) {
+		infoDisp(i18n(S_HTTP_ERROR_PROCESSING_PHASE));
+		socket_close();
+		return;		
+	} else {
+		char *dummy;
+		memset(payload, 0, PAYLOADSIZE);
+		// set client socket to blocking to simplify sending data back
+		fcntl(data.client_id, F_SETFL, fcntl(data.client_id, F_GETFL, 0) & ~O_NONBLOCK);
+
+        recv(data.client_id, payload, PAYLOADSIZE, 0);
+        if (strstr(payload, "PKSMOTA") != NULL && (hidKeysDown() != KEY_B)) {
+            dummy = strstr(payload, "PKSMOTA");
+            memcpy(buf, &dummy[7], 264);
+        }
+    }
+    close(data.client_id);
+    data.client_id = -1;
+}
+
+void process_pkx(u8* mainbuf, int game, int tempVett[]) {
+	data.client_id = accept(data.server_id, (struct sockaddr *) &data.client_addr, &data.client_length);
+	if (data.client_id < 0 && errno != EAGAIN) {
+		infoDisp(i18n(S_HTTP_ERROR_PROCESSING_PHASE));
+		socket_close();
+		return;		
+	} else {
+		panic = 0;
+		int boxmax = ISGEN6 ? 30 : 31;
+		char *dummy;
+		memset(payload, 0, PAYLOADSIZE);
+		// set client socket to blocking to simplify sending data back
+		fcntl(data.client_id, F_SETFL, fcntl(data.client_id, F_GETFL, 0) & ~O_NONBLOCK);
+
+        recv(data.client_id, payload, PAYLOADSIZE, 0);
+        if (strstr(payload,"PKSMOTA") != NULL && (hidKeysDown() != KEY_B)) {
+            u8 pkmn[PKMNLENGTH];
+            dummy = strstr(payload,"PKSMOTA");
+            memcpy(pkmn, &dummy[7], PKMNLENGTH);
+            pkx_set(mainbuf, tempVett[0], tempVett[1], pkmn, game);
+
+            do {
+                tempVett[1]++;
+                if (tempVett[1] == 30) {
+                    tempVett[0]++;
+                    tempVett[1] = 0;
+                }
+                if (tempVett[0] > boxmax)
+                    tempVett[0] = 0;
+
+                pkx_get(mainbuf, tempVett[0], tempVett[1], pkmn, game);
+                panic++;
+            } while (pkx_get_species(pkmn) && (panic < boxmax * 30));
+        }
+    }
+    close(data.client_id);
+    data.client_id = -1;
+}

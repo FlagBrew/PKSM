@@ -907,7 +907,7 @@ void printDB7(u8* previewbuf, int game, int sprite, int i, bool langVett[], bool
 		
 		if (ota) {
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
-			drawIPBottom(fontBold9);
+			sftd_draw_wtextf(fontBold9, 10, 225, WHITE, 9, i18n(S_HTTP_SERVER_RUNNING), socket_get_ip());
 		} else
 			printBottomIndications(i18n(S_GRAPHIC_DB_INDICATIONS_INJECT));
 		
@@ -1371,7 +1371,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 			sftd_draw_wtext(fontBold14, (320 - sftd_get_wtext_width(fontBold14, 14, i18n(S_GRAPHIC_PKVIEWER_GENERATE_INDICATIONS))) / 2, 105, WHITE, 14, i18n(S_GRAPHIC_PKVIEWER_GENERATE_INDICATIONS));
 		} else if (mode == ED_OTA) {
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
-			drawIP(fontBold9);
+			sftd_draw_wtextf(fontBold9, 10, 220, WHITE, 9, i18n(S_HTTP_SERVER_RUNNING), socket_get_ip());
 		} else if (mode != ED_CLONE) {
 			if (mode == ED_STANDARD)
 				sftd_draw_wtextf(fontBold9, 10, 220, BARTEXT, 9, i18n(S_GRAPHIC_PKVIEWER_TIDSIDTSV), getSaveTID(mainbuf, game), getSaveSID(mainbuf, game), getSaveTSV(mainbuf, game));

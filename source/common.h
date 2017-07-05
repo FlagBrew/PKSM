@@ -52,6 +52,7 @@
 #include "pkx.h"
 #include "save.h"
 #include "sha256.h"
+#include "socket.h"
 #include "spi.h"
 #include "util.h"
 #include "wcx.h"

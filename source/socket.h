@@ -19,4 +19,20 @@
 #pragma once
 #include "common.h"
 
-Result downloadFile(char* url, char* path);
+#define PAYLOADSIZE    0x400
+#define SOC_ALIGN      0x1000
+#define SOC_BUFFERSIZE 0x100000
+
+typedef struct {
+	struct sockaddr_in client_addr;
+	struct sockaddr_in server_addr;
+	u32	client_length;
+	s32	server_id;
+	s32	client_id;
+} socket_server;
+
+char* socket_get_ip();
+void socket_shutdown();
+int socket_init();
+void process_pkx(u8* mainbuf, int game, int tempVett[]);
+void process_wcx(u8* buf);

@@ -531,7 +531,7 @@ Land
 Regio
 Console Regio
 Taal
-Server draait op http://%s:9000
+Server draait op %s:9000
 Buffer allocatie mislukt!
 socInit mislukt!
 Socket niet toegankelijk!
