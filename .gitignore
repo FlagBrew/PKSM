@@ -5,3 +5,8 @@ badsectors/build
 *.elf
 *.smdh
 *.3dsx
+
+# IntelliJ Clion IDEA files
+.idea/
+CMakeLists.txt
+cmake-build-debug/
