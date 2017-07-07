@@ -46,6 +46,7 @@ bool pkx_get_pokerus(u8* pkmn);
 u16 pkx_get_move(u8* pkmn, const int nmove);
 u32 *pkx_get_ot(u8* pkmn, u32* dst);
 u32 *pkx_get_nickname(u8* pkmn, u32* dst);
+u8 *pkx_get_nickname_u8(u8* pkmn, u8* dst);
 u32 *pkx_get_ht(u8* pkmn, u32* dst);
 u16 pkx_get_tid(u8* pkmn);
 u16 pkx_get_sid(u8* pkmn);

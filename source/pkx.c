@@ -336,6 +336,14 @@ u32 *pkx_get_nickname(u8* pkmn, u32* dst) {
 	return dst;
 }
 
+u8 *pkx_get_nickname_u8(u8* pkmn, u8* dst) {
+	u16 src[NICKNAMELENGTH];
+	for (int i = 0; i < NICKNAMELENGTH; i++)
+		src[i] = *(u16*)(pkmn + 0x40 + i*2);
+	utf16_to_utf8(dst, src, NICKNAMELENGTH*2);
+	return dst;
+}
+
 u32 *pkx_get_ht(u8* pkmn, u32* dst) {
 	u16 src[NICKNAMELENGTH];
 	memcpy(src, &pkmn[0x78], NICKNAMELENGTH);

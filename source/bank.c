@@ -63,17 +63,14 @@ void dumpStorage2pk7(u8* bankbuf, u32 size) {
 		u8 tmp[PKMNLENGTH];
 		memcpy(&tmp[0], &bankbuf[i*PKMNLENGTH], PKMNLENGTH);
 		if (pkx_get_species(tmp) > 0 && pkx_get_species(tmp) < 802) {
-			char path[30];
-			wchar_t str[100];
-			u32 nick[NICKNAMELENGTH*2];
+			char path[100];
+			u8 nick[NICKNAMELENGTH*2];
 			
 			memset(nick, 0, NICKNAMELENGTH*2);
-			memset(path, 0, 30);
-			memset(str, 0, 100);
+			memset(path, 0, 100);
 			
-			pkx_get_nickname(tmp, nick);
-			swprintf(str, 100, L"%d - %ls - %X.pk7", (int)pkx_get_species(tmp), nick, (int)pkx_get_pid(tmp));
-			utf32_to_utf8((uint8_t*)path, (uint32_t*)str, 25);
+			pkx_get_nickname_u8(tmp, nick);
+			sprintf(path, "%d - %s - %X.pk7", (int)pkx_get_species(tmp), nick, (int)pkx_get_pid(tmp));
 
 			file_write(path, tmp, PKMNLENGTH);
 		}
