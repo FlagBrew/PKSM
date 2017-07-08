@@ -557,3 +557,5 @@ Passo %d/%d
 PokéDex
 Catturati: %d
 Visti: %d
+Connessione socket fallita!
+Invio socket fallito!

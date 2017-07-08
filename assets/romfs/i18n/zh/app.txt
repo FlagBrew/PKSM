@@ -551,9 +551,11 @@ Listening 失败!
 银行大小已改变!
 存档备份已建立!
 银行备份已建立!
-DUMP
+Dump
 Confirm for a full storage dump?
 Step %d/%d
-DEX
+PokéDex
 Caught: %d
 Seen: %d
+Socket connect failed!
+Socket send failed!

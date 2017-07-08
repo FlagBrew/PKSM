@@ -36,3 +36,8 @@ void socket_shutdown();
 int socket_init();
 void process_pkx(u8* mainbuf, int game, int tempVett[]);
 void process_wcx(u8* buf);
+void processLegality(u8* pkmn);
+
+bool socket_check_valid_ip_address(char *ipAddress);
+bool socket_is_legality_address_set();
+void socket_set_legality_address(bool value);

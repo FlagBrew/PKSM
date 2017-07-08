@@ -557,3 +557,5 @@ Paso %d/%d
 PokéDex
 Caught: %d
 Seen: %d
+Socket connect failed!
+Socket send failed!

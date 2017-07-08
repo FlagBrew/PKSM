@@ -24,6 +24,9 @@ static socket_server data;
 socket_server *app_data = &data;
 static char	payload[PAYLOADSIZE];
 
+static char legalityAddress[16];
+bool isLegalityAddressSet = false;
+
 char* socket_get_ip() {
 	return inet_ntoa(data.server_addr.sin_addr);
 }
@@ -145,7 +148,7 @@ void process_pkx(u8* mainbuf, int game, int tempVett[]) {
             u8 pkmn[PKMNLENGTH];
             dummy = strstr(payload,"PKSMOTA");
             memcpy(pkmn, &dummy[7], PKMNLENGTH);
-            pkx_set(mainbuf, tempVett[0], tempVett[1], pkmn, game);
+            pkx_set_as_it_is(mainbuf, tempVett[0], tempVett[1], pkmn, game);
 
             do {
                 tempVett[1]++;
@@ -163,4 +166,68 @@ void process_pkx(u8* mainbuf, int game, int tempVett[]) {
     }
     close(data.client_id);
     data.client_id = -1;
+}
+
+void processLegality(u8* pkmn) {
+	char message[PKMNLENGTH + 7];
+	const char* prefix = "PKSMOTA";
+	memcpy(message, prefix, 7);
+	memcpy(message + 7, pkmn, PKMNLENGTH);
+
+	struct sockaddr_in legalityServer;
+	int sock = socket(AF_INET, SOCK_STREAM, 0);
+	if (sock < 0) {
+		close(sock);
+		infoDisp(i18n(S_HTTP_SOCKET_UNACCESSIBLE));
+		return;
+	}
+	
+	legalityServer.sin_addr.s_addr = inet_addr(legalityAddress);
+	legalityServer.sin_family = AF_INET;
+	legalityServer.sin_port = htons(9000);
+ 
+	if (connect(sock, (struct sockaddr *)&legalityServer, sizeof(legalityServer)) < 0) {
+		close(sock);
+		infoDisp(i18n(S_SOCKET_CONNECT_FAILED));
+		return;		
+	}
+	
+	if (send(sock, message, strlen(message), 0) < 0) {
+		close(sock);
+		infoDisp(i18n(S_SOCKET_SEND_FAILED));
+		return;
+	}					
+	close(sock);
+}
+
+bool socket_check_valid_ip_address(char *ipAddress) {
+    struct sockaddr_in sa;
+    int result = inet_pton(AF_INET, ipAddress, &(sa.sin_addr));
+    return result != 0;
+}
+
+bool socket_is_legality_address_set() {
+	return isLegalityAddressSet;
+}
+
+void socket_set_legality_address(bool value) {
+	if (isLegalityAddressSet)
+		isLegalityAddressSet = value;
+	else {
+		SwkbdState swkbd;
+		memset(legalityAddress, 0, 16);
+
+		swkbdInit(&swkbd, SWKBD_TYPE_NORMAL, 2, 12);
+		swkbdSetValidation(&swkbd, SWKBD_NOTEMPTY_NOTBLANK, SWKBD_FILTER_DIGITS | SWKBD_FILTER_AT | SWKBD_FILTER_PERCENT | SWKBD_FILTER_BACKSLASH | SWKBD_FILTER_PROFANITY, 12);
+		i18n_initTextSwkbd(&swkbd, S_EDITOR_TEXT_CANCEL, S_EDITOR_TEXT_SET, S_EDITOR_TEXT_ENTER_NICKNAME_POKEMON);
+
+		swkbdInputText(&swkbd, legalityAddress, 16);
+		legalityAddress[15] = '\0';	
+
+		if (!socket_check_valid_ip_address(legalityAddress)) {
+			memset(legalityAddress, 0, 16);
+		} else {
+			isLegalityAddressSet = true;
+		}
+	}
 }

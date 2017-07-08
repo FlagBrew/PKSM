@@ -557,3 +557,5 @@ HP努力値
 図鑑
 捕まえた数: %d
 見つけた数: %d
+Socket connect failed!
+Socket send failed!

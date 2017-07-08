@@ -237,6 +237,13 @@ void pkx_set(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, 
     memcpy(&mainbuf[pkx_get_save_address(boxnumber, indexnumber, game)], pkmn, PKMNLENGTH);
 }
 
+void pkx_set_as_it_is(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, const int game) {
+    pkx_calculate_checksum(pkmn);
+    pkx_encrypt(pkmn);
+	
+    memcpy(&mainbuf[pkx_get_save_address(boxnumber, indexnumber, game)], pkmn, PKMNLENGTH);
+}
+
 u8 pkx_get_HT(u8* pkmn) { 
 	return *(u8*)(pkmn + 0xDE); 
 }

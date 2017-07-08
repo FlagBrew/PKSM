@@ -1102,8 +1102,8 @@ void pokemonEditor(u8* mainbuf, int game) {
 			}
 		}
 		
-		#ifdef PKSV
-		#else
+#ifdef PKSV
+#else
 		if (((hidKeysDown() & KEY_Y) || ((hidKeysDown() & KEY_TOUCH) && touch.px > 240 && touch.px < 276 && touch.py > 210 && touch.py < 240)) && !isTeam) {
 			if (!socket_init())
 				break;
@@ -1112,11 +1112,23 @@ void pokemonEditor(u8* mainbuf, int game) {
 			int tempVett[2]; // box, currentEntry
 			tempVett[0] = box;
 			tempVett[1] = currentEntry;
-			
+
 			do {
 				hidScanInput();
 				calcCurrentEntryMorePages(&tempVett[1], &tempVett[0], boxmax + 1, 29, 6);
-		
+
+				if (hidKeysDown() & KEY_X) {
+					u8 toBeChecked[PKMNLENGTH];
+					pkx_get(mainbuf, tempVett[0], tempVett[1], toBeChecked, game);
+					if (pkx_get_species(toBeChecked)) {
+						while(!socket_is_legality_address_set())
+							socket_set_legality_address(true);
+						
+						if (socket_is_legality_address_set())
+							processLegality(toBeChecked);
+					}
+				}
+				
 				process_pkx(mainbuf, game, tempVett);
 				printPKViewer(mainbuf, pkmn, isTeam, game, tempVett[1], menuEntry, tempVett[0], ED_OTA, 0, 0);	
 			} while (aptMainLoop() && !(hidKeysDown() & KEY_B));
@@ -1126,7 +1138,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 			box = tempVett[0];
 			currentEntry = tempVett[1];
 		}
-		#endif
+#endif
 
 		if (!(hidKeysDown() & KEY_TOUCH) && !(hidKeysHeld() & KEY_TOUCH) && touchExecuting >= 0 && touchExecuting / 40 == 0)// && !teamChanged)
 			touchExecuting += 40;

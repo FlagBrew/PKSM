@@ -551,9 +551,11 @@ Socket недоступен!
 Размер банка изменён!
 Резервная копия сохранения создана!
 Резервная копия банка создана!
-DUMP
+Dump
 Confirm for a full storage dump?
 Step %d/%d
-DEX
+PokéDex
 Caught: %d
 Seen: %d
+Socket connect failed!
+Socket send failed!
