@@ -20,6 +20,7 @@
 #include "common.h"
 
 void pkx_set(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, const int game);
+void pkx_set_as_it_is(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, const int game);
 void pkx_get(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, const int game);
 
 u32 pkx_lcrng(u32 seed);
