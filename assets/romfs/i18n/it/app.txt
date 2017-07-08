@@ -559,3 +559,4 @@ Catturati: %d
 Visti: %d
 Connessione socket fallita!
 Invio socket fallito!
+Inserisci l'indirizzo IP del tuo pc:
