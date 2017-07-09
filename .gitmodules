@@ -1,6 +1,6 @@
 [submodule "buildtools"]
 	path = buildtools
-	url = https://github.com/Steveice10/buildtools.git
+	url = https://github.com/BernardoGiordano/buildtools.git
 [submodule "servepkx/webbrowser"]
 	path = servepkx/webbrowser
 	url = https://github.com/zaksabeast/PKSMBrowserInject
