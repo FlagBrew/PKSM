@@ -7,3 +7,6 @@
 [submodule "source/memecrypto"]
 	path = source/memecrypto
 	url = https://github.com/dsoldier/memecrypto.git
+[submodule "buildtools"]
+	path = buildtools
+	url = https://github.com/BernardoGiordano/buildtools.git
