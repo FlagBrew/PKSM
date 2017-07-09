@@ -22,18 +22,18 @@ Pas de cartouche inséré !
 Gestion
 Events
 Credits
-Appuie sur A pour choisir un menu.
-Appuie sur START pour quitter.
+Appuyez sur A pour choisir un menu.
+Appuyez sur START pour quitter.
 Editeur
 Info sauv.
 Banque
 GÉNÉRATION
 Enregistrer les modifications ?
-Appuie sur A pour confirmer.
+Appuyez sur A pour confirmer.
 A pour confirmer, B pour annuler.
 Veuillez patienter.
 Le jeu cartouche est prioritaire au jeu digital.
-Utilise la croix +. Appuie A pour confirmer, B pour quitter.
+Utilisez la croix +. Appuyez A pour confirmer, B pour quitter.
 X
 Y
 Rubis Omega
@@ -77,18 +77,18 @@ Annuler
 OK
 Entrez le surnom du Pokémon
 Entrez le nom du dresseur
-Voulez-vous vraiment relâcher ?
+Relâcher le Pokémon ?
 Pokémon relâché !
 Avancement: %lu/%lu bytes
 EVENTS
 AUTRES
-Appuie sur START pour quitter.
+Appuyez sur START pour quitter.
 Crédits
-Appuie sur B pour revenir en arr.
+Appuyez sur B pour revenir en arr.
 Liste des évènements
-Appuie sur A pour confirmer, B pour revenir en arr.
-Appuie sur START pour les ajouter, B pour revenir en arr.
-Appuie sur A pour sélectionner, B pour revenir en arr.
+Appuyez sur A pour confirmer, B pour revenir en arr.
+Appuyez sur START pour les ajouter, B pour revenir en arr.
+Appuyez sur A pour sélectionner, B pour revenir en arr.
 Langues
 Écraser Carte Miracle
 Adapter langue à la CM
@@ -122,12 +122,12 @@ Relâcher
 Générer
 Quitter
 Boîte %d
-Lance le client sur ton PC...
-Appuie sur B pour quitter.
+Lancez le client sur le PC...
+Appuyez sur B pour quitter.
 Équipe
 A sur une case pour le cloner, B pour annuler
 %ls a été sélectionné.
-Génère avec A dans l'écran du haut.
+Générez avec A dans l'écran du haut.
 TID: %u / SID: %u / TSV: %u
 Seed: %lx %lx %lx %lx
 Niveau
@@ -148,8 +148,8 @@ Défense
 Attaque Spé.
 Défense Spé.
 Vitesse
-Édite le Pokémon dans l'écran du bas
-Appuie sur ENREGISTRER quand tu as terminé
+Éditez le Pokémon dans l'écran du bas
+Appuyez sur ENREGISTRER pour sauvegarder
 Neutre
 -Attaque
 -Défense
@@ -170,11 +170,11 @@ Puissance cachée
 Capacités
 Capacités réapprises
 Byte séléctionné
-Choisis un objet avec A dans l'écran du haut.
-Choisis une nature avec A dans l'écran du haut.
-Choisis une Ball avec A dans l'écran du haut.
-Choisis une p. cachée avec A dans l'écran du haut.
-Choisis une forme avec A dans l'écran du haut.
+Choisir l'objet avec A sur l'écran du haut.
+Choisir la nature avec A sur l'écran du haut.
+Choisir la Ball avec A sur l'écran du haut.
+Choisir la p. cachée avec A sur l'écran du haut.
+Choisir la forme avec A sur l'écran du haut.
 Banque n°%d
 Niv.%u
 ID. %u
@@ -194,11 +194,11 @@ My Pokémon Ranch
 Events Corréens
 %d boîtes vont être remplacés.
 Génération automatique de Pokémons
-Appuie sur START pour injecter, B pour quitter.
+Appuyez sur START pour injecter, B pour quitter.
 Boxs banque
 Backup Jeu
 Backup Banque
-Appuie à côté du nombre pour changer la taille.
+Appuyez à côté du nombre pour changer la taille.
 Oui
 Non
 Créature: #%d - %ls
@@ -551,12 +551,12 @@ Changement de la taille...
 La taille totale de la banque a été changée!
 Backup du jeu créé!
 Backup de la banque créé!
-Dump
-Confirm for a full storage dump?
-Step %d/%d
+Exporter
+Exporter tous les Pokémons ?
+Progression %d/%d
 PokéDex
-Caught: %d
-Seen: %d
-Socket connect failed!
-Socket send failed!
-Enter your pc IP address:
+Attrapés: %d
+Vus: %d
+Impossible d'établir une connexion !
+Impossible d'envoyer les données !
+Entrez l'IP du PC:
