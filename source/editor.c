@@ -1121,10 +1121,10 @@ void pokemonEditor(u8* mainbuf, int game) {
 					u8 toBeChecked[PKMNLENGTH];
 					pkx_get(mainbuf, tempVett[0], tempVett[1], toBeChecked, game);
 					if (pkx_get_species(toBeChecked)) {
-						while(!socket_is_legality_address_set())
+						if (!socket_is_legality_address_set())
 							socket_set_legality_address(true);
 						
-						if (socket_is_legality_address_set())
+						else if (socket_is_legality_address_set())
 							processLegality(toBeChecked);
 					}
 				}

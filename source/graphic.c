@@ -1283,6 +1283,10 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 			sf2d_draw_rectangle(0, 0, 400, 240, RGBA8(0, 0, 0, 220));
 			sftd_draw_wtext(fontBold15, (400 - sftd_get_wtext_width(fontBold15, 15, i18n(S_GRAPHIC_PKVIEWER_OTA_LAUNCH_CLIENT))) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, i18n(S_GRAPHIC_PKVIEWER_OTA_LAUNCH_CLIENT));
 			sftd_draw_wtext(fontBold12, (400 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKVIEWER_OTA_INDICATIONS))) / 2, 130, WHITE, 12, i18n(S_GRAPHIC_PKVIEWER_OTA_INDICATIONS));
+			if (!socket_is_legality_address_set())
+				sftd_draw_wtext(fontBold11, (400 - sftd_get_wtext_width(fontBold11, 11, i18n(S_GRAPHIC_PKVIEWER_OTA_SET_ADDRESS))) / 2, 222, WHITE, 11, i18n(S_GRAPHIC_PKVIEWER_OTA_SET_ADDRESS));
+			else
+				sftd_draw_wtext(fontBold11, (400 - sftd_get_wtext_width(fontBold11, 11, i18n(S_GRAPHIC_PKVIEWER_OTA_CHECK_LEGALITY))) / 2, 222, WHITE, 11, i18n(S_GRAPHIC_PKVIEWER_OTA_CHECK_LEGALITY));
 		}
 	pksm_end_frame();
 

@@ -192,6 +192,7 @@ void processLegality(u8* pkmn) {
 		return;		
 	}
 	
+	fcntl(sock, F_SETFL, fcntl(sock, F_GETFL, 0) | O_NONBLOCK);
 	if (send(sock, message, strlen(message), 0) < 0) {
 		close(sock);
 		infoDisp(i18n(S_SOCKET_SEND_FAILED));
