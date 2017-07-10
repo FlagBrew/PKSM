@@ -111,7 +111,7 @@ Once installed, make sure you have access to a C compiler from `cmd`. If you're 
 `C:\Development\mingw-w64` and then add the path `C:\Development\mingw-w64\mingw32\bin` to your env variables.
 
 Open command prompt as an **administrator** and `cd` into the devkitPro installation folder. Some commands need admin 
-rights to properly install.
+rights to properly install. Additionally any installed antivirus might block installation files.
 
 Next `git clone` the latest [3ds_portlibs]:
 * zlib
@@ -146,14 +146,14 @@ git clone https://github.com/xerpi/sf2dlib.git
 cd sf2dlib/libsf2d
 make
 make install
-
+cd ../..
 git clone https://github.com/xerpi/sftdlib.git
 cd sftdlib/libsftd
 make
 make install
-
+cd ../..
 git clone https://github.com/xerpi/sfillib.git
-cd sfillib
+cd sfillib/libsfil
 make
 make install
 ```
