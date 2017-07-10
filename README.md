@@ -65,110 +65,24 @@ We'll not reply to issues related to versions of PKSM different from the latest 
 Pull Requests are greatly appreciated. If you're planning to add features that requires a good bunch of work, please tell us before starting, in order to avoid wasting your time if the feature you're planning to add will not be possible to merge.
 
 ## Compiling
+You will need:
 
-### Unix
-First you will need [devkitArm] which can be obtained with
-
-```bash
-wget http://sourceforge.net/projects/devkitpro/files/Automated%20Installer/devkitARMupdate.pl
-chmod +x devkitARMupdate.pl
-sudo ./devkitARMupdate.pl /opt/devkitPro
-echo "export DEVKITPRO=/opt/devkitPro" >> ~/.bashrc
-echo "export DEVKITARM=\$DEVKITPRO/devkitARM" >> ~/.bashrc
-echo "export PATH=\$PATH:\$DEVKITARM/bin" >> ~/.bashrc
-source ~/.bashrc
-```
-
-Please note: The env variables need to be available from sudo
-
-```bash
-Defaults env_keep += "DEVKITPRO DEVKITARM"
-```
-
-The following can be installed with [3ds_portlibs]:
-* libpng 1.6.19
-* libJPEGTurbo 1.5.1
-* freetype 2.7.1
-
-The following will need to be manually installed:
-* [sf2dlib]
-* [sftdlib]
-* [sfillib]
-
-When cloning the repo make sure to use `git clone --recursive` in order to also get buildtools and the other dependencies.
-
-In case you're compiling for *hax-based homebrew launchers ensure you also create an xml file with `<targets selectable="true"></targets>` and put it along side the `.3dsx` file with matching names.
-
-### Windows
-Install the following using [devkitProUpdater]:
-* [devkitArm] r46
+* [devKitArm] r46
 * [libctru] 1.2.1
 * [citro3D] (commit 3ae31ad)
 
-**Note**: It is suggested to install dev tools at the root of your disk drive i.e. `C:\Development\devkitPro`
-
-Once installed, make sure you have access to a C compiler from `cmd`. If you're not sure install [mingw-w64] to 
-`C:\Development\mingw-w64` and then add the path `C:\Development\mingw-w64\mingw32\bin` to your env variables.
-
-Open command prompt as an **administrator** and `cd` into the devkitPro installation folder. Some commands need admin 
-rights to properly install. Additionally any installed antivirus might block installation files.
-
-Next `git clone` the latest [3ds_portlibs]:
-* zlib
+The following from [3ds_portlibs]:
 * libpng 1.6.19
 * libJPEGTurbo 1.5.1
 * freetype 2.7.1
 
-```bash
-git clone https://github.com/devkitPro/3ds_portlibs.git
-cd 3ds_portlibs
-
-make zlib
-make install-zlib
-
-make libpng
-make install libpng
-
-make libjpeg-turbo
-make install libjpeg-turbo
-
-make freetype
-make install freetype
-```
-
-Manually install each of the following into the devkitPro folder:
+The following from github:
 * [sf2dlib]
 * [sftdlib]
 * [sfillib]
 
-```bash
-git clone https://github.com/xerpi/sf2dlib.git
-cd sf2dlib/libsf2d
-make
-make install
-cd ../..
-git clone https://github.com/xerpi/sftdlib.git
-cd sftdlib/libsftd
-make
-make install
-cd ../..
-git clone https://github.com/xerpi/sfillib.git
-cd sfillib/libsfil
-make
-make install
-```
+Check out `COMPILE.md` for more details.
 
-Finally, clone this repo recursively and build with
-
-```bash
-git clone --recursive https://github.com/BernardoGiordano/PKSM.git
-cd PKSM
-make
-make install
-```
-
-In case you're compiling for *hax-based homebrew launchers ensure you also create an xml file with 
-`<targets selectable="true"></targets>` and put it along side the `.3dsx` file with matching names.
 ## Screenshots
 
 <img src="assets/page/01.png" width="350"> <img src="assets/page/02.png" width="350">
