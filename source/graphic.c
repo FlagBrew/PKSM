@@ -683,7 +683,7 @@ void printCredits() {
 void printDatabase6(char *database[], int currentEntry, int page, int spriteArray[]) {
 	int pk, y = 41;
 	char *pages = (char*)malloc(10 * sizeof(char));
-	snprintf(pages, 10, "%d/%d", page + 1, 205);
+	snprintf(pages, 10, "%d/%d", page + 1, fill_get_index()/10);
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		printMenuTop();
@@ -844,7 +844,7 @@ void printDB7(u8* previewbuf, int game, int sprite, int i, bool langVett[], bool
 		printMenuBottom();
 
 		if (getN(i) > 1)
-			sftd_draw_text(fontBold11, (320 - sftd_get_text_width(fontBold11, 11, "Press L/R to switch multiple wondercards.")) / 2, 19, LIGHTBLUE, 11, "Press L/R to switch multiple wondercards.");
+			sftd_draw_text(fontBold11, (320 - sftd_get_text_width(fontBold11, 11, "Press L to switch multiple wondercards.")) / 2, 19, LIGHTBLUE, 11, "Press L/R to switch multiple wondercards.");
 		
 		sftd_draw_wtext(fontBold14, 16, 50, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_LANGUAGES));
 		sftd_draw_wtext(fontBold14, 16, 112, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_OVERWRITE_WC));

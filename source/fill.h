@@ -19,6 +19,7 @@
 #pragma once
 #include "common.h"
 
+int fill_get_index();
 void filldatabase7(char *database[], int spriteArray[]);
 void filldatabase6(char *database[], int spriteArray[]);
 void filldatabase5(char *database[], int spriteArray[]);

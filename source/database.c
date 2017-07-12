@@ -20,6 +20,15 @@
 
 char *tags[] = {"jpn", "eng", "fre", "ita", "ger", "spa", "kor", "chs", "cht"};
 
+int getI(char* str, bool is3ds) {
+	int i = 0, mult = 1;
+	for (int k = is3ds ? 3 : 2; k >= 0; k--) {
+		i += (int)(str[k] - '0') * mult;
+		mult *= 10;
+	}
+	return i;
+}
+
 void getSinglePathPGF(char* path, int lang, int i) {
 	sprintf(path, "romfs:/pgf/%s/%d.pgf", tags[lang], i);
 }
@@ -121,6 +130,7 @@ int getN(int i) {
 		case 221 : return 6;
 		case 223 : return 6;
 		case 230 : return 8;
+		case 238 : return 2;
 		case 504 : return 2;
 		case 515 : return 2;
 		case 551 : return 2;
@@ -157,93 +167,14 @@ void eventDatabase7(u8* mainbuf, int game) {
 	
 	while(aptMainLoop()) {
 		hidScanInput();
-		
+		calcCurrentEntryMorePagesReversed(&currentEntry, &page, fill_get_index()/10, 9, 5);
+			
 		if (hidKeysDown() & KEY_B)
 			break;
-		
-		if (hidKeysDown() & KEY_L) {
-			if (page > 0) {
-				int temp;
-				do {
-					page--;
-					temp = 0;
-					for (int i = 0; i < 10; i++)
-						if (strcmp(database[page*10+i], " ") == 0)
-							temp++;
-					
-					if (temp == 10) 
-						page--;
-				} while (temp == 10);
-			}
-			else if (page == 0) page = SMCOUNT / 10 - 1;
-		}
-		
-		if (hidKeysDown() & KEY_R) {
-			if (page < SMCOUNT / 10 - 1) {
-				int temp;
-				do {
-					page++;
-					temp = 0;
-					for (int i = 0; i < 10; i++)
-						if (strcmp(database[page*10+i], " ") == 0)
-							temp++;
-					
-					if (temp == 10) 
-						page++;
-				} while (temp == 10);
-			}
-			else if (page == SMCOUNT / 10 - 1) page = 0;
-		}
-		
-		if (hidKeysDown() & KEY_UP) {
-			if (currentEntry > 0) currentEntry--;
-			else if (currentEntry == 0) currentEntry = 9;
-		}
-		
-		if (hidKeysDown() & KEY_DOWN) {
-			if (currentEntry < 9) currentEntry++;
-			else if (currentEntry == 9) currentEntry = 0;
-		}
-		
-		if (hidKeysDown() & KEY_LEFT) {
-			if (currentEntry <= 4) {
-				int temp;
-				do {
-					page--;
-					if (page < 0) page = SMCOUNT / 10 - 1;
-					temp = 0;
-					for (int i = 0; i < 10; i++)
-						if (strcmp(database[page*10+i], " ") == 0)
-							temp++;
-					
-					if (temp == 10) 
-						page--;
-				} while (temp == 10);
-			}
-			else if (currentEntry >= 5) currentEntry -= 5;
-		}
-		
-		if (hidKeysDown() & KEY_RIGHT) {
-			if (currentEntry <= 4) currentEntry += 5;
-			else if (currentEntry >= 5) {
-				int temp;
-				do {
-					page++;
-					if (page > SMCOUNT / 10 - 1) page = 0;
-					temp = 0;
-					for (int i = 0; i < 10; i++)
-						if (strcmp(database[page*10+i], " ") == 0)
-							temp++;
-					
-					if (temp == 10) 
-						page++;
-				} while (temp == 10);
-			}
-		}
-		
+
 		if (hidKeysDown() & KEY_A && spriteArray[page*10+currentEntry] != -1) {
 			int total = (ISGEN7) ? 9 : 7;
-			int i = page * 10 + currentEntry;
+			int i = getI(database[page * 10 + currentEntry], true);
 			// check for single wcx events
 			char *testpath = (char*)malloc(40 * sizeof(char));
 			
@@ -458,93 +389,14 @@ void eventDatabase5(u8* mainbuf, int game) {
 	
 	while(aptMainLoop()) {
 		hidScanInput();
+		calcCurrentEntryMorePagesReversed(&currentEntry, &page, fill_get_index()/10, 9, 5);
 		
 		if (hidKeysDown() & KEY_B)
 			break;
 		
-		if (hidKeysDown() & KEY_L) {
-			if (page > 0) {
-				int temp;
-				do {
-					page--;
-					temp = 0;
-					for (int i = 0; i < 10; i++)
-						if (strcmp(database[page*10+i], " ") == 0)
-							temp++;
-					
-					if (temp == 10) 
-						page--;
-				} while (temp == 10);
-			}
-			else if (page == 0) page = ISGEN5 ? 16 : 18;
-		}
-		
-		if (hidKeysDown() & KEY_R) {
-			if (page < (ISGEN5 ? 16 : 18)) {
-				int temp;
-				do {
-					page++;
-					temp = 0;
-					for (int i = 0; i < 10; i++)
-						if (strcmp(database[page*10+i], " ") == 0)
-							temp++;
-					
-					if (temp == 10) 
-						page++;
-				} while (temp == 10);
-			}
-			else if (page == (ISGEN5 ? 16 : 18)) page = 0;
-		}
-		
-		if (hidKeysDown() & KEY_UP) {
-			if (currentEntry > 0) currentEntry--;
-			else if (currentEntry == 0) currentEntry = 9;
-		}
-		
-		if (hidKeysDown() & KEY_DOWN) {
-			if (currentEntry < 9) currentEntry++;
-			else if (currentEntry == 9) currentEntry = 0;
-		}
-		
-		if (hidKeysDown() & KEY_LEFT) {
-			if (currentEntry <= 4) {
-				int temp;
-				do {
-					page--;
-					if (page < 0) page = (ISGEN5 ? 16 : 18);
-					temp = 0;
-					for (int i = 0; i < 10; i++)
-						if (strcmp(database[page*10+i], " ") == 0)
-							temp++;
-					
-					if (temp == 10) 
-						page--;
-				} while (temp == 10);
-			}
-			else if (currentEntry >= 5) currentEntry -= 5;
-		}
-		
-		if (hidKeysDown() & KEY_RIGHT) {
-			if (currentEntry <= 4) currentEntry += 5;
-			else if (currentEntry >= 5) {
-				int temp;
-				do {
-					page++;
-					if (page > (ISGEN5 ? 16 : 18)) page = 0;
-					temp = 0;
-					for (int i = 0; i < 10; i++)
-						if (strcmp(database[page*10+i], " ") == 0)
-							temp++;
-					
-					if (temp == 10) 
-						page++;
-				} while (temp == 10);
-			}
-		}
-		
 		if (hidKeysDown() & KEY_A && spriteArray[page*10+currentEntry] != -1) {
 			isSelected = true;
-			int i = page * 10 + currentEntry;
+			int i = getI(database[page * 10 + currentEntry], false);
 
 			char *testpath = (char*)malloc(40 * sizeof(char));
 			for (int j = 0; j < 7; j++) {
