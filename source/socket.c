@@ -20,27 +20,26 @@
 
 int panic = 0;
 static u32 *socket_buffer = NULL;
-static socket_server data;
-socket_server *app_data = &data;
+static socket_server server;
 static char	payload[PAYLOADSIZE];
 
 static char legalityAddress[16];
 bool isLegalityAddressSet = false;
 
 char* socket_get_ip() {
-	return inet_ntoa(data.server_addr.sin_addr);
+	return inet_ntoa(server.server_addr.sin_addr);
 }
 
 void socket_shutdown() {
-	close(data.server_id);
+	close(server.server_id);
 	socExit();
 }
 
 void socket_close() {
-	if (app_data->server_id > 0) 
-		close(app_data->server_id);
-	if (app_data->client_id > 0) 
-		close(app_data->client_id);	
+	if (server.server_id > 0) 
+		close(server.server_id);
+	if (server.client_id > 0) 
+		close(server.client_id);	
 }
 
 int socket_init() {
@@ -59,34 +58,34 @@ int socket_init() {
 	}
 	
 	// Inizializzo la struct del server http
-	memset(&data, 0, sizeof(data));
-	data.client_id = -1;
+	memset(&server, 0, sizeof(server));
+	server.client_id = -1;
 	// socket(int domain, int type, int protocol)
 	// domain specifica la famiglia di indirizzi usati nel dominio di comunicazione
 	// sockstream utilizza tcp per inviare streams di byte
 	// socket ritorna -1 in caso di fallimento, o un intero non negativo in caso di successo
 	// il numero in caso di successo è il socket file descriptor
-	data.server_id = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
+	server.server_id = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
 
 	// controllo se c'è stato un insuccesso nella creazione della socket
-	if (data.server_id < 0) {
+	if (server.server_id < 0) {
 		infoDisp(i18n(S_HTTP_SOCKET_UNACCESSIBLE));
 		socket_close();
 		return 0;
 	}
 	
 	// la famiglia è quella di indirizzi IPv4
-	data.server_addr.sin_family = AF_INET;
+	server.server_addr.sin_family = AF_INET;
 	// htons converte un u16 da host byte order a network byte order (big endian)
-	data.server_addr.sin_port = htons(9000);
+	server.server_addr.sin_port = htons(9000);
 	// ritorna l'identificativo 32bit della macchina
-	data.server_addr.sin_addr.s_addr = gethostid();
-	data.client_length = sizeof(data.client_addr);
+	server.server_addr.sin_addr.s_addr = gethostid();
+	server.client_length = sizeof(server.client_addr);
 	
 	// quando una socket viene creata con socket(...), essa esiste in una famiglia di indirizzi
 	// ma non ha alcun indirizzo legato ad essa. con bind assegno l'indirizzo giusto
-	if (bind(data.server_id, (struct sockaddr *) &data.server_addr, sizeof(data.server_addr))) {
-		close(data.server_id);
+	if (bind(server.server_id, (struct sockaddr *) &server.server_addr, sizeof(server.server_addr))) {
+		close(server.server_id);
 		infoDisp(i18n(S_HTTP_BINDING_FAILED));
 		socket_close();
 		return 0;
@@ -94,11 +93,11 @@ int socket_init() {
 	
 	// setto la socket a non-blocking in modo tale da poter uscire successivamente con un segnale di input
 	// fcntl manipola un file descriptor. 
-	fcntl(data.server_id, F_SETFL, fcntl(data.server_id, F_GETFL, 0) | O_NONBLOCK);
+	fcntl(server.server_id, F_SETFL, fcntl(server.server_id, F_GETFL, 0) | O_NONBLOCK);
 
 	// ascolta per connessioni su una socket. il primo parametro è il file descriptor, il secondo definisce la massima lunghezza fino alla quale
 	// la coda di connessioni in coda per la socket può crescere
-	if (listen(data.server_id, 5)) {
+	if (listen(server.server_id, 5)) {
 		infoDisp(i18n(S_HTTP_LISTENING_FAILED));
 		socket_close();
 		return 0;		
@@ -108,30 +107,29 @@ int socket_init() {
 
 void process_wcx(u8* buf) {
 	// accetto la connessione su una socket
-	data.client_id = accept(data.server_id, (struct sockaddr *) &data.client_addr, &data.client_length);
-	if (data.client_id < 0 && errno != EAGAIN) {
+	server.client_id = accept(server.server_id, (struct sockaddr *) &server.client_addr, &server.client_length);
+	if (server.client_id < 0 && errno != EAGAIN) {
 		infoDisp(i18n(S_HTTP_ERROR_PROCESSING_PHASE));
 		socket_close();
 		return;		
 	} else {
 		char *dummy;
 		memset(payload, 0, PAYLOADSIZE);
-		// set client socket to blocking to simplify sending data back
-		fcntl(data.client_id, F_SETFL, fcntl(data.client_id, F_GETFL, 0) & ~O_NONBLOCK);
+		fcntl(server.client_id, F_SETFL, fcntl(server.client_id, F_GETFL, 0) & ~O_NONBLOCK);
 
-        recv(data.client_id, payload, PAYLOADSIZE, 0);
+        recv(server.client_id, payload, PAYLOADSIZE, 0);
         if (strstr(payload, "PKSMOTA") != NULL && (hidKeysDown() != KEY_B)) {
             dummy = strstr(payload, "PKSMOTA");
             memcpy(buf, &dummy[7], 264);
         }
     }
-    close(data.client_id);
-    data.client_id = -1;
+    close(server.client_id);
+    server.client_id = -1;
 }
 
 void process_pkx(u8* mainbuf, int game, int tempVett[]) {
-	data.client_id = accept(data.server_id, (struct sockaddr *) &data.client_addr, &data.client_length);
-	if (data.client_id < 0 && errno != EAGAIN) {
+	server.client_id = accept(server.server_id, (struct sockaddr *) &server.client_addr, &server.client_length);
+	if (server.client_id < 0 && errno != EAGAIN) {
 		infoDisp(i18n(S_HTTP_ERROR_PROCESSING_PHASE));
 		socket_close();
 		return;		
@@ -140,13 +138,12 @@ void process_pkx(u8* mainbuf, int game, int tempVett[]) {
 		int boxmax = ISGEN6 ? 30 : 31;
 		char *dummy;
 		memset(payload, 0, PAYLOADSIZE);
-		// set client socket to blocking to simplify sending data back
-		fcntl(data.client_id, F_SETFL, fcntl(data.client_id, F_GETFL, 0) & ~O_NONBLOCK);
 
-        recv(data.client_id, payload, PAYLOADSIZE, 0);
-        if (strstr(payload,"PKSMOTA") != NULL && (hidKeysDown() != KEY_B)) {
+		fcntl(server.client_id, F_SETFL, fcntl(server.client_id, F_GETFL, 0) & ~O_NONBLOCK);
+        recv(server.client_id, payload, PAYLOADSIZE, 0);
+        if (strstr(payload, "PKSMOTA") != NULL && (hidKeysDown() != KEY_B)) {
             u8 pkmn[PKMNLENGTH];
-            dummy = strstr(payload,"PKSMOTA");
+            dummy = strstr(payload, "PKSMOTA");
             memcpy(pkmn, &dummy[7], PKMNLENGTH);
             pkx_set_as_it_is(mainbuf, tempVett[0], tempVett[1], pkmn, game);
 
@@ -162,10 +159,18 @@ void process_pkx(u8* mainbuf, int game, int tempVett[]) {
                 pkx_get(mainbuf, tempVett[0], tempVett[1], pkmn, game);
                 panic++;
             } while (pkx_get_species(pkmn) && (panic < boxmax * 30));
+			
+			char* message = "[RISPOSTA DAL SERVER] File .pkx arrivato!";
+			fcntl(server.client_id, F_SETFL, fcntl(server.client_id, F_GETFL, 0) & ~O_NONBLOCK);
+			if (send(server.client_id, message, strlen(message), 0) < 0) {
+				close(server.client_id);
+				infoDisp(i18n(S_SOCKET_SEND_FAILED));
+				return;
+			}	
         }
     }
-    close(data.client_id);
-    data.client_id = -1;
+    close(server.client_id);
+    server.client_id = -1;
 }
 
 void processLegality(u8* pkmn) {
