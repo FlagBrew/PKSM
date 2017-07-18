@@ -38,7 +38,7 @@ void socket_shutdown() {
 void socket_close() {
 	if (server.server_id > 0) 
 		close(server.server_id);
-	if (server.client_id > 0) +
+	if (server.client_id > 0)
 		close(server.client_id);	
 }
 
