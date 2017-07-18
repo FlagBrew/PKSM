@@ -38,7 +38,7 @@ void socket_shutdown() {
 void socket_close() {
 	if (server.server_id > 0) 
 		close(server.server_id);
-	if (server.client_id > 0) 
+	if (server.client_id > 0) +
 		close(server.client_id);	
 }
 
@@ -158,15 +158,7 @@ void process_pkx(u8* mainbuf, int game, int tempVett[]) {
 
                 pkx_get(mainbuf, tempVett[0], tempVett[1], pkmn, game);
                 panic++;
-            } while (pkx_get_species(pkmn) && (panic < boxmax * 30));
-			
-			char* message = "[RISPOSTA DAL SERVER] File .pkx arrivato!";
-			fcntl(server.client_id, F_SETFL, fcntl(server.client_id, F_GETFL, 0) & ~O_NONBLOCK);
-			if (send(server.client_id, message, strlen(message), 0) < 0) {
-				close(server.client_id);
-				infoDisp(i18n(S_SOCKET_SEND_FAILED));
-				return;
-			}	
+            } while (pkx_get_species(pkmn) && (panic < boxmax * 30));	
         }
     }
     close(server.client_id);
