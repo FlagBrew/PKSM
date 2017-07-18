@@ -20,29 +20,32 @@
 
 #define ASSETS 11
 
-char* path[] =    { "/3ds/data/PKSM/additionalassets/alternative_icons_spritesheetv3.png",
-					"/3ds/data/PKSM/additionalassets/balls_spritesheetv2.png",
-					"/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheetv3.png",
-					"/3ds/data/PKSM/additionalassets/i18n/de/types.png",
-					"/3ds/data/PKSM/additionalassets/i18n/en/types.png",
-					"/3ds/data/PKSM/additionalassets/i18n/es/types.png",
-					"/3ds/data/PKSM/additionalassets/i18n/fr/types.png",
-					"/3ds/data/PKSM/additionalassets/i18n/it/types.png",
-					"/3ds/data/PKSM/additionalassets/i18n/jp/types.png",
-					"/3ds/data/PKSM/additionalassets/i18n/ko/types.png",
-					"/3ds/data/PKSM/additionalassets/i18n/zh/types.png",
+char* path[] = { 
+	"/3ds/data/PKSM/additionalassets/alternative_icons_spritesheetv3.png",
+	"/3ds/data/PKSM/additionalassets/balls_spritesheetv2.png",
+	"/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheetv3.png",
+	"/3ds/data/PKSM/additionalassets/i18n/de/types.png",
+	"/3ds/data/PKSM/additionalassets/i18n/en/types.png",
+	"/3ds/data/PKSM/additionalassets/i18n/es/types.png",
+	"/3ds/data/PKSM/additionalassets/i18n/fr/types.png",
+	"/3ds/data/PKSM/additionalassets/i18n/it/types.png",
+	"/3ds/data/PKSM/additionalassets/i18n/jp/types.png",
+	"/3ds/data/PKSM/additionalassets/i18n/ko/types.png",
+	"/3ds/data/PKSM/additionalassets/i18n/zh/types.png",
 };
-char* url[] = { "https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/alternative_icons_spritesheetv3.png",
-				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/balls_spritesheetv2.png",
-				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/pokemon_icons_spritesheetv3.png",
-				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_de.png",
-				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_en.png",
-				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_es.png",
-				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_fr.png",
-				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_it.png",
-				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_jp.png",
-				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_ko.png",
-				"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_zh.png",
+
+char* url[] = {
+	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/alternative_icons_spritesheetv3.png",
+	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/balls_spritesheetv2.png",
+	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/pokemon_icons_spritesheetv3.png",
+	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_de.png",
+	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_en.png",
+	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_es.png",
+	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_fr.png",
+	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_it.png",
+	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_jp.png",
+	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_ko.png",
+	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_zh.png",
 };
 
 char* LANG_PREFIX[] = { "jp", "en", "fr", "de", "it", "es", "zh", "ko", "nl", "pt", "ru", "tw" };
