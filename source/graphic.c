@@ -1696,7 +1696,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 	sf2d_swapbuffers();
 }
 
-void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEntry, int saveBox, int bankBox, bool isBufferized, bool isSeen) {
+void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int game, int currentEntry, int saveBox, int bankBox, bool isBufferized, bool isSeen, bool isWirelessActivated) {
 	int x, y;
 	int pointer[2] = {0, 0};
 	wchar_t* page = (wchar_t*)malloc((MAX_LENGTH_BOX_NAME+1) * sizeof(wchar_t));
@@ -1704,6 +1704,8 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 	u8* pkmn = (u8*)malloc(PKMNLENGTH * sizeof(u8));
 	if (currentEntry < 30)
 		memcpy(pkmn, &bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], PKMNLENGTH);
+	else if (isWirelessActivated)
+		memcpy(pkmn, &wirelessBuffer[saveBox * 30 * PKMNLENGTH + (currentEntry - 30) * PKMNLENGTH], PKMNLENGTH);
 	else
 		pkx_get(mainbuf, saveBox, currentEntry - 30, pkmn, game);
 	
@@ -1788,13 +1790,13 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 				if (n) printElement(pkmnbuf, GAME_SUN, n, pointer[0] - 18, pointer[1] + 3);
 				sf2d_draw_texture(selector, pointer[0], pointer[1] - 2 - ((!isBufferized) ? movementOffsetSlow(3) : 0));
 			}
-		}		
+		}
 	pksm_end_frame();
 
 	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(boxView, 0, 0);
 		sf2d_draw_texture(editorBar, 0, 210);
-		swprintf(page, MAX_LENGTH_BOX_NAME+1, i18n(S_GRAPHIC_PKBANK_SAVED_BOX_TITLE), saveBox + 1);
+		swprintf(page, MAX_LENGTH_BOX_NAME+1, isWirelessActivated ? L"Wireless %d" : i18n(S_GRAPHIC_PKBANK_SAVED_BOX_TITLE), saveBox + 1);
 		sftd_draw_wtext(fontBold12, 12 + (178 - sftd_get_wtext_width(fontBold12, 12, page)) / 2, 19, WHITE, 12, page);
 		sf2d_draw_texture(left, 7, 17);
 		sf2d_draw_texture(right, 185, 17);
@@ -1810,12 +1812,19 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 		sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKBANK_MENU_RELEASE))) / 2, 104, BLACK, 12, i18n(S_GRAPHIC_PKBANK_MENU_RELEASE));
 		sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKBANK_MENU_DEX))) / 2, 160, BLACK, 12, i18n(S_GRAPHIC_PKBANK_MENU_DEX));
 		sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKBANK_MENU_DUMP))) / 2, 187, BLACK, 12, i18n(S_GRAPHIC_PKBANK_MENU_DUMP));
-				
+#ifdef PKSV
+#else
+		sf2d_draw_texture(otaButton, 240, 211);
+#endif
+		
 		y = 45;
 		for (int i = 0; i < 5; i++) {
 			x = 4;
 			for (int j = 0; j < 6; j++) {
-				pkx_get(mainbuf, saveBox, i*6+j, pkmn, game);
+				if (isWirelessActivated)
+					memcpy(pkmn, wirelessBuffer + saveBox*30*PKMNLENGTH + (i*6+j)*PKMNLENGTH, PKMNLENGTH);
+				else
+					pkx_get(mainbuf, saveBox, i*6+j, pkmn, game);
 				u16 n = pkx_get_species(pkmn);
 				if (n)
 					printElement(pkmn, game, n, x, y);
@@ -1841,6 +1850,10 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* pkmnbuf, int game, int currentEnt
 		
 		if (isSeen)
 			sf2d_draw_rectangle(0, -30, 320, 240, MASKBLACK);
+		
+		if (bank_getIsInternetWorking())
+			sftd_draw_wtextf(fontBold9, 10, 220, WHITE, 9, i18n(S_HTTP_SERVER_RUNNING), socket_get_ip());
+			
 	pksm_end_frame();
 	sf2d_swapbuffers();
 	

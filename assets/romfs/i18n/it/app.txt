@@ -179,7 +179,7 @@ Banca %d
 Lv.%u
 ID. %u
 Save %d
-Y: Info
+X: Info
 Svuota Box
 Rilascia
 Raccolta XD

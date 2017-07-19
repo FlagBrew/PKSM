@@ -179,7 +179,7 @@ Bank %d
 Lv.%u
 ID. %u
 Save %d
-Y: View
+X: View
 Clear Box
 Release
 XD Collection

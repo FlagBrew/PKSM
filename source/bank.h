@@ -20,4 +20,5 @@
 #include "common.h"
 
 void clearMarkings(u8* pkmn, int game);
+bool bank_getIsInternetWorking();
 void bank(u8* mainbuf, int game);

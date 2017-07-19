@@ -179,7 +179,7 @@ Banque n°%d
 Niv.%u
 ID. %u
 Boîte du jeu %d
-Y: Voir
+X: Voir
 Vider Boîte
 Relâcher
 Pokémon XD

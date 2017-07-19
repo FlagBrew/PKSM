@@ -179,7 +179,7 @@ Bank %d
 Lv.%u
 ID. %u
 Speichern %d
-Y: Bericht
+X: Bericht
 Box Leeren
 Freilassen
 XD-Sammlung

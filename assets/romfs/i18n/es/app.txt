@@ -179,7 +179,7 @@ Banco %d
 Nv.%u
 ID. %u
 Caja %d
-Y: Ver
+X: Ver
 Vaciar Caja
 Liberar
 Colección XD

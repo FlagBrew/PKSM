@@ -179,7 +179,7 @@ Banco %d
 Nv. %u
 ID. %u
 Gravar %d
-Y: Estado
+X: Estado
 Apagar Box
 Libertar
 XD Collection

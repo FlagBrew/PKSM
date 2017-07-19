@@ -198,6 +198,47 @@ void processLegality(u8* pkmn) {
 	close(sock);
 }
 
+void process_bank(u8* buf, int game) {
+	server.client_id = accept(server.server_id, (struct sockaddr *) &server.client_addr, &server.client_length);
+	if (server.client_id < 0 && errno != EAGAIN) {
+		infoDisp(i18n(S_HTTP_ERROR_PROCESSING_PHASE));
+		socket_close();
+		return;		
+	} else {
+		panic = 0;
+		int boxmax = ISGEN6 ? 30 : 31;
+		int box = 0, slot = 0;
+		char *dummy;
+		memset(payload, 0, PAYLOADSIZE);
+		
+		u8 tmp[PKMNLENGTH];
+		memcpy(tmp, &buf[box*30*PKMNLENGTH + slot*PKMNLENGTH], PKMNLENGTH);
+		while(pkx_get_species(tmp) && (panic < boxmax * 30)) {
+			slot++;
+			if (slot == 30) {
+				box++;
+				slot = 0;
+			}
+			if (box > boxmax)
+				box = 0;
+			panic++;
+			
+			memcpy(tmp, &buf[box*30*PKMNLENGTH + slot*PKMNLENGTH], PKMNLENGTH);
+		}
+
+		fcntl(server.client_id, F_SETFL, fcntl(server.client_id, F_GETFL, 0) & ~O_NONBLOCK);
+        recv(server.client_id, payload, PAYLOADSIZE, 0);
+        if (strstr(payload, "PKSMOTA") != NULL && (hidKeysDown() != KEY_B)) {
+            u8 pkmn[PKMNLENGTH];
+            dummy = strstr(payload, "PKSMOTA");
+            memcpy(pkmn, &dummy[7], PKMNLENGTH);
+			memcpy(&buf[box*30*PKMNLENGTH + slot*PKMNLENGTH], pkmn, PKMNLENGTH);
+        }
+    }
+    close(server.client_id);
+    server.client_id = -1;
+}
+
 bool socket_check_valid_ip_address(char *ipAddress) {
     struct sockaddr_in sa;
     int result = inet_pton(AF_INET, ipAddress, &(sa.sin_addr));

@@ -179,7 +179,7 @@ Seed: %lx %lx %lx %lx
 Lv.%u
 ID. %u
 盒子 %d
-Y: 浏览
+X: 浏览
 清空
 放生
 XD收藏
