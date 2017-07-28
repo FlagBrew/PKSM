@@ -19,6 +19,9 @@
 #pragma once
 #include "common.h"
 
+#define WCX_SIZE 264
+#define WCXFULL_SIZE 784
+
 bool wcx_is_bean(u8* wcx);
 bool wcx_is_bp(u8* wcx);
 bool wcx_is_egg(u8* wcx);
@@ -55,3 +58,4 @@ u16 wcx_get_tid(u8* wcx);
 u32 *wcx_get_title(u8* wcx, u32* dst);
 u8 wcx_get_type(u8* wcx);
 u32 wcx_get_year(u8* wcx);
+void wcxfull_to_wcx(u8* dst, u8* src);

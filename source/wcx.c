@@ -184,3 +184,7 @@ u8 wcx_get_level(u8* wcx) {
 bool wcx_is_egg(u8* wcx) { 
 	return *(u8*)(wcx + 0xD1) == 1; 
 }
+
+void wcxfull_to_wcx(u8* dst, u8* src) {
+	memcpy(dst, src + 0x208, 264);
+}

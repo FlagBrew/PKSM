@@ -29,61 +29,79 @@ int getI(char* str, bool is3ds) {
 	return i;
 }
 
-void getSinglePathPGF(char* path, int lang, int i) {
+void getSinglePathPGF(char* path, const int lang, const int i) {
 	sprintf(path, "romfs:/pgf/%s/%d.pgf", tags[lang], i);
 }
 
-void getSinglePathPGT(char* path, int lang, int i) {
+void getSinglePathPGT(char* path, const int lang, const int i) {
 	sprintf(path, "romfs:/pgt/%s/%d.pgt", tags[lang], i);
 }
 
-void getSinglePathWCX(char* path, int lang, int i) {
+void getSinglePathWCX(char* path, const int lang, const int i) {
 	sprintf(path, "romfs:/wcx/%s/%d.wcx", tags[lang], i);
 }
 
-void getMultiplePathWCX(char* path, int lang, int i, int j) {
+void getMultiplePathWCX(char* path, const int lang, const int i, const int j) {
 	sprintf(path, "romfs:/wcx/%s/%d-%d.wcx", tags[lang], i, j);
 }
 
-void reloadPreviewBuf(u8* previewBuf, int i, int n) {
-	char *testpath = (char*)malloc(40 * sizeof(char));
-	getSinglePathWCX(testpath, n, i);
+void getSinglePathWCXFull(char* path, const int lang, const int i) {
+	sprintf(path, "romfs:/wcxfull/%s/%d.wcxfull", tags[lang], i);
+}
+
+void getMultiplePathWCXFull(char* path, const int lang, const int i, const int j) {
+	sprintf(path, "romfs:/wcxfull/%s/%d-%d.wcxfull", tags[lang], i, j);
+}
+
+void reloadPreviewBuf(u8* previewBuf, const int game, const int i, const int n) {
+	char testpath[40];
+	if (ISGEN7)
+		getSinglePathWCXFull(testpath, n, i);
+	else if (ISGEN6)
+		getSinglePathWCX(testpath, n, i);
 	
 	FILE* f = fopen(testpath, "r");
 	if (f) { 
 		fseek(f, 0, SEEK_END);
 		u32 sz = ftell(f);
-		memset(previewBuf, 0, sz);
+		memset(previewBuf, 0, WCX_SIZE);
 		rewind(f);
-		fread(previewBuf, sz, 1, f);
+		if (sz == WCXFULL_SIZE) {
+			fpos_t pos = 520;
+			fsetpos(f, &pos);
+		}
+		fread(previewBuf, WCX_SIZE, 1, f);
 		fclose(f); 
 	} else { 
 		fclose(f); 
-	}
-
-	free(testpath);	
+	}	
 }
 
-void reloadMultiplePreviewBuf(u8* previewBuf, int i, int n, int j) {
-	char *testpath = (char*)malloc(40 * sizeof(char));
-	getMultiplePathWCX(testpath, n, i, j);
+void reloadMultiplePreviewBuf(u8* previewBuf, const int game, const int i, const int n, const int j) {
+	char testpath[40];
+	if (ISGEN7)
+		getMultiplePathWCXFull(testpath, n, i, j);
+	else if (ISGEN6)
+		getMultiplePathWCX(testpath, n, i, j);
 	
 	FILE* f = fopen(testpath, "r");
 	if (f) { 
 		fseek(f, 0, SEEK_END);
 		u32 sz = ftell(f);
-		memset(previewBuf, 0, sz);
+		memset(previewBuf, 0, WCX_SIZE);
 		rewind(f);
-		fread(previewBuf, sz, 1, f);
+		if (sz == WCXFULL_SIZE) {
+			fpos_t pos = 520;
+			fsetpos(f, &pos);
+		}
+		fread(previewBuf, WCX_SIZE, 1, f);
 		fclose(f); 
 	} else { 
 		fclose(f); 
 	}
-
-	free(testpath);	
 }
 
-void findFreeLocationWC(u8 *mainbuf, int game, int nInjected[]) {
+void findFreeLocationWC(u8 *mainbuf, const int game, int nInjected[]) {
 	nInjected[0] = 0;
 	int len = ISGEN6 ? 24 : 48;
 	int temp;
@@ -108,7 +126,7 @@ void findFreeLocationWC(u8 *mainbuf, int game, int nInjected[]) {
 	}
 }
 
-int getN(int i) {
+int getN(const int i) {
 	switch (i) {
 		case 1 : return 10;
 		case 48 : return 4;
@@ -128,14 +146,16 @@ int getN(int i) {
 		case 205 : return 2;
 		case 211 : return 7;
 		case 221 : return 6;
-		case 223 : return 6;
+		case 223 : return 7;
 		case 230 : return 8;
 		case 238 : return 2;
+		case 244 : return 3;
 		case 504 : return 2;
 		case 515 : return 2;
 		case 551 : return 2;
 		case 552 : return 2;
 		case 1111 : return 6;
+		case 1114 : return 8;
 		case 2016 : return 3;		
 	}	
 	return 0;
@@ -176,10 +196,13 @@ void eventDatabase7(u8* mainbuf, int game) {
 			int total = (ISGEN7) ? 9 : 7;
 			int i = getI(database[page * 10 + currentEntry], true);
 			// check for single wcx events
-			char *testpath = (char*)malloc(40 * sizeof(char));
+			char testpath[40];
 			
 			for (int j = 0; j < total; j++) {
-				getSinglePathWCX(testpath, j, i);
+				if (ISGEN7)
+					getSinglePathWCXFull(testpath, j, i);
+				else if (ISGEN6)
+					getSinglePathWCX(testpath, j, i);
 
 				FILE* f = fopen(testpath, "r");
 				if (f) { 
@@ -197,7 +220,10 @@ void eventDatabase7(u8* mainbuf, int game) {
 				for (int j = 0; j < total; j++) {
 					k = 0;
 					for (int t = 0; t < n; t++) {	
-						getMultiplePathWCX(testpath, j, i, t + 1);
+						if (ISGEN7)
+							getMultiplePathWCXFull(testpath, j, i, t + 1);
+						else if (ISGEN6)
+							getMultiplePathWCX(testpath, j, i, t + 1);
 
 						FILE* f = fopen(testpath, "r");
 						if (f) {
@@ -222,8 +248,8 @@ void eventDatabase7(u8* mainbuf, int game) {
 			}
 			
 			if (langSelected != -1) {
-				reloadPreviewBuf(previewbuf, i, langSelected);
-				reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
+				reloadPreviewBuf(previewbuf, game, i, langSelected);
+				reloadMultiplePreviewBuf(previewbuf, game, i, langSelected, currentMultipleWCSelected);
 			}
 			
 			while (aptMainLoop()) {
@@ -241,7 +267,7 @@ void eventDatabase7(u8* mainbuf, int game) {
 					if (n != 0) {
 						currentMultipleWCSelected--;
 						if (currentMultipleWCSelected == 0) currentMultipleWCSelected = n;
-						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
+						reloadMultiplePreviewBuf(previewbuf, game, i, langSelected, currentMultipleWCSelected);
 					}
 				}
 				
@@ -250,7 +276,7 @@ void eventDatabase7(u8* mainbuf, int game) {
 					if (n != 0) {
 						currentMultipleWCSelected = (currentMultipleWCSelected + 1) % n;
 						if (currentMultipleWCSelected == 0) currentMultipleWCSelected = 1;
-						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
+						reloadMultiplePreviewBuf(previewbuf, game, i, langSelected, currentMultipleWCSelected);
 					}
 				}
 
@@ -272,50 +298,50 @@ void eventDatabase7(u8* mainbuf, int game) {
 				if (hidKeysHeld() & KEY_TOUCH) {
 					if (touch.px > 114 && touch.px < 150 && touch.py > 50 && touch.py < 71 && langVett[0]) {
 						langSelected = 0;
-						reloadPreviewBuf(previewbuf, i, langSelected);
-						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
+						reloadPreviewBuf(previewbuf, game, i, langSelected);
+						reloadMultiplePreviewBuf(previewbuf, game, i, langSelected, currentMultipleWCSelected);
 					}
 					if (touch.px > 153 && touch.px < 189 && touch.py > 50 && touch.py < 71 && langVett[1]) {
 						langSelected = 1;
-						reloadPreviewBuf(previewbuf, i, langSelected);
-						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
+						reloadPreviewBuf(previewbuf, game, i, langSelected);
+						reloadMultiplePreviewBuf(previewbuf, game, i, langSelected, currentMultipleWCSelected);
 					}
 					if (touch.px > 192 && touch.px < 228 && touch.py > 50 && touch.py < 71 && langVett[2]) {
 						langSelected = 2;
-						reloadPreviewBuf(previewbuf, i, langSelected);
-						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
+						reloadPreviewBuf(previewbuf, game, i, langSelected);
+						reloadMultiplePreviewBuf(previewbuf, game, i, langSelected, currentMultipleWCSelected);
 					}
 					if (touch.px > 231 && touch.px < 267 && touch.py > 50 && touch.py < 71 && langVett[3]) {
 						langSelected = 3;
-						reloadPreviewBuf(previewbuf, i, langSelected);
-						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
+						reloadPreviewBuf(previewbuf, game, i, langSelected);
+						reloadMultiplePreviewBuf(previewbuf, game, i, langSelected, currentMultipleWCSelected);
 					}
 					if (touch.px > 270 && touch.px < 306 && touch.py > 50 && touch.py < 71 && langVett[4]) {
 						langSelected = 4;
-						reloadPreviewBuf(previewbuf, i, langSelected);
-						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
+						reloadPreviewBuf(previewbuf, game, i, langSelected);
+						reloadMultiplePreviewBuf(previewbuf, game, i, langSelected, currentMultipleWCSelected);
 					}
 					if (touch.px > 153 && touch.px < 189 && touch.py > 74 && touch.py < 95 && langVett[5]) {
 						langSelected = 5;
-						reloadPreviewBuf(previewbuf, i, langSelected);
-						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
+						reloadPreviewBuf(previewbuf, game, i, langSelected);
+						reloadMultiplePreviewBuf(previewbuf, game, i, langSelected, currentMultipleWCSelected);
 					}
 					if (touch.px > 192 && touch.px < 228 && touch.py > 74 && touch.py < 95 && langVett[6]) {
 						langSelected = 6;
-						reloadPreviewBuf(previewbuf, i, langSelected);
-						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
+						reloadPreviewBuf(previewbuf, game, i, langSelected);
+						reloadMultiplePreviewBuf(previewbuf, game, i, langSelected, currentMultipleWCSelected);
 					}
 					
 					if (total == 9) {
 						if (touch.px > 231 && touch.px < 267 && touch.py > 74 && touch.py < 95 && langVett[7]) {
 							langSelected = 7;
-							reloadPreviewBuf(previewbuf, i, langSelected);
-							reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
+							reloadPreviewBuf(previewbuf, game, i, langSelected);
+							reloadMultiplePreviewBuf(previewbuf, game, i, langSelected, currentMultipleWCSelected);
 						}
 						if (touch.px > 270 && touch.px < 306 && touch.py > 74 && touch.py < 95 && langVett[8]) {
 							langSelected = 8;
-							reloadPreviewBuf(previewbuf, i, langSelected);
-							reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
+							reloadPreviewBuf(previewbuf, game, i, langSelected);
+							reloadMultiplePreviewBuf(previewbuf, game, i, langSelected, currentMultipleWCSelected);
 						}
 					}
 					
@@ -332,8 +358,8 @@ void eventDatabase7(u8* mainbuf, int game) {
 					if (touch.px > 270 && touch.px < 306 && touch.py > 138 && touch.py < 159) adapt = false;
 				}
 				
-				#ifdef PKSV
-				#else
+#ifdef PKSV
+#else
 				if (hidKeysDown() & KEY_START) {
 					if (nInjected[0] >= 48) 
 						nInjected[0] = 0;
@@ -354,12 +380,9 @@ void eventDatabase7(u8* mainbuf, int game) {
 					infoDisp(i18n(S_DATABASE_SUCCESS_INJECTION));
 					break;
 				}
-				#endif
-				
+#endif
 				printDB7(previewbuf, game, spriteArray[i], i, langVett, adapt, overwrite, langSelected, nInjected[0], false);
 			}
-			
-			free(testpath);
 		}
 		
 		printDatabase6(database, currentEntry, page, spriteArray);
