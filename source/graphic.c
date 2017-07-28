@@ -689,7 +689,7 @@ void printCredits() {
 void printDatabase6(char *database[], int currentEntry, int page, int spriteArray[]) {
 	int pk, y = 41;
 	char *pages = (char*)malloc(10 * sizeof(char));
-	snprintf(pages, 10, "%d/%d", page + 1, fill_get_index()/10);
+	sprintf(pages, "%d/%d", page + 1, fill_get_index()/10);
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		printMenuTop();
@@ -1046,12 +1046,12 @@ void infoViewer(u8* pkmn, int game) {
 		free(level);
 		
 		u32 nick[NICKNAMELENGTH*2];
-		memset(nick, 0, NICKNAMELENGTH*2);
+		memset(nick, 0, NICKNAMELENGTH*2*sizeof(u32));
 		pkx_get_nickname(pkmn, nick);
 		sftd_draw_wtext(fontBold12, 215 - (sftd_get_wtext_width(fontBold12, 12, (wchar_t*)nick)), 29, WHITE, 12, (wchar_t*)nick);
 		
 		u32 ot_name[NICKNAMELENGTH*2];
-		memset(ot_name, 0, NICKNAMELENGTH*2);
+		memset(ot_name, 0, NICKNAMELENGTH*2*sizeof(u32));
 		pkx_get_ot(pkmn, ot_name);
 		sftd_draw_wtext(fontBold12, 215 - (sftd_get_wtext_width(fontBold12, 12, (wchar_t*)ot_name)), 49, WHITE, 12, (wchar_t*)ot_name);
 		
@@ -1090,11 +1090,11 @@ void infoViewer(u8* pkmn, int game) {
 		
 		char* tmp = (char*)malloc(4);
 		for (int i = 0; i < 6; i++) {
-			snprintf(tmp, 4, "%d", getIV(pkmn, lookup[i]));
+			sprintf(tmp, "%d", getIV(pkmn, lookup[i]));
 			sftd_draw_text(fontBold12, 289 + (max - sftd_get_text_width(fontBold12, 12, tmp)) / 2, 8 + i * 20, WHITE, 12, tmp);
-			snprintf(tmp, 4, "%d", getEV(pkmn, lookup[i]));
+			sprintf(tmp, "%d", getEV(pkmn, lookup[i]));
 			sftd_draw_text(fontBold12, 328 + (max - sftd_get_text_width(fontBold12, 12, tmp)) / 2, 8 + i * 20, WHITE, 12, tmp);
-			snprintf(tmp, 4, "%d", getStat(pkmn, lookup[i]));
+			sprintf(tmp, "%d", getStat(pkmn, lookup[i]));
 			sftd_draw_text(fontBold12, 369 + (max - sftd_get_text_width(fontBold12, 12, tmp)) / 2, 8 + i * 20, WHITE, 12, tmp);
 		}
 		free(tmp);
@@ -1159,12 +1159,12 @@ void wcxInfoViewer(u8* buf, int game) {
 	sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, version), 115, WHITE, 12, version);
 	
 	u32 title[72];
-	memset(title, 0, 72);
+	memset(title, 0, 72*sizeof(u32));
 	wcx_get_title(buf, title);
 	sftd_draw_wtext(fontBold12, !wcx_is_pokemon(buf) ? 4 : 30, 6, WHITE, 12, (wchar_t*)title);
 	
 	u32 date[12];
-	memset(date, 0, 12);
+	memset(date, 0, 12*sizeof(u32));
 	swprintf((wchar_t*)date, 12, L"%u/%u/%u", wcx_get_year(buf), wcx_get_month(buf), wcx_get_day(buf));
 	sftd_draw_wtext(fontBold12, 215 - (sftd_get_wtext_width(fontBold12, 12, (wchar_t*)date)), 134, WHITE, 12, (wchar_t*)date);
 	
@@ -1182,7 +1182,7 @@ void wcxInfoViewer(u8* buf, int game) {
 		free(level);
 		
 		u32 ot_name[NICKNAMELENGTH*2];
-		memset(ot_name, 0, NICKNAMELENGTH*2);
+		memset(ot_name, 0, NICKNAMELENGTH*2*sizeof(u32));
 		wcx_get_ot(buf, ot_name);
 		sftd_draw_wtext(fontBold12, 215 - (sftd_get_wtext_width(fontBold12, 12, (wchar_t*)ot_name)), 49, WHITE, 12, (wchar_t*)ot_name);
 		
@@ -1238,7 +1238,7 @@ void printDexViewer(u8* mainbuf, int game, int currentEntry, int page, int seen,
 						sf2d_draw_texture_part_blend(spritesSmall, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((entry + 1) % 25) + 4, 30 * ((entry + 1) / 25), 34, 30, RGBA8(0,0,0,160));
 					} else
 						sf2d_draw_texture_part_blend(spritesSmall, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((entry + 1) % 25) + 4, 30 * ((entry + 1) / 25), 34, 30, RGBA8(0,0,0,255));
-					snprintf(temp, 4, "%d", entry + 1);
+					sprintf(temp, "%d", entry + 1);
 					sftd_draw_text(fontBold9, 49 * j + (49 - sftd_get_text_width(fontBold9, 9, temp)) / 2 + j, 34 + i * 47 + i, getCaught(mainbuf, game, entry + 1) ? WHITE : DS, 9, temp);
 				}
 			}
@@ -1593,12 +1593,12 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			free(friendship);
 			
 			u32 nick[NICKNAMELENGTH*2];
-			memset(nick, 0, NICKNAMELENGTH*2);
+			memset(nick, 0, NICKNAMELENGTH*2*sizeof(u32));
 			pkx_get_nickname(pkmn, nick);
 			sftd_draw_wtext(fontBold12, 178 - (sftd_get_wtext_width(fontBold12, 12, (wchar_t*)nick)), 169, WHITE, 12, (wchar_t*)nick);
 
 			u32 ot_name[NICKNAMELENGTH*2];
-			memset(ot_name, 0, NICKNAMELENGTH*2);
+			memset(ot_name, 0, NICKNAMELENGTH*2*sizeof(u32));
 			pkx_get_ot(pkmn, ot_name);
 			sftd_draw_wtext(fontBold12, 178 - (sftd_get_wtext_width(fontBold12, 12, (wchar_t*)ot_name)), 149, WHITE, 12, (wchar_t*)ot_name);
 		}
@@ -1625,11 +1625,11 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 
 			char* tmp = (char*)malloc(4);
 			for (int i = 0; i < 6; i++) {
-				snprintf(tmp, 4, "%d", getIV(pkmn, lookup[i]));
+				sprintf(tmp, "%d", getIV(pkmn, lookup[i]));
 				sftd_draw_text(fontBold12, 112 + (max - sftd_get_text_width(fontBold12, 12, tmp)) / 2, 49 + i * 20, WHITE, 12, tmp);
-				snprintf(tmp, 4, "%d", getEV(pkmn, lookup[i]));
+				sprintf(tmp, "%d", getEV(pkmn, lookup[i]));
 				sftd_draw_text(fontBold12, 192 + (max - sftd_get_text_width(fontBold12, 12, tmp)) / 2, 49 + i * 20, WHITE, 12, tmp);
-				snprintf(tmp, 4, "%d", getStat(pkmn, lookup[i]));
+				sprintf(tmp, "%d", getStat(pkmn, lookup[i]));
 				sftd_draw_text(fontBold12, 263 + (max - sftd_get_text_width(fontBold12, 12, tmp)) / 2, 49 + i * 20, WHITE, 12, tmp);
 			}
 			free(tmp);
@@ -1744,7 +1744,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 					sf2d_draw_texture_part(typesSheet, 325, 120, 50 * type2, 0, 50, 18); 
 				
 				u32 nick[NICKNAMELENGTH*2];
-				memset(nick, 0, NICKNAMELENGTH*2);
+				memset(nick, 0, NICKNAMELENGTH*2*sizeof(u32));
 				pkx_get_nickname(pkmn, nick);
 				sftd_draw_wtext(fontBold12, 273, 69, WHITE, 12, (wchar_t*)nick);
 				
@@ -1762,7 +1762,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 				free(level);
 				
 				u32 ot_name[NICKNAMELENGTH*2];
-				memset(ot_name, 0, NICKNAMELENGTH*2);
+				memset(ot_name, 0, NICKNAMELENGTH*2*sizeof(u32));
 				pkx_get_ot(pkmn, ot_name);
 				sftd_draw_wtext(fontBold12, 273, 146, WHITE, 12, (wchar_t*)ot_name);
 
@@ -1911,7 +1911,7 @@ void printSaveEditorInfo(u8* mainbuf, int game, int byte) {
 void printfHexEditorInfo(u8* pkmn, int byte) {
 	int y = 70, x = 8, xribbon = 90;
 	u32 string[NICKNAMELENGTH*2];
-	memset(string, 0, NICKNAMELENGTH*2);
+	memset(string, 0, NICKNAMELENGTH*2*sizeof(u32));
 	
 	switch (byte) {
 		case 0x08 :

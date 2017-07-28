@@ -65,21 +65,6 @@ We'll not reply to issues related to versions of PKSM different from the latest 
 Pull Requests are greatly appreciated. If you're planning to add features that requires a good bunch of work, please tell us before starting, in order to avoid wasting your time if the feature you're planning to add will not be possible to merge.
 
 ## Compiling
-You will need:
-
-* [devKitArm] r46
-* [libctru] 1.2.1
-* [citro3D] (commit 3ae31ad)
-
-The following from [3ds_portlibs]:
-* libpng 1.6.19
-* libJPEGTurbo 1.5.1
-* freetype 2.7.1
-
-The following from github:
-* [sf2dlib]
-* [sftdlib]
-* [sfillib]
 
 Check out `COMPILE.md` for more details.
 
@@ -127,17 +112,3 @@ Copyright (C) 2016/2017 Bernardo Giordano
 >    You should have received a copy of the GNU General Public License
 >    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 >    See LICENSE for information.
-
-[//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. 
-There is no need to format nicely because it shouldn't be seen. 
-Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
-
-[3ds_portlibs]: <https://github.com/devkitPro/3ds_portlibs>
-[devkitProUpdater]: <https://sourceforge.net/projects/devkitpro/>
-[devkitArm]: <https://sourceforge.net/projects/devkitpro/files/devkitARM/>
-[citro3D]: <https://sourceforge.net/projects/devkitpro/files/citro3d/>
-[libctru]: <https://sourceforge.net/projects/devkitpro/files/libctru/>
-[mingw-w64]: <https://sourceforge.net/projects/mingw-w64/>
-[sf2dlib]: <https://github.com/xerpi/sf2dlib>
-[sftdlib]: <https://github.com/xerpi/sftdlib>
-[sfillib]: <https://github.com/xerpi/sfillib>

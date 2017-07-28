@@ -1180,7 +1180,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 
 						u32 nick32[NICKNAMELENGTH];
 						u8 nick[NICKNAMELENGTH];
-						memset(nick32, 0, NICKNAMELENGTH);
+						memset(nick32, 0, NICKNAMELENGTH*sizeof(u32));
 						memset(nick, 0, NICKNAMELENGTH);
 						getSaveOT(mainbuf, game, nick32);
 						utf32_to_utf8(nick, nick32, NICKNAMELENGTH);

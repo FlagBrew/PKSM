@@ -190,11 +190,15 @@ int main() {
 	int currentEntry = 0;
 	
 	bool save = true;
+	
+#ifdef CITRA
+#else
 	Handle mainHandle;
 	FS_Archive saveArch;
-	
 	//X, Y, OR, AS, SUN, MOON
 	const u64 ids[] = {0x0004000000055D00, 0x0004000000055E00, 0x000400000011C400, 0x000400000011C500, 0x0004000000164800, 0x0004000000175E00};
+#endif
+
 	char *gamesList[] = {"X", "Y", "OR", "AS", "S", "M", "D", "P", "PL", "HG", "SS", "B", "W", "B2", "W2"};
 
 	while (aptMainLoop() && !(hidKeysDown() & KEY_A)) {
