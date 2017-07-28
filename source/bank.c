@@ -18,6 +18,67 @@
 
 #include "bank.h"
 
+bool isMultipleSelection = false;
+int multipleSelectionBuffer[MULTIPLESELECTIONSIZE][2];
+
+void bank_free_multiple_selection_buffer() {
+	for (int i = 0; i < MULTIPLESELECTIONSIZE; i++) {
+		for (int j = 0; j < 2; j++) {
+			multipleSelectionBuffer[i][j] = -1;
+		}
+	}
+	
+	isMultipleSelection = false;
+}
+
+bool bank_get_selected_slot(const int box, const int slot) {
+	for (int i = 0; i < MULTIPLESELECTIONSIZE; i++) {
+		if (multipleSelectionBuffer[i][0] == box &&
+			multipleSelectionBuffer[i][1] == slot)
+			return true;
+	}
+	
+	return false;
+}
+
+void bank_free_multiple_selection_location(const int box, const int slot) {
+	bool erased = false;
+	for (int i = 0; i < MULTIPLESELECTIONSIZE && !erased; i++) {
+		if (multipleSelectionBuffer[i][0] == box &&
+			multipleSelectionBuffer[i][1] == slot) {
+			
+			multipleSelectionBuffer[i][0] = -1;
+			multipleSelectionBuffer[i][1] = -1;
+			erased = true;
+		}		
+	}
+	
+	// check if the buffer is empty
+	bool empty = true;
+	for (int i = 0; i < MULTIPLESELECTIONSIZE && empty; i++) {
+		if (multipleSelectionBuffer[i][0] != 1 &&
+			multipleSelectionBuffer[i][1] != -1)
+			empty = false;
+	}
+	if (empty)
+		isMultipleSelection = false;
+}
+
+void bank_set_selected_slot(const int box, const int slot) {
+	bool inserted = false;
+	for (int i = 0; i < MULTIPLESELECTIONSIZE && !inserted; i++) {
+		if (multipleSelectionBuffer[i][0] == -1 &&
+			multipleSelectionBuffer[i][1] == -1) {
+			
+			multipleSelectionBuffer[i][0] = box;
+			multipleSelectionBuffer[i][1] = slot;
+			
+			isMultipleSelection = true;
+			inserted = true;
+		}		
+	}	
+}
+
 bool isInternetWorking = false;
 
 bool bank_getIsInternetWorking() {
@@ -126,6 +187,8 @@ void bank(u8* mainbuf, int game) {
 	
 	u8* pkmn = (u8*)malloc(PKMNLENGTH * sizeof(u8));
 	memset(pkmn, 0, PKMNLENGTH);
+	
+	bank_free_multiple_selection_buffer();
 	
 	while (aptMainLoop()) {
 		hidScanInput();
