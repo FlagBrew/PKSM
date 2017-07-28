@@ -164,10 +164,16 @@ void GUIElementsSpecify(int game) {
 	initProgressLoadPNGInRAM(elements);
 
 	freezeMsg(i18n(S_GRAPHIC_GUI_ELEMENTS_SPECIFY_LOADING));
+#ifdef CITRA
+	alternativeSpritesSmall = loadPNGInRAM("romfs:/citra/PKResources/additionalassets/alternative_icons_spritesheetv3.png");
+	spritesSmall = loadPNGInRAM("romfs:/citra/PKResources/additionalassets/pokemon_icons_spritesheetv3.png");
+	balls = loadPNGInRAM("romfs:/citra/PKResources/additionalassets/balls_spritesheetv2.png");
+#else
 	alternativeSpritesSmall = loadPNGInRAM("/3ds/data/PKSM/additionalassets/alternative_icons_spritesheetv3.png");
 	spritesSmall = loadPNGInRAM("/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheetv3.png");
 	balls = loadPNGInRAM("/3ds/data/PKSM/additionalassets/balls_spritesheetv2.png");
-	
+#endif
+
 	if (IS3DS) {
 		eventView = loadPNGInRAM("romfs:/res/Event View.png");
 		iconBank = loadPNGInRAM("romfs:/res/Icon Bank.png");
@@ -977,6 +983,7 @@ void printElement(u8* pkmn, int game, u16 n, int x, int y) {
 	if (pkx_get_item(pkmn))
 		sf2d_draw_texture(item, x + 3, y + 21);
 }
+
 void printElementBlend(u8* pkmn, int game, u16 n, int x, int y, u32 color) {
 	u16 t = getAlternativeSprite(pkmn, game);
 	if (t) {

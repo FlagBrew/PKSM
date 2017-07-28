@@ -101,7 +101,9 @@ bool initServices() {
 	GUIElementsInit();
 	FXElementsInit();
 	GUIGameElementsInit();
-	
+
+#ifdef CITRA
+#else	
 	wchar_t* str = malloc(60*sizeof(wchar_t*));
 	for (int i = 0; i < ASSETS; i++) {
 		FILE *temp1 = fopen(path[i], "rt");
@@ -115,6 +117,7 @@ bool initServices() {
 			fclose(temp1);
 	}
 	free(str);
+#endif
 	
 	loadPersonal();
 	
@@ -169,13 +172,16 @@ int main() {
 		return 0;
 	}
 	
+#ifdef CITRA
+#else
 	for (int i = 0; i < ASSETS; i++) {
-		if(!checkFile(path[i])) {
+		if (!checkFile(path[i])) {
 			infoDisp(i18n(S_MAIN_MISSING_ASSETS));
 			exitServices();
 			return -1;
 		}
 	}
+#endif
 
 	u8* mainbuf;
 	u64 mainSize = 0;
@@ -205,8 +211,30 @@ int main() {
 	
 	GUIGameElementsExit();
 	freezeMsg(i18n(S_MAIN_LOADING_SAVE));
+
+#ifdef CITRA
+	char savepath[100];
+	sprintf(savepath, "romfs:/citra/saves/%s.bin", gamesList[game]);
+	FILE *saveptr = fopen(savepath, "rt");
+	if (!saveptr) {
+		infoDisp(L"Missing file!");
+		exitServices();
+		return -1;
+	}
+	fseek(saveptr, 0, SEEK_END);
+	mainSize = ftell(saveptr);
+	mainbuf = (u8*)malloc(mainSize);
+	memset(mainbuf, 0, mainSize);
+	rewind(saveptr);
+	fread(mainbuf, mainSize, 1, saveptr);
+	fclose(saveptr);
 	
-	if (IS3DS) {	
+	if (ISGEN4) {
+		GBO = 0x40000 * getActiveGBO(mainbuf, game);
+		SBO = 0x40000 * getActiveSBO(mainbuf, game);
+	}
+#else
+	if (IS3DS) {
 		if (!(openSaveArch(&saveArch, ids[game]))) {
 			infoDisp(i18n(S_MAIN_GAME_NOT_FOUND));
 			exitServices();
@@ -230,7 +258,6 @@ int main() {
 		mainbuf = malloc(mainSize);
 		FSFILE_Read(mainHandle, NULL, 0, mainbuf, mainSize);
 	}
-	
 	else if (ISDS) {
 		FS_CardType t;
 		if (FSUSER_GetCardType(&t)) {
@@ -259,6 +286,7 @@ int main() {
 			SBO = 0x40000 * getActiveSBO(mainbuf, game);
 		}
 	}
+#endif
 	
 	char *bakpath = (char*)malloc(100 * sizeof(char));
 	time_t unixTime = time(NULL);
@@ -361,7 +389,9 @@ int main() {
 		else if (ISGEN4) 
 			rewriteCHK4(mainbuf, game, GBO, SBO);
 	}
-	
+
+#ifdef CITRA
+#else
 	if (IS3DS) {
 		FSFILE_Write(mainHandle, NULL, 0, mainbuf, mainSize, FS_WRITE_FLUSH);
 		FSFILE_Close(mainHandle);
@@ -371,6 +401,7 @@ int main() {
 	}
 	else if (ISDS && save)
 		TWLinjectSave(mainbuf, mainSize);
+#endif
 
 	free(mainbuf);
 	
