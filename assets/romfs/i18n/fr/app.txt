@@ -531,7 +531,7 @@ Pays
 Région
 Région de la console
 Langue
-Le serveur pk7 écoute sur le port %s:9000
+Le serveur pk7 écoute sur le port %s
 Échec allocation buffer!
 Échec socInit!
 Socket indisponible!

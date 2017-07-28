@@ -531,7 +531,7 @@ Land
 Region
 Konsolenregion
 Sprache
-Server läuft unter %s:9000
+Server läuft unter %s
 Bufferzuweisung fehlgeschlagen!
 socInit fehlgeschlagen!
 Sockel nicht verfügbar!

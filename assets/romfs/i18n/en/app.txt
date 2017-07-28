@@ -531,7 +531,7 @@ Country
 Region
 Console Region
 Language
-Server running at %s:9000
+Server running at %s
 Buffer allocation failed!
 socInit failed!
 Socket unaccesible!

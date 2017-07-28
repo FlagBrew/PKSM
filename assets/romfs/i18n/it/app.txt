@@ -531,7 +531,7 @@ Paese
 Regione
 Regione della Console
 Lingua
-Server avviato su %s:9000
+Server avviato su %s
 Allocazione buffer fallita!
 Init socker fallito!
 Socket non accessibile!
