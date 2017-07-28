@@ -19,9 +19,9 @@
 #pragma once
 #include "common.h"
 
-#define SMCOUNT 2050
+#define SMCOUNT 300
 
-void findFreeLocationWC(u8 *mainbuf, int game, int nInjected[]);
-int getN(int i);
+void findFreeLocationWC(u8 *mainbuf, const int game, int nInjected[]);
+int getN(const int i);
 void eventDatabase7(u8* mainbuf, int game);
 void eventDatabase5(u8* mainbuf, int game);

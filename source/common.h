@@ -97,11 +97,6 @@
 #define SAVE_SM_ITEM 0x0
 #define SAVE_SM_ITEM_SIZE 0xDE0
 
-
-#define WCX_SIZE 0x108
-#define WCX_SIZEFULL 0x310
-
-
 struct ArrayUTF32 listMoves;
 struct ArrayUTF32 listItems;
 struct ArrayUTF32 listSpecies;
