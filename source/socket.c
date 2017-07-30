@@ -49,54 +49,37 @@ int socket_init() {
 		socket_close();
 		return 0;
 	}
-	// inizializzo il servizio soc:U, che accetta un u32* relativo a un page-aligned buffer da usare (0x1000 bytes).
-	// la dimensione del buffer p un multiplo di 0x1000 bytes
+
 	if (socInit(socket_buffer, SOC_BUFFERSIZE)) {
 		infoDisp(i18n(S_HTTP_SOCINIT_FAILED));
 		socket_close();
 		return 0;
 	}
 	
-	// Inizializzo la struct del server http
 	memset(&server, 0, sizeof(server));
 	server.client_id = -1;
-	// socket(int domain, int type, int protocol)
-	// domain specifica la famiglia di indirizzi usati nel dominio di comunicazione
-	// sockstream utilizza tcp per inviare streams di byte
-	// socket ritorna -1 in caso di fallimento, o un intero non negativo in caso di successo
-	// il numero in caso di successo è il socket file descriptor
 	server.server_id = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
 
-	// controllo se c'è stato un insuccesso nella creazione della socket
 	if (server.server_id < 0) {
 		infoDisp(i18n(S_HTTP_SOCKET_UNACCESSIBLE));
 		socket_close();
 		return 0;
 	}
 	
-	// la famiglia è quella di indirizzi IPv4
 	server.server_addr.sin_family = AF_INET;
-	// htons converte un u16 da host byte order a network byte order (big endian)
 	server.server_addr.sin_port = htons(9000);
-	// ritorna l'identificativo 32bit della macchina
 	server.server_addr.sin_addr.s_addr = gethostid();
 	server.client_length = sizeof(server.client_addr);
-	
-	// quando una socket viene creata con socket(...), essa esiste in una famiglia di indirizzi
-	// ma non ha alcun indirizzo legato ad essa. con bind assegno l'indirizzo giusto
+
 	if (bind(server.server_id, (struct sockaddr *) &server.server_addr, sizeof(server.server_addr))) {
 		close(server.server_id);
 		infoDisp(i18n(S_HTTP_BINDING_FAILED));
 		socket_close();
 		return 0;
 	}
-	
-	// setto la socket a non-blocking in modo tale da poter uscire successivamente con un segnale di input
-	// fcntl manipola un file descriptor. 
+
 	fcntl(server.server_id, F_SETFL, fcntl(server.server_id, F_GETFL, 0) | O_NONBLOCK);
 
-	// ascolta per connessioni su una socket. il primo parametro è il file descriptor, il secondo definisce la massima lunghezza fino alla quale
-	// la coda di connessioni in coda per la socket può crescere
 	if (listen(server.server_id, 5)) {
 		infoDisp(i18n(S_HTTP_LISTENING_FAILED));
 		socket_close();
@@ -106,7 +89,6 @@ int socket_init() {
 }
 
 void process_wcx(u8* buf) {
-	// accetto la connessione su una socket
 	server.client_id = accept(server.server_id, (struct sockaddr *) &server.client_addr, &server.client_length);
 	if (server.client_id < 0 && errno != EAGAIN) {
 		infoDisp(i18n(S_HTTP_ERROR_PROCESSING_PHASE));
@@ -190,7 +172,7 @@ void processLegality(u8* pkmn) {
 	}
 	
 	fcntl(sock, F_SETFL, fcntl(sock, F_GETFL, 0) | O_NONBLOCK);
-	if (send(sock, message, strlen(message), 0) < 0) {
+	if (send(sock, message, 239, 0) < 0) {
 		close(sock);
 		infoDisp(i18n(S_SOCKET_SEND_FAILED));
 		return;
