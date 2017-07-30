@@ -104,7 +104,7 @@ bool initServices() {
 
 #ifdef CITRA
 #else	
-	wchar_t* str = malloc(60*sizeof(wchar_t*));
+	wchar_t str[60];
 	for (int i = 0; i < ASSETS; i++) {
 		FILE *temp1 = fopen(path[i], "rt");
 		if (temp1 == NULL) {
@@ -116,7 +116,6 @@ bool initServices() {
 		} else
 			fclose(temp1);
 	}
-	free(str);
 #endif
 	
 	loadPersonal();
@@ -131,7 +130,7 @@ bool initServices() {
 		fclose(bank);
 		
 		size = defaultSize;
-		defaultBank = (u8*)malloc(size * sizeof(u8));
+		defaultBank = (u8*)malloc(size);
 		memset(defaultBank, 0, size);
 		
 		FILE *new = fopen("/3ds/data/PKSM/bank/bank.bin", "wb");
@@ -144,14 +143,13 @@ bool initServices() {
 	FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bak", "rt");
 	if (bak) {
 		fclose(bak);
-		return isDownloaded;
 	} else {
 		fclose(bak);
 		freezeMsg(i18n(S_MAIN_BACKING_UP_BANK));
 		FILE *dobak = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
 		fseek(dobak, 0, SEEK_END);
 		size = ftell(dobak);
-		bankbuf = (u8*)malloc(size * sizeof(u8));
+		bankbuf = (u8*)malloc(size);
 		
 		rewind(dobak);
 		fread(bankbuf, size, 1, dobak);
@@ -199,7 +197,7 @@ int main() {
 	const u64 ids[] = {0x0004000000055D00, 0x0004000000055E00, 0x000400000011C400, 0x000400000011C500, 0x0004000000164800, 0x0004000000175E00};
 #endif
 
-	char *gamesList[] = {"X", "Y", "OR", "AS", "S", "M", "D", "P", "PL", "HG", "SS", "B", "W", "B2", "W2"};
+	const char *gamesList[] = {"X", "Y", "OR", "AS", "S", "M", "D", "P", "PL", "HG", "SS", "B", "W", "B2", "W2"};
 
 	while (aptMainLoop() && !(hidKeysDown() & KEY_A)) {
 		hidScanInput();
@@ -273,7 +271,7 @@ int main() {
 		FSUSER_GetLegacyRomHeader(MEDIATYPE_GAME_CARD, 0LL, data);
 
 		CardType cardType_;
-		SPIGetCardType(&cardType_, (*(data + 12) == 'I') ? 1 : 0);
+		SPIGetCardType(&cardType_, (*(u8*)(data + 12) == 'I') ? 1 : 0);
 
 		mainSize = SPIGetCapacity(cardType_);
 		
@@ -282,6 +280,7 @@ int main() {
 			exitServices();
 			return -1;
 		}
+		
 		mainbuf = malloc(mainSize);
 		
 		TWLstoreSaveFile(mainbuf, cardType_);
@@ -292,7 +291,7 @@ int main() {
 	}
 #endif
 	
-	char *bakpath = (char*)malloc(100 * sizeof(char));
+	char bakpath[100];
 	time_t unixTime = time(NULL);
 	struct tm* timeStruct = gmtime((const time_t *)&unixTime);		
 	snprintf(bakpath, 100, "sdmc:/3ds/data/PKSM/backup/%s_%02i%02i%02i%02i%02i%02i", gamesList[game], timeStruct->tm_year + 1900, timeStruct->tm_mon + 1, timeStruct->tm_mday, timeStruct->tm_hour, timeStruct->tm_min, timeStruct->tm_sec);
@@ -301,7 +300,6 @@ int main() {
 	FILE *f = fopen("main", "wb");
 	fwrite(mainbuf, 1, mainSize, f);
 	fclose(f);
-	free(bakpath);
 	
 	bool touchPressed = false;
 	

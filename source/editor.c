@@ -18,7 +18,6 @@
 
 #include "editor.h"
 
-/* ************************ local variables ************************ */
 int lookupHT[] = {0, 1, 2, 5, 3, 4};
 u8 DPActiveFlag[] = {0x20, 0x83, 0xB8, 0xED};
 
@@ -509,9 +508,7 @@ u32 getSaveSeed(u8* mainbuf, int game, int index) {
     u32 buffer;
     memcpy(&buffer, &mainbuf[(ISGEN6 ? 0 : 0x6B5DC) + index * 0x4], 4);
     return buffer;
-} 
-
-/* ************************ set ************************ */
+}
 
 void setItemEditor(u8* pkmn, u16 item) {
     memcpy(&pkmn[0x0A], &item, ITEMLENGTH);

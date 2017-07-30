@@ -377,12 +377,11 @@ void GUIElementsI18nExit() {
 
 
 void create_font_cache(sftd_font* font, unsigned int size, int total_fonts, int* num_font) {
-	wchar_t* str = malloc(sizeof(wchar_t*)*60);
+	wchar_t str[60];
 	swprintf(str, 60, i18n(S_GUI_ELEMENTS_LOADING_FONTS_CACHE_FONT), *num_font, total_fonts);
 	freezeMsgDetails(str);
 	sftd_draw_text(font, 0, 0, RGBA8(0, 0, 0, 0), size, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
 	*num_font = *num_font + 1;
-	free(str);
 }
 
 void init_font_cache() {
@@ -518,7 +517,7 @@ void freezeMsg(wchar_t* message) { _freezeMsgWithDetails(message, i18n(S_FREEZEM
 void freezeMsgWithDetails(wchar_t* message, wchar_t* details) { _freezeMsgWithDetails(message, details, false); }
 
 void progressBar(wchar_t* message, u32 current, u32 sz) {
-	wchar_t* progress = (wchar_t*)malloc(40 * sizeof(wchar_t));
+	wchar_t progress[40];
 	swprintf(progress, 40, i18n(S_GRAPHIC_PROGRESSBAR_MESSAGE), current, sz);
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
@@ -531,8 +530,6 @@ void progressBar(wchar_t* message, u32 current, u32 sz) {
 		sf2d_draw_texture(warningBottom, 0, 0);
 	pksm_end_frame();
 	sf2d_swapbuffers();
-	
-	free(progress);
 }
 
 void drawMenuTop() {
@@ -657,7 +654,7 @@ void mainMenuDS(int currentEntry) {
 }
 
 void printCredits() {
-	u8* buf = (u8*)malloc(1500 * sizeof(u8));
+	u8 buf[1500];
 	memset(buf, 0, 1500);
 	loadFile(buf, "romfs:/res/credits.txt");
 	
@@ -682,13 +679,11 @@ void printCredits() {
 		pksm_end_frame();
 		sf2d_swapbuffers();
 	}
-	
-	free(buf);
 }
 
 void printDatabase6(char *database[], int currentEntry, int page, int spriteArray[]) {
 	int pk, y = 41;
-	char *pages = (char*)malloc(10 * sizeof(char));
+	char pages[10];
 	sprintf(pages, "%d/%d", page + 1, fill_get_index()/10);
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
@@ -740,8 +735,6 @@ void printDatabase6(char *database[], int currentEntry, int page, int spriteArra
 		printBottomIndications(i18n(S_GRAPHIC_DB6_INDICATIONS));
 	pksm_end_frame();
 	sf2d_swapbuffers();
-	
-	free(pages);
 }
 
 void printDatabaseListDS(char *database[], int currentEntry, int page, int spriteArray[], bool isSelected, int langSelected, bool langVett[]) {
@@ -823,7 +816,7 @@ void printDatabaseListDS(char *database[], int currentEntry, int page, int sprit
 
 void printDB7(u8* previewbuf, int game, int sprite, int i, bool langVett[], bool adapt, bool overwrite, int langSelected, int nInjected, bool ota) {
 	char *languages[] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR", "CHS", "CHT"};
-	char *cont = (char*)malloc(3 * sizeof(char));
+	char cont[3];
 	snprintf(cont, 3, "%d", nInjected + 1);
 	
 	int total = ISGEN7 ? 9 : 7;
@@ -919,8 +912,6 @@ void printDB7(u8* previewbuf, int game, int sprite, int i, bool langVett[], bool
 		
 		pksm_end_frame();
 	sf2d_swapbuffers();
-	
-	free(cont);
 }
 
 void printEditor(u8* mainbuf, int game, u64 size, int currentEntry, int page) {

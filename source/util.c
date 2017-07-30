@@ -24,12 +24,12 @@ void checkMaxValueBetweenBounds(u8* buf, int byte, int start, int len, int max) 
 	
 	if (len == 2) {
 		buf[byte]++;
-		memcpy(&buf2, &buf[start], len);
+		buf2 = *(u16*)(buf + start);
 		if (buf2 > (u16)max)
 			buf[byte]--;
 	} else if (len == 4) {
 		buf[byte]++;
-		memcpy(&buf4, &buf[start], len);
+		buf4 = *(u32*)(buf + start);
 		if (buf4 > max)
 			buf[byte]--;	
 	}
@@ -124,7 +124,7 @@ bool isHBL() {
 
 
 void fsStart() {
-    if(isHBL()) {
+    if (isHBL()) {
         Handle fsHandle;
         srvGetServiceHandleDirect(&fsHandle, "fs:USER");
         FSUSER_Initialize(fsHandle);
@@ -133,7 +133,7 @@ void fsStart() {
 }
 
 void fsEnd() {
-    if(isHBL())
+    if (isHBL())
         fsEndUseSession();
 }
 
@@ -163,12 +163,13 @@ bool openSaveArch(FS_Archive *out, u64 id) {
 void settingsMenu(u8* mainbuf, int game) {
 	char *gamesList[] = {"X", "Y", "OR", "AS", "S", "M", "D", "P", "PL", "HG", "SS", "B", "W", "W2", "B2"};
 	
-	char *bakpath = (char*)malloc(80 * sizeof(char));
+	char bakpath[80];
 	time_t unixTime = time(NULL);
 	struct tm* timeStruct = gmtime((const time_t *)&unixTime);	
 	
 	int speed = 0;
 	bool operationDone = false;
+	
 	FILE *bank = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
 	fseek(bank, 0, SEEK_END);
 	u32 size = ftell(bank);
@@ -177,7 +178,6 @@ void settingsMenu(u8* mainbuf, int game) {
 	u32 box = size / (30 * PKMNLENGTH);
 	u32 boxmax = 1000;
 
-	// getting language
 	int language = loadI18nConfig();
 		
 	while (aptMainLoop() && !operationDone) {
@@ -247,7 +247,7 @@ void settingsMenu(u8* mainbuf, int game) {
 					FILE *buf = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
 					fseek(buf, 0, SEEK_END);
 					u32 size_temp = ftell(buf);
-					u8 *bankbuf = (u8*)malloc(size_temp * sizeof(u8));
+					u8 *bankbuf = (u8*)malloc(size_temp);
 					rewind(buf);
 					fread(bankbuf, size_temp, 1, buf);
 					fclose(buf);
@@ -271,7 +271,7 @@ void settingsMenu(u8* mainbuf, int game) {
 					FILE *buf = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
 					fseek(buf, 0, SEEK_END);
 					u32 size_temp = ftell(buf);
-					u8 *bankbuf = (u8*)malloc(size_temp * sizeof(u8));
+					u8 *bankbuf = (u8*)malloc(size_temp);
 					rewind(buf);
 					fread(bankbuf, size_temp, 1, buf);
 					fclose(buf);
@@ -301,7 +301,6 @@ void settingsMenu(u8* mainbuf, int game) {
 				fwrite(mainbuf, 1, sizeof(&mainbuf), f);
 				fclose(f);
 				
-				free(bakpath);
 				operationDone = true;
 				infoDisp(i18n(S_UTIL_BACKUP_SAVE_CREATED));
 			}
@@ -309,7 +308,7 @@ void settingsMenu(u8* mainbuf, int game) {
 				FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
 				fseek(bak, 0, SEEK_END);
 				size = ftell(bak);
-				u8* bankbuf = (u8*)malloc(size * sizeof(u8));
+				u8* bankbuf = (u8*)malloc(size);
 				rewind(bak);
 				fread(bankbuf, size, 1, bak);
 				fclose(bak);
@@ -361,6 +360,7 @@ u8 loadI18nConfig() {
 	fclose(conf);
 	return localeConfig[0];
 }
+
 void saveI18nConfig(u8 language) {
 	u8 localeConfig[1];
 	localeConfig[0] = language;
@@ -368,7 +368,6 @@ void saveI18nConfig(u8 language) {
 	fwrite(localeConfig, 1, 1, conf);
 	fclose(conf);
 }
-
 
 bool hasExternI18nFile() {
 	return checkFile("sdmc:/3ds/data/PKSM/i18n/app.txt");

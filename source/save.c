@@ -55,7 +55,6 @@ u16 crc16[] = {
 
 int getActiveGBO(u8* mainbuf, int game) {
 	int ofs = 0;
-	int generalBlock = -1;
 
 	u8 temp[10];
 	u8 dummy[10];
@@ -81,14 +80,11 @@ int getActiveGBO(u8* mainbuf, int game) {
 	memcpy(&c1, &mainbuf[ofs], 2);
 	memcpy(&c2, &mainbuf[ofs + 0x40000], 2);
 	
-	generalBlock = (c1 >= c2) ? 0 : 1;
-	
-	return generalBlock;
+	return (c1 >= c2) ? 0 : 1;
 }
 
 int getActiveSBO(u8* mainbuf, int game) {
 	int ofs = 0;
-	int storageBlock = -1;
 	
 	if (game == GAME_HG || game == GAME_SS)
 		ofs = 0x21A00;
@@ -114,9 +110,7 @@ int getActiveSBO(u8* mainbuf, int game) {
 	memcpy(&c1, &mainbuf[ofs], 2);
 	memcpy(&c2, &mainbuf[ofs + 0x40000], 2);
 	
-	storageBlock = (c1 >= c2) ? 0 : 1;
-	
-	return storageBlock;
+	return (c1 >= c2) ? 0 : 1;
 }
 
 u32 CHKOffset(u32 i, int game) {
@@ -167,10 +161,8 @@ u32 CHKLength(u32 i, int game) {
 	else return 0;
 }
 
-u16 getBlockID(u8* mainbuf, int csoff, u32 i) {
-	u16 id;
-	memcpy(&id, &mainbuf[csoff + 8 * i - 2], sizeof(u16));
-	return id;
+u16 getBlockID(u8* mainbuf, const int csoff, const u32 i) {
+	return *(u16*)(mainbuf + csoff + 8*i - 2);
 }
 
 u32 BWCHKOff(u32 i, int game) {
@@ -178,10 +170,12 @@ u32 BWCHKOff(u32 i, int game) {
 		const u32 _bw[] = { 0x013F2, 0x023F2, 0x033F2, 0x043F2, 0x053F2, 0x063F2, 0x073F2, 0x083F2, 0x093F2, 0x0A3F2, 0x0B3F2, 0x0C3F2, 0x0D3F2, 0x0E3F2, 0x0F3F2, 0x103F2, 0x113F2, 0x123F2, 0x133F2, 0x143F2, 0x153F2, 0x163F2, 0x173F2, 0x183F2, 0x1D296, 0x23F9A };
 		return _bw[i];
 	}
+	
 	else if (game == GAME_B2 || game == GAME_W2) {
 		const u32 _b2w2[]= { 0x013F2, 0x023F2, 0x033F2, 0x043F2, 0x053F2, 0x063F2, 0x073F2, 0x083F2, 0x093F2, 0x0A3F2, 0x0B3F2, 0x0C3F2, 0x0D3F2, 0x0E3F2, 0x0F3F2, 0x103F2, 0x113F2, 0x123F2, 0x133F2, 0x143F2, 0x153F2, 0x163F2, 0x173F2, 0x183F2, 0x1D296, 0x25FA2 };
 		return _b2w2[i];
 	}
+	
 	else return 0;
 }
 
