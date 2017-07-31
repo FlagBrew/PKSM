@@ -7,7 +7,7 @@ Tri des capacités
 Chargement des natures
 Chargement des objets
 Tri des objets
-Chargement des p. cachés
+Chargement des p. cachées
 Chargement des polices...
 Préchargement police de caractère %i / %i
 Chargement initial terminé !
@@ -17,8 +17,8 @@ Relancez l'app!
 Des fichiers sont manquants!
 Chargement de la sauvegarde...
 Jeu non trouvé !
-Taille incorrect de la sauvegarde!
-Pas de cartouche inséré !
+Taille de la sauvegarde incorrecte!
+Pas de cartouche insérée !
 Gestion
 Events
 Credits
@@ -201,14 +201,14 @@ Backup Banque
 Appuyez à côté du nombre pour changer la taille.
 Oui
 Non
-Créature: #%d - %ls
+Espèce: #%d - %ls
 Objet tenu: #%d - %ls
 TID: %d
 SID: %d
 Talent: %ls
 Nature: %ls
 Indicateur Rencontre Fatidique
-Sexe:
+Genre:
 mâle
 femelle
 sans genre
@@ -560,14 +560,14 @@ Vus: %d
 Impossible d'établir une connexion !
 Impossible d'envoyer les données !
 Entrez l'IP du PC:
-Press X to enter serveLegality IP address...
-Press X to check legality with serveLegality...
-Calling GitHub APIs...
-Elaborating API response...
-Downloading latest release...
-Update failed!
-Failed to add certificate!
-Failed to add a request header!
-Failed to download data!
-Installing latest release...
-Latest release installed!
+Appuyez sur X pour entrer l'adresse IP de serveLegality...
+Appuyez sur X pour tester la légalité avec serveLegality...
+Appel des APIs Github...
+Elaboration de la réponse...
+Téléchargement de la dernière version...
+Echec de la mise à jour!
+Echec de l'ajout de certificats!
+Echec de l'ajout d'un request header!
+Echec du téléchargement des données!
+Installation de la dernière version...
+Dernière version installée!
