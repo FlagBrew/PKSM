@@ -111,7 +111,9 @@ bool initServices() {
 			fclose(temp1);
 			swprintf(str, 60, i18n(S_DOWNLOADING_ASSETS), i + 1);
 			freezeMsg(str);
-			downloadFile(url[i], path[i]);
+			if (downloadFile(url[i], path[i]) != 0) {
+				infoDisp(i18n(S_HTTP_DOWNLOAD_ASSETS_FAILED));
+			}
 			isDownloaded = true;
 		} else
 			fclose(temp1);

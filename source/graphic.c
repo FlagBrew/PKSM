@@ -1868,7 +1868,11 @@ void printSettings(int box, int language) {
 			sf2d_draw_texture(menuBar, (320 - menuBar->width) / 2, 60 + i * (menuBar->height));
 			sftd_draw_wtext(fontBold15, i == 0 ? 69 : (320 - sftd_get_wtext_width(fontBold15, 15, menu[i])) / 2, 58 + (menuBar->height - 18) / 2 + i * (menuBar->height), DARKBLUE, 15, menu[i]);
 		}
-		
+
+#ifdef PKSV
+#else
+		sf2d_draw_texture(otaButton, 280, 216);
+#endif
 		sf2d_draw_texture(miniBox, 189, 64);
 		sf2d_draw_texture(minusButton, 169, 65);
 		sf2d_draw_texture(plusButton, 228, 65);

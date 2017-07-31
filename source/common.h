@@ -52,7 +52,7 @@
 #include "util.h"
 #include "wcx.h"
 
-#define DEBUG 1
+#define DEBUG 0
 
 #define GAME_X 		  0
 #define GAME_Y 		  1

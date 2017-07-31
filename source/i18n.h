@@ -25,7 +25,7 @@
 #include <unistd.h>
 
 // debuglogf displays message on the app if defined to 1
-#define DEBUG_I18N 1
+#define DEBUG_I18N 0
 // Force the lang to display in PKSM. Useful when debugging another lang than the 3DS lang
 // Langs ID are defined in ctrulib : https://smealum.github.io/ctrulib/cfgu_8h.html
 // CFG_LANGUAGE_JP = 0
@@ -709,6 +709,16 @@ typedef enum {
 	S_EDITOR_TEXT_ENTER_LEGALITY_ADDRESS,
 	S_GRAPHIC_PKVIEWER_OTA_SET_ADDRESS,
 	S_GRAPHIC_PKVIEWER_OTA_CHECK_LEGALITY,
+	
+	S_HTTP_CALLING_GITHUB_API,
+	S_HTTP_ELABORATING_API_RESPONSE,
+	S_HTTP_DOWNLOADING_UPDATE,
+	S_HTTP_UPDATE_FAILED,
+	S_HTTP_ERROR_CERT,
+	S_HTTP_ERROR_REQUEST_HEADER,
+	S_HTTP_ERROR_DOWNLOAD_DATA,
+	S_HTTP_INSTALL_UPDATE,
+	S_HTTP_UPDATE_INSTALLED,
 } AppTextCode;
 
 
