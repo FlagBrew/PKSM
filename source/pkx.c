@@ -18,6 +18,8 @@
 
 #include "pkx.h"
 
+const int lookupHT[] = {0, 1, 2, 5, 3, 4};
+
 u32 expTable[100][6] = {
   {0, 0, 0, 0, 0, 0},
   {8, 15, 4, 9, 6, 10},
@@ -273,12 +275,12 @@ u16 pkx_get_item(u8* pkmn) {
 }
 
 u8 pkx_get_hp_type(u8* pkmn) { 
-	return 15 * ((getIV(pkmn, 0)& 1) 
-		  + 2 * (getIV(pkmn, 1) & 1) 
-		  + 4 * (getIV(pkmn, 2) & 1) 
-		  + 8 * (getIV(pkmn, 3) & 1) 
-		  + 16 * (getIV(pkmn, 4) & 1) 
-		  + 32 * (getIV(pkmn, 5) & 1)) / 63; 
+	return 15 * ((pkx_get_iv(pkmn, 0)& 1) 
+		  + 2 * (pkx_get_iv(pkmn, 1) & 1) 
+		  + 4 * (pkx_get_iv(pkmn, 2) & 1) 
+		  + 8 * (pkx_get_iv(pkmn, 3) & 1) 
+		  + 16 * (pkx_get_iv(pkmn, 4) & 1) 
+		  + 32 * (pkx_get_iv(pkmn, 5) & 1)) / 63; 
 }
 
 u8 pkx_get_ot_gender(u8* pkmn) { 
@@ -392,4 +394,84 @@ u8 pkx_get_level(u8* pkmn) {
 void pkx_set_level(u8* pkmn, const int lv) {
     u32 towrite = expTable[lv - 1][personal.pkmData[pkx_get_species(pkmn)][0x08]];
     memcpy(&pkmn[0x10], &towrite, 4);
+}
+
+bool pkx_is_shiny(u8* pkmn) {
+    u16 trainersv = (pkx_get_tid(pkmn) ^ pkx_get_sid(pkmn)) >> 4;
+    u16 pkmnv = ((pkx_get_pid(pkmn) >> 16) ^ (pkx_get_pid(pkmn) & 0xFFFF)) >> 4;
+
+    return trainersv == pkmnv;
+}
+
+u16 pkx_get_form_species_number(u8 *pkmn) {	
+	u16 tempspecies = pkx_get_species(pkmn);
+	u8 form = pkx_get_form(pkmn);
+	u8 formcnt = personal.pkmData[tempspecies][0x0E];
+
+	if (form && form < formcnt) {
+		u16 backspecies = tempspecies;
+		memcpy(&tempspecies, &personal.pkmData[tempspecies][0x0C], 2);
+		if (!tempspecies)
+			tempspecies = backspecies;
+		else if (form < formcnt)
+			tempspecies += form - 1;
+	}
+	
+	return tempspecies;
+}
+
+u16 pkx_get_stat(u8* pkmn, const int stat) {
+    u16 tempspecies = pkx_get_form_species_number(pkmn);
+
+    u8 mult = 10, basestat = 0;
+    u16 final;
+    if (stat == 0) basestat = personal.pkmData[tempspecies][0x0];
+    if (stat == 1) basestat = personal.pkmData[tempspecies][0x1];
+    if (stat == 2) basestat = personal.pkmData[tempspecies][0x2];
+    if (stat == 3) basestat = personal.pkmData[tempspecies][0x3];
+    if (stat == 4) basestat = personal.pkmData[tempspecies][0x4];
+    if (stat == 5) basestat = personal.pkmData[tempspecies][0x5];
+    
+    if (stat == 0)
+        final = 10 + ((2 * basestat) + ((((pkx_get_HT(pkmn) >> lookupHT[stat]) & 1) == 1) ? 31 : pkx_get_iv(pkmn, stat)) + pkx_get_ev(pkmn, stat) / 4 + 100) * pkx_get_level(pkmn) / 100;
+    else
+        final = 5 + (2 * basestat + ((((pkx_get_HT(pkmn) >> lookupHT[stat]) & 1) == 1) ? 31 : pkx_get_iv(pkmn, stat)) + pkx_get_ev(pkmn, stat) / 4) * pkx_get_level(pkmn) / 100; 
+    
+    if (pkx_get_nature(pkmn) / 5 + 1 == stat)
+        mult++;
+    if (pkx_get_nature(pkmn) % 5 + 1 == stat)
+        mult--;
+  
+    final = final * mult / 10;
+    return final;
+}
+
+u8 pkx_get_friendship(u8* pkmn) {
+	return (pkmn[0x93] == 0) ? pkx_get_ot_friendship(pkmn) : pkx_get_ht_friendship(pkmn);
+}
+
+u8 pkx_get_ht_friendship(u8* pkmn) {
+	return *(u8*)(pkmn + 0xA2);
+}
+
+u8 pkx_get_ot_friendship(u8* pkmn) {
+	return *(u8*)(pkmn + 0xCA);
+}
+
+u8 pkx_get_nature(u8* pkmn) {
+	return *(u8*)(pkmn + 0x1C);
+}
+
+u8 pkx_get_ev(u8* pkmn, const int stat) {
+	return *(u8*)(pkmn + 0x1E + stat);
+}
+
+u8 pkx_get_iv(u8* pkmn, const int stat) {
+    u32 buffer = *(u32*)(pkmn + 0x74);
+    buffer = buffer >> 5 * stat;
+    buffer = buffer & 0x1F;
+	
+	u8 toreturn;
+	memcpy(&toreturn, &buffer, 1);
+	return toreturn;
 }

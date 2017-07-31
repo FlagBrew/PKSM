@@ -71,20 +71,11 @@ typedef struct FormData {
 	bool editable;
 } FormData;
 
-bool isShiny(u8* pkmn);
 bool isBattleBoxed(u8* mainbuf, int game, int box, int slot);
 bool checkHTLegality(u8* mainbuf, u8* pkmn, int game);
 
-u8 getNature(u8* pkmn);
-u8 getEV(u8* pkmn, const int stat);
-u8 getFriendship(u8* pkmn);
-u8 getHTFriendship(u8* pkmn);
-u8 getOTFriendship(u8* pkmn);
-u8 getIV(u8* pkmn, const int stat);
 bool isInfected (u8* pkmn);
-u16 getFormSpeciesNumber(u8* pkmn);
 FormData *getLegalFormData(u16 species, int game);
-u16 getStat(u8* pkmn, const int stat);
 u8 getBall(u8* pkmn);
 u32 *getSaveOT(u8* mainbuf, int game, u32* dst);
 u8 getSaveGender(u8* mainbuf, int game);

@@ -18,16 +18,7 @@
 
 #include "editor.h"
 
-int lookupHT[] = {0, 1, 2, 5, 3, 4};
 u8 DPActiveFlag[] = {0x20, 0x83, 0xB8, 0xED};
-
-bool isShiny(u8* pkmn) {
-    u16 trainersv = (pkx_get_tid(pkmn) ^ pkx_get_sid(pkmn)) >> 4;
-    u16 pkmnv = ((pkx_get_pid(pkmn) >> 16) ^ (pkx_get_pid(pkmn) & 0xFFFF)) >> 4;
-
-    if (trainersv == pkmnv) return true;
-    else return false;
-}
 
 bool isBattleBoxed(u8* mainbuf, int game, int box, int slot) {
 	if (ISGEN6) //don't care about obsolete titles
@@ -42,22 +33,6 @@ bool isBattleBoxed(u8* mainbuf, int game, int box, int slot) {
 	}
 	
 	return false;
-}
-
-u16 getFormSpeciesNumber(u8 *pkmn) {	
-	u16 tempspecies = pkx_get_species(pkmn);
-	u8 form = pkx_get_form(pkmn);
-	u8 formcnt = personal.pkmData[tempspecies][0x0E];
-
-	if (form && form < formcnt) {
-		u16 backspecies = tempspecies;
-		memcpy(&tempspecies, &personal.pkmData[tempspecies][0x0C], 2);
-		if (!tempspecies)
-			tempspecies = backspecies;
-		else if (form < formcnt)
-			tempspecies += form - 1;
-	}	
-	return tempspecies;
 }
 
 FormData *getLegalFormData(u16 species, int game) {
@@ -399,78 +374,12 @@ FormData *getLegalFormData(u16 species, int game) {
 	return forms;
 }
 
-u16 getStat(u8* pkmn, const int stat) {
-    u16 tempspecies = getFormSpeciesNumber(pkmn);
-
-    u8 mult = 10;
-    u16 final;
-    u8 basestat = 0;
-    if (stat == 0) basestat = personal.pkmData[tempspecies][0x0];
-    if (stat == 1) basestat = personal.pkmData[tempspecies][0x1];
-    if (stat == 2) basestat = personal.pkmData[tempspecies][0x2];
-    if (stat == 3) basestat = personal.pkmData[tempspecies][0x3];
-    if (stat == 4) basestat = personal.pkmData[tempspecies][0x4];
-    if (stat == 5) basestat = personal.pkmData[tempspecies][0x5];
-    
-    if (stat == 0)
-        final = 10 + ((2 * basestat) + ((((pkx_get_HT(pkmn) >> lookupHT[stat]) & 1) == 1) ? 31 : getIV(pkmn, stat)) + getEV(pkmn, stat) / 4 + 100) * pkx_get_level(pkmn) / 100;
-    else
-        final = 5 + (2 * basestat + ((((pkx_get_HT(pkmn) >> lookupHT[stat]) & 1) == 1) ? 31 : getIV(pkmn, stat)) + getEV(pkmn, stat) / 4) * pkx_get_level(pkmn) / 100; 
-    
-    if (getNature(pkmn) / 5 + 1 == stat)
-        mult++;
-    if (getNature(pkmn) % 5 + 1 == stat)
-        mult--;
-  
-    final = final * mult / 10;
-    return final;
-}
-
 u32 *getSaveOT(u8* mainbuf, int game, u32* dst) {
 	u16 src[NICKNAMELENGTH];
 	memcpy(src, &mainbuf[ISGEN6 ? 0x14048 : 0X1238], NICKNAMELENGTH);
 	
 	utf16_to_utf32(dst, src, NICKNAMELENGTH);
 	return dst;
-}
-
-u8 getFriendship(u8* pkmn) {
-	return (pkmn[0x93] == 0) ? getOTFriendship(pkmn) : getHTFriendship(pkmn);
-}
-
-u8 getHTFriendship(u8* pkmn) {
-    u8 friendship;
-    memcpy(&friendship, &pkmn[0xA2], 1);
-    return friendship;
-}
-
-u8 getOTFriendship(u8* pkmn) {
-    u8 friendship;
-    memcpy(&friendship, &pkmn[0xCA], 1);
-    return friendship;
-}
-
-u8 getNature(u8* pkmn) {
-    u8 nature;
-    memcpy(&nature, &pkmn[0x1C], NATURELENGTH);
-    return nature;
-}
-
-u8 getEV(u8* pkmn, const int stat) {
-    u8 evbuffer[6];
-    memcpy(evbuffer, &pkmn[0x1E], EVLENGTH * 6);
-    return evbuffer[stat];
-}
-
-u8 getIV(u8* pkmn, const int stat) {
-    u32 buffer;
-    u8 toreturn;
-
-    memcpy(&buffer, &pkmn[0x74], IVLENGTH);
-    buffer = buffer >> 5 * stat;
-    buffer = buffer & 0x1F;
-    memcpy(&toreturn, &buffer, 1);
-    return toreturn;
 }
 
 u8 getBall(u8* pkmn) {
@@ -528,7 +437,7 @@ void setSID(u8* pkmn, u16 sid) {
 }
 
 void setAbility(u8* pkmn, const u8 ability) {
-    u16 tempspecies = getFormSpeciesNumber(pkmn);
+    u16 tempspecies = pkx_get_form_species_number(pkmn);
 	
 	u8 abilitynum = 0;
 	if (ability == 0)      abilitynum = 1;
@@ -647,7 +556,7 @@ void setIV(u8* pkmn, u8 val, const int stat) {
 void setHPType(u8* pkmn, const int val) {
     u8 ivstat[6];
     for (int i = 0; i < 6; i++)
-        ivstat[i] = getIV(pkmn, i);
+        ivstat[i] = pkx_get_iv(pkmn, i);
 
     u8 hpivs[16][6] = {
         { 1, 1, 0, 0, 0, 0 }, // Fighting
@@ -884,7 +793,7 @@ void parseHexEditor(u8* pkmn, int game, int byteEntry) {
 		else if (byteEntry == 0x1E || byteEntry == 0x1F || byteEntry == 0x20 || byteEntry == 0x21 || byteEntry == 0x22 || byteEntry == 0x23) {
 			int tot = 0;
 			for (int i = 0; i < 6; i++)
-				tot += getEV(pkmn, i);
+				tot += pkx_get_ev(pkmn, i);
 			if (tot < 510)
 				pkmn[byteEntry]++;
 		}
@@ -1340,8 +1249,8 @@ void pokemonEditor(u8* mainbuf, int game) {
 											
 											if (hidKeysDown() & KEY_TOUCH) {
 												for (int i = 0; i < 6; i++) {
-													int iv = getIV(pkmn, lookup[i]);
-													int ev = getEV(pkmn, lookup[i]);
+													int iv = pkx_get_iv(pkmn, lookup[i]);
+													int ev = pkx_get_ev(pkmn, lookup[i]);
 													int oldev = ev;
 													int tot = 0;
 													
@@ -1355,7 +1264,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 														setEV(pkmn, (ev < 252) ? ev + 1 : 0, lookup[i]);
 													
 													for (int i = 0; i < 6; i++)
-														tot += getEV(pkmn, i);
+														tot += pkx_get_ev(pkmn, i);
 													if (tot > 510)
 														setEV(pkmn, oldev, lookup[i]);
 												}
@@ -1367,33 +1276,33 @@ void pokemonEditor(u8* mainbuf, int game) {
 												for (int i = 0; i < 6; i++) {
 													if (touch.px > 96 && touch.px < 109 && touch.py > 49 + i * 20 && touch.py < 62 + i * 20) {
 														touched = true;
-														if (speed < -30 && getIV(pkmn, lookup[i]) > 0)
-															setIV(pkmn, getIV(pkmn, lookup[i]) - 1, lookup[i]);
+														if (speed < -30 && pkx_get_iv(pkmn, lookup[i]) > 0)
+															setIV(pkmn, pkx_get_iv(pkmn, lookup[i]) - 1, lookup[i]);
 														else
 															speed--;
 													}
 													else if (touch.px > 139 && touch.px < 152 && touch.py > 49 + i * 20 && touch.py < 62 + i * 20) {
 														touched = true;
-														if (speed > 30 && getIV(pkmn, lookup[i]) < 31)
-															setIV(pkmn, getIV(pkmn, lookup[i]) + 1, lookup[i]);
+														if (speed > 30 && pkx_get_iv(pkmn, lookup[i]) < 31)
+															setIV(pkmn, pkx_get_iv(pkmn, lookup[i]) + 1, lookup[i]);
 														else
 															speed++;
 													}
 													else if (touch.px > 177 && touch.px < 190 && touch.py > 49 + i * 20 && touch.py < 62 + i * 20) {
 														touched = true;
-														if (speed < -30 && getEV(pkmn, lookup[i]) > 0)
-															setEV(pkmn, getEV(pkmn, lookup[i]) - 1, lookup[i]);
+														if (speed < -30 && pkx_get_ev(pkmn, lookup[i]) > 0)
+															setEV(pkmn, pkx_get_ev(pkmn, lookup[i]) - 1, lookup[i]);
 														else
 															speed--;
 													}
 													else if (touch.px > 218 && touch.px < 231 && touch.py > 49 + i * 20 && touch.py < 62 + i * 20) {
 														touched = true;
-														if (speed > 30 && getEV(pkmn, lookup[i]) < 252) {
+														if (speed > 30 && pkx_get_ev(pkmn, lookup[i]) < 252) {
 															int tot = 0;
 															for (int i = 0; i < 6; i++)
-																tot += getEV(pkmn, i);
+																tot += pkx_get_ev(pkmn, i);
 															if (tot < 510)
-																setEV(pkmn, getEV(pkmn, lookup[i]) + 1, lookup[i]);
+																setEV(pkmn, pkx_get_ev(pkmn, lookup[i]) + 1, lookup[i]);
 														}
 														else
 															speed++;
@@ -1495,7 +1404,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 									}
 									
 									if (touch.px > 180 && touch.px < 195 && touch.py > 111 && touch.py < 123)
-										setShiny(pkmn, isShiny(pkmn) ? false : true);
+										setShiny(pkmn, pkx_is_shiny(pkmn) ? false : true);
 									
 									if (touch.px > 180 && touch.px < 195 && touch.py > 131 && touch.py < 143) {
 										if (!(pkx_get_pokerus(pkmn)))
@@ -1615,16 +1524,16 @@ void pokemonEditor(u8* mainbuf, int game) {
 									
 									if (touch.px > 137 && touch.px < 150 && touch.py > 189 && touch.py < 202) {
 										if (pkx_is_egg(pkmn))
-											setOTFriendship(pkmn, (getOTFriendship(pkmn) > 0) ? getOTFriendship(pkmn) - 1 : 255);
+											setOTFriendship(pkmn, (pkx_get_ot_friendship(pkmn) > 0) ? pkx_get_ot_friendship(pkmn) - 1 : 255);
 										else
-											setFriendship(pkmn, (getFriendship(pkmn) > 0) ? getFriendship(pkmn) - 1 : 255);
+											setFriendship(pkmn, (pkx_get_friendship(pkmn) > 0) ? pkx_get_friendship(pkmn) - 1 : 255);
 									}
 
 									if (touch.px > 180 && touch.px < 193 && touch.py > 189 && touch.py < 202) {
 										if (pkx_is_egg(pkmn))
-											setOTFriendship(pkmn, (getOTFriendship(pkmn) < 255) ? getOTFriendship(pkmn) + 1 : 0);
+											setOTFriendship(pkmn, (pkx_get_ot_friendship(pkmn) < 255) ? pkx_get_ot_friendship(pkmn) + 1 : 0);
 										else
-											setFriendship(pkmn, (getFriendship(pkmn) < 255) ? getFriendship(pkmn) + 1 : 0);
+											setFriendship(pkmn, (pkx_get_friendship(pkmn) < 255) ? pkx_get_friendship(pkmn) + 1 : 0);
 									}
 								}
 
@@ -1643,28 +1552,28 @@ void pokemonEditor(u8* mainbuf, int game) {
 									}
 									else if (touch.px > 137 && touch.px < 150 && touch.py > 189 && touch.py < 202) {
 										if (pkx_is_egg(pkmn)) {
-											if (speed < -30 && getOTFriendship(pkmn) > 0)
-												setOTFriendship(pkmn, getOTFriendship(pkmn) - 1);
+											if (speed < -30 && pkx_get_ot_friendship(pkmn) > 0)
+												setOTFriendship(pkmn, pkx_get_ot_friendship(pkmn) - 1);
 											else
 												speed--;
 										}
 										else {
-											if (speed < -30 && getFriendship(pkmn) > 0)
-												setFriendship(pkmn, getFriendship(pkmn) - 1);
+											if (speed < -30 && pkx_get_friendship(pkmn) > 0)
+												setFriendship(pkmn, pkx_get_friendship(pkmn) - 1);
 											else
 												speed--;
 										}
 									}
 									else if (touch.px > 180 && touch.px < 193 && touch.py > 189 && touch.py < 202) {
 										if (pkx_is_egg(pkmn)) {
-											if (speed > 30 && getOTFriendship(pkmn) < 255)
-												setOTFriendship(pkmn, getOTFriendship(pkmn) + 1);
+											if (speed > 30 && pkx_get_ot_friendship(pkmn) < 255)
+												setOTFriendship(pkmn, pkx_get_ot_friendship(pkmn) + 1);
 											else
 												speed++;
 										}
 										else {
-											if (speed > 30 && getFriendship(pkmn) < 255)
-												setFriendship(pkmn, getFriendship(pkmn) + 1);
+											if (speed > 30 && pkx_get_friendship(pkmn) < 255)
+												setFriendship(pkmn, pkx_get_friendship(pkmn) + 1);
 											else
 												speed++;
 										}

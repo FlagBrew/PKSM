@@ -147,7 +147,7 @@ void setDex(u8 mainbuf[], u8* pkmn, int game) {
 	int bd = bit >> 3;
 	int bm = bit & 7;
 	int gender = pkx_get_gender(pkmn) % 2;
-	int shiny = isShiny(pkmn) ? 1 : 0;
+	int shiny = pkx_is_shiny(pkmn) ? 1 : 0;
 	if (n == 351)
 		shiny = 0;
 	int shift = gender | (shiny << 1);

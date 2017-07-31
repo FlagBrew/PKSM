@@ -1047,18 +1047,18 @@ void infoViewer(u8* pkmn, int game) {
 		sftd_draw_wtext(fontBold12, 215 - (sftd_get_wtext_width(fontBold12, 12, (wchar_t*)ot_name)), 49, WHITE, 12, (wchar_t*)ot_name);
 		
 		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, (pkx_get_pokerus(pkmn) ? i18n(S_YES) : i18n(S_NO))), 69, WHITE, 12, pkx_get_pokerus(pkmn) ? i18n(S_YES) : i18n(S_NO));
-		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, natures[getNature(pkmn)]), 94, WHITE, 12, natures[getNature(pkmn)]);
+		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, natures[pkx_get_nature(pkmn)]), 94, WHITE, 12, natures[pkx_get_nature(pkmn)]);
 		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, abilities[pkx_get_ability(pkmn)]), 114, WHITE, 12, abilities[pkx_get_ability(pkmn)]);
 		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, items[pkx_get_item(pkmn)]), 134, WHITE, 12, items[pkx_get_item(pkmn)]);
 		
-		if (isShiny(pkmn))
+		if (pkx_is_shiny(pkmn))
 			sf2d_draw_texture(shinyStar, 205, 9);
 		
 		char* friendship = (char*)malloc(11 * sizeof(char));
 		if (pkx_is_egg(pkmn))
-			snprintf(friendship, 11, "%u", getOTFriendship(pkmn));
+			snprintf(friendship, 11, "%u", pkx_get_ot_friendship(pkmn));
 		else
-			snprintf(friendship, 11, "%u / %u", getHTFriendship(pkmn), getOTFriendship(pkmn));
+			snprintf(friendship, 11, "%u / %u", pkx_get_ht_friendship(pkmn), pkx_get_ot_friendship(pkmn));
 		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, friendship), 200, WHITE, 12, friendship);
 		free(friendship);
 		
@@ -1081,11 +1081,11 @@ void infoViewer(u8* pkmn, int game) {
 		
 		char* tmp = (char*)malloc(4);
 		for (int i = 0; i < 6; i++) {
-			sprintf(tmp, "%d", getIV(pkmn, lookup[i]));
+			sprintf(tmp, "%d", pkx_get_iv(pkmn, lookup[i]));
 			sftd_draw_text(fontBold12, 289 + (max - sftd_get_text_width(fontBold12, 12, tmp)) / 2, 8 + i * 20, WHITE, 12, tmp);
-			sprintf(tmp, "%d", getEV(pkmn, lookup[i]));
+			sprintf(tmp, "%d", pkx_get_ev(pkmn, lookup[i]));
 			sftd_draw_text(fontBold12, 328 + (max - sftd_get_text_width(fontBold12, 12, tmp)) / 2, 8 + i * 20, WHITE, 12, tmp);
-			sprintf(tmp, "%d", getStat(pkmn, lookup[i]));
+			sprintf(tmp, "%d", pkx_get_stat(pkmn, lookup[i]));
 			sftd_draw_text(fontBold12, 369 + (max - sftd_get_text_width(fontBold12, 12, tmp)) / 2, 8 + i * 20, WHITE, 12, tmp);
 		}
 		free(tmp);
@@ -1569,17 +1569,17 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			sftd_draw_text(fontBold12, 180 - max - 3 + (max - sftd_get_text_width(fontBold12, 12, level)) / 2, 29, WHITE, 12, level);
 			free(level);
 				
-			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, natures[getNature(pkmn)]), 49, WHITE, 12, natures[getNature(pkmn)]);
+			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, natures[pkx_get_nature(pkmn)]), 49, WHITE, 12, natures[pkx_get_nature(pkmn)]);
 			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, abilities[pkx_get_ability(pkmn)]), 69, WHITE, 12, abilities[pkx_get_ability(pkmn)]);
 			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, items[pkx_get_item(pkmn)]), 89, WHITE, 12, items[pkx_get_item(pkmn)]);
-			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, isShiny(pkmn) ? i18n(S_YES) : i18n(S_NO)), 109, WHITE, 12, isShiny(pkmn) ? i18n(S_YES) : i18n(S_NO));
+			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, pkx_is_shiny(pkmn) ? i18n(S_YES) : i18n(S_NO)), 109, WHITE, 12, pkx_is_shiny(pkmn) ? i18n(S_YES) : i18n(S_NO));
 			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, pkx_get_pokerus(pkmn) ? i18n(S_YES) : i18n(S_NO)), 129, WHITE, 12, pkx_get_pokerus(pkmn) ? i18n(S_YES) : i18n(S_NO));
 			
 			char* friendship = (char*)malloc(4 * sizeof(char));
 			if (pkx_is_egg(pkmn))
-				snprintf(friendship, 4, "%u", getOTFriendship(pkmn));
+				snprintf(friendship, 4, "%u", pkx_get_ot_friendship(pkmn));
 			else
-				snprintf(friendship, 4, "%u", getFriendship(pkmn));
+				snprintf(friendship, 4, "%u", pkx_get_friendship(pkmn));
 			sftd_draw_text(fontBold12, 180 - max - 3 + (max - sftd_get_text_width(fontBold12, 12, friendship)) / 2, 189, WHITE, 12, friendship);
 			free(friendship);
 			
@@ -1616,11 +1616,11 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 
 			char* tmp = (char*)malloc(4);
 			for (int i = 0; i < 6; i++) {
-				sprintf(tmp, "%d", getIV(pkmn, lookup[i]));
+				sprintf(tmp, "%d", pkx_get_iv(pkmn, lookup[i]));
 				sftd_draw_text(fontBold12, 112 + (max - sftd_get_text_width(fontBold12, 12, tmp)) / 2, 49 + i * 20, WHITE, 12, tmp);
-				sprintf(tmp, "%d", getEV(pkmn, lookup[i]));
+				sprintf(tmp, "%d", pkx_get_ev(pkmn, lookup[i]));
 				sftd_draw_text(fontBold12, 192 + (max - sftd_get_text_width(fontBold12, 12, tmp)) / 2, 49 + i * 20, WHITE, 12, tmp);
-				sprintf(tmp, "%d", getStat(pkmn, lookup[i]));
+				sprintf(tmp, "%d", pkx_get_stat(pkmn, lookup[i]));
 				sftd_draw_text(fontBold12, 263 + (max - sftd_get_text_width(fontBold12, 12, tmp)) / 2, 49 + i * 20, WHITE, 12, tmp);
 			}
 			free(tmp);
@@ -1717,7 +1717,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 			sftd_draw_wtext(fontBold12, 55 + (178 - sftd_get_wtext_width(fontBold12, 12, page)) / 2, 9, WHITE, 12, page);
 
 			if (pkx_get_species(pkmn) > 0 && pkx_get_species(pkmn) < 822) {
-				u16 tempspecies = getFormSpeciesNumber(pkmn);
+				u16 tempspecies = pkx_get_form_species_number(pkmn);
 				u8 type1 = 0, type2 = 0;
 
 				if (tempspecies == 493 || tempspecies == 773) {
@@ -1747,7 +1747,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 					sf2d_draw_texture(male, 358 - sftd_get_wtext_width(fontBold12, 12, level), 86);
 				else if (pkx_get_gender(pkmn) == 1)
 					sf2d_draw_texture(female, 360 - sftd_get_wtext_width(fontBold12, 12, level), 86);
-				if (isShiny(pkmn))
+				if (pkx_is_shiny(pkmn))
 					sf2d_draw_texture(shinyStar, 360 - sftd_get_wtext_width(fontBold12, 12, level) - 14, 88);
 				
 				free(level);
@@ -1927,7 +1927,7 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ABILITY), abilities[pkx_get_ability(pkmn)]);
 			break;
 		case 0x1C :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_NATURE), natures[getNature(pkmn)]);
+			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_NATURE), natures[pkx_get_nature(pkmn)]);
 			break;
 		case 0x1D : {
 			wchar_t* entries[] = { i18n(S_GRAPHIC_HEXEDITOR_FATEFUL_ENCOUNTER_FLAG) };

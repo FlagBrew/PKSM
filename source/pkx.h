@@ -56,3 +56,13 @@ u16 pkx_get_psv(u8* pkmn);
 u16 pkx_get_species(u8* pkmn);
 u8 pkx_get_level(u8* pkmn);
 void pkx_set_level(u8* pkmn, const int lv);
+
+bool pkx_is_shiny(u8* pkmn);
+u16 pkx_get_stat(u8* pkmn, const int stat);
+u16 pkx_get_form_species_number(u8 *pkmn);
+u8 pkx_get_friendship(u8* pkmn);
+u8 pkx_get_ht_friendship(u8* pkmn);
+u8 pkx_get_ot_friendship(u8* pkmn);
+u8 pkx_get_nature(u8* pkmn);
+u8 pkx_get_ev(u8* pkmn, const int stat);
+u8 pkx_get_iv(u8* pkmn, const int stat);
