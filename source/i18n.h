@@ -25,7 +25,7 @@
 #include <unistd.h>
 
 // debuglogf displays message on the app if defined to 1
-#define DEBUG_I18N 0
+#define DEBUG_I18N 1
 // Force the lang to display in PKSM. Useful when debugging another lang than the 3DS lang
 // Langs ID are defined in ctrulib : https://smealum.github.io/ctrulib/cfgu_8h.html
 // CFG_LANGUAGE_JP = 0

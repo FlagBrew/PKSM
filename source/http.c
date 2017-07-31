@@ -17,6 +17,80 @@
 */
 
 #include "http.h"
+#include "certs/digicert.h"
+#include "certs/cybertrust.h"
+
+bool updating = false;
+
+void update() {
+	freezeMsg(L"Calling github APIs...");
+	
+	char* apiurl = "https://api.github.com/repos/BernardoGiordano/PKSM/releases/latest";
+	char* apipath = "sdmc:/3ds/data/PKSM/apiresponse.txt";
+	char* downloadpath = "sdmc:/3ds/data/PKSM/latest.cia";
+	
+	if (!downloadFile(apiurl, apipath)) {
+		freezeMsg(L"Elaborating API response...");
+		
+		u8* apiresponse;
+		
+		FILE *apiptr = fopen(apipath, "rt");
+		if (apiptr == NULL)
+			return;
+		fseek(apiptr, 0, SEEK_END);
+		u32 apiresponsesize = ftell(apiptr);
+		apiresponse = (u8*)malloc(apiresponsesize);
+		memset(apiresponse, 0, apiresponsesize);
+		rewind(apiptr);
+		fread(apiresponse, apiresponsesize, 1, apiptr);
+		fclose(apiptr);
+		
+		char* pointertourl = strstr((char*)apiresponse, "browser_download_url");
+		char tokenbuffer[100];
+		memcpy(tokenbuffer, pointertourl + 22, 100);
+		char* releaseurl = strtok(tokenbuffer, "\"");
+		//debuglogf(releaseurl + 40);
+		
+		free(apiresponse);
+		
+		freezeMsg(L"Downloading update...");
+		updating = true;
+		if (!downloadFile(releaseurl, downloadpath)) {
+			freezeMsg(L"Installing update...");
+			
+			u8* newcia;
+			
+			FILE *ciaptr = fopen(apipath, "rt");
+			if (ciaptr == NULL)
+				return;
+			fseek(ciaptr, 0, SEEK_END);
+			u32 ciasize = ftell(ciaptr);
+			newcia = (u8*)malloc(ciasize);
+			memset(newcia, 0, ciasize);
+			rewind(ciaptr);
+			fread(newcia, ciasize, 1, ciaptr);
+			fclose(ciaptr);
+					
+			Handle handle;
+			AM_QueryAvailableExternalTitleDatabase(NULL);
+			AM_StartCiaInstall(MEDIATYPE_SD, &handle);
+			FSFILE_Write(handle, NULL, 0, newcia, (u32)ciasize, 0);
+			AM_FinishCiaInstall(handle);
+
+			free(newcia);
+			infoDisp(L"Update installed!");
+		} else {
+			infoDisp(L"Update failed!");
+		}
+	} else {
+		infoDisp(L"Update failed!");
+	}
+	
+	remove(apipath);
+	remove(downloadpath);
+	
+	updating = false;
+}
 
 Result downloadFile(char* url, char* path) {
     httpcInit(0);
@@ -37,11 +111,22 @@ Result downloadFile(char* url, char* path) {
         return -1;
     }
 	
-    if (httpcSetSSLOpt(&context, SSLCOPT_DisableVerify)) {
-        infoDisp(i18n(S_HTTP_SET_SSLOPT_FAILED));
-		infoDisp(i18n(S_HTTP_DOWNLOAD_ASSETS_FAILED));
-        return -1;
-    }
+	if (updating) {
+		if (httpcAddTrustedRootCA(&context, cybertrust_cer, cybertrust_cer_len)) {
+			infoDisp(L"Failed to add cert!");
+			return -1;			
+		}
+		if (httpcAddTrustedRootCA(&context, digicert_cer, digicert_cer_len)) {
+			infoDisp(L"Failed to add cert!");
+			return -1;			
+		}
+	} else {
+		if (httpcSetSSLOpt(&context, SSLCOPT_DisableVerify)) {
+			infoDisp(i18n(S_HTTP_SET_SSLOPT_FAILED));
+			infoDisp(i18n(S_HTTP_DOWNLOAD_ASSETS_FAILED));
+			return -1;
+		}
+	}
 	
 	httpcAddRequestHeaderField(&context, "Connection", "Keep-Alive");
 
@@ -60,8 +145,8 @@ Result downloadFile(char* url, char* path) {
 
     if (statuscode != 200) {
         if (statuscode >= 300 && statuscode < 400) {
-            char newUrl[1024];
-            if (httpcGetResponseHeader(&context, (char*)"Location", newUrl, 1024)) {
+            char newUrl[0x1000];
+            if (httpcGetResponseHeader(&context, (char*)"Location", newUrl, 0x1000)) {
                 infoDisp(i18n(S_HTTP_REDIRECTION_FAILED));
 				infoDisp(i18n(S_HTTP_DOWNLOAD_ASSETS_FAILED));
                 return -1;

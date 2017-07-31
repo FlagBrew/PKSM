@@ -187,6 +187,10 @@ void settingsMenu(u8* mainbuf, int game) {
 
 		if (hidKeysDown() & KEY_B) break;
 		
+		if (hidKeysDown() & KEY_Y) {
+			update();
+		}
+		
 		if (hidKeysDown() & KEY_TOUCH) {
 			if (touch.px > 169 && touch.px < 186 && touch.py > 65 && touch.py < 83) {
 				if (box > 2) box--;
