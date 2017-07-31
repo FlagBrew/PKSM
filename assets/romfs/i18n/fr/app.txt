@@ -7,7 +7,7 @@ Tri des capacités
 Chargement des natures
 Chargement des objets
 Tri des objets
-Chargement des p. cachés
+Chargement des p. cachées
 Chargement des polices...
 Préchargement police de caractère %i / %i
 Chargement initial terminé !
@@ -17,8 +17,8 @@ Relancez l'app!
 Des fichiers sont manquants!
 Chargement de la sauvegarde...
 Jeu non trouvé !
-Taille incorrect de la sauvegarde!
-Pas de cartouche inséré !
+Taille de la sauvegarde incorrecte!
+Pas de cartouche insérée !
 Gestion
 Events
 Credits
@@ -201,14 +201,14 @@ Backup Banque
 Appuyez à côté du nombre pour changer la taille.
 Oui
 Non
-Créature: #%d - %ls
+Espèce: #%d - %ls
 Objet tenu: #%d - %ls
 TID: %d
 SID: %d
 Talent: %ls
 Nature: %ls
 Indicateur Rencontre Fatidique
-Sexe:
+Genre:
 mâle
 femelle
 sans genre
