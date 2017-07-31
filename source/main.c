@@ -332,7 +332,8 @@ int main() {
 				}
 
 				if (touch.px > 165 && touch.px < 305 && touch.py > 83 && touch.py < 136) {
-					saveFileEditor(mainbuf, game, mainSize);
+					infoDisp(L"Work in progress!");
+					//saveFileEditor(mainbuf, game, mainSize);
 				}
 				
 				if (touch.px > 15 && touch.px < 155 && touch.py > 146 && touch.py < 199) {
@@ -375,7 +376,8 @@ int main() {
 						break;
 					}
 					case 1 : {
-						saveFileEditor(mainbuf, game, mainSize);
+						infoDisp(L"Work in progress!");
+						//saveFileEditor(mainbuf, game, mainSize);
 						break;
 					}
 				}

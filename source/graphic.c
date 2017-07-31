@@ -683,7 +683,7 @@ void printCredits() {
 
 void printDatabase6(char *database[], int currentEntry, int page, int spriteArray[]) {
 	int pk, y = 41;
-	char pages[10];
+	char pages[24];
 	sprintf(pages, "%d/%d", page + 1, fill_get_index()/10);
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
@@ -948,7 +948,7 @@ void printEditor(u8* mainbuf, int game, u64 size, int currentEntry, int page) {
 u16 getAlternativeSprite(u8* pkmn, int game) {
 	u8 form = pkx_get_form(pkmn);
 	if (form) {
-		FormData *forms = getLegalFormData(pkx_get_species(pkmn), game);
+		FormData *forms = pkx_get_legal_form_data(pkx_get_species(pkmn), game);
 		int spritenum = forms->spriteNum;
 		if (spritenum > 0 && form >= forms->min && form <= forms->max)
 			spritenum += form - (forms->min > 0 ? forms->min : 1);
@@ -1023,7 +1023,7 @@ void infoViewer(u8* pkmn, int game) {
 	}
 	
 	if (pkx_get_species(pkmn) > 0 && pkx_get_species(pkmn) < 822) {
-		sf2d_draw_texture_part(balls, -2, -5, 32 * (getBall(pkmn) % 8), 32 * (getBall(pkmn) / 8), 32, 32);
+		sf2d_draw_texture_part(balls, -2, -5, 32 * (pkx_get_ball(pkmn) % 8), 32 * (pkx_get_ball(pkmn) / 8), 32, 32);
 		sftd_draw_wtext(fontBold12, 30, 6, WHITE, 12, listSpecies.items[pkx_get_species(pkmn)]);
 		
 		if (pkx_get_gender(pkmn) == 0)
@@ -1079,7 +1079,7 @@ void infoViewer(u8* pkmn, int game) {
 			y_moves += 21;
 		}
 		
-		char* tmp = (char*)malloc(4);
+		char tmp[6];
 		for (int i = 0; i < 6; i++) {
 			sprintf(tmp, "%d", pkx_get_iv(pkmn, lookup[i]));
 			sftd_draw_text(fontBold12, 289 + (max - sftd_get_text_width(fontBold12, 12, tmp)) / 2, 8 + i * 20, WHITE, 12, tmp);
@@ -1088,7 +1088,6 @@ void infoViewer(u8* pkmn, int game) {
 			sprintf(tmp, "%d", pkx_get_stat(pkmn, lookup[i]));
 			sftd_draw_text(fontBold12, 369 + (max - sftd_get_text_width(fontBold12, 12, tmp)) / 2, 8 + i * 20, WHITE, 12, tmp);
 		}
-		free(tmp);
 	}
 }
 
@@ -1211,7 +1210,7 @@ void wcxInfoViewer(u8* buf, int game) {
 }
 
 void printDexViewer(u8* mainbuf, int game, int currentEntry, int page, int seen, int caught) {
-	char* temp = (char*)malloc(4);
+	char temp[12];
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		sf2d_draw_texture(generationBG, 0, 0);
@@ -1243,8 +1242,6 @@ void printDexViewer(u8* mainbuf, int game, int currentEntry, int page, int seen,
 		printBottomIndications(i18n(S_GRAPHIC_CREDITS_INDICATIONS));
 	pksm_end_frame();
 	sf2d_swapbuffers();	
-	
-	free(temp);
 }
 
 void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry, int menuEntry, int box, int mode, int additional1, int additional2) {
@@ -1356,7 +1353,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
 			sf2d_draw_texture(bottomPopUp, 1, 214);
 
-			if (getBall(pkmn) != CHERISH_BALL && !isTeam) {
+			if (pkx_get_ball(pkmn) != CHERISH_BALL && !isTeam) {
 				sf2d_draw_texture(includeInfoButton, 242, 5);
 			}
 			sftd_draw_wtextf(fontBold11, 8, 220, WHITE, 11, i18n(S_GRAPHIC_PKVIEWER_MENU_POKEMON_SELECTED), listSpecies.items[pkx_get_species(tmp)]);
@@ -1466,7 +1463,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			}
 		}
 	} else if (mode == ED_FORMS) {
-		FormData *forms = getLegalFormData((u16)additional2, game);
+		FormData *forms = pkx_get_legal_form_data((u16)additional2, game);
 		int numforms = forms->max - forms->min + 1;
 		
 		int rows, columns, width, height;
@@ -1527,7 +1524,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			sf2d_draw_texture(hexIcon, 290, 1);
 			
 			sftd_draw_wtext(fontBold12, 27, 4, WHITE, 12, listSpecies.items[n]);
-			sf2d_draw_texture_part(balls, -2, -6, 32 * (getBall(pkmn) % 8), 32 * (getBall(pkmn) / 8), 32, 32);
+			sf2d_draw_texture_part(balls, -2, -6, 32 * (pkx_get_ball(pkmn) % 8), 32 * (pkx_get_ball(pkmn) / 8), 32, 32);
 			
 			u16 t = getAlternativeSprite(pkmn, game);
 			int ofs = movementOffsetSlow(3);
@@ -1604,7 +1601,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			sftd_draw_wtext(fontBold12, 2, 173, LIGHTBLUE, 12, i18n(S_GRAPHIC_PKEDITOR_HIDDEN_POWER));
 			
 			sftd_draw_wtext(fontBold12, 27, 4, WHITE, 12, listSpecies.items[n]);
-			sf2d_draw_texture_part(balls, -2, -6, 32 * (getBall(pkmn) % 8), 32 * (getBall(pkmn) / 8), 32, 32);
+			sf2d_draw_texture_part(balls, -2, -6, 32 * (pkx_get_ball(pkmn) % 8), 32 * (pkx_get_ball(pkmn) / 8), 32, 32);
 			
 			if (pkx_get_gender(pkmn) == 0)
 				sf2d_draw_texture(male, 159, 6);
@@ -1614,7 +1611,7 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 			for (int i = 0; i < 6; i++)
 				sftd_draw_wtext(fontBold12, 2, 49 + i * 20, LIGHTBLUE, 12, values[i]);
 
-			char* tmp = (char*)malloc(4);
+			char tmp[6];
 			for (int i = 0; i < 6; i++) {
 				sprintf(tmp, "%d", pkx_get_iv(pkmn, lookup[i]));
 				sftd_draw_text(fontBold12, 112 + (max - sftd_get_text_width(fontBold12, 12, tmp)) / 2, 49 + i * 20, WHITE, 12, tmp);
@@ -1623,7 +1620,6 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 				sprintf(tmp, "%d", pkx_get_stat(pkmn, lookup[i]));
 				sftd_draw_text(fontBold12, 263 + (max - sftd_get_text_width(fontBold12, 12, tmp)) / 2, 49 + i * 20, WHITE, 12, tmp);
 			}
-			free(tmp);
 			
 			sftd_draw_wtext(fontBold12, 288 - sftd_get_wtext_width(fontBold12, 12, hpList[pkx_get_hp_type(pkmn)]), 173, WHITE, 12, hpList[pkx_get_hp_type(pkmn)]);
 
@@ -1984,7 +1980,7 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_KALOS, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_G3_HOENN, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_SINNOH, S_GRAPHIC_HEXEDITOR_RIBBON_BEST_FRIENDS, S_GRAPHIC_HEXEDITOR_RIBBON_TRAINING,S_GRAPHIC_HEXEDITOR_RIBBON_SKILLFUL_BATTLER, S_GRAPHIC_HEXEDITOR_RIBBON_BATTLER_EXPERT, S_GRAPHIC_HEXEDITOR_RIBBON_EFFORT };
 			for (int i = 0; i < 8; i++) {
 				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
-				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 0, i)) ? BUTTONGREEN : BUTTONRED);
+				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (pkx_get_ribbons(pkmn, 0, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
@@ -1992,7 +1988,7 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_ALERT, S_GRAPHIC_HEXEDITOR_RIBBON_SHOCK, S_GRAPHIC_HEXEDITOR_RIBBON_DOWNCAST, S_GRAPHIC_HEXEDITOR_RIBBON_CARELESS, S_GRAPHIC_HEXEDITOR_RIBBON_RELAX, S_GRAPHIC_HEXEDITOR_RIBBON_SNOOZE, S_GRAPHIC_HEXEDITOR_RIBBON_SMILE, S_GRAPHIC_HEXEDITOR_RIBBON_GORGEOUS };
 			for (int i = 0; i < 8; i++) {
 				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
-				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 1, i)) ? BUTTONGREEN : BUTTONRED);
+				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (pkx_get_ribbons(pkmn, 1, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
@@ -2000,7 +1996,7 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_ROYAL, S_GRAPHIC_HEXEDITOR_RIBBON_GORGEOUS_ROYAL, S_GRAPHIC_HEXEDITOR_RIBBON_ARTIST, S_GRAPHIC_HEXEDITOR_RIBBON_FOOTPRINT, S_GRAPHIC_HEXEDITOR_RIBBON_RECORD, S_GRAPHIC_HEXEDITOR_RIBBON_LEGEND, S_GRAPHIC_HEXEDITOR_RIBBON_COUNTRY, S_GRAPHIC_HEXEDITOR_RIBBON_NATIONAL };
 			for (int i = 0; i < 8; i++) {
 				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
-				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 2, i)) ? BUTTONGREEN : BUTTONRED);
+				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (pkx_get_ribbons(pkmn, 2, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
@@ -2008,7 +2004,7 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_EARTH, S_GRAPHIC_HEXEDITOR_RIBBON_WORLD, S_GRAPHIC_HEXEDITOR_RIBBON_CLASSIC, S_GRAPHIC_HEXEDITOR_RIBBON_PREMIER, S_GRAPHIC_HEXEDITOR_RIBBON_EVENT, S_GRAPHIC_HEXEDITOR_RIBBON_BIRTHDAY, S_GRAPHIC_HEXEDITOR_RIBBON_SPECIAL, S_GRAPHIC_HEXEDITOR_RIBBON_SOUVENIR };
 			for (int i = 0; i < 8; i++) {
 				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
-				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 3, i)) ? BUTTONGREEN : BUTTONRED);
+				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (pkx_get_ribbons(pkmn, 3, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
@@ -2016,7 +2012,7 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_WISHING, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_BATTLE, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_REGIONAL, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_NATIONAL, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_WORLD, S_GRAPHIC_HEXEDITOR_RIBBON_38, S_GRAPHIC_HEXEDITOR_RIBBON_39, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_G6_HOENN };
 			for (int i = 0; i < 8; i++) {
 				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
-				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 4, i)) ? BUTTONGREEN : BUTTONRED);
+				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (pkx_get_ribbons(pkmn, 4, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
@@ -2024,7 +2020,7 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_CONTEST_STAR, S_GRAPHIC_HEXEDITOR_RIBBON_MASTER_COOLNESS, S_GRAPHIC_HEXEDITOR_RIBBON_MASTER_BEAUTY, S_GRAPHIC_HEXEDITOR_RIBBON_MASTER_CUTENESS, S_GRAPHIC_HEXEDITOR_RIBBON_MASTER_CLEVERNESS, S_GRAPHIC_HEXEDITOR_RIBBON_MASTER_TOUGHNESS, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_ALOLA, S_GRAPHIC_HEXEDITOR_RIBBON_BATTLE_ROYALE };
 			for (int i = 0; i < 8; i++) {
 				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
-				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 5, i)) ? BUTTONGREEN : BUTTONRED);
+				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (pkx_get_ribbons(pkmn, 5, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
@@ -2032,7 +2028,7 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_BATTLE_TREE_GREAT, S_GRAPHIC_HEXEDITOR_RIBBON_BATTLE_TREE_MASTER, S_GRAPHIC_HEXEDITOR_RIBBON_51, S_GRAPHIC_HEXEDITOR_RIBBON_52, S_GRAPHIC_HEXEDITOR_RIBBON_53, S_GRAPHIC_HEXEDITOR_RIBBON_54, S_GRAPHIC_HEXEDITOR_RIBBON_55, S_GRAPHIC_HEXEDITOR_RIBBON_56 };
 			for (int i = 0; i < 8; i++) {
 				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
-				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (getRibbons(pkmn, 6, i)) ? BUTTONGREEN : BUTTONRED);
+				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (pkx_get_ribbons(pkmn, 6, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
@@ -2251,7 +2247,7 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_HYPER_TRAINED_HP, S_GRAPHIC_HEXEDITOR_HYPER_TRAINED_ATK, S_GRAPHIC_HEXEDITOR_HYPER_TRAINED_DEF, S_GRAPHIC_HEXEDITOR_HYPER_TRAINED_SPATK, S_GRAPHIC_HEXEDITOR_HYPER_TRAINED_SPDEF, S_GRAPHIC_HEXEDITOR_HYPER_TRAINED_SPEED };
 			for (int i = 0; i < 6; i++) {
 				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17 * i, LIGHTBLUE, 12, i18n(entries[i]));
-				sf2d_draw_rectangle(xribbon, y + 17 * i, 13, 13, (getHTi(pkmn, i)) ? BUTTONGREEN : BUTTONRED);
+				sf2d_draw_rectangle(xribbon, y + 17 * i, 13, 13, (pkx_get_hti(pkmn, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}

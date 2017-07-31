@@ -157,7 +157,7 @@ u16 wcx_get_ability(u8* wcx) {
 		abilitynum = 2;
 	else
 		abilitynum = 0;
-	memcpy(&ability, &personal.pkmData[wcx_get_species(wcx)][0x09 + abilitynum], ABILITYLENGTH);
+	memcpy(&ability, &personal.pkmData[wcx_get_species(wcx)][0x09 + abilitynum], 1);
 	return ability;
 }
 

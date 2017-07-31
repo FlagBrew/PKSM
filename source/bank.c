@@ -377,7 +377,7 @@ void bank(u8* mainbuf, int game) {
 						
 						u16 species = pkx_get_species(temp);
 						u8 form = pkx_get_form(temp);
-						FormData *forms = getLegalFormData(species, game);
+						FormData *forms = pkx_get_legal_form_data(species, game);
 						bool illegalform = form < forms->min || form > forms->max;
 						bool illegalspecies = game < 4 && species > 721;
 						free(forms);
@@ -482,7 +482,7 @@ void bank(u8* mainbuf, int game) {
 			if (isBufferized) {
 				u16 species = pkx_get_species(pkmn);
 				u8 form = pkx_get_form(pkmn);
-				FormData *forms = getLegalFormData(species, game);
+				FormData *forms = pkx_get_legal_form_data(species, game);
 				bool illegalform = form < forms->min || form > forms->max;
 				bool illegalspecies = ISGEN6 && species > 721;
 				free(forms);

@@ -123,6 +123,345 @@ u32 expTable[100][6] = {
   {1000000, 600000, 1640000, 1059860, 800000, 1250000}
 };
 
+FormData *pkx_get_legal_form_data(const u16 species, const int game) {
+	FormData *forms = malloc(sizeof(FormData));
+	forms->spriteNum = 0;
+	forms->stringNum = 0;
+	forms->min = 0;
+	forms->max = 0;
+	forms->editable = true;
+
+	bool sumo = false, oras = false, xy = false, b2w2 = false, bw = false, hgss = false, plat = false;
+
+	switch (game)
+	{
+		case GAME_SUN:
+		case GAME_MOON:
+			sumo = true;
+		case GAME_OR:
+		case GAME_AS:
+			oras = true;
+		case GAME_X:
+		case GAME_Y:
+			xy = true;
+		case GAME_B2:
+		case GAME_W2:
+			b2w2 = true;
+		case GAME_B1:
+		case GAME_W1:
+			bw = true;
+		case GAME_HG:
+		case GAME_SS:
+			hgss = true;
+		case GAME_PLATINUM:
+			plat = true;
+	}
+
+	switch (species) {
+		case 19 :
+			if (sumo) {
+				forms->spriteNum = 1;
+				forms->max = 1;
+			} break;
+		case 20 :
+			if (sumo) {
+				forms->spriteNum = 2;
+				forms->max = 1;
+			} break;
+		case 25 :
+			if (sumo) {
+				forms->spriteNum = 9;
+				forms->stringNum = 9;
+				forms->max = 6;
+			} else if (oras) {
+				forms->spriteNum = 3;
+				forms->stringNum = 2;
+				forms->max = 6;
+			} break;
+		case 26 :
+			if (sumo) {
+				forms->spriteNum = 15;
+				forms->max = 1;
+			} break;
+		case 27 :
+			if (sumo) {
+				forms->spriteNum = 16;
+				forms->max = 1;
+			} break;
+		case 28 :
+			if (sumo) {
+				forms->spriteNum = 17;
+				forms->max = 1;
+			} break;
+		case 37 :
+			if (sumo) {
+				forms->spriteNum = 18;
+				forms->max = 1;
+			} break;
+		case 38 :
+			if (sumo) {
+				forms->spriteNum = 19;
+				forms->max = 1;
+			} break;
+		case 50 :
+			if (sumo) {
+				forms->spriteNum = 20;
+				forms->max = 1;
+			} break;
+		case 51 :
+			if (sumo) {
+				forms->spriteNum = 21;
+				forms->max = 1;
+			} break;
+		case 52 :
+			if (sumo) {
+				forms->spriteNum = 22;
+				forms->max = 1;
+			} break;
+		case 53 :
+			if (sumo) {
+				forms->spriteNum = 23;
+				forms->max = 1;
+			} break;
+		case 74 :
+			if (sumo) {
+				forms->spriteNum = 24;
+				forms->max = 1;
+			} break;
+		case 75 :
+			if (sumo) {
+				forms->spriteNum = 25;
+				forms->max = 1;
+			} break;
+		case 76 :
+			if (sumo) {
+				forms->spriteNum = 26;
+				forms->max = 1;
+			} break;
+		case 88 :
+			if (sumo) {
+				forms->spriteNum = 27;
+				forms->max = 1;
+			} break;
+		case 89 :
+			if (sumo) {
+				forms->spriteNum = 28;
+				forms->max = 1;
+			} break;
+		case 103 :
+			if (sumo) {
+				forms->spriteNum = 29;
+				forms->max = 1;
+			} break;
+		case 105 :
+			if (sumo) {
+				forms->spriteNum = 30;
+				forms->max = 1;
+			} break;
+		case 172 :
+			if (hgss && !bw) {
+				forms->spriteNum = 0;
+				forms->stringNum = 141;
+				forms->max = 1;
+			} break;
+		case 201 :
+			forms->spriteNum = 31;
+			forms->stringNum = 16;
+			forms->max = 27;
+			break;
+		case 386 :
+			forms->spriteNum = 58;
+			forms->stringNum = 44;
+			forms->max = 3;
+			break;
+		case 412 :
+			forms->spriteNum = 61;
+			forms->stringNum = 48;
+			forms->max = 2;
+			break;
+		case 413 :
+			forms->spriteNum = 63;
+			forms->stringNum = 48;
+			forms->max = 2;
+			break;
+		case 422 :
+			forms->spriteNum = 65;
+			forms->stringNum = 51;
+			forms->max = 1;
+			break;
+		case 423 :
+			forms->spriteNum = 66;
+			forms->stringNum = 51;
+			forms->max = 1;
+			break;
+		case 479 :
+			if (plat) {
+				forms->spriteNum = 67;
+				forms->stringNum = 53;
+				forms->max = 5;
+			} break;
+		case 487 :
+			if (plat) {
+				forms->spriteNum = 72;
+				forms->stringNum = 59;
+				forms->max = 1;
+			} break;
+		case 492 :
+			if (plat) {
+				forms->spriteNum = 73;
+				forms->stringNum = 61;
+				forms->max = 1;
+			} break;
+		case 493 :
+			forms->spriteNum = 0;
+			forms->max = (xy || (hgss && !bw)) ? 17 : 16;
+			forms->editable = false;
+			break;
+		case 550 :
+			forms->spriteNum = 74;
+			forms->stringNum = 63;
+			forms->max = 1;
+			break;
+		case 585 :
+			forms->spriteNum = 75;
+			forms->stringNum = 65;
+			forms->max = 3;
+			break;
+		case 586 :
+			forms->spriteNum = 78;
+			forms->stringNum = 65;
+			forms->max = 3;
+			break;
+		case 641 :
+			if (b2w2) {
+				forms->spriteNum = 81;
+				forms->stringNum = 69;
+				forms->max = 1;
+			} break;
+		case 642 :
+			if (b2w2) {
+				forms->spriteNum = 82;
+				forms->stringNum = 69;
+				forms->max = 1;
+			} break;
+		case 645 :
+			if (b2w2) {
+				forms->spriteNum = 83;
+				forms->stringNum = 69;
+				forms->max = 1;
+			} break;
+		case 646 :
+			if (b2w2) {
+				forms->spriteNum = 84;
+				forms->stringNum = 71;
+				forms->max = 2;
+			} break;
+		case 647 :
+			if (b2w2) {
+				forms->spriteNum = 86;
+				forms->stringNum = 74;
+				forms->max = 1;
+			} break;
+		case 648 :
+			forms->spriteNum = 87;
+			forms->stringNum = 76;
+			forms->max = 1;
+			break;
+		case 649 :
+			forms->spriteNum = 0;
+			forms->max = 4;
+			forms->editable = false;
+			break;
+		case 658 :
+			if (sumo) {
+				forms->spriteNum = 0;
+				forms->stringNum = 78;
+				forms->max = 1;
+			} break;
+		case 664 :
+		case 665 :
+			forms->spriteNum = 0;
+			forms->stringNum = 80;
+			forms->max = 19;
+			break;
+		case 666 :
+			forms->spriteNum = 88;
+			forms->stringNum = 80;
+			forms->max = 19;
+			break;
+		case 669 :
+			forms->spriteNum = 107;
+			forms->stringNum = 100;
+			forms->max = 4;
+			break;
+		case 670 :
+			forms->spriteNum = 111;
+			forms->stringNum = 100;
+			forms->max = 5;
+			break;
+		case 671 :
+			forms->spriteNum = 116;
+			forms->stringNum = 100;
+			forms->max = 4;
+			break;
+		case 676 :
+			forms->spriteNum = 120;
+			forms->stringNum = 106;
+			forms->max = 9;
+			break;
+		case 678 :
+			forms->spriteNum = 145;
+			forms->stringNum = 143;
+			forms->max = 1;
+			break;
+		case 710 :
+		case 711 :
+			forms->spriteNum = 0;
+			forms->stringNum = 116;
+			forms->max = 3;
+			break;
+		case 718 :
+			forms->spriteNum = 129;
+			forms->stringNum = 120;
+			forms->max = 3;
+			break;
+		case 720 :
+			forms->spriteNum = 132;
+			forms->stringNum = 124;
+			forms->max = 1;
+			break;
+		case 741 :
+			forms->spriteNum = 133;
+			forms->stringNum = 126;
+			forms->max = 3;
+			break;
+		case 745 :
+			forms->spriteNum = 136;
+			forms->stringNum = 130;
+			forms->max = 1;
+			break;
+		case 773 :
+			forms->spriteNum = 0;
+			forms->max = 17;
+			forms->editable = false;
+			break;
+		case 774 :
+			forms->spriteNum = 137;
+			forms->stringNum = 132;
+			forms->min = 7;
+			forms->max = 13;
+			break;
+		case 801 :
+			forms->spriteNum = 144;
+			forms->stringNum = 139;
+			forms->max = 1;
+			break;
+	}
+
+	forms->editable = forms->editable && forms->max > 0;
+	return forms;
+}
+
 u32 pkx_seedstep(const u32 seed) { 
 	return seed * 0x41C64E6D + 0x00006073; 
 }
@@ -226,11 +565,11 @@ void pkx_set(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, 
 	memcpy(save_name, &mainbuf[ISGEN6 ? 0x14048 : 0x1238], NICKNAMELENGTH);
 	
 	if ((getSaveTID(mainbuf, game) == pkx_get_tid(pkmn)) && (getSaveSID(mainbuf, game) == pkx_get_sid(pkmn)) && !memcmp(ot_name, save_name, NICKNAMELENGTH) && !memcmp(latestHandlers, ht_name, 10)) { //you're the first owner
-		setHT(pkmn, ht_name);
-		setHTGender(pkmn, 0);
+		pkx_set_ht(pkmn, ht_name);
+		pkx_set_ht_gender(pkmn, 0);
 	} else {
-		setHT(pkmn, save_name);
-		setHTGender(pkmn, getSaveGender(mainbuf, game));
+		pkx_set_ht(pkmn, save_name);
+		pkx_set_ht_gender(pkmn, getSaveGender(mainbuf, game));
 	}
 
     pkx_calculate_checksum(pkmn);
@@ -303,7 +642,7 @@ void pkx_reroll_encryption_key(u8* pkmn) {
 void pkx_reroll_pid(u8* pkmn) {
     srand(pkx_get_pid(pkmn));
     u32 pidbuffer = rand();
-    memcpy(&pkmn[0x18], &pidbuffer, PIDLENGTH);
+    memcpy(&pkmn[0x18], &pidbuffer, 4);
 }
 
 u32 pkx_get_pid(u8* pkmn) {
@@ -474,4 +813,227 @@ u8 pkx_get_iv(u8* pkmn, const int stat) {
 	u8 toreturn;
 	memcpy(&toreturn, &buffer, 1);
 	return toreturn;
+}
+
+u8 pkx_get_ball(u8* pkmn) {
+	return *(u8*)(pkmn + 0xDC);
+}
+
+void pkx_set_item(u8* pkmn, const u16 item) {
+    memcpy(&pkmn[0x0A], &item, 2);
+}
+
+void pkx_set_gender(u8* pkmn, const u8 val) { 
+	pkmn[0x1D] = (u8)((pkmn[0x1D] & ~0x06) | (val << 1)); 
+}
+
+void pkx_set_form(u8* pkmn, const u8 val) { 
+	pkmn[0x1D] = (u8)((pkmn[0x1D] & 0x07) | (val << 3)); 
+}
+
+void pkx_set_ball(u8* pkmn, const u8 val) { 
+	pkmn[0xDC] = val; 
+}
+
+void pkx_set_ot_gender(u8* pkmn, const u8 val) { 
+	pkx_set_flag(pkmn, 0xDD, 7, (val == 1) ? true : false); 
+}
+
+void pkx_set_tid(u8* pkmn, const u16 tid) {
+    memcpy(&pkmn[0x0C], &tid, 2);
+}
+
+void pkx_set_sid(u8* pkmn, const u16 sid) {
+    memcpy(&pkmn[0x0E], &sid, 2);
+}
+
+void pkx_set_ability(u8* pkmn, const u8 ability) {
+    u16 tempspecies = pkx_get_form_species_number(pkmn);
+	u8 abilitynum = 0;
+	
+	if (ability == 0)      abilitynum = 1;
+	else if (ability == 1) abilitynum = 2;
+	else                   abilitynum = 4;
+	
+	memcpy(&pkmn[0x15], &abilitynum, 1);
+	memcpy(&pkmn[0x14], &personal.pkmData[tempspecies][0x09 + ability], 1);
+}
+
+void pkx_set_move(u8* pkmn, const u16 move, const int nmove) {
+    memcpy(&pkmn[0x5A + (2 * nmove)], &move, 2);
+}
+
+void pkx_set_egg_move(u8* pkmn, const u16 move, const int nmove) {
+    memcpy(&pkmn[0x6A + (2 * nmove)], &move, 2);
+}
+
+void pkx_set_ht(u8* pkmn, char* nick) {
+    memcpy(&pkmn[0x78], nick, NICKNAMELENGTH);
+}
+
+void pkx_set_ht_gender(u8* pkmn, const u8 gender) {
+	memcpy(&pkmn[0x92], &gender, 1);
+}
+
+void pkx_set_nature(u8* pkmn, const u8 nature) {
+    memcpy(&pkmn[0x1C], &nature, 1);
+}
+
+void pkx_set_ht_friendship(u8* pkmn, const int val) {
+	memcpy(&pkmn[0xA2], &val, 1);
+}
+
+void pkx_set_ot_friendship(u8* pkmn, const int val) {
+	memcpy(&pkmn[0xCA], &val, 1);
+}
+
+void pkx_set_friendship(u8* pkmn, const int val) {
+	if (pkmn[0x93] == 0)
+		pkx_set_ot_friendship(pkmn, val);
+	else
+		pkx_set_ht_friendship(pkmn, val);
+}
+
+void pkx_set_ev(u8* pkmn, u8 val, const int stat) {
+    memcpy(&pkmn[0x1E + stat], &val, 1);
+}
+
+void pkx_set_iv(u8* pkmn, u8 val, const int stat) {
+	u32 nval = val;
+	u32 mask = 0xFFFFFFFF;
+	mask ^= 0x1F << (5 * stat);
+
+	u32 buffer;
+	memcpy(&buffer, &pkmn[0x74], 4);
+
+	buffer &= mask;
+	buffer ^= ((nval & 0x1F) << (5 * stat));
+	memcpy(&pkmn[0x74], &buffer, 4);
+}
+
+void pkx_set_hp_type(u8* pkmn, const int val) {
+    u8 ivstat[6];
+    for (int i = 0; i < 6; i++)
+        ivstat[i] = pkx_get_iv(pkmn, i);
+
+    u8 hpivs[16][6] = {
+        { 1, 1, 0, 0, 0, 0 }, // Fighting
+        { 0, 0, 0, 1, 0, 0 }, // Flying
+        { 1, 1, 0, 1, 0, 0 }, // Poison
+        { 1, 1, 1, 1, 0, 0 }, // Ground
+        { 1, 1, 0, 0, 1, 0 }, // Rock
+        { 1, 0, 0, 1, 1, 0 }, // Bug
+        { 1, 0, 1, 1, 1, 0 }, // Ghost
+        { 1, 1, 1, 1, 1, 0 }, // Steel
+        { 1, 0, 1, 0, 0, 1 }, // Fire
+        { 1, 0, 0, 1, 0, 1 }, // Water
+        { 1, 0, 1, 1, 0, 1 }, // Grass
+        { 1, 1, 1, 1, 0, 1 }, // Electric
+        { 1, 0, 1, 0, 1, 1 }, // Psychic
+        { 1, 0, 0, 1, 1, 1 }, // Ice
+        { 1, 0, 1, 1, 1, 1 }, // Dragon
+        { 1, 1, 1, 1, 1, 1 }, // Dark
+    };
+
+    for (int i = 0; i < 6; i++)
+         ivstat[i] = (ivstat[i] & 0x1E) + hpivs[val][i];
+
+    for (int i = 0; i < 6; i++)
+        pkx_set_iv(pkmn, ivstat[i], i);
+}
+
+void pkx_set_shiny(u8* pkmn, const bool shiny) {
+	if (!shiny)
+		pkx_reroll_pid(pkmn);
+	else {
+		u16 tsv = (pkx_get_tid(pkmn) ^ pkx_get_sid(pkmn)) >> 4;
+		u16 buffer = (pkx_get_pid(pkmn) >> 16) ^ (tsv << 4);
+		memcpy(&pkmn[0x18], &buffer, 2);
+	}
+}
+
+void pkx_set_nickname(u8* pkmn, char* nick, const int dst) {
+	// dst 0x40(Nickname) 0xB0(OT) 0x78(HT)
+	u8 toinsert[NICKNAMELENGTH];
+	memset(toinsert, 0, NICKNAMELENGTH);
+
+	if (!memcmp(nick, toinsert, NICKNAMELENGTH))
+		return;
+
+	char buf;
+	int nicklen = strlen(nick);
+	int r = 0, w = 0, i = 0;
+	while (r < nicklen) {
+		buf = *(nick + r);
+		r++;
+		if ((buf & 0x80) == 0) {
+			toinsert[w] = buf & 0x7f;
+			i = 0;
+		}
+		else if ((buf & 0xe0) == 0xc0) {
+			toinsert[w] = buf & 0x1f;
+			i = 1;
+		}
+		else if ((buf & 0xf0) == 0xe0) {
+			toinsert[w] = buf & 0x0f;
+			i = 2;
+		}
+		else break;
+		for (int j = 0; j < i; j++) {
+			buf = *(nick + r);
+			r++;
+			if (toinsert[w] > 0x04) {
+				toinsert[w + 1] = (toinsert[w + 1] << 6) | (((toinsert[w] & 0xfc) >> 2) & 0x3f);
+				toinsert[w] &= 0x03;
+			}
+			toinsert[w] = (toinsert[w] << 6) | (buf & 0x3f);
+		}
+		
+		w += 2;
+		if (w > NICKNAMELENGTH)
+			break;
+	}
+
+	if (dst == 0x40) {
+		u8 isnicknamed;
+		memcpy(&isnicknamed, &pkmn[0x77], 1);
+		isnicknamed |= 0x80;
+		memcpy(&pkmn[0x77], &isnicknamed, 1);
+	}
+
+	memcpy(&pkmn[dst], toinsert, NICKNAMELENGTH);
+}
+
+void pkx_set_ribbons(u8* pkmn, const int ribcat, const int ribnumber, const bool value) {
+	u8 tmp = *(u8*)(pkmn + 0x30 + ribcat);
+	tmp = (u8)((tmp & ~(1 << ribnumber)) | (value ? 1 << ribnumber : 0));
+	memcpy(&pkmn[0x30 + ribcat], &tmp, 1);
+}
+
+bool pkx_get_ribbons(u8* pkmn, const int ribcat, const int ribnumber) {
+	return (pkmn[0x30 + ribcat] & (1 << ribnumber)) == 1 << ribnumber;
+}
+
+void pkx_set_hti(u8* pkmn, const int htnumber, const bool value) {
+	// HyperTrains htnumber HP,ATK,SPATK,SPDEF,SPEED
+	u8 tmp = *(u8*)(pkmn + 0xDE);
+	tmp = (u8)((tmp & ~(1 << htnumber)) | (value ? 1 << htnumber : 0));
+	memcpy(&pkmn[0xDE], &tmp, 1);
+}
+
+bool pkx_get_hti(u8* pkmn, const int htnumber) {
+	return (pkmn[0xDE] & (1 << htnumber)) == 1 << htnumber;
+}
+
+void pkx_set_flag(u8* pkmn, const int flgaddr, const int flgshift, const bool value) {
+	if (flgaddr < 0 || PKMNLENGTH <= flgaddr || flgshift < 0 || 8 <= flgshift) 
+		return;
+	
+	u8 tmp = *(u8*)(pkmn + flgaddr);
+	tmp = (u8)((tmp & ~(1 << flgshift)) | (value ? 1 << flgshift : 0));
+	memcpy(&pkmn[flgaddr], &tmp, 1);
+}
+
+void pkx_set_pokerus(u8* pkmn) {
+	*(pkmn + 0x2B) = 0x11;
 }

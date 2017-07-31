@@ -35,358 +35,12 @@ bool isBattleBoxed(u8* mainbuf, int game, int box, int slot) {
 	return false;
 }
 
-FormData *getLegalFormData(u16 species, int game) {
-	FormData *forms = malloc(sizeof(FormData));
-	forms->spriteNum = 0;
-	forms->stringNum = 0;
-	forms->min = 0;
-	forms->max = 0;
-	forms->editable = true;
-
-	bool sumo = false, oras = false, xy = false, b2w2 = false, bw = false, hgss = false, plat = false;
-
-	switch (game)
-	{
-		case GAME_SUN:
-		case GAME_MOON:
-			sumo = true;
-		case GAME_OR:
-		case GAME_AS:
-			oras = true;
-		case GAME_X:
-		case GAME_Y:
-			xy = true;
-		case GAME_B2:
-		case GAME_W2:
-			b2w2 = true;
-		case GAME_B1:
-		case GAME_W1:
-			bw = true;
-		case GAME_HG:
-		case GAME_SS:
-			hgss = true;
-		case GAME_PLATINUM:
-			plat = true;
-	}
-
-	switch (species) {
-		case 19 :
-			if (sumo) {
-				forms->spriteNum = 1;
-				forms->max = 1;
-			} break;
-		case 20 :
-			if (sumo) {
-				forms->spriteNum = 2;
-				forms->max = 1;
-			} break;
-		case 25 :
-			if (sumo) {
-				forms->spriteNum = 9;
-				forms->stringNum = 9;
-				forms->max = 6;
-			} else if (oras) {
-				forms->spriteNum = 3;
-				forms->stringNum = 2;
-				forms->max = 6;
-			} break;
-		case 26 :
-			if (sumo) {
-				forms->spriteNum = 15;
-				forms->max = 1;
-			} break;
-		case 27 :
-			if (sumo) {
-				forms->spriteNum = 16;
-				forms->max = 1;
-			} break;
-		case 28 :
-			if (sumo) {
-				forms->spriteNum = 17;
-				forms->max = 1;
-			} break;
-		case 37 :
-			if (sumo) {
-				forms->spriteNum = 18;
-				forms->max = 1;
-			} break;
-		case 38 :
-			if (sumo) {
-				forms->spriteNum = 19;
-				forms->max = 1;
-			} break;
-		case 50 :
-			if (sumo) {
-				forms->spriteNum = 20;
-				forms->max = 1;
-			} break;
-		case 51 :
-			if (sumo) {
-				forms->spriteNum = 21;
-				forms->max = 1;
-			} break;
-		case 52 :
-			if (sumo) {
-				forms->spriteNum = 22;
-				forms->max = 1;
-			} break;
-		case 53 :
-			if (sumo) {
-				forms->spriteNum = 23;
-				forms->max = 1;
-			} break;
-		case 74 :
-			if (sumo) {
-				forms->spriteNum = 24;
-				forms->max = 1;
-			} break;
-		case 75 :
-			if (sumo) {
-				forms->spriteNum = 25;
-				forms->max = 1;
-			} break;
-		case 76 :
-			if (sumo) {
-				forms->spriteNum = 26;
-				forms->max = 1;
-			} break;
-		case 88 :
-			if (sumo) {
-				forms->spriteNum = 27;
-				forms->max = 1;
-			} break;
-		case 89 :
-			if (sumo) {
-				forms->spriteNum = 28;
-				forms->max = 1;
-			} break;
-		case 103 :
-			if (sumo) {
-				forms->spriteNum = 29;
-				forms->max = 1;
-			} break;
-		case 105 :
-			if (sumo) {
-				forms->spriteNum = 30;
-				forms->max = 1;
-			} break;
-		case 172 :
-			if (hgss && !bw) {
-				forms->spriteNum = 0;
-				forms->stringNum = 141;
-				forms->max = 1;
-			} break;
-		case 201 :
-			forms->spriteNum = 31;
-			forms->stringNum = 16;
-			forms->max = 27;
-			break;
-		case 386 :
-			forms->spriteNum = 58;
-			forms->stringNum = 44;
-			forms->max = 3;
-			break;
-		case 412 :
-			forms->spriteNum = 61;
-			forms->stringNum = 48;
-			forms->max = 2;
-			break;
-		case 413 :
-			forms->spriteNum = 63;
-			forms->stringNum = 48;
-			forms->max = 2;
-			break;
-		case 422 :
-			forms->spriteNum = 65;
-			forms->stringNum = 51;
-			forms->max = 1;
-			break;
-		case 423 :
-			forms->spriteNum = 66;
-			forms->stringNum = 51;
-			forms->max = 1;
-			break;
-		case 479 :
-			if (plat) {
-				forms->spriteNum = 67;
-				forms->stringNum = 53;
-				forms->max = 5;
-			} break;
-		case 487 :
-			if (plat) {
-				forms->spriteNum = 72;
-				forms->stringNum = 59;
-				forms->max = 1;
-			} break;
-		case 492 :
-			if (plat) {
-				forms->spriteNum = 73;
-				forms->stringNum = 61;
-				forms->max = 1;
-			} break;
-		case 493 :
-			forms->spriteNum = 0;
-			forms->max = (xy || (hgss && !bw)) ? 17 : 16;
-			forms->editable = false;
-			break;
-		case 550 :
-			forms->spriteNum = 74;
-			forms->stringNum = 63;
-			forms->max = 1;
-			break;
-		case 585 :
-			forms->spriteNum = 75;
-			forms->stringNum = 65;
-			forms->max = 3;
-			break;
-		case 586 :
-			forms->spriteNum = 78;
-			forms->stringNum = 65;
-			forms->max = 3;
-			break;
-		case 641 :
-			if (b2w2) {
-				forms->spriteNum = 81;
-				forms->stringNum = 69;
-				forms->max = 1;
-			} break;
-		case 642 :
-			if (b2w2) {
-				forms->spriteNum = 82;
-				forms->stringNum = 69;
-				forms->max = 1;
-			} break;
-		case 645 :
-			if (b2w2) {
-				forms->spriteNum = 83;
-				forms->stringNum = 69;
-				forms->max = 1;
-			} break;
-		case 646 :
-			if (b2w2) {
-				forms->spriteNum = 84;
-				forms->stringNum = 71;
-				forms->max = 2;
-			} break;
-		case 647 :
-			if (b2w2) {
-				forms->spriteNum = 86;
-				forms->stringNum = 74;
-				forms->max = 1;
-			} break;
-		case 648 :
-			forms->spriteNum = 87;
-			forms->stringNum = 76;
-			forms->max = 1;
-			break;
-		case 649 :
-			forms->spriteNum = 0;
-			forms->max = 4;
-			forms->editable = false;
-			break;
-		case 658 :
-			if (sumo) {
-				forms->spriteNum = 0;
-				forms->stringNum = 78;
-				forms->max = 1;
-			} break;
-		case 664 :
-		case 665 :
-			forms->spriteNum = 0;
-			forms->stringNum = 80;
-			forms->max = 19;
-			break;
-		case 666 :
-			forms->spriteNum = 88;
-			forms->stringNum = 80;
-			forms->max = 19;
-			break;
-		case 669 :
-			forms->spriteNum = 107;
-			forms->stringNum = 100;
-			forms->max = 4;
-			break;
-		case 670 :
-			forms->spriteNum = 111;
-			forms->stringNum = 100;
-			forms->max = 5;
-			break;
-		case 671 :
-			forms->spriteNum = 116;
-			forms->stringNum = 100;
-			forms->max = 4;
-			break;
-		case 676 :
-			forms->spriteNum = 120;
-			forms->stringNum = 106;
-			forms->max = 9;
-			break;
-		case 678 :
-			forms->spriteNum = 145;
-			forms->stringNum = 143;
-			forms->max = 1;
-			break;
-		case 710 :
-		case 711 :
-			forms->spriteNum = 0;
-			forms->stringNum = 116;
-			forms->max = 3;
-			break;
-		case 718 :
-			forms->spriteNum = 129;
-			forms->stringNum = 120;
-			forms->max = 3;
-			break;
-		case 720 :
-			forms->spriteNum = 132;
-			forms->stringNum = 124;
-			forms->max = 1;
-			break;
-		case 741 :
-			forms->spriteNum = 133;
-			forms->stringNum = 126;
-			forms->max = 3;
-			break;
-		case 745 :
-			forms->spriteNum = 136;
-			forms->stringNum = 130;
-			forms->max = 1;
-			break;
-		case 773 :
-			forms->spriteNum = 0;
-			forms->max = 17;
-			forms->editable = false;
-			break;
-		case 774 :
-			forms->spriteNum = 137;
-			forms->stringNum = 132;
-			forms->min = 7;
-			forms->max = 13;
-			break;
-		case 801 :
-			forms->spriteNum = 144;
-			forms->stringNum = 139;
-			forms->max = 1;
-			break;
-	}
-
-	forms->editable = forms->editable && forms->max > 0;
-	return forms;
-}
-
 u32 *getSaveOT(u8* mainbuf, int game, u32* dst) {
 	u16 src[NICKNAMELENGTH];
 	memcpy(src, &mainbuf[ISGEN6 ? 0x14048 : 0X1238], NICKNAMELENGTH);
 	
 	utf16_to_utf32(dst, src, NICKNAMELENGTH);
 	return dst;
-}
-
-u8 getBall(u8* pkmn) {
-    u8 ballbuffer;
-    memcpy(&ballbuffer, &pkmn[0xDC], 1);
-    
-    return ballbuffer;
 }
 
 u8 getSaveGender(u8* mainbuf, int game) {
@@ -417,181 +71,6 @@ u32 getSaveSeed(u8* mainbuf, int game, int index) {
     u32 buffer;
     memcpy(&buffer, &mainbuf[(ISGEN6 ? 0 : 0x6B5DC) + index * 0x4], 4);
     return buffer;
-}
-
-void setItemEditor(u8* pkmn, u16 item) {
-    memcpy(&pkmn[0x0A], &item, ITEMLENGTH);
-}
-
-void setGender(u8* pkmn, u8 val) { pkmn[0x1D] = (u8)((pkmn[0x1D] & ~0x06) | (val << 1)); }
-void setForm(u8* pkmn, u8 val) { pkmn[0x1D] = (u8)((pkmn[0x1D] & 0x07) | (val << 3)); }
-void setBall(u8* pkmn, u8 val) { pkmn[0xDC] = val; }
-void setOTGender(u8* pkmn, u8 val) { setFlag(pkmn, 0xDD, 7, (val == 1) ? true : false); }
-
-void setTID(u8* pkmn, u16 tid) {
-    memcpy(&pkmn[0x0C], &tid, 2);
-}
-
-void setSID(u8* pkmn, u16 sid) {
-    memcpy(&pkmn[0x0E], &sid, 2);
-}
-
-void setAbility(u8* pkmn, const u8 ability) {
-    u16 tempspecies = pkx_get_form_species_number(pkmn);
-	
-	u8 abilitynum = 0;
-	if (ability == 0)      abilitynum = 1;
-	else if (ability == 1) abilitynum = 2;
-	else                   abilitynum = 4;
-	
-	memcpy(&pkmn[0x15], &abilitynum, ABILITYNUMLENGTH);
-	memcpy(&pkmn[0x14], &personal.pkmData[tempspecies][0x09 + ability], ABILITYLENGTH);
-}
-
-void setMove(u8* pkmn, const u16 move, const int nmove) {
-    memcpy(&pkmn[0x5A + (MOVELENGTH * nmove)], &move, MOVELENGTH);
-}
-
-void setEggMove(u8* pkmn, const u16 move, const int nmove) {
-    memcpy(&pkmn[0x6A + (EGGMOVELENGTH * nmove)], &move, EGGMOVELENGTH);
-}
-
-void setNicknameZ(u8* pkmn, char* nick, int dst) {
-	// dst 0x40(Nickname) 0xB0(OT) 0x78(HT)
-	u8 toinsert[NICKNAMELENGTH];
-	memset(toinsert, 0, NICKNAMELENGTH);
-
-	if (!memcmp(nick, toinsert, NICKNAMELENGTH))
-		return;
-
-	char buf;
-	int nicklen = strlen(nick);
-	int r = 0, w = 0, i = 0;
-	while (r < nicklen) {
-		buf = *(nick + r);
-		r++;
-		if ((buf & 0x80) == 0) {
-			toinsert[w] = buf & 0x7f;
-			i = 0;
-		//	w += 2;
-		}
-		else if ((buf & 0xe0) == 0xc0) {
-			toinsert[w] = buf & 0x1f;
-			i = 1;
-		}
-		else if ((buf & 0xf0) == 0xe0) {
-			toinsert[w] = buf & 0x0f;
-			i = 2;
-		}
-		else break;
-		for (int j = 0; j < i; j++) {
-			buf = *(nick + r);
-			r++;
-			if (toinsert[w] > 0x04) {
-				toinsert[w + 1] = (toinsert[w + 1] << 6) | (((toinsert[w] & 0xfc) >> 2) & 0x3f);
-				toinsert[w] &= 0x03;
-			}
-			toinsert[w] = (toinsert[w] << 6) | (buf & 0x3f);
-		}
-		// r++;
-		w += 2;
-		if (w > NICKNAMELENGTH)
-			break;
-	}
-
-	if (dst == 0x40) {
-		u8 isnicknamed;
-		memcpy(&isnicknamed, &pkmn[0x77], 1);
-		isnicknamed |= 0x80;
-		memcpy(&pkmn[0x77], &isnicknamed, 1);
-	}
-
-	memcpy(&pkmn[dst], toinsert, NICKNAMELENGTH);
-}
-
-void setHT(u8* pkmn, char* nick) {
-    memcpy(&pkmn[0x78], nick, NICKNAMELENGTH);
-}
-
-void setHTGender(u8* pkmn, const u8 gender) {
-	memcpy(&pkmn[0x92], &gender, 1);
-}
-
-void setNature(u8* pkmn, const u8 nature) {
-    memcpy(&pkmn[0x1C], &nature, NATURELENGTH);
-}
-
-void setFriendship(u8* pkmn, const int val) {
-	if (pkmn[0x93] == 0)
-		setOTFriendship(pkmn, val);
-	else
-		setHTFriendship(pkmn, val);
-}
-
-void setHTFriendship(u8* pkmn, const int val) {
-	memcpy(&pkmn[0xA2], &val, 1);
-}
-
-void setOTFriendship(u8* pkmn, const int val) {
-	memcpy(&pkmn[0xCA], &val, 1);
-}
-
-void setEV(u8* pkmn, u8 val, const int stat) {
-    memcpy(&pkmn[0x1E + (EVLENGTH*stat)], &val, EVLENGTH);
-}
-
-void setIV(u8* pkmn, u8 val, const int stat) {
-	u32 nval = val;
-	u32 mask = 0xFFFFFFFF;
-	mask ^= 0x1F << (5 * stat);
-
-	u32 buffer;
-	memcpy(&buffer, &pkmn[0x74], IVLENGTH);
-
-	buffer &= mask;
-	buffer ^= ((nval & 0x1F) << (5 * stat));
-	memcpy(&pkmn[0x74], &buffer, IVLENGTH);
-}
-
-void setHPType(u8* pkmn, const int val) {
-    u8 ivstat[6];
-    for (int i = 0; i < 6; i++)
-        ivstat[i] = pkx_get_iv(pkmn, i);
-
-    u8 hpivs[16][6] = {
-        { 1, 1, 0, 0, 0, 0 }, // Fighting
-        { 0, 0, 0, 1, 0, 0 }, // Flying
-        { 1, 1, 0, 1, 0, 0 }, // Poison
-        { 1, 1, 1, 1, 0, 0 }, // Ground
-        { 1, 1, 0, 0, 1, 0 }, // Rock
-        { 1, 0, 0, 1, 1, 0 }, // Bug
-        { 1, 0, 1, 1, 1, 0 }, // Ghost
-        { 1, 1, 1, 1, 1, 0 }, // Steel
-        { 1, 0, 1, 0, 0, 1 }, // Fire
-        { 1, 0, 0, 1, 0, 1 }, // Water
-        { 1, 0, 1, 1, 0, 1 }, // Grass
-        { 1, 1, 1, 1, 0, 1 }, // Electric
-        { 1, 0, 1, 0, 1, 1 }, // Psychic
-        { 1, 0, 0, 1, 1, 1 }, // Ice
-        { 1, 0, 1, 1, 1, 1 }, // Dragon
-        { 1, 1, 1, 1, 1, 1 }, // Dark
-    };
-
-    for (int i = 0; i < 6; i++)
-         ivstat[i] = (ivstat[i] & 0x1E) + hpivs[val][i];
-
-    for (int i = 0; i < 6; i++)
-        setIV(pkmn, ivstat[i], i);
-}
-
-void setShiny(u8* pkmn, const bool shiny) {
-	if (!shiny)
-		pkx_reroll_pid(pkmn);
-	else {
-		u16 tsv = (pkx_get_tid(pkmn) ^ pkx_get_sid(pkmn)) >> 4;
-		u16 buffer = (pkx_get_pid(pkmn) >> 16) ^ (tsv << 4);
-		memcpy(&pkmn[0x18], &buffer, 2);
-	}
 }
 
 void setWC(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[]) {
@@ -693,11 +172,6 @@ u8 getSaveLanguage(u8* mainbuf, int game) {
 	return mainbuf[getSaveLanguageAddress(mainbuf, game)];
 }
 
-
-void setPokerus(u8* pkmn) {
-	*(pkmn + 0x2B) = 0x11;
-}
-
 void saveFileEditor(u8* mainbuf, int game, u64 size) {
 	int currentEntry = 0;
 	int page = 0;
@@ -743,39 +217,6 @@ void saveFileEditor(u8* mainbuf, int game, u64 size) {
 
 		printEditor(mainbuf, game, size, currentEntry, page);
 	}
-}
-
-void setRibbons(u8* pkmn, int ribcat, int ribnumber, bool value) {
-	u8 tmp;
-	memcpy(&tmp, &pkmn[0x30 + ribcat], 1);
-	tmp = (u8)((tmp & ~(1 << ribnumber)) | (value ? 1 << ribnumber : 0));
-	memcpy(&pkmn[0x30 + ribcat], &tmp, 1);
-}
-
-bool getRibbons(u8* pkmn, int ribcat, int ribnumber) {
-	return (pkmn[0x30 + ribcat] & (1 << ribnumber)) == 1 << ribnumber;
-}
-
-void setHTi(u8* pkmn, int htnumber, bool value) {
-	// HyperTrains htnumber HP,ATK,SPATK,SPDEF,SPEED
-	u8 tmp;
-	memcpy(&tmp, &pkmn[0xDE], 1);
-	tmp = (u8)((tmp & ~(1 << htnumber)) | (value ? 1 << htnumber : 0));
-	memcpy(&pkmn[0xDE], &tmp, 1);
-}
-
-bool getHTi(u8* pkmn, int htnumber) {
-	return (pkmn[0xDE] & (1 << htnumber)) == 1 << htnumber;
-}
-
-void setFlag(u8* pkmn, int flgaddr, int flgshift, bool value) {
-	if (flgaddr < 0 || PKMNLENGTH <= flgaddr || flgshift < 0 || 8 <= flgshift) 
-		return;
-	
-	u8 tmp;
-	memcpy(&tmp, &pkmn[flgaddr], 1);
-	tmp = (u8)((tmp & ~(1 << flgshift)) | (value ? 1 << flgshift : 0));
-	memcpy(&pkmn[flgaddr], &tmp, 1);
 }
 
 void parseHexEditor(u8* pkmn, int game, int byteEntry) {	
@@ -888,7 +329,7 @@ void generate(u8* mainbuf, int game, bool isTeam, int box, int currentEntry, int
 	utf32_to_utf8((unsigned char*)nick, (uint32_t*)listSpecies.items[pkx_get_species(tempkmn)], NICKNAMELENGTH);
 	nick[NICKNAMELENGTH - 1] = '\0';
 
-	setNicknameZ(tempkmn, nick, 0x40);
+	pkx_set_nickname(tempkmn, nick, 0x40);
 
 	// Randomizing the encryption constant
 	pkx_reroll_encryption_key(tempkmn);
@@ -1074,9 +515,9 @@ void pokemonEditor(u8* mainbuf, int game) {
 				printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_MENU, 0, 0);
 				
 				if (hidKeysHeld() & KEY_TOUCH) {
-					if (touch.px > 242 && touch.px < 283 && touch.py > 5 && touch.py < 25 && !isTeam && getBall(pkmn) != CHERISH_BALL) {
-						setTID(pkmn, getSaveTID(mainbuf, game));
-						setSID(pkmn, getSaveSID(mainbuf, game));
+					if (touch.px > 242 && touch.px < 283 && touch.py > 5 && touch.py < 25 && !isTeam && pkx_get_ball(pkmn) != CHERISH_BALL) {
+						pkx_set_tid(pkmn, getSaveTID(mainbuf, game));
+						pkx_set_sid(pkmn, getSaveSID(mainbuf, game));
 
 						int language =  getSaveLanguage(mainbuf, game);
 						memcpy(&pkmn[0xE3], &language, 1); // nats
@@ -1091,8 +532,8 @@ void pokemonEditor(u8* mainbuf, int game) {
 						getSaveOT(mainbuf, game, nick32);
 						utf32_to_utf8(nick, nick32, NICKNAMELENGTH);
 
-						setNicknameZ(pkmn, (char*)nick, 0xb0);
-						setOTGender(pkmn, (getSaveGender(mainbuf, game)));
+						pkx_set_nickname(pkmn, (char*)nick, 0xb0);
+						pkx_set_ot_gender(pkmn, (getSaveGender(mainbuf, game)));
 
 						pkx_set(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
 						operationDone = true;
@@ -1159,28 +600,28 @@ void pokemonEditor(u8* mainbuf, int game) {
 											if (byteEntry == 0x30 || byteEntry == 0x31 || byteEntry == 0x32 || byteEntry == 0x33 || byteEntry == 0x34 || byteEntry == 0x35 || byteEntry == 0x36) {
 												for (int i = 0; i < 8; i++) {
 													if ((hidKeysDown() & KEY_TOUCH) && touch.px > 90 && touch.px < 103 && touch.py > 70 + i*17 && touch.py < 83 + i*17 && !(byteEntry == 0x36 && i > 1))
-														setRibbons(pkmn, byteEntry - 0x30, i, !getRibbons(pkmn, byteEntry - 0x30, i));
+														pkx_set_ribbons(pkmn, byteEntry - 0x30, i, !pkx_get_ribbons(pkmn, byteEntry - 0x30, i));
 												}
 											}
 											if (byteEntry == 0x77) {
 												if ((hidKeysDown() & KEY_TOUCH) && touch.px > 90 && touch.px < 103 && touch.py > 70 && touch.py < 83)
-													setFlag(pkmn, 0x77, 7, !pkx_get_nickname_flag(pkmn));
+													pkx_set_flag(pkmn, 0x77, 7, !pkx_get_nickname_flag(pkmn));
 												if ((hidKeysDown() & KEY_TOUCH) && touch.px > 90 && touch.px < 103 && touch.py > 70 + 17 && touch.py < 83 + 17)
-													setFlag(pkmn, 0x77, 6, !pkx_is_egg(pkmn));
+													pkx_set_flag(pkmn, 0x77, 6, !pkx_is_egg(pkmn));
 											}
 											if (byteEntry == 0xDD) {
 												if ((hidKeysDown() & KEY_TOUCH) && touch.px > 100 - 3 && touch.px < 100 + 15 && touch.py > 89 - 6 && touch.py < 89 + 14)
-													setFlag(pkmn, 0xdd, 7, !pkx_get_ot_gender(pkmn));
+													pkx_set_flag(pkmn, 0xdd, 7, !pkx_get_ot_gender(pkmn));
 											}
 											if (byteEntry == 0xDE) {
 												for (int i = 0; i < 6; i++) {
 													if ((hidKeysDown() & KEY_TOUCH) && touch.px > 90 && touch.px < 103 && touch.py > 70 + i * 17 && touch.py < 83 + i * 17)
-														setHTi(pkmn, i, !getHTi(pkmn, i));
+														pkx_set_hti(pkmn, i, !pkx_get_hti(pkmn, i));
 												}
 											}
 											if (byteEntry == 0x1D) {
 												if ((hidKeysDown() & KEY_TOUCH) && touch.px > 90 && touch.px < 103 && touch.py > 70 && touch.py < 83)
-													setFlag(pkmn, 0x1D, 0, !((pkmn[byteEntry] & 1) == 1));
+													pkx_set_flag(pkmn, 0x1D, 0, !((pkmn[byteEntry] & 1) == 1));
 											}
 										}
 
@@ -1238,7 +679,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 														hpEntry = calcCurrentEntryOneScreen(hpEntry, 15, 4);
 	
 														if (hidKeysDown() & KEY_A) {
-															setHPType(pkmn, (u8)hpEntry);
+															pkx_set_hp_type(pkmn, (u8)hpEntry);
 															break;
 														}
 														
@@ -1255,18 +696,18 @@ void pokemonEditor(u8* mainbuf, int game) {
 													int tot = 0;
 													
 													if (touch.px > 96 && touch.px < 109 && touch.py > 49 + i * 20 && touch.py < 62 + i * 20)
-														setIV(pkmn, (iv > 0) ? iv - 1 : 31, lookup[i]);
+														pkx_set_iv(pkmn, (iv > 0) ? iv - 1 : 31, lookup[i]);
 													if (touch.px > 139 && touch.px < 152 && touch.py > 49 + i * 20 && touch.py < 62 + i * 20)
-														setIV(pkmn, (iv < 31) ? iv + 1 : 0, lookup[i]);
+														pkx_set_iv(pkmn, (iv < 31) ? iv + 1 : 0, lookup[i]);
 													if (touch.px > 177 && touch.px < 190 && touch.py > 49 + i * 20 && touch.py < 62 + i * 20)
-														setEV(pkmn, (ev > 0) ? ev - 1 : 252, lookup[i]);
+														pkx_set_ev(pkmn, (ev > 0) ? ev - 1 : 252, lookup[i]);
 													if (touch.px > 218 && touch.px < 231 && touch.py > 49 + i * 20 && touch.py < 62 + i * 20)
-														setEV(pkmn, (ev < 252) ? ev + 1 : 0, lookup[i]);
+														pkx_set_ev(pkmn, (ev < 252) ? ev + 1 : 0, lookup[i]);
 													
 													for (int i = 0; i < 6; i++)
 														tot += pkx_get_ev(pkmn, i);
 													if (tot > 510)
-														setEV(pkmn, oldev, lookup[i]);
+														pkx_set_ev(pkmn, oldev, lookup[i]);
 												}
 											}
 											
@@ -1277,21 +718,21 @@ void pokemonEditor(u8* mainbuf, int game) {
 													if (touch.px > 96 && touch.px < 109 && touch.py > 49 + i * 20 && touch.py < 62 + i * 20) {
 														touched = true;
 														if (speed < -30 && pkx_get_iv(pkmn, lookup[i]) > 0)
-															setIV(pkmn, pkx_get_iv(pkmn, lookup[i]) - 1, lookup[i]);
+															pkx_set_iv(pkmn, pkx_get_iv(pkmn, lookup[i]) - 1, lookup[i]);
 														else
 															speed--;
 													}
 													else if (touch.px > 139 && touch.px < 152 && touch.py > 49 + i * 20 && touch.py < 62 + i * 20) {
 														touched = true;
 														if (speed > 30 && pkx_get_iv(pkmn, lookup[i]) < 31)
-															setIV(pkmn, pkx_get_iv(pkmn, lookup[i]) + 1, lookup[i]);
+															pkx_set_iv(pkmn, pkx_get_iv(pkmn, lookup[i]) + 1, lookup[i]);
 														else
 															speed++;
 													}
 													else if (touch.px > 177 && touch.px < 190 && touch.py > 49 + i * 20 && touch.py < 62 + i * 20) {
 														touched = true;
 														if (speed < -30 && pkx_get_ev(pkmn, lookup[i]) > 0)
-															setEV(pkmn, pkx_get_ev(pkmn, lookup[i]) - 1, lookup[i]);
+															pkx_set_ev(pkmn, pkx_get_ev(pkmn, lookup[i]) - 1, lookup[i]);
 														else
 															speed--;
 													}
@@ -1302,7 +743,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 															for (int i = 0; i < 6; i++)
 																tot += pkx_get_ev(pkmn, i);
 															if (tot < 510)
-																setEV(pkmn, pkx_get_ev(pkmn, lookup[i]) + 1, lookup[i]);
+																pkx_set_ev(pkmn, pkx_get_ev(pkmn, lookup[i]) + 1, lookup[i]);
 														}
 														else
 															speed++;
@@ -1326,7 +767,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 											natureEntry = calcCurrentEntryOneScreen(natureEntry, 24, 5);
 											
 											if (hidKeysDown() & KEY_A) {
-												setNature(pkmn, natureEntry);
+												pkx_set_nature(pkmn, natureEntry);
 												break;
 											}
 											
@@ -1341,7 +782,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 											ballEntry = calcCurrentEntryOneScreen(ballEntry, 25, 6);
 
 											if (hidKeysDown() & KEY_A) {
-												setBall(pkmn, (u8)ballEntry + 1);
+												pkx_set_ball(pkmn, (u8)ballEntry + 1);
 												break;
 											}
 											
@@ -1351,7 +792,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 									
 									if (touch.px > 227 && touch.px < 300 && touch.py > 24 && touch.py < 92) {
 										u16 species = pkx_get_species(pkmn);
-										FormData *forms = getLegalFormData(species, game);
+										FormData *forms = pkx_get_legal_form_data(species, game);
 										if (forms->editable) {
 											int numforms = forms->max - forms->min + 1;
 											int columns;
@@ -1382,8 +823,8 @@ void pokemonEditor(u8* mainbuf, int game) {
 														formEntry += columns;
 													
 												if (hidKeysDown() & KEY_A) {
-													setForm(pkmn, (u8)(formEntry + forms->min));
-													setAbility(pkmn, ability);
+													pkx_set_form(pkmn, (u8)(formEntry + forms->min));
+													pkx_set_ability(pkmn, ability);
 													break;
 												}
 												
@@ -1395,20 +836,20 @@ void pokemonEditor(u8* mainbuf, int game) {
 
 									if (touch.px > 180 && touch.px < 195 && touch.py > 71 && touch.py < 83) {
 										ability = (ability + 1) % 3;
-										setAbility(pkmn, ability);
+										pkx_set_ability(pkmn, ability);
 									}
 									
 									if (touch.px > 156 && touch.px < 174 && touch.py > 0 && touch.py < 20) {
 										if (pkx_get_gender(pkmn) != 2) 
-											setGender(pkmn, ((pkx_get_gender(pkmn) == 0) ? 1 : 0));
+											pkx_set_gender(pkmn, ((pkx_get_gender(pkmn) == 0) ? 1 : 0));
 									}
 									
 									if (touch.px > 180 && touch.px < 195 && touch.py > 111 && touch.py < 123)
-										setShiny(pkmn, pkx_is_shiny(pkmn) ? false : true);
+										pkx_set_shiny(pkmn, pkx_is_shiny(pkmn) ? false : true);
 									
 									if (touch.px > 180 && touch.px < 195 && touch.py > 131 && touch.py < 143) {
 										if (!(pkx_get_pokerus(pkmn)))
-											setPokerus(pkmn);
+											pkx_set_pokerus(pkmn);
 										else 
 											*(pkmn + 0x2B) = 0x00;
 									}
@@ -1430,7 +871,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 										nick[NICKNAMELENGTH - 1] = '\0';
 
 										if (button != SWKBD_BUTTON_NONE)
-											setNicknameZ(pkmn, nick, 0x40);
+											pkx_set_nickname(pkmn, nick, 0x40);
 									}
 									
 									if (touch.px > 180 && touch.px < 195 && touch.py > 151 && touch.py < 163) {
@@ -1450,7 +891,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 										nick[NICKNAMELENGTH - 1] = '\0';
 
 										if (button != SWKBD_BUTTON_NONE)
-											setNicknameZ(pkmn, nick, 0xb0);
+											pkx_set_nickname(pkmn, nick, 0xb0);
 									}
 									
 									if (touch.px > 206 && touch.px < 315 && touch.py > 172 && touch.py < 203) {
@@ -1487,9 +928,9 @@ void pokemonEditor(u8* mainbuf, int game) {
 
 											if (hidKeysDown() & KEY_A) {
 												if (entryBottom < 4)
-													setMove(pkmn, movesSorted[moveEntry + page * 40], entryBottom);
+													pkx_set_move(pkmn, movesSorted[moveEntry + page * 40], entryBottom);
 												else
-													setEggMove(pkmn, movesSorted[moveEntry + page * 40], entryBottom - 4);
+													pkx_set_egg_move(pkmn, movesSorted[moveEntry + page * 40], entryBottom - 4);
 											}
 
 											printPKEditor(pkmn, game, moveEntry, page, entryBottom, ED_MOVES, descriptions);
@@ -1506,7 +947,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 											calcCurrentEntryMorePagesReversed(&itemEntry, &page, maxpages, 39, 20);
 											
 											if (hidKeysDown() & KEY_A) {
-												setItemEditor(pkmn, itemsSorted[itemEntry + page * 40]);
+												pkx_set_item(pkmn, itemsSorted[itemEntry + page * 40]);
 												break;
 											}
 											
@@ -1524,16 +965,16 @@ void pokemonEditor(u8* mainbuf, int game) {
 									
 									if (touch.px > 137 && touch.px < 150 && touch.py > 189 && touch.py < 202) {
 										if (pkx_is_egg(pkmn))
-											setOTFriendship(pkmn, (pkx_get_ot_friendship(pkmn) > 0) ? pkx_get_ot_friendship(pkmn) - 1 : 255);
+											pkx_set_ot_friendship(pkmn, (pkx_get_ot_friendship(pkmn) > 0) ? pkx_get_ot_friendship(pkmn) - 1 : 255);
 										else
-											setFriendship(pkmn, (pkx_get_friendship(pkmn) > 0) ? pkx_get_friendship(pkmn) - 1 : 255);
+											pkx_set_friendship(pkmn, (pkx_get_friendship(pkmn) > 0) ? pkx_get_friendship(pkmn) - 1 : 255);
 									}
 
 									if (touch.px > 180 && touch.px < 193 && touch.py > 189 && touch.py < 202) {
 										if (pkx_is_egg(pkmn))
-											setOTFriendship(pkmn, (pkx_get_ot_friendship(pkmn) < 255) ? pkx_get_ot_friendship(pkmn) + 1 : 0);
+											pkx_set_ot_friendship(pkmn, (pkx_get_ot_friendship(pkmn) < 255) ? pkx_get_ot_friendship(pkmn) + 1 : 0);
 										else
-											setFriendship(pkmn, (pkx_get_friendship(pkmn) < 255) ? pkx_get_friendship(pkmn) + 1 : 0);
+											pkx_set_friendship(pkmn, (pkx_get_friendship(pkmn) < 255) ? pkx_get_friendship(pkmn) + 1 : 0);
 									}
 								}
 
@@ -1553,13 +994,13 @@ void pokemonEditor(u8* mainbuf, int game) {
 									else if (touch.px > 137 && touch.px < 150 && touch.py > 189 && touch.py < 202) {
 										if (pkx_is_egg(pkmn)) {
 											if (speed < -30 && pkx_get_ot_friendship(pkmn) > 0)
-												setOTFriendship(pkmn, pkx_get_ot_friendship(pkmn) - 1);
+												pkx_set_ot_friendship(pkmn, pkx_get_ot_friendship(pkmn) - 1);
 											else
 												speed--;
 										}
 										else {
 											if (speed < -30 && pkx_get_friendship(pkmn) > 0)
-												setFriendship(pkmn, pkx_get_friendship(pkmn) - 1);
+												pkx_set_friendship(pkmn, pkx_get_friendship(pkmn) - 1);
 											else
 												speed--;
 										}
@@ -1567,13 +1008,13 @@ void pokemonEditor(u8* mainbuf, int game) {
 									else if (touch.px > 180 && touch.px < 193 && touch.py > 189 && touch.py < 202) {
 										if (pkx_is_egg(pkmn)) {
 											if (speed > 30 && pkx_get_ot_friendship(pkmn) < 255)
-												setOTFriendship(pkmn, pkx_get_ot_friendship(pkmn) + 1);
+												pkx_set_ot_friendship(pkmn, pkx_get_ot_friendship(pkmn) + 1);
 											else
 												speed++;
 										}
 										else {
 											if (speed > 30 && pkx_get_friendship(pkmn) < 255)
-												setFriendship(pkmn, pkx_get_friendship(pkmn) + 1);
+												pkx_set_friendship(pkmn, pkx_get_friendship(pkmn) + 1);
 											else
 												speed++;
 										}
