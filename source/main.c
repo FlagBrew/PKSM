@@ -411,6 +411,13 @@ int main() {
 
 	free(mainbuf);
 	
+	if (!isHBL() && IS3DS && confirmDisp(i18n(S_LAUNCH_GAME))) {
+		APT_PrepareToDoApplicationJump(0, ids[game], getLoadedFromCart() ? MEDIATYPE_GAME_CARD : MEDIATYPE_SD);
+		u8 hmac[0x20] = {0};
+		APT_DoApplicationJump(NULL, 0, hmac);		
+	}
+	
 	exitServices();
+	
 	return 0;
 }

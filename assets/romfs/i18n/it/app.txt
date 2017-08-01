@@ -571,3 +571,4 @@ Errore nell'aggiunta dell'header!
 Errore nel download dei dati!
 Installando l'ultima release...
 Ultima release installata!
+Avviare il gioco?

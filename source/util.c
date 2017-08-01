@@ -137,6 +137,12 @@ void fsEnd() {
         fsEndUseSession();
 }
 
+bool loadedFromCart = true;
+
+bool getLoadedFromCart() {
+	return loadedFromCart;
+}
+
 bool openSaveArch(FS_Archive *out, u64 id) {
 	if (id == 0x00040000000C9B00 || !isHBL()) { //If we're using Pokebank or CIA
 		u32 cardPath[3] = {MEDIATYPE_GAME_CARD, id, id >> 32}; //Card
@@ -144,8 +150,10 @@ bool openSaveArch(FS_Archive *out, u64 id) {
 			u32 sdPath[3] = {MEDIATYPE_SD, id, id >> 32};
 			if (R_FAILED(FSUSER_OpenArchive(out, ARCHIVE_USER_SAVEDATA, (FS_Path){PATH_BINARY, 0xC, sdPath})))
 				return false;
-			else
+			else {
+				loadedFromCart = false;
 				return true;
+			}
 		}
 		else
 			return true;
