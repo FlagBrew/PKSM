@@ -1037,3 +1037,7 @@ void pkx_set_flag(u8* pkmn, const int flgaddr, const int flgshift, const bool va
 void pkx_set_pokerus(u8* pkmn) {
 	*(pkmn + 0x2B) = 0x11;
 }
+
+u8 pkx_get_version(u8* pkmn) {
+	return *(u8*)(pkmn + 0xDF);
+}

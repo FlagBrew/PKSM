@@ -44,7 +44,7 @@ int lookup[] = {0x0, 0x1, 0x2, 0x4, 0x5, 0x3};
 int MAX_LENGTH_BOX_NAME = 15;
 
 sftd_font *fontBold15, *fontBold14, *fontBold12, *fontBold11, *fontBold9; 
-sf2d_texture *eventView, *iconBank, *iconEditor, *iconEvents, *iconSave, *iconSettings, *iconCredits, *mainMenuButton, *noMove, *hexIcon, *hexBG, *blueTextBox, *otaButton, *generationBG, *includeInfoButton, *hiddenPowerBG, *ballsBG, *male, *female, *naturestx, *movesBottom, *topMovesBG, *editorBar, *editorStatsBG, *subArrow, *backgroundTop, *miniBox, *plusButton, *minusButton, *balls, *typesSheet, *transferButton, *bankTop, *shinyStar, *normalBar, *LButton, *RButton, *creditsTop, *pokeball, *gameSelectorBottom1, *gameSelectorBottom2, *gameSelectorTop, *menuBar, *darkButton, *left, *lightButton, *redButton, *right, *spritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *warningTop, *warningBottom, *boxView, *infoView, *selector, *editorBG, *plus, *minus, *back, *setting, *selectorCloning, *button, *bottomPopUp, *pokemonBufferBox, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR, *item, *alternativeSpritesSmall;
+sf2d_texture *generations, *eventView, *iconBank, *iconEditor, *iconEvents, *iconSave, *iconSettings, *iconCredits, *mainMenuButton, *noMove, *hexIcon, *hexBG, *blueTextBox, *otaButton, *generationBG, *includeInfoButton, *hiddenPowerBG, *ballsBG, *male, *female, *naturestx, *movesBottom, *topMovesBG, *editorBar, *editorStatsBG, *subArrow, *backgroundTop, *miniBox, *plusButton, *minusButton, *balls, *typesSheet, *transferButton, *bankTop, *shinyStar, *normalBar, *LButton, *RButton, *creditsTop, *pokeball, *gameSelectorBottom1, *gameSelectorBottom2, *gameSelectorTop, *menuBar, *darkButton, *left, *lightButton, *redButton, *right, *spritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *warningTop, *warningBottom, *boxView, *infoView, *selector, *editorBG, *plus, *minus, *back, *setting, *selectorCloning, *button, *bottomPopUp, *pokemonBufferBox, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR, *item, *alternativeSpritesSmall;
 
 AppTextCode gamesList[] = {S_GRAPHIC_GAME_SELECTOR_GAME_X, S_GRAPHIC_GAME_SELECTOR_GAME_Y, S_GRAPHIC_GAME_SELECTOR_GAME_OS, S_GRAPHIC_GAME_SELECTOR_GAME_AS, S_GRAPHIC_GAME_SELECTOR_GAME_SUN, S_GRAPHIC_GAME_SELECTOR_GAME_MOON, S_GRAPHIC_GAME_SELECTOR_GAME_DIAMOND, S_GRAPHIC_GAME_SELECTOR_GAME_PEARL, S_GRAPHIC_GAME_SELECTOR_GAME_PLATINUM, S_GRAPHIC_GAME_SELECTOR_GAME_HG, S_GRAPHIC_GAME_SELECTOR_GAME_SS, S_GRAPHIC_GAME_SELECTOR_GAME_B, S_GRAPHIC_GAME_SELECTOR_GAME_W, S_GRAPHIC_GAME_SELECTOR_GAME_B2, S_GRAPHIC_GAME_SELECTOR_GAME_W2};
 char* langs[] = { "JP", "EN", "FR", "DE", "IT", "ES", "ZH", "KO", "NL", "PT", "RU", "TW", "SD C." };
@@ -155,7 +155,7 @@ void GUIElementsI18nSpecify(int game) {
 void GUIElementsSpecify(int game) {
 	int elements = 4;
 	if (IS3DS) {
-		elements += 58;
+		elements += 59;
 	} else {
 		elements += 16;
 	}
@@ -175,6 +175,7 @@ void GUIElementsSpecify(int game) {
 #endif
 
 	if (IS3DS) {
+		generations = loadPNGInRAM("romfs:/res/generations.png");
 		eventView = loadPNGInRAM("romfs:/res/Event View.png");
 		iconBank = loadPNGInRAM("romfs:/res/Icon Bank.png");
 		iconEditor = loadPNGInRAM("romfs:/res/Icon Editor.png");
@@ -272,6 +273,7 @@ void GUIGameElementsExit() {
 }
 
 void GUIElementsExit() {
+	sf2d_free_texture(generations);
 	sf2d_free_texture(eventView);
 	
 	sf2d_free_texture(iconBank);
@@ -992,6 +994,58 @@ void printElementBlend(u8* pkmn, int game, u16 n, int x, int y, u32 color) {
 		sf2d_draw_texture_blend(item, x + 3, y + 21, color);
 }
 
+void printGeneration(u8* pkmn, int x, int y) {
+	u8 version = pkx_get_version(pkmn);
+	switch (version) {
+		case 1: // sapphire
+		case 2: // ruby
+		case 3: // emerald
+		case 4: // fire red
+		case 5: // leaf green
+		case 15: // colosseum/XD
+			sf2d_draw_texture_part(generations, x, y, 20, 0, 10, 10);
+			break;
+		case 10: // diamond
+		case 11: // pearl
+		case 12: // platinum
+		case 7: // heart gold
+		case 8: // soul silver
+			sf2d_draw_texture_part(generations, x, y, 30, 0, 10, 10);
+			break;		
+		case 20: // white
+		case 21: // black
+		case 22: // white2
+		case 23: // black2
+			sf2d_draw_texture_part(generations, x, y, 40, 0, 10, 10);
+			break;
+		case 24: // x
+		case 25: // y
+		case 26: // as
+		case 27: // or
+			sf2d_draw_texture_part(generations, x, y, 50, 0, 10, 10);
+			break;
+		case 30: // sun
+		case 31: // moon
+		case 32: // us
+		case 33: // um
+			sf2d_draw_texture_part(generations, x, y, 60, 0, 10, 10);
+			break;
+		case 34: // go
+			sf2d_draw_texture_part(generations, x, y, 10, 0, 10, 10);
+			break;
+		case 35: // rd
+		case 36: // gn
+		case 37: // bu
+		case 38: // yw
+		case 39: // gd
+		case 40: // sv
+			sf2d_draw_texture_part(generations, x, y, 0, 0, 10, 10);
+			break;
+		default:
+			break;
+	}
+}
+
 void infoViewer(u8* pkmn, int game) {
 	int y_desc = 29;
 	wchar_t* entries[] = {i18n(S_GRAPHIC_INFOVIEWER_NICKNAME), i18n(S_GRAPHIC_INFOVIEWER_OT), i18n(S_GRAPHIC_INFOVIEWER_POKERUS), i18n(S_GRAPHIC_INFOVIEWER_NATURE), i18n(S_GRAPHIC_INFOVIEWER_ABILITY), i18n(S_GRAPHIC_INFOVIEWER_ITEM), i18n(S_GRAPHIC_INFOVIEWER_ESVTSV), i18n(S_GRAPHIC_INFOVIEWER_TIDSID), i18n(S_GRAPHIC_INFOVIEWER_HTOT_FRIENDSHIP), i18n(S_GRAPHIC_INFOVIEWER_HTOT_HIDDEN_POWER)};
@@ -1023,8 +1077,11 @@ void infoViewer(u8* pkmn, int game) {
 	}
 	
 	if (pkx_get_species(pkmn) > 0 && pkx_get_species(pkmn) < 822) {
+		
 		sf2d_draw_texture_part(balls, -2, -5, 32 * (pkx_get_ball(pkmn) % 8), 32 * (pkx_get_ball(pkmn) / 8), 32, 32);
 		sftd_draw_wtext(fontBold12, 30, 6, WHITE, 12, listSpecies.items[pkx_get_species(pkmn)]);
+		
+		printGeneration(pkmn, 134, 8);
 		
 		if (pkx_get_gender(pkmn) == 0)
 			sf2d_draw_texture(male, 146, 7);

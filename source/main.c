@@ -410,7 +410,9 @@ int main() {
 #endif
 
 	free(mainbuf);
-	
+
+#ifdef CITRA
+#else	
 	if (!isHBL() && IS3DS && confirmDisp(i18n(S_LAUNCH_GAME))) {
 		//FXElementsExit();
 		//GUIElementsExit();
@@ -422,6 +424,7 @@ int main() {
 		u8 hmac[0x20] = {0};
 		APT_DoApplicationJump(NULL, 0, hmac);		
 	}
+#endif
 	
 	exitServices();
 	

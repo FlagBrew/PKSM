@@ -81,6 +81,7 @@ u8 pkx_get_nature(u8* pkmn);
 u8 pkx_get_ev(u8* pkmn, const int stat);
 u8 pkx_get_iv(u8* pkmn, const int stat);
 u8 pkx_get_ball(u8* pkmn);
+u8 pkx_get_version(u8* pkmn);
 
 void pkx_set_item(u8* pkmn, const u16 item);
 void pkx_set_gender(u8* pkmn, const u8 val);
