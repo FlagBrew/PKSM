@@ -994,7 +994,7 @@ void pkx_set_nickname(u8* pkmn, char* nick, const int dst) {
 			break;
 	}
 
-	if (dst == 0x40) {
+	if (dst == 0x40 && !isGenerating()) {
 		u8 isnicknamed;
 		memcpy(&isnicknamed, &pkmn[0x77], 1);
 		isnicknamed |= 0x80;

@@ -308,7 +308,15 @@ void parseSaveHexEditor(u8* mainbuf, int game, int byte) {
 	}
 }
 
+bool generating = false;
+
+bool isGenerating() {
+	return generating;
+}
+
 void generate(u8* mainbuf, int game, bool isTeam, int box, int currentEntry, int page, int genEntry) {
+	generating = true;
+	
 	FILE *fptr = fopen(ISGEN6 ? "romfs:/misc/living6.bin" : "romfs:/misc/living7.bin", "rt");
 	fseek(fptr, 0, SEEK_END);
 	u32 size = ftell(fptr);
@@ -336,7 +344,8 @@ void generate(u8* mainbuf, int game, bool isTeam, int box, int currentEntry, int
 	setDex(mainbuf, tempkmn, game);
 	pkx_set(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
 
-	free(livingbuf);	
+	free(livingbuf);
+	generating = false;
 }
 
 void pokemonEditor(u8* mainbuf, int game) {

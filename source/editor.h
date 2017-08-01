@@ -45,6 +45,7 @@
 
 #define CHERISH_BALL 16
 
+bool isGenerating();
 bool isBattleBoxed(u8* mainbuf, int game, int box, int slot);
 bool checkHTLegality(u8* mainbuf, u8* pkmn, int game);
 
