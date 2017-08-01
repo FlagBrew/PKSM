@@ -25,6 +25,7 @@ static char	payload[PAYLOADSIZE];
 
 static char legalityAddress[16];
 bool isLegalityAddressSet = false;
+bool checkingLegality = false;
 
 char* socket_get_ip() {
 	return inet_ntoa(server.server_addr.sin_addr);
@@ -129,18 +130,22 @@ void process_pkx(u8* mainbuf, int game, int tempVett[]) {
             memcpy(pkmn, &dummy[7], PKMNLENGTH);
             pkx_set_as_it_is(mainbuf, tempVett[0], tempVett[1], pkmn, game);
 
-            do {
-                tempVett[1]++;
-                if (tempVett[1] == 30) {
-                    tempVett[0]++;
-                    tempVett[1] = 0;
-                }
-                if (tempVett[0] > boxmax)
-                    tempVett[0] = 0;
+			if (checkingLegality) {
+				checkingLegality = false;
+			} else {
+				do {
+					tempVett[1]++;
+					if (tempVett[1] == 30) {
+						tempVett[0]++;
+						tempVett[1] = 0;
+					}
+					if (tempVett[0] > boxmax)
+						tempVett[0] = 0;
 
-                pkx_get(mainbuf, tempVett[0], tempVett[1], pkmn, game);
-                panic++;
-            } while (pkx_get_species(pkmn) && (panic < boxmax * 30));	
+					pkx_get(mainbuf, tempVett[0], tempVett[1], pkmn, game);
+					panic++;
+				} while (pkx_get_species(pkmn) && (panic < boxmax * 30));
+			}
         }
     }
     close(server.client_id);
@@ -176,7 +181,10 @@ void processLegality(u8* pkmn) {
 		close(sock);
 		infoDisp(i18n(S_SOCKET_SEND_FAILED));
 		return;
-	}					
+	}
+
+	checkingLegality = true;
+	
 	close(sock);
 }
 
