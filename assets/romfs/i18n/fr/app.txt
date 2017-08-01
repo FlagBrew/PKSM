@@ -571,3 +571,4 @@ Echec de l'ajout d'un request header!
 Echec du téléchargement des données!
 Installation de la dernière version...
 Dernière version installée!
+Voulez-vous lancer le jeu ?
