@@ -1,13 +1,13 @@
 Téléchargement du fichier supp. n°%d...
 Chargement des fichiers...
 Chargement des traductions...
-Chargement des talents
-Chargement des capacités
-Tri des capacités
-Chargement des natures
-Chargement des objets
-Tri des objets
-Chargement des p. cachés
+Chargement des talents...
+Chargement des capacités...
+Tri des capacités...
+Chargement des natures...
+Chargement des objets...
+Tri des objets...
+Chargement des p. cachées...
 Chargement des polices...
 Préchargement police de caractère %i / %i
 Chargement initial terminé !
@@ -17,11 +17,11 @@ Relancez l'app!
 Des fichiers sont manquants!
 Chargement de la sauvegarde...
 Jeu non trouvé !
-Taille incorrect de la sauvegarde!
-Pas de cartouche inséré !
+Taille de la sauvegarde incorrecte!
+Pas de cartouche insérée !
 Gestion
 Events
-Credits
+Crédits
 Appuyez sur A pour choisir un menu.
 Appuyez sur START pour quitter.
 Editeur
@@ -192,7 +192,7 @@ Pokédex National
 Oblivia Deoxys
 My Pokémon Ranch
 Events Corréens
-%d boîtes vont être remplacés.
+%d boîtes vont être remplacées.
 Génération automatique de Pokémons
 Appuyez sur START pour injecter, B pour quitter.
 Boxs banque
@@ -201,24 +201,24 @@ Backup Banque
 Appuyez à côté du nombre pour changer la taille.
 Oui
 Non
-Créature: #%d - %ls
+Espèce: #%d - %ls
 Objet tenu: #%d - %ls
 TID: %d
 SID: %d
 Talent: %ls
 Nature: %ls
-Indicateur Rencontre Fatidique
-Sexe:
+Rencontré par la force du destin
+Genre:
 mâle
 femelle
 sans genre
 Forme alternative: #%d
-PV EV: %d
-ATQ EV: %d
-DEF EV: %d
-VIT EV: %d
-A.SPE EV: %d
-D.SPE EV: %d
+EV PV: %d
+EV Atq: %d
+EV Def: %d
+EV Vit: %d
+EV A.Spé: %d
+EV D.Spé: %d
 Concours Pkmn - Sang-Froid: %d
 Concours Pkmn - Beauté: %d
 Concours Pkmn - Grâce: %d
@@ -336,8 +336,8 @@ Sanity, byte 1
 Sanity, byte 2
 Checksum, byte 1
 Checksum, byte 2
-Créature, byte 1
-Créature, byte 2
+Espèce, byte 1
+Espèce, byte 2
 Objet tenu, byte 1
 Objet tenu, byte 2
 TID, byte 1
@@ -357,13 +357,13 @@ PID, byte 2
 PID, byte 3
 PID, byte 4
 Nature
-Indicateur de Rencontre Fatidique / Sexe / Forme alternative
-PV Effort Value
-ATQ Effort Value
-DEF Effort Value
-VIT Effort Value
-A.SPE Effort Value
-D.SPE Effort Value
+"Rencontré par la force du destin" / Sexe / Forme alternative
+EV PV
+EV Attaque
+EV Défense
+EV Vitesse
+EV Attaque Spéciale
+EV Défense Spéciale
 Concours Pkmn - Sang-Froid
 Concours Pkmn - Beauté
 Concours Pkmn - Grâce
@@ -553,22 +553,21 @@ Backup du jeu créé!
 Backup de la banque créé!
 Exporter
 Exporter tous les Pokémons ?
-Progression %d/%d
+Progrès:  %d/%d
 PokéDex
 Attrapés: %d
 Vus: %d
 Impossible d'établir une connexion !
 Impossible d'envoyer les données !
 Entrez l'IP du PC:
-Press X to enter serveLegality IP address...
-Press X to check legality with serveLegality...
-Calling GitHub APIs...
-Elaborating API response...
-Downloading latest release...
-Update failed!
-Failed to add certificate!
-Failed to add a request header!
-Failed to download data!
-Installing latest release...
-Latest release installed!
-Do you want to launch the game?
+Appuyez sur X pour entrer l'adresse IP de serveLegality...
+Appuyez sur X pour tester la légalité avec serveLegality...
+Appel des APIs Github...
+Elaboration de la réponse...
+Téléchargement de la dernière version...
+Echec de la mise à jour!
+Echec de l'ajout de certificats!
+Echec de l'ajout d'un request header!
+Echec du téléchargement des données!
+Installation de la dernière version...
+Dernière version installée!
