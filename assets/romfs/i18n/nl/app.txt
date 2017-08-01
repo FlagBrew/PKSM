@@ -321,7 +321,7 @@ Met Year: %d
 Met Month: %d
 Met Day: %d
 Met Level: %d
-: Original Trainer Gender
+: Originele Trainer Geslacht
 HP Hyper Trained
 ATK Hyper Trained
 DEF Hyper Trained
@@ -555,8 +555,8 @@ Dump
 Confirm for a full storage dump?
 Step %d/%d
 PokéDex
-Caught: %d
-Seen: %d
+Gevangen: %d
+Gezien: %d
 Socket connect failed!
 Socket send failed!
 Enter your pc IP address:
@@ -564,11 +564,11 @@ Press X to enter serveLegality IP address...
 Press X to check legality with serveLegality...
 Calling GitHub APIs...
 Elaborating API response...
-Downloading latest release...
-Update failed!
-Failed to add certificate!
-Failed to add a request header!
-Failed to download data!
-Installing latest release...
-Latest release installed!
-Do you want to launch the game?
+Laatste versie downloaden...
+Bijwerken mislukt!
+Certificaat toevoegen mislukt!
+Verzoek header toevoegen mislukt!
+Data downloaden mislukt!
+Installeren laatste versie...
+Laatste versie geïnstalleerd!
+Wil je het spel opstarten?
