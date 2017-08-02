@@ -78,7 +78,7 @@ BUILD_FLAGS_CC := -g -Wall -O2 -mword-relocations \
 			-fomit-frame-pointer -ffast-math \
 			$(BUILD_FLAGS) $(INCLUDE) -DARM11 -D_3DS \
 			-DPKSV=${PKSV} \
-			-DROSALINA_3DSX=${ROSALINA}
+			-DROSALINA_3DSX=${ROSALINA} \
 			-DCITRA=${DEBUG}
 BUILD_FLAGS_CXX := $(BUILD_FLAGS_CC) -fno-rtti -fno-exceptions -std=gnu++11
 RUN_FLAGS :=
