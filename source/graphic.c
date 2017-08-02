@@ -164,7 +164,7 @@ void GUIElementsSpecify(int game) {
 	initProgressLoadPNGInRAM(elements);
 
 	freezeMsg(i18n(S_GRAPHIC_GUI_ELEMENTS_SPECIFY_LOADING));
-#ifdef CITRA
+#if CITRA
 	alternativeSpritesSmall = loadPNGInRAM("romfs:/citra/PKResources/additionalassets/alternative_icons_spritesheetv3.png");
 	spritesSmall = loadPNGInRAM("romfs:/citra/PKResources/additionalassets/pokemon_icons_spritesheetv3.png");
 	balls = loadPNGInRAM("romfs:/citra/PKResources/additionalassets/balls_spritesheetv2.png");
@@ -536,7 +536,7 @@ void progressBar(wchar_t* message, u32 current, u32 sz) {
 
 void drawMenuTop() {
 	printMenuTop();
-	#ifdef PKSV
+	#if PKSV
 	printTitle(L"PKSV");
 	#else
 	printTitle(L"PKSM");
@@ -825,7 +825,7 @@ void printDB7(u8* previewbuf, int game, int sprite, int i, bool langVett[], bool
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		wcxInfoViewer(previewbuf, game);
-#ifdef PKSV
+#if PKSV
 #else
 		sf2d_draw_texture(otaButton, 360, 2);
 #endif
@@ -1348,7 +1348,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 		sftd_draw_wtext(fontBold12, 12 + (178 - sftd_get_wtext_width(fontBold12, 12, page)) / 2, 19, WHITE, 12, page);
 		sf2d_draw_texture(left, 7, 17);
 		sf2d_draw_texture(right, 185, 17);
-#ifdef PKSV
+#if PKSV
 #else
 		sf2d_draw_texture(otaButton, 240, 211);
 #endif
@@ -1863,7 +1863,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 		sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKBANK_MENU_RELEASE))) / 2, 104, BLACK, 12, i18n(S_GRAPHIC_PKBANK_MENU_RELEASE));
 		sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKBANK_MENU_DEX))) / 2, 160, BLACK, 12, i18n(S_GRAPHIC_PKBANK_MENU_DEX));
 		sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKBANK_MENU_DUMP))) / 2, 187, BLACK, 12, i18n(S_GRAPHIC_PKBANK_MENU_DUMP));
-#ifdef PKSV
+#if PKSV
 #else
 		sf2d_draw_texture(otaButton, 240, 211);
 #endif
@@ -1926,7 +1926,7 @@ void printSettings(int box, int language) {
 			sftd_draw_wtext(fontBold15, i == 0 ? 69 : (320 - sftd_get_wtext_width(fontBold15, 15, menu[i])) / 2, 58 + (menuBar->height - 18) / 2 + i * (menuBar->height), DARKBLUE, 15, menu[i]);
 		}
 
-#ifdef PKSV
+#if PKSV
 #else
 		sf2d_draw_texture(otaButton, 280, 216);
 #endif

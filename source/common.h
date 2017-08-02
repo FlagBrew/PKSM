@@ -80,12 +80,7 @@
 #define ISORAS (game == GAME_OR || game == GAME_AS)
 #define ISSUMO (game == GAME_SUN || game == GAME_MOON)
 
-#ifdef PKSV
-#define VERSION "v2.0.1"
-#else
 #define VERSION "v4.3.1"
-#endif
-
 
 /**
  * OFFSETS

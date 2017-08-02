@@ -343,7 +343,7 @@ void fillSaveSectors(bool saveSectors[][2], int game) {
 		saveSectors[j][1] = false;
 	}
 	
-	#ifdef PKSV
+	#if PKSV
 	#else
 	if (game == GAME_SUN || game == GAME_MOON) { 
 		for (int i = SAVE_SM_MONEY; i < SAVE_SM_MONEY + 4; i++)

@@ -11,11 +11,57 @@ endif
 
 # COMMON CONFIGURATION #
 
-NAME := PKSM
+PKSM=1
+PKSV=0 
+ROSALINA=0
+DEBUG=0
 
-BUILD_DIR := build/PKSM
-OUTPUT_DIR := output/PKSM
-INCLUDE_DIRS := 
+ifeq ($(PKSV), 1)
+	NAME := PKSV
+else
+	NAME := PKSM
+endif
+
+BUILD_BASE := build
+OUTPUT_BASE := output
+
+ifeq ($(PKSV), 1)
+	ifeq ($(ROSALINA), 1)
+		BUILD_DIR := build/rosalina/PKSV
+	else
+		BUILD_DIR := build/PKSV
+	endif
+else
+	ifeq ($(DEBUG), 1)
+		BUILD_DIR := build/PKSM/citra
+	else
+		ifeq ($(ROSALINA), 1)
+			BUILD_DIR := build/rosalina/PKSM
+		else
+			BUILD_DIR := build/PKSM
+		endif
+	endif
+endif
+
+ifeq ($(PKSV), 1)
+	ifeq ($(ROSALINA), 1)
+		OUTPUT_DIR := output/rosalina/PKSV
+	else
+		OUTPUT_DIR := output/PKSV
+	endif
+else
+	ifeq ($(DEBUG), 1)
+		OUTPUT_DIR := output/PKSM/citra
+	else
+		ifeq ($(ROSALINA), 1)
+			OUTPUT_DIR := output/rosalina/PKSM
+		else
+			OUTPUT_DIR := output/PKSM
+		endif
+	endif
+endif
+
+INCLUDE_DIRS :=
 SOURCE_DIRS := source/memecrypto/source source
 
 EXTRA_OUTPUT_FILES :=
@@ -30,21 +76,28 @@ LIBRARIES := sfil sftd freetype png z sf2d citro3d ctru m
 BUILD_FLAGS := -march=armv6k -mtune=mpcore -mfloat-abi=hard
 BUILD_FLAGS_CC := -g -Wall -O2 -mword-relocations \
 			-fomit-frame-pointer -ffast-math \
-			$(BUILD_FLAGS) $(INCLUDE) -DARM11 -D_3DS
+			$(BUILD_FLAGS) $(INCLUDE) -DARM11 -D_3DS \
+			-DPKSV=${PKSV} \
+			-DROSALINA_3DSX=${ROSALINA}
+			-DCITRA=${DEBUG}
 BUILD_FLAGS_CXX := $(BUILD_FLAGS_CC) -fno-rtti -fno-exceptions -std=gnu++11
 RUN_FLAGS :=
 
 VERSION_MAJOR := 4
 VERSION_MINOR := 3
-VERSION_MICRO := 1
+VERSION_MICRO := 0
 
-REMOTE_IP := 192.168.1.9
+REMOTE_IP := 192.168.1.3
 
 # 3DS/Wii U CONFIGURATION #
 
 ifeq ($(TARGET),$(filter $(TARGET),3DS WIIU))
     TITLE := $(NAME)
-    DESCRIPTION := AIO tool for Pokemon games
+	ifeq ($(PKSV), 1)
+		DESCRIPTION := Gen4+ pkmn save viewer
+	else
+		DESCRIPTION := Gen4+ pkmn save manager
+	endif
     AUTHOR := Bernardo Giordano, PKSM devs
 endif
 
@@ -55,7 +108,11 @@ ifeq ($(TARGET),3DS)
     LIBRARIES +=
 
     PRODUCT_CODE := CTR-HB-PKSM
-    UNIQUE_ID := 0xEC100
+	ifeq ($(PKSV), 1)
+		UNIQUE_ID := 0xEC200
+	else
+		UNIQUE_ID := 0xEC100
+	endif
 
     CATEGORY := Application
     USE_ON_SD := true
@@ -70,11 +127,42 @@ ifeq ($(TARGET),3DS)
 
     ROMFS_DIR := assets/romfs
     BANNER_AUDIO := assets/audio.wav
-    BANNER_IMAGE := assets/banner.png
-    ICON := assets/icon.png
+	
+	ifeq ($(PKSV), 1)
+		BANNER_IMAGE := assets/banner_pksv.png
+	else
+		BANNER_IMAGE := assets/banner.png
+	endif
+	
+	ifeq ($(PKSV), 1)
+		ICON := assets/icon_pksv.png
+	else
+		ICON := assets/icon.png
+	endif
+	
 	LOGO :=
 endif
 
 # INTERNAL #
 
 include buildtools/make_base
+
+pksm: 
+	@make PKSM=1 PKSV=0 ROSALINA=0 DEBUG=0
+
+citra:
+	@make PKSM=1 PKSV=0 ROSALINA=0 DEBUG=1
+	
+pksv:
+	@make PKSM=0 PKSV=1 ROSALINA=0 DEBUG=0
+	
+rosalinapksm:
+	@make PKSM=0 PKSV=0 ROSALINA=1 DEBUG=0
+	
+rosalinapksv:
+	@make PKSM=0 PKSV=1 ROSALINA=1 DEBUG=0
+
+cleanall: 
+	@rm -rf $(BUILD_BASE)
+	@rm -rf $(OUTPUT_BASE)
+	@echo Cleaned.

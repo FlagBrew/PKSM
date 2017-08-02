@@ -302,7 +302,7 @@ void bank(u8* mainbuf, int game) {
 		else
 			zSpeed = 0;
 		
-#ifdef PKSV
+#if PKSV
 #else
 		if (((hidKeysDown() & KEY_Y) || ((hidKeysDown() & KEY_TOUCH) && touch.px > 240 && touch.px < 276 && touch.py > 210 && touch.py < 240)) && !isBufferized) {
 			isWirelessBuffer = isWirelessBuffer ? false : true;

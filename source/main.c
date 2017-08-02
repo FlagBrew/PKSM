@@ -102,7 +102,7 @@ bool initServices() {
 	FXElementsInit();
 	GUIGameElementsInit();
 
-#ifdef CITRA
+#if CITRA
 #else	
 	wchar_t str[60];
 	for (int i = 0; i < ASSETS; i++) {
@@ -172,7 +172,7 @@ int main() {
 		return 0;
 	}
 	
-#ifdef CITRA
+#if CITRA
 #else
 	for (int i = 0; i < ASSETS; i++) {
 		if (!checkFile(path[i])) {
@@ -191,7 +191,7 @@ int main() {
 	
 	bool save = true;
 	
-#ifdef CITRA
+#if CITRA
 #else
 	Handle mainHandle;
 	FS_Archive saveArch;
@@ -216,7 +216,7 @@ int main() {
 	GUIGameElementsExit();
 	freezeMsg(i18n(S_MAIN_LOADING_SAVE));
 
-#ifdef CITRA
+#if CITRA
 	char savepath[100];
 	sprintf(savepath, "romfs:/citra/saves/%s.bin", gamesList[game]);
 	FILE *saveptr = fopen(savepath, "rt");
@@ -396,7 +396,7 @@ int main() {
 			rewriteCHK4(mainbuf, game, GBO, SBO);
 	}
 
-#ifdef CITRA
+#if CITRA
 #else
 	if (IS3DS) {
 		FSFILE_Write(mainHandle, NULL, 0, mainbuf, mainSize, FS_WRITE_FLUSH);
@@ -411,7 +411,7 @@ int main() {
 
 	free(mainbuf);
 
-#ifdef CITRA
+#if CITRA
 #else	
 	if (!isHBL() && IS3DS && confirmDisp(i18n(S_LAUNCH_GAME))) {
 		//FXElementsExit();

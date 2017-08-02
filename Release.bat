@@ -1,19 +1,7 @@
-make -j install
-@rename Makefile PKSM.Makefile
-
-@rename PKSV.Makefile Makefile
-make -j install
-@rename MakeFile PKSV.Makefile
-
-@rename RosalinaPKSM.Makefile Makefile
-make -j 
-@rename MakeFile RosalinaPKSM.Makefile
-
-@rename RosalinaPKSV.Makefile Makefile
-make -j
-@rename MakeFile RosalinaPKSV.Makefile
-
-@rename PKSM.Makefile Makefile
+make pksm
+make pksv
+make rosalinapksm
+make rosalinapksv
 
 @rd release /s /q
 @mkdir release\standard\PKSM\3ds\PKSM release\standard\PKSV\3ds\PKSV release\rosalina\3ds\PKSM release\rosalina\3ds\PKSV release\servepkx\java release\servepkx\python release\servepkx\webbrowser release\extrastorage\badsectors release\extrastorage\phbank2pksm

@@ -77,27 +77,28 @@ Manually install each of the following into the devkitPro folder:
 ```bash
 git clone https://github.com/xerpi/sf2dlib.git
 cd sf2dlib/libsf2d
-make
 make install
 
 git clone https://github.com/xerpi/sftdlib.git
 cd sftdlib/libsftd
-make
 make install
 
 git clone https://github.com/xerpi/sfillib.git
 cd sfillib
-make
 make install
 ```
 
-Finally, clone this repo recursively and build with
+Finally, clone this repo recursively and build with one of the following build options:
 
 ```bash
 git clone --recursive https://github.com/BernardoGiordano/PKSM.git
 cd PKSM
-make
-make install
+
+make pksm
+make pksv
+make rosalinapksm
+make rosalinapksv
+make cleanall
 ```
 
 In case you're compiling for *hax-based homebrew launchers ensure you also create an xml file with 

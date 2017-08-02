@@ -108,13 +108,13 @@ void injectFromFile(u8* mainbuf, char* path, u32 offset) {
 }
 
 bool isHBL() {
-#ifdef ROSALINA_3DSX
+#if ROSALINA_3DSX
 	return false;
 #else
 	u64 id;
 	APT_GetProgramID(&id);
 	
-#ifdef PKSV
+#if PKSV
 	return id != 0x000400000EC20000;
 #else
 	return id != 0x000400000EC10000;
@@ -195,7 +195,7 @@ void settingsMenu(u8* mainbuf, int game) {
 
 		if (hidKeysDown() & KEY_B) break;
 
-#ifdef PKSV
+#if PKSV
 #else		
 		if ((hidKeysDown() & KEY_Y) || (hidKeysDown() & KEY_TOUCH && touch.px > 280 && touch.px < 313 && touch.py > 216)) {
 			update();
