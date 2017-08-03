@@ -37,7 +37,7 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	// database[count] = "0000 - Mewnium Z"; spriteArray[count++] = 0;
 	// database[count] = "0201 - Birthday Events"; spriteArray[count++] = 764;
 	database[count] = "0202 - Revival Herb"; spriteArray[count++] = 0;
-	// database[count] = "0203 - PC Alolan Vulpix"; spriteArray[count++] = 37;
+	database[count] = "0203 - PC Alolan Vulpix"; spriteArray[count++] = 37;
 	// database[count] = "0204 - Item Bundle"; spriteArray[count++] = 0;
 	database[count] = "0205 - Choice Band/Scarf"; spriteArray[count++] = 0;
 	// database[count] = "0207 - Big Nugget"; spriteArray[count++] = 0;
@@ -48,7 +48,7 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[count] = "0219 - 7-11 Machamp"; spriteArray[count++] = 68;
 	database[count] = "0220 - Shiny Tapu Koko"; spriteArray[count++] = 785;
 	database[count] = "0221 - JPN Egg Shiny Chance"; spriteArray[count++] = 747;
-	// database[count] = "0222 - JPN Bewear"; spriteArray[count++] = 760;
+	database[count] = "0222 - JPN Bewear"; spriteArray[count++] = 760;
 	database[count] = "0223 - Ash-hat Pikachu"; spriteArray[count++] = 25;
 	database[count] = "0224 - CoroCoro Charizard"; spriteArray[count++] = 6;
 	database[count] = "0225 - Battle Points"; spriteArray[count++] = 0;
@@ -73,7 +73,7 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[count] = "1108 - Alolan Sandshrew"; spriteArray[count++] = 27;
 	database[count] = "1109 - Alolan Diglett"; spriteArray[count++] = 50;
 	database[count] = "1110 - Alolan Grimer"; spriteArray[count++] = 88;
-	// database[count] = "1111 - KOR Egg Shiny Chance"; spriteArray[count++] = 780;
+	database[count] = "1111 - KOR Egg Shiny Chance"; spriteArray[count++] = 780;
 	// database[count] = "1112 - WCSK17 Mew"; spriteArray[count++] = 151;
 	database[count] = "1114 - Birthday Events"; spriteArray[count++] = 133;
 	database[count] = "1601 - Z-stone Munchlax"; spriteArray[count++] = 446;
