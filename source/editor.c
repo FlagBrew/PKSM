@@ -1125,7 +1125,7 @@ void pokemonEditor(u8* mainbuf) {
 									}
 								}
 								if ((hidKeysDown() & KEY_A) && !isTeam) {
-									pkx_set(mainbuf, box, cloneEntry, pkmn);
+									pkx_set_as_it_is(mainbuf, box, cloneEntry, pkmn);
 									operationDone = true;
 									currentEntry = cloneEntry;
 									break;
@@ -1138,7 +1138,7 @@ void pokemonEditor(u8* mainbuf) {
 						case 2 : {
 							if (!isTeam && confirmDisp(i18n(S_EDITOR_Q_CONFIRM_RELEASE))) {
 								memset(pkmn, 0, PKMNLENGTH);
-								pkx_set(mainbuf, box, currentEntry, pkmn);
+								pkx_set_as_it_is(mainbuf, box, currentEntry, pkmn);
 								infoDisp(i18n(S_EDITOR_RELEASED));
 								operationDone = true;
 							}

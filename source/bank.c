@@ -328,7 +328,7 @@ void bank(u8* mainbuf) {
 				if (bufferizedfrombank)
 					memcpy(&bankbuf[coordinate[0] * 30 * PKMNLENGTH + coordinate[1] * PKMNLENGTH], pkmn, PKMNLENGTH);
 				else if (!isWirelessBuffer)
-					pkx_set(mainbuf, coordinate[0], coordinate[1], pkmn);
+					pkx_set_as_it_is(mainbuf, coordinate[0], coordinate[1], pkmn);
 				else if (isWirelessBuffer)
 					setToWirelessBuf(wirelessbuf, coordinate[0], coordinate[1], pkmn);
 				
@@ -361,7 +361,7 @@ void bank(u8* mainbuf) {
 						if (currentEntry < 30)
 							memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + i * PKMNLENGTH], tmp, PKMNLENGTH);
 						else if (!isBattleBoxed(mainbuf, saveBox, i) && !isWirelessBuffer)
-							pkx_set(mainbuf, saveBox, i, tmp);
+							pkx_set_as_it_is(mainbuf, saveBox, i, tmp);
 						else if (isWirelessBuffer)
 							setToWirelessBuf(wirelessbuf, saveBox, i, tmp);
 					}
@@ -405,7 +405,7 @@ void bank(u8* mainbuf) {
 				if (currentEntry < 30) 
 					memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], tmp, PKMNLENGTH);
 				else if (!isBattleBoxed(mainbuf, saveBox, currentEntry - 30) && !isWirelessBuffer)
-					pkx_set(mainbuf, saveBox, currentEntry - 30, tmp);
+					pkx_set_as_it_is(mainbuf, saveBox, currentEntry - 30, tmp);
 				else if (isWirelessBuffer)
 					setToWirelessBuf(wirelessbuf, saveBox, currentEntry - 30, tmp);
 			}
@@ -500,7 +500,7 @@ void bank(u8* mainbuf) {
 					else if ((!bufferizedfrombank == (currentEntry > 29)) && (coordinate[0] == ((currentEntry < 30) ? bankBox : saveBox)) && (coordinate[1] == currentEntry - 30)) {
 						//remains at the same place
 						if (!isWirelessBuffer)
-							pkx_set(mainbuf, saveBox, currentEntry - 30, pkmn);
+							pkx_set_as_it_is(mainbuf, saveBox, currentEntry - 30, pkmn);
 						else if (isWirelessBuffer)
 							setToWirelessBuf(wirelessbuf, saveBox, currentEntry - 30, pkmn);
 					}
