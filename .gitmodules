@@ -10,3 +10,6 @@
 [submodule "buildtools"]
 	path = buildtools
 	url = https://github.com/BernardoGiordano/buildtools.git
+[submodule "serveLegality"]
+	path = serveLegality
+	url = https://github.com/BernardoGiordano/serveLegality
