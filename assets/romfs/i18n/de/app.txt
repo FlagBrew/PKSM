@@ -551,24 +551,24 @@ Speicherzuweisung fehlgeschlagen!
 Bank-Größe geändert!
 Spielstand-Sicherung erstellt!
 Bank-Sicherung erstellt!
-Dump
-Confirm for a full storage dump?
-Step %d/%d
+Exportieren
+Bestätigten für vollständigen Export des Speichers?
+Schritt %d/%d
 PokéDex
-Caught: %d
-Seen: %d
-Socket connect failed!
-Socket send failed!
-Enter your pc IP address:
-Press X to enter serveLegality IP address...
-Press X to check legality with serveLegality...
-Calling GitHub APIs...
-Elaborating API response...
-Downloading latest release...
-Update failed!
-Failed to add certificate!
-Failed to add a request header!
-Failed to download data!
-Installing latest release...
-Latest release installed!
-Do you want to launch the game?
+Gefangen: %d
+Gesehen: %d
+Socket: Verbindung fehlgeschlagen!
+Socket: Senden fehlgeschlagen!
+Gib die IP Adresse deines PC ein:
+Drücke X zum eingeben der serveLegality IP Adresse...
+Drücke X um Mithilfe von serveLegality auf Legalität zu prüfen...
+Aufrufen der GitHub APIs...
+Parsen der API Antwort...
+Downloaden der aktuellen Version...
+Update fehlgeschlagen!
+Hinzufügen des Zertifikat fehlgeschlagen!
+Hinzufügen des request header fehlgeschlagen!
+Download der Daten fehlgeschlagen!
+Installiere aktuelle Version...
+Aktuelle Version installiert!
+Möchtest du das Spiel starten?
