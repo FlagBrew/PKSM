@@ -132,7 +132,8 @@ void process_pkx(u8* mainbuf, int game, int tempVett[]) {
 
 			if (checkingLegality) {
 				checkingLegality = false;
-			} else {
+			} 
+			else {
 				do {
 					tempVett[1]++;
 					if (tempVett[1] == 30) {
@@ -152,11 +153,13 @@ void process_pkx(u8* mainbuf, int game, int tempVett[]) {
     server.client_id = -1;
 }
 
-void processLegality(u8* pkmn) {
-	char message[PKMNLENGTH + 7];
+void processLegality(u8* pkmn, int game) {
+	u8 gameVersion = ISGEN7 ? 7 : 6;
+	char message[PKMNLENGTH + 8];
 	const char* prefix = "PKSMOTA";
 	memcpy(message, prefix, 7);
-	memcpy(message + 7, pkmn, PKMNLENGTH);
+	memcpy(message + 7, &gameVersion, 1);
+	memcpy(message + 8, pkmn, PKMNLENGTH);
 
 	struct sockaddr_in legalityServer;
 	int sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -177,14 +180,14 @@ void processLegality(u8* pkmn) {
 	}
 	
 	fcntl(sock, F_SETFL, fcntl(sock, F_GETFL, 0) | O_NONBLOCK);
-	if (send(sock, message, 239, 0) < 0) {
+	if (send(sock, message, 240, 0) < 0) {
 		close(sock);
 		infoDisp(i18n(S_SOCKET_SEND_FAILED));
 		return;
 	}
 
-	checkingLegality = true;
-	
+	//TODO: uncomment when all the serveLegality's features are implemented
+	//checkingLegality = true;
 	close(sock);
 }
 

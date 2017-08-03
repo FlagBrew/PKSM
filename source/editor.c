@@ -457,9 +457,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 				}
 			}
 		}
-		
-#if PKSV
-#else
+
 		if (((hidKeysDown() & KEY_Y) || ((hidKeysDown() & KEY_TOUCH) && touch.px > 240 && touch.px < 276 && touch.py > 210 && touch.py < 240)) && !isTeam) {
 			if (!socket_init())
 				break;
@@ -481,11 +479,13 @@ void pokemonEditor(u8* mainbuf, int game) {
 							socket_set_legality_address(true);
 						
 						else if (socket_is_legality_address_set())
-							processLegality(toBeChecked);
+							processLegality(toBeChecked, game);
 					}
 				}
-				
+#if PKSV
+#else				
 				process_pkx(mainbuf, game, tempVett);
+#endif
 				printPKViewer(mainbuf, pkmn, isTeam, game, tempVett[1], menuEntry, tempVett[0], ED_OTA, 0, 0);	
 			} while (aptMainLoop() && !(hidKeysDown() & KEY_B));
 			socket_shutdown();
@@ -494,7 +494,6 @@ void pokemonEditor(u8* mainbuf, int game) {
 			box = tempVett[0];
 			currentEntry = tempVett[1];
 		}
-#endif
 
 		if (!(hidKeysDown() & KEY_TOUCH) && !(hidKeysHeld() & KEY_TOUCH) && touchExecuting >= 0 && touchExecuting / 40 == 0)// && !teamChanged)
 			touchExecuting += 40;

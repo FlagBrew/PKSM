@@ -37,7 +37,7 @@ int socket_init();
 void process_pkx(u8* mainbuf, int game, int tempVett[]);
 void process_wcx(u8* buf);
 void process_bank(u8* buf, int game);
-void processLegality(u8* pkmn);
+void processLegality(u8* pkmn, int game);
 
 bool socket_check_valid_ip_address(char *ipAddress);
 bool socket_is_legality_address_set();
