@@ -952,6 +952,13 @@ void pkx_set_shiny(u8* pkmn, const bool shiny) {
 	}
 }
 
+void pkx_set_nickname_flag(u8* pkmn) {
+	u8 isnicknamed;
+	memcpy(&isnicknamed, &pkmn[0x77], 1);
+	isnicknamed |= 0x80;
+	memcpy(&pkmn[0x77], &isnicknamed, 1);
+}
+
 void pkx_set_nickname(u8* pkmn, char* nick, const int dst) {
 	// dst 0x40(Nickname) 0xB0(OT) 0x78(HT)
 	u8 toinsert[NICKNAMELENGTH];
@@ -995,10 +1002,7 @@ void pkx_set_nickname(u8* pkmn, char* nick, const int dst) {
 	}
 
 	if (dst == 0x40 && !isGenerating()) {
-		u8 isnicknamed;
-		memcpy(&isnicknamed, &pkmn[0x77], 1);
-		isnicknamed |= 0x80;
-		memcpy(&pkmn[0x77], &isnicknamed, 1);
+		pkx_set_nickname_flag(pkmn);
 	}
 
 	memcpy(&pkmn[dst], toinsert, NICKNAMELENGTH);

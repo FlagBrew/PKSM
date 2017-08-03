@@ -541,6 +541,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 						utf32_to_utf8(nick, nick32, NICKNAMELENGTH);
 
 						pkx_set_nickname(pkmn, (char*)nick, 0xb0);
+						pkx_set_nickname_flag(pkmn);
 						pkx_set_ot_gender(pkmn, (getSaveGender(mainbuf, game)));
 
 						pkx_set(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
@@ -903,7 +904,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 									}
 									
 									if (touch.px > 206 && touch.px < 315 && touch.py > 172 && touch.py < 203) {
-										pkx_set(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
+										pkx_set_as_it_is(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
 										operationDone = true;
 										break;
 									}

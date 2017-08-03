@@ -111,3 +111,4 @@ void pkx_set_hti(u8* pkmn, const int htnumber, const bool value);
 bool pkx_get_hti(u8* pkmn, const int htnumber);
 void pkx_set_flag(u8* pkmn, const int flgaddr, const int flgshift, const bool value);
 void pkx_set_pokerus(u8* pkmn);
+void pkx_set_nickname_flag(u8* pkmn);
