@@ -15,7 +15,7 @@ make rosalinapksv
 @echo ^<targets selectable="true"^>^</targets^> > release\standard\PKSV\3ds\PKSV\PKSV.xml
 
 @copy output\rosalina\PKSV\3ds-arm\3ds\PKSV\PKSV.3dsx release\rosalina\3ds\PKSV
-@copy output\rosalina\PKSM\3ds-arm\3ds\PKSM\PKSM.3dsx release\rosalina\3ds\
+@copy output\rosalina\PKSM\3ds-arm\3ds\PKSM\PKSM.3dsx release\rosalina\3ds\PKSM
 
 @copy serveLegality\serveLegality\bin\Debug\serveLegality.exe release\serveLegality
 @copy serveLegality\README.md release\serveLegality
