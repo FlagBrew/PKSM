@@ -197,7 +197,7 @@ void settingsMenu(u8* mainbuf, int game) {
 
 #if PKSV
 #else		
-		if ((hidKeysDown() & KEY_Y) || (hidKeysDown() & KEY_TOUCH && touch.px > 280 && touch.px < 313 && touch.py > 216)) {
+		if ((hidKeysDown() & KEY_Y) || (hidKeysDown() & KEY_TOUCH && touch.px > 280 && touch.px < 313 && touch.py > 220)) {
 			update();
 		}
 #endif

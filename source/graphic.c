@@ -1928,7 +1928,7 @@ void printSettings(int box, int language) {
 
 #if PKSV
 #else
-		sf2d_draw_texture(otaButton, 280, 216);
+		sf2d_draw_texture(otaButton, 280, 220);
 #endif
 		sf2d_draw_texture(miniBox, 189, 64);
 		sf2d_draw_texture(minusButton, 169, 65);
