@@ -19,8 +19,8 @@
 #pragma once
 #include "common.h"
 
-int getActiveGBO(u8* mainbuf, int game);
-int getActiveSBO(u8* mainbuf, int game);
-void rewriteCHK(u8 *mainbuf, int game);
-void rewriteCHK4(u8 *mainbuf, int game, int GBO, int SBO);
+int getActiveGBO(u8* mainbuf);
+int getActiveSBO(u8* mainbuf);
+void rewriteCHK(u8 *mainbuf);
+void rewriteCHK4(u8 *mainbuf, int GBO, int SBO);
 void resign(u8 *mainbuf);

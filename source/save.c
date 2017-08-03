@@ -53,7 +53,9 @@ u16 crc16[] = {
 	0x8201, 0x42C0, 0x4380, 0x8341, 0x4100, 0x81C1, 0x8081, 0x4040
 };
 
-int getActiveGBO(u8* mainbuf, int game) {
+int getActiveGBO(u8* mainbuf) {
+	int game = game_get();
+	
 	int ofs = 0;
 
 	u8 temp[10];
@@ -83,7 +85,9 @@ int getActiveGBO(u8* mainbuf, int game) {
 	return (c1 >= c2) ? 0 : 1;
 }
 
-int getActiveSBO(u8* mainbuf, int game) {
+int getActiveSBO(u8* mainbuf) {
+	int game = game_get();
+	
 	int ofs = 0;
 	
 	if (game == GAME_HG || game == GAME_SS)
@@ -113,7 +117,9 @@ int getActiveSBO(u8* mainbuf, int game) {
 	return (c1 >= c2) ? 0 : 1;
 }
 
-u32 CHKOffset(u32 i, int game) {
+u32 CHKOffset(u32 i) {
+	int game = game_get();
+	
 	if (ISXY) {
 		const u32 _xy[] = { 0x05400, 0x05800, 0x06400, 0x06600, 0x06800, 0x06A00, 0x06C00, 0x06E00, 0x07000, 0x07200, 0x07400, 0x09600, 0x09800, 0x09E00, 0x0A400, 0x0F400, 0x14400, 0x19400, 0x19600, 0x19E00, 0x1A400, 0x1AC00, 0x1B400, 0x1B600, 0x1B800, 0x1BE00, 0x1C000, 0x1C400, 0x1CC00, 0x1CE00, 0x1D000, 0x1D200, 0x1D400, 0x1D600, 0x1DE00, 0x1E400, 0x1E800, 0x20400, 0x20600, 0x20800, 0x20C00, 0x21000, 0x22C00, 0x23000, 0x23800, 0x23C00, 0x24600, 0x24A00, 0x25200, 0x26000, 0x26200, 0x26400, 0x27200, 0x27A00, 0x5C600, };
 		return _xy[i] - 0x5400;
@@ -137,7 +143,9 @@ u32 CHKOffset(u32 i, int game) {
 	else return 0;
 }
 
-u32 CHKLength(u32 i, int game) {
+u32 CHKLength(u32 i) {
+	int game = game_get();
+	
 	if (ISXY) {
 		const u32 _xy[] = { 0x002C8, 0x00B88, 0x0002C, 0x00038, 0x00150, 0x00004, 0x00008, 0x001C0, 0x000BE, 0x00024, 0x02100, 0x00140, 0x00440, 0x00574, 0x04E28, 0x04E28, 0x04E28, 0x00170, 0x0061C, 0x00504, 0x006A0, 0x00644, 0x00104, 0x00004, 0x00420, 0x00064, 0x003F0, 0x0070C, 0x00180, 0x00004, 0x0000C, 0x00048, 0x00054, 0x00644, 0x005C8, 0x002F8, 0x01B40, 0x001F4, 0x001F0, 0x00216, 0x00390, 0x01A90, 0x00308, 0x00618, 0x0025C, 0x00834, 0x00318, 0x007D0, 0x00C48, 0x00078, 0x00200, 0x00C84, 0x00628, 0x34AD0, 0x0E058, };
 		return _xy[i];
@@ -165,7 +173,9 @@ u16 getBlockID(u8* mainbuf, const int csoff, const u32 i) {
 	return *(u16*)(mainbuf + csoff + 8*i - 2);
 }
 
-u32 BWCHKOff(u32 i, int game) {
+u32 BWCHKOff(u32 i) {
+	int game = game_get();
+	
 	if (game == GAME_B1 || game == GAME_W1) {
 		const u32 _bw[] = { 0x013F2, 0x023F2, 0x033F2, 0x043F2, 0x053F2, 0x063F2, 0x073F2, 0x083F2, 0x093F2, 0x0A3F2, 0x0B3F2, 0x0C3F2, 0x0D3F2, 0x0E3F2, 0x0F3F2, 0x103F2, 0x113F2, 0x123F2, 0x133F2, 0x143F2, 0x153F2, 0x163F2, 0x173F2, 0x183F2, 0x1D296, 0x23F9A };
 		return _bw[i];
@@ -179,7 +189,9 @@ u32 BWCHKOff(u32 i, int game) {
 	else return 0;
 }
 
-u32 BWCHKMirr(u32 i, int game) {
+u32 BWCHKMirr(u32 i) {
+	int game = game_get();
+	
 	if (game == GAME_B1 || game == GAME_W1) {
 		const u32 _bw[] = { 0x25F02, 0x25F04, 0x25F06, 0x25F08, 0x25F0A, 0x25F0C, 0x25F0E, 0x25F10, 0x25F12, 0x25F14, 0x25F16, 0x25F18, 0x25F1A, 0x25F1C, 0x25F1E, 0x25F20, 0x25F22, 0x25F24, 0x25F26, 0x25F28, 0x25F2A, 0x25F2C, 0x25F2E, 0x25F30, 0x23F44, 0x23F9A };
 		return _bw[i];
@@ -226,7 +238,9 @@ u16 check16(u8 data[], u32 blockID, u32 len) {
 	return ~chk;
 }
 
-void rewriteCHK(u8 *mainbuf, int game) {
+void rewriteCHK(u8 *mainbuf) {
+	int game = game_get();
+	
 	u8 blockCount = 0;
 	u8* tmp = (u8*)malloc(0x36600 * sizeof(u8));
 	u16 cs;
@@ -249,15 +263,15 @@ void rewriteCHK(u8 *mainbuf, int game) {
 
 	if (ISGEN6)
 		for (u32 i = 0; i < blockCount; i++) {
-			memcpy(tmp, mainbuf + CHKOffset(i, game), CHKLength(i, game));
-			cs = ccitt16(tmp, CHKLength(i, game));
+			memcpy(tmp, mainbuf + CHKOffset(i), CHKLength(i));
+			cs = ccitt16(tmp, CHKLength(i));
 			memcpy(mainbuf + csoff + i * 8, &cs, 2);
 		}
 		
 	else if (ISSUMO) {
 		for (u32 i = 0; i < blockCount; i++) {
-			memcpy(tmp, mainbuf + CHKOffset(i, game), CHKLength(i, game));
-			cs = check16(tmp, getBlockID(mainbuf, csoff, i), CHKLength(i, game));
+			memcpy(tmp, mainbuf + CHKOffset(i), CHKLength(i));
+			cs = check16(tmp, getBlockID(mainbuf, csoff, i), CHKLength(i));
 			memcpy(mainbuf + csoff + i * 8, &cs, 2);
 		}
 		
@@ -267,17 +281,19 @@ void rewriteCHK(u8 *mainbuf, int game) {
 	else if (ISGEN5) {
 		blockCount = 26;
 		for (u32 i = 0; i < blockCount; i++) {
-			memcpy(tmp, mainbuf + CHKOffset(i, game), CHKLength(i, game));
-			cs = ccitt16(tmp, CHKLength(i, game));
-			memcpy(mainbuf + BWCHKOff(i, game), &cs, 2);
-			memcpy(mainbuf + BWCHKMirr(i, game), &cs, 2);
+			memcpy(tmp, mainbuf + CHKOffset(i), CHKLength(i));
+			cs = ccitt16(tmp, CHKLength(i));
+			memcpy(mainbuf + BWCHKOff(i), &cs, 2);
+			memcpy(mainbuf + BWCHKMirr(i), &cs, 2);
 		}
 	}
 
 	free(tmp);
 }
 
-void rewriteCHK4(u8 *mainbuf, int game, int GBO, int SBO) {
+void rewriteCHK4(u8 *mainbuf, int GBO, int SBO) {
+	int game = game_get();
+	
 	u8* tmp = (u8*)malloc(0x35000 * sizeof(u8));
 	u16 cs;
 	

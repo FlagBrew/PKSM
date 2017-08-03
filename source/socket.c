@@ -110,7 +110,9 @@ void process_wcx(u8* buf) {
     server.client_id = -1;
 }
 
-void process_pkx(u8* mainbuf, int game, int tempVett[]) {
+void process_pkx(u8* mainbuf, int tempVett[]) {
+	int game = game_get();
+	
 	server.client_id = accept(server.server_id, (struct sockaddr *) &server.client_addr, &server.client_length);
 	if (server.client_id < 0 && errno != EAGAIN) {
 		infoDisp(i18n(S_HTTP_ERROR_PROCESSING_PHASE));
@@ -128,7 +130,7 @@ void process_pkx(u8* mainbuf, int game, int tempVett[]) {
             u8 pkmn[PKMNLENGTH];
             dummy = strstr(payload, "PKSMOTA");
             memcpy(pkmn, &dummy[7], PKMNLENGTH);
-            pkx_set_as_it_is(mainbuf, tempVett[0], tempVett[1], pkmn, game);
+            pkx_set_as_it_is(mainbuf, tempVett[0], tempVett[1], pkmn);
 
 			if (checkingLegality) {
 				checkingLegality = false;
@@ -143,7 +145,7 @@ void process_pkx(u8* mainbuf, int game, int tempVett[]) {
 					if (tempVett[0] > boxmax)
 						tempVett[0] = 0;
 
-					pkx_get(mainbuf, tempVett[0], tempVett[1], pkmn, game);
+					pkx_get(mainbuf, tempVett[0], tempVett[1], pkmn);
 					panic++;
 				} while (pkx_get_species(pkmn) && (panic < boxmax * 30));
 			}
@@ -153,7 +155,9 @@ void process_pkx(u8* mainbuf, int game, int tempVett[]) {
     server.client_id = -1;
 }
 
-void processLegality(u8* pkmn, int game) {
+void processLegality(u8* pkmn) {
+	int game = game_get();
+	
 	u8 gameVersion = ISGEN7 ? 7 : 6;
 	char message[PKMNLENGTH + 8];
 	const char* prefix = "PKSMOTA";
@@ -191,7 +195,9 @@ void processLegality(u8* pkmn, int game) {
 	close(sock);
 }
 
-void process_bank(u8* buf, int game) {
+void process_bank(u8* buf) {
+	int game = game_get();
+	
 	server.client_id = accept(server.server_id, (struct sockaddr *) &server.client_addr, &server.client_length);
 	if (server.client_id < 0 && errno != EAGAIN) {
 		infoDisp(i18n(S_HTTP_ERROR_PROCESSING_PHASE));

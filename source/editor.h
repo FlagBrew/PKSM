@@ -46,22 +46,22 @@
 #define CHERISH_BALL 16
 
 bool isGenerating();
-bool isBattleBoxed(u8* mainbuf, int game, int box, int slot);
-bool checkHTLegality(u8* mainbuf, u8* pkmn, int game);
+bool isBattleBoxed(u8* mainbuf, int box, int slot);
+bool checkHTLegality(u8* mainbuf, u8* pkmn);
 
-u32 *getSaveOT(u8* mainbuf, int game, u32* dst);
-u8 getSaveGender(u8* mainbuf, int game);
-u16 getSaveTID(u8* mainbuf, int game);
-u16 getSaveSID(u8* mainbuf, int game);
-u16 getSaveTSV(u8* mainbuf, int game);
-u32 getSaveSeed(u8* mainbuf, int game, int index);
-u8 getSaveLanguage(u8* mainbuf, int game);
+u32 *getSaveOT(u8* mainbuf, u32* dst);
+u8 getSaveGender(u8* mainbuf);
+u16 getSaveTID(u8* mainbuf);
+u16 getSaveSID(u8* mainbuf);
+u16 getSaveTSV(u8* mainbuf);
+u32 getSaveSeed(u8* mainbuf, int index);
+u8 getSaveLanguage(u8* mainbuf);
 
-void setWC(u8* mainbuf, u8* wc6buf, int game, int i, int nInjected[]);
-void setWC4(u8* mainbuf, u8* wc6buf, int game, int i, int nInjected[], int GBO);
-void setSaveLanguage(u8* mainbuf, int game, int i);
+void setWC(u8* mainbuf, u8* wc6buf, int i, int nInjected[]);
+void setWC4(u8* mainbuf, u8* wc6buf, int i, int nInjected[], int GBO);
+void setSaveLanguage(u8* mainbuf, int i);
 
-void parseSaveHexEditor(u8* mainbuf, int game, int byte);
+void parseSaveHexEditor(u8* mainbuf, int byte);
 
-void saveFileEditor(u8* mainbuf, int game, u64 size);
-void pokemonEditor(u8* mainbuf, int game);
+void saveFileEditor(u8* mainbuf, u64 size);
+void pokemonEditor(u8* mainbuf);

@@ -186,7 +186,7 @@ int main() {
 	u8* mainbuf;
 	u64 mainSize = 0;
 
-	int game = 0, GBO = 0, SBO = 0;
+	int GBO = 0, SBO = 0;
 	int currentEntry = 0;
 	
 	bool save = true;
@@ -203,15 +203,17 @@ int main() {
 
 	while (aptMainLoop() && !(hidKeysDown() & KEY_A)) {
 		hidScanInput();
-		game = calcCurrentEntryOneScreen(game, 14, 4);
+		game_set(calcCurrentEntryOneScreen(game_get(), 14, 4));
 		
 		if (hidKeysDown() & KEY_B) {
 			exitServices();
 			return 0;
 		}
 		
-		gameSelectorMenu(game);
+		gameSelectorMenu(game_get());
 	}
+	
+	int game = game_get();
 	
 	GUIGameElementsExit();
 	freezeMsg(i18n(S_MAIN_LOADING_SAVE));
@@ -234,8 +236,8 @@ int main() {
 	fclose(saveptr);
 	
 	if (ISGEN4) {
-		GBO = 0x40000 * getActiveGBO(mainbuf, game);
-		SBO = 0x40000 * getActiveSBO(mainbuf, game);
+		GBO = 0x40000 * getActiveGBO(mainbuf);
+		SBO = 0x40000 * getActiveSBO(mainbuf);
 	}
 #else
 	if (IS3DS) {
@@ -287,8 +289,8 @@ int main() {
 		
 		TWLstoreSaveFile(mainbuf, cardType_);
 		if (ISGEN4) {
-			GBO = 0x40000 * getActiveGBO(mainbuf, game);
-			SBO = 0x40000 * getActiveSBO(mainbuf, game);
+			GBO = 0x40000 * getActiveGBO(mainbuf);
+			SBO = 0x40000 * getActiveSBO(mainbuf);
 		}
 	}
 #endif
@@ -305,7 +307,7 @@ int main() {
 	
 	bool touchPressed = false;
 	
-	GUIElementsSpecify(game);
+	GUIElementsSpecify();
 
 	if (IS3DS) {
 		int mainMenu[] = {S_MAIN_MENU_EXTRA_STORAGE, S_MAIN_MENU_EDITOR, S_MAIN_MENU_EVENTS, S_MAIN_MENU_SAVE_INFO, S_MAIN_MENU_SETTINGS, S_MAIN_MENU_CREDITS};
@@ -322,24 +324,24 @@ int main() {
 			
 			if (hidKeysDown() & KEY_TOUCH) {
 				if (touch.px > 15 && touch.px < 155 && touch.py > 20 && touch.py < 73) {
-					bank(mainbuf, game);
+					bank(mainbuf);
 				}
 
 				if (touch.px > 165 && touch.px < 305 && touch.py > 20 && touch.py < 73) {
-					pokemonEditor(mainbuf, game);
+					pokemonEditor(mainbuf);
 				}
 
 				if (touch.px > 15 && touch.px < 155 && touch.py > 83 && touch.py < 136) {
-					eventDatabase7(mainbuf, game);
+					eventDatabase7(mainbuf);
 				}
 
 				if (touch.px > 165 && touch.px < 305 && touch.py > 83 && touch.py < 136) {
 					infoDisp(L"Work in progress!");
-					//saveFileEditor(mainbuf, game, mainSize);
+					//saveFileEditor(mainbuf, mainSize);
 				}
 				
 				if (touch.px > 15 && touch.px < 155 && touch.py > 146 && touch.py < 199) {
-					settingsMenu(mainbuf, game);
+					settingsMenu(mainbuf);
 					continue;
 				}
 				
@@ -374,12 +376,12 @@ int main() {
 				touchPressed = false;
 				switch (currentEntry) {
 					case 0 : {
-						eventDatabase5(mainbuf, game);
+						eventDatabase5(mainbuf);
 						break;
 					}
 					case 1 : {
 						infoDisp(L"Work in progress!");
-						//saveFileEditor(mainbuf, game, mainSize);
+						//saveFileEditor(mainbuf, mainSize);
 						break;
 					}
 				}
@@ -391,9 +393,9 @@ int main() {
 	
 	if (save) {
 		if (IS3DS || ISGEN5) 
-			rewriteCHK(mainbuf, game);
+			rewriteCHK(mainbuf);
 		else if (ISGEN4) 
-			rewriteCHK4(mainbuf, game, GBO, SBO);
+			rewriteCHK4(mainbuf, GBO, SBO);
 	}
 
 #if CITRA

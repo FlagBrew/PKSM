@@ -337,7 +337,9 @@ void fillSectorsHaxMode(bool sector[][2]) {
 	sector[0x1D][1] = true; // Fateful encounter
 }
 
-void fillSaveSectors(bool saveSectors[][2], int game) {
+void fillSaveSectors(bool saveSectors[][2]) {
+	int game = game_get();
+	
 	for (int j = 0; j < SAVE_SIZE_MAX; j++) {
 		saveSectors[j][0] = false;
 		saveSectors[j][1] = false;

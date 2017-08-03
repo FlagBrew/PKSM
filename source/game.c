@@ -16,16 +16,30 @@
 >   See LICENSE for information.
 */
 
-#pragma once
-#include "common.h"
+#include "game.h"
 
-#define MULTIPLESELECTIONSIZE 30
+int game = 0;
 
-void bank_free_multiple_selection_location(const int box, const int slot);
-void bank_free_multiple_selection_buffer();
-bool bank_get_selected_slot(const int box, const int slot);
-void bank_set_selected_slot(const int box, const int slot);
+int game_get() {
+	return game;
+}
 
-void clearMarkings(u8* pkmn);
-bool bank_getIsInternetWorking();
-void bank(u8* mainbuf);
+void game_set(int value) {
+	game = value;
+}
+
+/*u8 game_get_country(u8* mainbuf) {
+	
+}
+
+u8 game_get_region(u8* mainbuf) {
+	
+}
+
+u8 game_get_console_region(u8* mainbuf) {
+	
+}
+
+u8 game_get_language(u8* mainbuf) {
+	
+}*/

@@ -141,18 +141,21 @@ void initProgressLoadPNGInRAM(int total) {
 }
 
 
-int getGUIElementsI18nSpecifyTotalElements(int game) {
+int getGUIElementsI18nSpecifyTotalElements() {
+	int game = game_get();
 	return IS3DS ? 1 : 0;
 }
 
-void GUIElementsI18nSpecify(int game) {
+void GUIElementsI18nSpecify() {
+	int game = game_get();
 	struct i18n_files languageSpecificFiles = i18n_getFilesPath();
 	if (IS3DS) {
 		typesSheet = loadPNGInRAM(languageSpecificFiles.types);
 	}
 }
 
-void GUIElementsSpecify(int game) {
+void GUIElementsSpecify() {
+	int game = game_get();
 	int elements = 4;
 	if (IS3DS) {
 		elements += 59;
@@ -160,7 +163,7 @@ void GUIElementsSpecify(int game) {
 		elements += 16;
 	}
 
-	elements += getGUIElementsI18nSpecifyTotalElements(game);
+	elements += getGUIElementsI18nSpecifyTotalElements();
 	initProgressLoadPNGInRAM(elements);
 
 	freezeMsg(i18n(S_GRAPHIC_GUI_ELEMENTS_SPECIFY_LOADING));
@@ -256,7 +259,7 @@ void GUIElementsSpecify(int game) {
 		plusButton = loadPNGInRAM("romfs:/res/Plus Button.png");
 	}
 
-	GUIElementsI18nSpecify(game);
+	GUIElementsI18nSpecify();
 }
 
 
@@ -816,7 +819,9 @@ void printDatabaseListDS(char *database[], int currentEntry, int page, int sprit
 	sf2d_swapbuffers();
 }
 
-void printDB7(u8* previewbuf, int game, int sprite, int i, bool langVett[], bool adapt, bool overwrite, int langSelected, int nInjected, bool ota) {
+void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bool overwrite, int langSelected, int nInjected, bool ota) {
+	int game = game_get();
+	
 	char *languages[] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR", "CHS", "CHT"};
 	char cont[3];
 	snprintf(cont, 3, "%d", nInjected + 1);
@@ -824,7 +829,7 @@ void printDB7(u8* previewbuf, int game, int sprite, int i, bool langVett[], bool
 	int total = ISGEN7 ? 9 : 7;
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
-		wcxInfoViewer(previewbuf, game);
+		wcxInfoViewer(previewbuf);
 #if PKSV
 #else
 		sf2d_draw_texture(otaButton, 360, 2);
@@ -916,7 +921,7 @@ void printDB7(u8* previewbuf, int game, int sprite, int i, bool langVett[], bool
 	sf2d_swapbuffers();
 }
 
-void printEditor(u8* mainbuf, int game, u64 size, int currentEntry, int page) {
+void printEditor(u8* mainbuf, u64 size, int currentEntry, int page) {
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		sf2d_draw_texture(hexBG, 0, 0);
 		for (int rows = 0; rows < 15; rows++) {
@@ -942,7 +947,7 @@ void printEditor(u8* mainbuf, int game, u64 size, int currentEntry, int page) {
 		sftd_draw_wtextf(fontBold14, (155 - sftd_get_wtext_width(fontBold14, 14, i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE))), 30, LIGHTBLUE, 14, i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE));
 		sftd_draw_textf(fontBold14, 165, 30, WHITE, 14, "0x%05X", currentEntry + 240*page);
 		
-		printSaveEditorInfo(mainbuf, game, page*240 + currentEntry);
+		printSaveEditorInfo(mainbuf, page*240 + currentEntry);
 	pksm_end_frame();
 	sf2d_swapbuffers();		
 }
@@ -1046,7 +1051,7 @@ void printGeneration(u8* pkmn, int x, int y) {
 	}
 }
 
-void infoViewer(u8* pkmn, int game) {
+void infoViewer(u8* pkmn) {
 	int y_desc = 29;
 	wchar_t* entries[] = {i18n(S_GRAPHIC_INFOVIEWER_NICKNAME), i18n(S_GRAPHIC_INFOVIEWER_OT), i18n(S_GRAPHIC_INFOVIEWER_POKERUS), i18n(S_GRAPHIC_INFOVIEWER_NATURE), i18n(S_GRAPHIC_INFOVIEWER_ABILITY), i18n(S_GRAPHIC_INFOVIEWER_ITEM), i18n(S_GRAPHIC_INFOVIEWER_ESVTSV), i18n(S_GRAPHIC_INFOVIEWER_TIDSID), i18n(S_GRAPHIC_INFOVIEWER_HTOT_FRIENDSHIP), i18n(S_GRAPHIC_INFOVIEWER_HTOT_HIDDEN_POWER)};
 	wchar_t* values[] =  {i18n(S_GRAPHIC_INFOVIEWER_VALUE_HP), i18n(S_GRAPHIC_INFOVIEWER_VALUE_ATTACK), i18n(S_GRAPHIC_INFOVIEWER_VALUE_DEFENSE), i18n(S_GRAPHIC_INFOVIEWER_VALUE_SP_ATK), i18n(S_GRAPHIC_INFOVIEWER_VALUE_SP_DEF), i18n(S_GRAPHIC_INFOVIEWER_VALUE_SPEED)};
@@ -1148,7 +1153,9 @@ void infoViewer(u8* pkmn, int game) {
 	}
 }
 
-void wcxInfoViewer(u8* buf, int game) {
+void wcxInfoViewer(u8* buf) {
+	int game = game_get();
+	
 	int y_desc = 29;
 	wchar_t* entries[] = {L"Species", L"OT", L"TID/SID", L"Held Item", L"Game", L"Met Date"};
 
@@ -1266,7 +1273,7 @@ void wcxInfoViewer(u8* buf, int game) {
 	}
 }
 
-void printDexViewer(u8* mainbuf, int game, int currentEntry, int page, int seen, int caught) {
+void printDexViewer(u8* mainbuf, int currentEntry, int page, int seen, int caught) {
 	char temp[12];
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
@@ -1278,15 +1285,15 @@ void printDexViewer(u8* mainbuf, int game, int currentEntry, int page, int seen,
 				
 				int entry = i*8+j + 40*page;
 				if ((entry) < 802) {
-					if (getCaught(mainbuf, game, entry + 1))
+					if (getCaught(mainbuf, entry + 1))
 						sf2d_draw_texture_part(spritesSmall, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((entry + 1) % 25) + 4, 30 * ((entry + 1) / 25), 34, 30);
-					else if (getSeen(mainbuf, game, entry + 1)) {
+					else if (getSeen(mainbuf, entry + 1)) {
 						sf2d_draw_texture_part(spritesSmall, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((entry + 1) % 25) + 4, 30 * ((entry + 1) / 25), 34, 30);
 						sf2d_draw_texture_part_blend(spritesSmall, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((entry + 1) % 25) + 4, 30 * ((entry + 1) / 25), 34, 30, RGBA8(0,0,0,160));
 					} else
 						sf2d_draw_texture_part_blend(spritesSmall, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((entry + 1) % 25) + 4, 30 * ((entry + 1) / 25), 34, 30, RGBA8(0,0,0,255));
 					sprintf(temp, "%d", entry + 1);
-					sftd_draw_text(fontBold9, 49 * j + (49 - sftd_get_text_width(fontBold9, 9, temp)) / 2 + j, 34 + i * 47 + i, getCaught(mainbuf, game, entry + 1) ? WHITE : DS, 9, temp);
+					sftd_draw_text(fontBold9, 49 * j + (49 - sftd_get_text_width(fontBold9, 9, temp)) / 2 + j, 34 + i * 47 + i, getCaught(mainbuf, entry + 1) ? WHITE : DS, 9, temp);
 				}
 			}
 		}
@@ -1301,7 +1308,9 @@ void printDexViewer(u8* mainbuf, int game, int currentEntry, int page, int seen,
 	sf2d_swapbuffers();	
 }
 
-void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry, int menuEntry, int box, int mode, int additional1, int additional2) {
+void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int currentEntry, int menuEntry, int box, int mode, int additional1, int additional2) {
+	int game = game_get();
+	
 	wchar_t* menuEntries[] = {i18n(S_GRAPHIC_PKVIEWER_MENU_EDIT), i18n(S_GRAPHIC_PKVIEWER_MENU_CLONE), i18n(S_GRAPHIC_PKVIEWER_MENU_RELEASE), i18n(S_GRAPHIC_PKVIEWER_MENU_GENERATE), i18n(S_GRAPHIC_PKVIEWER_MENU_EXIT)};
 	int x;
 
@@ -1309,7 +1318,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 	swprintf(page, MAX_LENGTH_BOX_NAME+1, i18n(S_GRAPHIC_PKVIEWER_BOX), box + 1);
 	
 	u8* pkmn = (u8*)malloc(PKMNLENGTH * sizeof(u8));
-	pkx_get(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
+	pkx_get(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn);
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		if (mode == ED_GENERATE) {
@@ -1329,7 +1338,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 			}
 			free(temp);
 		} else
-			infoViewer(pkmn, game);
+			infoViewer(pkmn);
 		
 		if (mode == ED_OTA) {
 			sf2d_draw_rectangle(0, 0, 400, 240, RGBA8(0, 0, 0, 220));
@@ -1360,7 +1369,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 		for (int i = 0; i < 5; i++) {
 			x = 4;
 			for (int j = 0; j < 6; j++) {
-				pkx_get(mainbuf, box, i * 6 + j, pkmn, game);
+				pkx_get(mainbuf, box, i * 6 + j, pkmn);
 				u16 n = pkx_get_species(pkmn);
 				if (n > 0 && n < 822)
 					printElement(pkmn, game, n, x, y);
@@ -1383,7 +1392,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 		for (int i = 0; i < 3; i++) {
 			x = 222;
 			for (int j = 0; j < 2; j++) {
-				pkx_get(mainbuf, 33, i * 2 + j, pkmn, game);
+				pkx_get(mainbuf, 33, i * 2 + j, pkmn);
 				u16 n = pkx_get_species(pkmn);
 				if (n)
 					printElement(pkmn, game, n, x, (j == 1) ? y + 20 : y);
@@ -1405,7 +1414,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 		}
 		
 		if (mode == ED_MENU) {
-			pkx_get(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
+			pkx_get(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn);
 
 			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
 			sf2d_draw_texture(bottomPopUp, 1, 214);
@@ -1430,9 +1439,9 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 			sftd_draw_wtextf(fontBold9, 10, 220, WHITE, 9, i18n(S_HTTP_SERVER_RUNNING), socket_get_ip());
 		} else if (mode != ED_CLONE) {
 			if (mode == ED_STANDARD)
-				sftd_draw_wtextf(fontBold9, 10, 220, BARTEXT, 9, i18n(S_GRAPHIC_PKVIEWER_TIDSIDTSV), getSaveTID(mainbuf, game), getSaveSID(mainbuf, game), getSaveTSV(mainbuf, game));
+				sftd_draw_wtextf(fontBold9, 10, 220, BARTEXT, 9, i18n(S_GRAPHIC_PKVIEWER_TIDSIDTSV), getSaveTID(mainbuf), getSaveSID(mainbuf), getSaveTSV(mainbuf));
 			else
-				sftd_draw_wtextf(fontBold9, 10, 220, BARTEXT, 9, i18n(S_GRAPHIC_PKVIEWER_SEED), getSaveSeed(mainbuf, game, 3), getSaveSeed(mainbuf, game, 2), getSaveSeed(mainbuf, game, 1), getSaveSeed(mainbuf, game, 0));
+				sftd_draw_wtextf(fontBold9, 10, 220, BARTEXT, 9, i18n(S_GRAPHIC_PKVIEWER_SEED), getSaveSeed(mainbuf, 3), getSaveSeed(mainbuf, 2), getSaveSeed(mainbuf, 1), getSaveSeed(mainbuf, 0));
 		}
 	pksm_end_frame();
 	sf2d_swapbuffers();
@@ -1441,7 +1450,9 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int game, int currentEntry
 	free(page);
 }
 
-void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int additional3, int mode, wchar_t* descriptions[]) {
+void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, int mode, wchar_t* descriptions[]) {
+	int game = game_get();
+	
 	int max = sftd_get_text_width(fontBold12, 12, "252");
 	wchar_t* entries[] = {i18n(S_GRAPHIC_PKEDITOR_LEVEL), i18n(S_GRAPHIC_PKEDITOR_NATURE), i18n(S_GRAPHIC_PKEDITOR_ABILITY), i18n(S_GRAPHIC_PKEDITOR_ITEM), i18n(S_GRAPHIC_PKEDITOR_SHINY), i18n(S_GRAPHIC_PKEDITOR_POKERUS), i18n(S_GRAPHIC_PKEDITOR_OT), i18n(S_GRAPHIC_PKEDITOR_NICKNAME), i18n(S_GRAPHIC_PKEDITOR_FRIENDSHIP)};
 	wchar_t* options[] = {i18n(S_GRAPHIC_PKEDITOR_MENU_STATS), i18n(S_GRAPHIC_PKEDITOR_MENU_MOVES), i18n(S_GRAPHIC_PKEDITOR_MENU_SAVE)};
@@ -1747,7 +1758,9 @@ void printPKEditor(u8* pkmn, int game, int additional1, int additional2, int add
 	sf2d_swapbuffers();
 }
 
-void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int game, int currentEntry, int saveBox, int bankBox, bool isBufferized, bool isSeen, bool isWirelessActivated) {
+void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int currentEntry, int saveBox, int bankBox, bool isBufferized, bool isSeen, bool isWirelessActivated) {
+	int game = game_get();
+	
 	int x, y;
 	int pointer[2] = {0, 0};
 	wchar_t* page = (wchar_t*)malloc((MAX_LENGTH_BOX_NAME+1) * sizeof(wchar_t));
@@ -1758,11 +1771,11 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 	else if (isWirelessActivated)
 		memcpy(pkmn, &wirelessBuffer[saveBox * 30 * PKMNLENGTH + (currentEntry - 30) * PKMNLENGTH], PKMNLENGTH);
 	else
-		pkx_get(mainbuf, saveBox, currentEntry - 30, pkmn, game);
+		pkx_get(mainbuf, saveBox, currentEntry - 30, pkmn);
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		if (isSeen) {
-			infoViewer(pkmnbuf, game);
+			infoViewer(pkmnbuf);
 		} else {
 			printAnimatedBG(true);
 			sf2d_draw_texture(bankTop, 34, 5);
@@ -1875,7 +1888,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 				if (isWirelessActivated)
 					memcpy(pkmn, wirelessBuffer + saveBox*30*PKMNLENGTH + (i*6+j)*PKMNLENGTH, PKMNLENGTH);
 				else
-					pkx_get(mainbuf, saveBox, i*6+j, pkmn, game);
+					pkx_get(mainbuf, saveBox, i*6+j, pkmn);
 				u16 n = pkx_get_species(pkmn);
 				if (n)
 					printElement(pkmn, game, n, x, y);
@@ -1944,7 +1957,7 @@ void printSettings(int box, int language) {
 	sf2d_swapbuffers();
 }
 
-void printSaveEditorInfo(u8* mainbuf, int game, int byte) {
+void printSaveEditorInfo(u8* mainbuf, int byte) {
 	/*int y = 70, x = 8;
 	u32 string[NICKNAMELENGTH*2];
 	memset(string, 0, NICKNAMELENGTH*2);

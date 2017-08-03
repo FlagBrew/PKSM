@@ -19,13 +19,5 @@
 #pragma once
 #include "common.h"
 
-#define MULTIPLESELECTIONSIZE 30
-
-void bank_free_multiple_selection_location(const int box, const int slot);
-void bank_free_multiple_selection_buffer();
-bool bank_get_selected_slot(const int box, const int slot);
-void bank_set_selected_slot(const int box, const int slot);
-
-void clearMarkings(u8* pkmn);
-bool bank_getIsInternetWorking();
-void bank(u8* mainbuf);
+int game_get();
+void game_set(int value);

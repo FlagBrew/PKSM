@@ -21,7 +21,7 @@
 
 #define SMCOUNT 300
 
-void findFreeLocationWC(u8 *mainbuf, const int game, int nInjected[]);
+void findFreeLocationWC(u8 *mainbuf, int nInjected[]);
 int getN(const int i);
-void eventDatabase7(u8* mainbuf, int game);
-void eventDatabase5(u8* mainbuf, int game);
+void eventDatabase7(u8* mainbuf);
+void eventDatabase5(u8* mainbuf);

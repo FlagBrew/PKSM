@@ -33,12 +33,12 @@ struct {
 
 FormData *pkx_get_legal_form_data(const u16 species, const int game);
 
-void pkx_set(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, const int game);
-void pkx_set_as_it_is(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, const int game);
-void pkx_get(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, const int game);
+void pkx_set(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn);
+void pkx_set_as_it_is(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn);
+void pkx_get(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn);
 
 u32 pkx_lcrng(u32 seed);
-u32 pkx_get_save_address(const int boxnumber, const int indexnumber, const int game);
+u32 pkx_get_save_address(const int boxnumber, const int indexnumber);
 
 u8 pkx_get_HT(u8* pkmn);
 u8 pkx_get_gender(u8* pkmn);

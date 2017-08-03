@@ -27,4 +27,4 @@ bool saveSectors[0x80000][2];
 void fillSectorsHaxMode(bool sector[][2]);
 void fillDescriptions(wchar_t *descriptions[]);
 void fillSectors(bool sector[][2]);
-void fillSaveSectors(bool saveSectors[][2], int game);
+void fillSaveSectors(bool saveSectors[][2]);

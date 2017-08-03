@@ -20,8 +20,8 @@
 #include "common.h"
 
 int getDexFormIndexSM(int species, int formct, int start);
-void setDexFlags(u8 mainbuf[], int index, int gender, int shiny, int baseSpecies, int game);
+void setDexFlags(u8 mainbuf[], int index, int gender, int shiny, int baseSpecies);
 bool sanitizeFormsToIterate(int species, int fsfe[], int formIn);
-void setDex(u8 mainbuf[], u8* pkmn, int game);
-bool getCaught(u8* mainbuf, int game, int species);
-bool getSeen(u8* mainbuf, int game, int species);
+void setDex(u8 mainbuf[], u8* pkmn);
+bool getCaught(u8* mainbuf, int species);
+bool getSeen(u8* mainbuf, int species);

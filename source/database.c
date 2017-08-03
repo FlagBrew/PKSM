@@ -53,7 +53,9 @@ void getMultiplePathWCXFull(char* path, const int lang, const int i, const int j
 	sprintf(path, "romfs:/wcxfull/%s/%d-%d.wcxfull", tags[lang], i, j);
 }
 
-void reloadPreviewBuf(u8* previewBuf, const int game, const int i, const int n) {
+void reloadPreviewBuf(u8* previewBuf, const int i, const int n) {
+	int game = game_get();
+	
 	char testpath[40];
 	if (ISGEN7)
 		getSinglePathWCXFull(testpath, n, i);
@@ -77,7 +79,9 @@ void reloadPreviewBuf(u8* previewBuf, const int game, const int i, const int n) 
 	}	
 }
 
-void reloadMultiplePreviewBuf(u8* previewBuf, const int game, const int i, const int n, const int j) {
+void reloadMultiplePreviewBuf(u8* previewBuf, const int i, const int n, const int j) {
+	int game = game_get();
+	
 	char testpath[40];
 	if (ISGEN7)
 		getMultiplePathWCXFull(testpath, n, i, j);
@@ -101,7 +105,9 @@ void reloadMultiplePreviewBuf(u8* previewBuf, const int game, const int i, const
 	}
 }
 
-void findFreeLocationWC(u8 *mainbuf, const int game, int nInjected[]) {
+void findFreeLocationWC(u8 *mainbuf, int nInjected[]) {
+	int game = game_get();
+	
 	nInjected[0] = 0;
 	int len = ISGEN6 ? 24 : 48;
 	int temp;
@@ -161,7 +167,9 @@ int getN(const int i) {
 	return 0;
 }
 
-void eventDatabase7(u8* mainbuf, int game) {
+void eventDatabase7(u8* mainbuf) {
+	int game = game_get();
+	
 	char *database[SMCOUNT];
 	int *spriteArray = (int*)malloc(SMCOUNT * sizeof(int));
 	u8 *previewbuf = (u8*)malloc(WCX_SIZE);
@@ -183,7 +191,7 @@ void eventDatabase7(u8* mainbuf, int game) {
 	
 	int currentMultipleWCSelected = 0;
 	
-	findFreeLocationWC(mainbuf, game, nInjected);
+	findFreeLocationWC(mainbuf, nInjected);
 	
 	while(aptMainLoop()) {
 		hidScanInput();
@@ -248,8 +256,8 @@ void eventDatabase7(u8* mainbuf, int game) {
 			}
 			
 			if (langSelected != -1) {
-				reloadPreviewBuf(previewbuf, game, i, langSelected);
-				reloadMultiplePreviewBuf(previewbuf, game, i, langSelected, currentMultipleWCSelected);
+				reloadPreviewBuf(previewbuf, i, langSelected);
+				reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
 			}
 			
 			while (aptMainLoop()) {
@@ -267,7 +275,7 @@ void eventDatabase7(u8* mainbuf, int game) {
 					if (n != 0) {
 						currentMultipleWCSelected--;
 						if (currentMultipleWCSelected == 0) currentMultipleWCSelected = n;
-						reloadMultiplePreviewBuf(previewbuf, game, i, langSelected, currentMultipleWCSelected);
+						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
 					}
 				}
 				
@@ -276,7 +284,7 @@ void eventDatabase7(u8* mainbuf, int game) {
 					if (n != 0) {
 						currentMultipleWCSelected = (currentMultipleWCSelected + 1) % n;
 						if (currentMultipleWCSelected == 0) currentMultipleWCSelected = 1;
-						reloadMultiplePreviewBuf(previewbuf, game, i, langSelected, currentMultipleWCSelected);
+						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
 					}
 				}
 
@@ -289,7 +297,7 @@ void eventDatabase7(u8* mainbuf, int game) {
 					do {
 						hidScanInput();
 						process_wcx(previewbuf);
-						printDB7(previewbuf, game, spriteArray[i], i, langVett, adapt, overwrite, langSelected, nInjected[0], true);
+						printDB7(previewbuf, spriteArray[i], i, langVett, adapt, overwrite, langSelected, nInjected[0], true);
 					} while (aptMainLoop() && !(hidKeysDown() & KEY_B));
 					socket_shutdown();
 				}
@@ -298,50 +306,50 @@ void eventDatabase7(u8* mainbuf, int game) {
 				if (hidKeysHeld() & KEY_TOUCH) {
 					if (touch.px > 114 && touch.px < 150 && touch.py > 50 && touch.py < 71 && langVett[0]) {
 						langSelected = 0;
-						reloadPreviewBuf(previewbuf, game, i, langSelected);
-						reloadMultiplePreviewBuf(previewbuf, game, i, langSelected, currentMultipleWCSelected);
+						reloadPreviewBuf(previewbuf, i, langSelected);
+						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
 					}
 					if (touch.px > 153 && touch.px < 189 && touch.py > 50 && touch.py < 71 && langVett[1]) {
 						langSelected = 1;
-						reloadPreviewBuf(previewbuf, game, i, langSelected);
-						reloadMultiplePreviewBuf(previewbuf, game, i, langSelected, currentMultipleWCSelected);
+						reloadPreviewBuf(previewbuf, i, langSelected);
+						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
 					}
 					if (touch.px > 192 && touch.px < 228 && touch.py > 50 && touch.py < 71 && langVett[2]) {
 						langSelected = 2;
-						reloadPreviewBuf(previewbuf, game, i, langSelected);
-						reloadMultiplePreviewBuf(previewbuf, game, i, langSelected, currentMultipleWCSelected);
+						reloadPreviewBuf(previewbuf, i, langSelected);
+						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
 					}
 					if (touch.px > 231 && touch.px < 267 && touch.py > 50 && touch.py < 71 && langVett[3]) {
 						langSelected = 3;
-						reloadPreviewBuf(previewbuf, game, i, langSelected);
-						reloadMultiplePreviewBuf(previewbuf, game, i, langSelected, currentMultipleWCSelected);
+						reloadPreviewBuf(previewbuf, i, langSelected);
+						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
 					}
 					if (touch.px > 270 && touch.px < 306 && touch.py > 50 && touch.py < 71 && langVett[4]) {
 						langSelected = 4;
-						reloadPreviewBuf(previewbuf, game, i, langSelected);
-						reloadMultiplePreviewBuf(previewbuf, game, i, langSelected, currentMultipleWCSelected);
+						reloadPreviewBuf(previewbuf, i, langSelected);
+						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
 					}
 					if (touch.px > 153 && touch.px < 189 && touch.py > 74 && touch.py < 95 && langVett[5]) {
 						langSelected = 5;
-						reloadPreviewBuf(previewbuf, game, i, langSelected);
-						reloadMultiplePreviewBuf(previewbuf, game, i, langSelected, currentMultipleWCSelected);
+						reloadPreviewBuf(previewbuf, i, langSelected);
+						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
 					}
 					if (touch.px > 192 && touch.px < 228 && touch.py > 74 && touch.py < 95 && langVett[6]) {
 						langSelected = 6;
-						reloadPreviewBuf(previewbuf, game, i, langSelected);
-						reloadMultiplePreviewBuf(previewbuf, game, i, langSelected, currentMultipleWCSelected);
+						reloadPreviewBuf(previewbuf, i, langSelected);
+						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
 					}
 					
 					if (total == 9) {
 						if (touch.px > 231 && touch.px < 267 && touch.py > 74 && touch.py < 95 && langVett[7]) {
 							langSelected = 7;
-							reloadPreviewBuf(previewbuf, game, i, langSelected);
-							reloadMultiplePreviewBuf(previewbuf, game, i, langSelected, currentMultipleWCSelected);
+							reloadPreviewBuf(previewbuf, i, langSelected);
+							reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
 						}
 						if (touch.px > 270 && touch.px < 306 && touch.py > 74 && touch.py < 95 && langVett[8]) {
 							langSelected = 8;
-							reloadPreviewBuf(previewbuf, game, i, langSelected);
-							reloadMultiplePreviewBuf(previewbuf, game, i, langSelected, currentMultipleWCSelected);
+							reloadPreviewBuf(previewbuf, i, langSelected);
+							reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
 						}
 					}
 					
@@ -351,7 +359,7 @@ void eventDatabase7(u8* mainbuf, int game) {
 					}
 					if (touch.px > 270 && touch.px < 306 && touch.py > 110 && touch.py < 131) {
 						overwrite = false;
-						findFreeLocationWC(mainbuf, game, nInjected);
+						findFreeLocationWC(mainbuf, nInjected);
 					}
 					
 					if (touch.px > 231 && touch.px < 267 && touch.py > 138 && touch.py < 159) adapt = true;
@@ -370,18 +378,18 @@ void eventDatabase7(u8* mainbuf, int game) {
 					}
 
 					if (!(overwrite))
-						findFreeLocationWC(mainbuf, game, nInjected);
+						findFreeLocationWC(mainbuf, nInjected);
 
 					if (adapt)
-						setSaveLanguage(mainbuf, game, langSelected);
+						setSaveLanguage(mainbuf, langSelected);
 
-					setWC(mainbuf, previewbuf, game, i, nInjected);
+					setWC(mainbuf, previewbuf, i, nInjected);
 					
 					infoDisp(i18n(S_DATABASE_SUCCESS_INJECTION));
 					break;
 				}
 #endif
-				printDB7(previewbuf, game, spriteArray[i], i, langVett, adapt, overwrite, langSelected, nInjected[0], false);
+				printDB7(previewbuf, spriteArray[i], i, langVett, adapt, overwrite, langSelected, nInjected[0], false);
 			}
 		}
 		
@@ -392,7 +400,9 @@ void eventDatabase7(u8* mainbuf, int game) {
 	free(previewbuf);
 }
 
-void eventDatabase5(u8* mainbuf, int game) {
+void eventDatabase5(u8* mainbuf) {
+	int game = game_get();
+	
 	int sz = ISGEN5 ? 170 : 190;
 	char *database[sz];
 	int *spriteArray = (int*)malloc(sz * sizeof(int));
@@ -492,7 +502,7 @@ void eventDatabase5(u8* mainbuf, int game) {
 					fread(buf, contentsize, 1, fptr);
 					fclose(fptr);
 
-					setWC(mainbuf, buf, game, i, nInjected);
+					setWC(mainbuf, buf, i, nInjected);
 
 					free(path);
 					free(buf);					

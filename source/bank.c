@@ -93,7 +93,9 @@ inline void getFromWirelessBuf(u8* buf, int box, int slot, u8* pkmn) {
 	memcpy(pkmn, &buf[box*30*PKMNLENGTH + slot*PKMNLENGTH], PKMNLENGTH);
 }
 
-void clearMarkings(u8* pkmn, int game) {
+void clearMarkings(u8* pkmn) {
+	int game = game_get();
+	
 	u8 version = pkmn[0xDF];
 	if (!(version == 30 || version == 31) && !(version >= 35 && version <= 41) && !ISGEN7) { // not SM
 		pkmn[0x2A] = 0;
@@ -152,7 +154,9 @@ void dumpStorage2pk7(u8* bankbuf, u32 size) {
 	}
 }
 
-void bank(u8* mainbuf, int game) {
+void bank(u8* mainbuf) {
+	int game = game_get();
+	
 	FILE *fptr = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
 	fseek(fptr, 0, SEEK_END);
 	u32 size = ftell(fptr);
@@ -324,7 +328,7 @@ void bank(u8* mainbuf, int game) {
 				if (bufferizedfrombank)
 					memcpy(&bankbuf[coordinate[0] * 30 * PKMNLENGTH + coordinate[1] * PKMNLENGTH], pkmn, PKMNLENGTH);
 				else if (!isWirelessBuffer)
-					pkx_set(mainbuf, coordinate[0], coordinate[1], pkmn, game);
+					pkx_set(mainbuf, coordinate[0], coordinate[1], pkmn);
 				else if (isWirelessBuffer)
 					setToWirelessBuf(wirelessbuf, coordinate[0], coordinate[1], pkmn);
 				
@@ -356,8 +360,8 @@ void bank(u8* mainbuf, int game) {
 					for (u32 i = 0; i < 30; i++) {
 						if (currentEntry < 30)
 							memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + i * PKMNLENGTH], tmp, PKMNLENGTH);
-						else if (!isBattleBoxed(mainbuf, game, saveBox, i) && !isWirelessBuffer)
-							pkx_set(mainbuf, saveBox, i, tmp, game);
+						else if (!isBattleBoxed(mainbuf, saveBox, i) && !isWirelessBuffer)
+							pkx_set(mainbuf, saveBox, i, tmp);
 						else if (isWirelessBuffer)
 							setToWirelessBuf(wirelessbuf, saveBox, i, tmp);
 					}
@@ -371,8 +375,8 @@ void bank(u8* mainbuf, int game) {
 				memset(temp, 0, PKMNLENGTH);
 				
 				for (u32 i = 0; i < 30; i++) {
-					if (!isBattleBoxed(mainbuf, game, saveBox, i) && !isWirelessBuffer) {
-						pkx_get(mainbuf, saveBox, i, buffer, game); // pkx_get -> buffer
+					if (!isBattleBoxed(mainbuf, saveBox, i) && !isWirelessBuffer) {
+						pkx_get(mainbuf, saveBox, i, buffer); // pkx_get -> buffer
 						memcpy(temp, &bankbuf[bankBox * 30 * PKMNLENGTH + i * PKMNLENGTH], PKMNLENGTH); // memcpy bank -> temp
 						
 						u16 species = pkx_get_species(temp);
@@ -383,7 +387,7 @@ void bank(u8* mainbuf, int game) {
 						free(forms);
 
 						if (!(illegalspecies || illegalform)) { // prevent that gen7 stuff goes into gen6 save
-							pkx_set(mainbuf, saveBox, i, temp, game); // pkx_set -> temp
+							pkx_set(mainbuf, saveBox, i, temp); // pkx_set -> temp
 							memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + i * PKMNLENGTH], buffer, PKMNLENGTH); // memcpy bank -> buffer
 						}
 					} else if (isWirelessBuffer) {
@@ -400,8 +404,8 @@ void bank(u8* mainbuf, int game) {
 				memset(tmp, 0, PKMNLENGTH);
 				if (currentEntry < 30) 
 					memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], tmp, PKMNLENGTH);
-				else if (!isBattleBoxed(mainbuf, game, saveBox, currentEntry - 30) && !isWirelessBuffer)
-					pkx_set(mainbuf, saveBox, currentEntry - 30, tmp, game);
+				else if (!isBattleBoxed(mainbuf, saveBox, currentEntry - 30) && !isWirelessBuffer)
+					pkx_set(mainbuf, saveBox, currentEntry - 30, tmp);
 				else if (isWirelessBuffer)
 					setToWirelessBuf(wirelessbuf, saveBox, currentEntry - 30, tmp);
 			}
@@ -414,15 +418,15 @@ void bank(u8* mainbuf, int game) {
 				int caught = 0;
 				
 				for (int i = 1; i <= total; i++) {
-					seen = getSeen(mainbuf, game, i) ? seen + 1 : seen;
-					caught = getCaught(mainbuf, game, i) ? caught + 1 : caught;
+					seen = getSeen(mainbuf, i) ? seen + 1 : seen;
+					caught = getCaught(mainbuf, i) ? caught + 1 : caught;
 				}
 				
 				while (aptMainLoop() && !(hidKeysDown() & KEY_B)) {
 					hidScanInput();
 					calcCurrentEntryMorePages(&dexEntry, &page, maxpages, 39, 8);
 					
-					printDexViewer(mainbuf, game, dexEntry, page, seen, caught);
+					printDexViewer(mainbuf, dexEntry, page, seen, caught);
 				}
 			}
 			
@@ -460,7 +464,7 @@ void bank(u8* mainbuf, int game) {
 			if (currentEntry < 30)
 				memcpy(tmp, &bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], PKMNLENGTH);
 			else if (!isWirelessBuffer)
-				pkx_get(mainbuf, saveBox, currentEntry - 30, tmp, game);
+				pkx_get(mainbuf, saveBox, currentEntry - 30, tmp);
 			else if (isWirelessBuffer)
 				getFromWirelessBuf(wirelessbuf, saveBox, currentEntry - 30, tmp);
 			
@@ -472,7 +476,7 @@ void bank(u8* mainbuf, int game) {
 				if ((hidKeysDown() & KEY_B) || (hidKeysDown() & KEY_X) || (hidKeysDown() & KEY_TOUCH && touch.px > 280 && touch.px < 318 && touch.py > 210 && touch.py < 240)) 
 					break;
 				
-				printPKBank(bankbuf, mainbuf, wirelessbuf, tmp, game, currentEntry, saveBox, bankBox, isBufferized, isSeen, isWirelessBuffer);
+				printPKBank(bankbuf, mainbuf, wirelessbuf, tmp, currentEntry, saveBox, bankBox, isBufferized, isSeen, isWirelessBuffer);
 			}
 			
 			isSeen = false;
@@ -496,7 +500,7 @@ void bank(u8* mainbuf, int game) {
 					else if ((!bufferizedfrombank == (currentEntry > 29)) && (coordinate[0] == ((currentEntry < 30) ? bankBox : saveBox)) && (coordinate[1] == currentEntry - 30)) {
 						//remains at the same place
 						if (!isWirelessBuffer)
-							pkx_set(mainbuf, saveBox, currentEntry - 30, pkmn, game);
+							pkx_set(mainbuf, saveBox, currentEntry - 30, pkmn);
 						else if (isWirelessBuffer)
 							setToWirelessBuf(wirelessbuf, saveBox, currentEntry - 30, pkmn);
 					}
@@ -506,15 +510,15 @@ void bank(u8* mainbuf, int game) {
 						if (bufferizedfrombank) 
 							memcpy(&bankbuf[coordinate[0] * 30 * PKMNLENGTH + coordinate[1] * PKMNLENGTH], tmp, PKMNLENGTH);
 						else if (!isWirelessBuffer)
-							pkx_set(mainbuf, coordinate[0], coordinate[1], tmp, game);
+							pkx_set(mainbuf, coordinate[0], coordinate[1], tmp);
 						else if (isWirelessBuffer)
 							setToWirelessBuf(wirelessbuf, coordinate[0], coordinate[1], tmp);
 					}
 					else {
 						if (!isWirelessBuffer) {
-							pkx_get(mainbuf, saveBox, currentEntry - 30, tmp, game);
-							setDex(mainbuf, pkmn, game);
-							pkx_set(mainbuf, saveBox, currentEntry - 30, pkmn, game);
+							pkx_get(mainbuf, saveBox, currentEntry - 30, tmp);
+							setDex(mainbuf, pkmn);
+							pkx_set(mainbuf, saveBox, currentEntry - 30, pkmn);
 						}
 						else if (isWirelessBuffer) {
 							getFromWirelessBuf(wirelessbuf, saveBox, currentEntry - 30, tmp);
@@ -524,7 +528,7 @@ void bank(u8* mainbuf, int game) {
 						if (bufferizedfrombank) 
 							memcpy(&bankbuf[coordinate[0] * 30 * PKMNLENGTH + coordinate[1] * PKMNLENGTH], tmp, PKMNLENGTH);
 						else if (!isWirelessBuffer)
-							pkx_set(mainbuf, coordinate[0], coordinate[1], tmp, game);
+							pkx_set(mainbuf, coordinate[0], coordinate[1], tmp);
 						else if (isWirelessBuffer)
 							setToWirelessBuf(wirelessbuf, coordinate[0], coordinate[1], tmp);
 					}
@@ -533,7 +537,7 @@ void bank(u8* mainbuf, int game) {
 				}
 			}
 			else {
-				if (isWirelessBuffer || (!(isBattleBoxed(mainbuf, game, saveBox, currentEntry - 30) && (currentEntry > 29)))) {
+				if (isWirelessBuffer || (!(isBattleBoxed(mainbuf, saveBox, currentEntry - 30) && (currentEntry > 29)))) {
 					u8 tmp[PKMNLENGTH];
 					memset(tmp, 0, PKMNLENGTH);
 				
@@ -542,7 +546,7 @@ void bank(u8* mainbuf, int game) {
 					
 					if (currentEntry < 30) {
 						memcpy(pkmn, &bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], PKMNLENGTH);
-						clearMarkings(pkmn, game);
+						clearMarkings(pkmn);
 						if (pkx_get_species(pkmn) <= 0 || pkx_get_species(pkmn) > 821) {
 							memset(pkmn, 0, PKMNLENGTH);
 							isBufferized = false;
@@ -552,8 +556,8 @@ void bank(u8* mainbuf, int game) {
 						}
 					} else {
 						if (!isWirelessBuffer) {
-							pkx_get(mainbuf, saveBox, currentEntry - 30, pkmn, game);
-							clearMarkings(pkmn, game);
+							pkx_get(mainbuf, saveBox, currentEntry - 30, pkmn);
+							clearMarkings(pkmn);
 						} else if (isWirelessBuffer) {
 							getFromWirelessBuf(wirelessbuf, saveBox, currentEntry - 30, pkmn);
 						}
@@ -563,7 +567,7 @@ void bank(u8* mainbuf, int game) {
 							isBufferized = false;
 						} else {
 							if (!isWirelessBuffer)
-								pkx_set(mainbuf, saveBox, currentEntry - 30, tmp, game);
+								pkx_set(mainbuf, saveBox, currentEntry - 30, tmp);
 							else if (isWirelessBuffer)
 								setToWirelessBuf(wirelessbuf, saveBox, currentEntry - 30, tmp);
 							isBufferized = true;
@@ -577,10 +581,10 @@ void bank(u8* mainbuf, int game) {
 		}
 		
 		if (isInternetWorking) {
-			process_bank(wirelessbuf, game);
+			process_bank(wirelessbuf);
 		}
 		
-		printPKBank(bankbuf, mainbuf, wirelessbuf, pkmn, game, currentEntry, saveBox, bankBox, isBufferized, isSeen, isWirelessBuffer);
+		printPKBank(bankbuf, mainbuf, wirelessbuf, pkmn, currentEntry, saveBox, bankBox, isBufferized, isSeen, isWirelessBuffer);
 	}
 	
 	if (confirmDisp(i18n(S_BANK_Q_SAVE_CHANGES)))

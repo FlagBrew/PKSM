@@ -20,7 +20,9 @@
 
 u8 DPActiveFlag[] = {0x20, 0x83, 0xB8, 0xED};
 
-bool isBattleBoxed(u8* mainbuf, int game, int box, int slot) {
+bool isBattleBoxed(u8* mainbuf, int box, int slot) {
+	int game = game_get();
+	
 	if (ISGEN6) //don't care about obsolete titles
 		return false;
 		
@@ -35,7 +37,9 @@ bool isBattleBoxed(u8* mainbuf, int game, int box, int slot) {
 	return false;
 }
 
-u32 *getSaveOT(u8* mainbuf, int game, u32* dst) {
+u32 *getSaveOT(u8* mainbuf, u32* dst) {
+	int game = game_get();
+	
 	u16 src[NICKNAMELENGTH];
 	memcpy(src, &mainbuf[ISGEN6 ? 0x14048 : 0X1238], NICKNAMELENGTH);
 	
@@ -43,37 +47,47 @@ u32 *getSaveOT(u8* mainbuf, int game, u32* dst) {
 	return dst;
 }
 
-u8 getSaveGender(u8* mainbuf, int game) {
+u8 getSaveGender(u8* mainbuf) {
+	int game = game_get();
+	
 	u8 buffer;
     memcpy(&buffer, &mainbuf[(ISGEN6 ? 0x14000 : 0x01200) + 5], 1);
     return buffer;
 }
 
-u16 getSaveTID(u8* mainbuf, int game) {
+u16 getSaveTID(u8* mainbuf) {
+	int game = game_get();
+	
     u16 buffer;
     memcpy(&buffer, &mainbuf[ISGEN6 ? 0x14000 : 0x01200], 2);
     return buffer;
 }
 
-u16 getSaveSID(u8* mainbuf, int game) {
+u16 getSaveSID(u8* mainbuf) {
+	int game = game_get();
+	
     u16 buffer;
     memcpy(&buffer, &mainbuf[(ISGEN6 ? 0x14000 : 0x01200) + 2], 2);
     return buffer;
 }
 
-u16 getSaveTSV(u8* mainbuf, int game) {
-	u16 TID = getSaveTID(mainbuf, game);
-	u16 SID = getSaveSID(mainbuf, game);
+u16 getSaveTSV(u8* mainbuf) {
+	u16 TID = getSaveTID(mainbuf);
+	u16 SID = getSaveSID(mainbuf);
 	return (TID ^ SID) >> 4;
 }
 
-u32 getSaveSeed(u8* mainbuf, int game, int index) {
+u32 getSaveSeed(u8* mainbuf, int index) {
+	int game = game_get();
+	
     u32 buffer;
     memcpy(&buffer, &mainbuf[(ISGEN6 ? 0 : 0x6B5DC) + index * 0x4], 4);
     return buffer;
 }
 
-void setWC(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[]) {
+void setWC(u8* mainbuf, u8* wcbuf, int i, int nInjected[]) {
+	int game = game_get();
+	
 	if (ISXY) {
 		*(mainbuf + 0x1BC00 + i / 8) |= 0x1 << (i % 8);
 		memcpy((void*)(mainbuf + 0x1BD00 + nInjected[0] * WC6LENGTH), (const void*)wcbuf, WC6LENGTH);
@@ -130,7 +144,9 @@ void setWC(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[]) {
 		nInjected[0] = 0;
 }
 
-void setWC4(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[], int GBO) {
+void setWC4(u8* mainbuf, u8* wcbuf, int i, int nInjected[], int GBO) {
+	int game = game_get();
+	
 	mainbuf[GBO + 72] = (u8)((mainbuf[GBO + 72] & 0xFE) | 1);
 	if (game == GAME_HG || game == GAME_SS) {
 		*(mainbuf + 0x9D3C + GBO + (2047 >> 3)) = 0x80;
@@ -150,7 +166,9 @@ void setWC4(u8* mainbuf, u8* wcbuf, int game, int i, int nInjected[], int GBO) {
 		nInjected[0] = 0;
 }
 
-int getSaveLanguageAddress(u8* mainbuf, int game) {
+int getSaveLanguageAddress(u8* mainbuf) {
+	int game = game_get();
+	
 	int address = 0;
 	if (ISXY)
 		address = 0x14000 + 0x2D;
@@ -162,23 +180,23 @@ int getSaveLanguageAddress(u8* mainbuf, int game) {
 	return address;
 }
 
-void setSaveLanguage(u8* mainbuf, int game, int i) {
+void setSaveLanguage(u8* mainbuf, int i) {
 	u8 langValues[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x07, 0x08, 0x09, 0x0A};
-	memcpy(&mainbuf[getSaveLanguageAddress(mainbuf, game)], &langValues[i], sizeof(u8));
+	memcpy(&mainbuf[getSaveLanguageAddress(mainbuf)], &langValues[i], sizeof(u8));
 }
 
 
-u8 getSaveLanguage(u8* mainbuf, int game) {
-	return mainbuf[getSaveLanguageAddress(mainbuf, game)];
+u8 getSaveLanguage(u8* mainbuf) {
+	return mainbuf[getSaveLanguageAddress(mainbuf)];
 }
 
-void saveFileEditor(u8* mainbuf, int game, u64 size) {
+void saveFileEditor(u8* mainbuf, u64 size) {
 	int currentEntry = 0;
 	int page = 0;
 	int maxpages = size/240;
 	int speed = 0;
 	
-	fillSaveSectors(saveSectors, game);
+	fillSaveSectors(saveSectors);
 	while (aptMainLoop() & !(hidKeysDown() & KEY_B)) {
 		hidScanInput();
 		touchPosition touch;
@@ -204,22 +222,22 @@ void saveFileEditor(u8* mainbuf, int game, u64 size) {
 		}
 		else if (saveSectors[currentEntry + 240*page][0] && downPlus) {
 			if (mainbuf[currentEntry + 240*page] < 0xFF)
-				parseSaveHexEditor(mainbuf, game, currentEntry + 240*page);
+				parseSaveHexEditor(mainbuf, currentEntry + 240*page);
 		}
 		else if (saveSectors[currentEntry + 240*page][0] && heldPlus) {
 			if (speed > 30 && mainbuf[currentEntry + 240*page] < 0xFF)
-				parseSaveHexEditor(mainbuf, game, currentEntry + 240*page);
+				parseSaveHexEditor(mainbuf, currentEntry + 240*page);
 			else
 				speed++;
 		}
 		else
 			speed = 0;	
 
-		printEditor(mainbuf, game, size, currentEntry, page);
+		printEditor(mainbuf, size, currentEntry, page);
 	}
 }
 
-void parseHexEditor(u8* pkmn, int game, int byteEntry) {	
+void parseHexEditor(u8* pkmn, int byteEntry) {
 	if (!hax) {
 		if (byteEntry == 0x08 || byteEntry == 0x09)
 			checkMaxValueBetweenBounds(pkmn, byteEntry, 0x08, 2, 802);
@@ -262,7 +280,9 @@ void parseHexEditor(u8* pkmn, int game, int byteEntry) {
 			pkmn[byteEntry]++;
 }
 
-void parseSaveHexEditor(u8* mainbuf, int game, int byte) {	
+void parseSaveHexEditor(u8* mainbuf, int byte) {
+	int game = game_get();
+	
 	if (ISSUMO) {
 		if (byte >= SAVE_SM_ITEM && byte < SAVE_SM_ITEM_SIZE) {
 			// check items
@@ -314,7 +334,9 @@ bool isGenerating() {
 	return generating;
 }
 
-void generate(u8* mainbuf, int game, bool isTeam, int box, int currentEntry, int page, int genEntry) {
+void generate(u8* mainbuf, bool isTeam, int box, int currentEntry, int page, int genEntry) {
+	int game = game_get();
+	
 	generating = true;
 	
 	FILE *fptr = fopen(ISGEN6 ? "romfs:/misc/living6.bin" : "romfs:/misc/living7.bin", "rt");
@@ -326,9 +348,9 @@ void generate(u8* mainbuf, int game, bool isTeam, int box, int currentEntry, int
 	fread(livingbuf, size, 1, fptr);
 	fclose(fptr);
 
-	memcpy(&mainbuf[pkx_get_save_address((isTeam) ? 33 : box, currentEntry, game)], &livingbuf[(page * 40 + genEntry) * 232], 232);
+	memcpy(&mainbuf[pkx_get_save_address((isTeam) ? 33 : box, currentEntry)], &livingbuf[(page * 40 + genEntry) * 232], 232);
 	u8 tempkmn[PKMNLENGTH];
-	pkx_get(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
+	pkx_get(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn);
 	memcpy(&tempkmn[0xE3], &mainbuf[ISGEN6 ? 0x1402D : 0x1235], 1); // nats
 
 	// Correct Nickname of current language
@@ -341,14 +363,16 @@ void generate(u8* mainbuf, int game, bool isTeam, int box, int currentEntry, int
 
 	// Randomizing the encryption constant
 	pkx_reroll_encryption_key(tempkmn);
-	setDex(mainbuf, tempkmn, game);
-	pkx_set(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn, game);
+	setDex(mainbuf, tempkmn);
+	pkx_set(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn);
 
 	free(livingbuf);
 	generating = false;
 }
 
-void pokemonEditor(u8* mainbuf, int game) {
+void pokemonEditor(u8* mainbuf) {
+	int game = game_get();
+	
 	int lookup[] = {0, 1, 2, 4, 5, 3};
 	
 	int modeFlag = ED_STANDARD;
@@ -473,20 +497,20 @@ void pokemonEditor(u8* mainbuf, int game) {
 
 				if (hidKeysDown() & KEY_X) {
 					u8 toBeChecked[PKMNLENGTH];
-					pkx_get(mainbuf, tempVett[0], tempVett[1], toBeChecked, game);
+					pkx_get(mainbuf, tempVett[0], tempVett[1], toBeChecked);
 					if (pkx_get_species(toBeChecked)) {
 						if (!socket_is_legality_address_set())
 							socket_set_legality_address(true);
 						
 						else if (socket_is_legality_address_set())
-							processLegality(toBeChecked, game);
+							processLegality(toBeChecked);
 					}
 				}
 #if PKSV
 #else				
-				process_pkx(mainbuf, game, tempVett);
+				process_pkx(mainbuf, tempVett);
 #endif
-				printPKViewer(mainbuf, pkmn, isTeam, game, tempVett[1], menuEntry, tempVett[0], ED_OTA, 0, 0);	
+				printPKViewer(mainbuf, pkmn, isTeam, tempVett[1], menuEntry, tempVett[0], ED_OTA, 0, 0);	
 			} while (aptMainLoop() && !(hidKeysDown() & KEY_B));
 			socket_shutdown();
 			
@@ -505,10 +529,10 @@ void pokemonEditor(u8* mainbuf, int game) {
 
 #if PKSV
 #else
-		if (((hidKeysDown() & KEY_A) || touchExecuting / 40 == 2) && !isBattleBoxed(mainbuf, game, box, currentEntry)) {
+		if (((hidKeysDown() & KEY_A) || touchExecuting / 40 == 2) && !isBattleBoxed(mainbuf, box, currentEntry)) {
 			touchExecuting = currentEntry;
 
-			pkx_get(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
+			pkx_get(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn);
 			bool operationDone = false;
 
 			touchExecuting = menuEntry;
@@ -520,14 +544,14 @@ void pokemonEditor(u8* mainbuf, int game) {
 				if (oldEntry != menuEntry)
 					touchExecuting = menuEntry;
 				
-				printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_MENU, 0, 0);
+				printPKViewer(mainbuf, pkmn, isTeam, currentEntry, menuEntry, box, ED_MENU, 0, 0);
 				
 				if (hidKeysHeld() & KEY_TOUCH) {
 					if (touch.px > 242 && touch.px < 283 && touch.py > 5 && touch.py < 25 && !isTeam && pkx_get_ball(pkmn) != CHERISH_BALL) {
-						pkx_set_tid(pkmn, getSaveTID(mainbuf, game));
-						pkx_set_sid(pkmn, getSaveSID(mainbuf, game));
+						pkx_set_tid(pkmn, getSaveTID(mainbuf));
+						pkx_set_sid(pkmn, getSaveSID(mainbuf));
 
-						int language =  getSaveLanguage(mainbuf, game);
+						int language =  getSaveLanguage(mainbuf);
 						memcpy(&pkmn[0xE3], &language, 1); // nats
 						
 						pkmn[0x93] = 0; // current handler to 0
@@ -537,14 +561,14 @@ void pokemonEditor(u8* mainbuf, int game) {
 						u8 nick[NICKNAMELENGTH];
 						memset(nick32, 0, NICKNAMELENGTH*sizeof(u32));
 						memset(nick, 0, NICKNAMELENGTH);
-						getSaveOT(mainbuf, game, nick32);
+						getSaveOT(mainbuf, nick32);
 						utf32_to_utf8(nick, nick32, NICKNAMELENGTH);
 
 						pkx_set_nickname(pkmn, (char*)nick, 0xb0);
 						pkx_set_nickname_flag(pkmn);
-						pkx_set_ot_gender(pkmn, (getSaveGender(mainbuf, game)));
+						pkx_set_ot_gender(pkmn, (getSaveGender(mainbuf)));
 
-						pkx_set(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
+						pkx_set(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn);
 						operationDone = true;
 						break;
 					}
@@ -653,18 +677,18 @@ void pokemonEditor(u8* mainbuf, int game) {
 										}
 										else if (sector[byteEntry][0] && downPlus) {
 											if (pkmn[byteEntry] < 0xFF)
-												parseHexEditor(pkmn, game, byteEntry);
+												parseHexEditor(pkmn, byteEntry);
 										}
 										else if (sector[byteEntry][0] && heldPlus) {
 											if (speed > 30 && pkmn[byteEntry] < 0xFF)
-												parseHexEditor(pkmn, game, byteEntry);
+												parseHexEditor(pkmn, byteEntry);
 											else
 												speed++;
 										}
 										else
 											speed = 0;
 										
-										printPKEditor(pkmn, game, byteEntry, 0, 0, ED_HEX, descriptions);
+										printPKEditor(pkmn, byteEntry, 0, 0, ED_HEX, descriptions);
 									}
 								}
 								
@@ -692,7 +716,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 															break;
 														}
 														
-														printPKEditor(pkmn, game, hpEntry, 0, 0, ED_HIDDENPOWER, descriptions);
+														printPKEditor(pkmn, hpEntry, 0, 0, ED_HIDDENPOWER, descriptions);
 													}
 												}
 											}
@@ -765,7 +789,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 											else
 												speed = 0;
 											
-											printPKEditor(pkmn, game, 0, 0, 0, ED_STATS, descriptions);
+											printPKEditor(pkmn, 0, 0, 0, ED_STATS, descriptions);
 										}
 									}
 									
@@ -780,7 +804,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 												break;
 											}
 											
-											printPKEditor(pkmn, game, natureEntry, 0, 0, ED_NATURES, descriptions);
+											printPKEditor(pkmn, natureEntry, 0, 0, ED_NATURES, descriptions);
 										}
 									}
 									
@@ -795,7 +819,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 												break;
 											}
 											
-											printPKEditor(pkmn, game, ballEntry, 0, 0, ED_BALLS, descriptions);
+											printPKEditor(pkmn, ballEntry, 0, 0, ED_BALLS, descriptions);
 										}
 									}
 									
@@ -837,7 +861,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 													break;
 												}
 												
-												printPKEditor(pkmn, game, formEntry, (int)species, 0, ED_FORMS, descriptions);
+												printPKEditor(pkmn, formEntry, (int)species, 0, ED_FORMS, descriptions);
 											}
 										}
 										free(forms);
@@ -904,7 +928,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 									}
 									
 									if (touch.px > 206 && touch.px < 315 && touch.py > 172 && touch.py < 203) {
-										pkx_set_as_it_is(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn, game);
+										pkx_set_as_it_is(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn);
 										operationDone = true;
 										break;
 									}
@@ -942,7 +966,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 													pkx_set_egg_move(pkmn, movesSorted[moveEntry + page * 40], entryBottom - 4);
 											}
 
-											printPKEditor(pkmn, game, moveEntry, page, entryBottom, ED_MOVES, descriptions);
+											printPKEditor(pkmn, moveEntry, page, entryBottom, ED_MOVES, descriptions);
 										}
 									}
 									
@@ -960,7 +984,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 												break;
 											}
 											
-											printPKEditor(pkmn, game, itemEntry, page, 0, ED_ITEMS, descriptions);
+											printPKEditor(pkmn, itemEntry, page, 0, ED_ITEMS, descriptions);
 										}
 									}
 								}
@@ -1034,7 +1058,7 @@ void pokemonEditor(u8* mainbuf, int game) {
 								else
 									speed = 0;
 								
-								printPKEditor(pkmn, game, 0, 0, 0, ED_BASE, descriptions);
+								printPKEditor(pkmn, 0, 0, 0, ED_BASE, descriptions);
 							}
 							break;
 						}
@@ -1096,20 +1120,20 @@ void pokemonEditor(u8* mainbuf, int game) {
 									}
 								}
 								if ((hidKeysDown() & KEY_A) && !isTeam) {
-									pkx_set(mainbuf, box, cloneEntry, pkmn, game);
+									pkx_set(mainbuf, box, cloneEntry, pkmn);
 									operationDone = true;
 									currentEntry = cloneEntry;
 									break;
 								}
 
-								printPKViewer(mainbuf, pkmn, isTeam, game, cloneEntry, menuEntry, box, ED_CLONE, 0, 0);
+								printPKViewer(mainbuf, pkmn, isTeam, cloneEntry, menuEntry, box, ED_CLONE, 0, 0);
 							}
 							break;
 						}
 						case 2 : {
 							if (!isTeam && confirmDisp(i18n(S_EDITOR_Q_CONFIRM_RELEASE))) {
 								memset(pkmn, 0, PKMNLENGTH);
-								pkx_set(mainbuf, box, currentEntry, pkmn, game);
+								pkx_set(mainbuf, box, currentEntry, pkmn);
 								infoDisp(i18n(S_EDITOR_RELEASED));
 								operationDone = true;
 							}
@@ -1126,12 +1150,12 @@ void pokemonEditor(u8* mainbuf, int game) {
 									
 									if (hidKeysDown() & KEY_A) {
 										if (!(ISGEN6 && ((genEntry + 1) > 721)) && (page*40 + genEntry < 802)) {
-											generate(mainbuf, game, isTeam, box, currentEntry, page, genEntry);
+											generate(mainbuf, isTeam, box, currentEntry, page, genEntry);
 											operationDone = true;
 										}
 										break;
 									}
-									printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_GENERATE, genEntry, page);
+									printPKViewer(mainbuf, pkmn, isTeam, currentEntry, menuEntry, box, ED_GENERATE, genEntry, page);
 								}
 							}
 							break;
@@ -1158,18 +1182,18 @@ void pokemonEditor(u8* mainbuf, int game) {
 					
 					if (hidKeysDown() & KEY_A) {
 						if (!(ISGEN6 && ((genEntry + 1) > 721)) && (page*40 + genEntry < 802)) {
-							generate(mainbuf, game, isTeam, box, currentEntry, page, genEntry);
+							generate(mainbuf, isTeam, box, currentEntry, page, genEntry);
 							operationDone = true;
 						}
 						break;
 					}
 					
-					printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, ED_GENERATE, genEntry, page);
+					printPKViewer(mainbuf, pkmn, isTeam, currentEntry, menuEntry, box, ED_GENERATE, genEntry, page);
 				}
 			}
 		}
 #endif
-		printPKViewer(mainbuf, pkmn, isTeam, game, currentEntry, menuEntry, box, modeFlag, 0, 0);
+		printPKViewer(mainbuf, pkmn, isTeam, currentEntry, menuEntry, box, modeFlag, 0, 0);
 	}
 	free(pkmn);
 }

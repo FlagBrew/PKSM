@@ -168,7 +168,8 @@ bool openSaveArch(FS_Archive *out, u64 id) {
 	return false;
 }
 
-void settingsMenu(u8* mainbuf, int game) {
+void settingsMenu(u8* mainbuf) {
+	int game = game_get();
 	char *gamesList[] = {"X", "Y", "OR", "AS", "S", "M", "D", "P", "PL", "HG", "SS", "B", "W", "W2", "B2"};
 	
 	char bakpath[80];
@@ -230,10 +231,10 @@ void settingsMenu(u8* mainbuf, int game) {
 				i18n_init();
 				GUITextsInit();
 
-				initProgressLoadPNGInRAM(getGUIElementsI18nSpecifyTotalElements(game));
+				initProgressLoadPNGInRAM(getGUIElementsI18nSpecifyTotalElements());
 
 				freezeMsg(i18n(S_GRAPHIC_GUI_ELEMENTS_SPECIFY_LOADING));
-				GUIElementsI18nSpecify(game);
+				GUIElementsI18nSpecify();
 			}
 		}
 		

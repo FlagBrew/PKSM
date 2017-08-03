@@ -64,7 +64,8 @@ int getDexFormIndexSM(int species, int formct, int start) {
 	return formindex;
 }
 
-void setDexFlags(u8 mainbuf[], int index, int gender, int shiny, int baseSpecies, int game) {
+void setDexFlags(u8 mainbuf[], int index, int gender, int shiny, int baseSpecies) {
+	int game = game_get();
 	int PokeDex;
 	
 	if (ISSUMO) {
@@ -123,7 +124,9 @@ bool sanitizeFormsToIterate(int species, int fsfe[], int formIn) {
 	return false;
 }
 
-void setDex(u8 mainbuf[], u8* pkmn, int game) {
+void setDex(u8 mainbuf[], u8* pkmn) {
+	int game = game_get();
+	
 	if (!ISSUMO)
 		return;
 	
@@ -184,7 +187,7 @@ void setDex(u8 mainbuf[], u8* pkmn, int game) {
 					bitIndex = f + form;
 			}
 		}
-		setDexFlags(mainbuf, bitIndex, gender, shiny, pkx_get_species(pkmn) - 1, game);
+		setDexFlags(mainbuf, bitIndex, gender, shiny, pkx_get_species(pkmn) - 1);
 	}
 
 	int lang = pkx_get_language(pkmn);
@@ -200,7 +203,9 @@ void setDex(u8 mainbuf[], u8* pkmn, int game) {
 	}
 }
 
-bool getCaught(u8* mainbuf, int game, int species) {
+bool getCaught(u8* mainbuf, int species) {
+	int game = game_get();
+	
 	int PokeDex = 0;
 	int miscdata = 0;
 	if (ISSUMO) {
@@ -230,7 +235,9 @@ bool getCaught(u8* mainbuf, int game, int species) {
 	return (1 << bm & mainbuf[ofs + bd]) != 0;
 }
 
-bool getSeen(u8* mainbuf, int game, int species) {
+bool getSeen(u8* mainbuf, int species) {
+	int game = game_get();
+	
 	int PokeDex = 0;
 	int miscdata = 0;
 	int brSize = 0;

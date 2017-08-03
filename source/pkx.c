@@ -470,7 +470,8 @@ u32 pkx_lcrng(u32 seed) {
 	return seed * 0x41C64E6D + 0x00006073; 
 }
 
-u32 pkx_get_save_address(const int boxnumber, const int indexnumber, const int game) {
+u32 pkx_get_save_address(const int boxnumber, const int indexnumber) {
+	int game = game_get();
     int boxpos = 0;
 	
     if (ISXY)
@@ -548,12 +549,14 @@ void pkx_encrypt(u8* pkmn) {
     }
 }
 
-void pkx_get(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, const int game) {
-    memcpy(pkmn, &mainbuf[pkx_get_save_address(boxnumber, indexnumber, game)], PKMNLENGTH);
+void pkx_get(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn) {
+    memcpy(pkmn, &mainbuf[pkx_get_save_address(boxnumber, indexnumber)], PKMNLENGTH);
     pkx_decrypt(pkmn);
 }
 
-void pkx_set(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, const int game) {
+void pkx_set(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn) {
+	int game = game_get();
+	
 	u8 latestHandlers[10];
 	char ot_name[NICKNAMELENGTH];
 	char save_name[NICKNAMELENGTH];
@@ -564,25 +567,25 @@ void pkx_set(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, 
 	memcpy(ot_name, &pkmn[0xB0], NICKNAMELENGTH);
 	memcpy(save_name, &mainbuf[ISGEN6 ? 0x14048 : 0x1238], NICKNAMELENGTH);
 	
-	if ((getSaveTID(mainbuf, game) == pkx_get_tid(pkmn)) && (getSaveSID(mainbuf, game) == pkx_get_sid(pkmn)) && !memcmp(ot_name, save_name, NICKNAMELENGTH) && !memcmp(latestHandlers, ht_name, 10)) { //you're the first owner
+	if ((getSaveTID(mainbuf) == pkx_get_tid(pkmn)) && (getSaveSID(mainbuf) == pkx_get_sid(pkmn)) && !memcmp(ot_name, save_name, NICKNAMELENGTH) && !memcmp(latestHandlers, ht_name, 10)) { //you're the first owner
 		pkx_set_ht(pkmn, ht_name);
 		pkx_set_ht_gender(pkmn, 0);
 	} else {
 		pkx_set_ht(pkmn, save_name);
-		pkx_set_ht_gender(pkmn, getSaveGender(mainbuf, game));
+		pkx_set_ht_gender(pkmn, getSaveGender(mainbuf));
 	}
 
     pkx_calculate_checksum(pkmn);
     pkx_encrypt(pkmn);
 
-    memcpy(&mainbuf[pkx_get_save_address(boxnumber, indexnumber, game)], pkmn, PKMNLENGTH);
+    memcpy(&mainbuf[pkx_get_save_address(boxnumber, indexnumber)], pkmn, PKMNLENGTH);
 }
 
-void pkx_set_as_it_is(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn, const int game) {
+void pkx_set_as_it_is(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn) {
     pkx_calculate_checksum(pkmn);
     pkx_encrypt(pkmn);
 	
-    memcpy(&mainbuf[pkx_get_save_address(boxnumber, indexnumber, game)], pkmn, PKMNLENGTH);
+    memcpy(&mainbuf[pkx_get_save_address(boxnumber, indexnumber)], pkmn, PKMNLENGTH);
 }
 
 u8 pkx_get_HT(u8* pkmn) { 
