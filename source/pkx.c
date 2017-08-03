@@ -567,10 +567,7 @@ void pkx_set(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn) 
 	memcpy(ot_name, &pkmn[0xB0], NICKNAMELENGTH);
 	memcpy(save_name, &mainbuf[ISGEN6 ? 0x14048 : 0x1238], NICKNAMELENGTH);
 	
-	if ((getSaveTID(mainbuf) == pkx_get_tid(pkmn)) && (getSaveSID(mainbuf) == pkx_get_sid(pkmn)) && !memcmp(ot_name, save_name, NICKNAMELENGTH) && !memcmp(latestHandlers, ht_name, 10)) { //you're the first owner
-		pkx_set_ht(pkmn, ht_name);
-		pkx_set_ht_gender(pkmn, 0);
-	} else {
+	if (!((getSaveTID(mainbuf) == pkx_get_tid(pkmn)) && (getSaveSID(mainbuf) == pkx_get_sid(pkmn)) && !memcmp(ot_name, save_name, NICKNAMELENGTH) && !memcmp(latestHandlers, ht_name, 10))) { //you're the first owner
 		pkx_set_ht(pkmn, save_name);
 		pkx_set_ht_gender(pkmn, getSaveGender(mainbuf));
 	}
