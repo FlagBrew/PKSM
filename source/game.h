@@ -21,3 +21,8 @@
 
 int game_get();
 void game_set(int value);
+
+u8 game_get_country(u8* mainbuf);
+u8 game_get_region(u8* mainbuf);
+u8 game_get_console_region(u8* mainbuf);
+u8 game_get_language(u8* mainbuf);

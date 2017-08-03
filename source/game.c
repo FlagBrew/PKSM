@@ -28,18 +28,46 @@ void game_set(int value) {
 	game = value;
 }
 
-/*u8 game_get_country(u8* mainbuf) {
+u8 game_get_country(u8* mainbuf) {
+	if (ISSUMO)
+		return *(u8*)(mainbuf + 0x01200 + 0x2F);
+	else if (ISORAS)
+		return *(u8*)(mainbuf +  + 0x27);
+	else if (ISXY)
+		return *(u8*)(mainbuf + 0x14000 + 0x27);
 	
+	return 0;
 }
 
 u8 game_get_region(u8* mainbuf) {
+	if (ISSUMO)
+		return *(u8*)(mainbuf + 0x01200 + 0x2E);
+	else if (ISORAS)
+		return *(u8*)(mainbuf + 0x14000 + 0x26);
+	else if (ISXY)
+		return *(u8*)(mainbuf + 0x14000 + 0x26);
 	
+	return 0;	
 }
 
 u8 game_get_console_region(u8* mainbuf) {
+	if (ISSUMO)
+		return *(u8*)(mainbuf + 0x01200 + 0x34);
+	else if (ISORAS)
+		return *(u8*)(mainbuf + 0x14000 + 0x2C);
+	else if (ISXY)
+		return *(u8*)(mainbuf + 0x14000 + 0x2C);
 	
+	return 0;	
 }
 
 u8 game_get_language(u8* mainbuf) {
+	if (ISSUMO)
+		return *(u8*)(mainbuf + 0x01200 + 0x35);
+	else if (ISORAS)
+		return *(u8*)(mainbuf + 0x14000 + 0x2D);
+	else if (ISXY)
+		return *(u8*)(mainbuf + 0x14000 + 0x2D);
 	
-}*/
+	return 0;	
+}

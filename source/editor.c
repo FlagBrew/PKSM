@@ -556,6 +556,11 @@ void pokemonEditor(u8* mainbuf) {
 						
 						pkmn[0x93] = 0; // current handler to 0
 						pkmn[0xA2] = 0; // held trainer friendship to 0
+						
+						pkmn[0xE0] = game_get_country(mainbuf);
+						pkmn[0xE1] = game_get_region(mainbuf);
+						pkmn[0xE2] = game_get_console_region(mainbuf);
+						pkmn[0xE3] = game_get_language(mainbuf);
 
 						u32 nick32[NICKNAMELENGTH];
 						u8 nick[NICKNAMELENGTH];
