@@ -4,7 +4,7 @@ make rosalinapksm
 make rosalinapksv
 
 @rd release /s /q
-@mkdir release\standard\PKSM\3ds\PKSM release\standard\PKSV\3ds\PKSV release\rosalina\3ds\PKSM release\rosalina\3ds\PKSV release\servepkx\java release\servepkx\python release\servepkx\webbrowser release\extrastorage\badsectors release\extrastorage\phbank2pksm
+@mkdir release\standard\PKSM\3ds\PKSM release\standard\PKSV\3ds\PKSV release\rosalina\3ds\PKSM release\rosalina\3ds\PKSV release\servepkx\java release\servepkx\python release\servepkx\webbrowser release\extrastorage\badsectors release\extrastorage\phbank2pksm release\serveLegality
 
 @copy output\PKSM\3ds-arm\PKSM.cia release\standard\PKSM
 @copy output\PKSM\3ds-arm\3ds\PKSM\PKSM.3dsx release\standard\PKSM\3ds\PKSM
@@ -15,12 +15,16 @@ make rosalinapksv
 @echo ^<targets selectable="true"^>^</targets^> > release\standard\PKSV\3ds\PKSV\PKSV.xml
 
 @copy output\rosalina\PKSV\3ds-arm\3ds\PKSV\PKSV.3dsx release\rosalina\3ds\PKSV
-@copy output\rosalina\PKSM\3ds-arm\3ds\PKSM\PKSM.3dsx release\rosalina\3ds\PKSM
+@copy output\rosalina\PKSM\3ds-arm\3ds\PKSM\PKSM.3dsx release\rosalina\3ds\
+
+@copy serveLegality\serveLegality\bin\Debug\serveLegality.exe release\serveLegality
+@copy serveLegality\README.md release\serveLegality
 
 @copy servepkx\java\servepkx.jar release\servepkx\java
 @copy servepkx\java\README.md release\servepkx\java
 
 @copy servepkx\python\servepkx.py release\servepkx\python
+@copy servepkx\python\servewcx.py release\servepkx\python
 @copy servepkx\python\README.md release\servepkx\python
 
 @copy extrastorage\badsectors\badsectors.3dsx release\extrastorage\badsectors

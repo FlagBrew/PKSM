@@ -38,6 +38,7 @@
 #include "fill.h"
 #include "files.h"
 #include "fx.h"
+#include "game.h"
 #include "graphic.h"
 #include "hex.h"
 #include "hid.h"
@@ -80,7 +81,7 @@
 #define ISORAS (game == GAME_OR || game == GAME_AS)
 #define ISSUMO (game == GAME_SUN || game == GAME_MOON)
 
-#define VERSION "v4.3.1"
+#define VERSION "v4.4.0"
 
 /**
  * OFFSETS

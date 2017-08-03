@@ -5,17 +5,17 @@
 
 **Editor**, **wondercard injector**, **offline extra storage** and **OTA injector**.
 
-If you want a non-invasive homebrew to see your save's infos, check out **PKSV** in the releases page.
+If you want a non-invasive homebrew to see your save's infos, check out **PKSV** in the release zip file.
 
 | Downloads | Links |
 | :-------: | :---: |
-| Latest 3dsx build | [direct](https://github.com/BernardoGiordano/PKSM/releases/download/4.3.0/PKSM.zip) |
-| Latest cfw build | [direct](https://github.com/BernardoGiordano/PKSM/releases/download/4.3.0/PKSM.cia) |
-| Latest QR code | [qr](https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=https://github.com/BernardoGiordano/PKSM/releases/download/4.3.0/PKSM.cia&choe=UTF-8.png) |
+| Latest solution | [direct](https://github.com/BernardoGiordano/PKSM/releases/download/4.4.0/PKSM.zip) |
+| Latest cfw build | [direct](https://github.com/BernardoGiordano/PKSM/releases/download/4.4.0/PKSM.cia) |
+| Latest QR code | [qr](https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=https://github.com/BernardoGiordano/PKSM/releases/download/4.4.0/PKSM.cia&choe=UTF-8.png) |
 
 ## Installation
 
-Download the latest release (4.3.0) and install it with your favourite installation method. You should only copy/paste the whole content of the release zip into the root of your sd-card, most of the time. When booted, the application will automatically download the required additional assets from an external source. You can provide your own assets, if you want.
+Download the latest release (4.4.0) and install it with your favourite installation method. You should only copy/paste the whole content of the release zip into the root of your sd-card, most of the time. When booted, the application will automatically download the required additional assets from an external source. You can provide your own assets, if you want.
 
 PKSM works with Rosalina-based Homebrew Launchers, too.
 
@@ -49,6 +49,7 @@ You can use servepkx to inject things from your PC to PKSM directly. Use your fa
 
 | Application | Description |
 | :---------: | :---------: |
+| **[serveLegality](https://github.com/BernardoGiordano/serveLegality)** | This windows application will let you check legality for your pkmns via wireless.
 | **[badsectors](https://github.com/BernardoGiordano/PKSM/tree/master/extrastorage/badsectors)** | This hb application cleans occasional wrong bytes into your extra storage file |
 | **[phbank2pksm](https://github.com/zaksabeast/phbank2pksm)** | This web application converts your PHBank extra storage file to a PKSM compatible one |
 
@@ -90,8 +91,9 @@ Check out `COMPILE.md` for more details.
 * TuxSH for TWLSaveTool
 * PPorg for most of the wcx included here
 * Simona, Carlo, Matteo for fill.c work
+* all the countless translators who helped with the multilanguage feature
 
-**If you appreciate my work, I appreciate [a coffee](https://www.paypal.me/BernardoGiordano) :)** 
+**If you appreciate my work, I appreciate [a coffee](https://www.patreon.com/bernardogiordano) :)** 
 
 ## License
 
