@@ -197,7 +197,8 @@ void settingsMenu(u8* mainbuf) {
 		if (hidKeysDown() & KEY_B) break;
 
 #if PKSV
-#else		
+#elif ROSALINA_3DSX
+#else	
 		if ((hidKeysDown() & KEY_Y) || (hidKeysDown() & KEY_TOUCH && touch.px > 280 && touch.px < 313 && touch.py > 220)) {
 			update();
 		}

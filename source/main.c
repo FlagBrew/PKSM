@@ -414,7 +414,8 @@ int main() {
 	free(mainbuf);
 
 #if CITRA
-#else	
+#elif ROSALINA_3DSX
+#else
 	if (!isHBL() && IS3DS && confirmDisp(i18n(S_LAUNCH_GAME))) {
 		//FXElementsExit();
 		//GUIElementsExit();

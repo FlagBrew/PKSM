@@ -53,8 +53,6 @@
 #include "util.h"
 #include "wcx.h"
 
-#define DEBUG 0
-
 #define GAME_X 		  0
 #define GAME_Y 		  1
 #define GAME_OR 	  2
@@ -80,8 +78,6 @@
 #define ISXY (game == GAME_X || game == GAME_Y)
 #define ISORAS (game == GAME_OR || game == GAME_AS)
 #define ISSUMO (game == GAME_SUN || game == GAME_MOON)
-
-#define VERSION "v4.4.0"
 
 /**
  * OFFSETS

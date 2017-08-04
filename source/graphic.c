@@ -539,14 +539,16 @@ void progressBar(wchar_t* message, u32 current, u32 sz) {
 
 void drawMenuTop() {
 	printMenuTop();
-	#if PKSV
+#if PKSV
 	printTitle(L"PKSV");
-	#else
+#else
 	printTitle(L"PKSM");
-	#endif
+#endif
 	sf2d_draw_texture(pokeball, (400 - pokeball->width) / 2 + 5, (240 - pokeball->height) / 2 + 10);
 	
-	sftd_draw_text(fontBold9, (398 - sftd_get_text_width(fontBold9, 9, VERSION)), 229, LIGHTBLUE, 9, VERSION);
+	char version[10];
+	snprintf(version, 10, "v%d.%d.%d", APP_VERSION_MAJOR, APP_VERSION_MINOR, APP_VERSION_MICRO);
+	sftd_draw_text(fontBold9, (398 - sftd_get_text_width(fontBold9, 9, version)), 229, LIGHTBLUE, 9, version);
 }
 
 void printAnimatedBG(bool isUp) {
