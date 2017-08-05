@@ -28,45 +28,81 @@ void game_set(int value) {
 	game = value;
 }
 
+bool game_isgen7() {
+	return (game == GAME_SUN || game == GAME_MOON);
+}
+
+bool game_isgen6() {
+	return (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS);
+}
+
+bool game_isgen5() {
+	return (game == GAME_B1 || game == GAME_B2 || game == GAME_W1 || game == GAME_W2);
+}
+
+bool game_isgen4() {
+	return (game == GAME_DIAMOND || game == GAME_PEARL || game == GAME_PLATINUM || game == GAME_HG || game == GAME_SS);
+}
+
+bool game_is3DS() {
+	return game_isgen6() || game_isgen7();
+}
+
+bool game_isDS() {
+	return game_isgen5() || game_isgen4();
+}
+
+bool game_getisXY() {
+	return (game == GAME_X || game == GAME_Y);
+}
+
+bool game_getisORAS() {
+	return (game == GAME_OR || game == GAME_AS);
+}
+
+bool game_getisSUMO() {
+	return (game == GAME_SUN || game == GAME_MOON);
+}
+
 u8 game_get_country(u8* mainbuf) {
-	if (ISSUMO)
+	if (game_getisSUMO())
 		return *(u8*)(mainbuf + 0x01200 + 0x2F);
-	else if (ISORAS)
+	else if (game_getisORAS())
 		return *(u8*)(mainbuf +  + 0x27);
-	else if (ISXY)
+	else if (game_getisXY())
 		return *(u8*)(mainbuf + 0x14000 + 0x27);
 	
 	return 0;
 }
 
 u8 game_get_region(u8* mainbuf) {
-	if (ISSUMO)
+	if (game_getisSUMO())
 		return *(u8*)(mainbuf + 0x01200 + 0x2E);
-	else if (ISORAS)
+	else if (game_getisORAS())
 		return *(u8*)(mainbuf + 0x14000 + 0x26);
-	else if (ISXY)
+	else if (game_getisXY())
 		return *(u8*)(mainbuf + 0x14000 + 0x26);
 	
 	return 0;	
 }
 
 u8 game_get_console_region(u8* mainbuf) {
-	if (ISSUMO)
+	if (game_getisSUMO())
 		return *(u8*)(mainbuf + 0x01200 + 0x34);
-	else if (ISORAS)
+	else if (game_getisORAS())
 		return *(u8*)(mainbuf + 0x14000 + 0x2C);
-	else if (ISXY)
+	else if (game_getisXY())
 		return *(u8*)(mainbuf + 0x14000 + 0x2C);
 	
 	return 0;	
 }
 
 u8 game_get_language(u8* mainbuf) {
-	if (ISSUMO)
+	if (game_getisSUMO())
 		return *(u8*)(mainbuf + 0x01200 + 0x35);
-	else if (ISORAS)
+	else if (game_getisORAS())
 		return *(u8*)(mainbuf + 0x14000 + 0x2D);
-	else if (ISXY)
+	else if (game_getisXY())
 		return *(u8*)(mainbuf + 0x14000 + 0x2D);
 	
 	return 0;	

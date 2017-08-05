@@ -94,10 +94,8 @@ inline void getFromWirelessBuf(u8* buf, int box, int slot, u8* pkmn) {
 }
 
 void clearMarkings(u8* pkmn) {
-	int game = game_get();
-	
 	u8 version = pkmn[0xDF];
-	if (!(version == 30 || version == 31) && !(version >= 35 && version <= 41) && !ISGEN7) { // not SM
+	if (!(version == 30 || version == 31) && !(version >= 35 && version <= 41) && !game_isgen7()) { // not SM
 		pkmn[0x2A] = 0;
 		pkmn[0x72] &= 0xFC;
 		pkmn[0xDE] = 0;
@@ -185,8 +183,8 @@ void bank(u8* mainbuf) {
 	int currentEntry = 30;
 	int coordinate[2] = {0, 0};
 	
-	u8* wirelessbuf = (u8*)malloc(30*232*(ISGEN6 ? 31 : 32));
-	memset(wirelessbuf, 0, 30*232*(ISGEN6 ? 31 : 32));
+	u8* wirelessbuf = (u8*)malloc(30*232*(game_isgen6() ? 31 : 32));
+	memset(wirelessbuf, 0, 30*232*(game_isgen6() ? 31 : 32));
 	bool isWirelessBuffer = false;
 	
 	u8* pkmn = (u8*)malloc(PKMNLENGTH * sizeof(u8));
@@ -207,9 +205,9 @@ void bank(u8* mainbuf) {
 				else if (bankBox == size / (30 * PKMNLENGTH) - 1) 
 					bankBox = 0;
 			} else {
-				if (saveBox < (ISGEN6 ? 30 : 31)) 
+				if (saveBox < (game_isgen6() ? 30 : 31)) 
 					saveBox++;
-				else if (saveBox == (ISGEN6 ? 30 : 31))
+				else if (saveBox == (game_isgen6() ? 30 : 31))
 					saveBox = 0;
 			}
 		}
@@ -224,7 +222,7 @@ void bank(u8* mainbuf) {
 				if (saveBox > 0) 
 					saveBox--;
 				else if (saveBox == 0) 
-					saveBox = ISGEN6 ? 30 : 31;	
+					saveBox = game_isgen6() ? 30 : 31;	
 			}
 		}
 		
@@ -238,9 +236,9 @@ void bank(u8* mainbuf) {
 					else if (bankBox == size / (30 * PKMNLENGTH) - 1) 
 						bankBox = 0;
 				} else {
-					if (saveBox < (ISGEN6 ? 30 : 31)) 
+					if (saveBox < (game_isgen6() ? 30 : 31)) 
 						saveBox++;
-					else if (saveBox == (ISGEN6 ? 30 : 31)) 
+					else if (saveBox == (game_isgen6() ? 30 : 31)) 
 						saveBox = 0;
 				}
 			}
@@ -258,7 +256,7 @@ void bank(u8* mainbuf) {
 					if (saveBox > 0) 
 						saveBox--;
 					else if (saveBox == 0) 
-						saveBox = ISGEN6 ? 30 : 31;	
+						saveBox = game_isgen6() ? 30 : 31;	
 				}
 			}
 			else
@@ -343,13 +341,13 @@ void bank(u8* mainbuf) {
 				if (saveBox > 0) 
 					saveBox--;
 				else if (saveBox == 0) 
-					saveBox = ISGEN6 ? 30 : 31;
+					saveBox = game_isgen6() ? 30 : 31;
 			}
 			
 			if (touch.px > 185 && touch.px < 201 && touch.py > 17 && touch.py < 37) {
-				if (saveBox < (ISGEN6 ? 30 : 31)) 
+				if (saveBox < (game_isgen6() ? 30 : 31)) 
 					saveBox++;
-				else if (saveBox == (ISGEN6 ? 30 : 31)) 
+				else if (saveBox == (game_isgen6() ? 30 : 31)) 
 					saveBox = 0;
 			}
 			
@@ -412,8 +410,8 @@ void bank(u8* mainbuf) {
 			
 			if (touch.px > 208 && touch.px < 317 && touch.py > 153 && touch.py < 180) {
 				int dexEntry = 0;
-				int page = 0, maxpages = ISGEN6 ? 18 : 21;
-				int total = ISGEN7 ? 802 : 721;
+				int page = 0, maxpages = game_isgen6() ? 18 : 21;
+				int total = game_isgen7() ? 802 : 721;
 				int seen = 0;
 				int caught = 0;
 				
@@ -488,7 +486,7 @@ void bank(u8* mainbuf) {
 				u8 form = pkx_get_form(pkmn);
 				FormData *forms = pkx_get_legal_form_data(species, game);
 				bool illegalform = form < forms->min || form > forms->max;
-				bool illegalspecies = ISGEN6 && species > 721;
+				bool illegalspecies = game_isgen6() && species > 721;
 				free(forms);
 
 				if (isWirelessBuffer || !((illegalspecies || illegalform) && currentEntry > 29)) { // prevent that gen7 stuff goes into gen6 save

@@ -235,12 +235,12 @@ int main() {
 	fread(mainbuf, mainSize, 1, saveptr);
 	fclose(saveptr);
 	
-	if (ISGEN4) {
+	if (game_isgen4()) {
 		GBO = 0x40000 * getActiveGBO(mainbuf);
 		SBO = 0x40000 * getActiveSBO(mainbuf);
 	}
 #else
-	if (IS3DS) {
+	if (game_is3DS()) {
 		if (!(openSaveArch(&saveArch, ids[game]))) {
 			infoDisp(i18n(S_MAIN_GAME_NOT_FOUND));
 			exitServices();
@@ -264,7 +264,7 @@ int main() {
 		mainbuf = malloc(mainSize);
 		FSFILE_Read(mainHandle, NULL, 0, mainbuf, mainSize);
 	}
-	else if (ISDS) {
+	else if (game_isDS()) {
 		FS_CardType t;
 		if (FSUSER_GetCardType(&t)) {
 			infoDisp(i18n(S_MAIN_NO_CARTRIDGE));
@@ -288,7 +288,7 @@ int main() {
 		mainbuf = malloc(mainSize);
 		
 		TWLstoreSaveFile(mainbuf, cardType_);
-		if (ISGEN4) {
+		if (game_isgen4()) {
 			GBO = 0x40000 * getActiveGBO(mainbuf);
 			SBO = 0x40000 * getActiveSBO(mainbuf);
 		}
@@ -309,7 +309,7 @@ int main() {
 	
 	GUIElementsSpecify();
 
-	if (IS3DS) {
+	if (game_is3DS()) {
 		int mainMenu[] = {S_MAIN_MENU_EXTRA_STORAGE, S_MAIN_MENU_EDITOR, S_MAIN_MENU_EVENTS, S_MAIN_MENU_SAVE_INFO, S_MAIN_MENU_SETTINGS, S_MAIN_MENU_CREDITS};
 		while (aptMainLoop()) {
 			hidScanInput();
@@ -392,22 +392,22 @@ int main() {
 	}
 	
 	if (save) {
-		if (IS3DS || ISGEN5) 
+		if (game_is3DS() || game_isgen5()) 
 			rewriteCHK(mainbuf);
-		else if (ISGEN4) 
+		else if (game_isgen4()) 
 			rewriteCHK4(mainbuf, GBO, SBO);
 	}
 
 #if CITRA
 #else
-	if (IS3DS) {
+	if (game_is3DS()) {
 		FSFILE_Write(mainHandle, NULL, 0, mainbuf, mainSize, FS_WRITE_FLUSH);
 		FSFILE_Close(mainHandle);
 		if (save)
 			FSUSER_ControlArchive(saveArch, ARCHIVE_ACTION_COMMIT_SAVE_DATA, NULL, 0, NULL, 0);
 		FSUSER_CloseArchive(saveArch);
 	}
-	else if (ISDS && save)
+	else if (game_isDS() && save)
 		TWLinjectSave(mainbuf, mainSize);
 #endif
 
@@ -416,7 +416,7 @@ int main() {
 #if CITRA
 #elif ROSALINA_3DSX
 #else
-	if (!isHBL() && IS3DS && confirmDisp(i18n(S_LAUNCH_GAME))) {
+	if (!isHBL() && game_is3DS() && confirmDisp(i18n(S_LAUNCH_GAME))) {
 		//FXElementsExit();
 		//GUIElementsExit();
 		i18n_exit();

@@ -91,7 +91,7 @@ BUILD_FLAGS_CC := -g -Wall -O2 -mword-relocations \
 BUILD_FLAGS_CXX := $(BUILD_FLAGS_CC) -fno-rtti -fno-exceptions -std=gnu++11
 RUN_FLAGS :=
 
-REMOTE_IP := 192.168.1.9
+REMOTE_IP := 192.168.1.7
 
 # 3DS/Wii U CONFIGURATION #
 

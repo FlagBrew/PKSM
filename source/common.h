@@ -53,31 +53,6 @@
 #include "util.h"
 #include "wcx.h"
 
-#define GAME_X 		  0
-#define GAME_Y 		  1
-#define GAME_OR 	  2
-#define GAME_AS 	  3
-#define GAME_SUN 	  4
-#define GAME_MOON 	  5
-#define GAME_DIAMOND  6
-#define GAME_PEARL 	  7
-#define GAME_PLATINUM 8
-#define GAME_HG 	  9
-#define GAME_SS 	 10
-#define GAME_B1 	 11
-#define GAME_W1 	 12
-#define GAME_B2 	 13
-#define GAME_W2 	 14
-
-#define ISGEN7 (game == GAME_SUN || game == GAME_MOON)
-#define ISGEN6 (game == GAME_X || game == GAME_Y || game == GAME_OR || game == GAME_AS)
-#define ISGEN5 (game == GAME_B1 || game == GAME_B2 || game == GAME_W1 || game == GAME_W2)
-#define ISGEN4 (game == GAME_DIAMOND || game == GAME_PEARL || game == GAME_PLATINUM || game == GAME_HG || game == GAME_SS)
-#define IS3DS (ISGEN6 || ISGEN7)
-#define ISDS (ISGEN5 || ISGEN4)
-#define ISXY (game == GAME_X || game == GAME_Y)
-#define ISORAS (game == GAME_OR || game == GAME_AS)
-#define ISSUMO (game == GAME_SUN || game == GAME_MOON)
 
 /**
  * OFFSETS

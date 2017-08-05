@@ -19,8 +19,34 @@
 #pragma once
 #include "common.h"
 
+#define GAME_X 		  0
+#define GAME_Y 		  1
+#define GAME_OR 	  2
+#define GAME_AS 	  3
+#define GAME_SUN 	  4
+#define GAME_MOON 	  5
+#define GAME_DIAMOND  6
+#define GAME_PEARL 	  7
+#define GAME_PLATINUM 8
+#define GAME_HG 	  9
+#define GAME_SS 	 10
+#define GAME_B1 	 11
+#define GAME_W1 	 12
+#define GAME_B2 	 13
+#define GAME_W2 	 14
+
 int game_get();
 void game_set(int value);
+
+bool game_isgen7();
+bool game_isgen6();
+bool game_isgen5();
+bool game_isgen4();
+bool game_is3DS();
+bool game_isDS();
+bool game_getisXY();
+bool game_getisORAS();
+bool game_getisSUMO();
 
 u8 game_get_country(u8* mainbuf);
 u8 game_get_region(u8* mainbuf);

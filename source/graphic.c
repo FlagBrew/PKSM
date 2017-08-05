@@ -142,22 +142,19 @@ void initProgressLoadPNGInRAM(int total) {
 
 
 int getGUIElementsI18nSpecifyTotalElements() {
-	int game = game_get();
-	return IS3DS ? 1 : 0;
+	return game_is3DS() ? 1 : 0;
 }
 
 void GUIElementsI18nSpecify() {
-	int game = game_get();
 	struct i18n_files languageSpecificFiles = i18n_getFilesPath();
-	if (IS3DS) {
+	if (game_is3DS()) {
 		typesSheet = loadPNGInRAM(languageSpecificFiles.types);
 	}
 }
 
 void GUIElementsSpecify() {
-	int game = game_get();
 	int elements = 4;
-	if (IS3DS) {
+	if (game_is3DS()) {
 		elements += 59;
 	} else {
 		elements += 16;
@@ -177,7 +174,7 @@ void GUIElementsSpecify() {
 	balls = loadPNGInRAM("/3ds/data/PKSM/additionalassets/balls_spritesheetv2.png");
 #endif
 
-	if (IS3DS) {
+	if (game_is3DS()) {
 		generations = loadPNGInRAM("romfs:/res/generations.png");
 		eventView = loadPNGInRAM("romfs:/res/Event View.png");
 		iconBank = loadPNGInRAM("romfs:/res/Icon Bank.png");
@@ -822,13 +819,11 @@ void printDatabaseListDS(char *database[], int currentEntry, int page, int sprit
 }
 
 void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bool overwrite, int langSelected, int nInjected, bool ota) {
-	int game = game_get();
-	
 	char *languages[] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR", "CHS", "CHT"};
 	char cont[3];
 	snprintf(cont, 3, "%d", nInjected + 1);
 	
-	int total = ISGEN7 ? 9 : 7;
+	int total = game_isgen7() ? 9 : 7;
 	
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		wcxInfoViewer(previewbuf);
@@ -1790,7 +1785,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 
 				if (tempspecies == 493 || tempspecies == 773) {
 					type1 = pkx_get_form(pkmn);
-					if (ISGEN4 && type1 > 9)
+					if (game_isgen4() && type1 > 9)
 						type1--;
 					type2 = type1;
 				} else {

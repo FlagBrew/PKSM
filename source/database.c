@@ -54,12 +54,10 @@ void getMultiplePathWCXFull(char* path, const int lang, const int i, const int j
 }
 
 void reloadPreviewBuf(u8* previewBuf, const int i, const int n) {
-	int game = game_get();
-	
 	char testpath[40];
-	if (ISGEN7)
+	if (game_isgen7())
 		getSinglePathWCXFull(testpath, n, i);
-	else if (ISGEN6)
+	else if (game_isgen6())
 		getSinglePathWCX(testpath, n, i);
 	
 	FILE* f = fopen(testpath, "r");
@@ -80,12 +78,10 @@ void reloadPreviewBuf(u8* previewBuf, const int i, const int n) {
 }
 
 void reloadMultiplePreviewBuf(u8* previewBuf, const int i, const int n, const int j) {
-	int game = game_get();
-	
 	char testpath[40];
-	if (ISGEN7)
+	if (game_isgen7())
 		getMultiplePathWCXFull(testpath, n, i, j);
-	else if (ISGEN6)
+	else if (game_isgen6())
 		getMultiplePathWCX(testpath, n, i, j);
 	
 	FILE* f = fopen(testpath, "r");
@@ -106,17 +102,15 @@ void reloadMultiplePreviewBuf(u8* previewBuf, const int i, const int n, const in
 }
 
 void findFreeLocationWC(u8 *mainbuf, int nInjected[]) {
-	int game = game_get();
-	
 	nInjected[0] = 0;
-	int len = ISGEN6 ? 24 : 48;
+	int len = game_isgen6() ? 24 : 48;
 	int temp;
 	int offset = 0;
-	if (ISXY)
+	if (game_getisXY())
 		offset = 0x1BD00;
-	else if (ISORAS)
+	else if (game_getisORAS())
 		offset = 0x1CD00;
-	else if (ISSUMO)
+	else if (game_getisSUMO())
 		offset = 0x65C00 + 0x100;
 	
 	for (int t = 0; t < len; t++) {
@@ -168,14 +162,12 @@ int getN(const int i) {
 }
 
 void eventDatabase7(u8* mainbuf) {
-	int game = game_get();
-	
 	char *database[SMCOUNT];
 	int *spriteArray = (int*)malloc(SMCOUNT * sizeof(int));
 	u8 *previewbuf = (u8*)malloc(WCX_SIZE);
 	memset(previewbuf, 0, WCX_SIZE);
 	
-	if (ISGEN7)
+	if (game_isgen7())
 		filldatabase7(database, spriteArray);
 	else
 		filldatabase6(database, spriteArray);
@@ -201,15 +193,15 @@ void eventDatabase7(u8* mainbuf) {
 			break;
 
 		if (hidKeysDown() & KEY_A && spriteArray[page*10+currentEntry] != -1) {
-			int total = (ISGEN7) ? 9 : 7;
+			int total = (game_isgen7()) ? 9 : 7;
 			int i = getI(database[page * 10 + currentEntry], true);
 			// check for single wcx events
 			char testpath[40];
 			
 			for (int j = 0; j < total; j++) {
-				if (ISGEN7)
+				if (game_isgen7())
 					getSinglePathWCXFull(testpath, j, i);
-				else if (ISGEN6)
+				else if (game_isgen6())
 					getSinglePathWCX(testpath, j, i);
 
 				FILE* f = fopen(testpath, "r");
@@ -228,9 +220,9 @@ void eventDatabase7(u8* mainbuf) {
 				for (int j = 0; j < total; j++) {
 					k = 0;
 					for (int t = 0; t < n; t++) {	
-						if (ISGEN7)
+						if (game_isgen7())
 							getMultiplePathWCXFull(testpath, j, i, t + 1);
-						else if (ISGEN6)
+						else if (game_isgen6())
 							getMultiplePathWCX(testpath, j, i, t + 1);
 
 						FILE* f = fopen(testpath, "r");
@@ -372,7 +364,7 @@ void eventDatabase7(u8* mainbuf) {
 					if (nInjected[0] >= 48) 
 						nInjected[0] = 0;
 					
-					if (ISXY && i == 2048) {
+					if (game_getisXY() && i == 2048) {
 						infoDisp(i18n(S_DATABASE_ITEM_NOT_AVAILABLE_XY));
 						break;
 					}
@@ -401,13 +393,11 @@ void eventDatabase7(u8* mainbuf) {
 }
 
 void eventDatabase5(u8* mainbuf) {
-	int game = game_get();
-	
-	int sz = ISGEN5 ? 170 : 190;
+	int sz = game_isgen5() ? 170 : 190;
 	char *database[sz];
 	int *spriteArray = (int*)malloc(sz * sizeof(int));
 	
-	if (ISGEN5)
+	if (game_isgen5())
 		filldatabase5(database, spriteArray);
 	else
 		filldatabase4(database, spriteArray);
@@ -433,7 +423,7 @@ void eventDatabase5(u8* mainbuf) {
 
 			char *testpath = (char*)malloc(40 * sizeof(char));
 			for (int j = 0; j < 7; j++) {
-				if (ISGEN5)
+				if (game_isgen5())
 					getSinglePathPGF(testpath, j, i);
 				else
 					getSinglePathPGT(testpath, j, i);
@@ -472,11 +462,11 @@ void eventDatabase5(u8* mainbuf) {
 #if PKSV
 #else
 				if (hidKeysDown() & KEY_START) {
-					if (nInjected[0] >= (ISGEN5 ? 12 : 8)) 
+					if (nInjected[0] >= (game_isgen5() ? 12 : 8)) 
 						nInjected[0] = 0;
 					
 					char *path = (char*)malloc(30 * sizeof(char));
-					if (ISGEN5)
+					if (game_isgen5())
 						getSinglePathPGF(path, langSelected, i);
 					else
 						getSinglePathPGT(path, langSelected, i);

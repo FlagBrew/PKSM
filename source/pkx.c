@@ -471,14 +471,13 @@ u32 pkx_lcrng(u32 seed) {
 }
 
 u32 pkx_get_save_address(const int boxnumber, const int indexnumber) {
-	int game = game_get();
     int boxpos = 0;
 	
-    if (ISXY)
+    if (game_getisXY())
 		boxpos = boxnumber < 33 ? 0x22600 : 0x14200;
-	else if (ISORAS)
+	else if (game_getisORAS())
 		boxpos = boxnumber < 33 ? 0x33000 : 0x14200;
-	else if (ISSUMO)
+	else if (game_getisSUMO())
 		boxpos = boxnumber < 33 ? 0x04E00 : 0x01400;
 
 	if (boxnumber < 33)
@@ -555,8 +554,6 @@ void pkx_get(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn) 
 }
 
 void pkx_set(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn) {
-	int game = game_get();
-	
 	u8 latestHandlers[10];
 	char ot_name[NICKNAMELENGTH];
 	char save_name[NICKNAMELENGTH];
@@ -565,7 +562,7 @@ void pkx_set(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn) 
 
 	memcpy(latestHandlers, &pkmn[0x94], 10);
 	memcpy(ot_name, &pkmn[0xB0], NICKNAMELENGTH);
-	memcpy(save_name, &mainbuf[ISGEN6 ? 0x14048 : 0x1238], NICKNAMELENGTH);
+	memcpy(save_name, &mainbuf[game_isgen6() ? 0x14048 : 0x1238], NICKNAMELENGTH);
 	
 	if (!((getSaveTID(mainbuf) == pkx_get_tid(pkmn)) && (getSaveSID(mainbuf) == pkx_get_sid(pkmn)) && !memcmp(ot_name, save_name, NICKNAMELENGTH) && !memcmp(latestHandlers, ht_name, 10))) { //you're the first owner
 		pkx_set_ht(pkmn, save_name);

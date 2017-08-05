@@ -35,8 +35,8 @@ In case you're compiling for *hax-based homebrew launchers ensure you also creat
 ### Windows
 Install the following using [devkitProUpdater]:
 * [devkitArm] r47
-* [libctru] 1.3.0
-* [citro3D] 1.3.0
+* [libctru] 1.2.1
+* [citro3D] (commit 3ae31ad)
 
 **Note**: It is suggested to install dev tools at the root of your disk drive i.e. `C:\Development\devkitPro`
 

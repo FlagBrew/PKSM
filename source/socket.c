@@ -111,8 +111,6 @@ void process_wcx(u8* buf) {
 }
 
 void process_pkx(u8* mainbuf, int tempVett[]) {
-	int game = game_get();
-	
 	server.client_id = accept(server.server_id, (struct sockaddr *) &server.client_addr, &server.client_length);
 	if (server.client_id < 0 && errno != EAGAIN) {
 		infoDisp(i18n(S_HTTP_ERROR_PROCESSING_PHASE));
@@ -120,7 +118,7 @@ void process_pkx(u8* mainbuf, int tempVett[]) {
 		return;		
 	} else {
 		panic = 0;
-		int boxmax = ISGEN6 ? 30 : 31;
+		int boxmax = game_isgen6() ? 30 : 31;
 		char *dummy;
 		memset(payload, 0, PAYLOADSIZE);
 
@@ -156,9 +154,7 @@ void process_pkx(u8* mainbuf, int tempVett[]) {
 }
 
 void processLegality(u8* pkmn) {
-	int game = game_get();
-	
-	u8 gameVersion = ISGEN7 ? 7 : 6;
+	u8 gameVersion = game_isgen7() ? 7 : 6;
 	char message[PKMNLENGTH + 8];
 	const char* prefix = "PKSMOTA";
 	memcpy(message, prefix, 7);
@@ -196,8 +192,6 @@ void processLegality(u8* pkmn) {
 }
 
 void process_bank(u8* buf) {
-	int game = game_get();
-	
 	server.client_id = accept(server.server_id, (struct sockaddr *) &server.client_addr, &server.client_length);
 	if (server.client_id < 0 && errno != EAGAIN) {
 		infoDisp(i18n(S_HTTP_ERROR_PROCESSING_PHASE));
@@ -205,7 +199,7 @@ void process_bank(u8* buf) {
 		return;		
 	} else {
 		panic = 0;
-		int boxmax = ISGEN6 ? 30 : 31;
+		int boxmax = game_isgen6() ? 30 : 31;
 		int box = 0, slot = 0;
 		char *dummy;
 		memset(payload, 0, PAYLOADSIZE);
