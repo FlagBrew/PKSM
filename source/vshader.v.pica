@@ -6,6 +6,7 @@
 ; Constants
 .constf myconst(0.0, 1.0, -1.0, 0.1)
 .constf myconst2(0.3, 0.0, 0.0, 0.0)
+.constf RGBA_TO_FLOAT4(0.00392156862, 0, 0, 0)
 .alias  zeros myconst.xxxx ; Vector full of zeros
 .alias  ones  myconst.yyyy ; Vector full of ones
 
@@ -31,11 +32,11 @@
 	dp4 outpos.z, projection[2], r0
 	dp4 outpos.w, projection[3], r0
 
-	; outclr = white
-	mov outclr, ones
-
-	; outtc0 = intex
+	;outtc0 = intexcoord
 	mov outtc0, intex
+
+	;outclr
+	mul outclr, RGBA_TO_FLOAT4.xxxx, intex
 
 	; We're finished
 	end

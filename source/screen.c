@@ -481,9 +481,9 @@ void screen_draw_texture_part(u32 id, float x, float y, float xbegin, float ybeg
 	if(base_alpha != 0xFF)
 		screen_set_blend(base_alpha << 24, false, true);
 	
-	float left = ((float)textures[id].width - xbegin) / (float)textures[id].tex.width;
-	float bottom = ((float)textures[id].tex.height - ybegin - h) / (float)textures[id].tex.height;
 	float right = ((float)textures[id].width - xbegin - w) / (float)textures[id].tex.width;	
+	float bottom = ((float)textures[id].tex.height - ybegin - h) / (float)textures[id].tex.height;
+	float left = ((float)textures[id].width - xbegin) / (float)textures[id].tex.width;
 	float top = ((float)textures[id].tex.height - ybegin) / (float)textures[id].tex.height;
 	
 	C3D_TexBind(0, &textures[id].tex);
@@ -829,7 +829,7 @@ void screen_draw_wstringf(float x, float y, float scaleX, float scaleY, u32 colo
 	va_list args;
 	va_start(args, text);
 	vswprintf(buffer, 256, text, args);
-	screen_draw_wstring(x, y, scaleX, scaleY, color, text);
+	screen_draw_wstring_internal(buffer, x, y, scaleX, scaleY, color, false, false, 0);
 	va_end(args);
 }
 

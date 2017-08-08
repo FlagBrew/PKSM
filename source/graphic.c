@@ -1326,6 +1326,7 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 	
 	screen_begin_frame();
 		screen_select(GFX_TOP);
+		screen_clear(GFX_TOP, BLACK);
 		if (mode == ED_BASE || mode == ED_STATS) {
 			screen_draw_wstring_center(true, 95, FONT_SIZE_15, FONT_SIZE_15, RGBA8(255, 255, 255, giveTransparence()), i18n(S_GRAPHIC_PKEDITOR_BASE_STATS_INDICATIONS_1));
 			screen_draw_wstring_center(true, 115, FONT_SIZE_15, FONT_SIZE_15, RGBA8(255, 255, 255, giveTransparence()), i18n(S_GRAPHIC_PKEDITOR_BASE_STATS_INDICATIONS_2));
@@ -1594,7 +1595,7 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 
 		if (mode != ED_HEX)
 			screen_draw_texture(TEXTURE_BACK_BUTTON, 283, 211);
-		
+
 		// apply masks
 		if (mode == ED_ITEMS) {
 			screen_draw_rect(0, 0, 320, 240, MASKBLACK);
@@ -1790,10 +1791,9 @@ void printSettings(int box, int language) {
 		printMenuBottom();
 
 		for (int i = 0; i < 3; i++) {
-			screen_draw_texture(TEXTURE_MAIN_MENU_DARK_BAR, 65, 60 + i * 190);
+			screen_draw_texture(TEXTURE_MAIN_MENU_DARK_BAR, 65, 60 + i * 34);
 			screen_draw_wstring(i == 0 ? 69 : (320 - screen_get_wstring_width(menu[i], FONT_SIZE_15, FONT_SIZE_15)) / 2, 66 + i * 34, FONT_SIZE_15, FONT_SIZE_15, DARKBLUE, menu[i]);
 		}
-
 #if PKSV
 #else
 		screen_draw_texture(TEXTURE_OTA_BUTTON, 280, 220);

@@ -106,9 +106,9 @@
 #define FONT_SIZE_18 0.72f
 #define FONT_SIZE_15 0.6f
 #define FONT_SIZE_14 0.56f
-#define FONT_SIZE_12 0.48f
-#define FONT_SIZE_11 0.44f
-#define FONT_SIZE_9 0.36f
+#define FONT_SIZE_12 0.50f
+#define FONT_SIZE_11 0.46f
+#define FONT_SIZE_9 0.38f
 
 
 #define BUTTONGREY RGBA8( 99, 110, 133, 255)
