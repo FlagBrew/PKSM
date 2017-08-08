@@ -51,7 +51,7 @@ char* url[] = {
 char* LANG_PREFIX[] = { "jp", "en", "fr", "de", "it", "es", "zh", "ko", "nl", "pt", "ru", "tw" };
 		
 void exitServices() {
-	FXElementsExit();
+	//FXElementsExit();
 	GUIElementsExit();
 	pxiDevExit();
 	hidExit();
@@ -61,18 +61,14 @@ void exitServices() {
 	sdmcExit();
 	aptExit();
 	romfsExit();
-	sftd_fini();
-	sf2d_fini();
+	screen_exit();
+	gfxExit();
 	cfguExit();
 }
 
 bool initServices() {
 	bool isDownloaded = false;
 	cfguInit();
-	sf2d_init();
-	sftd_init();
-	sf2d_set_clear_color(BLACK);
-	sf2d_set_vblank_wait(1);
 	aptInit();
 	sdmcInit();
 	romfsInit();
@@ -98,8 +94,10 @@ bool initServices() {
 	hidInit();
 	pxiDevInit();
 
+	gfxInitDefault();
+	screen_init();
 	GUIElementsInit();
-	FXElementsInit();
+	//FXElementsInit();
 	GUIGameElementsInit();
 
 #if CITRA

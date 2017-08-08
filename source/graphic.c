@@ -43,9 +43,6 @@ int lookup[] = {0x0, 0x1, 0x2, 0x4, 0x5, 0x3};
 
 int MAX_LENGTH_BOX_NAME = 15;
 
-sftd_font *fontBold15, *fontBold14, *fontBold12, *fontBold11, *fontBold9; 
-sf2d_texture *generations, *eventView, *iconBank, *iconEditor, *iconEvents, *iconSave, *iconSettings, *iconCredits, *mainMenuButton, *noMove, *hexIcon, *hexBG, *blueTextBox, *otaButton, *generationBG, *includeInfoButton, *hiddenPowerBG, *ballsBG, *male, *female, *naturestx, *movesBottom, *topMovesBG, *editorBar, *editorStatsBG, *subArrow, *backgroundTop, *miniBox, *plusButton, *minusButton, *balls, *typesSheet, *transferButton, *bankTop, *shinyStar, *normalBar, *LButton, *RButton, *creditsTop, *pokeball, *gameSelectorBottom1, *gameSelectorBottom2, *gameSelectorTop, *menuBar, *darkButton, *left, *lightButton, *redButton, *right, *spritesSmall, *eventMenuBottomBar, *eventMenuTopBarSelected, *eventMenuTopBar, *warningTop, *warningBottom, *boxView, *infoView, *selector, *editorBG, *plus, *minus, *back, *setting, *selectorCloning, *button, *bottomPopUp, *pokemonBufferBox, *DSBottomBG, *DSTopBG, *DSBarSelected, *DSBar, *DSEventBottom, *DSLangSelected, *DSLang, *DSEventTop, *DSNormalBarL, *DSNormalBarR, *DSSelectedBarL, *DSSelectedBarR, *item, *alternativeSpritesSmall;
-
 AppTextCode gamesList[] = {S_GRAPHIC_GAME_SELECTOR_GAME_X, S_GRAPHIC_GAME_SELECTOR_GAME_Y, S_GRAPHIC_GAME_SELECTOR_GAME_OS, S_GRAPHIC_GAME_SELECTOR_GAME_AS, S_GRAPHIC_GAME_SELECTOR_GAME_SUN, S_GRAPHIC_GAME_SELECTOR_GAME_MOON, S_GRAPHIC_GAME_SELECTOR_GAME_DIAMOND, S_GRAPHIC_GAME_SELECTOR_GAME_PEARL, S_GRAPHIC_GAME_SELECTOR_GAME_PLATINUM, S_GRAPHIC_GAME_SELECTOR_GAME_HG, S_GRAPHIC_GAME_SELECTOR_GAME_SS, S_GRAPHIC_GAME_SELECTOR_GAME_B, S_GRAPHIC_GAME_SELECTOR_GAME_W, S_GRAPHIC_GAME_SELECTOR_GAME_B2, S_GRAPHIC_GAME_SELECTOR_GAME_W2};
 char* langs[] = { "JP", "EN", "FR", "DE", "IT", "ES", "ZH", "KO", "NL", "PT", "RU", "TW", "SD C." };
 
@@ -109,30 +106,21 @@ void GUITextsInit() {
 }
 
 void GUIElementsInit() {
-	fontBold15 = sftd_load_font_file("romfs:/res/Bold.ttf");
-	fontBold12 = sftd_load_font_file("romfs:/res/Bold.ttf");
-	warningTop = sfil_load_PNG_file("romfs:/res/Warning Top.png", SF2D_PLACE_RAM);
-	warningBottom = sfil_load_PNG_file("romfs:/res/Warning Bottom.png", SF2D_PLACE_RAM);
-	freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_FILES));
-
-	fontBold14 = sftd_load_font_file("romfs:/res/Bold.ttf");
-	fontBold11 = sftd_load_font_file("romfs:/res/Bold.ttf");
-	fontBold9 = sftd_load_font_file("romfs:/res/Bold.ttf");
-
+	screen_load_texture_png(TEXTURE_WARNING_TOP, "romfs:/res/Warning Top.png", true);
+	screen_load_texture_png(TEXTURE_WARNING_BOTTOM, "romfs:/res/Warning Bottom.png", true);
+	//freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_FILES));
 	GUITextsInit();
-
-	freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_FONTS));
-	init_font_cache();
-	freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_DONE));
+	//freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_DONE));
 }
 
-sf2d_texture *loadPNGInRAM(const char* filepath) {
+void loadPNGInRAM(u32 id, const char* filepath) {
 	wchar_t* str = malloc(sizeof(wchar_t*)*60);
 	swprintf(str, 60, i18n(S_GRAPHIC_GUI_ELEMENTS_SPECIFY_LOADING_DETAILS), loadPNGInRAM_current_element, loadPNGInRAM_elements);
 	freezeMsgDetails(str);
 	loadPNGInRAM_current_element++;
 	free(str);
-	return sfil_load_PNG_file(filepath, SF2D_PLACE_RAM);
+	
+	screen_load_texture_png(id, filepath, true);
 }
 
 void initProgressLoadPNGInRAM(int total) {
@@ -148,7 +136,7 @@ int getGUIElementsI18nSpecifyTotalElements() {
 void GUIElementsI18nSpecify() {
 	struct i18n_files languageSpecificFiles = i18n_getFilesPath();
 	if (game_is3DS()) {
-		typesSheet = loadPNGInRAM(languageSpecificFiles.types);
+		loadPNGInRAM(TEXTURE_TYPES_SPRITESHEET, languageSpecificFiles.types);
 	}
 }
 
@@ -165,95 +153,95 @@ void GUIElementsSpecify() {
 
 	freezeMsg(i18n(S_GRAPHIC_GUI_ELEMENTS_SPECIFY_LOADING));
 #if CITRA
-	alternativeSpritesSmall = loadPNGInRAM("romfs:/citra/PKResources/additionalassets/alternative_icons_spritesheetv3.png");
-	spritesSmall = loadPNGInRAM("romfs:/citra/PKResources/additionalassets/pokemon_icons_spritesheetv3.png");
-	balls = loadPNGInRAM("romfs:/citra/PKResources/additionalassets/balls_spritesheetv2.png");
+	loadPNGInRAM(TEXTURE_ALTERNATIVE_SPRITESHEET, "romfs:/citra/PKResources/additionalassets/alternative_icons_spritesheetv3.png");
+	loadPNGInRAM(TEXTURE_NORMAL_SPRITESHEET, "romfs:/citra/PKResources/additionalassets/pokemon_icons_spritesheetv3.png");
+	loadPNGInRAM(TEXTURE_BALLS_SPRITESHEET, "romfs:/citra/PKResources/additionalassets/balls_spritesheetv2.png");
 #else
-	alternativeSpritesSmall = loadPNGInRAM("/3ds/data/PKSM/additionalassets/alternative_icons_spritesheetv3.png");
-	spritesSmall = loadPNGInRAM("/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheetv3.png");
-	balls = loadPNGInRAM("/3ds/data/PKSM/additionalassets/balls_spritesheetv2.png");
+	loadPNGInRAM(TEXTURE_ALTERNATIVE_SPRITESHEET, "/3ds/data/PKSM/additionalassets/alternative_icons_spritesheetv3.png");
+	loadPNGInRAM(TEXTURE_NORMAL_SPRITESHEET, "/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheetv3.png");
+	loadPNGInRAM(TEXTURE_BALLS_SPRITESHEET, "/3ds/data/PKSM/additionalassets/balls_spritesheetv2.png");
 #endif
 
 	if (game_is3DS()) {
-		generations = loadPNGInRAM("romfs:/res/generations.png");
-		eventView = loadPNGInRAM("romfs:/res/Event View.png");
-		iconBank = loadPNGInRAM("romfs:/res/Icon Bank.png");
-		iconEditor = loadPNGInRAM("romfs:/res/Icon Editor.png");
-		iconEvents = loadPNGInRAM("romfs:/res/Icon Events.png");
-		iconSave = loadPNGInRAM("romfs:/res/Icon Save.png");
-		iconSettings = loadPNGInRAM("romfs:/res/Icon Settings.png");
-		iconCredits = loadPNGInRAM("romfs:/res/Icon Credits.png");
-		mainMenuButton = loadPNGInRAM("romfs:/res/Main Menu Button.png");
+		loadPNGInRAM(TEXTURE_GENERATIONS, "romfs:/res/generations.png");
+		loadPNGInRAM(TEXTURE_EVENT_VIEW, "romfs:/res/Event View.png");
+		loadPNGInRAM(TEXTURE_ICON_BANK, "romfs:/res/Icon Bank.png");
+		loadPNGInRAM(TEXTURE_ICON_EDITOR, "romfs:/res/Icon Editor.png");
+		loadPNGInRAM(TEXTURE_ICON_EVENTS, "romfs:/res/Icon Events.png");
+		loadPNGInRAM(TEXTURE_ICON_SAVE, "romfs:/res/Icon Save.png");
+		loadPNGInRAM(TEXTURE_ICON_SETTINGS, "romfs:/res/Icon Settings.png");
+		loadPNGInRAM(TEXTURE_ICON_CREDITS, "romfs:/res/Icon Credits.png");
+		loadPNGInRAM(TEXTURE_MAIN_MENU_BUTTON, "romfs:/res/Main Menu Button.png");
 		
-		boxView = loadPNGInRAM("romfs:/res/Box View.png");
-		noMove = loadPNGInRAM("romfs:/res/No Move.png");
-		back = loadPNGInRAM("romfs:/res/Back Button.png");
-		editorBar = loadPNGInRAM("romfs:/res/Bottom Bar.png");
-		hexIcon = loadPNGInRAM("romfs:/res/Hex Button.png");
-		hexBG = loadPNGInRAM("romfs:/res/Hex BG.png");
-		blueTextBox = loadPNGInRAM("romfs:/res/Blue Textbox.png");
-		otaButton = loadPNGInRAM("romfs:/res/OTA Button.png");
-		includeInfoButton = loadPNGInRAM("romfs:/res/Include Info.png");
-		generationBG = loadPNGInRAM("romfs:/res/Generation BG.png");
-		hiddenPowerBG = loadPNGInRAM("romfs:/res/Hidden Power BG.png");
-		ballsBG = loadPNGInRAM("romfs:/res/BallsBG.png");
-		male = loadPNGInRAM("romfs:/res/Male.png");
-		female = loadPNGInRAM("romfs:/res/Female.png");
-		naturestx = loadPNGInRAM("romfs:/res/Natures.png");
-		movesBottom = loadPNGInRAM("romfs:/res/Moves Bottom.png");
-		topMovesBG = loadPNGInRAM("romfs:/res/Top Moves.png");
-		editorStatsBG = loadPNGInRAM("romfs:/res/Editor Stats.png");
-		subArrow = loadPNGInRAM("romfs:/res/Sub Arrow.png");
-		backgroundTop = loadPNGInRAM("romfs:/res/Background.png");
-		miniBox = loadPNGInRAM("romfs:/res/Mini Box.png");
-		minusButton = loadPNGInRAM("romfs:/res/Minus Button.png");
-		plusButton = loadPNGInRAM("romfs:/res/Plus Button.png");
-		transferButton = loadPNGInRAM("romfs:/res/Transfer Button.png");
-		bankTop = loadPNGInRAM("romfs:/res/Bank Top.png");
-		shinyStar = loadPNGInRAM("romfs:/res/Shiny.png");
-		normalBar = loadPNGInRAM("romfs:/res/Normal Bar.png");
-		RButton = loadPNGInRAM("romfs:/res/R Button.png");
-		LButton = loadPNGInRAM("romfs:/res/L Button.png");
-		creditsTop = loadPNGInRAM("romfs:/res/Credits Top.png");
-		pokeball = loadPNGInRAM("romfs:/res/Pokeball.png");
-		menuBar = loadPNGInRAM("romfs:/res/Main Menu Dark Bar.png");
-		darkButton = loadPNGInRAM("romfs:/res/Dark Button.png");
-		left = loadPNGInRAM("romfs:/res/Left.png");
-		lightButton = loadPNGInRAM("romfs:/res/Light Button.png");
-		redButton = loadPNGInRAM("romfs:/res/Red Button.png");
-		right = loadPNGInRAM("romfs:/res/Right.png");
-		eventMenuBottomBar = loadPNGInRAM("romfs:/res/Event Menu Bottom Bar.png");
-		eventMenuTopBarSelected = loadPNGInRAM("romfs:/res/Event Menu Top Bar Selected.png");
-		eventMenuTopBar = loadPNGInRAM("romfs:/res/Event Menu Top Bar.png");
-		infoView = loadPNGInRAM("romfs:/res/Info View.png");
-		selector = loadPNGInRAM("romfs:/res/Selector.png");
-		selectorCloning = loadPNGInRAM("romfs:/res/Selector (cloning).png");
-		editorBG = loadPNGInRAM("romfs:/res/Editor Bottom BG.png");
-		plus = loadPNGInRAM("romfs:/res/Plus.png");
-		minus = loadPNGInRAM("romfs:/res/Minus.png");
-		button = loadPNGInRAM("romfs:/res/Button.png");
-		setting = loadPNGInRAM("romfs:/res/Setting.png");
-		bottomPopUp = loadPNGInRAM("romfs:/res/Bottom Pop-Up.png");
-		pokemonBufferBox = loadPNGInRAM("romfs:/res/Pokemon Box.png");
-		item = loadPNGInRAM("romfs:/res/item.png");
+		loadPNGInRAM(TEXTURE_BOX_VIEW, "romfs:/res/Box View.png");
+		loadPNGInRAM(TEXTURE_NO_MOVE, "romfs:/res/No Move.png");
+		loadPNGInRAM(TEXTURE_BACK_BUTTON, "romfs:/res/Back Button.png");
+		loadPNGInRAM(TEXTURE_BOTTOM_BAR, "romfs:/res/Bottom Bar.png");
+		loadPNGInRAM(TEXTURE_HEX_BUTTON, "romfs:/res/Hex Button.png");
+		loadPNGInRAM(TEXTURE_HEX_BG, "romfs:/res/Hex BG.png");
+		loadPNGInRAM(TEXTURE_BLUE_TEXT_BOX, "romfs:/res/Blue Textbox.png");
+		loadPNGInRAM(TEXTURE_OTA_BUTTON, "romfs:/res/OTA Button.png");
+		loadPNGInRAM(TEXTURE_INCLUDE_INFO, "romfs:/res/Include Info.png");
+		loadPNGInRAM(TEXTURE_GENERATION_BG, "romfs:/res/Generation BG.png");
+		loadPNGInRAM(TEXTURE_HIDDEN_POWER_BG, "romfs:/res/Hidden Power BG.png");
+		loadPNGInRAM(TEXTURE_BALLS_BG, "romfs:/res/BallsBG.png");
+		loadPNGInRAM(TEXTURE_MALE, "romfs:/res/Male.png");
+		loadPNGInRAM(TEXTURE_FEMALE, "romfs:/res/Female.png");
+		loadPNGInRAM(TEXTURE_NATURES, "romfs:/res/Natures.png");
+		loadPNGInRAM(TEXTURE_MOVES_BOTTOM, "romfs:/res/Moves Bottom.png");
+		loadPNGInRAM(TEXTURE_TOP_MOVES, "romfs:/res/Top Moves.png");
+		loadPNGInRAM(TEXTURE_EDITOR_STATS, "romfs:/res/Editor Stats.png");
+		loadPNGInRAM(TEXTURE_SUB_ARROW, "romfs:/res/Sub Arrow.png");
+		loadPNGInRAM(TEXTURE_BACKGROUND, "romfs:/res/Background.png");
+		loadPNGInRAM(TEXTURE_MINI_BOX, "romfs:/res/Mini Box.png");
+		loadPNGInRAM(TEXTURE_MINUS_BUTTON, "romfs:/res/Minus Button.png");
+		loadPNGInRAM(TEXTURE_PLUS_BUTTON, "romfs:/res/Plus Button.png");
+		loadPNGInRAM(TEXTURE_TRANSFER_BUTTON, "romfs:/res/Transfer Button.png");
+		loadPNGInRAM(TEXTURE_BANK_TOP, "romfs:/res/Bank Top.png");
+		loadPNGInRAM(TEXTURE_SHINY, "romfs:/res/Shiny.png");
+		loadPNGInRAM(TEXTURE_NORMAL_BAR, "romfs:/res/Normal Bar.png");
+		loadPNGInRAM(TEXTURE_R_BUTTON, "romfs:/res/R Button.png");
+		loadPNGInRAM(TEXTURE_L_BUTTON, "romfs:/res/L Button.png");
+		loadPNGInRAM(TEXTURE_CREDITS, "romfs:/res/Credits Top.png");
+		loadPNGInRAM(TEXTURE_POKEBALL, "romfs:/res/Pokeball.png");
+		loadPNGInRAM(TEXTURE_MAIN_MENU_DARK_BAR, "romfs:/res/Main Menu Dark Bar.png");
+		loadPNGInRAM(TEXTURE_DARK_BUTTON, "romfs:/res/Dark Button.png");
+		loadPNGInRAM(TEXTURE_LEFT, "romfs:/res/Left.png");
+		loadPNGInRAM(TEXTURE_LIGHT_BUTTON, "romfs:/res/Light Button.png");
+		loadPNGInRAM(TEXTURE_RED_BUTTON, "romfs:/res/Red Button.png");
+		loadPNGInRAM(TEXTURE_RIGHT, "romfs:/res/Right.png");
+		loadPNGInRAM(TEXTURE_EVENT_MENU_BOTTOM_BAR, "romfs:/res/Event Menu Bottom Bar.png");
+		loadPNGInRAM(TEXTURE_EVENT_MENU_TOP_BAR_SELECTED, "romfs:/res/Event Menu Top Bar Selected.png");
+		loadPNGInRAM(TEXTURE_EVENT_MENU_TOP_BAR_NORMAL, "romfs:/res/Event Menu Top Bar.png");
+		loadPNGInRAM(TEXTURE_INFO_VIEW, "romfs:/res/Info View.png");
+		loadPNGInRAM(TEXTURE_SELECTOR_NORMAL, "romfs:/res/Selector.png");
+		loadPNGInRAM(TEXTURE_SELECTOR_CLONING, "romfs:/res/Selector (cloning).png");
+		loadPNGInRAM(TEXTURE_EDITOR_BOTTOM_BG, "romfs:/res/Editor Bottom BG.png");
+		loadPNGInRAM(TEXTURE_PLUS, "romfs:/res/Plus.png");
+		loadPNGInRAM(TEXTURE_MINUS, "romfs:/res/Minus.png");
+		loadPNGInRAM(TEXTURE_BUTTON, "romfs:/res/Button.png");
+		loadPNGInRAM(TEXTURE_SETTING, "romfs:/res/Setting.png");
+		loadPNGInRAM(TEXTURE_BOTTOM_POPUP, "romfs:/res/Bottom Pop-Up.png");
+		loadPNGInRAM(TEXTURE_POKEMON_BOX, "romfs:/res/Pokemon Box.png");
+		loadPNGInRAM(TEXTURE_ITEM, "romfs:/res/item.png");
 	} else {
-		pokeball = loadPNGInRAM("romfs:/res/DS Pokeball.png");
-		DSBottomBG = loadPNGInRAM("romfs:/res/Bottom BG.png");
-		DSTopBG = loadPNGInRAM("romfs:/res/Top BG.png");
-		DSBarSelected = loadPNGInRAM("romfs:/res/Bar Selected.png");
-		DSBar = loadPNGInRAM("romfs:/res/Bar.png");
-		DSEventBottom = loadPNGInRAM("romfs:/res/DS Menu Bottom BG.png");
-		DSLangSelected = loadPNGInRAM("romfs:/res/Language Button Selected.png");
-		DSLang = loadPNGInRAM("romfs:/res/Language Button.png");
-		DSEventTop = loadPNGInRAM("romfs:/res/Event Database BG.png");
-		DSNormalBarL = loadPNGInRAM("romfs:/res/Normal L.png");
-		DSNormalBarR = loadPNGInRAM("romfs:/res/Normal R.png");
-		DSSelectedBarL = loadPNGInRAM("romfs:/res/Selected L.png");
-		DSSelectedBarR = loadPNGInRAM("romfs:/res/Selected R.png");
+		loadPNGInRAM(TEXTURE_POKEBALL, "romfs:/res/DS Pokeball.png");
+		loadPNGInRAM(TEXTURE_DS_MENU_BOTTOM_BG, "romfs:/res/Bottom BG.png");
+		loadPNGInRAM(TEXTURE_DS_TOP_BG, "romfs:/res/Top BG.png");
+		loadPNGInRAM(TEXTURE_SELECTED_DS_BAR, "romfs:/res/Bar Selected.png");
+		loadPNGInRAM(TEXTURE_DS_BAR, "romfs:/res/Bar.png");
+		loadPNGInRAM(TEXTURE_DS_MENU_BOTTOM_BG, "romfs:/res/DS Menu Bottom BG.png");
+		loadPNGInRAM(TEXTURE_LANGUAGE_BUTTON_SELECTED, "romfs:/res/Language Button Selected.png");
+		loadPNGInRAM(TEXTURE_LANGUAGE_BUTTON_NORMAL, "romfs:/res/Language Button.png");
+		loadPNGInRAM(TEXTURE_DS_EVENT_DATABASE_BG, "romfs:/res/Event Database BG.png");
+		loadPNGInRAM(TEXTURE_NORMAL_L, "romfs:/res/Normal L.png");
+		loadPNGInRAM(TEXTURE_NORMAL_R, "romfs:/res/Normal R.png");
+		loadPNGInRAM(TEXTURE_SELECTED_L, "romfs:/res/Selected L.png");
+		loadPNGInRAM(TEXTURE_SELECTED_R, "romfs:/res/Selected R.png");
 		
-		hexBG = loadPNGInRAM("romfs:/res/Hex BG.png");
-		minusButton = loadPNGInRAM("romfs:/res/Minus Button.png");
-		plusButton = loadPNGInRAM("romfs:/res/Plus Button.png");
+		loadPNGInRAM(TEXTURE_HEX_BG, "romfs:/res/Hex BG.png");
+		loadPNGInRAM(TEXTURE_MINUS_BUTTON, "romfs:/res/Minus Button.png");
+		loadPNGInRAM(TEXTURE_PLUS_BUTTON, "romfs:/res/Plus Button.png");
 	}
 
 	GUIElementsI18nSpecify();
@@ -261,103 +249,16 @@ void GUIElementsSpecify() {
 
 
 void GUIGameElementsInit() {
-	gameSelectorBottom2 = sfil_load_PNG_file("romfs:/res/LogosGen5.png", SF2D_PLACE_RAM);
-	gameSelectorBottom1 = sfil_load_PNG_file("romfs:/res/LogosGen4.png", SF2D_PLACE_RAM);
-	gameSelectorTop = sfil_load_PNG_file("romfs:/res/Logos.png", SF2D_PLACE_RAM);
+	screen_load_texture_png(TEXTURE_LOGOS_GEN5, "romfs:/res/LogosGen5.png", true);
+	screen_load_texture_png(TEXTURE_LOGOS_GEN4, "romfs:/res/LogosGen4.png", true);
+	screen_load_texture_png(TEXTURE_LOGOS_3DS, "romfs:/res/Logos.png", true);
 }
 
 void GUIGameElementsExit() {
-	sf2d_free_texture(gameSelectorBottom2);
-	sf2d_free_texture(gameSelectorBottom1);
-	sf2d_free_texture(gameSelectorTop);
+
 }
 
 void GUIElementsExit() {
-	sf2d_free_texture(generations);
-	sf2d_free_texture(eventView);
-	
-	sf2d_free_texture(iconBank);
-	sf2d_free_texture(iconCredits);
-	sf2d_free_texture(iconEditor);
-	sf2d_free_texture(iconEvents);
-	sf2d_free_texture(iconSave);
-	sf2d_free_texture(iconSettings);
-	sf2d_free_texture(mainMenuButton);
-	
-	sf2d_free_texture(noMove);
-	sf2d_free_texture(hexIcon);
-	sf2d_free_texture(hexBG);
-	sf2d_free_texture(blueTextBox);
-	sf2d_free_texture(otaButton);
-	sf2d_free_texture(generationBG);
-	sf2d_free_texture(includeInfoButton);
-	sf2d_free_texture(hiddenPowerBG);
-	sf2d_free_texture(ballsBG);
-	sf2d_free_texture(male);
-	sf2d_free_texture(female);
-	sf2d_free_texture(naturestx);
-	sf2d_free_texture(movesBottom);
-	sf2d_free_texture(topMovesBG);
-	sf2d_free_texture(editorBar);
-	sf2d_free_texture(editorStatsBG);
-	sf2d_free_texture(subArrow);
-	sf2d_free_texture(backgroundTop);
-	sf2d_free_texture(miniBox);
-	sf2d_free_texture(minusButton);
-	sf2d_free_texture(plusButton);
-	sf2d_free_texture(balls);
-	sf2d_free_texture(transferButton);
-	sf2d_free_texture(bankTop);
-	sf2d_free_texture(shinyStar);
-	sf2d_free_texture(normalBar);
-	sf2d_free_texture(RButton);
-	sf2d_free_texture(LButton);
-	sf2d_free_texture(creditsTop);
-	sf2d_free_texture(pokeball);
-	sf2d_free_texture(alternativeSpritesSmall);
-	sf2d_free_texture(item);
-	sf2d_free_texture(DSEventBottom);
-	sf2d_free_texture(DSLangSelected);
-	sf2d_free_texture(DSLang);
-	sf2d_free_texture(DSEventTop);
-	sf2d_free_texture(DSNormalBarL);
-	sf2d_free_texture(DSNormalBarR);
-	sf2d_free_texture(DSSelectedBarL);
-	sf2d_free_texture(DSSelectedBarR);
-	sf2d_free_texture(DSBottomBG);
-	sf2d_free_texture(DSTopBG);
-	sf2d_free_texture(DSBarSelected);
-	sf2d_free_texture(DSBar);
-	sf2d_free_texture(bottomPopUp);
-	sf2d_free_texture(pokemonBufferBox);
-	sf2d_free_texture(selectorCloning);
-	sf2d_free_texture(back);
-	sf2d_free_texture(setting);
-	sf2d_free_texture(editorBG);
-	sf2d_free_texture(plus);
-	sf2d_free_texture(minus);
-	sf2d_free_texture(button);
-	sf2d_free_texture(boxView);
-	sf2d_free_texture(infoView);
-	sf2d_free_texture(selector);
-	sf2d_free_texture(warningTop);
-	sf2d_free_texture(warningBottom);
-	sf2d_free_texture(eventMenuBottomBar);
-	sf2d_free_texture(eventMenuTopBarSelected);
-	sf2d_free_texture(eventMenuTopBar);
-	sf2d_free_texture(spritesSmall);
-	sf2d_free_texture(darkButton);
-	sf2d_free_texture(left);
-	sf2d_free_texture(lightButton);
-	sf2d_free_texture(redButton);
-	sf2d_free_texture(right);
-	sf2d_free_texture(menuBar);
-	sftd_free_font(fontBold9);
-	sftd_free_font(fontBold11);
-	sftd_free_font(fontBold12);
-	sftd_free_font(fontBold14);
-	sftd_free_font(fontBold15);
-
 	GUIElementsI18nExit();
 }
 
@@ -373,33 +274,12 @@ void GUITextsExit() {
 }
 
 void GUIElementsI18nExit() {
-	sf2d_free_texture(typesSheet);
 	GUITextsExit();
 }
 
-
-void create_font_cache(sftd_font* font, unsigned int size, int total_fonts, int* num_font) {
-	wchar_t str[60];
-	swprintf(str, 60, i18n(S_GUI_ELEMENTS_LOADING_FONTS_CACHE_FONT), *num_font, total_fonts);
-	freezeMsgDetails(str);
-	sftd_draw_text(font, 0, 0, RGBA8(0, 0, 0, 0), size, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890:-.'!?()\"end");
-	*num_font = *num_font + 1;
-}
-
-void init_font_cache() {
-	int num_font = 1;
-	int total_fonts = 5;
-
-	create_font_cache(fontBold14, 14, total_fonts, &num_font);
-	create_font_cache(fontBold15, 15, total_fonts, &num_font);
-	create_font_cache(fontBold12, 12, total_fonts, &num_font);
-	create_font_cache(fontBold11, 11, total_fonts, &num_font);
-	create_font_cache(fontBold9,  9, total_fonts, &num_font);
-}
-
 void drawFPSDebug() {
-	sf2d_draw_rectangle(10, 10, 108, 20, RGBA8(0, 0, 0, 160));
-	sftd_draw_textf(fontBold12, 12, 13, WHITE, 12, "FPS: %2.6f", sf2d_get_fps());
+	//screen_draw_rect(10.0f, 10.0f, 108.0f, 20.0f, RGBA8(0, 0, 0, 160));
+	//screen_draw_stringf(12, 13, 0.5f, 0.5f, WHITE, "FPS: %2.6f", sf2d_get_fps());
 }
 
 char messageDebug[255];
@@ -415,17 +295,15 @@ void consoleMsg(char* message) {
 void drawConsoleDebug() {
 	if (hasDebugMessage) {
 		time_t currentTime = time(NULL);
-		if (sf2d_get_current_screen() == GFX_BOTTOM) {
-			if ((lastDebugMessageTime == 0 || (currentTime - lastDebugMessageTime) < 5)) {
-				sf2d_draw_rectangle(0, 0, 400, 20, RGBA8(0, 0, 0, 200));
-				sftd_draw_textf(fontBold12, 2, 3, WHITE, 12, "[Debug] %s", messageDebug);
-				if (lastDebugMessageTime == 0) {
-					lastDebugMessageTime = currentTime;
-				}
-			} else {
-				hasDebugMessage = false;
-				lastDebugMessageTime = 0;
+		if ((lastDebugMessageTime == 0 || (currentTime - lastDebugMessageTime) < 5)) {
+			screen_draw_rect(0, 0, 400, 20, RGBA8(0, 0, 0, 200));
+			screen_draw_stringf(2, 3, FONT_SIZE_12, FONT_SIZE_12, WHITE, "[Debug] %s", messageDebug);
+			if (lastDebugMessageTime == 0) {
+				lastDebugMessageTime = currentTime;
 			}
+		} else {
+			hasDebugMessage = false;
+			lastDebugMessageTime = 0;
 		}
 	}
 }
@@ -436,22 +314,22 @@ void pksm_end_frame() {
 	#if DEBUG_I18N
 		drawConsoleDebug();
 	#endif
-	sf2d_end_frame();
+	screen_end_frame();
 }
 
 void printSelector(int x, int y, int width, int height) {
-	sf2d_draw_rectangle(x, y, width, height, BUTTONBORD);
-	sf2d_draw_rectangle(x + 1, y + 1, width - 2, height - 2, BUTTONGREY);
+	screen_draw_rect(x, y, width, height, BUTTONBORD);
+	screen_draw_rect(x + 1, y + 1, width - 2, height - 2, BUTTONGREY);
 }
 
 void printMenuTop() {
-	sf2d_draw_rectangle(0, 0, 400, 240, MENUBLUE);
-	sf2d_draw_rectangle(0, 0, 400, 25, HIGHBLUE);
+	screen_draw_rect(0, 0, 400, 240, MENUBLUE);
+	screen_draw_rect(0, 0, 400, 25, HIGHBLUE);
 }
 
 void printMenuBottom() {
-	sf2d_draw_rectangle(0, 0, 320, 240, PALEBLUE);
-	sf2d_draw_rectangle(0, 219, 320, 21, MENUBLUE);
+	screen_draw_rect(0, 0, 320, 240, PALEBLUE);
+	screen_draw_rect(0, 219, 320, 21, MENUBLUE);
 }
 
 void infoDisp(wchar_t* message) {
@@ -460,16 +338,15 @@ void infoDisp(wchar_t* message) {
 
 		if (hidKeysDown() & KEY_A) break;
 		
-		sf2d_start_frame(GFX_TOP, GFX_LEFT);
-			sf2d_draw_texture(warningTop, 0, 0);
-			sftd_draw_wtext(fontBold15, (400 - sftd_get_wtext_width(fontBold15, 15, message)) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, message);
-			sftd_draw_wtext(fontBold12, (400 - sftd_get_wtext_width(fontBold12, 12, i18n(S_INFORMATION_MESSAGE_PRESS_A))) / 2, 130, WHITE, 12, i18n(S_INFORMATION_MESSAGE_PRESS_A));
-		pksm_end_frame();
+		screen_begin_frame();
+			screen_select(GFX_TOP);
+			screen_draw_texture(TEXTURE_WARNING_TOP, 0, 0);
+			screen_draw_wstring_center(true, 95, FONT_SIZE_15, FONT_SIZE_15, RGBA8(255, 255, 255, giveTransparence()), message);
+			screen_draw_wstring_center(true, 130, FONT_SIZE_12, FONT_SIZE_12, WHITE, i18n(S_INFORMATION_MESSAGE_PRESS_A));
 		
-		sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-			sf2d_draw_texture(warningBottom, 0, 0);
+			screen_select(GFX_BOTTOM);
+			screen_draw_texture(TEXTURE_WARNING_BOTTOM, 0, 0);
 		pksm_end_frame();
-		sf2d_swapbuffers();
 	}
 }
 
@@ -480,16 +357,15 @@ int confirmDisp(wchar_t* message) {
 		if (hidKeysDown() & KEY_A) return 1;
 		if (hidKeysDown() & KEY_B) return 0;
 		
-		sf2d_start_frame(GFX_TOP, GFX_LEFT);
-			sf2d_draw_texture(warningTop, 0, 0);
-			sftd_draw_wtext(fontBold15, (400 - sftd_get_wtext_width(fontBold15, 15, message)) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, message);
-			sftd_draw_wtext(fontBold12, (400 - sftd_get_wtext_width(fontBold12, 12, i18n(S_CONFIRMATION_MESSAGE_PRESS_A_OR_B))) / 2, 130, WHITE, 12, i18n(S_CONFIRMATION_MESSAGE_PRESS_A_OR_B));
+		screen_begin_frame();
+			screen_select(GFX_TOP);
+			screen_draw_texture(TEXTURE_WARNING_TOP, 0, 0);
+			screen_draw_wstring_center(true, 95, FONT_SIZE_15, FONT_SIZE_15, RGBA8(255, 255, 255, giveTransparence()), message);
+			screen_draw_wstring_center(true, 130, FONT_SIZE_12, FONT_SIZE_12, WHITE, i18n(S_CONFIRMATION_MESSAGE_PRESS_A_OR_B));
+
+			screen_select(GFX_BOTTOM);
+			screen_draw_texture(TEXTURE_WARNING_BOTTOM, 0, 0);
 		pksm_end_frame();
-		
-		sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-			sf2d_draw_texture(warningBottom, 0, 0);
-		pksm_end_frame();
-		sf2d_swapbuffers();
 	}
 	return 0;
 }
@@ -502,16 +378,15 @@ void _freezeMsgWithDetails(wchar_t* message, wchar_t* details, bool useLastMessa
 		lastMessage[wcslen(message)] = '\0';
 	}
 
-	sf2d_start_frame(GFX_TOP, GFX_LEFT);
-		sf2d_draw_texture(warningTop, 0, 0);
-		sftd_draw_wtext(fontBold15, (400 - sftd_get_wtext_width(fontBold15, 15, lastMessage)) / 2, 95, WHITE, 15, lastMessage);
-		sftd_draw_wtext(fontBold12, (400 - sftd_get_wtext_width(fontBold12, 12, details)) / 2, 130, WHITE, 12, details);
-	pksm_end_frame();
+	screen_begin_frame();
+		screen_select(GFX_TOP);
+		screen_draw_texture(TEXTURE_WARNING_TOP, 0, 0);
+		screen_draw_wstring_center(true, 95, FONT_SIZE_15, FONT_SIZE_15, WHITE, lastMessage);
+		screen_draw_wstring_center(true, 130, FONT_SIZE_12, FONT_SIZE_12, WHITE, details);
 	
-	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-		sf2d_draw_texture(warningBottom, 0, 0);
+		screen_select(GFX_BOTTOM);
+		screen_draw_texture(TEXTURE_WARNING_BOTTOM, 0, 0);
 	pksm_end_frame();
-	sf2d_swapbuffers();
 }
 
 void freezeMsgDetails(wchar_t* details) { _freezeMsgWithDetails(L"", details, true); }
@@ -522,16 +397,15 @@ void progressBar(wchar_t* message, u32 current, u32 sz) {
 	wchar_t progress[40];
 	swprintf(progress, 40, i18n(S_GRAPHIC_PROGRESSBAR_MESSAGE), current, sz);
 	
-	sf2d_start_frame(GFX_TOP, GFX_LEFT);
-		sf2d_draw_texture(warningTop, 0, 0);
-		sftd_draw_wtext(fontBold15, (400 - sftd_get_wtext_width(fontBold15, 15, message)) / 2, 95, WHITE, 15, message);
-		sftd_draw_wtext(fontBold12, (400 - sftd_get_wtext_width(fontBold12, 12, progress)) / 2, 130, WHITE, 12, progress);
-	pksm_end_frame();
+	screen_begin_frame();
+		screen_select(GFX_TOP);
+		screen_draw_texture(TEXTURE_WARNING_TOP, 0, 0);
+		screen_draw_wstring_center(true, 95, FONT_SIZE_15, FONT_SIZE_15, WHITE, message);
+		screen_draw_wstring_center(true, 130, FONT_SIZE_12, FONT_SIZE_12, WHITE, progress);
 	
-	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-		sf2d_draw_texture(warningBottom, 0, 0);
+		screen_select(GFX_BOTTOM);
+		screen_draw_texture(TEXTURE_WARNING_BOTTOM, 0, 0);
 	pksm_end_frame();
-	sf2d_swapbuffers();
 }
 
 void drawMenuTop() {
@@ -541,120 +415,120 @@ void drawMenuTop() {
 #else
 	printTitle(L"PKSM");
 #endif
-	sf2d_draw_texture(pokeball, (400 - pokeball->width) / 2 + 5, (240 - pokeball->height) / 2 + 10);
+	if (game_is3DS())
+		screen_draw_texture(TEXTURE_POKEBALL, 171, 95);
+	else
+		screen_draw_texture(TEXTURE_WARNING_TOP, 173, 98);
 	
 	char version[10];
 	snprintf(version, 10, "v%d.%d.%d", APP_VERSION_MAJOR, APP_VERSION_MINOR, APP_VERSION_MICRO);
-	sftd_draw_text(fontBold9, (398 - sftd_get_text_width(fontBold9, 9, version)), 229, LIGHTBLUE, 9, version);
+	screen_draw_string(398 - screen_get_string_width(version, FONT_SIZE_9, FONT_SIZE_9), 229, FONT_SIZE_9, FONT_SIZE_9, LIGHTBLUE, version);
 }
 
 void printAnimatedBG(bool isUp) {
-	sf2d_draw_texture(backgroundTop, 0, 0);
+	screen_draw_texture(TEXTURE_BACKGROUND, 0, 0);
 	animateBG(isUp);
 }
 
 void printTitle(const wchar_t* title) {
-	sftd_draw_wtext(fontBold14, (400 - sftd_get_wtext_width(fontBold14, 14, title)) / 2, 4, BLUE, 14, title);
+	screen_draw_wstring_center(true, 4, FONT_SIZE_14, FONT_SIZE_14, BLUE, title);
 }
 
 void printBottomIndications(const wchar_t* message) {
-	sftd_draw_wtext(fontBold9, (320 - sftd_get_wtext_width(fontBold9, 9, message)) / 2, 225, LIGHTBLUE, 9, message);
+	screen_draw_wstring_center(false, 225, FONT_SIZE_9, FONT_SIZE_9, LIGHTBLUE, message);
 }
 
 void gameSelectorMenu(int n) {
-	sf2d_start_frame(GFX_TOP, GFX_LEFT);
+	screen_begin_frame();
+		screen_select(GFX_TOP);
 		printMenuTop();
-		sftd_draw_wtext(fontBold9, (400 - sftd_get_wtext_width(fontBold9, 9, i18n(S_GRAPHIC_GAME_SELECTOR_INFO_CART_HAS_PRIO))) / 2, 6, BLUE, 9, i18n(S_GRAPHIC_GAME_SELECTOR_INFO_CART_HAS_PRIO));
+		screen_draw_wstring_center(true, 6, FONT_SIZE_9, FONT_SIZE_9, BLUE, i18n(S_GRAPHIC_GAME_SELECTOR_INFO_CART_HAS_PRIO));
 		
 		for (int i = 0; i < 6; i++) {
 			if (n == i) {
-				sf2d_draw_texture_part_blend(gameSelectorTop, 26 + i*60 + 4, 80 + 4, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70, HIGHBLUE);
-				sf2d_draw_texture_part_blend(gameSelectorTop, 26 + i*60, 80, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70, logoColors[i]);
+				//sf2d_draw_texture_part_blend(gameSelectorTop, 26 + i*60 + 4, 80 + 4, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70, HIGHBLUE);
+				//sf2d_draw_texture_part_blend(gameSelectorTop, 26 + i*60, 80, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70, logoColors[i]);
 			} else
-				sf2d_draw_texture_part(gameSelectorTop, 26 + i*60, 80, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70);
+				screen_draw_texture_part(TEXTURE_LOGOS_3DS, 26 + i*60, 80, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70);
 		}
 
-		sftd_draw_wtext(fontBold15, (400 - sftd_get_wtext_width(fontBold15, 15, i18n(gamesList[n]))) / 2, 185, logoColors[n], 15, i18n(gamesList[n]));
-	pksm_end_frame();
+		screen_draw_wstring_center(true, 185, FONT_SIZE_18, FONT_SIZE_18, logoColors[n], i18n(gamesList[n]));
 	
-	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
+		screen_select(GFX_BOTTOM);
 		printMenuBottom();
 		
 		for (int i = 6; i < 11; i++) {
 			if (n == i) {
-				sf2d_draw_texture_part_blend(gameSelectorBottom1, 26 + (i - 6)*56 + 4, 40 + 4, logo_lookup4[i - 6], 0, logo_lookup4[i - 5] - logo_lookup4[i - 6] - 1, 55, HIGHBLUE);
-				sf2d_draw_texture_part_blend(gameSelectorBottom1, 26 + (i - 6)*56, 40, logo_lookup4[i - 6], 0, logo_lookup4[i - 5] - logo_lookup4[i - 6] - 1, 55, logoColors[i]);
+				//sf2d_draw_texture_part_blend(gameSelectorBottom1, 26 + (i - 6)*56 + 4, 40 + 4, logo_lookup4[i - 6], 0, logo_lookup4[i - 5] - logo_lookup4[i - 6] - 1, 55, HIGHBLUE);
+				//sf2d_draw_texture_part_blend(gameSelectorBottom1, 26 + (i - 6)*56, 40, logo_lookup4[i - 6], 0, logo_lookup4[i - 5] - logo_lookup4[i - 6] - 1, 55, logoColors[i]);
 			} else
-				sf2d_draw_texture_part(gameSelectorBottom1, 26 + (i - 6)*56, 40, logo_lookup4[i - 6], 0, logo_lookup4[i - 5] - logo_lookup4[i - 6] - 1, 55);
+				screen_draw_texture_part(TEXTURE_LOGOS_GEN4, 26 + (i - 6)*56, 40, logo_lookup4[i - 6], 0, logo_lookup4[i - 5] - logo_lookup4[i - 6] - 1, 55);
 		}
 		
 		for (int i = 11; i < 15; i++) {
 			if (n == i) {
-				sf2d_draw_texture_part_blend(gameSelectorBottom2, 40 + (i - 11)*60 + 4, 115 + 4, logo_lookup5[i - 11], 0, logo_lookup5[i - 10] - logo_lookup5[i - 11] - 1, 63, HIGHBLUE);
-				sf2d_draw_texture_part_blend(gameSelectorBottom2, 40 + (i - 11)*60, 115, logo_lookup5[i - 11], 0, logo_lookup5[i - 10] - logo_lookup5[i - 11] - 1, 63, logoColors[i]);
+				//sf2d_draw_texture_part_blend(gameSelectorBottom2, 40 + (i - 11)*60 + 4, 115 + 4, logo_lookup5[i - 11], 0, logo_lookup5[i - 10] - logo_lookup5[i - 11] - 1, 63, HIGHBLUE);
+				//sf2d_draw_texture_part_blend(gameSelectorBottom2, 40 + (i - 11)*60, 115, logo_lookup5[i - 11], 0, logo_lookup5[i - 10] - logo_lookup5[i - 11] - 1, 63, logoColors[i]);
 			} else
-				sf2d_draw_texture_part(gameSelectorBottom2, 40 + (i - 11)*60, 115, logo_lookup5[i - 11], 0, logo_lookup5[i - 10] - logo_lookup5[i - 11] - 1, 63);
+				screen_draw_texture_part(TEXTURE_LOGOS_GEN5, 40 + (i - 11)*60, 115, logo_lookup5[i - 11], 0, logo_lookup5[i - 10] - logo_lookup5[i - 11] - 1, 63);
 		}
 
 		printBottomIndications(i18n(S_GRAPHIC_GAME_SELECTOR_INDICATIONS));
 	pksm_end_frame();
-	sf2d_swapbuffers();
 }
 
 void menu(int menu[]) {
-	sf2d_start_frame(GFX_TOP, GFX_LEFT);
+	screen_begin_frame();
+		screen_select(GFX_TOP);
 		drawMenuTop();
-	pksm_end_frame();
-	
-	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
+
+		screen_select(GFX_BOTTOM);
 		printMenuBottom();		
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 2; j++) {
-				sf2d_draw_texture(mainMenuButton, 15 + j*150, 20 + i*63);
-				sftd_draw_wtext(fontBold15, 15 + j*150 + 52 + (84 - sftd_get_wtext_width(fontBold15, 15, i18n(menu[i*2+j]))) / 2, 17 + i*63 + (mainMenuButton->height - 15) / 2, LIGHTBLUE, 15, i18n(menu[i*2+j]));
+				screen_draw_texture(TEXTURE_MAIN_MENU_BUTTON, 15 + j*150, 20 + i*63);
+				screen_draw_wstring(15 + j*150 + 52 + (84 - screen_get_wstring_width(i18n(menu[i*2+j]), FONT_SIZE_15, FONT_SIZE_15)) / 2, 17 + i*63 + 19, FONT_SIZE_15, FONT_SIZE_15, LIGHTBLUE, i18n(menu[i*2+j]));
 				switch (i*2+j) {
 					case 0: 
-						sf2d_draw_texture(iconBank, 25, 18 + (53 - iconBank->height)/2);
+						screen_draw_texture(TEXTURE_ICON_BANK, 25, 27);
 						break;
 					case 1: 
-						sf2d_draw_texture(iconEditor, 175, 18 + (53 - iconEditor->height)/2);
+						screen_draw_texture(TEXTURE_ICON_EDITOR, 175, 28);
 						break;
 					case 2: 
-						sf2d_draw_texture(iconEvents, 25, 81 + (53 - iconEvents->height)/2);
+						screen_draw_texture(TEXTURE_ICON_EVENTS, 25, 93);
 						break;
 					case 3: 
-						sf2d_draw_texture(iconSave, 175, 81 + (53 - iconSave->height)/2);
+						screen_draw_texture(TEXTURE_ICON_SAVE, 175, 91);
 						break;
 					case 4: 
-						sf2d_draw_texture(iconSettings, 25, 144 + (53 - iconSettings->height)/2);
+						screen_draw_texture(TEXTURE_ICON_SETTINGS, 25, 157);
 						break;
 					case 5: 
-						sf2d_draw_texture(iconCredits, 175, 144 + (53 - iconCredits->height)/2);
+						screen_draw_texture(TEXTURE_ICON_CREDITS, 175, 160);
 						break;
 				}
 			}
 		}
 		printBottomIndications(i18n(S_MAIN_MENU_INDICATION_EXIT));
 	pksm_end_frame();
-	sf2d_swapbuffers();
 }
 
 void mainMenuDS(int currentEntry) {
 	wchar_t* menu[] = { L"Events", L"Save Info", L"Other"};
-	sf2d_start_frame(GFX_TOP, GFX_LEFT);
-		sf2d_draw_texture(DSTopBG, 0, 0);
-		sf2d_draw_texture(pokeball, (400 - pokeball->width) / 2, (240 - pokeball->height) / 2 + 3);
-	pksm_end_frame();
+	screen_begin_frame();
+		screen_select(GFX_TOP);
+		screen_draw_texture(TEXTURE_DS_TOP_BG, 0, 0);
+		screen_draw_texture(TEXTURE_POKEBALL, 168, 91);
 	
-	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-		sf2d_draw_texture(DSBottomBG, 0, 0);
+		screen_select(GFX_BOTTOM);
+		screen_draw_texture(TEXTURE_DS_MENU_BOTTOM_BG, 0, 0);
 		for (int i = 0; i < 3; i++) {
-			sf2d_draw_texture((i == currentEntry) ? DSBarSelected : DSBar, 0, 33 + i*56);
-			sftd_draw_wtext(fontBold14, (320 - sftd_get_wtext_width(fontBold14, 14, menu[i])) / 2, (i == currentEntry) ? 43 + i*56 : 45 + i*56, (i == currentEntry) ? WHITE : DS, 14, menu[i]);
+			screen_draw_texture((i == currentEntry) ? TEXTURE_SELECTED_DS_BAR : TEXTURE_DS_BAR, 0, 33 + i*56);
+			screen_draw_wstring_center(false, (i == currentEntry) ? 43 + i*56 : 45 + i*56, FONT_SIZE_14, FONT_SIZE_14, (i == currentEntry) ? WHITE : DS, menu[i]);
 		}
-		sftd_draw_wtext(fontBold9, (320 - sftd_get_wtext_width(fontBold9, 9, i18n(S_GRAPHIC_MENUDS_INDICATIONS))) / 2, 224, RED, 9, i18n(S_GRAPHIC_MENUDS_INDICATIONS));
+		screen_draw_wstring_center(false, 224, FONT_SIZE_9, FONT_SIZE_9, RED, i18n(S_GRAPHIC_MENUDS_INDICATIONS));
 	pksm_end_frame();
-	sf2d_swapbuffers();
 }
 
 void printCredits() {
@@ -665,23 +539,22 @@ void printCredits() {
 	while (aptMainLoop() && !(hidKeysUp() & KEY_B)) {
 		hidScanInput();
 		
-		sf2d_start_frame(GFX_TOP, GFX_LEFT);
+		screen_begin_frame();
+			screen_select(GFX_TOP);
 			printMenuTop();
 			printTitle(i18n(S_GRAPHIC_CREDITS_TITLE));
-			sf2d_draw_texture_part(creditsTop, 16, 104, 0, 22, 181, 46);
-			sf2d_draw_texture_part(creditsTop, 36, 104, 0, 22, 181, 46);
-			sf2d_draw_texture(creditsTop, 0, 45);
-			sftd_draw_text(fontBold15, 18, 79, LIGHTBLUE, 15, "Bernardo Giordano");
-			sftd_draw_text(fontBold15, 34, 117, LIGHTBLUE, 15, "Naxann, Anty-Lemon");
-			sftd_draw_text(fontBold15, 64, 174, LIGHTBLUE, 15, "dsoldier for the complete GUI design");
-		pksm_end_frame();
+			screen_draw_texture_part(TEXTURE_CREDITS, 16, 104, 0, 22, 181, 46);
+			screen_draw_texture_part(TEXTURE_CREDITS, 36, 104, 0, 22, 181, 46);
+			screen_draw_texture(TEXTURE_CREDITS, 0, 45);
+			screen_draw_string(18, 79, FONT_SIZE_15, FONT_SIZE_15, LIGHTBLUE, "Bernardo Giordano");
+			screen_draw_string(34, 117, FONT_SIZE_15, FONT_SIZE_15, LIGHTBLUE, "Naxann, Anty-Lemon");
+			screen_draw_string(64, 174, FONT_SIZE_15, FONT_SIZE_15,  LIGHTBLUE, "dsoldier for the complete GUI design");
 
-		sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
+			screen_select(GFX_BOTTOM);
 			printMenuBottom();
-			sftd_draw_text(fontBold9, 20, 30, LIGHTBLUE, 9, (char*)buf);
+			screen_draw_string(20, 30, FONT_SIZE_9, FONT_SIZE_9, LIGHTBLUE, (char*)buf);
 			printBottomIndications(i18n(S_GRAPHIC_CREDITS_INDICATIONS));
 		pksm_end_frame();
-		sf2d_swapbuffers();
 	}
 }
 
@@ -690,102 +563,107 @@ void printDatabase6(char *database[], int currentEntry, int page, int spriteArra
 	char pages[24];
 	sprintf(pages, "%d/%d", page + 1, fill_get_index()/10);
 	
-	sf2d_start_frame(GFX_TOP, GFX_LEFT);
+	screen_begin_frame();
+		screen_select(GFX_TOP);
 		printMenuTop();
 		printTitle(i18n(S_GRAPHIC_DB6_TITLE));
 		
 		for (int i = 0; i < 5; i++) {
 			pk = spriteArray[page * 10 + i];
 			if (i == currentEntry)
-				sf2d_draw_texture(eventMenuTopBarSelected, 18, y);
+				screen_draw_texture(TEXTURE_EVENT_MENU_TOP_BAR_SELECTED, 18, y);
 			else
-				sf2d_draw_texture(eventMenuTopBar, 18, y);
+				screen_draw_texture(TEXTURE_EVENT_MENU_TOP_BAR_NORMAL, 18, y);
 			
-			if (pk != -1)
-				sf2d_draw_texture_part(spritesSmall, 20, y - ((i == currentEntry) ? movementOffsetSlow(2) : 0), 40 * (pk % 25) + 4, 30 * (pk / 25), 34, 30);
-			if (sftd_get_text_width(fontBold9, 9, database[page * 10 + i]) <= 148)
-				sftd_draw_text(fontBold9, 54, y + 12, (i == currentEntry) ? HIGHBLUE : YELLOW, 9, database[page * 10 + i]);
+			if (pk != -1) {
+				screen_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 20, y - ((i == currentEntry) ? movementOffsetSlow(2) : 0), 40 * (pk % 25) + 4, 30 * (pk / 25), 34, 30);
+			}
+			
+			if (screen_get_string_width(database[page*10 + i], FONT_SIZE_9, FONT_SIZE_9) <= 148)
+				screen_draw_string(54, y + 12, FONT_SIZE_9, FONT_SIZE_9, (i == currentEntry) ? HIGHBLUE : YELLOW, database[page * 10 + i]);
 			else
-				sftd_draw_text_wrap(fontBold9, 54, y + 3, (i == currentEntry) ? HIGHBLUE : YELLOW, 9, 148, database[page * 10 + i]);
+				screen_draw_string_wrap(54, y + 3, FONT_SIZE_9, FONT_SIZE_9, (i == currentEntry) ? HIGHBLUE : YELLOW, 148, database[page * 10 + i]);
 			
 			y += 37;
 		}
-		
+
 		y = 41;
 		for (int i = 5; i < 10; i++) {
 			pk = spriteArray[page * 10 + i];
 			if (i == currentEntry)
-				sf2d_draw_texture(eventMenuTopBarSelected, 200, y);
+				screen_draw_texture(TEXTURE_EVENT_MENU_TOP_BAR_SELECTED, 200, y);
 			else
-				sf2d_draw_texture(eventMenuTopBar, 200, y);
+				screen_draw_texture(TEXTURE_EVENT_MENU_TOP_BAR_NORMAL, 200, y);
 			
-			if (pk != -1)
-				sf2d_draw_texture_part(spritesSmall, 202, y - ((i == currentEntry) ? movementOffsetSlow(2) : 0), 40 * (pk % 25) + 4, 30 * (pk / 25), 34, 30);
-			if (sftd_get_text_width(fontBold9, 9, database[page * 10 + i]) <= 148)
-				sftd_draw_text(fontBold9, 235, y + 14, (i == currentEntry) ? HIGHBLUE : YELLOW, 9, database[page * 10 + i]);
+			if (pk != -1) {
+				screen_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 202, y - ((i == currentEntry) ? movementOffsetSlow(2) : 0), 40 * (pk % 25) + 4, 30 * (pk / 25), 34, 30);
+			}
+			
+			if (screen_get_string_width(database[page*10 + i], FONT_SIZE_9, FONT_SIZE_9) <= 148)
+				screen_draw_string(235, y + 14, FONT_SIZE_9, FONT_SIZE_9, (i == currentEntry) ? HIGHBLUE : YELLOW, database[page * 10 + i]);
 			else
-				sftd_draw_text_wrap(fontBold9, 235, y + 3, (i == currentEntry) ? HIGHBLUE : YELLOW, 9, 148, database[page * 10 + i]);
+				screen_draw_string_wrap(235, y + 3, FONT_SIZE_9, FONT_SIZE_9, (i == currentEntry) ? HIGHBLUE : YELLOW, 148, database[page * 10 + i]);
 			
 			y += 37;
 		}
-	pksm_end_frame();
-
-	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
+		
+		screen_select(GFX_BOTTOM);
 		printMenuBottom();
-		sf2d_draw_texture(eventMenuBottomBar, (320 - eventMenuBottomBar->width) / 2, 45);
-		sf2d_draw_texture(LButton, 83, 52);
-		sf2d_draw_texture(RButton, 221, 52);
-		sftd_draw_text(fontBold12, (320 - sftd_get_text_width(fontBold12, 12, pages)) / 2, 52, WHITE, 12, pages);
+		screen_draw_texture(TEXTURE_EVENT_MENU_BOTTOM_BAR, 65, 45);
+		screen_draw_texture(TEXTURE_L_BUTTON, 83, 52);
+		screen_draw_texture(TEXTURE_R_BUTTON, 221, 52);
+		screen_draw_string_center(false, 52, FONT_SIZE_12, FONT_SIZE_12, WHITE, pages);
 		printBottomIndications(i18n(S_GRAPHIC_DB6_INDICATIONS));
 	pksm_end_frame();
-	sf2d_swapbuffers();
 }
 
 void printDatabaseListDS(char *database[], int currentEntry, int page, int spriteArray[], bool isSelected, int langSelected, bool langVett[]) {
 	int pk, y = 41;
 	
-	sf2d_start_frame(GFX_TOP, GFX_LEFT);
-		sf2d_draw_texture(DSEventTop, 0, 0);
+	screen_begin_frame();
+		screen_select(GFX_TOP);
+		screen_draw_texture(TEXTURE_DS_EVENT_DATABASE_BG, 0, 0);
 		
 		for (int i = 0; i < 5; i++) {
 			pk = spriteArray[page * 10 + i];
 			if (i == currentEntry)
-				sf2d_draw_texture(DSSelectedBarL, 18, y);
+				screen_draw_texture(TEXTURE_SELECTED_L, 18, y);
 			else
-				sf2d_draw_texture(DSNormalBarL, 18, y);
+				screen_draw_texture(TEXTURE_SELECTED_R, 18, y);
 			
-			if (pk != -1)
-				sf2d_draw_texture_part(spritesSmall, 22, y + 2, 40 * (pk % 25) + 4, 30 * (pk / 25), 34, 30);
-			if (sftd_get_text_width(fontBold9, 9, database[page * 10 + i]) <= 148)
-				sftd_draw_text(fontBold9, 55, y + 14, WHITE, 9, database[page * 10 + i]);
+			if (pk != -1) {
+				screen_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 22, y + 2, 40 * (pk % 25) + 4, 30 * (pk / 25), 34, 30);
+			}
+			if (screen_get_string_width(database[page*10 + i], FONT_SIZE_9, FONT_SIZE_9) <= 148)
+				screen_draw_string(55, y + 14, FONT_SIZE_9, FONT_SIZE_9, WHITE, database[page * 10 + i]);
 			else
-				sftd_draw_text_wrap(fontBold9, 55, y + 3, WHITE, 9, 148, database[page * 10 + i]);
+				screen_draw_string(55, y + 3, FONT_SIZE_9, FONT_SIZE_9, WHITE, database[page * 10 + i]);
 			
-			y += DSSelectedBarL->height;
+			y += 36;
 		}
 		
 		y = 41;
 		for (int i = 5; i < 10; i++) {
 			pk = spriteArray[page * 10 + i];
 			if (i == currentEntry)
-				sf2d_draw_texture(DSSelectedBarR, 200, y);
+				screen_draw_texture(TEXTURE_SELECTED_L, 200, y);
 			else
-				sf2d_draw_texture(DSNormalBarR, 200, y);
+				screen_draw_texture(TEXTURE_SELECTED_R, 200, y);
 			
-			if (pk != -1)
-				sf2d_draw_texture_part(spritesSmall, 204, y + 2, 40 * (pk % 25) + 4, 30 * (pk / 25), 34, 30);
-			if (sftd_get_text_width(fontBold9, 9, database[page * 10 + i]) <= 148)
-				sftd_draw_text(fontBold9, 235, y + 14, WHITE, 9, database[page * 10 + i]);
+			if (pk != -1) {
+				screen_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 204, y + 2, 40 * (pk % 25) + 4, 30 * (pk / 25), 34, 30);
+			}
+			if (screen_get_string_width(database[page*10 + i], FONT_SIZE_9, FONT_SIZE_9) <= 148)
+				screen_draw_string(235, y + 14, FONT_SIZE_9, FONT_SIZE_9, WHITE, database[page * 10 + i]);
 			else
-				sftd_draw_text_wrap(fontBold9, 235, y + 3, WHITE, 9, 148, database[page * 10 + i]);
+				screen_draw_string(235, y + 3, FONT_SIZE_9, FONT_SIZE_9, WHITE, database[page * 10 + i]);
 			
-			y += DSSelectedBarR->height;
+			y += 36;
 		}
-	pksm_end_frame();
 
-	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-		sf2d_draw_texture(DSEventBottom, 0, 0);
-		sftd_draw_wtext(fontBold9, (320 - sftd_get_wtext_width(fontBold9, 9, isSelected ? i18n(S_GRAPHIC_DB_INDICATIONS_INJECT) : i18n(S_GRAPHIC_DB_INDICATIONS_SELECT))) / 2, 222, RGBA8(255, 255, 255, 130), 9, isSelected ? i18n(S_GRAPHIC_DB_INDICATIONS_INJECT) : i18n(S_GRAPHIC_DB_INDICATIONS_SELECT));
+		screen_select(GFX_BOTTOM);
+		screen_draw_texture(TEXTURE_DS_MENU_BOTTOM_BG, 0, 0);
+		screen_draw_wstring_center(false, 222, FONT_SIZE_9, FONT_SIZE_9, RGBA8(255, 255, 255, 130), isSelected ? i18n(S_GRAPHIC_DB_INDICATIONS_INJECT) : i18n(S_GRAPHIC_DB_INDICATIONS_SELECT));
 		
 		if (isSelected) {
 			char *languages[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};			
@@ -802,20 +680,19 @@ void printDatabaseListDS(char *database[], int currentEntry, int page, int sprit
 					case 6 : { x = 253; break; }
 				}
 				
-				sf2d_draw_texture(DSLang, x, y);
+				screen_draw_texture(TEXTURE_LANGUAGE_BUTTON_NORMAL, x, y);
 				if (langVett[t]) {
-					if (t == langSelected) sf2d_draw_texture(DSLangSelected, x, y);
-					sftd_draw_text(fontBold12, x + (36 - sftd_get_text_width(fontBold12, 12, languages[t])) / 2, y + 4, WHITE, 12, languages[t]);
+					if (t == langSelected) screen_draw_texture(TEXTURE_LANGUAGE_BUTTON_SELECTED, x, y);
+					screen_draw_string(x + (36 - screen_get_string_width(languages[t], FONT_SIZE_12, FONT_SIZE_12)) / 2, y + 4, FONT_SIZE_12, FONT_SIZE_12, WHITE, languages[t]);
 				}
 				else {
-					if (t == langSelected) sf2d_draw_texture(DSLangSelected, x, y);
-					sftd_draw_text(fontBold12, x + (36 - sftd_get_text_width(fontBold12, 12, languages[t])) / 2, y + 4, RGBA8(255, 255, 255, 100), 12, languages[t]);
+					if (t == langSelected) screen_draw_texture(TEXTURE_LANGUAGE_BUTTON_SELECTED, x, y);
+					screen_draw_string(x + (36 - screen_get_string_width(languages[t], FONT_SIZE_12, FONT_SIZE_12)) / 2, y + 4, FONT_SIZE_12, FONT_SIZE_12, RGBA8(255, 255, 255, 100), languages[t]);
 				}
 			}
 		}
 	
 	pksm_end_frame();
-	sf2d_swapbuffers();
 }
 
 void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bool overwrite, int langSelected, int nInjected, bool ota) {
@@ -825,34 +702,34 @@ void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bo
 	
 	int total = game_isgen7() ? 9 : 7;
 	
-	sf2d_start_frame(GFX_TOP, GFX_LEFT);
+	screen_begin_frame();
+		screen_select(GFX_TOP);
 		wcxInfoViewer(previewbuf);
 #if PKSV
 #else
-		sf2d_draw_texture(otaButton, 360, 2);
+		screen_draw_texture(TEXTURE_OTA_BUTTON, 360, 2);
 #endif
 		
 		if (sprite != -1) {
-			sf2d_draw_texture_part_scale(spritesSmall, 282, 41 - movementOffsetLong(6), 40 * (wcx_get_species(previewbuf) % 25) + 4, 30 * (wcx_get_species(previewbuf) / 25), 34, 30, 2, 2);
+			//sf2d_draw_texture_part_scale(spritesSmall, 282, 41 - movementOffsetLong(6), 40 * (wcx_get_species(previewbuf) % 25) + 4, 30 * (wcx_get_species(previewbuf) / 25), 34, 30, 2, 2);
 		}
 		
 		if (ota) {
-			sf2d_draw_rectangle(0, 0, 400, 240, RGBA8(0, 0, 0, 220));
-			sftd_draw_wtext(fontBold15, (400 - sftd_get_wtext_width(fontBold15, 15, i18n(S_GRAPHIC_PKVIEWER_OTA_LAUNCH_CLIENT))) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, i18n(S_GRAPHIC_PKVIEWER_OTA_LAUNCH_CLIENT));
-			sftd_draw_wtext(fontBold12, (400 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKVIEWER_OTA_INDICATIONS))) / 2, 130, WHITE, 12, i18n(S_GRAPHIC_PKVIEWER_OTA_INDICATIONS));
+			screen_draw_rect(0, 0, 400, 240, RGBA8(0, 0, 0, 220));
+			screen_draw_wstring_center(true, 95, FONT_SIZE_15, FONT_SIZE_15, RGBA8(255, 255, 255, giveTransparence()), i18n(S_GRAPHIC_PKVIEWER_OTA_LAUNCH_CLIENT));
+			screen_draw_wstring_center(true, 130, FONT_SIZE_12, FONT_SIZE_12, WHITE, i18n(S_GRAPHIC_PKVIEWER_OTA_INDICATIONS));
 		}
-	pksm_end_frame();
-	
-	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
+
+		screen_select(GFX_BOTTOM);
 		printMenuBottom();
 
 		if (getN(i) > 1)
-			sftd_draw_text(fontBold11, (320 - sftd_get_text_width(fontBold11, 11, "Press L to switch multiple wondercards.")) / 2, 19, LIGHTBLUE, 11, "Press L/R to switch multiple wondercards.");
+			screen_draw_string_center(false, 19, FONT_SIZE_11, FONT_SIZE_11, LIGHTBLUE, "Press L/R to switch multiple wondercards.");
 		
-		sftd_draw_wtext(fontBold14, 16, 50, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_LANGUAGES));
-		sftd_draw_wtext(fontBold14, 16, 112, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_OVERWRITE_WC));
-		sftd_draw_wtext(fontBold14, 16, 140, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_ADAPT_LANGUAGE_WC));
-		sftd_draw_wtext(fontBold14, 16, 170, LIGHTBLUE, 14, i18n(S_GRAPHIC_DB_INJECT_WC_SLOT));
+		screen_draw_wstring(16, 50, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_DB_LANGUAGES));
+		screen_draw_wstring(16, 112, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_DB_OVERWRITE_WC));
+		screen_draw_wstring(16, 140, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_DB_ADAPT_LANGUAGE_WC));
+		screen_draw_wstring(16, 170, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_DB_INJECT_WC_SLOT));
 		
 		for (int t = 0; t < total; t++) {
 			int x = 0, y = 0;
@@ -869,57 +746,56 @@ void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bo
 			}
 			if (langVett[t]) {
 				if (t == langSelected) {
-					sf2d_draw_texture(redButton, x, y);
-					sftd_draw_text(fontBold14, x + (36 - sftd_get_text_width(fontBold14, 14, languages[t])) / 2, y + 2, DARKBLUE, 14, languages[t]);
+					screen_draw_texture(TEXTURE_RED_BUTTON, x, y);
+					screen_draw_string(x + (36 - screen_get_string_width(languages[t], FONT_SIZE_14, FONT_SIZE_14)) / 2, y + 2, FONT_SIZE_14, FONT_SIZE_14, DARKBLUE, languages[t]);
 				} else {
-					sf2d_draw_texture(darkButton, x, y);
-					sftd_draw_text(fontBold14, x + (36 - sftd_get_text_width(fontBold14, 14, languages[t])) / 2, y + 2, YELLOW, 14, languages[t]);
+					screen_draw_texture(TEXTURE_DARK_BUTTON, x, y);
+					screen_draw_string(x + (36 - screen_get_string_width(languages[t], FONT_SIZE_14, FONT_SIZE_14)) / 2, y + 2, FONT_SIZE_14, FONT_SIZE_14, YELLOW, languages[t]);
 				}
 			}
 			else {
-				sf2d_draw_texture(lightButton, x, y);
-				sftd_draw_text(fontBold14, x + (36 - sftd_get_text_width(fontBold14, 14, languages[t])) / 2, y + 2, DARKBLUE, 14, languages[t]);
+				screen_draw_texture(TEXTURE_LIGHT_BUTTON, x, y);
+				screen_draw_string(x + (36 - screen_get_string_width(languages[t], FONT_SIZE_14, FONT_SIZE_14)) / 2, y + 2, FONT_SIZE_14, FONT_SIZE_14, DARKBLUE, languages[t]);
 			}
 		}
 			
 		if (overwrite) {
-			sf2d_draw_texture(redButton, 231, 110);
-			sf2d_draw_texture(darkButton, 270, 110);
+			screen_draw_texture(TEXTURE_RED_BUTTON, 231, 110);
+			screen_draw_texture(TEXTURE_DARK_BUTTON, 270, 110);
 		}
 		else {
-			sf2d_draw_texture(darkButton, 231, 110);
-			sf2d_draw_texture(redButton, 270, 110);			
+			screen_draw_texture(TEXTURE_DARK_BUTTON, 231, 110);
+			screen_draw_texture(TEXTURE_RED_BUTTON, 270, 110);			
 		}
 		
 		if (adapt) {
-			sf2d_draw_texture(redButton, 231, 138);
-			sf2d_draw_texture(darkButton, 270, 138);
+			screen_draw_texture(TEXTURE_RED_BUTTON, 231, 138);
+			screen_draw_texture(TEXTURE_DARK_BUTTON, 270, 138);
 		}
 		else {
-			sf2d_draw_texture(darkButton, 231, 138);
-			sf2d_draw_texture(redButton, 270, 138);
+			screen_draw_texture(TEXTURE_DARK_BUTTON, 231, 138);
+			screen_draw_texture(TEXTURE_RED_BUTTON, 270, 138);
 		}
 		
-		sf2d_draw_texture(darkButton, 251, 168);	
+		screen_draw_texture(TEXTURE_DARK_BUTTON, 251, 168);	
 		
-		sftd_draw_wtext(fontBold12, 231 + (36 - sftd_get_wtext_width(fontBold12, 12, i18n(S_YES))) / 2, 113, (overwrite) ? DARKBLUE : YELLOW, 12, i18n(S_YES));
-		sftd_draw_wtext(fontBold12, 270 + (36 - sftd_get_wtext_width(fontBold12, 12, i18n(S_NO))) / 2, 113, (!overwrite) ? DARKBLUE : YELLOW, 12, i18n(S_NO));
-		sftd_draw_wtext(fontBold12, 231 + (36 - sftd_get_wtext_width(fontBold12, 12, i18n(S_YES))) / 2, 141, (adapt) ? DARKBLUE : YELLOW, 12, i18n(S_YES));
-		sftd_draw_wtext(fontBold12, 270 + (36 - sftd_get_wtext_width(fontBold12, 12, i18n(S_NO))) / 2, 141, (!adapt) ? DARKBLUE : YELLOW, 12, i18n(S_NO));
-		sftd_draw_text(fontBold12, 251 + (36 - sftd_get_text_width(fontBold12, 12, cont)) / 2, 171, YELLOW, 12, cont);
+		screen_draw_wstring(231 + (36 - screen_get_wstring_width(i18n(S_YES), FONT_SIZE_12, FONT_SIZE_12)) / 2, 113, FONT_SIZE_12, FONT_SIZE_12, (overwrite) ? DARKBLUE : YELLOW, i18n(S_YES));
+		screen_draw_wstring(270 + (36 - screen_get_wstring_width(i18n(S_NO), FONT_SIZE_12, FONT_SIZE_12)) / 2, 113, FONT_SIZE_12, FONT_SIZE_12,(!overwrite) ? DARKBLUE : YELLOW, i18n(S_NO));
+		screen_draw_wstring(231 + (36 - screen_get_wstring_width(i18n(S_YES), FONT_SIZE_12, FONT_SIZE_12)) / 2, 141, FONT_SIZE_12, FONT_SIZE_12,(adapt) ? DARKBLUE : YELLOW, i18n(S_YES));
+		screen_draw_wstring(270 + (36 - screen_get_wstring_width(i18n(S_NO), FONT_SIZE_12, FONT_SIZE_12)) / 2, 141, FONT_SIZE_12, FONT_SIZE_12,(!adapt) ? DARKBLUE : YELLOW, i18n(S_NO));
+		screen_draw_string(251 + (36 - screen_get_string_width(cont, FONT_SIZE_12, FONT_SIZE_12)) / 2, 171, FONT_SIZE_12, FONT_SIZE_12, YELLOW, cont);
 		
 		if (ota) {
-			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
-			sftd_draw_wtextf(fontBold9, 10, 225, WHITE, 9, i18n(S_HTTP_SERVER_RUNNING), socket_get_ip());
+			screen_draw_rect(0, 0, 320, 240, MASKBLACK);
+			screen_draw_wstringf(10, 225, FONT_SIZE_9, FONT_SIZE_9, WHITE, i18n(S_HTTP_SERVER_RUNNING), socket_get_ip());
 		} else
 			printBottomIndications(i18n(S_GRAPHIC_DB_INDICATIONS_INJECT));
 		
-		pksm_end_frame();
-	sf2d_swapbuffers();
+	pksm_end_frame();
 }
 
 void printEditor(u8* mainbuf, u64 size, int currentEntry, int page) {
-	sf2d_start_frame(GFX_TOP, GFX_LEFT);
+	/*sf2d_start_frame(GFX_TOP, GFX_LEFT);
 		sf2d_draw_texture(hexBG, 0, 0);
 		for (int rows = 0; rows < 15; rows++) {
 			for (int columns = 0; columns < 16; columns++) {
@@ -946,7 +822,7 @@ void printEditor(u8* mainbuf, u64 size, int currentEntry, int page) {
 		
 		printSaveEditorInfo(mainbuf, page*240 + currentEntry);
 	pksm_end_frame();
-	sf2d_swapbuffers();		
+	sf2d_swapbuffers();*/	
 }
 
 u16 getAlternativeSprite(u8* pkmn, int game) {
@@ -966,34 +842,34 @@ void printElement(u8* pkmn, int game, u16 n, int x, int y) {
 	u16 t = getAlternativeSprite(pkmn, game);
 	if (t) {
 		t -= 1;
-		sf2d_draw_texture_part(alternativeSpritesSmall, x, y, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30); 
+		screen_draw_texture_part(TEXTURE_ALTERNATIVE_SPRITESHEET, x, y, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30);  
 	} else {
 		if (pkx_get_species(pkmn) < 0 || pkx_get_species(pkmn) > 821)
-			sf2d_draw_texture_part(spritesSmall, x, y, 0, 0, 34, 30);
+			screen_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, x, y, 0, 0, 34, 30);
 		else
-			sf2d_draw_texture_part(spritesSmall, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30);
+			screen_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30);
 	}
 	if (pkx_is_egg(pkmn))
-		sf2d_draw_texture_part(spritesSmall, x + 6, y + 6, 40 * (EGGSPRITEPOS % 25) + 4, 30 * (EGGSPRITEPOS / 25), 34, 30);
+		screen_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, x + 6, y + 6, 40 * (EGGSPRITEPOS % 25) + 4, 30 * (EGGSPRITEPOS / 25), 34, 30);
 	if (pkx_get_item(pkmn))
-		sf2d_draw_texture(item, x + 3, y + 21);
+		screen_draw_texture(TEXTURE_ITEM, x + 3, y + 21);
 }
 
 void printElementBlend(u8* pkmn, int game, u16 n, int x, int y, u32 color) {
-	u16 t = getAlternativeSprite(pkmn, game);
-	if (t) {
-		t -= 1;
-		sf2d_draw_texture_part_blend(alternativeSpritesSmall, x, y, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30, color); 
-	} else {
-		if (pkx_get_species(pkmn) < 0 || pkx_get_species(pkmn) > 821)
-			sf2d_draw_texture_part_blend(spritesSmall, x, y, 0, 0, 34, 30, color);
-		else
-			sf2d_draw_texture_part_blend(spritesSmall, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30, color);
-	}
-	if (pkx_is_egg(pkmn))
-		sf2d_draw_texture_part_blend(spritesSmall, x + 6, y + 6, 40 * (EGGSPRITEPOS % 25) + 4, 30 * (EGGSPRITEPOS / 25), 34, 30, color);
-	if (pkx_get_item(pkmn))
-		sf2d_draw_texture_blend(item, x + 3, y + 21, color);
+	// u16 t = getAlternativeSprite(pkmn, game);
+	// if (t) {
+		// t -= 1;
+		// sf2d_draw_texture_part_blend(alternativeSpritesSmall, x, y, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30, color); 
+	// } else {
+		// if (pkx_get_species(pkmn) < 0 || pkx_get_species(pkmn) > 821)
+			// sf2d_draw_texture_part_blend(spritesSmall, x, y, 0, 0, 34, 30, color);
+		// else
+			// sf2d_draw_texture_part_blend(spritesSmall, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30, color);
+	// }
+	// if (pkx_is_egg(pkmn))
+		// sf2d_draw_texture_part_blend(spritesSmall, x + 6, y + 6, 40 * (EGGSPRITEPOS % 25) + 4, 30 * (EGGSPRITEPOS / 25), 34, 30, color);
+	// if (pkx_get_item(pkmn))
+		// sf2d_draw_texture_blend(item, x + 3, y + 21, color);
 }
 
 void printGeneration(u8* pkmn, int x, int y) {
@@ -1005,35 +881,35 @@ void printGeneration(u8* pkmn, int x, int y) {
 		case 4: // fire red
 		case 5: // leaf green
 		case 15: // colosseum/XD
-			sf2d_draw_texture_part(generations, x, y, 20, 0, 10, 10);
+			screen_draw_texture_part(TEXTURE_GENERATIONS, x, y, 20, 0, 10, 10);
 			break;
 		case 10: // diamond
 		case 11: // pearl
 		case 12: // platinum
 		case 7: // heart gold
 		case 8: // soul silver
-			sf2d_draw_texture_part(generations, x, y, 30, 0, 10, 10);
+			screen_draw_texture_part(TEXTURE_GENERATIONS, x, y, 30, 0, 10, 10);
 			break;		
 		case 20: // white
 		case 21: // black
 		case 22: // white2
 		case 23: // black2
-			sf2d_draw_texture_part(generations, x, y, 40, 0, 10, 10);
+			screen_draw_texture_part(TEXTURE_GENERATIONS, x, y, 40, 0, 10, 10);
 			break;
 		case 24: // x
 		case 25: // y
 		case 26: // as
 		case 27: // or
-			sf2d_draw_texture_part(generations, x, y, 50, 0, 10, 10);
+			screen_draw_texture_part(TEXTURE_GENERATIONS, x, y, 50, 0, 10, 10);
 			break;
 		case 30: // sun
 		case 31: // moon
 		case 32: // us
 		case 33: // um
-			sf2d_draw_texture_part(generations, x, y, 60, 0, 10, 10);
+			screen_draw_texture_part(TEXTURE_GENERATIONS, x, y, 60, 0, 10, 10);
 			break;
 		case 34: // go
-			sf2d_draw_texture_part(generations, x, y, 10, 0, 10, 10);
+			screen_draw_texture_part(TEXTURE_GENERATIONS, x, y, 10, 0, 10, 10);
 			break;
 		case 35: // rd
 		case 36: // gn
@@ -1041,7 +917,7 @@ void printGeneration(u8* pkmn, int x, int y) {
 		case 38: // yw
 		case 39: // gd
 		case 40: // sv
-			sf2d_draw_texture_part(generations, x, y, 0, 0, 10, 10);
+			screen_draw_texture_part(TEXTURE_GENERATIONS, x, y, 0, 0, 10, 10);
 			break;
 		default:
 			break;
@@ -1054,19 +930,19 @@ void infoViewer(u8* pkmn) {
 	wchar_t* values[] =  {i18n(S_GRAPHIC_INFOVIEWER_VALUE_HP), i18n(S_GRAPHIC_INFOVIEWER_VALUE_ATTACK), i18n(S_GRAPHIC_INFOVIEWER_VALUE_DEFENSE), i18n(S_GRAPHIC_INFOVIEWER_VALUE_SP_ATK), i18n(S_GRAPHIC_INFOVIEWER_VALUE_SP_DEF), i18n(S_GRAPHIC_INFOVIEWER_VALUE_SPEED)};
 	
 	printAnimatedBG(true);
-	sf2d_draw_texture(infoView, 0, 2);
+	screen_draw_texture(TEXTURE_INFO_VIEW, 0, 2);
 
-	sf2d_draw_texture((pkx_get_move(pkmn, 0)) ? normalBar : noMove, 252, 155);
-	sf2d_draw_texture((pkx_get_move(pkmn, 1)) ? normalBar : noMove, 252, 176);
-	sf2d_draw_texture((pkx_get_move(pkmn, 2)) ? normalBar : noMove, 252, 197);
-	sf2d_draw_texture((pkx_get_move(pkmn, 3)) ? normalBar : noMove, 252, 218);
+	screen_draw_texture((pkx_get_move(pkmn, 0)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 155);
+	screen_draw_texture((pkx_get_move(pkmn, 1)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 176);
+	screen_draw_texture((pkx_get_move(pkmn, 2)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 197);
+	screen_draw_texture((pkx_get_move(pkmn, 3)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 218);
 	
-	sftd_draw_wtext(fontBold12, 251, 138, WHITE, 12, i18n(S_GRAPHIC_INFOVIEWER_MOVES));
+	screen_draw_wstring(251, 138, FONT_SIZE_12, FONT_SIZE_12, WHITE, i18n(S_GRAPHIC_INFOVIEWER_MOVES));
 	for (int i = 0; i < 10; i++) {
 		if (i == 8 && pkx_is_egg(pkmn))
-			sftd_draw_wtext(fontBold12, 2, y_desc, BLUE, 12, i18n(S_GRAPHIC_INFOVIEWER_EGG_CYCLE));
+			screen_draw_wstring(2, y_desc, FONT_SIZE_12, FONT_SIZE_12, BLUE, i18n(S_GRAPHIC_INFOVIEWER_EGG_CYCLE));
 		else
-			sftd_draw_wtext(fontBold12, 2, y_desc, BLUE, 12, entries[i]);
+			screen_draw_wstring(2, y_desc, FONT_SIZE_12, FONT_SIZE_12, BLUE, entries[i]);
 		y_desc += 20;
 		if (i == 2) y_desc += 5;
 		if (i == 5) y_desc += 6;
@@ -1074,78 +950,75 @@ void infoViewer(u8* pkmn) {
 	
 	y_desc = 8;
 	for (int i = 0; i < 6; i++) {
-		sftd_draw_wtext(fontBold12, 225, y_desc, LIGHTBLUE, 12, values[i]);
+		screen_draw_wstring(225, y_desc, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, values[i]);
 		y_desc += 20;
 	}
 	
 	if (pkx_get_species(pkmn) > 0 && pkx_get_species(pkmn) < 822) {
 		
-		sf2d_draw_texture_part(balls, -2, -5, 32 * (pkx_get_ball(pkmn) % 8), 32 * (pkx_get_ball(pkmn) / 8), 32, 32);
-		sftd_draw_wtext(fontBold12, 30, 6, WHITE, 12, listSpecies.items[pkx_get_species(pkmn)]);
+		screen_draw_texture_part(TEXTURE_BALLS_SPRITESHEET, -2, -5, 32 * (pkx_get_ball(pkmn) % 8), 32 * (pkx_get_ball(pkmn) / 8), 32, 32);
+		screen_draw_wstring(30, 6, FONT_SIZE_12, FONT_SIZE_12, WHITE, listSpecies.items[pkx_get_species(pkmn)]);
 		
 		printGeneration(pkmn, 134, 8);
 		
 		if (pkx_get_gender(pkmn) == 0)
-			sf2d_draw_texture(male, 146, 7);
+			screen_draw_texture(TEXTURE_MALE, 146, 7);
 		else if (pkx_get_gender(pkmn) == 1)
-			sf2d_draw_texture(female, 148, 7);
+			screen_draw_texture(TEXTURE_FEMALE, 148, 7);
 		
-		wchar_t* level = (wchar_t*)malloc(8 * sizeof(wchar_t));
+		wchar_t level[8];
 		swprintf(level, 8, i18n(S_GRAPHIC_INFOVIEWER_LV), pkx_get_level(pkmn));
-		sftd_draw_wtext(fontBold12, 160, 6, WHITE, 12, level);
-		free(level);
+		screen_draw_wstring(160, 6, FONT_SIZE_12, FONT_SIZE_12, WHITE, level);
 		
 		u32 nick[NICKNAMELENGTH*2];
 		memset(nick, 0, NICKNAMELENGTH*2*sizeof(u32));
 		pkx_get_nickname(pkmn, nick);
-		sftd_draw_wtext(fontBold12, 215 - (sftd_get_wtext_width(fontBold12, 12, (wchar_t*)nick)), 29, WHITE, 12, (wchar_t*)nick);
+		screen_draw_wstring(215 - screen_get_wstring_width((wchar_t*)nick, FONT_SIZE_12, FONT_SIZE_12), 29, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)nick);
 		
 		u32 ot_name[NICKNAMELENGTH*2];
 		memset(ot_name, 0, NICKNAMELENGTH*2*sizeof(u32));
 		pkx_get_ot(pkmn, ot_name);
-		sftd_draw_wtext(fontBold12, 215 - (sftd_get_wtext_width(fontBold12, 12, (wchar_t*)ot_name)), 49, WHITE, 12, (wchar_t*)ot_name);
+		screen_draw_wstring(215 - screen_get_wstring_width((wchar_t*)ot_name, FONT_SIZE_12, FONT_SIZE_12), 49, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)ot_name);
 		
-		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, (pkx_get_pokerus(pkmn) ? i18n(S_YES) : i18n(S_NO))), 69, WHITE, 12, pkx_get_pokerus(pkmn) ? i18n(S_YES) : i18n(S_NO));
-		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, natures[pkx_get_nature(pkmn)]), 94, WHITE, 12, natures[pkx_get_nature(pkmn)]);
-		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, abilities[pkx_get_ability(pkmn)]), 114, WHITE, 12, abilities[pkx_get_ability(pkmn)]);
-		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, items[pkx_get_item(pkmn)]), 134, WHITE, 12, items[pkx_get_item(pkmn)]);
+		screen_draw_wstring(215 - screen_get_wstring_width((pkx_get_pokerus(pkmn) ? i18n(S_YES) : i18n(S_NO)), FONT_SIZE_12, FONT_SIZE_12), 69, FONT_SIZE_12, FONT_SIZE_12, WHITE, pkx_get_pokerus(pkmn) ? i18n(S_YES) : i18n(S_NO));
+		screen_draw_wstring(215 - screen_get_wstring_width(natures[pkx_get_nature(pkmn)], FONT_SIZE_12, FONT_SIZE_12), 94, FONT_SIZE_12, FONT_SIZE_12, WHITE, natures[pkx_get_nature(pkmn)]);
+		screen_draw_wstring(215 - screen_get_wstring_width(abilities[pkx_get_ability(pkmn)], FONT_SIZE_12, FONT_SIZE_12), 114, FONT_SIZE_12, FONT_SIZE_12, WHITE, abilities[pkx_get_ability(pkmn)]);
+		screen_draw_wstring(215 - screen_get_wstring_width(items[pkx_get_item(pkmn)], FONT_SIZE_12, FONT_SIZE_12), 134, FONT_SIZE_12, FONT_SIZE_12, WHITE, items[pkx_get_item(pkmn)]);
 		
 		if (pkx_is_shiny(pkmn))
-			sf2d_draw_texture(shinyStar, 205, 9);
+			screen_draw_texture(TEXTURE_SHINY, 205, 9);
 		
-		char* friendship = (char*)malloc(11 * sizeof(char));
+		char friendship[11];
 		if (pkx_is_egg(pkmn))
 			snprintf(friendship, 11, "%u", pkx_get_ot_friendship(pkmn));
 		else
 			snprintf(friendship, 11, "%u / %u", pkx_get_ht_friendship(pkmn), pkx_get_ot_friendship(pkmn));
-		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, friendship), 200, WHITE, 12, friendship);
-		free(friendship);
+		screen_draw_string(215 - screen_get_string_width(friendship, FONT_SIZE_12, FONT_SIZE_12), 200, FONT_SIZE_12, FONT_SIZE_12, WHITE, friendship);
 		
-		char* otid = (char*)malloc(18 * sizeof(char));
+		char otid[18];
 		snprintf(otid, 18, "%u / %u", pkx_get_psv(pkmn), pkx_get_tsv(pkmn));
-		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, otid), 160, WHITE, 12, otid);
+		screen_draw_string(215 - screen_get_string_width(otid, FONT_SIZE_12, FONT_SIZE_12), 160, FONT_SIZE_12, FONT_SIZE_12, WHITE, otid);
 		snprintf(otid, 18, "%u / %u", pkx_get_tid(pkmn), pkx_get_sid(pkmn));
-		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, otid), 180, WHITE, 12, otid);
-		free(otid);
+		screen_draw_string(215 - screen_get_string_width(otid, FONT_SIZE_12, FONT_SIZE_12), 180, FONT_SIZE_12, FONT_SIZE_12, WHITE, otid);
 
-		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, hpList[pkx_get_hp_type(pkmn)]), 220, WHITE, 12, hpList[pkx_get_hp_type(pkmn)]);
+		screen_draw_wstring(215 - screen_get_wstring_width(hpList[pkx_get_hp_type(pkmn)], FONT_SIZE_12, FONT_SIZE_12), 220, FONT_SIZE_12, FONT_SIZE_12, WHITE, hpList[pkx_get_hp_type(pkmn)]);
 		
-		int max = sftd_get_text_width(fontBold12, 12, "252");		
+		int max = screen_get_string_width("252", FONT_SIZE_12, FONT_SIZE_12);		
 		int y_moves = 159;
 		for (int i = 0; i < 4; i++) {
 			if (pkx_get_move(pkmn, i))
-				sftd_draw_wtext(fontBold12, 396 - sftd_get_wtext_width(fontBold12, 12, moves[pkx_get_move(pkmn, i)]), y_moves, WHITE, 12, moves[pkx_get_move(pkmn, i)]);
+				screen_draw_wstring(396 - screen_get_wstring_width(moves[pkx_get_move(pkmn, i)], FONT_SIZE_12, FONT_SIZE_12), y_moves, FONT_SIZE_12, FONT_SIZE_12, WHITE, moves[pkx_get_move(pkmn, i)]);
 			y_moves += 21;
 		}
 		
 		char tmp[6];
 		for (int i = 0; i < 6; i++) {
 			sprintf(tmp, "%d", pkx_get_iv(pkmn, lookup[i]));
-			sftd_draw_text(fontBold12, 289 + (max - sftd_get_text_width(fontBold12, 12, tmp)) / 2, 8 + i * 20, WHITE, 12, tmp);
+			screen_draw_string(289 + (max - screen_get_string_width(tmp, FONT_SIZE_12, FONT_SIZE_12)) / 2, 8 + i * 20, FONT_SIZE_12, FONT_SIZE_12, WHITE, tmp);
 			sprintf(tmp, "%d", pkx_get_ev(pkmn, lookup[i]));
-			sftd_draw_text(fontBold12, 328 + (max - sftd_get_text_width(fontBold12, 12, tmp)) / 2, 8 + i * 20, WHITE, 12, tmp);
+			screen_draw_string(328 + (max - screen_get_string_width(tmp, FONT_SIZE_12, FONT_SIZE_12)) / 2, 8 + i * 20, FONT_SIZE_12, FONT_SIZE_12, WHITE, tmp);
 			sprintf(tmp, "%d", pkx_get_stat(pkmn, lookup[i]));
-			sftd_draw_text(fontBold12, 369 + (max - sftd_get_text_width(fontBold12, 12, tmp)) / 2, 8 + i * 20, WHITE, 12, tmp);
+			screen_draw_string(369 + (max - screen_get_string_width(tmp, FONT_SIZE_12, FONT_SIZE_12)) / 2, 8 + i * 20, FONT_SIZE_12, FONT_SIZE_12, WHITE, tmp);
 		}
 	}
 }
@@ -1157,16 +1030,16 @@ void wcxInfoViewer(u8* buf) {
 	wchar_t* entries[] = {L"Species", L"OT", L"TID/SID", L"Held Item", L"Game", L"Met Date"};
 
 	printAnimatedBG(true);
-	sf2d_draw_texture(eventView, 0, 2);
+	screen_draw_texture(TEXTURE_EVENT_VIEW, 0, 2);
 
-	sf2d_draw_texture((wcx_get_move(buf, 0)) ? normalBar : noMove, 252, 155);
-	sf2d_draw_texture((wcx_get_move(buf, 1)) ? normalBar : noMove, 252, 176);
-	sf2d_draw_texture((wcx_get_move(buf, 2)) ? normalBar : noMove, 252, 197);
-	sf2d_draw_texture((wcx_get_move(buf, 3)) ? normalBar : noMove, 252, 218);
+	screen_draw_texture((wcx_get_move(buf, 0)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 155);
+	screen_draw_texture((wcx_get_move(buf, 1)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 176);
+	screen_draw_texture((wcx_get_move(buf, 2)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 197);
+	screen_draw_texture((wcx_get_move(buf, 3)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 218);
 	
-	sftd_draw_wtext(fontBold12, 251, 138, WHITE, 12, i18n(S_GRAPHIC_INFOVIEWER_MOVES));
+	screen_draw_wstring(251, 138, FONT_SIZE_12, FONT_SIZE_12, WHITE, i18n(S_GRAPHIC_INFOVIEWER_MOVES));
 	for (int i = 0; i < 6; i++) {
-		sftd_draw_wtext(fontBold12, 2, y_desc, BLUE, 12, entries[i]);
+		screen_draw_wstring(2, y_desc, FONT_SIZE_12, FONT_SIZE_12, BLUE, entries[i]);
 		y_desc += 20;
 		if (i == 2) y_desc += 6;
 		if (i == 3) y_desc -= 1;
@@ -1207,74 +1080,73 @@ void wcxInfoViewer(u8* buf) {
 		}
 	}
 	
-	sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, version), 115, WHITE, 12, version);
+	screen_draw_wstring(215 - screen_get_wstring_width(version, FONT_SIZE_12, FONT_SIZE_12), 115, FONT_SIZE_12, FONT_SIZE_12, WHITE, version);
 	
 	u32 title[72];
 	memset(title, 0, 72*sizeof(u32));
 	wcx_get_title(buf, title);
-	sftd_draw_wtext(fontBold12, !wcx_is_pokemon(buf) ? 4 : 30, 6, WHITE, 12, (wchar_t*)title);
+	screen_draw_wstring(!wcx_is_pokemon(buf) ? 4 : 30, 6, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)title);
 	
 	u32 date[12];
 	memset(date, 0, 12*sizeof(u32));
 	swprintf((wchar_t*)date, 12, L"%u/%u/%u", wcx_get_year(buf), wcx_get_month(buf), wcx_get_day(buf));
-	sftd_draw_wtext(fontBold12, 215 - (sftd_get_wtext_width(fontBold12, 12, (wchar_t*)date)), 134, WHITE, 12, (wchar_t*)date);
+	screen_draw_wstring(215 - (screen_get_wstring_width((wchar_t*)date, FONT_SIZE_12, FONT_SIZE_12)), 134, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)date);
 	
 	if (wcx_is_pokemon(buf)) {
-		sf2d_draw_texture_part(balls, -2, -5, 32 * (wcx_get_ball(buf) % 8), 32 * (wcx_get_ball(buf) / 8), 32, 32);
+		screen_draw_texture_part(TEXTURE_BALLS_SPRITESHEET, -2, -5, 32 * (wcx_get_ball(buf) % 8), 32 * (wcx_get_ball(buf) / 8), 32, 32);
 		
 		if (wcx_get_gender(buf) == 0)
-			sf2d_draw_texture(male, 288, 7);
+			screen_draw_texture(TEXTURE_MALE, 288, 7);
 		else if (wcx_get_gender(buf) == 1)
-			sf2d_draw_texture(female, 290, 7);
+			screen_draw_texture(TEXTURE_FEMALE, 290, 7);
 		
-		wchar_t* level = (wchar_t*)malloc(8 * sizeof(wchar_t));
+		wchar_t level[8];
 		swprintf(level, 8, i18n(S_GRAPHIC_INFOVIEWER_LV), wcx_get_level(buf));
-		sftd_draw_wtext(fontBold12, 302, 6, WHITE, 12, level);
-		free(level);
+		screen_draw_wstring(302, 6, FONT_SIZE_12, FONT_SIZE_12, WHITE, level);
 		
 		u32 ot_name[NICKNAMELENGTH*2];
 		memset(ot_name, 0, NICKNAMELENGTH*2*sizeof(u32));
 		wcx_get_ot(buf, ot_name);
-		sftd_draw_wtext(fontBold12, 215 - (sftd_get_wtext_width(fontBold12, 12, (wchar_t*)ot_name)), 49, WHITE, 12, (wchar_t*)ot_name);
+		screen_draw_wstring(215 - screen_get_wstring_width((wchar_t*)ot_name, FONT_SIZE_12, FONT_SIZE_12), 49, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)ot_name);
 		
-		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, items[wcx_get_held_item(buf)]), 94, WHITE, 12, items[wcx_get_held_item(buf)]);
+		screen_draw_wstring(215 - screen_get_wstring_width(items[wcx_get_held_item(buf)], FONT_SIZE_12, FONT_SIZE_12), 94, FONT_SIZE_12, FONT_SIZE_12, WHITE, items[wcx_get_held_item(buf)]);
 		
 		if (wcx_is_shiny(buf)) {
-			sf2d_draw_texture(shinyStar, 206, 32);
-			sftd_draw_wtext(fontBold12, 202 - sftd_get_wtext_width(fontBold12, 12, listSpecies.items[wcx_get_species(buf)]), 29, WHITE, 12, listSpecies.items[wcx_get_species(buf)]);
+			screen_draw_texture(TEXTURE_SHINY, 206, 32);
+			screen_draw_wstring(202 - screen_get_wstring_width(listSpecies.items[wcx_get_species(buf)], FONT_SIZE_12, FONT_SIZE_12), 29, FONT_SIZE_12, FONT_SIZE_12, WHITE, listSpecies.items[wcx_get_species(buf)]);
 		} else {
-			sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, listSpecies.items[wcx_get_species(buf)]), 29, WHITE, 12, listSpecies.items[wcx_get_species(buf)]);
+			screen_draw_wstring(215 - screen_get_wstring_width(listSpecies.items[wcx_get_species(buf)], FONT_SIZE_12, FONT_SIZE_12), 29, FONT_SIZE_12, FONT_SIZE_12, WHITE, listSpecies.items[wcx_get_species(buf)]);
 		}
 		
-		char* otid = (char*)malloc(18 * sizeof(char));
+		char otid[18];
 		snprintf(otid, 18, "%u / %u", wcx_get_tid(buf), wcx_get_sid(buf));
-		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, otid), 69, WHITE, 12, otid);
-		free(otid);
+		screen_draw_string(215 - screen_get_string_width(otid, FONT_SIZE_12, FONT_SIZE_12), 69, FONT_SIZE_12, FONT_SIZE_12, WHITE, otid);
 	
 		int y_moves = 159;
 		for (int i = 0; i < 4; i++) {
 			if (wcx_get_move(buf, i))
-				sftd_draw_wtext(fontBold12, 396 - sftd_get_wtext_width(fontBold12, 12, moves[wcx_get_move(buf, i)]), y_moves, WHITE, 12, moves[wcx_get_move(buf, i)]);
+				screen_draw_wstring(396 - screen_get_wstring_width(moves[wcx_get_move(buf, i)], FONT_SIZE_12, FONT_SIZE_12), y_moves, FONT_SIZE_12, FONT_SIZE_12, WHITE, moves[wcx_get_move(buf, i)]);
 			y_moves += 21;
 		}	
 	} else if (wcx_is_item(buf)) {
-		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, "None"), 29, WHITE, 12, "None");
-		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, "None"), 49, WHITE, 12, "None");
-		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, "None"), 69, WHITE, 12, "None");
-		sftd_draw_wtext(fontBold12, 215 - sftd_get_wtext_width(fontBold12, 12, items[wcx_get_item(buf)]), 94, WHITE, 12, items[wcx_get_item(buf)]);
+		screen_draw_string(215 - screen_get_string_width("None", FONT_SIZE_12, FONT_SIZE_12), 29, FONT_SIZE_12, FONT_SIZE_12, WHITE, "None");
+		screen_draw_string(215 - screen_get_string_width("None", FONT_SIZE_12, FONT_SIZE_12), 49, FONT_SIZE_12, FONT_SIZE_12, WHITE, "None");
+		screen_draw_string(215 - screen_get_string_width("None", FONT_SIZE_12, FONT_SIZE_12), 69, FONT_SIZE_12, FONT_SIZE_12, WHITE, "None");
+		screen_draw_wstring(215 - screen_get_wstring_width(items[wcx_get_item(buf)], FONT_SIZE_12, FONT_SIZE_12), 94, FONT_SIZE_12, FONT_SIZE_12, WHITE, items[wcx_get_item(buf)]);
 	}  else if (wcx_is_bp(buf)) {
-		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, "None"), 29, WHITE, 12, "None");
-		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, "None"), 49, WHITE, 12, "None");
-		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, "None"), 69, WHITE, 12, "None");
-		sftd_draw_text(fontBold12, 215 - sftd_get_text_width(fontBold12, 12, "Battle Points"), 94, WHITE, 12, "Battle Points");
+		screen_draw_string(215 - screen_get_string_width("None", FONT_SIZE_12, FONT_SIZE_12), 29, FONT_SIZE_12, FONT_SIZE_12, WHITE, "None");
+		screen_draw_string(215 - screen_get_string_width("None", FONT_SIZE_12, FONT_SIZE_12), 49, FONT_SIZE_12, FONT_SIZE_12, WHITE, "None");
+		screen_draw_string(215 - screen_get_string_width("None", FONT_SIZE_12, FONT_SIZE_12), 69, FONT_SIZE_12, FONT_SIZE_12, WHITE, "None");
+		screen_draw_string(215 - screen_get_string_width("Battle Points", FONT_SIZE_12, FONT_SIZE_12), 94, FONT_SIZE_12, FONT_SIZE_12, WHITE, "Battle Points");
 	}
 }
 
 void printDexViewer(u8* mainbuf, int currentEntry, int page, int seen, int caught) {
 	char temp[12];
 	
-	sf2d_start_frame(GFX_TOP, GFX_LEFT);
-		sf2d_draw_texture(generationBG, 0, 0);
+	screen_begin_frame();
+		screen_select(GFX_TOP);
+		screen_draw_texture(TEXTURE_GENERATION_BG, 0, 0);
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 8; j++) {
 				if (currentEntry == i * 8 + j)
@@ -1283,26 +1155,25 @@ void printDexViewer(u8* mainbuf, int currentEntry, int page, int seen, int caugh
 				int entry = i*8+j + 40*page;
 				if ((entry) < 802) {
 					if (getCaught(mainbuf, entry + 1))
-						sf2d_draw_texture_part(spritesSmall, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((entry + 1) % 25) + 4, 30 * ((entry + 1) / 25), 34, 30);
+						screen_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((entry + 1) % 25) + 4, 30 * ((entry + 1) / 25), 34, 30);
 					else if (getSeen(mainbuf, entry + 1)) {
-						sf2d_draw_texture_part(spritesSmall, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((entry + 1) % 25) + 4, 30 * ((entry + 1) / 25), 34, 30);
-						sf2d_draw_texture_part_blend(spritesSmall, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((entry + 1) % 25) + 4, 30 * ((entry + 1) / 25), 34, 30, RGBA8(0,0,0,160));
-					} else
-						sf2d_draw_texture_part_blend(spritesSmall, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((entry + 1) % 25) + 4, 30 * ((entry + 1) / 25), 34, 30, RGBA8(0,0,0,255));
+						screen_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((entry + 1) % 25) + 4, 30 * ((entry + 1) / 25), 34, 30);
+						//sf2d_draw_texture_part_blend(spritesSmall, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((entry + 1) % 25) + 4, 30 * ((entry + 1) / 25), 34, 30, RGBA8(0,0,0,160));
+					} else {
+						//sf2d_draw_texture_part_blend(spritesSmall, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((entry + 1) % 25) + 4, 30 * ((entry + 1) / 25), 34, 30, RGBA8(0,0,0,255));
+					}
 					sprintf(temp, "%d", entry + 1);
-					sftd_draw_text(fontBold9, 49 * j + (49 - sftd_get_text_width(fontBold9, 9, temp)) / 2 + j, 34 + i * 47 + i, getCaught(mainbuf, entry + 1) ? WHITE : DS, 9, temp);
+					screen_draw_string(49 * j + (49 - screen_get_string_width(temp, FONT_SIZE_9, FONT_SIZE_9)) / 2 + j, 34 + i * 47 + i, FONT_SIZE_9, FONT_SIZE_9, getCaught(mainbuf, entry + 1) ? WHITE : DS, temp);
 				}
 			}
 		}
-	pksm_end_frame();
 
-	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
+		screen_select(GFX_BOTTOM);
 		printMenuBottom();
-		sftd_draw_wtextf(fontBold14, 16, 32, WHITE, 14, i18n(S_GRAPHIC_PKBANK_SEEN), seen);
-		sftd_draw_wtextf(fontBold14, 16, 48, WHITE, 14, i18n(S_GRAPHIC_PKBANK_CAUGHT), caught);
+		screen_draw_wstringf(16, 32, FONT_SIZE_14, FONT_SIZE_14, WHITE, i18n(S_GRAPHIC_PKBANK_SEEN), seen);
+		screen_draw_wstringf(16, 48, FONT_SIZE_14, FONT_SIZE_14, WHITE, i18n(S_GRAPHIC_PKBANK_CAUGHT), caught);
 		printBottomIndications(i18n(S_GRAPHIC_CREDITS_INDICATIONS));
 	pksm_end_frame();
-	sf2d_swapbuffers();	
 }
 
 void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int currentEntry, int menuEntry, int box, int mode, int additional1, int additional2) {
@@ -1311,55 +1182,54 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int currentEntry, int menu
 	wchar_t* menuEntries[] = {i18n(S_GRAPHIC_PKVIEWER_MENU_EDIT), i18n(S_GRAPHIC_PKVIEWER_MENU_CLONE), i18n(S_GRAPHIC_PKVIEWER_MENU_RELEASE), i18n(S_GRAPHIC_PKVIEWER_MENU_GENERATE), i18n(S_GRAPHIC_PKVIEWER_MENU_EXIT)};
 	int x;
 
-	wchar_t* page = (wchar_t*)malloc((MAX_LENGTH_BOX_NAME+1) * sizeof(wchar_t));
+	wchar_t page[MAX_LENGTH_BOX_NAME + 1];
 	swprintf(page, MAX_LENGTH_BOX_NAME+1, i18n(S_GRAPHIC_PKVIEWER_BOX), box + 1);
 	
-	u8* pkmn = (u8*)malloc(PKMNLENGTH * sizeof(u8));
-	pkx_get(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn);
+	u8 pkmn[PKMNLENGTH];
+	pkx_get(mainbuf, isTeam ? 33 : box, currentEntry, pkmn);
 	
-	sf2d_start_frame(GFX_TOP, GFX_LEFT);
+	screen_begin_frame();
+		screen_select(GFX_TOP);
 		if (mode == ED_GENERATE) {
-			char* temp = (char*)malloc(4);
-			sf2d_draw_texture(generationBG, 0, 0);
+			char temp[4];
+			screen_draw_texture(TEXTURE_GENERATION_BG, 0, 0);
 			for (int i = 0; i < 5; i++) {
 				for (int j = 0; j < 8; j++) {
 					if (additional1 == i * 8 + j)
 						printSelector(j*49 + j, i*47 + i, 49, 47);
 					
 					if ((i*8+j + 40*additional2) < 802) {
-						sf2d_draw_texture_part(spritesSmall, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((40 * additional2 + i * 8 + j + 1) % 25) + 4, 30 * ((40 * additional2 + i * 8 + j + 1) / 25), 34, 30);
+						screen_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((40 * additional2 + i * 8 + j + 1) % 25) + 4, 30 * ((40 * additional2 + i * 8 + j + 1) / 25), 34, 30);
 						snprintf(temp, 4, "%d", 40 * additional2 + i * 8 + j + 1);
-						sftd_draw_text(fontBold9, 49 * j + (49 - sftd_get_text_width(fontBold9, 9, temp)) / 2 + j, 34 + i * 47 + i, WHITE, 9, temp);
+						screen_draw_string(49 * j + (49 - screen_get_string_width(temp, FONT_SIZE_9, FONT_SIZE_9)) / 2 + j, 34 + i * 47 + i, FONT_SIZE_9, FONT_SIZE_9, WHITE, temp);
 					}
 				}
 			}
-			free(temp);
 		} else
 			infoViewer(pkmn);
 		
 		if (mode == ED_OTA) {
-			sf2d_draw_rectangle(0, 0, 400, 240, RGBA8(0, 0, 0, 220));
-			sftd_draw_wtext(fontBold15, (400 - sftd_get_wtext_width(fontBold15, 15, i18n(S_GRAPHIC_PKVIEWER_OTA_LAUNCH_CLIENT))) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, i18n(S_GRAPHIC_PKVIEWER_OTA_LAUNCH_CLIENT));
-			sftd_draw_wtext(fontBold12, (400 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKVIEWER_OTA_INDICATIONS))) / 2, 130, WHITE, 12, i18n(S_GRAPHIC_PKVIEWER_OTA_INDICATIONS));
+			screen_draw_rect(0, 0, 400, 240, RGBA8(0, 0, 0, 220));
+			screen_draw_wstring_center(true, 95, FONT_SIZE_15, FONT_SIZE_15, RGBA8(255, 255, 255, giveTransparence()), i18n(S_GRAPHIC_PKVIEWER_OTA_LAUNCH_CLIENT));
+			screen_draw_wstring_center(true, 130, FONT_SIZE_12, FONT_SIZE_12, WHITE, i18n(S_GRAPHIC_PKVIEWER_OTA_INDICATIONS));
 			if (!socket_is_legality_address_set())
-				sftd_draw_wtext(fontBold11, (400 - sftd_get_wtext_width(fontBold11, 11, i18n(S_GRAPHIC_PKVIEWER_OTA_SET_ADDRESS))) / 2, 222, WHITE, 11, i18n(S_GRAPHIC_PKVIEWER_OTA_SET_ADDRESS));
+				screen_draw_wstring_center(true, 222, FONT_SIZE_11, FONT_SIZE_11, WHITE, i18n(S_GRAPHIC_PKVIEWER_OTA_SET_ADDRESS));
 			else
-				sftd_draw_wtext(fontBold11, (400 - sftd_get_wtext_width(fontBold11, 11, i18n(S_GRAPHIC_PKVIEWER_OTA_CHECK_LEGALITY))) / 2, 222, WHITE, 11, i18n(S_GRAPHIC_PKVIEWER_OTA_CHECK_LEGALITY));
+				screen_draw_wstring_center(true, 222, FONT_SIZE_11, FONT_SIZE_11, WHITE, i18n(S_GRAPHIC_PKVIEWER_OTA_CHECK_LEGALITY));
 		}
-	pksm_end_frame();
 
-	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-		sf2d_draw_texture(boxView, 0, 0);
-		sf2d_draw_texture(editorBar, 0, 210);
-		sftd_draw_wtext(fontBold12, 12 + (178 - sftd_get_wtext_width(fontBold12, 12, page)) / 2, 19, WHITE, 12, page);
-		sf2d_draw_texture(left, 7, 17);
-		sf2d_draw_texture(right, 185, 17);
+		screen_select(GFX_BOTTOM);
+		screen_draw_texture(TEXTURE_BOX_VIEW, 0, 0);
+		screen_draw_texture(TEXTURE_BOTTOM_BAR, 0, 210);
+		screen_draw_wstring(12 + (178 - screen_get_wstring_width(page, FONT_SIZE_12, FONT_SIZE_12)) / 2, 19, FONT_SIZE_12, FONT_SIZE_12, WHITE, page);
+		screen_draw_texture(TEXTURE_LEFT, 7, 17);
+		screen_draw_texture(TEXTURE_RIGHT, 185, 17);
 #if PKSV
 #else
-		sf2d_draw_texture(otaButton, 240, 211);
+		screen_draw_texture(TEXTURE_OTA_BUTTON, 240, 211);
 #endif
-		sf2d_draw_texture(back, 283, 211);
-		sftd_draw_wtext(fontBold12, 247, 7, WHITE, 12, i18n(S_GRAPHIC_PKVIEWER_TEAM));
+		screen_draw_texture(TEXTURE_BACK_BUTTON, 283, 211);
+		screen_draw_wstring(247, 7, FONT_SIZE_12, FONT_SIZE_12, WHITE, i18n(S_GRAPHIC_PKVIEWER_TEAM));
 		
 		int y = 45;
 		int pointer[2] = {0, 0};
@@ -1381,8 +1251,8 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int currentEntry, int menu
 		}
 		
 		for (int i = 0; i < 3; i++) {
-			sf2d_draw_texture(pokemonBufferBox, 214, 40 + i * 45);
-			sf2d_draw_texture(pokemonBufferBox, 266, 60 + i * 45);
+			screen_draw_texture(TEXTURE_POKEMON_BOX, 214, 40 + i * 45);
+			screen_draw_texture(TEXTURE_POKEMON_BOX, 266, 60 + i * 45);
 		}
 		
 		y = 45;
@@ -1403,356 +1273,346 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int currentEntry, int menu
 			y += 45;
 		}
 		if (mode != ED_CLONE)
-			sf2d_draw_texture(selector, pointer[0], pointer[1] - ((mode == ED_STANDARD) ? movementOffsetSlow(3) : 0));
+			screen_draw_texture(TEXTURE_SELECTOR_NORMAL, pointer[0], pointer[1] - ((mode == ED_STANDARD) ? movementOffsetSlow(3) : 0));
 		else {
-			sf2d_draw_texture(selectorCloning, pointer[0], pointer[1] - movementOffsetSlow(3));			
-			sf2d_draw_texture(bottomPopUp, 1, 214);
-			sftd_draw_wtext(fontBold11, 8, 220, WHITE, 11, i18n(S_GRAPHIC_PKVIEWER_CLONE_INDICATIONS));
+			screen_draw_texture(TEXTURE_SELECTOR_CLONING, pointer[0], pointer[1] - movementOffsetSlow(3));			
+			screen_draw_texture(TEXTURE_BOTTOM_POPUP, 1, 214);
+			screen_draw_wstring(8, 220, FONT_SIZE_11, FONT_SIZE_11, WHITE, i18n(S_GRAPHIC_PKVIEWER_CLONE_INDICATIONS));
 		}
 		
 		if (mode == ED_MENU) {
 			pkx_get(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn);
 
-			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
-			sf2d_draw_texture(bottomPopUp, 1, 214);
+			screen_draw_rect(0, 0, 320, 240, MASKBLACK);
+			screen_draw_texture(TEXTURE_BOTTOM_POPUP, 1, 214);
 
 			if (pkx_get_ball(pkmn) != CHERISH_BALL && !isTeam) {
-				sf2d_draw_texture(includeInfoButton, 242, 5);
+				screen_draw_texture(TEXTURE_INCLUDE_INFO, 242, 5);
 			}
-			sftd_draw_wtextf(fontBold11, 8, 220, WHITE, 11, i18n(S_GRAPHIC_PKVIEWER_MENU_POKEMON_SELECTED), listSpecies.items[pkx_get_species(tmp)]);
+			screen_draw_wstringf(8, 220, FONT_SIZE_11, FONT_SIZE_11, WHITE, i18n(S_GRAPHIC_PKVIEWER_MENU_POKEMON_SELECTED), listSpecies.items[pkx_get_species(tmp)]);
 			for (int i = 0; i < 5; i++) {
-				sf2d_draw_texture(button, 208, 42 + i * 27 + i*4);
-				if (isTeam && (i == 0 || i == 2 || i == 3))
-					sf2d_draw_texture_blend(button, 208, 42 + i * 27 + i*4, RGBA8(0, 0, 0, 100));
-				sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, menuEntries[i])) / 2, 49 + i * 27 + i*4, BLACK, 12, menuEntries[i]);
+				screen_draw_texture(TEXTURE_BUTTON, 208, 42 + i * 27 + i*4);
+				if (isTeam && (i == 0 || i == 2 || i == 3)) {
+					//sf2d_draw_texture_blend(button, 208, 42 + i * 27 + i*4, RGBA8(0, 0, 0, 100));
+				}
+				screen_draw_wstring(208 + (109 - screen_get_wstring_width(menuEntries[i], FONT_SIZE_12, FONT_SIZE_12)) / 2, 49 + i * 27 + i*4, FONT_SIZE_12, FONT_SIZE_12, BLACK, menuEntries[i]);
 				if (i == menuEntry)
-					sf2d_draw_texture(subArrow, 203 - movementOffsetSlow(3), 46 + i * 27 + i*4);
+					screen_draw_texture(TEXTURE_SUB_ARROW, 203 - movementOffsetSlow(3), 46 + i * 27 + i*4);
 			}
 		} else if (mode == ED_GENERATE) {
-			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
-			sftd_draw_wtext(fontBold14, (320 - sftd_get_wtext_width(fontBold14, 14, i18n(S_GRAPHIC_PKVIEWER_GENERATE_INDICATIONS))) / 2, 105, WHITE, 14, i18n(S_GRAPHIC_PKVIEWER_GENERATE_INDICATIONS));
+			screen_draw_rect(0, 0, 320, 240, MASKBLACK);
+			screen_draw_wstring_center(false, 105, FONT_SIZE_14, FONT_SIZE_14, WHITE, i18n(S_GRAPHIC_PKVIEWER_GENERATE_INDICATIONS));
 		} else if (mode == ED_OTA) {
-			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
-			sftd_draw_wtextf(fontBold9, 10, 220, WHITE, 9, i18n(S_HTTP_SERVER_RUNNING), socket_get_ip());
+			screen_draw_rect(0, 0, 320, 240, MASKBLACK);
+			screen_draw_wstringf(10, 220, FONT_SIZE_9, FONT_SIZE_9, WHITE, i18n(S_HTTP_SERVER_RUNNING), socket_get_ip());
 		} else if (mode != ED_CLONE) {
 			if (mode == ED_STANDARD)
-				sftd_draw_wtextf(fontBold9, 10, 220, BARTEXT, 9, i18n(S_GRAPHIC_PKVIEWER_TIDSIDTSV), getSaveTID(mainbuf), getSaveSID(mainbuf), getSaveTSV(mainbuf));
+				screen_draw_wstringf(10, 220, FONT_SIZE_9, FONT_SIZE_9, BARTEXT, i18n(S_GRAPHIC_PKVIEWER_TIDSIDTSV), getSaveTID(mainbuf), getSaveSID(mainbuf), getSaveTSV(mainbuf));
 			else
-				sftd_draw_wtextf(fontBold9, 10, 220, BARTEXT, 9, i18n(S_GRAPHIC_PKVIEWER_SEED), getSaveSeed(mainbuf, 3), getSaveSeed(mainbuf, 2), getSaveSeed(mainbuf, 1), getSaveSeed(mainbuf, 0));
+				screen_draw_wstringf(10, 220, FONT_SIZE_9, FONT_SIZE_9, BARTEXT, i18n(S_GRAPHIC_PKVIEWER_SEED), getSaveSeed(mainbuf, 3), getSaveSeed(mainbuf, 2), getSaveSeed(mainbuf, 1), getSaveSeed(mainbuf, 0));
 		}
 	pksm_end_frame();
-	sf2d_swapbuffers();
-	
-	free(pkmn);
-	free(page);
 }
 
 void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, int mode, wchar_t* descriptions[]) {
 	int game = game_get();
 	
-	int max = sftd_get_text_width(fontBold12, 12, "252");
+	int max = screen_get_string_width("252", FONT_SIZE_12, FONT_SIZE_12);
 	wchar_t* entries[] = {i18n(S_GRAPHIC_PKEDITOR_LEVEL), i18n(S_GRAPHIC_PKEDITOR_NATURE), i18n(S_GRAPHIC_PKEDITOR_ABILITY), i18n(S_GRAPHIC_PKEDITOR_ITEM), i18n(S_GRAPHIC_PKEDITOR_SHINY), i18n(S_GRAPHIC_PKEDITOR_POKERUS), i18n(S_GRAPHIC_PKEDITOR_OT), i18n(S_GRAPHIC_PKEDITOR_NICKNAME), i18n(S_GRAPHIC_PKEDITOR_FRIENDSHIP)};
 	wchar_t* options[] = {i18n(S_GRAPHIC_PKEDITOR_MENU_STATS), i18n(S_GRAPHIC_PKEDITOR_MENU_MOVES), i18n(S_GRAPHIC_PKEDITOR_MENU_SAVE)};
 	
 	wchar_t* values[6] = {i18n(S_GRAPHIC_PKEDITOR_STATS_HP), i18n(S_GRAPHIC_PKEDITOR_STATS_ATTACK), i18n(S_GRAPHIC_PKEDITOR_STATS_DEFENSE), i18n(S_GRAPHIC_PKEDITOR_STATS_SP_ATTACK), i18n(S_GRAPHIC_PKEDITOR_STATS_SP_DEFENSE), i18n(S_GRAPHIC_PKEDITOR_STATS_SPEED)};
 	u16 n = pkx_get_species(pkmn);
 	
-	sf2d_start_frame(GFX_TOP, GFX_LEFT);
-	if (mode == ED_BASE || mode == ED_STATS) {
-		sftd_draw_wtext(fontBold15, (400 - sftd_get_wtext_width(fontBold15, 15, i18n(S_GRAPHIC_PKEDITOR_BASE_STATS_INDICATIONS_1))) / 2, 95, RGBA8(255, 255, 255, giveTransparence()), 15, i18n(S_GRAPHIC_PKEDITOR_BASE_STATS_INDICATIONS_1));
-		sftd_draw_wtext(fontBold15, (400 - sftd_get_wtext_width(fontBold15, 15, i18n(S_GRAPHIC_PKEDITOR_BASE_STATS_INDICATIONS_2))) / 2, 115, RGBA8(255, 255, 255, giveTransparence()), 15, i18n(S_GRAPHIC_PKEDITOR_BASE_STATS_INDICATIONS_2));
-	} else if (mode == ED_ITEMS) {
-		int entry;
-		int y = 0;
-		sf2d_draw_texture(topMovesBG, 0, 0);
-		for (int i = 0; i < 20; i++) {
-			entry = 40 * additional2 + i;
-			if (i == additional1)
-				printSelector(2, y, 198, 11);
-			else if (i + 20 == additional1) 
-				printSelector(200, y, 198, 11);
-			sftd_draw_wtextf(fontBold9, 2, y, WHITE, 9, L"%d - %ls", entry, itemsSorted[entry]);
-			sftd_draw_wtextf(fontBold9, 200, y, WHITE, 9, L"%d - %ls", entry + 20, itemsSorted[entry + 20]);
-			y += 12;
-		}	
-	} else if (mode == ED_MOVES) {
-
-		int entry;
-		int y = 0;
-		sf2d_draw_texture(topMovesBG, 0, 0);
-		for (int i = 0; i < 20; i++) {
-			entry = 40 * additional2 + i;
-			if (i == additional1) 
-				printSelector(2, y, 198, 11);
-			else if (i + 20 == additional1) 
-				printSelector(200, y, 198, 11);
-			sftd_draw_wtextf(fontBold9, 2, y, WHITE, 9, L"%d - %ls", entry, movesSorted[entry]);
-			sftd_draw_wtextf(fontBold9, 200, y, WHITE, 9, L"%d - %ls", entry + 20, movesSorted[entry + 20]);
-			y += 12;
-		}
-	} else if (mode == ED_NATURES) {
-		wchar_t* hor[] = {i18n(S_GRAPHIC_PKEDITOR_NATURE_NEUTRAL), i18n(S_GRAPHIC_PKEDITOR_NATURE_MIN_ATTACK), i18n(S_GRAPHIC_PKEDITOR_NATURE_MIN_DEFENSE), i18n(S_GRAPHIC_PKEDITOR_NATURE_MIN_SPEED), i18n(S_GRAPHIC_PKEDITOR_NATURE_MIN_SP_ATTACK), i18n(S_GRAPHIC_PKEDITOR_NATURE_MIN_SP_DEFENSE)};
-		wchar_t* ver[] = {i18n(S_GRAPHIC_PKEDITOR_NATURE_PLUS_ATTACK), i18n(S_GRAPHIC_PKEDITOR_NATURE_PLUS_DEFENSE), i18n(S_GRAPHIC_PKEDITOR_NATURE_PLUS_SPEED), i18n(S_GRAPHIC_PKEDITOR_NATURE_PLUS_SP_ATTACK), i18n(S_GRAPHIC_PKEDITOR_NATURE_PLUS_SP_DEFENSE)};
-		
-		sf2d_draw_texture(naturestx, 0, 0);
-		for (int i = 0; i < 6; i++)
-			sftd_draw_wtext(fontBold12, 66 * i + (66 - sftd_get_wtext_width(fontBold12, 12, hor[i])) / 2, 13, (i == 0) ? YELLOW : BLUE, 12, hor[i]);
-		for (int i = 0; i < 5; i++)
-			sftd_draw_wtext(fontBold12, (66 - sftd_get_wtext_width(fontBold12, 12, ver[i])) / 2, 53 + i * 40, BLUE, 12, ver[i]);
-		
-		for (int i = 0; i < 5; i++) {
-			for (int j = 0; j < 5; j++) {
-				if (additional1 == i * 5 + j)
-					printSelector(66*j + 66 + j, 40*i + 40, 66, 39);
-				sftd_draw_wtext(fontBold12, 66 + 66 * j + (66 - sftd_get_wtext_width(fontBold12, 12, natures[i * 5 + j])) / 2 + j, 53 + i * 40, (i == j) ? YELLOW : WHITE, 12, natures[i * 5 + j]);
+	screen_begin_frame();
+		screen_select(GFX_TOP);
+		if (mode == ED_BASE || mode == ED_STATS) {
+			screen_draw_wstring_center(true, 95, FONT_SIZE_15, FONT_SIZE_15, RGBA8(255, 255, 255, giveTransparence()), i18n(S_GRAPHIC_PKEDITOR_BASE_STATS_INDICATIONS_1));
+			screen_draw_wstring_center(true, 115, FONT_SIZE_15, FONT_SIZE_15, RGBA8(255, 255, 255, giveTransparence()), i18n(S_GRAPHIC_PKEDITOR_BASE_STATS_INDICATIONS_2));
+		} else if (mode == ED_ITEMS) {
+			int entry;
+			int y = 0;
+			screen_draw_texture(TEXTURE_TOP_MOVES, 0, 0);
+			for (int i = 0; i < 20; i++) {
+				entry = 40 * additional2 + i;
+				if (i == additional1)
+					printSelector(2, y, 198, 11);
+				else if (i + 20 == additional1) 
+					printSelector(200, y, 198, 11);
+				screen_draw_wstringf(2, y, FONT_SIZE_9, FONT_SIZE_9, WHITE, L"%d - %ls", entry, itemsSorted[entry]);
+				screen_draw_wstringf(200, y, FONT_SIZE_9, FONT_SIZE_9, WHITE, L"%d - %ls", entry + 20, itemsSorted[entry + 20]);
+				y += 12;
+			}	
+		} else if (mode == ED_MOVES) {
+			int entry;
+			int y = 0;
+			screen_draw_texture(TEXTURE_TOP_MOVES, 0, 0);
+			for (int i = 0; i < 20; i++) {
+				entry = 40 * additional2 + i;
+				if (i == additional1) 
+					printSelector(2, y, 198, 11);
+				else if (i + 20 == additional1) 
+					printSelector(200, y, 198, 11);
+				screen_draw_wstringf(2, y, FONT_SIZE_9, FONT_SIZE_9, WHITE, L"%d - %ls", entry, movesSorted[entry]);
+				screen_draw_wstringf(200, y, FONT_SIZE_9, FONT_SIZE_9, WHITE, L"%d - %ls", entry + 20, movesSorted[entry + 20]);
+				y += 12;
 			}
-		}
-	} else if (mode == ED_BALLS) {
-		sf2d_draw_texture(ballsBG, 0, 0);
-		
-		for (int i = 0; i < 5; i++) {
-			for (int j = 0; j < 6; j++) {
-				if (additional1 == i * 6 + j)
-					printSelector(66*j + j, 47*i + i, 66, 47);
-				sf2d_draw_texture_part(balls, 17 + 66 * j + j, 2 + i * 47, 32 * ((i * 6 + j + 1) % 8), 32 * ((i * 6 + j + 1) / 8), 32, 32);
-				sftd_draw_wtext(fontBold9, 66 * j + (66 - sftd_get_wtext_width(fontBold9, 9, ballList[i * 6 + j])) / 2 + j, 30 + i * 47 + i, WHITE, 9, ballList[i * 6 + j]);
-			}
-		}
-	} else if (mode == ED_HIDDENPOWER) {
-		sf2d_draw_texture(hiddenPowerBG, 0, 0);
-		for (int i = 0; i < 4; i++) {
-			for (int j = 0; j < 4; j++) {
-				if (additional1 == i * 4 + j)
-					printSelector(99*j + j, 59*i + i, 99, 59);
-				sf2d_draw_texture_part(typesSheet, 24 + 99 * j + j, 20 + 59 * i + i, 50 * (i * 4 + j + 1), 0, 50, 18); 
-			}
-		}
-	} else if (mode == ED_FORMS) {
-		FormData *forms = pkx_get_legal_form_data((u16)additional2, game);
-		int numforms = forms->max - forms->min + 1;
-		
-		int rows, columns, width, height;
-		if (numforms <= 16) {
-			columns = 4; rows = 4;
-			width = 99; height = 59;
-			sf2d_draw_texture(hiddenPowerBG, 0, 0);
-		} else {
-			columns = 6; rows = 5;
-			width = 66; height = 47;
-			sf2d_draw_texture(ballsBG, 0, 0);
-		}
-
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < columns; j++) {
-				if (additional1 == i * columns + j)
-					printSelector(j*width + j, i*height + i, width, height);
-
-				int form = i * columns + j;
-				if (form < numforms) {
-					wchar_t *str = formList[forms->stringNum + form];
-					if (forms->min > 0)
-						form++;
-					if (form == 0 || forms->spriteNum == 0)
-						sf2d_draw_texture_part(spritesSmall, (width - 34) / 2 + width * j + j, 2 * (height - 44) / 3 + i * height, 40 * (additional2 % 25) + 4, 30 * (additional2 / 25), 34, 30);
-					else {
-						int sprite = forms->spriteNum + form - 2;
-						sf2d_draw_texture_part(alternativeSpritesSmall, (width - 34) / 2 + width * j + j, 2 * (height - 44) / 3 + i * height + i, 40 * (sprite % 6) + 4, 30 * (sprite / 6), 34, 30);
-					}
-					sftd_draw_wtext(fontBold9, width * j + (width - sftd_get_wtext_width(fontBold9, 9, str)) / 2 + j, (height * 5) / 7 + i * height + i, WHITE, 9, str);
+		} else if (mode == ED_NATURES) {
+			wchar_t* hor[] = {i18n(S_GRAPHIC_PKEDITOR_NATURE_NEUTRAL), i18n(S_GRAPHIC_PKEDITOR_NATURE_MIN_ATTACK), i18n(S_GRAPHIC_PKEDITOR_NATURE_MIN_DEFENSE), i18n(S_GRAPHIC_PKEDITOR_NATURE_MIN_SPEED), i18n(S_GRAPHIC_PKEDITOR_NATURE_MIN_SP_ATTACK), i18n(S_GRAPHIC_PKEDITOR_NATURE_MIN_SP_DEFENSE)};
+			wchar_t* ver[] = {i18n(S_GRAPHIC_PKEDITOR_NATURE_PLUS_ATTACK), i18n(S_GRAPHIC_PKEDITOR_NATURE_PLUS_DEFENSE), i18n(S_GRAPHIC_PKEDITOR_NATURE_PLUS_SPEED), i18n(S_GRAPHIC_PKEDITOR_NATURE_PLUS_SP_ATTACK), i18n(S_GRAPHIC_PKEDITOR_NATURE_PLUS_SP_DEFENSE)};
+			
+			screen_draw_texture(TEXTURE_NATURES, 0, 0);
+			for (int i = 0; i < 6; i++)
+				screen_draw_wstring(66 * i + (66 - screen_get_wstring_width(hor[i], FONT_SIZE_12, FONT_SIZE_12)) / 2, 13, FONT_SIZE_12, FONT_SIZE_12, (i == 0) ? YELLOW : BLUE, hor[i]);
+			for (int i = 0; i < 5; i++)
+				screen_draw_wstring((66 - screen_get_wstring_width(ver[i], FONT_SIZE_12, FONT_SIZE_12)) / 2, 53 + i * 40, FONT_SIZE_12, FONT_SIZE_12, BLUE, ver[i]);
+			
+			for (int i = 0; i < 5; i++) {
+				for (int j = 0; j < 5; j++) {
+					if (additional1 == i * 5 + j)
+						printSelector(66*j + 66 + j, 40*i + 40, 66, 39);
+					screen_draw_wstring(66 + 66 * j + (66 - screen_get_wstring_width(natures[i * 5 + j], FONT_SIZE_12, FONT_SIZE_12)) / 2 + j, 53 + i * 40, FONT_SIZE_12, FONT_SIZE_12, (i == j) ? YELLOW : WHITE, natures[i * 5 + j]);
 				}
 			}
-		}
-	} else if (mode == ED_HEX) {
-		sf2d_draw_texture(hexBG, 0, 0);
-		if (hax)
-			sf2d_draw_rectangle(0, 0, 400, 240, RGBA8(255, 0, 0, 100));
-		for (int rows = 0; rows < 15; rows++) {
-			for (int columns = 0; columns < 16; columns++) {
-				int byte = rows*16 + columns;
-				if (additional1 == byte)
-					printSelector(columns*25, rows*15, 24, 14);
-				sftd_draw_textf(fontBold11, 4 + 25*columns, 15*rows, (sector[byte][0]) ? WHITE : DS, 11, "%02hhX", pkmn[byte]);
-				
-				if (byte == 231) break;
+		} else if (mode == ED_BALLS) {
+			screen_draw_texture(TEXTURE_BALLS_BG, 0, 0);
+			for (int i = 0; i < 5; i++) {
+				for (int j = 0; j < 6; j++) {
+					if (additional1 == i * 6 + j)
+						printSelector(66*j + j, 47*i + i, 66, 47);
+					screen_draw_texture_part(TEXTURE_BALLS_SPRITESHEET, 17 + 66 * j + j, 2 + i * 47, 32 * ((i * 6 + j + 1) % 8), 32 * ((i * 6 + j + 1) / 8), 32, 32);
+					screen_draw_wstring(66 * j + (66 - screen_get_wstring_width(ballList[i * 6 + j], FONT_SIZE_9, FONT_SIZE_9)) / 2 + j, 30 + i * 47 + i, FONT_SIZE_9, FONT_SIZE_9, WHITE, ballList[i * 6 + j]);
+				}
 			}
+		} else if (mode == ED_HIDDENPOWER) {
+			screen_draw_texture(TEXTURE_HIDDEN_POWER_BG, 0, 0);
+			for (int i = 0; i < 4; i++) {
+				for (int j = 0; j < 4; j++) {
+					if (additional1 == i * 4 + j)
+						printSelector(99*j + j, 59*i + i, 99, 59);
+					screen_draw_texture_part(TEXTURE_TYPES_SPRITESHEET, 24 + 99 * j + j, 20 + 59 * i + i, 50 * (i * 4 + j + 1), 0, 50, 18); 
+				}
+			}
+		} else if (mode == ED_FORMS) {
+			FormData *forms = pkx_get_legal_form_data((u16)additional2, game);
+			int numforms = forms->max - forms->min + 1;
+			
+			int rows, columns, width, height;
+			if (numforms <= 16) {
+				columns = 4; rows = 4;
+				width = 99; height = 59;
+				screen_draw_texture(TEXTURE_HIDDEN_POWER_BG, 0, 0);
+			} else {
+				columns = 6; rows = 5;
+				width = 66; height = 47;
+				screen_draw_texture(TEXTURE_BALLS_BG, 0, 0);
+			}
+
+			for (int i = 0; i < rows; i++) {
+				for (int j = 0; j < columns; j++) {
+					if (additional1 == i * columns + j)
+						printSelector(j*width + j, i*height + i, width, height);
+
+					int form = i * columns + j;
+					if (form < numforms) {
+						wchar_t *str = formList[forms->stringNum + form];
+						if (forms->min > 0)
+							form++;
+						if (form == 0 || forms->spriteNum == 0)
+							screen_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, (width - 34) / 2 + width * j + j, 2 * (height - 44) / 3 + i * height, 40 * (additional2 % 25) + 4, 30 * (additional2 / 25), 34, 30);
+						else {
+							int sprite = forms->spriteNum + form - 2;
+							screen_draw_texture_part(TEXTURE_ALTERNATIVE_SPRITESHEET, (width - 34) / 2 + width * j + j, 2 * (height - 44) / 3 + i * height + i, 40 * (sprite % 6) + 4, 30 * (sprite / 6), 34, 30);
+						}
+						screen_draw_wstring(width * j + (width - screen_get_wstring_width(str, FONT_SIZE_9, FONT_SIZE_9)) / 2 + j, (height * 5) / 7 + i * height + i, FONT_SIZE_9, FONT_SIZE_9, WHITE, str);
+					}
+				}
+			}
+		} else if (mode == ED_HEX) {
+			screen_draw_texture(TEXTURE_HEX_BG, 0, 0);
+			if (hax)
+				screen_draw_rect(0, 0, 400, 240, RGBA8(255, 0, 0, 100));
+			for (int rows = 0; rows < 15; rows++) {
+				for (int columns = 0; columns < 16; columns++) {
+					int byte = rows*16 + columns;
+					if (additional1 == byte)
+						printSelector(columns*25, rows*15, 24, 14);
+					screen_draw_stringf(4 + 25*columns, 15*rows, FONT_SIZE_11, FONT_SIZE_11, (sector[byte][0]) ? WHITE : DS, "%02hhX", pkmn[byte]);
+					
+					if (byte == 231) break;
+				}
+			}
+			screen_draw_wstringf(4, 225, FONT_SIZE_11, FONT_SIZE_11, LIGHTBLUE, L"%ls", descriptions[additional1]);
 		}
-		sftd_draw_wtextf(fontBold11, 4, 225, LIGHTBLUE, 11, L"%ls", descriptions[additional1]);
-	}
-	pksm_end_frame();
 	
-	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
+		screen_select(GFX_BOTTOM);
 		if (mode != ED_HEX)
 			printAnimatedBG(false);
 		if (mode == ED_BASE || mode == ED_ITEMS || mode == ED_NATURES || mode == ED_BALLS || mode == ED_FORMS) {
-			sf2d_draw_texture(editorBG, 0, 1);
-			sf2d_draw_texture(editorBar, 0, 210);
-			sf2d_draw_texture(hexIcon, 290, 1);
+			screen_draw_texture(TEXTURE_EDITOR_BOTTOM_BG, 0, 1);
+			screen_draw_texture(TEXTURE_BOTTOM_BAR, 0, 210);
+			screen_draw_texture(TEXTURE_HEX_BUTTON, 290, 1);
 			
-			sftd_draw_wtext(fontBold12, 27, 4, WHITE, 12, listSpecies.items[n]);
-			sf2d_draw_texture_part(balls, -2, -6, 32 * (pkx_get_ball(pkmn) % 8), 32 * (pkx_get_ball(pkmn) / 8), 32, 32);
+			screen_draw_wstring(27, 4, FONT_SIZE_12, FONT_SIZE_12, WHITE, listSpecies.items[n]);
+			screen_draw_texture_part(TEXTURE_BALLS_SPRITESHEET, -2, -6, 32 * (pkx_get_ball(pkmn) % 8), 32 * (pkx_get_ball(pkmn) / 8), 32, 32);
 			
 			u16 t = getAlternativeSprite(pkmn, game);
 			int ofs = movementOffsetSlow(3);
 			if (t) {
 				t -= 1;
-				sf2d_draw_texture_part_scale_blend(alternativeSpritesSmall, 232, 32 - ofs, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30, 2, 2, RGBA8(0x0, 0x0, 0x0, 100)); 
-				sf2d_draw_texture_part_scale(alternativeSpritesSmall, 227, 27 - ofs, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30, 2, 2);
+				//sf2d_draw_texture_part_scale_blend(alternativeSpritesSmall, 232, 32 - ofs, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30, 2, 2, RGBA8(0x0, 0x0, 0x0, 100)); 
+				//sf2d_draw_texture_part_scale(alternativeSpritesSmall, 227, 27 - ofs, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30, 2, 2);
 			} else {
-				sf2d_draw_texture_part_scale_blend(spritesSmall, 232, 32 - ofs, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30, 2, 2, RGBA8(0x0, 0x0, 0x0, 100));
-				sf2d_draw_texture_part_scale(spritesSmall, 227, 27 - ofs, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30, 2, 2);
+				//sf2d_draw_texture_part_scale_blend(spritesSmall, 232, 32 - ofs, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30, 2, 2, RGBA8(0x0, 0x0, 0x0, 100));
+				//sf2d_draw_texture_part_scale(spritesSmall, 227, 27 - ofs, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30, 2, 2);
 			}
 			
 			if (pkx_get_gender(pkmn) == 0)
-				sf2d_draw_texture(male, 159, 6);
+				screen_draw_texture(TEXTURE_MALE, 159, 6);
 			else if (pkx_get_gender(pkmn) == 1)
-				sf2d_draw_texture(female, 161, 6);
+				screen_draw_texture(TEXTURE_FEMALE, 161, 6);
 			
 			for (int i = 0; i < 3; i++) {
-				sf2d_draw_texture(button, 206, 110 + i * 27 + i*4);
-				sftd_draw_wtext(fontBold12, 206 + (109 - sftd_get_wtext_width(fontBold12, 12, options[i])) / 2, 117 + i * 27 + i*4, BLACK, 12, options[i]);
+				screen_draw_texture(TEXTURE_BUTTON, 206, 110 + i * 27 + i*4);
+				screen_draw_wstring(206 + (109 - screen_get_wstring_width(options[i], FONT_SIZE_12, FONT_SIZE_12)) / 2, 117 + i * 27 + i*4, FONT_SIZE_12, FONT_SIZE_12, BLACK, options[i]);
 			}
 			
 			for (int i = 0; i < 9; i++)
 				if (i == 8 && pkx_is_egg(pkmn))
-					sftd_draw_wtext(fontBold12, 2, 29 + i * 20, LIGHTBLUE, 12, i18n(S_GRAPHIC_PKEDITOR_EGG_CYCLE));
+					screen_draw_wstring(2, 29 + i * 20, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_PKEDITOR_EGG_CYCLE));
 				else
-					sftd_draw_wtext(fontBold12, 2, 29 + i * 20, LIGHTBLUE, 12, entries[i]);
+					screen_draw_wstring(2, 29 + i * 20, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, entries[i]);
 
 			for (int i = 0; i < 7; i++)
-				sf2d_draw_texture(setting, 180, 51 + i * 20);
+				screen_draw_texture(TEXTURE_SETTING, 180, 51 + i * 20);
 
-			sf2d_draw_texture(minus, 180 - max - 6 - minus->width, 29);
-			sf2d_draw_texture(plus, 180, 29);
-			sf2d_draw_texture(minus, 180 - max - 6 - minus->width, 189);
-			sf2d_draw_texture(plus, 180, 189);
+			screen_draw_texture(TEXTURE_MINUS, 180 - max - 19, 29);
+			screen_draw_texture(TEXTURE_PLUS, 180, 29);
+			screen_draw_texture(TEXTURE_MINUS, 180 - max - 19, 189);
+			screen_draw_texture(TEXTURE_PLUS, 180, 189);
 
-			char* level = (char*)malloc(4 * sizeof(char));
+			char level[4];
 			snprintf(level, 4, "%u", pkx_get_level(pkmn));
-			sftd_draw_text(fontBold12, 180 - max - 3 + (max - sftd_get_text_width(fontBold12, 12, level)) / 2, 29, WHITE, 12, level);
-			free(level);
+			screen_draw_string(180 - max - 3 + (max - screen_get_string_width(level, FONT_SIZE_12, FONT_SIZE_12)) / 2, 29, FONT_SIZE_12, FONT_SIZE_12, WHITE, level);
 				
-			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, natures[pkx_get_nature(pkmn)]), 49, WHITE, 12, natures[pkx_get_nature(pkmn)]);
-			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, abilities[pkx_get_ability(pkmn)]), 69, WHITE, 12, abilities[pkx_get_ability(pkmn)]);
-			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, items[pkx_get_item(pkmn)]), 89, WHITE, 12, items[pkx_get_item(pkmn)]);
-			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, pkx_is_shiny(pkmn) ? i18n(S_YES) : i18n(S_NO)), 109, WHITE, 12, pkx_is_shiny(pkmn) ? i18n(S_YES) : i18n(S_NO));
-			sftd_draw_wtext(fontBold12, 178 - sftd_get_wtext_width(fontBold12, 12, pkx_get_pokerus(pkmn) ? i18n(S_YES) : i18n(S_NO)), 129, WHITE, 12, pkx_get_pokerus(pkmn) ? i18n(S_YES) : i18n(S_NO));
+			screen_draw_wstring(178 - screen_get_wstring_width(natures[pkx_get_nature(pkmn)], FONT_SIZE_12, FONT_SIZE_12), 49, FONT_SIZE_12, FONT_SIZE_12, WHITE, natures[pkx_get_nature(pkmn)]);
+			screen_draw_wstring(178 - screen_get_wstring_width(abilities[pkx_get_ability(pkmn)], FONT_SIZE_12, FONT_SIZE_12), 69, FONT_SIZE_12, FONT_SIZE_12, WHITE, abilities[pkx_get_ability(pkmn)]);
+			screen_draw_wstring(178 - screen_get_wstring_width(items[pkx_get_item(pkmn)], FONT_SIZE_12, FONT_SIZE_12), 89, FONT_SIZE_12, FONT_SIZE_12, WHITE, items[pkx_get_item(pkmn)]);
+			screen_draw_wstring(178 - screen_get_wstring_width(pkx_is_shiny(pkmn) ? i18n(S_YES) : i18n(S_NO), FONT_SIZE_12, FONT_SIZE_12), 109, FONT_SIZE_12, FONT_SIZE_12, WHITE, pkx_is_shiny(pkmn) ? i18n(S_YES) : i18n(S_NO));
+			screen_draw_wstring(178 - screen_get_wstring_width(pkx_get_pokerus(pkmn) ? i18n(S_YES) : i18n(S_NO), FONT_SIZE_12, FONT_SIZE_12), 129, FONT_SIZE_12, FONT_SIZE_12, WHITE, pkx_get_pokerus(pkmn) ? i18n(S_YES) : i18n(S_NO));
 			
-			char* friendship = (char*)malloc(4 * sizeof(char));
+			char friendship[4];
 			if (pkx_is_egg(pkmn))
 				snprintf(friendship, 4, "%u", pkx_get_ot_friendship(pkmn));
 			else
 				snprintf(friendship, 4, "%u", pkx_get_friendship(pkmn));
-			sftd_draw_text(fontBold12, 180 - max - 3 + (max - sftd_get_text_width(fontBold12, 12, friendship)) / 2, 189, WHITE, 12, friendship);
-			free(friendship);
+			screen_draw_string(180 - max - 3 + (max - screen_get_string_width(friendship, FONT_SIZE_12, FONT_SIZE_12)) / 2, 189, FONT_SIZE_12, FONT_SIZE_12, WHITE, friendship);
 			
 			u32 nick[NICKNAMELENGTH*2];
 			memset(nick, 0, NICKNAMELENGTH*2*sizeof(u32));
 			pkx_get_nickname(pkmn, nick);
-			sftd_draw_wtext(fontBold12, 178 - (sftd_get_wtext_width(fontBold12, 12, (wchar_t*)nick)), 169, WHITE, 12, (wchar_t*)nick);
+			screen_draw_wstring(178 - screen_get_wstring_width((wchar_t*)nick, FONT_SIZE_12, FONT_SIZE_12), 169, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)nick);
 
 			u32 ot_name[NICKNAMELENGTH*2];
 			memset(ot_name, 0, NICKNAMELENGTH*2*sizeof(u32));
 			pkx_get_ot(pkmn, ot_name);
-			sftd_draw_wtext(fontBold12, 178 - (sftd_get_wtext_width(fontBold12, 12, (wchar_t*)ot_name)), 149, WHITE, 12, (wchar_t*)ot_name);
+			screen_draw_wstring(178 - screen_get_wstring_width((wchar_t*)ot_name, FONT_SIZE_12, FONT_SIZE_12), 149, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)ot_name);
 		}
 		if (mode == ED_STATS || mode == ED_HIDDENPOWER) {
-			sf2d_draw_texture(editorStatsBG, 0, 1);
-			sf2d_draw_texture(editorBar, 0, 210);
-			sf2d_draw_texture(setting, 291, 175);
-			sftd_draw_wtext(fontBold12, 2, 28, LIGHTBLUE, 12, i18n(S_GRAPHIC_PKEDITOR_LBL_STATS));
-			sftd_draw_wtext(fontBold12, 118, 28, DARKBLUE, 12, i18n(S_GRAPHIC_PKEDITOR_LBL_IV));
-			sftd_draw_wtext(fontBold12, 197, 28, DARKBLUE, 12, i18n(S_GRAPHIC_PKEDITOR_LBL_EV));
-			sftd_draw_wtext(fontBold12, 256, 28, DARKBLUE, 12, i18n(S_GRAPHIC_PKEDITOR_LBL_TOTAL));
-			sftd_draw_wtext(fontBold12, 2, 173, LIGHTBLUE, 12, i18n(S_GRAPHIC_PKEDITOR_HIDDEN_POWER));
+			screen_draw_texture(TEXTURE_EDITOR_STATS, 0, 1);
+			screen_draw_texture(TEXTURE_BOTTOM_BAR, 0, 210);
+			screen_draw_texture(TEXTURE_SETTING, 291, 175);
+			screen_draw_wstring(2, 28, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_PKEDITOR_LBL_STATS));
+			screen_draw_wstring(118, 28, FONT_SIZE_12, FONT_SIZE_12, DARKBLUE, i18n(S_GRAPHIC_PKEDITOR_LBL_IV));
+			screen_draw_wstring(197, 28, FONT_SIZE_12, FONT_SIZE_12, DARKBLUE, i18n(S_GRAPHIC_PKEDITOR_LBL_EV));
+			screen_draw_wstring(256, 28, FONT_SIZE_12, FONT_SIZE_12, DARKBLUE, i18n(S_GRAPHIC_PKEDITOR_LBL_TOTAL));
+			screen_draw_wstring(2, 173, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_PKEDITOR_HIDDEN_POWER));
 			
-			sftd_draw_wtext(fontBold12, 27, 4, WHITE, 12, listSpecies.items[n]);
-			sf2d_draw_texture_part(balls, -2, -6, 32 * (pkx_get_ball(pkmn) % 8), 32 * (pkx_get_ball(pkmn) / 8), 32, 32);
+			screen_draw_wstring(27, 4, FONT_SIZE_12, FONT_SIZE_12, WHITE, listSpecies.items[n]);
+			screen_draw_texture_part(TEXTURE_BALLS_BG, -2, -6, 32 * (pkx_get_ball(pkmn) % 8), 32 * (pkx_get_ball(pkmn) / 8), 32, 32);
 			
 			if (pkx_get_gender(pkmn) == 0)
-				sf2d_draw_texture(male, 159, 6);
+				screen_draw_texture(TEXTURE_MALE, 159, 6);
 			else if (pkx_get_gender(pkmn) == 1)
-				sf2d_draw_texture(female, 161, 6);
+				screen_draw_texture(TEXTURE_FEMALE, 161, 6);
 			
 			for (int i = 0; i < 6; i++)
-				sftd_draw_wtext(fontBold12, 2, 49 + i * 20, LIGHTBLUE, 12, values[i]);
+				screen_draw_wstring(2, 49 + i * 20, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, values[i]);
 
 			char tmp[6];
 			for (int i = 0; i < 6; i++) {
 				sprintf(tmp, "%d", pkx_get_iv(pkmn, lookup[i]));
-				sftd_draw_text(fontBold12, 112 + (max - sftd_get_text_width(fontBold12, 12, tmp)) / 2, 49 + i * 20, WHITE, 12, tmp);
+				screen_draw_string(112 + (max - screen_get_string_width(tmp, FONT_SIZE_12, FONT_SIZE_12)) / 2, 49 + i * 20, FONT_SIZE_12, FONT_SIZE_12, WHITE, tmp);
 				sprintf(tmp, "%d", pkx_get_ev(pkmn, lookup[i]));
-				sftd_draw_text(fontBold12, 192 + (max - sftd_get_text_width(fontBold12, 12, tmp)) / 2, 49 + i * 20, WHITE, 12, tmp);
+				screen_draw_string(192 + (max - screen_get_string_width(tmp, FONT_SIZE_12, FONT_SIZE_12)) / 2, 49 + i * 20, FONT_SIZE_12, FONT_SIZE_12, WHITE, tmp);
 				sprintf(tmp, "%d", pkx_get_stat(pkmn, lookup[i]));
-				sftd_draw_text(fontBold12, 263 + (max - sftd_get_text_width(fontBold12, 12, tmp)) / 2, 49 + i * 20, WHITE, 12, tmp);
+				screen_draw_string(263 + (max - screen_get_string_width(tmp, FONT_SIZE_12, FONT_SIZE_12)) / 2, 49 + i * 20, FONT_SIZE_12, FONT_SIZE_12, WHITE, tmp);
 			}
 			
-			sftd_draw_wtext(fontBold12, 288 - sftd_get_wtext_width(fontBold12, 12, hpList[pkx_get_hp_type(pkmn)]), 173, WHITE, 12, hpList[pkx_get_hp_type(pkmn)]);
+			screen_draw_wstring(288 - screen_get_wstring_width(hpList[pkx_get_hp_type(pkmn)], FONT_SIZE_12, FONT_SIZE_12), 173, FONT_SIZE_12, FONT_SIZE_12, WHITE, hpList[pkx_get_hp_type(pkmn)]);
 
 			for (int i = 0; i < 6; i++) {
-				sf2d_draw_texture(minus, 96, 49 + i * 20);
-				sf2d_draw_texture(plus, 139, 49 + i * 20);
-				sf2d_draw_texture(minus, 177, 49 + i * 20);
-				sf2d_draw_texture(plus, 218, 49 + i * 20);
+				screen_draw_texture(TEXTURE_MINUS, 96, 49 + i * 20);
+				screen_draw_texture(TEXTURE_PLUS, 139, 49 + i * 20);
+				screen_draw_texture(TEXTURE_MINUS, 177, 49 + i * 20);
+				screen_draw_texture(TEXTURE_PLUS, 218, 49 + i * 20);
 			}
 		}
 		if (mode == ED_MOVES) {
-
-			sf2d_draw_texture(movesBottom, 0, 1);
-			sf2d_draw_texture(movesBottom, 0, 2 + movesBottom->height);
-			sf2d_draw_texture(editorBar, 0, 210);
-			sftd_draw_wtext(fontBold12, 2, 5, LIGHTBLUE, 12, i18n(S_GRAPHIC_PKEDITOR_MOVES));
-			sftd_draw_wtext(fontBold12, 2, 110, LIGHTBLUE, 12, i18n(S_GRAPHIC_PKEDITOR_RELEARN_MOVES));
+			screen_draw_texture(TEXTURE_MOVES_BOTTOM, 0, 1);
+			screen_draw_texture(TEXTURE_MOVES_BOTTOM, 0, 105);
+			screen_draw_texture(TEXTURE_BOTTOM_BAR, 0, 210);
+			screen_draw_wstring(2, 5, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_PKEDITOR_MOVES));
+			screen_draw_wstring(2, 110, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_PKEDITOR_RELEARN_MOVES));
 			
 			for (int i = 0; i < 4; i++) {
-				sftd_draw_wtext(fontBold12, 2, 28 + i * 20, (i == additional3) ? YELLOW : WHITE, 12, moves[pkx_get_move(pkmn, i)]);
-				sftd_draw_wtext(fontBold12, 2, 132 + i * 20, (i == additional3 - 4) ? YELLOW: WHITE, 12, moves[pkx_get_egg_move(pkmn, i)]);
-				if (i == additional3)
-					sf2d_draw_texture_rotate(subArrow, 198 - movementOffsetSlow(3), 33 + i * 20, 3.1415f);
-				else if (i == additional3 - 4)
-					sf2d_draw_texture_rotate(subArrow, 198 - movementOffsetSlow(3), 137 + i * 20, 3.1415f);
+				screen_draw_wstring(2, 28 + i * 20, FONT_SIZE_12, FONT_SIZE_12, (i == additional3) ? YELLOW : WHITE, moves[pkx_get_move(pkmn, i)]);
+				screen_draw_wstring(2, 132 + i * 20, FONT_SIZE_12, FONT_SIZE_12, (i == additional3 - 4) ? YELLOW: WHITE, moves[pkx_get_egg_move(pkmn, i)]);
+				//if (i == additional3)
+				//	sf2d_draw_texture_rotate(subArrow, 198 - movementOffsetSlow(3), 33 + i * 20, 3.1415f);
+				//else if (i == additional3 - 4)
+				//	sf2d_draw_texture_rotate(subArrow, 198 - movementOffsetSlow(3), 137 + i * 20, 3.1415f);
 			}
 
 		}
 		if (mode == ED_HEX) {
 			printMenuBottom();
-			sf2d_draw_texture(blueTextBox, 165, 28);
+			screen_draw_texture(TEXTURE_BLUE_TEXT_BOX, 165, 28);
 			if (sector[additional1][0] && !(sector[additional1][1])) {
-				sf2d_draw_texture(minusButton, 224, 31);
-				sf2d_draw_texture(plusButton, 247, 31);
+				screen_draw_texture(TEXTURE_MINUS_BUTTON, 224, 31);
+				screen_draw_texture(TEXTURE_PLUS_BUTTON, 247, 31);
 			}
 			if (hax)
-				sf2d_draw_rectangle(0, 0, 320, 240, RGBA8(255, 0, 0, 100));
+				screen_draw_rect(0, 0, 320, 240, RGBA8(255, 0, 0, 100));
 			
-			sftd_draw_wtextf(fontBold14, (155 - sftd_get_wtext_width(fontBold14, 14, i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE))), 30, LIGHTBLUE, 14, i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE));
-			sftd_draw_textf(fontBold14, 171, 30, WHITE, 14, "0x%02hhX", additional1);
+			screen_draw_wstringf(155 - screen_get_wstring_width(i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE), FONT_SIZE_14, FONT_SIZE_14), 30, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE));
+			screen_draw_stringf(171, 30, FONT_SIZE_14, FONT_SIZE_14, WHITE, "0x%02hhX", additional1);
 			
 			printfHexEditorInfo(pkmn, additional1);
 			printBottomIndications(i18n(S_GRAPHIC_CREDITS_INDICATIONS));
 		}
 
 		if (mode != ED_HEX)
-			sf2d_draw_texture(back, 283, 211);
+			screen_draw_texture(TEXTURE_BACK_BUTTON, 283, 211);
 		
 		// apply masks
 		if (mode == ED_ITEMS) {
-			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
-			sftd_draw_wtext(fontBold14, (320 - sftd_get_wtext_width(fontBold14, 14, i18n(S_GRAPHIC_PKEDITOR_ITEM_INDICATION))) / 2, 105, WHITE, 14, i18n(S_GRAPHIC_PKEDITOR_ITEM_INDICATION));
+			screen_draw_rect(0, 0, 320, 240, MASKBLACK);
+			screen_draw_wstring_center(false, 105, FONT_SIZE_14, FONT_SIZE_14, WHITE, i18n(S_GRAPHIC_PKEDITOR_ITEM_INDICATION));
 		} else if (mode == ED_NATURES) {
-			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
-			sftd_draw_wtext(fontBold14, (320 - sftd_get_wtext_width(fontBold14, 14, i18n(S_GRAPHIC_PKEDITOR_NATURE_INDICATION))) / 2, 105, WHITE, 14, i18n(S_GRAPHIC_PKEDITOR_NATURE_INDICATION));
+			screen_draw_rect(0, 0, 320, 240, MASKBLACK);
+			screen_draw_wstring_center(false, 105, FONT_SIZE_14, FONT_SIZE_14, WHITE, i18n(S_GRAPHIC_PKEDITOR_NATURE_INDICATION));
 		} else if (mode == ED_BALLS) {
-			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
-			sftd_draw_wtext(fontBold14, (320 - sftd_get_wtext_width(fontBold14, 14, i18n(S_GRAPHIC_PKEDITOR_BALL_INDICATION))) / 2, 105, WHITE, 14, i18n(S_GRAPHIC_PKEDITOR_BALL_INDICATION));
+			screen_draw_rect(0, 0, 320, 240, MASKBLACK);
+			screen_draw_wstring_center(false, 105, FONT_SIZE_14, FONT_SIZE_14, WHITE, i18n(S_GRAPHIC_PKEDITOR_BALL_INDICATION));
 		} else if (mode == ED_HIDDENPOWER) {
-			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
-			sftd_draw_wtext(fontBold14, (320 - sftd_get_wtext_width(fontBold14, 14, i18n(S_GRAPHIC_PKEDITOR_HP_INDICATION))) / 2, 105, WHITE, 14, i18n(S_GRAPHIC_PKEDITOR_HP_INDICATION));
+			screen_draw_rect(0, 0, 320, 240, MASKBLACK);
+			screen_draw_wstring_center(false, 105, FONT_SIZE_14, FONT_SIZE_14, WHITE, i18n(S_GRAPHIC_PKEDITOR_HP_INDICATION));
 		} else if (mode == ED_FORMS) {
-			sf2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
-			sftd_draw_wtext(fontBold14, (320 - sftd_get_wtext_width(fontBold14, 14, i18n(S_GRAPHIC_PKEDITOR_FORM_INDICATION))) / 2, 105, WHITE, 14, i18n(S_GRAPHIC_PKEDITOR_FORM_INDICATION));
+			screen_draw_rect(0, 0, 320, 240, MASKBLACK);
+			screen_draw_wstring_center(false, 105, FONT_SIZE_14, FONT_SIZE_14, WHITE, i18n(S_GRAPHIC_PKEDITOR_FORM_INDICATION));
 		}
-		
 	pksm_end_frame();
-	sf2d_swapbuffers();
 }
 
 void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int currentEntry, int saveBox, int bankBox, bool isBufferized, bool isSeen, bool isWirelessActivated) {
@@ -1760,9 +1620,9 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 	
 	int x, y;
 	int pointer[2] = {0, 0};
-	wchar_t* page = (wchar_t*)malloc((MAX_LENGTH_BOX_NAME+1) * sizeof(wchar_t));
+	wchar_t page[MAX_LENGTH_BOX_NAME+1];
 	
-	u8* pkmn = (u8*)malloc(PKMNLENGTH * sizeof(u8));
+	u8 pkmn[PKMNLENGTH];
 	if (currentEntry < 30)
 		memcpy(pkmn, &bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], PKMNLENGTH);
 	else if (isWirelessActivated)
@@ -1770,14 +1630,15 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 	else
 		pkx_get(mainbuf, saveBox, currentEntry - 30, pkmn);
 	
-	sf2d_start_frame(GFX_TOP, GFX_LEFT);
+	screen_begin_frame();
+		screen_select(GFX_TOP);
 		if (isSeen) {
 			infoViewer(pkmnbuf);
 		} else {
 			printAnimatedBG(true);
-			sf2d_draw_texture(bankTop, 34, 5);
+			screen_draw_texture(TEXTURE_BANK_TOP, 34, 5);
 			swprintf(page, MAX_LENGTH_BOX_NAME+1, i18n(S_GRAPHIC_PKBANK_BANK_TITLE), bankBox + 1);
-			sftd_draw_wtext(fontBold12, 55 + (178 - sftd_get_wtext_width(fontBold12, 12, page)) / 2, 9, WHITE, 12, page);
+			screen_draw_wstring(55 + (178 - screen_get_wstring_width(page, FONT_SIZE_12, FONT_SIZE_12)) / 2, 9, FONT_SIZE_12, FONT_SIZE_12, WHITE, page);
 
 			if (pkx_get_species(pkmn) > 0 && pkx_get_species(pkmn) < 822) {
 				u16 tempspecies = pkx_get_form_species_number(pkmn);
@@ -1793,40 +1654,39 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 					type2 = personal.pkmData[tempspecies][0x7];
 				}
 				
-				sf2d_draw_texture_part(typesSheet, 273, 120, 50 * type1, 0, 50, 18); 
+				screen_draw_texture_part(TEXTURE_TYPES_SPRITESHEET, 273, 120, 50 * type1, 0, 50, 18); 
 				if (type1 != type2)
-					sf2d_draw_texture_part(typesSheet, 325, 120, 50 * type2, 0, 50, 18); 
+					screen_draw_texture_part(TEXTURE_TYPES_SPRITESHEET, 325, 120, 50 * type2, 0, 50, 18); 
 				
 				u32 nick[NICKNAMELENGTH*2];
 				memset(nick, 0, NICKNAMELENGTH*2*sizeof(u32));
 				pkx_get_nickname(pkmn, nick);
-				sftd_draw_wtext(fontBold12, 273, 69, WHITE, 12, (wchar_t*)nick);
+				screen_draw_wstring(273, 69, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)nick);
 				
-				wchar_t* level = (wchar_t*)malloc(8 * sizeof(wchar_t));
+				wchar_t level[8];
 				swprintf(level, 8, i18n(S_GRAPHIC_PKBANK_LV_PKMN), pkx_get_level(pkmn));
-				sftd_draw_wtext(fontBold12, 372 - sftd_get_wtext_width(fontBold12, 12, level), 86, WHITE, 12, level);
+				float width = screen_get_wstring_width(level, FONT_SIZE_12, FONT_SIZE_12);
+				screen_draw_wstring(372 - width, 86, FONT_SIZE_12, FONT_SIZE_12, WHITE, level);
 				
 				if (pkx_get_gender(pkmn) == 0)
-					sf2d_draw_texture(male, 358 - sftd_get_wtext_width(fontBold12, 12, level), 86);
+					screen_draw_texture(TEXTURE_MALE, 358 - width, 86);
 				else if (pkx_get_gender(pkmn) == 1)
-					sf2d_draw_texture(female, 360 - sftd_get_wtext_width(fontBold12, 12, level), 86);
+					screen_draw_texture(TEXTURE_FEMALE, 360 - width, 86);
 				if (pkx_is_shiny(pkmn))
-					sf2d_draw_texture(shinyStar, 360 - sftd_get_wtext_width(fontBold12, 12, level) - 14, 88);
-				
-				free(level);
+					screen_draw_texture(TEXTURE_SHINY, 360 - width - 14, 88);
 				
 				u32 ot_name[NICKNAMELENGTH*2];
 				memset(ot_name, 0, NICKNAMELENGTH*2*sizeof(u32));
 				pkx_get_ot(pkmn, ot_name);
-				sftd_draw_wtext(fontBold12, 273, 146, WHITE, 12, (wchar_t*)ot_name);
+				screen_draw_wstring(273, 146, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)ot_name);
 
-				wchar_t* otid = (wchar_t*)malloc(12 * sizeof(wchar_t));
+				wchar_t otid[12];
 				swprintf(otid, 12, i18n(S_GRAPHIC_PKBANK_OTID_PKMN), pkx_get_tid(pkmn));
-				sftd_draw_wtext(fontBold12, 372 - sftd_get_wtext_width(fontBold12, 12, otid), 163, WHITE, 12, otid);
-				free(otid);
+				screen_draw_wstring(372 - screen_get_wstring_width(otid, FONT_SIZE_12, FONT_SIZE_12), 163, FONT_SIZE_12, FONT_SIZE_12, WHITE, otid);
 				
-				sftd_draw_wtext(fontBold12, 273, 104, WHITE, 12, listSpecies.items[pkx_get_species(pkmn)]);
+				screen_draw_wstring(273, 104, FONT_SIZE_12, FONT_SIZE_12, WHITE, listSpecies.items[pkx_get_species(pkmn)]);
 			}
+			
 			y = 45;
 			for (int i = 0; i < 5; i++) {
 				x = 44;
@@ -1847,35 +1707,36 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 			
 			if (currentEntry < 30) {
 				u16 n = pkx_get_species(pkmnbuf);
-				if (n) printElementBlend(pkmnbuf, GAME_SUN, n, pointer[0] - 14, pointer[1] + 8, RGBA8(0x0, 0x0, 0x0, 100));
-				if (n) printElement(pkmnbuf, GAME_SUN, n, pointer[0] - 18, pointer[1] + 3);
-				sf2d_draw_texture(selector, pointer[0], pointer[1] - 2 - ((!isBufferized) ? movementOffsetSlow(3) : 0));
+				if (n) {
+					printElementBlend(pkmnbuf, GAME_SUN, n, pointer[0] - 14, pointer[1] + 8, RGBA8(0x0, 0x0, 0x0, 100));
+					printElement(pkmnbuf, GAME_SUN, n, pointer[0] - 18, pointer[1] + 3);
+				}
+				screen_draw_texture(TEXTURE_SELECTOR_NORMAL, pointer[0], pointer[1] - 2 - ((!isBufferized) ? movementOffsetSlow(3) : 0));
 			}
 		}
-	pksm_end_frame();
 
-	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-		sf2d_draw_texture(boxView, 0, 0);
-		sf2d_draw_texture(editorBar, 0, 210);
+		screen_select(GFX_BOTTOM);
+		screen_draw_texture(TEXTURE_BOX_VIEW, 0, 0);
+		screen_draw_texture(TEXTURE_BOTTOM_BAR, 0, 210);
 		swprintf(page, MAX_LENGTH_BOX_NAME+1, isWirelessActivated ? L"Wireless %d" : i18n(S_GRAPHIC_PKBANK_SAVED_BOX_TITLE), saveBox + 1);
-		sftd_draw_wtext(fontBold12, 12 + (178 - sftd_get_wtext_width(fontBold12, 12, page)) / 2, 19, WHITE, 12, page);
-		sf2d_draw_texture(left, 7, 17);
-		sf2d_draw_texture(right, 185, 17);
-		sf2d_draw_texture(transferButton, 242, 5);
-		sf2d_draw_texture(back, 283, 211);
-		sf2d_draw_texture(button, 208, 43);
-		sf2d_draw_texture(button, 208, 70);
-		sf2d_draw_texture(button, 208, 97);
-		sf2d_draw_texture(button, 208, 153);
-		sf2d_draw_texture(button, 208, 180);
-		sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKBANK_MENU_VIEW))) / 2, 50, BLACK, 12, i18n(S_GRAPHIC_PKBANK_MENU_VIEW));
-		sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKBANK_MENU_CLEARBOX))) / 2, 77, BLACK, 12, i18n(S_GRAPHIC_PKBANK_MENU_CLEARBOX));
-		sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKBANK_MENU_RELEASE))) / 2, 104, BLACK, 12, i18n(S_GRAPHIC_PKBANK_MENU_RELEASE));
-		sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKBANK_MENU_DEX))) / 2, 160, BLACK, 12, i18n(S_GRAPHIC_PKBANK_MENU_DEX));
-		sftd_draw_wtext(fontBold12, 208 + (109 - sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_PKBANK_MENU_DUMP))) / 2, 187, BLACK, 12, i18n(S_GRAPHIC_PKBANK_MENU_DUMP));
+		screen_draw_wstring(12 + (178 - screen_get_wstring_width(page, FONT_SIZE_12, FONT_SIZE_12)) / 2, 19, FONT_SIZE_12, FONT_SIZE_12, WHITE, page);
+		screen_draw_texture(TEXTURE_LEFT, 7, 17);
+		screen_draw_texture(TEXTURE_RIGHT, 185, 17);
+		screen_draw_texture(TEXTURE_TRANSFER_BUTTON, 242, 5);
+		screen_draw_texture(TEXTURE_BACK_BUTTON, 283, 211);
+		screen_draw_texture(TEXTURE_BUTTON, 208, 43);
+		screen_draw_texture(TEXTURE_BUTTON, 208, 70);
+		screen_draw_texture(TEXTURE_BUTTON, 208, 97);
+		screen_draw_texture(TEXTURE_BUTTON, 208, 153);
+		screen_draw_texture(TEXTURE_BUTTON, 208, 180);
+		screen_draw_wstring(208 + (109 - screen_get_wstring_width(i18n(S_GRAPHIC_PKBANK_MENU_VIEW), FONT_SIZE_12, FONT_SIZE_12)) / 2, 50, FONT_SIZE_12, FONT_SIZE_12, BLACK, i18n(S_GRAPHIC_PKBANK_MENU_VIEW));
+		screen_draw_wstring(208 + (109 - screen_get_wstring_width(i18n(S_GRAPHIC_PKBANK_MENU_CLEARBOX), FONT_SIZE_12, FONT_SIZE_12)) / 2, 77, FONT_SIZE_12, FONT_SIZE_12, BLACK, i18n(S_GRAPHIC_PKBANK_MENU_CLEARBOX));
+		screen_draw_wstring(208 + (109 - screen_get_wstring_width(i18n(S_GRAPHIC_PKBANK_MENU_RELEASE), FONT_SIZE_12, FONT_SIZE_12)) / 2, 104, FONT_SIZE_12, FONT_SIZE_12, BLACK, i18n(S_GRAPHIC_PKBANK_MENU_RELEASE));
+		screen_draw_wstring(208 + (109 - screen_get_wstring_width(i18n(S_GRAPHIC_PKBANK_MENU_DEX), FONT_SIZE_12, FONT_SIZE_12)) / 2, 160, FONT_SIZE_12, FONT_SIZE_12, BLACK, i18n(S_GRAPHIC_PKBANK_MENU_DEX));
+		screen_draw_wstring(208 + (109 - screen_get_wstring_width(i18n(S_GRAPHIC_PKBANK_MENU_DUMP), FONT_SIZE_12, FONT_SIZE_12)) / 2, 187, FONT_SIZE_12, FONT_SIZE_12, BLACK, i18n(S_GRAPHIC_PKBANK_MENU_DUMP));
 #if PKSV
 #else
-		sf2d_draw_texture(otaButton, 240, 211);
+		screen_draw_texture(TEXTURE_OTA_BUTTON, 240, 211);
 #endif
 		
 		y = 45;
@@ -1902,56 +1763,52 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 		if (currentEntry > 29) {
 			if (!isSeen) {
 				u16 n = pkx_get_species(pkmnbuf);
-				if (n) printElementBlend(pkmnbuf, GAME_SUN, n, pointer[0] - 14, pointer[1] + 8, RGBA8(0x0, 0x0, 0x0, 100));
-				if (n) printElement(pkmnbuf, GAME_SUN, n, pointer[0] - 18, pointer[1] + 3);
-				sf2d_draw_texture(selector, pointer[0], pointer[1] - 2 - ((!isBufferized) ? movementOffsetSlow(3) : 0));
+				if (n) {
+					printElementBlend(pkmnbuf, GAME_SUN, n, pointer[0] - 14, pointer[1] + 8, RGBA8(0x0, 0x0, 0x0, 100));
+					printElement(pkmnbuf, GAME_SUN, n, pointer[0] - 18, pointer[1] + 3);
+				}
+				screen_draw_texture(TEXTURE_SELECTOR_NORMAL, pointer[0], pointer[1] - 2 - ((!isBufferized) ? movementOffsetSlow(3) : 0));
 			} else
-				sf2d_draw_texture(selector, pointer[0], pointer[1] - 2);
+				screen_draw_texture(TEXTURE_SELECTOR_NORMAL, pointer[0], pointer[1] - 2);
 		}
 		
 		if (isSeen)
-			sf2d_draw_rectangle(0, -30, 320, 240, MASKBLACK);
+			screen_draw_rect(0, -30, 320, 240, MASKBLACK);
 		
 		if (bank_getIsInternetWorking())
-			sftd_draw_wtextf(fontBold9, 10, 220, WHITE, 9, i18n(S_HTTP_SERVER_RUNNING), socket_get_ip());
-			
+			screen_draw_wstringf(10, 220, FONT_SIZE_9, FONT_SIZE_9, WHITE, i18n(S_HTTP_SERVER_RUNNING), socket_get_ip());
 	pksm_end_frame();
-	sf2d_swapbuffers();
-	
-	free(pkmn);
-	free(page);
 }
 
 void printSettings(int box, int language) {
 	wchar_t *menu[] = {i18n(S_GRAPHIC_SETTINGS_BANK_SIZE), i18n(S_GRAPHIC_SETTINGS_BACKUP_SAVE), i18n(S_GRAPHIC_SETTINGS_BACKUP_BANK)};
-	sf2d_start_frame(GFX_TOP, GFX_LEFT);
+	screen_begin_frame();
+		screen_select(GFX_TOP);
 		drawMenuTop();
-	pksm_end_frame();
 	
-	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
+		screen_select(GFX_BOTTOM);
 		printMenuBottom();
 
 		for (int i = 0; i < 3; i++) {
-			sf2d_draw_texture(menuBar, (320 - menuBar->width) / 2, 60 + i * (menuBar->height));
-			sftd_draw_wtext(fontBold15, i == 0 ? 69 : (320 - sftd_get_wtext_width(fontBold15, 15, menu[i])) / 2, 58 + (menuBar->height - 18) / 2 + i * (menuBar->height), DARKBLUE, 15, menu[i]);
+			screen_draw_texture(TEXTURE_MAIN_MENU_DARK_BAR, 65, 60 + i * 190);
+			screen_draw_wstring(i == 0 ? 69 : (320 - screen_get_wstring_width(menu[i], FONT_SIZE_15, FONT_SIZE_15)) / 2, 66 + i * 34, FONT_SIZE_15, FONT_SIZE_15, DARKBLUE, menu[i]);
 		}
 
 #if PKSV
 #else
-		sf2d_draw_texture(otaButton, 280, 220);
+		screen_draw_texture(TEXTURE_OTA_BUTTON, 280, 220);
 #endif
-		sf2d_draw_texture(miniBox, 189, 64);
-		sf2d_draw_texture(minusButton, 169, 65);
-		sf2d_draw_texture(plusButton, 228, 65);
-		sf2d_draw_texture(miniBox, 281, 191);
-		sftd_draw_text(fontBold11, 281 + (36 - (sftd_get_text_width(fontBold11, 11, langs[language]))) / 2, 195, DARKBLUE, 11, langs[language]);
+		screen_draw_texture(TEXTURE_MINI_BOX, 189, 64);
+		screen_draw_texture(TEXTURE_MINUS_BUTTON, 169, 65);
+		screen_draw_texture(TEXTURE_PLUS_BUTTON, 228, 65);
+		screen_draw_texture(TEXTURE_MINI_BOX, 281, 191);
+		screen_draw_string(281 + (36 - (screen_get_string_width(langs[language], FONT_SIZE_11, FONT_SIZE_11))) / 2, 195, FONT_SIZE_11, FONT_SIZE_11, DARKBLUE, langs[language]);
 		
 		char size[5];
 		snprintf(size, 5, "%d", box);
-		sftd_draw_text(fontBold11, 189 + (36 - (sftd_get_text_width(fontBold11, 11, size))) / 2, 68, WHITE, 11, size);
+		screen_draw_string(189 + (36 - (screen_get_string_width(size, FONT_SIZE_11, FONT_SIZE_11))) / 2, 68, FONT_SIZE_11, FONT_SIZE_11, WHITE, size);
 		printBottomIndications(i18n(S_GRAPHIC_SETTINGS_INDICATION));
 	pksm_end_frame();
-	sf2d_swapbuffers();
 }
 
 void printSaveEditorInfo(u8* mainbuf, int byte) {
@@ -1967,7 +1824,7 @@ void printSaveEditorInfo(u8* mainbuf, int byte) {
 }
 
 void printfHexEditorInfo(u8* pkmn, int byte) {
-	int y = 70, x = 8, xribbon = 90;
+	/*int y = 70, x = 8, xribbon = 90;
 	u32 string[NICKNAMELENGTH*2];
 	memset(string, 0, NICKNAMELENGTH*2*sizeof(u32));
 	
@@ -2322,5 +2179,5 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			}
 			break;
 		}
-	}
+	}*/
 }
