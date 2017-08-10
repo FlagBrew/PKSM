@@ -213,7 +213,6 @@ int main() {
 	
 	int game = game_get();
 	
-	GUIGameElementsExit();
 	freezeMsg(i18n(S_MAIN_LOADING_SAVE));
 
 #if CITRA
@@ -415,11 +414,8 @@ int main() {
 #elif ROSALINA_3DSX
 #else
 	if (!isHBL() && game_is3DS() && confirmDisp(i18n(S_LAUNCH_GAME))) {
-		//FXElementsExit();
-		//GUIElementsExit();
 		i18n_exit();
-		//sftd_fini();
-		//sf2d_fini();
+		screen_exit();
 		
 		APT_PrepareToDoApplicationJump(0, ids[game], getLoadedFromCart() ? MEDIATYPE_GAME_CARD : MEDIATYPE_SD);
 		u8 hmac[0x20] = {0};

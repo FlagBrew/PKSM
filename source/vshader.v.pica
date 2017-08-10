@@ -1,5 +1,3 @@
-; Example PICA200 vertex shader
-
 ; Uniforms
 .fvec projection[4]
 

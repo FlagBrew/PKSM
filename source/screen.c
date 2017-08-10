@@ -29,7 +29,6 @@ static C3D_Mtx projectionBot;
 
 static C3D_Tex * glyphSheets;
 static textVertex_s* textVtxArray;
-static int textVtxArrayPos;
 
 static u8 base_alpha = 0xFF;
 
@@ -61,10 +60,6 @@ static u32 mempool_size = 0;
 static void screen_reset_mempool()
 {
 	mempool_index = 0;
-}
-
-void screen_reset_text_vtx_array_pos() {
-	textVtxArrayPos = 0;
 }
 
 static void screen_set_blend(u32 color, bool rgb, bool alpha) 
@@ -177,7 +172,7 @@ void screen_init(void)
 
 void screen_exit(void) 
 {
-	for(u32 id = 0; id < MAX_TEXTURES; id++)
+	for (u32 id = 0; id < MAX_TEXTURES; id++)
         screen_unload_texture(id);
 
 	if(glyphSheets != NULL) 
@@ -415,8 +410,6 @@ void screen_begin_frame(void)
 	
 	if(!C3D_FrameBegin(C3D_FRAME_SYNCDRAW))
 		return;
-	
-	screen_reset_text_vtx_array_pos();
 }
 
 void screen_end_frame(void) 
@@ -777,10 +770,6 @@ void screen_draw_rect(float x, float y, float width, float height, u32 color)
 	screen_set_blend(color, false, false);
 }
 
-void screen_set_text_vertex_array_pos(u32 pos) {
-	textVtxArrayPos = pos;
-}
-
 static void screen_draw_wstring_internal(const wchar_t * wtext, float x, float y, float scaleX, float scaleY, u32 color, bool wrap, bool baseline, float wrapX) 
 {
 	if (wtext == NULL)
@@ -792,7 +781,7 @@ static void screen_draw_wstring_internal(const wchar_t * wtext, float x, float y
 	utf32_to_utf8((uint8_t*)text, (uint32_t*)wtext, size);
 	text[size - 1] = '\0';
 	
-	screen_draw_string(x, y, scaleX, scaleY, color, text);
+	screen_draw_string_internal(text, x, y, scaleX, scaleY, color, false, false, 0);
 }
 
 void screen_draw_wstring(float x, float y, float scaleX, float scaleY, u32 color, const wchar_t * wtext) 

@@ -1,9 +1,5 @@
-#ifndef SCREEN_H
-#define SCREEN_H
-
 #include <3ds.h>
 #include <citro3d.h>
-
 #include <errno.h>
 #include <malloc.h>
 #include <stdarg.h>
@@ -15,16 +11,13 @@
 
 #define TOP_SCREEN_WIDTH			400
 #define BOTTOM_SCREEN_WIDTH			320
-
 #define SCREEN_HEIGHT				240
-
-#define MAX_TEXTURES 				1024
+#define MAX_TEXTURES 				100
 
 #define RGBA8(r, g, b, a) 			((((a)&0xFF)<<24) | (((b)&0xFF)<<16) | (((g)&0xFF)<<8) | (((r)&0xFF)<<0))
 
 #define CLEAR_COLOR 				0x000000FF
 
-void screen_reset_text_vtx_array_pos();
 void screen_init(void);
 void screen_exit(void);
 void screen_clear(gfxScreen_t screen, u32 color);
@@ -59,5 +52,3 @@ void screen_draw_wstringf(float x, float y, float scaleX, float scaleY, u32 colo
 float screen_get_wstring_width(const wchar_t * text, float scaleX, float scaleY);
 float screen_get_wstring_height(const wchar_t * text, float scaleX, float scaleY);
 void screen_draw_string_center(bool isTop, float y, float scaleX, float scaleY, u32 color, const char * text);
-
-#endif

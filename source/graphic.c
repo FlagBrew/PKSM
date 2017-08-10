@@ -64,32 +64,18 @@ int loadPNGInRAM_current_element = 1;
 int loadPNGInRAM_elements = 1;
 
 void GUITextsInit() {
-	freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_LOCALES));
 	struct i18n_files listFiles = i18n_getFilesPath();
 
-	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_ABILITIES));
 	listAbilities = i18n_FileToArrayUTF32(listFiles.abilities);
-
-	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_MOVES));
 	listMoves = i18n_FileToArrayUTF32(listFiles.moves);
-
-	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_SORTING_MOVES));
 	ArrayUTF32_sort_starting_index(&listMoves, 1);
-
-	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_NATURES));
 	listNatures = i18n_FileToArrayUTF32(listFiles.natures);
-
-	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_ITEMS));
 	listItems = i18n_FileToArrayUTF32(listFiles.items);
 	listBalls = i18n_FileToArrayUTF32(listFiles.balls);
 
-	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_SORTING_ITEMS));
 	ArrayUTF32_sort_starting_index_with_sort_func(&listItems, 1, ArrayUTF32_sort_cmp_PKMN_Things_List);
 
-	freezeMsgDetails(i18n(S_GUI_ELEMENTS_LOADING_LOCALES_HP));
 	listHPs = i18n_FileToArrayUTF32(listFiles.hp);
-
-	// Need loading message for forms and species
 	listForms = i18n_FileToArrayUTF32(listFiles.forms);
 	listSpecies = i18n_FileToArrayUTF32(listFiles.species);
 
@@ -108,18 +94,14 @@ void GUITextsInit() {
 void GUIElementsInit() {
 	screen_load_texture_png(TEXTURE_WARNING_TOP, "romfs:/res/Warning Top.png", true);
 	screen_load_texture_png(TEXTURE_WARNING_BOTTOM, "romfs:/res/Warning Bottom.png", true);
-	//freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_FILES));
 	GUITextsInit();
-	//freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_DONE));
 }
 
 void loadPNGInRAM(u32 id, const char* filepath) {
-	wchar_t* str = malloc(sizeof(wchar_t*)*60);
+	wchar_t str[60];
 	swprintf(str, 60, i18n(S_GRAPHIC_GUI_ELEMENTS_SPECIFY_LOADING_DETAILS), loadPNGInRAM_current_element, loadPNGInRAM_elements);
 	freezeMsgDetails(str);
 	loadPNGInRAM_current_element++;
-	free(str);
-	
 	screen_load_texture_png(id, filepath, true);
 }
 
@@ -143,7 +125,7 @@ void GUIElementsI18nSpecify() {
 void GUIElementsSpecify() {
 	int elements = 4;
 	if (game_is3DS()) {
-		elements += 59;
+		elements += 60;
 	} else {
 		elements += 16;
 	}
@@ -156,10 +138,12 @@ void GUIElementsSpecify() {
 	loadPNGInRAM(TEXTURE_ALTERNATIVE_SPRITESHEET, "romfs:/citra/PKResources/additionalassets/alternative_icons_spritesheetv3.png");
 	loadPNGInRAM(TEXTURE_NORMAL_SPRITESHEET, "romfs:/citra/PKResources/additionalassets/pokemon_icons_spritesheetv3.png");
 	loadPNGInRAM(TEXTURE_BALLS_SPRITESHEET, "romfs:/citra/PKResources/additionalassets/balls_spritesheetv2.png");
+	loadPNGInRAM(TEXTURE_SHINY_SPRITESHEET, "romfs:/citra/PKResources/additionalassets/pokemon_shiny_icons_spritesheet.png");
 #else
 	loadPNGInRAM(TEXTURE_ALTERNATIVE_SPRITESHEET, "/3ds/data/PKSM/additionalassets/alternative_icons_spritesheetv3.png");
 	loadPNGInRAM(TEXTURE_NORMAL_SPRITESHEET, "/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheetv3.png");
 	loadPNGInRAM(TEXTURE_BALLS_SPRITESHEET, "/3ds/data/PKSM/additionalassets/balls_spritesheetv2.png");
+	loadPNGInRAM(TEXTURE_SHINY_SPRITESHEET, "/3ds/data/PKSM/additionalassets/pokemon_shiny_icons_spritesheet.png");
 #endif
 
 	if (game_is3DS()) {
@@ -254,10 +238,6 @@ void GUIGameElementsInit() {
 	screen_load_texture_png(TEXTURE_LOGOS_3DS, "romfs:/res/Logos.png", true);
 }
 
-void GUIGameElementsExit() {
-
-}
-
 void GUIElementsExit() {
 	GUIElementsI18nExit();
 }
@@ -278,7 +258,7 @@ void GUIElementsI18nExit() {
 }
 
 void drawFPSDebug() {
-	//screen_draw_rect(10.0f, 10.0f, 108.0f, 20.0f, RGBA8(0, 0, 0, 160));
+	screen_draw_rect(10.0f, 10.0f, 108.0f, 20.0f, RGBA8(0, 0, 0, 160));
 	//screen_draw_stringf(12, 13, 0.5f, 0.5f, WHITE, "FPS: %2.6f", sf2d_get_fps());
 }
 
@@ -532,8 +512,7 @@ void mainMenuDS(int currentEntry) {
 }
 
 void printCredits() {
-	u8 buf[1500];
-	memset(buf, 0, 1500);
+	u8 buf[1500] = {0};
 	loadFile(buf, "romfs:/res/credits.txt");
 	
 	while (aptMainLoop() && !(hidKeysUp() & KEY_B)) {
@@ -847,7 +826,7 @@ void printElement(u8* pkmn, int game, u16 n, int x, int y) {
 		if (pkx_get_species(pkmn) < 0 || pkx_get_species(pkmn) > 821)
 			screen_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, x, y, 0, 0, 34, 30);
 		else
-			screen_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30);
+			screen_draw_texture_part(pkx_is_shiny(pkmn) ? TEXTURE_SHINY_SPRITESHEET : TEXTURE_NORMAL_SPRITESHEET, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30);
 	}
 	if (pkx_is_egg(pkmn))
 		screen_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, x + 6, y + 6, 40 * (EGGSPRITEPOS % 25) + 4, 30 * (EGGSPRITEPOS / 25), 34, 30);
@@ -955,7 +934,6 @@ void infoViewer(u8* pkmn) {
 	}
 	
 	if (pkx_get_species(pkmn) > 0 && pkx_get_species(pkmn) < 822) {
-		
 		screen_draw_texture_part(TEXTURE_BALLS_SPRITESHEET, -2, -5, 32 * (pkx_get_ball(pkmn) % 8), 32 * (pkx_get_ball(pkmn) / 8), 32, 32);
 		screen_draw_wstring(30, 6, FONT_SIZE_12, FONT_SIZE_12, WHITE, listSpecies.items[pkx_get_species(pkmn)]);
 		
@@ -970,13 +948,11 @@ void infoViewer(u8* pkmn) {
 		swprintf(level, 8, i18n(S_GRAPHIC_INFOVIEWER_LV), pkx_get_level(pkmn));
 		screen_draw_wstring(160, 6, FONT_SIZE_12, FONT_SIZE_12, WHITE, level);
 		
-		u32 nick[NICKNAMELENGTH*2];
-		memset(nick, 0, NICKNAMELENGTH*2*sizeof(u32));
+		u32 nick[NICKNAMELENGTH*2] = {0};
 		pkx_get_nickname(pkmn, nick);
 		screen_draw_wstring(215 - screen_get_wstring_width((wchar_t*)nick, FONT_SIZE_12, FONT_SIZE_12), 29, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)nick);
 		
-		u32 ot_name[NICKNAMELENGTH*2];
-		memset(ot_name, 0, NICKNAMELENGTH*2*sizeof(u32));
+		u32 ot_name[NICKNAMELENGTH*2] = {0};
 		pkx_get_ot(pkmn, ot_name);
 		screen_draw_wstring(215 - screen_get_wstring_width((wchar_t*)ot_name, FONT_SIZE_12, FONT_SIZE_12), 49, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)ot_name);
 		
@@ -1082,13 +1058,11 @@ void wcxInfoViewer(u8* buf) {
 	
 	screen_draw_wstring(215 - screen_get_wstring_width(version, FONT_SIZE_12, FONT_SIZE_12), 115, FONT_SIZE_12, FONT_SIZE_12, WHITE, version);
 	
-	u32 title[72];
-	memset(title, 0, 72*sizeof(u32));
+	u32 title[72] = {0};
 	wcx_get_title(buf, title);
 	screen_draw_wstring(!wcx_is_pokemon(buf) ? 4 : 30, 6, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)title);
 	
-	u32 date[12];
-	memset(date, 0, 12*sizeof(u32));
+	u32 date[12] = {0};
 	swprintf((wchar_t*)date, 12, L"%u/%u/%u", wcx_get_year(buf), wcx_get_month(buf), wcx_get_day(buf));
 	screen_draw_wstring(215 - (screen_get_wstring_width((wchar_t*)date, FONT_SIZE_12, FONT_SIZE_12)), 134, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)date);
 	
@@ -1104,8 +1078,7 @@ void wcxInfoViewer(u8* buf) {
 		swprintf(level, 8, i18n(S_GRAPHIC_INFOVIEWER_LV), wcx_get_level(buf));
 		screen_draw_wstring(302, 6, FONT_SIZE_12, FONT_SIZE_12, WHITE, level);
 		
-		u32 ot_name[NICKNAMELENGTH*2];
-		memset(ot_name, 0, NICKNAMELENGTH*2*sizeof(u32));
+		u32 ot_name[NICKNAMELENGTH*2] = {0};
 		wcx_get_ot(buf, ot_name);
 		screen_draw_wstring(215 - screen_get_wstring_width((wchar_t*)ot_name, FONT_SIZE_12, FONT_SIZE_12), 49, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)ot_name);
 		
@@ -1509,13 +1482,11 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 				snprintf(friendship, 4, "%u", pkx_get_friendship(pkmn));
 			screen_draw_string(180 - max - 3 + (max - screen_get_string_width(friendship, FONT_SIZE_12, FONT_SIZE_12)) / 2, 189, FONT_SIZE_12, FONT_SIZE_12, WHITE, friendship);
 			
-			u32 nick[NICKNAMELENGTH*2];
-			memset(nick, 0, NICKNAMELENGTH*2*sizeof(u32));
+			u32 nick[NICKNAMELENGTH*2] = {0};
 			pkx_get_nickname(pkmn, nick);
 			screen_draw_wstring(178 - screen_get_wstring_width((wchar_t*)nick, FONT_SIZE_12, FONT_SIZE_12), 169, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)nick);
 
-			u32 ot_name[NICKNAMELENGTH*2];
-			memset(ot_name, 0, NICKNAMELENGTH*2*sizeof(u32));
+			u32 ot_name[NICKNAMELENGTH*2] = {0};
 			pkx_get_ot(pkmn, ot_name);
 			screen_draw_wstring(178 - screen_get_wstring_width((wchar_t*)ot_name, FONT_SIZE_12, FONT_SIZE_12), 149, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)ot_name);
 		}
@@ -1569,10 +1540,10 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 			for (int i = 0; i < 4; i++) {
 				screen_draw_wstring(2, 28 + i * 20, FONT_SIZE_12, FONT_SIZE_12, (i == additional3) ? YELLOW : WHITE, moves[pkx_get_move(pkmn, i)]);
 				screen_draw_wstring(2, 132 + i * 20, FONT_SIZE_12, FONT_SIZE_12, (i == additional3 - 4) ? YELLOW: WHITE, moves[pkx_get_egg_move(pkmn, i)]);
-				//if (i == additional3)
-				//	sf2d_draw_texture_rotate(subArrow, 198 - movementOffsetSlow(3), 33 + i * 20, 3.1415f);
-				//else if (i == additional3 - 4)
-				//	sf2d_draw_texture_rotate(subArrow, 198 - movementOffsetSlow(3), 137 + i * 20, 3.1415f);
+				if (i == additional3)
+					screen_draw_texture_part(TEXTURE_SUB_ARROW, 198 - movementOffsetSlow(3), 33 + i*20, 0, 0, 20, 18);
+				else if (i == additional3 - 4)
+					screen_draw_texture_part(TEXTURE_SUB_ARROW, 198 - movementOffsetSlow(3), 137 + i*20, 0, 0, 20, 18);
 			}
 
 		}
@@ -1659,8 +1630,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 				if (type1 != type2)
 					screen_draw_texture_part(TEXTURE_TYPES_SPRITESHEET, 325, 120, 50 * type2, 0, 50, 18); 
 				
-				u32 nick[NICKNAMELENGTH*2];
-				memset(nick, 0, NICKNAMELENGTH*2*sizeof(u32));
+				u32 nick[NICKNAMELENGTH*2] = {0};
 				pkx_get_nickname(pkmn, nick);
 				screen_draw_wstring(273, 69, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)nick);
 				
@@ -1676,8 +1646,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 				if (pkx_is_shiny(pkmn))
 					screen_draw_texture(TEXTURE_SHINY, 360 - width - 14, 88);
 				
-				u32 ot_name[NICKNAMELENGTH*2];
-				memset(ot_name, 0, NICKNAMELENGTH*2*sizeof(u32));
+				u32 ot_name[NICKNAMELENGTH*2] = {0};
 				pkx_get_ot(pkmn, ot_name);
 				screen_draw_wstring(273, 146, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)ot_name);
 

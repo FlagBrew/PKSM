@@ -101,14 +101,14 @@
 #define TEXTURE_ALTERNATIVE_SPRITESHEET 80
 #define TEXTURE_BALLS_SPRITESHEET 81
 #define TEXTURE_TYPES_SPRITESHEET 82
-// #define TEXTURE_SHINY_SPRITESHEET 83
+#define TEXTURE_SHINY_SPRITESHEET 83
 
 #define FONT_SIZE_18 0.72f
 #define FONT_SIZE_15 0.6f
 #define FONT_SIZE_14 0.56f
 #define FONT_SIZE_12 0.50f
 #define FONT_SIZE_11 0.46f
-#define FONT_SIZE_9 0.38f
+#define FONT_SIZE_9 0.37f
 
 
 #define BUTTONGREY RGBA8( 99, 110, 133, 255)
@@ -144,7 +144,6 @@ void GUIElementsI18nSpecify(); // Needed for util.c when changing language
 void GUITextsInit(); // Needed for util.c when changing language
 void GUIGameElementsInit();
 void initProgressLoadPNGInRAM(int total);
-void GUIGameElementsExit();
 void GUIElementsExit();
 void GUIElementsI18nExit(); // Needed for util.c when changing language
 void init_font_cache();

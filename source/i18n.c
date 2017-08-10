@@ -78,7 +78,7 @@ u32 *text;
  * Log debug with format
  */
 void debuglogf(const char* format, ...) {
-#if DEBUG_I18N
+#if DEBUG
 	va_list args;
     va_start(args, format);
 	#ifdef VERSION
