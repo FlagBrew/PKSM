@@ -51,7 +51,6 @@ char* url[] = {
 char* LANG_PREFIX[] = { "jp", "en", "fr", "de", "it", "es", "zh", "ko", "nl", "pt", "ru", "tw" };
 		
 void exitServices() {
-	//FXElementsExit();
 	GUIElementsExit();
 	pxiDevExit();
 	hidExit();
@@ -97,7 +96,6 @@ bool initServices() {
 	gfxInitDefault();
 	screen_init();
 	GUIElementsInit();
-	//FXElementsInit();
 	GUIGameElementsInit();
 
 #if CITRA
@@ -183,10 +181,8 @@ int main() {
 
 	u8* mainbuf;
 	u64 mainSize = 0;
-
-	int GBO = 0, SBO = 0;
-	int currentEntry = 0;
 	
+	int currentEntry = 0;
 	bool save = true;
 	
 #if CITRA
@@ -214,7 +210,6 @@ int main() {
 	int game = game_get();
 	
 	freezeMsg(i18n(S_MAIN_LOADING_SAVE));
-
 #if CITRA
 	char savepath[100];
 	sprintf(savepath, "romfs:/citra/saves/%s.bin", gamesList[game]);
@@ -233,8 +228,8 @@ int main() {
 	fclose(saveptr);
 	
 	if (game_isgen4()) {
-		GBO = 0x40000 * getActiveGBO(mainbuf);
-		SBO = 0x40000 * getActiveSBO(mainbuf);
+		save_set_GBO(mainbuf);
+		save_set_SBO(mainbuf);
 	}
 #else
 	if (game_is3DS()) {
@@ -268,6 +263,7 @@ int main() {
 			exitServices();
 			return -1;
 		}
+		
 		u8 data[0x3B4];
 		FSUSER_GetLegacyRomHeader(MEDIATYPE_GAME_CARD, 0LL, data);
 
@@ -275,7 +271,6 @@ int main() {
 		SPIGetCardType(&cardType_, (*(u8*)(data + 12) == 'I') ? 1 : 0);
 
 		mainSize = SPIGetCapacity(cardType_);
-		
 		if (mainSize != 524288) {
 			infoDisp(i18n(S_MAIN_INCORRECT_SAVE_SIZE));
 			exitServices();
@@ -286,8 +281,8 @@ int main() {
 		
 		TWLstoreSaveFile(mainbuf, cardType_);
 		if (game_isgen4()) {
-			GBO = 0x40000 * getActiveGBO(mainbuf);
-			SBO = 0x40000 * getActiveSBO(mainbuf);
+			save_set_GBO(mainbuf);
+			save_set_SBO(mainbuf);
 		}
 	}
 #endif
@@ -389,10 +384,7 @@ int main() {
 	}
 	
 	if (save) {
-		if (game_is3DS() || game_isgen5()) 
-			rewriteCHK(mainbuf);
-		else if (game_isgen4()) 
-			rewriteCHK4(mainbuf, GBO, SBO);
+		rewriteCHK(mainbuf);
 	}
 
 #if CITRA
@@ -413,7 +405,7 @@ int main() {
 #if CITRA
 #elif ROSALINA_3DSX
 #else
-	if (!isHBL() && game_is3DS() && confirmDisp(i18n(S_LAUNCH_GAME))) {
+	if (!isHBL() && game_isgen7() && confirmDisp(i18n(S_LAUNCH_GAME))) {
 		i18n_exit();
 		screen_exit();
 		
@@ -424,6 +416,5 @@ int main() {
 #endif
 	
 	exitServices();
-	
 	return 0;
 }
