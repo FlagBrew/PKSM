@@ -502,7 +502,8 @@ void mainMenuDS(int currentEntry) {
 		screen_draw_texture(TEXTURE_POKEBALL, 168, 91);
 	
 		screen_select(GFX_BOTTOM);
-		screen_draw_texture(TEXTURE_DS_MENU_BOTTOM_BG, 0, 0);
+		screen_clear(GFX_TOP, BLACK);
+		screen_draw_texture(TEXTURE_DS_BOTTOM_BG, 0, 0);
 		for (int i = 0; i < 3; i++) {
 			screen_draw_texture((i == currentEntry) ? TEXTURE_SELECTED_DS_BAR : TEXTURE_DS_BAR, 0, 33 + i*56);
 			screen_draw_wstring_center(false, (i == currentEntry) ? 43 + i*56 : 45 + i*56, FONT_SIZE_14, FONT_SIZE_14, (i == currentEntry) ? WHITE : DS, menu[i]);
@@ -608,7 +609,7 @@ void printDatabaseListDS(char *database[], int currentEntry, int page, int sprit
 			if (i == currentEntry)
 				screen_draw_texture(TEXTURE_SELECTED_L, 18, y);
 			else
-				screen_draw_texture(TEXTURE_SELECTED_R, 18, y);
+				screen_draw_texture(TEXTURE_NORMAL_L, 18, y);
 			
 			if (pk != -1) {
 				screen_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 22, y + 2, 40 * (pk % 25) + 4, 30 * (pk / 25), 34, 30);
@@ -625,9 +626,9 @@ void printDatabaseListDS(char *database[], int currentEntry, int page, int sprit
 		for (int i = 5; i < 10; i++) {
 			pk = spriteArray[page * 10 + i];
 			if (i == currentEntry)
-				screen_draw_texture(TEXTURE_SELECTED_L, 200, y);
-			else
 				screen_draw_texture(TEXTURE_SELECTED_R, 200, y);
+			else
+				screen_draw_texture(TEXTURE_NORMAL_R, 200, y);
 			
 			if (pk != -1) {
 				screen_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 204, y + 2, 40 * (pk % 25) + 4, 30 * (pk / 25), 34, 30);

@@ -78,8 +78,8 @@ LIBRARY_DIRS := $(PORTLIBS) $(CTRULIB)
 LIBRARIES := citro3d ctru m
 
 BUILD_FLAGS := -march=armv6k -mtune=mpcore -mfloat-abi=hard
-BUILD_FLAGS_CC := -g -Wall -O2 -mword-relocations \
-			-fomit-frame-pointer -ffunction-sections \
+BUILD_FLAGS_CC := -g -Wall -Og -mword-relocations \
+			-fomit-frame-pointer -ffunction-sections -ffast-math \
 			$(BUILD_FLAGS) $(INCLUDE) -DARM11 -D_3DS \
 			-DPKSV=${PKSV} \
 			-DROSALINA_3DSX=${ROSALINA} \
@@ -91,7 +91,7 @@ BUILD_FLAGS_CC := -g -Wall -O2 -mword-relocations \
 BUILD_FLAGS_CXX := $(BUILD_FLAGS_CC) -fno-rtti -fno-exceptions -std=gnu++11
 RUN_FLAGS :=
 
-REMOTE_IP := 192.168.1.6
+REMOTE_IP := 192.168.1.3
 
 # 3DS/Wii U CONFIGURATION #
 
