@@ -405,8 +405,8 @@ int main() {
 #if CITRA
 #elif ROSALINA_3DSX
 #else
-	if (!isHBL() && game_isgen7() && confirmDisp(i18n(S_LAUNCH_GAME))) {
-		i18n_exit();
+	if (!isHBL() && game_is3DS() && confirmDisp(i18n(S_LAUNCH_GAME))) {
+		//i18n_exit();
 		screen_exit();
 		
 		APT_PrepareToDoApplicationJump(0, ids[game], getLoadedFromCart() ? MEDIATYPE_GAME_CARD : MEDIATYPE_SD);
