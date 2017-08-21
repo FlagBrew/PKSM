@@ -18,6 +18,9 @@
 
 #include "save.h"
 
+int gbo = -1;
+int sbo = -1;
+
 u16 crc16[] = {
 	0x0000, 0xC0C1, 0xC181, 0x0140, 0xC301, 0x03C0, 0x0280, 0xC241,
 	0xC601, 0x06C0, 0x0780, 0xC741, 0x0500, 0xC5C1, 0xC481, 0x0440,
@@ -53,9 +56,16 @@ u16 crc16[] = {
 	0x8201, 0x42C0, 0x4380, 0x8341, 0x4100, 0x81C1, 0x8081, 0x4040
 };
 
-int getActiveGBO(u8* mainbuf) {
+int save_get_GBO() {
+	return gbo;
+}
+
+int save_get_SBO() {
+	return sbo;
+}
+
+void save_set_GBO(u8* mainbuf) {
 	int game = game_get();
-	
 	int ofs = 0;
 
 	u8 temp[10];
@@ -63,12 +73,16 @@ int getActiveGBO(u8* mainbuf) {
 	memset(dummy, 0XFF, 10);
 	
 	memcpy(&temp, &mainbuf[0x00000], 10);
-	if (!memcmp(temp, dummy, 10))
-		return 1;
+	if (!memcmp(temp, dummy, 10)) {
+		gbo = 0x40000;
+		return;
+	}
 	
 	memcpy(&temp, &mainbuf[0x40000], 10);
-	if (!memcmp(temp, dummy, 10))
-		return 0;
+	if (!memcmp(temp, dummy, 10)) {
+		gbo = 0;
+		return;
+	}
 	
 	if (game == GAME_HG || game == GAME_SS)
 		ofs = 0xF618;
@@ -77,17 +91,15 @@ int getActiveGBO(u8* mainbuf) {
 	else if (game == GAME_DIAMOND || game == GAME_PEARL)
 		ofs = 0xC0F0;
 	
-	u16 c1;
-	u16 c2;
+	u16 c1, c2;
 	memcpy(&c1, &mainbuf[ofs], 2);
 	memcpy(&c2, &mainbuf[ofs + 0x40000], 2);
 	
-	return (c1 >= c2) ? 0 : 1;
+	gbo = (c1 >= c2) ? 0 : 0x40000;
 }
 
-int getActiveSBO(u8* mainbuf) {
+void save_set_SBO(u8* mainbuf) {
 	int game = game_get();
-	
 	int ofs = 0;
 	
 	if (game == GAME_HG || game == GAME_SS)
@@ -102,19 +114,22 @@ int getActiveSBO(u8* mainbuf) {
 	memset(dummy, 0XFF, 10);
 	
 	memcpy(&temp, &mainbuf[ofs], 10);
-	if (!memcmp(temp, dummy, 10))
-		return 1;
+	if (!memcmp(temp, dummy, 10)) {
+		sbo = 0x40000;
+		return;
+	}
 
 	memcpy(&temp, &mainbuf[ofs + 0x40000], 10);
-	if (!memcmp(temp, dummy, 10))
-		return 0;
+	if (!memcmp(temp, dummy, 10)) {
+		sbo = 0;
+		return;
+	}
 	
-	u16 c1;
-	u16 c2;
+	u16 c1, c2;
 	memcpy(&c1, &mainbuf[ofs], 2);
 	memcpy(&c2, &mainbuf[ofs + 0x40000], 2);
 	
-	return (c1 >= c2) ? 0 : 1;
+	sbo = (c1 >= c2) ? 0 : 0x40000;
 }
 
 u32 CHKOffset(u32 i) {
@@ -285,40 +300,34 @@ void rewriteCHK(u8 *mainbuf) {
 			memcpy(mainbuf + BWCHKMirr(i), &cs, 2);
 		}
 	}
-
-	free(tmp);
-}
-
-void rewriteCHK4(u8 *mainbuf, int GBO, int SBO) {
-	int game = game_get();
 	
-	u8* tmp = (u8*)malloc(0x35000 * sizeof(u8));
-	u16 cs;
-	
-	// start, end, chkoffset
-	int general[3] = {0, 0, 0};
-	int storage[3] = {0, 0, 0};
+	else if (game_isgen4()) {
+		int game = game_get();
+		// start, end, chkoffset
+		int general[3] = {0, 0, 0};
+		int storage[3] = {0, 0, 0};
 
-	if (game == GAME_DIAMOND || game == GAME_PEARL) {
-		general[0] = 0x0000; general[1] = 0xC0EC; general[2] = 0xC0FE;
-		storage[0] = 0xC100; storage[1] = 0x1E2CC; storage[2] = 0x1E2DE;
-	} 
-	else if (game == GAME_PLATINUM) {
-		general[0] = 0x0000; general[1] = 0xCF18; general[2] = 0xCF2A;
-		storage[0] = 0xCF2C; storage[1] = 0x1F0FC; storage[2] = 0x1F10E;
+		if (game == GAME_DIAMOND || game == GAME_PEARL) {
+			general[0] = 0x0000; general[1] = 0xC0EC; general[2] = 0xC0FE;
+			storage[0] = 0xC100; storage[1] = 0x1E2CC; storage[2] = 0x1E2DE;
+		} 
+		else if (game == GAME_PLATINUM) {
+			general[0] = 0x0000; general[1] = 0xCF18; general[2] = 0xCF2A;
+			storage[0] = 0xCF2C; storage[1] = 0x1F0FC; storage[2] = 0x1F10E;
+		}
+		else if (game == GAME_HG || game == GAME_SS) {
+			general[0] = 0x0000; general[1] = 0xF618; general[2] = 0xF626;
+			storage[0] = 0xF700; storage[1] = 0x21A00; storage[2] = 0x21A0E;		
+		}
+		
+		memcpy(tmp, mainbuf + gbo + general[0], general[1] - general[0]);
+		cs = ccitt16(tmp, general[1] - general[0]);
+		memcpy(mainbuf + gbo + general[2], &cs, 2);
+
+		memcpy(tmp, mainbuf + sbo + storage[0], storage[1] - storage[0]);
+		cs = ccitt16(tmp, storage[1] - storage[0]);
+		memcpy(mainbuf + sbo + storage[2], &cs, 2);		
 	}
-	else if (game == GAME_HG || game == GAME_SS) {
-		general[0] = 0x0000; general[1] = 0xF618; general[2] = 0xF626;
-		storage[0] = 0xF700; storage[1] = 0x21A00; storage[2] = 0x21A0E;		
-	}
-	
-	memcpy(tmp, mainbuf + GBO + general[0], general[1] - general[0]);
-	cs = ccitt16(tmp, general[1] - general[0]);
-	memcpy(mainbuf + GBO + general[2], &cs, 2);
-
-	memcpy(tmp, mainbuf + SBO + storage[0], storage[1] - storage[0]);
-	cs = ccitt16(tmp, storage[1] - storage[0]);
-	memcpy(mainbuf + SBO + storage[2], &cs, 2);
 
 	free(tmp);
 }

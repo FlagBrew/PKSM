@@ -58,7 +58,6 @@ u32 getSaveSeed(u8* mainbuf, int index);
 u8 getSaveLanguage(u8* mainbuf);
 
 void setWC(u8* mainbuf, u8* wc6buf, int i, int nInjected[]);
-void setWC4(u8* mainbuf, u8* wc6buf, int i, int nInjected[], int GBO);
 void setSaveLanguage(u8* mainbuf, int i);
 
 void parseSaveHexEditor(u8* mainbuf, int byte);

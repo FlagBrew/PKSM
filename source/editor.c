@@ -74,12 +74,16 @@ u32 getSaveSeed(u8* mainbuf, int index) {
 }
 
 void setWC(u8* mainbuf, u8* wcbuf, int i, int nInjected[]) {
+	int max = 1;
+	
 	if (game_getisXY()) {
 		*(mainbuf + 0x1BC00 + i / 8) |= 0x1 << (i % 8);
 		memcpy((void*)(mainbuf + 0x1BD00 + nInjected[0] * WC6LENGTH), (const void*)wcbuf, WC6LENGTH);
+		
+		max = 24;
 	}
 
-	if (game_getisORAS()) {
+	else if (game_getisORAS()) {
 		*(mainbuf + 0x1CC00 + i / 8) |= 0x1 << (i % 8);
 		memcpy((void*)(mainbuf + 0x1CD00 + nInjected[0] * WC6LENGTH), (const void*)wcbuf, WC6LENGTH);
 
@@ -89,14 +93,18 @@ void setWC(u8* mainbuf, u8* wcbuf, int i, int nInjected[]) {
 			*(mainbuf + 0x319B8 + 2) = 0x5D;
 			*(mainbuf + 0x319B8 + 3) = 0x22;
 		}
+		
+		max = 24;
 	}
 
-	if (game_getisSUMO()) {
+	else if (game_getisSUMO()) {
 		*(mainbuf + 0x65C00 + i / 8) |= 0x1 << (i % 8);
 		memcpy((void*)(mainbuf + 0x65C00 + 0x100 + nInjected[0] * WC6LENGTH), (const void*)wcbuf, WC6LENGTH);
+		
+		max = 48;
 	}
 
-	if (game_isgen5()) {
+	else if (game_isgen5()) {
 		u32 seed;
 		memcpy(&seed, &mainbuf[0x1D290], sizeof(u32));
 
@@ -120,35 +128,33 @@ void setWC(u8* mainbuf, u8* wcbuf, int i, int nInjected[]) {
 			seed = pkx_lcrng(seed);
 			memcpy(&mainbuf[0x1C800 + i], &temp, 2);
 		}
+		
+		max = 12;
+	}
+
+	else if (game_isgen4()) {
+		int game = game_get();
+		int GBO = save_get_GBO();
+		
+		mainbuf[GBO + 72] = (u8)((mainbuf[GBO + 72] & 0xFE) | 1);
+		if (game == GAME_HG || game == GAME_SS) {
+			*(mainbuf + 0x9D3C + GBO + (2047 >> 3)) = 0x80;
+			memcpy(&mainbuf[0x9E3C + GBO + nInjected[0] * PGTLENGTH], wcbuf, PGTLENGTH);
+		}
+		else if (game == GAME_PLATINUM) {
+			*(mainbuf + 0xB4C0 + GBO + (2047 >> 3)) = 0x80;
+			memcpy(&mainbuf[0xB5C0 + GBO + nInjected[0] * PGTLENGTH], wcbuf, PGTLENGTH);
+		}
+		else if (game == GAME_DIAMOND || game == GAME_PEARL) {
+			memcpy(&mainbuf[0xA7D0 + GBO + nInjected[0] * 4], &DPActiveFlag[0], 4);
+			memcpy(&mainbuf[0xA7FC + GBO + nInjected[0] * PGTLENGTH], wcbuf, PGTLENGTH);
+		}
+		
+		max = 8;
 	}
 
 	nInjected[0] += 1;
-	if (game_isgen6()) {
-		if (nInjected[0] >= 24)
-			nInjected[0] = 0;
-	} else if (nInjected[0] >= 48)
-		nInjected[0] = 0;
-}
-
-void setWC4(u8* mainbuf, u8* wcbuf, int i, int nInjected[], int GBO) {
-	int game = game_get();
-	
-	mainbuf[GBO + 72] = (u8)((mainbuf[GBO + 72] & 0xFE) | 1);
-	if (game == GAME_HG || game == GAME_SS) {
-		*(mainbuf + 0x9D3C + GBO + (2047 >> 3)) = 0x80;
-		memcpy(&mainbuf[0x9E3C + GBO + nInjected[0] * PGTLENGTH], wcbuf, PGTLENGTH);
-	}
-	else if (game == GAME_PLATINUM) {
-		*(mainbuf + 0xB4C0 + GBO + (2047 >> 3)) = 0x80;
-		memcpy(&mainbuf[0xB5C0 + GBO + nInjected[0] * PGTLENGTH], wcbuf, PGTLENGTH);
-	}
-	else if (game == GAME_DIAMOND || game == GAME_PEARL) {
-		memcpy(&mainbuf[0xA7D0 + GBO + nInjected[0] * 4], &DPActiveFlag[0], 4);
-		memcpy(&mainbuf[0xA7FC + GBO + nInjected[0] * PGTLENGTH], wcbuf, PGTLENGTH);
-	}
-
-	nInjected[0] += 1;
-	if (nInjected[0] >= 8)
+	if (nInjected[0] >= max)
 		nInjected[0] = 0;
 }
 

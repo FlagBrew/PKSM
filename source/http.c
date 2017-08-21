@@ -178,14 +178,56 @@ Result downloadFile(char* url, char* path) {
 	
 		amInit();
 		Handle handle;
-		AM_QueryAvailableExternalTitleDatabase(NULL);
-		AM_DeleteAppTitle(MEDIATYPE_SD, 0x000400000EC10000);
-		AM_StartCiaInstall(MEDIATYPE_SD, &handle);
-		FSFILE_Write(handle, NULL, 0, buf, contentsize, 0);
-		AM_FinishCiaInstall(handle);
+		AM_TitleEntry metadata;
+		u64 titleList[1] = {0x000400000EC10000};
+		
+		ret = AM_GetTitleInfo(MEDIATYPE_SD, 1, titleList, &metadata);
+		if (ret == 0 && metadata.size != (u64)contentsize) {
+			ret = AM_QueryAvailableExternalTitleDatabase(NULL);
+			if (ret != 0) {
+				wchar_t string[30];
+				swprintf(string, 30, L"amquery: %08X", ret);
+				infoDisp(string);
+				return -1;
+			}
+			ret = AM_DeleteAppTitle(MEDIATYPE_SD, titleList[0]);
+			if (ret != 0) {
+				wchar_t string[30];
+				swprintf(string, 30, L"deletetitle: %08X", ret);
+				infoDisp(string);
+				return -1;
+			}
+			ret = AM_StartCiaInstall(MEDIATYPE_SD, &handle);
+			if (ret != 0) {
+				wchar_t string[30];
+				swprintf(string, 30, L"startinstall: %08X", ret);
+				infoDisp(string);
+				return -1;
+			}
+			ret = FSFILE_Write(handle, NULL, 0, buf, contentsize, 0);
+			if (ret != 0) {
+				wchar_t string[30];
+				swprintf(string, 30, L"fsfile: %08X", ret);
+				infoDisp(string);
+				return -1;
+			}
+			ret = AM_FinishCiaInstall(handle);
+			if (ret != 0) {
+				wchar_t string[30];
+				swprintf(string, 30, L"finish: %08X", ret);
+				infoDisp(string);
+				return -1;
+			}
+			
+			infoDisp(i18n(S_HTTP_UPDATE_INSTALLED));
+		} else {
+			wchar_t string[30];
+			swprintf(string, 30, L"titleinfo: %08X %llu %llu", ret, metadata.size, contentsize);
+			infoDisp(string);
+			infoDisp(L"Latest version already installed!");
+		}
+		
 		amExit();
-
-		infoDisp(i18n(S_HTTP_UPDATE_INSTALLED));		
 	} else {
 		remove(path);
 		file_write(path, buf, contentsize);	

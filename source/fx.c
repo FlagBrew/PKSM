@@ -18,7 +18,7 @@
 
 #include "fx.h"
 
-sf2d_texture *cubesSheet, *boxesSheet;
+//sf2d_texture *cubesSheet, *boxesSheet;
 
 int movementLong = 0;
 int movementSlow = 0;
@@ -32,8 +32,8 @@ float rad = 0.0f;
 
 void FXElementsInit() {
 	srand(time(NULL));
-	cubesSheet = sfil_load_PNG_file("romfs:/res/fx/Cubes.png", SF2D_PLACE_RAM);
-	boxesSheet = sfil_load_PNG_file("romfs:/res/fx/Boxes.png", SF2D_PLACE_RAM);
+	//cubesSheet = sfil_load_PNG_file("romfs:/res/fx/Cubes.png", SF2D_PLACE_RAM);
+	//boxesSheet = sfil_load_PNG_file("romfs:/res/fx/Boxes.png", SF2D_PLACE_RAM);
 	
 	x[0] = 0;
 	y[0] = 0;
@@ -44,8 +44,8 @@ void FXElementsInit() {
 }
 
 void FXElementsExit() {
-	sf2d_free_texture(boxesSheet);
-	sf2d_free_texture(cubesSheet);
+	//sf2d_free_texture(boxesSheet);
+	//sf2d_free_texture(cubesSheet);
 }
 
 int movementOffsetLong(int maxrange) {
@@ -76,7 +76,7 @@ int giveTransparence() {
 }
 
 void animateBG(bool isUp) {
-	int maxrange = (isUp) ? 400 : 320;
+	/*int maxrange = (isUp) ? 400 : 320;
 	sf2d_draw_texture_part(boxesSheet, 0, 0, maxrange - x[0] / 2, 0, maxrange, 240);
 	
 	sf2d_draw_texture_part(cubesSheet, x[1] / 2, y[1], 0, 6, 66, 56); //cube1
@@ -102,5 +102,5 @@ void animateBG(bool isUp) {
 			x[i] += 1;
 	}
 
-	rad = (rad >= 360) ? 0.0f : (rad + 0.005f);
+	rad = (rad >= 360) ? 0.0f : (rad + 0.005f);*/
 }

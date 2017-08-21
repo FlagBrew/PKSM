@@ -82,10 +82,11 @@ Check out `COMPILE.md` for more details.
 
 * dsoldier for the gorgeous graphic work
 * Naxann and Anty-Lemon for their contributions to the project
-* Smealum for ctrulib, Xerpi for sf2d, sftd and sfil
+* Smealum for ctrulib
 * Kaphotics and SciresM for PKHeX and memecrypto
 * J-K-D for direct save import/export
 * Slownic for java servepkx
+* Joel16 and SteveIce10 for portions of screen.c
 * Slashcash for PCHex++
 * Gocario for PKBrew
 * TuxSH for TWLSaveTool

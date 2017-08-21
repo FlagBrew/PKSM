@@ -19,14 +19,12 @@
 #pragma once
 
 #include <3ds.h>
+#include <citro3d.h>
 #include <arpa/inet.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <malloc.h>
 #include <netinet/in.h>
-#include <sf2d.h>
-#include <sfil.h>
-#include <sftd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/socket.h>
@@ -47,12 +45,12 @@
 #include "memecrypto/source/memecrypto.h"
 #include "pkx.h"
 #include "save.h"
+#include "screen.h"
 #include "sha256.h"
 #include "socket.h"
 #include "spi.h"
 #include "util.h"
 #include "wcx.h"
-
 
 /**
  * OFFSETS

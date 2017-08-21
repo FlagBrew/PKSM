@@ -19,8 +19,9 @@
 #pragma once
 #include "common.h"
 
-int getActiveGBO(u8* mainbuf);
-int getActiveSBO(u8* mainbuf);
+int save_get_GBO();
+int save_get_SBO();
+void save_set_GBO(u8* mainbuf);
+void save_set_SBO(u8* mainbuf);
 void rewriteCHK(u8 *mainbuf);
-void rewriteCHK4(u8 *mainbuf, int GBO, int SBO);
 void resign(u8 *mainbuf);

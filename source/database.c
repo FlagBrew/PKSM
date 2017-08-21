@@ -421,7 +421,7 @@ void eventDatabase5(u8* mainbuf) {
 			isSelected = true;
 			int i = getI(database[page * 10 + currentEntry], false);
 
-			char *testpath = (char*)malloc(40 * sizeof(char));
+			char testpath[40];
 			for (int j = 0; j < 7; j++) {
 				if (game_isgen5())
 					getSinglePathPGF(testpath, j, i);
@@ -458,14 +458,13 @@ void eventDatabase5(u8* mainbuf) {
 					if (touch.px > 215 && touch.px < 251 && touch.py > 178 && touch.py < 202 && langVett[5]) langSelected = 5;
 					if (touch.px > 253 && touch.px < 289 && touch.py > 178 && touch.py < 202 && langVett[6]) langSelected = 6;
 				}
-				
 #if PKSV
 #else
 				if (hidKeysDown() & KEY_START) {
 					if (nInjected[0] >= (game_isgen5() ? 12 : 8)) 
 						nInjected[0] = 0;
 					
-					char *path = (char*)malloc(30 * sizeof(char));
+					char path[40];
 					if (game_isgen5())
 						getSinglePathPGF(path, langSelected, i);
 					else
@@ -474,7 +473,6 @@ void eventDatabase5(u8* mainbuf) {
 					FILE *fptr = fopen(path, "rt");
 					if (fptr == NULL) {
 						fclose(fptr);
-						free(path);
 						infoDisp(i18n(S_DATABASE_ERROR_INJECTION));
 						break;
 					}
@@ -484,7 +482,6 @@ void eventDatabase5(u8* mainbuf) {
 					if (buf == NULL) {
 						fclose(fptr);
 						free(buf);
-						free(path);
 						infoDisp(i18n(S_DATABASE_ERROR_INJECTION));
 						break;
 					}
@@ -494,18 +491,15 @@ void eventDatabase5(u8* mainbuf) {
 
 					setWC(mainbuf, buf, i, nInjected);
 
-					free(path);
 					free(buf);					
 					infoDisp(i18n(S_DATABASE_SUCCESS_INJECTION));
 					break;
 				}
 #endif
-				
 				printDatabaseListDS(database, currentEntry, page, spriteArray, isSelected, langSelected, langVett);
 			}
 			
 			isSelected = false;
-			free(testpath);
 		}
 		
 		printDatabaseListDS(database, currentEntry, page, spriteArray, isSelected, langSelected, langVett);
