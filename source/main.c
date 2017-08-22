@@ -60,8 +60,7 @@ void exitServices() {
 	sdmcExit();
 	aptExit();
 	romfsExit();
-	screen_exit();
-	gfxExit();
+	pp2d_exit();
 	cfguExit();
 }
 
@@ -87,14 +86,14 @@ bool initServices() {
 		mkdir(i18npath, 0777);
 	}
 	
+	config_init();
 	i18n_init();
 	fsStart();
 	srvInit();
 	hidInit();
 	pxiDevInit();
 
-	gfxInitDefault();
-	screen_init();
+	pp2d_init();
 	GUIElementsInit();
 	GUIGameElementsInit();
 
@@ -407,7 +406,7 @@ int main() {
 #else
 	if (!isHBL() && game_is3DS() && confirmDisp(i18n(S_LAUNCH_GAME))) {
 		//i18n_exit();
-		screen_exit();
+		pp2d_exit();
 		
 		APT_PrepareToDoApplicationJump(0, ids[game], getLoadedFromCart() ? MEDIATYPE_GAME_CARD : MEDIATYPE_SD);
 		u8 hmac[0x20] = {0};

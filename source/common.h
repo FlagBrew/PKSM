@@ -30,6 +30,7 @@
 #include <sys/socket.h>
 
 #include "bank.h"
+#include "config.h"
 #include "database.h"
 #include "dex.h"
 #include "editor.h"
@@ -43,9 +44,9 @@
 #include "http.h"
 #include "i18n.h"
 #include "memecrypto/source/memecrypto.h"
+#include "pp2d/pp2d.h"
 #include "pkx.h"
 #include "save.h"
-#include "screen.h"
 #include "sha256.h"
 #include "socket.h"
 #include "spi.h"

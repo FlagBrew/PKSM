@@ -311,7 +311,7 @@ void settingsMenu(u8* mainbuf) {
 				operationDone = true;
 				infoDisp(i18n(S_UTIL_BANK_SIZE_CHANGED));
 			}
-			if (touch.px > 60 && touch.px < 260 && touch.py > 100 && touch.py < 140) {
+			if (touch.px > 60 && touch.px < 260 && touch.py > 100 && touch.py < 134) {
 				snprintf(bakpath, 80, "/3ds/data/PKSM/backup/main_%s_%i%i%i%02i%02i%02i", gamesList[game], timeStruct->tm_mday, timeStruct->tm_mon + 1, timeStruct->tm_year + 1900, timeStruct->tm_hour, timeStruct->tm_min, timeStruct->tm_sec);
 				
 				FILE *f = fopen(bakpath, "wb");
@@ -321,7 +321,7 @@ void settingsMenu(u8* mainbuf) {
 				operationDone = true;
 				infoDisp(i18n(S_UTIL_BACKUP_SAVE_CREATED));
 			}
-			if (touch.px > 60 && touch.px < 260 && touch.py > 140 && touch.py < 180) {
+			if (touch.px > 60 && touch.px < 260 && touch.py > 134 && touch.py < 168) {
 				FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
 				fseek(bak, 0, SEEK_END);
 				size = ftell(bak);
@@ -338,6 +338,13 @@ void settingsMenu(u8* mainbuf) {
 				free(bankbuf);	
 
 				infoDisp(i18n(S_UTIL_BACKUP_BANK_CREATED));
+				operationDone = true;
+			}
+			if (touch.px > 60 && touch.px < 260 && touch.py > 168 && touch.py < 202) {
+				config_set_pkx_set_lock(config_get_pkx_set_lock() != 0 ? 0 : 1);
+				config_set();
+				
+				infoDisp(L"Config changed!");
 				operationDone = true;
 			}
 		}

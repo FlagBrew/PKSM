@@ -17,6 +17,7 @@
 >   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 >   See LICENSE for information.
 */
+
 #include "i18n.h"
 
 static wchar_t* ACCENTED_CHAR_REPLACE_FROM = L"ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ";
@@ -557,5 +558,5 @@ void i18n_exit() {
 	free(i18n_files_loaded.app);
 
 	i18n_free_ArrayUTF32(&i18n_AppTexts);
-
+	
 }

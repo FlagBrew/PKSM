@@ -36,6 +36,5 @@
 	;outclr
 	mul outclr, RGBA_TO_FLOAT4.xxxx, intex
 
-	; We're finished
 	end
 .end
