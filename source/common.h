@@ -19,19 +19,18 @@
 #pragma once
 
 #include <3ds.h>
+#include <citro3d.h>
 #include <arpa/inet.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <malloc.h>
 #include <netinet/in.h>
-#include <sf2d.h>
-#include <sfil.h>
-#include <sftd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/socket.h>
 
 #include "bank.h"
+#include "config.h"
 #include "database.h"
 #include "dex.h"
 #include "editor.h"
@@ -45,6 +44,7 @@
 #include "http.h"
 #include "i18n.h"
 #include "memecrypto/source/memecrypto.h"
+#include "pp2d/pp2d/pp2d.h"
 #include "pkx.h"
 #include "save.h"
 #include "sha256.h"
@@ -52,7 +52,6 @@
 #include "spi.h"
 #include "util.h"
 #include "wcx.h"
-
 
 /**
  * OFFSETS

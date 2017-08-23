@@ -20,7 +20,6 @@
 #include "common.h"
 
 void FXElementsInit();
-void FXElementsExit();
 int movementOffsetLong(int maxrange);
 int movementOffsetSlow(int maxrange);
 int giveTransparence();

@@ -13,3 +13,6 @@
 [submodule "serveLegality"]
 	path = serveLegality
 	url = https://github.com/BernardoGiordano/serveLegality
+[submodule "source/pp2d"]
+	path = source/pp2d
+	url = https://github.com/BernardoGiordano/pp2d

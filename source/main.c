@@ -51,7 +51,6 @@ char* url[] = {
 char* LANG_PREFIX[] = { "jp", "en", "fr", "de", "it", "es", "zh", "ko", "nl", "pt", "ru", "tw" };
 		
 void exitServices() {
-	FXElementsExit();
 	GUIElementsExit();
 	pxiDevExit();
 	hidExit();
@@ -61,18 +60,13 @@ void exitServices() {
 	sdmcExit();
 	aptExit();
 	romfsExit();
-	sftd_fini();
-	sf2d_fini();
+	pp2d_exit();
 	cfguExit();
 }
 
 bool initServices() {
 	bool isDownloaded = false;
 	cfguInit();
-	sf2d_init();
-	sftd_init();
-	sf2d_set_clear_color(BLACK);
-	sf2d_set_vblank_wait(1);
 	aptInit();
 	sdmcInit();
 	romfsInit();
@@ -92,12 +86,14 @@ bool initServices() {
 		mkdir(i18npath, 0777);
 	}
 	
+	config_init();
 	i18n_init();
 	fsStart();
 	srvInit();
 	hidInit();
 	pxiDevInit();
 
+	pp2d_init();
 	GUIElementsInit();
 	FXElementsInit();
 	GUIGameElementsInit();
@@ -185,10 +181,8 @@ int main() {
 
 	u8* mainbuf;
 	u64 mainSize = 0;
-
-	int GBO = 0, SBO = 0;
-	int currentEntry = 0;
 	
+	int currentEntry = 0;
 	bool save = true;
 	
 #if CITRA
@@ -215,9 +209,7 @@ int main() {
 	
 	int game = game_get();
 	
-	GUIGameElementsExit();
 	freezeMsg(i18n(S_MAIN_LOADING_SAVE));
-
 #if CITRA
 	char savepath[100];
 	sprintf(savepath, "romfs:/citra/saves/%s.bin", gamesList[game]);
@@ -236,8 +228,8 @@ int main() {
 	fclose(saveptr);
 	
 	if (game_isgen4()) {
-		GBO = 0x40000 * getActiveGBO(mainbuf);
-		SBO = 0x40000 * getActiveSBO(mainbuf);
+		save_set_GBO(mainbuf);
+		save_set_SBO(mainbuf);
 	}
 #else
 	if (game_is3DS()) {
@@ -271,6 +263,7 @@ int main() {
 			exitServices();
 			return -1;
 		}
+		
 		u8 data[0x3B4];
 		FSUSER_GetLegacyRomHeader(MEDIATYPE_GAME_CARD, 0LL, data);
 
@@ -278,7 +271,6 @@ int main() {
 		SPIGetCardType(&cardType_, (*(u8*)(data + 12) == 'I') ? 1 : 0);
 
 		mainSize = SPIGetCapacity(cardType_);
-		
 		if (mainSize != 524288) {
 			infoDisp(i18n(S_MAIN_INCORRECT_SAVE_SIZE));
 			exitServices();
@@ -289,8 +281,8 @@ int main() {
 		
 		TWLstoreSaveFile(mainbuf, cardType_);
 		if (game_isgen4()) {
-			GBO = 0x40000 * getActiveGBO(mainbuf);
-			SBO = 0x40000 * getActiveSBO(mainbuf);
+			save_set_GBO(mainbuf);
+			save_set_SBO(mainbuf);
 		}
 	}
 #endif
@@ -392,10 +384,7 @@ int main() {
 	}
 	
 	if (save) {
-		if (game_is3DS() || game_isgen5()) 
-			rewriteCHK(mainbuf);
-		else if (game_isgen4()) 
-			rewriteCHK4(mainbuf, GBO, SBO);
+		rewriteCHK(mainbuf);
 	}
 
 #if CITRA
@@ -417,11 +406,8 @@ int main() {
 #elif ROSALINA_3DSX
 #else
 	if (!isHBL() && game_is3DS() && confirmDisp(i18n(S_LAUNCH_GAME))) {
-		//FXElementsExit();
-		//GUIElementsExit();
-		i18n_exit();
-		//sftd_fini();
-		//sf2d_fini();
+		//i18n_exit();
+		pp2d_exit();
 		
 		APT_PrepareToDoApplicationJump(0, ids[game], getLoadedFromCart() ? MEDIATYPE_GAME_CARD : MEDIATYPE_SD);
 		u8 hmac[0x20] = {0};
@@ -430,6 +416,5 @@ int main() {
 #endif
 	
 	exitServices();
-	
 	return 0;
 }

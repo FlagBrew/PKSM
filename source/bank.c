@@ -94,6 +94,9 @@ inline void getFromWirelessBuf(u8* buf, int box, int slot, u8* pkmn) {
 }
 
 void clearMarkings(u8* pkmn) {
+	if (config_get_pkx_set_lock() != 0)
+		return;
+	
 	u8 version = pkmn[0xDF];
 	if (!(version == 30 || version == 31) && !(version >= 35 && version <= 41) && !game_isgen7()) { // not SM
 		pkmn[0x2A] = 0;

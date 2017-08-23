@@ -554,19 +554,21 @@ void pkx_get(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn) 
 }
 
 void pkx_set(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn) {
-	u8 latestHandlers[10];
-	char ot_name[NICKNAMELENGTH];
-	char save_name[NICKNAMELENGTH];
-	char ht_name[NICKNAMELENGTH];
-	memset(ht_name, 0, NICKNAMELENGTH);
+	if (config_get_pkx_set_lock() == 0) {
+		u8 latestHandlers[10];
+		char ot_name[NICKNAMELENGTH];
+		char save_name[NICKNAMELENGTH];
+		char ht_name[NICKNAMELENGTH];
+		memset(ht_name, 0, NICKNAMELENGTH);
 
-	memcpy(latestHandlers, &pkmn[0x94], 10);
-	memcpy(ot_name, &pkmn[0xB0], NICKNAMELENGTH);
-	memcpy(save_name, &mainbuf[game_isgen6() ? 0x14048 : 0x1238], NICKNAMELENGTH);
-	
-	if (!((getSaveTID(mainbuf) == pkx_get_tid(pkmn)) && (getSaveSID(mainbuf) == pkx_get_sid(pkmn)) && !memcmp(ot_name, save_name, NICKNAMELENGTH) && !memcmp(latestHandlers, ht_name, 10))) { //you're the first owner
-		pkx_set_ht(pkmn, save_name);
-		pkx_set_ht_gender(pkmn, getSaveGender(mainbuf));
+		memcpy(latestHandlers, &pkmn[0x94], 10);
+		memcpy(ot_name, &pkmn[0xB0], NICKNAMELENGTH);
+		memcpy(save_name, &mainbuf[game_isgen6() ? 0x14048 : 0x1238], NICKNAMELENGTH);
+		
+		if (!((getSaveTID(mainbuf) == pkx_get_tid(pkmn)) && (getSaveSID(mainbuf) == pkx_get_sid(pkmn)) && !memcmp(ot_name, save_name, NICKNAMELENGTH) && !memcmp(latestHandlers, ht_name, 10))) { //you're the first owner
+			pkx_set_ht(pkmn, save_name);
+			pkx_set_ht_gender(pkmn, getSaveGender(mainbuf));
+		}
 	}
 
     pkx_calculate_checksum(pkmn);
