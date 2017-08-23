@@ -62,7 +62,7 @@ else
 endif
 
 INCLUDE_DIRS :=
-SOURCE_DIRS := source/memecrypto/source source/pp2d source
+SOURCE_DIRS := source/memecrypto/source source/pp2d/pp2d source
 
 EXTRA_OUTPUT_FILES :=
 
@@ -81,6 +81,7 @@ BUILD_FLAGS := -march=armv6k -mtune=mpcore -mfloat-abi=hard
 BUILD_FLAGS_CC := -g -Wall -Og -mword-relocations \
 			-fomit-frame-pointer -ffunction-sections -ffast-math \
 			$(BUILD_FLAGS) $(INCLUDE) -DARM11 -D_3DS \
+			-DBUILDTOOLS \
 			-DPKSV=${PKSV} \
 			-DROSALINA_3DSX=${ROSALINA} \
 			-DCITRA=${DEBUG} \
@@ -91,7 +92,7 @@ BUILD_FLAGS_CC := -g -Wall -Og -mword-relocations \
 BUILD_FLAGS_CXX := $(BUILD_FLAGS_CC) -fno-rtti -fno-exceptions -std=gnu++11
 RUN_FLAGS :=
 
-REMOTE_IP := 192.168.1.8
+REMOTE_IP := 192.168.1.6
 
 # 3DS/Wii U CONFIGURATION #
 

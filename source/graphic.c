@@ -18,21 +18,22 @@
 
 #include "graphic.h"
 
-u32 logoColors[15] = {RGBA8(0, 136, 222, 255), 
-					RGBA8(203, 39, 69, 255),
-					RGBA8(247, 139, 50, 255),
-					RGBA8(115, 118, 252, 255),
-					RGBA8(241, 148, 45, 255),
-					RGBA8(75, 139, 190, 255),
-					RGBA8(138, 207, 231, 255),
-					RGBA8(195, 135, 182, 255),
-					RGBA8(196, 170, 76, 255),
-					RGBA8(248, 169, 64, 255),
-					RGBA8(108, 131, 185, 255),
-					RGBA8(227, 236, 243, 255),
-					RGBA8(62, 74, 72, 255),
-					RGBA8(0, 167, 215, 255),
-					RGBA8(223, 105, 95, 255),
+u32 logoColors[15] = {
+	RGBA8(0, 136, 222, 255), 
+	RGBA8(203, 39, 69, 255),
+	RGBA8(247, 139, 50, 255),
+	RGBA8(115, 118, 252, 255),
+	RGBA8(241, 148, 45, 255),
+	RGBA8(75, 139, 190, 255),
+	RGBA8(138, 207, 231, 255),
+	RGBA8(195, 135, 182, 255),
+	RGBA8(196, 170, 76, 255),
+	RGBA8(248, 169, 64, 255),
+	RGBA8(108, 131, 185, 255),
+	RGBA8(227, 236, 243, 255),
+	RGBA8(62, 74, 72, 255),
+	RGBA8(0, 167, 215, 255),
+	RGBA8(223, 105, 95, 255),
 };
 
 int logo_lookup6[7] = {0, 64, 121, 183, 250, 320, 375};
@@ -583,7 +584,7 @@ void printDatabase6(char *database[], int currentEntry, int page, int spriteArra
 		pp2d_draw_texture(TEXTURE_EVENT_MENU_BOTTOM_BAR, 65, 45);
 		pp2d_draw_texture(TEXTURE_L_BUTTON, 83, 52);
 		pp2d_draw_texture(TEXTURE_R_BUTTON, 221, 52);
-		pp2d_draw_text_center(false, 52, FONT_SIZE_12, FONT_SIZE_12, WHITE, pages);
+		pp2d_draw_text_center(GFX_BOTTOM, 52, FONT_SIZE_12, FONT_SIZE_12, WHITE, pages);
 		printBottomIndications(i18n(S_GRAPHIC_DB6_INDICATIONS));
 	pksm_end_frame();
 }
@@ -693,7 +694,7 @@ void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bo
 		printMenuBottom();
 
 		if (getN(i) > 1)
-			pp2d_draw_text_center(false, 19, FONT_SIZE_11, FONT_SIZE_11, LIGHTBLUE, "Press L/R to switch multiple wondercards.");
+			pp2d_draw_text_center(GFX_BOTTOM, 19, FONT_SIZE_11, FONT_SIZE_11, LIGHTBLUE, "Press L/R to switch multiple wondercards.");
 		
 		pp2d_draw_wtext(16, 50, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_DB_LANGUAGES));
 		pp2d_draw_wtext(16, 112, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_DB_OVERWRITE_WC));
@@ -1286,7 +1287,7 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 	u16 n = pkx_get_species(pkmn);
 	
 	pp2d_begin_draw(GFX_TOP);
-		pp2d_set_screen_color(GFX_TOP, BLACK);
+		pp2d_set_screen_color(GFX_TOP, BACKGROUND_BLACK);
 		if (mode == ED_BASE || mode == ED_STATS) {
 			pp2d_draw_wtext_center(GFX_TOP, 95, FONT_SIZE_15, FONT_SIZE_15, RGBA8(255, 255, 255, giveTransparence()), i18n(S_GRAPHIC_PKEDITOR_BASE_STATS_INDICATIONS_1));
 			pp2d_draw_wtext_center(GFX_TOP, 115, FONT_SIZE_15, FONT_SIZE_15, RGBA8(255, 255, 255, giveTransparence()), i18n(S_GRAPHIC_PKEDITOR_BASE_STATS_INDICATIONS_2));
@@ -1421,11 +1422,11 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 			int ofs = movementOffsetSlow(3);
 			if (t) {
 				t -= 1;
-				//sf2d_draw_texture_part_scale_blend(alternativeSpritesSmall, 232, 32 - ofs, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30, 2, 2, RGBA8(0x0, 0x0, 0x0, 100)); 
-				//sf2d_draw_texture_part_scale(alternativeSpritesSmall, 227, 27 - ofs, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30, 2, 2);
+				pp2d_draw_texture_part_scale_blend(TEXTURE_ALTERNATIVE_SPRITESHEET, 232, 32 - ofs, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30, 2, 2, RGBA8(0x0, 0x0, 0x0, 100)); 
+				pp2d_draw_texture_part_scale(TEXTURE_ALTERNATIVE_SPRITESHEET, 227, 27 - ofs, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30, 2, 2);
 			} else {
-				//sf2d_draw_texture_part_scale_blend(spritesSmall, 232, 32 - ofs, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30, 2, 2, RGBA8(0x0, 0x0, 0x0, 100));
-				//sf2d_draw_texture_part_scale(spritesSmall, 227, 27 - ofs, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30, 2, 2);
+				pp2d_draw_texture_part_scale_blend(TEXTURE_NORMAL_SPRITESHEET, 232, 32 - ofs, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30, 2, 2, RGBA8(0x0, 0x0, 0x0, 100));
+				pp2d_draw_texture_part_scale(pkx_is_shiny(pkmn) ? TEXTURE_SHINY_SPRITESHEET : TEXTURE_NORMAL_SPRITESHEET, 227, 27 - ofs, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30, 2, 2);
 			}
 			
 			if (pkx_get_gender(pkmn) == 0)

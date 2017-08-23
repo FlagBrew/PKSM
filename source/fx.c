@@ -18,8 +18,6 @@
 
 #include "fx.h"
 
-//sf2d_texture *cubesSheet, *boxesSheet;
-
 int movementLong = 0;
 int movementSlow = 0;
 int trasp = 254;
@@ -28,12 +26,11 @@ bool up = true;
 
 int x[11];
 int y[11];
-float rad = 0.0f;
 
 void FXElementsInit() {
 	srand(time(NULL));
-	//cubesSheet = sfil_load_PNG_file("romfs:/res/fx/Cubes.png", SF2D_PLACE_RAM);
-	//boxesSheet = sfil_load_PNG_file("romfs:/res/fx/Boxes.png", SF2D_PLACE_RAM);
+	pp2d_load_texture_png(TEXTURE_BOXES_SPRITESHEET, "romfs:/res/fx/Boxes.png");
+	pp2d_load_texture_png(TEXTURE_CUBES_SPRITESHEET, "romfs:/res/fx/Cubes.png");
 	
 	x[0] = 0;
 	y[0] = 0;
@@ -41,11 +38,6 @@ void FXElementsInit() {
 		x[i] = rand() % 800;
 		y[i] = rand() % 200;
 	}
-}
-
-void FXElementsExit() {
-	//sf2d_free_texture(boxesSheet);
-	//sf2d_free_texture(cubesSheet);
 }
 
 int movementOffsetLong(int maxrange) {
@@ -76,21 +68,22 @@ int giveTransparence() {
 }
 
 void animateBG(bool isUp) {
-	/*int maxrange = (isUp) ? 400 : 320;
-	sf2d_draw_texture_part(boxesSheet, 0, 0, maxrange - x[0] / 2, 0, maxrange, 240);
+	int maxrange = (isUp) ? TOP_WIDTH : BOTTOM_WIDTH;
 	
-	sf2d_draw_texture_part(cubesSheet, x[1] / 2, y[1], 0, 6, 66, 56); //cube1
-	sf2d_draw_texture_part_rotate_scale(cubesSheet, x[2] / 2, y[2], rad, 67, 11, 56, 51, 1, 1); //cube2rotate
-	sf2d_draw_texture_part(cubesSheet, x[3] / 2, y[3], 124, 0, 57, 62); //cube3
-	sf2d_draw_texture_part_rotate_scale(cubesSheet, x[4] / 2, y[4], rad, 182, 6, 58, 56, 1, 1); //cube4rotate
-	sf2d_draw_texture_part(cubesSheet, x[5] / 2, y[5], 241, 24, 41, 38); //cube5
-	sf2d_draw_texture_part(cubesSheet, x[6] / 2, y[6], 283, 36, 27, 26); //cube6
+	pp2d_draw_texture_part(TEXTURE_BOXES_SPRITESHEET, 0, 0, maxrange - x[0] / 2, 0, maxrange, 240);
+	
+	pp2d_draw_texture_part(TEXTURE_CUBES_SPRITESHEET, x[1] / 2, y[1], 0, 6, 66, 56); //cube1
+	pp2d_draw_texture_part(TEXTURE_CUBES_SPRITESHEET, x[2] / 2, y[2], 67, 11, 56, 51); //cube2rotate
+	pp2d_draw_texture_part(TEXTURE_CUBES_SPRITESHEET, x[3] / 2, y[3], 124, 0, 57, 62); //cube3
+	pp2d_draw_texture_part(TEXTURE_CUBES_SPRITESHEET, x[4] / 2, y[4], 182, 6, 58, 56); //cube4rotate
+	pp2d_draw_texture_part(TEXTURE_CUBES_SPRITESHEET, x[5] / 2, y[5], 241, 24, 41, 38); //cube5
+	pp2d_draw_texture_part(TEXTURE_CUBES_SPRITESHEET, x[6] / 2, y[6], 283, 36, 27, 26); //cube6
 	
 	//rep
-	sf2d_draw_texture_part_rotate_scale(cubesSheet, x[7] / 2, y[7], rad, 67, 11, 56, 51, 1, 1); //cube2rotate
-	sf2d_draw_texture_part(cubesSheet, x[8] / 2, y[8], 283, 36, 27, 26); //cube6
-	sf2d_draw_texture_part(cubesSheet, x[9] / 2, y[9], 311, 47, 14, 15); //cube7
-	sf2d_draw_texture_part(cubesSheet, x[10] / 2, y[10], 311, 47, 14, 15); //cube7
+	pp2d_draw_texture_part(TEXTURE_CUBES_SPRITESHEET, x[7] / 2, y[7], 67, 11, 56, 51); //cube2rotate
+	pp2d_draw_texture_part(TEXTURE_CUBES_SPRITESHEET, x[8] / 2, y[8], 283, 36, 27, 26); //cube6
+	pp2d_draw_texture_part(TEXTURE_CUBES_SPRITESHEET, x[9] / 2, y[9], 311, 47, 14, 15); //cube7
+	pp2d_draw_texture_part(TEXTURE_CUBES_SPRITESHEET, x[10] / 2, y[10], 311, 47, 14, 15); //cube7
 	
 	x[0] = (x[0] > maxrange * 2) ? 0 : (x[0] + 1);
 	
@@ -101,6 +94,4 @@ void animateBG(bool isUp) {
 		} else 
 			x[i] += 1;
 	}
-
-	rad = (rad >= 360) ? 0.0f : (rad + 0.005f);*/
 }

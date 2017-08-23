@@ -95,6 +95,7 @@ bool initServices() {
 
 	pp2d_init();
 	GUIElementsInit();
+	FXElementsInit();
 	GUIGameElementsInit();
 
 #if CITRA

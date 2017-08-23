@@ -44,7 +44,7 @@
 #include "http.h"
 #include "i18n.h"
 #include "memecrypto/source/memecrypto.h"
-#include "pp2d/pp2d.h"
+#include "pp2d/pp2d/pp2d.h"
 #include "pkx.h"
 #include "save.h"
 #include "sha256.h"
