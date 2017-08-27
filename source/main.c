@@ -18,12 +18,13 @@
 
 #include "common.h"
 
-#define ASSETS 11
+#define ASSETS 12
 
 char* path[] = { 
 	"/3ds/data/PKSM/additionalassets/alternative_icons_spritesheetv3.png",
 	"/3ds/data/PKSM/additionalassets/balls_spritesheetv2.png",
 	"/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheetv3.png",
+	"/3ds/data/PKSM/additionalassets/pokemon_shiny_icons_spritesheet.png",
 	"/3ds/data/PKSM/additionalassets/i18n/de/types.png",
 	"/3ds/data/PKSM/additionalassets/i18n/en/types.png",
 	"/3ds/data/PKSM/additionalassets/i18n/es/types.png",
@@ -38,6 +39,7 @@ char* url[] = {
 	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/alternative_icons_spritesheetv3.png",
 	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/balls_spritesheetv2.png",
 	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/pokemon_icons_spritesheetv3.png",
+	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/pokemon_shiny_icons_spritesheet.png",
 	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_de.png",
 	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_en.png",
 	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_es.png",
