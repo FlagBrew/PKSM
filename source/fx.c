@@ -26,6 +26,14 @@ bool up = true;
 
 int x[11];
 int y[11];
+float angle = 0.0f;
+
+void pp2d_draw_texture_part_rotate(size_t id, int x, int y, int xbegin, int ybegin, int width, int height)
+{
+	pp2d_texture_select_part(id, x, y, xbegin, ybegin, width, height);
+	pp2d_texture_rotate(angle);
+	pp2d_texture_draw();		
+}
 
 void FXElementsInit() {
 	srand(time(NULL));
@@ -73,14 +81,14 @@ void animateBG(bool isUp) {
 	pp2d_draw_texture_part(TEXTURE_BOXES_SPRITESHEET, 0, 0, maxrange - x[0] / 2, 0, maxrange, 240);
 	
 	pp2d_draw_texture_part(TEXTURE_CUBES_SPRITESHEET, x[1] / 2, y[1], 0, 6, 66, 56); //cube1
-	pp2d_draw_texture_part(TEXTURE_CUBES_SPRITESHEET, x[2] / 2, y[2], 67, 11, 56, 51); //cube2rotate
+	pp2d_draw_texture_part_rotate(TEXTURE_CUBES_SPRITESHEET, x[2] / 2, y[2], 67, 11, 56, 51); //cube2rotate
 	pp2d_draw_texture_part(TEXTURE_CUBES_SPRITESHEET, x[3] / 2, y[3], 124, 0, 57, 62); //cube3
-	pp2d_draw_texture_part(TEXTURE_CUBES_SPRITESHEET, x[4] / 2, y[4], 182, 6, 58, 56); //cube4rotate
+	pp2d_draw_texture_part_rotate(TEXTURE_CUBES_SPRITESHEET, x[4] / 2, y[4], 182, 6, 58, 56); //cube4rotate
 	pp2d_draw_texture_part(TEXTURE_CUBES_SPRITESHEET, x[5] / 2, y[5], 241, 24, 41, 38); //cube5
 	pp2d_draw_texture_part(TEXTURE_CUBES_SPRITESHEET, x[6] / 2, y[6], 283, 36, 27, 26); //cube6
 	
 	//rep
-	pp2d_draw_texture_part(TEXTURE_CUBES_SPRITESHEET, x[7] / 2, y[7], 67, 11, 56, 51); //cube2rotate
+	pp2d_draw_texture_part_rotate(TEXTURE_CUBES_SPRITESHEET, x[7] / 2, y[7], 67, 11, 56, 51); //cube2rotate
 	pp2d_draw_texture_part(TEXTURE_CUBES_SPRITESHEET, x[8] / 2, y[8], 283, 36, 27, 26); //cube6
 	pp2d_draw_texture_part(TEXTURE_CUBES_SPRITESHEET, x[9] / 2, y[9], 311, 47, 14, 15); //cube7
 	pp2d_draw_texture_part(TEXTURE_CUBES_SPRITESHEET, x[10] / 2, y[10], 311, 47, 14, 15); //cube7
@@ -94,4 +102,6 @@ void animateBG(bool isUp) {
 		} else 
 			x[i] += 1;
 	}
+	
+	angle = angle >= 360 ? 0.0f : angle + 0.2f;
 }
