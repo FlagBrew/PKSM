@@ -1,1 +1,0 @@
-Use desc.app.txt to have a brief description of each line in an app.txt file.
