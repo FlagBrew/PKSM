@@ -259,7 +259,7 @@ void GUIElementsI18nExit() {
 }
 
 void drawFPSDebug() {
-	pp2d_draw_rectangle(10, 10, 108, 20, RGBA8(0, 0, 0, 160));
+	//pp2d_draw_rectangle(10, 10, 108, 20, RGBA8(0, 0, 0, 160));
 	//pp2d_draw_textf(12, 13, 0.5f, 0.5f, WHITE, "FPS: %2.6f", sf2d_get_fps());
 }
 
