@@ -1,18 +1,9 @@
-[submodule "servepkx/webbrowser"]
-	path = servepkx/webbrowser
-	url = https://github.com/zaksabeast/PKSMBrowserInject
-[submodule "extrastorage/phbank2pksm"]
-	path = extrastorage/phbank2pksm
-	url = https://github.com/zaksabeast/phbank2pksm
 [submodule "source/memecrypto"]
 	path = source/memecrypto
 	url = https://github.com/dsoldier/memecrypto.git
 [submodule "buildtools"]
 	path = buildtools
 	url = https://github.com/BernardoGiordano/buildtools.git
-[submodule "serveLegality"]
-	path = serveLegality
-	url = https://github.com/BernardoGiordano/serveLegality
 [submodule "source/pp2d"]
 	path = source/pp2d
 	url = https://github.com/BernardoGiordano/pp2d
