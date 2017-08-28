@@ -1,14 +1,11 @@
 BasicInfo:
-  Title                   : "PKSM"
-  ProductCode             : "CTR-HB-PKSM"
+  Title                   : $(APP_TITLE)
+  ProductCode             : $(APP_PRODUCT_CODE)
   Logo                    : Homebrew
-
-RomFs:
-  $(APP_ROMFS)
 
 TitleInfo:
   Category                : Application
-  UniqueId                : 0xEC100
+  UniqueId                : $(APP_UNIQUE_ID)
 
 Option:
   UseOnSD                 : true # true if App is to be installed to SD
@@ -25,7 +22,7 @@ AccessControlInfo:
   
   # Minimum Required Kernel Version (below is for 4.5.0)
   ReleaseKernelMajor            : "02"
-  ReleaseKernelMinor            : "33" 
+  ReleaseKernelMinor            : "46" 
 
   # ExtData
   UseExtSaveData                : false # enables ExtData       
@@ -34,27 +31,37 @@ AccessControlInfo:
   # FS:USER Archive Access Permissions
   # Uncomment as required
   FileSystemAccess:
-   #- CategorySystemApplication
-   #- CategoryHardwareCheck
+   - CategorySystemApplication
+   - CategoryHardwareCheck
    - CategoryFileSystemTool
-   #- Debug
+   - Debug
    - TwlCardBackup
-   #- TwlNandData
-   #- Boss
+   - TwlNandData
+   - Boss
    - DirectSdmc
-   #- Core
-   #- CtrNandRo
-   #- CtrNandRw
-   #- CtrNandRoWrite
-   #- CategorySystemSettings
-   #- CardBoard
-   #- ExportImportIvs
+   - Core
+   - CtrNandRo
+   - CtrNandRw
+   - CtrNandRoWrite
+   - CategorySystemSettings
+   - CardBoard
+   - ExportImportIvs
    - DirectSdmcWrite
-   #- SwitchCleanup
+   - SwitchCleanup
    - SaveDataMove
-   #- Shop
-   #- Shell
-   #- CategoryHomeMenu
+   - Shop
+   - Shell
+   - CategoryHomeMenu
+   - SeedDB
+  IoAccessControl:
+   - FsMountNand
+   - FsMountNandRoWrite
+   - FsMountTwln
+   - FsMountWnand
+   - FsMountCardSpi
+   - UseSdif3
+   - CreateSeed
+   - UseCardSpi
 
   # Process Settings
   MemoryType                    : Application # Application/System/Base
@@ -76,9 +83,9 @@ AccessControlInfo:
 
   # New3DS Exclusive Process Settings
   SystemModeExt                 : Legacy # Legacy(Default)/124MB/178MB  Legacy:Use Old3DS SystemMode
-  CpuSpeed                      : 804MHz # 256MHz(Default)/804MHz
-  EnableL2Cache                 : true # false(default)/true
-  CanAccessCore2                : true 
+  CpuSpeed                      : 268MHz # 268MHz(Default)/804MHz
+  EnableL2Cache                 : false # false(default)/true
+  CanAccessCore2                : false 
 
   # Virtual Address Mappings
   IORegisterMapping:
@@ -88,59 +95,113 @@ AccessControlInfo:
 
   # Accessible SVCs, <Name>:<ID>
   SystemCallAccess: 
-    ArbitrateAddress: 34
-    Backdoor: 123
-    Break: 60
-    CancelTimer: 28
-    ClearEvent: 25
-    ClearTimer: 29
-    CloseHandle: 35
-    ConnectToPort: 45
     ControlMemory: 1
-    ControlProcessMemory: 112
-    CreateAddressArbiter: 33
-    CreateEvent: 23
-    CreateMemoryBlock: 30
-    CreateMutex: 19
-    CreateSemaphore: 21
-    CreateThread: 8
-    CreateTimer: 26
-    DuplicateHandle: 39
-    ExitProcess: 3
-    ExitThread: 9
-    GetCurrentProcessorNumber: 17
-    GetHandleInfo: 41
-    GetProcessId: 53
-    GetProcessIdOfThread: 54
-    GetProcessIdealProcessor: 6
-    GetProcessInfo: 43
-    GetResourceLimit: 56
-    GetResourceLimitCurrentValues: 58
-    GetResourceLimitLimitValues: 57
-    GetSystemInfo: 42
-    GetSystemTick: 40
-    GetThreadContext: 59
-    GetThreadId: 55
-    GetThreadIdealProcessor: 15
-    GetThreadInfo: 44
-    GetThreadPriority: 11
-    MapMemoryBlock: 31
-    OutputDebugString: 61
     QueryMemory: 2
+    ExitProcess: 3
+    GetProcessAffinityMask: 4
+    SetProcessAffinityMask: 5
+    GetProcessIdealProcessor: 6
+    SetProcessIdealProcessor: 7
+    CreateThread: 8
+    ExitThread: 9
+    SleepThread: 10
+    GetThreadPriority: 11
+    SetThreadPriority: 12
+    GetThreadAffinityMask: 13
+    SetThreadAffinityMask: 14
+    GetThreadIdealProcessor: 15
+    SetThreadIdealProcessor: 16
+    GetCurrentProcessorNumber: 17
+    Run: 18
+    CreateMutex: 19
     ReleaseMutex: 20
+    CreateSemaphore: 21
     ReleaseSemaphore: 22
+    CreateEvent: 23
+    SignalEvent: 24
+    ClearEvent: 25
+    CreateTimer: 26
+    SetTimer: 27
+    CancelTimer: 28
+    ClearTimer: 29
+    CreateMemoryBlock: 30
+    MapMemoryBlock: 31
+    UnmapMemoryBlock: 32
+    CreateAddressArbiter: 33
+    ArbitrateAddress: 34
+    CloseHandle: 35
+    WaitSynchronization1: 36
+    WaitSynchronizationN: 37
+    SignalAndWait: 38
+    DuplicateHandle: 39
+    GetSystemTick: 40
+    GetHandleInfo: 41
+    GetSystemInfo: 42
+    GetProcessInfo: 43
+    GetThreadInfo: 44
+    ConnectToPort: 45
     SendSyncRequest1: 46
     SendSyncRequest2: 47
     SendSyncRequest3: 48
     SendSyncRequest4: 49
     SendSyncRequest: 50
-    SetThreadPriority: 12
-    SetTimer: 27
-    SignalEvent: 24
-    SleepThread: 10
-    UnmapMemoryBlock: 32
-    WaitSynchronization1: 36
-    WaitSynchronizationN: 37
+    OpenProcess: 51
+    OpenThread: 52
+    GetProcessId: 53
+    GetProcessIdOfThread: 54
+    GetThreadId: 55
+    GetResourceLimit: 56
+    GetResourceLimitLimitValues: 57
+    GetResourceLimitCurrentValues: 58
+    GetThreadContext: 59
+    Break: 60
+    OutputDebugString: 61
+    ControlPerformanceCounter: 62
+    CreatePort: 71
+    CreateSessionToPort: 72
+    CreateSession: 73
+    AcceptSession: 74
+    ReplyAndReceive1: 75
+    ReplyAndReceive2: 76
+    ReplyAndReceive3: 77
+    ReplyAndReceive4: 78
+    ReplyAndReceive: 79
+    BindInterrupt: 80
+    UnbindInterrupt: 81
+    InvalidateProcessDataCache: 82
+    StoreProcessDataCache: 83
+    FlushProcessDataCache: 84
+    StartInterProcessDma: 85
+    StopDma: 86
+    GetDmaState: 87
+    RestartDma: 88
+    DebugActiveProcess: 96
+    BreakDebugProcess: 97
+    TerminateDebugProcess: 98
+    GetProcessDebugEvent: 99
+    ContinueDebugEvent: 100
+    GetProcessList: 101
+    GetThreadList: 102
+    GetDebugThreadContext: 103
+    SetDebugThreadContext: 104
+    QueryDebugProcessMemory: 105
+    ReadProcessMemory: 106
+    WriteProcessMemory: 107
+    SetHardwareBreakPoint: 108
+    GetDebugThreadParam: 109
+    ControlProcessMemory: 112
+    MapProcessMemory: 113
+    UnmapProcessMemory: 114
+    CreateCodeSet: 115
+    CreateProcess: 117
+    TerminateProcess: 118
+    SetProcessResourceLimits: 119
+    CreateResourceLimit: 120
+    SetResourceLimitValues: 121
+    AddCodeSegment: 122
+    Backdoor: 123
+    KernelSetState: 124
+    QueryProcessMemory: 125
 
   # Service List
   # Maximum 34 services (32 if firmware is prior to 9.6.0)
@@ -166,8 +227,10 @@ AccessControlInfo:
    - ir:USER
    - mic:u
    - ndm:u
-   - news:u
+   - news:s
+   - nwm::EXT
    - nwm::UDS
+   - ptm:sysm
    - ptm:u
    - pxi:dev
    - soc:U
@@ -177,7 +240,7 @@ AccessControlInfo:
 
 SystemControlInfo:
   SaveDataSize: 0KB # Change if the app uses savedata
-  RemasterVersion: $(VERSION_MAJOR)
+  RemasterVersion: 2
   StackSize: 0x40000
 
   # Modules that run services listed above should be included below
@@ -187,15 +250,15 @@ SystemControlInfo:
     ac: 0x0004013000002402
     #act: 0x0004013000003802
     am: 0x0004013000001502
-    #boss: 0x0004013000003402
-    #camera: 0x0004013000001602
+    boss: 0x0004013000003402
+    camera: 0x0004013000001602
     cecd: 0x0004013000002602
     cfg: 0x0004013000001702
     codec: 0x0004013000001802
-    #csnd: 0x0004013000002702
+    csnd: 0x0004013000002702
     dlp: 0x0004013000002802
     dsp: 0x0004013000001a02
-    #friends: 0x0004013000003202
+    friends: 0x0004013000003202
     gpio: 0x0004013000001b02
     gsp: 0x0004013000001c02
     hid: 0x0004013000001d02
@@ -205,7 +268,7 @@ SystemControlInfo:
     mcu: 0x0004013000001f02
     mic: 0x0004013000002002
     ndm: 0x0004013000002b02
-    #news: 0x0004013000003502
+    news: 0x0004013000003502
     #nfc: 0x0004013000004002
     nim: 0x0004013000002c02
     nwm: 0x0004013000002d02
