@@ -19,7 +19,7 @@ OUTDIR              :=	output
 BUILD               :=	build
 SOURCES             :=	source/memecrypto/source source/pp2d/pp2d source
 INCLUDES            :=	include
-ROMFS               :=	romfs
+ROMFS               :=	assets/romfs
 
 # Path to the files
 # If left blank, will try to use "icon.png", "$(TARGET).png", or the default ctrulib icon, in that order
