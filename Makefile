@@ -1,173 +1,268 @@
-# TARGET #
+#---------------------------------------------------------------------------------
+.SUFFIXES:
+#---------------------------------------------------------------------------------
 
-TARGET := 3DS
-LIBRARY := 0
-
-ifeq ($(TARGET),$(filter $(TARGET),3DS WIIU))
-    ifeq ($(strip $(DEVKITPRO)),)
-        $(error "Please set DEVKITPRO in your environment. export DEVKITPRO=<path to>devkitPro")
-    endif
+ifeq ($(strip $(DEVKITARM)),)
+$(error "Please set DEVKITARM in your environment. export DEVKITARM=<path to>devkitARM")
 endif
 
-# COMMON CONFIGURATION #
+TOPDIR ?= $(CURDIR)
+include $(DEVKITARM)/3ds_rules
 
-PKSM=1
-PKSV=0 
-ROSALINA=0
-DEBUG=0
+# Your values.
+APP_TITLE           :=	PKSM
+APP_DESCRIPTION     :=	Gen4+ pkmn save manager
+APP_AUTHOR          :=	Bernardo Giordano, PKSM devs
 
-ifeq ($(PKSV), 1)
-	NAME := PKSV
-else
-	NAME := PKSM
-endif
+TARGET              :=	$(subst $e ,_,$(notdir $(APP_TITLE)))
+OUTDIR              :=	output
+BUILD               :=	build
+SOURCES             :=	source/memecrypto/source source/pp2d/pp2d source
+INCLUDES            :=	include
+ROMFS               :=	assets/romfs
 
-BUILD_BASE := build
-OUTPUT_BASE := output
+# Path to the files
+# If left blank, will try to use "icon.png", "$(TARGET).png", or the default ctrulib icon, in that order
+ICON                :=	assets/icon.png
 
-ifeq ($(PKSV), 1)
-	ifeq ($(ROSALINA), 1)
-		BUILD_DIR := build/rosalina/PKSV
-	else
-		BUILD_DIR := build/PKSV
-	endif
-else
-	ifeq ($(DEBUG), 1)
-		BUILD_DIR := build/PKSM/citra
-	else
-		ifeq ($(ROSALINA), 1)
-			BUILD_DIR := build/rosalina/PKSM
-		else
-			BUILD_DIR := build/PKSM
-		endif
-	endif
-endif
+BANNER_AUDIO        :=	assets/audio.wav
+BANNER_IMAGE        :=	assets/banner.png
 
-ifeq ($(PKSV), 1)
-	ifeq ($(ROSALINA), 1)
-		OUTPUT_DIR := output/rosalina/PKSV
-	else
-		OUTPUT_DIR := output/PKSV
-	endif
-else
-	ifeq ($(DEBUG), 1)
-		OUTPUT_DIR := output/PKSM/citra
-	else
-		ifeq ($(ROSALINA), 1)
-			OUTPUT_DIR := output/rosalina/PKSM
-		else
-			OUTPUT_DIR := output/PKSM
-		endif
-	endif
-endif
+RSF_PATH            :=	assets/app.rsf
 
-INCLUDE_DIRS :=
-SOURCE_DIRS := source/memecrypto/source source/pp2d/pp2d source
+# If left blank, makerom will use the default Homebrew logo
+LOGO                :=	
 
-EXTRA_OUTPUT_FILES :=
+
+# If left blank, makerom will use default values (0xff3ff and CTR-P-CTAP, respectively)
+# Be careful if UNIQUE_ID is the same as other apps: it will overwrite the previously installed one
+UNIQUE_ID           :=	0xEC100
+PRODUCT_CODE        :=	CTR-HB-PKSM
 
 VERSION_MAJOR := 4
 VERSION_MINOR := 5
 VERSION_MICRO := 0
 
-PORTLIBS_PATH := $(DEVKITPRO)/portlibs
-PORTLIBS := $(PORTLIBS_PATH)/armv6k $(PORTLIBS_PATH)/3ds
-CTRULIB ?= $(DEVKITPRO)/libctru
+ROSALINA := 1
 
-LIBRARY_DIRS := $(PORTLIBS) $(CTRULIB)
-LIBRARIES := citro3d ctru m
+# Don't really need to change this
+ICON_FLAGS          :=	nosavebackups,visible
 
-BUILD_FLAGS := -march=armv6k -mtune=mpcore -mfloat-abi=hard
-BUILD_FLAGS_CC := -g -Wall -Og -mword-relocations \
-			-fomit-frame-pointer -ffunction-sections -ffast-math \
-			$(BUILD_FLAGS) $(INCLUDE) -DARM11 -D_3DS \
-			-DBUILDTOOLS \
-			-DPKSV=${PKSV} \
+#---------------------------------------------------------------------------------
+# options for code generation
+#---------------------------------------------------------------------------------
+ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
+
+CFLAGS	:=	-g -Wall -Wextra -O2 -mword-relocations \
+			-fomit-frame-pointer -ffunction-sections \
+			$(ARCH) \
 			-DROSALINA_3DSX=${ROSALINA} \
-			-DCITRA=${DEBUG} \
-			-DDEBUG=${DEBUG} \
 			-DAPP_VERSION_MAJOR=${VERSION_MAJOR} \
 			-DAPP_VERSION_MINOR=${VERSION_MINOR} \
 			-DAPP_VERSION_MICRO=${VERSION_MICRO}
-BUILD_FLAGS_CXX := $(BUILD_FLAGS_CC) -fno-rtti -fno-exceptions -std=gnu++11
-RUN_FLAGS :=
 
-REMOTE_IP := 192.168.1.6
+CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS -D_GNU_SOURCE
 
-# 3DS/Wii U CONFIGURATION #
+CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++11
 
-ifeq ($(TARGET),$(filter $(TARGET),3DS WIIU))
-    TITLE := $(NAME)
-	ifeq ($(PKSV), 1)
-		DESCRIPTION := Gen4+ pkmn save viewer
+ASFLAGS	:=	-g $(ARCH)
+LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
+
+LIBS	:= -lcitro3d -lctru -lm
+
+#---------------------------------------------------------------------------------
+# list of directories containing libraries, this must be the top level containing
+# include and lib
+#---------------------------------------------------------------------------------
+LIBDIRS	:= $(CTRULIB)
+
+
+#---------------------------------------------------------------------------------
+# no real need to edit anything past this point unless you need to add additional
+# rules for different file extensions
+#---------------------------------------------------------------------------------
+ifneq ($(BUILD),$(notdir $(CURDIR)))
+#---------------------------------------------------------------------------------
+
+export OUTPUT	:=	$(CURDIR)/$(OUTDIR)/$(TARGET)
+export TOPDIR	:=	$(CURDIR)
+
+export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) \
+			$(foreach dir,$(DATA),$(CURDIR)/$(dir))
+
+export DEPSDIR	:=	$(CURDIR)/$(BUILD)
+
+CFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
+CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
+SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
+PICAFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.v.pica)))
+SHLISTFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.shlist)))
+BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
+
+#---------------------------------------------------------------------------------
+# use CXX for linking C++ projects, CC for standard C
+#---------------------------------------------------------------------------------
+ifeq ($(strip $(CPPFILES)),)
+#---------------------------------------------------------------------------------
+	export LD	:=	$(CC)
+#---------------------------------------------------------------------------------
+else
+#---------------------------------------------------------------------------------
+	export LD	:=	$(CXX)
+#---------------------------------------------------------------------------------
+endif
+#---------------------------------------------------------------------------------
+
+export OFILES	:=	$(addsuffix .o,$(BINFILES)) \
+			$(PICAFILES:.v.pica=.shbin.o) $(SHLISTFILES:.shlist=.shbin.o) \
+			$(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)
+
+export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
+			$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
+			-I$(CURDIR)/$(BUILD)
+
+export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
+
+ifeq ($(strip $(ICON)),)
+	icons := $(wildcard *.png)
+	ifneq (,$(findstring $(TARGET).png,$(icons)))
+		export APP_ICON := $(TOPDIR)/$(TARGET).png
 	else
-		DESCRIPTION := Gen4+ pkmn save manager
+		ifneq (,$(findstring icon.png,$(icons)))
+			export APP_ICON := $(TOPDIR)/icon.png
+		endif
 	endif
-    AUTHOR := Bernardo Giordano, PKSM devs
+else
+	export APP_ICON := $(TOPDIR)/$(ICON)
 endif
 
-# 3DS CONFIGURATION #
-
-ifeq ($(TARGET),3DS)
-    LIBRARY_DIRS +=
-    LIBRARIES +=
-
-    PRODUCT_CODE := CTR-HB-PKSM
-	ifeq ($(PKSV), 1)
-		UNIQUE_ID := 0xEC200
-	else
-		UNIQUE_ID := 0xEC100
-	endif
-
-    CATEGORY := Application
-    USE_ON_SD := true
-
-    MEMORY_TYPE := Application
-    SYSTEM_MODE := 64MB
-    SYSTEM_MODE_EXT := Legacy
-    CPU_SPEED := 268MHz
-    ENABLE_L2_CACHE := true
-
-    ICON_FLAGS := --flags visible,ratingrequired,recordusage --cero 153 --esrb 153 --usk 153 --pegigen 153 --pegiptr 153 --pegibbfc 153 --cob 153 --grb 153 --cgsrr 153
-
-    ROMFS_DIR := assets/romfs
-    BANNER_AUDIO := assets/audio.wav
-	
-	ifeq ($(PKSV), 1)
-		BANNER_IMAGE := assets/banner_pksv.png
-	else
-		BANNER_IMAGE := assets/banner.png
-	endif
-	
-	ifeq ($(PKSV), 1)
-		ICON := assets/icon_pksv.png
-	else
-		ICON := assets/icon.png
-	endif
-	
-	LOGO :=
+ifeq ($(strip $(NO_SMDH)),)
+	export _3DSXFLAGS += --smdh=$(OUTPUT).smdh
 endif
 
-# INTERNAL #
+ifneq ($(ROMFS),)
+	export _3DSXFLAGS += --romfs=$(CURDIR)/$(ROMFS)
+endif
 
-include buildtools/make_base
+.PHONY: $(BUILD) clean all
 
-pksm: 
-	@make PKSM=1 PKSV=0 ROSALINA=0 DEBUG=0
+#---------------------------------------------------------------------------------
+3dsx: $(BUILD) $(OUTPUT).3dsx
 
-citra:
-	@make PKSM=1 PKSV=0 ROSALINA=0 DEBUG=1
-	
-pksv:
-	@make PKSM=0 PKSV=1 ROSALINA=0 DEBUG=0
-	
-rosalinapksm:
-	@make PKSM=0 PKSV=0 ROSALINA=1 DEBUG=0
-	
-rosalinapksv:
-	@make PKSM=0 PKSV=1 ROSALINA=1 DEBUG=0
+cia : $(BUILD) $(OUTPUT).cia
 
-cleanall: 
-	@rm -rf $(BUILD_BASE)
-	@rm -rf $(OUTPUT_BASE)
-	@echo Cleaned.
+all: 3dsx cia
+
+#---------------------------------------------------------------------------------
+$(BUILD):
+	@mkdir -p $(OUTDIR)
+	@[ -d "$@" ] || mkdir -p "$@"
+	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
+
+#---------------------------------------------------------------------------------
+clean:
+	@echo clean ...
+	@rm -fr $(BUILD) $(OUTDIR)
+
+#---------------------------------------------------------------------------------
+ifeq ($(strip $(NO_SMDH)),)
+$(OUTPUT).3dsx	:	$(OUTPUT).elf $(OUTPUT).smdh
+else
+$(OUTPUT).3dsx	:	$(OUTPUT).elf
+endif
+
+#---------------------------------------------------------------------------------
+MAKEROM		?=	makerom
+
+MAKEROM_ARGS		:=	-elf "$(OUTPUT).elf" -rsf "$(RSF_PATH)" -ver "$$(($(VERSION_MAJOR)*1024+$(VERSION_MINOR)*16+$(VERSION_MICRO)))" -banner "$(BUILD)/banner.bnr" -icon "$(BUILD)/icon.icn" -DAPP_TITLE="$(APP_TITLE)" -DAPP_PRODUCT_CODE="$(PRODUCT_CODE)" -DAPP_UNIQUE_ID="$(UNIQUE_ID)"
+
+ifneq ($(strip $(ROMFS)),)
+	MAKEROM_ARGS	+=	 -romfs "$(BUILD)/romfs.bin"
+endif
+ifneq ($(strip $(LOGO)),)
+	MAKEROM_ARGS	+=	 -logo "$(LOGO)"
+endif
+
+ifeq ($(strip $(ROMFS)),)
+$(OUTPUT).cia: $(OUTPUT).elf $(BUILD)/banner.bnr $(BUILD)/icon.icn
+	$(MAKEROM) -f cia -o "$@" -target t -exefslogo $(MAKEROM_ARGS)
+else
+$(OUTPUT).cia: $(OUTPUT).elf $(BUILD)/romfs.bin $(BUILD)/banner.bnr $(BUILD)/icon.icn
+	$(MAKEROM) -f cia -o "$@" -target t -exefslogo $(MAKEROM_ARGS)
+endif
+
+
+BANNERTOOL	?=	bannertool
+
+ifeq ($(suffix $(BANNER_IMAGE)),.cgfx)
+	BANNER_IMAGE_ARG := -ci
+else
+	BANNER_IMAGE_ARG := -i
+endif
+
+ifeq ($(suffix $(BANNER_AUDIO)),.cwav)
+	BANNER_AUDIO_ARG := -ca
+else
+	BANNER_AUDIO_ARG := -a
+endif
+
+$(BUILD)/banner.bnr	:	$(BANNER_IMAGE) $(BANNER_AUDIO)
+	$(BANNERTOOL) makebanner $(BANNER_IMAGE_ARG) "$(BANNER_IMAGE)" $(BANNER_AUDIO_ARG) "$(BANNER_AUDIO)" -o "$@"
+
+$(BUILD)/icon.icn	:	$(APP_ICON)
+	$(BANNERTOOL) makesmdh -s "$(APP_TITLE)" -l "$(APP_DESCRIPTION)" -p "$(APP_AUTHOR)" -i "$(APP_ICON)" -f "$(ICON_FLAGS)" -o "$@"
+
+
+3DSTOOL		?= 3dstool
+
+$(BUILD)/romfs.bin	:	$(ROMFS)
+	$(3DSTOOL) -ctf romfs "$@" --romfs-dir "$(ROMFS)"
+
+#---------------------------------------------------------------------------------
+else
+
+DEPENDS	:=	$(OFILES:.o=.d)
+
+#---------------------------------------------------------------------------------
+# main targets
+#---------------------------------------------------------------------------------
+
+$(OUTPUT).elf	:	$(OFILES)
+
+#---------------------------------------------------------------------------------
+# you need a rule like this for each extension you use as binary data
+#---------------------------------------------------------------------------------
+%.bin.o	:	%.bin
+#---------------------------------------------------------------------------------
+	@echo $(notdir $<)
+	@$(bin2o)
+
+#---------------------------------------------------------------------------------
+# rules for assembling GPU shaders
+#---------------------------------------------------------------------------------
+define shader-as
+	$(eval CURBIN := $(patsubst %.shbin.o,%.shbin,$(notdir $@)))
+	picasso -o $(CURBIN) $1
+	bin2s $(CURBIN) | $(AS) -o $@
+	echo "extern const u8" `(echo $(CURBIN) | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`"_end[];" > `(echo $(CURBIN) | tr . _)`.h
+	echo "extern const u8" `(echo $(CURBIN) | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`"[];" >> `(echo $(CURBIN) | tr . _)`.h
+	echo "extern const u32" `(echo $(CURBIN) | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`_size";" >> `(echo $(CURBIN) | tr . _)`.h
+endef
+
+%.shbin.o : %.v.pica %.g.pica
+	@echo $(notdir $^)
+	@$(call shader-as,$^)
+
+%.shbin.o : %.v.pica
+	@echo $(notdir $<)
+	@$(call shader-as,$<)
+
+%.shbin.o : %.shlist
+	@echo $(notdir $<)
+	@$(call shader-as,$(foreach file,$(shell cat $<),$(dir $<)/$(file)))
+
+-include $(DEPENDS)
+
+#---------------------------------------------------------------------------------------
+endif
+#---------------------------------------------------------------------------------------
