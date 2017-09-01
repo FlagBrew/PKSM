@@ -186,8 +186,7 @@ void processLegality(u8* pkmn) {
 		return;
 	}
 
-	//TODO: uncomment when all the serveLegality's features are implemented
-	//checkingLegality = true;
+	checkingLegality = true;
 	close(sock);
 }
 

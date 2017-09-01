@@ -44,6 +44,16 @@ void update() {
 		fread(apiresponse, apiresponsesize, 1, apiptr);
 		fclose(apiptr);
 		
+		// check if latest is the current version
+		char tag[100] = {0};
+		sprintf(tag, "https://github.com/BernardoGiordano/PKSM/releases/tag/%d.%d.%d", APP_VERSION_MAJOR, APP_VERSION_MINOR, APP_VERSION_MICRO);
+		if (strstr((char*)apiresponse, tag) != NULL) {
+			infoDisp(i18n(S_HTTP_UPDATE_FAILED));
+			remove(apipath);
+			updating = false;
+			return;
+		}
+		
 		char* pointertourl = strstr((char*)apiresponse, "browser_download_url");
 		char tokenbuffer[100];
 		memcpy(tokenbuffer, pointertourl + 22, 100);
