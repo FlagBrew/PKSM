@@ -573,10 +573,10 @@ void printDatabase6(char *database[], int currentEntry, int page, int spriteArra
 				pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 20, y - ((i == currentEntry) ? movementOffsetSlow(2) : 0), 40 * (pk % 25) + 4, 30 * (pk / 25), 34, 30);
 			}
 			
-			if (pp2d_get_text_width(database[page*10 + i], FONT_SIZE_9, FONT_SIZE_9) <= 148)
+			if (pp2d_get_text_width(database[page*10 + i], FONT_SIZE_9, FONT_SIZE_9) <= 140)
 				pp2d_draw_text(54, y + 12, FONT_SIZE_9, FONT_SIZE_9, (i == currentEntry) ? HIGHBLUE : YELLOW, database[page * 10 + i]);
 			else {
-				//pp2d_draw_text_wrap(54, y + 3, FONT_SIZE_9, FONT_SIZE_9, (i == currentEntry) ? HIGHBLUE : YELLOW, 148, database[page * 10 + i]);
+				pp2d_draw_text_wrap(54, y + 3, FONT_SIZE_9, FONT_SIZE_9, (i == currentEntry) ? HIGHBLUE : YELLOW, 140, database[page * 10 + i]);
 			}
 			y += 37;
 		}
@@ -593,10 +593,10 @@ void printDatabase6(char *database[], int currentEntry, int page, int spriteArra
 				pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 202, y - ((i == currentEntry) ? movementOffsetSlow(2) : 0), 40 * (pk % 25) + 4, 30 * (pk / 25), 34, 30);
 			}
 			
-			if (pp2d_get_text_width(database[page*10 + i], FONT_SIZE_9, FONT_SIZE_9) <= 148)
+			if (pp2d_get_text_width(database[page*10 + i], FONT_SIZE_9, FONT_SIZE_9) <= 140)
 				pp2d_draw_text(235, y + 14, FONT_SIZE_9, FONT_SIZE_9, (i == currentEntry) ? HIGHBLUE : YELLOW, database[page * 10 + i]);
 			else {
-				//pp2d_draw_text_wrap(235, y + 3, FONT_SIZE_9, FONT_SIZE_9, (i == currentEntry) ? HIGHBLUE : YELLOW, 148, database[page * 10 + i]);
+				pp2d_draw_text_wrap(235, y + 3, FONT_SIZE_9, FONT_SIZE_9, (i == currentEntry) ? HIGHBLUE : YELLOW, 140, database[page * 10 + i]);
 			}
 			y += 37;
 		}
@@ -716,7 +716,7 @@ void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bo
 		printMenuBottom();
 
 		if (getN(i) > 1)
-			pp2d_draw_text_center(GFX_BOTTOM, 19, FONT_SIZE_11, FONT_SIZE_11, LIGHTBLUE, "Press L/R to switch multiple wondercards.");
+			pp2d_draw_text_center(GFX_BOTTOM, 19, FONT_SIZE_11, FONT_SIZE_11, LIGHTBLUE, "Press L to switch multiple wondercards.");
 		
 		pp2d_draw_wtext(16, 50, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_DB_LANGUAGES));
 		pp2d_draw_wtext(16, 112, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_DB_OVERWRITE_WC));

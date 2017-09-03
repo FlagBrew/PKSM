@@ -43,7 +43,7 @@ VERSION_MAJOR := 4
 VERSION_MINOR := 5
 VERSION_MICRO := 0
 
-ROSALINA := 1
+ROSALINA := 0
 
 # Don't really need to change this
 ICON_FLAGS          :=	nosavebackups,visible
