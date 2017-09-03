@@ -529,8 +529,7 @@ void mainMenuDS(int currentEntry) {
 }
 
 void printCredits() {
-	u8 buf[1500] = {0};
-	loadFile(buf, "romfs:/res/credits.txt");
+	char* credits = "Smealum for ctrulib\nKaphotics and SciresM for PKHeX and memecrypto\nJ-K-D for direct save import/export\nArchitDate for serveLegality\nSlownic for java servepkx\nSlashcash for PCHex++\nGocario for PKBrew\nTuxSH for TWLSaveTool\nPPorg for most of the wcx bundled in the application\nSimona, Carlo, Matteo for fill.c work\nAll the countless translators who worked on the localization";
 	
 	while (aptMainLoop() && !(hidKeysUp() & KEY_B)) {
 		hidScanInput();
@@ -547,7 +546,7 @@ void printCredits() {
 
 			pp2d_draw_on(GFX_BOTTOM);
 			printMenuBottom();
-			pp2d_draw_text(20, 30, FONT_SIZE_9, FONT_SIZE_9, LIGHTBLUE, (char*)buf);
+			pp2d_draw_text(20, 30, FONT_SIZE_9, FONT_SIZE_9, LIGHTBLUE, credits);
 			printBottomIndications(i18n(S_GRAPHIC_CREDITS_INDICATIONS));
 		pksm_end_frame();
 	}
@@ -809,7 +808,7 @@ void printEditor(u8* mainbuf, u64 size, int currentEntry, int page) {
 			sf2d_draw_texture(plusButton, 267, 30);
 		}
 		
-		sftd_draw_wtextf(fontBold14, (155 - sftd_get_wtext_width(fontBold14, 14, i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE))), 30, LIGHTBLUE, 14, i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE));
+		sftd_draw_wtextf(fontBold14, (155 - pp2d_get_wtext_width(fontBold14, 14, i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE))), 30, LIGHTBLUE, 14, i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE));
 		sftd_draw_textf(fontBold14, 165, 30, WHITE, 14, "0x%05X", currentEntry + 240*page);
 		
 		printSaveEditorInfo(mainbuf, page*240 + currentEntry);
@@ -1807,139 +1806,139 @@ void printSaveEditorInfo(u8* mainbuf, int byte) {
 }
 
 void printfHexEditorInfo(u8* pkmn, int byte) {
-	/*int y = 70, x = 8, xribbon = 90;
+	int y = 70, x = 8, xribbon = 90;
 	u32 string[NICKNAMELENGTH*2];
 	memset(string, 0, NICKNAMELENGTH*2*sizeof(u32));
 	
 	switch (byte) {
 		case 0x08 :
 		case 0x09 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_SPECIES), pkx_get_species(pkmn), listSpecies.items[pkx_get_species(pkmn)]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_SPECIES), pkx_get_species(pkmn), listSpecies.items[pkx_get_species(pkmn)]);
 			break;
 		case 0x0A :
 		case 0x0B :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_ITEM), pkx_get_item(pkmn), items[pkx_get_item(pkmn)]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_HELD_ITEM), pkx_get_item(pkmn), items[pkx_get_item(pkmn)]);
 			break;
 		case 0x0C :
 		case 0x0D :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_TID), pkx_get_tid(pkmn));
-			sftd_draw_textf(fontBold12, x, y + 16, LIGHTBLUE, 12, "Gen7 TID: %d", ((unsigned int)(pkx_get_tid(pkmn) + pkx_get_sid(pkmn)*65536) % 1000000));
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_TID), pkx_get_tid(pkmn));
+			pp2d_draw_textf(x, y + 16, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, "Gen7 TID: %d", ((unsigned int)(pkx_get_tid(pkmn) + pkx_get_sid(pkmn)*65536) % 1000000));
 			break;
 		case 0x0E :
 		case 0x0F :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_SID), pkx_get_sid(pkmn));
-			sftd_draw_textf(fontBold12, x, y + 16, LIGHTBLUE, 12, "Gen7 TID: %d", ((unsigned int)(pkx_get_tid(pkmn) + pkx_get_sid(pkmn)*65536) % 1000000));
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_SID), pkx_get_sid(pkmn));
+			pp2d_draw_textf(x, y + 16, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, "Gen7 TID: %d", ((unsigned int)(pkx_get_tid(pkmn) + pkx_get_sid(pkmn)*65536) % 1000000));
 			break;
 		case 0x14 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ABILITY), abilities[pkx_get_ability(pkmn)]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_ABILITY), abilities[pkx_get_ability(pkmn)]);
 			break;
 		case 0x1C :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_NATURE), natures[pkx_get_nature(pkmn)]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_NATURE), natures[pkx_get_nature(pkmn)]);
 			break;
 		case 0x1D : {
 			wchar_t* entries[] = { i18n(S_GRAPHIC_HEXEDITOR_FATEFUL_ENCOUNTER_FLAG) };
-			int i = sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_HEXEDITOR_GENDER));
-			sftd_draw_wtext(fontBold12, xribbon + 27, y, LIGHTBLUE, 12, entries[0]);
-			sf2d_draw_rectangle(xribbon, y, 13, 13, (pkmn[byte] & 1) ? BUTTONGREEN : BUTTONRED);
-			sftd_draw_wtext(fontBold12, x, y + 17, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_GENDER));
+			int i = pp2d_get_wtext_width(i18n(S_GRAPHIC_HEXEDITOR_GENDER), FONT_SIZE_12, FONT_SIZE_12);
+			pp2d_draw_wtext(xribbon + 27, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, entries[0]);
+			pp2d_draw_rectangle(xribbon, y, 13, 13, (pkmn[byte] & 1) ? BUTTONGREEN : BUTTONRED);
+			pp2d_draw_wtext(x, y + 17, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_GENDER));
 			if (pkx_get_gender(pkmn) == 0)
-				sftd_draw_wtext(fontBold12, x + i, y + 17, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_GENDER_MALE));
+				pp2d_draw_wtext(x + i, y + 17, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_GENDER_MALE));
 			else if (pkx_get_gender(pkmn) == 1)
-				sftd_draw_wtext(fontBold12, x + i, y + 17, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_GENDER_FEMALE));
+				pp2d_draw_wtext(x + i, y + 17, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_GENDER_FEMALE));
 			else
-				sftd_draw_wtext(fontBold12, x + i, y + 17, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_GENDER_GENDERLESS));
-			sftd_draw_wtextf(fontBold12, x, y + 17 * 2, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ALTERNATIVE_FORM), pkmn[byte] >> 3);
+				pp2d_draw_wtext(x + i, y + 17, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_GENDER_GENDERLESS));
+			pp2d_draw_wtextf(x, y + 17 * 2, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_ALTERNATIVE_FORM), pkmn[byte] >> 3);
 			break;
 		}
 		case 0x1E :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_EV_HP), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_EV_HP), pkmn[byte]);
 			break;
 		case 0x1F : 
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_EV_ATK), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_EV_ATK), pkmn[byte]);
 			break;
 		case 0x20 : 
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_EV_DEF), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_EV_DEF), pkmn[byte]);
 			break;	
 		case 0x21 : 
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_EV_SPE), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_EV_SPE), pkmn[byte]);
 			break;
 		case 0x22 : 
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_EV_SPA), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_EV_SPA), pkmn[byte]);
 			break;	
 		case 0x23 : 
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_EV_SPD), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_EV_SPD), pkmn[byte]);
 			break;	
 		case 0x24 : 
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_CONTEST_VALUE_COOL), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_CONTEST_VALUE_COOL), pkmn[byte]);
 			break;	
 		case 0x25 : 
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_CONTEST_VALUE_BEAUTY), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_CONTEST_VALUE_BEAUTY), pkmn[byte]);
 			break;	
 		case 0x26 : 
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_CONTEST_VALUE_CUTE), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_CONTEST_VALUE_CUTE), pkmn[byte]);
 			break;	
 		case 0x27 : 
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_CONTEST_VALUE_SMART), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_CONTEST_VALUE_SMART), pkmn[byte]);
 			break;	
 		case 0x28 : 
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_CONTEST_VALUE_TOUGH), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_CONTEST_VALUE_TOUGH), pkmn[byte]);
 			break;	
 		case 0x29 : 
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_CONTEST_VALUE_SHEEN), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_CONTEST_VALUE_SHEEN), pkmn[byte]);
 			break;
 		case 0x30 : {
 			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_KALOS, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_G3_HOENN, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_SINNOH, S_GRAPHIC_HEXEDITOR_RIBBON_BEST_FRIENDS, S_GRAPHIC_HEXEDITOR_RIBBON_TRAINING,S_GRAPHIC_HEXEDITOR_RIBBON_SKILLFUL_BATTLER, S_GRAPHIC_HEXEDITOR_RIBBON_BATTLER_EXPERT, S_GRAPHIC_HEXEDITOR_RIBBON_EFFORT };
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
-				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (pkx_get_ribbons(pkmn, 0, i)) ? BUTTONGREEN : BUTTONRED);
+				pp2d_draw_wtext(xribbon + 27, y + 17*i, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(entries[i]));
+				pp2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (pkx_get_ribbons(pkmn, 0, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
 		case 0x31 : {
 			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_ALERT, S_GRAPHIC_HEXEDITOR_RIBBON_SHOCK, S_GRAPHIC_HEXEDITOR_RIBBON_DOWNCAST, S_GRAPHIC_HEXEDITOR_RIBBON_CARELESS, S_GRAPHIC_HEXEDITOR_RIBBON_RELAX, S_GRAPHIC_HEXEDITOR_RIBBON_SNOOZE, S_GRAPHIC_HEXEDITOR_RIBBON_SMILE, S_GRAPHIC_HEXEDITOR_RIBBON_GORGEOUS };
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
-				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (pkx_get_ribbons(pkmn, 1, i)) ? BUTTONGREEN : BUTTONRED);
+				pp2d_draw_wtext(xribbon + 27, y + 17*i, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(entries[i]));
+				pp2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (pkx_get_ribbons(pkmn, 1, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
 		case 0x32 : {
 			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_ROYAL, S_GRAPHIC_HEXEDITOR_RIBBON_GORGEOUS_ROYAL, S_GRAPHIC_HEXEDITOR_RIBBON_ARTIST, S_GRAPHIC_HEXEDITOR_RIBBON_FOOTPRINT, S_GRAPHIC_HEXEDITOR_RIBBON_RECORD, S_GRAPHIC_HEXEDITOR_RIBBON_LEGEND, S_GRAPHIC_HEXEDITOR_RIBBON_COUNTRY, S_GRAPHIC_HEXEDITOR_RIBBON_NATIONAL };
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
-				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (pkx_get_ribbons(pkmn, 2, i)) ? BUTTONGREEN : BUTTONRED);
+				pp2d_draw_wtext(xribbon + 27, y + 17*i, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(entries[i]));
+				pp2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (pkx_get_ribbons(pkmn, 2, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
 		case 0x33 : {
 			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_EARTH, S_GRAPHIC_HEXEDITOR_RIBBON_WORLD, S_GRAPHIC_HEXEDITOR_RIBBON_CLASSIC, S_GRAPHIC_HEXEDITOR_RIBBON_PREMIER, S_GRAPHIC_HEXEDITOR_RIBBON_EVENT, S_GRAPHIC_HEXEDITOR_RIBBON_BIRTHDAY, S_GRAPHIC_HEXEDITOR_RIBBON_SPECIAL, S_GRAPHIC_HEXEDITOR_RIBBON_SOUVENIR };
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
-				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (pkx_get_ribbons(pkmn, 3, i)) ? BUTTONGREEN : BUTTONRED);
+				pp2d_draw_wtext(xribbon + 27, y + 17*i, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(entries[i]));
+				pp2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (pkx_get_ribbons(pkmn, 3, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
 		case 0x34 : {
 			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_WISHING, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_BATTLE, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_REGIONAL, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_NATIONAL, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_WORLD, S_GRAPHIC_HEXEDITOR_RIBBON_38, S_GRAPHIC_HEXEDITOR_RIBBON_39, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_G6_HOENN };
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
-				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (pkx_get_ribbons(pkmn, 4, i)) ? BUTTONGREEN : BUTTONRED);
+				pp2d_draw_wtext(xribbon + 27, y + 17*i, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(entries[i]));
+				pp2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (pkx_get_ribbons(pkmn, 4, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
 		case 0x35 : {
 			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_CONTEST_STAR, S_GRAPHIC_HEXEDITOR_RIBBON_MASTER_COOLNESS, S_GRAPHIC_HEXEDITOR_RIBBON_MASTER_BEAUTY, S_GRAPHIC_HEXEDITOR_RIBBON_MASTER_CUTENESS, S_GRAPHIC_HEXEDITOR_RIBBON_MASTER_CLEVERNESS, S_GRAPHIC_HEXEDITOR_RIBBON_MASTER_TOUGHNESS, S_GRAPHIC_HEXEDITOR_RIBBON_CHAMPION_ALOLA, S_GRAPHIC_HEXEDITOR_RIBBON_BATTLE_ROYALE };
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
-				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (pkx_get_ribbons(pkmn, 5, i)) ? BUTTONGREEN : BUTTONRED);
+				pp2d_draw_wtext(xribbon + 27, y + 17*i, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(entries[i]));
+				pp2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (pkx_get_ribbons(pkmn, 5, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
 		case 0x36 : {
 			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_RIBBON_BATTLE_TREE_GREAT, S_GRAPHIC_HEXEDITOR_RIBBON_BATTLE_TREE_MASTER, S_GRAPHIC_HEXEDITOR_RIBBON_51, S_GRAPHIC_HEXEDITOR_RIBBON_52, S_GRAPHIC_HEXEDITOR_RIBBON_53, S_GRAPHIC_HEXEDITOR_RIBBON_54, S_GRAPHIC_HEXEDITOR_RIBBON_55, S_GRAPHIC_HEXEDITOR_RIBBON_56 };
 			for (int i = 0; i < 8; i++) {
-				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17*i, LIGHTBLUE, 12, i18n(entries[i]));
-				sf2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (pkx_get_ribbons(pkmn, 6, i)) ? BUTTONGREEN : BUTTONRED);
+				pp2d_draw_wtext(xribbon + 27, y + 17*i, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(entries[i]));
+				pp2d_draw_rectangle(xribbon, y + 17*i, 13, 13, (pkx_get_ribbons(pkmn, 6, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
@@ -1968,71 +1967,71 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0x56 :
 		case 0x57 :
 			pkx_get_nickname(pkmn, string);
-			sftd_draw_wtext(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_NICKNAME));
-			sftd_draw_wtext(fontBold12, x + sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_HEXEDITOR_NICKNAME)), y, LIGHTBLUE, 12, (wchar_t*)string);
+			pp2d_draw_wtext(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_NICKNAME));
+			pp2d_draw_wtext(x + pp2d_get_wtext_width(i18n(S_GRAPHIC_HEXEDITOR_NICKNAME), FONT_SIZE_12, FONT_SIZE_12), y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, (wchar_t*)string);
 			break;
 		case 0x5A :
 		case 0x5B :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE1), pkx_get_move(pkmn, 0), moves[pkx_get_move(pkmn, 0)]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_MOVE1), pkx_get_move(pkmn, 0), moves[pkx_get_move(pkmn, 0)]);
 			break;
 		case 0x5C :
 		case 0x5D :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE2), pkx_get_move(pkmn, 1), moves[pkx_get_move(pkmn, 1)]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_MOVE2), pkx_get_move(pkmn, 1), moves[pkx_get_move(pkmn, 1)]);
 			break;
 		case 0x5E :
 		case 0x5F :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE3), pkx_get_move(pkmn, 2), moves[pkx_get_move(pkmn, 2)]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_MOVE3), pkx_get_move(pkmn, 2), moves[pkx_get_move(pkmn, 2)]);
 			break;
 		case 0x60 :
 		case 0x61 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE4), pkx_get_move(pkmn, 3), moves[pkx_get_move(pkmn, 3)]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_MOVE4), pkx_get_move(pkmn, 3), moves[pkx_get_move(pkmn, 3)]);
 			break;
 		case 0x62 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE1_PP), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_MOVE1_PP), pkmn[byte]);
 			break;
 		case 0x63 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE2_PP), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_MOVE2_PP), pkmn[byte]);
 			break;
 		case 0x64 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE3_PP), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_MOVE3_PP), pkmn[byte]);
 			break;
 		case 0x65 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE4_PP), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_MOVE4_PP), pkmn[byte]);
 			break;
 		case 0x66 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE1_PPUP), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_MOVE1_PPUP), pkmn[byte]);
 			break;
 		case 0x67 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE2_PPUP), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_MOVE2_PPUP), pkmn[byte]);
 			break;
 		case 0x68 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE3_PPUP), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_MOVE3_PPUP), pkmn[byte]);
 			break;
 		case 0x69 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MOVE4_PPUP), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_MOVE4_PPUP), pkmn[byte]);
 			break;
 		case 0x6A :
 		case 0x6B :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_RELEARN_MOVE1), pkx_get_egg_move(pkmn, 0), moves[pkx_get_egg_move(pkmn, 0)]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_RELEARN_MOVE1), pkx_get_egg_move(pkmn, 0), moves[pkx_get_egg_move(pkmn, 0)]);
 			break;
 		case 0x6C :
 		case 0x6D :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_RELEARN_MOVE2), pkx_get_egg_move(pkmn, 1), moves[pkx_get_egg_move(pkmn, 1)]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_RELEARN_MOVE2), pkx_get_egg_move(pkmn, 1), moves[pkx_get_egg_move(pkmn, 1)]);
 			break;
 		case 0x6E :
 		case 0x6F :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_RELEARN_MOVE3), pkx_get_egg_move(pkmn, 2), moves[pkx_get_egg_move(pkmn, 2)]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_RELEARN_MOVE3), pkx_get_egg_move(pkmn, 2), moves[pkx_get_egg_move(pkmn, 2)]);
 			break;
 		case 0x70 :
 		case 0x71 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_RELEARN_MOVE4), pkx_get_egg_move(pkmn, 3), moves[pkx_get_egg_move(pkmn, 3)]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_RELEARN_MOVE4), pkx_get_egg_move(pkmn, 3), moves[pkx_get_egg_move(pkmn, 3)]);
 			break;
 		case 0x77: {
 			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_IS_NICKNAMED, S_GRAPHIC_HEXEDITOR_IS_EGG };
-			sftd_draw_wtext(fontBold12, xribbon + 27, y, LIGHTBLUE, 12, i18n(entries[0]));
-			sf2d_draw_rectangle(xribbon, y, 13, 13, (pkx_get_nickname_flag(pkmn)) ? BUTTONGREEN : BUTTONRED);
-			sftd_draw_wtext(fontBold12, xribbon + 27, y + 17, LIGHTBLUE, 12, i18n(entries[1]));
-			sf2d_draw_rectangle(xribbon, y + 17, 13, 13, (pkx_is_egg(pkmn)) ? BUTTONGREEN : BUTTONRED);
+			pp2d_draw_wtext(xribbon + 27, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(entries[0]));
+			pp2d_draw_rectangle(xribbon, y, 13, 13, (pkx_get_nickname_flag(pkmn)) ? BUTTONGREEN : BUTTONRED);
+			pp2d_draw_wtext(xribbon + 27, y + 17, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(entries[1]));
+			pp2d_draw_rectangle(xribbon, y + 17, 13, 13, (pkx_is_egg(pkmn)) ? BUTTONGREEN : BUTTONRED);
 			break;
 		}
 		case 0x78 :
@@ -2060,29 +2059,29 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0x8E :
 		case 0x8F :	
 			pkx_get_ht(pkmn, string);
-			sftd_draw_wtext(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_NAME));
-			sftd_draw_wtext(fontBold12, x + sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_NAME)), y, LIGHTBLUE, 12, (wchar_t*)string);
+			pp2d_draw_wtext(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_NAME));
+			pp2d_draw_wtext(x + pp2d_get_wtext_width(i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_NAME), FONT_SIZE_12, FONT_SIZE_12), y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, (wchar_t*)string);
 			break;
 		case 0xA2 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_FRIENDSHIP), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_FRIENDSHIP), pkmn[byte]);
 			break;
 		case 0xA3 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_AFFECTION), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_AFFECTION), pkmn[byte]);
 			break;
 		case 0xA4 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_INTENSITY), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_INTENSITY), pkmn[byte]);
 			break;
 		case 0xA5 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_MEMORY), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_MEMORY), pkmn[byte]);
 			break;	
 		case 0xA6 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_FEELING), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_FEELING), pkmn[byte]);
 			break;
 		case 0xAE :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_FULLNESS), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_FULLNESS), pkmn[byte]);
 			break;	
 		case 0xAF :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ENJOYMENT), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_ENJOYMENT), pkmn[byte]);
 			break;
 		case 0xB0 :
 		case 0xB1 :
@@ -2109,58 +2108,58 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0xC6 :
 		case 0xC7 :
 			pkx_get_ot(pkmn, string);
-			sftd_draw_wtext(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_NAME));
-			sftd_draw_wtext(fontBold12, x + sftd_get_wtext_width(fontBold12, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_NAME)), y, LIGHTBLUE, 12, (wchar_t*)string);
+			pp2d_draw_wtext(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_NAME));
+			pp2d_draw_wtext(x + pp2d_get_wtext_width(i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_NAME), FONT_SIZE_12, FONT_SIZE_12), y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, (wchar_t*)string);
 			break;
 		case 0xCA :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_FRIENDSHIP), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_FRIENDSHIP), pkmn[byte]);
 			break;
 		case 0xCB :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_AFFECTION), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_AFFECTION), pkmn[byte]);
 			break;
 		case 0xCC :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_INTENSITY), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_INTENSITY), pkmn[byte]);
 			break;
 		case 0xCD :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_MEMORY), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_MEMORY), pkmn[byte]);
 			break;	
 		case 0xD0 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_FEELING), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_FEELING), pkmn[byte]);
 			break;
 		case 0xD1 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_EGG_YEAR), 2000 + pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_EGG_YEAR), 2000 + pkmn[byte]);
 			break;
 		case 0xD2 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_EGG_MONTH), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_EGG_MONTH), pkmn[byte]);
 			break;
 		case 0xD3 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_EGG_DAY), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_EGG_DAY), pkmn[byte]);
 			break;
 		case 0xD4 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MET_YEAR), 2000 + pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_MET_YEAR), 2000 + pkmn[byte]);
 			break;
 		case 0xD5 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MET_MONTH), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_MET_MONTH), pkmn[byte]);
 			break;
 		case 0xD6 :
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MET_DAY), pkmn[byte]);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_MET_DAY), pkmn[byte]);
 			break;
 		case 0xDD : {
-			sftd_draw_wtextf(fontBold12, x, y, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_MET_LEVEL), (pkmn[byte] & 0x7f));
-			sftd_draw_wtextf(fontBold12, xribbon + 27, y + 17, LIGHTBLUE, 12, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_GENDER));
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_MET_LEVEL), (pkmn[byte] & 0x7f));
+			pp2d_draw_wtextf(xribbon + 27, y + 17, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_GENDER));
 			if (pkx_get_ot_gender(pkmn) == 0)
-				sf2d_draw_texture(male, xribbon + 10, y + 17 + 2);
+				pp2d_draw_texture(TEXTURE_MALE, xribbon + 10, y + 17 + 2);
 			else if (pkx_get_ot_gender(pkmn) == 1)
-				sf2d_draw_texture(female, xribbon + 10 + 2, y + 17 + 2);
+				pp2d_draw_texture(TEXTURE_FEMALE, xribbon + 10 + 2, y + 17 + 2);
 			break;
 		}
 		case 0xDE : {
 			AppTextCode entries[] = { S_GRAPHIC_HEXEDITOR_HYPER_TRAINED_HP, S_GRAPHIC_HEXEDITOR_HYPER_TRAINED_ATK, S_GRAPHIC_HEXEDITOR_HYPER_TRAINED_DEF, S_GRAPHIC_HEXEDITOR_HYPER_TRAINED_SPATK, S_GRAPHIC_HEXEDITOR_HYPER_TRAINED_SPDEF, S_GRAPHIC_HEXEDITOR_HYPER_TRAINED_SPEED };
 			for (int i = 0; i < 6; i++) {
-				sftd_draw_wtext(fontBold12, xribbon + 27, y + 17 * i, LIGHTBLUE, 12, i18n(entries[i]));
-				sf2d_draw_rectangle(xribbon, y + 17 * i, 13, 13, (pkx_get_hti(pkmn, i)) ? BUTTONGREEN : BUTTONRED);
+				pp2d_draw_wtext(xribbon + 27, y + 17 * i, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(entries[i]));
+				pp2d_draw_rectangle(xribbon, y + 17 * i, 13, 13, (pkx_get_hti(pkmn, i)) ? BUTTONGREEN : BUTTONRED);
 			}
 			break;
 		}
-	}*/
+	}
 }

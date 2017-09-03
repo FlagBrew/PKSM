@@ -1,39 +1,39 @@
-A sacar assets %d...
-Carregando arquivos...
-Carregando os assets locais...
-Carregando habilidades
-Carregando ataques
-Ordenando ataques
-Carregando naturezas
-Carregando items
-Ordenando items
-Carregando poderes ocultos
+Descarregando recursos %d...
+Carregando ficheiros...
+Carregando recursos locais...
+Carregando Abilities...
+Carregando Moves...
+Ordenando Moves...
+Carregando Natures...
+Carregando Items...
+Ordenando Items...
+Carregando Hidden Powers...
 Carregando fontes...
-Carregando cache de fontes %i/%i
+Carregando cache de fontes... %i/%i
 Pronto!
-Criando um banco de dados padrão...
-Fazendo cópia de segurança...
-Reinicie o aplicativo!
-Estão faltando alguns assets!
+Criando um banco padrão...
+Criando backup do banco...
+Reinicie a aplicação!
+Há alguns recursos em falta!
 Carregando gravação...
-Jogo não localizado!
-Tamanho incorreto para este jogo!
-Nenhum cartucho inserido!
-Gerenciar
+Jogo não encontrado!
+Tamanho incorrecto para este jogo!
+Nenhum cartão inserido!
+Opções
 Eventos
 Créditos
-Aperte A para escolher uma opção.
-Aperte START para sair.
+Pressione A para escolher uma opção.
+Pressione START para sair.
 Editor
-Save Info
-Storage
-Injetor em massa
-Deseja salvar as alterações?
+Gravação
+Banco
+INJECTOR EM MASSA
+Gravar as alterações?
 Pressione A para continuar.
-A: Continuar / B: Cancelar.
+A: Continuar / B: Cancelar
 Aguarde por favor.
-Os cartuchos tem prioridade sobre as versões digitais.
-Navegue pelo direcional, pressione A para continuar e B para sair.
+Cartões têm prioridade sobre versões digitais.
+Botão direccional: Navegar / A: Continuar / B: Sair
 X
 Y
 Omega Ruby
@@ -43,79 +43,79 @@ Moon
 Diamond
 Pearl
 Platinum
-Heart Gold
-Soul Silver
+HeartGold
+SoulSilver
 Black
 White
 Black 2
 White 2
-Carregado gráficos
-Carregando imagens %i / %i
-Bank.bin com tamanho incorreto
-Apagar os boxes selecionados?
-Salvar mudanças no bank.bin?
-Gravar flags na PokeDex?
-Box %lu / Espaço %lu
-Erro durante a injeção!
-Injeção concluída!
-Item não disponivel em XY!
-Gravas as flags no PokeDex?
-Box %lu / Espaço %lu
-Conjunto XD collection injetado com sucesso!
-Conjunto Colosseum col. injetado com sucesso!
-Conjunto 10th Anniversary injetado com sucesso!
-Conjunto N's collection injetado com sucesso!
-Conjunto Entree Forest col. injetado com sucesso!
-Conjunto Dream Radar col. injetado com sucesso!
-Conjunto Living dex injetado com sucesso!
-Conjunto Deoxys collection injetado com sucesso!
-Conjunto My Pokemon Ranch injetado com sucesso!
-Conjunto Korean collection injetado com sucesso!
-Idioma escolhido com sucesso!
-Mistery Gifts apagados!
+Carregando gráficos...
+Carregando imagem... %i / %i
+Tamanho incorrecto do bank.bin!
+Apagar a Box seleccionada?
+Gravar alterações ao bank.bin?
+Gravar marcos da Pokédex?
+Box %lu / Slot %lu
+Erro durante a injecção!
+Injecção concluída!
+Item não disponível no X/Y!
+Gravar os marcos da Pokédex?
+Box %lu / Slot %lu
+Colecção XD injectada!
+Colecção Colosseum injectada!
+Colecção 10.º Aniversário injectada!
+Colecção do N injectada!
+Colecção Entree Forest injectada!
+Colecção Dream Radar injectada!
+Pokédex Viva injectada!
+Colecção Deoxys de Oblivia!
+Colecção My Pokémon Ranch injectada!
+Colecção Coreana injectada!
+Idioma definido com sucesso!
+Mystery Gifts apagados!
 Cancelar
-Conjunto
-Insira seu nome
-Insira o nome para o TO
-Tem certeza?
+Seleccionar
+Introduza o seu nome.
+Introduza o nome para o OT.
+Soltar este Pokémon?
 Pokémon solto!
 Progresso: %lu %lu bytes
 EVENTOS
 OUTROS
-Aperte START para sair.
+Pressione START para sair.
 Créditos
-Aperte B para voltar.
-Banco de dados dos eventos
-A: continuar, B: voltar.
-START: injetar, B: voltar
-A: selecionar, B: voltar.
+Pressione B para retroceder.
+Base de Dados de Eventos
+A: Continuar / B: Retroceder
+START: Injectar / B: Retroceder
+A: Seleccionar / B: Retroceder
 Idiomas
-Substituir Wondercard
+Substituir Wonder Card
 Adaptar o idioma à WC
-Injetar WC no espaço
-Editor de Configurações
+Injectar WC no Slot
+Editor de Gravação
 Idioma
 Limpar o Mystery Gift
-Aperte START confirmar, A para mudar ou B para voltar.
+START: Editar / A: Alternar / B: Sair
 Nome
-TO
-Pokerus
-Natureza
-Habilidade
+OT
+Pokérus
+Nature
+Ability
 Item
-ESV/TSV
-TID/SID
+ESV / TSV
+TID / SID
 Amizade HT/OT
-Poder Oculto
-Vida
-Ataque
-Defesa
-Atq Esp.
-Def Esp.
-Veloc.
-Nv.%u
-Ataques
-Ciclo ovo
+Hidden Power
+HP
+Attack
+Defense
+Sp. Atk
+Sp. Def
+Speed
+Lv.%u
+Moves
+Cíclo do Ovo
 Editar
 Clonar
 Soltar
@@ -123,156 +123,156 @@ Gerar
 Sair
 Box %d
 Abra o cliente no seu PC...
-Aperte B para sair.
-Time
-A: Clonar no espaço selecionado, B: Cancelar.
-%ls selecionado.
-A: Gerar pokémon escolhido, B: Cancelar.
+Pressione B para sair.
+Team
+A: Clonar no Slot seleccionado / B: Cancelar
+%ls seleccionado.
+A: Gerar Pokémon / B: Cancelar
 TID: %u / SID: %u / TSV: %u
-Semente: %lx %lx %lx %lx
-Nivel
-Natureza
-Habilidade
+Seed: %lx %lx %lx %lx
+Nível
+Nature
+Ability
 Item
 Shiny
-Pokerus
+Pokérus
 OT
 Nome
 Amizade
-Estado
-Ataques
-Gravar
-Vida
-Ataque
-Defesa
-Atq Especial
-Def Especial
-Velocidade
-Edite o Pokemon na tela inferior
-Clique em GRAVAR quando terminar.
+Stats
+Moves
+GRAVAR
+HP
+Attack
+Defense
+Sp. Attack
+Sp. Defense
+Speed
+Edite o Pokémon no ecrã inferior.
+Toque em GRAVAR quando terminar.
 Neutro
--Ataque
--Defesa
--Velocid.
--Atq Esp.
--Def Esp.
-+Ataque
-+Defesa
-+Velocid.
-+Atq Esp.
-+Def Esp.
-Ciclo do ovo
-ESTADO
+-Attack
+-Defense
+-Speed
+-Sp. Atk.
+-Sp. Def.
++Attack
++Defense
++Speed
++Sp. Atk.
++Sp. Def.
+Cíclo do Ovo
+STATS
 IV
 EV
 TOTAL
-Poder Oculto
-Ataques
-Ataques para reaprender
+Hidden Power
+Moves
+Moves p/ Reaprender
 Byte escolhido
-Escolha um item com o A.
-Escolha a natureza com o A.
+Escolha um Item com o A.
+Escolha a Nature com o A.
 Escolha a bola com o A.
-Escolha o tipo de PO com o A.
+Escolha o Type do HP com o A.
 Escolha a forma com o A.
 Banco %d
-Nv. %u
+Lv.%u
 ID. %u
-Gravar %d
-X: Estado
-Apagar Box
-Libertar
-XD Collection
-Colosseum Collection
-10th Anniversary Collection
-N's Collection
-Entree Forest Collection
-Dream Radar Collection
-Living Dex
-Oblivia Deoxys Collection
-Pokemon Ranch Collection
-KOR Events Collections
-%d box vão ser substituidas.
-Injetor em massa
-Carregue START para injetar, B para sair.
+Jogo %d
+X: Ver
+Limpar Box
+Soltar
+Colecção XD
+Colecção Colosseum
+Colecção 10º. Aniversário
+Colecção do N
+Colecção Entree Forest
+Colecção Dream Radar
+Pokédex Viva
+Colecção Oblivia Deoxys
+Colecção My Pokémon Ranch
+Colecção Coreana
+%d Boxes serão substituidas.
+Injector em Massa
+START: Injectar / B: Sair
 Banco
-Backup do Save
+Backup da Gravação
 Backup do Banco
-Ajuste o número de espaços do banco extra.
+Ajuste o número de Boxes no Banco.
 Sim
 Não
-Espécies: #%d - %ls
-Item Segurado: #%d - %ls
+Espécie: #%d - %ls
+Held Item: #%d - %ls
 TID: %d
 SID: %d
-Habilidade: %ls
-Natureza: %ls
-Bandeira do Encontro Destinado
-Gênero:
+Ability: %ls
+Nature: %ls
+Marco de Fateful Encounter
+Género:
 Macho
-Fémea
-Sem gênero
+Fêmea
+Sem Género
 Forma Alternativa: #%d
-EV Vida: %d
-EV: Atq: %d
-EV DEF: %d
-EV VEL: %d
-EV ATE: %d
-EV DEFE: %d
-Valor do Concurso Cool: %d
-Valor do Concurso Beauty: %d
-Valor do Concurso Cute: %d
-Valor do Concurso Smart: %d
-Valor do Concurso Tough: %d
-Valor do Concurso Sheen: %d
-Campeão de Kalos
-Campeão de G3 Hoenn
-Campeão de Sinnoh
-Melhores Amigos
-Treino
-Batalhador hábil
-Batalhador expert
-Esforço
-Alerta
-Choque
-Abatido
-Descuidado
-Relaxar
-Sono
-Sorrir
-Deslumbrante
-Real
-Deslumbrante Real
-Artista
-Pegada
-Recorde
-Lenda
-País
-Nacional
-Terra
-Mundo
-Clássico
+EV de HP: %d
+EV de ATK: %d
+EV de DEf: %d
+EV de SPE: %d
+EV de SPA: %d
+EV de SPD: %d
+Valor de Contest Cool: %d
+Valor de Contest Beauty: %d
+Valor de Contest Cute: %d
+Valor de Contest Smart: %d
+Valor de Contest Tough: %d
+Valor de Contest Sheen: %d
+Kalos Champion
+Champion (3.ª Geração)
+Sinnoh Champion
+Best Friends
+Training
+Skillful Battler
+Expert Battler
+Effort
+Alert
+Shock
+Downcast
+Careless
+Relax
+Smile
+Snooze
+Gorgeous
+Royal
+Gorgeous Royal
+Artist
+Footprint
+Record
+Legend
+Country
+National
+Earth
+World
+Classic
 Premier
-Evento
-Aniversário
-Especial
-Lembrança
-Desejo
-Campeão de Batalha
-Campeão Regional
-Campeão Nacional
-Campeão do Mundo
+Event
+Birthday
+Special
+Souvenir
+Wishing
+Battle Champion
+Regional Champion
+National Champion
+World Champion
 -
 -
-Campeão de G6 Hoenn
-Estrela do Concurso
-Mestre do Coolness
-Mestre da Beauty
-Mestre da Cuteness
-Mestre do Cleverness
-Mestre do Toughness
-Campeão de Alola
-Battle Royale
+Hoenn Champion (6.ª Geração)
+Contest Star
+Coolness Master
+Beauty Master
+Cuteness Master
+Cleverness Master
+Toughness Master
+Alola Champion
+Battle Royal Master
 Battle Tree Great
 Battle Tree Master
 -
@@ -282,293 +282,293 @@ Battle Tree Master
 -
 -
 Nome:
-Ataque 1: #%d - %ls
-Ataque 2: #%d - %ls
-Ataque 3: #%d - %ls
-Ataque 4: #%d - %ls
-Ataque 1 PP: %d
-Ataque 2 PP: %d
-Ataque 3 PP: %d
-Ataque 4 PP: %d
-Ataque 1 PP Up: %d
-Ataque 2 PP Up: %d
-Ataque 3 PP Up: %d
-Ataque 4 PP Up: %d
-Ataque para reaprender 1: #%d - %ls
-Ataque para reaprender 2: #%d - %ls
-Ataque para reaprender 3: #%d - %ls
-Ataque para reaprender 4: #%d - %ls
+Move 1: #%d - %ls
+Move 2: #%d - %ls
+Move 3: #%d - %ls
+Move 4: #%d - %ls
+PP do Move 1: %d
+PP do Move 2: %d
+PP do Move 3: %d
+PP do Move 4: %d
+PP Ups no Move 1: %d
+PP Ups no Move 2: %d
+PP Ups no Move 3: %d
+PP Ups no Move 4: %d
+Move p/ Reaprender 1: #%d - %ls
+Move p/ Reaprender 2: #%d - %ls
+Move p/ Reaprender 3: #%d - %ls
+Move p/ Reaprender 4: #%d - %ls
 Está Apelidado
-Está em Ovo
-Nome do treinador em posse: %d
-Amizade do treinador em posse: %d
-Afeição do treinador em posse: %d
-Intesidade do treinador em posse: %d
-Memória do treinador em posse: %d
-Sentimento do treinador em posse: %d
-Cheio: %d
-Divertimento: %d
-Nome do treinador original: %d
-Amizade do treinador original: %d
-Afeição do treinador original: %d
-Intesidade do treinador original: %d
-Memória do treinador original: %d
-Sentimentos do treinador original: %d
+Está num Ovo
+Nome do Trainer em posse: %d
+Amizade com o Trainer em posse: %d
+Affection com o Trainer em posse: %d
+Intensidade com o Trainer em posse: %d
+Memória com o Trainer em posse: %d
+Sentimento com o Trainer em posse: %d
+Fullness: %d
+Enjoyment: %d
+Nome do Original Trainer: %d
+Amizade com o Original Trainer: %d
+Affection com o Original Trainer: %d
+Intensidade com o Original Trainer: %d
+Memória com o Original Trainer: %d
+Sentimento com o Original Trainer: %d
 Ano do Ovo: %d
 Mês do Ovo: %d
 Dia do Ovo: %d
-Ano encontrado: %d
-Mês encontrado: %d
-Dia encontrado: %d
-Nivel encontrado: %d
-: Gênero do treinador original
-VIDA hiper treinada
-ATQ hiper treinado
-DEF hiper treinada
-AT.ESP hiper treinado
-DEF.ESP hiper treinada
-VEL hiper treinada
-Encriptação constante, byte 1
-Encriptação constante, byte 2
-Encriptação constante, byte 3
-Encriptação constante, byte 4
+Ano de encontro: %d
+Mês de encontro: %d
+Dia de encontro: %d
+Nível de encontro: %d
+: Género do Original Trainer
+HP com Hyper Training
+ATK com Hyper Training
+DEF com Hyper Training
+SPA com Hyper Training
+SPD com Hyper Training
+SPE com Hyper Training
+Constante de Encriptação, byte 1
+Constante de Encriptação, byte 2
+Constante de Encriptação, byte 3
+Constante de Encriptação, byte 4
 Sanidade, byte 1
 Sanidade, byte 2
-Soma de verificação, byte 1
-Soma de verificação, byte 2
-Especies, byte 1
-Especies, byte 2
-Item em posse, byte 1
-Item em posse, byte 2
-IDT, byte 1
-IDT, byte 2
-IDS, byte 1
-IDS, byte 2
+Soma de Verificação, byte 1
+Soma de Verificação, byte 2
+Espécie, byte 1
+Espécie, byte 2
+Held Item, byte 1
+Held Item, byte 2
+TID, byte 1
+TID, byte 2
+SID, byte 1
+SID, byte 2
 Experiência, byte 1
 Experiência, byte 2
 Experiência, byte 3
 Experiência, byte 4
-Habilidade
-Número da habilidade
-ValorMarcado, byte 1
-ValorMarcado, byte 2
-IDP, byte 1
-IDP, byte 2
-IDP, byte 3
-IDP, byte 4
-Natureza
-Bandeira do encontro destinado / Gênero / Forma Alternativa
-Valor de esforço da VIDA
-Valor de esforço do ATQ
-Valor de esforço da DEF
-Valor de esforço do ATE
-Valor de esforço da DEFE
-Valor de esforço da VEL
-Valor do concurso Cool
-Valor do concurso Beauty
-Valor do concurso Cute
-Valor do concurso Smart
-Valor do concurso Tough
-Valor do concurso Sheen
-Satus da bandeira do PokePelago
-Pokerus
-Bandeira do super treino, byte 1
-Bandeira do super treino, byte 2
-Bandeira do super treino, byte 3
-Bandeira do super treino, byte 4
-Bandeira da fita, byte 1
-Bandeira da fita, byte 2
-Bandeira da fita, byte 3
-Bandeira da fita, byte 4
-Bandeira da fita, byte 5
-Bandeira da fita, byte 6
-Bandeira da fita, byte 7
-Bandeira da fita, byte 8
-Fita do concurso da memória
-Fita da batalha da memõria
+Ability
+Número da Ability
+Marcas, byte 1
+Marcas, byte 2
+PID, byte 1
+PID, byte 2
+PID, byte 3
+PID, byte 4
+Nature
+Marco de Encontro Destinado / Género / Forma Alternativa
+Valor de Esforço de HP
+Valor de Esforço de ATK
+Valor de Esforço de DEF
+Valor de Esforço de SPE
+Valor de Esforço de SPA
+Valor de Esforço de SPD
+Valor de Contest Cool
+Valor de Contest Beauty
+Valor de Contest Cute
+Valor de Contest Smart
+Valor de Contest Tough
+Valor de Contest Sheen
+Marco de Evento do PokéPelago
+Pokérus
+Marcos do Super Training, byte 1
+Marcos do Super Training, byte 2
+Marcos do Super Training, byte 3
+Marcos do Super Training, byte 4
+Marcos de Ribbon, byte 1
+Marcos de Ribbon, byte 2
+Marcos de Ribbon, byte 3
+Marcos de Ribbon, byte 4
+Marcos de Ribbon, byte 5
+Marcos de Ribbon, byte 6
+Marcos de Ribbon, byte 7
+Marcos de Ribbon, byte 8
+Contest Memory Ribbon
+Battle Memory Ribbon
 Dist byte
-Nome, byte 1
-Nome, byte 2
-Nome, byte 3
-Nome, byte 4
-Nome, byte 5
-Nome, byte 6
-Nome, byte 7
-Nome, byte 8
-Nome, byte 9
-Nome, byte 10
-Nome, byte 11
-Nome, byte 12
-Nome, byte 13
-Nome, byte 14
-Nome, byte 15
-Nome, byte 16
-Nome, byte 17
-Nome, byte 18
-Nome, byte 19
-Nome, byte 20
-Nome, byte 21
-Nome, byte 22
-Nome, byte 23
-Nome, byte 24
-Ataque 1, byte 1
-Ataque 1, byte 2
-Ataque 2, byte 1
-Ataque 2, byte 2
-Ataque 3, byte 1
-Ataque 3, byte 2
-Ataque 4, byte 1
-Ataque 4, byte 2
-PP do ataque 1
-PP do ataque 2
-PP do ataque 3
-PP do ataque 4
-PP UP para ataque 1
-PP UP para ataque 2
-PP UP para ataque 3
-PP UP para ataque 4
-Ataque para reaprender 1, byte 1
-Ataque para reaprender 1, byte 2
-Ataque para reaprender 2, byte 1
-Ataque para reaprender 2, byte 2
-Ataque para reaprender 3, byte 1
-Ataque para reaprender 3, byte 2
-Ataque para reaprender 4, byte 1
-Ataque para reaprender 4, byte 2
-Bandeira do treino super secreto
+Alcunha, byte 1
+Alcunha, byte 2
+Alcunha, byte 3
+Alcunha, byte 4
+Alcunha, byte 5
+Alcunha, byte 6
+Alcunha, byte 7
+Alcunha, byte 8
+Alcunha, byte 9
+Alcunha, byte 10
+Alcunha, byte 11
+Alcunha, byte 12
+Alcunha, byte 13
+Alcunha, byte 14
+Alcunha, byte 15
+Alcunha, byte 16
+Alcunha, byte 17
+Alcunha, byte 18
+Alcunha, byte 19
+Alcunha, byte 20
+Alcunha, byte 21
+Alcunha, byte 22
+Alcunha, byte 23
+Alcunha, byte 24
+Move 1, byte 1
+Move 1, byte 2
+Move 2, byte 1
+Move 2, byte 2
+Move 3, byte 1
+Move 3, byte 2
+Move 4, byte 1
+Move 4, byte 2
+PP do Move 1
+PP do Move 2
+PP do Move 3
+PP do Move 4
+PP Ups no Move 1
+PP Ups no Move 2
+PP Ups no Move 3
+PP Ups no Move 4
+Move p/ Reaprender 1, byte 1
+Move p/ Reaprender 1, byte 2
+Move p/ Reaprender 2, byte 1
+Move p/ Reaprender 2, byte 2
+Move p/ Reaprender 3, byte 1
+Move p/ Reaprender 3, byte 2
+Move p/ Reaprender 4, byte 1
+Move p/ Reaprender 4, byte 2
+Marco do Secret Super Training
 IV, byte 1
 IV, byte 2
 IV, byte 3
 IV, byte 4
-Nome do treinador em posse, byte 1
-Nome do treinador em posse, byte 2
-Nome do treinador em posse, byte 3
-Nome do treinador em posse, byte 4
-Nome do treinador em posse, byte 5
-Nome do treinador em posse, byte 6
-Nome do treinador em posse, byte 7
-Nome do treinador em posse, byte 8
-Nome do treinador em posse, byte 9
-Nome do treinador em posse, byte 10
-Nome do treinador em posse, byte 11
-Nome do treinador em posse, byte 12
-Nome do treinador em posse, byte 13
-Nome do treinador em posse, byte 14
-Nome do treinador em posse, byte 15
-Nome do treinador em posse, byte 16
-Nome do treinador em posse, byte 17
-Nome do treinador em posse, byte 18
-Nome do treinador em posse, byte 19
-Nome do treinador em posse, byte 20
-Nome do treinador em posse, byte 21
-Nome do treinador em posse, byte 22
-Nome do treinador em posse, byte 23
-Nome do treinador em posse, byte 24
-Gênero do treinador em posse
-Em posse atual
-Ultimos possuídores 1 Região
-Ultimos possuidores 1 País
-Ultimos possuidores 2 Região
-Ultimos possuidores 2 País
-Ultimos possuidores 3 Região
-Ultimos possuidores 3 País
-Ultimos possuidores 4 Região
-Ultimos possuidores 4 País
-Ultimos possuidores 5 Região
-Ultimos possuidores 5 País
-Amizade do treinador em posse
-Afeição do treinador em posse
-Intesidade do treinador em posse
-Memória do treinador em posse
-Sentimento do treinador em posse
-TextVar do treinador em posse, byte 1
-TextVar do treinador em posse, byte 1
-Cheio
-Divertimento
-Nome original do treinador, byte 1
-Nome original do treinador, byte 2
-Nome original do treinador, byte 3
-Nome original do treinador, byte 4
-Nome original do treinador, byte 5
-Nome original do treinador, byte 6
-Nome original do treinador, byte 7
-Nome original do treinador, byte 8
-Nome original do treinador, byte 9
-Nome original do treinador, byte 10
-Nome original do treinador, byte 11
-Nome original do treinador, byte 12
-Nome original do treinador, byte 13
-Nome original do treinador, byte 14
-Nome original do treinador, byte 15
-Nome original do treinador, byte 16
-Nome original do treinador, byte 17
-Nome original do treinador, byte 18
-Nome original do treinador, byte 19
-Nome original do treinador, byte 20
-Nome original do treinador, byte 21
-Nome original do treinador, byte 22
-Nome original do treinador, byte 23
-Nome original do treinador, byte 24
-Amizade do treinador original
-Afeição do treinador original
-Intensidade do treinador original
-Memória do treinador original
-TextVar do treinador original
-Sentimento do treinador original
+Nome do Trainer em posse, byte 1
+Nome do Trainer em posse, byte 2
+Nome do Trainer em posse, byte 3
+Nome do Trainer em posse, byte 4
+Nome do Trainer em posse, byte 5
+Nome do Trainer em posse, byte 6
+Nome do Trainer em posse, byte 7
+Nome do Trainer em posse, byte 8
+Nome do Trainer em posse, byte 9
+Nome do Trainer em posse, byte 10
+Nome do Trainer em posse, byte 11
+Nome do Trainer em posse, byte 12
+Nome do Trainer em posse, byte 13
+Nome do Trainer em posse, byte 14
+Nome do Trainer em posse, byte 15
+Nome do Trainer em posse, byte 16
+Nome do Trainer em posse, byte 17
+Nome do Trainer em posse, byte 18
+Nome do Trainer em posse, byte 19
+Nome do Trainer em posse, byte 20
+Nome do Trainer em posse, byte 21
+Nome do Trainer em posse, byte 22
+Nome do Trainer em posse, byte 23
+Nome do Trainer em posse, byte 24
+Género do Trainer em posse
+Em posse actual
+Últimos possuidores 1 Região
+Últimos possuidores 1 País
+Últimos possuidores 2 Região
+Últimos possuidores 2 País
+Últimos possuidores 3 Região
+Últimos possuidores 3 País
+Últimos possuidores 4 Região
+Últimos possuidores 4 País
+Últimos possuidores 5 Região
+Últimos possuidores 5 País
+Amizade com o Trainer em posse
+Affection com o Trainer em posse
+Intensidade com o Trainer em posse
+Memória com o Trainer em posse
+Sentimento com o Trainer em posse
+TextVar do Trainer em posse, byte 1
+TextVar do Trainer em posse, byte 1
+Fullness
+Enjoyment
+Nome do Original Trainer, byte 1
+Nome do Original Trainer, byte 2
+Nome do Original Trainer, byte 3
+Nome do Original Trainer, byte 4
+Nome do Original Trainer, byte 5
+Nome do Original Trainer, byte 6
+Nome do Original Trainer, byte 7
+Nome do Original Trainer, byte 8
+Nome do Original Trainer, byte 9
+Nome do Original Trainer, byte 10
+Nome do Original Trainer, byte 11
+Nome do Original Trainer, byte 12
+Nome do Original Trainer, byte 13
+Nome do Original Trainer, byte 14
+Nome do Original Trainer, byte 15
+Nome do Original Trainer, byte 16
+Nome do Original Trainer, byte 17
+Nome do Original Trainer, byte 18
+Nome do Original Trainer, byte 19
+Nome do Original Trainer, byte 20
+Nome do Original Trainer, byte 21
+Nome do Original Trainer, byte 22
+Nome do Original Trainer, byte 23
+Nome do Original Trainer, byte 24
+Amizade com o Original Trainer
+Affection com o Original Trainer
+Intensidade com o Original Trainer
+Memória com o Original Trainer
+TextVar do Original Trainer
+Sentimento com o Original Trainer
 Ano do Ovo
 Mês do Ovo
 Dia do Ovo
-Ano Encontrado
-Mês Encontrado
-Dia Encontrado
+Ano de encontro
+Mês de encontro
+Dia de encontro
 Localização do Ovo
-Localização Encontrado
+Localização de encontro
 Bola
-Nivel Encontrado / Gênero do treinador original
-Bandeiras do hiper treino
+Nível de encontro / Género do Original Trainer
+Marcos do Hyper Training
 Versão
 País
 Região
 Região da Consola
-Língua
-Servidor: %s
-Falha no alocação do buffer
-Falha no soclnit!
-Socket inacessíve!l
-Falha no Binding!
-Falha no Listening!
-Error durante a fase de processo!
-Falha a abri o contexto http!
-Falha a sacar os assets!
-Falha a adicionar o pedido no campo de cabeçalho!
+Idioma
+Servidor a correr em: %s:9000
+Falha na alocação do buffer!
+Falha no socInit!
+Socket inacessível!
+Falha no binding!
+Falha no listening!
+Erro durante a fase de processo!
+Falha a abrir o contexto http!
+Falha a descarregar os recursos!
+Falha a adicionar um pedido de cabeçalho!
 Falha a preparar SSLOpt!
 Falha a começar o pedido http!
-Falha a receber o código!
-Redireção falhada!
-Falha em receber o tamanha certo para sacar!
+Falha a receber um código de estado!
+Redirecção falhada!
+Falha a receber o tamanho de download certo!
 Falha a alocar memória!
-A mudar o tamanho...
-O tamanho do banco foi mudado!
-Backup do save criado!
-Backup do banco criado!
+Modificando o tamanho...
+O tamanho do Banco foi modificado!
+Backup da Gravação criado!
+Backup do Banco criado!
 Dump
-Confirm for a full storage dump?
-Step %d/%d
-PokéDex
-Caught: %d
-Seen: %d
-Socket connect failed!
-Socket send failed!
-Enter your pc IP address:
-Press X to enter serveLegality IP address...
-Press X to check legality with serveLegality...
-Calling GitHub APIs...
-Elaborating API response...
-Downloading latest release...
-Update failed!
-Failed to add certificate!
-Failed to add a request header!
-Failed to download data!
-Installing latest release...
-Latest release installed!
-Do you want to launch the game?
+Confirmar dump completo?
+Passo %d/%d
+Pokédex
+Capturados: %d
+Vistos: %d
+Falha a contactar o socket!
+Falha no envio do socket!
+Insira o endreço de IP do seu PC:
+X: Inserir endereço de IP de serveLegality
+X: Verificar legalidade com o serveLegality
+A ligar à API do GitHub...
+Elaborando resposta da API...
+Descarregando a versão mais recente...
+Falha na actualização!
+Falha a adicionar certificado!
+Falha a adicionar um pedido de cabeçalho!
+Falha a descarregar dados!
+Instalando a versão mais recente...
+Versão mais recente instalada!
+Deseja iniciar o jogo?

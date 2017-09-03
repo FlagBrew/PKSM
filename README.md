@@ -9,19 +9,19 @@ If you want a non-invasive homebrew to see your save's infos, check out **PKSV**
 
 | Downloads | Links |
 | :-------: | :---: |
-| Latest solution | [direct](https://github.com/BernardoGiordano/PKSM/releases/download/4.4.0/PKSM.zip) |
-| Latest cfw build | [direct](https://github.com/BernardoGiordano/PKSM/releases/download/4.4.0/PKSM.cia) |
-| Latest QR code | [qr](https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=https://github.com/BernardoGiordano/PKSM/releases/download/4.4.0/PKSM.cia&choe=UTF-8.png) |
+| Latest solution | [direct](https://github.com/BernardoGiordano/PKSM/releases/download/4.5.0/PKSM.zip) |
+| Latest cfw build | [direct](https://github.com/BernardoGiordano/PKSM/releases/download/4.5.0/PKSM.cia) |
+| Latest QR code | [qr](https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=https://github.com/BernardoGiordano/PKSM/releases/download/4.5.0/PKSM.cia&choe=UTF-8.png) |
 
 ## Installation
 
-Download the latest release (4.4.0) and install it with your favourite installation method. You should only copy/paste the whole content of the release zip into the root of your sd-card, most of the time. When booted, the application will automatically download the required additional assets from an external source. You can provide your own assets, if you want.
+Download the latest release (4.5.0) and install it with your favourite installation method. You should only copy/paste the whole content of the release zip into the root of your sd-card, most of the time. When booted, the application will automatically download the required additional assets from an external source. You can provide your own assets, if you want.
 
 PKSM works with Rosalina-based Homebrew Launchers, too.
 
 If you're using Homebrew Launcher with a *hax exploit, make sure you have it updated to the [latest version](https://smealum.github.io/ninjhax2/starter.zip).
 
-You need internet access to download the additional assets. If you can't still download them through the application, you can put them manually in the SD card, putting the external [additionalassets](https://github.com/Naxann/PKRessources/releases/tag/PKSM-4.3.0) folder in your SD card, located at ` /3ds/data/PKSM/ `. To avoid troubles, the final result should be a folder filled with assets, located at ` /3ds/data/PKSM/additionalassets/ `.
+You need internet access to download the additional assets. If you can't still download them through the application, you can put them manually in the SD card, putting the external [additionalassets](https://github.com/dsoldier/PKResources/releases/download/4.5.0/additionalassets.zip) folder in your SD card, located at ` /3ds/data/PKSM/ `. To avoid troubles, the final result should be a folder filled with assets, located at ` /3ds/data/PKSM/additionalassets/ `.
 
 ## Usage
 
@@ -35,23 +35,9 @@ Automatic save backups are located at ` /3ds/data/PKSM/backup/[GAME_DATE]/main `
 
 Extra storage backups are located at ` /3ds/data/PKSM/bank/bank_[DATE].bak `
 
-## OTA injection
-
-You can use servepkx to inject things from your PC to PKSM directly. Use your favourite version between the ones proposed here:
-
-| servepkx | Links |
-| :-------: | :---: |
-| **Java** | [Usage](https://github.com/BernardoGiordano/PKSM/tree/master/servepkx/java) |
-| **Python** | [Usage](https://github.com/BernardoGiordano/PKSM/tree/master/servepkx/python) |
-| **Web Browser** | [Usage](https://github.com/zaksabeast/PKSMBrowserInject) |
-
 ## Utilities
 
-| Application | Description |
-| :---------: | :---------: |
-| **[serveLegality](https://github.com/BernardoGiordano/serveLegality)** | This windows application will let you check legality for your pkmns via wireless.
-| **[badsectors](https://github.com/BernardoGiordano/PKSM/tree/master/extrastorage/badsectors)** | This hb application cleans occasional wrong bytes into your extra storage file |
-| **[phbank2pksm](https://github.com/zaksabeast/phbank2pksm)** | This web application converts your PHBank extra storage file to a PKSM compatible one |
+Check out **[PKSM-Tools](https://github.com/BernardoGiordano/PKSM-Tools)** to know more about the utilities to use with this software.
 
 ## Issues
 
@@ -86,7 +72,6 @@ Check out `COMPILE.md` for more details.
 * Kaphotics and SciresM for PKHeX and memecrypto
 * J-K-D for direct save import/export
 * Slownic for java servepkx
-* Joel16 and SteveIce10 for portions of screen.c
 * Slashcash for PCHex++
 * Gocario for PKBrew
 * TuxSH for TWLSaveTool

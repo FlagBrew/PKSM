@@ -118,14 +118,14 @@
 
 #define BARTEXT   RGBA8(114, 194, 255, 255)
 
-#define BLUE      RGBA8(104, 137, 205, 255)
+#define BLUE      RGBA8(124, 147, 225, 255)
 #define YELLOW    RGBA8(237, 247, 157, 255)
 #define LIGHTBLUE RGBA8(187, 208, 254, 255)
-#define DARKBLUE  RGBA8( 35,  69, 167, 255)
-#define HIGHBLUE  RGBA8( 28,  45,  86, 255)
-#define MASKBLACK RGBA8(  0,   0,   0, 180)
-#define PALEBLUE  RGBA8( 70,  95, 144, 255)
-#define MENUBLUE  RGBA8( 35,  69, 137, 255)
+#define DARKBLUE  RGBA8( 55,  89, 187, 255)
+#define HIGHBLUE  RGBA8( 48,  65, 106, 255)
+#define MASKBLACK RGBA8(  0,   0,   0, 190)
+#define PALEBLUE  RGBA8( 90, 115, 164, 255)
+#define MENUBLUE  RGBA8( 55,  89, 157, 255)
 
 #define BACKGROUND_BLACK ABGR8(255, 0, 0, 0)
 #define BLACK RGBA8(0, 0, 0, 255)
