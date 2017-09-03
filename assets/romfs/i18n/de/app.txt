@@ -19,14 +19,14 @@ Lade Spielstand...
 Spiel nicht gefunden!
 Falsche Größe für dieses Spiel!
 Keine Karte eingesteckt!
-Options
+Optionen
 Events
 Credits
 A: Auswählen
 START: Beenden
 Editor
-Save Info
-Storage
+Spielstand
+Lager
 MASSENEINFÜGEN
 Änderungen speichern?
 A: Fortfahren
@@ -178,9 +178,9 @@ Wähle oben eine Form mit A aus.
 Bank %d
 Lv.%u
 ID. %u
-Speichern %d
+Box %d
 X: Bericht
-Box Leeren
+Box leeren
 Freilassen
 XD-Sammlung
 Colosseum-Sammlung
@@ -552,22 +552,22 @@ Bank-Größe geändert!
 Spielstand-Sicherung erstellt!
 Bank-Sicherung erstellt!
 Exportieren
-Bestätigte vollständigen Bank Export?
+Gesamtes Lagerungssystem exportieren?
 Schritt %d/%d
-PokéDex
+Pokédex
 Gefangen: %d
 Gesehen: %d
-Sockel Verbindung fehlgeschlagen!
-Sockel Senden fehlgeschlagen!
-Gib die IP Adresse deines PC ein:
-Drücke X zum eingeben der serveLegality IP Adresse...
-Drücke X um Mithilfe von serveLegality auf Legalität zu prüfen...
+Socket: Verbindung fehlgeschlagen!
+Socket: Senden fehlgeschlagen!
+IP-Adresse des PCs eingeben...
+Drücke X, um die IP des serveLegality Clients einzugeben...
+Drücke X, um die Legitimität des augewählten Pokémon zu prüfen...
 Aufrufen der GitHub APIs...
-Parsen der API Antwort...
-Downlod aktueller Version...
+Verarbeite Antwort der API...
+Lade aktuelle Version herunter...
 Update fehlgeschlagen!
-Hinzufügen des Zertifikat fehlgeschlagen!
-Hinzufügen des request header fehlgeschlagen!
+Zertifikat hinzufügen fehlgeschlagen!
+Request Header hinzufügen fehlgeschlagen!
 Download der Daten fehlgeschlagen!
 Installiere aktuelle Version...
 Aktuelle Version installiert!
