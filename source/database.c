@@ -145,7 +145,7 @@ int getN(const int i) {
 		case 204 : return 7; 		
 		case 205 : return 2;
 		case 211 : return 7;
-		case 221 : return 7;
+		case 221 : return 6;
 		case 223 : return 10;
 		case 230 : return 8;
 		case 238 : return 2;
