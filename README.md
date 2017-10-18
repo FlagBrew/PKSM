@@ -3,9 +3,7 @@
   <img src="https://raw.githubusercontent.com/BernardoGiordano/PKSM/master/assets/banner.png">
 </p>
 
-**Editor**, **wondercard injector**, **offline extra storage** and **OTA injector**.
-
-If you want a non-invasive homebrew to see your save's infos, check out **PKSV** in the release zip file.
+Multipurpose **editor**, **wondercard injector**, **offline extra storage** and **OTA injector**.
 
 | Downloads | Links |
 | :-------: | :---: |
@@ -53,7 +51,7 @@ Pull Requests are greatly appreciated. If you're planning to add features that r
 
 ## Compiling
 
-Check out `COMPILE.md` for more details.
+PKSM uses [latest libctru](https://github.com/smealum/ctrulib), [latest citro3d](https://github.com/fincs/citro3d) and [latest pp2d](https://github.com/BernardoGiordano/PKSM/tree/master/source/pp2d).
 
 ## Screenshots
 

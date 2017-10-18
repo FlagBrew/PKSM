@@ -341,12 +341,12 @@ void infoDisp(wchar_t* message) {
 
 		if (hidKeysDown() & KEY_A) break;
 		
-		pp2d_begin_draw(GFX_TOP);
+		pp2d_begin_draw(GFX_TOP, GFX_LEFT);
 			pp2d_draw_texture(TEXTURE_WARNING_TOP, 0, 0);
 			pp2d_draw_wtext_center(GFX_TOP, 95, FONT_SIZE_15, FONT_SIZE_15, RGBA8(255, 255, 255, giveTransparence()), message);
 			pp2d_draw_wtext_center(GFX_TOP, 130, FONT_SIZE_12, FONT_SIZE_12, WHITE, i18n(S_INFORMATION_MESSAGE_PRESS_A));
 		
-			pp2d_draw_on(GFX_BOTTOM);
+			pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 			pp2d_draw_texture(TEXTURE_WARNING_BOTTOM, 0, 0);
 		pksm_end_frame();
 	}
@@ -359,12 +359,12 @@ int confirmDisp(wchar_t* message) {
 		if (hidKeysDown() & KEY_A) return 1;
 		if (hidKeysDown() & KEY_B) return 0;
 		
-		pp2d_begin_draw(GFX_TOP);
+		pp2d_begin_draw(GFX_TOP, GFX_LEFT);
 			pp2d_draw_texture(TEXTURE_WARNING_TOP, 0, 0);
 			pp2d_draw_wtext_center(GFX_TOP, 95, FONT_SIZE_15, FONT_SIZE_15, RGBA8(255, 255, 255, giveTransparence()), message);
 			pp2d_draw_wtext_center(GFX_TOP, 130, FONT_SIZE_12, FONT_SIZE_12, WHITE, i18n(S_CONFIRMATION_MESSAGE_PRESS_A_OR_B));
 
-			pp2d_draw_on(GFX_BOTTOM);
+			pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 			pp2d_draw_texture(TEXTURE_WARNING_BOTTOM, 0, 0);
 		pksm_end_frame();
 	}
@@ -379,12 +379,12 @@ void _freezeMsgWithDetails(wchar_t* message, wchar_t* details, bool useLastMessa
 		lastMessage[wcslen(message)] = '\0';
 	}
 
-	pp2d_begin_draw(GFX_TOP);
+	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
 		pp2d_draw_texture(TEXTURE_WARNING_TOP, 0, 0);
 		pp2d_draw_wtext_center(GFX_TOP, 95, FONT_SIZE_15, FONT_SIZE_15, WHITE, lastMessage);
 		pp2d_draw_wtext_center(GFX_TOP, 130, FONT_SIZE_12, FONT_SIZE_12, WHITE, details);
 	
-		pp2d_draw_on(GFX_BOTTOM);
+		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 		pp2d_draw_texture(TEXTURE_WARNING_BOTTOM, 0, 0);
 	pksm_end_frame();
 }
@@ -397,12 +397,12 @@ void progressBar(wchar_t* message, u32 current, u32 sz) {
 	wchar_t progress[40];
 	swprintf(progress, 40, i18n(S_GRAPHIC_PROGRESSBAR_MESSAGE), current, sz);
 	
-	pp2d_begin_draw(GFX_TOP);
+	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
 		pp2d_draw_texture(TEXTURE_WARNING_TOP, 0, 0);
 		pp2d_draw_wtext_center(GFX_TOP, 95, FONT_SIZE_15, FONT_SIZE_15, WHITE, message);
 		pp2d_draw_wtext_center(GFX_TOP, 130, FONT_SIZE_12, FONT_SIZE_12, WHITE, progress);
 	
-		pp2d_draw_on(GFX_BOTTOM);
+		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 		pp2d_draw_texture(TEXTURE_WARNING_BOTTOM, 0, 0);
 	pksm_end_frame();
 }
@@ -438,7 +438,7 @@ void printBottomIndications(const wchar_t* message) {
 }
 
 void gameSelectorMenu(int n) {
-	pp2d_begin_draw(GFX_TOP);
+	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
 		printMenuTop();
 		pp2d_draw_wtext_center(GFX_TOP, 6, FONT_SIZE_9, FONT_SIZE_9, BLUE, i18n(S_GRAPHIC_GAME_SELECTOR_INFO_CART_HAS_PRIO));
 		
@@ -452,7 +452,7 @@ void gameSelectorMenu(int n) {
 
 		pp2d_draw_wtext_center(GFX_TOP, 185, FONT_SIZE_18, FONT_SIZE_18, logoColors[n], i18n(gamesList[n]));
 	
-		pp2d_draw_on(GFX_BOTTOM);
+		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 		printMenuBottom();
 		
 		for (int i = 6; i < 11; i++) {
@@ -476,10 +476,10 @@ void gameSelectorMenu(int n) {
 }
 
 void menu(int menu[]) {
-	pp2d_begin_draw(GFX_TOP);
+	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
 		drawMenuTop();
 
-		pp2d_draw_on(GFX_BOTTOM);
+		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 		printMenuBottom();		
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 2; j++) {
@@ -513,11 +513,11 @@ void menu(int menu[]) {
 
 void mainMenuDS(int currentEntry) {
 	wchar_t* menu[] = { L"Events", L"Save Info", L"Other"};
-	pp2d_begin_draw(GFX_TOP);
+	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
 		pp2d_draw_texture(TEXTURE_DS_TOP_BG, 0, 0);
 		pp2d_draw_texture(TEXTURE_POKEBALL, 168, 91);
 	
-		pp2d_draw_on(GFX_BOTTOM);
+		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 		pp2d_set_screen_color(GFX_TOP, BACKGROUND_BLACK);
 		pp2d_draw_texture(TEXTURE_DS_BOTTOM_BG, 0, 0);
 		for (int i = 0; i < 3; i++) {
@@ -534,7 +534,7 @@ void printCredits() {
 	while (aptMainLoop() && !(hidKeysUp() & KEY_B)) {
 		hidScanInput();
 		
-		pp2d_begin_draw(GFX_TOP);
+		pp2d_begin_draw(GFX_TOP, GFX_LEFT);
 			printMenuTop();
 			printTitle(i18n(S_GRAPHIC_CREDITS_TITLE));
 			pp2d_draw_texture_part(TEXTURE_CREDITS, 16, 104, 0, 22, 181, 46);
@@ -544,7 +544,7 @@ void printCredits() {
 			pp2d_draw_text(34, 117, FONT_SIZE_15, FONT_SIZE_15, LIGHTBLUE, "Naxann, Anty-Lemon");
 			pp2d_draw_text(64, 174, FONT_SIZE_15, FONT_SIZE_15,  LIGHTBLUE, "dsoldier for the complete GUI design");
 
-			pp2d_draw_on(GFX_BOTTOM);
+			pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 			printMenuBottom();
 			pp2d_draw_text(20, 30, FONT_SIZE_9, FONT_SIZE_9, LIGHTBLUE, credits);
 			printBottomIndications(i18n(S_GRAPHIC_CREDITS_INDICATIONS));
@@ -557,7 +557,7 @@ void printDatabase6(char *database[], int currentEntry, int page, int spriteArra
 	char pages[24];
 	sprintf(pages, "%d/%d", page + 1, fill_get_index()/10);
 	
-	pp2d_begin_draw(GFX_TOP);
+	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
 		printMenuTop();
 		printTitle(i18n(S_GRAPHIC_DB6_TITLE));
 		
@@ -600,7 +600,7 @@ void printDatabase6(char *database[], int currentEntry, int page, int spriteArra
 			y += 37;
 		}
 		
-		pp2d_draw_on(GFX_BOTTOM);
+		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 		printMenuBottom();
 		pp2d_draw_texture(TEXTURE_EVENT_MENU_BOTTOM_BAR, 65, 45);
 		pp2d_draw_texture(TEXTURE_L_BUTTON, 83, 52);
@@ -613,7 +613,7 @@ void printDatabase6(char *database[], int currentEntry, int page, int spriteArra
 void printDatabaseListDS(char *database[], int currentEntry, int page, int spriteArray[], bool isSelected, int langSelected, bool langVett[]) {
 	int pk, y = 41;
 	
-	pp2d_begin_draw(GFX_TOP);
+	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
 		pp2d_draw_texture(TEXTURE_DS_EVENT_DATABASE_BG, 0, 0);
 		
 		for (int i = 0; i < 5; i++) {
@@ -653,7 +653,7 @@ void printDatabaseListDS(char *database[], int currentEntry, int page, int sprit
 			y += 36;
 		}
 
-		pp2d_draw_on(GFX_BOTTOM);
+		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 		pp2d_draw_texture(TEXTURE_DS_MENU_BOTTOM_BG, 0, 0);
 		pp2d_draw_wtext_center(GFX_BOTTOM, 222, FONT_SIZE_9, FONT_SIZE_9, RGBA8(255, 255, 255, 130), isSelected ? i18n(S_GRAPHIC_DB_INDICATIONS_INJECT) : i18n(S_GRAPHIC_DB_INDICATIONS_SELECT));
 		
@@ -694,7 +694,7 @@ void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bo
 	
 	int total = game_isgen7() ? 9 : 7;
 	
-	pp2d_begin_draw(GFX_TOP);
+	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
 		wcxInfoViewer(previewbuf);
 #if PKSV
 #else
@@ -711,7 +711,7 @@ void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bo
 			pp2d_draw_wtext_center(GFX_TOP, 130, FONT_SIZE_12, FONT_SIZE_12, WHITE, i18n(S_GRAPHIC_PKVIEWER_OTA_INDICATIONS));
 		}
 
-		pp2d_draw_on(GFX_BOTTOM);
+		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 		printMenuBottom();
 
 		if (getN(i) > 1)
@@ -783,37 +783,6 @@ void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bo
 			printBottomIndications(i18n(S_GRAPHIC_DB_INDICATIONS_INJECT));
 		
 	pksm_end_frame();
-}
-
-void printEditor(u8* mainbuf, u64 size, int currentEntry, int page) {
-	/*sf2d_start_frame(GFX_TOP, GFX_LEFT);
-		sf2d_draw_texture(hexBG, 0, 0);
-		for (int rows = 0; rows < 15; rows++) {
-			for (int columns = 0; columns < 16; columns++) {
-				int byte = rows*16 + columns;
-				if (currentEntry == byte)
-					printSelector(columns*25, rows*15, 24, 14);
-				sftd_draw_textf(fontBold11, 4 + 25*columns, 15*rows, (saveSectors[byte + 240*page][0]) ? WHITE : DS, 11, "%02hhX", mainbuf[byte + 240*page]);
-				
-				if (byte + 240*page == size) break;
-			}
-		}
-		//sftd_draw_wtextf(fontBold11, 4, 225, LIGHTBLUE, 11, L"%ls", descriptions[additional1]);
-	pksm_end_frame();
-		
-	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-		printMenuBottom();
-		if (saveSectors[currentEntry + 240*page][0] && !(saveSectors[currentEntry + 240*page][1])) {
-			sf2d_draw_texture(minusButton, 244, 30);
-			sf2d_draw_texture(plusButton, 267, 30);
-		}
-		
-		sftd_draw_wtextf(fontBold14, (155 - pp2d_get_wtext_width(fontBold14, 14, i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE))), 30, LIGHTBLUE, 14, i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE));
-		sftd_draw_textf(fontBold14, 165, 30, WHITE, 14, "0x%05X", currentEntry + 240*page);
-		
-		printSaveEditorInfo(mainbuf, page*240 + currentEntry);
-	pksm_end_frame();
-	sf2d_swapbuffers();*/	
 }
 
 u16 getAlternativeSprite(u8* pkmn, int game) {
@@ -1129,7 +1098,7 @@ void wcxInfoViewer(u8* buf) {
 void printDexViewer(u8* mainbuf, int currentEntry, int page, int seen, int caught) {
 	char temp[12];
 	
-	pp2d_begin_draw(GFX_TOP);
+	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
 		pp2d_draw_texture(TEXTURE_GENERATION_BG, 0, 0);
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 8; j++) {
@@ -1152,7 +1121,7 @@ void printDexViewer(u8* mainbuf, int currentEntry, int page, int seen, int caugh
 			}
 		}
 
-		pp2d_draw_on(GFX_BOTTOM);
+		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 		printMenuBottom();
 		pp2d_draw_wtextf(16, 32, FONT_SIZE_14, FONT_SIZE_14, WHITE, i18n(S_GRAPHIC_PKBANK_SEEN), seen);
 		pp2d_draw_wtextf(16, 48, FONT_SIZE_14, FONT_SIZE_14, WHITE, i18n(S_GRAPHIC_PKBANK_CAUGHT), caught);
@@ -1172,7 +1141,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int currentEntry, int menu
 	u8 pkmn[PKMNLENGTH];
 	pkx_get(mainbuf, isTeam ? 33 : box, currentEntry, pkmn);
 	
-	pp2d_begin_draw(GFX_TOP);
+	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
 		if (mode == ED_GENERATE) {
 			char temp[4];
 			pp2d_draw_texture(TEXTURE_GENERATION_BG, 0, 0);
@@ -1201,7 +1170,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int currentEntry, int menu
 				pp2d_draw_wtext_center(GFX_TOP, 222, FONT_SIZE_11, FONT_SIZE_11, WHITE, i18n(S_GRAPHIC_PKVIEWER_OTA_CHECK_LEGALITY));
 		}
 
-		pp2d_draw_on(GFX_BOTTOM);
+		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 		pp2d_draw_texture(TEXTURE_BOX_VIEW, 0, 0);
 		pp2d_draw_texture(TEXTURE_BOTTOM_BAR, 0, 210);
 		pp2d_draw_wtext(12 + (178 - pp2d_get_wtext_width(page, FONT_SIZE_12, FONT_SIZE_12)) / 2, 19, FONT_SIZE_12, FONT_SIZE_12, WHITE, page);
@@ -1307,7 +1276,7 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 	wchar_t* values[6] = {i18n(S_GRAPHIC_PKEDITOR_STATS_HP), i18n(S_GRAPHIC_PKEDITOR_STATS_ATTACK), i18n(S_GRAPHIC_PKEDITOR_STATS_DEFENSE), i18n(S_GRAPHIC_PKEDITOR_STATS_SP_ATTACK), i18n(S_GRAPHIC_PKEDITOR_STATS_SP_DEFENSE), i18n(S_GRAPHIC_PKEDITOR_STATS_SPEED)};
 	u16 n = pkx_get_species(pkmn);
 	
-	pp2d_begin_draw(GFX_TOP);
+	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
 		pp2d_set_screen_color(GFX_TOP, BACKGROUND_BLACK);
 		if (mode == ED_BASE || mode == ED_STATS) {
 			pp2d_draw_wtext_center(GFX_TOP, 95, FONT_SIZE_15, FONT_SIZE_15, RGBA8(255, 255, 255, giveTransparence()), i18n(S_GRAPHIC_PKEDITOR_BASE_STATS_INDICATIONS_1));
@@ -1428,7 +1397,7 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 			pp2d_draw_wtextf(4, 225, FONT_SIZE_11, FONT_SIZE_11, LIGHTBLUE, L"%ls", descriptions[additional1]);
 		}
 	
-		pp2d_draw_on(GFX_BOTTOM);
+		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 		if (mode != ED_HEX)
 			printAnimatedBG(false);
 		if (mode == ED_BASE || mode == ED_ITEMS || mode == ED_NATURES || mode == ED_BALLS || mode == ED_FORMS) {
@@ -1611,7 +1580,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 	else
 		pkx_get(mainbuf, saveBox, currentEntry - 30, pkmn);
 	
-	pp2d_begin_draw(GFX_TOP);
+	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
 		if (isSeen) {
 			infoViewer(pkmnbuf);
 		} else {
@@ -1693,7 +1662,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 			}
 		}
 
-		pp2d_draw_on(GFX_BOTTOM);
+		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 		pp2d_draw_texture(TEXTURE_BOX_VIEW, 0, 0);
 		pp2d_draw_texture(TEXTURE_BOTTOM_BAR, 0, 210);
 		swprintf(page, MAX_LENGTH_BOX_NAME+1, isWirelessActivated ? L"Wireless %d" : i18n(S_GRAPHIC_PKBANK_SAVED_BOX_TITLE), saveBox + 1);
@@ -1760,10 +1729,10 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 
 void printSettings(int box, int language) {
 	wchar_t *menu[] = {i18n(S_GRAPHIC_SETTINGS_BANK_SIZE), i18n(S_GRAPHIC_SETTINGS_BACKUP_SAVE), i18n(S_GRAPHIC_SETTINGS_BACKUP_BANK)};
-	pp2d_begin_draw(GFX_TOP);
+	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
 		drawMenuTop();
 	
-		pp2d_draw_on(GFX_BOTTOM);
+		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 		printMenuBottom();
 
 		for (int i = 0; i < 4; i++) {
@@ -1791,18 +1760,6 @@ void printSettings(int box, int language) {
 		pp2d_draw_text(189 + (36 - (pp2d_get_text_width(size, FONT_SIZE_11, FONT_SIZE_11))) / 2, 68, FONT_SIZE_11, FONT_SIZE_11, WHITE, size);
 		printBottomIndications(i18n(S_GRAPHIC_SETTINGS_INDICATION));
 	pksm_end_frame();
-}
-
-void printSaveEditorInfo(u8* mainbuf, int byte) {
-	/*int y = 70, x = 8;
-	u32 string[NICKNAMELENGTH*2];
-	memset(string, 0, NICKNAMELENGTH*2);
-
-	if (game == GAME_SUN || game == GAME_MOON) {
-		if (byte >= SAVE_SM_ITEM && byte < SAVE_SM_ITEM_SIZE) {
-
-		}
-	}*/
 }
 
 void printfHexEditorInfo(u8* pkmn, int byte) {

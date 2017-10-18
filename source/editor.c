@@ -180,53 +180,6 @@ u8 getSaveLanguage(u8* mainbuf) {
 	return mainbuf[getSaveLanguageAddress(mainbuf)];
 }
 
-void saveFileEditor(u8* mainbuf, u64 size) {
-	int currentEntry = 0;
-	int page = 0;
-	int maxpages = size/240;
-	int speed = 0;
-	
-	fillSaveSectors(saveSectors);
-	while (aptMainLoop() & !(hidKeysDown() & KEY_B)) {
-		hidScanInput();
-		touchPosition touch;
-		hidTouchRead(&touch);
-		calcCurrentEntryMorePages(&currentEntry, &page, maxpages, 239, 16);
-
-		bool downPlus = ((hidKeysDown() & KEY_TOUCH) && touch.px > 267 && touch.px < 284 && touch.py > 30 && touch.py < 48) || (hidKeysDown() & KEY_A);
-		bool downMinus = ((hidKeysDown() & KEY_TOUCH) && touch.px > 244 && touch.px < 261 && touch.py > 30 && touch.py < 48) || (hidKeysDown() & KEY_X);
-		bool heldPlus = ((hidKeysHeld() & KEY_TOUCH) && touch.px > 267 && touch.px < 284 && touch.py > 30 && touch.py < 48) || (hidKeysHeld() & KEY_A);
-		bool heldMinus = ((hidKeysHeld() & KEY_TOUCH) && touch.px > 244 && touch.px < 261 && touch.py > 30 && touch.py < 48) || (hidKeysHeld() & KEY_X);
-		
-		if (heldMinus && heldPlus)
-			speed = 0;
-		else if (saveSectors[currentEntry + 240*page][0] && downMinus) {
-			if (mainbuf[currentEntry + 240*page] > 0)
-				mainbuf[currentEntry + 240*page]--;
-		}
-		else if (saveSectors[currentEntry + 240*page][0] && heldMinus) {
-			if (speed < -30 && mainbuf[currentEntry + 240*page] > 0)
-				mainbuf[currentEntry + 240*page]--;
-			else
-				speed--;
-		}
-		else if (saveSectors[currentEntry + 240*page][0] && downPlus) {
-			if (mainbuf[currentEntry + 240*page] < 0xFF)
-				parseSaveHexEditor(mainbuf, currentEntry + 240*page);
-		}
-		else if (saveSectors[currentEntry + 240*page][0] && heldPlus) {
-			if (speed > 30 && mainbuf[currentEntry + 240*page] < 0xFF)
-				parseSaveHexEditor(mainbuf, currentEntry + 240*page);
-			else
-				speed++;
-		}
-		else
-			speed = 0;	
-
-		printEditor(mainbuf, size, currentEntry, page);
-	}
-}
-
 void parseHexEditor(u8* pkmn, int byteEntry) {
 	if (!hax) {
 		if (byteEntry == 0x08 || byteEntry == 0x09)
@@ -268,54 +221,6 @@ void parseHexEditor(u8* pkmn, int byteEntry) {
 			checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 231);
 		else 
 			pkmn[byteEntry]++;
-}
-
-void parseSaveHexEditor(u8* mainbuf, int byte) {
-	int game = game_get();
-	
-	if (game_getisSUMO()) {
-		if (byte >= SAVE_SM_ITEM && byte < SAVE_SM_ITEM_SIZE) {
-			// check items
-			for (unsigned int offset = SAVE_SM_ITEM; offset < SAVE_SM_ITEM_SIZE; offset += 4) {
-				for (unsigned int cursor = offset; cursor <= offset + 1; cursor++) {
-					unsigned int pos = offset + cursor;
-					if (byte == pos)
-						checkMaxValueBetweenBounds(mainbuf, byte, (pos % 2 == 0) ? pos : pos - 1, 2, 919);
-				}
-			}
-		}
-		else if (byte >= SAVE_SM_MONEY && byte < SAVE_SM_MONEY + 4)
-			checkMaxValueBetweenBounds(mainbuf, byte, SAVE_SM_MONEY, 4, 9999999);
-		else
-			mainbuf[byte]++;
-	} 
-	else if (game_getisORAS()) {
-		if (byte >= SAVE_ORAS_MONEY && byte < SAVE_ORAS_MONEY + 4)
-			checkMaxValueBetweenBounds(mainbuf, byte, SAVE_ORAS_MONEY, 4, 9999999);
-		else
-			mainbuf[byte]++;		
-	} 
-	else if (game_getisXY()) {
-		if (byte >= SAVE_XY_MONEY && byte < SAVE_XY_MONEY + 4)
-			checkMaxValueBetweenBounds(mainbuf, byte, SAVE_XY_MONEY, 4, 9999999);
-		else
-			mainbuf[byte]++;		
-	} 
-	else if (game == GAME_B2 || game == GAME_W2) {
-		
-	} 
-	else if (game == GAME_B1 || game == GAME_W1) {
-		
-	} 
-	else if (game == GAME_DIAMOND) {
-		
-	} 
-	else if (game == GAME_HG || game == GAME_SS) {
-		
-	} 
-	else if (game == GAME_PEARL || game == GAME_DIAMOND) {
-		
-	}
 }
 
 bool generating = false;

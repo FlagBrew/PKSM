@@ -1,6 +1,3 @@
 [submodule "source/memecrypto"]
 	path = source/memecrypto
 	url = https://github.com/dsoldier/memecrypto.git
-[submodule "source/pp2d"]
-	path = source/pp2d
-	url = https://github.com/BernardoGiordano/pp2d

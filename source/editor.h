@@ -60,7 +60,4 @@ u8 getSaveLanguage(u8* mainbuf);
 void setWC(u8* mainbuf, u8* wc6buf, int i, int nInjected[]);
 void setSaveLanguage(u8* mainbuf, int i);
 
-void parseSaveHexEditor(u8* mainbuf, int byte);
-
-void saveFileEditor(u8* mainbuf, u64 size);
 void pokemonEditor(u8* mainbuf);
