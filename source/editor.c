@@ -399,10 +399,8 @@ void pokemonEditor(u8* mainbuf) {
 							processLegality(toBeChecked);
 					}
 				}
-#if PKSV
-#else				
+			
 				process_pkx(mainbuf, tempVett);
-#endif
 				printPKViewer(mainbuf, pkmn, isTeam, tempVett[1], menuEntry, tempVett[0], ED_OTA, 0, 0);	
 			} while (aptMainLoop() && !(hidKeysDown() & KEY_B));
 			socket_shutdown();
@@ -420,8 +418,6 @@ void pokemonEditor(u8* mainbuf) {
 			touchExecuting = 0;
 		}
 
-#if PKSV
-#else
 		if (((hidKeysDown() & KEY_A) || touchExecuting / 40 == 2) && !isBattleBoxed(mainbuf, box, currentEntry)) {
 			touchExecuting = currentEntry;
 
@@ -1090,7 +1086,7 @@ void pokemonEditor(u8* mainbuf) {
 				}
 			}
 		}
-#endif
+
 		printPKViewer(mainbuf, pkmn, isTeam, currentEntry, menuEntry, box, modeFlag, 0, 0);
 	}
 	free(pkmn);

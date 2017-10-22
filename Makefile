@@ -15,7 +15,7 @@ APP_DESCRIPTION     :=	Gen4+ pkmn save manager
 APP_AUTHOR          :=	Bernardo Giordano, PKSM devs
 
 TARGET              :=	$(subst $e ,_,$(notdir $(APP_TITLE)))
-OUTDIR              :=	output
+OUTDIR              :=	out
 BUILD               :=	build
 SOURCES             :=	source/memecrypto/source source/pp2d source
 INCLUDES            :=	include

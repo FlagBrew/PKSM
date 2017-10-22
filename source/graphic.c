@@ -409,11 +409,8 @@ void progressBar(wchar_t* message, u32 current, u32 sz) {
 
 void drawMenuTop() {
 	printMenuTop();
-#if PKSV
-	printTitle(L"PKSV");
-#else
 	printTitle(L"PKSM");
-#endif
+
 	if (game_is3DS())
 		pp2d_draw_texture(TEXTURE_POKEBALL, 171, 95);
 	else
@@ -696,10 +693,7 @@ void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bo
 	
 	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
 		wcxInfoViewer(previewbuf);
-#if PKSV
-#else
 		pp2d_draw_texture(TEXTURE_OTA_BUTTON, 360, 2);
-#endif
 		
 		if (sprite != -1) {
 			pp2d_draw_texture_part_scale(TEXTURE_NORMAL_SPRITESHEET, 282, 41 - movementOffsetLong(6), 40 * (wcx_get_species(previewbuf) % 25) + 4, 30 * (wcx_get_species(previewbuf) / 25), 34, 30, 2, 2);
@@ -1176,10 +1170,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int currentEntry, int menu
 		pp2d_draw_wtext(12 + (178 - pp2d_get_wtext_width(page, FONT_SIZE_12, FONT_SIZE_12)) / 2, 19, FONT_SIZE_12, FONT_SIZE_12, WHITE, page);
 		pp2d_draw_texture(TEXTURE_LEFT, 7, 17);
 		pp2d_draw_texture(TEXTURE_RIGHT, 185, 17);
-#if PKSV
-#else
 		pp2d_draw_texture(TEXTURE_OTA_BUTTON, 240, 211);
-#endif
 		pp2d_draw_texture(TEXTURE_BACK_BUTTON, 283, 211);
 		pp2d_draw_wtext(247, 7, FONT_SIZE_12, FONT_SIZE_12, WHITE, i18n(S_GRAPHIC_PKVIEWER_TEAM));
 		
@@ -1681,10 +1672,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 		pp2d_draw_wtext(208 + (109 - pp2d_get_wtext_width(i18n(S_GRAPHIC_PKBANK_MENU_RELEASE), FONT_SIZE_12, FONT_SIZE_12)) / 2, 104, FONT_SIZE_12, FONT_SIZE_12, BLACK, i18n(S_GRAPHIC_PKBANK_MENU_RELEASE));
 		pp2d_draw_wtext(208 + (109 - pp2d_get_wtext_width(i18n(S_GRAPHIC_PKBANK_MENU_DEX), FONT_SIZE_12, FONT_SIZE_12)) / 2, 160, FONT_SIZE_12, FONT_SIZE_12, BLACK, i18n(S_GRAPHIC_PKBANK_MENU_DEX));
 		pp2d_draw_wtext(208 + (109 - pp2d_get_wtext_width(i18n(S_GRAPHIC_PKBANK_MENU_DUMP), FONT_SIZE_12, FONT_SIZE_12)) / 2, 187, FONT_SIZE_12, FONT_SIZE_12, BLACK, i18n(S_GRAPHIC_PKBANK_MENU_DUMP));
-#if PKSV
-#else
 		pp2d_draw_texture(TEXTURE_OTA_BUTTON, 240, 211);
-#endif
 		
 		y = 45;
 		for (int i = 0; i < 5; i++) {
@@ -1745,10 +1733,8 @@ void printSettings(int box, int language) {
 				pp2d_draw_wtext_center(GFX_BOTTOM, 66 + i * 34, FONT_SIZE_15, FONT_SIZE_15, DARKBLUE, tempstr);
 			}
 		}
-#if PKSV
-#else
+		
 		pp2d_draw_texture(TEXTURE_OTA_BUTTON, 280, 220);
-#endif
 		pp2d_draw_texture(TEXTURE_MINI_BOX, 189, 64);
 		pp2d_draw_texture(TEXTURE_MINUS_BUTTON, 169, 65);
 		pp2d_draw_texture(TEXTURE_PLUS_BUTTON, 228, 65);

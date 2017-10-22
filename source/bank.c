@@ -306,9 +306,7 @@ void bank(u8* mainbuf) {
 		}
 		else
 			zSpeed = 0;
-		
-#if PKSV
-#else
+
 		if (((hidKeysDown() & KEY_Y) || ((hidKeysDown() & KEY_TOUCH) && touch.px > 240 && touch.px < 276 && touch.py > 210 && touch.py < 240)) && !isBufferized) {
 			isWirelessBuffer = isWirelessBuffer ? false : true;
 			
@@ -322,7 +320,6 @@ void bank(u8* mainbuf) {
 				isInternetWorking = false;
 			}
 		}
-#endif
 		
 		if (hidKeysDown() & KEY_B) {
 			if (isBufferized) {
