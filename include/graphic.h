@@ -23,8 +23,8 @@
 #define TEXTURE_BACKGROUND 2
 #define TEXTURE_BALLS_BG 3
 #define TEXTURE_BANK_TOP 4
-#define TEXTURE_SELECTED_DS_BAR 5
-#define TEXTURE_DS_BAR 6
+
+
 #define TEXTURE_BLUE_TEXT_BOX 7 
 #define TEXTURE_BOTTOM_BAR 8 
 #define TEXTURE_DS_BOTTOM_BG 9 
@@ -33,11 +33,11 @@
 #define TEXTURE_BUTTON 12 
 #define TEXTURE_CREDITS 13 
 #define TEXTURE_DARK_BUTTON 14 
-#define TEXTURE_DS_MENU_BOTTOM_BG 15 
-#define TEXTURE_DS_POKEBALL 16 
+
+
 #define TEXTURE_EDITOR_BOTTOM_BG 17 
 #define TEXTURE_EDITOR_STATS 18 
-#define TEXTURE_DS_EVENT_DATABASE_BG 19 
+
 #define TEXTURE_EVENT_MENU_BOTTOM_BAR 20 
 #define TEXTURE_EVENT_MENU_TOP_BAR_SELECTED 21 
 #define TEXTURE_EVENT_MENU_TOP_BAR_NORMAL 22 
@@ -58,8 +58,8 @@
 #define TEXTURE_INFO_VIEW 37 
 #define TEXTURE_ITEM 38
 #define TEXTURE_L_BUTTON 39
-#define TEXTURE_LANGUAGE_BUTTON_SELECTED 40
-#define TEXTURE_LANGUAGE_BUTTON_NORMAL 41
+
+
 #define TEXTURE_LEFT 42
 #define TEXTURE_LIGHT_BUTTON 43
 #define TEXTURE_LOGOS_3DS 44
@@ -75,8 +75,8 @@
 #define TEXTURE_NATURES 54
 #define TEXTURE_NO_MOVE 55
 #define TEXTURE_NORMAL_BAR 56
-#define TEXTURE_NORMAL_L 57
-#define TEXTURE_NORMAL_R 58
+
+
 #define TEXTURE_OTA_BUTTON 59
 #define TEXTURE_PLUS_BUTTON 60
 #define TEXTURE_PLUS 61
@@ -84,15 +84,15 @@
 #define TEXTURE_POKEMON_BOX 63
 #define TEXTURE_R_BUTTON 64
 #define TEXTURE_RED_BUTTON 65
-#define TEXTURE_RIGHT 66
-#define TEXTURE_SELECTED_L 67
-#define TEXTURE_SELECTED_R 68
-#define TEXTURE_SELECTOR_CLONING 69
+
+
+
+
 #define TEXTURE_SELECTOR_NORMAL 70
 #define TEXTURE_SETTING 71
 #define TEXTURE_SHINY 72
 #define TEXTURE_SUB_ARROW 73
-#define TEXTURE_DS_TOP_BG 74
+
 #define TEXTURE_TOP_MOVES 75
 #define TEXTURE_TRANSFER_BUTTON 76
 #define TEXTURE_WARNING_BOTTOM 77
@@ -141,8 +141,7 @@
 
 void GUIElementsInit();
 void GUIElementsSpecify();
-int getGUIElementsI18nSpecifyTotalElements();
-void GUIElementsI18nSpecify(); // Needed for util.c when changing language
+void GUIElementsI18nSpecify();
 void GUITextsInit(); // Needed for util.c when changing language
 void GUIGameElementsInit();
 void initProgressLoadPNGInRAM(int total);
@@ -158,10 +157,8 @@ void progressBar(wchar_t* message, u32 pagesize, u32 sz);
 void printCredits();
 void printTitle(const wchar_t* title);
 void gameSelectorMenu(int n);
-void mainMenuDS(int currentEntry);
 void menu(int menu[]);
 void printDatabase6(char *database[], int currentEntry, int page, int spriteArray[]);
-void printDatabaseListDS(char *database[], int currentEntry, int page, int spriteArray[], bool isSelected, int langSelected, bool langVett[]);
 void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bool overwrite, int langSelected, int nInjected, bool ota);
 void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, int mode, wchar_t* descriptions[]);
 void printPKViewer(u8* mainbuf, u8* pkmn, bool isTeam, int currentEntry, int menuEntry, int box, int mode, int additional1, int additional2);

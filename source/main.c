@@ -183,8 +183,6 @@ int main() {
 
 	u8* mainbuf;
 	u64 mainSize = 0;
-	
-	int currentEntry = 0;
 	bool save = true;
 	
 #if CITRA
@@ -299,87 +297,48 @@ int main() {
 	fwrite(mainbuf, 1, mainSize, f);
 	fclose(f);
 	
-	bool touchPressed = false;
-	
 	GUIElementsSpecify();
 
-	if (game_is3DS()) {
-		int mainMenu[] = {S_MAIN_MENU_EXTRA_STORAGE, S_MAIN_MENU_EDITOR, S_MAIN_MENU_EVENTS, S_MAIN_MENU_SAVE_INFO, S_MAIN_MENU_SETTINGS, S_MAIN_MENU_CREDITS};
-		while (aptMainLoop()) {
-			hidScanInput();
-			touchPosition touch;
-			hidTouchRead(&touch);
-			
-			if (hidKeysDown() & KEY_START) {
-				if (!confirmDisp(i18n(S_MAIN_Q_SAVE_CHANGES)))
-					save = false;
-				break;
-			}
-			
-			if (hidKeysDown() & KEY_TOUCH) {
-				if (touch.px > 15 && touch.px < 155 && touch.py > 20 && touch.py < 73) {
-					bank(mainbuf);
-				}
-
-				if (touch.px > 165 && touch.px < 305 && touch.py > 20 && touch.py < 73) {
-					pokemonEditor(mainbuf);
-				}
-
-				if (touch.px > 15 && touch.px < 155 && touch.py > 83 && touch.py < 136) {
-					eventDatabase7(mainbuf);
-				}
-
-				if (touch.px > 165 && touch.px < 305 && touch.py > 83 && touch.py < 136) {
-
-				}
-				
-				if (touch.px > 15 && touch.px < 155 && touch.py > 146 && touch.py < 199) {
-					settingsMenu(mainbuf);
-					continue;
-				}
-				
-				if (touch.px > 165 && touch.px < 305 && touch.py > 146 && touch.py < 199) {
-					printCredits();
-				}
-			}
-
-			menu(mainMenu);
+	int mainMenu[] = {S_MAIN_MENU_EXTRA_STORAGE, S_MAIN_MENU_EDITOR, S_MAIN_MENU_EVENTS, S_MAIN_MENU_SAVE_INFO, S_MAIN_MENU_SETTINGS, S_MAIN_MENU_CREDITS};
+	while (aptMainLoop()) {
+		hidScanInput();
+		touchPosition touch;
+		hidTouchRead(&touch);
+		
+		if (hidKeysDown() & KEY_START) {
+			if (!confirmDisp(i18n(S_MAIN_Q_SAVE_CHANGES)))
+				save = false;
+			break;
 		}
-	} else {
-		while (aptMainLoop()) {
-			hidScanInput();
-			touchPosition touch;
-			hidTouchRead(&touch);
-			currentEntry = calcCurrentEntryOneScreen(currentEntry, 2, 1);
-			
-			if (hidKeysDown() & KEY_START) {
-				if (!confirmDisp(i18n(S_MAIN_Q_SAVE_CHANGES)))
-					save = false;
-				break;
-			}
-			
-			if (hidKeysDown() & KEY_TOUCH) {
-				if (touch.px > 97 && touch.px < 222) {
-					if (touch.py > 66 && touch.py < 105) { currentEntry = 0; touchPressed = true; }
-					if (touch.py > 123 && touch.py < 164) { currentEntry = 1; touchPressed = true; }
-				}
+		
+		if (hidKeysDown() & KEY_TOUCH) {
+			if (touch.px > 15 && touch.px < 155 && touch.py > 20 && touch.py < 73) {
+				bank(mainbuf);
 			}
 
-			if ((hidKeysDown() & KEY_A) || touchPressed) {
-				touchPressed = false;
-				switch (currentEntry) {
-					case 0 : {
-						eventDatabase5(mainbuf);
-						break;
-					}
-					case 1 : {
-						break;
-					}
-				}
+			if (touch.px > 165 && touch.px < 305 && touch.py > 20 && touch.py < 73) {
+				pokemonEditor(mainbuf);
 			}
 
-			mainMenuDS(currentEntry);
+			if (touch.px > 15 && touch.px < 155 && touch.py > 83 && touch.py < 136) {
+				eventDatabase7(mainbuf);
+			}
+
+			if (touch.px > 165 && touch.px < 305 && touch.py > 83 && touch.py < 136) {
+
+			}
+			
+			if (touch.px > 15 && touch.px < 155 && touch.py > 146 && touch.py < 199) {
+				settingsMenu(mainbuf);
+				continue;
+			}
+			
+			if (touch.px > 165 && touch.px < 305 && touch.py > 146 && touch.py < 199) {
+				printCredits();
+			}
 		}
+
+		menu(mainMenu);
 	}
 	
 	if (save) {

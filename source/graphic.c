@@ -133,27 +133,13 @@ void initProgressLoadPNGInRAM(int total) {
 	loadPNGInRAM_elements = total;
 }
 
-
-int getGUIElementsI18nSpecifyTotalElements() {
-	return game_is3DS() ? 1 : 0;
-}
-
 void GUIElementsI18nSpecify() {
 	struct i18n_files languageSpecificFiles = i18n_getFilesPath();
-	if (game_is3DS()) {
-		loadPNGInRAM(TEXTURE_TYPES_SPRITESHEET, languageSpecificFiles.types);
-	}
+	loadPNGInRAM(TEXTURE_TYPES_SPRITESHEET, languageSpecificFiles.types);
 }
 
 void GUIElementsSpecify() {
-	int elements = 4;
-	if (game_is3DS()) {
-		elements += 60;
-	} else {
-		elements += 16;
-	}
-
-	elements += getGUIElementsI18nSpecifyTotalElements();
+	int elements = 81;
 	initProgressLoadPNGInRAM(elements);
 
 	freezeMsg(i18n(S_GRAPHIC_GUI_ELEMENTS_SPECIFY_LOADING));
@@ -169,87 +155,71 @@ void GUIElementsSpecify() {
 	loadPNGInRAM(TEXTURE_SHINY_SPRITESHEET, "/3ds/data/PKSM/additionalassets/pokemon_shiny_icons_spritesheet.png");
 #endif
 
-	if (game_is3DS()) {
-		loadPNGInRAM(TEXTURE_GENERATIONS, "romfs:/res/generations.png");
-		loadPNGInRAM(TEXTURE_EVENT_VIEW, "romfs:/res/Event View.png");
-		loadPNGInRAM(TEXTURE_ICON_BANK, "romfs:/res/Icon Bank.png");
-		loadPNGInRAM(TEXTURE_ICON_EDITOR, "romfs:/res/Icon Editor.png");
-		loadPNGInRAM(TEXTURE_ICON_EVENTS, "romfs:/res/Icon Events.png");
-		loadPNGInRAM(TEXTURE_ICON_SAVE, "romfs:/res/Icon Save.png");
-		loadPNGInRAM(TEXTURE_ICON_SETTINGS, "romfs:/res/Icon Settings.png");
-		loadPNGInRAM(TEXTURE_ICON_CREDITS, "romfs:/res/Icon Credits.png");
-		loadPNGInRAM(TEXTURE_MAIN_MENU_BUTTON, "romfs:/res/Main Menu Button.png");
-		
-		loadPNGInRAM(TEXTURE_BOX_VIEW, "romfs:/res/Box View.png");
-		loadPNGInRAM(TEXTURE_NO_MOVE, "romfs:/res/No Move.png");
-		loadPNGInRAM(TEXTURE_BACK_BUTTON, "romfs:/res/Back Button.png");
-		loadPNGInRAM(TEXTURE_BOTTOM_BAR, "romfs:/res/Bottom Bar.png");
-		loadPNGInRAM(TEXTURE_HEX_BUTTON, "romfs:/res/Hex Button.png");
-		loadPNGInRAM(TEXTURE_HEX_BG, "romfs:/res/Hex BG.png");
-		loadPNGInRAM(TEXTURE_BLUE_TEXT_BOX, "romfs:/res/Blue Textbox.png");
-		loadPNGInRAM(TEXTURE_OTA_BUTTON, "romfs:/res/OTA Button.png");
-		loadPNGInRAM(TEXTURE_INCLUDE_INFO, "romfs:/res/Include Info.png");
-		loadPNGInRAM(TEXTURE_GENERATION_BG, "romfs:/res/Generation BG.png");
-		loadPNGInRAM(TEXTURE_HIDDEN_POWER_BG, "romfs:/res/Hidden Power BG.png");
-		loadPNGInRAM(TEXTURE_BALLS_BG, "romfs:/res/BallsBG.png");
-		loadPNGInRAM(TEXTURE_MALE, "romfs:/res/Male.png");
-		loadPNGInRAM(TEXTURE_FEMALE, "romfs:/res/Female.png");
-		loadPNGInRAM(TEXTURE_NATURES, "romfs:/res/Natures.png");
-		loadPNGInRAM(TEXTURE_MOVES_BOTTOM, "romfs:/res/Moves Bottom.png");
-		loadPNGInRAM(TEXTURE_TOP_MOVES, "romfs:/res/Top Moves.png");
-		loadPNGInRAM(TEXTURE_EDITOR_STATS, "romfs:/res/Editor Stats.png");
-		loadPNGInRAM(TEXTURE_SUB_ARROW, "romfs:/res/Sub Arrow.png");
-		loadPNGInRAM(TEXTURE_BACKGROUND, "romfs:/res/Background.png");
-		loadPNGInRAM(TEXTURE_MINI_BOX, "romfs:/res/Mini Box.png");
-		loadPNGInRAM(TEXTURE_MINUS_BUTTON, "romfs:/res/Minus Button.png");
-		loadPNGInRAM(TEXTURE_PLUS_BUTTON, "romfs:/res/Plus Button.png");
-		loadPNGInRAM(TEXTURE_TRANSFER_BUTTON, "romfs:/res/Transfer Button.png");
-		loadPNGInRAM(TEXTURE_BANK_TOP, "romfs:/res/Bank Top.png");
-		loadPNGInRAM(TEXTURE_SHINY, "romfs:/res/Shiny.png");
-		loadPNGInRAM(TEXTURE_NORMAL_BAR, "romfs:/res/Normal Bar.png");
-		loadPNGInRAM(TEXTURE_R_BUTTON, "romfs:/res/R Button.png");
-		loadPNGInRAM(TEXTURE_L_BUTTON, "romfs:/res/L Button.png");
-		loadPNGInRAM(TEXTURE_CREDITS, "romfs:/res/Credits Top.png");
-		loadPNGInRAM(TEXTURE_POKEBALL, "romfs:/res/Pokeball.png");
-		loadPNGInRAM(TEXTURE_MAIN_MENU_DARK_BAR, "romfs:/res/Main Menu Dark Bar.png");
-		loadPNGInRAM(TEXTURE_DARK_BUTTON, "romfs:/res/Dark Button.png");
-		loadPNGInRAM(TEXTURE_LEFT, "romfs:/res/Left.png");
-		loadPNGInRAM(TEXTURE_LIGHT_BUTTON, "romfs:/res/Light Button.png");
-		loadPNGInRAM(TEXTURE_RED_BUTTON, "romfs:/res/Red Button.png");
-		loadPNGInRAM(TEXTURE_RIGHT, "romfs:/res/Right.png");
-		loadPNGInRAM(TEXTURE_EVENT_MENU_BOTTOM_BAR, "romfs:/res/Event Menu Bottom Bar.png");
-		loadPNGInRAM(TEXTURE_EVENT_MENU_TOP_BAR_SELECTED, "romfs:/res/Event Menu Top Bar Selected.png");
-		loadPNGInRAM(TEXTURE_EVENT_MENU_TOP_BAR_NORMAL, "romfs:/res/Event Menu Top Bar.png");
-		loadPNGInRAM(TEXTURE_INFO_VIEW, "romfs:/res/Info View.png");
-		loadPNGInRAM(TEXTURE_SELECTOR_NORMAL, "romfs:/res/Selector.png");
-		loadPNGInRAM(TEXTURE_SELECTOR_CLONING, "romfs:/res/Selector (cloning).png");
-		loadPNGInRAM(TEXTURE_EDITOR_BOTTOM_BG, "romfs:/res/Editor Bottom BG.png");
-		loadPNGInRAM(TEXTURE_PLUS, "romfs:/res/Plus.png");
-		loadPNGInRAM(TEXTURE_MINUS, "romfs:/res/Minus.png");
-		loadPNGInRAM(TEXTURE_BUTTON, "romfs:/res/Button.png");
-		loadPNGInRAM(TEXTURE_SETTING, "romfs:/res/Setting.png");
-		loadPNGInRAM(TEXTURE_BOTTOM_POPUP, "romfs:/res/Bottom Pop-Up.png");
-		loadPNGInRAM(TEXTURE_POKEMON_BOX, "romfs:/res/Pokemon Box.png");
-		loadPNGInRAM(TEXTURE_ITEM, "romfs:/res/item.png");
-	} else {
-		loadPNGInRAM(TEXTURE_POKEBALL, "romfs:/res/DS Pokeball.png");
-		loadPNGInRAM(TEXTURE_DS_MENU_BOTTOM_BG, "romfs:/res/Bottom BG.png");
-		loadPNGInRAM(TEXTURE_DS_TOP_BG, "romfs:/res/Top BG.png");
-		loadPNGInRAM(TEXTURE_SELECTED_DS_BAR, "romfs:/res/Bar Selected.png");
-		loadPNGInRAM(TEXTURE_DS_BAR, "romfs:/res/Bar.png");
-		loadPNGInRAM(TEXTURE_DS_MENU_BOTTOM_BG, "romfs:/res/DS Menu Bottom BG.png");
-		loadPNGInRAM(TEXTURE_LANGUAGE_BUTTON_SELECTED, "romfs:/res/Language Button Selected.png");
-		loadPNGInRAM(TEXTURE_LANGUAGE_BUTTON_NORMAL, "romfs:/res/Language Button.png");
-		loadPNGInRAM(TEXTURE_DS_EVENT_DATABASE_BG, "romfs:/res/Event Database BG.png");
-		loadPNGInRAM(TEXTURE_NORMAL_L, "romfs:/res/Normal L.png");
-		loadPNGInRAM(TEXTURE_NORMAL_R, "romfs:/res/Normal R.png");
-		loadPNGInRAM(TEXTURE_SELECTED_L, "romfs:/res/Selected L.png");
-		loadPNGInRAM(TEXTURE_SELECTED_R, "romfs:/res/Selected R.png");
-		
-		loadPNGInRAM(TEXTURE_HEX_BG, "romfs:/res/Hex BG.png");
-		loadPNGInRAM(TEXTURE_MINUS_BUTTON, "romfs:/res/Minus Button.png");
-		loadPNGInRAM(TEXTURE_PLUS_BUTTON, "romfs:/res/Plus Button.png");
-	}
+	loadPNGInRAM(TEXTURE_GENERATIONS, "romfs:/res/generations.png");
+	loadPNGInRAM(TEXTURE_EVENT_VIEW, "romfs:/res/Event View.png");
+	loadPNGInRAM(TEXTURE_ICON_BANK, "romfs:/res/Icon Bank.png");
+	loadPNGInRAM(TEXTURE_ICON_EDITOR, "romfs:/res/Icon Editor.png");
+	loadPNGInRAM(TEXTURE_ICON_EVENTS, "romfs:/res/Icon Events.png");
+	loadPNGInRAM(TEXTURE_ICON_SAVE, "romfs:/res/Icon Save.png");
+	loadPNGInRAM(TEXTURE_ICON_SETTINGS, "romfs:/res/Icon Settings.png");
+	loadPNGInRAM(TEXTURE_ICON_CREDITS, "romfs:/res/Icon Credits.png");
+	loadPNGInRAM(TEXTURE_MAIN_MENU_BUTTON, "romfs:/res/Main Menu Button.png");
+	
+	loadPNGInRAM(TEXTURE_BOX_VIEW, "romfs:/res/Box View.png");
+	loadPNGInRAM(TEXTURE_NO_MOVE, "romfs:/res/No Move.png");
+	loadPNGInRAM(TEXTURE_BACK_BUTTON, "romfs:/res/Back Button.png");
+	loadPNGInRAM(TEXTURE_BOTTOM_BAR, "romfs:/res/Bottom Bar.png");
+	loadPNGInRAM(TEXTURE_HEX_BUTTON, "romfs:/res/Hex Button.png");
+	loadPNGInRAM(TEXTURE_HEX_BG, "romfs:/res/Hex BG.png");
+	loadPNGInRAM(TEXTURE_BLUE_TEXT_BOX, "romfs:/res/Blue Textbox.png");
+	loadPNGInRAM(TEXTURE_OTA_BUTTON, "romfs:/res/OTA Button.png");
+	loadPNGInRAM(TEXTURE_INCLUDE_INFO, "romfs:/res/Include Info.png");
+	loadPNGInRAM(TEXTURE_GENERATION_BG, "romfs:/res/Generation BG.png");
+	loadPNGInRAM(TEXTURE_HIDDEN_POWER_BG, "romfs:/res/Hidden Power BG.png");
+	loadPNGInRAM(TEXTURE_BALLS_BG, "romfs:/res/BallsBG.png");
+	loadPNGInRAM(TEXTURE_MALE, "romfs:/res/Male.png");
+	loadPNGInRAM(TEXTURE_FEMALE, "romfs:/res/Female.png");
+	loadPNGInRAM(TEXTURE_NATURES, "romfs:/res/Natures.png");
+	loadPNGInRAM(TEXTURE_MOVES_BOTTOM, "romfs:/res/Moves Bottom.png");
+	loadPNGInRAM(TEXTURE_TOP_MOVES, "romfs:/res/Top Moves.png");
+	loadPNGInRAM(TEXTURE_EDITOR_STATS, "romfs:/res/Editor Stats.png");
+	loadPNGInRAM(TEXTURE_SUB_ARROW, "romfs:/res/Sub Arrow.png");
+	loadPNGInRAM(TEXTURE_BACKGROUND, "romfs:/res/Background.png");
+	loadPNGInRAM(TEXTURE_MINI_BOX, "romfs:/res/Mini Box.png");
+	loadPNGInRAM(TEXTURE_MINUS_BUTTON, "romfs:/res/Minus Button.png");
+	loadPNGInRAM(TEXTURE_PLUS_BUTTON, "romfs:/res/Plus Button.png");
+	loadPNGInRAM(TEXTURE_TRANSFER_BUTTON, "romfs:/res/Transfer Button.png");
+	loadPNGInRAM(TEXTURE_BANK_TOP, "romfs:/res/Bank Top.png");
+	loadPNGInRAM(TEXTURE_SHINY, "romfs:/res/Shiny.png");
+	loadPNGInRAM(TEXTURE_NORMAL_BAR, "romfs:/res/Normal Bar.png");
+	loadPNGInRAM(TEXTURE_R_BUTTON, "romfs:/res/R Button.png");
+	loadPNGInRAM(TEXTURE_L_BUTTON, "romfs:/res/L Button.png");
+	loadPNGInRAM(TEXTURE_CREDITS, "romfs:/res/Credits Top.png");
+	loadPNGInRAM(TEXTURE_POKEBALL, "romfs:/res/Pokeball.png");
+	loadPNGInRAM(TEXTURE_MAIN_MENU_DARK_BAR, "romfs:/res/Main Menu Dark Bar.png");
+	loadPNGInRAM(TEXTURE_DARK_BUTTON, "romfs:/res/Dark Button.png");
+	loadPNGInRAM(TEXTURE_LEFT, "romfs:/res/Left.png");
+	loadPNGInRAM(TEXTURE_LIGHT_BUTTON, "romfs:/res/Light Button.png");
+	loadPNGInRAM(TEXTURE_RED_BUTTON, "romfs:/res/Red Button.png");
+
+	loadPNGInRAM(TEXTURE_EVENT_MENU_BOTTOM_BAR, "romfs:/res/Event Menu Bottom Bar.png");
+	loadPNGInRAM(TEXTURE_EVENT_MENU_TOP_BAR_SELECTED, "romfs:/res/Event Menu Top Bar Selected.png");
+	loadPNGInRAM(TEXTURE_EVENT_MENU_TOP_BAR_NORMAL, "romfs:/res/Event Menu Top Bar.png");
+	loadPNGInRAM(TEXTURE_INFO_VIEW, "romfs:/res/Info View.png");
+	loadPNGInRAM(TEXTURE_SELECTOR_NORMAL, "romfs:/res/Selector.png");
+
+	loadPNGInRAM(TEXTURE_EDITOR_BOTTOM_BG, "romfs:/res/Editor Bottom BG.png");
+	loadPNGInRAM(TEXTURE_PLUS, "romfs:/res/Plus.png");
+	loadPNGInRAM(TEXTURE_MINUS, "romfs:/res/Minus.png");
+	loadPNGInRAM(TEXTURE_BUTTON, "romfs:/res/Button.png");
+	loadPNGInRAM(TEXTURE_SETTING, "romfs:/res/Setting.png");
+	loadPNGInRAM(TEXTURE_BOTTOM_POPUP, "romfs:/res/Bottom Pop-Up.png");
+	loadPNGInRAM(TEXTURE_POKEMON_BOX, "romfs:/res/Pokemon Box.png");
+	loadPNGInRAM(TEXTURE_ITEM, "romfs:/res/item.png");
+	
+	loadPNGInRAM(TEXTURE_HEX_BG, "romfs:/res/Hex BG.png");
+	loadPNGInRAM(TEXTURE_MINUS_BUTTON, "romfs:/res/Minus Button.png");
+	loadPNGInRAM(TEXTURE_PLUS_BUTTON, "romfs:/res/Plus Button.png");
 
 	GUIElementsI18nSpecify();
 }
@@ -410,14 +380,10 @@ void progressBar(wchar_t* message, u32 current, u32 sz) {
 void drawMenuTop() {
 	printMenuTop();
 	printTitle(L"PKSM");
-
-	if (game_is3DS())
-		pp2d_draw_texture(TEXTURE_POKEBALL, 171, 95);
-	else
-		pp2d_draw_texture(TEXTURE_WARNING_TOP, 173, 98);
+	pp2d_draw_texture(TEXTURE_POKEBALL, 171, 95);
 	
 	char version[10];
-	snprintf(version, 10, "v%d.%d.%d", APP_VERSION_MAJOR, APP_VERSION_MINOR, APP_VERSION_MICRO);
+	sprintf(version, "v%d.%d.%d", APP_VERSION_MAJOR, APP_VERSION_MINOR, APP_VERSION_MICRO);
 	pp2d_draw_text(398 - pp2d_get_text_width(version, FONT_SIZE_9, FONT_SIZE_9), 229, FONT_SIZE_9, FONT_SIZE_9, LIGHTBLUE, version);
 }
 
@@ -508,25 +474,8 @@ void menu(int menu[]) {
 	pksm_end_frame();
 }
 
-void mainMenuDS(int currentEntry) {
-	wchar_t* menu[] = { L"Events", L"Save Info", L"Other"};
-	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
-		pp2d_draw_texture(TEXTURE_DS_TOP_BG, 0, 0);
-		pp2d_draw_texture(TEXTURE_POKEBALL, 168, 91);
-	
-		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
-		pp2d_set_screen_color(GFX_TOP, BACKGROUND_BLACK);
-		pp2d_draw_texture(TEXTURE_DS_BOTTOM_BG, 0, 0);
-		for (int i = 0; i < 3; i++) {
-			pp2d_draw_texture((i == currentEntry) ? TEXTURE_SELECTED_DS_BAR : TEXTURE_DS_BAR, 0, 33 + i*56);
-			pp2d_draw_wtext_center(GFX_BOTTOM, (i == currentEntry) ? 43 + i*56 : 45 + i*56, FONT_SIZE_14, FONT_SIZE_14, (i == currentEntry) ? WHITE : DS, menu[i]);
-		}
-		pp2d_draw_wtext_center(GFX_BOTTOM, 224, FONT_SIZE_9, FONT_SIZE_9, RED, i18n(S_GRAPHIC_MENUDS_INDICATIONS));
-	pksm_end_frame();
-}
-
 void printCredits() {
-	char* credits = "Smealum for ctrulib\nKaphotics and SciresM for PKHeX and memecrypto\nJ-K-D for direct save import/export\nArchitDate for serveLegality\nSlownic for java servepkx\nSlashcash for PCHex++\nGocario for PKBrew\nTuxSH for TWLSaveTool\nPPorg for most of the wcx bundled in the application\nSimona, Carlo, Matteo for fill.c work\nAll the countless translators who worked on the localization";
+	static const char* credits = "Smealum for ctrulib\nKaphotics and SciresM for PKHeX and memecrypto\nJ-K-D for direct save import/export\nArchitDate for serveLegality\nSlownic for java servepkx\nSlashcash for PCHex++\nGocario for PKBrew\nTuxSH for TWLSaveTool\nPPorg for most of the wcx bundled in the application\nSimona, Carlo, Matteo for fill.c work\nAll the countless translators who worked on the localization";
 	
 	while (aptMainLoop() && !(hidKeysUp() & KEY_B)) {
 		hidScanInput();
@@ -551,7 +500,7 @@ void printCredits() {
 
 void printDatabase6(char *database[], int currentEntry, int page, int spriteArray[]) {
 	int pk, y = 41;
-	char pages[24];
+	char pages[24]; // 24 is way too much but kills a gcc warning
 	sprintf(pages, "%d/%d", page + 1, fill_get_index()/10);
 	
 	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
@@ -607,93 +556,19 @@ void printDatabase6(char *database[], int currentEntry, int page, int spriteArra
 	pksm_end_frame();
 }
 
-void printDatabaseListDS(char *database[], int currentEntry, int page, int spriteArray[], bool isSelected, int langSelected, bool langVett[]) {
-	int pk, y = 41;
-	
-	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
-		pp2d_draw_texture(TEXTURE_DS_EVENT_DATABASE_BG, 0, 0);
-		
-		for (int i = 0; i < 5; i++) {
-			pk = spriteArray[page * 10 + i];
-			if (i == currentEntry)
-				pp2d_draw_texture(TEXTURE_SELECTED_L, 18, y);
-			else
-				pp2d_draw_texture(TEXTURE_NORMAL_L, 18, y);
-			
-			if (pk != -1) {
-				pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 22, y + 2, 40 * (pk % 25) + 4, 30 * (pk / 25), 34, 30);
-			}
-			if (pp2d_get_text_width(database[page*10 + i], FONT_SIZE_9, FONT_SIZE_9) <= 148)
-				pp2d_draw_text(55, y + 14, FONT_SIZE_9, FONT_SIZE_9, WHITE, database[page * 10 + i]);
-			else
-				pp2d_draw_text(55, y + 3, FONT_SIZE_9, FONT_SIZE_9, WHITE, database[page * 10 + i]);
-			
-			y += 36;
-		}
-		
-		y = 41;
-		for (int i = 5; i < 10; i++) {
-			pk = spriteArray[page * 10 + i];
-			if (i == currentEntry)
-				pp2d_draw_texture(TEXTURE_SELECTED_R, 200, y);
-			else
-				pp2d_draw_texture(TEXTURE_NORMAL_R, 200, y);
-			
-			if (pk != -1) {
-				pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 204, y + 2, 40 * (pk % 25) + 4, 30 * (pk / 25), 34, 30);
-			}
-			if (pp2d_get_text_width(database[page*10 + i], FONT_SIZE_9, FONT_SIZE_9) <= 148)
-				pp2d_draw_text(235, y + 14, FONT_SIZE_9, FONT_SIZE_9, WHITE, database[page * 10 + i]);
-			else
-				pp2d_draw_text(235, y + 3, FONT_SIZE_9, FONT_SIZE_9, WHITE, database[page * 10 + i]);
-			
-			y += 36;
-		}
-
-		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
-		pp2d_draw_texture(TEXTURE_DS_MENU_BOTTOM_BG, 0, 0);
-		pp2d_draw_wtext_center(GFX_BOTTOM, 222, FONT_SIZE_9, FONT_SIZE_9, RGBA8(255, 255, 255, 130), isSelected ? i18n(S_GRAPHIC_DB_INDICATIONS_INJECT) : i18n(S_GRAPHIC_DB_INDICATIONS_SELECT));
-		
-		if (isSelected) {
-			char *languages[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};			
-			
-			for (int t = 0; t < 7; t++) {
-				int x = 0, y = 178;
-				switch (t) {
-					case 0 : { x = 25; break; }
-					case 1 : { x = 63; break; }
-					case 2 : { x = 101; break; }
-					case 3 : { x = 139; break; }
-					case 4 : { x = 177; break; }
-					case 5 : { x = 215; break; }
-					case 6 : { x = 253; break; }
-				}
-				
-				pp2d_draw_texture(TEXTURE_LANGUAGE_BUTTON_NORMAL, x, y);
-				if (langVett[t]) {
-					if (t == langSelected) pp2d_draw_texture(TEXTURE_LANGUAGE_BUTTON_SELECTED, x, y);
-					pp2d_draw_text(x + (36 - pp2d_get_text_width(languages[t], FONT_SIZE_12, FONT_SIZE_12)) / 2, y + 4, FONT_SIZE_12, FONT_SIZE_12, WHITE, languages[t]);
-				}
-				else {
-					if (t == langSelected) pp2d_draw_texture(TEXTURE_LANGUAGE_BUTTON_SELECTED, x, y);
-					pp2d_draw_text(x + (36 - pp2d_get_text_width(languages[t], FONT_SIZE_12, FONT_SIZE_12)) / 2, y + 4, FONT_SIZE_12, FONT_SIZE_12, RGBA8(255, 255, 255, 100), languages[t]);
-				}
-			}
-		}
-	
-	pksm_end_frame();
-}
-
 void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bool overwrite, int langSelected, int nInjected, bool ota) {
-	char *languages[] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR", "CHS", "CHT"};
+	static const char *languages[] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR", "CHS", "CHT"};
 	char cont[3];
 	snprintf(cont, 3, "%d", nInjected + 1);
 	
 	int total = game_isgen7() ? 9 : 7;
 	
 	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
-		wcxInfoViewer(previewbuf);
-		pp2d_draw_texture(TEXTURE_OTA_BUTTON, 360, 2);
+		if (game_is3DS())
+		{
+			wcxInfoViewer(previewbuf);
+			pp2d_draw_texture(TEXTURE_OTA_BUTTON, 360, 2);
+		}
 		
 		if (sprite != -1) {
 			pp2d_draw_texture_part_scale(TEXTURE_NORMAL_SPRITESHEET, 282, 41 - movementOffsetLong(6), 40 * (wcx_get_species(previewbuf) % 25) + 4, 30 * (wcx_get_species(previewbuf) / 25), 34, 30, 2, 2);
@@ -1169,7 +1044,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int currentEntry, int menu
 		pp2d_draw_texture(TEXTURE_BOTTOM_BAR, 0, 210);
 		pp2d_draw_wtext(12 + (178 - pp2d_get_wtext_width(page, FONT_SIZE_12, FONT_SIZE_12)) / 2, 19, FONT_SIZE_12, FONT_SIZE_12, WHITE, page);
 		pp2d_draw_texture(TEXTURE_LEFT, 7, 17);
-		pp2d_draw_texture(TEXTURE_RIGHT, 185, 17);
+		pp2d_draw_texture_flip(TEXTURE_LEFT, 185, 17, HORIZONTAL);
 		pp2d_draw_texture(TEXTURE_OTA_BUTTON, 240, 211);
 		pp2d_draw_texture(TEXTURE_BACK_BUTTON, 283, 211);
 		pp2d_draw_wtext(247, 7, FONT_SIZE_12, FONT_SIZE_12, WHITE, i18n(S_GRAPHIC_PKVIEWER_TEAM));
@@ -1218,7 +1093,9 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int currentEntry, int menu
 		if (mode != ED_CLONE)
 			pp2d_draw_texture(TEXTURE_SELECTOR_NORMAL, pointer[0], pointer[1] - ((mode == ED_STANDARD) ? movementOffsetSlow(3) : 0));
 		else {
-			pp2d_draw_texture(TEXTURE_SELECTOR_CLONING, pointer[0], pointer[1] - movementOffsetSlow(3));			
+			int ofs = movementOffsetSlow(3);
+			pp2d_draw_texture(TEXTURE_SELECTOR_NORMAL, pointer[0], pointer[1] - ofs);	
+			pp2d_draw_texture_blend(TEXTURE_SELECTOR_NORMAL, pointer[0], pointer[1] - ofs, RGBA8(0, 0, 255, 100));			
 			pp2d_draw_texture(TEXTURE_BOTTOM_POPUP, 1, 214);
 			pp2d_draw_wtext(8, 220, FONT_SIZE_11, FONT_SIZE_11, WHITE, i18n(S_GRAPHIC_PKVIEWER_CLONE_INDICATIONS));
 		}
@@ -1510,9 +1387,9 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 				pp2d_draw_wtext(2, 28 + i * 20, FONT_SIZE_12, FONT_SIZE_12, (i == additional3) ? YELLOW : WHITE, moves[pkx_get_move(pkmn, i)]);
 				pp2d_draw_wtext(2, 132 + i * 20, FONT_SIZE_12, FONT_SIZE_12, (i == additional3 - 4) ? YELLOW: WHITE, moves[pkx_get_egg_move(pkmn, i)]);
 				if (i == additional3)
-					pp2d_draw_texture_part(TEXTURE_SUB_ARROW, 198 - movementOffsetSlow(3), 33 + i*20, 0, 0, 20, 18);
+					pp2d_draw_texture_flip(TEXTURE_SUB_ARROW, 190 - movementOffsetSlow(3), 26 + i*20, HORIZONTAL);
 				else if (i == additional3 - 4)
-					pp2d_draw_texture_part(TEXTURE_SUB_ARROW, 198 - movementOffsetSlow(3), 137 + i*20, 0, 0, 20, 18);
+					pp2d_draw_texture_flip(TEXTURE_SUB_ARROW, 190 - movementOffsetSlow(3), 130 + i*20, HORIZONTAL);
 			}
 
 		}
@@ -1659,7 +1536,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 		swprintf(page, MAX_LENGTH_BOX_NAME+1, isWirelessActivated ? L"Wireless %d" : i18n(S_GRAPHIC_PKBANK_SAVED_BOX_TITLE), saveBox + 1);
 		pp2d_draw_wtext(12 + (178 - pp2d_get_wtext_width(page, FONT_SIZE_12, FONT_SIZE_12)) / 2, 19, FONT_SIZE_12, FONT_SIZE_12, WHITE, page);
 		pp2d_draw_texture(TEXTURE_LEFT, 7, 17);
-		pp2d_draw_texture(TEXTURE_RIGHT, 185, 17);
+		pp2d_draw_texture_flip(TEXTURE_LEFT, 185, 17, HORIZONTAL);
 		pp2d_draw_texture(TEXTURE_TRANSFER_BUTTON, 242, 5);
 		pp2d_draw_texture(TEXTURE_BACK_BUTTON, 283, 211);
 		pp2d_draw_texture(TEXTURE_BUTTON, 208, 43);
