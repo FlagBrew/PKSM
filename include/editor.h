@@ -16,7 +16,9 @@
 >   See LICENSE for information.
 */
 
-#pragma once
+#ifndef EDITOR_H
+#define EDITOR_H
+
 #include "common.h"
 
 #define PGTLENGTH 260
@@ -61,3 +63,5 @@ void setWC(u8* mainbuf, u8* wc6buf, int i, int nInjected[]);
 void setSaveLanguage(u8* mainbuf, int i);
 
 void pokemonEditor(u8* mainbuf);
+
+#endif

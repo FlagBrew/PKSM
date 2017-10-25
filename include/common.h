@@ -16,7 +16,8 @@
 >   See LICENSE for information.
 */
 
-#pragma once
+#ifndef COMMON_H
+#define COMMON_H
 
 #include <3ds.h>
 #include <citro3d.h>
@@ -56,3 +57,5 @@
 struct ArrayUTF32 listMoves;
 struct ArrayUTF32 listItems;
 struct ArrayUTF32 listSpecies;
+
+#endif

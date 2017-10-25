@@ -16,7 +16,9 @@
 >   See LICENSE for information.
 */
 
-#pragma once
+#ifndef DATABASE_H
+#define DATABASE_H
+
 #include "common.h"
 
 #define SMCOUNT 300
@@ -24,3 +26,5 @@
 void findFreeLocationWC(u8 *mainbuf, int nInjected[]);
 int getN(const int i);
 void eventDatabase7(u8* mainbuf);
+
+#endif

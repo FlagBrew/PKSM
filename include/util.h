@@ -16,7 +16,9 @@
 >   See LICENSE for information.
 */
 
-#pragma once
+#ifndef UTIL_H
+#define UTIL_H
+
 #include "common.h"
 
 void checkMaxValueBetweenBounds(u8* buf, int byte, int start, int len, int max);
@@ -38,3 +40,5 @@ bool hasExternI18nFile();
 bool hasI18nConfig();
 u8 loadI18nConfig();
 void saveI18nConfig(u8 language);
+
+#endif

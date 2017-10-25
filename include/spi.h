@@ -18,7 +18,9 @@
 >   See LICENSE for information.
 */
  
-#pragma once
+#ifndef SPI_H
+#define SPI_H
+
 #include "common.h"
 
 #define SPI_CMD_RDSR 5
@@ -77,3 +79,5 @@ u32 SPIGetPageSize(CardType type);
 u32 SPIGetCapacity(CardType type);
 Result SPIWriteSaveData(CardType type, u32 offset, void* data, u32 size);
 Result SPIReadSaveData(CardType type, u32 offset, void* data, u32 size);
+
+#endif

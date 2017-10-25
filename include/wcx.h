@@ -16,7 +16,9 @@
 >   See LICENSE for information.
 */
 
-#pragma once
+#ifndef WCX_H
+#define WCX_H
+
 #include "common.h"
 
 #define WCX_SIZE 264
@@ -59,3 +61,5 @@ u32 *wcx_get_title(u8* wcx, u32* dst);
 u8 wcx_get_type(u8* wcx);
 u32 wcx_get_year(u8* wcx);
 void wcxfull_to_wcx(u8* dst, u8* src);
+
+#endif

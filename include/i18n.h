@@ -18,7 +18,9 @@
 >   See LICENSE for information.
 */
 
-#pragma once
+#ifndef I18N_H
+#define I18N_H
+
 #include "common.h"
 #include <stdarg.h>
 #include <wchar.h>
@@ -738,3 +740,4 @@ void i18n_init();
 void i18n_initTextSwkbd(SwkbdState* swkbd, AppTextCode leftButtonTextCode, AppTextCode rightButtonTextCode, AppTextCode hintTextCode);
 void i18n_exit();
 
+#endif

@@ -16,7 +16,11 @@
 >   See LICENSE for information.
 */
 
-#pragma once
+#ifndef FILES_H
+#define FILES_H
+
 #include "common.h"
 
 void file_write(char* path, u8 *buf, int size);
+
+#endif

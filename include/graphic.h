@@ -16,7 +16,9 @@
 >   See LICENSE for information.
 */
 
-#pragma once
+#ifndef GRAPHIC_H
+#define GRAPHIC_H
+
 #include "common.h"
 
 #define TEXTURE_BACK_BUTTON 1
@@ -175,3 +177,4 @@ void printSelector(int x, int y, int width, int height);
 void printMenuTop();
 void printMenuBottom();
 
+#endif

@@ -16,7 +16,9 @@
 >   See LICENSE for information.
 */
 
-#pragma once
+#ifndef CONFIG_H
+#define CONFIG_H
+
 #include "common.h"
 
 u8 config_get_pkx_set_lock();
@@ -24,3 +26,5 @@ void config_set_pkx_set_lock(u8 value);
 void config_load();
 void config_set();
 void config_init();
+
+#endif

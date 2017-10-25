@@ -16,7 +16,9 @@
 >   See LICENSE for information.
 */
 
-#pragma once
+#ifndef FILL_H
+#define FILL_H
+
 #include "common.h"
 
 int fill_get_index();
@@ -24,3 +26,5 @@ void filldatabase7(char *database[], int spriteArray[]);
 void filldatabase6(char *database[], int spriteArray[]);
 void filldatabase5(char *database[], int spriteArray[]);
 void filldatabase4(char *database[], int spriteArray[]);
+
+#endif
