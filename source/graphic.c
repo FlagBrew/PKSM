@@ -250,11 +250,6 @@ void GUIElementsI18nExit() {
 	GUITextsExit();
 }
 
-void drawFPSDebug() {
-	//pp2d_draw_rectangle(10, 10, 108, 20, RGBA8(0, 0, 0, 160));
-	//pp2d_draw_textf(12, 13, 0.5f, 0.5f, WHITE, "FPS: %2.6f", sf2d_get_fps());
-}
-
 char messageDebug[255];
 bool hasDebugMessage = false;
 time_t lastDebugMessageTime = 0;
@@ -279,15 +274,6 @@ void drawConsoleDebug() {
 			lastDebugMessageTime = 0;
 		}
 	}
-}
-void pksm_end_frame() {
-	#if DEBUG
-		drawFPSDebug();
-	#endif
-	#if DEBUG_I18N
-		drawConsoleDebug();
-	#endif
-	pp2d_end_draw();
 }
 
 void printSelector(int x, int y, int width, int height) {
@@ -318,7 +304,7 @@ void infoDisp(wchar_t* message) {
 		
 			pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 			pp2d_draw_texture(TEXTURE_WARNING_BOTTOM, 0, 0);
-		pksm_end_frame();
+		pp2d_end_draw();
 	}
 }
 
@@ -336,7 +322,7 @@ int confirmDisp(wchar_t* message) {
 
 			pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 			pp2d_draw_texture(TEXTURE_WARNING_BOTTOM, 0, 0);
-		pksm_end_frame();
+		pp2d_end_draw();
 	}
 	return 0;
 }
@@ -356,7 +342,7 @@ void _freezeMsgWithDetails(wchar_t* message, wchar_t* details, bool useLastMessa
 	
 		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 		pp2d_draw_texture(TEXTURE_WARNING_BOTTOM, 0, 0);
-	pksm_end_frame();
+	pp2d_end_draw();
 }
 
 void freezeMsgDetails(wchar_t* details) { _freezeMsgWithDetails(L"", details, true); }
@@ -374,7 +360,7 @@ void progressBar(wchar_t* message, u32 current, u32 sz) {
 	
 		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 		pp2d_draw_texture(TEXTURE_WARNING_BOTTOM, 0, 0);
-	pksm_end_frame();
+	pp2d_end_draw();
 }
 
 void drawMenuTop() {
@@ -435,7 +421,7 @@ void gameSelectorMenu(int n) {
 		}
 
 		printBottomIndications(i18n(S_GRAPHIC_GAME_SELECTOR_INDICATIONS));
-	pksm_end_frame();
+	pp2d_end_draw();
 }
 
 void menu(int menu[]) {
@@ -471,7 +457,7 @@ void menu(int menu[]) {
 			}
 		}
 		printBottomIndications(i18n(S_MAIN_MENU_INDICATION_EXIT));
-	pksm_end_frame();
+	pp2d_end_draw();
 }
 
 void printCredits() {
@@ -494,7 +480,7 @@ void printCredits() {
 			printMenuBottom();
 			pp2d_draw_text(20, 30, FONT_SIZE_9, FONT_SIZE_9, LIGHTBLUE, credits);
 			printBottomIndications(i18n(S_GRAPHIC_CREDITS_INDICATIONS));
-		pksm_end_frame();
+		pp2d_end_draw();
 	}
 }
 
@@ -515,7 +501,7 @@ void printDatabase6(char *database[], int currentEntry, int page, int spriteArra
 				pp2d_draw_texture(TEXTURE_EVENT_MENU_TOP_BAR_NORMAL, 18, y);
 			
 			if (pk != -1) {
-				pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 20, y - ((i == currentEntry) ? movementOffsetSlow(2) : 0), 40 * (pk % 25) + 4, 30 * (pk / 25), 34, 30);
+				pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 20, y - ((i == currentEntry) ? movementOffsetSlow(2) : 0), 34 * (pk % 30), 30 * (pk / 30), 34, 30);
 			}
 			
 			if (pp2d_get_text_width(database[page*10 + i], FONT_SIZE_9, FONT_SIZE_9) <= 140)
@@ -535,7 +521,7 @@ void printDatabase6(char *database[], int currentEntry, int page, int spriteArra
 				pp2d_draw_texture(TEXTURE_EVENT_MENU_TOP_BAR_NORMAL, 200, y);
 			
 			if (pk != -1) {
-				pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 202, y - ((i == currentEntry) ? movementOffsetSlow(2) : 0), 40 * (pk % 25) + 4, 30 * (pk / 25), 34, 30);
+				pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 202, y - ((i == currentEntry) ? movementOffsetSlow(2) : 0), 34 * (pk % 30), 30 * (pk / 30), 34, 30);
 			}
 			
 			if (pp2d_get_text_width(database[page*10 + i], FONT_SIZE_9, FONT_SIZE_9) <= 140)
@@ -553,7 +539,7 @@ void printDatabase6(char *database[], int currentEntry, int page, int spriteArra
 		pp2d_draw_texture(TEXTURE_R_BUTTON, 221, 52);
 		pp2d_draw_text_center(GFX_BOTTOM, 52, FONT_SIZE_12, FONT_SIZE_12, WHITE, pages);
 		printBottomIndications(i18n(S_GRAPHIC_DB6_INDICATIONS));
-	pksm_end_frame();
+	pp2d_end_draw();
 }
 
 void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bool overwrite, int langSelected, int nInjected, bool ota) {
@@ -571,7 +557,7 @@ void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bo
 		}
 		
 		if (sprite != -1) {
-			pp2d_draw_texture_part_scale(TEXTURE_NORMAL_SPRITESHEET, 282, 41 - movementOffsetLong(6), 40 * (wcx_get_species(previewbuf) % 25) + 4, 30 * (wcx_get_species(previewbuf) / 25), 34, 30, 2, 2);
+			pp2d_draw_texture_part_scale(TEXTURE_NORMAL_SPRITESHEET, 282, 41 - movementOffsetLong(6), 34 * (wcx_get_species(previewbuf) % 30), 30 * (wcx_get_species(previewbuf) / 30), 34, 30, 2, 2);
 		}
 		
 		if (ota) {
@@ -651,7 +637,7 @@ void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bo
 		} else
 			printBottomIndications(i18n(S_GRAPHIC_DB_INDICATIONS_INJECT));
 		
-	pksm_end_frame();
+	pp2d_end_draw();
 }
 
 u16 getAlternativeSprite(u8* pkmn, int game) {
@@ -673,13 +659,13 @@ void printElement(u8* pkmn, int game, u16 n, int x, int y) {
 		t -= 1;
 		pp2d_draw_texture_part(TEXTURE_ALTERNATIVE_SPRITESHEET, x, y, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30);  
 	} else {
-		if (pkx_get_species(pkmn) < 0 || pkx_get_species(pkmn) > 821)
+		if (pkx_get_species(pkmn) > 821)
 			pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, x, y, 0, 0, 34, 30);
 		else
-			pp2d_draw_texture_part(pkx_is_shiny(pkmn) ? TEXTURE_SHINY_SPRITESHEET : TEXTURE_NORMAL_SPRITESHEET, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30);
+			pp2d_draw_texture_part(pkx_is_shiny(pkmn) ? TEXTURE_SHINY_SPRITESHEET : TEXTURE_NORMAL_SPRITESHEET, x, y, 34 * (n % 30), 30 * (n / 30), 34, 30);
 	}
 	if (pkx_is_egg(pkmn))
-		pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, x + 6, y + 6, 40 * (EGGSPRITEPOS % 25) + 4, 30 * (EGGSPRITEPOS / 25), 34, 30);
+		pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, x + 6, y + 6, 34 * (EGGSPRITEPOS % 30), 30 * (EGGSPRITEPOS / 30), 34, 30);
 	if (pkx_get_item(pkmn))
 		pp2d_draw_texture(TEXTURE_ITEM, x + 3, y + 21);
 }
@@ -690,13 +676,13 @@ void printElementBlend(u8* pkmn, int game, u16 n, int x, int y, u32 color) {
 		t -= 1;
 		pp2d_draw_texture_part_blend(TEXTURE_ALTERNATIVE_SPRITESHEET, x, y, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30, color); 
 	} else {
-		if (pkx_get_species(pkmn) < 0 || pkx_get_species(pkmn) > 821)
+		if (pkx_get_species(pkmn) > 821)
 			pp2d_draw_texture_part_blend(TEXTURE_NORMAL_SPRITESHEET, x, y, 0, 0, 34, 30, color);
 		else
-			pp2d_draw_texture_part_blend(TEXTURE_NORMAL_SPRITESHEET, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30, color);
+			pp2d_draw_texture_part_blend(TEXTURE_NORMAL_SPRITESHEET, x, y, 34 * (n % 30), 30 * (n / 30), 34, 30, color);
 	}
 	if (pkx_is_egg(pkmn))
-		pp2d_draw_texture_part_blend(TEXTURE_NORMAL_SPRITESHEET, x + 6, y + 6, 40 * (EGGSPRITEPOS % 25) + 4, 30 * (EGGSPRITEPOS / 25), 34, 30, color);
+		pp2d_draw_texture_part_blend(TEXTURE_NORMAL_SPRITESHEET, x + 6, y + 6, 34 * (EGGSPRITEPOS % 30), 30 * (EGGSPRITEPOS / 30), 34, 30, color);
 	if (pkx_get_item(pkmn))
 		pp2d_draw_texture_blend(TEXTURE_ITEM, x + 3, y + 21, color);
 }
@@ -977,12 +963,12 @@ void printDexViewer(u8* mainbuf, int currentEntry, int page, int seen, int caugh
 				int entry = i*8+j + 40*page;
 				if ((entry) < 802) {
 					if (getCaught(mainbuf, entry + 1))
-						pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((entry + 1) % 25) + 4, 30 * ((entry + 1) / 25), 34, 30);
+						pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 34 * ((entry + 1) % 30), 30 * ((entry + 1) / 30), 34, 30);
 					else if (getSeen(mainbuf, entry + 1)) {
-						pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((entry + 1) % 25) + 4, 30 * ((entry + 1) / 25), 34, 30);
-						pp2d_draw_texture_part_blend(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((entry + 1) % 25) + 4, 30 * ((entry + 1) / 25), 34, 30, RGBA8(0,0,0,160));
+						pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 34 * ((entry + 1) % 30), 30 * ((entry + 1) / 30), 34, 30);
+						pp2d_draw_texture_part_blend(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 34 * ((entry + 1) % 30), 30 * ((entry + 1) / 30), 34, 30, RGBA8(0,0,0,160));
 					} else {
-						pp2d_draw_texture_part_blend(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((entry + 1) % 25) + 4, 30 * ((entry + 1) / 25), 34, 30, RGBA8(0,0,0,255));
+						pp2d_draw_texture_part_blend(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 34 * ((entry + 1) % 30), 30 * ((entry + 1) / 30), 34, 30, RGBA8(0,0,0,255));
 					}
 					sprintf(temp, "%d", entry + 1);
 					pp2d_draw_text(49 * j + (49 - pp2d_get_text_width(temp, FONT_SIZE_9, FONT_SIZE_9)) / 2 + j, 34 + i * 47 + i, FONT_SIZE_9, FONT_SIZE_9, getCaught(mainbuf, entry + 1) ? WHITE : DS, temp);
@@ -995,7 +981,7 @@ void printDexViewer(u8* mainbuf, int currentEntry, int page, int seen, int caugh
 		pp2d_draw_wtextf(16, 32, FONT_SIZE_14, FONT_SIZE_14, WHITE, i18n(S_GRAPHIC_PKBANK_SEEN), seen);
 		pp2d_draw_wtextf(16, 48, FONT_SIZE_14, FONT_SIZE_14, WHITE, i18n(S_GRAPHIC_PKBANK_CAUGHT), caught);
 		printBottomIndications(i18n(S_GRAPHIC_CREDITS_INDICATIONS));
-	pksm_end_frame();
+	pp2d_end_draw();
 }
 
 void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int currentEntry, int menuEntry, int box, int mode, int additional1, int additional2) {
@@ -1020,7 +1006,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int currentEntry, int menu
 						printSelector(j*49 + j, i*47 + i, 49, 47);
 					
 					if ((i*8+j + 40*additional2) < 802) {
-						pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((40 * additional2 + i * 8 + j + 1) % 25) + 4, 30 * ((40 * additional2 + i * 8 + j + 1) / 25), 34, 30);
+						pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 34 * ((34 * additional2 + i * 8 + j + 1) % 30), 30 * ((30 * additional2 + i * 8 + j + 1) / 30), 34, 30);
 						snprintf(temp, 4, "%d", 40 * additional2 + i * 8 + j + 1);
 						pp2d_draw_text(49 * j + (49 - pp2d_get_text_width(temp, FONT_SIZE_9, FONT_SIZE_9)) / 2 + j, 34 + i * 47 + i, FONT_SIZE_9, FONT_SIZE_9, WHITE, temp);
 					}
@@ -1131,7 +1117,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int currentEntry, int menu
 			else
 				pp2d_draw_wtextf(10, 220, FONT_SIZE_9, FONT_SIZE_9, BARTEXT, i18n(S_GRAPHIC_PKVIEWER_SEED), getSaveSeed(mainbuf, 3), getSaveSeed(mainbuf, 2), getSaveSeed(mainbuf, 1), getSaveSeed(mainbuf, 0));
 		}
-	pksm_end_frame();
+	pp2d_end_draw();
 }
 
 void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, int mode, wchar_t* descriptions[]) {
@@ -1239,7 +1225,7 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 						if (forms->min > 0)
 							form++;
 						if (form == 0 || forms->spriteNum == 0)
-							pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, (width - 34) / 2 + width * j + j, 2 * (height - 44) / 3 + i * height, 40 * (additional2 % 25) + 4, 30 * (additional2 / 25), 34, 30);
+							pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, (width - 34) / 2 + width * j + j, 2 * (height - 44) / 3 + i * height, 34 * (additional2 % 30), 30 * (additional2 / 30), 34, 30);
 						else {
 							int sprite = forms->spriteNum + form - 2;
 							pp2d_draw_texture_part(TEXTURE_ALTERNATIVE_SPRITESHEET, (width - 34) / 2 + width * j + j, 2 * (height - 44) / 3 + i * height + i, 40 * (sprite % 6) + 4, 30 * (sprite / 6), 34, 30);
@@ -1283,8 +1269,8 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 				pp2d_draw_texture_part_scale_blend(TEXTURE_ALTERNATIVE_SPRITESHEET, 232, 32 - ofs, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30, 2, 2, RGBA8(0x0, 0x0, 0x0, 100)); 
 				pp2d_draw_texture_part_scale(TEXTURE_ALTERNATIVE_SPRITESHEET, 227, 27 - ofs, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30, 2, 2);
 			} else {
-				pp2d_draw_texture_part_scale_blend(TEXTURE_NORMAL_SPRITESHEET, 232, 32 - ofs, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30, 2, 2, RGBA8(0x0, 0x0, 0x0, 100));
-				pp2d_draw_texture_part_scale(pkx_is_shiny(pkmn) ? TEXTURE_SHINY_SPRITESHEET : TEXTURE_NORMAL_SPRITESHEET, 227, 27 - ofs, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30, 2, 2);
+				pp2d_draw_texture_part_scale_blend(TEXTURE_NORMAL_SPRITESHEET, 232, 32 - ofs, 34 * (n % 30), 30 * (n / 30), 34, 30, 2, 2, RGBA8(0x0, 0x0, 0x0, 100));
+				pp2d_draw_texture_part_scale(pkx_is_shiny(pkmn) ? TEXTURE_SHINY_SPRITESHEET : TEXTURE_NORMAL_SPRITESHEET, 227, 27 - ofs, 34 * (n % 30), 30 * (n / 30), 34, 30, 2, 2);
 			}
 			
 			if (pkx_get_gender(pkmn) == 0)
@@ -1430,7 +1416,7 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 			pp2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
 			pp2d_draw_wtext_center(GFX_BOTTOM, 105, FONT_SIZE_14, FONT_SIZE_14, WHITE, i18n(S_GRAPHIC_PKEDITOR_FORM_INDICATION));
 		}
-	pksm_end_frame();
+	pp2d_end_draw();
 }
 
 void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int currentEntry, int saveBox, int bankBox, bool isBufferized, bool isSeen, bool isWirelessActivated) {
@@ -1589,7 +1575,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 		
 		if (bank_getIsInternetWorking())
 			pp2d_draw_wtextf(10, 220, FONT_SIZE_9, FONT_SIZE_9, WHITE, i18n(S_HTTP_SERVER_RUNNING), socket_get_ip());
-	pksm_end_frame();
+	pp2d_end_draw();
 }
 
 void printSettings(int box, int language) {
@@ -1622,7 +1608,7 @@ void printSettings(int box, int language) {
 		snprintf(size, 5, "%d", box);
 		pp2d_draw_text(189 + (36 - (pp2d_get_text_width(size, FONT_SIZE_11, FONT_SIZE_11))) / 2, 68, FONT_SIZE_11, FONT_SIZE_11, WHITE, size);
 		printBottomIndications(i18n(S_GRAPHIC_SETTINGS_INDICATION));
-	pksm_end_frame();
+	pp2d_end_draw();
 }
 
 void printfHexEditorInfo(u8* pkmn, int byte) {
