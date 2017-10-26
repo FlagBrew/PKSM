@@ -31,7 +31,6 @@ void printfile(char* path);
 bool isHBL();
 void fsStart();
 void fsEnd();
-bool getLoadedFromCart();
 bool openSaveArch(FS_Archive *out, u64 id);
 void settingsMenu(u8* mainbuf);
 int ArrayUTF32_sort_cmp_PKMN_Things_List(const wchar_t *a,const wchar_t *b);

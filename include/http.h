@@ -21,7 +21,6 @@
 
 #include "common.h"
 
-void update();
 Result downloadFile(char* url, char* path);
 
 #endif

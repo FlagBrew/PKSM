@@ -877,7 +877,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int currentEntry, int menu
 						printSelector(j*49 + j, i*47 + i, 49, 47);
 					
 					if ((i*8+j + 40*additional2) < 802) {
-						pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 34 * ((30 * additional2 + i * 8 + j + 1) % 30), 30 * ((30 * additional2 + i * 8 + j + 1) / 30), 34, 30);
+						pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 34 * ((34 * additional2 + i * 8 + j + 1) % 30), 30 * ((34 * additional2 + i * 8 + j + 1) / 30), 34, 30);
 						snprintf(temp, 4, "%d", 40 * additional2 + i * 8 + j + 1);
 						pp2d_draw_text(49 * j + (49 - pp2d_get_text_width(temp, FONT_SIZE_9, FONT_SIZE_9)) / 2 + j, 34 + i * 47 + i, FONT_SIZE_9, FONT_SIZE_9, WHITE, temp);
 					}
@@ -1467,8 +1467,7 @@ void printSettings(int box, int language) {
 				pp2d_draw_wtext_center(GFX_BOTTOM, 66 + i * 34, FONT_SIZE_15, FONT_SIZE_15, DARKBLUE, tempstr);
 			}
 		}
-		
-		pksm_draw_texture(TEXTURE_OTA_BUTTON, 280, 220);
+
 		pksm_draw_texture(TEXTURE_MINI_BOX, 189, 64);
 		pksm_draw_texture(TEXTURE_MINUS_BUTTON, 169, 65);
 		pksm_draw_texture(TEXTURE_PLUS_BUTTON, 228, 65);

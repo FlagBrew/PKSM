@@ -132,12 +132,6 @@ void fsEnd() {
         fsEndUseSession();
 }
 
-bool loadedFromCart = true;
-
-bool getLoadedFromCart() {
-	return loadedFromCart;
-}
-
 bool openSaveArch(FS_Archive *out, u64 id) {
 	if (id == 0x00040000000C9B00 || !isHBL()) { //If we're using Pokebank or CIA
 		u32 cardPath[3] = {MEDIATYPE_GAME_CARD, id, id >> 32}; //Card
@@ -146,7 +140,6 @@ bool openSaveArch(FS_Archive *out, u64 id) {
 			if (R_FAILED(FSUSER_OpenArchive(out, ARCHIVE_USER_SAVEDATA, (FS_Path){PATH_BINARY, 0xC, sdPath})))
 				return false;
 			else {
-				loadedFromCart = false;
 				return true;
 			}
 		}
@@ -190,13 +183,6 @@ void settingsMenu(u8* mainbuf) {
 		hidTouchRead(&touch);
 
 		if (hidKeysDown() & KEY_B) break;
-
-#if ROSALINA_3DSX
-#else	
-		if ((hidKeysDown() & KEY_Y) || (hidKeysDown() & KEY_TOUCH && touch.px > 280 && touch.px < 313 && touch.py > 220)) {
-			update();
-		}
-#endif
 		
 		if (hidKeysDown() & KEY_TOUCH) {
 			if (touch.px > 169 && touch.px < 186 && touch.py > 65 && touch.py < 83) {

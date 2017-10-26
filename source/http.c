@@ -17,61 +17,6 @@
 */
 
 #include "http.h"
-#include "certs/digicert.h"
-#include "certs/cybertrust.h"
-
-bool updating = false;
-
-void update() {
-	freezeMsg(i18n(S_HTTP_CALLING_GITHUB_API));
-	
-	char* apiurl = "https://api.github.com/repos/BernardoGiordano/PKSM/releases/latest";
-	char* apipath = "sdmc:/3ds/data/PKSM/apiresponse.txt";
-	
-	if (!downloadFile(apiurl, apipath)) {
-		freezeMsg(i18n(S_HTTP_ELABORATING_API_RESPONSE));
-		
-		u8* apiresponse;
-		
-		FILE *apiptr = fopen(apipath, "rt");
-		if (apiptr == NULL)
-			return;
-		fseek(apiptr, 0, SEEK_END);
-		u32 apiresponsesize = ftell(apiptr);
-		apiresponse = (u8*)malloc(apiresponsesize);
-		memset(apiresponse, 0, apiresponsesize);
-		rewind(apiptr);
-		fread(apiresponse, apiresponsesize, 1, apiptr);
-		fclose(apiptr);
-		
-		// check if latest is the current version
-		char tag[100] = {0};
-		sprintf(tag, "https://github.com/BernardoGiordano/PKSM/releases/tag/%d.%d.%d", APP_VERSION_MAJOR, APP_VERSION_MINOR, APP_VERSION_MICRO);
-		if (strstr((char*)apiresponse, tag) != NULL) {
-			infoDisp(i18n(S_HTTP_UPDATE_FAILED));
-			remove(apipath);
-			updating = false;
-			return;
-		}
-		
-		char* pointertourl = strstr((char*)apiresponse, "browser_download_url");
-		char tokenbuffer[100];
-		memcpy(tokenbuffer, pointertourl + 22, 100);
-		char* releaseurl = strtok(tokenbuffer, "\"");
-		
-		free(apiresponse);
-		
-		freezeMsg(i18n(S_HTTP_DOWNLOADING_UPDATE));
-		updating = true;
-		downloadFile(releaseurl, "sdmc:/3ds/data/PKSM/release.cia");
-	} else {
-		infoDisp(i18n(S_HTTP_UPDATE_FAILED));
-	}
-	
-	remove(apipath);
-	
-	updating = false;
-}
 
 Result downloadFile(char* url, char* path) {
 	Result ret = 0;
@@ -94,27 +39,11 @@ Result downloadFile(char* url, char* path) {
         return -1;
     }
 	
-	if (updating) {
-		ret = httpcAddTrustedRootCA(&context, cybertrust_cer, cybertrust_cer_len);
-		if (ret != 0) {
-			infoDisp(i18n(S_HTTP_ERROR_CERT));
-			httpcCloseContext(&context);
-			return -1;			
-		}
-		
-		ret = httpcAddTrustedRootCA(&context, digicert_cer, digicert_cer_len);
-		if (ret != 0) {
-			infoDisp(i18n(S_HTTP_ERROR_CERT));
-			httpcCloseContext(&context);
-			return -1;			
-		}
-	} else {
-		ret = httpcSetSSLOpt(&context, SSLCOPT_DisableVerify);
-		if (ret != 0) {
-			infoDisp(i18n(S_HTTP_SET_SSLOPT_FAILED));
-			httpcCloseContext(&context);
-			return -1;
-		}
+	ret = httpcSetSSLOpt(&context, SSLCOPT_DisableVerify);
+	if (ret != 0) {
+		infoDisp(i18n(S_HTTP_SET_SSLOPT_FAILED));
+		httpcCloseContext(&context);
+		return -1;
 	}
 	
 	ret = httpcAddRequestHeaderField(&context, "Connection", "Keep-Alive");
@@ -183,65 +112,8 @@ Result downloadFile(char* url, char* path) {
         return -1;
     }
 
-	if (updating) {
-		freezeMsg(i18n(S_HTTP_INSTALL_UPDATE));
-	
-		amInit();
-		Handle handle;
-		AM_TitleEntry metadata;
-		u64 titleList[1] = {0x000400000EC10000};
-		
-		ret = AM_GetTitleInfo(MEDIATYPE_SD, 1, titleList, &metadata);
-		if (ret == 0 && metadata.size != (u64)contentsize) {
-			ret = AM_QueryAvailableExternalTitleDatabase(NULL);
-			if (ret != 0) {
-				wchar_t string[30];
-				swprintf(string, 30, L"amquery: %08X", ret);
-				infoDisp(string);
-				return -1;
-			}
-			ret = AM_DeleteAppTitle(MEDIATYPE_SD, titleList[0]);
-			if (ret != 0) {
-				wchar_t string[30];
-				swprintf(string, 30, L"deletetitle: %08X", ret);
-				infoDisp(string);
-				return -1;
-			}
-			ret = AM_StartCiaInstall(MEDIATYPE_SD, &handle);
-			if (ret != 0) {
-				wchar_t string[30];
-				swprintf(string, 30, L"startinstall: %08X", ret);
-				infoDisp(string);
-				return -1;
-			}
-			ret = FSFILE_Write(handle, NULL, 0, buf, contentsize, 0);
-			if (ret != 0) {
-				wchar_t string[30];
-				swprintf(string, 30, L"fsfile: %08X", ret);
-				infoDisp(string);
-				return -1;
-			}
-			ret = AM_FinishCiaInstall(handle);
-			if (ret != 0) {
-				wchar_t string[30];
-				swprintf(string, 30, L"finish: %08X", ret);
-				infoDisp(string);
-				return -1;
-			}
-			
-			infoDisp(i18n(S_HTTP_UPDATE_INSTALLED));
-		} else {
-			wchar_t string[30];
-			swprintf(string, 30, L"titleinfo: %08X %llu %llu", ret, metadata.size, contentsize);
-			infoDisp(string);
-			infoDisp(L"Latest version already installed!");
-		}
-		
-		amExit();
-	} else {
-		remove(path);
-		file_write(path, buf, contentsize);	
-	}
+	remove(path);
+	file_write(path, buf, contentsize);	
 	
     free(buf);
 
