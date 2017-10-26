@@ -51,6 +51,7 @@
 #include "sha256.h"
 #include "socket.h"
 #include "spi.h"
+#include "texman.h"
 #include "util.h"
 #include "wcx.h"
 
