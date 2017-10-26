@@ -1458,7 +1458,7 @@ void printSettings(int box, int language) {
 		printMenuBottom();
 
 		for (int i = 0; i < 4; i++) {
-			pksm_draw_texture(TEXTURE_MAIN_MENU_BUTTON, 65, 60 + i * 34);
+			pksm_draw_texture(TEXTURE_EVENT_MENU_BOTTOM_BAR, 65, 60 + i * 34);
 			if (i < 3)
 				pp2d_draw_wtext(i == 0 ? 69 : (320 - pp2d_get_wtext_width(menu[i], FONT_SIZE_15, FONT_SIZE_15)) / 2, 66 + i * 34, FONT_SIZE_15, FONT_SIZE_15, DARKBLUE, menu[i]);
 			else {
