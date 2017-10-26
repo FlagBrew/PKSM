@@ -117,7 +117,7 @@ void GUIElementsI18nSpecify() {
 }
 
 void GUIElementsSpecify() {
-	int elements = 81;
+	int elements = 22;
 	initProgressLoadPNGInRAM(elements);
 
 	freezeMsg(i18n(S_GRAPHIC_GUI_ELEMENTS_SPECIFY_LOADING));
@@ -473,14 +473,19 @@ void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bo
 	int total = game_isgen7() ? 9 : 7;
 	
 	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
+		wcxInfoViewer(previewbuf);
 		if (game_is3DS())
 		{
-			wcxInfoViewer(previewbuf);
 			pksm_draw_texture(TEXTURE_OTA_BUTTON, 360, 2);
 		}
 		
-		if (sprite != -1) {
+		if (sprite != -1 && (game_is3DS() || game_isgen5()))
+		{
 			pp2d_draw_texture_part_scale(TEXTURE_NORMAL_SPRITESHEET, 282, 41 - movementOffsetLong(6), 34 * (wcx_get_species(previewbuf) % 30), 30 * (wcx_get_species(previewbuf) / 30), 34, 30, 2, 2);
+		}
+		else
+		{
+			pp2d_draw_texture_part_scale(TEXTURE_NORMAL_SPRITESHEET, 282, 41 - movementOffsetLong(6), 34 * (sprite % 30), 30 * (sprite / 30), 34, 30, 2, 2);
 		}
 		
 		if (ota) {
@@ -715,10 +720,10 @@ void wcxInfoViewer(u8* buf) {
 	printAnimatedBG(true);
 	pp2d_draw_texture(TEXTURE_EVENT_VIEW, 0, 2);
 
-	pksm_draw_texture((wcx_get_move(buf, 0)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 155);
-	pksm_draw_texture((wcx_get_move(buf, 1)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 176);
-	pksm_draw_texture((wcx_get_move(buf, 2)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 197);
-	pksm_draw_texture((wcx_get_move(buf, 3)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 218);
+	pksm_draw_texture((wc_get_move(buf, 0)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 155);
+	pksm_draw_texture((wc_get_move(buf, 1)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 176);
+	pksm_draw_texture((wc_get_move(buf, 2)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 197);
+	pksm_draw_texture((wc_get_move(buf, 3)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 218);
 	
 	pp2d_draw_wtext(251, 138, FONT_SIZE_12, FONT_SIZE_12, WHITE, i18n(S_GRAPHIC_INFOVIEWER_MOVES));
 	for (int i = 0; i < 6; i++) {
@@ -730,22 +735,24 @@ void wcxInfoViewer(u8* buf) {
 	}
 	
 	wchar_t *version;
-	if (wcx_get_origin_game(buf) != 0) {
-		switch (wcx_get_origin_game(buf)) {
-			case 24:
-				version = L"X"; break;
-			case 25:
-				version = L"Y"; break;
-			case 26:
-				version = L"Alpha Sapphire"; break;
-			case 27:
-				version = L"Omega Ruby"; break;
-			case 30:
-				version = L"Sun"; break;
-			case 31:
-				version = L"Moon"; break;
-			default: 
-				version = L"WIP";
+	if (game_is3DS()) {
+		if (wcx_get_origin_game(buf) != 0) {
+			switch (wcx_get_origin_game(buf)) {
+				case 24:
+					version = L"X"; break;
+				case 25:
+					version = L"Y"; break;
+				case 26:
+					version = L"Alpha Sapphire"; break;
+				case 27:
+					version = L"Omega Ruby"; break;
+				case 30:
+					version = L"Sun"; break;
+				case 31:
+					version = L"Moon"; break;
+				default: 
+					version = L"WIP";
+			}			
 		}
 	} else {
 		switch (game) {
@@ -758,6 +765,20 @@ void wcxInfoViewer(u8* buf) {
 			case GAME_SUN:
 			case GAME_MOON:
 				version = L"Sun/Moon compatible"; break;
+			case GAME_HG:
+			case GAME_SS:
+				version = L"HG/SS compatible"; break;
+			case GAME_DIAMOND:
+			case GAME_PEARL:
+				version = L"DP/PT compatible"; break;
+			case GAME_PLATINUM:
+				version = L"Platinum compatible"; break;
+			case GAME_B1:
+			case GAME_W1:
+				version = L"B/W compatible"; break;
+			case GAME_B2:
+			case GAME_W2:
+				version = L"B2/W2 compatible"; break;
 			default:
 				version = L"WIP"; break;
 		}
@@ -766,53 +787,53 @@ void wcxInfoViewer(u8* buf) {
 	pp2d_draw_wtext(215 - pp2d_get_wtext_width(version, FONT_SIZE_12, FONT_SIZE_12), 115, FONT_SIZE_12, FONT_SIZE_12, WHITE, version);
 	
 	u32 title[72] = {0};
-	wcx_get_title(buf, title);
-	pp2d_draw_wtext(!wcx_is_pokemon(buf) ? 4 : 30, 6, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)title);
+	wc_get_title(buf, title);
+	pp2d_draw_wtext(!wc_is_pokemon(buf) ? 4 : 30, 6, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)title);
 	
 	u32 date[12] = {0};
-	swprintf((wchar_t*)date, 12, L"%u/%u/%u", wcx_get_year(buf), wcx_get_month(buf), wcx_get_day(buf));
+	swprintf((wchar_t*)date, 12, L"%u/%u/%u", wc_get_year(buf), wc_get_month(buf), wc_get_day(buf));
 	pp2d_draw_wtext(215 - (pp2d_get_wtext_width((wchar_t*)date, FONT_SIZE_12, FONT_SIZE_12)), 134, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)date);
 	
-	if (wcx_is_pokemon(buf)) {
-		pp2d_draw_texture_part(TEXTURE_BALLS_SPRITESHEET, -2, -5, 32 * (wcx_get_ball(buf) % 8), 32 * (wcx_get_ball(buf) / 8), 32, 32);
+	if (wc_is_pokemon(buf)) {
+		pp2d_draw_texture_part(TEXTURE_BALLS_SPRITESHEET, -2, -5, 32 * (wc_get_ball(buf) % 8), 32 * (wc_get_ball(buf) / 8), 32, 32);
 		
-		if (wcx_get_gender(buf) == 0)
+		if (wc_get_gender(buf) == 0)
 			pksm_draw_texture(TEXTURE_MALE, 288, 7);
-		else if (wcx_get_gender(buf) == 1)
+		else if (wc_get_gender(buf) == 1)
 			pksm_draw_texture(TEXTURE_FEMALE, 290, 7);
 		
 		wchar_t level[8];
-		swprintf(level, 8, i18n(S_GRAPHIC_INFOVIEWER_LV), wcx_get_level(buf));
+		swprintf(level, 8, i18n(S_GRAPHIC_INFOVIEWER_LV), wc_get_level(buf));
 		pp2d_draw_wtext(302, 6, FONT_SIZE_12, FONT_SIZE_12, WHITE, level);
 		
 		u32 ot_name[NICKNAMELENGTH*2] = {0};
-		wcx_get_ot(buf, ot_name);
+		wc_get_ot(buf, ot_name);
 		pp2d_draw_wtext(215 - pp2d_get_wtext_width((wchar_t*)ot_name, FONT_SIZE_12, FONT_SIZE_12), 49, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)ot_name);
 		
-		pp2d_draw_wtext(215 - pp2d_get_wtext_width(items[wcx_get_held_item(buf)], FONT_SIZE_12, FONT_SIZE_12), 94, FONT_SIZE_12, FONT_SIZE_12, WHITE, items[wcx_get_held_item(buf)]);
+		pp2d_draw_wtext(215 - pp2d_get_wtext_width(items[wc_get_held_item(buf)], FONT_SIZE_12, FONT_SIZE_12), 94, FONT_SIZE_12, FONT_SIZE_12, WHITE, items[wc_get_held_item(buf)]);
 		
-		if (wcx_is_shiny(buf)) {
+		if (wc_is_shiny(buf)) {
 			pksm_draw_texture(TEXTURE_SHINY, 206, 32);
-			pp2d_draw_wtext(202 - pp2d_get_wtext_width(listSpecies.items[wcx_get_species(buf)], FONT_SIZE_12, FONT_SIZE_12), 29, FONT_SIZE_12, FONT_SIZE_12, WHITE, listSpecies.items[wcx_get_species(buf)]);
+			pp2d_draw_wtext(202 - pp2d_get_wtext_width(listSpecies.items[wc_get_species(buf)], FONT_SIZE_12, FONT_SIZE_12), 29, FONT_SIZE_12, FONT_SIZE_12, WHITE, listSpecies.items[wc_get_species(buf)]);
 		} else {
-			pp2d_draw_wtext(215 - pp2d_get_wtext_width(listSpecies.items[wcx_get_species(buf)], FONT_SIZE_12, FONT_SIZE_12), 29, FONT_SIZE_12, FONT_SIZE_12, WHITE, listSpecies.items[wcx_get_species(buf)]);
+			pp2d_draw_wtext(215 - pp2d_get_wtext_width(listSpecies.items[wc_get_species(buf)], FONT_SIZE_12, FONT_SIZE_12), 29, FONT_SIZE_12, FONT_SIZE_12, WHITE, listSpecies.items[wc_get_species(buf)]);
 		}
 		
 		char otid[18];
-		snprintf(otid, 18, "%u / %u", wcx_get_tid(buf), wcx_get_sid(buf));
+		snprintf(otid, 18, "%u / %u", wc_get_tid(buf), wc_get_sid(buf));
 		pp2d_draw_text(215 - pp2d_get_text_width(otid, FONT_SIZE_12, FONT_SIZE_12), 69, FONT_SIZE_12, FONT_SIZE_12, WHITE, otid);
 	
 		int y_moves = 159;
 		for (int i = 0; i < 4; i++) {
-			if (wcx_get_move(buf, i))
-				pp2d_draw_wtext(396 - pp2d_get_wtext_width(moves[wcx_get_move(buf, i)], FONT_SIZE_12, FONT_SIZE_12), y_moves, FONT_SIZE_12, FONT_SIZE_12, WHITE, moves[wcx_get_move(buf, i)]);
+			if (wc_get_move(buf, i))
+				pp2d_draw_wtext(396 - pp2d_get_wtext_width(moves[wc_get_move(buf, i)], FONT_SIZE_12, FONT_SIZE_12), y_moves, FONT_SIZE_12, FONT_SIZE_12, WHITE, moves[wc_get_move(buf, i)]);
 			y_moves += 21;
 		}	
-	} else if (wcx_is_item(buf)) {
+	} else if (wc_is_item(buf)) {
 		pp2d_draw_text(215 - pp2d_get_text_width("None", FONT_SIZE_12, FONT_SIZE_12), 29, FONT_SIZE_12, FONT_SIZE_12, WHITE, "None");
 		pp2d_draw_text(215 - pp2d_get_text_width("None", FONT_SIZE_12, FONT_SIZE_12), 49, FONT_SIZE_12, FONT_SIZE_12, WHITE, "None");
 		pp2d_draw_text(215 - pp2d_get_text_width("None", FONT_SIZE_12, FONT_SIZE_12), 69, FONT_SIZE_12, FONT_SIZE_12, WHITE, "None");
-		pp2d_draw_wtext(215 - pp2d_get_wtext_width(items[wcx_get_item(buf)], FONT_SIZE_12, FONT_SIZE_12), 94, FONT_SIZE_12, FONT_SIZE_12, WHITE, items[wcx_get_item(buf)]);
+		pp2d_draw_wtext(215 - pp2d_get_wtext_width(items[wc_get_item(buf)], FONT_SIZE_12, FONT_SIZE_12), 94, FONT_SIZE_12, FONT_SIZE_12, WHITE, items[wc_get_item(buf)]);
 	}  else if (wcx_is_bp(buf)) {
 		pp2d_draw_text(215 - pp2d_get_text_width("None", FONT_SIZE_12, FONT_SIZE_12), 29, FONT_SIZE_12, FONT_SIZE_12, WHITE, "None");
 		pp2d_draw_text(215 - pp2d_get_text_width("None", FONT_SIZE_12, FONT_SIZE_12), 49, FONT_SIZE_12, FONT_SIZE_12, WHITE, "None");

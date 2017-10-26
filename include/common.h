@@ -46,6 +46,8 @@
 #include "i18n.h"
 #include "../source/memecrypto/source/memecrypto.h"
 #include "../source/pp2d/pp2d.h"
+#include "pgf.h"
+#include "pgt.h"
 #include "pkx.h"
 #include "save.h"
 #include "sha256.h"
@@ -53,6 +55,7 @@
 #include "spi.h"
 #include "texman.h"
 #include "util.h"
+#include "wcman.h"
 #include "wcx.h"
 
 struct ArrayUTF32 listMoves;
