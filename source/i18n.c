@@ -43,11 +43,7 @@ struct i18n_files i18n_files_generic_paths = {
 	"romfs:/i18n/%s/hp.txt",
 	"romfs:/i18n/%s/forms.txt",
 	"romfs:/i18n/%s/balls.txt",
-#if CITRA
-	"romfs:/citra/PKResources/additionalassets/i18n/%s/types.png",
-#else
 	"sdmc:/3ds/data/PKSM/additionalassets/i18n/%s/types.png",
-#endif
 	"romfs:/i18n/%s/app.txt"
 };
 

@@ -99,9 +99,7 @@ bool initServices() {
 	GUIElementsInit();
 	FXElementsInit();
 	GUIGameElementsInit();
-
-#if CITRA
-#else	
+	
 	wchar_t str[60];
 	for (int i = 0; i < ASSETS; i++) {
 		FILE *temp1 = fopen(path[i], "rt");
@@ -116,8 +114,7 @@ bool initServices() {
 		} else
 			fclose(temp1);
 	}
-#endif
-	
+
 	loadPersonal();
 	
 	u32 defaultSize = 150 * 30 * PKMNLENGTH;
@@ -169,9 +166,7 @@ int main() {
 		exitServices();
 		return 0;
 	}
-	
-#if CITRA
-#else
+
 	for (int i = 0; i < ASSETS; i++) {
 		if (!checkFile(path[i])) {
 			infoDisp(i18n(S_MAIN_MISSING_ASSETS));
@@ -179,20 +174,16 @@ int main() {
 			return -1;
 		}
 	}
-#endif
 
 	u8* mainbuf;
 	u64 mainSize = 0;
 	bool save = true;
 	
-#if CITRA
-#else
 	Handle mainHandle;
 	FS_Archive saveArch;
+	
 	//X, Y, OR, AS, SUN, MOON
 	const u64 ids[] = {0x0004000000055D00, 0x0004000000055E00, 0x000400000011C400, 0x000400000011C500, 0x0004000000164800, 0x0004000000175E00};
-#endif
-
 	const char *gamesList[] = {"X", "Y", "OR", "AS", "S", "M", "D", "P", "PL", "HG", "SS", "B", "W", "B2", "W2"};
 
 	while (aptMainLoop() && !(hidKeysDown() & KEY_A)) {
@@ -210,29 +201,9 @@ int main() {
 	int game = game_get();
 	
 	freezeMsg(i18n(S_MAIN_LOADING_SAVE));
-#if CITRA
-	char savepath[100];
-	sprintf(savepath, "romfs:/citra/saves/%s.bin", gamesList[game]);
-	FILE *saveptr = fopen(savepath, "rt");
-	if (!saveptr) {
-		infoDisp(L"Missing file!");
-		exitServices();
-		return -1;
-	}
-	fseek(saveptr, 0, SEEK_END);
-	mainSize = ftell(saveptr);
-	mainbuf = (u8*)malloc(mainSize);
-	memset(mainbuf, 0, mainSize);
-	rewind(saveptr);
-	fread(mainbuf, mainSize, 1, saveptr);
-	fclose(saveptr);
-	
-	if (game_isgen4()) {
-		save_set_GBO(mainbuf);
-		save_set_SBO(mainbuf);
-	}
-#else
-	if (game_is3DS()) {
+
+	if (game_is3DS())
+	{
 		if (!(openSaveArch(&saveArch, ids[game]))) {
 			infoDisp(i18n(S_MAIN_GAME_NOT_FOUND));
 			exitServices();
@@ -285,7 +256,6 @@ int main() {
 			save_set_SBO(mainbuf);
 		}
 	}
-#endif
 	
 	char bakpath[100];
 	time_t unixTime = time(NULL);
@@ -345,8 +315,6 @@ int main() {
 		rewriteCHK(mainbuf);
 	}
 
-#if CITRA
-#else
 	if (game_is3DS()) {
 		FSFILE_Write(mainHandle, NULL, 0, mainbuf, mainSize, FS_WRITE_FLUSH);
 		FSFILE_Close(mainHandle);
@@ -356,23 +324,8 @@ int main() {
 	}
 	else if (game_isDS() && save)
 		TWLinjectSave(mainbuf, mainSize);
-#endif
 
-	free(mainbuf);
-
-#if CITRA
-#elif ROSALINA_3DSX
-#else
-	if (!isHBL() && game_is3DS() && confirmDisp(i18n(S_LAUNCH_GAME))) {
-		//i18n_exit();
-		pp2d_exit();
-		
-		APT_PrepareToDoApplicationJump(0, ids[game], getLoadedFromCart() ? MEDIATYPE_GAME_CARD : MEDIATYPE_SD);
-		u8 hmac[0x20] = {0};
-		APT_DoApplicationJump(NULL, 0, hmac);		
-	}
-#endif
-	
+	free(mainbuf);	
 	exitServices();
 	return 0;
 }
