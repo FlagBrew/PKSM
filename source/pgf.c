@@ -18,6 +18,17 @@
 
 #include "pgf.h"
 
+static void removeFFFF(u16* src, int len)
+{
+	for (int i = 0; i < len; i++)
+	{
+		if (src[i] == 0xFFFF)
+		{
+			src[i] = L' ';
+		}
+	}
+}
+
 u8 pgf_get_ball(u8* pgf) { 
 	return *(u8*)(pgf + 0x0E); 
 }
@@ -31,10 +42,10 @@ u16 pgf_get_id(u8* pgf) {
 }
 
 u32 *pgf_get_title(u8* pgf, u32* dst) {
-	u16 src[0x4A];
-	memcpy(src, &pgf[0x60], 0x4A);
-	
-	utf16_to_utf32(dst, src, 0x4A);
+	u16 src[37];
+	memcpy(src, &pgf[0x60], 37);
+	removeFFFF(src, 37);
+	utf16_to_utf32(dst, src, 37);
 	return dst;
 }
 
@@ -95,10 +106,10 @@ u8 pgf_get_gender(u8* pgf) {
 }
 
 u32 *pgf_get_ot(u8* pgf, u32* dst) {
-	u16 src[0x4A];
-	memcpy(src, &pgf[0x10], 0X4A);
-	
-	utf16_to_utf32(dst, src, 0x4A);
+	u16 src[37];
+	memcpy(src, &pgf[0x10], 37);
+	removeFFFF(src, 37);
+	utf16_to_utf32(dst, src, 37);
 	return dst;
 }
 

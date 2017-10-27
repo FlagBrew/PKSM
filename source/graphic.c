@@ -470,10 +470,11 @@ void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bo
 	char cont[3];
 	snprintf(cont, 3, "%d", nInjected + 1);
 	
-	int total = game_isgen7() ? 9 : 7;
+	const int total = game_isgen7() ? 9 : 7;
 	
 	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
-		wcxInfoViewer(previewbuf);
+		printAnimatedBG(true);
+		
 		if (game_is3DS())
 		{
 			pksm_draw_texture(TEXTURE_OTA_BUTTON, 360, 2);
@@ -481,14 +482,12 @@ void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bo
 		
 		if (sprite != -1 && (game_is3DS() || game_isgen5()))
 		{
-			pp2d_draw_texture_part_scale(TEXTURE_NORMAL_SPRITESHEET, 282, 41 - movementOffsetLong(6), 34 * (wcx_get_species(previewbuf) % 30), 30 * (wcx_get_species(previewbuf) / 30), 34, 30, 2, 2);
-		}
-		else
-		{
-			pp2d_draw_texture_part_scale(TEXTURE_NORMAL_SPRITESHEET, 282, 41 - movementOffsetLong(6), 34 * (sprite % 30), 30 * (sprite / 30), 34, 30, 2, 2);
+			wcxInfoViewer(previewbuf);
+			pp2d_draw_texture_part_scale(TEXTURE_NORMAL_SPRITESHEET, 282, 41 - movementOffsetLong(6), 34 * (wc_get_species(previewbuf) % 30), 30 * (wc_get_species(previewbuf) / 30), 34, 30, 2, 2);
 		}
 		
-		if (ota) {
+		if (ota)
+		{
 			pp2d_draw_rectangle(0, 0, 400, 240, RGBA8(0, 0, 0, 220));
 			pp2d_draw_wtext_center(GFX_TOP, 95, FONT_SIZE_15, FONT_SIZE_15, RGBA8(255, 255, 255, giveTransparence()), i18n(S_GRAPHIC_PKVIEWER_OTA_LAUNCH_CLIENT));
 			pp2d_draw_wtext_center(GFX_TOP, 130, FONT_SIZE_12, FONT_SIZE_12, WHITE, i18n(S_GRAPHIC_PKVIEWER_OTA_INDICATIONS));
@@ -498,16 +497,20 @@ void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bo
 		printMenuBottom();
 
 		if (getN(i) > 1)
-			pp2d_draw_text_center(GFX_BOTTOM, 19, FONT_SIZE_11, FONT_SIZE_11, LIGHTBLUE, "Press L to switch multiple wondercards.");
+		{
+			pp2d_draw_text_center(GFX_BOTTOM, 19, FONT_SIZE_11, FONT_SIZE_11, LIGHTBLUE, "Press L/R to switch multiple wondercards.");
+		}
 		
 		pp2d_draw_wtext(16, 50, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_DB_LANGUAGES));
 		pp2d_draw_wtext(16, 112, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_DB_OVERWRITE_WC));
 		pp2d_draw_wtext(16, 140, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_DB_ADAPT_LANGUAGE_WC));
 		pp2d_draw_wtext(16, 170, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_DB_INJECT_WC_SLOT));
 		
-		for (int t = 0; t < total; t++) {
+		for (int t = 0; t < total; t++)
+		{
 			int x = 0, y = 0;
-			switch (t) {
+			switch (t)
+			{
 				case 0 : { x = 114; y = 50; break; }
 				case 1 : { x = 153; y = 50; break; }
 				case 2 : { x = 192; y = 50; break; }
@@ -518,53 +521,40 @@ void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bo
 				case 7 : { x = 231; y = 74; break; }
 				case 8 : { x = 270; y = 74; break; }
 			}
-			if (langVett[t]) {
-				if (t == langSelected) {
-					pksm_draw_texture(TEXTURE_RED_BUTTON, x, y);
-					pp2d_draw_text(x + (36 - pp2d_get_text_width(languages[t], FONT_SIZE_14, FONT_SIZE_14)) / 2, y + 2, FONT_SIZE_14, FONT_SIZE_14, DARKBLUE, languages[t]);
-				} else {
-					pksm_draw_texture(TEXTURE_DARK_BUTTON, x, y);
-					pp2d_draw_text(x + (36 - pp2d_get_text_width(languages[t], FONT_SIZE_14, FONT_SIZE_14)) / 2, y + 2, FONT_SIZE_14, FONT_SIZE_14, YELLOW, languages[t]);
-				}
+			if (langVett[t])
+			{
+				pksm_draw_texture(t == langSelected ? TEXTURE_RED_BUTTON : TEXTURE_DARK_BUTTON, x, y);
+				pp2d_draw_text(x + (36 - pp2d_get_text_width(languages[t], FONT_SIZE_14, FONT_SIZE_14)) / 2, y + 2, FONT_SIZE_14, FONT_SIZE_14, t == langSelected ? DARKBLUE : YELLOW, languages[t]);
 			}
-			else {
+			else
+			{
 				pksm_draw_texture(TEXTURE_LIGHT_BUTTON, x, y);
 				pp2d_draw_text(x + (36 - pp2d_get_text_width(languages[t], FONT_SIZE_14, FONT_SIZE_14)) / 2, y + 2, FONT_SIZE_14, FONT_SIZE_14, DARKBLUE, languages[t]);
 			}
 		}
-			
-		if (overwrite) {
-			pksm_draw_texture(TEXTURE_RED_BUTTON, 231, 110);
-			pksm_draw_texture(TEXTURE_DARK_BUTTON, 270, 110);
-		}
-		else {
-			pksm_draw_texture(TEXTURE_DARK_BUTTON, 231, 110);
-			pksm_draw_texture(TEXTURE_RED_BUTTON, 270, 110);			
-		}
-		
-		if (adapt) {
-			pksm_draw_texture(TEXTURE_RED_BUTTON, 231, 138);
-			pksm_draw_texture(TEXTURE_DARK_BUTTON, 270, 138);
-		}
-		else {
-			pksm_draw_texture(TEXTURE_DARK_BUTTON, 231, 138);
-			pksm_draw_texture(TEXTURE_RED_BUTTON, 270, 138);
-		}
-		
+
+		pksm_draw_texture(overwrite ? TEXTURE_RED_BUTTON : TEXTURE_DARK_BUTTON, 231, 110);
+		pksm_draw_texture(overwrite ? TEXTURE_DARK_BUTTON : TEXTURE_RED_BUTTON, 270, 110);
+		pksm_draw_texture(adapt ? TEXTURE_RED_BUTTON : TEXTURE_DARK_BUTTON, 231, 138);
+		pksm_draw_texture(adapt ? TEXTURE_DARK_BUTTON : TEXTURE_RED_BUTTON, 270, 138);
 		pksm_draw_texture(TEXTURE_DARK_BUTTON, 251, 168);	
 		
-		pp2d_draw_wtext(231 + (36 - pp2d_get_wtext_width(i18n(S_YES), FONT_SIZE_12, FONT_SIZE_12)) / 2, 113, FONT_SIZE_12, FONT_SIZE_12, (overwrite) ? DARKBLUE : YELLOW, i18n(S_YES));
-		pp2d_draw_wtext(270 + (36 - pp2d_get_wtext_width(i18n(S_NO), FONT_SIZE_12, FONT_SIZE_12)) / 2, 113, FONT_SIZE_12, FONT_SIZE_12,(!overwrite) ? DARKBLUE : YELLOW, i18n(S_NO));
-		pp2d_draw_wtext(231 + (36 - pp2d_get_wtext_width(i18n(S_YES), FONT_SIZE_12, FONT_SIZE_12)) / 2, 141, FONT_SIZE_12, FONT_SIZE_12,(adapt) ? DARKBLUE : YELLOW, i18n(S_YES));
-		pp2d_draw_wtext(270 + (36 - pp2d_get_wtext_width(i18n(S_NO), FONT_SIZE_12, FONT_SIZE_12)) / 2, 141, FONT_SIZE_12, FONT_SIZE_12,(!adapt) ? DARKBLUE : YELLOW, i18n(S_NO));
+		pp2d_draw_wtext(231 + (36 - pp2d_get_wtext_width(i18n(S_YES), FONT_SIZE_12, FONT_SIZE_12)) / 2, 113, FONT_SIZE_12, FONT_SIZE_12, overwrite ? DARKBLUE : YELLOW, i18n(S_YES));
+		pp2d_draw_wtext(270 + (36 - pp2d_get_wtext_width(i18n(S_NO), FONT_SIZE_12, FONT_SIZE_12)) / 2, 113, FONT_SIZE_12, FONT_SIZE_12, !overwrite ? DARKBLUE : YELLOW, i18n(S_NO));
+		pp2d_draw_wtext(231 + (36 - pp2d_get_wtext_width(i18n(S_YES), FONT_SIZE_12, FONT_SIZE_12)) / 2, 141, FONT_SIZE_12, FONT_SIZE_12, adapt ? DARKBLUE : YELLOW, i18n(S_YES));
+		pp2d_draw_wtext(270 + (36 - pp2d_get_wtext_width(i18n(S_NO), FONT_SIZE_12, FONT_SIZE_12)) / 2, 141, FONT_SIZE_12, FONT_SIZE_12, !adapt ? DARKBLUE : YELLOW, i18n(S_NO));
 		pp2d_draw_text(251 + (36 - pp2d_get_text_width(cont, FONT_SIZE_12, FONT_SIZE_12)) / 2, 171, FONT_SIZE_12, FONT_SIZE_12, YELLOW, cont);
 		
-		if (ota) {
+		if (ota)
+		{
 			pp2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
 			pp2d_draw_wtextf(10, 225, FONT_SIZE_9, FONT_SIZE_9, WHITE, i18n(S_HTTP_SERVER_RUNNING), socket_get_ip());
-		} else
+		} 
+		else
+		{
 			printBottomIndications(i18n(S_GRAPHIC_DB_INDICATIONS_INJECT));
-		
+		}
+
 	pp2d_end_draw();
 }
 
@@ -717,7 +707,6 @@ void wcxInfoViewer(u8* buf) {
 	int y_desc = 29;
 	wchar_t* entries[] = {L"Species", L"OT", L"TID/SID", L"Held Item", L"Game", L"Met Date"};
 
-	printAnimatedBG(true);
 	pp2d_draw_texture(TEXTURE_EVENT_VIEW, 0, 2);
 
 	pksm_draw_texture((wc_get_move(buf, 0)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 155);
@@ -786,7 +775,7 @@ void wcxInfoViewer(u8* buf) {
 	
 	pp2d_draw_wtext(215 - pp2d_get_wtext_width(version, FONT_SIZE_12, FONT_SIZE_12), 115, FONT_SIZE_12, FONT_SIZE_12, WHITE, version);
 	
-	u32 title[72] = {0};
+	u32 title[0x4A] = {0};
 	wc_get_title(buf, title);
 	pp2d_draw_wtext(!wc_is_pokemon(buf) ? 4 : 30, 6, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)title);
 	
@@ -806,7 +795,7 @@ void wcxInfoViewer(u8* buf) {
 		swprintf(level, 8, i18n(S_GRAPHIC_INFOVIEWER_LV), wc_get_level(buf));
 		pp2d_draw_wtext(302, 6, FONT_SIZE_12, FONT_SIZE_12, WHITE, level);
 		
-		u32 ot_name[NICKNAMELENGTH*2] = {0};
+		u32 ot_name[0x4A] = {0};
 		wc_get_ot(buf, ot_name);
 		pp2d_draw_wtext(215 - pp2d_get_wtext_width((wchar_t*)ot_name, FONT_SIZE_12, FONT_SIZE_12), 49, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)ot_name);
 		
