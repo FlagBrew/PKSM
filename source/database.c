@@ -138,10 +138,15 @@ void reloadMultiplePreviewBuf(u8* previewBuf, const int i, const int n, const in
 	fclose(f);
 }
 
-void findFreeLocationWC(u8 *mainbuf, int nInjected[]) {
+void findFreeLocationWC(u8 *mainbuf, int nInjected[])
+{
 	nInjected[0] = 0;
-	int len = game_isgen6() ? 24 : 48;
-	int temp;
+	
+	if (!game_is3DS())
+	{
+		return;
+	}
+
 	int offset = 0;
 	if (game_getisXY())
 		offset = 0x1BD00;
@@ -150,17 +155,10 @@ void findFreeLocationWC(u8 *mainbuf, int nInjected[]) {
 	else if (game_getisSUMO())
 		offset = 0x65C00 + 0x100;
 	
-	for (int t = 0; t < len; t++) {
-		temp = 0;
-		for (int j = 0; j < WC6LENGTH; j++)
-			if (*(mainbuf + offset + t * WC6LENGTH + j) == 0x00)
-				temp++;
-			
-		if (temp == WC6LENGTH) {
-			nInjected[0] = t;
-			break;
-		}
-	}
+	int t = 0;
+	u8 dummy[WCX_SIZE] = {0};
+	for (int len = game_isgen6() ? 24 : 48; t < len && !memcmp(mainbuf + offset + t*WCX_SIZE, dummy, WCX_SIZE); t++);
+	nInjected[0] = t;
 }
 
 int getN(const int i) 
@@ -212,7 +210,7 @@ int getN(const int i)
 	return 0;
 }
 
-void eventDatabase7(u8* mainbuf) {
+void eventDatabase(u8* mainbuf) {
 	const u32 dbCount = game_is3DS() ? SMCOUNT : (game_isgen5() ? 170 : 190);
 	const u32 wcSize = getWondercardPreviewSize();
 	
@@ -387,7 +385,7 @@ void eventDatabase7(u8* mainbuf) {
 						do {
 							hidScanInput();
 							process_wcx(previewbuf);
-							printDB7(previewbuf, spriteArray[i], i, langVett, adapt, overwrite, langSelected, nInjected[0], true);
+							printEventInjector(previewbuf, spriteArray[i], i, langVett, adapt, overwrite, langSelected, nInjected[0], true);
 						} while (aptMainLoop() && !(hidKeysDown() & KEY_B));
 						socket_shutdown();						
 					}
@@ -476,14 +474,17 @@ void eventDatabase7(u8* mainbuf) {
 						break;
 					}
 
-					if (!(overwrite))
+					if (game_is3DS())
 					{
-						findFreeLocationWC(mainbuf, nInjected);
-					}
+						if (!overwrite)
+						{
+							findFreeLocationWC(mainbuf, nInjected);
+						}
 
-					if (adapt)
-					{
-						setSaveLanguage(mainbuf, langSelected);
+						if (adapt)
+						{
+							setSaveLanguage(mainbuf, langSelected);
+						}
 					}
 
 					setWC(mainbuf, previewbuf, i, nInjected);
@@ -492,11 +493,11 @@ void eventDatabase7(u8* mainbuf) {
 					break;
 				}
 				
-				printDB7(previewbuf, spriteArray[i], i, langVett, adapt, overwrite, langSelected, nInjected[0], false);
+				printEventInjector(previewbuf, spriteArray[i], i, langVett, adapt, overwrite, langSelected, nInjected[0], false);
 			}
 		}
 		
-		printDatabase6(database, currentEntry, page, spriteArray);
+		printEventList(database, currentEntry, page, spriteArray);
 	}
 	
 	free(spriteArray);

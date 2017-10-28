@@ -291,7 +291,7 @@ int main() {
 			}
 
 			if (touch.px > 15 && touch.px < 155 && touch.py > 83 && touch.py < 136) {
-				eventDatabase7(mainbuf);
+				eventDatabase(mainbuf);
 			}
 
 			if (touch.px > 165 && touch.px < 305 && touch.py > 83 && touch.py < 136) {

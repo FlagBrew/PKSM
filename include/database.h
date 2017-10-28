@@ -25,6 +25,6 @@
 
 void findFreeLocationWC(u8 *mainbuf, int nInjected[]);
 int getN(const int i);
-void eventDatabase7(u8* mainbuf);
+void eventDatabase(u8* mainbuf);
 
 #endif
