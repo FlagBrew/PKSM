@@ -17,8 +17,8 @@ APP_AUTHOR          :=	Bernardo Giordano, PKSM devs
 TARGET              :=	$(subst $e ,_,$(notdir $(APP_TITLE)))
 OUTDIR              :=	out
 BUILD               :=	build
-SOURCES             :=	source/memecrypto/source source/pp2d source
-INCLUDES            :=	include
+SOURCES             :=	source/memecrypto/source source/pp2d source/sections/events source
+INCLUDES            :=	include/sections/events include
 ROMFS               :=	assets/romfs
 
 # Path to the files

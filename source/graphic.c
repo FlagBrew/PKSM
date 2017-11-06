@@ -106,19 +106,9 @@ void loadPNGInRAM(u32 id, const char* filepath) {
 	pp2d_load_texture_png(id, filepath);
 }
 
-void initProgressLoadPNGInRAM(int total) {
-	loadPNGInRAM_current_element = 1;
-	loadPNGInRAM_elements = total;
-}
-
-void GUIElementsI18nSpecify() {
-	struct i18n_files languageSpecificFiles = i18n_getFilesPath();
-	loadPNGInRAM(TEXTURE_TYPES_SPRITESHEET, languageSpecificFiles.types);
-}
-
 void GUIElementsSpecify() {
-	int elements = 22;
-	initProgressLoadPNGInRAM(elements);
+	loadPNGInRAM_current_element = 1;
+	loadPNGInRAM_elements = 22;
 
 	freezeMsg(i18n(S_GRAPHIC_GUI_ELEMENTS_SPECIFY_LOADING));
 
@@ -145,7 +135,8 @@ void GUIElementsSpecify() {
 	loadPNGInRAM(TEXTURE_EDITOR_BOTTOM_BG, "romfs:/res/Editor Bottom BG.png");
 	loadPNGInRAM(TEXTURE_HEX_BG, "romfs:/res/Hex BG.png");
 
-	GUIElementsI18nSpecify();
+	struct i18n_files languageSpecificFiles = i18n_getFilesPath();
+	loadPNGInRAM(TEXTURE_TYPES_SPRITESHEET, languageSpecificFiles.types);
 }
 
 void GUIGameElementsInit() {
@@ -155,10 +146,6 @@ void GUIGameElementsInit() {
 }
 
 void GUIElementsExit() {
-	GUIElementsI18nExit();
-}
-
-void GUITextsExit() {
 	i18n_free_ArrayUTF32(&listAbilities);
 	i18n_free_ArrayUTF32(&listMoves);
 	i18n_free_ArrayUTF32(&listNatures);
@@ -167,10 +154,6 @@ void GUITextsExit() {
 	i18n_free_ArrayUTF32(&listHPs);
 	i18n_free_ArrayUTF32(&listForms);
 	i18n_free_ArrayUTF32(&listSpecies);
-}
-
-void GUIElementsI18nExit() {
-	GUITextsExit();
 }
 
 char messageDebug[255];
@@ -384,7 +367,7 @@ void menu(int menu[]) {
 }
 
 void printCredits() {
-	static const char* credits = "Smealum for ctrulib\nKaphotics and SciresM for PKHeX and memecrypto\nJ-K-D for direct save import/export\nArchitDate for serveLegality\nSlownic for java servepkx\nSlashcash for PCHex++\nGocario for PKBrew\nTuxSH for TWLSaveTool\nPPorg for most of the wcx bundled in the application\nSimona, Carlo, Matteo for fill.c work\nAll the countless translators who worked on the localization";
+	static const char* credits = "Anty-Lemon for various contributions\nSmealum for ctrulib\nKaphotics and SciresM for PKHeX and memecrypto\nJ-K-D for direct save import/export\nArchitDate for serveLegality\nSlownic for java servepkx\nSlashcash for PCHex++\nGocario for PKBrew\nTuxSH for TWLSaveTool\nPPorg for most of the wcx bundled in the application\nSimona, Carlo, Matteo for fill.c work\nAll the countless translators who worked on the localization";
 	
 	while (aptMainLoop() && !(hidKeysUp() & KEY_B)) {
 		hidScanInput();
@@ -396,7 +379,7 @@ void printCredits() {
 			pp2d_draw_texture_part(TEXTURE_CREDITS, 36, 104, 0, 22, 181, 46);
 			pp2d_draw_texture(TEXTURE_CREDITS, 0, 45);
 			pp2d_draw_text(18, 79, FONT_SIZE_15, FONT_SIZE_15, LIGHTBLUE, "Bernardo Giordano");
-			pp2d_draw_text(34, 117, FONT_SIZE_15, FONT_SIZE_15, LIGHTBLUE, "Naxann, Anty-Lemon");
+			pp2d_draw_text(34, 117, FONT_SIZE_15, FONT_SIZE_15, LIGHTBLUE, "Naxann");
 			pp2d_draw_text(64, 174, FONT_SIZE_15, FONT_SIZE_15,  LIGHTBLUE, "dsoldier for the complete GUI design");
 
 			pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);

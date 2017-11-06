@@ -16,15 +16,15 @@
 >   See LICENSE for information.
 */
 
-#ifndef DATABASE_H
-#define DATABASE_H
+#ifndef EVENTLISTS_H
+#define EVENTLISTS_H
 
 #include "common.h"
 
-#define SMCOUNT 300
-
-void findFreeLocationWC(u8 *mainbuf, int nInjected[]);
-int getN(const int i);
-void eventDatabase(u8* mainbuf);
+int fill_get_index();
+void filldatabase7(char *database[], int spriteArray[]);
+void filldatabase6(char *database[], int spriteArray[]);
+void filldatabase5(char *database[], int spriteArray[]);
+void filldatabase4(char *database[], int spriteArray[]);
 
 #endif

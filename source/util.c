@@ -201,21 +201,7 @@ void settingsMenu(u8* mainbuf) {
 					max_language++;
 				}
 				language = (language + 1) % max_language;
-				saveI18nConfig(language);
-
-				freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_LOCALES));
-				usleep(500);
-
-				GUIElementsI18nExit();
-				i18n_exit();
-
-				i18n_init();
-				GUITextsInit();
-
-				initProgressLoadPNGInRAM(1);
-
-				freezeMsg(i18n(S_GRAPHIC_GUI_ELEMENTS_SPECIFY_LOADING));
-				GUIElementsI18nSpecify();
+				//saveI18nConfig(language);
 			}
 		}
 		

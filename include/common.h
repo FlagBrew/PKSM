@@ -32,10 +32,10 @@
 
 #include "bank.h"
 #include "config.h"
-#include "database.h"
+#include "sections/events/events.h"
 #include "dex.h"
 #include "editor.h"
-#include "fill.h"
+#include "sections/events/eventlists.h"
 #include "files.h"
 #include "fx.h"
 #include "game.h"
@@ -46,8 +46,8 @@
 #include "i18n.h"
 #include "../source/memecrypto/source/memecrypto.h"
 #include "../source/pp2d/pp2d.h"
-#include "pgf.h"
-#include "pgt.h"
+#include "sections/events/pgf.h"
+#include "sections/events/pgt.h"
 #include "pkx.h"
 #include "save.h"
 #include "sha256.h"
@@ -55,8 +55,8 @@
 #include "spi.h"
 #include "texman.h"
 #include "util.h"
-#include "wcman.h"
-#include "wcx.h"
+#include "sections/events/wcman.h"
+#include "sections/events/wcx.h"
 
 struct ArrayUTF32 listMoves;
 struct ArrayUTF32 listItems;

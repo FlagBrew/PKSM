@@ -16,7 +16,7 @@
 >   See LICENSE for information.
 */
 
-#include "database.h"
+#include "events.h"
 
 static const char *tags[] = {"jpn", "eng", "fre", "ita", "ger", "spa", "kor", "chs", "cht"};
 

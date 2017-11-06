@@ -86,12 +86,8 @@
 
 void GUIElementsInit();
 void GUIElementsSpecify();
-void GUIElementsI18nSpecify();
-void GUITextsInit(); // Needed for util.c when changing language
 void GUIGameElementsInit();
-void initProgressLoadPNGInRAM(int total);
 void GUIElementsExit();
-void GUIElementsI18nExit(); // Needed for util.c when changing language
 void init_font_cache();
 void infoDisp(wchar_t* message);
 int confirmDisp(wchar_t* message);
