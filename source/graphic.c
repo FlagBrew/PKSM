@@ -470,6 +470,8 @@ void printEventInjector(u8* previewbuf, int sprite, int i, bool langVett[], bool
 	char cont[3];
 	snprintf(cont, 3, "%d", nInjected + 1);
 	
+	const int total = game_isgen7() ? 9 : 7;
+	
 	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
 		printAnimatedBG(true);
 		
@@ -486,7 +488,7 @@ void printEventInjector(u8* previewbuf, int sprite, int i, bool langVett[], bool
 		else
 		{
 			pp2d_draw_wtext_center(GFX_TOP, 95, FONT_SIZE_15, FONT_SIZE_15, BLACK, L"Detailed infos not available");
-			pp2d_draw_wtext_center(GFX_TOP, 115, FONT_SIZE_15, FONT_SIZE_15, BLACK, L"in this generation. Sorry!");			
+			pp2d_draw_wtext_center(GFX_TOP, 115, FONT_SIZE_15, FONT_SIZE_15, BLACK, L"for this generation. Sorry!");
 		}
 		
 		if (ota)
@@ -506,7 +508,6 @@ void printEventInjector(u8* previewbuf, int sprite, int i, bool langVett[], bool
 		
 		pp2d_draw_wtext(16, 50, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_DB_LANGUAGES));
 		
-		const int total = game_isgen7() ? 9 : 7;
 		for (int t = 0; t < total; t++)
 		{
 			int x = 0, y = 0;
@@ -536,21 +537,21 @@ void printEventInjector(u8* previewbuf, int sprite, int i, bool langVett[], bool
 
 		if (game_is3DS())
 		{
-			pp2d_draw_wtext(16, 112, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_DB_OVERWRITE_WC));
-			pp2d_draw_wtext(16, 140, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_DB_ADAPT_LANGUAGE_WC));
-			pp2d_draw_wtext(16, 170, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_DB_INJECT_WC_SLOT));
-		
 			pksm_draw_texture(overwrite ? TEXTURE_RED_BUTTON : TEXTURE_DARK_BUTTON, 231, 110);
 			pksm_draw_texture(overwrite ? TEXTURE_DARK_BUTTON : TEXTURE_RED_BUTTON, 270, 110);
 			pksm_draw_texture(adapt ? TEXTURE_RED_BUTTON : TEXTURE_DARK_BUTTON, 231, 138);
 			pksm_draw_texture(adapt ? TEXTURE_DARK_BUTTON : TEXTURE_RED_BUTTON, 270, 138);
 			pksm_draw_texture(TEXTURE_DARK_BUTTON, 251, 168);	
 			
+			pp2d_draw_wtext(16, 112, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_DB_OVERWRITE_WC));
+			pp2d_draw_wtext(16, 140, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_DB_ADAPT_LANGUAGE_WC));
+			pp2d_draw_wtext(16, 170, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_DB_INJECT_WC_SLOT));
+			
 			pp2d_draw_wtext(231 + (36 - pp2d_get_wtext_width(i18n(S_YES), FONT_SIZE_12, FONT_SIZE_12)) / 2, 113, FONT_SIZE_12, FONT_SIZE_12, overwrite ? DARKBLUE : YELLOW, i18n(S_YES));
 			pp2d_draw_wtext(270 + (36 - pp2d_get_wtext_width(i18n(S_NO), FONT_SIZE_12, FONT_SIZE_12)) / 2, 113, FONT_SIZE_12, FONT_SIZE_12, !overwrite ? DARKBLUE : YELLOW, i18n(S_NO));
 			pp2d_draw_wtext(231 + (36 - pp2d_get_wtext_width(i18n(S_YES), FONT_SIZE_12, FONT_SIZE_12)) / 2, 141, FONT_SIZE_12, FONT_SIZE_12, adapt ? DARKBLUE : YELLOW, i18n(S_YES));
 			pp2d_draw_wtext(270 + (36 - pp2d_get_wtext_width(i18n(S_NO), FONT_SIZE_12, FONT_SIZE_12)) / 2, 141, FONT_SIZE_12, FONT_SIZE_12, !adapt ? DARKBLUE : YELLOW, i18n(S_NO));
-			pp2d_draw_text(251 + (36 - pp2d_get_text_width(cont, FONT_SIZE_12, FONT_SIZE_12)) / 2, 171, FONT_SIZE_12, FONT_SIZE_12, YELLOW, cont);
+			pp2d_draw_text(251 + (36 - pp2d_get_text_width(cont, FONT_SIZE_12, FONT_SIZE_12)) / 2, 171, FONT_SIZE_12, FONT_SIZE_12, YELLOW, cont);			
 		}
 		
 		if (ota)

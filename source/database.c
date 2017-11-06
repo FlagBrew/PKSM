@@ -141,7 +141,6 @@ void reloadMultiplePreviewBuf(u8* previewBuf, const int i, const int n, const in
 void findFreeLocationWC(u8 *mainbuf, int nInjected[])
 {
 	nInjected[0] = 0;
-	
 	if (!game_is3DS())
 	{
 		return;
@@ -155,10 +154,21 @@ void findFreeLocationWC(u8 *mainbuf, int nInjected[])
 	else if (game_getisSUMO())
 		offset = 0x65C00 + 0x100;
 	
-	int t = 0;
-	u8 dummy[WCX_SIZE] = {0};
-	for (int len = game_isgen6() ? 24 : 48; t < len && !memcmp(mainbuf + offset + t*WCX_SIZE, dummy, WCX_SIZE); t++);
-	nInjected[0] = t;
+	const int len = game_isgen6() ? 24 : 48;
+	int temp;
+	for (int t = 0; t < len; t++)
+	{
+		temp = 0;
+		for (int j = 0; j < WC6LENGTH; j++)
+			if (*(mainbuf + offset + t * WC6LENGTH + j) == 0x00)
+				temp++;
+
+		if (temp == WC6LENGTH)
+		{
+			nInjected[0] = t;
+			break;
+		}
+	}
 }
 
 int getN(const int i) 
