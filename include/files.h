@@ -21,6 +21,6 @@
 
 #include "common.h"
 
-void file_write(char* path, u8 *buf, int size);
+void file_write(const char* path, void *buf, int size);
 
 #endif

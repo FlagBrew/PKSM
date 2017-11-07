@@ -42,7 +42,7 @@ void checkMaxValue(u8* pkmn, int byteEntry, int value, int max) {
 		pkmn[byteEntry] = temp;
 }
 
-bool checkFile(char* path) {
+bool checkFile(const char* path) {
 	FILE *temp = fopen(path, "rt");
 	if (temp == NULL) {
 		fclose(temp);
@@ -156,7 +156,7 @@ bool openSaveArch(FS_Archive *out, u64 id) {
 	return false;
 }
 
-void settingsMenu(u8* mainbuf) {
+/*void settingsMenu(u8* mainbuf) {
 	int game = game_get();
 	char *gamesList[] = {"X", "Y", "OR", "AS", "S", "M", "D", "P", "PL", "HG", "SS", "B", "W", "W2", "B2"};
 	
@@ -316,7 +316,7 @@ void settingsMenu(u8* mainbuf) {
 		}
 		printSettings(box, language);
 	}
-}
+}*/
 
 /**
  * Comparison function used for sorting items, abilities and all things
@@ -335,30 +335,4 @@ int ArrayUTF32_sort_cmp_PKMN_Things_List(const wchar_t *a,const wchar_t *b) {
 	}
 	// We inversed the result when there is 1 "???", so "???" will be always at the end of the list
 	return result;
-}
-
-bool hasI18nConfig() {
-	return checkFile("sdmc:/3ds/data/PKSM/i18n.bin");
-}
-
-u8 loadI18nConfig() {
-	FILE *conf = fopen("sdmc:/3ds/data/PKSM/i18n.bin", "rt");
-	fseek(conf, 0, SEEK_END);
-	u8 localeConfig[1];
-	rewind(conf);
-	fread(localeConfig, 1, 1, conf);
-	fclose(conf);
-	return localeConfig[0];
-}
-
-void saveI18nConfig(u8 language) {
-	u8 localeConfig[1];
-	localeConfig[0] = language;
-	FILE *conf = fopen("sdmc:/3ds/data/PKSM/i18n.bin", "wb");
-	fwrite(localeConfig, 1, 1, conf);
-	fclose(conf);
-}
-
-bool hasExternI18nFile() {
-	return checkFile("sdmc:/3ds/data/PKSM/i18n/app.txt");
 }

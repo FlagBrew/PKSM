@@ -299,7 +299,7 @@ int main() {
 			}
 			
 			if (touch.px > 15 && touch.px < 155 && touch.py > 146 && touch.py < 199) {
-				settingsMenu(mainbuf);
+				configMenu();
 				continue;
 			}
 			

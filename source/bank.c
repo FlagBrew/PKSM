@@ -94,7 +94,7 @@ inline void getFromWirelessBuf(u8* buf, int box, int slot, u8* pkmn) {
 }
 
 void clearMarkings(u8* pkmn) {
-	if (config_get_pkx_set_lock() != 0)
+	if (PKSM_Configuration.editInTransfers != 0)
 		return;
 	
 	u8 version = pkmn[0xDF];

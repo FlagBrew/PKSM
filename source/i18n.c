@@ -30,7 +30,6 @@ const int MAXLENGTH_NAMES_POKEMON = 32;
 
 static char* LANG_PREFIX[] = { "jp", "en", "fr", "de", "it", "es", "zh", "ko", "nl", "pt", "ru", "tw" };
 
-
 /**
  * Generic path for Localization files
  */
@@ -469,24 +468,7 @@ void i18n_load(u8 language) {
 }
 
 void i18n_init() {
-	u8 language = 1; // English by default
-	bool writeToConfig = !hasI18nConfig();
-
-	if (hasI18nConfig() && !hasExternI18nFile() && loadI18nConfig() == MAX_LANGUAGE) { // We have saved extern language but the file does not exist anymore, returning to English
-		writeToConfig = true;
-	}
-
-	if (writeToConfig) {
-		if (hasExternI18nFile()) { // Initializing to extern translation if no configuration at all and files are present
-			language = MAX_LANGUAGE;
-		} else {
-			CFGU_GetSystemLanguage(&language);
-		}
-		saveI18nConfig(language);
-
-	} else {
-		language = loadI18nConfig();
-	}
+	u8 language = PKSM_Configuration.pksmLanguage;
 	
 	#ifdef DEBUG_I18N_LANG
 		language = (u8)DEBUG_I18N_LANG;
@@ -541,7 +523,6 @@ void i18n_initTextSwkbd(SwkbdState* swkbd, AppTextCode leftButtonTextCode, AppTe
 }
 
 void i18n_exit() {
-
 	free(i18n_files_loaded.abilities);
 	free(i18n_files_loaded.species);
 	free(i18n_files_loaded.natures);
@@ -554,5 +535,4 @@ void i18n_exit() {
 	free(i18n_files_loaded.app);
 
 	i18n_free_ArrayUTF32(&i18n_AppTexts);
-	
 }

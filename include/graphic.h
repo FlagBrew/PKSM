@@ -106,11 +106,12 @@ void printPKViewer(u8* mainbuf, u8* pkmn, bool isTeam, int currentEntry, int men
 void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int currentEntry, int saveBox, int bankBox, bool isBufferized, bool isSeen, bool isWirelessActivated);
 void printElement(u8* pkmn, int game, u16 n, int x, int y);
 void printElementBlend(u8* pkmn, int game, u16 n, int x, int y, u32 color);
-void printSettings(int box, int language);
+void printSettings(u8* config_buf, int currentEntry, int configSize, wchar_t* descriptions[]);
 void infoViewer(u8* pkmn);
 void wcxInfoViewer(u8* buf);
 void printfHexEditorInfo(u8* pkmn, int byte);
 void printDexViewer(u8* mainbuf, int currentEntry, int page, int seen, int caught);
+void printfConfigEditorInfo(int currentEntry);
 
 void printSelector(int x, int y, int width, int height);
 void printMenuTop();

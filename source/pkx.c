@@ -554,7 +554,7 @@ void pkx_get(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn) 
 }
 
 void pkx_set(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn) {
-	if (config_get_pkx_set_lock() == 0) {
+	if (PKSM_Configuration.editInTransfers != 0) {
 		u8 latestHandlers[10];
 		char ot_name[NICKNAMELENGTH];
 		char save_name[NICKNAMELENGTH];

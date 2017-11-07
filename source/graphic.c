@@ -1451,36 +1451,88 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 	pp2d_end_draw();
 }
 
-void printSettings(int box, int language) {
-	wchar_t *menu[] = {i18n(S_GRAPHIC_SETTINGS_BANK_SIZE), i18n(S_GRAPHIC_SETTINGS_BACKUP_SAVE), i18n(S_GRAPHIC_SETTINGS_BACKUP_BANK)};
+void printSettings(u8* config_buf, int currentEntry, int configSize, wchar_t* descriptions[]) {
 	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
-		drawMenuTop();
-	
-		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
-		printMenuBottom();
-
-		for (int i = 0; i < 4; i++) {
-			pksm_draw_texture(TEXTURE_EVENT_MENU_BOTTOM_BAR, 65, 60 + i * 34);
-			if (i < 3)
-				pp2d_draw_wtext(i == 0 ? 69 : (320 - pp2d_get_wtext_width(menu[i], FONT_SIZE_15, FONT_SIZE_15)) / 2, 66 + i * 34, FONT_SIZE_15, FONT_SIZE_15, DARKBLUE, menu[i]);
-			else {
-				wchar_t tempstr[30];
-				swprintf(tempstr, 30, L"Edit in transfers: %s", config_get_pkx_set_lock() != 0 ? "No" : "Yes");
-				pp2d_draw_wtext_center(GFX_BOTTOM, 66 + i * 34, FONT_SIZE_15, FONT_SIZE_15, DARKBLUE, tempstr);
+		pp2d_draw_texture(TEXTURE_HEX_BG, 0, 0);
+		
+		for (int rows = 0; rows < 3; rows++)
+		{
+			for (int columns = 0; columns < 16; columns++)
+			{
+				int byte = rows*16 + columns;
+				if (currentEntry == byte)
+					printSelector(columns*25, rows*15, 24, 14);
+				pp2d_draw_textf(4 + 25*columns, 15*rows, FONT_SIZE_11, FONT_SIZE_11, WHITE, "%02hhX", config_buf[byte]);
+				
+				if (byte == configSize - 1) break;
 			}
 		}
-
-		pksm_draw_texture(TEXTURE_MINI_BOX, 189, 64);
-		pksm_draw_texture(TEXTURE_MINUS_BUTTON, 169, 65);
-		pksm_draw_texture(TEXTURE_PLUS_BUTTON, 228, 65);
-		pksm_draw_texture(TEXTURE_MINI_BOX, 281, 191);
-		pp2d_draw_text(281 + (36 - (pp2d_get_text_width(langs[language], FONT_SIZE_11, FONT_SIZE_11))) / 2, 195, FONT_SIZE_11, FONT_SIZE_11, DARKBLUE, langs[language]);
 		
-		char size[5];
-		snprintf(size, 5, "%d", box);
-		pp2d_draw_text(189 + (36 - (pp2d_get_text_width(size, FONT_SIZE_11, FONT_SIZE_11))) / 2, 68, FONT_SIZE_11, FONT_SIZE_11, WHITE, size);
-		printBottomIndications(i18n(S_GRAPHIC_SETTINGS_INDICATION));
+		pp2d_draw_wtextf(4, 225, FONT_SIZE_11, FONT_SIZE_11, LIGHTBLUE, L"%ls", descriptions[currentEntry]);
+
+		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
+		printMenuBottom();
+		pksm_draw_texture(TEXTURE_BLUE_TEXT_BOX, 165, 28);
+		
+		pp2d_draw_wtextf(155 - pp2d_get_wtext_width(i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE), FONT_SIZE_14, FONT_SIZE_14), 30, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE));
+		pp2d_draw_textf(171, 30, FONT_SIZE_14, FONT_SIZE_14, WHITE, "0x%02hhX", currentEntry);
+		
+		printfConfigEditorInfo(currentEntry);
+		printBottomIndications(i18n(S_GRAPHIC_CREDITS_INDICATIONS));
 	pp2d_end_draw();
+}
+
+void printfConfigEditorInfo(int currentEntry)
+{
+	int y = 70, x = 8;
+	u32 string[NICKNAMELENGTH*2];
+	memset(string, 0, NICKNAMELENGTH*2*sizeof(u32));
+	
+	switch (currentEntry) {
+		case 0x00:
+			break;
+		case 0x02:
+		case 0x03:
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, L"Storage size: %d", PKSM_Configuration.storageSize);
+			break;
+		case 0x04:
+		case 0x05:
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, L"Default TID: %d", PKSM_Configuration.defaultTID);
+			break;
+		case 0x06:
+		case 0x07:
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, L"Default SID: %d", PKSM_Configuration.defaultSID);
+			break;
+		case 0x08:
+		case 0x09:
+		case 0x0A:
+		case 0x0B:
+		case 0x0C:
+		case 0x0D:
+		case 0x0E:
+		case 0x0F:
+		case 0x10:
+		case 0x11:
+		case 0x12:
+		case 0x13:
+		case 0x14:
+		case 0x15:
+		case 0x16:
+		case 0x17:
+		case 0x18:
+		case 0x19:
+		case 0x1A:
+		case 0x1B:
+		case 0x1C:
+		case 0x1D:
+		case 0x1E:
+		case 0x1F:
+			utf16_to_utf32(string, (uint16_t*)PKSM_Configuration.defaultOTName, NICKNAMELENGTH);
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, L"Default OT Name: %s", string);
+			break;
+		case 0x20:
+			break;
+	}
 }
 
 void printfHexEditorInfo(u8* pkmn, int byte) {
