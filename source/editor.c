@@ -248,6 +248,10 @@ void generate(u8* mainbuf, bool isTeam, int box, int currentEntry, int page, int
 
 	// Correct Nickname of current language
 	char nick[NICKNAMELENGTH] = "";
+	
+	pkx_set_tid(tempkmn, PKSM_Configuration.defaultTID);
+	pkx_set_sid(tempkmn, PKSM_Configuration.defaultSID);
+	memcpy(tempkmn + 0xB0, PKSM_Configuration.defaultOTName, NICKNAMELENGTH);
 
 	utf32_to_utf8((unsigned char*)nick, (uint32_t*)listSpecies.items[pkx_get_species(tempkmn)], NICKNAMELENGTH);
 	nick[NICKNAMELENGTH - 1] = '\0';

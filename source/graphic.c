@@ -1473,7 +1473,8 @@ void printSettings(u8* config_buf, int currentEntry, int configSize, wchar_t* de
 		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 		printMenuBottom();
 		pksm_draw_texture(TEXTURE_BLUE_TEXT_BOX, 165, 28);
-		
+		pksm_draw_texture(TEXTURE_MINUS_BUTTON, 224, 31);
+		pksm_draw_texture(TEXTURE_PLUS_BUTTON, 247, 31);		
 		pp2d_draw_wtextf(155 - pp2d_get_wtext_width(i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE), FONT_SIZE_14, FONT_SIZE_14), 30, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE));
 		pp2d_draw_textf(171, 30, FONT_SIZE_14, FONT_SIZE_14, WHITE, "0x%02hhX", currentEntry);
 		
@@ -1485,11 +1486,10 @@ void printSettings(u8* config_buf, int currentEntry, int configSize, wchar_t* de
 void printfConfigEditorInfo(int currentEntry)
 {
 	int y = 70, x = 8;
-	u32 string[NICKNAMELENGTH*2];
-	memset(string, 0, NICKNAMELENGTH*2*sizeof(u32));
-	
 	switch (currentEntry) {
 		case 0x00:
+			pp2d_draw_text(50, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, "0x00: JP\n0x01: EN\n0x02: FR\n0x03: DE\n0x04: IT\n0x05: ES");
+			pp2d_draw_text(200, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, "0x06: ZH\n0x07: KO\n0x08: NL\n0x09: PT\n0x0A: RU\n0x0B: TW");
 			break;
 		case 0x02:
 		case 0x03:
@@ -1502,33 +1502,6 @@ void printfConfigEditorInfo(int currentEntry)
 		case 0x06:
 		case 0x07:
 			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, L"Default SID: %d", PKSM_Configuration.defaultSID);
-			break;
-		case 0x08:
-		case 0x09:
-		case 0x0A:
-		case 0x0B:
-		case 0x0C:
-		case 0x0D:
-		case 0x0E:
-		case 0x0F:
-		case 0x10:
-		case 0x11:
-		case 0x12:
-		case 0x13:
-		case 0x14:
-		case 0x15:
-		case 0x16:
-		case 0x17:
-		case 0x18:
-		case 0x19:
-		case 0x1A:
-		case 0x1B:
-		case 0x1C:
-		case 0x1D:
-		case 0x1E:
-		case 0x1F:
-			utf16_to_utf32(string, (uint16_t*)PKSM_Configuration.defaultOTName, NICKNAMELENGTH);
-			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, L"Default OT Name: %s", string);
 			break;
 		case 0x20:
 			break;

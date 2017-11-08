@@ -45,6 +45,96 @@ void config_init(void)
 	{
 		config_load();
 	}
+	
+	// check if need to resize the storage
+	if (checkFile("/3ds/data/PKSM/bank/bank.bin"))
+	{
+		FILE *bank = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
+		fseek(bank, 0, SEEK_END);
+		u32 size = ftell(bank);
+		fclose(bank);
+		
+		u32 actualBox = size / (30 * PKMNLENGTH);
+		if (actualBox != PKSM_Configuration.storageSize)
+		{
+			// add boxes to storage file
+			if (size < PKSM_Configuration.storageSize * 30 * PKMNLENGTH)
+			{
+				FILE *buf = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
+				fseek(buf, 0, SEEK_END);
+				u32 size_temp = ftell(buf);
+				u8 *bankbuf = (u8*)malloc(size_temp);
+				rewind(buf);
+				fread(bankbuf, size_temp, 1, buf);
+				fclose(buf);
+				
+				FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bak", "wb");
+				fwrite(bankbuf, 1, size_temp, bak);
+				fclose(bak);
+				
+				u8* newbank = (u8*)malloc(PKSM_Configuration.storageSize * 30 * PKMNLENGTH);
+				memset(newbank, 0, PKSM_Configuration.storageSize * 30 * PKMNLENGTH);
+				memcpy(newbank, bankbuf, size_temp);
+				
+				FILE *newbankfile = fopen("/3ds/data/PKSM/bank/bank.bin", "wb");
+				fwrite(newbank, 1, PKSM_Configuration.storageSize * 30 * PKMNLENGTH, newbankfile);
+				fclose(newbankfile);
+				
+				free(bankbuf);
+				free(newbank);					
+			}
+			// trim boxes from storage file
+			else if (size > PKSM_Configuration.storageSize * 30 * PKMNLENGTH)
+			{
+				FILE *buf = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
+				fseek(buf, 0, SEEK_END);
+				u32 size_temp = ftell(buf);
+				u8 *bankbuf = (u8*)malloc(size_temp);
+				rewind(buf);
+				fread(bankbuf, size_temp, 1, buf);
+				fclose(buf);
+				
+				FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bak", "wb");
+				fwrite(bankbuf, 1, size_temp, bak);
+				fclose(bak);
+				
+				u8* newbank = (u8*)malloc(PKSM_Configuration.storageSize * 30 * PKMNLENGTH);
+				memset(newbank, 0, PKSM_Configuration.storageSize * 30 * PKMNLENGTH);
+				memcpy(newbank, bankbuf, PKSM_Configuration.storageSize * 30 * PKMNLENGTH);
+				
+				FILE *newbankfile = fopen("/3ds/data/PKSM/bank/bank.bin", "wb");
+				fwrite(newbank, 1, PKSM_Configuration.storageSize * 30 * PKMNLENGTH, newbankfile);
+				fclose(newbankfile);
+				
+				free(bankbuf);
+				free(newbank);					
+			}
+		}		
+	}
+}
+
+void config_fill_values(void)
+{
+	PKSM_Configuration.pksmLanguage = *(u8*)(config_buf + 0x0);
+	PKSM_Configuration.automaticSaveBackup = *(u8*)(config_buf + 0x1);
+	PKSM_Configuration.storageSize = *(u16*)(config_buf + 0x2);
+	PKSM_Configuration.defaultTID = *(u16*)(config_buf + 0x4);
+	PKSM_Configuration.defaultSID = *(u16*)(config_buf + 0x6);
+	memcpy(PKSM_Configuration.defaultOTName, config_buf + 0x8, 24);
+	PKSM_Configuration.defaultNationality = *(u8*)(config_buf + 0x20);
+	PKSM_Configuration.editInTransfers = *(u8*)(config_buf + 0x21);	
+}
+
+void configbuf_set_values(void)
+{
+	*(config_buf + 0x0) = PKSM_Configuration.pksmLanguage;
+	*(config_buf + 0x1) = PKSM_Configuration.automaticSaveBackup;
+	memcpy(config_buf + 0x2, &PKSM_Configuration.storageSize, 2);
+	memcpy(config_buf + 0x4, &PKSM_Configuration.defaultTID, 2);
+	memcpy(config_buf + 0x6, &PKSM_Configuration.defaultSID, 2);
+	memcpy(config_buf + 0x8, PKSM_Configuration.defaultOTName, 24);
+	*(config_buf + 0x20) = PKSM_Configuration.defaultNationality;
+	*(config_buf + 0x21) = PKSM_Configuration.editInTransfers;	
 }
 
 void config_load(void)
@@ -59,30 +149,30 @@ void config_load(void)
 	fclose(fptr);
 	
 	// load values
-	PKSM_Configuration.pksmLanguage = *(u8*)(config_buf + 0x0);
-	PKSM_Configuration.automaticSaveBackup = *(u8*)(config_buf + 0x1);
-	PKSM_Configuration.storageSize = *(u16*)(config_buf + 0x2);
-	PKSM_Configuration.defaultTID = *(u16*)(config_buf + 0x4);
-	PKSM_Configuration.defaultSID = *(u16*)(config_buf + 0x6);
-	memcpy(PKSM_Configuration.defaultOTName, config_buf + 0x8, 24);
-	PKSM_Configuration.defaultNationality = *(u8*)(config_buf + 0x20);
-	PKSM_Configuration.editInTransfers = *(u8*)(config_buf + 0x21);
+	config_fill_values();
 }
 
 void config_set(void)
 {
 	remove(config_path);
-	
-	*(config_buf + 0x0) = PKSM_Configuration.pksmLanguage;
-	*(config_buf + 0x1) = PKSM_Configuration.automaticSaveBackup;
-	memcpy(config_buf + 0x2, &PKSM_Configuration.storageSize, 2);
-	memcpy(config_buf + 0x4, &PKSM_Configuration.defaultTID, 2);
-	memcpy(config_buf + 0x6, &PKSM_Configuration.defaultSID, 2);
-	memcpy(config_buf + 0x8, PKSM_Configuration.defaultOTName, 24);
-	*(config_buf + 0x20) = PKSM_Configuration.defaultNationality;
-	*(config_buf + 0x21) = PKSM_Configuration.editInTransfers;
-	
+	configbuf_set_values();
 	file_write(config_path, config_buf, CONFIG_SIZE);
+}
+
+void parseConfigHexEditor(int byte)
+{
+	if (byte == 0x00)
+		checkMaxValue(config_buf, byte, config_buf[byte], 11);
+	else if (byte == 0x01)
+		checkMaxValue(config_buf, byte, config_buf[byte], 0);
+	else if (byte == 0x02 || byte == 0x03)
+		checkMaxValueBetweenBounds(config_buf, byte, 0x02, 2, 1000);
+	else if (byte == 0x20)
+		checkMaxValue(config_buf, byte, config_buf[byte], 7);
+	else if (byte == 0x21)
+		checkMaxValue(config_buf, byte, config_buf[byte], 0);
+	else
+		config_buf[byte]++;
 }
 
 void configMenu(void)
@@ -127,13 +217,52 @@ void configMenu(void)
 	descriptions[0x20] = L"Default Nationality";
 	descriptions[0x21] = L"Edit during transfers (0: NO/1:YES)";
 	
-	int byteEntry = 0;
+	int byteEntry = 0, speed = 0;
 	
 	while(aptMainLoop() && !(hidKeysDown() & KEY_B))
 	{
+		touchPosition touch;
 		hidScanInput();
+		hidTouchRead(&touch);
 		byteEntry = calcCurrentEntryOneScreen(byteEntry, CONFIG_SIZE - 1, 16);
 		
+		bool downPlus = ((hidKeysDown() & KEY_TOUCH) && touch.px > 247 && touch.px < 264 && touch.py > 31 && touch.py < 49) || (hidKeysDown() & KEY_A);
+		bool downMinus = ((hidKeysDown() & KEY_TOUCH) && touch.px > 224 && touch.px < 241 && touch.py > 31 && touch.py < 49) || (hidKeysDown() & KEY_X);
+		bool heldPlus = ((hidKeysHeld() & KEY_TOUCH) && touch.px > 247 && touch.px < 264 && touch.py > 31 && touch.py < 49) || (hidKeysHeld() & KEY_A);
+		bool heldMinus = ((hidKeysHeld() & KEY_TOUCH) && touch.px > 224 && touch.px < 241 && touch.py > 31 && touch.py < 49) || (hidKeysHeld() & KEY_X);
+		
+		if (heldMinus && heldPlus)
+			speed = 0;
+		else if (downMinus)
+		{
+			if (config_buf[byteEntry] > 0)
+				config_buf[byteEntry]--;
+		}
+		else if (heldMinus)
+		{
+			if (speed < -30 && config_buf[byteEntry] > 0)
+				config_buf[byteEntry]--;
+			else
+				speed--;
+		}
+		else if (downPlus)
+		{
+			if (config_buf[byteEntry] < 0xFF)
+				parseConfigHexEditor(byteEntry);
+		}
+		else if (heldPlus)
+		{
+			if (speed > 30 && config_buf[byteEntry] < 0xFF)
+				parseConfigHexEditor(byteEntry);
+			else
+				speed++;
+		}
+		else
+			speed = 0;
+		
+		config_fill_values();
 		printSettings(config_buf, byteEntry, CONFIG_SIZE, descriptions);
 	}
+	
+	config_set();
 }

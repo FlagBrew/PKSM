@@ -257,15 +257,18 @@ int main() {
 		}
 	}
 	
-	char bakpath[100];
-	time_t unixTime = time(NULL);
-	struct tm* timeStruct = gmtime((const time_t *)&unixTime);		
-	snprintf(bakpath, 100, "sdmc:/3ds/data/PKSM/backup/%s_%02i%02i%02i%02i%02i%02i", gamesList[game], timeStruct->tm_year + 1900, timeStruct->tm_mon + 1, timeStruct->tm_mday, timeStruct->tm_hour, timeStruct->tm_min, timeStruct->tm_sec);
-	mkdir(bakpath, 777);
-	chdir(bakpath);
-	FILE *f = fopen("main", "wb");
-	fwrite(mainbuf, 1, mainSize, f);
-	fclose(f);
+	if (PKSM_Configuration.automaticSaveBackup != 0)
+	{
+		char bakpath[100];
+		time_t unixTime = time(NULL);
+		struct tm* timeStruct = gmtime((const time_t *)&unixTime);		
+		snprintf(bakpath, 100, "sdmc:/3ds/data/PKSM/backup/%s_%02i%02i%02i%02i%02i%02i", gamesList[game], timeStruct->tm_year + 1900, timeStruct->tm_mon + 1, timeStruct->tm_mday, timeStruct->tm_hour, timeStruct->tm_min, timeStruct->tm_sec);
+		mkdir(bakpath, 777);
+		chdir(bakpath);
+		FILE *f = fopen("main", "wb");
+		fwrite(mainbuf, 1, mainSize, f);
+		fclose(f);		
+	}
 	
 	GUIElementsSpecify();
 
