@@ -164,13 +164,13 @@ static void draw_qr_rect(int x, int y, int w, u32 color)
 
 void camera_take_qr(u8* payload, int mode)
 {
-    u16 *buf = malloc(sizeof(u16) * 400 * 240 * 4);
-    if (buf == NULL) return;
-    CAMU_SetReceiving(&event, buf, PORT_CAM1, 240 * 400 * 2, transfer_size);
-    svcWaitSynchronization(event, U64_MAX);
-    svcCloseHandle(event);
-	
-    pp2d_begin_draw(GFX_TOP, GFX_LEFT);
+	u16 *buf = malloc(sizeof(u16) * 400 * 240 * 4);
+	if (buf == NULL) return;
+	CAMU_SetReceiving(&event, buf, PORT_CAM1, 240 * 400 * 2, transfer_size);
+	svcWaitSynchronization(event, U64_MAX);
+	svcCloseHandle(event);
+
+	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
 		u32 *rgba8_buf = malloc(240 * 400 * sizeof(u32));
 		if (rgba8_buf == NULL) return;
 		for (int i = 0; i < 240 * 400; i++)
@@ -179,7 +179,7 @@ void camera_take_qr(u8* payload, int mode)
 		}
 		pp2d_load_texture_memory(TEXTURE_QR, rgba8_buf, 400, 240);
 		pp2d_draw_texture(TEXTURE_QR, 0, 0);
-		
+
 		if (mode == MODE_WCX)
 		{
 			draw_qr_rect(102, 18, 24, WHITE);
@@ -194,26 +194,26 @@ void camera_take_qr(u8* payload, int mode)
 		}
 
 		pp2d_draw_text_center(GFX_TOP, 101, 1.3f, 1.3f, WHITE, "\uE01E \uE004");
-    pp2d_end_draw();
-    
-	free(rgba8_buf);
-    pp2d_free_texture(TEXTURE_QR);
-	
-    hidScanInput();
-    u32 kDown = hidKeysDown();
-    if (kDown & KEY_L)
-    {
-        CAMU_StopCapture(PORT_BOTH);
-        CAMU_Activate(SELECT_NONE);
-        camera_scan_qr(buf, payload, mode);
-        CAMU_Activate(SELECT_OUT1_OUT2);
-        CAMU_StartCapture(PORT_BOTH);
-    }
-    if (kDown & KEY_B)
-    {
-        camera_exit();
-        qr_mode = false;
-    }
+	pp2d_end_draw();
 
-    free(buf);
+	free(rgba8_buf);
+	pp2d_free_texture(TEXTURE_QR);
+
+	hidScanInput();
+	u32 kDown = hidKeysDown();
+	if (kDown & KEY_L)
+	{
+		CAMU_StopCapture(PORT_BOTH);
+		CAMU_Activate(SELECT_NONE);
+		camera_scan_qr(buf, payload, mode);
+		CAMU_Activate(SELECT_OUT1_OUT2);
+		CAMU_StartCapture(PORT_BOTH);
+	}
+	if (kDown & KEY_B)
+	{
+		camera_exit();
+		qr_mode = false;
+	}
+
+	free(buf);
 }
