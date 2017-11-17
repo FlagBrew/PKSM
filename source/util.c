@@ -42,7 +42,13 @@ void checkMaxValue(u8* pkmn, int byteEntry, int value, int max) {
 		pkmn[byteEntry] = temp;
 }
 
-bool checkFile(char* path) {
+void file_write(const char* path, void *buf, int size) {
+	FILE *file = fopen(path, "wb");
+	fwrite(buf, 1, size, file);
+	fclose(file);
+}
+
+bool checkFile(const char* path) {
 	FILE *temp = fopen(path, "rt");
 	if (temp == NULL) {
 		fclose(temp);
@@ -73,40 +79,6 @@ void loadPersonal() {
 	free(buf);
 }
 
-void loadFile(u8* buf, char* path) {
-	FILE *fptr = fopen(path, "rt");
-	if (fptr == NULL)
-		return;
-	fseek(fptr, 0, SEEK_END);
-	u32 size = ftell(fptr);
-	memset(buf, 0, size);
-	rewind(fptr);
-	fread(buf, size, 1, fptr);
-	fclose(fptr);
-}
-
-void injectFromFile(u8* mainbuf, char* path, u32 offset) {
-	FILE *fptr = fopen(path, "rt");
-	if (fptr == NULL) {
-		fclose(fptr);
-		return;
-	}
-	fseek(fptr, 0, SEEK_END);
-	u32 size = ftell(fptr);
-	u8 *buf = (u8*)malloc(size);
-	if (buf == NULL) {
-		fclose(fptr);
-		free(buf);
-		return;
-	}
-	rewind(fptr);
-	fread(buf, size, 1, fptr);
-	fclose(fptr);
-
-	memcpy(&mainbuf[offset], buf, size);
-	free(buf);
-}
-
 bool isHBL() {
 #if ROSALINA_3DSX
 	return false;
@@ -116,7 +88,6 @@ bool isHBL() {
 	return id != 0x000400000EC10000;
 #endif
 }
-
 
 void fsStart() {
     if (isHBL()) {
@@ -132,12 +103,6 @@ void fsEnd() {
         fsEndUseSession();
 }
 
-bool loadedFromCart = true;
-
-bool getLoadedFromCart() {
-	return loadedFromCart;
-}
-
 bool openSaveArch(FS_Archive *out, u64 id) {
 	if (id == 0x00040000000C9B00 || !isHBL()) { //If we're using Pokebank or CIA
 		u32 cardPath[3] = {MEDIATYPE_GAME_CARD, id, id >> 32}; //Card
@@ -146,7 +111,6 @@ bool openSaveArch(FS_Archive *out, u64 id) {
 			if (R_FAILED(FSUSER_OpenArchive(out, ARCHIVE_USER_SAVEDATA, (FS_Path){PATH_BINARY, 0xC, sdPath})))
 				return false;
 			else {
-				loadedFromCart = false;
 				return true;
 			}
 		}
@@ -163,193 +127,7 @@ bool openSaveArch(FS_Archive *out, u64 id) {
 	return false;
 }
 
-void settingsMenu(u8* mainbuf) {
-	int game = game_get();
-	char *gamesList[] = {"X", "Y", "OR", "AS", "S", "M", "D", "P", "PL", "HG", "SS", "B", "W", "W2", "B2"};
-	
-	char bakpath[80];
-	time_t unixTime = time(NULL);
-	struct tm* timeStruct = gmtime((const time_t *)&unixTime);	
-	
-	int speed = 0;
-	bool operationDone = false;
-	
-	FILE *bank = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
-	fseek(bank, 0, SEEK_END);
-	u32 size = ftell(bank);
-	fclose(bank);
-	
-	u32 box = size / (30 * PKMNLENGTH);
-	u32 boxmax = 1000;
-
-	int language = loadI18nConfig();
-		
-	while (aptMainLoop() && !operationDone) {
-		hidScanInput();
-		touchPosition touch;
-		hidTouchRead(&touch);
-
-		if (hidKeysDown() & KEY_B) break;
-
-#if PKSV
-#elif ROSALINA_3DSX
-#else	
-		if ((hidKeysDown() & KEY_Y) || (hidKeysDown() & KEY_TOUCH && touch.px > 280 && touch.px < 313 && touch.py > 220)) {
-			update();
-		}
-#endif
-		
-		if (hidKeysDown() & KEY_TOUCH) {
-			if (touch.px > 169 && touch.px < 186 && touch.py > 65 && touch.py < 83) {
-				if (box > 2) box--;
-				else if (box == 2) box = boxmax;
-			}
-
-			if (touch.px > 228 && touch.px < 245 && touch.py > 65 && touch.py < 83) {
-				if (box < boxmax) box++;
-				else if (box == boxmax) box = 2;
-			}
-			
-			if (touch.px > 281 && touch.px < 317 && touch.py > 191 && touch.py < 212) {
-				int max_language = MAX_LANGUAGE;
-				if (hasExternI18nFile()) {
-					max_language++;
-				}
-				language = (language + 1) % max_language;
-				saveI18nConfig(language);
-
-				freezeMsg(i18n(S_GUI_ELEMENTS_LOADING_LOCALES));
-				usleep(500);
-
-				GUIElementsI18nExit();
-				i18n_exit();
-
-				i18n_init();
-				GUITextsInit();
-
-				initProgressLoadPNGInRAM(getGUIElementsI18nSpecifyTotalElements());
-
-				freezeMsg(i18n(S_GRAPHIC_GUI_ELEMENTS_SPECIFY_LOADING));
-				GUIElementsI18nSpecify();
-			}
-		}
-		
-		if (hidKeysHeld() & KEY_TOUCH) {
-			if (touch.px > 169 && touch.px < 186 && touch.py > 65 && touch.py < 83) {
-				if (speed < -30) {
-					if (box > 2) box--;
-					else if (box == 2) box = boxmax;
-				} else
-					speed--;
-			} else if (touch.px > 228 && touch.px < 245 && touch.py > 65 && touch.py < 83) {
-				if (speed > 30) {
-					if (box < boxmax) box++;
-					else if (box == boxmax) box = 2;
-				} else
-					speed++;
-			} else
-				speed = 0;
-		} else
-			speed = 0;
-		
-		if (hidKeysDown() & KEY_TOUCH) {
-			if (touch.px > 189 && touch.px < 225 && touch.py > 64 && touch.py < 85) {
-				freezeMsg(i18n(S_UTIL_BANK_CHANGING_SIZE));
-				if (size < box * 30 * PKMNLENGTH) { // i box sono maggiori
-					FILE *buf = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
-					fseek(buf, 0, SEEK_END);
-					u32 size_temp = ftell(buf);
-					u8 *bankbuf = (u8*)malloc(size_temp);
-					rewind(buf);
-					fread(bankbuf, size_temp, 1, buf);
-					fclose(buf);
-					
-					FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bak", "wb");
-					fwrite(bankbuf, 1, size_temp, bak);
-					fclose(bak);
-					
-					u8* newbank = (u8*)malloc(box * 30 * PKMNLENGTH);
-					memset(newbank, 0, box * 30 * PKMNLENGTH);
-					memcpy(newbank, bankbuf, size_temp);
-					
-					FILE *newbankfile = fopen("/3ds/data/PKSM/bank/bank.bin", "wb");
-					fwrite(newbank, 1, box * 30 * PKMNLENGTH, newbankfile);
-					fclose(newbankfile);
- 					
-					free(bankbuf);
-					free(newbank);					
-				}
-				else if (size > box * 30 * PKMNLENGTH) { // i box sono minori
-					FILE *buf = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
-					fseek(buf, 0, SEEK_END);
-					u32 size_temp = ftell(buf);
-					u8 *bankbuf = (u8*)malloc(size_temp);
-					rewind(buf);
-					fread(bankbuf, size_temp, 1, buf);
-					fclose(buf);
-					
-					FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bak", "wb");
-					fwrite(bankbuf, 1, size_temp, bak);
-					fclose(bak);
-					
-					u8* newbank = (u8*)malloc(box * 30 * PKMNLENGTH);
-					memset(newbank, 0, box * 30 * PKMNLENGTH);
-					memcpy(newbank, bankbuf, box * 30 * PKMNLENGTH);
-					
-					FILE *newbankfile = fopen("/3ds/data/PKSM/bank/bank.bin", "wb");
-					fwrite(newbank, 1, box * 30 * PKMNLENGTH, newbankfile);
-					fclose(newbankfile);
-					
-					free(bankbuf);
-					free(newbank);					
-				}
-				operationDone = true;
-				infoDisp(i18n(S_UTIL_BANK_SIZE_CHANGED));
-			}
-			if (touch.px > 60 && touch.px < 260 && touch.py > 100 && touch.py < 134) {
-				snprintf(bakpath, 80, "/3ds/data/PKSM/backup/main_%s_%i%i%i%02i%02i%02i", gamesList[game], timeStruct->tm_mday, timeStruct->tm_mon + 1, timeStruct->tm_year + 1900, timeStruct->tm_hour, timeStruct->tm_min, timeStruct->tm_sec);
-				
-				FILE *f = fopen(bakpath, "wb");
-				fwrite(mainbuf, 1, sizeof(&mainbuf), f);
-				fclose(f);
-				
-				operationDone = true;
-				infoDisp(i18n(S_UTIL_BACKUP_SAVE_CREATED));
-			}
-			if (touch.px > 60 && touch.px < 260 && touch.py > 134 && touch.py < 168) {
-				FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
-				fseek(bak, 0, SEEK_END);
-				size = ftell(bak);
-				u8* bankbuf = (u8*)malloc(size);
-				rewind(bak);
-				fread(bankbuf, size, 1, bak);
-				fclose(bak);
-				
-				snprintf(bakpath, 80, "/3ds/data/PKSM/bank/bank_%i%i%i%02i%02i%02i.bak", timeStruct->tm_mday, timeStruct->tm_mon + 1, timeStruct->tm_year + 1900, timeStruct->tm_hour, timeStruct->tm_min, timeStruct->tm_sec);
-				FILE *new = fopen(bakpath, "wb");
-				fwrite(bankbuf, 1, size, new);
-				fclose(new);
-				
-				free(bankbuf);	
-
-				infoDisp(i18n(S_UTIL_BACKUP_BANK_CREATED));
-				operationDone = true;
-			}
-			if (touch.px > 60 && touch.px < 260 && touch.py > 168 && touch.py < 202) {
-				config_set_pkx_set_lock(config_get_pkx_set_lock() != 0 ? 0 : 1);
-				config_set();
-				
-				infoDisp(L"Config changed!");
-				operationDone = true;
-			}
-		}
-		printSettings(box, language);
-	}
-}
-
-/**
- * Comparison function used for sorting items, abilities and all things
- */
+/// Comparison function used for sorting items, abilities and all things
 int ArrayUTF32_sort_cmp_PKMN_Things_List(const wchar_t *a,const wchar_t *b) {
 	int result = wcscmp(a, b);
 	wchar_t* unknownStrings[] = { L"???", L"？？？", L"(?)" };
@@ -364,30 +142,4 @@ int ArrayUTF32_sort_cmp_PKMN_Things_List(const wchar_t *a,const wchar_t *b) {
 	}
 	// We inversed the result when there is 1 "???", so "???" will be always at the end of the list
 	return result;
-}
-
-bool hasI18nConfig() {
-	return checkFile("sdmc:/3ds/data/PKSM/i18n.bin");
-}
-
-u8 loadI18nConfig() {
-	FILE *conf = fopen("sdmc:/3ds/data/PKSM/i18n.bin", "rt");
-	fseek(conf, 0, SEEK_END);
-	u8 localeConfig[1];
-	rewind(conf);
-	fread(localeConfig, 1, 1, conf);
-	fclose(conf);
-	return localeConfig[0];
-}
-
-void saveI18nConfig(u8 language) {
-	u8 localeConfig[1];
-	localeConfig[0] = language;
-	FILE *conf = fopen("sdmc:/3ds/data/PKSM/i18n.bin", "wb");
-	fwrite(localeConfig, 1, 1, conf);
-	fclose(conf);
-}
-
-bool hasExternI18nFile() {
-	return checkFile("sdmc:/3ds/data/PKSM/i18n/app.txt");
 }

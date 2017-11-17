@@ -16,7 +16,9 @@
 >   See LICENSE for information.
 */
 
-#pragma once
+#ifndef HEX_H
+#define HEX_H
+
 #include "common.h"
 
 bool hax;
@@ -26,3 +28,5 @@ bool sector[232][2];
 void fillSectorsHaxMode(bool sector[][2]);
 void fillDescriptions(wchar_t *descriptions[]);
 void fillSectors(bool sector[][2]);
+
+#endif

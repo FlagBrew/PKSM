@@ -16,7 +16,9 @@
 >   See LICENSE for information.
 */
 
-#pragma once
+#ifndef PKX_H
+#define PKX_H
+
 #include "common.h"
 
 typedef struct FormData {
@@ -28,7 +30,7 @@ typedef struct FormData {
 } FormData;
 
 struct {
-	u8 pkmData[961][15];
+	u8 pkmData[976][15];
 } personal;
 
 FormData *pkx_get_legal_form_data(const u16 species, const int game);
@@ -112,3 +114,5 @@ bool pkx_get_hti(u8* pkmn, const int htnumber);
 void pkx_set_flag(u8* pkmn, const int flgaddr, const int flgshift, const bool value);
 void pkx_set_pokerus(u8* pkmn);
 void pkx_set_nickname_flag(u8* pkmn);
+
+#endif

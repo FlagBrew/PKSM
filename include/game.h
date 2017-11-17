@@ -16,7 +16,9 @@
 >   See LICENSE for information.
 */
 
-#pragma once
+#ifndef GAME_H
+#define GAME_H
+
 #include "common.h"
 
 #define GAME_X 		  0
@@ -25,15 +27,17 @@
 #define GAME_AS 	  3
 #define GAME_SUN 	  4
 #define GAME_MOON 	  5
-#define GAME_DIAMOND  6
-#define GAME_PEARL 	  7
-#define GAME_PLATINUM 8
-#define GAME_HG 	  9
-#define GAME_SS 	 10
-#define GAME_B1 	 11
-#define GAME_W1 	 12
-#define GAME_B2 	 13
-#define GAME_W2 	 14
+#define GAME_US       6
+#define GAME_UM       7
+#define GAME_DIAMOND  8
+#define GAME_PEARL 	  9
+#define GAME_PLATINUM 10
+#define GAME_HG 	  11
+#define GAME_SS 	 12
+#define GAME_B1 	 13
+#define GAME_W1 	 14
+#define GAME_B2 	 15
+#define GAME_W2 	 16
 
 int game_get();
 void game_set(int value);
@@ -47,8 +51,13 @@ bool game_isDS();
 bool game_getisXY();
 bool game_getisORAS();
 bool game_getisSUMO();
+bool game_getisUSUM();
 
 u8 game_get_country(u8* mainbuf);
 u8 game_get_region(u8* mainbuf);
 u8 game_get_console_region(u8* mainbuf);
 u8 game_get_language(u8* mainbuf);
+
+void game_fill_offsets();
+
+#endif

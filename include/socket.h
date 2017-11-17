@@ -16,7 +16,9 @@
 >   See LICENSE for information.
 */
 
-#pragma once
+#ifndef SOCKET_H
+#define SOCKET_H
+
 #include "common.h"
 
 #define PAYLOADSIZE    0x400
@@ -42,3 +44,5 @@ void processLegality(u8* pkmn);
 bool socket_check_valid_ip_address(char *ipAddress);
 bool socket_is_legality_address_set();
 void socket_set_legality_address(bool value);
+
+#endif

@@ -572,3 +572,5 @@ Falha a descarregar dados!
 Instalando a versão mais recente...
 Versão mais recente instalada!
 Deseja iniciar o jogo?
+Ultra Sun
+Ultra Moon

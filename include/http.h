@@ -16,8 +16,11 @@
 >   See LICENSE for information.
 */
 
-#pragma once
+#ifndef HTTP_H
+#define HTTP_H
+
 #include "common.h"
 
-void update();
 Result downloadFile(char* url, char* path);
+
+#endif

@@ -18,7 +18,9 @@
 >   See LICENSE for information.
 */
 
-#pragma once
+#ifndef I18N_H
+#define I18N_H
+
 #include "common.h"
 #include <stdarg.h>
 #include <wchar.h>
@@ -719,6 +721,9 @@ typedef enum {
 	S_HTTP_UPDATE_INSTALLED,
 	
 	S_LAUNCH_GAME,
+	
+	S_GRAPHIC_GAME_SELECTOR_GAME_ULTRA_SUN,
+	S_GRAPHIC_GAME_SELECTOR_GAME_ULTRA_MOON,
 } AppTextCode;
 
 
@@ -727,7 +732,6 @@ void i18n_free_ArrayUTF32(ArrayUTF32 *arr);
 
 struct i18n_files i18n_getFilesPath();
 
-// struct ArrayUTF32 ArrayUTF32_copy(struct ArrayUTF32 from);
 void ArrayUTF32_sort_starting_index(ArrayUTF32 *arr, int index);
 void ArrayUTF32_sort_starting_index_with_sort_func(struct ArrayUTF32 *arr, int index, int (*f)(const wchar_t *a,const wchar_t *b));
 void ArrayUTF32_sort(ArrayUTF32 *arr);
@@ -738,3 +742,4 @@ void i18n_init();
 void i18n_initTextSwkbd(SwkbdState* swkbd, AppTextCode leftButtonTextCode, AppTextCode rightButtonTextCode, AppTextCode hintTextCode);
 void i18n_exit();
 
+#endif

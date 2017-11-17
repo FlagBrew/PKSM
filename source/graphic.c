@@ -18,11 +18,17 @@
 
 #include "graphic.h"
 
-u32 logoColors[15] = {
+static void printSelector(int x, int y, int width, int height);
+static void printMenuTop();
+static void printMenuBottom();
+
+u32 logoColors[17] = {
 	RGBA8(0, 136, 222, 255), 
 	RGBA8(203, 39, 69, 255),
 	RGBA8(247, 139, 50, 255),
 	RGBA8(115, 118, 252, 255),
+	RGBA8(241, 148, 45, 255),
+	RGBA8(75, 139, 190, 255),
 	RGBA8(241, 148, 45, 255),
 	RGBA8(75, 139, 190, 255),
 	RGBA8(138, 207, 231, 255),
@@ -36,7 +42,7 @@ u32 logoColors[15] = {
 	RGBA8(223, 105, 95, 255),
 };
 
-int logo_lookup6[7] = {0, 64, 121, 183, 250, 320, 375};
+int logo_lookup6[9] = {0, 64, 121, 183, 250, 320, 376, 451, 527};
 int logo_lookup4[6] = {0, 54, 116, 177, 233, 291};
 int logo_lookup5[5] = {0, 53, 104, 176, 252};
 
@@ -44,7 +50,7 @@ int lookup[] = {0x0, 0x1, 0x2, 0x4, 0x5, 0x3};
 
 int MAX_LENGTH_BOX_NAME = 15;
 
-AppTextCode gamesList[] = {S_GRAPHIC_GAME_SELECTOR_GAME_X, S_GRAPHIC_GAME_SELECTOR_GAME_Y, S_GRAPHIC_GAME_SELECTOR_GAME_OS, S_GRAPHIC_GAME_SELECTOR_GAME_AS, S_GRAPHIC_GAME_SELECTOR_GAME_SUN, S_GRAPHIC_GAME_SELECTOR_GAME_MOON, S_GRAPHIC_GAME_SELECTOR_GAME_DIAMOND, S_GRAPHIC_GAME_SELECTOR_GAME_PEARL, S_GRAPHIC_GAME_SELECTOR_GAME_PLATINUM, S_GRAPHIC_GAME_SELECTOR_GAME_HG, S_GRAPHIC_GAME_SELECTOR_GAME_SS, S_GRAPHIC_GAME_SELECTOR_GAME_B, S_GRAPHIC_GAME_SELECTOR_GAME_W, S_GRAPHIC_GAME_SELECTOR_GAME_B2, S_GRAPHIC_GAME_SELECTOR_GAME_W2};
+AppTextCode gamesList[] = {S_GRAPHIC_GAME_SELECTOR_GAME_X, S_GRAPHIC_GAME_SELECTOR_GAME_Y, S_GRAPHIC_GAME_SELECTOR_GAME_OS, S_GRAPHIC_GAME_SELECTOR_GAME_AS, S_GRAPHIC_GAME_SELECTOR_GAME_SUN, S_GRAPHIC_GAME_SELECTOR_GAME_MOON, S_GRAPHIC_GAME_SELECTOR_GAME_ULTRA_SUN, S_GRAPHIC_GAME_SELECTOR_GAME_ULTRA_MOON, S_GRAPHIC_GAME_SELECTOR_GAME_DIAMOND, S_GRAPHIC_GAME_SELECTOR_GAME_PEARL, S_GRAPHIC_GAME_SELECTOR_GAME_PLATINUM, S_GRAPHIC_GAME_SELECTOR_GAME_HG, S_GRAPHIC_GAME_SELECTOR_GAME_SS, S_GRAPHIC_GAME_SELECTOR_GAME_B, S_GRAPHIC_GAME_SELECTOR_GAME_W, S_GRAPHIC_GAME_SELECTOR_GAME_B2, S_GRAPHIC_GAME_SELECTOR_GAME_W2};
 char* langs[] = { "JP", "EN", "FR", "DE", "IT", "ES", "ZH", "KO", "NL", "PT", "RU", "TW", "SD C." };
 
 wchar_t **abilities;
@@ -62,29 +68,7 @@ wchar_t **formList;
 ArrayUTF32 listAbilities, listNatures, listBalls, listHPs, listForms;
 
 int loadPNGInRAM_current_element = 1;
-int loadPNGInRAM_elements = 1;
-
-void pp2d_draw_texture_part_blend(size_t id, int x, int y, int xbegin, int ybegin, int width, int height, u32 color)
-{
-	pp2d_texture_select_part(id, x, y, xbegin, ybegin, width, height);
-	pp2d_texture_blend(color);
-	pp2d_texture_draw();		
-}
-
-void pp2d_draw_texture_part_scale(size_t id, int x, int y, int xbegin, int ybegin, int width, int height, float scaleX, float scaleY)
-{
-	pp2d_texture_select_part(id, x, y, xbegin, ybegin, width, height);
-	pp2d_texture_scale(scaleX, scaleY);
-	pp2d_texture_draw();
-}
-
-void pp2d_draw_texture_part_scale_blend(size_t id, int x, int y, int xbegin, int ybegin, int width, int height, float scaleX, float scaleY, u32 color)
-{
-	pp2d_texture_select_part(id, x, y, xbegin, ybegin, width, height);
-	pp2d_texture_blend(color);
-	pp2d_texture_scale(scaleX, scaleY);
-	pp2d_texture_draw();		
-}
+int loadPNGInRAM_elements = 21;
 
 void GUITextsInit() {
 	struct i18n_files listFiles = i18n_getFilesPath();
@@ -128,132 +112,34 @@ void loadPNGInRAM(u32 id, const char* filepath) {
 	pp2d_load_texture_png(id, filepath);
 }
 
-void initProgressLoadPNGInRAM(int total) {
-	loadPNGInRAM_current_element = 1;
-	loadPNGInRAM_elements = total;
-}
-
-
-int getGUIElementsI18nSpecifyTotalElements() {
-	return game_is3DS() ? 1 : 0;
-}
-
-void GUIElementsI18nSpecify() {
-	struct i18n_files languageSpecificFiles = i18n_getFilesPath();
-	if (game_is3DS()) {
-		loadPNGInRAM(TEXTURE_TYPES_SPRITESHEET, languageSpecificFiles.types);
-	}
-}
-
 void GUIElementsSpecify() {
-	int elements = 4;
-	if (game_is3DS()) {
-		elements += 60;
-	} else {
-		elements += 16;
-	}
-
-	elements += getGUIElementsI18nSpecifyTotalElements();
-	initProgressLoadPNGInRAM(elements);
-
 	freezeMsg(i18n(S_GRAPHIC_GUI_ELEMENTS_SPECIFY_LOADING));
-#if CITRA
-	loadPNGInRAM(TEXTURE_ALTERNATIVE_SPRITESHEET, "romfs:/citra/PKResources/additionalassets/alternative_icons_spritesheetv3.png");
-	loadPNGInRAM(TEXTURE_NORMAL_SPRITESHEET, "romfs:/citra/PKResources/additionalassets/pokemon_icons_spritesheetv3.png");
-	loadPNGInRAM(TEXTURE_BALLS_SPRITESHEET, "romfs:/citra/PKResources/additionalassets/balls_spritesheetv2.png");
-	loadPNGInRAM(TEXTURE_SHINY_SPRITESHEET, "romfs:/citra/PKResources/additionalassets/pokemon_shiny_icons_spritesheet.png");
-#else
-	loadPNGInRAM(TEXTURE_ALTERNATIVE_SPRITESHEET, "/3ds/data/PKSM/additionalassets/alternative_icons_spritesheetv3.png");
-	loadPNGInRAM(TEXTURE_NORMAL_SPRITESHEET, "/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheetv3.png");
-	loadPNGInRAM(TEXTURE_BALLS_SPRITESHEET, "/3ds/data/PKSM/additionalassets/balls_spritesheetv2.png");
-	loadPNGInRAM(TEXTURE_SHINY_SPRITESHEET, "/3ds/data/PKSM/additionalassets/pokemon_shiny_icons_spritesheet.png");
-#endif
 
-	if (game_is3DS()) {
-		loadPNGInRAM(TEXTURE_GENERATIONS, "romfs:/res/generations.png");
-		loadPNGInRAM(TEXTURE_EVENT_VIEW, "romfs:/res/Event View.png");
-		loadPNGInRAM(TEXTURE_ICON_BANK, "romfs:/res/Icon Bank.png");
-		loadPNGInRAM(TEXTURE_ICON_EDITOR, "romfs:/res/Icon Editor.png");
-		loadPNGInRAM(TEXTURE_ICON_EVENTS, "romfs:/res/Icon Events.png");
-		loadPNGInRAM(TEXTURE_ICON_SAVE, "romfs:/res/Icon Save.png");
-		loadPNGInRAM(TEXTURE_ICON_SETTINGS, "romfs:/res/Icon Settings.png");
-		loadPNGInRAM(TEXTURE_ICON_CREDITS, "romfs:/res/Icon Credits.png");
-		loadPNGInRAM(TEXTURE_MAIN_MENU_BUTTON, "romfs:/res/Main Menu Button.png");
-		
-		loadPNGInRAM(TEXTURE_BOX_VIEW, "romfs:/res/Box View.png");
-		loadPNGInRAM(TEXTURE_NO_MOVE, "romfs:/res/No Move.png");
-		loadPNGInRAM(TEXTURE_BACK_BUTTON, "romfs:/res/Back Button.png");
-		loadPNGInRAM(TEXTURE_BOTTOM_BAR, "romfs:/res/Bottom Bar.png");
-		loadPNGInRAM(TEXTURE_HEX_BUTTON, "romfs:/res/Hex Button.png");
-		loadPNGInRAM(TEXTURE_HEX_BG, "romfs:/res/Hex BG.png");
-		loadPNGInRAM(TEXTURE_BLUE_TEXT_BOX, "romfs:/res/Blue Textbox.png");
-		loadPNGInRAM(TEXTURE_OTA_BUTTON, "romfs:/res/OTA Button.png");
-		loadPNGInRAM(TEXTURE_INCLUDE_INFO, "romfs:/res/Include Info.png");
-		loadPNGInRAM(TEXTURE_GENERATION_BG, "romfs:/res/Generation BG.png");
-		loadPNGInRAM(TEXTURE_HIDDEN_POWER_BG, "romfs:/res/Hidden Power BG.png");
-		loadPNGInRAM(TEXTURE_BALLS_BG, "romfs:/res/BallsBG.png");
-		loadPNGInRAM(TEXTURE_MALE, "romfs:/res/Male.png");
-		loadPNGInRAM(TEXTURE_FEMALE, "romfs:/res/Female.png");
-		loadPNGInRAM(TEXTURE_NATURES, "romfs:/res/Natures.png");
-		loadPNGInRAM(TEXTURE_MOVES_BOTTOM, "romfs:/res/Moves Bottom.png");
-		loadPNGInRAM(TEXTURE_TOP_MOVES, "romfs:/res/Top Moves.png");
-		loadPNGInRAM(TEXTURE_EDITOR_STATS, "romfs:/res/Editor Stats.png");
-		loadPNGInRAM(TEXTURE_SUB_ARROW, "romfs:/res/Sub Arrow.png");
-		loadPNGInRAM(TEXTURE_BACKGROUND, "romfs:/res/Background.png");
-		loadPNGInRAM(TEXTURE_MINI_BOX, "romfs:/res/Mini Box.png");
-		loadPNGInRAM(TEXTURE_MINUS_BUTTON, "romfs:/res/Minus Button.png");
-		loadPNGInRAM(TEXTURE_PLUS_BUTTON, "romfs:/res/Plus Button.png");
-		loadPNGInRAM(TEXTURE_TRANSFER_BUTTON, "romfs:/res/Transfer Button.png");
-		loadPNGInRAM(TEXTURE_BANK_TOP, "romfs:/res/Bank Top.png");
-		loadPNGInRAM(TEXTURE_SHINY, "romfs:/res/Shiny.png");
-		loadPNGInRAM(TEXTURE_NORMAL_BAR, "romfs:/res/Normal Bar.png");
-		loadPNGInRAM(TEXTURE_R_BUTTON, "romfs:/res/R Button.png");
-		loadPNGInRAM(TEXTURE_L_BUTTON, "romfs:/res/L Button.png");
-		loadPNGInRAM(TEXTURE_CREDITS, "romfs:/res/Credits Top.png");
-		loadPNGInRAM(TEXTURE_POKEBALL, "romfs:/res/Pokeball.png");
-		loadPNGInRAM(TEXTURE_MAIN_MENU_DARK_BAR, "romfs:/res/Main Menu Dark Bar.png");
-		loadPNGInRAM(TEXTURE_DARK_BUTTON, "romfs:/res/Dark Button.png");
-		loadPNGInRAM(TEXTURE_LEFT, "romfs:/res/Left.png");
-		loadPNGInRAM(TEXTURE_LIGHT_BUTTON, "romfs:/res/Light Button.png");
-		loadPNGInRAM(TEXTURE_RED_BUTTON, "romfs:/res/Red Button.png");
-		loadPNGInRAM(TEXTURE_RIGHT, "romfs:/res/Right.png");
-		loadPNGInRAM(TEXTURE_EVENT_MENU_BOTTOM_BAR, "romfs:/res/Event Menu Bottom Bar.png");
-		loadPNGInRAM(TEXTURE_EVENT_MENU_TOP_BAR_SELECTED, "romfs:/res/Event Menu Top Bar Selected.png");
-		loadPNGInRAM(TEXTURE_EVENT_MENU_TOP_BAR_NORMAL, "romfs:/res/Event Menu Top Bar.png");
-		loadPNGInRAM(TEXTURE_INFO_VIEW, "romfs:/res/Info View.png");
-		loadPNGInRAM(TEXTURE_SELECTOR_NORMAL, "romfs:/res/Selector.png");
-		loadPNGInRAM(TEXTURE_SELECTOR_CLONING, "romfs:/res/Selector (cloning).png");
-		loadPNGInRAM(TEXTURE_EDITOR_BOTTOM_BG, "romfs:/res/Editor Bottom BG.png");
-		loadPNGInRAM(TEXTURE_PLUS, "romfs:/res/Plus.png");
-		loadPNGInRAM(TEXTURE_MINUS, "romfs:/res/Minus.png");
-		loadPNGInRAM(TEXTURE_BUTTON, "romfs:/res/Button.png");
-		loadPNGInRAM(TEXTURE_SETTING, "romfs:/res/Setting.png");
-		loadPNGInRAM(TEXTURE_BOTTOM_POPUP, "romfs:/res/Bottom Pop-Up.png");
-		loadPNGInRAM(TEXTURE_POKEMON_BOX, "romfs:/res/Pokemon Box.png");
-		loadPNGInRAM(TEXTURE_ITEM, "romfs:/res/item.png");
-	} else {
-		loadPNGInRAM(TEXTURE_POKEBALL, "romfs:/res/DS Pokeball.png");
-		loadPNGInRAM(TEXTURE_DS_MENU_BOTTOM_BG, "romfs:/res/Bottom BG.png");
-		loadPNGInRAM(TEXTURE_DS_TOP_BG, "romfs:/res/Top BG.png");
-		loadPNGInRAM(TEXTURE_SELECTED_DS_BAR, "romfs:/res/Bar Selected.png");
-		loadPNGInRAM(TEXTURE_DS_BAR, "romfs:/res/Bar.png");
-		loadPNGInRAM(TEXTURE_DS_MENU_BOTTOM_BG, "romfs:/res/DS Menu Bottom BG.png");
-		loadPNGInRAM(TEXTURE_LANGUAGE_BUTTON_SELECTED, "romfs:/res/Language Button Selected.png");
-		loadPNGInRAM(TEXTURE_LANGUAGE_BUTTON_NORMAL, "romfs:/res/Language Button.png");
-		loadPNGInRAM(TEXTURE_DS_EVENT_DATABASE_BG, "romfs:/res/Event Database BG.png");
-		loadPNGInRAM(TEXTURE_NORMAL_L, "romfs:/res/Normal L.png");
-		loadPNGInRAM(TEXTURE_NORMAL_R, "romfs:/res/Normal R.png");
-		loadPNGInRAM(TEXTURE_SELECTED_L, "romfs:/res/Selected L.png");
-		loadPNGInRAM(TEXTURE_SELECTED_R, "romfs:/res/Selected R.png");
-		
-		loadPNGInRAM(TEXTURE_HEX_BG, "romfs:/res/Hex BG.png");
-		loadPNGInRAM(TEXTURE_MINUS_BUTTON, "romfs:/res/Minus Button.png");
-		loadPNGInRAM(TEXTURE_PLUS_BUTTON, "romfs:/res/Plus Button.png");
-	}
+	loadPNGInRAM(TEXTURE_ALTERNATIVE_SPRITESHEET, "/3ds/PKSM/additionalassets/altspritesheetfinal.png");
+	loadPNGInRAM(TEXTURE_NORMAL_SPRITESHEET, "/3ds/PKSM/additionalassets/norspritesheetfinal.png");
+	loadPNGInRAM(TEXTURE_BALLS_SPRITESHEET, "/3ds/PKSM/additionalassets/balspritesheetfinal.png");
 
-	GUIElementsI18nSpecify();
+	loadPNGInRAM(SPRITESHEET, "romfs:/res/spritesheet.png");
+	loadPNGInRAM(TEXTURE_EVENT_VIEW, "romfs:/res/Event View.png");
+	loadPNGInRAM(TEXTURE_BOX_VIEW, "romfs:/res/Box View.png");
+	loadPNGInRAM(TEXTURE_HEX_BG, "romfs:/res/Hex BG.png");
+	loadPNGInRAM(TEXTURE_GENERATION_BG, "romfs:/res/Generation BG.png");
+	loadPNGInRAM(TEXTURE_HIDDEN_POWER_BG, "romfs:/res/Hidden Power BG.png");
+	loadPNGInRAM(TEXTURE_BALLS_BG, "romfs:/res/BallsBG.png");
+	loadPNGInRAM(TEXTURE_NATURES, "romfs:/res/Natures.png");
+	loadPNGInRAM(TEXTURE_MOVES_BOTTOM, "romfs:/res/Moves Bottom.png");
+	loadPNGInRAM(TEXTURE_TOP_MOVES, "romfs:/res/Top Moves.png");
+	loadPNGInRAM(TEXTURE_EDITOR_STATS, "romfs:/res/Editor Stats.png");
+	loadPNGInRAM(TEXTURE_BACKGROUND, "romfs:/res/Background.png");
+	loadPNGInRAM(TEXTURE_BANK_TOP, "romfs:/res/Bank Top.png");
+	loadPNGInRAM(TEXTURE_CREDITS, "romfs:/res/Credits Top.png");
+	loadPNGInRAM(TEXTURE_INFO_VIEW, "romfs:/res/Info View.png");
+	loadPNGInRAM(TEXTURE_EDITOR_BOTTOM_BG, "romfs:/res/Editor Bottom BG.png");
+	loadPNGInRAM(TEXTURE_HEX_BG, "romfs:/res/Hex BG.png");
+
+	struct i18n_files languageSpecificFiles = i18n_getFilesPath();
+	loadPNGInRAM(TEXTURE_TYPES_SPRITESHEET, languageSpecificFiles.types);
 }
-
 
 void GUIGameElementsInit() {
 	pp2d_load_texture_png(TEXTURE_LOGOS_GEN5, "romfs:/res/LogosGen5.png");
@@ -262,10 +148,6 @@ void GUIGameElementsInit() {
 }
 
 void GUIElementsExit() {
-	GUIElementsI18nExit();
-}
-
-void GUITextsExit() {
 	i18n_free_ArrayUTF32(&listAbilities);
 	i18n_free_ArrayUTF32(&listMoves);
 	i18n_free_ArrayUTF32(&listNatures);
@@ -274,15 +156,6 @@ void GUITextsExit() {
 	i18n_free_ArrayUTF32(&listHPs);
 	i18n_free_ArrayUTF32(&listForms);
 	i18n_free_ArrayUTF32(&listSpecies);
-}
-
-void GUIElementsI18nExit() {
-	GUITextsExit();
-}
-
-void drawFPSDebug() {
-	//pp2d_draw_rectangle(10, 10, 108, 20, RGBA8(0, 0, 0, 160));
-	//pp2d_draw_textf(12, 13, 0.5f, 0.5f, WHITE, "FPS: %2.6f", sf2d_get_fps());
 }
 
 char messageDebug[255];
@@ -310,27 +183,18 @@ void drawConsoleDebug() {
 		}
 	}
 }
-void pksm_end_frame() {
-	#if DEBUG
-		drawFPSDebug();
-	#endif
-	#if DEBUG_I18N
-		drawConsoleDebug();
-	#endif
-	pp2d_end_draw();
-}
 
-void printSelector(int x, int y, int width, int height) {
+static void printSelector(int x, int y, int width, int height) {
 	pp2d_draw_rectangle(x, y, width, height, BUTTONBORD);
 	pp2d_draw_rectangle(x + 1, y + 1, width - 2, height - 2, BUTTONGREY);
 }
 
-void printMenuTop() {
+static void printMenuTop() {
 	pp2d_draw_rectangle(0, 0, 400, 240, MENUBLUE);
 	pp2d_draw_rectangle(0, 0, 400, 25, HIGHBLUE);
 }
 
-void printMenuBottom() {
+static void printMenuBottom() {
 	pp2d_draw_rectangle(0, 0, 320, 240, PALEBLUE);
 	pp2d_draw_rectangle(0, 219, 320, 21, MENUBLUE);
 }
@@ -348,7 +212,7 @@ void infoDisp(wchar_t* message) {
 		
 			pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 			pp2d_draw_texture(TEXTURE_WARNING_BOTTOM, 0, 0);
-		pksm_end_frame();
+		pp2d_end_draw();
 	}
 }
 
@@ -366,7 +230,7 @@ int confirmDisp(wchar_t* message) {
 
 			pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 			pp2d_draw_texture(TEXTURE_WARNING_BOTTOM, 0, 0);
-		pksm_end_frame();
+		pp2d_end_draw();
 	}
 	return 0;
 }
@@ -386,7 +250,7 @@ void _freezeMsgWithDetails(wchar_t* message, wchar_t* details, bool useLastMessa
 	
 		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 		pp2d_draw_texture(TEXTURE_WARNING_BOTTOM, 0, 0);
-	pksm_end_frame();
+	pp2d_end_draw();
 }
 
 void freezeMsgDetails(wchar_t* details) { _freezeMsgWithDetails(L"", details, true); }
@@ -404,20 +268,16 @@ void progressBar(wchar_t* message, u32 current, u32 sz) {
 	
 		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 		pp2d_draw_texture(TEXTURE_WARNING_BOTTOM, 0, 0);
-	pksm_end_frame();
+	pp2d_end_draw();
 }
 
 void drawMenuTop() {
 	printMenuTop();
 	printTitle(L"PKSM");
-
-	if (game_is3DS())
-		pp2d_draw_texture(TEXTURE_POKEBALL, 171, 95);
-	else
-		pp2d_draw_texture(TEXTURE_WARNING_TOP, 173, 98);
+	pksm_draw_texture(TEXTURE_POKEBALL, 171, 95);
 	
 	char version[10];
-	snprintf(version, 10, "v%d.%d.%d", APP_VERSION_MAJOR, APP_VERSION_MINOR, APP_VERSION_MICRO);
+	sprintf(version, "v%d.%d.%d", APP_VERSION_MAJOR, APP_VERSION_MINOR, APP_VERSION_MICRO);
 	pp2d_draw_text(398 - pp2d_get_text_width(version, FONT_SIZE_9, FONT_SIZE_9), 229, FONT_SIZE_9, FONT_SIZE_9, LIGHTBLUE, version);
 }
 
@@ -439,37 +299,45 @@ void gameSelectorMenu(int n) {
 		printMenuTop();
 		pp2d_draw_wtext_center(GFX_TOP, 6, FONT_SIZE_9, FONT_SIZE_9, BLUE, i18n(S_GRAPHIC_GAME_SELECTOR_INFO_CART_HAS_PRIO));
 		
-		for (int i = 0; i < 6; i++) {
+		for (int i = 0; i < 4; i++) {
 			if (n == i) {
-				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_3DS, 26 + i*60 + 4, 80 + 4, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70, HIGHBLUE);
-				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_3DS, 26 + i*60, 80, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70, logoColors[i]);
+				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_3DS, 44 + i*85 + 4, 55 + 4, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70, HIGHBLUE);
+				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_3DS, 44 + i*85, 55, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70, logoColors[i]);
 			} else
-				pp2d_draw_texture_part(TEXTURE_LOGOS_3DS, 26 + i*60, 80, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70);
+				pp2d_draw_texture_part(TEXTURE_LOGOS_3DS, 44 + i*85, 55, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70);
+		}
+		
+		for (int i = 4; i < 8; i++) {
+			if (n == i) {
+				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_3DS, 60 + (i - 4)*70 + 4, 120 + 4, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70, HIGHBLUE);
+				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_3DS, 60 + (i - 4)*70, 120, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70, logoColors[i]);
+			} else
+				pp2d_draw_texture_part(TEXTURE_LOGOS_3DS, 60 + (i - 4)*70, 120, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70);
 		}
 
-		pp2d_draw_wtext_center(GFX_TOP, 185, FONT_SIZE_18, FONT_SIZE_18, logoColors[n], i18n(gamesList[n]));
+		pp2d_draw_wtext_center(GFX_TOP, 200, FONT_SIZE_18, FONT_SIZE_18, logoColors[n], i18n(gamesList[n]));
 	
 		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 		printMenuBottom();
 		
-		for (int i = 6; i < 11; i++) {
+		for (int i = 8; i < 13; i++) {
 			if (n == i) {
-				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_GEN4, 26 + (i - 6)*56 + 4, 40 + 4, logo_lookup4[i - 6], 0, logo_lookup4[i - 5] - logo_lookup4[i - 6] - 1, 55, HIGHBLUE);
-				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_GEN4, 26 + (i - 6)*56, 40, logo_lookup4[i - 6], 0, logo_lookup4[i - 5] - logo_lookup4[i - 6] - 1, 55, logoColors[i]);
+				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_GEN4, 26 + (i - 8)*56 + 4, 40 + 4, logo_lookup4[i - 8], 0, logo_lookup4[i - 7] - logo_lookup4[i - 8] - 1, 56, HIGHBLUE);
+				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_GEN4, 26 + (i - 8)*56, 40, logo_lookup4[i - 8], 0, logo_lookup4[i - 7] - logo_lookup4[i - 8] - 1, 56, logoColors[i]);
 			} else
-				pp2d_draw_texture_part(TEXTURE_LOGOS_GEN4, 26 + (i - 6)*56, 40, logo_lookup4[i - 6], 0, logo_lookup4[i - 5] - logo_lookup4[i - 6] - 1, 55);
+				pp2d_draw_texture_part(TEXTURE_LOGOS_GEN4, 26 + (i - 8)*56, 40, logo_lookup4[i - 8], 0, logo_lookup4[i - 7] - logo_lookup4[i - 8] - 1, 56);
 		}
 		
-		for (int i = 11; i < 15; i++) {
+		for (int i = 13; i < 17; i++) {
 			if (n == i) {
-				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_GEN5, 40 + (i - 11)*60 + 4, 115 + 4, logo_lookup5[i - 11], 0, logo_lookup5[i - 10] - logo_lookup5[i - 11] - 1, 63, HIGHBLUE);
-				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_GEN5, 40 + (i - 11)*60, 115, logo_lookup5[i - 11], 0, logo_lookup5[i - 10] - logo_lookup5[i - 11] - 1, 63, logoColors[i]);
+				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_GEN5, 40 + (i - 13)*60 + 4, 115 + 4, logo_lookup5[i - 13], 0, logo_lookup5[i - 12] - logo_lookup5[i - 13] - 1, 60, HIGHBLUE);
+				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_GEN5, 40 + (i - 13)*60, 115, logo_lookup5[i - 13], 0, logo_lookup5[i - 12] - logo_lookup5[i - 13] - 1, 60, logoColors[i]);
 			} else
-				pp2d_draw_texture_part(TEXTURE_LOGOS_GEN5, 40 + (i - 11)*60, 115, logo_lookup5[i - 11], 0, logo_lookup5[i - 10] - logo_lookup5[i - 11] - 1, 63);
+				pp2d_draw_texture_part(TEXTURE_LOGOS_GEN5, 40 + (i - 13)*60, 115, logo_lookup5[i - 13], 0, logo_lookup5[i - 12] - logo_lookup5[i - 13] - 1, 60);
 		}
 
 		printBottomIndications(i18n(S_GRAPHIC_GAME_SELECTOR_INDICATIONS));
-	pksm_end_frame();
+	pp2d_end_draw();
 }
 
 void menu(int menu[]) {
@@ -480,53 +348,36 @@ void menu(int menu[]) {
 		printMenuBottom();		
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 2; j++) {
-				pp2d_draw_texture(TEXTURE_MAIN_MENU_BUTTON, 15 + j*150, 20 + i*63);
+				pksm_draw_texture(TEXTURE_MAIN_MENU_BUTTON, 15 + j*150, 20 + i*63);
 				pp2d_draw_wtext(15 + j*150 + 52 + (84 - pp2d_get_wtext_width(i18n(menu[i*2+j]), FONT_SIZE_15, FONT_SIZE_15)) / 2, 17 + i*63 + 19, FONT_SIZE_15, FONT_SIZE_15, LIGHTBLUE, i18n(menu[i*2+j]));
 				switch (i*2+j) {
 					case 0: 
-						pp2d_draw_texture(TEXTURE_ICON_BANK, 25, 27);
+						pksm_draw_texture(TEXTURE_ICON_BANK, 25, 27);
 						break;
 					case 1: 
-						pp2d_draw_texture(TEXTURE_ICON_EDITOR, 175, 28);
+						pksm_draw_texture(TEXTURE_ICON_EDITOR, 175, 28);
 						break;
 					case 2: 
-						pp2d_draw_texture(TEXTURE_ICON_EVENTS, 25, 93);
+						pksm_draw_texture(TEXTURE_ICON_EVENTS, 25, 93);
 						break;
 					case 3: 
-						pp2d_draw_texture(TEXTURE_ICON_SAVE, 175, 91);
+						pksm_draw_texture(TEXTURE_ICON_SAVE, 175, 91);
 						break;
 					case 4: 
-						pp2d_draw_texture(TEXTURE_ICON_SETTINGS, 25, 157);
+						pksm_draw_texture(TEXTURE_ICON_SETTINGS, 25, 157);
 						break;
 					case 5: 
-						pp2d_draw_texture(TEXTURE_ICON_CREDITS, 175, 160);
+						pksm_draw_texture(TEXTURE_ICON_CREDITS, 175, 160);
 						break;
 				}
 			}
 		}
 		printBottomIndications(i18n(S_MAIN_MENU_INDICATION_EXIT));
-	pksm_end_frame();
-}
-
-void mainMenuDS(int currentEntry) {
-	wchar_t* menu[] = { L"Events", L"Save Info", L"Other"};
-	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
-		pp2d_draw_texture(TEXTURE_DS_TOP_BG, 0, 0);
-		pp2d_draw_texture(TEXTURE_POKEBALL, 168, 91);
-	
-		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
-		pp2d_set_screen_color(GFX_TOP, BACKGROUND_BLACK);
-		pp2d_draw_texture(TEXTURE_DS_BOTTOM_BG, 0, 0);
-		for (int i = 0; i < 3; i++) {
-			pp2d_draw_texture((i == currentEntry) ? TEXTURE_SELECTED_DS_BAR : TEXTURE_DS_BAR, 0, 33 + i*56);
-			pp2d_draw_wtext_center(GFX_BOTTOM, (i == currentEntry) ? 43 + i*56 : 45 + i*56, FONT_SIZE_14, FONT_SIZE_14, (i == currentEntry) ? WHITE : DS, menu[i]);
-		}
-		pp2d_draw_wtext_center(GFX_BOTTOM, 224, FONT_SIZE_9, FONT_SIZE_9, RED, i18n(S_GRAPHIC_MENUDS_INDICATIONS));
-	pksm_end_frame();
+	pp2d_end_draw();
 }
 
 void printCredits() {
-	char* credits = "Smealum for ctrulib\nKaphotics and SciresM for PKHeX and memecrypto\nJ-K-D for direct save import/export\nArchitDate for serveLegality\nSlownic for java servepkx\nSlashcash for PCHex++\nGocario for PKBrew\nTuxSH for TWLSaveTool\nPPorg for most of the wcx bundled in the application\nSimona, Carlo, Matteo for fill.c work\nAll the countless translators who worked on the localization";
+	static const char* credits = "Naxann and Anty-Lemon for various contributions\nKaphotics and SciresM for PKHeX and memecrypto\nJ-K-D for direct save import/export\nAstronautlevel for QR code support\nArchitDate for serveLegality\nSlownic and zaksabeast for servepkx\nSlashcash for PCHex++\nTuxSH for TWLSaveTool\nProjectPokemon.org for most of the wondercards\nSimona for being my best supporter\nAll the countless translators who worked on the localization\nAll the contributors on Github\nEveryone supporting the development\n\nwww.github.com/BernardoGiordano/PKSM";
 	
 	while (aptMainLoop() && !(hidKeysUp() & KEY_B)) {
 		hidScanInput();
@@ -534,24 +385,21 @@ void printCredits() {
 		pp2d_begin_draw(GFX_TOP, GFX_LEFT);
 			printMenuTop();
 			printTitle(i18n(S_GRAPHIC_CREDITS_TITLE));
-			pp2d_draw_texture_part(TEXTURE_CREDITS, 16, 104, 0, 22, 181, 46);
-			pp2d_draw_texture_part(TEXTURE_CREDITS, 36, 104, 0, 22, 181, 46);
 			pp2d_draw_texture(TEXTURE_CREDITS, 0, 45);
 			pp2d_draw_text(18, 79, FONT_SIZE_15, FONT_SIZE_15, LIGHTBLUE, "Bernardo Giordano");
-			pp2d_draw_text(34, 117, FONT_SIZE_15, FONT_SIZE_15, LIGHTBLUE, "Naxann, Anty-Lemon");
 			pp2d_draw_text(64, 174, FONT_SIZE_15, FONT_SIZE_15,  LIGHTBLUE, "dsoldier for the complete GUI design");
 
 			pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 			printMenuBottom();
 			pp2d_draw_text(20, 30, FONT_SIZE_9, FONT_SIZE_9, LIGHTBLUE, credits);
 			printBottomIndications(i18n(S_GRAPHIC_CREDITS_INDICATIONS));
-		pksm_end_frame();
+		pp2d_end_draw();
 	}
 }
 
-void printDatabase6(char *database[], int currentEntry, int page, int spriteArray[]) {
+void printEventList(char *database[], int currentEntry, int page, int spriteArray[]) {
 	int pk, y = 41;
-	char pages[24];
+	char pages[24]; // 24 is way too much but kills a gcc warning
 	sprintf(pages, "%d/%d", page + 1, fill_get_index()/10);
 	
 	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
@@ -561,12 +409,12 @@ void printDatabase6(char *database[], int currentEntry, int page, int spriteArra
 		for (int i = 0; i < 5; i++) {
 			pk = spriteArray[page * 10 + i];
 			if (i == currentEntry)
-				pp2d_draw_texture(TEXTURE_EVENT_MENU_TOP_BAR_SELECTED, 18, y);
+				pksm_draw_texture(TEXTURE_EVENT_MENU_TOP_BAR_SELECTED, 18, y);
 			else
-				pp2d_draw_texture(TEXTURE_EVENT_MENU_TOP_BAR_NORMAL, 18, y);
+				pksm_draw_texture(TEXTURE_EVENT_MENU_TOP_BAR_NORMAL, 18, y);
 			
 			if (pk != -1) {
-				pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 20, y - ((i == currentEntry) ? movementOffsetSlow(2) : 0), 40 * (pk % 25) + 4, 30 * (pk / 25), 34, 30);
+				pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 20, y - ((i == currentEntry) ? movementOffsetSlow(2) : 0), 34 * (pk % 30), 30 * (pk / 30), 34, 30);
 			}
 			
 			if (pp2d_get_text_width(database[page*10 + i], FONT_SIZE_9, FONT_SIZE_9) <= 140)
@@ -581,12 +429,12 @@ void printDatabase6(char *database[], int currentEntry, int page, int spriteArra
 		for (int i = 5; i < 10; i++) {
 			pk = spriteArray[page * 10 + i];
 			if (i == currentEntry)
-				pp2d_draw_texture(TEXTURE_EVENT_MENU_TOP_BAR_SELECTED, 200, y);
+				pksm_draw_texture(TEXTURE_EVENT_MENU_TOP_BAR_SELECTED, 200, y);
 			else
-				pp2d_draw_texture(TEXTURE_EVENT_MENU_TOP_BAR_NORMAL, 200, y);
+				pksm_draw_texture(TEXTURE_EVENT_MENU_TOP_BAR_NORMAL, 200, y);
 			
 			if (pk != -1) {
-				pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 202, y - ((i == currentEntry) ? movementOffsetSlow(2) : 0), 40 * (pk % 25) + 4, 30 * (pk / 25), 34, 30);
+				pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 202, y - ((i == currentEntry) ? movementOffsetSlow(2) : 0), 34 * (pk % 30), 30 * (pk / 30), 34, 30);
 			}
 			
 			if (pp2d_get_text_width(database[page*10 + i], FONT_SIZE_9, FONT_SIZE_9) <= 140)
@@ -599,107 +447,42 @@ void printDatabase6(char *database[], int currentEntry, int page, int spriteArra
 		
 		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 		printMenuBottom();
-		pp2d_draw_texture(TEXTURE_EVENT_MENU_BOTTOM_BAR, 65, 45);
-		pp2d_draw_texture(TEXTURE_L_BUTTON, 83, 52);
-		pp2d_draw_texture(TEXTURE_R_BUTTON, 221, 52);
+		pksm_draw_texture(TEXTURE_EVENT_MENU_BOTTOM_BAR, 65, 45);
+		pksm_draw_texture(TEXTURE_L_BUTTON, 83, 52);
+		pksm_draw_texture(TEXTURE_R_BUTTON, 221, 52);
 		pp2d_draw_text_center(GFX_BOTTOM, 52, FONT_SIZE_12, FONT_SIZE_12, WHITE, pages);
 		printBottomIndications(i18n(S_GRAPHIC_DB6_INDICATIONS));
-	pksm_end_frame();
+	pp2d_end_draw();
 }
 
-void printDatabaseListDS(char *database[], int currentEntry, int page, int spriteArray[], bool isSelected, int langSelected, bool langVett[]) {
-	int pk, y = 41;
-	
-	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
-		pp2d_draw_texture(TEXTURE_DS_EVENT_DATABASE_BG, 0, 0);
-		
-		for (int i = 0; i < 5; i++) {
-			pk = spriteArray[page * 10 + i];
-			if (i == currentEntry)
-				pp2d_draw_texture(TEXTURE_SELECTED_L, 18, y);
-			else
-				pp2d_draw_texture(TEXTURE_NORMAL_L, 18, y);
-			
-			if (pk != -1) {
-				pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 22, y + 2, 40 * (pk % 25) + 4, 30 * (pk / 25), 34, 30);
-			}
-			if (pp2d_get_text_width(database[page*10 + i], FONT_SIZE_9, FONT_SIZE_9) <= 148)
-				pp2d_draw_text(55, y + 14, FONT_SIZE_9, FONT_SIZE_9, WHITE, database[page * 10 + i]);
-			else
-				pp2d_draw_text(55, y + 3, FONT_SIZE_9, FONT_SIZE_9, WHITE, database[page * 10 + i]);
-			
-			y += 36;
-		}
-		
-		y = 41;
-		for (int i = 5; i < 10; i++) {
-			pk = spriteArray[page * 10 + i];
-			if (i == currentEntry)
-				pp2d_draw_texture(TEXTURE_SELECTED_R, 200, y);
-			else
-				pp2d_draw_texture(TEXTURE_NORMAL_R, 200, y);
-			
-			if (pk != -1) {
-				pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 204, y + 2, 40 * (pk % 25) + 4, 30 * (pk / 25), 34, 30);
-			}
-			if (pp2d_get_text_width(database[page*10 + i], FONT_SIZE_9, FONT_SIZE_9) <= 148)
-				pp2d_draw_text(235, y + 14, FONT_SIZE_9, FONT_SIZE_9, WHITE, database[page * 10 + i]);
-			else
-				pp2d_draw_text(235, y + 3, FONT_SIZE_9, FONT_SIZE_9, WHITE, database[page * 10 + i]);
-			
-			y += 36;
-		}
-
-		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
-		pp2d_draw_texture(TEXTURE_DS_MENU_BOTTOM_BG, 0, 0);
-		pp2d_draw_wtext_center(GFX_BOTTOM, 222, FONT_SIZE_9, FONT_SIZE_9, RGBA8(255, 255, 255, 130), isSelected ? i18n(S_GRAPHIC_DB_INDICATIONS_INJECT) : i18n(S_GRAPHIC_DB_INDICATIONS_SELECT));
-		
-		if (isSelected) {
-			char *languages[7] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR"};			
-			
-			for (int t = 0; t < 7; t++) {
-				int x = 0, y = 178;
-				switch (t) {
-					case 0 : { x = 25; break; }
-					case 1 : { x = 63; break; }
-					case 2 : { x = 101; break; }
-					case 3 : { x = 139; break; }
-					case 4 : { x = 177; break; }
-					case 5 : { x = 215; break; }
-					case 6 : { x = 253; break; }
-				}
-				
-				pp2d_draw_texture(TEXTURE_LANGUAGE_BUTTON_NORMAL, x, y);
-				if (langVett[t]) {
-					if (t == langSelected) pp2d_draw_texture(TEXTURE_LANGUAGE_BUTTON_SELECTED, x, y);
-					pp2d_draw_text(x + (36 - pp2d_get_text_width(languages[t], FONT_SIZE_12, FONT_SIZE_12)) / 2, y + 4, FONT_SIZE_12, FONT_SIZE_12, WHITE, languages[t]);
-				}
-				else {
-					if (t == langSelected) pp2d_draw_texture(TEXTURE_LANGUAGE_BUTTON_SELECTED, x, y);
-					pp2d_draw_text(x + (36 - pp2d_get_text_width(languages[t], FONT_SIZE_12, FONT_SIZE_12)) / 2, y + 4, FONT_SIZE_12, FONT_SIZE_12, RGBA8(255, 255, 255, 100), languages[t]);
-				}
-			}
-		}
-	
-	pksm_end_frame();
-}
-
-void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bool overwrite, int langSelected, int nInjected, bool ota) {
-	char *languages[] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR", "CHS", "CHT"};
+void printEventInjector(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bool overwrite, int langSelected, int nInjected, bool ota) {
+	static const char *languages[] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR", "CHS", "CHT"};
 	char cont[3];
 	snprintf(cont, 3, "%d", nInjected + 1);
 	
-	int total = game_isgen7() ? 9 : 7;
+	const int total = game_isgen7() ? 9 : 7;
 	
 	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
-		wcxInfoViewer(previewbuf);
-		pp2d_draw_texture(TEXTURE_OTA_BUTTON, 360, 2);
+		printAnimatedBG(true);
 		
-		if (sprite != -1) {
-			pp2d_draw_texture_part_scale(TEXTURE_NORMAL_SPRITESHEET, 282, 41 - movementOffsetLong(6), 40 * (wcx_get_species(previewbuf) % 25) + 4, 30 * (wcx_get_species(previewbuf) / 25), 34, 30, 2, 2);
+		if (game_is3DS())
+		{
+			pksm_draw_texture(TEXTURE_OTA_BUTTON, 360, 2);
 		}
 		
-		if (ota) {
+		if (sprite != -1 && (game_is3DS() || game_isgen5()))
+		{
+			wcxInfoViewer(previewbuf);
+			pp2d_draw_texture_part_scale(TEXTURE_NORMAL_SPRITESHEET, 282, 41 - movementOffsetLong(6), 34 * (wc_get_species(previewbuf) % 30), 30 * (wc_get_species(previewbuf) / 30), 34, 30, 2, 2);
+		}
+		else
+		{
+			pp2d_draw_wtext_center(GFX_TOP, 95, FONT_SIZE_15, FONT_SIZE_15, BLACK, L"Detailed infos not available");
+			pp2d_draw_wtext_center(GFX_TOP, 115, FONT_SIZE_15, FONT_SIZE_15, BLACK, L"for this generation. Sorry!");
+		}
+		
+		if (ota)
+		{
 			pp2d_draw_rectangle(0, 0, 400, 240, RGBA8(0, 0, 0, 220));
 			pp2d_draw_wtext_center(GFX_TOP, 95, FONT_SIZE_15, FONT_SIZE_15, RGBA8(255, 255, 255, giveTransparence()), i18n(S_GRAPHIC_PKVIEWER_OTA_LAUNCH_CLIENT));
 			pp2d_draw_wtext_center(GFX_TOP, 130, FONT_SIZE_12, FONT_SIZE_12, WHITE, i18n(S_GRAPHIC_PKVIEWER_OTA_INDICATIONS));
@@ -709,16 +492,21 @@ void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bo
 		printMenuBottom();
 
 		if (getN(i) > 1)
-			pp2d_draw_text_center(GFX_BOTTOM, 19, FONT_SIZE_11, FONT_SIZE_11, LIGHTBLUE, "Press L to switch multiple wondercards.");
+		{
+			pp2d_draw_text_center(GFX_BOTTOM, 18, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, "\uE004+\uE005 \uE01E. L/R to switch multiple wondercards.");
+		}
+		else
+		{
+			pp2d_draw_text_center(GFX_BOTTOM, 18, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, "\uE004+\uE005 \uE01E");
+		}
 		
 		pp2d_draw_wtext(16, 50, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_DB_LANGUAGES));
-		pp2d_draw_wtext(16, 112, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_DB_OVERWRITE_WC));
-		pp2d_draw_wtext(16, 140, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_DB_ADAPT_LANGUAGE_WC));
-		pp2d_draw_wtext(16, 170, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_DB_INJECT_WC_SLOT));
 		
-		for (int t = 0; t < total; t++) {
+		for (int t = 0; t < total; t++)
+		{
 			int x = 0, y = 0;
-			switch (t) {
+			switch (t)
+			{
 				case 0 : { x = 114; y = 50; break; }
 				case 1 : { x = 153; y = 50; break; }
 				case 2 : { x = 192; y = 50; break; }
@@ -729,54 +517,48 @@ void printDB7(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bo
 				case 7 : { x = 231; y = 74; break; }
 				case 8 : { x = 270; y = 74; break; }
 			}
-			if (langVett[t]) {
-				if (t == langSelected) {
-					pp2d_draw_texture(TEXTURE_RED_BUTTON, x, y);
-					pp2d_draw_text(x + (36 - pp2d_get_text_width(languages[t], FONT_SIZE_14, FONT_SIZE_14)) / 2, y + 2, FONT_SIZE_14, FONT_SIZE_14, DARKBLUE, languages[t]);
-				} else {
-					pp2d_draw_texture(TEXTURE_DARK_BUTTON, x, y);
-					pp2d_draw_text(x + (36 - pp2d_get_text_width(languages[t], FONT_SIZE_14, FONT_SIZE_14)) / 2, y + 2, FONT_SIZE_14, FONT_SIZE_14, YELLOW, languages[t]);
-				}
+			if (langVett[t])
+			{
+				pksm_draw_texture(t == langSelected ? TEXTURE_RED_BUTTON : TEXTURE_DARK_BUTTON, x, y);
+				pp2d_draw_text(x + (36 - pp2d_get_text_width(languages[t], FONT_SIZE_14, FONT_SIZE_14)) / 2, y + 2, FONT_SIZE_14, FONT_SIZE_14, t == langSelected ? DARKBLUE : YELLOW, languages[t]);
 			}
-			else {
-				pp2d_draw_texture(TEXTURE_LIGHT_BUTTON, x, y);
+			else
+			{
+				pksm_draw_texture(TEXTURE_LIGHT_BUTTON, x, y);
 				pp2d_draw_text(x + (36 - pp2d_get_text_width(languages[t], FONT_SIZE_14, FONT_SIZE_14)) / 2, y + 2, FONT_SIZE_14, FONT_SIZE_14, DARKBLUE, languages[t]);
 			}
 		}
+
+		if (game_is3DS())
+		{
+			pksm_draw_texture(overwrite ? TEXTURE_RED_BUTTON : TEXTURE_DARK_BUTTON, 231, 110);
+			pksm_draw_texture(overwrite ? TEXTURE_DARK_BUTTON : TEXTURE_RED_BUTTON, 270, 110);
+			pksm_draw_texture(adapt ? TEXTURE_RED_BUTTON : TEXTURE_DARK_BUTTON, 231, 138);
+			pksm_draw_texture(adapt ? TEXTURE_DARK_BUTTON : TEXTURE_RED_BUTTON, 270, 138);
+			pksm_draw_texture(TEXTURE_DARK_BUTTON, 251, 168);	
 			
-		if (overwrite) {
-			pp2d_draw_texture(TEXTURE_RED_BUTTON, 231, 110);
-			pp2d_draw_texture(TEXTURE_DARK_BUTTON, 270, 110);
-		}
-		else {
-			pp2d_draw_texture(TEXTURE_DARK_BUTTON, 231, 110);
-			pp2d_draw_texture(TEXTURE_RED_BUTTON, 270, 110);			
-		}
-		
-		if (adapt) {
-			pp2d_draw_texture(TEXTURE_RED_BUTTON, 231, 138);
-			pp2d_draw_texture(TEXTURE_DARK_BUTTON, 270, 138);
-		}
-		else {
-			pp2d_draw_texture(TEXTURE_DARK_BUTTON, 231, 138);
-			pp2d_draw_texture(TEXTURE_RED_BUTTON, 270, 138);
+			pp2d_draw_wtext(16, 112, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_DB_OVERWRITE_WC));
+			pp2d_draw_wtext(16, 140, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_DB_ADAPT_LANGUAGE_WC));
+			pp2d_draw_wtext(16, 170, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_DB_INJECT_WC_SLOT));
+			
+			pp2d_draw_wtext(231 + (36 - pp2d_get_wtext_width(i18n(S_YES), FONT_SIZE_12, FONT_SIZE_12)) / 2, 113, FONT_SIZE_12, FONT_SIZE_12, overwrite ? DARKBLUE : YELLOW, i18n(S_YES));
+			pp2d_draw_wtext(270 + (36 - pp2d_get_wtext_width(i18n(S_NO), FONT_SIZE_12, FONT_SIZE_12)) / 2, 113, FONT_SIZE_12, FONT_SIZE_12, !overwrite ? DARKBLUE : YELLOW, i18n(S_NO));
+			pp2d_draw_wtext(231 + (36 - pp2d_get_wtext_width(i18n(S_YES), FONT_SIZE_12, FONT_SIZE_12)) / 2, 141, FONT_SIZE_12, FONT_SIZE_12, adapt ? DARKBLUE : YELLOW, i18n(S_YES));
+			pp2d_draw_wtext(270 + (36 - pp2d_get_wtext_width(i18n(S_NO), FONT_SIZE_12, FONT_SIZE_12)) / 2, 141, FONT_SIZE_12, FONT_SIZE_12, !adapt ? DARKBLUE : YELLOW, i18n(S_NO));
+			pp2d_draw_text(251 + (36 - pp2d_get_text_width(cont, FONT_SIZE_12, FONT_SIZE_12)) / 2, 171, FONT_SIZE_12, FONT_SIZE_12, YELLOW, cont);			
 		}
 		
-		pp2d_draw_texture(TEXTURE_DARK_BUTTON, 251, 168);	
-		
-		pp2d_draw_wtext(231 + (36 - pp2d_get_wtext_width(i18n(S_YES), FONT_SIZE_12, FONT_SIZE_12)) / 2, 113, FONT_SIZE_12, FONT_SIZE_12, (overwrite) ? DARKBLUE : YELLOW, i18n(S_YES));
-		pp2d_draw_wtext(270 + (36 - pp2d_get_wtext_width(i18n(S_NO), FONT_SIZE_12, FONT_SIZE_12)) / 2, 113, FONT_SIZE_12, FONT_SIZE_12,(!overwrite) ? DARKBLUE : YELLOW, i18n(S_NO));
-		pp2d_draw_wtext(231 + (36 - pp2d_get_wtext_width(i18n(S_YES), FONT_SIZE_12, FONT_SIZE_12)) / 2, 141, FONT_SIZE_12, FONT_SIZE_12,(adapt) ? DARKBLUE : YELLOW, i18n(S_YES));
-		pp2d_draw_wtext(270 + (36 - pp2d_get_wtext_width(i18n(S_NO), FONT_SIZE_12, FONT_SIZE_12)) / 2, 141, FONT_SIZE_12, FONT_SIZE_12,(!adapt) ? DARKBLUE : YELLOW, i18n(S_NO));
-		pp2d_draw_text(251 + (36 - pp2d_get_text_width(cont, FONT_SIZE_12, FONT_SIZE_12)) / 2, 171, FONT_SIZE_12, FONT_SIZE_12, YELLOW, cont);
-		
-		if (ota) {
+		if (ota)
+		{
 			pp2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
 			pp2d_draw_wtextf(10, 225, FONT_SIZE_9, FONT_SIZE_9, WHITE, i18n(S_HTTP_SERVER_RUNNING), socket_get_ip());
-		} else
+		} 
+		else
+		{
 			printBottomIndications(i18n(S_GRAPHIC_DB_INDICATIONS_INJECT));
-		
-	pksm_end_frame();
+		}
+
+	pp2d_end_draw();
 }
 
 u16 getAlternativeSprite(u8* pkmn, int game) {
@@ -796,86 +578,34 @@ void printElement(u8* pkmn, int game, u16 n, int x, int y) {
 	u16 t = getAlternativeSprite(pkmn, game);
 	if (t) {
 		t -= 1;
-		pp2d_draw_texture_part(TEXTURE_ALTERNATIVE_SPRITESHEET, x, y, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30);  
+		pp2d_draw_texture_part(TEXTURE_ALTERNATIVE_SPRITESHEET, x, y, 34 * (t % 6), 30 * (t / 6), 34, 30);  
 	} else {
-		if (pkx_get_species(pkmn) < 0 || pkx_get_species(pkmn) > 821)
+		if (pkx_get_species(pkmn) > ofs.maxSpecies)
 			pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, x, y, 0, 0, 34, 30);
 		else
-			pp2d_draw_texture_part(pkx_is_shiny(pkmn) ? TEXTURE_SHINY_SPRITESHEET : TEXTURE_NORMAL_SPRITESHEET, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30);
+			pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, x, y, 34 * (n % 30), 30 * (n / 30), 34, 30);
 	}
 	if (pkx_is_egg(pkmn))
-		pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, x + 6, y + 6, 40 * (EGGSPRITEPOS % 25) + 4, 30 * (EGGSPRITEPOS / 25), 34, 30);
+		pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, x + 6, y + 6, 34 * (EGGSPRITEPOS % 30), 30 * (EGGSPRITEPOS / 30), 34, 30);
 	if (pkx_get_item(pkmn))
-		pp2d_draw_texture(TEXTURE_ITEM, x + 3, y + 21);
+		pksm_draw_texture(TEXTURE_ITEM, x + 3, y + 21);
 }
 
 void printElementBlend(u8* pkmn, int game, u16 n, int x, int y, u32 color) {
 	u16 t = getAlternativeSprite(pkmn, game);
 	if (t) {
 		t -= 1;
-		pp2d_draw_texture_part_blend(TEXTURE_ALTERNATIVE_SPRITESHEET, x, y, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30, color); 
+		pp2d_draw_texture_part_blend(TEXTURE_ALTERNATIVE_SPRITESHEET, x, y, 34 * (t % 6), 30 * (t / 6), 34, 30, color); 
 	} else {
-		if (pkx_get_species(pkmn) < 0 || pkx_get_species(pkmn) > 821)
+		if (pkx_get_species(pkmn) > ofs.maxSpecies)
 			pp2d_draw_texture_part_blend(TEXTURE_NORMAL_SPRITESHEET, x, y, 0, 0, 34, 30, color);
 		else
-			pp2d_draw_texture_part_blend(TEXTURE_NORMAL_SPRITESHEET, x, y, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30, color);
+			pp2d_draw_texture_part_blend(TEXTURE_NORMAL_SPRITESHEET, x, y, 34 * (n % 30), 30 * (n / 30), 34, 30, color);
 	}
 	if (pkx_is_egg(pkmn))
-		pp2d_draw_texture_part_blend(TEXTURE_NORMAL_SPRITESHEET, x + 6, y + 6, 40 * (EGGSPRITEPOS % 25) + 4, 30 * (EGGSPRITEPOS / 25), 34, 30, color);
+		pp2d_draw_texture_part_blend(TEXTURE_NORMAL_SPRITESHEET, x + 6, y + 6, 34 * (EGGSPRITEPOS % 30), 30 * (EGGSPRITEPOS / 30), 34, 30, color);
 	if (pkx_get_item(pkmn))
-		pp2d_draw_texture_blend(TEXTURE_ITEM, x + 3, y + 21, color);
-}
-
-void printGeneration(u8* pkmn, int x, int y) {
-	u8 version = pkx_get_version(pkmn);
-	switch (version) {
-		case 1: // sapphire
-		case 2: // ruby
-		case 3: // emerald
-		case 4: // fire red
-		case 5: // leaf green
-		case 15: // colosseum/XD
-			pp2d_draw_texture_part(TEXTURE_GENERATIONS, x, y, 20, 0, 10, 10);
-			break;
-		case 10: // diamond
-		case 11: // pearl
-		case 12: // platinum
-		case 7: // heart gold
-		case 8: // soul silver
-			pp2d_draw_texture_part(TEXTURE_GENERATIONS, x, y, 30, 0, 10, 10);
-			break;		
-		case 20: // white
-		case 21: // black
-		case 22: // white2
-		case 23: // black2
-			pp2d_draw_texture_part(TEXTURE_GENERATIONS, x, y, 40, 0, 10, 10);
-			break;
-		case 24: // x
-		case 25: // y
-		case 26: // as
-		case 27: // or
-			pp2d_draw_texture_part(TEXTURE_GENERATIONS, x, y, 50, 0, 10, 10);
-			break;
-		case 30: // sun
-		case 31: // moon
-		case 32: // us
-		case 33: // um
-			pp2d_draw_texture_part(TEXTURE_GENERATIONS, x, y, 60, 0, 10, 10);
-			break;
-		case 34: // go
-			pp2d_draw_texture_part(TEXTURE_GENERATIONS, x, y, 10, 0, 10, 10);
-			break;
-		case 35: // rd
-		case 36: // gn
-		case 37: // bu
-		case 38: // yw
-		case 39: // gd
-		case 40: // sv
-			pp2d_draw_texture_part(TEXTURE_GENERATIONS, x, y, 0, 0, 10, 10);
-			break;
-		default:
-			break;
-	}
+		pksm_draw_texture_blend(TEXTURE_ITEM, x + 3, y + 21, color);
 }
 
 void infoViewer(u8* pkmn) {
@@ -886,10 +616,10 @@ void infoViewer(u8* pkmn) {
 	printAnimatedBG(true);
 	pp2d_draw_texture(TEXTURE_INFO_VIEW, 0, 2);
 
-	pp2d_draw_texture((pkx_get_move(pkmn, 0)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 155);
-	pp2d_draw_texture((pkx_get_move(pkmn, 1)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 176);
-	pp2d_draw_texture((pkx_get_move(pkmn, 2)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 197);
-	pp2d_draw_texture((pkx_get_move(pkmn, 3)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 218);
+	pksm_draw_texture((pkx_get_move(pkmn, 0)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 155);
+	pksm_draw_texture((pkx_get_move(pkmn, 1)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 176);
+	pksm_draw_texture((pkx_get_move(pkmn, 2)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 197);
+	pksm_draw_texture((pkx_get_move(pkmn, 3)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 218);
 	
 	pp2d_draw_wtext(251, 138, FONT_SIZE_12, FONT_SIZE_12, WHITE, i18n(S_GRAPHIC_INFOVIEWER_MOVES));
 	for (int i = 0; i < 10; i++) {
@@ -908,16 +638,16 @@ void infoViewer(u8* pkmn) {
 		y_desc += 20;
 	}
 	
-	if (pkx_get_species(pkmn) > 0 && pkx_get_species(pkmn) < 822) {
+	if (pkx_get_species(pkmn) > 0 && pkx_get_species(pkmn) < ofs.maxSpecies) {
 		pp2d_draw_texture_part(TEXTURE_BALLS_SPRITESHEET, -2, -5, 32 * (pkx_get_ball(pkmn) % 8), 32 * (pkx_get_ball(pkmn) / 8), 32, 32);
 		pp2d_draw_wtext(30, 6, FONT_SIZE_12, FONT_SIZE_12, WHITE, listSpecies.items[pkx_get_species(pkmn)]);
 		
 		printGeneration(pkmn, 134, 8);
 		
 		if (pkx_get_gender(pkmn) == 0)
-			pp2d_draw_texture(TEXTURE_MALE, 146, 7);
+			pksm_draw_texture(TEXTURE_MALE, 146, 7);
 		else if (pkx_get_gender(pkmn) == 1)
-			pp2d_draw_texture(TEXTURE_FEMALE, 148, 7);
+			pksm_draw_texture(TEXTURE_FEMALE, 148, 7);
 		
 		wchar_t level[8];
 		swprintf(level, 8, i18n(S_GRAPHIC_INFOVIEWER_LV), pkx_get_level(pkmn));
@@ -937,7 +667,7 @@ void infoViewer(u8* pkmn) {
 		pp2d_draw_wtext(215 - pp2d_get_wtext_width(items[pkx_get_item(pkmn)], FONT_SIZE_12, FONT_SIZE_12), 134, FONT_SIZE_12, FONT_SIZE_12, WHITE, items[pkx_get_item(pkmn)]);
 		
 		if (pkx_is_shiny(pkmn))
-			pp2d_draw_texture(TEXTURE_SHINY, 205, 9);
+			pksm_draw_texture(TEXTURE_SHINY, 205, 9);
 		
 		char friendship[11];
 		if (pkx_is_egg(pkmn))
@@ -975,18 +705,15 @@ void infoViewer(u8* pkmn) {
 }
 
 void wcxInfoViewer(u8* buf) {
-	int game = game_get();
-	
 	int y_desc = 29;
 	wchar_t* entries[] = {L"Species", L"OT", L"TID/SID", L"Held Item", L"Game", L"Met Date"};
 
-	printAnimatedBG(true);
 	pp2d_draw_texture(TEXTURE_EVENT_VIEW, 0, 2);
 
-	pp2d_draw_texture((wcx_get_move(buf, 0)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 155);
-	pp2d_draw_texture((wcx_get_move(buf, 1)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 176);
-	pp2d_draw_texture((wcx_get_move(buf, 2)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 197);
-	pp2d_draw_texture((wcx_get_move(buf, 3)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 218);
+	pksm_draw_texture((wc_get_move(buf, 0)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 155);
+	pksm_draw_texture((wc_get_move(buf, 1)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 176);
+	pksm_draw_texture((wc_get_move(buf, 2)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 197);
+	pksm_draw_texture((wc_get_move(buf, 3)) ? TEXTURE_NORMAL_BAR : TEXTURE_NO_MOVE, 252, 218);
 	
 	pp2d_draw_wtext(251, 138, FONT_SIZE_12, FONT_SIZE_12, WHITE, i18n(S_GRAPHIC_INFOVIEWER_MOVES));
 	for (int i = 0; i < 6; i++) {
@@ -997,90 +724,57 @@ void wcxInfoViewer(u8* buf) {
 		if (i == 5) y_desc += 6;
 	}
 	
-	wchar_t *version;
-	if (wcx_get_origin_game(buf) != 0) {
-		switch (wcx_get_origin_game(buf)) {
-			case 24:
-				version = L"X"; break;
-			case 25:
-				version = L"Y"; break;
-			case 26:
-				version = L"Alpha Sapphire"; break;
-			case 27:
-				version = L"Omega Ruby"; break;
-			case 30:
-				version = L"Sun"; break;
-			case 31:
-				version = L"Moon"; break;
-			default: 
-				version = L"WIP";
-		}
-	} else {
-		switch (game) {
-			case GAME_X:
-			case GAME_Y:
-				version = L"X/Y compatible"; break;
-			case GAME_OR:
-			case GAME_AS:
-				version = L"OR/AS compatible"; break;
-			case GAME_SUN:
-			case GAME_MOON:
-				version = L"Sun/Moon compatible"; break;
-			default:
-				version = L"WIP"; break;
-		}
-	}
-	
+	wchar_t *version = L"WIP";
 	pp2d_draw_wtext(215 - pp2d_get_wtext_width(version, FONT_SIZE_12, FONT_SIZE_12), 115, FONT_SIZE_12, FONT_SIZE_12, WHITE, version);
 	
-	u32 title[72] = {0};
-	wcx_get_title(buf, title);
-	pp2d_draw_wtext(!wcx_is_pokemon(buf) ? 4 : 30, 6, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)title);
+	u32 title[0x4A] = {0};
+	wc_get_title(buf, title);
+	pp2d_draw_wtext(!wc_is_pokemon(buf) ? 4 : 30, 6, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)title);
 	
 	u32 date[12] = {0};
-	swprintf((wchar_t*)date, 12, L"%u/%u/%u", wcx_get_year(buf), wcx_get_month(buf), wcx_get_day(buf));
+	swprintf((wchar_t*)date, 12, L"%u/%u/%u", wc_get_year(buf), wc_get_month(buf), wc_get_day(buf));
 	pp2d_draw_wtext(215 - (pp2d_get_wtext_width((wchar_t*)date, FONT_SIZE_12, FONT_SIZE_12)), 134, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)date);
 	
-	if (wcx_is_pokemon(buf)) {
-		pp2d_draw_texture_part(TEXTURE_BALLS_SPRITESHEET, -2, -5, 32 * (wcx_get_ball(buf) % 8), 32 * (wcx_get_ball(buf) / 8), 32, 32);
+	if (wc_is_pokemon(buf)) {
+		pp2d_draw_texture_part(TEXTURE_BALLS_SPRITESHEET, -2, -5, 32 * (wc_get_ball(buf) % 8), 32 * (wc_get_ball(buf) / 8), 32, 32);
 		
-		if (wcx_get_gender(buf) == 0)
-			pp2d_draw_texture(TEXTURE_MALE, 288, 7);
-		else if (wcx_get_gender(buf) == 1)
-			pp2d_draw_texture(TEXTURE_FEMALE, 290, 7);
+		if (wc_get_gender(buf) == 0)
+			pksm_draw_texture(TEXTURE_MALE, 288, 7);
+		else if (wc_get_gender(buf) == 1)
+			pksm_draw_texture(TEXTURE_FEMALE, 290, 7);
 		
 		wchar_t level[8];
-		swprintf(level, 8, i18n(S_GRAPHIC_INFOVIEWER_LV), wcx_get_level(buf));
+		swprintf(level, 8, i18n(S_GRAPHIC_INFOVIEWER_LV), wc_get_level(buf));
 		pp2d_draw_wtext(302, 6, FONT_SIZE_12, FONT_SIZE_12, WHITE, level);
 		
-		u32 ot_name[NICKNAMELENGTH*2] = {0};
-		wcx_get_ot(buf, ot_name);
+		u32 ot_name[0x4A] = {0};
+		wc_get_ot(buf, ot_name);
 		pp2d_draw_wtext(215 - pp2d_get_wtext_width((wchar_t*)ot_name, FONT_SIZE_12, FONT_SIZE_12), 49, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)ot_name);
 		
-		pp2d_draw_wtext(215 - pp2d_get_wtext_width(items[wcx_get_held_item(buf)], FONT_SIZE_12, FONT_SIZE_12), 94, FONT_SIZE_12, FONT_SIZE_12, WHITE, items[wcx_get_held_item(buf)]);
+		pp2d_draw_wtext(215 - pp2d_get_wtext_width(items[wc_get_held_item(buf)], FONT_SIZE_12, FONT_SIZE_12), 94, FONT_SIZE_12, FONT_SIZE_12, WHITE, items[wc_get_held_item(buf)]);
 		
-		if (wcx_is_shiny(buf)) {
-			pp2d_draw_texture(TEXTURE_SHINY, 206, 32);
-			pp2d_draw_wtext(202 - pp2d_get_wtext_width(listSpecies.items[wcx_get_species(buf)], FONT_SIZE_12, FONT_SIZE_12), 29, FONT_SIZE_12, FONT_SIZE_12, WHITE, listSpecies.items[wcx_get_species(buf)]);
+		if (wc_is_shiny(buf)) {
+			pksm_draw_texture(TEXTURE_SHINY, 206, 32);
+			pp2d_draw_wtext(202 - pp2d_get_wtext_width(listSpecies.items[wc_get_species(buf)], FONT_SIZE_12, FONT_SIZE_12), 29, FONT_SIZE_12, FONT_SIZE_12, WHITE, listSpecies.items[wc_get_species(buf)]);
 		} else {
-			pp2d_draw_wtext(215 - pp2d_get_wtext_width(listSpecies.items[wcx_get_species(buf)], FONT_SIZE_12, FONT_SIZE_12), 29, FONT_SIZE_12, FONT_SIZE_12, WHITE, listSpecies.items[wcx_get_species(buf)]);
+			pp2d_draw_wtext(215 - pp2d_get_wtext_width(listSpecies.items[wc_get_species(buf)], FONT_SIZE_12, FONT_SIZE_12), 29, FONT_SIZE_12, FONT_SIZE_12, WHITE, listSpecies.items[wc_get_species(buf)]);
 		}
 		
 		char otid[18];
-		snprintf(otid, 18, "%u / %u", wcx_get_tid(buf), wcx_get_sid(buf));
+		snprintf(otid, 18, "%u / %u", wc_get_tid(buf), wc_get_sid(buf));
 		pp2d_draw_text(215 - pp2d_get_text_width(otid, FONT_SIZE_12, FONT_SIZE_12), 69, FONT_SIZE_12, FONT_SIZE_12, WHITE, otid);
 	
 		int y_moves = 159;
 		for (int i = 0; i < 4; i++) {
-			if (wcx_get_move(buf, i))
-				pp2d_draw_wtext(396 - pp2d_get_wtext_width(moves[wcx_get_move(buf, i)], FONT_SIZE_12, FONT_SIZE_12), y_moves, FONT_SIZE_12, FONT_SIZE_12, WHITE, moves[wcx_get_move(buf, i)]);
+			if (wc_get_move(buf, i))
+				pp2d_draw_wtext(396 - pp2d_get_wtext_width(moves[wc_get_move(buf, i)], FONT_SIZE_12, FONT_SIZE_12), y_moves, FONT_SIZE_12, FONT_SIZE_12, WHITE, moves[wc_get_move(buf, i)]);
 			y_moves += 21;
 		}	
-	} else if (wcx_is_item(buf)) {
+	} else if (wc_is_item(buf)) {
 		pp2d_draw_text(215 - pp2d_get_text_width("None", FONT_SIZE_12, FONT_SIZE_12), 29, FONT_SIZE_12, FONT_SIZE_12, WHITE, "None");
 		pp2d_draw_text(215 - pp2d_get_text_width("None", FONT_SIZE_12, FONT_SIZE_12), 49, FONT_SIZE_12, FONT_SIZE_12, WHITE, "None");
 		pp2d_draw_text(215 - pp2d_get_text_width("None", FONT_SIZE_12, FONT_SIZE_12), 69, FONT_SIZE_12, FONT_SIZE_12, WHITE, "None");
-		pp2d_draw_wtext(215 - pp2d_get_wtext_width(items[wcx_get_item(buf)], FONT_SIZE_12, FONT_SIZE_12), 94, FONT_SIZE_12, FONT_SIZE_12, WHITE, items[wcx_get_item(buf)]);
+		pp2d_draw_wtext(215 - pp2d_get_wtext_width(items[wc_get_item(buf)], FONT_SIZE_12, FONT_SIZE_12), 94, FONT_SIZE_12, FONT_SIZE_12, WHITE, items[wc_get_item(buf)]);
 	}  else if (wcx_is_bp(buf)) {
 		pp2d_draw_text(215 - pp2d_get_text_width("None", FONT_SIZE_12, FONT_SIZE_12), 29, FONT_SIZE_12, FONT_SIZE_12, WHITE, "None");
 		pp2d_draw_text(215 - pp2d_get_text_width("None", FONT_SIZE_12, FONT_SIZE_12), 49, FONT_SIZE_12, FONT_SIZE_12, WHITE, "None");
@@ -1100,14 +794,14 @@ void printDexViewer(u8* mainbuf, int currentEntry, int page, int seen, int caugh
 					printSelector(j*49 + j, i*47 + i, 49, 47);
 				
 				int entry = i*8+j + 40*page;
-				if ((entry) < 802) {
+				if ((entry) < ofs.maxSpecies) {
 					if (getCaught(mainbuf, entry + 1))
-						pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((entry + 1) % 25) + 4, 30 * ((entry + 1) / 25), 34, 30);
+						pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 34 * ((entry + 1) % 30), 30 * ((entry + 1) / 30), 34, 30);
 					else if (getSeen(mainbuf, entry + 1)) {
-						pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((entry + 1) % 25) + 4, 30 * ((entry + 1) / 25), 34, 30);
-						pp2d_draw_texture_part_blend(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((entry + 1) % 25) + 4, 30 * ((entry + 1) / 25), 34, 30, RGBA8(0,0,0,160));
+						pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 34 * ((entry + 1) % 30), 30 * ((entry + 1) / 30), 34, 30);
+						pp2d_draw_texture_part_blend(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 34 * ((entry + 1) % 30), 30 * ((entry + 1) / 30), 34, 30, RGBA8(0,0,0,160));
 					} else {
-						pp2d_draw_texture_part_blend(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((entry + 1) % 25) + 4, 30 * ((entry + 1) / 25), 34, 30, RGBA8(0,0,0,255));
+						pp2d_draw_texture_part_blend(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 34 * ((entry + 1) % 30), 30 * ((entry + 1) / 30), 34, 30, RGBA8(0,0,0,255));
 					}
 					sprintf(temp, "%d", entry + 1);
 					pp2d_draw_text(49 * j + (49 - pp2d_get_text_width(temp, FONT_SIZE_9, FONT_SIZE_9)) / 2 + j, 34 + i * 47 + i, FONT_SIZE_9, FONT_SIZE_9, getCaught(mainbuf, entry + 1) ? WHITE : DS, temp);
@@ -1120,7 +814,7 @@ void printDexViewer(u8* mainbuf, int currentEntry, int page, int seen, int caugh
 		pp2d_draw_wtextf(16, 32, FONT_SIZE_14, FONT_SIZE_14, WHITE, i18n(S_GRAPHIC_PKBANK_SEEN), seen);
 		pp2d_draw_wtextf(16, 48, FONT_SIZE_14, FONT_SIZE_14, WHITE, i18n(S_GRAPHIC_PKBANK_CAUGHT), caught);
 		printBottomIndications(i18n(S_GRAPHIC_CREDITS_INDICATIONS));
-	pksm_end_frame();
+	pp2d_end_draw();
 }
 
 void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int currentEntry, int menuEntry, int box, int mode, int additional1, int additional2) {
@@ -1144,8 +838,8 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int currentEntry, int menu
 					if (additional1 == i * 8 + j)
 						printSelector(j*49 + j, i*47 + i, 49, 47);
 					
-					if ((i*8+j + 40*additional2) < 802) {
-						pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 40 * ((40 * additional2 + i * 8 + j + 1) % 25) + 4, 30 * ((40 * additional2 + i * 8 + j + 1) / 25), 34, 30);
+					if ((i*8+j + 40*additional2) < ofs.maxSpecies) {
+						pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 34 * ((40 * additional2 + i * 8 + j + 1) % 30), 30 * ((40 * additional2 + i * 8 + j + 1) / 30), 34, 30);
 						snprintf(temp, 4, "%d", 40 * additional2 + i * 8 + j + 1);
 						pp2d_draw_text(49 * j + (49 - pp2d_get_text_width(temp, FONT_SIZE_9, FONT_SIZE_9)) / 2 + j, 34 + i * 47 + i, FONT_SIZE_9, FONT_SIZE_9, WHITE, temp);
 					}
@@ -1166,13 +860,13 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int currentEntry, int menu
 
 		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 		pp2d_draw_texture(TEXTURE_BOX_VIEW, 0, 0);
-		pp2d_draw_texture(TEXTURE_BOTTOM_BAR, 0, 210);
+		pksm_draw_texture(TEXTURE_BOTTOM_BAR, 0, 210);
 		pp2d_draw_wtext(12 + (178 - pp2d_get_wtext_width(page, FONT_SIZE_12, FONT_SIZE_12)) / 2, 19, FONT_SIZE_12, FONT_SIZE_12, WHITE, page);
-		pp2d_draw_texture(TEXTURE_LEFT, 7, 17);
-		pp2d_draw_texture(TEXTURE_RIGHT, 185, 17);
-		pp2d_draw_texture(TEXTURE_OTA_BUTTON, 240, 211);
-		pp2d_draw_texture(TEXTURE_BACK_BUTTON, 283, 211);
-		pp2d_draw_wtext(247, 7, FONT_SIZE_12, FONT_SIZE_12, WHITE, i18n(S_GRAPHIC_PKVIEWER_TEAM));
+		pksm_draw_texture(TEXTURE_LEFT, 7, 17);
+		pksm_draw_texture(TEXTURE_RIGHT, 185, 17);
+		pksm_draw_texture(TEXTURE_OTA_BUTTON, 240, 211);
+		pksm_draw_texture(TEXTURE_BACK_BUTTON, 283, 211);
+		pp2d_draw_text(241, 7, FONT_SIZE_12, FONT_SIZE_12, WHITE, "\uE004+\uE005 \uE01E");
 		
 		int y = 45;
 		int pointer[2] = {0, 0};
@@ -1181,7 +875,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int currentEntry, int menu
 			for (int j = 0; j < 6; j++) {
 				pkx_get(mainbuf, box, i * 6 + j, pkmn);
 				u16 n = pkx_get_species(pkmn);
-				if (n > 0 && n < 822)
+				if (n > 0 && n < ofs.maxSpecies)
 					printElement(pkmn, game, n, x, y);
 
 				if ((currentEntry == (i * 6 + j)) && !isTeam) {
@@ -1194,8 +888,8 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int currentEntry, int menu
 		}
 		
 		for (int i = 0; i < 3; i++) {
-			pp2d_draw_texture(TEXTURE_POKEMON_BOX, 214, 40 + i * 45);
-			pp2d_draw_texture(TEXTURE_POKEMON_BOX, 266, 60 + i * 45);
+			pksm_draw_texture(TEXTURE_POKEMON_BOX, 214, 40 + i * 45);
+			pksm_draw_texture(TEXTURE_POKEMON_BOX, 266, 60 + i * 45);
 		}
 		
 		y = 45;
@@ -1216,10 +910,12 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int currentEntry, int menu
 			y += 45;
 		}
 		if (mode != ED_CLONE)
-			pp2d_draw_texture(TEXTURE_SELECTOR_NORMAL, pointer[0], pointer[1] - ((mode == ED_STANDARD) ? movementOffsetSlow(3) : 0));
+			pksm_draw_texture(TEXTURE_SELECTOR_NORMAL, pointer[0], pointer[1] - ((mode == ED_STANDARD) ? movementOffsetSlow(3) : 0));
 		else {
-			pp2d_draw_texture(TEXTURE_SELECTOR_CLONING, pointer[0], pointer[1] - movementOffsetSlow(3));			
-			pp2d_draw_texture(TEXTURE_BOTTOM_POPUP, 1, 214);
+			int ofs = movementOffsetSlow(3);
+			pksm_draw_texture(TEXTURE_SELECTOR_NORMAL, pointer[0], pointer[1] - ofs);	
+			pksm_draw_texture_blend(TEXTURE_SELECTOR_NORMAL, pointer[0], pointer[1] - ofs, RGBA8(0, 0, 255, 100));			
+			pksm_draw_texture(TEXTURE_BOTTOM_POPUP, 1, 214);
 			pp2d_draw_wtext(8, 220, FONT_SIZE_11, FONT_SIZE_11, WHITE, i18n(S_GRAPHIC_PKVIEWER_CLONE_INDICATIONS));
 		}
 		
@@ -1227,20 +923,20 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int currentEntry, int menu
 			pkx_get(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn);
 
 			pp2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
-			pp2d_draw_texture(TEXTURE_BOTTOM_POPUP, 1, 214);
+			pksm_draw_texture(TEXTURE_BOTTOM_POPUP, 1, 214);
 
 			if (pkx_get_ball(pkmn) != CHERISH_BALL && !isTeam) {
-				pp2d_draw_texture(TEXTURE_INCLUDE_INFO, 242, 5);
+				pksm_draw_texture(TEXTURE_INCLUDE_INFO, 242, 5);
 			}
 			pp2d_draw_wtextf(8, 220, FONT_SIZE_11, FONT_SIZE_11, WHITE, i18n(S_GRAPHIC_PKVIEWER_MENU_POKEMON_SELECTED), listSpecies.items[pkx_get_species(tmp)]);
 			for (int i = 0; i < 5; i++) {
-				pp2d_draw_texture(TEXTURE_BUTTON, 208, 42 + i * 27 + i*4);
+				pksm_draw_texture(TEXTURE_BUTTON, 208, 42 + i * 27 + i*4);
 				if (isTeam && (i == 0 || i == 2 || i == 3)) {
-					pp2d_draw_texture_blend(TEXTURE_BUTTON, 208, 42 + i * 27 + i*4, RGBA8(0, 0, 0, 100));
+					pksm_draw_texture_blend(TEXTURE_BUTTON, 208, 42 + i * 27 + i*4, RGBA8(0, 0, 0, 100));
 				}
 				pp2d_draw_wtext(208 + (109 - pp2d_get_wtext_width(menuEntries[i], FONT_SIZE_12, FONT_SIZE_12)) / 2, 49 + i * 27 + i*4, FONT_SIZE_12, FONT_SIZE_12, BLACK, menuEntries[i]);
 				if (i == menuEntry)
-					pp2d_draw_texture(TEXTURE_SUB_ARROW, 203 - movementOffsetSlow(3), 46 + i * 27 + i*4);
+					pksm_draw_texture(TEXTURE_SUB_ARROW, 203 - movementOffsetSlow(3), 46 + i * 27 + i*4);
 			}
 		} else if (mode == ED_GENERATE) {
 			pp2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
@@ -1254,7 +950,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int currentEntry, int menu
 			else
 				pp2d_draw_wtextf(10, 220, FONT_SIZE_9, FONT_SIZE_9, BARTEXT, i18n(S_GRAPHIC_PKVIEWER_SEED), getSaveSeed(mainbuf, 3), getSaveSeed(mainbuf, 2), getSaveSeed(mainbuf, 1), getSaveSeed(mainbuf, 0));
 		}
-	pksm_end_frame();
+	pp2d_end_draw();
 }
 
 void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, int mode, wchar_t* descriptions[]) {
@@ -1362,10 +1058,10 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 						if (forms->min > 0)
 							form++;
 						if (form == 0 || forms->spriteNum == 0)
-							pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, (width - 34) / 2 + width * j + j, 2 * (height - 44) / 3 + i * height, 40 * (additional2 % 25) + 4, 30 * (additional2 / 25), 34, 30);
+							pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, (width - 34) / 2 + width * j + j, 2 * (height - 44) / 3 + i * height, 34 * (additional2 % 30), 30 * (additional2 / 30), 34, 30);
 						else {
 							int sprite = forms->spriteNum + form - 2;
-							pp2d_draw_texture_part(TEXTURE_ALTERNATIVE_SPRITESHEET, (width - 34) / 2 + width * j + j, 2 * (height - 44) / 3 + i * height + i, 40 * (sprite % 6) + 4, 30 * (sprite / 6), 34, 30);
+							pp2d_draw_texture_part(TEXTURE_ALTERNATIVE_SPRITESHEET, (width - 34) / 2 + width * j + j, 2 * (height - 44) / 3 + i * height + i, 34 * (sprite % 6), 30 * (sprite / 6), 34, 30);
 						}
 						pp2d_draw_wtext(width * j + (width - pp2d_get_wtext_width(str, FONT_SIZE_9, FONT_SIZE_9)) / 2 + j, (height * 5) / 7 + i * height + i, FONT_SIZE_9, FONT_SIZE_9, WHITE, str);
 					}
@@ -1382,7 +1078,7 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 						printSelector(columns*25, rows*15, 24, 14);
 					pp2d_draw_textf(4 + 25*columns, 15*rows, FONT_SIZE_11, FONT_SIZE_11, (sector[byte][0]) ? WHITE : DS, "%02hhX", pkmn[byte]);
 					
-					if (byte == 231) break;
+					if (byte == ofs.pkmnLength - 1) break;
 				}
 			}
 			pp2d_draw_wtextf(4, 225, FONT_SIZE_11, FONT_SIZE_11, LIGHTBLUE, L"%ls", descriptions[additional1]);
@@ -1393,8 +1089,8 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 			printAnimatedBG(false);
 		if (mode == ED_BASE || mode == ED_ITEMS || mode == ED_NATURES || mode == ED_BALLS || mode == ED_FORMS) {
 			pp2d_draw_texture(TEXTURE_EDITOR_BOTTOM_BG, 0, 1);
-			pp2d_draw_texture(TEXTURE_BOTTOM_BAR, 0, 210);
-			pp2d_draw_texture(TEXTURE_HEX_BUTTON, 290, 1);
+			pksm_draw_texture(TEXTURE_BOTTOM_BAR, 0, 210);
+			pksm_draw_texture(TEXTURE_HEX_BUTTON, 290, 1);
 			
 			pp2d_draw_wtext(27, 4, FONT_SIZE_12, FONT_SIZE_12, WHITE, listSpecies.items[n]);
 			pp2d_draw_texture_part(TEXTURE_BALLS_SPRITESHEET, -2, -6, 32 * (pkx_get_ball(pkmn) % 8), 32 * (pkx_get_ball(pkmn) / 8), 32, 32);
@@ -1403,20 +1099,20 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 			int ofs = movementOffsetSlow(3);
 			if (t) {
 				t -= 1;
-				pp2d_draw_texture_part_scale_blend(TEXTURE_ALTERNATIVE_SPRITESHEET, 232, 32 - ofs, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30, 2, 2, RGBA8(0x0, 0x0, 0x0, 100)); 
-				pp2d_draw_texture_part_scale(TEXTURE_ALTERNATIVE_SPRITESHEET, 227, 27 - ofs, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30, 2, 2);
+				pp2d_draw_texture_part_scale_blend(TEXTURE_ALTERNATIVE_SPRITESHEET, 232, 32 - ofs, 34 * (t % 6), 30 * (t / 6), 34, 30, 2, 2, RGBA8(0x0, 0x0, 0x0, 100)); 
+				pp2d_draw_texture_part_scale(TEXTURE_ALTERNATIVE_SPRITESHEET, 227, 27 - ofs, 34 * (t % 6), 30 * (t / 6), 34, 30, 2, 2);
 			} else {
-				pp2d_draw_texture_part_scale_blend(TEXTURE_NORMAL_SPRITESHEET, 232, 32 - ofs, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30, 2, 2, RGBA8(0x0, 0x0, 0x0, 100));
-				pp2d_draw_texture_part_scale(pkx_is_shiny(pkmn) ? TEXTURE_SHINY_SPRITESHEET : TEXTURE_NORMAL_SPRITESHEET, 227, 27 - ofs, 40 * (n % 25) + 4, 30 * (n / 25), 34, 30, 2, 2);
+				pp2d_draw_texture_part_scale_blend(TEXTURE_NORMAL_SPRITESHEET, 232, 32 - ofs, 34 * (n % 30), 30 * (n / 30), 34, 30, 2, 2, RGBA8(0x0, 0x0, 0x0, 100));
+				pp2d_draw_texture_part_scale(TEXTURE_NORMAL_SPRITESHEET, 227, 27 - ofs, 34 * (n % 30), 30 * (n / 30), 34, 30, 2, 2);
 			}
 			
 			if (pkx_get_gender(pkmn) == 0)
-				pp2d_draw_texture(TEXTURE_MALE, 159, 6);
+				pksm_draw_texture(TEXTURE_MALE, 159, 6);
 			else if (pkx_get_gender(pkmn) == 1)
-				pp2d_draw_texture(TEXTURE_FEMALE, 161, 6);
+				pksm_draw_texture(TEXTURE_FEMALE, 161, 6);
 			
 			for (int i = 0; i < 3; i++) {
-				pp2d_draw_texture(TEXTURE_BUTTON, 206, 110 + i * 27 + i*4);
+				pksm_draw_texture(TEXTURE_BUTTON, 206, 110 + i * 27 + i*4);
 				pp2d_draw_wtext(206 + (109 - pp2d_get_wtext_width(options[i], FONT_SIZE_12, FONT_SIZE_12)) / 2, 117 + i * 27 + i*4, FONT_SIZE_12, FONT_SIZE_12, BLACK, options[i]);
 			}
 			
@@ -1427,12 +1123,12 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 					pp2d_draw_wtext(2, 29 + i * 20, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, entries[i]);
 
 			for (int i = 0; i < 7; i++)
-				pp2d_draw_texture(TEXTURE_SETTING, 180, 51 + i * 20);
+				pksm_draw_texture(TEXTURE_SETTING, 180, 51 + i * 20);
 
-			pp2d_draw_texture(TEXTURE_MINUS, 180 - max - 19, 29);
-			pp2d_draw_texture(TEXTURE_PLUS, 180, 29);
-			pp2d_draw_texture(TEXTURE_MINUS, 180 - max - 19, 189);
-			pp2d_draw_texture(TEXTURE_PLUS, 180, 189);
+			pksm_draw_texture(TEXTURE_MINUS, 180 - max - 19, 29);
+			pksm_draw_texture(TEXTURE_PLUS, 180, 29);
+			pksm_draw_texture(TEXTURE_MINUS, 180 - max - 19, 189);
+			pksm_draw_texture(TEXTURE_PLUS, 180, 189);
 
 			char level[4];
 			snprintf(level, 4, "%u", pkx_get_level(pkmn));
@@ -1461,8 +1157,8 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 		}
 		if (mode == ED_STATS || mode == ED_HIDDENPOWER) {
 			pp2d_draw_texture(TEXTURE_EDITOR_STATS, 0, 1);
-			pp2d_draw_texture(TEXTURE_BOTTOM_BAR, 0, 210);
-			pp2d_draw_texture(TEXTURE_SETTING, 291, 175);
+			pksm_draw_texture(TEXTURE_BOTTOM_BAR, 0, 210);
+			pksm_draw_texture(TEXTURE_SETTING, 291, 175);
 			pp2d_draw_wtext(2, 28, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_PKEDITOR_LBL_STATS));
 			pp2d_draw_wtext(118, 28, FONT_SIZE_12, FONT_SIZE_12, DARKBLUE, i18n(S_GRAPHIC_PKEDITOR_LBL_IV));
 			pp2d_draw_wtext(197, 28, FONT_SIZE_12, FONT_SIZE_12, DARKBLUE, i18n(S_GRAPHIC_PKEDITOR_LBL_EV));
@@ -1473,9 +1169,9 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 			pp2d_draw_texture_part(TEXTURE_BALLS_SPRITESHEET, -2, -6, 32 * (pkx_get_ball(pkmn) % 8), 32 * (pkx_get_ball(pkmn) / 8), 32, 32);
 			
 			if (pkx_get_gender(pkmn) == 0)
-				pp2d_draw_texture(TEXTURE_MALE, 159, 6);
+				pksm_draw_texture(TEXTURE_MALE, 159, 6);
 			else if (pkx_get_gender(pkmn) == 1)
-				pp2d_draw_texture(TEXTURE_FEMALE, 161, 6);
+				pksm_draw_texture(TEXTURE_FEMALE, 161, 6);
 			
 			for (int i = 0; i < 6; i++)
 				pp2d_draw_wtext(2, 49 + i * 20, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, values[i]);
@@ -1493,16 +1189,16 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 			pp2d_draw_wtext(288 - pp2d_get_wtext_width(hpList[pkx_get_hp_type(pkmn)], FONT_SIZE_12, FONT_SIZE_12), 173, FONT_SIZE_12, FONT_SIZE_12, WHITE, hpList[pkx_get_hp_type(pkmn)]);
 
 			for (int i = 0; i < 6; i++) {
-				pp2d_draw_texture(TEXTURE_MINUS, 96, 49 + i * 20);
-				pp2d_draw_texture(TEXTURE_PLUS, 139, 49 + i * 20);
-				pp2d_draw_texture(TEXTURE_MINUS, 177, 49 + i * 20);
-				pp2d_draw_texture(TEXTURE_PLUS, 218, 49 + i * 20);
+				pksm_draw_texture(TEXTURE_MINUS, 96, 49 + i * 20);
+				pksm_draw_texture(TEXTURE_PLUS, 139, 49 + i * 20);
+				pksm_draw_texture(TEXTURE_MINUS, 177, 49 + i * 20);
+				pksm_draw_texture(TEXTURE_PLUS, 218, 49 + i * 20);
 			}
 		}
 		if (mode == ED_MOVES) {
 			pp2d_draw_texture(TEXTURE_MOVES_BOTTOM, 0, 1);
 			pp2d_draw_texture(TEXTURE_MOVES_BOTTOM, 0, 105);
-			pp2d_draw_texture(TEXTURE_BOTTOM_BAR, 0, 210);
+			pksm_draw_texture(TEXTURE_BOTTOM_BAR, 0, 210);
 			pp2d_draw_wtext(2, 5, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_PKEDITOR_MOVES));
 			pp2d_draw_wtext(2, 110, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_PKEDITOR_RELEARN_MOVES));
 			
@@ -1510,18 +1206,18 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 				pp2d_draw_wtext(2, 28 + i * 20, FONT_SIZE_12, FONT_SIZE_12, (i == additional3) ? YELLOW : WHITE, moves[pkx_get_move(pkmn, i)]);
 				pp2d_draw_wtext(2, 132 + i * 20, FONT_SIZE_12, FONT_SIZE_12, (i == additional3 - 4) ? YELLOW: WHITE, moves[pkx_get_egg_move(pkmn, i)]);
 				if (i == additional3)
-					pp2d_draw_texture_part(TEXTURE_SUB_ARROW, 198 - movementOffsetSlow(3), 33 + i*20, 0, 0, 20, 18);
+					pksm_draw_texture(TEXTURE_SUB_ARROW_FLIPPED, 190 - movementOffsetSlow(3), 26 + i*20);
 				else if (i == additional3 - 4)
-					pp2d_draw_texture_part(TEXTURE_SUB_ARROW, 198 - movementOffsetSlow(3), 137 + i*20, 0, 0, 20, 18);
+					pksm_draw_texture(TEXTURE_SUB_ARROW_FLIPPED, 190 - movementOffsetSlow(3), 130 + i*20);
 			}
 
 		}
 		if (mode == ED_HEX) {
 			printMenuBottom();
-			pp2d_draw_texture(TEXTURE_BLUE_TEXT_BOX, 165, 28);
+			pksm_draw_texture(TEXTURE_BLUE_TEXT_BOX, 165, 28);
 			if (sector[additional1][0] && !(sector[additional1][1])) {
-				pp2d_draw_texture(TEXTURE_MINUS_BUTTON, 224, 31);
-				pp2d_draw_texture(TEXTURE_PLUS_BUTTON, 247, 31);
+				pksm_draw_texture(TEXTURE_MINUS_BUTTON, 224, 31);
+				pksm_draw_texture(TEXTURE_PLUS_BUTTON, 247, 31);
 			}
 			if (hax)
 				pp2d_draw_rectangle(0, 0, 320, 240, RGBA8(255, 0, 0, 100));
@@ -1534,7 +1230,7 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 		}
 
 		if (mode != ED_HEX)
-			pp2d_draw_texture(TEXTURE_BACK_BUTTON, 283, 211);
+			pksm_draw_texture(TEXTURE_BACK_BUTTON, 283, 211);
 
 		// apply masks
 		if (mode == ED_ITEMS) {
@@ -1553,7 +1249,7 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 			pp2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
 			pp2d_draw_wtext_center(GFX_BOTTOM, 105, FONT_SIZE_14, FONT_SIZE_14, WHITE, i18n(S_GRAPHIC_PKEDITOR_FORM_INDICATION));
 		}
-	pksm_end_frame();
+	pp2d_end_draw();
 }
 
 void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int currentEntry, int saveBox, int bankBox, bool isBufferized, bool isSeen, bool isWirelessActivated) {
@@ -1580,7 +1276,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 			swprintf(page, MAX_LENGTH_BOX_NAME+1, i18n(S_GRAPHIC_PKBANK_BANK_TITLE), bankBox + 1);
 			pp2d_draw_wtext(55 + (178 - pp2d_get_wtext_width(page, FONT_SIZE_12, FONT_SIZE_12)) / 2, 9, FONT_SIZE_12, FONT_SIZE_12, WHITE, page);
 
-			if (pkx_get_species(pkmn) > 0 && pkx_get_species(pkmn) < 822) {
+			if (pkx_get_species(pkmn) > 0 && pkx_get_species(pkmn) < ofs.maxSpecies) {
 				u16 tempspecies = pkx_get_form_species_number(pkmn);
 				u8 type1 = 0, type2 = 0;
 
@@ -1608,11 +1304,11 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 				pp2d_draw_wtext(372 - width, 86, FONT_SIZE_12, FONT_SIZE_12, WHITE, level);
 				
 				if (pkx_get_gender(pkmn) == 0)
-					pp2d_draw_texture(TEXTURE_MALE, 358 - width, 86);
+					pksm_draw_texture(TEXTURE_MALE, 358 - width, 86);
 				else if (pkx_get_gender(pkmn) == 1)
-					pp2d_draw_texture(TEXTURE_FEMALE, 360 - width, 86);
+					pksm_draw_texture(TEXTURE_FEMALE, 360 - width, 86);
 				if (pkx_is_shiny(pkmn))
-					pp2d_draw_texture(TEXTURE_SHINY, 360 - width - 14, 88);
+					pksm_draw_texture(TEXTURE_SHINY, 360 - width - 14, 88);
 				
 				u32 ot_name[NICKNAMELENGTH*2] = {0};
 				pkx_get_ot(pkmn, ot_name);
@@ -1649,30 +1345,30 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 					printElementBlend(pkmnbuf, GAME_SUN, n, pointer[0] - 14, pointer[1] + 8, RGBA8(0x0, 0x0, 0x0, 100));
 					printElement(pkmnbuf, GAME_SUN, n, pointer[0] - 18, pointer[1] + 3);
 				}
-				pp2d_draw_texture(TEXTURE_SELECTOR_NORMAL, pointer[0], pointer[1] - 2 - ((!isBufferized) ? movementOffsetSlow(3) : 0));
+				pksm_draw_texture(TEXTURE_SELECTOR_NORMAL, pointer[0], pointer[1] - 2 - ((!isBufferized) ? movementOffsetSlow(3) : 0));
 			}
 		}
 
 		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 		pp2d_draw_texture(TEXTURE_BOX_VIEW, 0, 0);
-		pp2d_draw_texture(TEXTURE_BOTTOM_BAR, 0, 210);
+		pksm_draw_texture(TEXTURE_BOTTOM_BAR, 0, 210);
 		swprintf(page, MAX_LENGTH_BOX_NAME+1, isWirelessActivated ? L"Wireless %d" : i18n(S_GRAPHIC_PKBANK_SAVED_BOX_TITLE), saveBox + 1);
 		pp2d_draw_wtext(12 + (178 - pp2d_get_wtext_width(page, FONT_SIZE_12, FONT_SIZE_12)) / 2, 19, FONT_SIZE_12, FONT_SIZE_12, WHITE, page);
-		pp2d_draw_texture(TEXTURE_LEFT, 7, 17);
-		pp2d_draw_texture(TEXTURE_RIGHT, 185, 17);
-		pp2d_draw_texture(TEXTURE_TRANSFER_BUTTON, 242, 5);
-		pp2d_draw_texture(TEXTURE_BACK_BUTTON, 283, 211);
-		pp2d_draw_texture(TEXTURE_BUTTON, 208, 43);
-		pp2d_draw_texture(TEXTURE_BUTTON, 208, 70);
-		pp2d_draw_texture(TEXTURE_BUTTON, 208, 97);
-		pp2d_draw_texture(TEXTURE_BUTTON, 208, 153);
-		pp2d_draw_texture(TEXTURE_BUTTON, 208, 180);
+		pksm_draw_texture(TEXTURE_LEFT, 7, 17);
+		pksm_draw_texture(TEXTURE_RIGHT, 185, 17);
+		pksm_draw_texture(TEXTURE_TRANSFER_BUTTON, 242, 5);
+		pksm_draw_texture(TEXTURE_BACK_BUTTON, 283, 211);
+		pksm_draw_texture(TEXTURE_BUTTON, 208, 43);
+		pksm_draw_texture(TEXTURE_BUTTON, 208, 70);
+		pksm_draw_texture(TEXTURE_BUTTON, 208, 97);
+		pksm_draw_texture(TEXTURE_BUTTON, 208, 153);
+		pksm_draw_texture(TEXTURE_BUTTON, 208, 180);
 		pp2d_draw_wtext(208 + (109 - pp2d_get_wtext_width(i18n(S_GRAPHIC_PKBANK_MENU_VIEW), FONT_SIZE_12, FONT_SIZE_12)) / 2, 50, FONT_SIZE_12, FONT_SIZE_12, BLACK, i18n(S_GRAPHIC_PKBANK_MENU_VIEW));
 		pp2d_draw_wtext(208 + (109 - pp2d_get_wtext_width(i18n(S_GRAPHIC_PKBANK_MENU_CLEARBOX), FONT_SIZE_12, FONT_SIZE_12)) / 2, 77, FONT_SIZE_12, FONT_SIZE_12, BLACK, i18n(S_GRAPHIC_PKBANK_MENU_CLEARBOX));
 		pp2d_draw_wtext(208 + (109 - pp2d_get_wtext_width(i18n(S_GRAPHIC_PKBANK_MENU_RELEASE), FONT_SIZE_12, FONT_SIZE_12)) / 2, 104, FONT_SIZE_12, FONT_SIZE_12, BLACK, i18n(S_GRAPHIC_PKBANK_MENU_RELEASE));
 		pp2d_draw_wtext(208 + (109 - pp2d_get_wtext_width(i18n(S_GRAPHIC_PKBANK_MENU_DEX), FONT_SIZE_12, FONT_SIZE_12)) / 2, 160, FONT_SIZE_12, FONT_SIZE_12, BLACK, i18n(S_GRAPHIC_PKBANK_MENU_DEX));
 		pp2d_draw_wtext(208 + (109 - pp2d_get_wtext_width(i18n(S_GRAPHIC_PKBANK_MENU_DUMP), FONT_SIZE_12, FONT_SIZE_12)) / 2, 187, FONT_SIZE_12, FONT_SIZE_12, BLACK, i18n(S_GRAPHIC_PKBANK_MENU_DUMP));
-		pp2d_draw_texture(TEXTURE_OTA_BUTTON, 240, 211);
+		pksm_draw_texture(TEXTURE_OTA_BUTTON, 240, 211);
 		
 		y = 45;
 		for (int i = 0; i < 5; i++) {
@@ -1702,9 +1398,9 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 					printElementBlend(pkmnbuf, GAME_SUN, n, pointer[0] - 14, pointer[1] + 8, RGBA8(0x0, 0x0, 0x0, 100));
 					printElement(pkmnbuf, GAME_SUN, n, pointer[0] - 18, pointer[1] + 3);
 				}
-				pp2d_draw_texture(TEXTURE_SELECTOR_NORMAL, pointer[0], pointer[1] - 2 - ((!isBufferized) ? movementOffsetSlow(3) : 0));
+				pksm_draw_texture(TEXTURE_SELECTOR_NORMAL, pointer[0], pointer[1] - 2 - ((!isBufferized) ? movementOffsetSlow(3) : 0));
 			} else
-				pp2d_draw_texture(TEXTURE_SELECTOR_NORMAL, pointer[0], pointer[1] - 2);
+				pksm_draw_texture(TEXTURE_SELECTOR_NORMAL, pointer[0], pointer[1] - 2);
 		}
 		
 		if (isSeen)
@@ -1712,40 +1408,64 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 		
 		if (bank_getIsInternetWorking())
 			pp2d_draw_wtextf(10, 220, FONT_SIZE_9, FONT_SIZE_9, WHITE, i18n(S_HTTP_SERVER_RUNNING), socket_get_ip());
-	pksm_end_frame();
+	pp2d_end_draw();
 }
 
-void printSettings(int box, int language) {
-	wchar_t *menu[] = {i18n(S_GRAPHIC_SETTINGS_BANK_SIZE), i18n(S_GRAPHIC_SETTINGS_BACKUP_SAVE), i18n(S_GRAPHIC_SETTINGS_BACKUP_BANK)};
+void printSettings(u8* config_buf, int currentEntry, int configSize, wchar_t* descriptions[]) {
 	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
-		drawMenuTop();
-	
-		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
-		printMenuBottom();
-
-		for (int i = 0; i < 4; i++) {
-			pp2d_draw_texture(TEXTURE_MAIN_MENU_DARK_BAR, 65, 60 + i * 34);
-			if (i < 3)
-				pp2d_draw_wtext(i == 0 ? 69 : (320 - pp2d_get_wtext_width(menu[i], FONT_SIZE_15, FONT_SIZE_15)) / 2, 66 + i * 34, FONT_SIZE_15, FONT_SIZE_15, DARKBLUE, menu[i]);
-			else {
-				wchar_t tempstr[30];
-				swprintf(tempstr, 30, L"Edit in transfers: %s", config_get_pkx_set_lock() != 0 ? "No" : "Yes");
-				pp2d_draw_wtext_center(GFX_BOTTOM, 66 + i * 34, FONT_SIZE_15, FONT_SIZE_15, DARKBLUE, tempstr);
+		pp2d_draw_texture(TEXTURE_HEX_BG, 0, 0);
+		
+		for (int rows = 0; rows < 3; rows++)
+		{
+			for (int columns = 0; columns < 16; columns++)
+			{
+				int byte = rows*16 + columns;
+				if (currentEntry == byte)
+					printSelector(columns*25, rows*15, 24, 14);
+				pp2d_draw_textf(4 + 25*columns, 15*rows, FONT_SIZE_11, FONT_SIZE_11, WHITE, "%02hhX", config_buf[byte]);
+				
+				if (byte == configSize - 1) break;
 			}
 		}
 		
-		pp2d_draw_texture(TEXTURE_OTA_BUTTON, 280, 220);
-		pp2d_draw_texture(TEXTURE_MINI_BOX, 189, 64);
-		pp2d_draw_texture(TEXTURE_MINUS_BUTTON, 169, 65);
-		pp2d_draw_texture(TEXTURE_PLUS_BUTTON, 228, 65);
-		pp2d_draw_texture(TEXTURE_MINI_BOX, 281, 191);
-		pp2d_draw_text(281 + (36 - (pp2d_get_text_width(langs[language], FONT_SIZE_11, FONT_SIZE_11))) / 2, 195, FONT_SIZE_11, FONT_SIZE_11, DARKBLUE, langs[language]);
+		pp2d_draw_wtextf(4, 225, FONT_SIZE_11, FONT_SIZE_11, LIGHTBLUE, L"%ls", descriptions[currentEntry]);
+
+		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
+		printMenuBottom();
+		pksm_draw_texture(TEXTURE_BLUE_TEXT_BOX, 165, 28);
+		pksm_draw_texture(TEXTURE_MINUS_BUTTON, 224, 31);
+		pksm_draw_texture(TEXTURE_PLUS_BUTTON, 247, 31);		
+		pp2d_draw_wtextf(155 - pp2d_get_wtext_width(i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE), FONT_SIZE_14, FONT_SIZE_14), 30, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_PKEDITOR_SELECTED_BYTE));
+		pp2d_draw_textf(171, 30, FONT_SIZE_14, FONT_SIZE_14, WHITE, "0x%02hhX", currentEntry);
 		
-		char size[5];
-		snprintf(size, 5, "%d", box);
-		pp2d_draw_text(189 + (36 - (pp2d_get_text_width(size, FONT_SIZE_11, FONT_SIZE_11))) / 2, 68, FONT_SIZE_11, FONT_SIZE_11, WHITE, size);
-		printBottomIndications(i18n(S_GRAPHIC_SETTINGS_INDICATION));
-	pksm_end_frame();
+		printfConfigEditorInfo(currentEntry);
+		printBottomIndications(i18n(S_GRAPHIC_CREDITS_INDICATIONS));
+	pp2d_end_draw();
+}
+
+void printfConfigEditorInfo(int currentEntry)
+{
+	int y = 70, x = 8;
+	switch (currentEntry) {
+		case 0x00:
+			pp2d_draw_text(50, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, "0x00: JP\n0x01: EN\n0x02: FR\n0x03: DE\n0x04: IT\n0x05: ES");
+			pp2d_draw_text(200, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, "0x06: ZH\n0x07: KO\n0x08: NL\n0x09: PT\n0x0A: RU\n0x0B: TW");
+			break;
+		case 0x02:
+		case 0x03:
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, L"Storage size: %d", PKSM_Configuration.storageSize);
+			break;
+		case 0x04:
+		case 0x05:
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, L"Default TID: %d", PKSM_Configuration.defaultTID);
+			break;
+		case 0x06:
+		case 0x07:
+			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, L"Default SID: %d", PKSM_Configuration.defaultSID);
+			break;
+		case 0x20:
+			break;
+	}
 }
 
 void printfHexEditorInfo(u8* pkmn, int byte) {
@@ -2091,9 +1811,9 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_MET_LEVEL), (pkmn[byte] & 0x7f));
 			pp2d_draw_wtextf(xribbon + 27, y + 17, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_GENDER));
 			if (pkx_get_ot_gender(pkmn) == 0)
-				pp2d_draw_texture(TEXTURE_MALE, xribbon + 10, y + 17 + 2);
+				pksm_draw_texture(TEXTURE_MALE, xribbon + 10, y + 17 + 2);
 			else if (pkx_get_ot_gender(pkmn) == 1)
-				pp2d_draw_texture(TEXTURE_FEMALE, xribbon + 10 + 2, y + 17 + 2);
+				pksm_draw_texture(TEXTURE_FEMALE, xribbon + 10 + 2, y + 17 + 2);
 			break;
 		}
 		case 0xDE : {

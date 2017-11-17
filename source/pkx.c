@@ -137,6 +137,8 @@ FormData *pkx_get_legal_form_data(const u16 species, const int game) {
 	{
 		case GAME_SUN:
 		case GAME_MOON:
+		case GAME_US:
+		case GAME_UM:
 			sumo = true;
 		case GAME_OR:
 		case GAME_AS:
@@ -479,9 +481,11 @@ u32 pkx_get_save_address(const int boxnumber, const int indexnumber) {
 		boxpos = boxnumber < 33 ? 0x33000 : 0x14200;
 	else if (game_getisSUMO())
 		boxpos = boxnumber < 33 ? 0x04E00 : 0x01400;
+	else if (game_getisUSUM())
+		boxpos = boxnumber < 33 ? 0x05200 : 0x01600;
 
 	if (boxnumber < 33)
-		return boxpos + (PKMNLENGTH * 30 * boxnumber) + (indexnumber * PKMNLENGTH);
+		return boxpos + (ofs.pkmnLength * 30 * boxnumber) + (indexnumber * ofs.pkmnLength);
 
 	return boxpos + indexnumber * 260;
 }
@@ -489,7 +493,7 @@ u32 pkx_get_save_address(const int boxnumber, const int indexnumber) {
 void pkx_calculate_checksum(u8* data) {
     u16 chk = 0;
 
-    for (int i = 8; i < PKMNLENGTH; i += 2)
+    for (int i = 8; i < ofs.pkmnLength; i += 2)
         chk += *(u16*)(data + i);
 
     memcpy(data + 6, &chk, 2);
@@ -506,10 +510,10 @@ void pkx_shuffle_array(u8* pkmn, const u32 encryptionkey) {
     int dloc[24] = { 3, 2, 3, 2, 1, 1, 3, 2, 3, 2, 1, 1, 3, 2, 3, 2, 1, 1, 0, 0, 0, 0, 0, 0 };
     int ord[4] = {aloc[seed], bloc[seed], cloc[seed], dloc[seed]};
 
-    char pkmncpy[PKMNLENGTH];
+    char pkmncpy[ofs.pkmnLength];
     char tmp[BLOCKLENGHT];
 
-    memcpy(&pkmncpy, pkmn, PKMNLENGTH);
+    memcpy(&pkmncpy, pkmn, ofs.pkmnLength);
 
     for (int i = 0; i < 4; i++) {
         memcpy(tmp, pkmncpy + 8 + BLOCKLENGHT * ord[i], BLOCKLENGHT);
@@ -522,7 +526,7 @@ void pkx_decrypt(u8* pkmn) {
     u32 seed = encryptionkey;
 
     u16 temp;
-    for (int i = 0x08; i < PKMNLENGTH; i += 2) {
+    for (int i = 0x08; i < ofs.pkmnLength; i += 2) {
         memcpy(&temp, &pkmn[i], 2);
         temp ^= (pkx_seedstep(seed) >> 16);
         seed = pkx_seedstep(seed);
@@ -540,7 +544,7 @@ void pkx_encrypt(u8* pkmn) {
         pkx_shuffle_array(pkmn, encryptionkey);
 
     u16 temp;
-    for(int i = 0x08; i < PKMNLENGTH; i += 2) {
+    for(int i = 0x08; i < ofs.pkmnLength; i += 2) {
         memcpy(&temp, &pkmn[i], 2);
         temp ^= (pkx_seedstep(seed) >> 16);
         seed = pkx_seedstep(seed);
@@ -549,23 +553,23 @@ void pkx_encrypt(u8* pkmn) {
 }
 
 void pkx_get(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn) {
-    memcpy(pkmn, &mainbuf[pkx_get_save_address(boxnumber, indexnumber)], PKMNLENGTH);
+    memcpy(pkmn, &mainbuf[pkx_get_save_address(boxnumber, indexnumber)], ofs.pkmnLength);
     pkx_decrypt(pkmn);
 }
 
 void pkx_set(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn) {
-	if (config_get_pkx_set_lock() == 0) {
+	if (PKSM_Configuration.editInTransfers != 0) {
 		u8 latestHandlers[10];
-		char ot_name[NICKNAMELENGTH];
-		char save_name[NICKNAMELENGTH];
-		char ht_name[NICKNAMELENGTH];
-		memset(ht_name, 0, NICKNAMELENGTH);
+		char ot_name[ofs.nicknameLength];
+		char save_name[ofs.nicknameLength];
+		char ht_name[ofs.nicknameLength];
+		memset(ht_name, 0, ofs.nicknameLength);
 
 		memcpy(latestHandlers, &pkmn[0x94], 10);
-		memcpy(ot_name, &pkmn[0xB0], NICKNAMELENGTH);
-		memcpy(save_name, &mainbuf[game_isgen6() ? 0x14048 : 0x1238], NICKNAMELENGTH);
+		memcpy(ot_name, &pkmn[0xB0], ofs.nicknameLength);
+		memcpy(save_name, &mainbuf[game_isgen6() ? 0x14048 : 0x1238], ofs.nicknameLength);
 		
-		if (!((getSaveTID(mainbuf) == pkx_get_tid(pkmn)) && (getSaveSID(mainbuf) == pkx_get_sid(pkmn)) && !memcmp(ot_name, save_name, NICKNAMELENGTH) && !memcmp(latestHandlers, ht_name, 10))) { //you're the first owner
+		if (!((getSaveTID(mainbuf) == pkx_get_tid(pkmn)) && (getSaveSID(mainbuf) == pkx_get_sid(pkmn)) && !memcmp(ot_name, save_name, ofs.nicknameLength) && !memcmp(latestHandlers, ht_name, 10))) { //you're the first owner
 			pkx_set_ht(pkmn, save_name);
 			pkx_set_ht_gender(pkmn, getSaveGender(mainbuf));
 		}
@@ -574,14 +578,14 @@ void pkx_set(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn) 
     pkx_calculate_checksum(pkmn);
     pkx_encrypt(pkmn);
 
-    memcpy(&mainbuf[pkx_get_save_address(boxnumber, indexnumber)], pkmn, PKMNLENGTH);
+    memcpy(&mainbuf[pkx_get_save_address(boxnumber, indexnumber)], pkmn, ofs.pkmnLength);
 }
 
 void pkx_set_as_it_is(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn) {
     pkx_calculate_checksum(pkmn);
     pkx_encrypt(pkmn);
 	
-    memcpy(&mainbuf[pkx_get_save_address(boxnumber, indexnumber)], pkmn, PKMNLENGTH);
+    memcpy(&mainbuf[pkx_get_save_address(boxnumber, indexnumber)], pkmn, ofs.pkmnLength);
 }
 
 u8 pkx_get_HT(u8* pkmn) { 
@@ -670,31 +674,31 @@ u16 pkx_get_move(u8* pkmn, const int nmove) {
 }
 
 u32 *pkx_get_ot(u8* pkmn, u32* dst) {
-	u16 src[NICKNAMELENGTH];
-	memcpy(src, &pkmn[0xB0], NICKNAMELENGTH);
-	utf16_to_utf32(dst, src, NICKNAMELENGTH);
+	u16 src[ofs.nicknameLength];
+	memcpy(src, &pkmn[0xB0], ofs.nicknameLength);
+	utf16_to_utf32(dst, src, ofs.nicknameLength);
 	return dst;
 }
 
 u32 *pkx_get_nickname(u8* pkmn, u32* dst) {
-	u16 src[NICKNAMELENGTH];
-	memcpy(src, &pkmn[0x40], NICKNAMELENGTH);
-	utf16_to_utf32(dst, src, NICKNAMELENGTH);
+	u16 src[ofs.nicknameLength];
+	memcpy(src, &pkmn[0x40], ofs.nicknameLength);
+	utf16_to_utf32(dst, src, ofs.nicknameLength);
 	return dst;
 }
 
 u8 *pkx_get_nickname_u8(u8* pkmn, u8* dst) {
-	u16 src[NICKNAMELENGTH];
-	for (int i = 0; i < NICKNAMELENGTH; i++)
+	u16 src[ofs.nicknameLength];
+	for (int i = 0; i < ofs.nicknameLength; i++)
 		src[i] = *(u16*)(pkmn + 0x40 + i*2);
-	utf16_to_utf8(dst, src, NICKNAMELENGTH*2);
+	utf16_to_utf8(dst, src, ofs.nicknameLength*2);
 	return dst;
 }
 
 u32 *pkx_get_ht(u8* pkmn, u32* dst) {
-	u16 src[NICKNAMELENGTH];
-	memcpy(src, &pkmn[0x78], NICKNAMELENGTH);
-	utf16_to_utf32(dst, src, NICKNAMELENGTH);
+	u16 src[ofs.nicknameLength];
+	memcpy(src, &pkmn[0x78], ofs.nicknameLength);
+	utf16_to_utf32(dst, src, ofs.nicknameLength);
 	return dst;
 }
 
@@ -960,10 +964,10 @@ void pkx_set_nickname_flag(u8* pkmn) {
 
 void pkx_set_nickname(u8* pkmn, char* nick, const int dst) {
 	// dst 0x40(Nickname) 0xB0(OT) 0x78(HT)
-	u8 toinsert[NICKNAMELENGTH];
-	memset(toinsert, 0, NICKNAMELENGTH);
+	u8 toinsert[ofs.nicknameLength];
+	memset(toinsert, 0, ofs.nicknameLength);
 
-	if (!memcmp(nick, toinsert, NICKNAMELENGTH))
+	if (!memcmp(nick, toinsert, ofs.nicknameLength))
 		return;
 
 	char buf;
@@ -996,7 +1000,7 @@ void pkx_set_nickname(u8* pkmn, char* nick, const int dst) {
 		}
 		
 		w += 2;
-		if (w > NICKNAMELENGTH)
+		if (w > ofs.nicknameLength)
 			break;
 	}
 
@@ -1004,7 +1008,7 @@ void pkx_set_nickname(u8* pkmn, char* nick, const int dst) {
 		pkx_set_nickname_flag(pkmn);
 	}
 
-	memcpy(&pkmn[dst], toinsert, NICKNAMELENGTH);
+	memcpy(&pkmn[dst], toinsert, ofs.nicknameLength);
 }
 
 void pkx_set_ribbons(u8* pkmn, const int ribcat, const int ribnumber, const bool value) {

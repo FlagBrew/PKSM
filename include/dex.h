@@ -16,7 +16,9 @@
 >   See LICENSE for information.
 */
 
-#pragma once
+#ifndef DEX_H
+#define DEX_H
+
 #include "common.h"
 
 int getDexFormIndexSM(int species, int formct, int start);
@@ -25,3 +27,5 @@ bool sanitizeFormsToIterate(int species, int fsfe[], int formIn);
 void setDex(u8 mainbuf[], u8* pkmn);
 bool getCaught(u8* mainbuf, int species);
 bool getSeen(u8* mainbuf, int species);
+
+#endif

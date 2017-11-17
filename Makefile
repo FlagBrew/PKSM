@@ -12,13 +12,18 @@ include $(DEVKITARM)/3ds_rules
 # Your values.
 APP_TITLE           :=	PKSM
 APP_DESCRIPTION     :=	Gen4+ pkmn save manager
-APP_AUTHOR          :=	Bernardo Giordano, PKSM devs
+APP_AUTHOR          :=	Bernardo Giordano
 
 TARGET              :=	$(subst $e ,_,$(notdir $(APP_TITLE)))
 OUTDIR              :=	out
 BUILD               :=	build
-SOURCES             :=	source/memecrypto/source source/pp2d source
-INCLUDES            :=	include
+SOURCES             :=	source/memecrypto/source \
+						source/pp2d \
+						source/quirc \
+						source/sections/events \
+						source
+INCLUDES            :=	include/sections/events \
+						include
 ROMFS               :=	assets/romfs
 
 # Path to the files
@@ -39,8 +44,8 @@ LOGO                :=
 UNIQUE_ID           :=	0xEC100
 PRODUCT_CODE        :=	CTR-HB-PKSM
 
-VERSION_MAJOR := 4
-VERSION_MINOR := 5
+VERSION_MAJOR := 5
+VERSION_MINOR := 0
 VERSION_MICRO := 0
 
 ROSALINA := 0
@@ -56,6 +61,7 @@ ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
 CFLAGS	:=	-g -Wall -Wextra -O2 -mword-relocations \
 			-fomit-frame-pointer -ffunction-sections \
 			$(ARCH) \
+			-DQUIRC_MAX_REGIONS=65534 \
 			-DROSALINA_3DSX=${ROSALINA} \
 			-DAPP_VERSION_MAJOR=${VERSION_MAJOR} \
 			-DAPP_VERSION_MINOR=${VERSION_MINOR} \

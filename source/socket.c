@@ -118,16 +118,16 @@ void process_pkx(u8* mainbuf, int tempVett[]) {
 		return;		
 	} else {
 		panic = 0;
-		int boxmax = game_isgen6() ? 30 : 31;
+		int boxmax = ofs.maxBoxes - 1;
 		char *dummy;
 		memset(payload, 0, PAYLOADSIZE);
 
 		fcntl(server.client_id, F_SETFL, fcntl(server.client_id, F_GETFL, 0) & ~O_NONBLOCK);
         recv(server.client_id, payload, PAYLOADSIZE, 0);
         if (strstr(payload, "PKSMOTA") != NULL && (hidKeysDown() != KEY_B)) {
-            u8 pkmn[PKMNLENGTH];
+            u8 pkmn[ofs.pkmnLength];
             dummy = strstr(payload, "PKSMOTA");
-            memcpy(pkmn, &dummy[7], PKMNLENGTH);
+            memcpy(pkmn, &dummy[7], ofs.pkmnLength);
             pkx_set_as_it_is(mainbuf, tempVett[0], tempVett[1], pkmn);
 
 			if (checkingLegality) {
@@ -155,11 +155,11 @@ void process_pkx(u8* mainbuf, int tempVett[]) {
 
 void processLegality(u8* pkmn) {
 	u8 gameVersion = game_isgen7() ? 7 : 6;
-	char message[PKMNLENGTH + 8];
+	char message[ofs.pkmnLength + 8];
 	const char* prefix = "PKSMOTA";
 	memcpy(message, prefix, 7);
 	memcpy(message + 7, &gameVersion, 1);
-	memcpy(message + 8, pkmn, PKMNLENGTH);
+	memcpy(message + 8, pkmn, ofs.pkmnLength);
 
 	struct sockaddr_in legalityServer;
 	int sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -180,7 +180,7 @@ void processLegality(u8* pkmn) {
 	}
 	
 	fcntl(sock, F_SETFL, fcntl(sock, F_GETFL, 0) | O_NONBLOCK);
-	if (send(sock, message, 240, 0) < 0) {
+	if (send(sock, message, ofs.pkmnLength + 7 + 1, 0) < 0) {
 		close(sock);
 		infoDisp(i18n(S_SOCKET_SEND_FAILED));
 		return;
@@ -198,13 +198,13 @@ void process_bank(u8* buf) {
 		return;		
 	} else {
 		panic = 0;
-		int boxmax = game_isgen6() ? 30 : 31;
+		int boxmax = ofs.maxBoxes;
 		int box = 0, slot = 0;
 		char *dummy;
 		memset(payload, 0, PAYLOADSIZE);
 		
-		u8 tmp[PKMNLENGTH];
-		memcpy(tmp, &buf[box*30*PKMNLENGTH + slot*PKMNLENGTH], PKMNLENGTH);
+		u8 tmp[ofs.pkxLength];
+		memcpy(tmp, &buf[box*30*ofs.pkxLength + slot*ofs.pkxLength], ofs.pkxLength);
 		while(pkx_get_species(tmp) && (panic < boxmax * 30)) {
 			slot++;
 			if (slot == 30) {
@@ -215,16 +215,16 @@ void process_bank(u8* buf) {
 				box = 0;
 			panic++;
 			
-			memcpy(tmp, &buf[box*30*PKMNLENGTH + slot*PKMNLENGTH], PKMNLENGTH);
+			memcpy(tmp, &buf[box*30*ofs.pkxLength + slot*ofs.pkxLength], ofs.pkxLength);
 		}
 
 		fcntl(server.client_id, F_SETFL, fcntl(server.client_id, F_GETFL, 0) & ~O_NONBLOCK);
         recv(server.client_id, payload, PAYLOADSIZE, 0);
         if (strstr(payload, "PKSMOTA") != NULL && (hidKeysDown() != KEY_B)) {
-            u8 pkmn[PKMNLENGTH];
+            u8 pkmn[ofs.pkxLength];
             dummy = strstr(payload, "PKSMOTA");
-            memcpy(pkmn, &dummy[7], PKMNLENGTH);
-			memcpy(&buf[box*30*PKMNLENGTH + slot*PKMNLENGTH], pkmn, PKMNLENGTH);
+            memcpy(pkmn, &dummy[7], ofs.pkxLength);
+			memcpy(&buf[box*30*ofs.pkxLength + slot*ofs.pkxLength], pkmn, ofs.pkxLength);
         }
     }
     close(server.client_id);

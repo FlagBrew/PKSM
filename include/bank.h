@@ -16,7 +16,9 @@
 >   See LICENSE for information.
 */
 
-#pragma once
+#ifndef BANK_H
+#define BANK_H
+
 #include "common.h"
 
 #define MULTIPLESELECTIONSIZE 30
@@ -29,3 +31,5 @@ void bank_set_selected_slot(const int box, const int slot);
 void clearMarkings(u8* pkmn);
 bool bank_getIsInternetWorking();
 void bank(u8* mainbuf);
+
+#endif

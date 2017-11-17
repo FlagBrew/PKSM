@@ -16,11 +16,28 @@
 >   See LICENSE for information.
 */
 
-#pragma once
+#ifndef CONFIG_H
+#define CONFIG_H
+
 #include "common.h"
 
-u8 config_get_pkx_set_lock();
-void config_set_pkx_set_lock(u8 value);
-void config_load();
-void config_set();
-void config_init();
+#define CONFIG_SIZE 240
+#define CONFIG_USED 34
+
+void config_load(void);
+void config_set(void);
+void config_init(void);
+void configMenu(void);
+
+struct {
+	u8 pksmLanguage;
+	u8 automaticSaveBackup;
+	u16 storageSize;
+	u16 defaultTID;
+	u16 defaultSID;
+	u8 defaultOTName[24];
+	u8 defaultNationality;
+	u8 editInTransfers;
+} PKSM_Configuration;
+
+#endif

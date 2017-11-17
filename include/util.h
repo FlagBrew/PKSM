@@ -16,25 +16,22 @@
 >   See LICENSE for information.
 */
 
-#pragma once
+#ifndef UTIL_H
+#define UTIL_H
+
 #include "common.h"
 
+unsigned char *base64_decode(const char *data, size_t input_length, size_t *output_length);
+							 
 void checkMaxValueBetweenBounds(u8* buf, int byte, int start, int len, int max);
 void checkMaxValue(u8* pkmn, int byteEntry, int value, int max);
-bool checkFile(char* path);
+void file_write(const char* path, void *buf, int size);
+bool checkFile(const char* path);
 void loadPersonal();
-void loadFile(u8* buf, char* path);
-void injectFromFile(u8* mainbuf, char* path, u32 offset);
-void printfile(char* path);
 bool isHBL();
 void fsStart();
 void fsEnd();
-bool getLoadedFromCart();
 bool openSaveArch(FS_Archive *out, u64 id);
-void settingsMenu(u8* mainbuf);
 int ArrayUTF32_sort_cmp_PKMN_Things_List(const wchar_t *a,const wchar_t *b);
 
-bool hasExternI18nFile();
-bool hasI18nConfig();
-u8 loadI18nConfig();
-void saveI18nConfig(u8 language);
+#endif

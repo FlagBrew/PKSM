@@ -86,15 +86,15 @@ bool bank_getIsInternetWorking() {
 }
 
 inline void setToWirelessBuf(u8* buf, int box, int slot, u8* pkmn) {
-	memcpy(&buf[box*30*PKMNLENGTH + slot*PKMNLENGTH], pkmn, PKMNLENGTH);
+	memcpy(&buf[box*30*ofs.pkxLength + slot*ofs.pkxLength], pkmn, ofs.pkxLength);
 }
 
 inline void getFromWirelessBuf(u8* buf, int box, int slot, u8* pkmn) {
-	memcpy(pkmn, &buf[box*30*PKMNLENGTH + slot*PKMNLENGTH], PKMNLENGTH);
+	memcpy(pkmn, &buf[box*30*ofs.pkxLength + slot*ofs.pkxLength], ofs.pkxLength);
 }
 
 void clearMarkings(u8* pkmn) {
-	if (config_get_pkx_set_lock() != 0)
+	if (PKSM_Configuration.editInTransfers != 0)
 		return;
 	
 	u8 version = pkmn[0xDF];
@@ -123,7 +123,7 @@ void dumpStorage2pk7(u8* bankbuf, u32 size) {
 	char dmppath[100];
 	time_t unixTime = time(NULL);
 	struct tm* timeStruct = gmtime((const time_t *)&unixTime);		
-	snprintf(dmppath, 100, "sdmc:/3ds/data/PKSM/dump/storagedump_%02i%02i%02i%02i%02i%02i", 
+	snprintf(dmppath, 100, "sdmc:/3ds/PKSM/dump/storagedump_%02i%02i%02i%02i%02i%02i", 
 			timeStruct->tm_year + 1900, 
 			timeStruct->tm_mon + 1, 
 			timeStruct->tm_mday, 
@@ -134,23 +134,23 @@ void dumpStorage2pk7(u8* bankbuf, u32 size) {
 	chdir(dmppath);
 	
 	wchar_t step[20];		
-	for (int i = 0, tot = size/PKMNLENGTH; i < tot; i++) {
+	for (int i = 0, tot = size/ofs.pkxLength; i < tot; i++) {
 		swprintf(step, 20, i18n(S_GRAPHIC_PKBANK_MESSAGE_DUMP), i + 1, tot);
 		freezeMsg(step);
 		
-		u8 tmp[PKMNLENGTH];
-		memcpy(&tmp[0], &bankbuf[i*PKMNLENGTH], PKMNLENGTH);
+		u8 tmp[ofs.pkxLength];
+		memcpy(&tmp[0], &bankbuf[i*ofs.pkxLength], ofs.pkxLength);
 		if (pkx_get_species(tmp) > 0 && pkx_get_species(tmp) < 802) {
 			char path[100];
-			u8 nick[NICKNAMELENGTH*2];
+			u8 nick[26*2];
 			
-			memset(nick, 0, NICKNAMELENGTH*2);
+			memset(nick, 0, 26*2);
 			memset(path, 0, 100);
 			
 			pkx_get_nickname_u8(tmp, nick);
 			sprintf(path, "%d - %s - %X.pk7", (int)pkx_get_species(tmp), nick, (int)pkx_get_pid(tmp));
 
-			file_write(path, tmp, PKMNLENGTH);
+			file_write(path, tmp, ofs.pkxLength);
 		}
 	}
 }
@@ -158,11 +158,11 @@ void dumpStorage2pk7(u8* bankbuf, u32 size) {
 void bank(u8* mainbuf) {
 	int game = game_get();
 	
-	FILE *fptr = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
+	FILE *fptr = fopen("/3ds/PKSM/bank/bank.bin", "rt");
 	fseek(fptr, 0, SEEK_END);
 	u32 size = ftell(fptr);
 	
-	if (size % (30 * PKMNLENGTH)) {
+	if (size % (30 * ofs.pkxLength)) {
 		fclose(fptr);
 		infoDisp(i18n(S_BANK_SIZE_ERROR));
 		return;
@@ -186,12 +186,12 @@ void bank(u8* mainbuf) {
 	int currentEntry = 30;
 	int coordinate[2] = {0, 0};
 	
-	u8* wirelessbuf = (u8*)malloc(30*232*(game_isgen6() ? 31 : 32));
-	memset(wirelessbuf, 0, 30*232*(game_isgen6() ? 31 : 32));
+	u8* wirelessbuf = (u8*)malloc(30*232*ofs.maxBoxes);
+	memset(wirelessbuf, 0, 30*232*ofs.maxBoxes);
 	bool isWirelessBuffer = false;
 	
-	u8* pkmn = (u8*)malloc(PKMNLENGTH * sizeof(u8));
-	memset(pkmn, 0, PKMNLENGTH);
+	u8* pkmn = (u8*)malloc(ofs.pkxLength * sizeof(u8));
+	memset(pkmn, 0, ofs.pkxLength);
 	
 	bank_free_multiple_selection_buffer();
 	
@@ -203,14 +203,14 @@ void bank(u8* mainbuf) {
 
 		if (speed >= -30 && (hidKeysDown() & KEY_R)) {
 			if (currentEntry < 30) {
-				if (bankBox < size / (30 * PKMNLENGTH) - 1) 
+				if (bankBox < size / (30 * ofs.pkxLength) - 1) 
 					bankBox++;
-				else if (bankBox == size / (30 * PKMNLENGTH) - 1) 
+				else if (bankBox == size / (30 * ofs.pkxLength) - 1) 
 					bankBox = 0;
 			} else {
-				if (saveBox < (game_isgen6() ? 30 : 31)) 
+				if (saveBox < ofs.maxBoxes - 1) 
 					saveBox++;
-				else if (saveBox == (game_isgen6() ? 30 : 31))
+				else if (saveBox == ofs.maxBoxes - 1)
 					saveBox = 0;
 			}
 		}
@@ -220,12 +220,12 @@ void bank(u8* mainbuf) {
 				if (bankBox > 0) 
 					bankBox--;
 				else if (bankBox == 0) 
-					bankBox = size / (30 * PKMNLENGTH) - 1;
+					bankBox = size / (30 * ofs.pkxLength) - 1;
 			} else {
 				if (saveBox > 0) 
 					saveBox--;
 				else if (saveBox == 0) 
-					saveBox = game_isgen6() ? 30 : 31;	
+					saveBox = ofs.maxBoxes - 1;	
 			}
 		}
 		
@@ -234,14 +234,14 @@ void bank(u8* mainbuf) {
 		else if (hidKeysHeld() & KEY_R) {
 			if (speed > 30) {
 				if (currentEntry < 30) {
-					if (bankBox < size / (30 * PKMNLENGTH) - 1) 
+					if (bankBox < size / (30 * ofs.pkxLength) - 1) 
 						bankBox++;
-					else if (bankBox == size / (30 * PKMNLENGTH) - 1) 
+					else if (bankBox == size / (30 * ofs.pkxLength) - 1) 
 						bankBox = 0;
 				} else {
-					if (saveBox < (game_isgen6() ? 30 : 31)) 
+					if (saveBox < ofs.maxBoxes - 1) 
 						saveBox++;
-					else if (saveBox == (game_isgen6() ? 30 : 31)) 
+					else if (saveBox == ofs.maxBoxes - 1) 
 						saveBox = 0;
 				}
 			}
@@ -254,12 +254,12 @@ void bank(u8* mainbuf) {
 					if (bankBox > 0) 
 						bankBox--;
 					else if (bankBox == 0) 
-						bankBox = size / (30 * PKMNLENGTH) - 1;
+						bankBox = size / (30 * ofs.pkxLength) - 1;
 				} else {
 					if (saveBox > 0) 
 						saveBox--;
 					else if (saveBox == 0) 
-						saveBox = game_isgen6() ? 30 : 31;	
+						saveBox = ofs.maxBoxes - 1;	
 				}
 			}
 			else
@@ -269,9 +269,9 @@ void bank(u8* mainbuf) {
 			speed = 0;
 
 		if (zSpeed >= -30 && (hidKeysDown() & KEY_ZR)) {
-			if (bankBox < size / (30 * PKMNLENGTH) - 1) 
+			if (bankBox < size / (30 * ofs.pkxLength) - 1) 
 				bankBox++;
-			else if (bankBox == size / (30 * PKMNLENGTH) - 1) 
+			else if (bankBox == size / (30 * ofs.pkxLength) - 1) 
 				bankBox = 0;
 		}
 		
@@ -279,16 +279,16 @@ void bank(u8* mainbuf) {
 			if (bankBox > 0) 
 				bankBox--;
 			else if (bankBox == 0) 
-				bankBox = size / (30 * PKMNLENGTH) - 1;
+				bankBox = size / (30 * ofs.pkxLength) - 1;
 		}
 		
 		if (hidKeysHeld() & KEY_ZR && hidKeysHeld() & KEY_ZL)
 			zSpeed = 0;
 		else if (hidKeysHeld() & KEY_ZR) {
 			if (zSpeed > 30) {
-				if (bankBox < size / (30 * PKMNLENGTH) - 1) 
+				if (bankBox < size / (30 * ofs.pkxLength) - 1) 
 					bankBox++;
-				else if (bankBox == size / (30 * PKMNLENGTH) - 1) 
+				else if (bankBox == size / (30 * ofs.pkxLength) - 1) 
 					bankBox = 0;
 			}
 			else
@@ -299,7 +299,7 @@ void bank(u8* mainbuf) {
 				if (bankBox > 0) 
 					bankBox--;
 				else if (bankBox == 0) 
-					bankBox = size / (30 * PKMNLENGTH) - 1;
+					bankBox = size / (30 * ofs.pkxLength) - 1;
 			}
 			else
 				zSpeed--;
@@ -324,13 +324,13 @@ void bank(u8* mainbuf) {
 		if (hidKeysDown() & KEY_B) {
 			if (isBufferized) {
 				if (bufferizedfrombank)
-					memcpy(&bankbuf[coordinate[0] * 30 * PKMNLENGTH + coordinate[1] * PKMNLENGTH], pkmn, PKMNLENGTH);
+					memcpy(&bankbuf[coordinate[0] * 30 * ofs.pkxLength + coordinate[1] * ofs.pkxLength], pkmn, ofs.pkxLength);
 				else if (!isWirelessBuffer)
 					pkx_set_as_it_is(mainbuf, coordinate[0], coordinate[1], pkmn);
 				else if (isWirelessBuffer)
 					setToWirelessBuf(wirelessbuf, coordinate[0], coordinate[1], pkmn);
 				
-				memset(pkmn, 0, PKMNLENGTH);
+				memset(pkmn, 0, ofs.pkxLength);
 				isBufferized = false;
 			} else
 				break;
@@ -341,23 +341,23 @@ void bank(u8* mainbuf) {
 				if (saveBox > 0) 
 					saveBox--;
 				else if (saveBox == 0) 
-					saveBox = game_isgen6() ? 30 : 31;
+					saveBox = ofs.maxBoxes - 1;
 			}
 			
 			if (touch.px > 185 && touch.px < 201 && touch.py > 17 && touch.py < 37) {
-				if (saveBox < (game_isgen6() ? 30 : 31)) 
+				if (saveBox < ofs.maxBoxes - 1) 
 					saveBox++;
-				else if (saveBox == (game_isgen6() ? 30 : 31)) 
+				else if (saveBox == ofs.maxBoxes - 1) 
 					saveBox = 0;
 			}
 			
 			if ((touch.px > 208 && touch.px < 317 && touch.py > 70 && touch.py < 97) && !(isBufferized)) {
 				if (confirmDisp(i18n(S_BANK_Q_ERASE_SELECTED_BOX))) {
-					u8 tmp[PKMNLENGTH];
-					memset(tmp, 0, PKMNLENGTH);
+					u8 tmp[ofs.pkxLength];
+					memset(tmp, 0, ofs.pkxLength);
 					for (u32 i = 0; i < 30; i++) {
 						if (currentEntry < 30)
-							memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + i * PKMNLENGTH], tmp, PKMNLENGTH);
+							memcpy(&bankbuf[bankBox * 30 * ofs.pkxLength + i * ofs.pkxLength], tmp, ofs.pkxLength);
 						else if (!isBattleBoxed(mainbuf, saveBox, i) && !isWirelessBuffer)
 							pkx_set_as_it_is(mainbuf, saveBox, i, tmp);
 						else if (isWirelessBuffer)
@@ -367,41 +367,41 @@ void bank(u8* mainbuf) {
 			}
 			
 			if (touch.px > 242 && touch.px < 285 && touch.py > 5 && touch.py < 25) {
-				u8 buffer[PKMNLENGTH];
-				u8 temp[PKMNLENGTH];
-				memset(buffer, 0, PKMNLENGTH);
-				memset(temp, 0, PKMNLENGTH);
+				u8 buffer[ofs.pkxLength];
+				u8 temp[ofs.pkxLength];
+				memset(buffer, 0, ofs.pkxLength);
+				memset(temp, 0, ofs.pkxLength);
 				
 				for (u32 i = 0; i < 30; i++) {
 					if (!isBattleBoxed(mainbuf, saveBox, i) && !isWirelessBuffer) {
 						pkx_get(mainbuf, saveBox, i, buffer); // pkx_get -> buffer
-						memcpy(temp, &bankbuf[bankBox * 30 * PKMNLENGTH + i * PKMNLENGTH], PKMNLENGTH); // memcpy bank -> temp
+						memcpy(temp, &bankbuf[bankBox * 30 * ofs.pkxLength + i * ofs.pkxLength], ofs.pkxLength); // memcpy bank -> temp
 						
 						u16 species = pkx_get_species(temp);
 						u8 form = pkx_get_form(temp);
 						FormData *forms = pkx_get_legal_form_data(species, game);
 						bool illegalform = form < forms->min || form > forms->max;
-						bool illegalspecies = game < 4 && species > 721;
+						bool illegalspecies = species > ofs.maxSpecies;
 						free(forms);
 
 						if (!(illegalspecies || illegalform)) { // prevent that gen7 stuff goes into gen6 save
 							pkx_set(mainbuf, saveBox, i, temp); // pkx_set -> temp
-							memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + i * PKMNLENGTH], buffer, PKMNLENGTH); // memcpy bank -> buffer
+							memcpy(&bankbuf[bankBox * 30 * ofs.pkxLength + i * ofs.pkxLength], buffer, ofs.pkxLength); // memcpy bank -> buffer
 						}
 					} else if (isWirelessBuffer) {
 						getFromWirelessBuf(wirelessbuf, saveBox, i, buffer); // pkx_get -> buffer
-						memcpy(temp, &bankbuf[bankBox * 30 * PKMNLENGTH + i * PKMNLENGTH], PKMNLENGTH); // memcpy bank -> temp
+						memcpy(temp, &bankbuf[bankBox * 30 * ofs.pkxLength + i * ofs.pkxLength], ofs.pkxLength); // memcpy bank -> temp
 						setToWirelessBuf(wirelessbuf, saveBox, i, temp); // pkx_set -> temp
-						memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + i * PKMNLENGTH], buffer, PKMNLENGTH); // memcpy bank -> buffer						
+						memcpy(&bankbuf[bankBox * 30 * ofs.pkxLength + i * ofs.pkxLength], buffer, ofs.pkxLength); // memcpy bank -> buffer						
 					}
 				}
 			}
 			
 			if ((touch.px > 208 && touch.px < 317 && touch.py > 97 && touch.py < 124) && !(isBufferized)) {
-				u8 tmp[PKMNLENGTH];
-				memset(tmp, 0, PKMNLENGTH);
+				u8 tmp[ofs.pkxLength];
+				memset(tmp, 0, ofs.pkxLength);
 				if (currentEntry < 30) 
-					memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], tmp, PKMNLENGTH);
+					memcpy(&bankbuf[bankBox * 30 * ofs.pkxLength + currentEntry * ofs.pkxLength], tmp, ofs.pkxLength);
 				else if (!isBattleBoxed(mainbuf, saveBox, currentEntry - 30) && !isWirelessBuffer)
 					pkx_set_as_it_is(mainbuf, saveBox, currentEntry - 30, tmp);
 				else if (isWirelessBuffer)
@@ -410,12 +410,11 @@ void bank(u8* mainbuf) {
 			
 			if (touch.px > 208 && touch.px < 317 && touch.py > 153 && touch.py < 180) {
 				int dexEntry = 0;
-				int page = 0, maxpages = game_isgen6() ? 18 : 21;
-				int total = game_isgen7() ? 802 : 721;
+				int page = 0, maxpages = ofs.maxSpecies / 40 + 1;
 				int seen = 0;
 				int caught = 0;
 				
-				for (int i = 1; i <= total; i++) {
+				for (int i = 1; i <= ofs.maxSpecies; i++) {
 					seen = getSeen(mainbuf, i) ? seen + 1 : seen;
 					caught = getCaught(mainbuf, i) ? caught + 1 : caught;
 				}
@@ -456,11 +455,11 @@ void bank(u8* mainbuf) {
 		
 		if (((hidKeysDown() & KEY_X) || (hidKeysDown() & KEY_TOUCH && touch.px > 208 && touch.px < 317 && touch.py > 43 && touch.py < 74)) && !isBufferized) {
 			isSeen = true;
-			u8 tmp[PKMNLENGTH];
-			memset(tmp, 0, PKMNLENGTH);
+			u8 tmp[ofs.pkxLength];
+			memset(tmp, 0, ofs.pkxLength);
 			
 			if (currentEntry < 30)
-				memcpy(tmp, &bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], PKMNLENGTH);
+				memcpy(tmp, &bankbuf[bankBox * 30 * ofs.pkxLength + currentEntry * ofs.pkxLength], ofs.pkxLength);
 			else if (!isWirelessBuffer)
 				pkx_get(mainbuf, saveBox, currentEntry - 30, tmp);
 			else if (isWirelessBuffer)
@@ -486,15 +485,15 @@ void bank(u8* mainbuf) {
 				u8 form = pkx_get_form(pkmn);
 				FormData *forms = pkx_get_legal_form_data(species, game);
 				bool illegalform = form < forms->min || form > forms->max;
-				bool illegalspecies = game_isgen6() && species > 721;
+				bool illegalspecies = species > ofs.maxSpecies;
 				free(forms);
 
 				if (isWirelessBuffer || !((illegalspecies || illegalform) && currentEntry > 29)) { // prevent that gen7 stuff goes into gen6 save
-					u8 tmp[PKMNLENGTH];
+					u8 tmp[ofs.pkxLength];
 					
 					if ((bufferizedfrombank == (currentEntry < 30)) && (coordinate[0] == ((currentEntry < 30) ? bankBox : saveBox)) && (coordinate[1] == currentEntry))
 						//remains at the same place
-						memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], pkmn, PKMNLENGTH);
+						memcpy(&bankbuf[bankBox * 30 * ofs.pkxLength + currentEntry * ofs.pkxLength], pkmn, ofs.pkxLength);
 					else if ((!bufferizedfrombank == (currentEntry > 29)) && (coordinate[0] == ((currentEntry < 30) ? bankBox : saveBox)) && (coordinate[1] == currentEntry - 30)) {
 						//remains at the same place
 						if (!isWirelessBuffer)
@@ -503,10 +502,10 @@ void bank(u8* mainbuf) {
 							setToWirelessBuf(wirelessbuf, saveBox, currentEntry - 30, pkmn);
 					}
 					else if (currentEntry < 30) {
-						memcpy(tmp, &bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], PKMNLENGTH);
-						memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], pkmn, PKMNLENGTH);
+						memcpy(tmp, &bankbuf[bankBox * 30 * ofs.pkxLength + currentEntry * ofs.pkxLength], ofs.pkxLength);
+						memcpy(&bankbuf[bankBox * 30 * ofs.pkxLength + currentEntry * ofs.pkxLength], pkmn, ofs.pkxLength);
 						if (bufferizedfrombank) 
-							memcpy(&bankbuf[coordinate[0] * 30 * PKMNLENGTH + coordinate[1] * PKMNLENGTH], tmp, PKMNLENGTH);
+							memcpy(&bankbuf[coordinate[0] * 30 * ofs.pkxLength + coordinate[1] * ofs.pkxLength], tmp, ofs.pkxLength);
 						else if (!isWirelessBuffer)
 							pkx_set(mainbuf, coordinate[0], coordinate[1], tmp);
 						else if (isWirelessBuffer)
@@ -524,32 +523,32 @@ void bank(u8* mainbuf) {
 						}
 
 						if (bufferizedfrombank) 
-							memcpy(&bankbuf[coordinate[0] * 30 * PKMNLENGTH + coordinate[1] * PKMNLENGTH], tmp, PKMNLENGTH);
+							memcpy(&bankbuf[coordinate[0] * 30 * ofs.pkxLength + coordinate[1] * ofs.pkxLength], tmp, ofs.pkxLength);
 						else if (!isWirelessBuffer)
 							pkx_set(mainbuf, coordinate[0], coordinate[1], tmp);
 						else if (isWirelessBuffer)
 							setToWirelessBuf(wirelessbuf, coordinate[0], coordinate[1], tmp);
 					}
-					memset(pkmn, 0, PKMNLENGTH);
+					memset(pkmn, 0, ofs.pkxLength);
 					isBufferized = false;
 				}
 			}
 			else {
 				if (isWirelessBuffer || (!(isBattleBoxed(mainbuf, saveBox, currentEntry - 30) && (currentEntry > 29)))) {
-					u8 tmp[PKMNLENGTH];
-					memset(tmp, 0, PKMNLENGTH);
+					u8 tmp[ofs.pkxLength];
+					memset(tmp, 0, ofs.pkxLength);
 				
 					coordinate[0] = (currentEntry < 30) ? bankBox : saveBox;
 					coordinate[1] = (currentEntry > 29) ? (currentEntry - 30) : currentEntry;
 					
 					if (currentEntry < 30) {
-						memcpy(pkmn, &bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], PKMNLENGTH);
+						memcpy(pkmn, &bankbuf[bankBox * 30 * ofs.pkxLength + currentEntry * ofs.pkxLength], ofs.pkxLength);
 						clearMarkings(pkmn);
-						if (pkx_get_species(pkmn) <= 0 || pkx_get_species(pkmn) > 821) {
-							memset(pkmn, 0, PKMNLENGTH);
+						if (pkx_get_species(pkmn) == 0 || pkx_get_species(pkmn) > ofs.maxSpecies) {
+							memset(pkmn, 0, ofs.pkxLength);
 							isBufferized = false;
 						} else {
-							memcpy(&bankbuf[bankBox * 30 * PKMNLENGTH + currentEntry * PKMNLENGTH], tmp, PKMNLENGTH);
+							memcpy(&bankbuf[bankBox * 30 * ofs.pkxLength + currentEntry * ofs.pkxLength], tmp, ofs.pkxLength);
 							isBufferized = true;
 						}
 					} else {
@@ -560,8 +559,8 @@ void bank(u8* mainbuf) {
 							getFromWirelessBuf(wirelessbuf, saveBox, currentEntry - 30, pkmn);
 						}
 						
-						if (pkx_get_species(pkmn) <= 0 || pkx_get_species(pkmn) > 821) {
-							memset(pkmn, 0, PKMNLENGTH);
+						if (pkx_get_species(pkmn) == 0 || pkx_get_species(pkmn) > ofs.maxSpecies) {
+							memset(pkmn, 0, ofs.pkxLength);
 							isBufferized = false;
 						} else {
 							if (!isWirelessBuffer)
@@ -586,7 +585,7 @@ void bank(u8* mainbuf) {
 	}
 	
 	if (confirmDisp(i18n(S_BANK_Q_SAVE_CHANGES)))
-		file_write("/3ds/data/PKSM/bank/bank.bin", bankbuf, size);
+		file_write("/3ds/PKSM/bank/bank.bin", bankbuf, size);
 	
 	free(bankbuf);
 	free(wirelessbuf);

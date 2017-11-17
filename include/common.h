@@ -16,7 +16,8 @@
 >   See LICENSE for information.
 */
 
-#pragma once
+#ifndef COMMON_H
+#define COMMON_H
 
 #include <3ds.h>
 #include <citro3d.h>
@@ -30,12 +31,12 @@
 #include <sys/socket.h>
 
 #include "bank.h"
+#include "camera.h"
 #include "config.h"
-#include "database.h"
+#include "sections/events/events.h"
 #include "dex.h"
 #include "editor.h"
-#include "fill.h"
-#include "files.h"
+#include "sections/events/eventlists.h"
 #include "fx.h"
 #include "game.h"
 #include "graphic.h"
@@ -45,14 +46,47 @@
 #include "i18n.h"
 #include "../source/memecrypto/source/memecrypto.h"
 #include "../source/pp2d/pp2d.h"
+#include "../source/quirc/quirc.h"
+#include "sections/events/pgf.h"
+#include "sections/events/pgt.h"
 #include "pkx.h"
 #include "save.h"
 #include "sha256.h"
 #include "socket.h"
 #include "spi.h"
+#include "texman.h"
 #include "util.h"
-#include "wcx.h"
+#include "sections/events/wcman.h"
+#include "sections/events/wcx.h"
 
 struct ArrayUTF32 listMoves;
 struct ArrayUTF32 listItems;
 struct ArrayUTF32 listSpecies;
+
+struct {
+	u8 maxBalls;
+	u8 pkxLength;
+	u8 maxBoxes;
+	u16 maxAbilities;
+	u16 maxSpecies;
+	u8 maxWondercards;
+	u8 nicknameLength;
+	u32 wondercardLocation;
+	u16 wondercardSize;
+	u8 pkmnLength;
+	u32 pokedex;
+	u32 battleBoxes;
+	u32 saveOT;
+	u32 saveGender;
+	u32 saveTID;
+	u32 saveSID;
+	u32 saveSeed;
+	u32 saveLanguage;
+	u32 saveRegion;
+	u32 consoleRegion;
+	u32 saveCountry;
+	u32 saveSize;
+	u32 boxSize;
+} ofs;
+
+#endif

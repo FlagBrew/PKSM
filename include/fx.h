@@ -16,7 +16,9 @@
 >   See LICENSE for information.
 */
 
-#pragma once
+#ifndef FX_H
+#define FX_H
+
 #include "common.h"
 
 void FXElementsInit();
@@ -24,3 +26,5 @@ int movementOffsetLong(int maxrange);
 int movementOffsetSlow(int maxrange);
 int giveTransparence();
 void animateBG(bool isUp);
+
+#endif

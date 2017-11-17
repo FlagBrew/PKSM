@@ -29,7 +29,7 @@ void game_set(int value) {
 }
 
 bool game_isgen7() {
-	return (game == GAME_SUN || game == GAME_MOON);
+	return (game == GAME_SUN || game == GAME_MOON || game == GAME_US || game == GAME_UM);
 }
 
 bool game_isgen6() {
@@ -64,46 +64,201 @@ bool game_getisSUMO() {
 	return (game == GAME_SUN || game == GAME_MOON);
 }
 
+bool game_getisUSUM() {
+	return (game == GAME_US || game == GAME_UM);
+}
+
 u8 game_get_country(u8* mainbuf) {
-	if (game_getisSUMO())
-		return *(u8*)(mainbuf + 0x01200 + 0x2F);
-	else if (game_getisORAS())
-		return *(u8*)(mainbuf +  + 0x27);
-	else if (game_getisXY())
-		return *(u8*)(mainbuf + 0x14000 + 0x27);
-	
-	return 0;
+	return *(u8*)(mainbuf + ofs.saveCountry);
 }
 
 u8 game_get_region(u8* mainbuf) {
-	if (game_getisSUMO())
-		return *(u8*)(mainbuf + 0x01200 + 0x2E);
-	else if (game_getisORAS())
-		return *(u8*)(mainbuf + 0x14000 + 0x26);
-	else if (game_getisXY())
-		return *(u8*)(mainbuf + 0x14000 + 0x26);
-	
-	return 0;	
+	return *(u8*)(mainbuf + ofs.saveRegion);
 }
 
 u8 game_get_console_region(u8* mainbuf) {
-	if (game_getisSUMO())
-		return *(u8*)(mainbuf + 0x01200 + 0x34);
-	else if (game_getisORAS())
-		return *(u8*)(mainbuf + 0x14000 + 0x2C);
-	else if (game_getisXY())
-		return *(u8*)(mainbuf + 0x14000 + 0x2C);
-	
-	return 0;	
+	return *(u8*)(mainbuf + ofs.consoleRegion);
 }
 
 u8 game_get_language(u8* mainbuf) {
-	if (game_getisSUMO())
-		return *(u8*)(mainbuf + 0x01200 + 0x35);
-	else if (game_getisORAS())
-		return *(u8*)(mainbuf + 0x14000 + 0x2D);
-	else if (game_getisXY())
-		return *(u8*)(mainbuf + 0x14000 + 0x2D);
+	return *(u8*)(mainbuf + ofs.saveLanguage);	
+}
+
+void game_fill_offsets()
+{
+	// init
+	ofs.pkxLength = 232;
+	ofs.maxBalls = 0;
+	ofs.maxBoxes = 31;
+	ofs.maxAbilities = 0;
+	ofs.maxSpecies = 0;
+	ofs.maxWondercards = 0;
+	ofs.nicknameLength = 26;
+	ofs.wondercardLocation = 0;
+	ofs.wondercardSize = 264;
+	ofs.pkmnLength = 232;
+	ofs.pokedex = 0;
+	ofs.battleBoxes = 0;
+	ofs.saveOT = 0;
+	ofs.saveGender = 0;
+	ofs.saveTID = 0;
+	ofs.saveSID = 0;
+	ofs.saveSeed = 0;
+	ofs.saveLanguage = 0;
+	ofs.saveRegion = 0;
+	ofs.consoleRegion = 0;
+	ofs.saveCountry = 0;
+	ofs.saveSize = 0;
+	ofs.boxSize = 0;
 	
-	return 0;	
+	if (game_getisUSUM())
+	{
+		ofs.maxBalls = 26;
+		ofs.maxBoxes = 32;
+		ofs.maxAbilities = 233;
+		ofs.maxSpecies = 807;
+		ofs.maxWondercards = 48;
+		ofs.nicknameLength = 26;
+		ofs.wondercardLocation = 0x66300;
+		ofs.wondercardSize = 264;
+		ofs.pkmnLength = 232;
+		ofs.pokedex = 0x2C00;
+		ofs.battleBoxes = 0x50C4;
+		ofs.saveOT = 0x1438;
+		ofs.saveGender = 0x1405;
+		ofs.saveTID = 0x1400;
+		ofs.saveSID = 0x1402;
+		ofs.saveSeed = 0x651DC;
+		ofs.saveLanguage = 0x1435;
+		ofs.saveRegion = 0x142E;
+		ofs.consoleRegion = 0x1434;
+		ofs.saveCountry = 0x142F;
+		ofs.saveSize = 0x6CC00;
+		ofs.boxSize = 0x36600;
+	}
+	else if (game_getisSUMO())
+	{
+		ofs.maxBalls = 26;
+		ofs.maxBoxes = 32;
+		ofs.maxAbilities = 232;
+		ofs.maxSpecies = 802;
+		ofs.maxWondercards = 48;
+		ofs.nicknameLength = 26;
+		ofs.wondercardLocation = 0x65D00;
+		ofs.wondercardSize = 264;
+		ofs.pkmnLength = 232;
+		ofs.pokedex = 0x2A00;
+		ofs.battleBoxes = 0x4CC4;
+		ofs.saveOT = 0x1238;
+		ofs.saveGender = 0x1205;
+		ofs.saveTID = 0x1200;
+		ofs.saveSID = 0x1202;
+		ofs.saveSeed = 0x6B5DC;
+		ofs.saveLanguage = 0x1235;
+		ofs.saveRegion = 0x122E;
+		ofs.consoleRegion = 0x1234;
+		ofs.saveCountry = 0x122F;
+		ofs.saveSize = 0x6BE00;
+		ofs.boxSize = 0x36600;
+	}
+	else if (game_getisORAS())
+	{
+		ofs.maxBalls = 25;
+		ofs.maxBoxes = 31;
+		ofs.maxAbilities = 191;
+		ofs.maxSpecies = 721;
+		ofs.maxWondercards = 24;
+		ofs.nicknameLength = 26;
+		ofs.wondercardLocation = 0x1CD00;
+		ofs.wondercardSize = 264;
+		ofs.pkmnLength = 232;
+		ofs.pokedex = 0x1500;
+		//ofs.battleBoxes =
+		ofs.saveOT = 0x14048;
+		ofs.saveGender = 0x14005;
+		ofs.saveTID = 0x14000;
+		ofs.saveSID = 0x14002;
+		//ofs.saveSeed = 
+		ofs.saveLanguage = 0x1402D;
+		ofs.saveRegion = 0x14026;
+		ofs.consoleRegion = 0x1402C;
+		ofs.saveCountry = 0x14027;
+		ofs.saveSize = 0x76000;
+		ofs.boxSize = 0x34AD0;
+	}
+	else if (game_getisXY())
+	{
+		ofs.maxBalls = 25;
+		ofs.maxBoxes = 31;
+		ofs.maxAbilities = 188;
+		ofs.maxSpecies = 721;
+		ofs.maxWondercards = 24;
+		ofs.nicknameLength = 26;
+		ofs.wondercardLocation = 0x1BD00;
+		ofs.wondercardSize = 264;
+		ofs.pkmnLength = 232;
+		ofs.pokedex = 0x1500;
+		//ofs.battleBoxes =
+		ofs.saveOT = 0x14048;
+		ofs.saveGender = 0x14005;
+		ofs.saveTID = 0x14000;
+		ofs.saveSID = 0x14002;
+		//ofs.saveSeed =
+		ofs.saveLanguage = 0x1402D;
+		ofs.saveRegion = 0x14026;
+		ofs.consoleRegion = 0x1402C;
+		ofs.saveCountry = 0x14027;
+		ofs.saveSize = 0x65600;
+		ofs.boxSize = 0x34AD0;
+	}
+	else if (game_isgen5())
+	{
+		ofs.maxBalls = 25;
+		//ofs.maxBoxes =
+		ofs.maxAbilities = 164;
+		ofs.maxSpecies = 649;
+		ofs.maxWondercards = 12;
+		//ofs.nicknameLength =
+		ofs.wondercardLocation = 0x1C900;
+		ofs.wondercardSize = 204;
+		// ofs.pkmnLength =
+		// ofs.pokedex =
+		// ofs.battleBoxes =
+		// ofs.saveOT =
+		// ofs.saveGender =
+		// ofs.saveTID =
+		// ofs.saveSID =
+		// ofs.saveSeed =
+		// ofs.saveLanguage =
+		// ofs.saveRegion =
+		// ofs.consoleRegion =
+		// ofs.saveCountry =
+		// ofs.saveSize = 	
+		// ofs.boxSize = 
+	}
+	else if (game_isgen4())
+	{
+		ofs.maxBalls = 25;
+		//ofs.maxBoxes =
+		ofs.maxAbilities = 123;
+		ofs.maxSpecies = 493;
+		ofs.maxWondercards = 8;
+		// ofs.nicknameLength =
+		// ofs.wondercardLocation =
+		ofs.wondercardSize = 260;
+		// ofs.pkmnLength =
+		// ofs.pokedex =
+		// ofs.battleBoxes =
+		// ofs.saveOT =
+		// ofs.saveGender =
+		// ofs.saveTID =
+		// ofs.saveSID =
+		// ofs.saveSeed =
+		// ofs.saveLanguage =
+		// ofs.saveRegion =
+		// ofs.consoleRegion =
+		// ofs.saveCountry =
+		// ofs.saveSize =
+		// ofs.boxSize = 		
+	}
 }

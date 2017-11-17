@@ -16,7 +16,9 @@
 >   See LICENSE for information.
 */
 
-#pragma once
+#ifndef SAVE_H
+#define SAVE_H
+
 #include "common.h"
 
 int save_get_GBO();
@@ -25,3 +27,5 @@ void save_set_GBO(u8* mainbuf);
 void save_set_SBO(u8* mainbuf);
 void rewriteCHK(u8 *mainbuf);
 void resign(u8 *mainbuf);
+
+#endif
