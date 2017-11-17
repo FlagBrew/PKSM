@@ -369,7 +369,7 @@ void eventDatabase(u8* mainbuf) {
 					}
 				}
 				
-				if ((hidKeysDown() & KEY_L) && (hidKeysDown() & KEY_R) && game_is3DS())
+				if ((hidKeysHeld() & KEY_L) && (hidKeysHeld() & KEY_R) && game_is3DS())
 				{
 					camera_set_qrmode(true);
 					camera_init();
