@@ -20,14 +20,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * https://discord.gg/zqXWgsH
+ * https://discord.gg/bGKEyfY
  */
 
 /**
  * Plug & Play 2D
  * @file pp2d.h
  * @author Bernardo Giordano
- * @date 17 October 2017
+ * @date 13 November 2017
  * @brief pp2d header
  */
 

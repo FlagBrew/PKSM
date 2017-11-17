@@ -46,9 +46,9 @@
 #define TEXTURE_ALTERNATIVE_SPRITESHEET 24
 #define TEXTURE_BALLS_SPRITESHEET 25
 #define TEXTURE_TYPES_SPRITESHEET 26
-#define TEXTURE_SHINY_SPRITESHEET 27
-#define TEXTURE_CUBES_SPRITESHEET 28
-#define TEXTURE_BOXES_SPRITESHEET 29
+#define TEXTURE_CUBES_SPRITESHEET 27
+#define TEXTURE_BOXES_SPRITESHEET 28
+#define TEXTURE_QR 29
 
 #define FONT_SIZE_18 0.72f
 #define FONT_SIZE_15 0.6f
@@ -80,7 +80,7 @@
 #define DS RGBA8(56, 56, 56, 255)
 #define RED RGBA8(184, 32, 16, 255)
 
-#define EGGSPRITEPOS 803
+#define EGGSPRITEPOS 808
 
 #define MOVEMENTSPEED 4
 
@@ -88,7 +88,6 @@ void GUIElementsInit();
 void GUIElementsSpecify();
 void GUIGameElementsInit();
 void GUIElementsExit();
-void init_font_cache();
 void infoDisp(wchar_t* message);
 int confirmDisp(wchar_t* message);
 void freezeMsg(wchar_t* message);
@@ -112,9 +111,5 @@ void wcxInfoViewer(u8* buf);
 void printfHexEditorInfo(u8* pkmn, int byte);
 void printDexViewer(u8* mainbuf, int currentEntry, int page, int seen, int caught);
 void printfConfigEditorInfo(int currentEntry);
-
-void printSelector(int x, int y, int width, int height);
-void printMenuTop();
-void printMenuBottom();
 
 #endif

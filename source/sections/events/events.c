@@ -20,11 +20,6 @@
 
 static const char *tags[] = {"jpn", "eng", "fre", "ita", "ger", "spa", "kor", "chs", "cht"};
 
-u32 getWondercardPreviewSize(void)
-{
-	return game_is3DS() ? WCX_SIZE : (game_isgen5() ? 204 : 260);
-}
-
 int getI(char* str, bool is3ds)
 {
 	int i = 0, mult = 1;
@@ -86,7 +81,7 @@ void reloadPreviewBuf(u8* previewBuf, const int i, const int n)
 		getSinglePathPGT(testpath, n, i);
 	}
 	
-	const u32 wcSize = getWondercardPreviewSize();
+	const u16 wcSize = ofs.wondercardSize;
 	FILE* f = fopen(testpath, "r");
 	if (f)
 	{ 
@@ -120,7 +115,7 @@ void reloadMultiplePreviewBuf(u8* previewBuf, const int i, const int n, const in
 		return;
 	}
 	
-	const u32 wcSize = getWondercardPreviewSize();
+	const u16 wcSize = ofs.wondercardSize;
 	FILE* f = fopen(testpath, "r");
 	if (f)
 	{ 
@@ -146,24 +141,16 @@ void findFreeLocationWC(u8 *mainbuf, int nInjected[])
 		return;
 	}
 
-	int offset = 0;
-	if (game_getisXY())
-		offset = 0x1BD00;
-	else if (game_getisORAS())
-		offset = 0x1CD00;
-	else if (game_getisSUMO())
-		offset = 0x65C00 + 0x100;
-	
-	const int len = game_isgen6() ? 24 : 48;
+	const u8 len = ofs.maxWondercards;
 	int temp;
-	for (int t = 0; t < len; t++)
+	for (u8 t = 0; t < len; t++)
 	{
 		temp = 0;
-		for (int j = 0; j < WC6LENGTH; j++)
-			if (*(mainbuf + offset + t * WC6LENGTH + j) == 0x00)
+		for (u32 j = 0; j < ofs.wondercardSize; j++)
+			if (*(mainbuf + ofs.wondercardLocation + t * ofs.wondercardSize + j) == 0x00)
 				temp++;
 
-		if (temp == WC6LENGTH)
+		if (temp == ofs.wondercardSize)
 		{
 			nInjected[0] = t;
 			break;
@@ -212,7 +199,7 @@ int getN(const int i)
 		case 551 : return 2;
 		case 552 : return 2;
 		case 614 : return 2;
-		case 629 : return 2;
+		case 627 : return 6;
 		case 1111 : return 6;
 		case 1114 : return 8;
 		case 2016 : return 3;		
@@ -222,7 +209,7 @@ int getN(const int i)
 
 void eventDatabase(u8* mainbuf) {
 	const u32 dbCount = game_is3DS() ? SMCOUNT : (game_isgen5() ? 170 : 190);
-	const u32 wcSize = getWondercardPreviewSize();
+	const u16 wcSize = ofs.wondercardSize;
 	
 	char *database[dbCount];
 	int *spriteArray = (int*)malloc(dbCount * sizeof(int));
@@ -381,6 +368,17 @@ void eventDatabase(u8* mainbuf) {
 						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
 					}
 				}
+				
+				if ((hidKeysDown() & KEY_L) && (hidKeysDown() & KEY_R) && game_is3DS())
+				{
+					camera_set_qrmode(true);
+					camera_init();
+					
+					while(camera_get_qrmode())
+					{
+						camera_take_qr(previewbuf, MODE_WCX);
+					}
+				}
 
 				// wireless injection toggle
 				if (hidKeysDown() & KEY_Y)
@@ -466,13 +464,9 @@ void eventDatabase(u8* mainbuf) {
 
 				// inject the wondercards
 				if (hidKeysDown() & KEY_START)
-				{
-					const int max = game_isgen7() ? 48 :
-									game_isgen6() ? 24 :
-									game_isgen5() ? 12 : 8;
-					
+				{	
 					// reached last slot, reset the slot to 0
-					if (nInjected[0] >= max)
+					if (nInjected[0] >= ofs.maxWondercards)
 					{
 						nInjected[0] = 0;
 					}

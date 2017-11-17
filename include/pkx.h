@@ -30,7 +30,7 @@ typedef struct FormData {
 } FormData;
 
 struct {
-	u8 pkmData[961][15];
+	u8 pkmData[976][15];
 } personal;
 
 FormData *pkx_get_legal_form_data(const u16 species, const int game);

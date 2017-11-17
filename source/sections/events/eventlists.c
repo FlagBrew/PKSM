@@ -35,7 +35,7 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	count = 0;
 	
 	// database[count] = "0000 - Mewnium Z"; spriteArray[count++] = 0;
-	// database[count] = "0004 - Mewnium Z (Test)"; spriteArray[count++] = 0;
+	database[count] = "0004 - Mewnium Z (Test)"; spriteArray[count++] = 0;
 	database[count] = "0201 - Birthday Events"; spriteArray[count++] = 764;
 	database[count] = "0202 - Revival Herb"; spriteArray[count++] = 0;
 	database[count] = "0203 - PC Alolan Vulpix"; spriteArray[count++] = 37;
@@ -58,6 +58,7 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[count] = "0229 - Movie Ho-Oh"; spriteArray[count++] = 250;
 	database[count] = "0230 - Colorful Friends"; spriteArray[count++] = 133;
 	database[count] = "0231 - Tohoku Victini"; spriteArray[count++] = 494;
+	database[count] = "0232 - Jirachi"; spriteArray[count++] = 385;
 	database[count] = "0233 - HK Shiny Tapu Koko"; spriteArray[count++] = 785;
 	database[count] = "0234 - Anime Steenee"; spriteArray[count++] = 762;
 	database[count] = "0235 - Anime Turtonator"; spriteArray[count++] = 776;
@@ -69,9 +70,16 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[count] = "0243 - Solrock/Lunatone"; spriteArray[count++] = 337;
 	database[count] = "0244 - Anime Trio"; spriteArray[count++] = 762;
 	database[count] = "0245 - Movie 2017 Trio"; spriteArray[count++] = 6;
+	database[count] = "0246 - 20th Mew"; spriteArray[count++] = 151;
 	database[count] = "0247 - 7-11 Mew"; spriteArray[count++] = 151;
+	database[count] = "0248 - Shiny Disguised Mimikyu"; spriteArray[count++] = 778;
 	database[count] = "0249 - Pikachu"; spriteArray[count++] = 25;
 	database[count] = "0250 - Pikachu, Ditto, Mimikyu"; spriteArray[count++] = 778;
+	database[count] = "0251 - Celebi"; spriteArray[count++] = 251;
+	database[count] = "0262 - Shiny Silvally"; spriteArray[count++] = 773;
+	database[count] = "0271 - Ash cap Pikachu"; spriteArray[count++] = 25;
+	database[count] = "0272 - MT Tensei Marshadow"; spriteArray[count++] = 802;
+	database[count] = "0275 - Ash cap Pikachu"; spriteArray[count++] = 25;
 	database[count] = "0599 - Bottle Cap"; spriteArray[count++] = 0;
 	database[count] = "0606 - Rocky Lycanroc"; spriteArray[count++] = 745;
 	database[count] = "0607 - Clovis Salazzle"; spriteArray[count++] = 758;
@@ -80,8 +88,10 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[count] = "0615 - Nats Arcanine"; spriteArray[count++] = 59;
 	database[count] = "0617 - Worlds17 Exeggutor"; spriteArray[count++] = 103;
 	database[count] = "0626 - Bullseye Charizard (Marshadow test)"; spriteArray[count++] = 6;
-	database[count] = "0629 - Sylvally Test"; spriteArray[count++] = 773;
-	database[count] = "0630 - Bullseye Charizard (Celebi test)"; spriteArray[count++] = 6;
+	database[count] = "0627 - Ash cap Pikachus"; spriteArray[count++] = 25;
+	database[count] = "0628 - 50 Potions (Test)"; spriteArray[count++] = 0;
+	database[count] = "0629 - Aether Shiny Silvally"; spriteArray[count++] = 773;
+	database[count] = "0630 - Ilex Celebi"; spriteArray[count++] = 251;
 	database[count] = "1105 - Shiny Tapu Koko"; spriteArray[count++] = 785;
 	database[count] = "1107 - Alolan Vulpix"; spriteArray[count++] = 37;
 	database[count] = "1108 - Alolan Sandshrew"; spriteArray[count++] = 27;
@@ -92,6 +102,11 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[count] = "1114 - Birthday Events"; spriteArray[count++] = 133;
 	database[count] = "1115 - Turtonator"; spriteArray[count++] = 776;
 	database[count] = "1116 - Alolan Vulpix"; spriteArray[count++] = 37;
+	database[count] = "1117 - Steenee"; spriteArray[count++] = 762;
+	database[count] = "1118 - Shiny Silvally"; spriteArray[count++] = 773;
+	database[count] = "1119 - Celebi"; spriteArray[count++] = 251;
+	database[count] = "1120 - Shiny Disguised Mimikyu"; spriteArray[count++] = 778;
+	database[count] = "1125 - Piplup"; spriteArray[count++] = 393;
 	database[count] = "1601 - Z-stone Munchlax"; spriteArray[count++] = 446;
 	database[count] = "1602 - Quick Balls"; spriteArray[count++] = 0;
 	database[count] = "1603 - Poke Balls"; spriteArray[count++] = 0;

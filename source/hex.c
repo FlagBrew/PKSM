@@ -19,7 +19,7 @@
 #include "hex.h"
 
 void fillDescriptions(wchar_t *descriptions[]) {
-	for (int j = 0; j < PKMNLENGTH; j++)
+	for (int j = 0; j < ofs.pkmnLength; j++)
 		descriptions[j] = L" ";
 	
 	descriptions[0x00] = i18n(S_HEXEDITOR_DESC_0x00);
@@ -249,7 +249,7 @@ void fillDescriptions(wchar_t *descriptions[]) {
 
 void fillSectors(bool sector[][2]) {
 	// editable, requires Boolean
-	for (int j = 0; j < PKMNLENGTH; j++) {
+	for (int j = 0; j < ofs.pkmnLength; j++) {
 		sector[j][0] = false;
 		sector[j][1] = false;
 	}
@@ -311,7 +311,7 @@ void fillSectors(bool sector[][2]) {
 }
 
 void fillSectorsHaxMode(bool sector[][2]) {
-	for (int j = 0; j < PKMNLENGTH; j++) {
+	for (int j = 0; j < ofs.pkmnLength; j++) {
 		sector[j][0] = true;
 		sector[j][1] = false;
 	}

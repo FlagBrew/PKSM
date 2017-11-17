@@ -572,3 +572,5 @@ Failed to download data!
 Installing latest release...
 Latest release installed!
 Do you want to launch the game?
+Ultra Sun
+Ultra Moon

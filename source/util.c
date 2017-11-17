@@ -42,6 +42,12 @@ void checkMaxValue(u8* pkmn, int byteEntry, int value, int max) {
 		pkmn[byteEntry] = temp;
 }
 
+void file_write(const char* path, void *buf, int size) {
+	FILE *file = fopen(path, "wb");
+	fwrite(buf, 1, size, file);
+	fclose(file);
+}
+
 bool checkFile(const char* path) {
 	FILE *temp = fopen(path, "rt");
 	if (temp == NULL) {
@@ -73,40 +79,6 @@ void loadPersonal() {
 	free(buf);
 }
 
-void loadFile(u8* buf, char* path) {
-	FILE *fptr = fopen(path, "rt");
-	if (fptr == NULL)
-		return;
-	fseek(fptr, 0, SEEK_END);
-	u32 size = ftell(fptr);
-	memset(buf, 0, size);
-	rewind(fptr);
-	fread(buf, size, 1, fptr);
-	fclose(fptr);
-}
-
-void injectFromFile(u8* mainbuf, char* path, u32 offset) {
-	FILE *fptr = fopen(path, "rt");
-	if (fptr == NULL) {
-		fclose(fptr);
-		return;
-	}
-	fseek(fptr, 0, SEEK_END);
-	u32 size = ftell(fptr);
-	u8 *buf = (u8*)malloc(size);
-	if (buf == NULL) {
-		fclose(fptr);
-		free(buf);
-		return;
-	}
-	rewind(fptr);
-	fread(buf, size, 1, fptr);
-	fclose(fptr);
-
-	memcpy(&mainbuf[offset], buf, size);
-	free(buf);
-}
-
 bool isHBL() {
 #if ROSALINA_3DSX
 	return false;
@@ -116,7 +88,6 @@ bool isHBL() {
 	return id != 0x000400000EC10000;
 #endif
 }
-
 
 void fsStart() {
     if (isHBL()) {
@@ -156,9 +127,7 @@ bool openSaveArch(FS_Archive *out, u64 id) {
 	return false;
 }
 
-/**
- * Comparison function used for sorting items, abilities and all things
- */
+/// Comparison function used for sorting items, abilities and all things
 int ArrayUTF32_sort_cmp_PKMN_Things_List(const wchar_t *a,const wchar_t *b) {
 	int result = wcscmp(a, b);
 	wchar_t* unknownStrings[] = { L"???", L"？？？", L"(?)" };

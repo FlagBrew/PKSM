@@ -18,7 +18,7 @@
 
 #include "config.h"
 
-static const char* config_path = "sdmc:/3ds/data/PKSM/cfg.bin";
+static const char* config_path = "sdmc:/3ds/PKSM/cfg.bin";
 static const u8 PKSMOT[24] = {
 	0x50, 0x00, 0x4B, 0x00, 0x53, 0x00, 0x4D, 0x00,
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
@@ -33,13 +33,13 @@ void config_init(void)
 	{
 		CFGU_GetSystemLanguage(&PKSM_Configuration.pksmLanguage);
 		PKSM_Configuration.automaticSaveBackup = 1;
-		PKSM_Configuration.storageSize = 1000;
+		PKSM_Configuration.storageSize = 150;
 		PKSM_Configuration.defaultTID = 12345;
 		PKSM_Configuration.defaultSID = 54321;
 		memcpy(PKSM_Configuration.defaultOTName, PKSMOT, 24);
 		PKSM_Configuration.defaultNationality = 1;
 		PKSM_Configuration.editInTransfers = 1;
-		
+
 		config_set();
 	} else
 	{
@@ -47,70 +47,66 @@ void config_init(void)
 	}
 	
 	// check if need to resize the storage
-	if (checkFile("/3ds/data/PKSM/bank/bank.bin"))
+	/*if (checkFile("/3ds/data/PKSM/bank/bank.bin"))
 	{
 		FILE *bank = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
 		fseek(bank, 0, SEEK_END);
 		u32 size = ftell(bank);
 		fclose(bank);
 		
-		u32 actualBox = size / (30 * PKMNLENGTH);
-		if (actualBox != PKSM_Configuration.storageSize)
+		// add boxes to storage file
+		if (size < PKSM_Configuration.storageSize * 30 * ofs.pkxLength)
 		{
-			// add boxes to storage file
-			if (size < PKSM_Configuration.storageSize * 30 * PKMNLENGTH)
-			{
-				FILE *buf = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
-				fseek(buf, 0, SEEK_END);
-				u32 size_temp = ftell(buf);
-				u8 *bankbuf = (u8*)malloc(size_temp);
-				rewind(buf);
-				fread(bankbuf, size_temp, 1, buf);
-				fclose(buf);
-				
-				FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bak", "wb");
-				fwrite(bankbuf, 1, size_temp, bak);
-				fclose(bak);
-				
-				u8* newbank = (u8*)malloc(PKSM_Configuration.storageSize * 30 * PKMNLENGTH);
-				memset(newbank, 0, PKSM_Configuration.storageSize * 30 * PKMNLENGTH);
-				memcpy(newbank, bankbuf, size_temp);
-				
-				FILE *newbankfile = fopen("/3ds/data/PKSM/bank/bank.bin", "wb");
-				fwrite(newbank, 1, PKSM_Configuration.storageSize * 30 * PKMNLENGTH, newbankfile);
-				fclose(newbankfile);
-				
-				free(bankbuf);
-				free(newbank);					
-			}
-			// trim boxes from storage file
-			else if (size > PKSM_Configuration.storageSize * 30 * PKMNLENGTH)
-			{
-				FILE *buf = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
-				fseek(buf, 0, SEEK_END);
-				u32 size_temp = ftell(buf);
-				u8 *bankbuf = (u8*)malloc(size_temp);
-				rewind(buf);
-				fread(bankbuf, size_temp, 1, buf);
-				fclose(buf);
-				
-				FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bak", "wb");
-				fwrite(bankbuf, 1, size_temp, bak);
-				fclose(bak);
-				
-				u8* newbank = (u8*)malloc(PKSM_Configuration.storageSize * 30 * PKMNLENGTH);
-				memset(newbank, 0, PKSM_Configuration.storageSize * 30 * PKMNLENGTH);
-				memcpy(newbank, bankbuf, PKSM_Configuration.storageSize * 30 * PKMNLENGTH);
-				
-				FILE *newbankfile = fopen("/3ds/data/PKSM/bank/bank.bin", "wb");
-				fwrite(newbank, 1, PKSM_Configuration.storageSize * 30 * PKMNLENGTH, newbankfile);
-				fclose(newbankfile);
-				
-				free(bankbuf);
-				free(newbank);					
-			}
-		}		
-	}
+			FILE *buf = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
+			fseek(buf, 0, SEEK_END);
+			u32 size_temp = ftell(buf);
+			u8 *bankbuf = (u8*)malloc(size_temp);
+			rewind(buf);
+			fread(bankbuf, size_temp, 1, buf);
+			fclose(buf);
+			
+			FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bak", "wb");
+			fwrite(bankbuf, 1, size_temp, bak);
+			fclose(bak);
+			
+			u8* newbank = (u8*)malloc(PKSM_Configuration.storageSize * 30 * ofs.pkxLength);
+			memset(newbank, 0, PKSM_Configuration.storageSize * 30 * ofs.pkxLength);
+			memcpy(newbank, bankbuf, size_temp);
+			
+			FILE *newbankfile = fopen("/3ds/data/PKSM/bank/bank.bin", "wb");
+			fwrite(newbank, 1, PKSM_Configuration.storageSize * 30 * ofs.pkxLength, newbankfile);
+			fclose(newbankfile);
+			
+			free(bankbuf);
+			free(newbank);					
+		}
+		// trim boxes from storage file
+		else if (size > PKSM_Configuration.storageSize * 30 * ofs.pkxLength)
+		{
+			FILE *buf = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
+			fseek(buf, 0, SEEK_END);
+			u32 size_temp = ftell(buf);
+			u8 *bankbuf = (u8*)malloc(size_temp);
+			rewind(buf);
+			fread(bankbuf, size_temp, 1, buf);
+			fclose(buf);
+			
+			FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bak", "wb");
+			fwrite(bankbuf, 1, size_temp, bak);
+			fclose(bak);
+			
+			u8* newbank = (u8*)malloc(PKSM_Configuration.storageSize * 30 * ofs.pkxLength);
+			memset(newbank, 0, PKSM_Configuration.storageSize * 30 * ofs.pkxLength);
+			memcpy(newbank, bankbuf, PKSM_Configuration.storageSize * 30 * ofs.pkxLength);
+			
+			FILE *newbankfile = fopen("/3ds/data/PKSM/bank/bank.bin", "wb");
+			fwrite(newbank, 1, PKSM_Configuration.storageSize * 30 * ofs.pkxLength, newbankfile);
+			fclose(newbankfile);
+			
+			free(bankbuf);
+			free(newbank);					
+		}	
+	}*/
 }
 
 void config_fill_values(void)
@@ -134,7 +130,12 @@ void configbuf_set_values(void)
 	memcpy(config_buf + 0x6, &PKSM_Configuration.defaultSID, 2);
 	memcpy(config_buf + 0x8, PKSM_Configuration.defaultOTName, 24);
 	*(config_buf + 0x20) = PKSM_Configuration.defaultNationality;
-	*(config_buf + 0x21) = PKSM_Configuration.editInTransfers;	
+	*(config_buf + 0x21) = PKSM_Configuration.editInTransfers;
+	
+	for (int i = CONFIG_USED; i < CONFIG_SIZE; i++)
+	{
+		config_buf[i] = 0;
+	}
 }
 
 void config_load(void)
@@ -224,7 +225,7 @@ void configMenu(void)
 		touchPosition touch;
 		hidScanInput();
 		hidTouchRead(&touch);
-		byteEntry = calcCurrentEntryOneScreen(byteEntry, CONFIG_SIZE - 1, 16);
+		byteEntry = calcCurrentEntryOneScreen(byteEntry, CONFIG_USED - 1, 16);
 		
 		bool downPlus = ((hidKeysDown() & KEY_TOUCH) && touch.px > 247 && touch.px < 264 && touch.py > 31 && touch.py < 49) || (hidKeysDown() & KEY_A);
 		bool downMinus = ((hidKeysDown() & KEY_TOUCH) && touch.px > 224 && touch.px < 241 && touch.py > 31 && touch.py < 49) || (hidKeysDown() & KEY_X);
@@ -261,7 +262,7 @@ void configMenu(void)
 			speed = 0;
 		
 		config_fill_values();
-		printSettings(config_buf, byteEntry, CONFIG_SIZE, descriptions);
+		printSettings(config_buf, byteEntry, CONFIG_USED, descriptions);
 	}
 	
 	config_set();

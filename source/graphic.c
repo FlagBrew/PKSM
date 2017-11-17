@@ -18,11 +18,17 @@
 
 #include "graphic.h"
 
-u32 logoColors[15] = {
+static void printSelector(int x, int y, int width, int height);
+static void printMenuTop();
+static void printMenuBottom();
+
+u32 logoColors[17] = {
 	RGBA8(0, 136, 222, 255), 
 	RGBA8(203, 39, 69, 255),
 	RGBA8(247, 139, 50, 255),
 	RGBA8(115, 118, 252, 255),
+	RGBA8(241, 148, 45, 255),
+	RGBA8(75, 139, 190, 255),
 	RGBA8(241, 148, 45, 255),
 	RGBA8(75, 139, 190, 255),
 	RGBA8(138, 207, 231, 255),
@@ -36,7 +42,7 @@ u32 logoColors[15] = {
 	RGBA8(223, 105, 95, 255),
 };
 
-int logo_lookup6[7] = {0, 64, 121, 183, 250, 320, 375};
+int logo_lookup6[9] = {0, 64, 121, 183, 250, 320, 376, 451, 527};
 int logo_lookup4[6] = {0, 54, 116, 177, 233, 291};
 int logo_lookup5[5] = {0, 53, 104, 176, 252};
 
@@ -44,7 +50,7 @@ int lookup[] = {0x0, 0x1, 0x2, 0x4, 0x5, 0x3};
 
 int MAX_LENGTH_BOX_NAME = 15;
 
-AppTextCode gamesList[] = {S_GRAPHIC_GAME_SELECTOR_GAME_X, S_GRAPHIC_GAME_SELECTOR_GAME_Y, S_GRAPHIC_GAME_SELECTOR_GAME_OS, S_GRAPHIC_GAME_SELECTOR_GAME_AS, S_GRAPHIC_GAME_SELECTOR_GAME_SUN, S_GRAPHIC_GAME_SELECTOR_GAME_MOON, S_GRAPHIC_GAME_SELECTOR_GAME_DIAMOND, S_GRAPHIC_GAME_SELECTOR_GAME_PEARL, S_GRAPHIC_GAME_SELECTOR_GAME_PLATINUM, S_GRAPHIC_GAME_SELECTOR_GAME_HG, S_GRAPHIC_GAME_SELECTOR_GAME_SS, S_GRAPHIC_GAME_SELECTOR_GAME_B, S_GRAPHIC_GAME_SELECTOR_GAME_W, S_GRAPHIC_GAME_SELECTOR_GAME_B2, S_GRAPHIC_GAME_SELECTOR_GAME_W2};
+AppTextCode gamesList[] = {S_GRAPHIC_GAME_SELECTOR_GAME_X, S_GRAPHIC_GAME_SELECTOR_GAME_Y, S_GRAPHIC_GAME_SELECTOR_GAME_OS, S_GRAPHIC_GAME_SELECTOR_GAME_AS, S_GRAPHIC_GAME_SELECTOR_GAME_SUN, S_GRAPHIC_GAME_SELECTOR_GAME_MOON, S_GRAPHIC_GAME_SELECTOR_GAME_ULTRA_SUN, S_GRAPHIC_GAME_SELECTOR_GAME_ULTRA_MOON, S_GRAPHIC_GAME_SELECTOR_GAME_DIAMOND, S_GRAPHIC_GAME_SELECTOR_GAME_PEARL, S_GRAPHIC_GAME_SELECTOR_GAME_PLATINUM, S_GRAPHIC_GAME_SELECTOR_GAME_HG, S_GRAPHIC_GAME_SELECTOR_GAME_SS, S_GRAPHIC_GAME_SELECTOR_GAME_B, S_GRAPHIC_GAME_SELECTOR_GAME_W, S_GRAPHIC_GAME_SELECTOR_GAME_B2, S_GRAPHIC_GAME_SELECTOR_GAME_W2};
 char* langs[] = { "JP", "EN", "FR", "DE", "IT", "ES", "ZH", "KO", "NL", "PT", "RU", "TW", "SD C." };
 
 wchar_t **abilities;
@@ -62,7 +68,7 @@ wchar_t **formList;
 ArrayUTF32 listAbilities, listNatures, listBalls, listHPs, listForms;
 
 int loadPNGInRAM_current_element = 1;
-int loadPNGInRAM_elements = 1;
+int loadPNGInRAM_elements = 21;
 
 void GUITextsInit() {
 	struct i18n_files listFiles = i18n_getFilesPath();
@@ -107,15 +113,11 @@ void loadPNGInRAM(u32 id, const char* filepath) {
 }
 
 void GUIElementsSpecify() {
-	loadPNGInRAM_current_element = 1;
-	loadPNGInRAM_elements = 22;
-
 	freezeMsg(i18n(S_GRAPHIC_GUI_ELEMENTS_SPECIFY_LOADING));
 
-	loadPNGInRAM(TEXTURE_ALTERNATIVE_SPRITESHEET, "/3ds/data/PKSM/additionalassets/alternative_icons_spritesheetv3.png");
-	loadPNGInRAM(TEXTURE_NORMAL_SPRITESHEET, "/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheetv3.png");
-	loadPNGInRAM(TEXTURE_BALLS_SPRITESHEET, "/3ds/data/PKSM/additionalassets/balls_spritesheetv2.png");
-	loadPNGInRAM(TEXTURE_SHINY_SPRITESHEET, "/3ds/data/PKSM/additionalassets/pokemon_shiny_icons_spritesheet.png");
+	loadPNGInRAM(TEXTURE_ALTERNATIVE_SPRITESHEET, "/3ds/PKSM/additionalassets/altspritesheetfinal.png");
+	loadPNGInRAM(TEXTURE_NORMAL_SPRITESHEET, "/3ds/PKSM/additionalassets/norspritesheetfinal.png");
+	loadPNGInRAM(TEXTURE_BALLS_SPRITESHEET, "/3ds/PKSM/additionalassets/balspritesheetfinal.png");
 
 	loadPNGInRAM(SPRITESHEET, "romfs:/res/spritesheet.png");
 	loadPNGInRAM(TEXTURE_EVENT_VIEW, "romfs:/res/Event View.png");
@@ -182,17 +184,17 @@ void drawConsoleDebug() {
 	}
 }
 
-void printSelector(int x, int y, int width, int height) {
+static void printSelector(int x, int y, int width, int height) {
 	pp2d_draw_rectangle(x, y, width, height, BUTTONBORD);
 	pp2d_draw_rectangle(x + 1, y + 1, width - 2, height - 2, BUTTONGREY);
 }
 
-void printMenuTop() {
+static void printMenuTop() {
 	pp2d_draw_rectangle(0, 0, 400, 240, MENUBLUE);
 	pp2d_draw_rectangle(0, 0, 400, 25, HIGHBLUE);
 }
 
-void printMenuBottom() {
+static void printMenuBottom() {
 	pp2d_draw_rectangle(0, 0, 320, 240, PALEBLUE);
 	pp2d_draw_rectangle(0, 219, 320, 21, MENUBLUE);
 }
@@ -297,33 +299,41 @@ void gameSelectorMenu(int n) {
 		printMenuTop();
 		pp2d_draw_wtext_center(GFX_TOP, 6, FONT_SIZE_9, FONT_SIZE_9, BLUE, i18n(S_GRAPHIC_GAME_SELECTOR_INFO_CART_HAS_PRIO));
 		
-		for (int i = 0; i < 6; i++) {
+		for (int i = 0; i < 4; i++) {
 			if (n == i) {
-				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_3DS, 26 + i*60 + 4, 80 + 4, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70, HIGHBLUE);
-				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_3DS, 26 + i*60, 80, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70, logoColors[i]);
+				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_3DS, 44 + i*85 + 4, 55 + 4, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70, HIGHBLUE);
+				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_3DS, 44 + i*85, 55, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70, logoColors[i]);
 			} else
-				pp2d_draw_texture_part(TEXTURE_LOGOS_3DS, 26 + i*60, 80, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70);
+				pp2d_draw_texture_part(TEXTURE_LOGOS_3DS, 44 + i*85, 55, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70);
+		}
+		
+		for (int i = 4; i < 8; i++) {
+			if (n == i) {
+				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_3DS, 60 + (i - 4)*70 + 4, 120 + 4, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70, HIGHBLUE);
+				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_3DS, 60 + (i - 4)*70, 120, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70, logoColors[i]);
+			} else
+				pp2d_draw_texture_part(TEXTURE_LOGOS_3DS, 60 + (i - 4)*70, 120, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70);
 		}
 
-		pp2d_draw_wtext_center(GFX_TOP, 185, FONT_SIZE_18, FONT_SIZE_18, logoColors[n], i18n(gamesList[n]));
+		pp2d_draw_wtext_center(GFX_TOP, 200, FONT_SIZE_18, FONT_SIZE_18, logoColors[n], i18n(gamesList[n]));
 	
 		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 		printMenuBottom();
 		
-		for (int i = 6; i < 11; i++) {
+		for (int i = 8; i < 13; i++) {
 			if (n == i) {
-				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_GEN4, 26 + (i - 6)*56 + 4, 40 + 4, logo_lookup4[i - 6], 0, logo_lookup4[i - 5] - logo_lookup4[i - 6] - 1, 55, HIGHBLUE);
-				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_GEN4, 26 + (i - 6)*56, 40, logo_lookup4[i - 6], 0, logo_lookup4[i - 5] - logo_lookup4[i - 6] - 1, 55, logoColors[i]);
+				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_GEN4, 26 + (i - 8)*56 + 4, 40 + 4, logo_lookup4[i - 8], 0, logo_lookup4[i - 7] - logo_lookup4[i - 8] - 1, 56, HIGHBLUE);
+				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_GEN4, 26 + (i - 8)*56, 40, logo_lookup4[i - 8], 0, logo_lookup4[i - 7] - logo_lookup4[i - 8] - 1, 56, logoColors[i]);
 			} else
-				pp2d_draw_texture_part(TEXTURE_LOGOS_GEN4, 26 + (i - 6)*56, 40, logo_lookup4[i - 6], 0, logo_lookup4[i - 5] - logo_lookup4[i - 6] - 1, 55);
+				pp2d_draw_texture_part(TEXTURE_LOGOS_GEN4, 26 + (i - 8)*56, 40, logo_lookup4[i - 8], 0, logo_lookup4[i - 7] - logo_lookup4[i - 8] - 1, 56);
 		}
 		
-		for (int i = 11; i < 15; i++) {
+		for (int i = 13; i < 17; i++) {
 			if (n == i) {
-				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_GEN5, 40 + (i - 11)*60 + 4, 115 + 4, logo_lookup5[i - 11], 0, logo_lookup5[i - 10] - logo_lookup5[i - 11] - 1, 63, HIGHBLUE);
-				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_GEN5, 40 + (i - 11)*60, 115, logo_lookup5[i - 11], 0, logo_lookup5[i - 10] - logo_lookup5[i - 11] - 1, 63, logoColors[i]);
+				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_GEN5, 40 + (i - 13)*60 + 4, 115 + 4, logo_lookup5[i - 13], 0, logo_lookup5[i - 12] - logo_lookup5[i - 13] - 1, 60, HIGHBLUE);
+				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_GEN5, 40 + (i - 13)*60, 115, logo_lookup5[i - 13], 0, logo_lookup5[i - 12] - logo_lookup5[i - 13] - 1, 60, logoColors[i]);
 			} else
-				pp2d_draw_texture_part(TEXTURE_LOGOS_GEN5, 40 + (i - 11)*60, 115, logo_lookup5[i - 11], 0, logo_lookup5[i - 10] - logo_lookup5[i - 11] - 1, 63);
+				pp2d_draw_texture_part(TEXTURE_LOGOS_GEN5, 40 + (i - 13)*60, 115, logo_lookup5[i - 13], 0, logo_lookup5[i - 12] - logo_lookup5[i - 13] - 1, 60);
 		}
 
 		printBottomIndications(i18n(S_GRAPHIC_GAME_SELECTOR_INDICATIONS));
@@ -367,7 +377,7 @@ void menu(int menu[]) {
 }
 
 void printCredits() {
-	static const char* credits = "Anty-Lemon for various contributions\nSmealum for ctrulib\nKaphotics and SciresM for PKHeX and memecrypto\nJ-K-D for direct save import/export\nArchitDate for serveLegality\nSlownic for java servepkx\nSlashcash for PCHex++\nGocario for PKBrew\nTuxSH for TWLSaveTool\nPPorg for most of the wcx bundled in the application\nSimona, Carlo, Matteo for fill.c work\nAll the countless translators who worked on the localization";
+	static const char* credits = "Naxann and Anty-Lemon for various contributions\nKaphotics and SciresM for PKHeX and memecrypto\nJ-K-D for direct save import/export\nAstronautlevel for QR code support\nArchitDate for serveLegality\nSlownic and zaksabeast for servepkx\nSlashcash for PCHex++\nTuxSH for TWLSaveTool\nProjectPokemon.org for most of the wondercards\nSimona for being my best supporter\nAll the countless translators who worked on the localization\nAll the contributors on Github\nEveryone supporting the development\n\nwww.github.com/BernardoGiordano/PKSM";
 	
 	while (aptMainLoop() && !(hidKeysUp() & KEY_B)) {
 		hidScanInput();
@@ -375,11 +385,8 @@ void printCredits() {
 		pp2d_begin_draw(GFX_TOP, GFX_LEFT);
 			printMenuTop();
 			printTitle(i18n(S_GRAPHIC_CREDITS_TITLE));
-			pp2d_draw_texture_part(TEXTURE_CREDITS, 16, 104, 0, 22, 181, 46);
-			pp2d_draw_texture_part(TEXTURE_CREDITS, 36, 104, 0, 22, 181, 46);
 			pp2d_draw_texture(TEXTURE_CREDITS, 0, 45);
 			pp2d_draw_text(18, 79, FONT_SIZE_15, FONT_SIZE_15, LIGHTBLUE, "Bernardo Giordano");
-			pp2d_draw_text(34, 117, FONT_SIZE_15, FONT_SIZE_15, LIGHTBLUE, "Naxann");
 			pp2d_draw_text(64, 174, FONT_SIZE_15, FONT_SIZE_15,  LIGHTBLUE, "dsoldier for the complete GUI design");
 
 			pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
@@ -486,7 +493,11 @@ void printEventInjector(u8* previewbuf, int sprite, int i, bool langVett[], bool
 
 		if (getN(i) > 1)
 		{
-			pp2d_draw_text_center(GFX_BOTTOM, 19, FONT_SIZE_11, FONT_SIZE_11, LIGHTBLUE, "Press L/R to switch multiple wondercards.");
+			pp2d_draw_text_center(GFX_BOTTOM, 18, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, "\uE004+\uE005 \uE01E. L/R to switch multiple wondercards.");
+		}
+		else
+		{
+			pp2d_draw_text_center(GFX_BOTTOM, 18, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, "\uE004+\uE005 \uE01E");
 		}
 		
 		pp2d_draw_wtext(16, 50, FONT_SIZE_14, FONT_SIZE_14, LIGHTBLUE, i18n(S_GRAPHIC_DB_LANGUAGES));
@@ -567,12 +578,12 @@ void printElement(u8* pkmn, int game, u16 n, int x, int y) {
 	u16 t = getAlternativeSprite(pkmn, game);
 	if (t) {
 		t -= 1;
-		pp2d_draw_texture_part(TEXTURE_ALTERNATIVE_SPRITESHEET, x, y, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30);  
+		pp2d_draw_texture_part(TEXTURE_ALTERNATIVE_SPRITESHEET, x, y, 34 * (t % 6), 30 * (t / 6), 34, 30);  
 	} else {
-		if (pkx_get_species(pkmn) > 821)
+		if (pkx_get_species(pkmn) > ofs.maxSpecies)
 			pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, x, y, 0, 0, 34, 30);
 		else
-			pp2d_draw_texture_part(pkx_is_shiny(pkmn) ? TEXTURE_SHINY_SPRITESHEET : TEXTURE_NORMAL_SPRITESHEET, x, y, 34 * (n % 30), 30 * (n / 30), 34, 30);
+			pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, x, y, 34 * (n % 30), 30 * (n / 30), 34, 30);
 	}
 	if (pkx_is_egg(pkmn))
 		pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, x + 6, y + 6, 34 * (EGGSPRITEPOS % 30), 30 * (EGGSPRITEPOS / 30), 34, 30);
@@ -584,9 +595,9 @@ void printElementBlend(u8* pkmn, int game, u16 n, int x, int y, u32 color) {
 	u16 t = getAlternativeSprite(pkmn, game);
 	if (t) {
 		t -= 1;
-		pp2d_draw_texture_part_blend(TEXTURE_ALTERNATIVE_SPRITESHEET, x, y, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30, color); 
+		pp2d_draw_texture_part_blend(TEXTURE_ALTERNATIVE_SPRITESHEET, x, y, 34 * (t % 6), 30 * (t / 6), 34, 30, color); 
 	} else {
-		if (pkx_get_species(pkmn) > 821)
+		if (pkx_get_species(pkmn) > ofs.maxSpecies)
 			pp2d_draw_texture_part_blend(TEXTURE_NORMAL_SPRITESHEET, x, y, 0, 0, 34, 30, color);
 		else
 			pp2d_draw_texture_part_blend(TEXTURE_NORMAL_SPRITESHEET, x, y, 34 * (n % 30), 30 * (n / 30), 34, 30, color);
@@ -627,7 +638,7 @@ void infoViewer(u8* pkmn) {
 		y_desc += 20;
 	}
 	
-	if (pkx_get_species(pkmn) > 0 && pkx_get_species(pkmn) < 822) {
+	if (pkx_get_species(pkmn) > 0 && pkx_get_species(pkmn) < ofs.maxSpecies) {
 		pp2d_draw_texture_part(TEXTURE_BALLS_SPRITESHEET, -2, -5, 32 * (pkx_get_ball(pkmn) % 8), 32 * (pkx_get_ball(pkmn) / 8), 32, 32);
 		pp2d_draw_wtext(30, 6, FONT_SIZE_12, FONT_SIZE_12, WHITE, listSpecies.items[pkx_get_species(pkmn)]);
 		
@@ -694,8 +705,6 @@ void infoViewer(u8* pkmn) {
 }
 
 void wcxInfoViewer(u8* buf) {
-	int game = game_get();
-	
 	int y_desc = 29;
 	wchar_t* entries[] = {L"Species", L"OT", L"TID/SID", L"Held Item", L"Game", L"Met Date"};
 
@@ -715,56 +724,7 @@ void wcxInfoViewer(u8* buf) {
 		if (i == 5) y_desc += 6;
 	}
 	
-	wchar_t *version;
-	if (game_is3DS()) {
-		if (wcx_get_origin_game(buf) != 0) {
-			switch (wcx_get_origin_game(buf)) {
-				case 24:
-					version = L"X"; break;
-				case 25:
-					version = L"Y"; break;
-				case 26:
-					version = L"Alpha Sapphire"; break;
-				case 27:
-					version = L"Omega Ruby"; break;
-				case 30:
-					version = L"Sun"; break;
-				case 31:
-					version = L"Moon"; break;
-				default: 
-					version = L"WIP";
-			}			
-		}
-	} else {
-		switch (game) {
-			case GAME_X:
-			case GAME_Y:
-				version = L"X/Y compatible"; break;
-			case GAME_OR:
-			case GAME_AS:
-				version = L"OR/AS compatible"; break;
-			case GAME_SUN:
-			case GAME_MOON:
-				version = L"Sun/Moon compatible"; break;
-			case GAME_HG:
-			case GAME_SS:
-				version = L"HG/SS compatible"; break;
-			case GAME_DIAMOND:
-			case GAME_PEARL:
-				version = L"DP/PT compatible"; break;
-			case GAME_PLATINUM:
-				version = L"Platinum compatible"; break;
-			case GAME_B1:
-			case GAME_W1:
-				version = L"B/W compatible"; break;
-			case GAME_B2:
-			case GAME_W2:
-				version = L"B2/W2 compatible"; break;
-			default:
-				version = L"WIP"; break;
-		}
-	}
-	
+	wchar_t *version = L"WIP";
 	pp2d_draw_wtext(215 - pp2d_get_wtext_width(version, FONT_SIZE_12, FONT_SIZE_12), 115, FONT_SIZE_12, FONT_SIZE_12, WHITE, version);
 	
 	u32 title[0x4A] = {0};
@@ -834,7 +794,7 @@ void printDexViewer(u8* mainbuf, int currentEntry, int page, int seen, int caugh
 					printSelector(j*49 + j, i*47 + i, 49, 47);
 				
 				int entry = i*8+j + 40*page;
-				if ((entry) < 802) {
+				if ((entry) < ofs.maxSpecies) {
 					if (getCaught(mainbuf, entry + 1))
 						pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 34 * ((entry + 1) % 30), 30 * ((entry + 1) / 30), 34, 30);
 					else if (getSeen(mainbuf, entry + 1)) {
@@ -878,8 +838,8 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int currentEntry, int menu
 					if (additional1 == i * 8 + j)
 						printSelector(j*49 + j, i*47 + i, 49, 47);
 					
-					if ((i*8+j + 40*additional2) < 802) {
-						pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 34 * ((34 * additional2 + i * 8 + j + 1) % 30), 30 * ((34 * additional2 + i * 8 + j + 1) / 30), 34, 30);
+					if ((i*8+j + 40*additional2) < ofs.maxSpecies) {
+						pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 34 * ((40 * additional2 + i * 8 + j + 1) % 30), 30 * ((40 * additional2 + i * 8 + j + 1) / 30), 34, 30);
 						snprintf(temp, 4, "%d", 40 * additional2 + i * 8 + j + 1);
 						pp2d_draw_text(49 * j + (49 - pp2d_get_text_width(temp, FONT_SIZE_9, FONT_SIZE_9)) / 2 + j, 34 + i * 47 + i, FONT_SIZE_9, FONT_SIZE_9, WHITE, temp);
 					}
@@ -906,7 +866,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int currentEntry, int menu
 		pksm_draw_texture(TEXTURE_RIGHT, 185, 17);
 		pksm_draw_texture(TEXTURE_OTA_BUTTON, 240, 211);
 		pksm_draw_texture(TEXTURE_BACK_BUTTON, 283, 211);
-		pp2d_draw_wtext(247, 7, FONT_SIZE_12, FONT_SIZE_12, WHITE, i18n(S_GRAPHIC_PKVIEWER_TEAM));
+		pp2d_draw_text(241, 7, FONT_SIZE_12, FONT_SIZE_12, WHITE, "\uE004+\uE005 \uE01E");
 		
 		int y = 45;
 		int pointer[2] = {0, 0};
@@ -915,7 +875,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int currentEntry, int menu
 			for (int j = 0; j < 6; j++) {
 				pkx_get(mainbuf, box, i * 6 + j, pkmn);
 				u16 n = pkx_get_species(pkmn);
-				if (n > 0 && n < 822)
+				if (n > 0 && n < ofs.maxSpecies)
 					printElement(pkmn, game, n, x, y);
 
 				if ((currentEntry == (i * 6 + j)) && !isTeam) {
@@ -1101,7 +1061,7 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 							pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, (width - 34) / 2 + width * j + j, 2 * (height - 44) / 3 + i * height, 34 * (additional2 % 30), 30 * (additional2 / 30), 34, 30);
 						else {
 							int sprite = forms->spriteNum + form - 2;
-							pp2d_draw_texture_part(TEXTURE_ALTERNATIVE_SPRITESHEET, (width - 34) / 2 + width * j + j, 2 * (height - 44) / 3 + i * height + i, 40 * (sprite % 6) + 4, 30 * (sprite / 6), 34, 30);
+							pp2d_draw_texture_part(TEXTURE_ALTERNATIVE_SPRITESHEET, (width - 34) / 2 + width * j + j, 2 * (height - 44) / 3 + i * height + i, 34 * (sprite % 6), 30 * (sprite / 6), 34, 30);
 						}
 						pp2d_draw_wtext(width * j + (width - pp2d_get_wtext_width(str, FONT_SIZE_9, FONT_SIZE_9)) / 2 + j, (height * 5) / 7 + i * height + i, FONT_SIZE_9, FONT_SIZE_9, WHITE, str);
 					}
@@ -1118,7 +1078,7 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 						printSelector(columns*25, rows*15, 24, 14);
 					pp2d_draw_textf(4 + 25*columns, 15*rows, FONT_SIZE_11, FONT_SIZE_11, (sector[byte][0]) ? WHITE : DS, "%02hhX", pkmn[byte]);
 					
-					if (byte == 231) break;
+					if (byte == ofs.pkmnLength - 1) break;
 				}
 			}
 			pp2d_draw_wtextf(4, 225, FONT_SIZE_11, FONT_SIZE_11, LIGHTBLUE, L"%ls", descriptions[additional1]);
@@ -1139,11 +1099,11 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 			int ofs = movementOffsetSlow(3);
 			if (t) {
 				t -= 1;
-				pp2d_draw_texture_part_scale_blend(TEXTURE_ALTERNATIVE_SPRITESHEET, 232, 32 - ofs, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30, 2, 2, RGBA8(0x0, 0x0, 0x0, 100)); 
-				pp2d_draw_texture_part_scale(TEXTURE_ALTERNATIVE_SPRITESHEET, 227, 27 - ofs, 40 * (t % 6) + 4, 30 * (t / 6), 34, 30, 2, 2);
+				pp2d_draw_texture_part_scale_blend(TEXTURE_ALTERNATIVE_SPRITESHEET, 232, 32 - ofs, 34 * (t % 6), 30 * (t / 6), 34, 30, 2, 2, RGBA8(0x0, 0x0, 0x0, 100)); 
+				pp2d_draw_texture_part_scale(TEXTURE_ALTERNATIVE_SPRITESHEET, 227, 27 - ofs, 34 * (t % 6), 30 * (t / 6), 34, 30, 2, 2);
 			} else {
 				pp2d_draw_texture_part_scale_blend(TEXTURE_NORMAL_SPRITESHEET, 232, 32 - ofs, 34 * (n % 30), 30 * (n / 30), 34, 30, 2, 2, RGBA8(0x0, 0x0, 0x0, 100));
-				pp2d_draw_texture_part_scale(pkx_is_shiny(pkmn) ? TEXTURE_SHINY_SPRITESHEET : TEXTURE_NORMAL_SPRITESHEET, 227, 27 - ofs, 34 * (n % 30), 30 * (n / 30), 34, 30, 2, 2);
+				pp2d_draw_texture_part_scale(TEXTURE_NORMAL_SPRITESHEET, 227, 27 - ofs, 34 * (n % 30), 30 * (n / 30), 34, 30, 2, 2);
 			}
 			
 			if (pkx_get_gender(pkmn) == 0)
@@ -1316,7 +1276,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 			swprintf(page, MAX_LENGTH_BOX_NAME+1, i18n(S_GRAPHIC_PKBANK_BANK_TITLE), bankBox + 1);
 			pp2d_draw_wtext(55 + (178 - pp2d_get_wtext_width(page, FONT_SIZE_12, FONT_SIZE_12)) / 2, 9, FONT_SIZE_12, FONT_SIZE_12, WHITE, page);
 
-			if (pkx_get_species(pkmn) > 0 && pkx_get_species(pkmn) < 822) {
+			if (pkx_get_species(pkmn) > 0 && pkx_get_species(pkmn) < ofs.maxSpecies) {
 				u16 tempspecies = pkx_get_form_species_number(pkmn);
 				u8 type1 = 0, type2 = 0;
 

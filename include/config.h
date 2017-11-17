@@ -21,7 +21,8 @@
 
 #include "common.h"
 
-#define CONFIG_SIZE 34
+#define CONFIG_SIZE 240
+#define CONFIG_USED 34
 
 void config_load(void);
 void config_set(void);

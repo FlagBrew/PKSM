@@ -65,38 +65,33 @@ int getDexFormIndexSM(int species, int formct, int start) {
 }
 
 void setDexFlags(u8 mainbuf[], int index, int gender, int shiny, int baseSpecies) {
-	int PokeDex;
-	
-	if (game_getisSUMO()) {
-		PokeDex = 0x02A00;
-	}
 	const int brSize = 0x8C;
 	int shift = gender | (shiny << 1);
-	int ofs = PokeDex + 0x08 + 0x80 + 0x68;
+	int off = ofs.pokedex + 0x08 + 0x80 + 0x68;
 	int bd = index >> 3; 
 	int bm = index & 7;
 	int bd1 = baseSpecies >> 3;
 	int bm1 = baseSpecies & 7;
 
 	int brSeen = shift * brSize;
-	mainbuf[ofs + brSeen + bd] |= (u8)(1 << bm);
+	mainbuf[off + brSeen + bd] |= (u8)(1 << bm);
 
 	bool displayed = false;
 	for (int i = 0; i < 4; i++) {
 		int brDisplayed = (4 + i) * brSize;
-		displayed |= (mainbuf[ofs + brDisplayed + bd1] & (u8)(1 << bm1)) != 0;
+		displayed |= (mainbuf[off + brDisplayed + bd1] & (u8)(1 << bm1)) != 0;
 	}
 
 	if (!displayed && baseSpecies != index) {
 		for (int i = 0; i < 4; i++) {
 			int brDisplayed = (4 + i) * brSize;
-			displayed |= (mainbuf[ofs + brDisplayed + bd] & (u8)(1 << bm)) != 0;
+			displayed |= (mainbuf[off + brDisplayed + bd] & (u8)(1 << bm)) != 0;
 		}
 	}
 	if (displayed)
 		return;
 
-	mainbuf[ofs + (4 + shift) * brSize + bd] |= (u8)(1 << bm);
+	mainbuf[off + (4 + shift) * brSize + bd] |= (u8)(1 << bm);
 }
 
 bool sanitizeFormsToIterate(int species, int fsfe[], int formIn) {
@@ -124,19 +119,13 @@ bool sanitizeFormsToIterate(int species, int fsfe[], int formIn) {
 }
 
 void setDex(u8 mainbuf[], u8* pkmn) {
-	if (!game_getisSUMO())
+	if (!game_isgen7())
 		return;
 	
 	int n = pkx_get_species(pkmn);
-	int MaxSpeciesID;
-	int PokeDex;
-	int PokeDexLanguageFlags;
-	
-	if (game_getisSUMO()) {
-		MaxSpeciesID = 802;
-		PokeDex = 0x02A00;
-		PokeDexLanguageFlags = PokeDex + 0x550;
-	}
+	int MaxSpeciesID = ofs.maxSpecies;
+	int PokeDex = ofs.pokedex;
+	int PokeDexLanguageFlags = ofs.pokedex + 0x550;
 	
 	if (n == 0 || n > MaxSpeciesID)
 		return;
@@ -161,8 +150,8 @@ void setDex(u8 mainbuf[], u8* pkmn) {
 			mainbuf[PokeDex + 0x84] |= (u8)(1 << shift); // 1
 	}
 	
-	int ofs = PokeDex + 0x08 + 0x80;
-	mainbuf[ofs + bd] |= (u8)(1 << bm);
+	int off = PokeDex + 0x08 + 0x80;
+	mainbuf[off + bd] |= (u8)(1 << bm);
 
 	int formstart = pkx_get_form(pkmn);
 	int formend = formstart;
@@ -201,49 +190,41 @@ void setDex(u8 mainbuf[], u8* pkmn) {
 }
 
 bool getCaught(u8* mainbuf, int species) {
-	int PokeDex = 0;
+	int PokeDex = ofs.pokedex;
 	int miscdata = 0;
-	if (game_getisSUMO()) {
-		PokeDex = 0x02A00;
+	if (game_isgen7()) {
 		miscdata = 0x80;
-	} else if (game_getisORAS()) {
-		PokeDex = 0x15000;
-	} else if (game_getisXY()) {
-		PokeDex = 0x15000;
 	}
 	
 	int bit = species - 1;
 	int bd = bit >> 3;
 	int bm = bit & 7; 
-	int ofs = PokeDex + 0x08 + miscdata;
+	int off = PokeDex + 0x08 + miscdata;
 			  
 	if (game_isgen6()) {
-		if ((1 << bm & mainbuf[ofs + bd]) != 0)
+		if ((1 << bm & mainbuf[off + bd]) != 0)
 			return true;
 
 		if (game_getisORAS() || bit >= 649)
 			return false;
 		
-		return (1 << bm & mainbuf[ofs + bd + 0x644]) != 0;		
+		return (1 << bm & mainbuf[off + bd + 0x644]) != 0;		
 	}
 
-	return (1 << bm & mainbuf[ofs + bd]) != 0;
+	return (1 << bm & mainbuf[off + bd]) != 0;
 }
 
 bool getSeen(u8* mainbuf, int species) {
-	int PokeDex = 0;
+	int PokeDex = ofs.pokedex;
 	int miscdata = 0;
 	int brSize = 0;
 	
-	if (game_getisSUMO()) {
-		PokeDex = 0x02A00;
+	if (game_isgen7()) {
 		miscdata = 0x80;
 		brSize = 0x8C;
 	} else if (game_getisORAS()) {
-		PokeDex = 0x15000;
 		brSize = 0x60;
 	} else if (game_getisXY()) {
-		PokeDex = 0x15000;
 		brSize = 0x60;
 	}
 
@@ -251,10 +232,10 @@ bool getSeen(u8* mainbuf, int species) {
 	int bd = bit >> 3;
 	int bm = bit & 7;
 	u8 mask = (u8)(1 << bm);
-	int ofs = PokeDex + 0x08 + miscdata; 
+	int off = PokeDex + 0x08 + miscdata; 
 
 	for (int i = 1; i <= 4; i++)
-		if ((mainbuf[ofs + bd + i * brSize] & mask) != 0)
+		if ((mainbuf[off + bd + i * brSize] & mask) != 0)
 			return true;
 	return false;
 }

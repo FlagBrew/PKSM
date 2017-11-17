@@ -18,28 +18,28 @@
 
 #include "common.h"
 
-#define ASSETS 12
+#define ASSETS 11
+
+int __stacksize__ = 64 * 1024;
 
 char* path[] = { 
-	"/3ds/data/PKSM/additionalassets/alternative_icons_spritesheetv3.png",
-	"/3ds/data/PKSM/additionalassets/balls_spritesheetv2.png",
-	"/3ds/data/PKSM/additionalassets/pokemon_icons_spritesheetv3.png",
-	"/3ds/data/PKSM/additionalassets/pokemon_shiny_icons_spritesheet.png",
-	"/3ds/data/PKSM/additionalassets/i18n/de/types.png",
-	"/3ds/data/PKSM/additionalassets/i18n/en/types.png",
-	"/3ds/data/PKSM/additionalassets/i18n/es/types.png",
-	"/3ds/data/PKSM/additionalassets/i18n/fr/types.png",
-	"/3ds/data/PKSM/additionalassets/i18n/it/types.png",
-	"/3ds/data/PKSM/additionalassets/i18n/jp/types.png",
-	"/3ds/data/PKSM/additionalassets/i18n/ko/types.png",
-	"/3ds/data/PKSM/additionalassets/i18n/zh/types.png",
+	"/3ds/PKSM/additionalassets/altspritesheetfinal.png",
+	"/3ds/PKSM/additionalassets/balspritesheetfinal.png",
+	"/3ds/PKSM/additionalassets/norspritesheetfinal.png",
+	"/3ds/PKSM/additionalassets/i18n/de/types.png",
+	"/3ds/PKSM/additionalassets/i18n/en/types.png",
+	"/3ds/PKSM/additionalassets/i18n/es/types.png",
+	"/3ds/PKSM/additionalassets/i18n/fr/types.png",
+	"/3ds/PKSM/additionalassets/i18n/it/types.png",
+	"/3ds/PKSM/additionalassets/i18n/jp/types.png",
+	"/3ds/PKSM/additionalassets/i18n/ko/types.png",
+	"/3ds/PKSM/additionalassets/i18n/zh/types.png",
 };
 
 char* url[] = {
-	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/alternative_icons_spritesheetv3.png",
-	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/balls_spritesheetv2.png",
-	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/pokemon_icons_spritesheetv3.png",
-	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/pokemon_shiny_icons_spritesheet.png",
+	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/altspritesheetfinal.png",
+	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/balspritesheetfinal.png",
+	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/norspritesheetfinal.png",
 	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_de.png",
 	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_en.png",
 	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_es.png",
@@ -74,17 +74,16 @@ bool initServices() {
 	romfsInit();
 	
 	mkdir("sdmc:/3ds", 777);
-	mkdir("sdmc:/3ds/data", 777);
-	mkdir("sdmc:/3ds/data/PKSM", 777);
-	mkdir("sdmc:/3ds/data/PKSM/bank", 777);
-	mkdir("sdmc:/3ds/data/PKSM/dump", 777);
-	mkdir("sdmc:/3ds/data/PKSM/backup", 777);
-	mkdir("sdmc:/3ds/data/PKSM/additionalassets", 777);
-	mkdir("sdmc:/3ds/data/PKSM/additionalassets/i18n", 777);
+	mkdir("sdmc:/3ds/PKSM", 777);
+	mkdir("sdmc:/3ds/PKSM/bank", 777);
+	mkdir("sdmc:/3ds/PKSM/dump", 777);
+	mkdir("sdmc:/3ds/PKSM/backup", 777);
+	mkdir("sdmc:/3ds/PKSM/additionalassets", 777);
+	mkdir("sdmc:/3ds/PKSM/additionalassets/i18n", 777);
 	
 	char i18npath[80];
 	for (unsigned int i = 0; i < 11; i++) {
-		snprintf(i18npath, 80, "sdmc:/3ds/data/PKSM/additionalassets/i18n/%s", LANG_PREFIX[i]);
+		snprintf(i18npath, 80, "sdmc:/3ds/PKSM/additionalassets/i18n/%s", LANG_PREFIX[i]);
 		mkdir(i18npath, 0777);
 	}
 	
@@ -121,7 +120,7 @@ bool initServices() {
 	u32 size = 0;
 	u8 *bankbuf, *defaultBank;
 	
-	FILE *bank = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
+	FILE *bank = fopen("/3ds/PKSM/bank/bank.bin", "rt");
 	if (bank == NULL) {
 		freezeMsg(i18n(S_MAIN_CREATING_DEFAULT_BANK));
 		fclose(bank);
@@ -130,20 +129,20 @@ bool initServices() {
 		defaultBank = (u8*)malloc(size);
 		memset(defaultBank, 0, size);
 		
-		FILE *new = fopen("/3ds/data/PKSM/bank/bank.bin", "wb");
+		FILE *new = fopen("/3ds/PKSM/bank/bank.bin", "wb");
 		fwrite(defaultBank, 1, size, new);
 		fclose(new);
 		
 		free(defaultBank);
 	}
 	
-	FILE *bak = fopen("/3ds/data/PKSM/bank/bank.bak", "rt");
+	FILE *bak = fopen("/3ds/PKSM/bank/bank.bak", "rt");
 	if (bak) {
 		fclose(bak);
 	} else {
 		fclose(bak);
 		freezeMsg(i18n(S_MAIN_BACKING_UP_BANK));
-		FILE *dobak = fopen("/3ds/data/PKSM/bank/bank.bin", "rt");
+		FILE *dobak = fopen("/3ds/PKSM/bank/bank.bin", "rt");
 		fseek(dobak, 0, SEEK_END);
 		size = ftell(dobak);
 		bankbuf = (u8*)malloc(size);
@@ -152,7 +151,7 @@ bool initServices() {
 		fread(bankbuf, size, 1, dobak);
 		fclose(dobak);
 		
-		FILE *new = fopen("/3ds/data/PKSM/bank/bank.bak", "wb");
+		FILE *new = fopen("/3ds/PKSM/bank/bank.bak", "wb");
 		fwrite(bankbuf, 1, size, new);
 		fclose(new);
 		free(bankbuf);
@@ -182,13 +181,13 @@ int main() {
 	Handle mainHandle;
 	FS_Archive saveArch;
 	
-	//X, Y, OR, AS, SUN, MOON
-	const u64 ids[] = {0x0004000000055D00, 0x0004000000055E00, 0x000400000011C400, 0x000400000011C500, 0x0004000000164800, 0x0004000000175E00};
-	const char *gamesList[] = {"X", "Y", "OR", "AS", "S", "M", "D", "P", "PL", "HG", "SS", "B", "W", "B2", "W2"};
+	//X, Y, OR, AS, SUN, MOON, ULTRA SUN, ULTRA MOON
+	const u64 ids[] = {0x0004000000055D00, 0x0004000000055E00, 0x000400000011C400, 0x000400000011C500, 0x0004000000164800, 0x0004000000175E00, 0x00040000001B5000, 0x00040000001B5100};
+	const char *gamesList[] = {"X", "Y", "OR", "AS", "S", "M", "US", "UM", "D", "P", "PT", "HG", "SS", "B", "W", "B2", "W2"};
 
 	while (aptMainLoop() && !(hidKeysDown() & KEY_A)) {
 		hidScanInput();
-		game_set(calcCurrentEntryOneScreen(game_get(), 14, 4));
+		game_set(calcCurrentEntryOneScreen(game_get(), 16, 4));
 		
 		if (hidKeysDown() & KEY_B) {
 			exitServices();
@@ -199,6 +198,7 @@ int main() {
 	}
 	
 	int game = game_get();
+	game_fill_offsets();
 	
 	freezeMsg(i18n(S_MAIN_LOADING_SAVE));
 
@@ -213,13 +213,9 @@ int main() {
 		FSUSER_OpenFile(&mainHandle, saveArch, fsMakePath(PATH_ASCII, "/main"), FS_OPEN_READ | FS_OPEN_WRITE, 0);		
 		FSFILE_GetSize(mainHandle, &mainSize);
 		
-		switch(game) {
-			case GAME_X : { if (mainSize != 415232)    infoDisp(i18n(S_MAIN_INCORRECT_SAVE_SIZE)); break; }
-			case GAME_Y : { if (mainSize != 415232)    infoDisp(i18n(S_MAIN_INCORRECT_SAVE_SIZE)); break; }
-			case GAME_OR : { if (mainSize != 483328)   infoDisp(i18n(S_MAIN_INCORRECT_SAVE_SIZE)); break; }
-			case GAME_AS : { if (mainSize != 483328)   infoDisp(i18n(S_MAIN_INCORRECT_SAVE_SIZE)); break; }
-			case GAME_SUN : { if (mainSize != 441856)  infoDisp(i18n(S_MAIN_INCORRECT_SAVE_SIZE)); break; }
-			case GAME_MOON : { if (mainSize != 441856) infoDisp(i18n(S_MAIN_INCORRECT_SAVE_SIZE)); break; }
+		if (mainSize != ofs.saveSize)
+		{
+			infoDisp(i18n(S_MAIN_INCORRECT_SAVE_SIZE));
 			exitServices();
 			return -1;
 		}
@@ -262,7 +258,7 @@ int main() {
 		char bakpath[100];
 		time_t unixTime = time(NULL);
 		struct tm* timeStruct = gmtime((const time_t *)&unixTime);		
-		snprintf(bakpath, 100, "sdmc:/3ds/data/PKSM/backup/%s_%02i%02i%02i%02i%02i%02i", gamesList[game], timeStruct->tm_year + 1900, timeStruct->tm_mon + 1, timeStruct->tm_mday, timeStruct->tm_hour, timeStruct->tm_min, timeStruct->tm_sec);
+		snprintf(bakpath, 100, "sdmc:/3ds/PKSM/backup/%s_%02i%02i%02i%02i%02i%02i", gamesList[game], timeStruct->tm_year + 1900, timeStruct->tm_mon + 1, timeStruct->tm_mday, timeStruct->tm_hour, timeStruct->tm_min, timeStruct->tm_sec);
 		mkdir(bakpath, 777);
 		chdir(bakpath);
 		FILE *f = fopen("main", "wb");
@@ -286,11 +282,17 @@ int main() {
 		
 		if (hidKeysDown() & KEY_TOUCH) {
 			if (touch.px > 15 && touch.px < 155 && touch.py > 20 && touch.py < 73) {
-				bank(mainbuf);
+				if (game_is3DS())
+				{
+					bank(mainbuf);
+				}
 			}
 
 			if (touch.px > 165 && touch.px < 305 && touch.py > 20 && touch.py < 73) {
-				pokemonEditor(mainbuf);
+				if (game_is3DS())
+				{
+					pokemonEditor(mainbuf);
+				}
 			}
 
 			if (touch.px > 15 && touch.px < 155 && touch.py > 83 && touch.py < 136) {

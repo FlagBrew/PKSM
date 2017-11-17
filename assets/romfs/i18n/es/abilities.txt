@@ -1,4 +1,4 @@
-Ningún
+-
 Hedor
 Llovizna
 Impulso
@@ -231,3 +231,4 @@ Herbogénesis
 Guardia Metálica
 Guardia Espectro
 Armadura Prisma
+Fuerza Cerebral
