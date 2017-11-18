@@ -572,5 +572,5 @@ Download der Daten fehlgeschlagen!
 Installiere aktuelle Version...
 Aktuelle Version installiert!
 Möchtest du das Spiel starten?
-Ultra Sun
-Ultra Moon
+Ultrasonne
+Ultramond
