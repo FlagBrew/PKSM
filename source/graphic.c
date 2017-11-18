@@ -638,7 +638,7 @@ void infoViewer(u8* pkmn) {
 		y_desc += 20;
 	}
 	
-	if (pkx_get_species(pkmn) > 0 && pkx_get_species(pkmn) < ofs.maxSpecies) {
+	if (pkx_get_species(pkmn) > 0 && pkx_get_species(pkmn) <= ofs.maxSpecies) {
 		pp2d_draw_texture_part(TEXTURE_BALLS_SPRITESHEET, -2, -5, 32 * (pkx_get_ball(pkmn) % 8), 32 * (pkx_get_ball(pkmn) / 8), 32, 32);
 		pp2d_draw_wtext(30, 6, FONT_SIZE_12, FONT_SIZE_12, WHITE, listSpecies.items[pkx_get_species(pkmn)]);
 		
@@ -875,7 +875,7 @@ void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int currentEntry, int menu
 			for (int j = 0; j < 6; j++) {
 				pkx_get(mainbuf, box, i * 6 + j, pkmn);
 				u16 n = pkx_get_species(pkmn);
-				if (n > 0 && n < ofs.maxSpecies)
+				if (n > 0 && n <= ofs.maxSpecies)
 					printElement(pkmn, game, n, x, y);
 
 				if ((currentEntry == (i * 6 + j)) && !isTeam) {
@@ -1276,7 +1276,7 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 			swprintf(page, MAX_LENGTH_BOX_NAME+1, i18n(S_GRAPHIC_PKBANK_BANK_TITLE), bankBox + 1);
 			pp2d_draw_wtext(55 + (178 - pp2d_get_wtext_width(page, FONT_SIZE_12, FONT_SIZE_12)) / 2, 9, FONT_SIZE_12, FONT_SIZE_12, WHITE, page);
 
-			if (pkx_get_species(pkmn) > 0 && pkx_get_species(pkmn) < ofs.maxSpecies) {
+			if (pkx_get_species(pkmn) > 0 && pkx_get_species(pkmn) <= ofs.maxSpecies) {
 				u16 tempspecies = pkx_get_form_species_number(pkmn);
 				u8 type1 = 0, type2 = 0;
 

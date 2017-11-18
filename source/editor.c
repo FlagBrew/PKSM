@@ -188,13 +188,6 @@ bool isGenerating() {
 }
 
 void generate(u8* mainbuf, bool isTeam, int box, int currentEntry, int page, int genEntry) {
-	// block zeraora
-	if (game_getisUSUM() && page*40+genEntry == ofs.maxSpecies - 1)
-	{
-		infoDisp(L"This pokemon doesn't exist yet.");
-		return;
-	}
-	
 	generating = true;
 	
 	FILE *fptr = fopen(game_isgen6() ? "romfs:/misc/living6.bin" : "romfs:/misc/living7.bin", "rt");
@@ -408,7 +401,7 @@ void pokemonEditor(u8* mainbuf) {
 			bool operationDone = false;
 
 			touchExecuting = menuEntry;
-			while (aptMainLoop() && (pkx_get_species(pkmn) > 0 && pkx_get_species(pkmn) < ofs.maxSpecies) && !operationDone && !(hidKeysDown() & KEY_B)) {
+			while (aptMainLoop() && (pkx_get_species(pkmn) > 0 && pkx_get_species(pkmn) <= ofs.maxSpecies) && !operationDone && !(hidKeysDown() & KEY_B)) {
 				hidScanInput();
 				hidTouchRead(&touch);
 				oldEntry = menuEntry;
