@@ -488,7 +488,7 @@ void pokemonEditor(u8* mainbuf) {
 									while(aptMainLoop() && !(hidKeysDown() & KEY_B)) {
 										hidScanInput();
 										hidTouchRead(&touch);
-										byteEntry = calcCurrentEntryOneScreen(byteEntry, ofs.pkmnLength, 16);
+										byteEntry = calcCurrentEntryOneScreen(byteEntry, ofs.pkmnLength - 1, 16);
 
 										if (hidKeysDown() & KEY_TOUCH) {
 											if (touch.px > 0 && touch.px < 20 && touch.py > 0 && touch.py < 20) pattern[0] = true;
