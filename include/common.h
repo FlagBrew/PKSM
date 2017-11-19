@@ -64,8 +64,10 @@ struct ArrayUTF32 listItems;
 struct ArrayUTF32 listSpecies;
 
 struct {
-	u8 maxBalls;
 	u8 pkxLength;
+	u16 totalSpecies;
+	
+	u8 maxBalls;
 	u8 maxBoxes;
 	u16 maxAbilities;
 	u16 maxSpecies;

@@ -87,7 +87,9 @@ u8 game_get_language(u8* mainbuf) {
 void game_fill_offsets()
 {
 	// init
+	ofs.totalSpecies = 807;
 	ofs.pkxLength = 232;
+	
 	ofs.maxBalls = 0;
 	ofs.maxBoxes = 31;
 	ofs.maxAbilities = 0;

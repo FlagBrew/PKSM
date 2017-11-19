@@ -155,6 +155,13 @@ void dumpStorage2pk7(u8* bankbuf, u32 size) {
 	}
 }
 
+bool checkUSUMexceptions(u16 species)
+{
+	if (game_getisUSUM() && (species == 20 || species == 105 || species == 745 || species == 25))
+		return false;
+	return true;
+}
+
 void bank(u8* mainbuf) {
 	int game = game_get();
 	
@@ -380,7 +387,7 @@ void bank(u8* mainbuf) {
 						u16 species = pkx_get_species(temp);
 						u8 form = pkx_get_form(temp);
 						FormData *forms = pkx_get_legal_form_data(species, game);
-						bool illegalform = form < forms->min || form > forms->max;
+						bool illegalform = form < forms->min || (form > forms->max && checkUSUMexceptions(species));
 						bool illegalspecies = species > ofs.maxSpecies;
 						free(forms);
 

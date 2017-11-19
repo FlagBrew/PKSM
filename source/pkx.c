@@ -498,6 +498,11 @@ FormData *pkx_get_legal_form_data(const u16 species, const int game) {
 			forms->max = 1;
 			forms->editable = false;
 			break;
+		case 800 :
+			forms->spriteNum = 0;
+			forms->max = 4;
+			forms->editable = false;
+			break;
 		case 801 :
 			forms->spriteNum = 144;
 			forms->stringNum = 139;
