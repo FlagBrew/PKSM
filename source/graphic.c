@@ -978,8 +978,14 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 					printSelector(2, y, 198, 11);
 				else if (i + 20 == additional1) 
 					printSelector(200, y, 198, 11);
-				pp2d_draw_wtextf(2, y, FONT_SIZE_9, FONT_SIZE_9, WHITE, L"%d - %ls", entry, itemsSorted[entry]);
-				pp2d_draw_wtextf(200, y, FONT_SIZE_9, FONT_SIZE_9, WHITE, L"%d - %ls", entry + 20, itemsSorted[entry + 20]);
+				if (entry <= ofs.totalItems)
+				{
+					pp2d_draw_wtextf(2, y, FONT_SIZE_9, FONT_SIZE_9, WHITE, L"%d - %ls", entry, itemsSorted[entry]);
+				}
+				if (entry + 20 <= ofs.totalItems)
+				{				
+					pp2d_draw_wtextf(200, y, FONT_SIZE_9, FONT_SIZE_9, WHITE, L"%d - %ls", entry + 20, itemsSorted[entry + 20]);
+				}
 				y += 12;
 			}	
 		} else if (mode == ED_MOVES) {
@@ -992,8 +998,14 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 					printSelector(2, y, 198, 11);
 				else if (i + 20 == additional1) 
 					printSelector(200, y, 198, 11);
-				pp2d_draw_wtextf(2, y, FONT_SIZE_9, FONT_SIZE_9, WHITE, L"%d - %ls", entry, movesSorted[entry]);
-				pp2d_draw_wtextf(200, y, FONT_SIZE_9, FONT_SIZE_9, WHITE, L"%d - %ls", entry + 20, movesSorted[entry + 20]);
+				if (entry <= ofs.totalMoves)
+				{
+					pp2d_draw_wtextf(2, y, FONT_SIZE_9, FONT_SIZE_9, WHITE, L"%d - %ls", entry, movesSorted[entry]);
+				}
+				if (entry + 20 <= ofs.totalMoves)
+				{
+					pp2d_draw_wtextf(200, y, FONT_SIZE_9, FONT_SIZE_9, WHITE, L"%d - %ls", entry + 20, movesSorted[entry + 20]);
+				}
 				y += 12;
 			}
 		} else if (mode == ED_NATURES) {

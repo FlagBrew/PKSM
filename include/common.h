@@ -66,11 +66,15 @@ struct ArrayUTF32 listSpecies;
 struct {
 	u8 pkxLength;
 	u16 totalSpecies;
+	u16 totalMoves;
+	u16 totalItems;
 	
 	u8 maxBalls;
 	u8 maxBoxes;
 	u16 maxAbilities;
 	u16 maxSpecies;
+	u16 maxMoveID; 
+	u16 maxItemID;
 	u8 maxWondercards;
 	u8 nicknameLength;
 	u32 wondercardLocation;

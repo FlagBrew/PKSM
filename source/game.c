@@ -89,11 +89,15 @@ void game_fill_offsets()
 	// init
 	ofs.totalSpecies = 807;
 	ofs.pkxLength = 232;
+	ofs.totalMoves = 728;
+	ofs.totalItems = 959;
 	
 	ofs.maxBalls = 0;
 	ofs.maxBoxes = 31;
 	ofs.maxAbilities = 0;
 	ofs.maxSpecies = 0;
+	ofs.maxMoveID = 0;
+	ofs.maxItemID = 0;
 	ofs.maxWondercards = 0;
 	ofs.nicknameLength = 26;
 	ofs.wondercardLocation = 0;
@@ -119,6 +123,8 @@ void game_fill_offsets()
 		ofs.maxBoxes = 32;
 		ofs.maxAbilities = 233;
 		ofs.maxSpecies = 806; // blocks zeraora, TODO: 807
+		ofs.maxMoveID = 728;
+		ofs.maxItemID = 959;
 		ofs.maxWondercards = 48;
 		ofs.nicknameLength = 26;
 		ofs.wondercardLocation = 0x66300;
@@ -144,6 +150,8 @@ void game_fill_offsets()
 		ofs.maxBoxes = 32;
 		ofs.maxAbilities = 232;
 		ofs.maxSpecies = 802;
+		ofs.maxMoveID = 720;
+		ofs.maxItemID = 920;
 		ofs.maxWondercards = 48;
 		ofs.nicknameLength = 26;
 		ofs.wondercardLocation = 0x65D00;
@@ -169,6 +177,8 @@ void game_fill_offsets()
 		ofs.maxBoxes = 31;
 		ofs.maxAbilities = 191;
 		ofs.maxSpecies = 721;
+		ofs.maxMoveID = 621;
+		ofs.maxItemID = 775;
 		ofs.maxWondercards = 24;
 		ofs.nicknameLength = 26;
 		ofs.wondercardLocation = 0x1CD00;
@@ -194,6 +204,8 @@ void game_fill_offsets()
 		ofs.maxBoxes = 31;
 		ofs.maxAbilities = 188;
 		ofs.maxSpecies = 721;
+		ofs.maxMoveID = 617;
+		ofs.maxItemID = 717;
 		ofs.maxWondercards = 24;
 		ofs.nicknameLength = 26;
 		ofs.wondercardLocation = 0x1BD00;
@@ -219,6 +231,8 @@ void game_fill_offsets()
 		//ofs.maxBoxes =
 		ofs.maxAbilities = 164;
 		ofs.maxSpecies = 649;
+		//ofs.maxMoveID = 
+		//ofs.maxItemID = 
 		ofs.maxWondercards = 12;
 		//ofs.nicknameLength =
 		ofs.wondercardLocation = 0x1C900;
@@ -244,6 +258,8 @@ void game_fill_offsets()
 		//ofs.maxBoxes =
 		ofs.maxAbilities = 123;
 		ofs.maxSpecies = 493;
+		//ofs.maxMoveID = 
+		//ofs.maxItemID = 
 		ofs.maxWondercards = 8;
 		// ofs.nicknameLength =
 		// ofs.wondercardLocation =

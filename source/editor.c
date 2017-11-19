@@ -807,7 +807,7 @@ void pokemonEditor(u8* mainbuf) {
 										int *movesSorted = listMoves.sortedItemsID;
 										int moveEntry = 0;
 										int entryBottom = 0;
-										int page = 0, maxpages = 18;
+										int page = 0, maxpages = ofs.totalMoves/40 + 1;
 
 										while (aptMainLoop() && !(hidKeysDown() & KEY_B)) {
 											hidScanInput();
@@ -830,10 +830,13 @@ void pokemonEditor(u8* mainbuf) {
 											}
 
 											if (hidKeysDown() & KEY_A) {
-												if (entryBottom < 4)
-													pkx_set_move(pkmn, movesSorted[moveEntry + page * 40], entryBottom);
-												else
-													pkx_set_egg_move(pkmn, movesSorted[moveEntry + page * 40], entryBottom - 4);
+												if (movesSorted[moveEntry + page*40] <= ofs.maxMoveID)
+												{
+													if (entryBottom < 4)
+														pkx_set_move(pkmn, movesSorted[moveEntry + page * 40], entryBottom);
+													else
+														pkx_set_egg_move(pkmn, movesSorted[moveEntry + page * 40], entryBottom - 4);													
+												}
 											}
 
 											printPKEditor(pkmn, moveEntry, page, entryBottom, ED_MOVES, descriptions);
@@ -843,13 +846,13 @@ void pokemonEditor(u8* mainbuf) {
 									if (touch.px > 180 && touch.px < 195 && touch.py > 90 && touch.py < 102) {
 										int *itemsSorted = listItems.sortedItemsID;
 										int itemEntry = 0;
-										int page = 0, maxpages = 23;
+										int page = 0, maxpages = ofs.totalItems/40 + 1;
 										
 										while (aptMainLoop() && !(hidKeysDown() & KEY_B)) {
 											hidScanInput();
 											calcCurrentEntryMorePagesReversed(&itemEntry, &page, maxpages, 39, 20);
 											
-											if (hidKeysDown() & KEY_A) {
+											if (hidKeysDown() & KEY_A && itemsSorted[itemEntry + page * 40] <= ofs.maxItemID) {
 												pkx_set_item(pkmn, itemsSorted[itemEntry + page * 40]);
 												break;
 											}
