@@ -576,7 +576,7 @@ u16 getAlternativeSprite(u8* pkmn, int game) {
 
 void printElement(u8* pkmn, int game, u16 n, int x, int y) {
 	u16 t = getAlternativeSprite(pkmn, game);
-	if (t) {
+	if (t && !(n == 745 && pkx_get_form(pkmn) == 2)) { // handles dusk lycanroc sprite to return the standard one
 		t -= 1;
 		pp2d_draw_texture_part(TEXTURE_ALTERNATIVE_SPRITESHEET, x, y, 34 * (t % 6), 30 * (t / 6), 34, 30);  
 	} else {
@@ -593,7 +593,7 @@ void printElement(u8* pkmn, int game, u16 n, int x, int y) {
 
 void printElementBlend(u8* pkmn, int game, u16 n, int x, int y, u32 color) {
 	u16 t = getAlternativeSprite(pkmn, game);
-	if (t) {
+	if (t && !(n == 745 && pkx_get_form(pkmn) == 2)) { // handles dusk lycanroc sprite to return the standard one
 		t -= 1;
 		pp2d_draw_texture_part_blend(TEXTURE_ALTERNATIVE_SPRITESHEET, x, y, 34 * (t % 6), 30 * (t / 6), 34, 30, color); 
 	} else {
