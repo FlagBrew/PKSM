@@ -432,15 +432,45 @@ FormData *pkx_get_legal_form_data(const u16 species, const int game) {
 			forms->stringNum = 124;
 			forms->max = 1;
 			break;
+		case 735 : // gumshoos
+			forms->spriteNum = 0;
+			forms->max = 1;
+			forms->editable = false;
+			break;
+		case 738 : // vikavolt
+			forms->spriteNum = 0;
+			forms->max = 1;
+			forms->editable = false;
+			break;
 		case 741 :
 			forms->spriteNum = 133;
 			forms->stringNum = 126;
 			forms->max = 3;
 			break;
+		case 743 : // ribombee
+			forms->spriteNum = 0;
+			forms->max = 1;
+			forms->editable = false;
+			break;
 		case 745 :
 			forms->spriteNum = 136;
 			forms->stringNum = 130;
 			forms->max = 1;
+			break;
+		case 752 : // araquanid
+			forms->spriteNum = 0;
+			forms->max = 1;
+			forms->editable = false;
+			break;
+		case 754 : // lurantis
+			forms->spriteNum = 0;
+			forms->max = 1;
+			forms->editable = false;
+			break;
+		case 758 : // salazzle
+			forms->spriteNum = 0;
+			forms->max = 1;
+			forms->editable = false;
 			break;
 		case 773 :
 			forms->spriteNum = 0;
@@ -452,6 +482,21 @@ FormData *pkx_get_legal_form_data(const u16 species, const int game) {
 			forms->stringNum = 132;
 			forms->min = 7;
 			forms->max = 13;
+			break;
+		case 777 : // togedemaru
+			forms->spriteNum = 0;
+			forms->max = 1;
+			forms->editable = false;
+			break;
+		case 778 : // mimikyu
+			forms->spriteNum = 0;
+			forms->max = 2;
+			forms->editable = false;
+			break;
+		case 784 : // kommo-o
+			forms->spriteNum = 0;
+			forms->max = 1;
+			forms->editable = false;
 			break;
 		case 801 :
 			forms->spriteNum = 144;
