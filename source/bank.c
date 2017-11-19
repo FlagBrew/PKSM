@@ -491,7 +491,7 @@ void bank(u8* mainbuf) {
 				u16 species = pkx_get_species(pkmn);
 				u8 form = pkx_get_form(pkmn);
 				FormData *forms = pkx_get_legal_form_data(species, game);
-				bool illegalform = form < forms->min || form > forms->max;
+				bool illegalform = form < forms->min || (form > forms->max && checkUSUMexceptions(species));
 				bool illegalspecies = species > ofs.maxSpecies;
 				free(forms);
 
