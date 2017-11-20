@@ -111,12 +111,12 @@ void setWC(u8* mainbuf, u8* wcbuf, int i, int nInjected[]) {
 		
 		mainbuf[GBO + 72] = (u8)((mainbuf[GBO + 72] & 0xFE) | 1);
 		if (game == GAME_HG || game == GAME_SS) {
-			*(mainbuf + ofs.wondercardLocation - 0x100 + GBO + (2047 >> 3)) = 0x80;
-			memcpy(&mainbuf[ofs.wondercardLocation + GBO + nInjected[0] * ofs.wondercardSize], wcbuf, ofs.wondercardSize);
+			*(mainbuf + 0x9D3C + GBO + (2047 >> 3)) = 0x80;
+			memcpy(&mainbuf[0x9E3C + GBO + nInjected[0] * ofs.wondercardSize], wcbuf, ofs.wondercardSize);
 		}
 		else if (game == GAME_PLATINUM) {
-			*(mainbuf + ofs.wondercardLocation - 0x100 + GBO + (2047 >> 3)) = 0x80;
-			memcpy(&mainbuf[ofs.wondercardLocation + GBO + nInjected[0] * ofs.wondercardSize], wcbuf, ofs.wondercardSize);
+			*(mainbuf + 0xB4C0 + GBO + (2047 >> 3)) = 0x80;
+			memcpy(&mainbuf[0xB5C0 + GBO + nInjected[0] * ofs.wondercardSize], wcbuf, ofs.wondercardSize);
 		}
 		else if (game == GAME_DIAMOND || game == GAME_PEARL) {
 			memcpy(&mainbuf[0xA7D0 + GBO + nInjected[0] * 4], &DPActiveFlag[0], 4);

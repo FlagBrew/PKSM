@@ -286,6 +286,8 @@ int main() {
 				{
 					bank(mainbuf);
 				}
+				else
+					infoDisp(L"This hasn't been implemented (yet).");
 			}
 
 			if (touch.px > 165 && touch.px < 305 && touch.py > 20 && touch.py < 73) {
@@ -293,6 +295,8 @@ int main() {
 				{
 					pokemonEditor(mainbuf);
 				}
+				else
+					infoDisp(L"This hasn't been implemented (yet).");
 			}
 
 			if (touch.px > 15 && touch.px < 155 && touch.py > 83 && touch.py < 136) {
@@ -300,12 +304,11 @@ int main() {
 			}
 
 			if (touch.px > 165 && touch.px < 305 && touch.py > 83 && touch.py < 136) {
-
+				infoDisp(L"This hasn't been implemented (yet).");
 			}
 			
 			if (touch.px > 15 && touch.px < 155 && touch.py > 146 && touch.py < 199) {
 				configMenu();
-				continue;
 			}
 			
 			if (touch.px > 165 && touch.px < 305 && touch.py > 146 && touch.py < 199) {

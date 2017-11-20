@@ -572,5 +572,5 @@ Errore nel download dei dati!
 Installando l'ultima release...
 Ultima release installata!
 Avviare il gioco?
-Ultra Sole
-Ultra Luna
+Ultrasole
+Ultraluna
