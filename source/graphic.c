@@ -1310,8 +1310,8 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 				pkx_get_nickname(pkmn, nick);
 				pp2d_draw_wtext(273, 69, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)nick);
 				
-				wchar_t national_id[8];
-				swprintf(national_id, 8, L"%d", pkx_get_species(pkmn));
+				wchar_t national_id[9];
+				swprintf(national_id, 9, L"#%d", pkx_get_species(pkmn));
 				pp2d_draw_wtext(273, 86, FONT_SIZE_12, FONT_SIZE_12, WHITE, national_id);
 				
 				wchar_t level[8];
