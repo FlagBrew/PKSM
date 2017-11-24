@@ -249,7 +249,7 @@ void socket_set_legality_address(bool value) {
 		memset(legalityAddress, 0, 16);
 
 		swkbdInit(&swkbd, SWKBD_TYPE_NORMAL, 2, 15);
-		swkbdSetValidation(&swkbd, SWKBD_NOTEMPTY_NOTBLANK, SWKBD_FILTER_DIGITS | SWKBD_FILTER_AT | SWKBD_FILTER_PERCENT | SWKBD_FILTER_BACKSLASH | SWKBD_FILTER_PROFANITY, 12);
+		swkbdSetValidation(&swkbd, SWKBD_NOTEMPTY_NOTBLANK, SWKBD_FILTER_DIGITS | SWKBD_FILTER_AT | SWKBD_FILTER_PERCENT | SWKBD_FILTER_BACKSLASH, 12);
 		i18n_initTextSwkbd(&swkbd, S_EDITOR_TEXT_CANCEL, S_EDITOR_TEXT_SET, S_EDITOR_TEXT_ENTER_LEGALITY_ADDRESS);
 
 		swkbdInputText(&swkbd, legalityAddress, 16);
