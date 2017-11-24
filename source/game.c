@@ -122,7 +122,7 @@ void game_fill_offsets()
 		ofs.maxBalls = 26;
 		ofs.maxBoxes = 32;
 		ofs.maxAbilities = 233;
-		ofs.maxSpecies = 806; // blocks zeraora, TODO: 807
+		ofs.maxSpecies = 807;
 		ofs.maxMoveID = 728;
 		ofs.maxItemID = 959;
 		ofs.maxWondercards = 48;
