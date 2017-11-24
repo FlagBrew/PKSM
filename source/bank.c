@@ -392,8 +392,8 @@ void bank(u8* mainbuf) {
 						free(forms);
 
 						if (!(illegalspecies || illegalform)) { // prevent that gen7 stuff goes into gen6 save
-							pkx_set(mainbuf, saveBox, i, temp); // pkx_set -> temp
 							setDex(mainbuf, temp);
+							pkx_set(mainbuf, saveBox, i, temp); // pkx_set -> temp
 							memcpy(&bankbuf[bankBox * 30 * ofs.pkxLength + i * ofs.pkxLength], buffer, ofs.pkxLength); // memcpy bank -> buffer
 						}
 					} else if (isWirelessBuffer) {
