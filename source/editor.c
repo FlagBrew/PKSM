@@ -20,16 +20,19 @@
 
 u8 DPActiveFlag[] = {0x20, 0x83, 0xB8, 0xED};
 
-bool isBattleBoxed(u8* mainbuf, int box, int slot) {
-	if (game_isgen6()) //don't care about obsolete titles
-		return false;
-		
-	if (game_getisSUMO()) {
+bool isBattleBoxed(u8* mainbuf, int box, int slot)
+{
+	if (game_isgen7())
+	{
 		u8 team_lookup[72];
 		memcpy(&team_lookup[0], &mainbuf[ofs.battleBoxes], 72);
 		for (int i = 0; i < 72; i += 2)
+		{
 			if ((team_lookup[i] == (u8)slot) && (team_lookup[i + 1] == (u8)box))
+			{
 				return true;
+			}
+		}
 	}
 	
 	return false;
