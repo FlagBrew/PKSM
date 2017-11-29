@@ -622,9 +622,11 @@ void pkx_set(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn) 
 
 		memcpy(latestHandlers, &pkmn[0x94], 10);
 		memcpy(ot_name, &pkmn[0xB0], ofs.nicknameLength);
-		memcpy(save_name, &mainbuf[game_isgen6() ? 0x14048 : 0x1238], ofs.nicknameLength);
+		memcpy(save_name, &mainbuf[ofs.saveOT], ofs.nicknameLength);
 		
-		if (!((getSaveTID(mainbuf) == pkx_get_tid(pkmn)) && (getSaveSID(mainbuf) == pkx_get_sid(pkmn)) && !memcmp(ot_name, save_name, ofs.nicknameLength) && !memcmp(latestHandlers, ht_name, 10))) { //you're the first owner
+		if (!((getSaveTID(mainbuf) == pkx_get_tid(pkmn)) && (getSaveSID(mainbuf) == pkx_get_sid(pkmn)) && 
+			 (getSaveGender(mainbuf) == pkx_get_ot_gender(pkmn)) && !memcmp(ot_name, save_name, ofs.nicknameLength)) &&
+			 !(pkx_is_egg(pkmn))) { //you're the first owner
 			pkx_set_ht(pkmn, save_name);
 			pkx_set_ht_gender(pkmn, getSaveGender(mainbuf));
 		}
