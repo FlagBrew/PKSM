@@ -574,3 +574,6 @@ Latest release installed!
 Do you want to launch the game?
 UltraSol
 UltraLuna
+Press A to execute a script.
+Script executed correctly!
+Script execution failed.

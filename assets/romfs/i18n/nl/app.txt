@@ -574,3 +574,6 @@ Laatste versie geïnstalleerd!
 Wil je het spel opstarten?
 Ultra Sun
 Ultra Moon
+Press A to execute a script.
+Script executed correctly!
+Script execution failed.

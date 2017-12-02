@@ -52,6 +52,26 @@ bool game_isDS() {
 	return game_isgen5() || game_isgen4();
 }
 
+bool game_getisDP() {
+	return (game == GAME_DIAMOND || game == GAME_PEARL);
+}
+
+bool game_getisPT() {
+	return game == GAME_PLATINUM;
+}
+
+bool game_getisHGSS() {
+	return (game == GAME_HG || game == GAME_SS);
+}
+
+bool game_getisBW() {
+	return (game == GAME_B1 || game == GAME_W1);
+}
+
+bool game_getisB2W2() {
+	return (game == GAME_B2 || game == GAME_W2);
+}
+
 bool game_getisXY() {
 	return (game == GAME_X || game == GAME_Y);
 }

@@ -21,9 +21,9 @@
 
 #include <3ds.h>
 #include <citro3d.h>
-#include <arpa/inet.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <arpa/inet.h>
 #include <malloc.h>
 #include <netinet/in.h>
 #include <stdio.h>
@@ -51,10 +51,12 @@
 #include "sections/events/pgt.h"
 #include "pkx.h"
 #include "save.h"
+#include "sections/scripts/scripts.h"
 #include "sha256.h"
 #include "socket.h"
 #include "spi.h"
 #include "texman.h"
+#include "sections/scripts/unicode.h"
 #include "util.h"
 #include "sections/events/wcman.h"
 #include "sections/events/wcx.h"

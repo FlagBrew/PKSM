@@ -80,6 +80,16 @@ bool initServices() {
 	mkdir("sdmc:/3ds/PKSM/backup", 777);
 	mkdir("sdmc:/3ds/PKSM/additionalassets", 777);
 	mkdir("sdmc:/3ds/PKSM/additionalassets/i18n", 777);
+	mkdir("sdmc:/3ds/PKSM/scripts", 777);
+	mkdir("sdmc:/3ds/PKSM/scripts/usum", 777);
+	mkdir("sdmc:/3ds/PKSM/scripts/sm", 777);
+	mkdir("sdmc:/3ds/PKSM/scripts/oras", 777);
+	mkdir("sdmc:/3ds/PKSM/scripts/xy", 777);
+	mkdir("sdmc:/3ds/PKSM/scripts/b2w2", 777);
+	mkdir("sdmc:/3ds/PKSM/scripts/bw", 777);
+	mkdir("sdmc:/3ds/PKSM/scripts/hgss", 777);
+	mkdir("sdmc:/3ds/PKSM/scripts/pt", 777);
+	mkdir("sdmc:/3ds/PKSM/scripts/dp", 777);
 	
 	char i18npath[80];
 	for (unsigned int i = 0; i < 11; i++) {
@@ -304,7 +314,7 @@ int main() {
 			}
 
 			if (touch.px > 165 && touch.px < 305 && touch.py > 83 && touch.py < 136) {
-				infoDisp(L"This hasn't been implemented (yet).");
+				scriptMenu(mainbuf);
 			}
 			
 			if (touch.px > 15 && touch.px < 155 && touch.py > 146 && touch.py < 199) {

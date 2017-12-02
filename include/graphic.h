@@ -93,6 +93,8 @@ int confirmDisp(wchar_t* message);
 void freezeMsg(wchar_t* message);
 void freezeMsgDetails(wchar_t* details);
 void consoleMsg(char* details);
+void printBottomIndications(const wchar_t* message);
+void printSelector(int x, int y, int width, int height);
 void progressBar(wchar_t* message, u32 pagesize, u32 sz);
 void printCredits();
 void printTitle(const wchar_t* title);

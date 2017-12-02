@@ -574,3 +574,6 @@ Latest release installed!
 Do you want to launch the game?
 究极之日
 究极之月
+Press A to execute a script.
+Script executed correctly!
+Script execution failed.

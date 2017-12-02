@@ -18,7 +18,6 @@
 
 #include "graphic.h"
 
-static void printSelector(int x, int y, int width, int height);
 static void printMenuTop();
 static void printMenuBottom();
 
@@ -184,7 +183,7 @@ void drawConsoleDebug() {
 	}
 }
 
-static void printSelector(int x, int y, int width, int height) {
+void printSelector(int x, int y, int width, int height) {
 	pp2d_draw_rectangle(x, y, width, height, BUTTONBORD);
 	pp2d_draw_rectangle(x + 1, y + 1, width - 2, height - 2, BUTTONGREY);
 }

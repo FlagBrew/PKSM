@@ -574,3 +574,6 @@ Ultima release installata!
 Avviare il gioco?
 Ultrasole
 Ultraluna
+Premi A per eseguire uno script.
+Script eseguito correttamente!
+Esecuzione script fallita.

@@ -574,3 +574,6 @@ Dernière version installée!
 Voulez-vous lancer le jeu ?
 Ultra Soleil
 Ultra Lune
+Press A to execute a script.
+Script executed correctly!
+Script execution failed.

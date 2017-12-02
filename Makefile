@@ -21,8 +21,10 @@ SOURCES             :=	source/memecrypto/source \
 						source/pp2d \
 						source/quirc \
 						source/sections/events \
+						source/sections/scripts \
 						source
 INCLUDES            :=	include/sections/events \
+						include/sections/scripts \
 						include
 ROMFS               :=	assets/romfs
 
@@ -48,7 +50,7 @@ VERSION_MAJOR := 5
 VERSION_MINOR := 0
 VERSION_MICRO := 1
 
-ROSALINA := 0
+ROSALINA := 1
 
 # Don't really need to change this
 ICON_FLAGS          :=	nosavebackups,visible
