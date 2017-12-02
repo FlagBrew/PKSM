@@ -146,7 +146,7 @@ void parseHexEditor(u8* pkmn, int byteEntry) {
 		if (byteEntry == 0x08 || byteEntry == 0x09)
 			checkMaxValueBetweenBounds(pkmn, byteEntry, 0x08, 2, ofs.maxSpecies);
 		else if (byteEntry == 0x14)
-			checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], ofs.maxAbilities);
+			checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], ofs.maxAbilities - 1);
 		else if (byteEntry == 0x15)
 			checkMaxValue(pkmn, byteEntry, pkmn[byteEntry], 1);
 		else if (byteEntry == 0x1D)
