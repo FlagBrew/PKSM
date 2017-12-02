@@ -574,6 +574,6 @@ PKSMが更新されました!
 ゲームを起動させますか?
 ウルトラサン
 ウルトラムーン
-Press A to execute a script.
-Script executed correctly!
-Script execution failed.
+Aボタンでスクリプトを実行します。
+スクリプトの実行に成功しました。
+スクリプトの実行に失敗しました。
