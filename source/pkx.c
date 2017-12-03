@@ -546,12 +546,17 @@ u32 pkx_get_save_address(const int boxnumber, const int indexnumber) {
 }
 
 void pkx_calculate_checksum(u8* data) {
-    u16 chk = 0;
-
-    for (int i = 8; i < ofs.pkmnLength; i += 2)
-        chk += *(u16*)(data + i);
-
+    u16 chk = pkx_return_checksum(data);
     memcpy(data + 6, &chk, 2);
+}
+
+u16 pkx_return_checksum(u8* data) {
+	u16 chk = 0;
+	for (int i = 8; i < ofs.pkmnLength; i += 2)
+	{
+		chk += *(u16*)(data + i);
+	}
+	return chk;
 }
 
 void pkx_shuffle_array(u8* pkmn, const u32 encryptionkey) {

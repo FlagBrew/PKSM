@@ -26,6 +26,10 @@ static char* getBaseScriptPath(void)
 	{
 		return "/3ds/PKSM/scripts/usum/";
 	}
+	else if (game_getisSUMO())
+	{
+		return "/3ds/PKSM/scripts/sm/";
+	}
 	else if (game_getisORAS())
 	{
 		return "/3ds/PKSM/scripts/oras/";
@@ -208,6 +212,11 @@ void scriptMenu(u8* mainbuf)
 	Script_s* scriptList = NULL;
 	getScriptList(&scriptList, &count);
 
+	if (count < 0)
+	{
+		count = 0;
+	}
+	
 	while(aptMainLoop() & !(hidKeysDown() & KEY_B))
 	{
 		hidScanInput();

@@ -41,6 +41,7 @@ void pkx_get(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn);
 
 u32 pkx_lcrng(u32 seed);
 u32 pkx_get_save_address(const int boxnumber, const int indexnumber);
+u16 pkx_return_checksum(u8* data);
 
 u8 pkx_get_HT(u8* pkmn);
 u8 pkx_get_gender(u8* pkmn);
