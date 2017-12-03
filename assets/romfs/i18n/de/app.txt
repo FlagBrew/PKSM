@@ -574,6 +574,6 @@ Aktuelle Version installiert!
 Möchtest du das Spiel starten?
 Ultrasonne
 Ultramond
-Press A to execute a script.
-Script executed correctly!
-Script execution failed.
+Drücke A, um das Script auszuführen!
+Script wurde erfolgreich ausgeführt!
+Ausführung des Scriptes fehlgeschlagen.
