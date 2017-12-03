@@ -194,6 +194,9 @@ int getN(const int i)
 		case 244 : return 3;
 		case 245 : return 3;
 		case 250 : return 3;
+		case 264 : return 7;
+		case 266 : return 4;
+		case 273 : return 3;
 		case 504 : return 2;
 		case 515 : return 2;
 		case 551 : return 2;

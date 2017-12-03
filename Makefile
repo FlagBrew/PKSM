@@ -11,7 +11,7 @@ include $(DEVKITARM)/3ds_rules
 
 # Your values.
 APP_TITLE           :=	PKSM
-APP_DESCRIPTION     :=	Gen4+ pkmn save manager
+APP_DESCRIPTION     :=	Gen4 to Gen7 pkmn save manager
 APP_AUTHOR          :=	Bernardo Giordano
 
 TARGET              :=	$(subst $e ,_,$(notdir $(APP_TITLE)))
