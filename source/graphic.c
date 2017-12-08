@@ -519,7 +519,7 @@ void printEventInjector(u8* previewbuf, int sprite, int i, bool langVett[], bool
 				for (int j = 0; j < 8; j++)
 				{
 					int index = i*8+j + 40*page;
-					if (entry == i * 8 + j)
+					if (entry == i*8+j)
 					{
 						printSelector(j*49 + j, i*47 + i, 49, 47);
 					}
@@ -528,10 +528,10 @@ void printEventInjector(u8* previewbuf, int sprite, int i, bool langVett[], bool
 					{
 						if (index < max && sprites[index] != -1)
 						{
-							pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 34 * (sprites[index] % 30), 30 * (sprites[index] / 30), 34, 30);
+							pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 7 + 49*j+j, 2 + 47*i+i, 34*(sprites[index]%30), 30*(sprites[index]/30), 34, 30);
 						}
-						sprintf(temp, "%d", 40 * page + i*8+j + 1);
-						pp2d_draw_text(49 * j + (49 - pp2d_get_text_width(temp, FONT_SIZE_9, FONT_SIZE_9)) / 2 + j, 34 + i * 47 + i, FONT_SIZE_9, FONT_SIZE_9, index <= max ? WHITE : DS, temp);
+						sprintf(temp, "%d", index + 1);
+						pp2d_draw_text(49*j + (49 - pp2d_get_text_width(temp, FONT_SIZE_9, FONT_SIZE_9))/2 + j, 34 + i*47 + i, FONT_SIZE_9, FONT_SIZE_9, index <= max ? WHITE : DS, temp);
 					}
 				}
 			}
@@ -1355,39 +1355,51 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 					type2 = personal.pkmData[tempspecies][0x7];
 				}
 				
-				pp2d_draw_texture_part(TEXTURE_TYPES_SPRITESHEET, 273, 120, 50 * type1, 0, 50, 18); 
+				pp2d_draw_texture_part(TEXTURE_TYPES_SPRITESHEET, 273, 103, 50 * type1, 0, 50, 18); 
 				if (type1 != type2)
-					pp2d_draw_texture_part(TEXTURE_TYPES_SPRITESHEET, 325, 120, 50 * type2, 0, 50, 18); 
+					pp2d_draw_texture_part(TEXTURE_TYPES_SPRITESHEET, 325, 103, 50 * type2, 0, 50, 18); 
 				
 				u32 nick[NICKNAMELENGTH*2] = {0};
 				pkx_get_nickname(pkmn, nick);
-				pp2d_draw_wtext(273, 69, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)nick);
+				pp2d_draw_wtext(273, 50, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)nick);
 				
 				wchar_t national_id[9];
 				swprintf(national_id, 9, L"#%d", pkx_get_species(pkmn));
-				pp2d_draw_wtext(273, 86, FONT_SIZE_12, FONT_SIZE_12, WHITE, national_id);
+				pp2d_draw_wtext(273, 67, FONT_SIZE_12, FONT_SIZE_12, WHITE, national_id);
 				
 				wchar_t level[8];
 				swprintf(level, 8, i18n(S_GRAPHIC_PKBANK_LV_PKMN), pkx_get_level(pkmn));
 				float width = pp2d_get_wtext_width(level, FONT_SIZE_12, FONT_SIZE_12);
-				pp2d_draw_wtext(372 - width, 86, FONT_SIZE_12, FONT_SIZE_12, WHITE, level);
+				pp2d_draw_wtext(374 - width, 67, FONT_SIZE_12, FONT_SIZE_12, WHITE, level);
 				
 				if (pkx_get_gender(pkmn) == 0)
-					pksm_draw_texture(TEXTURE_MALE, 358 - width, 86);
+					pksm_draw_texture(TEXTURE_MALE, 358 - width, 67);
 				else if (pkx_get_gender(pkmn) == 1)
-					pksm_draw_texture(TEXTURE_FEMALE, 360 - width, 86);
+					pksm_draw_texture(TEXTURE_FEMALE, 360 - width, 67);
 				if (pkx_is_shiny(pkmn))
-					pksm_draw_texture(TEXTURE_SHINY, 360 - width - 14, 88);
+					pksm_draw_texture(TEXTURE_SHINY, 360 - width - 14, 69);
 				
 				u32 ot_name[NICKNAMELENGTH*2] = {0};
 				pkx_get_ot(pkmn, ot_name);
-				pp2d_draw_wtext(273, 146, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)ot_name);
+				pp2d_draw_wtext(273, 126, FONT_SIZE_12, FONT_SIZE_12, WHITE, (wchar_t*)ot_name);
 
 				wchar_t otid[12];
 				swprintf(otid, 12, i18n(S_GRAPHIC_PKBANK_OTID_PKMN), pkx_get_tid(pkmn));
-				pp2d_draw_wtext(372 - pp2d_get_wtext_width(otid, FONT_SIZE_12, FONT_SIZE_12), 163, FONT_SIZE_12, FONT_SIZE_12, WHITE, otid);
+				pp2d_draw_wtext(374 - pp2d_get_wtext_width(otid, FONT_SIZE_12, FONT_SIZE_12), 143, FONT_SIZE_12, FONT_SIZE_12, WHITE, otid);
 				
-				pp2d_draw_wtext(273, 104, FONT_SIZE_12, FONT_SIZE_12, WHITE, listSpecies.items[pkx_get_species(pkmn)]);
+				pp2d_draw_wtext(273, 86, FONT_SIZE_12, FONT_SIZE_12, WHITE, listSpecies.items[pkx_get_species(pkmn)]);
+				pp2d_draw_wtext(273, 167, FONT_SIZE_11, FONT_SIZE_11, WHITE, natures[pkx_get_nature(pkmn)]);
+				
+				char ivs1[18];
+				char ivs2[18];
+				sprintf(ivs1, "%d/%d/%d", pkx_get_iv(pkmn, 0),
+										  pkx_get_iv(pkmn, 1),
+										  pkx_get_iv(pkmn, 2));
+				sprintf(ivs2, "%d/%d/%d", pkx_get_iv(pkmn, 4),
+										  pkx_get_iv(pkmn, 5),
+										  pkx_get_iv(pkmn, 3));
+				pp2d_draw_text(374 - pp2d_get_text_width(ivs1, FONT_SIZE_11, FONT_SIZE_11), 167, FONT_SIZE_11, FONT_SIZE_11, WHITE, ivs1);
+				pp2d_draw_text(374 - pp2d_get_text_width(ivs2, FONT_SIZE_11, FONT_SIZE_11), 183, FONT_SIZE_11, FONT_SIZE_11, WHITE, ivs2);			
 			}
 			
 			y = 45;
