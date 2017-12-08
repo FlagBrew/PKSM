@@ -130,13 +130,13 @@ void camera_scan_qr(u16 *buf, u8* payload, int mode)
 					return;
 				}
 				
-				int box = *(u32*)(data.payload + 8);
-				int slot = *(u32*)(data.payload + 12);
-				int copies = *(u32*)(data.payload + 16);
-				int startaddress = pkx_get_save_address(box, slot);
+				u32 box = *(u32*)(data.payload + 8);
+				u32 slot = *(u32*)(data.payload + 12);
+				u32 copies = *(u32*)(data.payload + 16);
+				u32 startaddress = pkx_get_save_address(box, slot);
 				
 				// TODO: check checksums
-				for (int i = 0; i < copies; i++)
+				for (u32 i = 0; i < copies; i++)
 				{
 					if (startaddress < ofs.boxSize)
 					{

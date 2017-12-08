@@ -184,7 +184,7 @@ int main() {
 		}
 	}
 
-	u8* mainbuf;
+	u8* mainbuf = NULL;
 	u64 mainSize = 0;
 	bool save = true;
 	

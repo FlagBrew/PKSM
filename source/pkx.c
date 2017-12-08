@@ -140,21 +140,27 @@ FormData *pkx_get_legal_form_data(const u16 species, const int game) {
 		case GAME_US:
 		case GAME_UM:
 			sumo = true;
+			//Falls through
 		case GAME_OR:
 		case GAME_AS:
 			oras = true;
+			//Falls through
 		case GAME_X:
 		case GAME_Y:
 			xy = true;
+			//Falls through
 		case GAME_B2:
 		case GAME_W2:
 			b2w2 = true;
+			//Falls through
 		case GAME_B1:
 		case GAME_W1:
 			bw = true;
+			//Falls through
 		case GAME_HG:
 		case GAME_SS:
 			hgss = true;
+			//Falls through
 		case GAME_PLATINUM:
 			plat = true;
 	}

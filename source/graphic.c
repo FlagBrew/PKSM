@@ -1620,30 +1620,7 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			}
 			break;
 		}
-		case 0x40 :
-		case 0x41 :
-		case 0x42 :
-		case 0x43 :
-		case 0x44 :
-		case 0x45 :
-		case 0x46 :
-		case 0x47 :
-		case 0x48 :
-		case 0x49 :
-		case 0x4A :
-		case 0x4B :
-		case 0x4C :
-		case 0x4D :
-		case 0x4E :
-		case 0x4F :
-		case 0x50 :
-		case 0x51 :
-		case 0x52 :
-		case 0x53 :
-		case 0x54 :
-		case 0x55 :
-		case 0x56 :
-		case 0x57 :
+		case 0x40 ... 0x57 :
 			pkx_get_nickname(pkmn, string);
 			pp2d_draw_wtext(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_NICKNAME));
 			pp2d_draw_wtext(x + pp2d_get_wtext_width(i18n(S_GRAPHIC_HEXEDITOR_NICKNAME), FONT_SIZE_12, FONT_SIZE_12), y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, (wchar_t*)string);
@@ -1712,30 +1689,7 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 			pp2d_draw_rectangle(xribbon, y + 17, 13, 13, (pkx_is_egg(pkmn)) ? BUTTONGREEN : BUTTONRED);
 			break;
 		}
-		case 0x78 :
-		case 0x79 :
-		case 0x7A :
-		case 0x7B :
-		case 0x7C :
-		case 0x7D :
-		case 0x7E :
-		case 0x7F :
-		case 0x80 :
-		case 0x81 :
-		case 0x82 :
-		case 0x83 :
-		case 0x84 :
-		case 0x85 :
-		case 0x86 :
-		case 0x87 :
-		case 0x88 :
-		case 0x89 :
-		case 0x8A :
-		case 0x8B :	
-		case 0x8C :
-		case 0x8D :
-		case 0x8E :
-		case 0x8F :	
+		case 0x78 ... 0x8F :
 			pkx_get_ht(pkmn, string);
 			pp2d_draw_wtext(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_NAME));
 			pp2d_draw_wtext(x + pp2d_get_wtext_width(i18n(S_GRAPHIC_HEXEDITOR_HELD_TRAINER_NAME), FONT_SIZE_12, FONT_SIZE_12), y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, (wchar_t*)string);
@@ -1761,30 +1715,7 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0xAF :
 			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_ENJOYMENT), pkmn[byte]);
 			break;
-		case 0xB0 :
-		case 0xB1 :
-		case 0xB2 :
-		case 0xB3 :
-		case 0xB4 :
-		case 0xB5 :
-		case 0xB6 :
-		case 0xB7 :
-		case 0xB8 :
-		case 0xB9 :
-		case 0xBA :
-		case 0xBB :
-		case 0xBC :
-		case 0xBD :
-		case 0xBE :
-		case 0xBF :
-		case 0xC0 :
-		case 0xC1 :
-		case 0xC2 :
-		case 0xC3 :
-		case 0xC4 :
-		case 0xC5 :
-		case 0xC6 :
-		case 0xC7 :
+		case 0xB0 ... 0xC7 :
 			pkx_get_ot(pkmn, string);
 			pp2d_draw_wtext(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_NAME));
 			pp2d_draw_wtext(x + pp2d_get_wtext_width(i18n(S_GRAPHIC_HEXEDITOR_ORIGINAL_TRAINER_NAME), FONT_SIZE_12, FONT_SIZE_12), y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, (wchar_t*)string);

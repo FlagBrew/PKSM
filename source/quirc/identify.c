@@ -541,7 +541,7 @@ static void finder_scan(struct quirc *q, int y)
 {
 	quirc_pixel_t *row = q->pixels + y * q->w;
 	int x;
-	int last_color;
+	int last_color = 0;
 	int run_length = 0;
 	int run_count = 0;
 	int pb[5];

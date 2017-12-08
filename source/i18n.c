@@ -30,9 +30,7 @@ const int MAXLENGTH_NAMES_POKEMON = 32;
 
 static char* LANG_PREFIX[] = { "jp", "en", "fr", "de", "it", "es", "zh", "ko", "nl", "pt", "ru", "tw" };
 
-/**
- * Generic path for Localization files
- */
+// Generic path for Localization files
 struct i18n_files i18n_files_generic_paths = {
 	"romfs:/i18n/%s/abilities.txt",
 	"romfs:/i18n/%s/species.txt",
@@ -46,9 +44,7 @@ struct i18n_files i18n_files_generic_paths = {
 	"romfs:/i18n/%s/app.txt"
 };
 
-/**
- * Generic path for Localization files
- */
+// Generic path for Localization files
 struct i18n_files i18n_files_extern_paths = {
 	"sdmc:/3ds/PKSM/i18n/abilities.txt",
 	"sdmc:/3ds/PKSM/i18n/species.txt",
@@ -62,35 +58,12 @@ struct i18n_files i18n_files_extern_paths = {
 	"sdmc:/3ds/PKSM/i18n/app.txt"
 };
 
-
-/**
- * Current localization files loaded
- */
+// Current localization files loaded
 struct i18n_files i18n_files_loaded;
 ArrayUTF32 i18n_AppTexts;
 u32 *text;
 
-/**
- * Log debug with format
- */
-void debuglogf(const char* format, ...) {
-#if DEBUG
-	va_list args;
-    va_start(args, format);
-	#ifdef VERSION
-		char str[255];
-		vsprintf(str, format, args);
-		consoleMsg(str);
-	#else
-		vprintf(format, args);
-	#endif
-	va_end(args);
-#endif
-}
-
-/**
- * Get the length of a string in UTF8
- */
+// Get the length of a string in UTF8
 int utf8_strlen(char* s) {
    int i = 0, j = 0;
    while (s[i]) {
@@ -100,9 +73,7 @@ int utf8_strlen(char* s) {
    return j;
 }
 
-/**
- * File information : lines and chars
- */
+// File information : lines and chars
 struct i18n_FileInfo {
     int numberOfLines;
     int maxCharPerLine;
@@ -189,12 +160,9 @@ ArrayUTF32 i18n_FileToArrayUTF32(char* filepath) {
 
 		}
 
-		if (fclose(fp)) {
-			// debuglogf("Error closing file !\n");
-		}
+		fclose(fp);
 	}
 
-	// debuglogf("Creating array...\n");
 	ArrayUTF32 arr;
 	arr.length = fileinfo.numberOfLines;
 	arr.items = arrwc;
@@ -229,7 +197,7 @@ void UTF32_ReplaceOE(const wchar_t *str, wchar_t *replacement) {
 
 	while (replaced) {
 		replaced = false;
-		for (int i = 0; i < wcslen(replacement); i++) {
+		for (size_t i = 0; i < wcslen(replacement); i++) {
 			if (replacement[i] == L'Œ') {
 				wcsncpy(tempstr, replacement, i);
 				tempstr[i] = L'O';
@@ -265,7 +233,7 @@ void UTF32_ReplaceAccentedChar(const wchar_t *str, wchar_t *replacement) {
 	replacement[wcslen(str)] = '\0';
 
 	for (int i = 0; i < totalChars; i++) {
-		for (int j = 0; j < wcslen(str); j++) {
+		for (size_t j = 0; j < wcslen(str); j++) {
 			if (str[j] == from[i]) {
 				replacement[j] = to[i];
 			}
@@ -418,7 +386,6 @@ void i18n_set_language_filepath(u8 language, const char* generic_path, char* pat
 			struct i18n_FileInfo finfoDefaultLang = i18n_getInfoFile(defaultlang_path);
 
 			if (finfoLang.numberOfLines != finfoDefaultLang.numberOfLines) {
-				// debuglogf("File [%s] haven't the correct number of lines : %i != %i!", lang_path, finfoDefaultLang.numberOfLines, finfoLang.numberOfLines);
 				putDefaultLang = true;
 			}
 

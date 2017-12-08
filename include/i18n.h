@@ -42,12 +42,9 @@
 // CFG_LANGUAGE_TW = 11
 // #define DEBUG_I18N_LANG 5
 
-
 #define MAX_LANGUAGE 12
 
-/**
- * Localization files
- */
+// Localization files
 struct i18n_files {
 	char *abilities;
 	char *species;
@@ -61,9 +58,7 @@ struct i18n_files {
 	char *app;
 };
 
-/**
- * Array of strings in UTF32
- */
+// Array of strings in UTF32
 typedef struct ArrayUTF32 {
 	int length;
 	wchar_t** items;
@@ -72,10 +67,7 @@ typedef struct ArrayUTF32 {
 	bool sorted;
 } ArrayUTF32;
 
-
-/**
- * Labels of localization strings used in the application
- */
+// Labels of localization strings used in the application
 typedef enum {
     S_DOWNLOADING_ASSETS = 0,
 	S_GUI_ELEMENTS_LOADING_FILES,
@@ -730,7 +722,6 @@ typedef enum {
 	S_SCRIPT_EXECUTION_FAILED,
 } AppTextCode;
 
-
 struct ArrayUTF32 i18n_FileToArrayUTF32(char* filepath);
 void i18n_free_ArrayUTF32(ArrayUTF32 *arr);
 
@@ -739,7 +730,6 @@ struct i18n_files i18n_getFilesPath();
 void ArrayUTF32_sort_starting_index(ArrayUTF32 *arr, int index);
 void ArrayUTF32_sort_starting_index_with_sort_func(struct ArrayUTF32 *arr, int index, int (*f)(const wchar_t *a,const wchar_t *b));
 void ArrayUTF32_sort(ArrayUTF32 *arr);
-void debuglogf(const char* format, ...);
 
 wchar_t* i18n(AppTextCode code);
 void i18n_init();

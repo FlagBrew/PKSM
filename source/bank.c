@@ -167,7 +167,7 @@ void bank(u8* mainbuf) {
 	
 	FILE *fptr = fopen("/3ds/PKSM/bank/bank.bin", "rt");
 	fseek(fptr, 0, SEEK_END);
-	u32 size = ftell(fptr);
+	int size = ftell(fptr);
 	
 	if (size % (30 * ofs.pkxLength)) {
 		fclose(fptr);
