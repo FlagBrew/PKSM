@@ -22,7 +22,7 @@
 #include "common.h"
 
 #define CONFIG_SIZE 240
-#define CONFIG_USED 34
+#define CONFIG_USED 37
 
 void config_load(void);
 void config_set(void);
@@ -38,6 +38,9 @@ struct {
 	u8 defaultOTName[24];
 	u8 defaultNationality;
 	u8 editInTransfers;
+	u8 defaultDay;
+	u8 defaultMonth;
+	u8 defaultYear;
 } PKSM_Configuration;
 
 #endif

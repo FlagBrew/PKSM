@@ -39,9 +39,13 @@ void config_init(void)
 		memcpy(PKSM_Configuration.defaultOTName, PKSMOT, 24);
 		PKSM_Configuration.defaultNationality = 1;
 		PKSM_Configuration.editInTransfers = 1;
+		PKSM_Configuration.defaultDay = 0;
+		PKSM_Configuration.defaultMonth = 0;
+		PKSM_Configuration.defaultYear = 0;
 
 		config_set();
-	} else
+	}
+	else
 	{
 		config_load();
 	}
@@ -118,7 +122,10 @@ void config_fill_values(void)
 	PKSM_Configuration.defaultSID = *(u16*)(config_buf + 0x6);
 	memcpy(PKSM_Configuration.defaultOTName, config_buf + 0x8, 24);
 	PKSM_Configuration.defaultNationality = *(u8*)(config_buf + 0x20);
-	PKSM_Configuration.editInTransfers = *(u8*)(config_buf + 0x21);	
+	PKSM_Configuration.editInTransfers = *(u8*)(config_buf + 0x21);
+	PKSM_Configuration.defaultDay = *(u8*)(config_buf + 0x22);
+	PKSM_Configuration.defaultMonth = *(u8*)(config_buf + 0x23);
+	PKSM_Configuration.defaultYear = *(u8*)(config_buf + 0x24);
 }
 
 void configbuf_set_values(void)
@@ -131,6 +138,9 @@ void configbuf_set_values(void)
 	memcpy(config_buf + 0x8, PKSM_Configuration.defaultOTName, 24);
 	*(config_buf + 0x20) = PKSM_Configuration.defaultNationality;
 	*(config_buf + 0x21) = PKSM_Configuration.editInTransfers;
+	*(config_buf + 0x22) = PKSM_Configuration.defaultDay;
+	*(config_buf + 0x23) = PKSM_Configuration.defaultMonth;
+	*(config_buf + 0x24) = PKSM_Configuration.defaultYear;
 	
 	for (int i = CONFIG_USED; i < CONFIG_SIZE; i++)
 	{
@@ -172,6 +182,12 @@ void parseConfigHexEditor(int byte)
 		checkMaxValue(config_buf, byte, config_buf[byte], 7);
 	else if (byte == 0x21)
 		checkMaxValue(config_buf, byte, config_buf[byte], 0);
+	else if (byte == 0x22) // day
+		checkMaxValue(config_buf, byte, config_buf[byte], 30);
+	else if (byte == 0x23) // month
+		checkMaxValue(config_buf, byte, config_buf[byte], 11);
+	else if (byte == 0x24) // year
+		checkMaxValue(config_buf, byte, config_buf[byte], 98);
 	else
 		config_buf[byte]++;
 }
@@ -217,6 +233,9 @@ void configMenu(void)
 	descriptions[0x1F] = L"Default OT Name, byte 24";
 	descriptions[0x20] = L"Default Nationality";
 	descriptions[0x21] = L"Edit during transfers (0: NO/1:YES)";
+	descriptions[0x22] = L"Default day";
+	descriptions[0x23] = L"Default month";
+	descriptions[0x24] = L"Default year";
 	
 	int byteEntry = 0, speed = 0;
 	

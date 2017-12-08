@@ -188,3 +188,7 @@ bool wcx_is_egg(u8* wcx) {
 void wcxfull_to_wcx(u8* dst, u8* src) {
 	memcpy(dst, src + 0x208, 264);
 }
+
+void wcx_set_rawdate(u8* wcx, u32 value) { 
+	memcpy(wcx + 0x4C, &value, sizeof(u32)); 
+}

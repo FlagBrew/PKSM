@@ -61,6 +61,15 @@ void getMultiplePathWCXFull(char* path, const int lang, const int i, const int j
 	sprintf(path, "romfs:/wcxfull/%s/%d-%d.wcxfull", tags[lang], i, j);
 }
 
+void patchWondercardDate(u8* buf)
+{
+	if (game_is3DS())
+	{
+		u32 rawdate = PKSM_Configuration.defaultYear * 10000 + PKSM_Configuration.defaultMonth * 100 + PKSM_Configuration.defaultDay;
+		wcx_set_rawdate(buf, rawdate);
+	}
+}
+
 void reloadPreviewBuf(u8* previewBuf, const int i, const int n)
 {
 	char testpath[40];
@@ -96,7 +105,9 @@ void reloadPreviewBuf(u8* previewBuf, const int i, const int n)
 		}
 		fread(previewBuf, wcSize, 1, f);
 	}
-	fclose(f); 
+	fclose(f);
+	
+	patchWondercardDate(previewBuf);
 }
 
 void reloadMultiplePreviewBuf(u8* previewBuf, const int i, const int n, const int j)
@@ -131,6 +142,8 @@ void reloadMultiplePreviewBuf(u8* previewBuf, const int i, const int n, const in
 		fread(previewBuf, wcSize, 1, f); 
 	}
 	fclose(f);
+	
+	patchWondercardDate(previewBuf);
 }
 
 void findFreeLocationWC(u8 *mainbuf, int nInjected[])
