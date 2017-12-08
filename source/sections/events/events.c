@@ -146,17 +146,16 @@ void reloadMultiplePreviewBuf(u8* previewBuf, const int i, const int n, const in
 	patchWondercardDate(previewBuf);
 }
 
-void findFreeLocationWC(u8 *mainbuf, int nInjected[])
+int getFreeLocationWC(u8 *mainbuf)
 {
-	nInjected[0] = 0;
 	if (!game_is3DS())
 	{
-		return;
+		return 0;
 	}
 
-	const u8 len = ofs.maxWondercards;
+	u8 t;
 	int temp;
-	for (u8 t = 0; t < len; t++)
+	for (t = 0; t < ofs.maxWondercards; t++)
 	{
 		temp = 0;
 		for (u32 j = 0; j < ofs.wondercardSize; j++)
@@ -165,10 +164,16 @@ void findFreeLocationWC(u8 *mainbuf, int nInjected[])
 
 		if (temp == ofs.wondercardSize)
 		{
-			nInjected[0] = t;
 			break;
 		}
 	}
+	
+	return t == 0 ? ofs.maxWondercards - 1 : t;
+}
+
+void findFreeLocationWC(u8 *mainbuf, int nInjected[])
+{
+	nInjected[0] = getFreeLocationWC(mainbuf);
 }
 
 int getN(const int i) 
@@ -409,9 +414,32 @@ void eventDatabase(u8* mainbuf) {
 						do {
 							hidScanInput();
 							process_wcx(previewbuf);
-							printEventInjector(previewbuf, spriteArray[i], i, langVett, adapt, overwrite, langSelected, nInjected[0], true);
+							printEventInjector(previewbuf, spriteArray[i], i, langVett, adapt, overwrite, langSelected, nInjected[0], EVENTS_OTA);
 						} while (aptMainLoop() && !(hidKeysDown() & KEY_B));
 						socket_shutdown();						
+					}
+				}
+				
+				// slot selection
+				if (hidKeysDown() & KEY_TOUCH && touch.px > 251 && touch.px < 287 && touch.py > 168 && touch.py < 193)
+				{
+					if (game_is3DS())
+					{
+						int max = getFreeLocationWC(mainbuf);
+						int entry = 0;
+						int page = 0, maxpages = ofs.maxWondercards / 40 + 1;
+						while(aptMainLoop() && !(hidKeysDown() & KEY_B))
+						{
+							hidScanInput();
+							calcCurrentEntryMorePages(&entry, &page, maxpages, max, 8);
+							printEventInjector(mainbuf, entry, page, langVett, adapt, overwrite, langSelected, max, EVENTS_SLOT);
+							
+							if (hidKeysDown() & KEY_A)
+							{
+								nInjected[0] = entry + 40*page;
+								break;
+							}
+						}
 					}
 				}
 				
@@ -481,12 +509,6 @@ void eventDatabase(u8* mainbuf) {
 				// inject the wondercards
 				if (hidKeysDown() & KEY_START)
 				{	
-					// reached last slot, reset the slot to 0
-					if (nInjected[0] >= ofs.maxWondercards)
-					{
-						nInjected[0] = 0;
-					}
-					
 					// Eon Ticket is not available in XY
 					if (game_getisXY() && i == 2048)
 					{
@@ -506,14 +528,20 @@ void eventDatabase(u8* mainbuf) {
 							setSaveLanguage(mainbuf, langSelected);
 						}
 					}
+					
+					// reached last slot, reset the slot to 0
+					if (nInjected[0] >= ofs.maxWondercards)
+					{
+						nInjected[0] = 0;
+					}
 
 					setWC(mainbuf, previewbuf, i, nInjected);
-					
+					findFreeLocationWC(mainbuf, nInjected);
 					infoDisp(i18n(S_DATABASE_SUCCESS_INJECTION));
 					break;
 				}
 				
-				printEventInjector(previewbuf, spriteArray[i], i, langVett, adapt, overwrite, langSelected, nInjected[0], false);
+				printEventInjector(previewbuf, spriteArray[i], i, langVett, adapt, overwrite, langSelected, nInjected[0], EVENTS_DEFAULT);
 			}
 		}
 		

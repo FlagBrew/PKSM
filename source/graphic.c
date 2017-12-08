@@ -454,37 +454,87 @@ void printEventList(char *database[], int currentEntry, int page, int spriteArra
 	pp2d_end_draw();
 }
 
-void printEventInjector(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bool overwrite, int langSelected, int nInjected, bool ota) {
+void printEventInjector(u8* previewbuf, int sprite, int i, bool langVett[], bool adapt, bool overwrite, int langSelected, int nInjected, int mode) {
 	static const char *languages[] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR", "CHS", "CHT"};
 	char cont[3];
-	snprintf(cont, 3, "%d", nInjected + 1);
+	snprintf(cont, 3, "%d", nInjected == ofs.maxWondercards ? 1 : nInjected + 1);
 	
 	const int total = game_isgen7() ? 9 : 7;
 	
 	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
-		printAnimatedBG(true);
-		
-		if (game_is3DS())
+		if (mode != EVENTS_SLOT)
 		{
-			pksm_draw_texture(TEXTURE_OTA_BUTTON, 360, 2);
-		}
-		
-		if (sprite != -1 && (game_is3DS() || game_isgen5()))
-		{
-			wcxInfoViewer(previewbuf);
-			pp2d_draw_texture_part_scale(TEXTURE_NORMAL_SPRITESHEET, 282, 41 - movementOffsetLong(6), 34 * (wc_get_species(previewbuf) % 30), 30 * (wc_get_species(previewbuf) / 30), 34, 30, 2, 2);
+			printAnimatedBG(true);
+			if (game_is3DS())
+			{
+				pksm_draw_texture(TEXTURE_OTA_BUTTON, 360, 2);
+			}
+			
+			if (sprite != -1 && (game_is3DS() || game_isgen5()))
+			{
+				wcxInfoViewer(previewbuf);
+				pp2d_draw_texture_part_scale(TEXTURE_NORMAL_SPRITESHEET, 282, 41 - movementOffsetLong(6), 34 * (wc_get_species(previewbuf) % 30), 30 * (wc_get_species(previewbuf) / 30), 34, 30, 2, 2);
+			}
+			else
+			{
+				pp2d_draw_wtext_center(GFX_TOP, 95, FONT_SIZE_15, FONT_SIZE_15, BLACK, L"Detailed infos not available");
+				pp2d_draw_wtext_center(GFX_TOP, 115, FONT_SIZE_15, FONT_SIZE_15, BLACK, L"for this generation. Sorry!");
+			}
+			
+			if (mode == EVENTS_OTA)
+			{
+				pp2d_draw_rectangle(0, 0, 400, 240, RGBA8(0, 0, 0, 220));
+				pp2d_draw_wtext_center(GFX_TOP, 95, FONT_SIZE_15, FONT_SIZE_15, RGBA8(255, 255, 255, giveTransparence()), i18n(S_GRAPHIC_PKVIEWER_OTA_LAUNCH_CLIENT));
+				pp2d_draw_wtext_center(GFX_TOP, 130, FONT_SIZE_12, FONT_SIZE_12, WHITE, i18n(S_GRAPHIC_PKVIEWER_OTA_INDICATIONS));
+			}
 		}
 		else
 		{
-			pp2d_draw_wtext_center(GFX_TOP, 95, FONT_SIZE_15, FONT_SIZE_15, BLACK, L"Detailed infos not available");
-			pp2d_draw_wtext_center(GFX_TOP, 115, FONT_SIZE_15, FONT_SIZE_15, BLACK, L"for this generation. Sorry!");
-		}
-		
-		if (ota)
-		{
-			pp2d_draw_rectangle(0, 0, 400, 240, RGBA8(0, 0, 0, 220));
-			pp2d_draw_wtext_center(GFX_TOP, 95, FONT_SIZE_15, FONT_SIZE_15, RGBA8(255, 255, 255, giveTransparence()), i18n(S_GRAPHIC_PKVIEWER_OTA_LAUNCH_CLIENT));
-			pp2d_draw_wtext_center(GFX_TOP, 130, FONT_SIZE_12, FONT_SIZE_12, WHITE, i18n(S_GRAPHIC_PKVIEWER_OTA_INDICATIONS));
+			pp2d_draw_texture(TEXTURE_GENERATION_BG, 0, 0);
+			// reuse variables
+			int entry = sprite;
+			int page = i;
+			int max = nInjected;
+			char temp[4];
+			
+			// load sprites for existing wondercards
+			int sprites[ofs.maxWondercards];
+			memset(sprites, -1, ofs.maxWondercards*sizeof(u16));
+			for (u8 i = 0; i < ofs.maxWondercards; i++)
+			{
+				u8 wcbuf[ofs.wondercardSize];
+				memcpy(wcbuf, previewbuf + ofs.wondercardLocation + i*ofs.wondercardSize, ofs.wondercardSize);
+				if (wcx_is_pokemon(wcbuf) && wcx_get_species(wcbuf) > 0)
+				{
+					sprites[i] = wcx_get_species(wcbuf);
+				}
+				else if (wcx_is_item(wcbuf) || wcx_is_bp(wcbuf) || wcx_is_bean(wcbuf))
+				{
+					sprites[i] = 0;
+				}
+			}
+			
+			for (int i = 0; i < 5; i++)
+			{
+				for (int j = 0; j < 8; j++)
+				{
+					int index = i*8+j + 40*page;
+					if (entry == i * 8 + j)
+					{
+						printSelector(j*49 + j, i*47 + i, 49, 47);
+					}
+					
+					if (index < ofs.maxWondercards)
+					{
+						if (index < max && sprites[index] != -1)
+						{
+							pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 34 * (sprites[index] % 30), 30 * (sprites[index] / 30), 34, 30);
+						}
+						sprintf(temp, "%d", 40 * page + i*8+j + 1);
+						pp2d_draw_text(49 * j + (49 - pp2d_get_text_width(temp, FONT_SIZE_9, FONT_SIZE_9)) / 2 + j, 34 + i * 47 + i, FONT_SIZE_9, FONT_SIZE_9, index <= max ? WHITE : DS, temp);
+					}
+				}
+			}
 		}
 
 		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
@@ -547,11 +597,15 @@ void printEventInjector(u8* previewbuf, int sprite, int i, bool langVett[], bool
 			pp2d_draw_text(251 + (36 - pp2d_get_text_width(cont, FONT_SIZE_12, FONT_SIZE_12)) / 2, 171, FONT_SIZE_12, FONT_SIZE_12, YELLOW, cont);			
 		}
 		
-		if (ota)
+		if (mode == EVENTS_OTA)
 		{
 			pp2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
 			pp2d_draw_wtextf(10, 225, FONT_SIZE_9, FONT_SIZE_9, WHITE, i18n(S_HTTP_SERVER_RUNNING), socket_get_ip());
-		} 
+		}
+		else if (mode == EVENTS_SLOT)
+		{
+			pp2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
+		}
 		else
 		{
 			printBottomIndications(i18n(S_GRAPHIC_DB_INDICATIONS_INJECT));

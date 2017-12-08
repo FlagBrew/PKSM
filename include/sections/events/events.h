@@ -23,6 +23,10 @@
 
 #define SMCOUNT 300
 
+#define EVENTS_DEFAULT 0
+#define EVENTS_OTA 1
+#define EVENTS_SLOT 2
+
 void findFreeLocationWC(u8 *mainbuf, int nInjected[]);
 int getN(const int i);
 void eventDatabase(u8* mainbuf);
