@@ -499,7 +499,7 @@ void printEventInjector(u8* previewbuf, int sprite, int i, bool langVett[], bool
 			
 			// load sprites for existing wondercards
 			int sprites[ofs.maxWondercards];
-			memset(sprites, -1, ofs.maxWondercards*sizeof(u16));
+			memset(sprites, -1, ofs.maxWondercards*sizeof(int));
 			for (u8 i = 0; i < ofs.maxWondercards; i++)
 			{
 				u8 wcbuf[ofs.wondercardSize];
