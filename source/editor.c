@@ -419,9 +419,7 @@ void pokemonEditor(u8* mainbuf) {
 						pkx_set_tid(pkmn, getSaveTID(mainbuf));
 						pkx_set_sid(pkmn, getSaveSID(mainbuf));
 
-						int language =  getSaveLanguage(mainbuf);
-						memcpy(&pkmn[0xE3], &language, 1); // nats
-						
+						pkmn[0xE3] = getSaveLanguage(mainbuf); // nationality
 						pkmn[0x93] = 0; // current handler to 0
 						pkmn[0xA2] = 0; // held trainer friendship to 0
 						
@@ -430,15 +428,14 @@ void pokemonEditor(u8* mainbuf) {
 						pkmn[0xE2] = game_get_console_region(mainbuf);
 						pkmn[0xE3] = game_get_language(mainbuf);
 
-						u32 nick32[ofs.nicknameLength];
-						u8 nick[ofs.nicknameLength];
-						memset(nick32, 0, ofs.nicknameLength*sizeof(u32));
-						memset(nick, 0, ofs.nicknameLength);
-						getSaveOT(mainbuf, nick32);
-						utf32_to_utf8(nick, nick32, ofs.nicknameLength);
+						u32 ot32[ofs.nicknameLength];
+						u8 ot[ofs.nicknameLength];
+						memset(ot32, 0, ofs.nicknameLength*sizeof(u32));
+						memset(ot, 0, ofs.nicknameLength);
+						getSaveOT(mainbuf, ot32);
+						utf32_to_utf8(ot, ot32, ofs.nicknameLength);
 
-						pkx_set_nickname(pkmn, (char*)nick, 0xB0);
-						pkx_set_nickname_flag(pkmn);
+						pkx_set_nickname(pkmn, (char*)ot, 0xB0);
 						pkx_set_ot_gender(pkmn, (getSaveGender(mainbuf)));
 
 						pkx_set(mainbuf, (isTeam) ? 33 : box, currentEntry, pkmn);
