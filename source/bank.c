@@ -430,7 +430,6 @@ void bank(u8* mainbuf) {
 				while (aptMainLoop() && !(hidKeysDown() & KEY_B)) {
 					hidScanInput();
 					calcCurrentEntryMorePages(&dexEntry, &page, maxpages, 39, 8);
-					
 					printDexViewer(mainbuf, dexEntry, page, seen, caught);
 				}
 			}

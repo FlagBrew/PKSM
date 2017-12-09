@@ -162,13 +162,11 @@ bool sanitizeFormsToIterate(int species, int fsfe[], int formIn) {
 			fsfe[0] = 0;
 			fsfe[1] = 3;
 			return true;
-			
 		case 20 : // Raticate
 		case 105 : // Marowak
 			fsfe[0] = 0;
 			fsfe[1] = 1;
 			return true;
-			
 		case 735: // Gumshoos
 		case 758: // Salazzle
 		case 754: // Lurantis
@@ -179,7 +177,6 @@ bool sanitizeFormsToIterate(int species, int fsfe[], int formIn) {
 		case 743: // Ribombee
 		case 744: // Rockruff
 			break;
-			
 		case 421: // Cherrim
 		case 555: // Darmanitan
 		case 648: // Meloetta
@@ -188,7 +185,6 @@ bool sanitizeFormsToIterate(int species, int fsfe[], int formIn) {
 			fsfe[0] = 0;
 			fsfe[1] = 1;
 			return true;
-
 		case 774 : // Minior
 			if (formIn <= 6) break;
 			else {

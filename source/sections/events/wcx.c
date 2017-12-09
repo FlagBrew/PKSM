@@ -19,7 +19,7 @@
 #include "wcx.h"
 
 u16 wcx_get_id(u8* wcx) { 
-	return *(u16*)(wcx + 0x0); 
+	return *(u16*)(wcx); 
 }
 
 u32 *wcx_get_title(u8* wcx, u32* dst) {
@@ -191,4 +191,12 @@ void wcxfull_to_wcx(u8* dst, u8* src) {
 
 void wcx_set_rawdate(u8* wcx, u32 value) { 
 	memcpy(wcx + 0x4C, &value, sizeof(u32)); 
+}
+
+ssize_t wcx_title(u8* wcx, u8* dst) {
+	u16 src[36];
+	for (int i = 0; i < 36; i++)
+		src[i] = *(u16*)(wcx + 0x2 + i*2);
+	ssize_t len = utf16_to_utf8(dst, src, 72);
+	return len;
 }

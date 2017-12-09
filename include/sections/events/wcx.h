@@ -62,5 +62,6 @@ u8 wcx_get_type(u8* wcx);
 u32 wcx_get_year(u8* wcx);
 void wcxfull_to_wcx(u8* dst, u8* src);
 void wcx_set_rawdate(u8* wcx, u32 value);
+ssize_t wcx_title(u8* wcx, u8* dst);
 
 #endif

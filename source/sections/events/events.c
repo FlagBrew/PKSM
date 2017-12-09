@@ -434,6 +434,31 @@ void eventDatabase(u8* mainbuf) {
 							calcCurrentEntryMorePages(&entry, &page, maxpages, max, 8);
 							printEventInjector(mainbuf, entry, page, langVett, adapt, overwrite, langSelected, max, EVENTS_SLOT);
 							
+							if (hidKeysDown() & KEY_X)
+							{
+								u8 empty[ofs.wondercardSize];
+								memset(empty, 0, ofs.wondercardSize);
+								u8 tmp[ofs.wondercardSize];
+								memcpy(tmp, mainbuf + ofs.wondercardLocation + entry*ofs.wondercardSize, ofs.wondercardSize);
+								if (memcmp(tmp, empty, ofs.wondercardSize))
+								{
+									u8 title[72] = {0};
+									char path[150] = {0};
+									ssize_t len = wcx_title(tmp, title);
+									if (len > 0 && wcx_get_id(tmp) != 145)
+									{
+										sprintf(path, "#%d - %.*s.%s", (int)wcx_get_id(tmp), len, title, game_isgen6() ? "wc6" : "wc7");
+									}
+									else
+									{
+										sprintf(path, "#%d.%s", (int)wcx_get_id(tmp), game_isgen6() ? "wc6" : "wc7");
+									}
+									chdir("sdmc:/3ds/PKSM/dump");
+									file_write(path, tmp, ofs.wondercardSize);
+									infoDisp(L"Wondercard extracted!");
+								}
+							}
+							
 							if (hidKeysDown() & KEY_A)
 							{
 								nInjected[0] = entry + 40*page;
