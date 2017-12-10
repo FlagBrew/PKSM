@@ -238,7 +238,7 @@ void scriptMenu(u8* mainbuf)
 			entry = entry + 4 >= count ? count - 1 : entry + 4;
 		}
 		
-		if ((hidKeysDown() & KEY_A) && entry < count)
+		if ((hidKeysDown() & KEY_A) && entry >= 0 && entry < count)
 		{
 			if (scriptExecute(mainbuf, scriptList[entry].path))
 			{
