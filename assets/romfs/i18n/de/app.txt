@@ -577,3 +577,5 @@ Ultramond
 Drücke A, um das Script auszuführen!
 Script wurde erfolgreich ausgeführt!
 Ausführung des Scriptes fehlgeschlagen.
+Press A to change slot.
+Press X to dump wondercard.

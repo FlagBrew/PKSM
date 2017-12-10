@@ -577,3 +577,5 @@ Ultra Lune
 Press A to execute a script.
 Script executed correctly!
 Script execution failed.
+Press A to change slot.
+Press X to dump wondercard.

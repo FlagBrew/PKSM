@@ -577,3 +577,5 @@ Ultraluna
 Premi A per eseguire uno script.
 Script eseguito correttamente!
 Esecuzione script fallita.
+Premi A per cambiare slot.
+Premi X per estrarre il dono.

@@ -605,6 +605,8 @@ void printEventInjector(u8* previewbuf, int sprite, int i, bool langVett[], bool
 		else if (mode == EVENTS_SLOT)
 		{
 			pp2d_draw_rectangle(0, 0, 320, 240, MASKBLACK);
+			pp2d_draw_wtext_center(GFX_BOTTOM, 95, FONT_SIZE_15, FONT_SIZE_15, WHITE, i18n(S_EVENTS_CHANGE_SLOT));
+			pp2d_draw_wtext_center(GFX_BOTTOM, 115, FONT_SIZE_15, FONT_SIZE_15, WHITE, i18n(S_EVENTS_DUMP_WC));
 		}
 		else
 		{

@@ -173,7 +173,7 @@ void config_set(void)
 void parseConfigHexEditor(int byte)
 {
 	if (byte == 0x00)
-		checkMaxValue(config_buf, byte, config_buf[byte], 11);
+		checkMaxValue(config_buf, byte, config_buf[byte], 10);
 	else if (byte == 0x01)
 		checkMaxValue(config_buf, byte, config_buf[byte], 0);
 	else if (byte == 0x02 || byte == 0x03)

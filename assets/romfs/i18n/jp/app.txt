@@ -577,3 +577,5 @@ PKSMが更新されました!
 Aボタンでスクリプトを実行します。
 スクリプトの実行に成功しました。
 スクリプトの実行に失敗しました。
+Press A to change slot.
+Press X to dump wondercard.

@@ -577,3 +577,5 @@ Do you want to launch the game?
 Press A to execute a script.
 Script executed correctly!
 Script execution failed.
+Press A to change slot.
+Press X to dump wondercard.
