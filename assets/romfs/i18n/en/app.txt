@@ -25,7 +25,7 @@ Credits
 Press A to select an option.
 Press START to quit.
 Editor
-Save Info
+Scripts
 Storage
 MASS INJECTOR
 Save changes?

@@ -25,7 +25,7 @@ Credits
 Druk op A om een optie te selecteren.
 Druk op START om te stoppen.
 Editor
-Save Info
+Scripts
 Storage
 MASSALE INJECTOR
 Aanpassingen opslaan?

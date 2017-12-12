@@ -25,7 +25,7 @@ Crediti
 Premi A per selezionare un'opzione.
 Premi START per uscire.
 Editor
-Save info
+Scripts
 Storage
 MASS INJECTOR
 Salvare?

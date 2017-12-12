@@ -25,7 +25,7 @@ Credits
 A: Auswählen
 START: Beenden
 Editor
-Spielstand
+Scripts
 Lager
 MASSENEINFÜGEN
 Änderungen speichern?

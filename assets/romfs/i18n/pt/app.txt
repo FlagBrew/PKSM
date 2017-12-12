@@ -25,7 +25,7 @@ Créditos
 Pressione A para escolher uma opção.
 Pressione START para sair.
 Editor
-Gravação
+Scripts
 Banco
 INJECTOR EM MASSA
 Gravar as alterações?

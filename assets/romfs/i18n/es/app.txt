@@ -25,7 +25,7 @@ Créditos
 Pulsa A para seleccionar esta opción.
 Pulsa START para salir.
 Editor
-Partida
+Scripts
 Banco
 Inyector
 ¿Guardar cambios?

@@ -25,7 +25,7 @@ Crédits
 Appuyez sur A pour choisir un menu.
 Appuyez sur START pour quitter.
 Editeur
-Info sauv.
+Scripts
 Banque
 GÉNÉRATION
 Enregistrer les modifications ?
