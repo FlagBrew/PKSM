@@ -19,6 +19,7 @@
 #include "scripts.h"
 
 static const char* magic = "PKSMSCRIPT";
+static const int rows = 8;
 
 static char* getBaseScriptPath(void)
 {
@@ -114,11 +115,7 @@ static Result getScriptList(Script_s **scriptList, int *count)
 		}
 		else
 		{
-			FILE *fptr = fopen(path, "rt");
-			fseek(fptr, 0, SEEK_END);
-			u32 size = ftell(fptr);
-			fclose(fptr);
-			script->size = size;
+			script->size = entry.fileSize;
 		}
 	}
 	
@@ -139,8 +136,8 @@ static void printScriptMenu(Script_s* scriptList, int count, int entry)
 		pp2d_draw_text(10, 3, FONT_SIZE_11, FONT_SIZE_11, YELLOW, getBaseScriptPath());
 		pp2d_draw_text(390 - pp2d_get_text_width(counter, FONT_SIZE_11, FONT_SIZE_11), 3, FONT_SIZE_11, FONT_SIZE_11, YELLOW, counter);
 		
-		int offset = entry < 7 ? 0 : entry - 7;
-		int total = offset + 8 < count ? offset + 8 : count;
+		int offset = entry < (rows-1) ? 0 : entry - (rows-1);
+		int total = offset + rows < count ? offset + rows : count;
 		for (int i = offset; i < total; i++)
 		{
 			char sizestr[20] = {0};
@@ -156,17 +153,31 @@ static void printScriptMenu(Script_s* scriptList, int count, int entry)
 			
 			if (i == entry)
 			{
-				printSelector(0, 20 + (i - offset)*25, 400, 25);
+				printSelector(0, 20 + (i - offset)*(200/rows), 400, (200/rows));
 			}
 			
-			pp2d_draw_text(10, 24 + (i - offset)*25, FONT_SIZE_12, FONT_SIZE_12, WHITE, scriptList[i].name);
-			pp2d_draw_text(390 - pp2d_get_text_width(sizestr, FONT_SIZE_11, FONT_SIZE_11), 24 + (i - offset) * 25, FONT_SIZE_11, FONT_SIZE_11, WHITE, sizestr);
+			pp2d_draw_text(10, (200/rows) - 1 + (i-offset)*(200/rows), FONT_SIZE_12, FONT_SIZE_12, WHITE, scriptList[i].name);
+			
+			// trim longer name
+			if (i == entry)
+			{
+				printSelector(340, 20 + (i - offset)*(200/rows), 60, (200/rows));
+				pp2d_draw_rectangle(340, 20 + (i - offset)*(200/rows) + 1, 2, (200/rows) - 2, BUTTONGREY);				
+			}
+			else
+			{
+				pp2d_draw_rectangle(340, 20 + (i - offset)*(200/rows), 60, (200/rows), PALEBLUE);
+			}
+			
+			pp2d_draw_text(390 - pp2d_get_text_width(sizestr, FONT_SIZE_11, FONT_SIZE_11), (200/rows) + (i-offset)*(200/rows), FONT_SIZE_11, FONT_SIZE_11, WHITE, sizestr);
 		}
 		
 		pp2d_draw_wtext_center(GFX_TOP, 225, FONT_SIZE_9, FONT_SIZE_9, WHITE, i18n(S_SCRIPT_EXECUTE_STRING));
 		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 		pp2d_draw_rectangle(0, 0, 320, 240, PALEBLUE);
-		pp2d_draw_rectangle(0, 0, 320, 20, MENUBLUE);	
+		pp2d_draw_rectangle(0, 0, 320, 20, MENUBLUE);
+		printSelector(20, 40, 280, 60);
+		pp2d_draw_text_wrap(30, 45, FONT_SIZE_12, FONT_SIZE_12, WHITE, 260, scriptList[entry].name);
 		pp2d_draw_rectangle(0, 220, 320, 20, MENUBLUE);	
 
 		printBottomIndications(i18n(S_GRAPHIC_CREDITS_INDICATIONS));
@@ -191,6 +202,23 @@ bool scriptExecute(u8* mainbuf, const char* path)
 			u32 offset = *(u32*)(buf + i);
 			u32 length = *(u32*)(buf + i + 4);
 			u32 repeat = *(u32*)(buf + i + 8 + length);
+			
+			// fix offset if gen4
+			if (game_isgen4())
+			{
+				if ((game_getisHGSS() && offset >= 0xF700 && offset <= 0xF700 + 18*136*30 + 18*0x10)
+					|| (game_getisPT() && offset >= 0xCF30 && offset <= 0xCF30 + 18*136*30) 
+					|| (game_getisDP() && offset >= 0xC104 && offset <= 0xC104 + 18*136*30))
+				{
+					offset += save_get_SBO();
+				}
+				else
+				{
+					offset += save_get_GBO();
+				}
+			}
+
+			
 			for (u32 k = 0; k < repeat; k++)
 			{
 				memcpy(mainbuf + offset + k*length, buf + i + 8, length);
@@ -231,11 +259,11 @@ void scriptMenu(u8* mainbuf)
 		}
 		else if (hidKeysDown() & KEY_LEFT)
 		{
-			entry = entry - 4 < 0 ? 0 : entry - 4;
+			entry = entry - rows < 0 ? 0 : entry - rows;
 		}
 		else if (hidKeysDown() & KEY_RIGHT)
 		{
-			entry = entry + 4 >= count ? count - 1 : entry + 4;
+			entry = entry + rows >= count ? count - 1 : entry + rows;
 		}
 		
 		if ((hidKeysDown() & KEY_A) && entry >= 0 && entry < count)
