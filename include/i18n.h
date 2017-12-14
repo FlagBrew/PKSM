@@ -723,6 +723,8 @@ typedef enum {
 	
 	S_EVENTS_CHANGE_SLOT,
 	S_EVENTS_DUMP_WC,
+	
+	S_SCRIPT_NO_SCRIPTS,
 } AppTextCode;
 
 struct ArrayUTF32 i18n_FileToArrayUTF32(char* filepath);

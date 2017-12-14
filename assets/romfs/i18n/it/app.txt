@@ -579,3 +579,4 @@ Script eseguito correttamente!
 Esecuzione script fallita.
 Premi A per cambiare slot.
 Premi X per estrarre il dono.
+Nessuno script nella cartella corrente.

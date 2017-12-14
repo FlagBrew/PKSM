@@ -579,3 +579,4 @@ Script wurde erfolgreich ausgeführt!
 Ausführung des Scriptes fehlgeschlagen.
 Press A to change slot.
 Press X to dump wondercard.
+No scripts in the current directory.

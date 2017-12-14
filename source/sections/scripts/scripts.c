@@ -137,6 +137,11 @@ static void printScriptMenu(Script_s* scriptList, int count, int entry)
 		pp2d_draw_text(10, 3, FONT_SIZE_11, FONT_SIZE_11, YELLOW, getBaseScriptPath());
 		pp2d_draw_text(390 - pp2d_get_text_width(counter, FONT_SIZE_11, FONT_SIZE_11), 3, FONT_SIZE_11, FONT_SIZE_11, YELLOW, counter);
 		
+		if (count == 0)
+		{
+			pp2d_draw_wtext_center(GFX_TOP, 108, FONT_SIZE_14, FONT_SIZE_14, WHITE, i18n(S_SCRIPT_NO_SCRIPTS));
+		}
+		
 		int offset = entry < (rows-1) ? 0 : entry - (rows-1);
 		int total = offset + rows < count ? offset + rows : count;
 		for (int i = offset; i < total; i++)
@@ -177,10 +182,14 @@ static void printScriptMenu(Script_s* scriptList, int count, int entry)
 		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 		pp2d_draw_rectangle(0, 0, 320, 240, PALEBLUE);
 		pp2d_draw_rectangle(0, 0, 320, 20, MENUBLUE);
-		printSelector(20, 40, 280, 60);
-		pp2d_draw_text_wrap(30, 45, FONT_SIZE_12, FONT_SIZE_12, WHITE, 260, scriptList[entry].name);
+		
+		if (count > 0)
+		{
+			printSelector(20, 40, 280, 60);
+			pp2d_draw_text_wrap(30, 45, FONT_SIZE_12, FONT_SIZE_12, WHITE, 260, scriptList[entry].name);			
+		}
+		
 		pp2d_draw_rectangle(0, 220, 320, 20, MENUBLUE);	
-
 		printBottomIndications(i18n(S_GRAPHIC_CREDITS_INDICATIONS));
 	pp2d_end_draw();
 }
