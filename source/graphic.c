@@ -1532,7 +1532,7 @@ void printfConfigEditorInfo(int currentEntry)
 	switch (currentEntry) {
 		case 0x00:
 			pp2d_draw_text(50, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, "0x00: JP\n0x01: EN\n0x02: FR\n0x03: DE\n0x04: IT\n0x05: ES");
-			pp2d_draw_text(200, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, "0x06: ZH\n0x07: KO\n0x08: NL\n0x09: PT\n0x0A: RU\n0x0B: TW");
+			pp2d_draw_text(200, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, "0x06: ZH\n0x07: KO\n0x08: NL\n0x09: PT\n0x0A: TW");
 			break;
 		case 0x02:
 		case 0x03:

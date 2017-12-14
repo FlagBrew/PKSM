@@ -28,7 +28,7 @@ const int DEFAULT_LANG = 1;
 const int MAXLENGTH_PATH = 255;
 const int MAXLENGTH_NAMES_POKEMON = 32;
 
-static char* LANG_PREFIX[] = { "jp", "en", "fr", "de", "it", "es", "zh", "ko", "nl", "pt", "ru", "tw" };
+static char* LANG_PREFIX[] = { "jp", "en", "fr", "de", "it", "es", "zh", "ko", "nl", "pt", "tw" };
 
 // Generic path for Localization files
 struct i18n_files i18n_files_generic_paths = {

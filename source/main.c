@@ -50,7 +50,7 @@ char* url[] = {
 	"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/i18n/types_zh.png",
 };
 
-char* LANG_PREFIX[] = { "jp", "en", "fr", "de", "it", "es", "zh", "ko", "nl", "pt", "ru", "tw" };
+char* LANG_PREFIX[] = { "jp", "en", "fr", "de", "it", "es", "zh", "ko", "nl", "pt", "tw" };
 		
 void exitServices() {
 	GUIElementsExit();
@@ -92,7 +92,7 @@ bool initServices() {
 	mkdir("sdmc:/3ds/PKSM/scripts/dp", 777);
 	
 	char i18npath[80];
-	for (unsigned int i = 0; i < 11; i++) {
+	for (unsigned int i = 0; i < 10; i++) {
 		snprintf(i18npath, 80, "sdmc:/3ds/PKSM/additionalassets/i18n/%s", LANG_PREFIX[i]);
 		mkdir(i18npath, 0777);
 	}
