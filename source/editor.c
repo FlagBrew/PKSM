@@ -222,6 +222,12 @@ void generate(u8* mainbuf, bool isTeam, int box, int currentEntry, int page, int
 
 	// Randomizing the encryption constant
 	pkx_reroll_encryption_key(tempkmn);
+	
+	// set met date
+	tempkmn[0xD4] = PKSM_Configuration.defaultYear;
+	tempkmn[0xD5] = PKSM_Configuration.defaultMonth;
+	tempkmn[0xD6] = PKSM_Configuration.defaultDay;
+	
 	setDex(mainbuf, tempkmn);
 	pkx_set(mainbuf, (isTeam) ? 33 : box, currentEntry, tempkmn);
 
