@@ -126,6 +126,7 @@ static Result getScriptList(Script_s **scriptList, int *count)
 
 static void printScriptMenu(Script_s* scriptList, int count, int entry)
 {
+	static const int h = 200 / rows;
 	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
 		pp2d_draw_rectangle(0, 0, 400, 240, PALEBLUE);
 		pp2d_draw_rectangle(0, 0, 400, 20, MENUBLUE);
@@ -153,23 +154,23 @@ static void printScriptMenu(Script_s* scriptList, int count, int entry)
 			
 			if (i == entry)
 			{
-				printSelector(0, 20 + (i - offset)*(200/rows), 400, (200/rows));
+				printSelector(0, 20 + (i - offset)*h, 400, h);
 			}
 			
-			pp2d_draw_text(10, (200/rows) - 1 + (i-offset)*(200/rows), FONT_SIZE_12, FONT_SIZE_12, WHITE, scriptList[i].name);
+			pp2d_draw_text(10, h - 1 + (i-offset)*h, FONT_SIZE_12, FONT_SIZE_12, WHITE, scriptList[i].name);
 			
 			// trim longer name
 			if (i == entry)
 			{
-				printSelector(340, 20 + (i - offset)*(200/rows), 60, (200/rows));
-				pp2d_draw_rectangle(340, 20 + (i - offset)*(200/rows) + 1, 2, (200/rows) - 2, BUTTONGREY);				
+				printSelector(340, 20 + (i - offset)*h, 60, h);
+				pp2d_draw_rectangle(340, 20 + (i - offset)*h + 1, 2, h - 2, BUTTONGREY);				
 			}
 			else
 			{
-				pp2d_draw_rectangle(340, 20 + (i - offset)*(200/rows), 60, (200/rows), PALEBLUE);
+				pp2d_draw_rectangle(340, 20 + (i - offset)*h, 60, h, PALEBLUE);
 			}
 			
-			pp2d_draw_text(390 - pp2d_get_text_width(sizestr, FONT_SIZE_11, FONT_SIZE_11), (200/rows) + (i-offset)*(200/rows), FONT_SIZE_11, FONT_SIZE_11, WHITE, sizestr);
+			pp2d_draw_text(390 - pp2d_get_text_width(sizestr, FONT_SIZE_11, FONT_SIZE_11), h + (i-offset)*h, FONT_SIZE_11, FONT_SIZE_11, WHITE, sizestr);
 		}
 		
 		pp2d_draw_wtext_center(GFX_TOP, 225, FONT_SIZE_9, FONT_SIZE_9, WHITE, i18n(S_SCRIPT_EXECUTE_STRING));
