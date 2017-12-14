@@ -89,35 +89,40 @@ void camera_exit(void)
 
 void camera_scan_qr(u16 *buf, u8* payload, int mode)
 {
-    int w;
-    int h;
+	int w;
+	int h;
+	int scale = 1;
 
-    u8 *image = (u8*)quirc_begin(context, &w, &h);
+	u8 *image = (u8*)quirc_begin(context, &w, &h);
+	if (quirc_resize(context, w*scale, h*scale) != 0)
+	{
+		return;
+	}
 
-    for (ssize_t x = 0; x < w; x++)
-    {
-        for (ssize_t y = 0; y < h; y++)
-        {
-            u16 px = buf[y * 400 + x];
-            image[y * w + x] = (u8)(((((px >> 11) & 0x1F) << 3) + (((px >> 5) & 0x3F) << 2) + ((px & 0x1F) << 3)) / 3);
-        }
-    }
+	for (ssize_t i = 0; i < h*scale; i++)
+	{
+		for (ssize_t j = 0; j < w*scale; j++)
+		{
+			u16 px = buf[(i/scale) * 400 + j/scale];
+			image[i * w * scale + j] = (u8)(((((px >> 11) & 0x1F) << 3) + (((px >> 5) & 0x3F) << 2) + ((px & 0x1F) << 3)) / 3);
+		}
+	}
 
-    quirc_end(context);
+	quirc_end(context);
 
-    if (quirc_count(context) > 0)
-    {
-        struct quirc_code code;
-        struct quirc_data data;
-        quirc_extract(context, 0, &code);
-        if (!quirc_decode(&code, &data))
-        {
+	if (quirc_count(context) > 0)
+	{
+		struct quirc_code code;
+		struct quirc_data data;
+		quirc_extract(context, 0, &code);
+		if (!quirc_decode(&code, &data))
+		{
 			if (mode == MODE_WCX)
 			{
 				size_t outlen;
 				static const int headerSize = strlen("http://lunarcookies.github.io/wc.html#");
 				unsigned char* out = base64_decode((char*)data.payload + headerSize, data.payload_len - headerSize, &outlen);
-				
+
 				if (outlen == ofs.wondercardSize)
 				{
 					memcpy(payload, out, outlen);
@@ -129,12 +134,12 @@ void camera_scan_qr(u16 *buf, u8* payload, int mode)
 				{
 					return;
 				}
-				
+
 				u32 box = *(u32*)(data.payload + 8);
 				u32 slot = *(u32*)(data.payload + 12);
 				u32 copies = *(u32*)(data.payload + 16);
 				u32 startaddress = pkx_get_save_address(box, slot);
-				
+
 				// TODO: check checksums
 				for (u32 i = 0; i < copies; i++)
 				{
@@ -145,8 +150,8 @@ void camera_scan_qr(u16 *buf, u8* payload, int mode)
 				}
 			}
 			qr_mode = false;
-        }
-    }
+		}
+	}
 }
 
 static void draw_qr_rect(int x, int y, int w, u32 color)
