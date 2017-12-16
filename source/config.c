@@ -70,9 +70,9 @@ void config_fill_values(void)
 
 void configbuf_set_values(void)
 {
-	if (PKSM_Configuration.automaticSaveBackup < 2)
+	if (PKSM_Configuration.storageSize < 2)
 	{
-		PKSM_Configuration.automaticSaveBackup = 2;
+		PKSM_Configuration.storageSize = 2;
 	}
 	
 	*(config_buf + 0x0) = PKSM_Configuration.pksmLanguage;
