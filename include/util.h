@@ -34,5 +34,6 @@ void fsEnd();
 bool openSaveArch(FS_Archive *out, u64 id);
 int ArrayUTF32_sort_cmp_PKMN_Things_List(const wchar_t *a,const wchar_t *b);
 void fixBadSectors(void);
+void resizeStorage(void);
 
 #endif

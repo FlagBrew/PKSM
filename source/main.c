@@ -60,6 +60,8 @@ void exitServices() {
 		config_set();
 	}
 	
+	resizeStorage();
+	
 	GUIElementsExit();
 	pxiDevExit();
 	hidExit();

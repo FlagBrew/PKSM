@@ -188,3 +188,71 @@ void fixBadSectors(void)
 	
 	free(buffer);
 }
+
+void resizeStorage(void)
+{
+	static const char* storagePath = "/3ds/PKSM/bank/bank.bin";
+	static const char* backupPath = "/3ds/PKSM/bank/bank.bak";
+	if (checkFile("/3ds/PKSM/bank/bank.bin"))
+	{
+		FILE *bank = fopen(storagePath, "rt");
+		fseek(bank, 0, SEEK_END);
+		u32 size = ftell(bank);
+		fclose(bank);
+		
+		// add boxes to storage file
+		if (size < PKSM_Configuration.storageSize * 30 * ofs.pkxLength)
+		{
+			freezeMsg(i18n(S_BANK_RESIZING));
+			FILE *buf = fopen(storagePath, "rt");
+			fseek(buf, 0, SEEK_END);
+			u32 size_temp = ftell(buf);
+			u8 *bankbuf = (u8*)malloc(size_temp);
+			rewind(buf);
+			fread(bankbuf, size_temp, 1, buf);
+			fclose(buf);
+			
+			FILE *bak = fopen(backupPath, "wb");
+			fwrite(bankbuf, 1, size_temp, bak);
+			fclose(bak);
+			
+			u8* newbank = (u8*)malloc(PKSM_Configuration.storageSize * 30 * ofs.pkxLength);
+			memset(newbank, 0, PKSM_Configuration.storageSize * 30 * ofs.pkxLength);
+			memcpy(newbank, bankbuf, size_temp);
+			
+			FILE *newbankfile = fopen(storagePath, "wb");
+			fwrite(newbank, 1, PKSM_Configuration.storageSize * 30 * ofs.pkxLength, newbankfile);
+			fclose(newbankfile);
+			
+			free(bankbuf);
+			free(newbank);					
+		}
+		// trim boxes from storage file
+		else if (size > PKSM_Configuration.storageSize * 30 * ofs.pkxLength)
+		{
+			freezeMsg(i18n(S_BANK_RESIZING));
+			FILE *buf = fopen(storagePath, "rt");
+			fseek(buf, 0, SEEK_END);
+			u32 size_temp = ftell(buf);
+			u8 *bankbuf = (u8*)malloc(size_temp);
+			rewind(buf);
+			fread(bankbuf, size_temp, 1, buf);
+			fclose(buf);
+			
+			FILE *bak = fopen(backupPath, "wb");
+			fwrite(bankbuf, 1, size_temp, bak);
+			fclose(bak);
+			
+			u8* newbank = (u8*)malloc(PKSM_Configuration.storageSize * 30 * ofs.pkxLength);
+			memset(newbank, 0, PKSM_Configuration.storageSize * 30 * ofs.pkxLength);
+			memcpy(newbank, bankbuf, PKSM_Configuration.storageSize * 30 * ofs.pkxLength);
+			
+			FILE *newbankfile = fopen(storagePath, "wb");
+			fwrite(newbank, 1, PKSM_Configuration.storageSize * 30 * ofs.pkxLength, newbankfile);
+			fclose(newbankfile);
+			
+			free(bankbuf);
+			free(newbank);					
+		}
+	}
+}
