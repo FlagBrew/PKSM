@@ -56,6 +56,8 @@ void exitServices() {
 	if (PKSM_Configuration.fixBadSectors)
 	{
 		fixBadSectors();
+		PKSM_Configuration.fixBadSectors = 0;
+		config_set();
 	}
 	
 	GUIElementsExit();
