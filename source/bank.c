@@ -119,40 +119,46 @@ void clearMarkings(u8* pkmn) {
 	}
 }
 
-void dumpStorage2pk7(u8* bankbuf, u32 size) {
+void dumpPkx(u8* buf, int box, int slot)
+{
+	bool isbank = slot < 30;
+	slot = isbank ? slot : slot - 30;
+	
+	wchar_t step[20];
+	swprintf(step, 20, L"%d / %d", slot + 1, box + 1);
+	
 	char dmppath[100];
 	time_t unixTime = time(NULL);
 	struct tm* timeStruct = gmtime((const time_t *)&unixTime);		
-	snprintf(dmppath, 100, "sdmc:/3ds/PKSM/dump/storagedump_%02i%02i%02i%02i%02i%02i", 
+	snprintf(dmppath, 100, "sdmc:/3ds/PKSM/dump/%04i%02i%02i", 
 			timeStruct->tm_year + 1900, 
 			timeStruct->tm_mon + 1, 
-			timeStruct->tm_mday, 
-			timeStruct->tm_hour, 
-			timeStruct->tm_min, 
-			timeStruct->tm_sec);
+			timeStruct->tm_mday);
 	mkdir(dmppath, 777);
 	chdir(dmppath);
 	
-	wchar_t step[20];		
-	for (int i = 0, tot = size/ofs.pkxLength; i < tot; i++) {
-		swprintf(step, 20, i18n(S_GRAPHIC_PKBANK_MESSAGE_DUMP), i + 1, tot);
-		freezeMsg(step);
-		
-		u8 tmp[ofs.pkxLength];
-		memcpy(&tmp[0], &bankbuf[i*ofs.pkxLength], ofs.pkxLength);
-		if (pkx_get_species(tmp) > 0 && pkx_get_species(tmp) < 802) {
-			char path[100];
-			u8 nick[26*2];
-			
-			memset(nick, 0, 26*2);
-			memset(path, 0, 100);
-			
-			pkx_get_nickname_u8(tmp, nick);
-			sprintf(path, "%d - %s - %X.pk7", (int)pkx_get_species(tmp), nick, (int)pkx_get_pid(tmp));
-
-			file_write(path, tmp, ofs.pkxLength);
-		}
+	u8 tmp[ofs.pkxLength];
+	if (isbank)
+	{
+		memcpy(tmp, buf + box*30*ofs.pkxLength + slot*ofs.pkxLength, ofs.pkxLength);
 	}
+	else
+	{
+		pkx_get(buf, box, slot, tmp);
+	}
+	
+	if (pkx_get_species(tmp) > 0 && pkx_get_species(tmp) < ofs.totalSpecies)
+	{
+		char path[100] = {0};
+		u8 nick[26*2] = {0};
+		
+		pkx_get_nickname_u8(tmp, nick);
+		sprintf(path, "%d - %s - %X.pk7", (int)pkx_get_species(tmp), nick, (int)pkx_get_pid(tmp));
+
+		file_write(path, tmp, ofs.pkxLength);
+	}
+	
+	infoDisp(step);
 }
 
 bool checkUSUMexceptions(u16 species)
@@ -434,13 +440,11 @@ void bank(u8* mainbuf) {
 				}
 			}
 			
-			if (touch.px > 208 && touch.px < 317 && touch.py > 180 && touch.py < 210) {
-				if (confirmDisp(i18n(S_GRAPHIC_PKBANK_MESSAGE_CONFIRM_DUMP))) {
-					dumpStorage2pk7(bankbuf, size);
-				} else {
-					
-				}
-				
+			if (touch.px > 208 && touch.px < 317 && touch.py > 180 && touch.py < 210)
+			{
+				bool isbank = currentEntry < 30;
+				dumpPkx(isbank ? bankbuf : mainbuf, isbank ? bankBox : saveBox, currentEntry);
+
 				hidScanInput();
 			}
 				
