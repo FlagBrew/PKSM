@@ -572,11 +572,13 @@ Failed to download data!
 Installing latest release...
 Latest release installed!
 Do you want to launch the game?
-UltraSol
-UltraLuna
+Ultrasol
+Ultraluna
 Press A to execute a script.
 Script executed correctly!
 Script execution failed.
 Press A to change slot.
 Press X to dump wondercard.
 No scripts in the current directory.
+Extra Storage has a bad size!
+Checking extra storage...

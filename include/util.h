@@ -22,7 +22,7 @@
 #include "common.h"
 
 unsigned char *base64_decode(const char *data, size_t input_length, size_t *output_length);
-							 
+
 void checkMaxValueBetweenBounds(u8* buf, int byte, int start, int len, int max);
 void checkMaxValue(u8* pkmn, int byteEntry, int value, int max);
 void file_write(const char* path, void *buf, int size);
@@ -33,5 +33,6 @@ void fsStart();
 void fsEnd();
 bool openSaveArch(FS_Archive *out, u64 id);
 int ArrayUTF32_sort_cmp_PKMN_Things_List(const wchar_t *a,const wchar_t *b);
+void fixBadSectors(void);
 
 #endif

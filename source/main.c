@@ -53,6 +53,11 @@ char* url[] = {
 char* LANG_PREFIX[] = { "jp", "en", "fr", "de", "it", "es", "zh", "ko", "nl", "pt", "tw" };
 		
 void exitServices() {
+	if (PKSM_Configuration.fixBadSectors)
+	{
+		fixBadSectors();
+	}
+	
 	GUIElementsExit();
 	pxiDevExit();
 	hidExit();

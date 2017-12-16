@@ -63,7 +63,7 @@ ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
 CFLAGS	:=	-g -Wall -Wextra -O2 -mword-relocations \
 			-fomit-frame-pointer -ffunction-sections \
 			$(ARCH) \
-			-DQUIRC_MAX_REGIONS=4096 \
+			-DQUIRC_MAX_REGIONS=65534 \
 			-DROSALINA_3DSX=${ROSALINA} \
 			-DAPP_VERSION_MAJOR=${VERSION_MAJOR} \
 			-DAPP_VERSION_MINOR=${VERSION_MINOR} \

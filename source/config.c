@@ -42,6 +42,7 @@ void config_init(void)
 		PKSM_Configuration.defaultDay = 0;
 		PKSM_Configuration.defaultMonth = 0;
 		PKSM_Configuration.defaultYear = 0;
+		PKSM_Configuration.fixBadSectors = 0;
 
 		config_set();
 	}
@@ -126,6 +127,7 @@ void config_fill_values(void)
 	PKSM_Configuration.defaultDay = *(u8*)(config_buf + 0x22);
 	PKSM_Configuration.defaultMonth = *(u8*)(config_buf + 0x23);
 	PKSM_Configuration.defaultYear = *(u8*)(config_buf + 0x24);
+	PKSM_Configuration.fixBadSectors = *(u8*)(config_buf + 0x25);
 }
 
 void configbuf_set_values(void)
@@ -141,6 +143,7 @@ void configbuf_set_values(void)
 	*(config_buf + 0x22) = PKSM_Configuration.defaultDay;
 	*(config_buf + 0x23) = PKSM_Configuration.defaultMonth;
 	*(config_buf + 0x24) = PKSM_Configuration.defaultYear;
+	*(config_buf + 0x25) = PKSM_Configuration.fixBadSectors;
 	
 	for (int i = CONFIG_USED; i < CONFIG_SIZE; i++)
 	{
@@ -188,6 +191,8 @@ void parseConfigHexEditor(int byte)
 		checkMaxValue(config_buf, byte, config_buf[byte], 11);
 	else if (byte == 0x24) // year
 		checkMaxValue(config_buf, byte, config_buf[byte], 98);
+	else if (byte == 0x25)
+		checkMaxValue(config_buf, byte, config_buf[byte], 0);
 	else
 		config_buf[byte]++;
 }
@@ -236,6 +241,7 @@ void configMenu(void)
 	descriptions[0x22] = L"Default day";
 	descriptions[0x23] = L"Default month";
 	descriptions[0x24] = L"Default year";
+	descriptions[0x25] = L"Fix storage bad sectors on exit (0: NO/1:YES)";
 	
 	int byteEntry = 0, speed = 0;
 	

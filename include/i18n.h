@@ -725,6 +725,8 @@ typedef enum {
 	S_EVENTS_DUMP_WC,
 	
 	S_SCRIPT_NO_SCRIPTS,
+	S_BADSECTORS_BAD_SIZE,
+	S_BADSECTORS_CHECKING,
 } AppTextCode;
 
 struct ArrayUTF32 i18n_FileToArrayUTF32(char* filepath);

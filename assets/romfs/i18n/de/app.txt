@@ -580,3 +580,5 @@ Ausführung des Scriptes fehlgeschlagen.
 Press A to change slot.
 Press X to dump wondercard.
 No scripts in the current directory.
+Extra Storage has a bad size!
+Checking extra storage...

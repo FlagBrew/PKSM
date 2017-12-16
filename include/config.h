@@ -22,7 +22,7 @@
 #include "common.h"
 
 #define CONFIG_SIZE 240
-#define CONFIG_USED 37
+#define CONFIG_USED 38
 
 void config_load(void);
 void config_set(void);
@@ -41,6 +41,7 @@ struct {
 	u8 defaultDay;
 	u8 defaultMonth;
 	u8 defaultYear;
+	u8 fixBadSectors;
 } PKSM_Configuration;
 
 #endif

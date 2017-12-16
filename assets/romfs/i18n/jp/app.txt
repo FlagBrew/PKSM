@@ -580,3 +580,5 @@ Aボタンでスクリプトを実行します。
 Aボタンでスロットを変更します。
 Xボタンでふしぎなカードをダンプします。
 スクリプトが見つかりませんでした。
+Extra Storage has a bad size!
+Checking extra storage...

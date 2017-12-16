@@ -143,3 +143,48 @@ int ArrayUTF32_sort_cmp_PKMN_Things_List(const wchar_t *a,const wchar_t *b) {
 	// We inversed the result when there is 1 "???", so "???" will be always at the end of the list
 	return result;
 }
+
+void fixBadSectors(void)
+{
+	FILE *fptr = fopen("sdmc:/3ds/PKSM/bank/bank.bin", "rt");
+	fseek(fptr, 0, SEEK_END);
+	u32 size = ftell(fptr);
+	if (size != 0 && size % (30*ofs.pkxLength))
+	{
+		fclose(fptr);
+		infoDisp(i18n(S_BADSECTORS_BAD_SIZE));
+		return;
+	}
+	
+	u8* buffer = (u8*)malloc(size * sizeof(u8));
+	if (buffer == NULL)
+	{
+		fclose(fptr);
+		free(buffer);
+		infoDisp(i18n(S_HTTP_BUFFER_ALLOC_FAILED));
+		return;
+	}
+	rewind(fptr);
+	fread(buffer, size, 1, fptr);
+	fclose(fptr);
+	
+	freezeMsg(i18n(S_BADSECTORS_CHECKING));
+	u32 boxes = size/(30*ofs.pkxLength) - 1;
+	for (u32 i = 0, n = 30*boxes; i < n; i++)
+	{
+		u16 tempSpecies = *(u16*)(buffer + i*ofs.pkxLength + 0x8);
+		if (tempSpecies == 0 || tempSpecies > ofs.totalSpecies)
+		{
+			for (u32 j = 0; j < ofs.pkxLength; j++)
+			{
+				buffer[i*ofs.pkxLength + j] = 0;
+			}
+		}
+	}
+
+	FILE *new = fopen("sdmc:/3ds/PKSM/bank/bank.bin", "wb");
+	fwrite(buffer, 1, size, new);
+	fclose(new);
+	
+	free(buffer);
+}
