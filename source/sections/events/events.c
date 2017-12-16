@@ -447,13 +447,23 @@ void eventDatabase(u8* mainbuf) {
 									ssize_t len = wcx_title(tmp, title);
 									if (len > 0 && wcx_get_id(tmp) != 145)
 									{
-										sprintf(path, "#%d - %.*s.%s", (int)wcx_get_id(tmp), len, title, game_isgen6() ? "wc6" : "wc7");
+										sprintf(path, "%d - %.*s.%s", (int)wcx_get_id(tmp), len, title, game_isgen6() ? "wc6" : "wc7");
 									}
 									else
 									{
-										sprintf(path, "#%d.%s", (int)wcx_get_id(tmp), game_isgen6() ? "wc6" : "wc7");
+										sprintf(path, "%d.%s", (int)wcx_get_id(tmp), game_isgen6() ? "wc6" : "wc7");
 									}
-									chdir("sdmc:/3ds/PKSM/dump");
+									
+									char dmppath[100];
+									time_t unixTime = time(NULL);
+									struct tm* timeStruct = gmtime((const time_t *)&unixTime);
+									snprintf(dmppath, 100, "sdmc:/3ds/PKSM/dump/%04i%02i%02i", 
+											timeStruct->tm_year + 1900, 
+											timeStruct->tm_mon + 1, 
+											timeStruct->tm_mday);
+									mkdir(dmppath, 777);
+									chdir(dmppath);
+
 									file_write(path, tmp, ofs.wondercardSize);
 									infoDisp(L"Wondercard extracted!");
 								}
