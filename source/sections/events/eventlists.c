@@ -124,7 +124,10 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[count] = "1119 - Celebi"; spriteArray[count++] = 251;
 	database[count] = "1120 - Shiny Disguised Mimikyu"; spriteArray[count++] = 778;
 	database[count] = "1121 - Pokeball x100"; spriteArray[count++] = 0;
-	database[count] = "1125 - Piplup"; spriteArray[count++] = 393;
+	database[count] = "1123 - Marshadow"; spriteArray[count++] = 802;
+	database[count] = "1125 - M20 Piplup"; spriteArray[count++] = 393;
+	database[count] = "1126 - M20 Charizard"; spriteArray[count++] = 6;
+	database[count] = "1127 - M20 Lucario"; spriteArray[count++] = 448;
 	database[count] = "1601 - Z-stone Munchlax"; spriteArray[count++] = 446;
 	database[count] = "1602 - Quick Balls"; spriteArray[count++] = 0;
 	database[count] = "1603 - Poke Balls"; spriteArray[count++] = 0;
