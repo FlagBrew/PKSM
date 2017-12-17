@@ -63,6 +63,13 @@ static char* getBaseScriptPath(void)
 	return " ";
 }
 
+static int compareScripts(const void *a, const void *b)
+{
+	Script_s *script_a = (Script_s*)a;
+	Script_s *script_b = (Script_s*)b;
+	return memcmp(script_a->name, script_b->name, 256);
+}
+
 static Result getScriptList(Script_s **scriptList, int *count)
 {
 	Result res = 0;
@@ -121,6 +128,7 @@ static Result getScriptList(Script_s **scriptList, int *count)
 	
 	FSUSER_CloseArchive(archiveSDMC);
 	FSDIR_Close(handle);
+	qsort(*scriptList, *count, sizeof(Script_s), compareScripts);
 	return res;
 }
 
