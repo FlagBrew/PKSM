@@ -445,6 +445,7 @@ void eventDatabase(u8* mainbuf) {
 									u8 title[72] = {0};
 									char path[150] = {0};
 									ssize_t len = wcx_title(tmp, title);
+									// handle edge case
 									if (len > 0 && wcx_get_id(tmp) != 145)
 									{
 										sprintf(path, "%d - %.*s.%s", (int)wcx_get_id(tmp), len, title, game_isgen6() ? "wc6" : "wc7");
@@ -465,7 +466,7 @@ void eventDatabase(u8* mainbuf) {
 									chdir(dmppath);
 
 									file_write(path, tmp, ofs.wondercardSize);
-									infoDisp(L"Wondercard extracted!");
+									infoDisp(i18n(S_EXTRACTED));
 								}
 							}
 							

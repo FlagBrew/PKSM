@@ -728,6 +728,7 @@ typedef enum {
 	S_BADSECTORS_CHECKING,
 	
 	S_BANK_RESIZING,
+	S_EXTRACTED,
 } AppTextCode;
 
 struct ArrayUTF32 i18n_FileToArrayUTF32(char* filepath);

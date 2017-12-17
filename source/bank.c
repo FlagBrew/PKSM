@@ -124,9 +124,6 @@ void dumpPkx(u8* buf, int box, int slot)
 	bool isbank = slot < 30;
 	slot = isbank ? slot : slot - 30;
 	
-	wchar_t step[20];
-	swprintf(step, 20, L"%d / %d", slot + 1, box + 1);
-	
 	char dmppath[100];
 	time_t unixTime = time(NULL);
 	struct tm* timeStruct = gmtime((const time_t *)&unixTime);		
@@ -156,9 +153,8 @@ void dumpPkx(u8* buf, int box, int slot)
 		sprintf(path, "%d - %s - %X.pk7", (int)pkx_get_species(tmp), nick, (int)pkx_get_pid(tmp));
 
 		file_write(path, tmp, ofs.pkxLength);
+		infoDisp(i18n(S_EXTRACTED));
 	}
-	
-	infoDisp(step);
 }
 
 bool checkUSUMexceptions(u16 species)
@@ -444,7 +440,6 @@ void bank(u8* mainbuf) {
 			{
 				bool isbank = currentEntry < 30;
 				dumpPkx(isbank ? bankbuf : mainbuf, isbank ? bankBox : saveBox, currentEntry);
-
 				hidScanInput();
 			}
 				
