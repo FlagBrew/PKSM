@@ -555,32 +555,32 @@ Exportar
 ¿Deseas exportar todas tus cajas?
 Paso %d/%d
 PokéDex
-Caught: %d
-Seen: %d
-Socket connect failed!
-Socket send failed!
-Enter your pc IP address:
-Press X to enter serveLegality IP address...
-Press X to check legality with serveLegality...
-Calling GitHub APIs...
-Elaborating API response...
-Downloading latest release...
-Update failed!
-Failed to add certificate!
-Failed to add a request header!
-Failed to download data!
-Installing latest release...
-Latest release installed!
-Do you want to launch the game?
+Atrapados: %d
+Vistos: %d
+¡Conexión socket fallida!
+¡Envío socket fallida!
+Introduzca dirección IP de su PC:
+Pulsa X para introducir dirección IP de serveLegality...
+Pulsa X para verificar la legalidad con serveLegality...
+Llamando GitHub APIs...
+Elaborando respuesta API...
+Descargar la última versión...
+¡Actualización fallida!
+¡Falló al agregar el certificado!
+¡Falló al agregar encabezado de solicitud!
+¡Falló la descarga de datos!
+Instalando la última versión...
+¡Última versión instalada!
+¿Quieres iniciar el juego?
 Ultrasol
 Ultraluna
-Press A to execute a script.
-Script executed correctly!
-Script execution failed.
-Press A to change slot.
-Press X to dump wondercard.
-No scripts in the current directory.
-Extra Storage has a bad size!
-Checking extra storage...
-Resizing extra storage...
-Extracted!
+Pulsa A para ejecutar un script.
+¡Script ejecutado correctamente!
+La ejecución del script falló.
+Pulsa A para cambiar slot.
+Pulsa X para extraer el regalo.
+Sin scripts en el directorio actual.
+¡Almacenamiento adicional tiene un tamaño erróneo!
+Comprobando almacenamiento extra...
+Redimensionando almacenamiento extra...
+¡Extraído!
