@@ -79,8 +79,8 @@ You can get real-time support by joining PKSM's discord server.
 
 ## Building
 
-PKSM requires [latest libctru](https://github.com/smealum/ctrulib), [latest citro3d](https://github.com/fincs/citro3d) and [latest pp2d](https://github.com/BernardoGiordano/PKSM/tree/master/source/pp2d). The executable can be compiled with [devkitARM r47+](https://sourceforge.net/projects/devkitpro/).
- 
+PKSM requires [latest libctru](https://github.com/smealum/ctrulib), [latest citro3d](https://github.com/fincs/citro3d) and [latest pp2d](https://github.com/BernardoGiordano/PKSM/tree/master/source/pp2d). The executable can be compiled with [devkitARM r47+](https://sourceforge.net/projects/devkitpro/).To compile the .cia you need [3dstool](https://github.com/dnasdw/3dstool/releases), [bannertool and makerom](https://github.com/Steveice10/buildtools/tree/master/3ds) in your PATH. Run the command `make all` to build both the .3dsx and .cia.
+
 ## Credits
 
 * dsoldier for the gorgeous graphic work
