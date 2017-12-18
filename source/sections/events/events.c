@@ -148,7 +148,7 @@ void reloadMultiplePreviewBuf(u8* previewBuf, const int i, const int n, const in
 
 int getFreeLocationWC(u8 *mainbuf)
 {
-	if (!game_is3DS())
+	if (!(game_is3DS() || game_isgen5()))
 	{
 		return 0;
 	}
