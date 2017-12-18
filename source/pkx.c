@@ -1116,3 +1116,20 @@ void pkx_set_pokerus(u8* pkmn) {
 u8 pkx_get_version(u8* pkmn) {
 	return *(u8*)(pkmn + 0xDF);
 }
+
+bool pkx_is_valid(u8* pkmn)
+{
+	if (pkmn == NULL)
+	{
+		return false;
+	}
+	
+	u16 sanity = *(u16*)(pkmn + 4);
+	u16 checksum = pkx_return_checksum(pkmn);
+	u16 species = pkx_get_species(pkmn);
+	
+	return sanity == 0 
+		   && checksum == *(u16*)(pkmn + 6)
+		   && species > 0
+		   && species <= ofs.totalSpecies; 
+}

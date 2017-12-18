@@ -18,40 +18,52 @@
 
 #include "socket.h"
 
-int panic = 0;
+static const int maxPkxPerSocket = 30;
+
+static int panic = 0;
 static u32 *socket_buffer = NULL;
 static socket_server server;
-static char	payload[PAYLOADSIZE];
-
+static char* payload = NULL;
+static int payloadSize = 0;
 static char legalityAddress[16];
-bool isLegalityAddressSet = false;
-bool checkingLegality = false;
+static bool isLegalityAddressSet = false;
+static bool checkingLegality = false;
 
-char* socket_get_ip() {
+char* socket_get_ip()
+{
 	return inet_ntoa(server.server_addr.sin_addr);
 }
 
-void socket_shutdown() {
+void socket_shutdown()
+{
+	free(payload);
 	close(server.server_id);
 	socExit();
 }
 
-void socket_close() {
-	if (server.server_id > 0) 
+void socket_close()
+{
+	if (server.server_id > 0)
+	{
 		close(server.server_id);
+	}
 	if (server.client_id > 0)
-		close(server.client_id);	
+	{
+		close(server.client_id);
+	}
 }
 
-int socket_init() {
+int socket_init()
+{
 	socket_buffer = (u32*)memalign(SOC_ALIGN, SOC_BUFFERSIZE);
-	if (socket_buffer == NULL) {
+	if (socket_buffer == NULL)
+	{
 		infoDisp(i18n(S_HTTP_BUFFER_ALLOC_FAILED));
 		socket_close();
 		return 0;
 	}
-
-	if (socInit(socket_buffer, SOC_BUFFERSIZE)) {
+	if (socInit(socket_buffer, SOC_BUFFERSIZE))
+	{
 		infoDisp(i18n(S_HTTP_SOCINIT_FAILED));
 		socket_close();
 		return 0;
@@ -61,7 +73,8 @@ int socket_init() {
 	server.client_id = -1;
 	server.server_id = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
 
-	if (server.server_id < 0) {
+	if (server.server_id < 0)
+	{
 		infoDisp(i18n(S_HTTP_SOCKET_UNACCESSIBLE));
 		socket_close();
 		return 0;
@@ -72,7 +85,8 @@ int socket_init() {
 	server.server_addr.sin_addr.s_addr = gethostid();
 	server.client_length = sizeof(server.client_addr);
 
-	if (bind(server.server_id, (struct sockaddr *) &server.server_addr, sizeof(server.server_addr))) {
+	if (bind(server.server_id, (struct sockaddr *) &server.server_addr, sizeof(server.server_addr)))
+	{
 		close(server.server_id);
 		infoDisp(i18n(S_HTTP_BINDING_FAILED));
 		socket_close();
@@ -81,71 +95,115 @@ int socket_init() {
 
 	fcntl(server.server_id, F_SETFL, fcntl(server.server_id, F_GETFL, 0) | O_NONBLOCK);
 
-	if (listen(server.server_id, 5)) {
+	if (listen(server.server_id, 5))
+	{
 		infoDisp(i18n(S_HTTP_LISTENING_FAILED));
 		socket_close();
-		return 0;		
+		return 0;
 	}
+	
+	payloadSize = ofs.pkxLength * maxPkxPerSocket + 7;
+	payload = (char*)malloc(payloadSize);
+	if (payload == NULL)
+	{
+		free(payload);
+		infoDisp(i18n(S_HTTP_ALLOC_MEMORY_FAILED));
+		socket_close();
+		return 0;
+	}
+	
 	return 1;
 }
 
-void process_wcx(u8* buf) {
+void process_wcx(u8* buf)
+{
 	server.client_id = accept(server.server_id, (struct sockaddr *) &server.client_addr, &server.client_length);
-	if (server.client_id < 0 && errno != EAGAIN) {
+	if (server.client_id < 0 && errno != EAGAIN)
+	{
 		infoDisp(i18n(S_HTTP_ERROR_PROCESSING_PHASE));
 		socket_close();
 		return;		
-	} else {
-		char *dummy;
-		memset(payload, 0, PAYLOADSIZE);
+	}
+	else
+	{
+		memset(payload, 0, payloadSize);
 		fcntl(server.client_id, F_SETFL, fcntl(server.client_id, F_GETFL, 0) & ~O_NONBLOCK);
 
-        recv(server.client_id, payload, PAYLOADSIZE, 0);
-        if (strstr(payload, "PKSMOTA") != NULL && (hidKeysDown() != KEY_B)) {
-            dummy = strstr(payload, "PKSMOTA");
-            memcpy(buf, &dummy[7], 264);
+        recv(server.client_id, payload, payloadSize, 0);
+		char* pointer = strstr(payload, "PKSMOTA");
+        if (pointer != NULL && (hidKeysDown() != KEY_B))
+		{
+            memcpy(buf, pointer + 7, 264);
         }
     }
+	
     close(server.client_id);
     server.client_id = -1;
 }
 
-void process_pkx(u8* mainbuf, int tempVett[]) {
+void process_pkx(u8* mainbuf, int tempVett[])
+{
 	server.client_id = accept(server.server_id, (struct sockaddr *) &server.client_addr, &server.client_length);
-	if (server.client_id < 0 && errno != EAGAIN) {
+	if (server.client_id < 0 && errno != EAGAIN)
+	{
 		infoDisp(i18n(S_HTTP_ERROR_PROCESSING_PHASE));
 		socket_close();
 		return;		
-	} else {
+	}
+	else
+	{
 		panic = 0;
 		int boxmax = ofs.maxBoxes - 1;
-		char *dummy;
-		memset(payload, 0, PAYLOADSIZE);
+		memset(payload, 0, payloadSize);
 
 		fcntl(server.client_id, F_SETFL, fcntl(server.client_id, F_GETFL, 0) & ~O_NONBLOCK);
-        recv(server.client_id, payload, PAYLOADSIZE, 0);
-        if (strstr(payload, "PKSMOTA") != NULL && (hidKeysDown() != KEY_B)) {
-            u8 pkmn[ofs.pkmnLength];
-            dummy = strstr(payload, "PKSMOTA");
-            memcpy(pkmn, &dummy[7], ofs.pkmnLength);
-            pkx_set_as_it_is(mainbuf, tempVett[0], tempVett[1], pkmn);
+        recv(server.client_id, payload, payloadSize, 0);
+		
+		char* pointer = strstr(payload, "PKSMOTA");
+        if (pointer != NULL && (hidKeysDown() != KEY_B))
+		{
+			u8 blank[ofs.pkxLength];
+			memset(blank, 0, ofs.pkxLength);
+			int counter = 0;
+			while (counter >= 0 && counter < maxPkxPerSocket)
+			{
+				u8 pkmn[ofs.pkxLength];
+				memcpy(pkmn, pointer + 7 + counter*ofs.pkxLength, ofs.pkxLength);
+				if (memcmp(pkmn, blank, ofs.pkxLength) == 0)
+				{
+					counter = -1;
+				}
+				else
+				{
+					counter++;
+					if (pkx_is_valid(pkmn))
+					{
+						pkx_set_as_it_is(mainbuf, tempVett[0], tempVett[1], pkmn);
+						if (checkingLegality)
+						{
+							checkingLegality = false;
+						}
+						else
+						{
+							// set pointer to next empty slot
+							do {
+								tempVett[1]++;
+								if (tempVett[1] == 30)
+								{
+									tempVett[0]++;
+									tempVett[1] = 0;
+								}
+								if (tempVett[0] > boxmax)
+								{
+									tempVett[0] = 0;
+								}
 
-			if (checkingLegality) {
-				checkingLegality = false;
-			} 
-			else {
-				do {
-					tempVett[1]++;
-					if (tempVett[1] == 30) {
-						tempVett[0]++;
-						tempVett[1] = 0;
+								pkx_get(mainbuf, tempVett[0], tempVett[1], pkmn);
+								panic++;
+							} while (pkx_get_species(pkmn) && panic < boxmax * 30);
+						}
 					}
-					if (tempVett[0] > boxmax)
-						tempVett[0] = 0;
-
-					pkx_get(mainbuf, tempVett[0], tempVett[1], pkmn);
-					panic++;
-				} while (pkx_get_species(pkmn) && (panic < boxmax * 30));
+				}
 			}
         }
     }
@@ -153,7 +211,8 @@ void process_pkx(u8* mainbuf, int tempVett[]) {
     server.client_id = -1;
 }
 
-void processLegality(u8* pkmn) {
+void processLegality(u8* pkmn)
+{
 	u8 gameVersion = game_isgen7() ? 7 : 6;
 	char message[ofs.pkmnLength + 8];
 	const char* prefix = "PKSMOTA";
@@ -163,7 +222,8 @@ void processLegality(u8* pkmn) {
 
 	struct sockaddr_in legalityServer;
 	int sock = socket(AF_INET, SOCK_STREAM, 0);
-	if (sock < 0) {
+	if (sock < 0)
+	{
 		close(sock);
 		infoDisp(i18n(S_HTTP_SOCKET_UNACCESSIBLE));
 		return;
@@ -173,14 +233,16 @@ void processLegality(u8* pkmn) {
 	legalityServer.sin_family = AF_INET;
 	legalityServer.sin_port = htons(9000);
  
-	if (connect(sock, (struct sockaddr *)&legalityServer, sizeof(legalityServer)) < 0) {
+	if (connect(sock, (struct sockaddr *)&legalityServer, sizeof(legalityServer)) < 0)
+	{
 		close(sock);
 		infoDisp(i18n(S_SOCKET_CONNECT_FAILED));
 		return;		
 	}
 	
 	fcntl(sock, F_SETFL, fcntl(sock, F_GETFL, 0) | O_NONBLOCK);
-	if (send(sock, message, ofs.pkmnLength + 7 + 1, 0) < 0) {
+	if (send(sock, message, ofs.pkmnLength + 7 + 1, 0) < 0)
+	{
 		close(sock);
 		infoDisp(i18n(S_SOCKET_SEND_FAILED));
 		return;
@@ -190,61 +252,73 @@ void processLegality(u8* pkmn) {
 	close(sock);
 }
 
-void process_bank(u8* buf) {
+void process_bank(u8* buf)
+{
 	server.client_id = accept(server.server_id, (struct sockaddr *) &server.client_addr, &server.client_length);
-	if (server.client_id < 0 && errno != EAGAIN) {
+	if (server.client_id < 0 && errno != EAGAIN)
+	{
 		infoDisp(i18n(S_HTTP_ERROR_PROCESSING_PHASE));
 		socket_close();
 		return;		
-	} else {
+	}
+	else
+	{
 		panic = 0;
-		int boxmax = ofs.maxBoxes;
-		int box = 0, slot = 0;
-		char *dummy;
-		memset(payload, 0, PAYLOADSIZE);
-		
-		u8 tmp[ofs.pkxLength];
-		memcpy(tmp, &buf[box*30*ofs.pkxLength + slot*ofs.pkxLength], ofs.pkxLength);
-		while(pkx_get_species(tmp) && (panic < boxmax * 30)) {
-			slot++;
-			if (slot == 30) {
-				box++;
-				slot = 0;
-			}
-			if (box > boxmax)
-				box = 0;
-			panic++;
-			
-			memcpy(tmp, &buf[box*30*ofs.pkxLength + slot*ofs.pkxLength], ofs.pkxLength);
-		}
+		int slot = 0;
+		memset(payload, 0, payloadSize);
 
 		fcntl(server.client_id, F_SETFL, fcntl(server.client_id, F_GETFL, 0) & ~O_NONBLOCK);
-        recv(server.client_id, payload, PAYLOADSIZE, 0);
-        if (strstr(payload, "PKSMOTA") != NULL && (hidKeysDown() != KEY_B)) {
-            u8 pkmn[ofs.pkxLength];
-            dummy = strstr(payload, "PKSMOTA");
-            memcpy(pkmn, &dummy[7], ofs.pkxLength);
-			memcpy(&buf[box*30*ofs.pkxLength + slot*ofs.pkxLength], pkmn, ofs.pkxLength);
+        recv(server.client_id, payload, payloadSize, 0);
+		char* pointer = strstr(payload, "PKSMOTA");
+        if (pointer != NULL && (hidKeysDown() != KEY_B))
+		{
+			u8 blank[ofs.pkxLength];
+			memset(blank, 0, ofs.pkxLength);
+			
+			int counter = 0;
+			while (counter >= 0 && counter < maxPkxPerSocket)
+			{
+				u8 pkmn[ofs.pkxLength];
+				memcpy(pkmn, pointer + 7 + counter*ofs.pkxLength, ofs.pkxLength);
+				if (memcmp(pkmn, blank, ofs.pkxLength) == 0)
+				{
+					counter = -1;
+				}
+				else
+				{
+					counter++;
+					if (pkx_is_valid(pkmn))
+					{
+						memcpy(&buf[slot*ofs.pkxLength], pkmn, ofs.pkxLength);
+						slot++;							
+					}
+				}
+			}
         }
     }
     close(server.client_id);
     server.client_id = -1;
 }
 
-bool socket_check_valid_ip_address(char *ipAddress) {
+bool socket_check_valid_ip_address(char *ipAddress)
+{
     struct sockaddr_in sa;
-    int result = inet_pton(AF_INET, ipAddress, &(sa.sin_addr));
-    return result != 0;
+    return inet_pton(AF_INET, ipAddress, &(sa.sin_addr)) != 0;
 }
 
-bool socket_is_legality_address_set() {
+bool socket_is_legality_address_set()
+{
 	return isLegalityAddressSet;
 }
 
-void socket_set_legality_address(bool value) {
+void socket_set_legality_address(bool value)
+{
 	if (isLegalityAddressSet)
+	{
 		isLegalityAddressSet = value;
-	else {
+	}
+	else
+	{
 		SwkbdState swkbd;
 		memset(legalityAddress, 0, 16);
 
@@ -255,9 +329,12 @@ void socket_set_legality_address(bool value) {
 		swkbdInputText(&swkbd, legalityAddress, 16);
 		legalityAddress[15] = '\0';	
 
-		if (!socket_check_valid_ip_address(legalityAddress)) {
+		if (!socket_check_valid_ip_address(legalityAddress))
+		{
 			memset(legalityAddress, 0, 16);
-		} else {
+		}
+		else
+		{
 			isLegalityAddressSet = true;
 		}
 	}
