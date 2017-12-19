@@ -27,11 +27,14 @@
  * Plug & Play 2D
  * @file pp2d.c
  * @author Bernardo Giordano
- * @date 13 November 2017
+ * @date 19 December 2017
  * @brief pp2d implementation
  */
 
 #include "pp2d.h"
+
+#define LOADBMP_IMPLEMENTATION
+#include "loadbmp.h"
 
 static DVLB_s* vshader_dvlb;
 static shaderProgram_s program;
@@ -45,6 +48,11 @@ static int textVtxArrayPos;
 static C3D_RenderTarget* topLeft;
 static C3D_RenderTarget* topRight;
 static C3D_RenderTarget* bot;
+
+static struct {
+	GPU_TEXTURE_FILTER_PARAM magFilter;
+	GPU_TEXTURE_FILTER_PARAM minFilter;
+} textureFilters;
 
 static struct {
 	size_t id;
@@ -340,6 +348,8 @@ Result pp2d_init(void)
 	res = fontEnsureMapped();
 	if (R_FAILED(res))
 		return res;
+	
+	pp2d_set_texture_filter(GPU_NEAREST, GPU_NEAREST);
 
 #ifdef BUILDTOOLS
 	vshader_dvlb = DVLB_ParseFile((u32*)vshader_shbin, vshader_shbin_len);
@@ -497,13 +507,44 @@ float pp2d_get_wtext_width(const wchar_t* text, float scaleX, float scaleY)
 	return width;
 }
 
+void pp2d_load_texture_bmp(size_t id, const char* path)
+{
+	if (id >= MAX_TEXTURES)
+		return;
+	
+	u8* image = NULL;
+	unsigned int width = 0, height = 0;
+
+	loadbmp_decode_file(path, &image, &width, &height, LOADBMP_RGBA);
+	for (u32 i = 0; i < width; i++) 
+	{
+		for (u32 j = 0; j < height; j++) 
+		{
+			u32 p = (i + j*width) * 4;
+
+			u8 r = *(u8*)(image + p);
+			u8 g = *(u8*)(image + p + 1);
+			u8 b = *(u8*)(image + p + 2);
+			u8 a = *(u8*)(image + p + 3);
+
+			*(image + p) = a;
+			*(image + p + 1) = b;
+			*(image + p + 2) = g;
+			*(image + p + 3) = r;
+		}
+	}
+	
+	pp2d_load_texture_memory(id, image, width, height);
+	free(image);
+}
+
 void pp2d_load_texture_memory(size_t id, void* buf, u32 width, u32 height)
 {
 	u32 w_pow2 = pp2d_get_next_pow2(width);
 	u32 h_pow2 = pp2d_get_next_pow2(height);
 	
 	C3D_TexInit(&textures[id].tex, (u16)w_pow2, (u16)h_pow2, GPU_RGBA8);
-	C3D_TexSetFilter(&textures[id].tex, GPU_NEAREST, GPU_NEAREST);
+	C3D_TexSetFilter(&textures[id].tex, textureFilters.magFilter, textureFilters.minFilter);
 	
 	textures[id].allocated = true;
 	textures[id].width = width;
@@ -530,11 +571,9 @@ void pp2d_load_texture_png(size_t id, const char* path)
 		return;
 	
 	u8* image;
-	unsigned width;
-	unsigned height;
+	unsigned width, height;
 
 	lodepng_decode32_file(&image, &width, &height, path);
-
 	for (u32 i = 0; i < width; i++) 
 	{
 		for (u32 j = 0; j < height; j++) 
@@ -606,6 +645,12 @@ void pp2d_set_screen_color(gfxScreen_t target, u32 color)
 	{
 		C3D_RenderTargetSetClear(bot, C3D_CLEAR_ALL, color, 0);
 	}
+}
+
+void pp2d_set_texture_filter(GPU_TEXTURE_FILTER_PARAM magFilter, GPU_TEXTURE_FILTER_PARAM minFilter)
+{
+	textureFilters.magFilter = magFilter;
+	textureFilters.minFilter = minFilter;
 }
 
 static void pp2d_set_text_color(u32 color)

@@ -27,7 +27,7 @@
  * Plug & Play 2D
  * @file pp2d.h
  * @author Bernardo Giordano
- * @date 13 November 2017
+ * @date 19 December 2017
  * @brief pp2d header
  */
 
@@ -366,6 +366,13 @@ float pp2d_get_wtext_width(const wchar_t* text, float scaleX, float scaleY);
 void pp2d_free_texture(size_t id);
 
 /**
+ * @brief Loads a texture from a bmp file
+ * @param id of the texture
+ * @param path where the bmp file is located
+ */
+void pp2d_load_texture_bmp(size_t id, const char* path);
+
+/**
  * @brief Loads a texture from a a buffer in memory
  * @param id of the texture 
  * @param buf buffer where the texture is stored
@@ -401,6 +408,13 @@ void pp2d_set_3D(int enable);
  * @param color ABGR8 which will be the background one
  */
 void pp2d_set_screen_color(gfxScreen_t target, u32 color);
+
+/**
+ * @brief Sets filters to load texture with
+ * @param magFilter GPU_NEAREST or GPU_LINEAR
+ * @param minFilter GPU_NEAREST or GPU_LINEAR
+ */
+void pp2d_set_texture_filter(GPU_TEXTURE_FILTER_PARAM magFilter, GPU_TEXTURE_FILTER_PARAM minFilter);
 
 /**
  * @brief Inits a texture to be drawn
