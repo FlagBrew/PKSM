@@ -191,34 +191,40 @@ void fixBadSectors(void)
 
 void resizeStorage(void)
 {
-	static const char* storagePath = "/3ds/PKSM/bank/bank.bin";
-	static const char* backupPath = "/3ds/PKSM/bank/bank.bak";
-	if (checkFile("/3ds/PKSM/bank/bank.bin"))
+	static const char* storagePath = "sdmc:/3ds/PKSM/bank/bank.bin";
+	char backupPath[100];
+	time_t unixTime = time(NULL);
+	struct tm* timeStruct = gmtime((const time_t *)&unixTime);
+	snprintf(backupPath, 100, "sdmc:/3ds/PKSM/bank/bank_%04i%02i%02i-%02i%02i%02i.bak", 
+			timeStruct->tm_year + 1900, 
+			timeStruct->tm_mon + 1, 
+			timeStruct->tm_mday,
+			timeStruct->tm_hour,
+			timeStruct->tm_min,
+			timeStruct->tm_sec);
+
+	if (checkFile(storagePath))
 	{
 		FILE *bank = fopen(storagePath, "rt");
 		fseek(bank, 0, SEEK_END);
 		u32 size = ftell(bank);
-		fclose(bank);
 		
 		// add boxes to storage file
 		if (size < PKSM_Configuration.storageSize * 30 * ofs.pkxLength)
 		{
 			freezeMsg(i18n(S_BANK_RESIZING));
-			FILE *buf = fopen(storagePath, "rt");
-			fseek(buf, 0, SEEK_END);
-			u32 size_temp = ftell(buf);
-			u8 *bankbuf = (u8*)malloc(size_temp);
-			rewind(buf);
-			fread(bankbuf, size_temp, 1, buf);
-			fclose(buf);
+			u8 *bankbuf = (u8*)malloc(size);
+			rewind(bank);
+			fread(bankbuf, size, 1, bank);
+			fclose(bank);
 			
 			FILE *bak = fopen(backupPath, "wb");
-			fwrite(bankbuf, 1, size_temp, bak);
+			fwrite(bankbuf, 1, size, bak);
 			fclose(bak);
 			
 			u8* newbank = (u8*)malloc(PKSM_Configuration.storageSize * 30 * ofs.pkxLength);
 			memset(newbank, 0, PKSM_Configuration.storageSize * 30 * ofs.pkxLength);
-			memcpy(newbank, bankbuf, size_temp);
+			memcpy(newbank, bankbuf, size);
 			
 			FILE *newbankfile = fopen(storagePath, "wb");
 			fwrite(newbank, 1, PKSM_Configuration.storageSize * 30 * ofs.pkxLength, newbankfile);
@@ -231,16 +237,13 @@ void resizeStorage(void)
 		else if (size > PKSM_Configuration.storageSize * 30 * ofs.pkxLength)
 		{
 			freezeMsg(i18n(S_BANK_RESIZING));
-			FILE *buf = fopen(storagePath, "rt");
-			fseek(buf, 0, SEEK_END);
-			u32 size_temp = ftell(buf);
-			u8 *bankbuf = (u8*)malloc(size_temp);
-			rewind(buf);
-			fread(bankbuf, size_temp, 1, buf);
-			fclose(buf);
+			u8 *bankbuf = (u8*)malloc(size);
+			rewind(bank);
+			fread(bankbuf, size, 1, bank);
+			fclose(bank);
 			
 			FILE *bak = fopen(backupPath, "wb");
-			fwrite(bankbuf, 1, size_temp, bak);
+			fwrite(bankbuf, 1, size, bak);
 			fclose(bak);
 			
 			u8* newbank = (u8*)malloc(PKSM_Configuration.storageSize * 30 * ofs.pkxLength);
@@ -253,6 +256,10 @@ void resizeStorage(void)
 			
 			free(bankbuf);
 			free(newbank);					
+		}
+		else
+		{
+			fclose(bank);
 		}
 	}
 }

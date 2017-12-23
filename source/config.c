@@ -27,13 +27,30 @@ static const u8 PKSMOT[24] = {
 static u8 config_buf[CONFIG_SIZE];
 static wchar_t* descriptions[CONFIG_SIZE];
 
+static void patchConfigStorageSize(void)
+{
+	static const char* storagePath = "sdmc:/3ds/PKSM/bank/bank.bin";
+	if (checkFile(storagePath))
+	{
+		FILE *bank = fopen(storagePath, "rt");
+		fseek(bank, 0, SEEK_END);
+		u32 size = ftell(bank);
+		fclose(bank);
+		PKSM_Configuration.storageSize = size / (30 * 232);
+	}
+	else
+	{
+		PKSM_Configuration.storageSize = 150;
+	}
+}
+
 void config_init(void)
 {
 	if (!checkFile(config_path))
 	{
 		CFGU_GetSystemLanguage(&PKSM_Configuration.pksmLanguage);
 		PKSM_Configuration.automaticSaveBackup = 1;
-		PKSM_Configuration.storageSize = 150;
+		patchConfigStorageSize();
 		PKSM_Configuration.defaultTID = 12345;
 		PKSM_Configuration.defaultSID = 54321;
 		memcpy(PKSM_Configuration.defaultOTName, PKSMOT, 24);
@@ -49,6 +66,8 @@ void config_init(void)
 	else
 	{
 		config_load();
+		patchConfigStorageSize();
+		config_set();
 	}
 }
 
