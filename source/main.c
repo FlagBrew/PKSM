@@ -60,7 +60,7 @@ void exitServices() {
 		config_set();
 	}
 	
-	resizeStorage();
+	//resizeStorage();
 	
 	GUIElementsExit();
 	pxiDevExit();
