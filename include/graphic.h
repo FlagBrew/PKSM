@@ -111,7 +111,6 @@ void printSettings(u8* config_buf, int currentEntry, int configSize, wchar_t* de
 void infoViewer(u8* pkmn);
 void wcxInfoViewer(u8* buf);
 void printfHexEditorInfo(u8* pkmn, int byte);
-void printDexViewer(u8* mainbuf, int currentEntry, int page, int seen, int caught);
 void printfConfigEditorInfo(int currentEntry);
 
 #endif

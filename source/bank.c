@@ -360,7 +360,7 @@ void bank(u8* mainbuf) {
 					saveBox = 0;
 			}
 			
-			if ((touch.px > 208 && touch.px < 317 && touch.py > 70 && touch.py < 97) && !(isBufferized)) {
+			if ((touch.px > 208 && touch.px < 317 && touch.py > 72 && touch.py < 99) && !(isBufferized)) {
 				if (confirmDisp(i18n(S_BANK_Q_ERASE_SELECTED_BOX))) {
 					u8 tmp[ofs.pkxLength];
 					memset(tmp, 0, ofs.pkxLength);
@@ -407,7 +407,7 @@ void bank(u8* mainbuf) {
 				}
 			}
 			
-			if ((touch.px > 208 && touch.px < 317 && touch.py > 97 && touch.py < 124) && !(isBufferized)) {
+			if ((touch.px > 208 && touch.px < 317 && touch.py > 100 && touch.py < 129) && !(isBufferized)) {
 				u8 tmp[ofs.pkxLength];
 				memset(tmp, 0, ofs.pkxLength);
 				if (currentEntry < 30) 
@@ -418,25 +418,7 @@ void bank(u8* mainbuf) {
 					setToWirelessBuf(wirelessbuf, saveBox, currentEntry - 30, tmp);
 			}
 			
-			if (touch.px > 208 && touch.px < 317 && touch.py > 153 && touch.py < 180) {
-				int dexEntry = 0;
-				int page = 0, maxpages = ofs.maxSpecies / 40 + 1;
-				int seen = 0;
-				int caught = 0;
-				
-				for (int i = 1; i <= ofs.maxSpecies; i++) {
-					seen = getSeen(mainbuf, i) ? seen + 1 : seen;
-					caught = getCaught(mainbuf, i) ? caught + 1 : caught;
-				}
-				
-				while (aptMainLoop() && !(hidKeysDown() & KEY_B)) {
-					hidScanInput();
-					calcCurrentEntryMorePages(&dexEntry, &page, maxpages, 39, 8);
-					printDexViewer(mainbuf, dexEntry, page, seen, caught);
-				}
-			}
-			
-			if (touch.px > 208 && touch.px < 317 && touch.py > 180 && touch.py < 210)
+			if (touch.px > 208 && touch.px < 317 && touch.py > 128 && touch.py < 156)
 			{
 				bool isbank = currentEntry < 30;
 				dumpPkx(isbank ? bankbuf : mainbuf, isbank ? bankBox : saveBox, currentEntry);

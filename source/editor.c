@@ -1013,7 +1013,6 @@ void pokemonEditor(u8* mainbuf) {
 							if (!isTeam && confirmDisp(i18n(S_EDITOR_Q_CONFIRM_RELEASE))) {
 								memset(pkmn, 0, ofs.pkmnLength);
 								pkx_set_as_it_is(mainbuf, box, currentEntry, pkmn);
-								infoDisp(i18n(S_EDITOR_RELEASED));
 								operationDone = true;
 							}
 							break;

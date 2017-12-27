@@ -838,40 +838,6 @@ void wcxInfoViewer(u8* buf) {
 	}
 }
 
-void printDexViewer(u8* mainbuf, int currentEntry, int page, int seen, int caught) {
-	char temp[12];
-	
-	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
-		pp2d_draw_texture(TEXTURE_GENERATION_BG, 0, 0);
-		for (int i = 0; i < 5; i++) {
-			for (int j = 0; j < 8; j++) {
-				if (currentEntry == i * 8 + j)
-					printSelector(j*49 + j, i*47 + i, 49, 47);
-				
-				int entry = i*8+j + 40*page;
-				if ((entry) < ofs.maxSpecies) {
-					if (getCaught(mainbuf, entry + 1))
-						pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 34 * ((entry + 1) % 30), 30 * ((entry + 1) / 30), 34, 30);
-					else if (getSeen(mainbuf, entry + 1)) {
-						pp2d_draw_texture_part(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 34 * ((entry + 1) % 30), 30 * ((entry + 1) / 30), 34, 30);
-						pp2d_draw_texture_part_blend(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 34 * ((entry + 1) % 30), 30 * ((entry + 1) / 30), 34, 30, RGBA8(0,0,0,160));
-					} else {
-						pp2d_draw_texture_part_blend(TEXTURE_NORMAL_SPRITESHEET, 7 + 49 * j + j, 2 + 47 * i + i, 34 * ((entry + 1) % 30), 30 * ((entry + 1) / 30), 34, 30, RGBA8(0,0,0,255));
-					}
-					sprintf(temp, "%d", entry + 1);
-					pp2d_draw_text(49 * j + (49 - pp2d_get_text_width(temp, FONT_SIZE_9, FONT_SIZE_9)) / 2 + j, 34 + i * 47 + i, FONT_SIZE_9, FONT_SIZE_9, getCaught(mainbuf, entry + 1) ? WHITE : DS, temp);
-				}
-			}
-		}
-
-		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
-		printMenuBottom();
-		pp2d_draw_wtextf(16, 32, FONT_SIZE_14, FONT_SIZE_14, WHITE, i18n(S_GRAPHIC_PKBANK_SEEN), seen);
-		pp2d_draw_wtextf(16, 48, FONT_SIZE_14, FONT_SIZE_14, WHITE, i18n(S_GRAPHIC_PKBANK_CAUGHT), caught);
-		printBottomIndications(i18n(S_GRAPHIC_CREDITS_INDICATIONS));
-	pp2d_end_draw();
-}
-
 void printPKViewer(u8* mainbuf, u8* tmp, bool isTeam, int currentEntry, int menuEntry, int box, int mode, int additional1, int additional2) {
 	int game = game_get();
 	
@@ -1442,15 +1408,13 @@ void printPKBank(u8* bankbuf, u8* mainbuf, u8* wirelessBuffer, u8* pkmnbuf, int 
 		pksm_draw_texture(TEXTURE_TRANSFER_BUTTON, 242, 5);
 		pksm_draw_texture(TEXTURE_BACK_BUTTON, 283, 211);
 		pksm_draw_texture(TEXTURE_BUTTON, 208, 43);
-		pksm_draw_texture(TEXTURE_BUTTON, 208, 70);
-		pksm_draw_texture(TEXTURE_BUTTON, 208, 97);
-		pksm_draw_texture(TEXTURE_BUTTON, 208, 153);
-		pksm_draw_texture(TEXTURE_BUTTON, 208, 180);
-		pp2d_draw_wtext(208 + (109 - pp2d_get_wtext_width(i18n(S_GRAPHIC_PKBANK_MENU_VIEW), FONT_SIZE_12, FONT_SIZE_12)) / 2, 50, FONT_SIZE_12, FONT_SIZE_12, BLACK, i18n(S_GRAPHIC_PKBANK_MENU_VIEW));
-		pp2d_draw_wtext(208 + (109 - pp2d_get_wtext_width(i18n(S_GRAPHIC_PKBANK_MENU_CLEARBOX), FONT_SIZE_12, FONT_SIZE_12)) / 2, 77, FONT_SIZE_12, FONT_SIZE_12, BLACK, i18n(S_GRAPHIC_PKBANK_MENU_CLEARBOX));
-		pp2d_draw_wtext(208 + (109 - pp2d_get_wtext_width(i18n(S_GRAPHIC_PKBANK_MENU_RELEASE), FONT_SIZE_12, FONT_SIZE_12)) / 2, 104, FONT_SIZE_12, FONT_SIZE_12, BLACK, i18n(S_GRAPHIC_PKBANK_MENU_RELEASE));
-		pp2d_draw_wtext(208 + (109 - pp2d_get_wtext_width(i18n(S_GRAPHIC_PKBANK_MENU_DEX), FONT_SIZE_12, FONT_SIZE_12)) / 2, 160, FONT_SIZE_12, FONT_SIZE_12, BLACK, i18n(S_GRAPHIC_PKBANK_MENU_DEX));
-		pp2d_draw_wtext(208 + (109 - pp2d_get_wtext_width(i18n(S_GRAPHIC_PKBANK_MENU_DUMP), FONT_SIZE_12, FONT_SIZE_12)) / 2, 187, FONT_SIZE_12, FONT_SIZE_12, BLACK, i18n(S_GRAPHIC_PKBANK_MENU_DUMP));
+		pksm_draw_texture(TEXTURE_BUTTON, 208, 72);
+		pksm_draw_texture(TEXTURE_BUTTON, 208, 101);
+		pksm_draw_texture(TEXTURE_BUTTON, 208, 130);
+		pp2d_draw_wtext(208 + (109 - pp2d_get_wtext_width(i18n(S_GRAPHIC_PKBANK_MENU_VIEW), FONT_SIZE_12, FONT_SIZE_12)) / 2, 49, FONT_SIZE_12, FONT_SIZE_12, BLACK, i18n(S_GRAPHIC_PKBANK_MENU_VIEW));
+		pp2d_draw_wtext(208 + (109 - pp2d_get_wtext_width(i18n(S_GRAPHIC_PKBANK_MENU_CLEARBOX), FONT_SIZE_12, FONT_SIZE_12)) / 2, 78, FONT_SIZE_12, FONT_SIZE_12, BLACK, i18n(S_GRAPHIC_PKBANK_MENU_CLEARBOX));
+		pp2d_draw_wtext(208 + (109 - pp2d_get_wtext_width(i18n(S_GRAPHIC_PKBANK_MENU_RELEASE), FONT_SIZE_12, FONT_SIZE_12)) / 2, 107, FONT_SIZE_12, FONT_SIZE_12, BLACK, i18n(S_GRAPHIC_PKBANK_MENU_RELEASE));
+		pp2d_draw_wtext(208 + (109 - pp2d_get_wtext_width(i18n(S_GRAPHIC_PKBANK_MENU_DUMP), FONT_SIZE_12, FONT_SIZE_12)) / 2, 136, FONT_SIZE_12, FONT_SIZE_12, BLACK, i18n(S_GRAPHIC_PKBANK_MENU_DUMP));
 		pksm_draw_texture(TEXTURE_OTA_BUTTON, 240, 211);
 		
 		y = 45;
