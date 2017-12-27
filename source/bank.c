@@ -497,25 +497,41 @@ void bank(u8* mainbuf) {
 				if (isWirelessBuffer || !((illegalspecies || illegalform) && currentEntry > 29)) { // prevent that gen7 stuff goes into gen6 save
 					u8 tmp[ofs.pkxLength];
 					
-					if ((bufferizedfrombank == (currentEntry < 30)) && (coordinate[0] == ((currentEntry < 30) ? bankBox : saveBox)) && (coordinate[1] == currentEntry))
+					if ((bufferizedfrombank == (currentEntry < 30)) && (coordinate[0] == ((currentEntry < 30) ? bankBox : saveBox)) && (coordinate[1] == currentEntry)) {
 						//remains at the same place
 						memcpy(&bankbuf[bankBox * 30 * ofs.pkxLength + currentEntry * ofs.pkxLength], pkmn, ofs.pkxLength);
+						memset(pkmn, 0, ofs.pkxLength);
+						isBufferized = false;
+					}
 					else if ((!bufferizedfrombank == (currentEntry > 29)) && (coordinate[0] == ((currentEntry < 30) ? bankBox : saveBox)) && (coordinate[1] == currentEntry - 30)) {
 						//remains at the same place
 						if (!isWirelessBuffer)
 							pkx_set_as_it_is(mainbuf, saveBox, currentEntry - 30, pkmn);
 						else if (isWirelessBuffer)
 							setToWirelessBuf(wirelessbuf, saveBox, currentEntry - 30, pkmn);
+						memset(pkmn, 0, ofs.pkxLength);
+						isBufferized = false;
 					}
 					else if (currentEntry < 30) {
 						memcpy(tmp, &bankbuf[bankBox * 30 * ofs.pkxLength + currentEntry * ofs.pkxLength], ofs.pkxLength);
-						memcpy(&bankbuf[bankBox * 30 * ofs.pkxLength + currentEntry * ofs.pkxLength], pkmn, ofs.pkxLength);
-						if (bufferizedfrombank) 
-							memcpy(&bankbuf[coordinate[0] * 30 * ofs.pkxLength + coordinate[1] * ofs.pkxLength], tmp, ofs.pkxLength);
-						else if (!isWirelessBuffer)
-							pkx_set(mainbuf, coordinate[0], coordinate[1], tmp);
-						else if (isWirelessBuffer)
-							setToWirelessBuf(wirelessbuf, coordinate[0], coordinate[1], tmp);
+						
+						u16 tmpspecies = pkx_get_species(tmp);
+						FormData *forms = pkx_get_legal_form_data(tmpspecies, game);
+						u8 tmpform = pkx_get_form(tmp);
+						bool tmpillegalform = tmpform < forms->min || (tmpform > forms->max && checkUSUMexceptions(tmpspecies));
+						bool tmpillegalspecies = tmpspecies > ofs.maxSpecies;
+						free(forms);
+						if (!(tmpillegalspecies || tmpillegalform)) { // check to make sure not swapping gen 7 stuff into gen 6
+							memcpy(&bankbuf[bankBox * 30 * ofs.pkxLength + currentEntry * ofs.pkxLength], pkmn, ofs.pkxLength);
+							if (bufferizedfrombank) 
+								memcpy(&bankbuf[coordinate[0] * 30 * ofs.pkxLength + coordinate[1] * ofs.pkxLength], tmp, ofs.pkxLength);
+							else if (!isWirelessBuffer)
+								pkx_set(mainbuf, coordinate[0], coordinate[1], tmp);
+							else if (isWirelessBuffer)
+								setToWirelessBuf(wirelessbuf, coordinate[0], coordinate[1], tmp);
+							memset(pkmn, 0, ofs.pkxLength);
+							isBufferized = false;
+						}
 					}
 					else {
 						if (!isWirelessBuffer) {
@@ -534,9 +550,9 @@ void bank(u8* mainbuf) {
 							pkx_set(mainbuf, coordinate[0], coordinate[1], tmp);
 						else if (isWirelessBuffer)
 							setToWirelessBuf(wirelessbuf, coordinate[0], coordinate[1], tmp);
+						memset(pkmn, 0, ofs.pkxLength);
+						isBufferized = false;
 					}
-					memset(pkmn, 0, ofs.pkxLength);
-					isBufferized = false;
 				}
 			}
 			else {
