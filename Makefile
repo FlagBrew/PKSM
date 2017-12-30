@@ -38,7 +38,7 @@ BANNER_IMAGE        :=	assets/banner.png
 RSF_PATH            :=	assets/app.rsf
 
 # If left blank, makerom will use the default Homebrew logo
-LOGO                :=	
+LOGO                :=  assets/splash.lz11
 
 
 # If left blank, makerom will use default values (0xff3ff and CTR-P-CTAP, respectively)
@@ -47,8 +47,8 @@ UNIQUE_ID           :=	0xEC100
 PRODUCT_CODE        :=	CTR-HB-PKSM
 
 VERSION_MAJOR := 5
-VERSION_MINOR := 0
-VERSION_MICRO := 1
+VERSION_MINOR := 1
+VERSION_MICRO := 0
 
 ROSALINA := 1
 

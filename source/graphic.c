@@ -300,7 +300,7 @@ void gameSelectorMenu(int n) {
 		
 		for (int i = 0; i < 4; i++) {
 			if (n == i) {
-				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_3DS, 44 + i*85 + 4, 55 + 4, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70, HIGHBLUE);
+				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_3DS, 44 + i*85 + 4, 55 + 4, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70, MENUBLUE);
 				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_3DS, 44 + i*85, 55, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70, logoColors[i]);
 			} else
 				pp2d_draw_texture_part(TEXTURE_LOGOS_3DS, 44 + i*85, 55, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70);
@@ -308,7 +308,7 @@ void gameSelectorMenu(int n) {
 		
 		for (int i = 4; i < 8; i++) {
 			if (n == i) {
-				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_3DS, 60 + (i - 4)*70 + 4, 120 + 4, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70, HIGHBLUE);
+				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_3DS, 60 + (i - 4)*70 + 4, 120 + 4, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70, MENUBLUE);
 				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_3DS, 60 + (i - 4)*70, 120, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70, logoColors[i]);
 			} else
 				pp2d_draw_texture_part(TEXTURE_LOGOS_3DS, 60 + (i - 4)*70, 120, logo_lookup6[i], 0, logo_lookup6[i+1] - logo_lookup6[i] - 1, 70);
@@ -321,7 +321,7 @@ void gameSelectorMenu(int n) {
 		
 		for (int i = 8; i < 13; i++) {
 			if (n == i) {
-				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_GEN4, 26 + (i - 8)*56 + 4, 40 + 4, logo_lookup4[i - 8], 0, logo_lookup4[i - 7] - logo_lookup4[i - 8] - 1, 56, HIGHBLUE);
+				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_GEN4, 26 + (i - 8)*56 + 4, 40 + 4, logo_lookup4[i - 8], 0, logo_lookup4[i - 7] - logo_lookup4[i - 8] - 1, 56, MENUBLUE);
 				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_GEN4, 26 + (i - 8)*56, 40, logo_lookup4[i - 8], 0, logo_lookup4[i - 7] - logo_lookup4[i - 8] - 1, 56, logoColors[i]);
 			} else
 				pp2d_draw_texture_part(TEXTURE_LOGOS_GEN4, 26 + (i - 8)*56, 40, logo_lookup4[i - 8], 0, logo_lookup4[i - 7] - logo_lookup4[i - 8] - 1, 56);
@@ -329,7 +329,7 @@ void gameSelectorMenu(int n) {
 		
 		for (int i = 13; i < 17; i++) {
 			if (n == i) {
-				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_GEN5, 40 + (i - 13)*60 + 4, 115 + 4, logo_lookup5[i - 13], 0, logo_lookup5[i - 12] - logo_lookup5[i - 13] - 1, 60, HIGHBLUE);
+				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_GEN5, 40 + (i - 13)*60 + 4, 115 + 4, logo_lookup5[i - 13], 0, logo_lookup5[i - 12] - logo_lookup5[i - 13] - 1, 60, MENUBLUE);
 				pp2d_draw_texture_part_blend(TEXTURE_LOGOS_GEN5, 40 + (i - 13)*60, 115, logo_lookup5[i - 13], 0, logo_lookup5[i - 12] - logo_lookup5[i - 13] - 1, 60, logoColors[i]);
 			} else
 				pp2d_draw_texture_part(TEXTURE_LOGOS_GEN5, 40 + (i - 13)*60, 115, logo_lookup5[i - 13], 0, logo_lookup5[i - 12] - logo_lookup5[i - 13] - 1, 60);

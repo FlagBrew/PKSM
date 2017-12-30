@@ -2,11 +2,12 @@
 =====
 ![License](https://img.shields.io/badge/License-GPLv3-blue.svg)
 
-Multipurpose and portable save manager for generations IV-VII, programmed in C.
+Multipurpose and portable save manager for generations IV to VII, programmed in C.
 
 * Supports original cartridges and digital copies of games from DPPT to USUM
 * Allows on-the-fly modifications to all of your data
 * Allows internal and resizable offline storage to store your pkmns
+* Capable of running custom scripts to allow injection of arbitrary data into your saves
 * Interfaces with multiple ad-hoc programs running on your computer, web browser or smartphone
 * Capable of scanning QR codes to inject both pkmn files or event wondercards
 * Contains an offline wondercard database to get events from old distributions
@@ -37,12 +38,9 @@ If you get a **failed to receive a status code** error, you may want to connect 
 
 You need internet access to download the additional assets. If you can't still download them through the application, put them manually in the SD card, extracting the external [additionalassets](https://github.com/dsoldier/PKResources/releases/download/final/additionalassets.zip) folder in your SD card, located at `/3ds/PKSM/`. The final result should be a folder filled with assets, located at `/3ds/PKSM/additionalassets/`.
 
-### DS cartridges
+### DS cartridges (*hax)
 
-To let PKSM load your DS save correctly:
-
-* If using rosalina, you need to inject the homebrew launcher in a title that has DS saves access.
-* If using *hax, you need to select a target title that has DS save access when selecting PKSM from the homebrew launcher.
+To let PKSM load your DS save correctly, you need to select a target title that has DS save access when selecting PKSM from the homebrew launcher.
 
 A title satisfying those specifics is, for example, Pokétransporter.
 
@@ -50,14 +48,14 @@ A title satisfying those specifics is, for example, Pokétransporter.
 
 If you're coming from a PKSM version < 5.0.0, you'll notice your `bank.bin` file isn't recognized anymore. That's because the working path changed from 5.0.0 so you need to **manually move** your `bank.bin` file to the new location, from `/3ds/data/PKSM/bank/` to `/3ds/PKSM/bank`. 
 
-## Applications supported by PKSM
+## Applications compatible with PKSM
 
 * **[serveLegality](https://github.com/BernardoGiordano/PKSM-Tools)**: PC tool to check and fix a pkmn's legality.
 * **[PKHeX](https://github.com/kwsch/PKHeX)**: Generates .pk7, .pk6, .wc7, .wc6 QR codes scannable from PKSM. Runs on PC.
 * **[MysteryGiftBot](https://twitter.com/mysterygiftbot)**: Generates .wc7 QR codes scannable from PKSM. Runs on Twitter.
 * **[servepkx](https://github.com/BernardoGiordano/PKSM-Tools)**: multiplatform tool to send .pk7, .pk6, .wc7full, .wc6full, .wc7, .wc6 files to PKSM. Requires a web browser or JRE.
 * **[phbank2pksm](https://github.com/BernardoGiordano/PKSM-Tools)**: tool to convert a PHBank bank file to a PKSM storage file. Requires a web browser.
-* **[badsectors](https://github.com/BernardoGiordano/PKSM-Tools)**: tool to fix bad slots in the PKSM storage file. Runs on the homebrew launcher.
+* **[PKSMScript](https://github.com/BernardoGiordano/PKSM-Tools/tree/master/PKSMScript)**: python tool to compile .pksm scripts.
 
 ## Working path
 
@@ -94,6 +92,7 @@ PKSM requires [latest libctru](https://github.com/smealum/ctrulib), [latest citr
 * TuxSH for TWLSaveTool
 * ProjectPokemon.org for most of the wondercards
 * Simona for being my best supporter
+* all the people contributing to the scripts
 * all the countless translators who helped with the multilanguage feature
 * everyone who helped during the development process
 * all the supporters
