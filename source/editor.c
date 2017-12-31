@@ -351,13 +351,7 @@ void pokemonEditor(u8* mainbuf) {
 		// QR injector
 		if ((hidKeysHeld() & KEY_L) && (hidKeysHeld() & KEY_R) && game_is3DS())
 		{
-			camera_set_qrmode(true);
-			camera_init();
-			
-			while(camera_get_qrmode())
-			{
-				camera_take_qr(mainbuf, MODE_PKX);
-			}
+			init_qr(mainbuf, MODE_PKX);
 		}
 
 		if (((hidKeysDown() & KEY_Y) || ((hidKeysDown() & KEY_TOUCH) && touch.px > 240 && touch.px < 276 && touch.py > 210 && touch.py < 240)) && !isTeam) {

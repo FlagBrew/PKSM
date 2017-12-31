@@ -44,84 +44,178 @@
 
 #include "camera.h"
 
-static bool qr_mode = false;
-static u32 transfer_size;
-static Handle event;
-static struct quirc* context;
-
-bool camera_get_qrmode(void) { return qr_mode; }
-void camera_set_qrmode(bool mode) { qr_mode = mode; }
-
-void camera_init(void)
+void exit_qr(qr_data *data)
 {
-    camInit();
-    CAMU_SetSize(SELECT_OUT1_OUT2, SIZE_CTR_TOP_LCD, CONTEXT_A);
-    CAMU_SetOutputFormat(SELECT_OUT1_OUT2, OUTPUT_RGB_565, CONTEXT_A);
-    CAMU_SetFrameRate(SELECT_OUT1_OUT2, FRAME_RATE_10);
-
-    CAMU_SetNoiseFilter(SELECT_OUT1_OUT2, true);
-    CAMU_SetAutoExposure(SELECT_OUT1_OUT2, true);
-    CAMU_SetAutoWhiteBalance(SELECT_OUT1_OUT2, true);
-    CAMU_SetTrimming(PORT_CAM1, false);
-    CAMU_SetTrimming(PORT_CAM2, false);
-
-    CAMU_GetMaxBytes(&transfer_size, 400, 240);
-    CAMU_SetTransferBytes(PORT_BOTH, transfer_size, 400, 240);
-
-    CAMU_Activate(SELECT_OUT1_OUT2);
-    event = 0;
-
-    CAMU_ClearBuffer(PORT_BOTH);
-    CAMU_SynchronizeVsyncTiming(SELECT_OUT1, SELECT_OUT2);
-    CAMU_StartCapture(PORT_BOTH);
-
-    context = quirc_new();
-    quirc_resize(context, 400, 240);
-}
-
-void camera_exit(void)
-{
-    CAMU_StopCapture(PORT_BOTH);
-    CAMU_Activate(SELECT_NONE);
-    camExit();
-    quirc_destroy(context);
-}
-
-void camera_scan_qr(u16 *buf, u8* payload, int mode)
-{
-	int w;
-	int h;
-	int scale = 1;
-
-	u8 *image = (u8*)quirc_begin(context, &w, &h);
-	if (quirc_resize(context, w*scale, h*scale) != 0)
+	svcSignalEvent(data->cancel);
+	while (!data->finished)
 	{
-		return;
+		svcSleepThread(1000000);
 	}
+	data->capturing = false;
 
-	for (ssize_t i = 0; i < h*scale; i++)
+	free(data->camera_buffer);
+	free(data->texture_buffer);
+	quirc_destroy(data->context);
+	free(data);
+}
+
+void capture_cam_thread(void *arg) 
+{
+	qr_data *data = (qr_data *) arg;
+	Handle events[3] = {0};
+	events[0] = data->cancel;
+	u32 transferUnit;
+
+	u16 *buffer = calloc(1, 400 * 240 * sizeof(u16));
+	camInit();
+	CAMU_SetSize(SELECT_OUT1, SIZE_CTR_TOP_LCD, CONTEXT_A);
+	CAMU_SetOutputFormat(SELECT_OUT1, OUTPUT_RGB_565, CONTEXT_A);
+	CAMU_SetFrameRate(SELECT_OUT1, FRAME_RATE_30);
+	CAMU_SetNoiseFilter(SELECT_OUT1, true);
+	CAMU_SetAutoExposure(SELECT_OUT1, true);
+	CAMU_SetAutoWhiteBalance(SELECT_OUT1, true);
+	CAMU_Activate(SELECT_OUT1);
+	CAMU_GetBufferErrorInterruptEvent(&events[2], PORT_CAM1);
+	CAMU_SetTrimming(PORT_CAM1, false);
+	CAMU_GetMaxBytes(&transferUnit, 400, 240);
+	CAMU_SetTransferBytes(PORT_CAM1, transferUnit, 400, 240);
+	CAMU_ClearBuffer(PORT_CAM1);
+	CAMU_SetReceiving(&events[1], buffer, PORT_CAM1, 400 * 240 * sizeof(u16), (s16) transferUnit);
+	CAMU_StartCapture(PORT_CAM1);
+	bool cancel = false;
+	while (!cancel) 
 	{
-		for (ssize_t j = 0; j < w*scale; j++)
+		s32 index = 0;
+		svcWaitSynchronizationN(&index, events, 3, false, U64_MAX);
+		switch(index)
 		{
-			u16 px = buf[(i/scale) * 400 + j/scale];
-			image[i * w * scale + j] = (u8)(((((px >> 11) & 0x1F) << 3) + (((px >> 5) & 0x3F) << 2) + ((px & 0x1F) << 3)) / 3);
+			case 0:
+				cancel = true;
+				break;
+			case 1:
+				svcCloseHandle(events[1]);
+				events[1] = 0;
+				svcWaitSynchronization(data->mutex, U64_MAX);
+				memcpy(data->camera_buffer, buffer, 400 * 240 * sizeof(u16));
+				GSPGPU_FlushDataCache(data->camera_buffer, 400 * 240 * sizeof(u16));
+				svcReleaseMutex(data->mutex);
+				CAMU_SetReceiving(&events[1], buffer, PORT_CAM1, 400 * 240 * sizeof(u16), transferUnit);
+				break;
+			case 2:
+				svcCloseHandle(events[1]);
+				events[1] = 0;
+				CAMU_ClearBuffer(PORT_CAM1);
+				CAMU_SetReceiving(&events[1], buffer, PORT_CAM1, 400 * 240 * sizeof(u16), transferUnit);
+				CAMU_StartCapture(PORT_CAM1);
+				break;
+			default:
+				break;
 		}
 	}
 
-	quirc_end(context);
+	CAMU_StopCapture(PORT_CAM1);
 
-	if (quirc_count(context) > 0)
+	bool busy = false;
+	while (R_SUCCEEDED(CAMU_IsBusy(&busy, PORT_CAM1)) && busy)
+	{
+		svcSleepThread(1000000);
+	}
+
+	CAMU_ClearBuffer(PORT_CAM1);
+	CAMU_Activate(SELECT_NONE);
+	camExit();
+	free(buffer);
+	for (int i = 0; i < 3; i++)
+	{
+		if (events[i] != 0)
+		{
+			svcCloseHandle(events[i]);
+			events[i] = 0;
+		}
+	}
+	svcCloseHandle(data->mutex);
+	data->finished = true;
+}
+
+bool start_capture_cam(qr_data *data) 
+{
+	data->mutex = 0;
+	data->cancel = 0;
+	svcCreateEvent(&data->cancel, RESET_STICKY);
+	svcCreateMutex(&data->mutex, false);
+	if (threadCreate(capture_cam_thread, data, 0x10000, 0x1A, 1, true) == NULL)
+	{
+		return false;
+	}
+	return true;
+}
+
+void update_qr(qr_data *data, u8* payload, int mode)
+{
+    hidScanInput();
+    if (hidKeysDown() & KEY_B)
+	{
+		exit_qr(data);
+		return;
+    }
+
+	if (!data->capturing)
+	{
+		if (start_capture_cam(data))
+		{
+			data->capturing = true;
+		}
+		else
+		{
+			exit_qr(data);
+			return;
+		}
+	}
+
+	if (data->finished)
+	{
+		exit_qr(data);
+		return;
+	}
+	for (int i = 0; i < 240 * 400; i++)
+    {
+		data->texture_buffer[i] = RGB565_TO_ABGR8(data->camera_buffer[i]);
+    }
+
+	pp2d_free_texture(TEXTURE_QR);
+	pp2d_load_texture_memory(TEXTURE_QR, data->texture_buffer, 400, 240);
+
+	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
+	pp2d_draw_texture(TEXTURE_QR, 0, 0);
+	pp2d_end_draw();
+
+	int w;
+	int h;
+	u8 *image = (u8*) quirc_begin(data->context, &w, &h);
+	svcWaitSynchronization(data->mutex, U64_MAX);
+	for (ssize_t x = 0; x < w; x++)
+	{
+		for (ssize_t y = 0; y < h; y++)
+		{
+			u16 px = data->camera_buffer[y * 400 + x];
+			image[y * w + x] = (u8)(((((px >> 11) & 0x1F) << 3) + (((px >> 5) & 0x3F) << 2) + ((px & 0x1F) << 3)) / 3);
+		}
+	}
+	svcReleaseMutex(data->mutex);
+	quirc_end(data->context);
+	if (quirc_count(data->context) > 0)
 	{
 		struct quirc_code code;
-		struct quirc_data data;
-		quirc_extract(context, 0, &code);
-		if (!quirc_decode(&code, &data))
+		struct quirc_data scan_data;
+		quirc_extract(data->context, 0, &code);  
+		if (!quirc_decode(&code, &scan_data))
 		{
+			exit_qr(data);
 			if (mode == MODE_WCX)
 			{
 				size_t outlen;
 				static const int headerSize = strlen("http://lunarcookies.github.io/wc.html#");
-				unsigned char* out = base64_decode((char*)data.payload + headerSize, data.payload_len - headerSize, &outlen);
+				unsigned char* out = base64_decode((char*)scan_data.payload + headerSize, scan_data.payload_len - headerSize, &outlen);
 
 				if (outlen == ofs.wondercardSize)
 				{
@@ -130,14 +224,14 @@ void camera_scan_qr(u16 *buf, u8* payload, int mode)
 			}
 			else if (mode == MODE_PKX)
 			{
-				if (data.payload_len != 0x1A2)
+				if (scan_data.payload_len != 0x1A2)
 				{
 					return;
 				}
 
-				u32 box = *(u32*)(data.payload + 8);
-				u32 slot = *(u32*)(data.payload + 12);
-				u32 copies = *(u32*)(data.payload + 16);
+				u32 box = *(u32*)(scan_data.payload + 8);
+				u32 slot = *(u32*)(scan_data.payload + 12);
+				u32 copies = *(u32*)(scan_data.payload + 16);
 				u32 startaddress = pkx_get_save_address(box, slot);
 
 				// TODO: check checksums
@@ -145,80 +239,30 @@ void camera_scan_qr(u16 *buf, u8* payload, int mode)
 				{
 					if (startaddress < ofs.boxSize)
 					{
-						memcpy(payload + startaddress + i*ofs.pkxLength, data.payload + 0x30, ofs.pkxLength);
+						memcpy(payload + startaddress + i*ofs.pkxLength, scan_data.payload + 0x30, ofs.pkxLength);
 					}
 				}
 			}
-			qr_mode = false;
+			data->success = true;
 		}
 	}
 }
 
-static void draw_qr_rect(int x, int y, int w, u32 color)
+bool init_qr(u8* payload, int mode)
 {
-	int center = w/3;
-	int bord = 0.4*center;
-	
-	pp2d_draw_rectangle(           x,            y,    w,       bord, color); // top
-	pp2d_draw_rectangle(           x,     y + bord, bord, w - 2*bord, color); // left
-	pp2d_draw_rectangle(x + w - bord,     y + bord, bord, w - 2*bord, color); // right
-	pp2d_draw_rectangle(           x, y + w - bord,    w,       bord, color); // bottom
-	
-	pp2d_draw_rectangle(x + center, y + center, center, center, color);
-}
+	qr_data *data = calloc(1, sizeof(qr_data));
+	data->capturing = false;
+	data->finished = false;
+	data->context = quirc_new();
+	quirc_resize(data->context, 400, 240);
 
-void camera_take_qr(u8* payload, int mode)
-{
-	u16 *buf = malloc(sizeof(u16) * 400 * 240 * 4);
-	if (buf == NULL) return;
-	CAMU_SetReceiving(&event, buf, PORT_CAM1, 240 * 400 * 2, transfer_size);
-	svcWaitSynchronization(event, U64_MAX);
-	svcCloseHandle(event);
+	data->camera_buffer = calloc(1, 400 * 240 * sizeof(u16));
+	data->texture_buffer = calloc(1, 400 * 240 * sizeof(u32));
 
-	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
-		u32 *rgba8_buf = malloc(240 * 400 * sizeof(u32));
-		if (rgba8_buf == NULL) return;
-		for (int i = 0; i < 240 * 400; i++)
-		{
-			rgba8_buf[i] = RGB565_TO_ABGR8(buf[i]);
-		}
-		pp2d_load_texture_memory(TEXTURE_QR, rgba8_buf, 400, 240);
-		pp2d_draw_texture(TEXTURE_QR, 0, 0);
-
-		if (mode == MODE_WCX)
-		{
-			draw_qr_rect(102, 18, 24, WHITE);
-			draw_qr_rect(102, 198, 24, WHITE);
-			draw_qr_rect(284, 18, 24, WHITE);
-		}
-		else if (mode == MODE_PKX)
-		{
-			draw_qr_rect(97, 12, 19, WHITE);
-			draw_qr_rect(289, 12, 19, WHITE);
-			draw_qr_rect(97, 206, 19, WHITE);			
-		}
-
-		pp2d_draw_text_center(GFX_TOP, 101, 1.3f, 1.3f, WHITE, "\uE01E \uE004");
-	pp2d_end_draw();
-
-	free(rgba8_buf);
-	pp2d_free_texture(TEXTURE_QR);
-
-	hidScanInput();
-	u32 kDown = hidKeysDown();
-	if (kDown & KEY_L)
+	while (!data->finished)
 	{
-		CAMU_StopCapture(PORT_BOTH);
-		CAMU_Activate(SELECT_NONE);
-		camera_scan_qr(buf, payload, mode);
-		CAMU_Activate(SELECT_OUT1_OUT2);
-		CAMU_StartCapture(PORT_BOTH);
-	}
-	if (kDown & KEY_B)
-	{
-		camera_exit();
-		qr_mode = false;
+		update_qr(data, payload, mode);
 	}
 
-	free(buf);
+	return (bool)data->success;
 }

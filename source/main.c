@@ -21,6 +21,7 @@
 #define ASSETS 11
 
 int __stacksize__ = 64 * 1024;
+u32 old_time_limit;
 
 char* path[] = { 
 	"/3ds/PKSM/additionalassets/altspritesheetfinal.png",
@@ -73,6 +74,11 @@ void exitServices() {
 	romfsExit();
 	pp2d_exit();
 	cfguExit();
+	
+	if (old_time_limit != UINT32_MAX)
+	{
+		APT_SetAppCpuTimeLimit(old_time_limit);
+	}
 }
 
 bool initServices() {
@@ -105,6 +111,9 @@ bool initServices() {
 		snprintf(i18npath, 80, "sdmc:/3ds/PKSM/additionalassets/i18n/%s", LANG_PREFIX[i]);
 		mkdir(i18npath, 0777);
 	}
+	
+	APT_GetAppCpuTimeLimit(&old_time_limit);
+	APT_SetAppCpuTimeLimit(30);
 	
 	config_init();
 	i18n_init();

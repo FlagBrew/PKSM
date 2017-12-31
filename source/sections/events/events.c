@@ -392,13 +392,7 @@ void eventDatabase(u8* mainbuf) {
 				
 				if ((hidKeysHeld() & KEY_L) && (hidKeysHeld() & KEY_R) && game_is3DS())
 				{
-					camera_set_qrmode(true);
-					camera_init();
-					
-					while(camera_get_qrmode())
-					{
-						camera_take_qr(previewbuf, MODE_WCX);
-					}
+					init_qr(previewbuf, MODE_WCX);
 				}
 
 				// wireless injection toggle

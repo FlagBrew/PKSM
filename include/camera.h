@@ -62,12 +62,22 @@
 // u16 crc16
 // sizeof(QR7) == 0x1A2
 
-bool camera_get_qrmode(void);
-void camera_set_qrmode(bool mode);
+typedef struct {
+    u16 *camera_buffer;
+    u32 *texture_buffer;
+    Handle mutex;
+    volatile bool finished;
+    volatile bool success;
+    Handle cancel;
 
-void camera_init(void);
-void camera_exit(void);
-void camera_scan_qr(u16 *buf, u8* payload, int mode);
-void camera_take_qr(u8* payload, int mode);
+    bool capturing;
+    struct quirc* context;
+} qr_data;
+
+void capture_cam_thread(void *arg);
+bool start_capture_cam(qr_data *data);
+void update_qr(qr_data *data, u8* buf, int mode);
+void exit_qr(qr_data *data);
+bool init_qr(u8* buf, int mode);
 
 #endif
