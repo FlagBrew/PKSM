@@ -25,7 +25,7 @@
 按A选择选项.
 按START退出.
 宝可梦编辑器
-Scripts
+金手指
 离线银行
 大规模注入器
 保存修改?
@@ -344,10 +344,10 @@ Sanity, 字节 2
 表ID, 字节 2
 里ID, 字节 1
 里ID, 字节 2
-Experience, 字节 1
-Experience, 字节 2
-Experience, 字节 3
-Experience, 字节 4
+经验值, 字节 1
+经验值, 字节 2
+经验值, 字节 3
+经验值, 字节 4
 特性
 特性数值
 MarkValue, 字节 1
@@ -552,35 +552,35 @@ Listening 失败!
 存档备份已建立!
 银行备份已建立!
 Dump
-Confirm for a full storage dump?
-Step %d/%d
-PokéDex
-Caught: %d
-Seen: %d
-Socket connect failed!
-Socket send failed!
-Enter your pc IP address:
-Press X to enter serveLegality IP address...
-Press X to check legality with serveLegality...
-Calling GitHub APIs...
-Elaborating API response...
-Downloading latest release...
-Update failed!
-Failed to add certificate!
-Failed to add a request header!
-Failed to download data!
-Installing latest release...
-Latest release installed!
-Do you want to launch the game?
+确认要dump整个离线银行吗?
+步骤 %d/%d
+图鉴
+已捕获: %d
+已遇见: %d
+Socket 连接失败!
+Socket 发送失败!
+输入你的PC的IP地址:
+按X输入serveLegality的IP地址...
+按X使用serveLegality检查合法性...
+调用GitHub API...
+等待API返回...
+下载最新版...
+更新失败!
+添加证书失败!
+添加请求头失败!
+下载数据失败!
+安装最新版...
+已安装最新版!
+是否运行此游戏?
 究极之日
 究极之月
-Press A to execute a script.
-Script executed correctly!
-Script execution failed.
-Press A to change slot.
-Press X to dump wondercard.
-No scripts in the current directory.
-Extra Storage has a bad size!
-Checking extra storage...
-Resizing extra storage...
-Extracted!
+按A执行金手指.
+金手指执行成功!
+金手指执行失败.
+按A修改格子.
+按X dump神秘卡片.
+当前目录中没有金手指文件.
+离线银行大小有误!
+检查离线银行...
+调整离线银行...
+已提取!
