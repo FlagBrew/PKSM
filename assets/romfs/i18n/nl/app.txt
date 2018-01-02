@@ -574,7 +574,7 @@ Laatste versie geïnstalleerd!
 Wil je het spel opstarten?
 Ultra Sun
 Ultra Moon
-Druk op A om een script uit te voeren
+Druk op A om een script uit te voeren.
 Script correct uitgevoerd!
 Script uitvoeren mislukt.
 Druk op A om slot te veranderen.
