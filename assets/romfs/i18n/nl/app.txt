@@ -574,13 +574,13 @@ Laatste versie geïnstalleerd!
 Wil je het spel opstarten?
 Ultra Sun
 Ultra Moon
-Press A to execute a script.
-Script executed correctly!
-Script execution failed.
-Press A to change slot.
-Press X to dump wondercard.
-No scripts in the current directory.
-Extra Storage has a bad size!
-Checking extra storage...
-Resizing extra storage...
+Druk op A om een script uit te voeren.
+Script correct uitgevoerd!
+Script uitvoeren mislukt.
+Druk op A om slot te veranderen.
+Druk op X om wondercard te dumpen.
+Geen scripts in de huidige directory.
+Extra Storage heeft een verkeerde grootte!
+Extra storage Checken...
+Grootte veranderen extra storage...
 Extracted!
