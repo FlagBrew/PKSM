@@ -56,8 +56,8 @@ void config_init(void)
 		memcpy(PKSM_Configuration.defaultOTName, PKSMOT, 24);
 		PKSM_Configuration.defaultNationality = 1;
 		PKSM_Configuration.editInTransfers = 1;
-		PKSM_Configuration.defaultDay = 0;
-		PKSM_Configuration.defaultMonth = 0;
+		PKSM_Configuration.defaultDay = 1;
+		PKSM_Configuration.defaultMonth = 1;
 		PKSM_Configuration.defaultYear = 0;
 		PKSM_Configuration.fixBadSectors = 0;
 
@@ -92,6 +92,14 @@ void configbuf_set_values(void)
 	if (PKSM_Configuration.storageSize < 2)
 	{
 		PKSM_Configuration.storageSize = 2;
+	}
+	if (PKSM_Configuration.defaultDay == 0)
+	{
+		PKSM_Configuration.defaultDay = 1;
+	}
+	if (PKSM_Configuration.defaultMonth == 0)
+	{
+		PKSM_Configuration.defaultMonth = 1;
 	}
 	
 	*(config_buf + 0x0) = PKSM_Configuration.pksmLanguage;
