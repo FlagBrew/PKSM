@@ -38,7 +38,7 @@ BANNER_IMAGE        :=	assets/banner.png
 RSF_PATH            :=	assets/app.rsf
 
 # If left blank, makerom will use the default Homebrew logo
-LOGO                :=  assets/splash.lz11
+LOGO                :=  
 
 
 # If left blank, makerom will use default values (0xff3ff and CTR-P-CTAP, respectively)
