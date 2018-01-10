@@ -640,6 +640,10 @@ void pkx_set(u8* mainbuf, const int boxnumber, const int indexnumber, u8* pkmn) 
 			 !(pkx_is_egg(pkmn))) { //you're the first owner
 			pkx_set_ht(pkmn, save_name);
 			pkx_set_ht_gender(pkmn, getSaveGender(mainbuf));
+			pkmn[0x93] = 1;
+		}
+		else {
+			pkmn[0x93] = 0;
 		}
 	}
 
