@@ -75,20 +75,6 @@ You can get real-time support by joining PKSM's discord server.
 
 [![Discord](https://discordapp.com/api/guilds/278222834633801728/widget.png?style=banner3&time-)](https://discord.gg/bGKEyfY)
 
-## Frequently Asked Questions
-
-* **When will Virtual Console games be supported?**
- - *Answer: Never.*
- 
-* **When will support be added for editing your backpack and items?**
- - *Answer: As of now, never, unless someone decides to make a contribution and develop it.*
- 
-* **When will we be able to do more than just inject events into the DS games?**
- - *Answer: Refer to the above answer.*
- 
-* **Why can't Zeroara be generated?**
- - *Answer: Zeroara has not been officially released, or even revealed yet, and will not be supported by PKSM until then.*
-
 ## Building
 
 PKSM requires [latest libctru](https://github.com/smealum/ctrulib), [latest citro3d](https://github.com/fincs/citro3d) and [latest pp2d](https://github.com/BernardoGiordano/PKSM/tree/master/source/pp2d). The executable can be compiled with [devkitARM r47+](https://sourceforge.net/projects/devkitpro/).To compile the .cia you need [3dstool](https://github.com/dnasdw/3dstool/releases), [bannertool and makerom](https://github.com/Steveice10/buildtools/tree/master/3ds) in your PATH. Run the command `make all` to build both the .3dsx and .cia.
