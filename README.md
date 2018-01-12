@@ -2,17 +2,17 @@
 =====
 ![License](https://img.shields.io/badge/License-GPLv3-blue.svg)
 
-Multipurpose and portable save manager for generations IV to VII, programmed in C.
+Multipurpose and portable save manager for Generations IV to VII, programmed in C.
 
-* Supports original cartridges and digital copies of games from DPPT to USUM
+* Supports original cartridges and digital copies of games from DPPt to USUM
 * Allows on-the-fly modifications to all of your data
-* Allows internal and resizable offline storage to store your pkmns
+* Allows internal and resizable offline storage to store your Pokémon
 * Capable of running custom scripts to allow injection of arbitrary data into your saves
 * Interfaces with multiple ad-hoc programs running on your computer, web browser or smartphone
-* Capable of scanning QR codes to inject both pkmn files or event wondercards
+* Capable of scanning QR codes to inject both .pkx files or event wondercards
 * Contains an offline wondercard database to get events from old distributions
 
-**I do not support or condone cheating at the expense of others. Do not use significantly edited pkmn in battle or in trades with those who are unaware edited pkmn are in use.**
+**I do not support or condone cheating at the expense of others. Do not use significantly edited Pokémon in battle or in trades with those who are unaware edited Pokémon are in use.**
 
 ## Screenshots
 
@@ -26,27 +26,27 @@ Multipurpose and portable save manager for generations IV to VII, programmed in 
 
 ## Installation
 
-This software works on cfw and *hax/rosalina-based Homebrew Launchers. An internet connection may be required at the first launch.
+This software works on CFW and *hax/Rosalina-based Homebrew Launchers. An internet connection may be required at the first launch.
 
 | Entrypoint | Instructions |
 | :--------: | :----------- |
-| cfw | Install the `PKSM.cia` file provided in the release page with your favourite installer. You can now launch the application from the home menu |
-| rosalina hbl | Move `PKSM.3dsx` from the rosalina folder in the `PKSM.zip` file. You can now launch PKSM from a [rosalina-based homebrew launcher](https://github.com/fincs/new-hbmenu) |
-| *hax hbl | Move `PKSM.3dsx` and `PKSM.xml` from the standard folder in the `PKSM.zip` file. You can now launch PKSM from a [*hax-based homebrew launcher](https://smealum.github.io/ninjhax2/starter.zip) |
+| CFW | Install the `PKSM.cia` file provided in the release page with your favourite installer. You can now launch the application from the Home Menu |
+| Rosalina HBL | Move `PKSM.3dsx` from the rosalina folder in the `PKSM.zip` file. You can now launch PKSM from a [Rosalina-based Homebrew Launcher](https://github.com/fincs/new-hbmenu) |
+| *hax HBL | Move `PKSM.3dsx` and `PKSM.xml` from the standard folder in the `PKSM.zip` file. You can now launch PKSM from a [*hax-based Homebrew Launcher](https://smealum.github.io/ninjhax2/starter.zip) |
 
-If you get a **failed to receive a status code** error, you may want to connect your console to the internet. This is needed to download the additional assets required for the application to launch. 
+Initial launch will require your system to be connected to the internet. This is needed to download the additional assets required for the application to launch. If your system is not connected to the internet, you will get a **Failed to receive a status code** error.
 
-You need internet access to download the additional assets. If you can't still download them through the application, put them manually in the SD card, extracting the external [additionalassets](https://github.com/dsoldier/PKResources/releases/download/final/additionalassets.zip) folder in your SD card, located at `/3ds/PKSM/`. The final result should be a folder filled with assets, located at `/3ds/PKSM/additionalassets/`.
+You need internet access to download the additional assets. If you're unable to download them through the application, download and extract the [additionalassets](https://github.com/dsoldier/PKResources/releases/download/final/additionalassets.zip) folder in the `.zip` file to your SD card, at `/3ds/PKSM/`. The final result should be a folder filled with assets, located at `/3ds/PKSM/additionalassets/`.
 
 ### DS cartridges (*hax)
 
 To let PKSM load your DS save correctly, you need to select a target title that has DS save access when selecting PKSM from the homebrew launcher.
 
-A title satisfying those specifics is, for example, Pokétransporter.
+A title satisfying those specifics is, for example, Poké Transporter.
 
 ### Storage changes from 5.0.0+
 
-If you're coming from a PKSM version < 5.0.0, you'll notice your `bank.bin` file isn't recognized anymore. That's because the working path changed from 5.0.0 so you need to **manually move** your `bank.bin` file to the new location, from `/3ds/data/PKSM/bank/` to `/3ds/PKSM/bank`. 
+If you're coming from a PKSM version < 5.0.0, you'll notice your `bank.bin` file isn't recognized anymore. That's because the working path changed from 5.0.0 onwards, so you'll need to **manually move** your `bank.bin` file to the new location, from `/3ds/data/PKSM/bank/` to `/3ds/PKSM/bank`. 
 
 ## Applications compatible with PKSM
 
@@ -57,7 +57,7 @@ If you're coming from a PKSM version < 5.0.0, you'll notice your `bank.bin` file
 * **[phbank2pksm](https://github.com/BernardoGiordano/PKSM-Tools)**: tool to convert a PHBank bank file to a PKSM storage file. Requires a web browser.
 * **[PKSMScript](https://github.com/BernardoGiordano/PKSM-Tools/tree/master/PKSMScript)**: python tool to compile .pksm scripts.
 
-## Working path
+## Working paths
 
 * Additional assets are located at `/3ds/PKSM/additionalassets/`
 * Automatic save backups are located at `/3ds/PKSM/backup/[GAME_DATE]/main`
@@ -65,9 +65,9 @@ If you're coming from a PKSM version < 5.0.0, you'll notice your `bank.bin` file
 
 ## Troubleshooting
 
-Before submitting an issue, look for it into the issues page, because it could have been already answered in the past.
+Before submitting an issue, have a look through the issues page, because your question may have already been answered in the past.
 
-Please only do consistent issues (submitting your environment and which version of PKSM you're running), without asking for the moon: I'm working for free here. Duplicate issues will be closed without any reply.
+Please only submit consistent issues (submitting your environment and which version of PKSM you're running), without asking for the moon: I'm working for free here. Duplicate issues will be closed without any reply.
 
 I'll not reply to issues related to versions of PKSM different from the latest stable release currently available.
 
