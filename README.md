@@ -1,5 +1,9 @@
 ![PKSM](https://raw.githubusercontent.com/BernardoGiordano/PKSM/master/assets/banner.png)
-=====
+
+## Notice
+
+PKSM is in the process of being rewritten to a different language. The repo won't be actively updated for the time being and pull requests may get ignored. If anyone wishes to help with the rewrite they may join the Discord server and provide proof of coding experience(pokemon and homebrew related would be highly appreciated).
+
 ![License](https://img.shields.io/badge/License-GPLv3-blue.svg)
 
 Multipurpose and portable save manager for Generations IV to VII, programmed in C.
