@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/socket.h>
+#include <curl/curl.h>
 
 #include "bank.h"
 #include "camera.h"

@@ -18,106 +18,90 @@
 
 #include "http.h"
 
-Result downloadFile(char* url, char* path) {
-	Result ret = 0;
-    httpcInit(0);
-    httpcContext context;
-    u32 statuscode = 0;
-    u32 contentsize = 0;
+static char* result_buf = NULL;
+static size_t result_sz = 0;
+static size_t result_written = 0;
 
-	ret = httpcOpenContext(&context, HTTPC_METHOD_GET, url, 0);
-    if (ret != 0) {
-        infoDisp(i18n(S_HTTP_HTTP_CONTEXT_OPEN_FAILED));
-		httpcCloseContext(&context);
-        return -1;
+// following code is from 
+// https://github.com/angelsl/libctrfgh/blob/master/curl_test/src/main.c
+static size_t handle_data(char* ptr, size_t size, size_t nmemb, void* userdata)
+{
+    (void) userdata;
+    const size_t bsz = size*nmemb;
+
+    if (result_sz == 0 || !result_buf)
+    {
+        result_sz = 0x1000;
+        result_buf = malloc(result_sz);
     }
 
-	ret = httpcAddRequestHeaderField(&context, "User-Agent", "PKSM");
-    if (ret != 0) {
-        infoDisp(i18n(S_HTTP_ADD_REQUEST_HEADER_FIELD_FAILED));
-		httpcCloseContext(&context);
-        return -1;
-    }
-	
-	ret = httpcSetSSLOpt(&context, SSLCOPT_DisableVerify);
-	if (ret != 0) {
-		infoDisp(i18n(S_HTTP_SET_SSLOPT_FAILED));
-		httpcCloseContext(&context);
-		return -1;
-	}
-	
-	ret = httpcAddRequestHeaderField(&context, "Connection", "Keep-Alive");
-	if (ret != 0) {
-		infoDisp(i18n(S_HTTP_ERROR_REQUEST_HEADER));
-		httpcCloseContext(&context);
-		return -1;
-	}
-
-	ret = httpcBeginRequest(&context);
-    if (ret != 0) {
-        infoDisp(i18n(S_HTTP_BEGIN_HTTP_REQUEST_FAILED));
-		httpcCloseContext(&context);
-        return -1;
+    bool need_realloc = false;
+    while (result_written + bsz > result_sz) 
+    {
+        result_sz <<= 1;
+        need_realloc = true;
     }
 
-	ret = httpcGetResponseStatusCode(&context, &statuscode);
-    if (ret != 0) {
-        infoDisp(i18n(S_HTTP_RECEIVE_STATUS_CODE_FAILED));
-        httpcCloseContext(&context);
-        return -1;
-    }
-
-    if (statuscode != 200) {
-        if (statuscode >= 300 && statuscode < 400) {
-            char newUrl[0x1000];
-			
-			ret = httpcGetResponseHeader(&context, (char*)"Location", newUrl, 0x1000);
-            if (ret != 0) {
-                infoDisp(i18n(S_HTTP_REDIRECTION_FAILED));
-				httpcCloseContext(&context);
-                return -1;
-            }
-			
-            httpcCloseContext(&context);
-            downloadFile(newUrl, path);
-            return -1;
-        } else {
-            infoDisp(i18n(S_HTTP_REDIRECTION_FAILED));
-            httpcCloseContext(&context);
-            return -1;
+    if (need_realloc)
+    {
+        char *new_buf = realloc(result_buf, result_sz);
+        if (!new_buf)
+        {
+            return 0;
         }
+        result_buf = new_buf;
     }
 
-	ret = httpcGetDownloadSizeState(&context, NULL, &contentsize);
-    if (ret != 0) {
-        infoDisp(i18n(S_HTTP_RECEIVE_DOWNLOAD_SIZE_FAILED));
-        httpcCloseContext(&context);
+    if (!result_buf)
+    {
+        return 0;
+    }
+
+    memcpy(result_buf + result_written, ptr, bsz);
+    result_written += bsz;
+    return bsz;
+}
+
+Result downloadFile(char* url, char* path)
+{
+    Result result;
+    void *socubuf = memalign(0x1000, 0x100000);
+    if (!socubuf)
+    {
         return -1;
     }
 
-    u8 *buf = (u8*)malloc(contentsize);
-    if (buf == NULL) {
-		free(buf);
-        infoDisp(i18n(S_HTTP_ALLOC_MEMORY_FAILED));
-		httpcCloseContext(&context);
-        return -1;
-    }
-    memset(buf, 0, contentsize);
-
-	ret = httpcDownloadData(&context, buf, contentsize, NULL);
-    if (ret != 0) {
-        free(buf);
-		infoDisp(i18n(S_HTTP_ERROR_DOWNLOAD_DATA));
-        httpcCloseContext(&context);
-        return -1;
+    if (R_FAILED(result = socInit(socubuf, 0x100000)))
+    {
+        return result;
     }
 
-	remove(path);
-	file_write(path, buf, contentsize);	
-	
-    free(buf);
+    CURL *hnd = curl_easy_init();
+    curl_easy_setopt(hnd, CURLOPT_BUFFERSIZE, 102400L);
+    curl_easy_setopt(hnd, CURLOPT_URL, url);
+    curl_easy_setopt(hnd, CURLOPT_NOPROGRESS, 1L);
+    curl_easy_setopt(hnd, CURLOPT_USERAGENT, "QRaken-curl/7.58.0");
+    curl_easy_setopt(hnd, CURLOPT_FOLLOWLOCATION, 1L);
+    curl_easy_setopt(hnd, CURLOPT_MAXREDIRS, 50L);
+    curl_easy_setopt(hnd, CURLOPT_HTTP_VERSION, (long)CURL_HTTP_VERSION_2TLS);
+    curl_easy_setopt(hnd, CURLOPT_WRITEFUNCTION, handle_data);
+    curl_easy_setopt(hnd, CURLOPT_SSL_VERIFYPEER, 0L);
+    curl_easy_setopt(hnd, CURLOPT_VERBOSE, 1L);
+    CURLcode cres = curl_easy_perform(hnd);
+    
+    // cleanup
+    curl_easy_cleanup(hnd);
+    socExit();
+    free(socubuf);
+    result_sz = 0;
 
-    httpcCloseContext(&context);
-    httpcExit();
-    return 0;
+    if (cres == CURLE_OK)
+    {
+        file_write(path, result_buf, result_written);
+    }
+
+    free(result_buf);
+    result_buf = NULL;
+    result_written = 0;
+    return cres == CURLE_OK ? 0 : -1;
 }
