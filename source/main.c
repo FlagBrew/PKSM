@@ -346,20 +346,19 @@ int main() {
 
 		menu(mainMenu);
 	}
-	
+
 	if (save) {
 		rewriteCHK(mainbuf);
-	}
 
-	if (game_is3DS()) {
-		FSFILE_Write(mainHandle, NULL, 0, mainbuf, mainSize, FS_WRITE_FLUSH);
-		FSFILE_Close(mainHandle);
-		if (save)
+		if (game_is3DS()) {
+			FSFILE_Write(mainHandle, NULL, 0, mainbuf, mainSize, FS_WRITE_FLUSH);
+			FSFILE_Close(mainHandle);
 			FSUSER_ControlArchive(saveArch, ARCHIVE_ACTION_COMMIT_SAVE_DATA, NULL, 0, NULL, 0);
-		FSUSER_CloseArchive(saveArch);
+			FSUSER_CloseArchive(saveArch);
+		}
+		else if (game_isDS())
+			TWLinjectSave(mainbuf, mainSize);
 	}
-	else if (game_isDS() && save)
-		TWLinjectSave(mainbuf, mainSize);
 
 	free(mainbuf);	
 	exitServices();
