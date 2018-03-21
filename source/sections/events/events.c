@@ -89,11 +89,11 @@ void reloadPreviewBuf(u8* previewBuf, const int i, const int n)
 	{
 		getSinglePathPGT(testpath, n, i);
 	}
-	
+
 	const u16 wcSize = ofs.wondercardSize;
 	FILE* f = fopen(testpath, "r");
 	if (f)
-	{ 
+	{
 		fseek(f, 0, SEEK_END);
 		u32 sz = ftell(f);
 		memset(previewBuf, 0, wcSize);
@@ -106,7 +106,7 @@ void reloadPreviewBuf(u8* previewBuf, const int i, const int n)
 		fread(previewBuf, wcSize, 1, f);
 	}
 	fclose(f);
-	
+
 	patchWondercardDate(previewBuf);
 }
 
@@ -116,7 +116,7 @@ void reloadMultiplePreviewBuf(u8* previewBuf, const int i, const int n, const in
 	if (game_isgen7())
 	{
 		getMultiplePathWCXFull(testpath, n, i, j);
-	}	
+	}
 	else if (game_isgen6())
 	{
 		getMultiplePathWCX(testpath, n, i, j);
@@ -125,11 +125,11 @@ void reloadMultiplePreviewBuf(u8* previewBuf, const int i, const int n, const in
 	{
 		return;
 	}
-	
+
 	const u16 wcSize = ofs.wondercardSize;
 	FILE* f = fopen(testpath, "r");
 	if (f)
-	{ 
+	{
 		fseek(f, 0, SEEK_END);
 		u32 sz = ftell(f);
 		memset(previewBuf, 0, wcSize);
@@ -139,10 +139,10 @@ void reloadMultiplePreviewBuf(u8* previewBuf, const int i, const int n, const in
 			fpos_t pos = 520;
 			fsetpos(f, &pos);
 		}
-		fread(previewBuf, wcSize, 1, f); 
+		fread(previewBuf, wcSize, 1, f);
 	}
 	fclose(f);
-	
+
 	patchWondercardDate(previewBuf);
 }
 
@@ -167,7 +167,7 @@ int getFreeLocationWC(u8 *mainbuf)
 			break;
 		}
 	}
-	
+
 	return t == 0 ? ofs.maxWondercards - 1 : t;
 }
 
@@ -176,7 +176,7 @@ void findFreeLocationWC(u8 *mainbuf, int nInjected[])
 	nInjected[0] = getFreeLocationWC(mainbuf);
 }
 
-int getN(const int i) 
+int getN(const int i)
 {
 	// we decided to not handle multiple wcs
 	// for gens prior to 6
@@ -184,9 +184,10 @@ int getN(const int i)
 	{
 		return 0;
 	}
-	
+
 	switch (i)
 	{
+		case 0 : return 3;
 		case 1 : return 10;
 		case 48 : return 4;
 		case 71 : return 5;
@@ -201,7 +202,7 @@ int getN(const int i)
 		case 142 : return 5;
 		case 184 : return 11;
 		case 201 : return 3;
-		case 204 : return 7; 		
+		case 204 : return 7;
 		case 205 : return 2;
 		case 211 : return 7;
 		case 221 : return 6;
@@ -223,20 +224,20 @@ int getN(const int i)
 		case 627 : return 6;
 		case 1111 : return 6;
 		case 1114 : return 8;
-		case 2016 : return 3;		
-	}	
+		case 2016 : return 3;
+	}
 	return 0;
 }
 
 void eventDatabase(u8* mainbuf) {
 	const u32 dbCount = game_is3DS() ? SMCOUNT : (game_isgen5() ? 170 : 190);
 	const u16 wcSize = ofs.wondercardSize;
-	
+
 	char *database[dbCount];
 	int *spriteArray = (int*)malloc(dbCount * sizeof(int));
 	u8 *previewbuf = (u8*)malloc(wcSize);
 	memset(previewbuf, 0, wcSize);
-	
+
 	if (game_isgen7())
 	{
 		filldatabase7(database, spriteArray);
@@ -259,24 +260,24 @@ void eventDatabase(u8* mainbuf) {
 		free(previewbuf);
 		return;
 	}
-	
+
 	int currentEntry = 0;
 	int page = 0;
-	
+
 	bool adapt = false;
 	bool langVett[9];
 	bool overwrite = false;
 	int nInjected[1] = {0};
 	int langSelected = -1;
 	int currentMultipleWCSelected = 0;
-	
+
 	findFreeLocationWC(mainbuf, nInjected);
-	
+
 	while(aptMainLoop())
 	{
 		hidScanInput();
 		calcCurrentEntryMorePagesReversed(&currentEntry, &page, fill_get_index()/10, 9, 5);
-		
+
 		if (hidKeysDown() & KEY_B)
 		{
 			break;
@@ -287,7 +288,7 @@ void eventDatabase(u8* mainbuf) {
 		{
 			const int total = (game_isgen7()) ? 9 : 7;
 			int i = getI(database[page * 10 + currentEntry], game_is3DS() ? true : false);
-			
+
 			// check for single events
 			char testpath[40];
 			for (int j = 0; j < total; j++)
@@ -311,9 +312,9 @@ void eventDatabase(u8* mainbuf) {
 
 				FILE* f = fopen(testpath, "r");
 				langVett[j] = f ? true : false;
-				fclose(f); 
+				fclose(f);
 			}
-			
+
 			//check for multiple wcx events
 			int k, n = getN(i);
 			if (n != 0)
@@ -322,7 +323,7 @@ void eventDatabase(u8* mainbuf) {
 				{
 					k = 0;
 					for (int t = 0; t < n; t++)
-					{	
+					{
 						if (game_isgen7())
 						{
 							getMultiplePathWCXFull(testpath, j, i, t + 1);
@@ -341,7 +342,7 @@ void eventDatabase(u8* mainbuf) {
 								currentMultipleWCSelected = t + 1;
 							}
 						}
-						fclose(f); 
+						fclose(f);
 					}
 					langVett[j] = (k == n) ? true : false;
 				}
@@ -356,25 +357,25 @@ void eventDatabase(u8* mainbuf) {
 					langSelected = i;
 				}
 			}
-			
+
 			if (langSelected != -1)
 			{
 				reloadPreviewBuf(previewbuf, i, langSelected);
-				reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);					
+				reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
 			}
-			
+
 			while (aptMainLoop())
 			{
 				hidScanInput();
 				touchPosition touch;
 				hidTouchRead(&touch);
-				
+
 				if (hidKeysDown() & KEY_B)
 				{
 					currentMultipleWCSelected = 0;
 					break;
 				}
-				
+
 				// in case of multiple WCs for the same ID, switch'em all
 				if ((hidKeysDown() & KEY_L) || (hidKeysDown() & KEY_R))
 				{
@@ -389,7 +390,7 @@ void eventDatabase(u8* mainbuf) {
 						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
 					}
 				}
-				
+
 				if ((hidKeysHeld() & KEY_L) && (hidKeysHeld() & KEY_R) && game_is3DS())
 				{
 					init_qr(previewbuf, MODE_WCX);
@@ -404,16 +405,16 @@ void eventDatabase(u8* mainbuf) {
 					{
 						if (!socket_init())
 							break;
-						
+
 						do {
 							hidScanInput();
 							process_wcx(previewbuf);
 							printEventInjector(previewbuf, spriteArray[i], i, langVett, adapt, overwrite, langSelected, nInjected[0], EVENTS_OTA);
 						} while (aptMainLoop() && !(hidKeysDown() & KEY_B));
-						socket_shutdown();						
+						socket_shutdown();
 					}
 				}
-				
+
 				// slot selection
 				if (hidKeysDown() & KEY_TOUCH && touch.px > 251 && touch.px < 287 && touch.py > 168 && touch.py < 193)
 				{
@@ -427,7 +428,7 @@ void eventDatabase(u8* mainbuf) {
 							hidScanInput();
 							calcCurrentEntryMorePages(&entry, &page, maxpages, max, 8);
 							printEventInjector(mainbuf, entry, page, langVett, adapt, overwrite, langSelected, max, EVENTS_SLOT);
-							
+
 							if (hidKeysDown() & KEY_X)
 							{
 								u8 empty[ofs.wondercardSize];
@@ -448,13 +449,13 @@ void eventDatabase(u8* mainbuf) {
 									{
 										sprintf(path, "%d.%s", (int)wcx_get_id(tmp), game_isgen6() ? "wc6" : "wc7");
 									}
-									
+
 									char dmppath[100];
 									time_t unixTime = time(NULL);
 									struct tm* timeStruct = gmtime((const time_t *)&unixTime);
-									snprintf(dmppath, 100, "sdmc:/3ds/PKSM/dump/%04i%02i%02i", 
-											timeStruct->tm_year + 1900, 
-											timeStruct->tm_mon + 1, 
+									snprintf(dmppath, 100, "sdmc:/3ds/PKSM/dump/%04i%02i%02i",
+											timeStruct->tm_year + 1900,
+											timeStruct->tm_mon + 1,
 											timeStruct->tm_mday);
 									mkdir(dmppath, 777);
 									chdir(dmppath);
@@ -463,7 +464,7 @@ void eventDatabase(u8* mainbuf) {
 									infoDisp(i18n(S_EXTRACTED));
 								}
 							}
-							
+
 							if (hidKeysDown() & KEY_A)
 							{
 								nInjected[0] = entry + 40*page;
@@ -472,7 +473,7 @@ void eventDatabase(u8* mainbuf) {
 						}
 					}
 				}
-				
+
 				if (hidKeysHeld() & KEY_TOUCH)
 				{
 					bool languageTouched = false;
@@ -504,7 +505,7 @@ void eventDatabase(u8* mainbuf) {
 						langSelected = 6;
 						languageTouched = true;
 					}
-					
+
 					if (total == 9)
 					{
 						if (touch.px > 231 && touch.px < 267 && touch.py > 74 && touch.py < 95 && langVett[7]) {
@@ -516,13 +517,13 @@ void eventDatabase(u8* mainbuf) {
 							languageTouched = true;
 						}
 					}
-					
+
 					if (languageTouched)
 					{
 						reloadPreviewBuf(previewbuf, i, langSelected);
 						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
 					}
-					
+
 					if (touch.px > 231 && touch.px < 267 && touch.py > 110 && touch.py < 131) {
 						overwrite = true;
 						nInjected[0] = 0;
@@ -531,14 +532,14 @@ void eventDatabase(u8* mainbuf) {
 						overwrite = false;
 						findFreeLocationWC(mainbuf, nInjected);
 					}
-					
+
 					if (touch.px > 231 && touch.px < 267 && touch.py > 138 && touch.py < 159) adapt = true;
 					if (touch.px > 270 && touch.px < 306 && touch.py > 138 && touch.py < 159) adapt = false;
 				}
 
 				// inject the wondercards
 				if (hidKeysDown() & KEY_START)
-				{	
+				{
 					// Eon Ticket is not available in XY
 					if (game_getisXY() && i == 2048)
 					{
@@ -558,7 +559,7 @@ void eventDatabase(u8* mainbuf) {
 							setSaveLanguage(mainbuf, langSelected);
 						}
 					}
-					
+
 					// reached last slot, reset the slot to 0
 					if (nInjected[0] >= ofs.maxWondercards)
 					{
@@ -570,14 +571,14 @@ void eventDatabase(u8* mainbuf) {
 					infoDisp(i18n(S_DATABASE_SUCCESS_INJECTION));
 					break;
 				}
-				
+
 				printEventInjector(previewbuf, spriteArray[i], i, langVett, adapt, overwrite, langSelected, nInjected[0], EVENTS_DEFAULT);
 			}
 		}
-		
+
 		printEventList(database, currentEntry, page, spriteArray);
 	}
-	
+
 	free(spriteArray);
 	free(previewbuf);
 }
