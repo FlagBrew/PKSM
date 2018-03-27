@@ -210,6 +210,7 @@ int getN(const int i)
 
 	switch (i)
 	{
+		case 0 : return 3;
 		case 1 : return 10;
 		case 48 : return 4;
 		case 71 : return 5;

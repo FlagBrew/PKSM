@@ -34,7 +34,7 @@ void fill_arrays(char *database[], int spriteArray[]) {
 void filldatabase7(char *database[], int spriteArray[]) {
 	count = 0;
 
-	// database[count] = "0000 - Mewnium Z"; spriteArray[count++] = 0;
+	database[count] = "0000 - Pokemon Bank 2018 Primarina/Incineroar/Decidueye"; spriteArray[count++] = 0;
 	database[count] = "0004 - Mewnium Z (Test)"; spriteArray[count++] = 0;
 	database[count] = "0201 - Birthday Events"; spriteArray[count++] = 764;
 	database[count] = "0202 - Revival Herb"; spriteArray[count++] = 0;
