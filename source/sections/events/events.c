@@ -394,6 +394,7 @@ void eventDatabase(u8* mainbuf) {
 				if ((hidKeysHeld() & KEY_L) && (hidKeysHeld() & KEY_R) && game_is3DS())
 				{
 					init_qr(previewbuf, MODE_WCX);
+					patchWondercardDate(previewbuf);
 				}
 
 				// wireless injection toggle
@@ -412,6 +413,7 @@ void eventDatabase(u8* mainbuf) {
 							printEventInjector(previewbuf, spriteArray[i], i, langVett, adapt, overwrite, langSelected, nInjected[0], EVENTS_OTA);
 						} while (aptMainLoop() && !(hidKeysDown() & KEY_B));
 						socket_shutdown();
+						patchWondercardDate(previewbuf);
 					}
 				}
 
