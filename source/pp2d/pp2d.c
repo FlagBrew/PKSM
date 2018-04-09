@@ -32,7 +32,6 @@
  */
 
 #include "pp2d.h"
-#include "loadbmp.h"
 
 static DVLB_s* vshader_dvlb;
 static shaderProgram_s program;
@@ -519,19 +518,6 @@ float pp2d_get_wtext_width(const wchar_t* text, float scaleX, float scaleY)
 	float width;
 	pp2d_get_text_size_internal(&width, NULL, scaleX, scaleY, -1, buf);
 	return width;
-}
-
-void pp2d_load_texture_bmp(size_t id, const char* path)
-{
-	if (id >= MAX_TEXTURES)
-		return;
-	
-	u8* image = NULL;
-	unsigned int width = 0, height = 0;
-	loadbmp_decode_file(path, &image, &width, &height);
-	
-	pp2d_load_texture_memory(id, image, width, height);
-	free(image);
 }
 
 void pp2d_load_texture_memory(size_t id, void* buf, u32 width, u32 height)
