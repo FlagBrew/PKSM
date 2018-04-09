@@ -27,14 +27,14 @@ int fill_get_index() {
 void fill_arrays(char *database[], int spriteArray[]) {
 	while (!(count % 10 == 0)) {
 		database[count] = " ";
-		spriteArray[count++] = -1;	
+		spriteArray[count++] = -1;
 	}
 }
 
 void filldatabase7(char *database[], int spriteArray[]) {
 	count = 0;
-	
-	// database[count] = "0000 - Mewnium Z"; spriteArray[count++] = 0;
+
+	database[count] = "0000 - Pokemon Bank 2018 Primarina/Incineroar/Decidueye"; spriteArray[count++] = 0;
 	database[count] = "0004 - Mewnium Z (Test)"; spriteArray[count++] = 0;
 	database[count] = "0201 - Birthday Events"; spriteArray[count++] = 764;
 	database[count] = "0202 - Revival Herb"; spriteArray[count++] = 0;
@@ -44,7 +44,7 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	// database[count] = "0207 - Big Nugget"; spriteArray[count++] = 0;
 	database[count] = "0208 - Rare Candy"; spriteArray[count++] = 0;
 	database[count] = "0210 - Gold Bottle Cap"; spriteArray[count++] = 0;
-	database[count] = "0211 - PC Icy items"; spriteArray[count++] = 0;	
+	database[count] = "0211 - PC Icy items"; spriteArray[count++] = 0;
 	database[count] = "0218 - Lunar Shiny Magikarp"; spriteArray[count++] = 129;
 	database[count] = "0219 - 7-11 Machamp"; spriteArray[count++] = 68;
 	database[count] = "0220 - Shiny Tapu Koko"; spriteArray[count++] = 785;
@@ -152,6 +152,7 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[count] = "1623 - PGL Prize"; spriteArray[count++] = 0;
 	database[count] = "1624 - Rockruff"; spriteArray[count++] = 744;
 	database[count] = "1625 - Quick Ball x12"; spriteArray[count++] = 0;
+	database[count] = "1626 - Master Ball"; spriteArray[count++] = 0;
 	database[count] = "2040 - Stardust"; spriteArray[count++] = 0;
 	database[count] = "2041 - Star Piece"; spriteArray[count++] = 0;
 	database[count] = "2042 - Nugget"; spriteArray[count++] = 0;
@@ -160,7 +161,7 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[count] = "2045 - Comet Shard"; spriteArray[count++] = 0;
 	database[count] = "2046 - Ash Greninja"; spriteArray[count++] = 658;
 	database[count] = "2047 - PGL 50BP"; spriteArray[count++] = 0;
-	
+
 	fill_arrays(database, spriteArray);
 }
 
@@ -422,13 +423,13 @@ void filldatabase6(char *database[], int spriteArray[]) {
 	database[count] = "1515 - PGL Garchomp"; spriteArray[count++] = 445;
 	database[count] = "1516 - PGL N's Darmanitan"; spriteArray[count++] = 555;
 	database[count] = "2048 - Eon Ticket"; spriteArray[count++] = 0;
-	
+
 	fill_arrays(database, spriteArray);
 }
 
-void filldatabase5(char *database[], int spriteArray[]) {	
+void filldatabase5(char *database[], int spriteArray[]) {
 	count = 0;
-	
+
 	database[count] = "000 - Liberty Pass"; spriteArray[count++] = 0;
 	database[count] = "001 - Helpful Cubchoo"; spriteArray[count++] = 613;
 	database[count] = "002 - Summer Karrablast"; spriteArray[count++] = 588;
@@ -558,13 +559,13 @@ void filldatabase5(char *database[], int spriteArray[]) {
 	database[count] = "165 - Chief's Sableye"; spriteArray[count++] = 302;
 	database[count] = "166 - Yamamoto's Politoed"; spriteArray[count++] = 186;
 	database[count] = "167 - Tamamoto's Kingdra"; spriteArray[count++] = 230;
-	
+
 	fill_arrays(database, spriteArray);
 }
 
-void filldatabase4(char *database[], int spriteArray[]) {	
+void filldatabase4(char *database[], int spriteArray[]) {
 	count = 0;
-	
+
 	database[count] = "001 - TRU Manaphy"; spriteArray[count++] = 490;
 	database[count] = "002 - Festa Electabuzz"; spriteArray[count++] = 125;
 	database[count] = "003 - Festa Magmar"; spriteArray[count++] = 126;
@@ -657,6 +658,6 @@ void filldatabase4(char *database[], int spriteArray[]) {
 	database[count] = "185 - Oblivia Deoxys (Defense)"; spriteArray[count++] = 386;
 	database[count] = "186 - Oblivia Deoxys (Normal)"; spriteArray[count++] = 386;
 	database[count] = "187 - Oblivia Deoxys (Speed)"; spriteArray[count++] = 386;
-	
+
 	fill_arrays(database, spriteArray);
 }
