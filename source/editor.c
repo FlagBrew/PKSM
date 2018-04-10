@@ -235,10 +235,19 @@ void generate(u8* mainbuf, bool isTeam, int box, int currentEntry, int page, int
 	generating = false;
 }
 
+u8 createByte(u8 byte, u8 byteEntry) {	
+	return byte = byteEntry << 4 | byte;
+}
+
 void pokemonEditor(u8* mainbuf) {
 	int game = game_get();
 	
 	int lookup[] = {0, 1, 2, 4, 5, 3};
+	int byteLookup[3][5] = {
+		{0xa, 0xb, 0x7, 0x8, 0x9},
+		{0xc, 0xd, 0x4, 0x5, 0x6},
+		{0xe, 0xf, 0x1, 0x2, 0x3}
+	};
 	
 	int modeFlag = ED_STANDARD;
 	bool isTeam = false;
@@ -527,36 +536,20 @@ void pokemonEditor(u8* mainbuf) {
 													pkx_set_flag(pkmn, 0x1D, 0, !((pkmn[byteEntry] & 1) == 1));
 											}
 										}
-
-										bool downPlus = ((hidKeysDown() & KEY_TOUCH) && touch.px > 247 && touch.px < 264 && touch.py > 31 && touch.py < 49) || (hidKeysDown() & KEY_A);
-										bool downMinus = ((hidKeysDown() & KEY_TOUCH) && touch.px > 224 && touch.px < 241 && touch.py > 31 && touch.py < 49) || (hidKeysDown() & KEY_X);
-										bool heldPlus = ((hidKeysHeld() & KEY_TOUCH) && touch.px > 247 && touch.px < 264 && touch.py > 31 && touch.py < 49) || (hidKeysHeld() & KEY_A);
-										bool heldMinus = ((hidKeysHeld() & KEY_TOUCH) && touch.px > 224 && touch.px < 241 && touch.py > 31 && touch.py < 49) || (hidKeysHeld() & KEY_X);
 										
-										if (heldMinus && heldPlus)
-											speed = 0;
-										else if (sector[byteEntry][0] && downMinus) {
-											if (pkmn[byteEntry] > 0)
-												pkmn[byteEntry]--;
+										u8 byte = 0;
+										for (int y = 0; y < 3; y++) {
+											for (int x = 0; x < 5; x++) {
+												if ((hidKeysDown() & KEY_TOUCH) && touch.px > 42 + x*50 && touch.px < 77 + x*50 && touch.py > 90 + y*32 + y*2 && touch.py < 110 + y*32) {
+													byte = byteLookup[y][x];
+													pkmn[byteEntry] = createByte(byte, pkmn[byteEntry]);
+												}
+											}
 										}
-										else if (sector[byteEntry][0] && heldMinus) {
-											if (speed < -30 && pkmn[byteEntry] > 0)
-												pkmn[byteEntry]--;
-											else
-												speed--;
+										if ((hidKeysDown() & KEY_TOUCH) && touch.px > 192 && touch.px < 227 && touch.py > 186 && touch.py < 206) {
+											byte = 0x0;
+											pkmn[byteEntry] = createByte(byte, pkmn[byteEntry]);
 										}
-										else if (sector[byteEntry][0] && downPlus) {
-											if (pkmn[byteEntry] < 0xFF)
-												parseHexEditor(pkmn, byteEntry);
-										}
-										else if (sector[byteEntry][0] && heldPlus) {
-											if (speed > 30 && pkmn[byteEntry] < 0xFF)
-												parseHexEditor(pkmn, byteEntry);
-											else
-												speed++;
-										}
-										else
-											speed = 0;
 										
 										printPKEditor(pkmn, byteEntry, 0, 0, ED_HEX, descriptions);
 									}
