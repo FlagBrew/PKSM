@@ -31,6 +31,29 @@ int getI(char* str, bool is3ds)
 	return i;
 }
 
+int getVariant(char* str, bool isGen7, char *out)
+{
+	if (!isGen7)
+	{
+		out[0] = '\0';
+		return 0;
+	}
+	char *end = strchr(str, ' ');
+	if (!end) {
+	  // no space WTF?!
+		out[0] = '\0';
+		return -1;
+	}
+	int len = end - str;
+	if (len >= 4) {
+		memcpy(out, str+4, len-4);
+		out[len-4] = '\0';
+	} else {
+		out[0] = '\0';
+	}
+	return 0;
+}
+
 void getSinglePathPGF(char* path, const int lang, const int i)
 {
 	sprintf(path, "romfs:/pgf/%s/%d.pgf", tags[lang], i);
@@ -51,14 +74,14 @@ void getMultiplePathWCX(char* path, const int lang, const int i, const int j)
 	sprintf(path, "romfs:/wcx/%s/%d-%d.wcx", tags[lang], i, j);
 }
 
-void getSinglePathWCXFull(char* path, const int lang, const int i)
+void getSinglePathWCXFull(char* path, const int lang, const int i, const char* variant)
 {
-	sprintf(path, "romfs:/wcxfull/%s/%d.wcxfull", tags[lang], i);
+	sprintf(path, "romfs:/wcxfull/%s/%d%s.wcxfull", tags[lang], i, variant);
 }
 
-void getMultiplePathWCXFull(char* path, const int lang, const int i, const int j)
+void getMultiplePathWCXFull(char* path, const int lang, const int i, const char* variant, const int j)
 {
-	sprintf(path, "romfs:/wcxfull/%s/%d-%d.wcxfull", tags[lang], i, j);
+	sprintf(path, "romfs:/wcxfull/%s/%d%s-%d.wcxfull", tags[lang], i, variant, j);
 }
 
 void patchWondercardDate(u8* buf)
@@ -70,12 +93,12 @@ void patchWondercardDate(u8* buf)
 	}
 }
 
-void reloadPreviewBuf(u8* previewBuf, const int i, const int n)
+void reloadPreviewBuf(u8* previewBuf, const int i, const int n, const char* variant)
 {
 	char testpath[40];
 	if (game_isgen7())
 	{
-		getSinglePathWCXFull(testpath, n, i);
+		getSinglePathWCXFull(testpath, n, i, variant);
 	}
 	else if (game_isgen6())
 	{
@@ -110,12 +133,12 @@ void reloadPreviewBuf(u8* previewBuf, const int i, const int n)
 	patchWondercardDate(previewBuf);
 }
 
-void reloadMultiplePreviewBuf(u8* previewBuf, const int i, const int n, const int j)
+void reloadMultiplePreviewBuf(u8* previewBuf, const int i, const int n, const char* variant, const int j)
 {
 	char testpath[40];
 	if (game_isgen7())
 	{
-		getMultiplePathWCXFull(testpath, n, i, j);
+		getMultiplePathWCXFull(testpath, n, i, variant, j);
 	}
 	else if (game_isgen6())
 	{
@@ -287,15 +310,18 @@ void eventDatabase(u8* mainbuf) {
 		if (hidKeysDown() & KEY_A && spriteArray[page*10+currentEntry] != -1)
 		{
 			const int total = (game_isgen7()) ? 9 : 7;
-			int i = getI(database[page * 10 + currentEntry], game_is3DS() ? true : false);
-
+			int i = getI(database[page * 10 + currentEntry], game_is3DS());
+			// we decided to not handle variant wcs
+			// for gens prior to 7
+			char variant[3];
+			getVariant(database[page * 10 + currentEntry], game_isgen7(), variant);
 			// check for single events
 			char testpath[40];
 			for (int j = 0; j < total; j++)
 			{
 				if (game_isgen7())
 				{
-					getSinglePathWCXFull(testpath, j, i);
+					getSinglePathWCXFull(testpath, j, i, variant);
 				}
 				else if (game_isgen6())
 				{
@@ -326,7 +352,7 @@ void eventDatabase(u8* mainbuf) {
 					{
 						if (game_isgen7())
 						{
-							getMultiplePathWCXFull(testpath, j, i, t + 1);
+							getMultiplePathWCXFull(testpath, j, i, variant, t + 1);
 						}
 						else if (game_isgen6())
 						{
@@ -360,8 +386,8 @@ void eventDatabase(u8* mainbuf) {
 
 			if (langSelected != -1)
 			{
-				reloadPreviewBuf(previewbuf, i, langSelected);
-				reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
+				reloadPreviewBuf(previewbuf, i, langSelected, variant);
+				reloadMultiplePreviewBuf(previewbuf, i, langSelected, variant, currentMultipleWCSelected);
 			}
 
 			while (aptMainLoop())
@@ -387,7 +413,7 @@ void eventDatabase(u8* mainbuf) {
 						{
 							currentMultipleWCSelected = n;
 						}
-						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
+						reloadMultiplePreviewBuf(previewbuf, i, langSelected, variant, currentMultipleWCSelected);
 					}
 				}
 
@@ -522,8 +548,8 @@ void eventDatabase(u8* mainbuf) {
 
 					if (languageTouched)
 					{
-						reloadPreviewBuf(previewbuf, i, langSelected);
-						reloadMultiplePreviewBuf(previewbuf, i, langSelected, currentMultipleWCSelected);
+						reloadPreviewBuf(previewbuf, i, langSelected, variant);
+						reloadMultiplePreviewBuf(previewbuf, i, langSelected, variant, currentMultipleWCSelected);
 					}
 
 					if (touch.px > 231 && touch.px < 267 && touch.py > 110 && touch.py < 131) {

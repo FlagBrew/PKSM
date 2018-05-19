@@ -108,6 +108,10 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[count] = "0630 - Ilex Celebi"; spriteArray[count++] = 251;
 	database[count] = "0635 - Pokeball x100"; spriteArray[count++] = 0;
 	database[count] = "0636 - Revive x12"; spriteArray[count++] = 0;
+	database[count] = "0638UM - 2018 Legends Dialga"; spriteArray[count++] = 483;
+	database[count] = "0638US - 2018 Legends Palkia"; spriteArray[count++] = 484;
+	database[count] = "0649UM - 2018 Legends Heatran"; spriteArray[count++] = 485;
+	database[count] = "0649US - 2018 Legends Regigigas"; spriteArray[count++] = 486;
 	database[count] = "1105 - Shiny Tapu Koko"; spriteArray[count++] = 785;
 	database[count] = "1107 - Alolan Vulpix"; spriteArray[count++] = 37;
 	database[count] = "1108 - Alolan Sandshrew"; spriteArray[count++] = 27;
@@ -149,9 +153,9 @@ void filldatabase7(char *database[], int spriteArray[]) {
 	database[count] = "1620 - PGL Prize"; spriteArray[count++] = 0;
 	database[count] = "1622 - PGL Prize"; spriteArray[count++] = 0;
 	database[count] = "1623 - PGL Prize"; spriteArray[count++] = 0;
-	database[count] = "1624 - Rockruff"; spriteArray[count++] = 744;
+	database[count] = "1624UM - Rockruff"; spriteArray[count++] = 744;
+	database[count] = "1624US - Rockruff"; spriteArray[count++] = 744;
 	database[count] = "1625 - Quick Ball x12"; spriteArray[count++] = 0;
-	database[count] = "1626 - Master Ball"; spriteArray[count++] = 0;
 	database[count] = "2040 - Stardust"; spriteArray[count++] = 0;
 	database[count] = "2041 - Star Piece"; spriteArray[count++] = 0;
 	database[count] = "2042 - Nugget"; spriteArray[count++] = 0;
@@ -353,6 +357,10 @@ void filldatabase6(char *database[], int spriteArray[]) {
 	database[count] = "0591 - WCS 2016 Charmander"; spriteArray[count++] = 4;
 	database[count] = "0592 - WCS 2016 Squirtle"; spriteArray[count++] = 7;
 	database[count] = "0598 - Alexander Hoopa"; spriteArray[count++] = 720;
+	database[count] = "0638M - 2018 Legends Dialga"; spriteArray[count++] = 483;
+	database[count] = "0638S - 2018 Legends Palkia"; spriteArray[count++] = 484;
+	database[count] = "0649M - 2018 Legends Heatran"; spriteArray[count++] = 485;
+	database[count] = "0649S - 2018 Legends Regigigas"; spriteArray[count++] = 486;
 	database[count] = "0812 - Christmas Stantler"; spriteArray[count++] = 234;
 	database[count] = "1001 - Eevee House Sylveon"; spriteArray[count++] = 700;
 	//database[count] = "1004 - Olleh TV Charizard X/Y"; spriteArray[count++] = 6;
