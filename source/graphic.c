@@ -1249,9 +1249,20 @@ void printPKEditor(u8* pkmn, int additional1, int additional2, int additional3, 
 			printMenuBottom();
 			pksm_draw_texture(TEXTURE_BLUE_TEXT_BOX, 165, 28);
 			if (sector[additional1][0] && !(sector[additional1][1])) {
-				pksm_draw_texture(TEXTURE_MINUS_BUTTON, 224, 31);
-				pksm_draw_texture(TEXTURE_PLUS_BUTTON, 247, 31);
+				for (int y = 0; y < 3; y++) {
+					for (int x = 0; x < 5; x++) {
+						pksm_draw_texture(TEXTURE_DARK_BUTTON, 42 + x*50, 90 + y*32 + y*2);
+					}
+				}
+				pksm_draw_texture(TEXTURE_DARK_BUTTON, 192, 191);
+				pp2d_draw_text(55, 	92, FONT_SIZE_14, FONT_SIZE_14, WHITE, "A\n\nC\n\nE");
+				pp2d_draw_text(105, 92, FONT_SIZE_14, FONT_SIZE_14, WHITE, "B\n\nD\n\nF");
+				pp2d_draw_text(155, 92, FONT_SIZE_14, FONT_SIZE_14, WHITE, "7\n\n4\n\n1");
+				pp2d_draw_text(205, 92, FONT_SIZE_14, FONT_SIZE_14, WHITE, "8\n\n5\n\n2\n\n0");
+				pp2d_draw_text(255, 92, FONT_SIZE_14, FONT_SIZE_14, WHITE, "9\n\n6\n\n3");
+				
 			}
+						
 			if (hax)
 				pp2d_draw_rectangle(0, 0, 320, 240, RGBA8(255, 0, 0, 100));
 			
