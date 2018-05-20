@@ -1,3 +1,9 @@
+.vscode
 build/
 out/
 release/
+assets/gfx/pkm
+assets/gfx/types
+assets/romfs/gfx/*
+!assets/romfs/gfx/pkm_spritesheet.t3x
+!assets/romfs/gfx/types_spritesheet.t3x
