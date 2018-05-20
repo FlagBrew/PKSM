@@ -348,6 +348,8 @@ static void threshold(struct quirc *q)
 
 static void area_count(void *user_data, int y, int left, int right)
 {
+	(void)y;
+	
 	((struct quirc_region *)user_data)->count += right - left + 1;
 }
 
