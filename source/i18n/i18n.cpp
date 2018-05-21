@@ -428,7 +428,7 @@ int i18n::move(u8 lang, std::string val)
     return 0;
 }
 
-std::string i18n::localize(Language lang, int val)
+std::string i18n::localize(Language lang, const std::string& val)
 {
     switch (lang)
     {

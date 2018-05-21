@@ -50,7 +50,7 @@ namespace i18n
     std::string species(u8 lang, u16 value);
 
     // Used for general GUI stuff; not for PKM values
-    std::string localize(Language lang, int index);
+    std::string localize(Language lang, const std::string& index);
 };
 
 #endif
