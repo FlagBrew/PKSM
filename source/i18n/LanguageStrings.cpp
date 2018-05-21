@@ -57,7 +57,7 @@ LanguageStrings::LanguageStrings(Language lang)
     load(lang, "/moves.txt", moves);
     load(lang, "/natures.txt", natures);
     load(lang, "/species.txt", speciess);
-    load(lang, "/gui.txt", gui);
+    loadGui(lang);
     std::pair<std::string, int> tmp;
     for (size_t i = 1; i < items.size(); i++)
     {
@@ -89,6 +89,17 @@ void LanguageStrings::load(Language lang, const std::string name, std::vector<st
     {
         array.push_back(tmp.substr(0, tmp.find('\r')));
     }
+    values.close();
+}
+
+void LanguageStrings::loadGui(Language lang)
+{
+    static const std::string base = "romfs:/i18n/";
+    std::string path = io::exists(base + folder(lang) + "gui.json") ? base + folder(lang) + "gui.json" : base + folder(Language::EN) + "gui.json";
+
+    std::string tmpKey, tmpVal;
+    std::ifstream values(path);
+    gui << values;
     values.close();
 }
 
@@ -196,7 +207,7 @@ int LanguageStrings::move(std::string v) const
     return index >= 0 ? sortedMoves[index].second : 0;
 }
 
-std::string LanguageStrings::localize(int v) const
+std::string LanguageStrings::localize(const std::string& v) const
 {
-    return gui[v];
+    return gui.value(v, "Invalid");
 }

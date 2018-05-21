@@ -35,6 +35,7 @@
 #include <fstream>
 #include <unordered_map>
 #include "io.hpp"
+#include "json.hpp"
 
 enum Language
 {
@@ -63,12 +64,13 @@ protected:
     std::vector<std::string> moves;
     std::vector<std::string> natures;
     std::vector<std::string> speciess;
-    std::vector<std::string> gui;
+    nlohmann::json gui;
 
     std::vector<std::pair<std::string, int>> sortedItems;
     std::vector<std::pair<std::string, int>> sortedMoves;
 
     void load(Language lang, const std::string name, std::vector<std::string>& array);
+    void loadGui(Language lang);
 
 public:
     LanguageStrings(Language lang);
@@ -89,7 +91,7 @@ public:
     std::string nature(u8 v) const;
     std::string species(u16 v) const;
 
-    std::string localize(int v) const;
+    std::string localize(const std::string& v) const;
 };
 
 #endif
