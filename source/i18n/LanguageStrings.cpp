@@ -97,7 +97,6 @@ void LanguageStrings::loadGui(Language lang)
     static const std::string base = "romfs:/i18n/";
     std::string path = io::exists(base + folder(lang) + "gui.json") ? base + folder(lang) + "gui.json" : base + folder(Language::EN) + "gui.json";
 
-    std::string tmpKey, tmpVal;
     std::ifstream values(path);
     gui << values;
     values.close();
