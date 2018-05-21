@@ -29,6 +29,8 @@
 
 #include <3ds.h>
 #include <vector>
+#include "gui.hpp"
+#include "thread.hpp"
 #include "Title.hpp"
 
 #include "Sav.hpp"
@@ -41,6 +43,9 @@
 #include "SavSUMO.hpp"
 #include "SavUSUM.hpp"
 #include "SavXY.hpp"
+
+extern C3D_RenderTarget* g_renderTargetTop;
+extern C3D_RenderTarget* g_renderTargetBottom;
 
 namespace TitleLoader
 {

@@ -58,6 +58,7 @@ LanguageStrings::LanguageStrings(Language lang)
     load(lang, "/natures.txt", natures);
     load(lang, "/species.txt", speciess);
     loadGui(lang);
+    
     std::pair<std::string, int> tmp;
     for (size_t i = 1; i < items.size(); i++)
     {

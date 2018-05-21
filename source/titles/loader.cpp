@@ -143,7 +143,22 @@ void TitleLoader::scan(void)
     }
 }
 
-//std::unique_ptr<Sav> TitleLoader::load(void)
-//{
-//
-//}
+std::unique_ptr<Sav> TitleLoader::load(void)
+{
+    Threads::create((ThreadFunc)scan);
+
+    while (aptMainLoop() & !(hidKeysDown() & KEY_B))
+    {
+        hidScanInput();
+
+        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+        C2D_SceneBegin(g_renderTargetTop);
+        Gui::backgroundTop();
+        C2D_SceneBegin(g_renderTargetBottom);
+        Gui::backgroundBottom();
+        C3D_FrameEnd(0);
+        Gui::clearTextBufs();
+    }
+
+    return nullptr;
+}

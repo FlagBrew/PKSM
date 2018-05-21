@@ -28,8 +28,8 @@
 
 std::mt19937 g_randomNumbers;
 
-static C3D_RenderTarget* renderTargetTop;
-static C3D_RenderTarget* renderTargetBottom;
+C3D_RenderTarget* g_renderTargetTop;
+C3D_RenderTarget* g_renderTargetBottom;
 static C2D_SpriteSheet spritesheet_ui;
 static C2D_SpriteSheet spritesheet_pkm;
 static C2D_SpriteSheet spritesheet_types;
@@ -60,6 +60,11 @@ static Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int d
         tex.height = deltaY;
     }
     return tex;
+}
+
+C2D_Image Gui::TWLIcon(void)
+{
+    return C2D_SpriteSheetGetImage(spritesheet_ui, ui_spritesheet_res_twlcart_idx);
 }
 
 void Gui::backgroundBottom(void)
@@ -305,8 +310,8 @@ Result Gui::init(void)
 
     srand(time(NULL));
 
-    renderTargetTop = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
-    renderTargetBottom = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
+    g_renderTargetTop = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
+    g_renderTargetBottom = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
 
     dynamicBuf = C2D_TextBufNew(1024);
     g_widthBuf = C2D_TextBufNew(1024);
@@ -327,22 +332,22 @@ Result Gui::init(void)
     C2D_SpriteFromSheet(&bgCubes[6], spritesheet_ui, ui_spritesheet_res_anim_cubes_7_idx);
 
     //test
-    while (aptMainLoop() && !(hidKeysDown() & KEY_START))
-    {
-        hidScanInput();
+    // while (aptMainLoop() && !(hidKeysDown() & KEY_START))
+    // {
+    //     hidScanInput();
 
-        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-        C2D_TargetClear(renderTargetTop, C2D_Color32(0, 0, 0, 0));
-        C2D_TargetClear(renderTargetBottom, C2D_Color32(0x23, 0x45, 0x89, 0));
-        C2D_SceneBegin(renderTargetTop);
-        //backgroundAnimated(GFX_TOP);
-        drawMenuTop();
-        //sprite(ui_spritesheet_res_info_top_idx, 0, 0);
-        C2D_SceneBegin(renderTargetBottom);
-        backgroundAnimated(GFX_BOTTOM);
-        C3D_FrameEnd(0);
-        C2D_TextBufClear(g_widthBuf);
-    }
+    //     C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+    //     C2D_TargetClear(g_renderTargetTop, C2D_Color32(0, 0, 0, 0));
+    //     C2D_TargetClear(g_renderTargetBottom, C2D_Color32(0x23, 0x45, 0x89, 0));
+    //     C2D_SceneBegin(g_renderTargetTop);
+    //     //backgroundAnimated(GFX_TOP);
+    //     drawMenuTop();
+    //     //sprite(ui_spritesheet_res_info_top_idx, 0, 0);
+    //     C2D_SceneBegin(g_renderTargetBottom);
+    //     backgroundAnimated(GFX_BOTTOM);
+    //     C3D_FrameEnd(0);
+    //     C2D_TextBufClear(g_widthBuf);
+    // }
     
     return 0;
 }
@@ -584,7 +589,7 @@ void Gui::ball(size_t index, int x, int y)
 /*
 void Gui::pkmInfoViewer(PKX* pkm)
 {
-    C2D_SceneBegin(renderTargetTop);
+    C2D_SceneBegin(g_renderTargetTop);
     std::vector<std::string> labels = {"Localize me"}; // TODO: entries & values; i18n::localize
     int y_desc = 29;
     
@@ -704,7 +709,7 @@ void Gui::pkmInfoViewer(PKX* pkm)
 
 /*void Gui::drawBox(int box, const Sav* save)
 {
-    C2D_SceneBegin(renderTargetBottom);
+    C2D_SceneBegin(g_renderTargetBottom);
     C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_spritesheet_res_box_bottom_idx), 0, 0, 0.5f);
     sprite(ui_spritesheet_res_bar_editor_idx, 0, 210);
     sprite(ui_spritesheet_res_button_arrow_idx, 7, 17);
@@ -748,7 +753,7 @@ void Gui::pkmInfoViewer(PKX* pkm)
 
 /*void Gui::eventList(WCX* database[], int currentEntry, int page) // This database could be an STL class, too
 {
-    C2D_SceneBegin(renderTargetTop);
+    C2D_SceneBegin(g_renderTargetTop);
     printMenuTop();
     // do title text
     int y = 41;
@@ -825,22 +830,22 @@ void Gui::pkmInfoViewer(PKX* pkm)
         y += 37;
     }
     
-    C2D_SceneBegin(renderTargetBottom);
+    C2D_SceneBegin(g_renderTargetBottom);
     printMenuBottom();
     sprite(ui_spritesheet_res_bar_event_bottom_idx, 65, 45);
     C2D_DrawText(&LButton, C2D_WithColor, 83, 52, 0.5f, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
     C2D_DrawText(&RButton, C2D_WithColor, 221, 52, 0.5f, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
-    _draw_text_center(renderTargetBottom, 52, pages);
+    _draw_text_center(g_renderTargetBottom, 52, pages);
 }*/
 
 /*
 void Gui::menu(Language lang)
 {
-    C2D_SceneBegin(renderTargetTop);
+    C2D_SceneBegin(g_renderTargetTop);
 
     drawMenuTop();
 
-    C2D_SceneBegin(renderTargetBottom);
+    C2D_SceneBegin(g_renderTargetBottom);
     backgroundBottom();
     for (int i = 0; i < 3; i++)
     {

@@ -24,17 +24,18 @@
 *         reasonable ways as different from the original version.
 */
 
-#include <3ds.h>
 #include "app.hpp"
-#include "gui.hpp"
 
 int main()
 {
     Result res = App::init();
     if (R_FAILED(res))
     {
-        // handle init failure
+        App::exit();
+        return -1;
     }
+
+    std::unique_ptr<Sav> save = TitleLoader::load();
 
     App::exit();
     return 0;

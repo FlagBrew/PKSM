@@ -43,6 +43,7 @@ Result App::init(void)
 
 void App::exit(void)
 {
+    Threads::destroy();
     i18n::exit();
     Gui::exit();
     amExit();

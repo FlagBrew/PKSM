@@ -31,6 +31,8 @@
 #include "archive.hpp"
 #include "gui.hpp"
 #include "i18n.hpp"
+#include "loader.hpp"
+#include "thread.hpp"
 
 namespace App
 {
