@@ -39,6 +39,9 @@
 class Title 
 {
 public:
+    Title(void) = default;
+    ~Title(void);
+
     bool load(u64 id, FS_MediaType mediaType, FS_CardType cardType);
     CardType SPICardType(void);
     u32 highId(void);

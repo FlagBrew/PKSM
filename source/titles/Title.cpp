@@ -26,6 +26,12 @@
 
 #include "Title.hpp"
 
+Title::~Title(void)
+{
+    C3D_TexDelete(mIcon.tex);
+    free(mIcon.tex);
+}
+
 static C2D_Image loadTextureIcon(smdh_s *smdh)
 {
     C3D_Tex* tex = (C3D_Tex*)malloc(sizeof(C3D_Tex));
