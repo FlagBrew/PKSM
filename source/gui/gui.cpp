@@ -27,9 +27,10 @@
 #include "gui.hpp"
 
 std::mt19937 g_randomNumbers;
-
 C3D_RenderTarget* g_renderTargetTop;
 C3D_RenderTarget* g_renderTargetBottom;
+C2D_TextBuf g_widthBuf;
+
 static C2D_SpriteSheet spritesheet_ui;
 static C2D_SpriteSheet spritesheet_pkm;
 static C2D_SpriteSheet spritesheet_types;
@@ -38,7 +39,6 @@ static C2D_Image bgBoxes;
 static C2D_TextBuf dynamicBuf;
 static C2D_TextBuf staticBuf;
 static std::unordered_map<std::string, C2D_Text> staticMap;
-C2D_TextBuf g_widthBuf;
 
 static Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int dx, int dy)
 {
@@ -173,7 +173,7 @@ std::string splitWord(std::string& word, float scaleX, float maxWidth)
         // TODO: maxChars is wrong:
         // with lowercase, it works with size_t maxChars = ceilf(maxWidth / defaultWidth) * 2;
         // with uppercase, it works with ceilf(maxWidth / defaultWidth * 1.25f);
-        size_t maxChars = ceilf(maxWidth / defaultWidth * 1.25f);
+        size_t maxChars = ceilf(maxWidth / defaultWidth);
         for (std::string::iterator it = word.begin() + maxChars; it < word.end(); it += maxChars)
         {
             word.insert(it++, '\n');
@@ -235,7 +235,7 @@ void Gui::dynamicText(int x, int y, float width, const std::string& text, float 
 C2D_Text Gui::cacheStaticText(const std::string& strKey)
 {
     C2D_Text text;
-    std::unordered_map<std::string, C2D_Text>::iterator index = staticMap.find(strKey);
+    std::unordered_map<std::string, C2D_Text>::const_iterator index = staticMap.find(strKey);
     if (index == staticMap.end())
     {
         C2D_TextParse(&text, staticBuf, strKey.c_str());
@@ -260,17 +260,17 @@ void Gui::staticText(const std::string& strKey, int x, int y, float scaleX, floa
 {
     std::string print = strKey;
     C2D_Text text;
-    std::unordered_map<std::string, C2D_Text>::iterator index = staticMap.find(strKey);
+    std::unordered_map<std::string, C2D_Text>::const_iterator index = staticMap.find(strKey);
     if (index == staticMap.end())
     {
         float defaultWidth = scaleX * fontGetInfo()->defaultWidth.charWidth;
         float width = defaultWidth * print.length();
         if (width > maxWidth)
         {
-            size_t maxChars = (size_t)(maxWidth / defaultWidth);
-            for (size_t i = 1; i * maxChars < strKey.length(); i++)
+            size_t maxChars = ceilf(maxWidth / defaultWidth);
+            for (std::string::iterator it = print.begin() + maxChars; it < print.end(); it += maxChars)
             {
-                print.insert(i * maxChars + i - 1, "\n");
+                print.insert(it++, '\n');
             }
         }
         C2D_TextParse(&text, dynamicBuf, print.c_str());
@@ -391,7 +391,11 @@ void Gui::exit(void)
 
 void Gui::sprite(int key, int x, int y)
 {
-    if (key == ui_spritesheet_res_bar_editor_idx)
+    if (key == ui_spritesheet_res_null)
+    {
+        return;
+    }
+    else if (key == ui_spritesheet_res_bar_editor_idx)
     {
         C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, key), x, y, 0.5f, nullptr, 320.0f, 1.0f);
     }

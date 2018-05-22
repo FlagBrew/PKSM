@@ -28,7 +28,6 @@
 
 void Clickable::update(touchPosition* touch)
 {
-    draw();
     if (touch->px >= xPos && touch->px <= xPos + width
         && touch->py >= yPos && touch->py <= yPos + height)
     {
@@ -37,4 +36,6 @@ void Clickable::update(touchPosition* touch)
     }
     else
         clicked = false;
+
+    draw();
 }

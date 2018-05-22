@@ -46,6 +46,7 @@
 // emulated
 #define ui_spritesheet_res_emulated_button_arrow_right_idx 501
 #define ui_spritesheet_res_emulated_selector_menu_left_idx 502
+#define ui_spritesheet_res_null 503
 
 // colors
 #define COLOR_WHITE     C2D_Color32(255, 255, 255, 255)
