@@ -152,6 +152,8 @@ std::unique_ptr<Sav> TitleLoader::load(void)
         hidScanInput();
 
         C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+        C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
+        C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
         C2D_SceneBegin(g_renderTargetTop);
         Gui::backgroundTop();
         C2D_SceneBegin(g_renderTargetBottom);

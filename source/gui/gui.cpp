@@ -164,60 +164,57 @@ void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float 
     C2D_DrawText(&text, C2D_WithColor, x, y, 0.5f, scaleX, scaleY, color);
 }
 
+// TODO: move to StringUtils
+std::string splitWord(std::string& word, float scaleX, float maxWidth)
+{
+    float defaultWidth = scaleX * fontGetInfo()->defaultWidth.charWidth;
+    if (textWidth(word, scaleX) > maxWidth)
+    {
+        // TODO: maxChars is wrong:
+        // with lowercase, it works with size_t maxChars = ceilf(maxWidth / defaultWidth) * 2;
+        // with uppercase, it works with ceilf(maxWidth / defaultWidth * 1.25f);
+        size_t maxChars = ceilf(maxWidth / defaultWidth * 1.25f);
+        for (std::string::const_iterator it = word.begin() + maxChars; it < word.end(); it += maxChars)
+        {
+            word.insert(it, '\n');
+        }
+    }
+    return word;
+}
+
 void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, float maxWidth)
 {
-    std::string print = str;
-    int nextSpace = -1, lastSplit = 0, position = 0, length = print.length();
-    C2D_Text text;
+    std::string dst, line, word;
+    dst = line = word = "";
 
-    while (position < length)
+    for (std::string::const_iterator it = str.begin(); it != str.end(); it++)
     {
-        nextSpace = print.find(' ', position);
-        if (textWidth(print.substr(lastSplit + 1, (nextSpace == std::string::npos ? nextSpace : nextSpace - (lastSplit + 1))), scaleX) > maxWidth)
+        word += *it;
+        if (*it == ' ')
         {
-            // Can't figure out the exact reason this doesn
-            // if (lastSplit == position - 1)
-            // {
-            //     // split without regard for words
-            //     for (int i = nextSpace; i > position; i--)
-            //     {
-            //         if (textWidth(print.substr(position, i - position), scaleX) < maxWidth)
-            //         {
-            //             i++;
-            //             print.insert(i, "\n");
-            //             lastSplit = i;
-            //             if (textWidth(print.substr(i + 1, nextSpace), scaleX) > maxWidth)
-            //             {
-            //                 position = i + 1;
-            //                 i = nextSpace;
-            //             }
-            //             else
-            //                 break;
-            //         }
-            //     }
-            // }
-            // else
-            // {
-                print[position - 1] = '\n';
-                lastSplit = nextSpace - 1;
-            // }
+            // split single words that are bigger than maxWidth
+            word = splitWord(word, scaleX, maxWidth);
+            if (textWidth(line + word, scaleX) <= maxWidth)
+            {
+                line += word;
+            }
+            else
+            {
+                dst += line + '\n';
+                line = word;
+            }
+            word = "";
         }
-        if (nextSpace == std::string::npos)
-            break;
-        position = nextSpace + 1;
     }
-    // float defaultWidth = scaleX * fontGetInfo()->defaultWidth.charWidth;
-    // float width = defaultWidth * print.length();
-    
-    // if (width > maxWidth)
-    // {
-    //     size_t maxChars = (size_t)(maxWidth / defaultWidth);
-    //     for (size_t i = 1; i * maxChars < str.length(); i++)
-    //     {
-    //         print.insert(i * maxChars + i - 1, "\n");
-    //     }
-    // }
-    C2D_TextParse(&text, dynamicBuf, print.c_str());
+
+    // attach line leftovers to word
+    word = line + word;
+
+    // we're out of the loop, what if the last word is longer than maxWidth? split it
+    dst += splitWord(word, scaleX, maxWidth);
+
+    C2D_Text text;
+    C2D_TextParse(&text, dynamicBuf, dst.c_str());
     C2D_TextOptimize(&text);
     C2D_DrawText(&text, C2D_WithColor, x, y, 0.5f, scaleX, scaleY, color);
 }
@@ -375,24 +372,6 @@ Result Gui::init(void)
     C2D_SpriteFromSheet(&bgCubes[4], spritesheet_ui, ui_spritesheet_res_anim_cubes_5_idx);
     C2D_SpriteFromSheet(&bgCubes[5], spritesheet_ui, ui_spritesheet_res_anim_cubes_6_idx);
     C2D_SpriteFromSheet(&bgCubes[6], spritesheet_ui, ui_spritesheet_res_anim_cubes_7_idx);
-
-    //test
-    // while (aptMainLoop() && !(hidKeysDown() & KEY_START))
-    // {
-    //     hidScanInput();
-
-    //     C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-    //     C2D_TargetClear(g_renderTargetTop, C2D_Color32(0, 0, 0, 0));
-    //     C2D_TargetClear(g_renderTargetBottom, C2D_Color32(0x23, 0x45, 0x89, 0));
-    //     C2D_SceneBegin(g_renderTargetTop);
-    //     //backgroundAnimated(GFX_TOP);
-    //     drawMenuTop();
-    //     //sprite(ui_spritesheet_res_info_top_idx, 0, 0);
-    //     C2D_SceneBegin(g_renderTargetBottom);
-    //     backgroundAnimated(GFX_BOTTOM);
-    //     C3D_FrameEnd(0);
-    //     C2D_TextBufClear(g_widthBuf);
-    // }
     
     return 0;
 }
