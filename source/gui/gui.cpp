@@ -174,9 +174,9 @@ std::string splitWord(std::string& word, float scaleX, float maxWidth)
         // with lowercase, it works with size_t maxChars = ceilf(maxWidth / defaultWidth) * 2;
         // with uppercase, it works with ceilf(maxWidth / defaultWidth * 1.25f);
         size_t maxChars = ceilf(maxWidth / defaultWidth * 1.25f);
-        for (std::string::const_iterator it = word.begin() + maxChars; it < word.end(); it += maxChars)
+        for (std::string::iterator it = word.begin() + maxChars; it < word.end(); it += maxChars)
         {
-            word.insert(it, '\n');
+            word.insert(it++, '\n');
         }
     }
     return word;
