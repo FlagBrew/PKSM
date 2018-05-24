@@ -29,6 +29,7 @@
 
 #include <3ds.h>
 #include <vector>
+#include "Hid.hpp"
 #include "gui.hpp"
 #include "thread.hpp"
 #include "Title.hpp"

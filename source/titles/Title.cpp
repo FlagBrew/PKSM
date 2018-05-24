@@ -59,7 +59,7 @@ bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
 
     if (mCard == CARD_CTR)
     {
-        smdh_s *smdh = loadSMDH(lowId(), highId(), mMedia);
+        smdh_s* smdh = loadSMDH(lowId(), highId(), mMedia);
         if (smdh == NULL)
         {
             return false;
@@ -120,4 +120,9 @@ std::string Title::name(void)
 CardType Title::SPICardType(void)
 {
     return mCardType;
+}
+
+C2D_Image Title::icon(void)
+{
+    return mIcon;
 }

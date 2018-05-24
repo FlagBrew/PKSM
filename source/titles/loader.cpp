@@ -26,7 +26,34 @@
 
 #include "loader.hpp"
 
+// title list
 static std::vector<Title> titles;
+
+// local gui variables and functions
+static const size_t rowlen = 4;
+static const size_t collen = 8;
+
+static int selectorX(size_t i)
+{
+    return 50*((i % (rowlen*collen)) % collen);
+}
+
+static int selectorY(size_t i)
+{
+    return 20 + 50*((i % (rowlen*collen)) / collen);
+}
+
+static void drawSelector(size_t idx)
+{
+    static const int w = 2;
+    const int x = selectorX(idx);
+    const int y = selectorY(idx);
+    C2D_DrawRectSolid(         x,          y, 0.5f, 50,       50, C2D_Color32(255, 255, 255, 100)); 
+    C2D_DrawRectSolid(         x,          y, 0.5f, 50,        w, COLOR_YELLOW); // top
+    C2D_DrawRectSolid(         x,      y + w, 0.5f,  w, 50 - 2*w, COLOR_YELLOW); // left
+    C2D_DrawRectSolid(x + 50 - w,      y + w, 0.5f,  w, 50 - 2*w, COLOR_YELLOW); // right
+    C2D_DrawRectSolid(         x, y + 50 - w, 0.5f, 50,        w, COLOR_YELLOW); // bottom
+}
 
 void TitleLoader::scan(void)
 {
@@ -62,7 +89,7 @@ void TitleLoader::scan(void)
         return;
     }
 
-    for (size_t i = 0, sz = ctrTitleIds.size(); i < sz; i++)
+    for (size_t i = 0; i < ctrTitleIds.size(); i++)
     {
         u64 id = ctrTitleIds.at(i);
         if (std::find(ids.begin(), ids.end(), id) != ids.end())
@@ -75,6 +102,7 @@ void TitleLoader::scan(void)
         }
     }
 
+    // sort the list alphabetically
     std::sort(titles.begin(), titles.end(), [](Title& l, Title& r) {
         return l.name() < r.name();
     });
@@ -87,6 +115,7 @@ void TitleLoader::scan(void)
         return;
     }
 
+    // check for cartridge and push at the beginning of the title list
     if (cardType == CARD_CTR)
     {
         // do the same
@@ -145,21 +174,46 @@ void TitleLoader::scan(void)
 
 std::unique_ptr<Sav> TitleLoader::load(void)
 {
+    // start to retrieve our titles
     Threads::create((ThreadFunc)scan);
 
+    // create hid object
+    Hid hid(rowlen * collen, collen);
     while (aptMainLoop() & !(hidKeysDown() & KEY_B))
     {
+        // update selector
         hidScanInput();
+        hid.update(titles.size());
 
+        // start frame
         C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
         C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
         C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
+
         C2D_SceneBegin(g_renderTargetTop);
         Gui::backgroundTop();
+
+        for (size_t k = hid.page() * hid.maxVisibleEntries(); 
+            k < hid.page() * hid.maxVisibleEntries() + hid.maxEntries(titles.size()) + 1; 
+            k++)
+        {
+            C2D_DrawImageAt(titles.at(k).icon(), selectorX(k) + 1, selectorY(k) + 1, 0.5f, NULL, 1.0f, 1.0f);
+        }
+
+        if (titles.size() > 0)
+        {
+            drawSelector(hid.index());
+        }
+
         C2D_SceneBegin(g_renderTargetBottom);
         Gui::backgroundBottom();
+
+        // TODO: remove, debug
+        if (titles.size() > 0)
+            Gui::dynamicText(titles.at(hid.fullIndex()).name(), 10, 10, 0.5f, 0.5f, COLOR_WHITE);
+        
         C3D_FrameEnd(0);
-        Gui::clearTextBufs();
+        Gui::clearTextBufs();  
     }
 
     return nullptr;

@@ -70,13 +70,13 @@ C2D_Image Gui::TWLIcon(void)
 void Gui::backgroundBottom(void)
 {
     C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, COLOR_PALEBLUE);
-    C2D_DrawRectSolid(0, 219, 0.5f, 320, 21, COLOR_MENUBLUE);
+    C2D_DrawRectSolid(0, 221, 0.5f, 320, 19, COLOR_MENUBLUE);
 }
 
 void Gui::backgroundTop(void)
 {
     C2D_DrawRectSolid(0, 0, 0.5f, 400, 240, COLOR_MENUBLUE);
-    C2D_DrawRectSolid(0, 0, 0.5f, 400, 25, COLOR_HIGHBLUE);
+    C2D_DrawRectSolid(0, 0, 0.5f, 400, 19, COLOR_HIGHBLUE);
 }
 
 void Gui::backgroundAnimated(gfxScreen_t screen)

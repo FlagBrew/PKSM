@@ -47,6 +47,7 @@ public:
     u32 highId(void);
     u32 lowId(void);
     std::string name(void);
+    C2D_Image icon(void);
 
 private:
     u64 mId;
