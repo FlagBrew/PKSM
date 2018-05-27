@@ -1,3 +1,4 @@
 {
-    "PKSM": "PKSM"
+    "LOADER_INSTRUCTIONS_TOP": "Please choose the save you want to open.",
+    "LOADER_INSTRUCTIONS_BOTTOM": "Move your DPAD. Press A to continue, B to exit."
 }
