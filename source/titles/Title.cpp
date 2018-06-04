@@ -33,21 +33,20 @@ Title::~Title(void)
 
 static C2D_Image loadTextureIcon(smdh_s *smdh)
 {
-    C3D_Tex* tex = (C3D_Tex*)malloc(sizeof(C3D_Tex));
+    C3D_Tex* tex = new C3D_Tex;
     static const Tex3DS_SubTexture subt3x = { 48, 48, 0.0f, 48/64.0f, 48/64.0f, 0.0f };
-    C2D_Image image = (C2D_Image){ tex, &subt3x };
-    C3D_TexInit(image.tex, 64, 64, GPU_RGB565);
-    
-    u16* dest = (u16*)image.tex->data + (64-48)*64;
+    C3D_TexInit(tex, 64, 64, GPU_RGB565);
+
+    u16* dest = (u16*)tex->data + (64-48)*64;
     u16* src = (u16*)smdh->bigIconData;
     for (int j = 0; j < 48; j += 8)
     {
-        memcpy(dest, src, 48*8*sizeof(u16));
+        std::copy(src, src + 48*8, dest);
         src += 48*8;
         dest += 64*8;
     }
     
-    return image;
+    return C2D_Image {tex, &subt3x};
 }
 
 bool Title::load(u64 id, FS_MediaType media, FS_CardType card)

@@ -52,6 +52,7 @@ namespace TitleLoader
 {
     void scan(void);
     std::unique_ptr<Sav> load(void);
+    void exit(void);
 }
 
 #endif

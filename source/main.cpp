@@ -37,6 +37,8 @@ int main()
 
     std::unique_ptr<Sav> save = TitleLoader::load();
 
+    TitleLoader::exit();
+
     App::exit();
     return 0;
 }

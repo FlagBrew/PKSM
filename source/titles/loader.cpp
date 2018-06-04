@@ -27,7 +27,7 @@
 #include "loader.hpp"
 
 // title list
-static std::vector<Title> titles;
+static std::vector<std::shared_ptr<Title>> titles;
 
 // local gui variables and functions
 static const size_t rowlen = 4;
@@ -94,8 +94,8 @@ void TitleLoader::scan(void)
         u64 id = ctrTitleIds.at(i);
         if (std::find(ids.begin(), ids.end(), id) != ids.end())
         {
-            Title title;
-            if (title.load(id, MEDIATYPE_SD, CARD_CTR))
+            auto title = std::shared_ptr<Title>(new Title);
+            if (title->load(id, MEDIATYPE_SD, CARD_CTR))
             {
                 titles.push_back(title);
             }
@@ -103,8 +103,8 @@ void TitleLoader::scan(void)
     }
 
     // sort the list alphabetically
-    std::sort(titles.begin(), titles.end(), [](Title& l, Title& r) {
-        return l.name() < r.name();
+    std::sort(titles.begin(), titles.end(), [](std::shared_ptr<Title>& l, std::shared_ptr<Title>& r) {
+        return l->name() < r->name();
     });
 
     // get our cartridge
@@ -135,8 +135,8 @@ void TitleLoader::scan(void)
         // check if this id is in our list
         if (std::find(ctrTitleIds.begin(), ctrTitleIds.end(), id) != ctrTitleIds.end())
         {
-            Title title;
-            if (title.load(id, MEDIATYPE_GAME_CARD, cardType))
+            auto title = std::shared_ptr<Title>(new Title);
+            if (title->load(id, MEDIATYPE_GAME_CARD, cardType))
             {
                 titles.push_back(title);
             }
@@ -146,10 +146,10 @@ void TitleLoader::scan(void)
     {
         // ds game card, behave differently
         // load the save and check for known patterns
-        Title title;
-        if (title.load(0, MEDIATYPE_GAME_CARD, cardType))
+        auto title = std::shared_ptr<Title>(new Title);
+        if (title->load(0, MEDIATYPE_GAME_CARD, cardType))
         {
-            CardType cardType = title.SPICardType();
+            CardType cardType = title->SPICardType();
             u32 saveSize = SPIGetCapacity(cardType);
             u32 sectorSize = (saveSize < 0x10000) ? saveSize : 0x10000;
             u8* saveFile = new u8[saveSize];
@@ -197,7 +197,7 @@ std::unique_ptr<Sav> TitleLoader::load(void)
             k < hid.page() * hid.maxVisibleEntries() + hid.maxEntries(titles.size()) + 1; 
             k++)
         {
-            C2D_DrawImageAt(titles.at(k).icon(), selectorX(k) + 1, selectorY(k) + 1, 0.5f, NULL, 1.0f, 1.0f);
+            C2D_DrawImageAt(titles.at(k)->icon(), selectorX(k) + 1, selectorY(k) + 1, 0.5f, NULL, 1.0f, 1.0f);
         }
 
         if (titles.size() > 0)
@@ -210,11 +210,16 @@ std::unique_ptr<Sav> TitleLoader::load(void)
 
         // TODO: remove, debug
         if (titles.size() > 0)
-            Gui::dynamicText(titles.at(hid.fullIndex()).name(), 10, 10, 0.5f, 0.5f, COLOR_WHITE);
+            Gui::dynamicText(titles.at(hid.fullIndex())->name(), 10, 10, 0.5f, 0.5f, COLOR_WHITE);
         
         C3D_FrameEnd(0);
         Gui::clearTextBufs();  
     }
 
     return nullptr;
+}
+
+void TitleLoader::exit()
+{
+    titles.clear();
 }
