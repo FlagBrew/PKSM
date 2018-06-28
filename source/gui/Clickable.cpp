@@ -26,16 +26,16 @@
 
 #include "Clickable.hpp"
 
-void Clickable::update(touchPosition* touch)
+void Clickable::update(touchPosition* touch, int argument)
 {
     if (touch->px >= xPos && touch->px <= xPos + width
         && touch->py >= yPos && touch->py <= yPos + height)
     {
-        // instead of setting clicked, we can pass a callback function that is called here
-        clicked = true;
+        if (hasArg)
+            withArg(argument);
+        else
+            noArg();
     }
-    else
-        clicked = false;
 
     draw();
 }

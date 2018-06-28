@@ -26,8 +26,17 @@
 
 #include "Button.hpp"
 
-Button::Button(int x, int y, u16 w, u16 h, int image, std::string text, float textScale, u32 textColor) 
-    : Clickable(x, y, w, h)
+Button::Button(int x, int y, u16 w, u16 h, std::function<void()> callback, int image, std::string text, float textScale, u32 textColor) 
+    : Clickable(x, y, w, h, callback)
+{
+    key = image;
+    this->text = text;
+    this->textScale = textScale;
+    this->textColor = textColor;
+}
+
+Button::Button(int x, int y, u16 w, u16 h, std::function<void(int)> callback, int image, std::string text, float textScale, u32 textColor) 
+    : Clickable(x, y, w, h, callback)
 {
     key = image;
     this->text = text;

@@ -27,22 +27,35 @@
 #ifndef CLICKABLE_HPP
 #define CLICKABLE_HPP
 
+#include <functional>
 #include "gui.hpp"
 
 class Clickable
 {
 public:
-    Clickable(int x, int y, u16 w, u16 h) : xPos(x), yPos(y), width(w), height(h) {}
+    Clickable(int x, int y, u16 w, u16 h, std::function<void()> function) : xPos(x), yPos(y), width(w), height(h)
+    {
+        noArg = function;
+    }
+    Clickable(int x, int y, u16 w, u16 h, std::function<void(int)> function) : xPos(x), yPos(y), width(w), height(h)
+    {
+        hasArg = true;
+        withArg = function;
+    }
     virtual ~Clickable() { };
 
-    virtual void update(touchPosition* touch);
-    virtual bool isClicked() const { return clicked; }
+    virtual void update(touchPosition* touch, int argument = 0);
     virtual void draw() = 0;
 
 protected:
-    bool clicked = false;
     int xPos, yPos;
     u16 width, height;
+    bool hasArg = false;
+    union
+    {
+        std::function<void()> noArg;
+        std::function<void(int)> withArg;
+    };
 };
 
 #endif
