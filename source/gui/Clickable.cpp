@@ -36,6 +36,4 @@ void Clickable::update(touchPosition* touch, int argument)
         else
             noArg();
     }
-
-    draw();
 }

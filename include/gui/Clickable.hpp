@@ -45,7 +45,7 @@ public:
     virtual ~Clickable() { };
 
     virtual void update(touchPosition* touch, int argument = 0);
-    virtual void draw() = 0;
+    virtual void draw() const = 0;
 
 protected:
     int xPos, yPos;
