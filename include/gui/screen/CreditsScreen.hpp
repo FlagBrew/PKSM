@@ -24,20 +24,17 @@
 *         reasonable ways as different from the original version.
 */
 
-#include "Button.hpp"
-#include "gui.hpp"
+#ifndef CREDITSSCREEN_HPP
+#define CREDITSSCREEN_HPP
 
-Button::Button(int x, int y, u16 w, u16 h, std::function<void()> callback, int image, std::string text, float textScale, u32 textColor) 
-    : Clickable(x, y, w, h, callback)
-{
-    key = image;
-    this->text = text;
-    this->textScale = textScale;
-    this->textColor = textColor;
-}
+#include "Screen.hpp"
 
-void Button::draw() const
+class CreditsScreen : public Screen
 {
-    Gui::sprite(key, xPos, yPos);
-    Gui::dynamicText(text, xPos, yPos, textScale, textScale, textColor, xPos + width);
-}
+public:
+    void update(touchPosition* touch) override;
+    void draw() const override;
+    ScreenType type() const override { return ScreenType::CREDITS; }
+};
+
+#endif

@@ -43,6 +43,8 @@
 #include "types_spritesheet.h"
 #include "WCX.hpp"
 
+#include "Screen.hpp"
+
 // emulated
 #define ui_spritesheet_res_emulated_button_arrow_right_idx 501
 #define ui_spritesheet_res_emulated_selector_menu_left_idx 502
@@ -70,6 +72,7 @@
 namespace Gui
 {
     Result init(void);
+    void mainLoop(void);
     void exit(void);
 
     C3D_RenderTarget* target(gfxScreen_t t);
@@ -80,8 +83,8 @@ namespace Gui
     void generation(PKX* pkm, int x, int y);
     void sprite(int key, int x, int y);
     void sprite(int key, int x, int y, u32 color);
-    void pkm(PKX* pkm, int x, int y, u32 color = 0);
-    void pkm(int formSpecies, int x, int y, u32 color = 0);
+    void pkm(PKX* pkm, int x, int y, u32 color = C2D_Color32(0, 0, 0, 255));
+    void pkm(int formSpecies, int x, int y, u32 color = C2D_Color32(0, 0, 0, 255));
     void pkmInfoViewer(PKX* pkm);
 
     void backgroundTop(void);
@@ -104,6 +107,8 @@ namespace Gui
     //void drawBox(int box, const Sav* save);
     //void eventList(WCX* database[], int currentEntry, int page);
     //void menu(Language lang);
+
+    void setScreen(Screen* screen);
 }
 
 extern std::mt19937 g_randomNumbers;

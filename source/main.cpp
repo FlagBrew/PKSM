@@ -25,6 +25,7 @@
 */
 
 #include "app.hpp"
+#include "MainMenu.hpp"
 
 int main()
 {
@@ -36,6 +37,10 @@ int main()
     }
 
     std::unique_ptr<Sav> save = TitleLoader::load();
+
+    Gui::setScreen(new MainMenu);
+
+    Gui::mainLoop();
 
     TitleLoader::exit();
 

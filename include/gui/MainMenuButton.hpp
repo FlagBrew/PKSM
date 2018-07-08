@@ -24,20 +24,26 @@
 *         reasonable ways as different from the original version.
 */
 
+#ifndef MAINMENUBUTTON_HPP
+#define MAINMENUBUTTON_HPP
+
 #include "Button.hpp"
-#include "gui.hpp"
+#include "ui_spritesheet.h"
 
-Button::Button(int x, int y, u16 w, u16 h, std::function<void()> callback, int image, std::string text, float textScale, u32 textColor) 
-    : Clickable(x, y, w, h, callback)
+// A clone of Button that adds the main menu image and centers the text differently
+class MainMenuButton : public Button
 {
-    key = image;
-    this->text = text;
-    this->textScale = textScale;
-    this->textColor = textColor;
-}
+public:
+    MainMenuButton(int x, int y, u16 w, u16 h, std::function<void()> callback, int image, std::string text, float textScale, u32 textColor, int imageY)
+            : Button(x, y, w, h, callback, ui_spritesheet_res_button_menu_idx, text, textScale, textColor)
+    {
+        menuImage = image;
+        this->imageY = imageY;
+    }
 
-void Button::draw() const
-{
-    Gui::sprite(key, xPos, yPos);
-    Gui::dynamicText(text, xPos, yPos, textScale, textScale, textColor, xPos + width);
-}
+    void draw() const override;
+private:
+    int menuImage, imageY;
+};
+
+#endif

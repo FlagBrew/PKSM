@@ -24,20 +24,28 @@
 *         reasonable ways as different from the original version.
 */
 
-#include "Button.hpp"
+#include "CreditsScreen.hpp"
 #include "gui.hpp"
+#include "MainMenu.hpp"
 
-Button::Button(int x, int y, u16 w, u16 h, std::function<void()> callback, int image, std::string text, float textScale, u32 textColor) 
-    : Clickable(x, y, w, h, callback)
+void CreditsScreen::update(touchPosition* touch)
 {
-    key = image;
-    this->text = text;
-    this->textScale = textScale;
-    this->textColor = textColor;
+    if (touch) {}
+    if (hidKeysDown() & KEY_B)
+    {
+        Gui::setScreen(new MainMenu);
+    }
 }
 
-void Button::draw() const
+void CreditsScreen::draw() const
 {
-    Gui::sprite(key, xPos, yPos);
-    Gui::dynamicText(text, xPos, yPos, textScale, textScale, textColor, xPos + width);
+    C2D_SceneBegin(g_renderTargetTop);
+    Gui::backgroundTop();
+    // Not sure what to put on the top
+    Gui::staticText(GFX_TOP, 4, "Credits", FONT_SIZE_14, FONT_SIZE_14, COLOR_BLUE);
+
+    C2D_SceneBegin(g_renderTargetBottom);
+    Gui::backgroundBottom();
+    Gui::dynamicText("Naxann and Anty-Lemon for various contributions\nKaphotics and SciresM for PKHeX and memecrypto\nJ-K-D for direct save import/export\nAstronautlevel for QR code support\nArchitDate for serveLegality\nSlownic and zaksabeast for servepkx\nSlashcash for PCHex++\nTuxSH for TWLSaveTool\nProjectPokemon.org for most of the wondercards\nSimona for being my best supporter\nAll the countless translators who worked on the localization\nAll the contributors on Github\nEveryone supporting the development\n\nwww.github.com/BernardoGiordano/PKSM", 20, 30, FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE);
+    Gui::staticText(GFX_BOTTOM, 225, "Press B to return", FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE);
 }

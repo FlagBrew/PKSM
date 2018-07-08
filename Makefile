@@ -44,6 +44,7 @@ OUTDIR			:=	out
 BUILD			:=	build
 SOURCES			:=	source \
 					source/gui \
+					source/gui/screen \
 					source/i18n \
 					source/io \
 					source/memecrypto \
@@ -57,6 +58,7 @@ SOURCES			:=	source \
 DATA			:=	data
 INCLUDES		:=	include \
 					include/gui \
+					include/gui/screen \
 					include/i18n \
 					include/io \
 					include/personal \

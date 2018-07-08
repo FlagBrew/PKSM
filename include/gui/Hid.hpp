@@ -44,17 +44,17 @@ public:
 
     ~Hid(void) { }
 
-    size_t fullIndex(void);
-    size_t index(void);
-    size_t maxEntries(size_t max);
-    size_t maxVisibleEntries(void);
-    int page(void);
+    size_t fullIndex(void) const;
+    size_t index(void) const;
+    size_t maxEntries(size_t max) const;
+    size_t maxVisibleEntries(void) const;
+    int page(void) const;
     void update(size_t count);
-
-private:
     void page_back(void);
     void page_forward(void);
+    void select(size_t index);
 
+private:
     size_t mIndex;
     int mPage;
     size_t mMaxPages;

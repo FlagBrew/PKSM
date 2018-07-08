@@ -40,6 +40,8 @@ static C2D_TextBuf dynamicBuf;
 static C2D_TextBuf staticBuf;
 static std::unordered_map<std::string, C2D_Text> staticMap;
 
+static Screen* currentScreen = NULL;
+
 static Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int dx, int dy)
 {
     Tex3DS_SubTexture tex = *image.subtex;
@@ -327,22 +329,6 @@ static void _draw_repeat(int key, int x, int y, u8 rows, u8 cols)
     }
 }
 
-// TODO: this is just a test, remove
-static void drawMenuTop()
-{
-    static const std::string version = StringUtils::format("v%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO);
-    Gui::clearTextBufs();
-    Gui::backgroundTop();
-    Gui::staticText(GFX_TOP, 4, "PKSM", FONT_SIZE_14, FONT_SIZE_14, COLOR_BLUE);
-    C2D_ImageTint tint;
-    for(int i = 0; i < 4; i++)
-    {
-        tint.corners[i] = {COLOR_YELLOW, 1.0f};
-    }
-    float width = textWidth(version, FONT_SIZE_9);
-    Gui::staticText(version, 398 - width, 229, FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE);
-}
-
 Result Gui::init(void)
 {
     gfxInitDefault();
@@ -374,6 +360,27 @@ Result Gui::init(void)
     C2D_SpriteFromSheet(&bgCubes[6], spritesheet_ui, ui_spritesheet_res_anim_cubes_7_idx);
     
     return 0;
+}
+
+void Gui::mainLoop(void)
+{
+    bool exit = false;
+    while (aptMainLoop() && !exit)
+    {
+        hidScanInput();
+        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+        C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
+        C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
+
+        currentScreen->draw();
+        touchPosition touch;
+        hidTouchRead(&touch);
+        currentScreen->update(&touch);
+        exit = currentScreen->type() == ScreenType::MAINMENU && (hidKeysDown() & KEY_START);
+
+        C3D_FrameEnd(0);
+        Gui::clearTextBufs();
+    }
 }
 
 void Gui::exit(void)
@@ -735,50 +742,6 @@ void Gui::pkmInfoViewer(PKX* pkm)
 }
 */
 
-/*void Gui::drawBox(int box, const Sav* save)
-{
-    C2D_SceneBegin(g_renderTargetBottom);
-    C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_spritesheet_res_box_bottom_idx), 0, 0, 0.5f);
-    sprite(ui_spritesheet_res_bar_editor_idx, 0, 210);
-    sprite(ui_spritesheet_res_button_arrow_idx, 7, 17);
-    sprite(ui_spritesheet_res_emulated_button_arrow_right_idx, 185, 17);
-    sprite(ui_spritesheet_res_button_swap_idx, 242, 5);
-    sprite(ui_spritesheet_res_button_back_idx, 283, 211);
-    float textWidth;
-    std::string text;
-    // buttons
-    sprite(ui_spritesheet_res_button_entry_idx, 208, 43);
-    textWidth = _text_width(text = "button");
-    _draw_text(208.0f + ((109.0f - textWidth) / 2.0f), 49, text, COLOR_BLACK);
-
-    sprite(ui_spritesheet_res_button_entry_idx, 208, 72);
-    textWidth = _text_width(text = "Button");
-    _draw_text(208.0f + ((109.0f - textWidth) / 2.0f), 78, text, COLOR_BLACK);
-
-    sprite(ui_spritesheet_res_button_entry_idx, 208, 101);
-    textWidth = _text_width(text = "BUTTON");
-    _draw_text(208.0f + ((109.0f - textWidth) / 2.0f), 107, text, COLOR_BLACK);
-
-    sprite(ui_spritesheet_res_button_entry_idx, 208, 130);
-    textWidth = _text_width(text = "butón");
-    _draw_text(208.0f + ((109.0f - textWidth) / 2.0f), 136, text, COLOR_BLACK);
-
-    sprite(ui_spritesheet_res_button_wireless_idx, 240, 211);
-
-    int y = 45;
-    for (int row = 0; row < 5; row++)
-    {
-        int x = 44;
-        for (int column = 0; column < 6; column++)
-        {
-            int index = row * 6 + column;
-            pkm(save->pkm(box, index).get(), x, y);
-            x += 34;
-        }
-        y += 30;
-    }
-}*/
-
 /*void Gui::eventList(WCX* database[], int currentEntry, int page) // This database could be an STL class, too
 {
     C2D_SceneBegin(g_renderTargetTop);
@@ -866,49 +829,6 @@ void Gui::pkmInfoViewer(PKX* pkm)
     _draw_text_center(g_renderTargetBottom, 52, pages);
 }*/
 
-/*
-void Gui::menu(Language lang)
-{
-    C2D_SceneBegin(g_renderTargetTop);
-
-    drawMenuTop();
-
-    C2D_SceneBegin(g_renderTargetBottom);
-    backgroundBottom();
-    for (int i = 0; i < 3; i++)
-    {
-        for (int j = 0; j < 2; j++)
-        {
-            sprite(ui_spritesheet_res_button_menu_idx, 15 + j*150, 20 + i*63);
-            std::string toDraw = "Menu Item " + std::to_string(i*2 + j); // TODO: i18n::localize
-            dynamicText(toDraw, 15 + j*150 + 52 + (84 - textWidth(toDraw, FONT_SIZE_15)) / 2, 17 + i*63 + 19, FONT_SIZE_15, FONT_SIZE_15, COLOR_LIGHTBLUE);
-            switch (i*2 + j)
-            {
-                case 0:
-                    sprite(ui_spritesheet_res_icon_storage_idx, 25, 27);
-                    break;
-                case 1:
-                    sprite(ui_spritesheet_res_icon_editor_idx, 175, 28);
-                    break;
-                case 2:
-                    sprite(ui_spritesheet_res_icon_events_idx, 25, 93);
-                    break;
-                case 3:
-                    sprite(ui_spritesheet_res_icon_scripts_idx, 175, 91);
-                    break;
-                case 4:
-                    sprite(ui_spritesheet_res_icon_settings_idx, 25, 157);
-                    break;
-                case 5:
-                    sprite(ui_spritesheet_res_icon_credits_idx, 175, 160);
-                    break;
-            }
-        }
-    }
-    dynamicText(GFX_BOTTOM, 225, "Bottom Indications", FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE); // TODO: i18n::localize
-}
-*/
-
 C2D_Image Gui::type(Language lang, u8 type)
 {
     switch (lang)
@@ -934,4 +854,16 @@ C2D_Image Gui::type(Language lang, u8 type)
         default:
             return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_en_00_idx + type);
     }
+}
+
+void Gui::setScreen(Screen* screen)
+{
+    if (currentScreen != NULL && currentScreen->type() == screen->type())
+    {
+        if (screen != currentScreen)
+            delete screen;
+        return;
+    }
+    delete currentScreen;
+    currentScreen = screen;
 }

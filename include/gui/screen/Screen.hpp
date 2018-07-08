@@ -24,20 +24,33 @@
 *         reasonable ways as different from the original version.
 */
 
-#include "Button.hpp"
-#include "gui.hpp"
+#ifndef SCREEN_HPP
+#define SCREEN_HPP
 
-Button::Button(int x, int y, u16 w, u16 h, std::function<void()> callback, int image, std::string text, float textScale, u32 textColor) 
-    : Clickable(x, y, w, h, callback)
-{
-    key = image;
-    this->text = text;
-    this->textScale = textScale;
-    this->textColor = textColor;
-}
+#include "3ds.h"
+#include <citro3d.h>
 
-void Button::draw() const
+extern C3D_RenderTarget* g_renderTargetTop;
+extern C3D_RenderTarget* g_renderTargetBottom;
+
+enum ScreenType
 {
-    Gui::sprite(key, xPos, yPos);
-    Gui::dynamicText(text, xPos, yPos, textScale, textScale, textColor, xPos + width);
-}
+    MAINMENU,
+    STORAGE,
+    EDITOR,
+    EVENTS,
+    SCRIPTS,
+    SETTINGS,
+    CREDITS
+};
+
+class Screen
+{
+public:
+    virtual ~Screen() {}
+    virtual void update(touchPosition* touch) = 0;
+    virtual void draw() const = 0;
+    virtual ScreenType type() const = 0;
+};
+
+#endif

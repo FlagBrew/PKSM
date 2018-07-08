@@ -24,20 +24,12 @@
 *         reasonable ways as different from the original version.
 */
 
-#include "Button.hpp"
+#include "MainMenuButton.hpp"
 #include "gui.hpp"
 
-Button::Button(int x, int y, u16 w, u16 h, std::function<void()> callback, int image, std::string text, float textScale, u32 textColor) 
-    : Clickable(x, y, w, h, callback)
-{
-    key = image;
-    this->text = text;
-    this->textScale = textScale;
-    this->textColor = textColor;
-}
-
-void Button::draw() const
+void MainMenuButton::draw() const
 {
     Gui::sprite(key, xPos, yPos);
-    Gui::dynamicText(text, xPos, yPos, textScale, textScale, textColor, xPos + width);
+    Gui::sprite(menuImage, xPos + 10, imageY);
+    Gui::dynamicText(xPos + 52, yPos + 19, 84, text, textScale, textScale, textColor);
 }

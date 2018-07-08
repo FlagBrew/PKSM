@@ -26,27 +26,27 @@
 
 #include "Hid.hpp"
 
-size_t Hid::index(void)
+size_t Hid::index(void) const
 {
     return mIndex;
 }
 
-size_t Hid::fullIndex(void)
+size_t Hid::fullIndex(void) const
 {
     return mIndex + mPage * mMaxVisibleEntries;
 }
 
-int Hid::page(void)
+int Hid::page(void) const
 {
     return mPage;
 }
 
-size_t Hid::maxVisibleEntries(void)
+size_t Hid::maxVisibleEntries(void) const
 {
     return mMaxVisibleEntries;
 }
 
-size_t Hid::maxEntries(size_t count)
+size_t Hid::maxEntries(size_t count) const
 {
     return (count - mPage*mMaxVisibleEntries) > mMaxVisibleEntries ? mMaxVisibleEntries - 1 : count - mPage*mMaxVisibleEntries - 1;
 }
@@ -197,4 +197,9 @@ void Hid::update(size_t count) {
     {
         svcSleepThread(FASTSCROLL_WAIT);
     }
+}
+
+void Hid::select(size_t index)
+{
+    mIndex = index;
 }
