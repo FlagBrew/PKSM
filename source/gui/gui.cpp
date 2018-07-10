@@ -93,9 +93,11 @@ void Gui::backgroundAnimated(gfxScreen_t screen)
         std::make_pair(bgCubes[5], randomRotation()),
         std::make_pair(bgCubes[6], randomRotation())
     };
-    static int boxesX = 0;
+    static int boxesX[11] = {0};
     static const int maxCubes = 25;
     static int cooldown = 30;
+
+    int maxrange = screen == GFX_TOP ? 400 : 320;
 
     if (firstRun)
     {
@@ -105,15 +107,21 @@ void Gui::backgroundAnimated(gfxScreen_t screen)
             i->first.params.pos.y = g_randomNumbers() % 200;
         }
         firstRun = false;
+        for (int i = 0; i < 11; i++)
+        {
+            boxesX[i] = (i - 1) * (maxrange / 10);
+    }
     }
 
     C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_spritesheet_res_anim_background_idx), 0, 0, 0.5f);
     
-    int maxrange = screen == GFX_TOP ? 400 : 320;
+    Tex3DS_SubTexture boxesPart;// = _select_box(bgBoxes, maxrange - boxesX / 2, 0, 800, 240);
+    for (int i = 0; i < 11; i++)
+    {
+        boxesPart = _select_box(bgBoxes, i * (maxrange / 10), 0, (i + 1) * (maxrange / 10), 240);
+        C2D_DrawImageAt({bgBoxes.tex, &boxesPart}, boxesX[i], 0, 0.5f);
+    }
 
-    Tex3DS_SubTexture boxesPart = _select_box(bgBoxes, maxrange - boxesX / 2, 0, 800, 240);
-    C2D_DrawImageAt({bgBoxes.tex, &boxesPart}, 0, 0, 0.5f);
-    
     if (g_randomNumbers() % 100 < 5 && cubes.size() < maxCubes && cooldown < 0)
     {
         cubes.push_back(std::make_pair(bgCubes[g_randomNumbers() % 7], randomRotation()));
@@ -149,7 +157,10 @@ void Gui::backgroundAnimated(gfxScreen_t screen)
     }
 
     cooldown--;
-    boxesX = boxesX > (maxrange * 2) ? 0 : boxesX + 1;
+    for (int i = 0; i < 11; i++)
+    {
+        boxesX[i] = boxesX[i] >= maxrange ? - maxrange / 10 : boxesX[i] + 1;
+}
 }
 
 void Gui::clearTextBufs(void)
