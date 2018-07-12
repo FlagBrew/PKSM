@@ -17,7 +17,7 @@ APP_AUTHOR          :=	Bernardo Giordano
 TARGET              :=	$(subst $e ,_,$(notdir $(APP_TITLE)))
 OUTDIR              :=	out
 BUILD               :=	build
-SOURCES             :=	source/memecrypto/source \
+SOURCES             :=	source/memecrypto \
 						source/pp2d \
 						source/quirc \
 						source/sections/events \
@@ -48,7 +48,7 @@ PRODUCT_CODE        :=	CTR-HB-PKSM
 
 VERSION_MAJOR := 5
 VERSION_MINOR := 1
-VERSION_MICRO := 2
+VERSION_MICRO := 3
 
 ROSALINA := 1
 

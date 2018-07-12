@@ -30,13 +30,13 @@ Multipurpose and portable save manager for Generations IV to VII, programmed in 
 
 ## Installation
 
-This software works on CFW and *hax/Rosalina-based Homebrew Launchers. An internet connection may be required at the first launch.
+This software works on CFW and Homebrew Launcher. An internet connection may be required at the first launch.
 
 | Entrypoint | Instructions |
 | :--------: | :----------- |
 | CFW | Install the `PKSM.cia` file provided in the release page with your favourite installer. You can now launch the application from the Home Menu |
-| Rosalina HBL | Move `PKSM.3dsx` from the rosalina folder in the `PKSM.zip` file. You can now launch PKSM from a [Rosalina-based Homebrew Launcher](https://github.com/fincs/new-hbmenu) |
-| *hax HBL | Move `PKSM.3dsx` and `PKSM.xml` from the standard folder in the `PKSM.zip` file. You can now launch PKSM from a [*hax-based Homebrew Launcher](https://smealum.github.io/ninjhax2/starter.zip) |
+| Rosalina | Move `PKSM.3dsx` from the `rosalina` folder in the `PKSM.zip` file. You can now launch PKSM from the [Homebrew Launcher](https://github.com/fincs/new-hbmenu) |
+| *hax | Move `PKSM.3dsx` and `PKSM.xml` from the `hax` folder in the `PKSM.zip` file. You can now launch PKSM from the [Homebrew Launcher](https://github.com/fincs/new-hbmenu) |
 
 Initial launch will require your system to be connected to the internet. This is needed to download the additional assets required for the application to launch. If your system is not connected to the internet, you will get a **Failed to receive a status code** error.
 
@@ -61,7 +61,7 @@ If you're coming from a PKSM version < 5.0.0, you'll notice your `bank.bin` file
 * **[phbank2pksm](https://github.com/BernardoGiordano/PKSM-Tools)**: tool to convert a PHBank bank file to a PKSM storage file. Requires a web browser.
 * **[PKSMScript](https://github.com/BernardoGiordano/PKSM-Tools/tree/master/PKSMScript)**: python tool to compile .pksm scripts.
 
-## Working paths
+## Working path
 
 * Additional assets are located at `/3ds/PKSM/additionalassets/`
 * Automatic save backups are located at `/3ds/PKSM/backup/[GAME_DATE]/main`
@@ -81,7 +81,7 @@ You can get real-time support by joining PKSM's discord server.
 
 ## Building
 
-PKSM requires [latest libctru](https://github.com/smealum/ctrulib), [latest citro3d](https://github.com/fincs/citro3d) and [latest pp2d](https://github.com/BernardoGiordano/PKSM/tree/master/source/pp2d). The executable can be compiled with [devkitARM r47+](https://sourceforge.net/projects/devkitpro/).To compile the .cia you need [3dstool](https://github.com/dnasdw/3dstool/releases), [bannertool and makerom](https://github.com/Steveice10/buildtools/tree/master/3ds) in your PATH. Run the command `make all` to build both the .3dsx and .cia.
+PKSM requires [latest libctru](https://github.com/smealum/ctrulib) and [latest citro3d](https://github.com/fincs/citro3d). The executable can be compiled with [devkitARM r47+](https://sourceforge.net/projects/devkitpro/).To compile the .cia you need [3dstool](https://github.com/dnasdw/3dstool/releases), [bannertool and makerom](https://github.com/Steveice10/buildtools/tree/master/3ds) in your PATH. Run the command `make all` to build both the .3dsx and .cia.
 
 ## Credits
 

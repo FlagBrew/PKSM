@@ -140,7 +140,7 @@ static void printScriptMenu(Script_s* scriptList, int count, int entry)
 		pp2d_draw_rectangle(0, 0, 400, 20, MENUBLUE);
 		pp2d_draw_rectangle(0, 220, 400, 20, MENUBLUE);
 		
-		char counter[10] = {0};
+		char counter[24] = {0};
 		sprintf(counter, "%d/%d", entry + 1, count);
 		pp2d_draw_text(10, 3, FONT_SIZE_11, FONT_SIZE_11, YELLOW, getBaseScriptPath());
 		pp2d_draw_text(390 - pp2d_get_text_width(counter, FONT_SIZE_11, FONT_SIZE_11), 3, FONT_SIZE_11, FONT_SIZE_11, YELLOW, counter);

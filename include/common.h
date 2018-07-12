@@ -45,7 +45,7 @@
 #include "hid.h"
 #include "http.h"
 #include "i18n.h"
-#include "../source/memecrypto/source/memecrypto.h"
+#include "../source/memecrypto/memecrypto.h"
 #include "../source/pp2d/pp2d.h"
 #include "../source/quirc/quirc.h"
 #include "sections/events/pgf.h"
