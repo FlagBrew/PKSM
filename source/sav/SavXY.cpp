@@ -296,3 +296,9 @@ void SavXY::mysteryGift(WCX& wc, int& pos)
 std::string SavXY::boxName(u8 box) const { return StringUtils::getString(data, 0x4400 + 0x22*box, 17); }
 
 u8 SavXY::partyCount(void) const { return data[partyOffset(0) + 6*260]; }
+
+std::shared_ptr<PKX> SavXY::emptyPkm() const
+{
+    static std::shared_ptr<PKX> empty = std::shared_ptr<PKX>(new PK6);
+    return empty;
+}

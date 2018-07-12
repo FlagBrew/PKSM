@@ -24,26 +24,21 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef MAINMENUBUTTON_HPP
-#define MAINMENUBUTTON_HPP
+#ifndef VIEWERSCREEN_HPP
+#define VIEWERSCREEN_HPP
 
-#include "Button.hpp"
-#include "ui_spritesheet.h"
+#include "Sav.hpp"
+#include "PKX.hpp"
 
-// A clone of Button that adds the main menu image and centers the text differently
-class MainMenuButton : public Button
+class ViewerScreen
 {
 public:
-    MainMenuButton(int x, int y, u16 w, u16 h, std::function<bool()> callback, int image, std::string text, float textScale, u32 textColor, int imageY)
-            : Button(x, y, w, h, callback, ui_spritesheet_res_button_menu_idx, text, textScale, textColor)
-    {
-        menuImage = image;
-        this->imageY = imageY;
-    }
+    ViewerScreen(std::shared_ptr<PKX> pokemon) : pkm(pokemon) {}
+    void draw() const;
 
-    void draw() const override;
+    void setPkm(std::shared_ptr<PKX> pokemon) { pkm = pokemon; }
 private:
-    int menuImage, imageY;
+    std::shared_ptr<PKX> pkm;
 };
 
 #endif

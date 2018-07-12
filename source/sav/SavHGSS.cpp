@@ -487,3 +487,9 @@ u32 SavHGSS::setDexFormValues(u8* forms, u8 fc, u8 bitsPerForm)
     }
     return v;
 }
+
+std::shared_ptr<PKX> SavHGSS::emptyPkm() const
+{
+    static std::shared_ptr<PKX> empty = std::shared_ptr<PKX>(new PK4);
+    return empty;
+}

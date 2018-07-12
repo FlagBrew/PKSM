@@ -27,7 +27,7 @@
 #include "MainMenu.hpp"
 #include "gui.hpp"
 #include "CreditsScreen.hpp"
-//#include "StorageScreen.hpp"
+#include "StorageScreen.hpp"
 
 static constexpr int icons[6] = { ui_spritesheet_res_icon_storage_idx,
                                   ui_spritesheet_res_icon_editor_idx,
@@ -43,29 +43,30 @@ static constexpr int yLevels[6] = { 27,
                                     157,
                                     160 };
 
-void goToScreen(int buttonNum)
+static bool goToScreen(int buttonNum)
 {
     switch (buttonNum)
     {
         case 0:
-            //Gui::setScreen(new StorageScreen(NULL));
-            break;
+            Gui::setScreen(std::unique_ptr<Screen>(new StorageScreen(NULL)));
+            return true;
         case 1:
             //Gui::setScreen(new EditorScreen);
-            break;
+            return true;
         case 2:
             //Gui::setScreen(new EventsScreen);
-            break;
+            return true;
         case 3:
             //Gui::setScreen(new ScriptsScreen);
-            break;
+            return true;
         case 4:
             //Gui::setScreen(new OptionsScreen);
-            break;
+            return true;
         case 5:
-            Gui::setScreen(new CreditsScreen);
-            break;
+            Gui::setScreen(std::unique_ptr<Screen>(new CreditsScreen));
+            return true;
     }
+    return true;
 }
 
 MainMenu::MainMenu()
@@ -94,13 +95,7 @@ static void menuTop()
     Gui::clearTextBufs();
     Gui::backgroundTop();
     Gui::staticText(GFX_TOP, 4, "PKSM", FONT_SIZE_14, FONT_SIZE_14, COLOR_BLUE);
-    C2D_ImageTint tint;
-    for(int i = 0; i < 4; i++)
-    {
-        tint.corners[i] = {COLOR_YELLOW, 1.0f};
-    }
-    float width = textWidth(version, FONT_SIZE_9);
-    Gui::staticText(version, 398 - width, 229, FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE);
+    Gui::staticText(version, 398, 229, FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE, true);
 }
 
 void MainMenu::draw() const
@@ -120,6 +115,7 @@ void MainMenu::update(touchPosition* touch)
 {
     for (MainMenuButton* button : buttons)
     {
-        button->update(touch);
+        if (button->update(touch))
+            return;
     }
 }

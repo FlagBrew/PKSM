@@ -41,7 +41,8 @@ enum ScreenType
     EVENTS,
     SCRIPTS,
     SETTINGS,
-    CREDITS
+    CREDITS,
+    VIEWER
 };
 
 class Screen

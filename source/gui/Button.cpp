@@ -27,7 +27,7 @@
 #include "Button.hpp"
 #include "gui.hpp"
 
-Button::Button(int x, int y, u16 w, u16 h, std::function<void()> callback, int image, std::string text, float textScale, u32 textColor) 
+Button::Button(int x, int y, u16 w, u16 h, std::function<bool()> callback, int image, std::string text, float textScale, u32 textColor) 
     : Clickable(x, y, w, h, callback)
 {
     key = image;
@@ -39,5 +39,5 @@ Button::Button(int x, int y, u16 w, u16 h, std::function<void()> callback, int i
 void Button::draw() const
 {
     Gui::sprite(key, xPos, yPos);
-    Gui::dynamicText(text, xPos, yPos, textScale, textScale, textColor, xPos + width);
+    Gui::dynamicText(text, xPos, yPos, textScale, textScale, textColor, (float)xPos + width);
 }

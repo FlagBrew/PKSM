@@ -40,7 +40,7 @@ static C2D_TextBuf dynamicBuf;
 static C2D_TextBuf staticBuf;
 static std::unordered_map<std::string, C2D_Text> staticMap;
 
-static Screen* currentScreen = NULL;
+static std::unique_ptr<Screen> currentScreen = NULL;
 
 static Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int dx, int dy)
 {
@@ -110,18 +110,18 @@ void Gui::backgroundAnimated(gfxScreen_t screen)
         for (int i = 0; i < 11; i++)
         {
             boxesX[i] = (i - 1) * (maxrange / 10);
-    }
+        }
     }
 
     C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_spritesheet_res_anim_background_idx), 0, 0, 0.5f);
-    
+
     Tex3DS_SubTexture boxesPart;// = _select_box(bgBoxes, maxrange - boxesX / 2, 0, 800, 240);
     for (int i = 0; i < 11; i++)
     {
         boxesPart = _select_box(bgBoxes, i * (maxrange / 10), 0, (i + 1) * (maxrange / 10), 240);
         C2D_DrawImageAt({bgBoxes.tex, &boxesPart}, boxesX[i], 0, 0.5f);
     }
-
+    
     if (g_randomNumbers() % 100 < 5 && cubes.size() < maxCubes && cooldown < 0)
     {
         cubes.push_back(std::make_pair(bgCubes[g_randomNumbers() % 7], randomRotation()));
@@ -160,7 +160,7 @@ void Gui::backgroundAnimated(gfxScreen_t screen)
     for (int i = 0; i < 11; i++)
     {
         boxesX[i] = boxesX[i] >= maxrange ? - maxrange / 10 : boxesX[i] + 1;
-}
+    }
 }
 
 void Gui::clearTextBufs(void)
@@ -169,11 +169,15 @@ void Gui::clearTextBufs(void)
     C2D_TextBufClear(g_widthBuf);
 }
 
-void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color)
+void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, bool rightAligned)
 {
     C2D_Text text;
     C2D_TextParse(&text, dynamicBuf, str.c_str());
     C2D_TextOptimize(&text);
+    if (rightAligned)
+    {
+        x = x - textWidth(text, scaleX);
+    }
     C2D_DrawText(&text, C2D_WithColor, x, y, 0.5f, scaleX, scaleY, color);
 }
 
@@ -263,9 +267,13 @@ C2D_Text Gui::cacheStaticText(const std::string& strKey)
     return text;
 }
 
-void Gui::staticText(const std::string& strKey, int x, int y, float scaleX, float scaleY, u32 color)
+void Gui::staticText(const std::string& strKey, int x, int y, float scaleX, float scaleY, u32 color, bool rightAligned)
 {
     C2D_Text text = cacheStaticText(strKey);
+    if (rightAligned)
+    {
+        x = x - textWidth(text, scaleX);
+    }
     C2D_DrawText(&text, C2D_WithColor, x, y, 0.5f, scaleX, scaleY, color);
 }
 
@@ -576,7 +584,7 @@ void Gui::sprite(int key, int x, int y, u32 color)
     }
 }
 
-void Gui::pkm(PKX* pokemon, int x, int y, u32 color)
+void Gui::pkm(PKX* pokemon, int x, int y, u32 color, float blend)
 {
     if (pokemon == NULL)
     {
@@ -585,7 +593,7 @@ void Gui::pkm(PKX* pokemon, int x, int y, u32 color)
     static C2D_ImageTint tint;
     for (int i = 0; i < 4; i++)
     {
-        tint.corners[i] = {color, 1.0f};
+        tint.corners[i] = {color, blend};
     }
 
     if (pokemon->egg())
@@ -609,12 +617,12 @@ void Gui::pkm(PKX* pokemon, int x, int y, u32 color)
     }
 }
 
-void Gui::pkm(int formSpecies, int x, int y, u32 color)
+void Gui::pkm(int formSpecies, int x, int y, u32 color, float blend)
 {
     static C2D_ImageTint tint;
     for (int i = 0; i < 4; i++)
     {
-        tint.corners[i] = {color, 1.0f};
+        tint.corners[i] = {color, blend};
     }
     C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, formSpecies), x, y, 0.5f, &tint);
 }
@@ -630,128 +638,6 @@ void Gui::ball(size_t index, int x, int y)
         C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_empty_idx), x, y, 0.5f);
     }
 }
-
-// TODO:remove
-/*
-void Gui::pkmInfoViewer(PKX* pkm)
-{
-    C2D_SceneBegin(g_renderTargetTop);
-    std::vector<std::string> labels = {"Localize me"}; // TODO: entries & values; i18n::localize
-    int y_desc = 29;
-    
-    backgroundAnimated(GFX_TOP);
-    sprite(ui_spritesheet_res_info_top_idx, 0, 2);
-
-    sprite(pkm->move(0) ? ui_spritesheet_res_bar_move_idx : ui_spritesheet_res_bar_no_move_idx, 252, 155);
-    sprite(pkm->move(1) ? ui_spritesheet_res_bar_move_idx : ui_spritesheet_res_bar_no_move_idx, 252, 155);
-    sprite(pkm->move(2) ? ui_spritesheet_res_bar_move_idx : ui_spritesheet_res_bar_no_move_idx, 252, 155);
-    sprite(pkm->move(3) ? ui_spritesheet_res_bar_move_idx : ui_spritesheet_res_bar_no_move_idx, 252, 155);
-    
-    dynamicText("Moves", 251, 138, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLUE); // TODO: i18n::localize
-    for (int i = 0; i < 10; i++)
-    {
-        if (i == 8 && pkm->egg())
-        {
-            dynamicText("Egg Cycle", 2, y_desc, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLUE); // TODO: i18n::localize
-        }
-        else
-        {
-            dynamicText(labels[i], 2, y_desc, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLUE);
-        }
-        y_desc += 20;
-        if (i == 2) y_desc += 5;
-        if (i == 5) y_desc += 6;
-    }
-
-    y_desc = 8;
-    for (int i = 10; i < 16; i++)
-    {
-        dynamicText(labels[i], 225, y_desc, FONT_SIZE_12, FONT_SIZE_12, COLOR_LIGHTBLUE);
-        y_desc += 20;
-    }
-
-    if (pkm != NULL && pkm->species() > 0)
-    {
-        ball(pkm->ball(), -2, -5);
-        dynamicText(i18n::species(pkm->language(), pkm->species()), 30, 6, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
-        
-        printGen(pkm, 134, 8);
-
-        if (pkm->gender() == 0)
-        {
-            sprite(ui_spritesheet_res_male_idx, 146, 7);
-        }
-        else if (pkm->gender() == 1)
-        {
-            sprite(ui_spritesheet_res_female_idx, 148, 7);
-        }
-
-        std::string toDraw;
-
-        toDraw = "Level " + std::to_string(pkm->level()); // TODO: i18n::localize
-        dynamicText(toDraw, 160, 6, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
-
-        toDraw = pkm->nickname();
-        dynamicText(toDraw, 215 - textWidth(toDraw, FONT_SIZE_12), 29, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
-        toDraw = pkm->otName();
-        dynamicText(toDraw, 215 - textWidth(toDraw, FONT_SIZE_12), 49, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
-
-        toDraw = pkm->pkrsStrain() ? "Yes" : "No"; // TODO: i18n::localize
-        dynamicText(toDraw, 215 - textWidth(toDraw, FONT_SIZE_12), 69, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
-        toDraw = i18n::nature(pkm->language(), pkm->nature());
-        dynamicText(toDraw, 215 - textWidth(toDraw, FONT_SIZE_12), 94, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
-        toDraw = i18n::ability(pkm->language(), pkm->ability());
-        dynamicText(toDraw, 215 - textWidth(toDraw, FONT_SIZE_12), 114, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
-        toDraw = i18n::item(pkm->language(), pkm->heldItem());
-        dynamicText(toDraw, 215 - textWidth(toDraw, FONT_SIZE_12), 134, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
-
-        if (pkm->shiny())
-        {
-            sprite(ui_spritesheet_res_shiny_idx, 205, 9);
-        }
-
-        if (pkm->egg())
-        {
-            toDraw = std::to_string(pkm->otFriendship());
-        }
-        else
-        {
-            toDraw = std::to_string(pkm->currentFriendship()) + " / " + std::to_string(pkm->otFriendship());
-        }
-        dynamicText(toDraw, 215 - textWidth(toDraw, FONT_SIZE_12), 200, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
-
-        toDraw = std::to_string(pkm->PSV()) + " / " + std::to_string(pkm->TSV());
-        dynamicText(toDraw, 215 - textWidth(toDraw, FONT_SIZE_12), 160, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
-        toDraw = std::to_string(pkm->TID()) + " / " + std::to_string(pkm->SID());
-        dynamicText(toDraw, 215 - textWidth(toDraw, FONT_SIZE_12), 180, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
-
-        toDraw = i18n::hp(pkm->language(), pkm->hpType());
-        dynamicText(toDraw, 215 - textWidth(toDraw, FONT_SIZE_12), 220, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
-        
-        int max = textWidth("252", FONT_SIZE_12);
-        int y_moves = 159;
-        for (int i = 0; i < 4; i++)
-        {
-            if (pkm->move(i))
-            {
-                toDraw = i18n::move(pkm->language(), pkm->move(i));
-                dynamicText(toDraw, 396 - textWidth(toDraw, FONT_SIZE_12), y_moves, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
-            }
-            y_moves += 21;
-        }
-
-        for (int i = 0; i < 6; i++)
-        {
-            toDraw = std::to_string(pkm->iv(i));
-            dynamicText(toDraw, 289 + (max - textWidth(toDraw, FONT_SIZE_12)) / 2, 8 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
-            toDraw = std::to_string(pkm->ev(i));
-            dynamicText(toDraw, 328 + (max - textWidth(toDraw, FONT_SIZE_12)) / 2, 8 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
-            toDraw = std::to_string(pkm->stat(i));
-            dynamicText(toDraw, 369 + (max - textWidth(toDraw, FONT_SIZE_12)) / 2, 8 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
-        }
-    }
-}
-*/
 
 /*void Gui::eventList(WCX* database[], int currentEntry, int page) // This database could be an STL class, too
 {
@@ -840,7 +726,7 @@ void Gui::pkmInfoViewer(PKX* pkm)
     _draw_text_center(g_renderTargetBottom, 52, pages);
 }*/
 
-C2D_Image Gui::type(Language lang, u8 type)
+static C2D_Image typeImage(Language lang, u8 type)
 {
     switch (lang)
     {
@@ -867,14 +753,67 @@ C2D_Image Gui::type(Language lang, u8 type)
     }
 }
 
-void Gui::setScreen(Screen* screen)
+void Gui::type(Language lang, u8 type, int x, int y)
+{
+    C2D_DrawImageAt(typeImage(lang, type), x, y, 0.5f);
+}
+
+void Gui::setScreen(std::unique_ptr<Screen> screen)
 {
     if (currentScreen != NULL && currentScreen->type() == screen->type())
     {
-        if (screen != currentScreen)
-            delete screen;
-        return;
+        if (screen == currentScreen)
+            return;
     }
-    delete currentScreen;
-    currentScreen = screen;
+    currentScreen = std::move(screen);
+}
+
+u8 transparencyWaver()
+{
+    static u8 currentAmount = 255;
+    static bool dir = true;
+    if (!dir)
+    {
+        currentAmount++;
+        if (currentAmount == 255)
+            dir = true;
+    }
+    else
+    {
+        currentAmount--;
+        if (currentAmount < 155)
+            dir = false;
+    }
+    return currentAmount;
+}
+
+bool Gui::showChoiceMessage(const std::string& message)
+{
+    u32 keys = 0;
+    while (aptMainLoop() && !((keys = hidKeysHeld()) & KEY_B))
+    {
+        hidScanInput();
+        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+        C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
+        C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
+
+        C2D_SceneBegin(g_renderTargetTop);
+        sprite(ui_spritesheet_res_info_top_idx, 0, 0);
+        dynamicText(GFX_TOP, 95, message, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparencyWaver()));
+
+        dynamicText(GFX_TOP, 130, "Press A to continue, B to cancel.", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+
+        C2D_SceneBegin(g_renderTargetBottom);
+        sprite(ui_spritesheet_res_info_bottom_idx, 0, 0);
+
+        C3D_FrameEnd(0);
+        Gui::clearTextBufs();
+        if (keys & KEY_A)
+        {
+            hidScanInput();
+            return true;
+        }
+    }
+    hidScanInput();
+    return false;
 }

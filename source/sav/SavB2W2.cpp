@@ -256,3 +256,9 @@ void SavB2W2::mysteryGift(WCX& wc, int& pos)
 std::string SavB2W2::boxName(u8 box) const { return StringUtils::getTrimmedString(data, 0x28 * box + 4, 0x14, (char*)"\uFFFF"); }
 
 u8 SavB2W2::partyCount(void) const { return data[0x18E04]; }
+
+std::shared_ptr<PKX> SavB2W2::emptyPkm() const
+{
+    static std::shared_ptr<PKX> empty = std::shared_ptr<PKX>(new PK5);
+    return empty;
+}

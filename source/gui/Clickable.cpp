@@ -26,11 +26,12 @@
 
 #include "Clickable.hpp"
 
-void Clickable::update(touchPosition* touch)
+bool Clickable::update(touchPosition* touch)
 {
     if (touch->px >= xPos && touch->px <= xPos + width
         && touch->py >= yPos && touch->py <= yPos + height)
     {
-        noArg();
+        return noArg();
     }
+    return false;
 }

@@ -77,14 +77,14 @@ namespace Gui
 
     C3D_RenderTarget* target(gfxScreen_t t);
     C2D_Image TWLIcon(void);
-    C2D_Image type(Language lang, u8 type);
 
     void ball(size_t index, int x, int y);
+    void type(Language lang, u8 type, int x, int y);
     void generation(PKX* pkm, int x, int y);
     void sprite(int key, int x, int y);
     void sprite(int key, int x, int y, u32 color);
-    void pkm(PKX* pkm, int x, int y, u32 color = C2D_Color32(0, 0, 0, 255));
-    void pkm(int formSpecies, int x, int y, u32 color = C2D_Color32(0, 0, 0, 255));
+    void pkm(PKX* pkm, int x, int y, u32 color = C2D_Color32(0, 0, 0, 255), float blend = 0.0f);
+    void pkm(int formSpecies, int x, int y, u32 color = C2D_Color32(0, 0, 0, 255), float blend = 0.0f);
     void pkmInfoViewer(PKX* pkm);
 
     void backgroundTop(void);
@@ -92,13 +92,13 @@ namespace Gui
     void backgroundAnimated(gfxScreen_t screen);
 
     void clearTextBufs(void);    
-    void dynamicText(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color);
+    void dynamicText(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, bool rightAligned = false);
     void dynamicText(const std::string& text, int x, int y, float scaleX, float scaleY, u32 color, float maxWidth);
     void dynamicText(gfxScreen_t screen, int y, const std::string& text, float scaleX, float scaleY, u32 color);
     void dynamicText(int x, int y, float width, const std::string& text, float scaleX, float scaleY, u32 color);
 
     C2D_Text cacheStaticText(const std::string& strKey);
-    void staticText(const std::string& strKey, int x, int y, float scaleX, float scaleY, u32 color);
+    void staticText(const std::string& strKey, int x, int y, float scaleX, float scaleY, u32 color, bool rightAligned = false);
     void staticText(const std::string& strKey, int x, int y, float scaleX, float scaleY, u32 color, float maxWidth);
     void staticText(gfxScreen_t screen, int y, const std::string& strKey, float scaleX, float scaleY, u32 color);
     void staticText(int x, int y, float width, const std::string& strKey, float scaleX, float scaleY, u32 color);
@@ -108,7 +108,8 @@ namespace Gui
     //void eventList(WCX* database[], int currentEntry, int page);
     //void menu(Language lang);
 
-    void setScreen(Screen* screen);
+    void setScreen(std::unique_ptr<Screen> screen);
+    bool showChoiceMessage(const std::string& message);
 }
 
 extern std::mt19937 g_randomNumbers;

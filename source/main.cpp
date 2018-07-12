@@ -38,7 +38,7 @@ int main()
 
     std::unique_ptr<Sav> save = TitleLoader::load();
 
-    Gui::setScreen(new MainMenu);
+    Gui::setScreen(std::unique_ptr<Screen>(new MainMenu));
 
     Gui::mainLoop();
 

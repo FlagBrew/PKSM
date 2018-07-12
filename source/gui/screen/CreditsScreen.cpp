@@ -28,12 +28,28 @@
 #include "gui.hpp"
 #include "MainMenu.hpp"
 
+static constexpr char* credits = R"(Naxann and Anty-Lemon for various contributions
+Kaphotics and SciresM for PKHeX and memecrypto
+J-K-D for direct save import/export
+Astronautlevel for QR code support
+ArchitDate for serveLegality
+Slownic and zaksabeast for servepkx
+Slashcash for PCHex++
+TuxSH for TWLSaveTool
+ProjectPokemon.org for most of the wondercards
+Simona for being my best supporter
+All the countless translators who worked on the localization
+All the contributors on Github
+Everyone supporting the development
+
+www.github.com/BernardoGiordano/PKSM)";
+
 void CreditsScreen::update(touchPosition* touch)
 {
     if (touch) {}
     if (hidKeysDown() & KEY_B)
     {
-        Gui::setScreen(new MainMenu);
+        Gui::setScreen(std::unique_ptr<Screen>(new MainMenu));
     }
 }
 
@@ -46,6 +62,6 @@ void CreditsScreen::draw() const
 
     C2D_SceneBegin(g_renderTargetBottom);
     Gui::backgroundBottom();
-    Gui::dynamicText("Naxann and Anty-Lemon for various contributions\nKaphotics and SciresM for PKHeX and memecrypto\nJ-K-D for direct save import/export\nAstronautlevel for QR code support\nArchitDate for serveLegality\nSlownic and zaksabeast for servepkx\nSlashcash for PCHex++\nTuxSH for TWLSaveTool\nProjectPokemon.org for most of the wondercards\nSimona for being my best supporter\nAll the countless translators who worked on the localization\nAll the contributors on Github\nEveryone supporting the development\n\nwww.github.com/BernardoGiordano/PKSM", 20, 30, FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE);
+    Gui::dynamicText(credits, 20, 30, FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE);
     Gui::staticText(GFX_BOTTOM, 225, "Press B to return", FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE);
 }

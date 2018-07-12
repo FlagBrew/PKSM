@@ -148,6 +148,8 @@ public:
     // crypts them back during resigning
     void pkm(PKX& pk, u8 box, u8 slot) override;
 
+    std::shared_ptr<PKX> emptyPkm() const override;
+
     void dex(PKX& pk) override;
     void mysteryGift(WCX& wc, int& pos) override;
     void cryptBoxData(bool crypted) override;

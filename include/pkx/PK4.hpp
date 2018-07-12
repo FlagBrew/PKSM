@@ -46,9 +46,10 @@ protected:
     void shuffleArray(void) override;
     void crypt(void) override;
     
-    u8 data[136];
+    u8 data[136] = {0};
 
 public:
+    PK4() {}
     PK4(u8* dt, bool ekx = false);
     virtual ~PK4() { };
 

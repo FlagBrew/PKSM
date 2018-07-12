@@ -474,3 +474,9 @@ u32 SavPT::setDexFormValues(u8* forms, u8 fc, u8 bitsPerForm)
     }
     return v;
 }
+
+std::shared_ptr<PKX> SavPT::emptyPkm() const
+{
+    static std::shared_ptr<PKX> empty = std::shared_ptr<PKX>(new PK4);
+    return empty;
+}

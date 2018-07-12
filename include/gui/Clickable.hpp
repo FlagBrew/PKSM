@@ -33,17 +33,18 @@
 class Clickable
 {
 public:
-    Clickable(int x, int y, u16 w, u16 h, std::function<void()> function)
+    Clickable(int x, int y, u16 w, u16 h, std::function<bool()> function)
             : xPos(x), yPos(y), width(w), height(h), noArg(function) {}
     virtual ~Clickable() { };
 
-    virtual void update(touchPosition* touch);
+    // returns return value of callback, or, if it's not executed, false
+    virtual bool update(touchPosition* touch);
     virtual void draw() const = 0;
 
 protected:
     int xPos, yPos;
     u16 width, height;
-    std::function<void()> noArg;
+    std::function<bool()> noArg;
 };
 
 #endif

@@ -24,26 +24,55 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef MAINMENUBUTTON_HPP
-#define MAINMENUBUTTON_HPP
+#ifndef STORAGESCREEN_HPP
+#define STORAGESCREEN_HPP
 
+#include "Screen.hpp"
+#include "Sav.hpp"
+#include "PKX.hpp"
+#include "ViewerScreen.hpp"
 #include "Button.hpp"
-#include "ui_spritesheet.h"
+#include <array>
 
-// A clone of Button that adds the main menu image and centers the text differently
-class MainMenuButton : public Button
+class StorageScreen : public Screen
 {
 public:
-    MainMenuButton(int x, int y, u16 w, u16 h, std::function<bool()> callback, int image, std::string text, float textScale, u32 textColor, int imageY)
-            : Button(x, y, w, h, callback, ui_spritesheet_res_button_menu_idx, text, textScale, textColor)
+    StorageScreen(Sav* save);
+    ~StorageScreen()
     {
-        menuImage = image;
-        this->imageY = imageY;
+        for (int i = 0; i < 10; i++)
+        {
+            delete mainButtons[i];
+        }
+        for (int i = 0; i < 30; i++)
+        {
+            delete pkmButtons[i];
+        }
     }
 
+    void update(touchPosition* touch) override;
     void draw() const override;
+
+    ScreenType type() const override { return ScreenType::STORAGE; }
 private:
-    int menuImage, imageY;
+    bool swapBoxWithStorage() { return false; }
+    bool showViewer();
+    bool clearBox();
+    bool releasePkm();
+    bool dumpPkm() { return false; }
+    bool backButton();
+    // Have to basically reimplement Hid because two Hids don't go well together
+    bool lastBox(bool forceBottom = false);
+    bool nextBox(bool forceBottom = false);
+    bool setBottomIndex(int index);
+
+    bool storageChosen = false;
+    std::array<Button*, 10> mainButtons;
+    std::array<Button*, 30> pkmButtons;
+    int cursorIndex = 0, storageBox = 0, boxBox = 0;
+    Sav* save;
+    std::unique_ptr<ViewerScreen> viewer = NULL;
+    // Storage implementation
 };
 
 #endif
