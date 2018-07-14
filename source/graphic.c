@@ -1543,12 +1543,12 @@ void printfHexEditorInfo(u8* pkmn, int byte) {
 		case 0x0C :
 		case 0x0D :
 			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_TID), pkx_get_tid(pkmn));
-			pp2d_draw_textf(x, y + 16, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, "Gen7 TID: %d", ((unsigned int)(pkx_get_tid(pkmn) + pkx_get_sid(pkmn)*65536) % 1000000));
+			pp2d_draw_textf(x + 152, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, "Gen7 TID: %d", ((unsigned int)(pkx_get_tid(pkmn) + pkx_get_sid(pkmn)*65536) % 1000000));
 			break;
 		case 0x0E :
 		case 0x0F :
 			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_SID), pkx_get_sid(pkmn));
-			pp2d_draw_textf(x, y + 16, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, "Gen7 TID: %d", ((unsigned int)(pkx_get_tid(pkmn) + pkx_get_sid(pkmn)*65536) % 1000000));
+			pp2d_draw_textf(x + 152, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, "Gen7 TID: %d", ((unsigned int)(pkx_get_tid(pkmn) + pkx_get_sid(pkmn)*65536) % 1000000));
 			break;
 		case 0x14 :
 			pp2d_draw_wtextf(x, y, FONT_SIZE_12, FONT_SIZE_12, LIGHTBLUE, i18n(S_GRAPHIC_HEXEDITOR_ABILITY), abilities[pkx_get_ability(pkmn)]);
