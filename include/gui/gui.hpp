@@ -33,6 +33,7 @@
 #include <fstream>
 #include <string.h>
 #include <random>
+#include <stack>
 #include "json.hpp"
 #include "i18n.hpp"
 #include "PKX.hpp"
@@ -109,6 +110,7 @@ namespace Gui
     //void menu(Language lang);
 
     void setScreen(std::unique_ptr<Screen> screen);
+    void screenBack(void);
     bool showChoiceMessage(const std::string& message);
 }
 

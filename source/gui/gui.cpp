@@ -40,7 +40,7 @@ static C2D_TextBuf dynamicBuf;
 static C2D_TextBuf staticBuf;
 static std::unordered_map<std::string, C2D_Text> staticMap;
 
-static std::unique_ptr<Screen> currentScreen = NULL;
+static std::stack<std::unique_ptr<Screen>> screens;
 
 static Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int dx, int dy)
 {
@@ -391,11 +391,11 @@ void Gui::mainLoop(void)
         C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
         C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
 
-        currentScreen->draw();
+        screens.top()->draw();
         touchPosition touch;
         hidTouchRead(&touch);
-        currentScreen->update(&touch);
-        exit = currentScreen->type() == ScreenType::MAINMENU && (hidKeysDown() & KEY_START);
+        screens.top()->update(&touch);
+        exit = screens.top()->type() == ScreenType::MAINMENU && (hidKeysDown() & KEY_START);
 
         C3D_FrameEnd(0);
         Gui::clearTextBufs();
@@ -760,12 +760,12 @@ void Gui::type(Language lang, u8 type, int x, int y)
 
 void Gui::setScreen(std::unique_ptr<Screen> screen)
 {
-    if (currentScreen != NULL && currentScreen->type() == screen->type())
+    if (!screens.empty() && screens.top()->type() == screen->type())
     {
-        if (screen == currentScreen)
+        if (screen == screens.top())
             return;
     }
-    currentScreen = std::move(screen);
+    screens.push(std::move(screen));
 }
 
 u8 transparencyWaver()
@@ -816,4 +816,9 @@ bool Gui::showChoiceMessage(const std::string& message)
     }
     hidScanInput();
     return false;
+}
+
+void Gui::screenBack()
+{
+    screens.pop();
 }

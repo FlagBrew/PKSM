@@ -49,7 +49,7 @@ void CreditsScreen::update(touchPosition* touch)
     if (touch) {}
     if (hidKeysDown() & KEY_B)
     {
-        Gui::setScreen(std::unique_ptr<Screen>(new MainMenu));
+        Gui::screenBack();
     }
 }
 

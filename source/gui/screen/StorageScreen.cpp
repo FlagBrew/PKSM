@@ -392,7 +392,7 @@ bool StorageScreen::backButton()
     {
         backHeld = true;
         if (!viewer)
-            Gui::setScreen(std::unique_ptr<Screen>(new MainMenu));
+            Gui::screenBack();
         else
             viewer.reset(NULL);
     }
