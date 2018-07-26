@@ -28,21 +28,22 @@
 #include "gui.hpp"
 #include "MainMenu.hpp"
 
-static constexpr char* credits = R"(Naxann and Anty-Lemon for various contributions
-Kaphotics and SciresM for PKHeX and memecrypto
-J-K-D for direct save import/export
-Astronautlevel for QR code support
-ArchitDate for serveLegality
-Slownic and zaksabeast for servepkx
-Slashcash for PCHex++
-TuxSH for TWLSaveTool
-ProjectPokemon.org for most of the wondercards
-Simona for being my best supporter
-All the countless translators who worked on the localization
-All the contributors on Github
-Everyone supporting the development
+static const char* credits = 
+    R"(Naxann and Anty-Lemon for various contributions
+    Kaphotics and SciresM for PKHeX and memecrypto
+    J-K-D for direct save import/export
+    Astronautlevel for QR code support
+    ArchitDate for serveLegality
+    Slownic and zaksabeast for servepkx
+    Slashcash for PCHex++
+    TuxSH for TWLSaveTool
+    ProjectPokemon.org for most of the wondercards
+    Simona for being my best supporter
+    All the countless translators who worked on the localization
+    All the contributors on Github
+    Everyone supporting the development
 
-www.github.com/BernardoGiordano/PKSM)";
+    www.github.com/BernardoGiordano/PKSM)";
 
 void CreditsScreen::update(touchPosition* touch)
 {
@@ -62,6 +63,6 @@ void CreditsScreen::draw() const
 
     C2D_SceneBegin(g_renderTargetBottom);
     Gui::backgroundBottom();
-    Gui::dynamicText(credits, 20, 30, FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE);
+    Gui::staticText(credits, 20, 30, FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE);
     Gui::staticText(GFX_BOTTOM, 225, "Press B to return", FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE);
 }

@@ -29,19 +29,23 @@
 #include "CreditsScreen.hpp"
 #include "StorageScreen.hpp"
 
-static constexpr int icons[6] = { ui_spritesheet_res_icon_storage_idx,
-                                  ui_spritesheet_res_icon_editor_idx,
-                                  ui_spritesheet_res_icon_events_idx,
-                                  ui_spritesheet_res_icon_scripts_idx,
-                                  ui_spritesheet_res_icon_settings_idx,
-                                  ui_spritesheet_res_icon_credits_idx };
+static constexpr int icons[6] = {
+    ui_spritesheet_res_icon_storage_idx,
+    ui_spritesheet_res_icon_editor_idx,
+    ui_spritesheet_res_icon_events_idx,
+    ui_spritesheet_res_icon_scripts_idx,
+    ui_spritesheet_res_icon_settings_idx,
+    ui_spritesheet_res_icon_credits_idx
+};
 
-static constexpr int yLevels[6] = { 27,
-                                    28,
-                                    93,
-                                    91,
-                                    157,
-                                    160 };
+static constexpr int yLevels[6] = {
+    27,
+    28,
+    93,
+    91,
+    157,
+    160
+};
 
 static bool goToScreen(int buttonNum)
 {
@@ -71,12 +75,18 @@ static bool goToScreen(int buttonNum)
 
 MainMenu::MainMenu()
 {
-    for (int i = 0; i < 3; i++)
+    for (u8 i = 0; i < 3; i++)
     {
-        for (int j = 0; j < 2; j++)
+        for (u8 j = 0; j < 2; j++)
         {
-            buttons[i*2 + j] = new MainMenuButton(15 + 150*j, 20 + 63*i, 140, 53, std::bind(&goToScreen, i*2 + j), icons[i*2 + j],
-                                            StringUtils::format("MainMenuBtn%i", i*2 + j), FONT_SIZE_15, COLOR_WHITE, yLevels[i*2 + j]);
+            buttons[i*2 + j] = new MainMenuButton(
+                15 + 150*j, 20 + 63*i, 140, 53,
+                std::bind(&goToScreen, i*2 + j),
+                icons[i*2 + j],
+                StringUtils::format("MainMenuBtn%i", i*2 + j),
+                FONT_SIZE_15,
+                COLOR_WHITE,
+                yLevels[i*2 + j]);
         }
     }
 }

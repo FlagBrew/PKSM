@@ -29,8 +29,10 @@
 #include "MainMenu.hpp"
 #include "PK4.hpp"
 
+// TODO: remove
 static u8 test[] = {0x0B,0xEB,0x64,0x89,0x00,0x00,0xC8,0xA5,0x12,0x00,0x00,0x00,0x2A,0x8A,0x42,0x73,0x47,0x9C,0x00,0x00,0xA0,0x91,0x00,0x02,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x21,0x00,0x62,0x00,0xEF,0x00,0x22,0x01,0x23,0x1E,0x14,0x14,0x00,0x00,0x00,0x00,0xD1,0xA1,0x33,0x3C,0x00,0x00,0x00,0x00,0x02,0x13,0x01,0x00,0x00,0x00,0x00,0x00,0x50,0x00,0x69,0x00,0x64,0x00,0x67,0x00,0x65,0x00,0x6F,0x00,0x74,0x00,0xFF,0xFF,0x6F,0x00,0xFF,0xFF,0xFF,0xFF,0x00,0x17,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x52,0x00,0x6F,0x00,0x43,0x00,0xFF,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x11,0x01,0x0D,0x00,0x00,0x4B,0x00,0x00,0x19,0x0A,0x00,0x00,0x00};
 static std::shared_ptr<PKX> testPkm(new PK5(test));
+
 static bool backHeld = false;
 
 static u8 type1(int generation, u16 species)
@@ -112,11 +114,11 @@ StorageScreen::StorageScreen(Sav* save)
     mainButtons[9] = new Button(283, 211, 34, 28, std::bind(&StorageScreen::backButton, this), ui_spritesheet_res_button_back_idx, "", 0.0f, 0);
 
     // Pokemon buttons
-    int y = 45;
-    for (int row = 0; row < 5; row++)
+    u16 y = 45;
+    for (u8 row = 0; row < 5; row++)
     {
-        int x = 4;
-        for (int column = 0; column < 6; column++)
+        u16 x = 4;
+        for (u8 column = 0; column < 6; column++)
         {
             pkmButtons[row*6 + column] = new Button(x, y, 34, 30, std::bind(&StorageScreen::setBottomIndex, this, row*6 + column), ui_spritesheet_res_null, "", 0.0f, 0);
             x += 34;
@@ -140,11 +142,11 @@ void StorageScreen::draw() const
     Gui::dynamicText(32, 19, 144, "This is a box", FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
 
     // actual Pokemon
-    int y = 45;
-    for (int row = 0; row < 5; row++)
+    u16 y = 45;
+    for (u8 row = 0; row < 5; row++)
     {
-        int x = 4;
-        for (int column = 0; column < 6; column++)
+        u16 x = 4;
+        for (u8 column = 0; column < 6; column++)
         {
             //Gui::pkm(save->pkm(boxBox, row * 6 + column).get(), x, y);
             Gui::pkm(70, x, y);
@@ -170,11 +172,11 @@ void StorageScreen::draw() const
         Gui::dynamicText(80, 9, 124, StringUtils::format("Bank %i", storageBox), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
 
         // actual Pokemon
-        int y = 45;
-        for (int row = 0; row < 5; row++)
+        u16 y = 45;
+        for (u8 row = 0; row < 5; row++)
         {
-            int x = 44;
-            for (int column = 0; column < 6; column++)
+            u16 x = 44;
+            for (u8 column = 0; column < 6; column++)
             {
                 //Gui::pkm(storage->pkm(storageBox, row * 6 + column).get(), x, y); Don't know what the call will be?
                 Gui::pkm(99, x, y);

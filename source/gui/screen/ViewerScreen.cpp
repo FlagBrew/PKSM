@@ -42,7 +42,7 @@ void ViewerScreen::draw() const
     Gui::sprite(pkm->move(3) ? ui_spritesheet_res_bar_move_idx : ui_spritesheet_res_bar_no_move_idx, 252, 218);
     
     Gui::dynamicText("Moves", 251, 138, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLUE); // TODO: i18n::localize
-    for (int i = 0; i < 10; i++)
+    for (u8 i = 0; i < 10; i++)
     {
         if (i == 8 && pkm->egg())
         {
@@ -58,7 +58,7 @@ void ViewerScreen::draw() const
     }
 
     y_desc = 8;
-    for (int i = 10; i < 16; i++)
+    for (u8 i = 10; i < 16; i++)
     {
         Gui::dynamicText(labels[i], 225, y_desc, FONT_SIZE_12, FONT_SIZE_12, COLOR_LIGHTBLUE);
         y_desc += 20;
@@ -123,8 +123,8 @@ void ViewerScreen::draw() const
         Gui::dynamicText(toDraw, 215 - textWidth(toDraw, FONT_SIZE_12), 220, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
         
         int max = textWidth("252", FONT_SIZE_12);
-        int y_moves = 159;
-        for (int i = 0; i < 4; i++)
+        u16 y_moves = 159;
+        for (u8 i = 0; i < 4; i++)
         {
             if (pkm->move(i))
             {
@@ -134,7 +134,7 @@ void ViewerScreen::draw() const
             y_moves += 21;
         }
 
-        for (int i = 0; i < 6; i++)
+        for (u8 i = 0; i < 6; i++)
         {
             toDraw = std::to_string(pkm->iv(i));
             Gui::dynamicText(toDraw, 289 + (max - textWidth(toDraw, FONT_SIZE_12)) / 2, 8 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
