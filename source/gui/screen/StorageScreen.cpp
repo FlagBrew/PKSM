@@ -160,13 +160,6 @@ void StorageScreen::draw() const
         Gui::sprite(ui_spritesheet_res_selector_box_idx, 22 + (cursorIndex % 6) * 34, 37 + (cursorIndex / 6) * 30 + bobPointer());
     }
 
-    const std::vector<std::pair<std::string, Result>>& errors = Configuration::getInstance().errors;
-    for (int i = 0; i < errors.size(); i++)
-    {
-        Gui::dynamicText(StringUtils::format(errors[i].first + " 0x%016llX", errors[i].second), 4, 45 + 10 * i, 
-                         FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
-    }
-
     if (viewer)
     {
         C2D_DrawRectSolid(0, 0, 0.5f, 320, 210, C2D_Color32(0, 0, 0, 120));

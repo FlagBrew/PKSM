@@ -27,6 +27,7 @@
 #include "CreditsScreen.hpp"
 #include "gui.hpp"
 #include "MainMenu.hpp"
+#include "Configuration.hpp"
 
 static const char* credits = 
     R"(Naxann and Anty-Lemon for various contributions
@@ -63,6 +64,14 @@ void CreditsScreen::draw() const
 
     C2D_SceneBegin(g_renderTargetBottom);
     Gui::backgroundBottom();
-    Gui::staticText(credits, 20, 30, FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE);
-    Gui::staticText(GFX_BOTTOM, 225, "Press B to return", FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE);
+
+    const std::vector<std::pair<std::string, Result>>& errors = Configuration::getInstance().errors;
+    for (int i = 0; i < errors.size(); i++)
+    {
+        Gui::dynamicText(StringUtils::format(errors[i].first + " 0x%016llX", errors[i].second), 4, 45 + 10 * i, 
+                         FONT_SIZE_11, FONT_SIZE_11, COLOR_BLACK);
+    }
+
+    // Gui::staticText(credits, 20, 30, FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE);
+    // Gui::staticText(GFX_BOTTOM, 225, "Press B to return", FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE);
 }
