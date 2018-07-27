@@ -25,6 +25,7 @@
 */
 
 #include "app.hpp"
+#include "Configuration.hpp"
 
 Result App::init(void)
 {
@@ -44,6 +45,7 @@ Result App::init(void)
 void App::exit(void)
 {
     Threads::destroy();
+    Configuration::getInstance().save();
     i18n::exit();
     Gui::exit();
     amExit();

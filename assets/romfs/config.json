@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "language": 2,
+  "autoBackup": true,
+  "storageSize": 150,
+  "transferEdit": false,
+  "useExtData": false,
+  "defaults":
+  {
+    "pid": 12345,
+    "sid": 12345,
+    "ot": "PKSM",
+    "nationality": 2,
+    "date":
+    {
+      "day": 0,
+      "month": 0,
+      "year": 0
+    }
+  }
+}
