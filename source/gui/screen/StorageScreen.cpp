@@ -163,7 +163,7 @@ void StorageScreen::draw() const
     const std::vector<std::pair<std::string, Result>>& errors = Configuration::getInstance().errors;
     for (int i = 0; i < errors.size(); i++)
     {
-        Gui::dynamicText(StringUtils::format(errors[i].first + " %i", errors[i].second), 4, 45 + 10 * i, 
+        Gui::dynamicText(StringUtils::format(errors[i].first + " 0x%016llX", errors[i].second), 4, 45 + 10 * i, 
                          FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
     }
 
