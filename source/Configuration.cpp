@@ -30,9 +30,11 @@
 
 Configuration::Configuration()
 {
-    static const std::u16string path = u"/user/config.json";
+    static const std::u16string path = StringUtils::UTF8toUTF16("/config.json");
     FSStream stream(Archive::data(), path, FS_OPEN_READ);
-    errors.emplace_back("First open in constructor", stream.result());
+
+    fprintf(stderr, "First open in constructor: 0x%016lX\n", stream.result());
+    
     if (R_FAILED(stream.result()))
     {
         std::ifstream istream("romfs:/config.json");
@@ -43,12 +45,12 @@ Configuration::Configuration()
     else
     {
         oldSize = stream.size();
-        errors.emplace_back("Size in constructor", stream.result());
+        fprintf(stderr, "Size in constructor: 0x%016lX\n", stream.result());
         char* jsonData = new char[oldSize];
         stream.read(jsonData, oldSize);
-        errors.emplace_back("Read in constructor", stream.result());
+        fprintf(stderr, "Read in constructor: 0x%016lX\n", stream.result());
         stream.close();
-        errors.emplace_back("Close in constructor", stream.result());
+        fprintf(stderr, "Close in constructor: 0x%016lX\n", stream.result());
         mJson.parse(jsonData);
         delete[] jsonData;
     }
@@ -70,16 +72,17 @@ Configuration::Configuration()
 
 void Configuration::save()
 {
-    static const std::u16string path = u"/user/config.json";
-    if (oldSize != mJson.dump(2).size())
+    static const std::u16string path = StringUtils::UTF8toUTF16("config.json");
+    size_t size = mJson.dump(2).size();
+    if (oldSize != size)
     {
-        Result res = FSUSER_DeleteFile(Archive::data(), {PATH_UTF16, path.size(), path.data()});
-        errors.emplace_back("Delete in save", res);
+        Result res = FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, path.data()));
+        fprintf(stderr, "Delete in save: 0x%016lX\n", res);
     }
-    FSStream stream(Archive::data(), path, FS_OPEN_WRITE | FS_OPEN_CREATE, oldSize = mJson.dump(2).size());
-    errors.emplace_back("Open in save", stream.result());
-    stream.write(const_cast<char*>(mJson.dump(2).data()), mJson.dump(2).size());
-    errors.emplace_back("Write in save", stream.result());
+    FSStream stream(Archive::data(), path, FS_OPEN_WRITE | FS_OPEN_CREATE, oldSize = size);
+    fprintf(stderr, "Open in save: 0x%016lX\n", stream.result());
+    stream.write(const_cast<char*>(mJson.dump(2).data()), size);
+    fprintf(stderr, "Write in save: 0x%016lX\n", stream.result());
     stream.close();
-    errors.emplace_back("Close in save", stream.result());
+    fprintf(stderr, "Close in save: 0x%016lX\n", stream.result());
 }

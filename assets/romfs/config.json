@@ -5,14 +5,12 @@
   "storageSize": 150,
   "transferEdit": false,
   "useExtData": false,
-  "defaults":
-  {
+  "defaults": {
     "pid": 12345,
     "sid": 12345,
     "ot": "PKSM",
     "nationality": 2,
-    "date":
-    {
+    "date": {
       "day": 0,
       "month": 0,
       "year": 0

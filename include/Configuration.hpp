@@ -27,16 +27,15 @@
 #ifndef CONFIGURATION_HPP
 #define CONFIGURATION_HPP
 
+#include <3ds.h>
 #include "json.hpp"
 #include "i18n.hpp"
-#include <3ds/types.h>
+#include "utils.hpp"
 
 class Configuration
 {
 public:
     static constexpr int CURRENT_VERSION = 1;
-
-    std::vector<std::pair<std::string, Result>> errors;
 
     static Configuration& getInstance(void)
     {

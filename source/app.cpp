@@ -39,6 +39,12 @@ Result App::init(void)
     if (R_FAILED(res = Gui::init())) return res;
     i18n::init();
 
+    // uncomment when needing to debug with GDB
+    consoleDebugInit(debugDevice_SVC);
+    while(aptMainLoop() && !(hidKeysDown() & KEY_START)) { hidScanInput(); }
+    
+    Configuration::getInstance();
+
     return 0;
 }
 
