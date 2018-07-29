@@ -443,12 +443,60 @@ void Gui::sprite(int key, int x, int y)
         C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_pointer_horizontal_idx);
         C2D_DrawImageAt(sprite, x, y, 0.5f, NULL, -1.0f, 1.0f);
     }
-    // TODO: bg top red
-    // TODO: bg top green
-    // TODO: bg top blue
-    // TODO: bg bottom red
-    // TODO: bg bottom green
-    // TODO: bg bottom blue
+    else if (key == ui_sheet_emulated_bg_top_red)
+    {
+        C2D_ImageTint tint;
+        C2D_SetImageTint(&tint, C2D_TopLeft, C2D_Color32(228, 143, 131, 255), 1);
+        C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(201, 95, 84, 255), 1);
+        C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(239, 163, 151, 255), 1);
+        C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(214, 117, 106, 255), 1);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_top_greyscale_idx), x, y, 0.5f, &tint);
+    }
+    else if (key == ui_sheet_emulated_bg_top_blue)
+    {
+        C2D_ImageTint tint;
+        C2D_SetImageTint(&tint, C2D_TopLeft, C2D_Color32(139, 171, 221, 255), 1);
+        C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(93, 134, 193, 255), 1);
+        C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(158, 186, 233, 255), 1);
+        C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(113, 150, 205, 255), 1);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_top_greyscale_idx), x, y, 0.5f, &tint);
+    }
+    else if (key == ui_sheet_emulated_bg_top_green)
+    {
+        C2D_ImageTint tint;
+        C2D_SetImageTint(&tint, C2D_TopLeft, C2D_Color32(142, 221, 138, 255), 1);
+        C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(101, 193, 93, 255), 1);
+        C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(161, 233, 158, 255), 1);
+        C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(119, 205, 113, 255), 1);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_top_greyscale_idx), x, y, 0.5f, &tint);
+    }
+    else if (key == ui_sheet_emulated_bg_bottom_red)
+    {
+        C2D_ImageTint tint;
+        C2D_SetImageTint(&tint, C2D_TopLeft, C2D_Color32(216, 122, 111, 255), 1);
+        C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(239, 163, 151, 255), 1);
+        C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(201, 95, 84, 255), 1);
+        C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(224, 134, 123, 255), 1);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_bottom_greyscale_idx), x, y, 0.5f, &tint);        
+    }
+    else if (key == ui_sheet_emulated_bg_bottom_blue)
+    {
+        C2D_ImageTint tint;
+        C2D_SetImageTint(&tint, C2D_TopLeft, C2D_Color32(120, 154, 209, 255), 1);
+        C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(158, 186, 233, 255), 1);
+        C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(93, 134, 193, 255), 1);
+        C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(131, 165, 217, 255), 1);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_bottom_greyscale_idx), x, y, 0.5f, &tint);  
+    }
+    else if (key == ui_sheet_emulated_bg_bottom_green)
+    {
+        C2D_ImageTint tint;
+        C2D_SetImageTint(&tint, C2D_TopLeft, C2D_Color32(125, 209, 119, 255), 1);
+        C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(161, 233, 158, 255), 1);
+        C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(101, 193, 93, 255), 1);
+        C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(136, 217, 131, 255), 1);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_bottom_greyscale_idx), x, y, 0.5f, &tint);        
+    }
     // TODO: flipped event menu bar
     
     // standard case
@@ -534,10 +582,7 @@ void Gui::pkm(PKX* pokemon, int x, int y, u32 color, float blend)
         return;
     }
     static C2D_ImageTint tint;
-    for (int i = 0; i < 4; i++)
-    {
-        tint.corners[i] = {color, blend};
-    }
+    C2D_PlainImageTint(&tint, color, blend);
 
     if (pokemon->egg())
     {
@@ -563,10 +608,7 @@ void Gui::pkm(PKX* pokemon, int x, int y, u32 color, float blend)
 void Gui::pkm(int formSpecies, int x, int y, u32 color, float blend)
 {
     static C2D_ImageTint tint;
-    for (int i = 0; i < 4; i++)
-    {
-        tint.corners[i] = {color, blend};
-    }
+    C2D_PlainImageTint(&tint, color, blend);
     C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, formSpecies), x, y, 0.5f, &tint);
 }
 

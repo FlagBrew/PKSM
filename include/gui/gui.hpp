@@ -49,6 +49,12 @@
 // emulated
 #define ui_sheet_res_null_idx 500
 #define ui_sheet_emulated_pointer_horizontal_flipped_idx 501
+#define ui_sheet_emulated_bg_top_red 502
+#define ui_sheet_emulated_bg_top_blue 503
+#define ui_sheet_emulated_bg_top_green 504
+#define ui_sheet_emulated_bg_bottom_red 505
+#define ui_sheet_emulated_bg_bottom_blue 506
+#define ui_sheet_emulated_bg_bottom_green 507
 
 // colors
 #define COLOR_WHITE     C2D_Color32(255, 255, 255, 255)
