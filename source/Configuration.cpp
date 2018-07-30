@@ -31,7 +31,6 @@
 Configuration::Configuration()
 {
     static const std::u16string path = StringUtils::UTF8toUTF16("/config.json");
-    FSUSER_CreateDirectory(Archive::data(), fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16("/").data()), 0);
     FSStream stream(Archive::data(), path, FS_OPEN_READ);
 
     fprintf(stderr, "First open in constructor: 0x%016lX\n", stream.result());

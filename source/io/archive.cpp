@@ -105,7 +105,10 @@ Result Archive::createPKSMExtdataArchive(void)
 	smdh_s* smdh = loadSMDH(UNIQUE_ID << 8, 0x00040000, MEDIATYPE_SD);
 	
 	Result res = FSUSER_CreateExtSaveData(esdi, ndirs, nfiles, sizeLimit, sizeof(smdh_s), (u8*)smdh);
-
+	if (R_SUCCEEDED(res))
+	{
+		res = FSUSER_CreateDirectory(Archive::data(), fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16("/").data()), 0);
+	}
 	delete smdh;
 	return res;
 }

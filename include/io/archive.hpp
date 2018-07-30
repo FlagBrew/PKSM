@@ -29,6 +29,7 @@
 
 #include <3ds.h>
 #include "smdh.hpp"
+#include "utils.hpp"
 
 namespace Archive
 {
