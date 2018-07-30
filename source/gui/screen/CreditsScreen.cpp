@@ -65,6 +65,6 @@ void CreditsScreen::draw() const
     C2D_SceneBegin(g_renderTargetBottom);
     Gui::backgroundBottom();
 
-    // Gui::staticText(credits, 20, 30, FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE);
-    // Gui::staticText(GFX_BOTTOM, 225, "Press B to return", FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE);
+    Gui::staticText(credits, 20, 30, FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE);
+    Gui::staticText(GFX_BOTTOM, 225, "Press B to return", FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE);
 }

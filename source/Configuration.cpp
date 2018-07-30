@@ -31,6 +31,7 @@
 Configuration::Configuration()
 {
     static const std::u16string path = StringUtils::UTF8toUTF16("/config.json");
+    FSUSER_CreateDirectory(Archive::data(), fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16("/").data()), 0);
     FSStream stream(Archive::data(), path, FS_OPEN_READ);
 
     fprintf(stderr, "First open in constructor: 0x%016lX\n", stream.result());
@@ -72,17 +73,18 @@ Configuration::Configuration()
 
 void Configuration::save()
 {
-    static const std::u16string path = StringUtils::UTF8toUTF16("config.json");
+    static const std::u16string path = StringUtils::UTF8toUTF16("/config.json");
     size_t size = mJson.dump(2).size();
     if (oldSize != size)
     {
         Result res = FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, path.data()));
         fprintf(stderr, "Delete in save: 0x%016lX\n", res);
     }
-    FSStream stream(Archive::data(), path, FS_OPEN_WRITE | FS_OPEN_CREATE, oldSize = size);
+    FSStream stream(Archive::data(), path, FS_OPEN_WRITE, oldSize = size);
     fprintf(stderr, "Open in save: 0x%016lX\n", stream.result());
-    stream.write(const_cast<char*>(mJson.dump(2).data()), size);
+    stream.write(mJson.dump(2).data(), size);
     fprintf(stderr, "Write in save: 0x%016lX\n", stream.result());
+    fprintf(stderr, "Data attempted to write: %s", mJson.dump(2).data());
     stream.close();
     fprintf(stderr, "Close in save: 0x%016lX\n", stream.result());
 }
