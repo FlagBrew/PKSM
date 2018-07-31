@@ -51,39 +51,33 @@ Configuration::Configuration()
         fprintf(stderr, "Read in constructor: 0x%016lX\n", stream.result());
         stream.close();
         fprintf(stderr, "Close in constructor: 0x%016lX\n", stream.result());
+        fprintf(stderr, "Read data %s", jsonData);
         mJson.parse(jsonData);
+        fprintf(stderr, "JSON data %s", mJson.dump(2).data());
         delete[] jsonData;
     }
-
-    mYear = mJson["defaults"]["date"]["year"];
-    mMonth = mJson["defaults"]["date"]["month"];
-    mDay = mJson["defaults"]["date"]["day"];
-    mNationality = mJson["defaults"]["nationality"];
-    mOt = mJson["defaults"]["ot"];
-    mSid = mJson["defaults"]["sid"];
-    mPid = mJson["defaults"]["pid"];
-    
-    mSize = mJson["storageSize"];
-    mTferEdit = mJson["transferEdit"];
-    mExtData = mJson["useExtData"];
-    mAutoBackup = mJson["autoBackup"];
-    mLang = mJson["language"];
 }
 
 void Configuration::save()
 {
     static const std::u16string path = StringUtils::UTF8toUTF16("/config.json");
-    size_t size = mJson.dump(2).size();
-    if (oldSize != size)
+
+    std::string writeData = mJson.dump(2);
+    writeData.shrink_to_fit();
+    size_t size = writeData.size();
+
+    if (oldSize > size)
     {
         Result res = FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, path.data()));
         fprintf(stderr, "Delete in save: 0x%016lX\n", res);
     }
+
     FSStream stream(Archive::data(), path, FS_OPEN_WRITE, oldSize = size);
     fprintf(stderr, "Open in save: 0x%016lX\n", stream.result());
-    stream.write(mJson.dump(2).data(), size);
+    u32 written = stream.write(writeData.data(), size);
     fprintf(stderr, "Write in save: 0x%016lX\n", stream.result());
-    fprintf(stderr, "Data attempted to write: %s", mJson.dump(2).data());
+    fprintf(stderr, "Size of data written: %lu", written);
+    fprintf(stderr, "Data attempted to write: %s", writeData.data());
     stream.close();
     fprintf(stderr, "Close in save: 0x%016lX\n", stream.result());
 }

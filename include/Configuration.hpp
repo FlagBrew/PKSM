@@ -45,122 +45,122 @@ public:
 
     Language language(void) const
     {
-        return mLang;
+        return mJson["language"];
     }
 
     bool autoBackup(void) const
     {
-        return mAutoBackup;
+        return mJson["autoBackup"];
     }
 
     int storageSize(void) const
     {
-        return mSize;
+        return mJson["storageSize"];
     }
 
     bool transferEdit(void) const
     {
-        return mTferEdit;
+        return mJson["transferEdit"];
     }
 
     bool useExtData(void) const
     {
-        return mExtData;
+        return mJson["useExtData"];
     }
 
     u32 defaultPID(void) const
     {
-        return mPid;
+        return mJson["defaults"]["pid"];
     }
 
     u32 defaultSID(void) const
     {
-        return mSid;
+        return mJson["defaults"]["sid"];
     }
 
     std::string defaultOT(void) const
     {
-        return mOt;
+        return mJson["defaults"]["ot"];
     }
 
     int nationality(void) const
     {
-        return mNationality;
+        return mJson["defaults"]["nationality"];
     }
 
     int day(void)
     {
-        return mDay;
+        return mJson["defaults"]["date"]["day"];
     }
     
     int month(void)
     {
-        return mMonth;
+        return mJson["defaults"]["date"]["month"];
     }
 
     int year(void)
     {
-        return mYear;
+        return mJson["defaults"]["date"]["year"];
     }
 
     void language(Language lang)
     {
-        mLang = lang;
+        mJson["language"] = lang;
     }
 
     void autoBackup(bool backup)
     {
-        mAutoBackup = backup;
+        mJson["autoBackup"] = backup;
     }
 
     void storageSize(int size)
     {
-        mSize = size;
+        mJson["storageSize"] = size;
     }
 
     void transferEdit(bool edit)
     {
-        mTferEdit = edit;
+        mJson["transferEdit"] = edit;
     }
 
     void useExtData(bool use)
     {
-        mExtData = use;
+        mJson["useExtData"] = use;
     }
 
     void defaultPID(u32 pid)
     {
-        mPid = pid;
+        mJson["defaults"]["pid"] = pid;
     }
 
     void defaultSID(u32 sid)
     {
-        mSid = sid;
+        mJson["defaults"]["sid"] = sid;
     }
 
     void defaultOT(std::string ot)
     {
-        mOt = ot;
+        mJson["defaults"]["ot"] = ot;
     }
 
     void nationality(int nation)
     {
-        mNationality = nation;
+        mJson["defaults"]["nationality"] = nation;
     }
 
     void day(int day)
     {
-        mDay = day;
+        mJson["defaults"]["date"]["day"] = day;
     }
     
     void month(int month)
     {
-        mMonth = month;
+        mJson["defaults"]["date"]["month"] = month;
     }
 
     void year(int year)
     {
-        mYear = year;
+        mJson["defaults"]["date"]["year"] = year;
     }
 
     void save(void);
@@ -173,11 +173,6 @@ private:
     void operator=(Configuration const&) = delete;
 
     nlohmann::json mJson;
-    int mYear, mMonth, mDay, mNationality, mSize;
-    u32 mSid, mPid;
-    bool mTferEdit, mExtData, mAutoBackup;
-    std::string mOt;
-    Language mLang;
 
     size_t oldSize = 0;
 };
