@@ -32,8 +32,6 @@ Configuration::Configuration()
 {
     static const std::u16string path = StringUtils::UTF8toUTF16("/config.json");
     FSStream stream(Archive::data(), path, FS_OPEN_READ);
-
-    fprintf(stderr, "First open in constructor: 0x%016lX\n", stream.result());
     
     if (R_FAILED(stream.result()))
     {
@@ -45,15 +43,10 @@ Configuration::Configuration()
     else
     {
         oldSize = stream.size();
-        fprintf(stderr, "Size in constructor: 0x%016lX\n", stream.result());
-        char* jsonData = new char[oldSize];
-        stream.read(jsonData, oldSize);
-        fprintf(stderr, "Read in constructor: 0x%016lX\n", stream.result());
+        char* jsonData = new char[oldSize + 1];
+        stream.read(jsonData, oldSize + 1);
         stream.close();
-        fprintf(stderr, "Close in constructor: 0x%016lX\n", stream.result());
-        fprintf(stderr, "Read data %s", jsonData);
-        mJson.parse(jsonData);
-        fprintf(stderr, "JSON data %s", mJson.dump(2).data());
+        mJson = nlohmann::json::parse(jsonData);
         delete[] jsonData;
     }
 }
@@ -66,18 +59,12 @@ void Configuration::save()
     writeData.shrink_to_fit();
     size_t size = writeData.size();
 
-    if (oldSize > size)
+    if (oldSize != size)
     {
-        Result res = FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, path.data()));
-        fprintf(stderr, "Delete in save: 0x%016lX\n", res);
+        FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, path.data()));
     }
 
     FSStream stream(Archive::data(), path, FS_OPEN_WRITE, oldSize = size);
-    fprintf(stderr, "Open in save: 0x%016lX\n", stream.result());
-    u32 written = stream.write(writeData.data(), size);
-    fprintf(stderr, "Write in save: 0x%016lX\n", stream.result());
-    fprintf(stderr, "Size of data written: %lu", written);
-    fprintf(stderr, "Data attempted to write: %s", writeData.data());
+    stream.write(writeData.data(), size);
     stream.close();
-    fprintf(stderr, "Close in save: 0x%016lX\n", stream.result());
 }

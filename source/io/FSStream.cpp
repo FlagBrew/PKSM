@@ -97,10 +97,6 @@ u32 FSStream::read(void *buf, u32 sz)
 u32 FSStream::write(const void *buf, u32 sz)
 {
 	u32 wt = 0;
-	if (off + sz != this->sz)
-	{
-		FSFILE_SetSize(handle, off + sz);
-	}
 	res = FSFILE_Write(handle, &wt, off, buf, sz, FS_WRITE_FLUSH);
 	off += wt;
 	return wt;
