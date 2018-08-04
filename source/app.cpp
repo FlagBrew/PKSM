@@ -25,6 +25,7 @@
 */
 
 #include "app.hpp"
+#include "Configuration.hpp"
 
 Result App::init(void)
 {
@@ -38,12 +39,20 @@ Result App::init(void)
     if (R_FAILED(res = Gui::init())) return res;
     i18n::init();
 
+    // uncomment when needing to debug with GDB
+    // Why does commenting this out make the configuration read fail???? WTF
+    consoleDebugInit(debugDevice_SVC);
+    // while(aptMainLoop() && !(hidKeysDown() & KEY_START)) { hidScanInput(); }
+    
+    Configuration::getInstance();
+
     return 0;
 }
 
 void App::exit(void)
 {
     Threads::destroy();
+    Configuration::getInstance().save();
     i18n::exit();
     Gui::exit();
     amExit();
