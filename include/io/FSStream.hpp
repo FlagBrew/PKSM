@@ -44,7 +44,7 @@ public:
 	u32 size(void);
 	u32 offset(void);
 	u32 read(void *buf, u32 size);
-	u32 write(void *buf, u32 size);
+	u32 write(const void *buf, u32 size);
 	bool eof(void);
 
 private:

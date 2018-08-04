@@ -24,47 +24,47 @@
 *         reasonable ways as different from the original version.
 */
 
-#include "CreditsScreen.hpp"
-#include "gui.hpp"
-#include "MainMenu.hpp"
 #include "Configuration.hpp"
+#include "archive.hpp"
+#include "FSStream.hpp"
 
-static const char* credits = 
-    R"(Naxann and Anty-Lemon for various contributions
-    Kaphotics and SciresM for PKHeX and memecrypto
-    J-K-D for direct save import/export
-    Astronautlevel for QR code support
-    ArchitDate for serveLegality
-    Slownic and zaksabeast for servepkx
-    Slashcash for PCHex++
-    TuxSH for TWLSaveTool
-    ProjectPokemon.org for most of the wondercards
-    Simona for being my best supporter
-    All the countless translators who worked on the localization
-    All the contributors on Github
-    Everyone supporting the development
-
-    www.github.com/BernardoGiordano/PKSM)";
-
-void CreditsScreen::update(touchPosition* touch)
+Configuration::Configuration()
 {
-    if (touch) {}
-    if (hidKeysDown() & KEY_B)
+    static const std::u16string path = StringUtils::UTF8toUTF16("/config.json");
+    FSStream stream(Archive::data(), path, FS_OPEN_READ);
+    
+    if (R_FAILED(stream.result()))
     {
-        Gui::screenBack();
+        std::ifstream istream("romfs:/config.json");
+        istream >> mJson;
+        istream.close();
+        save();
+    }
+    else
+    {
+        oldSize = stream.size();
+        char* jsonData = new char[oldSize + 1];
+        stream.read(jsonData, oldSize + 1);
+        stream.close();
+        mJson = nlohmann::json::parse(jsonData);
+        delete[] jsonData;
     }
 }
 
-void CreditsScreen::draw() const
+void Configuration::save()
 {
-    C2D_SceneBegin(g_renderTargetTop);
-    Gui::backgroundTop();
-    // Not sure what to put on the top
-    Gui::staticText(GFX_TOP, 4, "Credits", FONT_SIZE_14, FONT_SIZE_14, COLOR_BLUE);
+    static const std::u16string path = StringUtils::UTF8toUTF16("/config.json");
 
-    C2D_SceneBegin(g_renderTargetBottom);
-    Gui::backgroundBottom();
+    std::string writeData = mJson.dump(2);
+    writeData.shrink_to_fit();
+    size_t size = writeData.size();
 
-    Gui::staticText(credits, 20, 30, FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE);
-    Gui::staticText(GFX_BOTTOM, 225, "Press B to return", FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE);
+    if (oldSize != size)
+    {
+        FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, path.data()));
+    }
+
+    FSStream stream(Archive::data(), path, FS_OPEN_WRITE, oldSize = size);
+    stream.write(writeData.data(), size);
+    stream.close();
 }
