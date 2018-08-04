@@ -28,14 +28,14 @@
 #define MAINMENUBUTTON_HPP
 
 #include "Button.hpp"
-#include "ui_spritesheet.h"
+#include "ui_sheet.h"
 
 // A clone of Button that adds the main menu image and centers the text differently
 class MainMenuButton : public Button
 {
 public:
     MainMenuButton(int x, int y, u16 w, u16 h, std::function<bool()> callback, int image, std::string text, float textScale, u32 textColor, int imageY)
-            : Button(x, y, w, h, callback, ui_spritesheet_res_button_menu_idx, text, textScale, textColor)
+            : Button(x, y, w, h, callback, ui_sheet_mainmenu_button_idx, text, textScale, textColor)
     {
         menuImage = image;
         this->imageY = imageY;

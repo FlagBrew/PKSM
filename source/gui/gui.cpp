@@ -26,7 +26,6 @@
 
 #include "gui.hpp"
 
-std::mt19937 g_randomNumbers;
 C3D_RenderTarget* g_renderTargetTop;
 C3D_RenderTarget* g_renderTargetBottom;
 C2D_TextBuf g_widthBuf;
@@ -34,7 +33,6 @@ C2D_TextBuf g_widthBuf;
 static C2D_SpriteSheet spritesheet_ui;
 static C2D_SpriteSheet spritesheet_pkm;
 static C2D_SpriteSheet spritesheet_types;
-static C2D_Sprite bgCubes[7];
 static C2D_Image bgBoxes;
 static C2D_TextBuf dynamicBuf;
 static C2D_TextBuf staticBuf;
@@ -66,7 +64,7 @@ static Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int d
 
 C2D_Image Gui::TWLIcon(void)
 {
-    return C2D_SpriteSheetGetImage(spritesheet_ui, ui_spritesheet_res_twlcart_idx);
+    return C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_gameselector_twlcart_idx);
 }
 
 void Gui::backgroundBottom(void)
@@ -84,28 +82,12 @@ void Gui::backgroundTop(void)
 void Gui::backgroundAnimated(gfxScreen_t screen)
 {
     static bool firstRun = true;
-    static std::vector<std::pair<C2D_Sprite, float>> cubes = {
-        std::make_pair(bgCubes[0], randomRotation()),
-        std::make_pair(bgCubes[1], randomRotation()),
-        std::make_pair(bgCubes[2], randomRotation()),
-        std::make_pair(bgCubes[3], randomRotation()),
-        std::make_pair(bgCubes[4], randomRotation()),
-        std::make_pair(bgCubes[5], randomRotation()),
-        std::make_pair(bgCubes[6], randomRotation())
-    };
     static int boxesX[11] = {0};
-    static const int maxCubes = 25;
-    static int cooldown = 30;
 
     int maxrange = screen == GFX_TOP ? 400 : 320;
 
     if (firstRun)
     {
-        for (std::vector<std::pair<C2D_Sprite, float>>::iterator i = cubes.begin(); i != cubes.end(); i++)
-        {
-            i->first.params.pos.x = -1 * (int)(g_randomNumbers() % 100);
-            i->first.params.pos.y = g_randomNumbers() % 200;
-        }
         firstRun = false;
         for (int i = 0; i < 11; i++)
         {
@@ -113,52 +95,11 @@ void Gui::backgroundAnimated(gfxScreen_t screen)
         }
     }
 
-    C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_spritesheet_res_anim_background_idx), 0, 0, 0.5f);
-
-    Tex3DS_SubTexture boxesPart;// = _select_box(bgBoxes, maxrange - boxesX / 2, 0, 800, 240);
-    for (int i = 0; i < 11; i++)
+    Tex3DS_SubTexture boxesPart; // = _select_box(bgBoxes, maxrange - boxesX / 2, 0, 800, 240);
+    for (u8 i = 0; i < 11; i++)
     {
         boxesPart = _select_box(bgBoxes, i * (maxrange / 10), 0, (i + 1) * (maxrange / 10), 240);
         C2D_DrawImageAt({bgBoxes.tex, &boxesPart}, boxesX[i], 0, 0.5f);
-    }
-    
-    if (g_randomNumbers() % 100 < 5 && cubes.size() < maxCubes && cooldown < 0)
-    {
-        cubes.push_back(std::make_pair(bgCubes[g_randomNumbers() % 7], randomRotation()));
-        cubes[cubes.size() - 1].first.params.pos.x = -1 * (int)((g_randomNumbers() % 50) + 50);
-        cubes[cubes.size() - 1].first.params.pos.y = g_randomNumbers() % 200;
-        cubes[cubes.size() - 1].first.params.depth = 0.5f;
-        cubes[cubes.size() - 1].first.params.center.x = cubes[cubes.size() - 1].first.params.pos.w / 2.0f;
-        cubes[cubes.size() - 1].first.params.center.y = cubes[cubes.size() - 1].first.params.pos.h / 2.0f;
-        cooldown = 30;
-    }
-
-    for (std::vector<std::pair<C2D_Sprite, float>>::iterator i = cubes.begin(); i != cubes.end(); i++)
-    {
-        if (i->first.params.pos.x >= maxrange + 100)
-        {
-            cubes.erase(i);
-            if (g_randomNumbers() % 100 < 50 && cubes.size() < maxCubes)
-            {
-                cubes.push_back(std::make_pair(bgCubes[g_randomNumbers() % 7], randomRotation()));
-                cubes[cubes.size() - 1].first.params.pos.x = -1 * (int)((g_randomNumbers() % 50) + 50);
-                cubes[cubes.size() - 1].first.params.pos.y = g_randomNumbers() % 200;
-                cubes[cubes.size() - 1].first.params.depth = 0.5f;
-                cubes[cubes.size() - 1].first.params.center.x = cubes[cubes.size() - 1].first.params.pos.w / 2.0f;
-                cubes[cubes.size() - 1].first.params.center.y = cubes[cubes.size() - 1].first.params.pos.h / 2.0f;
-            }
-        }
-        else
-        {
-            C2D_SpriteMove(&i->first, 1, 0);
-            C2D_SpriteRotateDegrees(&i->first, i->second);
-            C2D_DrawSprite(&i->first);
-        }
-    }
-
-    cooldown--;
-    for (int i = 0; i < 11; i++)
-    {
         boxesX[i] = boxesX[i] >= maxrange ? - maxrange / 10 : boxesX[i] + 1;
     }
 }
@@ -364,20 +305,12 @@ Result Gui::init(void)
     g_widthBuf = C2D_TextBufNew(1024);
     staticBuf = C2D_TextBufNew(1024);
 
-    spritesheet_ui = C2D_SpriteSheetLoad("romfs:/gfx/ui_spritesheet.t3x");
+    spritesheet_ui = C2D_SpriteSheetLoad("romfs:/gfx/ui_sheet.t3x");
     spritesheet_pkm = C2D_SpriteSheetLoad("romfs:/gfx/pkm_spritesheet.t3x");
     spritesheet_types = C2D_SpriteSheetLoad("romfs:/gfx/types_spritesheet.t3x");
 
-    bgBoxes = C2D_SpriteSheetGetImage(spritesheet_ui, ui_spritesheet_res_anim_squares_idx);
+    bgBoxes = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_anim_squares_idx);
 
-    C2D_SpriteFromSheet(&bgCubes[0], spritesheet_ui, ui_spritesheet_res_anim_cubes_1_idx);
-    C2D_SpriteFromSheet(&bgCubes[1], spritesheet_ui, ui_spritesheet_res_anim_cubes_2_idx);
-    C2D_SpriteFromSheet(&bgCubes[2], spritesheet_ui, ui_spritesheet_res_anim_cubes_3_idx);
-    C2D_SpriteFromSheet(&bgCubes[3], spritesheet_ui, ui_spritesheet_res_anim_cubes_4_idx);
-    C2D_SpriteFromSheet(&bgCubes[4], spritesheet_ui, ui_spritesheet_res_anim_cubes_5_idx);
-    C2D_SpriteFromSheet(&bgCubes[5], spritesheet_ui, ui_spritesheet_res_anim_cubes_6_idx);
-    C2D_SpriteFromSheet(&bgCubes[6], spritesheet_ui, ui_spritesheet_res_anim_cubes_7_idx);
-    
     return 0;
 }
 
@@ -417,43 +350,63 @@ void Gui::exit(void)
 
 void Gui::sprite(int key, int x, int y)
 {
-    if (key == ui_spritesheet_res_null)
+    if (key == ui_sheet_res_null_idx)
     {
         return;
     }
-    else if (key == ui_spritesheet_res_bar_editor_idx)
+    else if (key == ui_sheet_eventmenu_bar_selected_idx || key == ui_sheet_eventmenu_bar_unselected_idx)
     {
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, key), x, y, 0.5f, nullptr, 320.0f, 1.0f);
+        u8 off = 4, rep = 174;
+        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, key);
+        // Left side
+        Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, off, 0);
+        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f);
+        // Center
+        tex = _select_box(sprite, off, 0, sprite.subtex->width, 0);
+        C2D_DrawImageAt({sprite.tex, &tex}, x + off, y, 0.5f, nullptr, rep, 1.0f);
     }
-    else if (key == ui_spritesheet_res_bar_event_bottom_idx)
+    else if (key == ui_sheet_eventmenu_page_indicator_idx)
     {
-        _draw_mirror_scale(key, x, y, 3, 184);
+        _draw_mirror_scale(key, x, y, 4, 182);
     }
-    else if (key == ui_spritesheet_res_bar_event_top_normal_idx)
+    else if (key == ui_sheet_gameselector_bg_idx)
     {
-        _draw_mirror_scale(key, x, y, 3, 172);
+        u8 off = 5, rep = 197;
+        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, key);
+        // Top side
+        Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, 0, off);
+        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f);
+        // Bottom side
+        float top = tex.top;
+        tex.top = tex.bottom;
+        tex.bottom = top;
+        C2D_DrawImageAt({sprite.tex, &tex}, x, y + off + rep, 0.5f);
+        // Center
+        tex = _select_box(sprite, 0, off, 0, sprite.subtex->height);
+        C2D_DrawImageAt({sprite.tex, &tex}, x, y + off, 0.5f, nullptr, 1.0f, rep);       
     }
-    else if (key == ui_spritesheet_res_bar_event_top_selected_idx)
+    else if (key == ui_sheet_gameselector_savebox_idx)
     {
-        _draw_mirror_scale(key, x, y, 3, 172);
+        u8 off = 53;
+        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, key);
+        // Top side
+        Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, 0, off);
+        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f);
+        // Bottom side
+        float top = tex.top;
+        tex.top = tex.bottom;
+        tex.bottom = top;
+        C2D_DrawImageAt({sprite.tex, &tex}, x, y + off - 1, 0.5f);         
     }
-    else if (key == ui_spritesheet_res_bar_selected_idx)
+    else if (key == ui_sheet_mainmenu_button_idx)
     {
-        _draw_mirror_scale(key, x, y, 8, 302);
+        _draw_mirror_scale(key, x, y, 5, 132);
     }
-    else if (key == ui_spritesheet_res_box_no_shadow_idx)
-    {
-        _draw_mirror_scale(key, x, y, 2, 32);
-    }
-    else if (key == ui_spritesheet_res_button_menu_idx)
-    {
-        _draw_mirror_scale(key, x, y, 3, 134);
-    }
-    else if (key == ui_spritesheet_res_editor_20x2_idx)
+    else if (key == ui_sheet_part_editor_20x2_idx)
     {
         _draw_repeat(key, x, y, 20, 1);
     }
-    else if (key == ui_spritesheet_res_info_bottom_idx || key == ui_spritesheet_res_info_top_idx)
+    else if (key == ui_sheet_part_info_bottom_idx || key == ui_sheet_part_info_top_idx)
     {
         C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, key);
         int width = sprite.subtex->width, height = sprite.subtex->height;
@@ -466,49 +419,87 @@ void Gui::sprite(int key, int x, int y)
         // Bottom right
         C2D_DrawImageAt(sprite, x + width, y + height, 0.5f, NULL, -1.0f, -1.0f);
     }
-    else if (key == ui_spritesheet_res_mtx_4x4_idx)
+    else if (key == ui_sheet_part_mtx_4x4_idx)
     {
         _draw_repeat(key, x, y, 4, 4);
     }
-    else if (key == ui_spritesheet_res_mtx_5x6_idx)
+    else if (key == ui_sheet_part_mtx_5x6_idx)
     {
         _draw_repeat(key, x, y, 5, 6);
     }
-    else if (key == ui_spritesheet_res_mtx_5x8_idx)
+    else if (key == ui_sheet_part_mtx_5x8_idx)
     {
         _draw_repeat(key, x, y, 5, 8);
     }
-    else if (key == ui_spritesheet_res_mtx_15x16_idx)
+    else if (key == ui_sheet_part_mtx_15x16_idx)
     {
         _draw_repeat(key, x, y, 15, 16);
         C2D_DrawRectSolid(0, 225, 0.5f, 400, 15, COLOR_WHITE);
-        //_draw_rectangle(0, 225, 400, 15, COLOR_WHITE);
-    }
-    else if (key == ui_spritesheet_res_wondercard_top_idx)
-    {
-        // top bar
-        C2D_Image image = C2D_SpriteSheetGetImage(spritesheet_ui, key);
-        Tex3DS_SubTexture tex = _select_box(image, 0, 0, 373, 20);
-        C2D_DrawImageAt({image.tex, &tex}, x, y, 0.5f);
-        // body
-        tex = _select_box(image, 0, 20, 220, image.subtex->height);
-        C2D_DrawImageAt({image.tex, &tex}, x, y + 22, 0.5f);
-        // moves
-        tex = _select_box(image, 221, 23, 373, 128);
-        C2D_DrawImageAt({image.tex, &tex}, x + 248, y + 135, 0.5f);
     }
     
     //emulated
-    else if (key == ui_spritesheet_res_emulated_button_arrow_right_idx)
+    else if (key == ui_sheet_emulated_pointer_horizontal_flipped_idx)
     {
-        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_spritesheet_res_button_arrow_idx);
+        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_pointer_horizontal_idx);
         C2D_DrawImageAt(sprite, x, y, 0.5f, NULL, -1.0f, 1.0f);
     }
-    else if (key == ui_spritesheet_res_emulated_selector_menu_left_idx)
+    else if (key == ui_sheet_emulated_bg_top_red)
     {
-        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_spritesheet_res_selector_menu_idx);
-        C2D_DrawImageAt(sprite, x, y, 0.5f, NULL, -1.0f, 1.0f);
+        C2D_ImageTint tint;
+        C2D_SetImageTint(&tint, C2D_TopLeft, C2D_Color32(228, 143, 131, 255), 1);
+        C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(201, 95, 84, 255), 1);
+        C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(239, 163, 151, 255), 1);
+        C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(214, 117, 106, 255), 1);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_top_greyscale_idx), x, y, 0.5f, &tint);
     }
+    else if (key == ui_sheet_emulated_bg_top_blue)
+    {
+        C2D_ImageTint tint;
+        C2D_SetImageTint(&tint, C2D_TopLeft, C2D_Color32(139, 171, 221, 255), 1);
+        C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(93, 134, 193, 255), 1);
+        C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(158, 186, 233, 255), 1);
+        C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(113, 150, 205, 255), 1);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_top_greyscale_idx), x, y, 0.5f, &tint);
+    }
+    else if (key == ui_sheet_emulated_bg_top_green)
+    {
+        C2D_ImageTint tint;
+        C2D_SetImageTint(&tint, C2D_TopLeft, C2D_Color32(142, 221, 138, 255), 1);
+        C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(101, 193, 93, 255), 1);
+        C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(161, 233, 158, 255), 1);
+        C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(119, 205, 113, 255), 1);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_top_greyscale_idx), x, y, 0.5f, &tint);
+    }
+    else if (key == ui_sheet_emulated_bg_bottom_red)
+    {
+        C2D_ImageTint tint;
+        C2D_SetImageTint(&tint, C2D_TopLeft, C2D_Color32(216, 122, 111, 255), 1);
+        C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(239, 163, 151, 255), 1);
+        C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(201, 95, 84, 255), 1);
+        C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(224, 134, 123, 255), 1);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_bottom_greyscale_idx), x, y, 0.5f, &tint);        
+    }
+    else if (key == ui_sheet_emulated_bg_bottom_blue)
+    {
+        C2D_ImageTint tint;
+        C2D_SetImageTint(&tint, C2D_TopLeft, C2D_Color32(120, 154, 209, 255), 1);
+        C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(158, 186, 233, 255), 1);
+        C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(93, 134, 193, 255), 1);
+        C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(131, 165, 217, 255), 1);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_bottom_greyscale_idx), x, y, 0.5f, &tint);  
+    }
+    else if (key == ui_sheet_emulated_bg_bottom_green)
+    {
+        C2D_ImageTint tint;
+        C2D_SetImageTint(&tint, C2D_TopLeft, C2D_Color32(125, 209, 119, 255), 1);
+        C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(161, 233, 158, 255), 1);
+        C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(101, 193, 93, 255), 1);
+        C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(136, 217, 131, 255), 1);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_bottom_greyscale_idx), x, y, 0.5f, &tint);        
+    }
+    // TODO: flipped event menu bar
+    
+    // standard case
     else
     {
         C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, key), x, y, 0.5f);
@@ -525,35 +516,35 @@ void Gui::generation(PKX* pkm, int x, int y)
 		case 4: // fire red
 		case 5: // leaf green
 		case 15: // colosseum/XD
-			Gui::sprite(ui_spritesheet_res_generation_3_idx, x, y);
+			Gui::sprite(ui_sheet_icon_generation_3_idx, x, y);
             break;
 		case 10: // diamond
 		case 11: // pearl
 		case 12: // platinum
 		case 7: // heart gold
 		case 8: // soul silver
-			Gui::sprite(ui_spritesheet_res_generation_4_idx, x, y);
+			Gui::sprite(ui_sheet_icon_generation_4_idx, x, y);
             break;		
 		case 20: // white
 		case 21: // black
 		case 22: // white2
 		case 23: // black2
-			Gui::sprite(ui_spritesheet_res_generation_5_idx, x, y);
+			Gui::sprite(ui_sheet_icon_generation_5_idx, x, y);
             break;
 		case 24: // x
 		case 25: // y
 		case 26: // as
 		case 27: // or
-			Gui::sprite(ui_spritesheet_res_generation_6_idx, x, y);
+			Gui::sprite(ui_sheet_icon_generation_6_idx, x, y);
             break;
 		case 30: // sun
 		case 31: // moon
 		case 32: // us
 		case 33: // um
-			Gui::sprite(ui_spritesheet_res_generation_7_idx, x, y);
+			Gui::sprite(ui_sheet_icon_generation_7_idx, x, y);
             break;
 		case 34: // go
-			Gui::sprite(ui_spritesheet_res_generation_go_idx, x, y);
+			Gui::sprite(ui_sheet_icon_generation_go_idx, x, y);
             break;
 		case 35: // rd
 		case 36: // gn
@@ -561,7 +552,7 @@ void Gui::generation(PKX* pkm, int x, int y)
 		case 38: // yw
 		case 39: // gd
 		case 40: // sv
-			Gui::sprite(ui_spritesheet_res_generation_gb_idx, x, y);
+			Gui::sprite(ui_sheet_icon_generation_gb_idx, x, y);
             break;
 		default:
 			break;
@@ -570,9 +561,9 @@ void Gui::generation(PKX* pkm, int x, int y)
 
 void Gui::sprite(int key, int x, int y, u32 color)
 {
-    if (key == ui_spritesheet_res_button_entry_idx
-       || key == ui_spritesheet_res_item_idx
-       || key == ui_spritesheet_res_selector_box_idx)
+    if (key == ui_sheet_button_editor_idx
+       || key == ui_sheet_icon_item_idx
+       || key == ui_sheet_pointer_arrow_idx)
     {
         C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, key);
         C2D_ImageTint tint;
@@ -591,10 +582,7 @@ void Gui::pkm(PKX* pokemon, int x, int y, u32 color, float blend)
         return;
     }
     static C2D_ImageTint tint;
-    for (int i = 0; i < 4; i++)
-    {
-        tint.corners[i] = {color, blend};
-    }
+    C2D_PlainImageTint(&tint, color, blend);
 
     if (pokemon->egg())
     {
@@ -612,7 +600,7 @@ void Gui::pkm(PKX* pokemon, int x, int y, u32 color, float blend)
         }
         if (pokemon->heldItem() > 0)
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_spritesheet_res_item_idx), x + 3, y + 21, 0.5f, &tint);
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_item_idx), x + 3, y + 21, 0.5f, &tint);
         }
     }
 }
@@ -620,10 +608,7 @@ void Gui::pkm(PKX* pokemon, int x, int y, u32 color, float blend)
 void Gui::pkm(int formSpecies, int x, int y, u32 color, float blend)
 {
     static C2D_ImageTint tint;
-    for (int i = 0; i < 4; i++)
-    {
-        tint.corners[i] = {color, blend};
-    }
+    C2D_PlainImageTint(&tint, color, blend);
     C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, formSpecies), x, y, 0.5f, &tint);
 }
 
@@ -651,11 +636,11 @@ void Gui::ball(size_t index, int x, int y)
     {
         if (i == currentEntry)
         {
-            sprite(ui_spritesheet_res_bar_event_top_selected_idx, 18, y);
+            sprite(ui_sheet_res_bar_event_top_selected_idx, 18, y);
         }
         else
         {
-            sprite(ui_spritesheet_res_bar_event_top_normal_idx, 18, y);
+            sprite(ui_sheet_res_bar_event_top_normal_idx, 18, y);
         }
 
         if (database[page * 10 + i]->pokemon()) // Or just use the value?
@@ -687,11 +672,11 @@ void Gui::ball(size_t index, int x, int y)
     {
         if (i == currentEntry)
         {
-            sprite(ui_spritesheet_res_bar_event_top_selected_idx, 200, y);
+            sprite(ui_sheet_res_bar_event_top_selected_idx, 200, y);
         }
         else
         {
-            sprite(ui_spritesheet_res_bar_event_top_normal_idx, 200, y);
+            sprite(ui_sheet_res_bar_event_top_normal_idx, 200, y);
         }
 
         if (database[page * 10 + i]->pokemon()) // Or just use the value?
@@ -720,7 +705,7 @@ void Gui::ball(size_t index, int x, int y)
     
     C2D_SceneBegin(g_renderTargetBottom);
     printMenuBottom();
-    sprite(ui_spritesheet_res_bar_event_bottom_idx, 65, 45);
+    sprite(ui_sheet_res_bar_event_bottom_idx, 65, 45);
     C2D_DrawText(&LButton, C2D_WithColor, 83, 52, 0.5f, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
     C2D_DrawText(&RButton, C2D_WithColor, 221, 52, 0.5f, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
     _draw_text_center(g_renderTargetBottom, 52, pages);
@@ -798,13 +783,13 @@ bool Gui::showChoiceMessage(const std::string& message)
         C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
 
         C2D_SceneBegin(g_renderTargetTop);
-        sprite(ui_spritesheet_res_info_top_idx, 0, 0);
+        sprite(ui_sheet_part_info_top_idx, 0, 0);
         dynamicText(GFX_TOP, 95, message, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparencyWaver()));
 
         dynamicText(GFX_TOP, 130, "Press A to continue, B to cancel.", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
 
         C2D_SceneBegin(g_renderTargetBottom);
-        sprite(ui_spritesheet_res_info_bottom_idx, 0, 0);
+        sprite(ui_sheet_part_info_bottom_idx, 0, 0);
 
         C3D_FrameEnd(0);
         Gui::clearTextBufs();

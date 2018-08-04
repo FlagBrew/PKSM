@@ -30,12 +30,12 @@
 #include "StorageScreen.hpp"
 
 static constexpr int icons[6] = {
-    ui_spritesheet_res_icon_storage_idx,
-    ui_spritesheet_res_icon_editor_idx,
-    ui_spritesheet_res_icon_events_idx,
-    ui_spritesheet_res_icon_scripts_idx,
-    ui_spritesheet_res_icon_settings_idx,
-    ui_spritesheet_res_icon_credits_idx
+    ui_sheet_icon_storage_idx,
+    ui_sheet_icon_editor_idx,
+    ui_sheet_icon_events_idx,
+    ui_sheet_icon_scripts_idx,
+    ui_sheet_icon_settings_idx,
+    ui_sheet_icon_credits_idx
 };
 
 static constexpr int yLevels[6] = {
