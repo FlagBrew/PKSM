@@ -26,88 +26,95 @@
 
 #include "FSStream.hpp"
 
-FSStream::FSStream(FS_Archive archive, std::u16string path, u32 flags)
+FSStream::FSStream(FS_Archive archive, const std::u16string& path, u32 flags)
 {
-	load = false;
-	sz = 0;
-	off = 0;
+    mGood = false;
+    mSize = 0;
+    mOffset = 0;
 
-	res = FSUSER_OpenFile(&handle, archive, fsMakePath(PATH_UTF16, path.data()), flags, 0);
-	if (R_SUCCEEDED(res))
-	{
-		FSFILE_GetSize(handle, (u64*)&sz);
-		load = true;
-	}
+    mResult = FSUSER_OpenFile(&mHandle, archive, fsMakePath(PATH_UTF16, path.data()), flags, 0);
+    if (R_SUCCEEDED(mResult))
+    {
+        FSFILE_GetSize(mHandle, (u64*)&mSize);
+        mGood = true;
+    }
 }
 
-FSStream::FSStream(FS_Archive archive, std::u16string path, u32 flags, u32 _size)
+FSStream::FSStream(FS_Archive archive, const std::u16string& path, u32 flags, u32 size)
 {
-	load = false;
-	sz = _size;
-	off = 0;
+    mGood = false;
+    mSize = size;
+    mOffset = 0;
 
-	res = FSUSER_OpenFile(&handle, archive, fsMakePath(PATH_UTF16, path.data()), flags, 0);
-	if (R_FAILED(res))
-	{
-		res = FSUSER_CreateFile(archive, fsMakePath(PATH_UTF16, path.data()), 0, sz);
-		if (R_SUCCEEDED(res))
-		{
-			res = FSUSER_OpenFile(&handle, archive, fsMakePath(PATH_UTF16, path.data()), flags, 0);
-			if (R_SUCCEEDED(res))
-			{
-				load = true;
-			}
-		}
-	}
-	else
-	{
-		load = true;
-	}
+    mResult = FSUSER_OpenFile(&mHandle, archive, fsMakePath(PATH_UTF16, path.data()), flags, 0);
+    if (R_FAILED(mResult))
+    {
+        mResult = FSUSER_CreateFile(archive, fsMakePath(PATH_UTF16, path.data()), 0, mSize);
+        if (R_SUCCEEDED(mResult))
+        {
+            mResult = FSUSER_OpenFile(&mHandle, archive, fsMakePath(PATH_UTF16, path.data()), flags, 0);
+            if (R_SUCCEEDED(mResult))
+            {
+                mGood = true;
+            }
+        }
+    }
+    else
+    {
+        mGood = true;
+    }
 }
 
 Result FSStream::close(void)
 {
-	res = FSFILE_Close(handle);
-	return res;
+    mResult = FSFILE_Close(mHandle);
+    return mResult;
 }
 
-bool FSStream::loaded(void)
+bool FSStream::good(void)
 {
-	return load;
+    return mGood;
 }
 
 Result FSStream::result(void)
 {
-	return res;
+    return mResult;
 }
 
 u32 FSStream::size(void)
 {
-	return sz;
+    return mSize;
 }
 
 u32 FSStream::read(void *buf, u32 sz)
 {
-	u32 rd = 0;
-	res = FSFILE_Read(handle, &rd, off, buf, sz);
-	off += rd;
-	return rd;
+    u32 rd = 0;
+    mResult = FSFILE_Read(mHandle, &rd, mOffset, buf, sz);
+    if (R_FAILED(mResult))
+    {
+        if (rd > sz)
+        {
+            rd = sz;
+        }
+    }
+    mOffset += rd;
+    return rd;
 }
 
 u32 FSStream::write(const void *buf, u32 sz)
 {
-	u32 wt = 0;
-	res = FSFILE_Write(handle, &wt, off, buf, sz, FS_WRITE_FLUSH);
-	off += wt;
-	return wt;
+    u32 wt = 0;
+    mResult = FSFILE_Write(mHandle, &wt, mOffset, buf, sz, FS_WRITE_FLUSH);
+    mOffset += wt;
+    return wt;
 }
 
 bool FSStream::eof(void)
 {
-	return off >= sz;
+    return mOffset >= mSize;
 }
 
 u32 FSStream::offset(void)
 {
-	return off;
+    return mOffset;
 }

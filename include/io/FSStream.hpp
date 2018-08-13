@@ -35,24 +35,25 @@
 class FSStream
 {
 public:
-	FSStream(FS_Archive archive, std::u16string path, u32 flags);
-	FSStream(FS_Archive archive, std::u16string path, u32 flags, u32 size);
-	
-	Result close(void);
-	bool loaded(void);
-	Result result(void);
-	u32 size(void);
-	u32 offset(void);
-	u32 read(void *buf, u32 size);
-	u32 write(const void *buf, u32 size);
-	bool eof(void);
+    FSStream(FS_Archive archive, const std::u16string& path, u32 flags);
+    FSStream(FS_Archive archive, const std::u16string& path, u32 flags, u32 size);
+    ~FSStream(void) { };
 
+    Result close(void);
+    bool   eof(void);
+    bool   good(void);
+    u32    offset(void);
+    u32    read(void *buf, u32 size);
+    Result result(void);
+    u32    size(void);
+    u32    write(const void *buf, u32 size);
+    
 private:
-	Handle handle;
-	u32 sz;
-	u32 off;
-	Result res;
-	bool load;
+    Handle mHandle;
+    u32    mSize;
+    u32    mOffset;
+    Result mResult;
+    bool   mGood;
 };
 
 #endif
