@@ -28,6 +28,7 @@
 #include "gui.hpp"
 #include "CreditsScreen.hpp"
 #include "StorageScreen.hpp"
+#include "ConfigScreen.hpp"
 
 static constexpr int icons[6] = {
     ui_sheet_icon_storage_idx,
@@ -64,7 +65,7 @@ static bool goToScreen(int buttonNum)
             //Gui::setScreen(new ScriptsScreen);
             return true;
         case 4:
-            //Gui::setScreen(new OptionsScreen);
+            Gui::setScreen(std::unique_ptr<Screen>(new ConfigScreen));
             return true;
         case 5:
             Gui::setScreen(std::unique_ptr<Screen>(new CreditsScreen));

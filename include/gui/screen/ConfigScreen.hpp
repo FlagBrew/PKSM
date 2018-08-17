@@ -24,48 +24,38 @@
 *         reasonable ways as different from the original version.
 */
 
+#include "Screen.hpp"
+#include "Button.hpp"
+#include "i18n.hpp"
 #include "Configuration.hpp"
-#include "archive.hpp"
-#include "FSStream.hpp"
+#include <vector>
+#include <array>
 
-Configuration::Configuration()
+#ifndef CONFIGSCREEN_HPP
+#define CONFIGSCREEN_HPP
+
+class ConfigScreen : public Screen
 {
-    static const std::u16string path = StringUtils::UTF8toUTF16("/config.json");
-    FSStream stream(Archive::data(), path, FS_OPEN_READ);
-    
-    if (R_FAILED(stream.result()))
+public:
+    ConfigScreen(void);
+    virtual ~ConfigScreen()
     {
-        std::ifstream istream("romfs:/config.json");
-        istream >> mJson;
-        istream.close();
-        save();
+        for (auto tab : tabButtons)
+        {
+            for (auto button : tab)
+            {
+                delete button;
+            }
+        }
     }
-    else
-    {
-        oldSize = stream.size();
-        char* jsonData = new char[oldSize + 1];
-        jsonData[oldSize] = '\0';
-        stream.read(jsonData, oldSize);
-        stream.close();
-        mJson = nlohmann::json::parse(jsonData);
-        delete[] jsonData;
-    }
-}
+    void update(touchPosition* touch) override;
+    void draw(void) const override;
+    ScreenType type(void) const override { return SETTINGS; }
 
-void Configuration::save()
-{
-    static const std::u16string path = StringUtils::UTF8toUTF16("/config.json");
+private:
+    std::array<Button*, 3> tabs;
+    std::array<std::vector<Button*>, 3> tabButtons;
+    int currentTab = 0;
+};
 
-    std::string writeData = mJson.dump(2);
-    writeData.shrink_to_fit();
-    size_t size = writeData.size();
-
-    if (oldSize != size)
-    {
-        FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, path.data()));
-    }
-
-    FSStream stream(Archive::data(), path, FS_OPEN_WRITE, oldSize = size);
-    stream.write(writeData.data(), size);
-    stream.close();
-}
+#endif

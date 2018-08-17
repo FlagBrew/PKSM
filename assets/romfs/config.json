@@ -5,6 +5,7 @@
   "storageSize": 150,
   "transferEdit": false,
   "useExtData": false,
+  "fixBadSectors": false,
   "defaults": {
     "pid": 12345,
     "sid": 12345,

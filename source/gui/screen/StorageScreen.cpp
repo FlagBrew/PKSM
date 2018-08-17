@@ -432,7 +432,7 @@ bool StorageScreen::clearBox()
 bool StorageScreen::releasePkm()
 {
     backHeld = true;
-    if (Gui::showChoiceMessage("Release the selected Pokémon?"))
+    if (Gui::showChoiceMessage("Release the selected Pok\xE9mon?"))
     {
         if (storageChosen) { // Storage set all slots in box to PK7()s (or however it happens)
         }
