@@ -26,6 +26,16 @@
 
 #include "ConfigScreen.hpp"
 #include "gui.hpp"
+#include <bitset>
+
+#define TIMER(thingToDo) static int timer = 3; \
+                         if (timer <= 0) \
+                         { \
+                            thingToDo; \
+                            timer = 3; \
+                         } \
+                         else \
+                            --timer
 
 static bool inputNumber() { return false; }
 static bool inputText() { return false; }
@@ -59,12 +69,13 @@ ConfigScreen::ConfigScreen()
     tabButtons[1].push_back(new Button(112, 110, 15, 12, &countryChoice, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
     tabButtons[1].push_back(new Button(112, 134, 15, 12, &inputDate, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
 
-    // Miscellaneous buttons; do we need a fix bad sectors option?
-    tabButtons[2].push_back(new Button(237, 39, 15, 12, [](){ Configuration::getInstance().autoBackup(!Configuration::getInstance().autoBackup()); return false; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new Button(239, 62, 13, 13, [](){ Configuration::getInstance().storageSize(Configuration::getInstance().storageSize() - 1); return false; }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new Button(288, 62, 13, 13, [](){ Configuration::getInstance().storageSize(Configuration::getInstance().storageSize() + 1); return false; }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new Button(237, 87, 15, 12, [](){ Configuration::getInstance().transferEdit(!Configuration::getInstance().transferEdit()); return false; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new Button(237, 111, 15, 12, [](){ Configuration::getInstance().fixSectors(!Configuration::getInstance().fixSectors()); return false; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    // Miscellaneous buttons
+    tabButtons[2].push_back(new Button(237, 39, 15, 12, [](){ Configuration::getInstance().autoBackup(!Configuration::getInstance().autoBackup()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    tabButtons[2].push_back(new Button(239, 62, 13, 13, [](){ TIMER(Configuration::getInstance().storageSize(Configuration::getInstance().storageSize() - 1)); return false; }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
+    tabButtons[2].push_back(new Button(240, 62, 47, 13, &inputNumber, ui_sheet_res_null_idx, "", 0.0f, 0));
+    tabButtons[2].push_back(new Button(288, 62, 13, 13, [](){ TIMER(Configuration::getInstance().storageSize(Configuration::getInstance().storageSize() + 1)); return false; }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
+    tabButtons[2].push_back(new Button(237, 87, 15, 12, [](){ Configuration::getInstance().fixSectors(!Configuration::getInstance().fixSectors()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    tabButtons[2].push_back(new Button(237, 111, 15, 12, [](){ Configuration::getInstance().transferEdit(!Configuration::getInstance().transferEdit()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
 }
 
 void ConfigScreen::draw() const
@@ -201,8 +212,23 @@ void ConfigScreen::update(touchPosition* touch)
         button->update(touch);
     }
 
-    for (Button* button : tabButtons[currentTab])
+    if (currentTab != 2)
     {
-        button->update(touch);
+        for (Button* button : tabButtons[currentTab])
+        {
+            button->update(touch);
+        }
+    }
+    else
+    {
+        // NOTE: if any other buttons are added, this number will need to be changed, as well
+        static std::bitset<6> dirtyButtons;
+        for (int i = 0; i < tabButtons[2].size(); i++)
+        {
+            if (!dirtyButtons[i])
+                dirtyButtons[i] = tabButtons[2][i]->update(touch);
+            else
+                dirtyButtons[i] = tabButtons[2][i]->clicked(touch);
+        }
     }
 }

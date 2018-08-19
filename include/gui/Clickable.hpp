@@ -40,6 +40,11 @@ public:
     // returns return value of callback, or, if it's not executed, false
     virtual bool update(touchPosition* touch);
     virtual void draw() const = 0;
+    // Useful for toggle buttons that need to only be used once and not again until they're released
+    virtual bool clicked(touchPosition* touch)
+    {
+        return touch->px >= xPos && touch->px <= xPos + width && touch->py >= yPos && touch->py <= yPos + height;
+    }
 
 protected:
     int xPos, yPos;
