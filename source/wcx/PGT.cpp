@@ -31,7 +31,7 @@ PGT::PGT(u8* pgt)
     std::copy(pgt, pgt + length, data);
     u8 pk4Data[136];
     std::copy(pgt + 0x8, pgt + 0x8 + 136, pk4Data);
-    pokemonData = new PK4(pk4Data, true);
+    pokemonData = new PK4(pk4Data, false);
 }
 
 PGT::~PGT() { delete pokemonData; }
