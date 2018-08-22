@@ -350,7 +350,7 @@ bool StorageScreen::lastBox(bool forceBottom)
         storageBox--;
         if (storageBox == -1)
         {
-            storageBox = 31; // Storage_implementation->maxBoxNum;
+            storageBox = Configuration::getInstance().storageSize();
         }
     }
     else
