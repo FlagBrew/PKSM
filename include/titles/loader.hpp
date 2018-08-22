@@ -29,6 +29,7 @@
 
 #include <3ds.h>
 #include <vector>
+#include <memory>
 #include "Hid.hpp"
 #include "gui.hpp"
 #include "thread.hpp"
@@ -51,8 +52,10 @@ extern C3D_RenderTarget* g_renderTargetBottom;
 namespace TitleLoader
 {
     void scan(void);
-    std::unique_ptr<Sav> load(void);
+    std::shared_ptr<Sav> load(std::shared_ptr<Title> title);
     void exit(void);
+    extern std::vector<std::shared_ptr<Title>> nandTitles;
+    extern std::shared_ptr<Title> cardTitle;
 }
 
 #endif

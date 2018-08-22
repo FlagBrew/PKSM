@@ -27,7 +27,8 @@
 #include "loader.hpp"
 
 // title list
-static std::vector<std::shared_ptr<Title>> titles;
+std::vector<std::shared_ptr<Title>> TitleLoader::nandTitles;
+std::shared_ptr<Title> TitleLoader::cardTitle = nullptr;
 
 // local gui variables and functions
 static const size_t rowlen = 4;
@@ -58,7 +59,7 @@ static void drawSelector(size_t idx)
 void TitleLoader::scan(void)
 {
     // known 3ds title ids
-    static const std::vector<u64> ctrTitleIds = {
+    static const std::vector<unsigned long long> ctrTitleIds = {
         0x0004000000055D00, // X
         0x0004000000055E00, // Y
         0x000400000011C400, // OR
@@ -69,43 +70,12 @@ void TitleLoader::scan(void)
         0x00040000001B5100  // Ultramoon 
     };
 
+    Result res = 0;
+
     // clear title list if filled previously
-    titles.clear();
+    nandTitles.clear();
 
-    // get title count
-    u32 count = 0;
-    Result res = AM_GetTitleCount(MEDIATYPE_SD, &count);
-    if (R_FAILED(res))
-    {
-        return;
-    }
-
-    // get title list and check if a title matches the ids we want
-    std::vector<u64> ids(count);
-    u64* p = ids.data();
-    res = AM_GetTitleList(NULL, MEDIATYPE_SD, count, p);
-    if (R_FAILED(res))
-    {
-        return;
-    }
-
-    for (size_t i = 0; i < ctrTitleIds.size(); i++)
-    {
-        u64 id = ctrTitleIds.at(i);
-        if (std::find(ids.begin(), ids.end(), id) != ids.end())
-        {
-            auto title = std::shared_ptr<Title>(new Title);
-            if (title->load(id, MEDIATYPE_SD, CARD_CTR))
-            {
-                titles.push_back(title);
-            }
-        }
-    }
-
-    // sort the list alphabetically
-    std::sort(titles.begin(), titles.end(), [](std::shared_ptr<Title>& l, std::shared_ptr<Title>& r) {
-        return l->name() < r->name();
-    });
+    // check for cartridge and push at the beginning of the title list
 
     // get our cartridge
     FS_CardType cardType;
@@ -115,30 +85,34 @@ void TitleLoader::scan(void)
         return;
     }
 
-    // check for cartridge and push at the beginning of the title list
+    u32 count = 0;
+
     if (cardType == CARD_CTR)
     {
-        // do the same
+        // get count of titles
         res = AM_GetTitleCount(MEDIATYPE_GAME_CARD, &count);
-        if (R_FAILED(res) || count <= 0)
-        {
-            return;
-        }
-
-        u64 id;
-        res = AM_GetTitleList(NULL, MEDIATYPE_GAME_CARD, count, &id);
         if (R_FAILED(res))
         {
             return;
         }
 
-        // check if this id is in our list
-        if (std::find(ctrTitleIds.begin(), ctrTitleIds.end(), id) != ctrTitleIds.end())
+        if (count > 0)
         {
-            auto title = std::shared_ptr<Title>(new Title);
-            if (title->load(id, MEDIATYPE_GAME_CARD, cardType))
+            u64 id;
+            res = AM_GetTitleList(NULL, MEDIATYPE_GAME_CARD, count, &id);
+            if (R_FAILED(res))
             {
-                titles.push_back(title);
+                return;
+            }
+
+            // check if this id is in our list
+            if (std::find(ctrTitleIds.begin(), ctrTitleIds.end(), id) != ctrTitleIds.end())
+            {
+                auto title = std::shared_ptr<Title>(new Title);
+                if (title->load(id, MEDIATYPE_GAME_CARD, cardType))
+                {
+                    cardTitle = title;
+                }
             }
         }
     }
@@ -164,62 +138,102 @@ void TitleLoader::scan(void)
 
             if (R_SUCCEEDED(res) && Sav::isValidDSSave(saveFile))
             {
-                titles.insert(titles.begin(), title);
+                cardTitle = title;
             }
 
             delete[] saveFile;
         }
     }
-}
 
-std::unique_ptr<Sav> TitleLoader::load(void)
-{
-    // start to retrieve our titles
-    Threads::create((ThreadFunc)scan);
-
-    // create hid object
-    Hid hid(rowlen * collen, collen);
-    while (aptMainLoop() & !(hidKeysDown() & KEY_B))
+    // get title count
+    res = AM_GetTitleCount(MEDIATYPE_SD, &count);
+    if (R_FAILED(res))
     {
-        // update selector
-        hidScanInput();
-        hid.update(titles.size());
-
-        // start frame
-        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-        C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
-        C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
-
-        C2D_SceneBegin(g_renderTargetTop);
-        Gui::backgroundTop();
-
-        for (size_t k = hid.page() * hid.maxVisibleEntries(); 
-            k < hid.page() * hid.maxVisibleEntries() + hid.maxEntries(titles.size()) + 1; 
-            k++)
-        {
-            C2D_DrawImageAt(titles.at(k)->icon(), selectorX(k) + 1, selectorY(k) + 1, 0.5f, NULL, 1.0f, 1.0f);
-        }
-
-        if (titles.size() > 0)
-        {
-            drawSelector(hid.index());
-        }
-
-        C2D_SceneBegin(g_renderTargetBottom);
-        Gui::backgroundBottom();
-
-        // TODO: remove, debug
-        if (titles.size() > 0)
-            Gui::dynamicText(titles.at(hid.fullIndex())->name(), 10, 10, 0.5f, 0.5f, COLOR_WHITE);
-        
-        C3D_FrameEnd(0);
-        Gui::clearTextBufs();  
+        return;
     }
 
+    // get title list and check if a title matches the ids we want
+    std::vector<u64> ids(count);
+    u64* p = ids.data();
+    res = AM_GetTitleList(NULL, MEDIATYPE_SD, count, p);
+    if (R_FAILED(res))
+    {
+        return;
+    }
+
+    for (size_t i = 0; i < ctrTitleIds.size(); i++)
+    {
+        u64 id = ctrTitleIds.at(i);
+        if (std::find(ids.begin(), ids.end(), id) != ids.end())
+        {
+            auto title = std::shared_ptr<Title>(new Title);
+            if (title->load(id, MEDIATYPE_SD, CARD_CTR))
+            {
+                nandTitles.push_back(title);
+            }
+        }
+    }
+
+    // sort the list alphabetically
+    std::sort(nandTitles.begin(), nandTitles.end(), [](std::shared_ptr<Title>& l, std::shared_ptr<Title>& r) {
+        return l->name() < r->name();
+    });
+}
+
+std::shared_ptr<Sav> TitleLoader::load(std::shared_ptr<Title>)
+{
     return nullptr;
 }
 
+// std::shared_ptr<Sav> TitleLoader::load(void)
+// {
+//     // start to retrieve our nandTitles
+//     Threads::create((ThreadFunc)scan);
+
+//     // create hid object
+//     Hid hid(rowlen * collen, collen);
+//     while (aptMainLoop() & !(hidKeysDown() & KEY_B))
+//     {
+//         // update selector
+//         hidScanInput();
+//         hid.update(nandTitles.size());
+
+//         // start frame
+//         C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+//         C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
+//         C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
+
+//         C2D_SceneBegin(g_renderTargetTop);
+//         Gui::backgroundTop();
+
+//         for (size_t k = hid.page() * hid.maxVisibleEntries(); 
+//             k < hid.page() * hid.maxVisibleEntries() + hid.maxEntries(nandTitles.size()) + 1; 
+//             k++)
+//         {
+//             C2D_DrawImageAt(nandTitles.at(k)->icon(), selectorX(k) + 1, selectorY(k) + 1, 0.5f, NULL, 1.0f, 1.0f);
+//         }
+
+//         if (nandTitles.size() > 0)
+//         {
+//             drawSelector(hid.index());
+//         }
+
+//         C2D_SceneBegin(g_renderTargetBottom);
+//         Gui::backgroundBottom();
+
+//         // TODO: remove, debug
+//         if (nandTitles.size() > 0)
+//             Gui::dynamicText(nandTitles.at(hid.fullIndex())->name(), 10, 10, 0.5f, 0.5f, COLOR_WHITE);
+        
+//         C3D_FrameEnd(0);
+//         Gui::clearTextBufs();  
+//     }
+
+//     return nullptr;
+// }
+
 void TitleLoader::exit()
 {
-    titles.clear();
+    nandTitles.clear();
+    cardTitle = nullptr;
 }

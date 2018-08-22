@@ -328,7 +328,7 @@ void Gui::mainLoop(void)
         touchPosition touch;
         hidTouchRead(&touch);
         screens.top()->update(&touch);
-        exit = screens.top()->type() == ScreenType::MAINMENU && (hidKeysDown() & KEY_START);
+        exit = screens.top()->type() == ScreenType::TITLELOAD && (hidKeysDown() & KEY_START);
 
         C3D_FrameEnd(0);
         Gui::clearTextBufs();

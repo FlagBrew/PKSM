@@ -35,6 +35,7 @@ extern C3D_RenderTarget* g_renderTargetBottom;
 
 enum ScreenType
 {
+    TITLELOAD,
     MAINMENU,
     STORAGE,
     EDITOR,

@@ -26,6 +26,7 @@
 
 #include "app.hpp"
 #include "MainMenu.hpp"
+#include "TitleLoadScreen.hpp"
 
 int main()
 {
@@ -36,9 +37,9 @@ int main()
         return -1;
     }
 
-    std::unique_ptr<Sav> save = TitleLoader::load();
+    Gui::setScreen(std::unique_ptr<Screen>(new TitleLoadScreen));
 
-    Gui::setScreen(std::unique_ptr<Screen>(new MainMenu));
+    //Gui::setScreen(std::unique_ptr<Screen>(new MainMenu));
 
     Gui::mainLoop();
 
