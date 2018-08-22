@@ -377,10 +377,10 @@ void Gui::sprite(int key, int x, int y)
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, 0, off);
         C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f);
         // Bottom side
-        float top = tex.top;
+        /* float top = tex.top;
         tex.top = tex.bottom;
-        tex.bottom = top;
-        C2D_DrawImageAt({sprite.tex, &tex}, x, y + off + rep, 0.5f);
+        tex.bottom = top; */
+        C2D_DrawImageAt({sprite.tex, &tex}, x, y + off + rep, 0.5f, nullptr, 1.0f, -1.0f);
         // Center
         tex = _select_box(sprite, 0, off, 0, sprite.subtex->height);
         C2D_DrawImageAt({sprite.tex, &tex}, x, y + off, 0.5f, nullptr, 1.0f, rep);       
@@ -393,10 +393,10 @@ void Gui::sprite(int key, int x, int y)
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, 0, off);
         C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f);
         // Bottom side
-        float top = tex.top;
+        /* float top = tex.top;
         tex.top = tex.bottom;
-        tex.bottom = top;
-        C2D_DrawImageAt({sprite.tex, &tex}, x, y + off - 1, 0.5f);         
+        tex.bottom = top; */
+        C2D_DrawImageAt({sprite.tex, &tex}, x, y + off - 1, 0.5f, nullptr, 1.0f, -1.0f);         
     }
     else if (key == ui_sheet_mainmenu_button_idx)
     {
