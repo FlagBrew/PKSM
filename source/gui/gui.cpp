@@ -590,275 +590,7 @@ void Gui::pkm(PKX* pokemon, int x, int y, u32 color, float blend)
     }
     else
     {
-        if (pokemon->species() == 201)
-        {
-            if (pokemon->alternativeForm() == 0)
-            {
-                C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pokemon->species()), x, y, 0.5f, &tint);
-            }
-            else
-            {
-                C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_801_1_idx + pokemon->alternativeForm()), x, y, 0.5f, &tint);
-            }
-        }
-        else if (pokemon->alternativeForm() == 0)
-        {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pokemon->species()), x, y, 0.5f, &tint);
-        }
-        // Mimikyu
-        else if (pokemon->species() == 778)
-        {
-            if (pokemon->alternativeForm() == 1)
-            {
-                C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_778_idx), x, y, 0.5f, &tint);
-            }
-            else
-            {
-                C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_778_2_idx), x, y, 0.5f, &tint);
-            }
-        }
-        // Minior
-        else if (pokemon->species() == 774 && pokemon->alternativeForm() < 7)
-        {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_774_idx), x, y, 0.5f, &tint);
-        }
-        // Pumpkaboo, Gourgeist, & Genesect
-        else if (pokemon->species() == 710 || pokemon->species() == 711 || pokemon->species() == 649)
-        {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pokemon->species()), x, y, 0.5f, &tint);
-        }
-        else if (pokemon->species() == 25)
-        {
-            if (pokemon->gen6())
-            {
-                C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_20_2_idx + pokemon->alternativeForm()), x, y, 0.5f, &tint);
-            }
-            else
-            {
-                C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_25_6_idx + pokemon->alternativeForm()), x, y, 0.5f, &tint);
-            }
-        }
-        else
-        {
-            int imageOffsetFromBack = 0;
-
-            switch (pokemon->species())
-            {
-                case 801:
-                    imageOffsetFromBack += 3;
-                case 800:
-                    imageOffsetFromBack += 1;
-                case 784:
-                    imageOffsetFromBack += 1;
-                case 778:
-                    imageOffsetFromBack += 1;
-                case 777:
-                    imageOffsetFromBack += 7;
-                case 774:
-                    imageOffsetFromBack += 1;
-                case 758:
-                    imageOffsetFromBack += 1;
-                case 754:
-                    imageOffsetFromBack += 1;
-                case 752:
-                    imageOffsetFromBack += 1;
-                case 746:
-                    imageOffsetFromBack += 2;
-                case 745:
-                    imageOffsetFromBack += 1;
-                case 744:
-                    imageOffsetFromBack += 1;
-                case 743:
-                    imageOffsetFromBack += 3;
-                case 741:
-                    imageOffsetFromBack += 1;
-                case 738:
-                    imageOffsetFromBack += 1;
-                case 735:
-                    imageOffsetFromBack += 1;
-                case 720:
-                    imageOffsetFromBack += 1;
-                case 719:
-                    imageOffsetFromBack += 4;
-                case 718:
-                    imageOffsetFromBack += 1;
-                case 681:
-                    imageOffsetFromBack += 1;
-                case 678:
-                    imageOffsetFromBack += 9;
-                case 676:
-                    imageOffsetFromBack += 5;
-                case 670:
-                    imageOffsetFromBack += 2;
-                case 658:
-                    imageOffsetFromBack += 1;
-                case 648:
-                    imageOffsetFromBack += 1;
-                case 647:
-                    imageOffsetFromBack += 2;
-                case 646:
-                    imageOffsetFromBack += 1;
-                case 645:
-                    imageOffsetFromBack += 1;
-                case 642:
-                    imageOffsetFromBack += 1;
-                case 641:
-                    imageOffsetFromBack += 1;
-                case 555:
-                    imageOffsetFromBack += 1;
-                case 550:
-                    imageOffsetFromBack += 1;
-                case 531:
-                    imageOffsetFromBack += 1;
-                case 492:
-                    imageOffsetFromBack += 1;
-                case 487:
-                    imageOffsetFromBack += 5;
-                case 479:
-                    imageOffsetFromBack += 1;
-                case 475:
-                    imageOffsetFromBack += 1;
-                case 460:
-                    imageOffsetFromBack += 1;
-                case 448:
-                    imageOffsetFromBack += 1;
-                case 445:
-                    imageOffsetFromBack += 1;
-                case 428:
-                    imageOffsetFromBack += 1;
-                case 423:
-                    imageOffsetFromBack += 1;
-                case 422:
-                    imageOffsetFromBack += 1;
-                case 421:
-                    imageOffsetFromBack += 2;
-                case 413:
-                    imageOffsetFromBack += 3;
-                case 386:
-                    imageOffsetFromBack += 1;
-                case 384:
-                    imageOffsetFromBack += 1;
-                case 383:
-                    imageOffsetFromBack += 1;
-                case 382:
-                    imageOffsetFromBack += 1;
-                case 381:
-                    imageOffsetFromBack += 1;
-                case 380:
-                    imageOffsetFromBack += 1;
-                case 376:
-                    imageOffsetFromBack += 1;
-                case 373:
-                    imageOffsetFromBack += 1;
-                case 362:
-                    imageOffsetFromBack += 1;
-                case 359:
-                    imageOffsetFromBack += 1;
-                case 354:
-                    imageOffsetFromBack += 3;
-                case 351:
-                    imageOffsetFromBack += 1;
-                case 334:
-                    imageOffsetFromBack += 1;
-                case 323:
-                    imageOffsetFromBack += 1;
-                case 319:
-                    imageOffsetFromBack += 1;
-                case 310:
-                    imageOffsetFromBack += 1;
-                case 308:
-                    imageOffsetFromBack += 1;
-                case 306:
-                    imageOffsetFromBack += 1;
-                case 303:
-                    imageOffsetFromBack += 1;
-                case 302:
-                    imageOffsetFromBack += 1;
-                case 282:
-                    imageOffsetFromBack += 1;
-                case 260:
-                    imageOffsetFromBack += 1;
-                case 257:
-                    imageOffsetFromBack += 1;
-                case 254:
-                    imageOffsetFromBack += 1;
-                case 248:
-                    imageOffsetFromBack += 1;
-                case 229:
-                    imageOffsetFromBack += 1;
-                case 214:
-                    imageOffsetFromBack += 1;
-                case 212:
-                    imageOffsetFromBack += 1;
-                case 208:
-                    imageOffsetFromBack += 1;
-                case 181:
-                    imageOffsetFromBack += 2;
-                case 150:
-                    imageOffsetFromBack += 1;
-                case 142:
-                    imageOffsetFromBack += 1;
-                case 130:
-                    imageOffsetFromBack += 1;
-                case 127:
-                    imageOffsetFromBack += 1;
-                case 115:
-                    imageOffsetFromBack += 2;
-                case 105:
-                    imageOffsetFromBack += 1;
-                case 103:
-                    imageOffsetFromBack += 1;
-                case 94:
-                    imageOffsetFromBack += 1;
-                case 89:
-                    imageOffsetFromBack += 1;
-                case 88:
-                    imageOffsetFromBack += 1;
-                case 80:
-                    imageOffsetFromBack += 1;
-                case 76:
-                    imageOffsetFromBack += 1;
-                case 75:
-                    imageOffsetFromBack += 1;
-                case 74:
-                    imageOffsetFromBack += 1;
-                case 65:
-                    imageOffsetFromBack += 1;
-                case 53:
-                    imageOffsetFromBack += 1;
-                case 52:
-                    imageOffsetFromBack += 1;
-                case 51:
-                    imageOffsetFromBack += 1;
-                case 50:
-                    imageOffsetFromBack += 1;
-                case 38:
-                    imageOffsetFromBack += 1;
-                case 37:
-                    imageOffsetFromBack += 1;
-                case 28:
-                    imageOffsetFromBack += 1;
-                case 27:
-                    imageOffsetFromBack += 1;
-                case 26:
-                    imageOffsetFromBack += 13;
-                case 25:
-                    imageOffsetFromBack += 2;
-                case 20:
-                    imageOffsetFromBack += 1;
-                case 19:
-                    imageOffsetFromBack += 1;
-                case 18:
-                    imageOffsetFromBack += 1;
-                case 15:
-                    imageOffsetFromBack += 1;
-                case 9:
-                    imageOffsetFromBack += 2;
-                case 6:
-                    imageOffsetFromBack += 1;
-            }
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_807_idx + imageOffsetFromBack + pokemon->alternativeForm()), x, y, 0.5f, &tint);
-        }
+        pkm(pokemon->species(), pokemon->alternativeForm(), pokemon->generation(), x, y, color, blend);
         if (pokemon->heldItem() > 0)
         {
             C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_item_idx), x + 3, y + 21, 0.5f, &tint);
@@ -866,11 +598,279 @@ void Gui::pkm(PKX* pokemon, int x, int y, u32 color, float blend)
     }
 }
 
-void Gui::pkm(int formSpecies, int x, int y, u32 color, float blend)
+void Gui::pkm(int species, int form, int generation, int x, int y, u32 color, float blend)
 {
     static C2D_ImageTint tint;
     C2D_PlainImageTint(&tint, color, blend);
-    C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, formSpecies), x, y, 0.5f, &tint);
+    if (species == 201)
+    {
+        if (form == 0)
+        {
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint);
+        }
+        else
+        {
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_801_1_idx + form), x, y, 0.5f, &tint);
+        }
+    }
+    else if (form == 0)
+    {
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint);
+    }
+    // Mimikyu
+    else if (species == 778)
+    {
+        if (form == 1)
+        {
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_778_idx), x, y, 0.5f, &tint);
+        }
+        else
+        {
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_778_2_idx), x, y, 0.5f, &tint);
+        }
+    }
+    // Minior
+    else if (species == 774 && form < 7)
+    {
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_774_idx), x, y, 0.5f, &tint);
+    }
+    // Pumpkaboo, Gourgeist, & Genesect
+    else if (species == 710 || species == 711 || species == 649)
+    {
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint);
+    }
+    else if (species == 25)
+    {
+        if (generation == 6)
+        {
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_20_2_idx + form), x, y, 0.5f, &tint);
+        }
+        else
+        {
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_25_6_idx + form), x, y, 0.5f, &tint);
+        }
+    }
+    else
+    {
+        int imageOffsetFromBack = 0;
+
+        switch (species)
+        {
+            case 801:
+                imageOffsetFromBack += 3;
+            case 800:
+                imageOffsetFromBack += 1;
+            case 784:
+                imageOffsetFromBack += 1;
+            case 778:
+                imageOffsetFromBack += 1;
+            case 777:
+                imageOffsetFromBack += 7;
+            case 774:
+                imageOffsetFromBack += 1;
+            case 758:
+                imageOffsetFromBack += 1;
+            case 754:
+                imageOffsetFromBack += 1;
+            case 752:
+                imageOffsetFromBack += 1;
+            case 746:
+                imageOffsetFromBack += 2;
+            case 745:
+                imageOffsetFromBack += 1;
+            case 744:
+                imageOffsetFromBack += 1;
+            case 743:
+                imageOffsetFromBack += 3;
+            case 741:
+                imageOffsetFromBack += 1;
+            case 738:
+                imageOffsetFromBack += 1;
+            case 735:
+                imageOffsetFromBack += 1;
+            case 720:
+                imageOffsetFromBack += 1;
+            case 719:
+                imageOffsetFromBack += 4;
+            case 718:
+                imageOffsetFromBack += 1;
+            case 681:
+                imageOffsetFromBack += 1;
+            case 678:
+                imageOffsetFromBack += 9;
+            case 676:
+                imageOffsetFromBack += 5;
+            case 670:
+                imageOffsetFromBack += 2;
+            case 658:
+                imageOffsetFromBack += 1;
+            case 648:
+                imageOffsetFromBack += 1;
+            case 647:
+                imageOffsetFromBack += 2;
+            case 646:
+                imageOffsetFromBack += 1;
+            case 645:
+                imageOffsetFromBack += 1;
+            case 642:
+                imageOffsetFromBack += 1;
+            case 641:
+                imageOffsetFromBack += 1;
+            case 555:
+                imageOffsetFromBack += 1;
+            case 550:
+                imageOffsetFromBack += 1;
+            case 531:
+                imageOffsetFromBack += 1;
+            case 492:
+                imageOffsetFromBack += 1;
+            case 487:
+                imageOffsetFromBack += 5;
+            case 479:
+                imageOffsetFromBack += 1;
+            case 475:
+                imageOffsetFromBack += 1;
+            case 460:
+                imageOffsetFromBack += 1;
+            case 448:
+                imageOffsetFromBack += 1;
+            case 445:
+                imageOffsetFromBack += 1;
+            case 428:
+                imageOffsetFromBack += 1;
+            case 423:
+                imageOffsetFromBack += 1;
+            case 422:
+                imageOffsetFromBack += 1;
+            case 421:
+                imageOffsetFromBack += 2;
+            case 413:
+                imageOffsetFromBack += 3;
+            case 386:
+                imageOffsetFromBack += 1;
+            case 384:
+                imageOffsetFromBack += 1;
+            case 383:
+                imageOffsetFromBack += 1;
+            case 382:
+                imageOffsetFromBack += 1;
+            case 381:
+                imageOffsetFromBack += 1;
+            case 380:
+                imageOffsetFromBack += 1;
+            case 376:
+                imageOffsetFromBack += 1;
+            case 373:
+                imageOffsetFromBack += 1;
+            case 362:
+                imageOffsetFromBack += 1;
+            case 359:
+                imageOffsetFromBack += 1;
+            case 354:
+                imageOffsetFromBack += 3;
+            case 351:
+                imageOffsetFromBack += 1;
+            case 334:
+                imageOffsetFromBack += 1;
+            case 323:
+                imageOffsetFromBack += 1;
+            case 319:
+                imageOffsetFromBack += 1;
+            case 310:
+                imageOffsetFromBack += 1;
+            case 308:
+                imageOffsetFromBack += 1;
+            case 306:
+                imageOffsetFromBack += 1;
+            case 303:
+                imageOffsetFromBack += 1;
+            case 302:
+                imageOffsetFromBack += 1;
+            case 282:
+                imageOffsetFromBack += 1;
+            case 260:
+                imageOffsetFromBack += 1;
+            case 257:
+                imageOffsetFromBack += 1;
+            case 254:
+                imageOffsetFromBack += 1;
+            case 248:
+                imageOffsetFromBack += 1;
+            case 229:
+                imageOffsetFromBack += 1;
+            case 214:
+                imageOffsetFromBack += 1;
+            case 212:
+                imageOffsetFromBack += 1;
+            case 208:
+                imageOffsetFromBack += 1;
+            case 181:
+                imageOffsetFromBack += 2;
+            case 150:
+                imageOffsetFromBack += 1;
+            case 142:
+                imageOffsetFromBack += 1;
+            case 130:
+                imageOffsetFromBack += 1;
+            case 127:
+                imageOffsetFromBack += 1;
+            case 115:
+                imageOffsetFromBack += 2;
+            case 105:
+                imageOffsetFromBack += 1;
+            case 103:
+                imageOffsetFromBack += 1;
+            case 94:
+                imageOffsetFromBack += 1;
+            case 89:
+                imageOffsetFromBack += 1;
+            case 88:
+                imageOffsetFromBack += 1;
+            case 80:
+                imageOffsetFromBack += 1;
+            case 76:
+                imageOffsetFromBack += 1;
+            case 75:
+                imageOffsetFromBack += 1;
+            case 74:
+                imageOffsetFromBack += 1;
+            case 65:
+                imageOffsetFromBack += 1;
+            case 53:
+                imageOffsetFromBack += 1;
+            case 52:
+                imageOffsetFromBack += 1;
+            case 51:
+                imageOffsetFromBack += 1;
+            case 50:
+                imageOffsetFromBack += 1;
+            case 38:
+                imageOffsetFromBack += 1;
+            case 37:
+                imageOffsetFromBack += 1;
+            case 28:
+                imageOffsetFromBack += 1;
+            case 27:
+                imageOffsetFromBack += 1;
+            case 26:
+                imageOffsetFromBack += 13;
+            case 25:
+                imageOffsetFromBack += 2;
+            case 20:
+                imageOffsetFromBack += 1;
+            case 19:
+                imageOffsetFromBack += 1;
+            case 18:
+                imageOffsetFromBack += 1;
+            case 15:
+                imageOffsetFromBack += 1;
+            case 9:
+                imageOffsetFromBack += 2;
+            case 6:
+                imageOffsetFromBack += 1;
+        }
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_807_idx + imageOffsetFromBack + form), x, y, 0.5f, &tint);
+    }
 }
 
 void Gui::ball(size_t index, int x, int y)
