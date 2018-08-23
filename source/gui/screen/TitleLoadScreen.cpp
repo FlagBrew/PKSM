@@ -84,7 +84,11 @@ void TitleLoadScreen::draw() const
     for (size_t i = 0; i < TitleLoader::nandTitles.size(); i++)
     {
         int y = TitleLoader::nandTitles.size() > 4 ? (i / 4) * 60 + 68 : 98;
-        int x = 150 + (4 - (TitleLoader::nandTitles.size() % 4 == 0 ? 4 : TitleLoader::nandTitles.size() % 4)) * 30 + (i > 3 ? i - 4 : i) * 60;
+        int x = 150 + (4 - (TitleLoader::nandTitles.size() % 4 == 0 ? 4 : TitleLoader::nandTitles.size() % 4)) * 30 + (i > 3 ? i - 4 : i) * 60;;
+        if (TitleLoader::nandTitles.size() > 4 && i < 4)
+        {
+            x = 150 + (i > 3 ? i - 4 : i) * 60;
+        }
 
         if (titleFromIndex(selectedTitle) == TitleLoader::nandTitles[i])
         {
@@ -109,7 +113,7 @@ void TitleLoadScreen::draw() const
     Gui::dynamicText("Media Type:", 27, 54, FONT_SIZE_11, FONT_SIZE_11, COLOR_LIGHTBLUE);
     if (selectedTitle != -2)
     {
-        C2D_DrawImageAt(titleFromIndex(selectedTitle)->icon(), 40, 98, 0.5f, NULL, 1.0f, 1.0f);
+        C2D_DrawImageAt(titleFromIndex(selectedTitle)->icon(), 245, 23, 0.5f, NULL, 1.0f, 1.0f);
         Gui::dynamicText(titleFromIndex(selectedTitle)->name(), 27, 26, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
         Gui::dynamicText(StringUtils::format("%X", titleFromIndex(selectedTitle)->lowId()), nextIdPart, 42, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
         
@@ -119,6 +123,11 @@ void TitleLoadScreen::draw() const
     else
     {
         Gui::dynamicText("None", 27, 26, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+    }
+
+    if (selectedSave > -1)
+    {
+        C2D_DrawRectSolid(24, 96 + 17 * selectedSave, 0.5f, 174, 16, C2D_Color32(0x0f, 0x16, 0x59, 255));
     }
 
     int y = 98;
@@ -144,7 +153,7 @@ void TitleLoadScreen::draw() const
         C2D_DrawRectSolid(191, 102, 0.5f, 4, 5, C2D_Color32(0x0f, 0x16, 0x59, 255));
         C2D_DrawTriangle(189, 102, C2D_Color32(0x0f, 0x16, 0x59, 255),
                         197, 102, C2D_Color32(0x0f, 0x16, 0x59, 255),
-                        193, 107, C2D_Color32(0x0f, 0x16, 0x59, 255), 0.5f);
+                        193, 97, C2D_Color32(0x0f, 0x16, 0x59, 255), 0.5f);
     }
 
     C2D_DrawRectSolid(191, 186, 0.5f, 4, 5, C2D_Color32(0x0f, 0x16, 0x59, 255));
@@ -270,14 +279,18 @@ void TitleLoadScreen::update(touchPosition* touch)
                 {
                     selectedTitle = 0;
                 }
+                else
+                {
+                    selectedTitle = TitleLoader::nandTitles.size() - 1;
+                }
             }
             else
             {
                 if (TitleLoader::nandTitles.size() > 4)
                 {
-                    if (selectedTitle > 4)
+                    if (selectedTitle > 3)
                     {
-                        selectedTitle = selectedTitle - 4 < 0 ? 0 : selectedTitle - 4;
+                        selectedTitle = selectedTitle - 4;
                     }
                     else
                     {
@@ -292,13 +305,13 @@ void TitleLoadScreen::update(touchPosition* touch)
         }
         if (buttonsDown & KEY_RIGHT)
         {
-            if (selectedTitle == -1 || selectedTitle % 4 < 2)
-            {
-                selectedTitle++;
-            }
-            else if (selectedTitle % 4 == 3)
+            if (selectedTitle == TitleLoader::nandTitles.size() - 1 || selectedTitle % 4 == 3)
             {
                 selectedTitle = -1;
+            }
+            else
+            {
+                selectedTitle++;
             }
         }
         if (buttonsDown & KEY_LEFT)
