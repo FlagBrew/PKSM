@@ -73,6 +73,7 @@ GRAPHICS		:=	assets/gfx/ui # \
 					# assets/gfx/types
 ROMFS			:=	assets/romfs
 GFXBUILD		:=	$(ROMFS)/gfx
+PACKER			:=	EventsGalleryPacker
 
 # If left blank, will try to use "icon.png", "$(TARGET).png", or the default ctrulib icon, in that order
 ICON			:=	assets/icon.png
@@ -210,13 +211,18 @@ all:
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile $(OUTPUT).3dsx
 	@bannertool makebanner -i "$(BANNER_IMAGE)" -a "$(BANNER_AUDIO)" -o $(BUILD)/banner.bnr
 	@bannertool makesmdh -s "$(APP_TITLE)" -l "$(APP_DESCRIPTION)" -p "$(APP_AUTHOR)" -i "$(APP_ICON)" -f "$(ICON_FLAGS)" -o $(BUILD)/icon.icn
+	@cd $(BUILD)/$(PACKER) && python packer.py
+	@cd $(BUILD)/$(PACKER) && mv out/*.bin out/*.json ../../assets/romfs/mg
 	@3dstool -ctf romfs "$(BUILD)/romfs.bin" --romfs-dir "$(ROMFS)"
 	@makerom -f cia -o $(OUTPUT).cia -target t -exefslogo -elf "$(OUTPUT).elf" -rsf "$(RSF_PATH)" -ver "$$(($(VERSION_MAJOR)*1024+$(VERSION_MINOR)*16+$(VERSION_MICRO)))" -banner "$(BUILD)/banner.bnr" -icon "$(BUILD)/icon.icn" -DAPP_TITLE="$(APP_TITLE)" -DAPP_PRODUCT_CODE="$(PRODUCT_CODE)" -DAPP_UNIQUE_ID="$(UNIQUE_ID)" -romfs "$(BUILD)/romfs.bin"
 #---------------------------------------------------------------------------------
 clean:
 	@echo clean ...
-	@rm -fr $(BUILD) $(OUTDIR)
-
+	@rm -fr $(OUTDIR)
+	@cd $(ROMFS)/mg && find -maxdepth 1 ! -name .gitkeep ! -name . | xargs --no-run-if-empty rm
+	@cd $(BUILD) && find -maxdepth 1 ! -name $(PACKER) ! -name . | xargs --no-run-if-empty rm
+	@rm -fr $(BUILD)/$(PACKER)/out $(BUILD)/$(PACKER)/EventsGallery 
+	
 #---------------------------------------------------------------------------------
 else
 
