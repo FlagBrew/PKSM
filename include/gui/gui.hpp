@@ -55,6 +55,12 @@
 #define ui_sheet_emulated_bg_bottom_red 505
 #define ui_sheet_emulated_bg_bottom_blue 506
 #define ui_sheet_emulated_bg_bottom_green 507
+#define ui_sheet_emulated_eventmenu_bar_selected_flipped_horizontal_idx 508
+#define ui_sheet_emulated_eventmenu_bar_unselected_flipped_horizontal_idx 509
+#define ui_sheet_emulated_eventmenu_bar_selected_flipped_vertical_idx 510
+#define ui_sheet_emulated_eventmenu_bar_unselected_flipped_vertical_idx 511
+#define ui_sheet_emulated_eventmenu_bar_selected_flipped_both_idx 512
+#define ui_sheet_emulated_eventmenu_bar_unselected_flipped_both_idx 513
 
 // colors
 #define COLOR_WHITE     C2D_Color32(255, 255, 255, 255)
