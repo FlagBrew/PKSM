@@ -25,6 +25,7 @@
 */
 
 #include "TitleLoadScreen.hpp"
+#include "MainMenu.hpp"
 
 static constexpr char langIds[] = {
     'E', //USA
@@ -49,7 +50,7 @@ static constexpr char* dsIds[] = {
     "IRD"  //White 2
 };
 
-static bool loadSave() { return true; }
+static bool loadSave() { Gui::setScreen(std::unique_ptr<Screen>(new MainMenu)); return true; }
 static bool wirelessSave() { return true; }
 
 TitleLoadScreen::TitleLoadScreen()
