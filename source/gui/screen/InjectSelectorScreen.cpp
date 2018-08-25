@@ -53,7 +53,7 @@ void InjectSelectorScreen::update(touchPosition* touch)
 void InjectSelectorScreen::draw() const
 {
     C2D_SceneBegin(g_renderTargetTop);
-    C2D_DrawRectSolid(0, 0, 0.5f, 400, 24, C2D_Color32(0x0F, 0x16, 0x59, 0xFF));
+    Gui::backgroundTop(true);
 
     Gui::dynamicText(GFX_TOP, 4, "Event Database", FONT_SIZE_14, FONT_SIZE_14, C2D_Color32(140, 158, 255, 255));
 
@@ -113,8 +113,7 @@ void InjectSelectorScreen::draw() const
     }
 
     C2D_SceneBegin(g_renderTargetBottom);
-
-    C2D_DrawRectSolid(0, 221, 0.5f, 320, 19, C2D_Color32(0x1A, 0x23, 0x7E, 0xFF));
+    Gui::backgroundBottom(true);
     Gui::dynamicText(GFX_BOTTOM, 224, "Press \uE000 to continue or \uE001 to return.", FONT_SIZE_11, FONT_SIZE_11, C2D_Color32(197, 202, 233, 255));
 
     Gui::sprite(ui_sheet_eventmenu_page_indicator_idx, 65, 13);

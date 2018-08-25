@@ -99,8 +99,8 @@ namespace Gui
     void pkm(int species, int form, int generation, int x, int y, u32 color = C2D_Color32(0, 0, 0, 255), float blend = 0.0f);
     void pkmInfoViewer(PKX* pkm);
 
-    void backgroundTop(void);
-    void backgroundBottom(void);
+    void backgroundTop(bool stripes);
+    void backgroundBottom(bool stripes);
     void backgroundAnimated(gfxScreen_t screen);
 
     void clearTextBufs(void);    

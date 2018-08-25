@@ -67,16 +67,42 @@ C2D_Image Gui::TWLIcon(void)
     return C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_gameselector_twlcart_idx);
 }
 
-void Gui::backgroundBottom(void)
+void Gui::backgroundBottom(bool stripes)
 {
-    C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, COLOR_PALEBLUE);
-    C2D_DrawRectSolid(0, 221, 0.5f, 320, 19, COLOR_MENUBLUE);
+    if (stripes)
+    {
+        for (int x = 0; x < 320; x += 7)
+        {
+            for (int y = 0; y < 240; y += 7)
+            {
+                C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_stripe_bottom_idx), x, y, 0.5f);
+            }
+        }
+    }
+    else
+    {
+        C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, C2D_Color32(40, 53, 147, 255));
+    }
+    C2D_DrawRectSolid(0, 220, 0.5f, 320, 20, C2D_Color32(26, 35, 126, 255));
 }
 
-void Gui::backgroundTop(void)
+void Gui::backgroundTop(bool stripes)
 {
-    C2D_DrawRectSolid(0, 0, 0.5f, 400, 240, COLOR_MENUBLUE);
-    C2D_DrawRectSolid(0, 0, 0.5f, 400, 19, COLOR_HIGHBLUE);
+    if (stripes)
+    {
+        for (int x = 0; x < 400; x += 7)
+        {
+            for (int y = 0; y < 240; y += 7)
+            {
+                C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_stripe_top_idx), x, y, 0.5f);
+            }
+        }
+    }
+    else
+    {
+        C2D_DrawRectSolid(0, 0, 0.5f, 400, 240, C2D_Color32(26, 35, 126, 255));
+    }
+    C2D_DrawRectSolid(0, 0, 0.5f, 400, 25, C2D_Color32(15, 22, 89, 255));
 }
 
 void Gui::backgroundAnimated(gfxScreen_t screen)

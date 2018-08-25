@@ -104,7 +104,7 @@ void TitleLoadScreen::draw() const
     Gui::dynamicText(128, 197, 268.0f, "Installed Games", FONT_SIZE_14, FONT_SIZE_14, C2D_Color32(15, 22, 89, 255));
 
     C2D_SceneBegin(g_renderTargetBottom);
-
+    Gui::backgroundBottom(true);
     Gui::sprite(ui_sheet_gameselector_savebox_idx, 22, 94);
 
     int nextIdPart = ceilf(27 + textWidth("ID: ", FONT_SIZE_11));

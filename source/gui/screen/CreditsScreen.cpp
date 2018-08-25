@@ -58,12 +58,12 @@ void CreditsScreen::update(touchPosition* touch)
 void CreditsScreen::draw() const
 {
     C2D_SceneBegin(g_renderTargetTop);
-    Gui::backgroundTop();
+    Gui::backgroundTop(false);
     // Not sure what to put on the top
     Gui::staticText(GFX_TOP, 4, "Credits", FONT_SIZE_14, FONT_SIZE_14, COLOR_BLUE);
 
     C2D_SceneBegin(g_renderTargetBottom);
-    Gui::backgroundBottom();
+    Gui::backgroundBottom(false);
 
     Gui::staticText(credits, 20, 30, FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE);
     Gui::staticText(GFX_BOTTOM, 225, "Press B to return", FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE);

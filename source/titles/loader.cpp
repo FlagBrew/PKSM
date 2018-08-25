@@ -204,7 +204,7 @@ std::shared_ptr<Sav> TitleLoader::load(std::shared_ptr<Title>)
 //         C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
 
 //         C2D_SceneBegin(g_renderTargetTop);
-//         Gui::backgroundTop();
+//         Gui::backgroundTop(false);
 
 //         for (size_t k = hid.page() * hid.maxVisibleEntries(); 
 //             k < hid.page() * hid.maxVisibleEntries() + hid.maxEntries(nandTitles.size()) + 1; 
@@ -219,7 +219,7 @@ std::shared_ptr<Sav> TitleLoader::load(std::shared_ptr<Title>)
 //         }
 
 //         C2D_SceneBegin(g_renderTargetBottom);
-//         Gui::backgroundBottom();
+//         Gui::backgroundBottom(false);
 
 //         // TODO: remove, debug
 //         if (nandTitles.size() > 0)

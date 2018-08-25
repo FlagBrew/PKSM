@@ -81,7 +81,7 @@ ConfigScreen::ConfigScreen()
 void ConfigScreen::draw() const
 {
     C2D_SceneBegin(g_renderTargetBottom);
-    Gui::backgroundBottom();
+    Gui::backgroundBottom(false);
 
     if (currentTab != 0)
     {
