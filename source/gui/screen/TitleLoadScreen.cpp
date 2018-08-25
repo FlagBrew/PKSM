@@ -266,9 +266,23 @@ void TitleLoadScreen::update(touchPosition* touch)
                         selectedTitle -= 4;
                     }
                 }
-                else if (TitleLoader::nandTitles.size() < 5 && selectedTitle < 4)
+                else if (TitleLoader::nandTitles.size() < 5)
                 {
-                    selectedTitle++;
+                    if (selectedTitle < TitleLoader::nandTitles.size() - 1)
+                    {
+                        selectedTitle++;
+                    }
+                    else
+                    {
+                        if (TitleLoader::cardTitle)
+                        {
+                            selectedTitle = -1;
+                        }
+                        else
+                        {
+                            selectedTitle = 0;
+                        }
+                    }
                 }
             }
         }
@@ -301,14 +315,25 @@ void TitleLoadScreen::update(touchPosition* touch)
                 else if (TitleLoader::nandTitles.size() < 5 && selectedTitle > -2)
                 {
                     selectedTitle--;
+                    if (selectedTitle == -1 && !TitleLoader::cardTitle)
+                    {
+                        selectedTitle = TitleLoader::nandTitles.size() - 1;
+                    }
                 }
             }
         }
         if (buttonsDown & KEY_RIGHT)
         {
-            if (selectedTitle == TitleLoader::nandTitles.size() - 1 || selectedTitle % 4 == 3)
+            if (selectedTitle == TitleLoader::nandTitles.size() - 1 || selectedTitle == 3)
             {
-                selectedTitle = -1;
+                if (TitleLoader::cardTitle)
+                {
+                    selectedTitle = -1;
+                }
+                else
+                {
+                    selectedTitle -= 3;
+                }
             }
             else
             {
@@ -323,7 +348,25 @@ void TitleLoadScreen::update(touchPosition* touch)
             }
             else if (selectedTitle == 4)
             {
-                selectedTitle = -1;
+                if (TitleLoader::cardTitle)
+                {
+                    selectedTitle = -1;
+                }
+                else
+                {
+                    selectedTitle = TitleLoader::nandTitles.size() - 1;
+                }
+            }
+            else if (selectedTitle = 0)
+            {
+                if (TitleLoader::cardTitle)
+                {
+                    selectedTitle = -1;
+                }
+                else
+                {
+                    selectedTitle = TitleLoader::nandTitles.size() > 4 ? 4 : TitleLoader::nandTitles.size() - 1;
+                }
             }
             else
             {
