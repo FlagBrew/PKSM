@@ -54,7 +54,7 @@ If you're coming from a PKSM version < 5.0.0, you'll notice your `bank.bin` file
 
 ## Applications compatible with PKSM
 
-* **[serveLegality](https://github.com/FlagBrew/serveLegality)**: PC tool to check and fix a pkmn's legality.
+* **[serveLegality](https://github.com/FlagBrew/serveLegality)**: PC tool to check and fix a pkmn's legality. (Development on hold)
 * **[PKHeX](https://github.com/kwsch/PKHeX)**: Generates .pk7, .pk6, .wc7, .wc6 QR codes scannable from PKSM. Runs on PC.
 * **[MysteryGiftBot](https://twitter.com/mysterygiftbot)**: Generates .wc7 QR codes scannable from PKSM. Runs on Twitter.
 * **[servepkx](https://github.com/FlagBrew/servepkx)**: multiplatform tool to send .pk7, .pk6, .wc7full, .wc6full, .wc7, .wc6 files to PKSM. Requires a web browser or JRE.
