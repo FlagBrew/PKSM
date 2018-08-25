@@ -332,7 +332,14 @@ void TitleLoadScreen::update(touchPosition* touch)
                 }
                 else
                 {
-                    selectedTitle -= 3;
+                    if (selectedTitle == 3)
+                    {
+                        selectedTitle = 0;
+                    }
+                    else
+                    {
+                        selectedTitle = 4;
+                    }
                 }
             }
             else
@@ -357,7 +364,7 @@ void TitleLoadScreen::update(touchPosition* touch)
                     selectedTitle = TitleLoader::nandTitles.size() - 1;
                 }
             }
-            else if (selectedTitle = 0)
+            else if (selectedTitle == 0)
             {
                 if (TitleLoader::cardTitle)
                 {
@@ -365,7 +372,7 @@ void TitleLoadScreen::update(touchPosition* touch)
                 }
                 else
                 {
-                    selectedTitle = TitleLoader::nandTitles.size() > 4 ? 4 : TitleLoader::nandTitles.size() - 1;
+                    selectedTitle = TitleLoader::nandTitles.size() > 4 ? 3 : TitleLoader::nandTitles.size() - 1;
                 }
             }
             else
