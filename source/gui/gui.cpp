@@ -40,21 +40,21 @@ static std::unordered_map<std::string, C2D_Text> staticMap;
 
 static std::stack<std::unique_ptr<Screen>> screens;
 
-static Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int dx, int dy)
+static Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int endX, int endY)
 {
     Tex3DS_SubTexture tex = *image.subtex;
-    if (x != dx)
+    if (x != endX)
     {
-        int deltaX = dx - x;
+        int deltaX = endX - x;
         float texRL = tex.left - tex.right;
         tex.left = tex.left - (float) texRL / tex.width * x;
         tex.right = tex.left - (float) texRL / tex.width * deltaX;
         tex.width = deltaX;
     }
-    if (y != dy)
+    if (y != endY)
     {
         float texTB = tex.top - tex.bottom;
-        int deltaY = dy - y;
+        int deltaY = endY - y;
         tex.top = tex.top - (float) texTB / tex.height * y;
         tex.bottom = tex.top - (float) texTB / tex.height * deltaY;
         tex.height = deltaY;
