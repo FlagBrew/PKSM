@@ -310,26 +310,27 @@ std::shared_ptr<PKX> SavORAS::emptyPkm() const
 int SavORAS::emptyGiftLocation(void) const
 {
     u8 t;
-    int tmp;
+    bool empty;
     // 24 max wonder cards
     for (t = 0; t < 24; t++)
     {
-        tmp = 0;
+        empty = true;
         for (u32 j = 0; j < WC6::length; j++)
         {
-            if (*(data + 0x1CD00 + t * WC6::length + j) == 0)
+            if (*(data + 0x1CD00 + t * WC6::length + j) != 0)
             {
-                tmp++;
+                empty = false;
+                break;
             }
         }
 
-        if (tmp == WC6::length)
+        if (empty)
         {
             break;
         }
     }
 
-    return t == 0 ? 23 : t;
+    return !empty ? 23 : t;
 }
 
 std::vector<MysteryGift::giftData> SavORAS::currentGifts(void) const

@@ -266,26 +266,27 @@ std::shared_ptr<PKX> SavB2W2::emptyPkm() const
 int SavB2W2::emptyGiftLocation(void) const
 {
     u8 t;
-    int tmp;
+    bool empty;
     // 12 max wonder cards
     for (t = 0; t < 12; t++)
     {
-        tmp = 0;
+        empty = true;
         for (u32 j = 0; j < PGF::length; j++)
         {
-            if (*(data + 0x1C900 + t * PGF::length + j) == 0)
+            if (*(data + 0x1C900 + t * PGF::length + j) != 0)
             {
-                tmp++;
+                empty = false;
+                break;
             }
         }
 
-        if (tmp == PGF::length)
+        if (empty)
         {
             break;
         }
     }
 
-    return t == 0 ? 11 : t;
+    return !empty ? 11 : t;
 }
 
 std::vector<MysteryGift::giftData> SavB2W2::currentGifts(void) const

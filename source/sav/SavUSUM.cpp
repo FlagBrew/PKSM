@@ -390,26 +390,27 @@ std::shared_ptr<PKX> SavUSUM::emptyPkm() const
 int SavUSUM::emptyGiftLocation(void) const
 {
     u8 t;
-    int tmp;
+    bool empty;
     // 48 max wonder cards
     for (t = 0; t < 48; t++)
     {
-        tmp = 0;
+        empty = true;
         for (u32 j = 0; j < WC7::length; j++)
         {
-            if (*(data + 0x66300 + t * WC7::length + j) == 0)
+            if (*(data + 0x66300 + t * WC7::length + j) != 0)
             {
-                tmp++;
+                empty = false;
+                break;
             }
         }
 
-        if (tmp == WC7::length)
+        if (empty)
         {
             break;
         }
     }
 
-    return t == 0 ? 47 : t;
+    return !empty ? 47 : t;
 }
 
 std::vector<MysteryGift::giftData> SavUSUM::currentGifts(void) const
