@@ -403,13 +403,10 @@ void Gui::sprite(int key, int x, int y)
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, 0, off);
         C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f);
         // Bottom side
-        /* float top = tex.top;
-        tex.top = tex.bottom;
-        tex.bottom = top; */
         C2D_DrawImageAt({sprite.tex, &tex}, x, y + off + rep, 0.5f, nullptr, 1.0f, -1.0f);
         // Center
-        tex = _select_box(sprite, 0, off, 0, sprite.subtex->height);
-        C2D_DrawImageAt({sprite.tex, &tex}, x, y + off, 0.5f, nullptr, 1.0f, rep);       
+        tex = _select_box(sprite, 0, off, 0, sprite.subtex->height - 1);
+        C2D_DrawImageAt({sprite.tex, &tex}, x, y + off, 0.5f, nullptr, 1.0f, rep);   
     }
     else if (key == ui_sheet_gameselector_savebox_idx)
     {
@@ -419,14 +416,11 @@ void Gui::sprite(int key, int x, int y)
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, 0, off);
         C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f);
         // Bottom side
-        /* float top = tex.top;
-        tex.top = tex.bottom;
-        tex.bottom = top; */
         C2D_DrawImageAt({sprite.tex, &tex}, x, y + off - 1, 0.5f, nullptr, 1.0f, -1.0f);         
     }
     else if (key == ui_sheet_mainmenu_button_idx)
     {
-        _draw_mirror_scale(key, x, y, 5, 132);
+        _draw_mirror_scale(key, x, y, 4, 132);
     }
     else if (key == ui_sheet_part_editor_20x2_idx)
     {
@@ -589,7 +583,6 @@ void Gui::sprite(int key, int x, int y)
         tex = _select_box(sprite, off, 0, sprite.subtex->width, 0);
         C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f, nullptr, -rep, -1.0f);
     }
-    
     // standard case
     else
     {

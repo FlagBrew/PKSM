@@ -85,7 +85,7 @@ MainMenu::MainMenu()
                 15 + 150*j, 20 + 63*i, 140, 53,
                 std::bind(&goToScreen, i*2 + j),
                 icons[i*2 + j],
-                StringUtils::format("MainMenuBtn%i", i*2 + j),
+                StringUtils::format("%i", i*2 + j),
                 FONT_SIZE_15,
                 COLOR_WHITE,
                 yLevels[i*2 + j]);
@@ -104,7 +104,6 @@ MainMenu::~MainMenu()
 static void menuTop()
 {
     static const std::string version = StringUtils::format("v%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO);
-    Gui::clearTextBufs();
     Gui::backgroundTop(false);
     Gui::staticText(GFX_TOP, 4, "PKSM", FONT_SIZE_14, FONT_SIZE_14, COLOR_BLUE);
     Gui::staticText(version, 398, 229, FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE, true);
@@ -112,9 +111,9 @@ static void menuTop()
 
 void MainMenu::draw() const
 {
+    Gui::clearTextBufs();
     C2D_SceneBegin(g_renderTargetTop);
     menuTop();
-
     C2D_SceneBegin(g_renderTargetBottom);
     Gui::backgroundBottom(false);
     for (MainMenuButton* button : buttons)
