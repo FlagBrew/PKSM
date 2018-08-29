@@ -28,6 +28,7 @@
 #define HID_HPP
 
 #include <3ds.h>
+#include <cmath>
 
 #define FASTSCROLL_WAIT 1.25e8
 
