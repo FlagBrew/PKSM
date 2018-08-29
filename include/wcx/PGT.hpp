@@ -29,9 +29,6 @@
 
 #include "WCX.hpp"
 #include "PK4.hpp"
-#include "SavHGSS.hpp"
-#include "SavPT.hpp"
-#include "SavDP.hpp"
 
 class PGT : public WCX
 {

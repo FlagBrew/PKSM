@@ -27,17 +27,11 @@
 #include "Screen.hpp"
 #include "Hid.hpp"
 #include "gui.hpp"
+#include "mysterygift.hpp"
 #include <vector>
 
 #ifndef INJECTSELECTORSCREEN_HPP
 #define INJECTSELECTORSCREEN_HPP
-
-// TODO: move this to the wondercard thing
-struct wcxData {
-    std::string name;
-    int species;
-    int form;
-};
 
 class InjectSelectorScreen : public Screen
 {
@@ -48,7 +42,7 @@ public:
     ScreenType type() const override { return ScreenType::EVENTS; }
 private:
     Hid hid;
-    std::vector<wcxData> wondercards;
+    std::vector<MysteryGift::giftData> wondercards;
 };
 
 #endif

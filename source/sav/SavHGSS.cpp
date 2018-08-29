@@ -493,3 +493,13 @@ std::shared_ptr<PKX> SavHGSS::emptyPkm() const
     static std::shared_ptr<PKX> empty = std::shared_ptr<PKX>(new PK4);
     return empty;
 }
+
+int SavHGSS::emptyGiftLocation(void) const
+{
+    return 0;
+}
+
+std::vector<MysteryGift::giftData> SavHGSS::currentGifts(void) const
+{
+    return {};
+}

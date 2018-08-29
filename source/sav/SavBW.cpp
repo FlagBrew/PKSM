@@ -262,3 +262,44 @@ std::shared_ptr<PKX> SavBW::emptyPkm() const
     static std::shared_ptr<PKX> empty = std::shared_ptr<PKX>(new PK5);
     return empty;
 }
+
+int SavBW::emptyGiftLocation(void) const
+{
+    u8 t;
+    int tmp;
+    // 12 max wonder cards
+    for (t = 0; t < 12; t++)
+    {
+        tmp = 0;
+        // PGFs are 204 bytes
+        for (u32 j = 0; j < 204; j++)
+        {
+            if (*(data + 0x1C900 + t * 204 + j) == 0)
+            {
+                tmp++;
+            }
+        }
+
+        if (tmp == 204)
+        {
+            break;
+        }
+    }
+
+    return t == 0 ? 11 : t;
+}
+
+std::vector<MysteryGift::giftData> SavBW::currentGifts(void) const
+{
+    std::vector<MysteryGift::giftData> ret;
+    u8* wonderCards = data + 0x1C900;
+    for (int i = 0; i < emptyGiftLocation() + 1; i++)
+    {
+        if (*(data + i * 204 + 0xB3) == 1)
+        {
+            ret.push_back({ "", *(u16*)(wonderCards + i * 204 + 0x1A), *(wonderCards + i * 204 + 0x1C)});
+        }
+        ret.push_back({ "", -1, -1 });
+    }
+    return ret;
+}

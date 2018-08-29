@@ -30,9 +30,6 @@
 #include "PKX.hpp"
 #include "PK5.hpp"
 #include "time.h"
-#include "SavHGSS.hpp"
-#include "SavPT.hpp"
-#include "SavDP.hpp"
 
 class PK4 : public PKX
 {

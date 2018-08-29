@@ -37,6 +37,11 @@
 
 namespace MysteryGift
 {
+    struct giftData {
+        std::string name;
+        int species;
+        int form;
+    };
     void init(u8 gen);
     void exit();
 }

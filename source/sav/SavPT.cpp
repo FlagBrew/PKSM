@@ -480,3 +480,13 @@ std::shared_ptr<PKX> SavPT::emptyPkm() const
     static std::shared_ptr<PKX> empty = std::shared_ptr<PKX>(new PK4);
     return empty;
 }
+
+int SavPT::emptyGiftLocation(void) const
+{
+    return 0;
+}
+
+std::vector<MysteryGift::giftData> SavPT::currentGifts(void) const
+{
+    return {};
+}

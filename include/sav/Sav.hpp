@@ -32,12 +32,13 @@
 #include "PKX.hpp"
 #include "WCX.hpp"
 #include "utils.hpp"
+#include "mysterygift.hpp"
 
 typedef uint8_t u8;
 typedef uint16_t u16;
 typedef uint32_t u32;
 
-class Sav 
+class Sav
 {
 protected:
     static const u16 crc16[256];
@@ -97,6 +98,8 @@ public:
     virtual std::shared_ptr<PKX> emptyPkm() const = 0;
     
     virtual void dex(PKX& pk) = 0;
+    virtual int emptyGiftLocation(void) const = 0;
+    virtual std::vector<MysteryGift::giftData> currentGifts(void) const = 0;
     virtual void mysteryGift(WCX& wc, int& pos) = 0;
     virtual void cryptBoxData(bool crypted) = 0;
     virtual std::string boxName(u8 box) const = 0;

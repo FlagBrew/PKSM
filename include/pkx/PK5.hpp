@@ -30,8 +30,6 @@
 #include "PKX.hpp"
 #include "PK6.hpp"
 #include "PK4.hpp"
-#include "SavB2W2.hpp"
-#include "SavBW.hpp"
 #include "i18n.hpp"
 
 class PK5 : public PKX

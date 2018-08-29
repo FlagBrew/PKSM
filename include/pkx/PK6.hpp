@@ -30,8 +30,6 @@
 #include "PKX.hpp"
 #include "PK7.hpp"
 #include "PK5.hpp"
-#include "SavORAS.hpp"
-#include "SavXY.hpp"
 
 class PK6 : public PKX
 {

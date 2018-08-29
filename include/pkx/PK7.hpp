@@ -29,8 +29,6 @@
 
 #include "PKX.hpp"
 #include "PK6.hpp"
-#include "SavUSUM.hpp"
-#include "SavSUMO.hpp"
 
 class PK7 : public PKX
 {

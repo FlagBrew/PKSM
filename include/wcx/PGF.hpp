@@ -28,8 +28,6 @@
 #define PGF_HPP
 
 #include "WCX.hpp"
-#include "SavB2W2.hpp"
-#include "SavBW.hpp"
 
 class PGF : public WCX
 {
@@ -39,7 +37,7 @@ protected:
     u8 data[204];
 
 public:
-    const u16 length = 204;
+    static const u16 length = 204;
     
     PGF(u8* pgf);
     virtual ~PGF() { };

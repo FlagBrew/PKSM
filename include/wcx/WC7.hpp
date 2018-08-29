@@ -28,8 +28,6 @@
 #define WC7_HPP
 
 #include "WCX.hpp"
-#include "SavUSUM.hpp"
-#include "SavSUMO.hpp"
 
 class WC7 : public WCX
 {
@@ -39,7 +37,7 @@ protected:
     u8 data[264];
     
 public:
-    const u16 length = 264;
+    static const u16 length = 264;
     const u16 lengthFull = 784;
     
     WC7(u8* dt, bool full = false);

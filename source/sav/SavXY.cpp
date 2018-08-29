@@ -302,3 +302,43 @@ std::shared_ptr<PKX> SavXY::emptyPkm() const
     static std::shared_ptr<PKX> empty = std::shared_ptr<PKX>(new PK6);
     return empty;
 }
+
+int SavXY::emptyGiftLocation(void) const
+{
+    u8 t;
+    int tmp;
+    // 24 max wonder cards
+    for (t = 0; t < 24; t++)
+    {
+        tmp = 0;
+        for (u32 j = 0; j < WC6::length; j++)
+        {
+            if (*(data + 0x1BD00 + t * WC6::length + j) == 0)
+            {
+                tmp++;
+            }
+        }
+
+        if (tmp == WC6::length)
+        {
+            break;
+        }
+    }
+
+    return t == 0 ? 23 : t;
+}
+
+std::vector<MysteryGift::giftData> SavXY::currentGifts(void) const
+{
+    std::vector<MysteryGift::giftData> ret;
+    u8* wonderCards = data + 0x1BD00;
+    for (int i = 0; i < emptyGiftLocation() + 1; i++)
+    {
+        if (*(data + i * WC6::length + 0x51) == 0)
+        {
+            ret.push_back({ "", *(u16*)(wonderCards + i * WC6::length + 0x82), *(wonderCards + i * WC6::length + 0x84)});
+        }
+        ret.push_back({ "", -1, -1 });
+    }
+    return ret;
+}

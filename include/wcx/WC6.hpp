@@ -28,8 +28,6 @@
 #define WC6_HPP
 
 #include "WCX.hpp"
-#include "SavORAS.hpp"
-#include "SavXY.hpp"
 
 class WC6 : public WCX
 {
@@ -39,7 +37,7 @@ protected:
     u8 data[264];
 
 public:
-    const u16 length = 264;
+    static const u16 length = 264;
     const u16 lengthFull = 784;
     
     WC6(u8* dt, bool full = false);

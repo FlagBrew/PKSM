@@ -24,36 +24,33 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef SCREEN_HPP
-#define SCREEN_HPP
+#include "Screen.hpp"
+#include "WCX.hpp"
+#include "Button.hpp"
+#include "i18n.hpp"
+#include "Configuration.hpp"
+#include <vector>
 
-#include "3ds.h"
-#include <citro3d.h>
+#ifndef INJECTORSCREEN_HPP
+#define INJECTORSCREEN_HPP
 
-extern C3D_RenderTarget* g_renderTargetTop;
-extern C3D_RenderTarget* g_renderTargetBottom;
-
-enum ScreenType
-{
-    TITLELOAD,
-    MAINMENU,
-    STORAGE,
-    EDITOR,
-    EVENTS,
-    INJECTOR,
-    SCRIPTS,
-    SETTINGS,
-    CREDITS,
-    VIEWER
-};
-
-class Screen
+class InjectorScreen : public Screen
 {
 public:
-    virtual ~Screen() {}
-    virtual void update(touchPosition* touch) = 0;
-    virtual void draw() const = 0;
-    virtual ScreenType type() const = 0;
+    InjectorScreen(std::unique_ptr<WCX> card);
+    void update(touchPosition* touch) override;
+    void draw(void) const override;
+    ScreenType type() const override { return ScreenType::INJECTOR; }
+private:
+    std::vector<Button*> buttons;
+    std::unique_ptr<WCX> wondercard;
+    bool overwriteCard = false;
+    bool adaptLanguage = false;
+    bool choosingSlot = false;
+    int slot;
+    Language lang = Language::JP;
+
+    bool setLanguage(Language lang);
 };
 
 #endif

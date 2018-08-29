@@ -148,6 +148,8 @@ public:
     std::shared_ptr<PKX> emptyPkm() const override;
 
     void dex(PKX& pk) override;
+    int emptyGiftLocation(void) const override;
+    std::vector<MysteryGift::giftData> currentGifts(void) const override;
     void mysteryGift(WCX& wc, int& pos) override;
     void cryptBoxData(bool crypted) override;
     std::string boxName(u8 box) const override;
