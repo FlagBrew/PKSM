@@ -53,7 +53,7 @@ bool InjectorScreen::setLanguage(Language language)
     return false;
 }
 
-InjectorScreen::InjectorScreen(std::unique_ptr<WCX> card)
+InjectorScreen::InjectorScreen(std::unique_ptr<WCX> card) : hid(40, 8) // sav->maxWonderCards(), 8);
 {
     wondercard = std::move(card);
     slot = 1;
@@ -186,9 +186,9 @@ void InjectorScreen::draw() const
 
     Gui::dynamicText(GFX_BOTTOM, 223, "Press Start to Inject", FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
     
-    C2D_SceneBegin(g_renderTargetTop);
     if (!choosingSlot)
     {
+        C2D_SceneBegin(g_renderTargetTop);
         Gui::sprite(ui_sheet_emulated_bg_top_red, 0, 0);
         Gui::sprite(ui_sheet_bg_style_top_idx, 0, 0);
         Gui::sprite(ui_sheet_bar_arc_top_red_idx, 0, 0);
@@ -274,6 +274,56 @@ void InjectorScreen::draw() const
             Gui::dynamicText(i18n::move(Configuration::getInstance().language(), wondercard->move(i)), 251, 156 + 20 * i, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
         }
     }
+    else
+    {
+        C2D_DrawRectSolid(0, 0, 0.5, 320, 240, COLOR_MASKBLACK);
+        Gui::dynamicText(GFX_BOTTOM, 107, "Press \uE000 to change slot", FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
+        Gui::dynamicText(GFX_BOTTOM, 124, "Press \uE002 to dump Wonder Card", FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
+
+        C2D_SceneBegin(g_renderTargetTop);
+        Gui::sprite(ui_sheet_part_mtx_5x8_idx, 0, 0);
+        std::vector<MysteryGift::giftData> saveDatas; // = sav->currentGifts();
+        for (int i = 0; i < 48; i++)
+        {
+            saveDatas.push_back({"", rand() % 807, 0});
+        }
+        int saveGeneration = 7; // sav->generation();
+        for (int i = 0; i < 40; i++)
+        {
+            int x = i % 8;
+            int y = i / 8;
+            int fullI = i + hid.page() * 40;
+            if (fullI > 48 - 1) // sav->maxWonderCards() - 1)
+            {
+                break;
+            }
+            if (hid.index() == i)
+            {
+                C2D_DrawRectSolid(x * 50, y * 48, 0.5f, 49, 47, C2D_Color32(15, 22, 89, 255));
+            }
+            if (fullI < saveDatas.size())
+            {
+                if (saveDatas[fullI].species > -1)
+                {
+                    Gui::pkm(saveDatas[fullI].species, saveDatas[fullI].form, saveGeneration, x * 50 + 7, y * 48 + 2);
+                }
+                else
+                {
+                    Gui::sprite(ui_sheet_icon_item_idx, x * 50 + 20, y * 48 + 18);
+                }
+
+                Gui::dynamicText(x * 50, y * 48 + 36, 50, std::to_string(fullI + 1), FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
+            }
+            else if (fullI == saveDatas.size())
+            {
+                Gui::dynamicText(x * 50, y * 48 + 36, 50, std::to_string(fullI + 1), FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
+            }
+            else
+            {
+                Gui::dynamicText(x * 50, y * 48 + 36, 50, std::to_string(fullI + 1), FONT_SIZE_9, FONT_SIZE_9, COLOR_MASKBLACK);
+            }
+        }
+    }
 }
 
 void InjectorScreen::update(touchPosition* touch)
@@ -284,6 +334,15 @@ void InjectorScreen::update(touchPosition* touch)
         for (Button* button : buttons)
         {
             button->update(touch);
+        }
+    }
+    else
+    {
+        hid.update(48); // sav->maxWonderCards();
+        if (downKeys & KEY_A)
+        {
+            slot = hid.fullIndex() + 1;
+            choosingSlot = false;
         }
     }
     if (downKeys & KEY_B)
@@ -304,7 +363,7 @@ void InjectorScreen::update(touchPosition* touch)
     }
     if (downKeys & KEY_START)
     {
-        // save->wcx(*wondercard, slot);
+        // save->wcx(*wondercard, slot - 1);
         Gui::screenBack();
         return;
     }

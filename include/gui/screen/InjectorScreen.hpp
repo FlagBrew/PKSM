@@ -29,6 +29,7 @@
 #include "Button.hpp"
 #include "i18n.hpp"
 #include "Configuration.hpp"
+#include "Hid.hpp"
 #include <vector>
 
 #ifndef INJECTORSCREEN_HPP
@@ -48,6 +49,7 @@ private:
     bool adaptLanguage = false;
     bool choosingSlot = false;
     int slot;
+    Hid hid;
     Language lang = Language::JP;
 
     bool setLanguage(Language lang);
