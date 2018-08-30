@@ -129,4 +129,9 @@ void MainMenu::update(touchPosition* touch)
         if (button->update(touch))
             return;
     }
+    if (keysDown() & KEY_B)
+    {
+        Gui::screenBack();
+        return;
+    }
 }
