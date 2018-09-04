@@ -1,7 +1,7 @@
 --atlas -f rgba8888 -z auto
 anim_squares.png
 bar_arc_bottom_blue.png
-bar_arc_bottom_red.png
+bar_arc_bottom_green.png
 bar_arc_top_blue.png
 bar_arc_top_green.png
 bar_arc_top_red.png
