@@ -223,7 +223,7 @@ void StorageScreen::draw() const
         Gui::dynamicText(infoMon->nickname(), 276, 61, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
         std::string info = "#" + std::to_string(infoMon->species());
         Gui::dynamicText(info, 276, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-        info = "Lv. " + std::to_string(infoMon->level());
+        info = "Lv." + std::to_string(infoMon->level());
         float width = textWidth(info, FONT_SIZE_12);
         Gui::dynamicText(info, 375 - (int) width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
         if (infoMon->gender() == 0)
@@ -234,7 +234,7 @@ void StorageScreen::draw() const
         {
             Gui::sprite(ui_sheet_icon_female_idx, 360 - (int) width, 80);
         }
-        if (!infoMon->shiny())
+        if (infoMon->shiny())
         {
             Gui::sprite(ui_sheet_icon_shiny_idx, 346 - (int) width, 81);
         }
