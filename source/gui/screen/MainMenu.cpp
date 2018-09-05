@@ -54,7 +54,7 @@ static bool goToScreen(int buttonNum)
     switch (buttonNum)
     {
         case 0:
-            Gui::setScreen(std::unique_ptr<Screen>(new StorageScreen(NULL)));
+            Gui::setScreen(std::unique_ptr<Screen>(new StorageScreen));
             return true;
         case 1:
             //Gui::setScreen(new EditorScreen);

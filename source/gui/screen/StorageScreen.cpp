@@ -29,6 +29,7 @@
 #include "MainMenu.hpp"
 #include "PK4.hpp"
 #include "Configuration.hpp"
+#include "TitleLoadScreen.hpp"
 
 // TODO: remove
 static u8 test[] = {0x0B,0xEB,0x64,0x89,0x00,0x00,0xC8,0xA5,0x12,0x00,0x00,0x00,0x2A,0x8A,0x42,0x73,0x47,0x9C,0x00,0x00,0xA0,0x91,0x00,0x02,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x21,0x00,0x62,0x00,0xEF,0x00,0x22,0x01,0x23,0x1E,0x14,0x14,0x00,0x00,0x00,0x00,0xD1,0xA1,0x33,0x3C,0x00,0x00,0x00,0x00,0x02,0x13,0x01,0x00,0x00,0x00,0x00,0x00,0x50,0x00,0x69,0x00,0x64,0x00,0x67,0x00,0x65,0x00,0x6F,0x00,0x74,0x00,0xFF,0xFF,0x6F,0x00,0xFF,0xFF,0xFF,0xFF,0x00,0x17,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x52,0x00,0x6F,0x00,0x43,0x00,0xFF,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x11,0x01,0x0D,0x00,0x00,0x4B,0x00,0x00,0x19,0x0A,0x00,0x00,0x00};
@@ -95,23 +96,24 @@ bool changeBoxName() { return false; }
 
 bool wirelessStuff() { return false; }
 
-StorageScreen::StorageScreen(Sav* save)
+StorageScreen::StorageScreen()
 {
-    this->save = save;
-    mainButtons[0] = new Button(242, 5, 45, 20, std::bind(&StorageScreen::swapBoxWithStorage, this), ui_sheet_button_swap_boxes_idx, "", 0.0f, 0);
-    mainButtons[1] = new Button(208, 43, 108, 31, std::bind(&StorageScreen::showViewer, this), ui_sheet_button_editor_idx,
+    mainButtons[0] = new Button(242, 9, 47, 22, std::bind(&StorageScreen::swapBoxWithStorage, this), ui_sheet_button_swap_boxes_idx, "", 0.0f, 0);
+    mainButtons[1] = new Button(212, 40, 108, 28, std::bind(&StorageScreen::showViewer, this), ui_sheet_button_editor_idx,
                                     "StorageButtonView", FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[2] = new Button(208, 72, 108, 31, std::bind(&StorageScreen::clearBox, this), ui_sheet_button_editor_idx,
+    mainButtons[2] = new Button(212, 71, 108, 28, std::bind(&StorageScreen::clearBox, this), ui_sheet_button_editor_idx,
                                     "StorageButtonClear", FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[3] = new Button(208, 101, 108, 31, std::bind(&StorageScreen::releasePkm, this), ui_sheet_button_editor_idx,
+    mainButtons[3] = new Button(212, 102, 108, 28, std::bind(&StorageScreen::releasePkm, this), ui_sheet_button_editor_idx,
                                     "StorageButtonRelease", FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[4] = new Button(208, 130, 108, 31, std::bind(&StorageScreen::dumpPkm, this), ui_sheet_button_editor_idx,
+    mainButtons[4] = new Button(212, 133, 108, 28, std::bind(&StorageScreen::dumpPkm, this), ui_sheet_button_editor_idx,
                                     "StorageButtonDump", FONT_SIZE_12, COLOR_BLACK);
 
+    mainButtons[5] = new Button(8, 15, 17, 24, std::bind(&StorageScreen::lastBox, this, true), ui_sheet_res_null_idx, "", 0.0f, 0);
+    mainButtons[6] = new Button(189, 15, 17, 24, std::bind(&StorageScreen::nextBox, this, true), ui_sheet_res_null_idx, "", 0.0f, 0);
     //mainButtons[5] = new Button(7, 17, 16, 20, std::bind(&StorageScreen::lastBox, this, true), ui_sheet_res_button_arrow_idx, "", 0.0f, 0);
     //mainButtons[6] = new Button(185, 17, 16, 20, std::bind(&StorageScreen::nextBox, this, true), ui_sheet_res_emulated_button_arrow_right_idx, "", 0.0f, 0);
-    mainButtons[7] = new Button(32, 14, 144, 26, &changeBoxName, ui_sheet_res_null_idx, "", 0.0f, 0);
-    mainButtons[8] = new Button(240, 211, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0);
+    mainButtons[7] = new Button(32, 15, 164, 24, &changeBoxName, ui_sheet_res_null_idx, "", 0.0f, 0);
+    mainButtons[8] = new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0);
     mainButtons[9] = new Button(283, 211, 34, 28, std::bind(&StorageScreen::backButton, this), ui_sheet_button_back_idx, "", 0.0f, 0);
 
     // Pokemon buttons
@@ -130,81 +132,140 @@ StorageScreen::StorageScreen(Sav* save)
 
 void StorageScreen::draw() const
 {
-    // static const std::shared_ptr<PKX>& infoMon = testPkm; // storageChosen ? storage->pkm(storageBox, cursorIndex) : save->pkm(storageBox, cursorIndex)
-    // C2D_SceneBegin(g_renderTargetBottom);
-    // Gui::sprite(ui_sheet_res_box_bottom_idx, 0, 0);
-    // Gui::sprite(ui_sheet_res_bar_editor_idx, 0, 210);
-    // for (Button* button : mainButtons)
-    // {
-    //     button->draw();
-    // }
+    static const std::shared_ptr<PKX>& infoMon = testPkm; // storageChosen ? storage->pkm(storageBox, cursorIndex) : save->pkm(storageBox, cursorIndex)
+    C2D_SceneBegin(g_renderTargetBottom);
+    Gui::sprite(ui_sheet_emulated_bg_bottom_green, 0, 0);
+    Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
+    Gui::sprite(ui_sheet_bar_arc_bottom_green_idx, 0, 206);
 
-    // //Gui::dynamicText(32, 19, 144, save->boxName(hid.page()), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
-    // Gui::dynamicText(32, 19, 144, "This is a box", FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
+    Gui::sprite(ui_sheet_bar_boxname_with_arrows_idx, 7, 15);
+    Gui::sprite(ui_sheet_storage_box_corner_idx, 2, 44);
+    Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_horizontal_idx, 202, 44);
+    Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_vertical_idx, 2, 193);
+    Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_both_idx, 202, 193);
+    for (Button* b : mainButtons)
+    {
+        b->draw();
+    }
 
-    // // actual Pokemon
-    // u16 y = 45;
-    // for (u8 row = 0; row < 5; row++)
-    // {
-    //     u16 x = 4;
-    //     for (u8 column = 0; column < 6; column++)
-    //     {
-    //         //Gui::pkm(save->pkm(boxBox, row * 6 + column).get(), x, y);
-    //         Gui::pkm(70, x, y);
-    //         x += 34;
-    //     }
-    //     y += 30;
-    // }
-    // if (!storageChosen)
-    // {
-    //     Gui::sprite(ui_sheet_res_selector_box_idx, 22 + (cursorIndex % 6) * 34, 37 + (cursorIndex / 6) * 30 + bobPointer());
-    // }
+    u16 y = 45;
+    for (u8 row = 0; row < 5; row++)
+    {
+        u16 x = 4;
+        for (u8 column = 0; column < 6; column++)
+        {
+            //Gui::pkm(save->pkm(boxBox, row * 6 + column).get(), x, y);
+            Gui::pkm(testPkm.get(), x, y);
+            x += 34;
+        }
+        y += 30;
+    }
 
-    // if (viewer)
-    // {
-    //     C2D_DrawRectSolid(0, 0, 0.5f, 320, 210, C2D_Color32(0, 0, 0, 120));
-    //     viewer->draw();
-    // }
-    // else
-    // {
-    //     C2D_SceneBegin(g_renderTargetTop);
-    //     Gui::backgroundAnimated(GFX_TOP);
-    //     Gui::sprite(ui_sheet_res_storage_top_idx, 34, 5);
-    //     Gui::dynamicText(80, 9, 124, StringUtils::format("Bank %i", storageBox), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
+    //Gui::dynamicText(32, 19, 144, save->boxName(hid.page()), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
+    Gui::dynamicText(25, 18, 164, "This is a box", FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
 
-    //     // actual Pokemon
-    //     u16 y = 45;
-    //     for (u8 row = 0; row < 5; row++)
-    //     {
-    //         u16 x = 44;
-    //         for (u8 column = 0; column < 6; column++)
-    //         {
-    //             //Gui::pkm(storage->pkm(storageBox, row * 6 + column).get(), x, y); Don't know what the call will be?
-    //             Gui::pkm(99, x, y);
-    //             x += 34;
-    //         }
-    //         y += 30;
-    //     }
-        
-    //     // Mini viewer
-    //     Gui::dynamicText(infoMon->nickname(), 273, 50, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
-    //     Gui::dynamicText(StringUtils::format("#%i", infoMon->species()), 273, 67, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
-        
-    //     std::string text = StringUtils::format("Lv.%i", infoMon->level());
-    //     float width = textWidth(text, FONT_SIZE_12);
-    //     Gui::dynamicText(text, 374 - (int) width, 67, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
-    //     if (infoMon->gender() == 0)
-    //     {
-    //         Gui::sprite(ui_sheet_res_male_idx, 358 - (int) width, 67);
-    //     }
-    //     else if (infoMon->gender() == 1)
-    //     {
-    //         Gui::sprite(ui_sheet_res_female_idx, 360 - (int) width, 67);
-    //     }
-    //     if (infoMon->shiny())
-    //     {
-    //         Gui::sprite(ui_sheet_res_shiny_idx, 346 - (int) width, 69);
-    //     }
+    if (!storageChosen)
+    {
+        Gui::sprite(ui_sheet_pointer_arrow_idx, 21 + (cursorIndex % 6) * 34, 30 + (cursorIndex / 6) * 30 + bobPointer());
+    }
+
+    if (viewer)
+    {
+        C2D_DrawRectSolid(0, 0, 0.5f, 320, 210, C2D_Color32(0, 0, 0, 120));
+        viewer->draw();
+    }
+    else
+    {
+        C2D_SceneBegin(g_renderTargetTop);
+        Gui::sprite(ui_sheet_emulated_bg_top_green, 0, 0);
+        Gui::sprite(ui_sheet_bg_style_top_idx, 0, 0);
+        Gui::sprite(ui_sheet_bar_arc_top_green_idx, 0, 0);
+
+        Gui::sprite(ui_sheet_textbox_pksm_idx, 261, 3);
+        Gui::staticText("PKSM", 394, 7, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, true);
+
+        Gui::sprite(ui_sheet_bar_boxname_empty_idx, 44, 21);
+        Gui::staticText(45, 24, 24, "\uE004", FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
+        Gui::staticText(225, 24, 24, "\uE005", FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
+        Gui::dynamicText(69, 24, 156, StringUtils::format("Bank %i", storageBox), FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
+
+        Gui::sprite(ui_sheet_storagemenu_cross_idx, 36, 50);
+        Gui::sprite(ui_sheet_storagemenu_cross_idx, 246, 50);
+        Gui::sprite(ui_sheet_storagemenu_cross_idx, 36, 220);
+        Gui::sprite(ui_sheet_storagemenu_cross_idx, 246, 220);
+
+        u16 y = 66;
+        for (u8 row = 0; row < 5; row++)
+        {
+            u16 x = 45;
+            for (u8 column = 0; column < 6; column++)
+            {
+                //Gui::pkm(storage->pkm(storageBox, row * 6 + column).get(), x, y);
+                Gui::pkm(testPkm.get(), x, y);
+                x += 34;
+            }
+            y += 30;
+        }
+
+        Gui::sprite(ui_sheet_stripe_separator_idx, 274, 97);
+        Gui::sprite(ui_sheet_stripe_separator_idx, 274, 137);
+        Gui::sprite(ui_sheet_stripe_separator_idx, 274, 177);
+        Gui::sprite(ui_sheet_point_big_idx, 265, 66);
+        Gui::sprite(ui_sheet_point_big_idx, 265, 103);
+        Gui::sprite(ui_sheet_point_big_idx, 265, 146);
+        Gui::sprite(ui_sheet_point_big_idx, 265, 186);
+
+        if (storageChosen)
+        {
+            Gui::sprite(ui_sheet_pointer_arrow_idx, 62 + (cursorIndex % 6) * 34, 51 + (cursorIndex / 6) * 30 + bobPointer());
+        }
+
+        Gui::dynamicText(infoMon->nickname(), 276, 61, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+        std::string info = "#" + std::to_string(infoMon->species());
+        Gui::dynamicText(info, 276, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+        info = "Lv. " + std::to_string(infoMon->level());
+        float width = textWidth(info, FONT_SIZE_12);
+        Gui::dynamicText(info, 375 - (int) width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+        if (infoMon->gender() == 0)
+        {
+            Gui::sprite(ui_sheet_icon_male_idx, 358 - (int) width, 80);
+        }
+        else if (infoMon->gender() == 1)
+        {
+            Gui::sprite(ui_sheet_icon_female_idx, 360 - (int) width, 80);
+        }
+        if (!infoMon->shiny())
+        {
+            Gui::sprite(ui_sheet_icon_shiny_idx, 346 - (int) width, 81);
+        }
+
+        info = i18n::species(Configuration::getInstance().language(), infoMon->species());
+        Gui::dynamicText(info, 276, 98, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+        u8 firstType = type1(infoMon->generation(), infoMon->formSpecies());
+        u8 secondType = type2(infoMon->generation(), infoMon->formSpecies());
+        if (firstType != secondType)
+        {
+            Gui::type(Configuration::getInstance().language(), firstType, 276, 115);
+            Gui::type(Configuration::getInstance().language(), secondType, 324, 115);
+        }
+        else
+        {
+            Gui::type(Configuration::getInstance().language(), firstType, 300, 115);
+        }
+
+        info = infoMon->otName() + "\nID. " + std::to_string(infoMon->TID());
+        Gui::dynamicText(info, 276, 141, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+
+        info = i18n::nature(Configuration::getInstance().language(), infoMon->nature());
+        Gui::dynamicText(info, 276, 181, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+        info = "IV: ";
+        width = textWidth(info, FONT_SIZE_12);
+        Gui::dynamicText(info, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+        info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(0), infoMon->iv(1), infoMon->iv(2));
+        Gui::dynamicText(276 + (int) width, 197, 70, info, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+        info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(4), infoMon->iv(5), infoMon->iv(3));
+        Gui::dynamicText(276 + (int) width, 209, 70, info, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+    }
 
     //     Gui::dynamicText(i18n::species(/*Settings::language()*/Language::EN, infoMon->species()), 273, 86, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
     //     u8 firstType = type1(infoMon->generation(), infoMon->formSpecies());
@@ -251,15 +312,7 @@ void StorageScreen::update(touchPosition* touch)
         u64 kDown = hidKeysDown();
         u64 kHeld = hidKeysHeld();
 
-        if (kDown & KEY_L)
-        {
-            lastBox();
-        }
-        else if (kDown & KEY_R)
-        {
-            nextBox();
-        }
-        else if (kDown & KEY_B)
+        if (kDown & KEY_B)
         {
             backButton();
             return;
@@ -328,6 +381,17 @@ void StorageScreen::update(touchPosition* touch)
                 }
                 sleep = true;
             }
+            else if (kHeld & KEY_R)
+            {
+                nextBox();
+                sleep = true;
+            }
+            else if (kHeld & KEY_L)
+            {
+                lastBox();
+                sleep = true;
+            }
+
             if (sleep)
                 buttonCooldown = 10;
         }
@@ -370,7 +434,7 @@ bool StorageScreen::nextBox(bool forceBottom)
     if (storageChosen && !forceBottom)
     {
         storageBox++;
-        if (storageBox == 32) // save->boxes)
+        if (storageBox == Configuration::getInstance().storageSize()) // save->boxes)
         {
             storageBox = 0;
         }
@@ -423,7 +487,7 @@ bool StorageScreen::clearBox()
             if (storageChosen) { // Storage set all slots in box to PK7()s (or however it happens)
             }
             else
-                save->pkm(*save->emptyPkm(), boxBox, i);
+                TitleLoadScreen::loadedSave()->pkm(*TitleLoadScreen::loadedSave()->emptyPkm(), boxBox, i);
         }
     }
     return false;
@@ -437,7 +501,7 @@ bool StorageScreen::releasePkm()
         if (storageChosen) { // Storage set all slots in box to PK7()s (or however it happens)
         }
         else
-            save->pkm(*save->emptyPkm(), boxBox, cursorIndex);
+            TitleLoadScreen::loadedSave()->pkm(*TitleLoadScreen::loadedSave()->emptyPkm(), boxBox, cursorIndex);
     }
     return false;
 }

@@ -50,6 +50,8 @@ static constexpr char* dsIds[] = {
     "IRD"  //White 2
 };
 
+static std::shared_ptr<Sav> save = nullptr;
+
 static bool loadSave() { Gui::setScreen(std::unique_ptr<Screen>(new MainMenu)); return true; }
 static bool wirelessSave() { return true; }
 
@@ -386,4 +388,9 @@ void TitleLoadScreen::update(touchPosition* touch)
             selectedSave = 0;
         }
     }
+}
+
+std::shared_ptr<Sav> TitleLoadScreen::loadedSave()
+{
+    return save;
 }

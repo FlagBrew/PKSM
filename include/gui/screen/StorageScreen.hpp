@@ -37,7 +37,7 @@
 class StorageScreen : public Screen
 {
 public:
-    StorageScreen(Sav* save);
+    StorageScreen();
     ~StorageScreen()
     {
         for (int i = 0; i < 10; i++)
@@ -70,8 +70,7 @@ private:
     std::array<Button*, 10> mainButtons;
     std::array<Button*, 30> pkmButtons;
     int cursorIndex = 0, storageBox = 0, boxBox = 0;
-    Sav* save;
-    std::unique_ptr<ViewerScreen> viewer = NULL;
+    std::unique_ptr<ViewerScreen> viewer;
     // Storage implementation
 };
 

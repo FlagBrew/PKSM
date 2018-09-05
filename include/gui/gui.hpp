@@ -61,6 +61,9 @@
 #define ui_sheet_emulated_eventmenu_bar_unselected_flipped_vertical_idx 511
 #define ui_sheet_emulated_eventmenu_bar_selected_flipped_both_idx 512
 #define ui_sheet_emulated_eventmenu_bar_unselected_flipped_both_idx 513
+#define ui_sheet_emulated_storage_box_corner_flipped_horizontal_idx 514
+#define ui_sheet_emulated_storage_box_corner_flipped_vertical_idx 515
+#define ui_sheet_emulated_storage_box_corner_flipped_both_idx 516
 
 // colors
 #define COLOR_WHITE     C2D_Color32(255, 255, 255, 255)

@@ -294,10 +294,7 @@ static void _draw_mirror_scale(int key, int x, int y, int off, int rep)
     Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, off, 0);
     C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f);
     // Right side
-    float right = tex.right;
-    tex.right = tex.left;
-    tex.left = right;
-    C2D_DrawImageAt({sprite.tex, &tex}, x + off + rep, y, 0.5f);
+    C2D_DrawImageAt({sprite.tex, &tex}, x + off + rep, y, 0.5f, nullptr, -1.0f, 1.0f);
     // Center
     tex = _select_box(sprite, off, 0, sprite.subtex->width, 0);
     C2D_DrawImageAt({sprite.tex, &tex}, x + off, y, 0.5f, nullptr, rep, 1.0f);
@@ -405,7 +402,7 @@ void Gui::sprite(int key, int x, int y)
         // Bottom side
         C2D_DrawImageAt({sprite.tex, &tex}, x, y + off + rep, 0.5f, nullptr, 1.0f, -1.0f);
         // Center
-        tex = _select_box(sprite, 0, off, 0, sprite.subtex->height - 1);
+        tex = _select_box(sprite, 0, off, 0, sprite.subtex->height);
         C2D_DrawImageAt({sprite.tex, &tex}, x, y + off, 0.5f, nullptr, 1.0f, rep);   
     }
     else if (key == ui_sheet_gameselector_savebox_idx)
@@ -582,6 +579,18 @@ void Gui::sprite(int key, int x, int y)
         // Center
         tex = _select_box(sprite, off, 0, sprite.subtex->width, 0);
         C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f, nullptr, -rep, -1.0f);
+    }
+    else if (key == ui_sheet_emulated_storage_box_corner_flipped_horizontal_idx)
+    {
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_storage_box_corner_idx), x, y, 0.5f, nullptr, -1.0f, 1.0f);
+    }
+    else if (key == ui_sheet_emulated_storage_box_corner_flipped_vertical_idx)
+    {
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_storage_box_corner_idx), x, y, 0.5f, nullptr, 1.0f, -1.0f);
+    }
+    else if (key == ui_sheet_emulated_storage_box_corner_flipped_both_idx)
+    {
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_storage_box_corner_idx), x, y, 0.5f, nullptr, -1.0f, -1.0f);
     }
     // standard case
     else
