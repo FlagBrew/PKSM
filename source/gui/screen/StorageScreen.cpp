@@ -220,51 +220,54 @@ void StorageScreen::draw() const
             Gui::sprite(ui_sheet_pointer_arrow_idx, 62 + (cursorIndex % 6) * 34, 51 + (cursorIndex / 6) * 30 + bobPointer());
         }
 
-        Gui::dynamicText(infoMon->nickname(), 276, 61, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-        std::string info = "#" + std::to_string(infoMon->species());
-        Gui::dynamicText(info, 276, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-        info = "Lv." + std::to_string(infoMon->level());
-        float width = textWidth(info, FONT_SIZE_12);
-        Gui::dynamicText(info, 375 - (int) width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-        if (infoMon->gender() == 0)
+        if (infoMon)
         {
-            Gui::sprite(ui_sheet_icon_male_idx, 358 - (int) width, 80);
-        }
-        else if (infoMon->gender() == 1)
-        {
-            Gui::sprite(ui_sheet_icon_female_idx, 360 - (int) width, 80);
-        }
-        if (infoMon->shiny())
-        {
-            Gui::sprite(ui_sheet_icon_shiny_idx, 346 - (int) width, 81);
-        }
+            Gui::dynamicText(infoMon->nickname(), 276, 61, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            std::string info = "#" + std::to_string(infoMon->species());
+            Gui::dynamicText(info, 276, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            info = "Lv." + std::to_string(infoMon->level());
+            float width = textWidth(info, FONT_SIZE_12);
+            Gui::dynamicText(info, 375 - (int) width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            if (infoMon->gender() == 0)
+            {
+                Gui::sprite(ui_sheet_icon_male_idx, 358 - (int) width, 80);
+            }
+            else if (infoMon->gender() == 1)
+            {
+                Gui::sprite(ui_sheet_icon_female_idx, 360 - (int) width, 80);
+            }
+            if (infoMon->shiny())
+            {
+                Gui::sprite(ui_sheet_icon_shiny_idx, 346 - (int) width, 81);
+            }
 
-        info = i18n::species(Configuration::getInstance().language(), infoMon->species());
-        Gui::dynamicText(info, 276, 98, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-        u8 firstType = type1(infoMon->generation(), infoMon->formSpecies());
-        u8 secondType = type2(infoMon->generation(), infoMon->formSpecies());
-        if (firstType != secondType)
-        {
-            Gui::type(Configuration::getInstance().language(), firstType, 276, 115);
-            Gui::type(Configuration::getInstance().language(), secondType, 324, 115);
-        }
-        else
-        {
-            Gui::type(Configuration::getInstance().language(), firstType, 300, 115);
-        }
+            info = i18n::species(Configuration::getInstance().language(), infoMon->species());
+            Gui::dynamicText(info, 276, 98, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            u8 firstType = type1(infoMon->generation(), infoMon->formSpecies());
+            u8 secondType = type2(infoMon->generation(), infoMon->formSpecies());
+            if (firstType != secondType)
+            {
+                Gui::type(Configuration::getInstance().language(), firstType, 276, 115);
+                Gui::type(Configuration::getInstance().language(), secondType, 324, 115);
+            }
+            else
+            {
+                Gui::type(Configuration::getInstance().language(), firstType, 300, 115);
+            }
 
-        info = infoMon->otName() + "\nID. " + std::to_string(infoMon->TID());
-        Gui::dynamicText(info, 276, 141, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            info = infoMon->otName() + "\nID. " + std::to_string(infoMon->TID());
+            Gui::dynamicText(info, 276, 141, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
 
-        info = i18n::nature(Configuration::getInstance().language(), infoMon->nature());
-        Gui::dynamicText(info, 276, 181, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-        info = "IV: ";
-        width = textWidth(info, FONT_SIZE_12);
-        Gui::dynamicText(info, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-        info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(0), infoMon->iv(1), infoMon->iv(2));
-        Gui::dynamicText(276 + (int) width, 197, 70, info, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
-        info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(4), infoMon->iv(5), infoMon->iv(3));
-        Gui::dynamicText(276 + (int) width, 209, 70, info, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+            info = i18n::nature(Configuration::getInstance().language(), infoMon->nature());
+            Gui::dynamicText(info, 276, 181, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            info = "IV: ";
+            width = textWidth(info, FONT_SIZE_12);
+            Gui::dynamicText(info, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(0), infoMon->iv(1), infoMon->iv(2));
+            Gui::dynamicText(276 + (int) width, 197, 70, info, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+            info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(4), infoMon->iv(5), infoMon->iv(3));
+            Gui::dynamicText(276 + (int) width, 209, 70, info, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+        }
     }
 
     //     Gui::dynamicText(i18n::species(/*Settings::language()*/Language::EN, infoMon->species()), 273, 86, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
