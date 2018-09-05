@@ -100,6 +100,7 @@ ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
 
 CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O2 -mword-relocations \
 			-fomit-frame-pointer -ffunction-sections \
+			-Wno-implicit-fallthrough \
 			$(ARCH) \
 			-DQUIRC_MAX_REGIONS=65534 \
 			-DVERSION_MAJOR=${VERSION_MAJOR} \
