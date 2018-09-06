@@ -32,6 +32,7 @@
 #include "PKX.hpp"
 #include "ViewerScreen.hpp"
 #include "Button.hpp"
+#include "loader.hpp"
 #include <array>
 
 class StorageScreen : public Screen
@@ -48,6 +49,7 @@ public:
         {
             delete pkmButtons[i];
         }
+        TitleLoader::save->cryptBoxData(false);
     }
 
     void update(touchPosition* touch) override;

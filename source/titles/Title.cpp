@@ -125,3 +125,13 @@ C2D_Image Title::icon(void)
 {
     return mIcon;
 }
+
+FS_MediaType Title::mediaType(void)
+{
+    return mMedia;
+}
+
+FS_CardType Title::cardType(void)
+{
+    return mCard;
+}

@@ -25,10 +25,38 @@
 */
 
 #include "loader.hpp"
+#include "Configuration.hpp"
+#include "Directory.hpp"
+#include "FSStream.hpp"
+
+static constexpr char langIds[8] = {
+    'E', //USA
+    'S', //Spain
+    'K', //Korea
+    'J', //Japan
+    'I', //Italy
+    'D', //Germany
+    'F', //France
+    'O'  //Europe? Definitely some sort of English
+};
+
+static constexpr char* dsIds[9] = {
+    "ADA", //Diamond
+    "APA", //Pearl
+    "CPU", //Platinum
+    "IPK", //HeartGold
+    "IPG", //SoulSilver
+    "IRB", //Black
+    "IRA", //White
+    "IRE", //Black 2
+    "IRD"  //White 2
+};
 
 // title list
 std::vector<std::shared_ptr<Title>> TitleLoader::nandTitles;
 std::shared_ptr<Title> TitleLoader::cardTitle = nullptr;
+std::unordered_map<std::string, std::vector<std::string>> TitleLoader::sdSaves;
+std::shared_ptr<Sav> TitleLoader::save;
 
 // local gui variables and functions
 static const size_t rowlen = 4;
@@ -178,11 +206,84 @@ void TitleLoader::scan(void)
     std::sort(nandTitles.begin(), nandTitles.end(), [](std::shared_ptr<Title>& l, std::shared_ptr<Title>& r) {
         return l->name() < r->name();
     });
+
+    std::u16string chkpntDir = StringUtils::UTF8toUTF16("/3ds/Checkpoint/saves");
+    Directory checkpoint(Archive::sd(), chkpntDir);
+    std::u16string sSeparator = StringUtils::UTF8toUTF16("/");
+    for (size_t i = 0; i < ctrTitleIds.size(); i++)
+    {
+        u32 uniqueId = (u32) ctrTitleIds[i] >> 8;
+        std::string id = StringUtils::format("0x%05X", uniqueId);
+        std::vector<std::string> saves;
+        for (size_t j = 0; j < checkpoint.count(); j++)
+        {
+            if (checkpoint.folder(j))
+            {
+                std::u16string fileName = checkpoint.item(j);
+                if (fileName.substr(0, 7) == StringUtils::UTF8toUTF16(id.c_str()))
+                {
+                    Directory subdir(Archive::sd(), chkpntDir + sSeparator + fileName);
+                    for (size_t k = 0; k < subdir.count(); k++)
+                    {
+                        if (subdir.folder(k))
+                        {
+                            std::u16string savePath = chkpntDir + sSeparator + fileName + sSeparator + subdir.item(k)
+                                                      + StringUtils::UTF8toUTF16("/main");
+                            saves.push_back(StringUtils::UTF16toUTF8(savePath));
+                        }
+                    }
+                }
+            }
+        }
+        sdSaves[id] = saves;
+    }
+
+    for (size_t game = 0; game < 9; game++)
+    {
+        for (size_t lang = 0; lang < 8; lang++)
+        {
+            std::string id = std::string(dsIds[game]) + langIds[lang];
+            std::vector<std::string> saves;
+            for (size_t i = 0; i < checkpoint.count(); i++)
+            {
+                if (checkpoint.folder(i))
+                {
+                    std::u16string fileName = checkpoint.item(i);
+                    if (StringUtils::UTF16toUTF8(fileName).substr(0, 7) == id)
+                    {
+                        Directory subdir(Archive::sd(), chkpntDir + sSeparator + fileName);
+                        {
+                            for(size_t j = 0; j < subdir.count(); j++)
+                            {
+                                if (subdir.folder(j))
+                                {
+                                    std::u16string savePath = chkpntDir + sSeparator + fileName + sSeparator + subdir.item(j) + sSeparator
+                                                              + subdir.item(j).substr(5) + StringUtils::UTF8toUTF16(".sav");
+                                    saves.push_back(StringUtils::UTF16toUTF8(savePath));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            sdSaves[id] = saves;
+        }
+    }
 }
 
-std::shared_ptr<Sav> TitleLoader::load(std::shared_ptr<Title>)
+void TitleLoader::load(std::shared_ptr<Title> title)
 {
-    return nullptr;
+    return;
+}
+
+void TitleLoader::load(std::string savePath)
+{
+    FSStream in(Archive::sd(), StringUtils::UTF8toUTF16(savePath.c_str()), FS_OPEN_READ);
+    u32 size = in.size();
+    u8* saveData = new u8[size];
+    in.read(saveData, size);
+    in.close();
+    save = Sav::getSave(saveData, size);
 }
 
 // std::shared_ptr<Sav> TitleLoader::load(void)

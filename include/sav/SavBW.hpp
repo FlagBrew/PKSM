@@ -150,6 +150,8 @@ public:
     void cryptBoxData(bool crypted) override;
     std::string boxName(u8 box) const override;
     u8 partyCount(void) const override;
+
+    int maxBoxes(void) const override { return 24; }
 };
 
 #endif

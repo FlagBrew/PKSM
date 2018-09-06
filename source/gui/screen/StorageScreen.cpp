@@ -128,11 +128,16 @@ StorageScreen::StorageScreen()
         }
         y += 30;
     }
+    TitleLoader::save->cryptBoxData(true);
 }
 
 void StorageScreen::draw() const
 {
-    static const std::shared_ptr<PKX>& infoMon = testPkm; // storageChosen ? storage->pkm(storageBox, cursorIndex) : save->pkm(storageBox, cursorIndex)
+    std::shared_ptr<PKX> infoMon = storageChosen ? /*storage->pkm(storageBox, cursorIndex)*/ testPkm : TitleLoader::save->pkm(boxBox, cursorIndex);
+    if (infoMon->species() == 0)
+    {
+        infoMon = nullptr;
+    }
     C2D_SceneBegin(g_renderTargetBottom);
     Gui::sprite(ui_sheet_emulated_bg_bottom_green, 0, 0);
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
@@ -154,15 +159,17 @@ void StorageScreen::draw() const
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            //Gui::pkm(save->pkm(boxBox, row * 6 + column).get(), x, y);
-            Gui::pkm(testPkm.get(), x, y);
+            std::unique_ptr<PKX> pokemon = TitleLoader::save->pkm(boxBox, row * 6 + column);
+            if (pokemon->species() > 0)
+            {
+                Gui::pkm(pokemon.get(), x, y);
+            }
             x += 34;
         }
         y += 30;
     }
 
-    //Gui::dynamicText(32, 19, 144, save->boxName(hid.page()), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
-    Gui::dynamicText(25, 18, 164, "This is a box", FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
+    Gui::dynamicText(25, 18, 164, TitleLoader::save->boxName(boxBox), FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
 
     if (!storageChosen)
     {
@@ -187,7 +194,7 @@ void StorageScreen::draw() const
         Gui::sprite(ui_sheet_bar_boxname_empty_idx, 44, 21);
         Gui::staticText(45, 24, 24, "\uE004", FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
         Gui::staticText(225, 24, 24, "\uE005", FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
-        Gui::dynamicText(69, 24, 156, StringUtils::format("Bank %i", storageBox), FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
+        Gui::dynamicText(69, 24, 156, StringUtils::format("Bank %i", storageBox + 1), FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
 
         Gui::sprite(ui_sheet_storagemenu_cross_idx, 36, 50);
         Gui::sprite(ui_sheet_storagemenu_cross_idx, 246, 50);
@@ -248,7 +255,7 @@ void StorageScreen::draw() const
             if (firstType != secondType)
             {
                 Gui::type(Configuration::getInstance().language(), firstType, 276, 115);
-                Gui::type(Configuration::getInstance().language(), secondType, 324, 115);
+                Gui::type(Configuration::getInstance().language(), secondType, 325, 115);
             }
             else
             {
@@ -417,7 +424,7 @@ bool StorageScreen::lastBox(bool forceBottom)
         storageBox--;
         if (storageBox == -1)
         {
-            storageBox = Configuration::getInstance().storageSize();
+            storageBox = Configuration::getInstance().storageSize() - 1;
         }
     }
     else
@@ -425,8 +432,7 @@ bool StorageScreen::lastBox(bool forceBottom)
         boxBox--;
         if (boxBox == -1)
         {
-            boxBox = 31;
-            //boxBox = save->boxes - 1;
+            boxBox = TitleLoader::save->maxBoxes() - 1;
         }
     }
     return false;
@@ -437,7 +443,7 @@ bool StorageScreen::nextBox(bool forceBottom)
     if (storageChosen && !forceBottom)
     {
         storageBox++;
-        if (storageBox == Configuration::getInstance().storageSize()) // save->boxes)
+        if (storageBox == Configuration::getInstance().storageSize())
         {
             storageBox = 0;
         }
@@ -445,7 +451,7 @@ bool StorageScreen::nextBox(bool forceBottom)
     else
     {
         boxBox++;
-        if (boxBox == 32) // save->boxes)
+        if (boxBox == TitleLoader::save->maxBoxes())
         {
             boxBox = 0;
         }
@@ -490,7 +496,7 @@ bool StorageScreen::clearBox()
             if (storageChosen) { // Storage set all slots in box to PK7()s (or however it happens)
             }
             else
-                TitleLoadScreen::loadedSave()->pkm(*TitleLoadScreen::loadedSave()->emptyPkm(), boxBox, i);
+                TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), boxBox, i);
         }
     }
     return false;
@@ -504,7 +510,7 @@ bool StorageScreen::releasePkm()
         if (storageChosen) { // Storage set all slots in box to PK7()s (or however it happens)
         }
         else
-            TitleLoadScreen::loadedSave()->pkm(*TitleLoadScreen::loadedSave()->emptyPkm(), boxBox, cursorIndex);
+            TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), boxBox, cursorIndex);
     }
     return false;
 }

@@ -41,10 +41,8 @@ public:
     void draw() const override;
     ScreenType type() const override { return ScreenType::TITLELOAD; }
     void update(touchPosition* touch) override;
-    static std::shared_ptr<Sav> loadedSave();
 private:
     int selectedTitle = -2;
-    Directory checkpointSaves = Directory(ARCHIVE_SDMC, u"/3ds/Checkpoint");
     std::vector<std::string> availableCheckpointSaves;
     int firstSave = -1;
     std::vector<Button*> buttons;
@@ -88,6 +86,8 @@ private:
         }
         return nullptr;
     }
+
+    bool loadSave(void) const;
 };
 
 #endif

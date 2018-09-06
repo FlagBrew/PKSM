@@ -26,33 +26,21 @@
 
 #include "TitleLoadScreen.hpp"
 #include "MainMenu.hpp"
+#include "FSStream.hpp"
 
-static constexpr char langIds[] = {
-    'E', //USA
-    'S', //Spain
-    'K', //Korea
-    'J', //Japan
-    'I', //Italy
-    'D', //Germany
-    'F', //France
-    'O'  //Europe?
-};
-
-static constexpr char* dsIds[] = {
-    "ADA", //Diamond
-    "APA", //Pearl
-    "CPU", //Platinum
-    "IPK", //HeartGold
-    "IPG", //SoulSilver
-    "IRB", //Black
-    "IRA", //White
-    "IRE", //Black 2
-    "IRD"  //White 2
-};
-
-static std::shared_ptr<Sav> save = nullptr;
-
-static bool loadSave() { Gui::setScreen(std::unique_ptr<Screen>(new MainMenu)); return true; }
+bool TitleLoadScreen::loadSave() const
+{
+    if (selectedSave == -1)
+    {
+        TitleLoader::load(titleFromIndex(selectedTitle));
+    }
+    else
+    {
+        TitleLoader::load(availableCheckpointSaves[selectedSave + firstSave]);
+    }
+    Gui::setScreen(std::unique_ptr<Screen>(new MainMenu));
+    return true;
+}
 static bool wirelessSave() { return true; }
 
 TitleLoadScreen::TitleLoadScreen()
@@ -62,7 +50,7 @@ TitleLoadScreen::TitleLoadScreen()
     {
         buttons.push_back(new Button(24, 96, 175, 16, std::bind(&TitleLoadScreen::setSelectedSave, this, i), ui_sheet_res_null_idx, "", 0.0f, 0));
     }
-    buttons.push_back(new Button(200, 95, 96, 51, &loadSave, ui_sheet_res_null_idx, "", 0.0f, 0));
+    buttons.push_back(new Button(200, 95, 96, 51, std::bind(&TitleLoadScreen::loadSave, this), ui_sheet_res_null_idx, "", 0.0f, 0));
     buttons.push_back(new Button(200, 147, 96, 51, &wirelessSave, ui_sheet_res_null_idx, "", 0.0f, 0));
 }
 
@@ -142,7 +130,30 @@ void TitleLoadScreen::draw() const
         }
         else if (i < availableCheckpointSaves.size())
         {
-            Gui::dynamicText(availableCheckpointSaves[i], 29, y, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+            std::string save;
+            bool passedSlash = false;
+            for (int j = availableCheckpointSaves[i].size() - 1; j > -1; j--)
+            {
+                if (availableCheckpointSaves[i][j] == '/')
+                {
+                    if (passedSlash)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        passedSlash = true;
+                    }
+                }
+                else
+                {
+                    if (passedSlash)
+                    {
+                        save = availableCheckpointSaves[i][j] + save;
+                    }
+                }
+            }
+            Gui::dynamicText(save, 29, y, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
         }
         else
         {
@@ -388,9 +399,5 @@ void TitleLoadScreen::update(touchPosition* touch)
             selectedSave = 0;
         }
     }
-}
-
-std::shared_ptr<Sav> TitleLoadScreen::loadedSave()
-{
-    return save;
+    availableCheckpointSaves = TitleLoader::sdSaves[StringUtils::format("0x%05X", titleFromIndex(selectedTitle)->lowId() >> 8)];
 }

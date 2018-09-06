@@ -52,10 +52,13 @@ extern C3D_RenderTarget* g_renderTargetBottom;
 namespace TitleLoader
 {
     void scan(void);
-    std::shared_ptr<Sav> load(std::shared_ptr<Title> title);
+    void load(std::shared_ptr<Title> title);
+    void load(std::string path);
     void exit(void);
     extern std::vector<std::shared_ptr<Title>> nandTitles;
     extern std::shared_ptr<Title> cardTitle;
+    extern std::unordered_map<std::string, std::vector<std::string>> sdSaves;
+    extern std::shared_ptr<Sav> save;
 }
 
 #endif

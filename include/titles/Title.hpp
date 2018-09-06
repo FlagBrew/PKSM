@@ -48,6 +48,8 @@ public:
     u32 lowId(void);
     std::string name(void);
     C2D_Image icon(void);
+    FS_MediaType mediaType(void);
+    FS_CardType cardType(void);
 
 private:
     u64 mId;
