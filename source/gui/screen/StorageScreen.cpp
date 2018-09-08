@@ -178,7 +178,8 @@ void StorageScreen::draw() const
 
     if (viewer)
     {
-        C2D_DrawRectSolid(0, 0, 0.5f, 320, 210, C2D_Color32(0, 0, 0, 120));
+        C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, C2D_Color32(0, 0, 0, 120));
+        mainButtons[9]->draw();
         viewer->draw();
     }
     else
@@ -186,6 +187,7 @@ void StorageScreen::draw() const
         C2D_SceneBegin(g_renderTargetTop);
         Gui::sprite(ui_sheet_emulated_bg_top_green, 0, 0);
         Gui::sprite(ui_sheet_bg_style_top_idx, 0, 0);
+        Gui::backgroundAnimated(GFX_TOP);
         Gui::sprite(ui_sheet_bar_arc_top_green_idx, 0, 0);
 
         Gui::sprite(ui_sheet_textbox_pksm_idx, 261, 3);
@@ -481,8 +483,11 @@ bool StorageScreen::backButton()
 
 bool StorageScreen::showViewer()
 {
-    static const std::shared_ptr<PKX>& view = testPkm;
-    viewer = std::unique_ptr<ViewerScreen>(new ViewerScreen(view));
+    std::shared_ptr<PKX> view = storageChosen ? testPkm : TitleLoader::save->pkm(boxBox, cursorIndex);
+    if (view->species() != 0)
+    {
+        viewer = std::unique_ptr<ViewerScreen>(new ViewerScreen(view, true));
+    }
     return true;
 }
 

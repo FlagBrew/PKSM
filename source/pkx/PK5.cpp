@@ -303,7 +303,7 @@ u8 PK5::level(void) const
 {
     u8 i = 1;
     u8 xpType = PersonalBWB2W2::expType(species());
-    while (i++ < 100 && experience() >= expTable(i, xpType));
+    while (experience() >= expTable(i, xpType) && ++i < 100);
     return i;
 }
 

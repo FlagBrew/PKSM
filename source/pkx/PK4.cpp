@@ -370,7 +370,7 @@ u8 PK4::level(void) const
 {
     u8 i = 1;
     u8 xpType = PersonalDPPtHGSS::expType(species());
-    while (i++ < 100 && experience() >= expTable(i, xpType));
+    while (experience() >= expTable(i, xpType) && ++i < 100);
     return i;
 }
 
