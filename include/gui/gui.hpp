@@ -77,6 +77,9 @@
 #define COLOR_PALEBLUE  C2D_Color32( 90, 115, 164, 255)
 #define COLOR_MENUBLUE  C2D_Color32( 55,  89, 157, 255)
 
+// TODO: all the colors to be defined here
+#define COLOR_SELECTOR  C2D_Color32( 29,  50, 253, 255)
+
 #define FONT_SIZE_18 0.72f
 #define FONT_SIZE_15 0.6f
 #define FONT_SIZE_14 0.56f

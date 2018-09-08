@@ -55,7 +55,7 @@ void CreditsScreen::update(touchPosition* touch)
     }
 }
 
-void CreditsScreen::draw() const
+void CreditsScreen::draw()
 {
     C2D_SceneBegin(g_renderTargetTop);
     Gui::backgroundTop(false);

@@ -51,6 +51,7 @@ namespace i18n
 
     // Used for general GUI stuff; not for PKM values
     std::string localize(Language lang, const std::string& index);
+    std::string localize(const std::string& index);
 };
 
 #endif

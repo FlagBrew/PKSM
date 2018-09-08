@@ -39,18 +39,19 @@
 
 enum Language
 {
-    JP = 1,
+    JP = 0,
     EN,
     FR,
-    IT,
     DE,
+    IT,
     UNUSED,
     ES,
     KO,
-    ZH,
-    TW,
     NL,
-    PT
+    PT,
+    RU,
+    ZH,
+    TW
 };
 
 class LanguageStrings

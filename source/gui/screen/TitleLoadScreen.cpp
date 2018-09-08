@@ -41,6 +41,7 @@ bool TitleLoadScreen::loadSave() const
     Gui::setScreen(std::unique_ptr<Screen>(new MainMenu));
     return true;
 }
+
 static bool wirelessSave() { return true; }
 
 TitleLoadScreen::TitleLoadScreen()
@@ -54,7 +55,23 @@ TitleLoadScreen::TitleLoadScreen()
     buttons.push_back(new Button(200, 147, 96, 51, &wirelessSave, ui_sheet_res_null_idx, "", 0.0f, 0));
 }
 
-void TitleLoadScreen::draw() const
+void TitleLoadScreen::drawSelector(int x, int y) const
+{
+    static const int w = 2;
+    float highlight_multiplier = fmax(0.0, fabs(fmod(Screen::timer(), 1.0) - 0.5) / 0.5);
+    u8 r = COLOR_SELECTOR & 0xFF;
+    u8 g = (COLOR_SELECTOR >> 8) & 0xFF;
+    u8 b = (COLOR_SELECTOR >> 16) & 0xFF;
+    u32 color = C2D_Color32(r + (255 - r) * highlight_multiplier, g + (255 - g) * highlight_multiplier, b + (255 - b) * highlight_multiplier, 255);
+
+    C2D_DrawRectSolid(         x,          y, 0.5f, 50,       50, C2D_Color32(255, 255, 255, 100)); 
+    C2D_DrawRectSolid(         x,          y, 0.5f, 50,        w, color); // top
+    C2D_DrawRectSolid(         x,      y + w, 0.5f,  w, 50 - 2*w, color); // left
+    C2D_DrawRectSolid(x + 50 - w,      y + w, 0.5f,  w, 50 - 2*w, color); // right
+    C2D_DrawRectSolid(         x, y + 50 - w, 0.5f, 50,        w, color); // bottom
+}
+
+void TitleLoadScreen::draw()
 {
     C2D_SceneBegin(g_renderTargetTop);
     C2D_DrawRectSolid(0, 0, 0.5f, 400.0f, 240.0f, C2D_Color32(15, 22, 89, 255));
@@ -64,12 +81,11 @@ void TitleLoadScreen::draw() const
 
     if (TitleLoader::cardTitle != nullptr)
     {
+        C2D_DrawImageAt(TitleLoader::cardTitle->icon(), 40, 98, 0.5f, NULL, 1.0f, 1.0f);
         if (titleFromIndex(selectedTitle) == TitleLoader::cardTitle)
         {
-            C2D_DrawRectSolid(38, 96, 0.5f, 52, 52, C2D_Color32(165, 244, 66, 255));
+            drawSelector(39, 97);
         }
-
-        C2D_DrawImageAt(TitleLoader::cardTitle->icon(), 40, 98, 0.5f, NULL, 1.0f, 1.0f);
     }
 
     for (size_t i = 0; i < TitleLoader::nandTitles.size(); i++)
@@ -81,39 +97,38 @@ void TitleLoadScreen::draw() const
             x = 150 + (i > 3 ? i - 4 : i) * 60;
         }
 
+        C2D_DrawImageAt(TitleLoader::nandTitles[i]->icon(), x, y, 0.5f, NULL, 1.0f, 1.0f);
         if (titleFromIndex(selectedTitle) == TitleLoader::nandTitles[i])
         {
-            C2D_DrawRectSolid(x - 2, y - 2, 0.5f, 52, 52, C2D_Color32(165, 244, 66, 255));
+            drawSelector(x - 1, y - 1);
         }
-
-        C2D_DrawImageAt(TitleLoader::nandTitles[i]->icon(), x, y, 0.5f, NULL, 1.0f, 1.0f);
     }
 
-    Gui::dynamicText(GFX_TOP, 8, "Select the game you want to edit.", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
-    Gui::dynamicText(4, 197, 120.0f, "Game Card", FONT_SIZE_14, FONT_SIZE_14, C2D_Color32(15, 22, 89, 255));
-    Gui::dynamicText(128, 197, 268.0f, "Installed Games", FONT_SIZE_14, FONT_SIZE_14, C2D_Color32(15, 22, 89, 255));
+    Gui::staticText(GFX_TOP, 8, i18n::localize("LOADER_INSTRUCTIONS_TOP"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+    Gui::staticText(4, 197, 120.0f, i18n::localize("LOADER_GAME_CARD"), FONT_SIZE_14, FONT_SIZE_14, C2D_Color32(15, 22, 89, 255));
+    Gui::staticText(128, 197, 268.0f, i18n::localize("LOADER_INSTALLED_GAMES"), FONT_SIZE_14, FONT_SIZE_14, C2D_Color32(15, 22, 89, 255));
 
     C2D_SceneBegin(g_renderTargetBottom);
     Gui::backgroundBottom(true);
     Gui::sprite(ui_sheet_gameselector_savebox_idx, 22, 94);
 
-    int nextIdPart = ceilf(27 + textWidth("ID: ", FONT_SIZE_11));
-    int nextMediaPart = ceilf(27 + textWidth("Media Type: ", FONT_SIZE_11));
+    int nextIdPart = ceilf(27 + textWidth(i18n::localize("LOADER_ID"), FONT_SIZE_11));
+    int nextMediaPart = ceilf(27 + textWidth(i18n::localize("LOADER_MEDIA_TYPE"), FONT_SIZE_11));
 
-    Gui::dynamicText("ID:", 27, 42, FONT_SIZE_11, FONT_SIZE_11, COLOR_LIGHTBLUE);
-    Gui::dynamicText("Media Type:", 27, 54, FONT_SIZE_11, FONT_SIZE_11, COLOR_LIGHTBLUE);
+    Gui::staticText(i18n::localize("LOADER_ID"), 27, 42, FONT_SIZE_11, FONT_SIZE_11, COLOR_LIGHTBLUE);
+    Gui::staticText(i18n::localize("LOADER_MEDIA_TYPE"), 27, 54, FONT_SIZE_11, FONT_SIZE_11, COLOR_LIGHTBLUE);
     if (selectedTitle != -2)
     {
         C2D_DrawImageAt(titleFromIndex(selectedTitle)->icon(), 245, 23, 0.5f, NULL, 1.0f, 1.0f);
         Gui::dynamicText(titleFromIndex(selectedTitle)->name(), 27, 26, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::dynamicText(StringUtils::format("%X", titleFromIndex(selectedTitle)->lowId()), nextIdPart, 42, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+        Gui::dynamicText(StringUtils::format("%08X", titleFromIndex(selectedTitle)->lowId()), nextIdPart, 42, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
         
-        std::string mediaType = selectedTitle == -1 ? "Cartridge" : "SD Installed";
-        Gui::dynamicText(mediaType, nextMediaPart, 54, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+        std::string mediaType = selectedTitle == -1 ? i18n::localize("LOADER_CARTRIDGE") : i18n::localize("LOADER_SD");
+        Gui::staticText(mediaType, nextMediaPart, 54, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
     }
     else
     {
-        Gui::dynamicText("None", 27, 26, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+        Gui::staticText(i18n::localize("NONE"), 27, 26, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
     }
 
     if (selectedSave > -1)
@@ -126,7 +141,7 @@ void TitleLoadScreen::draw() const
     {
         if (i == -1)
         {
-            Gui::dynamicText("Game Save File", 29, y, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+            Gui::staticText(i18n::localize("LOADER_GAME_SAVE"), 29, y, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
         }
         else if (i < availableCheckpointSaves.size())
         {
@@ -175,10 +190,12 @@ void TitleLoadScreen::draw() const
                      197, 191, C2D_Color32(0x0f, 0x16, 0x59, 255),
                      193, 196, C2D_Color32(0x0f, 0x16, 0x59, 255), 0.5f);
 
-    Gui::dynamicText(200, 113, 96, "Load \uE000", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
-    Gui::dynamicText(200, 163, 96, "Wireless \uE002", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+    Gui::staticText(200, 113, 96, i18n::localize("LOADER_LOAD"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+    Gui::staticText(200, 163, 96, i18n::localize("LOADER_WIRELESS"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
 
-    Gui::dynamicText(GFX_BOTTOM, 225, "Press HOME or START to exit. Press \uE001 to go back.", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+    Gui::staticText(GFX_BOTTOM, 225, i18n::localize("LOADER_INSTRUCTIONS_BOTTOM"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+
+    Screen::draw();
 }
 
 void TitleLoadScreen::update(touchPosition* touch)

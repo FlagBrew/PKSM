@@ -33,7 +33,7 @@ class CreditsScreen : public Screen
 {
 public:
     void update(touchPosition* touch) override;
-    void draw() const override;
+    void draw() override;
     ScreenType type() const override { return ScreenType::CREDITS; }
 };
 

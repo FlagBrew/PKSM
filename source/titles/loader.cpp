@@ -40,7 +40,7 @@ static constexpr char langIds[8] = {
     'O'  //Europe? Definitely some sort of English
 };
 
-static constexpr char* dsIds[9] = {
+static const char* dsIds[9] = {
     "ADA", //Diamond
     "APA", //Pearl
     "CPU", //Platinum
@@ -57,32 +57,6 @@ std::vector<std::shared_ptr<Title>> TitleLoader::nandTitles;
 std::shared_ptr<Title> TitleLoader::cardTitle = nullptr;
 std::unordered_map<std::string, std::vector<std::string>> TitleLoader::sdSaves;
 std::shared_ptr<Sav> TitleLoader::save;
-
-// local gui variables and functions
-static const size_t rowlen = 4;
-static const size_t collen = 8;
-
-static int selectorX(size_t i)
-{
-    return 50*((i % (rowlen*collen)) % collen);
-}
-
-static int selectorY(size_t i)
-{
-    return 20 + 50*((i % (rowlen*collen)) / collen);
-}
-
-static void drawSelector(size_t idx)
-{
-    static const int w = 2;
-    const int x = selectorX(idx);
-    const int y = selectorY(idx);
-    C2D_DrawRectSolid(         x,          y, 0.5f, 50,       50, C2D_Color32(255, 255, 255, 100)); 
-    C2D_DrawRectSolid(         x,          y, 0.5f, 50,        w, COLOR_YELLOW); // top
-    C2D_DrawRectSolid(         x,      y + w, 0.5f,  w, 50 - 2*w, COLOR_YELLOW); // left
-    C2D_DrawRectSolid(x + 50 - w,      y + w, 0.5f,  w, 50 - 2*w, COLOR_YELLOW); // right
-    C2D_DrawRectSolid(         x, y + 50 - w, 0.5f, 50,        w, COLOR_YELLOW); // bottom
-}
 
 void TitleLoader::scan(void)
 {
@@ -285,53 +259,6 @@ void TitleLoader::load(std::string savePath)
     in.close();
     save = Sav::getSave(saveData, size);
 }
-
-// std::shared_ptr<Sav> TitleLoader::load(void)
-// {
-//     // start to retrieve our nandTitles
-//     Threads::create((ThreadFunc)scan);
-
-//     // create hid object
-//     Hid hid(rowlen * collen, collen);
-//     while (aptMainLoop() & !(hidKeysDown() & KEY_B))
-//     {
-//         // update selector
-//         hidScanInput();
-//         hid.update(nandTitles.size());
-
-//         // start frame
-//         C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-//         C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
-//         C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
-
-//         C2D_SceneBegin(g_renderTargetTop);
-//         Gui::backgroundTop(false);
-
-//         for (size_t k = hid.page() * hid.maxVisibleEntries(); 
-//             k < hid.page() * hid.maxVisibleEntries() + hid.maxEntries(nandTitles.size()) + 1; 
-//             k++)
-//         {
-//             C2D_DrawImageAt(nandTitles.at(k)->icon(), selectorX(k) + 1, selectorY(k) + 1, 0.5f, NULL, 1.0f, 1.0f);
-//         }
-
-//         if (nandTitles.size() > 0)
-//         {
-//             drawSelector(hid.index());
-//         }
-
-//         C2D_SceneBegin(g_renderTargetBottom);
-//         Gui::backgroundBottom(false);
-
-//         // TODO: remove, debug
-//         if (nandTitles.size() > 0)
-//             Gui::dynamicText(nandTitles.at(hid.fullIndex())->name(), 10, 10, 0.5f, 0.5f, COLOR_WHITE);
-        
-//         C3D_FrameEnd(0);
-//         Gui::clearTextBufs();  
-//     }
-
-//     return nullptr;
-// }
 
 void TitleLoader::exit()
 {

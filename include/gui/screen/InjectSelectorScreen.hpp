@@ -38,7 +38,7 @@ class InjectSelectorScreen : public Screen
 public:
     InjectSelectorScreen();
     void update(touchPosition* touch) override;
-    void draw(void) const override;
+    void draw(void) override;
     ScreenType type() const override { return ScreenType::EVENTS; }
 private:
     Hid hid;

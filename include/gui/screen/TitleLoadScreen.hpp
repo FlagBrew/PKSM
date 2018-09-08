@@ -24,8 +24,9 @@
 *         reasonable ways as different from the original version.
 */
 
-#include "Screen.hpp"
+#include <cmath>
 #include <memory>
+#include "Screen.hpp"
 #include "Title.hpp"
 #include "Directory.hpp"
 #include "Button.hpp"
@@ -38,9 +39,11 @@ class TitleLoadScreen : public Screen
 {
 public:
     TitleLoadScreen();
-    void draw() const override;
+    void drawSelector(int x, int y) const;
+    void draw() override;
     ScreenType type() const override { return ScreenType::TITLELOAD; }
     void update(touchPosition* touch) override;
+
 private:
     int selectedTitle = -2;
     std::vector<std::string> availableCheckpointSaves;

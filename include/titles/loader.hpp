@@ -46,15 +46,13 @@
 #include "SavUSUM.hpp"
 #include "SavXY.hpp"
 
-extern C3D_RenderTarget* g_renderTargetTop;
-extern C3D_RenderTarget* g_renderTargetBottom;
-
 namespace TitleLoader
 {
     void scan(void);
     void load(std::shared_ptr<Title> title);
     void load(std::string path);
     void exit(void);
+    
     extern std::vector<std::shared_ptr<Title>> nandTitles;
     extern std::shared_ptr<Title> cardTitle;
     extern std::unordered_map<std::string, std::vector<std::string>> sdSaves;

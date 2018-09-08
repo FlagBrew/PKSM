@@ -28,7 +28,7 @@
 #include "gui.hpp"
 #include "Configuration.hpp"
 
-static constexpr char* displayKeys[] = {
+static const char* displayKeys[] = {
     "Nickname",
     "OT",
     "Pokérus",
@@ -47,7 +47,7 @@ static constexpr char* displayKeys[] = {
     "Speed"
 };
 
-void ViewerScreen::draw() const
+void ViewerScreen::draw()
 {
     C2D_SceneBegin(g_renderTargetTop);
     Gui::sprite(green ? ui_sheet_emulated_bg_top_green : ui_sheet_emulated_bg_top_blue, 0, 0);

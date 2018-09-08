@@ -49,7 +49,7 @@ public:
         }
     }
     void update(touchPosition* touch) override;
-    void draw(void) const override;
+    void draw(void) override;
     ScreenType type(void) const override { return SETTINGS; }
 
 private:

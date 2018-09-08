@@ -1,4 +1,14 @@
 {
     "LOADER_INSTRUCTIONS_TOP": "Please choose the save you want to open.",
-    "LOADER_INSTRUCTIONS_BOTTOM": "Move your DPAD. Press A to continue, B to exit."
+    "LOADER_INSTRUCTIONS_BOTTOM": "Move your DPAD. Press A to continue, START to exit.",
+    "LOADER_GAME_CARD": "Game Card",
+    "LOADER_INSTALLED_GAMES": "Installed Games",
+    "LOADER_ID": "ID: ",
+    "LOADER_MEDIA_TYPE": "Media Type: ",
+    "LOADER_CARTRIDGE": "Cartridge",
+    "LOADER_SD": "SD",
+    "LOADER_GAME_SAVE": "Game Save File",
+    "LOADER_LOAD": "Load \uE000",
+    "LOADER_WIRELESS": "Wireless \uE002",
+    "NONE": "None"
 }

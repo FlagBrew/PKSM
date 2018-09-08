@@ -209,5 +209,5 @@ int LanguageStrings::move(std::string v) const
 
 std::string LanguageStrings::localize(const std::string& v) const
 {
-    return gui.value(v, "Invalid");
+    return gui.value(v, "");
 }

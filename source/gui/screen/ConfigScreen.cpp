@@ -78,7 +78,7 @@ ConfigScreen::ConfigScreen()
     tabButtons[2].push_back(new Button(237, 111, 15, 12, [](){ Configuration::getInstance().transferEdit(!Configuration::getInstance().transferEdit()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
 }
 
-void ConfigScreen::draw() const
+void ConfigScreen::draw()
 {
     C2D_SceneBegin(g_renderTargetBottom);
     Gui::backgroundBottom(false);
