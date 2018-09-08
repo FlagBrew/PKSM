@@ -118,11 +118,6 @@ namespace Gui
     void staticText(gfxScreen_t screen, int y, const std::string& strKey, float scaleX, float scaleY, u32 color);
     void staticText(int x, int y, float width, const std::string& strKey, float scaleX, float scaleY, u32 color);
 
-    // TODO: remove
-    //void drawBox(int box, const Sav* save);
-    //void eventList(WCX* database[], int currentEntry, int page);
-    //void menu(Language lang);
-
     void setScreen(std::unique_ptr<Screen> screen);
     void screenBack(void);
     bool showChoiceMessage(const std::string& message);
