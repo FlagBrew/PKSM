@@ -40,6 +40,7 @@ InjectSelectorScreen::InjectSelectorScreen() : hid(10, 2)
 
 void InjectSelectorScreen::update(touchPosition* touch)
 {
+    Screen::update();
     hid.update(wondercards.size());
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_B)

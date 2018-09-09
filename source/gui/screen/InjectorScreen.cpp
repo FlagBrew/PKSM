@@ -328,6 +328,7 @@ void InjectorScreen::draw()
 
 void InjectorScreen::update(touchPosition* touch)
 {
+    Screen::update();
     u32 downKeys = hidKeysDown();
     if (!choosingSlot)
     {

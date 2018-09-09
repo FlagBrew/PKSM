@@ -51,14 +51,13 @@ class Screen
 {
 public:
     virtual ~Screen() {}
-    virtual void update(touchPosition* touch) = 0;
-    virtual ScreenType type() const = 0;
-    
-    virtual void draw() {
+    virtual void update(void) {
         // increase timer
         mTimer += 0.025f;
     }
-
+    virtual void update(touchPosition* touch) = 0;
+    virtual ScreenType type() const = 0;
+    virtual void draw() = 0;
     virtual float timer() const final { return mTimer; }
 
 private:

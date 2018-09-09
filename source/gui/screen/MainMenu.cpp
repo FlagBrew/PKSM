@@ -124,6 +124,7 @@ void MainMenu::draw()
 
 void MainMenu::update(touchPosition* touch)
 {
+    Screen::update();
     for (MainMenuButton* button : buttons)
     {
         if (button->update(touch))

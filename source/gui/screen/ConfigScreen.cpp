@@ -201,6 +201,7 @@ void ConfigScreen::draw()
 
 void ConfigScreen::update(touchPosition* touch)
 {
+    Screen::update();
     if (hidKeysDown() & KEY_B)
     {
         Gui::screenBack();

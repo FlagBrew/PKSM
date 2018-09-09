@@ -39,6 +39,7 @@ static LanguageStrings* zh;
 static LanguageStrings* tw;
 static LanguageStrings* nl;
 static LanguageStrings* pt;
+static LanguageStrings* ru;
 
 void i18n::init(void)
 {
@@ -53,6 +54,7 @@ void i18n::init(void)
     tw = new LanguageStrings(Language::TW);
     nl = new LanguageStrings(Language::NL);
     pt = new LanguageStrings(Language::PT);
+    ru = new LanguageStrings(Language::RU);
 
     CFGU_GetSystemLanguage(&systemLanguage);
 }
@@ -70,6 +72,7 @@ void i18n::exit(void)
     delete tw;
     delete nl;
     delete pt;
+    delete ru;
 }
 
 std::string i18n::ability(u8 lang, u8 val)
@@ -98,6 +101,8 @@ std::string i18n::ability(u8 lang, u8 val)
             return zh->ability(val);
         case Language::TW:
             return tw->ability(val);
+        case Language::RU:
+            return ru->ability(val);
     }
     return "";
 }
@@ -128,6 +133,8 @@ std::string i18n::ball(u8 lang, u8 val)
             return zh->ball(val);
         case Language::TW:
             return tw->ball(val);
+        case Language::RU:
+            return ru->ball(val);
     }
     return "";
 }
@@ -158,6 +165,8 @@ std::string i18n::form(u8 lang, u16 val)
             return zh->form(val);
         case Language::TW:
             return tw->form(val);
+        case Language::RU:
+            return ru->form(val);
     }
     return "";
 }
@@ -188,6 +197,8 @@ std::string i18n::hp(u8 lang, u8 val)
             return zh->hp(val);
         case Language::TW:
             return tw->hp(val);
+        case Language::RU:
+            return ru->hp(val);
     }
     return "";
 }
@@ -218,6 +229,8 @@ std::string i18n::item(u8 lang, u16 val)
             return zh->item(val);
         case Language::TW:
             return tw->item(val);
+        case Language::RU:
+            return ru->item(val);
     }
     return "";
 }
@@ -248,6 +261,8 @@ std::string i18n::move(u8 lang, u16 val)
             return zh->move(val);
         case Language::TW:
             return tw->move(val);
+        case Language::RU:
+            return ru->move(val);
     }
     return "";
 }
@@ -278,6 +293,8 @@ std::string i18n::nature(u8 lang, u8 val)
             return zh->nature(val);
         case Language::TW:
             return tw->nature(val);
+        case Language::RU:
+            return ru->nature(val);
     }
     return "";
 }
@@ -308,6 +325,8 @@ std::string i18n::species(u8 lang, u16 val)
             return zh->species(val);
         case Language::TW:
             return tw->species(val);
+        case Language::RU:
+            return ru->species(val);
     }
     return "";
 }
@@ -338,6 +357,8 @@ std::string i18n::sortedItem(u8 lang, u16 val)
             return zh->sortedItem(val);
         case Language::TW:
             return tw->sortedItem(val);
+        case Language::RU:
+            return ru->sortedItem(val);
     }
     return "";
 }
@@ -368,6 +389,8 @@ std::string i18n::sortedMove(u8 lang, u16 val)
             return zh->sortedMove(val);
         case Language::TW:
             return tw->sortedMove(val);
+        case Language::RU:
+            return ru->sortedMove(val);
     }
     return "";
 }
@@ -398,6 +421,8 @@ int i18n::item(u8 lang, std::string val)
             return zh->item(val);
         case Language::TW:
             return tw->item(val);
+        case Language::RU:
+            return ru->item(val);
     }
     return 0;
 }
@@ -428,6 +453,8 @@ int i18n::move(u8 lang, std::string val)
             return zh->move(val);
         case Language::TW:
             return tw->move(val);
+        case Language::RU:
+            return ru->move(val);
     }
     return 0;
 }
@@ -458,7 +485,8 @@ std::string i18n::localize(Language lang, const std::string& val)
             return zh->localize(val);
         case Language::TW:
             return tw->localize(val);
-        case UNUSED:
+        case Language::RU:
+            return ru->localize(val);
         default:
             return 0;
     }

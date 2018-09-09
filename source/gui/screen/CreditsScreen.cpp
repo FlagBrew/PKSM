@@ -48,6 +48,7 @@ static const char* credits =
 
 void CreditsScreen::update(touchPosition* touch)
 {
+    Screen::update();
     if (touch) {}
     if (hidKeysDown() & KEY_B)
     {

@@ -194,12 +194,11 @@ void TitleLoadScreen::draw()
     Gui::staticText(200, 163, 96, i18n::localize("LOADER_WIRELESS"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
 
     Gui::staticText(GFX_BOTTOM, 225, i18n::localize("LOADER_INSTRUCTIONS_BOTTOM"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
-
-    Screen::draw();
 }
 
 void TitleLoadScreen::update(touchPosition* touch)
 {
+    Screen::update();
     if (selectedTitle == -2)
     {
         if (TitleLoader::cardTitle == nullptr && !TitleLoader::nandTitles.empty())

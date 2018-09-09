@@ -305,6 +305,7 @@ void StorageScreen::draw()
 
 void StorageScreen::update(touchPosition* touch)
 {
+    Screen::update();
     static bool sleep = true;
     if (!viewer)
     {
