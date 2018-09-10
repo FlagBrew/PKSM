@@ -109,7 +109,7 @@ static void menuTop()
     Gui::staticText(version, 398, 229, FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE, true);
 }
 
-void MainMenu::draw()
+void MainMenu::draw() const
 {
     Gui::clearTextBufs();
     C2D_SceneBegin(g_renderTargetTop);

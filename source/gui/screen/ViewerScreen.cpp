@@ -47,7 +47,7 @@ static const char* displayKeys[] = {
     "Speed"
 };
 
-void ViewerScreen::draw()
+void ViewerScreen::draw() const
 {
     C2D_SceneBegin(g_renderTargetTop);
     Gui::sprite(green ? ui_sheet_emulated_bg_top_green : ui_sheet_emulated_bg_top_blue, 0, 0);

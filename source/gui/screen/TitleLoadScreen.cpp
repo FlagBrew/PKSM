@@ -71,7 +71,7 @@ void TitleLoadScreen::drawSelector(int x, int y) const
     C2D_DrawRectSolid(         x, y + 50 - w, 0.5f, 50,        w, color); // bottom
 }
 
-void TitleLoadScreen::draw()
+void TitleLoadScreen::draw() const
 {
     C2D_SceneBegin(g_renderTargetTop);
     C2D_DrawRectSolid(0, 0, 0.5f, 400.0f, 240.0f, C2D_Color32(15, 22, 89, 255));

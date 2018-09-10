@@ -53,7 +53,7 @@ public:
     }
 
     void update(touchPosition* touch) override;
-    void draw() override;
+    void draw() const override;
 
     ScreenType type() const override { return ScreenType::STORAGE; }
 private:

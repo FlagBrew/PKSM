@@ -35,7 +35,7 @@ class ViewerScreen
 public:
     // If it's not green, it's blue
     ViewerScreen(std::shared_ptr<PKX> pokemon, bool green) : pkm(pokemon), green(green) {}
-    void draw();
+    void draw() const;
 
     void setPkm(std::shared_ptr<PKX> pokemon) { pkm = pokemon; }
 private:

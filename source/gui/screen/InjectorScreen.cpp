@@ -78,7 +78,7 @@ InjectorScreen::InjectorScreen(std::unique_ptr<WCX> card) : hid(40, 8) // sav->m
     buttons.push_back(new Button(282, 212, 34, 28, [](){ Gui::screenBack(); return true; }, ui_sheet_button_back_idx, "", 0.0f, 0));
 }
 
-void InjectorScreen::draw()
+void InjectorScreen::draw() const
 {
     C2D_SceneBegin(g_renderTargetBottom);
     Gui::sprite(ui_sheet_emulated_bg_bottom_red, 0, 0);

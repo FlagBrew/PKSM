@@ -57,7 +57,7 @@ public:
     }
     virtual void update(touchPosition* touch) = 0;
     virtual ScreenType type() const = 0;
-    virtual void draw() = 0;
+    virtual void draw() const = 0;
     virtual float timer() const final { return mTimer; }
 
 private:

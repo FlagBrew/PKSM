@@ -55,7 +55,7 @@ void InjectSelectorScreen::update(touchPosition* touch)
     }
 }
 
-void InjectSelectorScreen::draw()
+void InjectSelectorScreen::draw() const
 {
     C2D_SceneBegin(g_renderTargetTop);
     Gui::backgroundTop(true);

@@ -40,7 +40,7 @@ class TitleLoadScreen : public Screen
 public:
     TitleLoadScreen();
     void drawSelector(int x, int y) const;
-    void draw() override;
+    void draw() const override;
     ScreenType type() const override { return ScreenType::TITLELOAD; }
     void update(touchPosition* touch) override;
 

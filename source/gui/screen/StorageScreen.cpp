@@ -131,7 +131,7 @@ StorageScreen::StorageScreen()
     TitleLoader::save->cryptBoxData(true);
 }
 
-void StorageScreen::draw()
+void StorageScreen::draw() const
 {
     std::shared_ptr<PKX> infoMon = storageChosen ? /*storage->pkm(storageBox, cursorIndex)*/ testPkm : TitleLoader::save->pkm(boxBox, cursorIndex);
     if (infoMon->species() == 0)
