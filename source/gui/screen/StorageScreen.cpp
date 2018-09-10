@@ -337,7 +337,8 @@ void StorageScreen::update(touchPosition* touch)
         }
         else if (kDown & KEY_Y)
         {
-            Configuration::getInstance().autoBackup(!Configuration::getInstance().autoBackup());
+            wirelessStuff();
+            return;
         }
         else if (buttonCooldown <= 0)
         {

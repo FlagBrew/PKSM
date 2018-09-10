@@ -24,45 +24,44 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef SCREEN_HPP
-#define SCREEN_HPP
+#ifndef EDITSELECTORSCREEN_HPP
+#define EDITSELECTORSCREEN_HPP
 
-#include "3ds.h"
-#include <citro3d.h>
+#include "Screen.hpp"
+#include <vector>
+#include "ViewerScreen.hpp"
+#include "Button.hpp"
+#include "loader.hpp"
 
-extern C3D_RenderTarget* g_renderTargetTop;
-extern C3D_RenderTarget* g_renderTargetBottom;
-
-enum ScreenType
-{
-    TITLELOAD,
-    MAINMENU,
-    STORAGE,
-    EDITOR,
-    EDITSELECT,
-    EVENTS,
-    INJECTOR,
-    SCRIPTS,
-    SETTINGS,
-    CREDITS,
-    VIEWER
-};
-
-class Screen
+class EditSelectorScreen : public Screen
 {
 public:
-    virtual ~Screen() {}
-    virtual void update(void) {
-        // increase timer
-        mTimer += 0.025f;
-    }
-    virtual void update(touchPosition* touch) = 0;
-    virtual ScreenType type() const = 0;
-    virtual void draw() const = 0;
-    virtual float timer() const final { return mTimer; }
+    ~EditSelectorScreen()
+    {
+        for (Button* button : buttons)
+        {
+            delete button;
+        }
+        
+        for (Button* button : pkmButtons)
+        {
+            delete button;
+        }
 
+        TitleLoader::save->cryptBoxData(false);
+    }
+    EditSelectorScreen();
+    void draw() const override;
+    void update(touchPosition* touch) override;
+    ScreenType type() const override { return ScreenType::EDITSELECT; }
 private:
-    float mTimer = 0;
+    bool lastBox();
+    bool nextBox();
+    std::vector<Button*> buttons;
+    std::vector<Button*> pkmButtons;
+    std::unique_ptr<ViewerScreen> viewer;
+    int cursorPos = 0;
+    int box = 0;
 };
 
 #endif

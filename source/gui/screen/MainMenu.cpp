@@ -30,6 +30,7 @@
 #include "StorageScreen.hpp"
 #include "ConfigScreen.hpp"
 #include "InjectSelectorScreen.hpp"
+#include "EditSelectorScreen.hpp"
 
 static constexpr int icons[6] = {
     ui_sheet_icon_storage_idx,
@@ -57,7 +58,7 @@ static bool goToScreen(int buttonNum)
             Gui::setScreen(std::unique_ptr<Screen>(new StorageScreen));
             return true;
         case 1:
-            //Gui::setScreen(new EditorScreen);
+            Gui::setScreen(std::unique_ptr<Screen>(new EditSelectorScreen));
             return true;
         case 2:
             Gui::setScreen(std::unique_ptr<Screen>(new InjectSelectorScreen));
