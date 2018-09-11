@@ -974,7 +974,15 @@ void Gui::pkm(int species, int form, int generation, int x, int y, u32 color, fl
             case 6:
                 imageOffsetFromBack += 1;
         }
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_807_idx + imageOffsetFromBack + form), x, y, 0.5f, &tint);
+        int drawIndex = pkm_spritesheet_807_idx + imageOffsetFromBack + form;
+        if (drawIndex < pkm_spritesheet_201_1_idx)
+        { 
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_807_idx + imageOffsetFromBack + form), x, y, 0.5f, &tint);
+        }
+        else
+        {
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y, 0.5f, &tint);
+        }
     }
 }
 

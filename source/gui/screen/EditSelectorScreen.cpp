@@ -50,16 +50,16 @@ EditSelectorScreen::EditSelectorScreen()
 
     // Pokemon buttons
     u16 y = 45;
-    for (u8 row = 0; row < 5; row++)
-    {
-        u16 x = 4;
-        for (u8 column = 0; column < 6; column++)
-        {
-            pkmButtons[row*6 + column] = new Button(x, y, 34, 30, [row, column, this](){ cursorPos = row * 6 + column; return false; }, ui_sheet_res_null_idx, "", 0.0f, 0);
-            x += 34;
-        }
-        y += 30;
-    }
+    // for (u8 row = 0; row < 5; row++)
+    // {
+    //     u16 x = 4;
+    //     for (u8 column = 0; column < 6; column++)
+    //     {
+    //         pkmButtons[row*6 + column] = new Button(x, y, 34, 30, [row, column, this](){ cursorPos = row * 6 + column; return false; }, ui_sheet_res_null_idx, "", 0.0f, 0);
+    //         x += 34;
+    //     }
+    //     y += 30;
+    // }
     TitleLoader::save->cryptBoxData(true);
 }
 
