@@ -42,11 +42,11 @@ EditSelectorScreen::EditSelectorScreen()
 {
     viewer = std::unique_ptr<ViewerScreen>(new ViewerScreen(nullptr, false));
     
-    buttons.push_back(new Button(32, 15, 164, 24, &changeBoxName, ui_sheet_res_null_idx, "", 0.0f, 0));
-    buttons.push_back(new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0));
-    buttons.push_back(new Button(283, 211, 34, 28, [](){ Gui::screenBack(); return true; }, ui_sheet_button_back_idx, "", 0.0f, 0));
-    buttons.push_back(new Button(8, 15, 17, 24, std::bind(&EditSelectorScreen::lastBox, this), ui_sheet_res_null_idx, "", 0.0f, 0));
-    buttons.push_back(new Button(189, 15, 17, 24, std::bind(&EditSelectorScreen::nextBox, this), ui_sheet_res_null_idx, "", 0.0f, 0));
+    // buttons.push_back(new Button(32, 15, 164, 24, &changeBoxName, ui_sheet_res_null_idx, "", 0.0f, 0));
+    // buttons.push_back(new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0));
+    // buttons.push_back(new Button(283, 211, 34, 28, [](){ Gui::screenBack(); return true; }, ui_sheet_button_back_idx, "", 0.0f, 0));
+    // buttons.push_back(new Button(8, 15, 17, 24, std::bind(&EditSelectorScreen::lastBox, this), ui_sheet_res_null_idx, "", 0.0f, 0));
+    // buttons.push_back(new Button(189, 15, 17, 24, std::bind(&EditSelectorScreen::nextBox, this), ui_sheet_res_null_idx, "", 0.0f, 0));
 
     // Pokemon buttons
     u16 y = 45;
@@ -85,8 +85,8 @@ void EditSelectorScreen::draw() const
 
     for (int i = 0; i < 6; i++)
     {
-        int x = (i % 2 == 0 ? 214 : 254);
-        int y = (i % 2 == 0 ? 43 + 45 * i : 59 + 45 * i);
+        int x = (i % 2 == 0 ? 214 : 264);
+        int y = (i % 2 == 0 ? 43 + 45 * i / 2 : 59 + 45 * i / 2);
         Gui::sprite(ui_sheet_icon_party_idx, x, y);
     }
 
@@ -108,8 +108,8 @@ void EditSelectorScreen::draw() const
 
     for (int i = 0; i < TitleLoader::save->partyCount(); i++)
     {
-        int x = (i % 2 == 0 ? 214 : 264);
-        int y = (i % 2 == 0 ? 43 + 45 * i : 59 + 45 * i);
+        int x = (i % 2 == 0 ? 221 : 271);
+        int y = (i % 2 == 0 ? 50 + 45 * i / 2 : 66 + 45 * i / 2);
         std::unique_ptr<PKX> pokemon = TitleLoader::save->pkm(i);
         if (pokemon->species() > 0)
         {
