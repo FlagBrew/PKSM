@@ -706,6 +706,11 @@ void Gui::pkm(int species, int form, int generation, int x, int y, u32 color, fl
             C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_801_1_idx + form), x, y, 0.5f, &tint);
         }
     }
+    // For possible hex editor mishaps
+    else if (species > 807)
+    {
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y, 0.5f, &tint);
+    }
     else if (form == 0)
     {
         C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint);
