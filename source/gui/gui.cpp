@@ -234,6 +234,11 @@ C2D_Text Gui::cacheStaticText(const std::string& strKey)
     return text;
 }
 
+void Gui::clearStaticText()
+{
+    C2D_TextBufClear(staticBuf);
+}
+
 void Gui::staticText(const std::string& strKey, int x, int y, float scaleX, float scaleY, u32 color, bool rightAligned)
 {
     C2D_Text text = cacheStaticText(strKey);

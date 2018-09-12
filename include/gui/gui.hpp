@@ -109,13 +109,14 @@ namespace Gui
     void backgroundBottom(bool stripes);
     void backgroundAnimated(gfxScreen_t screen);
 
-    void clearTextBufs(void);    
+    void clearTextBufs(void);
     void dynamicText(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, bool rightAligned = false);
     void dynamicText(const std::string& text, int x, int y, float scaleX, float scaleY, u32 color, float maxWidth);
     void dynamicText(gfxScreen_t screen, int y, const std::string& text, float scaleX, float scaleY, u32 color);
     void dynamicText(int x, int y, float width, const std::string& text, float scaleX, float scaleY, u32 color);
 
     C2D_Text cacheStaticText(const std::string& strKey);
+    void clearStaticText(void);
     void staticText(const std::string& strKey, int x, int y, float scaleX, float scaleY, u32 color, bool rightAligned = false);
     void staticText(const std::string& strKey, int x, int y, float scaleX, float scaleY, u32 color, float maxWidth);
     void staticText(gfxScreen_t screen, int y, const std::string& strKey, float scaleX, float scaleY, u32 color);
