@@ -50,6 +50,9 @@ SOURCES			:=	source \
 					source/memecrypto \
 					source/personal \
 					source/pkx \
+					source/picoc \
+					source/picoc/cstdlib \
+					source/picoc/platform \
 					source/quirc \
 					source/sav \
 					source/titles \
@@ -62,6 +65,7 @@ INCLUDES		:=	include \
 					include/i18n \
 					include/io \
 					include/personal \
+					include/picoc \
 					include/pkx \
 					include/quirc \
 					include/sav \
@@ -100,9 +104,10 @@ ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
 
 CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O2 -mword-relocations \
 			-fomit-frame-pointer -ffunction-sections \
-			-Wno-implicit-fallthrough \
+			-Wno-implicit-fallthrough -Wno-unused-parameter \
 			$(ARCH) \
 			-DQUIRC_MAX_REGIONS=65534 \
+			-DUNIX_HOST \
 			-DVERSION_MAJOR=${VERSION_MAJOR} \
 			-DVERSION_MINOR=${VERSION_MINOR} \
 			-DVERSION_MICRO=${VERSION_MICRO} \
