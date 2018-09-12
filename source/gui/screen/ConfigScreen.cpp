@@ -176,9 +176,16 @@ void ConfigScreen::draw() const
         Gui::dynamicText(std::to_string(Configuration::getInstance().defaultPID()), 140, 36, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
         Gui::dynamicText(std::to_string(Configuration::getInstance().defaultSID()), 140, 60, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
         Gui::dynamicText(Configuration::getInstance().defaultOT(), 140, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
-        Gui::dynamicText(std::to_string(Configuration::getInstance().nationality()), 140, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
-        std::string date = StringUtils::format("%2i-%2i-%i", Configuration::getInstance().month(), Configuration::getInstance().day(), Configuration::getInstance().year());
-        Gui::dynamicText(date, 140, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
+        std::string data;
+        switch (Configuration::getInstance().nationality())
+        {
+            // I have no clue what these values are lol
+            default:
+                data = "United States";
+        }
+        Gui::dynamicText(data, 140, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
+        data = StringUtils::format("%02i-%02i-%i", Configuration::getInstance().month(), Configuration::getInstance().day(), Configuration::getInstance().year());
+        Gui::dynamicText(data, 140, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
 
         for (Button* button : tabButtons[currentTab])
         {
