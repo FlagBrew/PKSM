@@ -31,7 +31,7 @@
 static const char* displayKeys[] = {
     "Nickname",
     "OT",
-    "Pok\xC9rus",
+    "Pok\u00E9rus",
     "Nature",
     "Ability",
     "Item",

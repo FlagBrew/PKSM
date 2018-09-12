@@ -27,6 +27,7 @@
 #include "EditSelectorScreen.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
+#include "EditorScreen.hpp"
 
 extern int bobPointer();
 
@@ -34,13 +35,11 @@ static bool changeBoxName() { return false; }
 
 static bool wirelessStuff() { return false; }
 
-static bool editPokemon() { return true; }
-
 static bool qrStuff() { return true; }
 
 EditSelectorScreen::EditSelectorScreen()
 {
-    viewer = std::unique_ptr<ViewerScreen>(new ViewerScreen(nullptr, false));
+    viewer = std::shared_ptr<ViewerScreen>(new ViewerScreen(nullptr, false));
     
     // buttons.push_back(new Button(32, 15, 164, 24, &changeBoxName, ui_sheet_res_null_idx, "", 0.0f, 0));
     // buttons.push_back(new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0));
@@ -161,11 +160,16 @@ void EditSelectorScreen::update(touchPosition* touch)
         button->update(touch);
     }
 
+    if (sleepTimer < 0 && sleep)
+    {
+        sleep = false;
+    }
+
     u32 downKeys = hidKeysDown();
     u32 heldKeys = hidKeysHeld();
     if (downKeys & KEY_A)
     {
-        editPokemon();
+        editPokemon(infoMon);
         return;
     }
     else if (downKeys & KEY_B)
@@ -177,6 +181,94 @@ void EditSelectorScreen::update(touchPosition* touch)
     {
         qrStuff();
         return;
+    }
+    else if (downKeys & KEY_LEFT)
+    {
+        if (cursorPos > 0) 
+        {
+            cursorPos--;
+        }
+        else if (cursorPos == 0)
+        {
+            lastBox();
+            cursorPos = 29;
+        }
+        sleep = true;
+        sleepTimer = 10;
+    }
+    else if (downKeys & KEY_RIGHT)
+    {
+        if (cursorPos < 29)
+        {
+            cursorPos++;
+        }
+        else if (cursorPos == 29)
+        {
+            nextBox();
+            cursorPos = 0;
+        }
+        sleep = true;
+        sleepTimer = 10;
+    }
+    else if (downKeys & KEY_UP)
+    {
+        if (cursorPos <= 5)
+        {
+            cursorPos += 24;
+        }
+        else if (cursorPos >= 30)
+        {
+            if (cursorPos > 31)
+            {
+                cursorPos -= 2;
+            }
+            else
+            {
+                cursorPos += 4;
+            }
+        }
+        else
+        {			
+            cursorPos -= 6;
+        }
+        sleep = true;
+        sleepTimer = 10;
+    }
+    else if (downKeys & KEY_DOWN)
+    {
+        if (cursorPos >= 30)
+        {
+            if (cursorPos < 34)
+            {
+                cursorPos += 2;
+            }
+            else
+            {
+                cursorPos -= 4;
+            }
+        }
+        else if (cursorPos >= 24)
+        {
+            cursorPos -= 24;
+        }
+        else
+        {
+            cursorPos += 6;
+        }
+        sleep = true;
+        sleepTimer = 10;
+    }
+    else if (downKeys & KEY_R)
+    {
+        nextBox();
+        sleep = true;
+        sleepTimer = 10;
+    }
+    else if (downKeys & KEY_L)
+    {
+        lastBox();
+        sleep = true;
+        sleepTimer = 10;
     }
     else if (sleepTimer < 0)
     {
@@ -293,5 +385,16 @@ bool EditSelectorScreen::nextBox()
     {
         box = 0;
     }
+    return false;
+}
+
+bool EditSelectorScreen::editPokemon(std::shared_ptr<PKX> pkm)
+{
+    if (cursorPos < 30)
+    {
+        Gui::setScreen(std::unique_ptr<Screen>(new EditorScreen(viewer, pkm, box, cursorPos)));
+        return true;
+    }
+
     return false;
 }

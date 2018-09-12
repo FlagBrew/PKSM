@@ -200,8 +200,7 @@ void InjectorScreen::draw() const
         Gui::ball(wondercard->ball(), 4, 6);
         if (wondercard->pokemon())
         {
-            // Double size?
-            Gui::pkm(wondercard->species(), wondercard->alternativeForm(), wondercard->generation(), 272, 44);
+            Gui::pkm(wondercard->species(), wondercard->alternativeForm(), wondercard->generation(), 272, 44, 2.0f);
         }
         else
         {

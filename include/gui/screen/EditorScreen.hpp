@@ -24,45 +24,59 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef EDITSELECTORSCREEN_HPP
-#define EDITSELECTORSCREEN_HPP
+#ifndef EDITORSCREEN_HPP
+#define EDITORSCREEN_HPP
 
 #include "Screen.hpp"
-#include <vector>
-#include "ViewerScreen.hpp"
 #include "Button.hpp"
-#include "loader.hpp"
+#include "ViewerScreen.hpp"
+#include "PKX.hpp"
 
-class EditSelectorScreen : public Screen
+class EditorScreen : public Screen
 {
 public:
-    ~EditSelectorScreen()
+    ~EditorScreen()
     {
-        for (Button* button : buttons)
+        for (auto vec : buttons)
         {
-            delete button;
+            for (auto button : vec)
+            {
+                delete button;
+            }
         }
-        
-        for (Button* button : pkmButtons)
-        {
-            delete button;
-        }
-
-        TitleLoader::save->cryptBoxData(false);
     }
-    EditSelectorScreen();
+    EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr<PKX> pkm, int box, int index);
     void draw() const override;
     void update(touchPosition* touch) override;
-    ScreenType type() const override { return ScreenType::EDITSELECT; }
+    ScreenType type() const override { return ScreenType::EDITOR; }
 private:
-    bool lastBox();
-    bool nextBox();
-    bool editPokemon(std::shared_ptr<PKX> pkm);
-    std::vector<Button*> buttons;
-    std::vector<Button*> pkmButtons;
-    std::shared_ptr<ViewerScreen> viewer;
-    int cursorPos = 0;
+    bool changeLevel(bool up);
+    bool setLevel();
+    bool selectNature();
+    bool selectAbility();
+    bool selectItem();
+    bool togglePokerus();
+    bool setOT();
+    bool setNick();
+    bool changeFriendship(bool up);
+    bool setFriendship();
+    bool hexEdit();
+    bool save();
+    
+    bool changeIV(int which, bool up);
+    bool setIV(int which);
+    bool changeEV(int which, bool up);
+    bool setEV(int which);
+    bool setHP();
+    bool goBack();
+    void changeMove();
+    std::array<std::vector<Button*>, 3> buttons;
+    std::shared_ptr<ViewerScreen> view;
+    std::shared_ptr<PKX> pkm;
+    int currentTab = 0;
+    int moveSelected = 0;
     int box = 0;
+    int index = 0;
 };
 
 #endif
