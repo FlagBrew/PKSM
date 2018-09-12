@@ -668,7 +668,7 @@ void Gui::sprite(int key, int x, int y, u32 color)
     }
 }
 
-void Gui::pkm(PKX* pokemon, int x, int y, u32 color, float blend)
+void Gui::pkm(PKX* pokemon, int x, int y, float scale, u32 color, float blend)
 {
     if (pokemon == NULL)
     {
@@ -683,7 +683,7 @@ void Gui::pkm(PKX* pokemon, int x, int y, u32 color, float blend)
     }
     else
     {
-        pkm(pokemon->species(), pokemon->alternativeForm(), pokemon->generation(), x, y, color, blend);
+        pkm(pokemon->species(), pokemon->alternativeForm(), pokemon->generation(), x, y, scale, color, blend);
         if (pokemon->heldItem() > 0)
         {
             C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_item_idx), x + 3, y + 21, 0.5f, &tint);
@@ -691,7 +691,7 @@ void Gui::pkm(PKX* pokemon, int x, int y, u32 color, float blend)
     }
 }
 
-void Gui::pkm(int species, int form, int generation, int x, int y, u32 color, float blend)
+void Gui::pkm(int species, int form, int generation, int x, int y, float scale, u32 color, float blend)
 {
     static C2D_ImageTint tint;
     C2D_PlainImageTint(&tint, color, blend);
@@ -699,32 +699,32 @@ void Gui::pkm(int species, int form, int generation, int x, int y, u32 color, fl
     {
         if (form == 0)
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint);
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint, scale, scale);
         }
         else
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_801_1_idx + form), x, y, 0.5f, &tint);
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_801_1_idx + form), x, y, 0.5f, &tint, scale, scale);
         }
     }
     // For possible hex editor mishaps
     else if (species > 807)
     {
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y, 0.5f, &tint);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y, 0.5f, &tint, scale, scale);
     }
     else if (form == 0)
     {
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint, scale, scale);
     }
     // Mimikyu
     else if (species == 778)
     {
         if (form == 1)
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_778_idx), x, y, 0.5f, &tint);
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_778_idx), x, y, 0.5f, &tint, scale, scale);
         }
         else
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_778_2_idx), x, y, 0.5f, &tint);
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_778_2_idx), x, y, 0.5f, &tint, scale, scale);
         }
     }
     // Minior
@@ -732,27 +732,27 @@ void Gui::pkm(int species, int form, int generation, int x, int y, u32 color, fl
     {
         if (form < 7)
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_774_idx), x, y, 0.5f, &tint);
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_774_idx), x, y, 0.5f, &tint, scale, scale);
         }
         else
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_774_7_idx + form - 7), x, y, 0.5f, &tint);
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_774_7_idx + form - 7), x, y, 0.5f, &tint, scale, scale);
         }
     }
     // Pumpkaboo, Gourgeist, & Genesect
     else if (species == 710 || species == 711 || species == 649)
     {
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint, scale, scale);
     }
     else if (species == 25)
     {
         if (generation == 6)
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_20_2_idx + form), x, y, 0.5f, &tint);
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_20_2_idx + form), x, y, 0.5f, &tint, scale, scale);
         }
         else
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_25_6_idx + form), x, y, 0.5f, &tint);
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_25_6_idx + form), x, y, 0.5f, &tint, scale, scale);
         }
     }
     else
@@ -977,11 +977,11 @@ void Gui::pkm(int species, int form, int generation, int x, int y, u32 color, fl
         int drawIndex = pkm_spritesheet_807_idx + imageOffsetFromBack + form;
         if (drawIndex < pkm_spritesheet_201_1_idx)
         { 
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, drawIndex), x, y, 0.5f, &tint);
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, drawIndex), x, y, 0.5f, &tint, scale, scale);
         }
         else
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y, 0.5f, &tint);
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y, 0.5f, &tint, scale, scale);
         }
     }
 }
