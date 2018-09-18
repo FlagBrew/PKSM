@@ -28,8 +28,7 @@
 
 bool Clickable::update(touchPosition* touch)
 {
-    if (touch->px >= xPos && touch->px <= xPos + width
-        && touch->py >= yPos && touch->py <= yPos + height)
+    if (clicked(touch))
     {
         return noArg();
     }

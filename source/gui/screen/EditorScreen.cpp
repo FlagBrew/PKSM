@@ -28,6 +28,7 @@
 #include "gui.hpp"
 #include "Configuration.hpp"
 #include "loader.hpp"
+#include "HexEditScreen.hpp"
 #include <bitset>
 
 #define NO_TEXT_BUTTON(x, y, w, h, function, image) new Button(x, y, w, h, function, image, "", 0.0f, 0)
@@ -323,7 +324,7 @@ bool EditorScreen::goBack()
 
 bool EditorScreen::hexEdit()
 {
-    // Unimplemented
+    Gui::setScreen(std::unique_ptr<Screen>(new HexEditScreen(pkm)));
     return false;
 }
 
@@ -343,6 +344,7 @@ bool EditorScreen::changeLevel(bool up)
             pkm->level(pkm->level() - 1);
         }
     }
+    return false;
 }
 
 bool EditorScreen::setLevel()

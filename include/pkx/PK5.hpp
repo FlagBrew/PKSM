@@ -42,8 +42,10 @@ protected:
     
     u8 data[136] = {0};
 
+    u8* rawData(void) override { return data; }
+
 public:
-    PK5() {}
+    PK5() { length = 136; }
     PK5(u8* dt, bool ekx = false);
     virtual ~PK5() { };
 

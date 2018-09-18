@@ -41,6 +41,7 @@ enum ScreenType
     EDITOR,
     EDITSELECT,
     EVENTS,
+    HEXEDIT,
     INJECTOR,
     SCRIPTS,
     SETTINGS,

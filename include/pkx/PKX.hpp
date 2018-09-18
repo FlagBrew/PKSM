@@ -40,6 +40,7 @@ typedef uint32_t u32;
 
 class PKX
 {
+friend class HexEditScreen;
 protected:
     u32 expTable(u8 row, u8 col) const;
     u32 seedStep(u32 seed);
@@ -47,6 +48,7 @@ protected:
 
     virtual void crypt(void) = 0;
     virtual void shuffleArray(void) = 0;
+    virtual u8* rawData(void) = 0;
 
     u8 length = 0;
 public:

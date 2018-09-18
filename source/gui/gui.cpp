@@ -331,7 +331,7 @@ Result Gui::init(void)
 
     dynamicBuf = C2D_TextBufNew(1024);
     g_widthBuf = C2D_TextBufNew(1024);
-    staticBuf = C2D_TextBufNew(1024);
+    staticBuf = C2D_TextBufNew(4096);
 
     spritesheet_ui = C2D_SpriteSheetLoad("romfs:/gfx/ui_sheet.t3x");
     spritesheet_pkm = C2D_SpriteSheetLoad("romfs:/gfx/pkm_spritesheet.t3x");
@@ -596,6 +596,14 @@ void Gui::sprite(int key, int x, int y)
     else if (key == ui_sheet_emulated_storage_box_corner_flipped_both_idx)
     {
         C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_storage_box_corner_idx), x, y, 0.5f, nullptr, -1.0f, -1.0f);
+    }
+    else if (key == ui_sheet_emulated_toggle_green_idx)
+    {
+        C2D_DrawRectSolid(x, y, 0.5f, 13, 13, C2D_Color32(0x35, 0xC1, 0x3E, 0xFF));
+    }
+    else if (key == ui_sheet_emulated_toggle_red_idx)
+    {
+        C2D_DrawRectSolid(x, y, 0.5f, 13, 13, C2D_Color32(0xCC, 0x3F, 0x26, 0xFF));
     }
     // standard case
     else

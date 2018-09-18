@@ -64,6 +64,8 @@
 #define ui_sheet_emulated_storage_box_corner_flipped_horizontal_idx 514
 #define ui_sheet_emulated_storage_box_corner_flipped_vertical_idx 515
 #define ui_sheet_emulated_storage_box_corner_flipped_both_idx 516
+#define ui_sheet_emulated_toggle_green_idx 517
+#define ui_sheet_emulated_toggle_red_idx 518
 
 // colors
 #define COLOR_WHITE     C2D_Color32(255, 255, 255, 255)
