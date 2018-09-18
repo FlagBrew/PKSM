@@ -59,7 +59,7 @@ private:
     bool nextBox();
     bool editPokemon(std::shared_ptr<PKX> pkm);
     std::vector<Button*> buttons;
-    std::vector<Button*> pkmButtons;
+    std::array<Button*, 36> pkmButtons;
     std::shared_ptr<ViewerScreen> viewer;
     int cursorPos = 0;
     int box = 0;

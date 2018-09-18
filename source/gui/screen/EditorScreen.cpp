@@ -238,13 +238,13 @@ void EditorScreen::update(touchPosition* touch)
         {
             if (!dirtyBack)
             {
-                if (buttons[currentTab][i]->update(touch))
-                {
-                    return;
-                }
                 if (buttons[currentTab][i]->clicked(touch))
                 {
                     dirtyBack = true;
+                }
+                if (buttons[currentTab][i]->update(touch))
+                {
+                    return;
                 }
             }
             else
@@ -273,7 +273,10 @@ void EditorScreen::update(touchPosition* touch)
 
     if (downKeys & KEY_B)
     {
-        goBack();
+        if (goBack())
+        {
+            return;
+        }
     }
 
     if (currentTab == 2)
