@@ -817,8 +817,12 @@ void Gui::pkm(int species, int form, int generation, int x, int y, float scale, 
             case 678:
                 imageOffsetFromBack += 9;
             case 676:
+                imageOffsetFromBack += 4;
+            case 671:
                 imageOffsetFromBack += 5;
             case 670:
+                imageOffsetFromBack += 4;
+            case 669:
                 imageOffsetFromBack += 2;
             case 658:
                 imageOffsetFromBack += 1;
