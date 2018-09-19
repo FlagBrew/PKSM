@@ -58,7 +58,7 @@ private:
     }
     bool increaseFirstSave()
     {
-        if (firstSave > availableCheckpointSaves.size() - 1)
+        if (firstSave < (int) availableCheckpointSaves.size() - 1)
         {
             firstSave++;
         }
@@ -83,7 +83,7 @@ private:
         {
             return nullptr;
         }
-        else if (i < TitleLoader::nandTitles.size())
+        else if ((size_t)i < TitleLoader::nandTitles.size())
         {
             return TitleLoader::nandTitles[i];
         }

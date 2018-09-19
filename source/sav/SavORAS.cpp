@@ -339,11 +339,14 @@ std::vector<MysteryGift::giftData> SavORAS::currentGifts(void) const
     u8* wonderCards = data + 0x1CD00;
     for (int i = 0; i < emptyGiftLocation() + 1; i++)
     {
-        if (*(data + i * WC6::length + 0x51) == 0)
+        if (*(wonderCards + i * WC6::length + 0x51) == 0)
         {
-            ret.push_back({ "", *(u16*)(wonderCards + i * WC6::length + 0x82), *(wonderCards + i * WC6::length + 0x84)});
+            ret.push_back({ StringUtils::getString(wonderCards + i * WC6::length, 0x2, 36), *(u16*)(wonderCards + i * WC6::length + 0x82), *(wonderCards + i * WC6::length + 0x84)});
         }
-        ret.push_back({ "", -1, -1 });
+        else
+        {
+            ret.push_back({ StringUtils::getString(wonderCards + i * WC6::length, 0x2, 36), -1, -1 });
+        }
     }
     return ret;
 }

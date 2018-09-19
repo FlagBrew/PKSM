@@ -420,7 +420,7 @@ void ExpressionAssign(struct ParseState *Parser, struct Value *DestValue, struct
             break;
         
         case TypeArray:
-            if (SourceValue->Typ->Base == TypeArray && DestValue->Typ->FromType == DestValue->Typ->FromType && DestValue->Typ->ArraySize == 0)
+            if (SourceValue->Typ->Base == TypeArray && DestValue->Typ->ArraySize == 0)
             {
                 /* destination array is unsized - need to resize the destination array to the same size as the source array */
                 DestValue->Typ = SourceValue->Typ;

@@ -90,7 +90,7 @@ void LexInit(Picoc *pc)
     
     TableInitTable(&pc->ReservedWordTable, &pc->ReservedWordHashTable[0], sizeof(ReservedWords) / sizeof(struct ReservedWord) * 2, TRUE);
 
-    for (Count = 0; Count < sizeof(ReservedWords) / sizeof(struct ReservedWord); Count++)
+    for (Count = 0; Count < (int) (sizeof(ReservedWords) / sizeof(struct ReservedWord)); Count++)
     {
         TableSet(pc, &pc->ReservedWordTable, TableStrRegister(pc, ReservedWords[Count].Word), (struct Value *)&ReservedWords[Count], NULL, 0, 0);
     }
@@ -111,7 +111,7 @@ void LexCleanup(Picoc *pc)
 
     LexInteractiveClear(pc, NULL);
 
-    for (Count = 0; Count < sizeof(ReservedWords) / sizeof(struct ReservedWord); Count++)
+    for (Count = 0; Count < (int) (sizeof(ReservedWords) / sizeof(struct ReservedWord)); Count++)
         TableDelete(pc, &pc->ReservedWordTable, TableStrRegister(pc, ReservedWords[Count].Word));
 }
 

@@ -157,6 +157,8 @@ public:
     u8 partyCount(void) const override;
 
     int maxBoxes(void) const override { return 32; }
+    size_t maxWondercards(void) const override { return 48; }
+    u8 generation(void) const override { return 7; }
 };
 
 #endif

@@ -245,9 +245,8 @@ void EditorScreen::update(touchPosition* touch)
         static bool dirtyBack = false;
         static int timers[38] = {-1};
         u32 downKeys = keysDown();
-        u32 heldKeys = keysHeld();
 
-        for (int i = 0; i < buttons[currentTab].size(); i++)
+        for (size_t i = 0; i < buttons[currentTab].size(); i++)
         {
             if (i == 0)
             {

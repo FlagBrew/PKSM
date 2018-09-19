@@ -26,6 +26,7 @@
 
 #include "InjectorScreen.hpp"
 #include "gui.hpp"
+#include "loader.hpp"
 
 static const char* languages[] = {
     "JPN",
@@ -53,7 +54,7 @@ bool InjectorScreen::setLanguage(Language language)
     return false;
 }
 
-InjectorScreen::InjectorScreen(std::unique_ptr<WCX> card) : hid(40, 8) // sav->maxWonderCards(), 8);
+InjectorScreen::InjectorScreen(std::unique_ptr<WCX> card) : hid(40, 8)
 {
     wondercard = std::move(card);
     slot = 1;
@@ -281,18 +282,14 @@ void InjectorScreen::draw() const
 
         C2D_SceneBegin(g_renderTargetTop);
         Gui::sprite(ui_sheet_part_mtx_5x8_idx, 0, 0);
-        std::vector<MysteryGift::giftData> saveDatas; // = sav->currentGifts();
-        for (int i = 0; i < 48; i++)
-        {
-            saveDatas.push_back({"", rand() % 807, 0});
-        }
-        int saveGeneration = 7; // sav->generation();
-        for (int i = 0; i < 40; i++)
+        std::vector<MysteryGift::giftData> saveDatas = TitleLoader::save->currentGifts();
+        int saveGeneration = TitleLoader::save->generation();
+        for (size_t i = 0; i < 40; i++)
         {
             int x = i % 8;
             int y = i / 8;
-            int fullI = i + hid.page() * 40;
-            if (fullI > 48 - 1) // sav->maxWonderCards() - 1)
+            size_t fullI = i + hid.page() * 40;
+            if (fullI >= TitleLoader::save->maxWondercards())
             {
                 break;
             }
@@ -338,7 +335,7 @@ void InjectorScreen::update(touchPosition* touch)
     }
     else
     {
-        hid.update(48); // sav->maxWonderCards();
+        hid.update(std::min(TitleLoader::save->maxWondercards(), (size_t) TitleLoader::save->emptyGiftLocation() + 2));
         if (downKeys & KEY_A)
         {
             slot = hid.fullIndex() + 1;

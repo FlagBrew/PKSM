@@ -39,7 +39,7 @@ void MoveSelectionScreen::draw() const
     C2D_DrawRectSolid(x, y, 0.5f, 1, 11, COLOR_YELLOW);
     C2D_DrawRectSolid(x, y + 10, 0.5f, 198, 1, COLOR_YELLOW);
     C2D_DrawRectSolid(x + 197, y, 0.5f, 1, 11, COLOR_YELLOW);
-    for (int i = 0; i < hid.maxVisibleEntries(); i++)
+    for (size_t i = 0; i < hid.maxVisibleEntries(); i++)
     {
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
         std::string text = i18n::sortedMove(Configuration::getInstance().language(), hid.page() * hid.maxVisibleEntries() + i);

@@ -295,11 +295,14 @@ std::vector<MysteryGift::giftData> SavB2W2::currentGifts(void) const
     u8* wonderCards = data + 0x1C900;
     for (int i = 0; i < emptyGiftLocation() + 1; i++)
     {
-        if (*(data + i * PGF::length + 0xB3) == 1)
+        if (*(wonderCards + i * PGF::length + 0xB3) == 1)
         {
-            ret.push_back({ "", *(u16*)(wonderCards + i * PGF::length + 0x1A), *(wonderCards + i * PGF::length + 0x1C)});
+            ret.push_back({ StringUtils::getTrimmedString(wonderCards + i * PGF::length, 0x60, 37, (char*)"\uFFFF"), *(u16*)(wonderCards + i * PGF::length + 0x1A), *(wonderCards + i * PGF::length + 0x1C)});
         }
-        ret.push_back({ "", -1, -1 });
+        else
+        {
+            ret.push_back({ StringUtils::getTrimmedString(wonderCards + i * PGF::length, 0x60, 37, (char*)"\uFFFF"), -1, -1 });
+        }
     }
     return ret;
 }

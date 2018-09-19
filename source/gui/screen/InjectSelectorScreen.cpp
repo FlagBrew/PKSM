@@ -100,7 +100,7 @@ void InjectSelectorScreen::draw() const
         }
     }
 
-    for (size_t i = hid.page() * 10; i < hid.page() * 10 + 10; i++)
+    for (size_t i = hid.page() * 10; i < (size_t) hid.page() * 10 + 10; i++)
     {
         if (i >= wondercards.size())
         {

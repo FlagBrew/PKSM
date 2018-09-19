@@ -61,6 +61,7 @@ ConfigScreen::ConfigScreen()
     tabButtons[0].push_back(new Button(177, 74, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::KO); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
     tabButtons[0].push_back(new Button(177, 96, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::NL); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
     tabButtons[0].push_back(new Button(177, 118, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::PT); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
+    tabButtons[0].push_back(new Button(177, 140, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::RU); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
 
     // Defaults buttons; don't know how to do swkbd stuff yet
     tabButtons[1].push_back(new Button(112, 38, 15, 12, &inputNumber, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
@@ -114,6 +115,7 @@ void ConfigScreen::draw() const
         Gui::staticText("한국어", 199, 69, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
         Gui::staticText("Nederlands", 199, 91, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
         Gui::staticText("Português", 199, 113, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+        Gui::staticText("русский", 199, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
 
         C2D_DrawRectSolid(37, 52, 0.5f, 8, 8, COLOR_MENUBLUE);
         C2D_DrawRectSolid(37, 74, 0.5f, 8, 8, COLOR_MENUBLUE);
@@ -126,6 +128,7 @@ void ConfigScreen::draw() const
         C2D_DrawRectSolid(177, 74, 0.5f, 8, 8, COLOR_MENUBLUE);
         C2D_DrawRectSolid(177, 96, 0.5f, 8, 8, COLOR_MENUBLUE);
         C2D_DrawRectSolid(177, 118, 0.5f, 8, 8, COLOR_MENUBLUE);
+        C2D_DrawRectSolid(177, 140, 0.5f, 8, 8, COLOR_MENUBLUE);
 
         switch (Configuration::getInstance().language())
         {
@@ -160,6 +163,9 @@ void ConfigScreen::draw() const
                 break;
             case Language::PT:
                 C2D_DrawRectSolid(176, 117, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                break;
+            case Language::RU:
+                C2D_DrawRectSolid(176, 139, 0.5f, 10, 10, COLOR_HIGHBLUE);
                 break;
         }
     }
@@ -238,7 +244,7 @@ void ConfigScreen::update(touchPosition* touch)
     {
         // NOTE: if any other buttons are added, this number will need to be changed, as well
         static std::bitset<6> dirtyButtons;
-        for (int i = 0; i < tabButtons[2].size(); i++)
+        for (size_t i = 0; i < tabButtons[2].size(); i++)
         {
             if (!dirtyButtons[i])
                 dirtyButtons[i] = tabButtons[2][i]->update(touch);

@@ -496,10 +496,43 @@ std::shared_ptr<PKX> SavHGSS::emptyPkm() const
 
 int SavHGSS::emptyGiftLocation(void) const
 {
-    return 0;
+    u8 t;
+    bool empty;
+    u8* wondercards = data + 0x9E3C + gbo;
+    for (t = 0; t < maxWondercards(); t++)
+    {
+        empty = true;
+        for (u32 j = 0; j < PGT::length; j++)
+        {
+            if (*(wondercards + t * PGT::length + j) != 0)
+            {
+                empty = false;
+                break;
+            }
+        }
+
+        if (empty)
+        {
+            break;
+        }
+    }
+    return !empty ? 7 : t;
 }
 
 std::vector<MysteryGift::giftData> SavHGSS::currentGifts(void) const
 {
-    return {};
+    std::vector<MysteryGift::giftData> ret;
+    u8* wonderCards = data + 0x9E3C + gbo;
+    for (int i = 0; i < emptyGiftLocation() + 1; i++)
+    {
+        if (*(wonderCards + i * PGT::length) == 1 || *(wonderCards + i * PGT::length) == 2 || *(wonderCards + i * PGT::length) == 7)
+        {
+            ret.push_back({ "Wonder Card", *(u16*)(wonderCards + i * PGT::length + 8 + 0x08), *(wonderCards + i * 204 + 8 + 0x40) >> 3});
+        }
+        else
+        {
+            ret.push_back({ "Wonder Card", -1, -1 });
+        }
+    }
+    return ret;
 }

@@ -156,12 +156,12 @@ std::string LanguageStrings::sortedMove(u16 v) const
 
 u16 LanguageStrings::itemFromSort(int v) const
 {
-    return v < sortedItems.size() ? sortedItems[v].second : 0;
+    return (size_t) v < sortedItems.size() ? sortedItems[v].second : 0;
 }
 
 u16 LanguageStrings::moveFromSort(int v) const
 {
-    return v < sortedMoves.size() ? sortedMoves[v].second : 0;
+    return (size_t) v < sortedMoves.size() ? sortedMoves[v].second : 0;
 }
 
 int LanguageStrings::sortedItemIndex(std::string v) const

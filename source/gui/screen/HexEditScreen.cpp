@@ -1452,7 +1452,7 @@ void HexEditScreen::update(touchPosition* touch)
     selectedDescription = describe(hid.fullIndex());
     if (level >= selectedDescription.second)
     {
-        for (int i = 0; i < buttons[hid.fullIndex()].size(); i++)
+        for (size_t i = 0; i < buttons[hid.fullIndex()].size(); i++)
         {
             if ((timers[i] <= 0 && !buttons[hid.fullIndex()][i]->isToggle()) || !dirtyButtons[i])
             {

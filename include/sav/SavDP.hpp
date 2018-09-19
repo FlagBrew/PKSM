@@ -110,6 +110,8 @@ public:
     u8 partyCount(void) const override;
 
     int maxBoxes(void) const override { return 18; }
+    size_t maxWondercards(void) const override { return 8; }
+    u8 generation(void) const override { return 4; }
 };
 
 #endif

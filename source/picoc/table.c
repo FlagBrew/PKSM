@@ -19,7 +19,7 @@ static unsigned int TableHash(const char *Key, int Len)
     
     for (Count = 0, Offset = 8; Count < Len; Count++, Offset+=7)
     {
-        if (Offset > sizeof(unsigned int) * 8 - 7)
+        if (Offset > (int) sizeof(unsigned int) * 8 - 7)
             Offset -= sizeof(unsigned int) * 8 - 6;
             
         Hash ^= *Key++ << Offset;
