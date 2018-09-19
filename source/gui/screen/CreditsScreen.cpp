@@ -30,21 +30,21 @@
 #include "Configuration.hpp"
 
 static const char* credits = 
-    R"(Naxann and Anty-Lemon for various contributions
-    Kaphotics and SciresM for PKHeX and memecrypto
-    J-K-D for direct save import/export
-    Astronautlevel for QR code support
-    ArchitDate for serveLegality
-    Slownic and zaksabeast for servepkx
-    Slashcash for PCHex++
-    TuxSH for TWLSaveTool
-    ProjectPokemon.org for most of the wondercards
-    Simona for being my best supporter
-    All the countless translators who worked on the localization
-    All the contributors on Github
-    Everyone supporting the development
+R"(Naxann and Anty-Lemon for various contributions
+Kaphotics and SciresM for PKHeX and memecrypto
+J-K-D for direct save import/export
+Astronautlevel for QR code support
+ArchitDate for serveLegality
+Slownic and zaksabeast for servepkx
+Slashcash for PCHex++
+TuxSH for TWLSaveTool
+ProjectPokemon.org for most of the wondercards
+Simona for being my best supporter
+All the countless translators who worked on the localization
+All the contributors on Github
+Everyone supporting the development
 
-    www.github.com/BernardoGiordano/PKSM)";
+www.github.com/BernardoGiordano/PKSM)";
 
 void CreditsScreen::update(touchPosition* touch)
 {

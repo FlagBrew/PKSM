@@ -278,29 +278,6 @@ void StorageScreen::draw() const
             Gui::dynamicText(276 + (int) width, 209, 70, info, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
         }
     }
-
-    //     Gui::dynamicText(i18n::species(/*Settings::language()*/Language::EN, infoMon->species()), 273, 86, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
-    //     u8 firstType = type1(infoMon->generation(), infoMon->formSpecies());
-    //     u8 secondType = type2(infoMon->generation(), infoMon->formSpecies());
-    //     Gui::type(/*Settings::language()*/Language::EN, firstType, 273, 103);
-    //     if (firstType != secondType)
-    //         Gui::type(/*Settings::language()*/Language::EN, secondType, 325, 103);
-
-    //     Gui::dynamicText(infoMon->otName(), 273, 126, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
-    //     Gui::dynamicText(StringUtils::format("ID. %i", infoMon->TID()), 374, 143, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, true);
-
-    //     Gui::dynamicText(i18n::nature(/*Settings::language()*/Language::EN, infoMon->nature()), 273, 167, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
-
-    //     Gui::dynamicText(StringUtils::format("%i/%i/%i", infoMon->iv(0), infoMon->iv(1), infoMon->iv(2)), 374, 167, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, true);
-    //     Gui::dynamicText(StringUtils::format("%i/%i/%i", infoMon->iv(4), infoMon->iv(5), infoMon->iv(3)), 374, 183, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, true);
-
-    //     // Cursor
-
-    //     if (storageChosen)
-    //     {
-    //         Gui::sprite(ui_sheet_res_selector_box_idx, 62 + (cursorIndex % 6) * 34, 37 + (cursorIndex / 6) * 30 + bobPointer());
-    //     }
-    // }
 }
 
 void StorageScreen::update(touchPosition* touch)
@@ -512,7 +489,7 @@ bool StorageScreen::clearBox()
 bool StorageScreen::releasePkm()
 {
     backHeld = true;
-    if (Gui::showChoiceMessage("Release the selected Pok\xE9mon?"))
+    if (Gui::showChoiceMessage("Release the selected Pok\u00E9mon?"))
     {
         if (storageChosen) { // Storage set all slots in box to PK7()s (or however it happens)
         }
