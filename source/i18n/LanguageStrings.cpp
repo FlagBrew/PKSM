@@ -62,11 +62,11 @@ LanguageStrings::LanguageStrings(Language lang)
     std::pair<std::string, int> tmp;
     for (size_t i = 1; i < items.size(); i++)
     {
-        if (items[i].find("？？？") != std::string::npos || items[i].find("???") != std::string::npos) continue;
+        if (items[i].find("\uFF1F\uFF1F\uFF1F") != std::string::npos || items[i].find("???") != std::string::npos) continue;
         tmp = std::make_pair(items[i], i);
         sortedItems.push_back(tmp);
     }
-    for (size_t i = 0; i < moves.size(); i++)
+    for (size_t i = 1; i < moves.size(); i++)
     {
         if (i >= 622 && i <= 658) continue;
         tmp = std::make_pair(moves[i], i);
@@ -76,6 +76,7 @@ LanguageStrings::LanguageStrings(Language lang)
     std::sort(sortedItems.begin(), sortedItems.end(), less);
     std::sort(sortedMoves.begin(), sortedMoves.end(), less);
     sortedItems.insert(sortedItems.begin(), std::make_pair(items[0], 0));
+    sortedMoves.insert(sortedMoves.begin(), std::make_pair(moves[0], 0));
 }
 
 void LanguageStrings::load(Language lang, const std::string name, std::vector<std::string>& array)
@@ -153,6 +154,70 @@ std::string LanguageStrings::sortedMove(u16 v) const
     return v < sortedMoves.size() ? sortedMoves[v].first : moves[0];
 }
 
+u16 LanguageStrings::itemFromSort(int v) const
+{
+    return v < sortedItems.size() ? sortedItems[v].second : 0;
+}
+
+u16 LanguageStrings::moveFromSort(int v) const
+{
+    return v < sortedMoves.size() ? sortedMoves[v].second : 0;
+}
+
+int LanguageStrings::sortedItemIndex(std::string v) const
+{
+    if (v == items[0] || v == "")
+    {
+        return 0;
+    }
+    int index = -1, min = 0, mid = 0, max = sortedItems.size();
+    while (min <= max)
+    {
+        mid = min + (max-min)/2;
+        if (sortedItems[mid].first == v)
+        {
+            index = mid;
+            break;
+        }
+        if (sortedItems[mid].first < v)
+        {
+            min = mid + 1;
+        }
+        else
+        {
+            max = mid - 1;
+        }
+    }
+    return index >= 0 ? index : 0;
+}
+
+int LanguageStrings::sortedMoveIndex(std::string v) const
+{
+    if (v == moves[0] || v == "")
+    {
+        return 0;
+    }
+    int index = -1, min = 0, mid = 0, max = sortedMoves.size();
+    while (min <= max)
+    {
+        mid = min + (max-min)/2;
+        if (sortedMoves[mid].first == v)
+        {
+            index = mid;
+            break;
+        }
+        if (sortedMoves[mid].first < v)
+        {
+            min = mid + 1;
+        }
+        else
+        {
+            max = mid - 1;
+        }
+    }
+    return index >= 0 ? index : 0;
+}
+
 int LanguageStrings::item(std::string v) const
 {
     if (v == items[0] || v == "")
@@ -205,6 +270,16 @@ int LanguageStrings::move(std::string v) const
         }
     }
     return index >= 0 ? sortedMoves[index].second : 0;
+}
+
+int LanguageStrings::moveNum() const
+{
+    return sortedMoves.size();
+}
+
+int LanguageStrings::itemNum() const
+{
+    return sortedItems.size();
 }
 
 std::string LanguageStrings::localize(const std::string& v) const

@@ -24,41 +24,41 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef I18N_HPP
-#define I18N_HPP
+#include "HiddenPowerSelectionScreen.hpp"
+#include "gui.hpp"
+#include "Configuration.hpp"
 
-#include "LanguageStrings.hpp"
-
-namespace i18n
+void HiddenPowerSelectionScreen::draw() const
 {
-    void init(void);
-    void exit(void);
+    C2D_SceneBegin(g_renderTargetTop);
+    Gui::sprite(ui_sheet_part_mtx_4x4_idx, 0, 0);
+    int x = (hid.index() % 4) * 100;
+    int y = (hid.index() / 4) * 60;
+    // Selector
+    C2D_DrawRectSolid(x, y, 0.5f, 99, 59, COLOR_MASKBLACK);
+    C2D_DrawRectSolid(x, y, 0.5f, 99, 1, COLOR_YELLOW);
+    C2D_DrawRectSolid(x, y, 0.5f, 1, 59, COLOR_YELLOW);
+    C2D_DrawRectSolid(x + 98, y, 0.5f, 1, 59, COLOR_YELLOW);
+    C2D_DrawRectSolid(x, y + 58, 0.5f, 99, 1, COLOR_YELLOW);
+    for (int i = 0; i < 16; i++)
+    {
+        Gui::type(Configuration::getInstance().language(), (u8) i, 23 + (i % 4) * 100, 20 + (i / 4) * 60);
+    }
+}
 
-    std::string sortedMove(u8 lang, u16 value);
-    std::string sortedItem(u8 lang, u16 value);
-    // Total amount of moves & items
-    int moves();
-    int items();
-    u16 itemFromSort(u8 lang, int value);
-    u16 moveFromSort(u8 lang, int value);
-    int sortedItemIndex(u8 lang, std::string value);
-    int sortedMoveIndex(u8 lang, std::string value);
-
-    int item(u8 lang, std::string value);
-    int move(u8 lang, std::string value);
-    
-    std::string ability(u8 lang, u8 value);
-    std::string ball(u8 lang, u8 value);
-    std::string form(u8 lang, u16 value);
-    std::string hp(u8 lang, u8 value);
-    std::string item(u8 lang, u16 value);
-    std::string move(u8 lang, u16 value);
-    std::string nature(u8 lang, u8 value);
-    std::string species(u8 lang, u16 value);
-
-    // Used for general GUI stuff; not for PKM values
-    std::string localize(Language lang, const std::string& index);
-    std::string localize(const std::string& index);
-};
-
-#endif
+void HiddenPowerSelectionScreen::update(touchPosition* touch)
+{
+    hid.update(16);
+    u32 downKeys = hidKeysDown();
+    if (downKeys & KEY_A)
+    {
+        pkm->hpType((u8) hid.fullIndex());
+        done = true;
+        return;
+    }
+    else if (downKeys & KEY_B)
+    {
+        done = true;
+        return;
+    }
+}

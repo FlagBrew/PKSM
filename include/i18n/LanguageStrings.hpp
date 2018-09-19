@@ -82,6 +82,12 @@ public:
 
     int item(std::string v) const;
     int move(std::string v) const;
+    u16 itemFromSort(int v) const;
+    u16 moveFromSort(int v) const;
+    int sortedItemIndex(std::string v) const;
+    int sortedMoveIndex(std::string v) const;
+    int itemNum() const;
+    int moveNum() const;
 
     std::string ability(u8 v) const;
     std::string ball(u8 v) const;

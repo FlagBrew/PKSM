@@ -24,61 +24,23 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef EDITORSCREEN_HPP
-#define EDITORSCREEN_HPP
+#ifndef SELECTIONSCREEN_HPP
+#define SELECTIONSCREEN_HPP
 
 #include "Screen.hpp"
-#include "Button.hpp"
-#include "ViewerScreen.hpp"
 #include "PKX.hpp"
-#include "SelectionScreen.hpp"
+#include "i18n.hpp"
 
-class EditorScreen : public Screen
+class SelectionScreen : public Screen
 {
 public:
-    ~EditorScreen()
-    {
-        for (auto vec : buttons)
-        {
-            for (auto button : vec)
-            {
-                delete button;
-            }
-        }
-    }
-    EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr<PKX> pkm, int box, int index);
-    void draw() const override;
-    void update(touchPosition* touch) override;
-    ScreenType type() const override { return ScreenType::EDITOR; }
-private:
-    bool changeLevel(bool up);
-    bool setLevel();
-    bool selectNature();
-    bool selectAbility();
-    bool selectItem();
-    bool togglePokerus();
-    bool setOT();
-    bool setNick();
-    bool changeFriendship(bool up);
-    bool setFriendship();
-    bool hexEdit();
-    bool save();
-    
-    bool changeIV(int which, bool up);
-    bool setIV(int which);
-    bool changeEV(int which, bool up);
-    bool setEV(int which);
-    bool setHP();
-    bool goBack();
-    void changeMove();
-    std::array<std::vector<Button*>, 3> buttons;
-    std::shared_ptr<ViewerScreen> view;
+    SelectionScreen(std::shared_ptr<PKX> pkm) : pkm(pkm) {}
+    virtual ~SelectionScreen() {}
+    ScreenType type() const override { return ScreenType::SELECTOR; }
+    bool finished() const { return done; }
+protected:
     std::shared_ptr<PKX> pkm;
-    std::unique_ptr<SelectionScreen> selector;
-    int currentTab = 0;
-    int moveSelected = 0;
-    int box = 0;
-    int index = 0;
+    bool done = false;
 };
 
 #endif

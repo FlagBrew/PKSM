@@ -177,6 +177,11 @@ void PKX::fixMoves(void)
 {
     reorderMoves();
 
+    if (move(0) == 0)
+    {
+        move(0, 1);
+    }
+
     for (int i = 0; i < 4; i++)
     {
         if (move(i) == 0)

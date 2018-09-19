@@ -44,6 +44,7 @@ enum ScreenType
     HEXEDIT,
     INJECTOR,
     SCRIPTS,
+    SELECTOR,
     SETTINGS,
     CREDITS,
     VIEWER

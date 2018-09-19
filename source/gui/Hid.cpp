@@ -215,5 +215,6 @@ void Hid::update(size_t count) {
 
 void Hid::select(size_t index)
 {
-    mIndex = index;
+    mIndex = index % mMaxVisibleEntries;
+    mPage = index / mMaxVisibleEntries;
 }

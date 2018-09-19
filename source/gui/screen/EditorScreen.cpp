@@ -29,6 +29,10 @@
 #include "Configuration.hpp"
 #include "loader.hpp"
 #include "HexEditScreen.hpp"
+#include "MoveSelectionScreen.hpp"
+#include "HiddenPowerSelectionScreen.hpp"
+#include "NatureSelectionScreen.hpp"
+#include "ItemSelectionScreen.hpp"
 #include <bitset>
 
 #define NO_TEXT_BUTTON(x, y, w, h, function, image) new Button(x, y, w, h, function, image, "", 0.0f, 0)
@@ -222,91 +226,110 @@ void EditorScreen::draw() const
             }
             break;
     }
-    view->draw();
+    if (!selector)
+    {
+        view->draw();
+    }
+    else
+    {
+        C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, C2D_Color32(0, 0, 0, 120));
+        Gui::staticText(GFX_BOTTOM, 115, "Press \uE000 to select, \uE001 to go back", FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
+        selector->draw();
+    }
 }
 
 void EditorScreen::update(touchPosition* touch)
 {
-    static bool dirtyBack = false;
-    static int timers[38] = {-1};
-    u32 downKeys = keysDown();
-    u32 heldKeys = keysHeld();
-
-    for (int i = 0; i < buttons[currentTab].size(); i++)
+    if (!selector)
     {
-        if (i == 0)
+        static bool dirtyBack = false;
+        static int timers[38] = {-1};
+        u32 downKeys = keysDown();
+        u32 heldKeys = keysHeld();
+
+        for (int i = 0; i < buttons[currentTab].size(); i++)
         {
-            if (!dirtyBack)
+            if (i == 0)
             {
-                if (buttons[currentTab][i]->clicked(touch))
+                if (!dirtyBack)
                 {
-                    dirtyBack = true;
+                    if (buttons[currentTab][i]->clicked(touch))
+                    {
+                        dirtyBack = true;
+                    }
+                    if (buttons[currentTab][i]->update(touch))
+                    {
+                        return;
+                    }
                 }
-                if (buttons[currentTab][i]->update(touch))
+                else
                 {
-                    return;
+                    if (!buttons[currentTab][i]->clicked(touch))
+                    {
+                        dirtyBack = false;
+                    }
                 }
             }
             else
             {
-                if (!buttons[currentTab][i]->clicked(touch))
+                if (timers[i] < 0)
                 {
-                    dirtyBack = false;
+                    if (buttons[currentTab][i]->update(touch))
+                    {
+                        return;
+                    }
+                    if (buttons[currentTab][i]->clicked(touch))
+                    {
+                        timers[i] = 10;
+                    }
                 }
             }
         }
-        else
+
+        if (downKeys & KEY_B)
         {
-            if (timers[i] < 0)
+            if (goBack())
             {
-                if (buttons[currentTab][i]->update(touch))
+                return;
+            }
+        }
+
+        if (currentTab == 2)
+        {
+            if (downKeys & KEY_A)
+            {
+                changeMove();
+            }
+            else if (downKeys & KEY_DOWN)
+            {
+                if (moveSelected < 7)
                 {
-                    return;
+                    moveSelected++;
                 }
-                if (buttons[currentTab][i]->clicked(touch))
+            }
+            else if (downKeys & KEY_UP)
+            {
+                if (moveSelected > 0)
                 {
-                    timers[i] = 10;
+                    moveSelected--;
                 }
             }
         }
-    }
 
-    if (downKeys & KEY_B)
-    {
-        if (goBack())
+        for (int i = 0; i < 38; i++)
         {
-            return;
-        }
-    }
-
-    if (currentTab == 2)
-    {
-        if (downKeys & KEY_A)
-        {
-            changeMove();
-            pkm->fixMoves();
-        }
-        else if (downKeys & KEY_DOWN)
-        {
-            if (moveSelected < 7)
+            if (timers[i] > -1)
             {
-                moveSelected++;
-            }
-        }
-        else if (downKeys & KEY_UP)
-        {
-            if (moveSelected > 0)
-            {
-                moveSelected--;
+                timers[i]--;
             }
         }
     }
-
-    for (int i = 0; i < 38; i++)
+    else
     {
-        if (timers[i] > -1)
+        selector->update(touch);
+        if (selector->finished())
         {
-            timers[i]--;
+            selector = nullptr;
         }
     }
 }
@@ -356,21 +379,6 @@ bool EditorScreen::setLevel()
     return false;
 }
 
-bool EditorScreen::selectNature()
-{
-    // How are we going to do this?
-    return false;
-}
-bool EditorScreen::selectAbility()
-{
-    // How are we going to do this?
-    return false;
-}
-bool EditorScreen::selectItem()
-{
-    // How are we going to do this?
-    return false;
-}
 bool EditorScreen::togglePokerus()
 {
     if (pkm->pkrs() > 0)
@@ -383,16 +391,19 @@ bool EditorScreen::togglePokerus()
     }
     return false;
 }
+
 bool EditorScreen::setOT()
 {
     // swkbd stuff
     return false;
 }
+
 bool EditorScreen::setNick()
 {
     // swkbd stuff
     return false;
 }
+
 bool EditorScreen::changeFriendship(bool up)
 {
     if (up)
@@ -411,21 +422,25 @@ bool EditorScreen::changeFriendship(bool up)
     }
     return false;
 }
+
 bool EditorScreen::setFriendship()
 {
     // swkbd stuff
     return false;
 }
+
 bool EditorScreen::save()
 {
     TitleLoader::save->pkm(*pkm, box, index);
     return false;
 }
+
 bool EditorScreen::setIV(int which)
 {
     // swkbd stuff
     return false;
 }
+
 bool EditorScreen::changeIV(int which, bool up)
 {
     if (up)
@@ -444,11 +459,13 @@ bool EditorScreen::changeIV(int which, bool up)
     }
     return false;
 }
+
 bool EditorScreen::setEV(int which)
 {
     // swkbd stuff
     return false;
 }
+
 bool EditorScreen::changeEV(int which, bool up)
 {
     if (up)
@@ -467,12 +484,134 @@ bool EditorScreen::changeEV(int which, bool up)
     }
     return false;
 }
+
 bool EditorScreen::setHP()
 {
-    // How are we going to do this?
+    selector = std::unique_ptr<SelectionScreen>(new HiddenPowerSelectionScreen(pkm));
     return false;
 }
+
 void EditorScreen::changeMove()
 {
-    // How are we going to do this?
+    selector = std::unique_ptr<SelectionScreen>(new MoveSelectionScreen(pkm, moveSelected));
+}
+
+bool EditorScreen::selectNature()
+{
+    selector = std::unique_ptr<SelectionScreen>(new NatureSelectionScreen(pkm));
+    return false;
+}
+
+bool EditorScreen::selectAbility()
+{
+    if (pkm->gen4())
+    {
+        u8 setAbility = pkm->ability();
+        if (PersonalDPPtHGSS::ability(pkm->formSpecies(), 0) != setAbility && PersonalDPPtHGSS::ability(pkm->formSpecies(), 0) != 0)
+        {
+            pkm->ability(PersonalDPPtHGSS::ability(pkm->formSpecies(), 0));
+        }
+        else if (PersonalDPPtHGSS::ability(pkm->formSpecies(), 1) != 0)
+        {
+            pkm->ability(PersonalDPPtHGSS::ability(pkm->formSpecies(), 1));
+        }
+    }
+    else if (pkm->gen5())
+    {
+        PK5* pk5 = (PK5*) pkm.get();
+        auto abilityResolver = PersonalBWB2W2::ability;
+        switch (pkm->abilityNumber() >> 1)
+        {
+            case 0:
+                if (abilityResolver(pkm->formSpecies(), 1) != pkm->ability() && abilityResolver(pkm->formSpecies(), 1) != 0)
+                {
+                    pkm->ability(abilityResolver(pkm->formSpecies(), 1));
+                    if (abilityResolver(pkm->formSpecies(), 1) == abilityResolver(pkm->formSpecies(), 2))
+                    {
+                        pk5->hiddenAbility(true);
+                    }
+                }
+                else if (abilityResolver(pkm->formSpecies(), 2) != 0)
+                {
+                    pkm->ability(abilityResolver(pkm->formSpecies(), 2));
+                    pk5->hiddenAbility(true);
+                }
+                break;
+            case 1:
+                if (abilityResolver(pkm->formSpecies(), 2) != pkm->ability() && abilityResolver(pkm->formSpecies(), 2) != 0)
+                {
+                    pkm->ability(abilityResolver(pkm->formSpecies(), 2));
+                    pk5->hiddenAbility(true);
+                }
+                else if (abilityResolver(pkm->formSpecies(), 0) != 0)
+                {
+                    pkm->ability(abilityResolver(pkm->formSpecies(), 0));
+                    pk5->hiddenAbility(false);
+                }
+                break;
+            case 2:
+                if (abilityResolver(pkm->formSpecies(), 0) != pkm->ability() && abilityResolver(pkm->formSpecies(), 0) != 0)
+                {
+                    pkm->ability(abilityResolver(pkm->formSpecies(), 0));
+                    pk5->hiddenAbility(false);
+                }
+                else if (abilityResolver(pkm->formSpecies(), 1) != 0)
+                {
+                    pkm->ability(abilityResolver(pkm->formSpecies(), 1));
+                    if (abilityResolver(pkm->formSpecies(), 1) == abilityResolver(pkm->formSpecies(), 2))
+                    {
+                        pk5->hiddenAbility(true);
+                    }
+                    else
+                    {
+                        pk5->hiddenAbility(false);
+                    }
+                }
+                break;
+        }
+    }
+    else if (pkm->gen6() || pkm->gen7())
+    {
+        auto abilityResolver = pkm->gen6() ? PersonalXYORAS::ability : PersonalSMUSUM::ability;
+        switch (pkm->abilityNumber() >> 1)
+        {
+            case 0:
+                if (abilityResolver(pkm->formSpecies(), 1) != pkm->ability() && abilityResolver(pkm->formSpecies(), 1) != 0)
+                {
+                    pkm->ability(1);
+                }
+                else if (abilityResolver(pkm->formSpecies(), 2) != 0)
+                {
+                    pkm->ability(2);
+                }
+                break;
+            case 1:
+                if (abilityResolver(pkm->formSpecies(), 2) != pkm->ability() && abilityResolver(pkm->formSpecies(), 2) != 0)
+                {
+                    pkm->ability(2);
+                }
+                else if (abilityResolver(pkm->formSpecies(), 0) != 0)
+                {
+                    pkm->ability(0);
+                }
+                break;
+            case 2:
+                if (abilityResolver(pkm->formSpecies(), 0) != pkm->ability() && abilityResolver(pkm->formSpecies(), 0) != 0)
+                {
+                    pkm->ability(0);
+                }
+                else if (abilityResolver(pkm->formSpecies(), 1) != 0)
+                {
+                    pkm->ability(1);
+                }
+                break;
+        }
+    }
+    return false;
+}
+
+bool EditorScreen::selectItem()
+{
+    selector = std::unique_ptr<SelectionScreen>(new ItemSelectionScreen(pkm));
+    return false;
 }

@@ -459,6 +459,144 @@ int i18n::move(u8 lang, std::string val)
     return 0;
 }
 
+int i18n::items()
+{
+    return en->itemNum();
+}
+
+int i18n::moves()
+{
+    return en->moveNum();
+}
+
+u16 i18n::itemFromSort(u8 lang, int val)
+{
+    switch (lang)
+    {
+        case Language::DE:
+            return de->itemFromSort(val);
+        case Language::EN:
+            return en->itemFromSort(val);
+        case Language::ES:
+            return es->itemFromSort(val);
+        case Language::FR:
+            return fr->itemFromSort(val);
+        case Language::IT:
+            return it->itemFromSort(val);
+        case Language::JP:
+            return jp->itemFromSort(val);
+        case Language::KO:
+            return ko->itemFromSort(val);
+        case Language::NL:
+            return nl->itemFromSort(val);
+        case Language::PT:
+            return pt->itemFromSort(val);
+        case Language::ZH:
+            return zh->itemFromSort(val);
+        case Language::TW:
+            return tw->itemFromSort(val);
+        case Language::RU:
+            return ru->itemFromSort(val);
+    }
+    return 0;
+}
+
+u16 i18n::moveFromSort(u8 lang, int val)
+{
+    switch (lang)
+    {
+        case Language::DE:
+            return de->moveFromSort(val);
+        case Language::EN:
+            return en->moveFromSort(val);
+        case Language::ES:
+            return es->moveFromSort(val);
+        case Language::FR:
+            return fr->moveFromSort(val);
+        case Language::IT:
+            return it->moveFromSort(val);
+        case Language::JP:
+            return jp->moveFromSort(val);
+        case Language::KO:
+            return ko->moveFromSort(val);
+        case Language::NL:
+            return nl->moveFromSort(val);
+        case Language::PT:
+            return pt->moveFromSort(val);
+        case Language::ZH:
+            return zh->moveFromSort(val);
+        case Language::TW:
+            return tw->moveFromSort(val);
+        case Language::RU:
+            return ru->moveFromSort(val);
+    }
+    return 0;
+}
+
+int i18n::sortedMoveIndex(u8 lang, std::string val)
+{
+    switch (lang)
+    {
+        case Language::DE:
+            return de->sortedMoveIndex(val);
+        case Language::EN:
+            return en->sortedMoveIndex(val);
+        case Language::ES:
+            return es->sortedMoveIndex(val);
+        case Language::FR:
+            return fr->sortedMoveIndex(val);
+        case Language::IT:
+            return it->sortedMoveIndex(val);
+        case Language::JP:
+            return jp->sortedMoveIndex(val);
+        case Language::KO:
+            return ko->sortedMoveIndex(val);
+        case Language::NL:
+            return nl->sortedMoveIndex(val);
+        case Language::PT:
+            return pt->sortedMoveIndex(val);
+        case Language::ZH:
+            return zh->sortedMoveIndex(val);
+        case Language::TW:
+            return tw->sortedMoveIndex(val);
+        case Language::RU:
+            return ru->sortedMoveIndex(val);
+    }
+    return 0;
+}
+
+int i18n::sortedItemIndex(u8 lang, std::string val)
+{
+    switch (lang)
+    {
+        case Language::DE:
+            return de->sortedItemIndex(val);
+        case Language::EN:
+            return en->sortedItemIndex(val);
+        case Language::ES:
+            return es->sortedItemIndex(val);
+        case Language::FR:
+            return fr->sortedItemIndex(val);
+        case Language::IT:
+            return it->sortedItemIndex(val);
+        case Language::JP:
+            return jp->sortedItemIndex(val);
+        case Language::KO:
+            return ko->sortedItemIndex(val);
+        case Language::NL:
+            return nl->sortedItemIndex(val);
+        case Language::PT:
+            return pt->sortedItemIndex(val);
+        case Language::ZH:
+            return zh->sortedItemIndex(val);
+        case Language::TW:
+            return tw->sortedItemIndex(val);
+        case Language::RU:
+            return ru->sortedItemIndex(val);
+    }
+    return 0;
+}
+
 std::string i18n::localize(Language lang, const std::string& val)
 {
     switch (lang)

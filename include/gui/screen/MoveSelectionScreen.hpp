@@ -24,61 +24,48 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef EDITORSCREEN_HPP
-#define EDITORSCREEN_HPP
+#ifndef MOVESELECTIONSCREEN_HPP
+#define MOVESELECTIONSCREEN_HPP
 
-#include "Screen.hpp"
-#include "Button.hpp"
-#include "ViewerScreen.hpp"
-#include "PKX.hpp"
 #include "SelectionScreen.hpp"
+#include "Hid.hpp"
+#include "Configuration.hpp"
+#include "PK7.hpp"
+#include "PK6.hpp"
 
-class EditorScreen : public Screen
+class MoveSelectionScreen : public SelectionScreen
 {
 public:
-    ~EditorScreen()
+    MoveSelectionScreen(std::shared_ptr<PKX> pkm, int moveIndex) : SelectionScreen(pkm), moveIndex(moveIndex), hid(40, 2)
     {
-        for (auto vec : buttons)
+        hid.update(i18n::moves());
+        if (moveIndex < 4)
         {
-            for (auto button : vec)
+            hid.select((u16) i18n::sortedMoveIndex(Configuration::getInstance().language(), i18n::move(Configuration::getInstance().language(), pkm->move(moveIndex))));
+        }
+        else
+        {
+            if (pkm->gen6())
             {
-                delete button;
+                PK6* pk6 = ((PK6*)pkm.get());
+                hid.select((u16) i18n::sortedMoveIndex(Configuration::getInstance().language(), i18n::move(Configuration::getInstance().language(), pk6->relearnMove(moveIndex - 4))));
+            }
+            else if (pkm->gen7())
+            {
+                PK7* pk7 = ((PK7*)pkm.get());
+                hid.select((u16) i18n::sortedMoveIndex(Configuration::getInstance().language(), i18n::move(Configuration::getInstance().language(), pk7->relearnMove(moveIndex - 4))));
             }
         }
     }
-    EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr<PKX> pkm, int box, int index);
+    ~MoveSelectionScreen()
+    {
+        pkm->fixMoves();
+    }
     void draw() const override;
     void update(touchPosition* touch) override;
-    ScreenType type() const override { return ScreenType::EDITOR; }
 private:
-    bool changeLevel(bool up);
-    bool setLevel();
-    bool selectNature();
-    bool selectAbility();
-    bool selectItem();
-    bool togglePokerus();
-    bool setOT();
-    bool setNick();
-    bool changeFriendship(bool up);
-    bool setFriendship();
-    bool hexEdit();
-    bool save();
-    
-    bool changeIV(int which, bool up);
-    bool setIV(int which);
-    bool changeEV(int which, bool up);
-    bool setEV(int which);
-    bool setHP();
-    bool goBack();
-    void changeMove();
-    std::array<std::vector<Button*>, 3> buttons;
-    std::shared_ptr<ViewerScreen> view;
-    std::shared_ptr<PKX> pkm;
-    std::unique_ptr<SelectionScreen> selector;
-    int currentTab = 0;
-    int moveSelected = 0;
-    int box = 0;
-    int index = 0;
+    int moveIndex;
+    Hid hid;
 };
 
 #endif

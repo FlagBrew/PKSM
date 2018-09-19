@@ -24,61 +24,24 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef EDITORSCREEN_HPP
-#define EDITORSCREEN_HPP
+#ifndef HIDDENPOWERSELECTIONSCREEN_HPP
+#define HIDDENPOWERSELECTIONSCREEN_HPP
 
-#include "Screen.hpp"
-#include "Button.hpp"
-#include "ViewerScreen.hpp"
-#include "PKX.hpp"
 #include "SelectionScreen.hpp"
+#include "Hid.hpp"
 
-class EditorScreen : public Screen
+class HiddenPowerSelectionScreen : public SelectionScreen
 {
 public:
-    ~EditorScreen()
+    HiddenPowerSelectionScreen(std::shared_ptr<PKX> pkm) : SelectionScreen(pkm), hid(16, 4)
     {
-        for (auto vec : buttons)
-        {
-            for (auto button : vec)
-            {
-                delete button;
-            }
-        }
+        hid.update(16);
+        hid.select(pkm->hpType());
     }
-    EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr<PKX> pkm, int box, int index);
     void draw() const override;
     void update(touchPosition* touch) override;
-    ScreenType type() const override { return ScreenType::EDITOR; }
 private:
-    bool changeLevel(bool up);
-    bool setLevel();
-    bool selectNature();
-    bool selectAbility();
-    bool selectItem();
-    bool togglePokerus();
-    bool setOT();
-    bool setNick();
-    bool changeFriendship(bool up);
-    bool setFriendship();
-    bool hexEdit();
-    bool save();
-    
-    bool changeIV(int which, bool up);
-    bool setIV(int which);
-    bool changeEV(int which, bool up);
-    bool setEV(int which);
-    bool setHP();
-    bool goBack();
-    void changeMove();
-    std::array<std::vector<Button*>, 3> buttons;
-    std::shared_ptr<ViewerScreen> view;
-    std::shared_ptr<PKX> pkm;
-    std::unique_ptr<SelectionScreen> selector;
-    int currentTab = 0;
-    int moveSelected = 0;
-    int box = 0;
-    int index = 0;
+    Hid hid;
 };
 
 #endif
