@@ -57,7 +57,7 @@ bool InjectorScreen::setLanguage(Language language)
 InjectorScreen::InjectorScreen(std::unique_ptr<WCX> card) : hid(40, 8)
 {
     wondercard = std::move(card);
-    slot = 1;
+    slot = TitleLoader::save->emptyGiftLocation() + 2;
     int langIndex = 1;
     for (int y = 46; y < 70; y += 23)
     {
@@ -74,7 +74,7 @@ InjectorScreen::InjectorScreen(std::unique_ptr<WCX> card) : hid(40, 8)
     buttons.push_back(new Button(273, 102, 38, 23, [this](){ overwriteCard = false; return false; }, ui_sheet_res_null_idx, "", 0, 0));
     buttons.push_back(new Button(235, 135, 38, 23, [this](){ adaptLanguage = true; return false; }, ui_sheet_res_null_idx, "", 0, 0));
     buttons.push_back(new Button(273, 135, 38, 23, [this](){ adaptLanguage = false; return false; }, ui_sheet_res_null_idx, "", 0, 0));
-    buttons.push_back(new Button(255, 168, 38, 23, [this](){ choosingSlot = true; return true; }, ui_sheet_button_unselected_text_button_idx, "", 0.0f, 0));
+    buttons.push_back(new Button(255, 168, 38, 23, [this](){ choosingSlot = true; hid.select(slot - 1); return true; }, ui_sheet_button_unselected_text_button_idx, "", 0.0f, 0));
     buttons.push_back(new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0));
     buttons.push_back(new Button(282, 212, 34, 28, [](){ Gui::screenBack(); return true; }, ui_sheet_button_back_idx, "", 0.0f, 0));
 }

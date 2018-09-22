@@ -39,6 +39,7 @@ static C2D_TextBuf staticBuf;
 static std::unordered_map<std::string, C2D_Text> staticMap;
 
 static std::stack<std::unique_ptr<Screen>> screens;
+static std::function<void()> keyboardFunc;
 
 static Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int endX, int endY)
 {
@@ -361,14 +362,28 @@ void Gui::mainLoop(void)
 
         C3D_FrameEnd(0);
         Gui::clearTextBufs();
+        if (keyboardFunc != nullptr)
+        {
+            keyboardFunc();
+            keyboardFunc = nullptr;
+        }
     }
 }
 
 void Gui::exit(void)
 {
-    C2D_SpriteSheetFree(spritesheet_ui);
-    C2D_SpriteSheetFree(spritesheet_pkm);
-    C2D_SpriteSheetFree(spritesheet_types);
+    if (spritesheet_ui)
+    {
+        C2D_SpriteSheetFree(spritesheet_ui);
+    }
+    if (spritesheet_pkm)
+    {
+        C2D_SpriteSheetFree(spritesheet_pkm);
+    }
+    if (spritesheet_types)
+    {
+        C2D_SpriteSheetFree(spritesheet_types);
+    }
     C2D_TextBufDelete(g_widthBuf);
     C2D_TextBufDelete(dynamicBuf);
     C2D_TextBufDelete(staticBuf);
@@ -1198,4 +1213,9 @@ bool Gui::showChoiceMessage(const std::string& message)
 void Gui::screenBack()
 {
     screens.pop();
+}
+
+void Gui::setNextKeyboardFunc(std::function<void()> func)
+{
+    keyboardFunc = func;
 }

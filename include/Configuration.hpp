@@ -73,7 +73,7 @@ public:
         return mJson["useExtData"];
     }
 
-    u32 defaultPID(void) const
+    u32 defaultTID(void) const
     {
         return mJson["defaults"]["pid"];
     }
@@ -138,7 +138,7 @@ public:
         mJson["useExtData"] = use;
     }
 
-    void defaultPID(u32 pid)
+    void defaultTID(u32 pid)
     {
         mJson["defaults"]["pid"] = pid;
     }

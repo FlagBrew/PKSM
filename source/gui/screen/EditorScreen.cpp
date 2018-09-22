@@ -55,17 +55,17 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
     buttons[tab].push_back(NO_TEXT_BUTTON(283, 211, 34, 28, std::bind(&EditorScreen::goBack, this), ui_sheet_button_back_idx));
     buttons[tab].push_back(NO_TEXT_BUTTON(291, 2, 27, 23, std::bind(&EditorScreen::hexEdit, this), ui_sheet_icon_hex_idx));
     buttons[tab].push_back(NO_TEXT_BUTTON(94, 34, 13, 13, std::bind(&EditorScreen::changeLevel, this, false), ui_sheet_button_minus_small_idx));
-    buttons[tab].push_back(NO_TEXT_BUTTON(109, 34, 31, 13, std::bind(&EditorScreen::setLevel, this), ui_sheet_res_null_idx));
+    buttons[tab].push_back(NO_TEXT_BUTTON(109, 34, 31, 13, [this](){ Gui::setNextKeyboardFunc([this](){ setLevel(); }); return false; }, ui_sheet_res_null_idx));
     buttons[tab].push_back(NO_TEXT_BUTTON(142, 34, 13, 13, std::bind(&EditorScreen::changeLevel, this, true), ui_sheet_button_plus_small_idx));
     buttons[tab].push_back(NO_TEXT_BUTTON(75, 54, 15, 12, std::bind(&EditorScreen::selectNature, this), ui_sheet_button_info_detail_editor_dark_idx));
     buttons[tab].push_back(NO_TEXT_BUTTON(75, 74, 15, 12, std::bind(&EditorScreen::selectAbility, this), ui_sheet_button_info_detail_editor_dark_idx));
     buttons[tab].push_back(NO_TEXT_BUTTON(75, 94, 15, 12, std::bind(&EditorScreen::selectItem, this), ui_sheet_button_info_detail_editor_dark_idx));
     buttons[tab].push_back(NO_TEXT_BUTTON(75, 114, 15, 12, [this](){ pkm->shiny(!pkm->shiny()); return false; }, ui_sheet_button_info_detail_editor_dark_idx));
     buttons[tab].push_back(NO_TEXT_BUTTON(75, 134, 15, 12, std::bind(&EditorScreen::togglePokerus, this), ui_sheet_button_info_detail_editor_dark_idx));
-    buttons[tab].push_back(NO_TEXT_BUTTON(75, 154, 15, 12, std::bind(&EditorScreen::setOT, this), ui_sheet_button_info_detail_editor_dark_idx));
-    buttons[tab].push_back(NO_TEXT_BUTTON(75, 174, 15, 12, std::bind(&EditorScreen::setNick, this), ui_sheet_button_info_detail_editor_dark_idx));
+    buttons[tab].push_back(NO_TEXT_BUTTON(75, 154, 15, 12, [this](){ Gui::setNextKeyboardFunc(std::bind(&EditorScreen::setOT, this)); return false; }, ui_sheet_button_info_detail_editor_dark_idx));
+    buttons[tab].push_back(NO_TEXT_BUTTON(75, 174, 15, 12, [this](){ Gui::setNextKeyboardFunc(std::bind(&EditorScreen::setNick, this)); return false; }, ui_sheet_button_info_detail_editor_dark_idx));
     buttons[tab].push_back(NO_TEXT_BUTTON(94, 194, 13, 13, std::bind(&EditorScreen::changeFriendship, this, false), ui_sheet_button_minus_small_idx));
-    buttons[tab].push_back(NO_TEXT_BUTTON(109, 194, 31, 13, std::bind(&EditorScreen::setFriendship, this), ui_sheet_res_null_idx));
+    buttons[tab].push_back(NO_TEXT_BUTTON(109, 194, 31, 13, [this](){ Gui::setNextKeyboardFunc(std::bind(&EditorScreen::setFriendship, this)); return false; }, ui_sheet_res_null_idx));
     buttons[tab].push_back(NO_TEXT_BUTTON(142, 194, 13, 13, std::bind(&EditorScreen::changeFriendship, this, true), ui_sheet_button_plus_small_idx));
     buttons[tab].push_back(new Button(204, 109, 108, 30, [this](){ currentTab = 1; return true; }, ui_sheet_button_editor_idx, "STATS", FONT_SIZE_12, COLOR_BLACK));
     buttons[tab].push_back(new Button(204, 140, 108, 30, [this](){ currentTab = 2; return true; }, ui_sheet_button_editor_idx, "MOVES", FONT_SIZE_12, COLOR_BLACK));
@@ -77,11 +77,11 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
     {
         int y = 54 + i * 20;
         buttons[tab].push_back(NO_TEXT_BUTTON(106, y, 13, 13, std::bind(&EditorScreen::changeIV, this, statValues[i], false), ui_sheet_button_minus_small_idx));
-        buttons[tab].push_back(NO_TEXT_BUTTON(121, y, 23, 13, std::bind(&EditorScreen::setIV, this, statValues[i]), ui_sheet_res_null_idx));
+        buttons[tab].push_back(NO_TEXT_BUTTON(121, y, 23, 13, [=](){ Gui::setNextKeyboardFunc(std::bind(&EditorScreen::setIV, this, statValues[i])); return false; }, ui_sheet_res_null_idx));
         buttons[tab].push_back(NO_TEXT_BUTTON(146, y, 13, 13, std::bind(&EditorScreen::changeIV, this, statValues[i], true), ui_sheet_button_plus_small_idx));
 
         buttons[tab].push_back(NO_TEXT_BUTTON(182, y, 13, 13, std::bind(&EditorScreen::changeEV, this, statValues[i], false), ui_sheet_button_minus_small_idx));
-        buttons[tab].push_back(NO_TEXT_BUTTON(197, y, 32, 13, std::bind(&EditorScreen::setEV, this, statValues[i]), ui_sheet_res_null_idx));
+        buttons[tab].push_back(NO_TEXT_BUTTON(197, y, 32, 13, [=](){ Gui::setNextKeyboardFunc(std::bind(&EditorScreen::setEV, this, statValues[i])); return false; }, ui_sheet_res_null_idx));
         buttons[tab].push_back(NO_TEXT_BUTTON(231, y, 13, 13, std::bind(&EditorScreen::changeEV, this, statValues[i], true), ui_sheet_button_plus_small_idx));
     }
     buttons[tab].push_back(NO_TEXT_BUTTON(300, 184, 15, 12, std::bind(&EditorScreen::setHP, this), ui_sheet_button_info_detail_editor_light_idx));
@@ -372,10 +372,25 @@ bool EditorScreen::changeLevel(bool up)
     return false;
 }
 
-bool EditorScreen::setLevel()
+void EditorScreen::setLevel()
 {
-    // swkbd stuff
-    return false;
+    static SwkbdState state;
+    static bool first = true;
+    if (first)
+    {
+        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 3);
+        first = false;
+    }
+    swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
+    swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+    char input[4] = {0};
+    SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
+    input[3] = '\0';
+    if (ret == SWKBD_BUTTON_CONFIRM)
+    {
+        u8 level = (u8) std::min(std::stoi(input), 100);
+        pkm->level(level);
+    }
 }
 
 bool EditorScreen::togglePokerus()
@@ -391,16 +406,44 @@ bool EditorScreen::togglePokerus()
     return false;
 }
 
-bool EditorScreen::setOT()
+void EditorScreen::setOT()
 {
-    // swkbd stuff
-    return false;
+    SwkbdState state;
+    bool first = true;
+    if (first)
+    {
+        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->gen6() || pkm->gen7() ? 12 : 8);
+        first = false;
+    }
+    swkbdSetHintText(&state, "OT Name");
+    swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+    char input[25] = {0};
+    SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
+    input[24] = '\0';
+    if (ret == SWKBD_BUTTON_CONFIRM)
+    {
+        pkm->otName(input);
+    }
 }
 
-bool EditorScreen::setNick()
+void EditorScreen::setNick()
 {
-    // swkbd stuff
-    return false;
+    SwkbdState state;
+    bool first = true;
+    if (first)
+    {
+        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->gen6() || pkm->gen7() ? 12 : 11);
+        first = false;
+    }
+    swkbdSetHintText(&state, "Nickname");
+    swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+    char input[25] = {0};
+    SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
+    input[24] = '\0';
+    if (ret == SWKBD_BUTTON_CONFIRM)
+    {
+        pkm->nickname(input);
+    }
 }
 
 bool EditorScreen::changeFriendship(bool up)
@@ -422,10 +465,25 @@ bool EditorScreen::changeFriendship(bool up)
     return false;
 }
 
-bool EditorScreen::setFriendship()
+void EditorScreen::setFriendship()
 {
-    // swkbd stuff
-    return false;
+    static SwkbdState state;
+    static bool first = true;
+    if (first)
+    {
+        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 3);
+        first = false;
+    }
+    swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
+    swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+    char input[4] = {0};
+    SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
+    input[3] = '\0';
+    if (ret == SWKBD_BUTTON_CONFIRM)
+    {
+        u8 friendship = (u8) std::min(std::stoi(input), 255);
+        pkm->currentFriendship(friendship);
+    }
 }
 
 bool EditorScreen::save()
@@ -434,10 +492,25 @@ bool EditorScreen::save()
     return false;
 }
 
-bool EditorScreen::setIV(int which)
+void EditorScreen::setIV(int which)
 {
-    // swkbd stuff
-    return false;
+    static SwkbdState state;
+    static bool first = true;
+    if (first)
+    {
+        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 2);
+        first = false;
+    }
+    swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
+    swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+    char input[3] = {0};
+    SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
+    input[2] = '\0';
+    if (ret == SWKBD_BUTTON_CONFIRM)
+    {
+        u8 iv = (u8) std::stoi(input);
+        pkm->iv(which, std::min((u8)31, iv));
+    }
 }
 
 bool EditorScreen::changeIV(int which, bool up)
@@ -459,10 +532,25 @@ bool EditorScreen::changeIV(int which, bool up)
     return false;
 }
 
-bool EditorScreen::setEV(int which)
+void EditorScreen::setEV(int which)
 {
-    // swkbd stuff
-    return false;
+    static SwkbdState state;
+    static bool first = true;
+    if (first)
+    {
+        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 3);
+        first = false;
+    }
+    swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
+    swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+    char input[4] = {0};
+    SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
+    input[3] = '\0';
+    if (ret == SWKBD_BUTTON_CONFIRM)
+    {
+        u8 ev = (u8) std::min(std::stoi(input), 0xFF);
+        pkm->ev(which, ev);
+    }
 }
 
 bool EditorScreen::changeEV(int which, bool up)

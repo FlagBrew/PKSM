@@ -52,22 +52,22 @@ public:
     ScreenType type() const override { return ScreenType::EDITOR; }
 private:
     bool changeLevel(bool up);
-    bool setLevel();
+    void setLevel();
     bool selectNature();
     bool selectAbility();
     bool selectItem();
     bool togglePokerus();
-    bool setOT();
-    bool setNick();
+    void setOT();
+    void setNick();
     bool changeFriendship(bool up);
-    bool setFriendship();
+    void setFriendship();
     bool hexEdit();
     bool save();
     
     bool changeIV(int which, bool up);
-    bool setIV(int which);
+    void setIV(int which);
     bool changeEV(int which, bool up);
-    bool setEV(int which);
+    void setEV(int which);
     bool setHP();
     bool goBack();
     void changeMove();

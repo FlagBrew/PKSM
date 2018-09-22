@@ -40,8 +40,7 @@ Result App::init(void)
     i18n::init();
 
     // uncomment when needing to debug with GDB
-    // Why does commenting this out make the configuration read fail???? WTF
-    consoleDebugInit(debugDevice_SVC);
+    // consoleDebugInit(debugDevice_SVC);
     // while(aptMainLoop() && !(hidKeysDown() & KEY_START)) { hidScanInput(); }
     
     Configuration::getInstance();

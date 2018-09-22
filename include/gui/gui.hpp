@@ -127,6 +127,7 @@ namespace Gui
     void setScreen(std::unique_ptr<Screen> screen);
     void screenBack(void);
     bool showChoiceMessage(const std::string& message);
+    void setNextKeyboardFunc(std::function<void()> callback);
 }
 
 extern std::mt19937 g_randomNumbers;
