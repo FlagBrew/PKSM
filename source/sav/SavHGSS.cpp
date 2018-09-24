@@ -194,6 +194,11 @@ void SavHGSS::mysteryGift(WCX& wc, int& pos)
 
 std::string SavHGSS::boxName(u8 box) const { return StringUtils::getString4(data, boxOffset(18, 0) + 0x8 + box*0x28, 0x14); }
 
+void SavHGSS::boxName(u8 box, std::string name)
+{
+    StringUtils::setString4(data, name, boxOffset(18, 0) + 0x8 + box * 0x28, 0x14);
+}
+
 u8 SavHGSS::partyCount(void) const { return data[gbo + 0x94]; }
 
 void SavHGSS::dex(PKX& pk)

@@ -106,6 +106,7 @@ public:
     void mysteryGift(WCX& wc, int& pos) override;
     void cryptBoxData(bool crypted) override;
     std::string boxName(u8 box) const override;
+    void boxName(u8 box, std::string name) override;
     u8 partyCount(void) const override;
 
     int maxBoxes(void) const override { return 18; }

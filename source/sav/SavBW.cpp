@@ -255,6 +255,11 @@ void SavBW::mysteryGift(WCX& wc, int& pos)
 
 std::string SavBW::boxName(u8 box) const { return StringUtils::getTrimmedString(data, 0x28 * box + 4, 0x14, (char*)"\uFFFF"); }
 
+void SavBW::boxName(u8 box, std::string name)
+{
+    StringUtils::setStringWithBytes(data, name.c_str(), 0x28 * box + 4, 0x14, (char*)"\uFFFF");
+}
+
 u8 SavBW::partyCount(void) const { return data[0x18E04]; }
 
 std::shared_ptr<PKX> SavBW::emptyPkm() const

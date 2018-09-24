@@ -379,6 +379,11 @@ std::string SavUSUM::boxName(u8 box) const
     return StringUtils::getString(data, 0x4C00 + 0x22*box, 17);
 }
 
+void SavUSUM::boxName(u8 box, std::string name)
+{
+    StringUtils::setString(data, name.c_str(), 0x4C00 + 0x22*box, 17);
+}
+
 u8 SavUSUM::partyCount(void) const { return data[partyOffset(0) + 6*260]; }
 
 std::shared_ptr<PKX> SavUSUM::emptyPkm() const

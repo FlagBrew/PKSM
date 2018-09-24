@@ -92,7 +92,82 @@ int bobPointer()
     return currentBob / 4;
 }
 
-bool changeBoxName() { return false; }
+void StorageScreen::setBoxName(bool storage)
+{
+    if (TitleLoader::save->generation() == 4)
+    {
+        return;
+    }
+    if (storage)
+    {
+        static SwkbdState state;
+        static bool first = true;
+        if (first)
+        {
+            swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 20);
+            first = false;
+        }
+        swkbdSetHintText(&state, "Bank Box Name");
+        swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+        char input[41] = {0};
+        SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
+        input[40] = '\0';
+        if (ret == SWKBD_BUTTON_CONFIRM)
+        {
+            //storage->setBoxName(storageBox);
+        }
+    }
+    else
+    {
+        switch (TitleLoader::save->generation())
+        {
+            case 4:
+            case 5:
+            {
+                static SwkbdState state;
+                static bool first = true;
+                if (first)
+                {
+                    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 19);
+                    first = false;
+                }
+                swkbdSetHintText(&state, "Box Name");
+                swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+                char input[40] = {0};
+                SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
+                input[38] = '\0';
+                input[39] = '\0';
+                if (ret == SWKBD_BUTTON_CONFIRM)
+                {
+                    TitleLoader::save->boxName(boxBox, input);
+                }
+            }
+            break;
+            case 6:
+            case 7:
+            {
+                static SwkbdState state;
+                static bool first = true;
+                if (first)
+                {
+                    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 16);
+                    first = false;
+                }
+                swkbdSetHintText(&state, "Box Name");
+                swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+                char input[34] = {0};
+                SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
+                input[32] = '\0';
+                input[33] = '\0';
+                if (ret == SWKBD_BUTTON_CONFIRM)
+                {
+                    TitleLoader::save->boxName(boxBox, input);
+                }
+            }
+                break;
+        }
+    }
+}
 
 bool wirelessStuff() { return false; }
 
@@ -112,9 +187,8 @@ StorageScreen::StorageScreen()
     mainButtons[6] = new Button(189, 15, 17, 24, std::bind(&StorageScreen::nextBox, this, true), ui_sheet_res_null_idx, "", 0.0f, 0);
     //mainButtons[5] = new Button(7, 17, 16, 20, std::bind(&StorageScreen::lastBox, this, true), ui_sheet_res_button_arrow_idx, "", 0.0f, 0);
     //mainButtons[6] = new Button(185, 17, 16, 20, std::bind(&StorageScreen::nextBox, this, true), ui_sheet_res_emulated_button_arrow_right_idx, "", 0.0f, 0);
-    mainButtons[7] = new Button(32, 15, 164, 24, &changeBoxName, ui_sheet_res_null_idx, "", 0.0f, 0);
-    mainButtons[8] = new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0);
-    mainButtons[9] = new Button(283, 211, 34, 28, std::bind(&StorageScreen::backButton, this), ui_sheet_button_back_idx, "", 0.0f, 0);
+    mainButtons[7] = new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0);
+    mainButtons[8] = new Button(283, 211, 34, 28, std::bind(&StorageScreen::backButton, this), ui_sheet_button_back_idx, "", 0.0f, 0);
 
     // Pokemon buttons
     u16 y = 45;
@@ -123,18 +197,30 @@ StorageScreen::StorageScreen()
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            pkmButtons[row*6 + column] = new Button(x, y, 34, 30, std::bind(&StorageScreen::setBottomIndex, this, row*6 + column), ui_sheet_res_null_idx, "", 0.0f, 0);
+            clickButtons[row*6 + column] = new Button(x, y, 34, 30, std::bind(&StorageScreen::clickBottomIndex, this, row*6 + column + 1), ui_sheet_res_null_idx, "", 0.0f, 0);
             x += 34;
         }
         y += 30;
     }
+    clickButtons[30] = new Button(32, 15, 164, 24, std::bind(&StorageScreen::clickBottomIndex, this, 0), ui_sheet_res_null_idx, "", 0.0f, 0);
     TitleLoader::save->cryptBoxData(true);
 }
 
 void StorageScreen::draw() const
 {
-    std::shared_ptr<PKX> infoMon = storageChosen ? /*storage->pkm(storageBox, cursorIndex)*/ testPkm : TitleLoader::save->pkm(boxBox, cursorIndex);
-    if (infoMon->species() == 0)
+    std::shared_ptr<PKX> infoMon = nullptr;
+    if (moveMon)
+    {
+        infoMon = moveMon;
+    }
+    else
+    {
+        if (cursorIndex != 0)
+        {
+            infoMon = storageChosen ? /*storage->pkm(storageBox, cursorIndex)*/ testPkm : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
+        }
+    }
+    if (infoMon && infoMon->species() == 0)
     {
         infoMon = nullptr;
     }
@@ -173,13 +259,31 @@ void StorageScreen::draw() const
 
     if (!storageChosen)
     {
-        Gui::sprite(ui_sheet_pointer_arrow_idx, 21 + (cursorIndex % 6) * 34, 30 + (cursorIndex / 6) * 30 + bobPointer());
+        if (cursorIndex == 0)
+        {
+            int dy = bobPointer();
+            if (moveMon)
+            {
+                Gui::pkm(moveMon.get(), 94, 5 + dy);
+            }
+            Gui::sprite(ui_sheet_pointer_arrow_idx, 106, -4 + dy);
+        }
+        else
+        {
+            int tempIndex = cursorIndex - 1;
+            int yMod = (tempIndex / 6) * 30 + bobPointer();
+            if (moveMon)
+            {
+                Gui::pkm(moveMon.get(), 9 + (tempIndex % 6) * 34, 39 + yMod);
+            }
+            Gui::sprite(ui_sheet_pointer_arrow_idx, 21 + (tempIndex % 6) * 34, 30 + yMod);
+        }
     }
 
     if (viewer)
     {
         C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, C2D_Color32(0, 0, 0, 120));
-        mainButtons[9]->draw();
+        mainButtons[8]->draw();
         viewer->draw();
     }
     else
@@ -226,7 +330,25 @@ void StorageScreen::draw() const
 
         if (storageChosen)
         {
-            Gui::sprite(ui_sheet_pointer_arrow_idx, 62 + (cursorIndex % 6) * 34, 51 + (cursorIndex / 6) * 30 + bobPointer());
+            if (cursorIndex == 0)
+            {
+                int dy = bobPointer();
+                if (moveMon)
+                {
+                    Gui::pkm(moveMon.get(), 135, 11 + dy);
+                }
+                Gui::sprite(ui_sheet_pointer_arrow_idx, 147, 2 + dy);
+            }
+            else
+            {
+                int tempIndex = cursorIndex - 1;
+                int yMod = (tempIndex / 6) * 30 + bobPointer();
+                if (moveMon)
+                {
+                    Gui::pkm(moveMon.get(), 50 + (tempIndex % 6) * 34, 60 + yMod);
+                }
+                Gui::sprite(ui_sheet_pointer_arrow_idx, 62 + (tempIndex % 6) * 34, 51 + yMod);
+            }
         }
 
         if (infoMon)
@@ -286,23 +408,42 @@ void StorageScreen::update(touchPosition* touch)
     static bool sleep = true;
     if (!viewer)
     {
+        u32 kDown = hidKeysDown();
+        u32 kHeld = hidKeysHeld();
+
         for (Button* button : mainButtons)
         {
             if (button->update(touch))
                 return;
         }
         backHeld = false;
-        for (Button* button : pkmButtons)
+        // prevents double pressing
+        if (kDown & KEY_TOUCH)
         {
-            button->update(touch);
+            for (Button* button : clickButtons)
+            {
+                if (button->update(touch))
+                    return;
+            }
         }
 
         static int buttonCooldown = 10;
 
-        u64 kDown = hidKeysDown();
-        u64 kHeld = hidKeysHeld();
-
-        if (kDown & KEY_B)
+        if (kDown & KEY_A)
+        {
+            if (cursorIndex == 0)
+            {
+                if (!moveMon)
+                {
+                    Gui::setNextKeyboardFunc(std::bind(&StorageScreen::setBoxName, this, storageChosen));
+                }
+            }
+            else
+            {
+                pickup();
+            }
+        }
+        else if (kDown & KEY_B)
         {
             backButton();
             return;
@@ -322,38 +463,50 @@ void StorageScreen::update(touchPosition* touch)
             sleep = false;
             if (kHeld & KEY_LEFT)
             {
-                if (cursorIndex > 0) 
+                if (cursorIndex == 0)
+                {
+                    lastBox();
+                }
+                else if (cursorIndex > 1) 
                 {
                     cursorIndex--;
                 }
-                else if (cursorIndex == 0)
+                else if (cursorIndex == 1)
                 {
                     lastBox();
-                    cursorIndex = 29;
+                    cursorIndex = 30;
                 }
                 sleep = true;
             }
             else if (kHeld & KEY_RIGHT)
             {
-                if (cursorIndex < 29)
+                if (cursorIndex == 0)
+                {
+                    nextBox();
+                }
+                else if (cursorIndex < 30)
                 {
                     cursorIndex++;
                 }
-                else if (cursorIndex == 29)
+                else if (cursorIndex == 30)
                 {
                     nextBox();
-                    cursorIndex = 0;
+                    cursorIndex = 1;
                 }
                 sleep = true;
             }
             else if (kHeld & KEY_UP)
             {
-                if (cursorIndex <= 5 && !storageChosen)
+                if (cursorIndex == 0 && !storageChosen)
                 {
                     storageChosen = true;
-                    cursorIndex += 24;
+                    cursorIndex = 27;
                 }
-                else if (cursorIndex > 5)
+                else if (cursorIndex > 0 && cursorIndex <= 6)
+                {
+                    cursorIndex = 0;
+                }
+                else if (cursorIndex > 6)
                 {			
                     cursorIndex -= 6;
                 }
@@ -361,12 +514,16 @@ void StorageScreen::update(touchPosition* touch)
             }
             else if (kHeld & KEY_DOWN)
             {
-                if (cursorIndex >= 24 && storageChosen)
+                if (cursorIndex >= 25 && storageChosen)
                 {
                     storageChosen = false;
-                    cursorIndex -= 24;
+                    cursorIndex = 0;
                 }
-                else if (cursorIndex < 24)
+                else if (cursorIndex == 0)
+                {
+                    cursorIndex = 3;
+                }
+                else if (cursorIndex < 25)
                 {
                     cursorIndex += 6;
                 }
@@ -391,7 +548,7 @@ void StorageScreen::update(touchPosition* touch)
     }
     else
     {
-        if (hidKeysDown() & KEY_B || mainButtons[9]->update(touch))
+        if (hidKeysDown() & KEY_B || mainButtons[8]->update(touch))
         {
             backButton();
         }
@@ -440,10 +597,28 @@ bool StorageScreen::nextBox(bool forceBottom)
     return false;
 }
 
-bool StorageScreen::setBottomIndex(int index)
+bool StorageScreen::clickBottomIndex(int index)
 {
-    cursorIndex = index;
-    storageChosen = false;
+    if (cursorIndex == index && !storageChosen)
+    {
+        if (cursorIndex == 0)
+        {
+            if (!moveMon)
+            {
+                Gui::setNextKeyboardFunc(std::bind(&StorageScreen::setBoxName, this, false));
+                return true;
+            }
+        }
+        else
+        {
+            pickup();
+        }
+    }
+    else
+    {
+        cursorIndex = index;
+        storageChosen = false;
+    }
     return false;
 }
 
@@ -452,17 +627,25 @@ bool StorageScreen::backButton()
     if (!backHeld)
     {
         backHeld = true;
-        if (!viewer)
-            Gui::screenBack();
+        if (viewer)
+        {
+            viewer = nullptr;
+        }
+        else if (moveMon)
+        {
+            Gui::warn("Exiting is not allowed when a Pok\u00E9mon is held!");
+        }
         else
-            viewer.reset(NULL);
+        {
+            Gui::screenBack();
+        }
     }
     return true;
 }
 
 bool StorageScreen::showViewer()
 {
-    std::shared_ptr<PKX> view = storageChosen ? testPkm : TitleLoader::save->pkm(boxBox, cursorIndex);
+    std::shared_ptr<PKX> view = cursorIndex == 0 ? TitleLoader::save->emptyPkm() : storageChosen ? testPkm : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
     if (view->species() != 0)
     {
         viewer = std::unique_ptr<ViewerScreen>(new ViewerScreen(view, true));
@@ -497,4 +680,41 @@ bool StorageScreen::releasePkm()
             TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), boxBox, cursorIndex);
     }
     return false;
+}
+
+void StorageScreen::pickup()
+{
+    if (!moveMon)
+    {
+        moveMon = storageChosen ? /*storage->pkm(storageBox, cursorIndex)*/ testPkm : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
+        if (storageChosen)
+        {
+            // set storage pkm to emptyPKM
+        }
+        else
+        {
+            TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), boxBox, cursorIndex - 1);
+        }
+    }
+    else
+    {
+        if (storageChosen)
+        {
+            // storage implementation->pkm(storageBox, cursorIndex, moveMon);
+            // moveMon = nullptr;
+        }
+        else
+        {
+            std::shared_ptr<PKX> temPkm = TitleLoader::save->pkm(boxBox, cursorIndex - 1);
+            TitleLoader::save->pkm(*moveMon, boxBox, cursorIndex - 1);
+            if (temPkm->species() == 0)
+            {
+                moveMon = nullptr;
+            }
+            else
+            {
+                moveMon = temPkm;
+            }
+        }
+    }
 }

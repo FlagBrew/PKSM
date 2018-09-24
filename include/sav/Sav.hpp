@@ -103,6 +103,7 @@ public:
     virtual void mysteryGift(WCX& wc, int& pos) = 0;
     virtual void cryptBoxData(bool crypted) = 0;
     virtual std::string boxName(u8 box) const = 0;
+    virtual void boxName(u8 box, std::string name) = 0;
     virtual u8 partyCount(void) const = 0;
 
     virtual int maxBoxes(void) const = 0;

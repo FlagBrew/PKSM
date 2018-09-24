@@ -41,13 +41,13 @@ public:
     StorageScreen();
     ~StorageScreen()
     {
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 9; i++)
         {
             delete mainButtons[i];
         }
-        for (int i = 0; i < 30; i++)
+        for (int i = 0; i < 31; i++)
         {
-            delete pkmButtons[i];
+            delete clickButtons[i];
         }
         TitleLoader::save->cryptBoxData(false);
     }
@@ -66,13 +66,16 @@ private:
     // Have to basically reimplement Hid because two Hids don't go well together
     bool lastBox(bool forceBottom = false);
     bool nextBox(bool forceBottom = false);
-    bool setBottomIndex(int index);
+    bool clickBottomIndex(int index);
+    void setBoxName(bool storage);
+    void pickup();
 
     bool storageChosen = false;
-    std::array<Button*, 10> mainButtons;
-    std::array<Button*, 30> pkmButtons;
+    std::array<Button*, 9> mainButtons;
+    std::array<Button*, 31> clickButtons;
     int cursorIndex = 0, storageBox = 0, boxBox = 0;
     std::unique_ptr<ViewerScreen> viewer;
+    std::shared_ptr<PKX> moveMon = nullptr;
     // Storage implementation
 };
 

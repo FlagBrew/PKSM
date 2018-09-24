@@ -36,6 +36,7 @@
                          } \
                          else \
                             --timer
+#define LIMITSTORAGE(number) number > 9999 ? 9999 : number < 0 ? 0 : number
 
 static void inputNumber(std::function<void(int)> callback, int digits, int maxValue)
 {
@@ -107,9 +108,9 @@ ConfigScreen::ConfigScreen()
 
     // Miscellaneous buttons
     tabButtons[2].push_back(new Button(237, 39, 15, 12, [](){ Gui::clearStaticText(); Configuration::getInstance().autoBackup(!Configuration::getInstance().autoBackup()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new Button(231, 62, 13, 13, [](){ TIMER(Configuration::getInstance().storageSize(Configuration::getInstance().storageSize() - 1)); return false; }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
+    tabButtons[2].push_back(new Button(231, 62, 13, 13, [](){ TIMER(Configuration::getInstance().storageSize(LIMITSTORAGE(Configuration::getInstance().storageSize() - 1))); return false; }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
     tabButtons[2].push_back(new Button(245, 62, 50, 13, [](){ Gui::setNextKeyboardFunc([](){ inputNumber([](u16 a){ Configuration::getInstance().storageSize(a); }, 4, 9999); }); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new Button(296, 62, 13, 13, [](){ TIMER(Configuration::getInstance().storageSize(Configuration::getInstance().storageSize() + 1)); return false; }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
+    tabButtons[2].push_back(new Button(296, 62, 13, 13, [](){ TIMER(Configuration::getInstance().storageSize(LIMITSTORAGE(Configuration::getInstance().storageSize() + 1))); return false; }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
     tabButtons[2].push_back(new Button(237, 87, 15, 12, [](){ Gui::clearStaticText(); Configuration::getInstance().fixSectors(!Configuration::getInstance().fixSectors()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
     tabButtons[2].push_back(new Button(237, 111, 15, 12, [](){ Gui::clearStaticText(); Configuration::getInstance().transferEdit(!Configuration::getInstance().transferEdit()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
 }
