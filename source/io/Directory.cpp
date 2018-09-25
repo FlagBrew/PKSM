@@ -60,27 +60,27 @@ Directory::Directory(FS_Archive archive, std::u16string root)
 	load = true;
 }
 
-Result Directory::error(void)
+Result Directory::error(void) const
 {
 	return err;
 }
 
-bool Directory::loaded(void)
+bool Directory::loaded(void) const
 {
 	return load;
 }
 
-std::u16string Directory::item(size_t index)
+std::u16string Directory::item(size_t index) const
 {
 	return (char16_t*)list.at(index).name;
 }
 
-bool Directory::folder(size_t index)
+bool Directory::folder(size_t index) const
 {
 	return index < list.size() ? list.at(index).attributes == FS_ATTRIBUTE_DIRECTORY : false;
 }
 
-size_t Directory::count(void)
+size_t Directory::count(void) const
 {
 	return list.size();
 }

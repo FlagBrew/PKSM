@@ -24,27 +24,31 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef DIRECTORY_HPP
-#define DIRECTORY_HPP
+#ifndef SCRIPTSCREEN_HPP
+#define SCRIPTSCREEN_HPP
 
-#include <3ds.h>
-#include <string>
-#include <vector>
+#include "Screen.hpp"
+#include "Directory.hpp"
+#include "Hid.hpp"
+#include <array>
 
-class Directory
+class ScriptScreen : public Screen
 {
 public:
-	Directory(FS_Archive archive, std::u16string root);
-	Result error(void) const;
-	bool loaded(void) const;
-	std::u16string item(size_t index) const;
-	bool folder(size_t index) const;
-	size_t count(void) const;
+    ScriptScreen();
 
+    void draw() const override;
+    void update(touchPosition* touch) override;
+
+    ScreenType type() const override { return ScreenType::SCRIPTS; }
 private:
-	std::vector<FS_DirectoryEntry> list;
-	Result err;
-	bool load;
+    void updateEntries();
+    void applyScript();
+    std::string currDirString;
+    size_t origDirLength;
+    Directory currDir;
+    std::vector<std::pair<std::string, bool>> currFiles;
+    Hid hid;
 };
 
 #endif

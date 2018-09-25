@@ -1031,93 +1031,6 @@ void Gui::ball(size_t index, int x, int y)
     }
 }
 
-/*void Gui::eventList(WCX* database[], int currentEntry, int page) // This database could be an STL class, too
-{
-    C2D_SceneBegin(g_renderTargetTop);
-    printMenuTop();
-    // do title text
-    int y = 41;
-    std::string pages = std::to_string(page + 1) + "/" + "WHEE"; // + mysteryGiftTotal() / 10;
-    C2D_TextBufClear(dynamicBuf);
-    for (int i = 0; i < 5; i++)
-    {
-        if (i == currentEntry)
-        {
-            sprite(ui_sheet_res_bar_event_top_selected_idx, 18, y);
-        }
-        else
-        {
-            sprite(ui_sheet_res_bar_event_top_normal_idx, 18, y);
-        }
-
-        if (database[page * 10 + i]->pokemon()) // Or just use the value?
-        {
-            if (database[page * 10 + i]->alternativeForm() == 0 || database[page * 10 + i]->species() != 201)
-            {
-                pkm(database[page * 10 + i]->formSpecies(), 20, y - ((i == currentEntry) ? movementOffsetSlow(2) : 0));
-            }
-            else
-            {
-                pkm(pkm_spritesheet_744_1_idx + database[page * 10 + i]->alternativeForm(), 20, y - ((i == currentEntry) ? movementOffsetSlow(2) : 0));
-            }
-        }
-
-        float textWidth = _text_width(database[page * 10 + i]->title(), FONT_SIZE_9);
-        if (textWidth < 140.0f)
-        {
-            _draw_text(54, y + 12, database[page * 10 + i]->title(), (i == currentEntry) ? COLOR_HIGHBLUE : COLOR_YELLOW, FONT_SIZE_9, FONT_SIZE_9);
-        }
-        else
-        {
-            _draw_text_wrap(54, y + 3, database[page * 10 + i]->title(), 140.0f, (i == currentEntry) ? COLOR_HIGHBLUE : COLOR_YELLOW, FONT_SIZE_9, FONT_SIZE_9);
-        }
-        y += 37;
-    }
-
-    y = 41;
-    for (int i = 5; i < 10; i++)
-    {
-        if (i == currentEntry)
-        {
-            sprite(ui_sheet_res_bar_event_top_selected_idx, 200, y);
-        }
-        else
-        {
-            sprite(ui_sheet_res_bar_event_top_normal_idx, 200, y);
-        }
-
-        if (database[page * 10 + i]->pokemon()) // Or just use the value?
-        {
-            if (database[page * 10 + i]->alternativeForm() == 0 || database[page * 10 + i]->species() != 201)
-            {
-                pkm(database[page * 10 + i]->formSpecies(), 20, y - ((i == currentEntry) ? movementOffsetSlow(2) : 0));
-            }
-            else
-            {
-                pkm(pkm_spritesheet_744_1_idx + database[page * 10 + i]->alternativeForm(), 20, y - ((i == currentEntry) ? movementOffsetSlow(2) : 0));
-            }
-        }
-
-        float textWidth = _text_width(database[page * 10 + i]->title(), FONT_SIZE_9);
-        if (textWidth < 140.0f)
-        {
-            _draw_text(235, y + 14, database[page * 10 + i]->title(), (i == currentEntry) ? COLOR_HIGHBLUE : COLOR_YELLOW, FONT_SIZE_9, FONT_SIZE_9);
-        }
-        else
-        {
-            _draw_text_wrap(235, y + 3, database[page * 10 + i]->title(), 140.0f, (i == currentEntry) ? COLOR_HIGHBLUE : COLOR_YELLOW, FONT_SIZE_9, FONT_SIZE_9);
-        }
-        y += 37;
-    }
-    
-    C2D_SceneBegin(g_renderTargetBottom);
-    printMenuBottom();
-    sprite(ui_sheet_res_bar_event_bottom_idx, 65, 45);
-    C2D_DrawText(&LButton, C2D_WithColor, 83, 52, 0.5f, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
-    C2D_DrawText(&RButton, C2D_WithColor, 221, 52, 0.5f, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
-    _draw_text_center(g_renderTargetBottom, 52, pages);
-}*/
-
 static C2D_Image typeImage(Language lang, u8 type)
 {
     switch (lang)
@@ -1182,7 +1095,10 @@ u8 transparencyWaver()
 bool Gui::showChoiceMessage(const std::string& message)
 {
     u32 keys = 0;
-    while (aptMainLoop() && !((keys = hidKeysHeld()) & KEY_B))
+    C3D_FrameEnd(0);
+    clearTextBufs();
+    hidScanInput();
+    while (aptMainLoop() && !((keys = hidKeysDown()) & KEY_B))
     {
         hidScanInput();
         C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
@@ -1213,7 +1129,10 @@ bool Gui::showChoiceMessage(const std::string& message)
 void Gui::warn(const std::string& message)
 {
     u32 keys = 0;
-    while (aptMainLoop() && !((keys = hidKeysHeld()) & KEY_A))
+    C3D_FrameEnd(0);
+    clearTextBufs();
+    hidScanInput();
+    while (aptMainLoop() && !((keys = hidKeysDown()) & KEY_A))
     {
         hidScanInput();
         C3D_FrameBegin(C3D_FRAME_SYNCDRAW);

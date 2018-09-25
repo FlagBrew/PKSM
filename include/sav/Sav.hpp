@@ -40,6 +40,7 @@ typedef uint32_t u32;
 
 class Sav
 {
+friend class ScriptScreen;
 protected:
     static const u16 crc16[256];
     

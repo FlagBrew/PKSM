@@ -38,6 +38,7 @@ extern "C" {
 
 class SavPT : public Sav
 {
+friend class ScriptScreen;
 protected:
     int gbo = -1;
     int sbo = -1;
