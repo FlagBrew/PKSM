@@ -82,7 +82,7 @@ void ScriptScreen::draw() const
     Gui::backgroundTop(true);
 
     // Leaving space for the icon
-    Gui::dynamicText(currDirString, 30, 2, FONT_SIZE_9, FONT_SIZE_9, COLOR_YELLOW, false);
+    Gui::dynamicText(currDirString, 30, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_YELLOW, false);
     Gui::staticText(GFX_TOP, 224, "Press \uE000 to execute script or enter directory", FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
 
     C2D_DrawRectSolid(0, 20 + hid.index() * 25, 0.5f, 400, 25, C2D_Color32(128, 128, 128, 255));
@@ -97,7 +97,7 @@ void ScriptScreen::draw() const
         else
         {
             // Leaving space for the icon
-            Gui::dynamicText(currFiles[i].first, 30, 24 + (i % hid.maxVisibleEntries() * 25), FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, false);
+            Gui::dynamicText(currFiles[i].first, 30, 24 + (i % hid.maxVisibleEntries() * 25), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, false);
         }
     }
 
@@ -122,7 +122,7 @@ void ScriptScreen::update(touchPosition* touch)
         }
         else
         {
-            currDirString = currDirString.substr(0, currDirString.rfind('/'));
+            currDirString = currDirString.substr(0, currDirString.find_last_of('/'));
             currDir = Directory(Archive::sd(), StringUtils::UTF8toUTF16(currDirString.c_str()));
             updateEntries();
         }
@@ -148,6 +148,7 @@ void ScriptScreen::update(touchPosition* touch)
 void ScriptScreen::updateEntries()
 {
     hid.select(0);
+    currFiles.clear();
     for (size_t i = 0; i < currDir.count(); i++)
     {
         currFiles.push_back(std::make_pair(StringUtils::UTF16toUTF8(currDir.item(i)), currDir.folder(i)));
@@ -187,8 +188,8 @@ void ScriptScreen::applyScript()
                 return;
             }
         }
-        
-        size_t index = 10;
+
+        size_t index = strlen(MAGIC);
         while (index < size)
         {
             u32 offset = *(u32*)(data + index);
@@ -201,8 +202,8 @@ void ScriptScreen::applyScript()
                 u32 gbo = 0;
                 switch (TitleLoader::save->version())
                 {
-                    case 7: // heart gold
-                    case 8: // soul silver
+                    case 7:
+                    case 8:
                         sbo = ((SavHGSS*)TitleLoader::save.get())->sbo;
                         gbo = ((SavHGSS*)TitleLoader::save.get())->gbo;
                         break;

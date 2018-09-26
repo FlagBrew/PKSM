@@ -30,7 +30,6 @@
 #include "Screen.hpp"
 #include "Directory.hpp"
 #include "Hid.hpp"
-#include <array>
 
 class ScriptScreen : public Screen
 {
