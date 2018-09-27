@@ -26,6 +26,8 @@
 
 #include "utils.hpp"
 
+static std::wstring_convert<std::codecvt_utf8_utf16<char16_t>,char16_t> convert;
+
 std::string StringUtils::format(const std::string fmt_str, ...)
 {
     va_list ap;
@@ -37,18 +39,14 @@ std::string StringUtils::format(const std::string fmt_str, ...)
     return std::string(formatted.get());
 }
 
-std::u16string StringUtils::UTF8toUTF16(const char* src)
+std::u16string StringUtils::UTF8toUTF16(std::string src)
 {
-    char16_t tmp[256] = {0};
-    utf8_to_utf16((uint16_t *)tmp, (uint8_t *)src, 256);
-    return std::u16string(tmp);
+    return convert.from_bytes(src);
 }
 
 std::string StringUtils::UTF16toUTF8(std::u16string src)
 {
-    static std::wstring_convert<std::codecvt_utf8_utf16<char16_t>,char16_t> convert;
-    std::string dst = convert.to_bytes(src);
-    return dst;
+    return convert.to_bytes(src);
 }
 
 std::string StringUtils::getString(const u8* data, int ofs, int len)
@@ -56,7 +54,6 @@ std::string StringUtils::getString(const u8* data, int ofs, int len)
     len *= 2;
     u8 buffer[len];
     std::copy(data + ofs, data + ofs + len, buffer);
-    std::wstring_convert<std::codecvt_utf8_utf16<char16_t>,char16_t> convert;
     std::string dst = convert.to_bytes((char16_t*)buffer);
     return dst;
 }

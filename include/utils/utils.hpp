@@ -392,7 +392,7 @@ namespace StringUtils
     const size_t G4TEXT_LENGTH = 2872;
 
     std::string format(const std::string fmt_str, ...);
-    std::u16string UTF8toUTF16(const char* src);
+    std::u16string UTF8toUTF16(std::string src);
     std::string UTF16toUTF8(std::u16string src);
     std::string getString(const u8* data, int ofs, int len);
     std::string getTrimmedString(const u8* data, int ofs, int len, char* substr);

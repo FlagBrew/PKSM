@@ -71,7 +71,7 @@ namespace
 }
 
 ScriptScreen::ScriptScreen() : currDirString(getScriptDir(TitleLoader::save->version())), origDirLength(currDirString.size()),
-                               currDir(Archive::sd(), StringUtils::UTF8toUTF16(currDirString.c_str())), hid(8, 1)
+                               currDir(Archive::sd(), StringUtils::UTF8toUTF16(currDirString)), hid(8, 1)
 {
     updateEntries();
 }
@@ -123,7 +123,7 @@ void ScriptScreen::update(touchPosition* touch)
         else
         {
             currDirString = currDirString.substr(0, currDirString.find_last_of('/'));
-            currDir = Directory(Archive::sd(), StringUtils::UTF8toUTF16(currDirString.c_str()));
+            currDir = Directory(Archive::sd(), StringUtils::UTF8toUTF16(currDirString));
             updateEntries();
         }
     }
@@ -132,7 +132,7 @@ void ScriptScreen::update(touchPosition* touch)
         if (currFiles[hid.fullIndex()].second)
         {
             currDirString += '/' + currFiles[hid.fullIndex()].first;
-            currDir = Directory(Archive::sd(), StringUtils::UTF8toUTF16(currDirString.c_str()));
+            currDir = Directory(Archive::sd(), StringUtils::UTF8toUTF16(currDirString));
             updateEntries();
         }
         else
@@ -172,7 +172,7 @@ void ScriptScreen::updateEntries()
 
 void ScriptScreen::applyScript()
 {
-    FSStream in(Archive::sd(), StringUtils::UTF8toUTF16((currDirString + '/' + currFiles[hid.fullIndex()].first).c_str()), FS_OPEN_READ);
+    FSStream in(Archive::sd(), StringUtils::UTF8toUTF16(currDirString + '/' + currFiles[hid.fullIndex()].first), FS_OPEN_READ);
     if (in.good())
     {
         size_t size = in.size();

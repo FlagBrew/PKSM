@@ -34,7 +34,7 @@ Directory::Directory(FS_Archive archive, std::u16string root)
 
 	list.clear();
 
-	err = FSUSER_OpenDirectory(&handle, archive, fsMakePath(PATH_UTF16, root.data()));
+	err = FSUSER_OpenDirectory(&handle, archive, fsMakePath(PATH_UTF16, root.c_str()));
 	if (R_FAILED(err))
 	{
 		return;
