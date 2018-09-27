@@ -132,12 +132,6 @@ namespace Gui
     void setNextKeyboardFunc(std::function<void()> callback);
 }
 
-extern std::mt19937 g_randomNumbers;
-static inline float randomRotation(void)
-{
-    return (((float)(g_randomNumbers() % 1000)) / 500.0f) - 1.0f;
-}
-
 extern C2D_TextBuf g_widthBuf;
 static inline float textWidth(const std::string& str, float scaleX)
 {
