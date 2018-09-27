@@ -194,7 +194,7 @@ void ScriptScreen::applyScript()
         {
             u32 offset = *(u32*)(data + index);
             u32 length = *(u32*)(data + index + 4);
-            u32 repeat = *(u32*)(data + index + 8);
+            u32 repeat = *(u32*)(data + index + 8 + length);
 
             if (TitleLoader::save->generation() == 4)
             {
@@ -229,7 +229,7 @@ void ScriptScreen::applyScript()
 
             for (size_t i = 0; i < repeat; i++)
             {
-                std::copy(data + index + 8, data + index + 8 + length, (TitleLoader::save.get())->data + offset + i * length);
+                std::copy(data + index + 8, data + index + 8 + length, TitleLoader::save->data + offset + i * length);
             }
 
             index += 12 + length;

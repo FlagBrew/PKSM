@@ -297,7 +297,7 @@ void TitleLoadScreen::update(touchPosition* touch)
                 }
                 else if (TitleLoader::nandTitles.size() < 5)
                 {
-                    if (selectedTitle < (int) TitleLoader::nandTitles.size() - 1)
+                    if (selectedTitle < (int) TitleLoader::nandTitles.size() - 2)
                     {
                         selectedTitle++;
                     }
@@ -361,13 +361,20 @@ void TitleLoadScreen::update(touchPosition* touch)
                 }
                 else
                 {
-                    if (selectedTitle == 3)
+                    if (TitleLoader::nandTitles.size() > 4 && selectedTitle > 3)
                     {
-                        selectedTitle = 0;
+                        if (selectedTitle > 3)
+                        {
+                            selectedTitle = 4;
+                        }
+                        else if (selectedTitle == 3)
+                        {
+                            selectedTitle = 0;
+                        }
                     }
                     else
                     {
-                        selectedTitle = 4;
+                        selectedTitle = 0;
                     }
                 }
             }
