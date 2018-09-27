@@ -38,6 +38,7 @@
 #include "i18n.hpp"
 #include "PKX.hpp"
 #include "Sav.hpp"
+#include "Optional.hpp"
 
 #include "ui_sheet.h"
 #include "pkm_spritesheet.h"
@@ -126,8 +127,8 @@ namespace Gui
 
     void setScreen(std::unique_ptr<Screen> screen);
     void screenBack(void);
-    bool showChoiceMessage(const std::string& message);
-    void warn(const std::string& message);
+    bool showChoiceMessage(const std::string& message, Optional<std::string> message2 = Optional<std::string>(nullptr));
+    void warn(const std::string& message, Optional<std::string> message2 = Optional<std::string>(nullptr));
     void setNextKeyboardFunc(std::function<void()> callback);
 }
 

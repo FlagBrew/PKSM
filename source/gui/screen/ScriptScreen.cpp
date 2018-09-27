@@ -137,7 +137,7 @@ void ScriptScreen::update(touchPosition* touch)
         }
         else
         {
-            if (Gui::showChoiceMessage("Do you want to use the script \'" + currFiles[hid.fullIndex()].first + "\'?"))
+            if (Gui::showChoiceMessage("Do you want to use the following script?", '\'' + currFiles[hid.fullIndex()].first + '\''))
             {
                 applyScript();
             }
