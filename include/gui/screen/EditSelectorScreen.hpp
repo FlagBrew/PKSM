@@ -58,6 +58,8 @@ private:
     bool lastBox();
     bool nextBox();
     bool editPokemon(std::shared_ptr<PKX> pkm);
+    void changeBoxName();
+    bool clickIndex(int i);
     std::vector<Button*> buttons;
     std::array<Button*, 36> pkmButtons;
     std::shared_ptr<ViewerScreen> viewer;

@@ -94,10 +94,6 @@ int bobPointer()
 
 void StorageScreen::setBoxName(bool storage)
 {
-    if (TitleLoader::save->generation() == 4)
-    {
-        return;
-    }
     if (storage)
     {
         static SwkbdState state;
@@ -164,7 +160,7 @@ void StorageScreen::setBoxName(bool storage)
                     TitleLoader::save->boxName(boxBox, input);
                 }
             }
-                break;
+            break;
         }
     }
 }

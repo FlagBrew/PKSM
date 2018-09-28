@@ -30,8 +30,58 @@
 #include "EditorScreen.hpp"
 
 extern int bobPointer();
+static bool dirtyBack = true;
 
-static bool changeBoxName() { return false; }
+void EditSelectorScreen::changeBoxName()
+{
+    switch (TitleLoader::save->generation())
+    {
+        case 4:
+        case 5:
+        {
+            static SwkbdState state;
+            static bool first = true;
+            if (first)
+            {
+                swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 19);
+                first = false;
+            }
+            swkbdSetHintText(&state, "Box Name");
+            swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+            char input[40] = {0};
+            SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
+            input[38] = '\0';
+            input[39] = '\0';
+            if (ret == SWKBD_BUTTON_CONFIRM)
+            {
+                TitleLoader::save->boxName(box, input);
+            }
+        }
+        break;
+        case 6:
+        case 7:
+        {
+            static SwkbdState state;
+            static bool first = true;
+            if (first)
+            {
+                swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 16);
+                first = false;
+            }
+            swkbdSetHintText(&state, "Box Name");
+            swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+            char input[34] = {0};
+            SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
+            input[32] = '\0';
+            input[33] = '\0';
+            if (ret == SWKBD_BUTTON_CONFIRM)
+            {
+                TitleLoader::save->boxName(box, input);
+            }
+        }
+        break;
+    }
+}
 
 static bool wirelessStuff() { return false; }
 
@@ -42,7 +92,7 @@ EditSelectorScreen::EditSelectorScreen()
     viewer = std::shared_ptr<ViewerScreen>(new ViewerScreen(nullptr, false));
     
     buttons.push_back(new Button(283, 211, 34, 28, [](){ Gui::screenBack(); return true; }, ui_sheet_button_back_idx, "", 0.0f, 0));
-    buttons.push_back(new Button(32, 15, 164, 24, &changeBoxName, ui_sheet_res_null_idx, "", 0.0f, 0));
+    buttons.push_back(new Button(32, 15, 164, 24, std::bind(&EditSelectorScreen::clickIndex, this, 0), ui_sheet_res_null_idx, "", 0.0f, 0));
     buttons.push_back(new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0));
     buttons.push_back(new Button(8, 15, 17, 24, std::bind(&EditSelectorScreen::lastBox, this), ui_sheet_res_null_idx, "", 0.0f, 0));
     buttons.push_back(new Button(189, 15, 17, 24, std::bind(&EditSelectorScreen::nextBox, this), ui_sheet_res_null_idx, "", 0.0f, 0));
@@ -54,7 +104,7 @@ EditSelectorScreen::EditSelectorScreen()
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            pkmButtons[row*6 + column] = new Button(x, y, 34, 30, [row, column, this](){ cursorPos = row * 6 + column; return false; }, ui_sheet_res_null_idx, "", 0.0f, 0);
+            pkmButtons[row*6 + column] = new Button(x, y, 34, 30, std::bind(&EditSelectorScreen::clickIndex, this, row * 6 + column + 1), ui_sheet_res_null_idx, "", 0.0f, 0);
             x += 34;
         }
         y += 30;
@@ -63,14 +113,14 @@ EditSelectorScreen::EditSelectorScreen()
     {
         int x = (i % 2 == 0 ? 221 : 271);
         int y = (i % 2 == 0 ? 50 + 45 * (i / 2) : 66 + 45 * (i / 2));
-        pkmButtons[30 + i] = new Button(x, y, 34, 30, [i, this](){ cursorPos = 30 + i; return false; }, ui_sheet_res_null_idx, "", 0.0f, 0);
+        pkmButtons[30 + i] = new Button(x, y, 34, 30, std::bind(&EditSelectorScreen::clickIndex, this, 31 + i), ui_sheet_res_null_idx, "", 0.0f, 0);
     }
     TitleLoader::save->cryptBoxData(true);
 }
 
 void EditSelectorScreen::draw() const
 {
-    std::shared_ptr<PKX> infoMon = cursorPos < 30 ? TitleLoader::save->pkm(box, cursorPos) : TitleLoader::save->pkm(cursorPos - 30);
+    std::shared_ptr<PKX> infoMon = cursorPos == 0 ? nullptr : (cursorPos < 31 ? TitleLoader::save->pkm(box, cursorPos - 1) : TitleLoader::save->pkm(cursorPos - 31));
     C2D_SceneBegin(g_renderTargetBottom);
     Gui::sprite(ui_sheet_emulated_bg_bottom_blue, 0, 0);
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
@@ -124,19 +174,26 @@ void EditSelectorScreen::draw() const
 
     Gui::dynamicText(25, 18, 164, TitleLoader::save->boxName(box), FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
 
-    if (cursorPos < 30)
+    if (cursorPos == 0)
     {
-        Gui::sprite(ui_sheet_pointer_arrow_idx, 21 + (cursorPos % 6) * 34, 30 + (cursorPos / 6) * 30 + bobPointer());
+        Gui::sprite(ui_sheet_pointer_arrow_idx, 106, -4 + bobPointer());
+    }
+    else if (cursorPos < 31)
+    {
+        Gui::sprite(ui_sheet_pointer_arrow_idx, 21 + ((cursorPos - 1) % 6) * 34, 30 + ((cursorPos - 1) / 6) * 30 + bobPointer());
     }
     else
     {
-        int x = 238 + (cursorPos % 2) * 50;
-        int y = (cursorPos % 2 == 0 ? 35 : 51) + ((cursorPos - 30) / 2) * 45;
+        int x = 238 + ((cursorPos - 1) % 2) * 50;
+        int y = ((cursorPos - 1) % 2 == 0 ? 35 : 51) + (((cursorPos - 1) - 30) / 2) * 45;
         Gui::sprite(ui_sheet_pointer_arrow_idx, x, y + bobPointer());
     }
 
-    Gui::dynamicText(GFX_BOTTOM, 224, StringUtils::format("TID: %i / SID: %i / TSV: %i", infoMon->TID(), infoMon->SID(), infoMon->TSV()),
-                     FONT_SIZE_9, FONT_SIZE_9, COLOR_BLACK);
+    if (infoMon)
+    {
+        Gui::dynamicText(GFX_BOTTOM, 224, StringUtils::format("TID: %i / SID: %i / TSV: %i", infoMon->TID(), infoMon->SID(), infoMon->TSV()),
+                        FONT_SIZE_9, FONT_SIZE_9, COLOR_BLACK);
+    }
 
     viewer->draw();
 }
@@ -144,11 +201,10 @@ void EditSelectorScreen::draw() const
 void EditSelectorScreen::update(touchPosition* touch)
 {
     static bool sleep = true;
-    static bool dirtyBack = true;
     static int sleepTimer = 10;
 
-    std::shared_ptr<PKX> infoMon = (cursorPos > 29 ? TitleLoader::save->pkm(cursorPos - 30) : TitleLoader::save->pkm(box, cursorPos));
-    if (infoMon->species() == 0)
+    std::shared_ptr<PKX> infoMon = cursorPos == 0 ? nullptr : (cursorPos > 30 ? TitleLoader::save->pkm(cursorPos - 31) : TitleLoader::save->pkm(box, cursorPos - 1));
+    if (infoMon && infoMon->species() == 0)
     {
         infoMon = nullptr;
     }
@@ -183,9 +239,15 @@ void EditSelectorScreen::update(touchPosition* touch)
         }
     }
 
-    for (Button* button : pkmButtons)
+    u32 downKeys = hidKeysDown();
+    u32 heldKeys = hidKeysHeld();
+
+    if (downKeys & KEY_TOUCH)
     {
-        button->update(touch);
+        for (Button* button : pkmButtons)
+        {
+            button->update(touch);
+        }
     }
 
     if (sleepTimer < 0 && sleep)
@@ -193,13 +255,18 @@ void EditSelectorScreen::update(touchPosition* touch)
         sleep = false;
     }
 
-    u32 downKeys = hidKeysDown();
-    u32 heldKeys = hidKeysHeld();
     if (downKeys & KEY_A)
     {
-        editPokemon(infoMon);
-        dirtyBack = true;
-        return;
+        if (cursorPos == 0)
+        {
+            Gui::setNextKeyboardFunc(std::bind(&EditSelectorScreen::changeBoxName, this));
+        }
+        else
+        {
+            editPokemon(infoMon);
+            dirtyBack = true;
+            return;
+        }
     }
     else if (downKeys & KEY_B)
     {
@@ -213,72 +280,84 @@ void EditSelectorScreen::update(touchPosition* touch)
     }
     else if (downKeys & KEY_LEFT)
     {
-        if (cursorPos >= 30)
+        if (cursorPos >= 31)
         {
-            if (cursorPos == 30)
+            if (cursorPos == 31)
             {
-                cursorPos = 5;
+                cursorPos = 6;
             }
-            else if (cursorPos == 32)
+            else if (cursorPos == 33)
             {
-                cursorPos = 17;
+                cursorPos = 18;
             }
-            else if (cursorPos == 34)
+            else if (cursorPos == 35)
             {
-                cursorPos = 29;
+                cursorPos = 30;
             }
             else
             {
                 cursorPos--;
             }
         }
-        else if (cursorPos > 0) 
+        else if (cursorPos > 1) 
         {
             cursorPos--;
+        }
+        else if (cursorPos == 1)
+        {
+            lastBox();
+            cursorPos = 30;
         }
         else if (cursorPos == 0)
         {
             lastBox();
-            cursorPos = 29;
         }
         sleep = true;
         sleepTimer = 10;
     }
     else if (downKeys & KEY_RIGHT)
     {
-        if (cursorPos < 29 || (cursorPos >= 30 && cursorPos % 2 == 0))
+        if (cursorPos == 0)
+        {
+            nextBox();
+        }
+        else if (cursorPos < 30 || (cursorPos >= 31 && cursorPos % 2 == 1))
         {
             cursorPos++;
         }
-        else if (cursorPos == 29)
+        else if (cursorPos == 30)
         {
             nextBox();
-            cursorPos = 0;
+            cursorPos = 1;
         }
-        else if (cursorPos == 31)
+        else if (cursorPos == 32)
         {
-            cursorPos = 0;
+            cursorPos = 1;
         }
-        else if (cursorPos == 33)
+        else if (cursorPos == 34)
         {
-            cursorPos = 12;
+            cursorPos = 13;
         }
-        else if (cursorPos == 35)
+        else if (cursorPos == 36)
         {
-            cursorPos = 24;
+            cursorPos = 25;
         }
         sleep = true;
         sleepTimer = 10;
     }
     else if (downKeys & KEY_UP)
     {
-        if (cursorPos <= 5)
+        if (cursorPos == 0)
         {
-            cursorPos += 24;
+            cursorPos = 27;
         }
-        else if (cursorPos >= 30)
+        else if (cursorPos <= 6)
         {
-            if (cursorPos > 31)
+            cursorPos = 0;
+        }
+        else if (cursorPos >= 31)
+        {
+            if (cursorPos > 32)
             {
                 cursorPos -= 2;
             }
@@ -296,9 +375,9 @@ void EditSelectorScreen::update(touchPosition* touch)
     }
     else if (downKeys & KEY_DOWN)
     {
-        if (cursorPos >= 30)
+        if (cursorPos >= 31)
         {
-            if (cursorPos < 34)
+            if (cursorPos < 35)
             {
                 cursorPos += 2;
             }
@@ -307,9 +386,13 @@ void EditSelectorScreen::update(touchPosition* touch)
                 cursorPos -= 4;
             }
         }
-        else if (cursorPos >= 24)
+        else if (cursorPos >= 25)
         {
-            cursorPos -= 24;
+            cursorPos = 0;
+        }
+        else if (cursorPos == 0)
+        {
+            cursorPos = 3;
         }
         else
         {
@@ -334,70 +417,82 @@ void EditSelectorScreen::update(touchPosition* touch)
     {
         if (heldKeys & KEY_LEFT)
         {
-            if (cursorPos >= 30)
+            if (cursorPos >= 31)
             {
-                if (cursorPos == 30)
+                if (cursorPos == 31)
                 {
-                    cursorPos = 5;
+                    cursorPos = 6;
                 }
-                else if (cursorPos == 32)
+                else if (cursorPos == 33)
                 {
-                    cursorPos = 17;
+                    cursorPos = 18;
                 }
-                else if (cursorPos == 34)
+                else if (cursorPos == 35)
                 {
-                    cursorPos = 29;
+                    cursorPos = 30;
                 }
                 else
                 {
                     cursorPos--;
                 }
             }
-            else if (cursorPos > 0) 
+            else if (cursorPos > 1) 
             {
                 cursorPos--;
+            }
+            else if (cursorPos == 1)
+            {
+                lastBox();
+                cursorPos = 30;
             }
             else if (cursorPos == 0)
             {
                 lastBox();
-                cursorPos = 29;
             }
             sleep = true;
         }
         else if (heldKeys & KEY_RIGHT)
         {
-            if (cursorPos < 29 || (cursorPos >= 30 && cursorPos % 2 == 0))
+            if (cursorPos == 0)
+            {
+                nextBox();
+            }
+            else if (cursorPos < 30 || (cursorPos >= 31 && cursorPos % 2 == 1))
             {
                 cursorPos++;
             }
-            else if (cursorPos == 29)
+            else if (cursorPos == 30)
             {
                 nextBox();
-                cursorPos = 0;
+                cursorPos = 1;
             }
-            else if (cursorPos == 31)
+            else if (cursorPos == 32)
             {
-                cursorPos = 0;
+                cursorPos = 1;
             }
-            else if (cursorPos == 33)
+            else if (cursorPos == 34)
             {
-                cursorPos = 12;
+                cursorPos = 13;
             }
-            else if (cursorPos == 35)
+            else if (cursorPos == 36)
             {
-                cursorPos = 24;
+                cursorPos = 25;
             }
             sleep = true;
         }
         else if (heldKeys & KEY_UP)
         {
-            if (cursorPos <= 5)
+            if (cursorPos == 0)
             {
-                cursorPos += 24;
+                cursorPos = 27;
             }
-            else if (cursorPos >= 30)
+            else if (cursorPos <= 6)
             {
-                if (cursorPos > 31)
+                cursorPos = 0;
+            }
+            else if (cursorPos >= 31)
+            {
+                if (cursorPos > 32)
                 {
                     cursorPos -= 2;
                 }
@@ -414,9 +509,9 @@ void EditSelectorScreen::update(touchPosition* touch)
         }
         else if (heldKeys & KEY_DOWN)
         {
-            if (cursorPos >= 30)
+            if (cursorPos >= 31)
             {
-                if (cursorPos < 34)
+                if (cursorPos < 35)
                 {
                     cursorPos += 2;
                 }
@@ -425,9 +520,13 @@ void EditSelectorScreen::update(touchPosition* touch)
                     cursorPos -= 4;
                 }
             }
-            else if (cursorPos >= 24)
+            else if (cursorPos >= 25)
             {
-                cursorPos -= 24;
+                cursorPos = 0;
+            }
+            else if (cursorPos == 0)
+            {
+                cursorPos = 3;
             }
             else
             {
@@ -481,11 +580,33 @@ bool EditSelectorScreen::nextBox()
 
 bool EditSelectorScreen::editPokemon(std::shared_ptr<PKX> pkm)
 {
-    if (cursorPos < 30)
+    if (cursorPos < 31 && cursorPos != 0)
     {
-        Gui::setScreen(std::unique_ptr<Screen>(new EditorScreen(viewer, pkm, box, cursorPos)));
+        Gui::setScreen(std::unique_ptr<Screen>(new EditorScreen(viewer, pkm, box, cursorPos - 1)));
         return true;
     }
 
     return false;
+}
+
+bool EditSelectorScreen::clickIndex(int i)
+{
+    if (cursorPos == i)
+    {
+        if (cursorPos == 0)
+        {
+            Gui::setNextKeyboardFunc(std::bind(&EditSelectorScreen::changeBoxName, this));
+        }
+        else
+        {
+            editPokemon(TitleLoader::save->pkm(box, cursorPos - 1));
+            dirtyBack = true;
+        }
+        return true;
+    }
+    else
+    {
+        cursorPos = i;
+        return false;
+    }
 }
