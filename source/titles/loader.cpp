@@ -28,6 +28,7 @@
 #include "Configuration.hpp"
 #include "Directory.hpp"
 #include "FSStream.hpp"
+#include <ctime>
 
 static constexpr char langIds[8] = {
     'E', //USA
@@ -245,6 +246,137 @@ void TitleLoader::scan(void)
     }
 }
 
+static std::string folderPrefix()
+{
+    switch (TitleLoader::save->version())
+    {
+        case 10:
+            return "d";
+            break;
+        case 11:
+            return "p";
+            break;
+        case 12:
+            return "pt";
+            break;
+        case 7:
+            return "hg";
+            break;
+        case 8:
+            return "ss";
+            break;
+        case 20:
+            return "b";
+            break;
+        case 21:
+            return "w";
+            break;
+        case 22:
+            return "b2";
+            break;
+        case 23:
+            return "w2";
+            break;
+        case 24:
+            return "x";
+            break;
+        case 25:
+            return "y";
+            break;
+        case 26:
+            return "or";
+            break;
+        case 27:
+            return "as";
+            break;
+        case 30:
+            return "su";
+            break;
+        case 31:
+            return "mo";
+            break;
+        case 32:
+            return "us";
+            break;
+        case 33:
+            return "um";
+            break;
+        default:
+            Gui::warn("Couldn't identify save type!");
+            return "";
+    }
+}
+
+static std::string backupName()
+{
+    switch (TitleLoader::save->version())
+    {
+        case 10:
+            return "POKEMON D.sav";
+            break;
+        case 11:
+            return "POKEMON P.sav";
+            break;
+        case 12:
+            return "POKEMON PT.sav";
+            break;
+        case 7:
+            return "POKEMON HG.sav";
+            break;
+        case 8:
+            return "POKEMON SS.sav";
+            break;
+        case 20:
+            return "POKEMON B.sav";
+            break;
+        case 21:
+            return "POKEMON W.sav";
+            break;
+        case 22:
+            return "POKEMON B2.sav";
+            break;
+        case 23:
+            return "POKEMON W2.sav";
+            break;
+        case 24:
+        case 25:
+        case 26:
+        case 27:
+        case 30:
+        case 31:
+        case 32:
+        case 33:
+            return "main";
+            break;
+        default:
+            Gui::warn("Couldn't identify save type!", std::string("This should really never happen!"));
+            return "";
+    }
+}
+
+void TitleLoader::backupSave()
+{
+    char stringTime[15] = {0};
+    time_t unixTime = time(NULL);
+    struct tm* timeStruct = gmtime((const time_t *)&unixTime);
+    std::strftime(stringTime, 14,"%Y%m%d%H%M%S", timeStruct);
+    std::string gameFolder = "/3ds/PKSM/backups/" + folderPrefix();
+    mkdir(gameFolder.c_str(), 777);
+    std::string folderName = gameFolder + '/' + stringTime;
+    mkdir(folderName.c_str(), 777);
+    std::string filePath = folderName + '/' + backupName();
+    FSStream out = FSStream(Archive::sd(), StringUtils::UTF8toUTF16(filePath), FS_OPEN_WRITE | FS_OPEN_CREATE, TitleLoader::save->length);
+    if (out.good())
+    {
+        out.write(TitleLoader::save->data, TitleLoader::save->length);
+    }
+    else
+    {
+        Gui::warn("Could not open backup file!");
+    }
+    out.close();
+}
+
 void TitleLoader::load(std::shared_ptr<Title> title)
 {
     return;
@@ -252,12 +384,16 @@ void TitleLoader::load(std::shared_ptr<Title> title)
 
 void TitleLoader::load(std::string savePath)
 {
-    FSStream in(Archive::sd(), StringUtils::UTF8toUTF16(savePath.c_str()), FS_OPEN_READ);
+    FSStream in(Archive::sd(), StringUtils::UTF8toUTF16(savePath), FS_OPEN_READ);
     u32 size = in.size();
     u8* saveData = new u8[size];
     in.read(saveData, size);
     in.close();
     save = Sav::getSave(saveData, size);
+    if (Configuration::getInstance().autoBackup())
+    {
+        Threads::create((ThreadFunc)&TitleLoader::backupSave);
+    }
 }
 
 void TitleLoader::exit()

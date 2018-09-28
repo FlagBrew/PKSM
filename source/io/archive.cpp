@@ -25,6 +25,7 @@
 */
 
 #include "archive.hpp"
+#include <sys/stat.h>
 
 static FS_Archive sdmc;
 static FS_Archive mData;
@@ -38,6 +39,7 @@ Result Archive::init(void)
         if (R_FAILED(res = createPKSMExtdataArchive())) return res;
     }
     else if (R_FAILED(res = extdata(&mData, UNIQUE_ID))) return res;
+    mkdir("/3ds/PKSM/backups", 777);
     return res;
 }
 

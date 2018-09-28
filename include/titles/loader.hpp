@@ -51,6 +51,7 @@ namespace TitleLoader
     void scan(void);
     void load(std::shared_ptr<Title> title);
     void load(std::string path);
+    void backupSave(void);
     void exit(void);
     
     extern std::vector<std::shared_ptr<Title>> nandTitles;

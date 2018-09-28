@@ -34,6 +34,10 @@
 #include "utils.hpp"
 #include "mysterygift.hpp"
 
+namespace TitleLoader {
+    void backupSave();
+}
+
 typedef uint8_t u8;
 typedef uint16_t u16;
 typedef uint32_t u32;
@@ -41,6 +45,7 @@ typedef uint32_t u32;
 class Sav
 {
 friend class ScriptScreen;
+friend void TitleLoader::backupSave();
 protected:
     static const u16 crc16[256];
     
