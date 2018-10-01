@@ -51,6 +51,8 @@ public:
     FS_MediaType mediaType(void);
     FS_CardType cardType(void);
 
+    std::string checkpointPrefix(void);
+
 private:
     u64 mId;
     FS_MediaType mMedia;
@@ -58,6 +60,7 @@ private:
     CardType mCardType;
     C2D_Image mIcon;
     std::string mName;
+    std::string mPrefix;
 };
 
 #endif

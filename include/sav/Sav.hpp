@@ -36,6 +36,7 @@
 
 namespace TitleLoader {
     void backupSave();
+    void saveChanges();
 }
 
 typedef uint8_t u8;
@@ -46,6 +47,7 @@ class Sav
 {
 friend class ScriptScreen;
 friend void TitleLoader::backupSave();
+friend void TitleLoader::saveChanges();
 protected:
     static const u16 crc16[256];
     

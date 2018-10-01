@@ -422,5 +422,5 @@ void TitleLoadScreen::update(touchPosition* touch)
             selectedSave = 0;
         }
     }
-    availableCheckpointSaves = TitleLoader::sdSaves[StringUtils::format("0x%05X", titleFromIndex(selectedTitle)->lowId() >> 8)];
+    availableCheckpointSaves = TitleLoader::sdSaves[titleFromIndex(selectedTitle)->checkpointPrefix()];
 }

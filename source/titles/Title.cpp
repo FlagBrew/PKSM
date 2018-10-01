@@ -65,6 +65,8 @@ bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
         }
 
         mName = StringUtils::UTF16toUTF8((char16_t*)smdh->applicationTitles[1].shortDescription);
+        mPrefix = StringUtils::format("0x%05X", lowId() >> 8);
+
         if (Archive::saveAccessible(mMedia, lowId(), highId()))
         {
             loadTitle = true;
@@ -83,8 +85,12 @@ bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
         }
         
         char _cardTitle[14] = {0};
+        char _gameCode[6] = {0};
         std::copy(headerData, headerData + 12, _cardTitle);
         _cardTitle[13] = '\0';
+        std::copy(headerData + 12, headerData + 16, _gameCode);
+        _gameCode[5] = '\0';
+        mPrefix = _gameCode;
 
         res = SPIGetCardType(&mCardType, (headerData[12] == 'I') ? 1 : 0);
         delete[] headerData;
@@ -134,4 +140,9 @@ FS_MediaType Title::mediaType(void)
 FS_CardType Title::cardType(void)
 {
     return mCard;
+}
+
+std::string Title::checkpointPrefix(void)
+{
+    return mPrefix;
 }
