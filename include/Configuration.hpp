@@ -108,6 +108,9 @@ public:
         return mJson["defaults"]["date"]["year"];
     }
 
+    // Folders, then files
+    std::pair<std::vector<std::string>, std::vector<std::string>> extraSaves(std::string id);
+
     void language(Language lang)
     {
         mJson["language"] = lang;
@@ -172,6 +175,11 @@ public:
     {
         mJson["defaults"]["date"]["year"] = year;
     }
+
+    // This assumes that we'll have a way to set them in the config screen, something that I'm not sure about
+    // as that would require basically implementing a file browser. Maybe have it be manual, just like Checkpoint?
+    // I implemented it just in case
+    void extraSaves(std::string id, std::pair<std::vector<std::string>, std::vector<std::string>>& saves);
 
     void save(void);
 

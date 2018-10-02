@@ -46,7 +46,8 @@ static bool wirelessSave() { return true; }
 
 TitleLoadScreen::TitleLoadScreen()
 {
-    Threads::create((ThreadFunc)TitleLoader::scan);
+    TitleLoader::scan();
+    //Threads::create((ThreadFunc)TitleLoader::scan);
     for (int i = 0; i < 6; i++)
     {
         buttons.push_back(new Button(24, 96, 175, 16, std::bind(&TitleLoadScreen::setSelectedSave, this, i), ui_sheet_res_null_idx, "", 0.0f, 0));
