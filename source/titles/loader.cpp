@@ -61,6 +61,7 @@ std::shared_ptr<Sav> TitleLoader::save;
 
 static bool saveIsFile;
 static std::string saveFileName;
+static std::shared_ptr<Title> loadedTitle;
 
 void TitleLoader::scan(void)
 {
@@ -223,7 +224,7 @@ void TitleLoader::scan(void)
                 {
                     if (dir.folder(j))
                     {
-                        saves.push_back(saveDir + StringUtils::UTF16toUTF8(sSeparator + dir.item(j) + StringUtils::UTF8toUTF16("/main")));
+                        saves.push_back(saveDir + StringUtils::UTF16toUTF8(sSeparator + dir.item(j)) + "/main");
                     }
                 }
             }
@@ -283,7 +284,7 @@ void TitleLoader::scan(void)
                                 std::u16string file = subdir.item(j);
                                 if (file.substr(file.size() - 3) == StringUtils::UTF8toUTF16("sav"))
                                 {
-                                    saves.push_back(saveDir + StringUtils::UTF16toUTF8(thisDir + sSeparator + file));
+                                    saves.push_back(StringUtils::UTF16toUTF8(thisDir + sSeparator + file));
                                 }
                             }
                         }
@@ -302,73 +303,31 @@ void TitleLoader::scan(void)
     }
 }
 
-static std::string folderPrefix()
-{
-    if (TitleLoader::save->generation() == 4)
-    {
-        // Why is this call not an index to an index instead of an index and a length? Sigh
-        std::string substr = saveFileName.substr(saveFileName.find_last_of(' ') + 1);
-        substr = substr.substr(0,substr.find_last_of('.'));
-        return substr;
-    }
-    else
-    {
-        switch (TitleLoader::save->version())
-        {
-            case 20:
-                return "B";
-                break;
-            case 21:
-                return "W";
-                break;
-            case 22:
-                return "B2";
-                break;
-            case 23:
-                return "W2";
-                break;
-            case 24:
-                return "X";
-                break;
-            case 25:
-                return "Y";
-                break;
-            case 26:
-                return "OR";
-                break;
-            case 27:
-                return "AS";
-                break;
-            case 30:
-                return "SU";
-                break;
-            case 31:
-                return "MO";
-                break;
-            case 32:
-                return "US";
-                break;
-            case 33:
-                return "UM";
-                break;
-            default:
-                Gui::warn("Couldn't identify save type!");
-                return "";
-        }
-    }
-}
-
 void TitleLoader::backupSave()
 {
     char stringTime[15] = {0};
     time_t unixTime = time(NULL);
     struct tm* timeStruct = gmtime((const time_t *)&unixTime);
     std::strftime(stringTime, 14,"%Y%m%d%H%M%S", timeStruct);
-    std::string path = "/3ds/PKSM/backups/" + folderPrefix();
+    std::string path = "/3ds/PKSM/backups/" + loadedTitle->checkpointPrefix();
     mkdir(path.c_str(), 777);
     path += '/' + std::string(stringTime);
     mkdir(path.c_str(), 777);
-    path += '/' + saveFileName.substr(saveFileName.find_last_of('/') + 1);
+    if (saveIsFile)
+    {
+        path += '/' + saveFileName.substr(saveFileName.find_last_of('/') + 1);
+    }
+    else
+    {
+        if (save->generation() == 4 || save->generation() == 5)
+        {
+            path += '/' + loadedTitle->name() + ".sav";
+        }
+        else
+        {
+            path += "/main";
+        }
+    }
     FSStream out = FSStream(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_WRITE | FS_OPEN_CREATE, TitleLoader::save->length);
     if (out.good())
     {
@@ -384,13 +343,15 @@ void TitleLoader::backupSave()
 void TitleLoader::load(std::shared_ptr<Title> title)
 {
     saveIsFile = false;
+    loadedTitle = title;
     return;
 }
 
-void TitleLoader::load(std::string savePath)
+void TitleLoader::load(std::shared_ptr<Title> title, std::string savePath)
 {
     saveIsFile = true;
     saveFileName = savePath;
+    loadedTitle = title;
     FSStream in(Archive::sd(), StringUtils::UTF8toUTF16(savePath), FS_OPEN_READ);
     u32 size = in.size();
     u8* saveData = new u8[size];
@@ -422,4 +383,5 @@ void TitleLoader::exit()
 {
     nandTitles.clear();
     cardTitle = nullptr;
+    loadedTitle = nullptr;
 }

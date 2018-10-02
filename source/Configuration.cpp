@@ -73,9 +73,9 @@ void Configuration::save()
 std::pair<std::vector<std::string>, std::vector<std::string>> Configuration::extraSaves(std::string id)
 {
     std::vector<std::string> folders = {}, files = {};
-    if (mJson["extraSaves"].find(id) != mJson.end())
+    if (mJson["extraSaves"].find(id) != mJson["extraSaves"].end())
     {
-        if (mJson["extraSaves"][id].find("folders") != mJson.end())
+        if (mJson["extraSaves"][id].find("folders") != mJson["extraSaves"][id].end())
         {
             nlohmann::json add = mJson["extraSaves"][id]["folders"];
             for (size_t i = 0; i < add.size(); i++)
@@ -83,9 +83,9 @@ std::pair<std::vector<std::string>, std::vector<std::string>> Configuration::ext
                 folders.push_back(add[i]);
             }
         }
-        if (mJson["extraSaves"][id].find("files") != mJson.end())
+        if (mJson["extraSaves"][id].find("files") != mJson["extraSaves"][id].end())
         {
-            nlohmann::json add = mJson["extraSaves"][id]["folders"];
+            nlohmann::json add = mJson["extraSaves"][id]["files"];
             for (size_t i = 0; i < add.size(); i++)
             {
                 files.push_back(add[i]);

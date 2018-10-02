@@ -50,7 +50,7 @@ namespace TitleLoader
 {
     void scan(void);
     void load(std::shared_ptr<Title> title);
-    void load(std::string path);
+    void load(std::shared_ptr<Title> title, std::string path);
     void backupSave(void);
     void saveChanges(void);
     void exit(void);

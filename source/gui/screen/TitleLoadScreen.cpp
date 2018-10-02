@@ -36,7 +36,7 @@ bool TitleLoadScreen::loadSave() const
     }
     else
     {
-        TitleLoader::load(availableCheckpointSaves[selectedSave + firstSave]);
+        TitleLoader::load(titleFromIndex(selectedTitle), availableCheckpointSaves[selectedSave + firstSave]);
     }
     Gui::setScreen(std::unique_ptr<Screen>(new MainMenu));
     return true;
@@ -46,8 +46,7 @@ static bool wirelessSave() { return true; }
 
 TitleLoadScreen::TitleLoadScreen()
 {
-    TitleLoader::scan();
-    //Threads::create((ThreadFunc)TitleLoader::scan);
+    Threads::create((ThreadFunc)TitleLoader::scan);
     for (int i = 0; i < 6; i++)
     {
         buttons.push_back(new Button(24, 96, 175, 16, std::bind(&TitleLoadScreen::setSelectedSave, this, i), ui_sheet_res_null_idx, "", 0.0f, 0));
