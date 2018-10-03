@@ -60,8 +60,8 @@ private:
     class HexEditButton : public Button
     {
     public:
-        HexEditButton(int x, int y, int w, int h, std::function<bool()> callback, int image, std::string text, bool toggle)
-            : Button(x, y, w, h, callback, image, text, FONT_SIZE_11, COLOR_WHITE), toggle(toggle) {}
+        HexEditButton(int x, int y, int w, int h, std::function<bool()> callback, int image, std::string text, bool toggle, u8 bit)
+            : Button(x, y, w, h, callback, image, text, FONT_SIZE_11, COLOR_WHITE), toggle(toggle), bitVal(bit) {}
         void draw() const override
         {
             Gui::sprite(key, xPos, yPos);
@@ -87,8 +87,13 @@ private:
         {
             return toggle;
         }
+        u8 bit()
+        {
+            return bitVal;
+        }
     private:
         bool toggle;
+        u8 bitVal;
     };
     // Normally I would just use the same buttons for every byte, but since there are some odd things that can be done,
     // I think that this is the better solution. It allows for every byte to have its own set of buttons, allowing bytes

@@ -1097,17 +1097,25 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
     {
         std::vector<HexEditButton*> newButtons;
         buttons.push_back(newButtons);
-        buttons[i].push_back(new HexEditButton(146, 35, 13, 13, std::bind(&HexEditScreen::editNumber, this, true, true), ui_sheet_button_plus_small_idx, "", false));
-        buttons[i].push_back(new HexEditButton(161, 35, 13, 13, std::bind(&HexEditScreen::editNumber, this, false, true), ui_sheet_button_plus_small_idx, "", false));
-        buttons[i].push_back(new HexEditButton(146, 75, 13, 13, std::bind(&HexEditScreen::editNumber, this, true, false), ui_sheet_button_minus_small_idx, "", false));
-        buttons[i].push_back(new HexEditButton(161, 75, 13, 13, std::bind(&HexEditScreen::editNumber, this, false, false), ui_sheet_button_minus_small_idx, "", false));
+        auto edit = [i, this](bool high, bool up) {
+            editNumber(high, up);
+            for (size_t j = 4; j < buttons[i].size(); j++)
+            {
+                buttons[i][j]->setToggled((this->pkm->rawData()[i] >> buttons[i][j]->bit()) & 0x1);
+            }
+            return true;
+        };
+        buttons[i].push_back(new HexEditButton(146, 35, 13, 13, [edit](){ return edit(true, true); }, ui_sheet_button_plus_small_idx, "", false, 0));
+        buttons[i].push_back(new HexEditButton(161, 35, 13, 13, [edit](){ return edit(false, true); }, ui_sheet_button_plus_small_idx, "", false, 0));
+        buttons[i].push_back(new HexEditButton(146, 75, 13, 13, [edit](){ return edit(true, false); }, ui_sheet_button_minus_small_idx, "", false, 0));
+        buttons[i].push_back(new HexEditButton(161, 75, 13, 13, [edit](){ return edit(false, false); }, ui_sheet_button_minus_small_idx, "", false, 0));
         if (pkm->gen6() || pkm->gen7())
         {
             switch (i)
             {
                 // Fateful Encounter
                 case 0x1D:
-                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 0), ui_sheet_emulated_toggle_green_idx, "Fateful Encounter", true));
+                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 0), ui_sheet_emulated_toggle_green_idx, "Fateful Encounter", true, 0));
                     buttons[i].back()->setToggled(pkm->rawData()[i] & 0x1);
                     break;
                 // Markings
@@ -1119,8 +1127,8 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     }
                     for (int j = 0; j < 6; j++)
                     {
-                        buttons[i].push_back(new HexEditButton(70, 90 + j * 16, 13, 13, std::bind(&HexEditScreen::toggleBit, this, i, j), ui_sheet_emulated_toggle_green_idx, marks[j], true));
-                    buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
+                        buttons[i].push_back(new HexEditButton(70, 90 + j * 16, 13, 13, std::bind(&HexEditScreen::toggleBit, this, i, j), ui_sheet_emulated_toggle_green_idx, marks[j], true, j));
+                        buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
                     }
                     break;
                 // Super Training Flags
@@ -1144,8 +1152,8 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     }
                     for (int j = 0; j < 8; j++)
                     {
-                        buttons[i].push_back(new HexEditButton(70, 90 + j * 16, 13, 13, std::bind(&HexEditScreen::toggleBit, this, i, j), ui_sheet_emulated_toggle_green_idx, gen67ToggleTexts[currRibbon], true));
-                    buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
+                        buttons[i].push_back(new HexEditButton(70, 90 + j * 16, 13, 13, std::bind(&HexEditScreen::toggleBit, this, i, j), ui_sheet_emulated_toggle_green_idx, gen67ToggleTexts[currRibbon], true, j));
+                        buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
                         currRibbon++;
                     }
                     break;
@@ -1156,19 +1164,19 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                         delete buttons[i].back();
                         buttons[i].pop_back();
                     }
-                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 0), ui_sheet_emulated_toggle_green_idx, "Secret Super Training", true));
+                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 0), ui_sheet_emulated_toggle_green_idx, "Secret Super Training", true, 0));
                     buttons[i].back()->setToggled(pkm->rawData()[i] & 0x1);
                     break;
                 // Egg, & Nicknamed Flag
                 case 0x77:
-                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 6), ui_sheet_emulated_toggle_green_idx, "Egg", true));
+                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 6), ui_sheet_emulated_toggle_green_idx, "Egg", true, 6));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 6) & 0x1);
-                    buttons[i].push_back(new HexEditButton(70, 106, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 7), ui_sheet_emulated_toggle_green_idx, "Nicknamed", true));
+                    buttons[i].push_back(new HexEditButton(70, 106, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 7), ui_sheet_emulated_toggle_green_idx, "Nicknamed", true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
                     break;
                 // OT Gender
                 case 0xDD:
-                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 7), ui_sheet_emulated_toggle_green_idx, "Female OT", true));
+                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 7), ui_sheet_emulated_toggle_green_idx, "Female OT", true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
                     break;
             }
@@ -1186,7 +1194,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     }
                     for (int j = 0; j < 6; j++)
                     {
-                        buttons[i].push_back(new HexEditButton(70, 90 + j * 16, 13, 13, std::bind(&HexEditScreen::toggleBit, this, i, j), ui_sheet_emulated_toggle_green_idx, marks[j], true));
+                        buttons[i].push_back(new HexEditButton(70, 90 + j * 16, 13, 13, std::bind(&HexEditScreen::toggleBit, this, i, j), ui_sheet_emulated_toggle_green_idx, marks[j], true, j));
                         buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
                     }
                     break;
@@ -1210,33 +1218,33 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     }
                     for (int j = 0; j < 8; j++)
                     {
-                        buttons[i].push_back(new HexEditButton(70, 90 + j * 16, 13, 13, std::bind(&HexEditScreen::toggleBit, this, i, j), ui_sheet_emulated_toggle_green_idx, gen5ToggleTexts[currRibbon], true));
+                        buttons[i].push_back(new HexEditButton(70, 90 + j * 16, 13, 13, std::bind(&HexEditScreen::toggleBit, this, i, j), ui_sheet_emulated_toggle_green_idx, gen5ToggleTexts[currRibbon], true, j));
                         buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
                         currRibbon++;
                     }
                     break;
                 // Egg and Nicknamed Flags
                 case 0x3B:
-                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 6), ui_sheet_emulated_toggle_green_idx, "Egg", true));
+                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 6), ui_sheet_emulated_toggle_green_idx, "Egg", true, 6));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 6) & 0x1);
-                    buttons[i].push_back(new HexEditButton(70, 106, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 7), ui_sheet_emulated_toggle_green_idx, "Nicknamed", true));
+                    buttons[i].push_back(new HexEditButton(70, 106, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 7), ui_sheet_emulated_toggle_green_idx, "Nicknamed", true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
                     break;
                 // Fateful Encounter
                 case 0x40:
-                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 0), ui_sheet_emulated_toggle_green_idx, "Fateful Encounter", true));
+                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 0), ui_sheet_emulated_toggle_green_idx, "Fateful Encounter", true, 0));
                     buttons[i].back()->setToggled(pkm->rawData()[i] & 0x1);
                     break;
                 // DreamWorldAbility & N's Pokemon Flags
                 case 0x42:
-                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 0), ui_sheet_emulated_toggle_green_idx, "Hidden Ability?", true));
+                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 0), ui_sheet_emulated_toggle_green_idx, "Hidden Ability?", true, 0));
                     buttons[i].back()->setToggled(pkm->rawData()[i] & 0x1);
-                    buttons[i].push_back(new HexEditButton(70, 106, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 1), ui_sheet_emulated_toggle_green_idx, "N\'s Pokemon?", true));
+                    buttons[i].push_back(new HexEditButton(70, 106, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 1), ui_sheet_emulated_toggle_green_idx, "N\'s Pokemon?", true, 1));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 1) & 0x1);
                     break;
                 // OT Gender
                 case 0x84:
-                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 7), ui_sheet_emulated_toggle_green_idx, "Female OT", true));
+                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 7), ui_sheet_emulated_toggle_green_idx, "Female OT", true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
                     break;
             }
@@ -1254,7 +1262,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     }
                     for (int j = 0; j < 6; j++)
                     {
-                        buttons[i].push_back(new HexEditButton(70, 90 + j * 16, 13, 13, std::bind(&HexEditScreen::toggleBit, this, i, j), ui_sheet_emulated_toggle_green_idx, marks[j], true));
+                        buttons[i].push_back(new HexEditButton(70, 90 + j * 16, 13, 13, std::bind(&HexEditScreen::toggleBit, this, i, j), ui_sheet_emulated_toggle_green_idx, marks[j], true, j));
                         buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
                     }
                     break;
@@ -1278,21 +1286,21 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     }
                     for (int j = 0; j < 8; j++)
                     {
-                        buttons[i].push_back(new HexEditButton(70, 90 + j * 16, 13, 13, std::bind(&HexEditScreen::toggleBit, this, i, j), ui_sheet_emulated_toggle_green_idx, gen4ToggleTexts[currRibbon], true));
+                        buttons[i].push_back(new HexEditButton(70, 90 + j * 16, 13, 13, std::bind(&HexEditScreen::toggleBit, this, i, j), ui_sheet_emulated_toggle_green_idx, gen4ToggleTexts[currRibbon], true, j));
                         buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
                         currRibbon++;
                     }
                     break;
                 // Egg and Nicknamed Flags
                 case 0x3B:
-                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 6), ui_sheet_emulated_toggle_green_idx, "", true));
+                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 6), ui_sheet_emulated_toggle_green_idx, "", true, 6));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 6) & 0x1);
-                    buttons[i].push_back(new HexEditButton(70, 106, 13, 13, std::bind(&HexEditScreen::toggleBit, this, i, 7), ui_sheet_emulated_toggle_green_idx, "", true));
+                    buttons[i].push_back(new HexEditButton(70, 106, 13, 13, std::bind(&HexEditScreen::toggleBit, this, i, 7), ui_sheet_emulated_toggle_green_idx, "", true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
                     break;
                 // Fateful Encounter
                 case 0x40:
-                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 0), ui_sheet_emulated_toggle_green_idx, "", true));
+                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 0), ui_sheet_emulated_toggle_green_idx, "", true, 0));
                     buttons[i].back()->setToggled(pkm->rawData()[i] & 0x1);
                     break;
                 // Gold Leaves & Crown
@@ -1304,13 +1312,13 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     }
                     for (int j = 0; j < 6; j++)
                     {
-                        buttons[i].push_back(new HexEditButton(70, 90 + j * 16, 13, 13, std::bind(&HexEditScreen::toggleBit, this, i, j), ui_sheet_emulated_toggle_green_idx, "", true));
+                        buttons[i].push_back(new HexEditButton(70, 90 + j * 16, 13, 13, std::bind(&HexEditScreen::toggleBit, this, i, j), ui_sheet_emulated_toggle_green_idx, "", true, j));
                         buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
                     }
                     break;
                 // OT Gender
                 case 0x84:
-                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 7), ui_sheet_emulated_toggle_green_idx, "", true));
+                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, std::bind(&HexEditScreen::toggleBit, this, i, 7), ui_sheet_emulated_toggle_green_idx, "", true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
                     break;
             }
