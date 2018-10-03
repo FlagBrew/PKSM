@@ -53,6 +53,18 @@ static const char* dsIds[9] = {
     "IRD"  //White 2
 };
 
+// known 3ds title ids
+static constexpr std::array<unsigned long long, 8> ctrTitleIds = {
+    0x0004000000055D00, // X
+    0x0004000000055E00, // Y
+    0x000400000011C400, // OR
+    0x000400000011C500, // AS
+    0x0004000000164800, // Sun
+    0x0004000000175E00, // Moon
+    0x00040000001B5000, // Ultrasun
+    0x00040000001B5100  // Ultramoon 
+};
+
 // title list
 std::vector<std::shared_ptr<Title>> TitleLoader::nandTitles;
 std::shared_ptr<Title> TitleLoader::cardTitle = nullptr;
@@ -63,20 +75,8 @@ static bool saveIsFile;
 static std::string saveFileName;
 static std::shared_ptr<Title> loadedTitle;
 
-void TitleLoader::scan(void)
+void TitleLoader::scanTitles(void)
 {
-    // known 3ds title ids
-    static const std::vector<unsigned long long> ctrTitleIds = {
-        0x0004000000055D00, // X
-        0x0004000000055E00, // Y
-        0x000400000011C400, // OR
-        0x000400000011C500, // AS
-        0x0004000000164800, // Sun
-        0x0004000000175E00, // Moon
-        0x00040000001B5000, // Ultrasun
-        0x00040000001B5100  // Ultramoon 
-    };
-
     Result res = 0;
 
     // clear title list if filled previously
@@ -185,7 +185,10 @@ void TitleLoader::scan(void)
     std::sort(nandTitles.begin(), nandTitles.end(), [](std::shared_ptr<Title>& l, std::shared_ptr<Title>& r) {
         return l->name() < r->name();
     });
+}
 
+void TitleLoader::scanSaves(void)
+{
     std::u16string chkpntDir = StringUtils::UTF8toUTF16("/3ds/Checkpoint/saves");
     Directory checkpoint(Archive::sd(), chkpntDir);
     std::u16string sSeparator = StringUtils::UTF8toUTF16("/");
@@ -309,11 +312,20 @@ void TitleLoader::backupSave()
     time_t unixTime = time(NULL);
     struct tm* timeStruct = gmtime((const time_t *)&unixTime);
     std::strftime(stringTime, 14,"%Y%m%d%H%M%S", timeStruct);
-    std::string path = "/3ds/PKSM/backups/" + loadedTitle->checkpointPrefix();
+    std::string path = "/3ds/PKSM/backups/";
+    if (loadedTitle)
+    {
+        path += loadedTitle->checkpointPrefix();
+    }
+    else
+    {
+        path += saveFileName.substr(saveFileName.find_last_of('/') + 1);
+        path = path.substr(0, path.find(".sav"));
+    }
     mkdir(path.c_str(), 777);
     path += '/' + std::string(stringTime);
     mkdir(path.c_str(), 777);
-    if (saveIsFile)
+    if (!loadedTitle || saveIsFile)
     {
         path += '/' + saveFileName.substr(saveFileName.find_last_of('/') + 1);
     }
@@ -364,6 +376,30 @@ void TitleLoader::load(std::shared_ptr<Title> title, std::string savePath)
     }
 }
 
+static void saveToTitle()
+{
+    // Just an extra check
+    if (loadedTitle)
+    {
+        if (TitleLoader::cardTitle == loadedTitle && Gui::showChoiceMessage("Would you like to write changes to", std::string("the game card?")))
+        {
+            // Not sure how to do this
+        }
+        else
+        {
+            // Just a linear search because it's a maximum of eight titles
+            for (auto title : TitleLoader::nandTitles)
+            {
+                if (title == loadedTitle && Gui::showChoiceMessage("Would you like to write changes to", std::string("the installed title?")))
+                {
+                    // Not sure how to do this either
+                    break; // There can only be one match
+                }
+            }
+        }
+    }
+}
+
 void TitleLoader::saveChanges()
 {
     if (saveIsFile)
@@ -372,10 +408,14 @@ void TitleLoader::saveChanges()
         FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(saveFileName), FS_OPEN_WRITE);
         out.write(save->data, save->length);
         out.close();
+        if (Configuration::getInstance().writeFileSave())
+        {
+            saveToTitle();
+        }
     }
     else
     {
-        // Yeah, still don't know how to do this lol
+        saveToTitle();
     }
 }
 

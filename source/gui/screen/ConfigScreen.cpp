@@ -107,12 +107,13 @@ ConfigScreen::ConfigScreen()
     tabButtons[1].push_back(new Button(112, 182, 15, 12, [](){ Gui::setNextKeyboardFunc([](){ inputNumber([](u16 a){ Configuration::getInstance().year(a); }, 4, 9999); }); return false; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
 
     // Miscellaneous buttons
-    tabButtons[2].push_back(new Button(237, 39, 15, 12, [](){ Gui::clearStaticText(); Configuration::getInstance().autoBackup(!Configuration::getInstance().autoBackup()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    tabButtons[2].push_back(new Button(237, 39, 15, 12, [](){ Configuration::getInstance().autoBackup(!Configuration::getInstance().autoBackup()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
     tabButtons[2].push_back(new Button(231, 62, 13, 13, [](){ TIMER(Configuration::getInstance().storageSize(LIMITSTORAGE(Configuration::getInstance().storageSize() - 1))); return false; }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
     tabButtons[2].push_back(new Button(245, 62, 50, 13, [](){ Gui::setNextKeyboardFunc([](){ inputNumber([](u16 a){ Configuration::getInstance().storageSize(a); }, 4, 9999); }); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
     tabButtons[2].push_back(new Button(296, 62, 13, 13, [](){ TIMER(Configuration::getInstance().storageSize(LIMITSTORAGE(Configuration::getInstance().storageSize() + 1))); return false; }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new Button(237, 87, 15, 12, [](){ Gui::clearStaticText(); Configuration::getInstance().fixSectors(!Configuration::getInstance().fixSectors()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new Button(237, 111, 15, 12, [](){ Gui::clearStaticText(); Configuration::getInstance().transferEdit(!Configuration::getInstance().transferEdit()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    tabButtons[2].push_back(new Button(237, 87, 15, 12, [](){ Configuration::getInstance().fixSectors(!Configuration::getInstance().fixSectors()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    tabButtons[2].push_back(new Button(237, 111, 15, 12, [](){ Configuration::getInstance().transferEdit(!Configuration::getInstance().transferEdit()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    tabButtons[2].push_back(new Button(237, 135, 15, 12, [](){ Configuration::getInstance().writeFileSave(!Configuration::getInstance().writeFileSave()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
 }
 
 void ConfigScreen::draw() const
@@ -245,6 +246,7 @@ void ConfigScreen::draw() const
         Gui::staticText("Storage Size", 19, 60, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
         Gui::staticText("Fix Bad Sectors on Exit", 19, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
         Gui::staticText("Edit During Transfer", 19, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+        Gui::staticText("Enable Backup Injection", 19, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
 
         for (Button* button : tabButtons[currentTab])
         {
@@ -255,6 +257,7 @@ void ConfigScreen::draw() const
         Gui::dynamicText(245, 60, 50, std::to_string(Configuration::getInstance().storageSize()), FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
         Gui::staticText(Configuration::getInstance().fixSectors() ? "Yes" : "No", 260, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
         Gui::staticText(Configuration::getInstance().transferEdit() ? "Yes" : "No", 260, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+        Gui::staticText(Configuration::getInstance().writeFileSave() ? "Yes" : "No", 260, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
     }
 }
 

@@ -111,6 +111,11 @@ public:
     // Folders, then files
     std::pair<std::vector<std::string>, std::vector<std::string>> extraSaves(std::string id);
 
+    bool writeFileSave(void)
+    {
+        return mJson["writeFileSave"];
+    }
+
     void language(Language lang)
     {
         mJson["language"] = lang;
@@ -180,6 +185,11 @@ public:
     // as that would require basically implementing a file browser. Maybe have it be manual, just like Checkpoint?
     // I implemented it just in case
     void extraSaves(std::string id, std::pair<std::vector<std::string>, std::vector<std::string>>& saves);
+
+    void writeFileSave(bool write)
+    {
+        mJson["writeFileSave"] = write;
+    }
 
     void save(void);
 

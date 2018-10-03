@@ -48,7 +48,8 @@
 
 namespace TitleLoader
 {
-    void scan(void);
+    void scanTitles(void);
+    void scanSaves(void);
     void load(std::shared_ptr<Title> title);
     void load(std::shared_ptr<Title> title, std::string path);
     void backupSave(void);

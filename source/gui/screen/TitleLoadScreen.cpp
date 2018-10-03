@@ -46,7 +46,8 @@ static bool wirelessSave() { return true; }
 
 TitleLoadScreen::TitleLoadScreen()
 {
-    Threads::create((ThreadFunc)TitleLoader::scan);
+    Threads::create((ThreadFunc)TitleLoader::scanTitles);
+    Threads::create((ThreadFunc)TitleLoader::scanSaves);
     for (int i = 0; i < 6; i++)
     {
         buttons.push_back(new Button(24, 96, 175, 16, std::bind(&TitleLoadScreen::setSelectedSave, this, i), ui_sheet_res_null_idx, "", 0.0f, 0));
@@ -145,29 +146,8 @@ void TitleLoadScreen::draw() const
         }
         else if (i < (int) availableCheckpointSaves.size())
         {
-            std::string save;
-            bool passedSlash = false;
-            for (int j = availableCheckpointSaves[i].size() - 1; j > -1; j--)
-            {
-                if (availableCheckpointSaves[i][j] == '/')
-                {
-                    if (passedSlash)
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        passedSlash = true;
-                    }
-                }
-                else
-                {
-                    if (passedSlash)
-                    {
-                        save = availableCheckpointSaves[i][j] + save;
-                    }
-                }
-            }
+            std::string save = availableCheckpointSaves[i].substr(0, availableCheckpointSaves[i].find_last_of('/'));
+            save = save.substr(save.find_last_of('/') + 1);
             Gui::dynamicText(save, 29, y, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
         }
         else
@@ -181,8 +161,8 @@ void TitleLoadScreen::draw() const
     {
         C2D_DrawRectSolid(191, 102, 0.5f, 4, 5, C2D_Color32(0x0f, 0x16, 0x59, 255));
         C2D_DrawTriangle(189, 102, C2D_Color32(0x0f, 0x16, 0x59, 255),
-                        197, 102, C2D_Color32(0x0f, 0x16, 0x59, 255),
-                        193, 97, C2D_Color32(0x0f, 0x16, 0x59, 255), 0.5f);
+                         197, 102, C2D_Color32(0x0f, 0x16, 0x59, 255),
+                         193, 97, C2D_Color32(0x0f, 0x16, 0x59, 255), 0.5f);
     }
 
     C2D_DrawRectSolid(191, 186, 0.5f, 4, 5, C2D_Color32(0x0f, 0x16, 0x59, 255));
@@ -245,7 +225,10 @@ void TitleLoadScreen::update(touchPosition* touch)
             }
             else
             {
-                selectedSave++;
+                if (firstSave + selectedSave < (int) availableCheckpointSaves.size() - 1)
+                {
+                    selectedSave++;
+                }
             }
         }
         if (buttonsDown & KEY_UP)
@@ -315,7 +298,7 @@ void TitleLoadScreen::update(touchPosition* touch)
                 }
             }
         }
-        if (buttonsDown & KEY_UP)
+        else if (buttonsDown & KEY_UP)
         {
             if (titleFromIndex(selectedTitle) == TitleLoader::cardTitle)
             {
@@ -351,7 +334,7 @@ void TitleLoadScreen::update(touchPosition* touch)
                 }
             }
         }
-        if (buttonsDown & KEY_RIGHT)
+        else if (buttonsDown & KEY_RIGHT)
         {
             if (selectedTitle == (int) TitleLoader::nandTitles.size() - 1 || selectedTitle == 3)
             {
@@ -383,7 +366,7 @@ void TitleLoadScreen::update(touchPosition* touch)
                 selectedTitle++;
             }
         }
-        if (buttonsDown & KEY_LEFT)
+        else if (buttonsDown & KEY_LEFT)
         {
             if (selectedTitle == -1)
             {
