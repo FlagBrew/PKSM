@@ -402,6 +402,7 @@ static void saveToTitle()
 
 void TitleLoader::saveChanges()
 {
+    save->resign();
     if (saveIsFile)
     {
         // No need to check size; if it was read successfully, that means that it has the correct size
