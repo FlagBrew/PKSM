@@ -40,6 +40,7 @@ Result Archive::init(void)
     }
     else if (R_FAILED(res = extdata(&mData, UNIQUE_ID))) return res;
     mkdir("/3ds/PKSM/backups", 777);
+    mkdir("/3ds/PKSM/dumps", 777);
     return res;
 }
 

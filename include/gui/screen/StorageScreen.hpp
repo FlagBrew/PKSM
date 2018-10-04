@@ -61,7 +61,7 @@ private:
     bool showViewer();
     bool clearBox();
     bool releasePkm();
-    bool dumpPkm() { return false; }
+    bool dumpPkm();
     bool backButton();
     // Have to basically reimplement Hid because two Hids don't go well together
     bool lastBox(bool forceBottom = false);

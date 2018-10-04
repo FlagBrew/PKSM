@@ -273,7 +273,7 @@ void EditSelectorScreen::update(touchPosition* touch)
         Gui::screenBack();
         return;
     }
-    else if (heldKeys & KEY_L & KEY_R)
+    else if (heldKeys & (KEY_L | KEY_R))
     {
         qrStuff();
         return;

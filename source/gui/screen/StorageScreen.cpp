@@ -30,6 +30,7 @@
 #include "PK4.hpp"
 #include "Configuration.hpp"
 #include "TitleLoadScreen.hpp"
+#include "FSStream.hpp"
 
 // TODO: remove
 static u8 test[] = {0x0B,0xEB,0x64,0x89,0x00,0x00,0xC8,0xA5,0x12,0x00,0x00,0x00,0x2A,0x8A,0x42,0x73,0x47,0x9C,0x00,0x00,0xA0,0x91,0x00,0x02,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x21,0x00,0x62,0x00,0xEF,0x00,0x22,0x01,0x23,0x1E,0x14,0x14,0x00,0x00,0x00,0x00,0xD1,0xA1,0x33,0x3C,0x00,0x00,0x00,0x00,0x02,0x13,0x01,0x00,0x00,0x00,0x00,0x00,0x50,0x00,0x69,0x00,0x64,0x00,0x67,0x00,0x65,0x00,0x6F,0x00,0x74,0x00,0xFF,0xFF,0x6F,0x00,0xFF,0xFF,0xFF,0xFF,0x00,0x17,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x52,0x00,0x6F,0x00,0x43,0x00,0xFF,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x11,0x01,0x0D,0x00,0x00,0x4B,0x00,0x00,0x19,0x0A,0x00,0x00,0x00};
@@ -713,4 +714,84 @@ void StorageScreen::pickup()
             }
         }
     }
+}
+
+bool StorageScreen::dumpPkm()
+{
+    if (Gui::showChoiceMessage("Dump selected Pok\u00E9mon?"))
+    {
+        char stringDate[9] = {0};
+        char stringTime[8] = {0};
+        time_t unixTime = time(NULL);
+        struct tm* timeStruct = gmtime((const time_t *)&unixTime);
+        std::strftime(stringDate, 8,"%Y%m%d", timeStruct);
+        std::strftime(stringTime, 7,"/%H%M%S", timeStruct);
+        std::string path = std::string("/3ds/PKSM/dumps/") + stringDate;
+        mkdir(path.c_str(), 777);
+        path += stringTime;
+        if (moveMon)
+        {
+            path += StringUtils::format(".pk%d", moveMon->generation());
+            FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, moveMon->length);
+            if (out.good())
+            {
+                out.write(moveMon->rawData(), moveMon->length);
+            }
+            else
+            {
+                Gui::warn("Could not open file for dump!");
+            }
+            out.close();
+        }
+        else
+        {
+            std::shared_ptr<PKX> dumpMon;
+            if (!storageChosen)
+            {
+                if (cursorIndex == 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    dumpMon = TitleLoader::save->pkm(boxBox, cursorIndex - 1);
+                    path += StringUtils::format(".pk%d", dumpMon->generation());
+                    FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, TitleLoader::save->emptyPkm()->length);
+                    if (out.good())
+                    {
+                        out.write(dumpMon->rawData(), dumpMon->length);
+                    }
+                    else
+                    {
+                        Gui::warn("Could not open file for dump!");
+                    }
+                    out.close();
+                }
+            }
+            else
+            {
+                if (cursorIndex == 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    dumpMon = testPkm; // Storage implementation thingy
+                    path += StringUtils::format(".pk%d", dumpMon->generation());
+                    FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, TitleLoader::save->emptyPkm()->length);
+                    if (out.good())
+                    {
+                        out.write(dumpMon->rawData(), dumpMon->length);
+                    }
+                    else
+                    {
+                        Gui::warn("Could not open file for dump!");
+                    }
+                    out.close();
+                }
+            }
+        }
+        return true;
+    }
+    return false;
 }

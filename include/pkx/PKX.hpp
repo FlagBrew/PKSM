@@ -41,6 +41,7 @@ typedef uint32_t u32;
 class PKX
 {
 friend class HexEditScreen;
+friend class StorageScreen;
 protected:
     u32 expTable(u8 row, u8 col) const;
     u32 seedStep(u32 seed);
