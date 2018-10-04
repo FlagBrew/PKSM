@@ -376,12 +376,12 @@ void TitleLoader::load(std::shared_ptr<Title> title, std::string savePath)
     }
 }
 
-static void saveToTitle()
+static void saveToTitle(bool ask)
 {
     // Just an extra check
     if (loadedTitle)
     {
-        if (TitleLoader::cardTitle == loadedTitle && Gui::showChoiceMessage("Would you like to write changes to", std::string("the game card?")))
+        if (TitleLoader::cardTitle == loadedTitle && (!ask && Gui::showChoiceMessage("Would you like to write changes to", std::string("the game card?"))))
         {
             // Not sure how to do this
         }
@@ -390,7 +390,7 @@ static void saveToTitle()
             // Just a linear search because it's a maximum of eight titles
             for (auto title : TitleLoader::nandTitles)
             {
-                if (title == loadedTitle && Gui::showChoiceMessage("Would you like to write changes to", std::string("the installed title?")))
+                if (title == loadedTitle && (!ask && Gui::showChoiceMessage("Would you like to write changes to", std::string("the installed title?"))))
                 {
                     // Not sure how to do this either
                     break; // There can only be one match
@@ -411,12 +411,12 @@ void TitleLoader::saveChanges()
         out.close();
         if (Configuration::getInstance().writeFileSave())
         {
-            saveToTitle();
+            saveToTitle(true);
         }
     }
     else
     {
-        saveToTitle();
+        saveToTitle(false);
     }
 }
 
