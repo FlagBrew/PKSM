@@ -182,8 +182,6 @@ StorageScreen::StorageScreen()
 
     mainButtons[5] = new Button(8, 15, 17, 24, std::bind(&StorageScreen::lastBox, this, true), ui_sheet_res_null_idx, "", 0.0f, 0);
     mainButtons[6] = new Button(189, 15, 17, 24, std::bind(&StorageScreen::nextBox, this, true), ui_sheet_res_null_idx, "", 0.0f, 0);
-    //mainButtons[5] = new Button(7, 17, 16, 20, std::bind(&StorageScreen::lastBox, this, true), ui_sheet_res_button_arrow_idx, "", 0.0f, 0);
-    //mainButtons[6] = new Button(185, 17, 16, 20, std::bind(&StorageScreen::nextBox, this, true), ui_sheet_res_emulated_button_arrow_right_idx, "", 0.0f, 0);
     mainButtons[7] = new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0);
     mainButtons[8] = new Button(283, 211, 34, 28, std::bind(&StorageScreen::backButton, this), ui_sheet_button_back_idx, "", 0.0f, 0);
 
@@ -352,21 +350,21 @@ void StorageScreen::draw() const
         {
             Gui::dynamicText(infoMon->nickname(), 276, 61, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
             std::string info = "#" + std::to_string(infoMon->species());
-            Gui::dynamicText(info, 276, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            Gui::dynamicText(info, 273, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
             info = "Lv." + std::to_string(infoMon->level());
             float width = textWidth(info, FONT_SIZE_12);
             Gui::dynamicText(info, 375 - (int) width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
             if (infoMon->gender() == 0)
             {
-                Gui::sprite(ui_sheet_icon_male_idx, 358 - (int) width, 80);
+                Gui::sprite(ui_sheet_icon_male_idx, 362 - (int) width, 80);
             }
             else if (infoMon->gender() == 1)
             {
-                Gui::sprite(ui_sheet_icon_female_idx, 360 - (int) width, 80);
+                Gui::sprite(ui_sheet_icon_female_idx, 364 - (int) width, 80);
             }
             if (infoMon->shiny())
             {
-                Gui::sprite(ui_sheet_icon_shiny_idx, 346 - (int) width, 81);
+                Gui::sprite(ui_sheet_icon_shiny_idx, 352 - (int) width, 81);
             }
 
             info = i18n::species(Configuration::getInstance().language(), infoMon->species());
