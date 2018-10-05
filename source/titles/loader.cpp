@@ -352,38 +352,133 @@ void TitleLoader::backupSave()
     out.close();
 }
 
-void TitleLoader::load(std::shared_ptr<Title> title)
+bool TitleLoader::load(std::shared_ptr<Title> title)
 {
     saveIsFile = false;
     loadedTitle = title;
-    return;
+    if (title->mediaType() == FS_MediaType::MEDIATYPE_SD || title->cardType() == FS_CardType::CARD_CTR)
+    {
+        FS_Archive archive;
+        Archive::save(&archive, title->mediaType(), title->lowId(), title->highId());
+        FSStream in(archive, u"/main", FS_OPEN_READ);
+        if (in.good())
+        {
+            u8* data = new u8[in.size()];
+            in.read(data, in.size());
+            save = Sav::getSave(data, in.size());
+            in.close();
+            delete[] data;
+            FSUSER_CloseArchive(archive);
+            return true;
+        }
+        else
+        {
+            Gui::warn("Could not open save!");
+            in.close();
+            loadedTitle = nullptr;
+            FSUSER_CloseArchive(archive);
+            return false;
+        }
+    }
+    else
+    {
+        u32 cap = SPIGetCapacity(title->SPICardType());
+        if (cap != 524288)
+        {
+            Gui::warn("Wrong size for this game!", std::string("Please report to FlagBrew"));
+            return false;
+        }
+
+        u8* data = new u8[cap];
+        u32 sectorSize = (cap < 0x10000) ? cap : 0x10000;
+
+        for (u32 i = 0; i < cap / sectorSize; ++i) {
+            SPIReadSaveData(title->SPICardType(), sectorSize * i, data + sectorSize * i, sectorSize);
+        }
+
+        save = Sav::getSave(data, cap);
+        if (save != nullptr)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    Gui::warn("This should never happen!");
+    return false;
 }
 
-void TitleLoader::load(std::shared_ptr<Title> title, std::string savePath)
+bool TitleLoader::load(std::shared_ptr<Title> title, std::string savePath)
 {
     saveIsFile = true;
     saveFileName = savePath;
     loadedTitle = title;
     FSStream in(Archive::sd(), StringUtils::UTF8toUTF16(savePath), FS_OPEN_READ);
-    u32 size = in.size();
-    u8* saveData = new u8[size];
-    in.read(saveData, size);
+    u32 size;
+    u8* saveData = nullptr;
+    if (in.good())
+    {
+        size = in.size();
+        saveData = new u8[size];
+        in.read(saveData, size);
+    }
+    else
+    {
+        Gui::warn("Could not open save!");
+        loadedTitle = nullptr;
+        saveFileName = "";
+        in.close();
+        return false;
+    }
     in.close();
     save = Sav::getSave(saveData, size);
     if (Configuration::getInstance().autoBackup())
     {
         Threads::create((ThreadFunc)&TitleLoader::backupSave);
     }
+    delete[] saveData;
+    return true;
 }
 
-static void saveToTitle(bool ask)
+void TitleLoader::saveToTitle(bool ask)
 {
     // Just an extra check
     if (loadedTitle)
     {
-        if (TitleLoader::cardTitle == loadedTitle && (!ask && Gui::showChoiceMessage("Would you like to write changes to", std::string("the game card?"))))
+        if (TitleLoader::cardTitle == loadedTitle && (!ask || Gui::showChoiceMessage("Would you like to write changes to", std::string("the game card?"))))
         {
-            // Not sure how to do this
+            auto& title = TitleLoader::cardTitle;
+            if (title->cardType() == FS_CardType::CARD_CTR)
+            {
+                FS_Archive archive;
+                Archive::save(&archive, title->mediaType(), title->lowId(), title->highId());
+                FSStream out(archive, u"/main", FS_OPEN_WRITE | FS_OPEN_CREATE, save->length);
+                if (out.good())
+                {
+                    out.write(save->data, save->length);
+                }
+                else
+                {
+                    Gui::warn("Could not open save!");
+                }
+                out.close();
+                FSUSER_CloseArchive(archive);
+            }
+            else
+            {
+                u32 pageSize = SPIGetPageSize(title->SPICardType());
+
+                for (u32 i = 0; i < save->length / pageSize; ++i)
+                {
+                    
+                    if (R_FAILED(SPIWriteSaveData(title->SPICardType(), pageSize * i, save->data + pageSize * i, pageSize)))
+                    {
+                        break;
+                    }
+                }
+            }
         }
         else
         {
@@ -392,7 +487,19 @@ static void saveToTitle(bool ask)
             {
                 if (title == loadedTitle && (!ask && Gui::showChoiceMessage("Would you like to write changes to", std::string("the installed title?"))))
                 {
-                    // Not sure how to do this either
+                    FS_Archive archive;
+                    Archive::save(&archive, title->mediaType(), title->lowId(), title->highId());
+                    FSStream out(archive, u"/main", FS_OPEN_WRITE | FS_OPEN_CREATE, save->length);
+                    if (out.good())
+                    {
+                        out.write(save->data, save->length);
+                    }
+                    else
+                    {
+                        Gui::warn("Could not open save!");
+                    }
+                    out.close();
+                    FSUSER_CloseArchive(archive);
                     break; // There can only be one match
                 }
             }

@@ -30,16 +30,21 @@
 
 bool TitleLoadScreen::loadSave() const
 {
-    if (selectedSave == -1)
+    bool status = false;
+    if (selectedSave + firstSave == -1)
     {
-        TitleLoader::load(titleFromIndex(selectedTitle));
+        status = TitleLoader::load(titleFromIndex(selectedTitle));
     }
     else
     {
-        TitleLoader::load(titleFromIndex(selectedTitle), availableCheckpointSaves[selectedSave + firstSave]);
+        status = TitleLoader::load(titleFromIndex(selectedTitle), availableCheckpointSaves[selectedSave + firstSave]);
     }
-    Gui::setScreen(std::unique_ptr<Screen>(new MainMenu));
-    return true;
+    if (status)
+    {
+        Gui::setScreen(std::unique_ptr<Screen>(new MainMenu));
+    }
+
+    return status;
 }
 
 static bool wirelessSave() { return true; }
