@@ -1184,14 +1184,14 @@ void Gui::setNextKeyboardFunc(std::function<void()> func)
 
 void Gui::showRestoreProgress(u32 partial, u32 total)
 {
-    std::string message = StringUtils::format("%luKB of %luKB...", partial, total);
+    clearTextBufs();
     C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
     C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
     C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
     C2D_SceneBegin(g_renderTargetTop);
     sprite(ui_sheet_part_info_top_idx, 0, 0);
-    dynamicText(GFX_TOP, 95, "Saving...", FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE);
-    dynamicText(GFX_TOP, 130, message, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
+    staticText(GFX_TOP, 95, "Saving...", FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE);
+    dynamicText(GFX_TOP, 130, StringUtils::format("%lu KB of %lu KB...", partial, total), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
     C2D_SceneBegin(g_renderTargetBottom);
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
     C3D_FrameEnd(0);

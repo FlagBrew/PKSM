@@ -41,8 +41,8 @@ SavHGSS::SavHGSS(u8* dt)
 void SavHGSS::GBO(void)
 {
     int ofs = 0xF618;
-    u8 temp[10];
-    u8 dummy[10] = {0xFF};
+    u8 temp[10], dummy[10];
+    std::fill_n(dummy, 10, 0xFF);
     
     std::copy(data, data + 10, temp);
     if (!memcmp(temp, dummy, 10)) {
@@ -64,8 +64,8 @@ void SavHGSS::GBO(void)
 void SavHGSS::SBO(void)
 {
     int ofs = 0x21A00;
-    u8 temp[10];
-    u8 dummy[10] = {0xFF};
+    u8 temp[10], dummy[10];
+    std::fill_n(dummy, 10, 0xFF);
     
     std::copy(data, data + 10, temp);
     if (!memcmp(temp, dummy, 10)) {

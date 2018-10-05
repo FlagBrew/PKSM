@@ -41,8 +41,8 @@ SavDP::SavDP(u8* dt)
 void SavDP::GBO(void)
 {
     int ofs = 0xC0F0;
-    u8 temp[10];
-    u8 dummy[10] = {0xFF};
+    u8 temp[10], dummy[10];
+    std::fill_n(dummy, 10, 0xFF);
     
     std::copy(data, data + 10, temp);
     if (!memcmp(temp, dummy, 10)) {
@@ -64,8 +64,8 @@ void SavDP::GBO(void)
 void SavDP::SBO(void)
 {
     int ofs = 0x1E2D0;
-    u8 temp[10];
-    u8 dummy[10] = {0xFF};
+    u8 temp[10], dummy[10];
+    std::fill_n(dummy, 10, 0xFF);
     
     std::copy(data, data + 10, temp);
     if (!memcmp(temp, dummy, 10)) {

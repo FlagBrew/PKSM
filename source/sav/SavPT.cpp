@@ -41,8 +41,8 @@ SavPT::SavPT(u8* dt)
 void SavPT::GBO(void)
 {
     int ofs = 0xCF1C;
-    u8 temp[10];
-    u8 dummy[10] = {0xFF};
+    u8 temp[10], dummy[10];
+    std::fill_n(dummy, 10, 0xFF);
     
     std::copy(data, data + 10, temp);
     if (!memcmp(temp, dummy, 10)) {
@@ -64,8 +64,8 @@ void SavPT::GBO(void)
 void SavPT::SBO(void)
 {
     int ofs = 0x1F100;
-    u8 temp[10];
-    u8 dummy[10] = {0xFF};
+    u8 temp[10], dummy[10];
+    std::fill_n(dummy, 10, 0xFF);
     
     std::copy(data, data + 10, temp);
     if (!memcmp(temp, dummy, 10)) {

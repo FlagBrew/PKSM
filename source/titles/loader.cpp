@@ -447,15 +447,14 @@ void TitleLoader::saveToTitle(bool ask)
             {
                 Result res = 0;
                 u32 pageSize = SPIGetPageSize(title->SPICardType());
-                u32 capacity = SPIGetCapacity(title->SPICardType());
-                for (u32 i = 0; i < capacity / pageSize; ++i)
+                for (u32 i = 0; i < save->length / pageSize; ++i)
                 {
                     res = SPIWriteSaveData(title->SPICardType(), pageSize * i, save->data + pageSize * i, pageSize);
                     if (R_FAILED(res))
                     {
                         break;
                     }
-                    Gui::showRestoreProgress(pageSize * (i + 1), capacity);
+                    Gui::showRestoreProgress(pageSize * (i + 1), save->length);
                 }
             }
         }
