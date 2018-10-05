@@ -78,77 +78,61 @@ static std::shared_ptr<Title> loadedTitle;
 void TitleLoader::scanTitles(void)
 {
     Result res = 0;
-
+    u32 count = 0;
+    
     // clear title list if filled previously
     nandTitles.clear();
 
     // check for cartridge and push at the beginning of the title list
-
-    // get our cartridge
     FS_CardType cardType;
     res = FSUSER_GetCardType(&cardType);
-    if (R_FAILED(res))
+    if (R_SUCCEEDED(res))
     {
-        return;
-    }
-
-    u32 count = 0;
-
-    if (cardType == CARD_CTR)
-    {
-        // get count of titles
-        res = AM_GetTitleCount(MEDIATYPE_GAME_CARD, &count);
-        if (R_FAILED(res))
+        if (cardType == CARD_CTR)
         {
-            return;
-        }
-
-        if (count > 0)
-        {
-            u64 id;
-            res = AM_GetTitleList(NULL, MEDIATYPE_GAME_CARD, count, &id);
-            if (R_FAILED(res))
+            res = AM_GetTitleCount(MEDIATYPE_GAME_CARD, &count);
+            if (R_SUCCEEDED(res) && count > 0)
             {
-                return;
+                u64 id;
+                res = AM_GetTitleList(NULL, MEDIATYPE_GAME_CARD, count, &id);
+                // check if this id is in our list
+                if (R_SUCCEEDED(res) && std::find(ctrTitleIds.begin(), ctrTitleIds.end(), id) != ctrTitleIds.end())
+                {
+                    auto title = std::shared_ptr<Title>(new Title);
+                    if (title->load(id, MEDIATYPE_GAME_CARD, cardType))
+                    {
+                        cardTitle = title;
+                    }
+                }
             }
-
-            // check if this id is in our list
-            if (std::find(ctrTitleIds.begin(), ctrTitleIds.end(), id) != ctrTitleIds.end())
+        }
+        else
+        {
+            // ds game card, behave differently
+            // load the save and check for known patterns
+            auto title = std::shared_ptr<Title>(new Title);
+            if (title->load(0, MEDIATYPE_GAME_CARD, cardType))
             {
-                auto title = std::shared_ptr<Title>(new Title);
-                if (title->load(id, MEDIATYPE_GAME_CARD, cardType))
+                CardType cardType = title->SPICardType();
+                u32 saveSize = SPIGetCapacity(cardType);
+                u32 sectorSize = (saveSize < 0x10000) ? saveSize : 0x10000;
+                u8* saveFile = new u8[saveSize];
+                for (u32 i = 0; i < saveSize/sectorSize; ++i)
+                {
+                    res = SPIReadSaveData(cardType, sectorSize*i, saveFile + sectorSize*i, sectorSize);
+                    if (R_FAILED(res))
+                    {
+                        break;
+                    }
+                }
+
+                if (R_SUCCEEDED(res) && Sav::isValidDSSave(saveFile))
                 {
                     cardTitle = title;
                 }
-            }
-        }
-    }
-    else
-    {
-        // ds game card, behave differently
-        // load the save and check for known patterns
-        auto title = std::shared_ptr<Title>(new Title);
-        if (title->load(0, MEDIATYPE_GAME_CARD, cardType))
-        {
-            CardType cardType = title->SPICardType();
-            u32 saveSize = SPIGetCapacity(cardType);
-            u32 sectorSize = (saveSize < 0x10000) ? saveSize : 0x10000;
-            u8* saveFile = new u8[saveSize];
-            for (u32 i = 0; i < saveSize/sectorSize; ++i)
-            {
-                res = SPIReadSaveData(cardType, sectorSize*i, saveFile + sectorSize*i, sectorSize);
-                if (R_FAILED(res))
-                {
-                    break;
-                }
-            }
 
-            if (R_SUCCEEDED(res) && Sav::isValidDSSave(saveFile))
-            {
-                cardTitle = title;
+                delete[] saveFile;
             }
-
-            delete[] saveFile;
         }
     }
 
