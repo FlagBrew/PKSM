@@ -210,7 +210,7 @@ void ConfigScreen::draw() const
     {
         Gui::staticText(108, 2, 104, "Defaults", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
 
-        Gui::staticText("PID", 19, 36, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+        Gui::staticText("TID", 19, 36, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
         Gui::staticText("SID", 19, 60, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
         Gui::staticText("OT", 19, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
         Gui::staticText("Nationality", 19, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);

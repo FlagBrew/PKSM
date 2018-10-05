@@ -48,6 +48,8 @@ void SavB2W2::resign(void)
         *(u16*)(data + chkMirror[i]) = cs;
         *(u16*)(data + chkofs[i]) = cs;
     }
+
+    delete[] tmp;
 }
 
 u16 SavB2W2::TID(void) const { return *(u16*)(data + 0x19414); }

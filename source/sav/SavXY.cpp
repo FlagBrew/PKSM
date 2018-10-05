@@ -46,6 +46,8 @@ void SavXY::resign(void)
         std::copy(data + chkofs[i], data + chkofs[i] + chklen[i], tmp);
         *(u16*)(data + csoff + i*8) = ccitt16(tmp, chklen[i]);
     }
+
+    delete[] tmp;
 }
 
 u16 SavXY::TID(void) const { return *(u16*)(data + 0x14000); }

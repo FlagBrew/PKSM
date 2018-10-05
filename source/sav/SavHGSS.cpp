@@ -99,6 +99,8 @@ void SavHGSS::resign(void)
     std::copy(data + sbo + storage[0], data + sbo + storage[1] - storage[0], tmp);
     cs = ccitt16(tmp, storage[1] - storage[0]);
     *(u16*)(data + sbo + storage[2]) = cs;
+
+    delete[] tmp;
 }
 
 u16 SavHGSS::TID(void) const { return *(u16*)(data + gbo + 0x74); }
@@ -107,7 +109,7 @@ void SavHGSS::TID(u16 v) { *(u16*)(data + gbo + 0x74) = v; }
 u16 SavHGSS::SID(void) const { return *(u16*)(data + gbo + 0x76); }
 void SavHGSS::SID(u16 v) { *(u16*)(data + gbo + 0x76) = v; }
 
-u8 SavHGSS::version(void) const { return 0; } // Not completely sure how to do this, any ideas?
+u8 SavHGSS::version(void) const { return 7; } // Always return HG's value: no way to check it, but needed for identification within Gen 4
 void SavHGSS::version(u8 v) { (void)v; }
 
 u8 SavHGSS::gender(void) const { return data[0x7C + gbo]; }

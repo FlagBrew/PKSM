@@ -99,6 +99,8 @@ void SavPT::resign(void)
     std::copy(data + sbo + storage[0], data + sbo + storage[1] - storage[0], tmp);
     cs = ccitt16(tmp, storage[1] - storage[0]);
     *(u16*)(data + sbo + storage[2]) = cs;
+
+    delete[] tmp;
 }
 
 u16 SavPT::TID(void) const { return *(u16*)(data + gbo + 0x78); }
@@ -107,7 +109,7 @@ void SavPT::TID(u16 v) { *(u16*)(data + gbo + 0x78) = v; }
 u16 SavPT::SID(void) const { return *(u16*)(data + gbo + 0x7A); }
 void SavPT::SID(u16 v) { *(u16*)(data + gbo + 0x7A) = v; }
 
-u8 SavPT::version(void) const { return 0; } // Not completely sure how to do this, any ideas?
+u8 SavPT::version(void) const { return 12; }
 void SavPT::version(u8 v) { (void)v; }
 
 u8 SavPT::gender(void) const { return data[0x80 + gbo]; }
