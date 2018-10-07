@@ -170,20 +170,20 @@ bool wirelessStuff() { return false; }
 
 StorageScreen::StorageScreen()
 {
-    mainButtons[0] = new Button(242, 9, 47, 22, std::bind(&StorageScreen::swapBoxWithStorage, this), ui_sheet_button_swap_boxes_idx, "", 0.0f, 0);
-    mainButtons[1] = new Button(212, 40, 108, 28, std::bind(&StorageScreen::showViewer, this), ui_sheet_button_editor_idx,
+    mainButtons[0] = new Button(242, 9, 47, 22, [this](){ return this->swapBoxWithStorage(); }, ui_sheet_button_swap_boxes_idx, "", 0.0f, 0);
+    mainButtons[1] = new Button(212, 40, 108, 28, [this](){ return this->showViewer(); }, ui_sheet_button_editor_idx,
                                     "StorageButtonView", FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[2] = new Button(212, 71, 108, 28, std::bind(&StorageScreen::clearBox, this), ui_sheet_button_editor_idx,
+    mainButtons[2] = new Button(212, 71, 108, 28, [this](){ return this->clearBox(); }, ui_sheet_button_editor_idx,
                                     "StorageButtonClear", FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[3] = new Button(212, 102, 108, 28, std::bind(&StorageScreen::releasePkm, this), ui_sheet_button_editor_idx,
+    mainButtons[3] = new Button(212, 102, 108, 28, [this](){ return this->releasePkm(); }, ui_sheet_button_editor_idx,
                                     "StorageButtonRelease", FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[4] = new Button(212, 133, 108, 28, std::bind(&StorageScreen::dumpPkm, this), ui_sheet_button_editor_idx,
+    mainButtons[4] = new Button(212, 133, 108, 28, [this](){ return this->dumpPkm(); }, ui_sheet_button_editor_idx,
                                     "StorageButtonDump", FONT_SIZE_12, COLOR_BLACK);
 
-    mainButtons[5] = new Button(8, 15, 17, 24, std::bind(&StorageScreen::lastBox, this, true), ui_sheet_res_null_idx, "", 0.0f, 0);
-    mainButtons[6] = new Button(189, 15, 17, 24, std::bind(&StorageScreen::nextBox, this, true), ui_sheet_res_null_idx, "", 0.0f, 0);
+    mainButtons[5] = new Button(8, 15, 17, 24, [this](){ return this->lastBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0);
+    mainButtons[6] = new Button(189, 15, 17, 24, [this](){ return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0);
     mainButtons[7] = new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0);
-    mainButtons[8] = new Button(283, 211, 34, 28, std::bind(&StorageScreen::backButton, this), ui_sheet_button_back_idx, "", 0.0f, 0);
+    mainButtons[8] = new Button(283, 211, 34, 28, [this](){ return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
 
     // Pokemon buttons
     u16 y = 45;
@@ -192,12 +192,12 @@ StorageScreen::StorageScreen()
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            clickButtons[row*6 + column] = new Button(x, y, 34, 30, std::bind(&StorageScreen::clickBottomIndex, this, row*6 + column + 1), ui_sheet_res_null_idx, "", 0.0f, 0);
+            clickButtons[row*6 + column] = new Button(x, y, 34, 30, [this, row, column](){ return this->clickBottomIndex(row*6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, 0);
             x += 34;
         }
         y += 30;
     }
-    clickButtons[30] = new Button(32, 15, 164, 24, std::bind(&StorageScreen::clickBottomIndex, this, 0), ui_sheet_res_null_idx, "", 0.0f, 0);
+    clickButtons[30] = new Button(32, 15, 164, 24, [this](){ return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0);
     TitleLoader::save->cryptBoxData(true);
 }
 
