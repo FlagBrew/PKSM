@@ -201,7 +201,7 @@ void SavHGSS::boxName(u8 box, std::string name)
     StringUtils::setString4(data, name, boxOffset(18, 0) + 0x8 + box * 0x28, 0x14);
 }
 
-u8 SavHGSS::partyCount(void) const { return data[gbo + 0x94]; }
+u8 SavHGSS::partyCount(void) const { return data[gbo + 0x94 - 4]; }
 
 void SavHGSS::dex(PKX& pk)
 {
