@@ -684,6 +684,62 @@ bool StorageScreen::releasePkm()
     return false;
 }
 
+static void regionChange(PK6* pkm)
+{
+    if (pkm->htName() != "" && (TitleLoader::save->country() != pkm->geoCountry(0) || TitleLoader::save->subRegion() != pkm->geoRegion(0)))
+    {
+        for (u8 i = 4; i > 0; i--)
+        {
+            pkm->geoCountry(i, pkm->geoCountry(i-1));
+            pkm->geoRegion(i, pkm->geoRegion(i-1));
+        }
+        pkm->geoCountry(0, TitleLoader::save->country());
+        pkm->geoRegion(0, TitleLoader::save->subRegion());
+    }
+}
+
+static void regionChange(PK7* pkm)
+{
+    if (pkm->htName() != "" && (TitleLoader::save->country() != pkm->geoCountry(0) || TitleLoader::save->subRegion() != pkm->geoRegion(0)))
+    {
+        for (u8 i = 4; i > 0; i--)
+        {
+            pkm->geoCountry(i, pkm->geoCountry(i-1));
+            pkm->geoRegion(i, pkm->geoRegion(i-1));
+        }
+        pkm->geoCountry(0, TitleLoader::save->country());
+        pkm->geoRegion(0, TitleLoader::save->subRegion());
+    }
+}
+
+static void memoryChange(PK6* pkm)
+{
+    static const int allowedFeelings = 0x04CBFD;
+    pkm->htMemory(4);
+    pkm->htTextVar(0);
+    pkm->htIntensity(1);
+    int feel = 20; // Too high of a value, the next condition will always be false with it
+    while ((allowedFeelings & (1 << feel)) == 0)
+    {
+        feel = rand() % 10;
+    }
+    pkm->htFeeling(feel);
+}
+
+static void memoryChange(PK7* pkm)
+{
+    static const int allowedFeelings = 0x04CBFD;
+    pkm->htMemory(4);
+    pkm->htTextVar(0);
+    pkm->htIntensity(1);
+    int feel = 20; // Too high of a value, the next condition will always be false with it
+    while ((allowedFeelings & (1 << feel)) == 0)
+    {
+        feel = rand() % 10;
+    }
+    pkm->htFeeling(feel);
+}
+
 void StorageScreen::pickup()
 {
     if (!moveMon)
@@ -719,6 +775,51 @@ void StorageScreen::pickup()
                     else
                     {
                         moveMon = moveMon->next();
+                    }
+                }
+                if (Configuration::getInstance().transferEdit())
+                {
+                    if (TitleLoader::save->otName() == moveMon->otName() && TitleLoader::save->TID() == moveMon->TID() && TitleLoader::save->SID() == moveMon->SID() && TitleLoader::save->gender() == moveMon->otGender())
+                    {
+                        if (moveMon->generation() == 6)
+                        {
+                            PK6* movePkm = (PK6*)moveMon.get();
+                            movePkm->currentHandler(0);
+                            regionChange(movePkm);
+                        }
+                        else if (moveMon->generation() == 7)
+                        {
+                            PK7* movePkm = (PK7*)moveMon.get();
+                            movePkm->currentHandler(0);
+                            regionChange(movePkm);
+                        }
+                    }
+                    else
+                    {
+                        if (moveMon->generation() == 6)
+                        {
+                            PK6* movePkm = (PK6*)moveMon.get();
+                            movePkm->currentHandler(1);
+                            regionChange(movePkm);
+                            movePkm->htName(TitleLoader::save->otName().c_str());
+                            movePkm->htGender(TitleLoader::save->gender());
+                            if (movePkm->htMemory() == 0)
+                            {
+                                memoryChange(movePkm);
+                            }
+                        }
+                        else if (moveMon->generation() == 7)
+                        {
+                            PK7* movePkm = (PK7*)moveMon.get();
+                            movePkm->currentHandler(1);
+                            regionChange(movePkm);
+                            movePkm->htName(TitleLoader::save->otName().c_str());
+                            movePkm->htGender(TitleLoader::save->gender());
+                            if (movePkm->htMemory() == 0)
+                            {
+                                memoryChange(movePkm);
+                            }
+                        }
                     }
                 }
                 TitleLoader::save->pkm(*moveMon, boxBox, cursorIndex - 1);
