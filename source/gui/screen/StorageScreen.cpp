@@ -708,7 +708,7 @@ void StorageScreen::pickup()
         else
         {
             std::shared_ptr<PKX> temPkm = TitleLoader::save->pkm(boxBox, cursorIndex - 1);
-            if (Configuration::getInstance().transferEdit() || Gui::showChoiceMessage("The generation change will edit your", std::string("Pok\u00E9mon. Continue?")))
+            if ((Configuration::getInstance().transferEdit() || moveMon->generation() == TitleLoader::save->generation()) || Gui::showChoiceMessage(StringUtils::format("The generation change (%d->%d) will edit your", (int)moveMon->generation(), (int)TitleLoader::save->generation()), std::string("Pok\u00E9mon. Continue?")))
             {
                 while (moveMon->generation() != TitleLoader::save->generation())
                 {
