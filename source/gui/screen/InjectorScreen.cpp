@@ -65,7 +65,7 @@ InjectorScreen::InjectorScreen(std::unique_ptr<WCX> card) : hid(40, 8)
         {
             if (langIndex != (int) Language::UNUSED)
             {
-                buttons.push_back(new Button(x, y, 38, 23, std::bind(&InjectorScreen::setLanguage, this, (Language) langIndex), isLangAvailable((Language) langIndex) ? ui_sheet_res_null_idx : ui_sheet_button_unavailable_text_button_idx, "", 0, 0));
+                buttons.push_back(new Button(x, y, 38, 23, [this, langIndex](){ return this->setLanguage((Language) langIndex); }, isLangAvailable((Language) langIndex) ? ui_sheet_res_null_idx : ui_sheet_button_unavailable_text_button_idx, "", 0, 0));
             }
             langIndex++;
         }

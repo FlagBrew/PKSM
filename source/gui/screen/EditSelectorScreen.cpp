@@ -92,10 +92,10 @@ EditSelectorScreen::EditSelectorScreen()
     viewer = std::shared_ptr<ViewerScreen>(new ViewerScreen(nullptr, false));
     
     buttons.push_back(new Button(283, 211, 34, 28, [](){ Gui::screenBack(); return true; }, ui_sheet_button_back_idx, "", 0.0f, 0));
-    buttons.push_back(new Button(32, 15, 164, 24, std::bind(&EditSelectorScreen::clickIndex, this, 0), ui_sheet_res_null_idx, "", 0.0f, 0));
+    buttons.push_back(new Button(32, 15, 164, 24, [this](){ return this->clickIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0));
     buttons.push_back(new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0));
-    buttons.push_back(new Button(8, 15, 17, 24, std::bind(&EditSelectorScreen::lastBox, this), ui_sheet_res_null_idx, "", 0.0f, 0));
-    buttons.push_back(new Button(189, 15, 17, 24, std::bind(&EditSelectorScreen::nextBox, this), ui_sheet_res_null_idx, "", 0.0f, 0));
+    buttons.push_back(new Button(8, 15, 17, 24, [this](){ return this->lastBox(); }, ui_sheet_res_null_idx, "", 0.0f, 0));
+    buttons.push_back(new Button(189, 15, 17, 24, [this](){ return this->nextBox(); }, ui_sheet_res_null_idx, "", 0.0f, 0));
 
     // Pokemon buttons
     u16 y = 45;
@@ -104,7 +104,7 @@ EditSelectorScreen::EditSelectorScreen()
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            pkmButtons[row*6 + column] = new Button(x, y, 34, 30, std::bind(&EditSelectorScreen::clickIndex, this, row * 6 + column + 1), ui_sheet_res_null_idx, "", 0.0f, 0);
+            pkmButtons[row*6 + column] = new Button(x, y, 34, 30, [this, row, column](){ return this->clickIndex(row * 6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, 0);
             x += 34;
         }
         y += 30;
@@ -113,7 +113,7 @@ EditSelectorScreen::EditSelectorScreen()
     {
         int x = (i % 2 == 0 ? 221 : 271);
         int y = (i % 2 == 0 ? 50 + 45 * (i / 2) : 66 + 45 * (i / 2));
-        pkmButtons[30 + i] = new Button(x, y, 34, 30, std::bind(&EditSelectorScreen::clickIndex, this, 31 + i), ui_sheet_res_null_idx, "", 0.0f, 0);
+        pkmButtons[30 + i] = new Button(x, y, 34, 30, [this, i](){ return this->clickIndex(31 + i); }, ui_sheet_res_null_idx, "", 0.0f, 0);
     }
     TitleLoader::save->cryptBoxData(true);
 }

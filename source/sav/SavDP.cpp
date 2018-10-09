@@ -41,8 +41,8 @@ SavDP::SavDP(u8* dt)
 void SavDP::GBO(void)
 {
     int ofs = 0xC0F0;
-    u8 temp[10];
-    u8 dummy[10] = {0xFF};
+    u8 temp[10], dummy[10];
+    std::fill_n(dummy, 10, 0xFF);
     
     std::copy(data, data + 10, temp);
     if (!memcmp(temp, dummy, 10)) {
@@ -64,8 +64,8 @@ void SavDP::GBO(void)
 void SavDP::SBO(void)
 {
     int ofs = 0x1E2D0;
-    u8 temp[10];
-    u8 dummy[10] = {0xFF};
+    u8 temp[10], dummy[10];
+    std::fill_n(dummy, 10, 0xFF);
     
     std::copy(data, data + 10, temp);
     if (!memcmp(temp, dummy, 10)) {
@@ -92,11 +92,11 @@ void SavDP::resign(void)
     int general[3] = {0x0000, 0xC0EC, 0xC0FE};
     int storage[3] = {0xC100, 0x1E2CC, 0x1E2DE};
     
-    std::copy(data + gbo + general[0], data + gbo + general[1] - general[0], tmp);
+    std::copy(data + gbo + general[0], data + gbo + general[1], tmp);
     cs = ccitt16(tmp, general[1] - general[0]);
     *(u16*)(data + gbo + general[2]) = cs;
 
-    std::copy(data + sbo + storage[0], data + sbo + storage[1] - storage[0], tmp);
+    std::copy(data + sbo + storage[0], data + sbo + storage[1], tmp);
     cs = ccitt16(tmp, storage[1] - storage[0]);
     *(u16*)(data + sbo + storage[2]) = cs;
 
@@ -201,7 +201,7 @@ void SavDP::boxName(u8 box, std::string name)
     StringUtils::setString4(data, name, boxOffset(18, 0) + box * 0x28, 0x14);
 }
 
-u8 SavDP::partyCount(void) const { return data[gbo + 0xA0]; }
+u8 SavDP::partyCount(void) const { return data[gbo + 0xA0 - 4]; }
 
 void SavDP::dex(PKX& pk)
 {

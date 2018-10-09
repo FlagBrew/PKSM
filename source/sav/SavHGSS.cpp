@@ -41,8 +41,8 @@ SavHGSS::SavHGSS(u8* dt)
 void SavHGSS::GBO(void)
 {
     int ofs = 0xF618;
-    u8 temp[10];
-    u8 dummy[10] = {0xFF};
+    u8 temp[10], dummy[10];
+    std::fill_n(dummy, 10, 0xFF);
     
     std::copy(data, data + 10, temp);
     if (!memcmp(temp, dummy, 10)) {
@@ -64,8 +64,8 @@ void SavHGSS::GBO(void)
 void SavHGSS::SBO(void)
 {
     int ofs = 0x21A00;
-    u8 temp[10];
-    u8 dummy[10] = {0xFF};
+    u8 temp[10], dummy[10];
+    std::fill_n(dummy, 10, 0xFF);
     
     std::copy(data, data + 10, temp);
     if (!memcmp(temp, dummy, 10)) {
@@ -92,11 +92,11 @@ void SavHGSS::resign(void)
     int general[3] = {0x0, 0xF618, 0xF626};
     int storage[3] = {0xF700, 0x21A00, 0x21A0E};
     
-    std::copy(data + gbo + general[0], data + gbo + general[1] - general[0], tmp);
+    std::copy(data + gbo + general[0], data + gbo + general[1], tmp);
     cs = ccitt16(tmp, general[1] - general[0]);
     *(u16*)(data + gbo + general[2]) = cs;
 
-    std::copy(data + sbo + storage[0], data + sbo + storage[1] - storage[0], tmp);
+    std::copy(data + sbo + storage[0], data + sbo + storage[1], tmp);
     cs = ccitt16(tmp, storage[1] - storage[0]);
     *(u16*)(data + sbo + storage[2]) = cs;
 
@@ -201,7 +201,7 @@ void SavHGSS::boxName(u8 box, std::string name)
     StringUtils::setString4(data, name, boxOffset(18, 0) + 0x8 + box * 0x28, 0x14);
 }
 
-u8 SavHGSS::partyCount(void) const { return data[gbo + 0x94]; }
+u8 SavHGSS::partyCount(void) const { return data[gbo + 0x94 - 4]; }
 
 void SavHGSS::dex(PKX& pk)
 {

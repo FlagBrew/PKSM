@@ -381,14 +381,7 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
         }
 
         save = Sav::getSave(data, cap);
-        if (save != nullptr)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return save != nullptr;
     }
     Gui::warn("This should never happen!");
     return false;
@@ -452,15 +445,16 @@ void TitleLoader::saveToTitle(bool ask)
             }
             else
             {
+                Result res = 0;
                 u32 pageSize = SPIGetPageSize(title->SPICardType());
-
                 for (u32 i = 0; i < save->length / pageSize; ++i)
                 {
-                    
-                    if (R_FAILED(SPIWriteSaveData(title->SPICardType(), pageSize * i, save->data + pageSize * i, pageSize)))
+                    res = SPIWriteSaveData(title->SPICardType(), pageSize * i, save->data + pageSize * i, pageSize);
+                    if (R_FAILED(res))
                     {
                         break;
                     }
+                    Gui::showRestoreProgress(pageSize * (i + 1), save->length);
                 }
             }
         }
