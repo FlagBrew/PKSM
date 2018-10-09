@@ -701,6 +701,17 @@ void StorageScreen::pickup()
         else
         {
             std::shared_ptr<PKX> temPkm = TitleLoader::save->pkm(boxBox, cursorIndex - 1);
+            while (moveMon->generation() != TitleLoader::save->generation())
+            {
+                if (moveMon->generation() > TitleLoader::save->generation())
+                {
+                    moveMon = moveMon->previous();
+                }
+                else
+                {
+                    moveMon = moveMon->next();
+                }
+            }
             TitleLoader::save->pkm(*moveMon, boxBox, cursorIndex - 1);
             if (temPkm->species() == 0)
             {

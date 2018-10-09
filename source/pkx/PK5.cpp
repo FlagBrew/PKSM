@@ -371,7 +371,7 @@ u16 PK5::stat(const u8 stat) const
     return final * mult / 10;
 }
 
-std::unique_ptr<PKX> PK5::next(void)
+std::unique_ptr<PKX> PK5::next(void) const
 {
     u8 dt[232] = {0};
     PK6 *pk6 = new PK6(dt);
@@ -552,7 +552,7 @@ std::unique_ptr<PKX> PK5::next(void)
     return std::unique_ptr<PKX>(pk6);
 }
 
-std::unique_ptr<PKX> PK5::previous(void)
+std::unique_ptr<PKX> PK5::previous(void) const
 {
     u8 dt[136];
     std::copy(data, data + 136, dt);

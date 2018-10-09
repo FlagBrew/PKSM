@@ -177,6 +177,9 @@ public:
     virtual void shiny(bool v) = 0;
     virtual u16 formSpecies(void) const = 0;
     virtual u16 stat(const u8 stat) const = 0;
+
+    virtual std::unique_ptr<PKX> previous(void) const { return std::unique_ptr<PKX>(const_cast<PKX*>(this)); }
+    virtual std::unique_ptr<PKX> next(void) const { return std::unique_ptr<PKX>(const_cast<PKX*>(this)); }
 };
 
 #endif

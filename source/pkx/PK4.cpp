@@ -438,7 +438,7 @@ u16 PK4::stat(const u8 stat) const
     return final * mult / 10;
 }
 
-std::unique_ptr<PKX> PK4::next(void)
+std::unique_ptr<PKX> PK4::next(void) const
 {
     u8 dt[136];
     std::copy(data, data + 136, dt);

@@ -176,7 +176,7 @@ public:
     u16 formSpecies(void) const override;
     u16 stat(const u8 stat) const override;
     
-    std::unique_ptr<PKX> next(void);
+    std::unique_ptr<PKX> next(void) const override;
 };
 
 #endif
