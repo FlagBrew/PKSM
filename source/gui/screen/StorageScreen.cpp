@@ -701,25 +701,28 @@ void StorageScreen::pickup()
         else
         {
             std::shared_ptr<PKX> temPkm = TitleLoader::save->pkm(boxBox, cursorIndex - 1);
-            while (moveMon->generation() != TitleLoader::save->generation())
+            if (Configuration::getInstance().transferEdit() || Gui::showChoiceMessage("The generation change will edit your", std::string("Pok\u00E9mon. Continue?")))
             {
-                if (moveMon->generation() > TitleLoader::save->generation())
+                while (moveMon->generation() != TitleLoader::save->generation())
                 {
-                    moveMon = moveMon->previous();
+                    if (moveMon->generation() > TitleLoader::save->generation())
+                    {
+                        moveMon = moveMon->previous();
+                    }
+                    else
+                    {
+                        moveMon = moveMon->next();
+                    }
+                }
+                TitleLoader::save->pkm(*moveMon, boxBox, cursorIndex - 1);
+                if (temPkm->species() == 0)
+                {
+                    moveMon = nullptr;
                 }
                 else
                 {
-                    moveMon = moveMon->next();
+                    moveMon = temPkm;
                 }
-            }
-            TitleLoader::save->pkm(*moveMon, boxBox, cursorIndex - 1);
-            if (temPkm->species() == 0)
-            {
-                moveMon = nullptr;
-            }
-            else
-            {
-                moveMon = temPkm;
             }
         }
     }
