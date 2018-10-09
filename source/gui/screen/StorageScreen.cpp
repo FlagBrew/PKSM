@@ -371,6 +371,13 @@ void StorageScreen::draw() const
             Gui::dynamicText(info, 276, 98, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
             u8 firstType = type1(infoMon->generation(), infoMon->formSpecies());
             u8 secondType = type2(infoMon->generation(), infoMon->formSpecies());
+            if (infoMon->generation() == 4)
+            {
+                if (firstType > 8)
+                    firstType--;
+                if (secondType > 8)
+                    secondType--;
+            }
             if (firstType != secondType)
             {
                 Gui::type(Configuration::getInstance().language(), firstType, 276, 115);
