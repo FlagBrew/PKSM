@@ -37,7 +37,7 @@ int main()
         return -1;
     }
 
-    Gui::setScreen(std::unique_ptr<Screen>(new TitleLoadScreen));
+    Gui::setScreen(std::make_unique<TitleLoadScreen>());
 
     //Gui::setScreen(std::unique_ptr<Screen>(new MainMenu));
 

@@ -98,7 +98,7 @@ void TitleLoader::scanTitles(void)
                 // check if this id is in our list
                 if (R_SUCCEEDED(res) && std::find(ctrTitleIds.begin(), ctrTitleIds.end(), id) != ctrTitleIds.end())
                 {
-                    auto title = std::shared_ptr<Title>(new Title);
+                    auto title = std::make_shared<Title>();
                     if (title->load(id, MEDIATYPE_GAME_CARD, cardType))
                     {
                         cardTitle = title;
@@ -110,7 +110,7 @@ void TitleLoader::scanTitles(void)
         {
             // ds game card, behave differently
             // load the save and check for known patterns
-            auto title = std::shared_ptr<Title>(new Title);
+            auto title = std::make_shared<Title>();
             if (title->load(0, MEDIATYPE_GAME_CARD, cardType))
             {
                 CardType cardType = title->SPICardType();
@@ -157,7 +157,7 @@ void TitleLoader::scanTitles(void)
         u64 id = ctrTitleIds.at(i);
         if (std::find(ids.begin(), ids.end(), id) != ids.end())
         {
-            auto title = std::shared_ptr<Title>(new Title);
+            auto title = std::make_shared<Title>();
             if (title->load(id, MEDIATYPE_SD, CARD_CTR))
             {
                 nandTitles.push_back(title);

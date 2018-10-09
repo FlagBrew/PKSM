@@ -388,7 +388,7 @@ u8 SavUSUM::partyCount(void) const { return data[partyOffset(0) + 6*260]; }
 
 std::shared_ptr<PKX> SavUSUM::emptyPkm() const
 {
-    static std::shared_ptr<PKX> empty = std::shared_ptr<PKX>(new PK7);
+    static auto empty = std::make_shared<PK7>();
     return empty;
 }
 

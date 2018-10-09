@@ -50,7 +50,7 @@ void InjectSelectorScreen::update(touchPosition* touch)
     }
     if (downKeys & KEY_A)
     {
-        Gui::setScreen(std::unique_ptr<Screen>(new InjectorScreen(std::unique_ptr<WCX>(new WC6(test, false)))));
+        Gui::setScreen(std::make_unique<InjectorScreen>(std::make_unique<WC6>(test, false)));
         return;
     }
 }

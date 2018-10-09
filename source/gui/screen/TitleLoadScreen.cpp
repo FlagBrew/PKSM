@@ -41,7 +41,7 @@ bool TitleLoadScreen::loadSave() const
     }
     if (status)
     {
-        Gui::setScreen(std::unique_ptr<Screen>(new MainMenu));
+        Gui::setScreen(std::make_unique<MainMenu>());
     }
 
     return status;

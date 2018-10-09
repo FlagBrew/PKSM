@@ -48,7 +48,7 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
     }
     if (!view)
     {
-        view = std::shared_ptr<ViewerScreen>(new ViewerScreen(pkm, false));
+        view = std::make_shared<ViewerScreen>(pkm, false);
     }
     u8 tab = 0;
     // Back button first, always. Needs to have the same index for each one
@@ -349,7 +349,7 @@ bool EditorScreen::goBack()
 
 bool EditorScreen::hexEdit()
 {
-    Gui::setScreen(std::unique_ptr<Screen>(new HexEditScreen(pkm)));
+    Gui::setScreen(std::make_unique<HexEditScreen>(pkm));
     return false;
 }
 

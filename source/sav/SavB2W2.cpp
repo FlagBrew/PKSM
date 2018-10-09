@@ -266,7 +266,7 @@ u8 SavB2W2::partyCount(void) const { return data[0x18E04]; }
 
 std::shared_ptr<PKX> SavB2W2::emptyPkm() const
 {
-    static std::shared_ptr<PKX> empty = std::shared_ptr<PKX>(new PK5);
+    static auto empty = std::make_shared<PK5>();
     return empty;
 }
 

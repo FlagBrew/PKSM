@@ -56,22 +56,22 @@ static bool goToScreen(int buttonNum)
     switch (buttonNum)
     {
         case 0:
-            Gui::setScreen(std::unique_ptr<Screen>(new StorageScreen));
+            Gui::setScreen(std::make_unique<StorageScreen>());
             return true;
         case 1:
-            Gui::setScreen(std::unique_ptr<Screen>(new EditSelectorScreen));
+            Gui::setScreen(std::make_unique<EditSelectorScreen>());
             return true;
         case 2:
-            Gui::setScreen(std::unique_ptr<Screen>(new InjectSelectorScreen));
+            Gui::setScreen(std::make_unique<InjectSelectorScreen>());
             return true;
         case 3:
-            Gui::setScreen(std::unique_ptr<Screen>(new ScriptScreen));
+            Gui::setScreen(std::make_unique<ScriptScreen>());
             return true;
         case 4:
-            Gui::setScreen(std::unique_ptr<Screen>(new ConfigScreen));
+            Gui::setScreen(std::make_unique<ConfigScreen>());
             return true;
         case 5:
-            Gui::setScreen(std::unique_ptr<Screen>(new CreditsScreen));
+            Gui::setScreen(std::make_unique<CreditsScreen>());
             return true;
     }
     return true;

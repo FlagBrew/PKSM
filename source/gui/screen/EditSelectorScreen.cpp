@@ -89,7 +89,7 @@ static bool qrStuff() { return true; }
 
 EditSelectorScreen::EditSelectorScreen()
 {
-    viewer = std::shared_ptr<ViewerScreen>(new ViewerScreen(nullptr, false));
+    viewer = std::make_shared<ViewerScreen>(nullptr, false);
     
     buttons.push_back(new Button(283, 211, 34, 28, [](){ Gui::screenBack(); return true; }, ui_sheet_button_back_idx, "", 0.0f, 0));
     buttons.push_back(new Button(32, 15, 164, 24, [this](){ return this->clickIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0));
@@ -582,7 +582,7 @@ bool EditSelectorScreen::editPokemon(std::shared_ptr<PKX> pkm)
 {
     if (cursorPos < 31 && cursorPos != 0)
     {
-        Gui::setScreen(std::unique_ptr<Screen>(new EditorScreen(viewer, pkm, box, cursorPos - 1)));
+        Gui::setScreen(std::make_unique<EditorScreen>(viewer, pkm, box, cursorPos - 1));
         return true;
     }
 

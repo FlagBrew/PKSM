@@ -310,7 +310,7 @@ u8 SavORAS::partyCount(void) const { return data[partyOffset(0) + 6*260]; }
 
 std::shared_ptr<PKX> SavORAS::emptyPkm() const
 {
-    static std::shared_ptr<PKX> empty = std::shared_ptr<PKX>(new PK6);
+    static auto empty = std::make_shared<PK6>();
     return empty;
 }
 
