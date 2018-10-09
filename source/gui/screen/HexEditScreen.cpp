@@ -347,7 +347,7 @@ bool HexEditScreen::editNumber(bool high, bool up)
 
 std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int i) const
 {
-    if (pkm->gen7() || pkm->gen6())
+    if (pkm->generation() >= 6)
     {
         switch (i)
         {
@@ -685,7 +685,7 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 return std::make_pair("Unused", UNRESTRICTED);
         }
     }
-    else if (pkm->gen5())
+    else if (pkm->generation() == 5)
     {
         switch(i)
         {
@@ -885,7 +885,7 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 return std::make_pair("Unused", UNRESTRICTED);
         }
     }
-    else if (pkm->gen4())
+    else if (pkm->generation() == 4)
     {
         switch(i)
         {
