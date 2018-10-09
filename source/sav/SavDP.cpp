@@ -92,11 +92,11 @@ void SavDP::resign(void)
     int general[3] = {0x0000, 0xC0EC, 0xC0FE};
     int storage[3] = {0xC100, 0x1E2CC, 0x1E2DE};
     
-    std::copy(data + gbo + general[0], data + gbo + general[1] - general[0], tmp);
+    std::copy(data + gbo + general[0], data + gbo + general[1], tmp);
     cs = ccitt16(tmp, general[1] - general[0]);
     *(u16*)(data + gbo + general[2]) = cs;
 
-    std::copy(data + sbo + storage[0], data + sbo + storage[1] - storage[0], tmp);
+    std::copy(data + sbo + storage[0], data + sbo + storage[1], tmp);
     cs = ccitt16(tmp, storage[1] - storage[0]);
     *(u16*)(data + sbo + storage[2]) = cs;
 
