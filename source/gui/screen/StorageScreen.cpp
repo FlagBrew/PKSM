@@ -672,7 +672,7 @@ bool StorageScreen::releasePkm()
         if (storageChosen) { // Storage set all slots in box to PK7()s (or however it happens)
         }
         else
-            TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), boxBox, cursorIndex);
+            TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), boxBox, cursorIndex - 1);
     }
     return false;
 }
