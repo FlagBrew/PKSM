@@ -316,7 +316,8 @@ bool SavPT::checkInsertForm(u8* forms, u8 fc, u8 formNum)
         }
     }
 
-    u8 dummy[fc] = {255};
+    u8 dummy[fc];
+    std::fill_n(dummy, fc, 0xFF);
     if (!memcmp(forms, dummy, fc))
     {
         forms[0] = formNum;

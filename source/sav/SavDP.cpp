@@ -328,7 +328,8 @@ bool SavDP::checkInsertForm(u8* forms, u8 fc, u8 formNum)
         }
     }
     
-    u8 dummy[fc] = {255};
+    u8 dummy[fc];
+    std::fill_n(dummy, fc, 0xFF);
     if (!memcmp(forms, dummy, fc))
     {
         forms[0] = formNum;
@@ -406,13 +407,11 @@ void SavDP::getDexFormValues(u8* forms, u32 v, u8 bitsPerForm, u8 readCt)
 void SavDP::setForms(u8* forms, u16 species)
 {
     static const int brSize = 0x40;
-    switch (species)
+    if (species == 386)
     {
-        case 386: // Deoxys
-            u32 newval = setDexFormValues(forms, 4, 4);
-            data[gbo + 0x12DC + 0x4 + 1*brSize - 1] = (u8) (newval & 0xFF);
-            data[gbo + 0x12DC + 0x4 + 2*brSize - 1] = (u8) ((newval >> 8) & 0xFF);
-            break;
+        u32 newval = setDexFormValues(forms, 4, 4);
+        data[gbo + 0x12DC + 0x4 + 1*brSize - 1] = (u8) (newval & 0xFF);
+        data[gbo + 0x12DC + 0x4 + 2*brSize - 1] = (u8) ((newval >> 8) & 0xFF);
     }
 
     int formOffset = gbo + 0x12DC + 4 + 4*brSize + 4;
