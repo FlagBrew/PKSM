@@ -180,10 +180,10 @@ StorageScreen::StorageScreen()
     mainButtons[4] = new Button(212, 133, 108, 28, [this](){ return this->dumpPkm(); }, ui_sheet_button_editor_idx,
                                     "StorageButtonDump", FONT_SIZE_12, COLOR_BLACK);
 
-    mainButtons[5] = new Button(8, 15, 17, 24, [this](){ return this->lastBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0);
-    mainButtons[6] = new Button(189, 15, 17, 24, [this](){ return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0);
-    mainButtons[7] = new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0);
-    mainButtons[8] = new Button(283, 211, 34, 28, [this](){ return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
+    mainButtons[5] = new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0);
+    mainButtons[6] = new Button(283, 211, 34, 28, [this](){ return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
+    mainButtons[7] = new Button(8, 15, 17, 24, [this](){ return this->lastBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0);
+    mainButtons[8] = new Button(189, 15, 17, 24, [this](){ return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0);
 
     // Pokemon buttons
     u16 y = 45;
@@ -413,10 +413,35 @@ void StorageScreen::update(touchPosition* touch)
         u32 kDown = hidKeysDown();
         u32 kHeld = hidKeysHeld();
 
-        for (Button* button : mainButtons)
+        for (size_t i = 0; i < mainButtons.size(); i++)
         {
-            if (button->update(touch))
-                return;
+            if (i < 7)
+            {
+                if (mainButtons[i]->update(touch))
+                    return;
+            }
+            else
+            {
+                static int timers[2] = {0};
+                static bool doTime[2] = {false, false};
+                if (timers[i - 7] <= 0)
+                {
+                    if (mainButtons[i]->clicked(touch))
+                    {
+                        mainButtons[i]->update(touch);
+                        timers[i - 7] = 10;
+                        doTime[i - 7] = true;
+                    }
+                }
+                if (doTime[i - 7])
+                {
+                    timers[i - 7]--;
+                    if (timers[i - 7] <= 0)
+                    {
+                        doTime[i - 7] = false;
+                    }
+                }
+            }
         }
         backHeld = false;
         // prevents double pressing

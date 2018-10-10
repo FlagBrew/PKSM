@@ -233,9 +233,31 @@ void EditSelectorScreen::update(touchPosition* touch)
                 }
             }
         }
-        else
+        else if (i < 3)
         {
             buttons[i]->update(touch);
+        }
+        else
+        {
+            static int timers[2] = {0};
+            static bool doTime[2] = {false, false};
+            if (timers[i - 3] <= 0)
+            {
+                if (buttons[i]->clicked(touch))
+                {
+                    buttons[i]->update(touch);
+                    timers[i - 3] = 10;
+                    doTime[i - 3] = true;
+                }
+            }
+            if (doTime[i - 3])
+            {
+                timers[i - 3]--;
+                if (timers[i - 3] <= 0)
+                {
+                    doTime[i - 3] = false;
+                }
+            }
         }
     }
 
