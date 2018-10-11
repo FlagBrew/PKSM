@@ -24,30 +24,57 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef SCRIPTSCREEN_HPP
-#define SCRIPTSCREEN_HPP
-
-#include "Screen.hpp"
 #include "STDirectory.hpp"
-#include "Hid.hpp"
 
-class ScriptScreen : public Screen
+STDirectory::STDirectory(const std::string& root)
 {
-public:
-    ScriptScreen();
+    mGood = false;
+    mError = 0;
+    mList.clear();
+    
+    DIR* dir = opendir(root.c_str());
+    struct dirent* ent;
 
-    void draw() const override;
-    void update(touchPosition* touch) override;
+    if (dir == NULL)
+    {
+        mError = (Result)errno;
+    }
+    else
+    {
+        while ((ent = readdir(dir)))
+        {
+            std::string name = std::string(ent->d_name);
+            bool directory = ent->d_type == DT_DIR;
+            struct STDirectoryEntry de = { name, directory };
+            mList.push_back(de);
+        }
+    }
+    
+    closedir(dir);
+    mGood = true;
+}
 
-    ScreenType type() const override { return ScreenType::SCRIPTS; }
-private:
-    void updateEntries();
-    void applyScript();
-    std::string currDirString;
-    STDirectory currDir;
-    std::vector<std::pair<std::string, bool>> currFiles;
-    Hid hid;
-    bool sdSearch;
-};
+Result STDirectory::error(void)
+{
+    return mError;
+}
 
-#endif
+bool STDirectory::good(void)
+{
+    return mGood;
+}
+
+std::string STDirectory::item(size_t index)
+{
+    return index < mList.size() ? mList.at(index).name : "";
+}
+
+bool STDirectory::folder(size_t index)
+{
+    return index < mList.size() ? mList.at(index).directory : false; 
+}
+
+size_t STDirectory::count(void)
+{
+    return mList.size();
+}

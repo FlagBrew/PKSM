@@ -24,30 +24,36 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef SCRIPTSCREEN_HPP
-#define SCRIPTSCREEN_HPP
+#ifndef STDIRECTORY_HPP
+#define STDIRECTORY_HPP
 
-#include "Screen.hpp"
-#include "STDirectory.hpp"
-#include "Hid.hpp"
+#include <dirent.h>
+#include <3ds.h>
+#include <errno.h>
+#include <string>
+#include <vector>
 
-class ScriptScreen : public Screen
+struct STDirectoryEntry {
+    std::string name;
+    bool        directory;
+};
+
+class STDirectory
 {
 public:
-    ScriptScreen();
+    STDirectory(const std::string& root);
+    ~STDirectory(void) { };
 
-    void draw() const override;
-    void update(touchPosition* touch) override;
+    Result      error(void);
+    std::string item(size_t index);
+    bool        folder(size_t index);
+    bool        good(void);
+    size_t      count(void);
 
-    ScreenType type() const override { return ScreenType::SCRIPTS; }
 private:
-    void updateEntries();
-    void applyScript();
-    std::string currDirString;
-    STDirectory currDir;
-    std::vector<std::pair<std::string, bool>> currFiles;
-    Hid hid;
-    bool sdSearch;
+    std::vector<STDirectoryEntry> mList;
+    Result                  mError;
+    bool                    mGood;
 };
 
 #endif

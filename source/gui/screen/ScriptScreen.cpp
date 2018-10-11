@@ -40,38 +40,38 @@ namespace
         {
             case 7:
             case 8:
-                return "/3ds/PKSM/scripts/hgss";
+                return "/scripts/hgss";
             case 10:
             case 11:
-                return "/3ds/PKSM/scripts/dp";
+                return "/scripts/dp";
             case 12:
-                return "/3ds/PKSM/scripts/pt";
+                return "/scripts/pt";
             case 20:
             case 21:
-                return "/3ds/PKSM/scripts/bw";
+                return "/scripts/bw";
             case 22:
             case 23:
-                return "/3ds/PKSM/scripts/b2w2";
+                return "/scripts/b2w2";
             case 24:
             case 25:
-                return "/3ds/PKSM/scripts/xy";
+                return "/scripts/xy";
             case 26:
             case 27:
-                return "/3ds/PKSM/scripts/oras";
+                return "/scripts/oras";
             case 30:
             case 31:
-                return "/3ds/PKSM/scripts/sm";
+                return "/scripts/sm";
             case 32:
             case 33:
-                return "/3ds/PKSM/scripts/usum";
+                return "/scripts/usum";
             default:
                 return "";
         }
     }
 }
 
-ScriptScreen::ScriptScreen() : currDirString(getScriptDir(TitleLoader::save->version())), origDirLength(currDirString.size()),
-                               currDir(Archive::sd(), StringUtils::UTF8toUTF16(currDirString)), hid(8, 1)
+ScriptScreen::ScriptScreen() : currDirString("romfs:" + getScriptDir(TitleLoader::save->version())),
+                               currDir(currDirString), hid(8, 1), sdSearch(false)
 {
     updateEntries();
 }
@@ -105,6 +105,7 @@ void ScriptScreen::draw() const
     Gui::backgroundBottom(true);
     C2D_DrawRectSolid(20, 40, 0.5f, 280, 60, C2D_Color32(128, 128, 128, 255));
     C2D_DrawRectSolid(21, 41, 0.5f, 278, 58, COLOR_MASKBLACK);
+    Gui::staticText(GFX_BOTTOM, 224, "Press \uE002 to switch between built-in scripts and ones on the SD card", FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
 
     Gui::dynamicText(currFiles[hid.fullIndex()].first, 30, 44, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
 }
@@ -115,7 +116,7 @@ void ScriptScreen::update(touchPosition* touch)
     u32 down = hidKeysDown();
     if (down & KEY_B)
     {
-        if (currDirString.size() == origDirLength)
+        if (currDirString == (sdSearch ? "/3ds/PKSM" : "romfs:") + getScriptDir(TitleLoader::save->version()))
         {
             Gui::screenBack();
             return;
@@ -123,7 +124,7 @@ void ScriptScreen::update(touchPosition* touch)
         else
         {
             currDirString = currDirString.substr(0, currDirString.find_last_of('/'));
-            currDir = Directory(Archive::sd(), StringUtils::UTF8toUTF16(currDirString));
+            currDir = STDirectory(currDirString);
             updateEntries();
         }
     }
@@ -132,7 +133,7 @@ void ScriptScreen::update(touchPosition* touch)
         if (currFiles[hid.fullIndex()].second)
         {
             currDirString += '/' + currFiles[hid.fullIndex()].first;
-            currDir = Directory(Archive::sd(), StringUtils::UTF8toUTF16(currDirString));
+            currDir = STDirectory(currDirString);
             updateEntries();
         }
         else
@@ -143,6 +144,13 @@ void ScriptScreen::update(touchPosition* touch)
             }
         }
     }
+    else if (down & KEY_X)
+    {
+        sdSearch = !sdSearch;
+        currDirString = (sdSearch ? "/3ds/PKSM" : "romfs:") + getScriptDir(TitleLoader::save->version());
+        currDir = STDirectory(currDirString);
+        updateEntries();
+    }
 }
 
 void ScriptScreen::updateEntries()
@@ -151,7 +159,11 @@ void ScriptScreen::updateEntries()
     currFiles.clear();
     for (size_t i = 0; i < currDir.count(); i++)
     {
-        currFiles.push_back(std::make_pair(StringUtils::UTF16toUTF8(currDir.item(i)), currDir.folder(i)));
+        std::string item = currDir.item(i);
+        if (item != "." && item != "..")
+        {
+            currFiles.push_back(std::make_pair(item, currDir.folder(i)));
+        }
     }
     std::sort(currFiles.begin(), currFiles.end(), [this](std::pair<std::string, bool>& first, std::pair<std::string, bool>& second)
     {
@@ -170,75 +182,98 @@ void ScriptScreen::updateEntries()
     });
 }
 
-void ScriptScreen::applyScript()
+static std::pair<u8*, size_t> scriptRead(std::string path)
 {
-    FSStream in(Archive::sd(), StringUtils::UTF8toUTF16(currDirString + '/' + currFiles[hid.fullIndex()].first), FS_OPEN_READ);
-    if (in.good())
+    u8* data = nullptr;
+    size_t size = 0;
+    if (path.find("romfs") == 0)
     {
-        size_t size = in.size();
-        u8* data = new u8[size];
-        in.read(data, size);
-        in.close();
-
-        for (size_t i = 0; i < strlen(MAGIC); i++)
-        {
-            if (data[i] != MAGIC[i])
-            {
-                Gui::warn("Not a valid script!");
-                return;
-            }
-        }
-
-        size_t index = strlen(MAGIC);
-        while (index < size)
-        {
-            u32 offset = *(u32*)(data + index);
-            u32 length = *(u32*)(data + index + 4);
-            u32 repeat = *(u32*)(data + index + 8 + length);
-
-            if (TitleLoader::save->generation() == 4)
-            {
-                u32 sbo = 0;
-                u32 gbo = 0;
-                switch (TitleLoader::save->version())
-                {
-                    case 7:
-                    case 8:
-                        sbo = ((SavHGSS*)TitleLoader::save.get())->sbo;
-                        gbo = ((SavHGSS*)TitleLoader::save.get())->gbo;
-                        break;
-                    case 10:
-                    case 11:
-                        sbo = ((SavDP*)TitleLoader::save.get())->sbo;
-                        gbo = ((SavDP*)TitleLoader::save.get())->gbo;
-                        break;
-                    case 12:
-                        sbo = ((SavPT*)TitleLoader::save.get())->sbo;
-                        gbo = ((SavPT*)TitleLoader::save.get())->gbo;
-                        break;
-                }
-                if (TitleLoader::save->boxOffset(0, 0) - sbo <= offset && TitleLoader::save->boxOffset(TitleLoader::save->boxes, 0) - sbo >= offset)
-                {
-                    offset += sbo;
-                }
-                else
-                {
-                    offset += gbo;
-                }
-            }
-
-            for (size_t i = 0; i < repeat; i++)
-            {
-                std::copy(data + index + 8, data + index + 8 + length, TitleLoader::save->data + offset + i * length);
-            }
-
-            index += 12 + length;
-        }
-
-        delete[] data;
+        FILE *fptr = fopen(path.c_str(), "rt");
+        fseek(fptr, 0, SEEK_END);
+        size = ftell(fptr);
+        rewind(fptr);
+        data = new u8[size];
+        fread(data, size, 1, fptr);
+        fclose(fptr);
     }
     else
     {
-        Gui::warn("Could not open script file!");
+        FSStream in(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_READ);
+        if (in.good())
+        {
+            size = in.size();
+            u8* data = new u8[size];
+            in.read(data, size);
+            in.close();
+        }
+        else
+        {
+            Gui::warn("Could not open script file!");
+            in.close();
+        }
     }
+
+    return {data, size};
+}
+
+void ScriptScreen::applyScript()
+{
+    auto scriptData = scriptRead(currDirString + '/' + currFiles[hid.fullIndex()].first);
+
+    for (size_t i = 0; i < strlen(MAGIC); i++)
+    {
+        if (scriptData.first[i] != MAGIC[i])
+        {
+            Gui::warn("Not a valid script!");
+            return;
+        }
+    }
+
+    size_t index = strlen(MAGIC);
+    while (index < scriptData.second)
+    {
+        u32 offset = *(u32*)(scriptData.first + index);
+        u32 length = *(u32*)(scriptData.first + index + 4);
+        u32 repeat = *(u32*)(scriptData.first + index + 8 + length);
+
+        if (TitleLoader::save->generation() == 4)
+        {
+            u32 sbo = 0;
+            u32 gbo = 0;
+            switch (TitleLoader::save->version())
+            {
+                case 7:
+                case 8:
+                    sbo = ((SavHGSS*)TitleLoader::save.get())->sbo;
+                    gbo = ((SavHGSS*)TitleLoader::save.get())->gbo;
+                    break;
+                case 10:
+                case 11:
+                    sbo = ((SavDP*)TitleLoader::save.get())->sbo;
+                    gbo = ((SavDP*)TitleLoader::save.get())->gbo;
+                    break;
+                case 12:
+                    sbo = ((SavPT*)TitleLoader::save.get())->sbo;
+                    gbo = ((SavPT*)TitleLoader::save.get())->gbo;
+                    break;
+            }
+            if (TitleLoader::save->boxOffset(0, 0) - sbo <= offset && TitleLoader::save->boxOffset(TitleLoader::save->boxes, 0) - sbo >= offset)
+            {
+                offset += sbo;
+            }
+            else
+            {
+                offset += gbo;
+            }
+        }
+
+        for (size_t i = 0; i < repeat; i++)
+        {
+            std::copy(scriptData.first + index + 8, scriptData.first + index + 8 + length, TitleLoader::save->data + offset + i * length);
+        }
+
+        index += 12 + length;
+    }
+
+    delete[] scriptData.first;
 }

@@ -78,6 +78,7 @@ GRAPHICS		:=	assets/gfx/ui # \
 ROMFS			:=	assets/romfs
 GFXBUILD		:=	$(ROMFS)/gfx
 PACKER			:=	EventsGalleryPacker
+SCRIPTS			:=	PKSM-Scripts
 
 # If left blank, will try to use "icon.png", "$(TARGET).png", or the default ctrulib icon, in that order
 ICON			:=	assets/icon.png
@@ -214,8 +215,11 @@ endif
 #---------------------------------------------------------------------------------
 all:
 	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR)
-	@cd $(BUILD)/$(PACKER) && python packer.py
+	@cd $(BUILD)/$(PACKER) && python3 packer.py
 	@cd $(BUILD)/$(PACKER) && mv out/*.bin out/*.json ../../assets/romfs/mg
+	@cd $(BUILD)/$(SCRIPTS) && python3 genScripts.py
+	@rm -r assets/romfs/scripts
+	@cd $(BUILD)/$(SCRIPTS) && mv -f scripts ../../assets/romfs
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile $(OUTPUT).3dsx
 	@bannertool makebanner -i "$(BANNER_IMAGE)" -a "$(BANNER_AUDIO)" -o $(BUILD)/banner.bnr
 	@bannertool makesmdh -s "$(APP_TITLE)" -l "$(APP_DESCRIPTION)" -p "$(APP_AUTHOR)" -i "$(APP_ICON)" -f "$(ICON_FLAGS)" -o $(BUILD)/icon.icn

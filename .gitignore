@@ -9,3 +9,4 @@ assets/romfs/mg/*.bin
 assets/romfs/gfx/*
 !assets/romfs/gfx/pkm_spritesheet.t3x
 !assets/romfs/gfx/types_spritesheet.t3x
+assets/romfs/scripts/
