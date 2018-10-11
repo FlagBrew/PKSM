@@ -31,6 +31,8 @@
 #include "Configuration.hpp"
 #include "TitleLoadScreen.hpp"
 #include "FSStream.hpp"
+#include "AccelButton.hpp"
+#include "ClickButton.hpp"
 
 // TODO: remove
 static u8 test[] = {0x0B,0xEB,0x64,0x89,0x00,0x00,0xC8,0xA5,0x12,0x00,0x00,0x00,0x2A,0x8A,0x42,0x73,0x47,0x9C,0x00,0x00,0xA0,0x91,0x00,0x02,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x21,0x00,0x62,0x00,0xEF,0x00,0x22,0x01,0x23,0x1E,0x14,0x14,0x00,0x00,0x00,0x00,0xD1,0xA1,0x33,0x3C,0x00,0x00,0x00,0x00,0x02,0x13,0x01,0x00,0x00,0x00,0x00,0x00,0x50,0x00,0x69,0x00,0x64,0x00,0x67,0x00,0x65,0x00,0x6F,0x00,0x74,0x00,0xFF,0xFF,0x6F,0x00,0xFF,0xFF,0xFF,0xFF,0x00,0x17,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x52,0x00,0x6F,0x00,0x43,0x00,0xFF,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x11,0x01,0x0D,0x00,0x00,0x4B,0x00,0x00,0x19,0x0A,0x00,0x00,0x00};
@@ -170,7 +172,7 @@ bool wirelessStuff() { return false; }
 
 StorageScreen::StorageScreen()
 {
-    mainButtons[0] = new Button(242, 9, 47, 22, [this](){ return this->swapBoxWithStorage(); }, ui_sheet_button_swap_boxes_idx, "", 0.0f, 0);
+    mainButtons[0] = new ClickButton(242, 9, 47, 22, [this](){ return this->swapBoxWithStorage(); }, ui_sheet_button_swap_boxes_idx, "", 0.0f, 0);
     mainButtons[1] = new Button(212, 40, 108, 28, [this](){ return this->showViewer(); }, ui_sheet_button_editor_idx,
                                     "StorageButtonView", FONT_SIZE_12, COLOR_BLACK);
     mainButtons[2] = new Button(212, 71, 108, 28, [this](){ return this->clearBox(); }, ui_sheet_button_editor_idx,
@@ -182,8 +184,8 @@ StorageScreen::StorageScreen()
 
     mainButtons[5] = new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0);
     mainButtons[6] = new Button(283, 211, 34, 28, [this](){ return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
-    mainButtons[7] = new Button(8, 15, 17, 24, [this](){ return this->lastBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0);
-    mainButtons[8] = new Button(189, 15, 17, 24, [this](){ return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0);
+    mainButtons[7] = new AccelButton(8, 15, 17, 24, [this](){ return this->lastBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+    mainButtons[8] = new AccelButton(189, 15, 17, 24, [this](){ return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
 
     // Pokemon buttons
     u16 y = 45;
@@ -192,12 +194,12 @@ StorageScreen::StorageScreen()
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            clickButtons[row*6 + column] = new Button(x, y, 34, 30, [this, row, column](){ return this->clickBottomIndex(row*6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, 0);
+            clickButtons[row*6 + column] = new ClickButton(x, y, 34, 30, [this, row, column](){ return this->clickBottomIndex(row*6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, 0);
             x += 34;
         }
         y += 30;
     }
-    clickButtons[30] = new Button(32, 15, 164, 24, [this](){ return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0);
+    clickButtons[30] = new ClickButton(32, 15, 164, 24, [this](){ return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0);
     TitleLoader::save->cryptBoxData(true);
 }
 
@@ -278,7 +280,7 @@ void StorageScreen::draw() const
     if (viewer)
     {
         C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, C2D_Color32(0, 0, 0, 120));
-        mainButtons[8]->draw();
+        mainButtons[6]->draw();
         viewer->draw();
     }
     else
@@ -415,43 +417,14 @@ void StorageScreen::update(touchPosition* touch)
 
         for (size_t i = 0; i < mainButtons.size(); i++)
         {
-            if (i < 7)
-            {
-                if (mainButtons[i]->update(touch))
-                    return;
-            }
-            else
-            {
-                static int timers[2] = {0};
-                static bool doTime[2] = {false, false};
-                if (timers[i - 7] <= 0)
-                {
-                    if (mainButtons[i]->clicked(touch))
-                    {
-                        mainButtons[i]->update(touch);
-                        timers[i - 7] = 10;
-                        doTime[i - 7] = true;
-                    }
-                }
-                if (doTime[i - 7])
-                {
-                    timers[i - 7]--;
-                    if (timers[i - 7] <= 0)
-                    {
-                        doTime[i - 7] = false;
-                    }
-                }
-            }
+            if (mainButtons[i]->update(touch))
+                return;
         }
         backHeld = false;
-        // prevents double pressing
-        if (kDown & KEY_TOUCH)
+        for (Button* button : clickButtons)
         {
-            for (Button* button : clickButtons)
-            {
-                if (button->update(touch))
-                    return;
-            }
+            if (button->update(touch))
+                return;
         }
 
         static int buttonCooldown = 10;
@@ -575,7 +548,7 @@ void StorageScreen::update(touchPosition* touch)
     }
     else
     {
-        if (hidKeysDown() & KEY_B || mainButtons[8]->update(touch))
+        if (hidKeysDown() & KEY_B || mainButtons[6]->update(touch))
         {
             backButton();
         }

@@ -26,16 +26,9 @@
 
 #include "ConfigScreen.hpp"
 #include "gui.hpp"
-#include <bitset>
+#include "AccelButton.hpp"
+#include "ClickButton.hpp"
 
-#define TIMER(thingToDo) static int timer = 3; \
-                         if (timer <= 0) \
-                         { \
-                            thingToDo; \
-                            timer = 3; \
-                         } \
-                         else \
-                            --timer
 #define LIMITSTORAGE(number) number > 9999 ? 9999 : number < 0 ? 0 : number
 
 static void inputNumber(std::function<void(int)> callback, int digits, int maxValue)
@@ -97,7 +90,7 @@ ConfigScreen::ConfigScreen()
     tabButtons[0].push_back(new Button(177, 118, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::PT); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
     tabButtons[0].push_back(new Button(177, 140, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::RU); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
 
-    // Defaults buttons; don't know how to do swkbd stuff yet
+    // Defaults buttons
     tabButtons[1].push_back(new Button(112, 38, 15, 12, [](){ Gui::setNextKeyboardFunc([](){ inputNumber([](u16 a){ Configuration::getInstance().defaultTID(a); }, 5, 0xFFFF); }); return false; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
     tabButtons[1].push_back(new Button(112, 62, 15, 12, [](){ Gui::setNextKeyboardFunc([](){ inputNumber([](u16 a){ Configuration::getInstance().defaultSID(a); }, 5, 0xFFFF); }); return false; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
     tabButtons[1].push_back(new Button(112, 86, 15, 12, [](){ Gui::setNextKeyboardFunc(&inputOT); return false; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
@@ -107,13 +100,13 @@ ConfigScreen::ConfigScreen()
     tabButtons[1].push_back(new Button(112, 182, 15, 12, [](){ Gui::setNextKeyboardFunc([](){ inputNumber([](u16 a){ Configuration::getInstance().year(a); }, 4, 9999); }); return false; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
 
     // Miscellaneous buttons
-    tabButtons[2].push_back(new Button(237, 39, 15, 12, [](){ Configuration::getInstance().autoBackup(!Configuration::getInstance().autoBackup()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new Button(231, 62, 13, 13, [](){ TIMER(Configuration::getInstance().storageSize(LIMITSTORAGE(Configuration::getInstance().storageSize() - 1))); return false; }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
+    tabButtons[2].push_back(new ClickButton(237, 39, 15, 12, [](){ Configuration::getInstance().autoBackup(!Configuration::getInstance().autoBackup()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    tabButtons[2].push_back(new AccelButton(231, 62, 13, 13, [](){ Configuration::getInstance().storageSize(LIMITSTORAGE(Configuration::getInstance().storageSize() - 1)); return false; }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
     tabButtons[2].push_back(new Button(245, 62, 50, 13, [](){ Gui::setNextKeyboardFunc([](){ inputNumber([](u16 a){ Configuration::getInstance().storageSize(a); }, 4, 9999); }); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new Button(296, 62, 13, 13, [](){ TIMER(Configuration::getInstance().storageSize(LIMITSTORAGE(Configuration::getInstance().storageSize() + 1))); return false; }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new Button(237, 87, 15, 12, [](){ Configuration::getInstance().fixSectors(!Configuration::getInstance().fixSectors()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new Button(237, 111, 15, 12, [](){ Configuration::getInstance().transferEdit(!Configuration::getInstance().transferEdit()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new Button(237, 135, 15, 12, [](){ Configuration::getInstance().writeFileSave(!Configuration::getInstance().writeFileSave()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    tabButtons[2].push_back(new AccelButton(296, 62, 13, 13, [](){ Configuration::getInstance().storageSize(LIMITSTORAGE(Configuration::getInstance().storageSize() + 1)); return false; }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
+    tabButtons[2].push_back(new ClickButton(237, 87, 15, 12, [](){ Configuration::getInstance().fixSectors(!Configuration::getInstance().fixSectors()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    tabButtons[2].push_back(new ClickButton(237, 111, 15, 12, [](){ Configuration::getInstance().transferEdit(!Configuration::getInstance().transferEdit()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    tabButtons[2].push_back(new ClickButton(237, 135, 15, 12, [](){ Configuration::getInstance().writeFileSave(!Configuration::getInstance().writeFileSave()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
 }
 
 void ConfigScreen::draw() const
@@ -275,23 +268,8 @@ void ConfigScreen::update(touchPosition* touch)
         button->update(touch);
     }
 
-    if (currentTab != 2)
+    for (Button* button : tabButtons[currentTab])
     {
-        for (Button* button : tabButtons[currentTab])
-        {
-            button->update(touch);
-        }
-    }
-    else
-    {
-        // NOTE: if any other buttons are added, this number will need to be changed, as well
-        static std::bitset<6> dirtyButtons;
-        for (size_t i = 0; i < tabButtons[2].size(); i++)
-        {
-            if (!dirtyButtons[i])
-                dirtyButtons[i] = tabButtons[2][i]->update(touch);
-            else
-                dirtyButtons[i] = tabButtons[2][i]->clicked(touch);
-        }
+        button->update(touch);
     }
 }

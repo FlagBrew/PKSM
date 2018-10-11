@@ -69,13 +69,41 @@ private:
         }
         bool update(touchPosition* touch)
         {
-            if (clicked(touch))
+            if (toggle)
             {
-                if (toggle)
+                if (!isClicked && clicked(touch))
                 {
                     key = key == ui_sheet_emulated_toggle_green_idx ? ui_sheet_emulated_toggle_red_idx : ui_sheet_emulated_toggle_green_idx;
+                    return noArg();
                 }
-                return noArg();
+                else
+                {
+                    isClicked = clicked(touch);
+                }
+            }
+            else
+            {
+                static constexpr int ACCELERATIONTIME = 25;
+                static constexpr int ACCELERATED_RATE = 2;
+                static constexpr int NORMAL_RATE      = 5;
+                if (clicked(touch))
+                {
+                    clickedTime++;
+                    if (timer <= 0)
+                    {
+                        doTime = true;
+                        timer = clickedTime > ACCELERATIONTIME ? ACCELERATED_RATE : NORMAL_RATE;
+                        return noArg();
+                    }
+                }
+                else
+                {
+                    clickedTime = 0;
+                }
+                if (doTime)
+                {
+                    timer--;
+                }
             }
             return false;
         }
@@ -94,6 +122,10 @@ private:
     private:
         bool toggle;
         u8 bitVal;
+        int clickedTime;
+        bool isClicked = false;
+        int timer = 0;
+        bool doTime = false;
     };
     // Normally I would just use the same buttons for every byte, but since there are some odd things that can be done,
     // I think that this is the better solution. It allows for every byte to have its own set of buttons, allowing bytes

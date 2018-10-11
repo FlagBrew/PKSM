@@ -28,6 +28,8 @@
 #include "gui.hpp"
 #include "loader.hpp"
 #include "EditorScreen.hpp"
+#include "ClickButton.hpp"
+#include "AccelButton.hpp"
 
 extern int bobPointer();
 static bool dirtyBack = true;
@@ -92,10 +94,10 @@ EditSelectorScreen::EditSelectorScreen()
     viewer = std::make_shared<ViewerScreen>(nullptr, false);
     
     buttons.push_back(new Button(283, 211, 34, 28, [](){ Gui::screenBack(); return true; }, ui_sheet_button_back_idx, "", 0.0f, 0));
-    buttons.push_back(new Button(32, 15, 164, 24, [this](){ return this->clickIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0));
+    buttons.push_back(new ClickButton(32, 15, 164, 24, [this](){ return this->clickIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0));
     buttons.push_back(new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0));
-    buttons.push_back(new Button(8, 15, 17, 24, [this](){ return this->lastBox(); }, ui_sheet_res_null_idx, "", 0.0f, 0));
-    buttons.push_back(new Button(189, 15, 17, 24, [this](){ return this->nextBox(); }, ui_sheet_res_null_idx, "", 0.0f, 0));
+    buttons.push_back(new AccelButton(8, 15, 17, 24, [this](){ return this->lastBox(); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5));
+    buttons.push_back(new AccelButton(189, 15, 17, 24, [this](){ return this->nextBox(); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5));
 
     // Pokemon buttons
     u16 y = 45;
@@ -104,7 +106,7 @@ EditSelectorScreen::EditSelectorScreen()
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            pkmButtons[row*6 + column] = new Button(x, y, 34, 30, [this, row, column](){ return this->clickIndex(row * 6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, 0);
+            pkmButtons[row*6 + column] = new ClickButton(x, y, 34, 30, [this, row, column](){ return this->clickIndex(row * 6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, 0);
             x += 34;
         }
         y += 30;
@@ -113,7 +115,7 @@ EditSelectorScreen::EditSelectorScreen()
     {
         int x = (i % 2 == 0 ? 221 : 271);
         int y = (i % 2 == 0 ? 50 + 45 * (i / 2) : 66 + 45 * (i / 2));
-        pkmButtons[30 + i] = new Button(x, y, 34, 30, [this, i](){ return this->clickIndex(31 + i); }, ui_sheet_res_null_idx, "", 0.0f, 0);
+        pkmButtons[30 + i] = new ClickButton(x, y, 34, 30, [this, i](){ return this->clickIndex(31 + i); }, ui_sheet_res_null_idx, "", 0.0f, 0);
     }
     TitleLoader::save->cryptBoxData(true);
 }
@@ -233,43 +235,18 @@ void EditSelectorScreen::update(touchPosition* touch)
                 }
             }
         }
-        else if (i < 3)
-        {
-            buttons[i]->update(touch);
-        }
         else
         {
-            static int timers[2] = {0};
-            static bool doTime[2] = {false, false};
-            if (timers[i - 3] <= 0)
-            {
-                if (buttons[i]->clicked(touch))
-                {
-                    buttons[i]->update(touch);
-                    timers[i - 3] = 10;
-                    doTime[i - 3] = true;
-                }
-            }
-            if (doTime[i - 3])
-            {
-                timers[i - 3]--;
-                if (timers[i - 3] <= 0)
-                {
-                    doTime[i - 3] = false;
-                }
-            }
+            buttons[i]->update(touch);
         }
     }
 
     u32 downKeys = hidKeysDown();
     u32 heldKeys = hidKeysHeld();
 
-    if (downKeys & KEY_TOUCH)
+    for (Button* button : pkmButtons)
     {
-        for (Button* button : pkmButtons)
-        {
-            button->update(touch);
-        }
+        button->update(touch);
     }
 
     if (sleepTimer < 0 && sleep)
@@ -286,7 +263,6 @@ void EditSelectorScreen::update(touchPosition* touch)
         else
         {
             editPokemon(infoMon);
-            dirtyBack = true;
             return;
         }
     }

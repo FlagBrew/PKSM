@@ -1380,10 +1380,8 @@ void HexEditScreen::draw() const
 void HexEditScreen::update(touchPosition* touch)
 {
     u32 down = hidKeysDown();
-    static int timers[8] = {0};
     static int superSecretTimer = 120;
     static std::bitset<8> superSecretCornersPressed = {false};
-    static std::bitset<8> dirtyButtons = {false};
     static bool countDownSecretTimer = false;
     //u32 held = hidKeysHeld();
 
@@ -1462,22 +1460,7 @@ void HexEditScreen::update(touchPosition* touch)
     {
         for (size_t i = 0; i < buttons[hid.fullIndex()].size(); i++)
         {
-            if ((timers[i] <= 0 && !buttons[hid.fullIndex()][i]->isToggle()) || !dirtyButtons[i])
-            {
-                dirtyButtons[i] = buttons[hid.fullIndex()][i]->update(touch);
-                timers[i] = 8;
-            }
-            else if (dirtyButtons[i])
-            {
-                dirtyButtons[i] = buttons[hid.fullIndex()][i]->clicked(touch);
-            }
-        }
-    }
-    for (int i = 0; i < 8; i++)
-    {
-        if (timers[i] > 0)
-        {
-            timers[i]--;
+            buttons[hid.fullIndex()][i]->update(touch);
         }
     }
     if (countDownSecretTimer)

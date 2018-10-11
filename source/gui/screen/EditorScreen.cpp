@@ -33,9 +33,12 @@
 #include "HiddenPowerSelectionScreen.hpp"
 #include "NatureSelectionScreen.hpp"
 #include "ItemSelectionScreen.hpp"
-#include <bitset>
+#include "AccelButton.hpp"
+#include "ClickButton.hpp"
 
 #define NO_TEXT_BUTTON(x, y, w, h, function, image) new Button(x, y, w, h, function, image, "", 0.0f, 0)
+#define NO_TEXT_ACCEL(x, y, w, h, function, image) new AccelButton(x, y, w, h, function, image, "", 0.0f, 0)
+#define NO_TEXT_CLICK(x, y, w, h, function, image) new ClickButton(x, y, w, h, function, image, "", 0.0f, 0)
 
 static constexpr int statValues[] = { 0, 1, 2, 4, 5, 3 };
 
@@ -52,42 +55,42 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
     }
     u8 tab = 0;
     // Back button first, always. Needs to have the same index for each one
-    buttons[tab].push_back(NO_TEXT_BUTTON(283, 211, 34, 28, [this](){ return this->goBack(); }, ui_sheet_button_back_idx));
+    buttons[tab].push_back(NO_TEXT_CLICK(283, 211, 34, 28, [this](){ return this->goBack(); }, ui_sheet_button_back_idx));
     buttons[tab].push_back(NO_TEXT_BUTTON(291, 2, 27, 23, [this](){ return this->hexEdit(); }, ui_sheet_icon_hex_idx));
-    buttons[tab].push_back(NO_TEXT_BUTTON(94, 34, 13, 13, [this](){ return this->changeLevel(false); }, ui_sheet_button_minus_small_idx));
+    buttons[tab].push_back(NO_TEXT_ACCEL(94, 34, 13, 13, [this](){ return this->changeLevel(false); }, ui_sheet_button_minus_small_idx));
     buttons[tab].push_back(NO_TEXT_BUTTON(109, 34, 31, 13, [this](){ Gui::setNextKeyboardFunc([this](){ setLevel(); }); return false; }, ui_sheet_res_null_idx));
-    buttons[tab].push_back(NO_TEXT_BUTTON(142, 34, 13, 13, [this](){ return this->changeLevel(true); }, ui_sheet_button_plus_small_idx));
+    buttons[tab].push_back(NO_TEXT_ACCEL(142, 34, 13, 13, [this](){ return this->changeLevel(true); }, ui_sheet_button_plus_small_idx));
     buttons[tab].push_back(NO_TEXT_BUTTON(75, 54, 15, 12, [this](){ return this->selectNature(); }, ui_sheet_button_info_detail_editor_dark_idx));
-    buttons[tab].push_back(NO_TEXT_BUTTON(75, 74, 15, 12, [this](){ return this->selectAbility(); }, ui_sheet_button_info_detail_editor_dark_idx));
+    buttons[tab].push_back(NO_TEXT_CLICK(75, 74, 15, 12, [this](){ return this->selectAbility(); }, ui_sheet_button_info_detail_editor_dark_idx));
     buttons[tab].push_back(NO_TEXT_BUTTON(75, 94, 15, 12, [this](){ return this->selectItem(); }, ui_sheet_button_info_detail_editor_dark_idx));
-    buttons[tab].push_back(NO_TEXT_BUTTON(75, 114, 15, 12, [this](){ pkm->shiny(!pkm->shiny()); return false; }, ui_sheet_button_info_detail_editor_dark_idx));
-    buttons[tab].push_back(NO_TEXT_BUTTON(75, 134, 15, 12, [this](){ return this->togglePokerus(); }, ui_sheet_button_info_detail_editor_dark_idx));
+    buttons[tab].push_back(NO_TEXT_CLICK(75, 114, 15, 12, [this](){ pkm->shiny(!pkm->shiny()); return false; }, ui_sheet_button_info_detail_editor_dark_idx));
+    buttons[tab].push_back(NO_TEXT_CLICK(75, 134, 15, 12, [this](){ return this->togglePokerus(); }, ui_sheet_button_info_detail_editor_dark_idx));
     buttons[tab].push_back(NO_TEXT_BUTTON(75, 154, 15, 12, [this](){ Gui::setNextKeyboardFunc([this](){ return this->setOT(); }); return false; }, ui_sheet_button_info_detail_editor_dark_idx));
     buttons[tab].push_back(NO_TEXT_BUTTON(75, 174, 15, 12, [this](){ Gui::setNextKeyboardFunc([this](){ return this->setNick(); }); return false; }, ui_sheet_button_info_detail_editor_dark_idx));
-    buttons[tab].push_back(NO_TEXT_BUTTON(94, 194, 13, 13, [this](){ return this->changeFriendship(false); }, ui_sheet_button_minus_small_idx));
+    buttons[tab].push_back(NO_TEXT_ACCEL(94, 194, 13, 13, [this](){ return this->changeFriendship(false); }, ui_sheet_button_minus_small_idx));
     buttons[tab].push_back(NO_TEXT_BUTTON(109, 194, 31, 13, [this](){ Gui::setNextKeyboardFunc([this](){ return this->setFriendship(); }); return false; }, ui_sheet_res_null_idx));
-    buttons[tab].push_back(NO_TEXT_BUTTON(142, 194, 13, 13, [this](){ return this->changeFriendship(true); }, ui_sheet_button_plus_small_idx));
+    buttons[tab].push_back(NO_TEXT_ACCEL(142, 194, 13, 13, [this](){ return this->changeFriendship(true); }, ui_sheet_button_plus_small_idx));
     buttons[tab].push_back(new Button(204, 109, 108, 30, [this](){ currentTab = 1; return true; }, ui_sheet_button_editor_idx, "STATS", FONT_SIZE_12, COLOR_BLACK));
     buttons[tab].push_back(new Button(204, 140, 108, 30, [this](){ currentTab = 2; return true; }, ui_sheet_button_editor_idx, "MOVES", FONT_SIZE_12, COLOR_BLACK));
-    buttons[tab].push_back(new Button(204, 171, 108, 30, [this](){ return this->save(); }, ui_sheet_button_editor_idx, "SAVE", FONT_SIZE_12, COLOR_BLACK));
+    buttons[tab].push_back(new ClickButton(204, 171, 108, 30, [this](){ return this->save(); }, ui_sheet_button_editor_idx, "SAVE", FONT_SIZE_12, COLOR_BLACK));
 
     tab = 1;
-    buttons[tab].push_back(NO_TEXT_BUTTON(283, 211, 34, 28, [this](){ return this->goBack(); }, ui_sheet_button_back_idx));
+    buttons[tab].push_back(buttons[0][0]);
     for (int i = 0; i < 6; i++)
     {
         int y = 54 + i * 20;
-        buttons[tab].push_back(NO_TEXT_BUTTON(106, y, 13, 13, [=](){ return this->changeIV(statValues[i], false); }, ui_sheet_button_minus_small_idx));
+        buttons[tab].push_back(NO_TEXT_ACCEL(106, y, 13, 13, [=](){ return this->changeIV(statValues[i], false); }, ui_sheet_button_minus_small_idx));
         buttons[tab].push_back(NO_TEXT_BUTTON(121, y, 23, 13, [=](){ Gui::setNextKeyboardFunc([=](){ return this->setIV(statValues[i]); }); return false; }, ui_sheet_res_null_idx));
-        buttons[tab].push_back(NO_TEXT_BUTTON(146, y, 13, 13, [=](){ return this->changeIV(statValues[i], true); }, ui_sheet_button_plus_small_idx));
+        buttons[tab].push_back(NO_TEXT_ACCEL(146, y, 13, 13, [=](){ return this->changeIV(statValues[i], true); }, ui_sheet_button_plus_small_idx));
 
-        buttons[tab].push_back(NO_TEXT_BUTTON(182, y, 13, 13, [=](){ return this->changeEV(statValues[i], false); }, ui_sheet_button_minus_small_idx));
+        buttons[tab].push_back(NO_TEXT_ACCEL(182, y, 13, 13, [=](){ return this->changeEV(statValues[i], false); }, ui_sheet_button_minus_small_idx));
         buttons[tab].push_back(NO_TEXT_BUTTON(197, y, 32, 13, [=](){ Gui::setNextKeyboardFunc([=](){ return this->setEV(statValues[i]); }); return false; }, ui_sheet_res_null_idx));
-        buttons[tab].push_back(NO_TEXT_BUTTON(231, y, 13, 13, [=](){ return this->changeEV(statValues[i], true); }, ui_sheet_button_plus_small_idx));
+        buttons[tab].push_back(NO_TEXT_ACCEL(231, y, 13, 13, [=](){ return this->changeEV(statValues[i], true); }, ui_sheet_button_plus_small_idx));
     }
     buttons[tab].push_back(NO_TEXT_BUTTON(300, 184, 15, 12, [this](){ return this->setHP(); }, ui_sheet_button_info_detail_editor_light_idx));
 
     tab = 2;
-    buttons[tab].push_back(NO_TEXT_BUTTON(283, 211, 34, 28, [this](){ return this->goBack(); }, ui_sheet_button_back_idx));
+    buttons[tab].push_back(buttons[0][0]);
 }
 
 void EditorScreen::draw() const
@@ -242,46 +245,13 @@ void EditorScreen::update(touchPosition* touch)
 {
     if (!selector)
     {
-        static bool dirtyBack = false;
-        static int timers[38] = {-1};
         u32 downKeys = keysDown();
 
         for (size_t i = 0; i < buttons[currentTab].size(); i++)
         {
-            if (i == 0)
+            if (buttons[currentTab][i]->update(touch))
             {
-                if (!dirtyBack)
-                {
-                    if (buttons[currentTab][i]->clicked(touch))
-                    {
-                        dirtyBack = true;
-                    }
-                    if (buttons[currentTab][i]->update(touch))
-                    {
-                        return;
-                    }
-                }
-                else
-                {
-                    if (!buttons[currentTab][i]->clicked(touch))
-                    {
-                        dirtyBack = false;
-                    }
-                }
-            }
-            else
-            {
-                if (timers[i] < 0)
-                {
-                    if (buttons[currentTab][i]->update(touch))
-                    {
-                        return;
-                    }
-                    if (buttons[currentTab][i]->clicked(touch))
-                    {
-                        timers[i] = 10;
-                    }
-                }
+                return;
             }
         }
 
@@ -312,14 +282,6 @@ void EditorScreen::update(touchPosition* touch)
                 {
                     moveSelected--;
                 }
-            }
-        }
-
-        for (int i = 0; i < 38; i++)
-        {
-            if (timers[i] > -1)
-            {
-                timers[i]--;
             }
         }
     }
