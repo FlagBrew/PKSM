@@ -38,6 +38,7 @@ public:
     void draw() const;
 
     void setPkm(std::shared_ptr<PKX> pokemon) { pkm = pokemon; }
+    std::shared_ptr<PKX> getPkm(void) { return pkm; }
 private:
     std::shared_ptr<PKX> pkm;
     bool green;

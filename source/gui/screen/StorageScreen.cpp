@@ -280,6 +280,10 @@ void StorageScreen::draw() const
     if (viewer)
     {
         C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, C2D_Color32(0, 0, 0, 120));
+        if (!moveMon)
+        {
+            Gui::staticText(GFX_BOTTOM, 110, "Press \uE002 to clone", FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+        }
         mainButtons[6]->draw();
         viewer->draw();
     }
@@ -410,11 +414,10 @@ void StorageScreen::update(touchPosition* touch)
 {
     Screen::update();
     static bool sleep = true;
+    u32 kDown = hidKeysDown();
+    u32 kHeld = hidKeysHeld();
     if (!viewer)
     {
-        u32 kDown = hidKeysDown();
-        u32 kHeld = hidKeysHeld();
-
         for (size_t i = 0; i < mainButtons.size(); i++)
         {
             if (mainButtons[i]->update(touch))
@@ -548,8 +551,13 @@ void StorageScreen::update(touchPosition* touch)
     }
     else
     {
-        if (hidKeysDown() & KEY_B || mainButtons[6]->update(touch))
+        if (kDown & KEY_B || mainButtons[6]->update(touch))
         {
+            backButton();
+        }
+        else if (!moveMon && kDown & KEY_X)
+        {
+            moveMon = viewer->getPkm()->clone();
             backButton();
         }
     }
