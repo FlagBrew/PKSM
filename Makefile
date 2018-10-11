@@ -215,10 +215,10 @@ endif
 #---------------------------------------------------------------------------------
 all:
 	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR)
-	@cd $(BUILD)/$(PACKER) && python3 packer.py
+	@cd $(BUILD)/$(PACKER) && py -3 packer.py
 	@cd $(BUILD)/$(PACKER) && mv out/*.bin out/*.json ../../assets/romfs/mg
-	@cd $(BUILD)/$(SCRIPTS) && python3 genScripts.py
-	@rm -r assets/romfs/scripts
+	@cd $(BUILD)/$(SCRIPTS) && py -3 genScripts.py
+	@rm -fr assets/romfs/scripts
 	@cd $(BUILD)/$(SCRIPTS) && mv -f scripts ../../assets/romfs
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile $(OUTPUT).3dsx
 	@bannertool makebanner -i "$(BANNER_IMAGE)" -a "$(BANNER_AUDIO)" -o $(BUILD)/banner.bnr
