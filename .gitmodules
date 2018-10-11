@@ -4,3 +4,6 @@
 [submodule "build/EventsGalleryPacker"]
 	path = build/EventsGalleryPacker
 	url = https://github.com/FlagBrew/EventsGalleryPacker
+[submodule "build/PKSM-Scripts"]
+	path = build/PKSM-Scripts
+	url = https://github.com/FlagBrew/PKSM-Scripts
