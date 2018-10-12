@@ -656,7 +656,7 @@ bool StorageScreen::showViewer()
     std::shared_ptr<PKX> view = cursorIndex == 0 ? TitleLoader::save->emptyPkm() : storageChosen ? testPkm : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
     if (view->species() != 0)
     {
-        viewer = std::unique_ptr<ViewerScreen>(new ViewerScreen(view, true));
+        viewer = std::make_unique<ViewerScreen>(view, true);
     }
     return true;
 }

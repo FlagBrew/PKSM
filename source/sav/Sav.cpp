@@ -94,13 +94,13 @@ std::unique_ptr<Sav> Sav::getSave(u8* dt, size_t length)
     switch (length)
     {
         case 0x6CC00:
-            return std::unique_ptr<Sav>(new SavUSUM(dt));
+            return std::make_unique<SavUSUM>(dt);
         case 0x6BE00:
-            return std::unique_ptr<Sav>(new SavSUMO(dt));
+            return std::make_unique<SavSUMO>(dt);
         case 0x76000:
-            return std::unique_ptr<Sav>(new SavORAS(dt));
+            return std::make_unique<SavORAS>(dt);
         case 0x65600:
-            return std::unique_ptr<Sav>(new SavXY(dt));
+            return std::make_unique<SavXY>(dt);
         case 0x80000:
             return checkDSType(dt);
         default:
@@ -157,41 +157,41 @@ std::unique_ptr<Sav> Sav::checkDSType(u8* dt)
     u16 actual1 = ccitt16(dt + 0x24000 - 0x100, 0x8C);
     if (chk1 == actual1)
     {
-        return std::unique_ptr<Sav>(new SavBW(dt));
+        return std::make_unique<SavBW>(dt);
     }
     u16 chk2 = *(u16*)(dt + 0x26000 - 0x100 + 0x94 + 0xE);
     u16 actual2 = ccitt16(dt + 0x26000 - 0x100, 0x94);
     if (chk2 == actual2)
     {
-        return std::unique_ptr<Sav>(new SavB2W2(dt));
+        return std::make_unique<SavB2W2>(dt);
     }
 
     if (*(u16*)(dt + 0xC0FE) == ccitt16(dt, 0xC0EC))
-        return std::unique_ptr<Sav>(new SavDP(dt));
+        return std::make_unique<SavDP>(dt);
     if (*(u16*)(dt + 0xCF2A) == ccitt16(dt, 0xCF18))
-        return std::unique_ptr<Sav>(new SavPT(dt));
+        return std::make_unique<SavPT>(dt);
     if (*(u16*)(dt + 0xF626) == ccitt16(dt, 0xF618))
-        return std::unique_ptr<Sav>(new SavHGSS(dt));
+        return std::make_unique<SavHGSS>(dt);
 
     // General Block Checksum is invalid, check for block identifiers
     u8 dpPattern[] = { 0x00, 0xC1, 0x00, 0x00, 0x23, 0x06, 0x06, 0x20, 0x00, 0x00 };
     u8 ptPattern[] = { 0x2C, 0xCF, 0x00, 0x00, 0x23, 0x06, 0x06, 0x20, 0x00, 0x00 };
     u8 hgssPattern[] = { 0x28, 0xF6, 0x00, 0x00, 0x23, 0x06, 0x06, 0x20, 0x00, 0x00 };
     if (validSequence(dt, dpPattern))
-        return std::unique_ptr<Sav>(new SavDP(dt));
+        return std::make_unique<SavDP>(dt);
     if (validSequence(dt, ptPattern))
-        return std::unique_ptr<Sav>(new SavPT(dt));
+        return std::make_unique<SavPT>(dt);
     if (validSequence(dt, hgssPattern))
-        return std::unique_ptr<Sav>(new SavHGSS(dt));
+        return std::make_unique<SavHGSS>(dt);
 
     // Check the other save
     if (validSequence(dt, dpPattern, 0x40000))
-        return std::unique_ptr<Sav>(new SavDP(dt));
+        return std::make_unique<SavDP>(dt);
     if (validSequence(dt, ptPattern, 0x40000))
-        return std::unique_ptr<Sav>(new SavPT(dt));
+        return std::make_unique<SavPT>(dt);
     if (validSequence(dt, hgssPattern, 0x40000))
-        return std::unique_ptr<Sav>(new SavHGSS(dt));
-    return std::unique_ptr<Sav>(nullptr);
+        return std::make_unique<SavHGSS>(dt);
+    return nullptr;
 }
 
 bool Sav::validSequence(u8* dt, u8* pattern, int shift)

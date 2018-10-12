@@ -556,18 +556,18 @@ bool EditorScreen::changeEV(int which, bool up)
 
 bool EditorScreen::setHP()
 {
-    selector = std::unique_ptr<SelectionScreen>(new HiddenPowerSelectionScreen(pkm));
+    selector = std::make_unique<HiddenPowerSelectionScreen>(pkm);
     return false;
 }
 
 void EditorScreen::changeMove()
 {
-    selector = std::unique_ptr<SelectionScreen>(new MoveSelectionScreen(pkm, moveSelected));
+    selector = std::make_unique<MoveSelectionScreen>(pkm, moveSelected);
 }
 
 bool EditorScreen::selectNature()
 {
-    selector = std::unique_ptr<SelectionScreen>(new NatureSelectionScreen(pkm));
+    selector = std::make_unique<NatureSelectionScreen>(pkm);
     return false;
 }
 
@@ -681,7 +681,7 @@ bool EditorScreen::selectAbility()
 
 bool EditorScreen::selectItem()
 {
-    selector = std::unique_ptr<SelectionScreen>(new ItemSelectionScreen(pkm));
+    selector = std::make_unique<ItemSelectionScreen>(pkm);
     return false;
 }
 
@@ -714,19 +714,19 @@ bool EditorScreen::selectForm()
     u8 count = formCounter(pkm->species());
     if (count > 1)
     {
-        selector = std::unique_ptr<SelectionScreen>(new FormSelectionScreen(pkm, count));
+        selector = std::make_unique<FormSelectionScreen>(pkm, count);
     }
     return false;
 }
 
 bool EditorScreen::selectBall()
 {
-    selector = std::unique_ptr<SelectionScreen>(new BallSelectionScreen(pkm));
+    selector = std::make_unique<BallSelectionScreen>(pkm);
     return false;
 }
 
 bool EditorScreen::selectSpecies()
 {
-    selector = std::unique_ptr<SelectionScreen>(new SpeciesSelectionScreen(pkm));
+    selector = std::make_unique<SpeciesSelectionScreen>(pkm);
     return false;
 }

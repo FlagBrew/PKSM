@@ -103,13 +103,13 @@ std::unique_ptr<PKX> SavXY::pkm(u8 slot) const
 {
     u8 tmp[232];
     std::copy(data + partyOffset(slot), data + partyOffset(slot) + 232, tmp);
-    return std::unique_ptr<PKX>(new PK6(tmp, true));
+    return std::make_unique<PK6>(tmp, true);
 }
 std::unique_ptr<PKX> SavXY::pkm(u8 box, u8 slot, bool ekx) const
 {
     u8 tmp[232];
     std::copy(data + boxOffset(box, slot), data + boxOffset(box, slot) + 232, tmp);
-    return std::unique_ptr<PKX>(new PK6(tmp, ekx));
+    return std::make_unique<PK6>(tmp, ekx);
 }
 
 void SavXY::pkm(PKX& pk, u8 box, u8 slot)

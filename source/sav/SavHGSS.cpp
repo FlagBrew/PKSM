@@ -155,13 +155,13 @@ std::unique_ptr<PKX> SavHGSS::pkm(u8 slot) const
 {
     u8 buf[136];
     std::copy(data + partyOffset(slot), data + partyOffset(slot) + 136, buf);
-    return std::unique_ptr<PKX>(new PK4(buf, true));
+    return std::make_unique<PK4>(buf, true);
 }
 std::unique_ptr<PKX> SavHGSS::pkm(u8 box, u8 slot, bool ekx) const
 {
     u8 buf[136];
     std::copy(data + boxOffset(box, slot), data + boxOffset(box, slot) + 136, buf);
-    return std::unique_ptr<PKX>(new PK4(buf, ekx));
+    return std::make_unique<PK4>(buf, ekx);
 }
 
 void SavHGSS::pkm(PKX& pk, u8 box, u8 slot)

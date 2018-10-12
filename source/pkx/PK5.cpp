@@ -86,7 +86,7 @@ void PK5::encrypt(void)
     crypt();
 }
 
-std::unique_ptr<PKX> PK5::clone(void) { return std::unique_ptr<PKX>(new PK5(data)); }
+std::unique_ptr<PKX> PK5::clone(void) { return std::make_unique<PK5>(data); }
 
 u8 PK5::generation(void) const { return 5; }
 
@@ -560,7 +560,7 @@ std::unique_ptr<PKX> PK5::previous(void) const
     // Clear nature field
     dt[0x41] = 0;
 
-    std::unique_ptr<PKX> pk4(new PK4(dt));
+    PK4* pk4 = new PK4(dt);
 
     // Force normal Arceus form
     if (pk4->species() == 493)
@@ -577,5 +577,5 @@ std::unique_ptr<PKX> PK5::previous(void) const
     // check illegal moves ???
 
     pk4->refreshChecksum();
-    return pk4;
+    return std::unique_ptr<PKX>(pk4);
 }

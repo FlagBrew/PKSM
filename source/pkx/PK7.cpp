@@ -88,7 +88,7 @@ void PK7::encrypt(void)
     crypt();
 }
 
-std::unique_ptr<PKX> PK7::clone(void) { return std::unique_ptr<PKX>(new PK7(data)); }
+std::unique_ptr<PKX> PK7::clone(void) { return std::make_unique<PK7>(data); }
 
 u8 PK7::generation(void) const { return 7; }
 

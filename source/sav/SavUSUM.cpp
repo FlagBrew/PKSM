@@ -139,14 +139,14 @@ std::unique_ptr<PKX> SavUSUM::pkm(u8 slot) const
 {
     u8 buf[232];
     std::copy(data + partyOffset(slot), data + partyOffset(slot) + 232, buf);
-    return std::unique_ptr<PKX>(new PK7(buf, true));
+    return std::make_unique<PK7>(buf, true);
 }
 
 std::unique_ptr<PKX> SavUSUM::pkm(u8 box, u8 slot, bool ekx) const
 {
     u8 buf[232];
     std::copy(data + boxOffset(box, slot), data + boxOffset(box, slot) + 232, buf);
-    return std::unique_ptr<PKX>(new PK7(buf, ekx));
+    return std::make_unique<PK7>(buf, ekx);
 }
 
 void SavUSUM::pkm(PKX& pk, u8 box, u8 slot)
