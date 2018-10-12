@@ -759,6 +759,11 @@ void StorageScreen::pickup()
         {
             TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), boxBox, cursorIndex - 1);
         }
+
+        if (moveMon->species() == 0)
+        {
+            moveMon = nullptr;
+        }
     }
     else
     {
