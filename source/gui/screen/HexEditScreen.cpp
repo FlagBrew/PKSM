@@ -27,7 +27,7 @@
 #include "HexEditScreen.hpp"
 #include <bitset>
 
-static const char* marks[] = {
+static constexpr std::string_view marks[] = {
     "Circle",
     "Triangle",
     "Square",
@@ -35,7 +35,7 @@ static const char* marks[] = {
     "Star",
     "Diamond"
 };
-static const char* gen4ToggleTexts[] = {
+static constexpr std::string_view gen4ToggleTexts[] = {
     "Sinnoh Champ Ribbon",
     "Ability Ribbon",
     "Great Ability Ribbon",
@@ -125,7 +125,7 @@ static const char* gen4ToggleTexts[] = {
     "Earth Ribbon",
     "World Ribbon"
 };
-static const char* gen5ToggleTexts[] = {
+static constexpr std::string_view gen5ToggleTexts[] = {
     "Sinnoh Champ Ribbon",
     "Ability Ribbon",
     "Great Ability Ribbon",
@@ -215,7 +215,7 @@ static const char* gen5ToggleTexts[] = {
     "Earth Ribbon",
     "World Ribbon"
 };
-static const char* gen67ToggleTexts[] = {
+static constexpr std::string_view gen67ToggleTexts[] = {
     "Unused",
     "Unused",
     "Sp. Attack Level 1",
@@ -1127,7 +1127,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     }
                     for (int j = 0; j < 6; j++)
                     {
-                        buttons[i].push_back(new HexEditButton(70, 90 + j * 16, 13, 13, [this, i, j](){ return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, marks[j], true, j));
+                        buttons[i].push_back(new HexEditButton(70, 90 + j * 16, 13, 13, [this, i, j](){ return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, std::string(marks[j]), true, j));
                         buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
                     }
                     break;
@@ -1152,7 +1152,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     }
                     for (int j = 0; j < 8; j++)
                     {
-                        buttons[i].push_back(new HexEditButton(70, 90 + j * 16, 13, 13, [this, i, j](){ return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, gen67ToggleTexts[currRibbon], true, j));
+                        buttons[i].push_back(new HexEditButton(70, 90 + j * 16, 13, 13, [this, i, j](){ return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, std::string(gen67ToggleTexts[currRibbon]), true, j));
                         buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
                         currRibbon++;
                     }
@@ -1194,7 +1194,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     }
                     for (int j = 0; j < 6; j++)
                     {
-                        buttons[i].push_back(new HexEditButton(70, 90 + j * 16, 13, 13, [this, i, j](){ return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, marks[j], true, j));
+                        buttons[i].push_back(new HexEditButton(70, 90 + j * 16, 13, 13, [this, i, j](){ return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, std::string(marks[j]), true, j));
                         buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
                     }
                     break;
@@ -1218,7 +1218,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     }
                     for (int j = 0; j < 8; j++)
                     {
-                        buttons[i].push_back(new HexEditButton(70, 90 + j * 16, 13, 13, [this, i, j](){ return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, gen5ToggleTexts[currRibbon], true, j));
+                        buttons[i].push_back(new HexEditButton(70, 90 + j * 16, 13, 13, [this, i, j](){ return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, std::string(gen5ToggleTexts[currRibbon]), true, j));
                         buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
                         currRibbon++;
                     }
@@ -1262,7 +1262,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     }
                     for (int j = 0; j < 6; j++)
                     {
-                        buttons[i].push_back(new HexEditButton(70, 90 + j * 16, 13, 13, [this, i, j](){ return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, marks[j], true, j));
+                        buttons[i].push_back(new HexEditButton(70, 90 + j * 16, 13, 13, [this, i, j](){ return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, std::string(marks[j]), true, j));
                         buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
                     }
                     break;
@@ -1286,7 +1286,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     }
                     for (int j = 0; j < 8; j++)
                     {
-                        buttons[i].push_back(new HexEditButton(70, 90 + j * 16, 13, 13, [this, i, j](){ return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, gen4ToggleTexts[currRibbon], true, j));
+                        buttons[i].push_back(new HexEditButton(70, 90 + j * 16, 13, 13, [this, i, j](){ return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, std::string(gen4ToggleTexts[currRibbon]), true, j));
                         buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
                         currRibbon++;
                     }

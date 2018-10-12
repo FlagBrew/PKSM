@@ -28,7 +28,7 @@
 #include "gui.hpp"
 #include "loader.hpp"
 
-static const char* languages[] = {
+static constexpr std::string_view languages[] = {
     "JPN",
     "ENG",
     "FRE",
@@ -111,18 +111,18 @@ void InjectorScreen::draw() const
                     if (langIndex == (int) lang)
                     {
                         Gui::sprite(ui_sheet_button_selected_text_button_idx, x, y);
-                        Gui::dynamicText(x, y + 2, 38, languages[langIndex - 1], FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+                        Gui::dynamicText(x, y + 2, 38, std::string(languages[langIndex - 1]), FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
                     }
                     else
                     {
                         Gui::sprite(ui_sheet_button_unselected_text_button_idx, x, y);
-                        Gui::dynamicText(x, y + 2, 38, languages[langIndex - 1], FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
+                        Gui::dynamicText(x, y + 2, 38, std::string(languages[langIndex - 1]), FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
                     }
                 }
                 else
                 {
                     Gui::sprite(ui_sheet_button_unavailable_text_button_idx, x, y);
-                    Gui::dynamicText(x, y + 2, 38, languages[langIndex - 1], FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
+                    Gui::dynamicText(x, y + 2, 38, std::string(languages[langIndex - 1]), FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
                 }
             }
             langIndex++;

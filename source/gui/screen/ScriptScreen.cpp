@@ -30,7 +30,7 @@
 #include "loader.hpp"
 #include "FSStream.hpp"
 
-static const char* MAGIC = "PKSMSCRIPT";
+static constexpr std::string_view MAGIC = "PKSMSCRIPT";
 
 namespace
 {
@@ -220,7 +220,7 @@ void ScriptScreen::applyScript()
 {
     auto scriptData = scriptRead(currDirString + '/' + currFiles[hid.fullIndex()].first);
 
-    for (size_t i = 0; i < strlen(MAGIC); i++)
+    for (size_t i = 0; i < MAGIC.size(); i++)
     {
         if (scriptData.first[i] != MAGIC[i])
         {
@@ -229,7 +229,7 @@ void ScriptScreen::applyScript()
         }
     }
 
-    size_t index = strlen(MAGIC);
+    size_t index = MAGIC.size();
     while (index < scriptData.second)
     {
         u32 offset = *(u32*)(scriptData.first + index);

@@ -29,7 +29,7 @@
 #include "MainMenu.hpp"
 #include "Configuration.hpp"
 
-static const char* credits = 
+static constexpr std::string_view credits = 
 R"(Naxann and Anty-Lemon for various contributions
 Kaphotics and SciresM for PKHeX and memecrypto
 J-K-D for direct save import/export
@@ -66,6 +66,6 @@ void CreditsScreen::draw() const
     C2D_SceneBegin(g_renderTargetBottom);
     Gui::backgroundBottom(false);
 
-    Gui::staticText(credits, 20, 30, FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE);
+    Gui::staticText(std::string(credits), 20, 30, FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE);
     Gui::staticText(GFX_BOTTOM, 225, "Press B to return", FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE);
 }

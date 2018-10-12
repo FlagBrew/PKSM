@@ -28,7 +28,7 @@
 #include "gui.hpp"
 #include "Configuration.hpp"
 
-static const char* displayKeys[] = {
+static constexpr std::string_view displayKeys[] = {
     "Nickname",
     "OT",
     "Pok\u00E9rus",
@@ -93,11 +93,11 @@ void ViewerScreen::draw() const
 
     for (int i = 0; i < 10; i++)
     {
-        Gui::dynamicText(displayKeys[i], 10, 36 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+        Gui::dynamicText(std::string(displayKeys[i]), 10, 36 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
     }
     for (int i = 0; i < 6; i++)
     {
-        Gui::dynamicText(displayKeys[i + 10], 238, 16 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+        Gui::dynamicText(std::string(displayKeys[i + 10]), 238, 16 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
     }
     Gui::dynamicText("Moves", 252, 136, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
 

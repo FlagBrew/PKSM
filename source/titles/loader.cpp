@@ -41,7 +41,7 @@ static constexpr char langIds[8] = {
     'O'  //Europe? Definitely some sort of English
 };
 
-static const char* dsIds[9] = {
+static constexpr std::string_view dsIds[9] = {
     "ADA", //Diamond
     "APA", //Pearl
     "CPU", //Platinum

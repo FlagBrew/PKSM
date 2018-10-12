@@ -28,7 +28,7 @@
 #include "gui.hpp"
 #include "Configuration.hpp"
 
-static const char* stats[] = {
+static constexpr std::string_view stats[] = {
     "Attack",
     "Defense",
     "Speed",
@@ -44,8 +44,8 @@ void NatureSelectionScreen::draw() const
     Gui::staticText(0, 12, 65, "Neutral", FONT_SIZE_11, FONT_SIZE_11, COLOR_YELLOW);
     for (int i = 0; i < 5; i++)
     {
-        Gui::staticText(i * 67 + 66, 12, 66, std::string("-") + stats[i], FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
-        Gui::staticText(0, i * 40 + 52, 65, std::string("+") + stats[i], FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+        Gui::staticText(i * 67 + 66, 12, 66, std::string("-") + std::string(stats[i]), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+        Gui::staticText(0, i * 40 + 52, 65, std::string("+") + std::string(stats[i]), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
     }
 
     int x = (hid.index() % 5) * 67 + 66;
