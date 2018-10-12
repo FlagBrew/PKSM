@@ -188,13 +188,20 @@ static std::pair<u8*, size_t> scriptRead(std::string path)
     size_t size = 0;
     if (path.find("romfs") == 0)
     {
-        FILE *fptr = fopen(path.c_str(), "rt");
-        fseek(fptr, 0, SEEK_END);
-        size = ftell(fptr);
-        rewind(fptr);
-        data = new u8[size];
-        fread(data, size, 1, fptr);
-        fclose(fptr);
+        std::ifstream in(path, std::ios::binary);
+        if (in.good())
+        {
+            in.seekg(0, std::ios::end);
+            size = in.tellg();
+            in.seekg(0, std::ios::beg);
+            data = new u8[size];
+            in.read((char*)data, size);
+        }
+        else
+        {
+            Gui::warn("Could not open script file!");
+        }
+        in.close();
     }
     else
     {
