@@ -576,13 +576,13 @@ bool EditorScreen::selectAbility()
     if (pkm->generation() == 4)
     {
         u8 setAbility = pkm->ability();
-        if (PersonalDPPtHGSS::ability(pkm->formSpecies(), 0) != setAbility && PersonalDPPtHGSS::ability(pkm->formSpecies(), 0) != 0)
+        if (PersonalDPPtHGSS::ability(pkm->species(), 0) != setAbility && PersonalDPPtHGSS::ability(pkm->species(), 0) != 0)
         {
-            pkm->ability(PersonalDPPtHGSS::ability(pkm->formSpecies(), 0));
+            pkm->ability(PersonalDPPtHGSS::ability(pkm->species(), 0));
         }
-        else if (PersonalDPPtHGSS::ability(pkm->formSpecies(), 1) != 0)
+        else if (PersonalDPPtHGSS::ability(pkm->species(), 1) != 0)
         {
-            pkm->ability(PersonalDPPtHGSS::ability(pkm->formSpecies(), 1));
+            pkm->ability(PersonalDPPtHGSS::ability(pkm->species(), 1));
         }
     }
     else if (pkm->generation() == 5)
@@ -592,42 +592,42 @@ bool EditorScreen::selectAbility()
         switch (pkm->abilityNumber() >> 1)
         {
             case 0:
-                if (abilityResolver(pkm->formSpecies(), 1) != pkm->ability() && abilityResolver(pkm->formSpecies(), 1) != 0)
+                if (abilityResolver(pkm->species(), 1) != pkm->ability() && abilityResolver(pkm->species(), 1) != 0)
                 {
-                    pkm->ability(abilityResolver(pkm->formSpecies(), 1));
-                    if (abilityResolver(pkm->formSpecies(), 1) == abilityResolver(pkm->formSpecies(), 2))
+                    pkm->ability(abilityResolver(pkm->species(), 1));
+                    if (abilityResolver(pkm->species(), 1) == abilityResolver(pkm->species(), 2))
                     {
                         pk5->hiddenAbility(true);
                     }
                 }
-                else if (abilityResolver(pkm->formSpecies(), 2) != 0)
+                else if (abilityResolver(pkm->species(), 2) != 0)
                 {
-                    pkm->ability(abilityResolver(pkm->formSpecies(), 2));
+                    pkm->ability(abilityResolver(pkm->species(), 2));
                     pk5->hiddenAbility(true);
                 }
                 break;
             case 1:
-                if (abilityResolver(pkm->formSpecies(), 2) != pkm->ability() && abilityResolver(pkm->formSpecies(), 2) != 0)
+                if (abilityResolver(pkm->species(), 2) != pkm->ability() && abilityResolver(pkm->species(), 2) != 0)
                 {
-                    pkm->ability(abilityResolver(pkm->formSpecies(), 2));
+                    pkm->ability(abilityResolver(pkm->species(), 2));
                     pk5->hiddenAbility(true);
                 }
-                else if (abilityResolver(pkm->formSpecies(), 0) != 0)
+                else if (abilityResolver(pkm->species(), 0) != 0)
                 {
-                    pkm->ability(abilityResolver(pkm->formSpecies(), 0));
+                    pkm->ability(abilityResolver(pkm->species(), 0));
                     pk5->hiddenAbility(false);
                 }
                 break;
             case 2:
-                if (abilityResolver(pkm->formSpecies(), 0) != pkm->ability() && abilityResolver(pkm->formSpecies(), 0) != 0)
+                if (abilityResolver(pkm->species(), 0) != pkm->ability() && abilityResolver(pkm->species(), 0) != 0)
                 {
-                    pkm->ability(abilityResolver(pkm->formSpecies(), 0));
+                    pkm->ability(abilityResolver(pkm->species(), 0));
                     pk5->hiddenAbility(false);
                 }
-                else if (abilityResolver(pkm->formSpecies(), 1) != 0)
+                else if (abilityResolver(pkm->species(), 1) != 0)
                 {
-                    pkm->ability(abilityResolver(pkm->formSpecies(), 1));
-                    if (abilityResolver(pkm->formSpecies(), 1) == abilityResolver(pkm->formSpecies(), 2))
+                    pkm->ability(abilityResolver(pkm->species(), 1));
+                    if (abilityResolver(pkm->species(), 1) == abilityResolver(pkm->species(), 2))
                     {
                         pk5->hiddenAbility(true);
                     }
@@ -645,31 +645,31 @@ bool EditorScreen::selectAbility()
         switch (pkm->abilityNumber() >> 1)
         {
             case 0:
-                if (abilityResolver(pkm->formSpecies(), 1) != pkm->ability() && abilityResolver(pkm->formSpecies(), 1) != 0)
+                if (abilityResolver(pkm->species(), 1) != pkm->ability() && abilityResolver(pkm->species(), 1) != 0)
                 {
                     pkm->ability(1);
                 }
-                else if (abilityResolver(pkm->formSpecies(), 2) != 0)
+                else if (abilityResolver(pkm->species(), 2) != 0)
                 {
                     pkm->ability(2);
                 }
                 break;
             case 1:
-                if (abilityResolver(pkm->formSpecies(), 2) != pkm->ability() && abilityResolver(pkm->formSpecies(), 2) != 0)
+                if (abilityResolver(pkm->species(), 2) != pkm->ability() && abilityResolver(pkm->species(), 2) != 0)
                 {
                     pkm->ability(2);
                 }
-                else if (abilityResolver(pkm->formSpecies(), 0) != 0)
+                else if (abilityResolver(pkm->species(), 0) != 0)
                 {
                     pkm->ability(0);
                 }
                 break;
             case 2:
-                if (abilityResolver(pkm->formSpecies(), 0) != pkm->ability() && abilityResolver(pkm->formSpecies(), 0) != 0)
+                if (abilityResolver(pkm->species(), 0) != pkm->ability() && abilityResolver(pkm->species(), 0) != 0)
                 {
                     pkm->ability(0);
                 }
-                else if (abilityResolver(pkm->formSpecies(), 1) != 0)
+                else if (abilityResolver(pkm->species(), 1) != 0)
                 {
                     pkm->ability(1);
                 }
