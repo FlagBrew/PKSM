@@ -58,6 +58,8 @@ private:
     bool selectNature();
     bool selectAbility();
     bool selectItem();
+    bool selectForm();
+    bool selectBall();
     bool togglePokerus();
     void setOT();
     void setNick();

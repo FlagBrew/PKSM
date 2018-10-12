@@ -91,12 +91,12 @@ public:
 
     std::string ability(u8 v) const;
     std::string ball(u8 v) const;
-    std::string form(u8 v) const;
     std::string hp(u8 v) const;
     std::string item(u16 v) const;
     std::string move(u16 v) const;
     std::string nature(u8 v) const;
     std::string species(u16 v) const;
+    std::string form(u16 species, u8 form, u8 generation) const;
 
     std::string localize(const std::string& v) const;
 };

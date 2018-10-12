@@ -139,34 +139,34 @@ std::string i18n::ball(u8 lang, u8 val)
     return "";
 }
 
-std::string i18n::form(u8 lang, u16 val)
+std::string i18n::form(u8 lang, u16 species, u8 form, u8 generation)
 {
     switch (lang)
     {
         case Language::DE:
-            return de->form(val);
+            return de->form(species, form, generation);
         case Language::EN:
-            return en->form(val);
+            return en->form(species, form, generation);
         case Language::ES:
-            return es->form(val);
+            return es->form(species, form, generation);
         case Language::FR:
-            return fr->form(val);
+            return fr->form(species, form, generation);
         case Language::IT:
-            return it->form(val);
+            return it->form(species, form, generation);
         case Language::JP:
-            return jp->form(val);
+            return jp->form(species, form, generation);
         case Language::KO:
-            return ko->form(val);
+            return ko->form(species, form, generation);
         case Language::NL:
-            return nl->form(val);
+            return nl->form(species, form, generation);
         case Language::PT:
-            return pt->form(val);
+            return pt->form(species, form, generation);
         case Language::ZH:
-            return zh->form(val);
+            return zh->form(species, form, generation);
         case Language::TW:
-            return tw->form(val);
+            return tw->form(species, form, generation);
         case Language::RU:
-            return ru->form(val);
+            return ru->form(species, form, generation);
     }
     return "";
 }

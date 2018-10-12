@@ -24,41 +24,24 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef I18N_HPP
-#define I18N_HPP
+#ifndef BALLSELECTIONSCREEN_HPP
+#define BALLSELECTIONSCREEN_HPP
 
-#include "LanguageStrings.hpp"
+#include "SelectionScreen.hpp"
+#include "Hid.hpp"
 
-namespace i18n
+class BallSelectionScreen : public SelectionScreen
 {
-    void init(void);
-    void exit(void);
-
-    std::string sortedMove(u8 lang, u16 value);
-    std::string sortedItem(u8 lang, u16 value);
-    // Total amount of moves & items
-    int moves();
-    int items();
-    u16 itemFromSort(u8 lang, int value);
-    u16 moveFromSort(u8 lang, int value);
-    int sortedItemIndex(u8 lang, std::string value);
-    int sortedMoveIndex(u8 lang, std::string value);
-
-    int item(u8 lang, std::string value);
-    int move(u8 lang, std::string value);
-    
-    std::string ability(u8 lang, u8 value);
-    std::string ball(u8 lang, u8 value);
-    std::string hp(u8 lang, u8 value);
-    std::string item(u8 lang, u16 value);
-    std::string move(u8 lang, u16 value);
-    std::string nature(u8 lang, u8 value);
-    std::string species(u8 lang, u16 value);
-    std::string form(u8 lang, u16 species, u8 form, u8 generation);
-
-    // Used for general GUI stuff; not for PKM values
-    std::string localize(Language lang, const std::string& index);
-    std::string localize(const std::string& index);
+public:
+    BallSelectionScreen(std::shared_ptr<PKX> pkm) : SelectionScreen(pkm), hid(30, 6)
+    {
+        hid.update(24);
+        hid.select(pkm->ball() - 1);
+    }
+    void draw() const override;
+    void update(touchPosition* touch) override;
+private:
+    Hid hid;
 };
 
 #endif

@@ -26,6 +26,23 @@
 
 #include "LanguageStrings.hpp"
 
+static nlohmann::json& formJson()
+{
+    static nlohmann::json forms;
+    static bool first = true;
+    if (first)
+    {
+        std::ifstream in("romfs:/i18n/forms.json");
+        if (in.good())
+        {
+            in >> forms;
+        }
+        in.close();
+        first = false;
+    }
+    return forms;
+}
+
 std::string LanguageStrings::folder(Language lang) const
 {
     switch (lang)
@@ -114,9 +131,47 @@ std::string LanguageStrings::ball(u8 v) const
     return v < balls.size() ? balls.at(v) : "Invalid";
 }
 
-std::string LanguageStrings::form(u8 v) const
+std::string LanguageStrings::form(u16 species, u8 form, u8 generation) const
 {
-    return v < forms.size() ? forms.at(v) : "Invalid";
+    std::string ret = "Invalid";
+    std::string sSpecies = std::to_string((int)species);
+    if (formJson().find(sSpecies) == formJson().end())
+    {
+        // Not sure how the json sorts it, so just do a linear search. Aren't that many (only 44) anyways
+        for (int i : formJson()["megas"])
+        {
+            if (i == species)
+            {
+                ret = form == 1 ? forms.at(146) : forms.at(0);
+                break;
+            }
+        }
+    }
+    else
+    {
+        std::vector<int> formIndices;
+        if (formJson()[sSpecies].is_object())
+        {
+            if (formJson()[sSpecies].find(std::to_string((int)generation)) != formJson()[sSpecies].end())
+            {
+                formIndices = formJson()[sSpecies][std::to_string((int)generation)].get<std::vector<int>>();
+            }
+        }
+        else
+        {
+            formIndices = formJson()[sSpecies].get<std::vector<int>>();
+        }
+
+        if (form < formIndices.size())
+        {
+            size_t formNameIndex = formIndices[form];
+            if (formNameIndex < forms.size())
+            {
+                ret = forms.at(formNameIndex);
+            }
+        }
+    }
+    return std::move(ret);
 }
 
 std::string LanguageStrings::hp(u8 v) const

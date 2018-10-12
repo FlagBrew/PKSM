@@ -34,6 +34,8 @@
 #include "NatureSelectionScreen.hpp"
 #include "ItemSelectionScreen.hpp"
 #include "SpeciesSelectionScreen.hpp"
+#include "FormSelectionScreen.hpp"
+#include "BallSelectionScreen.hpp"
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
 
@@ -69,6 +71,8 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
     u8 tab = 0;
     // Back button first, always. Needs to have the same index for each one
     buttons[tab].push_back(NO_TEXT_CLICK(283, 211, 34, 28, [this](){ return this->goBack(); }, ui_sheet_button_back_idx));
+    buttons[tab].push_back(NO_TEXT_BUTTON(4, 3, 20, 19, [this](){ return this->selectBall(); }, ui_sheet_res_null_idx));
+    buttons[tab].push_back(NO_TEXT_BUTTON(224, 33, 60, 68, [this](){ return this->selectForm(); }, ui_sheet_res_null_idx));
     buttons[tab].push_back(NO_TEXT_BUTTON(291, 2, 27, 23, [this](){ return this->hexEdit(); }, ui_sheet_icon_hex_idx));
     buttons[tab].push_back(NO_TEXT_ACCEL(94, 34, 13, 13, [this](){ return this->changeLevel(false); }, ui_sheet_button_minus_small_idx));
     buttons[tab].push_back(NO_TEXT_BUTTON(109, 34, 31, 13, [this](){ Gui::setNextKeyboardFunc([this](){ setLevel(); }); return false; }, ui_sheet_res_null_idx));
@@ -676,5 +680,45 @@ bool EditorScreen::selectAbility()
 bool EditorScreen::selectItem()
 {
     selector = std::unique_ptr<SelectionScreen>(new ItemSelectionScreen(pkm));
+    return false;
+}
+
+bool EditorScreen::selectForm()
+{
+    // If unnecessary, can change to single value. Done for expandability
+    static const std::vector<u16> noChange = { 493 };
+    for (auto bad : noChange)
+    {
+        if (bad == pkm->species())
+            return false;
+    }
+    u8 (*formCounter)(u16);
+    switch (TitleLoader::save->generation())
+    {
+        case 4:
+            formCounter = PersonalDPPtHGSS::formCount;
+            break;
+        case 5:
+            formCounter = PersonalBWB2W2::formCount;
+            break;
+        case 6:
+            formCounter = PersonalXYORAS::formCount;
+            break;
+        case 7:
+        default:
+            formCounter = PersonalSMUSUM::formCount;
+            break;
+    }
+    u8 count = formCounter(pkm->species());
+    if (count > 1)
+    {
+        selector = std::unique_ptr<SelectionScreen>(new FormSelectionScreen(pkm, count));
+    }
+    return false;
+}
+
+bool EditorScreen::selectBall()
+{
+    selector = std::unique_ptr<SelectionScreen>(new BallSelectionScreen(pkm));
     return false;
 }
