@@ -33,6 +33,7 @@
 #include "HiddenPowerSelectionScreen.hpp"
 #include "NatureSelectionScreen.hpp"
 #include "ItemSelectionScreen.hpp"
+#include "SpeciesSelectionScreen.hpp"
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
 
@@ -45,14 +46,26 @@ static constexpr int statValues[] = { 0, 1, 2, 4, 5, 3 };
 EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr<PKX> pokemon, int box, int index)
                 : view(viewer), pkm(pokemon), box(box), index(index)
 {
-    if (!pkm)
-    {
-        pkm = TitleLoader::save->emptyPkm();
-    }
     if (!view)
     {
         view = std::make_shared<ViewerScreen>(pkm, false);
     }
+    if (!pkm || pkm->species() == 0)
+    {
+        pkm = TitleLoader::save->emptyPkm()->clone();
+        pkm->TID(Configuration::getInstance().defaultTID());
+        pkm->SID(Configuration::getInstance().defaultSID());
+        pkm->otName(Configuration::getInstance().defaultOT().c_str());
+        pkm->ball(1);
+        pkm->encryptionConstant((u32)rand());
+        pkm->version(TitleLoader::save->version());
+        pkm->fixMoves();
+        selector = std::make_unique<SpeciesSelectionScreen>(pkm);
+        // No clue why this is necessary
+        view->setPkm(nullptr);
+        view->setPkm(pkm);
+    }
+
     u8 tab = 0;
     // Back button first, always. Needs to have the same index for each one
     buttons[tab].push_back(NO_TEXT_CLICK(283, 211, 34, 28, [this](){ return this->goBack(); }, ui_sheet_button_back_idx));
@@ -203,11 +216,11 @@ void EditorScreen::draw() const
             for (int i = 0; i < 4; i++)
             {
                 Gui::dynamicText(i18n::move(lang, pkm->move(i)), 24, 32 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-                if (pkm->gen6())
+                if (pkm->generation() == 6)
                 {
                     Gui::dynamicText(i18n::move(lang, ((PK6*)pkm.get())->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
                 }
-                else if (pkm->gen7())
+                else if (pkm->generation() == 7)
                 {
                     Gui::dynamicText(i18n::move(lang, ((PK7*)pkm.get())->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
                 }
@@ -374,7 +387,7 @@ void EditorScreen::setOT()
     bool first = true;
     if (first)
     {
-        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->gen6() || pkm->gen7() ? 12 : 8);
+        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() == 6 || pkm->generation() == 7 ? 12 : 8);
         first = false;
     }
     swkbdSetHintText(&state, "OT Name");
@@ -394,7 +407,7 @@ void EditorScreen::setNick()
     bool first = true;
     if (first)
     {
-        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->gen6() || pkm->gen7() ? 12 : 11);
+        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() == 6 || pkm->generation() == 7 ? 12 : 11);
         first = false;
     }
     swkbdSetHintText(&state, "Nickname");
@@ -450,6 +463,7 @@ void EditorScreen::setFriendship()
 
 bool EditorScreen::save()
 {
+    pkm->refreshChecksum();
     TitleLoader::save->pkm(*pkm, box, index);
     return false;
 }
@@ -553,7 +567,7 @@ bool EditorScreen::selectNature()
 
 bool EditorScreen::selectAbility()
 {
-    if (pkm->gen4())
+    if (pkm->generation() == 4)
     {
         u8 setAbility = pkm->ability();
         if (PersonalDPPtHGSS::ability(pkm->formSpecies(), 0) != setAbility && PersonalDPPtHGSS::ability(pkm->formSpecies(), 0) != 0)
@@ -565,7 +579,7 @@ bool EditorScreen::selectAbility()
             pkm->ability(PersonalDPPtHGSS::ability(pkm->formSpecies(), 1));
         }
     }
-    else if (pkm->gen5())
+    else if (pkm->generation() == 5)
     {
         PK5* pk5 = (PK5*) pkm.get();
         auto abilityResolver = PersonalBWB2W2::ability;
@@ -619,9 +633,9 @@ bool EditorScreen::selectAbility()
                 break;
         }
     }
-    else if (pkm->gen6() || pkm->gen7())
+    else if (pkm->generation() == 6 || pkm->generation() == 7)
     {
-        auto abilityResolver = pkm->gen6() ? PersonalXYORAS::ability : PersonalSMUSUM::ability;
+        auto abilityResolver = pkm->generation() == 6 ? PersonalXYORAS::ability : PersonalSMUSUM::ability;
         switch (pkm->abilityNumber() >> 1)
         {
             case 0:
