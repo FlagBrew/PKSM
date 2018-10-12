@@ -712,11 +712,11 @@ void Gui::pkm(PKX* pokemon, int x, int y, float scale, u32 color, float blend)
     }
     else
     {
-        pkm(pokemon->species(), pokemon->alternativeForm(), pokemon->generation(), x, y, scale, color, blend);
         if (pokemon->heldItem() > 0)
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_item_idx), x + 3, y + 21, 0.5f, &tint);
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_item_idx), x + ceil(3 * scale), y + 21 + ceil(34 * (scale - 1)), 0.5f, &tint);
         }
+        pkm(pokemon->species(), pokemon->alternativeForm(), pokemon->generation(), x, y, scale, color, blend);
     }
 }
 
@@ -784,6 +784,16 @@ void Gui::pkm(int species, int form, int generation, int x, int y, float scale, 
             C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_25_6_idx + form), x, y, 0.5f, &tint, scale, scale);
         }
     }
+    // Arceus
+    else if (species == 493)
+    {
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint, scale, scale);
+    }
+    // Vivillon chain
+    else if (species == 664 || species == 665)
+    {
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint, scale, scale);
+    }
     else
     {
         int imageOffsetFromBack = 0;
@@ -839,6 +849,8 @@ void Gui::pkm(int species, int form, int generation, int x, int y, float scale, 
             case 670:
                 imageOffsetFromBack += 4;
             case 669:
+                imageOffsetFromBack += 19;
+            case 666:
                 imageOffsetFromBack += 2;
             case 658:
                 imageOffsetFromBack += 1;
@@ -1023,11 +1035,11 @@ void Gui::ball(size_t index, int x, int y)
 {
     if (index < 27)
     {
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, index + pkm_spritesheet_empty_idx), x, y, 0.5f);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, index + types_spritesheet_empty_idx), x, y, 0.5f);
     }
     else
     {
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_empty_idx), x, y, 0.5f);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_empty_idx), x, y, 0.5f);
     }
 }
 

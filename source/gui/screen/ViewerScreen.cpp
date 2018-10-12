@@ -146,7 +146,7 @@ void ViewerScreen::draw() const
     }
     else
     {
-        Gui::ball(pkm_spritesheet_empty_idx, 4, 6);
+        Gui::ball(0, 4, 6);
         for (int i = 0; i < 4; i++)
         {
             Gui::dynamicText(i18n::move(Configuration::getInstance().language(), 0), 252, 156 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
