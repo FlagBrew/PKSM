@@ -60,6 +60,7 @@ private:
     bool selectItem();
     bool selectForm();
     bool selectBall();
+    bool selectSpecies();
     bool togglePokerus();
     void setOT();
     void setNick();

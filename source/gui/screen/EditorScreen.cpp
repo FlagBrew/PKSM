@@ -58,10 +58,11 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
         pkm->TID(Configuration::getInstance().defaultTID());
         pkm->SID(Configuration::getInstance().defaultSID());
         pkm->otName(Configuration::getInstance().defaultOT().c_str());
-        pkm->ball(1);
+        pkm->ball(4);
         pkm->encryptionConstant((u32)rand());
         pkm->version(TitleLoader::save->version());
         pkm->fixMoves();
+        pkm->PID((u32)rand());
         selector = std::make_unique<SpeciesSelectionScreen>(pkm);
         // No clue why this is necessary
         view->setPkm(nullptr);
@@ -90,6 +91,7 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
     buttons[tab].push_back(new Button(204, 109, 108, 30, [this](){ currentTab = 1; return true; }, ui_sheet_button_editor_idx, "STATS", FONT_SIZE_12, COLOR_BLACK));
     buttons[tab].push_back(new Button(204, 140, 108, 30, [this](){ currentTab = 2; return true; }, ui_sheet_button_editor_idx, "MOVES", FONT_SIZE_12, COLOR_BLACK));
     buttons[tab].push_back(new ClickButton(204, 171, 108, 30, [this](){ return this->save(); }, ui_sheet_button_editor_idx, "SAVE", FONT_SIZE_12, COLOR_BLACK));
+    buttons[tab].push_back(NO_TEXT_BUTTON(25, 5, 120, 13, [this](){ return this->selectSpecies(); }, ui_sheet_res_null_idx));
 
     tab = 1;
     buttons[tab].push_back(buttons[0][0]);
@@ -145,7 +147,7 @@ void EditorScreen::draw() const
             Gui::staticText("Friendship", 5, 192, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
 
             Gui::ball(pkm->ball(), 4, 3);
-            Gui::dynamicText(i18n::species(lang, pkm->species()), 25, 4, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, false);
+            Gui::dynamicText(i18n::species(lang, pkm->species()), 25, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, false);
             Gui::dynamicText(107, 32, 35, std::to_string((int) pkm->level()), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
             Gui::dynamicText(i18n::nature(lang, pkm->nature()), 95, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
             Gui::dynamicText(i18n::ability(lang, pkm->ability()), 95, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
@@ -720,5 +722,11 @@ bool EditorScreen::selectForm()
 bool EditorScreen::selectBall()
 {
     selector = std::unique_ptr<SelectionScreen>(new BallSelectionScreen(pkm));
+    return false;
+}
+
+bool EditorScreen::selectSpecies()
+{
+    selector = std::unique_ptr<SelectionScreen>(new SpeciesSelectionScreen(pkm));
     return false;
 }

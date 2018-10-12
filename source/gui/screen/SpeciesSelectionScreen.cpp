@@ -96,16 +96,33 @@ void SpeciesSelectionScreen::update(touchPosition* touch)
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {
-        pkm->species((u8) hid.fullIndex() + 1);
+        if (pkm->species() == 0 || !pkm->nicknamed())
+        {
+            pkm->nickname(i18n::species(Configuration::getInstance().language(), hid.fullIndex() + 1).c_str());
+        }
+        pkm->species((u16) hid.fullIndex() + 1);
         pkm->alternativeForm(0);
-        pkm->nickname(i18n::species(Configuration::getInstance().language(), pkm->species()).c_str());
-        pkm->ability(1);
+        if (pkm->generation() != 4)
+        {
+            pkm->ability(0);
+        }
+        else
+        {
+            pkm->ability(PersonalDPPtHGSS::ability(pkm->species(), pkm->abilityNumber()));
+        }
         done = true;
         return;
     }
     else if (downKeys & KEY_B)
     {
-        Gui::warn("Please select a species");
+        if (pkm->species() != 0)
+        {
+            done = true;
+        }
+        else
+        {
+            Gui::warn("Please select a species");
+        }
         return;
     }
 }
