@@ -35,7 +35,7 @@ std::string StringUtils::format(const std::string fmt_str, ...)
     va_start(ap, fmt_str);
     vasprintf(&fp, fmt_str.c_str(), ap);
     va_end(ap);
-    std::unique_ptr<char[]> formatted(fp);
+    std::unique_ptr<char, decltype(free)*> formatted(fp, free);
     return std::string(formatted.get());
 }
 

@@ -712,11 +712,11 @@ void Gui::pkm(PKX* pokemon, int x, int y, float scale, u32 color, float blend)
     }
     else
     {
+        pkm(pokemon->species(), pokemon->alternativeForm(), pokemon->generation(), x, y, scale, color, blend);
         if (pokemon->heldItem() > 0)
         {
             C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_item_idx), x + ceil(3 * scale), y + 21 + ceil(34 * (scale - 1)), 0.5f, &tint);
         }
-        pkm(pokemon->species(), pokemon->alternativeForm(), pokemon->generation(), x, y, scale, color, blend);
     }
 }
 
