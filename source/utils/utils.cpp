@@ -36,7 +36,7 @@ std::string StringUtils::format(const std::string fmt_str, ...)
     vasprintf(&fp, fmt_str.c_str(), ap);
     va_end(ap);
     std::unique_ptr<char[]> formatted(fp);
-    return std::string(formatted.release());
+    return std::string(formatted.get());
 }
 
 std::u16string StringUtils::UTF8toUTF16(std::string src)
