@@ -30,7 +30,7 @@
 #include <3ds.h>
 #include <cmath>
 
-#define FASTSCROLL_WAIT 1.25e8
+#define DELAY_TICKS 50000000
 
 class Hid 
 {
@@ -41,6 +41,8 @@ public:
         mIndex = 0;
         mPage = 0;
         mMaxPages = 0;
+        mCurrentTime = 0;
+        mLastTime = 0;
     }
 
     ~Hid(void) { }
@@ -61,6 +63,8 @@ private:
     size_t mMaxPages;
     size_t mMaxVisibleEntries;
     size_t mColumns;
+    u64    mCurrentTime;
+    u64    mLastTime;
 };
 
 #endif

@@ -76,11 +76,15 @@ void Hid::page_forward(void)
 }
 
 void Hid::update(size_t count) {
-    mMaxPages = (count % mMaxVisibleEntries == 0) ? count / mMaxVisibleEntries : count / mMaxVisibleEntries + 1;
+    mCurrentTime = svcGetSystemTick();
+    if (mCurrentTime <= mLastTime + DELAY_TICKS)
+    {
+        return;
+    }
 
+    mMaxPages = (count % mMaxVisibleEntries == 0) ? count / mMaxVisibleEntries : count / mMaxVisibleEntries + 1;
     u64 kHeld = hidKeysHeld();
     u64 kDown = hidKeysDown();
-    bool sleep = false;
     
     if (kDown & KEY_L)
     {
@@ -111,7 +115,6 @@ void Hid::update(size_t count) {
                 page_back();
                 mIndex = maxEntries(count);
             }
-            sleep = true;
         }
         else if (kHeld & KEY_RIGHT)
         {
@@ -124,7 +127,6 @@ void Hid::update(size_t count) {
                 page_forward();
                 mIndex = 0;
             }
-            sleep = true;
         }
         else if (kHeld & KEY_UP)
         {
@@ -148,7 +150,6 @@ void Hid::update(size_t count) {
             {
                 mIndex -= mColumns;
             }
-            sleep = true;
         }
         else if (kHeld & KEY_DOWN)
         {
@@ -173,7 +174,6 @@ void Hid::update(size_t count) {
                         mIndex = maxEntries(count);
                     }
                 }
-                sleep = true;
             }
         }
     }
@@ -190,7 +190,6 @@ void Hid::update(size_t count) {
                 page_back();
                 mIndex = maxEntries(count);
             }
-            sleep = true;
         }
         else if (kHeld & KEY_DOWN)
         {
@@ -203,14 +202,10 @@ void Hid::update(size_t count) {
                 page_forward();
                 mIndex = 0;
             }
-            sleep = true;
         }
     }
 
-    if (sleep)
-    {
-        svcSleepThread(FASTSCROLL_WAIT);
-    }
+    mLastTime = mCurrentTime;
 }
 
 void Hid::select(size_t index)
