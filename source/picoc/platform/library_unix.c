@@ -1,4 +1,5 @@
 #include "interpreter.h"
+#include "scripthelpers.h"
 
 void UnixSetupFunc()
 {    
@@ -18,8 +19,9 @@ void Clineno (struct ParseState *Parser, struct Value *ReturnValue, struct Value
 /* list of all library functions and their prototypes */
 struct LibraryFunction UnixFunctions[] =
 {
-    { Ctest,        "void test(int);" },
-    { Clineno,      "int lineno();" },
+    { Ctest,            "void test(int);" },
+    { Clineno,          "int lineno();" },
+    { gui_fpsCheck,     "int gui_fpsCheck();" },
     { NULL,         NULL }
 };
 

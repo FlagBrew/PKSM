@@ -24,33 +24,12 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef SCRIPTSCREEN_HPP
-#define SCRIPTSCREEN_HPP
+#ifndef SCRIPTHELPERS_H
+#define SCRIPTHELPERS_H
 
-#include "Screen.hpp"
-#include "STDirectory.hpp"
-#include "Hid.hpp"
+#include "picoc.h"
+#include "3ds/types.h"
 
-#define PICOC_STACKSIZE (128 * 1024)
-
-class ScriptScreen : public Screen
-{
-public:
-    ScriptScreen();
-
-    void draw() const override;
-    void update(touchPosition* touch) override;
-
-    ScreenType type() const override { return ScreenType::SCRIPTS; }
-private:
-    void updateEntries();
-    void applyScript();
-    void parsePicoCScript(std::string& file);
-    std::string currDirString;
-    STDirectory currDir;
-    std::vector<std::pair<std::string, bool>> currFiles;
-    Hid hid;
-    bool sdSearch;
-};
+void gui_fpsCheck(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs);
 
 #endif

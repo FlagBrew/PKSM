@@ -29,6 +29,9 @@
 #include "archive.hpp"
 #include "loader.hpp"
 #include "FSStream.hpp"
+extern "C" {
+    #include "picoc.h"
+}
 
 static constexpr std::string_view MAGIC = "PKSMSCRIPT";
 
@@ -67,6 +70,13 @@ namespace
             default:
                 return "";
         }
+    }
+
+    Picoc* picoC()
+    {
+        static Picoc* picoc = new Picoc;
+        PicocInitialise(picoc, PICOC_STACKSIZE);
+        return picoc;
     }
 }
 
@@ -225,7 +235,13 @@ static std::pair<u8*, size_t> scriptRead(std::string path)
 
 void ScriptScreen::applyScript()
 {
-    auto scriptData = scriptRead(currDirString + '/' + currFiles[hid.fullIndex()].first);
+    std::string scriptFile = currDirString + '/' + currFiles[hid.fullIndex()].first;
+    if (scriptFile.rfind(".c") == scriptFile.size() - 2)
+    {
+        parsePicoCScript(scriptFile);
+        return;
+    }
+    auto scriptData = scriptRead(scriptFile);
 
     for (size_t i = 0; i < MAGIC.size(); i++)
     {
@@ -283,4 +299,12 @@ void ScriptScreen::applyScript()
     }
 
     delete[] scriptData.first;
+}
+
+void ScriptScreen::parsePicoCScript(std::string& file)
+{
+    Picoc* picoc = picoC();
+    PicocPlatformScanFile(picoc, file.c_str());
+    PicocParse(picoc, file.c_str(), "main();", 7, TRUE, FALSE, FALSE, FALSE);
+    PicocCleanup(picoc);
 }

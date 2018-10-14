@@ -24,33 +24,23 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef SCRIPTSCREEN_HPP
-#define SCRIPTSCREEN_HPP
+#include "gui.hpp"
 
-#include "Screen.hpp"
-#include "STDirectory.hpp"
-#include "Hid.hpp"
+extern "C" {
+#include "scripthelpers.h"
 
-#define PICOC_STACKSIZE (128 * 1024)
-
-class ScriptScreen : public Screen
-{
-public:
-    ScriptScreen();
-
-    void draw() const override;
-    void update(touchPosition* touch) override;
-
-    ScreenType type() const override { return ScreenType::SCRIPTS; }
-private:
-    void updateEntries();
-    void applyScript();
-    void parsePicoCScript(std::string& file);
-    std::string currDirString;
-    STDirectory currDir;
-    std::vector<std::pair<std::string, bool>> currFiles;
-    Hid hid;
-    bool sdSearch;
-};
-
-#endif
+    void gui_fpsCheck(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        int i = 0;
+        while (aptMainLoop() && !(hidKeysDown() & KEY_B))
+        {
+            hidScanInput();
+            C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+            C2D_TargetClear(g_renderTargetTop, C2D_Color32(0,0,0,255));
+            C2D_SceneBegin(g_renderTargetTop);
+            Gui::dynamicText(std::to_string(i++ % 300), 38, 47, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
+            C3D_FrameEnd(0);
+            Gui::clearTextBufs();
+        }
+    }
+}
