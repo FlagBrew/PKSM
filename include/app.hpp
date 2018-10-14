@@ -37,7 +37,7 @@
 namespace App
 {
     Result init(void);
-    void exit(void);
+    Result exit(void);
 }
 
 #endif

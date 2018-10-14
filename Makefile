@@ -33,7 +33,7 @@ include $(DEVKITARM)/3ds_rules
 #---------------------------------------------------------------------------------
 APP_TITLE		:= 	PKSM
 APP_DESCRIPTION	:=	Gen IV to Gen VII save manager
-APP_AUTHOR		:=	Bernardo Giordano, PKSM Devs
+APP_AUTHOR		:=	FlagBrew
 
 VERSION_MAJOR := 6
 VERSION_MINOR := 0
@@ -210,21 +210,18 @@ ifneq ($(ROMFS),)
 	export _3DSXFLAGS += --romfs=$(CURDIR)/$(ROMFS)
 endif
 
-.PHONY: all clean
+.PHONY: all clean deps no-deps
 
 #---------------------------------------------------------------------------------
-all:
+all: deps no-deps
+#---------------------------------------------------------------------------------
+deps:
 	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR)
 	@cd $(BUILD)/$(PACKER) && py -3 packer.py
 	@cd $(BUILD)/$(PACKER) && mv out/*.bin out/*.json ../../assets/romfs/mg
 	@cd $(BUILD)/$(SCRIPTS) && py -3 genScripts.py
 	@rm -fr assets/romfs/scripts
 	@cd $(BUILD)/$(SCRIPTS) && mv -f scripts ../../assets/romfs
-	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile $(OUTPUT).3dsx
-	@bannertool makebanner -i "$(BANNER_IMAGE)" -a "$(BANNER_AUDIO)" -o $(BUILD)/banner.bnr
-	@bannertool makesmdh -s "$(APP_TITLE)" -l "$(APP_DESCRIPTION)" -p "$(APP_AUTHOR)" -i "$(APP_ICON)" -f "$(ICON_FLAGS)" -o $(BUILD)/icon.icn
-	@3dstool -ctf romfs "$(BUILD)/romfs.bin" --romfs-dir "$(ROMFS)"
-	@makerom -f cia -o $(OUTPUT).cia -target t -exefslogo -elf "$(OUTPUT).elf" -rsf "$(RSF_PATH)" -ver "$$(($(VERSION_MAJOR)*1024+$(VERSION_MINOR)*16+$(VERSION_MICRO)))" -banner "$(BUILD)/banner.bnr" -icon "$(BUILD)/icon.icn" -DAPP_TITLE="$(APP_TITLE)" -DAPP_PRODUCT_CODE="$(PRODUCT_CODE)" -DAPP_UNIQUE_ID="$(UNIQUE_ID)" -romfs "$(BUILD)/romfs.bin"
 #---------------------------------------------------------------------------------
 clean:
 	@echo clean ...
@@ -232,7 +229,14 @@ clean:
 	@cd $(ROMFS)/mg && find -maxdepth 1 ! -name .gitkeep ! -name . | xargs --no-run-if-empty rm
 	@cd $(BUILD) && find -maxdepth 1 ! -name $(PACKER) ! -name . ! -name $(SCRIPTS) | xargs --no-run-if-empty rm
 	@rm -fr $(BUILD)/$(PACKER)/out $(BUILD)/$(PACKER)/EventsGallery 
-	
+#---------------------------------------------------------------------------------
+no-deps:
+	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR)
+	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile $(OUTPUT).3dsx
+	@bannertool makebanner -i "$(BANNER_IMAGE)" -a "$(BANNER_AUDIO)" -o $(BUILD)/banner.bnr
+	@bannertool makesmdh -s "$(APP_TITLE)" -l "$(APP_DESCRIPTION)" -p "$(APP_AUTHOR)" -i "$(APP_ICON)" -f "$(ICON_FLAGS)" -o $(BUILD)/icon.icn
+	@3dstool -ctf romfs "$(BUILD)/romfs.bin" --romfs-dir "$(ROMFS)"
+	@makerom -f cia -o $(OUTPUT).cia -target t -exefslogo -elf "$(OUTPUT).elf" -rsf "$(RSF_PATH)" -ver "$$(($(VERSION_MAJOR)*1024+$(VERSION_MINOR)*16+$(VERSION_MICRO)))" -banner "$(BUILD)/banner.bnr" -icon "$(BUILD)/icon.icn" -DAPP_TITLE="$(APP_TITLE)" -DAPP_PRODUCT_CODE="$(PRODUCT_CODE)" -DAPP_UNIQUE_ID="$(UNIQUE_ID)" -romfs "$(BUILD)/romfs.bin"
 #---------------------------------------------------------------------------------
 else
 

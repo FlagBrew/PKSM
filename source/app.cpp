@@ -26,6 +26,7 @@
 
 #include "app.hpp"
 #include "Configuration.hpp"
+#include "TitleLoadScreen.hpp"
 
 Result App::init(void)
 {
@@ -38,18 +39,20 @@ Result App::init(void)
     if (R_FAILED(res = amInit())) return res;
     if (R_FAILED(res = Gui::init())) return res;
     i18n::init();
+    Configuration::getInstance();
+
+    Gui::setScreen(std::make_unique<TitleLoadScreen>());
 
     // uncomment when needing to debug with GDB
     // consoleDebugInit(debugDevice_SVC);
     // while(aptMainLoop() && !(hidKeysDown() & KEY_START)) { hidScanInput(); }
-    
-    Configuration::getInstance();
 
     return 0;
 }
 
-void App::exit(void)
+Result App::exit(void)
 {
+    TitleLoader::exit();
     Threads::destroy();
     Configuration::getInstance().save();
     i18n::exit();
@@ -59,4 +62,5 @@ void App::exit(void)
     Archive::exit();
     romfsExit();
     cfguExit();
+    return 0;
 }

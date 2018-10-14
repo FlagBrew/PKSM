@@ -25,8 +25,6 @@
 */
 
 #include "app.hpp"
-#include "MainMenu.hpp"
-#include "TitleLoadScreen.hpp"
 
 int main()
 {
@@ -34,17 +32,10 @@ int main()
     if (R_FAILED(res))
     {
         App::exit();
-        return -1;
+        return res;
     }
-
-    Gui::setScreen(std::make_unique<TitleLoadScreen>());
-
-    //Gui::setScreen(std::unique_ptr<Screen>(new MainMenu));
 
     Gui::mainLoop();
 
-    TitleLoader::exit();
-
-    App::exit();
-    return 0;
+    return App::exit();
 }
