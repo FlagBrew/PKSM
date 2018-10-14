@@ -28,9 +28,17 @@
 #include "Configuration.hpp"
 #include "TitleLoadScreen.hpp"
 
+// increase the stack in order to allow quirc to decode large qrs
+int __stacksize__ = 64 * 1024;
+
+static u32 old_time_limit;
+
 Result App::init(void)
 {
     Result res;
+
+    APT_GetAppCpuTimeLimit(&old_time_limit);
+    APT_SetAppCpuTimeLimit(30);
     
     if (R_FAILED(res = cfguInit())) return res;
     if (R_FAILED(res = romfsInit())) return res;
@@ -62,5 +70,11 @@ Result App::exit(void)
     Archive::exit();
     romfsExit();
     cfguExit();
+
+    if (old_time_limit != UINT32_MAX)
+    {
+        APT_SetAppCpuTimeLimit(old_time_limit);
+    }
+    
     return 0;
 }

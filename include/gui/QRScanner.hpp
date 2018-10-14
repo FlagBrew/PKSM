@@ -24,48 +24,40 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef EDITSELECTORSCREEN_HPP
-#define EDITSELECTORSCREEN_HPP
+#ifndef QRSCANNER_HPP
+#define QRSCANNER_HPP
 
-#include "Screen.hpp"
-#include <vector>
-#include "ViewerScreen.hpp"
-#include "QRScanner.hpp"
-#include "Button.hpp"
-#include "loader.hpp"
+#include <curl/curl.h>
+#include "gui.hpp"
 
-class EditSelectorScreen : public Screen
-{
-public:
-    ~EditSelectorScreen()
-    {
-        for (Button* button : buttons)
-        {
-            delete button;
-        }
-        
-        for (Button* button : pkmButtons)
-        {
-            delete button;
-        }
+extern "C" {
+#include "quirc/quirc.h"
+}
 
-        TitleLoader::save->cryptBoxData(false);
-    }
-    EditSelectorScreen();
-    void draw() const override;
-    void update(touchPosition* touch) override;
-    ScreenType type() const override { return ScreenType::EDITSELECT; }
-private:
-    bool lastBox();
-    bool nextBox();
-    bool editPokemon(std::shared_ptr<PKX> pkm);
-    void changeBoxName();
-    bool clickIndex(int i);
-    std::vector<Button*> buttons;
-    std::array<Button*, 36> pkmButtons;
-    std::shared_ptr<ViewerScreen> viewer;
-    int cursorPos = 0;
-    int box = 0;
+typedef struct {
+    u16*          camera_buffer;
+    Handle        mutex;
+    volatile bool finished;
+    Handle        cancel;
+    bool          capturing;
+    struct quirc* context;
+    C3D_Tex*      tex;
+    C2D_Image     image;
+} qr_data;
+
+enum QRMode {
+    PK4,
+    PK5,
+    PK6,
+    PK7
 };
+
+namespace QRScanner
+{
+    void init(QRMode mode, u8* buff);
+
+    // note: exposed, but not required to be called outside QRScanner.cpp
+    void exit(qr_data* data);
+}
 
 #endif

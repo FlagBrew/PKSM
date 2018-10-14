@@ -87,7 +87,13 @@ void EditSelectorScreen::changeBoxName()
 
 static bool wirelessStuff() { return false; }
 
-static bool qrStuff() { return true; }
+static bool qrStuff()
+{
+    // TODO: change me
+    u8* data = NULL;
+    QRScanner::init(QRMode::PK7, data);
+    return true;
+}
 
 EditSelectorScreen::EditSelectorScreen()
 {
