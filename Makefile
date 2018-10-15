@@ -45,6 +45,7 @@ BUILD			:=	build
 SOURCES			:=	source \
 					source/gui \
 					source/gui/screen \
+					source/gui/scripts \
 					source/i18n \
 					source/io \
 					source/memecrypto \
@@ -62,6 +63,7 @@ DATA			:=	data
 INCLUDES		:=	include \
 					include/gui \
 					include/gui/screen \
+					include/gui/scripts \
 					include/i18n \
 					include/io \
 					include/personal \

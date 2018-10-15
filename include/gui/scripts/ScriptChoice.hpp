@@ -24,48 +24,25 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef SCREEN_HPP
-#define SCREEN_HPP
+#ifndef SCRIPTCHOICE_HPP
+#define SCRIPTCHOICE_HPP
 
-#include "3ds.h"
-#include <citro3d.h>
+#include <3ds.h>
+#include <string>
+#include "Screen.hpp"
 
-extern C3D_RenderTarget* g_renderTargetTop;
-extern C3D_RenderTarget* g_renderTargetBottom;
-
-enum ScreenType
-{
-    TITLELOAD,
-    MAINMENU,
-    STORAGE,
-    EDITOR,
-    EDITSELECT,
-    EVENTS,
-    HEXEDIT,
-    INJECTOR,
-    SCRIPTS,
-    SCRIPTSELECT,
-    SELECTOR,
-    SETTINGS,
-    CREDITS,
-    VIEWER
-};
-
-class Screen
+class ScriptChoice : public Screen
 {
 public:
-    virtual ~Screen() {}
-    virtual void update(void) {
-        // increase timer
-        mTimer += 0.025f;
-    }
-    virtual void update(touchPosition* touch) = 0;
-    virtual ScreenType type() const = 0;
-    virtual void draw() const = 0;
-    virtual float timer() const final { return mTimer; }
-
-private:
-    float mTimer = 0;
+    ScriptChoice(char* question) : question(question) {}
+    int run();
+    bool finished() const { return done; }
+    ScreenType type() const override { return ScreenType::SCRIPTSELECT; }
+    void drawBottom() const;
+protected:
+    std::string question;
+    bool done = false;
+    size_t finalVal = 0;
 };
 
 #endif

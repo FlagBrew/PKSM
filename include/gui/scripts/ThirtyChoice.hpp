@@ -24,48 +24,38 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef SCREEN_HPP
-#define SCREEN_HPP
+#ifndef THIRTYCHOICE_HPP
+#define THIRTYCHOICE_HPP
 
-#include "3ds.h"
-#include <citro3d.h>
+#include "ScriptChoice.hpp"
+#include "Hid.hpp"
+#include <vector>
+#include <string>
 
-extern C3D_RenderTarget* g_renderTargetTop;
-extern C3D_RenderTarget* g_renderTargetBottom;
-
-enum ScreenType
-{
-    TITLELOAD,
-    MAINMENU,
-    STORAGE,
-    EDITOR,
-    EDITSELECT,
-    EVENTS,
-    HEXEDIT,
-    INJECTOR,
-    SCRIPTS,
-    SCRIPTSELECT,
-    SELECTOR,
-    SETTINGS,
-    CREDITS,
-    VIEWER
-};
-
-class Screen
+class ThirtyChoice : public ScriptChoice
 {
 public:
-    virtual ~Screen() {}
-    virtual void update(void) {
-        // increase timer
-        mTimer += 0.025f;
+    ThirtyChoice(char* question, char** text, int** pokemon, int items, int gen = 7) : ScriptChoice(question), hid(30, 6), items(items), gen(gen)
+    {
+        for (int i = 0; i < items; i++)
+        {
+            labels.push_back(text[i]);
+            pkm.push_back({ pokemon[i][0], pokemon[i][1] });
+        }
     }
-    virtual void update(touchPosition* touch) = 0;
-    virtual ScreenType type() const = 0;
-    virtual void draw() const = 0;
-    virtual float timer() const final { return mTimer; }
-
+    void draw() const override;
+    void update(touchPosition* touch) override;
 private:
-    float mTimer = 0;
+    Hid hid;
+    const int items;
+    const int gen;
+    struct pkmData
+    {
+        int pkm;
+        int form;
+    };
+    std::vector<std::string> labels;
+    std::vector<pkmData> pkm;
 };
 
 #endif

@@ -25,6 +25,8 @@
 */
 
 #include "gui.hpp"
+#include "FortyChoice.hpp"
+#include "ThirtyChoice.hpp"
 
 extern "C" {
 #include "scripthelpers.h"
@@ -42,5 +44,39 @@ extern "C" {
             C3D_FrameEnd(0);
             Gui::clearTextBufs();
         }
+    }
+
+    void gui_warn(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        char* lineOne = (char*) Param[0]->Val->Pointer;
+        char* lineTwo = (char*) Param[1]->Val->Pointer;
+        Gui::warn(lineOne, lineTwo != nullptr ? std::string(lineTwo) : nullptr);
+    }
+
+    void gui_choice(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        char* lineOne = (char*) Param[0]->Val->Pointer;
+        char* lineTwo = (char*) Param[1]->Val->Pointer;
+        ReturnValue->Val->Integer = (int) Gui::showChoiceMessage(lineOne, lineTwo != nullptr ? std::string(lineTwo) : nullptr);
+    }
+
+    void gui_menu6x5(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        char* question = (char*) Param[0]->Val->Pointer;
+        int options = Param[1]->Val->Integer;
+        char** labels = (char**) Param[2]->Val->Pointer;
+        int** pokemon = (int**) Param[3]->Val->Pointer;
+        int gen = Param[4]->Val->Integer;
+        ThirtyChoice screen = ThirtyChoice(question, labels, pokemon, options, gen);
+        ReturnValue->Val->Integer = screen.run();
+    }
+
+    void gui_menu20x2(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        char* question = (char*) Param[0]->Val->Pointer;
+        int options = Param[1]->Val->Integer;
+        char** labels = (char**) Param[2]->Val->Pointer;
+        FortyChoice screen = FortyChoice(question, labels, options);
+        ReturnValue->Val->Integer = screen.run();
     }
 }

@@ -24,48 +24,45 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef SCREEN_HPP
-#define SCREEN_HPP
+#include "ThirtyChoice.hpp"
+#include "gui.hpp"
 
-#include "3ds.h"
-#include <citro3d.h>
-
-extern C3D_RenderTarget* g_renderTargetTop;
-extern C3D_RenderTarget* g_renderTargetBottom;
-
-enum ScreenType
+void ThirtyChoice::draw() const
 {
-    TITLELOAD,
-    MAINMENU,
-    STORAGE,
-    EDITOR,
-    EDITSELECT,
-    EVENTS,
-    HEXEDIT,
-    INJECTOR,
-    SCRIPTS,
-    SCRIPTSELECT,
-    SELECTOR,
-    SETTINGS,
-    CREDITS,
-    VIEWER
-};
+    C2D_SceneBegin(g_renderTargetTop);
+    Gui::sprite(ui_sheet_part_mtx_5x6_idx, 0, 0);
 
-class Screen
-{
-public:
-    virtual ~Screen() {}
-    virtual void update(void) {
-        // increase timer
-        mTimer += 0.025f;
+    int x = (hid.index() % 6) * 67;
+    int y = (hid.index() / 6) * 48;
+    // Selector
+    C2D_DrawRectSolid(x, y, 0.5f, 66, 47, COLOR_MASKBLACK);
+    C2D_DrawRectSolid(x, y, 0.5f, 66, 1, COLOR_YELLOW);
+    C2D_DrawRectSolid(x, y, 0.5f, 1, 47, COLOR_YELLOW);
+    C2D_DrawRectSolid(x + 65, y, 0.5f, 1, 47, COLOR_YELLOW);
+    C2D_DrawRectSolid(x, y + 46, 0.5f, 66, 1, COLOR_YELLOW);
+
+    for (int y = 0; y < 5; y++)
+    {
+        for (int x = 0; x < 6; x++)
+        {
+            if (x + y * 6 >= items)
+            {
+                break;
+            }
+            Gui::pkm(pkm[x + y * 6].pkm, pkm[x + y * 6].form, gen, x * 67 + 18, y * 48 + 7);
+            Gui::dynamicText(x * 67, y * 48 + 30, 67, labels[x + y * 6], FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
+        }
     }
-    virtual void update(touchPosition* touch) = 0;
-    virtual ScreenType type() const = 0;
-    virtual void draw() const = 0;
-    virtual float timer() const final { return mTimer; }
 
-private:
-    float mTimer = 0;
-};
+    drawBottom();
+}
 
-#endif
+void ThirtyChoice::update(touchPosition* touch)
+{
+    hid.update(items);
+    if (hidKeysDown() & KEY_A)
+    {
+        finalVal = hid.fullIndex();
+        done = true;
+    }
+}

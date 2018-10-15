@@ -24,48 +24,30 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef SCREEN_HPP
-#define SCREEN_HPP
+#ifndef FORTYCHOICE_HPP
+#define FORTYCHOICE_HPP
 
-#include "3ds.h"
-#include <citro3d.h>
+#include "ScriptChoice.hpp"
+#include "Hid.hpp"
+#include <vector>
+#include <string>
 
-extern C3D_RenderTarget* g_renderTargetTop;
-extern C3D_RenderTarget* g_renderTargetBottom;
-
-enum ScreenType
-{
-    TITLELOAD,
-    MAINMENU,
-    STORAGE,
-    EDITOR,
-    EDITSELECT,
-    EVENTS,
-    HEXEDIT,
-    INJECTOR,
-    SCRIPTS,
-    SCRIPTSELECT,
-    SELECTOR,
-    SETTINGS,
-    CREDITS,
-    VIEWER
-};
-
-class Screen
+class FortyChoice : public ScriptChoice
 {
 public:
-    virtual ~Screen() {}
-    virtual void update(void) {
-        // increase timer
-        mTimer += 0.025f;
+    FortyChoice(char* question, char** text, int items) : ScriptChoice(question), hid(40, 2), items(items)
+    {
+        for (int i = 0; i < items; i++)
+        {
+            labels.push_back(text[i]);
+        }
     }
-    virtual void update(touchPosition* touch) = 0;
-    virtual ScreenType type() const = 0;
-    virtual void draw() const = 0;
-    virtual float timer() const final { return mTimer; }
-
+    void draw() const override;
+    void update(touchPosition* touch) override;
 private:
-    float mTimer = 0;
+    Hid hid;
+    const int items;
+    std::vector<std::string> labels;
 };
 
 #endif

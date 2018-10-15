@@ -24,48 +24,35 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef SCREEN_HPP
-#define SCREEN_HPP
+#include "FortyChoice.hpp"
+#include "gui.hpp"
 
-#include "3ds.h"
-#include <citro3d.h>
-
-extern C3D_RenderTarget* g_renderTargetTop;
-extern C3D_RenderTarget* g_renderTargetBottom;
-
-enum ScreenType
+void FortyChoice::draw() const
 {
-    TITLELOAD,
-    MAINMENU,
-    STORAGE,
-    EDITOR,
-    EDITSELECT,
-    EVENTS,
-    HEXEDIT,
-    INJECTOR,
-    SCRIPTS,
-    SCRIPTSELECT,
-    SELECTOR,
-    SETTINGS,
-    CREDITS,
-    VIEWER
-};
-
-class Screen
-{
-public:
-    virtual ~Screen() {}
-    virtual void update(void) {
-        // increase timer
-        mTimer += 0.025f;
+    C2D_SceneBegin(g_renderTargetTop);
+    Gui::sprite(ui_sheet_part_editor_20x2_idx, 0, 0);
+    int x = hid.index() < hid.maxVisibleEntries() / 2 ? 2 : 200;
+    int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 12;
+    C2D_DrawRectSolid(x, y, 0.5f, 198, 11, COLOR_MASKBLACK);
+    C2D_DrawRectSolid(x, y, 0.5f, 198, 1, COLOR_YELLOW);
+    C2D_DrawRectSolid(x, y, 0.5f, 1, 11, COLOR_YELLOW);
+    C2D_DrawRectSolid(x, y + 10, 0.5f, 198, 1, COLOR_YELLOW);
+    C2D_DrawRectSolid(x + 197, y, 0.5f, 1, 11, COLOR_YELLOW);
+    for (size_t i = 0; i < hid.maxVisibleEntries(); i++)
+    {
+        x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
+        Gui::dynamicText(labels[i], x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
     }
-    virtual void update(touchPosition* touch) = 0;
-    virtual ScreenType type() const = 0;
-    virtual void draw() const = 0;
-    virtual float timer() const final { return mTimer; }
 
-private:
-    float mTimer = 0;
-};
+    drawBottom();
+}
 
-#endif
+void FortyChoice::update(touchPosition* touch)
+{
+    hid.update(items);
+    if (hidKeysDown() & KEY_A)
+    {
+        finalVal = hid.fullIndex();
+        done = true;
+    }
+}

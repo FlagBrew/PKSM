@@ -305,6 +305,6 @@ void ScriptScreen::parsePicoCScript(std::string& file)
 {
     Picoc* picoc = picoC();
     PicocPlatformScanFile(picoc, file.c_str());
-    PicocParse(picoc, file.c_str(), "main();", 7, TRUE, FALSE, FALSE, FALSE);
+    PicocCallMain(picoc, 0, NULL);
     PicocCleanup(picoc);
 }

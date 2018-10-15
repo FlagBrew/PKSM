@@ -24,48 +24,43 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef SCREEN_HPP
-#define SCREEN_HPP
+#include "ScriptChoice.hpp"
+#include "gui.hpp"
 
-#include "3ds.h"
-#include <citro3d.h>
-
-extern C3D_RenderTarget* g_renderTargetTop;
-extern C3D_RenderTarget* g_renderTargetBottom;
-
-enum ScreenType
+int ScriptChoice::run()
 {
-    TITLELOAD,
-    MAINMENU,
-    STORAGE,
-    EDITOR,
-    EDITSELECT,
-    EVENTS,
-    HEXEDIT,
-    INJECTOR,
-    SCRIPTS,
-    SCRIPTSELECT,
-    SELECTOR,
-    SETTINGS,
-    CREDITS,
-    VIEWER
-};
+    while (aptMainLoop() && !finished())
+    {
+        hidScanInput();
+        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+        C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
+        C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
 
-class Screen
-{
-public:
-    virtual ~Screen() {}
-    virtual void update(void) {
-        // increase timer
-        mTimer += 0.025f;
+        draw();
+        touchPosition touch;
+        hidTouchRead(&touch);
+        update(&touch);
+
+        C3D_FrameEnd(0);
+        Gui::clearTextBufs();
     }
-    virtual void update(touchPosition* touch) = 0;
-    virtual ScreenType type() const = 0;
-    virtual void draw() const = 0;
-    virtual float timer() const final { return mTimer; }
+    return finalVal;
+}
 
-private:
-    float mTimer = 0;
-};
-
-#endif
+void ScriptChoice::drawBottom() const
+{
+    C2D_SceneBegin(g_renderTargetBottom);
+    Gui::backgroundBottom(false);
+    std::vector<std::string> lines;
+    std::string tmp = question;
+    do {
+        lines.push_back(tmp.substr(0, tmp.find('\n')));
+        tmp = tmp.substr(tmp.find('\n') + 1);
+    } while (tmp.find('\n') != std::string::npos);
+    int y = 115 - 10 * lines.size();
+    for (size_t i = 0; i < lines.size(); i++)
+    {
+        y += 20 * i;
+        Gui::dynamicText(GFX_BOTTOM, y, lines[i], FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
+    }
+}

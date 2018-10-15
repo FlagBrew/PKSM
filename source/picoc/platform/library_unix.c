@@ -22,6 +22,10 @@ struct LibraryFunction UnixFunctions[] =
     { Ctest,            "void test(int);" },
     { Clineno,          "int lineno();" },
     { gui_fpsCheck,     "int gui_fpsCheck();" },
+    { gui_choice,       "int gui_choice(char* lineOne, char* lineTwo);" },
+    { gui_warn,         "void gui_warn(char* lineOne, char* lineTwo);"},
+    { gui_menu6x5,      "int gui_menu6x5(char* question, int options, char** labels, int** pokemon, int generation);" },
+    { gui_menu20x2,     "int gui_menu(char* question, int options, char** labels);" },
     { NULL,         NULL }
 };
 
