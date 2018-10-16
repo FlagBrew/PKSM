@@ -435,6 +435,13 @@ void TitleLoader::saveToTitle(bool ask)
                 if (out.good())
                 {
                     out.write(save->data, save->length);
+                    if (R_FAILED(FSUSER_ControlArchive(archive, ARCHIVE_ACTION_COMMIT_SAVE_DATA, NULL, 0, NULL, 0)))
+                    {
+                        out.close();
+                        FSUSER_CloseArchive(archive);
+                        Gui::warn("Failed to commit save data!");
+                        return;
+                    }
                 }
                 else
                 {
@@ -463,7 +470,7 @@ void TitleLoader::saveToTitle(bool ask)
             // Just a linear search because it's a maximum of eight titles
             for (auto title : TitleLoader::nandTitles)
             {
-                if (title == loadedTitle && (!ask && Gui::showChoiceMessage("Would you like to write changes to", std::string("the installed title?"))))
+                if (title == loadedTitle && (!ask || Gui::showChoiceMessage("Would you like to write changes to", std::string("the installed title?"))))
                 {
                     FS_Archive archive;
                     Archive::save(&archive, title->mediaType(), title->lowId(), title->highId());
@@ -471,6 +478,13 @@ void TitleLoader::saveToTitle(bool ask)
                     if (out.good())
                     {
                         out.write(save->data, save->length);
+                        if (R_FAILED(FSUSER_ControlArchive(archive, ARCHIVE_ACTION_COMMIT_SAVE_DATA, NULL, 0, NULL, 0)))
+                        {
+                            out.close();
+                            FSUSER_CloseArchive(archive);
+                            Gui::warn("Failed to commit save data!");
+                            return;
+                        }
                     }
                     else
                     {
