@@ -45,6 +45,64 @@ void MysteryGift::init(u8 gen)
     data.close();
 }
 
+std::vector<MysteryGift::giftData> MysteryGift::wondercards()
+{
+    std::vector<MysteryGift::giftData> mysteryGifts;
+    auto iterator = mysteryGiftSheet.begin();
+    iterator++;
+
+    for (auto &entry : iterator.value())
+    {
+        MysteryGift::giftData gift;
+        gift.name = entry["name"].get<std::string>();
+        gift.species = entry["species"];
+        gift.form = entry["form"];
+        mysteryGifts.push_back(gift);
+    }
+
+    return mysteryGifts;
+}
+
+std::unique_ptr<WCX> MysteryGift::wondercard(size_t index)
+{
+    auto iterator = mysteryGiftSheet.begin();
+    u8 gen = iterator.value();
+
+    iterator++;
+    auto entry = iterator.value()[index];
+
+    u32 offset = entry["offset"];
+    u32 size = entry["size"];
+
+    u8 *data = new u8[size];
+    std::copy(mysteryGiftData + offset, mysteryGiftData + offset + size, data);
+
+    if (gen == 4)
+    {
+        PGT *pgt = new PGT(data);
+        delete[] data;
+        return std::unique_ptr<WCX>(pgt);
+    }
+    else if (gen == 5)
+    {
+        PGF *pgf = new PGF(data);
+        delete[] data;
+        return std::unique_ptr<WCX>(pgf);
+    }
+    else if (gen == 6)
+    {
+        WC6 *wc6 = new WC6(data);
+        delete[] data;
+        return std::unique_ptr<WCX>(wc6);
+    }
+    else
+    {
+        WC7 *wc7 = new WC7(data);
+        delete[] data;
+        return std::unique_ptr<WCX>(wc7);
+    }
+}
+
 void MysteryGift::exit(void)
 {
     delete[] mysteryGiftData;
