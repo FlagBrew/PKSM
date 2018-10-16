@@ -27,6 +27,7 @@
 #include "ItemSelectionScreen.hpp"
 #include "gui.hpp"
 #include "Configuration.hpp"
+#include "loader.hpp"
 
 void ItemSelectionScreen::draw() const
 {
@@ -50,7 +51,7 @@ void ItemSelectionScreen::draw() const
 
 void ItemSelectionScreen::update(touchPosition* touch)
 {
-    hid.update(i18n::items());
+    hid.update(TitleLoader::save->maxItem());
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {

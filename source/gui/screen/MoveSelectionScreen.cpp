@@ -27,6 +27,7 @@
 #include "MoveSelectionScreen.hpp"
 #include "gui.hpp"
 #include "Configuration.hpp"
+#include "loader.hpp"
 
 void MoveSelectionScreen::draw() const
 {
@@ -50,7 +51,7 @@ void MoveSelectionScreen::draw() const
 
 void MoveSelectionScreen::update(touchPosition* touch)
 {
-    hid.update(i18n::moves());
+    hid.update(TitleLoader::save->maxMove());
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {

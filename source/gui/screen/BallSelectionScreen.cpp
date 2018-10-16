@@ -29,38 +29,6 @@
 #include "loader.hpp"
 #include "Configuration.hpp"
 
-namespace {
-    int maxBalls()
-    {
-        switch (TitleLoader::save->version())
-        {
-            case 10:
-            case 11:
-            case 12:
-                return 16;
-            case 7:
-            case 8:
-                return 24;
-            case 20:
-            case 21:
-            case 22:
-            case 23:
-            case 24:
-            case 25:
-            case 26:
-            case 27:
-                return 25;
-            case 30:
-            case 31:
-            case 32:
-            case 33:
-                return 26;
-            default:
-                return 0;
-        }
-    }
-}
-
 void BallSelectionScreen::draw() const
 {
     C2D_SceneBegin(g_renderTargetTop);
@@ -79,7 +47,7 @@ void BallSelectionScreen::draw() const
     {
         for (int x = 0; x < 6; x++)
         {
-            if (x + y * 6 >= maxBalls())
+            if (x + y * 6 >= TitleLoader::save->maxBall())
             {
                 break;
             }
@@ -91,7 +59,7 @@ void BallSelectionScreen::draw() const
 
 void BallSelectionScreen::update(touchPosition* touch)
 {
-    hid.update(maxBalls());
+    hid.update(TitleLoader::save->maxBall());
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {

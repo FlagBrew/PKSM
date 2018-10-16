@@ -118,6 +118,11 @@ public:
 
     virtual int maxBoxes(void) const = 0;
     virtual size_t maxWondercards(void) const = 0;
+    virtual int maxSpecies(void) const = 0;
+    virtual int maxMove(void) const = 0;
+    virtual int maxItem(void) const = 0;
+    virtual int maxAbility(void) const = 0;
+    virtual int maxBall(void) const = 0;
     virtual u8 generation(void) const = 0;
 };
 

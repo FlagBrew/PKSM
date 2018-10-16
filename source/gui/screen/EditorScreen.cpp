@@ -471,6 +471,7 @@ bool EditorScreen::save()
 {
     pkm->refreshChecksum();
     TitleLoader::save->pkm(*pkm, box, index);
+    Gui::warn("Saved");
     return false;
 }
 

@@ -29,39 +29,6 @@
 #include "loader.hpp"
 #include "Configuration.hpp"
 
-namespace {
-    u16 maxSpecies(u8 version)
-    {
-        switch (version)
-        {
-            case 7:
-            case 8:
-            case 10:
-            case 11:
-            case 12:
-                return 493;
-            case 20:
-            case 21:
-            case 22:
-            case 23:
-                return 649;
-            case 24:
-            case 25:
-            case 26:
-            case 27:
-                return 721;
-            case 30:
-            case 31:
-                return 802;
-            case 32:
-            case 33:
-                return 807;
-            default:
-                return 0;
-        }
-    }
-}
-
 void SpeciesSelectionScreen::draw() const
 {
     C2D_SceneBegin(g_renderTargetTop);
@@ -80,7 +47,7 @@ void SpeciesSelectionScreen::draw() const
     {
         for (int x = 0; x < 8; x++)
         {
-            if (hid.page() * hid.maxVisibleEntries() + x + y * 8 + 1 > maxSpecies(TitleLoader::save->version()))
+            if (hid.page() * hid.maxVisibleEntries() + x + y * 8 + 1 > (size_t) TitleLoader::save->maxSpecies())
             {
                 break;
             }
@@ -92,7 +59,7 @@ void SpeciesSelectionScreen::draw() const
 
 void SpeciesSelectionScreen::update(touchPosition* touch)
 {
-    hid.update(maxSpecies(TitleLoader::save->version()));
+    hid.update(TitleLoader::save->maxSpecies());
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {

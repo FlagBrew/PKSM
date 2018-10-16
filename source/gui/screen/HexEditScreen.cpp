@@ -25,6 +25,7 @@
 */
 
 #include "HexEditScreen.hpp"
+#include "loader.hpp"
 #include <bitset>
 
 static constexpr std::string_view marks[] = {
@@ -300,6 +301,71 @@ static constexpr std::string_view gen67ToggleTexts[] = {
 
 static int currRibbon = 0;
 
+namespace {
+    void checkValues(std::shared_ptr<PKX> pkm)
+    {
+        if (pkm->ability() > TitleLoader::save->maxAbility())
+        {
+            pkm->ability(TitleLoader::save->maxAbility());
+        }
+        if (pkm->ball() > TitleLoader::save->maxBall())
+        {
+            pkm->ball(TitleLoader::save->maxBall());
+        }
+        for (int i = 0; i < 4; i++)
+        {
+            if (pkm->move(i) > TitleLoader::save->maxMove())
+            {
+                pkm->move(i, TitleLoader::save->maxMove());
+            }
+            if (pkm->generation() == 6)
+            {
+                if (((PK6*)pkm.get())->relearnMove(i) > TitleLoader::save->maxMove())
+                {
+                    ((PK6*)pkm.get())->relearnMove(i, TitleLoader::save->maxMove());
+                }
+            }
+            if (pkm->generation() == 7)
+            {
+                if (((PK7*)pkm.get())->relearnMove(i) > TitleLoader::save->maxMove())
+                {
+                    ((PK7*)pkm.get())->relearnMove(i, TitleLoader::save->maxMove());
+                }
+            }
+        }
+        if (pkm->species() > TitleLoader::save->maxSpecies())
+        {
+            pkm->species(TitleLoader::save->maxSpecies());
+        }
+        if (pkm->heldItem() > TitleLoader::save->maxItem())
+        {
+            pkm->heldItem(TitleLoader::save->maxItem());
+        }
+        u8 (*formCounter)(u16);
+        switch (TitleLoader::save->generation())
+        {
+            case 4:
+                formCounter = PersonalDPPtHGSS::formCount;
+                break;
+            case 5:
+                formCounter = PersonalBWB2W2::formCount;
+                break;
+            case 6:
+                formCounter = PersonalXYORAS::formCount;
+                break;
+            case 7:
+            default:
+                formCounter = PersonalSMUSUM::formCount;
+                break;
+        }
+        u8 count = formCounter(pkm->species());
+        if (pkm->alternativeForm() >= count)
+        {
+            pkm->alternativeForm(count - 1);
+        }
+    }
+}
+
 bool HexEditScreen::toggleBit(int selected, int offset)
 {
     pkm->rawData()[selected] ^= 0x1 << offset;
@@ -395,7 +461,7 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 return std::make_pair("Nature", OPEN);
             //Gender, fateful encounter, and form bits
             case 0x1D:
-                return std::make_pair("", OPEN);
+                return std::make_pair("Gender, Fateful Encounter, Form", OPEN);
             case 0x1E:
                 return std::make_pair("HP EV", NORMAL);
             case 0x1F:
@@ -1380,13 +1446,14 @@ void HexEditScreen::draw() const
 void HexEditScreen::update(touchPosition* touch)
 {
     u32 down = hidKeysDown();
-    static int superSecretTimer = 120;
+    static int superSecretTimer = 300;
     static std::bitset<8> superSecretCornersPressed = {false};
     static bool countDownSecretTimer = false;
     //u32 held = hidKeysHeld();
 
     if (down & KEY_B)
     {
+        checkValues(pkm);
         Gui::screenBack();
         return;
     }
@@ -1401,7 +1468,7 @@ void HexEditScreen::update(touchPosition* touch)
             }
             superSecretCornersPressed[0] = true;
             countDownSecretTimer = true;
-            superSecretTimer = 120;
+            superSecretTimer = 300;
         }
         else if (touch->px > 300 && touch->py < 20)
         {
@@ -1411,7 +1478,7 @@ void HexEditScreen::update(touchPosition* touch)
             }
             superSecretCornersPressed[1] = true;
             countDownSecretTimer = true;
-            superSecretTimer = 120;
+            superSecretTimer = 300;
         }
         else if (touch->px < 20 && touch->py > 220)
         {
@@ -1421,7 +1488,7 @@ void HexEditScreen::update(touchPosition* touch)
             }
             superSecretCornersPressed[2] = true;
             countDownSecretTimer = true;
-            superSecretTimer = 120;
+            superSecretTimer = 300;
         }
         else if (touch->px > 300 && touch->py > 220)
         {
@@ -1431,7 +1498,7 @@ void HexEditScreen::update(touchPosition* touch)
             }
             superSecretCornersPressed[3] = true;
             countDownSecretTimer = true;
-            superSecretTimer = 120;
+            superSecretTimer = 300;
         }
         if (level == NORMAL)
         {

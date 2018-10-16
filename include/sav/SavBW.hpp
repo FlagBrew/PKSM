@@ -155,6 +155,11 @@ public:
     int maxBoxes(void) const override { return 24; }
     size_t maxWondercards(void) const override { return 12; }
     u8 generation(void) const override { return 5; }
+    int maxSpecies(void) const { return 649; }
+    int maxMove(void) const { return 559; }
+    int maxItem(void) const { return 632; }
+    int maxAbility(void) const { return 164; }
+    int maxBall(void) const { return 0x19; }
 };
 
 #endif
