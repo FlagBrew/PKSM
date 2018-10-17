@@ -2,8 +2,10 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-int main()
+int main(int argc, char** argv)
 {
+    unsigned char* saveData = (unsigned char*) atoi(argv[0]);
+    int saveLength = atoi(argv[1]);
     struct pkx showMe[13];
     char* labels[13];
     for (int i = 0; i < 13; i++)
