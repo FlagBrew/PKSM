@@ -91,13 +91,13 @@ std::unique_ptr<WCX> MysteryGift::wondercard(size_t index)
     }
     else if (gen == 6)
     {
-        WC6 *wc6 = new WC6(data);
+        WC6 *wc6 = new WC6(data, entry["type"].get<std::string>().find("full") != std::string::npos);
         delete[] data;
         return std::unique_ptr<WCX>(wc6);
     }
     else
     {
-        WC7 *wc7 = new WC7(data);
+        WC7 *wc7 = new WC7(data, entry["type"].get<std::string>().find("full") != std::string::npos);
         delete[] data;
         return std::unique_ptr<WCX>(wc7);
     }
