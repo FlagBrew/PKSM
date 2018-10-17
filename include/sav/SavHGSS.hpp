@@ -31,11 +31,6 @@
 #include "Sav.hpp"
 #include "PK4.hpp"
 
-extern "C" {
-#include "../../source/memecrypto/memecrypto.h"
-#include "sha256.h"
-}
-
 class SavHGSS : public Sav
 {
 friend class ScriptScreen;

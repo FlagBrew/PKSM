@@ -32,11 +32,6 @@
 #include "PK6.hpp"
 #include "WC6.hpp"
 
-extern "C" {
-#include "../../source/memecrypto/memecrypto.h"
-#include "sha256.h"
-}
-
 class SavXY : public Sav
 {
 protected:
