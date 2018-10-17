@@ -62,6 +62,7 @@ private:
     bool clearBox();
     bool releasePkm();
     bool dumpPkm();
+    bool duplicate();
     bool backButton();
     // Have to basically reimplement Hid because two Hids don't go well together
     bool lastBox(bool forceBottom = false);
@@ -71,7 +72,7 @@ private:
     void pickup();
 
     bool storageChosen = false;
-    std::array<Button*, 9> mainButtons;
+    std::array<Button*, 10> mainButtons;
     std::array<Button*, 31> clickButtons;
     int cursorIndex = 0, storageBox = 0, boxBox = 0;
     std::unique_ptr<ViewerScreen> viewer;
