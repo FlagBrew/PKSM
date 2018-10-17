@@ -114,7 +114,7 @@ namespace Gui
 
     void clearTextBufs(void);
     void dynamicText(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, bool rightAligned = false);
-    void dynamicText(const std::string& text, int x, int y, float scaleX, float scaleY, u32 color, float maxWidth);
+    void dynamicText(const std::string& text, int x, int y, float scaleX, float scaleY, u32 color, float maxWidth, bool fullCenter = false);
     void dynamicText(gfxScreen_t screen, int y, const std::string& text, float scaleX, float scaleY, u32 color);
     void dynamicText(int x, int y, float width, const std::string& text, float scaleX, float scaleY, u32 color);
 
