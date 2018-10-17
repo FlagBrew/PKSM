@@ -39,5 +39,5 @@ Button::Button(int x, int y, u16 w, u16 h, std::function<bool()> callback, int i
 void Button::draw() const
 {
     Gui::sprite(key, xPos, yPos);
-    Gui::staticText(xPos, yPos, width, text, textScale, textScale, textColor);
+    Gui::staticText(xPos, yPos + 5, width, text, textScale, textScale, textColor);
 }
