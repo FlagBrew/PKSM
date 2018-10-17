@@ -27,6 +27,7 @@
 #include "app.hpp"
 #include "Configuration.hpp"
 #include "TitleLoadScreen.hpp"
+#include <stdio.h>
 
 // increase the stack in order to allow quirc to decode large qrs
 int __stacksize__ = 64 * 1024;
@@ -35,6 +36,9 @@ static u32 old_time_limit;
 
 Result App::init(void)
 {
+#ifdef PICOC_DEBUG
+    dup2(2, 1); // Redirects stdout to stderr for GDB to capture
+#endif
     Result res;
 
     APT_GetAppCpuTimeLimit(&old_time_limit);
@@ -52,7 +56,9 @@ Result App::init(void)
     Gui::setScreen(std::make_unique<TitleLoadScreen>());
 
     // uncomment when needing to debug with GDB
-    // consoleDebugInit(debugDevice_SVC);
+#ifdef PICOC_DEBUG
+    consoleDebugInit(debugDevice_SVC);
+#endif
     // while(aptMainLoop() && !(hidKeysDown() & KEY_START)) { hidScanInput(); }
 
     return 0;

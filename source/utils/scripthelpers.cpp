@@ -65,7 +65,7 @@ extern "C" {
         char* question = (char*) Param[0]->Val->Pointer;
         int options = Param[1]->Val->Integer;
         char** labels = (char**) Param[2]->Val->Pointer;
-        int** pokemon = (int**) Param[3]->Val->Pointer;
+        pkm* pokemon = (pkm*) Param[3]->Val->Pointer;
         int gen = Param[4]->Val->Integer;
         ThirtyChoice screen = ThirtyChoice(question, labels, pokemon, options, gen);
         ReturnValue->Val->Integer = screen.run();

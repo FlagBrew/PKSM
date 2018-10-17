@@ -2,7 +2,7 @@
 #include "scripthelpers.h"
 
 void UnixSetupFunc()
-{    
+{
 }
 
 void Ctest (struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs) 
@@ -24,12 +24,12 @@ struct LibraryFunction UnixFunctions[] =
     { gui_fpsCheck,     "int gui_fpsCheck();" },
     { gui_choice,       "int gui_choice(char* lineOne, char* lineTwo);" },
     { gui_warn,         "void gui_warn(char* lineOne, char* lineTwo);"},
-    { gui_menu6x5,      "int gui_menu6x5(char* question, int options, char** labels, int** pokemon, int generation);" },
-    { gui_menu20x2,     "int gui_menu(char* question, int options, char** labels);" },
+    { gui_menu6x5,      "int gui_menu6x5(char* question, int options, char** labels, struct pkx* pokemon, int generation);" },
+    { gui_menu20x2,     "int gui_menu20x2(char* question, int options, char** labels);" },
     { NULL,         NULL }
 };
 
 void PlatformLibraryInit(Picoc *pc)
 {
-    IncludeRegister(pc, "picoc_unix.h", &UnixSetupFunc, &UnixFunctions[0], NULL);
+    IncludeRegister(pc, "picoc_unix.h", &UnixSetupFunc, &UnixFunctions[0], "struct pkx { int species; int form; };");
 }

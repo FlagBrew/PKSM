@@ -45,12 +45,13 @@ void ThirtyChoice::draw() const
     {
         for (int x = 0; x < 6; x++)
         {
-            if (x + y * 6 >= items)
+            size_t index = x + y * 6 + hid.page() * hid.maxVisibleEntries();
+            if (index >= (size_t) items)
             {
                 break;
             }
-            Gui::pkm(pkm[x + y * 6].pkm, pkm[x + y * 6].form, gen, x * 67 + 18, y * 48 + 7);
-            Gui::dynamicText(x * 67, y * 48 + 30, 67, labels[x + y * 6], FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
+            Gui::pkm(pkms[index].species, pkms[index].form, gen, x * 67 + 18, y * 48 + 7);
+            Gui::dynamicText(x * 67, y * 48 + 30, 67, labels[index], FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
         }
     }
 

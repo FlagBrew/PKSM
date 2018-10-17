@@ -32,15 +32,20 @@
 #include <vector>
 #include <string>
 
+struct pkm {
+    int species;
+    int form;
+};
+
 class ThirtyChoice : public ScriptChoice
 {
 public:
-    ThirtyChoice(char* question, char** text, int** pokemon, int items, int gen = 7) : ScriptChoice(question), hid(30, 6), items(items), gen(gen)
+    ThirtyChoice(char* question, char** text, pkm* pokemon, int items, int gen = 7) : ScriptChoice(question), hid(30, 6), items(items), gen(gen)
     {
         for (int i = 0; i < items; i++)
         {
             labels.push_back(text[i]);
-            pkm.push_back({ pokemon[i][0], pokemon[i][1] });
+            pkms.push_back(pokemon[i]);
         }
     }
     void draw() const override;
@@ -49,13 +54,8 @@ private:
     Hid hid;
     const int items;
     const int gen;
-    struct pkmData
-    {
-        int pkm;
-        int form;
-    };
     std::vector<std::string> labels;
-    std::vector<pkmData> pkm;
+    std::vector<pkm> pkms;
 };
 
 #endif

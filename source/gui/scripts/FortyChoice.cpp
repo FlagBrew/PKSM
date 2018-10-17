@@ -40,8 +40,12 @@ void FortyChoice::draw() const
     C2D_DrawRectSolid(x + 197, y, 0.5f, 1, 11, COLOR_YELLOW);
     for (size_t i = 0; i < hid.maxVisibleEntries(); i++)
     {
+        if (i + hid.page() * hid.maxVisibleEntries() >= (size_t) items)
+        {
+            break;
+        }
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
-        Gui::dynamicText(labels[i], x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
+        Gui::dynamicText(labels[i + hid.page() * hid.maxVisibleEntries()], x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
     }
 
     drawBottom();
