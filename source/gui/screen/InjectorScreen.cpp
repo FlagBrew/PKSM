@@ -205,9 +205,7 @@ void InjectorScreen::draw() const
         }
         else
         {
-            // Sizing for this may look stupid; not even sure if this is a good idea
-            // But I'm thinking ~ 5x size
-            Gui::sprite(ui_sheet_icon_item_idx, 272, 44);
+            Gui::sprite(ui_sheet_icon_item_idx, 301, 68);
         }
 
         for (int i = 0; i < 4; i++)
@@ -227,15 +225,15 @@ void InjectorScreen::draw() const
         Gui::dynamicText("Met Date", 9, 155, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
         if (wondercard->pokemon())
         {
-            std::string text = wondercard->nickname();
-            if (text == "")
-            {
-                text = i18n::species(wondercard->language(), wondercard->species());
-            }
-            Gui::dynamicText(text, 87, 35, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::dynamicText(i18n::species(Configuration::getInstance().language(), wondercard->species()), 87, 35, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             Gui::dynamicText(std::to_string(wondercard->level()), 87, 55, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            Gui::dynamicText(i18n::item(wondercard->language(), wondercard->heldItem()), 87, 75, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            Gui::dynamicText(wondercard->otName(), 87, 95, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::dynamicText(i18n::item(Configuration::getInstance().language(), wondercard->heldItem()), 87, 75, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            std::string text = wondercard->otName();
+            if (text == "Your OT Name")
+            {
+                text = TitleLoader::save->otName();
+            }
+            Gui::dynamicText(text, 87, 95, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             Gui::dynamicText(StringUtils::format("%i/%i", wondercard->TID(), wondercard->SID()), 87, 115, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             // No clue how to do the game detection
             Gui::dynamicText(StringUtils::format("%i/%i/%i", wondercard->day(), wondercard->month(), wondercard->year()), 87, 155, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
@@ -244,7 +242,16 @@ void InjectorScreen::draw() const
         {
             Gui::dynamicText("N/A", 87, 35, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             Gui::dynamicText("N/A", 87, 55, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            Gui::dynamicText(i18n::item(Configuration::getInstance().language(), wondercard->heldItem()), 87, 75, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            std::string item = i18n::item(Configuration::getInstance().language(), wondercard->object());
+            if (wondercard->generation() == 6)
+            {
+                item += " x " + std::to_string(((WC6*)wondercard.get())->objectQuantity());
+            }
+            else if (wondercard->generation() == 7)
+            {
+                item += " x " + std::to_string(((WC7*)wondercard.get())->objectQuantity());
+            }
+            Gui::dynamicText(item, 87, 75, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             Gui::dynamicText("N/A", 87, 95, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             Gui::dynamicText("N/A", 87, 115, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             // No clue how to do the game detection

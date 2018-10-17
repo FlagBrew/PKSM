@@ -106,7 +106,14 @@ void InjectSelectorScreen::draw() const
         {
             int x = i % 2 == 0 ? 21 : 201;
             int y = 43 + ((i % 10) / 2) * 37;
-            Gui::pkm(wondercards[i].species, wondercards[i].form, TitleLoader::save->generation(), x, y);
+            if (wondercards[i].species == -1)
+            {
+                Gui::sprite(ui_sheet_icon_item_idx, x + 12, y + 9);
+            }
+            else
+            {
+                Gui::pkm(wondercards[i].species, wondercards[i].form, TitleLoader::save->generation(), x, y);
+            }
             Gui::dynamicText(wondercards[i].name, x + 34, y + 10, FONT_SIZE_11, FONT_SIZE_11, i == hid.fullIndex() ? C2D_Color32(232, 234, 246, 255) : C2D_Color32(26, 35, 126, 255), 143, true);
         }
     }
