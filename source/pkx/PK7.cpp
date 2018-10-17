@@ -338,7 +338,7 @@ void PK7::refreshChecksum(void)
 u8 PK7::hpType(void) const { return 15 * ((iv(0) & 1) + 2*(iv(1) & 1) + 4*(iv(2) & 1) + 8*(iv(3) & 1) + 16*(iv(4) & 1) + 32*(iv(5) & 1)) / 63; }
 void PK7::hpType(u8 v)
 {
-    static const u8 hpivs[16][6] = {
+    static constexpr u16 hpivs[16][6] = {
         { 1, 1, 0, 0, 0, 0 }, // Fighting
         { 0, 0, 0, 1, 0, 0 }, // Flying
         { 1, 1, 0, 1, 0, 0 }, // Poison

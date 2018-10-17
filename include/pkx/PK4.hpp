@@ -37,8 +37,8 @@ friend class SavHGSS;
 friend class SavPT;
 friend class SavDP;
 protected:
-    const u8 beasts[4] = { 251, 243, 244, 245 };
-    const u16 banned[8] = { 15, 19, 57, 70, 250, 249, 127, 431 };
+    static constexpr u8 beasts[4] = { 251, 243, 244, 245 };
+    static constexpr u16 banned[8] = { 15, 19, 57, 70, 250, 249, 127, 431 };
 
     void shuffleArray(void) override;
     void crypt(void) override;

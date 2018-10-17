@@ -37,9 +37,9 @@ SavXY::SavXY(u8* dt)
 
 void SavXY::resign(void)
 {
-    const u8 blockCount = 55;
+    static constexpr u8 blockCount = 55;
     u8* tmp = new u8[*std::max_element(chklen, chklen + blockCount)];
-    const u32 csoff = 0x6541A;
+    static constexpr u32 csoff = 0x6541A;
 
     for (u8 i = 0; i < blockCount; i++)
     {

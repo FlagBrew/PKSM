@@ -31,7 +31,7 @@ smdh_s *loadSMDH(u32 low, u32 high, u8 media)
 	Handle fileHandle;
 
 	u32 archPath[] = {low, high, media, 0x0};
-	static const u32 filePath[] = {0x0, 0x0, 0x2, 0x6E6F6369, 0x0};
+	static constexpr u32 filePath[] = {0x0, 0x0, 0x2, 0x6E6F6369, 0x0};
 	smdh_s *smdh = new smdh_s;
 
 	FS_Path binArchPath = {PATH_BINARY, 0x10, archPath};

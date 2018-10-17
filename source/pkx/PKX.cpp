@@ -28,7 +28,7 @@
 
 u32 PKX::expTable(u8 row, u8 col) const
 {
-    static const u32 table[100][6] = {
+    static constexpr u32 table[100][6] = {
         {0, 0, 0, 0, 0, 0},
         {8, 15, 4, 9, 6, 10},
         {27, 52, 13, 57, 21, 33},
