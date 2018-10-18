@@ -357,7 +357,7 @@ Result Gui::init(void)
     g_renderTargetBottom = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
 
     dynamicBuf = C2D_TextBufNew(2048);
-    g_widthBuf = C2D_TextBufNew(2048);
+    g_widthBuf = C2D_TextBufNew(4096);
     staticBuf = C2D_TextBufNew(4096);
 
     spritesheet_ui = C2D_SpriteSheetLoad("romfs:/gfx/ui_sheet.t3x");
