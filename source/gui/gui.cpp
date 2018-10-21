@@ -214,6 +214,7 @@ void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float 
             draw.push_back(tmp.substr(0, tmp.find('\n')));
             tmp = tmp.substr(tmp.find('\n') + 1);
         }
+        draw.push_back(tmp);
         for (int i = 0; i < draw.size(); i++)
         {
             C2D_Text text;
