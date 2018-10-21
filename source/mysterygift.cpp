@@ -55,6 +55,7 @@ std::vector<MysteryGift::giftData> MysteryGift::wondercards()
     {
         MysteryGift::giftData gift;
         gift.name = entry["name"].get<std::string>();
+        gift.game = entry["game"].get<std::string>();
         gift.species = entry["species"];
         gift.form = entry["form"];
         mysteryGifts.push_back(gift);

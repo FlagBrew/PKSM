@@ -46,7 +46,7 @@ void InjectSelectorScreen::update(touchPosition* touch)
     }
     if (downKeys & KEY_A)
     {
-        Gui::setScreen(std::make_unique<InjectorScreen>(MysteryGift::wondercard(hid.fullIndex())));
+        Gui::setScreen(std::make_unique<InjectorScreen>(MysteryGift::wondercard(hid.fullIndex()), wondercards[hid.fullIndex()]));
         return;
     }
 }
