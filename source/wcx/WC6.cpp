@@ -67,7 +67,7 @@ bool WC6::power(void) const { return false; }
 
 u16 WC6::object(void) const { return *(u16*)(data + 0x68); }
 
-u16 WC6::objectQuantity(void) const { return *(u16*)(data + 0x6A); }
+u16 WC6::objectQuantity(void) const { return *(u16*)(data + 0x70); }
 
 bool WC6::pokemon(void) const { return type() == 0; }
 
