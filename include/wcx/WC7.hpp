@@ -35,6 +35,7 @@ friend class SavUSUM;
 friend class SavSUMO;
 protected:
     u8 data[264];
+    int numItems = 0;
     
 public:
     static const u16 length = 264;
@@ -57,6 +58,10 @@ public:
     u16 ID(void) const override;
     u16 object(void) const override;
     u16 objectQuantity(void) const;
+    // Multiple-item cards
+    u16 object(int index) const;
+    u16 objectQuantity(int index) const;
+    int items(void) const;
     bool multiObtainable(void) const override;
     u32 rawDate(void) const override;
     void rawDate(u32 value) override;

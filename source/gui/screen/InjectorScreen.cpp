@@ -213,7 +213,7 @@ void InjectorScreen::draw() const
         {
             Gui::sprite(ui_sheet_stripe_info_row_idx, 0, 34 + 40 * i);
         }
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < 7; i++)
         {
             Gui::sprite(ui_sheet_point_big_idx, 1, 40 + 20 * i);
         }
@@ -238,21 +238,30 @@ void InjectorScreen::draw() const
             Gui::dynamicText(StringUtils::format("%i/%i", wondercard->TID(), wondercard->SID()), 87, 115, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             Gui::dynamicText(game, 87, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             Gui::dynamicText(StringUtils::format("%i/%i/%i", wondercard->day(), wondercard->month(), wondercard->year()), 87, 155, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            if (wondercard->generation() == 7)
+            {
+                Gui::sprite(ui_sheet_point_big_idx, 1, 180);
+                Gui::staticText("Item", 9, 175, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+                u16 additionalItem = ((WC7*)wondercard.get())->additionalItem();
+                Gui::dynamicText(i18n::item(Configuration::getInstance().language(), additionalItem), 87, 175, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            }
         }
         else if (wondercard->item())
         {
             Gui::staticText("N/A", 87, 35, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             Gui::staticText("N/A", 87, 55, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            std::string item = i18n::item(Configuration::getInstance().language(), wondercard->object());
+            std::string itemString;
             if (wondercard->generation() == 6)
             {
-                item += " x " + std::to_string(((WC6*)wondercard.get())->objectQuantity());
+                itemString = i18n::item(Configuration::getInstance().language(), wondercard->object());
+                itemString += " x " + std::to_string(((WC6*)wondercard.get())->objectQuantity());
             }
             else if (wondercard->generation() == 7)
             {
-                item += " x " + std::to_string(((WC7*)wondercard.get())->objectQuantity());
+                itemString = i18n::item(Configuration::getInstance().language(), ((WC7*)wondercard.get())->object(item));
+                itemString += " x " + std::to_string(((WC7*)wondercard.get())->objectQuantity(item));
             }
-            Gui::dynamicText(item, 87, 75, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::dynamicText(itemString, 87, 75, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             Gui::staticText("N/A", 87, 95, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             Gui::staticText("N/A", 87, 115, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             Gui::dynamicText(game, 87, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
@@ -371,5 +380,24 @@ void InjectorScreen::update(touchPosition* touch)
         // save->wcx(*wondercard, slot - 1);
         Gui::screenBack();
         return;
+    }
+    if (wondercard->generation() == 7 && wondercard->item() && ((WC7*)wondercard.get())->items() > 1)
+    {
+        if (downKeys & KEY_L)
+        {
+            if (item == 0)
+            {
+                item = ((WC7*)wondercard.get())->items();
+            }
+            item--;
+        }
+        else if (downKeys & KEY_R)
+        {
+            item++;
+            if (item == ((WC7*)wondercard.get())->items())
+            {
+                item = 0;
+            }
+        }
     }
 }

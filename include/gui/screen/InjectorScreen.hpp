@@ -51,6 +51,8 @@ private:
     bool adaptLanguage = false;
     bool choosingSlot = false;
     int slot;
+    // For multi-item injects
+    int item = 0;
     Hid hid;
     Language lang = Language::JP;
 
