@@ -61,28 +61,6 @@ std::vector<MysteryGift::giftData> MysteryGift::wondercards()
         mysteryGifts.push_back(gift);
     }
 
-    std::sort(mysteryGifts.begin(), mysteryGifts.end(), [](MysteryGift::giftData& c1, MysteryGift::giftData c2) {
-        if (c1.name[0] == '-' && c2.name[0] == '-')
-        {
-            return c1.name < c2.name;
-        }
-        else if (c1.name[0] == '-')
-        {
-            return true;
-        }
-        else if (c2.name[0] == '-')
-        {
-            return false;
-        }
-        int num1 = std::stoi(c1.name.substr(0, c1.name.find_first_not_of("1234567890")));
-        int num2 = std::stoi(c2.name.substr(0, c2.name.find_first_not_of("1234567890")));
-        if (num1 == num2)
-        {
-            return c1.name < c2.name;
-        }
-        return num1 < num2;
-    });
-
     return mysteryGifts;
 }
 
