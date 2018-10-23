@@ -53,10 +53,13 @@ void ScriptChoice::drawBottom() const
     Gui::backgroundBottom(false);
     std::vector<std::string> lines;
     std::string tmp = question;
-    do {
+    while (tmp.find('\n') != std::string::npos)
+    {
         lines.push_back(tmp.substr(0, tmp.find('\n')));
         tmp = tmp.substr(tmp.find('\n') + 1);
-    } while (tmp.find('\n') != std::string::npos);
+    }
+    // Add the final line
+    lines.push_back(tmp);
     int y = 115 - 10 * lines.size();
     for (size_t i = 0; i < lines.size(); i++)
     {
