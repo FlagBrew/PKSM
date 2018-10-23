@@ -114,7 +114,16 @@ void InjectSelectorScreen::draw() const
             {
                 Gui::pkm(wondercards[i].species, wondercards[i].form, TitleLoader::save->generation(), x, y);
             }
-            Gui::dynamicText(wondercards[i].name, x + 34, y + 10, FONT_SIZE_11, FONT_SIZE_11, i == hid.fullIndex() ? C2D_Color32(232, 234, 246, 255) : C2D_Color32(26, 35, 126, 255), 143, true);
+            std::string text;
+            if (wondercards[i].name.size() > 30)
+            {
+                text = wondercards[i].name.substr(0, 26) + "...";
+            }
+            else
+            {
+                text = wondercards[i].name;
+            }
+            Gui::dynamicText(text, x + 34, y + 10, FONT_SIZE_11, FONT_SIZE_11, i == hid.fullIndex() ? C2D_Color32(232, 234, 246, 255) : C2D_Color32(26, 35, 126, 255), 138, true);
         }
     }
 
