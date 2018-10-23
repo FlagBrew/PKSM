@@ -192,11 +192,17 @@ void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float 
         }
     }
 
-    // attach line leftovers to word
-    word = line + word;
-
-    // we're out of the loop, what if the last word is longer than maxWidth? split it
-    dst += splitWord(word, scaleX, maxWidth);
+    // "Another iteration" of the loop b/c it probably won't end with a space
+    // If it does, no harm done
+    word = splitWord(word, scaleX, maxWidth);
+    if (textWidth(line + word, scaleX) <= maxWidth)
+    {
+        dst += line + word;
+    }
+    else
+    {
+        dst += line + '\n' + word;
+    }
 
     if (!fullCenter)
     {
@@ -215,7 +221,7 @@ void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float 
             tmp = tmp.substr(tmp.find('\n') + 1);
         }
         draw.push_back(tmp);
-        for (int i = 0; i < draw.size(); i++)
+        for (size_t i = 0; i < draw.size(); i++)
         {
             C2D_Text text;
             C2D_TextParse(&text, dynamicBuf, draw[i].c_str());
