@@ -39,6 +39,7 @@ namespace MysteryGift
 {
     struct giftData {
         std::string name;
+        std::string game;
         int species;
         int form;
     };

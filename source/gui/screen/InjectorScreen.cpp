@@ -54,8 +54,9 @@ bool InjectorScreen::setLanguage(Language language)
     return false;
 }
 
-InjectorScreen::InjectorScreen(std::unique_ptr<WCX> card) : hid(40, 8)
+InjectorScreen::InjectorScreen(std::unique_ptr<WCX> card, MysteryGift::giftData& data) : hid(40, 8)
 {
+    game = data.game;
     wondercard = std::move(card);
     slot = TitleLoader::save->emptyGiftLocation() + 2;
     int langIndex = 1;
@@ -91,13 +92,13 @@ void InjectorScreen::draw() const
     Gui::dynamicText("\uE004+\uE005 \uE01E", 311, 15, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, true);
 
     Gui::sprite(ui_sheet_point_big_idx, 15, 54);
-    Gui::dynamicText("Languages", 26, 49, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
+    Gui::staticText("Languages", 26, 49, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
     Gui::sprite(ui_sheet_point_big_idx, 15, 110);
-    Gui::dynamicText("Overwrite Wondercard", 26, 105, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
+    Gui::staticText("Overwrite Wondercard", 26, 105, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
     Gui::sprite(ui_sheet_point_big_idx, 15, 143);
-    Gui::dynamicText("Adapt Language to WC", 26, 138, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
+    Gui::staticText("Adapt Language to WC", 26, 138, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
     Gui::sprite(ui_sheet_point_big_idx, 15, 176);
-    Gui::dynamicText("Inject Slot", 26, 171, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
+    Gui::staticText("Inject Slot", 26, 171, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
 
     int langIndex = 1;
     for (int y = 46; y < 70; y += 23)
@@ -205,59 +206,75 @@ void InjectorScreen::draw() const
         }
         else
         {
-            // Sizing for this may look stupid; not even sure if this is a good idea
-            // But I'm thinking ~ 5x size
-            Gui::sprite(ui_sheet_icon_item_idx, 272, 44);
+            Gui::sprite(ui_sheet_icon_item_idx, 301, 68);
         }
 
         for (int i = 0; i < 4; i++)
         {
             Gui::sprite(ui_sheet_stripe_info_row_idx, 0, 34 + 40 * i);
         }
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < 7; i++)
         {
             Gui::sprite(ui_sheet_point_big_idx, 1, 40 + 20 * i);
         }
-        Gui::dynamicText("Species", 9, 35, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-        Gui::dynamicText("Level", 9, 55, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-        Gui::dynamicText("Held Item", 9, 75, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-        Gui::dynamicText("OT", 9, 95, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-        Gui::dynamicText("TID/SID", 9, 115, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-        Gui::dynamicText("Game", 9, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-        Gui::dynamicText("Met Date", 9, 155, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+        Gui::staticText("Species", 9, 35, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+        Gui::staticText("Level", 9, 55, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+        Gui::staticText("Held Item", 9, 75, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+        Gui::staticText("OT", 9, 95, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+        Gui::staticText("TID/SID", 9, 115, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+        Gui::staticText("Game", 9, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+        Gui::staticText("Date", 9, 155, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
         if (wondercard->pokemon())
         {
-            std::string text = wondercard->nickname();
-            if (text == "")
-            {
-                text = i18n::species(wondercard->language(), wondercard->species());
-            }
-            Gui::dynamicText(text, 87, 35, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::dynamicText(i18n::species(Configuration::getInstance().language(), wondercard->species()), 87, 35, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             Gui::dynamicText(std::to_string(wondercard->level()), 87, 55, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            Gui::dynamicText(i18n::item(wondercard->language(), wondercard->heldItem()), 87, 75, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            Gui::dynamicText(wondercard->otName(), 87, 95, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::dynamicText(i18n::item(Configuration::getInstance().language(), wondercard->heldItem()), 87, 75, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            std::string text = wondercard->otName();
+            if (text == "Your OT Name")
+            {
+                text = TitleLoader::save->otName();
+            }
+            Gui::dynamicText(text, 87, 95, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             Gui::dynamicText(StringUtils::format("%i/%i", wondercard->TID(), wondercard->SID()), 87, 115, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            // No clue how to do the game detection
+            Gui::dynamicText(game, 87, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             Gui::dynamicText(StringUtils::format("%i/%i/%i", wondercard->day(), wondercard->month(), wondercard->year()), 87, 155, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            if (wondercard->generation() == 7)
+            {
+                Gui::sprite(ui_sheet_point_big_idx, 1, 180);
+                Gui::staticText("Item", 9, 175, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+                u16 additionalItem = ((WC7*)wondercard.get())->additionalItem();
+                Gui::dynamicText(i18n::item(Configuration::getInstance().language(), additionalItem), 87, 175, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            }
         }
         else if (wondercard->item())
         {
-            Gui::dynamicText("N/A", 87, 35, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            Gui::dynamicText("N/A", 87, 55, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            Gui::dynamicText(i18n::item(Configuration::getInstance().language(), wondercard->heldItem()), 87, 75, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            Gui::dynamicText("N/A", 87, 95, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            Gui::dynamicText("N/A", 87, 115, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            // No clue how to do the game detection
-            Gui::dynamicText("N/A", 87, 155, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::staticText("N/A", 87, 35, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::staticText("N/A", 87, 55, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            std::string itemString;
+            if (wondercard->generation() == 6)
+            {
+                itemString = i18n::item(Configuration::getInstance().language(), wondercard->object());
+                itemString += " x " + std::to_string(((WC6*)wondercard.get())->objectQuantity());
+            }
+            else if (wondercard->generation() == 7)
+            {
+                itemString = i18n::item(Configuration::getInstance().language(), ((WC7*)wondercard.get())->object(item));
+                itemString += " x " + std::to_string(((WC7*)wondercard.get())->objectQuantity(item));
+            }
+            Gui::dynamicText(itemString, 87, 75, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::staticText("N/A", 87, 95, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::staticText("N/A", 87, 115, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::dynamicText(game, 87, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::staticText("N/A", 87, 155, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
         }
         else if (wondercard->BP())
-        {   Gui::dynamicText("N/A", 87, 35, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            Gui::dynamicText("N/A", 87, 55, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            Gui::dynamicText("BP", 87, 75, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            Gui::dynamicText("N/A", 87, 95, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            Gui::dynamicText("N/A", 87, 115, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            // No clue how to do the game detection
-            Gui::dynamicText("N/A", 87, 155, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+        {   Gui::staticText("N/A", 87, 35, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::staticText("N/A", 87, 55, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::staticText("BP", 87, 75, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::staticText("N/A", 87, 95, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::staticText("N/A", 87, 115, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::dynamicText(game, 87, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::staticText("N/A", 87, 155, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
         }
         for (int i = 0; i < 3; i++)
         {
@@ -268,7 +285,7 @@ void InjectorScreen::draw() const
         {
             Gui::sprite(ui_sheet_point_small_idx, 238, 161 + 20 * i);
         }
-        Gui::dynamicText("Moves", 251, 136, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+        Gui::staticText("Moves", 251, 136, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
         for (int i = 0; i < 4; i++)
         {
             Gui::dynamicText(i18n::move(Configuration::getInstance().language(), wondercard->move(i)), 251, 156 + 20 * i, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
@@ -363,5 +380,24 @@ void InjectorScreen::update(touchPosition* touch)
         // save->wcx(*wondercard, slot - 1);
         Gui::screenBack();
         return;
+    }
+    if (wondercard->generation() == 7 && wondercard->item() && ((WC7*)wondercard.get())->items() > 1)
+    {
+        if (downKeys & KEY_L)
+        {
+            if (item == 0)
+            {
+                item = ((WC7*)wondercard.get())->items();
+            }
+            item--;
+        }
+        else if (downKeys & KEY_R)
+        {
+            item++;
+            if (item == ((WC7*)wondercard.get())->items())
+            {
+                item = 0;
+            }
+        }
     }
 }

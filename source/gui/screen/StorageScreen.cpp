@@ -181,11 +181,13 @@ StorageScreen::StorageScreen()
                                     "StorageButtonRelease", FONT_SIZE_12, COLOR_BLACK);
     mainButtons[4] = new Button(212, 133, 108, 28, [this](){ return this->dumpPkm(); }, ui_sheet_button_editor_idx,
                                     "StorageButtonDump", FONT_SIZE_12, COLOR_BLACK);
+    mainButtons[5] = new Button(212, 164, 108, 28, [this](){ return this->duplicate(); }, ui_sheet_button_editor_idx,
+                                    "StorageButtonDup", FONT_SIZE_12, COLOR_BLACK);
 
-    mainButtons[5] = new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0);
-    mainButtons[6] = new Button(283, 211, 34, 28, [this](){ return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
-    mainButtons[7] = new AccelButton(8, 15, 17, 24, [this](){ return this->lastBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
-    mainButtons[8] = new AccelButton(189, 15, 17, 24, [this](){ return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+    mainButtons[6] = new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0);
+    mainButtons[7] = new Button(283, 211, 34, 28, [this](){ return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
+    mainButtons[8] = new AccelButton(8, 15, 17, 24, [this](){ return this->lastBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+    mainButtons[9] = new AccelButton(189, 15, 17, 24, [this](){ return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
 
     // Pokemon buttons
     u16 y = 45;
@@ -923,6 +925,27 @@ bool StorageScreen::dumpPkm()
             }
         }
         return true;
+    }
+    return false;
+}
+
+bool StorageScreen::duplicate()
+{
+    if (!moveMon && cursorIndex > 0)
+    {
+        if (storageChosen)
+        {
+            // moveMon = storage->pkm(boxStorage, cursorIndex - 1);
+            moveMon = testPkm;
+        }
+        else
+        {
+            moveMon = TitleLoader::save->pkm(boxBox, cursorIndex - 1)->clone();
+        }
+        if (moveMon->species() == 0)
+        {
+            moveMon = nullptr;
+        }
     }
     return false;
 }

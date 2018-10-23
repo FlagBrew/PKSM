@@ -171,7 +171,7 @@ std::string LanguageStrings::form(u16 species, u8 form, u8 generation) const
             }
         }
     }
-    return std::move(ret);
+    return ret;
 }
 
 std::string LanguageStrings::hp(u8 v) const

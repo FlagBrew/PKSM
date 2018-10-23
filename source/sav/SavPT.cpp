@@ -522,11 +522,11 @@ std::vector<MysteryGift::giftData> SavPT::currentGifts(void) const
     {
         if (*(wonderCards + i * PGT::length) == 1 || *(wonderCards + i * PGT::length) == 2 || *(wonderCards + i * PGT::length) == 7)
         {
-            ret.push_back({ "Wonder Card", *(u16*)(wonderCards + i * PGT::length + 8 + 0x08), *(wonderCards + i * 204 + 8 + 0x40) >> 3});
+            ret.push_back({ "Wonder Card", "", *(u16*)(wonderCards + i * PGT::length + 8 + 0x08), *(wonderCards + i * 204 + 8 + 0x40) >> 3});
         }
         else
         {
-            ret.push_back({ "Wonder Card", -1, -1 });
+            ret.push_back({ "Wonder Card", "", -1, -1 });
         }
     }
     return ret;

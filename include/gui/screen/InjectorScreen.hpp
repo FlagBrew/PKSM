@@ -30,6 +30,7 @@
 #include "i18n.hpp"
 #include "Configuration.hpp"
 #include "Hid.hpp"
+#include "mysterygift.hpp"
 #include <vector>
 
 #ifndef INJECTORSCREEN_HPP
@@ -38,17 +39,20 @@
 class InjectorScreen : public Screen
 {
 public:
-    InjectorScreen(std::unique_ptr<WCX> card);
+    InjectorScreen(std::unique_ptr<WCX> card, MysteryGift::giftData& data);
     void update(touchPosition* touch) override;
     void draw(void) const override;
     ScreenType type() const override { return ScreenType::INJECTOR; }
 private:
     std::vector<Button*> buttons;
     std::unique_ptr<WCX> wondercard;
+    std::string game;
     bool overwriteCard = false;
     bool adaptLanguage = false;
     bool choosingSlot = false;
     int slot;
+    // For multi-item injects
+    int item = 0;
     Hid hid;
     Language lang = Language::JP;
 

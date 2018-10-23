@@ -167,7 +167,7 @@ std::string splitWord(std::string& word, float scaleX, float maxWidth)
     return word;
 }
 
-void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, float maxWidth)
+void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, float maxWidth, bool fullCenter)
 {
     std::string dst, line, word;
     dst = line = word = "";
@@ -192,16 +192,48 @@ void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float 
         }
     }
 
-    // attach line leftovers to word
-    word = line + word;
+    // "Another iteration" of the loop b/c it probably won't end with a space
+    // If it does, no harm done
+    word = splitWord(word, scaleX, maxWidth);
+    if (textWidth(line + word, scaleX) <= maxWidth)
+    {
+        dst += line + word;
+    }
+    else
+    {
+        dst += line + '\n' + word;
+    }
 
-    // we're out of the loop, what if the last word is longer than maxWidth? split it
-    dst += splitWord(word, scaleX, maxWidth);
-
-    C2D_Text text;
-    C2D_TextParse(&text, dynamicBuf, dst.c_str());
-    C2D_TextOptimize(&text);
-    C2D_DrawText(&text, C2D_WithColor, x, y, 0.5f, scaleX, scaleY, color);
+    if (!fullCenter)
+    {
+        C2D_Text text;
+        C2D_TextParse(&text, dynamicBuf, dst.c_str());
+        C2D_TextOptimize(&text);
+        C2D_DrawText(&text, C2D_WithColor, x, y, 0.5f, scaleX, scaleY, color);
+    }
+    else
+    {
+        std::string tmp = dst;
+        std::vector<std::string> draw;
+        while (tmp.find('\n') != std::string::npos)
+        {
+            draw.push_back(tmp.substr(0, tmp.find('\n')));
+            tmp = tmp.substr(tmp.find('\n') + 1);
+        }
+        draw.push_back(tmp);
+        for (size_t i = 0; i < draw.size(); i++)
+        {
+            C2D_Text text;
+            C2D_TextParse(&text, dynamicBuf, draw[i].c_str());
+            C2D_TextOptimize(&text);
+            float textWidth, textHeight;
+            C2D_TextGetDimensions(&text, scaleX, scaleY, &textWidth, &textHeight);
+            int drawX = x + ceilf((maxWidth - textWidth) / 2.0f);
+            int drawY = y + ceilf(textHeight) * 1.25 * i ;
+            drawY -= ceilf(textHeight) * draw.size() / 2;
+            C2D_DrawText(&text, C2D_WithColor, drawX, drawY, 0.5f, scaleX, scaleY, color);
+        }
+    }
 }
 
 void Gui::dynamicText(gfxScreen_t screen, int y, const std::string& text, float scaleX, float scaleY, u32 color)
@@ -331,8 +363,8 @@ Result Gui::init(void)
     g_renderTargetTop = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
     g_renderTargetBottom = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
 
-    dynamicBuf = C2D_TextBufNew(1024);
-    g_widthBuf = C2D_TextBufNew(1024);
+    dynamicBuf = C2D_TextBufNew(2048);
+    g_widthBuf = C2D_TextBufNew(4096);
     staticBuf = C2D_TextBufNew(4096);
 
     spritesheet_ui = C2D_SpriteSheetLoad("romfs:/gfx/ui_sheet.t3x");

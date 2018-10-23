@@ -30,6 +30,14 @@ WC7::WC7(u8* dt, bool full)
 {
 	const u16 ofs = full ? 0x208 : 0;
 	std::copy(dt + ofs, dt + ofs + length, data);
+    for (int i = 0; i < 6; i++)
+    {
+        if (object(i) != 0)
+        {
+            numItems++;
+        }
+        else break;
+    }
 }
 
 u8 WC7::generation(void) const { return 7; }
@@ -65,9 +73,18 @@ bool WC7::item(void) const { return type() == 1; }
 
 bool WC7::power(void) const { return false; }
 
-u16 WC7::object(void) const { return *(u16*)(data + 0x68); }
+u16 WC7::object(void) const { return object(0); }
 
-u16 WC7::objectQuantity(void) const { return *(u16*)(data + 0x6A); }
+u16 WC7::object(int index) const { return *(u16*)(data + 0x68 + index * 4); }
+
+int WC7::items(void) const
+{
+    return numItems;
+}
+
+u16 WC7::objectQuantity(void) const { return objectQuantity(0); }
+
+u16 WC7::objectQuantity(int index) const { return *(u16*)(data + 0x6A + index * 4); }
 
 bool WC7::pokemon(void) const { return type() == 0; }
 

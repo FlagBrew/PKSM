@@ -99,7 +99,7 @@ void ViewerScreen::draw() const
     {
         Gui::dynamicText(std::string(displayKeys[i + 10]), 238, 16 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
     }
-    Gui::dynamicText("Moves", 252, 136, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+    Gui::staticText("Moves", 252, 136, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
 
     if (pkm)
     {
