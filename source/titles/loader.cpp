@@ -477,6 +477,15 @@ void TitleLoader::exit()
 
 void TitleLoader::scanCard()
 {
+    static bool isScanning = false;
+    if (isScanning)
+    {
+        return;
+    }
+    else
+    {
+        isScanning = true;
+    }
     cardTitle = nullptr;
     Result res = 0;
     u32 count = 0;
@@ -532,24 +541,42 @@ void TitleLoader::scanCard()
             }
         }
     }
+    isScanning = false;
 }
 
 bool TitleLoader::cardUpdate()
 {
+    static bool first = true;
     static bool oldCardIn = false;
+    if (first)
+    {
+        FSUSER_CardSlotIsInserted(&oldCardIn);
+        first = false;
+        return false;
+    }
     bool cardIn = false;
 
     FSUSER_CardSlotIsInserted(&cardIn);
     if (cardIn != oldCardIn)
     {
+        bool power;
         if (cardIn)
         {
-            bool power;
             FSUSER_CardSlotPowerOn(&power);
+            while (!power)
+            {
+                FSUSER_CardSlotGetCardIFPowerStatus(&power);
+            }
+            svcSleepThread(1000000000);
             scanCard();
         }
         else
         {
+            FSUSER_CardSlotPowerOff(&power);
+            while (power)
+            {
+                FSUSER_CardSlotGetCardIFPowerStatus(&power);
+            }
             cardTitle = nullptr;
         }
         oldCardIn = cardIn;
