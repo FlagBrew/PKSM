@@ -45,32 +45,11 @@ void MysteryGift::init(u8 gen)
     data.close();
 }
 
-std::vector<MysteryGift::giftData> MysteryGift::wondercards()
-{
-    std::vector<MysteryGift::giftData> mysteryGifts;
-    auto iterator = mysteryGiftSheet.begin();
-    iterator++;
-
-    for (auto &entry : iterator.value())
-    {
-        MysteryGift::giftData gift;
-        gift.name = entry["name"].get<std::string>();
-        gift.game = entry["game"].get<std::string>();
-        gift.species = entry["species"];
-        gift.form = entry["form"];
-        mysteryGifts.push_back(gift);
-    }
-
-    return mysteryGifts;
-}
-
 std::unique_ptr<WCX> MysteryGift::wondercard(size_t index)
 {
-    auto iterator = mysteryGiftSheet.begin();
-    u8 gen = iterator.value();
+    u8 gen = mysteryGiftSheet["gen"];
 
-    iterator++;
-    auto entry = iterator.value()[index];
+    auto entry = mysteryGiftSheet["wondercards"][index];
 
     u32 offset = entry["offset"];
     u32 size = entry["size"];
@@ -107,4 +86,20 @@ std::unique_ptr<WCX> MysteryGift::wondercard(size_t index)
 void MysteryGift::exit(void)
 {
     delete[] mysteryGiftData;
+}
+
+std::vector<nlohmann::json> MysteryGift::wondercards()
+{
+    return mysteryGiftSheet["matches"];
+}
+
+MysteryGift::giftData MysteryGift::wondercardInfo(size_t index)
+{
+    giftData ret;
+    nlohmann::json entry = mysteryGiftSheet["wondercards"][index];
+    ret.name = entry["name"].get<std::string>();
+    ret.game = entry["game"].get<std::string>();
+    ret.form = entry["form"];
+    ret.species = entry["species"];
+    return ret;
 }

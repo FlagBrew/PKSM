@@ -39,7 +39,7 @@
 class InjectorScreen : public Screen
 {
 public:
-    InjectorScreen(std::unique_ptr<WCX> card, MysteryGift::giftData& data);
+    InjectorScreen(nlohmann::json ids);
     void update(touchPosition* touch) override;
     void draw(void) const override;
     ScreenType type() const override { return ScreenType::INJECTOR; }
@@ -55,8 +55,10 @@ private:
     int item = 0;
     Hid hid;
     Language lang = Language::JP;
+    nlohmann::json ids;
 
     bool setLanguage(Language lang);
+    bool isLangAvailable(Language lang) const;
 };
 
 #endif

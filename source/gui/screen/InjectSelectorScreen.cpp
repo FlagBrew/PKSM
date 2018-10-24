@@ -31,7 +31,7 @@
 InjectSelectorScreen::InjectSelectorScreen() : hid(10, 2)
 {
     MysteryGift::init(TitleLoader::save->generation());
-    wondercards = std::move(MysteryGift::wondercards());
+    wondercards = MysteryGift::wondercards();
 }
 
 void InjectSelectorScreen::update(touchPosition* touch)
@@ -46,7 +46,7 @@ void InjectSelectorScreen::update(touchPosition* touch)
     }
     if (downKeys & KEY_A)
     {
-        Gui::setScreen(std::make_unique<InjectorScreen>(MysteryGift::wondercard(hid.fullIndex()), wondercards[hid.fullIndex()]));
+        Gui::setScreen(std::make_unique<InjectorScreen>(wondercards[hid.fullIndex()]));
         return;
     }
 }
@@ -104,24 +104,34 @@ void InjectSelectorScreen::draw() const
         }
         else
         {
+            MysteryGift::giftData data;
+            std::string lang = i18n::langString(Configuration::getInstance().language());
+            if (wondercards[i].find(lang) != wondercards[i].end())
+            {
+                data = MysteryGift::wondercardInfo(wondercards[i][lang]);
+            }
+            else
+            {
+                data = MysteryGift::wondercardInfo(*wondercards[i].begin());
+            }
             int x = i % 2 == 0 ? 21 : 201;
             int y = 43 + ((i % 10) / 2) * 37;
-            if (wondercards[i].species == -1)
+            if (data.species == -1)
             {
                 Gui::sprite(ui_sheet_icon_item_idx, x + 12, y + 9);
             }
             else
             {
-                Gui::pkm(wondercards[i].species, wondercards[i].form, TitleLoader::save->generation(), x, y);
+                Gui::pkm(data.species, data.form, TitleLoader::save->generation(), x, y);
             }
             std::string text;
-            if (wondercards[i].name.size() > 30)
+            if (data.name.size() > 30)
             {
-                text = wondercards[i].name.substr(0, 26) + "...";
+                text = data.name.substr(0, 26) + "...";
             }
             else
             {
-                text = wondercards[i].name;
+                text = data.name;
             }
             Gui::dynamicText(text, x + 34, y + 10, FONT_SIZE_11, FONT_SIZE_11, i == hid.fullIndex() ? C2D_Color32(232, 234, 246, 255) : C2D_Color32(26, 35, 126, 255), 138, true);
         }

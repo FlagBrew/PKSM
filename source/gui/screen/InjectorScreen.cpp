@@ -41,8 +41,6 @@ static constexpr std::string_view languages[] = {
     "CHT"
 };
 
-static bool isLangAvailable(Language lang) { return true; }
-
 static bool wirelessStuff() { return false; }
 
 bool InjectorScreen::setLanguage(Language language)
@@ -50,14 +48,28 @@ bool InjectorScreen::setLanguage(Language language)
     if (isLangAvailable(language))
     {
         lang = language;
+        std::string langString = i18n::langString(lang);
+        wondercard = MysteryGift::wondercard(ids[langString]);
     }
     return false;
 }
 
-InjectorScreen::InjectorScreen(std::unique_ptr<WCX> card, MysteryGift::giftData& data) : hid(40, 8)
+InjectorScreen::InjectorScreen(nlohmann::json ids) : hid(40, 8), ids(ids)
 {
-    game = data.game;
-    wondercard = std::move(card);
+    std::string langString = i18n::langString(Configuration::getInstance().language());
+    if (ids.find(langString) != ids.end())
+    {
+        wondercard = MysteryGift::wondercard(ids[langString]);
+        game = MysteryGift::wondercardInfo(ids[langString]).game;
+        lang = Configuration::getInstance().language();
+    }
+    else
+    {
+        wondercard = MysteryGift::wondercard(*ids.begin());
+        game = MysteryGift::wondercardInfo(*ids.begin()).game;
+        lang = i18n::langFromString(ids.begin().key());
+    }
+    
     slot = TitleLoader::save->emptyGiftLocation() + 2;
     int langIndex = 1;
     for (int y = 46; y < 70; y += 23)
@@ -66,7 +78,7 @@ InjectorScreen::InjectorScreen(std::unique_ptr<WCX> card, MysteryGift::giftData&
         {
             if (langIndex != (int) Language::UNUSED)
             {
-                buttons.push_back(new Button(x, y, 38, 23, [this, langIndex](){ return this->setLanguage((Language) langIndex); }, isLangAvailable((Language) langIndex) ? ui_sheet_res_null_idx : ui_sheet_button_unavailable_text_button_idx, "", 0, 0));
+                buttons.push_back(new Button(x, y, 38, 23, [this, langIndex](){ return this->setLanguage((Language) langIndex); }, ui_sheet_res_null_idx, "", 0, 0));
             }
             langIndex++;
         }
@@ -400,4 +412,10 @@ void InjectorScreen::update(touchPosition* touch)
             }
         }
     }
+}
+
+bool InjectorScreen::isLangAvailable(Language l) const
+{
+    std::string langString = i18n::langString(l);
+    return ids.find(langString) != ids.end();
 }

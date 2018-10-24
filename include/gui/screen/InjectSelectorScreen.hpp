@@ -37,12 +37,16 @@ class InjectSelectorScreen : public Screen
 {
 public:
     InjectSelectorScreen();
+    ~InjectSelectorScreen()
+    {
+        MysteryGift::exit();
+    }
     void update(touchPosition* touch) override;
     void draw(void) const override;
     ScreenType type() const override { return ScreenType::EVENTS; }
 private:
     Hid hid;
-    std::vector<MysteryGift::giftData> wondercards;
+    std::vector<nlohmann::json> wondercards;
 };
 
 #endif

@@ -650,3 +650,71 @@ std::string i18n::localize(const std::string& index)
     }
     return localize(l, index);
 }
+
+std::string i18n::langString(Language l)
+{
+    switch (l)
+    {
+        case Language::JP:
+            return "JPN";
+        case Language::EN:
+            return "ENG";
+        case Language::FR:
+            return "FRE";
+        case Language::IT:
+            return "ITA";
+        case Language::DE:
+            return "GER";
+        case Language::ES:
+            return "SPA";
+        case Language::KO:
+            return "KOR";
+        case Language::ZH:
+            return "CHS";
+        case Language::TW:
+            return "CHT";
+        default:
+            return "ENG";
+    }
+}
+
+Language i18n::langFromString(const std::string& value)
+{
+    if (value == "JPN")
+    {
+        return Language::JP;
+    }
+    if (value == "ENG")
+    {
+        return Language::EN;
+    }
+    if (value == "FRE")
+    {
+        return Language::FR;
+    }
+    if (value == "ITA")
+    {
+        return Language::IT;
+    }
+    if (value == "GER")
+    {
+        return Language::DE;
+    }
+    if (value == "SPA")
+    {
+        return Language::ES;
+    }
+    if (value == "KOR")
+    {
+        return Language::KO;
+    }
+    if (value == "CHS")
+    {
+        return Language::ZH;
+    }
+    if (value == "CHT")
+    {
+        return Language::TW;
+    }
+    return Language::EN;
+}
