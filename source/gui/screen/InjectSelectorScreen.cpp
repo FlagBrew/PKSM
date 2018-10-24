@@ -32,6 +32,34 @@ InjectSelectorScreen::InjectSelectorScreen() : hid(10, 2)
 {
     MysteryGift::init(TitleLoader::save->generation());
     wondercards = MysteryGift::wondercards();
+
+    if (TitleLoader::save->generation() == 5)
+    {
+        if (TitleLoader::save->version() == 22 || TitleLoader::save->version() == 23)
+        {
+            ((SavB2W2*)TitleLoader::save.get())->cryptMysteryGiftData();
+        }
+        else
+        {
+            ((SavBW*)TitleLoader::save.get())->cryptMysteryGiftData();
+        }
+    }
+}
+
+InjectSelectorScreen::~InjectSelectorScreen()
+{
+    MysteryGift::exit();
+    if (TitleLoader::save->generation() == 5)
+    {
+        if (TitleLoader::save->version() == 22 || TitleLoader::save->version() == 23)
+        {
+            ((SavB2W2*)TitleLoader::save.get())->cryptMysteryGiftData();
+        }
+        else
+        {
+            ((SavBW*)TitleLoader::save.get())->cryptMysteryGiftData();
+        }
+    }
 }
 
 void InjectSelectorScreen::update(touchPosition* touch)

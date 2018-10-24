@@ -37,10 +37,7 @@ class InjectSelectorScreen : public Screen
 {
 public:
     InjectSelectorScreen();
-    ~InjectSelectorScreen()
-    {
-        MysteryGift::exit();
-    }
+    virtual ~InjectSelectorScreen();
     void update(touchPosition* touch) override;
     void draw(void) const override;
     ScreenType type() const override { return ScreenType::EVENTS; }

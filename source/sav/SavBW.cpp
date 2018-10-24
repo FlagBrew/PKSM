@@ -233,26 +233,10 @@ void SavBW::dex(PKX& pk)
 void SavBW::mysteryGift(WCX& wc, int& pos)
 {
     PGF* pgf = (PGF*)&wc;
-    u32 seed = *(u32*)(data + 0x1D290);
-
-    //decrypt
-    for (int i = 0; i < 0xA90; i += 2)
-    {
-        seed = seed * 0x41C64E6D + 0x6073; // Replace with seedStep?
-        *(u16*)(data + 0x1C800 + i) ^= (seed >> 16);
-    }
 
     *(data + 0x1C800 - 0x100 + pgf->ID()) |= 0x1 << (pgf->ID() & 7);
     std::copy(pgf->data, pgf->data + 204, data + 0x1C800 + pos * 204);
     pos = (pos + 1) % 12;
-
-    //encrypt
-    seed = *(u32*)(data + 0x1D290);
-    for (int i = 0; i < 0xA90; i += 2)
-    {
-        seed = seed * 0x41C64E6D + 0x6073; // Replace with seedStep?
-        *(u16*)(data + 0x1C800 + i) ^= (seed >> 16);
-    }
 }
 
 std::string SavBW::boxName(u8 box) const { return StringUtils::getTrimmedString(data, 0x28 * box + 4, 0x14, (char*)"\uFFFF"); }
@@ -312,4 +296,14 @@ std::vector<MysteryGift::giftData> SavBW::currentGifts(void) const
         }
     }
     return ret;
+}
+
+void SavBW::cryptMysteryGiftData()
+{
+    u32 seed = *(u32*)(data + 0x1D290);
+    for (int i = 0; i < 0xA90; i += 2)
+    {
+        seed = seed * 0x41C64E6D + 0x6073; // Replace with seedStep?
+        *(u16*)(data + 0x1C800 + i) ^= (seed >> 16);
+    }
 }

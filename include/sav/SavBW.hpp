@@ -143,6 +143,7 @@ public:
     std::vector<MysteryGift::giftData> currentGifts(void) const override;
     void mysteryGift(WCX& wc, int& pos) override;
     void cryptBoxData(bool crypted) override;
+    void cryptMysteryGiftData(void);
     std::string boxName(u8 box) const override;
     void boxName(u8 box, std::string name) override;
     u8 partyCount(void) const override;
