@@ -186,6 +186,8 @@ void TitleLoadScreen::update(touchPosition* touch)
     Screen::update();
     if (TitleLoader::cardUpdate())
     {
+        selectedGame = false;
+        selectedSave = -1;
         selectedTitle = -2;
     }
     if (selectedTitle == -2)
