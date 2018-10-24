@@ -83,58 +83,7 @@ void TitleLoader::scanTitles(void)
     // clear title list if filled previously
     nandTitles.clear();
 
-    // check for cartridge and push at the beginning of the title list
-    FS_CardType cardType;
-    res = FSUSER_GetCardType(&cardType);
-    if (R_SUCCEEDED(res))
-    {
-        if (cardType == CARD_CTR)
-        {
-            res = AM_GetTitleCount(MEDIATYPE_GAME_CARD, &count);
-            if (R_SUCCEEDED(res) && count > 0)
-            {
-                u64 id;
-                res = AM_GetTitleList(NULL, MEDIATYPE_GAME_CARD, count, &id);
-                // check if this id is in our list
-                if (R_SUCCEEDED(res) && std::find(ctrTitleIds.begin(), ctrTitleIds.end(), id) != ctrTitleIds.end())
-                {
-                    auto title = std::make_shared<Title>();
-                    if (title->load(id, MEDIATYPE_GAME_CARD, cardType))
-                    {
-                        cardTitle = title;
-                    }
-                }
-            }
-        }
-        else
-        {
-            // ds game card, behave differently
-            // load the save and check for known patterns
-            auto title = std::make_shared<Title>();
-            if (title->load(0, MEDIATYPE_GAME_CARD, cardType))
-            {
-                CardType cardType = title->SPICardType();
-                u32 saveSize = SPIGetCapacity(cardType);
-                u32 sectorSize = (saveSize < 0x10000) ? saveSize : 0x10000;
-                u8* saveFile = new u8[saveSize];
-                for (u32 i = 0; i < saveSize/sectorSize; ++i)
-                {
-                    res = SPIReadSaveData(cardType, sectorSize*i, saveFile + sectorSize*i, sectorSize);
-                    if (R_FAILED(res))
-                    {
-                        break;
-                    }
-                }
-
-                if (R_SUCCEEDED(res) && Sav::isValidDSSave(saveFile))
-                {
-                    cardTitle = title;
-                }
-
-                delete[] saveFile;
-            }
-        }
-    }
+    scanCard();
 
     // get title count
     res = AM_GetTitleCount(MEDIATYPE_SD, &count);
@@ -524,4 +473,87 @@ void TitleLoader::exit()
     nandTitles.clear();
     cardTitle = nullptr;
     loadedTitle = nullptr;
+}
+
+void TitleLoader::scanCard()
+{
+    cardTitle = nullptr;
+    Result res = 0;
+    u32 count = 0;
+    // check for cartridge and push at the beginning of the title list
+    FS_CardType cardType;
+    res = FSUSER_GetCardType(&cardType);
+    if (R_SUCCEEDED(res))
+    {
+        if (cardType == CARD_CTR)
+        {
+            res = AM_GetTitleCount(MEDIATYPE_GAME_CARD, &count);
+            if (R_SUCCEEDED(res) && count > 0)
+            {
+                u64 id;
+                res = AM_GetTitleList(NULL, MEDIATYPE_GAME_CARD, count, &id);
+                // check if this id is in our list
+                if (R_SUCCEEDED(res) && std::find(ctrTitleIds.begin(), ctrTitleIds.end(), id) != ctrTitleIds.end())
+                {
+                    auto title = std::make_shared<Title>();
+                    if (title->load(id, MEDIATYPE_GAME_CARD, cardType))
+                    {
+                        cardTitle = title;
+                    }
+                }
+            }
+        }
+        else
+        {
+            // ds game card, behave differently
+            // load the save and check for known patterns
+            auto title = std::make_shared<Title>();
+            if (title->load(0, MEDIATYPE_GAME_CARD, cardType))
+            {
+                CardType cardType = title->SPICardType();
+                u32 saveSize = SPIGetCapacity(cardType);
+                u32 sectorSize = (saveSize < 0x10000) ? saveSize : 0x10000;
+                u8* saveFile = new u8[saveSize];
+                for (u32 i = 0; i < saveSize/sectorSize; ++i)
+                {
+                    res = SPIReadSaveData(cardType, sectorSize*i, saveFile + sectorSize*i, sectorSize);
+                    if (R_FAILED(res))
+                    {
+                        break;
+                    }
+                }
+
+                if (R_SUCCEEDED(res) && Sav::isValidDSSave(saveFile))
+                {
+                    cardTitle = title;
+                }
+
+                delete[] saveFile;
+            }
+        }
+    }
+}
+
+bool TitleLoader::cardUpdate()
+{
+    static bool oldCardIn = false;
+    bool cardIn = false;
+
+    FSUSER_CardSlotIsInserted(&cardIn);
+    if (cardIn != oldCardIn)
+    {
+        if (cardIn)
+        {
+            bool power;
+            FSUSER_CardSlotPowerOn(&power);
+            scanCard();
+        }
+        else
+        {
+            cardTitle = nullptr;
+        }
+        oldCardIn = cardIn;
+        return true;
+    }
+    return false;
 }

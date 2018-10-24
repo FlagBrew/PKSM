@@ -184,6 +184,10 @@ void TitleLoadScreen::draw() const
 void TitleLoadScreen::update(touchPosition* touch)
 {
     Screen::update();
+    if (TitleLoader::cardUpdate())
+    {
+        selectedTitle = -2;
+    }
     if (selectedTitle == -2)
     {
         if (TitleLoader::cardTitle == nullptr && !TitleLoader::nandTitles.empty())
