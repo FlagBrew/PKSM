@@ -262,10 +262,9 @@ void InjectorScreen::draw() const
         {
             Gui::staticText("N/A", 87, 35, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             Gui::staticText("N/A", 87, 55, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            std::string itemString;
+            std::string itemString = i18n::item(Configuration::getInstance().language(), wondercard->object());
             if (wondercard->generation() == 6)
             {
-                itemString = i18n::item(Configuration::getInstance().language(), wondercard->object());
                 itemString += " x " + std::to_string(((WC6*)wondercard.get())->objectQuantity());
             }
             else if (wondercard->generation() == 7)

@@ -50,12 +50,31 @@ bool PGT::bean(void) const { return false; }
 
 bool PGT::BP(void) const { return false; }
 
-bool PGT::item(void) const { return type() == 3 || type() == 8 || type() == 9 || type() == 10; }
+bool PGT::item(void) const { return type() == 3 || type() == 8 || type() == 9 || type() == 10 || type() == 12; }
 
 // Pokemon, egg, or Manaphy egg
 bool PGT::pokemon(void) const { return type() == 1 || type() == 2 || type() == 7; }
 
-u16 PGT::object(void) const { return *(u16*)(data + 0x4); }
+u16 PGT::object(void) const
+{
+    if (type() == 8)
+    {
+        return 454;
+    }
+    else if (type() == 9)
+    {
+        return 452;
+    }
+    else if (type() == 10)
+    {
+        return 455;
+    }
+    else if (type() == 12)
+    {
+        return 467;
+    }
+    return *(u16*)(data + 0x4);
+}
 
 u8 PGT::flags(void) const { return *(u8*)(data + 0x3); }
 
