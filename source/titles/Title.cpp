@@ -28,7 +28,7 @@
 
 Title::~Title(void)
 {
-    if (mIcon.tex)
+    if (mCard != CARD_TWL)
         C3D_TexDelete(mIcon.tex);
 }
 
