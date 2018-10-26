@@ -28,7 +28,8 @@
 
 Title::~Title(void)
 {
-    C3D_TexDelete(mIcon.tex);
+    if (mIcon.tex)
+        C3D_TexDelete(mIcon.tex);
 }
 
 static C2D_Image loadTextureIcon(smdh_s *smdh)

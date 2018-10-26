@@ -24,26 +24,26 @@
 *         reasonable ways as different from the original version.
 */
 
-#include <cmath>
 #include <memory>
+#include <list>
 #include "Screen.hpp"
 #include "Title.hpp"
 #include "Directory.hpp"
 #include "Button.hpp"
 #include "loader.hpp"
 
-#ifndef TITLELOADSCREEN_HPP
-#define TITLELOADSCREEN_HPP
+#ifndef SAVELOADSCREEN_HPP
+#define SAVELOADSCREEN_HPP
 
-class TitleLoadScreen : public Screen
+class SaveLoadScreen : public Screen
 {
 public:
-    TitleLoadScreen();
-    ~TitleLoadScreen()
+    SaveLoadScreen();
+    ~SaveLoadScreen()
     {
-        for (auto button : buttons)
+        for (auto b : buttons)
         {
-            delete button;
+            delete b;
         }
     }
     void drawSelector(int x, int y) const;
@@ -52,13 +52,17 @@ public:
     void update(touchPosition* touch) override;
 
 private:
-    int selectedTitle = -2;
-    std::vector<std::string> availableCheckpointSaves;
-    int firstSave = -1;
+    int saveGroup = 0;
+    // Has to be mutable because no const operator[]
+    mutable std::unordered_map<int, std::vector<std::pair<std::string, std::string>>> saves;
+    int firstSave = 0;
     std::vector<Button*> buttons;
     int selectedSave = -1;
-    bool selectedGame = false;
-    bool uninstGameView = false;
+    mutable bool platinum = false;
+    bool hasTitles[4] = {false, false, false, false};
+    std::list<std::string> nandTitles;
+    int missingGroups = 4;
+    bool selectedGroup = false;
     bool setSelectedSave(int i)
     {
         selectedSave = i;
@@ -66,7 +70,22 @@ private:
     }
     bool increaseFirstSave()
     {
-        if (firstSave < (int) availableCheckpointSaves.size() - 1)
+        int accessSaves = saveGroup;
+        if (accessSaves > 3 && accessSaves < 7)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                if (i + 3 >= saveGroup)
+                {
+                    break;
+                }
+                if (hasTitles[i])
+                {
+                    accessSaves++;
+                }
+            }
+        }
+        if (firstSave < (int) saves[accessSaves].size() - 1)
         {
             firstSave++;
         }
@@ -74,31 +93,16 @@ private:
     }
     bool decreaseFirstSave()
     {
-        if (firstSave > -1)
+        if (firstSave > 0)
         {
             firstSave--;
         }
         return false;
     }
+    std::string_view titleName(int index) const;
+    int saveIndex(int index) const;
 
-    std::shared_ptr<Title> titleFromIndex(int i) const
-    {
-        if (i == -1)
-        {
-            return TitleLoader::cardTitle;
-        }
-        else if (i == -2)
-        {
-            return nullptr;
-        }
-        else if ((size_t)i < TitleLoader::nandTitles.size())
-        {
-            return TitleLoader::nandTitles[i];
-        }
-        return nullptr;
-    }
-
-    bool loadSave(void) const;
+    bool loadSave(void);
 };
 
 #endif

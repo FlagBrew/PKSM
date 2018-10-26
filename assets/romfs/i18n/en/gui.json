@@ -1,5 +1,6 @@
 {
-    "LOADER_INSTRUCTIONS_TOP": "Please choose the save you want to open.",
+    "LOADER_INSTRUCTIONS_TOP_PRESENT": "Choose a save to open. Press Y for present games.",
+    "LOADER_INSTRUCTIONS_TOP_ABSENT": "Choose a save to open. Press Y for absent games.",
     "LOADER_INSTRUCTIONS_BOTTOM": "Move your DPAD. Press A to continue, START to exit.",
     "LOADER_GAME_CARD": "Game Card",
     "LOADER_INSTALLED_GAMES": "Installed Games",

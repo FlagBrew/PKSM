@@ -27,6 +27,7 @@
 #include "TitleLoadScreen.hpp"
 #include "MainMenu.hpp"
 #include "FSStream.hpp"
+#include "SaveLoadScreen.hpp"
 
 bool TitleLoadScreen::loadSave() const
 {
@@ -51,8 +52,6 @@ static bool wirelessSave() { return true; }
 
 TitleLoadScreen::TitleLoadScreen()
 {
-    Threads::create((ThreadFunc)TitleLoader::scanTitles);
-    Threads::create((ThreadFunc)TitleLoader::scanSaves);
     for (int i = 0; i < 6; i++)
     {
         buttons.push_back(new Button(24, 96, 175, 16, [this, i](){ return this->setSelectedSave(i); }, ui_sheet_res_null_idx, "", 0.0f, 0));
@@ -110,7 +109,7 @@ void TitleLoadScreen::draw() const
         }
     }
 
-    Gui::staticText(GFX_TOP, 8, i18n::localize("LOADER_INSTRUCTIONS_TOP"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+    Gui::staticText(GFX_TOP, 8, i18n::localize("LOADER_INSTRUCTIONS_TOP_ABSENT"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
     Gui::staticText(4, 197, 120.0f, i18n::localize("LOADER_GAME_CARD"), FONT_SIZE_14, FONT_SIZE_14, C2D_Color32(15, 22, 89, 255));
     Gui::staticText(128, 197, 268.0f, i18n::localize("LOADER_INSTALLED_GAMES"), FONT_SIZE_14, FONT_SIZE_14, C2D_Color32(15, 22, 89, 255));
 
@@ -188,6 +187,7 @@ void TitleLoadScreen::update(touchPosition* touch)
     {
         selectedGame = false;
         selectedSave = -1;
+        firstSave = -1;
         selectedTitle = -2;
     }
     if (selectedTitle == -2)
@@ -409,6 +409,12 @@ void TitleLoadScreen::update(touchPosition* touch)
             {
                 selectedTitle--;
             }
+        }
+        else if (buttonsDown & KEY_Y)
+        {
+            Gui::screenBack();
+            Gui::setScreen(std::make_unique<SaveLoadScreen>());
+            return;
         }
         if (buttonsDown & KEY_A)
         {

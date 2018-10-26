@@ -53,6 +53,9 @@ Result App::init(void)
     i18n::init();
     Configuration::getInstance();
 
+    Threads::create((ThreadFunc)TitleLoader::scanTitles);
+    Threads::create((ThreadFunc)TitleLoader::scanSaves);
+
     Gui::setScreen(std::make_unique<TitleLoadScreen>());
 
     // uncomment when needing to debug with GDB

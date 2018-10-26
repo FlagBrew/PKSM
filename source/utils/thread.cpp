@@ -43,4 +43,5 @@ void Threads::destroy(void)
         threadJoin(threads.at(i), U64_MAX);
         threadFree(threads.at(i));
     }
+    threads.clear();
 }
