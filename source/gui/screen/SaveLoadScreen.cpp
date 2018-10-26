@@ -69,8 +69,6 @@ SaveLoadScreen::SaveLoadScreen()
     buttons.push_back(new Button(200, 95, 96, 51, [this](){ return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f, 0));
     buttons.push_back(new Button(200, 147, 96, 51, &wirelessSave, ui_sheet_res_null_idx, "", 0.0f, 0));
 
-    // Finishes loading of nand titles & saves
-    Threads::destroy();
     // Check platinum
     if (TitleLoader::cardTitle && TitleLoader::cardTitle->checkpointPrefix().substr(0,3) == "CPU")
     {
@@ -256,7 +254,7 @@ void SaveLoadScreen::draw(void) const
     C2D_SceneBegin(g_renderTargetTop);
     C2D_DrawRectSolid(0, 0, 0.5f, 400.0f, 240.0f, C2D_Color32(15, 22, 89, 255));
 
-    Gui::sprite(ui_sheet_gameselector_bg_idx, 4, 29);
+    Gui::sprite(ui_sheet_emulated_gameselector_bg_idx, 4, 29);
     Gui::sprite(ui_sheet_gameselector_cart_idx, 35, 93);
 
     int x = 90;

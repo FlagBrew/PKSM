@@ -445,19 +445,6 @@ void Gui::sprite(int key, int x, int y)
     {
         _draw_mirror_scale(key, x, y, 4, 182);
     }
-    else if (key == ui_sheet_gameselector_bg_idx)
-    {
-        u8 off = 5, rep = 197;
-        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, key);
-        // Top side
-        Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, 0, off);
-        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f);
-        // Bottom side
-        C2D_DrawImageAt({sprite.tex, &tex}, x, y + off + rep, 0.5f, nullptr, 1.0f, -1.0f);
-        // Center
-        tex = _select_box(sprite, 0, off, 0, sprite.subtex->height);
-        C2D_DrawImageAt({sprite.tex, &tex}, x, y + off, 0.5f, nullptr, 1.0f, rep);   
-    }
     else if (key == ui_sheet_gameselector_savebox_idx)
     {
         u8 off = 53;
@@ -652,6 +639,36 @@ void Gui::sprite(int key, int x, int y)
     else if (key == ui_sheet_emulated_toggle_red_idx)
     {
         C2D_DrawRectSolid(x, y, 0.5f, 13, 13, C2D_Color32(0xCC, 0x3F, 0x26, 0xFF));
+    }
+    else if (key == ui_sheet_emulated_gameselector_bg_idx)
+    {
+        u8 off = 5, rep = 197;
+        /* LEFT */
+        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_gameselector_bg_left_idx);
+        // Top side
+        Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, 0, off);
+        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f);
+        // Bottom side
+        C2D_DrawImageAt({sprite.tex, &tex}, x, y + off + rep, 0.5f, nullptr, 1.0f, -1.0f);
+        // Center
+        tex = _select_box(sprite, 0, off, 0, sprite.subtex->height);
+        C2D_DrawImageAt({sprite.tex, &tex}, x, y + off, 0.5f, nullptr, 1.0f, rep);
+        x += 5;
+        C2D_DrawRectSolid(x, y, 0.5f, 115, rep + 10, C2D_Color32(26, 35, 126, 255));
+
+        /* RIGHT */
+        x += 119;
+        C2D_DrawRectSolid(x, y, 0.5f, 263, rep + 10, C2D_Color32(26, 35, 126, 255));
+        x += 263;
+        sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_gameselector_bg_left_idx);
+        // Top side
+        tex = _select_box(sprite, 0, 0, 0, off);
+        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f, nullptr, -1.0f, 1.0f);
+        // Bottom side
+        C2D_DrawImageAt({sprite.tex, &tex}, x, y + off + rep, 0.5f, nullptr, -1.0f, -1.0f);
+        // Center
+        tex = _select_box(sprite, 0, off, 0, sprite.subtex->height);
+        C2D_DrawImageAt({sprite.tex, &tex}, x, y + off, 0.5f, nullptr, 1.0f, rep);   
     }
     // standard case
     else

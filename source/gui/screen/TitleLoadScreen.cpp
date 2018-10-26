@@ -81,7 +81,7 @@ void TitleLoadScreen::draw() const
     C2D_SceneBegin(g_renderTargetTop);
     C2D_DrawRectSolid(0, 0, 0.5f, 400.0f, 240.0f, C2D_Color32(15, 22, 89, 255));
 
-    Gui::sprite(ui_sheet_gameselector_bg_idx, 4, 29);
+    Gui::sprite(ui_sheet_emulated_gameselector_bg_idx, 4, 29);
     Gui::sprite(ui_sheet_gameselector_cart_idx, 35, 93);
 
     if (TitleLoader::cardTitle != nullptr)
