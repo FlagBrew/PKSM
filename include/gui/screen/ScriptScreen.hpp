@@ -31,7 +31,7 @@
 #include "STDirectory.hpp"
 #include "Hid.hpp"
 
-#define PICOC_STACKSIZE (4 * 1024)
+#define PICOC_STACKSIZE (16 * 1024)
 
 class ScriptScreen : public Screen
 {
@@ -50,7 +50,7 @@ private:
     STDirectory currDir;
     std::vector<std::pair<std::string, bool>> currFiles;
     Hid hid;
-    bool sdSearch;
+    bool sdSearch, cScripts;
 };
 
 #endif

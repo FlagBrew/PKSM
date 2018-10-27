@@ -81,7 +81,7 @@ namespace
 }
 
 ScriptScreen::ScriptScreen() : currDirString("romfs:" + getScriptDir(TitleLoader::save->version())),
-                               currDir(currDirString), hid(8, 1), sdSearch(false)
+                               currDir(currDirString), hid(8, 1), sdSearch(false), cScripts(false)
 {
     updateEntries();
 }
@@ -93,7 +93,7 @@ void ScriptScreen::draw() const
 
     // Leaving space for the icon
     Gui::dynamicText(currDirString, 30, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_YELLOW, false);
-    Gui::staticText(GFX_TOP, 224, "Press \uE000 to execute script or enter directory", FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
+    Gui::staticText(GFX_TOP, 224, "Press \uE000 to execute script or enter folder. Press \uE003 for universal scripts", FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
 
     C2D_DrawRectSolid(0, 20 + hid.index() * 25, 0.5f, 400, 25, C2D_Color32(128, 128, 128, 255));
     C2D_DrawRectSolid(1, 21 + hid.index() * 25, 0.5f, 398, 23, COLOR_MASKBLACK);
@@ -126,7 +126,7 @@ void ScriptScreen::update(touchPosition* touch)
     u32 down = hidKeysDown();
     if (down & KEY_B)
     {
-        if (currDirString == (sdSearch ? "/3ds/PKSM" : "romfs:") + getScriptDir(TitleLoader::save->version()))
+        if (currDirString == (sdSearch ? "/3ds/PKSM" : "romfs:") + (cScripts ? std::string("/scripts/universal") : getScriptDir(TitleLoader::save->version())))
         {
             Gui::screenBack();
             return;
@@ -156,10 +156,35 @@ void ScriptScreen::update(touchPosition* touch)
     }
     else if (down & KEY_X)
     {
-        sdSearch = !sdSearch;
-        currDirString = (sdSearch ? "/3ds/PKSM" : "romfs:") + getScriptDir(TitleLoader::save->version());
-        currDir = STDirectory(currDirString);
-        updateEntries();
+        std::string dirString = (!sdSearch ? "/3ds/PKSM" : "romfs:") + (cScripts ? std::string("/scripts/universal") : getScriptDir(TitleLoader::save->version()));
+        STDirectory dir = STDirectory(dirString);
+        if (dir.good())
+        {
+            sdSearch = !sdSearch;
+            currDirString = dirString;
+            currDir = dir;
+            updateEntries();
+        }
+        else
+        {
+            Gui::warn("\"" + dirString + "\"", std::string("not found!"));
+        }
+    }
+    else if (down & KEY_Y)
+    {
+        std::string dirString = (sdSearch ? "/3ds/PKSM" : "romfs:") + (!cScripts ? std::string("/scripts/universal") : getScriptDir(TitleLoader::save->version()));
+        STDirectory dir = STDirectory(dirString);
+        if (dir.good())
+        {
+            cScripts = !cScripts;
+            currDirString = dirString;
+            currDir = dir;
+            updateEntries();
+        }
+        else
+        {
+            Gui::warn("\"" + dirString + "\"", std::string("not found!"));
+        }
     }
 }
 
@@ -167,6 +192,11 @@ void ScriptScreen::updateEntries()
 {
     hid.select(0);
     currFiles.clear();
+    if (!currDir.good())
+    {
+        currFiles.push_back({"Folder does not exist", false});
+        return;
+    }
     for (size_t i = 0; i < currDir.count(); i++)
     {
         std::string item = currDir.item(i);

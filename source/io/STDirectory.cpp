@@ -38,6 +38,8 @@ STDirectory::STDirectory(const std::string& root)
     if (dir == NULL)
     {
         mError = (Result)errno;
+        closedir(dir);
+        return;
     }
     else
     {
