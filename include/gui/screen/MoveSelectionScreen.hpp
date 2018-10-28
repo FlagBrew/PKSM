@@ -28,7 +28,7 @@
 #define MOVESELECTIONSCREEN_HPP
 
 #include "SelectionScreen.hpp"
-#include "Hid.hpp"
+#include "HidVertical.hpp"
 #include "Configuration.hpp"
 #include "PK7.hpp"
 #include "PK6.hpp"
@@ -65,7 +65,7 @@ public:
     void update(touchPosition* touch) override;
 private:
     int moveIndex;
-    Hid hid;
+    HidVertical hid;
 };
 
 #endif

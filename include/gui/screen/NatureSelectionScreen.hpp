@@ -28,7 +28,7 @@
 #define NATURESELECTIONSCREEN_HPP
 
 #include "SelectionScreen.hpp"
-#include "Hid.hpp"
+#include "HidHorizontal.hpp"
 #include "PKX.hpp"
 
 class NatureSelectionScreen : public SelectionScreen
@@ -42,7 +42,7 @@ public:
     void draw() const override;
     void update(touchPosition* touch) override;
 private:
-    Hid hid;
+    HidHorizontal hid;
 };
 
 #endif

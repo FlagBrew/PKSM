@@ -28,7 +28,7 @@
 #define FORMSELECTIONSCREEN_HPP
 
 #include "SelectionScreen.hpp"
-#include "Hid.hpp"
+#include "HidHorizontal.hpp"
 
 class FormSelectionScreen : public SelectionScreen
 {
@@ -41,7 +41,7 @@ public:
     void draw() const override;
     void update(touchPosition* touch) override;
 private:
-    Hid hid;
+    HidHorizontal hid;
     u8 formCount;
 };
 

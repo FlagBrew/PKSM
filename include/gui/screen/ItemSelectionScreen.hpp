@@ -28,7 +28,7 @@
 #define ITEMSELECTIONSCREEN_HPP
 
 #include "SelectionScreen.hpp"
-#include "Hid.hpp"
+#include "HidVertical.hpp"
 #include "Configuration.hpp"
 
 class ItemSelectionScreen : public SelectionScreen
@@ -42,7 +42,7 @@ public:
     void draw() const override;
     void update(touchPosition* touch) override;
 private:
-    Hid hid;
+    HidVertical hid;
 };
 
 #endif

@@ -28,7 +28,7 @@
 #define FORTYCHOICE_HPP
 
 #include "ScriptChoice.hpp"
-#include "Hid.hpp"
+#include "HidVertical.hpp"
 #include <vector>
 #include <string>
 
@@ -45,7 +45,7 @@ public:
     void draw() const override;
     void update(touchPosition* touch) override;
 private:
-    Hid hid;
+    HidVertical hid;
     const int items;
     std::vector<std::string> labels;
 };

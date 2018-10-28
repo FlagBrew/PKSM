@@ -24,26 +24,30 @@
 *         reasonable ways as different from the original version.
 */
 
-#include "Screen.hpp"
-#include "HidHorizontal.hpp"
-#include "gui.hpp"
-#include "mysterygift.hpp"
-#include <vector>
+#ifndef HIDVERTICAL_HPP
+#define HIDVERTICAL_HPP
 
-#ifndef INJECTSELECTORSCREEN_HPP
-#define INJECTSELECTORSCREEN_HPP
+#include "Hid.hpp"
 
-class InjectSelectorScreen : public Screen
+class HidVertical: public Hid
 {
 public:
-    InjectSelectorScreen();
-    virtual ~InjectSelectorScreen();
-    void update(touchPosition* touch) override;
-    void draw(void) const override;
-    ScreenType type() const override { return ScreenType::EVENTS; }
+    HidVertical(size_t entries, size_t columns)
+    {
+        mMaxVisibleEntries = entries;
+        mColumns = columns;
+        rows = mMaxVisibleEntries / mColumns;
+        mIndex = 0;
+        mPage = 0;
+        mMaxPages = 0;
+        mCurrentTime = 0;
+        mLastTime = 0;
+    }
+
+    void update(size_t count) override;
+
 private:
-    HidHorizontal hid;
-    std::vector<nlohmann::json> wondercards;
+    size_t rows;
 };
 
 #endif
