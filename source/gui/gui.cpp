@@ -781,7 +781,7 @@ void Gui::pkm(int species, int form, int generation, int x, int y, float scale, 
         }
         else
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_801_1_idx + form), x, y, 0.5f, &tint, scale, scale);
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_801_1_idx + form), x, y, 0.5f, &tint, scale, scale);
         }
     }
     // For possible hex editor mishaps
@@ -802,7 +802,7 @@ void Gui::pkm(int species, int form, int generation, int x, int y, float scale, 
         }
         else
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_778_2_idx), x, y, 0.5f, &tint, scale, scale);
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_778_2_idx), x, y, 0.5f, &tint, scale, scale);
         }
     }
     // Minior
@@ -814,7 +814,7 @@ void Gui::pkm(int species, int form, int generation, int x, int y, float scale, 
         }
         else
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_774_7_idx + form - 7), x, y, 0.5f, &tint, scale, scale);
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_774_7_idx + form - 7), x, y, 0.5f, &tint, scale, scale);
         }
     }
     // Pumpkaboo, Gourgeist, & Genesect
@@ -826,11 +826,11 @@ void Gui::pkm(int species, int form, int generation, int x, int y, float scale, 
     {
         if (generation == 6)
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_20_2_idx + form), x, y, 0.5f, &tint, scale, scale);
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_20_2_idx + form), x, y, 0.5f, &tint, scale, scale);
         }
         else
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_25_6_idx + form), x, y, 0.5f, &tint, scale, scale);
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_25_6_idx + form), x, y, 0.5f, &tint, scale, scale);
         }
     }
     // Arceus
@@ -914,6 +914,10 @@ void Gui::pkm(int species, int form, int generation, int x, int y, float scale, 
             case 642:
                 imageOffsetFromBack += 1;
             case 641:
+                imageOffsetFromBack += 3;
+            case 586:
+                imageOffsetFromBack += 3;
+            case 585:
                 imageOffsetFromBack += 1;
             case 555:
                 imageOffsetFromBack += 1;
@@ -1068,10 +1072,10 @@ void Gui::pkm(int species, int form, int generation, int x, int y, float scale, 
             case 6:
                 imageOffsetFromBack += 1;
         }
-        int drawIndex = pkm_spritesheet_807_idx + imageOffsetFromBack + form;
-        if (drawIndex < pkm_spritesheet_201_1_idx)
+        int drawIndex = types_spritesheet_beast_idx + imageOffsetFromBack + form;
+        if (drawIndex < types_spritesheet_201_1_idx)
         { 
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, drawIndex), x, y, 0.5f, &tint, scale, scale);
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, drawIndex), x, y, 0.5f, &tint, scale, scale);
         }
         else
         {
@@ -1094,6 +1098,10 @@ void Gui::ball(size_t index, int x, int y)
 
 static C2D_Image typeImage(Language lang, u8 type)
 {
+    if (type > 17)
+    {
+        type = 0;
+    }
     switch (lang)
     {
         case Language::ES:
