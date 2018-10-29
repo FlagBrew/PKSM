@@ -29,10 +29,6 @@
 void HidVertical::update(size_t count)
 {
     mCurrentTime = svcGetSystemTick();
-    if (mCurrentTime <= mLastTime + DELAY_TICKS)
-    {
-        return;
-    }
 
     mMaxPages = (count % mMaxVisibleEntries == 0) ? count / mMaxVisibleEntries : count / mMaxVisibleEntries + 1;
     u64 kHeld = hidKeysHeld();
@@ -48,8 +44,60 @@ void HidVertical::update(size_t count)
     }
     else if (mColumns > 1)
     {
-        if (kHeld & KEY_LEFT)
+        if (kDown & KEY_LEFT)
         {
+            if (mIndex % rows != mIndex)
+            {
+                mIndex -= rows;
+            }
+            else
+            {
+                page_back();
+                mIndex += rows;
+            }
+        }
+        else if (kDown & KEY_RIGHT)
+        {
+            if (mIndex + rows < mMaxVisibleEntries)
+            {
+                mIndex += rows;
+            }
+            else
+            {
+                page_forward();
+                mIndex -= rows;
+            }
+        }
+        else if (kDown & KEY_UP)
+        {
+            if (mIndex % rows > 0)
+            {
+                mIndex -= 1;
+            }
+            else
+            {
+                page_back();
+                mIndex = mIndex == rows ? mMaxVisibleEntries - 1 : ((mMaxVisibleEntries - 1) % rows);
+            }
+        }
+        else if (kDown & KEY_DOWN)
+        {
+            if ((mIndex % rows) < rows - 1)
+            {
+                mIndex += 1;
+            }
+            else
+            {
+                page_forward();
+                mIndex = mIndex == rows - 1 ? 0 : rows;
+            }
+        }
+        else if (kHeld & KEY_LEFT)
+        {
+            if (mCurrentTime <= mLastTime + DELAY_TICKS)
+            {
+                return;
+            }
             if (mIndex % rows != mIndex)
             {
                 mIndex -= rows;
@@ -62,6 +110,10 @@ void HidVertical::update(size_t count)
         }
         else if (kHeld & KEY_RIGHT)
         {
+            if (mCurrentTime <= mLastTime + DELAY_TICKS)
+            {
+                return;
+            }
             if (mIndex + rows < mMaxVisibleEntries)
             {
                 mIndex += rows;
@@ -74,6 +126,10 @@ void HidVertical::update(size_t count)
         }
         else if (kHeld & KEY_UP)
         {
+            if (mCurrentTime <= mLastTime + DELAY_TICKS)
+            {
+                return;
+            }
             if (mIndex % rows > 0)
             {
                 mIndex -= 1;
@@ -86,6 +142,10 @@ void HidVertical::update(size_t count)
         }
         else if (kHeld & KEY_DOWN)
         {
+            if (mCurrentTime <= mLastTime + DELAY_TICKS)
+            {
+                return;
+            }
             if ((mIndex % rows) < rows - 1)
             {
                 mIndex += 1;
@@ -99,8 +159,37 @@ void HidVertical::update(size_t count)
     }
     else
     {
-        if (kHeld & KEY_UP)
+        
+        if (kDown & KEY_UP)
         {
+            if (mIndex > 0) 
+            {
+                mIndex--;
+            }
+            else if (mIndex == 0)
+            {
+                page_back();
+                mIndex = maxEntries(count);
+            }
+        }
+        else if (kDown & KEY_DOWN)
+        {
+            if (mIndex < maxEntries(count))
+            {
+                mIndex++;
+            }
+            else if (mIndex == maxEntries(count))
+            {
+                page_forward();
+                mIndex = 0;
+            }
+        }
+        else if (kHeld & KEY_UP)
+        {
+            if (mCurrentTime <= mLastTime + DELAY_TICKS)
+            {
+                return;
+            }
             if (mIndex > 0) 
             {
                 mIndex--;
@@ -113,6 +202,10 @@ void HidVertical::update(size_t count)
         }
         else if (kHeld & KEY_DOWN)
         {
+            if (mCurrentTime <= mLastTime + DELAY_TICKS)
+            {
+                return;
+            }
             if (mIndex < maxEntries(count))
             {
                 mIndex++;
