@@ -30,7 +30,7 @@
 #include "Screen.hpp"
 #include "Button.hpp"
 #include "PKX.hpp"
-#include "Hid.hpp"
+#include "HidHorizontal.hpp"
 #include "gui.hpp"
 #include <vector>
 
@@ -55,7 +55,7 @@ private:
     std::pair<std::string, SecurityLevel> selectedDescription;
     std::vector<int> selectBytes;
     std::shared_ptr<PKX> pkm;
-    Hid hid;
+    HidHorizontal hid;
     SecurityLevel level = SecurityLevel::NORMAL;
     class HexEditButton : public Button
     {

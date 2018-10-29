@@ -29,7 +29,7 @@
 #include "Button.hpp"
 #include "i18n.hpp"
 #include "Configuration.hpp"
-#include "Hid.hpp"
+#include "HidHorizontal.hpp"
 #include "mysterygift.hpp"
 #include <vector>
 
@@ -53,7 +53,7 @@ private:
     int slot;
     // For multi-item injects
     int item = 0;
-    Hid hid;
+    HidHorizontal hid;
     Language lang = Language::JP;
     nlohmann::json ids;
 

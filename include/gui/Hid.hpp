@@ -35,29 +35,19 @@
 class Hid 
 {
 public:
-    Hid(size_t entries, size_t columns)
-    : mMaxVisibleEntries(entries), mColumns(columns)
-    {
-        mIndex = 0;
-        mPage = 0;
-        mMaxPages = 0;
-        mCurrentTime = 0;
-        mLastTime = 0;
-    }
-
-    ~Hid(void) { }
+    virtual ~Hid(void) { }
 
     size_t fullIndex(void) const;
     size_t index(void) const;
     size_t maxEntries(size_t max) const;
     size_t maxVisibleEntries(void) const;
     int page(void) const;
-    void update(size_t count);
+    virtual void update(size_t count) = 0;
     void page_back(void);
     void page_forward(void);
     void select(size_t index);
 
-private:
+protected:
     size_t mIndex;
     int mPage;
     size_t mMaxPages;

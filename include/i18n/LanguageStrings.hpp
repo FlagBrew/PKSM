@@ -67,9 +67,6 @@ protected:
     std::vector<std::string> speciess;
     nlohmann::json gui;
 
-    std::vector<std::pair<std::string, int>> sortedItems;
-    std::vector<std::pair<std::string, int>> sortedMoves;
-
     void load(Language lang, const std::string name, std::vector<std::string>& array);
     void loadGui(Language lang);
 
@@ -77,17 +74,8 @@ public:
     LanguageStrings(Language lang);
     std::string folder(Language lang) const;
 
-    std::string sortedItem(u16 v) const;
-    std::string sortedMove(u16 v) const;
-
-    int item(std::string v) const;
-    int move(std::string v) const;
-    u16 itemFromSort(int v) const;
-    u16 moveFromSort(int v) const;
-    int sortedItemIndex(std::string v) const;
-    int sortedMoveIndex(std::string v) const;
-    int itemNum() const;
-    int moveNum() const;
+    std::vector<std::string> rawItems() const;
+    std::vector<std::string> rawMoves() const;
 
     std::string ability(u8 v) const;
     std::string ball(u8 v) const;

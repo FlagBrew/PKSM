@@ -25,7 +25,7 @@
 */
 
 #include "Screen.hpp"
-#include "Hid.hpp"
+#include "HidHorizontal.hpp"
 #include "gui.hpp"
 #include "mysterygift.hpp"
 #include <vector>
@@ -42,7 +42,7 @@ public:
     void draw(void) const override;
     ScreenType type() const override { return ScreenType::EVENTS; }
 private:
-    Hid hid;
+    HidHorizontal hid;
     std::vector<nlohmann::json> wondercards;
 };
 

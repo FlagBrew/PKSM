@@ -24,23 +24,26 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef ITEMSELECTIONSCREEN_HPP
-#define ITEMSELECTIONSCREEN_HPP
+#ifndef HIDHORIZONTAL_HPP
+#define HIDHORIZONTAL_HPP
 
-#include "SelectionScreen.hpp"
-#include "HidVertical.hpp"
-#include "Configuration.hpp"
-#include "loader.hpp"
+#include "Hid.hpp"
 
-class ItemSelectionScreen : public SelectionScreen
+class HidHorizontal: public Hid
 {
 public:
-    ItemSelectionScreen(std::shared_ptr<PKX> pkm);
-    void draw() const override;
-    void update(touchPosition* touch) override;
-private:
-    HidVertical hid;
-    std::vector<std::pair<int, std::string>> items;
+    HidHorizontal(size_t entries, size_t columns)
+    {
+        mMaxVisibleEntries = entries;
+        mColumns = columns;
+        mIndex = 0;
+        mPage = 0;
+        mMaxPages = 0;
+        mCurrentTime = 0;
+        mLastTime = 0;
+    }
+
+    void update(size_t count) override;
 };
 
 #endif

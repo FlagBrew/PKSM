@@ -29,7 +29,7 @@
 
 #include "Screen.hpp"
 #include "STDirectory.hpp"
-#include "Hid.hpp"
+#include "HidHorizontal.hpp"
 
 #define PICOC_STACKSIZE (16 * 1024)
 
@@ -49,7 +49,7 @@ private:
     std::string currDirString;
     STDirectory currDir;
     std::vector<std::pair<std::string, bool>> currFiles;
-    Hid hid;
+    HidHorizontal hid;
     bool sdSearch, cScripts;
 };
 
