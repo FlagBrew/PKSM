@@ -71,6 +71,19 @@ ItemSelectionScreen::ItemSelectionScreen(std::shared_ptr<PKX> pkm) : SelectionSc
     items.insert(items.begin(), {0, rawItems[0]});
 
     hid.update(items.size());
+    int itemIndex = index(items, i18n::item(Configuration::getInstance().language(), pkm->heldItem()));
+    // Checks to make sure that it's the correct item and not one with a duplicate name
+    if (items[itemIndex].first != pkm->heldItem())
+    {
+        if (items[itemIndex + 1].second == items[itemIndex].second)
+        {
+            itemIndex++;
+        }
+        else
+        {
+            itemIndex--;
+        }
+    }
     hid.select(index(items, i18n::item(Configuration::getInstance().language(), pkm->heldItem())));
 }
 
