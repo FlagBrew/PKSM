@@ -39,6 +39,8 @@ namespace i18n
     // Total amount of moves & items
     int moves();
     int items();
+    std::vector<std::string> rawItems(u8 lang);
+    std::vector<std::string> rawMoves(u8 lang);
     u16 itemFromSort(u8 lang, int value);
     u16 moveFromSort(u8 lang, int value);
     int sortedItemIndex(u8 lang, std::string value);

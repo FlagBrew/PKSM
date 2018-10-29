@@ -718,3 +718,67 @@ Language i18n::langFromString(const std::string& value)
     }
     return Language::EN;
 }
+
+std::vector<std::string> i18n::rawItems(u8 lang)
+{
+    switch (lang)
+    {
+        case Language::DE:
+            return de->rawItems();
+        case Language::EN:
+            return en->rawItems();
+        case Language::ES:
+            return es->rawItems();
+        case Language::FR:
+            return fr->rawItems();
+        case Language::IT:
+            return it->rawItems();
+        case Language::JP:
+            return jp->rawItems();
+        case Language::KO:
+            return ko->rawItems();
+        case Language::NL:
+            return nl->rawItems();
+        case Language::PT:
+            return pt->rawItems();
+        case Language::ZH:
+            return zh->rawItems();
+        case Language::TW:
+            return tw->rawItems();
+        case Language::RU:
+            return ru->rawItems();
+    }
+    return {};
+}
+
+std::vector<std::string> i18n::rawMoves(u8 lang)
+{
+    switch (lang)
+    {
+        case Language::DE:
+            return de->rawMoves();
+        case Language::EN:
+            return en->rawMoves();
+        case Language::ES:
+            return es->rawMoves();
+        case Language::FR:
+            return fr->rawMoves();
+        case Language::IT:
+            return it->rawMoves();
+        case Language::JP:
+            return jp->rawMoves();
+        case Language::KO:
+            return ko->rawMoves();
+        case Language::NL:
+            return nl->rawMoves();
+        case Language::PT:
+            return pt->rawMoves();
+        case Language::ZH:
+            return zh->rawMoves();
+        case Language::TW:
+            return tw->rawMoves();
+        case Language::RU:
+            return ru->rawMoves();
+    }
+    return {};
+}

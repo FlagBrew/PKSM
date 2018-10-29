@@ -88,6 +88,8 @@ public:
     int sortedMoveIndex(std::string v) const;
     int itemNum() const;
     int moveNum() const;
+    std::vector<std::string> rawItems() const;
+    std::vector<std::string> rawMoves() const;
 
     std::string ability(u8 v) const;
     std::string ball(u8 v) const;

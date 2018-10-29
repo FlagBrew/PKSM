@@ -43,19 +43,26 @@ void ItemSelectionScreen::draw() const
     for (size_t i = 0; i < hid.maxVisibleEntries(); i++)
     {
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
-        std::string text = i18n::sortedItem(Configuration::getInstance().language(), hid.page() * hid.maxVisibleEntries() + i);
-        text = std::to_string(hid.page() * hid.maxVisibleEntries() + i) + " - " + text;
+        std::string text;
+        if (hid.page() * hid.maxVisibleEntries() + i < items.size())
+        {
+            text = std::to_string(items[hid.page() * hid.maxVisibleEntries() + i].first) + " - " + items[hid.page() * hid.maxVisibleEntries() + i].second;
+        }
+        else
+        {
+            text = "0 - " + items[0].second;
+        }
         Gui::dynamicText(text, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
     }
 }
 
 void ItemSelectionScreen::update(touchPosition* touch)
 {
-    hid.update(TitleLoader::save->maxItem());
+    hid.update(items.size());
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {
-        pkm->heldItem((u16) i18n::itemFromSort(Configuration::getInstance().language(), hid.fullIndex()));
+        pkm->heldItem((u16) items[hid.fullIndex()].first);
         done = true;
         return;
     }

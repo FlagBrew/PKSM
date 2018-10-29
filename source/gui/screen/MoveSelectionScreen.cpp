@@ -43,31 +43,38 @@ void MoveSelectionScreen::draw() const
     for (size_t i = 0; i < hid.maxVisibleEntries(); i++)
     {
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
-        std::string text = i18n::sortedMove(Configuration::getInstance().language(), hid.page() * hid.maxVisibleEntries() + i);
-        text = std::to_string(hid.page() * hid.maxVisibleEntries() + i) + " - " + text;
+        std::string text;
+        if (hid.page() * hid.maxVisibleEntries() + i < moves.size())
+        {
+            text = std::to_string(moves[hid.page() * hid.maxVisibleEntries() + i].first) + " - " + moves[hid.page() * hid.maxVisibleEntries() + i].second;
+        }
+        else
+        {
+            text = "0 - " + moves[0].second;
+        }
         Gui::dynamicText(text, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
     }
 }
 
 void MoveSelectionScreen::update(touchPosition* touch)
 {
-    hid.update(TitleLoader::save->maxMove());
+    hid.update(moves.size());
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {
         if (moveIndex < 4)
         {
-            pkm->move(moveIndex, i18n::moveFromSort(Configuration::getInstance().language(), hid.fullIndex()));
+            pkm->move(moveIndex, (u16) moves[hid.fullIndex()].first);
         }
         else
         {
             if (pkm->gen6())
             {
-                ((PK6*)pkm.get())->relearnMove(moveIndex - 4, i18n::moveFromSort(Configuration::getInstance().language(), hid.fullIndex()));
+                ((PK6*)pkm.get())->relearnMove(moveIndex - 4, (u16) moves[hid.fullIndex()].first);
             }
             else if (pkm->gen7())
             {
-                ((PK7*)pkm.get())->relearnMove(moveIndex - 4, i18n::moveFromSort(Configuration::getInstance().language(), hid.fullIndex()));
+                ((PK7*)pkm.get())->relearnMove(moveIndex - 4, (u16) moves[hid.fullIndex()].first);
             }
         }
         done = true;

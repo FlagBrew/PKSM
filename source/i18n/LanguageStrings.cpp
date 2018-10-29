@@ -341,3 +341,13 @@ std::string LanguageStrings::localize(const std::string& v) const
 {
     return gui.value(v, "");
 }
+
+std::vector<std::string> LanguageStrings::rawItems() const
+{
+    return items;
+}
+
+std::vector<std::string> LanguageStrings::rawMoves() const
+{
+    return moves;
+}

@@ -32,13 +32,24 @@
 #include "Configuration.hpp"
 #include "PK7.hpp"
 #include "PK6.hpp"
+#include "loader.hpp"
 
 class MoveSelectionScreen : public SelectionScreen
 {
 public:
     MoveSelectionScreen(std::shared_ptr<PKX> pkm, int moveIndex) : SelectionScreen(pkm), moveIndex(moveIndex), hid(40, 2)
     {
-        hid.update(i18n::moves());
+        std::vector<std::string> rawMoves = i18n::rawMoves(Configuration::getInstance().language());
+        for (size_t i = 1; i < TitleLoader::save->maxMove(); i++)
+        {
+            if (i >= 622 && i <= 658) continue;
+            moves.push_back({i, rawMoves[i]});
+        }
+        static const auto less = [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2){ return pair1.second < pair2.second; };
+        std::sort(moves.begin(), moves.end(), less);
+        moves.insert(moves.begin(), {0, rawMoves[0]});
+
+        hid.update(moves.size());
         if (moveIndex < 4)
         {
             hid.select((u16) i18n::sortedMoveIndex(Configuration::getInstance().language(), i18n::move(Configuration::getInstance().language(), pkm->move(moveIndex))));
@@ -66,6 +77,7 @@ public:
 private:
     int moveIndex;
     HidVertical hid;
+    std::vector<std::pair<int, std::string>> moves;
 };
 
 #endif
