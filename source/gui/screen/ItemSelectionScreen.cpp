@@ -30,9 +30,9 @@
 #include "loader.hpp"
 
 namespace {
-    int index(std::vector<std::pair<int, std::string>>& search, int v)
+    int index(std::vector<std::pair<int, std::string>>& search, std::string v)
     {
-        if (v == search[0].first)
+        if (v == search[0].second || v == "")
         {
             return 0;
         }
@@ -40,12 +40,12 @@ namespace {
         while (min <= max)
         {
             mid = min + (max-min)/2;
-            if (search[mid].first == v)
+            if (search[mid].second == v)
             {
                 index = mid;
                 break;
             }
-            if (search[mid].first < v)
+            if (search[mid].second < v)
             {
                 min = mid + 1;
             }
@@ -71,7 +71,7 @@ ItemSelectionScreen::ItemSelectionScreen(std::shared_ptr<PKX> pkm) : SelectionSc
     items.insert(items.begin(), {0, rawItems[0]});
 
     hid.update(items.size());
-    hid.select(index(items, pkm->heldItem()));
+    hid.select(index(items, i18n::item(Configuration::getInstance().language(), pkm->heldItem())));
 }
 
 void ItemSelectionScreen::draw() const

@@ -30,9 +30,9 @@
 #include "loader.hpp"
 
 namespace {
-    int index(std::vector<std::pair<int, std::string>>& search, int v)
+    int index(std::vector<std::pair<int, std::string>>& search, std::string v)
     {
-        if (v == search[0].first)
+        if (v == search[0].second || v == "")
         {
             return 0;
         }
@@ -40,12 +40,12 @@ namespace {
         while (min <= max)
         {
             mid = min + (max-min)/2;
-            if (search[mid].first == v)
+            if (search[mid].second == v)
             {
                 index = mid;
                 break;
             }
-            if (search[mid].first < v)
+            if (search[mid].second < v)
             {
                 min = mid + 1;
             }
@@ -73,19 +73,19 @@ MoveSelectionScreen::MoveSelectionScreen(std::shared_ptr<PKX> pkm, int moveIndex
     hid.update(moves.size());
     if (moveIndex < 4)
     {
-        hid.select((u16) index(moves, pkm->move(moveIndex)));
+        hid.select((u16) index(moves, i18n::move(Configuration::getInstance().language(), pkm->move(moveIndex))));
     }
     else
     {
         if (pkm->gen6())
         {
             PK6* pk6 = ((PK6*)pkm.get());
-            hid.select((u16) index(moves, pk6->relearnMove(moveIndex - 4)));
+            hid.select((u16) index(moves, i18n::move(Configuration::getInstance().language(), pk6->relearnMove(moveIndex - 4))));
         }
         else if (pkm->gen7())
         {
             PK7* pk7 = ((PK7*)pkm.get());
-            hid.select((u16) index(moves, pk7->relearnMove(moveIndex - 4)));
+            hid.select((u16) index(moves, i18n::move(Configuration::getInstance().language(), pk7->relearnMove(moveIndex - 4))));
         }
     }
 }
