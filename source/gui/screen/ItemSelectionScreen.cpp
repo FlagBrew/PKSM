@@ -29,6 +29,51 @@
 #include "Configuration.hpp"
 #include "loader.hpp"
 
+namespace {
+    int index(std::vector<std::pair<int, std::string>>& search, int v)
+    {
+        if (v == search[0].first)
+        {
+            return 0;
+        }
+        int index = -1, min = 0, mid = 0, max = search.size();
+        while (min <= max)
+        {
+            mid = min + (max-min)/2;
+            if (search[mid].first == v)
+            {
+                index = mid;
+                break;
+            }
+            if (search[mid].first < v)
+            {
+                min = mid + 1;
+            }
+            else
+            {
+                max = mid - 1;
+            }
+        }
+        return index >= 0 ? index : 0;
+    }
+}
+
+ItemSelectionScreen::ItemSelectionScreen(std::shared_ptr<PKX> pkm) : SelectionScreen(pkm), hid(40, 2)
+{
+    std::vector<std::string> rawItems = i18n::rawItems(Configuration::getInstance().language());
+    for (size_t i = 1; i < TitleLoader::save->maxItem(); i++)
+    {
+        if (rawItems[i].find("\uFF1F\uFF1F\uFF1F") != std::string::npos || rawItems[i].find("???") != std::string::npos) continue;
+        items.push_back({i, rawItems[i]});
+    }
+    static const auto less = [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2){ return pair1.second < pair2.second; };
+    std::sort(items.begin(), items.end(), less);
+    items.insert(items.begin(), {0, rawItems[0]});
+
+    hid.update(items.size());
+    hid.select(index(items, pkm->heldItem()));
+}
+
 void ItemSelectionScreen::draw() const
 {
     C2D_SceneBegin(g_renderTargetTop);

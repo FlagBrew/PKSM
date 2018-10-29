@@ -34,20 +34,8 @@ namespace i18n
     void init(void);
     void exit(void);
 
-    std::string sortedMove(u8 lang, u16 value);
-    std::string sortedItem(u8 lang, u16 value);
-    // Total amount of moves & items
-    int moves();
-    int items();
     std::vector<std::string> rawItems(u8 lang);
     std::vector<std::string> rawMoves(u8 lang);
-    u16 itemFromSort(u8 lang, int value);
-    u16 moveFromSort(u8 lang, int value);
-    int sortedItemIndex(u8 lang, std::string value);
-    int sortedMoveIndex(u8 lang, std::string value);
-
-    int item(u8 lang, std::string value);
-    int move(u8 lang, std::string value);
     
     std::string ability(u8 lang, u8 value);
     std::string ball(u8 lang, u8 value);

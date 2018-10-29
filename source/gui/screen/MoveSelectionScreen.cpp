@@ -29,6 +29,67 @@
 #include "Configuration.hpp"
 #include "loader.hpp"
 
+namespace {
+    int index(std::vector<std::pair<int, std::string>>& search, int v)
+    {
+        if (v == search[0].first)
+        {
+            return 0;
+        }
+        int index = -1, min = 0, mid = 0, max = search.size();
+        while (min <= max)
+        {
+            mid = min + (max-min)/2;
+            if (search[mid].first == v)
+            {
+                index = mid;
+                break;
+            }
+            if (search[mid].first < v)
+            {
+                min = mid + 1;
+            }
+            else
+            {
+                max = mid - 1;
+            }
+        }
+        return index >= 0 ? index : 0;
+    }
+}
+
+MoveSelectionScreen::MoveSelectionScreen(std::shared_ptr<PKX> pkm, int moveIndex) : SelectionScreen(pkm), moveIndex(moveIndex), hid(40, 2)
+{
+    std::vector<std::string> rawMoves = i18n::rawMoves(Configuration::getInstance().language());
+    for (size_t i = 1; i < TitleLoader::save->maxMove(); i++)
+    {
+        if (i >= 622 && i <= 658) continue;
+        moves.push_back({i, rawMoves[i]});
+    }
+    static const auto less = [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2){ return pair1.second < pair2.second; };
+    std::sort(moves.begin(), moves.end(), less);
+    moves.insert(moves.begin(), {0, rawMoves[0]});
+
+    hid.update(moves.size());
+    if (moveIndex < 4)
+    {
+        hid.select((u16) index(moves, pkm->move(moveIndex)));
+    }
+    else
+    {
+        if (pkm->gen6())
+        {
+            PK6* pk6 = ((PK6*)pkm.get());
+            hid.select((u16) index(moves, pk6->relearnMove(moveIndex - 4)));
+        }
+        else if (pkm->gen7())
+        {
+            PK7* pk7 = ((PK7*)pkm.get());
+            hid.select((u16) index(moves, pk7->relearnMove(moveIndex - 4)));
+        }
+    }
+}
+
 void MoveSelectionScreen::draw() const
 {
     C2D_SceneBegin(g_renderTargetTop);
