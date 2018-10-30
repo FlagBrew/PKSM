@@ -120,7 +120,7 @@ void HidHorizontal::update(size_t count)
             {
                 return;
             }
-            if (mIndex % mColumns != mColumns)
+            if (mIndex % mColumns != mColumns - 1)
             {
                 mIndex++;
             }

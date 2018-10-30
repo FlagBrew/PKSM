@@ -58,7 +58,11 @@ void HidVertical::update(size_t count)
         }
         else if (kDown & KEY_RIGHT)
         {
-            if (mIndex + rows < mMaxVisibleEntries)
+            if (maxEntries(count) < rows)
+            {
+                page_forward();
+            }
+            else if (mIndex + rows < mMaxVisibleEntries)
             {
                 mIndex += rows;
             }
@@ -112,7 +116,11 @@ void HidVertical::update(size_t count)
             {
                 return;
             }
-            if (mIndex + rows < mMaxVisibleEntries)
+            if (maxEntries(count) < rows)
+            {
+                page_forward();
+            }
+            else if (mIndex + rows < mMaxVisibleEntries)
             {
                 mIndex += rows;
             }
