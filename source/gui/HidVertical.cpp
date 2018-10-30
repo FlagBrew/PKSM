@@ -76,7 +76,6 @@ void HidVertical::update(size_t count)
             }
             else
             {
-                page_back();
                 mIndex = mIndex == rows ? mMaxVisibleEntries - 1 : ((mMaxVisibleEntries - 1) % rows);
             }
         }
@@ -88,7 +87,6 @@ void HidVertical::update(size_t count)
             }
             else
             {
-                page_forward();
                 mIndex = mIndex == rows - 1 ? 0 : rows;
             }
         }
@@ -136,7 +134,6 @@ void HidVertical::update(size_t count)
             }
             else
             {
-                page_back();
                 mIndex = mIndex == rows ? mMaxVisibleEntries - 1 : ((mMaxVisibleEntries - 1) % rows);
             }
         }
@@ -152,7 +149,6 @@ void HidVertical::update(size_t count)
             }
             else
             {
-                page_forward();
                 mIndex = mIndex == rows - 1 ? 0 : rows;
             }
         }
