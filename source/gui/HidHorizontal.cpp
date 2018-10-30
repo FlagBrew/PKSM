@@ -54,74 +54,48 @@ void HidHorizontal::update(size_t count)
     {
         if (kDown & KEY_LEFT)
         {
-            if (mIndex > 0) 
+            if (mIndex % mColumns != 0) 
             {
                 mIndex--;
             }
-            else if (mIndex == 0)
+            else
             {
                 page_back();
-                mIndex = maxEntries(count);
+                mIndex += mColumns - 1;
             }
         }
         else if (kDown & KEY_RIGHT)
         {
-            if (mIndex < maxEntries(count))
+            if (mIndex % mColumns != mColumns - 1)
             {
                 mIndex++;
             }
-            else if (mIndex == maxEntries(count))
+            else
             {
                 page_forward();
-                mIndex = 0;
+                mIndex -= mColumns - 1;
             }
         }
         else if (kDown & KEY_UP)
         {
             if (mIndex < mColumns)
             {
-                // store the previous page
-                int page = mPage;
-                // update it
-                page_back();
-                // refresh the maximum amount of entries
-                size_t maxentries = maxEntries(count);
-                // if we went to the last page, make sure we go to the last valid row instead of the last absolute one
-                mIndex = page == 0 ? (size_t)((floor(maxentries / mColumns) + 1)) * mColumns + mIndex - mColumns : mMaxVisibleEntries + mIndex - mColumns;
-                // handle possible overflows
-                if (mIndex > maxentries)
-                {
-                    mIndex = maxentries;
-                }
+                mIndex += mColumns * (rows - 1);
             }
-            else if (mIndex >= mColumns)
+            else
             {
                 mIndex -= mColumns;
             }
         }
         else if (kDown & KEY_DOWN)
         {
-            size_t maxentries = maxEntries(count);
-            if ((int)(maxentries - mColumns) >= 0)
+            if (mIndex >= mColumns * (rows - 1))
             {
-                if (mIndex <= maxentries - mColumns)
-                {
-                    mIndex += mColumns;
-                }
-                else if (mIndex >= maxentries - mColumns + 1)
-                {
-                    // store the old maxentries value to use later
-                    maxentries = maxEntries(count);
-                    // change page
-                    page_forward();
-                    // we need to setup the index to be on a new row: quantize the row and evaluate it
-                    mIndex = (mIndex + mColumns) % (size_t)(floor(maxentries / mColumns) * mColumns + mColumns);
-                    // in case rows are not full of icons, handle possible overflows
-                    if (mIndex > maxEntries(count))
-                    {
-                        mIndex = maxEntries(count);
-                    }
-                }
+                mIndex -= mColumns * (rows - 1);
+            }
+            else
+            {
+                mIndex += mColumns;
             }
         }
         else if (kHeld & KEY_LEFT)
@@ -130,14 +104,14 @@ void HidHorizontal::update(size_t count)
             {
                 return;
             }
-            if (mIndex > 0) 
+            if (mIndex % mColumns != 0) 
             {
                 mIndex--;
             }
-            else if (mIndex == 0)
+            else
             {
                 page_back();
-                mIndex = maxEntries(count);
+                mIndex += mColumns - 1;
             }
         }
         else if (kHeld & KEY_RIGHT)
@@ -146,14 +120,14 @@ void HidHorizontal::update(size_t count)
             {
                 return;
             }
-            if (mIndex < maxEntries(count))
+            if (mIndex % mColumns != mColumns)
             {
                 mIndex++;
             }
-            else if (mIndex == maxEntries(count))
+            else
             {
                 page_forward();
-                mIndex = 0;
+                mIndex -= mColumns - 1;
             }
         }
         else if (kHeld & KEY_UP)
@@ -164,21 +138,9 @@ void HidHorizontal::update(size_t count)
             }
             if (mIndex < mColumns)
             {
-                // store the previous page
-                int page = mPage;
-                // update it
-                page_back();
-                // refresh the maximum amount of entries
-                size_t maxentries = maxEntries(count);
-                // if we went to the last page, make sure we go to the last valid row instead of the last absolute one
-                mIndex = page == 0 ? (size_t)((floor(maxentries / mColumns) + 1)) * mColumns + mIndex - mColumns : mMaxVisibleEntries + mIndex - mColumns;
-                // handle possible overflows
-                if (mIndex > maxentries)
-                {
-                    mIndex = maxentries;
-                }
+                mIndex += mColumns * (rows - 1);
             }
-            else if (mIndex >= mColumns)
+            else
             {
                 mIndex -= mColumns;
             }
@@ -189,27 +151,13 @@ void HidHorizontal::update(size_t count)
             {
                 return;
             }
-            size_t maxentries = maxEntries(count);
-            if ((int)(maxentries - mColumns) >= 0)
+            if (mIndex >= mColumns * (rows - 1))
             {
-                if (mIndex <= maxentries - mColumns)
-                {
-                    mIndex += mColumns;
-                }
-                else if (mIndex >= maxentries - mColumns + 1)
-                {
-                    // store the old maxentries value to use later
-                    maxentries = maxEntries(count);
-                    // change page
-                    page_forward();
-                    // we need to setup the index to be on a new row: quantize the row and evaluate it
-                    mIndex = (mIndex + mColumns) % (size_t)(floor(maxentries / mColumns) * mColumns + mColumns);
-                    // in case rows are not full of icons, handle possible overflows
-                    if (mIndex > maxEntries(count))
-                    {
-                        mIndex = maxEntries(count);
-                    }
-                }
+                mIndex -= mColumns * (rows - 1);
+            }
+            else
+            {
+                mIndex += mColumns;
             }
         }
     }
@@ -273,5 +221,9 @@ void HidHorizontal::update(size_t count)
         }
     }
 
+    if (mIndex > maxEntries(count))
+    {
+        mIndex = maxEntries(count);
+    }
     mLastTime = mCurrentTime;
 }

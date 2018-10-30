@@ -36,6 +36,7 @@ public:
     {
         mMaxVisibleEntries = entries;
         mColumns = columns;
+        rows = entries / columns;
         mIndex = 0;
         mPage = 0;
         mMaxPages = 0;
@@ -44,6 +45,9 @@ public:
     }
 
     void update(size_t count) override;
+
+private:
+    size_t rows;
 };
 
 #endif
