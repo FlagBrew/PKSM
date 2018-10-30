@@ -36,7 +36,7 @@
 
 namespace App
 {
-    Result init(void);
+    Result init(std::string execPath);
     Result exit(void);
 }
 

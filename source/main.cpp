@@ -26,9 +26,9 @@
 
 #include "app.hpp"
 
-int main()
+int main(int argc, char* argv[])
 {
-    Result res = App::init();
+    Result res = App::init(argc > 0 ? argv[0] : "");
     if (R_FAILED(res))
     {
         App::exit();

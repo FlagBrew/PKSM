@@ -26,19 +26,21 @@
 
 #include "archive.hpp"
 #include <sys/stat.h>
+#include <fstream>
 
 static FS_Archive sdmc;
 static FS_Archive mData;
 
-Result Archive::init(void)
+Result Archive::init(std::string& execPath)
 {
     Result res = 0;
     if (R_FAILED(res = FSUSER_OpenArchive(&sdmc, ARCHIVE_SDMC, fsMakePath(PATH_EMPTY, "")))) return res;
     if (!extdataAccessible(UNIQUE_ID))
     {
-        if (R_FAILED(res = createPKSMExtdataArchive())) return res;
+        if (R_FAILED(res = createPKSMExtdataArchive(execPath))) return res;
     }
     else if (R_FAILED(res = extdata(&mData, UNIQUE_ID))) return res;
+    mkdir("/3ds/PKSM", 777);
     mkdir("/3ds/PKSM/backups", 777);
     mkdir("/3ds/PKSM/dumps", 777);
     return res;
@@ -96,7 +98,7 @@ bool Archive::extdataAccessible(u32 id)
     return false;
 }
 
-Result Archive::createPKSMExtdataArchive(void)
+Result Archive::createPKSMExtdataArchive(std::string& execPath)
 {
     u32 ndirs = 100; // TODO
     u32 nfiles = 100; // TODO
@@ -105,7 +107,22 @@ Result Archive::createPKSMExtdataArchive(void)
     FS_ExtSaveDataInfo esdi;
     esdi.mediaType = MEDIATYPE_SD;
     esdi.saveId = UNIQUE_ID;
-    smdh_s* smdh = loadSMDH(UNIQUE_ID << 8, 0x00040000, MEDIATYPE_SD);
+    smdh_s* smdh;
+    if (execPath == "")
+    {
+        smdh = loadSMDH(UNIQUE_ID << 8, 0x00040000, MEDIATYPE_SD);
+    }
+    else
+    {
+        smdh = new smdh_s;
+        std::ifstream in(execPath.substr(execPath.find('/')), std::ios::binary);
+        in.seekg(0x20);
+        u32 pos;
+        in.read((char*) &pos, 4);
+        in.seekg(pos);
+        in.read((char*) smdh, sizeof(smdh_s));
+        in.close();
+    }
     
     Result res = FSUSER_CreateExtSaveData(esdi, ndirs, nfiles, sizeLimit, sizeof(smdh_s), (u8*)smdh);
     if (R_SUCCEEDED(res))

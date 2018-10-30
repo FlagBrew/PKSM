@@ -33,7 +33,7 @@
 
 namespace Archive
 {
-	Result init(void);
+	Result init(std::string& execPath);
 	void exit(void);
 	FS_Archive sd(void);
 	FS_Archive data(void);
@@ -41,7 +41,7 @@ namespace Archive
 	Result extdata(FS_Archive* archive, u32 extdata);
 	bool saveAccessible(FS_MediaType mediatype, u32 lowid, u32 highid);
 	bool extdataAccessible(u32 id);
-	Result createPKSMExtdataArchive(void);
+	Result createPKSMExtdataArchive(std::string& execPath);
 }
 
 #endif

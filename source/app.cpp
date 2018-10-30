@@ -34,7 +34,7 @@ int __stacksize__ = 64 * 1024;
 
 static u32 old_time_limit;
 
-Result App::init(void)
+Result App::init(std::string execPath)
 {
 #ifdef PICOC_DEBUG
     dup2(2, 1); // Redirects stdout to stderr for GDB to capture
@@ -46,7 +46,7 @@ Result App::init(void)
     
     if (R_FAILED(res = cfguInit())) return res;
     if (R_FAILED(res = romfsInit())) return res;
-    if (R_FAILED(res = Archive::init())) return res;
+    if (R_FAILED(res = Archive::init(execPath))) return res;
     if (R_FAILED(res = pxiDevInit())) return res;
     if (R_FAILED(res = amInit())) return res;
     if (R_FAILED(res = Gui::init())) return res;
