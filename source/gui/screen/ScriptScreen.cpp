@@ -78,6 +78,19 @@ namespace
         PicocInitialise(picoc, PICOC_STACKSIZE);
         return picoc;
     }
+
+    // slight change to stripy top
+    void menuTop()
+    {
+        for (int x = 0; x < 400; x += 7)
+        {
+            for (int y = 0; y < 240; y += 7)
+            {
+                Gui::sprite(ui_sheet_bg_stripe_top_idx, x, y);
+            }
+        }
+        C2D_DrawRectSolid(0, 0, 0.5f, 400, 20, C2D_Color32(15, 22, 89, 255));
+    }
 }
 
 ScriptScreen::ScriptScreen() : currDirString("romfs:" + getScriptDir(TitleLoader::save->version())),
@@ -89,10 +102,10 @@ ScriptScreen::ScriptScreen() : currDirString("romfs:" + getScriptDir(TitleLoader
 void ScriptScreen::draw() const
 {
     C2D_SceneBegin(g_renderTargetTop);
-    Gui::backgroundTop(true);
+    menuTop();
 
     // Leaving space for the icon
-    Gui::dynamicText(currDirString, 30, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_YELLOW, false);
+    Gui::dynamicText(currDirString, 15, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_YELLOW, false);
     Gui::staticText(GFX_TOP, 224, "Press \uE000 to execute script or enter folder. Press \uE003 for universal scripts", FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
 
     C2D_DrawRectSolid(0, 20 + hid.index() * 25, 0.5f, 400, 25, C2D_Color32(128, 128, 128, 255));
@@ -106,7 +119,7 @@ void ScriptScreen::draw() const
         }
         else
         {
-            // Leaving space for the icon
+            Gui::sprite(currFiles[i].second ? ui_sheet_icon_folder_idx : ui_sheet_icon_script_idx, 3, 23 + i % hid.maxVisibleEntries() * 25);
             Gui::dynamicText(currFiles[i].first, 30, 24 + (i % hid.maxVisibleEntries() * 25), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, false);
         }
     }
