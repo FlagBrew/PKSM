@@ -111,7 +111,8 @@ namespace Gui
 
     void backgroundTop(bool stripes);
     void backgroundBottom(bool stripes);
-    void backgroundAnimated(gfxScreen_t screen);
+    void backgroundAnimatedTop(void);
+    void backgroundAnimatedBottom(void);
 
     void clearTextBufs(void);
     void dynamicText(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, bool rightAligned = false);

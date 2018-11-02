@@ -106,29 +106,44 @@ void Gui::backgroundTop(bool stripes)
     C2D_DrawRectSolid(0, 0, 0.5f, 400, 25, C2D_Color32(15, 22, 89, 255));
 }
 
-void Gui::backgroundAnimated(gfxScreen_t screen)
+void Gui::backgroundAnimatedTop()
 {
-    static bool firstRun = true;
-    static int boxesX[11] = {0};
-
-    int maxrange = screen == GFX_TOP ? 400 : 320;
-
-    if (firstRun)
+    static int x1 = 0;
+    static int x2 = 400;
+    static const Tex3DS_SubTexture boxes1 = _select_box(bgBoxes, 0, 0, 400, 240);
+    static const Tex3DS_SubTexture boxes2 = _select_box(bgBoxes, 400, 0, 800, 240);
+    
+    if (x1 < -400)
     {
-        firstRun = false;
-        for (int i = 0; i < 11; i++)
-        {
-            boxesX[i] = (i - 1) * (maxrange / 10);
-        }
+        x1 = 400;
+    }
+    if (x2 < -400)
+    {
+        x2 = 400;
     }
 
-    Tex3DS_SubTexture boxesPart; // = _select_box(bgBoxes, maxrange - boxesX / 2, 0, 800, 240);
-    for (u8 i = 0; i < 11; i++)
+    C2D_DrawImageAt({bgBoxes.tex, &boxes1}, x1--, 0, 0.5f);
+    C2D_DrawImageAt({bgBoxes.tex, &boxes2}, x2--, 0, 0.5f);
+}
+
+void Gui::backgroundAnimatedBottom()
+{
+    static int x1 = 0;
+    static int x2 = 400;
+    static const Tex3DS_SubTexture boxes1 = _select_box(bgBoxes, 0, 0, 400, 240);
+    static const Tex3DS_SubTexture boxes2 = _select_box(bgBoxes, 400, 0, 800, 240);
+    
+    if (x1 < -400)
     {
-        boxesPart = _select_box(bgBoxes, i * (maxrange / 10), 0, (i + 1) * (maxrange / 10), 240);
-        C2D_DrawImageAt({bgBoxes.tex, &boxesPart}, boxesX[i], 0, 0.5f);
-        boxesX[i] = boxesX[i] >= maxrange ? - maxrange / 10 : boxesX[i] + 1;
+        x1 = 400;
     }
+    if (x2 < -400)
+    {
+        x2 = 400;
+    }
+
+    C2D_DrawImageAt({bgBoxes.tex, &boxes1}, x1--, 0, 0.5f);
+    C2D_DrawImageAt({bgBoxes.tex, &boxes2}, x2--, 0, 0.5f);
 }
 
 void Gui::clearTextBufs(void)

@@ -119,7 +119,7 @@ void EditorScreen::draw() const
     Gui::sprite(ui_sheet_emulated_bg_bottom_blue, 0, 0);
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
     Gui::sprite(ui_sheet_bar_arc_bottom_blue_idx, 0, 206);
-    Gui::backgroundAnimated(GFX_BOTTOM);
+    Gui::backgroundAnimatedBottom();
 
     Gui::sprite(ui_sheet_textbox_name_bottom_idx, 0, 1);
     switch (currentTab)

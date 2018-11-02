@@ -207,7 +207,7 @@ void InjectorScreen::draw() const
         Gui::sprite(ui_sheet_bg_style_top_idx, 0, 0);
         Gui::sprite(ui_sheet_bar_arc_top_red_idx, 0, 0);
 
-        Gui::backgroundAnimated(GFX_TOP);
+        Gui::backgroundAnimatedTop();
 
         Gui::sprite(ui_sheet_textbox_event_name_idx, 0, 3);
         Gui::dynamicText(wondercard->title(), 25, 7, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);

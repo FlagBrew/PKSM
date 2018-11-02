@@ -52,7 +52,7 @@ void ViewerScreen::draw() const
     C2D_SceneBegin(g_renderTargetTop);
     Gui::sprite(green ? ui_sheet_emulated_bg_top_green : ui_sheet_emulated_bg_top_blue, 0, 0);
     Gui::sprite(ui_sheet_bg_style_top_idx, 0, 0);
-    Gui::backgroundAnimated(GFX_TOP);
+    Gui::backgroundAnimatedTop();
     Gui::sprite(ui_sheet_bar_arc_top_blue_idx, 0, 0);
     
     Gui::sprite(ui_sheet_textbox_name_top_idx, 0, 3);

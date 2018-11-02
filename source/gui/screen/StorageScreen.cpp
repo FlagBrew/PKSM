@@ -294,7 +294,7 @@ void StorageScreen::draw() const
         C2D_SceneBegin(g_renderTargetTop);
         Gui::sprite(ui_sheet_emulated_bg_top_green, 0, 0);
         Gui::sprite(ui_sheet_bg_style_top_idx, 0, 0);
-        Gui::backgroundAnimated(GFX_TOP);
+        Gui::backgroundAnimatedTop();
         Gui::sprite(ui_sheet_bar_arc_top_green_idx, 0, 0);
 
         Gui::sprite(ui_sheet_textbox_pksm_idx, 261, 3);
