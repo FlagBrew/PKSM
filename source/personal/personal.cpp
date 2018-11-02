@@ -101,6 +101,22 @@ namespace PersonalDPPtHGSS
     u8 baseFriendship(u16 species) { return *(u8*)(personal_dppthgss + species*17 + 0xA); }
     u8 expType(u16 species) { return *(u8*)(personal_dppthgss + species*17 + 0xB); }
     u8 ability(u16 species, u8 n) { return *(u8*)(personal_dppthgss + species*17 + 0xC + n); }
-    u8 formCount(u16 species) { return *(u8*)(personal_dppthgss + species*17 + 0xE); }
+    // Normalized to fit with other formCounts' return values
+    u8 formCount(u16 species)
+    {
+        if (species == 201)
+        {
+            return 28;
+        }
+        else
+        {
+            u8 count = *(u8*)(personal_dppthgss + species*17 + 0xE);
+            if (count == 0)
+            {
+                return 1;
+            }
+            return count;
+        }
+    }
     u16 formStatIndex(u16 species) { return *(u16*)(personal_dppthgss + species*17 + 0xF); }
 }

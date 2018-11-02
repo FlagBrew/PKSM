@@ -361,7 +361,21 @@ namespace {
         switch (TitleLoader::save->generation())
         {
             case 4:
-                formCounter = PersonalDPPtHGSS::formCount;
+                formCounter = [](u16 species) -> u8 {
+                if (species == 201)
+                {
+                    return 28;
+                }
+                else
+                {
+                    u8 count = PersonalDPPtHGSS::formCount(species);
+                    if (count == 0)
+                    {
+                        return 1;
+                    }
+                    return count;
+                }
+            };
                 break;
             case 5:
                 formCounter = PersonalBWB2W2::formCount;
