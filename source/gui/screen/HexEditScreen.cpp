@@ -1375,9 +1375,9 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     break;
                 // Egg and Nicknamed Flags
                 case 0x3B:
-                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, [this, i](){ return this->toggleBit(i, 6); }, ui_sheet_emulated_toggle_green_idx, "", true, 6));
+                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, [this, i](){ return this->toggleBit(i, 6); }, ui_sheet_emulated_toggle_green_idx, "Egg", true, 6));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 6) & 0x1);
-                    buttons[i].push_back(new HexEditButton(70, 106, 13, 13, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, "", true, 7));
+                    buttons[i].push_back(new HexEditButton(70, 106, 13, 13, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, "Nicknamed", true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
                     break;
                 // Fateful Encounter
