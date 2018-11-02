@@ -38,6 +38,16 @@ class HexEditScreen : public Screen
 {
 public:
     HexEditScreen(std::shared_ptr<PKX> pkm);
+    ~HexEditScreen()
+    {
+        for (auto subButtons : buttons)
+        {
+            for (auto button : subButtons)
+            {
+                delete button;
+            }
+        }
+    }
     void draw() const override;
     void update(touchPosition* touch) override;
 

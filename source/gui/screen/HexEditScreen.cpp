@@ -70,30 +70,6 @@ static constexpr std::string_view gen4ToggleTexts[] = {
     "Unused",
     "Unused",
     "Cool Ribbon",
-    "Cool Ribbon Great",
-    "Cool Ribbon Ultra",
-    "Cool Ribbon Master",
-    "Beauty Ribbon",
-    "Beauty Ribbon Great",
-    "Beauty Ribbon Ultra",
-    "Beauty Ribbon Master",
-    "Cute Ribbon",
-    "Cute Ribbon Great",
-    "Cute Ribbon Ultra",
-    "Cute Ribbon Master",
-    "Smart Ribbon",
-    "Smart Ribbon Great",
-    "Smart Ribbon Ultra",
-    "Smart Ribbon Master",
-    "Tough Ribbon",
-    "Tough Ribbon Great",
-    "Tough Ribbon Ultra",
-    "Tough Ribbon Master",
-    "Unused",
-    "Unused",
-    "Unused",
-    "Unused",
-    "Cool Ribbon",
     "Cool Ribbon Super",
     "Cool Ribbon Hyper",
     "Cool Ribbon Master",
@@ -124,7 +100,39 @@ static constexpr std::string_view gen4ToggleTexts[] = {
     "Country Ribbon",
     "National Ribbon",
     "Earth Ribbon",
-    "World Ribbon"
+    "World Ribbon",
+    "Cool Ribbon",
+    "Cool Ribbon Great",
+    "Cool Ribbon Ultra",
+    "Cool Ribbon Master",
+    "Beauty Ribbon",
+    "Beauty Ribbon Great",
+    "Beauty Ribbon Ultra",
+    "Beauty Ribbon Master",
+    "Cute Ribbon",
+    "Cute Ribbon Great",
+    "Cute Ribbon Ultra",
+    "Cute Ribbon Master",
+    "Smart Ribbon",
+    "Smart Ribbon Great",
+    "Smart Ribbon Ultra",
+    "Smart Ribbon Master",
+    "Tough Ribbon",
+    "Tough Ribbon Great",
+    "Tough Ribbon Ultra",
+    "Tough Ribbon Master",
+    "Unused",
+    "Unused",
+    "Unused",
+    "Unused",
+    "Unused",
+    "Unused",
+    "Unused",
+    "Unused",
+    "Unused",
+    "Unused",
+    "Unused",
+    "Unused"
 };
 static constexpr std::string_view gen5ToggleTexts[] = {
     "Sinnoh Champ Ribbon",
@@ -160,30 +168,6 @@ static constexpr std::string_view gen5ToggleTexts[] = {
     "Unused",
     "Unused",
     "Cool Ribbon",
-    "Cool Ribbon Great",
-    "Cool Ribbon Ultra",
-    "Cool Ribbon Master",
-    "Beauty Ribbon",
-    "Beauty Ribbon Great",
-    "Beauty Ribbon Ultra",
-    "Beauty Ribbon Master",
-    "Cute Ribbon",
-    "Cute Ribbon Great",
-    "Cute Ribbon Ultra",
-    "Cute Ribbon Master",
-    "Smart Ribbon",
-    "Smart Ribbon Great",
-    "Smart Ribbon Ultra",
-    "Smart Ribbon Master",
-    "Tough Ribbon",
-    "Tough Ribbon Great",
-    "Tough Ribbon Ultra",
-    "Tough Ribbon Master",
-    "Unused",
-    "Unused",
-    "Unused",
-    "Unused",
-    "Cool Ribbon",
     "Cool Ribbon Super",
     "Cool Ribbon Hyper",
     "Cool Ribbon Master",
@@ -214,7 +198,39 @@ static constexpr std::string_view gen5ToggleTexts[] = {
     "Country Ribbon",
     "National Ribbon",
     "Earth Ribbon",
-    "World Ribbon"
+    "World Ribbon",
+    "Cool Ribbon",
+    "Cool Ribbon Great",
+    "Cool Ribbon Ultra",
+    "Cool Ribbon Master",
+    "Beauty Ribbon",
+    "Beauty Ribbon Great",
+    "Beauty Ribbon Ultra",
+    "Beauty Ribbon Master",
+    "Cute Ribbon",
+    "Cute Ribbon Great",
+    "Cute Ribbon Ultra",
+    "Cute Ribbon Master",
+    "Smart Ribbon",
+    "Smart Ribbon Great",
+    "Smart Ribbon Ultra",
+    "Smart Ribbon Master",
+    "Tough Ribbon",
+    "Tough Ribbon Great",
+    "Tough Ribbon Ultra",
+    "Tough Ribbon Master",
+    "Unused",
+    "Unused",
+    "Unused",
+    "Unused",
+    "Unused",
+    "Unused",
+    "Unused",
+    "Unused",
+    "Unused",
+    "Unused",
+    "Unused",
+    "Unused"
 };
 static constexpr std::string_view gen67ToggleTexts[] = {
     "Unused",
@@ -729,7 +745,7 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
             case 0xDB:
                 return std::make_pair("Met Location", NORMAL);
             case 0xDC:
-                return std::make_pair("Pok\u00E7 Ball", NORMAL);
+                return std::make_pair("Pok\u00E9 Ball", NORMAL);
             case 0xDD:
                 return std::make_pair("Met Level & Original Trainer Gender", NORMAL);
             case 0xDE:
@@ -939,9 +955,9 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
             case 0x81:
                 return std::make_pair("Met Location", OPEN);
             case 0x82:
-                return std::make_pair("Pok\u00E7rus", NORMAL);
+                return std::make_pair("Pok\u00E9rus", NORMAL);
             case 0x83:
-                return std::make_pair("Pok\u00E7 Ball", NORMAL);
+                return std::make_pair("Pok\u00E9 Ball", NORMAL);
             case 0x84:
                 return std::make_pair("Met Level & Original Trainer Gender", NORMAL);
             case 0x85:
@@ -1140,15 +1156,15 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
             case 0x81:
                 return std::make_pair("Met Location (Diamond & Pearl", OPEN);
             case 0x82:
-                return std::make_pair("Pok\u00E7rus", NORMAL);
+                return std::make_pair("Pok\u00E9rus", NORMAL);
             case 0x83:
-                return std::make_pair("Pok\u00E7 Ball", NORMAL);
+                return std::make_pair("Pok\u00E9 Ball", NORMAL);
             case 0x84:
                 return std::make_pair("Met Level & Original Trainer Gender", NORMAL);
             case 0x85:
                 return std::make_pair("Encounter Type", NORMAL);
             case 0x86:
-                return std::make_pair("HGSS Pok\u00E7 Ball", NORMAL);
+                return std::make_pair("HGSS Pok\u00E9 Ball", NORMAL);
             case 0x87:
                 return std::make_pair("Unused", UNRESTRICTED);
         }
