@@ -155,7 +155,18 @@ void InjectSelectorScreen::draw() const
             std::string text;
             if (data.name.size() > 30)
             {
-                text = data.name.substr(0, 26) + "...";
+                size_t chop = 26;
+                // Get rid of ending codepoint segments
+                while (data.name[chop - 1] & 0x80 && !(data.name[chop - 1] & 0x40))
+                {
+                    chop--;
+                }
+                // Get rid of the first codepoint segment
+                if (data.name[chop - 1] & 0x80 && data.name[chop - 1] & 0x40)
+                {
+                    chop--;
+                }
+                text = data.name.substr(0, chop) + "...";
             }
             else
             {
