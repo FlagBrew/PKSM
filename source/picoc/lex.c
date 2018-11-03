@@ -276,10 +276,103 @@ unsigned char LexUnEscapeCharacterConstant(const char **From, const char *End, u
     return Total;
 }
 
+char* LexUnEscapeUnicode16Character(const char **From, const char *End, unsigned char FirstChar)
+{
+    static char Ret[5];
+    
+    memset(Ret, '\0', 5);
+
+    unsigned short Value = GET_BASE_DIGIT(FirstChar);
+    for (int CCount = 0; CCount < 4; CCount++, (*From)++)
+        Value = Value * 16 + GET_BASE_DIGIT(**From);
+    
+    int ReturnLength;
+    if (Value < 0x0080)
+        ReturnLength = 1;
+    else if (Value < 0x0800)
+        ReturnLength = 2;
+    else
+        ReturnLength = 3;
+    
+    if (ReturnLength == 3)
+    {
+        *(Ret) = 0xE0 | ((Value >> 12) & 0x0F);
+        *(Ret + 1) = 0x80 | ((Value >> 6) & 0x3F);
+        *(Ret + 2) = 0x80 | (Value & 0x3F);
+        *(Ret + 3) = '\0';
+    }
+    else if (ReturnLength == 2)
+    {
+        *(Ret) = 0xC0 | ((Value >> 6) & 0x1F);
+        *(Ret + 1) = 0x80 | (Value & 0x3F);
+        *(Ret + 2) = '\0';
+    }
+    else if (ReturnLength == 1)
+    {
+        *(Ret) = Value;
+        *(Ret + 1) = '\0';
+    }
+
+    return Ret;
+}
+
+char* LexUnEscapeUnicode32Character(const char **From, const char *End, unsigned char FirstChar)
+{
+    static char Ret[5];
+    
+    memset(Ret, '\0', 5);
+
+    unsigned int Value = GET_BASE_DIGIT(FirstChar);
+    for (int CCount = 0; CCount < 8; CCount++, (*From)++)
+        Value = Value * 16 + GET_BASE_DIGIT(**From);
+    
+    int ReturnLength;
+    if (Value < 0x0080)
+        ReturnLength = 1;
+    else if (Value < 0x0800)
+        ReturnLength = 2;
+    else if (Value < 0x10000)
+        ReturnLength = 3;
+    else
+        ReturnLength = 4;
+
+    if (ReturnLength == 4)
+    {
+        *(Ret) = 0xF0 | ((Value >> 18) & 0x7);
+        *(Ret + 1) = 0x80 | ((Value >> 12) & 0x3F);
+        *(Ret + 2) = 0x80 | ((Value >> 6) & 0x3F);
+        *(Ret + 3) = 0x80 | (Value & 0x3F);
+        *(Ret + 4) = '\0';
+    }
+    else if (ReturnLength == 3)
+    {
+        *(Ret) = 0xE0 | ((Value >> 12) & 0x0F);
+        *(Ret + 1) = 0x80 | ((Value >> 6) & 0x3F);
+        *(Ret + 2) = 0x80 | (Value & 0x3F);
+        *(Ret + 3) = '\0';
+    }
+    else if (ReturnLength == 2)
+    {
+        *(Ret) = 0xC0 | ((Value >> 6) & 0x1F);
+        *(Ret + 1) = 0x80 | (Value & 0x3F);
+        *(Ret + 2) = '\0';
+    }
+    else if (ReturnLength == 1)
+    {
+        *(Ret) = Value;
+        *(Ret + 1) = '\0';
+    }
+
+    return Ret;
+}
+
 /* unescape a character from a string or character constant */
-unsigned char LexUnEscapeCharacter(const char **From, const char *End)
+char* LexUnEscapeCharacter(const char **From, const char *End)
 {
     unsigned char ThisChar;
+    static char Ret[5];
+
+    memset(Ret, '\0', 5);
     
     while ( *From != End && **From == '\\' && 
             &(*From)[1] != End && (*From)[1] == '\n' )
@@ -290,35 +383,40 @@ unsigned char LexUnEscapeCharacter(const char **From, const char *End)
         (*From) += 3;       /* skip escaped end of lines with CR/LF line termination */
     
     if (*From == End)
-        return '\\';
-    
-    if (**From == '\\')
+        Ret[0] = '\\';
+    else if (**From == '\\')
     { 
         /* it's escaped */
         (*From)++;
         if (*From == End)
-            return '\\';
-        
-        ThisChar = *(*From)++;
-        switch (ThisChar)
+            Ret[0] = '\\';
+        else
         {
-            case '\\': return '\\'; 
-            case '\'': return '\'';
-            case '"':  return '"';
-            case 'a':  return '\a';
-            case 'b':  return '\b';
-            case 'f':  return '\f';
-            case 'n':  return '\n';
-            case 'r':  return '\r';
-            case 't':  return '\t';
-            case 'v':  return '\v';
-            case '0': case '1': case '2': case '3': return LexUnEscapeCharacterConstant(From, End, ThisChar, 8);
-            case 'x': return LexUnEscapeCharacterConstant(From, End, '0', 16);
-            default:   return ThisChar;
+            ThisChar = *(*From)++;
+            switch (ThisChar)
+            {
+                case '\\': Ret[0] = '\\'; break;
+                case '\'': Ret[0] = '\''; break;
+                case '"':  Ret[0] = '"';  break;
+                case 'a':  Ret[0] = '\a'; break;
+                case 'b':  Ret[0] = '\b'; break;
+                case 'f':  Ret[0] = '\f'; break;
+                case 'n':  Ret[0] = '\n'; break;
+                case 'r':  Ret[0] = '\r'; break;
+                case 't':  Ret[0] = '\t'; break;
+                case 'u':  strcat(Ret, LexUnEscapeUnicode16Character(From, End, ThisChar)); break;
+                case 'U':  strcat(Ret, LexUnEscapeUnicode32Character(From, End, ThisChar)); break;
+                case 'v':  Ret[0] = '\v'; break;
+                case '0': case '1': case '2': case '3': Ret[0] = LexUnEscapeCharacterConstant(From, End, ThisChar, 8); break;
+                case 'x': Ret[0] = LexUnEscapeCharacterConstant(From, End, '0', 16); break;
+                default:  Ret[0] = ThisChar; break;
+            }
         }
     }
     else
-        return *(*From)++;
+        Ret[0] = *(*From)++;
+
+    return Ret;
 }
 
 /* get a string constant - used while scanning */
@@ -362,7 +460,22 @@ enum LexToken LexGetStringConstant(Picoc *pc, struct LexState *Lexer, struct Val
         LexFail(pc, Lexer, "out of memory");
     
     for (EscBufPos = EscBuf, Lexer->Pos = StartPos; Lexer->Pos != EndPos;)
-        *EscBufPos++ = LexUnEscapeCharacter(&Lexer->Pos, EndPos);
+    {
+        char* Buf = LexUnEscapeCharacter(&Lexer->Pos, EndPos);
+
+        if (*Buf == '\0')
+        {
+            *EscBufPos++ = '\0';
+        }
+        else
+        {
+            for (size_t i = 0; i < strlen(Buf); i++)
+            {
+                *EscBufPos++ = Buf[i];
+            }
+        }
+    }
+    *EscBufPos = '\0';
     
     /* try to find an existing copy of this string literal */
     RegString = TableStrRegister2(pc, EscBuf, EscBufPos - EscBuf);
@@ -390,7 +503,7 @@ enum LexToken LexGetStringConstant(Picoc *pc, struct LexState *Lexer, struct Val
 enum LexToken LexGetCharacterConstant(Picoc *pc, struct LexState *Lexer, struct Value *Value)
 {
     Value->Typ = &pc->CharType;
-    Value->Val->Character = LexUnEscapeCharacter(&Lexer->Pos, Lexer->End);
+    Value->Val->Character = *LexUnEscapeCharacter(&Lexer->Pos, Lexer->End);
     if (Lexer->Pos != Lexer->End && *Lexer->Pos != '\'')
         LexFail(pc, Lexer, "expected \"'\"");
         
