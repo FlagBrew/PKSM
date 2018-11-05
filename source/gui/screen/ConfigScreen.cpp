@@ -69,7 +69,7 @@ static void inputOT()
 
 static bool countryChoice() { return false; }
 
-ConfigScreen::ConfigScreen()
+ConfigScreen::ConfigScreen() : oldStorage(Configuration::getInstance().storageSize())
 {
     tabs[0] = new Button(1, 2, 104, 17, [&](){ currentTab = 0; return false; }, ui_sheet_res_null_idx, "", 0.0f, 0);
     tabs[1] = new Button(108, 2, 104, 17, [&](){ currentTab = 1; return false; }, ui_sheet_res_null_idx, "", 0.0f, 0);
@@ -259,7 +259,7 @@ void ConfigScreen::update(touchPosition* touch)
     Screen::update();
     if (hidKeysDown() & KEY_B)
     {
-        Gui::screenBack();
+        back();
         return;
     }
 
@@ -272,4 +272,14 @@ void ConfigScreen::update(touchPosition* touch)
     {
         button->update(touch);
     }
+}
+
+void ConfigScreen::back()
+{
+    if (Configuration::getInstance().storageSize() != oldStorage)
+    {
+        Gui::showResizeStorage();
+        // Resize storage
+    }
+    Gui::screenBack();
 }

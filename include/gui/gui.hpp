@@ -133,6 +133,7 @@ namespace Gui
     void showRestoreProgress(u32 partial, u32 total);
     void warn(const std::string& message, Optional<std::string> message2 = Optional<std::string>(nullptr));
     void setNextKeyboardFunc(std::function<void()> callback);
+    void showResizeStorage(void);
 }
 
 extern C2D_TextBuf g_widthBuf;

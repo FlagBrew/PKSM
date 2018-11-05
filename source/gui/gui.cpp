@@ -1282,3 +1282,18 @@ void Gui::showRestoreProgress(u32 partial, u32 total)
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
     C3D_FrameEnd(0);
 }
+
+void Gui::showResizeStorage()
+{
+    clearTextBufs();
+    C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+    C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
+    C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
+    C2D_SceneBegin(g_renderTargetTop);
+    sprite(ui_sheet_part_info_top_idx, 0, 0);
+    staticText(GFX_TOP, 95, "Resizing Storage...", FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE);
+    // dynamicText(GFX_TOP, 130, StringUtils::format("%lu KB of %lu KB...", partial, total), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
+    C2D_SceneBegin(g_renderTargetBottom);
+    sprite(ui_sheet_part_info_bottom_idx, 0, 0);
+    C3D_FrameEnd(0);
+}

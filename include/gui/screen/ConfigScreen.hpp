@@ -56,6 +56,8 @@ private:
     std::array<Button*, 3> tabs;
     std::array<std::vector<Button*>, 3> tabButtons;
     int currentTab = 0;
+    int oldStorage;
+    void back(void);
 };
 
 #endif
