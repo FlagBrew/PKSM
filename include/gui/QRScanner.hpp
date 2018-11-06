@@ -32,6 +32,7 @@
 
 extern "C" {
 #include "quirc/quirc.h"
+#include "base64.h"
 }
 
 typedef struct {
@@ -46,10 +47,14 @@ typedef struct {
 } qr_data;
 
 enum QRMode {
-    PK4,
-    PK5,
-    PK6,
-    PK7
+    PKM4,
+    PKM5,
+    PKM6,
+    PKM7,
+    WCX4,
+    WCX5,
+    WCX6,
+    WCX7
 };
 
 namespace QRScanner

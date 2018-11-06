@@ -91,7 +91,7 @@ static bool qrStuff()
 {
     // TODO: change me
     u8* data = NULL;
-    QRScanner::init(QRMode::PK7, data);
+    QRScanner::init(QRMode::PKM7, data);
     return true;
 }
 
