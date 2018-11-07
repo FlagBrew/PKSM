@@ -72,6 +72,11 @@ void InjectSelectorScreen::update(touchPosition* touch)
         Gui::screenBack();
         return;
     }
+    if (downKeys & KEY_L && downKeys && KEY_R)
+    {
+        doQR();
+        return;
+    }
     if (downKeys & KEY_A)
     {
         Gui::setScreen(std::make_unique<InjectorScreen>(wondercards[hid.fullIndex()]));
@@ -185,4 +190,40 @@ void InjectSelectorScreen::draw() const
     Gui::staticText("\uE004", 75, 17, FONT_SIZE_18, FONT_SIZE_18, C2D_Color32(197, 202, 233, 255), false);
     Gui::staticText("\uE005", 228, 17, FONT_SIZE_18, FONT_SIZE_18, C2D_Color32(197, 202, 233, 255), false);
     Gui::dynamicText(92, 20, 136, StringUtils::format("%d/%d", hid.page() + 1, wondercards.size() % 10 == 0 ? wondercards.size() / 10 : wondercards.size() / 10 + 1), FONT_SIZE_12, FONT_SIZE_12, C2D_Color32(197, 202, 233, 255));
+}
+
+void InjectSelectorScreen::doQR()
+{
+    u8* data = nullptr;
+    QRMode initMode = QRMode(TitleLoader::save->generation());
+
+    QRScanner::init(initMode, data);
+
+    if (data != nullptr)
+    {
+        std::unique_ptr<WCX> wcx = nullptr;
+
+        switch (TitleLoader::save->generation())
+        {
+            case 4:
+                wcx = std::make_unique<PGT>(data);
+                break;
+            case 5:
+                wcx = std::make_unique<PGF>(data);
+                break;
+            case 6:
+                wcx = std::make_unique<WC6>(data);
+                break;
+            case 7:
+                wcx = std::make_unique<WC7>(data);
+                break;
+        }
+
+        if (wcx)
+        {
+            Gui::setScreen(std::make_unique<InjectorScreen>(std::move(wcx)));
+        }
+        
+        delete data;
+    }
 }

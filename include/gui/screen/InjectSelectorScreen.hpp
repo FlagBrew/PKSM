@@ -28,6 +28,7 @@
 #include "HidHorizontal.hpp"
 #include "gui.hpp"
 #include "mysterygift.hpp"
+#include "QRScanner.hpp"
 #include <vector>
 
 #ifndef INJECTSELECTORSCREEN_HPP
@@ -42,6 +43,7 @@ public:
     void draw(void) const override;
     ScreenType type() const override { return ScreenType::EVENTS; }
 private:
+    void doQR(void);
     HidHorizontal hid;
     std::vector<nlohmann::json> wondercards;
 };

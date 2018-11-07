@@ -92,6 +92,32 @@ InjectorScreen::InjectorScreen(nlohmann::json ids) : hid(40, 8), ids(ids)
     buttons.push_back(new Button(282, 212, 34, 28, [](){ Gui::screenBack(); return true; }, ui_sheet_button_back_idx, "", 0.0f, 0));
 }
 
+InjectorScreen::InjectorScreen(std::unique_ptr<WCX> wcx) : hid(40, 8), ids({}), wondercard(std::move(wcx))
+{
+    lang = Language::UNUSED;
+    
+    slot = TitleLoader::save->emptyGiftLocation() + 2;
+    int langIndex = 1;
+    for (int y = 46; y < 70; y += 23)
+    {
+        for (int x = 121; x < 274; x += 38)
+        {
+            if (langIndex != (int) Language::UNUSED)
+            {
+                buttons.push_back(new Button(x, y, 38, 23, [this, langIndex](){ return this->setLanguage((Language) langIndex); }, ui_sheet_res_null_idx, "", 0, 0));
+            }
+            langIndex++;
+        }
+    }
+    buttons.push_back(new Button(235, 102, 38, 23, [this](){ overwriteCard = true; return false; }, ui_sheet_res_null_idx, "", 0, 0));
+    buttons.push_back(new Button(273, 102, 38, 23, [this](){ overwriteCard = false; return false; }, ui_sheet_res_null_idx, "", 0, 0));
+    buttons.push_back(new Button(235, 135, 38, 23, [this](){ adaptLanguage = true; return false; }, ui_sheet_res_null_idx, "", 0, 0));
+    buttons.push_back(new Button(273, 135, 38, 23, [this](){ adaptLanguage = false; return false; }, ui_sheet_res_null_idx, "", 0, 0));
+    buttons.push_back(new Button(255, 168, 38, 23, [this](){ choosingSlot = true; hid.select(slot - 1); return true; }, ui_sheet_button_unselected_text_button_idx, "", 0.0f, 0));
+    buttons.push_back(new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0));
+    buttons.push_back(new Button(282, 212, 34, 28, [](){ Gui::screenBack(); return true; }, ui_sheet_button_back_idx, "", 0.0f, 0));
+}
+
 void InjectorScreen::draw() const
 {
     C2D_SceneBegin(g_renderTargetBottom);

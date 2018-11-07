@@ -1,10 +1,45 @@
-#include "QRScanner.hpp"
+/*
+*   This file is part of PKSM
+*   Copyright (C) 2016-2018 Bernardo Giordano, Admiral Fish, piepie62
+*
+*   This program is free software: you can redistribute it and/or modify
+*   it under the terms of the GNU General Public License as published by
+*   the Free Software Foundation, either version 3 of the License, or
+*   (at your option) any later version.
+*
+*   This program is distributed in the hope that it will be useful,
+*   but WITHOUT ANY WARRANTY; without even the implied warranty of
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*   GNU General Public License for more details.
+*
+*   You should have received a copy of the GNU General Public License
+*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*
+*   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
+*       * Requiring preservation of specified reasonable legal notices or
+*         author attributions in that material or in the Appropriate Legal
+*         Notices displayed by works containing it.
+*       * Prohibiting misrepresentation of the origin of that material,
+*         or requiring that modified versions of such material be marked in
+*         reasonable ways as different from the original version.
+*/
 
-static void qrHandler(qr_data*, QRMode, u8*);
+#include "QRScanner.hpp"
+#include "WC7.hpp"
+#include "WC6.hpp"
+#include "PGT.hpp"
+#include "PGF.hpp"
+#include "PK4.hpp"
+#include "PK5.hpp"
+#include "PK6.hpp"
+#include "PK7.hpp"
+#include "loader.hpp"
+
+static void qrHandler(qr_data*, QRMode, u8*&);
 static void camThread(void*);
 static void uiThread(void*);
 
-static void qrHandler(qr_data* data, QRMode mode, u8* buff)
+static void qrHandler(qr_data* data, QRMode mode, u8*& buff)
 {
     hidScanInput();
     if (hidKeysDown() & KEY_B)
@@ -57,7 +92,132 @@ static void qrHandler(qr_data* data, QRMode mode, u8* buff)
         quirc_extract(data->context, 0, &code);  
         if (!quirc_decode(&code, &scan_data))
         {
+            QRScanner::exit(data);
+            if (mode == WCX4)
+            {
+                size_t outSize;
+                static constexpr int wcHeader = 38; // strlen("http://lunarcookies.github.io/wc.html#)
+                u8* out = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader, &outSize);
 
+                if (outSize == PGT::length)
+                {
+                    buff = new u8[outSize];
+                    std::copy(out, out + outSize, buff);
+                }
+
+                free(out);
+            }
+            else if (mode == WCX5)
+            {
+                size_t outSize;
+                static constexpr int wcHeader = 38; // strlen("http://lunarcookies.github.io/wc.html#)
+                u8* out = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader, &outSize);
+
+                if (outSize == PGF::length)
+                {
+                    buff = new u8[outSize];
+                    std::copy(out, out + outSize, buff);
+                }
+
+                free(out);
+            }
+            else if (mode == WCX6 || mode == WCX7)
+            {
+                size_t outSize;
+                static constexpr int wcHeader = 38; // strlen("http://lunarcookies.github.io/wc.html#)
+                u8* out = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader, &outSize);
+
+                if (outSize == WC6::length || outSize == WC6::lengthFull)
+                {
+                    buff = new u8[outSize];
+                    std::copy(out, out + outSize, buff);
+                }
+
+                free(out);
+            }
+            else if (mode == PKM4)
+            {
+                size_t outSize;
+                static constexpr int pkHeader = 6; // strlen("null/#")
+                u8* out = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader, &outSize);
+
+                if (PKX::genFromBytes(out, outSize, true) == 4) // PK4/5 length
+                {
+                    buff = new u8[outSize];
+                    std::copy(out, out + outSize, buff);
+                }
+
+                free(out);
+            }
+            else if (mode == PKM5)
+            {
+                size_t outSize;
+                static constexpr int pkHeader = 6; // strlen("null/#")
+                u8* out = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader, &outSize);
+
+                if (PKX::genFromBytes(out, outSize, true) == 5) // PK4/5 length
+                {
+                    buff = new u8[outSize];
+                    std::copy(out, out + outSize, buff);
+                }
+
+                free(out);
+            }
+            else if (mode == PKM6)
+            {
+                size_t outSize;
+                static constexpr int pkHeader = 40; // strlen("http://lunarcookies.github.io/b1s1.html#")
+                u8* out = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader, &outSize);
+
+                if (PKX::genFromBytes(out, outSize, true) == 6) // PK6 length
+                {
+                    buff = new u8[outSize];
+                    std::copy(out, out + outSize, buff);
+                }
+
+                free(out);
+            }
+            else if (mode == PKM7)
+            {
+                if (scan_data.payload_len != 0x1A2)
+                {
+                    return;
+                }
+
+                u32 box = *(u32*)(scan_data.payload + 8);
+                u32 slot = *(u32*)(scan_data.payload + 12);
+                u32 copies = *(u32*)(scan_data.payload + 16);
+
+                if (copies > 1)
+                {
+                    if ((int) box < TitleLoader::save->maxBoxes() && slot < 30)
+                    {
+                        std::shared_ptr<PKX> pkx;
+                        if (mode == PKM6)
+                        {
+                            pkx = std::make_shared<PK6>(scan_data.payload + 0x30, true);
+                        }
+                        else
+                        {
+                            pkx = std::make_shared<PK7>(scan_data.payload + 0x30, true);
+                        }
+                        for (u32 i = 0; i < copies; i++)
+                        {
+                            u32 tmpSlot = (slot + i) % 30;
+                            u32 tmpBox = box + (slot + i) / 30;
+                            if ((int) tmpBox < TitleLoader::save->maxBoxes() && tmpSlot < 30)
+                            {
+                                TitleLoader::save->pkm(*pkx, tmpBox, tmpSlot);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    buff = new u8[232]; // PK7 size
+                    std::copy(scan_data.payload + 0x30, scan_data.payload + 0x30 + 232, buff);
+                }
+            }
         }
     }
 }
@@ -162,7 +322,7 @@ static void uiThread(void* arg)
     }
 }
 
-void QRScanner::init(QRMode mode, u8* buff)
+void QRScanner::init(QRMode mode, u8*& buff)
 {
     // init qr_data struct variables
     qr_data* data = (qr_data*)malloc(sizeof(qr_data));

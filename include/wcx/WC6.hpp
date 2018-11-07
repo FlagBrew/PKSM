@@ -38,7 +38,7 @@ protected:
 
 public:
     static const u16 length = 264;
-    const u16 lengthFull = 784;
+    static const u16 lengthFull = 784;
     
     WC6(u8* dt, bool full = false);
     virtual ~WC6() { };

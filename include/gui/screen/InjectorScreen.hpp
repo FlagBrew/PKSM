@@ -40,6 +40,7 @@ class InjectorScreen : public Screen
 {
 public:
     InjectorScreen(nlohmann::json ids);
+    InjectorScreen(std::unique_ptr<WCX> card);
     void update(touchPosition* touch) override;
     void draw(void) const override;
     ScreenType type() const override { return ScreenType::INJECTOR; }

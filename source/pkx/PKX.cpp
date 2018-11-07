@@ -25,6 +25,7 @@
 */
 
 #include "PKX.hpp"
+#include "PK6.hpp"
 
 u32 PKX::expTable(u8 row, u8 col) const
 {
@@ -190,4 +191,62 @@ void PKX::fixMoves(void)
             PPUp(i, 0);
         }
     }
+}
+
+u8 PKX::genFromBytes(u8* data, size_t length, bool ekx)
+{
+    if (length == 136)
+    {
+        if (*(u16*)(data + 4) == 0 && (*(u16*)(data + 0x80) >= 0x3333 || data[0x5F] >= 0x10) && *(u16*)(data + 0x46) == 0)
+        {
+            return 5;
+        }
+        return 4;
+    }
+    else if (length == 232)
+    {
+        PK6 test(data, ekx);
+        if (test.species() > 721 ||
+            test.version() > 27 ||
+            test.move(0) > 621 ||
+            test.move(1) > 621 ||
+            test.move(2) > 621 ||
+            test.move(3) > 621 ||
+            test.relearnMove(0) > 621 ||
+            test.relearnMove(1) > 621 ||
+            test.relearnMove(2) > 621 ||
+            test.relearnMove(3) > 621 ||
+            test.ability() > 191 ||
+            test.heldItem() > 775) // Invalid values for gen 6
+        {
+            return 7;
+        }
+
+        int et = test.encounterType();
+        if (et != 0)
+        {
+            if (test.level() < 100)
+            {
+                return 6;
+            }
+
+            switch (test.version())
+            {
+                case 7:
+                case 8:
+                case 10:
+                case 11:
+                case 12:
+                    if (et > 24)
+                    {
+                        return 7;
+                    }
+                break;
+                default:
+                    return 7;
+            }
+        }
+        return 6;
+    }
+    return 0;
 }

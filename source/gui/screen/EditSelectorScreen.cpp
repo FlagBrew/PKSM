@@ -30,6 +30,7 @@
 #include "EditorScreen.hpp"
 #include "ClickButton.hpp"
 #include "AccelButton.hpp"
+#include <memory>
 
 extern int bobPointer();
 static bool dirtyBack = true;
@@ -87,11 +88,41 @@ void EditSelectorScreen::changeBoxName()
 
 static bool wirelessStuff() { return false; }
 
-static bool qrStuff()
+bool EditSelectorScreen::doQR()
 {
-    // TODO: change me
-    u8* data = NULL;
-    QRScanner::init(QRMode::PKM7, data);
+    u8* data = nullptr;
+    QRMode initMode = QRMode(TitleLoader::save->generation() - 4);
+
+    QRScanner::init(initMode, data);
+
+    if (data != nullptr)
+    {
+        std::shared_ptr<PKX> pkm = nullptr;
+
+        switch (TitleLoader::save->generation())
+        {
+            case 4:
+                pkm = std::make_shared<PK4>(data, true);
+                break;
+            case 5:
+                pkm = std::make_shared<PK5>(data, true);
+                break;
+            case 6:
+                pkm = std::make_shared<PK6>(data, true);
+                break;
+            case 7:
+                pkm = std::make_shared<PK7>(data, true);
+                break;
+        }
+
+        if (pkm) // Should be true, but just make sure
+        {
+            int slot = cursorPos ? cursorPos - 1 : 0; // make sure it writes to a good position, AKA not the title bar
+            TitleLoader::save->pkm(*pkm, box, slot);
+        }
+
+        delete data;
+    }
     return true;
 }
 
@@ -279,7 +310,7 @@ void EditSelectorScreen::update(touchPosition* touch)
     }
     else if ((heldKeys & KEY_L) && (heldKeys & KEY_R))
     {
-        qrStuff();
+        doQR();
         return;
     }
     else if (downKeys & KEY_LEFT)
