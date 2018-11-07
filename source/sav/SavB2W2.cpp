@@ -284,7 +284,7 @@ std::vector<MysteryGift::giftData> SavB2W2::currentGifts(void) const
 {
     std::vector<MysteryGift::giftData> ret;
     u8* wonderCards = data + 0x1C900;
-    for (int i = 0; i < emptyGiftLocation() + 1; i++)
+    for (int i = 0; i < emptyGiftLocation(); i++)
     {
         if (*(wonderCards + i * PGF::length + 0xB3) == 1)
         {

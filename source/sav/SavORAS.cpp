@@ -344,7 +344,7 @@ std::vector<MysteryGift::giftData> SavORAS::currentGifts(void) const
 {
     std::vector<MysteryGift::giftData> ret;
     u8* wonderCards = data + 0x1CD00;
-    for (int i = 0; i < emptyGiftLocation() + 1; i++)
+    for (int i = 0; i < emptyGiftLocation(); i++)
     {
         if (*(wonderCards + i * WC6::length + 0x51) == 0)
         {

@@ -422,7 +422,7 @@ std::vector<MysteryGift::giftData> SavUSUM::currentGifts(void) const
 {
     std::vector<MysteryGift::giftData> ret;
     u8* wonderCards = data + 0x66300;
-    for (int i = 0; i < emptyGiftLocation() + 1; i++)
+    for (int i = 0; i < emptyGiftLocation(); i++)
     {
         if (*(wonderCards + i * WC7::length + 0x51) == 0)
         {

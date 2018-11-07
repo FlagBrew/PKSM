@@ -52,7 +52,8 @@ bool InjectorScreen::setLanguage(Language language)
     return false;
 }
 
-InjectorScreen::InjectorScreen(nlohmann::json ids) : hid(40, 8), ids(ids)
+InjectorScreen::InjectorScreen(nlohmann::json ids) : hid(40, 8), ids(ids), emptySlot(TitleLoader::save->emptyGiftLocation()),
+                                                     gifts(TitleLoader::save->currentGifts())
 {
     std::string langString = i18n::langString(Configuration::getInstance().language());
     if (ids.find(langString) != ids.end())
@@ -68,7 +69,7 @@ InjectorScreen::InjectorScreen(nlohmann::json ids) : hid(40, 8), ids(ids)
         lang = i18n::langFromString(ids.begin().key());
     }
     
-    slot = TitleLoader::save->emptyGiftLocation() + 2;
+    slot = emptySlot + 1;
     int langIndex = 1;
     for (int y = 46; y < 70; y += 23)
     {
@@ -87,13 +88,34 @@ InjectorScreen::InjectorScreen(nlohmann::json ids) : hid(40, 8), ids(ids)
     buttons.push_back(new Button(273, 135, 38, 23, [this](){ adaptLanguage = false; return false; }, ui_sheet_res_null_idx, "", 0, 0));
     buttons.push_back(new Button(255, 168, 38, 23, [this](){ choosingSlot = true; hid.select(slot - 1); return true; }, ui_sheet_button_unselected_text_button_idx, "", 0.0f, 0));
     buttons.push_back(new Button(282, 212, 34, 28, [](){ Gui::screenBack(); return true; }, ui_sheet_button_back_idx, "", 0.0f, 0));
+
+    u32 newDate = 0;
+    switch (wondercard->generation())
+    {
+        case 4: // No date data
+            break;
+        case 5:
+            *((u8*)(&newDate)) = (u8)Configuration::getInstance().day();
+            *((u8*)(&newDate) + 1) = (u8)Configuration::getInstance().month();
+            *((u16*)(&newDate) + 1) = (u16)Configuration::getInstance().year();
+            wondercard->rawDate(newDate);
+            break;
+        case 6:
+        case 7:
+            newDate = Configuration::getInstance().year() * 10000;
+            newDate += Configuration::getInstance().month() * 100;
+            newDate += Configuration::getInstance().day();
+            wondercard->rawDate(newDate);
+            break;
+    }
 }
 
-InjectorScreen::InjectorScreen(std::unique_ptr<WCX> wcx) : wondercard(std::move(wcx)), hid(40, 8), ids({})
+InjectorScreen::InjectorScreen(std::unique_ptr<WCX> wcx) : wondercard(std::move(wcx)), hid(40, 8), ids({}), emptySlot(TitleLoader::save->emptyGiftLocation()),
+                                                           gifts(TitleLoader::save->currentGifts())
 {
     lang = Language::UNUSED;
     
-    slot = TitleLoader::save->emptyGiftLocation() + 2;
+    slot = emptySlot + 1;
     int langIndex = 1;
     for (int y = 46; y < 70; y += 23)
     {
@@ -332,7 +354,6 @@ void InjectorScreen::draw() const
 
         C2D_SceneBegin(g_renderTargetTop);
         Gui::sprite(ui_sheet_part_mtx_5x8_idx, 0, 0);
-        std::vector<MysteryGift::giftData> saveDatas = TitleLoader::save->currentGifts();
         int saveGeneration = TitleLoader::save->generation();
         for (size_t i = 0; i < 40; i++)
         {
@@ -347,11 +368,11 @@ void InjectorScreen::draw() const
             {
                 C2D_DrawRectSolid(x * 50, y * 48, 0.5f, 49, 47, C2D_Color32(15, 22, 89, 255));
             }
-            if (fullI < saveDatas.size())
+            if (fullI < gifts.size())
             {
-                if (saveDatas[fullI].species > -1)
+                if (gifts[fullI].species > -1)
                 {
-                    Gui::pkm(saveDatas[fullI].species, saveDatas[fullI].form, saveGeneration, x * 50 + 7, y * 48 + 2);
+                    Gui::pkm(gifts[fullI].species, gifts[fullI].form, saveGeneration, x * 50 + 7, y * 48 + 2);
                 }
                 else
                 {
@@ -360,7 +381,7 @@ void InjectorScreen::draw() const
 
                 Gui::dynamicText(x * 50, y * 48 + 36, 50, std::to_string(fullI + 1), FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
             }
-            else if (fullI == saveDatas.size())
+            else if (fullI == gifts.size())
             {
                 Gui::dynamicText(x * 50, y * 48 + 36, 50, std::to_string(fullI + 1), FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
             }
@@ -382,10 +403,21 @@ void InjectorScreen::update(touchPosition* touch)
         {
             button->update(touch);
         }
+        if (downKeys & KEY_START)
+        {
+            int tmpSlot = emptySlot;
+            if (overwriteCard)
+            {
+                tmpSlot = slot - 1;
+            }
+            TitleLoader::save->mysteryGift(*wondercard, tmpSlot);
+            Gui::screenBack();
+            return;
+        }
     }
     else
     {
-        hid.update(std::min(TitleLoader::save->maxWondercards(), (size_t) TitleLoader::save->emptyGiftLocation() + 2));
+        hid.update(std::min(TitleLoader::save->maxWondercards(), (size_t) emptySlot + 1));
         if (downKeys & KEY_A)
         {
             slot = hid.fullIndex() + 1;
@@ -403,12 +435,6 @@ void InjectorScreen::update(touchPosition* touch)
         {
             choosingSlot = false;
         }
-    }
-    if (downKeys & KEY_START)
-    {
-        // save->wcx(*wondercard, slot - 1);
-        Gui::screenBack();
-        return;
     }
     if (wondercard->generation() == 7 && wondercard->item() && ((WC7*)wondercard.get())->items() > 1)
     {

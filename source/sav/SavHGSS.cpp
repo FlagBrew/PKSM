@@ -531,7 +531,7 @@ std::vector<MysteryGift::giftData> SavHGSS::currentGifts(void) const
 {
     std::vector<MysteryGift::giftData> ret;
     u8* wonderCards = data + 0x9E3C + gbo;
-    for (int i = 0; i < emptyGiftLocation() + 1; i++)
+    for (int i = 0; i < emptyGiftLocation(); i++)
     {
         if (*(wonderCards + i * PGT::length) == 1 || *(wonderCards + i * PGT::length) == 2 || *(wonderCards + i * PGT::length) == 7)
         {
