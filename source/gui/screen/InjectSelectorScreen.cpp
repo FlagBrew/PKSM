@@ -67,12 +67,13 @@ void InjectSelectorScreen::update(touchPosition* touch)
     Screen::update();
     hid.update(wondercards.size());
     u32 downKeys = hidKeysDown();
+    u32 heldKeys = hidKeysHeld();
     if (downKeys & KEY_B)
     {
         Gui::screenBack();
         return;
     }
-    if (downKeys & KEY_L && downKeys && KEY_R)
+    if (heldKeys & KEY_L && heldKeys & KEY_R)
     {
         doQR();
         return;
