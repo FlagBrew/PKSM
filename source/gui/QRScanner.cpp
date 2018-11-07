@@ -129,8 +129,10 @@ static void qrHandler(qr_data* data, QRMode mode, u8*& buff)
 
                 if (outSize == WC6::length || outSize == WC6::lengthFull)
                 {
-                    buff = new u8[outSize];
-                    std::copy(out, out + outSize, buff);
+                    buff = new u8[WC6::length];
+                    int ofs = outSize == WC6::lengthFull ? 0x206 : 0;
+
+                    std::copy(out + ofs, out + ofs + WC6::length, buff);
                 }
 
                 free(out);
@@ -303,13 +305,17 @@ static void camThread(void *arg)
 static void uiThread(void* arg)
 {
     qr_data* data = (qr_data*) arg;
-    while (!data->finished)
+    while (true)
     {
         C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
         for (u32 x = 0; x < 400; x++)
         {
             for (u32 y = 0; y < 240; y++)
             {
+                if (data->finished || data->tex == NULL || data->image.tex->data == NULL)
+                {
+                    return;
+                }
                 u32 dstPos = ((((y >> 3) * (512 >> 3) + (x >> 3)) << 6) + ((x & 1) | ((y & 1) << 1) | ((x & 2) << 1) | ((y & 2) << 2) | ((x & 4) << 2) | ((y & 4) << 3))) * 2;
                 u32 srcPos = (y * 400 + x) * 2;
                 memcpy(&((u8*)data->image.tex->data)[dstPos], &((u8*)data->camera_buffer)[srcPos], 2);
@@ -355,6 +361,7 @@ void QRScanner::exit(qr_data *data)
     C3D_TexDelete(data->tex);
     free(data->camera_buffer);
     free(data->tex);
+    data->tex = NULL;
     quirc_destroy(data->context);
     free(data);
 }

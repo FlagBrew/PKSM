@@ -685,6 +685,19 @@ void Gui::sprite(int key, int x, int y)
         tex = _select_box(sprite, 0, off, 0, sprite.subtex->height);
         C2D_DrawImageAt({sprite.tex, &tex}, x, y + off, 0.5f, nullptr, 1.0f, rep);   
     }
+    else if (key == ui_sheet_emulated_button_qr_idx)
+    {
+        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_box_hex_value_idx);
+
+        Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, 5, 0);
+        // Left
+        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f);
+        // Right
+        C2D_DrawImageAt({sprite.tex, &tex}, x + 65, y, 0.5f, nullptr, -1.0f, 1.0f);
+        // Middle
+        tex = _select_box(sprite, 5, 0, 6, 0);
+        C2D_DrawImageAt({sprite.tex, &tex}, x + 5, y, 0.5f, nullptr, 60.0f, 1.0f);
+    }
     // standard case
     else
     {

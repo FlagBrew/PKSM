@@ -44,6 +44,8 @@ InjectSelectorScreen::InjectSelectorScreen() : hid(10, 2)
             ((SavBW*)TitleLoader::save.get())->cryptMysteryGiftData();
         }
     }
+
+    buttons.push_back(new Button(160 - 70/2, 207 - 23, 70, 23, [this](){ return this->doQR(); }, ui_sheet_emulated_button_qr_idx, "", FONT_SIZE_14, COLOR_WHITE));
 }
 
 InjectSelectorScreen::~InjectSelectorScreen()
@@ -59,6 +61,10 @@ InjectSelectorScreen::~InjectSelectorScreen()
         {
             ((SavBW*)TitleLoader::save.get())->cryptMysteryGiftData();
         }
+    }
+    for (auto button : buttons)
+    {
+        delete button;
     }
 }
 
@@ -82,6 +88,14 @@ void InjectSelectorScreen::update(touchPosition* touch)
     {
         Gui::setScreen(std::make_unique<InjectorScreen>(wondercards[hid.fullIndex()]));
         return;
+    }
+
+    for (auto button : buttons)
+    {
+        if (button->update(touch))
+        {
+            return;
+        }
     }
 }
 
@@ -191,9 +205,16 @@ void InjectSelectorScreen::draw() const
     Gui::staticText("\uE004", 75, 17, FONT_SIZE_18, FONT_SIZE_18, C2D_Color32(197, 202, 233, 255), false);
     Gui::staticText("\uE005", 228, 17, FONT_SIZE_18, FONT_SIZE_18, C2D_Color32(197, 202, 233, 255), false);
     Gui::dynamicText(92, 20, 136, StringUtils::format("%d/%d", hid.page() + 1, wondercards.size() % 10 == 0 ? wondercards.size() / 10 : wondercards.size() / 10 + 1), FONT_SIZE_12, FONT_SIZE_12, C2D_Color32(197, 202, 233, 255));
+
+    for (auto button : buttons)
+    {
+        button->draw();
+    }
+
+    Gui::staticText(GFX_BOTTOM, 207 - 21, "\uE004+\uE005 \uE01E", FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
 }
 
-void InjectSelectorScreen::doQR()
+bool InjectSelectorScreen::doQR()
 {
     u8* data = nullptr;
     QRMode initMode = QRMode(TitleLoader::save->generation());
@@ -223,8 +244,12 @@ void InjectSelectorScreen::doQR()
         if (wcx)
         {
             Gui::setScreen(std::make_unique<InjectorScreen>(std::move(wcx)));
+
+            delete data;
+            return true;
         }
-        
+
         delete data;
     }
+    return false;
 }

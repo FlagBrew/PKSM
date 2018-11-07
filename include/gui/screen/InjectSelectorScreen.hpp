@@ -29,6 +29,7 @@
 #include "gui.hpp"
 #include "mysterygift.hpp"
 #include "QRScanner.hpp"
+#include "Button.hpp"
 #include <vector>
 
 #ifndef INJECTSELECTORSCREEN_HPP
@@ -43,9 +44,10 @@ public:
     void draw(void) const override;
     ScreenType type() const override { return ScreenType::EVENTS; }
 private:
-    void doQR(void);
+    bool doQR(void);
     HidHorizontal hid;
     std::vector<nlohmann::json> wondercards;
+    std::vector<Button*> buttons;
 };
 
 #endif
