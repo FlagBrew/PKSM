@@ -28,6 +28,8 @@
 #include "InjectorScreen.hpp"
 #include "loader.hpp"
 
+static bool wirelessStuff() { return false; }
+
 InjectSelectorScreen::InjectSelectorScreen() : hid(10, 2)
 {
     MysteryGift::init(TitleLoader::save->generation());
@@ -46,6 +48,8 @@ InjectSelectorScreen::InjectSelectorScreen() : hid(10, 2)
     }
 
     buttons.push_back(new Button(160 - 70/2, 207 - 23, 70, 23, [this](){ return this->doQR(); }, ui_sheet_emulated_button_qr_idx, "", FONT_SIZE_14, COLOR_WHITE));
+    buttons.push_back(new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0));
+    buttons.push_back(new Button(282, 212, 34, 28, [](){ Gui::screenBack(); return true; }, ui_sheet_button_back_idx, "", 0.0f, 0));
 }
 
 InjectSelectorScreen::~InjectSelectorScreen()
@@ -89,12 +93,20 @@ void InjectSelectorScreen::update(touchPosition* touch)
         Gui::setScreen(std::make_unique<InjectorScreen>(wondercards[hid.fullIndex()]));
         return;
     }
-
-    for (auto button : buttons)
+    if (downKeys & KEY_Y)
     {
-        if (button->update(touch))
+        wirelessStuff();
+        return;
+    }
+
+    if (downKeys & KEY_TOUCH)
+    {
+        for (auto button : buttons)
         {
-            return;
+            if (button->update(touch))
+            {
+                return;
+            }
         }
     }
 }

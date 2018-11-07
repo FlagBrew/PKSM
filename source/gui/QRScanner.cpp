@@ -304,6 +304,7 @@ static void camThread(void *arg)
 
 static void uiThread(void* arg)
 {
+    static bool first = true;
     qr_data* data = (qr_data*) arg;
     while (true)
     {
@@ -314,6 +315,7 @@ static void uiThread(void* arg)
             {
                 if (data->finished || data->tex == NULL || data->image.tex->data == NULL)
                 {
+                    first = true;
                     return;
                 }
                 u32 dstPos = ((((y >> 3) * (512 >> 3) + (x >> 3)) << 6) + ((x & 1) | ((y & 1) << 1) | ((x & 2) << 1) | ((y & 2) << 2) | ((x & 4) << 2) | ((y & 4) << 3))) * 2;
@@ -324,6 +326,13 @@ static void uiThread(void* arg)
 
         C2D_SceneBegin(g_renderTargetTop);
         C2D_DrawImageAt(data->image, 0.0f, 0.0f, 0.5f, NULL, 1.0f, 1.0f);
+        if (first)
+        {
+            C2D_SceneBegin(g_renderTargetBottom);
+            C2D_DrawRectSolid(0, 0, 0.5f, 320.0f, 240.0f, COLOR_MASKBLACK);
+            Gui::staticText(GFX_BOTTOM, 115, "Press \uE001 to exit", FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
+            first = false;
+        }
         C3D_FrameEnd(0);
     }
 }
