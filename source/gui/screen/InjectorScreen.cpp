@@ -144,8 +144,6 @@ void InjectorScreen::draw() const
     Gui::sprite(ui_sheet_bar_bottom_red_idx, -3, 213);
     Gui::sprite(ui_sheet_stripe_wondercard_info_idx, 0, 14);
     Gui::dynamicText("\uE004 / \uE005 to switch multiple WC.", 9, 15, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-    Gui::sprite(ui_sheet_stripe_camera_idx, 218, 14);
-    Gui::dynamicText("\uE004+\uE005 \uE01E", 311, 15, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, true);
 
     Gui::sprite(ui_sheet_point_big_idx, 15, 54);
     Gui::staticText("Languages", 26, 49, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
