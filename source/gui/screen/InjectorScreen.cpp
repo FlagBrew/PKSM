@@ -411,6 +411,10 @@ void InjectorScreen::update(touchPosition* touch)
                 tmpSlot = slot - 1;
             }
             TitleLoader::save->mysteryGift(*wondercard, tmpSlot);
+            if (adaptLanguage)
+            {
+                TitleLoader::save->language((u8)lang);
+            }
             Gui::screenBack();
             return;
         }
