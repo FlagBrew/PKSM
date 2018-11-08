@@ -120,16 +120,39 @@ std::string StringUtils::getString4(const u8* data, int ofs, int len)
     std::string output;
     len *= 2;
     u16 temp;
-    char tempChar[2];
+    u16 codepoint;
     for (u8 i = 0; i < len; i += 2)
     {
         temp = *(u16*)(data + ofs + i);
         if (temp == 0xFFFF)
             break;
-        *(u16*)(tempChar) = ((0 < temp && temp < G4TEXT_LENGTH) ? G4Chars[temp - 2] : G4Chars[G4TEXT_LENGTH - 1]);
-        if (*(u16*)(tempChar) == 0xFFFF)
+        codepoint = ((0 < temp && temp < G4TEXT_LENGTH) ? G4Chars[temp - 2] : G4Chars[G4TEXT_LENGTH - 1]);
+        if (codepoint == 0xFFFF)
             break;
-        output.append((char*)tempChar);
+        
+        char* addChar;
+        if (codepoint < 0x0080)
+        {
+            addChar = new char[2];
+            addChar[0] = codepoint;
+            addChar[1] = '\0';
+        }
+        else if (codepoint < 0x0800)
+        {
+            addChar = new char[3];
+            addChar[0] = 0xC0 | ((codepoint >> 6) & 0x1F);
+            addChar[1] = 0x80 | (codepoint & 0x3F);
+            addChar[2] = '\0';
+        }
+        else
+        {
+            addChar = new char[4];
+            addChar[0] = 0xE0 | ((codepoint >> 12) & 0x0F);
+            addChar[1] = 0x80 | ((codepoint >> 6) & 0x3F);
+            addChar[2] = 0x80 | (codepoint & 0x3F);
+            addChar[3] = '\0';
+        }
+        output.append(addChar);
     }
     return output;
 }
@@ -137,19 +160,49 @@ std::string StringUtils::getString4(const u8* data, int ofs, int len)
 void StringUtils::setString4(u8* data, const std::string v, int ofs, int len)
 {
     u16 output[len] = {0};
-    for (int tLen = 0; tLen < len; tLen++)
+    for (int outIndex = 0, charIndex = 0; outIndex < len; charIndex++, outIndex++)
     {
-        size_t index = G4TEXT_LENGTH;
-        for (size_t i = 0; i < G4TEXT_LENGTH; i++)
+        if (v[charIndex] & 0x80)
         {
-            if (v[tLen] == G4Chars[i])
+            u16 codepoint = 0;
+            if (v[charIndex] & 0x80 && v[charIndex] & 0x40 && v[charIndex] & 0x20)
             {
-                index = i;
-                break;
+                codepoint = v[charIndex] & 0x0F;
+                codepoint = codepoint << 6 | (v[charIndex + 1] & 0x3F);
+                codepoint = codepoint << 6 | (v[charIndex + 2] & 0x3F);
+                charIndex += 2;
             }
+            else if (v[charIndex] & 0x80 && v[charIndex] & 0x40)
+            {
+                codepoint = v[charIndex] & 0x1F;
+                codepoint = codepoint << 6 | (v[charIndex + 1] & 0x3F);
+                charIndex += 1;
+            }
+            size_t index = G4TEXT_LENGTH;
+            for (size_t i = 0; i < G4TEXT_LENGTH; i++)
+            {
+                if (codepoint == G4Chars[i])
+                {
+                    index = i;
+                    break;
+                }
+            }
+            output[outIndex] = ((0 < index && index < G4TEXT_LENGTH) ? G4Values[index] : 0x0000); 
         }
-        output[tLen] = ((0 < index && index < G4TEXT_LENGTH) ? G4Values[index] : 0x0000);
+        else
+        {
+            size_t index = G4TEXT_LENGTH;
+            for (size_t i = 0; i < G4TEXT_LENGTH; i++)
+            {
+                if (v[charIndex] == G4Chars[i])
+                {
+                    index = i;
+                    break;
+                }
+            }
+            output[outIndex] = ((0 < index && index < G4TEXT_LENGTH) ? G4Values[index] : 0x0000);
+        }
     }
-    output[v.length()] = 0xFFFF;
+    output[len - 1] = 0xFFFF;
     memcpy(data + ofs, output, len * 2);
 }

@@ -239,11 +239,11 @@ void SavBW::mysteryGift(WCX& wc, int& pos)
     pos = (pos + 1) % 12;
 }
 
-std::string SavBW::boxName(u8 box) const { return StringUtils::getTrimmedString(data, 0x28 * box + 4, 0x14, (char*)"\uFFFF"); }
+std::string SavBW::boxName(u8 box) const { return StringUtils::getTrimmedString(data, 0x28 * box + 4, 9, (char*)"\uFFFF"); }
 
 void SavBW::boxName(u8 box, std::string name)
 {
-    StringUtils::setStringWithBytes(data, name.c_str(), 0x28 * box + 4, 0x14, (char*)"\uFFFF");
+    StringUtils::setStringWithBytes(data, name.c_str(), 0x28 * box + 4, 9, (char*)"\uFFFF");
 }
 
 u8 SavBW::partyCount(void) const { return data[0x18E04]; }

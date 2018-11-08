@@ -393,7 +393,7 @@ void EditorScreen::setOT()
     bool first = true;
     if (first)
     {
-        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() == 6 || pkm->generation() == 7 ? 12 : 8);
+        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() == 6 || pkm->generation() == 7 ? 12 : (8 - 1));
         first = false;
     }
     swkbdSetHintText(&state, "OT Name");
@@ -413,7 +413,7 @@ void EditorScreen::setNick()
     bool first = true;
     if (first)
     {
-        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() == 6 || pkm->generation() == 7 ? 12 : 11);
+        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() == 6 || pkm->generation() == 7 ? 12 : (11 - 1));
         first = false;
     }
     swkbdSetHintText(&state, "Nickname");

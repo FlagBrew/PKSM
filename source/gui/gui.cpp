@@ -785,7 +785,14 @@ void Gui::pkm(PKX* pokemon, int x, int y, float scale, u32 color, float blend)
 
     if (pokemon->egg())
     {
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y, 0.5f, &tint);
+        if (pokemon->species() != 490)
+        {
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y, 0.5f, &tint, scale, scale);
+        }
+        else
+        {
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_490_e_idx), x, y, 0.5f, &tint, scale, scale);
+        }
     }
     else
     {
@@ -801,7 +808,11 @@ void Gui::pkm(int species, int form, int generation, int x, int y, float scale, 
 {
     static C2D_ImageTint tint;
     C2D_PlainImageTint(&tint, color, blend);
-    if (species == 201)
+    if (species == 490 && form == -1)
+    {
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_490_e_idx), x, y, 0.5f, &tint, scale, scale);
+    }
+    else if (species == 201)
     {
         if (form == 0)
         {

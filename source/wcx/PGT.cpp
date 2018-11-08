@@ -32,6 +32,28 @@ PGT::PGT(u8* pgt)
     u8 pk4Data[136];
     std::copy(pgt + 0x8, pgt + 0x8 + 136, pk4Data);
     pokemonData = new PK4(pk4Data, false);
+    if (type() == 7)
+    {
+        // Set visible manaphy data
+        pokemonData->species(490);
+        pokemonData->alternativeForm(0);
+        pokemonData->egg(true);
+        pokemonData->gender(2);
+        pokemonData->level(1);
+        pokemonData->ability(PersonalDPPtHGSS::ability(490, 0));
+        pokemonData->move(0, 294);
+        pokemonData->move(1, 145);
+        pokemonData->move(2, 346);
+        pokemonData->move(3, 0);
+        pokemonData->heldItem(0);
+        pokemonData->fatefulEncounter(true);
+        pokemonData->ball(4);
+        pokemonData->version(10); // Diamond
+        pokemonData->language((u8)EN);
+        pokemonData->nickname("MANAPHY");
+        pokemonData->nicknamed(false);
+        pokemonData->eggLocation(1);
+    }
 }
 
 PGT::~PGT() { delete pokemonData; }

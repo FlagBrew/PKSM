@@ -59,9 +59,17 @@ std::unique_ptr<WCX> MysteryGift::wondercard(size_t index)
 
     if (gen == 4)
     {
-        PGT *pgt = new PGT(data);
+        std::unique_ptr<WCX> wc = nullptr;
+        if (entry["type"] == "wc4")
+        {
+            wc = std::make_unique<WC4>(data);
+        }
+        else
+        {
+            wc = std::make_unique<PGT>(data);
+        }
         delete[] data;
-        return std::unique_ptr<WCX>(pgt);
+        return wc;
     }
     else if (gen == 5)
     {

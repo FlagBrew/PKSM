@@ -46,15 +46,15 @@ void EditSelectorScreen::changeBoxName()
             static bool first = true;
             if (first)
             {
-                swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 19);
+                swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 8);
                 first = false;
             }
             swkbdSetHintText(&state, "Box Name");
             swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
-            char input[40] = {0};
+            char input[18] = {0};
             SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-            input[38] = '\0';
-            input[39] = '\0';
+            input[16] = '\0';
+            input[17] = '\0';
             if (ret == SWKBD_BUTTON_CONFIRM)
             {
                 TitleLoader::save->boxName(box, input);

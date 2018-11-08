@@ -51,7 +51,7 @@ public:
     bool item(void) const override;
     bool pokemon(void) const override;
     bool power(void) const override;
-    std::string title(void) const override;
+    virtual std::string title(void) const override;
     u8 type(void) const override;
     u16 ID(void) const override;
     u16 object(void) const override;

@@ -190,15 +190,15 @@ void SavPT::mysteryGift(WCX& wc, int& pos)
 {
     PGT* pgt = (PGT*)&wc;
     *(data + 0xB4C0 + gbo + (2047 >> 3)) = 0x80;
-    std::copy(pgt->data, pgt->data + 260, data + 0xB5C0 + gbo + pos);
+    std::copy(pgt->data, pgt->data + PGT::length, data + 0xB5C0 + gbo + pos * PGT::length);
     pos++;
 }
 
-std::string SavPT::boxName(u8 box) const { return StringUtils::getString4(data, boxOffset(18, 0) + box*0x28, 0x14); }
+std::string SavPT::boxName(u8 box) const { return StringUtils::getString4(data, boxOffset(18, 0) + box*0x28, 9); }
 
 void SavPT::boxName(u8 box, std::string name)
 {
-    StringUtils::setString4(data, name, boxOffset(18, 0) + box * 0x28, 0x14);
+    StringUtils::setString4(data, name, boxOffset(18, 0) + box * 0x28, 9);
 }
 
 u8 SavPT::partyCount(void) const { return data[gbo + 0xA0 - 4]; }
@@ -520,9 +520,13 @@ std::vector<MysteryGift::giftData> SavPT::currentGifts(void) const
     u8* wonderCards = data + 0xB5C0 + gbo;
     for (int i = 0; i < emptyGiftLocation(); i++)
     {
-        if (*(wonderCards + i * PGT::length) == 1 || *(wonderCards + i * PGT::length) == 2 || *(wonderCards + i * PGT::length) == 7)
+        if (*(wonderCards + i * PGT::length) == 1 || *(wonderCards + i * PGT::length) == 2)
         {
-            ret.push_back({ "Wonder Card", "", *(u16*)(wonderCards + i * PGT::length + 8 + 0x08), *(wonderCards + i * 204 + 8 + 0x40) >> 3});
+            ret.push_back({ "Wonder Card", "", *(u16*)(wonderCards + i * PGT::length + 8 + 0x08), *(wonderCards + i * PGT::length + 8 + 0x40) >> 3});
+        }
+        else if (*(wonderCards + i * PGT::length) == 7)
+        {
+            ret.push_back({ "Wonder Card", "", 490, -1 });
         }
         else
         {

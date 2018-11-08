@@ -24,31 +24,24 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef MYSTERYGIFT_HPP
-#define MYSTERYGIFT_HPP
+#ifndef WC4_HPP
+#define WC4_HPP
 
-#include <fstream>
-#include "WC7.hpp"
-#include "WC6.hpp"
-#include "PGF.hpp"
 #include "PGT.hpp"
-#include "WC4.hpp"
-#include "json.hpp"
-#include "utils.hpp"
 
-namespace MysteryGift
+class WC4 : public PGT
 {
-    struct giftData {
-        std::string name;
-        std::string game;
-        int species;
-        int form;
-    };
-    void init(u8 gen);
-    std::vector<nlohmann::json> wondercards();
-    MysteryGift::giftData wondercardInfo(size_t index);
-    std::unique_ptr<WCX> wondercard(size_t index);
-    void exit();
-}
+public:
+    WC4(u8* wc4) : PGT(wc4)
+    {
+        name = StringUtils::getString4(wc4, 0x104, 0x24);
+    }
+
+    static const int length = 856;
+    std::string title(void) const override { return name; };
+
+private:
+    std::string name;
+};
 
 #endif

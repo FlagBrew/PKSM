@@ -258,7 +258,14 @@ void InjectorScreen::draw() const
         Gui::ball(wondercard->ball(), 4, 6);
         if (wondercard->pokemon())
         {
-            Gui::pkm(wondercard->species(), wondercard->alternativeForm(), wondercard->generation(), 272, 44, 2.0f);
+            if (wondercard->species() == 490 && wondercard->egg())
+            {
+                Gui::pkm(490, -1, wondercard->generation(), 272, 44, 2.0f);
+            }
+            else
+            {
+                Gui::pkm(wondercard->species(), wondercard->alternativeForm(), wondercard->generation(), 272, 44, 2.0f);
+            }
         }
         else
         {
