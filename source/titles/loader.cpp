@@ -302,6 +302,10 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
             in.close();
             delete[] data;
             FSUSER_CloseArchive(archive);
+            if (Configuration::getInstance().autoBackup())
+            {
+                Threads::create((ThreadFunc)&TitleLoader::backupSave);
+            }
             return true;
         }
         else
@@ -330,6 +334,10 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
         }
 
         save = Sav::getSave(data, cap);
+        if (Configuration::getInstance().autoBackup())
+        {
+            Threads::create((ThreadFunc)&TitleLoader::backupSave);
+        }
         return save != nullptr;
     }
     Gui::warn("This should never happen!");
