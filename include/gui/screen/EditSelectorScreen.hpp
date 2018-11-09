@@ -64,7 +64,8 @@ private:
     bool doQR();
     std::vector<Button*> buttons;
     std::array<Button*, 36> pkmButtons;
-    std::shared_ptr<ViewerScreen> viewer;
+    std::shared_ptr<ViewerScreen> viewer = nullptr;
+    std::shared_ptr<PKX> moveMon = nullptr;
     int cursorPos = 0;
     int box = 0;
 };

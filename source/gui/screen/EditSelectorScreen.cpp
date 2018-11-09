@@ -159,7 +159,23 @@ EditSelectorScreen::EditSelectorScreen()
 
 void EditSelectorScreen::draw() const
 {
-    std::shared_ptr<PKX> infoMon = cursorPos == 0 ? nullptr : (cursorPos < 31 ? TitleLoader::save->pkm(box, cursorPos - 1) : TitleLoader::save->pkm(cursorPos - 31));
+    std::shared_ptr<PKX> infoMon = moveMon;
+    if (!infoMon && cursorPos != 0)
+    {
+        if (cursorPos < 31)
+        {
+            infoMon = TitleLoader::save->pkm(box, cursorPos - 1);
+        }
+        else
+        {
+            infoMon = TitleLoader::save->pkm(cursorPos - 31);
+        }
+    }
+    if (infoMon && infoMon->species() == 0)
+    {
+        infoMon = nullptr;
+    }
+    //std::shared_ptr<PKX> infoMon = cursorPos == 0 ? nullptr : (cursorPos < 31 ? TitleLoader::save->pkm(box, cursorPos - 1) : TitleLoader::save->pkm(cursorPos - 31));
     C2D_SceneBegin(g_renderTargetBottom);
     Gui::sprite(ui_sheet_emulated_bg_bottom_blue, 0, 0);
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
@@ -215,17 +231,32 @@ void EditSelectorScreen::draw() const
 
     if (cursorPos == 0)
     {
-        Gui::sprite(ui_sheet_pointer_arrow_idx, 106, -4 + bobPointer());
+        int dy = bobPointer();
+        if (moveMon)
+        {
+            Gui::pkm(moveMon.get(), 94, 5 + dy);
+        }
+        Gui::sprite(ui_sheet_pointer_arrow_idx, 106, -4 + dy);
     }
     else if (cursorPos < 31)
     {
-        Gui::sprite(ui_sheet_pointer_arrow_idx, 21 + ((cursorPos - 1) % 6) * 34, 30 + ((cursorPos - 1) / 6) * 30 + bobPointer());
+        int tempIndex = cursorPos - 1;
+        int yMod = (tempIndex / 6) * 30 + bobPointer();
+        if (moveMon)
+        {
+            Gui::pkm(moveMon.get(), 9 + (tempIndex % 6) * 34, 39 + yMod);
+        }
+        Gui::sprite(ui_sheet_pointer_arrow_idx, 21 + (tempIndex % 6) * 34, 30 + yMod);
     }
     else
     {
         int x = 238 + ((cursorPos - 1) % 2) * 50;
-        int y = ((cursorPos - 1) % 2 == 0 ? 35 : 51) + (((cursorPos - 1) - 30) / 2) * 45;
-        Gui::sprite(ui_sheet_pointer_arrow_idx, x, y + bobPointer());
+        int y = ((cursorPos - 1) % 2 == 0 ? 35 : 51) + (((cursorPos - 1) - 30) / 2) * 45 + bobPointer();
+        if (moveMon)
+        {
+            Gui::pkm(moveMon.get(), x - 12, y + 9);
+        }
+        Gui::sprite(ui_sheet_pointer_arrow_idx, x, y);
     }
 
     if (infoMon)
@@ -242,7 +273,22 @@ void EditSelectorScreen::update(touchPosition* touch)
     static bool sleep = true;
     static int sleepTimer = 10;
 
-    std::shared_ptr<PKX> infoMon = cursorPos == 0 ? nullptr : (cursorPos > 30 ? TitleLoader::save->pkm(cursorPos - 31) : TitleLoader::save->pkm(box, cursorPos - 1));
+    std::shared_ptr<PKX> infoMon = moveMon;
+    if (moveMon)
+    {
+        infoMon = moveMon;
+    }
+    else if (cursorPos != 0)
+    {
+        if (cursorPos < 31)
+        {
+            infoMon = TitleLoader::save->pkm(box, cursorPos - 1);
+        }
+        else
+        {
+            infoMon = TitleLoader::save->pkm(cursorPos - 31);
+        }
+    }
     if (infoMon && infoMon->species() == 0)
     {
         infoMon = nullptr;
@@ -297,6 +343,16 @@ void EditSelectorScreen::update(touchPosition* touch)
         {
             Gui::setNextKeyboardFunc(std::bind(&EditSelectorScreen::changeBoxName, this));
         }
+        else if (moveMon && cursorPos < 31)
+        {
+            std::shared_ptr<PKX> tmpMon = TitleLoader::save->pkm(box, cursorPos - 1);
+            if (tmpMon->species() == 0)
+            {
+                tmpMon = nullptr;
+            }
+            TitleLoader::save->pkm(*moveMon, box, cursorPos - 1);
+            moveMon = tmpMon;
+        }
         else
         {
             editPokemon(infoMon);
@@ -305,8 +361,42 @@ void EditSelectorScreen::update(touchPosition* touch)
     }
     else if (downKeys & KEY_B)
     {
-        Gui::screenBack();
-        return;
+        if (moveMon)
+        {
+            moveMon = nullptr;
+        }
+        else
+        {
+            Gui::screenBack();
+            return;
+        }
+    }
+    else if (downKeys & KEY_X)
+    {
+        if (cursorPos > 0)
+        {
+            if (cursorPos > 30)
+            {
+                moveMon = TitleLoader::save->pkm(cursorPos - 31)->clone();
+            }
+            else
+            {
+                if (!moveMon)
+                {
+                    moveMon = TitleLoader::save->pkm(box, cursorPos - 1);
+                }
+                else
+                {
+                    std::shared_ptr<PKX> tmpMon = TitleLoader::save->pkm(box, cursorPos - 1);
+                    if (tmpMon->species() == 0)
+                    {
+                        tmpMon = nullptr;
+                    }
+                    TitleLoader::save->pkm(*moveMon, box, cursorPos - 1);
+                    moveMon = tmpMon;
+                }
+            }
+        }
     }
     else if ((heldKeys & KEY_L) && (heldKeys & KEY_R))
     {
