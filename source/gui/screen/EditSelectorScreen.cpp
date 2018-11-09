@@ -417,7 +417,7 @@ void EditSelectorScreen::update(touchPosition* touch)
             }
             else if (cursorPos == 35)
             {
-                cursorPos = 30;
+                cursorPos = 24;
             }
             else
             {
