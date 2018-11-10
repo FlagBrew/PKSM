@@ -32,7 +32,7 @@
 class WC4 : public PGT
 {
 public:
-    WC4(u8* wc4) : PGT(wc4)
+    WC4(u8* wc4) : PGT(wc4, true)
     {
         name = StringUtils::getString4(wc4, 0x104, 0x24);
     }

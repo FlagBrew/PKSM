@@ -291,12 +291,15 @@ void InjectorScreen::draw() const
             Gui::dynamicText(std::to_string(wondercard->level()), 87, 55, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             Gui::dynamicText(i18n::item(Configuration::getInstance().language(), wondercard->heldItem()), 87, 75, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             std::string text = wondercard->otName();
-            if (text == "Your OT Name")
+            u16 tid = wondercard->TID(), sid = wondercard->SID();
+            if (text == "Your OT Name" || text == "")
             {
                 text = TitleLoader::save->otName();
+                tid = TitleLoader::save->TID();
+                sid = TitleLoader::save->SID();
             }
             Gui::dynamicText(text, 87, 95, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            Gui::dynamicText(StringUtils::format("%i/%i", wondercard->TID(), wondercard->SID()), 87, 115, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::dynamicText(StringUtils::format("%i/%i", tid, sid), 87, 115, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             Gui::dynamicText(game, 87, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             Gui::dynamicText(StringUtils::format("%i/%i/%i", wondercard->day(), wondercard->month(), wondercard->year()), 87, 155, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             if (wondercard->generation() == 7)

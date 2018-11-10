@@ -26,12 +26,12 @@
 
 #include "PGT.hpp"
 
-PGT::PGT(u8* pgt)
+PGT::PGT(u8* pgt, bool fromWC4)
 {
     std::copy(pgt, pgt + length, data);
     u8 pk4Data[136];
     std::copy(pgt + 0x8, pgt + 0x8 + 136, pk4Data);
-    pokemonData = new PK4(pk4Data, false);
+    pokemonData = new PK4(pk4Data, !fromWC4);
     if (type() == 7)
     {
         // Set visible manaphy data
@@ -134,7 +134,7 @@ u16 PGT::species(void) const { return pokemonData->species(); }
 
 u8 PGT::gender(void) const { return pokemonData->gender(); }
 
-std::string PGT::otName(void) const { return flags() != 0 ? pokemonData->otName() : "Your OT Name"; }
+std::string PGT::otName(void) const { return !(flags() == 0 && type() != 1) ? pokemonData->otName() : "Your OT Name"; }
 
 u8 PGT::level(void) const { return pokemonData->level(); }
 

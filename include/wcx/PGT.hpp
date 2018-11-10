@@ -42,7 +42,7 @@ protected:
 public:
     static const u16 length = 260;
 
-    PGT(u8* pgt);
+    PGT(u8* pgt, bool fromWC4 = false);
     ~PGT();
 
     u8 generation() const override;
