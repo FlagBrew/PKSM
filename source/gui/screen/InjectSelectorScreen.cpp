@@ -48,8 +48,6 @@ InjectSelectorScreen::InjectSelectorScreen() : hid(10, 2)
     }
 
     buttons.push_back(new Button(160 - 70/2, 207 - 23, 70, 23, [this](){ return this->doQR(); }, ui_sheet_emulated_button_qr_idx, "", FONT_SIZE_14, COLOR_WHITE));
-    buttons.push_back(new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0));
-    buttons.push_back(new Button(282, 212, 34, 28, [](){ Gui::screenBack(); return true; }, ui_sheet_button_back_idx, "", 0.0f, 0));
 }
 
 InjectSelectorScreen::~InjectSelectorScreen()
