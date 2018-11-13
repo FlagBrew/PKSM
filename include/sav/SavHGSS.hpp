@@ -33,7 +33,6 @@
 
 class SavHGSS : public Sav
 {
-friend class ScriptScreen;
 protected:
     int gbo = -1;
     int sbo = -1;
@@ -113,6 +112,8 @@ public:
     int maxItem(void) const { return 536; }
     int maxAbility(void) const { return 123; }
     int maxBall(void) const { return 0x18; }
+    int getGBO(void) const { return gbo; }
+    int getSBO(void) const { return sbo; }
 };
 
 #endif

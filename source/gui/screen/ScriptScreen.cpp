@@ -310,17 +310,17 @@ void ScriptScreen::applyScript()
             {
                 case 7:
                 case 8:
-                    sbo = ((SavHGSS*)TitleLoader::save.get())->sbo;
-                    gbo = ((SavHGSS*)TitleLoader::save.get())->gbo;
+                    sbo = ((SavHGSS*)TitleLoader::save.get())->getSBO();
+                    gbo = ((SavHGSS*)TitleLoader::save.get())->getGBO();
                     break;
                 case 10:
                 case 11:
-                    sbo = ((SavDP*)TitleLoader::save.get())->sbo;
-                    gbo = ((SavDP*)TitleLoader::save.get())->gbo;
+                    sbo = ((SavDP*)TitleLoader::save.get())->getSBO();
+                    gbo = ((SavDP*)TitleLoader::save.get())->getGBO();
                     break;
                 case 12:
-                    sbo = ((SavPT*)TitleLoader::save.get())->sbo;
-                    gbo = ((SavPT*)TitleLoader::save.get())->gbo;
+                    sbo = ((SavPT*)TitleLoader::save.get())->getSBO();
+                    gbo = ((SavPT*)TitleLoader::save.get())->getGBO();
                     break;
             }
             if (TitleLoader::save->boxOffset(0, 0) - sbo <= offset && TitleLoader::save->boxOffset(TitleLoader::save->boxes, 0) - sbo >= offset)

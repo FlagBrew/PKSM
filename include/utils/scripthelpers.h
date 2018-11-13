@@ -35,5 +35,7 @@ void gui_warn(struct ParseState*, struct Value*, struct Value**, int);
 void gui_choice(struct ParseState*, struct Value*, struct Value**, int);
 void gui_menu6x5(struct ParseState*, struct Value*, struct Value**, int);
 void gui_menu20x2(struct ParseState*, struct Value*, struct Value**, int);
+void sav_sbo(struct ParseState*, struct Value*, struct Value**, int);
+void sav_gbo(struct ParseState*, struct Value*, struct Value**, int);
 
 #endif

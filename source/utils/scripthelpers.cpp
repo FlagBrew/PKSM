@@ -27,6 +27,7 @@
 #include "gui.hpp"
 #include "FortyChoice.hpp"
 #include "ThirtyChoice.hpp"
+#include "loader.hpp"
 
 extern "C" {
 #include "scripthelpers.h"
@@ -78,5 +79,47 @@ extern "C" {
         char** labels = (char**) Param[2]->Val->Pointer;
         FortyChoice screen = FortyChoice(question, labels, options);
         ReturnValue->Val->Integer = screen.run();
+    }
+
+    void sav_sbo(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        switch (TitleLoader::save->version())
+        {
+            case 7:
+            case 8:
+                ReturnValue->Val->Integer = ((SavHGSS*)TitleLoader::save.get())->getSBO();
+                break;
+            case 10:
+            case 11:
+                ReturnValue->Val->Integer = ((SavDP*)TitleLoader::save.get())->getSBO();
+                break;
+            case 12:
+                ReturnValue->Val->Integer = ((SavPT*)TitleLoader::save.get())->getSBO();
+                break;
+            default:
+                ReturnValue->Val->Integer = 0;
+                break;
+        }
+    }
+
+    void sav_gbo(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        switch (TitleLoader::save->version())
+        {
+            case 7:
+            case 8:
+                ReturnValue->Val->Integer = ((SavHGSS*)TitleLoader::save.get())->getGBO();
+                break;
+            case 10:
+            case 11:
+                ReturnValue->Val->Integer = ((SavDP*)TitleLoader::save.get())->getGBO();
+                break;
+            case 12:
+                ReturnValue->Val->Integer = ((SavPT*)TitleLoader::save.get())->getGBO();
+                break;
+            default:
+                ReturnValue->Val->Integer = 0;
+                break;
+        }
     }
 }

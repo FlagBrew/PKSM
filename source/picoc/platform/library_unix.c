@@ -26,6 +26,8 @@ struct LibraryFunction UnixFunctions[] =
     { gui_warn,         "void gui_warn(char* lineOne, char* lineTwo);"},
     { gui_menu6x5,      "int gui_menu6x5(char* question, int options, char** labels, struct pkx* pokemon, int generation);" },
     { gui_menu20x2,     "int gui_menu20x2(char* question, int options, char** labels);" },
+    { sav_sbo,          "int sav_sbo();" },
+    { sav_gbo,          "int sav_gbo();" },
     { NULL,         NULL }
 };
 
