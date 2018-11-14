@@ -334,14 +334,14 @@ namespace {
             {
                 pkm->move(i, TitleLoader::save->maxMove());
             }
-            if (pkm->generation() == 6)
+            if (pkm->generation() == Generation::SIX)
             {
                 if (((PK6*)pkm.get())->relearnMove(i) > TitleLoader::save->maxMove())
                 {
                     ((PK6*)pkm.get())->relearnMove(i, TitleLoader::save->maxMove());
                 }
             }
-            if (pkm->generation() == 7)
+            if (pkm->generation() == Generation::SEVEN)
             {
                 if (((PK7*)pkm.get())->relearnMove(i) > TitleLoader::save->maxMove())
                 {
@@ -360,30 +360,30 @@ namespace {
         u8 (*formCounter)(u16);
         switch (TitleLoader::save->generation())
         {
-            case 4:
+            case Generation::FOUR:
                 formCounter = [](u16 species) -> u8 {
-                if (species == 201)
-                {
-                    return 28;
-                }
-                else
-                {
-                    u8 count = PersonalDPPtHGSS::formCount(species);
-                    if (count == 0)
+                    if (species == 201)
                     {
-                        return 1;
+                        return 28;
                     }
-                    return count;
-                }
-            };
+                    else
+                    {
+                        u8 count = PersonalDPPtHGSS::formCount(species);
+                        if (count == 0)
+                        {
+                            return 1;
+                        }
+                        return count;
+                    }
+                };
                 break;
-            case 5:
+            case Generation::FIVE:
                 formCounter = PersonalBWB2W2::formCount;
                 break;
-            case 6:
+            case Generation::SIX:
                 formCounter = PersonalXYORAS::formCount;
                 break;
-            case 7:
+            case Generation::SEVEN:
             default:
                 formCounter = PersonalSMUSUM::formCount;
                 break;
@@ -443,7 +443,7 @@ bool HexEditScreen::editNumber(bool high, bool up)
 
 std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int i) const
 {
-    if (pkm->generation() >= 6)
+    if (pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN)
     {
         switch (i)
         {
@@ -781,7 +781,7 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 return std::make_pair("Unused", UNRESTRICTED);
         }
     }
-    else if (pkm->generation() == 5)
+    else if (pkm->generation() == Generation::FIVE)
     {
         switch(i)
         {
@@ -981,7 +981,7 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 return std::make_pair("Unused", UNRESTRICTED);
         }
     }
-    else if (pkm->generation() == 4)
+    else if (pkm->generation() == Generation::FOUR)
     {
         switch(i)
         {

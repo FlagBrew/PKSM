@@ -41,7 +41,7 @@ class WCX
 public:
     virtual ~WCX(void) { };
 
-    virtual u8 generation(void) const = 0;
+    virtual Generation generation(void) const = 0;
     virtual bool bean(void) const = 0;
     virtual bool BP(void) const = 0;
     virtual bool item(void) const = 0;

@@ -28,7 +28,7 @@
 
 PGF::PGF(u8* dt) { std::copy(dt, dt + length, data); }
 
-u8 PGF::generation(void) const { return 5; }
+Generation PGF::generation(void) const { return Generation::FIVE; }
 
 u16 PGF::ID(void) const { return *(u16*)(data + 0xB0); }
 

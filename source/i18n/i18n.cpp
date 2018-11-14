@@ -139,7 +139,7 @@ std::string i18n::ball(u8 lang, u8 val)
     return "";
 }
 
-std::string i18n::form(u8 lang, u16 species, u8 form, u8 generation)
+std::string i18n::form(u8 lang, u16 species, u8 form, Generation generation)
 {
     switch (lang)
     {

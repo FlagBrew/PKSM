@@ -804,7 +804,7 @@ void Gui::pkm(PKX* pokemon, int x, int y, float scale, u32 color, float blend)
     }
 }
 
-void Gui::pkm(int species, int form, int generation, int x, int y, float scale, u32 color, float blend)
+void Gui::pkm(int species, int form, Generation generation, int x, int y, float scale, u32 color, float blend)
 {
     static C2D_ImageTint tint;
     C2D_PlainImageTint(&tint, color, blend);
@@ -863,7 +863,7 @@ void Gui::pkm(int species, int form, int generation, int x, int y, float scale, 
     }
     else if (species == 25)
     {
-        if (generation == 6)
+        if (generation == Generation::SIX)
         {
             C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_20_2_idx + form), x, y, 0.5f, &tint, scale, scale);
         }

@@ -40,33 +40,33 @@ static std::shared_ptr<PKX> testPkm(new PK5(test));
 
 static bool backHeld = false;
 
-static u8 type1(int generation, u16 species)
+static u8 type1(Generation generation, u16 species)
 {
     switch (generation)
     {
-        case 4:
+        case Generation::FOUR:
             return PersonalDPPtHGSS::type1(species);
-        case 5:
+        case Generation::FIVE:
             return PersonalBWB2W2::type1(species);
-        case 6:
+        case Generation::SIX:
             return PersonalXYORAS::type1(species);
-        case 7:
+        case Generation::SEVEN:
             return PersonalSMUSUM::type1(species);
     }
     return 0;
 }
 
-static u8 type2(int generation, u16 species)
+static u8 type2(Generation generation, u16 species)
 {
     switch (generation)
     {
-        case 4:
+        case Generation::FOUR:
             return PersonalDPPtHGSS::type2(species);
-        case 5:
+        case Generation::FIVE:
             return PersonalBWB2W2::type2(species);
-        case 6:
+        case Generation::SIX:
             return PersonalXYORAS::type2(species);
-        case 7:
+        case Generation::SEVEN:
             return PersonalSMUSUM::type2(species);
     }
     return 0;
@@ -120,8 +120,8 @@ void StorageScreen::setBoxName(bool storage)
     {
         switch (TitleLoader::save->generation())
         {
-            case 4:
-            case 5:
+            case Generation::FOUR:
+            case Generation::FIVE:
             {
                 static SwkbdState state;
                 static bool first = true;
@@ -142,8 +142,8 @@ void StorageScreen::setBoxName(bool storage)
                 }
             }
             break;
-            case 6:
-            case 7:
+            case Generation::SIX:
+            case Generation::SEVEN:
             {
                 static SwkbdState state;
                 static bool first = true;
@@ -379,7 +379,7 @@ void StorageScreen::draw() const
             Gui::dynamicText(info, 276, 98, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
             u8 firstType = type1(infoMon->generation(), infoMon->formSpecies());
             u8 secondType = type2(infoMon->generation(), infoMon->formSpecies());
-            if (infoMon->generation() == 4)
+            if (infoMon->generation() == Generation::FOUR)
             {
                 if (firstType > 8)
                     firstType--;
@@ -794,13 +794,13 @@ void StorageScreen::pickup()
                 {
                     if (TitleLoader::save->otName() == moveMon->otName() && TitleLoader::save->TID() == moveMon->TID() && TitleLoader::save->SID() == moveMon->SID() && TitleLoader::save->gender() == moveMon->otGender())
                     {
-                        if (moveMon->generation() == 6)
+                        if (moveMon->generation() == Generation::SIX)
                         {
                             PK6* movePkm = (PK6*)moveMon.get();
                             movePkm->currentHandler(0);
                             regionChange(movePkm);
                         }
-                        else if (moveMon->generation() == 7)
+                        else if (moveMon->generation() == Generation::SEVEN)
                         {
                             PK7* movePkm = (PK7*)moveMon.get();
                             movePkm->currentHandler(0);
@@ -809,7 +809,7 @@ void StorageScreen::pickup()
                     }
                     else
                     {
-                        if (moveMon->generation() == 6)
+                        if (moveMon->generation() == Generation::SIX)
                         {
                             PK6* movePkm = (PK6*)moveMon.get();
                             movePkm->currentHandler(1);
@@ -821,7 +821,7 @@ void StorageScreen::pickup()
                                 memoryChange(movePkm);
                             }
                         }
-                        else if (moveMon->generation() == 7)
+                        else if (moveMon->generation() == Generation::SEVEN)
                         {
                             PK7* movePkm = (PK7*)moveMon.get();
                             movePkm->currentHandler(1);

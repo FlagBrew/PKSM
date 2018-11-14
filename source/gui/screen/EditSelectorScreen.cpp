@@ -39,8 +39,8 @@ void EditSelectorScreen::changeBoxName()
 {
     switch (TitleLoader::save->generation())
     {
-        case 4:
-        case 5:
+        case Generation::FOUR:
+        case Generation::FIVE:
         {
             static SwkbdState state;
             static bool first = true;
@@ -61,8 +61,8 @@ void EditSelectorScreen::changeBoxName()
             }
         }
         break;
-        case 6:
-        case 7:
+        case Generation::SIX:
+        case Generation::SEVEN:
         {
             static SwkbdState state;
             static bool first = true;
@@ -91,7 +91,23 @@ static bool wirelessStuff() { return false; }
 bool EditSelectorScreen::doQR()
 {
     u8* data = nullptr;
-    QRMode initMode = QRMode(TitleLoader::save->generation() - 4);
+    QRMode initMode;
+    switch (TitleLoader::save->generation())
+    {
+        case Generation::FOUR:
+            initMode = QRMode::PKM4;
+            break;
+        case Generation::FIVE:
+            initMode = QRMode::PKM5;
+            break;
+        case Generation::SIX:
+            initMode = QRMode::PKM6;
+            break;
+        case Generation::SEVEN:
+        default:
+            initMode = QRMode::PKM7;
+            break;
+    }
 
     QRScanner::init(initMode, data);
 
@@ -101,16 +117,16 @@ bool EditSelectorScreen::doQR()
 
         switch (TitleLoader::save->generation())
         {
-            case 4:
+            case Generation::FOUR:
                 pkm = std::make_shared<PK4>(data, true);
                 break;
-            case 5:
+            case Generation::FIVE:
                 pkm = std::make_shared<PK5>(data, true);
                 break;
-            case 6:
+            case Generation::SIX:
                 pkm = std::make_shared<PK6>(data, true);
                 break;
-            case 7:
+            case Generation::SEVEN:
                 pkm = std::make_shared<PK7>(data, true);
                 break;
         }

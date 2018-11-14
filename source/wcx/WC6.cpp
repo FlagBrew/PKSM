@@ -32,7 +32,7 @@ WC6::WC6(u8* dt, bool full)
 	std::copy(dt + ofs, dt + ofs + length, data);
 }
 
-u8 WC6::generation(void) const { return 6; }
+Generation WC6::generation(void) const { return Generation::SIX; }
 
 u16 WC6::ID(void) const { return *(u16*)(data); }
 

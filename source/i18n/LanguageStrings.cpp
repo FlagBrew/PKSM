@@ -112,7 +112,7 @@ std::string LanguageStrings::ball(u8 v) const
     return v < balls.size() ? balls.at(v) : "Invalid";
 }
 
-std::string LanguageStrings::form(u16 species, u8 form, u8 generation) const
+std::string LanguageStrings::form(u16 species, u8 form, Generation generation) const
 {
     std::string ret = "Invalid";
     std::string sSpecies = std::to_string((int)species);

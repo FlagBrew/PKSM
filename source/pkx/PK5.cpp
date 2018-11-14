@@ -88,7 +88,7 @@ void PK5::encrypt(void)
 
 std::unique_ptr<PKX> PK5::clone(void) { return std::make_unique<PK5>(data); }
 
-u8 PK5::generation(void) const { return 5; }
+Generation PK5::generation(void) const { return Generation::FIVE; }
 
 u32 PK5::encryptionConstant(void) const { return PID(); }
 void PK5::encryptionConstant(u32 v) { (void)v; }

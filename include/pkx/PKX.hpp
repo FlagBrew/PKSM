@@ -33,6 +33,7 @@
 
 #include "personal.hpp"
 #include "utils.hpp"
+#include "generation.hpp"
 
 typedef uint8_t u8;
 typedef uint16_t u16;
@@ -58,7 +59,7 @@ public:
     virtual std::unique_ptr<PKX> clone(void) = 0;
     virtual ~PKX() { };
 
-    virtual u8 generation(void) const = 0;
+    virtual Generation generation(void) const = 0;
     bool gen7(void) const;
     bool gen6(void) const;
     bool gen5(void) const;

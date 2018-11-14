@@ -302,7 +302,7 @@ void ScriptScreen::applyScript()
         u32 length = *(u32*)(scriptData.first + index + 4);
         u32 repeat = *(u32*)(scriptData.first + index + 8 + length);
 
-        if (TitleLoader::save->generation() == 4)
+        if (TitleLoader::save->generation() == Generation::FOUR)
         {
             u32 sbo = 0;
             u32 gbo = 0;

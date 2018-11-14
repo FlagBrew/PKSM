@@ -264,7 +264,7 @@ void TitleLoader::backupSave()
     }
     else
     {
-        if (save->generation() == 4 || save->generation() == 5)
+        if (save->generation() == Generation::FOUR || save->generation() == Generation::FIVE)
         {
             path += '/' + loadedTitle->name() + ".sav";
         }

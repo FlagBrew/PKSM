@@ -69,7 +69,7 @@ void SpeciesSelectionScreen::update(touchPosition* touch)
         }
         pkm->species((u16) hid.fullIndex() + 1);
         pkm->alternativeForm(0);
-        if (pkm->generation() != 4)
+        if (pkm->generation() != Generation::FOUR)
         {
             pkm->ability(0);
         }

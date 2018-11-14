@@ -44,7 +44,7 @@ namespace MysteryGift
         int species;
         int form;
     };
-    void init(u8 gen);
+    void init(Generation gen);
     std::vector<nlohmann::json> wondercards();
     MysteryGift::giftData wondercardInfo(size_t index);
     std::unique_ptr<WCX> wondercard(size_t index);

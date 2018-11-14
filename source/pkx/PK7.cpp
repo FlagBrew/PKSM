@@ -90,7 +90,7 @@ void PK7::encrypt(void)
 
 std::unique_ptr<PKX> PK7::clone(void) { return std::make_unique<PK7>(data); }
 
-u8 PK7::generation(void) const { return 7; }
+Generation PK7::generation(void) const { return Generation::SEVEN; }
 
 u32 PK7::encryptionConstant(void) const { return *(u32*)(data); }
 void PK7::encryptionConstant(u32 v) { *(u32*)(data) = v; }

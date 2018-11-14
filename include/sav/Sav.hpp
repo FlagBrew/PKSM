@@ -33,6 +33,7 @@
 #include "WCX.hpp"
 #include "utils.hpp"
 #include "mysterygift.hpp"
+#include "generation.hpp"
 
 namespace TitleLoader {
     void backupSave();
@@ -156,7 +157,7 @@ public:
     virtual int maxItem(void) const = 0;
     virtual int maxAbility(void) const = 0;
     virtual int maxBall(void) const = 0;
-    virtual u8 generation(void) const = 0;
+    virtual Generation generation(void) const = 0;
 };
 
 #endif

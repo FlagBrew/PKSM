@@ -24,39 +24,15 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef THIRTYCHOICE_HPP
-#define THIRTYCHOICE_HPP
+#ifndef GENERATION_HPP
+#define GENERATION_HPP
 
-#include "ScriptChoice.hpp"
-#include "HidHorizontal.hpp"
-#include "generation.hpp"
-#include <vector>
-#include <string>
-
-struct pkm {
-    int species;
-    int form;
-};
-
-class ThirtyChoice : public ScriptChoice
+enum class Generation
 {
-public:
-    ThirtyChoice(char* question, char** text, pkm* pokemon, int items, Generation gen = Generation::SEVEN) : ScriptChoice(question), hid(30, 6), items(items), gen(gen)
-    {
-        for (int i = 0; i < items; i++)
-        {
-            labels.push_back(text[i]);
-            pkms.push_back(pokemon[i]);
-        }
-    }
-    void draw() const override;
-    void update(touchPosition* touch) override;
-private:
-    HidHorizontal hid;
-    const int items;
-    const Generation gen;
-    std::vector<std::string> labels;
-    std::vector<pkm> pkms;
+    FOUR,
+    FIVE,
+    SIX,
+    SEVEN
 };
 
 #endif

@@ -119,7 +119,7 @@ public:
 
     int maxBoxes(void) const override { return 31; }
     size_t maxWondercards(void) const override { return 24; }
-    u8 generation(void) const override { return 6; }
+    Generation generation(void) const override { return Generation::SIX; }
     int maxSpecies(void) const { return 721; }
     int maxMove(void) const { return 617; }
     int maxItem(void) const { return 717; }

@@ -53,7 +53,7 @@ public:
     void encrypt(void) override;
     std::unique_ptr<PKX> clone(void) override;
 
-    u8 generation(void) const override;
+    Generation generation(void) const override;
 
     u32 encryptionConstant(void) const override;
     void encryptionConstant(u32 v) override;

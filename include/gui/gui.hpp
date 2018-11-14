@@ -107,7 +107,7 @@ namespace Gui
     void sprite(int key, int x, int y);
     void sprite(int key, int x, int y, u32 color);
     void pkm(PKX* pkm, int x, int y, float scale = 1.0f, u32 color = C2D_Color32(0, 0, 0, 255), float blend = 0.0f);
-    void pkm(int species, int form, int generation, int x, int y, float scale = 1.0f, u32 color = C2D_Color32(0, 0, 0, 255), float blend = 0.0f);
+    void pkm(int species, int form, Generation generation, int x, int y, float scale = 1.0f, u32 color = C2D_Color32(0, 0, 0, 255), float blend = 0.0f);
     void pkmInfoViewer(PKX* pkm);
 
     void backgroundTop(bool stripes);
