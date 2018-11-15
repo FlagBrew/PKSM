@@ -728,7 +728,22 @@ bool EditorScreen::selectForm()
     switch (TitleLoader::save->generation())
     {
         case Generation::FOUR:
-            formCounter = PersonalDPPtHGSS::formCount;
+            formCounter = [](u16 species) -> u8
+            {
+                if (species == 201)
+                {
+                    return 28;
+                }
+                else
+                {
+                    u8 count = PersonalDPPtHGSS::formCount(species);
+                    if (count == 0)
+                    {
+                        return 1;
+                    }
+                    return count;
+                }
+            };
             break;
         case Generation::FIVE:
             formCounter = PersonalBWB2W2::formCount;

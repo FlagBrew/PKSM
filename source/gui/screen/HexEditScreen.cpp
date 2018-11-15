@@ -361,7 +361,8 @@ namespace {
         switch (TitleLoader::save->generation())
         {
             case Generation::FOUR:
-                formCounter = [](u16 species) -> u8 {
+                formCounter = [](u16 species) -> u8
+                {
                     if (species == 201)
                     {
                         return 28;
