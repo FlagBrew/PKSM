@@ -160,7 +160,8 @@ std::string StringUtils::getString4(const u8* data, int ofs, int len)
 void StringUtils::setString4(u8* data, const std::string v, int ofs, int len)
 {
     u16 output[len] = {0};
-    for (int outIndex = 0, charIndex = 0; outIndex < len; charIndex++, outIndex++)
+    u16 outIndex = 0, charIndex = 0;
+    for (; outIndex < len && charIndex < v.length(); charIndex++, outIndex++)
     {
         if (v[charIndex] & 0x80)
         {
@@ -203,6 +204,6 @@ void StringUtils::setString4(u8* data, const std::string v, int ofs, int len)
             output[outIndex] = ((0 < index && index < G4TEXT_LENGTH) ? G4Values[index] : 0x0000);
         }
     }
-    output[len - 1] = 0xFFFF;
+    output[outIndex == len ? len - 1 : outIndex] = 0xFFFF;
     memcpy(data + ofs, output, len * 2);
 }
