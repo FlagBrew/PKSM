@@ -718,8 +718,7 @@ bool EditorScreen::selectItem()
 
 bool EditorScreen::selectForm()
 {
-    // If unnecessary, can change to single value. Done for expandability
-    static const std::vector<u16> noChange = { 493 };
+    static const std::vector<u16> noChange = { 493, 649, 773 };
     for (auto bad : noChange)
     {
         if (bad == pkm->species())
