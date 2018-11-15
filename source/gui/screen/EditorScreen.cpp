@@ -69,6 +69,13 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
         view->setPkm(pkm);
     }
 
+    for (int i = 0; i < 6; i++)
+    {
+        origPartyStats[i] = pkm->partyStat(i);
+    }
+    origPartyLevel = pkm->partyLevel();
+    origPartyCurrHP = pkm->partyCurrHP();
+
     u8 tab = 0;
     // Back button first, always. Needs to have the same index for each one
     buttons[tab].push_back(NO_TEXT_CLICK(283, 211, 34, 28, [this](){ return this->goBack(); }, ui_sheet_button_back_idx));
@@ -470,7 +477,30 @@ void EditorScreen::setFriendship()
 bool EditorScreen::save()
 {
     pkm->refreshChecksum();
-    TitleLoader::save->pkm(*pkm, box, index);
+    if (box != 0xFF)
+    {
+        TitleLoader::save->pkm(*pkm, box, index);
+    }
+    else
+    {
+        // Update party values IF the user hasn't edited them themselves
+        for (int i = 0; i < 6; i++)
+        {
+            if (pkm->partyStat(i) == origPartyStats[i])
+            {
+                pkm->partyStat(i, pkm->stat(i));
+            }
+        }
+        if (pkm->partyLevel() == origPartyLevel)
+        {
+            pkm->partyLevel(pkm->level());
+        }
+        if (pkm->partyCurrHP() == origPartyCurrHP)
+        {
+            pkm->partyCurrHP(pkm->partyStat(0));
+        }
+        TitleLoader::save->pkm(*pkm, index);
+    }
     Gui::warn("Saved");
     return false;
 }

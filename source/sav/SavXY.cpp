@@ -101,10 +101,19 @@ u32 SavXY::partyOffset(u8 slot) const { return 0x14200 + 260*slot; }
 
 std::unique_ptr<PKX> SavXY::pkm(u8 slot) const
 {
-    u8 tmp[232];
-    std::copy(data + partyOffset(slot), data + partyOffset(slot) + 232, tmp);
-    return std::make_unique<PK6>(tmp, true);
+    u8 tmp[260];
+    std::copy(data + partyOffset(slot), data + partyOffset(slot) + 260, tmp);
+    return std::make_unique<PK6>(tmp, true, true);
 }
+
+void SavXY::pkm(PKX& pk, u8 slot)
+{
+    pk.encrypt();
+    PK6* pk6 = (PK6*)&pk;
+    std::copy(pk6->data, pk6->data + pk6->length, data + partyOffset(slot));
+    pk.decrypt();
+}
+
 std::unique_ptr<PKX> SavXY::pkm(u8 box, u8 slot, bool ekx) const
 {
     u8 tmp[232];

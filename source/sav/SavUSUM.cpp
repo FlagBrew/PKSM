@@ -137,9 +137,17 @@ u32 SavUSUM::partyOffset(u8 slot) const { return 0x1600 + 260*slot; }
 
 std::unique_ptr<PKX> SavUSUM::pkm(u8 slot) const
 {
-    u8 buf[232];
-    std::copy(data + partyOffset(slot), data + partyOffset(slot) + 232, buf);
-    return std::make_unique<PK7>(buf, true);
+    u8 buf[260];
+    std::copy(data + partyOffset(slot), data + partyOffset(slot) + 260, buf);
+    return std::make_unique<PK7>(buf, true, true);
+}
+
+void SavUSUM::pkm(PKX& pk, u8 slot)
+{
+    pk.encrypt();
+    PK7* pk7 = (PK7*)&pk;
+    std::copy(pk7->data, pk7->data + pk7->length, data + partyOffset(slot));
+    pk.decrypt();
 }
 
 std::unique_ptr<PKX> SavUSUM::pkm(u8 box, u8 slot, bool ekx) const

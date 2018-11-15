@@ -105,6 +105,7 @@ public:
     // that's because PKSM works with decrypted boxes and
     // crypts them back during resigning
     void pkm(PKX& pk, u8 box, u8 slot) override;
+    void pkm(PKX& pk, u8 slot) override;
 
     std::shared_ptr<PKX> emptyPkm() const override;
 

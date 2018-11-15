@@ -726,6 +726,11 @@ bool EditSelectorScreen::editPokemon(std::shared_ptr<PKX> pkm)
         Gui::setScreen(std::make_unique<EditorScreen>(viewer, pkm, box, cursorPos - 1));
         return true;
     }
+    else if (cursorPos > 30)
+    {
+        Gui::setScreen(std::make_unique<EditorScreen>(viewer, pkm, 0xFF, cursorPos - 31));
+        return true;
+    }
 
     return false;
 }

@@ -52,7 +52,15 @@ void PK6::shuffleArray(void)
 void PK6::crypt(void)
 {
     u32 seed = encryptionConstant();
-    for (u8 i = 0x08; i < length; i+= 2)
+    for (int i = 0x08; i < 232; i += 2)
+    {
+        u16 temp = *(u16*)(data + i);
+        seed = seedStep(seed);
+        temp ^= (seed >> 16);
+        *(u16*)(data + i) = temp;
+    }
+    seed = encryptionConstant();
+    for (u32 i = 232; i < length; i += 2)
     {
         u16 temp = *(u16*)(data + i);
         seed = seedStep(seed);
@@ -61,9 +69,11 @@ void PK6::crypt(void)
     }
 }
 
-PK6::PK6(u8* dt, bool ekx)
+PK6::PK6(u8* dt, bool ekx, bool party)
 {
-    length = 232;
+    length = party ? 260 : 232;
+    data = new u8[length];
+    std::fill_n(data, length, 0);
     
     std::copy(dt, dt + length, data);
     if (ekx)
@@ -343,7 +353,7 @@ void PK6::oppositeFriendship(u8 v) { if (currentHandler() == 1) otFriendship(v);
 void PK6::refreshChecksum(void)
 {
     u16 chk = 0;
-    for (u8 i = 8; i < length; i += 2)
+    for (u8 i = 8; i < 232; i += 2)
     {
         chk += *(u16*)(data + i);
     }
@@ -606,4 +616,55 @@ std::unique_ptr<PKX> PK6::previous(void) const
 
     pk5->refreshChecksum();
     return std::unique_ptr<PKX>(pk5);
+}
+
+int PK6::partyCurrHP(void) const
+{
+    if (length == 232)
+    {
+        return -1;
+    }
+    return *(u16*)(data + 0xF0);
+}
+
+void PK6::partyCurrHP(u16 v)
+{
+    if (length != 232)
+    {
+        *(u16*)(data + 0xF0) = v;
+    }
+}
+
+int PK6::partyStat(const u8 stat) const
+{
+    if (length == 232)
+    {
+        return -1;
+    }
+    return *(u16*)(data + 0xF2 + stat*2);
+}
+
+void PK6::partyStat(const u8 stat, u16 v)
+{
+    if (length != 232)
+    {
+        *(u16*)(data + 0xF2 + stat*2) = v;
+    }
+}
+
+int PK6::partyLevel() const
+{
+    if (length == 232)
+    {
+        return -1;
+    }
+    return *(data + 0xEC);
+}
+
+void PK6::partyLevel(u8 v)
+{
+    if (length != 232)
+    {
+        *(data + 0xEC) = v;
+    }
 }
