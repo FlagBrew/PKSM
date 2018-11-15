@@ -1202,7 +1202,7 @@ u8 transparencyWaver()
     return currentAmount;
 }
 
-bool Gui::showChoiceMessage(const std::string& message, Optional<std::string> message2)
+bool Gui::showChoiceMessage(const std::string& message, std::optional<std::string> message2)
 {
     u32 keys = 0;
     C3D_FrameEnd(0);
@@ -1225,7 +1225,7 @@ bool Gui::showChoiceMessage(const std::string& message, Optional<std::string> me
         {
             u8 transparency = transparencyWaver();
             dynamicText(GFX_TOP, 85, message, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency));
-            dynamicText(GFX_TOP, 105, message2, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency));
+            dynamicText(GFX_TOP, 105, message2.value(), FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency));
         }
 
         dynamicText(GFX_TOP, 130, "Press A to continue, B to cancel.", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
@@ -1245,7 +1245,7 @@ bool Gui::showChoiceMessage(const std::string& message, Optional<std::string> me
     return false;
 }
 
-void Gui::waitFrame(const std::string& message, Optional<std::string> message2)
+void Gui::waitFrame(const std::string& message, std::optional<std::string> message2)
 {
     C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
     C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
@@ -1260,7 +1260,7 @@ void Gui::waitFrame(const std::string& message, Optional<std::string> message2)
     else
     {
         dynamicText(GFX_TOP, 85, message, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE);
-        dynamicText(GFX_TOP, 105, message2, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE);
+        dynamicText(GFX_TOP, 105, message2.value(), FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE);
     }
 
     dynamicText(GFX_TOP, 130, "Please wait.", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
@@ -1272,7 +1272,7 @@ void Gui::waitFrame(const std::string& message, Optional<std::string> message2)
     Gui::clearTextBufs();
 }
 
-void Gui::warn(const std::string& message, Optional<std::string> message2)
+void Gui::warn(const std::string& message, std::optional<std::string> message2)
 {
     u32 keys = 0;
     C3D_FrameEnd(0);
@@ -1295,7 +1295,7 @@ void Gui::warn(const std::string& message, Optional<std::string> message2)
         {
             u8 transparency = transparencyWaver();
             dynamicText(GFX_TOP, 85, message, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency));
-            dynamicText(GFX_TOP, 105, message2, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency));
+            dynamicText(GFX_TOP, 105, message2.value(), FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency));
         }
 
         dynamicText(GFX_TOP, 130, "Press A to continue.", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);

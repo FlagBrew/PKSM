@@ -35,4 +35,20 @@ enum class Generation
     SEVEN
 };
 
+inline std::string genToString(Generation gen)
+{
+    switch (gen)
+    {
+        case Generation::FOUR:
+            return "4";
+        case Generation::FIVE:
+            return "5";
+        case Generation::SIX:
+            return "6";
+        case Generation::SEVEN:
+        default:
+            return "7";
+    }
+}
+
 #endif

@@ -51,14 +51,28 @@ extern "C" {
     {
         char* lineOne = (char*) Param[0]->Val->Pointer;
         char* lineTwo = (char*) Param[1]->Val->Pointer;
-        Gui::warn(lineOne, lineTwo != nullptr ? std::string(lineTwo) : nullptr);
+        if (lineTwo != nullptr)
+        {
+            Gui::warn(lineOne, lineTwo);
+        }
+        else
+        {
+            Gui::warn(lineOne);
+        }
     }
 
     void gui_choice(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
     {
         char* lineOne = (char*) Param[0]->Val->Pointer;
         char* lineTwo = (char*) Param[1]->Val->Pointer;
-        ReturnValue->Val->Integer = (int) Gui::showChoiceMessage(lineOne, lineTwo != nullptr ? std::string(lineTwo) : nullptr);
+        if (lineTwo != nullptr)
+        {
+            ReturnValue->Val->Integer = (int) Gui::showChoiceMessage(lineOne, lineTwo);
+        }
+        else
+        {
+            ReturnValue->Val->Integer = (int) Gui::showChoiceMessage(lineOne);
+        }
     }
 
     void gui_menu6x5(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)

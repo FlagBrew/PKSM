@@ -323,7 +323,7 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
         u32 cap = SPIGetCapacity(title->SPICardType());
         if (cap != 524288)
         {
-            Gui::warn("Wrong size for this game!", std::string("Please report to FlagBrew"));
+            Gui::warn("Wrong size for this game!", "Please report to FlagBrew");
             return false;
         }
 
@@ -382,7 +382,7 @@ void TitleLoader::saveToTitle(bool ask)
     // Just an extra check
     if (loadedTitle)
     {
-        if (TitleLoader::cardTitle == loadedTitle && (!ask || Gui::showChoiceMessage("Would you like to write changes to", std::string("the game card?"))))
+        if (TitleLoader::cardTitle == loadedTitle && (!ask || Gui::showChoiceMessage("Would you like to write changes to", "the game card?")))
         {
             auto& title = TitleLoader::cardTitle;
             if (title->cardType() == FS_CardType::CARD_CTR)
@@ -428,7 +428,7 @@ void TitleLoader::saveToTitle(bool ask)
             // Just a linear search because it's a maximum of eight titles
             for (auto title : TitleLoader::nandTitles)
             {
-                if (title == loadedTitle && (!ask || Gui::showChoiceMessage("Would you like to write changes to", std::string("the installed title?"))))
+                if (title == loadedTitle && (!ask || Gui::showChoiceMessage("Would you like to write changes to", "the installed title?")))
                 {
                     FS_Archive archive;
                     Archive::save(&archive, title->mediaType(), title->lowId(), title->highId());

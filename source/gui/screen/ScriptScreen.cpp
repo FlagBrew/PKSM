@@ -180,7 +180,7 @@ void ScriptScreen::update(touchPosition* touch)
         }
         else
         {
-            Gui::warn("\"" + dirString + "\"", std::string("not found!"));
+            Gui::warn("\"" + dirString + "\"", "not found!");
         }
     }
     else if (down & KEY_Y)
@@ -196,7 +196,7 @@ void ScriptScreen::update(touchPosition* touch)
         }
         else
         {
-            Gui::warn("\"" + dirString + "\"", std::string("not found!"));
+            Gui::warn("\"" + dirString + "\"", "not found!");
         }
     }
 }
