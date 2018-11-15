@@ -132,6 +132,7 @@ namespace Gui
     void screenBack(void);
     bool showChoiceMessage(const std::string& message, Optional<std::string> message2 = Optional<std::string>(nullptr));
     void showRestoreProgress(u32 partial, u32 total);
+    void waitFrame(const std::string& message, Optional<std::string> message2 = Optional<std::string>(nullptr));
     void warn(const std::string& message, Optional<std::string> message2 = Optional<std::string>(nullptr));
     void setNextKeyboardFunc(std::function<void()> callback);
     void showResizeStorage(void);

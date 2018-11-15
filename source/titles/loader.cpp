@@ -241,6 +241,7 @@ void TitleLoader::scanSaves(void)
 
 void TitleLoader::backupSave()
 {
+    Gui::waitFrame("Backing up save...");
     char stringTime[15] = {0};
     time_t unixTime = time(NULL);
     struct tm* timeStruct = gmtime((const time_t *)&unixTime);
@@ -304,7 +305,7 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
             FSUSER_CloseArchive(archive);
             if (Configuration::getInstance().autoBackup())
             {
-                Threads::create((ThreadFunc)&TitleLoader::backupSave);
+                backupSave();
             }
             return true;
         }
@@ -336,7 +337,7 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
         save = Sav::getSave(data, cap);
         if (Configuration::getInstance().autoBackup())
         {
-            Threads::create((ThreadFunc)&TitleLoader::backupSave);
+            backupSave();
         }
         return save != nullptr;
     }
@@ -370,7 +371,7 @@ bool TitleLoader::load(std::shared_ptr<Title> title, std::string savePath)
     save = Sav::getSave(saveData, size);
     if (Configuration::getInstance().autoBackup())
     {
-        Threads::create((ThreadFunc)&TitleLoader::backupSave);
+        backupSave();
     }
     delete[] saveData;
     return true;

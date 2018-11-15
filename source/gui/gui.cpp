@@ -1245,6 +1245,33 @@ bool Gui::showChoiceMessage(const std::string& message, Optional<std::string> me
     return false;
 }
 
+void Gui::waitFrame(const std::string& message, Optional<std::string> message2)
+{
+    C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+    C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
+    C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
+
+    C2D_SceneBegin(g_renderTargetTop);
+    sprite(ui_sheet_part_info_top_idx, 0, 0);
+    if (!message2)
+    {
+        dynamicText(GFX_TOP, 95, message, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE);
+    }
+    else
+    {
+        dynamicText(GFX_TOP, 85, message, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE);
+        dynamicText(GFX_TOP, 105, message2, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE);
+    }
+
+    dynamicText(GFX_TOP, 130, "Please wait.", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+
+    C2D_SceneBegin(g_renderTargetBottom);
+    sprite(ui_sheet_part_info_bottom_idx, 0, 0);
+
+    C3D_FrameEnd(0);
+    Gui::clearTextBufs();
+}
+
 void Gui::warn(const std::string& message, Optional<std::string> message2)
 {
     u32 keys = 0;
