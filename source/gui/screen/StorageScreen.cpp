@@ -864,7 +864,7 @@ bool StorageScreen::dumpPkm()
         path += stringTime;
         if (moveMon)
         {
-            path += StringUtils::format(".pk%d", moveMon->generation());
+            path += StringUtils::format(".pk%s", genToString(moveMon->generation()));
             FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, moveMon->length);
             if (out.good())
             {
@@ -888,7 +888,7 @@ bool StorageScreen::dumpPkm()
                 else
                 {
                     dumpMon = TitleLoader::save->pkm(boxBox, cursorIndex - 1);
-                    path += StringUtils::format(".pk%d", dumpMon->generation());
+                    path += StringUtils::format(".pk%d", genToString(dumpMon->generation()));
                     FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, TitleLoader::save->emptyPkm()->length);
                     if (out.good())
                     {
@@ -910,7 +910,7 @@ bool StorageScreen::dumpPkm()
                 else
                 {
                     dumpMon = testPkm; // Storage implementation thingy
-                    path += StringUtils::format(".pk%d", dumpMon->generation());
+                    path += StringUtils::format(".pk%d", genToString(dumpMon->generation()));
                     FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, TitleLoader::save->emptyPkm()->length);
                     if (out.good())
                     {
