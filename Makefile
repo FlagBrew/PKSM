@@ -220,9 +220,17 @@ all: deps no-deps
 #---------------------------------------------------------------------------------
 deps:
 	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR)
+ifeq ($(OS),Windows_NT)
 	@cd $(BUILD)/$(PACKER) && py -3 packer.py
+else
+	@cd $(BUILD)/$(PACKER) && python3 packer.py
+endif
 	@cd $(BUILD)/$(PACKER) && mv out/*.bin out/*.json ../../assets/romfs/mg
+ifeq ($(OS),Windows_NT)
 	@cd $(BUILD)/$(SCRIPTS) && py -3 genScripts.py
+else
+	@cd $(BUILD)/$(SCRIPTS) && python3 genScripts.py
+endif
 	@rm -fr assets/romfs/scripts
 	@cd $(BUILD)/$(SCRIPTS) && mv -f scripts ../../assets/romfs
 #---------------------------------------------------------------------------------
