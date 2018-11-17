@@ -327,8 +327,8 @@ void PK5::shiny(bool v)
 {
     if (v)
     {
-        u16 buf = (PID() >> 16) ^ (TSV() << 4);
-        *(u16*)(data + 0x18) = buf;
+        u16 buf = (PID() >> 16) ^ (TSV() << 3);
+        *(u16*)(data) = buf;
     }
     else
     {
