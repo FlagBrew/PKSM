@@ -292,14 +292,6 @@ std::unique_ptr<PKX> SavLGPE::pkm(u8 box, u8 slot, bool ekx) const
 
 void SavLGPE::pkm(PKX& pk, u8 box, u8 slot)
 {
-    for (int i = 0; i < partyCount(); i++)
-    {
-        if (partyBoxSlot(i) == box * 30 + slot)
-        {
-            Gui::warn("Cannot edit party Pok\u00E9mon from the box");
-            return;
-        }
-    }
     PB7* pb7 = (PB7*)&pk;
     std::copy(pb7->data, pb7->data + pb7->length, data + boxOffset(box, slot));
 }
