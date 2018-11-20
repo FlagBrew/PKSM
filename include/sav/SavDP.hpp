@@ -33,7 +33,6 @@
 
 class SavDP : public Sav
 {
-friend class ScriptScreen;
 protected:
     int gbo = -1;
     int sbo = -1;
@@ -94,6 +93,7 @@ public:
     // that's because PKSM works with decrypted boxes and
     // crypts them back during resigning
     void pkm(PKX& pk, u8 box, u8 slot) override;
+    void pkm(PKX& pk, u8 slot) override;
 
     std::shared_ptr<PKX> emptyPkm() const override;
 
@@ -108,12 +108,14 @@ public:
 
     int maxBoxes(void) const override { return 18; }
     size_t maxWondercards(void) const override { return 8; }
-    u8 generation(void) const override { return 4; }
+    Generation generation(void) const override { return Generation::FOUR; }
     int maxSpecies(void) const { return 493; }
     int maxMove(void) const { return 467; }
     int maxItem(void) const { return 464; }
     int maxAbility(void) const { return 123; }
     int maxBall(void) const { return 0x10; }
+    int getGBO(void) const { return gbo; }
+    int getSBO(void) const { return sbo; }
 };
 
 #endif

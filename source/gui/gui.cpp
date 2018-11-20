@@ -804,7 +804,7 @@ void Gui::pkm(PKX* pokemon, int x, int y, float scale, u32 color, float blend)
     }
 }
 
-void Gui::pkm(int species, int form, int generation, int x, int y, float scale, u32 color, float blend)
+void Gui::pkm(int species, int form, Generation generation, int x, int y, float scale, u32 color, float blend)
 {
     static C2D_ImageTint tint;
     C2D_PlainImageTint(&tint, color, blend);
@@ -863,7 +863,7 @@ void Gui::pkm(int species, int form, int generation, int x, int y, float scale, 
     }
     else if (species == 25)
     {
-        if (generation == 6)
+        if (generation == Generation::SIX)
         {
             C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_20_2_idx + form), x, y, 0.5f, &tint, scale, scale);
         }
@@ -1202,7 +1202,7 @@ u8 transparencyWaver()
     return currentAmount;
 }
 
-bool Gui::showChoiceMessage(const std::string& message, Optional<std::string> message2)
+bool Gui::showChoiceMessage(const std::string& message, std::optional<std::string> message2)
 {
     u32 keys = 0;
     C3D_FrameEnd(0);
@@ -1225,7 +1225,7 @@ bool Gui::showChoiceMessage(const std::string& message, Optional<std::string> me
         {
             u8 transparency = transparencyWaver();
             dynamicText(GFX_TOP, 85, message, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency));
-            dynamicText(GFX_TOP, 105, message2, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency));
+            dynamicText(GFX_TOP, 105, message2.value(), FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency));
         }
 
         dynamicText(GFX_TOP, 130, "Press A to continue, B to cancel.", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
@@ -1245,7 +1245,34 @@ bool Gui::showChoiceMessage(const std::string& message, Optional<std::string> me
     return false;
 }
 
-void Gui::warn(const std::string& message, Optional<std::string> message2)
+void Gui::waitFrame(const std::string& message, std::optional<std::string> message2)
+{
+    C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+    C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
+    C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
+
+    C2D_SceneBegin(g_renderTargetTop);
+    sprite(ui_sheet_part_info_top_idx, 0, 0);
+    if (!message2)
+    {
+        dynamicText(GFX_TOP, 95, message, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE);
+    }
+    else
+    {
+        dynamicText(GFX_TOP, 85, message, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE);
+        dynamicText(GFX_TOP, 105, message2.value(), FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE);
+    }
+
+    dynamicText(GFX_TOP, 130, "Please wait.", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+
+    C2D_SceneBegin(g_renderTargetBottom);
+    sprite(ui_sheet_part_info_bottom_idx, 0, 0);
+
+    C3D_FrameEnd(0);
+    Gui::clearTextBufs();
+}
+
+void Gui::warn(const std::string& message, std::optional<std::string> message2)
 {
     u32 keys = 0;
     C3D_FrameEnd(0);
@@ -1268,7 +1295,7 @@ void Gui::warn(const std::string& message, Optional<std::string> message2)
         {
             u8 transparency = transparencyWaver();
             dynamicText(GFX_TOP, 85, message, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency));
-            dynamicText(GFX_TOP, 105, message2, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency));
+            dynamicText(GFX_TOP, 105, message2.value(), FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency));
         }
 
         dynamicText(GFX_TOP, 130, "Press A to continue.", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);

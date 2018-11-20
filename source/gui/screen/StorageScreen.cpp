@@ -33,6 +33,7 @@
 #include "FSStream.hpp"
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
+#include "SavLGPE.hpp"
 
 // TODO: remove
 static u8 test[] = {0x0B,0xEB,0x64,0x89,0x00,0x00,0xC8,0xA5,0x12,0x00,0x00,0x00,0x2A,0x8A,0x42,0x73,0x47,0x9C,0x00,0x00,0xA0,0x91,0x00,0x02,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x21,0x00,0x62,0x00,0xEF,0x00,0x22,0x01,0x23,0x1E,0x14,0x14,0x00,0x00,0x00,0x00,0xD1,0xA1,0x33,0x3C,0x00,0x00,0x00,0x00,0x02,0x13,0x01,0x00,0x00,0x00,0x00,0x00,0x50,0x00,0x69,0x00,0x64,0x00,0x67,0x00,0x65,0x00,0x6F,0x00,0x74,0x00,0xFF,0xFF,0x6F,0x00,0xFF,0xFF,0xFF,0xFF,0x00,0x17,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x52,0x00,0x6F,0x00,0x43,0x00,0xFF,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x11,0x01,0x0D,0x00,0x00,0x4B,0x00,0x00,0x19,0x0A,0x00,0x00,0x00};
@@ -40,34 +41,38 @@ static std::shared_ptr<PKX> testPkm(new PK5(test));
 
 static bool backHeld = false;
 
-static u8 type1(int generation, u16 species)
+static u8 type1(Generation generation, u16 species)
 {
     switch (generation)
     {
-        case 4:
+        case Generation::FOUR:
             return PersonalDPPtHGSS::type1(species);
-        case 5:
+        case Generation::FIVE:
             return PersonalBWB2W2::type1(species);
-        case 6:
+        case Generation::SIX:
             return PersonalXYORAS::type1(species);
-        case 7:
+        case Generation::SEVEN:
             return PersonalSMUSUM::type1(species);
+        case Generation::LGPE:
+            return 0; //PersonalLGPE::type1(species);
     }
     return 0;
 }
 
-static u8 type2(int generation, u16 species)
+static u8 type2(Generation generation, u16 species)
 {
     switch (generation)
     {
-        case 4:
+        case Generation::FOUR:
             return PersonalDPPtHGSS::type2(species);
-        case 5:
+        case Generation::FIVE:
             return PersonalBWB2W2::type2(species);
-        case 6:
+        case Generation::SIX:
             return PersonalXYORAS::type2(species);
-        case 7:
+        case Generation::SEVEN:
             return PersonalSMUSUM::type2(species);
+        case Generation::LGPE:
+            return 0; //PersonalLGPE::type2(species);
     }
     return 0;
 }
@@ -120,8 +125,8 @@ void StorageScreen::setBoxName(bool storage)
     {
         switch (TitleLoader::save->generation())
         {
-            case 4:
-            case 5:
+            case Generation::FOUR:
+            case Generation::FIVE:
             {
                 static SwkbdState state;
                 static bool first = true;
@@ -142,8 +147,8 @@ void StorageScreen::setBoxName(bool storage)
                 }
             }
             break;
-            case 6:
-            case 7:
+            case Generation::SIX:
+            case Generation::SEVEN:
             {
                 static SwkbdState state;
                 static bool first = true;
@@ -163,6 +168,9 @@ void StorageScreen::setBoxName(bool storage)
                     TitleLoader::save->boxName(boxBox, input);
                 }
             }
+            break;
+            case Generation::LGPE:
+            // Do nothing
             break;
         }
     }
@@ -205,6 +213,24 @@ StorageScreen::StorageScreen()
     TitleLoader::save->cryptBoxData(true);
 }
 
+StorageScreen::~StorageScreen()
+{
+    for (int i = 0; i < 9; i++)
+    {
+        delete mainButtons[i];
+    }
+    for (int i = 0; i < 31; i++)
+    {
+        delete clickButtons[i];
+    }
+
+    if (TitleLoader::save->generation() == Generation::LGPE)
+    {
+        ((SavLGPE*)TitleLoader::save.get())->compressBox();
+    }
+    TitleLoader::save->cryptBoxData(false);
+}
+
 void StorageScreen::draw() const
 {
     std::shared_ptr<PKX> infoMon = nullptr;
@@ -244,10 +270,17 @@ void StorageScreen::draw() const
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            std::unique_ptr<PKX> pokemon = TitleLoader::save->pkm(boxBox, row * 6 + column);
-            if (pokemon->species() > 0)
+            if (TitleLoader::save->generation() == Generation::LGPE && row * 6 + column + boxBox * 30 >= TitleLoader::save->maxSlot())
             {
-                Gui::pkm(pokemon.get(), x, y);
+                C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(128, 128, 128, 128));
+            }
+            else
+            {
+                std::unique_ptr<PKX> pokemon = TitleLoader::save->pkm(boxBox, row * 6 + column);
+                if (pokemon->species() > 0)
+                {
+                    Gui::pkm(pokemon.get(), x, y);
+                }
             }
             x += 34;
         }
@@ -379,7 +412,7 @@ void StorageScreen::draw() const
             Gui::dynamicText(info, 276, 98, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
             u8 firstType = type1(infoMon->generation(), infoMon->formSpecies());
             u8 secondType = type2(infoMon->generation(), infoMon->formSpecies());
-            if (infoMon->generation() == 4)
+            if (infoMon->generation() == Generation::FOUR)
             {
                 if (firstType > 8)
                     firstType--;
@@ -655,7 +688,11 @@ bool StorageScreen::backButton()
 
 bool StorageScreen::showViewer()
 {
-    std::shared_ptr<PKX> view = cursorIndex == 0 ? TitleLoader::save->emptyPkm() : storageChosen ? testPkm : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
+    if (cursorIndex == 0 || (!storageChosen && boxBox * 30 + cursorIndex - 1 >= TitleLoader::save->maxSlot()))
+    {
+        return false;
+    }
+    std::shared_ptr<PKX> view = storageChosen ? testPkm : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
     if (view->species() != 0)
     {
         viewer = std::make_unique<ViewerScreen>(view, true);
@@ -672,7 +709,7 @@ bool StorageScreen::clearBox()
         {
             if (storageChosen) { // Storage set all slots in box to PK7()s (or however it happens)
             }
-            else
+            else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
                 TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), boxBox, i);
         }
     }
@@ -686,7 +723,7 @@ bool StorageScreen::releasePkm()
     {
         if (storageChosen) { // Storage set all slots in box to PK7()s (or however it happens)
         }
-        else
+        else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
             TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), boxBox, cursorIndex - 1);
     }
     return false;
@@ -752,14 +789,28 @@ void StorageScreen::pickup()
 {
     if (!moveMon)
     {
-        moveMon = storageChosen ? /*storage->pkm(storageBox, cursorIndex)*/ testPkm : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
+        if (storageChosen)
+        {
+            moveMon = /*storage->pkm(storageBox, cursorIndex)*/ testPkm;
+        }
+        else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
+        {
+            moveMon = TitleLoader::save->pkm(boxBox, cursorIndex - 1);
+        }
+        else
+        {
+            return;
+        }
+
         if (storageChosen)
         {
             // set storage pkm to emptyPKM
+            fromStorage = true;
         }
         else
         {
             TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), boxBox, cursorIndex - 1);
+            fromStorage = false;
         }
 
         if (moveMon->species() == 0)
@@ -773,11 +824,12 @@ void StorageScreen::pickup()
         {
             // storage implementation->pkm(storageBox, cursorIndex, moveMon);
             // moveMon = nullptr;
+            // fromStorage = true;
         }
-        else
+        else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
         {
             std::shared_ptr<PKX> temPkm = TitleLoader::save->pkm(boxBox, cursorIndex - 1);
-            if ((Configuration::getInstance().transferEdit() || moveMon->generation() == TitleLoader::save->generation()) || Gui::showChoiceMessage(StringUtils::format("The generation change (%d->%d) will edit your", (int)moveMon->generation(), (int)TitleLoader::save->generation()), std::string("Pok\u00E9mon. Continue?")))
+            if ((Configuration::getInstance().transferEdit() || moveMon->generation() == TitleLoader::save->generation()) || Gui::showChoiceMessage(StringUtils::format("The generation change (%s->%s) will edit your", genToString(moveMon->generation()).c_str(), genToString(TitleLoader::save->generation()).c_str()), "Pok\u00E9mon. Continue?"))
             {
                 while (moveMon->generation() != TitleLoader::save->generation())
                 {
@@ -790,17 +842,17 @@ void StorageScreen::pickup()
                         moveMon = moveMon->next();
                     }
                 }
-                if (Configuration::getInstance().transferEdit())
+                if (Configuration::getInstance().transferEdit() && fromStorage)
                 {
                     if (TitleLoader::save->otName() == moveMon->otName() && TitleLoader::save->TID() == moveMon->TID() && TitleLoader::save->SID() == moveMon->SID() && TitleLoader::save->gender() == moveMon->otGender())
                     {
-                        if (moveMon->generation() == 6)
+                        if (moveMon->generation() == Generation::SIX)
                         {
                             PK6* movePkm = (PK6*)moveMon.get();
                             movePkm->currentHandler(0);
                             regionChange(movePkm);
                         }
-                        else if (moveMon->generation() == 7)
+                        else if (moveMon->generation() == Generation::SEVEN)
                         {
                             PK7* movePkm = (PK7*)moveMon.get();
                             movePkm->currentHandler(0);
@@ -809,7 +861,7 @@ void StorageScreen::pickup()
                     }
                     else
                     {
-                        if (moveMon->generation() == 6)
+                        if (moveMon->generation() == Generation::SIX)
                         {
                             PK6* movePkm = (PK6*)moveMon.get();
                             movePkm->currentHandler(1);
@@ -821,7 +873,7 @@ void StorageScreen::pickup()
                                 memoryChange(movePkm);
                             }
                         }
-                        else if (moveMon->generation() == 7)
+                        else if (moveMon->generation() == Generation::SEVEN)
                         {
                             PK7* movePkm = (PK7*)moveMon.get();
                             movePkm->currentHandler(1);
@@ -845,6 +897,7 @@ void StorageScreen::pickup()
                     moveMon = temPkm;
                 }
             }
+            fromStorage = false;
         }
     }
 }
@@ -864,7 +917,7 @@ bool StorageScreen::dumpPkm()
         path += stringTime;
         if (moveMon)
         {
-            path += StringUtils::format(".pk%d", moveMon->generation());
+            path += StringUtils::format(".pk%s", genToString(moveMon->generation()));
             FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, moveMon->length);
             if (out.good())
             {
@@ -887,9 +940,13 @@ bool StorageScreen::dumpPkm()
                 }
                 else
                 {
+                    if (boxBox * 30 + cursorIndex - 1 >= TitleLoader::save->maxSlot())
+                    {
+                        return false;
+                    }
                     dumpMon = TitleLoader::save->pkm(boxBox, cursorIndex - 1);
-                    path += StringUtils::format(".pk%d", dumpMon->generation());
-                    FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, TitleLoader::save->emptyPkm()->length);
+                    path += StringUtils::format(".pk%d", genToString(dumpMon->generation()));
+                    FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, dumpMon->length);
                     if (out.good())
                     {
                         out.write(dumpMon->rawData(), dumpMon->length);
@@ -910,8 +967,8 @@ bool StorageScreen::dumpPkm()
                 else
                 {
                     dumpMon = testPkm; // Storage implementation thingy
-                    path += StringUtils::format(".pk%d", dumpMon->generation());
-                    FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, TitleLoader::save->emptyPkm()->length);
+                    path += StringUtils::format(".pk%d", genToString(dumpMon->generation()));
+                    FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, dumpMon->length);
                     if (out.good())
                     {
                         out.write(dumpMon->rawData(), dumpMon->length);
@@ -940,6 +997,10 @@ bool StorageScreen::duplicate()
         }
         else
         {
+            if (boxBox * 30 + cursorIndex - 1 >= TitleLoader::save->maxSlot())
+            {
+                return false;
+            }
             moveMon = TitleLoader::save->pkm(boxBox, cursorIndex - 1)->clone();
         }
         if (moveMon->species() == 0)

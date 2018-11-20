@@ -29,8 +29,26 @@
 static nlohmann::json mysteryGiftSheet;
 static u8* mysteryGiftData;
 
-void MysteryGift::init(u8 gen)
+void MysteryGift::init(Generation g)
 {
+    int gen = 0;
+    switch (g)
+    {
+        case Generation::FOUR:
+            gen = 4;
+            break;
+        case Generation::FIVE:
+            gen = 5;
+            break;
+        case Generation::SIX:
+            gen = 6;
+            break;
+        case Generation::SEVEN:
+            gen = 7;
+            break;
+        case Generation::LGPE:
+            return;
+    }
     std::ifstream sheet(StringUtils::format("romfs:/mg/sheet%d.json", gen));
     sheet >> mysteryGiftSheet;
     sheet.close();

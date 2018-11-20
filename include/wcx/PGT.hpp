@@ -45,7 +45,7 @@ public:
     PGT(u8* pgt, bool fromWC4 = false);
     ~PGT();
 
-    u8 generation() const override;
+    Generation generation() const override;
     bool bean(void) const override;
     bool BP(void) const override;
     bool item(void) const override;

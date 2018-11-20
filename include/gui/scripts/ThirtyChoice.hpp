@@ -29,6 +29,7 @@
 
 #include "ScriptChoice.hpp"
 #include "HidHorizontal.hpp"
+#include "generation.hpp"
 #include <vector>
 #include <string>
 
@@ -40,7 +41,7 @@ struct pkm {
 class ThirtyChoice : public ScriptChoice
 {
 public:
-    ThirtyChoice(char* question, char** text, pkm* pokemon, int items, int gen = 7) : ScriptChoice(question), hid(30, 6), items(items), gen(gen)
+    ThirtyChoice(char* question, char** text, pkm* pokemon, int items, Generation gen = Generation::SEVEN) : ScriptChoice(question), hid(30, 6), items(items), gen(gen)
     {
         for (int i = 0; i < items; i++)
         {
@@ -53,7 +54,7 @@ public:
 private:
     HidHorizontal hid;
     const int items;
-    const int gen;
+    const Generation gen;
     std::vector<std::string> labels;
     std::vector<pkm> pkms;
 };

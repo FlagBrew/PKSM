@@ -92,16 +92,16 @@ InjectorScreen::InjectorScreen(nlohmann::json ids) : hid(40, 8), ids(ids), empty
     u32 newDate = 0;
     switch (wondercard->generation())
     {
-        case 4: // No date data
+        case Generation::FOUR: // No date data
             break;
-        case 5:
+        case Generation::FIVE:
             *((u8*)(&newDate)) = (u8)Configuration::getInstance().day();
             *((u8*)(&newDate) + 1) = (u8)Configuration::getInstance().month();
             *((u16*)(&newDate) + 1) = (u16)Configuration::getInstance().year();
             wondercard->rawDate(newDate);
             break;
-        case 6:
-        case 7:
+        case Generation::SIX:
+        case Generation::SEVEN:
             newDate = Configuration::getInstance().year() * 10000;
             newDate += Configuration::getInstance().month() * 100;
             newDate += Configuration::getInstance().day();
@@ -302,7 +302,7 @@ void InjectorScreen::draw() const
             Gui::dynamicText(StringUtils::format("%i/%i", tid, sid), 87, 115, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             Gui::dynamicText(game, 87, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             Gui::dynamicText(StringUtils::format("%i/%i/%i", wondercard->day(), wondercard->month(), wondercard->year()), 87, 155, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            if (wondercard->generation() == 7)
+            if (wondercard->generation() == Generation::SEVEN)
             {
                 Gui::sprite(ui_sheet_point_big_idx, 1, 180);
                 Gui::staticText("Item", 9, 175, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
@@ -315,11 +315,11 @@ void InjectorScreen::draw() const
             Gui::staticText("N/A", 87, 35, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             Gui::staticText("N/A", 87, 55, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             std::string itemString = i18n::item(Configuration::getInstance().language(), wondercard->object());
-            if (wondercard->generation() == 6)
+            if (wondercard->generation() == Generation::SIX)
             {
                 itemString += " x " + std::to_string(((WC6*)wondercard.get())->objectQuantity());
             }
-            else if (wondercard->generation() == 7)
+            else if (wondercard->generation() == Generation::SEVEN)
             {
                 itemString = i18n::item(Configuration::getInstance().language(), ((WC7*)wondercard.get())->object(item));
                 itemString += " x " + std::to_string(((WC7*)wondercard.get())->objectQuantity(item));
@@ -362,7 +362,7 @@ void InjectorScreen::draw() const
 
         C2D_SceneBegin(g_renderTargetTop);
         Gui::sprite(ui_sheet_part_mtx_5x8_idx, 0, 0);
-        int saveGeneration = TitleLoader::save->generation();
+        auto saveGeneration = TitleLoader::save->generation();
         for (size_t i = 0; i < 40; i++)
         {
             int x = i % 8;
@@ -448,7 +448,7 @@ void InjectorScreen::update(touchPosition* touch)
             choosingSlot = false;
         }
     }
-    if (wondercard->generation() == 7 && wondercard->item() && ((WC7*)wondercard.get())->items() > 1)
+    if (wondercard->generation() == Generation::SEVEN && wondercard->item() && ((WC7*)wondercard.get())->items() > 1)
     {
         if (downKeys & KEY_L)
         {

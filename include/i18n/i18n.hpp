@@ -44,7 +44,7 @@ namespace i18n
     std::string move(u8 lang, u16 value);
     std::string nature(u8 lang, u8 value);
     std::string species(u8 lang, u16 value);
-    std::string form(u8 lang, u16 species, u8 form, u8 generation);
+    std::string form(u8 lang, u16 species, u8 form, Generation generation);
 
     // Used for general GUI stuff; not for PKM values
     std::string localize(Language lang, const std::string& index);

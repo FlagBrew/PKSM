@@ -40,20 +40,20 @@ protected:
     void shuffleArray(void) override;
     void crypt(void) override;
     
-    u8 data[136] = {0};
+    u8* data;
 
     u8* rawData(void) override { return data; }
 
 public:
-    PK5() { length = 136; }
-    PK5(u8* dt, bool ekx = false);
-    virtual ~PK5() { };
+    PK5() { length = 136; data = new u8[length]; std::fill_n(data, length, 0); }
+    PK5(u8* dt, bool ekx = false, bool party = false);
+    virtual ~PK5() { delete[] data; };
 
     void decrypt(void) override;
     void encrypt(void) override;
     std::unique_ptr<PKX> clone(void) override;
 
-    u8 generation(void) const override;
+    Generation generation(void) const override;
 
     u32 encryptionConstant(void) const override;
     void encryptionConstant(u32 v) override;
@@ -169,6 +169,13 @@ public:
     void shiny(bool v) override;
     u16 formSpecies(void) const override;
     u16 stat(const u8 stat) const override;
+
+    int partyCurrHP(void) const override;
+    void partyCurrHP(u16 v) override;
+    int partyStat(const u8 stat) const override;
+    void partyStat(const u8 stat, u16 v) override;
+    int partyLevel() const override;
+    void partyLevel(u8 v) override;
     
     std::unique_ptr<PKX> next(void) const override;
     std::unique_ptr<PKX> previous(void) const override;

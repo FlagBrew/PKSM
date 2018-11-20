@@ -36,6 +36,7 @@
 #include <unordered_map>
 #include "io.hpp"
 #include "json.hpp"
+#include "generation.hpp"
 
 enum Language
 {
@@ -84,7 +85,7 @@ public:
     std::string move(u16 v) const;
     std::string nature(u8 v) const;
     std::string species(u16 v) const;
-    std::string form(u16 species, u8 form, u8 generation) const;
+    std::string form(u16 species, u8 form, Generation generation) const;
 
     std::string localize(const std::string& v) const;
 };

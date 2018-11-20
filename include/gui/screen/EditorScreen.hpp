@@ -84,6 +84,9 @@ private:
     int moveSelected = 0;
     int box = 0;
     int index = 0;
+    int origPartyStats[6];
+    int origPartyLevel;
+    int origPartyCurrHP;
 };
 
 #endif

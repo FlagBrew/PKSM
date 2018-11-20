@@ -35,7 +35,7 @@ InjectSelectorScreen::InjectSelectorScreen() : hid(10, 2)
     MysteryGift::init(TitleLoader::save->generation());
     wondercards = MysteryGift::wondercards();
 
-    if (TitleLoader::save->generation() == 5)
+    if (TitleLoader::save->generation() == Generation::FIVE)
     {
         if (TitleLoader::save->version() == 22 || TitleLoader::save->version() == 23)
         {
@@ -53,7 +53,7 @@ InjectSelectorScreen::InjectSelectorScreen() : hid(10, 2)
 InjectSelectorScreen::~InjectSelectorScreen()
 {
     MysteryGift::exit();
-    if (TitleLoader::save->generation() == 5)
+    if (TitleLoader::save->generation() == Generation::FIVE)
     {
         if (TitleLoader::save->version() == 22 || TitleLoader::save->version() == 23)
         {
@@ -237,16 +237,16 @@ bool InjectSelectorScreen::doQR()
 
         switch (TitleLoader::save->generation())
         {
-            case 4:
+            case Generation::FOUR:
                 wcx = std::make_unique<PGT>(data);
                 break;
-            case 5:
+            case Generation::FIVE:
                 wcx = std::make_unique<PGF>(data);
                 break;
-            case 6:
+            case Generation::SIX:
                 wcx = std::make_unique<WC6>(data);
                 break;
-            case 7:
+            case Generation::SEVEN:
                 wcx = std::make_unique<WC7>(data);
                 break;
         }

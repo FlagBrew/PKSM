@@ -33,6 +33,7 @@
 
 #include "personal.hpp"
 #include "utils.hpp"
+#include "generation.hpp"
 
 typedef uint8_t u8;
 typedef uint16_t u16;
@@ -51,14 +52,14 @@ protected:
     virtual void shuffleArray(void) = 0;
     virtual u8* rawData(void) = 0;
 
-    u8 length = 0;
+    u32 length = 0;
 public:
     virtual void decrypt(void) = 0;
     virtual void encrypt(void) = 0;
     virtual std::unique_ptr<PKX> clone(void) = 0;
     virtual ~PKX() { };
 
-    virtual u8 generation(void) const = 0;
+    virtual Generation generation(void) const = 0;
     bool gen7(void) const;
     bool gen6(void) const;
     bool gen5(void) const;
@@ -177,6 +178,27 @@ public:
     virtual void shiny(bool v) = 0;
     virtual u16 formSpecies(void) const = 0;
     virtual u16 stat(const u8 stat) const = 0;
+
+    // Hehehehe... to be done
+    // virtual u8 sleepTurns(void) const = 0;
+    // virtual void sleepTurns(u8 v) = 0;
+    // virtual bool poison(void) const = 0;
+    // virtual void poison(bool v) = 0;
+    // virtual bool burn(void) const = 0;
+    // virtual void burn(bool v) = 0;
+    // virtual bool frozen(void) const = 0;
+    // virtual void frozen(bool v) = 0;
+    // virtual bool paralyzed(void) const = 0;
+    // virtual void paralyzed(bool v) = 0;
+    // virtual bool toxic(void) const = 0;
+    // virtual void toxic(bool v) = 0;
+    // -1 means not a party pokemon
+    virtual int partyCurrHP(void) const = 0;
+    virtual void partyCurrHP(u16 v) = 0;
+    virtual int partyStat(const u8 stat) const = 0;
+    virtual void partyStat(const u8 stat, u16 v) = 0;
+    virtual int partyLevel(void) const = 0;
+    virtual void partyLevel(u8 v) = 0;
 
     virtual std::unique_ptr<PKX> previous(void) const { return std::unique_ptr<PKX>(const_cast<PKX*>(this)); }
     virtual std::unique_ptr<PKX> next(void) const { return std::unique_ptr<PKX>(const_cast<PKX*>(this)); }

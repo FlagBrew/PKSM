@@ -112,7 +112,7 @@ std::string LanguageStrings::ball(u8 v) const
     return v < balls.size() ? balls.at(v) : "Invalid";
 }
 
-std::string LanguageStrings::form(u16 species, u8 form, u8 generation) const
+std::string LanguageStrings::form(u16 species, u8 form, Generation generation) const
 {
     std::string ret = "Invalid";
     std::string sSpecies = std::to_string((int)species);
@@ -133,9 +133,9 @@ std::string LanguageStrings::form(u16 species, u8 form, u8 generation) const
         std::vector<int> formIndices;
         if (formJson()[sSpecies].is_object())
         {
-            if (formJson()[sSpecies].find(std::to_string((int)generation)) != formJson()[sSpecies].end())
+            if (formJson()[sSpecies].find(genToString(generation)) != formJson()[sSpecies].end())
             {
-                formIndices = formJson()[sSpecies][std::to_string((int)generation)].get<std::vector<int>>();
+                formIndices = formJson()[sSpecies][genToString(generation)].get<std::vector<int>>();
             }
         }
         else

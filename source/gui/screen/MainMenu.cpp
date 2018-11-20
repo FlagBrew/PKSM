@@ -134,7 +134,7 @@ void MainMenu::update(touchPosition* touch)
     }
     if (keysDown() & KEY_B)
     {
-        if (Gui::showChoiceMessage("Would you like to save", std::string("your changes?")))
+        if (Gui::showChoiceMessage("Would you like to save", "your changes?"))
         {
             TitleLoader::saveChanges();
         }

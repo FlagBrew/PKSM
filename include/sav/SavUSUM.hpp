@@ -147,6 +147,7 @@ public:
     // that's because PKSM works with decrypted boxes and
     // crypts them back during resigning
     void pkm(PKX& pk, u8 box, u8 slot) override;
+    void pkm(PKX& pk, u8 slot) override;
 
     std::shared_ptr<PKX> emptyPkm() const override;
 
@@ -161,7 +162,7 @@ public:
 
     int maxBoxes(void) const override { return 32; }
     size_t maxWondercards(void) const override { return 48; }
-    u8 generation(void) const override { return 7; }
+    Generation generation(void) const override { return Generation::SEVEN; }
     int maxSpecies(void) const { return 807; }
     int maxMove(void) const { return 728; }
     int maxItem(void) const { return 959; }

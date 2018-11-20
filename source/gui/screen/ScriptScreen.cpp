@@ -180,7 +180,7 @@ void ScriptScreen::update(touchPosition* touch)
         }
         else
         {
-            Gui::warn("\"" + dirString + "\"", std::string("not found!"));
+            Gui::warn("\"" + dirString + "\"", "not found!");
         }
     }
     else if (down & KEY_Y)
@@ -196,7 +196,7 @@ void ScriptScreen::update(touchPosition* touch)
         }
         else
         {
-            Gui::warn("\"" + dirString + "\"", std::string("not found!"));
+            Gui::warn("\"" + dirString + "\"", "not found!");
         }
     }
 }
@@ -302,7 +302,7 @@ void ScriptScreen::applyScript()
         u32 length = *(u32*)(scriptData.first + index + 4);
         u32 repeat = *(u32*)(scriptData.first + index + 8 + length);
 
-        if (TitleLoader::save->generation() == 4)
+        if (TitleLoader::save->generation() == Generation::FOUR)
         {
             u32 sbo = 0;
             u32 gbo = 0;
@@ -310,17 +310,17 @@ void ScriptScreen::applyScript()
             {
                 case 7:
                 case 8:
-                    sbo = ((SavHGSS*)TitleLoader::save.get())->sbo;
-                    gbo = ((SavHGSS*)TitleLoader::save.get())->gbo;
+                    sbo = ((SavHGSS*)TitleLoader::save.get())->getSBO();
+                    gbo = ((SavHGSS*)TitleLoader::save.get())->getGBO();
                     break;
                 case 10:
                 case 11:
-                    sbo = ((SavDP*)TitleLoader::save.get())->sbo;
-                    gbo = ((SavDP*)TitleLoader::save.get())->gbo;
+                    sbo = ((SavDP*)TitleLoader::save.get())->getSBO();
+                    gbo = ((SavDP*)TitleLoader::save.get())->getGBO();
                     break;
                 case 12:
-                    sbo = ((SavPT*)TitleLoader::save.get())->sbo;
-                    gbo = ((SavPT*)TitleLoader::save.get())->gbo;
+                    sbo = ((SavPT*)TitleLoader::save.get())->getSBO();
+                    gbo = ((SavPT*)TitleLoader::save.get())->getGBO();
                     break;
             }
             if (TitleLoader::save->boxOffset(0, 0) - sbo <= offset && TitleLoader::save->boxOffset(TitleLoader::save->boxes, 0) - sbo >= offset)

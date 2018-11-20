@@ -64,7 +64,7 @@ std::string PGT::title(void) const { return "Wondercard"; }
 
 bool PGT::power(void) const { return false; }
 
-u8 PGT::generation(void) const { return 4; }
+Generation PGT::generation(void) const { return Generation::FOUR; }
 
 u8 PGT::type(void) const { return *(u8*)(data); }
 

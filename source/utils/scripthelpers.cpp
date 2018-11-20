@@ -27,6 +27,7 @@
 #include "gui.hpp"
 #include "FortyChoice.hpp"
 #include "ThirtyChoice.hpp"
+#include "loader.hpp"
 
 extern "C" {
 #include "scripthelpers.h"
@@ -50,14 +51,28 @@ extern "C" {
     {
         char* lineOne = (char*) Param[0]->Val->Pointer;
         char* lineTwo = (char*) Param[1]->Val->Pointer;
-        Gui::warn(lineOne, lineTwo != nullptr ? std::string(lineTwo) : nullptr);
+        if (lineTwo != nullptr)
+        {
+            Gui::warn(lineOne, lineTwo);
+        }
+        else
+        {
+            Gui::warn(lineOne);
+        }
     }
 
     void gui_choice(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
     {
         char* lineOne = (char*) Param[0]->Val->Pointer;
         char* lineTwo = (char*) Param[1]->Val->Pointer;
-        ReturnValue->Val->Integer = (int) Gui::showChoiceMessage(lineOne, lineTwo != nullptr ? std::string(lineTwo) : nullptr);
+        if (lineTwo != nullptr)
+        {
+            ReturnValue->Val->Integer = (int) Gui::showChoiceMessage(lineOne, lineTwo);
+        }
+        else
+        {
+            ReturnValue->Val->Integer = (int) Gui::showChoiceMessage(lineOne);
+        }
     }
 
     void gui_menu6x5(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
@@ -66,7 +81,7 @@ extern "C" {
         int options = Param[1]->Val->Integer;
         char** labels = (char**) Param[2]->Val->Pointer;
         pkm* pokemon = (pkm*) Param[3]->Val->Pointer;
-        int gen = Param[4]->Val->Integer;
+        Generation gen = Generation(Param[4]->Val->Integer);
         ThirtyChoice screen = ThirtyChoice(question, labels, pokemon, options, gen);
         ReturnValue->Val->Integer = screen.run();
     }
@@ -78,5 +93,47 @@ extern "C" {
         char** labels = (char**) Param[2]->Val->Pointer;
         FortyChoice screen = FortyChoice(question, labels, options);
         ReturnValue->Val->Integer = screen.run();
+    }
+
+    void sav_sbo(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        switch (TitleLoader::save->version())
+        {
+            case 7:
+            case 8:
+                ReturnValue->Val->Integer = ((SavHGSS*)TitleLoader::save.get())->getSBO();
+                break;
+            case 10:
+            case 11:
+                ReturnValue->Val->Integer = ((SavDP*)TitleLoader::save.get())->getSBO();
+                break;
+            case 12:
+                ReturnValue->Val->Integer = ((SavPT*)TitleLoader::save.get())->getSBO();
+                break;
+            default:
+                ReturnValue->Val->Integer = 0;
+                break;
+        }
+    }
+
+    void sav_gbo(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        switch (TitleLoader::save->version())
+        {
+            case 7:
+            case 8:
+                ReturnValue->Val->Integer = ((SavHGSS*)TitleLoader::save.get())->getGBO();
+                break;
+            case 10:
+            case 11:
+                ReturnValue->Val->Integer = ((SavDP*)TitleLoader::save.get())->getGBO();
+                break;
+            case 12:
+                ReturnValue->Val->Integer = ((SavPT*)TitleLoader::save.get())->getGBO();
+                break;
+            default:
+                ReturnValue->Val->Integer = 0;
+                break;
+        }
     }
 }

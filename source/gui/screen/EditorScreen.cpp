@@ -69,6 +69,13 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
         view->setPkm(pkm);
     }
 
+    for (int i = 0; i < 6; i++)
+    {
+        origPartyStats[i] = pkm->partyStat(i);
+    }
+    origPartyLevel = pkm->partyLevel();
+    origPartyCurrHP = pkm->partyCurrHP();
+
     u8 tab = 0;
     // Back button first, always. Needs to have the same index for each one
     buttons[tab].push_back(NO_TEXT_CLICK(283, 211, 34, 28, [this](){ return this->goBack(); }, ui_sheet_button_back_idx));
@@ -222,11 +229,11 @@ void EditorScreen::draw() const
             for (int i = 0; i < 4; i++)
             {
                 Gui::dynamicText(i18n::move(lang, pkm->move(i)), 24, 32 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-                if (pkm->generation() == 6)
+                if (pkm->generation() == Generation::SIX)
                 {
                     Gui::dynamicText(i18n::move(lang, ((PK6*)pkm.get())->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
                 }
-                else if (pkm->generation() == 7)
+                else if (pkm->generation() == Generation::SEVEN)
                 {
                     Gui::dynamicText(i18n::move(lang, ((PK7*)pkm.get())->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
                 }
@@ -393,7 +400,7 @@ void EditorScreen::setOT()
     bool first = true;
     if (first)
     {
-        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() == 6 || pkm->generation() == 7 ? 12 : (8 - 1));
+        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN ? 12 : (8 - 1));
         first = false;
     }
     swkbdSetHintText(&state, "OT Name");
@@ -413,7 +420,7 @@ void EditorScreen::setNick()
     bool first = true;
     if (first)
     {
-        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() == 6 || pkm->generation() == 7 ? 12 : (11 - 1));
+        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN ? 12 : (11 - 1));
         first = false;
     }
     swkbdSetHintText(&state, "Nickname");
@@ -470,7 +477,30 @@ void EditorScreen::setFriendship()
 bool EditorScreen::save()
 {
     pkm->refreshChecksum();
-    TitleLoader::save->pkm(*pkm, box, index);
+    if (box != 0xFF)
+    {
+        TitleLoader::save->pkm(*pkm, box, index);
+    }
+    else
+    {
+        // Update party values IF the user hasn't edited them themselves
+        for (int i = 0; i < 6; i++)
+        {
+            if (pkm->partyStat(i) == origPartyStats[i])
+            {
+                pkm->partyStat(i, pkm->stat(i));
+            }
+        }
+        if (pkm->partyLevel() == origPartyLevel)
+        {
+            pkm->partyLevel(pkm->level());
+        }
+        if (pkm->partyCurrHP() == origPartyCurrHP)
+        {
+            pkm->partyCurrHP(pkm->partyStat(0));
+        }
+        TitleLoader::save->pkm(*pkm, index);
+    }
     Gui::warn("Saved");
     return false;
 }
@@ -574,7 +604,7 @@ bool EditorScreen::selectNature()
 
 bool EditorScreen::selectAbility()
 {
-    if (pkm->generation() == 4)
+    if (pkm->generation() == Generation::FOUR)
     {
         u8 setAbility = pkm->ability();
         if (PersonalDPPtHGSS::ability(pkm->species(), 0) != setAbility && PersonalDPPtHGSS::ability(pkm->species(), 0) != 0)
@@ -586,7 +616,7 @@ bool EditorScreen::selectAbility()
             pkm->ability(PersonalDPPtHGSS::ability(pkm->species(), 1));
         }
     }
-    else if (pkm->generation() == 5)
+    else if (pkm->generation() == Generation::FIVE)
     {
         PK5* pk5 = (PK5*) pkm.get();
         auto abilityResolver = PersonalBWB2W2::ability;
@@ -640,9 +670,9 @@ bool EditorScreen::selectAbility()
                 break;
         }
     }
-    else if (pkm->generation() == 6 || pkm->generation() == 7)
+    else if (pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN)
     {
-        auto abilityResolver = pkm->generation() == 6 ? PersonalXYORAS::ability : PersonalSMUSUM::ability;
+        auto abilityResolver = pkm->generation() == Generation::SIX ? PersonalXYORAS::ability : PersonalSMUSUM::ability;
         switch (pkm->abilityNumber() >> 1)
         {
             case 0:
@@ -688,8 +718,7 @@ bool EditorScreen::selectItem()
 
 bool EditorScreen::selectForm()
 {
-    // If unnecessary, can change to single value. Done for expandability
-    static const std::vector<u16> noChange = { 493 };
+    static const std::vector<u16> noChange = { 493, 649, 773 };
     for (auto bad : noChange)
     {
         if (bad == pkm->species())
@@ -698,16 +727,16 @@ bool EditorScreen::selectForm()
     u8 (*formCounter)(u16);
     switch (TitleLoader::save->generation())
     {
-        case 4:
+        case Generation::FOUR:
             formCounter = PersonalDPPtHGSS::formCount;
             break;
-        case 5:
+        case Generation::FIVE:
             formCounter = PersonalBWB2W2::formCount;
             break;
-        case 6:
+        case Generation::SIX:
             formCounter = PersonalXYORAS::formCount;
             break;
-        case 7:
+        case Generation::SEVEN:
         default:
             formCounter = PersonalSMUSUM::formCount;
             break;

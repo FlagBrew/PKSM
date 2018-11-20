@@ -334,14 +334,14 @@ namespace {
             {
                 pkm->move(i, TitleLoader::save->maxMove());
             }
-            if (pkm->generation() == 6)
+            if (pkm->generation() == Generation::SIX)
             {
                 if (((PK6*)pkm.get())->relearnMove(i) > TitleLoader::save->maxMove())
                 {
                     ((PK6*)pkm.get())->relearnMove(i, TitleLoader::save->maxMove());
                 }
             }
-            if (pkm->generation() == 7)
+            if (pkm->generation() == Generation::SEVEN)
             {
                 if (((PK7*)pkm.get())->relearnMove(i) > TitleLoader::save->maxMove())
                 {
@@ -360,30 +360,16 @@ namespace {
         u8 (*formCounter)(u16);
         switch (TitleLoader::save->generation())
         {
-            case 4:
-                formCounter = [](u16 species) -> u8 {
-                if (species == 201)
-                {
-                    return 28;
-                }
-                else
-                {
-                    u8 count = PersonalDPPtHGSS::formCount(species);
-                    if (count == 0)
-                    {
-                        return 1;
-                    }
-                    return count;
-                }
-            };
+            case Generation::FOUR:
+                formCounter = PersonalDPPtHGSS::formCount;
                 break;
-            case 5:
+            case Generation::FIVE:
                 formCounter = PersonalBWB2W2::formCount;
                 break;
-            case 6:
+            case Generation::SIX:
                 formCounter = PersonalXYORAS::formCount;
                 break;
-            case 7:
+            case Generation::SEVEN:
             default:
                 formCounter = PersonalSMUSUM::formCount;
                 break;
@@ -443,7 +429,9 @@ bool HexEditScreen::editNumber(bool high, bool up)
 
 std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int i) const
 {
-    if (pkm->generation() >= 6)
+    static const std::pair<std::string, HexEditScreen::SecurityLevel> UNKNOWN = std::make_pair("Unknown", UNRESTRICTED);
+    static const std::pair<std::string, HexEditScreen::SecurityLevel> UNUSED = std::make_pair("Unused", UNRESTRICTED);
+    if (pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN)
     {
         switch (i)
         {
@@ -534,7 +522,7 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 return std::make_pair("Ribbons", NORMAL);
             case 0x36:
             case 0x37:
-                return std::make_pair("Unused", UNRESTRICTED);
+                return UNUSED;
             case 0x38:
                 return std::make_pair("Contest Memory Ribbon Count", NORMAL);
             case 0x39:
@@ -546,7 +534,7 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
             case 0x3D:
             case 0x3E:
             case 0x3F:
-                return std::make_pair("Unused", UNRESTRICTED);
+                return UNUSED;
             case 0x40:
             case 0x41:
             case 0x42:
@@ -618,7 +606,7 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
             case 0x72:
                 return std::make_pair("Secret Super Training Flag", NORMAL);
             case 0x73:
-                return std::make_pair("Unused", UNRESTRICTED);
+                return UNUSED;
             case 0x74:
             case 0x75:
             case 0x76:
@@ -676,7 +664,7 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
             case 0x9F:
             case 0xA0:
             case 0xA1:
-                return std::make_pair("Unused", UNRESTRICTED);
+                return UNUSED;
             case 0xA2:
                 return std::make_pair("Current Trainer Friendship", NORMAL);
             case 0xA3:
@@ -688,7 +676,7 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
             case 0xA6:
                 return std::make_pair("Current Trainer Memory Feeling", OPEN);
             case 0xA7:
-                return std::make_pair("Unused", UNRESTRICTED);
+                return UNUSED;
             case 0xA8:
             case 0xA9:
                 return std::make_pair("Current Trainer Memory TextVar", OPEN);
@@ -696,7 +684,7 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
             case 0xAB:
             case 0xAC:
             case 0xAD:
-                return std::make_pair("Unused", UNRESTRICTED);
+                return UNUSED;
             case 0xAE:
                 return std::make_pair("Fullness", NORMAL);
             case 0xAF:
@@ -751,7 +739,7 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
             case 0xD6:
                 return std::make_pair("Met Date", NORMAL);
             case 0xD7:
-                return std::make_pair("Unknown/Unused", UNRESTRICTED);
+                return UNKNOWN;
             case 0xD8:
             case 0xD9:
                 return std::make_pair("Egg Location", NORMAL);
@@ -778,10 +766,60 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
             case 0xE5:
             case 0xE6:
             case 0xE7:
-                return std::make_pair("Unused", UNRESTRICTED);
+                return UNUSED;
+            case 0xE8:
+                return std::make_pair("Status Conditions", NORMAL);
+            case 0xE9:
+                return std::make_pair("Unknown Flags", UNRESTRICTED);
+            case 0xEA:
+            case 0xEB:
+                return UNKNOWN;
+            case 0xEC:
+                return std::make_pair("Level", NORMAL);
+            // Refresh dirt
+            case 0xED:
+                if (pkm->generation() == Generation::SEVEN)
+                {
+                    return std::make_pair("Dirt Type", OPEN);
+                }
+            case 0xEE:
+                if (pkm->generation() == Generation::SEVEN)
+                {
+                    return std::make_pair("Dirt Location", OPEN);
+                }
+            case 0xEF:
+                return UNKNOWN;
+            case 0xF0:
+            case 0xF1:
+                return std::make_pair("Current HP", OPEN);
+            case 0xF2:
+            case 0xF3:
+                return std::make_pair("Max HP", OPEN);
+            case 0xF4:
+            case 0xF5:
+                return std::make_pair("Attack", OPEN);
+            case 0xF6:
+            case 0xF7:
+                return std::make_pair("Defense", OPEN);
+            case 0xF8:
+            case 0xF9:
+                return std::make_pair("Speed", OPEN);
+            case 0xFA:
+            case 0xFB:
+                return std::make_pair("Sp. Attack", OPEN);
+            case 0xFC:
+            case 0xFD:
+                return std::make_pair("Sp. Defense", OPEN);
+            case 0xFE:
+            case 0xFF:
+            case 0x100:
+            case 0x101:
+            case 0x102:
+            case 0x103:
+                return UNKNOWN;
         }
     }
-    else if (pkm->generation() == 5)
+    else if (pkm->generation() == Generation::FIVE)
     {
         switch(i)
         {
@@ -792,7 +830,7 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 return std::make_pair("PID", NORMAL);
             case 0x04:
             case 0x05:
-                return std::make_pair("Unused", UNRESTRICTED);
+                return UNUSED;
             case 0x06:
             case 0x07:
                 return std::make_pair("Checksum", UNRESTRICTED);
@@ -899,7 +937,7 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
             case 0x45:
             case 0x46:
             case 0x47:
-                return std::make_pair("Unused", UNRESTRICTED);
+                return UNUSED;
             case 0x48:
             case 0x49:
             case 0x4A:
@@ -924,7 +962,7 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
             case 0x5D:
                 return std::make_pair("Nickname", NORMAL);
             case 0x5E:
-                return std::make_pair("Unknown", UNRESTRICTED);
+                return UNKNOWN;
             case 0x5F:
                 return std::make_pair("Origin Game", NORMAL);
             case 0x60:
@@ -936,7 +974,7 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
             case 0x65:
             case 0x66:
             case 0x67:
-                return std::make_pair("Unused", UNRESTRICTED);
+                return UNUSED;
             case 0x68:
             case 0x69:
             case 0x6A:
@@ -978,10 +1016,108 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 return std::make_pair("Encounter Type", NORMAL);
             case 0x86:
             case 0x87:
-                return std::make_pair("Unused", UNRESTRICTED);
+                return UNUSED;
+            case 0x88:
+                return std::make_pair("Status Conditions", NORMAL);
+            case 0x89:
+                return std::make_pair("Unknown Flags", UNRESTRICTED);
+            case 0x8A:
+            case 0x8B:
+                return UNKNOWN;
+            case 0x8C:
+                return std::make_pair("Level", NORMAL);
+            case 0x8D:
+                return std::make_pair("Capsule Index (seals)", OPEN);
+            case 0x8E:
+            case 0x8F:
+                return std::make_pair("Current HP", OPEN);
+            case 0x90:
+            case 0x91:
+                return std::make_pair("Max HP", OPEN);
+            case 0x92:
+            case 0x93:
+                return std::make_pair("Attack", OPEN);
+            case 0x94:
+            case 0x95:
+                return std::make_pair("Defense", OPEN);
+            case 0x96:
+            case 0x97:
+                return std::make_pair("Speed", OPEN);
+            case 0x98:
+            case 0x99:
+                return std::make_pair("Sp. Attack", OPEN);
+            case 0x9A:
+            case 0x9B:
+                return std::make_pair("Sp. Defense", OPEN);
+            case 0x9C:
+            case 0x9D:
+            case 0x9E:
+            case 0x9F:
+            case 0xA0:
+            case 0xA1:
+            case 0xA2:
+            case 0xA3:
+            case 0xA4:
+            case 0xA5:
+            case 0xA6:
+            case 0xA7:
+            case 0xA8:
+            case 0xA9:
+            case 0xAA:
+            case 0xAB:
+            case 0xAC:
+            case 0xAD:
+            case 0xAE:
+            case 0xAF:
+            case 0xB0:
+            case 0xB1:
+            case 0xB2:
+            case 0xB3:
+            case 0xB4:
+            case 0xB5:
+            case 0xB6:
+            case 0xB7:
+            case 0xB8:
+            case 0xB9:
+            case 0xBA:
+            case 0xBB:
+            case 0xBC:
+            case 0xBD:
+            case 0xBE:
+            case 0xBF:
+            case 0xC0:
+            case 0xC1:
+            case 0xC2:
+            case 0xC3:
+            case 0xC4:
+            case 0xC5:
+            case 0xC6:
+            case 0xC7:
+            case 0xC8:
+            case 0xC9:
+            case 0xCA:
+            case 0xCB:
+            case 0xCC:
+            case 0xCD:
+            case 0xCE:
+            case 0xCF:
+            case 0xD0:
+            case 0xD1:
+            case 0xD2:
+            case 0xD3:
+                return std::make_pair("Mail message + OT Name", OPEN);
+            case 0xD4:
+            case 0xD5:
+            case 0xD6:
+            case 0xD7:
+            case 0xD8:
+            case 0xD9:
+            case 0xDA:
+            case 0xDB:
+                return UNKNOWN;
         }
     }
-    else if (pkm->generation() == 4)
+    else if (pkm->generation() == Generation::FOUR)
     {
         switch(i)
         {
@@ -992,7 +1128,7 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 return std::make_pair("PID", NORMAL);
             case 0x04:
             case 0x05:
-                return std::make_pair("Unused", UNRESTRICTED);
+                return UNUSED;
             case 0x06:
             case 0x07:
                 return std::make_pair("Checksum", UNRESTRICTED);
@@ -1094,7 +1230,7 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 return std::make_pair("Shiny Leaves (HGSS)", NORMAL);
             case 0x42:
             case 0x43:
-                return std::make_pair("Unused", UNRESTRICTED);
+                return UNUSED;
             case 0x44:
             case 0x45:
                 return std::make_pair("Egg Location (Platinum)", NORMAL);
@@ -1125,7 +1261,7 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
             case 0x5D:
                 return std::make_pair("Nickname", NORMAL);
             case 0x5E:
-                return std::make_pair("Unused", UNRESTRICTED);
+                return UNUSED;
             case 0x5F:
                 return std::make_pair("Origin Game", NORMAL);
             case 0x60:
@@ -1137,7 +1273,7 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
             case 0x65:
             case 0x66:
             case 0x67:
-                return std::make_pair("Unused", UNRESTRICTED);
+                return UNUSED;
             case 0x68:
             case 0x69:
             case 0x6A:
@@ -1180,7 +1316,121 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
             case 0x86:
                 return std::make_pair("HGSS Pok\u00E9 Ball", NORMAL);
             case 0x87:
-                return std::make_pair("Unused", UNRESTRICTED);
+                return UNUSED;
+            case 0x88:
+                return std::make_pair("Status Conditions", NORMAL);
+            case 0x89:
+                return std::make_pair("Unknown Flags", UNRESTRICTED);
+            case 0x8A:
+            case 0x8B:
+                return UNKNOWN;
+            case 0x8C:
+                return std::make_pair("Level", NORMAL);
+            case 0x8D:
+                return std::make_pair("Capsule Index (seals)", OPEN);
+            case 0x8E:
+            case 0x8F:
+                return std::make_pair("Current HP", OPEN);
+            case 0x90:
+            case 0x91:
+                return std::make_pair("Max HP", OPEN);
+            case 0x92:
+            case 0x93:
+                return std::make_pair("Attack", OPEN);
+            case 0x94:
+            case 0x95:
+                return std::make_pair("Defense", OPEN);
+            case 0x96:
+            case 0x97:
+                return std::make_pair("Speed", OPEN);
+            case 0x98:
+            case 0x99:
+                return std::make_pair("Sp. Attack", OPEN);
+            case 0x9A:
+            case 0x9B:
+                return std::make_pair("Sp. Defense", OPEN);
+            case 0x9C:
+            case 0x9D:
+            case 0x9E:
+            case 0x9F:
+            case 0xA0:
+            case 0xA1:
+            case 0xA2:
+            case 0xA3:
+            case 0xA4:
+            case 0xA5:
+            case 0xA6:
+            case 0xA7:
+            case 0xA8:
+            case 0xA9:
+            case 0xAA:
+            case 0xAB:
+            case 0xAC:
+            case 0xAD:
+            case 0xAE:
+            case 0xAF:
+            case 0xB0:
+            case 0xB1:
+            case 0xB2:
+            case 0xB3:
+            case 0xB4:
+            case 0xB5:
+            case 0xB6:
+            case 0xB7:
+            case 0xB8:
+            case 0xB9:
+            case 0xBA:
+            case 0xBB:
+            case 0xBC:
+            case 0xBD:
+            case 0xBE:
+            case 0xBF:
+            case 0xC0:
+            case 0xC1:
+            case 0xC2:
+            case 0xC3:
+            case 0xC4:
+            case 0xC5:
+            case 0xC6:
+            case 0xC7:
+            case 0xC8:
+            case 0xC9:
+            case 0xCA:
+            case 0xCB:
+            case 0xCC:
+            case 0xCD:
+            case 0xCE:
+            case 0xCF:
+            case 0xD0:
+            case 0xD1:
+            case 0xD2:
+            case 0xD3:
+                return std::make_pair("Mail message + OT Name", OPEN);
+            case 0xD4:
+            case 0xD5:
+            case 0xD6:
+            case 0xD7:
+            case 0xD8:
+            case 0xD9:
+            case 0xDA:
+            case 0xDB:
+            case 0xDC:
+            case 0xDD:
+            case 0xDE:
+            case 0xDF:
+            case 0xE0:
+            case 0xE1:
+            case 0xE2:
+            case 0xE3:
+            case 0xE4:
+            case 0xE5:
+            case 0xE6:
+            case 0xE7:
+            case 0xE8:
+            case 0xE9:
+            case 0xEA:
+            case 0xEB:
+                return std::make_pair("Seal Coordinates", OPEN);
         }
     }
     return std::make_pair("Report this to FlagBrew", UNRESTRICTED);
@@ -1189,7 +1439,7 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
 HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
 {
     currRibbon = 0;
-    for (int i = 0; i < pkm->length; i++)
+    for (u32 i = 0; i < pkm->length; i++)
     {
         std::vector<HexEditButton*> newButtons;
         buttons.push_back(newButtons);
@@ -1211,7 +1461,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
             {
                 // Fateful Encounter
                 case 0x1D:
-                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, [this, i](){ return this->toggleBit(i, 0); }, ui_sheet_emulated_toggle_green_idx, "Fateful Encounter", true, 0));
+                    buttons[i].push_back(new HexEditButton(70, 90, 13, 13, [this, i](){ return this->toggleBit(i, 0); }, ui_sheet_emulated_toggle_green_idx, "Fateful Encounter", true, 0));
                     buttons[i].back()->setToggled(pkm->rawData()[i] & 0x1);
                     break;
                 // Markings
@@ -1260,19 +1510,32 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                         delete buttons[i].back();
                         buttons[i].pop_back();
                     }
-                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, [this, i](){ return this->toggleBit(i, 0); }, ui_sheet_emulated_toggle_green_idx, "Secret Super Training", true, 0));
+                    buttons[i].push_back(new HexEditButton(70, 90, 13, 13, [this, i](){ return this->toggleBit(i, 0); }, ui_sheet_emulated_toggle_green_idx, "Secret Super Training", true, 0));
                     buttons[i].back()->setToggled(pkm->rawData()[i] & 0x1);
                     break;
                 // Egg, & Nicknamed Flag
                 case 0x77:
-                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, [this, i](){ return this->toggleBit(i, 6); }, ui_sheet_emulated_toggle_green_idx, "Egg", true, 6));
+                    buttons[i].push_back(new HexEditButton(70, 90, 13, 13, [this, i](){ return this->toggleBit(i, 6); }, ui_sheet_emulated_toggle_green_idx, "Egg", true, 6));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 6) & 0x1);
-                    buttons[i].push_back(new HexEditButton(70, 106, 38, 23, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, "Nicknamed", true, 7));
+                    buttons[i].push_back(new HexEditButton(70, 106, 13, 13, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, "Nicknamed", true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
                     break;
                 // OT Gender
                 case 0xDD:
-                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, "Female OT", true, 7));
+                    buttons[i].push_back(new HexEditButton(70, 90, 13, 13, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, "Female OT", true, 7));
+                    buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
+                    break;
+                // Status
+                case 0xE8:
+                    buttons[i].push_back(new HexEditButton(70, 90, 13, 13, [this, i](){ return this->toggleBit(i, 3); }, ui_sheet_emulated_toggle_green_idx, "Poisoned", true, 3));
+                    buttons[i].back()->setToggled((pkm->rawData()[i] >> 3) & 0x1);
+                    buttons[i].push_back(new HexEditButton(70, 106, 13, 13, [this, i](){ return this->toggleBit(i, 4); }, ui_sheet_emulated_toggle_green_idx, "Burned", true, 4));
+                    buttons[i].back()->setToggled((pkm->rawData()[i] >> 4) & 0x1);
+                    buttons[i].push_back(new HexEditButton(70, 122, 13, 13, [this, i](){ return this->toggleBit(i, 5); }, ui_sheet_emulated_toggle_green_idx, "Frozen", true, 5));
+                    buttons[i].back()->setToggled((pkm->rawData()[i] >> 5) & 0x1);
+                    buttons[i].push_back(new HexEditButton(70, 138, 13, 13, [this, i](){ return this->toggleBit(i, 6); }, ui_sheet_emulated_toggle_green_idx, "Paralyzed", true, 6));
+                    buttons[i].back()->setToggled((pkm->rawData()[i] >> 6) & 0x1);
+                    buttons[i].push_back(new HexEditButton(70, 154, 13, 13, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, "Toxic", true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
                     break;
             }
@@ -1321,26 +1584,39 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     break;
                 // Egg and Nicknamed Flags
                 case 0x3B:
-                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, [this, i](){ return this->toggleBit(i, 6); }, ui_sheet_emulated_toggle_green_idx, "Egg", true, 6));
+                    buttons[i].push_back(new HexEditButton(70, 90, 13, 13, [this, i](){ return this->toggleBit(i, 6); }, ui_sheet_emulated_toggle_green_idx, "Egg", true, 6));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 6) & 0x1);
-                    buttons[i].push_back(new HexEditButton(70, 106, 38, 23, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, "Nicknamed", true, 7));
+                    buttons[i].push_back(new HexEditButton(70, 106, 13, 13, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, "Nicknamed", true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
                     break;
                 // Fateful Encounter
                 case 0x40:
-                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, [this, i](){ return this->toggleBit(i, 0); }, ui_sheet_emulated_toggle_green_idx, "Fateful Encounter", true, 0));
+                    buttons[i].push_back(new HexEditButton(70, 90, 13, 13, [this, i](){ return this->toggleBit(i, 0); }, ui_sheet_emulated_toggle_green_idx, "Fateful Encounter", true, 0));
                     buttons[i].back()->setToggled(pkm->rawData()[i] & 0x1);
                     break;
                 // DreamWorldAbility & N's Pokemon Flags
                 case 0x42:
-                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, [this, i](){ return this->toggleBit(i, 0); }, ui_sheet_emulated_toggle_green_idx, "Hidden Ability?", true, 0));
+                    buttons[i].push_back(new HexEditButton(70, 90, 13, 13, [this, i](){ return this->toggleBit(i, 0); }, ui_sheet_emulated_toggle_green_idx, "Hidden Ability?", true, 0));
                     buttons[i].back()->setToggled(pkm->rawData()[i] & 0x1);
-                    buttons[i].push_back(new HexEditButton(70, 106, 38, 23, [this, i](){ return this->toggleBit(i, 1); }, ui_sheet_emulated_toggle_green_idx, "N\'s Pokemon?", true, 1));
+                    buttons[i].push_back(new HexEditButton(70, 106, 13, 13, [this, i](){ return this->toggleBit(i, 1); }, ui_sheet_emulated_toggle_green_idx, "N\'s Pokemon?", true, 1));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 1) & 0x1);
                     break;
                 // OT Gender
                 case 0x84:
-                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, "Female OT", true, 7));
+                    buttons[i].push_back(new HexEditButton(70, 90, 13, 13, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, "Female OT", true, 7));
+                    buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
+                    break;
+                // Status
+                case 0x88:
+                    buttons[i].push_back(new HexEditButton(70, 90, 13, 13, [this, i](){ return this->toggleBit(i, 3); }, ui_sheet_emulated_toggle_green_idx, "Poisoned", true, 3));
+                    buttons[i].back()->setToggled((pkm->rawData()[i] >> 3) & 0x1);
+                    buttons[i].push_back(new HexEditButton(70, 106, 13, 13, [this, i](){ return this->toggleBit(i, 4); }, ui_sheet_emulated_toggle_green_idx, "Burned", true, 4));
+                    buttons[i].back()->setToggled((pkm->rawData()[i] >> 4) & 0x1);
+                    buttons[i].push_back(new HexEditButton(70, 122, 13, 13, [this, i](){ return this->toggleBit(i, 5); }, ui_sheet_emulated_toggle_green_idx, "Frozen", true, 5));
+                    buttons[i].back()->setToggled((pkm->rawData()[i] >> 5) & 0x1);
+                    buttons[i].push_back(new HexEditButton(70, 138, 13, 13, [this, i](){ return this->toggleBit(i, 6); }, ui_sheet_emulated_toggle_green_idx, "Paralyzed", true, 6));
+                    buttons[i].back()->setToggled((pkm->rawData()[i] >> 6) & 0x1);
+                    buttons[i].push_back(new HexEditButton(70, 154, 13, 13, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, "Toxic", true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
                     break;
             }
@@ -1389,14 +1665,14 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     break;
                 // Egg and Nicknamed Flags
                 case 0x3B:
-                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, [this, i](){ return this->toggleBit(i, 6); }, ui_sheet_emulated_toggle_green_idx, "Egg", true, 6));
+                    buttons[i].push_back(new HexEditButton(70, 90, 13, 13, [this, i](){ return this->toggleBit(i, 6); }, ui_sheet_emulated_toggle_green_idx, "Egg", true, 6));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 6) & 0x1);
                     buttons[i].push_back(new HexEditButton(70, 106, 13, 13, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, "Nicknamed", true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
                     break;
                 // Fateful Encounter
                 case 0x40:
-                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, [this, i](){ return this->toggleBit(i, 0); }, ui_sheet_emulated_toggle_green_idx, "", true, 0));
+                    buttons[i].push_back(new HexEditButton(70, 90, 13, 13, [this, i](){ return this->toggleBit(i, 0); }, ui_sheet_emulated_toggle_green_idx, "Fateful Encounter", true, 0));
                     buttons[i].back()->setToggled(pkm->rawData()[i] & 0x1);
                     break;
                 // Gold Leaves & Crown
@@ -1414,7 +1690,20 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     break;
                 // OT Gender
                 case 0x84:
-                    buttons[i].push_back(new HexEditButton(70, 90, 38, 23, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, "", true, 7));
+                    buttons[i].push_back(new HexEditButton(70, 90, 13, 13, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, "", true, 7));
+                    buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
+                    break;
+                // Status
+                case 0x88:
+                    buttons[i].push_back(new HexEditButton(70, 90, 13, 13, [this, i](){ return this->toggleBit(i, 3); }, ui_sheet_emulated_toggle_green_idx, "Poisoned", true, 3));
+                    buttons[i].back()->setToggled((pkm->rawData()[i] >> 3) & 0x1);
+                    buttons[i].push_back(new HexEditButton(70, 106, 13, 13, [this, i](){ return this->toggleBit(i, 4); }, ui_sheet_emulated_toggle_green_idx, "Burned", true, 4));
+                    buttons[i].back()->setToggled((pkm->rawData()[i] >> 4) & 0x1);
+                    buttons[i].push_back(new HexEditButton(70, 122, 13, 13, [this, i](){ return this->toggleBit(i, 5); }, ui_sheet_emulated_toggle_green_idx, "Frozen", true, 5));
+                    buttons[i].back()->setToggled((pkm->rawData()[i] >> 5) & 0x1);
+                    buttons[i].push_back(new HexEditButton(70, 138, 13, 13, [this, i](){ return this->toggleBit(i, 6); }, ui_sheet_emulated_toggle_green_idx, "Paralyzed", true, 6));
+                    buttons[i].back()->setToggled((pkm->rawData()[i] >> 6) & 0x1);
+                    buttons[i].push_back(new HexEditButton(70, 154, 13, 13, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, "Toxic", true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
                     break;
             }
@@ -1429,24 +1718,24 @@ void HexEditScreen::draw() const
     Gui::sprite(ui_sheet_part_mtx_15x16_idx, 0, 0);
     
     // Selected box
-    C2D_DrawRectSolid((hid.fullIndex() % 16) * 25, (hid.fullIndex() / 16) * 15, 0.5f, 24, 14, C2D_Color32(15, 22, 89, 0));
-    C2D_DrawRectSolid((hid.fullIndex() % 16) * 25, (hid.fullIndex() / 16) * 15, 0.5f, 1, 14, COLOR_YELLOW);
-    C2D_DrawRectSolid((hid.fullIndex() % 16) * 25, (hid.fullIndex() / 16) * 15, 0.5f, 24, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid((hid.fullIndex() % 16) * 25, (hid.fullIndex() / 16) * 15 + 13, 0.5f, 24, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid((hid.fullIndex() % 16) * 25 + 23, (hid.fullIndex() / 16) * 15, 0.5f, 1, 14, COLOR_YELLOW);
+    C2D_DrawRectSolid((hid.index() % 16) * 25, (hid.index() / 16) * 15, 0.5f, 24, 14, C2D_Color32(15, 22, 89, 0));
+    C2D_DrawRectSolid((hid.index() % 16) * 25, (hid.index() / 16) * 15, 0.5f, 1, 14, COLOR_YELLOW);
+    C2D_DrawRectSolid((hid.index() % 16) * 25, (hid.index() / 16) * 15, 0.5f, 24, 1, COLOR_YELLOW);
+    C2D_DrawRectSolid((hid.index() % 16) * 25, (hid.index() / 16) * 15 + 13, 0.5f, 24, 1, COLOR_YELLOW);
+    C2D_DrawRectSolid((hid.index() % 16) * 25 + 23, (hid.index() / 16) * 15, 0.5f, 1, 14, COLOR_YELLOW);
     for (int y = 0; y < 15; y++)
     {
         for (int x = 0; x < 16; x++)
         {
-            if (x + y * 16 < pkm->length)
+            if (x + y * 16 + hid.page() * hid.maxVisibleEntries() < pkm->length)
             {
-                std::pair<std::string, SecurityLevel> description = describe(x + y * 16);
+                std::pair<std::string, SecurityLevel> description = describe(x + y * 16 + hid.page() * hid.maxVisibleEntries());
                 u32 color = COLOR_WHITE;
                 if (level < description.second)
                 {
                     color = C2D_Color32(0, 0, 0, 120);
                 }
-                Gui::dynamicText(x * 25, y * 15 + 1, 24, StringUtils::format("%02X", pkm->rawData()[x + y * 16]), FONT_SIZE_9, FONT_SIZE_9, color);
+                Gui::dynamicText(x * 25, y * 15 + 1, 24, StringUtils::format("%02X", pkm->rawData()[x + y * 16 + hid.page() * hid.maxVisibleEntries()]), FONT_SIZE_9, FONT_SIZE_9, color);
             }
             else
             {

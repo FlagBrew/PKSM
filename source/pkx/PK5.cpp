@@ -51,19 +51,29 @@ void PK5::shuffleArray(void)
 
 void PK5::crypt(void)
 {
-    u32 chk = checksum();
+    u32 seed = checksum();
 
-    for (int i = 0x08; i < 4 * 32 + 8; i += 2)
+    for (int i = 0x08; i < 136; i += 2)
     {
-        chk = seedStep(chk);
-        data[i] ^= (chk >> 16);
-        data[i+1] ^= (chk >> 24);
+        seed = seedStep(seed);
+        data[i] ^= (seed >> 16);
+        data[i+1] ^= (seed >> 24);
+    }
+
+    seed = PID();
+    for (u32 i = 136; i < length; i += 2)
+    {
+        seed = seedStep(seed);
+        data[i] ^= (seed >> 16);
+        data[i+1] ^= (seed >> 24);
     }
 }
 
-PK5::PK5(u8* dt, bool ekx)
+PK5::PK5(u8* dt, bool ekx, bool party)
 {
-    length = 136;
+    length = party ? 220 : 136;
+    data = new u8[length];
+    std::fill_n(data, length, 0);
 
     std::copy(dt, dt + length, data);
     if (ekx)
@@ -88,7 +98,7 @@ void PK5::encrypt(void)
 
 std::unique_ptr<PKX> PK5::clone(void) { return std::make_unique<PK5>(data); }
 
-u8 PK5::generation(void) const { return 5; }
+Generation PK5::generation(void) const { return Generation::FIVE; }
 
 u32 PK5::encryptionConstant(void) const { return PID(); }
 void PK5::encryptionConstant(u32 v) { (void)v; }
@@ -261,7 +271,7 @@ void PK5::encounterType(u8 v) { data[0x85] = v; }
 void PK5::refreshChecksum(void)
 {
     u16 chk = 0;
-    for (u8 i = 8; i < length; i += 2)
+    for (u8 i = 8; i < 136; i += 2)
     {
         chk += *(u16*)(data + i);
     }
@@ -317,8 +327,8 @@ void PK5::shiny(bool v)
 {
     if (v)
     {
-        u16 buf = (PID() >> 16) ^ (TSV() << 4);
-        *(u16*)(data + 0x18) = buf;
+        u16 buf = (PID() >> 16) ^ (TSV() << 3);
+        *(u16*)(data) = buf;
     }
     else
     {
@@ -578,4 +588,55 @@ std::unique_ptr<PKX> PK5::previous(void) const
 
     pk4->refreshChecksum();
     return std::unique_ptr<PKX>(pk4);
+}
+
+int PK5::partyCurrHP(void) const
+{
+    if (length == 136)
+    {
+        return -1;
+    }
+    return *(u16*)(data + 0x8E);
+}
+
+void PK5::partyCurrHP(u16 v)
+{
+    if (length != 136)
+    {
+        *(u16*)(data + 0x8E) = v;
+    }
+}
+
+int PK5::partyStat(const u8 stat) const
+{
+    if (length == 136)
+    {
+        return -1;
+    }
+    return *(u16*)(data + 0x90 + stat*2);
+}
+
+void PK5::partyStat(const u8 stat, u16 v)
+{
+    if (length != 136)
+    {
+        *(u16*)(data + 0x90 + stat*2) = v;
+    }
+}
+
+int PK5::partyLevel() const
+{
+    if (length == 136)
+    {
+        return -1;
+    }
+    return *(data + 0x8C);
+}
+
+void PK5::partyLevel(u8 v)
+{
+    if (length != 136)
+    {
+        *(data + 0x8C) = v;
+    }
 }

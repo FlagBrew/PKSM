@@ -42,7 +42,7 @@ public:
     PGF(u8* pgf);
     virtual ~PGF() { };
 
-    u8 generation(void) const override;
+    Generation generation(void) const override;
     u16 ID(void) const override;
     std::string title(void) const override;
     u8 type(void) const override;

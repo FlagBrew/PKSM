@@ -44,7 +44,7 @@ public:
     WC7(u8* dt, bool full = false);
     virtual ~WC7() { };
     
-    u8 generation(void) const override;
+    Generation generation(void) const override;
     bool bean(void) const override;
     bool BP(void) const override;
     bool item(void) const override;

@@ -33,6 +33,7 @@
 #include "WCX.hpp"
 #include "utils.hpp"
 #include "mysterygift.hpp"
+#include "generation.hpp"
 
 namespace TitleLoader {
     void backupSave();
@@ -136,6 +137,7 @@ public:
     virtual u32 partyOffset(u8 slot) const = 0;
     
     virtual std::unique_ptr<PKX> pkm(u8 slot) const = 0;
+    virtual void pkm(PKX& pk, u8 slot) = 0;
     virtual std::unique_ptr<PKX> pkm(u8 box, u8 slot, bool ekx = false) const = 0;
     virtual void pkm(PKX& pk, u8 box, u8 slot) = 0;
     virtual std::shared_ptr<PKX> emptyPkm() const = 0;
@@ -149,6 +151,7 @@ public:
     virtual void boxName(u8 box, std::string name) = 0;
     virtual u8 partyCount(void) const = 0;
 
+    virtual int maxSlot(void) const { return maxBoxes() * 30; }
     virtual int maxBoxes(void) const = 0;
     virtual size_t maxWondercards(void) const = 0;
     virtual int maxSpecies(void) const = 0;
@@ -156,7 +159,7 @@ public:
     virtual int maxItem(void) const = 0;
     virtual int maxAbility(void) const = 0;
     virtual int maxBall(void) const = 0;
-    virtual u8 generation(void) const = 0;
+    virtual Generation generation(void) const = 0;
 };
 
 #endif

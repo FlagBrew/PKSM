@@ -52,7 +52,15 @@ void PK7::shuffleArray(void)
 void PK7::crypt(void)
 {
     u32 seed = encryptionConstant();
-    for (u8 i = 0x08; i < length; i+= 2)
+    for (int i = 0x08; i < 232; i += 2)
+    {
+        u16 temp = *(u16*)(data + i);
+        seed = seedStep(seed);
+        temp ^= (seed >> 16);
+        *(u16*)(data + i) = temp;
+    }
+    seed = encryptionConstant();
+    for (u32 i = 232; i < length; i += 2)
     {
         u16 temp = *(u16*)(data + i);
         seed = seedStep(seed);
@@ -61,9 +69,11 @@ void PK7::crypt(void)
     }
 }
 
-PK7::PK7(u8* dt, bool ekx)
+PK7::PK7(u8* dt, bool ekx, bool party)
 {
-    length = 232;
+    length = party ? 260 : 232;
+    data = new u8[length];
+    std::fill_n(data, length, 0);
     
     std::copy(dt, dt + length, data);
     if (ekx)
@@ -90,7 +100,7 @@ void PK7::encrypt(void)
 
 std::unique_ptr<PKX> PK7::clone(void) { return std::make_unique<PK7>(data); }
 
-u8 PK7::generation(void) const { return 7; }
+Generation PK7::generation(void) const { return Generation::SEVEN; }
 
 u32 PK7::encryptionConstant(void) const { return *(u32*)(data); }
 void PK7::encryptionConstant(u32 v) { *(u32*)(data) = v; }
@@ -328,7 +338,7 @@ void PK7::oppositeFriendship(u8 v) { if (currentHandler() == 1) otFriendship(v);
 void PK7::refreshChecksum(void)
 {
     u16 chk = 0;
-    for (u8 i = 8; i < length; i += 2)
+    for (u8 i = 8; i < 232; i += 2)
     {
         chk += *(u16*)(data + i);
     }
@@ -472,4 +482,65 @@ std::unique_ptr<PKX> PK7::previous(void) const
 
     pk6->refreshChecksum();
     return std::unique_ptr<PKX>(pk6);
+}
+
+std::unique_ptr<PKX> PK7::next() const
+{
+    if (species() > 151) // Stop any non-gen-one PKM from going through. That could be bad.
+    {
+        return nullptr;
+    }
+    u8 dt[260];
+    std::copy(data, data + length, dt);
+}
+
+int PK7::partyCurrHP(void) const
+{
+    if (length == 232)
+    {
+        return -1;
+    }
+    return *(u16*)(data + 0xF0);
+}
+
+void PK7::partyCurrHP(u16 v)
+{
+    if (length != 232)
+    {
+        *(u16*)(data + 0xF0) = v;
+    }
+}
+
+int PK7::partyStat(const u8 stat) const
+{
+    if (length == 232)
+    {
+        return -1;
+    }
+    return *(u16*)(data + 0xF2 + stat*2);
+}
+
+void PK7::partyStat(const u8 stat, u16 v)
+{
+    if (length != 232)
+    {
+        *(u16*)(data + 0xF2 + stat*2) = v;
+    }
+}
+
+int PK7::partyLevel() const
+{
+    if (length == 232)
+    {
+        return -1;
+    }
+    return *(data + 0xEC);
+}
+
+void PK7::partyLevel(u8 v)
+{
+    if (length != 232)
+    {
+        *(data + 0xEC) = v;
+    }
 }

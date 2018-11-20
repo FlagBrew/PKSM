@@ -38,7 +38,6 @@
 #include "i18n.hpp"
 #include "PKX.hpp"
 #include "Sav.hpp"
-#include "Optional.hpp"
 
 #include "ui_sheet.h"
 #include "pkm_spritesheet.h"
@@ -107,7 +106,7 @@ namespace Gui
     void sprite(int key, int x, int y);
     void sprite(int key, int x, int y, u32 color);
     void pkm(PKX* pkm, int x, int y, float scale = 1.0f, u32 color = C2D_Color32(0, 0, 0, 255), float blend = 0.0f);
-    void pkm(int species, int form, int generation, int x, int y, float scale = 1.0f, u32 color = C2D_Color32(0, 0, 0, 255), float blend = 0.0f);
+    void pkm(int species, int form, Generation generation, int x, int y, float scale = 1.0f, u32 color = C2D_Color32(0, 0, 0, 255), float blend = 0.0f);
     void pkmInfoViewer(PKX* pkm);
 
     void backgroundTop(bool stripes);
@@ -130,9 +129,10 @@ namespace Gui
 
     void setScreen(std::unique_ptr<Screen> screen);
     void screenBack(void);
-    bool showChoiceMessage(const std::string& message, Optional<std::string> message2 = Optional<std::string>(nullptr));
+    bool showChoiceMessage(const std::string& message, std::optional<std::string> message2 = std::nullopt);
     void showRestoreProgress(u32 partial, u32 total);
-    void warn(const std::string& message, Optional<std::string> message2 = Optional<std::string>(nullptr));
+    void waitFrame(const std::string& message, std::optional<std::string> message2 = std::nullopt);
+    void warn(const std::string& message, std::optional<std::string> message2 = std::nullopt);
     void setNextKeyboardFunc(std::function<void()> callback);
     void showResizeStorage(void);
 }

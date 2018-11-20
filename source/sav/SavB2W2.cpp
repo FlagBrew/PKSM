@@ -102,9 +102,17 @@ u32 SavB2W2::partyOffset(u8 slot) const { return 0x18E08 + 220*slot; }
 
 std::unique_ptr<PKX> SavB2W2::pkm(u8 slot) const
 {
-    u8 buf[136];
-    std::copy(data + partyOffset(slot), data + partyOffset(slot) + 136, buf);
-    return std::make_unique<PK5>(buf, true);
+    u8 buf[220];
+    std::copy(data + partyOffset(slot), data + partyOffset(slot) + 220, buf);
+    return std::make_unique<PK5>(buf, true, true);
+}
+
+void SavB2W2::pkm(PKX& pk, u8 slot)
+{
+    pk.encrypt();
+    PK5* pk5 = (PK5*)&pk;
+    std::copy(pk5->data, pk5->data + pk5->length, data + partyOffset(slot));
+    pk.decrypt();
 }
 
 std::unique_ptr<PKX> SavB2W2::pkm(u8 box, u8 slot, bool ekx) const

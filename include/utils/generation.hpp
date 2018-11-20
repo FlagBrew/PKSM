@@ -24,23 +24,34 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef OPTIONAL_HPP
-#define OPTIONAL_HPP
+#ifndef GENERATION_HPP
+#define GENERATION_HPP
 
-template<class T>
-class Optional
+enum class Generation
 {
-public:
-    Optional(T&& item) : item(&item), present(true) {}
-    Optional(std::nullptr_t item) : item(nullptr), present(false) {}
-    Optional() : item(nullptr), present(false) {}
-    bool exists() { return present; }
-    T* get() { return item; }
-    operator bool() { return present; }
-    operator T() { return *item; }
-private:
-    T* item;
-    bool present;
+    FOUR,
+    FIVE,
+    SIX,
+    SEVEN,
+    LGPE
 };
+
+inline std::string genToString(Generation gen)
+{
+    switch (gen)
+    {
+        case Generation::LGPE:
+            return "7.5";
+        case Generation::FOUR:
+            return "4";
+        case Generation::FIVE:
+            return "5";
+        case Generation::SIX:
+            return "6";
+        case Generation::SEVEN:
+        default:
+            return "7";
+    }
+}
 
 #endif

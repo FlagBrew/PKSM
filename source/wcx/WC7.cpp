@@ -40,7 +40,7 @@ WC7::WC7(u8* dt, bool full)
     }
 }
 
-u8 WC7::generation(void) const { return 7; }
+Generation WC7::generation(void) const { return Generation::SEVEN; }
 
 u16 WC7::ID(void) const { return *(u16*)(data); }
 
