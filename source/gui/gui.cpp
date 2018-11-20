@@ -787,7 +787,8 @@ void Gui::pkm(PKX* pokemon, int x, int y, float scale, u32 color, float blend)
     {
         if (pokemon->species() != 490)
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y, 0.5f, &tint, scale, scale);
+            pkm(pokemon->species(), pokemon->alternativeForm(), pokemon->generation(), x, y, scale, color, blend);
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x + 5 + 34 * (scale - 1), y + 4 + 30 * (scale - 1), 0.5f);
         }
         else
         {
@@ -799,8 +800,13 @@ void Gui::pkm(PKX* pokemon, int x, int y, float scale, u32 color, float blend)
         pkm(pokemon->species(), pokemon->alternativeForm(), pokemon->generation(), x, y, scale, color, blend);
         if (pokemon->heldItem() > 0)
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_item_idx), x + ceil(3 * scale), y + 21 + ceil(34 * (scale - 1)), 0.5f, &tint);
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_item_idx), x + ceil(3 * scale), y + 21 + ceil(30 * (scale - 1)), 0.5f, &tint);
         }
+    }
+
+    if (pokemon->shiny())
+    {
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx), x, y, 0.5f);
     }
 }
 
@@ -875,14 +881,14 @@ void Gui::pkm(int species, int form, Generation generation, int x, int y, float 
         else // LGPE starter
         {
             C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint, scale, scale);
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx), x + 25 + 34 * (scale-1), y + 21 + 30 * (scale-1), 0.5f);
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx), x + 25 + 34 * (scale-1), y + 5, 0.5f);
         }
     }
     // LGPE starter Eevee
     else if (species == 133)
     {
         C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint, scale, scale);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx), x + 25 + 34 * (scale-1), y + 21 + 30 * (scale-1), 0.5f);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx), x + 25 + 34 * (scale-1), y + 5, 0.5f);
     }
     // Arceus
     else if (species == 493)
