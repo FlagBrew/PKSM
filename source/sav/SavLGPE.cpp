@@ -33,19 +33,13 @@
 SavLGPE::SavLGPE(u8* dt)
 {
     length = 0x100000;
-    boxes = 40; // Ish
+    boxes = 34; // Ish
 
     data = new u8[length];
     std::copy(dt, dt + length, data);
 }
 
-SavLGPE::~SavLGPE()
-{
-    resign();
-    FSStream out(Archive::sd(), StringUtils::UTF8toUTF16("/savedata_new.bin"), FS_OPEN_CREATE | FS_OPEN_WRITE, 0x100000);
-    out.write(data, length);
-    out.close();
-}
+SavLGPE::~SavLGPE() {}
 
 u32 SavLGPE::boxOffset(u8 box, u8 slot) const
 {
@@ -298,6 +292,14 @@ std::unique_ptr<PKX> SavLGPE::pkm(u8 box, u8 slot, bool ekx) const
 
 void SavLGPE::pkm(PKX& pk, u8 box, u8 slot)
 {
+    for (int i = 0; i < partyCount(); i++)
+    {
+        if (partyBoxSlot(i) == box * 30 + slot)
+        {
+            Gui::warn("Cannot edit party Pok\u00E9mon from the box");
+            return;
+        }
+    }
     PB7* pb7 = (PB7*)&pk;
     std::copy(pb7->data, pb7->data + pb7->length, data + boxOffset(box, slot));
 }
