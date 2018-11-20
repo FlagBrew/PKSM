@@ -484,6 +484,16 @@ std::unique_ptr<PKX> PK7::previous(void) const
     return std::unique_ptr<PKX>(pk6);
 }
 
+std::unique_ptr<PKX> PK7::next() const
+{
+    if (species() > 151) // Stop any non-gen-one PKM from going through. That could be bad.
+    {
+        return nullptr;
+    }
+    u8 dt[260];
+    std::copy(data, data + length, dt);
+}
+
 int PK7::partyCurrHP(void) const
 {
     if (length == 232)

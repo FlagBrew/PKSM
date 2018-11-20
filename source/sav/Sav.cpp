@@ -34,6 +34,7 @@
 #include "SavSUMO.hpp"
 #include "SavUSUM.hpp"
 #include "SavXY.hpp"
+#include "SavLGPE.hpp"
 
 Sav::~Sav() { delete[] data; }
 
@@ -68,6 +69,9 @@ std::unique_ptr<Sav> Sav::getSave(u8* dt, size_t length)
             return std::make_unique<SavXY>(dt);
         case 0x80000:
             return checkDSType(dt);
+        case 0xB8800:
+        case 0x100000:
+            return std::make_unique<SavLGPE>(dt);
         default:
             return std::unique_ptr<Sav>(nullptr);
     }

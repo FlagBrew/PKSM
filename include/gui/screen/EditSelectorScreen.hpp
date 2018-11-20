@@ -37,20 +37,7 @@
 class EditSelectorScreen : public Screen
 {
 public:
-    ~EditSelectorScreen()
-    {
-        for (Button* button : buttons)
-        {
-            delete button;
-        }
-        
-        for (Button* button : pkmButtons)
-        {
-            delete button;
-        }
-
-        TitleLoader::save->cryptBoxData(false);
-    }
+    ~EditSelectorScreen();
     EditSelectorScreen();
     void draw() const override;
     void update(touchPosition* touch) override;

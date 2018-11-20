@@ -46,6 +46,8 @@ void MysteryGift::init(Generation g)
         case Generation::SEVEN:
             gen = 7;
             break;
+        case Generation::LGPE:
+            return;
     }
     std::ifstream sheet(StringUtils::format("romfs:/mg/sheet%d.json", gen));
     sheet >> mysteryGiftSheet;

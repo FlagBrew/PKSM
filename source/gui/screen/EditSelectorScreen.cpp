@@ -30,6 +30,7 @@
 #include "EditorScreen.hpp"
 #include "ClickButton.hpp"
 #include "AccelButton.hpp"
+#include "SavLGPE.hpp"
 #include <memory>
 
 extern int bobPointer();
@@ -82,6 +83,9 @@ void EditSelectorScreen::changeBoxName()
                 TitleLoader::save->boxName(box, input);
             }
         }
+        break;
+        case Generation::LGPE:
+        // Nothing happens
         break;
     }
 }
@@ -173,6 +177,25 @@ EditSelectorScreen::EditSelectorScreen()
     TitleLoader::save->cryptBoxData(true);
 }
 
+EditSelectorScreen::~EditSelectorScreen()
+{
+    for (Button* button : buttons)
+    {
+        delete button;
+    }
+    
+    for (Button* button : pkmButtons)
+    {
+        delete button;
+    }
+
+    if (TitleLoader::save->generation() == Generation::LGPE)
+    {
+        ((SavLGPE*)TitleLoader::save.get())->compressBox();
+    }
+    TitleLoader::save->cryptBoxData(false);
+}
+
 void EditSelectorScreen::draw() const
 {
     std::shared_ptr<PKX> infoMon = moveMon;
@@ -222,10 +245,17 @@ void EditSelectorScreen::draw() const
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            std::unique_ptr<PKX> pokemon = TitleLoader::save->pkm(box, row * 6 + column);
-            if (pokemon->species() > 0)
+            if (TitleLoader::save->generation() == Generation::LGPE && row * 6 + column + box * 30 >= TitleLoader::save->maxSlot())
             {
-                Gui::pkm(pokemon.get(), x, y);
+                C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(128, 128, 128, 128));
+            }
+            else
+            {
+                std::unique_ptr<PKX> pokemon = TitleLoader::save->pkm(box, row * 6 + column);
+                if (pokemon->species() > 0)
+                {
+                    Gui::pkm(pokemon.get(), x, y);
+                }
             }
             x += 34;
         }
@@ -298,7 +328,10 @@ void EditSelectorScreen::update(touchPosition* touch)
     {
         if (cursorPos < 31)
         {
-            infoMon = TitleLoader::save->pkm(box, cursorPos - 1);
+            if (box * 30 + cursorPos - 1 < TitleLoader::save->maxSlot())
+            {
+                infoMon = TitleLoader::save->pkm(box, cursorPos - 1);
+            }
         }
         else
         {
@@ -361,8 +394,12 @@ void EditSelectorScreen::update(touchPosition* touch)
         }
         else if (moveMon && cursorPos < 31)
         {
-            std::shared_ptr<PKX> tmpMon = TitleLoader::save->pkm(box, cursorPos - 1);
-            if (tmpMon->species() == 0)
+            std::shared_ptr<PKX> tmpMon = nullptr;
+            if (box * 30 + cursorPos - 1 < TitleLoader::save->maxSlot())
+            {
+                tmpMon = TitleLoader::save->pkm(box, cursorPos - 1);
+            }
+            if (tmpMon && tmpMon->species() == 0)
             {
                 tmpMon = nullptr;
             }
@@ -393,13 +430,34 @@ void EditSelectorScreen::update(touchPosition* touch)
         {
             if (cursorPos > 30)
             {
-                moveMon = TitleLoader::save->pkm(cursorPos - 31)->clone();
+                if (!moveMon)
+                {
+                    moveMon = TitleLoader::save->pkm(cursorPos - 31)->clone();
+                    if (moveMon && moveMon->species() == 0)
+                    {
+                        moveMon = nullptr;
+                    }
+                }
+                else
+                {
+                    std::shared_ptr<PKX> tmpMon = TitleLoader::save->pkm(cursorPos - 31);
+                    if (tmpMon->species() == 0)
+                    {
+                        tmpMon = nullptr;
+                    }
+                    TitleLoader::save->pkm(*moveMon, cursorPos - 31);
+                    moveMon = tmpMon;
+                }
             }
-            else
+            else if (box * 30 + cursorPos - 1 < TitleLoader::save->maxSlot())
             {
                 if (!moveMon)
                 {
                     moveMon = TitleLoader::save->pkm(box, cursorPos - 1);
+                    if (moveMon && moveMon->species() == 0)
+                    {
+                        moveMon = nullptr;
+                    }
                 }
                 else
                 {
@@ -743,9 +801,14 @@ bool EditSelectorScreen::clickIndex(int i)
         {
             Gui::setNextKeyboardFunc(std::bind(&EditSelectorScreen::changeBoxName, this));
         }
-        else
+        else if (cursorPos < 31 && box * 30 + cursorPos - 1 < TitleLoader::save->maxSlot())
         {
             editPokemon(TitleLoader::save->pkm(box, cursorPos - 1));
+            dirtyBack = true;
+        }
+        else if (cursorPos > 30)
+        {
+            editPokemon(TitleLoader::save->pkm(cursorPos - 31));
             dirtyBack = true;
         }
         return true;

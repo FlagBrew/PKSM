@@ -151,6 +151,7 @@ public:
     virtual void boxName(u8 box, std::string name) = 0;
     virtual u8 partyCount(void) const = 0;
 
+    virtual int maxSlot(void) const { return maxBoxes() * 30; }
     virtual int maxBoxes(void) const = 0;
     virtual size_t maxWondercards(void) const = 0;
     virtual int maxSpecies(void) const = 0;

@@ -39,18 +39,7 @@ class StorageScreen : public Screen
 {
 public:
     StorageScreen();
-    ~StorageScreen()
-    {
-        for (int i = 0; i < 9; i++)
-        {
-            delete mainButtons[i];
-        }
-        for (int i = 0; i < 31; i++)
-        {
-            delete clickButtons[i];
-        }
-        TitleLoader::save->cryptBoxData(false);
-    }
+    ~StorageScreen();
 
     void update(touchPosition* touch) override;
     void draw() const override;
@@ -72,6 +61,7 @@ private:
     void pickup();
 
     bool storageChosen = false;
+    bool fromStorage = false;
     std::array<Button*, 10> mainButtons;
     std::array<Button*, 31> clickButtons;
     int cursorIndex = 0, storageBox = 0, boxBox = 0;

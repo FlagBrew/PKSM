@@ -32,13 +32,16 @@ enum class Generation
     FOUR,
     FIVE,
     SIX,
-    SEVEN
+    SEVEN,
+    LGPE
 };
 
 inline std::string genToString(Generation gen)
 {
     switch (gen)
     {
+        case Generation::LGPE:
+            return "7.5";
         case Generation::FOUR:
             return "4";
         case Generation::FIVE:

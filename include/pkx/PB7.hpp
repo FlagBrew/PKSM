@@ -24,16 +24,15 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef PK7_HPP
-#define PK7_HPP
+#ifndef PB7_HPP
+#define PB7_HPP
 
 #include "PKX.hpp"
-#include "PK6.hpp"
+#include "SavLGPE.hpp"
 
-class PK7 : public PKX
+class PB7 : public PKX
 {
-friend class SavUSUM;
-friend class SavSUMO;
+friend class SavLGPE;
 protected:
     static constexpr u16 hyperTrainLookup[6] = {0, 1, 2, 5, 3, 4};
 
@@ -45,15 +44,15 @@ protected:
     u8* rawData(void) override { return data; }
 
 public:
-    PK7() { length = 232; data = new u8[length]; std::fill_n(data, length, 0); }
-    PK7(u8* dt, bool ekx = false, bool party = false);
-    virtual ~PK7() { delete[] data; };
+    PB7() { length = 260; data = new u8[length]; std::fill_n(data, length, 0); }
+    PB7(u8* dt, bool ekx = false);
+    virtual ~PB7() { delete[] data; }
 
     void decrypt(void) override;
     void encrypt(void) override;
     std::unique_ptr<PKX> clone(void) override;
 
-    Generation generation(void) const override;
+    Generation generation() const override;
 
     u32 encryptionConstant(void) const override;
     void encryptionConstant(u32 v) override;
@@ -89,8 +88,12 @@ public:
     void alternativeForm(u8 v) override;
     u8 ev(u8 ev) const override;
     void ev(u8 ev, u8 v) override;
-    u8 contest(u8 contest) const override;
-    void contest(u8 contest, u8 v) override;
+    // Stubbed; data no longer exists
+    u8 contest(u8 contest) const { return 0;};
+    void contest(u8 contest, u8 v) { (void) contest, (void) v; };
+    // Replaced by
+    u8 awakened(u8 stat) const;
+    void awakened(u8 stat, u8 v);
 
     u8 pelagoEventStatus(void) const;
     void pelagoEventStatus(u8 v);
@@ -215,16 +218,18 @@ public:
     void shiny(bool v) override;
     u16 formSpecies(void) const override;
     u16 stat(const u8 stat) const override;
+    u16 CP(void) const;
 
     int partyCurrHP(void) const override;
     void partyCurrHP(u16 v) override;
     int partyStat(const u8 stat) const override;
     void partyStat(const u8 stat, u16 v) override;
-    int partyLevel() const override;
+    int partyLevel(void) const override;
     void partyLevel(u8 v) override;
+    u16 partyCP(void) const;
+    void partyCP(u16 v);
     
     std::unique_ptr<PKX> previous(void) const override;
-    std::unique_ptr<PKX> next(void) const override;
 };
 
 #endif
