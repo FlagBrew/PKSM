@@ -861,16 +861,28 @@ void Gui::pkm(int species, int form, Generation generation, int x, int y, float 
     {
         C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint, scale, scale);
     }
+    // Pikachu
     else if (species == 25)
     {
         if (generation == Generation::SIX)
         {
             C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_20_2_idx + form), x, y, 0.5f, &tint, scale, scale);
         }
-        else
+        else if (form <= 7)
         {
             C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_25_6_idx + form), x, y, 0.5f, &tint, scale, scale);
         }
+        else // LGPE starter
+        {
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint, scale, scale);
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx), x + 25 + 34 * (scale-1), y + 21 + 30 * (scale-1), 0.5f);
+        }
+    }
+    // LGPE starter Eevee
+    else if (species == 133)
+    {
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint, scale, scale);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx), x + 25 + 34 * (scale-1), y + 21 + 30 * (scale-1), 0.5f);
     }
     // Arceus
     else if (species == 493)
