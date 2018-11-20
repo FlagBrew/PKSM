@@ -99,6 +99,18 @@ u8 SavLGPE::partyCount() const
     return ret;
 }
 
+void SavLGPE::fixParty()
+{
+    for (int i = 0; i < 5; i++)
+    {
+        if (partyBoxSlot(i) == 1001)
+        {
+            partyBoxSlot(i, partyBoxSlot(i + 1));
+            partyBoxSlot(i + 1, 1001);
+        }
+    }
+}
+
 static bool isPKM(u8* pkmData)
 {
     if (*(u32*)(pkmData) == 0 && *(u16*)(pkmData + 8) == 0)

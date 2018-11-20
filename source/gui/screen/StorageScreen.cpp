@@ -724,7 +724,21 @@ bool StorageScreen::releasePkm()
         if (storageChosen) { // Storage set all slots in box to PK7()s (or however it happens)
         }
         else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
+        {
             TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), boxBox, cursorIndex - 1);
+            if (TitleLoader::save->generation() == Generation::LGPE)
+            {
+                SavLGPE* sav = (SavLGPE*)TitleLoader::save.get();
+                for (int i = 0; i < sav->partyCount(); i++)
+                {
+                    if (sav->partyBoxSlot(i) == boxBox * 30 + cursorIndex - 1)
+                    {
+                        sav->partyBoxSlot(i, 1001);
+                        sav->fixParty();
+                    }
+                }
+            }
+        }
     }
     return false;
 }
@@ -795,6 +809,19 @@ void StorageScreen::pickup()
         }
         else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
         {
+            if (TitleLoader::save->generation() == Generation::LGPE)
+            {
+                SavLGPE* sav = (SavLGPE*)TitleLoader::save.get();
+                partyNum = -1;
+                for (int i = 0; i < TitleLoader::save->partyCount(); i++)
+                {
+                    if (sav->partyBoxSlot(i) == boxBox * 30 + cursorIndex - 1)
+                    {
+                        partyNum = i;
+                        break;
+                    }
+                }
+            }
             moveMon = TitleLoader::save->pkm(boxBox, cursorIndex - 1);
         }
         else
@@ -816,6 +843,7 @@ void StorageScreen::pickup()
         if (moveMon->species() == 0)
         {
             moveMon = nullptr;
+            partyNum = -1;
         }
     }
     else
@@ -888,6 +916,10 @@ void StorageScreen::pickup()
                     }
                 }
                 TitleLoader::save->pkm(*moveMon, boxBox, cursorIndex - 1);
+                if (partyNum != -1)
+                {
+                    ((SavLGPE*)TitleLoader::save.get())->partyBoxSlot(partyNum, boxBox * 30 + cursorIndex - 1);
+                }
                 if (temPkm->species() == 0)
                 {
                     moveMon = nullptr;

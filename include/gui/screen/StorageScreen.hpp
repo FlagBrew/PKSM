@@ -67,6 +67,7 @@ private:
     int cursorIndex = 0, storageBox = 0, boxBox = 0;
     std::unique_ptr<ViewerScreen> viewer;
     std::shared_ptr<PKX> moveMon = nullptr;
+    int partyNum = -1;
     // Storage implementation
 };
 

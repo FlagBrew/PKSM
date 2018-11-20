@@ -72,6 +72,7 @@ public:
     u16 partyBoxSlot(u8 slot) const;
     void partyBoxSlot(u8 slot, u16 v);
     void compressBox(void);
+    void fixParty(void);
 
     u16 TID(void) const override;
     void TID(u16 v) override;
