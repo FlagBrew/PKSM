@@ -38,5 +38,5 @@ struct LibraryFunction UnixFunctions[] =
 
 void PlatformLibraryInit(Picoc *pc)
 {
-    IncludeRegister(pc, "picoc_unix.h", &UnixSetupFunc, &UnixFunctions[0], "struct pkx { int species; int form; }; enum Generation { GEN_FOUR, GEN_FIVE, GEN_SIX, GEN_SEVEN };");
+    IncludeRegister(pc, "picoc_unix.h", &UnixSetupFunc, &UnixFunctions[0], "struct pkx { int species; int form; }; enum Generation { GEN_FOUR, GEN_FIVE, GEN_SIX, GEN_SEVEN, GEN_LGPE };");
 }
