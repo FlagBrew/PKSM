@@ -38,6 +38,7 @@
 #include "BallSelectionScreen.hpp"
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
+#include "PB7.hpp"
 
 #define NO_TEXT_BUTTON(x, y, w, h, function, image) new Button(x, y, w, h, function, image, "", 0.0f, 0)
 #define NO_TEXT_ACCEL(x, y, w, h, function, image) new AccelButton(x, y, w, h, function, image, "", 0.0f, 0)
@@ -75,6 +76,10 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
     }
     origPartyLevel = pkm->partyLevel();
     origPartyCurrHP = pkm->partyCurrHP();
+    if (pkm->generation() == Generation::LGPE)
+    {
+        origPartyCP = ((PB7*)pkm.get())->partyCP();
+    }
 
     u8 tab = 0;
     // Back button first, always. Needs to have the same index for each one
@@ -109,9 +114,9 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
         buttons[tab].push_back(NO_TEXT_BUTTON(121, y, 23, 13, [=](){ Gui::setNextKeyboardFunc([=](){ return this->setIV(statValues[i]); }); return false; }, ui_sheet_res_null_idx));
         buttons[tab].push_back(NO_TEXT_ACCEL(146, y, 13, 13, [=](){ return this->changeIV(statValues[i], true); }, ui_sheet_button_plus_small_idx));
 
-        buttons[tab].push_back(NO_TEXT_ACCEL(182, y, 13, 13, [=](){ return this->changeEV(statValues[i], false); }, ui_sheet_button_minus_small_idx));
-        buttons[tab].push_back(NO_TEXT_BUTTON(197, y, 32, 13, [=](){ Gui::setNextKeyboardFunc([=](){ return this->setEV(statValues[i]); }); return false; }, ui_sheet_res_null_idx));
-        buttons[tab].push_back(NO_TEXT_ACCEL(231, y, 13, 13, [=](){ return this->changeEV(statValues[i], true); }, ui_sheet_button_plus_small_idx));
+        buttons[tab].push_back(NO_TEXT_ACCEL(182, y, 13, 13, [=](){ return this->changeSecondaryStat(statValues[i], false); }, ui_sheet_button_minus_small_idx));
+        buttons[tab].push_back(NO_TEXT_BUTTON(197, y, 32, 13, [=](){ Gui::setNextKeyboardFunc([=](){ return this->setSecondaryStat(statValues[i]); }); return false; }, ui_sheet_res_null_idx));
+        buttons[tab].push_back(NO_TEXT_ACCEL(231, y, 13, 13, [=](){ return this->changeSecondaryStat(statValues[i], true); }, ui_sheet_button_plus_small_idx));
     }
     buttons[tab].push_back(NO_TEXT_BUTTON(300, 184, 15, 12, [this](){ return this->setHP(); }, ui_sheet_button_info_detail_editor_light_idx));
 
@@ -129,6 +134,7 @@ void EditorScreen::draw() const
     Gui::backgroundAnimatedBottom();
 
     Gui::sprite(ui_sheet_textbox_name_bottom_idx, 0, 1);
+    std::string text;
     switch (currentTab)
     {
         // Main part
@@ -155,7 +161,7 @@ void EditorScreen::draw() const
 
             Gui::ball(pkm->ball(), 4, 3);
             Gui::dynamicText(i18n::species(lang, pkm->species()), 25, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, false);
-            Gui::dynamicText(107, 32, 35, std::to_string((int) pkm->level()), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+            Gui::dynamicText(107, 32, 35, std::to_string((int)pkm->level()), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
             Gui::dynamicText(i18n::nature(lang, pkm->nature()), 95, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
             Gui::dynamicText(i18n::ability(lang, pkm->ability()), 95, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
             Gui::dynamicText(i18n::item(lang, pkm->heldItem()), 95, 92, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
@@ -185,10 +191,15 @@ void EditorScreen::draw() const
             {
                 button->draw();
             }
-
+            
+            if (pkm->generation() == Generation::LGPE)
+            {
+                Gui::dynamicText("CP: " + std::to_string((int)((PB7*)pkm.get())->CP()), 4, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, false);
+            }
             Gui::staticText("STATS", 4, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
             Gui::staticText(119, 32, 27, "IV", FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
-            Gui::staticText(195, 32, 36, "EV", FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+            text = pkm->generation() == Generation::LGPE ? "Awakened" : "EV";
+            Gui::staticText(195, 32, 36, text, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
             Gui::staticText(249, 32, 51, "TOTAL", FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
             Gui::staticText("HP", 4, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
             Gui::staticText("Attack", 4, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
@@ -200,7 +211,14 @@ void EditorScreen::draw() const
             for (int i = 0; i < 6; i++)
             {
                 Gui::dynamicText(119, 52 + i * 20, 27, std::to_string((int) pkm->iv(statValues[i])), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
-                Gui::dynamicText(195, 52 + i * 20, 36, std::to_string((int) pkm->ev(statValues[i])), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+                if (pkm->generation() != Generation::LGPE)
+                {
+                    Gui::dynamicText(195, 52 + i * 20, 36, std::to_string((int) pkm->ev(statValues[i])), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+                }
+                else
+                {
+                    Gui::dynamicText(195, 52 + i * 20, 36, std::to_string((int) ((PB7*)pkm.get())->awakened(statValues[i])), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+                }
                 Gui::dynamicText(249, 52 + i * 20, 51, std::to_string((int) pkm->stat(statValues[i])), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
             }
             Gui::dynamicText("Hidden Power " + i18n::hp(lang, pkm->hpType()), 295, 181, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, true);
@@ -489,15 +507,27 @@ bool EditorScreen::save()
             if (pkm->partyStat(i) == origPartyStats[i])
             {
                 pkm->partyStat(i, pkm->stat(i));
+                origPartyStats[i] = pkm->stat(i);
             }
         }
         if (pkm->partyLevel() == origPartyLevel)
         {
             pkm->partyLevel(pkm->level());
+            origPartyLevel = pkm->level();
         }
         if (pkm->partyCurrHP() == origPartyCurrHP)
         {
-            pkm->partyCurrHP(pkm->partyStat(0));
+            pkm->partyCurrHP(pkm->stat(0));
+            origPartyCurrHP = pkm->stat(0);
+        }
+        if (pkm->generation() == Generation::LGPE)
+        {
+            PB7* pb7 = (PB7*)pkm.get();
+            if (pb7->partyCP() == origPartyCP)
+            {
+                pb7->partyCP(pb7->CP());
+                origPartyCP = pb7->CP();
+            }
         }
         TitleLoader::save->pkm(*pkm, index);
     }
@@ -545,7 +575,7 @@ bool EditorScreen::changeIV(int which, bool up)
     return false;
 }
 
-void EditorScreen::setEV(int which)
+void EditorScreen::setSecondaryStat(int which)
 {
     static SwkbdState state;
     static bool first = true;
@@ -561,25 +591,54 @@ void EditorScreen::setEV(int which)
     input[3] = '\0';
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
-        u8 ev = (u8) std::min(std::stoi(input), 0xFF);
-        pkm->ev(which, ev);
+        u8 val = (u8) std::min(std::stoi(input), 0xFF);
+        if (pkm->generation() != Generation::LGPE)
+        {
+            pkm->ev(which, val);
+        }
+        else
+        {
+            ((PB7*)pkm.get())->awakened(which, std::min((int)val, 200));
+        }
     }
 }
 
-bool EditorScreen::changeEV(int which, bool up)
+bool EditorScreen::changeSecondaryStat(int which, bool up)
 {
     if (up)
     {
-        if (pkm->ev(which) < 0xFF)
+        if (pkm->generation() != Generation::LGPE)
         {
-            pkm->ev(which, pkm->ev(which) + 1);
+            if (pkm->ev(which) < 0xFF)
+            {
+                pkm->ev(which, pkm->ev(which) + 1);
+            }
+        }
+        else
+        {
+            PB7* pb7 = (PB7*)pkm.get();
+            if (pb7->awakened(which) < 200)
+            {
+                pb7->awakened(which, pb7->awakened(which) + 1);
+            }
         }
     }
     else
     {
-        if (pkm->ev(which) > 0)
+        if (pkm->generation() != Generation::LGPE)
         {
-            pkm->ev(which, pkm->ev(which) - 1);
+            if (pkm->ev(which) > 0)
+            {
+                pkm->ev(which, pkm->ev(which) - 1);
+            }
+        }
+        else
+        {
+            PB7* pb7 = (PB7*)pkm.get();
+            if (pb7->awakened(which) > 0)
+            {
+                pb7->awakened(which, pb7->awakened(which) - 1);
+            }
         }
     }
     return false;

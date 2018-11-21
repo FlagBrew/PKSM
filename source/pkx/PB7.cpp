@@ -432,6 +432,7 @@ u16 PB7::stat(const u8 stat) const
     u16 tmpSpecies = formSpecies(), final;
     u8 mult = 10, basestat = 0;
 
+    // TODO: PersonalLGPE
     if (stat == 0) basestat = PersonalSMUSUM::baseHP(tmpSpecies);
     else if (stat == 1) basestat = PersonalSMUSUM::baseAtk(tmpSpecies);
     else if (stat == 2) basestat = PersonalSMUSUM::baseDef(tmpSpecies);
@@ -445,7 +446,7 @@ u16 PB7::stat(const u8 stat) const
         final = 5 + (2 * basestat + ((((data[0xDE] >> hyperTrainLookup[stat]) & 1) == 1) ? 31 : iv(stat)) + ev(stat) / 4) * level() / 100; 
     if (nature() / 5 + 1 == stat) mult++;
     if (nature() % 5 + 1 == stat) mult--;
-    return final * mult / 10;
+    return final * mult / 10 + awakened(stat);
 }
 
 std::unique_ptr<PKX> PB7::previous(void) const
@@ -543,4 +544,23 @@ u16 PB7::partyCP() const
 void PB7::partyCP(u16 v)
 {
     *(u16*)(data + 0xFE) = v;
+}
+
+u16 PB7::CP() const
+{
+    int base = stat(0) + 10 + level(); // HP
+    int mult = ((currentFriendship() / 255.0f / 10.0f) + 1.0f) * 100.0f;
+    int awake = awakened(0);
+
+    for (int i = 1; i < 6; i++)
+    {
+        base += stat(i) * mult / 100;
+        awake += awakened(i);
+    }
+
+    base = (u16)((float)(base * 6 * level()) / 100.0f);
+
+    double modifier = level() / 100.0 + 2.0;
+    awake = (u16) modifier * awake;
+    return std::min(10000, base + awake);
 }

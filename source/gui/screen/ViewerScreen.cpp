@@ -27,6 +27,7 @@
 #include "ViewerScreen.hpp"
 #include "gui.hpp"
 #include "Configuration.hpp"
+#include "PB7.hpp"
 
 static constexpr std::string_view displayKeys[] = {
     "Nickname",
@@ -135,7 +136,14 @@ void ViewerScreen::draw() const
         for (int i = 0; i < 6; i++)
         {
             Gui::dynamicText(std::to_string((int)pkm->iv(statValues[i])), 317, 16 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, true);
-            Gui::dynamicText(326, 16 + i * 20, 33, std::to_string((int)pkm->ev(statValues[i])), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+            if (pkm->generation() == Generation::LGPE)
+            {
+                Gui::dynamicText(326, 16 + i * 20, 33, std::to_string((int)((PB7*)pkm.get())->awakened(statValues[i])), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+            }
+            else
+            {
+                Gui::dynamicText(326, 16 + i * 20, 33, std::to_string((int)pkm->ev(statValues[i])), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+            }
             Gui::dynamicText(std::to_string((int)pkm->stat(statValues[i])), 367, 16 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
         }
 

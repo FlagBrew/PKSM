@@ -71,8 +71,9 @@ private:
     
     bool changeIV(int which, bool up);
     void setIV(int which);
-    bool changeEV(int which, bool up);
-    void setEV(int which);
+    // Either EV or Awakened value
+    bool changeSecondaryStat(int which, bool up);
+    void setSecondaryStat(int which);
     bool setHP();
     bool goBack();
     void changeMove();
@@ -87,6 +88,7 @@ private:
     int origPartyStats[6];
     int origPartyLevel;
     int origPartyCurrHP;
+    int origPartyCP;
 };
 
 #endif
