@@ -24,20 +24,22 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef GENERATION_HPP
-#define GENERATION_HPP
+#include "generation.hpp"
 
-#include <string>
-
-enum class Generation
+std::string genToString(Generation gen)
 {
-    FOUR,
-    FIVE,
-    SIX,
-    SEVEN,
-    LGPE
-};
-
-std::string genToString(Generation gen);
-
-#endif
+    switch (gen)
+    {
+        case Generation::LGPE:
+            return "LGPE";
+        case Generation::FOUR:
+            return "4";
+        case Generation::FIVE:
+            return "5";
+        case Generation::SIX:
+            return "6";
+        case Generation::SEVEN:
+        default:
+            return "7";
+    }
+}
