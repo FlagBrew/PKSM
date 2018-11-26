@@ -29,6 +29,7 @@
 #include "gui.hpp"
 #include "FSStream.hpp"
 #include "archive.hpp"
+#include "WB7.hpp"
 
 SavLGPE::SavLGPE(u8* dt)
 {
@@ -524,5 +525,202 @@ void SavLGPE::cryptBoxData(bool crypted)
             }
             pkm(*pb7, box, slot);
         }
+    }
+}
+
+void SavLGPE::mysteryGift(WCX& wc, int& pos)
+{
+    WB7* wb7 = (WB7*)&wc;
+    if (wb7->pokemon())
+    {
+        if (boxedPkm() == maxSlot())
+        {
+            Gui::warn("Too many Pok\u00E9mon", "Cannot inject");
+            return;
+        }
+        PB7 pkm;
+        pkm.species(wb7->species());
+        pkm.alternativeForm(wb7->alternativeForm());
+        if (wb7->level() > 0)
+        {
+            pkm.level(wb7->level());
+            pkm.partyLevel(wb7->level());
+        }
+        else
+        {
+            pkm.level(rand() % 100 + 1);
+            pkm.partyLevel(pkm.level());
+        }
+        if (wb7->metLevel() > 0)
+        {
+            pkm.metLevel(wb7->metLevel());
+        }
+        else
+        {
+            pkm.metLevel(rand() % 100 + 1);
+        }
+        pkm.TID(wb7->TID());
+        pkm.SID(wb7->SID());
+        for (int i = 0; i < 4; i++)
+        {
+            pkm.move(i, wb7->move(i));
+            pkm.relearnMove(i, wb7->move(i));
+        }
+        if (wb7->nature() == 255)
+        {
+            pkm.nature(rand() % 25);
+        }
+        else
+        {
+            pkm.nature(wb7->nature());
+        }
+        if (wb7->gender() == 3)
+        {
+            pkm.gender(rand() % 3);
+        }
+        else
+        {
+            pkm.gender(wb7->gender());
+        }
+        pkm.heldItem(wb7->heldItem());
+        pkm.encryptionConstant(wb7->encryptionConstant());
+        if (wb7->version() == 0)
+        {
+            pkm.version(wb7->version());
+        }
+        else
+        {
+            pkm.version(version());
+        }
+        pkm.language(language());
+        pkm.ball(wb7->ball());
+        pkm.country(country());
+        pkm.region(subRegion());
+        pkm.consoleRegion(consoleRegion());
+        pkm.metLocation(wb7->metLocation());
+        pkm.eggLocation(wb7->eggLocation());
+        for (int i = 0; i < 6; i++)
+        {
+            pkm.awakened(i, wb7->awakened(i));
+            pkm.ev(i, wb7->ev(i));
+        }
+        if (wb7->nickname((Language)language()).length() == 0)
+        {
+            pkm.nickname(i18n::species(language(), pkm.species()).c_str());
+        }
+        else
+        {
+            pkm.nickname(wb7->nickname((Language)language()).c_str());
+            pkm.nicknamed(pkm.nickname() != i18n::species(language(), pkm.species()));
+        }
+        if (wb7->otName((Language)language()).length() == 0)
+        {
+            pkm.otName(otName().c_str());
+            pkm.otGender(gender());
+            pkm.currentHandler(0);
+        }
+        else
+        {
+            pkm.otName(wb7->otName((Language)language()).c_str());
+            pkm.htName(otName().c_str());
+            pkm.otGender(wb7->otGender());
+            pkm.htGender(gender());
+            pkm.currentHandler(1);
+        }
+
+        int perfectIVs = 0;
+        for (int i = 0; i < 6; i++)
+        {
+            pkm.iv(rand() % 30 + 1); // Initialize IVs so that none are perfect (though they can be close)
+            if (wb7->iv(i) - 0xFC < 3)
+            {
+                perfectIVs = wb7->iv(i) - 0xFB; // How many perfects should there be?
+                break;
+            }
+        }
+        if (perfectIVs > 0)
+        {
+            for (int i = 0; i < perfectIVs; i++)
+            {
+                u8 chosenIV;
+                do {
+                    chosenIV = rand() % 6;
+                }
+                while (pkm.iv(chosenIV) == 31);
+                pkm.iv(chosenIV, 31);
+            }
+            for (int i = 0; i < 6; i++)
+            {
+                if (pkm.iv(i) != 31)
+                {
+                    pkm.iv(i, rand() % 32);
+                }
+            }
+        }
+        else
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                pkm.iv(i, rand() % 32);
+            }
+        }
+
+        if (wb7->otGender() == 3)
+        {
+            pkm.TID(TID());
+            pkm.SID(SID());
+        }
+
+        u8 abilitynum, type = wb7->abilityType();
+        
+        if (type == 2) abilitynum = 2;
+        else if (type == 4) abilitynum = 2;
+        else abilitynum = 0;
+
+        pkm.ability(abilitynum); // Sets the ability to the one specific to the formSpecies and sets abilitynumber (Why? Don't quite understand that)
+
+        switch (wb7->PIDType())
+        {
+            case 0: // Fixed value
+                pkm.PID(wb7->PID());
+                break;
+            case 1: // Random
+                pkm.PID((u32)rand());
+                break;
+            case 2: // Always shiny
+                pkm.PID((u32)rand());
+                pkm.shiny(true);
+                break;
+            case 3: // Never shiny
+                pkm.PID((u32)rand());
+                pkm.shiny(false);
+                break;
+        }
+
+        if (wb7->egg())
+        {
+            pkm.egg(true);
+            pkm.eggYear(wb7->year());
+            pkm.eggMonth(wb7->month());
+            pkm.eggDay(wb7->day());
+            pkm.nickname(i18n::species(language(), pkm.species()).c_str());
+            pkm.nicknamed(true);
+        }
+
+        pkm.metDay(wb7->day());
+        pkm.metMonth(wb7->month());
+        pkm.metYear(wb7->year());
+        pkm.currentFriendship(128); // Don't have baseFriendship or hatchCycles
+
+        pkm.partyCP(pkm.CP());
+        pkm.partyCurrHP(pkm.stat(0));
+        for (int i = 0; i < 6; i++)
+        {
+            pkm.partyStat(pkm.stat(i));
+        }
+
+        pkm.refreshChecksum();
+        SavLGPE::pkm(pkm, boxedPkm()); // qualify so there are no stupid errors
+        boxedPkm(this->boxedPkm() + 1);
     }
 }

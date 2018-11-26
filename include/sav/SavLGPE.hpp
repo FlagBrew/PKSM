@@ -123,7 +123,7 @@ public:
     void dex(PKX& pk) override;
     int emptyGiftLocation(void) const override { return 0; } // TODO
     std::vector<MysteryGift::giftData> currentGifts(void) const override { return {}; } // TODO
-    void mysteryGift(WCX& wc, int& pos) override { (void)wc, (void)pos; } // TODO
+    void mysteryGift(WCX& wc, int& pos) override ;
     void cryptBoxData(bool crypted) override;
     std::string boxName(u8 box) const override;
     void boxName(u8 box, std::string name) override;
