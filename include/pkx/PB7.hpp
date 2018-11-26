@@ -228,6 +228,11 @@ public:
     void partyLevel(u8 v) override;
     u16 partyCP(void) const;
     void partyCP(u16 v);
+
+    u8 height(void) const;
+    void height(u8 v);
+    u8 weight(void) const;
+    void weight(u8 v);
     
     std::unique_ptr<PKX> previous(void) const override;
 };

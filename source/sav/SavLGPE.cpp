@@ -557,7 +557,7 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
         }
         else
         {
-            pkm.metLevel(rand() % 100 + 1);
+            pkm.metLevel(pkm.level());
         }
         pkm.TID(wb7->TID());
         pkm.SID(wb7->SID());
@@ -625,6 +625,7 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
             pkm.htName(otName().c_str());
             pkm.otGender(wb7->otGender());
             pkm.htGender(gender());
+            pkm.otFriendship(PersonalSMUSUM::baseFriendship(pkm.formSpecies())); // TODO: PersonalLGPE
             pkm.currentHandler(1);
         }
 
@@ -671,13 +672,19 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
             pkm.SID(SID());
         }
 
-        u8 abilitynum, type = wb7->abilityType();
-        
-        if (type == 2) abilitynum = 2;
-        else if (type == 4) abilitynum = 2;
-        else abilitynum = 0;
-
-        pkm.ability(abilitynum); // Sets the ability to the one specific to the formSpecies and sets abilitynumber (Why? Don't quite understand that)
+        // Sets the ability to the one specific to the formSpecies and sets abilitynumber (Why? Don't quite understand that)
+        switch (wb7->abilityType())
+        {
+            case 0:
+            case 1:
+            case 2:
+                pkm.ability(wb7->abilityType());
+                break;
+            case 3:
+            case 4:
+                pkm.ability(rand() % (wb7->abilityType() - 1));
+                break;
+        }
 
         switch (wb7->PIDType())
         {
@@ -710,7 +717,7 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
         pkm.metDay(wb7->day());
         pkm.metMonth(wb7->month());
         pkm.metYear(wb7->year());
-        pkm.currentFriendship(128); // Don't have baseFriendship or hatchCycles
+        pkm.currentFriendship(PersonalSMUSUM::baseFriendship(pkm.formSpecies())); // TODO: PersonalLGPE
 
         pkm.partyCP(pkm.CP());
         pkm.partyCurrHP(pkm.stat(0));
@@ -718,9 +725,17 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
         {
             pkm.partyStat(pkm.stat(i));
         }
+        
+        pkm.height(rand() % 256);
+        pkm.weight(rand() % 256);
+        pkm.fatefulEncounter(true);
 
         pkm.refreshChecksum();
         SavLGPE::pkm(pkm, boxedPkm()); // qualify so there are no stupid errors
         boxedPkm(this->boxedPkm() + 1);
+    }
+    else
+    {
+        Gui::warn("This is icky and currently unimplemented.", "Requires dumb stuff to happen");
     }
 }

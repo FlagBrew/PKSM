@@ -564,3 +564,23 @@ u16 PB7::CP() const
     awake = (u16) modifier * awake;
     return std::min(10000, base + awake);
 }
+
+u8 PB7::height(void) const
+{
+    return data[0x3A];
+}
+
+void PB7::height(u8 v)
+{
+    data[0x3A] = v;
+}
+
+u8 PB7::weight(void) const
+{
+    return data[0x3B];
+}
+
+void PB7::weight(u8 v)
+{
+    data[0x3B] = v;
+}
