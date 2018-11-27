@@ -138,6 +138,9 @@ public:
     int maxItem(void) const { return 1057; }
     int maxAbility(void) const { return 233; } // Same as G7
     int maxBall(void) const { return 0x1A; } // Same as G7
+
+    void item(Item& item, Pouch pouch, u16 slot) override;
+    std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
 };
 
 #endif

@@ -34,12 +34,27 @@
 #include "utils.hpp"
 #include "mysterygift.hpp"
 #include "generation.hpp"
+#include "Item.hpp"
 
 namespace TitleLoader {
     void backupSave();
     void saveChanges();
     void saveToTitle(bool ask);
 }
+
+enum Pouch
+{
+    NormalItem,
+    KeyItem,
+    TM,
+    Mail,
+    Medicine,
+    Berry,
+    Ball,
+    Battle,
+    Candy,
+    ZCrystals
+};
 
 typedef uint8_t u8;
 typedef uint16_t u16;
@@ -160,6 +175,9 @@ public:
     virtual int maxAbility(void) const = 0;
     virtual int maxBall(void) const = 0;
     virtual Generation generation(void) const = 0;
+
+    virtual void item(Item& item, Pouch pouch, u16 slot) {};
+    virtual std::unique_ptr<Item> item(Pouch pouch, u16 slot) const { return nullptr; };
 };
 
 #endif

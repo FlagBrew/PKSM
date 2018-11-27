@@ -734,8 +734,188 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
         SavLGPE::pkm(pkm, boxedPkm()); // qualify so there are no stupid errors
         boxedPkm(this->boxedPkm() + 1);
     }
-    else
+    else if (wb7->item())
+    {
+        for (int itemNum = 0; itemNum < wb7->items(); itemNum++)
+        {
+            Pouch place = NormalItem;
+            int slot = -1;
+            static constexpr Pouch search[] = { NormalItem, TM, Medicine, Candy, ZCrystals, Ball, Battle };
+            static constexpr int limits[] =   { 150,        108,60,       200,   150,       50,   150 };
+            for (int i = 0; i < 7; i++)
+            {
+                for (int j = 0; j < limits[i]; j++)
+                {
+                    auto find = item(search[i], j);
+                    if (!find)
+                    {
+                        break; // End of item list
+                    }
+                    if (((Item7b*)find.get())->id == wb7->object(itemNum))
+                    {
+                        slot = j;
+                        place = search[i];
+                        break;
+                    }
+                }
+                if (slot != -1)
+                {
+                    break;
+                }
+            }
+
+            if (slot != -1)
+            {
+                Item7b* inject = (Item7b*)item(place, slot).release();
+                inject->count += wb7->objectQuantity(itemNum);
+                item(*inject, place, slot);
+                delete inject;
+            }
+            else
+            {
+                Item7b inject;
+                inject.id = wb7->object(itemNum);
+                inject.count = wb7->objectQuantity(itemNum);
+                inject.newFlag = 1;
+                if (inject.id >= 960) // Start of candies
+                {
+                    for (int i = 0; i < 200; i++)
+                    {
+                        if (!item(Candy, i)) // If slot is empty
+                        {
+                            item(inject, Candy, i);
+                            return;
+                        }
+                    }
+                }
+                else // Ugh, I don't wanna implement this right now
+                {
+                    item(inject, NormalItem, 0); // TODO: make this less bad
+                }
+            }
+        }
+    }
     {
         Gui::warn("This is icky and currently unimplemented.", "Requires dumb stuff to happen");
     }
+}
+
+void SavLGPE::item(Item& item, Pouch pouch, u16 slot)
+{
+    switch (pouch)
+    {
+        case Pouch::Medicine:
+            if (slot < 60)
+            {
+                std::copy((u8*)(&item), (u8*)(&item) + 4, data + slot * 4);
+            }
+            else
+            {
+                Gui::warn("Why the fuck is this happenening?", "Please report this! (Medicine LGPE)");
+            }
+            break;
+        case Pouch::TM:
+            if (slot < 108)
+            {
+                std::copy((u8*)(&item), (u8*)(&item) + 4, data + 0xF0 + slot * 4);
+            }
+            else
+            {
+                Gui::warn("Why the fuck is this happenening?", "Please report this! (TM LGPE)");
+            }
+            break;
+        case Pouch::Candy:
+            if (slot < 200)
+            {
+                std::copy((u8*)(&item), (u8*)(&item) + 4, data + 0x2A0 + slot * 4);
+            }
+            else
+            {
+                Gui::warn("Why the fuck is this happenening?", "Please report this! (Candy LGPE)");
+            }
+            break;
+        case Pouch::ZCrystals:
+            if (slot < 150)
+            {
+                std::copy((u8*)(&item), (u8*)(&item) + 4, data + 0x5C0 + slot * 4);
+            }
+            else
+            {
+                Gui::warn("Why the fuck is this happenening?", "Please report this! (ZCrystals LGPE)");
+            }
+            break;
+        case Pouch::Ball:
+            if (slot < 50)
+            {
+                std::copy((u8*)(&item), (u8*)(&item) + 4, data + 0x818 + slot * 4);
+            }
+            else
+            {
+                Gui::warn("Why the fuck is this happenening?", "Please report this! (Ball LGPE)");
+            }
+            break;
+        case Pouch::Battle:
+            if (slot < 150)
+            {
+                std::copy((u8*)(&item), (u8*)(&item) + 4, data + 0x8E0 + slot * 4);
+            }
+            else
+            {
+                Gui::warn("Why the fuck is this happenening?", "Please report this! (Battle LGPE)");
+            }
+            break;
+        case Pouch::KeyItem:
+        case Pouch::NormalItem:
+            if (slot < 150)
+            {
+                std::copy((u8*)(&item), (u8*)(&item) + 4, data + 0xB38 + slot * 4);
+            }
+            else
+            {
+                Gui::warn("Why the fuck is this happenening?", "Please report this! (Normal/Key LGPE)");
+            }
+            break;
+        default:
+            Gui::warn("Something very, very weird happened.", "Please report where this happened.");
+            break;
+    }
+}
+
+std::unique_ptr<Item> SavLGPE::item(Pouch pouch, u16 slot) const
+{
+    Item7b* ret = new Item7b;
+    switch (pouch)
+    {
+        case Pouch::Medicine:
+            std::copy(data + slot * 4, data + (slot + 1) * 4, (u8*) ret);
+            break;
+        case Pouch::TM:
+            std::copy(data + 0xF0 + slot * 4, data + 0xF0 + (slot + 1) * 4, (u8*) ret);
+            break;
+        case Pouch::Candy:
+            std::copy(data + 0x2A0 + slot * 4, data + 0x2A0 + (slot + 1) * 4, (u8*) ret);
+            break;
+        case Pouch::ZCrystals:
+            std::copy(data + 0x5C0 + slot * 4, data + 0x5C0 + (slot + 1) * 4, (u8*) ret);
+            break;
+        case Pouch::Ball:
+            std::copy(data + 0x818 + slot * 4, data + 0x818 + (slot + 1) * 4, (u8*) ret);
+            break;
+        case Pouch::Battle:
+            std::copy(data + 0x8E0 + slot * 4, data + 0x8E0 + (slot + 1) * 4, (u8*) ret);
+            break;
+        case Pouch::KeyItem:
+        case Pouch::NormalItem:
+            std::copy(data + 0xB38 + slot * 4, data + 0xB38 + (slot + 1) * 4, (u8*) ret);
+            break;
+        default:
+            ret = nullptr;
+            break;
+    }
+    if (ret && (ret->id == 0 || ret->count == 0))
+    {
+        ret = nullptr;
+    }
+    
+    return std::unique_ptr<Item>(ret);
 }
