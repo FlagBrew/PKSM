@@ -28,30 +28,160 @@
 #define ITEM_HPP
 
 #include <3ds.h>
+#include "generation.hpp"
 
-struct Item {}; // Superstruct of all items
+class Item4;
+class Item5;
+class Item6;
+class Item7;
+class Item7b;
 
-struct Item456 : public Item // Item before Gen 7
+class Item
 {
-    unsigned int id : 16;
-    unsigned int count : 16;
+public:
+    virtual Generation generation(void) const = 0;
+    virtual u16 id(void) const = 0;
+    virtual u16 count(void) const = 0;
+    virtual std::pair<u8*, int> bytes(void) const = 0;
+    virtual void id(u16 id) = 0;
+    virtual void count(u16 id) = 0;
+    virtual operator Item4(void) const;
+    virtual operator Item5(void) const;
+    virtual operator Item6(void) const;
+    virtual operator Item7(void) const;
+    virtual operator Item7b(void) const;
 };
 
-struct Item7 : public Item // Gen 7 item
+class Item4 : public Item
 {
-    unsigned int id : 10;
-    unsigned int count : 10;
-    unsigned int freeSpaceIndex : 10;
-    unsigned int newFlag : 1;
-    unsigned int reserved : 1;
+private:
+    struct {
+        u16 id;
+        u16 count;
+    } itemData;
+public:
+    Item4(u8* data = nullptr)
+    {
+        if (data)
+        {
+            std::copy(data, data + 4, (u8*)&itemData);
+        }
+    }
+    Generation generation(void) const override { return Generation::FOUR; }
+    u16 id(void) const override { return itemData.id; }
+    void id(u16 v) override { itemData.id = v; }
+    u16 count(void) const override { return itemData.count; }
+    void count(u16 v) override { itemData.count = v; }
+    std::pair<u8*, int> bytes(void) const override { return { (u8*)&itemData, sizeof(itemData) }; }
 };
 
-struct Item7b : public Item // LGPE item
+class Item5 : public Item
 {
-    unsigned int id : 15;
-    unsigned int count : 15;
-    unsigned int newFlag : 1;
-    unsigned int reserved : 1;
+private:
+    struct {
+        u16 id;
+        u16 count;
+    } itemData;
+public:
+    Item5(u8* data = nullptr)
+    {
+        if (data)
+        {
+            std::copy(data, data + 4, (u8*)&itemData);
+        }
+    }
+    Generation generation(void) const override { return Generation::FIVE; }
+    u16 id(void) const override { return itemData.id; }
+    void id(u16 v) override { itemData.id = v; }
+    u16 count(void) const override { return itemData.count; }
+    void count(u16 v) override { itemData.count = v; }
+    std::pair<u8*, int> bytes(void) const override { return { (u8*)&itemData, sizeof(itemData) }; }
+};
+
+class Item6 : public Item
+{
+private:
+    struct {
+        u16 id;
+        u16 count;
+    } itemData;
+public:
+    Item6(u8* data = nullptr)
+    {
+        if (data)
+        {
+            std::copy(data, data + 4, (u8*)&itemData);
+        }
+    }
+    Generation generation(void) const override { return Generation::SIX; }
+    u16 id(void) const override { return itemData.id; }
+    void id(u16 v) override { itemData.id = v; }
+    u16 count(void) const override { return itemData.count; }
+    void count(u16 v) override { itemData.count = v; }
+    std::pair<u8*, int> bytes(void) const override { return { (u8*)&itemData, sizeof(itemData) }; }
+};
+
+class Item7 : public Item
+{
+private:
+    struct {
+        unsigned int id : 10;
+        unsigned int count : 10;
+        unsigned int freeSpace : 10;
+        unsigned int newFlag : 1;
+        unsigned int reserved : 1;
+    } itemData;
+public:
+    Item7(u8* data = nullptr)
+    {
+        if (data)
+        {
+            std::copy(data, data + 4, (u8*)&itemData);
+        }
+    }
+    Generation generation(void) const override { return Generation::SEVEN; }
+    u16 id(void) const override { return itemData.id; }
+    void id(u16 v) override { itemData.id = v; }
+    u16 count(void) const override { return itemData.count; }
+    void count(u16 v) override { itemData.count = v; }
+    u16 freeSpaceIndex(void) const { return itemData.freeSpace; }
+    void freeSpaceIndex(u16 v) { itemData.freeSpace = v; }
+    bool newFlag(void) const { return itemData.newFlag; }
+    void newFlag(bool v) { itemData.newFlag = v ? 1 : 0; }
+    bool reserved(void) const { return itemData.reserved; }
+    void reserved(bool v) { itemData.reserved = v ? 1 : 0; }
+    std::pair<u8*, int> bytes(void) const override { return { (u8*)&itemData, sizeof(itemData) }; }
+    operator Item7b(void) const override;
+};
+
+class Item7b : public Item
+{
+private:
+    struct {
+        unsigned int id : 15;
+        unsigned int count : 15;
+        unsigned int newFlag : 1;
+        unsigned int reserved : 1;
+    } itemData;
+public:
+    Item7b(u8* data = nullptr)
+    {
+        if (data)
+        {
+            std::copy(data, data + 4, (u8*)&itemData);
+        }
+    }
+    Generation generation(void) const override { return Generation::SEVEN; }
+    u16 id(void) const override { return itemData.id; }
+    void id(u16 v) override { itemData.id = v; }
+    u16 count(void) const override { return itemData.count; }
+    void count(u16 v) override { itemData.count = v; }
+    bool newFlag(void) const { return itemData.newFlag; }
+    void newFlag(bool v) { itemData.newFlag = v ? 1 : 0; }
+    bool reserved(void) const { return itemData.reserved; }
+    void reserved(bool v) { itemData.reserved = v ? 1 : 0; }
+    std::pair<u8*, int> bytes(void) const override { return { (u8*)&itemData, sizeof(itemData) }; }
+    operator Item7(void) const override;
 };
 
 #endif

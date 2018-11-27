@@ -760,9 +760,9 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
                     {
                         break; // End of item list
                     }
-                    if (((Item7b*)find.get())->id == wb7->object(itemNum))
+                    if (find->id() == wb7->object(itemNum))
                     {
-                        if (std::find(tms, tms + 60, ((Item7b*)find.get())->id) != tms + 60)
+                        if (std::find(tms, tms + 60, find->id()) == tms + 60)
                         {
                             slot = j;
                             place = search[i];
@@ -784,10 +784,9 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
             }
             else if (slot != -1)
             {
-                Item7b* inject = (Item7b*)item(place, slot).release();
-                inject->count += wb7->objectQuantity(itemNum);
+                auto inject = item(place, slot);
+                inject->count(inject->count() + wb7->objectQuantity(itemNum));
                 item(*inject, place, slot);
-                delete inject;
             }
             else
             {
@@ -803,10 +802,10 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
                     760, 762, 770, 773
                 };
                 Item7b inject;
-                inject.id = wb7->object(itemNum);
-                inject.count = wb7->objectQuantity(itemNum);
-                inject.newFlag = 1;
-                if (inject.id >= 960) // Start of candies
+                inject.id(wb7->object(itemNum));
+                inject.count(wb7->objectQuantity(itemNum));
+                inject.newFlag(true);
+                if (inject.id() >= 960) // Start of candies
                 {
                     for (int i = 0; i < 200; i++)
                     {
@@ -817,7 +816,7 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
                         }
                     }
                 }
-                else if (std::find(medicines, medicines + 22, inject.id) != medicines + 22)
+                else if (std::find(medicines, medicines + 22, inject.id()) != medicines + 22)
                 {
                     for (int i = 0; i < 60; i++)
                     {
@@ -828,7 +827,7 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
                         }
                     }
                 }
-                else if (std::find(tms, tms + 60, inject.id) != tms + 60)
+                else if (std::find(tms, tms + 60, inject.id()) != tms + 60)
                 {
                     for (int i = 0; i < 108; i++)
                     {
@@ -839,7 +838,7 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
                         }
                     }
                 }
-                else if (std::find(zCrystals, zCrystals + 8, inject.id) != zCrystals + 8)
+                else if (std::find(zCrystals, zCrystals + 8, inject.id()) != zCrystals + 8)
                 {
                     for (int i = 0; i < 150; i++)
                     {
@@ -850,7 +849,7 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
                         }
                     }
                 }
-                else if (std::find(balls, balls + 14, inject.id) != balls + 14)
+                else if (std::find(balls, balls + 14, inject.id()) != balls + 14)
                 {
                     for (int i = 0; i < 50; i++)
                     {
@@ -861,7 +860,7 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
                         }
                     }
                 }
-                else if (std::find(battle, battle + 24, inject.id) != battle + 24)
+                else if (std::find(battle, battle + 24, inject.id()) != battle + 24)
                 {
                     for (int i = 0; i < 150; i++)
                     {
@@ -893,12 +892,14 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
 
 void SavLGPE::item(Item& item, Pouch pouch, u16 slot)
 {
+    Item7b write = (Item7b)item;
+    auto writeData = write.bytes();
     switch (pouch)
     {
         case Pouch::Medicine:
             if (slot < 60)
             {
-                std::copy((u8*)(&item), (u8*)(&item) + 4, data + slot * 4);
+                std::copy(writeData.first, writeData.first + writeData.second, data + slot * 4);
             }
             else
             {
@@ -908,7 +909,7 @@ void SavLGPE::item(Item& item, Pouch pouch, u16 slot)
         case Pouch::TM:
             if (slot < 108)
             {
-                std::copy((u8*)(&item), (u8*)(&item) + 4, data + 0xF0 + slot * 4);
+                std::copy(writeData.first, writeData.first + writeData.second, data + 0xF0 + slot * 4);
             }
             else
             {
@@ -918,7 +919,7 @@ void SavLGPE::item(Item& item, Pouch pouch, u16 slot)
         case Pouch::Candy:
             if (slot < 200)
             {
-                std::copy((u8*)(&item), (u8*)(&item) + 4, data + 0x2A0 + slot * 4);
+                std::copy(writeData.first, writeData.first + writeData.second, data + 0x2A0 + slot * 4);
             }
             else
             {
@@ -928,7 +929,7 @@ void SavLGPE::item(Item& item, Pouch pouch, u16 slot)
         case Pouch::ZCrystals:
             if (slot < 150)
             {
-                std::copy((u8*)(&item), (u8*)(&item) + 4, data + 0x5C0 + slot * 4);
+                std::copy(writeData.first, writeData.first + writeData.second, data + 0x5C0 + slot * 4);
             }
             else
             {
@@ -938,7 +939,7 @@ void SavLGPE::item(Item& item, Pouch pouch, u16 slot)
         case Pouch::Ball:
             if (slot < 50)
             {
-                std::copy((u8*)(&item), (u8*)(&item) + 4, data + 0x818 + slot * 4);
+                std::copy(writeData.first, writeData.first + writeData.second, data + 0x818 + slot * 4);
             }
             else
             {
@@ -948,7 +949,7 @@ void SavLGPE::item(Item& item, Pouch pouch, u16 slot)
         case Pouch::Battle:
             if (slot < 150)
             {
-                std::copy((u8*)(&item), (u8*)(&item) + 4, data + 0x8E0 + slot * 4);
+                std::copy(writeData.first, writeData.first + writeData.second, data + 0x8E0 + slot * 4);
             }
             else
             {
@@ -959,7 +960,7 @@ void SavLGPE::item(Item& item, Pouch pouch, u16 slot)
         case Pouch::NormalItem:
             if (slot < 150)
             {
-                std::copy((u8*)(&item), (u8*)(&item) + 4, data + 0xB38 + slot * 4);
+                std::copy(writeData.first, writeData.first + writeData.second, data + 0xB38 + slot * 4);
             }
             else
             {
@@ -974,39 +975,24 @@ void SavLGPE::item(Item& item, Pouch pouch, u16 slot)
 
 std::unique_ptr<Item> SavLGPE::item(Pouch pouch, u16 slot) const
 {
-    Item7b* ret = new Item7b;
     switch (pouch)
     {
         case Pouch::Medicine:
-            std::copy(data + slot * 4, data + (slot + 1) * 4, (u8*) ret);
-            break;
+            return std::make_unique<Item7b>(data + slot * 4);
         case Pouch::TM:
-            std::copy(data + 0xF0 + slot * 4, data + 0xF0 + (slot + 1) * 4, (u8*) ret);
-            break;
+            return std::make_unique<Item7b>(data + 0xF0 + slot * 4);
         case Pouch::Candy:
-            std::copy(data + 0x2A0 + slot * 4, data + 0x2A0 + (slot + 1) * 4, (u8*) ret);
-            break;
+            return std::make_unique<Item7b>(data + 0x2A0 + slot * 4);
         case Pouch::ZCrystals:
-            std::copy(data + 0x5C0 + slot * 4, data + 0x5C0 + (slot + 1) * 4, (u8*) ret);
-            break;
+            return std::make_unique<Item7b>(data + 0x5C0 + slot * 4);
         case Pouch::Ball:
-            std::copy(data + 0x818 + slot * 4, data + 0x818 + (slot + 1) * 4, (u8*) ret);
-            break;
+            return std::make_unique<Item7b>(data + 0x818 + slot * 4);
         case Pouch::Battle:
-            std::copy(data + 0x8E0 + slot * 4, data + 0x8E0 + (slot + 1) * 4, (u8*) ret);
-            break;
+            return std::make_unique<Item7b>(data + 0x8E0 + slot * 4);
         case Pouch::KeyItem:
         case Pouch::NormalItem:
-            std::copy(data + 0xB38 + slot * 4, data + 0xB38 + (slot + 1) * 4, (u8*) ret);
-            break;
+            return std::make_unique<Item7b>(data + 0xB38 + slot * 4);
         default:
-            ret = nullptr;
-            break;
+            return nullptr;
     }
-    if (ret && (ret->id == 0 || ret->count == 0))
-    {
-        ret = nullptr;
-    }
-    
-    return std::unique_ptr<Item>(ret);
 }

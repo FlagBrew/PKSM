@@ -34,6 +34,7 @@
 #include "personal.hpp"
 #include "utils.hpp"
 #include "generation.hpp"
+#include "Item.hpp"
 
 typedef uint8_t u8;
 typedef uint16_t u16;
@@ -78,6 +79,7 @@ public:
     virtual void species(u16 v) = 0;
     virtual u16 heldItem(void) const = 0;
     virtual void heldItem(u16 v) = 0;
+    void heldItem(Item& item) { heldItem(item.id()); }
     virtual u16 TID(void) const = 0;
     virtual void TID(u16 v) = 0;
     virtual u16 SID(void) const = 0;
