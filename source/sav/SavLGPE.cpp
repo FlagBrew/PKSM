@@ -773,6 +773,25 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
             }
             else
             {
+                static constexpr int medicines[] = { 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 38, 39, 40, 41, 709, 903 };
+                static constexpr int tms[] = {
+                    328, 329, 330, 331, 332, 333, 334, 335, 336, 337,
+                    338, 339, 340, 341, 342, 343, 344, 345, 346, 347,
+                    348, 349, 350, 351, 352, 353, 354, 355, 356, 357,
+                    358, 359, 360, 361, 362, 363, 364, 365, 366, 367,
+                    368, 369, 370, 371, 372, 373, 374, 375, 376, 377,
+                    378, 379, 380, 381, 382, 383, 384, 385, 386, 387
+                };
+                static constexpr int zCrystals[] = { 51, 53, 81, 82, 83, 84, 85, 849 };
+                static constexpr int balls[] = {
+                    1, 2, 3, 4, 12, 164, 166, 168,
+                    861, 862, 863, 864, 865, 866
+                };
+                static constexpr int battle[] = {
+                    55, 56, 57, 58, 59, 60, 61, 62,
+                    656, 659, 660, 661, 662, 663, 671, 672, 675, 676, 678, 679,
+                    760, 762, 770, 773
+                };
                 Item7b inject;
                 inject.id = wb7->object(itemNum);
                 inject.count = wb7->objectQuantity(itemNum);
@@ -788,9 +807,71 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
                         }
                     }
                 }
-                else // Ugh, I don't wanna implement this right now
+                else if (std::find(medicines, medicines + 22, inject.id) != medicines + 22)
                 {
-                    item(inject, NormalItem, 0); // TODO: make this less bad
+                    for (int i = 0; i < 60; i++)
+                    {
+                        if (!item(Medicine, i))
+                        {
+                            item(inject, Medicine, i);
+                            return;
+                        }
+                    }
+                }
+                else if (std::find(tms, tms + 60, inject.id) != tms + 60)
+                {
+                    for (int i = 0; i < 108; i++)
+                    {
+                        if (!item(TM, i))
+                        {
+                            item(inject, TM, i);
+                            return;
+                        }
+                    }
+                }
+                else if (std::find(zCrystals, zCrystals + 8, inject.id) != zCrystals + 8)
+                {
+                    for (int i = 0; i < 150; i++)
+                    {
+                        if (!item(ZCrystals, i))
+                        {
+                            item(inject, TM, i);
+                            return;
+                        }
+                    }
+                }
+                else if (std::find(balls, balls + 14, inject.id) != balls + 14)
+                {
+                    for (int i = 0; i < 50; i++)
+                    {
+                        if (!item(Ball, i))
+                        {
+                            item(inject, Ball, i);
+                            return;
+                        }
+                    }
+                }
+                else if (std::find(battle, battle + 24, inject.id) != battle + 24)
+                {
+                    for (int i = 0; i < 150; i++)
+                    {
+                        if (!item(Battle, i))
+                        {
+                            item(inject, Battle, i);
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < 150; i++)
+                    {
+                        if (!item(NormalItem, i))
+                        {
+                            item(inject, NormalItem, i);
+                            return;
+                        }
+                    }
                 }
             }
         }
