@@ -736,6 +736,15 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
     }
     else if (wb7->item())
     {
+        
+        static constexpr int tms[] = {
+            328, 329, 330, 331, 332, 333, 334, 335, 336, 337,
+            338, 339, 340, 341, 342, 343, 344, 345, 346, 347,
+            348, 349, 350, 351, 352, 353, 354, 355, 356, 357,
+            358, 359, 360, 361, 362, 363, 364, 365, 366, 367,
+            368, 369, 370, 371, 372, 373, 374, 375, 376, 377,
+            378, 379, 380, 381, 382, 383, 384, 385, 386, 387
+        };
         for (int itemNum = 0; itemNum < wb7->items(); itemNum++)
         {
             Pouch place = NormalItem;
@@ -753,8 +762,12 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
                     }
                     if (((Item7b*)find.get())->id == wb7->object(itemNum))
                     {
-                        slot = j;
-                        place = search[i];
+                        if (std::find(tms, tms + 60, ((Item7b*)find.get())->id) != tms + 60)
+                        {
+                            slot = j;
+                            place = search[i];
+                        }
+                        else slot = -2;
                         break;
                     }
                 }
@@ -764,7 +777,12 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
                 }
             }
 
-            if (slot != -1)
+            if (slot == -2)
+            {
+                Gui::warn("You already have this TM!");
+                return;
+            }
+            else if (slot != -1)
             {
                 Item7b* inject = (Item7b*)item(place, slot).release();
                 inject->count += wb7->objectQuantity(itemNum);
@@ -774,14 +792,6 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
             else
             {
                 static constexpr int medicines[] = { 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 38, 39, 40, 41, 709, 903 };
-                static constexpr int tms[] = {
-                    328, 329, 330, 331, 332, 333, 334, 335, 336, 337,
-                    338, 339, 340, 341, 342, 343, 344, 345, 346, 347,
-                    348, 349, 350, 351, 352, 353, 354, 355, 356, 357,
-                    358, 359, 360, 361, 362, 363, 364, 365, 366, 367,
-                    368, 369, 370, 371, 372, 373, 374, 375, 376, 377,
-                    378, 379, 380, 381, 382, 383, 384, 385, 386, 387
-                };
                 static constexpr int zCrystals[] = { 51, 53, 81, 82, 83, 84, 85, 849 };
                 static constexpr int balls[] = {
                     1, 2, 3, 4, 12, 164, 166, 168,
