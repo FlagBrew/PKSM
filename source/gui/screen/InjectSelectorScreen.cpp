@@ -257,8 +257,7 @@ void InjectSelectorScreen::draw() const
     else
     {
         C2D_DrawRectSolid(0, 0, 0.5, 320, 240, COLOR_MASKBLACK);
-        Gui::dynamicText(GFX_BOTTOM, 107, "Press \uE000 to change slot", FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
-        Gui::dynamicText(GFX_BOTTOM, 124, "Press \uE002 to dump Wonder Card", FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
+        Gui::dynamicText(GFX_BOTTOM, 107, "Press \uE000 to dump Wonder Card", FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
 
         C2D_SceneBegin(g_renderTargetTop);
         Gui::sprite(ui_sheet_part_mtx_5x8_idx, 0, 0);
