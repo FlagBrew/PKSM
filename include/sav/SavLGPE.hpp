@@ -142,6 +142,7 @@ public:
 
     void item(Item& item, Pouch pouch, u16 slot) override;
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
+    std::vector<std::pair<Pouch, int>> pouches(void) const override;
 };
 
 #endif

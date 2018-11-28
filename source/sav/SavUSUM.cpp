@@ -448,3 +448,71 @@ std::unique_ptr<WCX> SavUSUM::mysteryGift(int pos) const
 {
     return std::make_unique<WC7>(data + 0x66300 + pos * WC7::length);
 }
+
+void SavUSUM::item(Item& item, Pouch pouch, u16 slot)
+{
+    Item7 inject = (Item7) item;
+    auto write = inject.bytes();
+    switch (pouch)
+    {
+        case NormalItem:
+            std::copy(write.first, write.first + write.second, data + 0x000 + slot * 4);
+            break;
+        case KeyItem:
+            std::copy(write.first, write.first + write.second, data + 0x6AC + slot * 4);
+            break;
+        case TM:
+            std::copy(write.first, write.first + write.second, data + 0x9C4 + slot * 4);
+            break;
+        case Medicine:
+            std::copy(write.first, write.first + write.second, data + 0xB74 + slot * 4);
+            break;
+        case Berry:
+            std::copy(write.first, write.first + write.second, data + 0xC64 + slot * 4);
+            break;
+        case ZCrystals:
+            std::copy(write.first, write.first + write.second, data + 0xD70 + slot * 4);
+            break;
+        case Battle:
+            std::copy(write.first, write.first + write.second, data + 0xDFC + slot * 4);
+            break;
+        default:
+            return;
+    }
+}
+
+std::unique_ptr<Item> SavUSUM::item(Pouch pouch, u16 slot) const
+{
+    switch (pouch)
+    {
+        case NormalItem:
+            return std::make_unique<Item7>(data + 0x000 + slot * 4);
+        case KeyItem:
+            return std::make_unique<Item7>(data + 0x6AC + slot * 4);
+        case TM:
+            return std::make_unique<Item7>(data + 0x9C4 + slot * 4);
+        case Medicine:
+            return std::make_unique<Item7>(data + 0xB74 + slot * 4);
+        case Berry:
+            return std::make_unique<Item7>(data + 0xC64 + slot * 4);
+        case ZCrystals:
+            return std::make_unique<Item7>(data + 0xD70 + slot * 4);
+        case Battle:
+            return std::make_unique<Item7>(data + 0xDFC + slot * 4);
+        default:
+            return nullptr;
+    }
+}
+
+std::vector<std::pair<Pouch, int>> SavUSUM::pouches(void) const
+{
+    return {
+        { NormalItem, 427 },
+        { KeyItem, 198 },
+        { TM, 108 },
+        { Medicine, 60 },
+        { Berry, 67 },
+        { ZCrystals, 35 },
+        { Battle, 11 }
+    };
+}

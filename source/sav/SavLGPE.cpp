@@ -1001,3 +1001,16 @@ std::unique_ptr<WCX> SavLGPE::mysteryGift(int pos) const
 {
     return nullptr;
 }
+
+std::vector<std::pair<Pouch, int>> SavLGPE::pouches() const
+{
+    return {
+        { Pouch::Medicine, 60 },
+        { Pouch::TM, 108 },
+        { Pouch::Candy, 200 },
+        { Pouch::ZCrystals, 150 },
+        { Pouch::Ball, 50 },
+        { Pouch::Battle, 150 },
+        { Pouch::NormalItem, 150 }
+    };
+}

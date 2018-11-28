@@ -53,8 +53,8 @@ Item::operator Item6() const
 Item::operator Item7() const
 {
     Item7 ret;
-    ret.id(id());
-    ret.count(count());
+    ret.id(std::min((int)id(), 0x3FF));
+    ret.count(std::min((int)count(), 0x3FF));
     ret.freeSpaceIndex(0);
     ret.newFlag(false);
     ret.reserved(false);
@@ -64,8 +64,8 @@ Item::operator Item7() const
 Item::operator Item7b() const
 {
     Item7b ret;
-    ret.id(id());
-    ret.count(count());
+    ret.id(std::min((int)id(), 0x7FFF));
+    ret.count(std::min((int)count(), 0x7FFF));
     ret.newFlag(false);
     ret.reserved(false);
     return ret;
@@ -74,7 +74,7 @@ Item::operator Item7b() const
 Item7::operator Item7b() const
 {
     Item7b ret;
-    ret.id(id());
+    ret.id(id()); // Capped at 0x3FF, so no need to cap it at 0x7FFF
     ret.count(count());
     ret.newFlag(newFlag());
     ret.reserved(reserved());
@@ -84,8 +84,8 @@ Item7::operator Item7b() const
 Item7b::operator Item7() const
 {
     Item7 ret;
-    ret.id(id());
-    ret.count(count());
+    ret.id(std::min((int)id(), 0x3FF));
+    ret.count(std::min((int)count(), 0x3FF));
     ret.freeSpaceIndex(0);
     ret.newFlag(newFlag());
     ret.reserved(reserved());

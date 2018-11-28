@@ -141,11 +141,11 @@ public:
     }
     Generation generation(void) const override { return Generation::SEVEN; }
     u16 id(void) const override { return itemData.id; }
-    void id(u16 v) override { itemData.id = v; }
+    void id(u16 v) override { itemData.id = std::min(v, (u16)0x3FF); }
     u16 count(void) const override { return itemData.count; }
-    void count(u16 v) override { itemData.count = v; }
+    void count(u16 v) override { itemData.count = std::min(v, (u16)0x3FF); }
     u16 freeSpaceIndex(void) const { return itemData.freeSpace; }
-    void freeSpaceIndex(u16 v) { itemData.freeSpace = v; }
+    void freeSpaceIndex(u16 v) { itemData.freeSpace = std::min(v, (u16)0x3FF); }
     bool newFlag(void) const { return itemData.newFlag; }
     void newFlag(bool v) { itemData.newFlag = v ? 1 : 0; }
     bool reserved(void) const { return itemData.reserved; }
@@ -173,9 +173,9 @@ public:
     }
     Generation generation(void) const override { return Generation::SEVEN; }
     u16 id(void) const override { return itemData.id; }
-    void id(u16 v) override { itemData.id = v; }
+    void id(u16 v) override { itemData.id = std::min(v, (u16)0x7FFF); }
     u16 count(void) const override { return itemData.count; }
-    void count(u16 v) override { itemData.count = v; }
+    void count(u16 v) override { itemData.count = std::min(v, (u16)0x7FFF); }
     bool newFlag(void) const { return itemData.newFlag; }
     void newFlag(bool v) { itemData.newFlag = v ? 1 : 0; }
     bool reserved(void) const { return itemData.reserved; }

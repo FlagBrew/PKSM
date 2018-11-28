@@ -167,6 +167,10 @@ public:
     int maxItem(void) const { return 920; }
     int maxAbility(void) const { return 232; }
     int maxBall(void) const { return 0x1A; }
+
+    void item(Item& item, Pouch pouch, u16 slot) override;
+    std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
+    std::vector<std::pair<Pouch, int>> pouches(void) const override;
 };
 
 #endif

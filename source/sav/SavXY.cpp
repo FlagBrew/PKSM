@@ -367,3 +367,59 @@ std::unique_ptr<WCX> SavXY::mysteryGift(int pos) const
 {
     return std::make_unique<WC6>(data + 0x1BD00 + pos * WC6::length);
 }
+
+void SavXY::item(Item& item, Pouch pouch, u16 slot)
+{
+    Item6 inject = (Item6) item;
+    auto write = inject.bytes();
+    switch (pouch)
+    {
+        case NormalItem:
+            std::copy(write.first, write.first + write.second, data + 0x400 + slot * 4);
+            break;
+        case KeyItem:
+            std::copy(write.first, write.first + write.second, data + 0xA40 + slot * 4);
+            break;
+        case TM:
+            std::copy(write.first, write.first + write.second, data + 0xBC0 + slot * 4);
+            break;
+        case Medicine:
+            std::copy(write.first, write.first + write.second, data + 0xD68 + slot * 4);
+            break;
+        case Berry:
+            std::copy(write.first, write.first + write.second, data + 0xE68 + slot * 4);
+            break;
+        default:
+            return;
+    }
+}
+
+std::unique_ptr<Item> SavXY::item(Pouch pouch, u16 slot) const
+{
+    switch (pouch)
+    {
+        case NormalItem:
+            return std::make_unique<Item6>(data + 0x400 + slot * 4);
+        case KeyItem:
+            return std::make_unique<Item6>(data + 0xA40 + slot * 4);
+        case TM:
+            return std::make_unique<Item6>(data + 0xBC0 + slot * 4);
+        case Medicine:
+            return std::make_unique<Item6>(data + 0xD68 + slot * 4);
+        case Berry:
+            return std::make_unique<Item6>(data + 0xE68 + slot * 4);
+        default:
+            return nullptr;
+    }
+}
+
+std::vector<std::pair<Pouch, int>> SavXY::pouches(void) const
+{
+    return {
+        { NormalItem, 286 },
+        { KeyItem, 31 },
+        { TM, 105 },
+        { Medicine, 51 },
+        { Berry, 67 }
+    };
+}

@@ -549,3 +549,77 @@ std::unique_ptr<WCX> SavPT::mysteryGift(int pos) const
 {
     return std::make_unique<PGT>(data + 0xB5C0 + gbo + pos * PGT::length);
 }
+
+void SavPT::item(Item& item, Pouch pouch, u16 slot)
+{
+    Item4 inject = (Item4) item;
+    auto write = inject.bytes();
+    switch (pouch)
+    {
+        case NormalItem:
+            std::copy(write.first, write.first + write.second, data + 0x630 + gbo + slot * 4);
+            break;
+        case KeyItem:
+            std::copy(write.first, write.first + write.second, data + 0x8C4 + gbo + slot * 4);
+            break;
+        case TM:
+            std::copy(write.first, write.first + write.second, data + 0x98C + gbo + slot * 4);
+            break;
+        case Mail:
+            std::copy(write.first, write.first + write.second, data + 0xB1C + gbo + slot * 4);
+            break;
+        case Medicine:
+            std::copy(write.first, write.first + write.second, data + 0xB4C + gbo + slot * 4);
+            break;
+        case Berry:
+            std::copy(write.first, write.first + write.second, data + 0xBEC + gbo + slot * 4);
+            break;
+        case Ball:
+            std::copy(write.first, write.first + write.second, data + 0xCEC + gbo + slot * 4);
+            break;
+        case Battle:
+            std::copy(write.first, write.first + write.second, data + 0xD28 + gbo + slot * 4);
+            break;
+        default:
+            return;
+    }
+}
+
+std::unique_ptr<Item> SavPT::item(Pouch pouch, u16 slot) const
+{
+    switch (pouch)
+    {
+        case NormalItem:
+            return std::make_unique<Item4>(data + 0x630 + gbo + slot * 4);
+        case KeyItem:
+            return std::make_unique<Item4>(data + 0x8C4 + gbo + slot * 4);
+        case TM:
+            return std::make_unique<Item4>(data + 0x98C + gbo + slot * 4);
+        case Mail:
+            return std::make_unique<Item4>(data + 0xB1C + gbo + slot * 4);
+        case Medicine:
+            return std::make_unique<Item4>(data + 0xB4C + gbo + slot * 4);
+        case Berry:
+            return std::make_unique<Item4>(data + 0xBEC + gbo + slot * 4);
+        case Ball:
+            return std::make_unique<Item4>(data + 0xCEC + gbo + slot * 4);
+        case Battle:
+            return std::make_unique<Item4>(data + 0xD28 + gbo + slot * 4);
+        default:
+            return nullptr;
+    }
+}
+
+std::vector<std::pair<Pouch, int>> SavPT::pouches(void) const
+{
+    return {
+        { NormalItem, 162 },
+        { KeyItem, 40 },
+        { TM, 100 },
+        { Mail, 12 },
+        { Medicine, 38 },
+        { Berry, 64 },
+        { Ball, 15 },
+        { Battle, 13 }
+    };
+}

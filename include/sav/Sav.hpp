@@ -177,8 +177,9 @@ public:
     virtual int maxBall(void) const = 0;
     virtual Generation generation(void) const = 0;
 
-    virtual void item(Item& item, Pouch pouch, u16 slot) {};
-    virtual std::unique_ptr<Item> item(Pouch pouch, u16 slot) const { return nullptr; };
+    virtual void item(Item& item, Pouch pouch, u16 slot) = 0;
+    virtual std::unique_ptr<Item> item(Pouch pouch, u16 slot) const = 0;
+    virtual std::vector<std::pair<Pouch, int>> pouches(void) const = 0;
 };
 
 #endif
