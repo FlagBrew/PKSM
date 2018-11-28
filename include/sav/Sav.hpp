@@ -160,6 +160,7 @@ public:
     virtual void dex(PKX& pk) = 0;
     virtual int emptyGiftLocation(void) const = 0;
     virtual std::vector<MysteryGift::giftData> currentGifts(void) const = 0;
+    virtual std::unique_ptr<WCX> mysteryGift(int pos) const = 0;
     virtual void mysteryGift(WCX& wc, int& pos) = 0;
     virtual void cryptBoxData(bool crypted) = 0;
     virtual std::string boxName(u8 box) const = 0;

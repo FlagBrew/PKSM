@@ -315,3 +315,8 @@ void SavB2W2::cryptMysteryGiftData()
         *(u16*)(data + 0x1C800 + i) ^= (seed >> 16);
     }
 }
+
+std::unique_ptr<WCX> SavB2W2::mysteryGift(int pos) const
+{
+    return std::make_unique<PGF>(data + 0x1C900 + pos * PGF::length);
+}

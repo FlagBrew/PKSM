@@ -949,7 +949,7 @@ bool StorageScreen::dumpPkm()
         path += stringTime;
         if (moveMon)
         {
-            path += moveMon->generation() != Generation::LGPE ? StringUtils::format(".pk%s", genToString(moveMon->generation())) : ".pb7";
+            path += moveMon->generation() != Generation::LGPE ? ".pk%s" + genToString(moveMon->generation()) : ".pb7";
             FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, moveMon->length);
             if (out.good())
             {

@@ -512,3 +512,8 @@ std::vector<MysteryGift::giftData> SavDP::currentGifts(void) const
     }
     return ret;
 }
+
+std::unique_ptr<WCX> SavDP::mysteryGift(int pos) const
+{
+    return std::make_unique<PGT>(data + 0xA7FC + gbo + pos * PGT::length);
+}

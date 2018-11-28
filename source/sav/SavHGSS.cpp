@@ -557,3 +557,8 @@ std::vector<MysteryGift::giftData> SavHGSS::currentGifts(void) const
     }
     return ret;
 }
+
+std::unique_ptr<WCX> SavHGSS::mysteryGift(int pos) const
+{
+    return std::make_unique<PGT>(data + 0x9E3C + gbo + pos * PGT::length);
+}

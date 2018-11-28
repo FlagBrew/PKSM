@@ -35,6 +35,7 @@ friend class SavORAS;
 friend class SavXY;
 protected:
     u8 data[264];
+    const u8* rawData(void) const override { return data; }
 
 public:
     static const u16 length = 264;
@@ -103,6 +104,8 @@ public:
     bool ribbon(u8 category, u8 index) const override;
 
     u16 formSpecies(void) const override;
+
+    int size(void) const override { return length; }
 };
 
 #endif

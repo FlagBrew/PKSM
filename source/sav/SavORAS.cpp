@@ -366,3 +366,8 @@ std::vector<MysteryGift::giftData> SavORAS::currentGifts(void) const
     }
     return ret;
 }
+
+std::unique_ptr<WCX> SavORAS::mysteryGift(int pos) const
+{
+    return std::make_unique<WC6>(data + 0x1CD00 + pos * WC6::length);
+}

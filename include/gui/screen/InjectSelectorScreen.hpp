@@ -48,6 +48,11 @@ private:
     HidHorizontal hid;
     std::vector<nlohmann::json> wondercards;
     std::vector<Button*> buttons;
+
+    bool dump = false;
+    HidHorizontal dumpHid;
+    void dumpCard(void) const;
+    std::vector<MysteryGift::giftData> gifts;
 };
 
 #endif

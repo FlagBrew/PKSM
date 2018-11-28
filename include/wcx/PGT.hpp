@@ -38,6 +38,7 @@ friend class SavDP;
 protected:
     u8 data[260];
     PK4* pokemonData;
+    const u8* rawData(void) const override { return data; }
 
 public:
     static const u16 length = 260;
@@ -94,5 +95,7 @@ public:
     bool egg(void) const override;
 
     u16 formSpecies(void) const override;
+
+    int size(void) const override { return length; }
 };
 #endif

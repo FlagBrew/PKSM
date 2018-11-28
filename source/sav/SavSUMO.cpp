@@ -443,3 +443,8 @@ std::vector<MysteryGift::giftData> SavSUMO::currentGifts(void) const
     }
     return ret;
 }
+
+std::unique_ptr<WCX> SavSUMO::mysteryGift(int pos) const
+{
+    return std::make_unique<WC7>(data + 0x65D00 + pos * WC7::length);
+}

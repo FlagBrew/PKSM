@@ -996,3 +996,8 @@ std::unique_ptr<Item> SavLGPE::item(Pouch pouch, u16 slot) const
             return nullptr;
     }
 }
+
+std::unique_ptr<WCX> SavLGPE::mysteryGift(int pos) const
+{
+    return nullptr;
+}

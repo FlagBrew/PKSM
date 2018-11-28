@@ -102,6 +102,7 @@ InjectorScreen::InjectorScreen(nlohmann::json ids) : hid(40, 8), ids(ids), empty
             break;
         case Generation::SIX:
         case Generation::SEVEN:
+        case Generation::LGPE:
             newDate = Configuration::getInstance().year() * 10000;
             newDate += Configuration::getInstance().month() * 100;
             newDate += Configuration::getInstance().day();
@@ -132,7 +133,17 @@ InjectorScreen::InjectorScreen(std::unique_ptr<WCX> wcx) : wondercard(std::move(
     buttons.push_back(new Button(273, 102, 38, 23, [this](){ overwriteCard = false; return false; }, ui_sheet_res_null_idx, "", 0, 0));
     buttons.push_back(new Button(235, 135, 38, 23, [this](){ adaptLanguage = true; return false; }, ui_sheet_res_null_idx, "", 0, 0));
     buttons.push_back(new Button(273, 135, 38, 23, [this](){ adaptLanguage = false; return false; }, ui_sheet_res_null_idx, "", 0, 0));
-    buttons.push_back(new Button(255, 168, 38, 23, [this](){ choosingSlot = true; hid.select(slot - 1); return true; }, ui_sheet_button_unselected_text_button_idx, "", 0.0f, 0));
+    buttons.push_back(new Button(255, 168, 38, 23, [this](){
+            if (TitleLoader::save->generation() == Generation::LGPE)
+            {
+                Gui::warn("LGPE saves do not store Wonder Cards", "This is not a bug");
+                return false;
+            }
+            else
+            {
+                choosingSlot = true; hid.select(slot - 1); return true;
+            }
+        }, TitleLoader::save->generation() == Generation::LGPE ? ui_sheet_button_unavailable_text_button_idx : ui_sheet_button_unselected_text_button_idx, "", 0.0f, 0));
     buttons.push_back(new Button(282, 212, 34, 28, [](){ Gui::screenBack(); return true; }, ui_sheet_button_back_idx, "", 0.0f, 0));
 }
 

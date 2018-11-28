@@ -121,9 +121,10 @@ public:
     std::shared_ptr<PKX> emptyPkm() const override;
 
     void dex(PKX& pk) override;
-    int emptyGiftLocation(void) const override { return 0; } // TODO
-    std::vector<MysteryGift::giftData> currentGifts(void) const override { return {}; } // TODO
+    int emptyGiftLocation(void) const override { return 0; } // Data not stored
+    std::vector<MysteryGift::giftData> currentGifts(void) const override { return {}; } // Data not stored
     void mysteryGift(WCX& wc, int& pos) override;
+    std::unique_ptr<WCX> mysteryGift(int pos) const override;
     void cryptBoxData(bool crypted) override;
     std::string boxName(u8 box) const override;
     void boxName(u8 box, std::string name) override;
@@ -131,7 +132,7 @@ public:
 
     int maxSlot(void) const override { return 1000; }
     int maxBoxes(void) const override { return 34; } // ish; stupid 1000-slot box makes this dumb
-    size_t maxWondercards(void) const override { return 48; }
+    size_t maxWondercards(void) const override { return 1; } // Data not stored
     Generation generation(void) const override { return Generation::LGPE; }
     int maxSpecies(void) const { return 809; } // This is going to be FUN: only numbers 1-151, 808, & 809
     int maxMove(void) const { return 742; }

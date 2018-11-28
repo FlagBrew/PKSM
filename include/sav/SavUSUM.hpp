@@ -155,6 +155,7 @@ public:
     int emptyGiftLocation(void) const override;
     std::vector<MysteryGift::giftData> currentGifts(void) const override;
     void mysteryGift(WCX& wc, int& pos) override;
+    std::unique_ptr<WCX> mysteryGift(int pos) const override;
     void cryptBoxData(bool crypted) override;
     std::string boxName(u8 box) const override;
     void boxName(u8 box, std::string name) override;

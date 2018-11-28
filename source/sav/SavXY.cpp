@@ -362,3 +362,8 @@ std::vector<MysteryGift::giftData> SavXY::currentGifts(void) const
     }
     return ret;
 }
+
+std::unique_ptr<WCX> SavXY::mysteryGift(int pos) const
+{
+    return std::make_unique<WC6>(data + 0x1BD00 + pos * WC6::length);
+}

@@ -35,6 +35,7 @@ friend class SavB2W2;
 friend class SavBW;
 protected:
     u8 data[204];
+    const u8* rawData(void) const override { return data; }
 
 public:
     static const u16 length = 204;
@@ -90,6 +91,8 @@ public:
     bool egg(void) const override;
 
     u16 formSpecies(void) const override;
+
+    int size(void) const override { return length; }
 };
 
 #endif

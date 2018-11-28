@@ -38,6 +38,10 @@ typedef uint32_t u32;
 
 class WCX
 {
+friend class InjectSelectorScreen;
+protected:
+    virtual const u8* rawData(void) const = 0;
+
 public:
     virtual ~WCX(void) { };
 
@@ -89,6 +93,8 @@ public:
     virtual bool ribbon(u8 category, u8 index) const = 0;
 
     virtual u16 formSpecies(void) const = 0;
+
+    virtual int size(void) const = 0;
 };
 
 #endif
