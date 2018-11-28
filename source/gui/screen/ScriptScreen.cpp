@@ -67,8 +67,11 @@ namespace
             case 32:
             case 33:
                 return "/scripts/usum";
+            case 42:
+            case 43:
+                return "/scripts/lgpe";
             default:
-                return "";
+                return "/scripts/" + std::to_string(version);
         }
     }
 
@@ -96,6 +99,19 @@ namespace
 ScriptScreen::ScriptScreen() : currDirString("romfs:" + getScriptDir(TitleLoader::save->version())),
                                currDir(currDirString), hid(8, 1), sdSearch(false), cScripts(false)
 {
+    if (!currDir.good())
+    {
+        std::string tmp = "/3ds/PKSM" + getScriptDir(TitleLoader::save->version());
+        currDir = STDirectory(tmp);
+        if (!currDir.good())
+        {
+            currDir = STDirectory(currDirString);
+        }
+        else
+        {
+            currDirString = tmp;
+        }
+    }
     updateEntries();
 }
 
@@ -285,6 +301,11 @@ void ScriptScreen::applyScript()
         return;
     }
     auto scriptData = scriptRead(scriptFile);
+
+    if (!scriptData.first)
+    {
+        return;
+    }
 
     for (size_t i = 0; i < MAGIC.size(); i++)
     {
