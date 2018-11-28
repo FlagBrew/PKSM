@@ -31,29 +31,11 @@ static u8* mysteryGiftData;
 
 void MysteryGift::init(Generation g)
 {
-    int gen = 0;
-    switch (g)
-    {
-        case Generation::FOUR:
-            gen = 4;
-            break;
-        case Generation::FIVE:
-            gen = 5;
-            break;
-        case Generation::SIX:
-            gen = 6;
-            break;
-        case Generation::SEVEN:
-            gen = 7;
-            break;
-        case Generation::LGPE:
-            return;
-    }
-    std::ifstream sheet(StringUtils::format("romfs:/mg/sheet%d.json", gen));
+    std::ifstream sheet(StringUtils::format("romfs:/mg/sheet%s.json", genToString(g).c_str()));
     sheet >> mysteryGiftSheet;
     sheet.close();
 
-    std::ifstream data(StringUtils::format("romfs:/mg/data%d.bin", gen), std::ios::binary);
+    std::ifstream data(StringUtils::format("romfs:/mg/data%s.bin", genToString(g).c_str()), std::ios::binary);
     data.seekg(0, std::ios::end);
     size_t size = data.tellg();
     data.seekg(0, std::ios::beg);
@@ -65,7 +47,7 @@ void MysteryGift::init(Generation g)
 
 std::unique_ptr<WCX> MysteryGift::wondercard(size_t index)
 {
-    u8 gen = mysteryGiftSheet["gen"];
+    std::string gen = mysteryGiftSheet["gen"];
 
     auto entry = mysteryGiftSheet["wondercards"][index];
 
@@ -75,7 +57,7 @@ std::unique_ptr<WCX> MysteryGift::wondercard(size_t index)
     u8 *data = new u8[size];
     std::copy(mysteryGiftData + offset, mysteryGiftData + offset + size, data);
 
-    if (gen == 4)
+    if (gen == "4")
     {
         std::unique_ptr<WCX> wc = nullptr;
         if (entry["type"] == "wc4")
@@ -89,23 +71,34 @@ std::unique_ptr<WCX> MysteryGift::wondercard(size_t index)
         delete[] data;
         return wc;
     }
-    else if (gen == 5)
+    else if (gen == "5")
     {
         PGF *pgf = new PGF(data);
         delete[] data;
         return std::unique_ptr<WCX>(pgf);
     }
-    else if (gen == 6)
+    else if (gen == "6")
     {
         WC6 *wc6 = new WC6(data, entry["type"].get<std::string>().find("full") != std::string::npos);
         delete[] data;
         return std::unique_ptr<WCX>(wc6);
     }
-    else
+    else if (gen == "7")
     {
         WC7 *wc7 = new WC7(data, entry["type"].get<std::string>().find("full") != std::string::npos);
         delete[] data;
         return std::unique_ptr<WCX>(wc7);
+    }
+    else if (gen == "LGPE")
+    {
+        WB7 *wb7 = new WB7(data, entry["type"].get<std::string>().find("full") != std::string::npos);
+        delete[] data;
+        return std::unique_ptr<WCX>(wb7);
+    }
+    else
+    {
+        delete[] data;
+        return nullptr;
     }
 }
 

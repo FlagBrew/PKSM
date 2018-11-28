@@ -25,6 +25,7 @@
 */
 
 #include "WB7.hpp"
+#include "Configuration.hpp"
 
 WB7::WB7(u8* dt, bool full)
 {
@@ -182,3 +183,34 @@ static int langIndex(Language lang)
 std::string WB7::nickname(Language lang) const { return StringUtils::getString(data, 0x4 + langIndex(lang) * 0x1A, 13); }
 
 std::string WB7::otName(Language lang) const { return StringUtils::getString(data, 0xEE + langIndex(lang) * 0x1A, 13); }
+
+std::string WB7::nickname() const { return nickname(Configuration::getInstance().language()); }
+
+std::string WB7::otName() const { return otName(Configuration::getInstance().language()); }
+
+bool WB7::used() const { return (flags() & 2) == 2; }
+
+bool WB7::oncePerDay(void) const { return (flags() & 4) == 4; }
+
+u16 WB7::formSpecies(void) const
+{
+	u16 tmpSpecies = species();
+    u8 form = alternativeForm();
+    u8 formcount = PersonalSMUSUM::formCount(tmpSpecies); // TODO: PersonalLGPE
+
+    if (form && form < formcount)
+    {
+        u16 backSpecies = tmpSpecies;
+        tmpSpecies = PersonalSMUSUM::formStatIndex(tmpSpecies);
+        if (!tmpSpecies)
+        {
+            tmpSpecies = backSpecies;
+        }
+        else if (form < formcount)
+        {
+            tmpSpecies += form - 1;
+        }
+    }
+
+    return tmpSpecies;
+}

@@ -28,6 +28,7 @@
 #define MYSTERYGIFT_HPP
 
 #include <fstream>
+#include "WB7.hpp"
 #include "WC7.hpp"
 #include "WC6.hpp"
 #include "PGF.hpp"
