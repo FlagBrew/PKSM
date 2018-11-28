@@ -339,12 +339,12 @@ bool InjectSelectorScreen::doQR()
 void InjectSelectorScreen::dumpCard(void) const
 {
     auto wc = TitleLoader::save->mysteryGift(dumpHid.fullIndex());
-    char stringDate[9] = {0};
-    char stringTime[8] = {0};
+    char stringDate[11] = {0};
+    char stringTime[10] = {0};
     time_t unixTime = time(NULL);
     struct tm* timeStruct = gmtime((const time_t *)&unixTime);
-    std::strftime(stringDate, 8,"%Y%m%d", timeStruct);
-    std::strftime(stringTime, 7,"/%H%M%S", timeStruct);
+    std::strftime(stringDate, 10,"%Y-%m-%d", timeStruct);
+    std::strftime(stringTime, 9,"/%H-%M-%S", timeStruct);
     std::string path = std::string("/3ds/PKSM/dumps/") + stringDate;
     mkdir(path.c_str(), 777);
     path += stringTime;
