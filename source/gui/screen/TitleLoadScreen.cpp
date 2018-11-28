@@ -30,6 +30,7 @@
 #include "SaveLoadScreen.hpp"
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
+#include "ConfigScreen.hpp"
 
 bool TitleLoadScreen::loadSave() const
 {
@@ -165,7 +166,7 @@ void TitleLoadScreen::draw() const
         y += 17;
     }
 
-    if (selectedSave > 0)
+    if (selectedSave > 0 && firstSave > -1)
     {
         C2D_DrawRectSolid(191, 102, 0.5f, 4, 5, C2D_Color32(0x0f, 0x16, 0x59, 255));
         C2D_DrawTriangle(189, 102, C2D_Color32(0x0f, 0x16, 0x59, 255),
@@ -173,10 +174,13 @@ void TitleLoadScreen::draw() const
                          193, 97, C2D_Color32(0x0f, 0x16, 0x59, 255), 0.5f);
     }
 
-    C2D_DrawRectSolid(191, 186, 0.5f, 4, 5, C2D_Color32(0x0f, 0x16, 0x59, 255));
-    C2D_DrawTriangle(189, 191, C2D_Color32(0x0f, 0x16, 0x59, 255),
-                     197, 191, C2D_Color32(0x0f, 0x16, 0x59, 255),
-                     193, 196, C2D_Color32(0x0f, 0x16, 0x59, 255), 0.5f);
+    if (selectedSave < 5 && (size_t)firstSave + 5 < availableCheckpointSaves.size() - 1)
+    {
+        C2D_DrawRectSolid(191, 186, 0.5f, 4, 5, C2D_Color32(0x0f, 0x16, 0x59, 255));
+        C2D_DrawTriangle(189, 191, C2D_Color32(0x0f, 0x16, 0x59, 255),
+                        197, 191, C2D_Color32(0x0f, 0x16, 0x59, 255),
+                        193, 196, C2D_Color32(0x0f, 0x16, 0x59, 255), 0.5f);
+    }
 
     Gui::staticText(200, 113, 96, i18n::localize("LOADER_LOAD"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
     Gui::staticText(200, 163, 96, i18n::localize("LOADER_WIRELESS"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
@@ -233,9 +237,13 @@ void TitleLoadScreen::update(touchPosition* touch)
         {
             if (selectedSave == 4)
             {
-                if (firstSave + 5 < (int) availableCheckpointSaves.size())
+                if (firstSave + 5 < (int) availableCheckpointSaves.size() - 1)
                 {
                     firstSave++;
+                }
+                else
+                {
+                    selectedSave++;
                 }
             }
             else
@@ -431,14 +439,26 @@ void TitleLoadScreen::update(touchPosition* touch)
         }
     }
     availableCheckpointSaves = TitleLoader::sdSaves[titleFromIndex(selectedTitle)->checkpointPrefix()];
+
+    if (buttonsDown & KEY_SELECT)
+    {
+        Gui::setScreen(std::make_unique<ConfigScreen>());
+    }
 }
 
 bool TitleLoadScreen::setSelectedSave(int i)
 {
-    if (i == 5 && firstSave + i < (int) availableCheckpointSaves.size())
+    if (i == 5)
     {
-        firstSave++;
-        selectedSave = 4;
+        if (firstSave + 5 < (int) availableCheckpointSaves.size() - 1)
+        {
+            firstSave++;
+            selectedSave = 4;
+        }
+        else
+        {
+            selectedSave = 5;
+        }
     }
     else if (i == 0 && firstSave != -1)
     {
