@@ -244,14 +244,18 @@ void TitleLoadScreen::update(touchPosition* touch)
         }
         if (buttonsDown & KEY_UP)
         {
-            if (selectedSave <= 1)
+            if (selectedSave == 1)
             {
                 if (firstSave > -1)
                 {
                     firstSave--;
                 }
+                else
+                {
+                    selectedSave--;
+                }
             }
-            else
+            else if (selectedSave != 0)
             {
                 selectedSave--;
             }
