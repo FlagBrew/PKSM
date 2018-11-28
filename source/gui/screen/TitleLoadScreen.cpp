@@ -28,6 +28,8 @@
 #include "MainMenu.hpp"
 #include "FSStream.hpp"
 #include "SaveLoadScreen.hpp"
+#include "AccelButton.hpp"
+#include "ClickButton.hpp"
 
 bool TitleLoadScreen::loadSave() const
 {
@@ -52,10 +54,12 @@ static bool wirelessSave() { return true; }
 
 TitleLoadScreen::TitleLoadScreen()
 {
-    for (int i = 0; i < 6; i++)
+    buttons.push_back(new AccelButton(24, 96, 175, 16, [this](){ return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
+    for (int i = 1; i < 5; i++)
     {
-        buttons.push_back(new Button(24, 96 + 17 * i, 175, 16, [this, i](){ return this->setSelectedSave(i); }, ui_sheet_res_null_idx, "", 0.0f, 0));
+        buttons.push_back(new ClickButton(24, 96 + 17 * i, 175, 16, [this, i](){ return this->setSelectedSave(i); }, ui_sheet_res_null_idx, "", 0.0f, 0));
     }
+    buttons.push_back(new AccelButton(24, 181, 175, 16, [this](){ return this->setSelectedSave(5); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
     buttons.push_back(new Button(200, 95, 96, 51, [this](){ return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f, 0));
     buttons.push_back(new Button(200, 147, 96, 51, &wirelessSave, ui_sheet_res_null_idx, "", 0.0f, 0));
 }
@@ -260,12 +264,9 @@ void TitleLoadScreen::update(touchPosition* touch)
                 selectedSave--;
             }
         }
-        if (buttonsDown & KEY_TOUCH)
+        for (Button* button : buttons)
         {
-            for (Button* button : buttons)
-            {
-                button->update(touch);
-            }
+            button->update(touch);
         }
     }
     else
