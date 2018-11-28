@@ -59,11 +59,7 @@ private:
     int selectedSave = -1;
     bool selectedGame = false;
     bool uninstGameView = false;
-    bool setSelectedSave(int i)
-    {
-        selectedSave = i;
-        return false;
-    }
+    bool setSelectedSave(int i);
     bool increaseFirstSave()
     {
         if (firstSave < (int) availableCheckpointSaves.size() - 1)

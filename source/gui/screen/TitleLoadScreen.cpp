@@ -244,7 +244,7 @@ void TitleLoadScreen::update(touchPosition* touch)
         }
         if (buttonsDown & KEY_UP)
         {
-            if (selectedSave == 0)
+            if (selectedSave <= 1)
             {
                 if (firstSave > -1)
                 {
@@ -256,9 +256,12 @@ void TitleLoadScreen::update(touchPosition* touch)
                 selectedSave--;
             }
         }
-        for (Button* button : buttons)
+        if (buttonsDown & KEY_TOUCH)
         {
-            button->update(touch);
+            for (Button* button : buttons)
+            {
+                button->update(touch);
+            }
         }
     }
     else
@@ -423,4 +426,23 @@ void TitleLoadScreen::update(touchPosition* touch)
         }
     }
     availableCheckpointSaves = TitleLoader::sdSaves[titleFromIndex(selectedTitle)->checkpointPrefix()];
+}
+
+bool TitleLoadScreen::setSelectedSave(int i)
+{
+    if (i == 5 && firstSave + i < (int) availableCheckpointSaves.size())
+    {
+        firstSave++;
+        selectedSave = 4;
+    }
+    else if (i == 0 && firstSave != -1)
+    {
+        firstSave--;
+        selectedSave = 1;
+    }
+    else if (firstSave + i < (int) availableCheckpointSaves.size())
+    {
+        selectedSave = i;
+    }
+    return false;
 }
