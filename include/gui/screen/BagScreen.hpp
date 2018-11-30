@@ -24,49 +24,38 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef SCREEN_HPP
-#define SCREEN_HPP
+#ifndef BAGSCREEN_HPP
+#define BAGSCREEN_HPP
 
-#include "3ds.h"
-#include <citro3d.h>
+#include "Screen.hpp"
+#include "Sav.hpp"
+#include "Button.hpp"
+#include "FortyChoice.hpp"
 
-extern C3D_RenderTarget* g_renderTargetTop;
-extern C3D_RenderTarget* g_renderTargetBottom;
-
-enum ScreenType
-{
-    TITLELOAD,
-    MAINMENU,
-    STORAGE,
-    EDITOR,
-    EDITSELECT,
-    EVENTS,
-    HEXEDIT,
-    INJECTOR,
-    SCRIPTS,
-    SCRIPTSELECT,
-    SELECTOR,
-    SETTINGS,
-    CREDITS,
-    VIEWER,
-    BAG
-};
-
-class Screen
+class BagScreen : public Screen
 {
 public:
-    virtual ~Screen() {}
-    virtual void update(void) {
-        // increase timer
-        mTimer += 0.025f;
-    }
-    virtual void update(touchPosition* touch) = 0;
-    virtual ScreenType type() const = 0;
-    virtual void draw() const = 0;
-    virtual float timer() const final { return mTimer; }
+    BagScreen();
+    virtual ~BagScreen();
+
+    void update(touchPosition* touch) override;
+    void draw() const override;
+
+    ScreenType type() const { return ScreenType::BAG; }
 
 private:
-    float mTimer = 0;
+    std::vector<std::pair<Pouch, int>> limits;
+    std::map<Pouch, std::vector<int>> allowedItems;
+    int currentPouch = 0;
+    std::vector<Button*> buttons;
+    int selectedItem = 0;
+    int firstItem = 0;
+    int firstEmpty = 0;
+    bool selectingPouch = false;
+    bool clickIndex(int i);
+    bool switchPouch(int i);
+    void editItem();
+    std::unique_ptr<FortyChoice> select = nullptr;
 };
 
 #endif

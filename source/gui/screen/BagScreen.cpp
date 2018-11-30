@@ -1,0 +1,388 @@
+/*
+*   This file is part of PKSM
+*   Copyright (C) 2016-2018 Bernardo Giordano, Admiral Fish, piepie62
+*
+*   This program is free software: you can redistribute it and/or modify
+*   it under the terms of the GNU General Public License as published by
+*   the Free Software Foundation, either version 3 of the License, or
+*   (at your option) any later version.
+*
+*   This program is distributed in the hope that it will be useful,
+*   but WITHOUT ANY WARRANTY; without even the implied warranty of
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*   GNU General Public License for more details.
+*
+*   You should have received a copy of the GNU General Public License
+*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*
+*   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
+*       * Requiring preservation of specified reasonable legal notices or
+*         author attributions in that material or in the Appropriate Legal
+*         Notices displayed by works containing it.
+*       * Prohibiting misrepresentation of the origin of that material,
+*         or requiring that modified versions of such material be marked in
+*         reasonable ways as different from the original version.
+*/
+
+#include "BagScreen.hpp"
+#include "loader.hpp"
+#include "AccelButton.hpp"
+#include "ClickButton.hpp"
+#include "Configuration.hpp"
+
+BagScreen::BagScreen() : limits(TitleLoader::save->pouches()), allowedItems(TitleLoader::save->validItems())
+{
+    currentPouch = limits[0].first;
+    for (int i = 0; i < limits.size(); i++)
+    {
+        buttons.push_back(new Button(3, i * 30, 108, 30, [this, i](){ return switchPouch(i); }, ui_sheet_button_editor_idx, TitleLoader::save->pouchName(limits[i].first), FONT_SIZE_12, COLOR_BLACK));
+    }
+    buttons.push_back(new AccelButton(131, -15, 134, 30, [this](){ return clickIndex(-1); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK));
+    for (int i = 0; i < std::min(allowedItems[limits[0].first].size(), (size_t)7); i++)
+    {
+        buttons.push_back(new ClickButton(131, 15 + i * 30, 134, 30, [this, i](){ return clickIndex(i); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK));
+    }
+    buttons.push_back(new AccelButton(131, 225, 134, 30, [this](){ return clickIndex(7); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 10));
+
+    for (int i = 0; i < limits[0].second; i++)
+    {
+        auto item = TitleLoader::save->item(limits[0].first, i);
+        if (item && item->id() == 0)
+        {
+            firstEmpty = i;
+            break;
+        }
+    }
+}
+
+BagScreen::~BagScreen()
+{
+    for (auto button : buttons)
+    {
+        delete button;
+    }
+}
+
+static int bobPointer()
+{
+    static int currentBob = 0;
+    static bool up = true;
+    if (up)
+    {
+        currentBob++;
+        if (currentBob >= 12)
+        {
+            up = false;
+        }
+    }
+    else
+    {
+        currentBob--;
+        if (currentBob <= 0)
+        {
+            up = true;
+        }
+    }
+    return currentBob / 4;
+}
+
+void BagScreen::draw() const
+{
+    C2D_SceneBegin(g_renderTargetBottom);
+    C2D_DrawRectSolid(0, 0, 0.5f, 120, 240, COLOR_DARKBLUE);
+    C2D_DrawRectSolid(121, 0, 0.5f, 200, 240, COLOR_BLUE);
+
+    for (auto button : buttons)
+    {
+        button->draw();
+    }
+
+    if (firstItem != 0)
+    {
+        Gui::sprite(ui_sheet_button_editor_idx, 131, -15);
+    }
+    if (firstItem + 7 < firstEmpty)
+    {
+        Gui::sprite(ui_sheet_button_editor_idx, 131, 225);
+    }
+
+    for (int i = firstItem > 0 ? -1 : 0; i <= std::min(std::min(firstEmpty - firstItem, 7), limits[currentPouch].second); i++)
+    {
+        auto item = TitleLoader::save->item(limits[currentPouch].first, firstItem + i);
+        Gui::sprite(ui_sheet_button_editor_idx, 131, 15 + 30 * i);
+        Gui::dynamicText(i18n::item(Configuration::getInstance().language(), item->id()), 147, 20 + 30 * i, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+    }
+
+    int xMod = bobPointer();
+
+    if (!selectingPouch)
+    {
+        Gui::sprite(ui_sheet_pointer_horizontal_idx, 116 + xMod, 20 + selectedItem * 30);
+    }
+    Gui::sprite(ui_sheet_pointer_horizontal_idx, -12 + (selectingPouch ? xMod : 0), 5 + currentPouch * 30);
+}
+
+void BagScreen::update(touchPosition* touch)
+{
+    static int timer = 0;
+    u32 downKeys = hidKeysDown();
+    u32 heldKeys = hidKeysHeld();
+    if (downKeys & KEY_B)
+    {
+        Gui::screenBack();
+        return;
+    }
+    if (downKeys & KEY_LEFT || downKeys & KEY_RIGHT)
+    {
+        selectingPouch = !selectingPouch;
+    }
+    if (!selectingPouch)
+    {
+        if (downKeys & KEY_DOWN)
+        {
+            if (selectedItem + firstItem < firstEmpty)
+            {
+                if (selectedItem == 6)
+                {
+                    if (firstItem + 6 < firstEmpty)
+                    {
+                        firstItem++;
+                    }
+                }
+                else
+                {
+                    selectedItem++;
+                }
+            }
+            else
+            {
+                selectedItem = 0;
+                firstItem = 0;
+            }
+            timer = 10;
+        }
+        else if (heldKeys & KEY_DOWN && timer == 0)
+        {
+            if (selectedItem + firstItem < firstEmpty)
+            {
+                if (selectedItem == 6)
+                {
+                    if (firstItem + 6 < firstEmpty)
+                    {
+                        firstItem++;
+                    }
+                }
+                else
+                {
+                    selectedItem++;
+                }
+            }
+            else
+            {
+                selectedItem = 0;
+                firstItem = 0;
+            }
+            timer = 10;
+        }
+        else if (downKeys & KEY_UP)
+        {
+            if (firstItem > 0 && selectedItem == 0)
+            {
+                firstItem--;
+            }
+            else if (selectedItem > 0)
+            {
+                selectedItem--;
+            }
+            else
+            {
+                firstItem = std::max(firstEmpty - 6, 0);
+                for (int i = firstItem + 6; i > firstItem; i--)
+                {
+                    if (i == firstEmpty)
+                    {
+                        selectedItem = i - firstItem;
+                    }
+                }
+            }
+            timer = 10;
+        }
+        else if (heldKeys & KEY_UP && timer == 0)
+        {
+            if (firstItem > 0 && selectedItem == 0)
+            {
+                firstItem--;
+            }
+            else if (selectedItem > 0)
+            {
+                selectedItem--;
+            }
+            else
+            {
+                firstItem = std::max(firstEmpty - 6, 0);
+                for (int i = firstItem + 6; i > firstItem; i--)
+                {
+                    if (i == firstEmpty)
+                    {
+                        selectedItem = i - firstItem;
+                    }
+                }
+            }
+            timer = 10;
+        }
+
+        if (downKeys & KEY_A)
+        {
+            editItem();
+        }
+    }
+    else
+    {
+        if (downKeys & KEY_DOWN)
+        {
+            currentPouch = (currentPouch + 1) % limits.size();
+            switchPouch(currentPouch);
+            timer = 10;
+        }
+        else if (heldKeys & KEY_DOWN && timer == 0)
+        {
+            currentPouch = (currentPouch + 1) % limits.size();
+            switchPouch(currentPouch);
+            timer = 10;
+        }
+        else if (downKeys & KEY_UP)
+        {
+            int newPouch = currentPouch - 1;
+            if (newPouch == -1)
+            {
+                newPouch = limits.size() - 1;
+            }
+            switchPouch(newPouch);
+            timer = 10;
+        }
+        else if (heldKeys & KEY_UP && timer == 0)
+        {
+            int newPouch = currentPouch - 1;
+            if (newPouch == -1)
+            {
+                newPouch = limits.size() - 1;
+            }
+            switchPouch(newPouch);
+            timer = 10;
+        }
+
+        if (downKeys & KEY_A)
+        {
+            selectingPouch = false;
+        }
+    }
+    for (auto button : buttons)
+    {
+        button->update(touch);
+    }
+
+    if (timer > 0)
+    {
+        timer--;
+    }
+}
+
+bool BagScreen::clickIndex(int i)
+{
+    if (i == -1)
+    {
+        if (firstItem > 0)
+        {
+            firstItem--;
+            selectedItem = 0;
+        }
+    }
+    if (i == 7)
+    {
+        if (firstItem + 6 <= firstEmpty)
+        {
+            firstItem++;
+            selectedItem = 6;
+        }
+    }
+    if (selectedItem == i)
+    {
+        editItem();
+    }
+    else
+    {
+        if (i < firstEmpty - firstItem)
+        {
+            selectedItem = i;
+        }
+    }
+    return false;
+}
+
+bool BagScreen::switchPouch(int newPouch)
+{
+    currentPouch = newPouch;
+
+    firstEmpty = limits[newPouch].second - 1;
+    for (int i = 0; i < limits[newPouch].second; i++)
+    {
+        auto item = TitleLoader::save->item(limits[newPouch].first, i);
+        if (item && item->id() == 0)
+        {
+            firstEmpty = i;
+            break;
+        }
+    }
+    
+    firstItem = 0;
+    selectedItem = 0;
+    return false;
+}
+
+void BagScreen::editItem()
+{
+    int limit = allowedItems[limits[currentPouch].first].size() + 1; // Add one for None
+    std::pair<std::string, int> items[limit];
+    char* itemStrings[limit];
+    items[0] = { i18n::item(Configuration::getInstance().language(), 0), 0 };
+    for (int i = 1; i < limit; i++)
+    {
+        int itemId = allowedItems[limits[currentPouch].first][i - 1];
+        items[i] = std::make_pair(i18n::item(Configuration::getInstance().language(), itemId), itemId); // Store the string so that the pointer isn't deleted
+    }
+    std::sort(items + 1, items + limit, [](std::pair<std::string, int> p1, std::pair<std::string, int> p2){
+        return p1.first < p2.first;
+    });
+    for (int i = 0; i < limit; i++)
+    {
+        itemStrings[i] = const_cast<char*>(items[i].first.c_str());
+    }
+    select = std::make_unique<FortyChoice>(const_cast<char*>("Press A to choose item"), (char**)itemStrings, limit);
+    int retItem = select->run();
+
+    static Item4 emptyItem;
+
+    if (retItem == 0 && firstItem + selectedItem < firstEmpty)
+    {
+        for (int i = firstItem + selectedItem; i < firstEmpty - 1; i++)
+        {
+            auto item = TitleLoader::save->item(limits[currentPouch].first, i + 1);
+            TitleLoader::save->item(*item, limits[currentPouch].first, i);
+        }
+        TitleLoader::save->item(emptyItem, limits[currentPouch].first, --firstEmpty);
+    }
+    else
+    {
+        auto item = TitleLoader::save->item(limits[currentPouch].first, firstItem + selectedItem);
+        item->id(items[retItem].second);
+        if (item->count() == 0 && retItem != 0)
+        {
+            item->count(1);
+        }
+        TitleLoader::save->item(*item, limits[currentPouch].first, firstItem + selectedItem);
+        if (firstItem + selectedItem == firstEmpty)
+        {
+            firstEmpty = std::min(firstEmpty + 1, limits[currentPouch].second);
+        }
+    }
+}

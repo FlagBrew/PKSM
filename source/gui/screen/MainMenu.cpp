@@ -32,14 +32,15 @@
 #include "InjectSelectorScreen.hpp"
 #include "EditSelectorScreen.hpp"
 #include "ScriptScreen.hpp"
+#include "BagScreen.hpp"
 
 static constexpr int icons[6] = {
     ui_sheet_icon_storage_idx,
     ui_sheet_icon_editor_idx,
     ui_sheet_icon_events_idx,
     ui_sheet_icon_scripts_idx,
-    ui_sheet_icon_settings_idx,
-    ui_sheet_icon_credits_idx
+    ui_sheet_icon_credits_idx,
+    ui_sheet_icon_settings_idx
 };
 
 static constexpr int yLevels[6] = {
@@ -68,10 +69,10 @@ static bool goToScreen(int buttonNum)
             Gui::setScreen(std::make_unique<ScriptScreen>());
             return true;
         case 4:
-            Gui::setScreen(std::make_unique<ConfigScreen>());
+            Gui::setScreen(std::make_unique<BagScreen>());
             return true;
         case 5:
-            Gui::setScreen(std::make_unique<CreditsScreen>());
+            Gui::setScreen(std::make_unique<ConfigScreen>());
             return true;
     }
     return true;
@@ -85,7 +86,7 @@ MainMenu::MainMenu()
         {
             buttons[i*2 + j] = new MainMenuButton(
                 15 + 150*j, 20 + 63*i, 140, 53,
-                std::bind(&goToScreen, i*2 + j),
+                [i, j](){ return goToScreen(i*2 + j); },
                 icons[i*2 + j],
                 StringUtils::format("%i", i*2 + j),
                 FONT_SIZE_15,

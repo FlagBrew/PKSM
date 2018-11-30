@@ -166,6 +166,8 @@ public:
     void item(Item& item, Pouch pouch, u16 slot) override;
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
     std::vector<std::pair<Pouch, int>> pouches(void) const override;
+    std::map<Pouch, std::vector<int>> validItems(void) const override;
+    std::string pouchName(Pouch pouch) const override;
 };
 
 #endif
