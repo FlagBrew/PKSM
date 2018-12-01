@@ -698,6 +698,20 @@ void Gui::sprite(int key, int x, int y)
         tex = _select_box(sprite, 5, 0, 6, 0);
         C2D_DrawImageAt({sprite.tex, &tex}, x + 5, y, 0.5f, nullptr, 60.0f, 1.0f);
     }
+    else if (key == ui_sheet_emulated_button_item_idx)
+    {
+        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_editor_idx);
+
+        Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, 16, 0);
+        // Left
+        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f);
+        // Right
+        tex = _select_box(sprite, 92, 0, 108, 0);
+        C2D_DrawImageAt({sprite.tex, &tex}, x + 168, y, 0.5f);
+        // Center
+        tex = _select_box(sprite, 16, 0, 17, 0);
+        C2D_DrawImageAt({sprite.tex, &tex}, x + 16, y, 0.5f, nullptr, 152.0f, 1.0f);
+    }
     // standard case
     else
     {

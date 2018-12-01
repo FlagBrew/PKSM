@@ -37,12 +37,17 @@ BagScreen::BagScreen() : limits(TitleLoader::save->pouches()), allowedItems(Titl
     {
         buttons.push_back(new Button(3, i * 30, 108, 30, [this, i](){ return switchPouch(i); }, ui_sheet_button_editor_idx, TitleLoader::save->pouchName(limits[i].first), FONT_SIZE_12, COLOR_BLACK));
     }
-    buttons.push_back(new AccelButton(131, -15, 134, 30, [this](){ return clickIndex(-1); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK));
+    buttons.push_back(new AccelButton(147, -15, 152, 30, [this](){ return clickIndex(-1); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK));
     for (int i = 0; i < std::min(allowedItems[limits[0].first].size(), (size_t)7); i++)
     {
-        buttons.push_back(new ClickButton(131, 15 + i * 30, 134, 30, [this, i](){ return clickIndex(i); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK));
+        buttons.push_back(new ClickButton(147, 15 + i * 30, 152, 30, [this, i](){ return clickIndex(i); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK));
     }
-    buttons.push_back(new AccelButton(131, 225, 134, 30, [this](){ return clickIndex(7); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 10));
+    buttons.push_back(new AccelButton(147, 225, 152, 30, [this](){ return clickIndex(7); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 10));
+    for (int i = 0; i < 7; i++)
+    {
+        amountButtons.push_back(new AccelButton(134, 23 + i * 30, 13, 13, [this, i](){ editCount(false, i); return false; }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
+        amountButtons.push_back(new AccelButton(299, 23 + i * 30, 13, 13, [this, i](){ editCount(true, i); return false; }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
+    }
 
     for (int i = 0; i < limits[0].second; i++)
     {
@@ -109,8 +114,24 @@ void BagScreen::draw() const
     for (int i = firstItem > 0 ? -1 : 0; i <= std::min(std::min(firstEmpty - firstItem, 7), limits[currentPouch].second); i++)
     {
         auto item = TitleLoader::save->item(limits[currentPouch].first, firstItem + i);
-        Gui::sprite(ui_sheet_button_editor_idx, 131, 15 + 30 * i);
-        Gui::dynamicText(i18n::item(Configuration::getInstance().language(), item->id()), 147, 20 + 30 * i, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+        Gui::sprite(ui_sheet_emulated_button_item_idx, 131, 15 + 30 * i);
+        std::string print = i18n::item(Configuration::getInstance().language(), item->id());
+        if (item->id() > 0)
+        {
+            if (item->count() == 0)
+            {
+                item->count(1);
+                TitleLoader::save->item(*item, limits[currentPouch].first, firstItem + i);
+            }
+            print += " x " + std::to_string((int)item->count());
+        }
+        Gui::dynamicText(147, 20 + 30 * i, 152, print, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+    }
+
+    for (int i = 0; i < std::min(std::min(firstEmpty - firstItem, 7), limits[currentPouch].second); i++)
+    {
+        amountButtons[i*2]->draw();
+        amountButtons[i*2+1]->draw();
     }
 
     int xMod = bobPointer();
@@ -281,6 +302,13 @@ void BagScreen::update(touchPosition* touch)
         button->update(touch);
     }
 
+    for (int i = 0; i < std::min(std::min(firstEmpty - firstItem, 6), limits[currentPouch].second); i++)
+    {
+        amountButtons[i*2]->update(touch);
+        amountButtons[i*2+1]->update(touch);
+        selectingPouch = false;
+    }
+
     if (timer > 0)
     {
         timer--;
@@ -384,5 +412,22 @@ void BagScreen::editItem()
         {
             firstEmpty = std::min(firstEmpty + 1, limits[currentPouch].second);
         }
+    }
+}
+
+void BagScreen::editCount(bool up, int selected)
+{
+    auto item = TitleLoader::save->item(limits[currentPouch].first, firstItem + selectedItem + selected);
+    if (item->id() > 0)
+    {
+        if (up)
+        {
+            item->count(item->count() + 1);
+        }
+        else
+        {
+            item->count(item->count() - 1);
+        }
+        TitleLoader::save->item(*item, limits[currentPouch].first, firstItem + selectedItem + selected);
     }
 }

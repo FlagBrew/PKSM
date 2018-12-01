@@ -46,6 +46,7 @@ public:
 private:
     std::vector<std::pair<Pouch, int>> limits;
     std::map<Pouch, std::vector<int>> allowedItems;
+    std::vector<Button*> amountButtons;
     int currentPouch = 0;
     std::vector<Button*> buttons;
     int selectedItem = 0;
@@ -56,6 +57,7 @@ private:
     bool switchPouch(int i);
     void editItem();
     std::unique_ptr<FortyChoice> select = nullptr;
+    void editCount(bool up, int selected);
 };
 
 #endif

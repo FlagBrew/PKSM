@@ -68,6 +68,7 @@
 #define ui_sheet_emulated_toggle_red_idx 518
 #define ui_sheet_emulated_gameselector_bg_idx 519
 #define ui_sheet_emulated_button_qr_idx 520
+#define ui_sheet_emulated_button_item_idx 521
 
 // colors
 #define COLOR_WHITE     C2D_Color32(255, 255, 255, 255)
