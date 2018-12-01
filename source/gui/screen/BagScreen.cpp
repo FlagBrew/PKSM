@@ -45,8 +45,8 @@ BagScreen::BagScreen() : limits(TitleLoader::save->pouches()), allowedItems(Titl
     buttons.push_back(new AccelButton(147, 225, 152, 30, [this](){ return clickIndex(7); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 10));
     for (int i = 0; i < 7; i++)
     {
-        amountButtons.push_back(new AccelButton(134, 23 + i * 30, 13, 13, [this, i](){ editCount(false, i); return false; }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
-        amountButtons.push_back(new AccelButton(299, 23 + i * 30, 13, 13, [this, i](){ editCount(true, i); return false; }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
+        amountButtons.push_back(new AccelButton(134, 23 + i * 30, 13, 13, [this, i](){ editCount(false, i); return false; }, ui_sheet_emulated_button_minus_small_black_idx, "", 0.0f, 0));
+        amountButtons.push_back(new AccelButton(299, 23 + i * 30, 13, 13, [this, i](){ editCount(true, i); return false; }, ui_sheet_emulated_button_plus_small_black_idx, "", 0.0f, 0));
     }
 
     for (int i = 0; i < limits[0].second; i++)

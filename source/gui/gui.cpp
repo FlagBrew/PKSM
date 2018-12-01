@@ -712,6 +712,18 @@ void Gui::sprite(int key, int x, int y)
         tex = _select_box(sprite, 16, 0, 17, 0);
         C2D_DrawImageAt({sprite.tex, &tex}, x + 16, y, 0.5f, nullptr, 152.0f, 1.0f);
     }
+    else if (key == ui_sheet_emulated_button_plus_small_black_idx)
+    {
+        C2D_ImageTint tint;
+        C2D_PlainImageTint(&tint, COLOR_BLACK, 1.0f);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_plus_small_idx), x, y, 0.5f, &tint, 1.0f, 1.0f);
+    }
+    else if (key == ui_sheet_emulated_button_minus_small_black_idx)
+    {
+        C2D_ImageTint tint;
+        C2D_PlainImageTint(&tint, COLOR_BLACK, 1.0f);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_minus_small_idx), x, y, 0.5f, &tint, 1.0f, 1.0f);
+    }
     // standard case
     else
     {

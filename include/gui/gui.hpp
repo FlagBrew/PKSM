@@ -69,6 +69,8 @@
 #define ui_sheet_emulated_gameselector_bg_idx 519
 #define ui_sheet_emulated_button_qr_idx 520
 #define ui_sheet_emulated_button_item_idx 521
+#define ui_sheet_emulated_button_plus_small_black_idx 522
+#define ui_sheet_emulated_button_minus_small_black_idx 523
 
 // colors
 #define COLOR_WHITE     C2D_Color32(255, 255, 255, 255)
