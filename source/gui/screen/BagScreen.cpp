@@ -37,7 +37,7 @@ BagScreen::BagScreen() : limits(TitleLoader::save->pouches()), allowedItems(Titl
     {
         buttons.push_back(new Button(3, i * 30, 108, 30, [this, i](){ return switchPouch(i); }, ui_sheet_button_editor_idx, TitleLoader::save->pouchName(limits[i].first), FONT_SIZE_12, COLOR_BLACK));
     }
-    buttons.push_back(new AccelButton(147, -15, 152, 30, [this](){ return clickIndex(-1); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK));
+    buttons.push_back(new AccelButton(147, -15, 152, 30, [this](){ return clickIndex(-1); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 10));
     for (int i = 0; i < std::min(allowedItems[limits[0].first].size(), (size_t)7); i++)
     {
         buttons.push_back(new ClickButton(147, 15 + i * 30, 152, 30, [this, i](){ return clickIndex(i); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK));
@@ -128,7 +128,12 @@ void BagScreen::draw() const
         Gui::dynamicText(147, 20 + 30 * i, 152, print, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
     }
 
-    for (int i = 0; i < std::min(std::min(firstEmpty - firstItem, 7), limits[currentPouch].second); i++)
+    u8 mod = 0;
+    if (TitleLoader::save->item(limits[currentPouch].first, firstEmpty)->id() > 0)
+    {
+        mod = 1;
+    }
+    for (int i = 0; i < std::min(std::min(firstEmpty - firstItem + mod, 7), limits[currentPouch].second); i++)
     {
         amountButtons[i*2]->draw();
         amountButtons[i*2+1]->draw();
@@ -302,7 +307,12 @@ void BagScreen::update(touchPosition* touch)
         button->update(touch);
     }
 
-    for (int i = 0; i < std::min(std::min(firstEmpty - firstItem, 6), limits[currentPouch].second); i++)
+    u8 mod = 0;
+    if (TitleLoader::save->item(limits[currentPouch].first, firstEmpty)->id() > 0)
+    {
+        mod = 1;
+    }
+    for (int i = 0; i < std::min(std::min(firstEmpty - firstItem + mod, 7), limits[currentPouch].second); i++)
     {
         amountButtons[i*2]->update(touch);
         amountButtons[i*2+1]->update(touch);
@@ -324,16 +334,26 @@ bool BagScreen::clickIndex(int i)
             firstItem--;
             selectedItem = 0;
         }
+        else
+        {
+            firstItem = std::max(0, firstEmpty - 6);
+            selectedItem = 6;
+        }
     }
-    if (i == 7)
+    else if (i == 7)
     {
-        if (firstItem + 6 <= firstEmpty)
+        if (firstItem + 6 < firstEmpty)
         {
             firstItem++;
             selectedItem = 6;
         }
+        else
+        {
+            firstItem = 0;
+            selectedItem = 0;
+        }
     }
-    if (selectedItem == i)
+    else if (selectedItem == i)
     {
         editItem();
     }
@@ -417,7 +437,7 @@ void BagScreen::editItem()
 
 void BagScreen::editCount(bool up, int selected)
 {
-    auto item = TitleLoader::save->item(limits[currentPouch].first, firstItem + selectedItem + selected);
+    auto item = TitleLoader::save->item(limits[currentPouch].first, firstItem + selected);
     if (item->id() > 0)
     {
         if (up)
@@ -428,6 +448,6 @@ void BagScreen::editCount(bool up, int selected)
         {
             item->count(item->count() - 1);
         }
-        TitleLoader::save->item(*item, limits[currentPouch].first, firstItem + selectedItem + selected);
+        TitleLoader::save->item(*item, limits[currentPouch].first, firstItem + selected);
     }
 }
