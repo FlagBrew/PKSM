@@ -30,7 +30,7 @@
 #include "Screen.hpp"
 #include "Sav.hpp"
 #include "Button.hpp"
-#include "FortyChoice.hpp"
+#include "ItemEditScreen.hpp"
 
 class BagScreen : public Screen
 {
@@ -56,7 +56,7 @@ private:
     bool clickIndex(int i);
     bool switchPouch(int i);
     void editItem();
-    std::unique_ptr<FortyChoice> select = nullptr;
+    std::unique_ptr<ItemEditScreen> select = nullptr;
     void editCount(bool up, int selected);
 };
 

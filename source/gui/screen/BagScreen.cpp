@@ -390,22 +390,32 @@ bool BagScreen::switchPouch(int newPouch)
 void BagScreen::editItem()
 {
     int limit = allowedItems[limits[currentPouch].first].size() + 1; // Add one for None
-    std::pair<std::string, int> items[limit];
-    char* itemStrings[limit];
+    std::vector<std::pair<std::string, int>> items(limit);
     items[0] = { i18n::item(Configuration::getInstance().language(), 0), 0 };
+    auto currentItem = TitleLoader::save->item(limits[currentPouch].first, firstItem + selectedItem);
+    std::pair<std::string, int> currentItemPair = std::make_pair(i18n::item(Configuration::getInstance().language(), currentItem->id()), currentItem->id());
+
     for (int i = 1; i < limit; i++)
     {
         int itemId = allowedItems[limits[currentPouch].first][i - 1];
         items[i] = std::make_pair(i18n::item(Configuration::getInstance().language(), itemId), itemId); // Store the string so that the pointer isn't deleted
     }
-    std::sort(items + 1, items + limit, [](std::pair<std::string, int> p1, std::pair<std::string, int> p2){
+    std::sort(items.begin() + 1, items.end(), [](std::pair<std::string, int> p1, std::pair<std::string, int> p2){
         return p1.first < p2.first;
     });
-    for (int i = 0; i < limit; i++)
+
+    size_t currItemIndex = 0;
+
+    for (size_t i = 0; i < items.size(); i++)
     {
-        itemStrings[i] = const_cast<char*>(items[i].first.c_str());
+        if (items[i] == currentItemPair)
+        {
+            currItemIndex = i;
+            break;
+        }
     }
-    select = std::make_unique<FortyChoice>(const_cast<char*>("Press A to choose item"), (char**)itemStrings, limit);
+
+    select = std::make_unique<ItemEditScreen>(items, currItemIndex);
     int retItem = select->run();
 
     static Item4 emptyItem;

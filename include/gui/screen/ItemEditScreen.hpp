@@ -24,50 +24,33 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef SCREEN_HPP
-#define SCREEN_HPP
+#ifndef ITEMEDITSCREEN_HPP
+#define ITEMEDITSCREEN_HPP
 
-#include "3ds.h"
-#include <citro3d.h>
+#include "Screen.hpp"
+#include "HidVertical.hpp"
+#include <vector>
+#include <string>
 
-extern C3D_RenderTarget* g_renderTargetTop;
-extern C3D_RenderTarget* g_renderTargetBottom;
-
-enum ScreenType
-{
-    TITLELOAD,
-    MAINMENU,
-    STORAGE,
-    EDITOR,
-    EDITSELECT,
-    EVENTS,
-    HEXEDIT,
-    INJECTOR,
-    SCRIPTS,
-    SCRIPTSELECT,
-    SELECTOR,
-    SETTINGS,
-    CREDITS,
-    VIEWER,
-    BAG,
-    ITEMEDIT
-};
-
-class Screen
+class ItemEditScreen : public Screen
 {
 public:
-    virtual ~Screen() {}
-    virtual void update(void) {
-        // increase timer
-        mTimer += 0.025f;
+    ItemEditScreen(std::vector<std::pair<std::string, int>>& items, size_t selected) : hid(40,2), items(items), origItem(selected)
+    {
+        hid.update(items.size());
+        hid.select(selected);
     }
-    virtual void update(touchPosition* touch) = 0;
-    virtual ScreenType type() const = 0;
-    virtual void draw() const = 0;
-    virtual float timer() const final { return mTimer; }
-
+    int run();
+    void draw() const override;
+    void update(touchPosition* touch) override;
+    ScreenType type() const override { return ITEMEDIT; }
 private:
-    float mTimer = 0;
+    HidVertical hid;
+    std::vector<std::pair<std::string, int>>& items;
+    bool finished = false;
+    mutable bool firstDraw = true;
+    int finalVal = 0;
+    int origItem;
 };
 
 #endif
