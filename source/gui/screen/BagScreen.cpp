@@ -158,9 +158,13 @@ void BagScreen::update(touchPosition* touch)
         Gui::screenBack();
         return;
     }
-    if (downKeys & KEY_LEFT || downKeys & KEY_RIGHT)
+    if (downKeys & KEY_R)
     {
-        selectingPouch = !selectingPouch;
+        selectingPouch = false;
+    }
+    if (downKeys & KEY_L)
+    {
+        selectingPouch = true;
     }
     if (!selectingPouch)
     {
@@ -254,6 +258,26 @@ void BagScreen::update(touchPosition* touch)
                     }
                 }
             }
+            timer = 10;
+        }
+        else if (downKeys & KEY_LEFT)
+        {
+            editCount(false, selectedItem);
+            timer = 10;
+        }
+        else if (heldKeys & KEY_LEFT && timer == 0)
+        {
+            editCount(false, selectedItem);
+            timer = 10;
+        }
+        else if (downKeys & KEY_RIGHT)
+        {
+            editCount(true, selectedItem);
+            timer = 10;
+        }
+        else if (heldKeys & KEY_RIGHT && timer == 0)
+        {
+            editCount(true, selectedItem);
             timer = 10;
         }
 
