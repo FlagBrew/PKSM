@@ -37,12 +37,12 @@ BagScreen::BagScreen() : limits(TitleLoader::save->pouches()), allowedItems(Titl
     {
         buttons.push_back(new Button(3, i * 30, 108, 30, [this, i](){ return switchPouch(i); }, ui_sheet_button_editor_idx, TitleLoader::save->pouchName(limits[i].first), FONT_SIZE_12, COLOR_BLACK));
     }
-    buttons.push_back(new AccelButton(147, -15, 152, 30, [this](){ return clickIndex(-1); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 10));
+    buttons.push_back(new AccelButton(147, -15, 152, 30, [this](){ return clickIndex(-1); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 5));
     for (size_t i = 0; i < std::min(allowedItems[limits[0].first].size(), (size_t)7); i++)
     {
         buttons.push_back(new ClickButton(147, 15 + i * 30, 152, 30, [this, i](){ return clickIndex(i); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK));
     }
-    buttons.push_back(new AccelButton(147, 225, 152, 30, [this](){ return clickIndex(7); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 10));
+    buttons.push_back(new AccelButton(147, 225, 152, 30, [this](){ return clickIndex(7); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 5));
     for (int i = 0; i < 7; i++)
     {
         amountButtons.push_back(new AccelButton(134, 23 + i * 30, 13, 13, [this, i](){ editCount(false, i); return false; }, ui_sheet_emulated_button_minus_small_black_idx, "", 0.0f, 0));

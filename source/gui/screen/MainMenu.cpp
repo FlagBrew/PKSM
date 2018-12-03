@@ -39,7 +39,7 @@ static constexpr int icons[6] = {
     ui_sheet_icon_editor_idx,
     ui_sheet_icon_events_idx,
     ui_sheet_icon_scripts_idx,
-    ui_sheet_icon_credits_idx,
+    ui_sheet_icon_bag_idx,
     ui_sheet_icon_settings_idx
 };
 
