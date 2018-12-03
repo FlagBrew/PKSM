@@ -33,12 +33,12 @@
 BagScreen::BagScreen() : limits(TitleLoader::save->pouches()), allowedItems(TitleLoader::save->validItems())
 {
     currentPouch = limits[0].first;
-    for (int i = 0; i < limits.size(); i++)
+    for (size_t i = 0; i < limits.size(); i++)
     {
         buttons.push_back(new Button(3, i * 30, 108, 30, [this, i](){ return switchPouch(i); }, ui_sheet_button_editor_idx, TitleLoader::save->pouchName(limits[i].first), FONT_SIZE_12, COLOR_BLACK));
     }
     buttons.push_back(new AccelButton(147, -15, 152, 30, [this](){ return clickIndex(-1); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 10));
-    for (int i = 0; i < std::min(allowedItems[limits[0].first].size(), (size_t)7); i++)
+    for (size_t i = 0; i < std::min(allowedItems[limits[0].first].size(), (size_t)7); i++)
     {
         buttons.push_back(new ClickButton(147, 15 + i * 30, 152, 30, [this, i](){ return clickIndex(i); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK));
     }
@@ -93,6 +93,10 @@ static int bobPointer()
 
 void BagScreen::draw() const
 {
+    C2D_SceneBegin(g_renderTargetTop);
+    Gui::backgroundTop(false);
+    Gui::backgroundAnimatedTop();
+
     C2D_SceneBegin(g_renderTargetBottom);
     C2D_DrawRectSolid(0, 0, 0.5f, 120, 240, COLOR_DARKBLUE);
     C2D_DrawRectSolid(121, 0, 0.5f, 200, 240, COLOR_BLUE);
@@ -383,7 +387,7 @@ bool BagScreen::clickIndex(int i)
     }
     else
     {
-        if (i < firstEmpty - firstItem)
+        if (i <= firstEmpty - firstItem)
         {
             selectedItem = i;
         }
