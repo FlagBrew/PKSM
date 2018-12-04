@@ -33,6 +33,8 @@ struct LibraryFunction UnixFunctions[] =
     { gui_menu20x2,     "int gui_menu20x2(char* question, int options, char** labels);" },
     { sav_sbo,          "int sav_sbo();" },
     { sav_gbo,          "int sav_gbo();" },
+    { sav_boxDecrypt,   "void sav_boxDecrypt();" },
+    { sav_boxEncrypt,   "void sav_boxEncrypt();" },
     { NULL,             NULL }
 };
 

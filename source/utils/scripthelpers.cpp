@@ -136,4 +136,14 @@ extern "C" {
                 break;
         }
     }
+
+    void sav_boxDecrypt(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        TitleLoader::save->cryptBoxData(true);
+    }
+
+    void sav_boxEncrypt(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        TitleLoader::save->cryptBoxData(false);
+    }
 }
