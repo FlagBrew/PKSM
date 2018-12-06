@@ -58,6 +58,14 @@ private:
     void editItem();
     std::unique_ptr<ItemEditScreen> select = nullptr;
     void editCount(bool up, int selected);
+    bool canEdit(Pouch pouch, Item& item) const;
+
+    std::array<u16, 35> lgpeKeyItems = {
+        101, 102, 103, 113, 115, 121, 122, 123, 124, 125,
+        126, 127, 128, 442, 632, 651, 872, 873, 874, 875,
+        876, 877, 878, 885, 886, 887, 888, 889, 890, 891,
+        892, 893, 894, 895, 896
+    };
 };
 
 #endif

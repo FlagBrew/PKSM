@@ -122,14 +122,9 @@ void BagScreen::draw() const
         std::string print = i18n::item(Configuration::getInstance().language(), item->id());
         if (item->id() > 0)
         {
-            if (item->count() == 0)
-            {
-                item->count(1);
-                TitleLoader::save->item(*item, limits[currentPouch].first, firstItem + i);
-            }
             print += " x " + std::to_string((int)item->count());
         }
-        Gui::dynamicText(147, 20 + 30 * i, 152, print, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+        Gui::dynamicText(147, 20 + 30 * i, 152, print, FONT_SIZE_12, FONT_SIZE_12, canEdit(limits[currentPouch].first, *item) ? COLOR_BLACK : C2D_Color32(128, 128, 128, 255));
     }
 
     u8 mod = 0;
@@ -139,8 +134,11 @@ void BagScreen::draw() const
     }
     for (int i = 0; i < std::min(std::min(firstEmpty - firstItem + mod, 7), limits[currentPouch].second); i++)
     {
-        amountButtons[i*2]->draw();
-        amountButtons[i*2+1]->draw();
+        if (canEdit(limits[currentPouch].first, *TitleLoader::save->item(limits[currentPouch].first, firstItem + i)))
+        {
+            amountButtons[i*2]->draw();
+            amountButtons[i*2+1]->draw();
+        }
     }
 
     int xMod = bobPointer();
@@ -423,6 +421,11 @@ void BagScreen::editItem()
     auto currentItem = TitleLoader::save->item(limits[currentPouch].first, firstItem + selectedItem);
     std::pair<std::string, int> currentItemPair = std::make_pair(i18n::item(Configuration::getInstance().language(), currentItem->id()), currentItem->id());
 
+    if (!canEdit(limits[currentPouch].first, *currentItem))
+    {
+        return;
+    }
+
     for (int i = 1; i < limit; i++)
     {
         int itemId = allowedItems[limits[currentPouch].first][i - 1];
@@ -476,6 +479,12 @@ void BagScreen::editItem()
 void BagScreen::editCount(bool up, int selected)
 {
     auto item = TitleLoader::save->item(limits[currentPouch].first, firstItem + selected);
+
+    if (!canEdit(limits[currentPouch].first, *item))
+    {
+        return;
+    }
+
     if (item->id() > 0)
     {
         if (up)
@@ -487,5 +496,25 @@ void BagScreen::editCount(bool up, int selected)
             item->count(item->count() - 1);
         }
         TitleLoader::save->item(*item, limits[currentPouch].first, firstItem + selected);
+    }
+}
+
+bool BagScreen::canEdit(Pouch pouch, Item& item) const
+{
+    if (pouch == Pouch::KeyItem)
+    {
+        return false;
+    }
+    if (TitleLoader::save->generation() != Generation::LGPE)
+    {
+        return true;
+    }
+    else
+    {
+        if (std::find(lgpeKeyItems.begin(), lgpeKeyItems.end(), item.id()) != lgpeKeyItems.end())
+        {
+            return false;
+        }
+        return true;
     }
 }
