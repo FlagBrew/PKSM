@@ -31,7 +31,7 @@
 
 static bool wirelessStuff() { return false; }
 
-InjectSelectorScreen::InjectSelectorScreen() : hid(10, 2), dumpHid(40, 8), gifts(TitleLoader::save->currentGifts())
+InjectSelectorScreen::InjectSelectorScreen() : hid(10, 2), dumpHid(40, 8)
 {
     MysteryGift::init(TitleLoader::save->generation());
     wondercards = MysteryGift::wondercards();
@@ -47,6 +47,8 @@ InjectSelectorScreen::InjectSelectorScreen() : hid(10, 2), dumpHid(40, 8), gifts
             ((SavBW*)TitleLoader::save.get())->cryptMysteryGiftData();
         }
     }
+
+    gifts = TitleLoader::save->currentGifts();
 
     buttons.push_back(new Button(160 - 70/2, 207 - 23, 70, 23, [this](){ return this->doQR(); }, ui_sheet_emulated_button_qr_idx, "", FONT_SIZE_14, COLOR_WHITE));
 }
