@@ -26,7 +26,6 @@
 
 #include "MainMenu.hpp"
 #include "gui.hpp"
-#include "CreditsScreen.hpp"
 #include "StorageScreen.hpp"
 #include "ConfigScreen.hpp"
 #include "InjectSelectorScreen.hpp"
