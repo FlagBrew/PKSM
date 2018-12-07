@@ -31,6 +31,8 @@ struct LibraryFunction UnixFunctions[] =
     { gui_warn,         "void gui_warn(char* lineOne, char* lineTwo);"},
     { gui_menu6x5,      "int gui_menu6x5(char* question, int options, char** labels, struct pkx* pokemon, enum Generation generation);" },
     { gui_menu20x2,     "int gui_menu20x2(char* question, int options, char** labels);" },
+    { gui_keyboard,     "void gui_keyboard(char* out, char* hint, int maxChars);" },
+    { gui_numpad,       "void gui_numpad(int* out, int maxDigits);" },
     { sav_sbo,          "int sav_sbo();" },
     { sav_gbo,          "int sav_gbo();" },
     { sav_boxDecrypt,   "void sav_boxDecrypt();" },

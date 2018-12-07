@@ -146,4 +146,37 @@ extern "C" {
     {
         TitleLoader::save->cryptBoxData(false);
     }
+
+    void gui_keyboard(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        char* out = (char*) Param[0]->Val->Pointer;
+        char* hint = (char*) Param[1]->Val->Pointer;
+        int numChars = Param[2]->Val->Integer;
+
+        C3D_FrameEnd(0);
+        
+        SwkbdState state;
+        swkbdInit(&state, SWKBD_TYPE_NORMAL, 1, numChars);
+        swkbdSetHintText(&state, hint);
+        swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+        swkbdInputText(&state, out, numChars);
+        out[numChars - 1] = '\0';
+    }
+
+    void gui_numpad(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        int* out = (int*) Param[0]->Val->Pointer;
+        int numChars = Param[1]->Val->Integer;
+
+        char number[numChars + 1];
+        number[numChars] = '\0';
+
+        C3D_FrameEnd(0);
+        
+        SwkbdState state;
+        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 1, numChars);
+        swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+        swkbdInputText(&state, number, numChars);
+        *out = std::atoi(number);
+    }
 }
