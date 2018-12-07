@@ -166,7 +166,14 @@ extern "C" {
     void gui_numpad(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
     {
         int* out = (int*) Param[0]->Val->Pointer;
-        int numChars = Param[1]->Val->Integer;
+        std::string hint = (char*) Param[1]->Val->Pointer;
+        std::optional<std::string> hint2 = std::nullopt;
+        if (hint.find('\n') != std::string::npos)
+        {
+            hint2 = hint.substr(hint.find('\n')+1);
+            hint = hint.substr(0, hint.find('\n'));
+        }
+        int numChars = Param[2]->Val->Integer;
 
         char number[numChars + 1];
         number[numChars] = '\0';
@@ -174,9 +181,20 @@ extern "C" {
         C3D_FrameEnd(0);
         
         SwkbdState state;
-        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 1, numChars);
+        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, numChars);
         swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
-        swkbdInputText(&state, number, numChars);
+        swkbdSetButton(&state, SWKBD_BUTTON_LEFT, "What?", true);
+        SwkbdButton button;
+        do
+        {
+            button = swkbdInputText(&state, number, numChars);
+            if (button != SWKBD_BUTTON_CONFIRM)
+            {
+                Gui::warn(hint, hint2);
+                C3D_FrameEnd(0); // Just make sure
+            }
+        }
+        while (button != SWKBD_BUTTON_CONFIRM);
         *out = std::atoi(number);
     }
 }
