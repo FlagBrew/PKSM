@@ -107,6 +107,7 @@ ConfigScreen::ConfigScreen() : oldStorage(Configuration::getInstance().storageSi
     tabButtons[2].push_back(new ClickButton(237, 87, 15, 12, [](){ Configuration::getInstance().fixSectors(!Configuration::getInstance().fixSectors()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
     tabButtons[2].push_back(new ClickButton(237, 111, 15, 12, [](){ Configuration::getInstance().transferEdit(!Configuration::getInstance().transferEdit()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
     tabButtons[2].push_back(new ClickButton(237, 135, 15, 12, [](){ Configuration::getInstance().writeFileSave(!Configuration::getInstance().writeFileSave()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    tabButtons[2].push_back(new ClickButton(237, 159, 15, 12, [](){ Configuration::getInstance().useSaveInfo(!Configuration::getInstance().useSaveInfo()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
 }
 
 void ConfigScreen::draw() const
@@ -240,6 +241,7 @@ void ConfigScreen::draw() const
         Gui::staticText("Fix Bad Sectors on Exit", 19, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
         Gui::staticText("Edit During Transfer", 19, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
         Gui::staticText("Enable Backup Injection", 19, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+        Gui::staticText("Use Save Info", 19, 156, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
 
         for (Button* button : tabButtons[currentTab])
         {
@@ -251,6 +253,7 @@ void ConfigScreen::draw() const
         Gui::staticText(Configuration::getInstance().fixSectors() ? "Yes" : "No", 260, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
         Gui::staticText(Configuration::getInstance().transferEdit() ? "Yes" : "No", 260, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
         Gui::staticText(Configuration::getInstance().writeFileSave() ? "Yes" : "No", 260, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+        Gui::staticText(Configuration::getInstance().useSaveInfo() ? "Yes" : "No", 260, 156, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
     }
 }
 

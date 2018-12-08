@@ -56,9 +56,18 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
     if (!pkm || pkm->species() == 0)
     {
         pkm = TitleLoader::save->emptyPkm()->clone();
-        pkm->TID(Configuration::getInstance().defaultTID());
-        pkm->SID(Configuration::getInstance().defaultSID());
-        pkm->otName(Configuration::getInstance().defaultOT().c_str());
+        if (Configuration::getInstance().useSaveInfo())
+        {
+            pkm->TID(TitleLoader::save->TID());
+            pkm->SID(TitleLoader::save->SID());
+            pkm->otName(TitleLoader::save->otName().c_str());
+        }
+        else
+        {
+            pkm->TID(Configuration::getInstance().defaultTID());
+            pkm->SID(Configuration::getInstance().defaultSID());
+            pkm->otName(Configuration::getInstance().defaultOT().c_str());
+        }
         pkm->ball(4);
         pkm->encryptionConstant((u32)rand());
         pkm->version(TitleLoader::save->version());

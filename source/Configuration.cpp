@@ -35,10 +35,7 @@ Configuration::Configuration()
     
     if (R_FAILED(stream.result()))
     {
-        std::ifstream istream("romfs:/config.json");
-        istream >> mJson;
-        istream.close();
-        save();
+        loadFromRomfs();
     }
     else
     {
@@ -49,6 +46,21 @@ Configuration::Configuration()
         stream.close();
         mJson = nlohmann::json::parse(jsonData);
         delete[] jsonData;
+
+        if (mJson.find("version") == mJson.end())
+        {
+            loadFromRomfs();
+        }
+        else if (mJson["version"].get<int>() != CURRENT_VERSION)
+        {
+            if (mJson["version"].get<int>() < 2)
+            {
+                mJson["useSaveInfo"] = false;
+            }
+
+            mJson["version"] = CURRENT_VERSION;
+            save();
+        }
     }
 }
 
@@ -105,4 +117,12 @@ void Configuration::extraSaves(std::string id, std::pair<std::vector<std::string
     {
         mJson["extraSaves"][id]["files"] = value.second;
     }
+}
+
+void Configuration::loadFromRomfs()
+{
+    std::ifstream istream("romfs:/config.json");
+    istream >> mJson;
+    istream.close();
+    save();
 }

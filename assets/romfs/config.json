@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "language": 2,
   "autoBackup": true,
   "storageSize": 150,
@@ -19,5 +19,6 @@
   },
   "extraSaves": {
   },
-  "writeFileSave": false
+  "writeFileSave": false,
+  "useSaveInfo": false
 }
