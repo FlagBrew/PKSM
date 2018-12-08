@@ -415,12 +415,7 @@ bool EditorScreen::togglePokerus()
 void EditorScreen::setOT()
 {
     SwkbdState state;
-    bool first = true;
-    if (first)
-    {
-        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN ? 12 : (8 - 1));
-        first = false;
-    }
+    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN ? 12 : (8 - 1));
     swkbdSetHintText(&state, "OT Name");
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
     char input[25] = {0};
@@ -435,12 +430,7 @@ void EditorScreen::setOT()
 void EditorScreen::setNick()
 {
     SwkbdState state;
-    bool first = true;
-    if (first)
-    {
-        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN ? 12 : (11 - 1));
-        first = false;
-    }
+    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN ? 12 : (11 - 1));
     swkbdSetHintText(&state, "Nickname");
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
     char input[25] = {0};
