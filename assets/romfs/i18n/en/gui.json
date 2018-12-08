@@ -343,5 +343,16 @@
     "WC_DUMP1": "Press \uE000 to dump Wonder Card",
     "WC_INST1": "Press \uE000 to continue or \uE001 to return.",
     "EVENT_DATABASE": "Event Database",
-    "FAILED_OPEN_DUMP": "Could not open file for dump!"
+    "FAILED_OPEN_DUMP": "Could not open file for dump!",
+    "SPATK.": "Sp. Atk.",
+    "SPDEF.": "Sp. Def.",
+    "NEUTRAL": "Neutral",
+    "STORAGE": "Storage",
+    "EDITOR": "Editor",
+    "EVENTS": "Events",
+    "SCRIPTS": "Scripts",
+    "BAG": "Bag",
+    "SETTINGS": "Settings",
+    "SAVE_CHANGES_1": "Would you like to save",
+    "SAVE_CHANGES_2": "your changes?"    
 }
