@@ -323,5 +323,21 @@
     "TOXIC": "Toxic",
     "HIDDEN_ABILITY?": "Hidden Ability?",
     "NS_POKEMON?": "N's Pokemon?",
-    "HEX_SELECTED_BYTE": "Selected Byte:"
+    "HEX_SELECTED_BYTE": "Selected Byte:",
+    "WC_LGPE": "LGPE saves do not store Wonder Cards",
+    "NOT_A_BUG": "This is not a bug",
+    "WC_SWITCH": "\uE004 / \uE005 to switch multiple WC.",
+    "LANGUAGES": "Languages",
+    "OVERWRITE_WC": "Overwrite Wondercard",
+    "ADAPT_LANGUAGE": "Adapt language to WC",
+    "INJECT_TO_SLOT": "Inject to slot",
+    "START_TO_INJECT": "Press START to inject",
+    "HELD_ITEM": "Held Item",
+    "GAME": "Game",
+    "DATE": "Date",
+    "YOUR_OT_NAME": "Your OT Name",
+    "NA": "N/A",
+    "BP": "BP",
+    "WC_CHANGE_SLOT": "Press \uE000 to change slot",
+    "WC_DUMP": "Press \uE002 to dump Wonder Card"
 }
