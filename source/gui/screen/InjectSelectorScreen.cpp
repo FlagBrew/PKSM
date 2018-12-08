@@ -105,7 +105,7 @@ void InjectSelectorScreen::update(touchPosition* touch)
         {
             if (TitleLoader::save->generation() == Generation::LGPE)
             {
-                Gui::warn("LGPE saves do not store Wonder Cards!", "(This is not a bug, don't report it)");
+                Gui::warn(i18n::localize("WC_LGPE"), i18n::localize("NOT_A_BUG"));
             }
             else
             {
@@ -144,7 +144,7 @@ void InjectSelectorScreen::draw() const
 {
     C2D_SceneBegin(g_renderTargetBottom);
     Gui::backgroundBottom(true);
-    Gui::dynamicText(GFX_BOTTOM, 224, "Press \uE000 to continue or \uE001 to return.", FONT_SIZE_11, FONT_SIZE_11, C2D_Color32(197, 202, 233, 255));
+    Gui::dynamicText(GFX_BOTTOM, 224, i18n::localize("WC_INST1"), FONT_SIZE_11, FONT_SIZE_11, C2D_Color32(197, 202, 233, 255));
 
     Gui::sprite(ui_sheet_eventmenu_page_indicator_idx, 65, 13);
 
@@ -164,7 +164,7 @@ void InjectSelectorScreen::draw() const
         C2D_SceneBegin(g_renderTargetTop);
         Gui::backgroundTop(true);
 
-        Gui::dynamicText(GFX_TOP, 4, "Event Database", FONT_SIZE_14, FONT_SIZE_14, C2D_Color32(140, 158, 255, 255));
+        Gui::dynamicText(GFX_TOP, 4, i18n::localize("EVENT_DATABASE"), FONT_SIZE_14, FONT_SIZE_14, C2D_Color32(140, 158, 255, 255));
 
         for (size_t i = 0; i < 10; i++)
         {
@@ -259,7 +259,7 @@ void InjectSelectorScreen::draw() const
     else
     {
         C2D_DrawRectSolid(0, 0, 0.5, 320, 240, COLOR_MASKBLACK);
-        Gui::dynamicText(GFX_BOTTOM, 107, "Press \uE000 to dump Wonder Card", FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
+        Gui::dynamicText(GFX_BOTTOM, 107, i18n::localize("WC_DUMP1"), FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
 
         C2D_SceneBegin(g_renderTargetTop);
         Gui::sprite(ui_sheet_part_mtx_5x8_idx, 0, 0);
@@ -323,6 +323,8 @@ bool InjectSelectorScreen::doQR()
             case Generation::SEVEN:
                 wcx = std::make_unique<WC7>(data);
                 break;
+            default:
+                break;
         }
 
         if (wcx)
@@ -375,7 +377,7 @@ void InjectSelectorScreen::dumpCard(void) const
     }
     else
     {
-        Gui::warn("Could not open file for dump!");
+        Gui::warn(i18n::localize("FAILED_OPEN_DUMP"));
     }
     out.close();
 }

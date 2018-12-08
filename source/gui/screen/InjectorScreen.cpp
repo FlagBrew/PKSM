@@ -369,7 +369,7 @@ void InjectorScreen::draw() const
     {
         C2D_DrawRectSolid(0, 0, 0.5, 320, 240, COLOR_MASKBLACK);
         Gui::dynamicText(GFX_BOTTOM, 107, i18n::localize("WC_CHANGE_SLOT"), FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
-        Gui::dynamicText(GFX_BOTTOM, 124, i18n::localize("WC_DUMP"), FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
+        Gui::dynamicText(GFX_BOTTOM, 124, i18n::localize("WC_DUMP2"), FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
 
         C2D_SceneBegin(g_renderTargetTop);
         Gui::sprite(ui_sheet_part_mtx_5x8_idx, 0, 0);

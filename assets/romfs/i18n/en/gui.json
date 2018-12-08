@@ -324,8 +324,8 @@
     "HIDDEN_ABILITY?": "Hidden Ability?",
     "NS_POKEMON?": "N's Pokemon?",
     "HEX_SELECTED_BYTE": "Selected Byte:",
-    "WC_LGPE": "LGPE saves do not store Wonder Cards",
-    "NOT_A_BUG": "This is not a bug",
+    "WC_LGPE": "LGPE saves do not store Wonder Cards!",
+    "NOT_A_BUG": "This is not a bug.",
     "WC_SWITCH": "\uE004 / \uE005 to switch multiple WC.",
     "LANGUAGES": "Languages",
     "OVERWRITE_WC": "Overwrite Wondercard",
@@ -339,5 +339,9 @@
     "NA": "N/A",
     "BP": "BP",
     "WC_CHANGE_SLOT": "Press \uE000 to change slot",
-    "WC_DUMP": "Press \uE002 to dump Wonder Card"
+    "WC_DUMP2": "Press \uE002 to dump Wonder Card",
+    "WC_DUMP1": "Press \uE000 to dump Wonder Card",
+    "WC_INST1": "Press \uE000 to continue or \uE001 to return.",
+    "EVENT_DATABASE": "Event Database",
+    "FAILED_OPEN_DUMP": "Could not open file for dump!"
 }
