@@ -361,5 +361,18 @@
     "SCRIPTS_NOT_FOUND": "not found!",
     "FOLDER_DOESNT_EXIST": "Folder does not exist",
     "SCRIPTS_FAILED_OPEN": "Could not open script file!",
-    "SCRIPTS_INVALID": "Not a valid script!"
+    "SCRIPTS_INVALID": "Not a valid script!",
+    "SELECT_SPECIES": "Please select a species",
+    "BANK_BOX_NAME": "Bank Box Name",
+    "VIEW": "View",
+    "CLEAR": "Clear",
+    "RELEASE": "Release",
+    "DUMP": "Dump",
+    "CLONE": "Clone",
+    "PRESS_TO_CLONE": "Press \uE002 to clone",
+    "BANK_FAILED_EXIT": "Exiting is not allowed when a Pok\u00E9mon is held!",
+    "BANK_CONFIRM_CLEAR": "Erase the selected box?",
+    "BANK_CONFIRM_RELEASE": "Release the selected Pok\u00E9mon?",
+    "BANK_CONFIRM_DUMP": "Dump selected Pok\u00E9mon?",
+    "BANK_OPEN_FAILED": "Could not open file for dump!"
 }

@@ -111,7 +111,7 @@ void StorageScreen::setBoxName(bool storage)
             swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 20);
             first = false;
         }
-        swkbdSetHintText(&state, "Bank Box Name");
+        swkbdSetHintText(&state, i18n::localize("BANK_BOX_NAME").c_str());
         swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
         char input[41] = {0};
         SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
@@ -135,7 +135,7 @@ void StorageScreen::setBoxName(bool storage)
                     swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 8);
                     first = false;
                 }
-                swkbdSetHintText(&state, "Box Name");
+                swkbdSetHintText(&state, i18n::localize("BOX_NAME").c_str());
                 swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
                 char input[18] = {0};
                 SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
@@ -157,7 +157,7 @@ void StorageScreen::setBoxName(bool storage)
                     swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 16);
                     first = false;
                 }
-                swkbdSetHintText(&state, "Box Name");
+                swkbdSetHintText(&state, i18n::localize("BOX_NAME").c_str());
                 swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
                 char input[34] = {0};
                 SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
@@ -182,15 +182,15 @@ StorageScreen::StorageScreen()
 {
     mainButtons[0] = new ClickButton(242, 9, 47, 22, [this](){ return this->swapBoxWithStorage(); }, ui_sheet_button_swap_boxes_idx, "", 0.0f, 0);
     mainButtons[1] = new Button(212, 40, 108, 28, [this](){ return this->showViewer(); }, ui_sheet_button_editor_idx,
-                                    "StorageButtonView", FONT_SIZE_12, COLOR_BLACK);
+                                    i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
     mainButtons[2] = new Button(212, 71, 108, 28, [this](){ return this->clearBox(); }, ui_sheet_button_editor_idx,
-                                    "StorageButtonClear", FONT_SIZE_12, COLOR_BLACK);
+                                    i18n::localize("CLEAR"), FONT_SIZE_12, COLOR_BLACK);
     mainButtons[3] = new Button(212, 102, 108, 28, [this](){ return this->releasePkm(); }, ui_sheet_button_editor_idx,
-                                    "StorageButtonRelease", FONT_SIZE_12, COLOR_BLACK);
+                                    i18n::localize("RELEASE"), FONT_SIZE_12, COLOR_BLACK);
     mainButtons[4] = new Button(212, 133, 108, 28, [this](){ return this->dumpPkm(); }, ui_sheet_button_editor_idx,
-                                    "StorageButtonDump", FONT_SIZE_12, COLOR_BLACK);
+                                    i18n::localize("DUMP"), FONT_SIZE_12, COLOR_BLACK);
     mainButtons[5] = new Button(212, 164, 108, 28, [this](){ return this->duplicate(); }, ui_sheet_button_editor_idx,
-                                    "StorageButtonDup", FONT_SIZE_12, COLOR_BLACK);
+                                    i18n::localize("CLONE"), FONT_SIZE_12, COLOR_BLACK);
 
     mainButtons[6] = new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0);
     mainButtons[7] = new Button(283, 211, 34, 28, [this](){ return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
@@ -317,7 +317,7 @@ void StorageScreen::draw() const
         C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, C2D_Color32(0, 0, 0, 120));
         if (!moveMon)
         {
-            Gui::staticText(GFX_BOTTOM, 110, "Press \uE002 to clone", FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+            Gui::staticText(GFX_BOTTOM, 110, i18n::localize("PRESS_TO_CLONE"), FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
         }
         mainButtons[6]->draw();
         viewer->draw();
@@ -336,7 +336,7 @@ void StorageScreen::draw() const
         Gui::sprite(ui_sheet_bar_boxname_empty_idx, 44, 21);
         Gui::staticText(45, 24, 24, "\uE004", FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
         Gui::staticText(225, 24, 24, "\uE005", FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
-        Gui::dynamicText(69, 24, 156, StringUtils::format("Bank %i", storageBox + 1), FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
+        Gui::dynamicText(69, 24, 156, StringUtils::format("%s %i", i18n::localize("STORAGE").c_str(), storageBox + 1), FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
 
         Gui::sprite(ui_sheet_storagemenu_cross_idx, 36, 50);
         Gui::sprite(ui_sheet_storagemenu_cross_idx, 246, 50);
@@ -676,7 +676,7 @@ bool StorageScreen::backButton()
         }
         else if (moveMon)
         {
-            Gui::warn("Exiting is not allowed when a Pok\u00E9mon is held!");
+            Gui::warn(i18n::localize("BANK_FAILED_EXIT"));
         }
         else
         {
@@ -703,7 +703,7 @@ bool StorageScreen::showViewer()
 bool StorageScreen::clearBox()
 {
     backHeld = true;
-    if (Gui::showChoiceMessage("Erase the selected box?"))
+    if (Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_CLEAR")))
     {
         for (int i = 0; i < 30; i++)
         {
@@ -719,7 +719,7 @@ bool StorageScreen::clearBox()
 bool StorageScreen::releasePkm()
 {
     backHeld = true;
-    if (Gui::showChoiceMessage("Release the selected Pok\u00E9mon?"))
+    if (Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_RELEASE")))
     {
         if (storageChosen) { // Storage set all slots in box to PK7()s (or however it happens)
         }
@@ -936,7 +936,7 @@ void StorageScreen::pickup()
 
 bool StorageScreen::dumpPkm()
 {
-    if (Gui::showChoiceMessage("Dump selected Pok\u00E9mon?"))
+    if (Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_DUMP")))
     {
         char stringDate[11] = {0};
         char stringTime[10] = {0};
@@ -957,7 +957,7 @@ bool StorageScreen::dumpPkm()
             }
             else
             {
-                Gui::warn("Could not open file for dump!");
+                Gui::warn(i18n::localize("BANK_OPEN_FAILED"));
             }
             out.close();
         }
@@ -985,7 +985,7 @@ bool StorageScreen::dumpPkm()
                     }
                     else
                     {
-                        Gui::warn("Could not open file for dump!");
+                        Gui::warn(i18n::localize("BANK_OPEN_FAILED"));
                     }
                     out.close();
                 }
@@ -1007,7 +1007,7 @@ bool StorageScreen::dumpPkm()
                     }
                     else
                     {
-                        Gui::warn("Could not open file for dump!");
+                        Gui::warn(i18n::localize("BANK_OPEN_FAILED"));
                     }
                     out.close();
                 }
