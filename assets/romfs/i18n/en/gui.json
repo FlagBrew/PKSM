@@ -354,5 +354,12 @@
     "BAG": "Bag",
     "SETTINGS": "Settings",
     "SAVE_CHANGES_1": "Would you like to save",
-    "SAVE_CHANGES_2": "your changes?"    
+    "SAVE_CHANGES_2": "your changes?",
+    "SCRIPTS_INST1": "Press \uE000 to execute script or enter folder. Press \uE003 for universal scripts",
+    "SCRIPTS_INST2": "Press \uE002 to switch between built-in scripts and ones on the SD card",
+    "SCRIPTS_CONFIRM_USE": "Do you want to use the following script?",
+    "SCRIPTS_NOT_FOUND": "not found!",
+    "FOLDER_DOESNT_EXIST": "Folder does not exist",
+    "SCRIPTS_FAILED_OPEN": "Could not open script file!",
+    "SCRIPTS_INVALID": "Not a valid script!"
 }
