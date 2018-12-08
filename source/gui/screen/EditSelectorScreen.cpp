@@ -50,7 +50,7 @@ void EditSelectorScreen::changeBoxName()
                 swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 8);
                 first = false;
             }
-            swkbdSetHintText(&state, "Box Name");
+            swkbdSetHintText(&state, i18n::localize("BOX_NAME").c_str());
             swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
             char input[18] = {0};
             SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
@@ -72,7 +72,7 @@ void EditSelectorScreen::changeBoxName()
                 swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 16);
                 first = false;
             }
-            swkbdSetHintText(&state, "Box Name");
+            swkbdSetHintText(&state, i18n::localize("BOX_NAME").c_str());
             swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
             char input[34] = {0};
             SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
@@ -132,6 +132,8 @@ bool EditSelectorScreen::doQR()
                 break;
             case Generation::SEVEN:
                 pkm = std::make_shared<PK7>(data, true);
+                break;
+            default:
                 break;
         }
 
@@ -307,7 +309,7 @@ void EditSelectorScreen::draw() const
 
     if (infoMon)
     {
-        Gui::dynamicText(GFX_BOTTOM, 224, StringUtils::format("TID: %i / SID: %i / TSV: %i", infoMon->TID(), infoMon->SID(), infoMon->TSV()),
+        Gui::dynamicText(GFX_BOTTOM, 224, StringUtils::format(i18n::localize("EDITOR_IDS"), infoMon->TID(), infoMon->SID(), infoMon->TSV()),
                         FONT_SIZE_9, FONT_SIZE_9, COLOR_BLACK);
     }
 

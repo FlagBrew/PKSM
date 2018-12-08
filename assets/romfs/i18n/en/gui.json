@@ -56,5 +56,7 @@
     "MOVES": "Moves",
     "RELEARN_MOVES": "Relearn moves",
     "EDITOR_NOT_APPLICABLE_GEN": "Not applicable for this generation",
-    "EDITOR_INST": "Press \uE000 to select, \uE001 to go back"
+    "EDITOR_INST": "Press \uE000 to select, \uE001 to go back",
+    "BOX_NAME": "Box name",
+    "EDITOR_IDS": "TID: %i / SID: %i / TSV: %i"
 }
