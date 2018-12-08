@@ -89,6 +89,7 @@ private:
     int origPartyLevel;
     int origPartyCurrHP;
     int origPartyCP;
+    bool justSwitched = true;
 };
 
 #endif

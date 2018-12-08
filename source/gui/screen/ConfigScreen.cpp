@@ -256,6 +256,17 @@ void ConfigScreen::draw() const
 
 void ConfigScreen::update(touchPosition* touch)
 {
+    if (justSwitched)
+    {
+        if (keysHeld() & KEY_TOUCH)
+        {
+            return;
+        }
+        else
+        {
+            justSwitched = false;
+        }
+    }
     Screen::update();
     if (hidKeysDown() & KEY_B)
     {

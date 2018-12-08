@@ -55,6 +55,7 @@ private:
     std::shared_ptr<PKX> moveMon = nullptr;
     int cursorPos = 0;
     int box = 0;
+    bool justSwitched = true;
 };
 
 #endif

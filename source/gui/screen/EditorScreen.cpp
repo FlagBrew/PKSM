@@ -287,6 +287,17 @@ void EditorScreen::draw() const
 
 void EditorScreen::update(touchPosition* touch)
 {
+    if (justSwitched)
+    {
+        if (keysHeld() & KEY_TOUCH)
+        {
+            return;
+        }
+        else
+        {
+            justSwitched = false;
+        }
+    }
     if (!selector)
     {
         u32 downKeys = keysDown();

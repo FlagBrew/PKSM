@@ -68,6 +68,7 @@ private:
     std::unique_ptr<ViewerScreen> viewer;
     std::shared_ptr<PKX> moveMon = nullptr;
     int partyNum = -1;
+    bool justSwitched = true;
     // Storage implementation
 };
 
