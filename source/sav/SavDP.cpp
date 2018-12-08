@@ -627,21 +627,21 @@ std::string SavDP::pouchName(Pouch pouch) const
     switch (pouch)
     {
         case NormalItem:
-            return "Items";
+            return i18n::localize("ITEMS");
         case KeyItem:
-            return "Key Items";
+            return i18n::localize("KEY_ITEMS");
         case TM:
-            return "TMs/HMs";
+            return i18n::localize("TMHM");
         case Mail:
-            return "Mail";
+            return i18n::localize("MAIL");
         case Medicine:
-            return "Medicine";
+            return i18n::localize("MEDICINE");
         case Berry:
-            return "Berries";
+            return i18n::localize("BERRIES");
         case Ball:
-            return "Balls";
+            return i18n::localize("BALLS");
         case Battle:
-            return "Battle Items";
+            return i18n::localize("BATTLE_ITEMS");
         default:
             return "";
     }

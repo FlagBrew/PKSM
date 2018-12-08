@@ -30,22 +30,22 @@
 #include "PB7.hpp"
 
 static constexpr std::string_view displayKeys[] = {
-    "Nickname",
+    "NICKNAME",
     "OT",
-    "Pok\u00E9rus",
-    "Nature",
-    "Ability",
-    "Item",
-    "ESV/TSV",
-    "TID/SID",
-    "CT/OT F.ship",
-    "Hidden Power",
+    "POKERUS",
+    "NATURE",
+    "ABILITY",
+    "ITEM",
+    "ESV_TSV",
+    "TID_SID",
+    "CTOT_FSHIP",
+    "HIDDEN_POWER",
     "HP",
-    "Attack",
-    "Defense",
-    "Sp. Atk",
-    "Sp. Def",
-    "Speed"
+    "ATTACK",
+    "DEFENSE",
+    "SPATK.",
+    "SPDEF.",
+    "SPEED"
 };
 
 void ViewerScreen::draw() const
@@ -94,13 +94,13 @@ void ViewerScreen::draw() const
 
     for (int i = 0; i < 10; i++)
     {
-        Gui::dynamicText(std::string(displayKeys[i]), 10, 36 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+        Gui::dynamicText(i18n::localize(std::string(displayKeys[i])), 10, 36 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
     }
     for (int i = 0; i < 6; i++)
     {
-        Gui::dynamicText(std::string(displayKeys[i + 10]), 238, 16 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+        Gui::dynamicText(i18n::localize(std::string(displayKeys[i + 10])), 238, 16 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
     }
-    Gui::staticText("Moves", 252, 136, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+    Gui::staticText(i18n::localize("MOVES"), 252, 136, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
 
     if (pkm)
     {
@@ -115,7 +115,7 @@ void ViewerScreen::draw() const
         {
             Gui::sprite(ui_sheet_icon_female_idx, 129, 10);
         }
-        Gui::dynamicText(StringUtils::format("Lvl. %i", pkm->level()), 143, 10, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, false);
+        Gui::dynamicText(StringUtils::format(i18n::localize("LVL"), pkm->level()), 143, 10, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, false);
         if (pkm->shiny())
         {
             Gui::sprite(ui_sheet_icon_shiny_idx, 191, 8);
@@ -123,7 +123,7 @@ void ViewerScreen::draw() const
 
         Gui::dynamicText(pkm->nickname(), 87, 36, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
         Gui::dynamicText(pkm->otName(), 87, 56, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-        Gui::dynamicText(pkm->pkrsDays() > 0 ? "Yes" : "No", 87, 76, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+        Gui::dynamicText(pkm->pkrsDays() > 0 ? i18n::localize("YES") : i18n::localize("NO"), 87, 76, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
         Gui::dynamicText(i18n::nature(Configuration::getInstance().language(), pkm->nature()), 87, 96, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
         Gui::dynamicText(i18n::ability(Configuration::getInstance().language(), pkm->ability()), 87, 116, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
         Gui::dynamicText(i18n::item(Configuration::getInstance().language(), pkm->heldItem()), 87, 136, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);

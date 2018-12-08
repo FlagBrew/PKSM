@@ -293,7 +293,7 @@ void InjectorScreen::draw() const
         Gui::staticText(i18n::localize("LEVEL"), 9, 55, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
         Gui::staticText(i18n::localize("HELD_ITEM"), 9, 75, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
         Gui::staticText(i18n::localize("OT"), 9, 95, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-        Gui::staticText(i18n::localize("TID") + "/" + i18n::localize("SID"), 9, 115, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+        Gui::staticText(i18n::localize("TID_SID"), 9, 115, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
         Gui::staticText(i18n::localize("GAME"), 9, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
         Gui::staticText(i18n::localize("DATE"), 9, 155, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
         if (wondercard->pokemon())

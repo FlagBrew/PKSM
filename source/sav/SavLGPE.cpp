@@ -1072,19 +1072,19 @@ std::string SavLGPE::pouchName(Pouch pouch) const
     switch (pouch)
     {
         case Medicine:
-            return "Medicine";
+            return i18n::localize("MEDICINE");
         case TM:
-            return "TMs";
+            return i18n::localize("TMS");
         case Candy:
-            return "Candies";
+            return i18n::localize("CANDIES");
         case ZCrystals:
-            return "Z-Crystals";
+            return i18n::localize("ZCRYSTALS");
         case Ball:
-            return "Catching Items";
+            return i18n::localize("CATCHING_ITEMS");
         case Battle:
-            return "Battle Items";
+            return i18n::localize("BATTLE_ITEMS");
         case NormalItem:
-            return "Items";
+            return i18n::localize("ITEMS");
         default:
             return "";
     }
