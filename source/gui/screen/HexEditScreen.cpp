@@ -435,45 +435,29 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
     {
         switch (i)
         {
-            case 0x00:
-            case 0x01:
-            case 0x02:
-            case 0x03:
+            case 0x00 ... 0x03:
                 return std::make_pair("Encryption Key", UNRESTRICTED);
-            case 0x04:
-            case 0x05:
+            case 0x04 ... 0x05:
                 return std::make_pair("Sanity Placeholder", UNRESTRICTED);
-            case 0x06:
-            case 0x07:
+            case 0x06 ... 0x07:
                 return std::make_pair("Checksum", UNRESTRICTED);
-            case 0x08:
-            case 0x09:
+            case 0x08 ... 0x09:
                 return std::make_pair("Species", NORMAL);
-            case 0x0A:
-            case 0x0B:
+            case 0x0A ... 0x0B:
                 return std::make_pair("Item", NORMAL);
-            case 0x0C:
-            case 0x0D:
+            case 0x0C ... 0x0D:
                 return std::make_pair("OT ID", NORMAL);
-            case 0x0E:
-            case 0x0F:
+            case 0x0E ... 0x0F:
                 return std::make_pair("OT SID", NORMAL);
-            case 0x10:
-            case 0x11:
-            case 0x12:
-            case 0x13:
+            case 0x10 ... 0x13:
                 return std::make_pair("Experience", OPEN);
             case 0x14:
                 return std::make_pair("Ability", NORMAL);
             case 0x15:
                 return std::make_pair("Ability Number", OPEN);
-            case 0x16:
-            case 0x17:
+            case 0x16 ... 0x17:
                 return std::make_pair("Training bag hits left", NORMAL);
-            case 0x18:
-            case 0x19:
-            case 0x1A:
-            case 0x1B:
+            case 0x18 ... 0x1B:
                 return std::make_pair("PID", NORMAL);
             case 0x1C:
                 return std::make_pair("Nature", OPEN);
@@ -508,20 +492,11 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 return std::make_pair("Markings", NORMAL);
             case 0x2B:
                 return std::make_pair("Pok\u00E9rus", NORMAL);
-            case 0x2C:
-            case 0x2D:
-            case 0x2E:
-            case 0x2F:
+            case 0x2C ... 0x2F:
                 return std::make_pair("Super Training Flags", NORMAL);
-            case 0x30:
-            case 0x31:
-            case 0x32:
-            case 0x33:
-            case 0x34:
-            case 0x35:
+            case 0x30 ... 0x35:
                 return std::make_pair("Ribbons", NORMAL);
-            case 0x36:
-            case 0x37:
+            case 0x36 ... 0x37:
                 return UNUSED;
             case 0x38:
                 return std::make_pair("Contest Memory Ribbon Count", NORMAL);
@@ -529,51 +504,19 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 return std::make_pair("Battle Memory Ribbon Count", NORMAL);
             case 0x3A:
                 return std::make_pair("Distribution Super Training Flags", NORMAL);
-            case 0x3B:
-            case 0x3C:
-            case 0x3D:
-            case 0x3E:
-            case 0x3F:
+            case 0x3B ... 0x3F:
                 return UNUSED;
-            case 0x40:
-            case 0x41:
-            case 0x42:
-            case 0x43:
-            case 0x44:
-            case 0x45:
-            case 0x46:
-            case 0x47:
-            case 0x48:
-            case 0x49:
-            case 0x4A:
-            case 0x4B:
-            case 0x4C:
-            case 0x4D:
-            case 0x4E:
-            case 0x4F:
-            case 0x50:
-            case 0x51:
-            case 0x52:
-            case 0x53:
-            case 0x54:
-            case 0x55:
-            case 0x56:
-            case 0x57:
+            case 0x40 ... 0x57:
                 return std::make_pair("Nickname", NORMAL);
-            case 0x58:
-            case 0x59:
+            case 0x58 ... 0x59:
                 return std::make_pair("Null Terminator", UNRESTRICTED);
-            case 0x5A:
-            case 0x5B:
+            case 0x5A ... 0x5B:
                 return std::make_pair("Move 1 ID", NORMAL);
-            case 0x5C:
-            case 0x5D:
+            case 0x5C ... 0x5D:
                 return std::make_pair("Move 2 ID", NORMAL);
-            case 0x5E:
-            case 0x5F:
+            case 0x5E ... 0x5F:
                 return std::make_pair("Move 3 ID", NORMAL);
-            case 0x60:
-            case 0x61:
+            case 0x60 ... 0x61:
                 return std::make_pair("Move 4 ID", NORMAL);
             case 0x62:
                 return std::make_pair("Move 1 Current PP", OPEN);
@@ -591,79 +534,41 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 return std::make_pair("Move 3 PP Ups", NORMAL);
             case 0x69:
                 return std::make_pair("Move 5 PP Ups", NORMAL);
-            case 0x6A:
-            case 0x6B:
+            case 0x6A ... 0x6B:
                 return std::make_pair("Relearn Move 1 ID", NORMAL);
-            case 0x6C:
-            case 0x6D:
+            case 0x6C ... 0x6D:
                 return std::make_pair("Relearn Move 2 ID", NORMAL);
-            case 0x6E:
-            case 0x6F:
+            case 0x6E ... 0x6F:
                 return std::make_pair("Relearn Move 3 ID", NORMAL);
-            case 0x70:
-            case 0x71:
+            case 0x70 ... 0x71:
                 return std::make_pair("Relearn Move 4 ID", NORMAL);
             case 0x72:
                 return std::make_pair("Secret Super Training Flag", NORMAL);
             case 0x73:
                 return UNUSED;
-            case 0x74:
-            case 0x75:
-            case 0x76:
+            case 0x74 ... 0x76:
                 return std::make_pair("IVs", NORMAL);
             case 0x77:
                 return std::make_pair("IVs; Egg and Nicknamed Flag", NORMAL);
-            case 0x78:
-            case 0x79:
-            case 0x7A:
-            case 0x7B:
-            case 0x7C:
-            case 0x7D:
-            case 0x7E:
-            case 0x7F:
-            case 0x80:
-            case 0x81:
-            case 0x82:
-            case 0x83:
-            case 0x84:
-            case 0x85:
-            case 0x86:
-            case 0x87:
-            case 0x88:
-            case 0x89:
-            case 0x8A:
-            case 0x8B:
-            case 0x8C:
-            case 0x8D:
-            case 0x8E:
-            case 0x8F:
+            case 0x78 ... 0x8F:
                 return std::make_pair("Current Trainer Name", NORMAL);
-            case 0x90:
-            case 0x91:
+            case 0x90 ... 0x91:
                 return std::make_pair("Null Terminator", UNRESTRICTED);
             case 0x92:
                 return std::make_pair("Current Trainer Gender", NORMAL);
             case 0x93:
                 return std::make_pair("Current Handler", NORMAL);
-            case 0x94:
-            case 0x95:
+            case 0x94 ... 0x95:
                 return std::make_pair("Geolocation 1", NORMAL);
-            case 0x96:
-            case 0x97:
+            case 0x96 ... 0x97:
                 return std::make_pair("Geolocation 2", NORMAL);
-            case 0x98:
-            case 0x99:
+            case 0x98 ... 0x99:
                 return std::make_pair("Geolocation 3", NORMAL);
-            case 0x9A:
-            case 0x9B:
+            case 0x9A ... 0x9B:
                 return std::make_pair("Geolocation 4", NORMAL);
-            case 0x9C:
-            case 0x9D:
+            case 0x9C ... 0x9D:
                 return std::make_pair("Geolocation 5", NORMAL);
-            case 0x9E:
-            case 0x9F:
-            case 0xA0:
-            case 0xA1:
+            case 0x9E ... 0xA1:
                 return UNUSED;
             case 0xA2:
                 return std::make_pair("Current Trainer Friendship", NORMAL);
@@ -677,45 +582,17 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 return std::make_pair("Current Trainer Memory Feeling", OPEN);
             case 0xA7:
                 return UNUSED;
-            case 0xA8:
-            case 0xA9:
+            case 0xA8 ... 0xA9:
                 return std::make_pair("Current Trainer Memory TextVar", OPEN);
-            case 0xAA:
-            case 0xAB:
-            case 0xAC:
-            case 0xAD:
+            case 0xAA ... 0xAD:
                 return UNUSED;
             case 0xAE:
                 return std::make_pair("Fullness", NORMAL);
             case 0xAF:
                 return std::make_pair("Enjoyment", NORMAL);
-            case 0xB0:
-            case 0xB1:
-            case 0xB2:
-            case 0xB3:
-            case 0xB4:
-            case 0xB5:
-            case 0xB6:
-            case 0xB7:
-            case 0xB8:
-            case 0xB9:
-            case 0xBA:
-            case 0xBB:
-            case 0xBC:
-            case 0xBD:
-            case 0xBE:
-            case 0xBF:
-            case 0xC0:
-            case 0xC1:
-            case 0xC2:
-            case 0xC3:
-            case 0xC4:
-            case 0xC5:
-            case 0xC6:
-            case 0xC7:
+            case 0xB0 ... 0xC7:
                 return std::make_pair("Original Trainer Name", NORMAL);
-            case 0xC8:
-            case 0xC9:
+            case 0xC8 ... 0xC9:
                 return std::make_pair("Null Terminator", UNRESTRICTED);
             case 0xCA:
                 return std::make_pair("Original Trainer Friendship", NORMAL);
@@ -730,21 +607,15 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 return std::make_pair("Original Trainer Memory TextVar", OPEN);
             case 0xD0:
                 return std::make_pair("Original Trainer Memory Feeling", OPEN);
-            case 0xD1:
-            case 0xD2:
-            case 0xD3:
+            case 0xD1 ... 0xD3:
                 return std::make_pair("Egg Received Date", NORMAL);
-            case 0xD4:
-            case 0xD5:
-            case 0xD6:
+            case 0xD4 ... 0xD6:
                 return std::make_pair("Met Date", NORMAL);
             case 0xD7:
                 return UNKNOWN;
-            case 0xD8:
-            case 0xD9:
+            case 0xD8 ... 0xD9:
                 return std::make_pair("Egg Location", NORMAL);
-            case 0xDA:
-            case 0xDB:
+            case 0xDA ... 0xDB:
                 return std::make_pair("Met Location", NORMAL);
             case 0xDC:
                 return std::make_pair("Pok\u00E9 Ball", NORMAL);
@@ -762,17 +633,13 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 return std::make_pair("3DS Region ID", OPEN);
             case 0xE3:
                 return std::make_pair("Original Trainer Language ID", NORMAL);
-            case 0xE4:
-            case 0xE5:
-            case 0xE6:
-            case 0xE7:
+            case 0xE4 ... 0xE7:
                 return UNUSED;
             case 0xE8:
                 return std::make_pair("Status Conditions", NORMAL);
             case 0xE9:
                 return std::make_pair("Unknown Flags", UNRESTRICTED);
-            case 0xEA:
-            case 0xEB:
+            case 0xEA ... 0xEB:
                 return UNKNOWN;
             case 0xEC:
                 return std::make_pair("Level", NORMAL);
@@ -789,33 +656,21 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 }
             case 0xEF:
                 return UNKNOWN;
-            case 0xF0:
-            case 0xF1:
+            case 0xF0 ... 0xF1:
                 return std::make_pair("Current HP", OPEN);
-            case 0xF2:
-            case 0xF3:
+            case 0xF2 ...  0xF3:
                 return std::make_pair("Max HP", OPEN);
-            case 0xF4:
-            case 0xF5:
+            case 0xF4 ... 0xF5:
                 return std::make_pair("Attack", OPEN);
-            case 0xF6:
-            case 0xF7:
+            case 0xF6 ... 0xF7:
                 return std::make_pair("Defense", OPEN);
-            case 0xF8:
-            case 0xF9:
+            case 0xF8 ... 0xF9:
                 return std::make_pair("Speed", OPEN);
-            case 0xFA:
-            case 0xFB:
+            case 0xFA ... 0xFB:
                 return std::make_pair("Sp. Attack", OPEN);
-            case 0xFC:
-            case 0xFD:
+            case 0xFC ... 0xFD:
                 return std::make_pair("Sp. Defense", OPEN);
-            case 0xFE:
-            case 0xFF:
-            case 0x100:
-            case 0x101:
-            case 0x102:
-            case 0x103:
+            case 0xFE ... 0x103:
                 return UNKNOWN;
         }
     }
@@ -823,33 +678,21 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
     {
         switch(i)
         {
-            case 0x00:
-            case 0x01:
-            case 0x02:
-            case 0x03:
+            case 0x00 ... 0x03:
                 return std::make_pair("PID", NORMAL);
-            case 0x04:
-            case 0x05:
+            case 0x04 ... 0x05:
                 return UNUSED;
-            case 0x06:
-            case 0x07:
+            case 0x06 ... 0x07:
                 return std::make_pair("Checksum", UNRESTRICTED);
-            case 0x08:
-            case 0x09:
+            case 0x08 ... 0x09:
                 return std::make_pair("Species", NORMAL);
-            case 0x0A:
-            case 0x0B:
+            case 0x0A ... 0x0B:
                 return std::make_pair("Item", NORMAL);
-            case 0x0C:
-            case 0x0D:
+            case 0x0C ... 0x0D:
                 return std::make_pair("Original Trainer ID", NORMAL);
-            case 0x0E:
-            case 0x0F:
+            case 0x0E ... 0x0F:
                 return std::make_pair("Original Trainer SID", NORMAL);
-            case 0x10:
-            case 0x11:
-            case 0x12:
-            case 0x13:
+            case 0x10 ... 0x13:
                 return std::make_pair("Experience", NORMAL);
             case 0x14:
                 return std::make_pair("Friendship", NORMAL);
@@ -883,22 +726,15 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 return std::make_pair("Tough Contest Value", NORMAL);
             case 0x23:
                 return std::make_pair("Sheen Contest Value", NORMAL);
-            case 0x24:
-            case 0x25:
-            case 0x26:
-            case 0x27:
+            case 0x24 ... 0x27:
                 return std::make_pair("Ribbons", NORMAL);
-            case 0x28:
-            case 0x29:
+            case 0x28 ... 0x29:
                 return std::make_pair("Move 1", NORMAL);
-            case 0x2A:
-            case 0x2B:
+            case 0x2A ... 0x2B:
                 return std::make_pair("Move 2", NORMAL);
-            case 0x2C:
-            case 0x2D:
+            case 0x2C ... 0x2D:
                 return std::make_pair("Move 3", NORMAL);
-            case 0x2E:
-            case 0x2F:
+            case 0x2E ... 0x2F:
                 return std::make_pair("Move 4", NORMAL);
             case 0x30:
                 return std::make_pair("Move 1 PP", NORMAL);
@@ -916,15 +752,9 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 return std::make_pair("Move 3 PP Ups", NORMAL);
             case 0x37:
                 return std::make_pair("Move 4 PP Ups", NORMAL);
-            case 0x38:
-            case 0x39:
-            case 0x3A:
-            case 0x3B:
+            case 0x38 ... 0x3B:
                 return std::make_pair("IVs, Egg, and Nicknamed Flags", NORMAL);
-            case 0x3C:
-            case 0x3D:
-            case 0x3E:
-            case 0x3F:
+            case 0x3C ... 0x3F:
                 return std::make_pair("Hoenn Ribbons", NORMAL);
             case 0x40:
                 return std::make_pair("Gender & Forms", NORMAL);
@@ -932,79 +762,27 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 return std::make_pair("Nature", NORMAL);
             case 0x42:
                 return std::make_pair("Misc. Flags", NORMAL);
-            case 0x43:
-            case 0x44:
-            case 0x45:
-            case 0x46:
-            case 0x47:
+            case 0x43 ... 0x47:
                 return UNUSED;
-            case 0x48:
-            case 0x49:
-            case 0x4A:
-            case 0x4B:
-            case 0x4C:
-            case 0x4D:
-            case 0x4E:
-            case 0x4F:
-            case 0x50:
-            case 0x51:
-            case 0x52:
-            case 0x53:
-            case 0x54:
-            case 0x55:
-            case 0x56:
-            case 0x57:
-            case 0x58:
-            case 0x59:
-            case 0x5A:
-            case 0x5B:
-            case 0x5C:
-            case 0x5D:
+            case 0x48 ... 0x5D:
                 return std::make_pair("Nickname", NORMAL);
             case 0x5E:
                 return UNKNOWN;
             case 0x5F:
                 return std::make_pair("Origin Game", NORMAL);
-            case 0x60:
-            case 0x61:
-            case 0x62:
-            case 0x63:
+            case 0x60 ... 0x63:
                 return std::make_pair("Ribbons", NORMAL);
-            case 0x64:
-            case 0x65:
-            case 0x66:
-            case 0x67:
+            case 0x64 ... 0x67:
                 return UNUSED;
-            case 0x68:
-            case 0x69:
-            case 0x6A:
-            case 0x6B:
-            case 0x6C:
-            case 0x6D:
-            case 0x6E:
-            case 0x6F:
-            case 0x70:
-            case 0x71:
-            case 0x72:
-            case 0x73:
-            case 0x74:
-            case 0x75:
-            case 0x76:
-            case 0x77:
+            case 0x68 ... 0x77:
                 return std::make_pair("Original Trainer Name", NORMAL);
-            case 0x78:
-            case 0x79:
-            case 0x7A:
+            case 0x78 ... 0x7A:
                 return std::make_pair("Egg Date", NORMAL);
-            case 0x7B:
-            case 0x7C:
-            case 0x7D:
+            case 0x7B ... 0x7D:
                 return std::make_pair("Met Date", NORMAL);
-            case 0x7E:
-            case 0x7F:
+            case 0x7E ... 0x7F:
                 return std::make_pair("Egg Location", OPEN);
-            case 0x80:
-            case 0x81:
+            case 0x80 ... 0x81:
                 return std::make_pair("Met Location", OPEN);
             case 0x82:
                 return std::make_pair("Pok\u00E9rus", NORMAL);
@@ -1014,106 +792,35 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 return std::make_pair("Met Level & Original Trainer Gender", NORMAL);
             case 0x85:
                 return std::make_pair("Encounter Type", NORMAL);
-            case 0x86:
-            case 0x87:
+            case 0x86 ... 0x87:
                 return UNUSED;
             case 0x88:
                 return std::make_pair("Status Conditions", NORMAL);
             case 0x89:
                 return std::make_pair("Unknown Flags", UNRESTRICTED);
-            case 0x8A:
-            case 0x8B:
+            case 0x8A ... 0x8B:
                 return UNKNOWN;
             case 0x8C:
                 return std::make_pair("Level", NORMAL);
             case 0x8D:
                 return std::make_pair("Capsule Index (seals)", OPEN);
-            case 0x8E:
-            case 0x8F:
+            case 0x8E ... 0x8F:
                 return std::make_pair("Current HP", OPEN);
-            case 0x90:
-            case 0x91:
+            case 0x90 ... 0x91:
                 return std::make_pair("Max HP", OPEN);
-            case 0x92:
-            case 0x93:
+            case 0x92 ... 0x93:
                 return std::make_pair("Attack", OPEN);
-            case 0x94:
-            case 0x95:
+            case 0x94 ... 0x95:
                 return std::make_pair("Defense", OPEN);
-            case 0x96:
-            case 0x97:
+            case 0x96 ... 0x97:
                 return std::make_pair("Speed", OPEN);
-            case 0x98:
-            case 0x99:
+            case 0x98 ... 0x99:
                 return std::make_pair("Sp. Attack", OPEN);
-            case 0x9A:
-            case 0x9B:
+            case 0x9A ... 0x9B:
                 return std::make_pair("Sp. Defense", OPEN);
-            case 0x9C:
-            case 0x9D:
-            case 0x9E:
-            case 0x9F:
-            case 0xA0:
-            case 0xA1:
-            case 0xA2:
-            case 0xA3:
-            case 0xA4:
-            case 0xA5:
-            case 0xA6:
-            case 0xA7:
-            case 0xA8:
-            case 0xA9:
-            case 0xAA:
-            case 0xAB:
-            case 0xAC:
-            case 0xAD:
-            case 0xAE:
-            case 0xAF:
-            case 0xB0:
-            case 0xB1:
-            case 0xB2:
-            case 0xB3:
-            case 0xB4:
-            case 0xB5:
-            case 0xB6:
-            case 0xB7:
-            case 0xB8:
-            case 0xB9:
-            case 0xBA:
-            case 0xBB:
-            case 0xBC:
-            case 0xBD:
-            case 0xBE:
-            case 0xBF:
-            case 0xC0:
-            case 0xC1:
-            case 0xC2:
-            case 0xC3:
-            case 0xC4:
-            case 0xC5:
-            case 0xC6:
-            case 0xC7:
-            case 0xC8:
-            case 0xC9:
-            case 0xCA:
-            case 0xCB:
-            case 0xCC:
-            case 0xCD:
-            case 0xCE:
-            case 0xCF:
-            case 0xD0:
-            case 0xD1:
-            case 0xD2:
-            case 0xD3:
+            case 0x9C ... 0xD3:
                 return std::make_pair("Mail message + OT Name", OPEN);
-            case 0xD4:
-            case 0xD5:
-            case 0xD6:
-            case 0xD7:
-            case 0xD8:
-            case 0xD9:
-            case 0xDA:
-            case 0xDB:
+            case 0xD4 ... 0xDB:
                 return UNKNOWN;
         }
     }
@@ -1121,33 +828,21 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
     {
         switch(i)
         {
-            case 0x00:
-            case 0x01:
-            case 0x02:
-            case 0x03:
+            case 0x00 ... 0x03:
                 return std::make_pair("PID", NORMAL);
-            case 0x04:
-            case 0x05:
+            case 0x04 ... 0x05:
                 return UNUSED;
-            case 0x06:
-            case 0x07:
+            case 0x06 ... 0x07:
                 return std::make_pair("Checksum", UNRESTRICTED);
-            case 0x08:
-            case 0x09:
+            case 0x08 ... 0x09:
                 return std::make_pair("Species", NORMAL);
-            case 0x0A:
-            case 0x0B:
+            case 0x0A ... 0x0B:
                 return std::make_pair("Item", NORMAL);
-            case 0x0C:
-            case 0x0D:
+            case 0x0C ... 0x0D:
                 return std::make_pair("Original Trainer ID", NORMAL);
-            case 0x0E:
-            case 0x0F:
+            case 0x0E ... 0x0F:
                 return std::make_pair("Original Trainer SID", NORMAL);
-            case 0x10:
-            case 0x11:
-            case 0x12:
-            case 0x13:
+            case 0x10 ... 0x13:
                 return std::make_pair("Experience", NORMAL);
             case 0x14:
                 return std::make_pair("Friendship", NORMAL);
@@ -1181,22 +876,15 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 return std::make_pair("Tough Contest Value", NORMAL);
             case 0x23:
                 return std::make_pair("Sheen Contest Value", NORMAL);
-            case 0x24:
-            case 0x25:
-            case 0x26:
-            case 0x27:
+            case 0x24 ... 0x27:
                 return std::make_pair("Ribbons", NORMAL);
-            case 0x28:
-            case 0x29:
+            case 0x28 ... 0x29:
                 return std::make_pair("Move 1", NORMAL);
-            case 0x2A:
-            case 0x2B:
+            case 0x2A ... 0x2B:
                 return std::make_pair("Move 2", NORMAL);
-            case 0x2C:
-            case 0x2D:
+            case 0x2C ... 0x2D:
                 return std::make_pair("Move 3", NORMAL);
-            case 0x2E:
-            case 0x2F:
+            case 0x2E ... 0x2F:
                 return std::make_pair("Move 4", NORMAL);
             case 0x30:
                 return std::make_pair("Move 1 PP", NORMAL);
@@ -1214,96 +902,39 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 return std::make_pair("Move 3 PP Ups", NORMAL);
             case 0x37:
                 return std::make_pair("Move 4 PP Ups", NORMAL);
-            case 0x38:
-            case 0x39:
-            case 0x3A:
-            case 0x3B:
+            case 0x38 ... 0x3B:
                 return std::make_pair("IVs, Egg, and Nicknamed Flags", NORMAL);
-            case 0x3C:
-            case 0x3D:
-            case 0x3E:
-            case 0x3F:
+            case 0x3C ... 0x3F:
                 return std::make_pair("Hoenn Ribbons", NORMAL);
             case 0x40:
                 return std::make_pair("Gender & Forms", NORMAL);
             case 0x41:
                 return std::make_pair("Shiny Leaves (HGSS)", NORMAL);
-            case 0x42:
-            case 0x43:
+            case 0x42 ... 0x43:
                 return UNUSED;
-            case 0x44:
-            case 0x45:
+            case 0x44 ... 0x45:
                 return std::make_pair("Egg Location (Platinum)", NORMAL);
-            case 0x46:
-            case 0x47:
+            case 0x46 ... 0x47:
                 return std::make_pair("Met Location (Platinum)", NORMAL);
-            case 0x48:
-            case 0x49:
-            case 0x4A:
-            case 0x4B:
-            case 0x4C:
-            case 0x4D:
-            case 0x4E:
-            case 0x4F:
-            case 0x50:
-            case 0x51:
-            case 0x52:
-            case 0x53:
-            case 0x54:
-            case 0x55:
-            case 0x56:
-            case 0x57:
-            case 0x58:
-            case 0x59:
-            case 0x5A:
-            case 0x5B:
-            case 0x5C:
-            case 0x5D:
+            case 0x48 ... 0x5D:
                 return std::make_pair("Nickname", NORMAL);
             case 0x5E:
                 return UNUSED;
             case 0x5F:
                 return std::make_pair("Origin Game", NORMAL);
-            case 0x60:
-            case 0x61:
-            case 0x62:
-            case 0x63:
+            case 0x60 ... 0x63:
                 return std::make_pair("Ribbons", NORMAL);
-            case 0x64:
-            case 0x65:
-            case 0x66:
-            case 0x67:
+            case 0x64 ... 0x67:
                 return UNUSED;
-            case 0x68:
-            case 0x69:
-            case 0x6A:
-            case 0x6B:
-            case 0x6C:
-            case 0x6D:
-            case 0x6E:
-            case 0x6F:
-            case 0x70:
-            case 0x71:
-            case 0x72:
-            case 0x73:
-            case 0x74:
-            case 0x75:
-            case 0x76:
-            case 0x77:
+            case 0x68 ... 0x77:
                 return std::make_pair("Original Trainer Name", NORMAL);
-            case 0x78:
-            case 0x79:
-            case 0x7A:
+            case 0x78 ... 0x7A:
                 return std::make_pair("Egg Date", NORMAL);
-            case 0x7B:
-            case 0x7C:
-            case 0x7D:
+            case 0x7B ... 0x7D:
                 return std::make_pair("Met Date", NORMAL);
-            case 0x7E:
-            case 0x7F:
+            case 0x7E ... 0x7F:
                 return std::make_pair("Egg Location (Diamond & Pearl)", OPEN);
-            case 0x80:
-            case 0x81:
+            case 0x80 ... 0x81:
                 return std::make_pair("Met Location (Diamond & Pearl", OPEN);
             case 0x82:
                 return std::make_pair("Pok\u00E9rus", NORMAL);
@@ -1321,115 +952,29 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 return std::make_pair("Status Conditions", NORMAL);
             case 0x89:
                 return std::make_pair("Unknown Flags", UNRESTRICTED);
-            case 0x8A:
-            case 0x8B:
+            case 0x8A ... 0x8B:
                 return UNKNOWN;
             case 0x8C:
                 return std::make_pair("Level", NORMAL);
             case 0x8D:
                 return std::make_pair("Capsule Index (seals)", OPEN);
-            case 0x8E:
-            case 0x8F:
+            case 0x8E ... 0x8F:
                 return std::make_pair("Current HP", OPEN);
-            case 0x90:
-            case 0x91:
+            case 0x90 ... 0x91:
                 return std::make_pair("Max HP", OPEN);
-            case 0x92:
-            case 0x93:
+            case 0x92 ... 0x93:
                 return std::make_pair("Attack", OPEN);
-            case 0x94:
-            case 0x95:
+            case 0x94 ... 0x95:
                 return std::make_pair("Defense", OPEN);
-            case 0x96:
-            case 0x97:
+            case 0x96 ... 0x97:
                 return std::make_pair("Speed", OPEN);
-            case 0x98:
-            case 0x99:
+            case 0x98 ... 0x99:
                 return std::make_pair("Sp. Attack", OPEN);
-            case 0x9A:
-            case 0x9B:
+            case 0x9A ... 0x9B:
                 return std::make_pair("Sp. Defense", OPEN);
-            case 0x9C:
-            case 0x9D:
-            case 0x9E:
-            case 0x9F:
-            case 0xA0:
-            case 0xA1:
-            case 0xA2:
-            case 0xA3:
-            case 0xA4:
-            case 0xA5:
-            case 0xA6:
-            case 0xA7:
-            case 0xA8:
-            case 0xA9:
-            case 0xAA:
-            case 0xAB:
-            case 0xAC:
-            case 0xAD:
-            case 0xAE:
-            case 0xAF:
-            case 0xB0:
-            case 0xB1:
-            case 0xB2:
-            case 0xB3:
-            case 0xB4:
-            case 0xB5:
-            case 0xB6:
-            case 0xB7:
-            case 0xB8:
-            case 0xB9:
-            case 0xBA:
-            case 0xBB:
-            case 0xBC:
-            case 0xBD:
-            case 0xBE:
-            case 0xBF:
-            case 0xC0:
-            case 0xC1:
-            case 0xC2:
-            case 0xC3:
-            case 0xC4:
-            case 0xC5:
-            case 0xC6:
-            case 0xC7:
-            case 0xC8:
-            case 0xC9:
-            case 0xCA:
-            case 0xCB:
-            case 0xCC:
-            case 0xCD:
-            case 0xCE:
-            case 0xCF:
-            case 0xD0:
-            case 0xD1:
-            case 0xD2:
-            case 0xD3:
+            case 0x9C ... 0xD3:
                 return std::make_pair("Mail message + OT Name", OPEN);
-            case 0xD4:
-            case 0xD5:
-            case 0xD6:
-            case 0xD7:
-            case 0xD8:
-            case 0xD9:
-            case 0xDA:
-            case 0xDB:
-            case 0xDC:
-            case 0xDD:
-            case 0xDE:
-            case 0xDF:
-            case 0xE0:
-            case 0xE1:
-            case 0xE2:
-            case 0xE3:
-            case 0xE4:
-            case 0xE5:
-            case 0xE6:
-            case 0xE7:
-            case 0xE8:
-            case 0xE9:
-            case 0xEA:
-            case 0xEB:
+            case 0xD4 ... 0xEB:
                 return std::make_pair("Seal Coordinates", OPEN);
         }
     }
@@ -1478,17 +1023,9 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     }
                     break;
                 // Super Training Flags
-                case 0x2C:
-                case 0x2D:
-                case 0x2E:
-                case 0x2F:
+                case 0x2C ... 0x2F:
                 // Ribbons
-                case 0x30:
-                case 0x31:
-                case 0x32:
-                case 0x33:
-                case 0x34:
-                case 0x35:
+                case 0x30 ... 0x35:
                 // Distribution Super Training (???)
                 case 0x3A:
                     for (int j = 0; j < 4; j++)
@@ -1558,18 +1095,9 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     }
                     break;
                 // Ribbons
-                case 0x24:
-                case 0x25:
-                case 0x26:
-                case 0x27:
-                case 0x3C:
-                case 0x3D:
-                case 0x3E:
-                case 0x3F:
-                case 0x60:
-                case 0x61:
-                case 0x62:
-                case 0x63:
+                case 0x24 ... 0x27:
+                case 0x3C ... 0x3F:
+                case 0x60 ... 0x63:
                     for (int j = 0; j < 4; j++)
                     {
                         delete buttons[i].back();
@@ -1639,18 +1167,9 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     }
                     break;
                 // Ribbons
-                case 0x24:
-                case 0x25:
-                case 0x26:
-                case 0x27:
-                case 0x3C:
-                case 0x3D:
-                case 0x3E:
-                case 0x3F:
-                case 0x60:
-                case 0x61:
-                case 0x62:
-                case 0x63:
+                case 0x24 ... 0x27:
+                case 0x3C ... 0x3F:
+                case 0x60 ... 0x63:
                     for (int j = 0; j < 4; j++)
                     {
                         delete buttons[i].back();
