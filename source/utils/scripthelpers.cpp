@@ -32,21 +32,6 @@
 extern "C" {
 #include "scripthelpers.h"
 
-    void gui_fpsCheck(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
-    {
-        int i = 0;
-        while (aptMainLoop() && !(hidKeysDown() & KEY_B))
-        {
-            hidScanInput();
-            C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-            C2D_TargetClear(g_renderTargetTop, C2D_Color32(0,0,0,255));
-            C2D_SceneBegin(g_renderTargetTop);
-            Gui::dynamicText(std::to_string(i++ % 300), 38, 47, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
-            C3D_FrameEnd(0);
-            Gui::clearTextBufs();
-        }
-    }
-
     void gui_warn(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
     {
         char* lineOne = (char*) Param[0]->Val->Pointer;
