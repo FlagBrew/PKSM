@@ -1,7 +1,7 @@
 {
     "LOADER_INSTRUCTIONS_TOP_PRESENT": "Choisir une sauvegarde à ouvrir. Presser Y pour les jeux présents.",
     "LOADER_INSTRUCTIONS_TOP_ABSENT": "Choisir une sauvegarde à ouvrir. Presser Y pour les jeux absents.",
-    "LOADER_INSTRUCTIONS_BOTTOM":"Déplacez-vous avec le DPAD. A pour valider, START pour quitter", 
+    "LOADER_INSTRUCTIONS_BOTTOM": "Déplacez-vous avec le DPAD. A pour valider, START pour quitter", 
     "LOADER_GAME_CARD": "Carte de Jeu",
     "LOADER_INSTALLED_GAMES": "Jeux Installés",
     "LOADER_ID": "ID: ",
