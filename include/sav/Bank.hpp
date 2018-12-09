@@ -24,47 +24,40 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef LOADER_HPP
-#define LOADER_HPP
-
-#include <3ds.h>
-#include <vector>
-#include <memory>
-#include "Hid.hpp"
-#include "gui.hpp"
-#include "thread.hpp"
-#include "Title.hpp"
-#include "Bank.hpp"
+#ifndef BANK_HPP
+#define BANK_HPP
 
 #include "Sav.hpp"
-#include "SavB2W2.hpp"
-#include "SavBW.hpp"
-#include "SavDP.hpp"
-#include "SavHGSS.hpp"
-#include "SavORAS.hpp"
-#include "SavPT.hpp"
-#include "SavSUMO.hpp"
-#include "SavUSUM.hpp"
-#include "SavXY.hpp"
 
-namespace TitleLoader
+class Bank
 {
-    void scanTitles(void);
-    void scanCard(void);
-    bool cardUpdate(void);
-    void scanSaves(void);
-    bool load(std::shared_ptr<Title> title);
-    bool load(std::shared_ptr<Title> title, std::string path);
-    void backupSave(void);
-    void saveChanges(void);
-    void saveToTitle(bool ask);
-    void exit(void);
-    
-    extern std::vector<std::shared_ptr<Title>> nandTitles;
-    extern std::shared_ptr<Title> cardTitle;
-    extern std::unordered_map<std::string, std::vector<std::string>> sdSaves;
-    extern std::shared_ptr<Sav> save;
-    extern std::unique_ptr<Bank> bank;
-}
+public:
+    Bank();
+    ~Bank()
+    {
+        delete[] data;
+    }
+    std::unique_ptr<PKX> pkm(int box, int slot) const;
+    void pkm(PKX& pkm, int box, int slot);
+    void resize();
+    void save() const;
+    void backup() const;
+    std::string boxName(int box) const;
+    void boxName(std::string name, int box);
+private:
+    static constexpr int BANK_VERSION = 1;
+    static constexpr std::string_view BANK_MAGIC = "PKSMBANK";
+    struct BankHeader {
+        const char MAGIC[8];
+        int version;
+    };
+    struct BankEntry {
+        Generation gen;
+        u8 data[260];
+    };
+    u8* data = nullptr;
+    nlohmann::json boxNames;
+    size_t size;
+};
 
 #endif

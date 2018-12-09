@@ -70,6 +70,7 @@ std::vector<std::shared_ptr<Title>> TitleLoader::nandTitles;
 std::shared_ptr<Title> TitleLoader::cardTitle = nullptr;
 std::unordered_map<std::string, std::vector<std::string>> TitleLoader::sdSaves;
 std::shared_ptr<Sav> TitleLoader::save;
+std::unique_ptr<Bank> TitleLoader::bank;
 
 static bool saveIsFile;
 static std::string saveFileName;
