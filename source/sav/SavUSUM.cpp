@@ -607,19 +607,19 @@ std::string SavUSUM::pouchName(Pouch pouch) const
     switch (pouch)
     {
         case NormalItem:
-            return "Items";
+            return i18n::localize("ITEMS");
         case KeyItem:
-            return "Key Items";
+            return i18n::localize("KEY_ITEMS");
         case TM:
-            return "TMs";
+            return i18n::localize("TMS");
         case Medicine:
-            return "Medicine";
+            return i18n::localize("MEDICINE");
         case Berry:
-            return "Berries";
+            return i18n::localize("BERRIES");
         case ZCrystals:
-            return "Z-Crystals";
+            return i18n::localize("ZCRYSTALS");
         case Battle:
-            return "Rotom Powers";
+            return i18n::localize("ROTOM_POWERS");
         default:
             return "";
     }

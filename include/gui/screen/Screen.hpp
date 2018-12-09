@@ -47,7 +47,6 @@ enum ScreenType
     SCRIPTSELECT,
     SELECTOR,
     SETTINGS,
-    CREDITS,
     VIEWER,
     BAG,
     ITEMEDIT

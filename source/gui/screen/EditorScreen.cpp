@@ -109,9 +109,9 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
     buttons[tab].push_back(NO_TEXT_ACCEL(94, 194, 13, 13, [this](){ return this->changeFriendship(false); }, ui_sheet_button_minus_small_idx));
     buttons[tab].push_back(NO_TEXT_BUTTON(109, 194, 31, 13, [this](){ Gui::setNextKeyboardFunc([this](){ return this->setFriendship(); }); return false; }, ui_sheet_res_null_idx));
     buttons[tab].push_back(NO_TEXT_ACCEL(142, 194, 13, 13, [this](){ return this->changeFriendship(true); }, ui_sheet_button_plus_small_idx));
-    buttons[tab].push_back(new Button(204, 109, 108, 30, [this](){ currentTab = 1; return true; }, ui_sheet_button_editor_idx, "STATS", FONT_SIZE_12, COLOR_BLACK));
-    buttons[tab].push_back(new Button(204, 140, 108, 30, [this](){ currentTab = 2; return true; }, ui_sheet_button_editor_idx, "MOVES", FONT_SIZE_12, COLOR_BLACK));
-    buttons[tab].push_back(new ClickButton(204, 171, 108, 30, [this](){ return this->save(); }, ui_sheet_button_editor_idx, "SAVE", FONT_SIZE_12, COLOR_BLACK));
+    buttons[tab].push_back(new Button(204, 109, 108, 30, [this](){ currentTab = 1; return true; }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_STATS"), FONT_SIZE_12, COLOR_BLACK));
+    buttons[tab].push_back(new Button(204, 140, 108, 30, [this](){ currentTab = 2; return true; }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_MOVES"), FONT_SIZE_12, COLOR_BLACK));
+    buttons[tab].push_back(new ClickButton(204, 171, 108, 30, [this](){ return this->save(); }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_SAVE"), FONT_SIZE_12, COLOR_BLACK));
     buttons[tab].push_back(NO_TEXT_BUTTON(25, 5, 120, 13, [this](){ return this->selectSpecies(); }, ui_sheet_res_null_idx));
 
     tab = 1;
@@ -158,15 +158,15 @@ void EditorScreen::draw() const
                 button->draw();
             }
 
-            Gui::staticText("Level", 5, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText("Nature", 5, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText("Ability", 5, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText("Item", 5, 92, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText("Shiny", 5, 112, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText("Pok\u00E9rus", 5, 132, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText("OT", 5, 152, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText("Nickname", 5, 172, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText("Friendship", 5, 192, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            Gui::staticText(i18n::localize("LEVEL"), 5, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            Gui::staticText(i18n::localize("NATURE"), 5, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            Gui::staticText(i18n::localize("ABILITY"), 5, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            Gui::staticText(i18n::localize("ITEM"), 5, 92, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            Gui::staticText(i18n::localize("SHINY"), 5, 112, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            Gui::staticText(i18n::localize("POKERUS"), 5, 132, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            Gui::staticText(i18n::localize("OT"), 5, 152, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            Gui::staticText(i18n::localize("NICKNAME"), 5, 172, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            Gui::staticText(i18n::localize("FRIENDSHIP"), 5, 192, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
 
             Gui::ball(pkm->ball(), 4, 3);
             Gui::dynamicText(i18n::species(lang, pkm->species()), 25, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, false);
@@ -174,8 +174,8 @@ void EditorScreen::draw() const
             Gui::dynamicText(i18n::nature(lang, pkm->nature()), 95, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
             Gui::dynamicText(i18n::ability(lang, pkm->ability()), 95, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
             Gui::dynamicText(i18n::item(lang, pkm->heldItem()), 95, 92, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::dynamicText(pkm->shiny() ? "Yes" : "No", 95, 112, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::dynamicText(pkm->pkrsDays() > 0 ? "Yes" : "No", 95, 132, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            Gui::dynamicText(pkm->shiny() ? i18n::localize("YES") : i18n::localize("NO"), 95, 112, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            Gui::dynamicText(pkm->pkrsDays() > 0 ? i18n::localize("YES") : i18n::localize("NO"), 95, 132, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
             Gui::dynamicText(pkm->otName(), 95, 152, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
             Gui::dynamicText(pkm->nickname(), 95, 172, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
             Gui::dynamicText(107, 192, 35, std::to_string((int) pkm->currentFriendship()), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
@@ -203,19 +203,19 @@ void EditorScreen::draw() const
             
             if (pkm->generation() == Generation::LGPE)
             {
-                Gui::dynamicText("CP: " + std::to_string((int)((PB7*)pkm.get())->CP()), 4, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, false);
+                Gui::dynamicText(i18n::localize("EDITOR_CP") + std::to_string((int)((PB7*)pkm.get())->CP()), 4, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, false);
             }
-            Gui::staticText("STATS", 4, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText(119, 32, 27, "IV", FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
-            text = pkm->generation() == Generation::LGPE ? "Awakened" : "EV";
+            Gui::staticText(i18n::localize("STATS"), 4, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            Gui::staticText(119, 32, 27, i18n::localize("IV"), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+            text = pkm->generation() == Generation::LGPE ? i18n::localize("AWAKENED") : i18n::localize("EV");
             Gui::staticText(195, 32, 36, text, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
-            Gui::staticText(249, 32, 51, "TOTAL", FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
-            Gui::staticText("HP", 4, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText("Attack", 4, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText("Defense", 4, 92, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText("Sp. Attack", 4, 112, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText("Sp. Defense", 4, 132, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText("Speed", 4, 152, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            Gui::staticText(249, 32, 51, i18n::localize("TOTAL"), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+            Gui::staticText(i18n::localize("HP"), 4, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            Gui::staticText(i18n::localize("ATTACK"), 4, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            Gui::staticText(i18n::localize("DEFENSE"), 4, 92, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            Gui::staticText(i18n::localize("SPATK"), 4, 112, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            Gui::staticText(i18n::localize("SPDEF"), 4, 132, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            Gui::staticText(i18n::localize("SPEED"), 4, 152, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
 
             for (int i = 0; i < 6; i++)
             {
@@ -230,7 +230,7 @@ void EditorScreen::draw() const
                 }
                 Gui::dynamicText(249, 52 + i * 20, 51, std::to_string((int) pkm->stat(statValues[i])), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
             }
-            Gui::dynamicText("Hidden Power " + i18n::hp(lang, pkm->hpType()), 295, 181, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, true);
+            Gui::dynamicText(i18n::localize("EDITOR_HIDDEN_POWER") + i18n::hp(lang, pkm->hpType()), 295, 181, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, true);
             break;
         // Moves screen
         case 2:
@@ -250,8 +250,8 @@ void EditorScreen::draw() const
                 button->draw();
             }
 
-            Gui::staticText("Moves", 12, 4, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, false);
-            Gui::staticText("Relearn Moves", 12, 112, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, false);
+            Gui::staticText(i18n::localize("MOVES"), 12, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, false);
+            Gui::staticText(i18n::localize("RELEARN_MOVES"), 12, 113, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, false);
 
             for (int i = 0; i < 4; i++)
             {
@@ -266,7 +266,7 @@ void EditorScreen::draw() const
                 }
                 else
                 {
-                    Gui::staticText("Not applicable for this generation", 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+                    Gui::staticText(i18n::localize("EDITOR_NOT_APPLICABLE_GEN"), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
                 }
             }
 
@@ -289,7 +289,7 @@ void EditorScreen::draw() const
     else
     {
         C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, C2D_Color32(0, 0, 0, 120));
-        Gui::staticText(GFX_BOTTOM, 115, "Press \uE000 to select, \uE001 to go back", FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
+        Gui::staticText(GFX_BOTTOM, 115, i18n::localize("EDITOR_INST"), FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
         selector->draw();
     }
 }
@@ -436,7 +436,7 @@ void EditorScreen::setOT()
 {
     SwkbdState state;
     swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN ? 12 : (8 - 1));
-    swkbdSetHintText(&state, "OT Name");
+    swkbdSetHintText(&state, i18n::localize("OT_NAME").c_str());
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
     char input[25] = {0};
     SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
@@ -451,7 +451,7 @@ void EditorScreen::setNick()
 {
     SwkbdState state;
     swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN ? 12 : (11 - 1));
-    swkbdSetHintText(&state, "Nickname");
+    swkbdSetHintText(&state, i18n::localize("NICKNAME").c_str());
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
     char input[25] = {0};
     SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
@@ -541,7 +541,6 @@ bool EditorScreen::save()
         }
         TitleLoader::save->pkm(*pkm, index);
     }
-    Gui::warn("Saved");
     return false;
 }
 

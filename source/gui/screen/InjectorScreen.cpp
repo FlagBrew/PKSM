@@ -136,7 +136,7 @@ InjectorScreen::InjectorScreen(std::unique_ptr<WCX> wcx) : wondercard(std::move(
     buttons.push_back(new Button(255, 168, 38, 23, [this](){
             if (TitleLoader::save->generation() == Generation::LGPE)
             {
-                Gui::warn("LGPE saves do not store Wonder Cards", "This is not a bug");
+                Gui::warn(i18n::localize("WC_LGPE"), i18n::localize("NOT_A_BUG"));
                 return false;
             }
             else
@@ -154,16 +154,16 @@ void InjectorScreen::draw() const
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
     Gui::sprite(ui_sheet_bar_bottom_red_idx, -3, 213);
     Gui::sprite(ui_sheet_stripe_wondercard_info_idx, 0, 14);
-    Gui::dynamicText("\uE004 / \uE005 to switch multiple WC.", 9, 15, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+    Gui::dynamicText(i18n::localize("WC_SWITCH"), 9, 15, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
 
     Gui::sprite(ui_sheet_point_big_idx, 15, 54);
-    Gui::staticText("Languages", 26, 49, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
+    Gui::staticText(i18n::localize("LANGUAGES"), 26, 49, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
     Gui::sprite(ui_sheet_point_big_idx, 15, 110);
-    Gui::staticText("Overwrite Wondercard", 26, 105, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
+    Gui::staticText(i18n::localize("OVERWRITE_WC"), 26, 105, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
     Gui::sprite(ui_sheet_point_big_idx, 15, 143);
-    Gui::staticText("Adapt Language to WC", 26, 138, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
+    Gui::staticText(i18n::localize("ADAPT_LANGUAGE"), 26, 138, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
     Gui::sprite(ui_sheet_point_big_idx, 15, 176);
-    Gui::staticText("Inject Slot", 26, 171, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
+    Gui::staticText(i18n::localize("INJECT_TO_SLOT"), 26, 171, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
 
     int langIndex = 1;
     for (int y = 46; y < 70; y += 23)
@@ -205,7 +205,7 @@ void InjectorScreen::draw() const
         bool first = true;
         for (int x = 235; x < 274; x += 38)
         {
-            std::string word = first ? "Yes" : "No";
+            std::string word = first ? i18n::localize("YES") : i18n::localize("NO");
             if (overwriteCard)
             {
                 Gui::sprite(ui_sheet_button_selected_text_button_idx, x, y);
@@ -222,36 +222,36 @@ void InjectorScreen::draw() const
     if (overwriteCard)
     {
         Gui::sprite(ui_sheet_button_selected_text_button_idx, 235, 103);
-        Gui::dynamicText(235, 106, 38, "Yes", FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+        Gui::dynamicText(235, 106, 38, i18n::localize("YES"), FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
         Gui::sprite(ui_sheet_button_unselected_text_button_idx, 273, 103);
-        Gui::dynamicText(273, 106, 38, "No", FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
+        Gui::dynamicText(273, 106, 38, i18n::localize("NO"), FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
     }
     else
     {
         Gui::sprite(ui_sheet_button_unselected_text_button_idx, 235, 103);
-        Gui::dynamicText(235, 106, 38, "Yes", FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
+        Gui::dynamicText(235, 106, 38, i18n::localize("YES"), FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
         Gui::sprite(ui_sheet_button_selected_text_button_idx, 273, 103);
-        Gui::dynamicText(273, 106, 38, "No", FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+        Gui::dynamicText(273, 106, 38, i18n::localize("NO"), FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
     }
 
     if (adaptLanguage)
     {
         Gui::sprite(ui_sheet_button_selected_text_button_idx, 235, 136);
-        Gui::dynamicText(235, 139, 38, "Yes", FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+        Gui::dynamicText(235, 139, 38, i18n::localize("YES"), FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
         Gui::sprite(ui_sheet_button_unselected_text_button_idx, 273, 136);
-        Gui::dynamicText(273, 139, 38, "No", FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
+        Gui::dynamicText(273, 139, 38, i18n::localize("NO"), FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
     }
     else
     {
         Gui::sprite(ui_sheet_button_unselected_text_button_idx, 235, 136);
-        Gui::dynamicText(235, 139, 38, "Yes", FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
+        Gui::dynamicText(235, 139, 38, i18n::localize("YES"), FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
         Gui::sprite(ui_sheet_button_selected_text_button_idx, 273, 136);
-        Gui::dynamicText(273, 139, 38, "No", FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+        Gui::dynamicText(273, 139, 38, i18n::localize("NO"), FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
     }
 
     Gui::dynamicText(255, 170, 38, std::to_string(slot), FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
 
-    Gui::dynamicText(GFX_BOTTOM, 223, "Press Start to Inject", FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+    Gui::dynamicText(GFX_BOTTOM, 223, i18n::localize("START_TO_INJECT"), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
     
     if (!choosingSlot)
     {
@@ -289,13 +289,13 @@ void InjectorScreen::draw() const
         {
             Gui::sprite(ui_sheet_point_big_idx, 1, 40 + 20 * i);
         }
-        Gui::staticText("Species", 9, 35, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-        Gui::staticText("Level", 9, 55, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-        Gui::staticText("Held Item", 9, 75, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-        Gui::staticText("OT", 9, 95, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-        Gui::staticText("TID/SID", 9, 115, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-        Gui::staticText("Game", 9, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-        Gui::staticText("Date", 9, 155, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+        Gui::staticText(i18n::localize("SPECIES"), 9, 35, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+        Gui::staticText(i18n::localize("LEVEL"), 9, 55, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+        Gui::staticText(i18n::localize("HELD_ITEM"), 9, 75, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+        Gui::staticText(i18n::localize("OT"), 9, 95, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+        Gui::staticText(i18n::localize("TID_SID"), 9, 115, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+        Gui::staticText(i18n::localize("GAME"), 9, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+        Gui::staticText(i18n::localize("DATE"), 9, 155, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
         if (wondercard->pokemon())
         {
             Gui::dynamicText(i18n::species(Configuration::getInstance().language(), wondercard->species()), 87, 35, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
@@ -303,7 +303,7 @@ void InjectorScreen::draw() const
             Gui::dynamicText(i18n::item(Configuration::getInstance().language(), wondercard->heldItem()), 87, 75, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             std::string text = wondercard->otName();
             u16 tid = wondercard->TID(), sid = wondercard->SID();
-            if (text == "Your OT Name" || text == "")
+            if (text == i18n::localize("YOUR_OT_NAME") || text == "")
             {
                 text = TitleLoader::save->otName();
                 tid = TitleLoader::save->TID();
@@ -316,15 +316,15 @@ void InjectorScreen::draw() const
             if (wondercard->generation() == Generation::SEVEN)
             {
                 Gui::sprite(ui_sheet_point_big_idx, 1, 180);
-                Gui::staticText("Item", 9, 175, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+                Gui::staticText(i18n::localize("ITEM"), 9, 175, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
                 u16 additionalItem = ((WC7*)wondercard.get())->additionalItem();
                 Gui::dynamicText(i18n::item(Configuration::getInstance().language(), additionalItem), 87, 175, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             }
         }
         else if (wondercard->item())
         {
-            Gui::staticText("N/A", 87, 35, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            Gui::staticText("N/A", 87, 55, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::staticText(i18n::localize("NA"), 87, 35, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::staticText(i18n::localize("NA"), 87, 55, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             std::string itemString = i18n::item(Configuration::getInstance().language(), wondercard->object());
             if (wondercard->generation() == Generation::SIX)
             {
@@ -336,19 +336,19 @@ void InjectorScreen::draw() const
                 itemString += " x " + std::to_string(((WC7*)wondercard.get())->objectQuantity(item));
             }
             Gui::dynamicText(itemString, 87, 75, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            Gui::staticText("N/A", 87, 95, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            Gui::staticText("N/A", 87, 115, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::staticText(i18n::localize("NA"), 87, 95, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::staticText(i18n::localize("NA"), 87, 115, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             Gui::dynamicText(game, 87, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            Gui::staticText("N/A", 87, 155, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::staticText(i18n::localize("NA"), 87, 155, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
         }
         else if (wondercard->BP())
-        {   Gui::staticText("N/A", 87, 35, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            Gui::staticText("N/A", 87, 55, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            Gui::staticText("BP", 87, 75, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            Gui::staticText("N/A", 87, 95, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            Gui::staticText("N/A", 87, 115, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+        {   Gui::staticText(i18n::localize("NA"), 87, 35, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::staticText(i18n::localize("NA"), 87, 55, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::staticText(i18n::localize("BP"), 87, 75, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::staticText(i18n::localize("NA"), 87, 95, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::staticText(i18n::localize("NA"), 87, 115, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
             Gui::dynamicText(game, 87, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
-            Gui::staticText("N/A", 87, 155, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+            Gui::staticText(i18n::localize("NA"), 87, 155, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
         }
         for (int i = 0; i < 3; i++)
         {
@@ -359,7 +359,7 @@ void InjectorScreen::draw() const
         {
             Gui::sprite(ui_sheet_point_small_idx, 238, 161 + 20 * i);
         }
-        Gui::staticText("Moves", 251, 136, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
+        Gui::staticText(i18n::localize("MOVES"), 251, 136, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
         for (int i = 0; i < 4; i++)
         {
             Gui::dynamicText(i18n::move(Configuration::getInstance().language(), wondercard->move(i)), 251, 156 + 20 * i, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, false);
@@ -368,8 +368,8 @@ void InjectorScreen::draw() const
     else
     {
         C2D_DrawRectSolid(0, 0, 0.5, 320, 240, COLOR_MASKBLACK);
-        Gui::dynamicText(GFX_BOTTOM, 107, "Press \uE000 to change slot", FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
-        Gui::dynamicText(GFX_BOTTOM, 124, "Press \uE002 to dump Wonder Card", FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
+        Gui::dynamicText(GFX_BOTTOM, 107, i18n::localize("WC_CHANGE_SLOT"), FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
+        Gui::dynamicText(GFX_BOTTOM, 124, i18n::localize("WC_DUMP2"), FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
 
         C2D_SceneBegin(g_renderTargetTop);
         Gui::sprite(ui_sheet_part_mtx_5x8_idx, 0, 0);

@@ -122,7 +122,7 @@ void ScriptScreen::draw() const
 
     // Leaving space for the icon
     Gui::dynamicText(currDirString, 15, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_YELLOW, false);
-    Gui::staticText(GFX_TOP, 224, "Press \uE000 to execute script or enter folder. Press \uE003 for universal scripts", FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
+    Gui::staticText(GFX_TOP, 224, i18n::localize("SCRIPTS_INST1"), FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
 
     C2D_DrawRectSolid(0, 20 + hid.index() * 25, 0.5f, 400, 25, C2D_Color32(128, 128, 128, 255));
     C2D_DrawRectSolid(1, 21 + hid.index() * 25, 0.5f, 398, 23, COLOR_MASKBLACK);
@@ -144,7 +144,7 @@ void ScriptScreen::draw() const
     Gui::backgroundBottom(true);
     C2D_DrawRectSolid(20, 40, 0.5f, 280, 60, C2D_Color32(128, 128, 128, 255));
     C2D_DrawRectSolid(21, 41, 0.5f, 278, 58, COLOR_MASKBLACK);
-    Gui::staticText(GFX_BOTTOM, 224, "Press \uE002 to switch between built-in scripts and ones on the SD card", FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
+    Gui::staticText(GFX_BOTTOM, 224, i18n::localize("SCRIPTS_INST2"), FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
 
     Gui::dynamicText(currFiles[hid.fullIndex()].first, 30, 44, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
 }
@@ -177,7 +177,7 @@ void ScriptScreen::update(touchPosition* touch)
         }
         else
         {
-            if (Gui::showChoiceMessage("Do you want to use the following script?", '\'' + currFiles[hid.fullIndex()].first + '\''))
+            if (Gui::showChoiceMessage(i18n::localize("SCRIPTS_CONFIRM_USE"), '\'' + currFiles[hid.fullIndex()].first + '\''))
             {
                 applyScript();
             }
@@ -196,7 +196,7 @@ void ScriptScreen::update(touchPosition* touch)
         }
         else
         {
-            Gui::warn("\"" + dirString + "\"", "not found!");
+            Gui::warn("\"" + dirString + "\"", i18n::localize("SCRIPTS_NOT_FOUND"));
         }
     }
     else if (down & KEY_Y)
@@ -212,7 +212,7 @@ void ScriptScreen::update(touchPosition* touch)
         }
         else
         {
-            Gui::warn("\"" + dirString + "\"", "not found!");
+            Gui::warn("\"" + dirString + "\"", i18n::localize("SCRIPTS_NOT_FOUND"));
         }
     }
 }
@@ -223,7 +223,7 @@ void ScriptScreen::updateEntries()
     currFiles.clear();
     if (!currDir.good())
     {
-        currFiles.push_back({"Folder does not exist", false});
+        currFiles.push_back({i18n::localize("FOLDER_DOESNT_EXIST"), false});
         return;
     }
     for (size_t i = 0; i < currDir.count(); i++)
@@ -266,7 +266,7 @@ static std::pair<u8*, size_t> scriptRead(std::string path)
     }
     else
     {
-        Gui::warn("Could not open script file!");
+        Gui::warn(i18n::localize("SCRIPTS_FAILED_OPEN"));
     }
     in.close();
 
@@ -292,7 +292,7 @@ void ScriptScreen::applyScript()
     {
         if (scriptData.first[i] != MAGIC[i])
         {
-            Gui::warn("Not a valid script!");
+            Gui::warn(i18n::localize("SCRIPTS_INVALID"));
             return;
         }
     }

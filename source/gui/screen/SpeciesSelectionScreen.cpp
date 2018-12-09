@@ -88,7 +88,7 @@ void SpeciesSelectionScreen::update(touchPosition* touch)
         }
         else
         {
-            Gui::warn("Please select a species");
+            Gui::warn(i18n::localize("SELECT_SPECIES"));
         }
         return;
     }

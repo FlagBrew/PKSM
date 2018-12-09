@@ -35,6 +35,7 @@
 #include "mysterygift.hpp"
 #include "generation.hpp"
 #include "Item.hpp"
+#include "i18n.hpp"
 
 namespace TitleLoader {
     void backupSave();

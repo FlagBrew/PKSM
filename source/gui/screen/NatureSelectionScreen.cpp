@@ -29,11 +29,11 @@
 #include "Configuration.hpp"
 
 static constexpr std::string_view stats[] = {
-    "Attack",
-    "Defense",
-    "Speed",
-    "Sp. Atk.",
-    "Sp. Def."
+    "ATTACK",
+    "DEFENSE",
+    "SPEED",
+    "SPATK.",
+    "SPDEF."
 };
 
 void NatureSelectionScreen::draw() const
@@ -41,11 +41,11 @@ void NatureSelectionScreen::draw() const
     C2D_SceneBegin(g_renderTargetTop);
     Gui::sprite(ui_sheet_part_editor_6x6_idx, 0, 0);
 
-    Gui::staticText(0, 12, 65, "Neutral", FONT_SIZE_11, FONT_SIZE_11, COLOR_YELLOW);
+    Gui::staticText(0, 12, 65, i18n::localize("NEUTRAL"), FONT_SIZE_11, FONT_SIZE_11, COLOR_YELLOW);
     for (int i = 0; i < 5; i++)
     {
-        Gui::staticText(i * 67 + 66, 12, 66, std::string("-") + std::string(stats[i]), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
-        Gui::staticText(0, i * 40 + 52, 65, std::string("+") + std::string(stats[i]), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+        Gui::staticText(i * 67 + 66, 12, 66, std::string("-") + i18n::localize(std::string(stats[i])), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+        Gui::staticText(0, i * 40 + 52, 65, std::string("+") + i18n::localize(std::string(stats[i])), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
     }
 
     int x = (hid.index() % 5) * 67 + 66;
