@@ -68,7 +68,15 @@ void HidHorizontal::update(size_t count)
         {
             if (mIndex % mColumns != mColumns - 1)
             {
-                mIndex++;
+                if (mIndex + mPage * mMaxVisibleEntries == count - 1)
+                {
+                    page_forward();
+                    mIndex = (mIndex / mColumns) * mColumns;
+                }
+                else
+                {
+                    mIndex++;
+                }
             }
             else
             {
@@ -122,7 +130,15 @@ void HidHorizontal::update(size_t count)
             }
             if (mIndex % mColumns != mColumns - 1)
             {
-                mIndex++;
+                if (mIndex + mPage * mMaxVisibleEntries == count - 1)
+                {
+                    page_forward();
+                    mIndex = (mIndex / mColumns) * mColumns;
+                }
+                else
+                {
+                    mIndex++;
+                }
             }
             else
             {

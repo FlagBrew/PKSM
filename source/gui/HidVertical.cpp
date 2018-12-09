@@ -87,7 +87,14 @@ void HidVertical::update(size_t count)
         {
             if ((mIndex % rows) < rows - 1)
             {
-                mIndex += 1;
+                if (mIndex + mPage * mMaxVisibleEntries == count - 1)
+                {
+                    mIndex = (mIndex / rows) * rows;
+                }
+                else
+                {
+                    mIndex += 1;
+                }
             }
             else
             {
@@ -153,7 +160,14 @@ void HidVertical::update(size_t count)
             }
             if ((mIndex % rows) < rows - 1)
             {
-                mIndex += 1;
+                if (mIndex + mPage * mMaxVisibleEntries == count - 1)
+                {
+                    mIndex = (mIndex / rows) * rows;
+                }
+                else
+                {
+                    mIndex += 1;
+                }
             }
             else
             {
