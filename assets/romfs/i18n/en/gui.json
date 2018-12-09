@@ -1,119 +1,119 @@
 {
-    "LOADER_INSTRUCTIONS_TOP_PRESENT": "Choose a save to open. Press Y for present games.",
-    "LOADER_INSTRUCTIONS_TOP_ABSENT": "Choose a save to open. Press Y for absent games.",
-    "LOADER_INSTRUCTIONS_BOTTOM": "Move your DPAD. Press A to continue, START to exit.",
-    "LOADER_GAME_CARD": "Game Card",
-    "LOADER_INSTALLED_GAMES": "Installed Games",
-    "LOADER_ID": "ID: ",
-    "LOADER_MEDIA_TYPE": "Media Type: ",
-    "LOADER_CARTRIDGE": "Cartridge",
-    "LOADER_SD": "SD",
-    "LOADER_GAME_SAVE": "Game Save File",
-    "LOADER_LOAD": "Load \ue000",
-    "LOADER_WIRELESS": "Wireless \ue002",
-    "NONE": "None",
+    "LOADER_INSTRUCTIONS_TOP_PRESENT": "Choose a save to open. Press Y for present games.", "Choisir une sauvegarde à ouvrir. Presser Y pour les jeux présents."
+    "LOADER_INSTRUCTIONS_TOP_ABSENT": "Choose a save to open. Press Y for absent games.", "Choisir une sauvegarde à ouvrir. Presser Y pour les jeux absents."
+    "LOADER_INSTRUCTIONS_BOTTOM": "Move your DPAD. Press A to continue, START to exit.", 
+    "LOADER_GAME_CARD": "Game Card", " Carte de Jeu"
+    "LOADER_INSTALLED_GAMES": "Installed Games", "Jeux Installés"
+    "LOADER_ID": "ID: ", "ID"
+    "LOADER_MEDIA_TYPE": "Media Type: ", "Type de Media"
+    "LOADER_CARTRIDGE": "Cartridge", "Cartouche"
+    "LOADER_SD": "SD", "SD"
+    "LOADER_GAME_SAVE": "Game Save File","Fichier de Sauvegarde de Jeu"
+    "LOADER_LOAD": "Load \ue000", " Charger \ue000"
+    "LOADER_WIRELESS": "Wireless \ue002", "Sans-fil \ue002"
+    "NONE": "None", "Aucun"
     "OT_NAME": "OT Name",
-    "LANGUAGE": "Language",
-    "DEFAULTS": "Defaults",
-    "MISC": "Misc.",
+    "LANGUAGE": "Language", "Langage"
+    "DEFAULTS": "Defaults", 
+    "MISC": "Misc.", "Div."
     "TID": "TID",
     "SID": "SID",
     "OT": "OT",
-    "NATIONALITY": "Nationality",
-    "DAY": "Day",
-    "MONTH": "Month",
-    "YEAR": "Year",
-    "CONFIG_BACKUP_SAVE": "Automatically backup on load",
-    "CONFIG_STORAGE_SIZE": "Storage size",
+    "NATIONALITY": "Nationality", "Nationalité"
+    "DAY": "Day", "Jour"
+    "MONTH": "Month", "Mois"
+    "YEAR": "Year", "Année
+    "CONFIG_BACKUP_SAVE": "Automatically backup on load", "Créer une sauvegarde automatiquement au lancement"
+    "CONFIG_STORAGE_SIZE": "Storage size", "Taille de stockage"
     "CONFIG_BAD_SECTORS": "Fix bad sectors on exit",
-    "CONFIG_EDIT_TRANSFERS": "Edit during transfers",
+    "CONFIG_EDIT_TRANSFERS": "Edit during transfers", "Editer pendant les transferts"
     "CONFIG_BACKUP_INJECTION": "Enable backup injection",
-    "YES": "Yes",
-    "NO": "No",
-    "EDITOR_STATS": "STATS",
-    "EDITOR_MOVES": "MOVES",
-    "EDITOR_SAVE": "SAVE",
-    "LEVEL": "Level",
-    "ABILITY": "Ability",
-    "NATURE": "Nature",
-    "ITEM": "Item",
+    "YES": "Yes", "Oui"
+    "NO": "No", "Non"
+    "EDITOR_STATS": "STATS", "STATS"
+    "EDITOR_MOVES": "MOVES", 
+    "EDITOR_SAVE": "SAVE", "SAUVEGARDE"
+    "LEVEL": "Level", "Niveau"
+    "ABILITY": "Ability", "Abilité"
+    "NATURE": "Nature", "Nature"
+    "ITEM": "Item", "Objet"
     "SHINY": "Shiny",
     "POKERUS": "Pok\u00e9rus",
-    "NICKNAME": "Nickname",
-    "FRIENDSHIP": "Friendship",
+    "NICKNAME": "Nickname", "Surnom"
+    "FRIENDSHIP": "Friendship", "Amitié"
     "EDITOR_CP": "CP: ",
     "IV": "IV",
     "AWAKENED": "Awakened",
     "EV": "EV",
-    "TOTAL": "TOTAL",
-    "HP": "HP",
-    "ATTACK": "Attack",
-    "DEFENSE": "Defense",
-    "SPATK": "Sp. Attack",
-    "SPDEF": "Sp. Defense",
-    "SPEED": "Speed",
-    "EDITOR_HIDDEN_POWER": "Hidden Power ",
+    "TOTAL": "TOTAL", "TOTAL"
+    "HP": "HP", "PV"
+    "ATTACK": "Attack", "Attaque"
+    "DEFENSE": "Defense", "Défense"
+    "SPATK": "Sp. Attack", "Attaque spéc."
+    "SPDEF": "Sp. Defense" "Défense spéc."
+    "SPEED": "Speed", "Vitesse"
+    "EDITOR_HIDDEN_POWER": "Hidden Power ", "Pouvoir Caché"
     "MOVES": "Moves",
     "RELEARN_MOVES": "Relearn moves",
-    "EDITOR_NOT_APPLICABLE_GEN": "Not applicable for this generation",
-    "EDITOR_INST": "Press \ue000 to select, \ue001 to go back",
-    "BOX_NAME": "Box name",
+    "EDITOR_NOT_APPLICABLE_GEN": "Not applicable for this generation", "Pas applicable pour cette génération"
+    "EDITOR_INST": "Press \ue000 to select, \ue001 to go back", "Presse \ue000 pour sélectionner, \ue001 pour retourner en arrière"
+    "BOX_NAME": "Box name", "Nom de la boite"
     "EDITOR_IDS": "TID: %i / SID: %i / TSV: %i",
-    "CIRCLE": "Circle",
-    "TRIANGLE": "Triangle",
-    "SQUARE": "Square",
-    "HEART": "Heart",
-    "STAR": "Star",
-    "DIAMOND": "Diamond",
-    "SINNOH_CHAMP_RIBBON": "Sinnoh Champ Ribbon",
-    "ABILITY_RIBBON": "Ability Ribbon",
-    "GREAT_ABILITY_RIBBON": "Great Ability Ribbon",
-    "DOUBLE_ABILITY_RIBBON": "Double Ability Ribbon",
-    "MULTI_ABILITY_RIBBON": "Multi Ability Ribbon",
-    "PAIR_ABILITY_RIBBON": "Pair Ability Ribbon",
-    "WORLD_ABILITY_RIBBON": "World Ability Ribbon",
-    "ALERT_RIBBON": "Alert Ribbon",
-    "SHOCK_RIBBON": "Shock Ribbon",
-    "DOWNCAST_RIBBON": "Downcast Ribbon",
-    "CARELESS_RIBBON": "Careless Ribbon",
-    "RELAX_RIBBON": "Relax Ribbon",
-    "SNOOZE_RIBBON": "Snooze Ribbon",
-    "SMILE_RIBBON": "Smile Ribbon",
+    "CIRCLE": "Circle", "Cercle"
+    "TRIANGLE": "Triangle", "Triangle"
+    "SQUARE": "Square", "Carré"
+    "HEART": "Heart", "Coeur"
+    "STAR": "Star", "Etoile"
+    "DIAMOND": "Diamond", "Diamant"
+    "SINNOH_CHAMP_RIBBON": "Sinnoh Champ Ribbon", "Ruban Maitre Sinnoh"
+    "ABILITY_RIBBON": "Ability Ribbon", "Ruban Abilité"
+    "GREAT_ABILITY_RIBBON": "Great Ability Ribbon", "Ruban Grande Abilité"
+    "DOUBLE_ABILITY_RIBBON": "Double Ability Ribbon", "Ruban Double Abilité"
+    "MULTI_ABILITY_RIBBON": "Multi Ability Ribbon", "Ruban Multi Abilité"
+    "PAIR_ABILITY_RIBBON": "Pair Ability Ribbon", "Ruban Abilité Pair"
+    "WORLD_ABILITY_RIBBON": "World Ability Ribbon", "Ruban Abilité Monde"
+    "ALERT_RIBBON": "Alert Ribbon", "Ruban Alerte"
+    "SHOCK_RIBBON": "Shock Ribbon", "Ruban Choque"
+    "DOWNCAST_RIBBON": "Downcast Ribbon","Ruban Déprime"
+    "CARELESS_RIBBON": "Careless Ribbon", "Ruban Négligence"
+    "RELAX_RIBBON": "Relax Ribbon", "Ruban Détente"
+    "SNOOZE_RIBBON": "Snooze Ribbon","Ruban Sieste"
+    "SMILE_RIBBON": "Smile Ribbon", "Ruban Sourire"
     "GORGEOUS_RIBBON": "Gorgeous Ribbon",
-    "ROYAL_RIBBON": "Royal Ribbon",
+    "ROYAL_RIBBON": "Royal Ribbon", "Ruban Royal"
     "GORGEOUS_ROYAL_RIBBON": "Gorgeous Royal Ribbon",
-    "FOOTPRINT_RIBBON": "Footprint Ribbon",
-    "RECORD_RIBBON": "Record Ribbon",
-    "HISTORY_RIBBON": "History Ribbon",
-    "LEGEND_RIBBON": "Legend Ribbon",
-    "RED_RIBBON": "Red Ribbon",
-    "GREEN_RIBBON": "Green Ribbon",
-    "BLUE_RIBBON": "Blue Ribbon",
-    "FESTIVAL_RIBBON": "Festival Ribbon",
-    "CARNIVAL_RIBBON": "Carnival Ribbon",
-    "CLASSIC_RIBBON": "Classic Ribbon",
-    "PREMIER_RIBBON": "Premier Ribbon",
-    "UNUSED": "Unused",
-    "COOL_RIBBON": "Cool Ribbon",
-    "COOL_RIBBON_SUPER": "Cool Ribbon Super",
-    "COOL_RIBBON_HYPER": "Cool Ribbon Hyper",
-    "COOL_RIBBON_MASTER": "Cool Ribbon Master",
-    "BEAUTY_RIBBON": "Beauty Ribbon",
-    "BEAUTY_RIBBON_SUPER": "Beauty Ribbon Super",
-    "BEAUTY_RIBBON_HYPER": "Beauty Ribbon Hyper",
-    "BEAUTY_RIBBON_MASTER": "Beauty Ribbon Master",
-    "CUTE_RIBBON": "Cute Ribbon",
-    "CUTE_RIBBON_SUPER": "Cute Ribbon Super",
-    "CUTE_RIBBON_HYPER": "Cute Ribbon Hyper",
-    "CUTE_RIBBON_MASTER": "Cute Ribbon Master",
-    "SMART_RIBBON": "Smart Ribbon",
-    "SMART_RIBBON_SUPER": "Smart Ribbon Super",
-    "SMART_RIBBON_HYPER": "Smart Ribbon Hyper",
-    "SMART_RIBBON_MASTER": "Smart Ribbon Master",
-    "TOUGH_RIBBON": "Tough Ribbon",
-    "TOUGH_RIBBON_SUPER": "Tough Ribbon Super",
-    "TOUGH_RIBBON_HYPER": "Tough Ribbon Hyper",
-    "TOUGH_RIBBON_MASTER": "Tough Ribbon Master",
+    "FOOTPRINT_RIBBON": "Footprint Ribbon","Ruban Empreinte"
+    "RECORD_RIBBON": "Record Ribbon", "Ruban Record"
+    "HISTORY_RIBBON": "History Ribbon", "Ruban Histoire"
+    "LEGEND_RIBBON": "Legend Ribbon", "Ruban Légende"
+    "RED_RIBBON": "Red Ribbon","Ruban Rouge"
+    "GREEN_RIBBON": "Green Ribbon","Ruban Vert"
+    "BLUE_RIBBON": "Blue Ribbon","Ruban Bleu"
+    "FESTIVAL_RIBBON": "Festival Ribbon","Ruban Festival"
+    "CARNIVAL_RIBBON": "Carnival Ribbon","Rubban Carnaval"
+    "CLASSIC_RIBBON": "Classic Ribbon","Ruban Classique"
+    "PREMIER_RIBBON": "Premier Ribbon","Ruban Premier"
+    "UNUSED": "Unused","Inutilisé"
+    "COOL_RIBBON": "Cool Ribbon","Ruban Sang-Froid"
+    "COOL_RIBBON_SUPER": "Cool Ribbon Super","Ruban Sang-Froid Super"
+    "COOL_RIBBON_HYPER": "Cool Ribbon Hyper","Ruban Sang-Froid Hyper"
+    "COOL_RIBBON_MASTER": "Cool Ribbon Master","Ruban Sang-Froid Maitre"
+    "BEAUTY_RIBBON": "Beauty Ribbon", "Ruban Beauté"
+    "BEAUTY_RIBBON_SUPER": "Beauty Ribbon Super","Ruban Beauté Super"
+    "BEAUTY_RIBBON_HYPER": "Beauty Ribbon Hyper","Ruban Beauté Hyper"
+    "BEAUTY_RIBBON_MASTER": "Beauty Ribbon Master","Ruban Beauté Maitre"
+    "CUTE_RIBBON": "Cute Ribbon","Ruban Grâce"
+    "CUTE_RIBBON_SUPER": "Cute Ribbon Super","Ruban Grâce Super"
+    "CUTE_RIBBON_HYPER": "Cute Ribbon Hyper","Ruban Grâce Hyper"
+    "CUTE_RIBBON_MASTER": "Cute Ribbon Master","Ruban Grâce Maitre"
+    "SMART_RIBBON": "Smart Ribbon","Ruban Intelligence"
+    "SMART_RIBBON_SUPER": "Smart Ribbon Super","Ruban Intelligence Super"
+    "SMART_RIBBON_HYPER": "Smart Ribbon Hyper","Ruban Intelligence Hyper"
+    "SMART_RIBBON_MASTER": "Smart Ribbon Master","Ruban Intelligence Maitre"
+    "TOUGH_RIBBON": "Tough Ribbon","Ruban Robustesse"
+    "TOUGH_RIBBON_SUPER": "Tough Ribbon Super","Ruban Robustesse Super"
+    "TOUGH_RIBBON_HYPER": "Tough Ribbon Hyper","Ruban Robustesse Hyper"
+    "TOUGH_RIBBON_MASTER": "Tough Ribbon Master","Ruban Robustesse Maitre"
     "CHAMPION_RIBBON": "Champion Ribbon",
     "WINNING_RIBBON": "Winning Ribbon",
     "VICTORY_RIBBON": "Victory Ribbon",
@@ -122,10 +122,10 @@
     "BATTLE_CHAMPION_RIBBON": "Battle Champion Ribbon",
     "REGIONAL_CHAMPION_RIBBON": "Regional Champion Ribbon",
     "NATIONAL_CHAMPION_RIBBON": "National Champion Ribbon",
-    "COUNTRY_RIBBON": "Country Ribbon",
-    "NATIONAL_RIBBON": "National Ribbon",
-    "EARTH_RIBBON": "Earth Ribbon",
-    "WORLD_RIBBON": "World Ribbon",
+    "COUNTRY_RIBBON": "Country Ribbon","Ruban Pays"
+    "NATIONAL_RIBBON": "National Ribbon","Ruban National"
+    "EARTH_RIBBON": "Earth Ribbon","Ruban Terre"
+    "WORLD_RIBBON": "World Ribbon","Ruban Monde"
     "COOL_RIBBON_GREAT": "Cool Ribbon Great",
     "COOL_RIBBON_ULTRA": "Cool Ribbon Ultra",
     "BEAUTY_RIBBON_GREAT": "Beauty Ribbon Great",
@@ -138,70 +138,70 @@
     "TOUGH_RIBBON_ULTRA": "Tough Ribbon Ultra",
     "EVENT_RIBBON": "Event Ribbon",
     "WORLD_CHAMPION_RIBBON": "World Champion Ribbon",
-    "BIRTHDAY_RIBBON": "Birthday Ribbon",
-    "SPECIAL_RIBBON": "Special Ribbon",
-    "SOUVENIR_RIBBON": "Souvenir Ribbon",
+    "BIRTHDAY_RIBBON": "Birthday Ribbon","Ruban Anniversaire"
+    "SPECIAL_RIBBON": "Special Ribbon","Ruban Spécial"
+    "SOUVENIR_RIBBON": "Souvenir Ribbon","Ruban Souvenir"
     "WISHING_RIBBON": "Wishing Ribbon",
-    "SPATK_LEVEL_1": "Sp. Attack Level 1",
-    "HP_LEVEL_1": "HP Level 1",
-    "ATTACK_LEVEL_1": "Attack Level 1",
-    "SPDEF_LEVEL_1": "Sp. Defense Level 1",
-    "SPEED_LEVEL_1": "Speed Level 1",
-    "DEFENSE_LEVEL_1": "Defense Level 1",
-    "SPATK_LEVEL_2": "Sp. Attack Level 2",
-    "HP_LEVEL_2": "HP Level 2",
-    "ATTACK_LEVEL_2": "Attack Level 2",
-    "SPDEF_LEVEL_2": "Sp. Defense Level 2",
-    "SPEED_LEVEL_2": "Speed Level 2",
-    "DEFENSE_LEVEL_2": "Defense Level 2",
-    "SPATK_LEVEL_3": "Sp. Attack Level 3",
-    "HP_LEVEL_3": "HP Level 3",
-    "ATTACK_LEVEL_3": "Attack Level 3",
-    "SPDEF_LEVEL_3": "Sp. Defense Level 3",
-    "SPEED_LEVEL_3": "Speed Level 3",
-    "DEFENSE_LEVEL_3": "Defense Level 3",
+    "SPATK_LEVEL_1": "Sp. Attack Level 1","Attaque Spéc. Niveau 1"
+    "HP_LEVEL_1": "HP Level 1","PV Niveau 1"
+    "ATTACK_LEVEL_1": "Attack Level 1","Attaque Niveau 1"
+    "SPDEF_LEVEL_1": "Sp. Defense Level 1","Défense Spéc. Niveau 1"
+    "SPEED_LEVEL_1": "Speed Level 1","Vitesse Niveau 1"
+    "DEFENSE_LEVEL_1": "Defense Level 1","Défense Niveau 1"
+    "SPATK_LEVEL_2": "Sp. Attack Level 2","Attaque Spéc. Niveau 2"
+    "HP_LEVEL_2": "HP Level 2","PV Niveau 2"
+    "ATTACK_LEVEL_2": "Attack Level 2","Attaque Niveau 2"
+    "SPDEF_LEVEL_2": "Sp. Defense Level 2","Défense Spéc. Niveau 2"
+    "SPEED_LEVEL_2": "Speed Level 2","Vitesse Niveau 2"
+    "DEFENSE_LEVEL_2": "Defense Level 2","Défense Niveau 2"
+    "SPATK_LEVEL_3": "Sp. Attack Level 3","Attaque Spéc. Niveau 3"
+    "HP_LEVEL_3": "HP Level 3","PV Niveau 3"
+    "ATTACK_LEVEL_3": "Attack Level 3","Attaque Niveau 3"
+    "SPDEF_LEVEL_3": "Sp. Defense Level 3","Défense Spéc. Niveau 3"
+    "SPEED_LEVEL_3": "Speed Level 3","Vitesse Niveau 3"
+    "DEFENSE_LEVEL_3": "Defense Level 3","Défense Niveau 3"
     "THE_TROUBLES_KEEP_ON_COMING?": "The Troubles Keep on Coming?!",
-    "THE_LEAF_STONE_CUP_BEGINS": "The Leaf Stone Cup Begins!",
-    "THE_FIRE_STONE_CUP_BEGINS": "The Fire Stone Cup Begins!",
-    "THE_WATER_STONE_CUP_BEGINS": "The Water Stone Cup Begins!",
+    "THE_LEAF_STONE_CUP_BEGINS": "The Leaf Stone Cup Begins!","La Coupe Pierre de Feuille Commence!"
+    "THE_FIRE_STONE_CUP_BEGINS": "The Fire Stone Cup Begins!","La Coupe Pierre de Feu Commence!"
+    "THE_WATER_STONE_CUP_BEGINS": "The Water Stone Cup Begins!","La Coupe Pierre d'Eau Commence!"
     "FOLLOW_THOSE_FLEEING_GOALS": "Follow Those Fleeing Goals!",
     "WATCH_OUT_THATS_ONE_TRICKY_SECOND_HALF": "Watch Out! That's One Tricky Second Half!",
-    "AN_OPENING_OF_LIGHTING_QUICK_ATTACKS": "An Opening of Lighting-Quick Attacks!",
+    "AN_OPENING_OF_LIGHTING_QUICK_ATTACKS": "An Opening of Lighting-Quick Attacks!","Une Ouverture d'Attaques Eclairs!"
     "THOSE_LONG_SHOTS_ARE_NO_LONG_SHOT": "Those Long Shots Are No Long Shot!",
     "SCATTERBUG_LUGS_BACK": "Scatterbug Lugs Back!",
     "A_BARRAGE_OF_BITBOTS": "A Barrage of Bitbots!",
     "DRAG_DOWN_HYDREIGON": "Drag Down Hydreigon!",
     "THE_BATTLE_FOR_THE_BEST_VERSION_X/Y": "The Battle for the Best: Version X/Y!",
     "KALOS_CHAMP_RIBBON": "Kalos Champ Ribbon",
-    "BEST_FRIENDS_RIBBON": "Best Friends Ribbon",
-    "TRAINING_RIBBON": "Training Ribbon",
+    "BEST_FRIENDS_RIBBON": "Best Friends Ribbon","Ruban Meilleurs Amis"
+    "TRAINING_RIBBON": "Training Ribbon","Ruban Entrainement"
     "SKILLFUL_BATTLER_RIBBON": "Skillful Battler Ribbon",
     "EXPERT_BATTLER_RIBBON": "Expert Battler Ribbon",
     "HOENN_CHAMPION_RIBBON": "Hoenn Champion Ribbon",
     "CONTEST_STAR_RIBBON": "Contest Star Ribbon",
-    "COOLNESS_MASTER_RIBBON": "Coolness Master Ribbon",
-    "BEAUTY_MASTER_RIBBON": "Beauty Master Ribbon",
-    "CUTENESS_MASTER_RIBBON": "Cuteness Master Ribbon",
-    "CLEVERNESS_MASTER_RIBBON": "Cleverness Master Ribbon",
-    "TOUGHNESS_MASTER_RIBBON": "Toughness Master Ribbon",
-    "UNKNOWN": "Unknown",
-    "ENCRYPTION_KEY": "Encryption Key",
+    "COOLNESS_MASTER_RIBBON": "Coolness Master Ribbon","Ruban Sang-froid Maitre"
+    "BEAUTY_MASTER_RIBBON": "Beauty Master Ribbon","Ruban Beauté Maitre"
+    "CUTENESS_MASTER_RIBBON": "Cuteness Master Ribbon","Ruban Grâce Maitre"
+    "CLEVERNESS_MASTER_RIBBON": "Cleverness Master Ribbon","Ruban Intelligence Maitre"
+    "TOUGHNESS_MASTER_RIBBON": "Toughness Master Ribbon","Ruban Robustesse Maitre"
+    "UNKNOWN": "Unknown","Inconnu"
+    "ENCRYPTION_KEY": "Encryption Key","Clé d'Encryption"
     "SANITY_PLACEHOLDER": "Sanity Placeholder",
     "CHECKSUM": "Checksum",
-    "SPECIES": "Species",
+    "SPECIES": "Species","Espèce"
     "OT_ID": "OT ID",
     "OT_SID": "OT SID",
-    "EXPERIENCE": "Experience",
-    "ABILITY_NUMBER": "Ability Number",
-    "TRAINING_BAG_HITS_LEFT": "Training bag hits left",
+    "EXPERIENCE": "Experience","Expérience"
+    "ABILITY_NUMBER": "Ability Number","Numéro d'Abilité"
+    "TRAINING_BAG_HITS_LEFT": "Training bag hits left", "Le sac d'entrainement frappe à gauche"
     "PID": "PID",
-    "GENDER_FATEFUL_ENCOUNTER_FORM": "Gender, Fateful Encounter, Form",
-    "HP_EV": "HP EV",
-    "ATTACK_EV": "Attack EV",
-    "DEFENSE_EV": "Defense EV",
-    "SPEED_EV": "Speed EV",
-    "SPATK_EV": "Sp. Attack EV",
-    "SPDEF_EV": "Sp. Defense EV",
+    "GENDER_FATEFUL_ENCOUNTER_FORM": "Gender, Fateful Encounter, Form","Genre, Rencontre Fatidique, Forme"
+    "HP_EV": "HP EV","PV EV"
+    "ATTACK_EV": "Attack EV","Attaque EV"
+    "DEFENSE_EV": "Defense EV","Défense EV"
+    "SPEED_EV": "Speed EV","Vitesse EV"
+    "SPATK_EV": "Sp. Attack EV","Attaque Spéc. EV"
+    "SPDEF_EV": "Sp. Defense EV","Défense Spéc. EV"
     "CONTEST_VALUE_COOL": "Contest Value: Cool",
     "CONTEST_VALUE_BEAUTY": "Contest Value: Beauty",
     "CONTEST_VALUE_CUTE": "Contest Value: Cute",
@@ -210,8 +210,8 @@
     "CONTEST_VALUE_SHEEN": "Contest Value: Sheen",
     "MARKINGS": "Markings",
     "POKERUS": "Pok\u00e9rus",
-    "SUPER_TRAINING_FLAGS": "Super Training Flags",
-    "RIBBONS": "Ribbons",
+    "SUPER_TRAINING_FLAGS": "Super Training Flags","Super Drapeaux d'Entrainement"
+    "RIBBONS": "Ribbons","Rubans"
     "CONTEST_MEMORY_RIBBON_COUNT": "Contest Memory Ribbon Count",
     "BATTLE_MEMORY_RIBBON_COUNT": "Battle Memory Ribbon Count",
     "DISTRIBUTION_SUPER_TRAINING_FLAGS": "Distribution Super Training Flags",
@@ -232,17 +232,17 @@
     "RELEARN_MOVE_2_ID": "Relearn Move 2 ID",
     "RELEARN_MOVE_3_ID": "Relearn Move 3 ID",
     "RELEARN_MOVE_4_ID": "Relearn Move 4 ID",
-    "SECRET_SUPER_TRAINING_FLAG": "Secret Super Training Flag",
+    "SECRET_SUPER_TRAINING_FLAG": "Secret Super Training Flag","Drapeau d'Entrainement Super Secret"
     "IVS": "IVs",
     "IVS;_EGG_AND_NICKNAMED_FLAG": "IVs; Egg and Nicknamed Flag",
     "CURRENT_TRAINER_NAME": "Current Trainer Name",
     "CURRENT_TRAINER_GENDER": "Current Trainer Gender",
     "CURRENT_HANDLER": "Current Handler",
-    "GEOLOCATION_1": "Geolocation 1",
-    "GEOLOCATION_2": "Geolocation 2",
-    "GEOLOCATION_3": "Geolocation 3",
-    "GEOLOCATION_4": "Geolocation 4",
-    "GEOLOCATION_5": "Geolocation 5",
+    "GEOLOCATION_1": "Geolocation 1","Géolocation 1"
+    "GEOLOCATION_2": "Geolocation 2","Géolocation 2"
+    "GEOLOCATION_3": "Geolocation 3","Géolocation 3"
+    "GEOLOCATION_4": "Geolocation 4","Géolocation 4"
+    "GEOLOCATION_5": "Geolocation 5","Géolocation 5"
     "CURRENT_TRAINER_FRIENDSHIP": "Current Trainer Friendship",
     "CURRENT_TRAINER_AFFECTION": "Current Trainer Affection",
     "CURRENT_TRAINER_MEMORY_INTENSITY": "Current Trainer Memory Intensity",
@@ -258,11 +258,11 @@
     "ORIGINAL_TRAINER_MEMORY_LINE": "Original Trainer Memory Line",
     "ORIGINAL_TRAINER_MEMORY_TEXTVAR": "Original Trainer Memory TextVar",
     "ORIGINAL_TRAINER_MEMORY_FEELING": "Original Trainer Memory Feeling",
-    "EGG_RECEIVED_DATE": "Egg Received Date",
-    "MET_DATE": "Met Date",
-    "EGG_LOCATION": "Egg Location",
-    "MET_LOCATION": "Met Location",
-    "POKEBALL": "Pok\u00e9 Ball",
+    "EGG_RECEIVED_DATE": "Egg Received Date","Date de Réception de L'oeuf"
+    "MET_DATE": "Met Date","Date de Rencontre"
+    "EGG_LOCATION": "Egg Location","Location de l'Oeuf"
+    "MET_LOCATION": "Met Location","Location de Rencontre
+    "POKEBALL": "Pok\u00e9 Ball", "Pok\u00e9 Ball"
     "MET_LEVEL_&_ORIGINAL_TRAINER_GENDER": "Met Level & Original Trainer Gender",
     "GEN_4_ENCOUNTER_TYPE": "Gen 4 Encounter Type",
     "ORIGINAL_TRAINER_GAME_ID": "Original Trainer Game ID",
@@ -271,14 +271,14 @@
     "3DS_REGION_ID": "3DS Region ID",
     "ORIGINAL_TRAINER_LANGUAGE_ID": "Original Trainer Language ID",
     "STATUS_CONDITIONS": "Status Conditions",
-    "UNKNOWN_FLAGS": "Unknown Flags",
-    "DIRT_TYPE": "Dirt Type",
-    "DIRT_LOCATION": "Dirt Location",
-    "CURRENT_HP": "Current HP",
-    "MAX_HP": "Max HP",
+    "UNKNOWN_FLAGS": "Unknown Flags","Drapeaux Inconnus"
+    "DIRT_TYPE": "Dirt Type","Type Terre"
+    "DIRT_LOCATION": "Dirt Location","Location Terre"
+    "CURRENT_HP": "Current HP","PV Actuels"
+    "MAX_HP": "Max HP","PV Max"
     "ORIGINAL_TRAINER_ID": "Original Trainer ID",
     "ORIGINAL_TRAINER_SID": "Original Trainer SID",
-    "ORIGINAL_LANGUAGE": "Original Language",
+    "ORIGINAL_LANGUAGE": "Original Language","Langage Original"
     "COOL_CONTEST_VALUE": "Cool Contest Value",
     "BEAUTY_CONTEST_VALUE": "Beauty Contest Value",
     "CUTE_CONTEST_VALUE": "Cute Contest Value",
@@ -296,102 +296,102 @@
     "MOVE_4_PP_UPS": "Move 4 PP Ups",
     "IVS_EGG_AND_NICKNAMED_FLAGS": "IVs, Egg, and Nicknamed Flags",
     "HOENN_RIBBONS": "Hoenn Ribbons",
-    "GENDER_&_FORMS": "Gender & Forms",
-    "MISC_FLAGS": "Misc. Flags",
+    "GENDER_&_FORMS": "Gender & Forms","Genre & Formes"
+    "MISC_FLAGS": "Misc. Flags","Drapeaux Div."
     "ORIGIN_GAME": "Origin Game",
-    "EGG_DATE": "Egg Date",
-    "ENCOUNTER_TYPE": "Encounter Type",
+    "EGG_DATE": "Egg Date","Date de l'Oeuf"
+    "ENCOUNTER_TYPE": "Encounter Type","Type de Rencontre"
     "CAPSULE_INDEX_(SEALS)": "Capsule Index (seals)",
     "MAIL_MESSAGE_+_OT_NAME": "Mail message + OT Name",
     "SHINY_LEAVES_(HGSS)": "Shiny Leaves (HGSS)",
-    "EGG_LOCATION_(PLATINUM)": "Egg Location (Platinum)",
-    "MET_LOCATION_(PLATINUM)": "Met Location (Platinum)",
-    "EGG_LOCATION_(DIAMOND_&_PEARL)": "Egg Location (Diamond & Pearl)",
-    "MET_LOCATION_(DIAMOND_&_PEARL": "Met Location (Diamond & Pearl",
+    "EGG_LOCATION_(PLATINUM)": "Egg Location (Platinum)","Location de L'Oeuf (Platine)"
+    "MET_LOCATION_(PLATINUM)": "Met Location (Platinum)",'Location de Rencontre (Platine)"
+    "EGG_LOCATION_(DIAMOND_&_PEARL)": "Egg Location (Diamond & Pearl)","Location de L'Oeuf (Diamant & Perle)"
+    "MET_LOCATION_(DIAMOND_&_PEARL": "Met Location (Diamond & Pearl","Location de Rencontre (Diamant & Perle)"
     "HGSS_POKEBALL": "HGSS Pok\u00e9 Ball",
     "SEAL_COORDINATES": "Seal Coordinates",
-    "REPORT_THIS_TO_FLAGBREW": "Report this to FlagBrew",
-    "FATEFUL_ENCOUNTER": "Fateful Encounter",
-    "SECRET_SUPER_TRAINING": "Secret Super Training",
-    "EGG": "Egg",
-    "NICKNAMED": "Nicknamed",
+    "REPORT_THIS_TO_FLAGBREW": "Report this to FlagBrew","Reporter cela à FlagBrew"
+    "FATEFUL_ENCOUNTER": "Fateful Encounter","Rencontre Fatidique"
+    "SECRET_SUPER_TRAINING": "Secret Super Training","Entrainement Super Secret"
+    "EGG": "Egg","Oeuf"
+    "NICKNAMED": "Nicknamed","Surnommé"
     "FEMALE_OT": "Female OT",
-    "POISONED": "Poisoned",
-    "BURNED": "Burned",
-    "FROZEN": "Frozen",
-    "PARALYZED": "Paralyzed",
-    "TOXIC": "Toxic",
-    "HIDDEN_ABILITY?": "Hidden Ability?",
-    "NS_POKEMON?": "N's Pokemon?",
-    "HEX_SELECTED_BYTE": "Selected Byte:",
+    "POISONED": "Poisoned","Empoisonné"
+    "BURNED": "Burned","Brûlé"
+    "FROZEN": "Frozen","Gelé"
+    "PARALYZED": "Paralyzed","Paralysé"
+    "TOXIC": "Toxic","Toxique"
+    "HIDDEN_ABILITY?": "Hidden Ability?","Abilité Cachée?"
+    "NS_POKEMON?": "N's Pokemon?","Pokemon de N?"
+    "HEX_SELECTED_BYTE": "Selected Byte:","Byte Selectionné:"
     "WC_LGPE": "LGPE saves do not store Wonder Cards!",
-    "NOT_A_BUG": "This is not a bug.",
+    "NOT_A_BUG": "This is not a bug.","Ceci n'est pas un bug."
     "WC_SWITCH": "\uE004 / \uE005 to switch multiple WC.",
-    "LANGUAGES": "Languages",
+    "LANGUAGES": "Languages","Langages"
     "OVERWRITE_WC": "Overwrite Wondercard",
     "ADAPT_LANGUAGE": "Adapt language to WC",
     "INJECT_TO_SLOT": "Inject to slot",
-    "START_TO_INJECT": "Press START to inject",
-    "HELD_ITEM": "Held Item",
-    "GAME": "Game",
-    "DATE": "Date",
+    "START_TO_INJECT": "Press START to inject","Presser START pour injecter"
+    "HELD_ITEM": "Held Item","Objet Tenu"
+    "GAME": "Game","Jeu"
+    "DATE": "Date","Date"
     "YOUR_OT_NAME": "Your OT Name",
     "NA": "N/A",
     "BP": "BP",
     "WC_CHANGE_SLOT": "Press \uE000 to change slot",
     "WC_DUMP2": "Press \uE002 to dump Wonder Card",
     "WC_DUMP1": "Press \uE000 to dump Wonder Card",
-    "WC_INST1": "Press \uE000 to continue or \uE001 to return.",
-    "EVENT_DATABASE": "Event Database",
+    "WC_INST1": "Press \uE000 to continue or \uE001 to return.","Presser \uE000 pour continuer ou \uE001 pour revenir en arrière."
+    "EVENT_DATABASE": "Event Database","Base de Données d'Evenement"
     "FAILED_OPEN_DUMP": "Could not open file for dump!",
     "SPATK.": "Sp. Atk.",
-    "SPDEF.": "Sp. Def.",
-    "NEUTRAL": "Neutral",
+    "SPDEF.": "Sp. Def.","Déf. Spéc."
+    "NEUTRAL": "Neutral","Neutre"
     "STORAGE": "Storage",
-    "EDITOR": "Editor",
-    "EVENTS": "Events",
+    "EDITOR": "Editor","Editeur"
+    "EVENTS": "Events","Evenements"
     "SCRIPTS": "Scripts",
-    "BAG": "Bag",
-    "SETTINGS": "Settings",
-    "SAVE_CHANGES_1": "Would you like to save",
-    "SAVE_CHANGES_2": "your changes?",
+    "BAG": "Bag","Sac"
+    "SETTINGS": "Settings","Paramètres"
+    "SAVE_CHANGES_1": "Would you like to save","Voulez-vous sauvegarder"
+    "SAVE_CHANGES_2": "your changes?","Vos changements"
     "SCRIPTS_INST1": "Press \uE000 to execute script or enter folder. Press \uE003 for universal scripts",
     "SCRIPTS_INST2": "Press \uE002 to switch between built-in scripts and ones on the SD card",
     "SCRIPTS_CONFIRM_USE": "Do you want to use the following script?",
-    "SCRIPTS_NOT_FOUND": "not found!",
-    "FOLDER_DOESNT_EXIST": "Folder does not exist",
+    "SCRIPTS_NOT_FOUND": "not found!","Pas trouvé!"
+    "FOLDER_DOESNT_EXIST": "Folder does not exist","Le Dossier n'existe pas"
     "SCRIPTS_FAILED_OPEN": "Could not open script file!",
     "SCRIPTS_INVALID": "Not a valid script!",
-    "SELECT_SPECIES": "Please select a species",
-    "BANK_BOX_NAME": "Bank Box Name",
-    "VIEW": "View",
+    "SELECT_SPECIES": "Please select a species","SVP sélectionner une espèce"
+    "BANK_BOX_NAME": "Bank Box Name","Nom de la Boite de Banque"
+    "VIEW": "View","Voir"
     "CLEAR": "Clear",
-    "RELEASE": "Release",
+    "RELEASE": "Release","Relacher"
     "DUMP": "Dump",
-    "CLONE": "Clone",
-    "PRESS_TO_CLONE": "Press \uE002 to clone",
-    "BANK_FAILED_EXIT": "Exiting is not allowed when a Pok\u00E9mon is held!",
-    "BANK_CONFIRM_CLEAR": "Erase the selected box?",
-    "BANK_CONFIRM_RELEASE": "Release the selected Pok\u00E9mon?",
+    "CLONE": "Clone","Cloner"
+    "PRESS_TO_CLONE": "Press \uE002 to clone","Presser \uE002 pour cloner"
+    "BANK_FAILED_EXIT": "Exiting is not allowed when a Pok\u00E9mon is held!","Quitter n'est pas permis lorsqu'un Pok\u00E9mon est tenu!"
+    "BANK_CONFIRM_CLEAR": "Erase the selected box?","Effacer la boite sélectionnée?"
+    "BANK_CONFIRM_RELEASE": "Release the selected Pok\u00E9mon?","Relacher le Pok\u00E9mon sélectionné?"
     "BANK_CONFIRM_DUMP": "Dump selected Pok\u00E9mon?",
     "BANK_OPEN_FAILED": "Could not open file for dump!",
     "ESV_TSV": "ESV_TSV",
     "TID_SID": "TID/SID",
     "CTOT_FSHIP": "CT/OT F.ship",
     "LVL": "Lvl. %i",
-    "HIDDEN_POWER": "Hidden Power",
-    "ITEMS": "Items",
-    "KEY_ITEMS": "Key Items",
+    "HIDDEN_POWER": "Hidden Power","Pouvoir Caché"
+    "ITEMS": "Items","Objets"
+    "KEY_ITEMS": "Key Items","Objets Clés"
     "TMHM": "TMs/HMs",
-    "MEDICINE": "Medicine",
+    "MEDICINE": "Medicine","Médicaments"
     "BERRIES": "Berries",
-    "MAIL": "Mail",
-    "BALLS": "Balls",
-    "BATTLE_ITEMS": "Battle Items",
+    "MAIL": "Mail","Lettres"
+    "BALLS": "Balls","Balls"
+    "BATTLE_ITEMS": "Battle Items","Objets de Combat"
     "TMS": "TMs",
-    "CANDIES": "Candies",
-    "ZCRYSTALS": "Z-Crystals",
+    "CANDIES": "Candies","Bonbons"
+    "ZCRYSTALS": "Z-Crystals","Cristals Z"
     "CATCHING_ITEMS": "Catching Items",
     "ROTOM_POWERS": "Rotom Powers",
-    "CONFIG_SAVE_INFO": "Use Save info"
+    "CONFIG_SAVE_INFO": "Use Save info","Utiliser les infos de Sauvegarde"
 }
