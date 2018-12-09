@@ -152,6 +152,17 @@ void BagScreen::draw() const
 
 void BagScreen::update(touchPosition* touch)
 {
+    if (justSwitched)
+    {
+        if (keysHeld() & KEY_TOUCH)
+        {
+            return;
+        }
+        else
+        {
+            justSwitched = false;
+        }
+    }
     static int timer = 0;
     u32 downKeys = hidKeysDown();
     u32 heldKeys = hidKeysHeld();

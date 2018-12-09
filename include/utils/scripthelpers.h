@@ -30,7 +30,6 @@
 #include "picoc.h"
 #include "3ds/types.h"
 
-void gui_fpsCheck(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs);
 void gui_warn(struct ParseState*, struct Value*, struct Value**, int);
 void gui_choice(struct ParseState*, struct Value*, struct Value**, int);
 void gui_menu6x5(struct ParseState*, struct Value*, struct Value**, int);

@@ -447,6 +447,17 @@ void StorageScreen::draw() const
 
 void StorageScreen::update(touchPosition* touch)
 {
+    if (justSwitched)
+    {
+        if (keysHeld() & KEY_TOUCH)
+        {
+            return;
+        }
+        else
+        {
+            justSwitched = false;
+        }
+    }
     Screen::update();
     static bool sleep = true;
     u32 kDown = hidKeysDown();

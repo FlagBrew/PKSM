@@ -318,6 +318,17 @@ void EditSelectorScreen::draw() const
 
 void EditSelectorScreen::update(touchPosition* touch)
 {
+    if (justSwitched)
+    {
+        if (keysHeld() & KEY_TOUCH)
+        {
+            return;
+        }
+        else
+        {
+            justSwitched = false;
+        }
+    }
     static bool sleep = true;
     static int sleepTimer = 10;
 

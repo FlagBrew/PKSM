@@ -35,7 +35,7 @@
 class Configuration
 {
 public:
-    static constexpr int CURRENT_VERSION = 1;
+    static constexpr int CURRENT_VERSION = 2;
 
     static Configuration& getInstance(void)
     {
@@ -116,6 +116,11 @@ public:
         return mJson["writeFileSave"];
     }
 
+    bool useSaveInfo(void)
+    {
+        return mJson["useSaveInfo"];
+    }
+
     void language(Language lang)
     {
         mJson["language"] = lang;
@@ -191,6 +196,11 @@ public:
         mJson["writeFileSave"] = write;
     }
 
+    void useSaveInfo(bool saveInfo)
+    {
+        mJson["useSaveInfo"] = saveInfo;
+    }
+
     void save(void);
 
 private:
@@ -199,6 +209,8 @@ private:
 
     Configuration(Configuration const&) = delete;
     void operator=(Configuration const&) = delete;
+
+    void loadFromRomfs(void);
 
     nlohmann::json mJson;
 

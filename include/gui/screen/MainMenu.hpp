@@ -41,6 +41,7 @@ public:
     ScreenType type() const override { return ScreenType::MAINMENU; }
 private:
     std::array<MainMenuButton*, 6> buttons = {NULL};
+    bool justSwitched = true;
 };
 
 #endif
