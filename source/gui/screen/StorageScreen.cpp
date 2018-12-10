@@ -239,7 +239,7 @@ void StorageScreen::draw() const
     {
         if (cursorIndex != 0)
         {
-            infoMon = storageChosen ? TitleLoader::bank->pkm(storageBox, cursorIndex) : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
+            infoMon = storageChosen ? TitleLoader::bank->pkm(storageBox, cursorIndex - 1) : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
         }
     }
     if (infoMon && infoMon->species() == 0)
