@@ -33,6 +33,7 @@
 
 Bank::Bank()
 {
+    bool needSave = false;
     if (Configuration::getInstance().useExtData())
     {
         FSStream in(Archive::data(), u"/pksm_1.bnk", FS_OPEN_READ);
@@ -56,16 +57,16 @@ Bank::Bank()
             std::copy(BANK_MAGIC.data(), BANK_MAGIC.data() + BANK_MAGIC.size(), data);
             *(int*)(data + 8) = BANK_VERSION;
             std::fill_n(data + sizeof(BankHeader), sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30, 0xFF);
-            save();
+            needSave = true;
         }
         
-        in = FSStream(Archive::data(), u"/pksm_1.json", FS_OPEN_READ);
-        if (in.good())
+        FSStream in2(Archive::data(), u"/pksm_1.json", FS_OPEN_READ);
+        if (in2.good())
         {
-            size_t jsonSize = in.size();
+            size_t jsonSize = in2.size();
             char jsonData[jsonSize + 1];
-            in.read(jsonData, jsonSize);
-            in.close();
+            in2.read(jsonData, jsonSize);
+            in2.close();
             jsonData[jsonSize] = '\0';
             boxNames = nlohmann::json::parse(jsonData);
         }
@@ -77,12 +78,13 @@ Bank::Bank()
             {
                 boxNames[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
             }
+
+            needSave = true;
         }
     }
     else
     {
         std::fstream in("/3ds/PKSM/banks/pksm_1.bnk", std::ios::in);
-        bool needSave = false;
         if (in.good())
         {
             Gui::waitFrame("Loading bank", "Please wait");
@@ -123,11 +125,11 @@ Bank::Bank()
             }
             needSave = true;
         }
+    }
 
-        if (needSave)
-        {
-            save();
-        }
+    if (needSave)
+    {
+        save();
     }
 
     if (Configuration::getInstance().autoBackup())
@@ -149,16 +151,16 @@ void Bank::save() const
 
             std::string jsonData = boxNames.dump(2);
             path = StringUtils::UTF8toUTF16("/pksm_1.json");
-            out = FSStream(Archive::data(), path, FS_OPEN_CREATE | FS_OPEN_WRITE, jsonData.size());
-            if (out.good())
+            FSStream out2(Archive::data(), path, FS_OPEN_CREATE | FS_OPEN_WRITE, jsonData.size());
+            if (out2.good())
             {
-                out.write(jsonData.data(), jsonData.size());
+                out2.write(jsonData.data(), jsonData.size());
             }
             else
             {
                 Gui::warn("Could not save box names!");
             }
-            out.close();
+            out2.close();
         }
         else
         {
