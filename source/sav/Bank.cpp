@@ -36,10 +36,9 @@ Bank::Bank()
     bool needSave = false;
     if (Configuration::getInstance().useExtData())
     {
-        FSStream in(Archive::data(), u"/pksm_1.bnk", FS_OPEN_READ);
+        FSStream in(Archive::data(), u"/banks/pksm_1.bnk", FS_OPEN_READ);
         if (in.good())
         {
-            Gui::warn("Yep");
             size = in.size();
             data = new u8[size];
             in.read(data, size);
@@ -51,7 +50,7 @@ Bank::Bank()
         }
         else
         {
-            Gui::warn("Creating bank");
+            Gui::waitFrame("Creating bank");
             in.close();
             data = new u8[size = sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30];
             std::copy(BANK_MAGIC.data(), BANK_MAGIC.data() + BANK_MAGIC.size(), data);
@@ -60,13 +59,13 @@ Bank::Bank()
             needSave = true;
         }
         
-        FSStream in2(Archive::data(), u"/pksm_1.json", FS_OPEN_READ);
-        if (in2.good())
+        in = FSStream(Archive::data(), u"/banks/pksm_1.json", FS_OPEN_READ);
+        if (in.good())
         {
-            size_t jsonSize = in2.size();
+            size_t jsonSize = in.size();
             char jsonData[jsonSize + 1];
-            in2.read(jsonData, jsonSize);
-            in2.close();
+            in.read(jsonData, jsonSize);
+            in.close();
             jsonData[jsonSize] = '\0';
             boxNames = nlohmann::json::parse(jsonData);
         }
@@ -142,25 +141,26 @@ void Bank::save() const
 {
     if (Configuration::getInstance().useExtData())
     {
-        std::u16string path = StringUtils::UTF8toUTF16("/pksm_1.bnk");
-        FSStream out(Archive::data(), path, FS_OPEN_CREATE | FS_OPEN_WRITE, sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30);
+        FSUSER_CreateDirectory(Archive::data(), fsMakePath(PATH_UTF16, u"/banks"), 0);
+        std::u16string path = StringUtils::UTF8toUTF16("/banks/pksm_1.bnk");
+        FSStream out(Archive::data(), path, FS_OPEN_WRITE, sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30);
         if (out.good())
         {
             out.write(data, sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30);
             out.close();
 
             std::string jsonData = boxNames.dump(2);
-            path = StringUtils::UTF8toUTF16("/pksm_1.json");
-            FSStream out2(Archive::data(), path, FS_OPEN_CREATE | FS_OPEN_WRITE, jsonData.size());
-            if (out2.good())
+            path = StringUtils::UTF8toUTF16("/banks/pksm_1.json");
+            out = FSStream(Archive::data(), path, FS_OPEN_WRITE, jsonData.size());
+            if (out.good())
             {
-                out2.write(jsonData.data(), jsonData.size());
+                out.write(jsonData.data(), jsonData.size());
             }
             else
             {
                 Gui::warn("Could not save box names!");
             }
-            out2.close();
+            out.close();
         }
         else
         {
