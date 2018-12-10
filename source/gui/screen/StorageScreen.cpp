@@ -225,6 +225,7 @@ StorageScreen::~StorageScreen()
         ((SavLGPE*)TitleLoader::save.get())->compressBox();
     }
     TitleLoader::save->cryptBoxData(false);
+    TitleLoader::bank->save();
 }
 
 void StorageScreen::draw() const

@@ -50,7 +50,7 @@ Bank::Bank()
         }
         else
         {
-            Gui::warn("Creating bank", "Please wait");
+            Gui::warn("Creating bank");
             in.close();
             data = new u8[size = sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30];
             std::copy(BANK_MAGIC.data(), BANK_MAGIC.data() + BANK_MAGIC.size(), data);
@@ -82,6 +82,7 @@ Bank::Bank()
     else
     {
         std::fstream in("/3ds/PKSM/banks/pksm_1.bnk", std::ios::in);
+        bool needSave = false;
         if (in.good())
         {
             Gui::waitFrame("Loading bank", "Please wait");
@@ -97,13 +98,13 @@ Bank::Bank()
         }
         else
         {
-            Gui::waitFrame("Creating bank", "Please wait");
+            Gui::waitFrame("Creating bank");
             in.close();
             data = new u8[size = sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30];
             std::copy(BANK_MAGIC.data(), BANK_MAGIC.data() + BANK_MAGIC.size(), data);
             *(int*)(data + 8) = BANK_VERSION;
             std::fill_n(data + sizeof(BankHeader), sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30, 0xFF);
-            save();
+            needSave = true;
         }
 
         in = std::fstream("/3ds/PKSM/banks/pksm_1.json", std::ios::in);
@@ -120,6 +121,12 @@ Bank::Bank()
             {
                 boxNames[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
             }
+            needSave = true;
+        }
+
+        if (needSave)
+        {
+            save();
         }
     }
 
