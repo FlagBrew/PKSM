@@ -290,7 +290,7 @@
     "MOVE_3": "Movimiento 3",
     "MOVE_4": "Movimiento 4",
     "MOVE_1_PP": "PP de Movimiento 1",
-    "MOVE_2_PP": "PP deMovimiento 2",
+    "MOVE_2_PP": "PP de Movimiento 2",
     "MOVE_3_PP": "PP de Movimiento 3",
     "MOVE_4_PP": "PP de Movimiento 4",
     "MOVE_4_PP_UPS": "PP de Movimiento 4 PP Ups",
@@ -391,7 +391,7 @@
     "TMS": "TMs",
     "CANDIES": "Dulces",
     "ZCRYSTALS": "Cristales Z",
-    "CATCHING_ITEMS": "Artapar Objetos",
+    "CATCHING_ITEMS": "Atrapar Objetos",
     "ROTOM_POWERS": "Poderes Rotom",
     "CONFIG_SAVE_INFO": "Usar Info. de Guardado"
 }
