@@ -821,7 +821,7 @@ void StorageScreen::pickup()
     {
         if (storageChosen)
         {
-            moveMon = TitleLoader::bank->pkm(storageBox, cursorIndex);
+            moveMon = TitleLoader::bank->pkm(storageBox, cursorIndex - 1);
         }
         else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
         {
