@@ -44,6 +44,7 @@ class PKX
 {
 friend class HexEditScreen;
 friend class StorageScreen;
+friend class Bank;
 protected:
     u32 expTable(u8 row, u8 col) const;
     u32 seedStep(u32 seed);
@@ -205,7 +206,7 @@ public:
     virtual std::unique_ptr<PKX> previous(void) const { return std::unique_ptr<PKX>(const_cast<PKX*>(this)); }
     virtual std::unique_ptr<PKX> next(void) const { return std::unique_ptr<PKX>(const_cast<PKX*>(this)); }
 
-    u8 getLength(void) const { return length; }
+    u32 getLength(void) const { return length; }
     static u8 genFromBytes(u8* data, size_t length, bool ekx = false);
 };
 
