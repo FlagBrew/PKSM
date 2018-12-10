@@ -75,7 +75,7 @@ Bank::Bank()
             boxNames = nlohmann::json::array();
             for (int i = 0; i < Configuration::getInstance().storageSize(); i++)
             {
-                boxNames[i] = "Box " + std::to_string(i);
+                boxNames[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
             }
         }
     }
@@ -118,7 +118,7 @@ Bank::Bank()
             boxNames = nlohmann::json::array();
             for (int i = 0; i < Configuration::getInstance().storageSize(); i++)
             {
-                boxNames[i] = "Box " + std::to_string(i);
+                boxNames[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
             }
         }
     }
@@ -287,7 +287,7 @@ void Bank::pkm(PKX& pkm, int box, int slot)
     BankEntry* bank = (BankEntry*)(data + sizeof(BankHeader));
     int index = box * 30 + slot;
     BankEntry newEntry;
-    if (pkm.species() != 0)
+    if (pkm.species() == 0)
     {
         std::fill_n((char*) &newEntry, sizeof(BankEntry), 0xFF);
         bank[index] = newEntry;

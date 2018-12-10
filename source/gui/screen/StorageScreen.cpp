@@ -332,7 +332,7 @@ void StorageScreen::draw() const
         Gui::sprite(ui_sheet_bar_boxname_empty_idx, 44, 21);
         Gui::staticText(45, 24, 24, "\uE004", FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
         Gui::staticText(225, 24, 24, "\uE005", FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
-        Gui::dynamicText(69, 24, 156, StringUtils::format("%s %i", i18n::localize("STORAGE").c_str(), storageBox + 1), FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
+        Gui::dynamicText(69, 24, 156, TitleLoader::bank->boxName(storageBox), FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
 
         Gui::sprite(ui_sheet_storagemenu_cross_idx, 36, 50);
         Gui::sprite(ui_sheet_storagemenu_cross_idx, 246, 50);
