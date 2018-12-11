@@ -222,6 +222,7 @@ void TitleLoadScreen::update(touchPosition* touch)
         {
             selectedGame = false;
             selectedSave = -1;
+            firstSave = -1;
         }
         if (buttonsDown & KEY_A)
         {

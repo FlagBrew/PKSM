@@ -106,6 +106,7 @@ namespace Gui
     void ball(size_t index, int x, int y);
     void type(Language lang, u8 type, int x, int y);
     void generation(PKX* pkm, int x, int y);
+    void format(PKX* pkm, int x, int y);
     void sprite(int key, int x, int y);
     void sprite(int key, int x, int y, u32 color);
     void pkm(PKX* pkm, int x, int y, float scale = 1.0f, u32 color = C2D_Color32(0, 0, 0, 255), float blend = 0.0f);

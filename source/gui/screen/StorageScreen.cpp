@@ -440,7 +440,7 @@ void StorageScreen::draw() const
             Gui::dynamicText(276 + (int) width, 197, 70, info, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
             info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(4), infoMon->iv(5), infoMon->iv(3));
             Gui::dynamicText(276 + (int) width, 209, 70, info, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
-            Gui::generation(infoMon.get(), 276, 210);
+            Gui::format(infoMon.get(), 276, 210);
         }
     }
 }

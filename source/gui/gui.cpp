@@ -731,6 +731,46 @@ void Gui::sprite(int key, int x, int y)
     }
 }
 
+void Gui::format(PKX* pkm, int x, int y)
+{
+    switch (pkm->generation())
+    {
+        // case 1: // sapphire
+		// case 2: // ruby
+		// case 3: // emerald
+		// case 4: // fire red
+		// case 5: // leaf green
+		// case 15: // colosseum/XD
+		// 	Gui::sprite(ui_sheet_icon_generation_3_idx, x, y);
+        //     break;
+		case Generation::FOUR:
+			Gui::sprite(ui_sheet_icon_generation_4_idx, x, y);
+            break;		
+		case Generation::FIVE:
+			Gui::sprite(ui_sheet_icon_generation_5_idx, x, y);
+            break;
+		case Generation::SIX:
+			Gui::sprite(ui_sheet_icon_generation_6_idx, x, y);
+            break;
+		case Generation::SEVEN:
+			Gui::sprite(ui_sheet_icon_generation_7_idx, x, y);
+            break;
+		case Generation::LGPE:
+			Gui::sprite(ui_sheet_icon_generation_go_idx, x, y);
+            break;
+		// case 35: // rd
+		// case 36: // gn
+		// case 37: // bu
+		// case 38: // yw
+		// case 39: // gd
+		// case 40: // sv
+		// 	Gui::sprite(ui_sheet_icon_generation_gb_idx, x, y);
+        //     break;
+		default:
+			break;
+    }
+}
+
 void Gui::generation(PKX* pkm, int x, int y)
 {
     switch (pkm->version())
