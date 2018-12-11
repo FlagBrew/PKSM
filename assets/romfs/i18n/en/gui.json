@@ -399,5 +399,14 @@
     "BANK_LOAD": "Loading bank",
     "BANK_SAVE": "Saving bank",
     "BANK_NAME_ERROR": "Could not save box names!",
-    "BANK_SAVE_ERROR": "Could not save bank!"
+    "BANK_SAVE_ERROR": "Could not save bank!",
+    "STORAGE_IMPLEMENTATION": "We don't currently have a good way to do this",
+    "STORAGE_CHECKBACK": "Check back in a couple years",
+    "STORAGE_BAD_TRANFER": "Could not transfer Pok\u00E9mon:",
+    "STORAGE_BAD_MOVE": "Impossible move",
+    "STORAGE_BAD_SPECIES": "Impossible species",
+    "STORAGE_BAD_FORM": "Impossible form",
+    "STORAGE_BAD_ABILITY": "Impossible ability",
+    "STORAGE_BAD_ITEM": "Impossible item",
+    "STORAGE_BAD_BALL": "Impossible ball"
 }

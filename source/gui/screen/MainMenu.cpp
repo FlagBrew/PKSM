@@ -38,6 +38,11 @@ static bool goToScreen(int buttonNum)
     switch (buttonNum)
     {
         case 0:
+            if (TitleLoader::save->generation() == Generation::LGPE)
+            {
+                Gui::warn(i18n::localize("STORAGE_IMPLEMENTATION"), i18n::localize("STORAGE_CHECKBACK"));
+                return false;
+            }
             Gui::setScreen(std::make_unique<StorageScreen>());
             return true;
         case 1:

@@ -887,6 +887,81 @@ void StorageScreen::pickup()
         }
         else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
         {
+            u8 (*formCounter)(u16);
+            switch (TitleLoader::save->generation())
+            {
+                case Generation::FOUR:
+                    formCounter = PersonalDPPtHGSS::formCount;
+                    break;
+                case Generation::FIVE:
+                    formCounter = PersonalBWB2W2::formCount;
+                    break;
+                case Generation::SIX:
+                    formCounter = PersonalXYORAS::formCount;
+                    break;
+                case Generation::SEVEN:
+                default:
+                    formCounter = PersonalSMUSUM::formCount;
+                    break;
+            }
+            bool moveBad = false;
+            for (int i = 0; i < 4; i++)
+            {
+                if (moveMon->move(i) > TitleLoader::save->maxMove())
+                {
+                    moveBad = true;
+                    break;
+                }
+                if (moveMon->generation() == Generation::SIX)
+                {
+                    PK6* pk6 = (PK6*) moveMon.get();
+                    if (pk6->relearnMove(i) > TitleLoader::save->maxMove())
+                    {
+                        moveBad = true;
+                        break;
+                    }
+                }
+                else if (moveMon->generation() == Generation::SEVEN)
+                {
+                    PK7* pk7 = (PK7*) moveMon.get();
+                    if (pk7->relearnMove(i) > TitleLoader::save->maxMove())
+                    {
+                        moveBad = true;
+                        break;
+                    }
+                }
+            }
+            if (moveMon->species() > TitleLoader::save->maxSpecies())
+            {
+                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_SPECIES"));
+                return;
+            }
+            else if (moveMon->alternativeForm() > formCounter(moveMon->species()))
+            {
+                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_FORM"));
+                return;
+            }
+            else if (moveMon->ability() > TitleLoader::save->maxAbility())
+            {
+                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_ABILITY"));
+                return;
+            }
+            else if (moveMon->heldItem() > TitleLoader::save->maxItem())
+            {
+                
+                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_ITEM"));
+                return;
+            }
+            else if (moveMon->ball() > TitleLoader::save->maxBall())
+            {
+                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_BALL"));
+                return;
+            }
+            else if (moveBad)
+            {
+                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_MOVE"));
+                return;
+            }
             std::shared_ptr<PKX> temPkm = TitleLoader::save->pkm(boxBox, cursorIndex - 1);
             if ((Configuration::getInstance().transferEdit() || moveMon->generation() == TitleLoader::save->generation()) || Gui::showChoiceMessage(StringUtils::format("The generation change (%s->%s) will edit your", genToString(moveMon->generation()).c_str(), genToString(TitleLoader::save->generation()).c_str()), "Pok\u00E9mon. Continue?"))
             {
