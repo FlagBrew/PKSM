@@ -40,5 +40,9 @@ void sav_sbo(struct ParseState*, struct Value*, struct Value**, int);
 void sav_gbo(struct ParseState*, struct Value*, struct Value**, int);
 void sav_boxEncrypt(struct ParseState*, struct Value*, struct Value**, int);
 void sav_boxDecrypt(struct ParseState*, struct Value*, struct Value**, int);
+void sav_inject_pkx(struct ParseState*, struct Value*, struct Value**, int);
+void sav_inject_ekx(struct ParseState*, struct Value*, struct Value**, int);
+void current_directory(struct ParseState*, struct Value*, struct Value**, int);
+void read_directory(struct ParseState*, struct Value*, struct Value**, int);
 
 #endif

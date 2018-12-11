@@ -18,10 +18,14 @@ struct LibraryFunction UnixFunctions[] =
     { sav_gbo,          "int sav_gbo();" },
     { sav_boxDecrypt,   "void sav_box_decrypt();" },
     { sav_boxEncrypt,   "void sav_box_encrypt();" },
+    { sav_inject_pkx,   "void sav_inject_pkx(char* data, enum Generation type, int box, int slot);" },
+    { sav_inject_ekx,   "void sav_inject_ekx(char* data, enum Generation type, int box, int slot);" },
+    { current_directory,"char* current_directory();" },
+    { read_directory,   "struct directory* read_directory(char* dir);" },
     { NULL,             NULL }
 };
 
 void PlatformLibraryInit(Picoc *pc)
 {
-    IncludeRegister(pc, "pksm.h", &UnixSetupFunc, &UnixFunctions[0], "struct pkx { int species; int form; }; enum Generation { GEN_FOUR, GEN_FIVE, GEN_SIX, GEN_SEVEN, GEN_LGPE };");
+    IncludeRegister(pc, "pksm.h", &UnixSetupFunc, &UnixFunctions[0], "struct pkx { int species; int form; }; enum Generation { GEN_FOUR, GEN_FIVE, GEN_SIX, GEN_SEVEN, GEN_LGPE }; struct directory { int count; char** files; };");
 }

@@ -28,6 +28,12 @@
 #include "FortyChoice.hpp"
 #include "ThirtyChoice.hpp"
 #include "loader.hpp"
+#include "STDirectory.hpp"
+#include "PB7.hpp"
+#include "PK4.hpp"
+#include "PK5.hpp"
+#include "PK6.hpp"
+#include "PK7.hpp"
 
 extern "C" {
 #include "scripthelpers.h"
@@ -181,5 +187,161 @@ extern "C" {
         }
         while (button != SWKBD_BUTTON_CONFIRM);
         *out = std::atoi(number);
+    }
+
+    void current_directory(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        std::string fileName = Parser->FileName;
+        fileName = fileName.substr(0, fileName.rfind('/'));
+        ReturnValue->Val->Pointer = fileName.data();
+    }
+
+    void read_directory(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        std::string dir = (char*)Param[0]->Val->Pointer;
+        STDirectory directory(dir);
+        struct dirData {
+            int amount;
+            char** data;
+        };
+        dirData* ret = (dirData*) malloc(sizeof(dirData));
+        if (directory.good())
+        {
+            ret->amount = directory.count();
+            ret->data = (char**) malloc(sizeof(char*) * directory.count());
+            for (int i = 0; i < directory.count(); i++)
+            {
+                std::string item = dir + "/" + directory.item(i);
+                ret->data[i] = (char*) malloc(sizeof(char) * (item.size() + 1));
+                ret->data[i][item.size()] = '\0';
+                strcpy(ret->data[i], item.data());
+            }
+        }
+        else
+        {
+            ret->amount = 0;
+            ret->data = nullptr;
+        }
+        ReturnValue->Val->Pointer = ret;
+    }
+
+    void sav_inject_pkx(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        u8* data = (u8*) Param[0]->Val->Pointer;
+        Generation gen = Generation(Param[1]->Val->Integer);
+        int box = Param[2]->Val->Integer;
+        int slot = Param[3]->Val->Integer;
+
+        std::unique_ptr<PKX> pkm = nullptr;
+
+        switch (gen)
+        {
+            case Generation::FOUR:
+                pkm = std::make_unique<PK4>(data, false);
+                break;
+            case Generation::FIVE:
+                pkm = std::make_unique<PK5>(data, false);
+                break;
+            case Generation::SIX:
+                pkm = std::make_unique<PK6>(data, false);
+                break;
+            case Generation::SEVEN:
+                pkm = std::make_unique<PK7>(data, false);
+                break;
+            case Generation::LGPE:
+                pkm = std::make_unique<PB7>(data, false);
+                break;
+            default:
+                Gui::warn("What did you do?", "Generation is incorrect!");
+        }
+
+        if (pkm)
+        {
+            if (TitleLoader::save->generation() == Generation::LGPE)
+            {
+                if (pkm->generation() == Generation::LGPE)
+                {
+                    TitleLoader::save->pkm(*pkm, box, slot);
+                }
+            }
+            else
+            {
+                if (pkm->generation() != Generation::LGPE)
+                {
+                    while (pkm->generation() != TitleLoader::save->generation())
+                    {
+                        if (pkm->generation() < TitleLoader::save->generation())
+                        {
+                            pkm = pkm->next();
+                        }
+                        else
+                        {
+                            pkm = pkm->previous();
+                        }
+                    }
+                    TitleLoader::save->pkm(*pkm, box, slot);
+                }
+            }
+        }
+    }
+
+    void sav_inject_ekx(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        u8* data = (u8*) Param[0]->Val->Pointer;
+        Generation gen = Generation(Param[1]->Val->Integer);
+        int box = Param[2]->Val->Integer;
+        int slot = Param[3]->Val->Integer;
+
+        std::unique_ptr<PKX> pkm = nullptr;
+
+        switch (gen)
+        {
+            case Generation::FOUR:
+                pkm = std::make_unique<PK4>(data, true);
+                break;
+            case Generation::FIVE:
+                pkm = std::make_unique<PK5>(data, true);
+                break;
+            case Generation::SIX:
+                pkm = std::make_unique<PK6>(data, true);
+                break;
+            case Generation::SEVEN:
+                pkm = std::make_unique<PK7>(data, true);
+                break;
+            case Generation::LGPE:
+                pkm = std::make_unique<PB7>(data, true);
+                break;
+            default:
+                Gui::warn("What did you do?", "Generation is incorrect!");
+        }
+
+        if (pkm)
+        {
+            if (TitleLoader::save->generation() == Generation::LGPE)
+            {
+                if (pkm->generation() == Generation::LGPE)
+                {
+                    TitleLoader::save->pkm(*pkm, box, slot);
+                }
+            }
+            else
+            {
+                if (pkm->generation() != Generation::LGPE)
+                {
+                    while (pkm->generation() != TitleLoader::save->generation())
+                    {
+                        if (pkm->generation() < TitleLoader::save->generation())
+                        {
+                            pkm = pkm->next();
+                        }
+                        else
+                        {
+                            pkm = pkm->previous();
+                        }
+                    }
+                    TitleLoader::save->pkm(*pkm, box, slot);
+                }
+            }
+        }
     }
 }
