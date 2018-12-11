@@ -57,7 +57,6 @@ Result App::init(std::string execPath)
     Threads::create((ThreadFunc)TitleLoader::scanSaves);
 
     Gui::setScreen(std::make_unique<TitleLoadScreen>());
-    TitleLoader::bank = std::make_unique<Bank>();
 
     // uncomment when needing to debug with GDB
 #ifdef PICOC_DEBUG

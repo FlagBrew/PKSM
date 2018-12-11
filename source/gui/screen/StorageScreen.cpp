@@ -114,7 +114,7 @@ void StorageScreen::setBoxName(bool storage)
         input[40] = '\0';
         if (ret == SWKBD_BUTTON_CONFIRM)
         {
-            TitleLoader::bank->boxName(input, storageBox);
+            bank.boxName(input, storageBox);
         }
     }
     else
@@ -225,7 +225,6 @@ StorageScreen::~StorageScreen()
         ((SavLGPE*)TitleLoader::save.get())->compressBox();
     }
     TitleLoader::save->cryptBoxData(false);
-    TitleLoader::bank->save();
 }
 
 void StorageScreen::draw() const
@@ -239,7 +238,7 @@ void StorageScreen::draw() const
     {
         if (cursorIndex != 0)
         {
-            infoMon = storageChosen ? TitleLoader::bank->pkm(storageBox, cursorIndex - 1) : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
+            infoMon = storageChosen ? bank.pkm(storageBox, cursorIndex - 1) : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
         }
     }
     if (infoMon && infoMon->species() == 0)
@@ -333,7 +332,7 @@ void StorageScreen::draw() const
         Gui::sprite(ui_sheet_bar_boxname_empty_idx, 44, 21);
         Gui::staticText(45, 24, 24, "\uE004", FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
         Gui::staticText(225, 24, 24, "\uE005", FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
-        Gui::dynamicText(69, 24, 156, TitleLoader::bank->boxName(storageBox), FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
+        Gui::dynamicText(69, 24, 156, bank.boxName(storageBox), FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
 
         Gui::sprite(ui_sheet_storagemenu_cross_idx, 36, 50);
         Gui::sprite(ui_sheet_storagemenu_cross_idx, 246, 50);
@@ -346,7 +345,7 @@ void StorageScreen::draw() const
             u16 x = 45;
             for (u8 column = 0; column < 6; column++)
             {
-                auto pkm = TitleLoader::bank->pkm(storageBox, row * 6 + column);
+                auto pkm = bank.pkm(storageBox, row * 6 + column);
                 if (pkm->species() > 0)
                 {
                     Gui::pkm(pkm.get(), x, y);
@@ -441,6 +440,7 @@ void StorageScreen::draw() const
             Gui::dynamicText(276 + (int) width, 197, 70, info, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
             info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(4), infoMon->iv(5), infoMon->iv(3));
             Gui::dynamicText(276 + (int) width, 209, 70, info, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+            Gui::generation(infoMon.get(), 276, 210);
         }
     }
 }
@@ -691,6 +691,10 @@ bool StorageScreen::backButton()
         }
         else
         {
+            if (Gui::showChoiceMessage(i18n::localize("BANK_SAVE_CHANGES")))
+            {
+                bank.save();
+            }
             Gui::screenBack();
         }
     }
@@ -703,7 +707,7 @@ bool StorageScreen::showViewer()
     {
         return false;
     }
-    std::shared_ptr<PKX> view = storageChosen ? TitleLoader::bank->pkm(storageBox, cursorIndex - 1) : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
+    std::shared_ptr<PKX> view = storageChosen ? bank.pkm(storageBox, cursorIndex - 1) : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
     if (view->species() != 0)
     {
         viewer = std::make_unique<ViewerScreen>(view, true);
@@ -720,7 +724,7 @@ bool StorageScreen::clearBox()
         {
             if (storageChosen)
             {
-                TitleLoader::bank->pkm(*TitleLoader::save->emptyPkm(), storageBox, i);
+                bank.pkm(*TitleLoader::save->emptyPkm(), storageBox, i);
             }
             else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
             {
@@ -738,7 +742,7 @@ bool StorageScreen::releasePkm()
     {
         if (storageChosen)
         {
-            TitleLoader::bank->pkm(*TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1);
+            bank.pkm(*TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1);
         }
         else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
         {
@@ -822,7 +826,7 @@ void StorageScreen::pickup()
     {
         if (storageChosen)
         {
-            moveMon = TitleLoader::bank->pkm(storageBox, cursorIndex - 1);
+            moveMon = bank.pkm(storageBox, cursorIndex - 1);
         }
         else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
         {
@@ -848,7 +852,7 @@ void StorageScreen::pickup()
 
         if (storageChosen)
         {
-            TitleLoader::bank->pkm(*TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1);
+            bank.pkm(*TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1);
             fromStorage = true;
         }
         else
@@ -867,8 +871,8 @@ void StorageScreen::pickup()
     {
         if (storageChosen)
         {
-            std::shared_ptr<PKX> temPkm = TitleLoader::bank->pkm(storageBox, cursorIndex - 1);
-            TitleLoader::bank->pkm(*moveMon, storageBox, cursorIndex - 1);
+            std::shared_ptr<PKX> temPkm = bank.pkm(storageBox, cursorIndex - 1);
+            bank.pkm(*moveMon, storageBox, cursorIndex - 1);
             moveMon = temPkm;
             
             if (moveMon && moveMon->species() > 0)
@@ -1025,7 +1029,7 @@ bool StorageScreen::dumpPkm()
                 }
                 else
                 {
-                    dumpMon = TitleLoader::bank->pkm(storageBox, cursorIndex - 1);
+                    dumpMon = bank.pkm(storageBox, cursorIndex - 1);
                     path += dumpMon->generation() != Generation::LGPE ? ".pk" + genToString(dumpMon->generation()) : ".pb7";
                     FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, dumpMon->length);
                     if (out.good())
@@ -1051,7 +1055,7 @@ bool StorageScreen::duplicate()
     {
         if (storageChosen)
         {
-            moveMon = TitleLoader::bank->pkm(storageBox, cursorIndex - 1);
+            moveMon = bank.pkm(storageBox, cursorIndex - 1);
         }
         else
         {
@@ -1065,6 +1069,40 @@ bool StorageScreen::duplicate()
         {
             moveMon = nullptr;
         }
+    }
+    return false;
+}
+
+bool StorageScreen::swapBoxWithStorage()
+{
+    for (int i = 0; i < 30; i++)
+    {
+        if (boxBox * 30 + i >= TitleLoader::save->maxSlot())
+        {
+            break;
+        }
+        std::shared_ptr<PKX> temPkm = bank.pkm(storageBox, i);
+        if (temPkm->species() == 0)
+        {
+            temPkm = TitleLoader::save->emptyPkm();
+        }
+        else if ((Configuration::getInstance().transferEdit() || temPkm->generation() == TitleLoader::save->generation()) || Gui::showChoiceMessage(StringUtils::format("The generation change (%s->%s) will edit your", genToString(temPkm->generation()).c_str(), genToString(TitleLoader::save->generation()).c_str()), "Pok\u00E9mon. Continue?"))
+        {
+            while (temPkm->generation() != TitleLoader::save->generation())
+            {
+                if (temPkm->generation() > TitleLoader::save->generation())
+                {
+                    temPkm = temPkm->previous();
+                }
+                else
+                {
+                    temPkm = temPkm->next();
+                }
+            }
+        }
+        auto otherTemPkm = TitleLoader::save->pkm(boxBox, i);
+        TitleLoader::save->pkm(*temPkm, boxBox, i);
+        bank.pkm(*otherTemPkm, storageBox, i);
     }
     return false;
 }

@@ -46,7 +46,7 @@ public:
 
     ScreenType type() const override { return ScreenType::STORAGE; }
 private:
-    bool swapBoxWithStorage() { return false; }
+    bool swapBoxWithStorage();
     bool showViewer();
     bool clearBox();
     bool releasePkm();
@@ -69,7 +69,7 @@ private:
     std::shared_ptr<PKX> moveMon = nullptr;
     int partyNum = -1;
     bool justSwitched = true;
-    // Storage implementation
+    Bank bank;
 };
 
 #endif

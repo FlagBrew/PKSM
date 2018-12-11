@@ -39,7 +39,6 @@
     "NATURE": "Nature",
     "ITEM": "Item",
     "SHINY": "Shiny",
-    "POKERUS": "Pok\u00e9rus",
     "NICKNAME": "Nickname",
     "FRIENDSHIP": "Friendship",
     "EDITOR_CP": "CP: ",
@@ -376,6 +375,7 @@
     "BANK_CONFIRM_RELEASE": "Release the selected Pok\u00E9mon?",
     "BANK_CONFIRM_DUMP": "Dump selected Pok\u00E9mon?",
     "BANK_OPEN_FAILED": "Could not open file for dump!",
+    "BANK_SAVE_CHANGES": "Save changes to bank?",
     "ESV_TSV": "ESV_TSV",
     "TID_SID": "TID/SID",
     "CTOT_FSHIP": "CT/OT F.ship",
@@ -394,5 +394,10 @@
     "ZCRYSTALS": "Z-Crystals",
     "CATCHING_ITEMS": "Catching Items",
     "ROTOM_POWERS": "Rotom Powers",
-    "CONFIG_SAVE_INFO": "Use Save info"
+    "CONFIG_SAVE_INFO": "Use Save info",
+    "BANK_CREATE": "Creating bank",
+    "BANK_LOAD": "Loading bank",
+    "BANK_SAVE": "Saving bank",
+    "BANK_NAME_ERROR": "Could not save box names!",
+    "BANK_SAVE_ERROR": "Could not save bank!"
 }
