@@ -549,7 +549,7 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
             case 0x74 ... 0x76:
                 return std::make_pair(i18n::localize("IVS"), NORMAL);
             case 0x77:
-                return std::make_pair(i18n::localize("IVS;_EGG_AND_NICKNAMED_FLAG"), NORMAL);
+                return std::make_pair(i18n::localize("IVS_EGG_AND_NICKNAMED_FLAGS"), NORMAL);
             case 0x78 ... 0x8F:
                 return std::make_pair(i18n::localize("CURRENT_TRAINER_NAME"), NORMAL);
             case 0x90 ... 0x91:
