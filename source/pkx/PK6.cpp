@@ -547,8 +547,8 @@ std::unique_ptr<PKX> PK6::previous(void) const
 
     pk5->version(version());
 
-    pk5->nickname(nickname().c_str());
-    pk5->otName(otName().c_str());
+    pk5->nickname(nickname().substr(0, 11).c_str());
+    pk5->otName(otName().substr(0, 8).c_str());
 
     pk5->metYear(metYear());
     pk5->metMonth(metMonth());
