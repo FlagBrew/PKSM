@@ -29,10 +29,33 @@
 #include "TitleLoadScreen.hpp"
 #include <stdio.h>
 
+extern "C" {
+#include "download.h"
+}
+
 // increase the stack in order to allow quirc to decode large qrs
 int __stacksize__ = 64 * 1024;
 
 static u32 old_time_limit;
+
+struct asset {
+    std::string url;
+    std::string path;
+};
+
+static Result downloadAdditionalAssets(void) {
+    Result res = 0;
+    asset assets[2] = {
+        {"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/pkm_spritesheet.t3x", "/3ds/PKSM/assets/pkm_spritesheet.t3x"},
+        {"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/types_spritesheet.t3x", "/3ds/PKSM/assets/types_spritesheet.t3x"}
+    };
+    if (!io::exists(assets[0].path) || !io::exists(assets[1].path)) {
+        Result res1 = download(assets[0].url.c_str(), assets[0].path.c_str());
+        Result res2 = download(assets[1].url.c_str(), assets[1].path.c_str());
+        res = !res1 && !res2 ? 0 : -1;
+    }
+    return res;
+}
 
 Result App::init(std::string execPath)
 {
@@ -49,6 +72,7 @@ Result App::init(std::string execPath)
     if (R_FAILED(res = Archive::init(execPath))) return res;
     if (R_FAILED(res = pxiDevInit())) return res;
     if (R_FAILED(res = amInit())) return res;
+    if (R_FAILED(res = downloadAdditionalAssets())) return res;
     if (R_FAILED(res = Gui::init())) return res;
     i18n::init();
     Configuration::getInstance();
@@ -58,10 +82,10 @@ Result App::init(std::string execPath)
 
     Gui::setScreen(std::make_unique<TitleLoadScreen>());
 
-    // uncomment when needing to debug with GDB
 #ifdef PICOC_DEBUG
     consoleDebugInit(debugDevice_SVC);
 #endif
+    // uncomment when needing to debug with GDB
     // while(aptMainLoop() && !(hidKeysDown() & KEY_START)) { hidScanInput(); }
 
     return 0;

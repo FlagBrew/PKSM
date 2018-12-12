@@ -383,8 +383,8 @@ Result Gui::init(void)
     staticBuf = C2D_TextBufNew(4096);
 
     spritesheet_ui = C2D_SpriteSheetLoad("romfs:/gfx/ui_sheet.t3x");
-    spritesheet_pkm = C2D_SpriteSheetLoad("romfs:/gfx/pkm_spritesheet.t3x");
-    spritesheet_types = C2D_SpriteSheetLoad("romfs:/gfx/types_spritesheet.t3x");
+    spritesheet_pkm = C2D_SpriteSheetLoad("/3ds/PKSM/assets/pkm_spritesheet.t3x");
+    spritesheet_types = C2D_SpriteSheetLoad("/3ds/PKSM/assets/types_spritesheet.t3x");
 
     bgBoxes = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_anim_squares_idx);
 

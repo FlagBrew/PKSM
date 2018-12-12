@@ -407,5 +407,7 @@
     "STORAGE_BAD_FORM": "Impossible form",
     "STORAGE_BAD_ABILITY": "Impossible ability",
     "STORAGE_BAD_ITEM": "Impossible item",
-    "STORAGE_BAD_BALL": "Impossible ball"
+    "STORAGE_BAD_BALL": "Impossible ball",
+    "DOWNLOADING_ASSETS": "Downloading assets...",
+    "PLEASE_WAIT": "Please wait."
 }

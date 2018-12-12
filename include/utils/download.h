@@ -24,44 +24,9 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef QRSCANNER_HPP
-#define QRSCANNER_HPP
+#include <3ds.h>
+#include <curl/curl.h>
+#include <malloc.h>
+#include <string.h>
 
-#include "gui.hpp"
-
-extern "C" {
-#include "quirc/quirc.h"
-#include "base64.h"
-}
-
-typedef struct {
-    u16*          camera_buffer;
-    Handle        mutex;
-    volatile bool finished;
-    Handle        cancel;
-    bool          capturing;
-    struct quirc* context;
-    C3D_Tex*      tex;
-    C2D_Image     image;
-} qr_data;
-
-enum QRMode {
-    PKM4,
-    PKM5,
-    PKM6,
-    PKM7,
-    WCX4,
-    WCX5,
-    WCX6,
-    WCX7
-};
-
-namespace QRScanner
-{
-    void init(QRMode mode, u8*& buff);
-
-    // note: exposed, but not required to be called outside QRScanner.cpp
-    void exit(qr_data* data);
-}
-
-#endif
+Result download(const char* url, const char* path);

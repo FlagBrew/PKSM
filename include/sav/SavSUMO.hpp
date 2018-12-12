@@ -33,7 +33,7 @@
 #include "PK7.hpp"
 #include "WC7.hpp"
 
-extern "C"  {
+extern "C" {
 #include "../../source/memecrypto/memecrypto.h"
 #include "sha256.h"
 }
