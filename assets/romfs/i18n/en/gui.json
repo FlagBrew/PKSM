@@ -409,5 +409,8 @@
     "STORAGE_BAD_ITEM": "Impossible item",
     "STORAGE_BAD_BALL": "Impossible ball",
     "DOWNLOADING_ASSETS": "Downloading assets...",
-    "PLEASE_WAIT": "Please wait."
+    "PLEASE_WAIT": "Please wait.",
+    "BANK_CORRUPT": "Corrupted bank data",
+    "BANK_CONVERT": "Converting bank...",
+    "BANK_BAD_CONVERT": "Could not read bank.bin"
 }

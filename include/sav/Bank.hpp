@@ -40,13 +40,15 @@ public:
     std::unique_ptr<PKX> pkm(int box, int slot) const;
     void pkm(PKX& pkm, int box, int slot);
     void resize();
-    void save() const;
+    bool save() const;
     void backup() const;
     std::string boxName(int box) const;
     void boxName(std::string name, int box);
 private:
     static constexpr int BANK_VERSION = 1;
     static constexpr std::string_view BANK_MAGIC = "PKSMBANK";
+    void loadExtData();
+    void loadSD();
     struct BankHeader {
         const char MAGIC[8];
         int version;
