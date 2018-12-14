@@ -45,8 +45,8 @@ BagScreen::BagScreen() : limits(TitleLoader::save->pouches()), allowedItems(Titl
     buttons.push_back(new AccelButton(147, 225, 152, 30, [this](){ return clickIndex(7); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 5));
     for (int i = 0; i < 7; i++)
     {
-        amountButtons.push_back(new AccelButton(134, 23 + i * 30, 13, 13, [this, i](){ editCount(false, i); return false; }, ui_sheet_emulated_button_minus_small_black_idx, "", 0.0f, 0));
-        amountButtons.push_back(new AccelButton(299, 23 + i * 30, 13, 13, [this, i](){ editCount(true, i); return false; }, ui_sheet_emulated_button_plus_small_black_idx, "", 0.0f, 0));
+        amountButtons.push_back(new AccelButton(134, 23 + i * 30, 13, 13, [this, i](){ editCount(false, i); selectingPouch = false; selectedItem = i; return false; }, ui_sheet_emulated_button_minus_small_black_idx, "", 0.0f, 0));
+        amountButtons.push_back(new AccelButton(299, 23 + i * 30, 13, 13, [this, i](){ editCount(true, i); selectingPouch = false; selectedItem = i; return false; }, ui_sheet_emulated_button_plus_small_black_idx, "", 0.0f, 0));
     }
 
     for (int i = 0; i < limits[0].second; i++)
@@ -353,7 +353,6 @@ void BagScreen::update(touchPosition* touch)
     {
         amountButtons[i*2]->update(touch);
         amountButtons[i*2+1]->update(touch);
-        selectingPouch = false;
     }
 
     if (timer > 0)
@@ -401,6 +400,7 @@ bool BagScreen::clickIndex(int i)
             selectedItem = i;
         }
     }
+    selectingPouch = false;
     return false;
 }
 
@@ -500,11 +500,17 @@ void BagScreen::editCount(bool up, int selected)
     {
         if (up)
         {
-            item->count(item->count() + 1);
+            if (item->count() < 0xFFFF)
+            {
+                item->count(item->count() + 1);
+            }
         }
         else
         {
-            item->count(item->count() - 1);
+            if (item->count() > 1)
+            {
+                item->count(item->count() - 1);
+            }
         }
         TitleLoader::save->item(*item, limits[currentPouch].first, firstItem + selected);
     }
