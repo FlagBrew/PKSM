@@ -485,6 +485,7 @@ void Bank::pkm(PKX& pkm, int box, int slot)
 
 void Bank::backup() const
 {
+    Gui::waitFrame(i18n::localize("BANK_BACKUP"));
     FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_UTF16, u"/3ds/PKSM/banks/pksm_1.bnk.bak"));
     FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_UTF16, u"/3ds/PKSM/banks/pksm_1.json.bak"));
 
