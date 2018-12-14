@@ -27,6 +27,7 @@
 #include "SaveLoadScreen.hpp"
 #include "TitleLoadScreen.hpp"
 #include "MainMenu.hpp"
+#include "ConfigScreen.hpp"
 
 static constexpr std::string_view dsIds[9] = {
     "ADA", //Diamond
@@ -607,6 +608,11 @@ void SaveLoadScreen::update(touchPosition* touch)
                 selectedSave = 0;
             }
         }
+    }
+
+    if (downKeys & KEY_SELECT)
+    {
+        Gui::setScreen(std::make_unique<ConfigScreen>());
     }
 
     // re-adds removed cards and deletes inserted ones
