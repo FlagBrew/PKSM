@@ -64,6 +64,9 @@ Result App::init(std::string execPath)
 #endif
     Result res;
 
+    Handle hbldrHandle;
+    if (R_FAILED(res = svcConnectToPort(&hbldrHandle, "hb:ldr"))) return res;
+
     APT_GetAppCpuTimeLimit(&old_time_limit);
     APT_SetAppCpuTimeLimit(30);
     

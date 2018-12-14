@@ -29,7 +29,9 @@
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
 
-#define LIMITSTORAGE(number) number > 2000 ? 2000 : number < 0 ? 0 : number
+#define STORAGE_BOX_LIMIT 2000
+
+#define LIMITSTORAGE(number) number > STORAGE_BOX_LIMIT ? STORAGE_BOX_LIMIT : number < 0 ? 0 : number
 
 static void inputNumber(std::function<void(int)> callback, int digits, int maxValue)
 {
@@ -102,7 +104,7 @@ ConfigScreen::ConfigScreen() : oldStorage(Configuration::getInstance().storageSi
     // Miscellaneous buttons
     tabButtons[2].push_back(new ClickButton(237, 39, 15, 12, [](){ Configuration::getInstance().autoBackup(!Configuration::getInstance().autoBackup()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
     tabButtons[2].push_back(new AccelButton(231, 62, 13, 13, [](){ Configuration::getInstance().storageSize(LIMITSTORAGE(Configuration::getInstance().storageSize() - 1)); return false; }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new Button(245, 62, 50, 13, [](){ Gui::setNextKeyboardFunc([](){ inputNumber([](u16 a){ Configuration::getInstance().storageSize(a); }, 4, 2000); }); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
+    tabButtons[2].push_back(new Button(245, 62, 50, 13, [](){ Gui::setNextKeyboardFunc([](){ inputNumber([](u16 a){ Configuration::getInstance().storageSize(a); }, 4, STORAGE_BOX_LIMIT); }); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
     tabButtons[2].push_back(new AccelButton(296, 62, 13, 13, [](){ Configuration::getInstance().storageSize(LIMITSTORAGE(Configuration::getInstance().storageSize() + 1)); return false; }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
     tabButtons[2].push_back(new ClickButton(237, 87, 15, 12, [](){ Configuration::getInstance().fixSectors(!Configuration::getInstance().fixSectors()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
     tabButtons[2].push_back(new ClickButton(237, 111, 15, 12, [](){ Configuration::getInstance().transferEdit(!Configuration::getInstance().transferEdit()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
