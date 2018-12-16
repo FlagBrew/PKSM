@@ -35,8 +35,7 @@ void MysteryGift::init(Generation g)
     sheet >> mysteryGiftSheet;
     sheet.close();
 
-    std::ifstream data(StringUtils::format("romfs:/mg/data%s.bin", genToString(g).c_str()), std::ios::binary);
-    data.seekg(0, std::ios::end);
+    std::ifstream data(StringUtils::format("romfs:/mg/data%s.bin", genToString(g).c_str()), std::ios::binary | std::ios::ate);
     size_t size = data.tellg();
     data.seekg(0, std::ios::beg);
 

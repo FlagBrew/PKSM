@@ -255,10 +255,9 @@ static std::pair<u8*, size_t> scriptRead(std::string path)
 {
     u8* data = nullptr;
     size_t size = 0;
-    std::ifstream in(path, std::ios::binary);
+    std::ifstream in(path, std::ios::binary | std::ios::ate);
     if (in.good())
     {
-        in.seekg(0, std::ios::end);
         size = in.tellg();
         in.seekg(0, std::ios::beg);
         data = new u8[size];

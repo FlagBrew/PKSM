@@ -36,9 +36,8 @@ Bank::Bank()
     if (io::exists("/3ds/PKSM/bank/bank.bin"))
     {
         bool deleteOld = true;
-        std::ifstream in("/3ds/PKSM/bank/bank.bin");
+        std::ifstream in("/3ds/PKSM/bank/bank.bin", std::ios::binary | std::ios::ate);
         Gui::waitFrame(i18n::localize("BANK_CONVERT"));
-        in.seekg(0, std::ios::end);
         size_t oldSize = in.tellg();
         in.seekg(0, std::ios::beg);
         u8* oldData = new u8[oldSize];
@@ -240,11 +239,10 @@ createBank:
 void Bank::loadSD()
 {
     bool needResize = false, needSave = false;
-    std::fstream in("/3ds/PKSM/banks/pksm_1.bnk", std::ios::in);
+    std::fstream in("/3ds/PKSM/banks/pksm_1.bnk", std::ios::in | std::ios::binary | std::ios::ate);
     if (in.good())
     {
         Gui::waitFrame(i18n::localize("BANK_LOAD"));
-        in.seekg(0, std::ios::end);
         size = in.tellg();
         in.seekg(0, std::ios::beg);
         data = new u8[size];
