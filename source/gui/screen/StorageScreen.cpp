@@ -50,6 +50,7 @@ static u8 type1(Generation generation, u16 species)
         case Generation::SEVEN:
             return PersonalSMUSUM::type1(species);
         case Generation::LGPE:
+        case Generation::UNUSED:
             return 0; //PersonalLGPE::type1(species);
     }
     return 0;
@@ -68,6 +69,7 @@ static u8 type2(Generation generation, u16 species)
         case Generation::SEVEN:
             return PersonalSMUSUM::type2(species);
         case Generation::LGPE:
+        case Generation::UNUSED:
             return 0; //PersonalLGPE::type2(species);
     }
     return 0;
@@ -166,6 +168,7 @@ void StorageScreen::setBoxName(bool storage)
             }
             break;
             case Generation::LGPE:
+            case Generation::UNUSED:
             // Do nothing
             break;
         }

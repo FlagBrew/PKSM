@@ -108,6 +108,8 @@ InjectorScreen::InjectorScreen(nlohmann::json ids) : hid(40, 8), ids(ids), empty
             newDate += Configuration::getInstance().day();
             wondercard->rawDate(newDate);
             break;
+        case Generation::UNUSED:
+            break;
     }
 }
 
