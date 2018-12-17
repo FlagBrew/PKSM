@@ -455,7 +455,7 @@ std::unique_ptr<PKX> Bank::pkm(int box, int slot) const
         case Generation::LGPE:
             return std::make_unique<PB7>(bank[index].data, false);
 
-        case Generation(0xFF):
+        case Generation::UNUSED:
         default:
             return std::make_unique<PK7>();
     }

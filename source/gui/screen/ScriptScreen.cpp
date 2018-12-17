@@ -32,6 +32,7 @@
 extern "C" {
     #include "picoc.h"
 }
+#undef min // Get rid of picoc's min function
 
 static constexpr std::string_view MAGIC = "PKSMSCRIPT";
 
@@ -287,7 +288,7 @@ void ScriptScreen::applyScript()
         return;
     }
 
-    for (size_t i = 0; i < MAGIC.size() < scriptData.second ? MAGIC.size() : scriptData.second; i++)
+    for (size_t i = 0; i < std::min(MAGIC.size(), scriptData.second); i++)
     {
         if (scriptData.first[i] != MAGIC[i])
         {

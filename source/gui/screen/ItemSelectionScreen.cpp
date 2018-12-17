@@ -61,7 +61,7 @@ namespace {
 ItemSelectionScreen::ItemSelectionScreen(std::shared_ptr<PKX> pkm) : SelectionScreen(pkm), hid(40, 2)
 {
     std::vector<std::string> rawItems = i18n::rawItems(Configuration::getInstance().language());
-    for (size_t i = 1; i < TitleLoader::save->maxItem(); i++)
+    for (int i = 1; i < TitleLoader::save->maxItem(); i++)
     {
         if (rawItems[i].find("\uFF1F\uFF1F\uFF1F") != std::string::npos || rawItems[i].find("???") != std::string::npos) continue;
         items.push_back({i, rawItems[i]});

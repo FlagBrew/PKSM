@@ -61,7 +61,7 @@ namespace {
 MoveSelectionScreen::MoveSelectionScreen(std::shared_ptr<PKX> pkm, int moveIndex) : SelectionScreen(pkm), moveIndex(moveIndex), hid(40, 2)
 {
     std::vector<std::string> rawMoves = i18n::rawMoves(Configuration::getInstance().language());
-    for (size_t i = 1; i < TitleLoader::save->maxMove(); i++)
+    for (int i = 1; i < TitleLoader::save->maxMove(); i++)
     {
         if (i >= 622 && i <= 658) continue;
         moves.push_back({i, rawMoves[i]});

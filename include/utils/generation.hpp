@@ -35,7 +35,8 @@ enum class Generation
     FIVE,
     SIX,
     SEVEN,
-    LGPE
+    LGPE,
+    UNUSED = 0xFF
 };
 
 std::string genToString(Generation gen);

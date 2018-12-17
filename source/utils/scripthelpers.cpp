@@ -209,7 +209,7 @@ extern "C" {
         {
             ret->amount = directory.count();
             ret->data = (char**) malloc(sizeof(char*) * directory.count());
-            for (int i = 0; i < directory.count(); i++)
+            for (size_t i = 0; i < directory.count(); i++)
             {
                 std::string item = dir + "/" + directory.item(i);
                 ret->data[i] = (char*) malloc(sizeof(char) * (item.size() + 1));
