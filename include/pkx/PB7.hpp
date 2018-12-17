@@ -233,8 +233,6 @@ public:
     void height(u8 v);
     u8 weight(void) const;
     void weight(u8 v);
-    
-    std::unique_ptr<PKX> previous(void) const override;
 };
 
 #endif

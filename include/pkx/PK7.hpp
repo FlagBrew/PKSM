@@ -224,7 +224,6 @@ public:
     void partyLevel(u8 v) override;
     
     std::unique_ptr<PKX> previous(void) const override;
-    std::unique_ptr<PKX> next(void) const override;
 };
 
 #endif

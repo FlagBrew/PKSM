@@ -449,42 +449,6 @@ u16 PB7::stat(const u8 stat) const
     return final * mult / 10 + awakened(stat);
 }
 
-std::unique_ptr<PKX> PB7::previous(void) const
-{
-    u8 dt[232];
-    std::copy(data, data + 232, dt);
-
-    // markvalue field moved, clear old gen 7 data
-    *(u16*)(dt + 0x16) = 0;
-
-    PK6 *pk6 = new PK6(dt);
-    
-    pk6->markValue(markValue());
-
-    switch (abilityNumber())
-    {
-        case 1:
-        case 2:
-        case 4:
-            u8 index = abilityNumber() >> 1;
-            if (PersonalSMUSUM::ability(species(), index) == ability())
-                pk6->ability(PersonalXYORAS::ability(species(), index));
-    }
-
-    // TODO
-    pk6->htMemory(4);
-    pk6->htTextVar(0);
-    pk6->htIntensity(1);
-    pk6->htFeeling(rand() % 10);
-    //pk6->geoCountry
-    //pk6->geoRegion
-
-    // check illegal moves ???
-
-    pk6->refreshChecksum();
-    return std::unique_ptr<PKX>(pk6);
-}
-
 int PB7::partyCurrHP(void) const
 {
     if (length == 232)
