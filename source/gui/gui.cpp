@@ -1347,7 +1347,7 @@ void Gui::waitFrame(const std::string& message, std::optional<std::string> messa
         dynamicText(GFX_TOP, 105, message2.value(), FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE);
     }
 
-    dynamicText(GFX_TOP, 130, "Please wait.", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+    dynamicText(GFX_TOP, 130, i18n::localize("PLEASE_WAIT"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
 
     C2D_SceneBegin(g_renderTargetBottom);
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);

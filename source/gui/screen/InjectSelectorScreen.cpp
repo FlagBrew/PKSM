@@ -369,6 +369,9 @@ void InjectSelectorScreen::dumpCard(void) const
         case Generation::LGPE:
             path += ".wb7";
             break;
+        case Generation::UNUSED:
+            Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS"));
+            return;
     }
     FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, wc->size());
     if (out.good())

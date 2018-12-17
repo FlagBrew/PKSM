@@ -85,6 +85,7 @@ void EditSelectorScreen::changeBoxName()
         }
         break;
         case Generation::LGPE:
+        case Generation::UNUSED:
         // Nothing happens
         break;
     }

@@ -391,7 +391,7 @@ void StorageScreen::draw() const
             Gui::dynamicText(infoMon->nickname(), 276, 61, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
             std::string info = "#" + std::to_string(infoMon->species());
             Gui::dynamicText(info, 273, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            info = "Lv." + std::to_string(infoMon->level());
+            info = i18n::localize("LV") + std::to_string(infoMon->level());
             float width = textWidth(info, FONT_SIZE_12);
             Gui::dynamicText(info, 375 - (int) width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
             if (infoMon->gender() == 0)
@@ -428,12 +428,12 @@ void StorageScreen::draw() const
                 Gui::type(Configuration::getInstance().language(), firstType, 300, 115);
             }
 
-            info = infoMon->otName() + "\nID. " + std::to_string(infoMon->TID());
+            info = infoMon->otName() + '\n' + i18n::localize("LOADER_ID") + std::to_string(infoMon->TID());
             Gui::dynamicText(info, 276, 141, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
 
             info = i18n::nature(Configuration::getInstance().language(), infoMon->nature());
             Gui::dynamicText(info, 276, 181, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            info = "IV: ";
+            info = i18n::localize("IV") + ": ";
             width = textWidth(info, FONT_SIZE_12);
             Gui::dynamicText(info, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
             info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(0), infoMon->iv(1), infoMon->iv(2));
