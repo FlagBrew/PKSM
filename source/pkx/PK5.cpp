@@ -25,6 +25,7 @@
 */
 
 #include "PK5.hpp"
+#include "loader.hpp"
 
 void PK5::shuffleArray(void)
 {
@@ -584,7 +585,14 @@ std::unique_ptr<PKX> PK5::previous(void) const
     pk4->otFriendship(70);
     pk4->ball(ball());
     // met location ???
-    // check illegal moves ???
+    for (int i = 0; i < 4; i++)
+    {
+        if (pk4->move(i) > TitleLoader::save->maxMove())
+        {
+            pk4->move(i, 0);
+        }
+    }
+    pk4->fixMoves();
 
     pk4->refreshChecksum();
     return std::unique_ptr<PKX>(pk4);

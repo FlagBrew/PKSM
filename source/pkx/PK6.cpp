@@ -25,6 +25,7 @@
 */
 
 #include "PK6.hpp"
+#include "loader.hpp"
 
 void PK6::shuffleArray(void)
 {
@@ -612,7 +613,13 @@ std::unique_ptr<PKX> PK6::previous(void) const
     if (shiny() && (val > 7) && (val < 16))
         pk5->PID(PID() ^ 0x80000000);
 
-    // check illegal moves ???
+    for (int i = 0; i < 4; i++)
+    {
+        if (pk5->move(i) > TitleLoader::save->maxMove())
+        {
+            pk5->move(i, 0);
+        }
+    }
 
     pk5->refreshChecksum();
     return std::unique_ptr<PKX>(pk5);

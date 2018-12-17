@@ -25,6 +25,7 @@
 */
 
 #include "PK7.hpp"
+#include "loader.hpp"
 
 void PK7::shuffleArray(void)
 {
@@ -478,7 +479,18 @@ std::unique_ptr<PKX> PK7::previous(void) const
     //pk6->geoCountry
     //pk6->geoRegion
 
-    // check illegal moves ???
+    for (int i = 0; i < 4; i++)
+    {
+        if (pk6->move(i) > TitleLoader::save->maxMove())
+        {
+            pk6->move(i, 0);
+        }
+        if (pk6->relearnMove(i) > TitleLoader::save->maxMove())
+        {
+            pk6->relearnMove(i, 0);
+        }
+    }
+    pk6->fixMoves();
 
     pk6->refreshChecksum();
     return std::unique_ptr<PKX>(pk6);
