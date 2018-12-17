@@ -327,7 +327,7 @@ void SavLGPE::pkm(PKX& pk, u8 slot)
         }
         if (off == 0)
         {
-            Gui::warn("No empty slot found");
+            Gui::warn(i18n::localize("LGPE_NO_PARTY_SLOT"));
             return;
         }
     }
@@ -344,7 +344,7 @@ std::shared_ptr<PKX> SavLGPE::emptyPkm() const
 
 std::string SavLGPE::boxName(u8 box) const
 {
-    return "Box " + std::to_string((int)box + 1);
+    return i18n::localize("BOX") + " " + std::to_string((int)box + 1);
 }
 
 void SavLGPE::boxName(u8 box, std::string name)
@@ -535,7 +535,7 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
     {
         if (boxedPkm() == maxSlot())
         {
-            Gui::warn("Too many Pok\u00E9mon", "Cannot inject");
+            Gui::warn(i18n::localize("LGPE_TOO_MANY_PKM"), i18n::localize("BAD_INJECT"));
             return;
         }
         PB7 pkm;
@@ -779,7 +779,7 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
 
             if (slot == -2)
             {
-                Gui::warn("You already have this TM!");
+                Gui::warn(i18n::localize("LGPE_HAS_TM"));
                 return;
             }
             else if (slot != -1)
@@ -885,6 +885,7 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
             }
         }
     }
+    else
     {
         Gui::warn("This is icky and currently unimplemented.", "Requires dumb stuff to happen");
     }
@@ -903,7 +904,7 @@ void SavLGPE::item(Item& item, Pouch pouch, u16 slot)
             }
             else
             {
-                Gui::warn("Why the fuck is this happenening?", "Please report this! (Medicine LGPE)");
+                Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Medicine LGPE)");
             }
             break;
         case Pouch::TM:
@@ -913,7 +914,7 @@ void SavLGPE::item(Item& item, Pouch pouch, u16 slot)
             }
             else
             {
-                Gui::warn("Why the fuck is this happenening?", "Please report this! (TM LGPE)");
+                Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(TM LGPE)");
             }
             break;
         case Pouch::Candy:
@@ -923,7 +924,7 @@ void SavLGPE::item(Item& item, Pouch pouch, u16 slot)
             }
             else
             {
-                Gui::warn("Why the fuck is this happenening?", "Please report this! (Candy LGPE)");
+                Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Candy LGPE)");
             }
             break;
         case Pouch::ZCrystals:
@@ -933,7 +934,7 @@ void SavLGPE::item(Item& item, Pouch pouch, u16 slot)
             }
             else
             {
-                Gui::warn("Why the fuck is this happenening?", "Please report this! (ZCrystals LGPE)");
+                Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(ZCrystals LGPE)");
             }
             break;
         case Pouch::Ball:
@@ -943,7 +944,7 @@ void SavLGPE::item(Item& item, Pouch pouch, u16 slot)
             }
             else
             {
-                Gui::warn("Why the fuck is this happenening?", "Please report this! (Ball LGPE)");
+                Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Ball LGPE)");
             }
             break;
         case Pouch::Battle:
@@ -953,7 +954,7 @@ void SavLGPE::item(Item& item, Pouch pouch, u16 slot)
             }
             else
             {
-                Gui::warn("Why the fuck is this happenening?", "Please report this! (Battle LGPE)");
+                Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Battle LGPE)");
             }
             break;
         case Pouch::KeyItem:
@@ -964,11 +965,11 @@ void SavLGPE::item(Item& item, Pouch pouch, u16 slot)
             }
             else
             {
-                Gui::warn("Why the fuck is this happenening?", "Please report this! (Normal/Key LGPE)");
+                Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Normal/Key LGPE)");
             }
             break;
         default:
-            Gui::warn("Something very, very weird happened.", "Please report where this happened.");
+            Gui::warn(i18n::localize("THE_FUCK"), std::to_string((int)pouch));
             break;
     }
 }

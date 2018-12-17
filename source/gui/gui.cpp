@@ -1312,7 +1312,7 @@ bool Gui::showChoiceMessage(const std::string& message, std::optional<std::strin
             dynamicText(GFX_TOP, 105, message2.value(), FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency));
         }
 
-        dynamicText(GFX_TOP, 130, "Press A to continue, B to cancel.", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+        dynamicText(GFX_TOP, 130, i18n::localize("CONTINUE_CANCEL"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
 
         C2D_SceneBegin(g_renderTargetBottom);
         sprite(ui_sheet_part_info_bottom_idx, 0, 0);
@@ -1382,7 +1382,7 @@ void Gui::warn(const std::string& message, std::optional<std::string> message2)
             dynamicText(GFX_TOP, 105, message2.value(), FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency));
         }
 
-        dynamicText(GFX_TOP, 130, "Press A to continue.", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+        dynamicText(GFX_TOP, 130, i18n::localize("CONTINUE"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
 
         C2D_SceneBegin(g_renderTargetBottom);
         sprite(ui_sheet_part_info_bottom_idx, 0, 0);
@@ -1411,8 +1411,8 @@ void Gui::showRestoreProgress(u32 partial, u32 total)
     C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
     C2D_SceneBegin(g_renderTargetTop);
     sprite(ui_sheet_part_info_top_idx, 0, 0);
-    staticText(GFX_TOP, 95, "Saving...", FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE);
-    dynamicText(GFX_TOP, 130, StringUtils::format("%lu KB of %lu KB...", partial, total), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
+    staticText(GFX_TOP, 95, i18n::localize("SAVING"), FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE);
+    dynamicText(GFX_TOP, 130, StringUtils::format(i18n::localize("SAVE_PROGRESS"), partial, total), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
     C2D_SceneBegin(g_renderTargetBottom);
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
     C3D_FrameEnd(0);
@@ -1426,9 +1426,38 @@ void Gui::showResizeStorage()
     C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
     C2D_SceneBegin(g_renderTargetTop);
     sprite(ui_sheet_part_info_top_idx, 0, 0);
-    staticText(GFX_TOP, 95, "Resizing Storage...", FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE);
-    // dynamicText(GFX_TOP, 130, StringUtils::format("%lu KB of %lu KB...", partial, total), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
+    staticText(GFX_TOP, 95, i18n::localize("STORAGE_RESIZE"), FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE);
     C2D_SceneBegin(g_renderTargetBottom);
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
     C3D_FrameEnd(0);
+}
+
+void Gui::error(const std::string& message, Result errorCode)
+{
+    u32 keys = 0;
+    C3D_FrameEnd(0);
+    clearTextBufs();
+    hidScanInput();
+    while (aptMainLoop() && !((keys = hidKeysDown()) & KEY_A))
+    {
+        hidScanInput();
+        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+        C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
+        C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
+
+        C2D_SceneBegin(g_renderTargetTop);
+        sprite(ui_sheet_part_info_top_idx, 0, 0);
+        u8 transparency = transparencyWaver();
+        dynamicText(GFX_TOP, 85, message, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency));
+        dynamicText(GFX_TOP, 105, StringUtils::format(i18n::localize("ERROR_CODE"), errorCode), FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency));
+
+        dynamicText(GFX_TOP, 130, i18n::localize("CONTINUE"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+
+        C2D_SceneBegin(g_renderTargetBottom);
+        sprite(ui_sheet_part_info_bottom_idx, 0, 0);
+
+        C3D_FrameEnd(0);
+        Gui::clearTextBufs();
+    }
+    hidScanInput();
 }

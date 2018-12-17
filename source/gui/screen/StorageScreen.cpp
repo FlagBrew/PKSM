@@ -963,7 +963,7 @@ void StorageScreen::pickup()
                 return;
             }
             std::shared_ptr<PKX> temPkm = TitleLoader::save->pkm(boxBox, cursorIndex - 1);
-            if ((Configuration::getInstance().transferEdit() || moveMon->generation() == TitleLoader::save->generation()) || Gui::showChoiceMessage(StringUtils::format("The generation change (%s->%s) will edit your", genToString(moveMon->generation()).c_str(), genToString(TitleLoader::save->generation()).c_str()), "Pok\u00E9mon. Continue?"))
+            if ((Configuration::getInstance().transferEdit() || moveMon->generation() == TitleLoader::save->generation()) || Gui::showChoiceMessage(StringUtils::format(i18n::localize("GEN_CHANGE_1"), genToString(moveMon->generation()).c_str(), genToString(TitleLoader::save->generation()).c_str()), i18n::localize("GEN_CHANGE_2")))
             {
                 while (moveMon->generation() != TitleLoader::save->generation())
                 {
@@ -1063,7 +1063,7 @@ bool StorageScreen::dumpPkm()
             }
             else
             {
-                Gui::warn(i18n::localize("BANK_OPEN_FAILED"));
+                Gui::error(i18n::localize("FAILED_OPEN_DUMP"), out.result());
             }
             out.close();
         }
@@ -1091,7 +1091,7 @@ bool StorageScreen::dumpPkm()
                     }
                     else
                     {
-                        Gui::warn(i18n::localize("BANK_OPEN_FAILED"));
+                        Gui::error(i18n::localize("FAILED_OPEN_DUMP"), out.result());
                     }
                     out.close();
                 }
@@ -1113,7 +1113,7 @@ bool StorageScreen::dumpPkm()
                     }
                     else
                     {
-                        Gui::warn(i18n::localize("BANK_OPEN_FAILED"));
+                        Gui::error(i18n::localize("FAILED_OPEN_DUMP"), out.result());
                     }
                     out.close();
                 }
@@ -1161,7 +1161,7 @@ bool StorageScreen::swapBoxWithStorage()
         {
             temPkm = TitleLoader::save->emptyPkm();
         }
-        else if ((Configuration::getInstance().transferEdit() || temPkm->generation() == TitleLoader::save->generation()) || Gui::showChoiceMessage(StringUtils::format("The generation change (%s->%s) will edit your", genToString(temPkm->generation()).c_str(), genToString(TitleLoader::save->generation()).c_str()), "Pok\u00E9mon. Continue?"))
+        else if ((Configuration::getInstance().transferEdit() || temPkm->generation() == TitleLoader::save->generation()) || Gui::showChoiceMessage(StringUtils::format(i18n::localize("GEN_CHANGE_1"), genToString(moveMon->generation()).c_str(), genToString(TitleLoader::save->generation()).c_str()), i18n::localize("GEN_CHANGE_2")))
         {
             while (temPkm->generation() != TitleLoader::save->generation())
             {
@@ -1174,10 +1174,10 @@ bool StorageScreen::swapBoxWithStorage()
                     temPkm = temPkm->next();
                 }
             }
+            auto otherTemPkm = TitleLoader::save->pkm(boxBox, i);
+            TitleLoader::save->pkm(*temPkm, boxBox, i);
+            bank.pkm(*otherTemPkm, storageBox, i);
         }
-        auto otherTemPkm = TitleLoader::save->pkm(boxBox, i);
-        TitleLoader::save->pkm(*temPkm, boxBox, i);
-        bank.pkm(*otherTemPkm, storageBox, i);
     }
     return false;
 }

@@ -265,7 +265,7 @@ static std::pair<u8*, size_t> scriptRead(std::string path)
     }
     else
     {
-        Gui::warn(i18n::localize("SCRIPTS_FAILED_OPEN"));
+        Gui::error(i18n::localize("SCRIPTS_FAILED_OPEN"), errno);
     }
     in.close();
 
@@ -287,7 +287,7 @@ void ScriptScreen::applyScript()
         return;
     }
 
-    for (size_t i = 0; i < MAGIC.size(); i++)
+    for (size_t i = 0; i < MAGIC.size() < scriptData.second ? MAGIC.size() : scriptData.second; i++)
     {
         if (scriptData.first[i] != MAGIC[i])
         {

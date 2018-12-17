@@ -377,7 +377,7 @@ void InjectSelectorScreen::dumpCard(void) const
     }
     else
     {
-        Gui::warn(i18n::localize("FAILED_OPEN_DUMP"));
+        Gui::error(i18n::localize("FAILED_OPEN_DUMP"), out.result());
     }
     out.close();
 }

@@ -47,7 +47,7 @@ Bank::Bank()
         }
         else
         {
-            Gui::warn("BANK_BAD_CONVERT");
+            Gui::error(i18n::localize("BANK_BAD_CONVERT"), errno);
             deleteOld = false;
         }
         in.close();
@@ -328,7 +328,7 @@ bool Bank::save() const
             }
             else
             {
-                Gui::warn(i18n::localize("BANK_NAME_ERROR"), std::to_string(out.result()));
+                Gui::error(i18n::localize("BANK_NAME_ERROR"), out.result());
             }
             out.close();
             return true;
@@ -336,7 +336,7 @@ bool Bank::save() const
         else
         {
             out.close();
-            Gui::warn(i18n::localize("BANK_SAVE_ERROR"), std::to_string(out.result()));
+            Gui::error(i18n::localize("BANK_SAVE_ERROR"), out.result());
             return false;
         }
     }
@@ -356,7 +356,7 @@ bool Bank::save() const
             }
             else
             {
-                Gui::warn(i18n::localize("BANK_NAME_ERROR"));
+                Gui::error(i18n::localize("BANK_NAME_ERROR"), errno);
             }
             out.close();
             return true;
@@ -364,7 +364,7 @@ bool Bank::save() const
         else
         {
             out.close();
-            Gui::warn(i18n::localize("BANK_SAVE_ERROR"));
+            Gui::error(i18n::localize("BANK_SAVE_ERROR"), errno);
             return false;
         }
     }

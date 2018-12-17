@@ -281,7 +281,7 @@ void TitleLoader::backupSave()
     }
     else
     {
-        Gui::warn("Could not open backup file!");
+        Gui::warn(i18n::localize("BAD_OPEN_BACKUP"));
     }
     out.close();
 }
@@ -311,7 +311,7 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
         }
         else
         {
-            Gui::warn("Could not open save!");
+            Gui::error(i18n::localize("BAD_OPEN_SAVE"), in.result());
             in.close();
             loadedTitle = nullptr;
             FSUSER_CloseArchive(archive);
@@ -323,7 +323,7 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
         u32 cap = SPIGetCapacity(title->SPICardType());
         if (cap != 524288)
         {
-            Gui::warn("Wrong size for this game!", "Please report to FlagBrew");
+            Gui::warn(i18n::localize("WRONG_SIZE"), i18n::localize("Please report"));
             return false;
         }
 
@@ -361,7 +361,7 @@ bool TitleLoader::load(std::shared_ptr<Title> title, std::string savePath)
     }
     else
     {
-        Gui::warn("Could not open save!");
+        Gui::error(i18n::localize("BAD_OPEN_SAVE"), in.result());
         loadedTitle = nullptr;
         saveFileName = "";
         in.close();
@@ -379,10 +379,10 @@ bool TitleLoader::load(std::shared_ptr<Title> title, std::string savePath)
 
 void TitleLoader::saveToTitle(bool ask)
 {
-    // Just an extra check
+    Result res;
     if (loadedTitle)
     {
-        if (TitleLoader::cardTitle == loadedTitle && (!ask || Gui::showChoiceMessage("Would you like to write changes to", "the game card?")))
+        if (TitleLoader::cardTitle == loadedTitle && (!ask || Gui::showChoiceMessage(i18n::localize("SAVE_OVERWRITE_1"), i18n::localize("SAVE_OVERWRITE_CARD"))))
         {
             auto& title = TitleLoader::cardTitle;
             if (title->cardType() == FS_CardType::CARD_CTR)
@@ -393,17 +393,17 @@ void TitleLoader::saveToTitle(bool ask)
                 if (out.good())
                 {
                     out.write(save->data, save->length);
-                    if (R_FAILED(FSUSER_ControlArchive(archive, ARCHIVE_ACTION_COMMIT_SAVE_DATA, NULL, 0, NULL, 0)))
+                    if (R_FAILED(res = FSUSER_ControlArchive(archive, ARCHIVE_ACTION_COMMIT_SAVE_DATA, NULL, 0, NULL, 0)))
                     {
                         out.close();
                         FSUSER_CloseArchive(archive);
-                        Gui::warn("Failed to commit save data!");
+                        Gui::error(i18n::localize("FAIL_SAVE_COMMIT"), res);
                         return;
                     }
                 }
                 else
                 {
-                    Gui::warn("Could not open save!");
+                    Gui::error(i18n::localize("BAD_OPEN_SAVE"), out.result());
                 }
                 out.close();
                 FSUSER_CloseArchive(archive);
@@ -428,7 +428,7 @@ void TitleLoader::saveToTitle(bool ask)
             // Just a linear search because it's a maximum of eight titles
             for (auto title : TitleLoader::nandTitles)
             {
-                if (title == loadedTitle && (!ask || Gui::showChoiceMessage("Would you like to write changes to", "the installed title?")))
+                if (title == loadedTitle && (!ask || Gui::showChoiceMessage(i18n::localize("SAVE_OVERWRITE_1"), i18n::localize("SAVE_OVERWRITE_INSTALL"))))
                 {
                     FS_Archive archive;
                     Archive::save(&archive, title->mediaType(), title->lowId(), title->highId());
@@ -436,17 +436,17 @@ void TitleLoader::saveToTitle(bool ask)
                     if (out.good())
                     {
                         out.write(save->data, save->length);
-                        if (R_FAILED(FSUSER_ControlArchive(archive, ARCHIVE_ACTION_COMMIT_SAVE_DATA, NULL, 0, NULL, 0)))
+                        if (R_FAILED(res = FSUSER_ControlArchive(archive, ARCHIVE_ACTION_COMMIT_SAVE_DATA, NULL, 0, NULL, 0)))
                         {
                             out.close();
                             FSUSER_CloseArchive(archive);
-                            Gui::warn("Failed to commit save data!");
+                            Gui::error(i18n::localize("FAIL_SAVE_COMMIT"), res);
                             return;
                         }
                     }
                     else
                     {
-                        Gui::warn("Could not open save!");
+                        Gui::error(i18n::localize("BAD_OPEN_SAVE"), out.result());
                     }
                     out.close();
                     FSUSER_CloseArchive(archive);
