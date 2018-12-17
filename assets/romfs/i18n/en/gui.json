@@ -434,5 +434,6 @@
     "SAVING": "Saving...",
     "SAVE_PROGRESS": "%lu KB of %lu KB...",
     "GEN_CHANGE_1": "The generation change (%s->%s) will edit your",
-    "GEN_CHANGE_2": "Pok\u00E9mon. Continue?"
+    "GEN_CHANGE_2": "Pok\u00E9mon. Continue?",
+    "EDITOR_CHECK_EXIT": "Exit without saving?"
 }

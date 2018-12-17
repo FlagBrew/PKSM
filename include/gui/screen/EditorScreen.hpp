@@ -90,6 +90,7 @@ private:
     int origPartyCurrHP;
     int origPartyCP;
     bool justSwitched = true;
+    bool saved = true;
 };
 
 #endif
