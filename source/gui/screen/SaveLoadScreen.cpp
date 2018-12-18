@@ -28,6 +28,8 @@
 #include "TitleLoadScreen.hpp"
 #include "MainMenu.hpp"
 #include "ConfigScreen.hpp"
+#include "AccelButton.hpp"
+#include "ClickButton.hpp"
 
 static constexpr std::string_view dsIds[9] = {
     "ADA", //Diamond
@@ -63,10 +65,12 @@ static bool wirelessSave() { return true; }
 
 SaveLoadScreen::SaveLoadScreen()
 {
-    for (int i = 0; i < 6; i++)
+    buttons.push_back(new AccelButton(24, 96, 175, 16, [this](){ return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
+    for (int i = 1; i < 5; i++)
     {
-        buttons.push_back(new Button(24, 96, 175, 16, [this, i](){ return this->setSelectedSave(i); }, ui_sheet_res_null_idx, "", 0.0f, 0));
+        buttons.push_back(new ClickButton(24, 96 + 17 * i, 175, 16, [this, i](){ return this->setSelectedSave(i); }, ui_sheet_res_null_idx, "", 0.0f, 0));
     }
+    buttons.push_back(new AccelButton(24, 181, 175, 16, [this](){ return this->setSelectedSave(5); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
     buttons.push_back(new Button(200, 95, 96, 51, [this](){ return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f, 0));
     buttons.push_back(new Button(200, 147, 96, 51, &wirelessSave, ui_sheet_res_null_idx, "", 0.0f, 0));
 
@@ -718,4 +722,30 @@ int SaveLoadScreen::saveIndex(int index) const
         }
     }
     return ret;
+}
+
+bool SaveLoadScreen::setSelectedSave(int i)
+{
+    if (i == 5)
+    {
+        if (firstSave + 5 < (int) saves[saveIndex(saveGroup)].size() - 1)
+        {
+            firstSave++;
+            selectedSave = 4;
+        }
+        else if (firstSave + 5 < (int) saves[saveIndex(saveGroup)].size())
+        {
+            selectedSave = 5;
+        }
+    }
+    else if (i == 0 && firstSave != 0)
+    {
+        firstSave--;
+        selectedSave = 1;
+    }
+    else if (firstSave + i < (int) saves[saveIndex(saveGroup)].size())
+    {
+        selectedSave = i;
+    }
+    return false;
 }

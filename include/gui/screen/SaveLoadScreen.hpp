@@ -63,11 +63,7 @@ private:
     std::list<std::string> nandTitles;
     int missingGroups = 4;
     bool selectedGroup = false;
-    bool setSelectedSave(int i)
-    {
-        selectedSave = i;
-        return false;
-    }
+    bool setSelectedSave(int i);
     bool increaseFirstSave()
     {
         int accessSaves = saveGroup;

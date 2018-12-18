@@ -456,7 +456,7 @@ bool TitleLoadScreen::setSelectedSave(int i)
             firstSave++;
             selectedSave = 4;
         }
-        else
+        else if (firstSave + 5 < (int) availableCheckpointSaves.size())
         {
             selectedSave = 5;
         }
