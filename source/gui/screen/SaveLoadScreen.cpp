@@ -356,7 +356,7 @@ void SaveLoadScreen::draw(void) const
         y += 17;
     }
 
-    if (selectedSave > 0)
+    if (selectedSave > 0 && firstSave > -1)
     {
         C2D_DrawRectSolid(191, 102, 0.5f, 4, 5, C2D_Color32(0x0f, 0x16, 0x59, 255));
         C2D_DrawTriangle(189, 102, C2D_Color32(0x0f, 0x16, 0x59, 255),
@@ -364,10 +364,13 @@ void SaveLoadScreen::draw(void) const
                          193, 97, C2D_Color32(0x0f, 0x16, 0x59, 255), 0.5f);
     }
 
-    C2D_DrawRectSolid(191, 186, 0.5f, 4, 5, C2D_Color32(0x0f, 0x16, 0x59, 255));
-    C2D_DrawTriangle(189, 191, C2D_Color32(0x0f, 0x16, 0x59, 255),
-                     197, 191, C2D_Color32(0x0f, 0x16, 0x59, 255),
-                     193, 196, C2D_Color32(0x0f, 0x16, 0x59, 255), 0.5f);
+    if (selectedSave < 5 && (size_t)firstSave + 5 < saves[saveIndex(saveGroup)].size() - 1)
+    {
+        C2D_DrawRectSolid(191, 186, 0.5f, 4, 5, C2D_Color32(0x0f, 0x16, 0x59, 255));
+        C2D_DrawTriangle(189, 191, C2D_Color32(0x0f, 0x16, 0x59, 255),
+                        197, 191, C2D_Color32(0x0f, 0x16, 0x59, 255),
+                        193, 196, C2D_Color32(0x0f, 0x16, 0x59, 255), 0.5f);
+    }
 
     Gui::staticText(200, 113, 96, i18n::localize("LOADER_LOAD"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
     Gui::staticText(200, 163, 96, i18n::localize("LOADER_WIRELESS"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
@@ -403,9 +406,13 @@ void SaveLoadScreen::update(touchPosition* touch)
         {
             if (selectedSave == 4)
             {
-                if (firstSave + 5 < (int) saves[saveIndex(saveGroup)].size())
+                if (firstSave + 5 < (int) saves[saveIndex(saveGroup)].size() - 1)
                 {
                     firstSave++;
+                }
+                else
+                {
+                    selectedSave++;
                 }
             }
             else
@@ -418,14 +425,18 @@ void SaveLoadScreen::update(touchPosition* touch)
         }
         if (downKeys & KEY_UP)
         {
-            if (selectedSave == 0)
+            if (selectedSave == 1)
             {
                 if (firstSave > 0)
                 {
                     firstSave--;
                 }
+                else
+                {
+                    selectedSave--;
+                }
             }
-            else
+            else if (selectedSave != 0)
             {
                 selectedSave--;
             }
