@@ -896,7 +896,7 @@ void Gui::pkm(int species, int form, Generation generation, int x, int y, float 
         }
     }
     // For possible hex editor mishaps
-    else if (species > 807)
+    else if (species > 809)
     {
         C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y, 0.5f, &tint, scale, scale);
     }

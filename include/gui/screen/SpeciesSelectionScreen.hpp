@@ -35,11 +35,12 @@ class SpeciesSelectionScreen : public SelectionScreen
 public:
     SpeciesSelectionScreen(std::shared_ptr<PKX> pkm) : SelectionScreen(pkm), hid(40, 8)
     {
-        hid.update(807);
+        hid.update(809);
         hid.select(pkm->species() == 0 ? 0 : pkm->species() - 1);
     }
     void draw() const override;
     void update(touchPosition* touch) override;
+    ScreenType type() const override { return ScreenType::SPECIES_SELECT; }
 private:
     HidHorizontal hid;
 };

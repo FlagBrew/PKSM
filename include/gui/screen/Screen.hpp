@@ -46,6 +46,7 @@ enum ScreenType
     SCRIPTS,
     SCRIPTSELECT,
     SELECTOR,
+    SPECIES_SELECT,
     SETTINGS,
     VIEWER,
     BAG,

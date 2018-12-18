@@ -809,3 +809,5 @@
 #define pkm_spritesheet_805_idx 805
 #define pkm_spritesheet_806_idx 806
 #define pkm_spritesheet_807_idx 807
+#define pkm_spritesheet_808_idx 808
+#define pkm_spritesheet_809_idx 809

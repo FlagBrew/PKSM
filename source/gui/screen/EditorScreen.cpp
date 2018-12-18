@@ -355,6 +355,15 @@ void EditorScreen::update(touchPosition* touch)
         selector->update(touch);
         if (selector->finished())
         {
+            if (selector->type() == ScreenType::SPECIES_SELECT)
+            {
+                if (pkm->species() == 0)
+                {
+                    selector = nullptr;
+                    Gui::screenBack();
+                    return;
+                }
+            }
             selector = nullptr;
         }
     }

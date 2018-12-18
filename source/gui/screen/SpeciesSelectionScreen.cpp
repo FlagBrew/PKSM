@@ -43,15 +43,26 @@ void SpeciesSelectionScreen::draw() const
     C2D_DrawRectSolid(x + 48, y, 0.5f, 1, 47, COLOR_YELLOW);
     C2D_DrawRectSolid(x, y + 46, 0.5f, 49, 1, COLOR_YELLOW);
 
+    size_t maxPkm = TitleLoader::save->generation() == Generation::LGPE ? 153 : TitleLoader::save->maxSpecies();
+
     for (int y = 0; y < 5; y++)
     {
         for (int x = 0; x < 8; x++)
         {
-            if (hid.page() * hid.maxVisibleEntries() + x + y * 8 + 1 > (size_t) TitleLoader::save->maxSpecies())
+            size_t species = hid.page() * hid.maxVisibleEntries() + x + y * 8 + 1;
+            if (species > maxPkm)
             {
                 break;
             }
-            Gui::pkm(hid.page() * hid.maxVisibleEntries() + x + y * 8 + 1, 0, TitleLoader::save->generation(), x * 50 + 7, y * 48 + 2);
+            if (TitleLoader::save->generation() == Generation::LGPE && species == 152)
+            {
+                species = 808;
+            }
+            else if (TitleLoader::save->generation() == Generation::LGPE && species == 153)
+            {
+                species = 809;
+            }
+            Gui::pkm(species, 0, TitleLoader::save->generation(), x * 50 + 7, y * 48 + 2);
             Gui::dynamicText(x * 50, y * 48 + 34, 50, std::to_string(hid.page() * hid.maxVisibleEntries() + x + y * 8 + 1), FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
         }
     }
@@ -59,15 +70,28 @@ void SpeciesSelectionScreen::draw() const
 
 void SpeciesSelectionScreen::update(touchPosition* touch)
 {
-    hid.update(TitleLoader::save->maxSpecies());
+    int amount = TitleLoader::save->generation() == Generation::LGPE ? 151 + 2 : TitleLoader::save->maxSpecies();
+    hid.update(amount);
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {
+        int species = hid.fullIndex() + 1;
+        if (TitleLoader::save->generation() == Generation::LGPE)
+        {
+            if (species == 152)
+            {
+                species = 808;
+            }
+            else if (species == 153)
+            {
+                species = 809;
+            }
+        }
         if (pkm->species() == 0 || !pkm->nicknamed())
         {
-            pkm->nickname(i18n::species(Configuration::getInstance().language(), hid.fullIndex() + 1).c_str());
+            pkm->nickname(i18n::species(Configuration::getInstance().language(), species).c_str());
         }
-        pkm->species((u16) hid.fullIndex() + 1);
+        pkm->species((u16) species);
         pkm->alternativeForm(0);
         if (pkm->generation() != Generation::FOUR)
         {
@@ -82,14 +106,7 @@ void SpeciesSelectionScreen::update(touchPosition* touch)
     }
     else if (downKeys & KEY_B)
     {
-        if (pkm->species() != 0)
-        {
-            done = true;
-        }
-        else
-        {
-            Gui::warn(i18n::localize("SELECT_SPECIES"));
-        }
+        done = true;
         return;
     }
 }
