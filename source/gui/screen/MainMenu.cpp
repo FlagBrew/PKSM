@@ -76,9 +76,9 @@ MainMenu::MainMenu()
 
 MainMenu::~MainMenu()
 {
-    for (int i = 0; i < 6; i++)
+    for (auto button : buttons)
     {
-        delete buttons[i];
+        delete button;
     }
 }
 

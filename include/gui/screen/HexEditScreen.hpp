@@ -47,6 +47,10 @@ public:
                 delete button;
             }
         }
+        for (auto button : secretButtons)
+        {
+            delete button;
+        }
     }
     void draw() const override;
     void update(touchPosition* touch) override;

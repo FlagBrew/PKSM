@@ -214,13 +214,13 @@ StorageScreen::StorageScreen()
 
 StorageScreen::~StorageScreen()
 {
-    for (int i = 0; i < 9; i++)
+    for (auto button : mainButtons)
     {
-        delete mainButtons[i];
+        delete button;
     }
-    for (int i = 0; i < 31; i++)
+    for (auto button : clickButtons)
     {
-        delete clickButtons[i];
+        delete button;
     }
 
     if (TitleLoader::save->generation() == Generation::LGPE)
