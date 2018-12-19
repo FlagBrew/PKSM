@@ -439,5 +439,6 @@
     "LV": "Lv.",
     "SCANNER_EXIT": "Press \uE001 to exit",
     "SHINY_LEAF": "Shiny Leaf",
-    "SHINY_CROWN": "Shiny Crown"
+    "SHINY_CROWN": "Shiny Crown",
+    "SAVE_INVALID": "is not a valid save file."
 }
