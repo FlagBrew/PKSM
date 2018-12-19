@@ -53,7 +53,7 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
     {
         view = std::make_shared<ViewerScreen>(pkm, false);
     }
-    if (!pkm || pkm->species() == 0)
+    if (!pkm || pkm->encryptionConstant() == 0)
     {
         pkm = TitleLoader::save->emptyPkm()->clone();
         if (Configuration::getInstance().useSaveInfo())
@@ -69,7 +69,7 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
             pkm->otName(Configuration::getInstance().defaultOT().c_str());
         }
         pkm->ball(4);
-        pkm->encryptionConstant((u32)rand());
+        pkm->encryptionConstant((((u32)rand()) % 0xFFFFFFFF) + 1);
         pkm->version(TitleLoader::save->version());
         pkm->fixMoves();
         pkm->PID((u32)rand());
@@ -113,6 +113,7 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
     buttons[tab].push_back(new Button(204, 140, 108, 30, [this](){ currentTab = 2; return true; }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_MOVES"), FONT_SIZE_12, COLOR_BLACK));
     buttons[tab].push_back(new ClickButton(204, 171, 108, 30, [this](){ saved = true; return this->save(); }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_SAVE"), FONT_SIZE_12, COLOR_BLACK));
     buttons[tab].push_back(NO_TEXT_BUTTON(25, 5, 120, 13, [this](){ saved = false; return this->selectSpecies(); }, ui_sheet_res_null_idx));
+    buttons[tab].push_back(NO_TEXT_BUTTON(186, 7, 12, 12, [this](){ saved = false; return this->genderSwitch(); }, ui_sheet_res_null_idx));
 
     tab = 1;
     buttons[tab].push_back(buttons[0][0]);
@@ -170,6 +171,18 @@ void EditorScreen::draw() const
 
             Gui::ball(pkm->ball(), 4, 3);
             Gui::dynamicText(i18n::species(lang, pkm->species()), 25, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, false);
+            switch (pkm->gender())
+            {
+                case 0:
+                    Gui::sprite(ui_sheet_icon_male_idx, 186, 7);
+                    break;
+                case 1:
+                    Gui::sprite(ui_sheet_icon_female_idx, 187, 7);
+                    break;
+                default:
+                    // Gui::sprite(ui_sheet_icon_genderless_idx, 186, 7);
+                    break;
+            }
             Gui::dynamicText(107, 32, 35, std::to_string((int)pkm->level()), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
             Gui::dynamicText(i18n::nature(lang, pkm->nature()), 95, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
             Gui::dynamicText(i18n::ability(lang, pkm->ability()), 95, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
@@ -840,5 +853,22 @@ bool EditorScreen::selectBall()
 bool EditorScreen::selectSpecies()
 {
     selector = std::make_unique<SpeciesSelectionScreen>(pkm);
+    return false;
+}
+
+bool EditorScreen::genderSwitch()
+{
+    switch (pkm->gender())
+    {
+        case 0:
+            pkm->gender(1);
+            break;
+        case 1:
+            pkm->gender(2);
+            break;
+        case 2:
+            pkm->gender(0);
+            break;
+    }
     return false;
 }

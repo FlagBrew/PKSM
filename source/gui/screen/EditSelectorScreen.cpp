@@ -213,7 +213,7 @@ void EditSelectorScreen::draw() const
             infoMon = TitleLoader::save->pkm(cursorPos - 31);
         }
     }
-    if (infoMon && infoMon->species() == 0)
+    if (infoMon && infoMon->encryptionConstant() == 0)
     {
         infoMon = nullptr;
     }
@@ -352,7 +352,7 @@ void EditSelectorScreen::update(touchPosition* touch)
             infoMon = TitleLoader::save->pkm(cursorPos - 31);
         }
     }
-    if (infoMon && infoMon->species() == 0)
+    if (infoMon && infoMon->encryptionConstant() == 0)
     {
         infoMon = nullptr;
     }
@@ -413,7 +413,7 @@ void EditSelectorScreen::update(touchPosition* touch)
             {
                 tmpMon = TitleLoader::save->pkm(box, cursorPos - 1);
             }
-            if (tmpMon && tmpMon->species() == 0)
+            if (tmpMon && tmpMon->encryptionConstant() == 0)
             {
                 tmpMon = nullptr;
             }
@@ -447,7 +447,7 @@ void EditSelectorScreen::update(touchPosition* touch)
                 if (!moveMon)
                 {
                     moveMon = TitleLoader::save->pkm(cursorPos - 31)->clone();
-                    if (moveMon && moveMon->species() == 0)
+                    if (moveMon && moveMon->encryptionConstant() == 0)
                     {
                         moveMon = nullptr;
                     }
@@ -455,7 +455,7 @@ void EditSelectorScreen::update(touchPosition* touch)
                 else
                 {
                     std::shared_ptr<PKX> tmpMon = TitleLoader::save->pkm(cursorPos - 31);
-                    if (tmpMon->species() == 0)
+                    if (tmpMon->encryptionConstant() == 0)
                     {
                         tmpMon = nullptr;
                     }
@@ -468,7 +468,7 @@ void EditSelectorScreen::update(touchPosition* touch)
                 if (!moveMon)
                 {
                     moveMon = TitleLoader::save->pkm(box, cursorPos - 1);
-                    if (moveMon && moveMon->species() == 0)
+                    if (moveMon && moveMon->encryptionConstant() == 0)
                     {
                         moveMon = nullptr;
                     }
@@ -476,7 +476,7 @@ void EditSelectorScreen::update(touchPosition* touch)
                 else
                 {
                     std::shared_ptr<PKX> tmpMon = TitleLoader::save->pkm(box, cursorPos - 1);
-                    if (tmpMon->species() == 0)
+                    if (tmpMon->encryptionConstant() == 0)
                     {
                         tmpMon = nullptr;
                     }

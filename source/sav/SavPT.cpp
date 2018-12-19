@@ -44,13 +44,13 @@ void SavPT::GBO(void)
     u8 temp[10], dummy[10];
     std::fill_n(dummy, 10, 0xFF);
     
-    std::copy(data, data + 10, temp);
+    std::copy(data + ofs, data + ofs + 10, temp);
     if (!memcmp(temp, dummy, 10)) {
         gbo = 0x40000;
         return;
     }
     
-    std::copy(data + 0x40000, data + 0x4000A, temp);
+    std::copy(data + ofs + 0x40000, data + ofs + 0x4000A, temp);
     if (!memcmp(temp, dummy, 10)) {
         gbo = 0;
         return;
@@ -67,13 +67,13 @@ void SavPT::SBO(void)
     u8 temp[10], dummy[10];
     std::fill_n(dummy, 10, 0xFF);
     
-    std::copy(data, data + 10, temp);
+    std::copy(data + ofs, data + ofs + 10, temp);
     if (!memcmp(temp, dummy, 10)) {
         sbo = 0x40000;
         return;
     }
     
-    std::copy(data + 0x40000, data + 0x4000A, temp);
+    std::copy(data + ofs + 0x40000, data + ofs + 0x4000A, temp);
     if (!memcmp(temp, dummy, 10)) {
         sbo = 0;
         return;

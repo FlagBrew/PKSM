@@ -437,5 +437,7 @@
     "GEN_CHANGE_2": "Pok\u00E9mon. Continue?",
     "EDITOR_CHECK_EXIT": "Exit without saving?",
     "LV": "Lv.",
-    "SCANNER_EXIT": "Press \uE001 to exit"
+    "SCANNER_EXIT": "Press \uE001 to exit",
+    "SHINY_LEAF": "Shiny Leaf",
+    "SHINY_CROWN": "Shiny Crown"
 }

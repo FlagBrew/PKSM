@@ -68,6 +68,7 @@ private:
     void setFriendship();
     bool hexEdit();
     bool save();
+    bool genderSwitch();
     
     bool changeIV(int which, bool up);
     void setIV(int which);

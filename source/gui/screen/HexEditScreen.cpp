@@ -1184,7 +1184,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     break;
                 // Egg and Nicknamed Flags
                 case 0x3B:
-                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i](){ return this->toggleBit(i, 6); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("NICKNAMEEGGD"), true, 6));
+                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i](){ return this->toggleBit(i, 6); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("EGG"), true, 6));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 6) & 0x1);
                     buttons[i].push_back(new HexEditButton(30, 106, 13, 13, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("NICKNAMED"), true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
@@ -1201,15 +1201,17 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                         delete buttons[i].back();
                         buttons[i].pop_back();
                     }
-                    for (int j = 0; j < 6; j++)
+                    for (int j = 0; j < 5; j++)
                     {
-                        buttons[i].push_back(new HexEditButton(30, 90 + j * 16, 13, 13, [this, i, j](){ return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, "", true, j));
+                        buttons[i].push_back(new HexEditButton(30, 90 + j * 16, 13, 13, [this, i, j](){ return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, (i18n::localize("SHINY_LEAF") + ' ') + (char)('A' + j), true, j));
                         buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
                     }
+                    buttons[i].push_back(new HexEditButton(30, 170, 13, 13, [this, i](){ return this->toggleBit(i, 5); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("SHINY_CROWN"), true, 5));
+                    buttons[i].back()->setToggled((pkm->rawData()[i] >> 5) & 0x1);
                     break;
                 // OT Gender
                 case 0x84:
-                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, "", true, 7));
+                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("FEMALE_OT"), true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
                     break;
                 // Status
