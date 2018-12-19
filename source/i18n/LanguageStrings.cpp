@@ -182,7 +182,7 @@ std::string LanguageStrings::species(u16 v) const
 
 std::string LanguageStrings::localize(const std::string& v) const
 {
-    return gui.value(v, "");
+    return gui.value(v, "MISSING: " + v);
 }
 
 std::vector<std::string> LanguageStrings::rawItems() const
