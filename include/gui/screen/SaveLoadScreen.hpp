@@ -24,6 +24,15 @@
 *         reasonable ways as different from the original version.
 */
 
+#include <fcntl.h>
+#include <errno.h>
+#include <unistd.h> 
+#include <string.h> 
+#include <sys/types.h> 
+#include <sys/socket.h> 
+#include <arpa/inet.h> 
+#include <netinet/in.h>
+#include <malloc.h>
 #include <memory>
 #include <list>
 #include "Screen.hpp"
@@ -34,6 +43,10 @@
 
 #ifndef SAVELOADSCREEN_HPP
 #define SAVELOADSCREEN_HPP
+
+#define PKSM_PORT 34567
+#define SOC_ALIGN      0x1000
+#define SOC_BUFFERSIZE 0x100000
 
 class SaveLoadScreen : public Screen
 {

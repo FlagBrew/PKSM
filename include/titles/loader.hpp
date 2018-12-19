@@ -47,6 +47,10 @@
 #include "SavUSUM.hpp"
 #include "SavXY.hpp"
 
+bool isLoadedSaveFromBridge(void);
+bool receiveSaveFromBridge(void);
+bool sendSaveToBridge(void);
+
 namespace TitleLoader
 {
     void scanTitles(void);
@@ -55,6 +59,7 @@ namespace TitleLoader
     void scanSaves(void);
     bool load(std::shared_ptr<Title> title);
     bool load(std::shared_ptr<Title> title, std::string path);
+    bool load(u8* data, size_t size);
     void backupSave(void);
     void saveChanges(void);
     void saveToTitle(bool ask);

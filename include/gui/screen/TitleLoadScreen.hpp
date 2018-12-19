@@ -31,6 +31,12 @@
 #include "Directory.hpp"
 #include "Button.hpp"
 #include "loader.hpp"
+#include "MainMenu.hpp"
+#include "FSStream.hpp"
+#include "SaveLoadScreen.hpp"
+#include "AccelButton.hpp"
+#include "ClickButton.hpp"
+#include "ConfigScreen.hpp"
 
 #ifndef TITLELOADSCREEN_HPP
 #define TITLELOADSCREEN_HPP

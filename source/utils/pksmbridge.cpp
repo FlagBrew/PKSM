@@ -1,0 +1,127 @@
+#include "TitleLoadScreen.hpp"
+
+static bool saveFromBridge = false;
+static struct in_addr lastIPAddr;
+
+bool isLoadedSaveFromBridge(void) { return saveFromBridge; }
+
+bool receiveSaveFromBridge(void)
+{
+    int fd;
+    struct sockaddr_in servaddr;
+    if ((fd = socket(AF_INET, SOCK_STREAM, IPPROTO_IP)) < 0)
+    {
+        Gui::error("Socket creation failed.", errno);
+        return false;
+    }
+
+    memset(&servaddr, 0, sizeof(servaddr));
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_port = htons(PKSM_PORT);
+    servaddr.sin_addr.s_addr = INADDR_ANY;
+    
+    if (bind(fd, (struct sockaddr*)&servaddr, sizeof(servaddr)) < 0)
+    {
+        Gui::error("Socket bind failed.", errno);
+        close(fd);
+        return false;
+    }
+    
+    if (listen(fd, 5) < 0)
+    {
+        Gui::error("Socket listen failed.", errno);
+        close(fd);
+        return false;
+    }
+
+    int fdconn;
+    int addrlen = sizeof(servaddr);
+    if ((fdconn = accept(fd, (struct sockaddr*)&servaddr, (socklen_t*)&addrlen)) < 0)
+    {
+        Gui::error("Socket accept failed.", errno);
+        close(fd);
+        return false;
+    }
+
+    lastIPAddr = servaddr.sin_addr;
+
+    size_t size = 0x100000;
+    char* data = new char[size];
+
+    size_t total = 0;
+    size_t chunk = 1024;
+    int n;
+    while (total < size) {
+        size_t torecv = size - total > chunk ? chunk : size - total;
+        n = recv(fdconn, data + total, torecv, 0);
+        if (n == -1) { break; }
+        total += n;
+        fprintf(stderr, "Recv %u bytes, %u still missing\n", total, size - total);
+    }
+
+    close(fd);
+    close(fdconn);
+
+    if (total == size)
+    {
+        if (TitleLoader::load((u8*)data, size))
+        {
+            saveFromBridge = true;
+            Gui::setScreen(std::make_unique<MainMenu>());
+        }
+    }
+    else
+    {
+        Gui::error("Failed to receive data.", errno);
+    }
+
+    delete[] data;
+    return true;
+}
+
+bool sendSaveToBridge(void)
+{
+    // send via TCP
+    int fd;
+    struct sockaddr_in servaddr;
+    if ((fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    {
+        Gui::error("Socket creation failed.", errno);
+        return false;
+    }
+    memset(&servaddr, 0, sizeof(servaddr));
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_port = htons(PKSM_PORT);
+    servaddr.sin_addr = lastIPAddr;
+
+    if (connect(fd, (struct sockaddr*)&servaddr, sizeof(servaddr)) < 0)
+    {
+        Gui::error("Socket connection failed.", errno);
+        close(fd);
+        return false;
+    }
+
+    size_t size = TitleLoader::save->length;
+    size_t total = 0;
+    size_t chunk = 1024;
+    int n;
+    while (total < size) {
+        size_t tosend = size - total > chunk ? chunk : size - total;
+        n = send(fd, TitleLoader::save->data + total, tosend, 0);
+        if (n == -1) { break; }
+        total += n;
+        fprintf(stderr, "Sent %u bytes, %u still missing\n", total, size - total);
+    }
+    if (total == size)
+    {
+        //Gui::createInfo("Success!", "Data sent back correctly.");
+    }
+    else
+    {
+        Gui::error("Failed to send data.", errno);
+    }
+
+    close(fd);
+    saveFromBridge = false;
+    return true;
+}

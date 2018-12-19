@@ -80,6 +80,11 @@ MainMenu::~MainMenu()
     {
         delete button;
     }
+
+    if (isLoadedSaveFromBridge())
+    {
+        sendSaveToBridge();
+    }
 }
 
 static void menuTop()

@@ -33,6 +33,9 @@ extern "C" {
 #include "download.h"
 }
 
+#define SOC_ALIGN      0x1000
+#define SOC_BUFFERSIZE 0x100000
+
 // increase the stack in order to allow quirc to decode large qrs
 int __stacksize__ = 64 * 1024;
 
@@ -80,6 +83,16 @@ Result App::init(std::string execPath)
     i18n::init();
     Configuration::getInstance();
 
+    u32* socketBuffer = (u32*)memalign(SOC_ALIGN, SOC_BUFFERSIZE);
+    if (socketBuffer == NULL)
+    {
+        return -1;
+    }
+    if (socInit(socketBuffer, SOC_BUFFERSIZE))
+    {
+        return -1;
+    }
+
     Threads::create((ThreadFunc)TitleLoader::scanTitles);
     Threads::create((ThreadFunc)TitleLoader::scanSaves);
 
@@ -96,6 +109,7 @@ Result App::init(std::string execPath)
 
 Result App::exit(void)
 {
+    socExit();
     TitleLoader::exit();
     Threads::destroy();
     Configuration::getInstance().save();
