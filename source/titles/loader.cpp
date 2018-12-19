@@ -335,6 +335,7 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
         }
 
         save = Sav::getSave(data, cap);
+        delete[] data;
         if (Configuration::getInstance().autoBackup())
         {
             backupSave();
@@ -369,9 +370,9 @@ bool TitleLoader::load(std::shared_ptr<Title> title, std::string savePath)
     }
     in.close();
     save = Sav::getSave(saveData, size);
+    delete[] saveData;
     if (!save)
     {
-        delete[] saveData;
         Gui::warn(saveFileName, i18n::localize("SAVE_INVALID"));
         saveFileName = "";
         loadedTitle = nullptr;
@@ -381,7 +382,6 @@ bool TitleLoader::load(std::shared_ptr<Title> title, std::string savePath)
     {
         backupSave();
     }
-    delete[] saveData;
     return true;
 }
 

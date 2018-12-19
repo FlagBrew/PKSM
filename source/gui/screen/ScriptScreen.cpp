@@ -78,9 +78,9 @@ namespace
 
     Picoc* picoC()
     {
-        static Picoc* picoc = new Picoc;
-        PicocInitialise(picoc, PICOC_STACKSIZE);
-        return picoc;
+        static Picoc picoc;
+        PicocInitialise(&picoc, PICOC_STACKSIZE);
+        return &picoc;
     }
 
     // slight change to stripy top

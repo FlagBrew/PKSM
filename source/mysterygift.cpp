@@ -104,6 +104,7 @@ std::unique_ptr<WCX> MysteryGift::wondercard(size_t index)
 void MysteryGift::exit(void)
 {
     delete[] mysteryGiftData;
+    mysteryGiftSheet.clear();
 }
 
 std::vector<nlohmann::json> MysteryGift::wondercards()

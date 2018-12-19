@@ -153,6 +153,7 @@ std::string StringUtils::getString4(const u8* data, int ofs, int len)
             addChar[3] = '\0';
         }
         output.append(addChar);
+        delete[] addChar;
     }
     return output;
 }

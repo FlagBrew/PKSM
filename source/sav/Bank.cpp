@@ -377,7 +377,7 @@ void Bank::resize()
     if (newSize != size)
     {
         u8* newData = new u8[newSize];
-        std::copy(data, data + newSize, newData);
+        std::copy(data, data + std::min(newSize, size), newData);
         delete[] data;
         if (newSize > size)
         {
