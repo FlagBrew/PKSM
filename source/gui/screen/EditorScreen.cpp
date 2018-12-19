@@ -113,7 +113,7 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
     buttons[tab].push_back(new Button(204, 140, 108, 30, [this](){ currentTab = 2; return true; }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_MOVES"), FONT_SIZE_12, COLOR_BLACK));
     buttons[tab].push_back(new ClickButton(204, 171, 108, 30, [this](){ saved = true; return this->save(); }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_SAVE"), FONT_SIZE_12, COLOR_BLACK));
     buttons[tab].push_back(NO_TEXT_BUTTON(25, 5, 120, 13, [this](){ saved = false; return this->selectSpecies(); }, ui_sheet_res_null_idx));
-    buttons[tab].push_back(NO_TEXT_BUTTON(186, 7, 12, 12, [this](){ saved = false; return this->genderSwitch(); }, ui_sheet_res_null_idx));
+    buttons[tab].push_back(NO_TEXT_CLICK(186, 7, 12, 12, [this](){ saved = false; return this->genderSwitch(); }, ui_sheet_res_null_idx));
 
     tab = 1;
     buttons[tab].push_back(buttons[0][0]);
