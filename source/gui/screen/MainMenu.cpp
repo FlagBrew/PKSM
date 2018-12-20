@@ -49,6 +49,11 @@ static bool goToScreen(int buttonNum)
             Gui::setScreen(std::make_unique<EditSelectorScreen>());
             return true;
         case 2:
+            if (TitleLoader::save->generation() == Generation::LGPE)
+            {
+                Gui::warn(i18n::localize("NO_WONDERCARDS"));
+                return false;
+            }
             Gui::setScreen(std::make_unique<InjectSelectorScreen>());
             return true;
         case 3:
@@ -83,7 +88,14 @@ MainMenu::~MainMenu()
 
     if (isLoadedSaveFromBridge())
     {
-        sendSaveToBridge();
+        if (Gui::showChoiceMessage(i18n::localize("BRIDGE_SHOULD_SEND_1"), i18n::localize("BRIDGE_SHOULD_SEND_2")))
+        {
+            sendSaveToBridge();
+        }
+        else
+        {
+            setLoadedSaveFromBridge(false);
+        }
     }
 }
 

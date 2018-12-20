@@ -50,6 +50,7 @@
 bool isLoadedSaveFromBridge(void);
 bool receiveSaveFromBridge(void);
 bool sendSaveToBridge(void);
+void setLoadedSaveFromBridge(bool v);
 
 namespace TitleLoader
 {

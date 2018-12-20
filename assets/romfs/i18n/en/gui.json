@@ -440,5 +440,8 @@
     "SCANNER_EXIT": "Press \uE001 to exit",
     "SHINY_LEAF": "Shiny Leaf",
     "SHINY_CROWN": "Shiny Crown",
-    "SAVE_INVALID": "is not a valid save file."
+    "SAVE_INVALID": "is not a valid save file.",
+    "NO_WONDERCARDS": "LGPE doesn't have any Wonder Cards yet!",
+    "BRIDGE_SHOULD_SEND_1": "Would you like to send the changed file",
+    "BRIDGE_SHOULD_SEND_2": "to Checkpoint Switch?"
 }

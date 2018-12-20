@@ -4,6 +4,7 @@ static bool saveFromBridge = false;
 static struct in_addr lastIPAddr;
 
 bool isLoadedSaveFromBridge(void) { return saveFromBridge; }
+void setLoadedSaveFromBridge(bool v) { saveFromBridge = false; }
 
 bool receiveSaveFromBridge(void)
 {
