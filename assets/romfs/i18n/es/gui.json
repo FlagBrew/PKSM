@@ -411,5 +411,8 @@
     "PLEASE_WAIT": "Por favor espera.",
     "BANK_CORRUPT": "Datos del banco corruptos",
     "BANK_CONVERT": "Convirtiendo banco...",
-"BANK_BAD_CONVERT": "No se pudo leer bank.bin"
+"BANK_BAD_CONVERT": "No se pudo leer bank.bin",
+    "DOWNLOADING_ASSETS": "",
+    "PLEASE_WAIT": ""
+    
 }
