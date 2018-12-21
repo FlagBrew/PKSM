@@ -61,6 +61,14 @@ static constexpr std::string_view ctrNames[] = {
     "USUM"
 };
 
+static constexpr std::string_view dsNames[] = {
+    "Pt",
+    "DP",
+    "HGSS",
+    "BW",
+    "B2W2"
+};
+
 static bool wirelessSave() { return true; }
 
 SaveLoadScreen::SaveLoadScreen()
@@ -73,39 +81,6 @@ SaveLoadScreen::SaveLoadScreen()
     buttons.push_back(new AccelButton(24, 181, 175, 16, [this](){ return this->setSelectedSave(5); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
     buttons.push_back(new Button(200, 95, 96, 51, [this](){ return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f, 0));
     buttons.push_back(new Button(200, 147, 96, 51, &wirelessSave, ui_sheet_res_null_idx, "", 0.0f, 0));
-
-    // Check platinum
-    if (TitleLoader::cardTitle && TitleLoader::cardTitle->checkpointPrefix().substr(0,3) == "CPU")
-    {
-        platinum = true;
-    }
-    // Nand titles will never disappear/reappear
-    for (size_t i = 0; i < 8; i += 2)
-    {
-        bool found = false;
-        bool otherFound = false;
-        for (auto title : TitleLoader::nandTitles)
-        {
-            if (title->checkpointPrefix() == ctrIds[i] || title->checkpointPrefix() == ctrIds[i + 1])
-            {
-                nandTitles.push_back(title->checkpointPrefix());
-                if (!found)
-                {
-                    found = true;
-                }
-                else
-                {
-                    otherFound = true;
-                    break;
-                }
-            }
-        }
-        if (found && otherFound)
-        {
-            hasTitles[i / 2] = true;
-            missingGroups--;
-        }
-    }
 
     for (auto i = TitleLoader::sdSaves.begin(); i != TitleLoader::sdSaves.end(); i++)
     {
@@ -264,10 +239,6 @@ void SaveLoadScreen::draw(void) const
 
     int x = 90;
     int y = 68;
-    if (missingGroups == 0)
-    {
-        y = 98;
-    }
     
     // draw DS game boxes
     C2D_DrawRectSolid(x += 60, y, 0.5f, 48, 48, COLOR_HIGHBLUE);
@@ -278,44 +249,19 @@ void SaveLoadScreen::draw(void) const
     Gui::staticText(x, y + 18, 48, "BW", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
     C2D_DrawRectSolid(x += 60, y, 0.5f, 48, 48, COLOR_HIGHBLUE);
     Gui::staticText(x, y + 18, 48, "B2W2", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+    C2D_DrawRectSolid(40, 98, 0.5f, 48, 48, COLOR_HIGHBLUE);
+    Gui::staticText(40, 116, 48, "Pt", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
 
-    if (!platinum)
-    {
-        C2D_DrawRectSolid(40, 98, 0.5f, 48, 48, COLOR_HIGHBLUE);
-        Gui::staticText(40, 116, 48, "Pt", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
-    }
-
-    int titleDrawSaves = saveGroup;
-
-    if (y == 68)
-    {
-        x = 90 + 30 * (4 - missingGroups);
-        y = 128;
-        int title = 0;
-        for (int i = 0; i < missingGroups; i++)
-        {
-            C2D_DrawRectSolid(x += 60, y, 0.5f, 48, 48, COLOR_HIGHBLUE);
-            bool drawn = false;
-            while (!drawn)
-            {
-                if (hasTitles[title])
-                {
-                    title++;
-                }
-                else
-                {
-                    Gui::staticText(x, y + 18, 48, std::string(ctrNames[title]), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
-                    drawn = true;
-                }
-            }
-            title++;
-            if (saveGroup - 4 == i)
-            {
-                drawSelector(x - 1, y - 1);
-                titleDrawSaves = 3 + title;
-            }
-        }
-    }
+    x = 90, y = 128;
+    // draw 3DS game boxes
+    C2D_DrawRectSolid(x += 60, y, 0.5f, 48, 48, COLOR_HIGHBLUE);
+    Gui::staticText(x, y + 18, 48, "XY", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+    C2D_DrawRectSolid(x += 60, y, 0.5f, 48, 48, COLOR_HIGHBLUE);
+    Gui::staticText(x, y + 18, 48, "ORAS", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+    C2D_DrawRectSolid(x += 60, y, 0.5f, 48, 48, COLOR_HIGHBLUE);
+    Gui::staticText(x, y + 18, 48, "SUMO", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+    C2D_DrawRectSolid(x += 60, y, 0.5f, 48, 48, COLOR_HIGHBLUE);
+    Gui::staticText(x, y + 18, 48, "USUM", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
 
     if (saveGroup == -1)
     {
@@ -323,9 +269,13 @@ void SaveLoadScreen::draw(void) const
     }
     else if (saveGroup < 4)
     {
-        drawSelector(149 + saveGroup * 60, y == 98 ? 97 : 67);
+        drawSelector(149 + saveGroup * 60, 67);
     }
-    
+    else
+    {
+        drawSelector(149 + (saveGroup - 4) * 60, 127);
+    }
+
     Gui::staticText(GFX_TOP, 8, i18n::localize("LOADER_INSTRUCTIONS_TOP_PRESENT"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
 
     C2D_SceneBegin(g_renderTargetBottom);
@@ -342,11 +292,11 @@ void SaveLoadScreen::draw(void) const
     y = 98;
     for (int i = firstSave; i < firstSave + 6; i++)
     {
-        if (i < (int) saves[titleDrawSaves].size())
+        if (i < (int) saves[saveGroup].size())
         {
-            std::string save = saves[titleDrawSaves][i].second.substr(0, saves[titleDrawSaves][i].second.find_last_of('/'));
+            std::string save = saves[saveGroup][i].second.substr(0, saves[saveGroup][i].second.find_last_of('/'));
             save = save.substr(save.find_last_of('/') + 1);
-            save = saves[titleDrawSaves][i].first + save;
+            save = saves[saveGroup][i].first + save;
             Gui::dynamicText(save, 29, y, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
         }
         else
@@ -356,7 +306,7 @@ void SaveLoadScreen::draw(void) const
         y += 17;
     }
 
-    if (selectedSave > 0 && firstSave > -1)
+    if (selectedSave > 0 && firstSave > 0)
     {
         C2D_DrawRectSolid(191, 102, 0.5f, 4, 5, C2D_Color32(0x0f, 0x16, 0x59, 255));
         C2D_DrawTriangle(189, 102, C2D_Color32(0x0f, 0x16, 0x59, 255),
@@ -364,7 +314,7 @@ void SaveLoadScreen::draw(void) const
                          193, 97, C2D_Color32(0x0f, 0x16, 0x59, 255), 0.5f);
     }
 
-    if (selectedSave < 5 && (size_t)firstSave + 5 < saves[saveIndex(saveGroup)].size() - 1)
+    if (selectedSave < 5 && (size_t)firstSave + 5 < saves[saveGroup].size() - 1)
     {
         C2D_DrawRectSolid(191, 186, 0.5f, 4, 5, C2D_Color32(0x0f, 0x16, 0x59, 255));
         C2D_DrawTriangle(189, 191, C2D_Color32(0x0f, 0x16, 0x59, 255),
@@ -391,6 +341,7 @@ void SaveLoadScreen::update(touchPosition* touch)
         {
             selectedGroup = false;
             selectedSave = -1;
+            firstSave = 0;
         }
         if (downKeys & KEY_A)
         {
@@ -406,7 +357,7 @@ void SaveLoadScreen::update(touchPosition* touch)
         {
             if (selectedSave == 4)
             {
-                if (firstSave + 5 < (int) saves[saveIndex(saveGroup)].size() - 1)
+                if (firstSave + 5 < (int) saves[saveGroup].size() - 1)
                 {
                     firstSave++;
                 }
@@ -417,7 +368,7 @@ void SaveLoadScreen::update(touchPosition* touch)
             }
             else
             {
-                if (firstSave + selectedSave < (int) saves[saveIndex(saveGroup)].size() - 1)
+                if (firstSave + selectedSave < (int) saves[saveGroup].size() - 1)
                 {
                     selectedSave++;
                 }
@@ -452,124 +403,41 @@ void SaveLoadScreen::update(touchPosition* touch)
         {
             if (saveGroup == -1)
             {
-                if (missingGroups != 0)
-                {
-                    saveGroup = 4;
-                }
-                else
-                {
-                    saveGroup = 0;
-                }
+                saveGroup = 4;
+            }
+            else if (saveGroup < 4)
+            {
+                saveGroup += 4;
             }
             else
             {
-                if (missingGroups != 0)
-                {
-                    if (saveGroup < 4)
-                    {
-                        if (saveGroup + 4 > 3 + missingGroups)
-                        {
-                            saveGroup = 3 + missingGroups;
-                        }
-                        else
-                        {
-                            saveGroup += 4;
-                        }
-                    }
-                    else
-                    {
-                        saveGroup -= 4;
-                    }
-                }
-                else
-                {
-                    if (saveGroup < 3)
-                    {
-                        saveGroup++;
-                    }
-                    else
-                    {
-                        if (!platinum)
-                        {
-                            saveGroup = -1;
-                        }
-                        else
-                        {
-                            saveGroup = 0;
-                        }
-                    }
-                }
+                saveGroup -= 4;
             }
         }
         else if (downKeys & KEY_UP)
         {
             if (saveGroup == -1)
             {
-                if (missingGroups != 0)
-                {
-                    saveGroup = 0;
-                }
-                else
-                {
-                    saveGroup = 3;
-                }
+                saveGroup = 0;
+            }
+            else if (saveGroup < 4)
+            {
+                saveGroup += 4;
             }
             else
             {
-                if (missingGroups != 0)
-                {
-                    if (saveGroup > 3)
-                    {
-                        saveGroup -= 4;
-                    }
-                    else
-                    {
-                        if (saveGroup + 4 > 3 + missingGroups)
-                        {
-                            saveGroup = 3 + missingGroups;
-                        }
-                        else
-                        {
-                            saveGroup += 4;
-                        }
-                    }
-                }
-                else if (saveGroup > -1)
-                {
-                    saveGroup--;
-                    if (saveGroup == -1 && platinum)
-                    {
-                        saveGroup = 3;
-                    }
-                }
+                saveGroup -= 4;
             }
         }
         else if (downKeys & KEY_RIGHT)
         {
-            if (saveGroup == 3 + missingGroups || saveGroup == 3)
+            if (saveGroup == -1)
             {
-                if (!platinum)
-                {
-                    saveGroup = -1;
-                }
-                else
-                {
-                    if (missingGroups != 0 && saveGroup > 3)
-                    {
-                        if (saveGroup > 3)
-                        {
-                            saveGroup = 4;
-                        }
-                        else if (saveGroup == 3)
-                        {
-                            saveGroup = 0;
-                        }
-                    }
-                    else
-                    {
-                        saveGroup = 0;
-                    }
-                }
+                saveGroup = 0;
+            }
+            else if (saveGroup % 4 == 3)
+            {
+                saveGroup = -1;
             }
             else
             {
@@ -582,27 +450,9 @@ void SaveLoadScreen::update(touchPosition* touch)
             {
                 saveGroup = 3;
             }
-            else if (saveGroup == 4)
+            else if (saveGroup % 4 == 0)
             {
-                if (!platinum)
-                {
-                    saveGroup = -1;
-                }
-                else
-                {
-                    saveGroup = 3 + missingGroups;
-                }
-            }
-            else if (saveGroup == 0)
-            {
-                if (!platinum)
-                {
-                    saveGroup = -1;
-                }
-                else
-                {
-                    saveGroup = 3;
-                }
+                saveGroup = -1;
             }
             else
             {
@@ -617,7 +467,7 @@ void SaveLoadScreen::update(touchPosition* touch)
         }
         if (downKeys & KEY_A)
         {
-            if (saves[saveIndex(saveGroup)].size() != 0)
+            if (saves[saveGroup].size() != 0)
             {
                 selectedGroup = true;
                 selectedSave = 0;
@@ -629,70 +479,11 @@ void SaveLoadScreen::update(touchPosition* touch)
     {
         Gui::setScreen(std::make_unique<ConfigScreen>());
     }
-
-    // re-adds removed cards and deletes inserted ones
-    auto card = TitleLoader::cardTitle;
-    if (TitleLoader::cardUpdate())
-    {
-        auto newCard = TitleLoader::cardTitle;
-        if (!newCard)
-        {
-            if (card)
-            {
-                std::string prefix = card->checkpointPrefix();
-                int index = std::distance(ctrIds, std::find(ctrIds, &ctrIds[8], prefix));
-                auto nandIndex = std::find(nandTitles.begin(), nandTitles.end(), prefix);
-                if (prefix.size() != 4)
-                {
-                    if (index != 8 && nandIndex == nandTitles.end())
-                    {
-                        hasTitles[index / 2] = false;
-                        missingGroups++;
-                    }
-                }
-                else
-                {
-                    if (prefix.substr(0,3) == "CPU")
-                    {
-                        platinum = false;
-                    }
-                }
-            }
-        }
-        else
-        {
-            std::string prefix = newCard->checkpointPrefix();
-            if (prefix.size() == 4)
-            {
-                if (prefix.substr(0,3) == "CPU")
-                {
-                    platinum = true;
-                }
-            }
-            else 
-            {
-                auto found = std::find(nandTitles.begin(), nandTitles.end(), prefix);
-                int index = std::distance(ctrIds, std::find(ctrIds, &ctrIds[8], prefix));
-                if (index != 8 && found == nandTitles.end())
-                {
-                    int pairIndex = index % 2 ? -1 : 1;
-                    if (std::find(nandTitles.begin(), nandTitles.end(), ctrIds[index + pairIndex]) != nandTitles.end())
-                    {
-                        hasTitles[index / 2] = true;
-                        missingGroups--;
-                    }
-                }
-            }
-        }
-        selectedGroup = false;
-        selectedSave = -1;
-        saveGroup = 0;
-    }
 }
 
 bool SaveLoadScreen::loadSave()
 {
-    if (TitleLoader::load(nullptr, saves[saveIndex(saveGroup)][selectedSave + firstSave].second))
+    if (TitleLoader::load(nullptr, saves[saveGroup][selectedSave + firstSave].second))
     {
         Gui::setScreen(std::make_unique<MainMenu>());
         return true;
@@ -700,51 +491,28 @@ bool SaveLoadScreen::loadSave()
     return false;
 }
 
-std::string_view SaveLoadScreen::titleName(int index) const
+constexpr std::string_view SaveLoadScreen::titleName(int index)
 {
-    if (index == 7) return "USUM";
-    if (index == -1) return "Pt";
-    if (index == 0) return "DP";
-    if (index == 1) return "HGSS";
-    if (index == 2) return "BW";
-    if (index == 3) return "B2W2";
-    if (index > 3)
+    if (index < 4)
     {
-        return ctrNames[saveIndex(saveGroup) - 4];
+        return dsNames[index + 1];
     }
-    return "";
-}
-
-int SaveLoadScreen::saveIndex(int index) const
-{
-    int ret = index;
-    if (ret > 3 && ret < 7)
+    else
     {
-        for (int i = 0; i < 4; i++)
-        {
-            if (i + 3 >= index)
-            {
-                break;
-            }
-            if (hasTitles[i])
-            {
-                ret++;
-            }
-        }
+        return ctrNames[index - 4];
     }
-    return ret;
 }
 
 bool SaveLoadScreen::setSelectedSave(int i)
 {
     if (i == 5)
     {
-        if (firstSave + 5 < (int) saves[saveIndex(saveGroup)].size() - 1)
+        if (firstSave + 5 < (int) saves[saveGroup].size() - 1)
         {
             firstSave++;
             selectedSave = 4;
         }
-        else if (firstSave + 5 < (int) saves[saveIndex(saveGroup)].size())
+        else if (firstSave + 5 < (int) saves[saveGroup].size())
         {
             selectedSave = 5;
         }
@@ -754,7 +522,7 @@ bool SaveLoadScreen::setSelectedSave(int i)
         firstSave--;
         selectedSave = 1;
     }
-    else if (firstSave + i < (int) saves[saveIndex(saveGroup)].size())
+    else if (firstSave + i < (int) saves[saveGroup].size())
     {
         selectedSave = i;
     }
