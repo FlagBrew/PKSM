@@ -289,7 +289,7 @@ void SaveLoadScreen::draw(void) const
         C2D_DrawRectSolid(24, 96 + 17 * selectedSave, 0.5f, 174, 16, C2D_Color32(0x0f, 0x16, 0x59, 255));
     }
 
-    y = 98;
+    y = 97;
     for (int i = firstSave; i < firstSave + 6; i++)
     {
         if (i < (int) saves[saveGroup].size())
@@ -322,12 +322,13 @@ void SaveLoadScreen::draw(void) const
                         193, 196, C2D_Color32(0x0f, 0x16, 0x59, 255), 0.5f);
     }
 
-    Gui::staticText(200, 113, 96, i18n::localize("LOADER_LOAD"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
-    Gui::staticText(200, 163, 96, i18n::localize("LOADER_WIRELESS"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+    Gui::staticText(200, 113, 96, i18n::localize("LOADER_LOAD"), FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+    Gui::staticText(200, 163, 96, i18n::localize("LOADER_WIRELESS"), FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
 
-    Gui::staticText(GFX_BOTTOM, 225, i18n::localize("LOADER_INSTRUCTIONS_BOTTOM"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+    Gui::staticText(GFX_BOTTOM, 223, i18n::localize("LOADER_INSTRUCTIONS_BOTTOM"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
 
     C2D_DrawRectSolid(245, 23, 0.5f, 48, 48, COLOR_BLACK);
+    C2D_DrawRectSolid(243, 21, 0.5f, 52, 52, C2D_Color32(15, 22, 89, 255));
     Gui::sprite(ui_sheet_gameselector_unknown_idx, 245, 23);
 }
 
