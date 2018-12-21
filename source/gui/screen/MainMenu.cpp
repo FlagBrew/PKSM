@@ -87,7 +87,7 @@ static void menuTop()
     static const std::string version = StringUtils::format("v%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO);
     Gui::backgroundTop(false);
     Gui::staticText(GFX_TOP, 4, "PKSM", FONT_SIZE_14, FONT_SIZE_14, COLOR_BLUE);
-    Gui::staticText(version, 398, 229, FONT_SIZE_11, FONT_SIZE_11, COLOR_LIGHTBLUE, true);
+    Gui::staticText(version, 398, 229, FONT_SIZE_9, FONT_SIZE_9, COLOR_LIGHTBLUE, true);
 }
 
 void MainMenu::draw() const

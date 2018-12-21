@@ -39,7 +39,7 @@
     "NATURE": "Natura",
     "ITEM": "Strumento",
     "SHINY": "Shiny",
-    "NICKNAME": "Soprannome",
+    "NICKNAME": "Soprann.",
     "FRIENDSHIP": "Amicizia",
     "EDITOR_CP": "PL: ",
     "IV": "IV",
@@ -56,7 +56,7 @@
     "MOVES": "Mosse",
     "RELEARN_MOVES": "Mosse uovo",
     "EDITOR_NOT_APPLICABLE_GEN": "Non disponibile in questa generazione",
-    "EDITOR_INST": "Clicca \ue000 per selezionare, \ue001 per tornare indietro",
+    "EDITOR_INST": "Clicca \ue000 per selezionare,\n\ue001 per tornare indietro",
     "BOX_NAME": "Nome Box",
     "EDITOR_IDS": "TID: %i / SID: %i / TSV: %i",
     "CIRCLE": "Cerchio",
@@ -441,5 +441,6 @@
     "SCANNER_EXIT": "Premi \uE001 per uscire",
     "SHINY_LEAF": "Foglialucente",
     "SHINY_CROWN": "Coronalucente",
-    "SAVE_INVALID": "è un salvataggio invalido."
+    "SAVE_INVALID": "è un salvataggio invalido.",
+    "LOADER_BACKING_UP": "Backup del salvataggio..."
 }

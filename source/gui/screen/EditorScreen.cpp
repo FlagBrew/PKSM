@@ -111,7 +111,7 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
     buttons[tab].push_back(NO_TEXT_ACCEL(142, 194, 13, 13, [this](){ saved = false; return this->changeFriendship(true); }, ui_sheet_button_plus_small_idx));
     buttons[tab].push_back(new Button(204, 109, 108, 30, [this](){ currentTab = 1; return true; }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_STATS"), FONT_SIZE_12, COLOR_BLACK));
     buttons[tab].push_back(new Button(204, 140, 108, 30, [this](){ currentTab = 2; return true; }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_MOVES"), FONT_SIZE_12, COLOR_BLACK));
-    buttons[tab].push_back(new ClickButton(204, 171, 108, 30, [this](){ saved = true; return this->save(); }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_SAVE"), FONT_SIZE_12, COLOR_BLACK));
+    buttons[tab].push_back(new ClickButton(204, 171, 108, 30, [this](){ saved = true; this->save(); Gui::screenBack(); return true; }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_SAVE"), FONT_SIZE_12, COLOR_BLACK));
     buttons[tab].push_back(NO_TEXT_BUTTON(25, 5, 120, 13, [this](){ saved = false; return this->selectSpecies(); }, ui_sheet_res_null_idx));
     buttons[tab].push_back(NO_TEXT_CLICK(186, 7, 12, 12, [this](){ saved = false; return this->genderSwitch(); }, ui_sheet_res_null_idx));
 
