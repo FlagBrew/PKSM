@@ -1000,7 +1000,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
         buttons[i].push_back(new HexEditButton(161, 35, 13, 13, [edit](){ return edit(false, true); }, ui_sheet_button_plus_small_idx, "", false, 0));
         buttons[i].push_back(new HexEditButton(146, 75, 13, 13, [edit](){ return edit(true, false); }, ui_sheet_button_minus_small_idx, "", false, 0));
         buttons[i].push_back(new HexEditButton(161, 75, 13, 13, [edit](){ return edit(false, false); }, ui_sheet_button_minus_small_idx, "", false, 0));
-        if (pkm->gen6() || pkm->gen7())
+        if (pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN)
         {
             switch (i)
             {
@@ -1077,7 +1077,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     break;
             }
         }
-        else if (pkm->gen5())
+        else if (pkm->generation() == Generation::FIVE)
         {
             switch (i)
             {
@@ -1149,7 +1149,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     break;
             }
         }
-        else if (pkm->gen4())
+        else if (pkm->generation() == Generation::FOUR)
         {
             switch (i)
             {
