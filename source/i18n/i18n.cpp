@@ -26,8 +26,6 @@
 
 #include "i18n.hpp"
 
-static u8 systemLanguage = 1;
-
 static LanguageStrings* jp;
 static LanguageStrings* en;
 static LanguageStrings* fr;
@@ -55,8 +53,6 @@ void i18n::init(void)
     nl = new LanguageStrings(Language::NL);
     pt = new LanguageStrings(Language::PT);
     ru = new LanguageStrings(Language::RU);
-
-    CFGU_GetSystemLanguage(&systemLanguage);
 }
 
 void i18n::exit(void)
@@ -367,22 +363,7 @@ std::string i18n::localize(Language lang, const std::string& val)
 
 std::string i18n::localize(const std::string& index)
 {
-    Language l = Language::EN;
-    switch (systemLanguage) {
-        case 0x0: l = Language::JP; break;
-        case 0x1: l = Language::EN; break;
-        case 0x2: l = Language::FR; break;
-        case 0x3: l = Language::DE; break;
-        case 0x4: l = Language::IT; break;
-        case 0x5: l = Language::ES; break;
-        case 0x7: l = Language::KO; break;
-        case 0x8: l = Language::NL; break;
-        case 0x9: l = Language::PT; break;
-        case 0xA: l = Language::RU; break;
-        case 0xB: l = Language::ZH; break;
-        default: l = Language::EN;
-    }
-    return localize(l, index);
+    return localize(Configuration::getInstance().language(), index);
 }
 
 std::string i18n::langString(Language l)
