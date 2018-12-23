@@ -1025,6 +1025,7 @@ void StorageScreen::pickup()
                     }
                 }
                 TitleLoader::save->pkm(*moveMon, boxBox, cursorIndex - 1);
+                TitleLoader::save->dex(*moveMon);
                 if (partyNum != -1)
                 {
                     ((SavLGPE*)TitleLoader::save.get())->partyBoxSlot(partyNum, boxBox * 30 + cursorIndex - 1);

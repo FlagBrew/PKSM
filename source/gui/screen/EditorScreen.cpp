@@ -568,6 +568,7 @@ bool EditorScreen::save()
         }
         TitleLoader::save->pkm(*pkm, index);
     }
+    TitleLoader::save->dex(*pkm);
     return false;
 }
 
