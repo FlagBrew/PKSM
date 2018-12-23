@@ -28,6 +28,7 @@
 #define I18N_HPP
 
 #include "LanguageStrings.hpp"
+#include "Configuration.hpp"
 
 namespace i18n
 {

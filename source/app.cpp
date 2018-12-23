@@ -77,8 +77,8 @@ Result App::init(std::string execPath)
     if (R_FAILED(res = amInit())) return res;
     if (R_FAILED(res = downloadAdditionalAssets())) return res;
     if (R_FAILED(res = Gui::init())) return res;
-    i18n::init();
     Configuration::getInstance();
+    i18n::init();
 
     Threads::create((ThreadFunc)TitleLoader::scanTitles);
     Threads::create((ThreadFunc)TitleLoader::scanSaves);

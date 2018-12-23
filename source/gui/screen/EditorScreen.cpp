@@ -218,7 +218,7 @@ void EditorScreen::draw() const
             {
                 Gui::dynamicText(i18n::localize("EDITOR_CP") + std::to_string((int)((PB7*)pkm.get())->CP()), 4, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, false);
             }
-            Gui::staticText(i18n::localize("STATS"), 4, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            Gui::staticText(i18n::localize("EDITOR_STATS"), 4, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
             Gui::staticText(119, 32, 27, i18n::localize("IV"), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
             text = pkm->generation() == Generation::LGPE ? i18n::localize("AWAKENED") : i18n::localize("EV");
             Gui::staticText(195, 32, 36, text, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
@@ -301,7 +301,7 @@ void EditorScreen::draw() const
     }
     else
     {
-        C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, C2D_Color32(0, 0, 0, 120));
+        C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, COLOR_MASKBLACK);
         Gui::staticText(GFX_BOTTOM, 115, i18n::localize("EDITOR_INST"), FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
         selector->draw();
     }

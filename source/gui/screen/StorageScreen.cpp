@@ -175,8 +175,6 @@ void StorageScreen::setBoxName(bool storage)
     }
 }
 
-bool wirelessStuff() { return false; }
-
 StorageScreen::StorageScreen()
 {
     mainButtons[0] = new ClickButton(242, 9, 47, 22, [this](){ return this->swapBoxWithStorage(); }, ui_sheet_button_swap_boxes_idx, "", 0.0f, 0);
@@ -190,8 +188,8 @@ StorageScreen::StorageScreen()
                                     i18n::localize("DUMP"), FONT_SIZE_12, COLOR_BLACK);
     mainButtons[5] = new Button(212, 164, 108, 28, [this](){ return this->duplicate(); }, ui_sheet_button_editor_idx,
                                     i18n::localize("CLONE"), FONT_SIZE_12, COLOR_BLACK);
-
-    mainButtons[6] = new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0);
+    //mainButtons[6] = new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0);
+    mainButtons[6] = new Button(4, 212, 33, 28, [this](){ return false; }, ui_sheet_res_null_idx, "", 0.0f, 0);
     mainButtons[7] = new Button(283, 211, 34, 28, [this](){ return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
     mainButtons[8] = new AccelButton(8, 15, 17, 24, [this](){ return this->lastBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
     mainButtons[9] = new AccelButton(189, 15, 17, 24, [this](){ return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
@@ -313,7 +311,7 @@ void StorageScreen::draw() const
 
     if (viewer)
     {
-        C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, C2D_Color32(0, 0, 0, 120));
+        C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, COLOR_MASKBLACK);
         if (!moveMon)
         {
             Gui::staticText(GFX_BOTTOM, 110, i18n::localize("PRESS_TO_CLONE"), FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
@@ -507,7 +505,7 @@ void StorageScreen::update(touchPosition* touch)
         }
         else if (kDown & KEY_Y)
         {
-            wirelessStuff();
+            //wirelessStuff();
             return;
         }
         else if (buttonCooldown <= 0)
