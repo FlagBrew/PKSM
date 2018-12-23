@@ -25,12 +25,6 @@
 */
 
 #include "TitleLoadScreen.hpp"
-#include "MainMenu.hpp"
-#include "FSStream.hpp"
-#include "SaveLoadScreen.hpp"
-#include "AccelButton.hpp"
-#include "ClickButton.hpp"
-#include "ConfigScreen.hpp"
 
 bool TitleLoadScreen::loadSave() const
 {
@@ -51,8 +45,6 @@ bool TitleLoadScreen::loadSave() const
     return status;
 }
 
-static bool wirelessSave() { return true; }
-
 TitleLoadScreen::TitleLoadScreen()
 {
     buttons.push_back(new AccelButton(24, 96, 175, 16, [this](){ return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
@@ -62,7 +54,7 @@ TitleLoadScreen::TitleLoadScreen()
     }
     buttons.push_back(new AccelButton(24, 181, 175, 16, [this](){ return this->setSelectedSave(5); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
     buttons.push_back(new Button(200, 95, 96, 51, [this](){ return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f, 0));
-    buttons.push_back(new Button(200, 147, 96, 51, &wirelessSave, ui_sheet_res_null_idx, "", 0.0f, 0));
+    buttons.push_back(new Button(200, 147, 96, 51, &receiveSaveFromBridge, ui_sheet_res_null_idx, "", 0.0f, 0));
 }
 
 void TitleLoadScreen::drawSelector(int x, int y) const
@@ -232,7 +224,7 @@ void TitleLoadScreen::update(touchPosition* touch)
         }
         if (buttonsDown & KEY_X)
         {
-            wirelessSave();
+            receiveSaveFromBridge();
             return;
         }
         if (buttonsDown & KEY_DOWN)

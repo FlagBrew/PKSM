@@ -69,8 +69,6 @@ static constexpr std::string_view dsNames[] = {
     "B2W2"
 };
 
-static bool wirelessSave() { return true; }
-
 SaveLoadScreen::SaveLoadScreen()
 {
     buttons.push_back(new AccelButton(24, 96, 175, 16, [this](){ return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
@@ -80,7 +78,7 @@ SaveLoadScreen::SaveLoadScreen()
     }
     buttons.push_back(new AccelButton(24, 181, 175, 16, [this](){ return this->setSelectedSave(5); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
     buttons.push_back(new Button(200, 95, 96, 51, [this](){ return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f, 0));
-    buttons.push_back(new Button(200, 147, 96, 51, &wirelessSave, ui_sheet_res_null_idx, "", 0.0f, 0));
+    buttons.push_back(new Button(200, 147, 96, 51, &receiveSaveFromBridge, ui_sheet_res_null_idx, "", 0.0f, 0));
 
     for (auto i = TitleLoader::sdSaves.begin(); i != TitleLoader::sdSaves.end(); i++)
     {
@@ -351,7 +349,7 @@ void SaveLoadScreen::update(touchPosition* touch)
         }
         if (downKeys & KEY_X)
         {
-            wirelessSave();
+            receiveSaveFromBridge();
             return;
         }
         if (downKeys & KEY_DOWN)

@@ -224,6 +224,19 @@ StorageScreen::~StorageScreen()
     if (TitleLoader::save->generation() == Generation::LGPE)
     {
         ((SavLGPE*)TitleLoader::save.get())->compressBox();
+        int occupiedSlots = 0;
+        for (int i = 0; i < TitleLoader::save->maxSlot(); i++)
+        {
+            if (TitleLoader::save->pkm(0, i)->encryptionConstant())
+            {
+                occupiedSlots++;
+            }
+            else
+            {
+                break;
+            }
+        }
+        ((SavLGPE*)TitleLoader::save.get())->boxedPkm(occupiedSlots);
     }
     TitleLoader::save->cryptBoxData(false);
 }

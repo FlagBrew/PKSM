@@ -286,6 +286,12 @@ void TitleLoader::backupSave()
     out.close();
 }
 
+bool TitleLoader::load(u8* data, size_t size)
+{
+    save = Sav::getSave(data, size);
+    return save != nullptr;
+}
+
 bool TitleLoader::load(std::shared_ptr<Title> title)
 {
     saveIsFile = false;
