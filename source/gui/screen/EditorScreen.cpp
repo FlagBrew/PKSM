@@ -529,43 +529,52 @@ void EditorScreen::setFriendship()
     }
 }
 
+void EditorScreen::partyUpdate()
+{
+    // Update party values IF the user hasn't edited them themselves
+    for (int i = 0; i < 6; i++)
+    {
+        if (pkm->partyStat(i) == origPartyStats[i])
+        {
+            pkm->partyStat(i, pkm->stat(i));
+            origPartyStats[i] = pkm->stat(i);
+        }
+    }
+    if (pkm->partyLevel() == origPartyLevel)
+    {
+        pkm->partyLevel(pkm->level());
+        origPartyLevel = pkm->level();
+    }
+    if (pkm->partyCurrHP() == origPartyCurrHP)
+    {
+        pkm->partyCurrHP(pkm->stat(0));
+        origPartyCurrHP = pkm->stat(0);
+    }
+    if (pkm->generation() == Generation::LGPE)
+    {
+        PB7* pb7 = (PB7*)pkm.get();
+        if (pb7->partyCP() == origPartyCP)
+        {
+            pb7->partyCP(pb7->CP());
+            origPartyCP = pb7->CP();
+        }
+    }
+}
+
 bool EditorScreen::save()
 {
     pkm->refreshChecksum();
     if (box != 0xFF)
     {
+        if (TitleLoader::save->generation() == Generation::LGPE)
+        {
+            partyUpdate();
+        }
         TitleLoader::save->pkm(*pkm, box, index);
     }
     else
     {
-        // Update party values IF the user hasn't edited them themselves
-        for (int i = 0; i < 6; i++)
-        {
-            if (pkm->partyStat(i) == origPartyStats[i])
-            {
-                pkm->partyStat(i, pkm->stat(i));
-                origPartyStats[i] = pkm->stat(i);
-            }
-        }
-        if (pkm->partyLevel() == origPartyLevel)
-        {
-            pkm->partyLevel(pkm->level());
-            origPartyLevel = pkm->level();
-        }
-        if (pkm->partyCurrHP() == origPartyCurrHP)
-        {
-            pkm->partyCurrHP(pkm->stat(0));
-            origPartyCurrHP = pkm->stat(0);
-        }
-        if (pkm->generation() == Generation::LGPE)
-        {
-            PB7* pb7 = (PB7*)pkm.get();
-            if (pb7->partyCP() == origPartyCP)
-            {
-                pb7->partyCP(pb7->CP());
-                origPartyCP = pb7->CP();
-            }
-        }
+        partyUpdate();
         TitleLoader::save->pkm(*pkm, index);
     }
     TitleLoader::save->dex(*pkm);

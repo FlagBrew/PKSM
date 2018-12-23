@@ -69,6 +69,7 @@ private:
     bool hexEdit();
     bool save();
     bool genderSwitch();
+    void partyUpdate();
     
     bool changeIV(int which, bool up);
     void setIV(int which);
