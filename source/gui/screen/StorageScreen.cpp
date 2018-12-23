@@ -1165,7 +1165,7 @@ bool StorageScreen::swapBoxWithStorage()
         {
             temPkm = TitleLoader::save->emptyPkm();
         }
-        else if ((Configuration::getInstance().transferEdit() || temPkm->generation() == TitleLoader::save->generation()) || Gui::showChoiceMessage(StringUtils::format(i18n::localize("GEN_CHANGE_1"), genToString(moveMon->generation()).c_str(), genToString(TitleLoader::save->generation()).c_str()), i18n::localize("GEN_CHANGE_2")))
+        if ((Configuration::getInstance().transferEdit() || temPkm->generation() == TitleLoader::save->generation()) || Gui::showChoiceMessage(StringUtils::format(i18n::localize("GEN_CHANGE_1"), genToString(moveMon->generation()).c_str(), genToString(TitleLoader::save->generation()).c_str()), i18n::localize("GEN_CHANGE_2")))
         {
             while (temPkm->generation() != TitleLoader::save->generation())
             {
