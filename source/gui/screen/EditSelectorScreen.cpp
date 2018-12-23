@@ -91,8 +91,6 @@ void EditSelectorScreen::changeBoxName()
     }
 }
 
-static bool wirelessStuff() { return false; }
-
 bool EditSelectorScreen::doQR()
 {
     u8* data = nullptr;
@@ -155,7 +153,7 @@ EditSelectorScreen::EditSelectorScreen()
     
     buttons.push_back(new Button(283, 211, 34, 28, [](){ Gui::screenBack(); return true; }, ui_sheet_button_back_idx, "", 0.0f, 0));
     buttons.push_back(new ClickButton(32, 15, 164, 24, [this](){ return this->clickIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0));
-    buttons.push_back(new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0));
+    //buttons.push_back(new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0));
     buttons.push_back(new AccelButton(8, 15, 17, 24, [this](){ return this->lastBox(); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5));
     buttons.push_back(new AccelButton(189, 15, 17, 24, [this](){ return this->nextBox(); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5));
 

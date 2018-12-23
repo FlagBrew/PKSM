@@ -373,6 +373,7 @@
     "BANK_CONFIRM_CLEAR": "Erase the selected box?",
     "BANK_CONFIRM_RELEASE": "Release the selected Pok\u00E9mon?",
     "BANK_CONFIRM_DUMP": "Dump selected Pok\u00E9mon?",
+    "BANK_OPEN_FAILED": "Impossibile avviare lo scaricamento!",
     "BANK_SAVE_CHANGES": "Save changes to storage?",
     "ESV_TSV": "ESV/TSV",
     "TID_SID": "TID/SID",
@@ -429,8 +430,8 @@
     "FAIL_SAVE_COMMIT": "Failed to commit save data!",
     "CONTINUE": "Press A to continue.",
     "CONTINUE_CANCEL": "Press A to continue, B to cancel.",
-    "ERROR_CODE": "Error: %X",
-    "STORAGE_RESIZE": "Resizing Storage...",
+    "ERROR_CODE": "Error: 0x%08X",
+    "STORAGE_RESIZE": "Resizing storage...",
     "SAVING": "Saving...",
     "SAVE_PROGRESS": "%lu KB of %lu KB...",
     "GEN_CHANGE_1": "The generation change (%s->%s) will edit your",
@@ -443,5 +444,6 @@
     "SAVE_INVALID": "is not a valid save file.",
     "NO_WONDERCARDS": "LGPE doesn't have any Wonder Cards yet!",
     "BRIDGE_SHOULD_SEND_1": "Would you like to send the changed file",
-    "BRIDGE_SHOULD_SEND_2": "to Checkpoint Switch?"
+    "BRIDGE_SHOULD_SEND_2": "to Checkpoint Switch?",
+    "LOADER_BACKING_UP": "Backing up save..."
 }

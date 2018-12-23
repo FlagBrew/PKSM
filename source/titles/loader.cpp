@@ -241,7 +241,7 @@ void TitleLoader::scanSaves(void)
 
 void TitleLoader::backupSave()
 {
-    Gui::waitFrame("Backing up save...");
+    Gui::waitFrame(i18n::localize("LOADER_BACKING_UP"));
     char stringTime[15] = {0};
     time_t unixTime = time(NULL);
     struct tm* timeStruct = gmtime((const time_t *)&unixTime);

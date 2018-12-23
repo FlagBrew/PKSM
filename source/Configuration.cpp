@@ -124,5 +124,11 @@ void Configuration::loadFromRomfs()
     std::ifstream istream("romfs:/config.json");
     istream >> mJson;
     istream.close();
+
+    // load system language
+    u8 systemLanguage;
+    CFGU_GetSystemLanguage(&systemLanguage);
+    mJson["language"] = systemLanguage;
+
     save();
 }

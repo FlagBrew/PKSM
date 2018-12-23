@@ -71,30 +71,11 @@ private:
     int firstSave = 0;
     std::vector<Button*> buttons;
     int selectedSave = -1;
-    mutable bool platinum = false;
-    bool hasTitles[4] = {false, false, false, false};
-    std::list<std::string> nandTitles;
-    int missingGroups = 4;
     bool selectedGroup = false;
     bool setSelectedSave(int i);
     bool increaseFirstSave()
     {
-        int accessSaves = saveGroup;
-        if (accessSaves > 3 && accessSaves < 7)
-        {
-            for (int i = 0; i < 4; i++)
-            {
-                if (i + 3 >= saveGroup)
-                {
-                    break;
-                }
-                if (hasTitles[i])
-                {
-                    accessSaves++;
-                }
-            }
-        }
-        if (firstSave < (int) saves[accessSaves].size() - 1)
+        if (firstSave < (int) saves[saveGroup].size() - 1)
         {
             firstSave++;
         }
@@ -108,8 +89,7 @@ private:
         }
         return false;
     }
-    std::string_view titleName(int index) const;
-    int saveIndex(int index) const;
+    static constexpr std::string_view titleName(int index);
 
     bool loadSave(void);
 };

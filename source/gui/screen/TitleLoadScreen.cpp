@@ -117,16 +117,17 @@ void TitleLoadScreen::draw() const
     int nextIdPart = ceilf(27 + textWidth(i18n::localize("LOADER_ID"), FONT_SIZE_11));
     int nextMediaPart = ceilf(27 + textWidth(i18n::localize("LOADER_MEDIA_TYPE"), FONT_SIZE_11));
 
-    Gui::staticText(i18n::localize("LOADER_ID"), 27, 42, FONT_SIZE_11, FONT_SIZE_11, COLOR_LIGHTBLUE);
-    Gui::staticText(i18n::localize("LOADER_MEDIA_TYPE"), 27, 54, FONT_SIZE_11, FONT_SIZE_11, COLOR_LIGHTBLUE);
+    Gui::staticText(i18n::localize("LOADER_ID"), 27, 46, FONT_SIZE_11, FONT_SIZE_11, COLOR_LIGHTBLUE);
+    Gui::staticText(i18n::localize("LOADER_MEDIA_TYPE"), 27, 58, FONT_SIZE_11, FONT_SIZE_11, COLOR_LIGHTBLUE);
     if (selectedTitle != -2)
     {
+        C2D_DrawRectSolid(243, 21, 0.5f, 52, 52, C2D_Color32(15, 22, 89, 255));
         C2D_DrawImageAt(titleFromIndex(selectedTitle)->icon(), 245, 23, 0.5f, NULL, 1.0f, 1.0f);
         Gui::dynamicText(titleFromIndex(selectedTitle)->name(), 27, 26, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::dynamicText(StringUtils::format("%08X", titleFromIndex(selectedTitle)->lowId()), nextIdPart, 42, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+        Gui::dynamicText(StringUtils::format("%08X", titleFromIndex(selectedTitle)->lowId()), nextIdPart, 46, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
         
         std::string mediaType = selectedTitle == -1 ? i18n::localize("LOADER_CARTRIDGE") : i18n::localize("LOADER_SD");
-        Gui::staticText(mediaType, nextMediaPart, 54, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+        Gui::staticText(mediaType, nextMediaPart, 58, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
     }
     else
     {
@@ -138,7 +139,7 @@ void TitleLoadScreen::draw() const
         C2D_DrawRectSolid(24, 96 + 17 * selectedSave, 0.5f, 174, 16, C2D_Color32(0x0f, 0x16, 0x59, 255));
     }
 
-    int y = 98;
+    int y = 97;
     for (int i = firstSave; i < firstSave + 6; i++)
     {
         if (i == -1)
@@ -174,10 +175,10 @@ void TitleLoadScreen::draw() const
                         193, 196, C2D_Color32(0x0f, 0x16, 0x59, 255), 0.5f);
     }
 
-    Gui::staticText(200, 113, 96, i18n::localize("LOADER_LOAD"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
-    Gui::staticText(200, 163, 96, i18n::localize("LOADER_WIRELESS"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+    Gui::staticText(200, 113, 96, i18n::localize("LOADER_LOAD"), FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+    Gui::staticText(200, 163, 96, i18n::localize("LOADER_WIRELESS"), FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
 
-    Gui::staticText(GFX_BOTTOM, 225, i18n::localize("LOADER_INSTRUCTIONS_BOTTOM"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+    Gui::staticText(GFX_BOTTOM, 223, i18n::localize("LOADER_INSTRUCTIONS_BOTTOM"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
 }
 
 void TitleLoadScreen::update(touchPosition* touch)

@@ -80,8 +80,8 @@ Result App::init(std::string execPath)
     if (R_FAILED(res = amInit())) return res;
     if (R_FAILED(res = downloadAdditionalAssets())) return res;
     if (R_FAILED(res = Gui::init())) return res;
-    i18n::init();
     Configuration::getInstance();
+    i18n::init();
 
     u32* socketBuffer = (u32*)memalign(SOC_ALIGN, SOC_BUFFERSIZE);
     if (socketBuffer == NULL)
