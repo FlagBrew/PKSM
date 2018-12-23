@@ -9,4 +9,4 @@
 	url = https://github.com/FlagBrew/PKSM-Scripts
 [submodule "docs"]
 	path = docs
-	url = ../PKSM.wiki.git
+	url = https://github.com/FlagBrew/PKSM.wiki.git
