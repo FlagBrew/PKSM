@@ -34,6 +34,7 @@
 #include <string.h>
 #include <random>
 #include <stack>
+#include "mixer.hpp"
 #include "json.hpp"
 #include "i18n.hpp"
 #include "PKX.hpp"

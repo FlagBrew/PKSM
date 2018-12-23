@@ -372,6 +372,7 @@ Result Gui::init(void)
     C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
     C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
     C2D_Prepare();
+    SDLH_Init();
 
     srand(time(NULL));
 
@@ -394,6 +395,7 @@ Result Gui::init(void)
 void Gui::mainLoop(void)
 {
     bool exit = false;
+    SDLH_Play();
     while (aptMainLoop() && !exit)
     {
         hidScanInput();
@@ -437,6 +439,7 @@ void Gui::exit(void)
     C2D_Fini();
     C3D_Fini();
     gfxExit();
+    SDLH_Exit();
 }
 
 void Gui::sprite(int key, int x, int y)
