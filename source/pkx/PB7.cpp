@@ -206,9 +206,8 @@ u8 PB7::iv(u8 stat) const
 void PB7::iv(u8 stat, u8 v)
 {
     u32 buffer = *(u32*)(data + 0x74);
-    u32 mask = 0xFFFFFFFF ^ 0x1F << 5*stat;
-    buffer &= mask;
-    buffer ^= ((v & 0x1F) << (5*stat));
+    buffer &= ~(0x1F << 5 * stat);
+    buffer |= v << (5 * stat);
     *(u32*)(data + 0x74) = buffer;
 }
 
@@ -369,7 +368,7 @@ void PB7::hpType(u8 v)
 
     for (u8 i = 0; i < 6; i++)
     {
-        iv((iv(i) & 0x1E) + hpivs[v][i], i);
+        iv(i, (iv(i) & 0x1E) + hpivs[v][i]);
     }
 }
 
