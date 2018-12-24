@@ -144,7 +144,7 @@ void InjectSelectorScreen::draw() const
 {
     C2D_SceneBegin(g_renderTargetBottom);
     Gui::backgroundBottom(true);
-    Gui::dynamicText(GFX_BOTTOM, 224, i18n::localize("WC_INST1"), FONT_SIZE_11, FONT_SIZE_11, C2D_Color32(197, 202, 233, 255));
+    Gui::dynamicText(GFX_BOTTOM, 222, i18n::localize("WC_INST1"), FONT_SIZE_11, FONT_SIZE_11, C2D_Color32(197, 202, 233, 255));
 
     Gui::sprite(ui_sheet_eventmenu_page_indicator_idx, 65, 13);
 
@@ -252,7 +252,7 @@ void InjectSelectorScreen::draw() const
                 {
                     text = data.name;
                 }
-                Gui::dynamicText(text, x + 34, y + 10, FONT_SIZE_11, FONT_SIZE_11, i == hid.fullIndex() ? C2D_Color32(232, 234, 246, 255) : C2D_Color32(26, 35, 126, 255), 138, true);
+                Gui::dynamicText(text, x + 34, y + 12, FONT_SIZE_11, FONT_SIZE_11, i == hid.fullIndex() ? C2D_Color32(232, 234, 246, 255) : C2D_Color32(26, 35, 126, 255), 138, true);
             }
         }
     }

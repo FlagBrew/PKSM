@@ -102,15 +102,15 @@ ConfigScreen::ConfigScreen() : oldStorage(Configuration::getInstance().storageSi
     tabButtons[1].push_back(new Button(112, 182, 15, 12, [](){ Gui::setNextKeyboardFunc([](){ inputNumber([](u16 a){ Configuration::getInstance().year(a); }, 4, 9999); }); return false; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
 
     // Miscellaneous buttons
-    tabButtons[2].push_back(new ClickButton(237, 39, 15, 12, [](){ Configuration::getInstance().autoBackup(!Configuration::getInstance().autoBackup()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    tabButtons[2].push_back(new ClickButton(247, 39, 15, 12, [](){ Configuration::getInstance().autoBackup(!Configuration::getInstance().autoBackup()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
     tabButtons[2].push_back(new AccelButton(231, 62, 13, 13, [](){ Configuration::getInstance().storageSize(LIMITSTORAGE(Configuration::getInstance().storageSize() - 1)); return false; }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
     tabButtons[2].push_back(new Button(245, 62, 50, 13, [](){ Gui::setNextKeyboardFunc([](){ inputNumber([](u16 a){ Configuration::getInstance().storageSize(a); }, 4, STORAGE_BOX_LIMIT); }); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
     tabButtons[2].push_back(new AccelButton(296, 62, 13, 13, [](){ Configuration::getInstance().storageSize(LIMITSTORAGE(Configuration::getInstance().storageSize() + 1)); return false; }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new ClickButton(237, 87, 15, 12, [](){ Configuration::getInstance().fixSectors(!Configuration::getInstance().fixSectors()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new ClickButton(237, 111, 15, 12, [](){ Configuration::getInstance().transferEdit(!Configuration::getInstance().transferEdit()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new ClickButton(237, 135, 15, 12, [](){ Configuration::getInstance().writeFileSave(!Configuration::getInstance().writeFileSave()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new ClickButton(237, 159, 15, 12, [](){ Configuration::getInstance().useSaveInfo(!Configuration::getInstance().useSaveInfo()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new ClickButton(237, 183, 15, 12, [](){ Configuration::getInstance().useExtData(!Configuration::getInstance().useExtData()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    tabButtons[2].push_back(new ClickButton(247, 87, 15, 12, [](){ Configuration::getInstance().fixSectors(!Configuration::getInstance().fixSectors()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    tabButtons[2].push_back(new ClickButton(247, 111, 15, 12, [](){ Configuration::getInstance().transferEdit(!Configuration::getInstance().transferEdit()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    tabButtons[2].push_back(new ClickButton(247, 135, 15, 12, [](){ Configuration::getInstance().writeFileSave(!Configuration::getInstance().writeFileSave()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    tabButtons[2].push_back(new ClickButton(247, 159, 15, 12, [](){ Configuration::getInstance().useSaveInfo(!Configuration::getInstance().useSaveInfo()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    tabButtons[2].push_back(new ClickButton(247, 183, 15, 12, [](){ Configuration::getInstance().useExtData(!Configuration::getInstance().useExtData()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
 }
 
 void ConfigScreen::draw() const
@@ -252,13 +252,13 @@ void ConfigScreen::draw() const
             button->draw();
         }
 
-        Gui::staticText(Configuration::getInstance().autoBackup() ? i18n::localize("YES") : i18n::localize("NO"), 260, 36, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+        Gui::staticText(Configuration::getInstance().autoBackup() ? i18n::localize("YES") : i18n::localize("NO"), 270, 36, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
         Gui::dynamicText(245, 60, 50, std::to_string(Configuration::getInstance().storageSize()), FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText(Configuration::getInstance().fixSectors() ? i18n::localize("YES") : i18n::localize("NO"), 260, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText(Configuration::getInstance().transferEdit() ? i18n::localize("YES") : i18n::localize("NO"), 260, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText(Configuration::getInstance().writeFileSave() ? i18n::localize("YES") : i18n::localize("NO"), 260, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText(Configuration::getInstance().useSaveInfo() ? i18n::localize("YES") : i18n::localize("NO"), 260, 156, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText(Configuration::getInstance().useExtData() ? i18n::localize("YES") : i18n::localize("NO"), 260, 180, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+        Gui::staticText(Configuration::getInstance().fixSectors() ? i18n::localize("YES") : i18n::localize("NO"), 270, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+        Gui::staticText(Configuration::getInstance().transferEdit() ? i18n::localize("YES") : i18n::localize("NO"), 270, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+        Gui::staticText(Configuration::getInstance().writeFileSave() ? i18n::localize("YES") : i18n::localize("NO"), 270, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+        Gui::staticText(Configuration::getInstance().useSaveInfo() ? i18n::localize("YES") : i18n::localize("NO"), 270, 156, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+        Gui::staticText(Configuration::getInstance().useExtData() ? i18n::localize("YES") : i18n::localize("NO"), 270, 180, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
     }
 }
 

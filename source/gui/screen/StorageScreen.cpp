@@ -177,16 +177,16 @@ void StorageScreen::setBoxName(bool storage)
 
 StorageScreen::StorageScreen()
 {
-    mainButtons[0] = new ClickButton(242, 9, 47, 22, [this](){ return this->swapBoxWithStorage(); }, ui_sheet_button_swap_boxes_idx, "", 0.0f, 0);
-    mainButtons[1] = new Button(212, 40, 108, 28, [this](){ return this->showViewer(); }, ui_sheet_button_editor_idx,
+    mainButtons[0] = new ClickButton(242, 12, 47, 22, [this](){ return this->swapBoxWithStorage(); }, ui_sheet_button_swap_boxes_idx, "", 0.0f, 0);
+    mainButtons[1] = new Button(212, 47, 108, 28, [this](){ return this->showViewer(); }, ui_sheet_button_editor_idx,
                                     i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[2] = new Button(212, 71, 108, 28, [this](){ return this->clearBox(); }, ui_sheet_button_editor_idx,
+    mainButtons[2] = new Button(212, 78, 108, 28, [this](){ return this->clearBox(); }, ui_sheet_button_editor_idx,
                                     i18n::localize("CLEAR"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[3] = new Button(212, 102, 108, 28, [this](){ return this->releasePkm(); }, ui_sheet_button_editor_idx,
+    mainButtons[3] = new Button(212, 109, 108, 28, [this](){ return this->releasePkm(); }, ui_sheet_button_editor_idx,
                                     i18n::localize("RELEASE"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[4] = new Button(212, 133, 108, 28, [this](){ return this->dumpPkm(); }, ui_sheet_button_editor_idx,
+    mainButtons[4] = new Button(212, 140, 108, 28, [this](){ return this->dumpPkm(); }, ui_sheet_button_editor_idx,
                                     i18n::localize("DUMP"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[5] = new Button(212, 164, 108, 28, [this](){ return this->duplicate(); }, ui_sheet_button_editor_idx,
+    mainButtons[5] = new Button(212, 171, 108, 28, [this](){ return this->duplicate(); }, ui_sheet_button_editor_idx,
                                     i18n::localize("CLONE"), FONT_SIZE_12, COLOR_BLACK);
     //mainButtons[6] = new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0);
     mainButtons[6] = new Button(4, 212, 33, 28, [this](){ return false; }, ui_sheet_res_null_idx, "", 0.0f, 0);
@@ -454,7 +454,7 @@ void StorageScreen::draw() const
             Gui::dynamicText(276 + (int) width, 197, 70, info, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
             info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(4), infoMon->iv(5), infoMon->iv(3));
             Gui::dynamicText(276 + (int) width, 209, 70, info, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
-            Gui::format(infoMon.get(), 276, 210);
+            Gui::generation(infoMon.get(), 276, 213);
         }
     }
 }

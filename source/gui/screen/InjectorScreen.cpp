@@ -253,7 +253,7 @@ void InjectorScreen::draw() const
 
     Gui::dynamicText(255, 170, 38, std::to_string(slot), FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
 
-    Gui::dynamicText(GFX_BOTTOM, 223, i18n::localize("START_TO_INJECT"), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+    Gui::dynamicText(GFX_BOTTOM, 221, i18n::localize("START_TO_INJECT"), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
     
     if (!choosingSlot)
     {
@@ -370,8 +370,8 @@ void InjectorScreen::draw() const
     else
     {
         C2D_DrawRectSolid(0, 0, 0.5, 320, 240, COLOR_MASKBLACK);
-        Gui::dynamicText(GFX_BOTTOM, 107, i18n::localize("WC_CHANGE_SLOT"), FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
-        Gui::dynamicText(GFX_BOTTOM, 124, i18n::localize("WC_DUMP2"), FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
+        Gui::dynamicText(GFX_BOTTOM, 100, i18n::localize("WC_CHANGE_SLOT"), FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
+        Gui::dynamicText(GFX_BOTTOM, 128, i18n::localize("WC_DUMP2"), FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
 
         C2D_SceneBegin(g_renderTargetTop);
         Gui::sprite(ui_sheet_part_mtx_5x8_idx, 0, 0);

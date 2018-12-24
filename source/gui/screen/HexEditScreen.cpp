@@ -1004,8 +1004,8 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
             }
             return true;
         };
-        buttons[i].push_back(new HexEditButton(146, 35, 13, 13, [edit](){ return edit(true, true); }, ui_sheet_button_plus_small_idx, "", false, 0));
-        buttons[i].push_back(new HexEditButton(161, 35, 13, 13, [edit](){ return edit(false, true); }, ui_sheet_button_plus_small_idx, "", false, 0));
+        buttons[i].push_back(new HexEditButton(146, 33, 13, 13, [edit](){ return edit(true, true); }, ui_sheet_button_plus_small_idx, "", false, 0));
+        buttons[i].push_back(new HexEditButton(161, 33, 13, 13, [edit](){ return edit(false, true); }, ui_sheet_button_plus_small_idx, "", false, 0));
         buttons[i].push_back(new HexEditButton(146, 75, 13, 13, [edit](){ return edit(true, false); }, ui_sheet_button_minus_small_idx, "", false, 0));
         buttons[i].push_back(new HexEditButton(161, 75, 13, 13, [edit](){ return edit(false, false); }, ui_sheet_button_minus_small_idx, "", false, 0));
         if (pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN)
@@ -1273,12 +1273,11 @@ void HexEditScreen::draw() const
         }
     }
 
-    Gui::dynamicText(GFX_TOP, 226, selectedDescription.first, FONT_SIZE_9, FONT_SIZE_9, COLOR_BLACK);
+    Gui::dynamicText(GFX_TOP, 227, selectedDescription.first, FONT_SIZE_9, FONT_SIZE_9, COLOR_BLACK);
 
     C2D_SceneBegin(g_renderTargetBottom);
     Gui::backgroundBottom(false);
-    Gui::staticText(GFX_BOTTOM, 2, i18n::localize("HEX_SELECTED_BYTE"), FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-    Gui::dynamicText(GFX_BOTTOM, 17, StringUtils::format("0x%02X", hid.fullIndex()), FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+    Gui::staticText(GFX_BOTTOM, 8, StringUtils::format("%s 0x%02X", i18n::localize("HEX_SELECTED_BYTE").c_str(), hid.fullIndex()), FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
 
     Gui::sprite(ui_sheet_box_hex_value_idx, 140, 50);
     Gui::dynamicText(GFX_BOTTOM, 52, StringUtils::format("%01X %01X", pkm->rawData()[hid.fullIndex()] >> 4, pkm->rawData()[hid.fullIndex()] & 0x0F), FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
