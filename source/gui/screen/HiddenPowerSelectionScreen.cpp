@@ -42,7 +42,7 @@ void HiddenPowerSelectionScreen::draw() const
     C2D_DrawRectSolid(x, y + 58, 0.5f, 99, 1, COLOR_YELLOW);
     for (int i = 0; i < 16; i++)
     {
-        Gui::type(Configuration::getInstance().language(), (u8) i, 23 + (i % 4) * 100, 20 + (i / 4) * 60);
+        Gui::type(Configuration::getInstance().language(), (u8) i + 1, 23 + (i % 4) * 100, 20 + (i / 4) * 60);
     }
 }
 
