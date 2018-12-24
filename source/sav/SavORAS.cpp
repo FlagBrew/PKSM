@@ -272,8 +272,8 @@ void SavORAS::dex(PKX& pk)
     data[0x15400 + (bit * 7 + lang) / 8] |= (u8)(1 << ((bit * 7 + lang) % 8));
 
     // Set DexNav count (only if not encountered previously)
-    if (*(u16*)(0x15686 + (pk.species() - 1) * 2) == 0)
-        *(u16*)(0x15686 + (pk.species() - 1) * 2) = 1;
+    if (*(u16*)(data + 0x15686 + (pk.species() - 1) * 2) == 0)
+        *(u16*)(data + 0x15686 + (pk.species() - 1) * 2) = 1;
 
     // Set Form flags
     int fc = PersonalXYORAS::formCount(pk.species());
