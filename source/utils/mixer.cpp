@@ -41,8 +41,10 @@ bool SDLH_Init(void)
     {
         fprintf(stderr, "Mix_Init: %s\n", Mix_GetError());
     }
-    Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 4096);
-    song = Mix_LoadMUS("romfs:/audio.mp3");
+    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 4096);
+    std::string path = io::exists("/3ds/PKSM/songs/audio.mp3") ? 
+        "/3ds/PKSM/songs/audio.mp3" : "romfs:/audio.mp3";
+    song = Mix_LoadMUS(path.c_str());
     
     return true;
 }

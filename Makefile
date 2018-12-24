@@ -115,7 +115,7 @@ CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O2 -mword-relocations \
 			-DVERSION_MINOR=${VERSION_MINOR} \
 			-DVERSION_MICRO=${VERSION_MICRO} \
 			-DUNIQUE_ID=${UNIQUE_ID} \
-			-DPICOC_DEBUG \
+			# -DPICOC_DEBUG \
 			`sdl-config --cflags`
 
 CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS -D_GNU_SOURCE=1
@@ -125,7 +125,9 @@ CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++17
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS	:= -lSDL_mixer -lSDL -lmpg123 -lvorbisidec -logg -lmikmod -lmad -lcurl -lmbedtls -lmbedx509 -lmbedcrypto -lz -lcitro2d -lcitro3d -lctru -lm 
+LIBS	:= -lSDL_mixer -lSDL -lmpg123 -lvorbisidec -logg -lmikmod -lmad  \
+		   -lcurl -lmbedtls -lmbedx509 -lmbedcrypto \
+		   -lz -lcitro2d -lcitro3d -lctru -lm 
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
