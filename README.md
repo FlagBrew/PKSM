@@ -1,4 +1,4 @@
-![PKSM](https://raw.githubusercontent.com/BernardoGiordano/PKSM/master/assets/banner.png)
+![PKSM](https://raw.githubusercontent.com/FlagBrew/PKSM/master/assets/banner.png)
 
 ## Notice
 
@@ -54,12 +54,12 @@ If you're coming from a PKSM version < 5.0.0, you'll notice your `bank.bin` file
 
 ## Applications compatible with PKSM
 
-* **[serveLegality](https://github.com/BernardoGiordano/PKSM-Tools)**: PC tool to check and fix a pkmn's legality.
+* **[serveLegality](https://github.com/FlagBrew/serveLegality)**: PC tool to check and fix a pkmn's legality. (Development on hold)
 * **[PKHeX](https://github.com/kwsch/PKHeX)**: Generates .pk7, .pk6, .wc7, .wc6 QR codes scannable from PKSM. Runs on PC.
 * **[MysteryGiftBot](https://twitter.com/mysterygiftbot)**: Generates .wc7 QR codes scannable from PKSM. Runs on Twitter.
-* **[servepkx](https://github.com/BernardoGiordano/PKSM-Tools)**: multiplatform tool to send .pk7, .pk6, .wc7full, .wc6full, .wc7, .wc6 files to PKSM. Requires a web browser or JRE.
+* **[servepkx](https://github.com/FlagBrew/servepkx)**: multiplatform tool to send .pk7, .pk6, .wc7full, .wc6full, .wc7, .wc6 files to PKSM. Requires a web browser or JRE.
 * **[phbank2pksm](https://github.com/BernardoGiordano/PKSM-Tools)**: tool to convert a PHBank bank file to a PKSM storage file. Requires a web browser.
-* **[PKSMScript](https://github.com/BernardoGiordano/PKSM-Tools/tree/master/PKSMScript)**: python tool to compile .pksm scripts.
+* **[PKSMScript](https://github.com/FlagBrew/PKSM-Scripts)**: python tool to compile .pksm scripts.
 
 ## Working paths
 
@@ -81,7 +81,12 @@ You can get real-time support by joining PKSM's discord server.
 
 ## Building
 
-PKSM requires [latest libctru](https://github.com/smealum/ctrulib), [latest citro3d](https://github.com/fincs/citro3d) and [latest pp2d](https://github.com/BernardoGiordano/PKSM/tree/master/source/pp2d). The executable can be compiled with [devkitARM r47+](https://sourceforge.net/projects/devkitpro/).To compile the .cia you need [3dstool](https://github.com/dnasdw/3dstool/releases), [bannertool and makerom](https://github.com/Steveice10/buildtools/tree/master/3ds) in your PATH. Run the command `make all` to build both the .3dsx and .cia.
+PKSM has the following dependencies:
+
+- The latest version of ctrulib, citro3d, citro2d, 3ds-curl and [3dstool](https://github.com/dnasdw/3dstool/releases), [bannertool](https://github.com/Steveice10/bannertool/releases) and [makerom](https://github.com/profi200/Project_CTR/releases). (All of these except for bannertool, makerom and 3dstool should be installed from the [devKitPro pacman repository](https://devkitpro.org/wiki/devkitPro_pacman). ctrulib, citro3d and citro2d should be installed with `3ds-dev` and then selecting yes on the entire group instead of installing the packages directly).
+- The latest version of python 3.x and the GitPython library.
+
+To compile, clone the repository with all submodules (`git clone --recursive https://github.com/FlagBrew/PKSM.git` if initially cloning, `git submodule init` and `git submodule update` if running from an existing clone) and run `make all`.
 
 ## Credits
 
