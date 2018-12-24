@@ -25,16 +25,6 @@
 */
 
 #include "app.hpp"
-#include "Configuration.hpp"
-#include "TitleLoadScreen.hpp"
-#include <stdio.h>
-
-extern "C" {
-#include "download.h"
-}
-
-#define SOC_ALIGN      0x1000
-#define SOC_BUFFERSIZE 0x100000
 
 // increase the stack in order to allow quirc to decode large qrs
 int __stacksize__ = 64 * 1024;
@@ -44,18 +34,71 @@ static u32 old_time_limit;
 struct asset {
     std::string url;
     std::string path;
+    unsigned char hash[SHA256_BLOCK_SIZE];
 };
+
+static bool matchSha256HashFromFile(const std::string& path, unsigned char* sha)
+{
+    bool match = false;
+    std::ifstream file(path, std::ios::binary | std::ios::ate);
+    if (file.good())
+    {
+        size_t size = file.tellg();
+        file.seekg(0, std::ios::beg);
+        char* data = new char[size];
+        file.read(data, size);
+        char hash[SHA256_BLOCK_SIZE];
+        sha256((unsigned char*)hash, (unsigned char*)data, size);
+        delete[] data;
+        //std::ofstream out(path + ".bin", std::ios::binary);
+        //out.write(hash, SHA256_BLOCK_SIZE);
+        //out.close();
+        match = memcmp(sha, hash, SHA256_BLOCK_SIZE) == 0;
+    }
+    file.close();
+    return match;
+}
 
 static Result downloadAdditionalAssets(void) {
     Result res = 0;
     asset assets[2] = {
-        {"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/pkm_spritesheet.t3x", "/3ds/PKSM/assets/pkm_spritesheet.t3x"},
-        {"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/types_spritesheet.t3x", "/3ds/PKSM/assets/types_spritesheet.t3x"}
+        {"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/pkm_spritesheet.t3x", "/3ds/PKSM/assets/pkm_spritesheet.t3x",
+            {
+                0xa5, 0x0e, 0x59, 0x75, 0x00, 0xf0, 0xe1, 0x6a,
+                0x6e, 0xe9, 0xd4, 0x5b, 0xb3, 0x3b, 0x9c, 0x08,
+                0xe8, 0x69, 0xc0, 0x1d, 0x10, 0x53, 0x3f, 0xe0,
+                0xbe, 0x7e, 0x2c, 0xa4, 0xe7, 0x6d, 0xcc, 0x48
+            }
+        },
+        {"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/types_spritesheet.t3x", "/3ds/PKSM/assets/types_spritesheet.t3x",
+            {
+                0x59, 0x31, 0xa2, 0x1e, 0x1d, 0x00, 0x0b, 0x82,
+                0xe3, 0x1a, 0x07, 0x16, 0xd6, 0xc6, 0x96, 0xe1,
+                0x61, 0x62, 0xb0, 0xf6, 0xc6, 0x29, 0xd4, 0x9a,
+                0x9c, 0xa8, 0xf1, 0x8a, 0x3d, 0xd5, 0x2d, 0x0c
+            }
+        }
     };
-    if (!io::exists(assets[0].path) || !io::exists(assets[1].path)) {
-        Result res1 = download(assets[0].url.c_str(), assets[0].path.c_str());
-        Result res2 = download(assets[1].url.c_str(), assets[1].path.c_str());
-        res = !res1 && !res2 ? 0 : -1;
+
+    for (auto item : assets)
+    {
+        bool downloadAsset = true;
+        if (io::exists(item.path))
+        {
+            if (matchSha256HashFromFile(item.path, item.hash))
+            {
+                downloadAsset = false;
+            }
+            else
+            {
+                std::remove(item.path.c_str());
+            }
+        }
+        if (downloadAsset)
+        {
+            Result res1 = download(item.url.c_str(), item.path.c_str());
+            if (R_FAILED(res1)) res--;
+        }
     }
     return res;
 }

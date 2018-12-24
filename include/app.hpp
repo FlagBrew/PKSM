@@ -28,11 +28,22 @@
 #define APP_HPP
 
 #include <3ds.h>
+#include <stdio.h>
 #include "archive.hpp"
+#include "Configuration.hpp"
 #include "gui.hpp"
 #include "i18n.hpp"
 #include "loader.hpp"
+#include "TitleLoadScreen.hpp"
 #include "thread.hpp"
+
+extern "C" {
+#include "download.h"
+#include "sha256.h"
+}
+
+#define SOC_ALIGN      0x1000
+#define SOC_BUFFERSIZE 0x100000
 
 namespace App
 {
