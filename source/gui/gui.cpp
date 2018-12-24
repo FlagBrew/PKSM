@@ -395,7 +395,7 @@ Result Gui::init(void)
 void Gui::mainLoop(void)
 {
     bool exit = false;
-    SDLH_Play();
+    Threads::create((ThreadFunc)SDLH_Play);
     while (aptMainLoop() && !exit)
     {
         hidScanInput();

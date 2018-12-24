@@ -39,6 +39,7 @@
 #include "i18n.hpp"
 #include "PKX.hpp"
 #include "Sav.hpp"
+#include "thread.hpp"
 
 #include "ui_sheet.h"
 #include "pkm_spritesheet.h"
