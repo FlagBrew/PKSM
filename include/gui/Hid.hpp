@@ -53,6 +53,7 @@ protected:
     size_t mMaxPages;
     size_t mMaxVisibleEntries;
     size_t mColumns;
+    size_t mRows;
     u64    mCurrentTime;
     u64    mLastTime;
 };

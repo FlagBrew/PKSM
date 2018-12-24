@@ -88,7 +88,7 @@ void HidHorizontal::update(size_t count)
         {
             if (mIndex < mColumns)
             {
-                mIndex += mColumns * (rows - 1);
+                mIndex += mColumns * (mRows - 1);
             }
             else
             {
@@ -97,9 +97,9 @@ void HidHorizontal::update(size_t count)
         }
         else if (kDown & KEY_DOWN)
         {
-            if (mIndex >= mColumns * (rows - 1))
+            if (mIndex >= mColumns * (mRows - 1))
             {
-                mIndex -= mColumns * (rows - 1);
+                mIndex -= mColumns * (mRows - 1);
             }
             else
             {
@@ -154,7 +154,7 @@ void HidHorizontal::update(size_t count)
             }
             if (mIndex < mColumns)
             {
-                mIndex += mColumns * (rows - 1);
+                mIndex += mColumns * (mRows - 1);
             }
             else
             {
@@ -167,9 +167,9 @@ void HidHorizontal::update(size_t count)
             {
                 return;
             }
-            if (mIndex >= mColumns * (rows - 1))
+            if (mIndex >= mColumns * (mRows - 1))
             {
-                mIndex -= mColumns * (rows - 1);
+                mIndex -= mColumns * (mRows - 1);
             }
             else
             {
