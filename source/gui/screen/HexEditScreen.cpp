@@ -312,6 +312,14 @@ static constexpr std::string_view gen67ToggleTexts[] = {
     "CLEVERNESS_MASTER_RIBBON",
     "TOUGHNESS_MASTER_RIBBON",
     "UNUSED",
+    "UNUSED",
+    "UNUSED",
+    "UNUSED",
+    "UNUSED",
+    "UNUSED",
+    "UNUSED",
+    "UNUSED",
+    "UNUSED",
     "UNUSED"
 };
 
