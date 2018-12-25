@@ -422,7 +422,10 @@ void InjectorScreen::update(touchPosition* touch)
     {
         for (Button* button : buttons)
         {
-            button->update(touch);
+            if (button->update(touch))
+            {
+                return;
+            }
         }
         if (downKeys & KEY_START)
         {
