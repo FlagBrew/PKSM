@@ -327,7 +327,7 @@ void StorageScreen::draw() const
         C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, COLOR_MASKBLACK);
         if (!moveMon)
         {
-            Gui::staticText(GFX_BOTTOM, 110, i18n::localize("PRESS_TO_CLONE"), FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+            Gui::staticText(GFX_BOTTOM, 110, i18n::localize("PRESS_TO_CLONE"), FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
         }
         mainButtons[6]->draw();
         viewer->draw();
@@ -454,7 +454,7 @@ void StorageScreen::draw() const
             Gui::dynamicText(276 + (int) width, 197, 70, info, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
             info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(4), infoMon->iv(5), infoMon->iv(3));
             Gui::dynamicText(276 + (int) width, 209, 70, info, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
-            Gui::generation(infoMon.get(), 276, 213);
+            Gui::format(infoMon.get(), 276, 213);
         }
     }
 }
@@ -1176,7 +1176,7 @@ bool StorageScreen::swapBoxWithStorage()
         {
             temPkm = TitleLoader::save->emptyPkm();
         }
-        if ((Configuration::getInstance().transferEdit() || temPkm->generation() == TitleLoader::save->generation()) || Gui::showChoiceMessage(StringUtils::format(i18n::localize("GEN_CHANGE_1"), genToString(moveMon->generation()).c_str(), genToString(TitleLoader::save->generation()).c_str()), i18n::localize("GEN_CHANGE_2")))
+        if (Configuration::getInstance().transferEdit() || temPkm->generation() == TitleLoader::save->generation())
         {
             while (temPkm->generation() != TitleLoader::save->generation())
             {

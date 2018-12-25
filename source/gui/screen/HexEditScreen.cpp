@@ -1004,9 +1004,9 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
             }
             return true;
         };
-        buttons[i].push_back(new HexEditButton(146, 33, 13, 13, [edit](){ return edit(true, true); }, ui_sheet_button_plus_small_idx, "", false, 0));
+        buttons[i].push_back(new HexEditButton(145, 33, 13, 13, [edit](){ return edit(true, true); }, ui_sheet_button_plus_small_idx, "", false, 0));
         buttons[i].push_back(new HexEditButton(161, 33, 13, 13, [edit](){ return edit(false, true); }, ui_sheet_button_plus_small_idx, "", false, 0));
-        buttons[i].push_back(new HexEditButton(146, 75, 13, 13, [edit](){ return edit(true, false); }, ui_sheet_button_minus_small_idx, "", false, 0));
+        buttons[i].push_back(new HexEditButton(145, 75, 13, 13, [edit](){ return edit(true, false); }, ui_sheet_button_minus_small_idx, "", false, 0));
         buttons[i].push_back(new HexEditButton(161, 75, 13, 13, [edit](){ return edit(false, false); }, ui_sheet_button_minus_small_idx, "", false, 0));
         if (pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN)
         {
