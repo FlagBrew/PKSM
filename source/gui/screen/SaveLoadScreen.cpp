@@ -71,6 +71,7 @@ static constexpr std::string_view dsNames[] = {
 
 SaveLoadScreen::SaveLoadScreen()
 {
+    Threads::destroy();
     buttons.push_back(new AccelButton(24, 96, 175, 16, [this](){ return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
     for (int i = 1; i < 5; i++)
     {
