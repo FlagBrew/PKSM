@@ -59,6 +59,7 @@ private:
     bool clickBottomIndex(int index);
     void setBoxName(bool storage);
     void pickup();
+    bool isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTransfer = false);
 
     bool storageChosen = false;
     bool fromStorage = false;

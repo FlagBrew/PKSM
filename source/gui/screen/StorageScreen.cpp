@@ -834,6 +834,85 @@ static void memoryChange(PK7* pkm)
     pkm->htFeeling(feel);
 }
 
+bool StorageScreen::isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTransfer)
+{
+    u8 (*formCounter)(u16);
+    switch (TitleLoader::save->generation())
+    {
+        case Generation::FOUR:
+            formCounter = PersonalDPPtHGSS::formCount;
+            break;
+        case Generation::FIVE:
+            formCounter = PersonalBWB2W2::formCount;
+            break;
+        case Generation::SIX:
+            formCounter = PersonalXYORAS::formCount;
+            break;
+        case Generation::SEVEN:
+        default:
+            formCounter = PersonalSMUSUM::formCount;
+            break;
+    }
+    bool moveBad = false;
+    for (int i = 0; i < 4; i++)
+    {
+        if (moveMon->move(i) > TitleLoader::save->maxMove())
+        {
+            moveBad = true;
+            break;
+        }
+        if (moveMon->generation() == Generation::SIX)
+        {
+            PK6* pk6 = (PK6*) moveMon.get();
+            if (pk6->relearnMove(i) > TitleLoader::save->maxMove())
+            {
+                moveBad = true;
+                break;
+            }
+        }
+        else if (moveMon->generation() == Generation::SEVEN)
+        {
+            PK7* pk7 = (PK7*) moveMon.get();
+            if (pk7->relearnMove(i) > TitleLoader::save->maxMove())
+            {
+                moveBad = true;
+                break;
+            }
+        }
+    }
+    if (moveBad)
+    {
+        if (!bulkTransfer) Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_MOVE"));
+        return false;
+    }
+    else if (moveMon->species() > TitleLoader::save->maxSpecies())
+    {
+        if (!bulkTransfer) Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_SPECIES"));
+        return false;
+    }
+    else if (moveMon->alternativeForm() > formCounter(moveMon->species()))
+    {
+        if (!bulkTransfer) Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_FORM"));
+        return false;
+    }
+    else if (moveMon->ability() > TitleLoader::save->maxAbility())
+    {
+        if (!bulkTransfer) Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_ABILITY"));
+        return false;
+    }
+    else if (moveMon->heldItem() > TitleLoader::save->maxItem())
+    {
+        if (!bulkTransfer) Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_ITEM"));
+        return false;
+    }
+    else if (moveMon->ball() > TitleLoader::save->maxBall())
+    {
+        if (!bulkTransfer) Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_BALL"));
+        return false;
+    }
+    return true;
+}
+
 void StorageScreen::pickup()
 {
     if (!moveMon)
@@ -901,79 +980,8 @@ void StorageScreen::pickup()
         }
         else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
         {
-            u8 (*formCounter)(u16);
-            switch (TitleLoader::save->generation())
+            if (!isValidTransfer(moveMon))
             {
-                case Generation::FOUR:
-                    formCounter = PersonalDPPtHGSS::formCount;
-                    break;
-                case Generation::FIVE:
-                    formCounter = PersonalBWB2W2::formCount;
-                    break;
-                case Generation::SIX:
-                    formCounter = PersonalXYORAS::formCount;
-                    break;
-                case Generation::SEVEN:
-                default:
-                    formCounter = PersonalSMUSUM::formCount;
-                    break;
-            }
-            bool moveBad = false;
-            for (int i = 0; i < 4; i++)
-            {
-                if (moveMon->move(i) > TitleLoader::save->maxMove())
-                {
-                    moveBad = true;
-                    break;
-                }
-                if (moveMon->generation() == Generation::SIX)
-                {
-                    PK6* pk6 = (PK6*) moveMon.get();
-                    if (pk6->relearnMove(i) > TitleLoader::save->maxMove())
-                    {
-                        moveBad = true;
-                        break;
-                    }
-                }
-                else if (moveMon->generation() == Generation::SEVEN)
-                {
-                    PK7* pk7 = (PK7*) moveMon.get();
-                    if (pk7->relearnMove(i) > TitleLoader::save->maxMove())
-                    {
-                        moveBad = true;
-                        break;
-                    }
-                }
-            }
-            if (moveMon->species() > TitleLoader::save->maxSpecies())
-            {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_SPECIES"));
-                return;
-            }
-            else if (moveMon->alternativeForm() > formCounter(moveMon->species()))
-            {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_FORM"));
-                return;
-            }
-            else if (moveMon->ability() > TitleLoader::save->maxAbility())
-            {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_ABILITY"));
-                return;
-            }
-            else if (moveMon->heldItem() > TitleLoader::save->maxItem())
-            {
-                
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_ITEM"));
-                return;
-            }
-            else if (moveMon->ball() > TitleLoader::save->maxBall())
-            {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_BALL"));
-                return;
-            }
-            else if (moveBad)
-            {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_MOVE"));
                 return;
             }
             std::shared_ptr<PKX> temPkm = TitleLoader::save->pkm(boxBox, cursorIndex - 1);
@@ -1189,9 +1197,12 @@ bool StorageScreen::swapBoxWithStorage()
                     temPkm = temPkm->next();
                 }
             }
-            auto otherTemPkm = TitleLoader::save->pkm(boxBox, i);
-            TitleLoader::save->pkm(*temPkm, boxBox, i);
-            bank.pkm(*otherTemPkm, storageBox, i);
+            if (isValidTransfer(temPkm, true))
+            {
+                auto otherTemPkm = TitleLoader::save->pkm(boxBox, i);
+                TitleLoader::save->pkm(*temPkm, boxBox, i);
+                bank.pkm(*otherTemPkm, storageBox, i);
+            }
         }
     }
     return false;
