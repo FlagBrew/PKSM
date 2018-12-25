@@ -51,52 +51,42 @@ std::unique_ptr<WCX> MysteryGift::wondercard(size_t index)
     auto entry = mysteryGiftSheet["wondercards"][index];
 
     u32 offset = entry["offset"];
-    u32 size = entry["size"];
-
-    u8 *data = new u8[size];
-    std::copy(mysteryGiftData + offset, mysteryGiftData + offset + size, data);
 
     if (gen == "4")
     {
         std::unique_ptr<WCX> wc = nullptr;
         if (entry["type"] == "wc4")
         {
-            wc = std::make_unique<WC4>(data);
+            wc = std::make_unique<WC4>(mysteryGiftData + offset);
         }
         else
         {
-            wc = std::make_unique<PGT>(data);
+            wc = std::make_unique<PGT>(mysteryGiftData + offset);
         }
-        delete[] data;
         return wc;
     }
     else if (gen == "5")
     {
-        PGF *pgf = new PGF(data);
-        delete[] data;
+        PGF *pgf = new PGF(mysteryGiftData + offset);
         return std::unique_ptr<WCX>(pgf);
     }
     else if (gen == "6")
     {
-        WC6 *wc6 = new WC6(data, entry["type"].get<std::string>().find("full") != std::string::npos);
-        delete[] data;
+        WC6 *wc6 = new WC6(mysteryGiftData + offset, entry["type"].get<std::string>().find("full") != std::string::npos);
         return std::unique_ptr<WCX>(wc6);
     }
     else if (gen == "7")
     {
-        WC7 *wc7 = new WC7(data, entry["type"].get<std::string>().find("full") != std::string::npos);
-        delete[] data;
+        WC7 *wc7 = new WC7(mysteryGiftData + offset, entry["type"].get<std::string>().find("full") != std::string::npos);
         return std::unique_ptr<WCX>(wc7);
     }
     else if (gen == "LGPE")
     {
-        WB7 *wb7 = new WB7(data, entry["type"].get<std::string>().find("full") != std::string::npos);
-        delete[] data;
+        WB7 *wb7 = new WB7(mysteryGiftData + offset, entry["type"].get<std::string>().find("full") != std::string::npos);
         return std::unique_ptr<WCX>(wb7);
     }
     else
     {
-        delete[] data;
         return nullptr;
     }
 }
