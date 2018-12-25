@@ -50,6 +50,7 @@ private:
     std::vector<Button*> buttons;
 
     bool dump = false;
+    bool updateGifts = false;
     HidHorizontal dumpHid;
     void dumpCard(void) const;
     std::vector<MysteryGift::giftData> gifts;

@@ -78,6 +78,10 @@ void InjectSelectorScreen::update(touchPosition* touch)
     Screen::update();
     u32 downKeys = hidKeysDown();
     u32 heldKeys = hidKeysHeld();
+    if (updateGifts)
+    {
+        gifts = TitleLoader::save->currentGifts();
+    }
     if (!dump)
     {
         hid.update(wondercards.size());
@@ -94,6 +98,7 @@ void InjectSelectorScreen::update(touchPosition* touch)
         if (downKeys & KEY_A)
         {
             Gui::setScreen(std::make_unique<InjectorScreen>(wondercards[hid.fullIndex()]));
+            updateGifts = true;
             return;
         }
         if (downKeys & KEY_Y)
@@ -330,6 +335,7 @@ bool InjectSelectorScreen::doQR()
         if (wcx)
         {
             Gui::setScreen(std::make_unique<InjectorScreen>(std::move(wcx)));
+            updateGifts = true;
 
             delete data;
             return true;
