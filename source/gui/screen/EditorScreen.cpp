@@ -874,9 +874,6 @@ bool EditorScreen::genderSwitch()
             pkm->gender(1);
             break;
         case 1:
-            pkm->gender(2);
-            break;
-        case 2:
             pkm->gender(0);
             break;
     }
