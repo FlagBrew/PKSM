@@ -242,8 +242,8 @@ void SavBW::mysteryGift(WCX& wc, int& pos)
 {
     PGF* pgf = (PGF*)&wc;
 
-    *(data + 0x1C800 - 0x100 + pgf->ID()) |= 0x1 << (pgf->ID() & 7);
-    std::copy(pgf->data, pgf->data + 204, data + 0x1C800 + pos * 204);
+    *(data + 0x1C900 - 0x100 + pgf->ID()) |= 0x1 << (pgf->ID() & 7);
+    std::copy(pgf->data, pgf->data + PGF::length, data + 0x1C900 + pos * PGF::length);
     pos = (pos + 1) % 12;
 }
 
