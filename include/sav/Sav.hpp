@@ -168,6 +168,8 @@ public:
     virtual std::string boxName(u8 box) const = 0;
     virtual void boxName(u8 box, std::string name) = 0;
     virtual u8 partyCount(void) const = 0;
+    virtual void partyCount(u8 count) = 0;
+    virtual void fixParty(void); // Has to be overridden by SavLGPE because it works stupidly
 
     virtual int maxSlot(void) const { return maxBoxes() * 30; }
     virtual int maxBoxes(void) const = 0;

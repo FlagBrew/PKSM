@@ -171,3 +171,25 @@ bool Sav::validSequence(u8* dt, u8* pattern, int shift)
             return false;
     return true;
 }
+
+void Sav::fixParty()
+{
+    int numPkm = 6;
+    for (int i = 5; i > 0; i--)
+    {
+        auto checkPKM = pkm(i);
+        if (checkPKM->encryptionConstant() == 0)
+        {
+            numPkm--;
+            continue;
+        }
+        auto prevPKM = pkm(i - 1);
+        if (checkPKM->encryptionConstant() != 0 && prevPKM->encryptionConstant() == 0)
+        {
+            pkm(*checkPKM, i - 1);
+            pkm(*prevPKM, i);
+            numPkm--;
+        }
+    }
+    partyCount(numPkm);
+}

@@ -393,6 +393,7 @@ void SavSUMO::boxName(u8 box, std::string name)
 }
 
 u8 SavSUMO::partyCount(void) const { return data[partyOffset(0) + 6*260]; }
+void SavSUMO::partyCount(u8 v) { data[partyOffset(0) + 6*260] = v; }
 
 std::shared_ptr<PKX> SavSUMO::emptyPkm() const
 {

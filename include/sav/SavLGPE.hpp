@@ -72,7 +72,7 @@ public:
     u16 partyBoxSlot(u8 slot) const;
     void partyBoxSlot(u8 slot, u16 v);
     void compressBox(void);
-    void fixParty(void);
+    void fixParty(void) override;
 
     u16 TID(void) const override;
     void TID(u16 v) override;
@@ -129,6 +129,7 @@ public:
     std::string boxName(u8 box) const override;
     void boxName(u8 box, std::string name) override;
     u8 partyCount(void) const override;
+    void partyCount(u8 count) override;
 
     int maxSlot(void) const override { return 1000; }
     int maxBoxes(void) const override { return 34; } // ish; stupid 1000-slot box makes this dumb

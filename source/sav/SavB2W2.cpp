@@ -255,6 +255,7 @@ void SavB2W2::boxName(u8 box, std::string name)
 }
 
 u8 SavB2W2::partyCount(void) const { return data[0x18E04]; }
+void SavB2W2::partyCount(u8 v) { data[0x18E04] = v; }
 
 std::shared_ptr<PKX> SavB2W2::emptyPkm() const
 {

@@ -316,6 +316,7 @@ void SavORAS::boxName(u8 box, std::string name)
 }
 
 u8 SavORAS::partyCount(void) const { return data[partyOffset(0) + 6*260]; }
+void SavORAS::partyCount(u8 v) { data[partyOffset(0) + 6*260] = v; }
 
 std::shared_ptr<PKX> SavORAS::emptyPkm() const
 {

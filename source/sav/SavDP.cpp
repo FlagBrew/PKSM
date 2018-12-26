@@ -211,6 +211,7 @@ void SavDP::boxName(u8 box, std::string name)
 }
 
 u8 SavDP::partyCount(void) const { return data[gbo + 0xA0 - 4]; }
+void SavDP::partyCount(u8 v) { data[gbo + 0xA0 - 4] = v; }
 
 void SavDP::dex(PKX& pk)
 {

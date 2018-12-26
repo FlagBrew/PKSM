@@ -100,6 +100,8 @@ u8 SavLGPE::partyCount() const
     return ret;
 }
 
+void SavLGPE::partyCount(u8 v) { (void) v;}
+
 void SavLGPE::fixParty()
 {
     for (int i = 0; i < 5; i++)

@@ -312,6 +312,7 @@ void SavXY::boxName(u8 box, std::string name)
 }
 
 u8 SavXY::partyCount(void) const { return data[partyOffset(0) + 6*260]; }
+void SavXY::partyCount(u8 v) { data[partyOffset(0) + 6*260] = v; }
 
 std::shared_ptr<PKX> SavXY::emptyPkm() const
 {

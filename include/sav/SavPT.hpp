@@ -105,6 +105,7 @@ public:
     std::string boxName(u8 box) const override;
     void boxName(u8 box, std::string name) override;
     u8 partyCount(void) const override;
+    void partyCount(u8 count) override;
 
     int maxBoxes(void) const override { return 18; }
     size_t maxWondercards(void) const override { return 8; }

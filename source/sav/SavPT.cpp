@@ -211,6 +211,7 @@ void SavPT::boxName(u8 box, std::string name)
 }
 
 u8 SavPT::partyCount(void) const { return data[gbo + 0xA0 - 4]; }
+void SavPT::partyCount(u8 v) { data[gbo + 0xA0 - 4] = v; }
 
 void SavPT::dex(PKX& pk)
 {
