@@ -7,6 +7,6 @@
 [submodule "build/PKSM-Scripts"]
 	path = build/PKSM-Scripts
 	url = https://github.com/FlagBrew/PKSM-Scripts
-[submodule "docs"]
-	path = docs
+[submodule "docs/wiki"]
+	path = docs/wiki
 	url = https://github.com/FlagBrew/PKSM.wiki.git
