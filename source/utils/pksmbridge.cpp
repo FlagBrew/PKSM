@@ -10,7 +10,7 @@ static char* getHostId()
 {
     static sockaddr_in addr;
     addr.sin_addr.s_addr = gethostid();
-	return inet_ntoa(addr.sin_addr);
+    return inet_ntoa(addr.sin_addr);
 }
 
 bool receiveSaveFromBridge(void)
@@ -67,17 +67,17 @@ bool receiveSaveFromBridge(void)
     while (total < size) {
         size_t torecv = size - total > chunk ? chunk : size - total;
         n = recv(fdconn, data + total, torecv, 0);
-        if (n == -1) { break; }
         total += n;
+        if (n <= 0) { break; }
         fprintf(stderr, "Recv %u bytes, %u still missing\n", total, size - total);
     }
 
     close(fd);
     close(fdconn);
 
-    if (total == size)
+    if (n == 0 || total == size)
     {
-        if (TitleLoader::load((u8*)data, size))
+        if (TitleLoader::load((u8*)data, total))
         {
             saveFromBridge = true;
             Gui::setScreen(std::make_unique<MainMenu>());

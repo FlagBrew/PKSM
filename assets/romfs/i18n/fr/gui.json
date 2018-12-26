@@ -38,7 +38,7 @@
     "ABILITY": "Talent",
     "NATURE": "Nature",
     "ITEM": "Objet",
-    "SHINY": "Chromatique",
+    "SHINY": "Chrom.",
     "NICKNAME": "Surnom",
     "FRIENDSHIP": "Amitié",
     "EDITOR_CP": "CP: ",
@@ -328,7 +328,7 @@
     "WC_SWITCH": "\uE004 / \uE005 pour changer entre différentes CM.",
     "LANGUAGES": "Langues",
     "OVERWRITE_WC": "Écraser Carte Miracle",
-    "ADAPT_LANGUAGE": "Adapter langue du jeu à la CM",
+    "ADAPT_LANGUAGE": "Adapter l. du jeu à la CM",
     "INJECT_TO_SLOT": "Injecter à l'emplacement",
     "START_TO_INJECT": "Presser START pour injecter",
     "HELD_ITEM": "Objet Tenu",
@@ -443,6 +443,8 @@
     "SHINY_CROWN": "Shiny Crown",
     "SAVE_INVALID": "n'est pas un fichier de sauvegarde valide",
     "LOADER_BACKING_UP": "Archivage de la sauvegarde...",
-    "WIRELESS_WARNING": "La console sera bloquée jusqu'à réception d'une sauvegarde.",
-    "WIRELESS_IP" : "Adresse IP : %s"
+    "WIRELESS_WARNING": "La console sera bloquée jusqu'à réc. d'une sauvegarde.",
+    "WIRELESS_IP" : "Adresse IP : %s",
+    "BRIDGE_SHOULD_SEND_1": "Would you like to send the changed file",
+    "BRIDGE_SHOULD_SEND_2": "to the original client?"
 }
