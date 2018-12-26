@@ -1,13 +1,11 @@
 Default
 알로라의 모습
-Default Pikachu Cosplay
 Rock Star
 Belle
 Pop Star
 Ph.D
 Libre
 Cosplay
-Default Pikachu
 오리지널캡
 호연캡
 신오캡
@@ -51,7 +49,6 @@ Normal Deoxys
 슈레도롱
 서쪽바다
 동쪽바다
-Default Rotom
 히트로토무
 워시로토무
 프로스트로토무
@@ -69,14 +66,12 @@ Default Rotom
 겨울의 모습
 화신폼
 영물폼
-Default Kyurem
 화이트큐레무
 블랙큐레무
 평상시 모습
 각오의 모습
 보이스폼
 스텝폼
-Default Greninja
 지우개굴닌자
 빙설의 모양
 설국의 모양
@@ -114,6 +109,7 @@ Default Greninja
 퀸컷
 가부키컷
 킹덤컷
+Average
 작은 사이즈
 큰 사이즈
 특대 사이즈
@@ -127,9 +123,16 @@ Default Greninja
 파칙파칙스타일
 훌라훌라스타일
 하늘하늘스타일
-한밤중의 모습
 한낮의 모습
 한밤중의 모습
+한밤중의 모습
+Covered Red
+Covered Orange
+Covered Yellow
+Covered Green
+Covered Blue
+Covered Indigo
+Covered Violet
 빨간색 코어
 주황색 코어
 노란색 코어
@@ -137,9 +140,16 @@ Default Greninja
 옥색 코어
 파란색 코어
 보라색 코어
-Default Magearna
 500년 전의 색
-Default Pichu
-Spiky-Eared Pichu
-Default Mistigrix
+Spiky-Eared
 암컷의 모습
+Totem
+Mega
+Dawn Wings
+Dusk Mane
+Ultra
+Primal
+Mega X
+Mega Y
+Partner
+100%

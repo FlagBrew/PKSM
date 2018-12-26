@@ -1,13 +1,11 @@
 Default
-Alola-Form
-Default Pikachu Cosplay
+Alola
 Rock Star
 Belle
 Pop Star
 Ph.D
 Libre
 Cosplay
-Default Pikachu
 Original-Kappe
 Hoenn-Kappe
 Sinnoh-Kappe
@@ -43,41 +41,38 @@ Z
 !
 ?
 Normal Deoxys
-Angriffsform
-Verteidigungsform
-Initiativeform
+Angriffs
+Verteidigungs
+Initiative
 Pflanzenumhang
 Sandumhang
 Lumpenumhang
 Westliches Meer
 Östliches Meer
-Default Rotom
 Hitze-Rotom
 Wasch-Rotom
 Frost-Rotom
 Wirbel-Rotom
 Schneid-Rotom
-Wandelform
-Urform
-Landform
-Zenitform
-Rotlinige Form
-Blaulinige Form
-Frühlingsform
-Sommerform
-Herbstform
-Winterform
-Inkarnationsform
-Tiergeistform
-Default Kyurem
+Wandel
+Ur
+Land
+Zenit
+Rotlinige 
+Blaulinige 
+Frühlings
+Sommer
+Herbst
+Winter
+Inkarnations
+Tiergeist
 Weißes Kyurem
 Schwarzes Kyurem
-Standardform
-Resolutform
-Gesangsform
-Tanzform
-Default Greninja
-Ash-Form
+Standard
+Resolut
+Gesangs
+Tanz
+Ash
 Frostmuster
 Schneefeldmuster
 Flockenmuster
@@ -104,7 +99,7 @@ Orangeblütler
 Blaublütler
 Weißblütler
 Ewigblütler
-Zottelform
+Zottel
 Herzchenschnitt
 Sternchenschnitt
 Diamantenschnitt
@@ -114,11 +109,12 @@ Kavaliersschnitt
 Königinnenschnitt
 Kabuki-Schnitt
 Herrscherschnitt
+Average
 Größe S
 Größe L
 Größe XL
-50%-Form
-10%-Form
+50%
+10%
 10%-PC
 50%-PC
 Gebanntes Hoopa
@@ -127,9 +123,16 @@ Flamenco-Stil
 Cheerleading-Stil
 Hula-Stil
 Buyo-Stil
-Nachtform
-Tagform
-Nachtform
+Tag
+Nacht
+Nacht
+Covered Red
+Covered Orange
+Covered Yellow
+Covered Green
+Covered Blue
+Covered Indigo
+Covered Violet
 Roter Kern
 Oranger Kern
 Gelber Kern
@@ -137,9 +140,16 @@ Grüner Kern
 Hellblauer Kern
 Blauer Kern
 Violetter Kern
-Default Magearna
 Originalfarbe
-Default Pichu
-Spiky-Eared Pichu
-Default Mistigrix
+Spiky-Eared
 Weiblich
+Totem
+Mega
+Dawn Wings
+Dusk Mane
+Ultra
+Primal
+Mega X
+Mega Y
+Partner
+100%

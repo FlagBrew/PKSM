@@ -1,13 +1,11 @@
 Default
-Forma di Alola
-Default Pikachu Cosplay
+di Alola
 Rock Star
 Belle
 Pop Star
 Ph.D
 Libre
 Cosplay
-Default Pikachu
 Berretto Originale
 Berretto Hoenn
 Berretto Sinnoh
@@ -43,41 +41,38 @@ Z
 !
 ?
 Normal Deoxys
-Forma Attacco
-Forma Difesa
-Forma Velocità
+Attacco
+Difesa
+Velocità
 Manto Pianta
 Manto Sabbia
 Manto Scarti
 Mare Ovest
 Mare Est
-Default Rotom
 Rotom Calore
 Rotom Lavaggio
 Rotom Gelo
 Rotom Vortice
 Rotom Taglio
-Forma Alterata
-Forma Originale
-Forma Terra
-Forma Cielo
-Forma Linearossa
-Forma Lineablu
-Forma Primavera
-Forma Estate
-Forma Autunno
-Forma Inverno
-Forma Incarnazione
-Forma Totem
-Default Kyurem
+Alterata
+Originale
+Terra
+Cielo
+Linearossa
+Lineablu
+Primavera
+Estate
+Autunno
+Inverno
+Incarnazione
+Totem
 Kyurem Bianco
 Kyurem Nero
-Forma Normale
-Forma Risoluta
-Forma Canto
-Forma Danza
-Default Greninja
-Forma Ash
+Normale
+Risoluta
+Canto
+Danza
+Ash
 Motivo Nevi Perenni
 Motivo Nordico
 Motivo Manto di Neve
@@ -104,7 +99,7 @@ Fiore Arancione
 Fiore Blu
 Fiore Bianco
 Fiore Eterno
-Forma Selvatica
+Selvatica
 Taglio Cuore
 Taglio Stella
 Taglio Diamante
@@ -114,11 +109,12 @@ Taglio Gentiluomo
 Taglio Regina
 Taglio Kabuki
 Taglio Faraone
+Medio
 Mini
 Grande
 Maxi
-Forma 50%
-Forma 10%
+50%
+10%
 10%-PC
 50%-PC
 Hoopa Vincolato
@@ -127,9 +123,16 @@ Stile Flamenco
 Stile Cheerdance
 Stile Hula
 Stile Buyō
-Forma Notte
-Forma Giorno
-Forma Notte
+Giorno
+Notte
+Crepuscolo
+Covered Red
+Covered Orange
+Covered Yellow
+Covered Green
+Covered Blue
+Covered Indigo
+Covered Violet
 Nucleo Rosso
 Nucleo Arancione
 Nucleo Giallo
@@ -137,9 +140,16 @@ Nucleo Verde
 Nucleo Azzurro
 Nucleo Indaco
 Nucleo Violetto
-Default Magearna
 Colore Antico
-Default Pichu
-Spiky-Eared Pichu
-Default
+Spiky-Eared
 Femmina
+Totem
+Mega
+Dawn Wings
+Dusk Mane
+Ultra
+Primal
+Mega X
+Mega Y
+Partner
+100%

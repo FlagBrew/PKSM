@@ -1,13 +1,11 @@
-Forme classique
-Forme d’Alola
-Pikachu classique
+classique
+d’Alola
 Pikachu Rockeur
 Pikachu Lady
 Pikachu Star
 Pikachu Docteur
 Pikachu Catcheur
 Pikachu Cosplayeur
-Pikachu classique
 Casquette Originale
 Casquette de Hoenn
 Casquette de Sinnoh
@@ -43,41 +41,38 @@ Z
 !
 ?
 Deoxys classique
-Forme Attaque
-Forme Défense
-Forme Vitesse
+Attaque
+Défense
+Vitesse
 Cape Plante
 Cape Sable
 Cape Déchet
 Mer Occident
 Mer Orient
-Motisma classique
 Motisma Chaleur
 Motisma Lavage
 Motisma Froid
 Motisma Hélice
 Motisma Tonte
-Forme Alternative
-Forme Originelle
-Forme Terrestre
-Forme Céleste
+Alternative
+Originelle
+Terrestre
+Céleste
 Motif Rouge
 Motif Bleu
-Forme Printemps
-Forme Été
-Forme Automne
-Forme Hiver
-Forme Avatar
-Forme Totémique
-Kyurem classique
+Printemps
+Été
+Automne
+Hiver
+Avatar
+Totémique
 Kyurem Blanc
 Kyurem Noir
 Aspect Normal
 Aspect Décidé
-Forme Chant
-Forme Danse
-Amphinobi classique
-Forme Sacha
+Chant
+Danse
+Sacha
 Motif Blizzard
 Motif Banquise
 Motif Glace
@@ -104,7 +99,7 @@ Fleur Orange
 Fleur Bleue
 Fleur Blanche
 Éternelle
-Forme Sauvage
+Sauvage
 Coupe Cœur
 Coupe Étoile
 Coupe Diamant
@@ -114,11 +109,12 @@ Coupe Monsieur
 Coupe Reine
 Coupe Kabuki
 Coupe Pharaon
+Average
 Taille Mini
 Taille Maxi
 Taille Ultra
-Forme 50 %
-Forme 10 %
+50 %
+10 %
 10%-Rassemblement
 50%-Rassemblement
 Hoopa Enchaîné
@@ -127,9 +123,16 @@ Style Flamenco
 Style Pom-Pom
 Style Hula
 Style Buyō
-Forme Nocturne
-Forme Diurne
-Forme Nocturne
+Diurne
+Nocturne
+Nocturne
+Covered Red
+Covered Orange
+Covered Yellow
+Covered Green
+Covered Blue
+Covered Indigo
+Covered Violet
 Noyau Rouge
 Noyau Orange
 Noyau Jaune
@@ -137,7 +140,16 @@ Noyau Vert
 Noyau Bleu
 Noyau Indigo
 Noyau Violet
-Magearna classique
 Couleur du passé
-Pichu classique
 Pichu Troizépi
+Femme
+Totem
+Mega
+Dawn Wings
+Dusk Mane
+Ultra
+Primal
+Mega X
+Mega Y
+Partner
+100%
