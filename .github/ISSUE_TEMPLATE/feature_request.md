@@ -1,7 +1,7 @@
 ---
 name: Feature request
 about: Suggest an idea for PKSM.
-title: feature_request
+title: Feature Request
 labels: ''
 assignees: ''
 

@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Something doesn't work properly in PKSM.
-title: bug_report
+title: Bug Report
 labels: ''
 assignees: ''
 
