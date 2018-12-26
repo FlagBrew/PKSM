@@ -1,7 +1,7 @@
 {
     "LOADER_INSTRUCTIONS_TOP_PRESENT": "Wähle Speicherstand zum Öffnen. Drück Y für vorhandene Spiele.",
     "LOADER_INSTRUCTIONS_TOP_ABSENT": "Wähle Speicherstand zum Öffnen. Drück Y für n. vorhandene Spiele.",
-    "LOADER_INSTRUCTIONS_BOTTOM": "Bewege das Steuerkreuz. A fortfahren, START schließen.",
+    "LOADER_INSTRUCTIONS_BOTTOM": "Bewege das Steuerkreuz. A fortfahren, START schließen",
     "LOADER_GAME_CARD": "Karte",
     "LOADER_INSTALLED_GAMES": "Installierte Spiele",
     "LOADER_ID": "ID: ",
@@ -442,5 +442,10 @@
     "SHINY_LEAF": "Glänzendes Blatt",
     "SHINY_CROWN": "Glänzende Krone",
     "SAVE_INVALID": "ist kein valider Speicherstand.",
-    "LOADER_BACKING_UP": "Erstelle Backup vom Speicherstand..."
+    "LOADER_BACKING_UP": "Erstelle Backup vom Speicherstand...",
+    "NO_WONDERCARDS": "LGPE doesn't have any Wondercards yet!",
+    "BRIDGE_SHOULD_SEND_1": "Would you like to send the changed file",
+    "BRIDGE_SHOULD_SEND_2": "to the original client?",
+    "WIRELESS_WARNING": "This will lock your console until a save is received.",
+    "WIRELESS_IP" : "IP Address: %s"
 }

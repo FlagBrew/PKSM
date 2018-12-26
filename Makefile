@@ -38,6 +38,7 @@ APP_AUTHOR		:=	FlagBrew
 VERSION_MAJOR := 6
 VERSION_MINOR := 0
 VERSION_MICRO := 0
+GIT_REV="$(shell git rev-parse --short HEAD)"
 
 TARGET			:=	$(subst $e ,_,$(notdir $(APP_TITLE)))
 OUTDIR			:=	out
@@ -115,6 +116,7 @@ CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O2 -mword-relocations \
 			-DVERSION_MINOR=${VERSION_MINOR} \
 			-DVERSION_MICRO=${VERSION_MICRO} \
 			-DUNIQUE_ID=${UNIQUE_ID} \
+			-DGIT_REV=\"$(GIT_REV)\" \
 			# -DPICOC_DEBUG \
 			`sdl-config --cflags`
 
