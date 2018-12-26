@@ -6,8 +6,20 @@ static struct in_addr lastIPAddr;
 bool isLoadedSaveFromBridge(void) { return saveFromBridge; }
 void setLoadedSaveFromBridge(bool v) { saveFromBridge = false; }
 
+static char* getHostId()
+{
+    static sockaddr_in addr;
+    addr.sin_addr.s_addr = gethostid();
+	return inet_ntoa(addr.sin_addr);
+}
+
 bool receiveSaveFromBridge(void)
 {
+    if (!Gui::showChoiceMessage(i18n::localize("WIRELESS_WARNING"), StringUtils::format(i18n::localize("WIRELESS_IP"), getHostId())))
+    {
+        return false;
+    }
+    
     int fd;
     struct sockaddr_in servaddr;
     if ((fd = socket(AF_INET, SOCK_STREAM, IPPROTO_IP)) < 0)

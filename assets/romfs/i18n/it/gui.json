@@ -442,5 +442,7 @@
     "SHINY_LEAF": "Foglialucente",
     "SHINY_CROWN": "Coronalucente",
     "SAVE_INVALID": "è un salvataggio invalido.",
-    "LOADER_BACKING_UP": "Backup del salvataggio..."
+    "LOADER_BACKING_UP": "Backup del salvataggio...",
+    "WIRELESS_WARNING": "La console si bloccherà fino alla ricezione di un save.",
+    "WIRELESS_IP" : "Indirizzo IP: %s"
 }

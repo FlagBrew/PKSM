@@ -445,5 +445,7 @@
     "NO_WONDERCARDS": "LGPE doesn't have any Wonder Cards yet!",
     "BRIDGE_SHOULD_SEND_1": "Would you like to send the changed file",
     "BRIDGE_SHOULD_SEND_2": "to Checkpoint Switch?",
-    "LOADER_BACKING_UP": "Backing up save..."
+    "LOADER_BACKING_UP": "Backing up save...",
+    "WIRELESS_WARNING": "This will lock your console until a save is received.",
+    "WIRELESS_IP" : "IP Address: %s"
 }
