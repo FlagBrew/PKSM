@@ -31,11 +31,11 @@ static u8* mysteryGiftData;
 
 void MysteryGift::init(Generation g)
 {
-    std::ifstream sheet(StringUtils::format("romfs:/mg/sheet%s.json", genToString(g).c_str()));
+    std::ifstream sheet(StringUtils::format("romfs:/mg/sheet%s.json", genToCstring(g)));
     sheet >> mysteryGiftSheet;
     sheet.close();
 
-    std::ifstream data(StringUtils::format("romfs:/mg/data%s.bin", genToString(g).c_str()), std::ios::binary | std::ios::ate);
+    std::ifstream data(StringUtils::format("romfs:/mg/data%s.bin", genToCstring(g)), std::ios::binary | std::ios::ate);
     size_t size = data.tellg();
     data.seekg(0, std::ios::beg);
 

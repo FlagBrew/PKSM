@@ -28,6 +28,11 @@
 
 std::string genToString(Generation gen)
 {
+    return genToCstring(gen);
+}
+
+const char* genToCstring(Generation gen)
+{
     switch (gen)
     {
         case Generation::LGPE:

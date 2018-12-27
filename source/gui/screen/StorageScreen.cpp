@@ -985,7 +985,7 @@ void StorageScreen::pickup()
                 return;
             }
             std::shared_ptr<PKX> temPkm = TitleLoader::save->pkm(boxBox, cursorIndex - 1);
-            if ((Configuration::getInstance().transferEdit() || moveMon->generation() == TitleLoader::save->generation()) || Gui::showChoiceMessage(StringUtils::format(i18n::localize("GEN_CHANGE_1"), genToString(moveMon->generation()).c_str(), genToString(TitleLoader::save->generation()).c_str()), i18n::localize("GEN_CHANGE_2")))
+            if ((Configuration::getInstance().transferEdit() || moveMon->generation() == TitleLoader::save->generation()) || Gui::showChoiceMessage(StringUtils::format(i18n::localize("GEN_CHANGE_1"), genToCstring(moveMon->generation()), genToCstring(TitleLoader::save->generation())), i18n::localize("GEN_CHANGE_2")))
             {
                 while (moveMon->generation() != TitleLoader::save->generation())
                 {
@@ -1173,6 +1173,9 @@ bool StorageScreen::duplicate()
 
 bool StorageScreen::swapBoxWithStorage()
 {
+    std::vector<int> notGenMatch;
+    bool acceptGenChange = Configuration::getInstance().transferEdit();
+    bool checkedWithUser = Configuration::getInstance().transferEdit();
     for (int i = 0; i < 30; i++)
     {
         if (boxBox * 30 + i >= TitleLoader::save->maxSlot())
@@ -1184,7 +1187,12 @@ bool StorageScreen::swapBoxWithStorage()
         {
             temPkm = TitleLoader::save->emptyPkm();
         }
-        if (Configuration::getInstance().transferEdit() || temPkm->generation() == TitleLoader::save->generation())
+        if (!checkedWithUser && temPkm->generation() != TitleLoader::save->generation())
+        {
+            checkedWithUser = true;
+            acceptGenChange = Gui::showChoiceMessage(StringUtils::format(i18n::localize("GEN_CHANGE_1"), genToCstring(temPkm->generation()), genToCstring(TitleLoader::save->generation())), i18n::localize("GEN_CHANGE_2"));
+        }
+        if (acceptGenChange || temPkm->generation() == TitleLoader::save->generation())
         {
             while (temPkm->generation() != TitleLoader::save->generation())
             {
@@ -1200,10 +1208,69 @@ bool StorageScreen::swapBoxWithStorage()
             if (isValidTransfer(temPkm, true))
             {
                 auto otherTemPkm = TitleLoader::save->pkm(boxBox, i);
+                if (Configuration::getInstance().transferEdit())
+                {
+                    if (TitleLoader::save->otName() == temPkm->otName() && TitleLoader::save->TID() == temPkm->TID() && TitleLoader::save->SID() == temPkm->SID() && TitleLoader::save->gender() == temPkm->otGender())
+                    {
+                        if (temPkm->generation() == Generation::SIX)
+                        {
+                            PK6* movePkm = (PK6*)temPkm.get();
+                            movePkm->currentHandler(0);
+                            regionChange(movePkm);
+                        }
+                        else if (temPkm->generation() == Generation::SEVEN)
+                        {
+                            PK7* movePkm = (PK7*)temPkm.get();
+                            movePkm->currentHandler(0);
+                            regionChange(movePkm);
+                        }
+                    }
+                    else
+                    {
+                        if (temPkm->generation() == Generation::SIX)
+                        {
+                            PK6* movePkm = (PK6*)temPkm.get();
+                            movePkm->currentHandler(1);
+                            regionChange(movePkm);
+                            movePkm->htName(TitleLoader::save->otName().c_str());
+                            movePkm->htGender(TitleLoader::save->gender());
+                            if (movePkm->htMemory() == 0)
+                            {
+                                memoryChange(movePkm);
+                            }
+                        }
+                        else if (temPkm->generation() == Generation::SEVEN)
+                        {
+                            PK7* movePkm = (PK7*)temPkm.get();
+                            movePkm->currentHandler(1);
+                            regionChange(movePkm);
+                            movePkm->htName(TitleLoader::save->otName().c_str());
+                            movePkm->htGender(TitleLoader::save->gender());
+                            if (movePkm->htMemory() == 0)
+                            {
+                                memoryChange(movePkm);
+                            }
+                        }
+                    }
+                }
                 TitleLoader::save->pkm(*temPkm, boxBox, i);
                 bank.pkm(*otherTemPkm, storageBox, i);
             }
         }
+        else
+        {
+            notGenMatch.push_back(i + 1);
+        }
+    }
+    if (!notGenMatch.empty())
+    {
+        std::string unswapped;
+        for (int i : notGenMatch)
+        {
+            unswapped += std::to_string(i) + ",";
+        }
+        unswapped.pop_back();
+        Gui::warn("Swapping these slots would have edited Pokémon:", unswapped);
     }
     return false;
 }

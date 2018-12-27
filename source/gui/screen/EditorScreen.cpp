@@ -611,12 +611,20 @@ bool EditorScreen::changeIV(int which, bool up)
         {
             pkm->iv(which, pkm->iv(which) + 1);
         }
+        else
+        {
+            pkm->iv(which, 0);
+        }
     }
     else
     {
         if (pkm->iv(which) > 0)
         {
             pkm->iv(which, pkm->iv(which) - 1);
+        }
+        else
+        {
+            pkm->iv(which, 31);
         }
     }
     return false;
@@ -656,9 +664,13 @@ bool EditorScreen::changeSecondaryStat(int which, bool up)
     {
         if (pkm->generation() != Generation::LGPE)
         {
-            if (pkm->ev(which) < 0xFF)
+            if (pkm->ev(which) < 0xFC)
             {
                 pkm->ev(which, pkm->ev(which) + 1);
+            }
+            else
+            {
+                pkm->ev(which, 0);
             }
         }
         else
@@ -667,6 +679,10 @@ bool EditorScreen::changeSecondaryStat(int which, bool up)
             if (pb7->awakened(which) < 200)
             {
                 pb7->awakened(which, pb7->awakened(which) + 1);
+            }
+            else
+            {
+                pb7->awakened(which, 0);
             }
         }
     }
@@ -678,6 +694,10 @@ bool EditorScreen::changeSecondaryStat(int which, bool up)
             {
                 pkm->ev(which, pkm->ev(which) - 1);
             }
+            else
+            {
+                pkm->ev(which, 0xFC);
+            }
         }
         else
         {
@@ -685,6 +705,10 @@ bool EditorScreen::changeSecondaryStat(int which, bool up)
             if (pb7->awakened(which) > 0)
             {
                 pb7->awakened(which, pb7->awakened(which) - 1);
+            }
+            else
+            {
+                pb7->awakened(which, 200);
             }
         }
     }

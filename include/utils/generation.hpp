@@ -40,5 +40,6 @@ enum class Generation
 };
 
 std::string genToString(Generation gen);
+const char* genToCstring(Generation gen);
 
 #endif
