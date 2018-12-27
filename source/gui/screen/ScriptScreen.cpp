@@ -147,7 +147,7 @@ void ScriptScreen::draw() const
     C2D_DrawRectSolid(21, 41, 0.5f, 278, 58, COLOR_MASKBLACK);
     Gui::staticText(GFX_BOTTOM, 224, i18n::localize("SCRIPTS_INST2"), FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
 
-    Gui::dynamicText(currFiles[hid.fullIndex()].first, 30, 44, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+    Gui::dynamicText(currFiles[hid.fullIndex()].first, 30, 44, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, 260, false);
 }
 
 void ScriptScreen::update(touchPosition* touch)
