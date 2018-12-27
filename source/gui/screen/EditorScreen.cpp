@@ -53,7 +53,7 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
     {
         view = std::make_shared<ViewerScreen>(pkm, false);
     }
-    if (!pkm || pkm->encryptionConstant() == 0)
+    if (!pkm || (pkm->encryptionConstant() == 0 && pkm->species() == 0))
     {
         pkm = TitleLoader::save->emptyPkm()->clone();
         if (Configuration::getInstance().useSaveInfo())

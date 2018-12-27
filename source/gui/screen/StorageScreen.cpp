@@ -255,7 +255,7 @@ void StorageScreen::draw() const
             infoMon = storageChosen ? bank.pkm(storageBox, cursorIndex - 1) : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
         }
     }
-    if (infoMon && infoMon->encryptionConstant() == 0)
+    if (infoMon && (infoMon->encryptionConstant() == 0 && infoMon->species() == 0))
     {
         infoMon = nullptr;
     }
@@ -954,7 +954,7 @@ void StorageScreen::pickup()
             fromStorage = false;
         }
 
-        if (moveMon->encryptionConstant() == 0)
+        if ((moveMon->encryptionConstant() == 0 && moveMon->species() == 0))
         {
             moveMon = nullptr;
             partyNum = -1;
@@ -1049,7 +1049,7 @@ void StorageScreen::pickup()
                 {
                     ((SavLGPE*)TitleLoader::save.get())->partyBoxSlot(partyNum, boxBox * 30 + cursorIndex - 1);
                 }
-                if (temPkm->encryptionConstant() == 0)
+                if ((temPkm->encryptionConstant() == 0 && temPkm->species() == 0))
                 {
                     moveMon = nullptr;
                 }
@@ -1163,7 +1163,7 @@ bool StorageScreen::duplicate()
             }
             moveMon = TitleLoader::save->pkm(boxBox, cursorIndex - 1)->clone();
         }
-        if (moveMon->encryptionConstant() == 0)
+        if ((moveMon->encryptionConstant() == 0 && moveMon->species() == 0))
         {
             moveMon = nullptr;
         }
@@ -1180,7 +1180,7 @@ bool StorageScreen::swapBoxWithStorage()
             break;
         }
         std::shared_ptr<PKX> temPkm = bank.pkm(storageBox, i);
-        if (temPkm->encryptionConstant() == 0)
+        if ((temPkm->encryptionConstant() == 0 && temPkm->species() == 0))
         {
             temPkm = TitleLoader::save->emptyPkm();
         }
