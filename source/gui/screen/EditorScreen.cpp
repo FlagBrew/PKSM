@@ -94,7 +94,7 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
     // Back button first, always. Needs to have the same index for each one
     buttons[tab].push_back(NO_TEXT_CLICK(283, 211, 34, 28, [this](){ return this->goBack(); }, ui_sheet_button_back_idx));
     buttons[tab].push_back(NO_TEXT_BUTTON(4, 3, 20, 19, [this](){ saved = false; return this->selectBall(); }, ui_sheet_res_null_idx));
-    buttons[tab].push_back(NO_TEXT_BUTTON(224, 33, 60, 68, [this](){ saved = false; return this->selectForm(); }, ui_sheet_res_null_idx));
+    buttons[tab].push_back(NO_TEXT_BUTTON(224, 33, 60, 68, [this](){ return this->selectForm(); }, ui_sheet_res_null_idx));
     buttons[tab].push_back(NO_TEXT_BUTTON(291, 2, 27, 23, [this](){ saved = false; return this->hexEdit(); }, ui_sheet_icon_hex_idx));
     buttons[tab].push_back(NO_TEXT_ACCEL(94, 34, 13, 13, [this](){ saved = false; return this->changeLevel(false); }, ui_sheet_button_minus_small_idx));
     buttons[tab].push_back(NO_TEXT_BUTTON(109, 34, 31, 13, [this](){ saved = false; Gui::setNextKeyboardFunc([this](){ setLevel(); }); return false; }, ui_sheet_res_null_idx));
@@ -113,7 +113,7 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
     buttons[tab].push_back(new Button(204, 140, 108, 30, [this](){ currentTab = 2; return true; }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_MOVES"), FONT_SIZE_12, COLOR_BLACK));
     buttons[tab].push_back(new ClickButton(204, 171, 108, 30, [this](){ saved = true; this->save(); this->goBack(); return true; }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_SAVE"), FONT_SIZE_12, COLOR_BLACK));
     buttons[tab].push_back(NO_TEXT_BUTTON(25, 5, 120, 13, [this](){ saved = false; return this->selectSpecies(); }, ui_sheet_res_null_idx));
-    buttons[tab].push_back(NO_TEXT_CLICK(186, 7, 12, 12, [this](){ saved = false; return this->genderSwitch(); }, ui_sheet_res_null_idx));
+    buttons[tab].push_back(NO_TEXT_CLICK(186, 7, 12, 12, [this](){ return this->genderSwitch(); }, ui_sheet_res_null_idx));
 
     tab = 1;
     buttons[tab].push_back(buttons[0][0]);
@@ -874,6 +874,7 @@ bool EditorScreen::selectForm()
     u8 count = formCounter(pkm->species());
     if (count > 1)
     {
+        saved = false;
         selector = std::make_unique<FormSelectionScreen>(pkm, count);
     }
     return false;
@@ -896,9 +897,11 @@ bool EditorScreen::genderSwitch()
     switch (pkm->gender())
     {
         case 0:
+            saved = false;
             pkm->gender(1);
             break;
         case 1:
+            saved = false;
             pkm->gender(0);
             break;
     }
