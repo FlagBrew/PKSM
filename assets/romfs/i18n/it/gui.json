@@ -447,5 +447,5 @@
     "WIRELESS_IP" : "Indirizzo IP: %s",
     "BRIDGE_SHOULD_SEND_1": "Vuoi mandare il salvataggio",
     "BRIDGE_SHOULD_SEND_2": "al client originale?",
-    "NO_SWAP_BULK": "Swapping these slots would have edited Pokémon:"
+    "NO_SWAP_BULK": "Lo scambio dei box potrebbe aver modificato:"
 }
