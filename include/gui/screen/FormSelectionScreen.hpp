@@ -33,7 +33,7 @@
 class FormSelectionScreen : public SelectionScreen
 {
 public:
-    FormSelectionScreen(std::shared_ptr<PKX> pkm, u8 formCount) : SelectionScreen(pkm), hid(40, 8), formCount(formCount)
+    FormSelectionScreen(std::shared_ptr<PKX> pkm, u8 formCount) : SelectionScreen(pkm), hid(40, 6), formCount(formCount)
     {
         hid.update(40);
         hid.select(pkm->alternativeForm());

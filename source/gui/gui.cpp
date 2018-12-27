@@ -200,7 +200,14 @@ void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float 
             }
             else
             {
-                dst += line + '\n';
+                if (line[line.size() - 1] == ' ')
+                {
+                    dst += line.substr(0, line.size() - 1) + '\n';
+                }
+                else
+                {
+                    dst += line + '\n';
+                }
                 line = word;
             }
             word = "";
@@ -216,7 +223,14 @@ void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float 
     }
     else
     {
-        dst += line + '\n' + word;
+        if (line[line.size() - 1] == ' ')
+        {
+            dst += line.substr(0, line.size() - 1) + '\n' + word;
+        }
+        else
+        {
+            dst += line + '\n' + word;
+        }
     }
 
     if (!fullCenter)
@@ -244,7 +258,7 @@ void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float 
             float textWidth, textHeight;
             C2D_TextGetDimensions(&text, scaleX, scaleY, &textWidth, &textHeight);
             int drawX = x + ceilf((maxWidth - textWidth) / 2.0f);
-            int drawY = y + ceilf(textHeight) * 1.25 * i ;
+            int drawY = y + ceilf(textHeight) * 1.05 * i;
             drawY -= ceilf(textHeight) * draw.size() / 2;
             C2D_DrawText(&text, C2D_WithColor, drawX, drawY, 0.5f, scaleX, scaleY, color);
         }

@@ -32,27 +32,34 @@
 void FormSelectionScreen::draw() const
 {
     C2D_SceneBegin(g_renderTargetTop);
-    Gui::sprite(ui_sheet_part_mtx_5x8_idx, 0, 0);
+    Gui::sprite(ui_sheet_part_mtx_5x6_idx, 0, 0);
 
-    int x = (hid.index() % 8) * 50;
-    int y = (hid.index() / 8) * 48;
+    int x = (hid.index() % 6) * 67;
+    int y = (hid.index() / 6) * 48;
+    int dx = 66;
+    int dy = 47;
+    if (x == 335)
+    {
+        dx -= 1;
+    }
     // Selector
-    C2D_DrawRectSolid(x, y, 0.5f, 49, 47, COLOR_MASKBLACK);
-    C2D_DrawRectSolid(x, y, 0.5f, 49, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y, 0.5f, 1, 47, COLOR_YELLOW);
-    C2D_DrawRectSolid(x + 48, y, 0.5f, 1, 47, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y + 46, 0.5f, 49, 1, COLOR_YELLOW);
+    C2D_DrawRectSolid(x, y, 0.5f, dx, dy, COLOR_MASKBLACK);
+    C2D_DrawRectSolid(x, y, 0.5f, dx, 1, COLOR_YELLOW);
+    C2D_DrawRectSolid(x, y, 0.5f, 1, dy, COLOR_YELLOW);
+    C2D_DrawRectSolid(x + dx - 1, y, 0.5f, 1, dy, COLOR_YELLOW);
+    C2D_DrawRectSolid(x, y + dy - 1, 0.5f, dx, 1, COLOR_YELLOW);
 
     for (int y = 0; y < 5; y++)
     {
-        for (int x = 0; x < 8; x++)
+        for (int x = 0; x < 6; x++)
         {
-            if (x + y * 8 >= formCount)
+            if (x + y * 6 >= formCount)
             {
                 break;
             }
-            Gui::pkm(pkm->species(), x + y * 8, TitleLoader::save->generation(), x * 50 + 7, y * 48 + 2);
-            Gui::dynamicText(x * 50, y * 48 + 34, 50, i18n::form(Configuration::getInstance().language(), pkm->species(), x + y * 8, TitleLoader::save->generation()), FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
+            Gui::pkm(pkm->species(), x + y * 6, TitleLoader::save->generation(), x * 66 + 19, y * 48 + 1);
+            Gui::dynamicText(i18n::form(Configuration::getInstance().language(), pkm->species(), x + y * 6, TitleLoader::save->generation()), x * 67, y * 48 + 36, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, 65.0f, true);
+            //Gui::dynamicText(x * 50, y * 48 + 30, 50, i18n::form(Configuration::getInstance().language(), pkm->species(), x + y * 8, TitleLoader::save->generation()), FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
         }
     }
 }
