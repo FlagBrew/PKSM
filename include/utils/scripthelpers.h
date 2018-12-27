@@ -30,6 +30,12 @@
 #include "picoc.h"
 #include "3ds/types.h"
 
+void cfg_default_ot(struct ParseState*, struct Value*, struct Value**, int);
+void cfg_default_tid(struct ParseState*, struct Value*, struct Value**, int);
+void cfg_default_sid(struct ParseState*, struct Value*, struct Value**, int);
+void cfg_default_day(struct ParseState*, struct Value*, struct Value**, int);
+void cfg_default_month(struct ParseState*, struct Value*, struct Value**, int);
+void cfg_default_year(struct ParseState*, struct Value*, struct Value**, int);
 void gui_warn(struct ParseState*, struct Value*, struct Value**, int);
 void gui_choice(struct ParseState*, struct Value*, struct Value**, int);
 void gui_menu6x5(struct ParseState*, struct Value*, struct Value**, int);

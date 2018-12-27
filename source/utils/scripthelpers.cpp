@@ -419,4 +419,34 @@ extern "C" {
             }
         }
     }
+
+    void cfg_default_ot(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        ReturnValue->Val->Pointer = (void*)Configuration::getInstance().defaultOT().c_str();
+    }
+
+    void cfg_default_tid(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        ReturnValue->Val->UnsignedInteger = Configuration::getInstance().defaultTID();
+    }
+
+    void cfg_default_sid(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        ReturnValue->Val->UnsignedInteger = Configuration::getInstance().defaultSID();
+    }
+
+    void cfg_default_day(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        ReturnValue->Val->Integer = Configuration::getInstance().day();
+    }
+
+    void cfg_default_month(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        ReturnValue->Val->Integer = Configuration::getInstance().month();
+    }
+
+    void cfg_default_year(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        ReturnValue->Val->Integer = Configuration::getInstance().year();
+    }
 }

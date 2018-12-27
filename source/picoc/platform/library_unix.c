@@ -22,6 +22,12 @@ struct LibraryFunction UnixFunctions[] =
     { sav_inject_ekx,   "void sav_inject_ekx(char* data, enum Generation type, int box, int slot);" },
     { current_directory,"char* current_directory();" },
     { read_directory,   "struct directory* read_directory(char* dir);" },
+    {cfg_default_ot,    "char* cfg_default_ot();" },
+    {cfg_default_tid,   "unsigned int cfg_default_tid();" },
+    {cfg_default_sid,   "unsigned int cfg_default_sid();" },
+    {cfg_default_day,   "int cfg_default_day();" },
+    {cfg_default_month, "int cfg_default_month();" },
+    {cfg_default_year,  "int cfg_default_year();" },
     { NULL,             NULL }
 };
 
