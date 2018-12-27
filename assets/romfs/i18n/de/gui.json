@@ -447,5 +447,6 @@
     "BRIDGE_SHOULD_SEND_1": "Would you like to send the changed file",
     "BRIDGE_SHOULD_SEND_2": "to the original client?",
     "WIRELESS_WARNING": "This will lock your console until a save is received.",
-    "WIRELESS_IP" : "IP Address: %s"
+    "WIRELESS_IP" : "IP Address: %s",
+    "NO_SWAP_BULK": "Swapping these slots would have edited Pokémon:"
 }

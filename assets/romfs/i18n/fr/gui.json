@@ -446,5 +446,6 @@
     "WIRELESS_WARNING": "La console sera bloquée jusqu'à réc. d'une sauvegarde.",
     "WIRELESS_IP" : "Adresse IP : %s",
     "BRIDGE_SHOULD_SEND_1": "Would you like to send the changed file",
-    "BRIDGE_SHOULD_SEND_2": "to the original client?"
+    "BRIDGE_SHOULD_SEND_2": "to the original client?",
+    "NO_SWAP_BULK": "Swapping these slots would have edited Pokémon:"
 }

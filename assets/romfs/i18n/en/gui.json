@@ -447,5 +447,6 @@
     "BRIDGE_SHOULD_SEND_2": "to the original client?",
     "LOADER_BACKING_UP": "Backing up save...",
     "WIRELESS_WARNING": "This will lock your console until a save is received.",
-    "WIRELESS_IP" : "IP Address: %s"
+    "WIRELESS_IP" : "IP Address: %s",
+    "NO_SWAP_BULK": "Swapping these slots would have edited Pokémon:"
 }

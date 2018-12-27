@@ -1270,7 +1270,7 @@ bool StorageScreen::swapBoxWithStorage()
             unswapped += std::to_string(i) + ",";
         }
         unswapped.pop_back();
-        Gui::warn("Swapping these slots would have edited Pokémon:", unswapped);
+        Gui::warn(i18n::localize("NO_SWAP_BULK"), unswapped);
     }
     return false;
 }
