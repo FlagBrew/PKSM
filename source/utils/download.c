@@ -75,7 +75,7 @@ Result download(const char* url, const char* path)
     free(result_buf);
     result_buf = NULL;
     result_written = 0;
-    return cres == CURLE_OK ? 0 : (Result)cres;
+    return cres == CURLE_OK ? 0 : (Result)-cres;
 }
 
 // following code is from 

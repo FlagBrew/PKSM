@@ -97,7 +97,7 @@ static Result downloadAdditionalAssets(void) {
         if (downloadAsset)
         {
             Result res1 = download(item.url.c_str(), item.path.c_str());
-            if (R_FAILED(res1)) res--;
+            if (R_FAILED(res1)) return res1;
         }
     }
     return res;
