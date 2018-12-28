@@ -154,10 +154,10 @@ Result App::exit(void)
 {
     socExit();
     TitleLoader::exit();
+    Gui::exit();
     Threads::destroy();
     Configuration::getInstance().save();
     i18n::exit();
-    Gui::exit();
     amExit();
     pxiDevExit();
     Archive::exit();
