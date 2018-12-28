@@ -25,8 +25,17 @@
 */
 
 #include "mixer.hpp"
+#include <vector>
+#include "STDirectory.hpp"
+#include "utils.hpp"
+#include <algorithm>
 
 static Mix_Music* song;
+static std::vector<std::string> songs;
+static bool musicMutex = false;
+static bool donePlaying = false;
+static size_t currentSong = 0;
+static u8 currentVolume = 0;
 
 bool SDLH_Init(void)
 {
@@ -42,15 +51,44 @@ bool SDLH_Init(void)
         fprintf(stderr, "Mix_Init: %s\n", Mix_GetError());
     }
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 4096);
-    std::string path = io::exists("/3ds/PKSM/songs/audio.mp3") ? 
-        "/3ds/PKSM/songs/audio.mp3" : "romfs:/audio.mp3";
-    song = Mix_LoadMUS(path.c_str());
+    if (io::exists("/3ds/PKSM/songs/"))
+    {
+        STDirectory d("/3ds/PKSM/songs/");
+        if (d.good() && d.count() > 0)
+        {
+            for (size_t i = 0; i < d.count(); i++)
+            {
+                if (!d.folder(i))
+                {
+                    std::string songName = d.item(i);
+                    if (songName.substr(songName.size() - 3, 3) == "mp3")
+                    {
+                        songs.push_back("/3ds/PKSM/songs/" + songName);
+                    }
+                }
+            }
+        }
+    }
+
+    if (songs.empty())
+    {
+        songs.push_back("romfs:/audio.mp3");
+    }
+
+    std::sort(songs.begin(), songs.end());
+
+    HIDUSER_GetSoundVolume(&currentVolume);
     
     return true;
 }
 
 void SDLH_Exit(void)
 {
+    if (musicMutex)
+    {
+        musicMutex = false;
+    }
+    while (!donePlaying) svcSleepThread(125000000); // wait for SDLH_Play to be done
     Mix_FreeMusic(song);
     Mix_CloseAudio();
     Mix_Quit();
@@ -59,5 +97,35 @@ void SDLH_Exit(void)
 
 void SDLH_Play(void)
 {
-    Mix_PlayMusic(song, -1);
+    musicMutex = true;
+    while (musicMutex)
+    {
+        HIDUSER_GetSoundVolume(&currentVolume);
+        if (!Mix_PlayingMusic() || currentVolume == 0)
+        {
+            if (song)
+            {
+                Mix_FreeMusic(song);
+                song = nullptr;
+            }
+            currentSong = (currentSong + 1) % songs.size();
+            song = Mix_LoadMUS(songs[currentSong].c_str());
+            Mix_PlayMusic(song, 1);
+            if (currentVolume == 0)
+            {
+                Mix_PauseMusic();
+            }
+        }
+        while (currentVolume == 0 && musicMutex)
+        {
+            HIDUSER_GetSoundVolume(&currentVolume);
+            svcSleepThread(250000000);
+        }
+        if (Mix_PausedMusic() && musicMutex)
+        {
+            Mix_ResumeMusic();
+        }
+        svcSleepThread(250000000);
+    }
+    donePlaying = true;
 }
