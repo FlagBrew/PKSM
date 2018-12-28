@@ -67,15 +67,12 @@ bool SDLH_Init(void)
                     }
                 }
             }
-            if (songs.empty())
-            {
-                songs.push_back("romfs:/audio.mp3");
-            }
         }
-        else
-        {
-            songs.push_back(io::exists("/3ds/PKSM/songs/audio.mp3") ? "/3ds/PKSM/songs/audio.mp3" : "romfs:/audio.mp3");
-        }
+    }
+
+    if (songs.empty())
+    {
+        songs.push_back("romfs:/audio.mp3");
     }
 
     std::sort(songs.begin(), songs.end());
@@ -91,7 +88,7 @@ void SDLH_Exit(void)
     {
         musicMutex = false;
     }
-    while (!donePlaying) svcSleepThread(1000000000); // wait for SDLH_Play to be done
+    while (!donePlaying) svcSleepThread(125000000); // wait for SDLH_Play to be done
     Mix_FreeMusic(song);
     Mix_CloseAudio();
     Mix_Quit();
