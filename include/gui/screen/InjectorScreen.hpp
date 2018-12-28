@@ -69,6 +69,7 @@ private:
 
     bool setLanguage(Language lang);
     bool isLangAvailable(Language lang) const;
+    void changeDate();
 };
 
 #endif

@@ -48,6 +48,8 @@ bool InjectorScreen::setLanguage(Language language)
         lang = language;
         std::string langString = i18n::langString(lang);
         wondercard = MysteryGift::wondercard(ids[langString]);
+        
+        changeDate();
     }
     return false;
 }
@@ -89,28 +91,7 @@ InjectorScreen::InjectorScreen(nlohmann::json ids) : hid(40, 8), ids(ids), empty
     buttons.push_back(new Button(255, 168, 38, 23, [this](){ choosingSlot = true; hid.select(slot - 1); return true; }, ui_sheet_button_unselected_text_button_idx, "", 0.0f, 0));
     buttons.push_back(new Button(282, 212, 34, 28, [](){ Gui::screenBack(); return true; }, ui_sheet_button_back_idx, "", 0.0f, 0));
 
-    u32 newDate = 0;
-    switch (wondercard->generation())
-    {
-        case Generation::FOUR: // No date data
-            break;
-        case Generation::FIVE:
-            *((u8*)(&newDate)) = (u8)Configuration::getInstance().day();
-            *((u8*)(&newDate) + 1) = (u8)Configuration::getInstance().month();
-            *((u16*)(&newDate) + 1) = (u16)Configuration::getInstance().year();
-            wondercard->rawDate(newDate);
-            break;
-        case Generation::SIX:
-        case Generation::SEVEN:
-        case Generation::LGPE:
-            newDate = Configuration::getInstance().year() * 10000;
-            newDate += Configuration::getInstance().month() * 100;
-            newDate += Configuration::getInstance().day();
-            wondercard->rawDate(newDate);
-            break;
-        case Generation::UNUSED:
-            break;
-    }
+    changeDate();
 }
 
 InjectorScreen::InjectorScreen(std::unique_ptr<WCX> wcx) : wondercard(std::move(wcx)), hid(40, 8), ids({}), emptySlot(TitleLoader::save->emptyGiftLocation()),
@@ -489,4 +470,30 @@ bool InjectorScreen::isLangAvailable(Language l) const
 {
     std::string langString = i18n::langString(l);
     return ids.find(langString) != ids.end();
+}
+
+void InjectorScreen::changeDate()
+{
+    u32 newDate = 0;
+    switch (wondercard->generation())
+    {
+        case Generation::FOUR: // No date data
+            break;
+        case Generation::FIVE:
+            *((u8*)(&newDate)) = (u8)Configuration::getInstance().day();
+            *((u8*)(&newDate) + 1) = (u8)Configuration::getInstance().month();
+            *((u16*)(&newDate) + 1) = (u16)Configuration::getInstance().year();
+            wondercard->rawDate(newDate);
+            break;
+        case Generation::SIX:
+        case Generation::SEVEN:
+        case Generation::LGPE:
+            newDate = Configuration::getInstance().year() * 10000;
+            newDate += Configuration::getInstance().month() * 100;
+            newDate += Configuration::getInstance().day();
+            wondercard->rawDate(newDate);
+            break;
+        case Generation::UNUSED:
+            break;
+    }
 }
