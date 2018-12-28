@@ -497,7 +497,7 @@ void EditSelectorScreen::update(touchPosition* touch)
             }
         }
     }
-    else if ((heldKeys & KEY_L) && (heldKeys & KEY_R))
+    else if ((heldKeys & KEY_L && downKeys & KEY_R) || (downKeys & KEY_L && heldKeys & KEY_R))
     {
         doQR();
         return;

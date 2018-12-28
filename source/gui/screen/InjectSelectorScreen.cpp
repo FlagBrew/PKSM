@@ -90,7 +90,7 @@ void InjectSelectorScreen::update(touchPosition* touch)
             Gui::screenBack();
             return;
         }
-        if (heldKeys & KEY_L && heldKeys & KEY_R)
+        if ((heldKeys & KEY_L && downKeys & KEY_R) || (downKeys & KEY_L && heldKeys & KEY_R))
         {
             doQR();
             return;
