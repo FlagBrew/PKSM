@@ -114,11 +114,19 @@ void SDLH_Play(void)
             currentSong = (currentSong + 1) % songs.size();
             song = Mix_LoadMUS(songs[currentSong].c_str());
             Mix_PlayMusic(song, 1);
+            if (currentVolume == 0)
+            {
+                Mix_PauseMusic();
+            }
         }
         while (currentVolume == 0 && musicMutex)
         {
             HIDUSER_GetSoundVolume(&currentVolume);
             svcSleepThread(250000000);
+        }
+        if (Mix_PausedMusic() && musicMutex)
+        {
+            Mix_ResumeMusic();
         }
         svcSleepThread(250000000);
     }
