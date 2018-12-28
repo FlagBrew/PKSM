@@ -137,7 +137,7 @@ Result App::init(std::string execPath)
     }
 
     Threads::create((ThreadFunc)TitleLoader::scanTitles);
-    Threads::create((ThreadFunc)TitleLoader::scanSaves);
+    TitleLoader::scanSaves();
 
     Gui::setScreen(std::make_unique<TitleLoadScreen>());
 
