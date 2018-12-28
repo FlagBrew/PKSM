@@ -35,6 +35,7 @@ static std::vector<std::string> songs;
 static bool musicMutex = false;
 static bool donePlaying = false;
 static size_t currentSong = 0;
+static u8 currentVolume = 0;
 
 bool SDLH_Init(void)
 {
@@ -78,6 +79,8 @@ bool SDLH_Init(void)
     }
 
     std::sort(songs.begin(), songs.end());
+
+    HIDUSER_GetSoundVolume(&currentVolume);
     
     return true;
 }
@@ -100,7 +103,8 @@ void SDLH_Play(void)
     musicMutex = true;
     while (musicMutex)
     {
-        if (!Mix_PlayingMusic())
+        HIDUSER_GetSoundVolume(&currentVolume);
+        if (!Mix_PlayingMusic() || currentVolume == 0)
         {
             if (song)
             {
@@ -110,6 +114,11 @@ void SDLH_Play(void)
             currentSong = (currentSong + 1) % songs.size();
             song = Mix_LoadMUS(songs[currentSong].c_str());
             Mix_PlayMusic(song, 1);
+        }
+        while (currentVolume == 0 && musicMutex)
+        {
+            HIDUSER_GetSoundVolume(&currentVolume);
+            svcSleepThread(250000000);
         }
         svcSleepThread(250000000);
     }
