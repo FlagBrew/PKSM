@@ -58,6 +58,7 @@ private:
     int currentTab = 0;
     int oldStorage;
     void back(void);
+    void drawTop(void) const;
     bool justSwitched = true;
 };
 

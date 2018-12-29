@@ -33,6 +33,20 @@
 
 #define LIMITSTORAGE(number) number > STORAGE_BOX_LIMIT ? STORAGE_BOX_LIMIT : number < 0 ? 0 : number
 
+static constexpr std::array<std::string_view, 11> credits = {
+    "piepie62 and Admiral-Fish their dedication",
+    "dsoldier for the gorgeous graphic work",
+    "SpiredMoth, trainboy2019 and all the scripters",
+    "The whole FlagBrew team for collaborating with us",
+    "kwsch and SciresM for PKHeX documentation",
+    "fincs and WinterMute for citro2d and devkitARM",
+    "kamronbatman and ProjectPokemon for EventsGallery",
+    "All of the translators",
+    "Subject21_J and all the submitters for PKSM's icon",
+    "Mewmore for the default background music",
+    "Bernardo for creating PKSM"
+};
+
 static void inputNumber(std::function<void(int)> callback, int digits, int maxValue)
 {
     SwkbdState state;
@@ -116,6 +130,9 @@ ConfigScreen::ConfigScreen() : oldStorage(Configuration::getInstance().storageSi
 
 void ConfigScreen::draw() const
 {
+    C2D_SceneBegin(g_renderTargetTop);
+    drawTop();
+
     C2D_SceneBegin(g_renderTargetBottom);
     Gui::backgroundBottom(false);
 
@@ -300,4 +317,44 @@ void ConfigScreen::back()
 {
     Configuration::getInstance().save();
     Gui::screenBack();
+}
+
+static u8 getNextAlpha(int off)
+{
+    static u8 retVals[11] = { 205, 210, 215, 220, 225, 230, 235, 240, 245, 250, 255 };
+    static bool up[11] = { false, false, false, false, false, false, false, false, false, false, false };
+    static u8 timers[11] = { 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 };
+    if (timers[off] == 0)
+    {
+        if (retVals[off] < 105 && !up[off])
+        {
+            up[off] = true;
+        }
+        else if (retVals[off] == 255 && up[off])
+        {
+            up[off] = false;
+        }
+        else if (up[off])
+        {
+            retVals[off] += 5;
+        }
+        else
+        {
+            retVals[off] -= 5;
+        }
+        timers[off] = 3;
+    }
+    timers[off]--;
+    return retVals[off];
+}
+
+void ConfigScreen::drawTop() const
+{
+    Gui::backgroundTop(false);
+    Gui::staticText(GFX_TOP, 4, "PKSM", FONT_SIZE_14, FONT_SIZE_14, COLOR_BLUE);
+    int y = 25;
+    for (size_t i = 0; i < credits.size(); i++)
+    {
+        Gui::dynamicText(GFX_TOP, y += 16, std::string(credits[i]), FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(0xFF, 0xFF, 0xFF, getNextAlpha(i)));
+    }
 }
