@@ -34,11 +34,11 @@
 #define LIMITSTORAGE(number) number > STORAGE_BOX_LIMIT ? STORAGE_BOX_LIMIT : number < 0 ? 0 : number
 
 static constexpr std::array<std::string_view, 11> credits = {
-    "piepie62 and Admiral-Fish their dedication",
+    "piepie62 and Admiral-Fish for their dedication",
     "dsoldier for the gorgeous graphic work",
     "SpiredMoth, trainboy2019 and all the scripters",
     "The whole FlagBrew team for collaborating with us",
-    "kwsch and SciresM for PKHeX documentation",
+    "Kaphotics and SciresM for PKHeX documentation",
     "fincs and WinterMute for citro2d and devkitARM",
     "kamronbatman and ProjectPokemon for EventsGallery",
     "All of the translators",

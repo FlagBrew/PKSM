@@ -72,6 +72,7 @@
     "CONFIG_BACKUP_SAVE": "backup automático al cargar",
     "CONFIG_BAD_SECTORS": "Arr. sectores dañados al salir",
     "CONFIG_EDIT_TRANSFERS": "Editar durante transferencias",
+    "CONFIG_RANDOM_MUSIC": "Randomize music",
     "CONFIG_SAVE_INFO": "Usar Info. de Guardado",
     "CONFIG_STORAGE_SIZE": "Tamaño del depósito",
     "CONFIG_USE_EXTDATA": "Usar ExtData",

@@ -46,6 +46,8 @@
 
 static constexpr int statValues[] = { 0, 1, 2, 4, 5, 3 };
 
+extern int bobPointer();
+
 EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr<PKX> pokemon, int box, int index)
                 : view(viewer), pkm(pokemon), box(box), index(index)
 {
@@ -132,6 +134,11 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
 
     tab = 2;
     buttons[tab].push_back(buttons[0][0]);
+    for (int i = 0; i < 4; i++)
+    {
+        buttons[tab].push_back(new ClickButton(0, 30 + 20 * i, 240, 20, [=](){ moveSelected = i; return true; }, ui_sheet_res_null_idx, "", 0.0f, 0));
+        buttons[tab].push_back(new ClickButton(0, 140 + 20 * i, 240, 20, [=](){ moveSelected = i + 4; return true; }, ui_sheet_res_null_idx, "", 0.0f, 0));
+    }
 }
 
 void EditorScreen::draw() const
@@ -285,13 +292,13 @@ void EditorScreen::draw() const
 
             if (moveSelected < 4)
             {
-                Gui::sprite(ui_sheet_emulated_pointer_horizontal_flipped_idx, 169, 31 + moveSelected * 20);
-                Gui::staticText("\uE000", 190, 29 + moveSelected * 20, FONT_SIZE_18, FONT_SIZE_18, COLOR_BLACK, false);
+                Gui::sprite(ui_sheet_emulated_pointer_horizontal_flipped_idx, 169 + bobPointer(), 31 + moveSelected * 20);
+                Gui::staticText("\uE000", 194, 29 + moveSelected * 20, FONT_SIZE_18, FONT_SIZE_18, COLOR_BLACK, false);
             }
             else
             {
-                Gui::sprite(ui_sheet_emulated_pointer_horizontal_flipped_idx, 169, 140 + (moveSelected - 4) * 20);
-                Gui::staticText("\uE000", 190, 138 + (moveSelected - 4) * 20, FONT_SIZE_18, FONT_SIZE_18, COLOR_BLACK, false);
+                Gui::sprite(ui_sheet_emulated_pointer_horizontal_flipped_idx, 169 + bobPointer(), 140 + (moveSelected - 4) * 20);
+                Gui::staticText("\uE000", 194, 138 + (moveSelected - 4) * 20, FONT_SIZE_18, FONT_SIZE_18, COLOR_BLACK, false);
             }
             break;
     }
