@@ -104,7 +104,7 @@ void SDLH_Play(void)
     while (musicMutex)
     {
         HIDUSER_GetSoundVolume(&currentVolume);
-        if (!Mix_PlayingMusic() || currentVolume == 0)
+        if (!Mix_PlayingMusic() || (currentVolume == 0 && songs.size() > 1))
         {
             if (song)
             {
@@ -121,10 +121,10 @@ void SDLH_Play(void)
             }
             song = Mix_LoadMUS(songs[currentSong].c_str());
             Mix_PlayMusic(song, 1);
-            if (currentVolume == 0)
-            {
-                Mix_PauseMusic();
-            }
+        }
+        if (currentVolume == 0)
+        {
+            Mix_PauseMusic();
         }
         while (currentVolume == 0 && musicMutex)
         {
