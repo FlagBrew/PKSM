@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "language": 2,
   "autoBackup": true,
   "storageSize": 150,
@@ -20,5 +20,6 @@
   "extraSaves": {
   },
   "writeFileSave": false,
-  "useSaveInfo": false
+  "useSaveInfo": false,
+  "randomMusic": false
 }

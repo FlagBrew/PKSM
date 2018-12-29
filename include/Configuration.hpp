@@ -35,7 +35,7 @@
 class Configuration
 {
 public:
-    static constexpr int CURRENT_VERSION = 2;
+    static constexpr int CURRENT_VERSION = 3;
 
     static Configuration& getInstance(void)
     {
@@ -121,6 +121,11 @@ public:
         return mJson["useSaveInfo"];
     }
 
+    bool randomMusic(void)
+    {
+        return mJson["randomMusic"];
+    }
+
     void language(Language lang)
     {
         mJson["language"] = lang;
@@ -199,6 +204,11 @@ public:
     void useSaveInfo(bool saveInfo)
     {
         mJson["useSaveInfo"] = saveInfo;
+    }
+
+    void randomMusic(bool random)
+    {
+        mJson["randomMusic"] = random;
     }
 
     void save(void);

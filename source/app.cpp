@@ -121,6 +121,7 @@ Result App::init(std::string execPath)
     if (R_FAILED(res = Archive::init(execPath))) return res;
     if (R_FAILED(res = pxiDevInit())) return res;
     if (R_FAILED(res = amInit())) return res;
+    if (R_FAILED(res = hidInit())) return res;
     if (R_FAILED(res = downloadAdditionalAssets())) return res;
     if (R_FAILED(res = Gui::init())) return res;
     Configuration::getInstance();

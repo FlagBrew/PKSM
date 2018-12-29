@@ -111,6 +111,7 @@ ConfigScreen::ConfigScreen() : oldStorage(Configuration::getInstance().storageSi
     tabButtons[2].push_back(new ClickButton(247, 135, 15, 12, [](){ Configuration::getInstance().writeFileSave(!Configuration::getInstance().writeFileSave()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
     tabButtons[2].push_back(new ClickButton(247, 159, 15, 12, [](){ Configuration::getInstance().useSaveInfo(!Configuration::getInstance().useSaveInfo()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
     tabButtons[2].push_back(new ClickButton(247, 183, 15, 12, [](){ Configuration::getInstance().useExtData(!Configuration::getInstance().useExtData()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    tabButtons[2].push_back(new ClickButton(247, 207, 15, 12, [](){ Configuration::getInstance().randomMusic(!Configuration::getInstance().randomMusic()); return true; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
 }
 
 void ConfigScreen::draw() const
@@ -246,6 +247,7 @@ void ConfigScreen::draw() const
         Gui::staticText(i18n::localize("CONFIG_BACKUP_INJECTION"), 19, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
         Gui::staticText(i18n::localize("CONFIG_SAVE_INFO"), 19, 156, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
         Gui::staticText(i18n::localize("CONFIG_USE_EXTDATA"), 19, 180, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+        Gui::staticText(i18n::localize("CONFIG_RANDOM_MUSIC"), 19, 204, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
 
         for (Button* button : tabButtons[currentTab])
         {
@@ -259,6 +261,7 @@ void ConfigScreen::draw() const
         Gui::staticText(Configuration::getInstance().writeFileSave() ? i18n::localize("YES") : i18n::localize("NO"), 270, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
         Gui::staticText(Configuration::getInstance().useSaveInfo() ? i18n::localize("YES") : i18n::localize("NO"), 270, 156, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
         Gui::staticText(Configuration::getInstance().useExtData() ? i18n::localize("YES") : i18n::localize("NO"), 270, 180, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+        Gui::staticText(Configuration::getInstance().randomMusic() ? i18n::localize("YES") : i18n::localize("NO"), 270, 204, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
     }
 }
 

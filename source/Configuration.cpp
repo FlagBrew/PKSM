@@ -57,6 +57,10 @@ Configuration::Configuration()
             {
                 mJson["useSaveInfo"] = false;
             }
+            if (mJson["version"].get<int>() < 3)
+            {
+                mJson["randomMusic"] = false;
+            }
 
             mJson["version"] = CURRENT_VERSION;
             save();

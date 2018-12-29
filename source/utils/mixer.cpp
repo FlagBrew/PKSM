@@ -29,6 +29,7 @@
 #include "STDirectory.hpp"
 #include "utils.hpp"
 #include <algorithm>
+#include "Configuration.hpp"
 
 static Mix_Music* song;
 static std::vector<std::string> songs;
@@ -108,7 +109,14 @@ void SDLH_Play(void)
                 Mix_FreeMusic(song);
                 song = nullptr;
             }
-            currentSong = (currentSong + 1) % songs.size();
+            if (Configuration::getInstance().randomMusic())
+            {
+                currentSong = rand() % songs.size();
+            }
+            else
+            {
+                currentSong = (currentSong + 1) % songs.size();
+            }
             song = Mix_LoadMUS(songs[currentSong].c_str());
             Mix_PlayMusic(song, 1);
             if (currentVolume == 0)
