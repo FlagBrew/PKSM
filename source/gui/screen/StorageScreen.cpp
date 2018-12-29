@@ -306,6 +306,7 @@ void StorageScreen::draw() const
             int dy = bobPointer();
             if (moveMon)
             {
+                Gui::pkm(moveMon.get()->species(), moveMon.get()->alternativeForm(), moveMon.get()->generation(), 97, 10 + dy, 1.0f, COLOR_GREY_BLEND, 1.0f);
                 Gui::pkm(moveMon.get(), 94, 5 + dy);
             }
             Gui::sprite(ui_sheet_pointer_arrow_idx, 106, -4 + dy);
@@ -316,6 +317,7 @@ void StorageScreen::draw() const
             int yMod = (tempIndex / 6) * 30 + bobPointer();
             if (moveMon)
             {
+                Gui::pkm(moveMon.get()->species(), moveMon.get()->alternativeForm(), moveMon.get()->generation(), 12 + (tempIndex % 6) * 34, 44 + yMod, 1.0f, COLOR_GREY_BLEND, 1.0f);
                 Gui::pkm(moveMon.get(), 9 + (tempIndex % 6) * 34, 39 + yMod);
             }
             Gui::sprite(ui_sheet_pointer_arrow_idx, 21 + (tempIndex % 6) * 34, 30 + yMod);
@@ -384,6 +386,7 @@ void StorageScreen::draw() const
                 int dy = bobPointer();
                 if (moveMon)
                 {
+                    Gui::pkm(moveMon.get()->species(), moveMon.get()->alternativeForm(), moveMon.get()->generation(), 138, 16 + dy, 1.0f, COLOR_GREY_BLEND, 1.0f);
                     Gui::pkm(moveMon.get(), 135, 11 + dy);
                 }
                 Gui::sprite(ui_sheet_pointer_arrow_idx, 147, 2 + dy);
@@ -394,6 +397,7 @@ void StorageScreen::draw() const
                 int yMod = (tempIndex / 6) * 30 + bobPointer();
                 if (moveMon)
                 {
+                    Gui::pkm(moveMon.get()->species(), moveMon.get()->alternativeForm(), moveMon.get()->generation(), 53 + (tempIndex % 6) * 34, 65 + yMod, 1.0f, COLOR_GREY_BLEND, 1.0f);
                     Gui::pkm(moveMon.get(), 50 + (tempIndex % 6) * 34, 60 + yMod);
                 }
                 Gui::sprite(ui_sheet_pointer_arrow_idx, 62 + (tempIndex % 6) * 34, 51 + yMod);
