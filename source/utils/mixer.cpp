@@ -82,7 +82,7 @@ bool SDLH_Init(void)
 
     HIDUSER_GetSoundVolume(&currentVolume);
 
-    randomNums.seed(time(NULL));
+    randomNums.seed(osGetTime());
     
     return true;
 }
