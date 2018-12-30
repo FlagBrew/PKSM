@@ -658,6 +658,15 @@ void EditorScreen::setSecondaryStat(int which)
         if (pkm->generation() != Generation::LGPE)
         {
             pkm->ev(which, val);
+            u16 total = 0;
+            for (int i = 0; i < 6; i++)
+            {
+                total += i != which ? pkm->ev(i) : 0;
+            }
+            if (total + val > 510)
+            {
+                pkm->ev(which, 510 - total);
+            }
         }
         else
         {
@@ -672,13 +681,22 @@ bool EditorScreen::changeSecondaryStat(int which, bool up)
     {
         if (pkm->generation() != Generation::LGPE)
         {
-            if (pkm->ev(which) < 0xFC)
+            u16 total = 0;
+            for (int i = 0; i < 6; i++)
             {
-                pkm->ev(which, pkm->ev(which) + 1);
+                total += pkm->ev(i);
             }
-            else
+            // TODO: remove hardcoded value and set it in classes
+            if (total < 510)
             {
-                pkm->ev(which, 0);
+                if (pkm->ev(which) < 0xFC)
+                {
+                    pkm->ev(which, pkm->ev(which) + 1);
+                }
+                else
+                {
+                    pkm->ev(which, 0);
+                }
             }
         }
         else
@@ -704,7 +722,16 @@ bool EditorScreen::changeSecondaryStat(int which, bool up)
             }
             else
             {
-                pkm->ev(which, 0xFC);
+                u16 total = 0xFC;
+                for (int i = 0; i < 6; i++)
+                {
+                    total += pkm->ev(i);
+                }
+                // TODO: remove hardcoded value and set it in classes
+                if (total < 510)
+                {
+                    pkm->ev(which, 0xFC);
+                }   
             }
         }
         else
