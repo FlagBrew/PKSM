@@ -337,7 +337,7 @@ bool InjectSelectorScreen::doQR()
             Gui::setScreen(std::make_unique<InjectorScreen>(std::move(wcx)));
             updateGifts = true;
 
-            delete data;
+            delete[] data;
             return true;
         }
 
