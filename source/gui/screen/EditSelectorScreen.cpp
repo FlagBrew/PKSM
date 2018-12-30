@@ -142,7 +142,7 @@ bool EditSelectorScreen::doQR()
             TitleLoader::save->pkm(*pkm, box, slot);
         }
 
-        delete data;
+        delete[] data;
     }
     return true;
 }
