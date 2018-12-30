@@ -143,7 +143,7 @@ static void qrHandler(qr_data* data, QRMode mode, u8*& buff)
                 static constexpr int pkHeader = 6; // strlen("null/#")
                 u8* out = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader, &outSize);
 
-                if (PKX::genFromBytes(out, outSize, true) == 4) // PK4/5 length
+                if (outSize == 136) // PK4/5 length
                 {
                     buff = new u8[outSize];
                     std::copy(out, out + outSize, buff);
@@ -157,7 +157,9 @@ static void qrHandler(qr_data* data, QRMode mode, u8*& buff)
                 static constexpr int pkHeader = 6; // strlen("null/#")
                 u8* out = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader, &outSize);
 
-                if (PKX::genFromBytes(out, outSize, true) == 5) // PK4/5 length
+                Gui::warn(std::to_string(outSize));
+
+                if (outSize == 136) // PK4/5 length
                 {
                     buff = new u8[outSize];
                     std::copy(out, out + outSize, buff);
