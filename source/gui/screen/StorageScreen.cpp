@@ -1082,7 +1082,7 @@ bool StorageScreen::dumpPkm()
         path += stringTime;
         if (moveMon)
         {
-            path += moveMon->generation() != Generation::LGPE ? ".pk" + genToString(moveMon->generation()) : ".pb7";
+            path += " - " + std::to_string(moveMon->species()) + moveMon->nickname() + " - " + StringUtils::format("%08X") + (moveMon->generation() != Generation::LGPE ? ".pk" + genToString(moveMon->generation()) : ".pb7");
             FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, moveMon->length);
             if (out.good())
             {
@@ -1110,7 +1110,7 @@ bool StorageScreen::dumpPkm()
                         return false;
                     }
                     dumpMon = TitleLoader::save->pkm(boxBox, cursorIndex - 1);
-                    path += dumpMon->generation() != Generation::LGPE ? ".pk" + genToString(dumpMon->generation()) : ".pb7";
+                    path += " - " + std::to_string(dumpMon->species()) + " - " + dumpMon->nickname() + " - " + StringUtils::format("%08X") + (dumpMon->generation() != Generation::LGPE ? ".pk" + genToString(dumpMon->generation()) : ".pb7");
                     FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, dumpMon->length);
                     if (out.good())
                     {
@@ -1132,7 +1132,7 @@ bool StorageScreen::dumpPkm()
                 else
                 {
                     dumpMon = bank.pkm(storageBox, cursorIndex - 1);
-                    path += dumpMon->generation() != Generation::LGPE ? ".pk" + genToString(dumpMon->generation()) : ".pb7";
+                    path += " - " + std::to_string(dumpMon->species()) + " - " + dumpMon->nickname() + " - " + StringUtils::format("%08X") + (dumpMon->generation() != Generation::LGPE ? ".pk" + genToString(dumpMon->generation()) : ".pb7");
                     FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, dumpMon->length);
                     if (out.good())
                     {

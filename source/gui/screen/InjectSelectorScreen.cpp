@@ -358,6 +358,7 @@ void InjectSelectorScreen::dumpCard(void) const
     std::string path = std::string("/3ds/PKSM/dumps/") + stringDate;
     mkdir(path.c_str(), 777);
     path += stringTime;
+    path += " - " + std::to_string(wc->ID()) + " - " + wc->title();
     switch (wc->generation())
     {
         case Generation::FOUR:
