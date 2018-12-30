@@ -99,7 +99,7 @@ static void qrHandler(qr_data* data, QRMode mode, u8*& buff)
                 static constexpr int wcHeader = 38; // strlen("http://lunarcookies.github.io/wc.html#)
                 u8* out = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader, &outSize);
 
-                if (outSize == PGT::length)
+                if (outSize == PGT::length || outSize == WC4::length)
                 {
                     buff = new u8[outSize];
                     std::copy(out, out + outSize, buff);
