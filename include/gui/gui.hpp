@@ -73,6 +73,7 @@
 #define ui_sheet_emulated_button_item_idx 521
 #define ui_sheet_emulated_button_plus_small_black_idx 522
 #define ui_sheet_emulated_button_minus_small_black_idx 523
+#define ui_sheet_emulated_box_search_idx 524
 
 // colors
 #define COLOR_WHITE     C2D_Color32(255, 255, 255, 255)

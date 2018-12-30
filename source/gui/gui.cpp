@@ -388,7 +388,7 @@ Result Gui::init(void)
     C2D_Prepare();
     SDLH_Init();
 
-    srand(time(NULL));
+    srand(osGetTime());
 
     g_renderTargetTop = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
     g_renderTargetBottom = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
@@ -741,6 +741,21 @@ void Gui::sprite(int key, int x, int y)
         C2D_PlainImageTint(&tint, COLOR_BLACK, 1.0f);
         C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_minus_small_idx), x, y, 0.5f, &tint, 1.0f, 1.0f);
     }
+    else if (key == ui_sheet_emulated_box_search_idx)
+    {
+        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_box_hex_value_idx);
+        
+        Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, 5, 0);
+        // Left
+        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f);
+        // Right
+        C2D_DrawImageAt({sprite.tex, &tex}, x + 165, y, 0.5f, nullptr, -1.0f, 1.0f);
+        // Middle
+        tex = _select_box(sprite, 5, 0, 6, 0);
+        C2D_DrawImageAt({sprite.tex, &tex}, x + 5, y, 0.5f, nullptr, 160.0f, 1.0f);
+
+        C2D_DrawRectSolid(x + 20, y + 17, 0.5f, 144, 1, COLOR_WHITE);
+    }
     // standard case
     else
     {
@@ -889,7 +904,7 @@ void Gui::pkm(PKX* pokemon, int x, int y, float scale, u32 color, float blend)
 
     if (pokemon->shiny())
     {
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx), x, y, 0.5f);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx), x, y, 0.5f, &tint);
     }
 }
 
