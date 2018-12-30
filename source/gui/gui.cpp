@@ -388,8 +388,6 @@ Result Gui::init(void)
     C2D_Prepare();
     SDLH_Init();
 
-    srand(osGetTime());
-
     g_renderTargetTop = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
     g_renderTargetBottom = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
 

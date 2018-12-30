@@ -30,6 +30,7 @@
 #include "utils.hpp"
 #include <algorithm>
 #include "Configuration.hpp"
+#include "random.hpp"
 
 static Mix_Music* song;
 static std::vector<std::string> songs;
@@ -79,8 +80,6 @@ bool SDLH_Init(void)
     std::sort(songs.begin(), songs.end());
 
     HIDUSER_GetSoundVolume(&currentVolume);
-
-    srand(osGetTime());
     
     return true;
 }
@@ -113,7 +112,7 @@ void SDLH_Play(void)
             }
             if (Configuration::getInstance().randomMusic())
             {
-                currentSong = rand() % songs.size();
+                currentSong = randomNumbers() % songs.size();
             }
             else
             {

@@ -30,6 +30,7 @@
 #include "FSStream.hpp"
 #include "archive.hpp"
 #include "WB7.hpp"
+#include "random.hpp"
 
 SavLGPE::SavLGPE(u8* dt)
 {
@@ -550,7 +551,7 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
         }
         else
         {
-            pkm.level(rand() % 100 + 1);
+            pkm.level(randomNumbers() % 100 + 1);
             pkm.partyLevel(pkm.level());
         }
         if (wb7->metLevel() > 0)
@@ -570,7 +571,7 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
         }
         if (wb7->nature() == 255)
         {
-            pkm.nature(rand() % 25);
+            pkm.nature(randomNumbers() % 25);
         }
         else
         {
@@ -578,7 +579,7 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
         }
         if (wb7->gender() == 3)
         {
-            pkm.gender(rand() % 3);
+            pkm.gender(randomNumbers() % 3);
         }
         else
         {
@@ -634,7 +635,7 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
         int perfectIVs = 0;
         for (int i = 0; i < 6; i++)
         {
-            pkm.iv(rand() % 30 + 1); // Initialize IVs so that none are perfect (though they can be close)
+            pkm.iv(randomNumbers() % 30 + 1); // Initialize IVs so that none are perfect (though they can be close)
             if (wb7->iv(i) - 0xFC < 3)
             {
                 perfectIVs = wb7->iv(i) - 0xFB; // How many perfects should there be?
@@ -647,7 +648,7 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
             {
                 u8 chosenIV;
                 do {
-                    chosenIV = rand() % 6;
+                    chosenIV = randomNumbers() % 6;
                 }
                 while (pkm.iv(chosenIV) == 31);
                 pkm.iv(chosenIV, 31);
@@ -656,7 +657,7 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
             {
                 if (pkm.iv(i) != 31)
                 {
-                    pkm.iv(i, rand() % 32);
+                    pkm.iv(i, randomNumbers() % 32);
                 }
             }
         }
@@ -664,7 +665,7 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
         {
             for (int i = 0; i < 6; i++)
             {
-                pkm.iv(i, rand() % 32);
+                pkm.iv(i, randomNumbers() % 32);
             }
         }
 
@@ -684,7 +685,7 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
                 break;
             case 3:
             case 4:
-                pkm.ability(rand() % (wb7->abilityType() - 1));
+                pkm.ability(randomNumbers() % (wb7->abilityType() - 1));
                 break;
         }
 
@@ -694,14 +695,14 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
                 pkm.PID(wb7->PID());
                 break;
             case 1: // Random
-                pkm.PID((u32)rand());
+                pkm.PID((u32)randomNumbers());
                 break;
             case 2: // Always shiny
-                pkm.PID((u32)rand());
+                pkm.PID((u32)randomNumbers());
                 pkm.shiny(true);
                 break;
             case 3: // Never shiny
-                pkm.PID((u32)rand());
+                pkm.PID((u32)randomNumbers());
                 pkm.shiny(false);
                 break;
         }
@@ -728,8 +729,8 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
             pkm.partyStat(pkm.stat(i));
         }
         
-        pkm.height(rand() % 256);
-        pkm.weight(rand() % 256);
+        pkm.height(randomNumbers() % 256);
+        pkm.weight(randomNumbers() % 256);
         pkm.fatefulEncounter(true);
 
         pkm.refreshChecksum();

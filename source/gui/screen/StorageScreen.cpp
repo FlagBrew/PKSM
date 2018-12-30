@@ -34,6 +34,7 @@
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
 #include "SavLGPE.hpp"
+#include "random.hpp"
 
 static bool backHeld = false;
 
@@ -819,7 +820,7 @@ static void memoryChange(PK6* pkm)
     int feel = 20; // Too high of a value, the next condition will always be false with it
     while ((allowedFeelings & (1 << feel)) == 0)
     {
-        feel = rand() % 10;
+        feel = randomNumbers() % 10;
     }
     pkm->htFeeling(feel);
 }
@@ -833,7 +834,7 @@ static void memoryChange(PK7* pkm)
     int feel = 20; // Too high of a value, the next condition will always be false with it
     while ((allowedFeelings & (1 << feel)) == 0)
     {
-        feel = rand() % 10;
+        feel = randomNumbers() % 10;
     }
     pkm->htFeeling(feel);
 }

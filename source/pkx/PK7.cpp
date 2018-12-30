@@ -26,6 +26,7 @@
 
 #include "PK7.hpp"
 #include "loader.hpp"
+#include "random.hpp"
 
 void PK7::shuffleArray(void)
 {
@@ -400,8 +401,8 @@ void PK7::shiny(bool v)
     }
     else
     {
-        srand(PID());
-        PID(rand());
+        randomNumbers.seed(PID());
+        PID(randomNumbers());
     }
 }
 
@@ -475,7 +476,7 @@ std::unique_ptr<PKX> PK7::previous(void) const
     pk6->htMemory(4);
     pk6->htTextVar(0);
     pk6->htIntensity(1);
-    pk6->htFeeling(rand() % 10);
+    pk6->htFeeling(randomNumbers() % 10);
     //pk6->geoCountry
     //pk6->geoRegion
 

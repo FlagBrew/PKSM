@@ -25,6 +25,7 @@
 */
 
 #include "PK4.hpp"
+#include "random.hpp"
 
 void PK4::shuffleArray(void)
 {
@@ -398,8 +399,8 @@ void PK4::shiny(bool v)
     }
     else
     {
-        srand(PID());
-        PID(rand());
+        randomNumbers.seed(PID());
+        PID(randomNumbers());
     }
 }
 

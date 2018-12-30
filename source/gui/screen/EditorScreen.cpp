@@ -39,6 +39,7 @@
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
 #include "PB7.hpp"
+#include "random.hpp"
 
 #define NO_TEXT_BUTTON(x, y, w, h, function, image) new Button(x, y, w, h, function, image, "", 0.0f, 0)
 #define NO_TEXT_ACCEL(x, y, w, h, function, image) new AccelButton(x, y, w, h, function, image, "", 0.0f, 0)
@@ -71,10 +72,10 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
             pkm->otName(Configuration::getInstance().defaultOT().c_str());
         }
         pkm->ball(4);
-        pkm->encryptionConstant((((u32)rand()) % 0xFFFFFFFF) + 1);
+        pkm->encryptionConstant((((u32)randomNumbers()) % 0xFFFFFFFF) + 1);
         pkm->version(TitleLoader::save->version());
         pkm->fixMoves();
-        pkm->PID((u32)rand());
+        pkm->PID((u32)randomNumbers());
         selector = std::make_unique<SpeciesSelectionScreen>(pkm);
         // No clue why this is necessary
         view->setPkm(nullptr);

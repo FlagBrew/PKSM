@@ -25,6 +25,9 @@
 */
 
 #include "app.hpp"
+#include <random>
+
+std::mt19937 randomNumbers;
 
 // increase the stack in order to allow quirc to decode large qrs
 int __stacksize__ = 64 * 1024;
@@ -139,6 +142,8 @@ Result App::init(std::string execPath)
 
     Threads::create((ThreadFunc)TitleLoader::scanTitles);
     TitleLoader::scanSaves();
+
+    randomNumbers.seed(osGetTime());
 
     Gui::setScreen(std::make_unique<TitleLoadScreen>());
 

@@ -26,6 +26,7 @@
 
 #include "PK5.hpp"
 #include "loader.hpp"
+#include "random.hpp"
 
 void PK5::shuffleArray(void)
 {
@@ -332,8 +333,8 @@ void PK5::shiny(bool v)
     }
     else
     {
-        srand(PID());
-        PID(rand());
+        randomNumbers.seed(PID());
+        PID(randomNumbers());
     }
 }
 
@@ -545,7 +546,7 @@ std::unique_ptr<PKX> PK5::next(void) const
     //pk6->geoCountry
     pk6->htIntensity(1);
     pk6->htMemory(4);
-    pk6->htFeeling(rand() % 10);
+    pk6->htFeeling(randomNumbers() % 10);
     pk6->otFriendship(PersonalXYORAS::baseFriendship(pk6->species()));
     pk6->htFriendship(PersonalXYORAS::baseFriendship(pk6->species()));
 

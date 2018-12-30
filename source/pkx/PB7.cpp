@@ -25,6 +25,7 @@
 */
 
 #include "PB7.hpp"
+#include "random.hpp"
 
 void PB7::shuffleArray(void)
 {
@@ -398,8 +399,8 @@ void PB7::shiny(bool v)
     }
     else
     {
-        srand(PID());
-        PID(rand());
+        randomNumbers.seed(PID());
+        PID(randomNumbers());
     }
 }
 
