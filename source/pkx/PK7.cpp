@@ -476,8 +476,8 @@ std::unique_ptr<PKX> PK7::previous(void) const
     pk6->htTextVar(0);
     pk6->htIntensity(1);
     pk6->htFeeling(randomNumbers() % 10);
-    pk6->geoCountry(TitleLoader::save->country());
-    pk6->geoRegion(TitleLoader::save->subRegion());
+    pk6->geoCountry(0, TitleLoader::save->country());
+    pk6->geoRegion(0, TitleLoader::save->subRegion());
 
     for (int i = 0; i < 4; i++)
     {
