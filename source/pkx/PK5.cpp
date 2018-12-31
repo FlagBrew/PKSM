@@ -144,6 +144,19 @@ void PK5::otFriendship(u8 v) { data[0x14] = v; }
 u8 PK5::ability(void) const { return data[0x15]; }
 void PK5::ability(u8 v) { data[0x15] = v; }
 
+void PK5::setAbility(u8 v)
+{
+    u16 tmpSpecies = formSpecies();
+    u8 abilitynum;
+
+    if (v == 0) abilitynum = 1;
+    else if (v == 1) abilitynum = 2;
+    else abilitynum = 4;
+
+    abilityNumber(abilitynum);
+    data[0x14] = PersonalBWB2W2::ability(tmpSpecies, v);
+}
+
 u16 PK5::markValue(void) const { return data[0x16]; }
 void PK5::markValue(u16 v) { data[0x16] = v; }
 

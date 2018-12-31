@@ -129,7 +129,9 @@ u32 PK7::experience(void) const { return *(u32*)(data + 0x10); }
 void PK7::experience(u32 v) { *(u32*)(data + 0x10) = v; }
 
 u8 PK7::ability(void) const { return data[0x14]; }
-void PK7::ability(u8 v)
+void PK7::ability(u8 v) { data[0x14] = v; }
+
+void PK7::setAbility(u8 v)
 {
     u16 tmpSpecies = formSpecies();
     u8 abilitynum;
@@ -139,7 +141,7 @@ void PK7::ability(u8 v)
     else abilitynum = 4;
 
     abilityNumber(abilitynum);
-    data[0x14] = PersonalSMUSUM::ability(tmpSpecies, v);    
+    data[0x14] = PersonalSMUSUM::ability(tmpSpecies, v);
 }
 
 u8 PK7::abilityNumber(void) const { return data[0x15]; }

@@ -74,6 +74,7 @@ public:
     void ability(u8 v) override;
     u8 abilityNumber(void) const override;
     void abilityNumber(u8 v) override;
+    void setAbility(u8 abilityNumber) override;
     u8 trainingBagHits(void) const;
     void trainingBagHits(u8 v);
     u8 trainingBag(void) const;

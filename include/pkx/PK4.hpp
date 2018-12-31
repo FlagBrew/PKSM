@@ -66,6 +66,7 @@ public:
     void currentHandler(u8 v) override;
     u8 abilityNumber(void) const override;
     void abilityNumber(u8 v) override;
+    void setAbility(u8 abilityNumber) override;
 
     u32 PID(void) const override;
     void PID(u32 v) override;

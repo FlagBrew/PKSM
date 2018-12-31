@@ -764,7 +764,14 @@ void EditorScreen::changeMove()
 
 bool EditorScreen::selectNature()
 {
-    selector = std::make_unique<NatureSelectionScreen>(pkm);
+    if (pkm->generation() != Generation::FOUR)
+    {
+        selector = std::make_unique<NatureSelectionScreen>(pkm);
+    }
+    else
+    {
+        Gui::warn(i18n::localize("NATURE_PID"));
+    }
     return false;
 }
 
@@ -775,11 +782,15 @@ bool EditorScreen::selectAbility()
         u8 setAbility = pkm->ability();
         if (PersonalDPPtHGSS::ability(pkm->species(), 0) != setAbility && PersonalDPPtHGSS::ability(pkm->species(), 0) != 0)
         {
-            pkm->ability(PersonalDPPtHGSS::ability(pkm->species(), 0));
+            pkm->setAbility(0);
         }
         else if (PersonalDPPtHGSS::ability(pkm->species(), 1) != 0)
         {
-            pkm->ability(PersonalDPPtHGSS::ability(pkm->species(), 1));
+            pkm->setAbility(1);
+        }
+        else // Just in case
+        {
+            pkm->setAbility(0);
         }
     }
     else if (pkm->generation() == Generation::FIVE)
@@ -844,31 +855,31 @@ bool EditorScreen::selectAbility()
             case 0:
                 if (abilityResolver(pkm->species(), 1) != pkm->ability() && abilityResolver(pkm->species(), 1) != 0)
                 {
-                    pkm->ability(1);
+                    pkm->setAbility(1);
                 }
                 else if (abilityResolver(pkm->species(), 2) != 0)
                 {
-                    pkm->ability(2);
+                    pkm->setAbility(2);
                 }
                 break;
             case 1:
                 if (abilityResolver(pkm->species(), 2) != pkm->ability() && abilityResolver(pkm->species(), 2) != 0)
                 {
-                    pkm->ability(2);
+                    pkm->setAbility(2);
                 }
                 else if (abilityResolver(pkm->species(), 0) != 0)
                 {
-                    pkm->ability(0);
+                    pkm->setAbility(0);
                 }
                 break;
             case 2:
                 if (abilityResolver(pkm->species(), 0) != pkm->ability() && abilityResolver(pkm->species(), 0) != 0)
                 {
-                    pkm->ability(0);
+                    pkm->setAbility(0);
                 }
                 else if (abilityResolver(pkm->species(), 1) != 0)
                 {
-                    pkm->ability(1);
+                    pkm->setAbility(1);
                 }
                 break;
         }

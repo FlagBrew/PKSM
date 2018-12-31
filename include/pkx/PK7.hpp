@@ -75,6 +75,7 @@ public:
     void ability(u8 v) override;
     u8 abilityNumber(void) const override;
     void abilityNumber(u8 v) override;
+    void setAbility(u8 abilityNumber) override;
     u16 markValue(void) const override;
     void markValue(u16 v) override;
     u32 PID(void) const override;

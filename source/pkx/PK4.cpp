@@ -143,6 +143,19 @@ void PK4::otFriendship(u8 v) { data[0x14] = v; }
 u8 PK4::ability(void) const { return data[0x15]; }
 void PK4::ability(u8 v) { data[0x15] = v; }
 
+void PK4::setAbility(u8 v)
+{
+    u16 tmpSpecies = formSpecies();
+    u8 abilitynum;
+
+    if (v == 0) abilitynum = 1;
+    else if (v == 1) abilitynum = 2;
+    else abilitynum = 4;
+
+    abilityNumber(abilitynum);
+    data[0x14] = PersonalDPPtHGSS::ability(tmpSpecies, v);
+}
+
 u16 PK4::markValue(void) const { return data[0x16]; }
 void PK4::markValue(u16 v) { data[0x16] = v; }
 

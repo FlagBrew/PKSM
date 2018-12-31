@@ -91,6 +91,7 @@ public:
     virtual void ability(u8 v) = 0;
     virtual u8 abilityNumber(void) const = 0;
     virtual void abilityNumber(u8 v) = 0;
+    virtual void setAbility(u8 abilityNumber) = 0;
     virtual u16 markValue(void) const = 0;
     virtual void markValue(u16 v) = 0;
     virtual u32 PID(void) const = 0;

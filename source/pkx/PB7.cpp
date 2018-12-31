@@ -112,7 +112,9 @@ u32 PB7::experience(void) const { return *(u32*)(data + 0x10); }
 void PB7::experience(u32 v) { *(u32*)(data + 0x10) = v; }
 
 u8 PB7::ability(void) const { return data[0x14]; }
-void PB7::ability(u8 v)
+void PB7::ability(u8 v) { data[0x14] = v; }
+
+void PB7::setAbility(u8 v)
 {
     u16 tmpSpecies = formSpecies();
     u8 abilitynum;
