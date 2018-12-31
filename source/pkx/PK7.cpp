@@ -472,13 +472,12 @@ std::unique_ptr<PKX> PK7::previous(void) const
                 pk6->ability(PersonalXYORAS::ability(species(), index));
     }
 
-    // TODO
     pk6->htMemory(4);
     pk6->htTextVar(0);
     pk6->htIntensity(1);
     pk6->htFeeling(randomNumbers() % 10);
-    //pk6->geoCountry
-    //pk6->geoRegion
+    pk6->geoCountry(TitleLoader::save->country());
+    pk6->geoRegion(TitleLoader::save->subRegion());
 
     for (int i = 0; i < 4; i++)
     {

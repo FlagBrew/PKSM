@@ -496,13 +496,12 @@ std::unique_ptr<PKX> PK6::next(void) const
                 pk7->ability(PersonalSMUSUM::ability(species(), index));
     }
 
-    // TODO
     pk7->htMemory(4);
     pk7->htTextVar(0);
     pk7->htIntensity(1);
     pk7->htFeeling(randomNumbers() % 10);
-    //pk7->geoCountry
-    //pk7->geoRegion
+    pk7->geoCountry(TitleLoader::save->country());
+    pk7->geoRegion(TitleLoader::save->subRegion());
 
     pk7->refreshChecksum();
     return std::unique_ptr<PKX>(pk7);
