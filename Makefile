@@ -256,7 +256,7 @@ no-deps:
 #---------------------------------------------------------------------------------
 docs:
 	@mkdir -p $(OUTDIR)
-	@gwtc -o $(OUTDIR) -n "$(APP_TITLE) Manual" -t "$(APP_TITLE) v$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_MICRO) Documentation" --logo-img $(ICON) --footer "Do you like PKSM? Support us on <a href='https://www.patreon.com/FlagBrew'>Patreon</a>!" docs/wiki
+	@gwtc -o $(OUTDIR) -n "$(APP_TITLE) Manual" -t "$(APP_TITLE) v$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_MICRO) Documentation" --logo-img $(ICON) docs/wiki
 #---------------------------------------------------------------------------------
 else
 

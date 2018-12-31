@@ -131,7 +131,7 @@ all`.
 * Subject21_J and all the submitters for PKSM's icon
 * [Mewmore](https://www.youtube.com/user/Mewmore) for the default background
   music
-* Allen, piepie62 and all the contributors for the documentation
+* Allen, piepie62, SpiredMoth and all the contributors for the documentation
 * All the past contributors to the project
 * All the patrons and the huge amount of supporters that this project has gained
   over the year
