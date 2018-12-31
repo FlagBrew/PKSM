@@ -93,6 +93,57 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
         origPartyCP = ((PB7*)pkm.get())->partyCP();
     }
 
+    if (this->box == 0xFF)
+    {
+        switch (pkm->generation())
+        {
+            case Generation::FOUR:
+            case Generation::FIVE:
+                if (pkm->getLength() == 136)
+                {
+                    u8 pkmData[236] = {0};
+                    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
+                    if (pkm->generation() == Generation::FOUR)
+                    {
+                        pkm = std::make_shared<PK4>(pkmData, false, true);
+                    }
+                    else
+                    {
+                        pkm = std::make_shared<PK5>(pkmData, false, true);
+                    }
+                    partyUpdate();
+                    view->setPkm(nullptr);
+                    view->setPkm(pkm);
+                    selector = std::make_unique<SpeciesSelectionScreen>(pkm);
+                }
+            break;
+            case Generation::SIX:
+            case Generation::SEVEN:
+                if (pkm->getLength() == 232)
+                {
+                    u8 pkmData[260] = {0};
+                    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
+                    if (pkm->generation() == Generation::SIX)
+                    {
+                        pkm = std::make_shared<PK6>(pkmData, false, true);
+                    }
+                    else
+                    {
+                        pkm = std::make_shared<PK7>(pkmData, false, true);
+                    }
+                    partyUpdate();
+                    view->setPkm(nullptr);
+                    view->setPkm(pkm);
+                    selector = std::make_unique<SpeciesSelectionScreen>(pkm);
+                }
+            break;
+            case Generation::LGPE:
+                break; // Always a party Pokémon
+            default:
+                Gui::warn(i18n::localize("THE_FUCK"));
+        }
+    }
+
     u8 tab = 0;
     // Back button first, always. Needs to have the same index for each one
     buttons[tab].push_back(NO_TEXT_CLICK(283, 211, 34, 28, [this](){ return this->goBack(); }, ui_sheet_button_back_idx));

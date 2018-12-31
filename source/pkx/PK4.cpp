@@ -153,7 +153,7 @@ void PK4::setAbility(u8 v)
     else abilitynum = 4;
 
     abilityNumber(abilitynum);
-    data[0x14] = PersonalDPPtHGSS::ability(tmpSpecies, v);
+    ability(PersonalDPPtHGSS::ability(tmpSpecies, v));
 }
 
 u16 PK4::markValue(void) const { return data[0x16]; }

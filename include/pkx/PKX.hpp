@@ -45,6 +45,7 @@ class PKX
 friend class HexEditScreen;
 friend class StorageScreen;
 friend class Bank;
+friend class EditorScreen;
 protected:
     u32 expTable(u8 row, u8 col) const;
     u32 seedStep(u32 seed);

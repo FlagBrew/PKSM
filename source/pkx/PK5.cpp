@@ -154,7 +154,7 @@ void PK5::setAbility(u8 v)
     else abilitynum = 4;
 
     abilityNumber(abilitynum);
-    data[0x14] = PersonalBWB2W2::ability(tmpSpecies, v);
+    ability(PersonalBWB2W2::ability(tmpSpecies, v));
 }
 
 u16 PK5::markValue(void) const { return data[0x16]; }
