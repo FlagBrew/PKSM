@@ -1,0 +1,25 @@
+{
+  "version": 3,
+  "language": 2,
+  "autoBackup": true,
+  "storageSize": 150,
+  "transferEdit": false,
+  "useExtData": true,
+  "fixBadSectors": false,
+  "defaults": {
+    "pid": 12345,
+    "sid": 54321,
+    "ot": "PKSM",
+    "nationality": 2,
+    "date": {
+      "day": 1,
+      "month": 1,
+      "year": 2000
+    }
+  },
+  "extraSaves": {
+  },
+  "writeFileSave": false,
+  "useSaveInfo": false,
+  "randomMusic": false
+}

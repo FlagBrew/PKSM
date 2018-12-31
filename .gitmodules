@@ -1,3 +1,12 @@
 [submodule "source/memecrypto"]
 	path = source/memecrypto
 	url = https://github.com/dsoldier/memecrypto.git
+[submodule "build/EventsGalleryPacker"]
+	path = build/EventsGalleryPacker
+	url = https://github.com/FlagBrew/EventsGalleryPacker
+[submodule "build/PKSM-Scripts"]
+	path = build/PKSM-Scripts
+	url = https://github.com/FlagBrew/PKSM-Scripts
+[submodule "docs/wiki"]
+	path = docs/wiki
+	url = https://github.com/FlagBrew/PKSM.wiki.git

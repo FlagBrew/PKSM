@@ -14,5 +14,3 @@ Psychic
 Ice
 Dragon
 Dark
- 
- 

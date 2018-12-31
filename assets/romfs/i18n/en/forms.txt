@@ -1,13 +1,11 @@
 Default
 Alolan
-Default
 Rock Star
 Belle
 Pop Star
 Ph.D
 Libre
 Cosplay
-Default
 Original
 Hoenn
 Sinnoh
@@ -51,7 +49,6 @@ Sandy
 Trash
 West Sea
 East Sea
-Default
 Heat
 Wash
 Fridge
@@ -69,14 +66,12 @@ Autumn
 Winter
 Incarnate
 Therian
-Default
 White
 Black
 Ordinary
 Resolute
 Aria
 Pirouette
-Default
 Battle Bond
 Icy Snow
 Polar
@@ -130,6 +125,14 @@ Pa'u
 Sensu
 Midday
 Midnight
+Dusk
+Covered Red
+Covered Orange
+Covered Yellow
+Covered Green
+Covered Blue
+Covered Indigo
+Covered Violet
 Red
 Orange
 Yellow
@@ -137,9 +140,16 @@ Green
 Blue
 Indigo
 Violet
-Default
 Original Color
-Default
 Spiky-Eared
-Default
 Female
+Totem
+Mega
+Dawn Wings
+Dusk Mane
+Ultra
+Primal
+Mega X
+Mega Y
+Partner
+100%
