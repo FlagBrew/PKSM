@@ -311,10 +311,10 @@ static constexpr std::string_view gen67ToggleTexts[] = {
     "CUTENESS_MASTER_RIBBON",
     "CLEVERNESS_MASTER_RIBBON",
     "TOUGHNESS_MASTER_RIBBON",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED",
+    "ALOLA_CHAMPION_RIBBON",
+    "BATTLE_ROYALE_RIBBON",
+    "BATTLE_TREE_GREAT_RIBBON",
+    "BATTLE_TREE_MASTER_RIBBON",
     "UNUSED",
     "UNUSED",
     "UNUSED",
@@ -502,9 +502,9 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 return std::make_pair(i18n::localize("POKERUS"), NORMAL);
             case 0x2C ... 0x2F:
                 return std::make_pair(i18n::localize("SUPER_TRAINING_FLAGS"), NORMAL);
-            case 0x30 ... 0x35:
+            case 0x30 ... 0x36:
                 return std::make_pair(i18n::localize("RIBBONS"), NORMAL);
-            case 0x36 ... 0x37:
+            case 0x37:
                 return UNUSED;
             case 0x38:
                 return std::make_pair(i18n::localize("CONTEST_MEMORY_RIBBON_COUNT"), NORMAL);
@@ -541,7 +541,7 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
             case 0x68:
                 return std::make_pair(i18n::localize("MOVE_3_PP_UPS"), NORMAL);
             case 0x69:
-                return std::make_pair(i18n::localize("MOVE_5_PP_UPS"), NORMAL);
+                return std::make_pair(i18n::localize("MOVE_4_PP_UPS"), NORMAL);
             case 0x6A ... 0x6B:
                 return std::make_pair(i18n::localize("RELEARN_MOVE_1_ID"), NORMAL);
             case 0x6C ... 0x6D:
