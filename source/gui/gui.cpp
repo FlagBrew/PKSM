@@ -445,9 +445,18 @@ void Gui::exit(void)
     {
         C2D_SpriteSheetFree(spritesheet_types);
     }
-    C2D_TextBufDelete(g_widthBuf);
-    C2D_TextBufDelete(dynamicBuf);
-    C2D_TextBufDelete(staticBuf);
+    if (g_widthBuf)
+    {
+        C2D_TextBufDelete(g_widthBuf);
+    }
+    if (dynamicBuf)
+    {
+        C2D_TextBufDelete(dynamicBuf);
+    }
+    if (staticBuf)
+    {
+        C2D_TextBufDelete(staticBuf);
+    }
     C2D_Fini();
     C3D_Fini();
     gfxExit();

@@ -91,7 +91,10 @@ void SDLH_Exit(void)
         musicMutex = false;
     }
     while (!donePlaying) svcSleepThread(125000000); // wait for SDLH_Play to be done
-    Mix_FreeMusic(song);
+    if (song)
+    {
+        Mix_FreeMusic(song);
+    }
     Mix_CloseAudio();
     Mix_Quit();
     SDL_Quit();

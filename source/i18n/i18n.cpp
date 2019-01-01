@@ -26,18 +26,18 @@
 
 #include "i18n.hpp"
 
-static LanguageStrings* jp;
-static LanguageStrings* en;
-static LanguageStrings* fr;
-static LanguageStrings* it;
-static LanguageStrings* de;
-static LanguageStrings* es;
-static LanguageStrings* ko;
-static LanguageStrings* zh;
-static LanguageStrings* tw;
-static LanguageStrings* nl;
-static LanguageStrings* pt;
-static LanguageStrings* ru;
+static LanguageStrings* jp = nullptr;
+static LanguageStrings* en = nullptr;
+static LanguageStrings* fr = nullptr;
+static LanguageStrings* it = nullptr;
+static LanguageStrings* de = nullptr;
+static LanguageStrings* es = nullptr;
+static LanguageStrings* ko = nullptr;
+static LanguageStrings* zh = nullptr;
+static LanguageStrings* tw = nullptr;
+static LanguageStrings* nl = nullptr;
+static LanguageStrings* pt = nullptr;
+static LanguageStrings* ru = nullptr;
 
 void i18n::init(void)
 {

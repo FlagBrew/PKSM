@@ -106,11 +106,15 @@ static Result downloadAdditionalAssets(void) {
     return res;
 }
 
+static Result consoleDisplayError(Result res)
+{
+    consoleInit(GFX_TOP, nullptr);
+    printf("Downloading assets failed!\nError code: %i", res);
+    return res;
+}
+
 Result App::init(std::string execPath)
 {
-#ifdef PICOC_DEBUG
-    dup2(2, 1); // Redirects stdout to stderr for GDB to capture
-#endif
     Result res;
 
     Handle hbldrHandle;
@@ -125,7 +129,7 @@ Result App::init(std::string execPath)
     if (R_FAILED(res = pxiDevInit())) return res;
     if (R_FAILED(res = amInit())) return res;
     if (R_FAILED(res = hidInit())) return res;
-    if (R_FAILED(res = downloadAdditionalAssets())) return res;
+    if (R_FAILED(res = downloadAdditionalAssets())) return consoleDisplayError(res);
     if (R_FAILED(res = Gui::init())) return res;
     Configuration::getInstance();
     i18n::init();
@@ -148,6 +152,7 @@ Result App::init(std::string execPath)
     Gui::setScreen(std::make_unique<TitleLoadScreen>());
 
 #ifdef PICOC_DEBUG
+    dup2(2, 1); // Redirects stdout to stderr for GDB to capture
     consoleDebugInit(debugDevice_SVC);
 #endif
     // uncomment when needing to debug with GDB
@@ -162,7 +167,6 @@ Result App::exit(void)
     TitleLoader::exit();
     Gui::exit();
     Threads::destroy();
-    Configuration::getInstance().save();
     i18n::exit();
     amExit();
     pxiDevExit();

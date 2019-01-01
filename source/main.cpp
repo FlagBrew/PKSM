@@ -25,13 +25,17 @@
 */
 
 #include "app.hpp"
+#include <3ds.h>
 
 int main(int argc, char* argv[])
 {
     Result res = App::init(argc > 0 ? argv[0] : "");
     if (R_FAILED(res))
     {
+        hidInit();
+        while (aptMainLoop() && (hidKeysDown() & KEY_START)) hidScanInput();
         App::exit();
+        hidExit();
         return res;
     }
 
