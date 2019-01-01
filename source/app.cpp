@@ -110,6 +110,9 @@ static Result consoleDisplayError(Result res)
 {
     consoleInit(GFX_TOP, nullptr);
     printf("Downloading assets failed!\nError code: %i", res);
+    hidInit();
+    while (aptMainLoop() && (hidKeysDown() & KEY_START)) hidScanInput();
+    hidExit();
     return res;
 }
 
