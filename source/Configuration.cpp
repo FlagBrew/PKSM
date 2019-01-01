@@ -132,6 +132,48 @@ void Configuration::loadFromRomfs()
     // load system language
     u8 systemLanguage;
     CFGU_GetSystemLanguage(&systemLanguage);
+    switch (systemLanguage)
+    {
+        case CFG_LANGUAGE_JP:
+            systemLanguage = Language::JP;
+            break;
+        case CFG_LANGUAGE_EN:
+            systemLanguage = Language::EN;
+            break;
+        case CFG_LANGUAGE_FR:
+            systemLanguage = Language::FR;
+            break;
+        case CFG_LANGUAGE_DE:
+            systemLanguage = Language::DE;
+            break;
+        case CFG_LANGUAGE_IT:
+            systemLanguage = Language::IT;
+            break;
+        case CFG_LANGUAGE_ES:
+            systemLanguage = Language::ES;
+            break;
+        case CFG_LANGUAGE_ZH:
+            systemLanguage = Language::ZH;
+            break;
+        case CFG_LANGUAGE_KO:
+            systemLanguage = Language::KO;
+            break;
+        case CFG_LANGUAGE_NL:
+            systemLanguage = Language::NL;
+            break;
+        case CFG_LANGUAGE_PT:
+            systemLanguage = Language::PT;
+            break;
+        case CFG_LANGUAGE_RU:
+            systemLanguage = Language::RU;
+            break;
+        case CFG_LANGUAGE_TW:
+            systemLanguage = Language::TW;
+            break;
+        default:
+            systemLanguage = Language::EN;
+            break;
+    }
     mJson["language"] = systemLanguage;
 
     save();
