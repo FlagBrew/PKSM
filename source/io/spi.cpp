@@ -74,7 +74,7 @@ Result SPIWaitWriteEnd(CardType type)
         if (res) return res;
     } while (statusReg & SPI_FLG_WIP && panic < 1000);
     
-    return panic >= 1000 ? 1 : 0;
+    return panic >= 1000 ? -1 : 0;
 }
 
 Result SPIEnableWriting(CardType type)
