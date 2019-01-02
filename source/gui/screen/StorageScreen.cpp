@@ -1259,6 +1259,7 @@ bool StorageScreen::swapBoxWithStorage()
                     }
                 }
                 TitleLoader::save->pkm(*temPkm, boxBox, i);
+                TitleLoader::save->dex(*temPkm);
                 bank.pkm(*otherTemPkm, storageBox, i);
             }
         }
