@@ -1005,3 +1005,23 @@ bool EditorScreen::genderSwitch()
     }
     return false;
 }
+
+bool EditorScreen::setSaveInfo()
+{
+    if (pkm->otName() != TitleLoader::save->otName())
+    {
+        saved = false;
+        pkm->otName(TitleLoader::save->otName().c_str());
+    }
+    if (pkm->TID() != TitleLoader::save->TID())
+    {
+        saved = false;
+        pkm->TID(TitleLoader::save->TID());
+    }
+    if (pkm->SID() != TitleLoader::save->SID())
+    {
+        saved = false;
+        pkm->SID(TitleLoader::save->SID());
+    }
+    return false;
+}

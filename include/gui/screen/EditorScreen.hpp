@@ -79,6 +79,7 @@ private:
     bool setHP();
     bool goBack();
     void changeMove();
+    bool setSaveInfo();
     std::array<std::vector<Button*>, 3> buttons;
     std::shared_ptr<ViewerScreen> view;
     std::shared_ptr<PKX> pkm;

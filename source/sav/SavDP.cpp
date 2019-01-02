@@ -197,8 +197,10 @@ void SavDP::cryptBoxData(bool crypted)
 
 void SavDP::mysteryGift(WCX& wc, int& pos)
 {
+    static constexpr u8 dpActiveStuff[] = {0x20, 0x83, 0xB8, 0xED};
     PGT* pgt = (PGT*)&wc;
     *(data + 0xA6D0 + gbo + (2047 >> 3)) = 0x80;
+    std::copy(dpActiveStuff, dpActiveStuff + 4, data + 0xA7D0 + gbo + pos * 4);
     std::copy(pgt->data, pgt->data + PGT::length, data + 0xA7FC + gbo + pos * PGT::length);
     pos++;
 }
