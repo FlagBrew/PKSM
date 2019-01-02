@@ -92,14 +92,7 @@ bool Sav::isValidDSSave(u8* dt)
         return true;
     }
 
-    if (*(u16*)(dt + 0xC0FE) == ccitt16(dt, 0xC0EC))
-        return true;
-    if (*(u16*)(dt + 0xCF2A) == ccitt16(dt, 0xCF18))
-        return true;
-    if (*(u16*)(dt + 0xF626) == ccitt16(dt, 0xF618))
-        return true;
-
-    // General Block Checksum is invalid, check for block identifiers
+    // Check for block identifiers
     u8 dpPattern[] = { 0x00, 0xC1, 0x00, 0x00, 0x23, 0x06, 0x06, 0x20, 0x00, 0x00 };
     u8 ptPattern[] = { 0x2C, 0xCF, 0x00, 0x00, 0x23, 0x06, 0x06, 0x20, 0x00, 0x00 };
     u8 hgssPattern[] = { 0x28, 0xF6, 0x00, 0x00, 0x23, 0x06, 0x06, 0x20, 0x00, 0x00 };
@@ -134,13 +127,6 @@ std::unique_ptr<Sav> Sav::checkDSType(u8* dt)
     {
         return std::make_unique<SavB2W2>(dt);
     }
-
-    if (*(u16*)(dt + 0xC0FE) == ccitt16(dt, 0xC0EC))
-        return std::make_unique<SavDP>(dt);
-    if (*(u16*)(dt + 0xCF2A) == ccitt16(dt, 0xCF18))
-        return std::make_unique<SavPT>(dt);
-    if (*(u16*)(dt + 0xF626) == ccitt16(dt, 0xF618))
-        return std::make_unique<SavHGSS>(dt);
 
     // General Block Checksum is invalid, check for block identifiers
     u8 dpPattern[] = { 0x00, 0xC1, 0x00, 0x00, 0x23, 0x06, 0x06, 0x20, 0x00, 0x00 };
