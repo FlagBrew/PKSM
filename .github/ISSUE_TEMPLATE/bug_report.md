@@ -1,7 +1,7 @@
 ---
 name: Bug report
-about: Something doesn't work properly in PKSM.
-title: Bug Report
+about: Something doesn't work properly in PKSM. Please keep the title short, clear and concise (example: Bug Report: Storage crashing with my save)
+title: Bug Report: Brief Description/Name of issue
 labels: ''
 assignees: ''
 
