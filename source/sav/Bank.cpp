@@ -312,16 +312,15 @@ bool Bank::save() const
     if (Configuration::getInstance().useExtData())
     {
         FSUSER_CreateDirectory(Archive::data(), fsMakePath(PATH_UTF16, u"/banks"), 0);
-        std::u16string path = StringUtils::UTF8toUTF16("/banks/pksm_1.bnk");
-        FSStream out(Archive::data(), path, FS_OPEN_WRITE, sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30);
+        FSStream out(Archive::data(), u"/banks/pksm_1.bnk", FS_OPEN_WRITE, sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30);
         if (out.good())
         {
             out.write(data, sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30);
             out.close();
 
             std::string jsonData = boxNames.dump(2);
-            path = StringUtils::UTF8toUTF16("/banks/pksm_1.json");
-            out = FSStream(Archive::data(), path, FS_OPEN_WRITE, jsonData.size());
+            FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, u"/banks/pksm_1.json"));
+            out = FSStream(Archive::data(), u"/banks/pksm_1.json", FS_OPEN_WRITE, jsonData.size());
             if (out.good())
             {
                 out.write(jsonData.data(), jsonData.size() + 1);
