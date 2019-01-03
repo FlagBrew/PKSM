@@ -34,17 +34,6 @@ static size_t handle_data(char*, size_t, size_t, void*);
 
 Result download(const char* url, const char* path)
 {
-    void *socubuf = memalign(0x1000, 0x100000);
-    if (!socubuf)
-    {
-        return -1;
-    }
-
-    if (R_FAILED(socInit(socubuf, 0x100000)))
-    {
-        return -2;
-    }
-
     CURL *hnd = curl_easy_init();
     curl_easy_setopt(hnd, CURLOPT_BUFFERSIZE, 102400L);
     curl_easy_setopt(hnd, CURLOPT_URL, (const uint8_t*)url);
@@ -60,8 +49,6 @@ Result download(const char* url, const char* path)
     
     // cleanup
     curl_easy_cleanup(hnd);
-    socExit();
-    free(socubuf);
     result_sz = 0;
 
     if (cres == CURLE_OK)

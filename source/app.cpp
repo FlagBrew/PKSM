@@ -99,6 +99,9 @@ static Result downloadAdditionalAssets(void) {
         }
         if (downloadAsset)
         {
+            u32 status;
+            ACU_GetWifiStatus(&status);
+            if (status == 0) return -1;
             Result res1 = download(item.url.c_str(), item.path.c_str());
             if (R_FAILED(res1)) return res1;
         }
@@ -106,13 +109,17 @@ static Result downloadAdditionalAssets(void) {
     return res;
 }
 
-static Result consoleDisplayError(Result res)
+static Result consoleDisplayError(const std::string& message, Result res)
 {
     consoleInit(GFX_TOP, nullptr);
-    printf("Downloading assets failed!\nError code: %i", res);
-    hidInit();
-    while (aptMainLoop() && (hidKeysDown() & KEY_START)) hidScanInput();
-    hidExit();
+    printf("\x1b[2;16H\x1b[34mPKSM v%d.%d.%d-%s\x1b[0m", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
+    printf("\x1b[5;1HError during startup: \x1b[31m0x%08lX\x1b[0m", res);
+    printf("\x1b[8;1HDescription: \x1b[33m%s\x1b[0m", message.c_str());
+    printf("\x1b[29;16HPress START to exit.");
+    gfxFlushBuffers();
+    gfxSwapBuffers();
+    gspWaitForVBlank();
+    while (aptMainLoop() && (hidKeysDown() & KEY_START)) { hidScanInput(); }
     return res;
 }
 
@@ -120,32 +127,46 @@ Result App::init(std::string execPath)
 {
     Result res;
 
+    hidInit();
+    gfxInitDefault();
+
     Handle hbldrHandle;
-    if (R_FAILED(res = svcConnectToPort(&hbldrHandle, "hb:ldr"))) return res;
+    if (R_FAILED(res = svcConnectToPort(&hbldrHandle, "hb:ldr")))
+        return consoleDisplayError("Rosalina sysmodule has not been found.\n\nMake sure you're running latest Luma3DS.", res);
 
     APT_GetAppCpuTimeLimit(&old_time_limit);
     APT_SetAppCpuTimeLimit(30);
     
-    if (R_FAILED(res = cfguInit())) return res;
-    if (R_FAILED(res = romfsInit())) return res;
-    if (R_FAILED(res = Archive::init(execPath))) return res;
-    if (R_FAILED(res = pxiDevInit())) return res;
-    if (R_FAILED(res = amInit())) return res;
-    if (R_FAILED(res = hidInit())) return res;
-    if (R_FAILED(res = downloadAdditionalAssets())) return consoleDisplayError(res);
-    if (R_FAILED(res = Gui::init())) return res;
-    Configuration::getInstance();
-    i18n::init();
+    if (R_FAILED(res = cfguInit()))
+        return consoleDisplayError("cfguInit failed.", res);
+    if (R_FAILED(res = romfsInit()))
+        return consoleDisplayError("romfsInit failed.", res);
+    if (R_FAILED(res = Archive::init(execPath)))
+        return consoleDisplayError("Archive::init failed.", res);
+    if (R_FAILED(res = pxiDevInit()))
+        return consoleDisplayError("pxiDevInit failed.", res);
+    if (R_FAILED(res = amInit()))
+        return consoleDisplayError("amInit.", res);
+    if (R_FAILED(res = acInit()))
+        return consoleDisplayError("acInit.", res);
 
     u32* socketBuffer = (u32*)memalign(SOC_ALIGN, SOC_BUFFERSIZE);
     if (socketBuffer == NULL)
     {
-        return -1;
+        return consoleDisplayError("Failed to create socket buffer.", -1);
     }
     if (socInit(socketBuffer, SOC_BUFFERSIZE))
     {
-        return -1;
+        return consoleDisplayError("socInit failed.", -1);
     }
+
+    if (R_FAILED(res = downloadAdditionalAssets()))
+        return consoleDisplayError("Additional assets download failed.\n\nAlways make sure you're connected to the internet.", res);
+    if (R_FAILED(res = Gui::init()))
+        return consoleDisplayError("Gui::init failed.", res);
+    
+    Configuration::getInstance();
+    i18n::init();
 
     Threads::create((ThreadFunc)TitleLoader::scanTitles);
     TitleLoader::scanSaves();
@@ -166,9 +187,10 @@ Result App::init(std::string execPath)
 
 Result App::exit(void)
 {
-    socExit();
     TitleLoader::exit();
     Gui::exit();
+    socExit();
+    acExit();
     Threads::destroy();
     i18n::exit();
     amExit();
@@ -181,6 +203,9 @@ Result App::exit(void)
     {
         APT_SetAppCpuTimeLimit(old_time_limit);
     }
-    
+
+    gfxExit();
+    hidExit();
+
     return 0;
 }

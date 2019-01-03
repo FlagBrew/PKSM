@@ -382,7 +382,6 @@ static void _draw_repeat(int key, int x, int y, u8 rows, u8 cols)
 
 Result Gui::init(void)
 {
-    gfxInitDefault();
     C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
     C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
     C2D_Prepare();
@@ -459,7 +458,6 @@ void Gui::exit(void)
     }
     C2D_Fini();
     C3D_Fini();
-    gfxExit();
     SDLH_Exit();
 }
 
