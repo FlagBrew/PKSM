@@ -457,7 +457,7 @@ void EditSelectorScreen::update(touchPosition* touch)
             {
                 if (!moveMon)
                 {
-                    moveMon = TitleLoader::save->pkm(cursorPos - 31)->clone();
+                    moveMon = TitleLoader::save->pkm(cursorPos - 31);
                     if (moveMon && (moveMon->encryptionConstant() == 0 && moveMon->species() == 0))
                     {
                         moveMon = nullptr;
