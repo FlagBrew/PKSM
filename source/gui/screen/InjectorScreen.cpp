@@ -478,7 +478,13 @@ void InjectorScreen::changeDate()
     u32 newDate = 0;
     switch (wondercard->generation())
     {
-        case Generation::FOUR: // No date data
+        case Generation::FOUR:
+            newDate = Configuration::getInstance().day() | (Configuration::getInstance().month() << 8) | (Configuration::getInstance().year() << 16);
+            if (newDate > (2000 << 16)) // get rid of the 2000 because u8 date
+            {
+                newDate -= (2000 << 16);
+            }
+            wondercard->rawDate(newDate);
             break;
         case Generation::FIVE:
             *((u8*)(&newDate)) = (u8)Configuration::getInstance().day();

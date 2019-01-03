@@ -29,9 +29,9 @@
 PGT::PGT(u8* pgt, bool fromWC4)
 {
     std::copy(pgt, pgt + length, data);
-    u8 pk4Data[136];
-    std::copy(pgt + 0x8, pgt + 0x8 + 136, pk4Data);
-    pokemonData = new PK4(pk4Data, !fromWC4);
+    u8 pk4Data[236];
+    std::copy(pgt + 0x8, pgt + 0x8 + 236, pk4Data);
+    pokemonData = new PK4(pk4Data, !fromWC4, true);
     if (type() == 7)
     {
         // Set visible manaphy data
@@ -54,6 +54,10 @@ PGT::PGT(u8* pgt, bool fromWC4)
         pokemonData->nicknamed(false);
         pokemonData->eggLocation(1);
     }
+    pokemonData->refreshChecksum();
+    pokemonData->encrypt();
+    std::copy(pokemonData->data, pokemonData->data + 236, data + 0x8);
+    pokemonData->decrypt(); // encrypt Pokemon data if it isn't already
 }
 
 PGT::~PGT() { delete pokemonData; }
@@ -102,15 +106,27 @@ u8 PGT::flags(void) const { return *(u8*)(data + 0x3); }
 
 bool PGT::multiObtainable(void) const { return false; }
 
-u32 PGT::year(void) const { return 0; }
+u32 PGT::year(void) const { return pokemonData->egg() ? pokemonData->eggYear() : pokemonData->metYear(); }
 
-u32 PGT::month(void) const { return 0; }
+u32 PGT::month(void) const { return pokemonData->egg() ? pokemonData->eggMonth() : pokemonData->metMonth(); }
 
-u32 PGT::day(void) const { return 0; }
+u32 PGT::day(void) const { return pokemonData->egg() ? pokemonData->eggDay() : pokemonData->metDay(); }
 
-u32 PGT::rawDate(void) const { return 0; }
+u32 PGT::rawDate(void) const
+{
+    return (year() << 16) | (month() << 8) | day();
+}
 
-void PGT::rawDate(u32 v) { (void)v; }
+void PGT::rawDate(u32 v)
+{
+    pokemonData->egg() ? pokemonData->eggYear((v >> 16) & 0xFF) : pokemonData->metYear((v >> 16) & 0xFF);
+    pokemonData->egg() ? pokemonData->eggMonth((v >> 8) & 0xFF) : pokemonData->metMonth((v >> 8) & 0xFF);
+    pokemonData->egg() ? pokemonData->eggDay(v & 0xFF) : pokemonData->metDay(v & 0xFF);
+    pokemonData->refreshChecksum();
+    pokemonData->encrypt();
+    std::copy(pokemonData->data, pokemonData->data + 236, data + 0x8); // Actually set the data
+    pokemonData->decrypt();
+}
 
 u8 PGT::cardLocation(void) const { return 0; }
 
