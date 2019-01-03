@@ -146,9 +146,9 @@ Result App::init(std::string execPath)
     if (R_FAILED(res = pxiDevInit()))
         return consoleDisplayError("pxiDevInit failed.", res);
     if (R_FAILED(res = amInit()))
-        return consoleDisplayError("amInit.", res);
+        return consoleDisplayError("amInit failed.", res);
     if (R_FAILED(res = acInit()))
-        return consoleDisplayError("acInit.", res);
+        return consoleDisplayError("acInit failed.", res);
 
     u32* socketBuffer = (u32*)memalign(SOC_ALIGN, SOC_BUFFERSIZE);
     if (socketBuffer == NULL)
