@@ -100,7 +100,7 @@ void PK7::encrypt(void)
     crypt();
 }
 
-std::unique_ptr<PKX> PK7::clone(void) { return std::make_unique<PK7>(data); }
+std::unique_ptr<PKX> PK7::clone(void) { return std::make_unique<PK7>(data, false, length == 260); }
 
 Generation PK7::generation(void) const { return Generation::SEVEN; }
 

@@ -97,7 +97,7 @@ void PK4::encrypt(void)
     crypt();
 }
 
-std::unique_ptr<PKX> PK4::clone(void) { return std::make_unique<PK4>(data); }
+std::unique_ptr<PKX> PK4::clone(void) { return std::make_unique<PK4>(data, false, length == 236); }
 
 Generation PK4::generation(void) const { return Generation::FOUR; }
 
