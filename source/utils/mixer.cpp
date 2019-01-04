@@ -90,6 +90,10 @@ void SDLH_Exit(void)
     {
         musicMutex = false;
     }
+    else
+    {
+        donePlaying = true;
+    }
     while (!donePlaying) svcSleepThread(125000000); // wait for SDLH_Play to be done
     if (song)
     {
