@@ -28,6 +28,14 @@
 #include "loader.hpp"
 #include <bitset>
 
+static constexpr std::string_view statNames[] = {
+    "HP",
+    "ATTACK",
+    "DEFENSE",
+    "SPDEF",
+    "SPATK",
+    "SPEED"
+};
 static constexpr std::string_view marks[] = {
     "CIRCLE",
     "TRIANGLE",
@@ -630,7 +638,14 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
             case 0xDD:
                 return std::make_pair(i18n::localize("MET_LEVEL_&_ORIGINAL_TRAINER_GENDER"), NORMAL);
             case 0xDE:
-                return std::make_pair(i18n::localize("GEN_4_ENCOUNTER_TYPE"), OPEN);
+                if (pkm->generation() == Generation::SIX)
+                {
+                    return std::make_pair(i18n::localize("GEN_4_ENCOUNTER_TYPE"), OPEN);
+                }
+                else
+                {
+                    return std::make_pair(i18n::localize("HYPER_TRAIN_FLAGS"), NORMAL);
+                }
             case 0xDF:
                 return std::make_pair(i18n::localize("ORIGINAL_TRAINER_GAME_ID"), OPEN);
             case 0xE0:
@@ -1069,6 +1084,21 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                 case 0xDD:
                     buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("FEMALE_OT"), true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
+                    break;
+                case 0xDE:
+                    if (pkm->generation() == Generation::SEVEN)
+                    {
+                        for (int j = 0; j < 4; j++)
+                        {
+                            delete buttons[i].back();
+                            buttons[i].pop_back();
+                        }
+                        for (int j = 0; j < 6; j++)
+                        {
+                            buttons[i].push_back(new HexEditButton(30, 90 + j * 16, 13, 13, [this, i, j](){ return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("HYPER_FLAG") + " " + i18n::localize(std::string(statNames[j])), true, j));
+                            buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
+                        }
+                    }
                     break;
                 // Status
                 case 0xE8:
