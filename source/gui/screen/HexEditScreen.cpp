@@ -333,6 +333,11 @@ static constexpr std::string_view gen67ToggleTexts[] = {
 
 static int currRibbon = 0;
 
+
+static constexpr int FAST_TIME = 1;
+static constexpr int SLOW_TIME = 5;
+static constexpr int TIME_TO_ACCEL = 5;
+
 namespace {
     void checkValues(std::shared_ptr<PKX> pkm)
     {
@@ -1323,9 +1328,12 @@ void HexEditScreen::draw() const
 void HexEditScreen::update(touchPosition* touch)
 {
     u32 down = hidKeysDown();
-    static int superSecretTimer = 300;
+    u32 held = hidKeysHeld();
+    static int superSecretTimer = 600;
     static std::bitset<8> superSecretCornersPressed = {false};
     static bool countDownSecretTimer = false;
+    static int timer = SLOW_TIME;
+    static int timerCount = 0;
     //u32 held = hidKeysHeld();
 
     if (down & KEY_B)
@@ -1333,6 +1341,24 @@ void HexEditScreen::update(touchPosition* touch)
         checkValues(pkm);
         Gui::screenBack();
         return;
+    }
+    else if (down & KEY_A || held & KEY_A)
+    {
+        if (timer == 0)
+        {
+            pkm->rawData()[hid.fullIndex()]++;
+            timer = timerCount > TIME_TO_ACCEL ? FAST_TIME : SLOW_TIME;
+            timerCount++;
+        }
+    }
+    else if (down & KEY_X || held & KEY_X)
+    {
+        if (timer == 0)
+        {
+            pkm->rawData()[hid.fullIndex()]--;
+            timer = timerCount > TIME_TO_ACCEL ? FAST_TIME : SLOW_TIME;
+            timerCount++;
+        }
     }
 
     if (down & KEY_TOUCH && level < UNRESTRICTED)
@@ -1421,5 +1447,9 @@ void HexEditScreen::update(touchPosition* touch)
                 superSecretCornersPressed[i] = false;
             }
         }
+    }
+    if (timer > 0)
+    {
+        timer--;
     }
 }
