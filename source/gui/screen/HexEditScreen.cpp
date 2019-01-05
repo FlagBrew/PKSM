@@ -27,14 +27,15 @@
 #include "HexEditScreen.hpp"
 #include "loader.hpp"
 #include <bitset>
+#include "PB7.hpp"
 
-static constexpr std::string_view statNames[] = {
-    "HP",
-    "ATTACK",
-    "DEFENSE",
-    "SPDEF",
-    "SPATK",
-    "SPEED"
+static constexpr std::string_view hyperVals[] = {
+    "HYPER_HP",
+    "HYPER_ATTACK",
+    "HYPER_DEFENSE",
+    "HYPER_SPDEF",
+    "HYPER_SPATK",
+    "HYPER_SPEED"
 };
 static constexpr std::string_view marks[] = {
     "CIRCLE",
@@ -333,75 +334,9 @@ static constexpr std::string_view gen67ToggleTexts[] = {
 
 static int currRibbon = 0;
 
-
 static constexpr int FAST_TIME = 1;
 static constexpr int SLOW_TIME = 5;
 static constexpr int TIME_TO_ACCEL = 5;
-
-namespace {
-    void checkValues(std::shared_ptr<PKX> pkm)
-    {
-        if (pkm->ability() > TitleLoader::save->maxAbility())
-        {
-            pkm->ability(TitleLoader::save->maxAbility());
-        }
-        if (pkm->ball() > TitleLoader::save->maxBall())
-        {
-            pkm->ball(TitleLoader::save->maxBall());
-        }
-        for (int i = 0; i < 4; i++)
-        {
-            if (pkm->move(i) > TitleLoader::save->maxMove())
-            {
-                pkm->move(i, TitleLoader::save->maxMove());
-            }
-            if (pkm->generation() == Generation::SIX)
-            {
-                if (((PK6*)pkm.get())->relearnMove(i) > TitleLoader::save->maxMove())
-                {
-                    ((PK6*)pkm.get())->relearnMove(i, TitleLoader::save->maxMove());
-                }
-            }
-            if (pkm->generation() == Generation::SEVEN)
-            {
-                if (((PK7*)pkm.get())->relearnMove(i) > TitleLoader::save->maxMove())
-                {
-                    ((PK7*)pkm.get())->relearnMove(i, TitleLoader::save->maxMove());
-                }
-            }
-        }
-        if (pkm->species() > TitleLoader::save->maxSpecies())
-        {
-            pkm->species(TitleLoader::save->maxSpecies());
-        }
-        if (pkm->heldItem() > TitleLoader::save->maxItem())
-        {
-            pkm->heldItem(TitleLoader::save->maxItem());
-        }
-        u8 (*formCounter)(u16);
-        switch (TitleLoader::save->generation())
-        {
-            case Generation::FOUR:
-                formCounter = PersonalDPPtHGSS::formCount;
-                break;
-            case Generation::FIVE:
-                formCounter = PersonalBWB2W2::formCount;
-                break;
-            case Generation::SIX:
-                formCounter = PersonalXYORAS::formCount;
-                break;
-            case Generation::SEVEN:
-            default:
-                formCounter = PersonalSMUSUM::formCount;
-                break;
-        }
-        u8 count = formCounter(pkm->species());
-        if (pkm->alternativeForm() >= count)
-        {
-            pkm->alternativeForm(count - 1);
-        }
-    }
-}
 
 bool HexEditScreen::toggleBit(int selected, int offset)
 {
@@ -409,9 +344,168 @@ bool HexEditScreen::toggleBit(int selected, int offset)
     return true;
 }
 
+bool HexEditScreen::checkValue()
+{
+    if (level != NORMAL)
+    {
+        return true;
+    }
+    if (pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN || pkm->generation() == Generation::LGPE)
+    {
+        int i = hid.fullIndex();
+        switch (i)
+        {
+            case 0x8 ... 0x9:
+                if (pkm->species() > TitleLoader::save->maxSpecies())
+                {
+                    return false;
+                }
+                return true;
+            case 0xA ... 0xB:
+                if (pkm->heldItem() > TitleLoader::save->maxItem())
+                {
+                    return false;
+                }
+                return true;
+            case 0x14:
+                if (pkm->ability() > TitleLoader::save->maxAbility())
+                {
+                    return false;
+                }
+                return true;
+            case 0x5A ... 0x61:
+                if (pkm->move((i - 0x5A) / 2) > TitleLoader::save->maxMove())
+                {
+                    return false;
+                }
+                return true;
+            case 0x66 ... 0x69:
+                if (pkm->PPUp(i - 0x66) > 3)
+                {
+                    return false;
+                }
+                return true;
+            case 0x6A ... 0x71:
+                if (pkm->generation() == Generation::SEVEN)
+                {
+                    if (((PK7*)pkm.get())->relearnMove((i - 0x6A) / 2) > TitleLoader::save->maxMove())
+                    {
+                        return false;
+                    }
+                }
+                else if (pkm->generation() == Generation::SIX)
+                {
+                    if (((PK6*)pkm.get())->relearnMove((i - 0x6A) / 2) > TitleLoader::save->maxMove())
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (((PB7*)pkm.get())->relearnMove((i - 0x6A) / 2) > TitleLoader::save->maxMove())
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            case 0xD2:
+                if (pkm->eggMonth() > 12)
+                {
+                    return false;
+                }
+                return true;
+            case 0xD5:
+                if (pkm->metMonth() > 12)
+                {
+                    return false;
+                }
+                return true;
+            case 0xD3:
+                if (pkm->eggDay() > 31)
+                {
+                    return false;
+                }
+                return true;
+            case 0xD6:
+                if (pkm->metDay() > 31)
+                {
+                    return false;
+                }
+                return true;
+            default:
+                return true;
+        }
+    }
+    else
+    {
+        int i = hid.fullIndex();
+        switch (i)
+        {
+            case 0x8 ... 0x9:
+                if (pkm->species() > TitleLoader::save->maxSpecies())
+                {
+                    return false;
+                }
+                return true;
+            case 0xA ... 0xB:
+                if (pkm->heldItem() > TitleLoader::save->maxItem())
+                {
+                    return false;
+                }
+                return true;
+            case 0x15:
+                if (pkm->ability() > TitleLoader::save->maxAbility())
+                {
+                    return false;
+                }
+                return true;
+            case 0x28 ... 0x2F:
+                if (pkm->move((i - 0x28) / 2) > TitleLoader::save->maxMove())
+                {
+                    return false;
+                }
+                return true;
+            case 0x34 ... 0x37:
+                if (pkm->PPUp(i - 0x66) > 3)
+                {
+                    return false;
+                }
+                return true;
+            case 0x79:
+                if (pkm->eggMonth() > 12)
+                {
+                    return false;
+                }
+                return true;
+            case 0x7C:
+                if (pkm->metMonth() > 12)
+                {
+                    return false;
+                }
+                return true;
+            case 0x7A:
+                if (pkm->eggDay() > 31)
+                {
+                    return false;
+                }
+                return true;
+            case 0x7D:
+                if (pkm->metDay() > 31)
+                {
+                    return false;
+                }
+                return true;
+            default:
+                return true;
+        }
+    }
+    return true;
+}
+
 bool HexEditScreen::editNumber(bool high, bool up)
 {
     u8* chosen = pkm->rawData() + hid.fullIndex();
+    u8 oldValue = *chosen;
     if (high)
     {
         u8 original = *chosen >> 4;
@@ -424,25 +518,24 @@ bool HexEditScreen::editNumber(bool high, bool up)
         {
             (*chosen) |= (original - 1) << 4;
         }
+        if (!checkValue())
+        {
+            *chosen = oldValue;
+        }
     }
     else
     {
-        u8 original = *chosen & 0x0F;
-        if (original == 0x0 && !up)
-        {
-            *chosen |= 0x0F;
-        }
-        else if (original == 0xF && up)
-        {
-            *chosen &= 0xF0;
-        }
-        else if (up)
+        if (up)
         {
             (*chosen)++;
         }
         else
         {
             (*chosen)--;
+        }
+        if (!checkValue())
+        {
+            *chosen = oldValue;
         }
     }
     return true;
@@ -452,7 +545,7 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
 {
     static const std::pair<std::string, HexEditScreen::SecurityLevel> UNKNOWN = std::make_pair(i18n::localize("UNKNOWN"), UNRESTRICTED);
     static const std::pair<std::string, HexEditScreen::SecurityLevel> UNUSED = std::make_pair(i18n::localize("UNUSED"), UNRESTRICTED);
-    if (pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN)
+    if (pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN || pkm->generation() == Generation::LGPE)
     {
         switch (i)
         {
@@ -498,34 +591,110 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
             case 0x23:
                 return std::make_pair(i18n::localize("SPDEF_EV"), NORMAL);
             case 0x24:
-                return std::make_pair(i18n::localize("CONTEST_VALUE_COOL"), NORMAL);
+                if (pkm->generation() == Generation::LGPE)
+                {
+                    return std::make_pair(i18n::localize("AWAKENED_HP"), NORMAL);
+                }
+                else
+                {
+                    return std::make_pair(i18n::localize("CONTEST_VALUE_COOL"), NORMAL);
+                }
             case 0x25:
-                return std::make_pair(i18n::localize("CONTEST_VALUE_BEAUTY"), NORMAL);
+                if (pkm->generation() == Generation::LGPE)
+                {
+                    return std::make_pair(i18n::localize("AWAKENED_ATTACK"), NORMAL);
+                }
+                else
+                {
+                    return std::make_pair(i18n::localize("CONTEST_VALUE_BEAUTY"), NORMAL);
+                }
             case 0x26:
-                return std::make_pair(i18n::localize("CONTEST_VALUE_CUTE"), NORMAL);
+                if (pkm->generation() == Generation::LGPE)
+                {
+                    return std::make_pair(i18n::localize("AWAKENED_DEFENSE"), NORMAL);
+                }
+                else
+                {
+                    return std::make_pair(i18n::localize("CONTEST_VALUE_CUTE"), NORMAL);
+                }
             case 0x27:
-                return std::make_pair(i18n::localize("CONTEST_VALUE_SMART"), NORMAL);
+                if (pkm->generation() == Generation::LGPE)
+                {
+                    return std::make_pair(i18n::localize("AWAKENED_SPEED"), NORMAL);
+                }
+                else
+                {
+                    return std::make_pair(i18n::localize("CONTEST_VALUE_SMART"), NORMAL);
+                }
             case 0x28:
-                return std::make_pair(i18n::localize("CONTEST_VALUE_TOUGH"), NORMAL);
+                if (pkm->generation() == Generation::LGPE)
+                {
+                    return std::make_pair(i18n::localize("AWAKENED_SPATK"), NORMAL);
+                }
+                else
+                {
+                    return std::make_pair(i18n::localize("CONTEST_VALUE_TOUGH"), NORMAL);
+                }
             case 0x29:
-                return std::make_pair(i18n::localize("CONTEST_VALUE_SHEEN"), NORMAL);
+                if (pkm->generation() == Generation::LGPE)
+                {
+                    return std::make_pair(i18n::localize("AWAKENED_SPDEF"), NORMAL);
+                }
+                else
+                {
+                    return std::make_pair(i18n::localize("CONTEST_VALUE_SHEEN"), NORMAL);
+                }
             case 0x2A:
                 return std::make_pair(i18n::localize("MARKINGS"), NORMAL);
             case 0x2B:
                 return std::make_pair(i18n::localize("POKERUS"), NORMAL);
             case 0x2C ... 0x2F:
-                return std::make_pair(i18n::localize("SUPER_TRAINING_FLAGS"), NORMAL);
+                if (pkm->generation() == Generation::LGPE)
+                {
+                    return std::make_pair(i18n::localize("HEIGHT_ABSOLUTE"), OPEN);
+                }
+                else
+                {
+                    return std::make_pair(i18n::localize("SUPER_TRAINING_FLAGS"), NORMAL);
+                }
             case 0x30 ... 0x36:
                 return std::make_pair(i18n::localize("RIBBONS"), NORMAL);
             case 0x37:
                 return UNUSED;
             case 0x38:
-                return std::make_pair(i18n::localize("CONTEST_MEMORY_RIBBON_COUNT"), NORMAL);
+                if (pkm->generation() == Generation::LGPE)
+                {
+                    return UNUSED;
+                }
+                else
+                {
+                    return std::make_pair(i18n::localize("CONTEST_MEMORY_RIBBON_COUNT"), NORMAL);
+                }
             case 0x39:
-                return std::make_pair(i18n::localize("BATTLE_MEMORY_RIBBON_COUNT"), NORMAL);
+                if (pkm->generation() == Generation::LGPE)
+                {
+                    return UNUSED;
+                }
+                else
+                {
+                    return std::make_pair(i18n::localize("BATTLE_MEMORY_RIBBON_COUNT"), NORMAL);
+                }
+                
             case 0x3A:
-                return std::make_pair(i18n::localize("DISTRIBUTION_SUPER_TRAINING_FLAGS"), NORMAL);
-            case 0x3B ... 0x3F:
+                if (pkm->generation() == Generation::LGPE)
+                {
+                    return std::make_pair(i18n::localize("HEIGHT"), NORMAL);
+                }
+                else
+                {
+                    return std::make_pair(i18n::localize("DISTRIBUTION_SUPER_TRAINING_FLAGS"), NORMAL);
+                }
+            case 0x3B:
+                if (pkm->generation() == Generation::LGPE)
+                {
+                    return std::make_pair(i18n::localize("WEIGHT"), NORMAL);
+                }
+            case 0x3C ... 0x3F:
                 return UNUSED;
             case 0x40 ... 0x57:
                 return std::make_pair(i18n::localize("NICKNAME"), NORMAL);
@@ -564,7 +733,10 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
             case 0x70 ... 0x71:
                 return std::make_pair(i18n::localize("RELEARN_MOVE_4_ID"), NORMAL);
             case 0x72:
-                return std::make_pair(i18n::localize("SECRET_SUPER_TRAINING_FLAG"), NORMAL);
+                if (pkm->generation() != Generation::LGPE)
+                {
+                    return std::make_pair(i18n::localize("SECRET_SUPER_TRAINING_FLAG"), NORMAL);
+                }
             case 0x73:
                 return UNUSED;
             case 0x74 ... 0x76:
@@ -663,24 +835,20 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 return std::make_pair(i18n::localize("ORIGINAL_TRAINER_LANGUAGE_ID"), NORMAL);
             case 0xE4 ... 0xE7:
                 return UNUSED;
-            case 0xE8:
+            case 0xE8 ... 0xEB:
                 return std::make_pair(i18n::localize("STATUS_CONDITIONS"), NORMAL);
-            case 0xE9:
-                return std::make_pair(i18n::localize("UNKNOWN_FLAGS"), UNRESTRICTED);
-            case 0xEA ... 0xEB:
-                return UNKNOWN;
             case 0xEC:
-                return std::make_pair(i18n::localize("LEVEL"), NORMAL);
+                return std::make_pair(i18n::localize("LEVEL"), NORMAL); // TODO CHECK LGPE
             // Refresh dirt
             case 0xED:
-                if (pkm->generation() == Generation::SEVEN)
+                if (pkm->generation() != Generation::SIX)
                 {
-                    return std::make_pair(i18n::localize("DIRT_TYPE"), OPEN);
+                    return std::make_pair(i18n::localize("DIRT_TYPE"), OPEN); // TODO CHECK LGPE
                 }
             case 0xEE:
-                if (pkm->generation() == Generation::SEVEN)
+                if (pkm->generation() != Generation::SIX)
                 {
-                    return std::make_pair(i18n::localize("DIRT_LOCATION"), OPEN);
+                    return std::make_pair(i18n::localize("DIRT_LOCATION"), OPEN); // TODO CHECK LGPE
                 }
             case 0xEF:
                 return UNKNOWN;
@@ -698,7 +866,12 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 return std::make_pair(i18n::localize("SPATK"), OPEN);
             case 0xFC ... 0xFD:
                 return std::make_pair(i18n::localize("SPDEF"), OPEN);
-            case 0xFE ... 0x103:
+            case 0xFE ... 0xFF:
+                if (pkm->generation() == Generation::LGPE)
+                {
+                    return std::make_pair(i18n::localize("CP"), OPEN);
+                }
+            case 0x100 ... 0x103:
                 return UNKNOWN;
         }
     }
@@ -1100,7 +1273,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                         }
                         for (int j = 0; j < 6; j++)
                         {
-                            buttons[i].push_back(new HexEditButton(30, 90 + j * 16, 13, 13, [this, i, j](){ return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("HYPER_FLAG") + " " + i18n::localize(std::string(statNames[j])), true, j));
+                            buttons[i].push_back(new HexEditButton(30, 90 + j * 16, 13, 13, [this, i, j](){ return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, i18n::localize(std::string(hyperVals[j])), true, j));
                             buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
                         }
                     }
@@ -1338,7 +1511,6 @@ void HexEditScreen::update(touchPosition* touch)
 
     if (down & KEY_B)
     {
-        checkValues(pkm);
         Gui::screenBack();
         return;
     }
@@ -1451,5 +1623,9 @@ void HexEditScreen::update(touchPosition* touch)
     if (timer > 0)
     {
         timer--;
+    }
+    else
+    {
+        timerCount = 0;
     }
 }
