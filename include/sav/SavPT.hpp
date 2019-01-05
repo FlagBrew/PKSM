@@ -114,7 +114,7 @@ public:
     int maxMove(void) const { return 467; }
     int maxItem(void) const { return 467; }
     int maxAbility(void) const { return 123; }
-    int maxBall(void) const { return 0x10; }
+    int maxBall(void) const { return 0x18; } // Ignores HGSS ball data
     int getGBO(void) const { return gbo; }
     int getSBO(void) const { return sbo; }
 
