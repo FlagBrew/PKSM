@@ -1009,6 +1009,9 @@ void Gui::pkm(int species, int form, Generation generation, int x, int y, float 
 
         switch (species)
         {
+            default:
+                C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint, scale, scale);
+                return;
             case 801:
                 imageOffsetFromBack += 3;
             case 800:
@@ -1233,6 +1236,8 @@ void Gui::pkm(int species, int form, Generation generation, int x, int y, float 
                 imageOffsetFromBack += 2;
             case 6:
                 imageOffsetFromBack += 1;
+            case 3:
+                imageOffsetFromBack += 0;
         }
         int drawIndex = types_spritesheet_beast_idx + imageOffsetFromBack + form;
         if (drawIndex < types_spritesheet_201_1_idx)
