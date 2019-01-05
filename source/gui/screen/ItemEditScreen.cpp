@@ -42,6 +42,11 @@ int ItemEditScreen::run()
 
         C3D_FrameEnd(0);
         Gui::clearTextBufs();
+
+        if (startSearch)
+        {
+            searchBar();
+        }
     }
     return finalVal;
 }
@@ -54,6 +59,11 @@ void ItemEditScreen::draw() const
         C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, C2D_Color32(0, 0, 0, 128));
         firstDraw = false;
     }
+
+    C2D_SceneBegin(g_renderTargetBottom);
+    searchButton->draw();
+    Gui::sprite(ui_sheet_icon_search_idx, 79, 33);
+    Gui::dynamicText(searchString, 95, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, false);
 
     C2D_SceneBegin(g_renderTargetTop);
     Gui::sprite(ui_sheet_part_editor_20x2_idx, 0, 0);
@@ -77,6 +87,45 @@ void ItemEditScreen::draw() const
 
 void ItemEditScreen::update(touchPosition* touch)
 {
+    if (justSwitched && ((hidKeysHeld() | hidKeysDown()) & KEY_TOUCH))
+    {
+        return;
+    }
+    else if (justSwitched)
+    {
+        justSwitched = false;
+    }
+    
+    if (hidKeysDown() & KEY_X)
+    {
+        Gui::setNextKeyboardFunc([this](){ this->searchBar(); });
+    }
+    searchButton->update(touch);
+
+    if (!searchString.empty() && searchString != oldSearchString)
+    {
+        items.clear();
+        items.push_back(validItems[0]);
+        for (size_t i = 1; i < validItems.size(); i++)
+        {
+            std::string itemName = validItems[i].first.substr(0, searchString.size());
+            StringUtils::toLower(itemName);
+            if (itemName == searchString)
+            {
+                items.push_back(validItems[i]);
+            }
+        }
+        oldSearchString = searchString;
+    }
+    else if (searchString.empty() && !oldSearchString.empty())
+    {
+        items = validItems;
+        oldSearchString = searchString = "";
+    }
+    if (hid.fullIndex() >= items.size())
+    {
+        hid.select(0);
+    }
     u32 downKeys = hidKeysDown();
     hid.update(items.size());
     if (downKeys & KEY_A)
@@ -89,4 +138,21 @@ void ItemEditScreen::update(touchPosition* touch)
         finalVal = origItem;
         finished = true;
     }
+}
+
+void ItemEditScreen::searchBar()
+{
+    SwkbdState state;
+    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 20);
+    swkbdSetHintText(&state, i18n::localize("ITEM").c_str());
+    swkbdSetValidation(&state, SWKBD_ANYTHING, 0, 0);
+    char input[25] = {0};
+    SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
+    input[24] = '\0';
+    if (ret == SWKBD_BUTTON_CONFIRM)
+    {
+        searchString = input;
+        StringUtils::toLower(searchString);
+    }
+    startSearch = false;
 }

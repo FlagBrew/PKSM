@@ -31,26 +31,40 @@
 #include "HidVertical.hpp"
 #include <vector>
 #include <string>
+#include "ClickButton.hpp"
+#include "gui.hpp"
 
 class ItemEditScreen : public Screen
 {
 public:
-    ItemEditScreen(std::vector<std::pair<std::string, int>>& items, size_t selected) : hid(40,2), items(items), origItem(selected)
+    ItemEditScreen(std::vector<std::pair<std::string, int>>& items, size_t selected) : hid(40,2), validItems(items), items(validItems), origItem(selected)
     {
+        searchButton = new ClickButton(75, 30, 170, 23, [this](){ startSearch = true; return false; }, ui_sheet_emulated_box_search_idx, "", 0, 0);
         hid.update(items.size());
         hid.select(selected);
+    }
+    ~ItemEditScreen()
+    {
+        delete searchButton;
     }
     int run();
     void draw() const override;
     void update(touchPosition* touch) override;
     ScreenType type() const override { return ITEMEDIT; }
 private:
+    void searchBar();
     HidVertical hid;
-    std::vector<std::pair<std::string, int>>& items;
+    std::vector<std::pair<std::string, int>>& validItems;
+    std::vector<std::pair<std::string, int>> items;
     bool finished = false;
     mutable bool firstDraw = true;
     int finalVal = 0;
     int origItem;
+    bool justSwitched = true;
+    std::string searchString = "";
+    std::string oldSearchString = "";
+    Button* searchButton;
+    bool startSearch = false;
 };
 
 #endif
