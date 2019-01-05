@@ -33,6 +33,7 @@
 #include "PK7.hpp"
 #include "PK6.hpp"
 #include "loader.hpp"
+#include "Button.hpp"
 
 class MoveSelectionScreen : public SelectionScreen
 {
@@ -41,13 +42,20 @@ public:
     ~MoveSelectionScreen()
     {
         pkm->fixMoves();
+        delete searchButton;
     }
     void draw() const override;
     void update(touchPosition* touch) override;
 private:
+    void searchBar();
     int moveIndex;
     HidVertical hid;
     std::vector<std::pair<int, std::string>> moves;
+    std::vector<std::pair<int, std::string>> validMoves;
+    std::string searchString = "";
+    std::string oldSearchString = "";
+    Button* searchButton;
+    bool justSwitched = true;
 };
 
 #endif

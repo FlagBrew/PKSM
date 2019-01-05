@@ -28,6 +28,8 @@
 #include "gui.hpp"
 #include "Configuration.hpp"
 #include "loader.hpp"
+#include "PB7.hpp"
+#include "ClickButton.hpp"
 
 namespace {
     int index(std::vector<std::pair<int, std::string>>& search, std::string v)
@@ -69,6 +71,7 @@ MoveSelectionScreen::MoveSelectionScreen(std::shared_ptr<PKX> pkm, int moveIndex
     static const auto less = [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2){ return pair1.second < pair2.second; };
     std::sort(moves.begin(), moves.end(), less);
     moves.insert(moves.begin(), {0, rawMoves[0]});
+    validMoves = moves;
 
     hid.update(moves.size());
     if (moveIndex < 4)
@@ -88,6 +91,7 @@ MoveSelectionScreen::MoveSelectionScreen(std::shared_ptr<PKX> pkm, int moveIndex
             hid.select((u16) index(moves, i18n::move(Configuration::getInstance().language(), pk7->relearnMove(moveIndex - 4))));
         }
     }
+    searchButton = new ClickButton(75, 30, 170, 23, [this](){ Gui::setNextKeyboardFunc([this](){ this->searchBar(); }); return false; }, ui_sheet_emulated_box_search_idx, "", 0, 0);
 }
 
 void MoveSelectionScreen::draw() const
@@ -104,21 +108,62 @@ void MoveSelectionScreen::draw() const
     for (size_t i = 0; i < hid.maxVisibleEntries(); i++)
     {
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
-        std::string text;
         if (hid.page() * hid.maxVisibleEntries() + i < moves.size())
         {
-            text = std::to_string(moves[hid.page() * hid.maxVisibleEntries() + i].first) + " - " + moves[hid.page() * hid.maxVisibleEntries() + i].second;
+            Gui::dynamicText(std::to_string(moves[hid.page() * hid.maxVisibleEntries() + i].first) + " - " + moves[hid.page() * hid.maxVisibleEntries() + i].second, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
         }
         else
         {
-            text = "0 - " + moves[0].second;
+            break;
         }
-        Gui::dynamicText(text, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
     }
+
+    C2D_SceneBegin(g_renderTargetBottom);
+    searchButton->draw();
 }
 
 void MoveSelectionScreen::update(touchPosition* touch)
 {
+    if (justSwitched && ((hidKeysHeld() | hidKeysDown()) & KEY_TOUCH))
+    {
+        return;
+    }
+    else if (justSwitched)
+    {
+        justSwitched = false;
+    }
+    
+    if (hidKeysDown() & KEY_X)
+    {
+        Gui::setNextKeyboardFunc([this](){ this->searchBar(); });
+    }
+    searchButton->update(touch);
+
+    if (!searchString.empty() && searchString != oldSearchString)
+    {
+        moves.clear();
+        moves.push_back(validMoves[0]);
+        for (size_t i = 1; i < validMoves.size(); i++)
+        {
+            std::string itemName = validMoves[i].second.substr(0, searchString.size());
+            StringUtils::toLower(itemName);
+            if (itemName == searchString)
+            {
+                moves.push_back(validMoves[i]);
+            }
+        }
+        oldSearchString = searchString;
+    }
+    else if (searchString.empty() && !oldSearchString.empty())
+    {
+        moves = validMoves;
+        oldSearchString = searchString = "";
+    }
+    if (hid.fullIndex() >= moves.size())
+    {
+        hid.select(0);
+    }
+
     hid.update(moves.size());
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
@@ -129,13 +174,17 @@ void MoveSelectionScreen::update(touchPosition* touch)
         }
         else
         {
-            if (pkm->gen6())
+            if (pkm->generation() == Generation::SIX)
             {
                 ((PK6*)pkm.get())->relearnMove(moveIndex - 4, (u16) moves[hid.fullIndex()].first);
             }
-            else if (pkm->gen7())
+            else if (pkm->generation() == Generation::SEVEN)
             {
                 ((PK7*)pkm.get())->relearnMove(moveIndex - 4, (u16) moves[hid.fullIndex()].first);
+            }
+            else if (pkm->generation() == Generation::LGPE)
+            {
+                ((PB7*)pkm.get())->relearnMove(moveIndex - 4, (u16) moves[hid.fullIndex()].first);
             }
         }
         done = true;
@@ -145,5 +194,21 @@ void MoveSelectionScreen::update(touchPosition* touch)
     {
         done = true;
         return;
+    }
+}
+
+void MoveSelectionScreen::searchBar()
+{
+    SwkbdState state;
+    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 20);
+    swkbdSetHintText(&state, i18n::localize("ITEM").c_str());
+    swkbdSetValidation(&state, SWKBD_ANYTHING, 0, 0);
+    char input[25] = {0};
+    SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
+    input[24] = '\0';
+    if (ret == SWKBD_BUTTON_CONFIRM)
+    {
+        searchString = input;
+        StringUtils::toLower(searchString);
     }
 }

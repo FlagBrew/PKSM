@@ -106,7 +106,6 @@ void ItemSelectionScreen::draw() const
     for (size_t i = 0; i < hid.maxVisibleEntries(); i++)
     {
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
-        std::string text;
         if (hid.page() * hid.maxVisibleEntries() + i < items.size())
         {
             Gui::dynamicText(std::to_string(items[hid.page() * hid.maxVisibleEntries() + i].first) + " - " + items[hid.page() * hid.maxVisibleEntries() + i].second, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
