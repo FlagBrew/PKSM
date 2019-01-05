@@ -1,4 +1,32 @@
 # Changelog
+## 6.0.1
++ **Fix crash when a flashcard was inserted**. You can now plug your cartridge
+  reader with whatever you want.
++ **Fix various offsets** used here and there in the application. This is
+  **critical** and **updating** to this version against v6.0.0 **is strongly
+  suggested**.
++ **Fix storage renaming bug**, which caused your storage to not be opened
+  again.
++ **Fix crashes on unsuccessfull app exit**.
++ Fix party generation.
++ Fix event injection for Pokemon Diamond/Pearl.
++ Fix transfer code from gen4 upwards and a couple backwards transfer issues.
++ Disable nature edit screen for Gen4, as it is linked to PID.
++ Added a console displaying why PKSM doesn't boot up, with explanation and
+  possible fixes.
++ Fix various Hex Editor offsets (thanks @SadisticMystic ).
++ Storage transfers through boxes now automatically set dex data.
++ DS save recognition simplified.
++ Added JP translations (thanks @pass0418 ).
++ Added form changing for Arceus and Genesect, disable form changing for
+  Xerneas.
++ Added Hyper Training flags to the hex editor.
++ Enable Hex Editor value changing with `A`/`X` buttons.
++ Fix empty ability after generating a pokemon from scratch.
++ Added a search bar for the moves editor, item editor and bag editor screens.
++ Hex Editor now enabled for LGPE.
++ Backup bridged save to the SD card in case the bridge disconnects, so you can
+  reinject it manually later.
 ## 6.0.0
 + **Game support has been extended to cover every functionality from Generation
   4 to LGPE**. This includes, among the others, *Storage*, *Editor* and
@@ -130,13 +158,14 @@
 + **PKSM now supports audio playback**. Audio will start once boot is completed.
   + There actually is no way to stop the audio playback, so turn down the volume
     in case it starts getting annoying.
-  + It's possible to provide your own audio soundtracks by placing `.mp3`
-    files in the `sdmc:/3ds/PKSM/songs` folder.
-  + It's suggested to provide relatively small sized files. We generally suggest tracks
-    with a length of no more than 4 minutes, single channel, with a sampling
-    frequency of 44100Hz and a bitrate of 96kbps.
+  + It's possible to provide your own audio soundtracks by placing `.mp3` files
+    in the `sdmc:/3ds/PKSM/songs` folder.
+  + It's suggested to provide relatively small sized files. We generally suggest
+    tracks with a length of no more than 4 minutes, single channel, with a
+    sampling frequency of 44100Hz and a bitrate of 96kbps.
     + These characteristics are not actual constraints: you can throw whatever
-      you want into the SD card and PKSM will mostly be able to work with it fine.
+      you want into the SD card and PKSM will mostly be able to work with it
+      fine.
     + You can convert a track to get these characteristics through
       [ffmpeg](https://stackoverflow.com/questions/3255674/convert-audio-files-to-mp3-using-ffmpeg).
 + A *search* function for species has been implemented so you're now able to
