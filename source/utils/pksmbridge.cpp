@@ -94,13 +94,14 @@ bool receiveSaveFromBridge(void)
 
 bool sendSaveToBridge(void)
 {
+    bool result = false;
     // send via TCP
     int fd;
     struct sockaddr_in servaddr;
     if ((fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         Gui::error("Socket creation failed.", errno);
-        return false;
+        return result;
     }
     memset(&servaddr, 0, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
@@ -111,7 +112,7 @@ bool sendSaveToBridge(void)
     {
         Gui::error("Socket connection failed.", errno);
         close(fd);
-        return false;
+        return result;
     }
 
     size_t size = TitleLoader::save->length;
@@ -128,6 +129,7 @@ bool sendSaveToBridge(void)
     if (total == size)
     {
         //Gui::createInfo("Success!", "Data sent back correctly.");
+        result = true;
     }
     else
     {
@@ -136,5 +138,20 @@ bool sendSaveToBridge(void)
 
     close(fd);
     saveFromBridge = false;
-    return true;
+    return result;
+}
+
+void backupBridgeChanges()
+{
+    char stringTime[15] = {0};
+    time_t unixTime = time(NULL);
+    struct tm* timeStruct = gmtime((const time_t *)&unixTime);
+    std::strftime(stringTime, 14,"%Y%m%d%H%M%S", timeStruct);
+    std::string path = "/3ds/PKSM/backups/bridge/" + std::string(stringTime) + ".bak";
+    FSStream out = FSStream(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_WRITE | FS_OPEN_CREATE, TitleLoader::save->length);
+    if (out.good())
+    {
+        out.write(TitleLoader::save->data, TitleLoader::save->length);
+    }
+    out.close();
 }

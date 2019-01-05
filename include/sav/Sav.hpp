@@ -67,6 +67,7 @@ friend class ScriptScreen;
 friend void TitleLoader::backupSave();
 friend void TitleLoader::saveChanges();
 friend void TitleLoader::saveToTitle(bool ask);
+friend void backupBridgeChanges(void);
 friend bool sendSaveToBridge(void);
 protected:
     static constexpr u16 crc16[256] = {

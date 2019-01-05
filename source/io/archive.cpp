@@ -43,6 +43,7 @@ Result Archive::init(std::string& execPath)
     mkdir("/3ds/PKSM", 777);
     mkdir("/3ds/PKSM/assets", 777);
     mkdir("/3ds/PKSM/backups", 777);
+    mkdir("/3ds/PKSM/backups/bridge", 777);
     mkdir("/3ds/PKSM/dumps", 777);
     mkdir("/3ds/PKSM/banks", 777);
     mkdir("/3ds/PKSM/songs", 777);

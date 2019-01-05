@@ -90,7 +90,12 @@ MainMenu::~MainMenu()
     {
         if (Gui::showChoiceMessage(i18n::localize("BRIDGE_SHOULD_SEND_1"), i18n::localize("BRIDGE_SHOULD_SEND_2")))
         {
-            sendSaveToBridge();
+            bool sent = sendSaveToBridge();
+            if (!sent)
+            {
+                // save a copy of the modified save to the SD card
+                backupBridgeChanges();
+            }
         }
         else
         {
