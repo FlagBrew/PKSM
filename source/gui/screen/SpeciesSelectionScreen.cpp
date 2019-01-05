@@ -206,14 +206,7 @@ void SpeciesSelectionScreen::update(touchPosition* touch)
         }
         pkm->species((u16) species);
         pkm->alternativeForm(0);
-        if (pkm->generation() != Generation::FOUR)
-        {
-            pkm->ability(0);
-        }
-        else
-        {
-            pkm->ability(PersonalDPPtHGSS::ability(pkm->species(), pkm->abilityNumber()));
-        }
+        pkm->setAbility(0);
         done = true;
         return;
     }
