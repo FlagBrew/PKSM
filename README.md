@@ -127,7 +127,8 @@ all`.
   [WinterMute](https://github.com/WinterMute) for citro2d and devkitARM
 * [kamronbatman](https://github.com/kamronbatman) and ProjectPokemon.org for
   EventsGallery
-* Methylnaltrexone, Y0ndaime, Gudf, forthepokemans, CaptainBarnaklez for the translations
+* Methylnaltrexone, Y0ndaime, Gudf, forthepokemans, CaptainBarnaklez, pass0418
+  for the translations
 * Subject21_J and all the submitters for PKSM's icon
 * [Mewmore](https://www.youtube.com/user/Mewmore) for the default background
   music
