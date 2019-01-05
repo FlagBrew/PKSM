@@ -400,6 +400,7 @@ namespace StringUtils
     void setStringWithBytes(u8* data, const char* v, int ofs, int len, char* padding);
     std::string getString4(const u8* data, int ofs, int len);
     void setString4(u8* data, const std::string v, int ofs, int len);
+    std::string& toLower(std::string& in);
 }
 
 #endif

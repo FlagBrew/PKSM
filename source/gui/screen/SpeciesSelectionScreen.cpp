@@ -29,21 +29,6 @@
 #include "loader.hpp"
 #include "Configuration.hpp"
 #include "ClickButton.hpp"
-#include <locale>
-
-static void myToLower(std::string& in)
-{
-    std::transform(in.begin(), in.end(), in.begin(), ::tolower);
-    std::u16string otherIn = StringUtils::UTF8toUTF16(in);
-    for (size_t i = 0; i < otherIn.size(); i++)
-    {
-        if (otherIn[i] == u'\u00C9')
-        {
-            otherIn[i] = u'\u00E9';
-        }
-    }
-    in = StringUtils::UTF16toUTF8(otherIn);
-}
 
 SpeciesSelectionScreen::SpeciesSelectionScreen(std::shared_ptr<PKX> pkm) : SelectionScreen(pkm), hid(40, 8)
 {
@@ -125,6 +110,7 @@ void SpeciesSelectionScreen::update(touchPosition* touch)
     {
         justSwitched = false;
     }
+
     if (hidKeysDown() & KEY_X)
     {
         Gui::setNextKeyboardFunc([this](){ this->searchBar(); });
@@ -138,7 +124,7 @@ void SpeciesSelectionScreen::update(touchPosition* touch)
             for (int i = 1; i <= TitleLoader::save->maxSpecies(); i++)
             {
                 std::string speciesName = i18n::species(Configuration::getInstance().language(), i).substr(0, searchString.size());
-                myToLower(speciesName);
+                StringUtils::toLower(speciesName);
                 if (speciesName == searchString)
                 {
                     dispPkm.push_back(i);
@@ -151,20 +137,20 @@ void SpeciesSelectionScreen::update(touchPosition* touch)
             for (size_t i = 1; i <= 151; i++)
             {
                 speciesName = i18n::species(Configuration::getInstance().language(), i).substr(0, searchString.size());
-                myToLower(speciesName);
+                StringUtils::toLower(speciesName);
                 if (speciesName == searchString)
                 {
                     dispPkm.push_back(i);
                 }
             }
             speciesName = i18n::species(Configuration::getInstance().language(), 808).substr(0, searchString.size());
-            myToLower(speciesName);
+            StringUtils::toLower(speciesName);
             if (speciesName == searchString)
             {
                 dispPkm.push_back(808);
             }
             speciesName = i18n::species(Configuration::getInstance().language(), 809).substr(0, searchString.size());
-            myToLower(speciesName);
+            StringUtils::toLower(speciesName);
             if (speciesName == searchString)
             {
                 dispPkm.push_back(809);
@@ -250,6 +236,6 @@ void SpeciesSelectionScreen::searchBar()
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
         searchString = input;
-        myToLower(searchString);
+        StringUtils::toLower(searchString);
     }
 }

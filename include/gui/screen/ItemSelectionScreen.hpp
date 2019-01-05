@@ -31,16 +31,27 @@
 #include "HidVertical.hpp"
 #include "Configuration.hpp"
 #include "loader.hpp"
+#include "Button.hpp"
 
 class ItemSelectionScreen : public SelectionScreen
 {
 public:
     ItemSelectionScreen(std::shared_ptr<PKX> pkm);
+    ~ItemSelectionScreen()
+    {
+        delete searchButton;
+    }
     void draw() const override;
     void update(touchPosition* touch) override;
 private:
+    void searchBar();
     HidVertical hid;
     std::vector<std::pair<int, std::string>> items;
+    std::vector<std::pair<int, std::string>> validItems;
+    std::string searchString = "";
+    std::string oldSearchString = "";
+    Button* searchButton;
+    bool justSwitched = true;
 };
 
 #endif

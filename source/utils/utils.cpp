@@ -25,6 +25,7 @@
 */
 
 #include "utils.hpp"
+#include <algorithm>
 
 static std::wstring_convert<std::codecvt_utf8_utf16<char16_t>,char16_t> convert;
 
@@ -207,4 +208,54 @@ void StringUtils::setString4(u8* data, const std::string v, int ofs, int len)
     }
     output[outIndex == len ? len - 1 : outIndex] = 0xFFFF;
     memcpy(data + ofs, output, len * 2);
+}
+
+std::string& StringUtils::toLower(std::string& in)
+{
+    std::transform(in.begin(), in.end(), in.begin(), ::tolower);
+    std::u16string otherIn = StringUtils::UTF8toUTF16(in);
+    for (size_t i = 0; i < otherIn.size(); i++)
+    {
+        switch (otherIn[i])
+        {
+            case u'Í':
+                otherIn[i] = u'í';
+                break;
+            case u'Ó':
+                otherIn[i] = u'ó';
+                break;
+            case u'Ú':
+                otherIn[i] = u'ú';
+                break;
+            case u'É':
+                otherIn[i] = u'é';
+                break;
+            case u'Á':
+                otherIn[i] = u'á';
+                break;
+            case u'Ì':
+                otherIn[i] = u'ì';
+                break;
+            case u'Ò':
+                otherIn[i] = u'ò';
+                break;
+            case u'Ù':
+                otherIn[i] = u'ù';
+                break;
+            case u'È':
+                otherIn[i] = u'è';
+                break;
+            case u'À':
+                otherIn[i] = u'à';
+                break;
+            case u'Ñ':
+                otherIn[i] = u'ñ';
+                break;
+            case u'Æ':
+                otherIn[i] = u'æ';
+                break;
+        }
+    }
+    in = StringUtils::UTF16toUTF8(otherIn);
+    return in;
 }
