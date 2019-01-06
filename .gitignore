@@ -1,4 +1,5 @@
 .vscode
+build/
 out/
 release/
 assets/gfx/pkm
