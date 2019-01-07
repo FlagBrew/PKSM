@@ -1514,24 +1514,6 @@ void HexEditScreen::update(touchPosition* touch)
         Gui::screenBack();
         return;
     }
-    else if (down & KEY_A || held & KEY_A)
-    {
-        if (timer == 0)
-        {
-            pkm->rawData()[hid.fullIndex()]++;
-            timer = timerCount > TIME_TO_ACCEL ? FAST_TIME : SLOW_TIME;
-            timerCount++;
-        }
-    }
-    else if (down & KEY_X || held & KEY_X)
-    {
-        if (timer == 0)
-        {
-            pkm->rawData()[hid.fullIndex()]--;
-            timer = timerCount > TIME_TO_ACCEL ? FAST_TIME : SLOW_TIME;
-            timerCount++;
-        }
-    }
 
     if (down & KEY_TOUCH && level < UNRESTRICTED)
     {
@@ -1603,6 +1585,25 @@ void HexEditScreen::update(touchPosition* touch)
         for (size_t i = 0; i < buttons[hid.fullIndex()].size(); i++)
         {
             buttons[hid.fullIndex()][i]->update(touch);
+        }
+        
+        if (down & KEY_A || held & KEY_A)
+        {
+            if (timer == 0)
+            {
+                pkm->rawData()[hid.fullIndex()]++;
+                timer = timerCount > TIME_TO_ACCEL ? FAST_TIME : SLOW_TIME;
+                timerCount++;
+            }
+        }
+        else if (down & KEY_X || held & KEY_X)
+        {
+            if (timer == 0)
+            {
+                pkm->rawData()[hid.fullIndex()]--;
+                timer = timerCount > TIME_TO_ACCEL ? FAST_TIME : SLOW_TIME;
+                timerCount++;
+            }
         }
     }
     if (countDownSecretTimer)
