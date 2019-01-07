@@ -77,6 +77,10 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
         pkm->fixMoves();
         pkm->PID((u32)randomNumbers());
         pkm->language(Configuration::getInstance().language());
+        pkm->metDay(Configuration::getInstance().day());
+        pkm->metMonth(Configuration::getInstance().month());
+        pkm->metYear(Configuration::getInstance().year() - 2000);
+        pkm->metLevel(1);
         if (pkm->generation() == Generation::SIX)
         {
             ((PK6*)pkm.get())->consoleRegion(Configuration::getInstance().nationality());
