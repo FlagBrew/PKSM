@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "language": 2,
   "autoBackup": true,
   "storageSize": 150,
@@ -11,6 +11,8 @@
     "sid": 54321,
     "ot": "PKSM",
     "nationality": 2,
+    "country": 0,
+    "region": 0,
     "date": {
       "day": 1,
       "month": 1,

@@ -77,6 +77,24 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
         pkm->fixMoves();
         pkm->PID((u32)randomNumbers());
         pkm->language(Configuration::getInstance().language());
+        if (pkm->generation() == Generation::SIX)
+        {
+            ((PK6*)pkm.get())->consoleRegion(Configuration::getInstance().nationality());
+            ((PK6*)pkm.get())->geoCountry(0, Configuration::getInstance().defaultCountry());
+            ((PK6*)pkm.get())->geoRegion(0, Configuration::getInstance().defaultRegion());
+        }
+        else if (pkm->generation() == Generation::SEVEN)
+        {
+            ((PK7*)pkm.get())->consoleRegion(Configuration::getInstance().nationality());
+            ((PK7*)pkm.get())->geoCountry(0, Configuration::getInstance().defaultCountry());
+            ((PK7*)pkm.get())->geoRegion(0, Configuration::getInstance().defaultRegion());
+        }
+        // if (pkm->generation() == Generation::LGPE)
+        // {
+        //     ((PB7*)pkm.get())->consoleRegion(Configuration::getInstance().nationality());
+        //     ((PB7*)pkm.get())->geoCountry(0, Configuration::getInstance().defaultCountry());
+        //     ((PB7*)pkm.get())->geoRegion(0, Configuration::getInstance().defaultRegion());
+        // }
         selector = std::make_unique<SpeciesSelectionScreen>(pkm);
         // No clue why this is necessary
         view->setPkm(nullptr);

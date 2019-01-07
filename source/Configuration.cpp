@@ -27,6 +27,7 @@
 #include "Configuration.hpp"
 #include "archive.hpp"
 #include "FSStream.hpp"
+#include "gui.hpp"
 
 Configuration::Configuration()
 {
@@ -53,6 +54,11 @@ Configuration::Configuration()
         }
         else if (mJson["version"].get<int>() != CURRENT_VERSION)
         {
+            if (mJson["version"].get<int>() > CURRENT_VERSION)
+            {
+                Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("DO_NOT_DOWNGRADE"));
+                return;
+            }
             if (mJson["version"].get<int>() < 2)
             {
                 mJson["useSaveInfo"] = false;
@@ -60,6 +66,15 @@ Configuration::Configuration()
             if (mJson["version"].get<int>() < 3)
             {
                 mJson["randomMusic"] = false;
+            }
+            if (mJson["version"].get<int>() < 4)
+            {
+                u8 countryData[4];
+                CFGU_GetConfigInfoBlk2(0x4, 0x000B0000, countryData);
+                mJson["defaults"]["country"] = countryData[3];
+                mJson["defaults"]["region"] = countryData[2];
+                CFGU_SecureInfoGetRegion(countryData);
+                mJson["defaults"]["nationality"] = countryData[0];
             }
 
             mJson["version"] = CURRENT_VERSION;
@@ -132,6 +147,13 @@ void Configuration::loadFromRomfs()
     // load system language
     u8 systemLanguage;
     CFGU_GetSystemLanguage(&systemLanguage);
+    u8 countryData[4];
+    CFGU_GetConfigInfoBlk2(0x4, 0x000B0000, countryData);
+    mJson["defaults"]["country"] = countryData[3];
+    mJson["defaults"]["region"] = countryData[2];
+    CFGU_SecureInfoGetRegion(countryData);
+    mJson["defaults"]["nationality"] = *countryData;
+    
     switch (systemLanguage)
     {
         case CFG_LANGUAGE_JP:

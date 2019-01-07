@@ -83,7 +83,37 @@ static void inputOT()
     }
 }
 
-static bool countryChoice() { return false; }
+static bool countryChoice()
+{
+    switch (Configuration::getInstance().nationality())
+    {
+        case 0:
+            Configuration::getInstance().nationality(1);
+            break;
+        case 1:
+            Configuration::getInstance().nationality(2);
+            break;
+        case 2:
+            Configuration::getInstance().nationality(3);
+            break;
+        case 3:
+            Configuration::getInstance().nationality(4);
+            break;
+        case 4:
+            Configuration::getInstance().nationality(5);
+            break;
+        case 5:
+            Configuration::getInstance().nationality(6);
+            break;
+        case 6:
+            Configuration::getInstance().nationality(0);
+            break;
+        default:
+            Configuration::getInstance().nationality(0);
+            break;
+    }
+    return false;
+}
 
 ConfigScreen::ConfigScreen() : oldStorage(Configuration::getInstance().storageSize())
 {
@@ -110,7 +140,7 @@ ConfigScreen::ConfigScreen() : oldStorage(Configuration::getInstance().storageSi
     tabButtons[1].push_back(new Button(112, 38, 15, 12, [](){ Gui::setNextKeyboardFunc([](){ inputNumber([](u16 a){ Configuration::getInstance().defaultTID(a); }, 5, 0xFFFF); }); return false; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
     tabButtons[1].push_back(new Button(112, 62, 15, 12, [](){ Gui::setNextKeyboardFunc([](){ inputNumber([](u16 a){ Configuration::getInstance().defaultSID(a); }, 5, 0xFFFF); }); return false; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
     tabButtons[1].push_back(new Button(112, 86, 15, 12, [](){ Gui::setNextKeyboardFunc(&inputOT); return false; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(new Button(112, 110, 15, 12, &countryChoice, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    tabButtons[1].push_back(new ClickButton(112, 110, 15, 12, &countryChoice, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
     tabButtons[1].push_back(new Button(112, 134, 15, 12, [](){ Gui::setNextKeyboardFunc([](){ inputNumber([](u16 a){ Configuration::getInstance().day(a); }, 2, 31); }); return false; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
     tabButtons[1].push_back(new Button(112, 158, 15, 12, [](){ Gui::setNextKeyboardFunc([](){ inputNumber([](u16 a){ Configuration::getInstance().month(a); }, 2, 12); }); return false; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
     tabButtons[1].push_back(new Button(112, 182, 15, 12, [](){ Gui::setNextKeyboardFunc([](){ inputNumber([](u16 a){ Configuration::getInstance().year(a); }, 4, 9999); }); return false; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
@@ -239,11 +269,32 @@ void ConfigScreen::draw() const
         std::string data;
         switch (Configuration::getInstance().nationality())
         {
-            // I have no clue what these values are lol
+            case 0:
+                data = "JPN";
+                break;
+            case 1:
+                data = "USA";
+                break;
+            case 2:
+                data = "EUR";
+                break;
+            case 3:
+                data = "AUS";
+                break;
+            case 4:
+                data = "CHN";
+                break;
+            case 5:
+                data = "KOR";
+                break;
+            case 6:
+                data = "TWN";
+                break;
             default:
-                data = "United States";
+                data = "USA";
+                break;
         }
-        Gui::dynamicText(data, 140, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
+        Gui::dynamicText(i18n::localize(data), 140, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
         Gui::dynamicText(std::to_string(Configuration::getInstance().day()), 140, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
         Gui::dynamicText(std::to_string(Configuration::getInstance().month()), 140, 156, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
         Gui::dynamicText(std::to_string(Configuration::getInstance().year()), 140, 180, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);

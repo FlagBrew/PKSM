@@ -35,7 +35,7 @@
 class Configuration
 {
 public:
-    static constexpr int CURRENT_VERSION = 3;
+    static constexpr int CURRENT_VERSION = 4;
 
     static Configuration& getInstance(void)
     {
@@ -126,6 +126,16 @@ public:
         return mJson["randomMusic"];
     }
 
+    int defaultRegion(void)
+    {
+        return mJson["defaults"]["region"];
+    }
+
+    int defaultCountry(void)
+    {
+        return mJson["defaults"]["country"];
+    }
+
     void language(Language lang)
     {
         mJson["language"] = lang;
@@ -209,6 +219,16 @@ public:
     void randomMusic(bool random)
     {
         mJson["randomMusic"] = random;
+    }
+
+    void defaultRegion(u8 value)
+    {
+        mJson["defaults"]["region"] = value;
+    }
+
+    void defaultCountry(u8 value)
+    {
+        mJson["defaults"]["country"] = value;
     }
 
     void save(void);
