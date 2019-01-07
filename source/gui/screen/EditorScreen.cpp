@@ -76,6 +76,7 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
         pkm->version(TitleLoader::save->version());
         pkm->fixMoves();
         pkm->PID((u32)randomNumbers());
+        pkm->language(Configuration::getInstance().language());
         selector = std::make_unique<SpeciesSelectionScreen>(pkm);
         // No clue why this is necessary
         view->setPkm(nullptr);
