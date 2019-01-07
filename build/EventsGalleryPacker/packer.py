@@ -70,13 +70,14 @@ def scanDir(root, sheet, origOffset):
 						entry['name'] = "%04i - " % cardId + name
 						inMatches = False
 						for i in range(len(sheet['matches'])):
-							if sheet['matches'][i]['id'] == cardId and sheet['matches'][i]['species'] == entry['species']:
+							if sheet['matches'][i]['id'] == cardId and sheet['matches'][i]['species'] == entry['species'] and sheet['matches'][i]['form'] == entry['form']:
 								sheet['matches'][i]['indices'][lang] = len(sheet['wondercards']) - 1
 								inMatches = True
 						if not inMatches:
 							match = {}
 							match['id'] = cardId
 							match['species'] = entry['species']
+							match['form'] = entry['form']
 							match['indices'] = {}
 							match['indices'][lang] = len(sheet['wondercards']) - 1
 							sheet['matches'].append(match)
@@ -95,13 +96,14 @@ def scanDir(root, sheet, origOffset):
 						entry['name'] = "%04i - " % cardId + name
 						inMatches = False
 						for i in range(len(sheet['matches'])):
-							if sheet['matches'][i]['id'] == cardId and sheet['matches'][i]['species'] == entry['species']:
+							if sheet['matches'][i]['id'] == cardId and sheet['matches'][i]['species'] == entry['species'] and sheet['matches'][i]['form'] == entry['form']:
 								sheet['matches'][i]['indices'][lang] = len(sheet['wondercards']) - 1
 								inMatches = True
 						if not inMatches:
 							match = {}
 							match['id'] = cardId
 							match['species'] = entry['species']
+							match['form'] = entry['form']
 							match['indices'] = {}
 							match['indices'][lang] = len(sheet['wondercards']) - 1
 							sheet['matches'].append(match)
