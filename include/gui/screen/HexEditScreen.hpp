@@ -67,6 +67,7 @@ private:
     bool toggleBit(int selected, int offset);
     bool editNumber(bool high, bool up);
     bool checkValue(void);
+    void drawMeaning(void) const;
     std::pair<std::string, SecurityLevel> selectedDescription;
     std::vector<int> selectBytes;
     std::shared_ptr<PKX> pkm;

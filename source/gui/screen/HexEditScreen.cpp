@@ -1496,6 +1496,7 @@ void HexEditScreen::draw() const
             button->draw();
         }
     }
+    drawMeaning();
 }
 
 void HexEditScreen::update(touchPosition* touch)
@@ -1517,7 +1518,7 @@ void HexEditScreen::update(touchPosition* touch)
 
     if (down & KEY_TOUCH && level < UNRESTRICTED)
     {
-        if (touch->px < 20 && touch->py < 20)
+        if (touch->px > 0 && touch->px < 30 && touch->py > 0 && touch->py < 30)
         {
             if (superSecretCornersPressed[0])
             {
@@ -1525,9 +1526,9 @@ void HexEditScreen::update(touchPosition* touch)
             }
             superSecretCornersPressed[0] = true;
             countDownSecretTimer = true;
-            superSecretTimer = 300;
+            superSecretTimer = 600;
         }
-        else if (touch->px > 300 && touch->py < 20)
+        else if (touch->px > 290 && touch->px < 320 && touch->py < 30 && touch->py > 0)
         {
             if (superSecretCornersPressed[1])
             {
@@ -1535,9 +1536,9 @@ void HexEditScreen::update(touchPosition* touch)
             }
             superSecretCornersPressed[1] = true;
             countDownSecretTimer = true;
-            superSecretTimer = 300;
+            superSecretTimer = 600;
         }
-        else if (touch->px < 20 && touch->py > 220)
+        else if (touch->px > 0 && touch->px < 30 && touch->py > 210 && touch->py < 240)
         {
             if (superSecretCornersPressed[2])
             {
@@ -1545,9 +1546,9 @@ void HexEditScreen::update(touchPosition* touch)
             }
             superSecretCornersPressed[2] = true;
             countDownSecretTimer = true;
-            superSecretTimer = 300;
+            superSecretTimer = 600;
         }
-        else if (touch->px > 300 && touch->py > 220)
+        else if (touch->px > 290 && touch->px < 320 && touch->py > 210 && touch->py < 240)
         {
             if (superSecretCornersPressed[3])
             {
@@ -1555,7 +1556,7 @@ void HexEditScreen::update(touchPosition* touch)
             }
             superSecretCornersPressed[3] = true;
             countDownSecretTimer = true;
-            superSecretTimer = 300;
+            superSecretTimer = 600;
         }
         if (level == NORMAL)
         {
@@ -1628,5 +1629,94 @@ void HexEditScreen::update(touchPosition* touch)
     else
     {
         timerCount = 0;
+    }
+}
+
+void HexEditScreen::drawMeaning() const
+{
+    size_t i = hid.fullIndex();
+    switch (pkm->generation())
+    {
+        case Generation::FOUR:
+        case Generation::FIVE:
+            switch (i)
+            {
+                case 0x8 ... 0x9:
+                    Gui::dynamicText(GFX_BOTTOM, 100, i18n::species(Configuration::getInstance().language(), pkm->species()), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
+                    break;
+                case 0xA ... 0xB:
+                    Gui::dynamicText(GFX_BOTTOM, 100, i18n::item(Configuration::getInstance().language(), pkm->heldItem()), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
+                    break;
+                case 0x15:
+                    Gui::dynamicText(GFX_BOTTOM, 100, i18n::ability(Configuration::getInstance().language(), pkm->ability()), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
+                    break;
+                case 0x28 ... 0x2F:
+                    Gui::dynamicText(GFX_BOTTOM, 100, i18n::move(Configuration::getInstance().language(), pkm->move((i - 0x5A) / 2)), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
+                    break;
+                case 0x5F:
+                    Gui::dynamicText(GFX_BOTTOM, 100, i18n::game(Configuration::getInstance().language(), pkm->version()), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
+                    break;
+                case 0x44 ... 0x45:
+                    if (pkm->generation() == Generation::FIVE)
+                    {
+                        break;
+                    }
+                case 0x78 ... 0x79:
+                    Gui::dynamicText(GFX_BOTTOM, 100, i18n::location(Configuration::getInstance().language(), pkm->eggLocation(), pkm->generation()), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
+                    break;
+                case 0x46 ... 0x47:
+                    if (pkm->generation() == Generation::FIVE)
+                    {
+                        break;
+                    }
+                case 0x80 ... 0x81:
+                    Gui::dynamicText(GFX_BOTTOM, 100, i18n::location(Configuration::getInstance().language(), pkm->metLocation(), pkm->generation()), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
+                    break;
+            }
+            break;
+        case Generation::SIX:
+        case Generation::SEVEN:
+        case Generation::LGPE:
+            switch (i)
+            {
+                case 0x8 ... 0x9:
+                    Gui::dynamicText(GFX_BOTTOM, 100, i18n::species(Configuration::getInstance().language(), pkm->species()), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
+                    break;
+                case 0xA ... 0xB:
+                    Gui::dynamicText(GFX_BOTTOM, 100, i18n::item(Configuration::getInstance().language(), pkm->heldItem()), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
+                    break;
+                case 0x14:
+                    Gui::dynamicText(GFX_BOTTOM, 100, i18n::ability(Configuration::getInstance().language(), pkm->ability()), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
+                    break;
+                case 0x5A ... 0x61:
+                    Gui::dynamicText(GFX_BOTTOM, 100, i18n::move(Configuration::getInstance().language(), pkm->move((i - 0x5A) / 2)), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
+                    break;
+                case 0xDF:
+                    Gui::dynamicText(GFX_BOTTOM, 100, i18n::game(Configuration::getInstance().language(), pkm->version()), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
+                    break;
+                case 0x6A ... 0x71:
+                    if (pkm->generation() == Generation::SEVEN)
+                    {
+                        Gui::dynamicText(GFX_BOTTOM, 100, i18n::move(Configuration::getInstance().language(), ((PK7*)pkm.get())->relearnMove((i - 0x5A) / 2)), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
+                    }
+                    else if (pkm->generation() == Generation::SIX)
+                    {
+                        Gui::dynamicText(GFX_BOTTOM, 100, i18n::move(Configuration::getInstance().language(), ((PK6*)pkm.get())->relearnMove((i - 0x5A) / 2)), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
+                    }
+                    else
+                    {
+                        Gui::dynamicText(GFX_BOTTOM, 100, i18n::move(Configuration::getInstance().language(), ((PB7*)pkm.get())->relearnMove((i - 0x5A) / 2)), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
+                    }
+                    break;
+                case 0xD8 ... 0xD9:
+                    Gui::dynamicText(GFX_BOTTOM, 100, i18n::location(Configuration::getInstance().language(), pkm->eggLocation(), pkm->generation()), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
+                    break;
+                case 0xDA ... 0xDB:
+                    Gui::dynamicText(GFX_BOTTOM, 100, i18n::location(Configuration::getInstance().language(), pkm->metLocation(), pkm->generation()), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
+                    break;
+            }
+            break;
+        default:
+            break;
     }
 }
