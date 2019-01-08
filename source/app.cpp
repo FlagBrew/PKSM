@@ -119,7 +119,7 @@ static Result consoleDisplayError(const std::string& message, Result res)
     gfxFlushBuffers();
     gfxSwapBuffers();
     gspWaitForVBlank();
-    while (aptMainLoop() && (hidKeysDown() & KEY_START)) { hidScanInput(); }
+    while (aptMainLoop() && !(hidKeysDown() & KEY_START)) { hidScanInput(); }
     return res;
 }
 

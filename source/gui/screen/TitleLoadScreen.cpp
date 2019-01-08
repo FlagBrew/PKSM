@@ -184,6 +184,7 @@ void TitleLoadScreen::draw() const
 void TitleLoadScreen::update(touchPosition* touch)
 {
     Screen::update();
+    u32 buttonsDown = hidKeysDown();
     if (TitleLoader::cardUpdate())
     {
         selectedGame = false;
@@ -203,11 +204,14 @@ void TitleLoadScreen::update(touchPosition* touch)
         }
         else
         {
+            if (buttonsDown & KEY_Y)
+            {
+                Gui::screenBack();
+                Gui::setScreen(std::make_unique<SaveLoadScreen>());
+            }
             return;
         }
     }
-
-    u32 buttonsDown = hidKeysDown();
 
     if (selectedGame)
     {
