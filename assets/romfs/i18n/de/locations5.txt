@@ -1,0 +1,281 @@
+0000|－－－－－－－－－－
+0001|Mysteriöser Ort
+0002|Entfernter Ort
+0003|von 
+0004|Avenitia
+0005|Gavina
+0006|Orion City
+0007|Septerna City
+0008|Stratos City
+0009|Rayono City
+000a|Marea City
+000b|Panaero City
+000c|Nevaio City
+000d|Twindrake City
+000e|Route 1
+000f|Route 2
+0010|Route 3
+0011|Route 4
+0012|Route 5
+0013|Route 6
+0014|Route 7
+0015|Route 8
+0016|Route 9
+0017|Route 10
+0018|Route 11
+0019|Route 12
+001a|Route 13
+001b|Route 14
+001c|Route 15
+001d|Route 16
+001e|Route 17
+001f|Route 18
+0020|Traumbrache
+0021|Ewigenwald
+0022|Wüstenresort
+0023|Alter Palast
+0024|PWT
+0025|Elektrolithhöhle
+0026|Wendelberg
+0027|Drachenstiege
+0028|Siegesstraße
+0029|Tessera
+002a|Ondula
+002b|Ferrula
+002c|Pokémon Liga
+002d|Schloss von N
+002e|MS Einall Royal
+002f|Weichenstation
+0030|Kampfmetro
+0031|Musiktheater
+0032|Schwarze Stadt
+0033|Weißer Wald
+0034|Turm der Einheit
+0035|Grundwassersenke
+0036|Panaero-Höhle
+0037|Feld der Besinnung
+0038|Turm des Himmels
+0039|Moor von Nevaio
+003a|Kaufhaus
+003b|Höhle der Schulung
+003c|Porterlabor
+003d|Riesengrotte
+003e|Freiheitsgarten
+003f|P2-Labor
+0040|Himmelspfeilbrücke
+0041|Marea-Zugbrücke
+0042|Zylinderbrücke
+0043|Dorfbrücke
+0044|Wunderbrücke
+0045|Kontaktebene
+0046|Schrein der Ernte
+0047|Bucht von Ondula
+0048|Hain der Täuschung
+0049|Kammer der Prüfung
+004a|Kammer der Weisung
+004b|Kontaktebenenhain
+004c|Rayono City
+004d|Marea City
+004e|Panaero City
+004f|Nevaio City
+0050|Twindrake City
+0051|Avenitia
+0052|Weißer Wald
+0053|Schwarze Stadt
+0054|Tiefkühlcontainer
+0055|Elektrolithhöhle
+0056|Wendelberg
+0057|Drachenstiege
+0058|Riesengrotte
+0059|Marea-Zugbrücke
+005a|Zylinderbrücke
+005b|Dorfbrücke
+005c|Wunderbrücke
+005d|Route 5
+005e|Route 6
+005f|Route 7
+0060|Route 8
+0061|Route 9
+0062|Route 11
+0063|Route 12
+0064|Route 13
+0065|Route 14
+0066|Route 15
+0067|Route 16
+0068|Tessera
+0069|Ondula
+006a|Gavina-Tor
+006b|Ondula-Tor
+006c|Septerna-Tor
+006d|Stratos-Tor
+006e|Rayono-Tor
+006f|Twindrake-Tor
+0070|Schwarztor
+0071|Weißtor
+0072|Brückentor
+0073|Routentor
+0074|Unterwasserruine
+0075|Eventura City
+0076|Vapydro City
+0077|Abidaya City
+0078|Pokéwood
+0079|Einklangspassage
+007a|Dausing
+007b|Monsentiero
+007c|Route 19
+007d|Route 20
+007e|Route 21
+007f|Route 22
+0080|Route 23
+0081|Stratos-Kanalisation
+0082|Dausing-Hof
+0083|Vapydro-Werke
+0084|Janusberg
+0085|Bizarro-Haus
+0086|Siegesstraße
+0087|Plasma-Fregatte
+0088|Alter Fluchtweg
+0089|Turner-Pfad
+008a|－－－－－－－－－－
+008b|Weiße Baumhöhle
+008c|Schwarzes Hochhaus
+008d|Strandgrotte
+008e|Beschwörungshöhle
+008f|Versteckte Lichtung
+0090|Unterseetunnel
+0091|Vapydro-Tor
+0092|Eventura-Tor
+0093|Naturschutzgebiet
+0094|Medaillenamt
+0095|Unterirdische Ruine
+0096|Steingipfelkammer
+0097|Eisbergkammer
+0098|Eisenkammer
+0099|Schwurhain
+7530|－－－－－－－－－－
+7531|Linktausch
+7532|Linktausch
+7533|Kanto
+7534|Johto
+7535|Hoenn
+7536|Sinnoh
+7537|Entferntes Land
+7538|－－－－－－－－－－
+7539|－－－－－－－－－－
+753a|－－－－－－－－－－
+753b|－－－－－－－－－－
+753c|－－－－－－－－－－
+753d|Kontaktebene
+753e|Pokémon Traumradar
+9c40|Idyll
+9c41|Entfernter Ort
+9c42|Pokémon Movie
+9c43|Pokémon Film 10
+9c44|Pokémon Film 11
+9c45|Pokémon Film 12
+9c46|Pokémon Film 13
+9c47|Pokémon Film 14
+9c48|Pokémon Film 15
+9c49|Pokémon Film 16
+9c4a|Pokémon Film 17
+9c4b|Pokémon Film 18
+9c4c|Pokémon Film 19
+9c4d|Pokémon Film 20
+9c4e|Pokémon-Center
+9c4f|Pokémon Cartoon
+9c50|PC Tokyo
+9c51|PC Osaka
+9c52|PC Fukuoka
+9c53|PC Nagoya
+9c54|PC Sapporo
+9c55|PC Yokohama
+9c56|WCS
+9c57|WCS 2010
+9c58|WCS 2011
+9c59|WCS 2012
+9c5a|WCS 2013
+9c5b|WCS 2014
+9c5c|WCS 2015
+9c5d|WCS 2016
+9c5e|WCS 2017
+9c5f|WCS 2018
+9c60|WCS 2019
+9c61|WCS 2020
+9c62|Worlds
+9c63|Worlds 2010
+9c64|Worlds 2011
+9c65|Worlds 2012
+9c66|Worlds 2013
+9c67|Worlds 2014
+9c68|Worlds 2015
+9c69|Worlds 2016
+9c6a|Worlds 2017
+9c6b|Worlds 2018
+9c6c|Worlds 2019
+9c6d|Worlds 2020
+9c6e|VGE
+9c6f|VGE 2010
+9c70|VGE 2011
+9c71|VGE 2012
+9c72|VGE 2013
+9c73|VGE 2014
+9c74|VGE 2015
+9c75|VGE 2016
+9c76|VGE 2017
+9c77|VGE 2018
+9c78|VGE 2019
+9c79|VGE 2020
+9c7a|Pokémon Event
+9c7b|Kampfturnier
+9c7c|Spielveranstaltung
+9c7d|Pokémon Fan Club
+9c7e|Pokémon Sunday
+9c7f|Challenge-Plaza
+9c80|Battle Challenge
+9c81|Trainer's Court
+9c82|Battle Tour
+9c83|Konzert
+9c84|Wi-Fi-Geschenk
+9c85|Pokémon Ranger
+9c86|Ranger-Vereinigung
+9c87|PBR
+9c88|Pokémon DW
+9c89|Pokémon Event 10
+9c8a|Pokémon Event 11
+9c8b|Pokémon Event 12
+9c8c|Pokémon Event 13
+9c8d|Pokémon Event 14
+9c8e|Pokémon Event 15
+9c8f|Pokémon Event 16
+9c90|Pokémon Event 17
+9c91|Pokémon Event 18
+9c92|Pokémon Event 19
+9c93|Pokémon Event 20
+9c94|Pokémon Festa
+9c95|Pokémon Festa 10
+9c96|Pokémon Festa 11
+9c97|Pokémon Festa 12
+9c98|Pokémon Festa 13
+9c99|Pokémon Festa 14
+9c9a|Pokémon Festa 15
+9c9b|Pokémon Festa 16
+9c9c|Pokémon Festa 17
+9c9d|Pokémon Festa 18
+9c9e|Pokémon Festa 19
+9c9f|Pokémon Festa 20
+9ca0|POKÉPARK
+9ca1|POKÉPARK 10
+9ca2|POKÉPARK 11
+9ca3|POKÉPARK 12
+9ca4|POKÉPARK 13
+9ca5|POKÉPARK 14
+9ca6|POKÉPARK 15
+9ca7|POKÉPARK 16
+9ca8|POKÉPARK 17
+9ca9|POKÉPARK 18
+9caa|POKÉPARK 19
+9cab|POKÉPARK 20
+9cac|Event
+ea60|Entfernte Person
+ea61|Betreuerpärchen
+ea62|Züchter

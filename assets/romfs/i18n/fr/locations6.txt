@@ -1,0 +1,296 @@
+0000|－－－－－－－－－－
+0002|Endroit Mystérieux
+0004|Endroit Lointain
+0006|Bourg Croquis
+0008|Route 1
+0009|Sentier Croquis
+000a|Quarellis
+000c|Route 2
+000d|Chemin Progrès
+000e|Forêt de Neuvartault
+0010|Route 3
+0011|Chemin Ouvert
+0012|Neuvartault
+0014|Route 4
+0015|Route Fleurie
+0016|Illumis
+0018|Tour Prismatique
+001a|Labos Lysandre
+001c|Route 5
+001d|Chemin du Versant
+001e|Fort-Vanitas
+0020|Fort de Vanitas
+0022|Route 6
+0023|Allée du Palais
+0024|Palais Chaydeuvre
+0026|Route 7
+0027|Chemin des Berges
+0028|Relifac-le-Haut
+002a|Route 8
+002b|Falaise Muraille
+002c|Roche-sur-Gliffe
+002e|Route 9
+002f|Piste Piquante
+0030|Château de Combat
+0032|Route 10
+0033|Route Menhir
+0034|Cromlac’h
+0036|Route 11
+0037|Chemin Miroir
+0038|Grotte Miroitante
+003a|Yantreizh
+003c|Tour Maîtrise
+003e|Route 12
+003f|Chemin Fourrage
+0040|Port Tempères
+0042|Route 13
+0043|Steppe d’Illumis
+0044|Route 14
+0045|Laie Romant-ss-Bois
+0046|Romant-sous-Bois
+0048|Usine de Poké Balls
+004a|Route 15
+004b|Chemin Brun
+004c|La Frescale
+004e|Route 16
+004f|Chemin Tristesse
+0050|[~ 80]
+0051|[~ 81]
+0052|Caverne Gelée
+0054|Route 17
+0055|Route Mammochon
+0056|Flusselles
+0058|Route 18
+0059|Chemin des Gorges
+005a|Mozheim
+005c|Route 19
+005d|Chemin du Val
+005e|Auffrac-les-Congères
+0060|Route 20
+0061|Bois du Dédale
+0062|Village Pokémon
+0064|Route 21
+0065|Chemin Final
+0066|Route 22
+0067|Chemin Détour
+0068|Route Victoire
+006a|Ligue Pokémon
+006c|Batisques
+006e|Maison de Combat
+0070|Baie Azur
+0072|Porte de La Frescale
+0074|Porte de Mozheim
+0076|Porte de R. s/Gliffe
+0078|Porte d’Illumis
+007a|Porte de Yantreizh
+007c|Porte de P. Tempères
+007e|Porte de Romant
+0080|Porte de Flusselles
+0082|Porte d’Auffrac
+0084|Grotte Étincelante
+0086|Cave Connecterre
+0087|Antre Nosferapti
+0088|Centrale de Kalos
+008a|Repaire Team Flare
+008c|Grotte Coda
+008e|Hôtel Désolation
+0090|Chambre Néant
+0092|Antre Néréen
+0094|Safari des Amis
+0096|Chambre du Brasier
+0098|Chambre du Barrage
+009a|Chambre de l’Alliage
+009c|Chambre de la Guivre
+009e|Chambre de l’Éclat
+00a0|Porte de la Ligue
+00a2|Gare d’Illumis
+00a4|Gare de Batisques
+00a6|Aquarium R. s/Gliffe
+00a8|Grotte Inconnue
+00aa|Bourg-en-Vol
+00ac|Rosyères
+00ae|Myokara
+00b0|Vermilava
+00b2|Autéquia
+00b4|Vergazon
+00b6|Pacifiville
+00b8|Clémenti-Ville
+00ba|Poivressel
+00bc|Lavandia
+00be|Mérouville
+00c0|Cimetronelle
+00c2|Nénucrique
+00c4|Algatia
+00c6|Atalanopolis
+00c8|Éternara
+00ca|Ligue Pokémon
+00cc|Route 101
+00ce|Route 102
+00d0|Route 103
+00d2|Route 104
+00d4|Chenal 105
+00d6|Chenal 106
+00d8|Chenal 107
+00da|Chenal 108
+00dc|Chenal 109
+00de|Route 110
+00e0|Route 111
+00e2|Route 112
+00e4|Route 113
+00e6|Route 114
+00e8|Route 115
+00ea|Route 116
+00ec|Route 117
+00ee|Route 118
+00f0|Route 119
+00f2|Route 120
+00f4|Route 121
+00f6|Chenal 122
+00f8|Route 123
+00fa|Chenal 124
+00fc|Chenal 125
+00fe|Chenal 126
+0100|Chenal 127
+0102|Chenal 128
+0104|Chenal 129
+0106|Chenal 130
+0108|Chenal 131
+010a|Chenal 132
+010c|Chenal 133
+010e|Chenal 134
+0110|Site Météore
+0112|Tunnel Mérazon
+0114|???
+0116|Ruines Désert
+0118|Grotte Granite
+011a|Bois Clémenti
+011c|Mont Chimnée
+011e|Sentier Sinuroc
+0120|Chemin Ardent
+0122|Mont Mémoria
+0124|Planque Aqua
+0126|Caverne Fondmer
+0128|Grotte Origine
+012a|Route Victoire
+012c|Grotte Tréfonds
+012e|New Lavandia
+0130|Lavandia Sea
+0132|Grotte de l’Îlot
+0134|Tombeau Antique
+0136|Sanctuaire
+0138|Grotte Zénith
+013a|Planque Magma
+013c|Pilier Céleste
+013e|Atoll de Combat
+0140|Île du Sud
+0142|Le Marina
+0144|Parc Safari
+0146|Forêt Mirage
+0148|Grotte Mirage
+014a|Île Mirage
+014c|Mont Mirage
+014e|Forêt Impénétrable
+0150|Plaine Sans Nom
+0152|Grotte Oubliée
+0154|Grotte Évanescente
+0156|Gouffre Informe
+0158|Île de l’Arc
+015a|Îlot Secret
+015c|Grand Ciel
+015e|Plage Secrète
+0160|Champ Fleuri Secret
+0162|Base Secrète
+7530|Échanges Link
+7531|Échanges Link
+7532|Kanto
+7533|Johto
+7534|Hoenn
+7535|Sinnoh
+7536|Pays lointain
+7537|－－－－－－－－－－
+7538|Unys
+7539|Kalos
+753a|Poké Lien
+9c40|Endroit superbe
+9c41|Endroit lointain
+9c42|Film Pokémon
+9c43|Film Pokémon 2013
+9c44|Film Pokémon 2014
+9c45|Film Pokémon 2015
+9c46|Film Pokémon 2016
+9c47|Film Pokémon 2017
+9c48|Film Pokémon 2018
+9c49|Centre Pokémon
+9c4a|Dessin animé Pokémon
+9c4b|Centre Pokémon Tokyo
+9c4c|Centre Pokémon Osaka
+9c4d|Centre Pokémon Fukuoka
+9c4e|Centre Pokémon Nagoya
+9c4f|Centre Pokémon Sapporo
+9c50|Centre Pokémon Yokohama
+9c51|Centre Pokémon Tohoku
+9c52|Centre Pokémon Tokyo Bay
+9c53|Pokémon Store
+9c54|WCS
+9c55|WCS 2013
+9c56|WCS 2014
+9c57|WCS 2015
+9c58|WCS 2016
+9c59|WCS 2017
+9c5a|WCS 2018
+9c5b|Worlds
+9c5c|Worlds 2013
+9c5d|Worlds 2014
+9c5e|Worlds 2015
+9c5f|Worlds 2016
+9c60|Worlds 2017
+9c61|Worlds 2018
+9c62|Événement Jeu Vidéo
+9c63|Événement Jeu Vidéo 2013
+9c64|Événement Jeu Vidéo 2014
+9c65|Événement Jeu Vidéo 2015
+9c66|Événement Jeu Vidéo 2016
+9c67|Événement Jeu Vidéo 2017
+9c68|Événement Jeu Vidéo 2018
+9c69|Événement Pokémon
+9c6a|Compétition
+9c6b|Événement
+9c6c|Fan Club Pokémon
+9c6d|Émission Pokémon
+9c6e|Concert
+9c6f|Cadeau téléchargeable
+9c70|Pokémon Global Link
+9c71|Événement Pokémon 2013
+9c72|Événement Pokémon 2014
+9c73|Événement Pokémon 2015
+9c74|Événement Pokémon 2016
+9c75|Événement Pokémon 2017
+9c76|Événement Pokémon 2018
+9c77|Pokémon Festa
+9c78|Pokémon Festa 2013
+9c79|Pokémon Festa 2014
+9c7a|Pokémon Festa 2015
+9c7b|Pokémon Festa 2016
+9c7c|Pokémon Festa 2017
+9c7d|Pokémon Festa 2018
+9c7e|PokéPark
+9c7f|PokéPark 2013
+9c80|PokéPark 2014
+9c81|PokéPark 2015
+9c82|PokéPark 2016
+9c83|PokéPark 2017
+9c84|PokéPark 2018
+9c85|Lieu d’Événement
+9c86|GAME FREAK
+9c87|Stade
+9c88|Championnat de Jeu Vidéo
+9c89|Championnat de JV 2013
+9c8a|Championnat de JV 2014
+9c8b|Championnat de JV 2015
+9c8c|Championnat de JV 2016
+9c8d|Championnat de JV 2017
+9c8e|Championnat de JV 2018
+ea60|Personne lointaine
+ea61|Responsable de la Pension
+ea62|Chercheur de Trésors
+ea63|Dame des Eaux Thermales

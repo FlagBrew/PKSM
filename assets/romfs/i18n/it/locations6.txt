@@ -1,0 +1,296 @@
+0000|----------
+0002|Zona Misteriosa
+0004|Luogo Remoto
+0006|Borgo Bozzetto
+0008|Percorso 1
+0009|Vicolo Bozzetto
+000a|Rio Acquerello
+000c|Percorso 2
+000d|Via Progresso
+000e|Bosco Novartopoli
+0010|Percorso 3
+0011|Via Aperta
+0012|Novartopoli
+0014|Percorso 4
+0015|Viale Parterre
+0016|Luminopoli
+0018|Torre Prisma
+001a|Laboratori Elisio
+001c|Percorso 5
+001d|Via Versante
+001e|Castel Vanità
+0020|Maniero Sottotono
+0022|Percorso 6
+0023|Boulevard Palazzo
+0024|Reggia Aurea
+0026|Percorso 7
+0027|Via Fiume
+0028|Altoripoli
+002a|Percorso 8
+002b|Muraglia Costiera
+002c|Petroglifari
+002e|Percorso 9
+002f|Sentiero Punzoni
+0030|Castello Lotta
+0032|Percorso 10
+0033|Strada dei Menhir
+0034|Cromleburgo
+0036|Percorso 11
+0037|Via dei Riflessi
+0038|Grotta dei Riflessi
+003a|Yantaropoli
+003c|Torre Maestra
+003e|Percorso 12
+003f|Via dei Pascoli
+0040|Temperopoli
+0042|Percorso 13
+0043|Landa di Luminopoli
+0044|Percorso 14
+0045|Sentiero Romantopoli
+0046|Romantopoli
+0048|Fabbrica Poké Ball
+004a|Percorso 15
+004b|Via Fogliebrune
+004c|Frescovilla
+004e|Percorso 16
+004f|Via Malinconia
+0050|[~ 80]
+0051|[~ 81]
+0052|Caverna Gelata
+0054|Percorso 17
+0055|Passo Mamoswine
+0056|Fluxopoli
+0058|Percorso 18
+0059|Via Valle Stretta
+005a|Ponte Mosaico
+005c|Percorso 19
+005d|Via Valle Larga
+005e|Fractalopoli
+0060|Percorso 20
+0061|Bosco Passoperso
+0062|Valle dei Pokémon
+0064|Percorso 21
+0065|Via Ultima
+0066|Percorso 22
+0067|Via Detour
+0068|Via Vittoria
+006a|Lega Pokémon
+006c|Batikopoli
+006e|Villa Lotta
+0070|Baia Azzurra
+0072|Varco Frescovilla
+0074|Varco Ponte Mosaico
+0076|Varco Petroglifari
+0078|Varco Luminopoli
+007a|Varco Yantaropoli
+007c|Varco Temperopoli
+007e|Varco Romantopoli
+0080|Varco Fluxopoli
+0082|Varco Fractalopoli
+0084|Grotta dei Bagliori
+0086|Grotta Trait d’Union
+0087|Tana degli Zubat
+0088|Centrale di Kalos
+008a|Covo del Team Flare
+008c|Grotta Climax
+008e|Albergo Diroccato
+0090|Stanza Vacua
+0092|Antro Talassico
+0094|Safari Amici
+0096|Sala delle Fiamme
+0098|Sala delle Chiuse
+009a|Sala del Metallo
+009c|Sala del Dragone
+009e|Sala della Luce
+00a0|Varco Lega Pokémon
+00a2|Stazione Luminopoli
+00a4|Stazione Batikopoli
+00a6|Acquario
+00a8|Grotta Ignota
+00aa|Albanova
+00ac|Solarosa
+00ae|Bluruvia
+00b0|Cuordilava
+00b2|Brunifoglia
+00b4|Mentania
+00b6|Orocea
+00b8|Petalipoli
+00ba|Porto Selcepoli
+00bc|Ciclamipoli
+00be|Ferrugipoli
+00c0|Forestopoli
+00c2|Porto Alghepoli
+00c4|Verdeazzupoli
+00c6|Ceneride
+00c8|Iridopoli
+00ca|Lega Pokémon
+00cc|Percorso 101
+00ce|Percorso 102
+00d0|Percorso 103
+00d2|Percorso 104
+00d4|Percorso 105
+00d6|Percorso 106
+00d8|Percorso 107
+00da|Percorso 108
+00dc|Percorso 109
+00de|Percorso 110
+00e0|Percorso 111
+00e2|Percorso 112
+00e4|Percorso 113
+00e6|Percorso 114
+00e8|Percorso 115
+00ea|Percorso 116
+00ec|Percorso 117
+00ee|Percorso 118
+00f0|Percorso 119
+00f2|Percorso 120
+00f4|Percorso 121
+00f6|Percorso 122
+00f8|Percorso 123
+00fa|Percorso 124
+00fc|Percorso 125
+00fe|Percorso 126
+0100|Percorso 127
+0102|Percorso 128
+0104|Percorso 129
+0106|Percorso 130
+0108|Percorso 131
+010a|Percorso 132
+010c|Percorso 133
+010e|Percorso 134
+0110|Cascate Meteora
+0112|Tunnel Menferro
+0114|???
+0116|Rovine Sabbiose
+0118|Grotta Pietrosa
+011a|Bosco Petalo
+011c|Monte Camino
+011e|Passo Selvaggio
+0120|Cammino Ardente
+0122|Monte Pira
+0124|Rifugio Idro
+0126|Antro Abissale
+0128|Grotta dei Tempi
+012a|Via Vittoria
+012c|Grotta Ondosa
+012e|Ciclanova
+0130|Ciclamare
+0132|Grotta Insulare
+0134|Tomba Antica
+0136|Sala Incisa
+0138|Grottino Solare
+013a|Rifugio Magma
+013c|Torre dei Cieli
+013e|Resort Lotta
+0140|Isola Remota
+0142|Motonave Marea
+0144|Zona Safari
+0146|Selva Miraggio
+0148|Grotta Miraggio
+014a|Isola Miraggio
+014c|Monte Miraggio
+014e|Foresta Vergine
+0150|Piana Senza Nome
+0152|Caverna Ignota
+0154|Grotta Sfuggente
+0156|Fossa Informe
+0158|Isola Arcodiluna
+015a|Isolotto Segreto
+015c|Ipersfera
+015e|Baia Segreta
+0160|Valle Segreta
+0162|Base Segreta
+7530|Scambio in link
+7531|Scambio in link
+7532|Kanto
+7533|Johto
+7534|Hoenn
+7535|Sinnoh
+7536|Terra Lontana
+7537|----------
+7538|Unima
+7539|Kalos
+753a|Pokémon Link
+9c40|Luogo Grazioso
+9c41|Luogo Remoto
+9c42|Film Pokémon
+9c43|Film Pokémon 2013
+9c44|Film Pokémon 2014
+9c45|Film Pokémon 2015
+9c46|Film Pokémon 2016
+9c47|Film Pokémon 2017
+9c48|Film Pokémon 2018
+9c49|Centro Pokémon
+9c4a|Cartone Pokémon
+9c4b|Centro Pokémon Tokyo
+9c4c|Centro Pokémon Osaka
+9c4d|Centro Pokémon Fukuoka
+9c4e|Centro Pokémon Nagoya
+9c4f|Centro Pokémon Sapporo
+9c50|Centro Pokémon Yokohama
+9c51|Centro Pokémon Tohoku
+9c52|Centro Pokémon Tokyo Bay
+9c53|Negozio Pokémon
+9c54|Mondiali
+9c55|Mondiali 2013
+9c56|Mondiali 2014
+9c57|Mondiali 2015
+9c58|Mondiali 2016
+9c59|Mondiali 2017
+9c5a|Mondiali 2018
+9c5b|Mondiali
+9c5c|Mondiali 2013
+9c5d|Mondiali 2014
+9c5e|Mondiali 2015
+9c5f|Mondiali 2016
+9c60|Mondiali 2017
+9c61|Mondiali 2018
+9c62|Evento di gioco
+9c63|Evento di gioco 2013
+9c64|Evento di gioco 2014
+9c65|Evento di gioco 2015
+9c66|Evento di gioco 2016
+9c67|Evento di gioco 2017
+9c68|Evento di gioco 2018
+9c69|Evento Pokémon
+9c6a|Gara di Lotta
+9c6b|Evento di gioco
+9c6c|Pokémon Fan Club
+9c6d|Programma TV Pokémon
+9c6e|Concerto
+9c6f|Regalo online
+9c70|PGL
+9c71|Evento Pokémon 13
+9c72|Evento Pokémon 14
+9c73|Evento Pokémon 15
+9c74|Evento Pokémon 16
+9c75|Evento Pokémon 17
+9c76|Evento Pokémon 18
+9c77|Pokémon Festa
+9c78|Pokémon Festa 13
+9c79|Pokémon Festa 14
+9c7a|Pokémon Festa 15
+9c7b|Pokémon Festa 16
+9c7c|Pokémon Festa 17
+9c7d|Pokémon Festa 18
+9c7e|PokéPark
+9c7f|PokéPark 13
+9c80|PokéPark 14
+9c81|PokéPark 15
+9c82|PokéPark 16
+9c83|PokéPark 17
+9c84|PokéPark 18
+9c85|Evento
+9c86|GAME FREAK
+9c87|Stadio
+9c88|Campionati di Videogiochi
+9c89|Campionati 2013
+9c8a|Campionati 2014
+9c8b|Campionati 2015
+9c8c|Campionati 2016
+9c8d|Campionati 2017
+9c8e|Campionati 2018
+ea60|Persona Lontana
+ea61|Pensione Pokémon
+ea62|Cercatesori
+ea63|Vecchina delle terme

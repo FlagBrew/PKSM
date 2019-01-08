@@ -1,0 +1,296 @@
+0000|——————
+0002|Mystery Zone
+0004|Faraway Place
+0006|Vaniville Town
+0008|Route 1
+0009|Vaniville Pathway
+000a|Aquacorde Town
+000c|Route 2
+000d|Avance Trail
+000e|Santalune Forest
+0010|Route 3
+0011|Ouvert Way
+0012|Santalune City
+0014|Route 4
+0015|Parterre Way
+0016|Lumiose City
+0018|Prism Tower
+001a|Lysandre Labs
+001c|Route 5
+001d|Versant Road
+001e|Camphrier Town
+0020|Shabboneau Castle
+0022|Route 6
+0023|Palais Lane
+0024|Parfum Palace
+0026|Route 7
+0027|Rivière Walk
+0028|Cyllage City
+002a|Route 8
+002b|Muraille Coast
+002c|Ambrette Town
+002e|Route 9
+002f|Spikes Passage
+0030|Battle Chateau
+0032|Route 10
+0033|Menhir Trail
+0034|Geosenge Town
+0036|Route 11
+0037|Miroir Way
+0038|Reflection Cave
+003a|Shalour City
+003c|Tower of Mastery
+003e|Route 12
+003f|Fourrage Road
+0040|Coumarine City
+0042|Route 13
+0043|Lumiose Badlands
+0044|Route 14
+0045|Laverre Nature Trail
+0046|Laverre City
+0048|Poké Ball Factory
+004a|Route 15
+004b|Brun Way
+004c|Dendemille Town
+004e|Route 16
+004f|Mélancolie Path
+0050|[~ 80]
+0051|[~ 81]
+0052|Frost Cavern
+0054|Route 17
+0055|Mamoswine Road
+0056|Anistar City
+0058|Route 18
+0059|Vallée Étroite Way
+005a|Couriway Town
+005c|Route 19
+005d|Grande Vallée Way
+005e|Snowbelle City
+0060|Route 20
+0061|Winding Woods
+0062|Pokémon Village
+0064|Route 21
+0065|Dernière Way
+0066|Route 22
+0067|Détourner Way
+0068|Victory Road
+006a|Pokémon League
+006c|Kiloude City
+006e|Battle Maison
+0070|Azure Bay
+0072|Dendemille Gate
+0074|Couriway Gate
+0076|Ambrette Gate
+0078|Lumiose Gate
+007a|Shalour Gate
+007c|Coumarine Gate
+007e|Laverre Gate
+0080|Anistar Gate
+0082|Snowbelle Gate
+0084|Glittering Cave
+0086|Connecting Cave
+0087|Zubat Roost
+0088|Kalos Power Plant
+008a|Team Flare Secret HQ
+008c|Terminus Cave
+008e|Lost Hotel
+0090|Chamber of Emptiness
+0092|Sea Spirit’s Den
+0094|Friend Safari
+0096|Blazing Chamber
+0098|Flood Chamber
+009a|Ironworks Chamber
+009c|Dragonmark Chamber
+009e|Radiant Chamber
+00a0|Pokémon League Gate
+00a2|Lumiose Station
+00a4|Kiloude Station
+00a6|Ambrette Aquarium
+00a8|Unknown Dungeon
+00aa|Littleroot Town
+00ac|Oldale Town
+00ae|Dewford Town
+00b0|Lavaridge Town
+00b2|Fallarbor Town
+00b4|Verdanturf Town
+00b6|Pacifidlog Town
+00b8|Petalburg City
+00ba|Slateport City
+00bc|Mauville City
+00be|Rustboro City
+00c0|Fortree City
+00c2|Lilycove City
+00c4|Mossdeep City
+00c6|Sootopolis City
+00c8|Ever Grande City
+00ca|Pokémon League
+00cc|Route 101
+00ce|Route 102
+00d0|Route 103
+00d2|Route 104
+00d4|Route 105
+00d6|Route 106
+00d8|Route 107
+00da|Route 108
+00dc|Route 109
+00de|Route 110
+00e0|Route 111
+00e2|Route 112
+00e4|Route 113
+00e6|Route 114
+00e8|Route 115
+00ea|Route 116
+00ec|Route 117
+00ee|Route 118
+00f0|Route 119
+00f2|Route 120
+00f4|Route 121
+00f6|Route 122
+00f8|Route 123
+00fa|Route 124
+00fc|Route 125
+00fe|Route 126
+0100|Route 127
+0102|Route 128
+0104|Route 129
+0106|Route 130
+0108|Route 131
+010a|Route 132
+010c|Route 133
+010e|Route 134
+0110|Meteor Falls
+0112|Rusturf Tunnel
+0114|???
+0116|Desert Ruins
+0118|Granite Cave
+011a|Petalburg Woods
+011c|Mt. Chimney
+011e|Jagged Pass
+0120|Fiery Path
+0122|Mt. Pyre
+0124|Team Aqua Hideout
+0126|Seafloor Cavern
+0128|Cave of Origin
+012a|Victory Road
+012c|Shoal Cave
+012e|New Mauville
+0130|Sea Mauville
+0132|Island Cave
+0134|Ancient Tomb
+0136|Sealed Chamber
+0138|Scorched Slab
+013a|Team Magma Hideout
+013c|Sky Pillar
+013e|Battle Resort
+0140|Southern Island
+0142|S.S. Tidal
+0144|Safari Zone
+0146|Mirage Forest
+0148|Mirage Cave
+014a|Mirage Island
+014c|Mirage Mountain
+014e|Trackless Forest
+0150|Pathless Plain
+0152|Nameless Cavern
+0154|Fabled Cave
+0156|Gnarled Den
+0158|Crescent Isle
+015a|Secret Islet
+015c|Soaring in the sky
+015e|Secret Shore
+0160|Secret Meadow
+0162|Secret Base
+7530|a Link Trade
+7531|a Link Trade
+7532|the Kanto region
+7533|the Johto region
+7534|the Hoenn region
+7535|the Sinnoh region
+7536|a distant land
+7537|----------
+7538|the Unova region
+7539|the Kalos region
+753a|Pokémon Link
+9c40|a lovely place
+9c41|a faraway place
+9c42|a Pokémon movie
+9c43|Pokémon Movie 13
+9c44|Pokémon Movie 14
+9c45|Pokémon Movie 15
+9c46|Pokémon Movie 16
+9c47|Pokémon Movie 17
+9c48|Pokémon Movie 18
+9c49|a Pokémon Center
+9c4a|the Pokémon cartoon
+9c4b|PC Tokyo
+9c4c|PC Osaka
+9c4d|PC Fukuoka
+9c4e|PC Nagoya
+9c4f|PC Sapporo
+9c50|PC Yokohama
+9c51|PC Tohoku
+9c52|PC Tokyo Bay
+9c53|a Pokémon Store
+9c54|a WCS
+9c55|WCS 2013
+9c56|WCS 2014
+9c57|WCS 2015
+9c58|WCS 2016
+9c59|WCS 2017
+9c5a|WCS 2018
+9c5b|Worlds
+9c5c|Worlds 2013
+9c5d|Worlds 2014
+9c5e|Worlds 2015
+9c5f|Worlds 2016
+9c60|Worlds 2017
+9c61|Worlds 2018
+9c62|a VGE
+9c63|VGE 2013
+9c64|VGE 2014
+9c65|VGE 2015
+9c66|VGE 2016
+9c67|VGE 2017
+9c68|VGE 2018
+9c69|a Pokémon event
+9c6a|a Battle Competition
+9c6b|a game event
+9c6c|the Pokémon Fan Club
+9c6d|a Pokémon TV program
+9c6e|a concert
+9c6f|an online Present
+9c70|the PGL
+9c71|Pokémon Event 13
+9c72|Pokémon Event 14
+9c73|Pokémon Event 15
+9c74|Pokémon Event 16
+9c75|Pokémon Event 17
+9c76|Pokémon Event 18
+9c77|Pokémon Festa
+9c78|Pokémon Festa 13
+9c79|Pokémon Festa 14
+9c7a|Pokémon Festa 15
+9c7b|Pokémon Festa 16
+9c7c|Pokémon Festa 17
+9c7d|Pokémon Festa 18
+9c7e|POKÉPARK
+9c7f|POKÉPARK
+9c80|POKÉPARK
+9c81|POKÉPARK
+9c82|POKÉPARK
+9c83|POKÉPARK
+9c84|POKÉPARK
+9c85|an event site
+9c86|GAME FREAK
+9c87|a stadium
+9c88|a VGC
+9c89|the VGC 2013
+9c8a|the VGC 2014
+9c8b|the VGC 2015
+9c8c|the VGC 2016
+9c8d|the VGC 2017
+9c8e|the VGC 2018
+ea60|a stranger
+ea61|Day Care helpers
+ea62|a treasure hunter
+ea63|an old hot-springs visitor

@@ -1,0 +1,220 @@
+0000|－－－－－－－－－－
+0002|Endroit mystérieux
+0004|Endroit lointain
+0006|Route 1
+0007|Abords d’Ekaeka
+0008|Route 1
+000a|Route 3
+000c|Route 2
+000e|Baie de Kala’e
+0010|Mer de Mele-Mele
+0012|Ekaeka
+0013|Plage
+0014|Ekaeka
+0015|Zone commerciale
+0016|Ekaeka
+0017|Port
+0018|Lili’i
+001a|Sentier de Mahalo
+001c|Sentier de Mahalo
+001d|Pont suspendu
+001e|Ruines du Conflit
+0020|Ruines du Conflit
+0021|[~ 33]
+0022|Colline Dicarat
+0024|Colline Dicarat
+0025|Caldeira Toutofon
+0026|Cimetière d’Ekaeka
+0028|Jardin de Mele-Mele
+002a|Grotte Verlamer
+002c|Champ de Baies
+002e|Grotte Verdoyante
+002f|Zone de l’Épreuve
+0030|Grotte Verdoyante
+0031|Repaire du Dominant
+0032|Route 4
+0034|Route 5
+0036|Route 6
+0038|Route 7
+003a|Route 8
+003c|Route 9
+003e|Club Hano-Hano
+0040|Plage Hano-Hano
+0042|Jardin d’Akala
+0044|Ohana
+0046|Ho’ohale
+0048|Konikoni
+004a|Rue du Dôme Royal
+004c|Colline Memento
+004e|Ranch Ohana
+0050|[~ 80]
+0052|Parc Volcanique
+0054|Parc Volcanique
+0055|Repaire du Dominant
+0056|Colline Clapotis
+0058|Colline Clapotis
+0059|Repaire du Dominant
+005a|Jungle Sombrefeuille
+005c|Ruines de l’Éveil
+005e|Côte Reculée d’Akala
+0060|[~ 96]
+0061|[~ 97]
+0062|[~ 98]
+0063|[~ 99]
+0064|Tunnel Taupiqueur
+0066|Club Hano-Hano
+0068|Dôme Royal
+006a|Route 10
+006c|Route 11
+006e|Côte Sauvage
+0070|Route 13
+0072|Village Toko
+0074|Route 15
+0076|Route 16
+0078|Route 17
+007a|Route 12
+007c|Désert Haina
+007e|Route 14
+0080|Jardin d’Ula-Ula
+0082|Kokohio
+0084|Malié
+0086|Parc de Malié
+0088|Mont Hokulani
+008a|Mont Ardent
+008c|Ruines de l’Essor
+008e|Lac du Halo Solaire
+0090|Lac du Halo Lunaire
+0092|Mont Lanakila
+0094|Manoir Chelou
+0096|Bradley Prix
+0097|Site désaffecté
+0098|Observatoire
+009a|Ligue Pokémon
+009c|Jardin de Poni
+009e|Prairie de Poni
+00a0|Vieille Route
+00a2|Récif de Poni
+00a4|Forêt de Poni
+00a6|Plaine de Poni
+00a8|Côte de Poni
+00aa|Chemin du Défi
+00ac|Village Flottant
+00ae|Grand Canyon de Poni
+00b0|Autel du Soleil
+00b2|Autel de la Lune
+00b4|Ruines de l’Au-Delà
+00b6|Caverne Coda
+00b8|Île Noadkoko
+00ba|Arbre de Combat
+00bc|Paradis Æther
+00be|Ultra-Dimension
+00c0|Malié
+00c1|Cap Passiloin
+7530|Échanges Link
+7531|Échanges Link
+7532|Kanto
+7533|Johto
+7534|Hoenn
+7535|Sinnoh
+7536|Pays lointain
+7537|－－－－－－－－－－
+7538|Unys
+7539|Kalos
+753a|Poké Lien
+753b|Pokémon GO
+753c|Kanto
+753d|Hoenn
+753e|Alola
+753f|Poké Loisir
+9c40|Endroit superbe
+9c41|Endroit lointain
+9c42|Film Pokémon
+9c43|Film Pokémon 2016
+9c44|Film Pokémon 2017
+9c45|Film Pokémon 2018
+9c46|Film Pokémon 2019
+9c47|Film Pokémon 2020
+9c48|Film Pokémon 2021
+9c49|Centre Pokémon
+9c4a|Dessin animé Pokémon
+9c4b|Pokémon Center MEGA TOKYO
+9c4c|Pokémon Center Osaka
+9c4d|Pokémon Center Fukuoka
+9c4e|Pokémon Center Nagoya
+9c4f|Pokémon Center Sapporo
+9c50|Pokémon Center Yokohama
+9c51|Pokémon Center Tohoku
+9c52|Pokémon Center TOKYO-BAY
+9c53|Pokémon Center Hiroshima
+9c54|Pokémon Center Kyoto
+9c55|Pokémon Ctr. SKYTREE TOWN
+9c56|Pokémon Store
+9c57|WCS
+9c58|WCS 2016
+9c59|WCS 2017
+9c5a|WCS 2018
+9c5b|WCS 2019
+9c5c|WCS 2020
+9c5d|WCS 2021
+9c5e|Worlds
+9c5f|Worlds 2016
+9c60|Worlds 2017
+9c61|Worlds 2018
+9c62|Worlds 2019
+9c63|Worlds 2020
+9c64|Worlds 2021
+9c65|Événement Jeu Vidéo
+9c66|Événement Jeu Vidéo 2016
+9c67|Événement Jeu Vidéo 2017
+9c68|Événement Jeu Vidéo 2018
+9c69|Événement Jeu Vidéo 2019
+9c6a|Événement Jeu Vidéo 2020
+9c6b|Événement Jeu Vidéo 2021
+9c6c|Événement Pokémon
+9c6d|Compétition
+9c6e|Événement
+9c6f|Pokémon Daisuki Club
+9c70|Émission Pokémon
+9c71|Concert
+9c72|Cadeau téléchargeable
+9c73|Pokémon Global Link
+9c74|Événement Pokémon 2016
+9c75|Événement Pokémon 2017
+9c76|Événement Pokémon 2018
+9c77|Événement Pokémon 2019
+9c78|Événement Pokémon 2020
+9c79|Événement Pokémon 2021
+9c7a|Pokémon Festa
+9c7b|Pokémon Festa 2016
+9c7c|Pokémon Festa 2017
+9c7d|Pokémon Festa 2018
+9c7e|Pokémon Festa 2019
+9c7f|Pokémon Festa 2020
+9c80|Pokémon Festa 2021
+9c81|PokéPark
+9c82|PokéPark 2016
+9c83|PokéPark 2017
+9c84|PokéPark 2018
+9c85|PokéPark 2019
+9c86|PokéPark 2020
+9c87|PokéPark 2021
+9c88|Lieu d’Événement
+9c89|GAME FREAK
+9c8a|Stade
+9c8b|VGC
+9c8c|VGC 2016
+9c8d|VGC 2017
+9c8e|VGC 2018
+9c8f|VGC 2019
+9c90|VGC 2020
+9c91|VGC 2021
+9c92|Console Virtuelle
+9c93|Pokémon GO
+9c94|Banque Pokémon
+9c95|Boutique Pokémon
+9c96|Démo
+9c97|Club des Dresseurs Pokémon
+ea60|Personne lointaine
+ea61|Responsable de la Garderie
+ea62|Chercheur de Trésors
+ea63|Dame des Eaux Thermales

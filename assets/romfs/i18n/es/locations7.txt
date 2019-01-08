@@ -1,0 +1,220 @@
+0000|－
+0002|Lugar misterioso
+0004|Lugar lejano
+0006|Ruta 1
+0007|Afueras de Hauoli
+0008|Ruta 1
+000a|Ruta 3
+000c|Ruta 2
+000e|Bahía Kalae
+0010|Mar de Melemele
+0012|Ciudad Hauoli
+0013|Paseo Marítimo
+0014|Ciudad Hauoli
+0015|Zona Comercial
+0016|Ciudad Hauoli
+0017|Puerto
+0018|Pueblo Lilii
+001a|Senda Mahalo
+001c|Senda Mahalo
+001d|Puente Colgante
+001e|Ruinas de la Guerra
+0020|Ruinas de la Guerra
+0021|[~ 33]
+0022|Colina Dequilate
+0024|Colina Dequilate
+0025|Caldera Remota
+0026|Cementerio de Hauoli
+0028|Jardines de Melemele
+002a|Gruta Unemar
+002c|Huerto de Bayas
+002e|Cueva Sotobosque
+002f|Sala de la Prueba
+0030|Cueva Sotobosque
+0031|Sala del Dominante
+0032|Ruta 4
+0034|Ruta 5
+0036|Ruta 6
+0038|Ruta 7
+003a|Ruta 8
+003c|Ruta 9
+003e|Resort Hanohano
+0040|Playa de Hanohano
+0042|Jardines de Akala
+0044|Pueblo Ohana
+0046|Ciudad Kantai
+0048|Ciudad Konikoni
+004a|Avenida Royale
+004c|Colina del Recuerdo
+004e|Rancho Ohana
+0050|[~ 80]
+0052|Área Volcánica Wela
+0054|Área Volcánica Wela
+0055|Sala del Dominante
+0056|Colina Saltagua
+0058|Colina Saltagua
+0059|Sala del Dominante
+005a|Jungla Umbría
+005c|Ruinas de la Vida
+005e|Afueras de Akala
+0060|[~ 96]
+0061|[~ 97]
+0062|[~ 98]
+0063|[~ 99]
+0064|Túnel Diglett
+0066|Resort Hanohano
+0068|Estadio Royale
+006a|Ruta 10
+006c|Ruta 11
+006e|Playa Menor
+0070|Ruta 13
+0072|Aldea Tapu
+0074|Ruta 15
+0076|Ruta 16
+0078|Ruta 17
+007a|Ruta 12
+007c|Desierto de Haina
+007e|Ruta 14
+0080|Jardines de Ula-Ula
+0082|Pueblo Po
+0084|Ciudad Malíe
+0086|Parque de Malíe
+0088|Pico Hokulani
+008a|Monte Rubor
+008c|Ruinas de la Cosecha
+008e|Lago Corosol
+0090|Lago Coroluna
+0092|Monte Lanakila
+0094|Mansión Misteriosa
+0096|Súper Ultraganga
+0097|Local Abandonado
+0098|Observ. de Hokulani
+009a|Liga Pokémon
+009c|Jardines de Poni
+009e|Prado de Poni
+00a0|Antiguo Paso de Poni
+00a2|Arrecife de Poni
+00a4|Bosque de Poni
+00a6|Llanura de Poni
+00a8|Costa de Poni
+00aa|Pendiente de Poni
+00ac|Aldea Marina
+00ae|Cañón de Poni
+00b0|Altar del Sol
+00b2|Altar de la Luna
+00b4|Ruinas del Tránsito
+00b6|Gruta Desenlace
+00b8|Isla Exeggutor
+00ba|Árbol de Combate
+00bc|Paraíso Æther
+00be|Ultraespacio
+00c0|Ciudad Malíe
+00c1|Cabo de las Afueras
+7530|Intercambio en conexión
+7531|Intercambio en conexión
+7532|Kanto
+7533|Johto
+7534|Hoenn
+7535|Sinnoh
+7536|Tierra lejana
+7537|－－－－－－－－－－
+7538|Teselia
+7539|Kalos
+753a|Nexo Pokémon
+753b|Pokémon GO
+753c|Kanto
+753d|Hoenn
+753e|Alola
+753f|Poké Resort
+9c40|Lugar encantador
+9c41|Lugar lejano
+9c42|Película Pokémon
+9c43|Película Pokémon 2016
+9c44|Película Pokémon 2017
+9c45|Película Pokémon 2018
+9c46|Película Pokémon 2019
+9c47|Película Pokémon 2020
+9c48|Película Pokémon 2021
+9c49|Pokémon Center
+9c4a|Dibujos animados Pokémon
+9c4b|Pokémon Center MEGA TOKYO
+9c4c|Pokémon Center Osaka
+9c4d|Pokémon Center Fukuoka
+9c4e|Pokémon Center Nagoya
+9c4f|Pokémon Center Sapporo
+9c50|Pokémon Center Yokohama
+9c51|Pokémon Center Tohoku
+9c52|Pokémon Center TOKYO-BAY
+9c53|Pokémon Center Hiroshima
+9c54|Pokémon Center Kyoto
+9c55|Pokémon Ctr. SKYTREE TOWN
+9c56|Pokémon Store
+9c57|WCS
+9c58|WCS 2016
+9c59|WCS 2017
+9c5a|WCS 2018
+9c5b|WCS 2019
+9c5c|WCS 2020
+9c5d|WCS 2021
+9c5e|Worlds
+9c5f|Worlds 2016
+9c60|Worlds 2017
+9c61|Worlds 2018
+9c62|Worlds 2019
+9c63|Worlds 2020
+9c64|Worlds 2021
+9c65|Evento de Videojuegos
+9c66|Evento Videojuegos 2016
+9c67|Evento Videojuegos 2017
+9c68|Evento Videojuegos 2018
+9c69|Evento Videojuegos 2019
+9c6a|Evento Videojuegos 2020
+9c6b|Evento Videojuegos 2021
+9c6c|Evento Pokémon
+9c6d|Torneo
+9c6e|Evento de Videojuegos
+9c6f|Pokémon Daisuki Club
+9c70|Programa sobre Pokémon
+9c71|Concierto
+9c72|Regalo en línea
+9c73|Pokémon Global Link
+9c74|Evento Pokémon 2016
+9c75|Evento Pokémon 2017
+9c76|Evento Pokémon 2018
+9c77|Evento Pokémon 2019
+9c78|Evento Pokémon 2020
+9c79|Evento Pokémon 2021
+9c7a|Evento Pokémon
+9c7b|Evento Pokémon 2016
+9c7c|Evento Pokémon 2017
+9c7d|Evento Pokémon 2018
+9c7e|Evento Pokémon 2019
+9c7f|Evento Pokémon 2020
+9c80|Evento Pokémon 2021
+9c81|PokéPark
+9c82|PokéPark 2016
+9c83|PokéPark 2017
+9c84|PokéPark 2018
+9c85|PokéPark 2019
+9c86|PokéPark 2020
+9c87|PokéPark 2021
+9c88|Evento
+9c89|GAME FREAK
+9c8a|Estadio
+9c8b|VGC
+9c8c|VGC 2016
+9c8d|VGC 2017
+9c8e|VGC 2018
+9c8f|VGC 2019
+9c90|VGC 2020
+9c91|VGC 2021
+9c92|Consola Virtual
+9c93|Pokémon GO
+9c94|Banco de Pokémon
+9c95|Establecimiento Pokémon
+9c96|versión de prueba
+9c97|Club de Entrenadores Pokémon
+ea60|Persona lejana
+ea61|Cuidados Pokémon
+ea62|Buscatesoros
+ea63|Anciana del Balneario

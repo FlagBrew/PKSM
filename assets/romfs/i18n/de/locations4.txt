@@ -1,0 +1,327 @@
+0000|Mysteriöser Ort
+0001|Zweiblattdorf
+0002|Sandgemme
+0003|Flori
+0004|Trostu
+0005|Elyses
+0006|Jubelstadt
+0007|Fleetburg
+0008|Erzelingen
+0009|Ewigenau
+000a|Herzhofen
+000b|Weideburg
+000c|Schleiede
+000d|Sonnewik
+000e|Blizzach
+000f|Pokémon Liga
+0010|Route 201
+0011|Route 202
+0012|Route 203
+0013|Route 204
+0014|Route 205
+0015|Route 206
+0016|Route 207
+0017|Route 208
+0018|Route 209
+0019|Route 210
+001a|Route 211
+001b|Route 212
+001c|Route 213
+001d|Route 214
+001e|Route 215
+001f|Route 216
+0020|Route 217
+0021|Route 218
+0022|Route 219
+0023|Route 220
+0024|Route 221
+0025|Route 222
+0026|Route 223
+0027|Route 224
+0028|Route 225
+0029|Route 226
+002a|Route 227
+002b|Route 228
+002c|Route 229
+002d|Route 230
+002e|Erzelingen-Mine
+002f|Windkraftwerk
+0030|Ewigwald
+0031|Feuriohütte
+0032|Kraterberg
+0033|Speersäule
+0034|Großmoor
+0035|Trostu-Ruinen
+0036|Siegesstraße
+0037|Park der Freunde
+0038|Platz der Treue
+0039|Verwüsteter Pfad
+003a|Auen von Flori
+003b|Erzelingen-Tor
+003c|Vollmond-Insel
+003d|Scheidequelle
+003e|Höhle der Umkehr
+003f|Blumenparadies
+0040|Blizzach-Tempel
+0041|Bizarre Höhle
+0042|Maniac-Höhle
+0043|Maniac-Tunnel
+0044|Trophäengarten
+0045|Eiseninsel
+0046|Alte Villa
+0047|Galakti-Zentrale
+0048|Wahrheitsufer
+0049|Kühnheitsufer
+004a|Stärkeufer
+004b|Frühlingspfad
+004c|See der Wahrheit
+004d|See der Kühnheit
+004e|See der Stärke
+004f|Neumond-Insel
+0050|Duellturm
+0051|Kampfareal
+0052|Überlebensareal
+0053|Erholungsgebiet
+0054|Kahlberg
+0055|Buhnen-Pfad
+0056|Halle d. Beginns
+0057|Wahrheitsgrotte
+0058|Kühnheitsgrotte
+0059|Stärkegrotte
+005a|Jubelstadt TV
+005b|Pokétch Ges.
+005c|GTS
+005d|Trainerschule
+005e|Bergbaumuseum
+005f|Blumenladen
+0060|Fahrradladen
+0061|Wettbewerbshalle
+0062|Knursperei
+0063|Begegnungsstätte
+0064|Pokémon-Pension
+0065|Schleiede-Kaufh.
+0066|Spielhalle
+0067|Fleetburg-Bibl.
+0068|Leuchtturm
+0069|Sonnewik-Markt
+006a|PKMN-Landgut
+006b|Schrittritt-Haus
+006c|Café
+006d|Prachtsee
+006e|Restaurant
+006f|Duellpark
+0070|Kampfzone
+0071|Kampffabrik
+0072|Kampfpalais
+0073|Kampfarkaden
+0074|Kampfsaal
+0075|Zerrwelt
+0076|Global. Terminal
+0077|Villa
+0078|Duellareal
+0079|Raum von ROTOM
+007a|Galaktik-Gebäude
+007b|Eisen-Ruinen
+007c|Eisberg-Ruinen
+007d|Gipfelruinen
+007e|Neuborkia
+007f|Rosalia City
+0080|Viola City
+0081|Azalea City
+0082|Anemonia City
+0083|Dukatia City
+0084|Oliviana City
+0085|Teak City
+0086|Mahagonia City
+0087|See des Zorns
+0088|Ebenholz City
+0089|Silberberg
+008a|Alabastia
+008b|Vertania City
+008c|Marmoria City
+008d|Azuria City
+008e|Lavandia
+008f|Orania City
+0090|Prismania City
+0091|Fuchsania City
+0092|Zinnoberinsel
+0093|Indigo Plateau
+0094|Saffronia City
+0095|Route 1
+0096|Route 2
+0097|Route 3
+0098|Route 4
+0099|Route 5
+009a|Route 6
+009b|Route 7
+009c|Route 8
+009d|Route 9
+009e|Route 10
+009f|Route 11
+00a0|Route 12
+00a1|Route 13
+00a2|Route 14
+00a3|Route 15
+00a4|Route 16
+00a5|Route 17
+00a6|Route 18
+00a7|Route 19
+00a8|Route 20
+00a9|Route 21
+00aa|Route 22
+00ab|Route 23
+00ac|Route 24
+00ad|Route 25
+00ae|Route 26
+00af|Route 27
+00b0|Route 28
+00b1|Route 29
+00b2|Route 30
+00b3|Route 31
+00b4|Route 32
+00b5|Route 33
+00b6|Route 34
+00b7|Route 35
+00b8|Route 36
+00b9|Route 37
+00ba|Route 38
+00bb|Route 39
+00bc|Route 40
+00bd|Route 41
+00be|Route 42
+00bf|Route 43
+00c0|Route 44
+00c1|Route 45
+00c2|Route 46
+00c3|Route 47
+00c4|Route 48
+00c5|DIGDAs Höhle
+00c6|Mondberg
+00c7|Azuria-Höhle
+00c8|Felstunnel
+00c9|Kraftwerk
+00ca|Safari-Zone
+00cb|Seeschauminseln
+00cc|KNOFENSA-Turm
+00cd|Glockenturm
+00ce|Turmruine
+00cf|Nationalpark
+00d0|Radioturm
+00d1|Alph-Ruinen
+00d2|Einheitstunnel
+00d3|FLEGMON-Brunnen
+00d4|Leuchtturm
+00d5|Rocket-Versteck
+00d6|Steineichenwald
+00d7|Dukatia-Passage
+00d8|Kesselberg
+00d9|Eispfad
+00da|Strudelinseln
+00db|Silberberghöhle
+00dc|Dunkelhöhle
+00dd|Siegesstraße
+00de|Drachenhöhle
+00df|Tohjo-Fälle
+00e0|Vertania-Wald
+00e1|Pokéathlonhallen
+00e2|M.S. Aqua
+00e3|Safari-Eingang
+00e4|Felsschlundhöhle
+00e5|Kampfzonenzugang
+00e6|Glockenklangpfad
+00e7|Sinjoh-Ruinen
+00e8|Felsenherzturm
+00e9|Pokéwalker
+00ea|Felsklippentor
+07d0|Betreuerpärchen
+07d1|Linktausch
+07d2|Linktausch
+07d3|Kanto
+07d4|Johto
+07d5|Hoenn
+07d6|Sinnoh
+07d7|----------
+07d8|Entferntes Land
+07d9|Reisender
+07da|Urs
+07db|Cynthia
+07dc|Mysteriöser Ort
+07dd|Mr. Pokémon
+07de|Castor
+0bb8|Idyll
+0bb9|Pokémon Ranger
+0bba|Entfernter Ort
+0bbb|Pokémon Movie
+0bbc|Pokémon Film 06
+0bbd|Pokémon Film 07
+0bbe|Pokémon Film 08
+0bbf|Pokémon Film 09
+0bc0|Pokémon Film 10
+0bc1|Pokémon Film 11
+0bc2|Pokémon Film 12
+0bc3|Pokémon Film 13
+0bc4|Pokémon Film 14
+0bc5|Pokémon Film 15
+0bc6|Pokémon Film 16
+0bc7|Pokémon Cartoon
+0bc8|Space World
+0bc9|Space World 06
+0bca|Space World 07
+0bcb|Space World 08
+0bcc|Space World 09
+0bcd|Space World 10
+0bce|Space World 11
+0bcf|Space World 12
+0bd0|Space World 13
+0bd1|Space World 14
+0bd2|Space World 15
+0bd3|Space World 16
+0bd4|Pokémon Festa
+0bd5|Pokémon Festa 06
+0bd6|Pokémon Festa 07
+0bd7|Pokémon Festa 08
+0bd8|Pokémon Festa 09
+0bd9|Pokémon Festa 10
+0bda|Pokémon Festa 11
+0bdb|Pokémon Festa 12
+0bdc|Pokémon Festa 13
+0bdd|Pokémon Festa 14
+0bde|Pokémon Festa 15
+0bdf|Pokémon Festa 16
+0be0|POKéPARK
+0be1|POKéPARK 06
+0be2|POKéPARK 07
+0be3|POKéPARK 08
+0be4|POKéPARK 09
+0be5|POKéPARK 10
+0be6|POKéPARK 11
+0be7|POKéPARK 12
+0be8|POKéPARK 13
+0be9|POKéPARK 14
+0bea|POKéPARK 15
+0beb|POKéPARK 16
+0bec|Pokémon-Center
+0bed|PC Tokyo
+0bee|PC Osaka
+0bef|PC Fukuoka
+0bf0|PC Nagoya
+0bf1|PC Sapporo
+0bf2|PC Yokohama
+0bf3|Nintendo World
+0bf4|Pokémon Event
+0bf5|Pokémon Event 06
+0bf6|Pokémon Event 07
+0bf7|Pokémon Event 08
+0bf8|Pokémon Event 09
+0bf9|Pokémon Event 10
+0bfa|Pokémon Event 11
+0bfb|Pokémon Event 12
+0bfc|Pokémon Event 13
+0bfd|Pokémon Event 14
+0bfe|Pokémon Event 15
+0bff|Pokémon Event 16
+0c00|Wi-Fi Event
+0c01|Wi-Fi-Geschenk
+0c02|Pokémon Fan Club
+0c03|Event
+0c04|Konzert

@@ -74,6 +74,7 @@ LanguageStrings::LanguageStrings(Language lang)
     load(lang, "/moves.txt", moves);
     load(lang, "/natures.txt", natures);
     load(lang, "/species.txt", speciess);
+    loadMap(lang, "/locations4.txt", locations4);
     loadGui(lang);
 }
 
@@ -90,6 +91,21 @@ void LanguageStrings::load(Language lang, const std::string name, std::vector<st
         array.push_back(tmp.substr(0, tmp.find('\r')));
     }
     values.close();
+}
+
+void LanguageStrings::loadMap(Language lang, const std::string name, std::unordered_map<u16, std::string>& map)
+{
+    static const std::string base = "romfs:/i18n/";
+    std::string path = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
+
+    std::string tmp;
+    std::ifstream values(path);
+    if (values.bad()) return;
+    while (std::getline(values, tmp))
+    {
+        u16 val = std::stoi(tmp.substr(0, 4), 0, 16);
+        map[val] = tmp.substr(5);
+    }
 }
 
 void LanguageStrings::loadGui(Language lang)
@@ -193,4 +209,37 @@ std::vector<std::string> LanguageStrings::rawItems() const
 std::vector<std::string> LanguageStrings::rawMoves() const
 {
     return moves;
+}
+
+std::string LanguageStrings::location(u16 v, Generation generation) const
+{
+    std::unordered_map<u16, std::string>::const_iterator i;
+    switch (generation)
+    {
+        case Generation::FOUR:
+            if ((i = locations4.find(v)) != locations4.end())
+            {
+                return i->second;
+            }
+            break;
+        case Generation::FIVE:
+            if ((i = locations5.find(v)) != locations5.end())
+            {
+                return i->second;
+            }
+            break;
+        case Generation::SIX:
+            if ((i = locations6.find(v)) != locations5.end())
+            {
+                return i->second;
+            }
+            break;
+        case Generation::SEVEN:
+            if ((i = locations7.find(v)) != locations5.end())
+            {
+                return i->second;
+            }
+            break;
+    }
+    return "";
 }

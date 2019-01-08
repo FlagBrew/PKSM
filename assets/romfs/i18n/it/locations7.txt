@@ -1,0 +1,220 @@
+0000|----------
+0002|Zona misteriosa
+0004|Luogo remoto
+0006|Percorso 1
+0007|Periferia di Hau’oli
+0008|Percorso 1
+000a|Percorso 3
+000c|Percorso 2
+000e|Baia Kala’e
+0010|Mare di Mele Mele
+0012|Hau’oli
+0013|Lungomare
+0014|Hau’oli
+0015|Zona Commerciale
+0016|Hau’oli
+0017|Porto
+0018|Lili
+001a|Sentiero Mahalo
+001c|Sentiero Mahalo
+001d|Ponte Sospeso
+001e|Tempio del Conflitto
+0020|Tempio del Conflitto
+0021|[~ 33]
+0022|Collina Diecicarati
+0024|Collina Diecicarati
+0025|Caldera Recondita
+0026|Cimitero di Hau’oli
+0028|Prato Mele Mele
+002a|Grotta Pratomare
+002c|Orto delle Bacche
+002e|Grotta Sottobosco
+002f|Luogo della Prova
+0030|Grotta Sottobosco
+0031|Arena del Dominante
+0032|Percorso 4
+0034|Percorso 5
+0036|Percorso 6
+0038|Percorso 7
+003a|Percorso 8
+003c|Percorso 9
+003e|Resort Hanu Hanu
+0040|Spiaggia Hanu Hanu
+0042|Prato Akala
+0044|Ohana
+0046|Kantai
+0048|Konikoni
+004a|Viale Royale
+004c|Colle della Memoria
+004e|Fattoria Ohana
+0050|[~ 80]
+0052|Parco Vulcano Wela
+0054|Parco Vulcano Wela
+0055|Arena del Dominante
+0056|Collina Scrosciante
+0058|Collina Scrosciante
+0059|Arena del Dominante
+005a|Giungla Ombrosa
+005c|Tempio della Vita
+005e|Punta Akala
+0060|[~ 96]
+0061|[~ 97]
+0062|[~ 98]
+0063|[~ 99]
+0064|Tunnel Diglett
+0066|Resort Hanu Hanu
+0068|Stadio Royale
+006a|Percorso 10
+006c|Percorso 11
+006e|Lido di Ula Ula
+0070|Percorso 13
+0072|Villaggio Tapu
+0074|Percorso 15
+0076|Percorso 16
+0078|Percorso 17
+007a|Percorso 12
+007c|Deserto Haina
+007e|Percorso 14
+0080|Prato Ula Ula
+0082|Poh
+0084|Malie
+0086|Giardino di Malie
+0088|Picco Hokulani
+008a|Monte Tepore
+008c|Tempio del Raccolto
+008e|Lago Solare
+0090|Lago Lunare
+0092|Monte Lanakila
+0094|Villa Losca
+0096|Supermarket Affaroni
+0097|Edificio Abbandonato
+0098|Osservatorio
+009a|Lega Pokémon
+009c|Prato Poni
+009e|Piana di Poni
+00a0|Via Antica di Poni
+00a2|Scogliera di Poni
+00a4|Foresta di Poni
+00a6|Prateria di Poni
+00a8|Costa di Poni
+00aa|Erta di Poni
+00ac|Villaggio del Mare
+00ae|Canyon di Poni
+00b0|Altare Solare
+00b2|Altare Lunare
+00b4|Tempio del Passaggio
+00b6|Caverna Climax
+00b8|Isola Exeggutor
+00ba|Albero della Lotta
+00bc|Æther Paradise
+00be|Ultramondo
+00c0|Malie
+00c1|Promontorio di Malie
+7530|Scambio in link
+7531|Scambio in link
+7532|Kanto
+7533|Johto
+7534|Hoenn
+7535|Sinnoh
+7536|Terra lontana
+7537|----------
+7538|Unima
+7539|Kalos
+753a|Pokémon Link
+753b|Pokémon GO
+753c|Kanto
+753d|Hoenn
+753e|Alola
+753f|Poké Resort
+9c40|Luogo grazioso
+9c41|Luogo remoto
+9c42|Film Pokémon
+9c43|Film Pokémon 2016
+9c44|Film Pokémon 2017
+9c45|Film Pokémon 2018
+9c46|Film Pokémon 2019
+9c47|Film Pokémon 2020
+9c48|Film Pokémon 2021
+9c49|Pokémon Center
+9c4a|Cartone animato Pokémon
+9c4b|Pokémon Center MEGA TOKYO
+9c4c|Pokémon Center Osaka
+9c4d|Pokémon Center Fukuoka
+9c4e|Pokémon Center Nagoya
+9c4f|Pokémon Center Sapporo
+9c50|Pokémon Center Yokohama
+9c51|Pokémon Center Tohoku
+9c52|Pokémon Center TOKYO-BAY
+9c53|Pokémon Center Hiroshima
+9c54|Pokémon Center Kyoto
+9c55|Pokémon Ctr. SKYTREE TOWN
+9c56|Pokémon Store
+9c57|WCS
+9c58|WCS 2016
+9c59|WCS 2017
+9c5a|WCS 2018
+9c5b|WCS 2019
+9c5c|WCS 2020
+9c5d|WCS 2021
+9c5e|Worlds
+9c5f|Worlds 2016
+9c60|Worlds 2017
+9c61|Worlds 2018
+9c62|Worlds 2019
+9c63|Worlds 2020
+9c64|Worlds 2021
+9c65|Evento di gioco
+9c66|Evento di gioco 2016
+9c67|Evento di gioco 2017
+9c68|Evento di gioco 2018
+9c69|Evento di gioco 2019
+9c6a|Evento di gioco 2020
+9c6b|Evento di gioco 2021
+9c6c|Evento Pokémon
+9c6d|Gara
+9c6e|Evento di gioco
+9c6f|Pokémon Daisuki Club
+9c70|Programma TV Pokémon
+9c71|Concerto
+9c72|Regalo online
+9c73|PGL
+9c74|Evento Pokémon 2016
+9c75|Evento Pokémon 2017
+9c76|Evento Pokémon 2018
+9c77|Evento Pokémon 2019
+9c78|Evento Pokémon 2020
+9c79|Evento Pokémon 2021
+9c7a|Evento Pokémon
+9c7b|Evento Pokémon 2016
+9c7c|Evento Pokémon 2017
+9c7d|Evento Pokémon 2018
+9c7e|Evento Pokémon 2019
+9c7f|Evento Pokémon 2020
+9c80|Evento Pokémon 2021
+9c81|PokéPark
+9c82|PokéPark 2016
+9c83|PokéPark 2017
+9c84|PokéPark 2018
+9c85|PokéPark 2019
+9c86|PokéPark 2020
+9c87|PokéPark 2021
+9c88|Evento
+9c89|GAME FREAK
+9c8a|Stadio
+9c8b|VGC
+9c8c|VGC 2016
+9c8d|VGC 2017
+9c8e|VGC 2018
+9c8f|VGC 2019
+9c90|VGC 2020
+9c91|VGC 2021
+9c92|Virtual Console
+9c93|Pokémon GO
+9c94|Banca Pokémon
+9c95|Negozio Pokémon
+9c96|Demo
+9c97|Club Allenatori di Pokémon
+ea60|Persona lontana
+ea61|Ostello Pokémon
+ea62|Cercatesori
+ea63|Vecchina delle terme

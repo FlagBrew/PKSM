@@ -1,0 +1,327 @@
+0000|Endroit mystér.
+0001|Bonaugure
+0002|Littorella
+0003|Floraville
+0004|Bonville
+0005|Célestia
+0006|Féli-Cité
+0007|Joliberges
+0008|Charbourg
+0009|Vestigion
+000a|Unionpolis
+000b|Verchamps
+000c|Voilaroc
+000d|Rivamar
+000e|Frimapic
+000f|Ligue Pokémon
+0010|Route 201
+0011|Route 202
+0012|Route 203
+0013|Route 204
+0014|Route 205
+0015|Route 206
+0016|Route 207
+0017|Route 208
+0018|Route 209
+0019|Route 210
+001a|Route 211
+001b|Route 212
+001c|Route 213
+001d|Route 214
+001e|Route 215
+001f|Route 216
+0020|Route 217
+0021|Route 218
+0022|Route 219
+0023|Chenal 220
+0024|Route 221
+0025|Route 222
+0026|Chenal 223
+0027|Route 224
+0028|Route 225
+0029|Chenal 226
+002a|Route 227
+002b|Route 228
+002c|Route 229
+002d|Chenal 230
+002e|Mine Charbourg
+002f|Les Eoliennes
+0030|Forêt Vestigion
+0031|Forge Fuego
+0032|Mont Couronné
+0033|Colonnes Lances
+0034|Grand Marais
+0035|Ruines Bonville
+0036|Route Victoire
+0037|Parc des Amis
+0038|Square Paisible
+0039|Chemin Rocheux
+003a|Pré Floraville
+003b|Entrée Charbourg
+003c|Ile Pleine Lune
+003d|Source Adieu
+003e|Grotte Retour
+003f|Paradis Fleuri
+0040|Temple Frimapic
+0041|Grotte Revêche
+0042|Grotte Ruineman.
+0043|Tunnel Ruineman.
+0044|Jardin Trophée
+0045|Ile de Fer
+0046|Vieux Château
+0047|QG Galaxie
+0048|Rive Lac Vérité
+0049|Rive Lac Courage
+004a|Rive Lac Savoir
+004b|Chemin Source
+004c|Lac Vérité
+004d|Lac Courage
+004e|Lac Savoir
+004f|Ile Nouvellune
+0050|Tour de Combat
+0051|Aire de Combat
+0052|Aire de Survie
+0053|Aire de Détente
+0054|Mont Abrupt
+0055|Passage Marin
+0056|Salle Originelle
+0057|Caverne Vérité
+0058|Caverne Courage
+0059|Caverne Savoir
+005a|Féli-Télé
+005b|Pokémontre S.A.
+005c|GTS
+005d|Ecole Dresseurs
+005e|Musée Minier
+005f|Fleuriste
+0060|Boutique de Vélo
+0061|Salle Concours
+0062|Poffinerie
+0063|Bâtiment Etrange
+0064|Pension Pokémon
+0065|C. Com. Voilaroc
+0066|Casino
+0067|Bibl. Joliberges
+0068|Phare Panorama
+0069|Marché Rivamar
+006a|Manoir Pokémon
+006b|Abri Petitpas
+006c|Café
+006d|Grand Lac
+006e|Restaurant
+006f|Parc des Combats
+0070|Zone de Combat
+0071|Usine de Combat
+0072|Castel de Combat
+0073|Arcade de Combat
+0074|Scène de Combat
+0075|Monde Distorsion
+0076|Terminal Mondial
+0077|Villa
+0078|Café Combats
+0079|Salle MOTISMA
+007a|Team G Vestigion
+007b|Ruines de Fer
+007c|Ruines Iceberg
+007d|Ruines Pic Roche
+007e|Bourg Geon
+007f|Ville Griotte
+0080|Mauville
+0081|Ecorcia
+0082|Irisia
+0083|Doublonville
+0084|Oliville
+0085|Rosalia
+0086|Acajou
+0087|Lac Colère
+0088|Ebènelle
+0089|Mont Argenté
+008a|Bourg Palette
+008b|Jadielle
+008c|Argenta
+008d|Azuria
+008e|Lavanville
+008f|Carmin sur Mer
+0090|Céladopole
+0091|Parmanie
+0092|Cramois’Ile
+0093|Plateau Indigo
+0094|Safrania
+0095|Route 1
+0096|Route 2
+0097|Route 3
+0098|Route 4
+0099|Route 5
+009a|Route 6
+009b|Route 7
+009c|Route 8
+009d|Route 9
+009e|Route 10
+009f|Route 11
+00a0|Route 12
+00a1|Route 13
+00a2|Route 14
+00a3|Route 15
+00a4|Route 16
+00a5|Route 17
+00a6|Route 18
+00a7|Chenal 19
+00a8|Chenal 20
+00a9|Chenal 21
+00aa|Route 22
+00ab|Route 23
+00ac|Route 24
+00ad|Route 25
+00ae|Route 26
+00af|Route 27
+00b0|Route 28
+00b1|Route 29
+00b2|Route 30
+00b3|Route 31
+00b4|Route 32
+00b5|Route 33
+00b6|Route 34
+00b7|Route 35
+00b8|Route 36
+00b9|Route 37
+00ba|Route 38
+00bb|Route 39
+00bc|Chenal 40
+00bd|Chenal 41
+00be|Route 42
+00bf|Route 43
+00c0|Route 44
+00c1|Route 45
+00c2|Route 46
+00c3|Route 47
+00c4|Route 48
+00c5|Cave TAUPIQUEUR
+00c6|Mont Sélénite
+00c7|Caverne Azurée
+00c8|Grotte
+00c9|Centrale
+00ca|Parc Safari
+00cb|Iles Ecume
+00cc|Tour CHETIFLOR
+00cd|Tour Carillon
+00ce|Tour Cendrée
+00cf|Parc Naturel
+00d0|Tour Radio
+00d1|Ruines d’Alpha
+00d2|Caves Jumelles
+00d3|Puits RAMOLOSS
+00d4|Phare
+00d5|Repaire Rocket
+00d6|Bois aux Chênes
+00d7|Doublon-Tunnel
+00d8|Mont Creuset
+00d9|Route de Glace
+00da|Tourb’Iles
+00db|Grotte Argentée
+00dc|Antre Noir
+00dd|Route Victoire
+00de|Antre du Dragon
+00df|Chutes Tohjo
+00e0|Forêt de Jade
+00e1|Dôme Pokéathlon
+00e2|Aquaria
+00e3|Portail Safari
+00e4|Grotte Falaise
+00e5|Atrium Combat
+00e6|Sentier Carillon
+00e7|Ruines Sinjoh
+00e8|Tour Enfouie
+00e9|Pokéwalker
+00ea|Portail Falaise
+07d0|Couple Pension
+07d1|Echange Link
+07d2|Echange Link
+07d3|Kanto
+07d4|Johto
+07d5|Hoenn
+07d6|Sinnoh
+07d7|----------
+07d8|Pays lointain
+07d9|un voyageur
+07da|Armand
+07db|Cynthia
+07dc|Endroit mystér.
+07dd|M. Pokémon
+07de|Castor
+0bb8|Endroit superbe
+0bb9|Pokémon Ranger
+0bba|Endroit lointain
+0bbb|Film Pokémon
+0bbc|Film Pokémon 06
+0bbd|Film Pokémon 07
+0bbe|Film Pokémon 08
+0bbf|Film Pokémon 09
+0bc0|Film Pokémon 10
+0bc1|Film Pokémon 11
+0bc2|Film Pokémon 12
+0bc3|Film Pokémon 13
+0bc4|Film Pokémon 14
+0bc5|Film Pokémon 15
+0bc6|Film Pokémon 16
+0bc7|Dessin ani. PKMN
+0bc8|Space World
+0bc9|Space World 06
+0bca|Space World 07
+0bcb|Space World 08
+0bcc|Space World 09
+0bcd|Space World 10
+0bce|Space World 11
+0bcf|Space World 12
+0bd0|Space World 13
+0bd1|Space World 14
+0bd2|Space World 15
+0bd3|Space World 16
+0bd4|Pokémon Festa
+0bd5|Pokémon Festa 06
+0bd6|Pokémon Festa 07
+0bd7|Pokémon Festa 08
+0bd8|Pokémon Festa 09
+0bd9|Pokémon Festa 10
+0bda|Pokémon Festa 11
+0bdb|Pokémon Festa 12
+0bdc|Pokémon Festa 13
+0bdd|Pokémon Festa 14
+0bde|Pokémon Festa 15
+0bdf|Pokémon Festa 16
+0be0|POKéPARK
+0be1|POKéPARK 06
+0be2|POKéPARK 07
+0be3|POKéPARK 08
+0be4|POKéPARK 09
+0be5|POKéPARK 10
+0be6|POKéPARK 11
+0be7|POKéPARK 12
+0be8|POKéPARK 13
+0be9|POKéPARK 14
+0bea|POKéPARK 15
+0beb|POKéPARK 16
+0bec|Centre Pokémon
+0bed|CP Tokyo
+0bee|CP Osaka
+0bef|CP Fukuoka
+0bf0|CP Nagoya
+0bf1|CP Sapporo
+0bf2|CP Yokohama
+0bf3|Nintendo World
+0bf4|Evénem. Pokémon
+0bf5|Evén. Pokémon 06
+0bf6|Evén. Pokémon 07
+0bf7|Evén. Pokémon 08
+0bf8|Evén. Pokémon 09
+0bf9|Evén. Pokémon 10
+0bfa|Evén. Pokémon 11
+0bfb|Evén. Pokémon 12
+0bfc|Evén. Pokémon 13
+0bfd|Evén. Pokémon 14
+0bfe|Evén. Pokémon 15
+0bff|Evén. Pokémon 16
+0c00|Evénement Wi-Fi
+0c01|Cadeau Wi-Fi
+0c02|Fan Club Pokémon
+0c03|Lieu d’Evénement
+0c04|Evénem. Concert

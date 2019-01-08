@@ -1,0 +1,296 @@
+0000|－－－－－－－－－－
+0002|Mysteriöser Ort
+0004|Entfernter Ort
+0006|Escissia
+0008|Route 1
+0009|Escissia-Pfad
+000a|Aquarellia
+000c|Route 2
+000d|Progrès-Weg
+000e|Nouvaria-Wald
+0010|Route 3
+0011|Ouvert-Weg
+0012|Nouvaria City
+0014|Route 4
+0015|Parterre-Weg
+0016|Illumina City
+0018|Prismaturm
+001a|Labor von Flordelis
+001c|Route 5
+001d|Coteau-Weg
+001e|Vanitéa
+0020|Château Tristesse
+0022|Route 6
+0023|Palais-Allee
+0024|Magnum-Opus-Palast
+0026|Route 7
+0027|Rivière-Promenade
+0028|Relievera City
+002a|Route 8
+002b|Muraille-Küstenpfad
+002c|Petrophia
+002e|Route 9
+002f|Rihorn-Pass
+0030|Kampfschloss
+0032|Route 10
+0033|Menhir-Weg
+0034|Cromlexia
+0036|Route 11
+0037|Miroir-Weg
+0038|Spiegelhöhle
+003a|Yantara City
+003c|Turm der Erkenntnis
+003e|Route 12
+003f|Fourrage-Weg
+0040|Tempera City
+0042|Route 13
+0043|Illumina-Steppe
+0044|Route 14
+0045|Romantia-Waldweg
+0046|Romantia City
+0048|Pokéball-Fabrik
+004a|Route 15
+004b|Brun-Weg
+004c|Frescora
+004e|Route 16
+004f|Tristesse-Weg
+0050|[~ 80]
+0051|[~ 81]
+0052|Frosthöhle
+0054|Route 17
+0055|Mamutel-Weg
+0056|Fluxia City
+0058|Route 18
+0059|Vallée-Étroite-Weg
+005a|Mosaia
+005c|Route 19
+005d|Vallée-Large-Weg
+005e|Fractalia City
+0060|Route 20
+0061|Irrwald
+0062|Pokémon-Dorf
+0064|Route 21
+0065|Dernier-Weg
+0066|Route 22
+0067|Détourné-Weg
+0068|Siegesstraße
+006a|Pokémon Liga
+006c|Batika City
+006e|Kampfhaus
+0070|Azurbucht
+0072|Frescora-Tor
+0074|Mosaia-Tor
+0076|Petrophia-Tor
+0078|Illumina-Tor
+007a|Yantara-Tor
+007c|Tempera-Tor
+007e|Romantia-Tor
+0080|Fluxia-Tor
+0082|Fractalia-Tor
+0084|Leuchthöhle
+0086|Geolinkhöhle
+0087|Zubat-Nest
+0088|Kalos-Kraftwerk
+008a|Flare-Geheimbasis
+008c|Omega-Höhle
+008e|Hotelruine
+0090|Kammer der Leere
+0092|Meerestitanenhöhle
+0094|Kontaktsafari
+0096|Flammen-Saal
+0098|Schleusen-Saal
+009a|Rüstungs-Saal
+009c|Draco-Saal
+009e|Licht-Saal
+00a0|Tor zur Pokémon Liga
+00a2|Bahnhof von Illumina
+00a4|Bahnhof von Batika
+00a6|Petrophia-Aquarium
+00a8|Geheimdungeon
+00aa|Wurzelheim
+00ac|Rosaltstadt
+00ae|Faustauhaven
+00b0|Bad Lavastadt
+00b2|Laubwechselfeld
+00b4|Wiesenflur
+00b6|Floßbrunn
+00b8|Blütenburg City
+00ba|Graphitport City
+00bc|Malvenfroh City
+00be|Metarost City
+00c0|Baumhausen City
+00c2|Seegrasulb City
+00c4|Moosbach City
+00c6|Xeneroville
+00c8|Prachtpolis City
+00ca|Pokémon Liga
+00cc|Route 101
+00ce|Route 102
+00d0|Route 103
+00d2|Route 104
+00d4|Route 105
+00d6|Route 106
+00d8|Route 107
+00da|Route 108
+00dc|Route 109
+00de|Route 110
+00e0|Route 111
+00e2|Route 112
+00e4|Route 113
+00e6|Route 114
+00e8|Route 115
+00ea|Route 116
+00ec|Route 117
+00ee|Route 118
+00f0|Route 119
+00f2|Route 120
+00f4|Route 121
+00f6|Route 122
+00f8|Route 123
+00fa|Route 124
+00fc|Route 125
+00fe|Route 126
+0100|Route 127
+0102|Route 128
+0104|Route 129
+0106|Route 130
+0108|Route 131
+010a|Route 132
+010c|Route 133
+010e|Route 134
+0110|Meteorfälle
+0112|Metaflurtunnel
+0114|???
+0116|Wüstenruine
+0118|Granithöhle
+011a|Blütenburgwald
+011c|Schlotberg
+011e|Steilpass
+0120|Feuriger Pfad
+0122|Pyroberg
+0124|Team Aquas Versteck
+0126|Tiefseehöhle
+0128|Urzeithöhle
+012a|Siegesstraße
+012c|Küstenhöhle
+012e|Neu Malvenfroh
+0130|Seewoge Malvenfroh
+0132|Inselhöhle
+0134|Grabmal
+0136|Siegelkammer
+0138|Sonnengrotte
+013a|Team Magmas Versteck
+013c|Himmelturm
+013e|Kampfresort
+0140|Insel im Süden
+0142|MS Tide
+0144|Safari-Zone
+0146|Wunderwald
+0148|Wunderhöhle
+014a|Wundereiland
+014c|Wunderberg
+014e|Wilder Wald
+0150|Namenlose Ebene
+0152|Unerforschte Höhle
+0154|Rätselhafte Höhle
+0156|Höhle der Spaltung
+0158|Sichelinsel
+015a|Geheiminsel
+015c|Luftraum
+015e|Geheime Küste
+0160|Geheime Blumenwiese
+0162|Geheimbasis
+7530|Linktausch
+7531|Linktausch
+7532|Kanto-Region
+7533|Johto-Region
+7534|Hoenn-Region
+7535|Sinnoh-Region
+7536|Entferntes Land
+7537|－－－－－－－－－－
+7538|Einall-Region
+7539|Kalos-Region
+753a|Pokémon-Link
+9c40|Netter Ort
+9c41|Entfernter Ort
+9c42|Pokémon-Film
+9c43|Pokémon-Film 2013
+9c44|Pokémon-Film 2014
+9c45|Pokémon-Film 2015
+9c46|Pokémon-Film 2016
+9c47|Pokémon-Film 2017
+9c48|Pokémon-Film 2018
+9c49|Pokémon-Center
+9c4a|Pokémon-Zeichentrickserie
+9c4b|PC Tokyo
+9c4c|PC Osaka
+9c4d|PC Fukuoka
+9c4e|PC Nagoya
+9c4f|PC Sapporo
+9c50|PC Yokohama
+9c51|PC Tohoku
+9c52|PC Tokyo Bay
+9c53|Pokémon Store
+9c54|WCS
+9c55|WCS 2013
+9c56|WCS 2014
+9c57|WCS 2015
+9c58|WCS 2016
+9c59|WCS 2017
+9c5a|WCS 2018
+9c5b|Worlds
+9c5c|Worlds 2013
+9c5d|Worlds 2014
+9c5e|Worlds 2015
+9c5f|Worlds 2016
+9c60|Worlds 2017
+9c61|Worlds 2018
+9c62|VGE
+9c63|VGE 2013
+9c64|VGE 2014
+9c65|VGE 2015
+9c66|VGE 2016
+9c67|VGE 2017
+9c68|VGE 2018
+9c69|Pokémon Event
+9c6a|Kampfturnier
+9c6b|Videospiel-Veranstaltung
+9c6c|Pokémon Fan Club
+9c6d|Pokémon-TV-Programm
+9c6e|Konzert
+9c6f|Online-Geschenk
+9c70|PGL
+9c71|Pokémon Event 2013
+9c72|Pokémon Event 2014
+9c73|Pokémon Event 2015
+9c74|Pokémon Event 2016
+9c75|Pokémon Event 2017
+9c76|Pokémon Event 2018
+9c77|Pokémon Festa
+9c78|Pokémon Festa 2013
+9c79|Pokémon Festa 2014
+9c7a|Pokémon Festa 2015
+9c7b|Pokémon Festa 2016
+9c7c|Pokémon Festa 2017
+9c7d|Pokémon Festa 2018
+9c7e|PokéPark
+9c7f|PokéPark 2013
+9c80|PokéPark 2014
+9c81|PokéPark 2015
+9c82|PokéPark 2016
+9c83|PokéPark 2017
+9c84|PokéPark 2018
+9c85|Veranstaltung
+9c86|GAME FREAK
+9c87|Stadion
+9c88|VGC
+9c89|VGC 2013
+9c8a|VGC 2014
+9c8b|VGC 2015
+9c8c|VGC 2016
+9c8d|VGC 2017
+9c8e|VGC 2018
+ea60|Ferne Person
+ea61|Pensionsleiter
+ea62|Schatzsucher
+ea63|Dame der Heißen Quellen

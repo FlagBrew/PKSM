@@ -1,0 +1,220 @@
+0000|－－－－－－－－－－
+0002|Mysteriöser Ort
+0004|Ferner Ort
+0006|Route 1
+0007|Hauholi-Stadtrand
+0008|Route 1
+000a|Route 3
+000c|Route 2
+000e|Kala’e-Bucht
+0010|Meer von Mele-Mele
+0012|Hauholi City
+0013|Strandpromenade
+0014|Hauholi City
+0015|Einkaufsviertel
+0016|Hauholi City
+0017|Hafen
+0018|Lili’i
+001a|Mahalo-Bergpfad
+001c|Mahalo-Bergpfad
+001d|Hängebrücke
+001e|Ruinen des Krieges
+0020|Ruinen des Krieges
+0021|[~ 33]
+0022|Tenkarat-Hügel
+0024|Tenkarat-Hügel
+0025|Zentraler Felskessel
+0026|Hauholi-Friedhof
+0028|Mele-Mele-Blumenmeer
+002a|Meereshöhle
+002c|Beerenfelder
+002e|Vegetationshöhle
+002f|Prüfungsbereich
+0030|Vegetationshöhle
+0031|Herrscherbereich
+0032|Route 4
+0034|Route 5
+0036|Route 6
+0038|Route 7
+003a|Route 8
+003c|Route 9
+003e|Hanohano-Resort
+0040|Hanohano-Strand
+0042|Akala-Blumenmeer
+0044|Ohana
+0046|Kantai City
+0048|Konikoni City
+004a|Avenue Royale
+004c|Hügel des Gedenkens
+004e|Ohana-Farm
+0050|[~ 80]
+0052|Wela-Vulkanpark
+0054|Wela-Vulkanpark
+0055|Herrscherbereich
+0056|Plätscherhügel
+0058|Plätscherhügel
+0059|Herrscherbereich
+005a|Schattendschungel
+005c|Ruinen des Lebens
+005e|Akala-Küstenstreifen
+0060|[~ 96]
+0061|[~ 97]
+0062|[~ 98]
+0063|[~ 99]
+0064|Digda-Tunnel
+0066|Hanohano-Resort
+0068|Dome Royale
+006a|Route 10
+006c|Route 11
+006e|Küste von Ula-Ula
+0070|Route 13
+0072|Dorf der Kapu
+0074|Route 15 (Wasserweg)
+0076|Route 16
+0078|Route 17
+007a|Route 12
+007c|Haina-Wüste
+007e|Route 14
+0080|Ula-Ula-Blumenmeer
+0082|Po’u
+0084|Malihe City
+0086|Malihe-Ziergarten
+0088|Hokulani-Berg
+008a|Glühberg
+008c|Ruinen des Gedeihens
+008e|Sonnenkreis-See
+0090|Mondscheiben-See
+0092|Mount Lanakila
+0094|Lottervilla
+0096|Schnäppchenparadies
+0097|Verlassener Laden
+0098|Hokulani-Sternwarte
+009a|Pokémon-Liga
+009c|Poni-Blumenmeer
+009e|Wildnis von Poni
+00a0|Alter Pfad von Poni
+00a2|Felsenküste von Poni
+00a4|Wald von Poni
+00a6|Ebene von Poni
+00a8|Küste von Poni
+00aa|Beschwerlicher Pfad
+00ac|Dorf des Seevolkes
+00ae|Canyon von Poni
+00b0|Sonnenkreis-Podium
+00b2|Mondscheiben-Podium
+00b4|Ruinen der Heimkehr
+00b6|Finalhöhle
+00b8|Kokowei-Eiland
+00ba|Kampfbaum
+00bc|Æther-Paradies
+00be|Ultradimension
+00c0|Malihe City
+00c1|Kap am Stadtrand
+7530|Link-Tausch
+7531|Link-Tausch
+7532|Kanto-Region
+7533|Johto-Region
+7534|Hoenn-Region
+7535|Sinnoh-Region
+7536|Fernes Land
+7537|－－－－－－－－－－
+7538|Einall-Region
+7539|Kalos-Region
+753a|Pokémon-Link
+753b|Pokémon GO
+753c|Kanto-Region
+753d|Hoenn-Region
+753e|Alola-Region
+753f|Pokémon-Resort
+9c40|Netter Ort
+9c41|Ferner Ort
+9c42|Pokémon-Film
+9c43|Pokémon-Film 2016
+9c44|Pokémon-Film 2017
+9c45|Pokémon-Film 2018
+9c46|Pokémon-Film 2019
+9c47|Pokémon-Film 2020
+9c48|Pokémon-Film 2021
+9c49|Pokémon Center
+9c4a|Pokémon-Zeichentrickserie
+9c4b|Pokémon Center MEGA TOKYO
+9c4c|Pokémon Center Osaka
+9c4d|Pokémon Center Fukuoka
+9c4e|Pokémon Center Nagoya
+9c4f|Pokémon Center Sapporo
+9c50|Pokémon Center Yokohama
+9c51|Pokémon Center Tohoku
+9c52|Pokémon Center TOKYO-BAY
+9c53|Pokémon Center Hiroshima
+9c54|Pokémon Center Kyoto
+9c55|Pokémon Ctr. SKYTREE TOWN
+9c56|Pokémon Store
+9c57|WCS
+9c58|WCS 2016
+9c59|WCS 2017
+9c5a|WCS 2018
+9c5b|WCS 2019
+9c5c|WCS 2020
+9c5d|WCS 2021
+9c5e|Worlds
+9c5f|Worlds 2016
+9c60|Worlds 2017
+9c61|Worlds 2018
+9c62|Worlds 2019
+9c63|Worlds 2020
+9c64|Worlds 2021
+9c65|VGE
+9c66|VGE 2016
+9c67|VGE 2017
+9c68|VGE 2018
+9c69|VGE 2019
+9c6a|VGE 2020
+9c6b|VGE 2021
+9c6c|Pokémon-Veranstaltung
+9c6d|Kampfturnier
+9c6e|Videospiel-Veranstaltung
+9c6f|Pokémon Daisuki Club
+9c70|Pokémon-TV-Programm
+9c71|Konzert
+9c72|Online-Geschenk
+9c73|PGL
+9c74|Pokémon-Veranstaltung 2016
+9c75|Pokémon-Veranstaltung 2017
+9c76|Pokémon-Veranstaltung 2018
+9c77|Pokémon-Veranstaltung 2019
+9c78|Pokémon-Veranstaltung 2020
+9c79|Pokémon-Veranstaltung 2021
+9c7a|Pokémon-Veranstaltung
+9c7b|Pokémon-Veranstaltung 2016
+9c7c|Pokémon-Veranstaltung 2017
+9c7d|Pokémon-Veranstaltung 2018
+9c7e|Pokémon-Veranstaltung 2019
+9c7f|Pokémon-Veranstaltung 2020
+9c80|Pokémon-Veranstaltung 2021
+9c81|PokéPark
+9c82|PokéPark 2016
+9c83|PokéPark 2017
+9c84|PokéPark 2018
+9c85|PokéPark 2019
+9c86|PokéPark 2020
+9c87|PokéPark 2021
+9c88|Veranstaltung
+9c89|GAME FREAK
+9c8a|Stadion
+9c8b|VGC
+9c8c|VGC 2016
+9c8d|VGC 2017
+9c8e|VGC 2018
+9c8f|VGC 2019
+9c90|VGC 2020
+9c91|VGC 2021
+9c92|Virtual Console
+9c93|Pokémon GO
+9c94|Pokémon Bank
+9c95|Pokémon-Geschäft
+9c96|Demo-Version
+9c97|Pokémon Trainer Club
+ea60|Ferne Person
+ea61|Hortleiterinnen
+ea62|Schatzsucher
+ea63|Dame der Heißen Quellen

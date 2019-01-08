@@ -356,9 +356,9 @@ std::string i18n::localize(Language lang, const std::string& val)
         case Language::RU:
             return ru->localize(val);
         default:
-            return 0;
+            return "";
     }
-    return 0;
+    return "";
 }
 
 std::string i18n::localize(const std::string& index)
@@ -496,4 +496,36 @@ std::vector<std::string> i18n::rawMoves(u8 lang)
             return ru->rawMoves();
     }
     return {};
+}
+
+std::string location(u8 lang, u16 v, Generation generation)
+{
+    switch (lang)
+    {
+        case Language::DE:
+            return de->location(v, generation);
+        case Language::EN:
+            return en->location(v, generation);
+        case Language::ES:
+            return es->location(v, generation);
+        case Language::FR:
+            return fr->location(v, generation);
+        case Language::IT:
+            return it->location(v, generation);
+        case Language::JP:
+            return jp->location(v, generation);
+        case Language::KO:
+            return ko->location(v, generation);
+        case Language::NL:
+            return nl->location(v, generation);
+        case Language::PT:
+            return pt->location(v, generation);
+        case Language::ZH:
+            return zh->location(v, generation);
+        case Language::TW:
+            return tw->location(v, generation);
+        case Language::RU:
+            return ru->location(v, generation);
+    }
+    return "";
 }

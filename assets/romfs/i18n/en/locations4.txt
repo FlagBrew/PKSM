@@ -1,0 +1,327 @@
+0000|Mystery Zone
+0001|Twinleaf Town
+0002|Sandgem Town
+0003|Floaroma Town
+0004|Solaceon Town
+0005|Celestic Town
+0006|Jubilife City
+0007|Canalave City
+0008|Oreburgh City
+0009|Eterna City
+000a|Hearthome City
+000b|Pastoria City
+000c|Veilstone City
+000d|Sunyshore City
+000e|Snowpoint City
+000f|Pokémon League
+0010|Route 201
+0011|Route 202
+0012|Route 203
+0013|Route 204
+0014|Route 205
+0015|Route 206
+0016|Route 207
+0017|Route 208
+0018|Route 209
+0019|Route 210
+001a|Route 211
+001b|Route 212
+001c|Route 213
+001d|Route 214
+001e|Route 215
+001f|Route 216
+0020|Route 217
+0021|Route 218
+0022|Route 219
+0023|Route 220
+0024|Route 221
+0025|Route 222
+0026|Route 223
+0027|Route 224
+0028|Route 225
+0029|Route 226
+002a|Route 227
+002b|Route 228
+002c|Route 229
+002d|Route 230
+002e|Oreburgh Mine
+002f|Valley Windworks
+0030|Eterna Forest
+0031|Fuego Ironworks
+0032|Mt. Coronet
+0033|Spear Pillar
+0034|Great Marsh
+0035|Solaceon Ruins
+0036|Victory Road
+0037|Pal Park
+0038|Amity Square
+0039|Ravaged Path
+003a|Floaroma Meadow
+003b|Oreburgh Gate
+003c|Fullmoon Island
+003d|Sendoff Spring
+003e|Turnback Cave
+003f|Flower Paradise
+0040|Snowpoint Temple
+0041|Wayward Cave
+0042|Ruin Maniac Cave
+0043|Maniac Tunnel
+0044|Trophy Garden
+0045|Iron Island
+0046|Old Chateau
+0047|Galactic HQ
+0048|Verity Lakefront
+0049|Valor Lakefront
+004a|Acuity Lakefront
+004b|Spring Path
+004c|Lake Verity
+004d|Lake Valor
+004e|Lake Acuity
+004f|Newmoon Island
+0050|Battle Tower
+0051|Fight Area
+0052|Survival Area
+0053|Resort Area
+0054|Stark Mountain
+0055|Seabreak Path
+0056|Hall of Origin
+0057|Verity Cavern
+0058|Valor Cavern
+0059|Acuity Cavern
+005a|Jubilife TV
+005b|Pokétch Co.
+005c|GTS
+005d|Trainers’ School
+005e|Mining Museum
+005f|Flower Shop
+0060|Cycle Shop
+0061|Contest Hall
+0062|Poffin House
+0063|Foreign Building
+0064|Pokémon Day Care
+0065|Veilstone Store
+0066|Game Corner
+0067|Canalave Library
+0068|Vista Lighthouse
+0069|Sunyshore Market
+006a|Pokémon Mansion
+006b|Footstep House
+006c|Café
+006d|Grand Lake
+006e|Restaurant
+006f|Battle Park
+0070|Battle Frontier
+0071|Battle Factory
+0072|Battle Castle
+0073|Battle Arcade
+0074|Battle Hall
+0075|Distortion World
+0076|Global Terminal
+0077|Villa
+0078|Battleground
+0079|ROTOM’s Room
+007a|T.G. Eterna Bldg
+007b|Iron Ruins
+007c|Iceberg Ruins
+007d|Rock Peak Ruins
+007e|New Bark Town
+007f|Cherrygrove City
+0080|Violet City
+0081|Azalea Town
+0082|Cianwood City
+0083|Goldenrod City
+0084|Olivine City
+0085|Ecruteak City
+0086|Mahogany Town
+0087|Lake of Rage
+0088|Blackthorn City
+0089|Mt. Silver
+008a|Pallet Town
+008b|Viridian City
+008c|Pewter City
+008d|Cerulean City
+008e|Lavender Town
+008f|Vermilion City
+0090|Celadon City
+0091|Fuchsia City
+0092|Cinnabar Island
+0093|Indigo Plateau
+0094|Saffron City
+0095|Route 1
+0096|Route 2
+0097|Route 3
+0098|Route 4
+0099|Route 5
+009a|Route 6
+009b|Route 7
+009c|Route 8
+009d|Route 9
+009e|Route 10
+009f|Route 11
+00a0|Route 12
+00a1|Route 13
+00a2|Route 14
+00a3|Route 15
+00a4|Route 16
+00a5|Route 17
+00a6|Route 18
+00a7|Route 19
+00a8|Route 20
+00a9|Route 21
+00aa|Route 22
+00ab|Route 23
+00ac|Route 24
+00ad|Route 25
+00ae|Route 26
+00af|Route 27
+00b0|Route 28
+00b1|Route 29
+00b2|Route 30
+00b3|Route 31
+00b4|Route 32
+00b5|Route 33
+00b6|Route 34
+00b7|Route 35
+00b8|Route 36
+00b9|Route 37
+00ba|Route 38
+00bb|Route 39
+00bc|Route 40
+00bd|Route 41
+00be|Route 42
+00bf|Route 43
+00c0|Route 44
+00c1|Route 45
+00c2|Route 46
+00c3|Route 47
+00c4|Route 48
+00c5|DIGLETT’s Cave
+00c6|Mt. Moon
+00c7|Cerulean Cave
+00c8|Rock Tunnel
+00c9|Power Plant
+00ca|Safari Zone
+00cb|Seafoam Islands
+00cc|Sprout Tower
+00cd|Bell Tower
+00ce|Burned Tower
+00cf|National Park
+00d0|Radio Tower
+00d1|Ruins of Alph
+00d2|Union Cave
+00d3|SLOWPOKE Well
+00d4|Lighthouse
+00d5|Team Rocket HQ
+00d6|Ilex Forest
+00d7|Goldenrod Tunnel
+00d8|Mt. Mortar
+00d9|Ice Path
+00da|Whirl Islands
+00db|Mt. Silver Cave
+00dc|Dark Cave
+00dd|Victory Road
+00de|Dragon’s Den
+00df|Tohjo Falls
+00e0|Viridian Forest
+00e1|Pokéathlon Dome
+00e2|S.S. Aqua
+00e3|Safari Zone Gate
+00e4|Cliff Cave
+00e5|Frontier Access
+00e6|Bellchime Trail
+00e7|Sinjoh Ruins
+00e8|Embedded Tower
+00e9|Pokéwalker
+00ea|Cliff Edge Gate
+07d0|Day-Care Couple
+07d1|Link trade
+07d2|Link trade
+07d3|Kanto
+07d4|Johto
+07d5|Hoenn
+07d6|Sinnoh
+07d7|----------
+07d8|Distant land
+07d9|Traveling Man
+07da|Riley
+07db|Cynthia
+07dc|Mystery Zone
+07dd|Mr. Pokémon
+07de|Primo
+0bb8|Lovely place
+0bb9|Pokémon Ranger
+0bba|Faraway place
+0bbb|Pokémon Movie
+0bbc|Pokémon Movie 06
+0bbd|Pokémon Movie 07
+0bbe|Pokémon Movie 08
+0bbf|Pokémon Movie 09
+0bc0|Pokémon Movie 10
+0bc1|Pokémon Movie 11
+0bc2|Pokémon Movie 12
+0bc3|Pokémon Movie 13
+0bc4|Pokémon Movie 14
+0bc5|Pokémon Movie 15
+0bc6|Pokémon Movie 16
+0bc7|Pokémon Cartoon
+0bc8|Space World
+0bc9|Space World 06
+0bca|Space World 07
+0bcb|Space World 08
+0bcc|Space World 09
+0bcd|Space World 10
+0bce|Space World 11
+0bcf|Space World 12
+0bd0|Space World 13
+0bd1|Space World 14
+0bd2|Space World 15
+0bd3|Space World 16
+0bd4|Pokémon Festa
+0bd5|Pokémon Festa 06
+0bd6|Pokémon Festa 07
+0bd7|Pokémon Festa 08
+0bd8|Pokémon Festa 09
+0bd9|Pokémon Festa 10
+0bda|Pokémon Festa 11
+0bdb|Pokémon Festa 12
+0bdc|Pokémon Festa 13
+0bdd|Pokémon Festa 14
+0bde|Pokémon Festa 15
+0bdf|Pokémon Festa 16
+0be0|POKéPARK
+0be1|POKéPARK 06
+0be2|POKéPARK 07
+0be3|POKéPARK 08
+0be4|POKéPARK 09
+0be5|POKéPARK 10
+0be6|POKéPARK 11
+0be7|POKéPARK 12
+0be8|POKéPARK 13
+0be9|POKéPARK 14
+0bea|POKéPARK 15
+0beb|POKéPARK 16
+0bec|Pokémon Center
+0bed|PC Tokyo
+0bee|PC Osaka
+0bef|PC Fukuoka
+0bf0|PC Nagoya
+0bf1|PC Sapporo
+0bf2|PC Yokohama
+0bf3|Nintendo World
+0bf4|Pokémon Event
+0bf5|Pokémon Event 06
+0bf6|Pokémon Event 07
+0bf7|Pokémon Event 08
+0bf8|Pokémon Event 09
+0bf9|Pokémon Event 10
+0bfa|Pokémon Event 11
+0bfb|Pokémon Event 12
+0bfc|Pokémon Event 13
+0bfd|Pokémon Event 14
+0bfe|Pokémon Event 15
+0bff|Pokémon Event 16
+0c00|Wi-Fi Event
+0c01|Wi-Fi Gift
+0c02|Pokémon Fan Club
+0c03|Event Site
+0c04|Concert Event

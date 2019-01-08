@@ -1,0 +1,327 @@
+0000|Zona Misteriosa
+0001|Duefoglie
+0002|Sabbiafine
+0003|Giardinfiorito
+0004|Flemminia
+0005|Memoride
+0006|Giubilopoli
+0007|Canalipoli
+0008|Mineropoli
+0009|Evopoli
+000a|Cuoripoli
+000b|Pratopoli
+000c|Rupepoli
+000d|Arenipoli
+000e|Nevepoli
+000f|Lega Pokémon
+0010|Percorso 201
+0011|Percorso 202
+0012|Percorso 203
+0013|Percorso 204
+0014|Percorso 205
+0015|Percorso 206
+0016|Percorso 207
+0017|Percorso 208
+0018|Percorso 209
+0019|Percorso 210
+001a|Percorso 211
+001b|Percorso 212
+001c|Percorso 213
+001d|Percorso 214
+001e|Percorso 215
+001f|Percorso 216
+0020|Percorso 217
+0021|Percorso 218
+0022|Percorso 219
+0023|Percorso 220
+0024|Percorso 221
+0025|Percorso 222
+0026|Percorso 223
+0027|Percorso 224
+0028|Percorso 225
+0029|Percorso 226
+002a|Percorso 227
+002b|Percorso 228
+002c|Percorso 229
+002d|Percorso 230
+002e|Cava Mineropoli
+002f|Impianto Turbine
+0030|Bosco Evopoli
+0031|Fonderie Fuego
+0032|Monte Corona
+0033|Vetta Lancia
+0034|Gran Palude
+0035|Rovine Flemminia
+0036|Via Vittoria
+0037|Parco Amici
+0038|Parco Concordia
+0039|Cammino Roccioso
+003a|Prato Fiorito
+003b|Varco Mineropoli
+003c|Isola Lunapiena
+003d|Fonte Saluto
+003e|Grotta Ritorno
+003f|Paradiso Fiore
+0040|Tempio Nevepoli
+0041|Grotta Labirinto
+0042|Grotta Rovine
+0043|Tunnel Rovine
+0044|Giardino Trofeo
+0045|Isola Ferrosa
+0046|Antico Château
+0047|Sede Galassia
+0048|Riva Verità
+0049|Riva Valore
+004a|Riva Arguzia
+004b|Sentiero Fonte
+004c|Lago Verità
+004d|Lago Valore
+004e|Lago Arguzia
+004f|Isola Lunanuova
+0050|Torre Lotta
+0051|Area Sfida
+0052|Area Provviste
+0053|Area Svago
+0054|Monte Ostile
+0055|Via Frangimare
+0056|Spazio Origine
+0057|Grotta Verità
+0058|Grotta Valore
+0059|Grotta Arguzia
+005a|Giubilo TV
+005b|PokéKron SpA
+005c|GTS
+005d|Sc. Allenatori
+005e|Museo Minerario
+005f|Fiorista
+0060|Negozio Bici
+0061|Arena Virtù
+0062|Casa Poffin
+0063|Edificio Culture
+0064|Pensione Pokémon
+0065|C. C. Rupepoli
+0066|Casinò
+0067|Bibl. Canalipoli
+0068|Faro Panorama
+0069|Merc. Arenipoli
+006a|Villa Pokémon
+006b|Casa Impronta
+006c|Caffè
+006d|Grande Lago
+006e|Ristorante
+006f|Giardino Lotta
+0070|Parco Lotta
+0071|Azienda Lotta
+0072|Maniero Lotta
+0073|Arena Lotta
+0074|Palco Lotta
+0075|Mondo Distorto
+0076|Centro Globale
+0077|Villa
+0078|Casa Lotta
+0079|Stanza di ROTOM
+007a|Edificio T. G.
+007b|Rovine Ferro
+007c|Rovine Iceberg
+007d|Rovine Picco
+007e|Borgo Foglianova
+007f|Fiorpescopoli
+0080|Violapoli
+0081|Azalina
+0082|Fiorlisopoli
+0083|Fiordoropoli
+0084|Olivinopoli
+0085|Amarantopoli
+0086|Mogania
+0087|Lago d’Ira
+0088|Ebanopoli
+0089|Monte Argento
+008a|Biancavilla
+008b|Smeraldopoli
+008c|Plumbeopoli
+008d|Celestopoli
+008e|Lavandonia
+008f|Aranciopoli
+0090|Azzurropoli
+0091|Fucsiapoli
+0092|Isola Cannella
+0093|Altopiano Blu
+0094|Zafferanopoli
+0095|Percorso 1
+0096|Percorso 2
+0097|Percorso 3
+0098|Percorso 4
+0099|Percorso 5
+009a|Percorso 6
+009b|Percorso 7
+009c|Percorso 8
+009d|Percorso 9
+009e|Percorso 10
+009f|Percorso 11
+00a0|Percorso 12
+00a1|Percorso 13
+00a2|Percorso 14
+00a3|Percorso 15
+00a4|Percorso 16
+00a5|Percorso 17
+00a6|Percorso 18
+00a7|Percorso 19
+00a8|Percorso 20
+00a9|Percorso 21
+00aa|Percorso 22
+00ab|Percorso 23
+00ac|Percorso 24
+00ad|Percorso 25
+00ae|Percorso 26
+00af|Percorso 27
+00b0|Percorso 28
+00b1|Percorso 29
+00b2|Percorso 30
+00b3|Percorso 31
+00b4|Percorso 32
+00b5|Percorso 33
+00b6|Percorso 34
+00b7|Percorso 35
+00b8|Percorso 36
+00b9|Percorso 37
+00ba|Percorso 38
+00bb|Percorso 39
+00bc|Percorso 40
+00bd|Percorso 41
+00be|Percorso 42
+00bf|Percorso 43
+00c0|Percorso 44
+00c1|Percorso 45
+00c2|Percorso 46
+00c3|Percorso 47
+00c4|Percorso 48
+00c5|Grotta DIGLETT
+00c6|Monteluna
+00c7|Grotta Celeste
+00c8|Tunnel Roccioso
+00c9|Impianto Turbine
+00ca|Zona Safari
+00cb|Isole Spumarine
+00cc|Torre Sprout
+00cd|Torre Campana
+00ce|Torre Bruciata
+00cf|Parco Nazionale
+00d0|Torre Radio
+00d1|Rovine d’Alfa
+00d2|Grotta di mezzo
+00d3|Pozzo SLOWPOKE
+00d4|Faro
+00d5|Covo Team Rocket
+00d6|Bosco di Lecci
+00d7|Fiortunnel
+00d8|Monte Scodella
+00d9|Via Gelata
+00da|Isole Vorticose
+00db|Grotta Argento
+00dc|Grotta Scura
+00dd|Via Vittoria
+00de|Tana del Drago
+00df|Cascate Tohjo
+00e0|Bosco Smeraldo
+00e1|Arena Pokéathlon
+00e2|M/N Acqua
+00e3|Ingresso Safari
+00e4|Grotta Falesia
+00e5|Accesso al Parco
+00e6|Sentiero Din Don
+00e7|Rovine Sinjoh
+00e8|Torre Occulta
+00e9|Pokéwalker
+00ea|Ingresso Falesia
+07d0|Coppia Pensione
+07d1|Scambio in link
+07d2|Scambio in link
+07d3|Kanto
+07d4|Johto
+07d5|Hoenn
+07d6|Sinnoh
+07d7|--------------
+07d8|Terra Lontana
+07d9|Viaggiatore
+07da|Marisio
+07db|Camilla
+07dc|Zona Misteriosa
+07dd|Mr. Pokémon
+07de|Castore
+0bb8|Luogo grazioso
+0bb9|Pokémon Ranger
+0bba|Luogo Remoto
+0bbb|Film Pokémon
+0bbc|Film Pokémon 06
+0bbd|Film Pokémon 07
+0bbe|Film Pokémon 08
+0bbf|Film Pokémon 09
+0bc0|Film Pokémon 10
+0bc1|Film Pokémon 11
+0bc2|Film Pokémon 12
+0bc3|Film Pokémon 13
+0bc4|Film Pokémon 14
+0bc5|Film Pokémon 15
+0bc6|Film Pokémon 16
+0bc7|Cartone Pokémon
+0bc8|Space World
+0bc9|Space World 06
+0bca|Space World 07
+0bcb|Space World 08
+0bcc|Space World 09
+0bcd|Space World 10
+0bce|Space World 11
+0bcf|Space World 12
+0bd0|Space World 13
+0bd1|Space World 14
+0bd2|Space World 15
+0bd3|Space World 16
+0bd4|Pokémon Festa
+0bd5|Pokémon Festa 06
+0bd6|Pokémon Festa 07
+0bd7|Pokémon Festa 08
+0bd8|Pokémon Festa 09
+0bd9|Pokémon Festa 10
+0bda|Pokémon Festa 11
+0bdb|Pokémon Festa 12
+0bdc|Pokémon Festa 13
+0bdd|Pokémon Festa 14
+0bde|Pokémon Festa 15
+0bdf|Pokémon Festa 16
+0be0|POKéPARK
+0be1|POKéPARK 06
+0be2|POKéPARK 07
+0be3|POKéPARK 08
+0be4|POKéPARK 09
+0be5|POKéPARK 10
+0be6|POKéPARK 11
+0be7|POKéPARK 12
+0be8|POKéPARK 13
+0be9|POKéPARK 14
+0bea|POKéPARK 15
+0beb|POKéPARK 16
+0bec|Centro Pokémon
+0bed|CP Tokyo
+0bee|CP Osaka
+0bef|CP Fukuoka
+0bf0|CP Nagoya
+0bf1|CP Sapporo
+0bf2|CP Yokohama
+0bf3|Nintendo World
+0bf4|Evento Pokémon
+0bf5|Even. Pokémon 06
+0bf6|Even. Pokémon 07
+0bf7|Even. Pokémon 08
+0bf8|Even. Pokémon 09
+0bf9|Even. Pokémon 10
+0bfa|Even. Pokémon 11
+0bfb|Even. Pokémon 12
+0bfc|Even. Pokémon 13
+0bfd|Even. Pokémon 14
+0bfe|Even. Pokémon 15
+0bff|Even. Pokémon 16
+0c00|Evento Wi-Fi
+0c01|Dono Wi-Fi
+0c02|Pokémon Fan Club
+0c03|Luogo Evento
+0c04|Concerto

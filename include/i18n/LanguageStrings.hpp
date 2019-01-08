@@ -66,9 +66,14 @@ protected:
     std::vector<std::string> moves;
     std::vector<std::string> natures;
     std::vector<std::string> speciess;
+    std::unordered_map<u16, std::string> locations4;
+    std::unordered_map<u16, std::string> locations5;
+    std::unordered_map<u16, std::string> locations6;
+    std::unordered_map<u16, std::string> locations7;
     nlohmann::json gui;
 
     void load(Language lang, const std::string name, std::vector<std::string>& array);
+    void loadMap(Language lang, const std::string name, std::unordered_map<u16, std::string>& map);
     void loadGui(Language lang);
 
 public:
@@ -86,6 +91,7 @@ public:
     std::string nature(u8 v) const;
     std::string species(u16 v) const;
     std::string form(u16 species, u8 form, Generation generation) const;
+    std::string location(u16 v, Generation generation) const;
 
     std::string localize(const std::string& v) const;
 };
