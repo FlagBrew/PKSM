@@ -146,6 +146,7 @@ void SavUSUM::pkm(PKX& pk, u8 slot)
 {
     pk.encrypt();
     PK7* pk7 = (PK7*)&pk;
+    std::fill(data + partyOffset(slot), data + partyOffset(slot + 1), (u8)0);
     std::copy(pk7->data, pk7->data + pk7->length, data + partyOffset(slot));
     pk.decrypt();
 }

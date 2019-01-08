@@ -162,6 +162,7 @@ void SavHGSS::pkm(PKX& pk, u8 slot)
 {
     pk.encrypt();
     PK4* pk4 = (PK4*)&pk;
+    std::fill(data + partyOffset(slot), data + partyOffset(slot + 1), (u8)0);
     std::copy(pk4->data, pk4->data + pk4->length, data + partyOffset(slot));
     pk.decrypt();
 }

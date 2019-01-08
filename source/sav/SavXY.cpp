@@ -110,6 +110,7 @@ void SavXY::pkm(PKX& pk, u8 slot)
 {
     pk.encrypt();
     PK6* pk6 = (PK6*)&pk;
+    std::fill(data + partyOffset(slot), data + partyOffset(slot + 1), (u8)0);
     std::copy(pk6->data, pk6->data + pk6->length, data + partyOffset(slot));
     pk.decrypt();
 }

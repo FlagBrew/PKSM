@@ -111,6 +111,7 @@ void SavB2W2::pkm(PKX& pk, u8 slot)
 {
     pk.encrypt();
     PK5* pk5 = (PK5*)&pk;
+    std::fill(data + partyOffset(slot), data + partyOffset(slot + 1), (u8)0);
     std::copy(pk5->data, pk5->data + pk5->length, data + partyOffset(slot));
     pk.decrypt();
 }
