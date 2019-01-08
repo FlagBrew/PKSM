@@ -498,7 +498,7 @@ std::vector<std::string> i18n::rawMoves(u8 lang)
     return {};
 }
 
-std::string location(u8 lang, u16 v, Generation generation)
+std::string i18n::location(u8 lang, u16 v, Generation generation)
 {
     switch (lang)
     {
@@ -526,6 +526,38 @@ std::string location(u8 lang, u16 v, Generation generation)
             return tw->location(v, generation);
         case Language::RU:
             return ru->location(v, generation);
+    }
+    return "";
+}
+
+std::string i18n::game(u8 lang, u8 v)
+{
+    switch (lang)
+    {
+        case Language::DE:
+            return de->game(v);
+        case Language::EN:
+            return en->game(v);
+        case Language::ES:
+            return es->game(v);
+        case Language::FR:
+            return fr->game(v);
+        case Language::IT:
+            return it->game(v);
+        case Language::JP:
+            return jp->game(v);
+        case Language::KO:
+            return ko->game(v);
+        case Language::NL:
+            return nl->game(v);
+        case Language::PT:
+            return pt->game(v);
+        case Language::ZH:
+            return zh->game(v);
+        case Language::TW:
+            return tw->game(v);
+        case Language::RU:
+            return ru->game(v);
     }
     return "";
 }

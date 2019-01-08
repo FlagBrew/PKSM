@@ -1,0 +1,131 @@
+0000|－
+0001|Lugar misterioso
+0002|Lugar lejano
+0003|Ruta 1
+0004|Ruta 2
+0005|Ruta 3
+0006|Ruta 4
+0007|Ruta 5
+0008|Ruta 6
+0009|Ruta 7
+000a|Ruta 8
+000b|Ruta 9
+000c|Ruta 10
+000d|Ruta 11
+000e|Ruta 12
+000f|Ruta 13
+0010|Ruta 14
+0011|Ruta 15
+0012|Ruta 16
+0013|Ruta 17
+0014|Ruta 18
+0015|Ruta 19
+0016|Ruta 20
+0017|Ruta 21
+0018|Ruta 22
+0019|Ruta 23
+001a|Ruta 24
+001b|Ruta 25
+001c|Pueblo Paleta
+001d|Ciudad Verde
+001e|Ciudad Plateada
+001f|Ciudad Celeste
+0020|Pueblo Lavanda
+0021|Ciudad Carmín
+0022|Ciudad Azulona
+0023|Ciudad Fucsia
+0024|Isla Canela
+0025|Meseta Añil
+0026|Ciudad Azafrán
+0027|Bosque Verde
+0028|Monte Moon
+0029|Túnel Roca
+002a|Central de Energía
+002b|Cueva Diglett
+002c|Islas Espuma
+002d|Calle Victoria
+002e|Cueva Celeste
+002f|Torre Pokémon
+0030|S. S. Anne
+0031|Guarida Rocket
+0032|GO Park
+0033|Mansión Pokémon
+0034|Silph S. A.
+0035|Liga Pokémon
+9c40|﻿Lugar encantador
+9c41|Lugar lejano
+9c42|Película Pokémon
+9c43|Película Pokémon 2018
+9c44|Película Pokémon 2019
+9c45|Película Pokémon 2020
+9c46|Película Pokémon 2021
+9c47|Película Pokémon 2022
+9c48|Película Pokémon 2023
+9c49|Dibujos animados Pokémon
+9c4a|Pokémon Center
+9c4b|Pokémon Center Tohoku
+9c4c|WCS
+9c4d|WCS 2018
+9c4e|WCS 2019
+9c4f|WCS 2020
+9c50|WCS 2021
+9c51|WCS 2022
+9c52|WCS 2023
+9c53|Worlds
+9c54|Worlds 2018
+9c55|Worlds 2019
+9c56|Worlds 2020
+9c57|Worlds 2021
+9c58|Worlds 2022
+9c59|Worlds 2023
+9c5a|Evento de Videojuegos
+9c5b|Evento Videojuegos 2018
+9c5c|Evento Videojuegos 2019
+9c5d|Evento Videojuegos 2020
+9c5e|Evento Videojuegos 2021
+9c5f|Evento Videojuegos 2022
+9c60|Evento Videojuegos 2023
+9c61|Evento Pokémon
+9c62|Torneo
+9c63|Evento de Videojuegos
+9c64|Pokémon Daisuki Club
+9c65|Programa sobre Pokémon
+9c66|Concierto
+9c67|Regalo en línea
+9c68|Pokémon Global Link
+9c69|Evento Pokémon 2018
+9c6a|Evento Pokémon 2019
+9c6b|Evento Pokémon 2020
+9c6c|Evento Pokémon 2021
+9c6d|Evento Pokémon 2022
+9c6e|Evento Pokémon 2023
+9c6f|Evento Pokémon
+9c70|Evento Pokémon 2018
+9c71|Evento Pokémon 2019
+9c72|Evento Pokémon 2020
+9c73|Evento Pokémon 2021
+9c74|Evento Pokémon 2022
+9c75|Evento Pokémon 2023
+9c76|PokéPark
+9c77|PokéPark 2018
+9c78|PokéPark 2019
+9c79|PokéPark 2020
+9c7a|PokéPark 2021
+9c7b|PokéPark 2022
+9c7c|PokéPark 2023
+9c7d|Evento
+9c7e|GAME FREAK
+9c7f|Estadio
+9c80|VGC
+9c81|VGC 2018
+9c82|VGC 2019
+9c83|VGC 2020
+9c84|VGC 2021
+9c85|VGC 2022
+9c86|VGC 2023
+9c87|Consola Virtual
+9c88|Pokémon GO
+9c89|Banco de Pokémon
+9c8a|Establecimiento Pokémon
+9c8b|Versión de prueba
+9c8c|Poké Ball Plus

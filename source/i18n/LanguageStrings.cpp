@@ -74,7 +74,12 @@ LanguageStrings::LanguageStrings(Language lang)
     load(lang, "/moves.txt", moves);
     load(lang, "/natures.txt", natures);
     load(lang, "/species.txt", speciess);
+    load(lang, "/games.txt", games);
     loadMap(lang, "/locations4.txt", locations4);
+    loadMap(lang, "/locations5.txt", locations5);
+    loadMap(lang, "/locations6.txt", locations6);
+    loadMap(lang, "/locations7.txt", locations7);
+    loadMap(lang, "/locationsLGPE.txt", locationsLGPE);
     loadGui(lang);
 }
 
@@ -120,17 +125,17 @@ void LanguageStrings::loadGui(Language lang)
 
 std::string LanguageStrings::ability(u8 v) const
 {
-    return v < abilities.size() ? abilities.at(v) : "Invalid";
+    return v < abilities.size() ? abilities.at(v) : localize("INVALID_ABILITY");
 }
 
 std::string LanguageStrings::ball(u8 v) const
 {
-    return v < balls.size() ? balls.at(v) : "Invalid";
+    return v < balls.size() ? balls.at(v) : localize("INVALID_BALL");
 }
 
 std::string LanguageStrings::form(u16 species, u8 form, Generation generation) const
 {
-    std::string ret = "Invalid";
+    std::string ret = localize("INVALID_FORM");
     std::string sSpecies = std::to_string((int)species);
     if (formJson().find(sSpecies) == formJson().end())
     {
@@ -173,27 +178,27 @@ std::string LanguageStrings::form(u16 species, u8 form, Generation generation) c
 
 std::string LanguageStrings::hp(u8 v) const
 {
-    return v < hps.size() ? hps.at(v) : "Invalid";
+    return v < hps.size() ? hps.at(v) : localize("INVALID_HP");
 }
 
 std::string LanguageStrings::item(u16 v) const
 {
-    return v < items.size() ? items.at(v) : "Invalid";
+    return v < items.size() ? items.at(v) : localize("INVALID_ITEM");
 }
 
 std::string LanguageStrings::move(u16 v) const
 {
-    return v < moves.size() ? moves.at(v) : "Invalid";
+    return v < moves.size() ? moves.at(v) : localize("INVALID_MOVE");
 }
 
 std::string LanguageStrings::nature(u8 v) const
 {
-    return v < natures.size() ? natures.at(v) : "Invalid";
+    return v < natures.size() ? natures.at(v) : localize("INVALID_NATURE");
 }
 
 std::string LanguageStrings::species(u16 v) const
 {
-    return v < speciess.size() ? speciess.at(v) : "Invalid";
+    return v < speciess.size() ? speciess.at(v) : localize("INVALID_SPECIES");
 }
 
 std::string LanguageStrings::localize(const std::string& v) const
@@ -229,17 +234,35 @@ std::string LanguageStrings::location(u16 v, Generation generation) const
             }
             break;
         case Generation::SIX:
-            if ((i = locations6.find(v)) != locations5.end())
+            if ((i = locations6.find(v)) != locations6.end())
             {
                 return i->second;
             }
             break;
         case Generation::SEVEN:
-            if ((i = locations7.find(v)) != locations5.end())
+            if ((i = locations7.find(v)) != locations7.end())
             {
                 return i->second;
             }
             break;
+        case Generation::LGPE:
+            if ((i = locationsLGPE.find(v)) != locationsLGPE.end())
+            {
+                return i->second;
+            }
+            break;
+        default:
+            break;
     }
-    return "";
+    return localize("INVALID_LOCATION");
+}
+
+std::string LanguageStrings::game(u8 v) const
+{
+    std::string ret = "";
+    if (v < games.size())
+    {
+        ret = games.at(v);
+    }
+    return ret == "" ? localize("INVALID_GAME") : ret;
 }
