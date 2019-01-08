@@ -500,14 +500,33 @@ void BagScreen::editCount(bool up, int selected)
     {
         if (up)
         {
-            if (item->count() < 0xFFFF)
+            switch (item->generation())
             {
-                item->count(item->count() + 1);
+                case Generation::FOUR:
+                case Generation::FIVE:
+                case Generation::SIX:
+                default:
+                    if (item->count() < 0xFFFF)
+                    {
+                        item->count(item->count() + 1);
+                    }
+                    break;
+                case Generation::SEVEN:
+                    if (item->count() < 0x3FF)
+                    {
+                        item->count(item->count() + 1);
+                    }
+                    break;
+                case Generation::LGPE:
+                    if (item->count() < 0x7FFF)
+                    {
+                        item->count(item->count() + 1);
+                    }
             }
         }
         else
         {
-            if (item->count() > 1)
+            if (item->count() > 2)
             {
                 item->count(item->count() - 1);
             }
