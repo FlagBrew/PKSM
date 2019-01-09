@@ -90,7 +90,6 @@ BANNER_AUDIO	:=	assets/audio.wav
 BANNER_IMAGE	:=	assets/banner.png
 RSF_PATH		:=	assets/app.rsf
 
-
 # If left blank, makerom will use the default Homebrew logo
 LOGO			:=
 
@@ -100,6 +99,12 @@ PRODUCT_CODE	:=	CTR-HB-PKSM
 
 # Don't really need to change this
 ICON_FLAGS		:=	nosavebackups,visible
+
+# Python
+PYVERS	:= 3.7.2
+PYDIST	:= Python-$(PYVERS)
+PYFILE	:= $(PYDIST).tgz
+PYLINK	:= https://www.python.org/ftp/python/$(PYVERS)/$(PYFILE)
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -221,7 +226,7 @@ endif
 .PHONY: all clean deps no-deps docs
 
 #---------------------------------------------------------------------------------
-all: deps no-deps docs
+all: deps no-deps docs python download
 #---------------------------------------------------------------------------------
 deps:
 	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR)
@@ -257,6 +262,15 @@ no-deps:
 docs:
 	@mkdir -p $(OUTDIR)
 	@gwtc -o $(OUTDIR) -n "$(APP_TITLE) Manual" -t "$(APP_TITLE) v$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_MICRO) Documentation" --logo-img $(ICON) docs/wiki
+#---------------------------------------------------------------------------------
+download:
+	@curl -Lo $(BUILD)/$(PYFILE) $(PYLINK)
+	@tar xfzv $(BUILD)/$(PYFILE) -C $(BUILD)
+#---------------------------------------------------------------------------------
+python:
+	# @rm -f $(BUILD)/$(PYFILE)
+	# @if [[ ! -f $(BUILD)/$(PYFILE) ]] then touch $(BUILD)/$(PYFILE) else curl -Lo $(BUILD)/$(PYFILE) $(PYLINK) fi
+	cd $(BUILD)/$(PYDIST) && ./configure CC="$(CC)" CXX="$(CXX)" AS="$(AS)" AR="$(AR)" OBJCOPY="$(OBJCOPY)" STRIP="$(STRIP)" NM="$(NM)" RANLIB="$(RANLIB)" CFLAGS="$(CFLAGS)" CXXFLAGS="$(CXXFLAGS)" ASFLAGS="$(ASFLAGS)" LDFLAGS="$(LDFLAGS)" CONFIG_SITE="config.site" --disable-shared --disable-ipv6 -host=armv6-none-elf --build=`./config.guess`
 #---------------------------------------------------------------------------------
 else
 
