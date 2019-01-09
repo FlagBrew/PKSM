@@ -200,97 +200,97 @@
 015e|Geheime Küste
 0160|Geheime Blumenwiese
 0162|Geheimbasis
-7530|Linktausch
 7531|Linktausch
-7532|Kanto-Region
-7533|Johto-Region
-7534|Hoenn-Region
-7535|Sinnoh-Region
-7536|Entferntes Land
-7537|－－－－－－－－－－
-7538|Einall-Region
-7539|Kalos-Region
-753a|Pokémon-Link
-9c40|Netter Ort
-9c41|Entfernter Ort
-9c42|Pokémon-Film
-9c43|Pokémon-Film 2013
-9c44|Pokémon-Film 2014
-9c45|Pokémon-Film 2015
-9c46|Pokémon-Film 2016
-9c47|Pokémon-Film 2017
-9c48|Pokémon-Film 2018
-9c49|Pokémon-Center
-9c4a|Pokémon-Zeichentrickserie
-9c4b|PC Tokyo
-9c4c|PC Osaka
-9c4d|PC Fukuoka
-9c4e|PC Nagoya
-9c4f|PC Sapporo
-9c50|PC Yokohama
-9c51|PC Tohoku
-9c52|PC Tokyo Bay
-9c53|Pokémon Store
-9c54|WCS
-9c55|WCS 2013
-9c56|WCS 2014
-9c57|WCS 2015
-9c58|WCS 2016
-9c59|WCS 2017
-9c5a|WCS 2018
-9c5b|Worlds
-9c5c|Worlds 2013
-9c5d|Worlds 2014
-9c5e|Worlds 2015
-9c5f|Worlds 2016
-9c60|Worlds 2017
-9c61|Worlds 2018
-9c62|VGE
-9c63|VGE 2013
-9c64|VGE 2014
-9c65|VGE 2015
-9c66|VGE 2016
-9c67|VGE 2017
-9c68|VGE 2018
-9c69|Pokémon Event
-9c6a|Kampfturnier
-9c6b|Videospiel-Veranstaltung
-9c6c|Pokémon Fan Club
-9c6d|Pokémon-TV-Programm
-9c6e|Konzert
-9c6f|Online-Geschenk
-9c70|PGL
-9c71|Pokémon Event 2013
-9c72|Pokémon Event 2014
-9c73|Pokémon Event 2015
-9c74|Pokémon Event 2016
-9c75|Pokémon Event 2017
-9c76|Pokémon Event 2018
-9c77|Pokémon Festa
-9c78|Pokémon Festa 2013
-9c79|Pokémon Festa 2014
-9c7a|Pokémon Festa 2015
-9c7b|Pokémon Festa 2016
-9c7c|Pokémon Festa 2017
-9c7d|Pokémon Festa 2018
-9c7e|PokéPark
-9c7f|PokéPark 2013
-9c80|PokéPark 2014
-9c81|PokéPark 2015
-9c82|PokéPark 2016
-9c83|PokéPark 2017
-9c84|PokéPark 2018
-9c85|Veranstaltung
-9c86|GAME FREAK
-9c87|Stadion
-9c88|VGC
-9c89|VGC 2013
-9c8a|VGC 2014
-9c8b|VGC 2015
-9c8c|VGC 2016
-9c8d|VGC 2017
-9c8e|VGC 2018
-ea60|Ferne Person
-ea61|Pensionsleiter
-ea62|Schatzsucher
-ea63|Dame der Heißen Quellen
+7532|Linktausch
+7533|Kanto-Region
+7534|Johto-Region
+7535|Hoenn-Region
+7536|Sinnoh-Region
+7537|Entferntes Land
+7538|－－－－－－－－－－
+7539|Einall-Region
+753a|Kalos-Region
+753b|Pokémon-Link
+9c41|Netter Ort
+9c42|Entfernter Ort
+9c43|Pokémon-Film
+9c44|Pokémon-Film 2013
+9c45|Pokémon-Film 2014
+9c46|Pokémon-Film 2015
+9c47|Pokémon-Film 2016
+9c48|Pokémon-Film 2017
+9c49|Pokémon-Film 2018
+9c4a|Pokémon-Center
+9c4b|Pokémon-Zeichentrickserie
+9c4c|PC Tokyo
+9c4d|PC Osaka
+9c4e|PC Fukuoka
+9c4f|PC Nagoya
+9c50|PC Sapporo
+9c51|PC Yokohama
+9c52|PC Tohoku
+9c53|PC Tokyo Bay
+9c54|Pokémon Store
+9c55|WCS
+9c56|WCS 2013
+9c57|WCS 2014
+9c58|WCS 2015
+9c59|WCS 2016
+9c5a|WCS 2017
+9c5b|WCS 2018
+9c5c|Worlds
+9c5d|Worlds 2013
+9c5e|Worlds 2014
+9c5f|Worlds 2015
+9c60|Worlds 2016
+9c61|Worlds 2017
+9c62|Worlds 2018
+9c63|VGE
+9c64|VGE 2013
+9c65|VGE 2014
+9c66|VGE 2015
+9c67|VGE 2016
+9c68|VGE 2017
+9c69|VGE 2018
+9c6a|Pokémon Event
+9c6b|Kampfturnier
+9c6c|Videospiel-Veranstaltung
+9c6d|Pokémon Fan Club
+9c6e|Pokémon-TV-Programm
+9c6f|Konzert
+9c70|Online-Geschenk
+9c71|PGL
+9c72|Pokémon Event 2013
+9c73|Pokémon Event 2014
+9c74|Pokémon Event 2015
+9c75|Pokémon Event 2016
+9c76|Pokémon Event 2017
+9c77|Pokémon Event 2018
+9c78|Pokémon Festa
+9c79|Pokémon Festa 2013
+9c7a|Pokémon Festa 2014
+9c7b|Pokémon Festa 2015
+9c7c|Pokémon Festa 2016
+9c7d|Pokémon Festa 2017
+9c7e|Pokémon Festa 2018
+9c7f|PokéPark
+9c80|PokéPark 2013
+9c81|PokéPark 2014
+9c82|PokéPark 2015
+9c83|PokéPark 2016
+9c84|PokéPark 2017
+9c85|PokéPark 2018
+9c86|Veranstaltung
+9c87|GAME FREAK
+9c88|Stadion
+9c89|VGC
+9c8a|VGC 2013
+9c8b|VGC 2014
+9c8c|VGC 2015
+9c8d|VGC 2016
+9c8e|VGC 2017
+9c8f|VGC 2018
+ea61|Ferne Person
+ea62|Pensionsleiter
+ea63|Schatzsucher
+ea64|Dame der Heißen Quellen

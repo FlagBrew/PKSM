@@ -200,97 +200,97 @@
 015e|Costa Secreta
 0160|Prado Secreto
 0162|Base Secreta
-7530|Intercambio
-7531|Intercambio en conexión
-7532|Kanto
-7533|Johto
-7534|Hoenn
-7535|Sinnoh
-7536|Tierra lejana
-7537|－－－－－－－－－－
-7538|Teselia
-7539|Kalos
-753a|Nexo Pokémon
-9c40|Lugar encantador
-9c41|Lugar lejano
-9c42|Película Pokémon
-9c43|Película Pokémon 2013
-9c44|Película Pokémon 2014
-9c45|Película Pokémon 2015
-9c46|Película Pokémon 2016
-9c47|Película Pokémon 2017
-9c48|Película Pokémon 2018
-9c49|Centro Pokémon
-9c4a|Serie de animación Pokémon
-9c4b|Centro Pokémon Tokio
-9c4c|Centro Pokémon Osaka
-9c4d|Centro Pokémon Fukuoka
-9c4e|Centro Pokémon Nagoya
-9c4f|Centro Pokémon Sapporo
-9c50|Centro Pokémon Yokohama
-9c51|Centro Pokémon Tohoku
-9c52|Centro Pokémon Tokyo Bay
-9c53|Pokémon Store
-9c54|Campeonato Mundial
-9c55|Campeonato Mundial 2013
-9c56|Campeonato Mundial 2014
-9c57|Campeonato Mundial 2015
-9c58|Campeonato Mundial 2016
-9c59|Campeonato Mundial 2017
-9c5a|Campeonato Mundial 2018
-9c5b|Campeonato Mundial
-9c5c|Campeonato Mundial 2013
-9c5d|Campeonato Mundial 2014
-9c5e|Campeonato Mundial 2015
-9c5f|Campeonato Mundial 2016
-9c60|Campeonato Mundial 2017
-9c61|Campeonato Mundial 2018
-9c62|Evento de Videojuegos
-9c63|Evento Videojuegos 2013
-9c64|Evento Videojuegos 2014
-9c65|Evento Videojuegos 2015
-9c66|Evento Videojuegos 2016
-9c67|Evento Videojuegos 2017
-9c68|Evento Videojuegos 2018
-9c69|Evento Pokémon
-9c6a|Torneo
-9c6b|Evento de Videojuegos
-9c6c|Club de Fans de Pokémon
-9c6d|Programa sobre Pokémon
-9c6e|Concierto Pokémon
-9c6f|Regalo en línea
-9c70|Pokémon Global Link
-9c71|Evento Pokémon 2013
-9c72|Evento Pokémon 2014
-9c73|Evento Pokémon 2015
-9c74|Evento Pokémon 2016
-9c75|Evento Pokémon 2017
-9c76|Evento Pokémon 2018
-9c77|Pokémon Festa
-9c78|Pokémon Festa 2013
-9c79|Pokémon Festa 2014
-9c7a|Pokémon Festa 2015
-9c7b|Pokémon Festa 2016
-9c7c|Pokémon Festa 2017
-9c7d|Pokémon Festa 2018
-9c7e|PokéPark
-9c7f|PokéPark 2013
-9c80|PokéPark 2014
-9c81|PokéPark 2015
-9c82|PokéPark 2016
-9c83|PokéPark 2017
-9c84|PokéPark 2018
-9c85|Evento
-9c86|GAME FREAK
-9c87|Estadio
-9c88|Camp. de Videojuegos
-9c89|Camp. de Videojuegos 2013
-9c8a|Camp. de Videojuegos 2014
-9c8b|Camp. de Videojuegos 2015
-9c8c|Camp. de Videojuegos 2016
-9c8d|Camp. de Videojuegos 2017
-9c8e|Camp. de Videojuegos 2018
-ea60|Persona lejana
-ea61|Pareja de la Guardería
-ea62|Buscatesoros
-ea63|Anciana del Balneario
+7531|Intercambio
+7532|Intercambio en conexión
+7533|Kanto
+7534|Johto
+7535|Hoenn
+7536|Sinnoh
+7537|Tierra lejana
+7538|－－－－－－－－－－
+7539|Teselia
+753a|Kalos
+753b|Nexo Pokémon
+9c41|Lugar encantador
+9c42|Lugar lejano
+9c43|Película Pokémon
+9c44|Película Pokémon 2013
+9c45|Película Pokémon 2014
+9c46|Película Pokémon 2015
+9c47|Película Pokémon 2016
+9c48|Película Pokémon 2017
+9c49|Película Pokémon 2018
+9c4a|Centro Pokémon
+9c4b|Serie de animación Pokémon
+9c4c|Centro Pokémon Tokio
+9c4d|Centro Pokémon Osaka
+9c4e|Centro Pokémon Fukuoka
+9c4f|Centro Pokémon Nagoya
+9c50|Centro Pokémon Sapporo
+9c51|Centro Pokémon Yokohama
+9c52|Centro Pokémon Tohoku
+9c53|Centro Pokémon Tokyo Bay
+9c54|Pokémon Store
+9c55|Campeonato Mundial
+9c56|Campeonato Mundial 2013
+9c57|Campeonato Mundial 2014
+9c58|Campeonato Mundial 2015
+9c59|Campeonato Mundial 2016
+9c5a|Campeonato Mundial 2017
+9c5b|Campeonato Mundial 2018
+9c5c|Campeonato Mundial
+9c5d|Campeonato Mundial 2013
+9c5e|Campeonato Mundial 2014
+9c5f|Campeonato Mundial 2015
+9c60|Campeonato Mundial 2016
+9c61|Campeonato Mundial 2017
+9c62|Campeonato Mundial 2018
+9c63|Evento de Videojuegos
+9c64|Evento Videojuegos 2013
+9c65|Evento Videojuegos 2014
+9c66|Evento Videojuegos 2015
+9c67|Evento Videojuegos 2016
+9c68|Evento Videojuegos 2017
+9c69|Evento Videojuegos 2018
+9c6a|Evento Pokémon
+9c6b|Torneo
+9c6c|Evento de Videojuegos
+9c6d|Club de Fans de Pokémon
+9c6e|Programa sobre Pokémon
+9c6f|Concierto Pokémon
+9c70|Regalo en línea
+9c71|Pokémon Global Link
+9c72|Evento Pokémon 2013
+9c73|Evento Pokémon 2014
+9c74|Evento Pokémon 2015
+9c75|Evento Pokémon 2016
+9c76|Evento Pokémon 2017
+9c77|Evento Pokémon 2018
+9c78|Pokémon Festa
+9c79|Pokémon Festa 2013
+9c7a|Pokémon Festa 2014
+9c7b|Pokémon Festa 2015
+9c7c|Pokémon Festa 2016
+9c7d|Pokémon Festa 2017
+9c7e|Pokémon Festa 2018
+9c7f|PokéPark
+9c80|PokéPark 2013
+9c81|PokéPark 2014
+9c82|PokéPark 2015
+9c83|PokéPark 2016
+9c84|PokéPark 2017
+9c85|PokéPark 2018
+9c86|Evento
+9c87|GAME FREAK
+9c88|Estadio
+9c89|Camp. de Videojuegos
+9c8a|Camp. de Videojuegos 2013
+9c8b|Camp. de Videojuegos 2014
+9c8c|Camp. de Videojuegos 2015
+9c8d|Camp. de Videojuegos 2016
+9c8e|Camp. de Videojuegos 2017
+9c8f|Camp. de Videojuegos 2018
+ea61|Persona lejana
+ea62|Pareja de la Guardería
+ea63|Buscatesoros
+ea64|Anciana del Balneario

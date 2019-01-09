@@ -52,80 +52,80 @@
 0033|Pokémon Mansion
 0034|Silph Co.
 0035|Pokémon League
-9c40|﻿a lovely place
-9c41|a faraway place
-9c42|a Pokémon movie
-9c43|2018 Pokémon Movie
-9c44|2019 Pokémon Movie
-9c45|2020 Pokémon Movie
-9c46|2021 Pokémon Movie
-9c47|2022 Pokémon Movie
-9c48|2023 Pokémon Movie
-9c49|the Pokémon animated show
-9c4a|a Pokémon Center
-9c4b|Pokémon Center Tohoku
-9c4c|a WCS
-9c4d|WCS 2018
-9c4e|WCS 2019
-9c4f|WCS 2020
-9c50|WCS 2021
-9c51|WCS 2022
-9c52|WCS 2023
-9c53|Worlds
-9c54|2018 Worlds
-9c55|2019 Worlds
-9c56|2020 Worlds
-9c57|2021 Worlds
-9c58|2022 Worlds
-9c59|2023 Worlds
-9c5a|a VGE
-9c5b|VGE 2018
-9c5c|VGE 2019
-9c5d|VGE 2020
-9c5e|VGE 2021
-9c5f|VGE 2022
-9c60|VGE 2023
-9c61|a Pokémon event
-9c62|a Battle Competition
-9c63|a game event
-9c64|the Pokémon Daisuki Club
-9c65|a Pokémon TV program
-9c66|a concert
-9c67|an online present
-9c68|the PGL
-9c69|a 2018 Pokémon event
-9c6a|a 2019 Pokémon event
-9c6b|a 2020 Pokémon event
-9c6c|a 2021 Pokémon event
-9c6d|a 2022 Pokémon event
-9c6e|a 2023 Pokémon event
-9c6f|a Pokémon event
-9c70|a 2018 Pokémon event
-9c71|a 2019 Pokémon event
-9c72|a 2020 Pokémon event
-9c73|a 2021 Pokémon event
-9c74|a 2022 Pokémon event
-9c75|a 2023 Pokémon event
-9c76|PokéPark
-9c77|PokéPark 2018
-9c78|PokéPark 2019
-9c79|PokéPark 2020
-9c7a|PokéPark 2021
-9c7b|PokéPark 2022
-9c7c|PokéPark 2023
-9c7d|an event site
-9c7e|GAME FREAK
-9c7f|a stadium
-9c80|VGC
-9c81|the VGC 2018
-9c82|the VGC 2019
-9c83|the VGC 2020
-9c84|the VGC 2021
-9c85|the VGC 2022
-9c86|the VGC 2023
-9c87|a Virtual Console game
-9c88|Pokémon GO
-9c89|Pokémon Bank
-9c8a|a Pokémon shop
-9c8b|a demo version
-9c8c|Poké Ball Plus
+9c41|a lovely place
+9c42|a faraway place
+9c43|a Pokémon movie
+9c44|2018 Pokémon Movie
+9c45|2019 Pokémon Movie
+9c46|2020 Pokémon Movie
+9c47|2021 Pokémon Movie
+9c48|2022 Pokémon Movie
+9c49|2023 Pokémon Movie
+9c4a|the Pokémon animated show
+9c4b|a Pokémon Center
+9c4c|Pokémon Center Tohoku
+9c4d|a WCS
+9c4e|WCS 2018
+9c4f|WCS 2019
+9c50|WCS 2020
+9c51|WCS 2021
+9c52|WCS 2022
+9c53|WCS 2023
+9c54|Worlds
+9c55|2018 Worlds
+9c56|2019 Worlds
+9c57|2020 Worlds
+9c58|2021 Worlds
+9c59|2022 Worlds
+9c5a|2023 Worlds
+9c5b|a VGE
+9c5c|VGE 2018
+9c5d|VGE 2019
+9c5e|VGE 2020
+9c5f|VGE 2021
+9c60|VGE 2022
+9c61|VGE 2023
+9c62|a Pokémon event
+9c63|a Battle Competition
+9c64|a game event
+9c65|the Pokémon Daisuki Club
+9c66|a Pokémon TV program
+9c67|a concert
+9c68|an online present
+9c69|the PGL
+9c6a|a 2018 Pokémon event
+9c6b|a 2019 Pokémon event
+9c6c|a 2020 Pokémon event
+9c6d|a 2021 Pokémon event
+9c6e|a 2022 Pokémon event
+9c6f|a 2023 Pokémon event
+9c70|a Pokémon event
+9c71|a 2018 Pokémon event
+9c72|a 2019 Pokémon event
+9c73|a 2020 Pokémon event
+9c74|a 2021 Pokémon event
+9c75|a 2022 Pokémon event
+9c76|a 2023 Pokémon event
+9c77|PokéPark
+9c78|PokéPark 2018
+9c79|PokéPark 2019
+9c7a|PokéPark 2020
+9c7b|PokéPark 2021
+9c7c|PokéPark 2022
+9c7d|PokéPark 2023
+9c7e|an event site
+9c7f|GAME FREAK
+9c80|a stadium
+9c81|VGC
+9c82|the VGC 2018
+9c83|the VGC 2019
+9c84|the VGC 2020
+9c85|the VGC 2021
+9c86|the VGC 2022
+9c87|the VGC 2023
+9c88|a Virtual Console game
+9c89|Pokémon GO
+9c8a|Pokémon Bank
+9c8b|a Pokémon shop
+9c8c|a demo version
+9c8d|Poké Ball Plus

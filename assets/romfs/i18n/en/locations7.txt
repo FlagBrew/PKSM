@@ -66,7 +66,7 @@
 0068|Battle Royal Dome
 006a|Route 10
 006c|Route 11
-006e|Secluded Shore
+006e|Ula’ula Beach
 0070|Route 13
 0072|Tapu Village
 0074|Route 15
@@ -107,114 +107,138 @@
 00b8|Exeggutor Island
 00ba|Battle Tree
 00bc|Aether Paradise
-00be|Ultra Space
+00be|Ultra Deep Sea
 00c0|Malie City
 00c1|Outer Cape
-7530|a Link Trade
+00c2|Melemele
+00c3|Akala
+00c4|Ula’ula
+00c5|Poni
+00c6|Big Wave Beach
+00c8|Sandy Cave
+00ca|Heahea Beach
+00cc|Poni Beach
+00ce|Ultra Megalopolis
+00d0|Megalo Tower
+00d2|Ultra Plant
+00d4|Ultra Crater
+00d6|Ultra Desert
+00d8|Ultra Forest
+00da|Ultra Jungle
+00dc|Ultra Ruin
+00de|Ultra Space Wilds
+00e0|Team Rocket’s Castle
+00e2|Plains Grotto
+00e4|Pikachu Valley
+00e6|Route 1
+00e7|Trainers’ School
+00e8|Dividing Peak Tunnel
 7531|a Link Trade
-7532|the Kanto region
-7533|the Johto region
-7534|the Hoenn region
-7535|the Sinnoh region
-7536|a distant land
-7537|——————
-7538|the Unova region
-7539|the Kalos region
-753a|Pokémon Link
-753b|Pokémon GO
-753c|the Kanto region
-753d|the Hoenn region
-753e|the Alola region
-753f|Poké Pelago
-9c40|a lovely place
-9c41|a faraway place
-9c42|a Pokémon movie
-9c43|2016 Pokémon Movie
-9c44|2017 Pokémon Movie
-9c45|2018 Pokémon Movie
-9c46|2019 Pokémon Movie
-9c47|2020 Pokémon Movie
-9c48|2021 Pokémon Movie
-9c49|a Pokémon Center
-9c4a|the Pokémon animated show
-9c4b|Pokémon Ctr. MEGA TOKYO
-9c4c|Pokémon Center Osaka
-9c4d|Pokémon Center Fukuoka
-9c4e|Pokémon Center Nagoya
-9c4f|Pokémon Center Sapporo
-9c50|Pokémon Center Yokohama
-9c51|Pokémon Center Tohoku
-9c52|Pokémon Center TOKYO-BAY
-9c53|Pokémon Center Hiroshima
-9c54|Pokémon Center Kyoto
-9c55|Pokémon Ctr. SKYTREE TOWN
-9c56|a Pokémon Store
-9c57|a WCS
-9c58|WCS 2016
-9c59|WCS 2017
-9c5a|WCS 2018
-9c5b|WCS 2019
-9c5c|WCS 2020
-9c5d|WCS 2021
-9c5e|Worlds
-9c5f|2016 Worlds
-9c60|2017 Worlds
-9c61|2018 Worlds
-9c62|2019 Worlds
-9c63|2020 Worlds
-9c64|2021 Worlds
-9c65|a VGE
-9c66|VGE 2016
-9c67|VGE 2017
-9c68|VGE 2018
-9c69|VGE 2019
-9c6a|VGE 2020
-9c6b|VGE 2021
-9c6c|a Pokémon event
-9c6d|a Battle Competition
-9c6e|a game event
-9c6f|the Pokémon Daisuki Club
-9c70|a Pokémon TV program
-9c71|a concert
-9c72|an online present
-9c73|the PGL
-9c74|a 2016 Pokémon event
-9c75|a 2017 Pokémon event
-9c76|a 2018 Pokémon event
-9c77|a 2019 Pokémon event
-9c78|a 2020 Pokémon event
-9c79|a 2021 Pokémon event
-9c7a|a Pokémon event
-9c7b|a 2016 Pokémon event
-9c7c|a 2017 Pokémon event
-9c7d|a 2018 Pokémon event
-9c7e|a 2019 Pokémon event
-9c7f|a 2020 Pokémon event
-9c80|a 2021 Pokémon event
-9c81|PokéPark
-9c82|PokéPark 2016
-9c83|PokéPark 2017
-9c84|PokéPark 2018
-9c85|PokéPark 2019
-9c86|PokéPark 2020
-9c87|PokéPark 2021
-9c88|an event site
-9c89|GAME FREAK
-9c8a|a stadium
-9c8b|VGC
-9c8c|the VGC 2016
-9c8d|the VGC 2017
-9c8e|the VGC 2018
-9c8f|the VGC 2019
-9c90|the VGC 2020
-9c91|the VGC 2021
-9c92|a Virtual Console game
-9c93|Pokémon GO
-9c94|Pokémon Bank
-9c95|a Pokémon shop
-9c96|a demo version
-9c97|the Pokémon Trainer Club
-ea60|a stranger
-ea61|Nursery helpers
-ea62|a treasure hunter
-ea63|an old hot-springs visitor
+7532|a Link Trade
+7533|the Kanto region
+7534|the Johto region
+7535|the Hoenn region
+7536|the Sinnoh region
+7537|a distant land
+7538|——————
+7539|the Unova region
+753a|the Kalos region
+753b|Pokémon Link
+753c|Pokémon GO
+753d|the Kanto region
+753e|the Hoenn region
+753f|the Alola region
+7540|Poké Pelago
+7541|the Johto region
+9c41|a lovely place
+9c42|a faraway place
+9c43|a Pokémon movie
+9c44|2016 Pokémon Movie
+9c45|2017 Pokémon Movie
+9c46|2018 Pokémon Movie
+9c47|2019 Pokémon Movie
+9c48|2020 Pokémon Movie
+9c49|2021 Pokémon Movie
+9c4a|a Pokémon Center
+9c4b|the Pokémon animated show
+9c4c|Pokémon Ctr. MEGA TOKYO
+9c4d|Pokémon Center Osaka
+9c4e|Pokémon Center Fukuoka
+9c4f|Pokémon Center Nagoya
+9c50|Pokémon Center Sapporo
+9c51|Pokémon Center Yokohama
+9c52|Pokémon Center Tohoku
+9c53|Pokémon Center TOKYO-BAY
+9c54|Pokémon Center Hiroshima
+9c55|Pokémon Center Kyoto
+9c56|Pokémon Ctr. SKYTREE TOWN
+9c57|a Pokémon Store
+9c58|a WCS
+9c59|WCS 2016
+9c5a|WCS 2017
+9c5b|WCS 2018
+9c5c|WCS 2019
+9c5d|WCS 2020
+9c5e|WCS 2021
+9c5f|Worlds
+9c60|2016 Worlds
+9c61|2017 Worlds
+9c62|2018 Worlds
+9c63|2019 Worlds
+9c64|2020 Worlds
+9c65|2021 Worlds
+9c66|a VGE
+9c67|VGE 2016
+9c68|VGE 2017
+9c69|VGE 2018
+9c6a|VGE 2019
+9c6b|VGE 2020
+9c6c|VGE 2021
+9c6d|a Pokémon event
+9c6e|a Battle Competition
+9c6f|a game event
+9c70|the Pokémon Daisuki Club
+9c71|a Pokémon TV program
+9c72|a concert
+9c73|an online present
+9c74|the PGL
+9c75|a 2016 Pokémon event
+9c76|a 2017 Pokémon event
+9c77|a 2018 Pokémon event
+9c78|a 2019 Pokémon event
+9c79|a 2020 Pokémon event
+9c7a|a 2021 Pokémon event
+9c7b|a Pokémon event
+9c7c|a 2016 Pokémon event
+9c7d|a 2017 Pokémon event
+9c7e|a 2018 Pokémon event
+9c7f|a 2019 Pokémon event
+9c80|a 2020 Pokémon event
+9c81|a 2021 Pokémon event
+9c82|PokéPark
+9c83|PokéPark 2016
+9c84|PokéPark 2017
+9c85|PokéPark 2018
+9c86|PokéPark 2019
+9c87|PokéPark 2020
+9c88|PokéPark 2021
+9c89|an event site
+9c8a|GAME FREAK
+9c8b|a stadium
+9c8c|VGC
+9c8d|the VGC 2016
+9c8e|the VGC 2017
+9c8f|the VGC 2018
+9c90|the VGC 2019
+9c91|the VGC 2020
+9c92|the VGC 2021
+9c93|a Virtual Console game
+9c94|Pokémon GO
+9c95|Pokémon Bank
+9c96|a Pokémon shop
+9c97|a demo version
+9c98|the Pokémon Trainer Club
+ea61|a stranger
+ea62|Nursery helpers
+ea63|a treasure hunter
+ea64|an old hot-springs visitor

@@ -52,80 +52,80 @@
 0033|Pokémon-Villa
 0034|Silph Company
 0035|Pokémon-Liga
-9c40|﻿Netter Ort
-9c41|Ferner Ort
-9c42|Pokémon-Film
-9c43|Pokémon-Film 2018
-9c44|Pokémon-Film 2019
-9c45|Pokémon-Film 2020
-9c46|Pokémon-Film 2021
-9c47|Pokémon-Film 2022
-9c48|Pokémon-Film 2023
-9c49|Pokémon-Zeichentrickserie
-9c4a|Pokémon Center
-9c4b|Pokémon Center Tohoku
-9c4c|WCS
-9c4d|WCS 2018
-9c4e|WCS 2019
-9c4f|WCS 2020
-9c50|WCS 2021
-9c51|WCS 2022
-9c52|WCS 2023
-9c53|Worlds
-9c54|Worlds 2018
-9c55|Worlds 2019
-9c56|Worlds 2020
-9c57|Worlds 2021
-9c58|Worlds 2022
-9c59|Worlds 2023
-9c5a|VGE
-9c5b|VGE 2018
-9c5c|VGE 2019
-9c5d|VGE 2020
-9c5e|VGE 2021
-9c5f|VGE 2022
-9c60|VGE 2023
-9c61|Pokémon-Veranstaltung
-9c62|Kampfturnier
-9c63|Videospiel-Veranstaltung
-9c64|Pokémon Daisuki Club
-9c65|Pokémon-TV-Programm
-9c66|Konzert
-9c67|Online-Geschenk
-9c68|PGL
-9c69|Pokémon-Veranstaltung 2018
-9c6a|Pokémon-Veranstaltung 2019
-9c6b|Pokémon-Veranstaltung 2020
-9c6c|Pokémon-Veranstaltung 2021
-9c6d|Pokémon-Veranstaltung 2022
-9c6e|Pokémon-Veranstaltung 2023
-9c6f|Pokémon-Veranstaltung
-9c70|Pokémon-Veranstaltung 2018
-9c71|Pokémon-Veranstaltung 2019
-9c72|Pokémon-Veranstaltung 2020
-9c73|Pokémon-Veranstaltung 2021
-9c74|Pokémon-Veranstaltung 2022
-9c75|Pokémon-Veranstaltung 2023
-9c76|PokéPark
-9c77|PokéPark 2018
-9c78|PokéPark 2019
-9c79|PokéPark 2020
-9c7a|PokéPark 2021
-9c7b|PokéPark 2022
-9c7c|PokéPark 2023
-9c7d|Veranstaltung
-9c7e|GAME FREAK
-9c7f|Stadion
-9c80|VGC
-9c81|VGC 2018
-9c82|VGC 2019
-9c83|VGC 2020
-9c84|VGC 2021
-9c85|VGC 2022
-9c86|VGC 2023
-9c87|Virtual Console
-9c88|Pokémon GO
-9c89|Pokémon Bank
-9c8a|Pokémon-Geschäft
-9c8b|Demo-Version
-9c8c|Pokéball Plus
+9c41|Netter Ort
+9c42|Ferner Ort
+9c43|Pokémon-Film
+9c44|Pokémon-Film 2018
+9c45|Pokémon-Film 2019
+9c46|Pokémon-Film 2020
+9c47|Pokémon-Film 2021
+9c48|Pokémon-Film 2022
+9c49|Pokémon-Film 2023
+9c4a|Pokémon-Zeichentrickserie
+9c4b|Pokémon Center
+9c4c|Pokémon Center Tohoku
+9c4d|WCS
+9c4e|WCS 2018
+9c4f|WCS 2019
+9c50|WCS 2020
+9c51|WCS 2021
+9c52|WCS 2022
+9c53|WCS 2023
+9c54|Worlds
+9c55|Worlds 2018
+9c56|Worlds 2019
+9c57|Worlds 2020
+9c58|Worlds 2021
+9c59|Worlds 2022
+9c5a|Worlds 2023
+9c5b|VGE
+9c5c|VGE 2018
+9c5d|VGE 2019
+9c5e|VGE 2020
+9c5f|VGE 2021
+9c60|VGE 2022
+9c61|VGE 2023
+9c62|Pokémon-Veranstaltung
+9c63|Kampfturnier
+9c64|Videospiel-Veranstaltung
+9c65|Pokémon Daisuki Club
+9c66|Pokémon-TV-Programm
+9c67|Konzert
+9c68|Online-Geschenk
+9c69|PGL
+9c6a|Pokémon-Veranstaltung 2018
+9c6b|Pokémon-Veranstaltung 2019
+9c6c|Pokémon-Veranstaltung 2020
+9c6d|Pokémon-Veranstaltung 2021
+9c6e|Pokémon-Veranstaltung 2022
+9c6f|Pokémon-Veranstaltung 2023
+9c70|Pokémon-Veranstaltung
+9c71|Pokémon-Veranstaltung 2018
+9c72|Pokémon-Veranstaltung 2019
+9c73|Pokémon-Veranstaltung 2020
+9c74|Pokémon-Veranstaltung 2021
+9c75|Pokémon-Veranstaltung 2022
+9c76|Pokémon-Veranstaltung 2023
+9c77|PokéPark
+9c78|PokéPark 2018
+9c79|PokéPark 2019
+9c7a|PokéPark 2020
+9c7b|PokéPark 2021
+9c7c|PokéPark 2022
+9c7d|PokéPark 2023
+9c7e|Veranstaltung
+9c7f|GAME FREAK
+9c80|Stadion
+9c81|VGC
+9c82|VGC 2018
+9c83|VGC 2019
+9c84|VGC 2020
+9c85|VGC 2021
+9c86|VGC 2022
+9c87|VGC 2023
+9c88|Virtual Console
+9c89|Pokémon GO
+9c8a|Pokémon Bank
+9c8b|Pokémon-Geschäft
+9c8c|Demo-Version
+9c8d|Pokéball Plus

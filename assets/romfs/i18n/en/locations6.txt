@@ -200,97 +200,97 @@
 015e|Secret Shore
 0160|Secret Meadow
 0162|Secret Base
-7530|a Link Trade
 7531|a Link Trade
-7532|the Kanto region
-7533|the Johto region
-7534|the Hoenn region
-7535|the Sinnoh region
-7536|a distant land
-7537|----------
-7538|the Unova region
-7539|the Kalos region
-753a|Pokémon Link
-9c40|a lovely place
-9c41|a faraway place
-9c42|a Pokémon movie
-9c43|Pokémon Movie 13
-9c44|Pokémon Movie 14
-9c45|Pokémon Movie 15
-9c46|Pokémon Movie 16
-9c47|Pokémon Movie 17
-9c48|Pokémon Movie 18
-9c49|a Pokémon Center
-9c4a|the Pokémon cartoon
-9c4b|PC Tokyo
-9c4c|PC Osaka
-9c4d|PC Fukuoka
-9c4e|PC Nagoya
-9c4f|PC Sapporo
-9c50|PC Yokohama
-9c51|PC Tohoku
-9c52|PC Tokyo Bay
-9c53|a Pokémon Store
-9c54|a WCS
-9c55|WCS 2013
-9c56|WCS 2014
-9c57|WCS 2015
-9c58|WCS 2016
-9c59|WCS 2017
-9c5a|WCS 2018
-9c5b|Worlds
-9c5c|Worlds 2013
-9c5d|Worlds 2014
-9c5e|Worlds 2015
-9c5f|Worlds 2016
-9c60|Worlds 2017
-9c61|Worlds 2018
-9c62|a VGE
-9c63|VGE 2013
-9c64|VGE 2014
-9c65|VGE 2015
-9c66|VGE 2016
-9c67|VGE 2017
-9c68|VGE 2018
-9c69|a Pokémon event
-9c6a|a Battle Competition
-9c6b|a game event
-9c6c|the Pokémon Fan Club
-9c6d|a Pokémon TV program
-9c6e|a concert
-9c6f|an online Present
-9c70|the PGL
-9c71|Pokémon Event 13
-9c72|Pokémon Event 14
-9c73|Pokémon Event 15
-9c74|Pokémon Event 16
-9c75|Pokémon Event 17
-9c76|Pokémon Event 18
-9c77|Pokémon Festa
-9c78|Pokémon Festa 13
-9c79|Pokémon Festa 14
-9c7a|Pokémon Festa 15
-9c7b|Pokémon Festa 16
-9c7c|Pokémon Festa 17
-9c7d|Pokémon Festa 18
-9c7e|POKÉPARK
+7532|a Link Trade
+7533|the Kanto region
+7534|the Johto region
+7535|the Hoenn region
+7536|the Sinnoh region
+7537|a distant land
+7538|----------
+7539|the Unova region
+753a|the Kalos region
+753b|Pokémon Link
+9c41|a lovely place
+9c42|a faraway place
+9c43|a Pokémon movie
+9c44|Pokémon Movie 13
+9c45|Pokémon Movie 14
+9c46|Pokémon Movie 15
+9c47|Pokémon Movie 16
+9c48|Pokémon Movie 17
+9c49|Pokémon Movie 18
+9c4a|a Pokémon Center
+9c4b|the Pokémon cartoon
+9c4c|PC Tokyo
+9c4d|PC Osaka
+9c4e|PC Fukuoka
+9c4f|PC Nagoya
+9c50|PC Sapporo
+9c51|PC Yokohama
+9c52|PC Tohoku
+9c53|PC Tokyo Bay
+9c54|a Pokémon Store
+9c55|a WCS
+9c56|WCS 2013
+9c57|WCS 2014
+9c58|WCS 2015
+9c59|WCS 2016
+9c5a|WCS 2017
+9c5b|WCS 2018
+9c5c|Worlds
+9c5d|Worlds 2013
+9c5e|Worlds 2014
+9c5f|Worlds 2015
+9c60|Worlds 2016
+9c61|Worlds 2017
+9c62|Worlds 2018
+9c63|a VGE
+9c64|VGE 2013
+9c65|VGE 2014
+9c66|VGE 2015
+9c67|VGE 2016
+9c68|VGE 2017
+9c69|VGE 2018
+9c6a|a Pokémon event
+9c6b|a Battle Competition
+9c6c|a game event
+9c6d|the Pokémon Fan Club
+9c6e|a Pokémon TV program
+9c6f|a concert
+9c70|an online Present
+9c71|the PGL
+9c72|Pokémon Event 13
+9c73|Pokémon Event 14
+9c74|Pokémon Event 15
+9c75|Pokémon Event 16
+9c76|Pokémon Event 17
+9c77|Pokémon Event 18
+9c78|Pokémon Festa
+9c79|Pokémon Festa 13
+9c7a|Pokémon Festa 14
+9c7b|Pokémon Festa 15
+9c7c|Pokémon Festa 16
+9c7d|Pokémon Festa 17
+9c7e|Pokémon Festa 18
 9c7f|POKÉPARK
 9c80|POKÉPARK
 9c81|POKÉPARK
 9c82|POKÉPARK
 9c83|POKÉPARK
 9c84|POKÉPARK
-9c85|an event site
-9c86|GAME FREAK
-9c87|a stadium
-9c88|a VGC
-9c89|the VGC 2013
-9c8a|the VGC 2014
-9c8b|the VGC 2015
-9c8c|the VGC 2016
-9c8d|the VGC 2017
-9c8e|the VGC 2018
-ea60|a stranger
-ea61|Day Care helpers
-ea62|a treasure hunter
-ea63|an old hot-springs visitor
+9c85|POKÉPARK
+9c86|an event site
+9c87|GAME FREAK
+9c88|a stadium
+9c89|a VGC
+9c8a|the VGC 2013
+9c8b|the VGC 2014
+9c8c|the VGC 2015
+9c8d|the VGC 2016
+9c8e|the VGC 2017
+9c8f|the VGC 2018
+ea61|a stranger
+ea62|Day Care helpers
+ea63|a treasure hunter
+ea64|an old hot-springs visitor

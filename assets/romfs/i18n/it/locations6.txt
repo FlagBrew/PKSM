@@ -200,97 +200,97 @@
 015e|Baia Segreta
 0160|Valle Segreta
 0162|Base Segreta
-7530|Scambio in link
 7531|Scambio in link
-7532|Kanto
-7533|Johto
-7534|Hoenn
-7535|Sinnoh
-7536|Terra Lontana
-7537|----------
-7538|Unima
-7539|Kalos
-753a|Pokémon Link
-9c40|Luogo Grazioso
-9c41|Luogo Remoto
-9c42|Film Pokémon
-9c43|Film Pokémon 2013
-9c44|Film Pokémon 2014
-9c45|Film Pokémon 2015
-9c46|Film Pokémon 2016
-9c47|Film Pokémon 2017
-9c48|Film Pokémon 2018
-9c49|Centro Pokémon
-9c4a|Cartone Pokémon
-9c4b|Centro Pokémon Tokyo
-9c4c|Centro Pokémon Osaka
-9c4d|Centro Pokémon Fukuoka
-9c4e|Centro Pokémon Nagoya
-9c4f|Centro Pokémon Sapporo
-9c50|Centro Pokémon Yokohama
-9c51|Centro Pokémon Tohoku
-9c52|Centro Pokémon Tokyo Bay
-9c53|Negozio Pokémon
-9c54|Mondiali
-9c55|Mondiali 2013
-9c56|Mondiali 2014
-9c57|Mondiali 2015
-9c58|Mondiali 2016
-9c59|Mondiali 2017
-9c5a|Mondiali 2018
-9c5b|Mondiali
-9c5c|Mondiali 2013
-9c5d|Mondiali 2014
-9c5e|Mondiali 2015
-9c5f|Mondiali 2016
-9c60|Mondiali 2017
-9c61|Mondiali 2018
-9c62|Evento di gioco
-9c63|Evento di gioco 2013
-9c64|Evento di gioco 2014
-9c65|Evento di gioco 2015
-9c66|Evento di gioco 2016
-9c67|Evento di gioco 2017
-9c68|Evento di gioco 2018
-9c69|Evento Pokémon
-9c6a|Gara di Lotta
-9c6b|Evento di gioco
-9c6c|Pokémon Fan Club
-9c6d|Programma TV Pokémon
-9c6e|Concerto
-9c6f|Regalo online
-9c70|PGL
-9c71|Evento Pokémon 13
-9c72|Evento Pokémon 14
-9c73|Evento Pokémon 15
-9c74|Evento Pokémon 16
-9c75|Evento Pokémon 17
-9c76|Evento Pokémon 18
-9c77|Pokémon Festa
-9c78|Pokémon Festa 13
-9c79|Pokémon Festa 14
-9c7a|Pokémon Festa 15
-9c7b|Pokémon Festa 16
-9c7c|Pokémon Festa 17
-9c7d|Pokémon Festa 18
-9c7e|PokéPark
-9c7f|PokéPark 13
-9c80|PokéPark 14
-9c81|PokéPark 15
-9c82|PokéPark 16
-9c83|PokéPark 17
-9c84|PokéPark 18
-9c85|Evento
-9c86|GAME FREAK
-9c87|Stadio
-9c88|Campionati di Videogiochi
-9c89|Campionati 2013
-9c8a|Campionati 2014
-9c8b|Campionati 2015
-9c8c|Campionati 2016
-9c8d|Campionati 2017
-9c8e|Campionati 2018
-ea60|Persona Lontana
-ea61|Pensione Pokémon
-ea62|Cercatesori
-ea63|Vecchina delle terme
+7532|Scambio in link
+7533|Kanto
+7534|Johto
+7535|Hoenn
+7536|Sinnoh
+7537|Terra Lontana
+7538|----------
+7539|Unima
+753a|Kalos
+753b|Pokémon Link
+9c41|Luogo Grazioso
+9c42|Luogo Remoto
+9c43|Film Pokémon
+9c44|Film Pokémon 2013
+9c45|Film Pokémon 2014
+9c46|Film Pokémon 2015
+9c47|Film Pokémon 2016
+9c48|Film Pokémon 2017
+9c49|Film Pokémon 2018
+9c4a|Centro Pokémon
+9c4b|Cartone Pokémon
+9c4c|Centro Pokémon Tokyo
+9c4d|Centro Pokémon Osaka
+9c4e|Centro Pokémon Fukuoka
+9c4f|Centro Pokémon Nagoya
+9c50|Centro Pokémon Sapporo
+9c51|Centro Pokémon Yokohama
+9c52|Centro Pokémon Tohoku
+9c53|Centro Pokémon Tokyo Bay
+9c54|Negozio Pokémon
+9c55|Mondiali
+9c56|Mondiali 2013
+9c57|Mondiali 2014
+9c58|Mondiali 2015
+9c59|Mondiali 2016
+9c5a|Mondiali 2017
+9c5b|Mondiali 2018
+9c5c|Mondiali
+9c5d|Mondiali 2013
+9c5e|Mondiali 2014
+9c5f|Mondiali 2015
+9c60|Mondiali 2016
+9c61|Mondiali 2017
+9c62|Mondiali 2018
+9c63|Evento di gioco
+9c64|Evento di gioco 2013
+9c65|Evento di gioco 2014
+9c66|Evento di gioco 2015
+9c67|Evento di gioco 2016
+9c68|Evento di gioco 2017
+9c69|Evento di gioco 2018
+9c6a|Evento Pokémon
+9c6b|Gara di Lotta
+9c6c|Evento di gioco
+9c6d|Pokémon Fan Club
+9c6e|Programma TV Pokémon
+9c6f|Concerto
+9c70|Regalo online
+9c71|PGL
+9c72|Evento Pokémon 13
+9c73|Evento Pokémon 14
+9c74|Evento Pokémon 15
+9c75|Evento Pokémon 16
+9c76|Evento Pokémon 17
+9c77|Evento Pokémon 18
+9c78|Pokémon Festa
+9c79|Pokémon Festa 13
+9c7a|Pokémon Festa 14
+9c7b|Pokémon Festa 15
+9c7c|Pokémon Festa 16
+9c7d|Pokémon Festa 17
+9c7e|Pokémon Festa 18
+9c7f|PokéPark
+9c80|PokéPark 13
+9c81|PokéPark 14
+9c82|PokéPark 15
+9c83|PokéPark 16
+9c84|PokéPark 17
+9c85|PokéPark 18
+9c86|Evento
+9c87|GAME FREAK
+9c88|Stadio
+9c89|Campionati di Videogiochi
+9c8a|Campionati 2013
+9c8b|Campionati 2014
+9c8c|Campionati 2015
+9c8d|Campionati 2016
+9c8e|Campionati 2017
+9c8f|Campionati 2018
+ea61|Persona Lontana
+ea62|Pensione Pokémon
+ea63|Cercatesori
+ea64|Vecchina delle terme

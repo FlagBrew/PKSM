@@ -66,7 +66,7 @@
 0068|Dôme Royal
 006a|Route 10
 006c|Route 11
-006e|Côte Sauvage
+006e|Plage d’Ula-Ula
 0070|Route 13
 0072|Village Toko
 0074|Route 15
@@ -107,114 +107,138 @@
 00b8|Île Noadkoko
 00ba|Arbre de Combat
 00bc|Paradis Æther
-00be|Ultra-Dimension
+00be|Ultra-Abysses
 00c0|Malié
 00c1|Cap Passiloin
-7530|Échanges Link
+00c2|Mele-Mele
+00c3|Akala
+00c4|Ula-Ula
+00c5|Poni
+00c6|Plage Big Wave
+00c8|Grotte de la Plage
+00ca|Plage d’Ho’ohale
+00cc|Plage de Poni
+00ce|Ultra-Mégalopole
+00d0|Tour Mégalopole
+00d2|Ultra-Centrale
+00d4|Ultra-Vallée
+00d6|Ultra-Désert
+00d8|Ultra-Forêt
+00da|Ultra-Jungle
+00dc|Ultra-Gratte-Ciel
+00de|Ultra-Dimension Zéro
+00e0|Château Rocket
+00e2|Grotte de la Plaine
+00e4|Plaine des Pikachu
+00e6|Route 1
+00e7|École de Dresseurs
+00e8|Tunnel Perce-Mont
 7531|Échanges Link
-7532|Kanto
-7533|Johto
-7534|Hoenn
-7535|Sinnoh
-7536|Pays lointain
-7537|－－－－－－－－－－
-7538|Unys
-7539|Kalos
-753a|Poké Lien
-753b|Pokémon GO
-753c|Kanto
-753d|Hoenn
-753e|Alola
-753f|Poké Loisir
-9c40|Endroit superbe
-9c41|Endroit lointain
-9c42|Film Pokémon
-9c43|Film Pokémon 2016
-9c44|Film Pokémon 2017
-9c45|Film Pokémon 2018
-9c46|Film Pokémon 2019
-9c47|Film Pokémon 2020
-9c48|Film Pokémon 2021
-9c49|Centre Pokémon
-9c4a|Dessin animé Pokémon
-9c4b|Pokémon Center MEGA TOKYO
-9c4c|Pokémon Center Osaka
-9c4d|Pokémon Center Fukuoka
-9c4e|Pokémon Center Nagoya
-9c4f|Pokémon Center Sapporo
-9c50|Pokémon Center Yokohama
-9c51|Pokémon Center Tohoku
-9c52|Pokémon Center TOKYO-BAY
-9c53|Pokémon Center Hiroshima
-9c54|Pokémon Center Kyoto
-9c55|Pokémon Ctr. SKYTREE TOWN
-9c56|Pokémon Store
-9c57|WCS
-9c58|WCS 2016
-9c59|WCS 2017
-9c5a|WCS 2018
-9c5b|WCS 2019
-9c5c|WCS 2020
-9c5d|WCS 2021
-9c5e|Worlds
-9c5f|Worlds 2016
-9c60|Worlds 2017
-9c61|Worlds 2018
-9c62|Worlds 2019
-9c63|Worlds 2020
-9c64|Worlds 2021
-9c65|Événement Jeu Vidéo
-9c66|Événement Jeu Vidéo 2016
-9c67|Événement Jeu Vidéo 2017
-9c68|Événement Jeu Vidéo 2018
-9c69|Événement Jeu Vidéo 2019
-9c6a|Événement Jeu Vidéo 2020
-9c6b|Événement Jeu Vidéo 2021
-9c6c|Événement Pokémon
-9c6d|Compétition
-9c6e|Événement
-9c6f|Pokémon Daisuki Club
-9c70|Émission Pokémon
-9c71|Concert
-9c72|Cadeau téléchargeable
-9c73|Pokémon Global Link
-9c74|Événement Pokémon 2016
-9c75|Événement Pokémon 2017
-9c76|Événement Pokémon 2018
-9c77|Événement Pokémon 2019
-9c78|Événement Pokémon 2020
-9c79|Événement Pokémon 2021
-9c7a|Pokémon Festa
-9c7b|Pokémon Festa 2016
-9c7c|Pokémon Festa 2017
-9c7d|Pokémon Festa 2018
-9c7e|Pokémon Festa 2019
-9c7f|Pokémon Festa 2020
-9c80|Pokémon Festa 2021
-9c81|PokéPark
-9c82|PokéPark 2016
-9c83|PokéPark 2017
-9c84|PokéPark 2018
-9c85|PokéPark 2019
-9c86|PokéPark 2020
-9c87|PokéPark 2021
-9c88|Lieu d’Événement
-9c89|GAME FREAK
-9c8a|Stade
-9c8b|VGC
-9c8c|VGC 2016
-9c8d|VGC 2017
-9c8e|VGC 2018
-9c8f|VGC 2019
-9c90|VGC 2020
-9c91|VGC 2021
-9c92|Console Virtuelle
-9c93|Pokémon GO
-9c94|Banque Pokémon
-9c95|Boutique Pokémon
-9c96|Démo
-9c97|Club des Dresseurs Pokémon
-ea60|Personne lointaine
-ea61|Responsable de la Garderie
-ea62|Chercheur de Trésors
-ea63|Dame des Eaux Thermales
+7532|Échanges Link
+7533|Kanto
+7534|Johto
+7535|Hoenn
+7536|Sinnoh
+7537|Pays lointain
+7538|－－－－－－－－－－
+7539|Unys
+753a|Kalos
+753b|Poké Lien
+753c|Pokémon GO
+753d|Kanto
+753e|Hoenn
+753f|Alola
+7540|Poké Loisir
+7541|Johto
+9c41|Endroit superbe
+9c42|Endroit lointain
+9c43|Film Pokémon
+9c44|Film Pokémon 2016
+9c45|Film Pokémon 2017
+9c46|Film Pokémon 2018
+9c47|Film Pokémon 2019
+9c48|Film Pokémon 2020
+9c49|Film Pokémon 2021
+9c4a|Centre Pokémon
+9c4b|Dessin animé Pokémon
+9c4c|Pokémon Center MEGA TOKYO
+9c4d|Pokémon Center Osaka
+9c4e|Pokémon Center Fukuoka
+9c4f|Pokémon Center Nagoya
+9c50|Pokémon Center Sapporo
+9c51|Pokémon Center Yokohama
+9c52|Pokémon Center Tohoku
+9c53|Pokémon Center TOKYO-BAY
+9c54|Pokémon Center Hiroshima
+9c55|Pokémon Center Kyoto
+9c56|Pokémon Ctr. SKYTREE TOWN
+9c57|Pokémon Store
+9c58|WCS
+9c59|WCS 2016
+9c5a|WCS 2017
+9c5b|WCS 2018
+9c5c|WCS 2019
+9c5d|WCS 2020
+9c5e|WCS 2021
+9c5f|Worlds
+9c60|Worlds 2016
+9c61|Worlds 2017
+9c62|Worlds 2018
+9c63|Worlds 2019
+9c64|Worlds 2020
+9c65|Worlds 2021
+9c66|Événement Jeu Vidéo
+9c67|Événement Jeu Vidéo 2016
+9c68|Événement Jeu Vidéo 2017
+9c69|Événement Jeu Vidéo 2018
+9c6a|Événement Jeu Vidéo 2019
+9c6b|Événement Jeu Vidéo 2020
+9c6c|Événement Jeu Vidéo 2021
+9c6d|Événement Pokémon
+9c6e|Compétition
+9c6f|Événement
+9c70|Pokémon Daisuki Club
+9c71|Émission Pokémon
+9c72|Concert
+9c73|Cadeau téléchargeable
+9c74|Pokémon Global Link
+9c75|Événement Pokémon 2016
+9c76|Événement Pokémon 2017
+9c77|Événement Pokémon 2018
+9c78|Événement Pokémon 2019
+9c79|Événement Pokémon 2020
+9c7a|Événement Pokémon 2021
+9c7b|Pokémon Festa
+9c7c|Pokémon Festa 2016
+9c7d|Pokémon Festa 2017
+9c7e|Pokémon Festa 2018
+9c7f|Pokémon Festa 2019
+9c80|Pokémon Festa 2020
+9c81|Pokémon Festa 2021
+9c82|PokéPark
+9c83|PokéPark 2016
+9c84|PokéPark 2017
+9c85|PokéPark 2018
+9c86|PokéPark 2019
+9c87|PokéPark 2020
+9c88|PokéPark 2021
+9c89|Lieu d’Événement
+9c8a|GAME FREAK
+9c8b|Stade
+9c8c|VGC
+9c8d|VGC 2016
+9c8e|VGC 2017
+9c8f|VGC 2018
+9c90|VGC 2019
+9c91|VGC 2020
+9c92|VGC 2021
+9c93|Console Virtuelle
+9c94|Pokémon GO
+9c95|Banque Pokémon
+9c96|Boutique Pokémon
+9c97|Démo
+9c98|Club des Dresseurs Pokémon
+ea61|Personne lointaine
+ea62|Responsable de la Garderie
+ea63|Chercheur de Trésors
+ea64|Dame des Eaux Thermales

@@ -200,97 +200,97 @@
 015e|Plage Secrète
 0160|Champ Fleuri Secret
 0162|Base Secrète
-7530|Échanges Link
 7531|Échanges Link
-7532|Kanto
-7533|Johto
-7534|Hoenn
-7535|Sinnoh
-7536|Pays lointain
-7537|－－－－－－－－－－
-7538|Unys
-7539|Kalos
-753a|Poké Lien
-9c40|Endroit superbe
-9c41|Endroit lointain
-9c42|Film Pokémon
-9c43|Film Pokémon 2013
-9c44|Film Pokémon 2014
-9c45|Film Pokémon 2015
-9c46|Film Pokémon 2016
-9c47|Film Pokémon 2017
-9c48|Film Pokémon 2018
-9c49|Centre Pokémon
-9c4a|Dessin animé Pokémon
-9c4b|Centre Pokémon Tokyo
-9c4c|Centre Pokémon Osaka
-9c4d|Centre Pokémon Fukuoka
-9c4e|Centre Pokémon Nagoya
-9c4f|Centre Pokémon Sapporo
-9c50|Centre Pokémon Yokohama
-9c51|Centre Pokémon Tohoku
-9c52|Centre Pokémon Tokyo Bay
-9c53|Pokémon Store
-9c54|WCS
-9c55|WCS 2013
-9c56|WCS 2014
-9c57|WCS 2015
-9c58|WCS 2016
-9c59|WCS 2017
-9c5a|WCS 2018
-9c5b|Worlds
-9c5c|Worlds 2013
-9c5d|Worlds 2014
-9c5e|Worlds 2015
-9c5f|Worlds 2016
-9c60|Worlds 2017
-9c61|Worlds 2018
-9c62|Événement Jeu Vidéo
-9c63|Événement Jeu Vidéo 2013
-9c64|Événement Jeu Vidéo 2014
-9c65|Événement Jeu Vidéo 2015
-9c66|Événement Jeu Vidéo 2016
-9c67|Événement Jeu Vidéo 2017
-9c68|Événement Jeu Vidéo 2018
-9c69|Événement Pokémon
-9c6a|Compétition
-9c6b|Événement
-9c6c|Fan Club Pokémon
-9c6d|Émission Pokémon
-9c6e|Concert
-9c6f|Cadeau téléchargeable
-9c70|Pokémon Global Link
-9c71|Événement Pokémon 2013
-9c72|Événement Pokémon 2014
-9c73|Événement Pokémon 2015
-9c74|Événement Pokémon 2016
-9c75|Événement Pokémon 2017
-9c76|Événement Pokémon 2018
-9c77|Pokémon Festa
-9c78|Pokémon Festa 2013
-9c79|Pokémon Festa 2014
-9c7a|Pokémon Festa 2015
-9c7b|Pokémon Festa 2016
-9c7c|Pokémon Festa 2017
-9c7d|Pokémon Festa 2018
-9c7e|PokéPark
-9c7f|PokéPark 2013
-9c80|PokéPark 2014
-9c81|PokéPark 2015
-9c82|PokéPark 2016
-9c83|PokéPark 2017
-9c84|PokéPark 2018
-9c85|Lieu d’Événement
-9c86|GAME FREAK
-9c87|Stade
-9c88|Championnat de Jeu Vidéo
-9c89|Championnat de JV 2013
-9c8a|Championnat de JV 2014
-9c8b|Championnat de JV 2015
-9c8c|Championnat de JV 2016
-9c8d|Championnat de JV 2017
-9c8e|Championnat de JV 2018
-ea60|Personne lointaine
-ea61|Responsable de la Pension
-ea62|Chercheur de Trésors
-ea63|Dame des Eaux Thermales
+7532|Échanges Link
+7533|Kanto
+7534|Johto
+7535|Hoenn
+7536|Sinnoh
+7537|Pays lointain
+7538|－－－－－－－－－－
+7539|Unys
+753a|Kalos
+753b|Poké Lien
+9c41|Endroit superbe
+9c42|Endroit lointain
+9c43|Film Pokémon
+9c44|Film Pokémon 2013
+9c45|Film Pokémon 2014
+9c46|Film Pokémon 2015
+9c47|Film Pokémon 2016
+9c48|Film Pokémon 2017
+9c49|Film Pokémon 2018
+9c4a|Centre Pokémon
+9c4b|Dessin animé Pokémon
+9c4c|Centre Pokémon Tokyo
+9c4d|Centre Pokémon Osaka
+9c4e|Centre Pokémon Fukuoka
+9c4f|Centre Pokémon Nagoya
+9c50|Centre Pokémon Sapporo
+9c51|Centre Pokémon Yokohama
+9c52|Centre Pokémon Tohoku
+9c53|Centre Pokémon Tokyo Bay
+9c54|Pokémon Store
+9c55|WCS
+9c56|WCS 2013
+9c57|WCS 2014
+9c58|WCS 2015
+9c59|WCS 2016
+9c5a|WCS 2017
+9c5b|WCS 2018
+9c5c|Worlds
+9c5d|Worlds 2013
+9c5e|Worlds 2014
+9c5f|Worlds 2015
+9c60|Worlds 2016
+9c61|Worlds 2017
+9c62|Worlds 2018
+9c63|Événement Jeu Vidéo
+9c64|Événement Jeu Vidéo 2013
+9c65|Événement Jeu Vidéo 2014
+9c66|Événement Jeu Vidéo 2015
+9c67|Événement Jeu Vidéo 2016
+9c68|Événement Jeu Vidéo 2017
+9c69|Événement Jeu Vidéo 2018
+9c6a|Événement Pokémon
+9c6b|Compétition
+9c6c|Événement
+9c6d|Fan Club Pokémon
+9c6e|Émission Pokémon
+9c6f|Concert
+9c70|Cadeau téléchargeable
+9c71|Pokémon Global Link
+9c72|Événement Pokémon 2013
+9c73|Événement Pokémon 2014
+9c74|Événement Pokémon 2015
+9c75|Événement Pokémon 2016
+9c76|Événement Pokémon 2017
+9c77|Événement Pokémon 2018
+9c78|Pokémon Festa
+9c79|Pokémon Festa 2013
+9c7a|Pokémon Festa 2014
+9c7b|Pokémon Festa 2015
+9c7c|Pokémon Festa 2016
+9c7d|Pokémon Festa 2017
+9c7e|Pokémon Festa 2018
+9c7f|PokéPark
+9c80|PokéPark 2013
+9c81|PokéPark 2014
+9c82|PokéPark 2015
+9c83|PokéPark 2016
+9c84|PokéPark 2017
+9c85|PokéPark 2018
+9c86|Lieu d’Événement
+9c87|GAME FREAK
+9c88|Stade
+9c89|Championnat de Jeu Vidéo
+9c8a|Championnat de JV 2013
+9c8b|Championnat de JV 2014
+9c8c|Championnat de JV 2015
+9c8d|Championnat de JV 2016
+9c8e|Championnat de JV 2017
+9c8f|Championnat de JV 2018
+ea61|Personne lointaine
+ea62|Responsable de la Pension
+ea63|Chercheur de Trésors
+ea64|Dame des Eaux Thermales
