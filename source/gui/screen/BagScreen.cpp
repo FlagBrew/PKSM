@@ -471,7 +471,7 @@ void BagScreen::editItem()
         }
         TitleLoader::save->item(emptyItem, limits[currentPouch].first, --firstEmpty);
     }
-    else
+    else if (retItem != 0)
     {
         auto item = TitleLoader::save->item(limits[currentPouch].first, firstItem + selectedItem);
         item->id(items[retItem].second);
