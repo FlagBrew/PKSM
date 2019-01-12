@@ -608,39 +608,21 @@ void StorageScreen::update(touchPosition* touch)
                 sleep = true;
             }
             
-            else if (kHeld & KEY_ZR & !forcebottom)
+            else if (kHeld & KEY_ZR)
             
             {
             	
-               storageBox++;
-
-               if (storageBox == Configuration::getInstance().storageSize())
-
-               {
-
-                  storageBox = 0;
-                
-               }
-
-       		 sleep = true;
+               nextBoxTop();
+               sleep = true;
 
             }
             
-            else if (kHeld & KEY_ZL & !forcebottom)
+            else if (kHeld & KEY_ZL)
             
             {
             	
-               storageBox--;
-
-               if (storageBox == -1)
-
-               {
-		
-                  storageBox = Configuration::getInstance().storageSize() - 1;
-
-               }
-	
-				sleep = true;
+               lastBoxTop();
+               sleep = true;
 
             }
 
@@ -685,6 +667,19 @@ bool StorageScreen::lastBox(bool forceBottom)
     return false;
 }
 
+bool StorageScreen::lastBoxTop(bool forceBottom)
+{
+    if (!forceBottom)
+    {
+        storageBox--;
+        if (storageBox == -1)
+        {
+            storageBox = Configuration::getInstance().storageSize() - 1;
+        }
+    }
+    return false;
+}
+
 bool StorageScreen::nextBox(bool forceBottom)
 {
     if (storageChosen && !forceBottom)
@@ -701,6 +696,19 @@ bool StorageScreen::nextBox(bool forceBottom)
         if (boxBox == TitleLoader::save->maxBoxes())
         {
             boxBox = 0;
+        }
+    }
+    return false;
+}
+
+bool StorageScreen::nextBoxTop(bool forceBottom)
+{
+    if (!forceBottom)
+    {
+        storageBox++;
+        if (storageBox == Configuration::getInstance().storageSize())
+        {
+            storageBox = 0;
         }
     }
     return false;
