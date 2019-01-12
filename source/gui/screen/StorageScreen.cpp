@@ -607,6 +607,42 @@ void StorageScreen::update(touchPosition* touch)
                 lastBox();
                 sleep = true;
             }
+            
+            else if (kHeld & KEY_ZR & !forcebottom)
+            
+            {
+            	
+               storageBox++;
+
+               if (storageBox == Configuration::getInstance().storageSize())
+
+               {
+
+                  storageBox = 0;
+                
+               }
+
+       		 sleep = true;
+
+            }
+            
+            else if (kHeld & KEY_ZL & !forcebottom)
+            
+            {
+            	
+               storageBox--;
+
+               if (storageBox == -1)
+
+               {
+		
+                  storageBox = Configuration::getInstance().storageSize() - 1;
+
+               }
+	
+				sleep = true;
+
+            }
 
             if (sleep)
                 buttonCooldown = 10;
