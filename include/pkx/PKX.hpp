@@ -30,6 +30,7 @@
 #include <algorithm>
 #include <memory>
 #include <stdlib.h>
+#include <string>
 
 #include "personal.hpp"
 #include "utils.hpp"
@@ -49,7 +50,7 @@ friend class EditorScreen;
 protected:
     u32 expTable(u8 row, u8 col) const;
     u32 seedStep(u32 seed);
-    void reorderMoves(void);
+    virtual void reorderMoves(void);
 
     virtual void crypt(void) = 0;
     virtual void shuffleArray(void) = 0;

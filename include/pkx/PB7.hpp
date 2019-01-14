@@ -29,6 +29,7 @@
 
 #include "PKX.hpp"
 #include "SavLGPE.hpp"
+#include <bits/unique_ptr.h>
 
 class PB7 : public PKX
 {
@@ -42,6 +43,7 @@ protected:
     u8* data;
 
     u8* rawData(void) override { return data; }
+    void reorderMoves(void) override;
 
 public:
     PB7() { length = 260; data = new u8[length]; std::fill_n(data, length, 0); }

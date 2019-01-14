@@ -43,6 +43,7 @@ protected:
     u8* data;
 
     u8* rawData(void) override { return data; }
+    void reorderMoves(void) override;
 
 public:
     PK7() { length = 232; data = new u8[length]; std::fill_n(data, length, 0); }
