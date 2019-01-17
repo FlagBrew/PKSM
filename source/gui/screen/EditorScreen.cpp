@@ -116,17 +116,6 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
         view->setPkm(pkm);
     }
 
-    for (int i = 0; i < 6; i++)
-    {
-        origPartyStats[i] = pkm->partyStat(i);
-    }
-    origPartyLevel = pkm->partyLevel();
-    origPartyCurrHP = pkm->partyCurrHP();
-    if (pkm->generation() == Generation::LGPE)
-    {
-        origPartyCP = ((PB7*)pkm.get())->partyCP();
-    }
-
     if (this->box == 0xFF)
     {
         switch (pkm->generation())
@@ -175,6 +164,17 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
                 break; // Always a party Pokémon
             default:
                 Gui::warn(i18n::localize("THE_FUCK"));
+        }
+        
+        for (int i = 0; i < 6; i++)
+        {
+            origPartyStats[i] = pkm->partyStat(i);
+        }
+        origPartyLevel = pkm->partyLevel();
+        origPartyCurrHP = pkm->partyCurrHP();
+        if (pkm->generation() == Generation::LGPE)
+        {
+            origPartyCP = ((PB7*)pkm.get())->partyCP();
         }
     }
 

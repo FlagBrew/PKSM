@@ -431,6 +431,20 @@ void EditSelectorScreen::update(touchPosition* touch)
             TitleLoader::save->pkm(*moveMon, box, cursorPos - 1);
             moveMon = tmpMon;
         }
+        else if (moveMon)
+        {
+            std::shared_ptr<PKX> tmpMon = nullptr;
+            if (cursorPos - 31 < TitleLoader::save->partyCount())
+            {
+                tmpMon = TitleLoader::save->pkm(cursorPos - 31);
+            }
+            if (tmpMon && (tmpMon->encryptionConstant() == 0 && tmpMon->species() == 0))
+            {
+                tmpMon = nullptr;
+            }
+            TitleLoader::save->pkm(*moveMon, cursorPos - 31);
+            moveMon = tmpMon;
+        }
         else
         {
             editPokemon(infoMon);
