@@ -69,7 +69,18 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
         {
             pkm->TID(Configuration::getInstance().defaultTID());
             pkm->SID(Configuration::getInstance().defaultSID());
-            pkm->otName(Configuration::getInstance().defaultOT().c_str());
+            switch (pkm->generation())
+            {
+                case Generation::FOUR:
+                case Generation::FIVE:
+                default:
+                    pkm->otName(Configuration::getInstance().defaultOT().substr(0, 7).c_str());
+                    break;
+                case Generation::SIX:
+                case Generation::SEVEN:
+                    pkm->otName(Configuration::getInstance().defaultOT().c_str());
+                    break;
+            }
         }
         pkm->ball(4);
         pkm->encryptionConstant((((u32)randomNumbers()) % 0xFFFFFFFF) + 1);
