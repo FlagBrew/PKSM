@@ -444,6 +444,7 @@ void EditSelectorScreen::update(touchPosition* touch)
             }
             TitleLoader::save->pkm(*moveMon, cursorPos - 31);
             moveMon = tmpMon;
+            TitleLoader::save->fixParty();
         }
         else
         {
@@ -486,6 +487,7 @@ void EditSelectorScreen::update(touchPosition* touch)
                     }
                     TitleLoader::save->pkm(*moveMon, cursorPos - 31);
                     moveMon = tmpMon;
+                    TitleLoader::save->fixParty();
                 }
             }
             else if (box * 30 + cursorPos - 1 < TitleLoader::save->maxSlot())

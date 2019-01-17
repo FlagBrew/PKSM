@@ -109,11 +109,27 @@ std::unique_ptr<PKX> SavB2W2::pkm(u8 slot) const
 
 void SavB2W2::pkm(PKX& pk, u8 slot)
 {
-    pk.encrypt();
     PK5* pk5 = (PK5*)&pk;
+    if (pk5->length != 220)
+    {
+        u8 buf[220] = {0};
+        std::copy(pk5->data, pk5->data + pk5->length, buf);
+        pk5 = new PK5(buf, false, true);
+        for (int i = 0; i < 6; i++)
+        {
+            pk5->partyStat(i, pk5->stat(i));
+        }
+        pk5->partyLevel(pk5->level());
+        pk5->partyCurrHP(pk5->stat(0));
+    }
+    pk5->encrypt();
     std::fill(data + partyOffset(slot), data + partyOffset(slot + 1), (u8)0);
     std::copy(pk5->data, pk5->data + pk5->length, data + partyOffset(slot));
-    pk.decrypt();
+    pk5->decrypt();
+    if (pk5 != &pk)
+    {
+        delete pk5;
+    }
 }
 
 std::unique_ptr<PKX> SavB2W2::pkm(u8 box, u8 slot, bool ekx) const

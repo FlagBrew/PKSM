@@ -108,11 +108,27 @@ std::unique_ptr<PKX> SavORAS::pkm(u8 slot) const
 
 void SavORAS::pkm(PKX& pk, u8 slot)
 {
-    pk.encrypt();
     PK6* pk6 = (PK6*)&pk;
+    if (pk6->length != 260)
+    {
+        u8 buf[260] = {0};
+        std::copy(pk6->data, pk6->data + pk6->length, buf);
+        pk6 = new PK6(buf, false, true);
+        for (int i = 0; i < 6; i++)
+        {
+            pk6->partyStat(i, pk6->stat(i));
+        }
+        pk6->partyLevel(pk6->level());
+        pk6->partyCurrHP(pk6->stat(0));
+    }
+    pk6->encrypt();
     std::fill(data + partyOffset(slot), data + partyOffset(slot + 1), (u8)0);
     std::copy(pk6->data, pk6->data + pk6->length, data + partyOffset(slot));
-    pk.decrypt();
+    pk6->decrypt();
+    if (pk6 != &pk)
+    {
+        delete pk6;
+    }
 }
 
 std::unique_ptr<PKX> SavORAS::pkm(u8 box, u8 slot, bool ekx) const

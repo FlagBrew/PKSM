@@ -160,11 +160,27 @@ std::unique_ptr<PKX> SavPT::pkm(u8 slot) const
 
 void SavPT::pkm(PKX& pk, u8 slot)
 {
-    pk.encrypt();
     PK4* pk4 = (PK4*)&pk;
+    if (pk4->length != 236)
+    {
+        u8 buf[236] = {0};
+        std::copy(pk4->data, pk4->data + pk4->length, buf);
+        pk4 = new PK4(buf, false, true);
+        for (int i = 0; i < 6; i++)
+        {
+            pk4->partyStat(i, pk4->stat(i));
+        }
+        pk4->partyLevel(pk4->level());
+        pk4->partyCurrHP(pk4->stat(0));
+    }
+    pk4->encrypt();
     std::fill(data + partyOffset(slot), data + partyOffset(slot + 1), (u8)0);
     std::copy(pk4->data, pk4->data + pk4->length, data + partyOffset(slot));
-    pk.decrypt();
+    pk4->decrypt();
+    if (pk4 != &pk)
+    {
+        delete pk4;
+    }
 }
 
 std::unique_ptr<PKX> SavPT::pkm(u8 box, u8 slot, bool ekx) const
