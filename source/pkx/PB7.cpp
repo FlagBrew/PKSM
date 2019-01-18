@@ -27,25 +27,21 @@
 #include "PB7.hpp"
 #include "random.hpp"
 
-void PB7::shuffleArray(void)
+void PB7::shuffleArray(u8 sv)
 {
     static const int blockLength = 56;
-    u8 seed = (((encryptionConstant() & 0x3E000) >> 0xD) % 24);
-    static int aloc[24] = { 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 2, 3, 1, 1, 2, 3, 2, 3, 1, 1, 2, 3, 2, 3 };
-    static int bloc[24] = { 1, 1, 2, 3, 2, 3, 0, 0, 0, 0, 0, 0, 2, 3, 1, 1, 3, 2, 2, 3, 1, 1, 3, 2 };
-    static int cloc[24] = { 2, 3, 1, 1, 3, 2, 2, 3, 1, 1, 3, 2, 0, 0, 0, 0, 0, 0, 3, 2, 3, 2, 1, 1 };
-    static int dloc[24] = { 3, 2, 3, 2, 1, 1, 3, 2, 3, 2, 1, 1, 3, 2, 3, 2, 1, 1, 0, 0, 0, 0, 0, 0 };
-    int ord[4] = {aloc[seed], bloc[seed], cloc[seed], dloc[seed]};
-
+    u8 index = sv * 4;
+    
     u8 cdata[length];
     std::copy(data, data + length, cdata);
 
-    for (u8 i = 0; i < 4; i++)
+    for (u8 block = 0; block < 4; block++)
     {
+        u8 ofs = blockPosition(index + block);
         std::copy(
-            cdata + blockLength * ord[i] + 8, 
-            cdata + blockLength * ord[i] + blockLength + 8, 
-            data + 8 + blockLength * i
+            cdata + 8 + (blockLength * block), 
+            cdata + 8 + (blockLength * block) + blockLength, 
+            data + 8 + (blockLength * ofs)
         );
     }
 }
@@ -125,22 +121,6 @@ void PB7::setAbility(u8 v)
 
     abilityNumber(abilitynum);
     data[0x14] = PersonalSMUSUM::ability(tmpSpecies, v);    
-}
-
-void PB7::decrypt(void)
-{
-    crypt();
-    shuffleArray();
-}
-
-void PB7::encrypt(void)
-{
-    refreshChecksum();
-    for (int i = 0; i < 11; i++)
-    {
-        shuffleArray();
-    }
-    crypt();
 }
 
 u8 PB7::abilityNumber(void) const { return data[0x15]; }

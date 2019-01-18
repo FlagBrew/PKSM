@@ -48,17 +48,19 @@ friend class Bank;
 friend class EditorScreen;
 protected:
     u32 expTable(u8 row, u8 col) const;
+    u8 blockPosition(u8 index) const;
+    u8 blockPositionInvert(u8 index) const;
     u32 seedStep(u32 seed);
     void reorderMoves(void);
 
     virtual void crypt(void) = 0;
-    virtual void shuffleArray(void) = 0;
+    virtual void shuffleArray(u8 sv) = 0;
     virtual u8* rawData(void) = 0;
 
     u32 length = 0;
 public:
-    virtual void decrypt(void) = 0;
-    virtual void encrypt(void) = 0;
+    void decrypt(void);
+    void encrypt(void);
     virtual std::unique_ptr<PKX> clone(void) = 0;
     virtual ~PKX() { };
 

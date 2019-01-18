@@ -135,6 +135,60 @@ u32 PKX::expTable(u8 row, u8 col) const
     return table[row][col]; 
 }
 
+u8 PKX::blockPosition(u8 index) const
+{
+    static constexpr u8 blocks[128] =
+    {
+        0, 1, 2, 3,
+        0, 1, 3, 2,
+        0, 2, 1, 3,
+        0, 3, 1, 2,
+        0, 2, 3, 1,
+        0, 3, 2, 1,
+        1, 0, 2, 3,
+        1, 0, 3, 2,
+        2, 0, 1, 3,
+        3, 0, 1, 2,
+        2, 0, 3, 1,
+        3, 0, 2, 1,
+        1, 2, 0, 3,
+        1, 3, 0, 2,
+        2, 1, 0, 3,
+        3, 1, 0, 2,
+        2, 3, 0, 1,
+        3, 2, 0, 1,
+        1, 2, 3, 0,
+        1, 3, 2, 0,
+        2, 1, 3, 0,
+        3, 1, 2, 0,
+        2, 3, 1, 0,
+        3, 2, 1, 0,
+
+        // duplicates of 0-7 to eliminate modulus
+        0, 1, 2, 3,
+        0, 1, 3, 2,
+        0, 2, 1, 3,
+        0, 3, 1, 2,
+        0, 2, 3, 1,
+        0, 3, 2, 1,
+        1, 0, 2, 3,
+        1, 0, 3, 2,
+    };
+
+    return blocks[index];
+}
+
+u8 PKX::blockPositionInvert(u8 index) const
+{
+    static constexpr u8 blocks[32] =
+    {
+        0, 1, 2, 4, 3, 5, 6, 7, 12, 18, 13, 19, 8, 10, 14, 20, 16, 22, 9, 11, 15, 21, 17, 23,
+        0, 1, 2, 4, 3, 5, 6, 7, // duplicates of 0-7 to eliminate modulus
+    };
+
+    return blocks[index];
+}
+
 u32 PKX::seedStep(u32 seed) { return seed * 0x41C64E6D + 0x6073; }
 
 void PKX::reorderMoves(void)
@@ -162,6 +216,19 @@ void PKX::reorderMoves(void)
         move(1, 0);
         reorderMoves();
     }
+}
+
+void PKX::decrypt(void)
+{
+    crypt();
+    shuffleArray((encryptionConstant() >> 13) & 31);
+}
+
+void PKX::encrypt(void)
+{
+    refreshChecksum();
+    shuffleArray(blockPositionInvert((encryptionConstant() >> 13) & 31));
+    crypt();
 }
 
 bool PKX::gen7(void) const { return version() >= 30 && version() <= 33;}
