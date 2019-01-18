@@ -107,10 +107,11 @@ void SavLGPE::fixParty()
 {
     for (int i = 0; i < 5; i++)
     {
-        if (partyBoxSlot(i) == 1001)
+        if (partyBoxSlot(i) == 1001 && partyBoxSlot(i + 1) != 1001)
         {
             partyBoxSlot(i, partyBoxSlot(i + 1));
             partyBoxSlot(i + 1, 1001);
+            i = -1;
         }
     }
 }
@@ -317,6 +318,15 @@ void SavLGPE::pkm(PKX& pk, u8 slot)
     PB7* pb7 = (PB7*)&pk;
     u32 off = partyOffset(slot);
     u16 newSlot = partyBoxSlot(slot);
+    if (pb7->encryptionConstant() == 0 && pb7->species() == 0)
+    {
+        if (off != 0)
+        {
+            std::fill_n(data + off, 260, 0);
+        }
+        partyBoxSlot(slot, 1001);
+        return;
+    }
     if (off == 0)
     {
         for (int i = 999; i >= 0; i--)

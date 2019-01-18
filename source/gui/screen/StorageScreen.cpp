@@ -757,9 +757,13 @@ bool StorageScreen::clearBox()
 bool StorageScreen::releasePkm()
 {
     backHeld = true;
-    if (Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_RELEASE")))
+    if ((cursorIndex != 0 || moveMon) && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_RELEASE")))
     {
-        if (storageChosen)
+        if (moveMon)
+        {
+            moveMon = nullptr;
+        }
+        else if (storageChosen)
         {
             bank.pkm(*TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1);
         }
@@ -1070,7 +1074,7 @@ void StorageScreen::pickup()
 
 bool StorageScreen::dumpPkm()
 {
-    if (Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_DUMP")))
+    if ((cursorIndex != 0 || moveMon) && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_DUMP")))
     {
         char stringDate[11] = {0};
         char stringTime[10] = {0};
