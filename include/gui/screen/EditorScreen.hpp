@@ -88,10 +88,10 @@ private:
     int moveSelected = 0;
     int box = 0;
     int index = 0;
-    int origPartyStats[6];
-    int origPartyLevel;
-    int origPartyCurrHP;
-    int origPartyCP;
+    int origPartyStats[6] = {0};
+    int origPartyLevel = 0;
+    int origPartyCurrHP = 0;
+    int origPartyCP = 0;
     bool justSwitched = true;
     bool saved = true;
 };

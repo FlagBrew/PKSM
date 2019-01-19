@@ -30,6 +30,7 @@
 #include <algorithm>
 #include <memory>
 #include <stdlib.h>
+#include <string>
 
 #include "personal.hpp"
 #include "utils.hpp"
@@ -51,7 +52,7 @@ protected:
     u8 blockPosition(u8 index) const;
     u8 blockPositionInvert(u8 index) const;
     u32 seedStep(u32 seed);
-    void reorderMoves(void);
+    virtual void reorderMoves(void);
 
     virtual void crypt(void) = 0;
     virtual void shuffleArray(u8 sv) = 0;

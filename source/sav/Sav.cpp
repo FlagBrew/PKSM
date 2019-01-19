@@ -160,6 +160,7 @@ bool Sav::validSequence(u8* dt, u8* pattern, int shift)
 
 void Sav::fixParty()
 {
+    // Poor man's bubble sort-like thing
     int numPkm = 6;
     for (int i = 5; i > 0; i--)
     {
@@ -170,11 +171,12 @@ void Sav::fixParty()
             continue;
         }
         auto prevPKM = pkm(i - 1);
-        if (checkPKM->encryptionConstant() != 0 && (prevPKM->encryptionConstant() == 0 && prevPKM->species() == 0))
+        if (!(checkPKM->encryptionConstant() == 0 && checkPKM->species() == 0) && (prevPKM->encryptionConstant() == 0 && prevPKM->species() == 0))
         {
             pkm(*checkPKM, i - 1);
             pkm(*prevPKM, i);
-            numPkm--;
+            numPkm = 6;
+            i = 6; // reset loop
         }
     }
     partyCount(numPkm);

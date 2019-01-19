@@ -45,17 +45,22 @@ public:
 private:
     bool lastBox();
     bool nextBox();
-    bool editPokemon(std::shared_ptr<PKX> pkm);
+    bool editPokemon();
     void changeBoxName();
     bool clickIndex(int i);
     bool doQR();
+    bool releasePokemon();
+    bool clonePkm();
+    bool goBack();
     std::vector<Button*> buttons;
     std::array<Button*, 36> pkmButtons;
+    std::vector<Button*> viewerButtons;
     std::shared_ptr<ViewerScreen> viewer = nullptr;
     std::shared_ptr<PKX> moveMon = nullptr;
     int cursorPos = 0;
     int box = 0;
     bool justSwitched = true;
+    bool menu = false;
 };
 
 #endif

@@ -257,6 +257,10 @@ void PKX::fixMoves(void)
             PP(i, 0);
             PPUp(i, 0);
         }
+        else
+        {
+            PP(i, 5); // Smallest maximum
+        }
     }
 }
 

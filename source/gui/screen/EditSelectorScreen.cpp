@@ -151,7 +151,7 @@ EditSelectorScreen::EditSelectorScreen()
 {
     viewer = std::make_shared<ViewerScreen>(nullptr, false);
     
-    buttons.push_back(new Button(283, 211, 34, 28, [](){ Gui::screenBack(); return true; }, ui_sheet_button_back_idx, "", 0.0f, 0));
+    buttons.push_back(new ClickButton(283, 211, 34, 28, [](){ Gui::screenBack(); return true; }, ui_sheet_button_back_idx, "", 0.0f, 0));
     buttons.push_back(new ClickButton(32, 15, 164, 24, [this](){ return this->clickIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0));
     //buttons.push_back(new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0));
     buttons.push_back(new AccelButton(8, 15, 17, 24, [this](){ return this->lastBox(); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5));
@@ -175,6 +175,14 @@ EditSelectorScreen::EditSelectorScreen()
         int y = (i % 2 == 0 ? 50 + 45 * (i / 2) : 66 + 45 * (i / 2));
         pkmButtons[30 + i] = new ClickButton(x, y, 34, 30, [this, i](){ return this->clickIndex(31 + i); }, ui_sheet_res_null_idx, "", 0.0f, 0);
     }
+
+    viewerButtons.push_back(buttons[0]);
+    viewerButtons.push_back(new ClickButton(212, 47, 108, 28, [this](){ return this->editPokemon(); }, ui_sheet_button_editor_idx,
+                                    "\uE000: " + i18n::localize("EDIT"), FONT_SIZE_12, COLOR_BLACK));
+    viewerButtons.push_back(new ClickButton(212, 78, 108, 28, [this](){ return this->releasePokemon(); }, ui_sheet_button_editor_idx,
+                                    "\uE003: " + i18n::localize("RELEASE"), FONT_SIZE_12, COLOR_BLACK));
+    viewerButtons.push_back(new ClickButton(212, 109, 108, 28, [this](){ return this->clonePkm(); }, ui_sheet_button_editor_idx,
+                                    "\uE002: " + i18n::localize("CLONE"), FONT_SIZE_12, COLOR_BLACK));
     TitleLoader::save->cryptBoxData(true);
 }
 
@@ -188,6 +196,12 @@ EditSelectorScreen::~EditSelectorScreen()
     for (Button* button : pkmButtons)
     {
         delete button;
+    }
+
+    // Skip shared back button
+    for (size_t i = 1; i < viewerButtons.size(); i++)
+    {
+        delete viewerButtons[i];
     }
 
     if (TitleLoader::save->generation() == Generation::LGPE)
@@ -325,6 +339,15 @@ void EditSelectorScreen::draw() const
                         FONT_SIZE_9, FONT_SIZE_9, COLOR_BLACK);
     }
 
+    if (menu)
+    {
+        C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, COLOR_MASKBLACK);
+        for (auto button : viewerButtons)
+        {
+            button->draw();
+        }
+    }
+
     viewer->draw();
 }
 
@@ -369,125 +392,112 @@ void EditSelectorScreen::update(touchPosition* touch)
     }
     viewer->setPkm(infoMon);
 
-    for (size_t i = 0; i < buttons.size(); i++)
+    u32 downKeys = hidKeysDown();
+    u32 heldKeys = hidKeysHeld();
+
+    if (menu)
     {
-        if (i == 0)
+        for (size_t i = 0; i < viewerButtons.size(); i++)
         {
-            if (!dirtyBack)
+            if (i == 0)
             {
-                if (buttons[i]->clicked(touch))
+                if (!dirtyBack)
                 {
-                    dirtyBack = true;
+                    if (viewerButtons[i]->clicked(touch))
+                    {
+                        dirtyBack = true;
+                    }
+                    if (viewerButtons[i]->update(touch))
+                    {
+                        return;
+                    }
                 }
-                if (buttons[i]->update(touch))
+                else
                 {
-                    return;
+                    if (!viewerButtons[i]->clicked(touch))
+                    {
+                        dirtyBack = false;
+                    }
                 }
             }
             else
             {
-                if (!buttons[i]->clicked(touch))
+                viewerButtons[i]->update(touch);
+            }
+        }
+        
+        if (downKeys & KEY_B)
+        {
+            menu = false;
+        }
+        else if (downKeys & KEY_X)
+        {
+            clonePkm();
+            menu = false;
+        }
+        else if (downKeys & KEY_A)
+        {
+            editPokemon();
+        }
+        else if (downKeys & KEY_Y)
+        {
+            releasePokemon();
+        }
+    }
+    else
+    {
+        for (size_t i = 0; i < buttons.size(); i++)
+        {
+            if (i == 0)
+            {
+                if (!dirtyBack)
                 {
-                    dirtyBack = false;
-                }
-            }
-        }
-        else
-        {
-            buttons[i]->update(touch);
-        }
-    }
-
-    u32 downKeys = hidKeysDown();
-    u32 heldKeys = hidKeysHeld();
-
-    for (Button* button : pkmButtons)
-    {
-        button->update(touch);
-    }
-
-    if (sleepTimer < 0 && sleep)
-    {
-        sleep = false;
-    }
-
-    if (downKeys & KEY_A)
-    {
-        if (cursorPos == 0)
-        {
-            Gui::setNextKeyboardFunc(std::bind(&EditSelectorScreen::changeBoxName, this));
-        }
-        else if (moveMon && cursorPos < 31)
-        {
-            std::shared_ptr<PKX> tmpMon = nullptr;
-            if (box * 30 + cursorPos - 1 < TitleLoader::save->maxSlot())
-            {
-                tmpMon = TitleLoader::save->pkm(box, cursorPos - 1);
-            }
-            if (tmpMon && (tmpMon->encryptionConstant() == 0 && tmpMon->species() == 0))
-            {
-                tmpMon = nullptr;
-            }
-            TitleLoader::save->pkm(*moveMon, box, cursorPos - 1);
-            moveMon = tmpMon;
-        }
-        else
-        {
-            editPokemon(infoMon);
-            return;
-        }
-    }
-    else if (downKeys & KEY_B)
-    {
-        if (moveMon)
-        {
-            moveMon = nullptr;
-        }
-        else
-        {
-            Gui::screenBack();
-            return;
-        }
-    }
-    else if (downKeys & KEY_X)
-    {
-        if (cursorPos > 0)
-        {
-            if (cursorPos > 30)
-            {
-                if (!moveMon)
-                {
-                    moveMon = TitleLoader::save->pkm(cursorPos - 31);
-                    if (moveMon && (moveMon->encryptionConstant() == 0 && moveMon->species() == 0))
+                    if (buttons[i]->clicked(touch))
                     {
-                        moveMon = nullptr;
+                        dirtyBack = true;
+                    }
+                    if (buttons[i]->update(touch))
+                    {
+                        return;
                     }
                 }
                 else
                 {
-                    std::shared_ptr<PKX> tmpMon = TitleLoader::save->pkm(cursorPos - 31);
-                    if ((tmpMon->encryptionConstant() == 0 && tmpMon->species() == 0))
+                    if (!buttons[i]->clicked(touch))
                     {
-                        tmpMon = nullptr;
+                        dirtyBack = false;
                     }
-                    TitleLoader::save->pkm(*moveMon, cursorPos - 31);
-                    moveMon = tmpMon;
                 }
             }
-            else if (box * 30 + cursorPos - 1 < TitleLoader::save->maxSlot())
+            else
             {
-                if (!moveMon)
+                buttons[i]->update(touch);
+            }
+        }
+
+        for (Button* button : pkmButtons)
+        {
+            button->update(touch);
+        }
+
+        if (sleepTimer < 0 && sleep)
+        {
+            sleep = false;
+        }
+
+        if (downKeys & KEY_A)
+        {
+            if (cursorPos == 0)
+            {
+                Gui::setNextKeyboardFunc(std::bind(&EditSelectorScreen::changeBoxName, this));
+            }
+            else if (moveMon && cursorPos < 31)
+            {
+                std::shared_ptr<PKX> tmpMon = nullptr;
+                if (box * 30 + cursorPos - 1 < TitleLoader::save->maxSlot())
                 {
-                    moveMon = TitleLoader::save->pkm(box, cursorPos - 1);
-                    if (moveMon && (moveMon->encryptionConstant() == 0 && moveMon->species() == 0))
-                    {
-                        moveMon = nullptr;
-                    }
-                }
-                else
-                {
-                    std::shared_ptr<PKX> tmpMon = TitleLoader::save->pkm(box, cursorPos - 1);
-                    if ((tmpMon->encryptionConstant() == 0 && tmpMon->species() == 0))
+                    tmpMon = TitleLoader::save->pkm(box, cursorPos - 1);
+                    if (tmpMon && (tmpMon->encryptionConstant() == 0 && tmpMon->species() == 0))
                     {
                         tmpMon = nullptr;
                     }
@@ -495,151 +505,49 @@ void EditSelectorScreen::update(touchPosition* touch)
                     moveMon = tmpMon;
                 }
             }
-        }
-    }
-    else if ((heldKeys & KEY_L && downKeys & KEY_R) || (downKeys & KEY_L && heldKeys & KEY_R))
-    {
-        doQR();
-        return;
-    }
-    else if (downKeys & KEY_LEFT)
-    {
-        if (cursorPos >= 31)
-        {
-            if (cursorPos == 31)
+            else if (moveMon)
             {
-                cursorPos = 6;
-            }
-            else if (cursorPos == 33)
-            {
-                cursorPos = 18;
-            }
-            else if (cursorPos == 35)
-            {
-                cursorPos = 24;
+                std::shared_ptr<PKX> tmpMon = nullptr;
+                if (cursorPos - 31 < TitleLoader::save->partyCount())
+                {
+                    tmpMon = TitleLoader::save->pkm(cursorPos - 31);
+                }
+                if (tmpMon && (tmpMon->encryptionConstant() == 0 && tmpMon->species() == 0))
+                {
+                    tmpMon = nullptr;
+                }
+                TitleLoader::save->pkm(*moveMon, cursorPos - 31);
+                moveMon = tmpMon;
+                TitleLoader::save->fixParty();
             }
             else
             {
-                cursorPos--;
+                menu = true;
+                return;
             }
         }
-        else if (cursorPos > 1) 
+        else if (downKeys & KEY_B)
         {
-            cursorPos--;
-        }
-        else if (cursorPos == 1)
-        {
-            lastBox();
-            cursorPos = 30;
-        }
-        else if (cursorPos == 0)
-        {
-            lastBox();
-        }
-        sleep = true;
-        sleepTimer = 10;
-    }
-    else if (downKeys & KEY_RIGHT)
-    {
-        if (cursorPos == 0)
-        {
-            nextBox();
-        }
-        else if (cursorPos < 30 || (cursorPos >= 31 && cursorPos % 2 == 1))
-        {
-            cursorPos++;
-        }
-        else if (cursorPos == 30)
-        {
-            nextBox();
-            cursorPos = 1;
-        }
-        else if (cursorPos == 32)
-        {
-            cursorPos = 1;
-        }
-        else if (cursorPos == 34)
-        {
-            cursorPos = 13;
-        }
-        else if (cursorPos == 36)
-        {
-            cursorPos = 25;
-        }
-        sleep = true;
-        sleepTimer = 10;
-    }
-    else if (downKeys & KEY_UP)
-    {
-        if (cursorPos == 0)
-        {
-            cursorPos = 27;
-        }
-        else if (cursorPos <= 6)
-        {
-            cursorPos = 0;
-        }
-        else if (cursorPos >= 31)
-        {
-            if (cursorPos > 32)
+            if (moveMon)
             {
-                cursorPos -= 2;
+                moveMon = nullptr;
             }
             else
             {
-                cursorPos += 4;
+                Gui::screenBack();
+                return;
             }
         }
-        else
-        {			
-            cursorPos -= 6;
-        }
-        sleep = true;
-        sleepTimer = 10;
-    }
-    else if (downKeys & KEY_DOWN)
-    {
-        if (cursorPos >= 31)
+        else if (downKeys & KEY_X)
         {
-            if (cursorPos < 35)
-            {
-                cursorPos += 2;
-            }
-            else
-            {
-                cursorPos -= 4;
-            }
+            clonePkm();
         }
-        else if (cursorPos >= 25)
+        else if (((heldKeys | downKeys) & KEY_L) && ((heldKeys | downKeys) & KEY_R))
         {
-            cursorPos = 0;
+            doQR();
+            return;
         }
-        else if (cursorPos == 0)
-        {
-            cursorPos = 3;
-        }
-        else
-        {
-            cursorPos += 6;
-        }
-        sleep = true;
-        sleepTimer = 10;
-    }
-    else if (downKeys & KEY_R)
-    {
-        nextBox();
-        sleep = true;
-        sleepTimer = 10;
-    }
-    else if (downKeys & KEY_L)
-    {
-        lastBox();
-        sleep = true;
-        sleepTimer = 10;
-    }
-    else if (sleepTimer < 0)
-    {
-        if (heldKeys & KEY_LEFT)
+        else if (downKeys & KEY_LEFT)
         {
             if (cursorPos >= 31)
             {
@@ -653,7 +561,7 @@ void EditSelectorScreen::update(touchPosition* touch)
                 }
                 else if (cursorPos == 35)
                 {
-                    cursorPos = 30;
+                    cursorPos = 24;
                 }
                 else
                 {
@@ -674,8 +582,9 @@ void EditSelectorScreen::update(touchPosition* touch)
                 lastBox();
             }
             sleep = true;
+            sleepTimer = 10;
         }
-        else if (heldKeys & KEY_RIGHT)
+        else if (downKeys & KEY_RIGHT)
         {
             if (cursorPos == 0)
             {
@@ -703,8 +612,9 @@ void EditSelectorScreen::update(touchPosition* touch)
                 cursorPos = 25;
             }
             sleep = true;
+            sleepTimer = 10;
         }
-        else if (heldKeys & KEY_UP)
+        else if (downKeys & KEY_UP)
         {
             if (cursorPos == 0)
             {
@@ -730,8 +640,9 @@ void EditSelectorScreen::update(touchPosition* touch)
                 cursorPos -= 6;
             }
             sleep = true;
+            sleepTimer = 10;
         }
-        else if (heldKeys & KEY_DOWN)
+        else if (downKeys & KEY_DOWN)
         {
             if (cursorPos >= 31)
             {
@@ -757,25 +668,160 @@ void EditSelectorScreen::update(touchPosition* touch)
                 cursorPos += 6;
             }
             sleep = true;
+            sleepTimer = 10;
         }
-        else if (heldKeys & KEY_R)
+        else if (downKeys & KEY_R)
         {
             nextBox();
             sleep = true;
+            sleepTimer = 10;
         }
-        else if (heldKeys & KEY_L)
+        else if (downKeys & KEY_L)
         {
             lastBox();
             sleep = true;
+            sleepTimer = 10;
+        }
+        else if (sleepTimer < 0)
+        {
+            if (heldKeys & KEY_LEFT)
+            {
+                if (cursorPos >= 31)
+                {
+                    if (cursorPos == 31)
+                    {
+                        cursorPos = 6;
+                    }
+                    else if (cursorPos == 33)
+                    {
+                        cursorPos = 18;
+                    }
+                    else if (cursorPos == 35)
+                    {
+                        cursorPos = 30;
+                    }
+                    else
+                    {
+                        cursorPos--;
+                    }
+                }
+                else if (cursorPos > 1) 
+                {
+                    cursorPos--;
+                }
+                else if (cursorPos == 1)
+                {
+                    lastBox();
+                    cursorPos = 30;
+                }
+                else if (cursorPos == 0)
+                {
+                    lastBox();
+                }
+                sleep = true;
+            }
+            else if (heldKeys & KEY_RIGHT)
+            {
+                if (cursorPos == 0)
+                {
+                    nextBox();
+                }
+                else if (cursorPos < 30 || (cursorPos >= 31 && cursorPos % 2 == 1))
+                {
+                    cursorPos++;
+                }
+                else if (cursorPos == 30)
+                {
+                    nextBox();
+                    cursorPos = 1;
+                }
+                else if (cursorPos == 32)
+                {
+                    cursorPos = 1;
+                }
+                else if (cursorPos == 34)
+                {
+                    cursorPos = 13;
+                }
+                else if (cursorPos == 36)
+                {
+                    cursorPos = 25;
+                }
+                sleep = true;
+            }
+            else if (heldKeys & KEY_UP)
+            {
+                if (cursorPos == 0)
+                {
+                    cursorPos = 27;
+                }
+                else if (cursorPos <= 6)
+                {
+                    cursorPos = 0;
+                }
+                else if (cursorPos >= 31)
+                {
+                    if (cursorPos > 32)
+                    {
+                        cursorPos -= 2;
+                    }
+                    else
+                    {
+                        cursorPos += 4;
+                    }
+                }
+                else
+                {			
+                    cursorPos -= 6;
+                }
+                sleep = true;
+            }
+            else if (heldKeys & KEY_DOWN)
+            {
+                if (cursorPos >= 31)
+                {
+                    if (cursorPos < 35)
+                    {
+                        cursorPos += 2;
+                    }
+                    else
+                    {
+                        cursorPos -= 4;
+                    }
+                }
+                else if (cursorPos >= 25)
+                {
+                    cursorPos = 0;
+                }
+                else if (cursorPos == 0)
+                {
+                    cursorPos = 3;
+                }
+                else
+                {
+                    cursorPos += 6;
+                }
+                sleep = true;
+            }
+            else if (heldKeys & KEY_R)
+            {
+                nextBox();
+                sleep = true;
+            }
+            else if (heldKeys & KEY_L)
+            {
+                lastBox();
+                sleep = true;
+            }
+
+            if (sleep)
+                sleepTimer = 10;
         }
 
         if (sleep)
-            sleepTimer = 10;
-    }
-
-    if (sleep)
-    {
-        sleepTimer--;
+        {
+            sleepTimer--;
+        }
     }
 }
 
@@ -802,16 +848,19 @@ bool EditSelectorScreen::nextBox()
     return false;
 }
 
-bool EditSelectorScreen::editPokemon(std::shared_ptr<PKX> pkm)
+bool EditSelectorScreen::editPokemon()
 {
     if (cursorPos < 31 && cursorPos != 0)
     {
-        Gui::setScreen(std::make_unique<EditorScreen>(viewer, pkm, box, cursorPos - 1));
-        return true;
+        if (box * 30 + cursorPos - 1 < TitleLoader::save->maxSlot())
+        {
+            Gui::setScreen(std::make_unique<EditorScreen>(viewer, TitleLoader::save->pkm(box, cursorPos - 1), box, cursorPos - 1));
+            return true;
+        }
     }
     else if (cursorPos > 30)
     {
-        Gui::setScreen(std::make_unique<EditorScreen>(viewer, pkm, 0xFF, cursorPos - 31));
+        Gui::setScreen(std::make_unique<EditorScreen>(viewer, TitleLoader::save->pkm(cursorPos - 31), 0xFF, cursorPos - 31));
         return true;
     }
 
@@ -826,15 +875,10 @@ bool EditSelectorScreen::clickIndex(int i)
         {
             Gui::setNextKeyboardFunc(std::bind(&EditSelectorScreen::changeBoxName, this));
         }
-        else if (cursorPos < 31 && box * 30 + cursorPos - 1 < TitleLoader::save->maxSlot())
+        else
         {
-            editPokemon(TitleLoader::save->pkm(box, cursorPos - 1));
-            dirtyBack = true;
-        }
-        else if (cursorPos > 30)
-        {
-            editPokemon(TitleLoader::save->pkm(cursorPos - 31));
-            dirtyBack = true;
+            menu = true;
+            justSwitched = true;
         }
         return true;
     }
@@ -843,4 +887,86 @@ bool EditSelectorScreen::clickIndex(int i)
         cursorPos = i;
         return false;
     }
+}
+
+bool EditSelectorScreen::clonePkm()
+{
+    if (cursorPos > 0)
+    {
+        if (cursorPos > 30)
+        {
+            if (!moveMon)
+            {
+                moveMon = TitleLoader::save->pkm(cursorPos - 31);
+                if (moveMon && (moveMon->encryptionConstant() == 0 && moveMon->species() == 0))
+                {
+                    moveMon = nullptr;
+                }
+            }
+            else
+            {
+                std::shared_ptr<PKX> tmpMon = TitleLoader::save->pkm(cursorPos - 31);
+                if ((tmpMon->encryptionConstant() == 0 && tmpMon->species() == 0))
+                {
+                    tmpMon = nullptr;
+                }
+                TitleLoader::save->pkm(*moveMon, cursorPos - 31);
+                moveMon = tmpMon;
+                TitleLoader::save->fixParty();
+            }
+        }
+        else if (box * 30 + cursorPos - 1 < TitleLoader::save->maxSlot())
+        {
+            if (!moveMon)
+            {
+                moveMon = TitleLoader::save->pkm(box, cursorPos - 1);
+                if (moveMon && (moveMon->encryptionConstant() == 0 && moveMon->species() == 0))
+                {
+                    moveMon = nullptr;
+                }
+            }
+            else
+            {
+                std::shared_ptr<PKX> tmpMon = TitleLoader::save->pkm(box, cursorPos - 1);
+                if ((tmpMon->encryptionConstant() == 0 && tmpMon->species() == 0))
+                {
+                    tmpMon = nullptr;
+                }
+                TitleLoader::save->pkm(*moveMon, box, cursorPos - 1);
+                moveMon = tmpMon;
+            }
+        }
+    }
+    return false;
+}
+
+bool EditSelectorScreen::goBack()
+{
+    if (menu)
+    {
+        menu = false;
+    }
+    else
+    {
+        Gui::screenBack();
+    }
+    return true;
+}
+
+bool EditSelectorScreen::releasePokemon()
+{
+    if (cursorPos != 0 && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_RELEASE")))
+    {
+        if (cursorPos < 31 && box * 30 + cursorPos - 1 < TitleLoader::save->maxSlot())
+        {
+            TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), box, cursorPos - 1);
+        }
+        else if (cursorPos > 30 && cursorPos - 31 < TitleLoader::save->partyCount())
+        {
+            TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), cursorPos - 31);
+            TitleLoader::save->fixParty();
+        }
+    }
+    menu = false;
+    return true;
 }
