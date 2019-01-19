@@ -104,6 +104,9 @@ bool Archive::extdataAccessible(u32 id)
 
 Result Archive::createPKSMExtdataArchive(std::string& execPath)
 {
+#if CITRA_DEBUG
+    return 0;
+#else
     u32 ndirs = 100; // TODO
     u32 nfiles = 100; // TODO
     u64 sizeLimit = 0x1000000; // TODO
@@ -135,4 +138,5 @@ Result Archive::createPKSMExtdataArchive(std::string& execPath)
     }
     delete smdh;
     return res;
+#endif
 }

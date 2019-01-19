@@ -82,6 +82,7 @@ ROMFS			:=	assets/romfs
 GFXBUILD		:=	$(ROMFS)/gfx
 PACKER			:=	EventsGalleryPacker
 SCRIPTS			:=	PKSM-Scripts
+CITRA_DEBUG		:=	0
 
 # If left blank, will try to use "icon.png", "$(TARGET).png", or the default ctrulib icon, in that order
 ICON			:=	assets/icon.png
@@ -117,8 +118,9 @@ CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O2 -mword-relocations \
 			-DVERSION_MICRO=${VERSION_MICRO} \
 			-DUNIQUE_ID=${UNIQUE_ID} \
 			-DGIT_REV=\"$(GIT_REV)\" \
-			# -DPICOC_DEBUG \
+			-DCITRA_DEBUG=${CITRA_DEBUG} \
 			`sdl-config --cflags`
+			# -DPICOC_DEBUG
 
 CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS -D_GNU_SOURCE=1
 
