@@ -220,14 +220,16 @@ void PKX::reorderMoves(void)
 
 void PKX::decrypt(void)
 {
+    u8 sv = (encryptionConstant() >> 13) & 31;
     crypt();
-    shuffleArray((encryptionConstant() >> 13) & 31);
+    shuffleArray(sv);
 }
 
 void PKX::encrypt(void)
 {
+    u8 sv = (encryptionConstant() >> 13) & 31;
     refreshChecksum();
-    shuffleArray(blockPositionInvert((encryptionConstant() >> 13) & 31));
+    shuffleArray(blockPositionInvert(sv));
     crypt();
 }
 

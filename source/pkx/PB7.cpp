@@ -39,9 +39,9 @@ void PB7::shuffleArray(u8 sv)
     {
         u8 ofs = blockPosition(index + block);
         std::copy(
-            cdata + 8 + (blockLength * block), 
-            cdata + 8 + (blockLength * block) + blockLength, 
-            data + 8 + (blockLength * ofs)
+            cdata + 8 + blockLength * ofs, 
+            cdata + 8 + blockLength * ofs + blockLength, 
+            data + 8 + blockLength * block
         );
     }
 }
