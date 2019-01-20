@@ -255,8 +255,8 @@ void PK5::metMonth(u8 v) { data[0x7C] = v; }
 u8 PK5::metDay(void) const { return data[0x7D]; }
 void PK5::metDay(u8 v) { data[0x7D] = v; }
 
-u16 PK5::eggLocation(void) const { return *(u16*)(data + 0x78); }
-void PK5::eggLocation(u16 v) { *(u16*)(data + 0x78) = v; }
+u16 PK5::eggLocation(void) const { return *(u16*)(data + 0x7E); }
+void PK5::eggLocation(u16 v) { *(u16*)(data + 0x7E) = v; }
 
 u16 PK5::metLocation(void) const { return *(u16*)(data + 0x80); }
 void PK5::metLocation(u16 v) { *(u16*)(data + 0x80) = v; }
