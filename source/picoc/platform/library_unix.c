@@ -27,6 +27,7 @@ struct LibraryFunction UnixFunctions[] =
     { cfg_default_day,  "int cfg_default_day();" },
     { cfg_default_month,"int cfg_default_month();" },
     { cfg_default_year, "int cfg_default_year();" },
+    { net_udpServer,    "int net_udpServer(char* buffer, int size, int* received);" },
     { NULL,             NULL }
 };
 

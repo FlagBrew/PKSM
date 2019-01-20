@@ -528,6 +528,7 @@ bool BoxChoice::backButton()
         }
         else
         {
+            result = std::make_tuple(0, -1, -1);
             done = true;
         }
     }
