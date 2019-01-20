@@ -1,9 +1,7 @@
 #include "interpreter.h"
-#include "scripthelpers.h"
+#include "pksm_api.h"
 
-void UnixSetupFunc()
-{
-}
+void UnixSetupFunc() { }
 
 /* list of all library functions and their prototypes */
 struct LibraryFunction UnixFunctions[] =
@@ -14,6 +12,7 @@ struct LibraryFunction UnixFunctions[] =
     { gui_menu20x2,     "int gui_menu_20x2(char* question, int options, char** labels);" },
     { gui_keyboard,     "void gui_keyboard(char* out, char* hint, int maxChars);" },
     { gui_numpad,       "void gui_numpad(int* out, char* hint, int maxDigits);" },
+    { gui_boxes,        "int gui_boxes(int* fromStorage, int* box, int* slot);" },
     { sav_sbo,          "int sav_sbo();" },
     { sav_gbo,          "int sav_gbo();" },
     { sav_boxDecrypt,   "void sav_box_decrypt();" },
@@ -22,12 +21,12 @@ struct LibraryFunction UnixFunctions[] =
     { sav_inject_ekx,   "void sav_inject_ekx(char* data, enum Generation type, int box, int slot);" },
     { current_directory,"char* current_directory();" },
     { read_directory,   "struct directory* read_directory(char* dir);" },
-    {cfg_default_ot,    "char* cfg_default_ot();" },
-    {cfg_default_tid,   "unsigned int cfg_default_tid();" },
-    {cfg_default_sid,   "unsigned int cfg_default_sid();" },
-    {cfg_default_day,   "int cfg_default_day();" },
-    {cfg_default_month, "int cfg_default_month();" },
-    {cfg_default_year,  "int cfg_default_year();" },
+    { cfg_default_ot,   "char* cfg_default_ot();" },
+    { cfg_default_tid,  "unsigned int cfg_default_tid();" },
+    { cfg_default_sid,  "unsigned int cfg_default_sid();" },
+    { cfg_default_day,  "int cfg_default_day();" },
+    { cfg_default_month,"int cfg_default_month();" },
+    { cfg_default_year, "int cfg_default_year();" },
     { NULL,             NULL }
 };
 

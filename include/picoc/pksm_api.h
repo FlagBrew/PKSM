@@ -24,8 +24,8 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef SCRIPTHELPERS_H
-#define SCRIPTHELPERS_H
+#ifndef PKSM_API_H
+#define PKSM_API_H
 
 #include "picoc.h"
 #include "3ds/types.h"
@@ -42,6 +42,7 @@ void gui_menu6x5(struct ParseState*, struct Value*, struct Value**, int);
 void gui_menu20x2(struct ParseState*, struct Value*, struct Value**, int);
 void gui_keyboard(struct ParseState*, struct Value*, struct Value**, int);
 void gui_numpad(struct ParseState*, struct Value*, struct Value**, int);
+void gui_boxes(struct ParseState*, struct Value*, struct Value**, int);
 void sav_sbo(struct ParseState*, struct Value*, struct Value**, int);
 void sav_gbo(struct ParseState*, struct Value*, struct Value**, int);
 void sav_boxEncrypt(struct ParseState*, struct Value*, struct Value**, int);

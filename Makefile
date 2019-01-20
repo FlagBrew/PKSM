@@ -117,8 +117,8 @@ CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O2 -mword-relocations \
 			-DVERSION_MICRO=${VERSION_MICRO} \
 			-DUNIQUE_ID=${UNIQUE_ID} \
 			-DGIT_REV=\"$(GIT_REV)\" \
-			# -DPICOC_DEBUG \
-			`sdl-config --cflags`
+			`sdl-config --cflags`  # \
+			# -DPICOC_DEBUG
 
 CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS -D_GNU_SOURCE=1
 

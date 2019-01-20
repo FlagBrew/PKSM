@@ -25,6 +25,7 @@
 */
 
 #include "gui.hpp"
+#include "BoxChoice.hpp"
 #include "FortyChoice.hpp"
 #include "ThirtyChoice.hpp"
 #include "loader.hpp"
@@ -36,7 +37,7 @@
 #include "PK7.hpp"
 
 extern "C" {
-#include "scripthelpers.h"
+#include "pksm_api.h"
 
     void gui_warn(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
     {
@@ -523,5 +524,20 @@ extern "C" {
     void cfg_default_year(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
     {
         ReturnValue->Val->Integer = Configuration::getInstance().year();
+    }
+
+    void gui_boxes(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        int* fromStorage = (int*) Param[0]->Val->Pointer;
+        int* box = (int*) Param[1]->Val->Pointer;
+        int* slot = (int*) Param[2]->Val->Pointer;
+
+        BoxChoice screen = BoxChoice();
+        auto result = screen.run();
+
+        *fromStorage = std::get<0>(result);
+        *box = std::get<1>(result);
+        *slot = std::get<2>(result) - 1;
+        ReturnValue->Val->Integer = std::get<0>(result) == 0 && std::get<1>(result) == -1 &&std::get<2>(result) == -1 ? -1 : 0;
     }
 }

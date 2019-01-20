@@ -189,10 +189,9 @@ StorageScreen::StorageScreen()
                                     i18n::localize("DUMP"), FONT_SIZE_12, COLOR_BLACK);
     mainButtons[5] = new Button(212, 171, 108, 28, [this](){ return this->duplicate(); }, ui_sheet_button_editor_idx,
                                     i18n::localize("CLONE"), FONT_SIZE_12, COLOR_BLACK);
-    //mainButtons[6] = new Button(4, 212, 33, 28, &wirelessStuff, ui_sheet_button_wireless_idx, "", 0.0f, 0);
     mainButtons[6] = new Button(4, 212, 33, 28, [this](){ return false; }, ui_sheet_res_null_idx, "", 0.0f, 0);
     mainButtons[7] = new Button(283, 211, 34, 28, [this](){ return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
-    mainButtons[8] = new AccelButton(8, 15, 17, 24, [this](){ return this->lastBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+    mainButtons[8] = new AccelButton(8, 15, 17, 24, [this](){ return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
     mainButtons[9] = new AccelButton(189, 15, 17, 24, [this](){ return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
 
     // Pokemon buttons
@@ -533,7 +532,7 @@ void StorageScreen::update(touchPosition* touch)
             {
                 if (cursorIndex == 0)
                 {
-                    lastBox();
+                    prevBox();
                 }
                 else if (cursorIndex > 1) 
                 {
@@ -541,7 +540,7 @@ void StorageScreen::update(touchPosition* touch)
                 }
                 else if (cursorIndex == 1)
                 {
-                    lastBox();
+                    prevBox();
                     cursorIndex = 30;
                 }
                 sleep = true;
@@ -604,7 +603,7 @@ void StorageScreen::update(touchPosition* touch)
             }
             else if (kHeld & KEY_L)
             {
-                lastBox();
+                prevBox();
                 sleep = true;
             }
 
@@ -628,7 +627,7 @@ void StorageScreen::update(touchPosition* touch)
     }
 }
 
-bool StorageScreen::lastBox(bool forceBottom)
+bool StorageScreen::prevBox(bool forceBottom)
 {
     if (storageChosen && !forceBottom)
     {

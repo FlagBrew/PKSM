@@ -54,7 +54,7 @@ private:
     bool duplicate();
     bool backButton();
     // Have to basically reimplement Hid because two Hids don't go well together
-    bool lastBox(bool forceBottom = false);
+    bool prevBox(bool forceBottom = false);
     bool nextBox(bool forceBottom = false);
     bool clickBottomIndex(int index);
     void setBoxName(bool storage);
