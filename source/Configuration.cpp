@@ -85,11 +85,7 @@ Configuration::Configuration()
 
 void Configuration::save()
 {
-    FS_Archive archive = Archive::data();
     static const std::u16string path = StringUtils::UTF8toUTF16("/config.json");
-
-    archive = Archive::sd();
-    mJson["useExtdata"] = false;
 
     std::string writeData = mJson.dump(2);
     writeData.shrink_to_fit();
@@ -97,10 +93,10 @@ void Configuration::save()
 
     if (oldSize != size)
     {
-        FSUSER_DeleteFile(archive, fsMakePath(PATH_UTF16, path.data()));
+        FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, path.data()));
     }
 
-    FSStream stream(archive, path, FS_OPEN_WRITE, oldSize = size);
+    FSStream stream(Archive::data(), path, FS_OPEN_WRITE, oldSize = size);
     stream.write(writeData.data(), size);
     stream.close();
 }
