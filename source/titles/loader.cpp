@@ -569,6 +569,7 @@ void TitleLoader::scanCard()
 
 bool TitleLoader::cardUpdate()
 {
+#if !CITRA_DEBUG
     static bool first = true;
     static bool oldCardIn = false;
     if (first)
@@ -605,5 +606,6 @@ bool TitleLoader::cardUpdate()
         oldCardIn = cardIn;
         return true;
     }
+#endif
     return false;
 }

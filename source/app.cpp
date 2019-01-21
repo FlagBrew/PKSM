@@ -130,10 +130,11 @@ Result App::init(std::string execPath)
     hidInit();
     gfxInitDefault();
 
+#if !CITRA_DEBUG
     Handle hbldrHandle;
     if (R_FAILED(res = svcConnectToPort(&hbldrHandle, "hb:ldr")))
         return consoleDisplayError("Rosalina sysmodule has not been found.\n\nMake sure you're running latest Luma3DS.", res);
-
+#endif
     APT_GetAppCpuTimeLimit(&old_time_limit);
     APT_SetAppCpuTimeLimit(30);
     
