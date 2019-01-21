@@ -36,7 +36,7 @@ class PK6 : public PKX
 friend class SavORAS;
 friend class SavXY;
 protected:
-    void shuffleArray(void) override;
+    void shuffleArray(u8 sv) override;
     void crypt(void) override;
 
     u8* data = {0};
@@ -49,8 +49,6 @@ public:
     PK6(u8* dt, bool ekx = false, bool party = false);
     virtual ~PK6() { delete[] data; };
 
-    void decrypt(void) override;
-    void encrypt(void) override;
     std::unique_ptr<PKX> clone(void) override;
 
     Generation generation(void) const override;

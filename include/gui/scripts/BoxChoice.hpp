@@ -24,43 +24,46 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef EDITSELECTORSCREEN_HPP
-#define EDITSELECTORSCREEN_HPP
+#ifndef STORAGESCREEN_HPP
+#define STORAGESCREEN_HPP
 
 #include "Screen.hpp"
-#include <vector>
+#include "Sav.hpp"
+#include "PKX.hpp"
 #include "ViewerScreen.hpp"
-#include "QRScanner.hpp"
 #include "Button.hpp"
 #include "loader.hpp"
+#include <array>
+#include <tuple>
 
-class EditSelectorScreen : public Screen
+class BoxChoice : public Screen
 {
 public:
-    ~EditSelectorScreen();
-    EditSelectorScreen();
+    BoxChoice();
+    ~BoxChoice();
+
+    std::tuple<int, int, int> run();
+    ScreenType type() const override { return ScreenType::SCRIPTSELECT; }
+
+private:
+    bool finished() const { return done; }
     void draw() const override;
     void update(touchPosition* touch) override;
-    ScreenType type() const override { return ScreenType::EDITSELECT; }
-private:
-    bool prevBox();
-    bool nextBox();
-    bool editPokemon();
-    void changeBoxName();
-    bool clickIndex(int i);
-    bool doQR();
-    bool releasePokemon();
-    bool clonePkm();
-    bool goBack();
-    std::vector<Button*> buttons;
-    std::array<Button*, 36> pkmButtons;
-    std::vector<Button*> viewerButtons;
-    std::shared_ptr<ViewerScreen> viewer = nullptr;
-    std::shared_ptr<PKX> moveMon = nullptr;
-    int cursorPos = 0;
-    int box = 0;
+
+    bool showViewer();
+    bool backButton();
+    bool prevBox(bool forceBottom = false);
+    bool nextBox(bool forceBottom = false);
+    bool clickBottomIndex(int index);
+
+    bool done = false;
+    bool storageChosen = false;
+    std::array<Button*, 5> mainButtons;
+    std::array<Button*, 30> clickButtons;
+    int cursorIndex = 0, storageBox = 0, boxBox = 0;
+    std::unique_ptr<ViewerScreen> viewer;
     bool justSwitched = true;
-    bool menu = false;
+    Bank bank;
 };
 
 #endif

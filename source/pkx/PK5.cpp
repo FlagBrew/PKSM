@@ -28,25 +28,21 @@
 #include "loader.hpp"
 #include "random.hpp"
 
-void PK5::shuffleArray(void)
+void PK5::shuffleArray(u8 sv)
 {
     static const int blockLength = 32;
-    u8 seed = (((encryptionConstant() & 0x3E000) >> 0xD) % 24);
-    static int aloc[24] = { 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 2, 3, 1, 1, 2, 3, 2, 3, 1, 1, 2, 3, 2, 3 };
-    static int bloc[24] = { 1, 1, 2, 3, 2, 3, 0, 0, 0, 0, 0, 0, 2, 3, 1, 1, 3, 2, 2, 3, 1, 1, 3, 2 };
-    static int cloc[24] = { 2, 3, 1, 1, 3, 2, 2, 3, 1, 1, 3, 2, 0, 0, 0, 0, 0, 0, 3, 2, 3, 2, 1, 1 };
-    static int dloc[24] = { 3, 2, 3, 2, 1, 1, 3, 2, 3, 2, 1, 1, 3, 2, 3, 2, 1, 1, 0, 0, 0, 0, 0, 0 };
-    int ord[4] = {aloc[seed], bloc[seed], cloc[seed], dloc[seed]};
-
+    u8 index = sv * 4;
+    
     u8 cdata[length];
     std::copy(data, data + length, cdata);
 
-    for (u8 i = 0; i < 4; i++)
+    for (u8 block = 0; block < 4; block++)
     {
+        u8 ofs = blockPosition(index + block);
         std::copy(
-            cdata + blockLength * ord[i] + 8, 
-            cdata + blockLength * ord[i] + blockLength + 8, 
-            data + 8 + blockLength * i
+            cdata + 8 + blockLength * ofs, 
+            cdata + 8 + blockLength * ofs + blockLength, 
+            data + 8 + blockLength * block
         );
     }
 }
@@ -80,22 +76,6 @@ PK5::PK5(u8* dt, bool ekx, bool party)
     std::copy(dt, dt + length, data);
     if (ekx)
         decrypt();
-}
-
-void PK5::decrypt(void)
-{
-    crypt();
-    shuffleArray();
-}
-
-void PK5::encrypt(void)
-{
-    refreshChecksum();
-    for (int i = 0; i < 11; i++)
-    {
-        shuffleArray();
-    }
-    crypt();
 }
 
 std::unique_ptr<PKX> PK5::clone(void) { return std::make_unique<PK5>(data, false, length == 236); }
@@ -255,8 +235,8 @@ void PK5::metMonth(u8 v) { data[0x7C] = v; }
 u8 PK5::metDay(void) const { return data[0x7D]; }
 void PK5::metDay(u8 v) { data[0x7D] = v; }
 
-u16 PK5::eggLocation(void) const { return *(u16*)(data + 0x78); }
-void PK5::eggLocation(u16 v) { *(u16*)(data + 0x78) = v; }
+u16 PK5::eggLocation(void) const { return *(u16*)(data + 0x7E); }
+void PK5::eggLocation(u16 v) { *(u16*)(data + 0x7E) = v; }
 
 u16 PK5::metLocation(void) const { return *(u16*)(data + 0x80); }
 void PK5::metLocation(u16 v) { *(u16*)(data + 0x80) = v; }

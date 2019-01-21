@@ -1661,7 +1661,7 @@ void HexEditScreen::drawMeaning() const
                     {
                         break;
                     }
-                case 0x78 ... 0x79:
+                case 0x7E ... 0x7F:
                     Gui::dynamicText(GFX_BOTTOM, 100, i18n::location(Configuration::getInstance().language(), pkm->eggLocation(), pkm->generation()), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
                     break;
                 case 0x46 ... 0x47:

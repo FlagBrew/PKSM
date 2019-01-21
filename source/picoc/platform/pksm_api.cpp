@@ -25,6 +25,7 @@
 */
 
 #include "gui.hpp"
+#include "BoxChoice.hpp"
 #include "FortyChoice.hpp"
 #include "ThirtyChoice.hpp"
 #include "loader.hpp"
@@ -34,9 +35,12 @@
 #include "PK5.hpp"
 #include "PK6.hpp"
 #include "PK7.hpp"
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <errno.h>
 
 extern "C" {
-#include "scripthelpers.h"
+#include "pksm_api.h"
 
     void gui_warn(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
     {
@@ -523,5 +527,55 @@ extern "C" {
     void cfg_default_year(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
     {
         ReturnValue->Val->Integer = Configuration::getInstance().year();
+    }
+
+    void gui_boxes(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        int* fromStorage = (int*) Param[0]->Val->Pointer;
+        int* box = (int*) Param[1]->Val->Pointer;
+        int* slot = (int*) Param[2]->Val->Pointer;
+
+        BoxChoice screen = BoxChoice();
+        auto result = screen.run();
+
+        *fromStorage = std::get<0>(result);
+        *box = std::get<1>(result);
+        *slot = std::get<2>(result) - 1;
+        ReturnValue->Val->Integer = std::get<0>(result) == 0 && std::get<1>(result) == -1 &&std::get<2>(result) == -1 ? -1 : 0;
+    }
+
+    void net_udpServer(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        char* buffer = (char*)Param[0]->Val->Pointer;
+        int size = (int)Param[1]->Val->Integer;
+        int* bytesReceived = (int*)Param[2]->Val->Pointer;
+
+        struct sockaddr_in addr;
+        socklen_t addrlen = sizeof(addr);
+        int fd = socket(AF_INET, SOCK_DGRAM, 0);
+        if (fd == -1)
+        {
+            ReturnValue->Val->Integer = errno;
+            return;
+        }
+        memset(&addr, 0, addrlen);
+        addr.sin_family = AF_INET;
+        addr.sin_port = htons(PKSM_PORT);
+        addr.sin_addr.s_addr = INADDR_ANY;
+        if (bind(fd, (struct sockaddr*)&addr, addrlen) != 0)
+        {
+            ReturnValue->Val->Integer = errno;
+            close(fd);
+            return;
+        }
+        *bytesReceived = 0;
+        while (*bytesReceived < size) {
+            int n = recvfrom(fd, buffer, size, 0, (struct sockaddr*)&addr, &addrlen);
+            *bytesReceived += n;
+            if (n <= 0) break;
+        }
+
+        close(fd);
+        ReturnValue->Val->Integer = 0;
     }
 }

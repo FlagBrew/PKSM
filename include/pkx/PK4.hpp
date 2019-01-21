@@ -41,7 +41,7 @@ protected:
     static constexpr u8 beasts[4] = { 251, 243, 244, 245 };
     static constexpr u16 banned[8] = { 15, 19, 57, 70, 250, 249, 127, 431 };
 
-    void shuffleArray(void) override;
+    void shuffleArray(u8 sv) override;
     void crypt(void) override;
     
     u8* data;
@@ -53,8 +53,6 @@ public:
     PK4(u8* dt, bool ekx = false, bool party = false);
     virtual ~PK4() { delete[] data; };
 
-    void decrypt(void) override;
-    void encrypt(void) override;
     std::unique_ptr<PKX> clone(void) override;
 
     Generation generation(void) const;
