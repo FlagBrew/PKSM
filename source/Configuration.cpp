@@ -88,10 +88,8 @@ void Configuration::save()
     FS_Archive archive = Archive::data();
     static const std::u16string path = StringUtils::UTF8toUTF16("/config.json");
 
-#if CITRA_DEBUG
     archive = Archive::sd();
     mJson["useExtdata"] = false;
-#endif
 
     std::string writeData = mJson.dump(2);
     writeData.shrink_to_fit();
