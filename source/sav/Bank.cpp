@@ -169,7 +169,7 @@ void Bank::loadExtData()
     FSStream in(Archive::data(), u"/banks/pksm_1.bnk", FS_OPEN_READ);
     if (in.good())
     {
-        Gui::waitFrame(i18n::localize("BANK_LOAD"));
+        // Gui::waitFrame(i18n::localize("BANK_LOAD"));
         size = in.size();
         data = new u8[size];
         in.read(data, size);
@@ -242,7 +242,7 @@ void Bank::loadSD()
     std::fstream in("/3ds/PKSM/banks/pksm_1.bnk", std::ios::in | std::ios::binary | std::ios::ate);
     if (in.good())
     {
-        Gui::waitFrame(i18n::localize("BANK_LOAD"));
+        // Gui::waitFrame(i18n::localize("BANK_LOAD"));
         size = in.tellg();
         in.seekg(0, std::ios::beg);
         data = new u8[size];
@@ -262,7 +262,7 @@ void Bank::loadSD()
     else
     {
 createBank:
-        Gui::waitFrame(i18n::localize("BANK_LOAD"));
+        // Gui::waitFrame(i18n::localize("BANK_LOAD"));
         in.close();
         data = new u8[size = sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30];
         std::copy(BANK_MAGIC.data(), BANK_MAGIC.data() + BANK_MAGIC.size(), data);

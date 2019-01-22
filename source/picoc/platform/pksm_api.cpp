@@ -38,6 +38,7 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <errno.h>
+#include <netdb.h>
 
 extern "C" {
 #include "pksm_api.h"
@@ -577,5 +578,56 @@ extern "C" {
 
         close(fd);
         ReturnValue->Val->Integer = 0;
+    }
+
+    void bank_inject_pkx(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        u8* data = (u8*) Param[0]->Val->Pointer;
+        Generation gen = Generation(Param[1]->Val->Integer);
+        int box = Param[2]->Val->Integer;
+        int slot = Param[3]->Val->Integer;
+
+        std::unique_ptr<PKX> pkm = nullptr;
+
+        switch (gen)
+        {
+            case Generation::FOUR:
+                pkm = std::make_unique<PK4>(data, false);
+                break;
+            case Generation::FIVE:
+                pkm = std::make_unique<PK5>(data, false);
+                break;
+            case Generation::SIX:
+                pkm = std::make_unique<PK6>(data, false);
+                break;
+            case Generation::SEVEN:
+                pkm = std::make_unique<PK7>(data, false);
+                break;
+            case Generation::LGPE:
+                pkm = std::make_unique<PB7>(data, false);
+                break;
+            default:
+                Gui::warn("What did you do?", "Generation is incorrect!");
+                return;
+        }
+
+        Bank bank;
+        bank.pkm(*pkm, box, slot);
+        bank.save();
+    }
+
+    void net_ip(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        char hostbuffer[256];
+        if (gethostname(hostbuffer, sizeof(hostbuffer)) == -1)
+        {
+            ReturnValue->Val->Pointer = (void*)"";
+        }
+        struct hostent *host_entry = gethostbyname(hostbuffer);
+        if (host_entry == NULL)
+        {
+            ReturnValue->Val->Pointer = (void*)"";
+        }
+        ReturnValue->Val->Pointer = (void*)inet_ntoa(*((struct in_addr*)host_entry->h_addr_list[0]));
     }
 }

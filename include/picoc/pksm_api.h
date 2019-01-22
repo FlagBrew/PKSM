@@ -32,6 +32,7 @@
 
 #define PKSM_PORT 34567
 
+void bank_inject_pkx(struct ParseState*, struct Value*, struct Value**, int);
 void cfg_default_ot(struct ParseState*, struct Value*, struct Value**, int);
 void cfg_default_tid(struct ParseState*, struct Value*, struct Value**, int);
 void cfg_default_sid(struct ParseState*, struct Value*, struct Value**, int);
@@ -45,6 +46,7 @@ void gui_menu20x2(struct ParseState*, struct Value*, struct Value**, int);
 void gui_keyboard(struct ParseState*, struct Value*, struct Value**, int);
 void gui_numpad(struct ParseState*, struct Value*, struct Value**, int);
 void gui_boxes(struct ParseState*, struct Value*, struct Value**, int);
+void net_ip(struct ParseState*, struct Value*, struct Value**, int);
 void net_udpServer(struct ParseState*, struct Value*, struct Value**, int);
 void sav_sbo(struct ParseState*, struct Value*, struct Value**, int);
 void sav_gbo(struct ParseState*, struct Value*, struct Value**, int);
