@@ -56,6 +56,8 @@ private:
     // Have to basically reimplement Hid because two Hids don't go well together
     bool lastBox(bool forceBottom = false);
     bool nextBox(bool forceBottom = false);
+    bool prevBoxTop(bool forceBottom = false);
+    bool nextBoxTop(bool forceBottom = false);
     bool clickBottomIndex(int index);
     void setBoxName(bool storage);
     void pickup();
