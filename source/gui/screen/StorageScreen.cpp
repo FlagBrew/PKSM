@@ -667,15 +667,12 @@ bool StorageScreen::lastBox(bool forceBottom)
     return false;
 }
 
-bool StorageScreen::prevBoxTop(bool forceBottom)
+bool StorageScreen::prevBoxTop()
 {
-    if (!forceBottom)
+    storageBox--;
+    if (storageBox == -1)
     {
-        storageBox--;
-        if (storageBox == -1)
-        {
-            storageBox = Configuration::getInstance().storageSize() - 1;
-        }
+        storageBox = Configuration::getInstance().storageSize() - 1;
     }
     return false;
 }
@@ -701,15 +698,12 @@ bool StorageScreen::nextBox(bool forceBottom)
     return false;
 }
 
-bool StorageScreen::nextBoxTop(bool forceBottom)
+bool StorageScreen::nextBoxTop()
 {
-    if (!forceBottom)
+    storageBox++;
+    if (storageBox == Configuration::getInstance().storageSize())
     {
-        storageBox++;
-        if (storageBox == Configuration::getInstance().storageSize())
-        {
-            storageBox = 0;
-        }
+        storageBox = 0;
     }
     return false;
 }
