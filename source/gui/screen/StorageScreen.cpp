@@ -621,7 +621,7 @@ void StorageScreen::update(touchPosition* touch)
             
             {
             	
-               lastBoxTop();
+               prevBoxTop();
                sleep = true;
 
             }
@@ -667,7 +667,7 @@ bool StorageScreen::lastBox(bool forceBottom)
     return false;
 }
 
-bool StorageScreen::lastBoxTop(bool forceBottom)
+bool StorageScreen::prevBoxTop(bool forceBottom)
 {
     if (!forceBottom)
     {
