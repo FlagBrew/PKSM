@@ -47,6 +47,7 @@ void gui_keyboard(struct ParseState*, struct Value*, struct Value**, int);
 void gui_numpad(struct ParseState*, struct Value*, struct Value**, int);
 void gui_boxes(struct ParseState*, struct Value*, struct Value**, int);
 void net_ip(struct ParseState*, struct Value*, struct Value**, int);
+void net_tcpServer(struct ParseState*, struct Value*, struct Value**, int);
 void net_udpServer(struct ParseState*, struct Value*, struct Value**, int);
 void sav_sbo(struct ParseState*, struct Value*, struct Value**, int);
 void sav_gbo(struct ParseState*, struct Value*, struct Value**, int);

@@ -580,6 +580,55 @@ extern "C" {
         ReturnValue->Val->Integer = 0;
     }
 
+    void net_tcpServer(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        char* buffer = (char*)Param[0]->Val->Pointer;
+        int size = (int)Param[1]->Val->Integer;
+        int* bytesReceived = (int*)Param[2]->Val->Pointer;
+
+        struct sockaddr_in addr;
+        socklen_t addrlen = sizeof(addr);
+        int fd = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
+        if (fd == -1)
+        {
+            ReturnValue->Val->Integer = errno;
+            return;
+        }
+        memset(&addr, 0, addrlen);
+        addr.sin_family = AF_INET;
+        addr.sin_port = htons(PKSM_PORT);
+        addr.sin_addr.s_addr = INADDR_ANY;
+        if (bind(fd, (struct sockaddr*)&addr, addrlen) != 0)
+        {
+            ReturnValue->Val->Integer = errno;
+            close(fd);
+            return;
+        }
+        if (listen(fd, 5) < 0)
+        {
+            ReturnValue->Val->Integer = errno;
+            close(fd);
+            return;            
+        }
+        int fdconn;
+        if ((fdconn = accept(fd, (struct sockaddr*)&addr, &addrlen)) < 0)
+        {
+            ReturnValue->Val->Integer = errno;
+            close(fd);
+            return;             
+        }
+        *bytesReceived = 0;
+        while (*bytesReceived < size) {
+            int n = recv(fdconn, buffer, size, 0);
+            *bytesReceived += n;
+            if (n <= 0) break;
+        }
+
+        close(fdconn);
+        close(fd);
+        ReturnValue->Val->Integer = 0;
+    }
+
     void bank_inject_pkx(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
     {
         u8* data = (u8*) Param[0]->Val->Pointer;

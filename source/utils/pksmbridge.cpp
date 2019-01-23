@@ -72,8 +72,8 @@ bool receiveSaveFromBridge(void)
         fprintf(stderr, "Recv %u bytes, %u still missing\n", total, size - total);
     }
 
-    close(fd);
     close(fdconn);
+    close(fd);
 
     if (n == 0 || total == size)
     {
