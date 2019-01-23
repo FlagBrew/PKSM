@@ -33,8 +33,8 @@ static constexpr std::string_view hyperVals[] = {
     "HYPER_HP",
     "HYPER_ATTACK",
     "HYPER_DEFENSE",
-    "HYPER_SPDEF",
     "HYPER_SPATK",
+    "HYPER_SPDEF",
     "HYPER_SPEED"
 };
 static constexpr std::string_view marks[] = {
