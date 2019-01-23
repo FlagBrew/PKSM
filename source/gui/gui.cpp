@@ -761,6 +761,14 @@ void Gui::sprite(int key, int x, int y)
 
         C2D_DrawRectSolid(x + 20, y + 17, 0.5f, 144, 1, COLOR_WHITE);
     }
+    else if (key == ui_sheet_emulated_toggle_gray_idx)
+    {
+        C2D_DrawRectSolid(x, y, 0.5f, 13, 13, C2D_Color32(0x80, 0x80, 0x80, 0xFF));
+    }
+    else if (key == ui_sheet_emulated_toggle_blue_idx)
+    {
+        C2D_DrawRectSolid(x, y, 0.5f, 13, 13, C2D_Color32(0x00, 0x00, 0xFF, 0xFF));
+    }
     // standard case
     else
     {

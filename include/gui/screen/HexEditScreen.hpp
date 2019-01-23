@@ -68,6 +68,7 @@ private:
     bool editNumber(bool high, bool up);
     bool checkValue(void);
     void drawMeaning(void) const;
+    bool rotateMark(u8 mark);
     std::pair<std::string, SecurityLevel> selectedDescription;
     std::vector<int> selectBytes;
     std::shared_ptr<PKX> pkm;
@@ -76,8 +77,8 @@ private:
     class HexEditButton : public Button
     {
     public:
-        HexEditButton(int x, int y, int w, int h, std::function<bool()> callback, int image, std::string text, bool toggle, u8 bit)
-            : Button(x, y, w, h, callback, image, text, FONT_SIZE_11, COLOR_WHITE), toggle(toggle), bitVal(bit) {}
+        HexEditButton(int x, int y, int w, int h, std::function<bool()> callback, int image, std::string text, bool toggle, u8 bit, bool mark = false)
+            : Button(x, y, w, h, callback, image, text, FONT_SIZE_11, COLOR_WHITE), toggle(toggle), mark(mark), bitVal(bit) {}
         void draw() const override
         {
             Gui::sprite(key, xPos, yPos);
@@ -89,7 +90,20 @@ private:
             {
                 if (!isClicked && clicked(touch))
                 {
-                    key = key == ui_sheet_emulated_toggle_green_idx ? ui_sheet_emulated_toggle_red_idx : ui_sheet_emulated_toggle_green_idx;
+                    key = key == ui_sheet_emulated_toggle_green_idx ? ui_sheet_emulated_toggle_gray_idx : ui_sheet_emulated_toggle_green_idx;
+                    isClicked = clicked(touch);
+                    return noArg();
+                }
+                else
+                {
+                    isClicked = clicked(touch);
+                }
+            }
+            else if (mark)
+            {
+                if (!isClicked && clicked(touch))
+                {
+                    rotateColor();
                     isClicked = clicked(touch);
                     return noArg();
                 }
@@ -126,11 +140,46 @@ private:
         }
         void setToggled(bool flag)
         {
-            key = flag ? ui_sheet_emulated_toggle_green_idx : ui_sheet_emulated_toggle_red_idx;
+            key = flag ? ui_sheet_emulated_toggle_green_idx : ui_sheet_emulated_toggle_gray_idx;
         }
         bool isToggle()
         {
             return toggle;
+        }
+        bool isMark()
+        {
+            return mark;
+        }
+        void rotateColor()
+        {
+            switch (key)
+            {
+                case ui_sheet_emulated_toggle_gray_idx:
+                    key = ui_sheet_emulated_toggle_blue_idx;
+                    break;
+                case ui_sheet_emulated_toggle_blue_idx:
+                    key = ui_sheet_emulated_toggle_red_idx;
+                    break;
+                case ui_sheet_emulated_toggle_red_idx:
+                default:
+                    key = ui_sheet_emulated_toggle_gray_idx;
+                    break;
+            }
+        }
+        void setColor(u8 val)
+        {
+            switch (val)
+            {
+                case 0:
+                default:
+                    key = ui_sheet_emulated_toggle_gray_idx;
+                    break;
+                case 1:
+                    key = ui_sheet_emulated_toggle_blue_idx;
+                    break;
+                case 2:
+                    key = ui_sheet_emulated_toggle_red_idx;
+            }
         }
         u8 bit()
         {
@@ -138,6 +187,7 @@ private:
         }
     private:
         bool toggle;
+        bool mark;
         u8 bitVal;
         int clickedTime;
         bool isClicked = false;

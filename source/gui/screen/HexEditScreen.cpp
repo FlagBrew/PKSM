@@ -570,7 +570,14 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
             case 0x15:
                 return std::make_pair(i18n::localize("ABILITY_NUMBER"), OPEN);
             case 0x16 ... 0x17:
-                return std::make_pair(i18n::localize("TRAINING_BAG_HITS_LEFT"), NORMAL);
+                if (pkm->generation() == Generation::SIX)
+                {
+                    return std::make_pair(i18n::localize("TRAINING_BAG_HITS_LEFT"), NORMAL);
+                }
+                else
+                {
+                    return std::make_pair(i18n::localize("MARKINGS"), NORMAL);
+                }
             case 0x18 ... 0x1B:
                 return std::make_pair(i18n::localize("PID"), NORMAL);
             case 0x1C:
@@ -645,7 +652,11 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                     return std::make_pair(i18n::localize("CONTEST_VALUE_SHEEN"), NORMAL);
                 }
             case 0x2A:
-                return std::make_pair(i18n::localize("MARKINGS"), NORMAL);
+                if (pkm->generation() == Generation::SIX)
+                {
+                    return std::make_pair(i18n::localize("MARKINGS"), NORMAL);
+                }
+                return UNUSED;
             case 0x2B:
                 return std::make_pair(i18n::localize("POKERUS"), NORMAL);
             case 0x2C ... 0x2F:
@@ -1193,7 +1204,14 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
             editNumber(high, up);
             for (size_t j = 4; j < buttons[i].size(); j++)
             {
-                buttons[i][j]->setToggled((this->pkm->rawData()[i] >> buttons[i][j]->bit()) & 0x1);
+                if (buttons[i][j]->isToggle())
+                {
+                    buttons[i][j]->setToggled((this->pkm->rawData()[i] >> buttons[i][j]->bit()) & 0x1);
+                }
+                else if (buttons[i][j]->isMark())
+                {
+                    buttons[i][j]->setColor((*(u16*)(this->pkm->rawData() + 0x16) >> buttons[i][j]->bit()) & 0x3);
+                }
             }
             return true;
         };
@@ -1201,7 +1219,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
         buttons[i].push_back(new HexEditButton(161, 33, 13, 13, [edit](){ return edit(false, true); }, ui_sheet_button_plus_small_idx, "", false, 0));
         buttons[i].push_back(new HexEditButton(145, 75, 13, 13, [edit](){ return edit(true, false); }, ui_sheet_button_minus_small_idx, "", false, 0));
         buttons[i].push_back(new HexEditButton(161, 75, 13, 13, [edit](){ return edit(false, false); }, ui_sheet_button_minus_small_idx, "", false, 0));
-        if (pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN)
+        if (pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN || pkm->generation() == Generation::LGPE)
         {
             switch (i)
             {
@@ -1211,16 +1229,35 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     buttons[i].back()->setToggled(pkm->rawData()[i] & 0x1);
                     break;
                 // Markings
-                case 0x2A:
-                    for (int j = 0; j < 4; j++)
+                case 0x16 ... 0x17:
+                    if (pkm->generation() != Generation::SIX)
                     {
-                        delete buttons[i].back();
-                        buttons[i].pop_back();
+                        for (int j = 0; j < 4; j++)
+                        {
+                            delete buttons[i].back();
+                            buttons[i].pop_back();
+                        }
+                        for (int j = 0; j < (i == 0x16 ? 4 : 2); j++)
+                        {
+                            u8 currentMark = i == 0x16 ? j : j + 4;
+                            buttons[i].push_back(new HexEditButton(30, 90 + j * 16, 13, 13, [this, currentMark](){ return this->rotateMark(currentMark); }, ui_sheet_emulated_toggle_gray_idx, i18n::localize(std::string(marks[currentMark])), false, currentMark, true));
+                            buttons[i].back()->setColor((pkm->rawData()[i] >> (j * 2)) & 0x3);
+                        }
                     }
-                    for (int j = 0; j < 6; j++)
+                    break;
+                case 0x2A:
+                    if (pkm->generation() == Generation::SIX)
                     {
-                        buttons[i].push_back(new HexEditButton(30, 90 + j * 16, 13, 13, [this, i, j](){ return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, i18n::localize(std::string(marks[j])), true, j));
-                        buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
+                        for (int j = 0; j < 4; j++)
+                        {
+                            delete buttons[i].back();
+                            buttons[i].pop_back();
+                        }
+                        for (int j = 0; j < 6; j++)
+                        {
+                            buttons[i].push_back(new HexEditButton(30, 90 + j * 16, 13, 13, [this, i, j](){ return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, i18n::localize(std::string(marks[j])), true, j));
+                            buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
+                        }
                     }
                     break;
                 // Super Training Flags
@@ -1719,4 +1756,27 @@ void HexEditScreen::drawMeaning() const
         default:
             break;
     }
+}
+
+bool HexEditScreen::rotateMark(u8 mark)
+{
+    u16 markData = *(u16*)(pkm->rawData() + 0x16);
+    switch ((markData >> (mark * 2)) & 0x3)
+    {
+        case 0:
+            markData &= (0xFFFF ^ (0x3 << (mark * 2)));
+            markData |= 0x1 << (mark * 2);
+            break;
+        case 1:
+            markData &= (0xFFFF ^ (0x3 << (mark * 2)));
+            markData |= 0x2 << (mark * 2);
+            break;
+        case 2:
+        default:
+            markData &= (0xFFFF ^ (0x3 << (mark * 2)));
+            // markData |= 0x0 << (mark * 2);
+            break;
+    }
+    *(u16*)(pkm->rawData() + 0x16) = markData;
+    return false;
 }
