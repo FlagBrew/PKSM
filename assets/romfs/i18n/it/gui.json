@@ -307,6 +307,7 @@
     "NEUTRAL": "Neutro",
     "NICKNAME": "Soprann.",
     "NICKNAMED": "Soprannominato",
+    "NO_PARTY_EMPTY": "Cannot clear party!",
     "NO_SWAP_BULK": "Lo scambio dei box potrebbe aver modificato:",
     "NO_WONDERCARDS": "LGPE non ha ancora nessuna wondercard!",
     "NO": "No",

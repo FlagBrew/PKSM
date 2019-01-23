@@ -307,6 +307,7 @@
     "NEUTRAL": "Neutral",
     "NICKNAME": "Apodo",
     "NICKNAMED": "Apodado",
+    "NO_PARTY_EMPTY": "Cannot clear party!",
     "NO_SWAP_BULK": "Swapping these slots would have edited Pokémon:",
     "NO_WONDERCARDS": "LGPE doesn't have any Wondercards yet!",
     "NO": "No",

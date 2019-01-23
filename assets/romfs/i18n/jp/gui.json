@@ -295,6 +295,7 @@
     "NEUTRAL": "Neutral",
     "NICKNAME": "ニックネーム",
     "NICKNAMED": "NNを付けたか",
+    "NO_PARTY_EMPTY": "Cannot clear party!",
     "NO_SWAP_BULK": "スワップするボックスに改造されたポケモンがいます:",
     "NO_WONDERCARDS": "LGPEにはまだ不思議なカードはありません!",
     "NO": "いいえ",

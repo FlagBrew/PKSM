@@ -963,8 +963,15 @@ bool EditSelectorScreen::releasePokemon()
         }
         else if (cursorPos > 30 && cursorPos - 31 < TitleLoader::save->partyCount())
         {
-            TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), cursorPos - 31);
-            TitleLoader::save->fixParty();
+            if (TitleLoader::save->partyCount() > 1)
+            {
+                TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), cursorPos - 31);
+                TitleLoader::save->fixParty();
+            }
+            else
+            {
+                Gui::warn(i18n::localize("NO_PARTY_EMPTY"));
+            }
         }
     }
     menu = false;

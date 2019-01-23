@@ -307,6 +307,7 @@
     "NEUTRAL": "Neutre",
     "NICKNAME": "Surnom",
     "NICKNAMED": "Surnommé",
+    "NO_PARTY_EMPTY": "Cannot clear party!",
     "NO_SWAP_BULK": "Swapping these slots would have edited Pokémon:",
     "NO_WONDERCARDS": "LGPE doesn't have any Wondercards yet!",
     "NO": "Non",
