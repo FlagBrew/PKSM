@@ -520,11 +520,6 @@ void StorageScreen::update(touchPosition* touch)
             showViewer();
             return;
         }
-        else if (kDown & KEY_Y)
-        {
-            //wirelessStuff();
-            return;
-        }
         else if (buttonCooldown <= 0)
         {
             sleep = false;
@@ -606,23 +601,15 @@ void StorageScreen::update(touchPosition* touch)
                 prevBox();
                 sleep = true;
             }
-            
             else if (kHeld & KEY_ZR)
-            
             {
-            	
-               nextBoxTop();
-               sleep = true;
-
+                nextBoxTop();
+                sleep = true;
             }
-            
             else if (kHeld & KEY_ZL)
-            
             {
-            	
-               prevBoxTop();
-               sleep = true;
-
+                prevBoxTop();
+                sleep = true;
             }
 
             if (sleep)

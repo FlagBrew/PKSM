@@ -29,8 +29,6 @@
 #include "loader.hpp"
 #include "FSStream.hpp"
 
-static bool wirelessStuff() { return false; }
-
 InjectSelectorScreen::InjectSelectorScreen() : hid(10, 2), dumpHid(40, 8)
 {
     MysteryGift::init(TitleLoader::save->generation());
@@ -99,11 +97,6 @@ void InjectSelectorScreen::update(touchPosition* touch)
         {
             Gui::setScreen(std::make_unique<InjectorScreen>(wondercards[hid.fullIndex()]));
             updateGifts = true;
-            return;
-        }
-        if (downKeys & KEY_Y)
-        {
-            wirelessStuff();
             return;
         }
         if (downKeys & KEY_X)
