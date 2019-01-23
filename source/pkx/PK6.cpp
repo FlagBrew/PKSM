@@ -392,13 +392,17 @@ void PK6::shiny(bool v)
 {
     if (v)
     {
-        u16 buf = (PID() >> 16) ^ (TSV() << 4);
-        *(u16*)(data + 0x18) = buf;
+        while (!shiny())
+        {
+            PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), abilityNumber(), PID(), generation()));
+        }
     }
     else
     {
-        randomNumbers.seed(PID());
-        PID(randomNumbers());
+        while (shiny())
+        {
+            PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), abilityNumber(), PID(), generation()));
+        }
     }
 }
 

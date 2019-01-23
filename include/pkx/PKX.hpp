@@ -36,6 +36,7 @@
 #include "utils.hpp"
 #include "generation.hpp"
 #include "Item.hpp"
+#include "random.hpp"
 
 typedef uint8_t u8;
 typedef uint16_t u16;
@@ -72,6 +73,8 @@ public:
     bool gen4(void) const;
     bool gen3(void) const;
     void fixMoves(void);
+
+    static u32 getRandomPID(u16 species, u8 gender, u8 originGame, u8 nature, u8 form, u8 abilityNum, u32 oldPid, Generation gen);
 
     // BLOCK A
     virtual u32 encryptionConstant(void) const = 0;

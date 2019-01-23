@@ -92,7 +92,25 @@ u8 PK5::currentHandler(void) const { return 0; }
 void PK5::currentHandler(u8 v) { (void)v; }
 
 u8 PK5::abilityNumber(void) const { return hiddenAbility() ? 4 : 1 << ((PID() >> 16) & 1); }
-void PK5::abilityNumber(u8 v) { (void)v; }
+void PK5::abilityNumber(u8 v)
+{
+    if (shiny())
+    {
+        do
+        {
+            PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), v, PID(), generation()));
+        }
+        while (!shiny());
+    }
+    else
+    {
+        do
+        {
+            PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), v, PID(), generation()));
+        }
+        while (shiny());
+    }
+}
 
 u32 PK5::PID(void) const { return *(u32*)(data); }
 void PK5::PID(u32 v) { *(u32*)(data) = v; }
@@ -194,7 +212,26 @@ bool PK5::fatefulEncounter(void) const { return (data[0x40] & 1) == 1; }
 void PK5::fatefulEncounter(bool v) { data[0x40] = (u8)((data[0x40] & ~0x01) | (v ? 1 : 0)); }
 
 u8 PK5::gender(void) const { return (data[0x40] >> 1) & 0x3; }
-void PK5::gender(u8 g) { data[0x40] = u8((data[0x40] & ~0x06) | (g << 1)); }
+void PK5::gender(u8 g)
+{
+    data[0x40] = u8((data[0x40] & ~0x06) | (g << 1));
+    if (shiny())
+    {
+        do
+        {
+            PID(PKX::getRandomPID(species(), g, version(), nature(), alternativeForm(), abilityNumber(), PID(), generation()));
+        }
+        while (!shiny());
+    }
+    else
+    {
+        do
+        {
+            PID(PKX::getRandomPID(species(), g, version(), nature(), alternativeForm(), abilityNumber(), PID(), generation()));
+        }
+        while (shiny());
+    }
+}
 
 u8 PK5::alternativeForm(void) const { return data[0x40] >> 3; }
 void PK5::alternativeForm(u8 v) { data[0x40] = u8((data[0x40] & 0x07) | (v << 3)); }
@@ -321,13 +358,17 @@ void PK5::shiny(bool v)
 {
     if (v)
     {
-        u16 buf = (PID() >> 16) ^ (TSV() << 3);
-        *(u16*)(data) = buf;
+        while (!shiny())
+        {
+            PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), abilityNumber(), PID(), generation()));
+        }
     }
     else
     {
-        randomNumbers.seed(PID());
-        PID(randomNumbers());
+        while (shiny())
+        {
+            PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), abilityNumber(), PID(), generation()));
+        }
     }
 }
 

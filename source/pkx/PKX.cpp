@@ -323,3 +323,90 @@ u8 PKX::genFromBytes(u8* data, size_t length, bool ekx)
     }
     return 0;
 }
+
+static inline u8 genderFromRatio(u32 pid, u8 gt)
+{
+    switch (gt)
+    {
+        case 0xFF:
+            return 2;
+        case 0xFE:
+            return 1;
+        case 0:
+            return 0;
+        default:
+            return (pid & 0xFF) < gt ? 1 : 0;
+    }
+}
+
+static inline u8 getUnownForm(u32 pid)
+{
+    u32 val = (pid & 0x3000000) >> 18 | (pid & 0x30000) >> 12 | (pid & 0x300) >> 6 | (pid & 0x3);
+    return val % 28;
+}
+
+u32 PKX::getRandomPID(u16 species, u8 gender, u8 originGame, u8 nature, u8 form, u8 abilityNum, u32 oldPid, Generation gen)
+{
+    if (originGame >= 24) // Origin game over gen 5
+    {
+        return randomNumbers();
+    }
+
+    u8 (*genderTypeFinder)(u16 species);
+    switch (gen)
+    {
+        case Generation::FOUR:
+            genderTypeFinder = PersonalDPPtHGSS::gender;
+            break;
+        case Generation::FIVE:
+            genderTypeFinder = PersonalBWB2W2::gender;
+            break;
+        case Generation::SIX:
+            genderTypeFinder = PersonalXYORAS::gender;
+            break;
+        case Generation::SEVEN:
+        default:
+            genderTypeFinder = PersonalSMUSUM::gender;
+            break;
+    }
+
+    u8 genderType = genderTypeFinder(species);
+    bool g3unown = originGame <= 5 && species == 201;
+    while (true)
+    {
+        u32 possiblePID = randomNumbers();
+        if (originGame <= 15 && possiblePID % 25 != nature)
+        {
+            continue;
+        }
+
+        if (g3unown)
+        {
+            if (getUnownForm(possiblePID) != form)
+            {
+                continue;
+            }
+        }
+        else if (abilityNum != 4)
+        {
+            if (abilityNum == 1 && (possiblePID & (1 << (gen == Generation::FIVE ? 16 : 0))))
+            {
+                continue;
+            }
+            else if (abilityNum == 2 && !(possiblePID & (1 << (gen == Generation::FIVE ? 16 : 0))))
+            {
+                continue;
+            }
+        }
+
+        if (genderType == 255 || genderType == 254 || genderType == 0)
+        {
+            return possiblePID;
+        }
+
+        if (gender == genderFromRatio(possiblePID, genderType))
+        {
+            return possiblePID;
+        }
+    }
+}

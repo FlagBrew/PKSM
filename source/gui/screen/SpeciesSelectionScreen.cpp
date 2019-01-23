@@ -207,6 +207,7 @@ void SpeciesSelectionScreen::update(touchPosition* touch)
         pkm->species((u16) species);
         pkm->alternativeForm(0);
         pkm->setAbility(0);
+        pkm->PID(PKX::getRandomPID(pkm->species(), pkm->gender(), pkm->version(), pkm->nature(), pkm->alternativeForm(), pkm->abilityNumber(), pkm->PID(), pkm->generation()));
         done = true;
         return;
     }

@@ -48,7 +48,7 @@ public:
             }
         }
     }
-    EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr<PKX> pkm, int box, int index);
+    EditorScreen(std::shared_ptr<PKX> pkm, int box, int index);
     void draw() const override;
     void update(touchPosition* touch) override;
     ScreenType type() const override { return ScreenType::EDITOR; }

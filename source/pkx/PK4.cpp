@@ -91,7 +91,25 @@ u8 PK4::currentHandler(void) const { return 0; }
 void PK4::currentHandler(u8 v) { (void)v; }
 
 u8 PK4::abilityNumber(void) const { return 1 << ((PID() >> 16) & 1); }
-void PK4::abilityNumber(u8 v) { (void)v; }
+void PK4::abilityNumber(u8 v)
+{
+    if (shiny())
+    {
+        do
+        {
+            PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), v, PID(), generation()));
+        }
+        while (!shiny());
+    }
+    else
+    {
+        do
+        {
+            PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), v, PID(), generation()));
+        }
+        while (shiny());
+    }
+}
 
 u32 PK4::PID(void) const { return *(u32*)(data); }
 void PK4::PID(u32 v) { *(u32*)(data) = v; }
@@ -193,13 +211,50 @@ bool PK4::fatefulEncounter(void) const { return (data[0x40] & 1) == 1; }
 void PK4::fatefulEncounter(bool v) { data[0x40] = (u8)((data[0x40] & ~0x01) | (v ? 1 : 0)); }
 
 u8 PK4::gender(void) const { return (data[0x40] >> 1) & 0x3; }
-void PK4::gender(u8 g) { data[0x40] = u8((data[0x40] & ~0x06) | (g << 1)); }
+void PK4::gender(u8 g)
+{
+    data[0x40] = u8((data[0x40] & ~0x06) | (g << 1));
+    if (shiny())
+    {
+        do
+        {
+            PID(PKX::getRandomPID(species(), g, version(), nature(), alternativeForm(), abilityNumber(), PID(), generation()));
+        }
+        while (!shiny());
+    }
+    else
+    {
+        do
+        {
+            PID(PKX::getRandomPID(species(), g, version(), nature(), alternativeForm(), abilityNumber(), PID(), generation()));
+        }
+        while (shiny());
+    }
+}
 
 u8 PK4::alternativeForm(void) const { return data[0x40] >> 3; }
 void PK4::alternativeForm(u8 v) { data[0x40] = u8((data[0x40] & 0x07) | (v << 3)); }
 
 u8 PK4::nature(void) const { return PID() % 25; }
-void PK4::nature(u8) { }
+void PK4::nature(u8 v)
+{
+    if (shiny())
+    {
+        do
+        {
+            PID(PKX::getRandomPID(species(), gender(), version(), v, alternativeForm(), abilityNumber(), PID(), generation()));
+        }
+        while (!shiny());
+    }
+    else
+    {
+        do
+        {
+            PID(PKX::getRandomPID(species(), gender(), version(), v, alternativeForm(), abilityNumber(), PID(), generation()));
+        }
+        while (shiny());
+    }
+}
 
 u8 PK4::shinyLeaf(void) const { return *(u8*)(data + 0x41); }
 void PK4::shinyLeaf(u8 v) { *(u8*)(data + 0x41) = v; }
@@ -387,13 +442,17 @@ void PK4::shiny(bool v)
 {
     if (v)
     {
-        u16 buf = (PID() >> 16) ^ (TSV() << 3);
-        *(u16*)(data) = buf;
+        while (!shiny())
+        {
+            PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), abilityNumber(), PID(), generation()));
+        }
     }
     else
     {
-        randomNumbers.seed(PID());
-        PID(randomNumbers());
+        while (shiny())
+        {
+            PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), abilityNumber(), PID(), generation()));
+        }
     }
 }
 

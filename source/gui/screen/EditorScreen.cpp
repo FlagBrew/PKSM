@@ -49,13 +49,9 @@ static constexpr int statValues[] = { 0, 1, 2, 4, 5, 3 };
 
 extern int bobPointer();
 
-EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr<PKX> pokemon, int box, int index)
-                : view(viewer), pkm(pokemon), box(box), index(index)
+EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index)
+                : pkm(pokemon), box(box), index(index)
 {
-    if (!view)
-    {
-        view = std::make_shared<ViewerScreen>(pkm, false);
-    }
     if (!pkm || (pkm->encryptionConstant() == 0 && pkm->species() == 0))
     {
         pkm = TitleLoader::save->emptyPkm()->clone();
@@ -86,7 +82,7 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
         pkm->encryptionConstant((((u32)randomNumbers()) % 0xFFFFFFFF) + 1);
         pkm->version(TitleLoader::save->version());
         pkm->fixMoves();
-        pkm->PID((u32)randomNumbers());
+        // pkm->PID((u32)randomNumbers());
         pkm->language(Configuration::getInstance().language());
         pkm->metDay(Configuration::getInstance().day());
         pkm->metMonth(Configuration::getInstance().month());
@@ -111,9 +107,6 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
         //     ((PB7*)pkm.get())->geoRegion(0, Configuration::getInstance().defaultRegion());
         // }
         selector = std::make_unique<SpeciesSelectionScreen>(pkm);
-        // No clue why this is necessary
-        view->setPkm(nullptr);
-        view->setPkm(pkm);
     }
 
     if (this->box == 0xFF)
@@ -155,8 +148,6 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
                         pkm = std::make_shared<PK7>(pkmData, false, true);
                     }
                     partyUpdate();
-                    view->setPkm(nullptr);
-                    view->setPkm(pkm);
                     selector = std::make_unique<SpeciesSelectionScreen>(pkm);
                 }
             break;
@@ -225,6 +216,7 @@ EditorScreen::EditorScreen(std::shared_ptr<ViewerScreen> viewer, std::shared_ptr
         buttons[tab].push_back(new ClickButton(0, 30 + 20 * i, 240, 20, [=](){ moveSelected = i; return true; }, ui_sheet_res_null_idx, "", 0.0f, 0));
         buttons[tab].push_back(new ClickButton(0, 140 + 20 * i, 240, 20, [=](){ moveSelected = i + 4; return true; }, ui_sheet_res_null_idx, "", 0.0f, 0));
     }
+    view = std::make_shared<ViewerScreen>(pkm, false);
 }
 
 void EditorScreen::draw() const
@@ -849,14 +841,7 @@ void EditorScreen::changeMove()
 
 bool EditorScreen::selectNature()
 {
-    if (pkm->generation() != Generation::FOUR)
-    {
-        selector = std::make_unique<NatureSelectionScreen>(pkm);
-    }
-    else
-    {
-        Gui::warn(i18n::localize("NATURE_PID"));
-    }
+    selector = std::make_unique<NatureSelectionScreen>(pkm);
     return false;
 }
 
