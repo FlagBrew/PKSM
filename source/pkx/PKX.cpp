@@ -399,7 +399,7 @@ u32 PKX::getRandomPID(u16 species, u8 gender, u8 originGame, u8 nature, u8 form,
             }
         }
 
-        if (genderType == 255 || genderType == 254 || genderType == 0)
+        if (genderType == 255 || genderType == 254 || genderType == 0 || gender == 2)
         {
             return possiblePID;
         }
