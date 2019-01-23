@@ -294,7 +294,7 @@ void SavDP::dex(PKX& pk)
     u8 forms[0x1C];
     bool validFormArray = getForms(forms, pk.species());
     int fc = PersonalDPPtHGSS::formCount(pk.species());
-    if (validFormArray && fc > 0)
+    if (validFormArray && fc > 1)
     {
         if (pk.species() == 201) // Unown
         {
