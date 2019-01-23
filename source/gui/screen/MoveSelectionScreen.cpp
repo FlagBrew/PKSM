@@ -63,7 +63,7 @@ namespace {
 MoveSelectionScreen::MoveSelectionScreen(std::shared_ptr<PKX> pkm, int moveIndex) : SelectionScreen(pkm), moveIndex(moveIndex), hid(40, 2)
 {
     std::vector<std::string> rawMoves = i18n::rawMoves(Configuration::getInstance().language());
-    for (int i = 1; i < TitleLoader::save->maxMove(); i++)
+    for (int i = 1; i <= TitleLoader::save->maxMove(); i++)
     {
         if (i >= 622 && i <= 658) continue;
         moves.push_back({i, rawMoves[i]});
@@ -120,6 +120,8 @@ void MoveSelectionScreen::draw() const
 
     C2D_SceneBegin(g_renderTargetBottom);
     searchButton->draw();
+    Gui::sprite(ui_sheet_icon_search_idx, 79, 33);
+    Gui::dynamicText(searchString, 95, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, false);
 }
 
 void MoveSelectionScreen::update(touchPosition* touch)
