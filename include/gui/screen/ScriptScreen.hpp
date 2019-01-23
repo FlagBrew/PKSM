@@ -31,7 +31,7 @@
 #include "STDirectory.hpp"
 #include "HidHorizontal.hpp"
 
-#define PICOC_STACKSIZE (16 * 1024)
+#define PICOC_STACKSIZE (32 * 1024)
 
 class ScriptScreen : public Screen
 {
