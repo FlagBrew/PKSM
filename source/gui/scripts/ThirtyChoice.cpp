@@ -50,8 +50,8 @@ void ThirtyChoice::draw() const
             {
                 break;
             }
-            Gui::pkm(pkms[index].species, pkms[index].form, gen, x * 67 + 18, y * 48 + 7);
-            Gui::dynamicText(x * 67, y * 48 + 30, 67, labels[index], FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
+            Gui::pkm(pkms[index].species, pkms[index].form, gen, x * 67 + 18, y * 48 + 1);
+            Gui::dynamicText(labels[index], x * 67, y * 48 + 36, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, 65.0f, true);
         }
     }
 
