@@ -1651,7 +1651,7 @@ void HexEditScreen::drawMeaning() const
                     Gui::dynamicText(GFX_BOTTOM, 100, i18n::ability(Configuration::getInstance().language(), pkm->ability()), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
                     break;
                 case 0x28 ... 0x2F:
-                    Gui::dynamicText(GFX_BOTTOM, 100, i18n::move(Configuration::getInstance().language(), pkm->move((i - 0x5A) / 2)), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
+                    Gui::dynamicText(GFX_BOTTOM, 100, i18n::move(Configuration::getInstance().language(), pkm->move((i - 0x28) / 2)), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
                     break;
                 case 0x5F:
                     Gui::dynamicText(GFX_BOTTOM, 100, i18n::game(Configuration::getInstance().language(), pkm->version()), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
