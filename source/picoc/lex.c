@@ -644,7 +644,7 @@ void *LexTokenise(Picoc *pc, struct LexState *Lexer, int *TokenLen)
     int MemUsed = 0;
     int ValueSize;
     int ReserveSpace = (Lexer->End - Lexer->Pos) * 4 + 16; 
-    void *TokenSpace = HeapAllocStack(pc, ReserveSpace);
+    void *TokenSpace = HeapAllocMem(pc, ReserveSpace);
     char *TokenPos = (char *)TokenSpace;
     int LastCharacterPos = 0;
 
@@ -686,7 +686,7 @@ void *LexTokenise(Picoc *pc, struct LexState *Lexer, int *TokenLen)
         
     assert(ReserveSpace >= MemUsed);
     memcpy(HeapMem, TokenSpace, MemUsed);
-    HeapPopStack(pc, TokenSpace, ReserveSpace);
+    HeapFreeMem(pc, TokenSpace);
 #ifdef DEBUG_LEXER
     {
         int Count;
