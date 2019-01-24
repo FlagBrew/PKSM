@@ -376,7 +376,7 @@ void ScriptScreen::parsePicoCScript(std::string& file)
         // consoleInit(GFX_BOTTOM, NULL);
         // Restore stdout state
         dup2(stdout_save, STDOUT_FILENO);
-        Gui::warn(i18n::localize("SCRIPT_EXECUTION_ERROR"), std::nullopt, error);
+        Gui::warn(i18n::localize("SCRIPTS_EXECUTION_ERROR"), file, error);
         // printf(error);
         // hidScanInput();
         // while (aptMainLoop() && !hidKeysDown()) hidScanInput();

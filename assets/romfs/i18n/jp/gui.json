@@ -358,6 +358,7 @@
     "SCANNER_EXIT": "\uE001 :終了",
     "SCATTERBUG_LUGS_BACK": "逆襲のコフキムシ!",
     "SCRIPTS_CONFIRM_USE": "次のスクリプトを使用しますか?",
+    "SCRIPTS_EXECUTION_ERROR": "Error executing script!",
     "SCRIPTS_FAILED_OPEN": "スクリプトを開けませんでした!",
     "SCRIPTS_INST1": "Press \uE000 to execute script or enter folder. Press \uE003 for universal scripts",
     "SCRIPTS_INST2": "Press \uE002 to switch between built-in scripts and ones on the SD card",

@@ -370,6 +370,7 @@
     "SCANNER_EXIT": "Appuyez sur \uE001 pour quitter",
     "SCATTERBUG_LUGS_BACK": "La revanche de Lépidonille !",
     "SCRIPTS_CONFIRM_USE": "Voulez-vous utiliser ce script ?",
+    "SCRIPTS_EXECUTION_ERROR": "Error executing script!",
     "SCRIPTS_FAILED_OPEN": "Échec de l'ouverture du script !",
     "SCRIPTS_INST1": "\uE000 Pour exécuter un script ou entrer dans un dossier. \uE003 pour les scripts universel.",
     "SCRIPTS_INST2": "\uE002 pour changer la source des scripts.",

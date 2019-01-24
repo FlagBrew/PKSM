@@ -370,6 +370,7 @@
     "SCANNER_EXIT": "Press \uE001 to exit",
     "SCATTERBUG_LUGS_BACK": "¡La venganza de Scatterbug!",
     "SCRIPTS_CONFIRM_USE": "¿Quieres usar el siguiente script?",
+    "SCRIPTS_EXECUTION_ERROR": "Error executing script!",
     "SCRIPTS_FAILED_OPEN": "¡No se pudo abrir el archivo del script!",
     "SCRIPTS_INST1": "\uE000 para ejecutar el script o entrar en la carpeta. \uE003 para scripts universales",
     "SCRIPTS_INST2": "\uE002 para cambiar entre scripts integrados y los de la tarjeta SD",

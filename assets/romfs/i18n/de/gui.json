@@ -370,6 +370,7 @@
     "SCANNER_EXIT": "Drück \uE001 zum Verlassen",
     "SCATTERBUG_LUGS_BACK": "Purmel schlägt zurück!",
     "SCRIPTS_CONFIRM_USE": "Möchtest du das folgende Skript ausführen?",
+    "SCRIPTS_EXECUTION_ERROR": "Error executing script!",
     "SCRIPTS_FAILED_OPEN": "Konnte Skript Datei nicht öffnen!",
     "SCRIPTS_INST1": "Drück \uE000 zum Skript ausführen oder Ordner öffnen. Drück \uE003 für univers. Skripte",
     "SCRIPTS_INST2": "Drück \uE002 zum Wechsel zwisch. eingebauten Skripten u. SD-Karte",

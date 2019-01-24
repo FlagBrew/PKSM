@@ -370,6 +370,7 @@
     "SCANNER_EXIT": "Premi \uE001 per uscire",
     "SCATTERBUG_LUGS_BACK": "Scatterbug Lugs Back!",
     "SCRIPTS_CONFIRM_USE": "Vuoi usare lo script selezionato?",
+    "SCRIPTS_EXECUTION_ERROR": "Error executing script!",
     "SCRIPTS_FAILED_OPEN": "Impossibile aprire lo script!",
     "SCRIPTS_INST1": "Premi \uE000 per eseguire uno script o entrare in una cartella. Premi \uE003 per script universali.",
     "SCRIPTS_INST2": "Premi \uE002 per cambiare sorgente di script",
