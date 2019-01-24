@@ -127,9 +127,21 @@ std::string StringUtils::getString4(const u8* data, int ofs, int len)
         temp = *(u16*)(data + ofs + i);
         if (temp == 0xFFFF)
             break;
-        codepoint = ((0 < temp && temp < G4TEXT_LENGTH) ? G4Chars[temp - 2] : G4Chars[G4TEXT_LENGTH - 1]);
+        u16 index = std::distance(G4Values, std::find(G4Values, G4Values + G4TEXT_LENGTH, temp));
+        codepoint = G4Chars[index];
         if (codepoint == 0xFFFF)
             break;
+
+        // Stupid stupid stupid
+        switch (codepoint)
+        {
+            case 0x246E:
+                codepoint = 0x2640;
+                break;
+            case 0x246D:
+                codepoint = 0x2642;
+                break;
+        }
         
         char* addChar;
         if (codepoint < 0x0080)
@@ -181,32 +193,26 @@ void StringUtils::setString4(u8* data, const std::string v, int ofs, int len)
                 codepoint = codepoint << 6 | (v[charIndex + 1] & 0x3F);
                 charIndex += 1;
             }
-            size_t index = G4TEXT_LENGTH;
-            for (size_t i = 0; i < G4TEXT_LENGTH; i++)
+            // GAHHHHHH WHY
+            switch (codepoint)
             {
-                if (codepoint == G4Chars[i])
-                {
-                    index = i;
+                case 0x2640:
+                    codepoint = 0x246E; // Female
                     break;
-                }
+                case 0x2642:
+                    codepoint = 0x246D; // Male
+                    break;
             }
-            output[outIndex] = ((0 < index && index < G4TEXT_LENGTH) ? G4Values[index] : 0x0000); 
+            size_t index = std::distance(G4Chars, std::find(G4Chars, G4Chars + G4TEXT_LENGTH, codepoint));
+            output[outIndex] = (index < G4TEXT_LENGTH ? G4Values[index] : 0x0000); 
         }
         else
         {
-            size_t index = G4TEXT_LENGTH;
-            for (size_t i = 0; i < G4TEXT_LENGTH; i++)
-            {
-                if (v[charIndex] == G4Chars[i])
-                {
-                    index = i;
-                    break;
-                }
-            }
-            output[outIndex] = ((0 < index && index < G4TEXT_LENGTH) ? G4Values[index] : 0x0000);
+            size_t index = std::distance(G4Chars, std::find(G4Chars, G4Chars + G4TEXT_LENGTH, v[charIndex]));
+            output[outIndex] = (index < G4TEXT_LENGTH ? G4Values[index] : 0x0000);
         }
     }
-    output[outIndex == len ? len - 1 : outIndex] = 0xFFFF;
+    output[outIndex >= len ? len - 1 : outIndex] = 0xFFFF;
     memcpy(data + ofs, output, len * 2);
 }
 
