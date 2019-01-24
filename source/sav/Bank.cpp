@@ -52,6 +52,9 @@ Bank::Bank()
         }
         in.close();
 
+        Configuration::getInstance().storageSize(oldSize / 232);
+        Configuration::getInstance().save();
+
         data = new u8[size = sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30];
         std::copy(BANK_MAGIC.data(), BANK_MAGIC.data() + BANK_MAGIC.size(), data);
         *(int*)(data + 8) = BANK_VERSION;
