@@ -348,15 +348,39 @@ void ScriptScreen::applyScript()
 
 void ScriptScreen::parsePicoCScript(std::string& file)
 {
+    // setup for printing errors
+    static char error[1024];
+    std::fill_n(error, 1024, '\0');
+    // Save stdout state
+    int stdout_save = dup(STDOUT_FILENO);
+    // Set stdout to buffer to error
+    setvbuf(stdout, error, _IOFBF, 1024);
+
     Picoc* picoc = picoC();
-    PicocPlatformScanFile(picoc, file.c_str());
-    char* args[3];
-    std::string data = std::to_string((int)TitleLoader::save->data);
-    args[0] = data.data();
-    std::string length = std::to_string(TitleLoader::save->length);
-    args[1] = length.data();
-    char version = TitleLoader::save->version();
-    args[2] = &version;
-    PicocCallMain(picoc, 3, args);
+    if (!PicocPlatformSetExitPoint(picoc))
+    {
+        PicocPlatformScanFile(picoc, file.c_str());
+        char* args[3];
+        std::string data = std::to_string((int)TitleLoader::save->data);
+        args[0] = data.data();
+        std::string length = std::to_string(TitleLoader::save->length);
+        args[1] = length.data();
+        char version = TitleLoader::save->version();
+        args[2] = &version;
+        PicocCallMain(picoc, 3, args);
+        // Restore stdout state
+        dup2(stdout_save, STDOUT_FILENO);
+    }
+    else
+    {
+        // consoleInit(GFX_BOTTOM, NULL);
+        // Restore stdout state
+        dup2(stdout_save, STDOUT_FILENO);
+        Gui::warn(i18n::localize("SCRIPT_EXECUTION_ERROR"), std::nullopt, error);
+        // printf(error);
+        // hidScanInput();
+        // while (aptMainLoop() && !hidKeysDown()) hidScanInput();
+        // Gui::warn(error);
+    }
     PicocCleanup(picoc);
 }

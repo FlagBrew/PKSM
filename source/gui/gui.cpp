@@ -1406,7 +1406,7 @@ void Gui::waitFrame(const std::string& message, std::optional<std::string> messa
     Gui::clearTextBufs();
 }
 
-void Gui::warn(const std::string& message, std::optional<std::string> message2)
+void Gui::warn(const std::string& message, std::optional<std::string> message2, std::optional<std::string> bottomScreen)
 {
     u32 keys = 0;
     C3D_FrameEnd(0);
@@ -1436,6 +1436,11 @@ void Gui::warn(const std::string& message, std::optional<std::string> message2)
 
         C2D_SceneBegin(g_renderTargetBottom);
         sprite(ui_sheet_part_info_bottom_idx, 0, 0);
+
+        if (bottomScreen)
+        {
+            dynamicText(bottomScreen.value(), 2, 2, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, 316.0f, false);
+        }
 
         C3D_FrameEnd(0);
         Gui::clearTextBufs();
