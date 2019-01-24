@@ -545,7 +545,7 @@ extern "C" {
         ReturnValue->Val->Integer = std::get<0>(result) == 0 && std::get<1>(result) == -1 &&std::get<2>(result) == -1 ? -1 : 0;
     }
 
-    void net_udpServer(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    void net_udp_receiver(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
     {
         char* buffer = (char*)Param[0]->Val->Pointer;
         int size = (int)Param[1]->Val->Integer;
@@ -554,7 +554,7 @@ extern "C" {
         struct sockaddr_in addr;
         socklen_t addrlen = sizeof(addr);
         int fd = socket(AF_INET, SOCK_DGRAM, 0);
-        if (fd == -1)
+        if (fd < 0)
         {
             ReturnValue->Val->Integer = errno;
             return;
@@ -563,7 +563,7 @@ extern "C" {
         addr.sin_family = AF_INET;
         addr.sin_port = htons(PKSM_PORT);
         addr.sin_addr.s_addr = INADDR_ANY;
-        if (bind(fd, (struct sockaddr*)&addr, addrlen) != 0)
+        if (bind(fd, (struct sockaddr*)&addr, addrlen) < 0)
         {
             ReturnValue->Val->Integer = errno;
             close(fd);
@@ -580,7 +580,7 @@ extern "C" {
         ReturnValue->Val->Integer = 0;
     }
 
-    void net_tcpServer(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    void net_tcp_receiver(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
     {
         char* buffer = (char*)Param[0]->Val->Pointer;
         int size = (int)Param[1]->Val->Integer;
@@ -589,7 +589,7 @@ extern "C" {
         struct sockaddr_in addr;
         socklen_t addrlen = sizeof(addr);
         int fd = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
-        if (fd == -1)
+        if (fd < 0)
         {
             ReturnValue->Val->Integer = errno;
             return;
@@ -598,7 +598,7 @@ extern "C" {
         addr.sin_family = AF_INET;
         addr.sin_port = htons(PKSM_PORT);
         addr.sin_addr.s_addr = INADDR_ANY;
-        if (bind(fd, (struct sockaddr*)&addr, addrlen) != 0)
+        if (bind(fd, (struct sockaddr*)&addr, addrlen) < 0)
         {
             ReturnValue->Val->Integer = errno;
             close(fd);
@@ -627,6 +627,46 @@ extern "C" {
         close(fdconn);
         close(fd);
         ReturnValue->Val->Integer = 0;
+    }
+
+    void net_tcp_sender(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        char* ip = (char*)Param[0]->Val->Pointer;
+        int port = (int)Param[1]->Val->Integer;
+        char* buffer = (char*)Param[2]->Val->Pointer;
+        int size = (int)Param[3]->Val->Integer;
+
+        struct sockaddr_in addr;
+        socklen_t addrlen = sizeof(addr);
+        int fd = socket(AF_INET, SOCK_STREAM, 0);
+        if (fd == -1)
+        {
+            ReturnValue->Val->Integer = errno;
+            return;
+        }
+        memset(&addr, 0, addrlen);
+        addr.sin_family = AF_INET;
+        addr.sin_port = htons(port);
+        inet_pton(AF_INET, ip, &addr.sin_addr);
+        if (connect(fd, (struct sockaddr*)&addr, addrlen) < 0)
+        {
+            ReturnValue->Val->Integer = errno;
+            close(fd);
+            return;
+        }
+
+        int total = 0;
+        int chunk = 1024;
+        int n;
+        while (total < size) {
+            size_t tosend = size - total > chunk ? chunk : size - total;
+            n = send(fd, buffer + total, tosend, 0);
+            if (n == -1) { break; }
+            total += n;
+        }
+
+        close(fd);
+        ReturnValue->Val->Integer = total == size ? 0 : errno;
     }
 
     void bank_inject_pkx(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)

@@ -28,8 +28,9 @@ struct LibraryFunction UnixFunctions[] =
     { cfg_default_month,"int cfg_default_month();" },
     { cfg_default_year, "int cfg_default_year();" },
     { net_ip,           "char* net_ip();" },
-    { net_tcpServer,    "int net_tcp_server(char* buffer, int size, int* received);" },
-    { net_udpServer,    "int net_udp_server(char* buffer, int size, int* received);" },
+    { net_tcp_receiver, "int net_tcp_recv(char* buffer, int size, int* received);" },
+    { net_tcp_sender,   "int net_tcp_send(char* ip, int port, char* buffer, int size);" },
+    { net_udp_receiver, "int net_udp_recv(char* buffer, int size, int* received);" },
     { bank_inject_pkx,  "void bank_inject_pkx(char* data, enum Generation type, int box, int slot);" },
     { NULL,             NULL }
 };
