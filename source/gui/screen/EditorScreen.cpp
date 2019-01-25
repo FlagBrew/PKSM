@@ -244,18 +244,18 @@ void EditorScreen::draw() const
                 button->draw();
             }
 
-            Gui::staticText(i18n::localize("LEVEL"), 5, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText(i18n::localize("NATURE"), 5, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText(i18n::localize("ABILITY"), 5, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText(i18n::localize("ITEM"), 5, 92, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText(i18n::localize("SHINY"), 5, 112, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText(i18n::localize("POKERUS"), 5, 132, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText(i18n::localize("OT"), 5, 152, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText(i18n::localize("NICKNAME"), 5, 172, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText(i18n::localize("FRIENDSHIP"), 5, 192, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            Gui::staticText(i18n::localize("LEVEL"), 5, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::staticText(i18n::localize("NATURE"), 5, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::staticText(i18n::localize("ABILITY"), 5, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::staticText(i18n::localize("ITEM"), 5, 92, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::staticText(i18n::localize("SHINY"), 5, 112, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::staticText(i18n::localize("POKERUS"), 5, 132, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::staticText(i18n::localize("OT"), 5, 152, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::staticText(i18n::localize("NICKNAME"), 5, 172, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::staticText(i18n::localize("FRIENDSHIP"), 5, 192, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
             Gui::ball(pkm->ball(), 4, 3);
-            Gui::dynamicText(i18n::species(lang, pkm->species()), 25, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, false);
+            Gui::dynamicText(i18n::species(lang, pkm->species()), 25, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
             switch (pkm->gender())
             {
                 case 0:
@@ -268,15 +268,15 @@ void EditorScreen::draw() const
                     // Gui::sprite(ui_sheet_icon_genderless_idx, 186, 7);
                     break;
             }
-            Gui::dynamicText(107, 32, 35, std::to_string((int)pkm->level()), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
-            Gui::dynamicText(i18n::nature(lang, pkm->nature()), 95, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::dynamicText(i18n::ability(lang, pkm->ability()), 95, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::dynamicText(i18n::item(lang, pkm->heldItem()), 95, 92, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::dynamicText(pkm->shiny() ? i18n::localize("YES") : i18n::localize("NO"), 95, 112, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::dynamicText(pkm->pkrsDays() > 0 ? i18n::localize("YES") : i18n::localize("NO"), 95, 132, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::dynamicText(pkm->otName(), 95, 152, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::dynamicText(pkm->nickname(), 95, 172, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::dynamicText(107, 192, 35, std::to_string((int) pkm->currentFriendship()), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+            Gui::dynamicText(std::to_string((int)pkm->level()), 107 + 35 / 2, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+            Gui::dynamicText(i18n::nature(lang, pkm->nature()), 95, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::dynamicText(i18n::ability(lang, pkm->ability()), 95, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::dynamicText(i18n::item(lang, pkm->heldItem()), 95, 92, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::dynamicText(pkm->shiny() ? i18n::localize("YES") : i18n::localize("NO"), 95, 112, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::dynamicText(pkm->pkrsDays() > 0 ? i18n::localize("YES") : i18n::localize("NO"), 95, 132, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::dynamicText(pkm->otName(), 95, 152, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::dynamicText(pkm->nickname(), 95, 172, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::dynamicText(std::to_string((int) pkm->currentFriendship()), 107 + 35 / 2, 192, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
             Gui::pkm(pkm.get()->species(), pkm.get()->alternativeForm(), pkm.get()->generation(), 228, 38, 2.0f, COLOR_GREY_BLEND, 1.0f);
             Gui::pkm(pkm.get(), 224, 33, 2.0f);
             break;
@@ -302,34 +302,34 @@ void EditorScreen::draw() const
             
             if (pkm->generation() == Generation::LGPE)
             {
-                Gui::dynamicText(i18n::localize("EDITOR_CP") + std::to_string((int)((PB7*)pkm.get())->CP()), 4, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, false);
+                Gui::dynamicText(i18n::localize("EDITOR_CP") + std::to_string((int)((PB7*)pkm.get())->CP()), 4, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
             }
-            Gui::staticText(i18n::localize("EDITOR_STATS"), 4, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText(119, 32, 27, i18n::localize("IV"), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+            Gui::staticText(i18n::localize("EDITOR_STATS"), 4, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::staticText(i18n::localize("IV"), 132, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
             text = pkm->generation() == Generation::LGPE ? i18n::localize("AWAKENED") : i18n::localize("EV");
-            Gui::staticText(195, 32, 36, text, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
-            Gui::staticText(249, 32, 51, i18n::localize("TOTAL"), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
-            Gui::staticText(i18n::localize("HP"), 4, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText(i18n::localize("ATTACK"), 4, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText(i18n::localize("DEFENSE"), 4, 92, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText(i18n::localize("SPATK"), 4, 112, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText(i18n::localize("SPDEF"), 4, 132, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-            Gui::staticText(i18n::localize("SPEED"), 4, 152, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            Gui::staticText(text, 213, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+            Gui::staticText(i18n::localize("TOTAL"), 274, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+            Gui::staticText(i18n::localize("HP"), 4, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::staticText(i18n::localize("ATTACK"), 4, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::staticText(i18n::localize("DEFENSE"), 4, 92, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::staticText(i18n::localize("SPATK"), 4, 112, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::staticText(i18n::localize("SPDEF"), 4, 132, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::staticText(i18n::localize("SPEED"), 4, 152, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
             for (int i = 0; i < 6; i++)
             {
-                Gui::dynamicText(119, 52 + i * 20, 27, std::to_string((int) pkm->iv(statValues[i])), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+                Gui::dynamicText(std::to_string((int) pkm->iv(statValues[i])), 132, 52 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
                 if (pkm->generation() != Generation::LGPE)
                 {
-                    Gui::dynamicText(195, 52 + i * 20, 36, std::to_string((int) pkm->ev(statValues[i])), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+                    Gui::dynamicText(std::to_string((int) pkm->ev(statValues[i])), 213, 52 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
                 }
                 else
                 {
-                    Gui::dynamicText(195, 52 + i * 20, 36, std::to_string((int) ((PB7*)pkm.get())->awakened(statValues[i])), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+                    Gui::dynamicText(std::to_string((int) ((PB7*)pkm.get())->awakened(statValues[i])), 213, 52 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
                 }
-                Gui::dynamicText(249, 52 + i * 20, 51, std::to_string((int) pkm->stat(statValues[i])), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+                Gui::dynamicText(std::to_string((int) pkm->stat(statValues[i])), 274, 52 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
             }
-            Gui::dynamicText(i18n::localize("EDITOR_HIDDEN_POWER") + i18n::hp(lang, pkm->hpType()), 295, 181, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, true);
+            Gui::dynamicText(i18n::localize("EDITOR_HIDDEN_POWER") + i18n::hp(lang, pkm->hpType()), 295, 181, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
             break;
         // Moves screen
         case 2:
@@ -349,35 +349,35 @@ void EditorScreen::draw() const
                 button->draw();
             }
 
-            Gui::staticText(i18n::localize("MOVES"), 12, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, false);
-            Gui::staticText(i18n::localize("RELEARN_MOVES"), 12, 113, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, false);
+            Gui::staticText(i18n::localize("MOVES"), 12, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            Gui::staticText(i18n::localize("RELEARN_MOVES"), 12, 113, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
             for (int i = 0; i < 4; i++)
             {
-                Gui::dynamicText(i18n::move(lang, pkm->move(i)), 24, 32 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+                Gui::dynamicText(i18n::move(lang, pkm->move(i)), 24, 32 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 if (pkm->generation() == Generation::SIX)
                 {
-                    Gui::dynamicText(i18n::move(lang, ((PK6*)pkm.get())->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+                    Gui::dynamicText(i18n::move(lang, ((PK6*)pkm.get())->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 }
                 else if (pkm->generation() == Generation::SEVEN)
                 {
-                    Gui::dynamicText(i18n::move(lang, ((PK7*)pkm.get())->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+                    Gui::dynamicText(i18n::move(lang, ((PK7*)pkm.get())->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 }
                 else
                 {
-                    Gui::staticText(i18n::localize("EDITOR_NOT_APPLICABLE_GEN"), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+                    Gui::staticText(i18n::localize("EDITOR_NOT_APPLICABLE_GEN"), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 }
             }
 
             if (moveSelected < 4)
             {
                 Gui::sprite(ui_sheet_emulated_pointer_horizontal_flipped_idx, 169 + bobPointer(), 31 + moveSelected * 20);
-                Gui::staticText("\uE000", 194, 29 + moveSelected * 20, FONT_SIZE_18, FONT_SIZE_18, COLOR_BLACK, false);
+                Gui::staticText("\uE000", 194, 29 + moveSelected * 20, FONT_SIZE_18, FONT_SIZE_18, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             }
             else
             {
                 Gui::sprite(ui_sheet_emulated_pointer_horizontal_flipped_idx, 169 + bobPointer(), 140 + (moveSelected - 4) * 20);
-                Gui::staticText("\uE000", 194, 138 + (moveSelected - 4) * 20, FONT_SIZE_18, FONT_SIZE_18, COLOR_BLACK, false);
+                Gui::staticText("\uE000", 194, 138 + (moveSelected - 4) * 20, FONT_SIZE_18, FONT_SIZE_18, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             }
             break;
     }
@@ -388,7 +388,7 @@ void EditorScreen::draw() const
     else
     {
         C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, COLOR_MASKBLACK);
-        Gui::staticText(GFX_BOTTOM, 115, i18n::localize("EDITOR_INST"), FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
+        Gui::staticText(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
         selector->draw();
     }
 }

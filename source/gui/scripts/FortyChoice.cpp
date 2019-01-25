@@ -45,7 +45,7 @@ void FortyChoice::draw() const
             break;
         }
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
-        Gui::dynamicText(labels[i + hid.page() * hid.maxVisibleEntries()], x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
+        Gui::dynamicText(labels[i + hid.page() * hid.maxVisibleEntries()], x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     }
 
     drawBottom();

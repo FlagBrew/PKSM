@@ -52,7 +52,7 @@ void BallSelectionScreen::draw() const
                 break;
             }
             Gui::ball(x + y * 6 + 1, x * 67 + 24, y * 48 + 8);
-            Gui::dynamicText(x * 67, y * 48 + 30, 67, i18n::ball(Configuration::getInstance().language(), x + y * 6), FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
+            Gui::dynamicText(i18n::ball(Configuration::getInstance().language(), x + y * 6), x * 67 + 33, y * 48 + 30, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
         }
     }
 }

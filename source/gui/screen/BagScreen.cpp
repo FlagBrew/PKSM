@@ -124,7 +124,7 @@ void BagScreen::draw() const
         {
             print += " x " + std::to_string((int)item->count());
         }
-        Gui::dynamicText(147, 20 + 30 * i, 152, print, FONT_SIZE_12, FONT_SIZE_12, canEdit(limits[currentPouch].first, *item) ? COLOR_BLACK : C2D_Color32(128, 128, 128, 255));
+        Gui::dynamicText(print, 223, 20 + 30 * i, FONT_SIZE_12, FONT_SIZE_12, canEdit(limits[currentPouch].first, *item) ? COLOR_BLACK : C2D_Color32(128, 128, 128, 255), TextPosX::CENTER, TextPosY::TOP);
     }
 
     u8 mod = 0;

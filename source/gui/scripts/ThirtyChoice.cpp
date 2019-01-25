@@ -51,7 +51,8 @@ void ThirtyChoice::draw() const
                 break;
             }
             Gui::pkm(pkms[index].species, pkms[index].form, gen, x * 67 + 18, y * 48 + 1);
-            Gui::dynamicText(labels[index], x * 67, y * 48 + 36, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, 65.0f, true);
+            std::string text = StringUtils::wrap(labels[index], FONT_SIZE_9, 65.0f, 2);
+            Gui::dynamicText(labels[index], x * 67 + 32, y * 48 + 39, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
         }
     }
 

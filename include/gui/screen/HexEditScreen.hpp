@@ -82,7 +82,7 @@ private:
         void draw() const override
         {
             Gui::sprite(key, xPos, yPos);
-            Gui::staticText(text, xPos + 27, yPos, textScale, textScale, textColor);
+            Gui::staticText(text, xPos + 27, yPos, textScale, textScale, textColor, TextPosX::LEFT, TextPosY::TOP);
         }
         bool update(touchPosition* touch)
         {

@@ -150,125 +150,68 @@ void Gui::clearTextBufs(void)
     C2D_TextBufClear(dynamicBuf);
 }
 
-void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, bool rightAligned)
+void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY)
 {
-    C2D_Text text;
-    C2D_TextParse(&text, dynamicBuf, str.c_str());
-    C2D_TextOptimize(&text);
-    if (rightAligned)
-    {
-        x = x - StringUtils::textWidth(text, scaleX);
-    }
-    C2D_DrawText(&text, C2D_WithColor, x, y, 0.5f, scaleX, scaleY, color);
-}
+    const float lineMod = ceilf(scaleY * fontGetInfo()->lineFeed);
 
-void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, float maxWidth, bool fullCenter)
-{
-    std::string dst, line, word;
-    dst = line = word = "";
-
-    for (std::string::const_iterator it = str.begin(); it != str.end(); it++)
+    static std::vector<std::string> print;
+    static std::vector<int> printX;
+    
+    size_t index = 0;
+    while (index != std::string::npos)
     {
-        word += *it;
-        if (*it == ' ')
+        print.push_back(str.substr(index, str.find('\n', index)));
+        index = str.find('\n', index);
+        if (index != std::string::npos)
         {
-            // split single words that are bigger than maxWidth
-            if (StringUtils::textWidth(line + word, scaleX) <= maxWidth)
+            index++;
+        }
+    }
+    
+    switch (positionX)
+    {
+        case TextPosX::LEFT:
+            for (size_t i = 0; i < print.size(); i++)
             {
-                line += word;
+                printX.push_back(x);
             }
-            else
+            break;
+        case TextPosX::CENTER:
+            for (size_t i = 0; i < print.size(); i++)
             {
-                if (StringUtils::textWidth(word, scaleX) > maxWidth)
-                {
-                    line += word;
-                    line = StringUtils::splitWord(line, scaleX, maxWidth);
-                    word = line.substr(line.find('\n')+1, std::string::npos);
-                    line = line.substr(0, line.find('\n')); // Split line on first newLine; assign second part to word and first to line
-                }
-                if (line[line.size() - 1] == ' ')
-                {
-                    dst += line.substr(0, line.size() - 1) + '\n';
-                }
-                else
-                {
-                    dst += line + '\n';
-                }
-                line = word;
+                printX.push_back(x - (ceilf(StringUtils::textWidth(print[i], scaleX)) / 2));
             }
-            word = "";
-        }
+            break;
+        case TextPosX::RIGHT:
+            for (size_t i = 0; i < print.size(); i++)
+            {
+                printX.push_back(x - (ceilf(StringUtils::textWidth(print[i], scaleX))));
+            }
+            break;
     }
 
-    // "Another iteration" of the loop b/c it probably won't end with a space
-    // If it does, no harm done
-    // word = StringUtils::splitWord(word, scaleX, maxWidth);
-    if (StringUtils::textWidth(line + word, scaleX) <= maxWidth)
+    switch (positionY)
     {
-        dst += line + word;
-    }
-    else
-    {
-        if (StringUtils::textWidth(word, scaleX) > maxWidth)
-        {
-            line += word;
-            line = StringUtils::splitWord(line, scaleX, maxWidth);
-            word = line.substr(line.find('\n')+1, std::string::npos);
-            line = line.substr(0, line.find('\n')); // Split line on first newLine; assign second part to word and first to line
-        }
-        if (line[line.size() - 1] == ' ')
-        {
-            dst += line.substr(0, line.size() - 1) + '\n' + word;
-        }
-        else
-        {
-            dst += line + '\n' + word;
-        }
+        case TextPosY::TOP:
+            break;
+        case TextPosY::CENTER:
+            y -= ceilf(0.5f * lineMod * (float)print.size());
+            break;
+        case TextPosY::BOTTOM:
+            y -= lineMod * (float)print.size();
+            break;
     }
 
-    if (!fullCenter)
+    for (size_t i = 0; i < print.size(); i++)
     {
         C2D_Text text;
-        C2D_TextParse(&text, dynamicBuf, dst.c_str());
+        C2D_TextParse(&text, dynamicBuf, print[i].c_str());
         C2D_TextOptimize(&text);
-        C2D_DrawText(&text, C2D_WithColor, x, y, 0.5f, scaleX, scaleY, color);
+        C2D_DrawText(&text, C2D_WithColor, printX[i], y + lineMod * i, 0.5f, scaleX, scaleY, color);
     }
-    else
-    {
-        std::string tmp = dst;
-        std::vector<std::string> draw;
-        while (tmp.find('\n') != std::string::npos)
-        {
-            draw.push_back(tmp.substr(0, tmp.find('\n')));
-            tmp = tmp.substr(tmp.find('\n') + 1);
-        }
-        draw.push_back(tmp);
-        for (size_t i = 0; i < draw.size(); i++)
-        {
-            C2D_Text text;
-            C2D_TextParse(&text, dynamicBuf, draw[i].c_str());
-            C2D_TextOptimize(&text);
-            float textWidth, textHeight;
-            C2D_TextGetDimensions(&text, scaleX, scaleY, &textWidth, &textHeight);
-            int drawX = x + ceilf((maxWidth - textWidth) / 2.0f);
-            int drawY = y + ceilf(textHeight) * 1.05 * i;
-            drawY -= ceilf(textHeight) * draw.size() / 2;
-            C2D_DrawText(&text, C2D_WithColor, drawX, drawY, 0.5f, scaleX, scaleY, color);
-        }
-    }
-}
 
-void Gui::dynamicText(gfxScreen_t screen, int y, const std::string& text, float scaleX, float scaleY, u32 color)
-{
-    float width = (screen == GFX_TOP) ? 400.0f : 320.0f;
-    int x = ceilf((width - StringUtils::textWidth(text, scaleX)) / 2.0f);
-    dynamicText(text, x, y, scaleX, scaleY, color);
-}
-
-void Gui::dynamicText(int x, int y, float width, const std::string& text, float scaleX, float scaleY, u32 color)
-{
-    int drawX = x + ceilf((width - StringUtils::textWidth(text, scaleX)) / 2.0f);
-    dynamicText(text, drawX, y, scaleX, scaleY, color);
+    print.clear();
+    printX.clear();
 }
 
 C2D_Text Gui::cacheStaticText(const std::string& strKey)
@@ -295,57 +238,66 @@ void Gui::clearStaticText()
     staticMap.clear();
 }
 
-void Gui::staticText(const std::string& strKey, int x, int y, float scaleX, float scaleY, u32 color, bool rightAligned)
+void Gui::staticText(const std::string& strKey, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY)
 {
-    C2D_Text text = cacheStaticText(strKey);
-    if (rightAligned)
-    {
-        x = x - StringUtils::textWidth(text, scaleX);
-    }
-    C2D_DrawText(&text, C2D_WithColor, x, y, 0.5f, scaleX, scaleY, color);
-}
+    const float lineMod = ceilf(scaleY * fontGetInfo()->lineFeed);
 
-void Gui::staticText(const std::string& strKey, int x, int y, float scaleX, float scaleY, u32 color, float maxWidth)
-{
-    std::string print = strKey;
-    C2D_Text text;
-    std::unordered_map<std::string, C2D_Text>::const_iterator index = staticMap.find(strKey);
-    if (index == staticMap.end())
+    static std::vector<std::string> print;
+    static std::vector<int> printX;
+    
+    size_t index = 0;
+    while (index != std::string::npos)
     {
-        float defaultWidth = scaleX * fontGetInfo()->defaultWidth.charWidth;
-        float width = defaultWidth * print.length();
-        if (width > maxWidth)
+        print.push_back(strKey.substr(index, strKey.find('\n', index)));
+        index = strKey.find('\n', index);
+        if (index != std::string::npos)
         {
-            size_t maxChars = ceilf(maxWidth / defaultWidth);
-            for (std::string::iterator it = print.begin() + maxChars; it < print.end(); it += maxChars)
-            {
-                print.insert(it++, '\n');
-            }
+            index++;
         }
-        C2D_TextParse(&text, dynamicBuf, print.c_str());
-        C2D_TextOptimize(&text);
-        staticMap.emplace(strKey, text);
     }
-    else
+    
+    switch (positionX)
     {
-        text = index->second;
+        case TextPosX::LEFT:
+            for (size_t i = 0; i < print.size(); i++)
+            {
+                printX.push_back(x);
+            }
+            break;
+        case TextPosX::CENTER:
+            for (size_t i = 0; i < print.size(); i++)
+            {
+                printX.push_back(x - (ceilf(StringUtils::textWidth(print[i], scaleX)) / 2));
+            }
+            break;
+        case TextPosX::RIGHT:
+            for (size_t i = 0; i < print.size(); i++)
+            {
+                printX.push_back(x - (ceilf(StringUtils::textWidth(print[i], scaleX))));
+            }
+            break;
     }
-    C2D_DrawText(&text, C2D_WithColor, x, y, 0.5f, scaleX, scaleY, color);
-}
 
-void Gui::staticText(gfxScreen_t screen, int y, const std::string& strKey, float scaleX, float scaleY, u32 color)
-{
-    C2D_Text text = cacheStaticText(strKey);
-    float width = (screen == GFX_TOP) ? 400.0f : 320.0f;
-    int x = ceilf((width - StringUtils::textWidth(text, scaleX)) / 2.0f);
-    C2D_DrawText(&text, C2D_WithColor, x, y, 0.5f, scaleX, scaleY, color);
-}
+    switch (positionY)
+    {
+        case TextPosY::TOP:
+            break;
+        case TextPosY::CENTER:
+            y -= ceilf(0.5f * lineMod * (float)print.size());
+            break;
+        case TextPosY::BOTTOM:
+            y -= lineMod * (float)print.size();
+            break;
+    }
 
-void Gui::staticText(int x, int y, float width, const std::string& strKey, float scaleX, float scaleY, u32 color)
-{
-    C2D_Text text = cacheStaticText(strKey);
-    int drawX = x + ceilf((width - StringUtils::textWidth(text, scaleX)) / 2.0f);
-    C2D_DrawText(&text, C2D_WithColor, drawX, y, 0.5f, scaleX, scaleY, color);
+    for (size_t i = 0; i < print.size(); i++)
+    {
+        C2D_Text text = cacheStaticText(print[i].c_str());
+        C2D_DrawText(&text, C2D_WithColor, printX[i], y + lineMod * i, 0.5f, scaleX, scaleY, color);
+    }
+
+    print.clear();
+    printX.clear();
 }
 
 static void _draw_mirror_scale(int key, int x, int y, int off, int rep)
@@ -759,27 +711,27 @@ void Gui::sprite(int key, int x, int y)
     }
     else if (key == ui_sheet_emulated_party_indicator_1_idx)
     {
-        staticText("\u2460", x, y - 3, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+        staticText("\u2460", x, y - 3, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     }
     else if (key == ui_sheet_emulated_party_indicator_2_idx)
     {
-        staticText("\u2461", x, y - 3, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+        staticText("\u2461", x, y - 3, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     }
     else if (key == ui_sheet_emulated_party_indicator_3_idx)
     {
-        staticText("\u2462", x, y - 3, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+        staticText("\u2462", x, y - 3, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     }
     else if (key == ui_sheet_emulated_party_indicator_4_idx)
     {
-        staticText("\u2463", x, y - 3, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+        staticText("\u2463", x, y - 3, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     }
     else if (key == ui_sheet_emulated_party_indicator_5_idx)
     {
-        staticText("\u2464", x, y - 3, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+        staticText("\u2464", x, y - 3, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     }
     else if (key == ui_sheet_emulated_party_indicator_6_idx)
     {
-        staticText("\u2465", x, y - 3, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+        staticText("\u2465", x, y - 3, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     }
     // standard case
     else
@@ -911,7 +863,7 @@ void Gui::pkm(PKX* pokemon, int x, int y, float scale, u32 color, float blend)
         if (pokemon->species() != 490)
         {
             pkm(pokemon->species(), pokemon->alternativeForm(), pokemon->generation(), x, y, scale, color, blend);
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x - 13 + ceil(3 * scale), y + 4 + 30 * (scale - 1), 0.5f);
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x - 13 + ceilf(3 * scale), y + 4 + 30 * (scale - 1), 0.5f);
         }
         else
         {
@@ -923,7 +875,7 @@ void Gui::pkm(PKX* pokemon, int x, int y, float scale, u32 color, float blend)
         pkm(pokemon->species(), pokemon->alternativeForm(), pokemon->generation(), x, y, scale, color, blend);
         if (pokemon->heldItem() > 0)
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_item_idx), x + ceil(3 * scale), y + 21 + ceil(30 * (scale - 1)), 0.5f, &tint);
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_item_idx), x + ceilf(3 * scale), y + 21 + ceilf(30 * (scale - 1)), 0.5f, &tint);
         }
     }
 
@@ -1365,16 +1317,16 @@ bool Gui::showChoiceMessage(const std::string& message, std::optional<std::strin
         sprite(ui_sheet_part_info_top_idx, 0, 0);
         if (!message2)
         {
-            dynamicText(GFX_TOP, 95, message, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparencyWaver()));
+            dynamicText(message, 200, 95, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::TOP);
         }
         else
         {
             u8 transparency = transparencyWaver();
-            dynamicText(GFX_TOP, 85, message, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency));
-            dynamicText(GFX_TOP, 105, message2.value(), FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency));
+            dynamicText(message, 200, 85, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
+            dynamicText(message2.value(), 200, 105, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
         }
 
-        dynamicText(GFX_TOP, 130, i18n::localize("CONTINUE_CANCEL"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+        dynamicText(i18n::localize("CONTINUE_CANCEL"), 200, 130, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
         C2D_SceneBegin(g_renderTargetBottom);
         sprite(ui_sheet_part_info_bottom_idx, 0, 0);
@@ -1401,15 +1353,15 @@ void Gui::waitFrame(const std::string& message, std::optional<std::string> messa
     sprite(ui_sheet_part_info_top_idx, 0, 0);
     if (!message2)
     {
-        dynamicText(GFX_TOP, 95, message, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE);
+        dynamicText(message, 200, 95, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     }
     else
     {
-        dynamicText(GFX_TOP, 85, message, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE);
-        dynamicText(GFX_TOP, 105, message2.value(), FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE);
+        dynamicText(message, 200, 85, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        dynamicText(message2.value(), 200, 105, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     }
 
-    dynamicText(GFX_TOP, 130, i18n::localize("PLEASE_WAIT"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+    dynamicText(i18n::localize("PLEASE_WAIT"), 200, 130, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
     C2D_SceneBegin(g_renderTargetBottom);
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
@@ -1435,23 +1387,24 @@ void Gui::warn(const std::string& message, std::optional<std::string> message2, 
         sprite(ui_sheet_part_info_top_idx, 0, 0);
         if (!message2)
         {
-            dynamicText(GFX_TOP, 95, message, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparencyWaver()));
+            dynamicText(message, 200, 95, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::TOP);
         }
         else
         {
             u8 transparency = transparencyWaver();
-            dynamicText(GFX_TOP, 85, message, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency));
-            dynamicText(GFX_TOP, 105, message2.value(), FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency));
+            dynamicText(message, 200, 85, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
+            dynamicText(message2.value(), 200, 105, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
         }
 
-        dynamicText(GFX_TOP, 130, i18n::localize("CONTINUE"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+        dynamicText(i18n::localize("CONTINUE"), 200, 130, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
         C2D_SceneBegin(g_renderTargetBottom);
         sprite(ui_sheet_part_info_bottom_idx, 0, 0);
 
         if (bottomScreen)
         {
-            dynamicText(bottomScreen.value(), 2, 2, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, 316.0f, false);
+            std::string bottom = StringUtils::wrap(bottomScreen.value(), FONT_SIZE_12, 316.0f);
+            dynamicText(bottom, 2, 2, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         }
 
         C3D_FrameEnd(0);
@@ -1478,8 +1431,8 @@ void Gui::showRestoreProgress(u32 partial, u32 total)
     C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
     C2D_SceneBegin(g_renderTargetTop);
     sprite(ui_sheet_part_info_top_idx, 0, 0);
-    staticText(GFX_TOP, 95, i18n::localize("SAVING"), FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE);
-    dynamicText(GFX_TOP, 130, StringUtils::format(i18n::localize("SAVE_PROGRESS"), partial, total), FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE);
+    staticText(i18n::localize("SAVING"), 200, 95, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    dynamicText(StringUtils::format(i18n::localize("SAVE_PROGRESS"), partial, total), 200, 130, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     C2D_SceneBegin(g_renderTargetBottom);
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
     C3D_FrameEnd(0);
@@ -1493,7 +1446,7 @@ void Gui::showResizeStorage()
     C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
     C2D_SceneBegin(g_renderTargetTop);
     sprite(ui_sheet_part_info_top_idx, 0, 0);
-    staticText(GFX_TOP, 95, i18n::localize("STORAGE_RESIZE"), FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE);
+    staticText(i18n::localize("STORAGE_RESIZE"), 200, 95, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     C2D_SceneBegin(g_renderTargetBottom);
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
     C3D_FrameEnd(0);
@@ -1515,10 +1468,10 @@ void Gui::error(const std::string& message, Result errorCode)
         C2D_SceneBegin(g_renderTargetTop);
         sprite(ui_sheet_part_info_top_idx, 0, 0);
         u8 transparency = transparencyWaver();
-        dynamicText(GFX_TOP, 85, message, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency));
-        dynamicText(GFX_TOP, 105, StringUtils::format(i18n::localize("ERROR_CODE"), errorCode), FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency));
+        dynamicText(message, 200, 85, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
+        dynamicText(StringUtils::format(i18n::localize("ERROR_CODE"), errorCode), 200, 105, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
 
-        dynamicText(GFX_TOP, 130, i18n::localize("CONTINUE"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+        dynamicText(i18n::localize("CONTINUE"), 200, 130, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
         C2D_SceneBegin(g_renderTargetBottom);
         sprite(ui_sheet_part_info_bottom_idx, 0, 0);

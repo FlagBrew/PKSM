@@ -169,35 +169,35 @@ void ConfigScreen::draw() const
     if (currentTab != 0)
     {
         C2D_DrawRectSolid(1, 2, 0.5f, 104, 17, COLOR_DARKBLUE);
-        Gui::staticText(1, 2, 104, i18n::localize("LANGUAGE"), FONT_SIZE_11, FONT_SIZE_11, COLOR_BLACK);
+        Gui::staticText(i18n::localize("LANGUAGE"), 53, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
     if (currentTab != 1)
     {
         C2D_DrawRectSolid(108, 2, 0.5f, 104, 17, COLOR_DARKBLUE);
-        Gui::staticText(108, 2, 104, i18n::localize("DEFAULTS"), FONT_SIZE_11, FONT_SIZE_11, COLOR_BLACK);
+        Gui::staticText(i18n::localize("DEFAULTS"), 160, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
     if (currentTab != 2)
     {
         C2D_DrawRectSolid(215, 2, 0.5f, 104, 17, COLOR_DARKBLUE);
-        Gui::staticText(215, 2, 104, i18n::localize("MISC"), FONT_SIZE_11, FONT_SIZE_11, COLOR_BLACK);
+        Gui::staticText(i18n::localize("MISC"), 267, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
 
     if (currentTab == 0)
     {
-        Gui::dynamicText(1, 2, 104, i18n::localize("LANGUAGE"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+        Gui::staticText(i18n::localize("LANGUAGE"), 53, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-        Gui::staticText("日本語", 59, 47, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText("English", 59, 69, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText("Français", 59, 91, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText("Deutsche", 59, 113, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText("Italiano", 59, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText("Español", 59, 157, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+        Gui::staticText("日本語", 59, 47, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText("English", 59, 69, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText("Français", 59, 91, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText("Deutsche", 59, 113, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText("Italiano", 59, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText("Español", 59, 157, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
-        Gui::staticText("中文", 199, 47, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText("한국어", 199, 69, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText("Nederlands", 199, 91, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText("Português", 199, 113, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText("русский", 199, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+        Gui::staticText("中文", 199, 47, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText("한국어", 199, 69, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText("Nederlands", 199, 91, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText("Português", 199, 113, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText("русский", 199, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
         C2D_DrawRectSolid(37, 52, 0.5f, 8, 8, COLOR_MENUBLUE);
         C2D_DrawRectSolid(37, 74, 0.5f, 8, 8, COLOR_MENUBLUE);
@@ -253,19 +253,19 @@ void ConfigScreen::draw() const
     }
     else if (currentTab == 1)
     {
-        Gui::staticText(108, 2, 104, i18n::localize("DEFAULTS"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+        Gui::staticText(i18n::localize("DEFAULTS"), 160, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-        Gui::staticText(i18n::localize("TID"), 19, 36, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText(i18n::localize("SID"), 19, 60, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText(i18n::localize("OT"), 19, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText(i18n::localize("NATIONALITY"), 19, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText(i18n::localize("DAY"), 19, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText(i18n::localize("MONTH"), 19, 156, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText(i18n::localize("YEAR"), 19, 180, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+        Gui::staticText(i18n::localize("TID"), 19, 36, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText(i18n::localize("SID"), 19, 60, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText(i18n::localize("OT"), 19, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText(i18n::localize("NATIONALITY"), 19, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText(i18n::localize("DAY"), 19, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText(i18n::localize("MONTH"), 19, 156, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText(i18n::localize("YEAR"), 19, 180, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
-        Gui::dynamicText(std::to_string(Configuration::getInstance().defaultTID()), 140, 36, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
-        Gui::dynamicText(std::to_string(Configuration::getInstance().defaultSID()), 140, 60, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
-        Gui::dynamicText(Configuration::getInstance().defaultOT(), 140, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
+        Gui::dynamicText(std::to_string(Configuration::getInstance().defaultTID()), 140, 36, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::dynamicText(std::to_string(Configuration::getInstance().defaultSID()), 140, 60, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::dynamicText(Configuration::getInstance().defaultOT(), 140, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         std::string data;
         switch (Configuration::getInstance().nationality())
         {
@@ -294,10 +294,10 @@ void ConfigScreen::draw() const
                 data = "USA";
                 break;
         }
-        Gui::dynamicText(i18n::localize(data), 140, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
-        Gui::dynamicText(std::to_string(Configuration::getInstance().day()), 140, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
-        Gui::dynamicText(std::to_string(Configuration::getInstance().month()), 140, 156, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
-        Gui::dynamicText(std::to_string(Configuration::getInstance().year()), 140, 180, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, false);
+        Gui::dynamicText(i18n::localize(data), 140, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::dynamicText(std::to_string(Configuration::getInstance().day()), 140, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::dynamicText(std::to_string(Configuration::getInstance().month()), 140, 156, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::dynamicText(std::to_string(Configuration::getInstance().year()), 140, 180, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
         for (Button* button : tabButtons[currentTab])
         {
@@ -306,30 +306,30 @@ void ConfigScreen::draw() const
     }
     else if (currentTab == 2)
     {
-        Gui::staticText(215, 2, 104, i18n::localize("MISC"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+        Gui::staticText(i18n::localize("MISC"), 215 + 104 / 2, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-        Gui::staticText(i18n::localize("CONFIG_BACKUP_SAVE"), 19, 36, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText(i18n::localize("CONFIG_STORAGE_SIZE"), 19, 60, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText(i18n::localize("CONFIG_BAD_SECTORS"), 19, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText(i18n::localize("CONFIG_EDIT_TRANSFERS"), 19, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText(i18n::localize("CONFIG_BACKUP_INJECTION"), 19, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText(i18n::localize("CONFIG_SAVE_INFO"), 19, 156, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText(i18n::localize("CONFIG_USE_EXTDATA"), 19, 180, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText(i18n::localize("CONFIG_RANDOM_MUSIC"), 19, 204, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+        Gui::staticText(i18n::localize("CONFIG_BACKUP_SAVE"), 19, 36, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText(i18n::localize("CONFIG_STORAGE_SIZE"), 19, 60, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText(i18n::localize("CONFIG_BAD_SECTORS"), 19, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText(i18n::localize("CONFIG_EDIT_TRANSFERS"), 19, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText(i18n::localize("CONFIG_BACKUP_INJECTION"), 19, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText(i18n::localize("CONFIG_SAVE_INFO"), 19, 156, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText(i18n::localize("CONFIG_USE_EXTDATA"), 19, 180, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText(i18n::localize("CONFIG_RANDOM_MUSIC"), 19, 204, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
         for (Button* button : tabButtons[currentTab])
         {
             button->draw();
         }
 
-        Gui::staticText(Configuration::getInstance().autoBackup() ? i18n::localize("YES") : i18n::localize("NO"), 270, 36, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::dynamicText(245, 60, 50, std::to_string(Configuration::getInstance().storageSize()), FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText(Configuration::getInstance().fixSectors() ? i18n::localize("YES") : i18n::localize("NO"), 270, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText(Configuration::getInstance().transferEdit() ? i18n::localize("YES") : i18n::localize("NO"), 270, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText(Configuration::getInstance().writeFileSave() ? i18n::localize("YES") : i18n::localize("NO"), 270, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText(Configuration::getInstance().useSaveInfo() ? i18n::localize("YES") : i18n::localize("NO"), 270, 156, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText(Configuration::getInstance().useExtData() ? i18n::localize("YES") : i18n::localize("NO"), 270, 180, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-        Gui::staticText(Configuration::getInstance().randomMusic() ? i18n::localize("YES") : i18n::localize("NO"), 270, 204, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+        Gui::staticText(Configuration::getInstance().autoBackup() ? i18n::localize("YES") : i18n::localize("NO"), 270, 36, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::dynamicText(std::to_string(Configuration::getInstance().storageSize()), 245 + 50 / 2, 60, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        Gui::staticText(Configuration::getInstance().fixSectors() ? i18n::localize("YES") : i18n::localize("NO"), 270, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText(Configuration::getInstance().transferEdit() ? i18n::localize("YES") : i18n::localize("NO"), 270, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText(Configuration::getInstance().writeFileSave() ? i18n::localize("YES") : i18n::localize("NO"), 270, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText(Configuration::getInstance().useSaveInfo() ? i18n::localize("YES") : i18n::localize("NO"), 270, 156, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText(Configuration::getInstance().useExtData() ? i18n::localize("YES") : i18n::localize("NO"), 270, 180, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText(Configuration::getInstance().randomMusic() ? i18n::localize("YES") : i18n::localize("NO"), 270, 204, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     }
 }
 
@@ -402,10 +402,10 @@ static u8 getNextAlpha(int off)
 void ConfigScreen::drawTop() const
 {
     Gui::backgroundTop(false);
-    Gui::staticText(GFX_TOP, 4, "PKSM", FONT_SIZE_14, FONT_SIZE_14, COLOR_BLUE);
+    Gui::staticText("PKSM", 200, 4, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLUE, TextPosX::CENTER, TextPosY::TOP);
     int y = 25;
     for (size_t i = 0; i < credits.size(); i++)
     {
-        Gui::dynamicText(GFX_TOP, y += 16, std::string(credits[i]), FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(0xFF, 0xFF, 0xFF, getNextAlpha(i)));
+        Gui::dynamicText(std::string(credits[i]), 200, y += 16, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(0xFF, 0xFF, 0xFF, getNextAlpha(i)), TextPosX::CENTER, TextPosY::TOP);
     }
 }

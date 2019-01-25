@@ -107,7 +107,7 @@ MainMenu::~MainMenu()
 static void menuTop()
 {
     Gui::backgroundTop(false);
-    Gui::staticText(GFX_TOP, 4, "PKSM", FONT_SIZE_14, FONT_SIZE_14, COLOR_BLUE);
+    Gui::staticText("PKSM", 200, 4, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLUE, TextPosX::CENTER, TextPosY::TOP);
 }
 
 void MainMenu::draw() const
@@ -122,7 +122,7 @@ void MainMenu::draw() const
         button->draw();
     }
     static const std::string version = StringUtils::format("v%d.%d.%d-%s", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
-    Gui::staticText(version, 316, 223, FONT_SIZE_11, FONT_SIZE_11, COLOR_LIGHTBLUE, true);
+    Gui::staticText(version, 316, 223, FONT_SIZE_11, FONT_SIZE_11, COLOR_LIGHTBLUE, TextPosX::RIGHT, TextPosY::TOP);
 }
 
 void MainMenu::update(touchPosition* touch)
