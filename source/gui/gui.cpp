@@ -769,6 +769,30 @@ void Gui::sprite(int key, int x, int y)
     {
         C2D_DrawRectSolid(x, y, 0.5f, 13, 13, C2D_Color32(0x00, 0x00, 0xFF, 0xFF));
     }
+    else if (key == ui_sheet_emulated_party_indicator_1_idx)
+    {
+        staticText("\u2460", x, y - 3, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+    }
+    else if (key == ui_sheet_emulated_party_indicator_2_idx)
+    {
+        staticText("\u2461", x, y - 3, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+    }
+    else if (key == ui_sheet_emulated_party_indicator_3_idx)
+    {
+        staticText("\u2462", x, y - 3, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+    }
+    else if (key == ui_sheet_emulated_party_indicator_4_idx)
+    {
+        staticText("\u2463", x, y - 3, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+    }
+    else if (key == ui_sheet_emulated_party_indicator_5_idx)
+    {
+        staticText("\u2464", x, y - 3, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+    }
+    else if (key == ui_sheet_emulated_party_indicator_6_idx)
+    {
+        staticText("\u2465", x, y - 3, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+    }
     // standard case
     else
     {
@@ -899,7 +923,7 @@ void Gui::pkm(PKX* pokemon, int x, int y, float scale, u32 color, float blend)
         if (pokemon->species() != 490)
         {
             pkm(pokemon->species(), pokemon->alternativeForm(), pokemon->generation(), x, y, scale, color, blend);
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x + 5 + 34 * (scale - 1), y + 4 + 30 * (scale - 1), 0.5f);
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x - 13 + ceil(3 * scale), y + 4 + 30 * (scale - 1), 0.5f);
         }
         else
         {

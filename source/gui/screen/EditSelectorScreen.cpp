@@ -264,6 +264,20 @@ void EditSelectorScreen::draw() const
         int x = (i % 2 == 0 ? 214 : 264);
         int y = (i % 2 == 0 ? 43 + 45 * (i / 2) : 59 + 45 * (i / 2));
         Gui::sprite(ui_sheet_icon_party_idx, x, y);
+        if (TitleLoader::save->generation() == Generation::LGPE)
+        {
+            Gui::sprite(ui_sheet_emulated_party_indicator_1_idx + i, x + 34, y + 30);
+        }
+    }
+
+    u16 partyPkm[6];
+    std::fill_n(partyPkm, 6, 1001);
+    if (TitleLoader::save->generation() == Generation::LGPE)
+    {
+        for (int i = 0; i < 6; i++)
+        {
+            partyPkm[i] = ((SavLGPE*)TitleLoader::save.get())->partyBoxSlot(i);
+        }
     }
 
     u16 y = 45;
@@ -282,6 +296,14 @@ void EditSelectorScreen::draw() const
                 if (pokemon->species() > 0)
                 {
                     Gui::pkm(pokemon.get(), x, y);
+                }
+                if (TitleLoader::save->generation() == Generation::LGPE)
+                {
+                    int partySlot = std::distance(partyPkm, std::find(partyPkm, partyPkm + 6, box * 30 + row * 6 + column));
+                    if (partySlot < 6)
+                    {
+                        Gui::sprite(ui_sheet_emulated_party_indicator_1_idx + partySlot, x + 26, y + 24);
+                    }
                 }
             }
             x += 34;
@@ -959,6 +981,18 @@ bool EditSelectorScreen::releasePokemon()
         if (cursorPos < 31 && box * 30 + cursorPos - 1 < TitleLoader::save->maxSlot())
         {
             TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), box, cursorPos - 1);
+            if (TitleLoader::save->generation() == Generation::LGPE)
+            {
+                SavLGPE* sav = (SavLGPE*)TitleLoader::save.get();
+                for (int i = 0; i < sav->partyCount(); i++)
+                {
+                    if (sav->partyBoxSlot(i) == box * 30 + cursorPos - 1)
+                    {
+                        sav->partyBoxSlot(i, 1001);
+                        sav->fixParty();
+                    }
+                }
+            }
         }
         else if (cursorPos > 30 && cursorPos - 31 < TitleLoader::save->partyCount())
         {

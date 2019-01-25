@@ -76,6 +76,12 @@
 #define ui_sheet_emulated_box_search_idx 524
 #define ui_sheet_emulated_toggle_gray_idx 525
 #define ui_sheet_emulated_toggle_blue_idx 526
+#define ui_sheet_emulated_party_indicator_1_idx 527
+#define ui_sheet_emulated_party_indicator_2_idx 528
+#define ui_sheet_emulated_party_indicator_3_idx 529
+#define ui_sheet_emulated_party_indicator_4_idx 530
+#define ui_sheet_emulated_party_indicator_5_idx 531
+#define ui_sheet_emulated_party_indicator_6_idx 532
 
 // colors
 #define COLOR_WHITE     C2D_Color32(255, 255, 255, 255)

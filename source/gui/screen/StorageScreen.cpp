@@ -274,6 +274,16 @@ void StorageScreen::draw() const
         b->draw();
     }
 
+    u16 partyPkm[6];
+    std::fill_n(partyPkm, 6, 1001);
+    if (TitleLoader::save->generation() == Generation::LGPE)
+    {
+        for (int i = 0; i < 6; i++)
+        {
+            partyPkm[i] = ((SavLGPE*)TitleLoader::save.get())->partyBoxSlot(i);
+        }
+    }
+
     u16 y = 45;
     for (u8 row = 0; row < 5; row++)
     {
@@ -290,6 +300,14 @@ void StorageScreen::draw() const
                 if (pokemon->species() > 0)
                 {
                     Gui::pkm(pokemon.get(), x, y);
+                }
+                if (TitleLoader::save->generation() == Generation::LGPE)
+                {
+                    int partySlot = std::distance(partyPkm, std::find(partyPkm, partyPkm + 6, boxBox * 30 + row * 6 + column));
+                    if (partySlot < 6)
+                    {
+                        Gui::sprite(ui_sheet_emulated_party_indicator_1_idx + partySlot, x + 26, y + 24);
+                    }
                 }
             }
             x += 34;
