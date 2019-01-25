@@ -835,7 +835,7 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                     return std::make_pair(i18n::localize("HYPER_TRAIN_FLAGS"), NORMAL);
                 }
             case 0xDF:
-                return std::make_pair(i18n::localize("ORIGINAL_TRAINER_GAME_ID"), OPEN);
+                return std::make_pair(i18n::localize("ORIGINAL_TRAINER_GAME_ID"), NORMAL);
             case 0xE0:
                 return std::make_pair(i18n::localize("COUNTRY_ID"), OPEN);
             case 0xE1:
@@ -993,9 +993,9 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
             case 0x7B ... 0x7D:
                 return std::make_pair(i18n::localize("MET_DATE"), NORMAL);
             case 0x7E ... 0x7F:
-                return std::make_pair(i18n::localize("EGG_LOCATION"), OPEN);
+                return std::make_pair(i18n::localize("EGG_LOCATION"), NORMAL);
             case 0x80 ... 0x81:
-                return std::make_pair(i18n::localize("MET_LOCATION"), OPEN);
+                return std::make_pair(i18n::localize("MET_LOCATION"), NORMAL);
             case 0x82:
                 return std::make_pair(i18n::localize("POKERUS"), NORMAL);
             case 0x83:
@@ -1145,9 +1145,9 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
             case 0x7B ... 0x7D:
                 return std::make_pair(i18n::localize("MET_DATE"), NORMAL);
             case 0x7E ... 0x7F:
-                return std::make_pair(i18n::localize("EGG_LOCATION_(DIAMOND_&_PEARL)"), OPEN);
+                return std::make_pair(i18n::localize("EGG_LOCATION_(DIAMOND_&_PEARL)"), NORMAL);
             case 0x80 ... 0x81:
-                return std::make_pair(i18n::localize("MET_LOCATION_(DIAMOND_&_PEARL"), OPEN);
+                return std::make_pair(i18n::localize("MET_LOCATION_(DIAMOND_&_PEARL"), NORMAL);
             case 0x82:
                 return std::make_pair(i18n::localize("POKERUS"), NORMAL);
             case 0x83:
