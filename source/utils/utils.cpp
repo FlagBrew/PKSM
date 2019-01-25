@@ -265,3 +265,100 @@ std::string& StringUtils::toLower(std::string& in)
     in = StringUtils::UTF16toUTF8(otherIn);
     return in;
 }
+
+std::string& StringUtils::splitWord(std::string& word, float scaleX, float maxWidth)
+{
+    float currentWidth = 0.0f;
+    if (StringUtils::textWidth(word, scaleX) > maxWidth)
+    {
+        for (size_t i = 0; i < word.size(); i++)
+        {
+            u16 codepoint = 0xFFFF;
+            int iMod = 0;
+            if (word[i] & 0x80 && word[i] & 0x40 && word[i] & 0x20 && !(word[i] & 0x10) && i + 2 < word.size())
+            {
+                codepoint = word[i] & 0x0F;
+                codepoint = codepoint << 6 | (word[i + 1] & 0x3F);
+                codepoint = codepoint << 6 | (word[i + 2] & 0x3F);
+                iMod = 2;
+            }
+            else if (word[i] & 0x80 && word[i] & 0x40 && !(word[i] & 0x20) && i + 1 < word.size())
+            {
+                codepoint = word[i] & 0x1F;
+                codepoint = codepoint << 6 | (word[i + 1] & 0x3F);
+                iMod = 1;
+            }
+            else if (!(word[i] & 0x80))
+            {
+                codepoint = word[i];
+            }
+            float charWidth = fontGetCharWidthInfo(fontGlyphIndexFromCodePoint(codepoint))->charWidth * scaleX;
+            currentWidth += charWidth;
+            if (currentWidth > maxWidth)
+            {
+                word.insert(i, 1, '\n');
+                currentWidth = charWidth;
+            }
+
+            i += iMod; // Yay, variable width encodings
+        }
+    }
+    return word;
+}
+
+float StringUtils::textWidth(const std::string& text, float scaleX)
+{
+    float ret = 0.0f;
+    float largestRet = 0.0f;
+    for (size_t i = 0; i < text.size(); i++)
+    {
+        if (text[i] == '\n')
+        {
+            largestRet = std::max(largestRet, ret);
+            ret = 0.0f;
+            continue;
+        }
+        u16 codepoint = 0xFFFF;
+        if (text[i] & 0x80 && text[i] & 0x40 && text[i] & 0x20 && !(text[i] & 0x10) && i + 2 < text.size())
+        {
+            codepoint = text[i] & 0x0F;
+            codepoint = codepoint << 6 | (text[i + 1] & 0x3F);
+            codepoint = codepoint << 6 | (text[i + 2] & 0x3F);
+            i += 2;
+        }
+        else if (text[i] & 0x80 && text[i] & 0x40 && !(text[i] & 0x20) && i + 1 < text.size())
+        {
+            codepoint = text[i] & 0x1F;
+            codepoint = codepoint << 6 | (text[i + 1] & 0x3F);
+            i += 1;
+        }
+        else if (!(text[i] & 0x80))
+        {
+            codepoint = text[i];
+        }
+        ret += fontGetCharWidthInfo(fontGlyphIndexFromCodePoint(codepoint))->charWidth * scaleX;
+    }
+    return std::max(largestRet, ret);
+}
+
+float StringUtils::textWidth(const std::u16string& text, float scaleX)
+{
+    float ret = 0.0f;
+    float largestRet = 0.0f;
+    for (size_t i = 0; i < text.size(); i++)
+    {
+        if (text[i] == u'\n')
+        {
+            largestRet = std::max(ret, largestRet);
+            ret = 0.0f;
+            continue;
+        }
+        ret += fontGetCharWidthInfo(fontGlyphIndexFromCodePoint(text[i]))->charWidth * scaleX;
+    }
+    return std::max(largestRet, ret);
+}
+
+float StringUtils::textWidth(const C2D_Text& text, float scaleX)
+{
+    return ceilf(text.width*scaleX);
+}

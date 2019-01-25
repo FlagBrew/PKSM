@@ -114,8 +114,8 @@ void TitleLoadScreen::draw() const
     Gui::backgroundBottom(true);
     Gui::sprite(ui_sheet_gameselector_savebox_idx, 22, 94);
 
-    int nextIdPart = ceilf(27 + textWidth(i18n::localize("LOADER_ID"), FONT_SIZE_11));
-    int nextMediaPart = ceilf(27 + textWidth(i18n::localize("LOADER_MEDIA_TYPE"), FONT_SIZE_11));
+    int nextIdPart = ceilf(27 + StringUtils::textWidth(i18n::localize("LOADER_ID"), FONT_SIZE_11));
+    int nextMediaPart = ceilf(27 + StringUtils::textWidth(i18n::localize("LOADER_MEDIA_TYPE"), FONT_SIZE_11));
 
     Gui::staticText(i18n::localize("LOADER_ID"), 27, 46, FONT_SIZE_11, FONT_SIZE_11, COLOR_LIGHTBLUE);
     Gui::staticText(i18n::localize("LOADER_MEDIA_TYPE"), 27, 58, FONT_SIZE_11, FONT_SIZE_11, COLOR_LIGHTBLUE);

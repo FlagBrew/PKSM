@@ -253,7 +253,7 @@ void BoxChoice::draw() const
             std::string info = "#" + std::to_string(infoMon->species());
             Gui::dynamicText(info, 273, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
             info = i18n::localize("LV") + std::to_string(infoMon->level());
-            float width = textWidth(info, FONT_SIZE_12);
+            float width = StringUtils::textWidth(info, FONT_SIZE_12);
             Gui::dynamicText(info, 375 - (int) width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
             if (infoMon->gender() == 0)
             {
@@ -295,7 +295,7 @@ void BoxChoice::draw() const
             info = i18n::nature(Configuration::getInstance().language(), infoMon->nature());
             Gui::dynamicText(info, 276, 181, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
             info = i18n::localize("IV") + ": ";
-            width = textWidth(info, FONT_SIZE_12);
+            width = StringUtils::textWidth(info, FONT_SIZE_12);
             Gui::dynamicText(info, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
             info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(0), infoMon->iv(1), infoMon->iv(2));
             Gui::dynamicText(276 + (int) width, 197, 70, info, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);

@@ -152,17 +152,4 @@ namespace Gui
     void showResizeStorage(void);
 }
 
-extern C2D_TextBuf g_widthBuf;
-static inline float textWidth(const std::string& str, float scaleX)
-{
-    C2D_Text text;
-    C2D_TextParse(&text, g_widthBuf, str.c_str());
-    return ceilf(text.width*scaleX);
-}
-
-static inline float textWidth(const C2D_Text& str, float scaleX)
-{
-    return ceilf(str.width*scaleX);
-}
-
 #endif

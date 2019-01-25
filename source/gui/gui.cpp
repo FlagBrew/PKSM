@@ -28,7 +28,6 @@
 
 C3D_RenderTarget* g_renderTargetTop;
 C3D_RenderTarget* g_renderTargetBottom;
-C2D_TextBuf g_widthBuf;
 
 static C2D_SpriteSheet spritesheet_ui;
 static C2D_SpriteSheet spritesheet_pkm;
@@ -149,7 +148,6 @@ void Gui::backgroundAnimatedBottom()
 void Gui::clearTextBufs(void)
 {
     C2D_TextBufClear(dynamicBuf);
-    C2D_TextBufClear(g_widthBuf);
 }
 
 void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, bool rightAligned)
@@ -159,27 +157,9 @@ void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float 
     C2D_TextOptimize(&text);
     if (rightAligned)
     {
-        x = x - textWidth(text, scaleX);
+        x = x - StringUtils::textWidth(text, scaleX);
     }
     C2D_DrawText(&text, C2D_WithColor, x, y, 0.5f, scaleX, scaleY, color);
-}
-
-// TODO: move to StringUtils
-std::string splitWord(std::string& word, float scaleX, float maxWidth)
-{
-    float defaultWidth = scaleX * fontGetInfo()->defaultWidth.charWidth;
-    if (textWidth(word, scaleX) > maxWidth)
-    {
-        // TODO: maxChars is wrong:
-        // with lowercase, it works with size_t maxChars = ceilf(maxWidth / defaultWidth) * 2;
-        // with uppercase, it works with ceilf(maxWidth / defaultWidth * 1.25f);
-        size_t maxChars = ceilf(maxWidth / defaultWidth);
-        for (std::string::iterator it = word.begin() + maxChars; it < word.end(); it += maxChars)
-        {
-            word.insert(it++, '\n');
-        }
-    }
-    return word;
 }
 
 void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, float maxWidth, bool fullCenter)
@@ -193,13 +173,19 @@ void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float 
         if (*it == ' ')
         {
             // split single words that are bigger than maxWidth
-            word = splitWord(word, scaleX, maxWidth);
-            if (textWidth(line + word, scaleX) <= maxWidth)
+            if (StringUtils::textWidth(line + word, scaleX) <= maxWidth)
             {
                 line += word;
             }
             else
             {
+                if (StringUtils::textWidth(word, scaleX) > maxWidth)
+                {
+                    line += word;
+                    line = StringUtils::splitWord(line, scaleX, maxWidth);
+                    word = line.substr(line.find('\n')+1, std::string::npos);
+                    line = line.substr(0, line.find('\n')); // Split line on first newLine; assign second part to word and first to line
+                }
                 if (line[line.size() - 1] == ' ')
                 {
                     dst += line.substr(0, line.size() - 1) + '\n';
@@ -216,13 +202,20 @@ void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float 
 
     // "Another iteration" of the loop b/c it probably won't end with a space
     // If it does, no harm done
-    word = splitWord(word, scaleX, maxWidth);
-    if (textWidth(line + word, scaleX) <= maxWidth)
+    // word = StringUtils::splitWord(word, scaleX, maxWidth);
+    if (StringUtils::textWidth(line + word, scaleX) <= maxWidth)
     {
         dst += line + word;
     }
     else
     {
+        if (StringUtils::textWidth(word, scaleX) > maxWidth)
+        {
+            line += word;
+            line = StringUtils::splitWord(line, scaleX, maxWidth);
+            word = line.substr(line.find('\n')+1, std::string::npos);
+            line = line.substr(0, line.find('\n')); // Split line on first newLine; assign second part to word and first to line
+        }
         if (line[line.size() - 1] == ' ')
         {
             dst += line.substr(0, line.size() - 1) + '\n' + word;
@@ -268,13 +261,13 @@ void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float 
 void Gui::dynamicText(gfxScreen_t screen, int y, const std::string& text, float scaleX, float scaleY, u32 color)
 {
     float width = (screen == GFX_TOP) ? 400.0f : 320.0f;
-    int x = ceilf((width - textWidth(text, scaleX)) / 2.0f);
+    int x = ceilf((width - StringUtils::textWidth(text, scaleX)) / 2.0f);
     dynamicText(text, x, y, scaleX, scaleY, color);
 }
 
 void Gui::dynamicText(int x, int y, float width, const std::string& text, float scaleX, float scaleY, u32 color)
 {
-    int drawX = x + ceilf((width - textWidth(text, scaleX)) / 2.0f);
+    int drawX = x + ceilf((width - StringUtils::textWidth(text, scaleX)) / 2.0f);
     dynamicText(text, drawX, y, scaleX, scaleY, color);
 }
 
@@ -307,7 +300,7 @@ void Gui::staticText(const std::string& strKey, int x, int y, float scaleX, floa
     C2D_Text text = cacheStaticText(strKey);
     if (rightAligned)
     {
-        x = x - textWidth(text, scaleX);
+        x = x - StringUtils::textWidth(text, scaleX);
     }
     C2D_DrawText(&text, C2D_WithColor, x, y, 0.5f, scaleX, scaleY, color);
 }
@@ -344,14 +337,14 @@ void Gui::staticText(gfxScreen_t screen, int y, const std::string& strKey, float
 {
     C2D_Text text = cacheStaticText(strKey);
     float width = (screen == GFX_TOP) ? 400.0f : 320.0f;
-    int x = ceilf((width - textWidth(text, scaleX)) / 2.0f);
+    int x = ceilf((width - StringUtils::textWidth(text, scaleX)) / 2.0f);
     C2D_DrawText(&text, C2D_WithColor, x, y, 0.5f, scaleX, scaleY, color);
 }
 
 void Gui::staticText(int x, int y, float width, const std::string& strKey, float scaleX, float scaleY, u32 color)
 {
     C2D_Text text = cacheStaticText(strKey);
-    int drawX = x + ceilf((width - textWidth(text, scaleX)) / 2.0f);
+    int drawX = x + ceilf((width - StringUtils::textWidth(text, scaleX)) / 2.0f);
     C2D_DrawText(&text, C2D_WithColor, drawX, y, 0.5f, scaleX, scaleY, color);
 }
 
@@ -391,7 +384,6 @@ Result Gui::init(void)
     g_renderTargetBottom = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
 
     dynamicBuf = C2D_TextBufNew(2048);
-    g_widthBuf = C2D_TextBufNew(4096);
     staticBuf = C2D_TextBufNew(4096);
 
     spritesheet_ui = C2D_SpriteSheetLoad("romfs:/gfx/ui_sheet.t3x");
@@ -443,10 +435,6 @@ void Gui::exit(void)
     if (spritesheet_types)
     {
         C2D_SpriteSheetFree(spritesheet_types);
-    }
-    if (g_widthBuf)
-    {
-        C2D_TextBufDelete(g_widthBuf);
     }
     if (dynamicBuf)
     {
