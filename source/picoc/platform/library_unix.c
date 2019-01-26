@@ -22,7 +22,7 @@ struct LibraryFunction UnixFunctions[] =
     { sav_get_pkx,      "void sav_get_pkx(char* data, int box, int slot);" },
     { sav_inject_pkx,   "void sav_inject_pkx(char* data, enum Generation type, int box, int slot);" },
     { sav_inject_ekx,   "void sav_inject_ekx(char* data, enum Generation type, int box, int slot);" },
-    { party_get_pkx,    "void sav_get_pkx(char* data, int slot);" },
+    { party_get_pkx,    "void party_get_pkx(char* data, int slot);" },
     { bank_inject_pkx,  "void bank_inject_pkx(char* data, enum Generation type, int box, int slot);" },
     // io
     { current_directory,"char* current_directory();" },
