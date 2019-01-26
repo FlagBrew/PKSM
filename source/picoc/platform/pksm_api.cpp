@@ -719,4 +719,23 @@ extern "C" {
         }
         ReturnValue->Val->Pointer = (void*)inet_ntoa(*((struct in_addr*)host_entry->h_addr_list[0]));
     }
+
+    void sav_get_pkx(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        u8* data = (u8*) Param[0]->Val->Pointer;
+        int box = Param[1]->Val->Integer;
+        int slot = Param[2]->Val->Integer;
+
+        auto pkm = TitleLoader::save->pkm(box, slot);
+        memcpy(data, pkm.get()->rawData(), pkm.get()->getLength());
+    }
+
+    void party_get_pkx(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        u8* data = (u8*) Param[0]->Val->Pointer;
+        int slot = Param[1]->Val->Integer;
+
+        auto pkm = TitleLoader::save->pkm(slot);
+        memcpy(data, pkm.get()->rawData(), pkm.get()->getLength());
+    }
 }
