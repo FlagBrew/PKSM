@@ -247,7 +247,7 @@ void EditSelectorScreen::draw() const
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
     Gui::sprite(ui_sheet_bar_bottom_blue_idx, 0, 216);
     Gui::sprite(ui_sheet_stripe_camera_idx, 218, 14);
-    Gui::dynamicText("\uE004+\uE005 \uE01E", 311, 15, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, true);
+    Gui::dynamicText("\uE004+\uE005 \uE01E", 311, 15, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::RIGHT, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_bar_boxname_with_arrows_idx, 7, 15);
     Gui::sprite(ui_sheet_storage_box_corner_idx, 2, 44);
@@ -322,7 +322,7 @@ void EditSelectorScreen::draw() const
         }
     }
 
-    Gui::dynamicText(25, 18, 164, TitleLoader::save->boxName(box), FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK);
+    Gui::dynamicText(TitleLoader::save->boxName(box), 107, 18, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
 
     if (cursorPos == 0)
     {
@@ -356,8 +356,8 @@ void EditSelectorScreen::draw() const
 
     if (infoMon)
     {
-        Gui::dynamicText(GFX_BOTTOM, 224, StringUtils::format(i18n::localize("EDITOR_IDS"), infoMon->TID(), infoMon->SID(), infoMon->TSV()),
-                        FONT_SIZE_9, FONT_SIZE_9, COLOR_BLACK);
+        Gui::dynamicText(StringUtils::format(i18n::localize("EDITOR_IDS"), infoMon->TID(), infoMon->SID(), infoMon->TSV()), 160, 224, 
+                        FONT_SIZE_9, FONT_SIZE_9, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
 
     if (menu)

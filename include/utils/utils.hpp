@@ -35,6 +35,7 @@
 #include <locale>
 #include <memory>
 #include <citro2d.h>
+#include <optional>
 
 typedef uint8_t u8;
 typedef uint16_t u16;
@@ -402,10 +403,14 @@ namespace StringUtils
     std::string getString4(const u8* data, int ofs, int len);
     void setString4(u8* data, const std::string v, int ofs, int len);
     std::string& toLower(std::string& in);
-    std::string& splitWord(std::string& word, float scaleX, float maxWidth);
+    std::string splitWord(const std::string& word, float scaleX, float maxWidth);
     float textWidth(const std::string& str, float scaleX);
     float textWidth(const std::u16string& str, float scaleX);
     float textWidth(const C2D_Text& str, float scaleX);
+    // Just wraps according to spaces
+    std::string wrap(const std::string& str, float scaleX, float maxWidth);
+    // Wraps and truncates to X lines, adding an ellipsis to the end
+    std::string wrap(const std::string& str, float scaleX, float maxWidth, size_t lines);
 }
 
 #endif

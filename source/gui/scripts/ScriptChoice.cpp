@@ -64,6 +64,6 @@ void ScriptChoice::drawBottom() const
     for (size_t i = 0; i < lines.size(); i++)
     {
         y += 20 * i;
-        Gui::dynamicText(GFX_BOTTOM, y, lines[i], FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
+        Gui::dynamicText(lines[i], 160, y, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     }
 }

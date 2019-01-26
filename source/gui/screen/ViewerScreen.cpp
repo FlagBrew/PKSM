@@ -94,17 +94,17 @@ void ViewerScreen::draw() const
 
     for (int i = 0; i < 10; i++)
     {
-        Gui::dynamicText(i18n::localize(std::string(displayKeys[i])), 10, 36 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+        Gui::dynamicText(i18n::localize(std::string(displayKeys[i])), 10, 36 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     }
     for (int i = 0; i < 6; i++)
     {
-        Gui::dynamicText(i18n::localize(std::string(displayKeys[i + 10])), 238, 16 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+        Gui::dynamicText(i18n::localize(std::string(displayKeys[i + 10])), 238, 16 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     }
-    Gui::staticText(i18n::localize("MOVES"), 252, 136, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+    Gui::staticText(i18n::localize("MOVES"), 252, 136, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
     if (pkm)
     {
-        Gui::dynamicText(i18n::species(Configuration::getInstance().language(), pkm->species()), 25, 7, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, false);
+        Gui::dynamicText(i18n::species(Configuration::getInstance().language(), pkm->species()), 25, 7, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::ball(pkm->ball(), 4, 6);
         Gui::generation(pkm.get(), 115, 11);
         if (pkm->gender() == 0)
@@ -115,41 +115,41 @@ void ViewerScreen::draw() const
         {
             Gui::sprite(ui_sheet_icon_female_idx, 129, 10);
         }
-        Gui::dynamicText(StringUtils::format(i18n::localize("LVL"), pkm->level()), 143, 10, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, false);
+        Gui::dynamicText(StringUtils::format(i18n::localize("LVL"), pkm->level()), 143, 10, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         if (pkm->shiny())
         {
             Gui::sprite(ui_sheet_icon_shiny_idx, 191, 8);
         }
 
-        Gui::dynamicText(pkm->nickname(), 87, 36, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-        Gui::dynamicText(pkm->otName(), 87, 56, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-        Gui::dynamicText(pkm->pkrsDays() > 0 ? i18n::localize("YES") : i18n::localize("NO"), 87, 76, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-        Gui::dynamicText(i18n::nature(Configuration::getInstance().language(), pkm->nature()), 87, 96, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-        Gui::dynamicText(i18n::ability(Configuration::getInstance().language(), pkm->ability()), 87, 116, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-        Gui::dynamicText(i18n::item(Configuration::getInstance().language(), pkm->heldItem()), 87, 136, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-        Gui::dynamicText(StringUtils::format("%i/%i", pkm->PSV(), pkm->TSV()), 87, 156, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-        Gui::dynamicText(StringUtils::format("%i/%i", pkm->TID(), pkm->SID()), 87, 176, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-        Gui::dynamicText(StringUtils::format("%i/%i", (int)pkm->currentFriendship(), (int)pkm->otFriendship()), 122, 196, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
-        Gui::dynamicText(i18n::hp(Configuration::getInstance().language(), pkm->hpType()), 122, 216, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+        Gui::dynamicText(pkm->nickname(), 87, 36, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::dynamicText(pkm->otName(), 87, 56, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::dynamicText(pkm->pkrsDays() > 0 ? i18n::localize("YES") : i18n::localize("NO"), 87, 76, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::dynamicText(i18n::nature(Configuration::getInstance().language(), pkm->nature()), 87, 96, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::dynamicText(i18n::ability(Configuration::getInstance().language(), pkm->ability()), 87, 116, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::dynamicText(i18n::item(Configuration::getInstance().language(), pkm->heldItem()), 87, 136, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::dynamicText(StringUtils::format("%i/%i", pkm->PSV(), pkm->TSV()), 87, 156, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::dynamicText(StringUtils::format("%i/%i", pkm->TID(), pkm->SID()), 87, 176, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::dynamicText(StringUtils::format("%i/%i", (int)pkm->currentFriendship(), (int)pkm->otFriendship()), 122, 196, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::dynamicText(i18n::hp(Configuration::getInstance().language(), pkm->hpType()), 122, 216, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
         static constexpr int statValues[] = { 0, 1, 2, 4, 5, 3 };
         for (int i = 0; i < 6; i++)
         {
-            Gui::dynamicText(std::to_string((int)pkm->iv(statValues[i])), 317, 16 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, true);
+            Gui::dynamicText(std::to_string((int)pkm->iv(statValues[i])), 317, 16 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::RIGHT, TextPosY::TOP);
             if (pkm->generation() == Generation::LGPE)
             {
-                Gui::dynamicText(326, 16 + i * 20, 33, std::to_string((int)((PB7*)pkm.get())->awakened(statValues[i])), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+                Gui::dynamicText(std::to_string((int)((PB7*)pkm.get())->awakened(statValues[i])), 342, 16 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
             }
             else
             {
-                Gui::dynamicText(326, 16 + i * 20, 33, std::to_string((int)pkm->ev(statValues[i])), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK);
+                Gui::dynamicText(std::to_string((int)pkm->ev(statValues[i])), 342, 16 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
             }
-            Gui::dynamicText(std::to_string((int)pkm->stat(statValues[i])), 367, 16 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            Gui::dynamicText(std::to_string((int)pkm->stat(statValues[i])), 367, 16 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         }
 
         for (int i = 0; i < 4; i++)
         {
-            Gui::dynamicText(i18n::move(Configuration::getInstance().language(), pkm->move(i)), 252, 156 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            Gui::dynamicText(i18n::move(Configuration::getInstance().language(), pkm->move(i)), 252, 156 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         }
     }
     else
@@ -157,7 +157,7 @@ void ViewerScreen::draw() const
         Gui::ball(0, 4, 6);
         for (int i = 0; i < 4; i++)
         {
-            Gui::dynamicText(i18n::move(Configuration::getInstance().language(), 0), 252, 156 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, false);
+            Gui::dynamicText(i18n::move(Configuration::getInstance().language(), 0), 252, 156 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         }
     }
 }

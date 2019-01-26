@@ -240,26 +240,26 @@ void SaveLoadScreen::draw(void) const
     
     // draw DS game boxes
     C2D_DrawRectSolid(x += 60, y, 0.5f, 48, 48, COLOR_HIGHBLUE);
-    Gui::staticText(x, y + 18, 48, "DP", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+    Gui::staticText("DP", x + 24, y + 18, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     C2D_DrawRectSolid(x += 60, y, 0.5f, 48, 48, COLOR_HIGHBLUE);
-    Gui::staticText(x, y + 18, 48, "HGSS", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+    Gui::staticText("HGSS", x + 24, y + 18, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     C2D_DrawRectSolid(x += 60, y, 0.5f, 48, 48, COLOR_HIGHBLUE);
-    Gui::staticText(x, y + 18, 48, "BW", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+    Gui::staticText("BW", x + 24, y + 18, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     C2D_DrawRectSolid(x += 60, y, 0.5f, 48, 48, COLOR_HIGHBLUE);
-    Gui::staticText(x, y + 18, 48, "B2W2", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+    Gui::staticText("B2W2", x + 24, y + 18, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     C2D_DrawRectSolid(40, 98, 0.5f, 48, 48, COLOR_HIGHBLUE);
-    Gui::staticText(40, 116, 48, "Pt", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+    Gui::staticText("Pt", 40 + 24, 116, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
     x = 90, y = 128;
     // draw 3DS game boxes
     C2D_DrawRectSolid(x += 60, y, 0.5f, 48, 48, COLOR_HIGHBLUE);
-    Gui::staticText(x, y + 18, 48, "XY", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+    Gui::staticText("XY", x + 24, y + 18, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     C2D_DrawRectSolid(x += 60, y, 0.5f, 48, 48, COLOR_HIGHBLUE);
-    Gui::staticText(x, y + 18, 48, "ORAS", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+    Gui::staticText("ORAS", x + 24, y + 18, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     C2D_DrawRectSolid(x += 60, y, 0.5f, 48, 48, COLOR_HIGHBLUE);
-    Gui::staticText(x, y + 18, 48, "SUMO", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+    Gui::staticText("SUMO", x + 24, y + 18, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     C2D_DrawRectSolid(x += 60, y, 0.5f, 48, 48, COLOR_HIGHBLUE);
-    Gui::staticText(x, y + 18, 48, "USUM", FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+    Gui::staticText("USUM", x + 24, y + 18, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
     if (saveGroup == -1)
     {
@@ -274,13 +274,13 @@ void SaveLoadScreen::draw(void) const
         drawSelector(149 + (saveGroup - 4) * 60, 127);
     }
 
-    Gui::staticText(GFX_TOP, 8, i18n::localize("LOADER_INSTRUCTIONS_TOP_PRESENT"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+    Gui::staticText(i18n::localize("LOADER_INSTRUCTIONS_TOP_PRESENT"), 200, 8, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
     C2D_SceneBegin(g_renderTargetBottom);
     Gui::backgroundBottom(true);
     Gui::sprite(ui_sheet_gameselector_savebox_idx, 22, 94);
 
-    Gui::staticText(std::string(titleName(saveGroup)), 27, 26, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+    Gui::staticText(std::string(titleName(saveGroup)), 27, 26, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
     if (selectedSave > -1)
     {
@@ -295,7 +295,7 @@ void SaveLoadScreen::draw(void) const
             std::string save = saves[saveGroup][i].second.substr(0, saves[saveGroup][i].second.find_last_of('/'));
             save = save.substr(save.find_last_of('/') + 1);
             save = saves[saveGroup][i].first + save;
-            Gui::dynamicText(save, 29, y, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+            Gui::dynamicText(save, 29, y, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         }
         else
         {
@@ -320,10 +320,10 @@ void SaveLoadScreen::draw(void) const
                         193, 196, C2D_Color32(0x0f, 0x16, 0x59, 255), 0.5f);
     }
 
-    Gui::staticText(200, 113, 96, i18n::localize("LOADER_LOAD"), FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
-    Gui::staticText(200, 163, 96, i18n::localize("LOADER_WIRELESS"), FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE);
+    Gui::staticText(i18n::localize("LOADER_LOAD"), 248, 113, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::staticText(i18n::localize("LOADER_WIRELESS"), 248, 163, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-    Gui::staticText(GFX_BOTTOM, 223, i18n::localize("LOADER_INSTRUCTIONS_BOTTOM"), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+    Gui::staticText(i18n::localize("LOADER_INSTRUCTIONS_BOTTOM"), 160, 223, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
     C2D_DrawRectSolid(245, 23, 0.5f, 48, 48, COLOR_BLACK);
     C2D_DrawRectSolid(243, 21, 0.5f, 52, 52, C2D_Color32(15, 22, 89, 255));

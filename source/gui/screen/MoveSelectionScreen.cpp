@@ -110,7 +110,7 @@ void MoveSelectionScreen::draw() const
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
         if (hid.page() * hid.maxVisibleEntries() + i < moves.size())
         {
-            Gui::dynamicText(std::to_string(moves[hid.page() * hid.maxVisibleEntries() + i].first) + " - " + moves[hid.page() * hid.maxVisibleEntries() + i].second, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
+            Gui::dynamicText(std::to_string(moves[hid.page() * hid.maxVisibleEntries() + i].first) + " - " + moves[hid.page() * hid.maxVisibleEntries() + i].second, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         }
         else
         {
@@ -121,7 +121,7 @@ void MoveSelectionScreen::draw() const
     C2D_SceneBegin(g_renderTargetBottom);
     searchButton->draw();
     Gui::sprite(ui_sheet_icon_search_idx, 79, 33);
-    Gui::dynamicText(searchString, 95, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, false);
+    Gui::dynamicText(searchString, 95, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 }
 
 void MoveSelectionScreen::update(touchPosition* touch)

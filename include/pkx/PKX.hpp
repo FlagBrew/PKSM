@@ -57,10 +57,11 @@ protected:
 
     virtual void crypt(void) = 0;
     virtual void shuffleArray(u8 sv) = 0;
-    virtual u8* rawData(void) = 0;
 
     u32 length = 0;
+
 public:
+    virtual u8* rawData(void) = 0;
     void decrypt(void);
     void encrypt(void);
     virtual std::unique_ptr<PKX> clone(void) = 0;

@@ -41,11 +41,11 @@ void NatureSelectionScreen::draw() const
     C2D_SceneBegin(g_renderTargetTop);
     Gui::sprite(ui_sheet_part_editor_6x6_idx, 0, 0);
 
-    Gui::staticText(0, 12, 65, i18n::localize("NEUTRAL"), FONT_SIZE_11, FONT_SIZE_11, COLOR_YELLOW);
+    Gui::staticText(i18n::localize("NEUTRAL"), 0 + 65 / 2, 12, FONT_SIZE_11, FONT_SIZE_11, COLOR_YELLOW, TextPosX::CENTER, TextPosY::TOP);
     for (int i = 0; i < 5; i++)
     {
-        Gui::staticText(i * 67 + 66, 12, 66, std::string("-") + i18n::localize(std::string(stats[i])), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
-        Gui::staticText(0, i * 40 + 52, 65, std::string("+") + i18n::localize(std::string(stats[i])), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE);
+        Gui::staticText(std::string("-") + i18n::localize(std::string(stats[i])), i * 67 + 99, 12, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        Gui::staticText(std::string("+") + i18n::localize(std::string(stats[i])), 32, i * 40 + 52, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     }
 
     int x = (hid.index() % 5) * 67 + 66;
@@ -61,7 +61,7 @@ void NatureSelectionScreen::draw() const
     {
         for (int x = 0; x < 5; x++)
         {
-            Gui::staticText(x * 67 + 66, y * 40 + 52, 66, i18n::nature(Configuration::getInstance().language(), x + y * 5), FONT_SIZE_11, FONT_SIZE_11, x == y ? COLOR_YELLOW : COLOR_WHITE);
+            Gui::staticText(i18n::nature(Configuration::getInstance().language(), x + y * 5), x * 67 + 99, y * 40 + 52, FONT_SIZE_11, FONT_SIZE_11, x == y ? COLOR_YELLOW : COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
         }
     }
 }

@@ -332,7 +332,7 @@ static void uiThread(void* arg)
         {
             C2D_SceneBegin(g_renderTargetBottom);
             C2D_DrawRectSolid(0, 0, 0.5f, 320.0f, 240.0f, COLOR_MASKBLACK);
-            Gui::staticText(GFX_BOTTOM, 115, i18n::localize("SCANNER_EXIT"), FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE);
+            Gui::staticText(i18n::localize("SCANNER_EXIT"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
             first = false;
         }
         C3D_FrameEnd(0);

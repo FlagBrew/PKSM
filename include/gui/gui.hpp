@@ -104,6 +104,19 @@
 #define FONT_SIZE_11 0.46f
 #define FONT_SIZE_9 0.37f
 
+enum class TextPosX
+{
+    LEFT,
+    CENTER,
+    RIGHT
+};
+enum class TextPosY
+{
+    TOP,
+    CENTER,
+    BOTTOM
+};
+
 namespace Gui
 {
     Result init(void);
@@ -129,17 +142,11 @@ namespace Gui
     void backgroundAnimatedBottom(void);
 
     void clearTextBufs(void);
-    void dynamicText(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, bool rightAligned = false);
-    void dynamicText(const std::string& text, int x, int y, float scaleX, float scaleY, u32 color, float maxWidth, bool fullCenter = false);
-    void dynamicText(gfxScreen_t screen, int y, const std::string& text, float scaleX, float scaleY, u32 color);
-    void dynamicText(int x, int y, float width, const std::string& text, float scaleX, float scaleY, u32 color);
+    void dynamicText(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY);
 
     C2D_Text cacheStaticText(const std::string& strKey);
     void clearStaticText(void);
-    void staticText(const std::string& strKey, int x, int y, float scaleX, float scaleY, u32 color, bool rightAligned = false);
-    void staticText(const std::string& strKey, int x, int y, float scaleX, float scaleY, u32 color, float maxWidth);
-    void staticText(gfxScreen_t screen, int y, const std::string& strKey, float scaleX, float scaleY, u32 color);
-    void staticText(int x, int y, float width, const std::string& strKey, float scaleX, float scaleY, u32 color);
+    void staticText(const std::string& strKey, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY);
 
     void setScreen(std::unique_ptr<Screen> screen);
     void screenBack(void);

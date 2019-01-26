@@ -63,7 +63,7 @@ void ItemEditScreen::draw() const
     C2D_SceneBegin(g_renderTargetBottom);
     searchButton->draw();
     Gui::sprite(ui_sheet_icon_search_idx, 79, 33);
-    Gui::dynamicText(searchString, 95, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, false);
+    Gui::dynamicText(searchString, 95, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
     C2D_SceneBegin(g_renderTargetTop);
     Gui::sprite(ui_sheet_part_editor_20x2_idx, 0, 0);
@@ -81,7 +81,7 @@ void ItemEditScreen::draw() const
             break;
         }
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
-        Gui::dynamicText(items[i + hid.page() * hid.maxVisibleEntries()].first, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
+        Gui::dynamicText(items[i + hid.page() * hid.maxVisibleEntries()].first, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     }
 }
 
