@@ -52,7 +52,7 @@ Bank::Bank()
         }
         in.close();
 
-        Configuration::getInstance().storageSize(oldSize / 232);
+        Configuration::getInstance().storageSize(oldSize / 232 / 30);
         Configuration::getInstance().save();
 
         data = new u8[size = sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30];
