@@ -227,7 +227,7 @@ std::vector<C2D_Text> Gui::parseText(const std::string& str, C2D_TextBuf buffer)
             else
             {
                 C2D_Text text;
-                C2D_TextFontParse(&text, fonts[currentFont], buffer, parseMe.c_str());
+                C2D_TextFontParse(&text, fonts[prevFont], buffer, parseMe.c_str());
                 C2D_TextOptimize(&text);
                 ret.push_back(text);
                 parseMe = currentChar;
