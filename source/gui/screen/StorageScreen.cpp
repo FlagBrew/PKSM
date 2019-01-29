@@ -35,6 +35,8 @@
 #include "ClickButton.hpp"
 #include "SavLGPE.hpp"
 #include "random.hpp"
+#include "SortSelectionScreen.hpp"
+#include <variant>
 
 static bool backHeld = false;
 
@@ -74,6 +76,57 @@ static u8 type2(Generation generation, u16 species)
             return 0; //PersonalLGPE::type2(species);
     }
     return 0;
+}
+
+u32 getSortValue(const std::shared_ptr<PKX> pkmn, SortType type)
+{
+    switch (type)
+    {
+        case DEX:
+            return pkmn->species();
+        case FORM:
+            return pkmn->alternativeForm();
+        case TYPE1:
+            return type1(pkmn->generation(), pkmn->formSpecies());
+        case TYPE2:
+            return type2(pkmn->generation(), pkmn->formSpecies());
+        case HP:
+            return pkmn->stat(0);
+        case ATK:
+            return pkmn->stat(1);
+        case DEF:
+            return pkmn->stat(2);
+        case SATK:
+            return pkmn->stat(4);
+        case SDEF:
+            return pkmn->stat(5);
+        case SPE:
+            return pkmn->stat(3);
+        case NATURE:
+            return pkmn->nature();
+        case LEVEL:
+            return pkmn->level();
+        case TID:
+            return pkmn->TID();
+        case HPIV:
+            return pkmn->iv(0);
+        case ATKIV:
+            return pkmn->iv(1);
+        case DEFIV:
+            return pkmn->iv(2);
+        case SATKIV:
+            return pkmn->iv(4);
+        case SDEFIV:
+            return pkmn->iv(5);
+        case SPEIV:
+            return pkmn->iv(3);
+        case HIDDENPOWER:
+            return pkmn->hpType();
+        case FRIENDSHIP:
+            return pkmn->currentFriendship();
+        default: // If this happens, something terribly, terribly wrong has occurred.
+            return 0;
+    }
 }
 
 int bobPointer()
@@ -208,6 +261,18 @@ StorageScreen::StorageScreen()
     }
     clickButtons[30] = new ClickButton(32, 15, 164, 24, [this](){ return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0);
     TitleLoader::save->cryptBoxData(true);
+
+    funcButtons[0] = new ClickButton(106, 99, 108, 28, [this](){ sortSelector = true; funcSelector = false; justSwitched = true; return true; }, ui_sheet_button_editor_idx,
+                                        i18n::localize("SORT"), FONT_SIZE_12, COLOR_BLACK);
+    funcButtons[1] = new ClickButton(106, 130, 108, 28, [this](){ filterSelector = true; funcSelector = false; justSwitched = true; return true; }, ui_sheet_button_editor_idx,
+                                        i18n::localize("FILTER"), FONT_SIZE_12, COLOR_BLACK);
+
+    sortButtons[0] = new ClickButton(51, 68, 108, 28, [this](){ return this->pickSort(0); }, ui_sheet_button_editor_idx, "", 0.0f, 0);
+    sortButtons[1] = new ClickButton(51, 99, 108, 28, [this](){ return this->pickSort(1); }, ui_sheet_button_editor_idx, "", 0.0f, 0);
+    sortButtons[2] = new ClickButton(51, 130, 108, 28, [this](){ return this->pickSort(2); }, ui_sheet_button_editor_idx, "", 0.0f, 0);
+    sortButtons[3] = new ClickButton(51, 161, 108, 28, [this](){ return this->pickSort(3); }, ui_sheet_button_editor_idx, "", 0.0f, 0);
+    sortButtons[4] = new ClickButton(51, 192, 108, 28, [this](){ return this->pickSort(4); }, ui_sheet_button_editor_idx, "", 0.0f, 0);
+    sortButtons[5] = new ClickButton(161, 108, 108, 28, [this](){ justSwitched = true; return this->sort(); }, ui_sheet_button_editor_idx, i18n::localize("SORT"), FONT_SIZE_12, COLOR_BLACK);
 }
 
 StorageScreen::~StorageScreen()
@@ -217,6 +282,14 @@ StorageScreen::~StorageScreen()
         delete button;
     }
     for (auto button : clickButtons)
+    {
+        delete button;
+    }
+    for (auto button : funcButtons)
+    {
+        delete button;
+    }
+    for (auto button : sortButtons)
     {
         delete button;
     }
@@ -349,11 +422,44 @@ void StorageScreen::draw() const
         {
             Gui::staticText(i18n::localize("PRESS_TO_CLONE"), 160, 110, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
         }
-        mainButtons[6]->draw();
+        mainButtons[7]->draw();
         viewer->draw();
     }
     else
     {
+        if (funcSelector)
+        {
+            C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, COLOR_MASKBLACK);
+            for (auto button : funcButtons)
+            {
+                button->draw();
+            }
+            mainButtons[7]->draw();
+        }
+        else if (sortSelector)
+        {
+            C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, COLOR_MASKBLACK);
+            for (auto button : sortButtons)
+            {
+                button->draw();
+            }
+            mainButtons[7]->draw();
+            for (size_t i = 0; i < 5; i++)
+            {
+                if (i >= sortTypes.size())
+                {
+                    Gui::dynamicText(i18n::localize(std::string(sortTypeToString(NONE))), 105, 82 + 31 *i, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER);
+                }
+                else
+                {
+                    Gui::dynamicText(i18n::localize(std::string(sortTypeToString(sortTypes[i]))), 105, 82 + 31 *i, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER);
+                }
+            }
+        }
+        else if (filterSelector)
+        {
+            // Draw filter buttons
+        }
         C2D_SceneBegin(g_renderTargetTop);
         Gui::sprite(ui_sheet_emulated_bg_top_green, 0, 0);
         Gui::sprite(ui_sheet_bg_style_top_idx, 0, 0);
@@ -498,147 +604,9 @@ void StorageScreen::update(touchPosition* touch)
     static bool sleep = true;
     u32 kDown = hidKeysDown();
     u32 kHeld = hidKeysHeld();
-    if (!viewer)
+    if (viewer)
     {
-        for (size_t i = 0; i < mainButtons.size(); i++)
-        {
-            if (mainButtons[i]->update(touch))
-                return;
-        }
-        backHeld = false;
-        for (Button* button : clickButtons)
-        {
-            if (button->update(touch))
-                return;
-        }
-
-        static int buttonCooldown = 10;
-
-        if (kDown & KEY_A)
-        {
-            if (cursorIndex == 0)
-            {
-                if (!moveMon)
-                {
-                    Gui::setNextKeyboardFunc(std::bind(&StorageScreen::setBoxName, this, storageChosen));
-                }
-            }
-            else
-            {
-                pickup();
-            }
-        }
-        else if (kDown & KEY_B)
-        {
-            backButton();
-            return;
-        }
-        else if (kDown & KEY_X)
-        {
-            showViewer();
-            return;
-        }
-        else if (buttonCooldown <= 0)
-        {
-            sleep = false;
-            if (kHeld & KEY_LEFT)
-            {
-                if (cursorIndex == 0)
-                {
-                    prevBox();
-                }
-                else if (cursorIndex > 1) 
-                {
-                    cursorIndex--;
-                }
-                else if (cursorIndex == 1)
-                {
-                    prevBox();
-                    cursorIndex = 30;
-                }
-                sleep = true;
-            }
-            else if (kHeld & KEY_RIGHT)
-            {
-                if (cursorIndex == 0)
-                {
-                    nextBox();
-                }
-                else if (cursorIndex < 30)
-                {
-                    cursorIndex++;
-                }
-                else if (cursorIndex == 30)
-                {
-                    nextBox();
-                    cursorIndex = 1;
-                }
-                sleep = true;
-            }
-            else if (kHeld & KEY_UP)
-            {
-                if (cursorIndex == 0 && !storageChosen)
-                {
-                    storageChosen = true;
-                    cursorIndex = 27;
-                }
-                else if (cursorIndex > 0 && cursorIndex <= 6)
-                {
-                    cursorIndex = 0;
-                }
-                else if (cursorIndex > 6)
-                {			
-                    cursorIndex -= 6;
-                }
-                sleep = true;
-            }
-            else if (kHeld & KEY_DOWN)
-            {
-                if (cursorIndex >= 25 && storageChosen)
-                {
-                    storageChosen = false;
-                    cursorIndex = 0;
-                }
-                else if (cursorIndex == 0)
-                {
-                    cursorIndex = 3;
-                }
-                else if (cursorIndex < 25)
-                {
-                    cursorIndex += 6;
-                }
-                sleep = true;
-            }
-            else if (kHeld & KEY_R)
-            {
-                nextBox();
-                sleep = true;
-            }
-            else if (kHeld & KEY_L)
-            {
-                prevBox();
-                sleep = true;
-            }
-            else if (kHeld & KEY_ZR)
-            {
-                nextBoxTop();
-                sleep = true;
-            }
-            else if (kHeld & KEY_ZL)
-            {
-                prevBoxTop();
-                sleep = true;
-            }
-
-            if (sleep)
-                buttonCooldown = 10;
-        }
-        if (sleep)
-            buttonCooldown--;
-    }
-    else
-    {
-        if (kDown & KEY_B || mainButtons[6]->update(touch))
+        if (kDown & KEY_B || mainButtons[7]->update(touch))
         {
             backButton();
         }
@@ -646,6 +614,172 @@ void StorageScreen::update(touchPosition* touch)
         {
             moveMon = viewer->getPkm()->clone();
             backButton();
+        }
+    }
+    else
+    {
+        
+        if (kDown & KEY_B)
+        {
+            backButton();
+            return;
+        }
+        if (funcSelector)
+        {
+            for (auto button : funcButtons)
+            {
+                button->update(touch);
+            }
+            mainButtons[7]->update(touch);
+        }
+        else if (sortSelector)
+        {
+            for (auto button : sortButtons)
+            {
+                button->update(touch);
+            }
+            mainButtons[7]->update(touch);
+        }
+        else if (filterSelector)
+        {
+            filterSelector = false;
+        }
+        else
+        {
+            for (size_t i = 0; i < mainButtons.size(); i++)
+            {
+                if (mainButtons[i]->update(touch))
+                    return;
+            }
+            backHeld = false;
+            for (Button* button : clickButtons)
+            {
+                if (button->update(touch))
+                    return;
+            }
+
+            static int buttonCooldown = 10;
+
+            if (kDown & KEY_A)
+            {
+                if (cursorIndex == 0)
+                {
+                    if (!moveMon)
+                    {
+                        Gui::setNextKeyboardFunc(std::bind(&StorageScreen::setBoxName, this, storageChosen));
+                    }
+                }
+                else
+                {
+                    pickup();
+                }
+            }
+            else if (kDown & KEY_X)
+            {
+                showViewer();
+                return;
+            }
+            else if (kDown & KEY_START)
+            {
+                funcSelector = true;
+            }
+            else if (buttonCooldown <= 0)
+            {
+                sleep = false;
+                if (kHeld & KEY_LEFT)
+                {
+                    if (cursorIndex == 0)
+                    {
+                        prevBox();
+                    }
+                    else if (cursorIndex > 1) 
+                    {
+                        cursorIndex--;
+                    }
+                    else if (cursorIndex == 1)
+                    {
+                        prevBox();
+                        cursorIndex = 30;
+                    }
+                    sleep = true;
+                }
+                else if (kHeld & KEY_RIGHT)
+                {
+                    if (cursorIndex == 0)
+                    {
+                        nextBox();
+                    }
+                    else if (cursorIndex < 30)
+                    {
+                        cursorIndex++;
+                    }
+                    else if (cursorIndex == 30)
+                    {
+                        nextBox();
+                        cursorIndex = 1;
+                    }
+                    sleep = true;
+                }
+                else if (kHeld & KEY_UP)
+                {
+                    if (cursorIndex == 0 && !storageChosen)
+                    {
+                        storageChosen = true;
+                        cursorIndex = 27;
+                    }
+                    else if (cursorIndex > 0 && cursorIndex <= 6)
+                    {
+                        cursorIndex = 0;
+                    }
+                    else if (cursorIndex > 6)
+                    {			
+                        cursorIndex -= 6;
+                    }
+                    sleep = true;
+                }
+                else if (kHeld & KEY_DOWN)
+                {
+                    if (cursorIndex >= 25 && storageChosen)
+                    {
+                        storageChosen = false;
+                        cursorIndex = 0;
+                    }
+                    else if (cursorIndex == 0)
+                    {
+                        cursorIndex = 3;
+                    }
+                    else if (cursorIndex < 25)
+                    {
+                        cursorIndex += 6;
+                    }
+                    sleep = true;
+                }
+                else if (kHeld & KEY_R)
+                {
+                    nextBox();
+                    sleep = true;
+                }
+                else if (kHeld & KEY_L)
+                {
+                    prevBox();
+                    sleep = true;
+                }
+                else if (kHeld & KEY_ZR)
+                {
+                    nextBoxTop();
+                    sleep = true;
+                }
+                else if (kHeld & KEY_ZL)
+                {
+                    prevBoxTop();
+                    sleep = true;
+                }
+
+                if (sleep)
+                    buttonCooldown = 10;
+            }
+            if (sleep)
+                buttonCooldown--;
         }
     }
 }
@@ -745,6 +879,18 @@ bool StorageScreen::backButton()
         if (viewer)
         {
             viewer = nullptr;
+        }
+        else if (funcSelector)
+        {
+            funcSelector = false;
+        }
+        else if (sortSelector)
+        {
+            sortSelector = false;
+        }
+        else if (filterSelector)
+        {
+            filterSelector = false;
         }
         else if (moveMon)
         {
@@ -1324,5 +1470,94 @@ bool StorageScreen::swapBoxWithStorage()
         unswapped.pop_back();
         Gui::warn(i18n::localize("NO_SWAP_BULK"), unswapped);
     }
+    return false;
+}
+
+bool StorageScreen::pickSort(size_t number)
+{
+    if (number >= sortTypes.size())
+    {
+        number = sortTypes.size();
+        sortTypes.push_back(NONE);
+    }
+    SortSelectionScreen screen(sortTypes[number]);
+    sortTypes[number] = screen.run();
+    while (sortTypes.size() > 1 && sortTypes.back() == NONE)
+    {
+        sortTypes.pop_back();
+    }
+    return false;
+}
+
+bool StorageScreen::sort()
+{
+    if (!sortTypes.empty())
+    {
+        if (std::find(sortTypes.begin(), sortTypes.end(), DEX) == sortTypes.end())
+        {
+            sortTypes.push_back(DEX);
+        }
+        std::vector<std::shared_ptr<PKX>> sortMe;
+        if (storageChosen)
+        {
+            for (size_t i = 0; i < Configuration::getInstance().storageSize() * 30; i++)
+            {
+                std::shared_ptr<PKX> pkm = bank.pkm(i / 30, i % 30);
+                if (pkm->encryptionConstant() != 0 && pkm->species() != 0)
+                {
+                    sortMe.push_back(pkm);
+                }
+            }
+        }
+        else
+        {
+            for (int i = 0; i < TitleLoader::save->maxSlot(); i++)
+            {
+                std::shared_ptr<PKX> pkm = TitleLoader::save->pkm(i / 30, i % 30);
+                if (pkm->encryptionConstant() != 0 && pkm->species() != 0)
+                {
+                    sortMe.push_back(pkm);
+                }
+            }
+        }
+        std::stable_sort(sortMe.begin(), sortMe.end(), [this](const std::shared_ptr<PKX>& pkm1, const std::shared_ptr<PKX>& pkm2){
+            for (auto type : sortTypes)
+            {
+                if (getSortValue(pkm1, type) < getSortValue(pkm2, type)) return true;
+                if (getSortValue(pkm2, type) < getSortValue(pkm1, type)) return false;
+            }
+            return false;
+        });
+        // for (auto type : sortTypes)
+        // {
+        //     if (type != NONE)
+        //         container.sort(type);
+        // }
+        // auto sortMe = container.join();
+
+        if (storageChosen)
+        {
+            for (size_t i = 0; i < sortMe.size(); i++)
+            {
+                bank.pkm(*sortMe[i], i / 30, i % 30);
+            }
+            for (int i = sortMe.size(); i < Configuration::getInstance().storageSize() * 30; i++)
+            {
+                bank.pkm(*TitleLoader::save->emptyPkm(), i / 30, i % 30);
+            }
+        }
+        else
+        {
+            for (size_t i = 0; i < sortMe.size(); i++)
+            {
+                TitleLoader::save->pkm(*sortMe[i], i / 30, i % 30);
+            }
+            for (int i = sortMe.size(); i < TitleLoader::save->maxSlot(); i++)
+            {
+                TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), i / 30, i % 30);
+            }
+        }
+    }
+    sortSelector = false;
     return false;
 }

@@ -33,6 +33,7 @@
 #include "ViewerScreen.hpp"
 #include "Button.hpp"
 #include "loader.hpp"
+#include "SortSelectionScreen.hpp"
 #include <array>
 
 class StorageScreen : public Screen
@@ -62,11 +63,19 @@ private:
     void setBoxName(bool storage);
     void pickup();
     bool isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTransfer = false);
+    bool pickSort(size_t number);
+    bool sort();
 
     bool storageChosen = false;
     bool fromStorage = false;
+    bool sortSelector = false;
+    mutable bool filterSelector = false;
+    bool funcSelector = false;
     std::array<Button*, 10> mainButtons;
     std::array<Button*, 31> clickButtons;
+    std::array<Button*, 2> funcButtons;
+    std::array<Button*, 6> sortButtons;
+    std::vector<SortType> sortTypes;
     int cursorIndex = 0, storageBox = 0, boxBox = 0;
     std::unique_ptr<ViewerScreen> viewer;
     std::shared_ptr<PKX> moveMon = nullptr;
