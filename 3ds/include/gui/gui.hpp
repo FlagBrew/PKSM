@@ -113,6 +113,7 @@ enum class TextPosY
 
 namespace Gui
 {
+    extern std::vector<C2D_Font> fonts;
     Result init(void);
     void mainLoop(void);
     void exit(void);
@@ -134,10 +135,11 @@ namespace Gui
     void backgroundAnimatedTop(void);
     void backgroundAnimatedBottom(void);
 
+    std::vector<C2D_Text> parseText(const std::string& str, C2D_TextBuf buffer);
     void clearTextBufs(void);
     void dynamicText(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY);
 
-    C2D_Text cacheStaticText(const std::string& strKey);
+    std::vector<C2D_Text> cacheStaticText(const std::string& strKey);
     void clearStaticText(void);
     void staticText(const std::string& strKey, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY);
 

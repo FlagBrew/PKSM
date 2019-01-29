@@ -31,6 +31,10 @@
 #include <queue>
 
 static std::wstring_convert<std::codecvt_utf8_utf16<char16_t>,char16_t> convert;
+namespace Gui
+{
+    extern std::vector<C2D_Font> fonts;
+}
 
 std::string StringUtils::format(const std::string& fmt_str, ...)
 {
@@ -389,7 +393,7 @@ float StringUtils::textWidth(const std::string& text, float scaleX)
             ret = 0.0f;
             continue;
         }
-        u16 codepoint = 0xFFFF;
+        u16 codepoint = 0xFFFD;
         if (text[i] & 0x80 && text[i] & 0x40 && text[i] & 0x20 && !(text[i] & 0x10) && i + 2 < text.size())
         {
             codepoint = text[i] & 0x0F;
@@ -635,4 +639,30 @@ std::string StringUtils::wrap(const std::string& text, float scaleX, float maxWi
     }
 
     return wrapped;
+}
+
+static u16 defaultCharacterIndex(const C2D_Font& font)
+{
+    if (font)
+    {
+        return font->cfnt->finf.alterCharIndex;
+    }
+    else
+    {
+        return fontGetInfo()->alterCharIndex;
+    }
+}
+
+bool StringUtils::fontHasChar(const C2D_Font& font, u16 codepoint)
+{
+    if (codepoint == 0xFFFD)
+    {
+        return true;
+    }
+    u16 alterCharIndex = defaultCharacterIndex(font);
+    if (C2D_FontGlyphIndexFromCodePoint(font, codepoint) == alterCharIndex)
+    {
+        return false;
+    }
+    return true;
 }
