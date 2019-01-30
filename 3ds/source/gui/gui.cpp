@@ -443,10 +443,10 @@ Result Gui::init(void)
     spritesheet_pkm = C2D_SpriteSheetLoad("/3ds/PKSM/assets/pkm_spritesheet.t3x");
     spritesheet_types = C2D_SpriteSheetLoad("/3ds/PKSM/assets/types_spritesheet.t3x");
 
-    fonts.push_back(C2D_FontLoadFromSystem(CFG_REGION_USA));
-    fonts.push_back(C2D_FontLoadFromSystem(CFG_REGION_CHN));
-    fonts.push_back(C2D_FontLoadFromSystem(CFG_REGION_KOR));
-    fonts.push_back(C2D_FontLoadFromSystem(CFG_REGION_TWN));
+    fonts.push_back(C2D_FontLoadSystem(CFG_REGION_USA));
+    fonts.push_back(C2D_FontLoadSystem(CFG_REGION_CHN));
+    fonts.push_back(C2D_FontLoadSystem(CFG_REGION_KOR));
+    fonts.push_back(C2D_FontLoadSystem(CFG_REGION_TWN));
 
     bgBoxes = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_anim_squares_idx);
 
