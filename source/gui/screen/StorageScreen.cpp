@@ -78,57 +78,6 @@ static u8 type2(Generation generation, u16 species)
     return 0;
 }
 
-u32 getSortValue(const std::shared_ptr<PKX> pkmn, SortType type)
-{
-    switch (type)
-    {
-        case DEX:
-            return pkmn->species();
-        case FORM:
-            return pkmn->alternativeForm();
-        case TYPE1:
-            return type1(pkmn->generation(), pkmn->formSpecies());
-        case TYPE2:
-            return type2(pkmn->generation(), pkmn->formSpecies());
-        case HP:
-            return pkmn->stat(0);
-        case ATK:
-            return pkmn->stat(1);
-        case DEF:
-            return pkmn->stat(2);
-        case SATK:
-            return pkmn->stat(4);
-        case SDEF:
-            return pkmn->stat(5);
-        case SPE:
-            return pkmn->stat(3);
-        case NATURE:
-            return pkmn->nature();
-        case LEVEL:
-            return pkmn->level();
-        case TID:
-            return pkmn->TID();
-        case HPIV:
-            return pkmn->iv(0);
-        case ATKIV:
-            return pkmn->iv(1);
-        case DEFIV:
-            return pkmn->iv(2);
-        case SATKIV:
-            return pkmn->iv(4);
-        case SDEFIV:
-            return pkmn->iv(5);
-        case SPEIV:
-            return pkmn->iv(3);
-        case HIDDENPOWER:
-            return pkmn->hpType();
-        case FRIENDSHIP:
-            return pkmn->currentFriendship();
-        default: // If this happens, something terribly, terribly wrong has occurred.
-            return 0;
-    }
-}
-
 int bobPointer()
 {
     static int currentBob = 0;
@@ -1523,8 +1472,105 @@ bool StorageScreen::sort()
         std::stable_sort(sortMe.begin(), sortMe.end(), [this](const std::shared_ptr<PKX>& pkm1, const std::shared_ptr<PKX>& pkm2){
             for (auto type : sortTypes)
             {
-                if (getSortValue(pkm1, type) < getSortValue(pkm2, type)) return true;
-                if (getSortValue(pkm2, type) < getSortValue(pkm1, type)) return false;
+                switch (type)
+                {
+                    case DEX:
+                        if (pkm1->species() < pkm2->species()) return true;
+                        if (pkm2->species() < pkm1->species()) return false;
+                        break;
+                    case FORM:
+                        if (pkm1->alternativeForm() < pkm2->alternativeForm()) return true;
+                        if (pkm2->alternativeForm() < pkm1->alternativeForm()) return false;
+                        break;
+                    case TYPE1:
+                        if (type1(pkm1->generation(), pkm1->formSpecies()) < type1(pkm2->generation(), pkm2->formSpecies())) return true;
+                        if (type1(pkm2->generation(), pkm2->formSpecies()) < type1(pkm1->generation(), pkm1->formSpecies())) return false;
+                        break;
+                    case TYPE2:
+                        if (type2(pkm1->generation(), pkm1->formSpecies()) < type2(pkm2->generation(), pkm2->formSpecies())) return true;
+                        if (type2(pkm2->generation(), pkm2->formSpecies()) < type2(pkm1->generation(), pkm1->formSpecies())) return false;
+                        break;
+                    case HP:
+                        if (pkm1->stat(0) < pkm2->stat(0)) return true;
+                        if (pkm2->stat(0) < pkm1->stat(0)) return false;
+                        break;
+                    case ATK:
+                        if (pkm1->stat(1) < pkm2->stat(1)) return true;
+                        if (pkm2->stat(1) < pkm1->stat(1)) return false;
+                        break;
+                    case DEF:
+                        if (pkm1->stat(2) < pkm2->stat(2)) return true;
+                        if (pkm2->stat(2) < pkm1->stat(2)) return false;
+                        break;
+                    case SATK:
+                        if (pkm1->stat(4) < pkm2->stat(4)) return true;
+                        if (pkm2->stat(4) < pkm1->stat(4)) return false;
+                        break;
+                    case SDEF:
+                        if (pkm1->stat(5) < pkm2->stat(5)) return true;
+                        if (pkm2->stat(5) < pkm1->stat(5)) return false;
+                        break;
+                    case SPE:
+                        if (pkm1->stat(3) < pkm2->stat(3)) return true;
+                        if (pkm2->stat(3) < pkm1->stat(3)) return false;
+                        break;
+                    case NATURE:
+                        if (pkm1->nature() < pkm2->nature()) return true;
+                        if (pkm2->nature() < pkm1->nature()) return false;
+                        break;
+                    case LEVEL:
+                        if (pkm1->level() < pkm2->level()) return true;
+                        if (pkm2->level() < pkm1->level()) return false;
+                        break;
+                    case TID:
+                        if (pkm1->TID() < pkm2->TID()) return true;
+                        if (pkm2->TID() < pkm1->TID()) return false;
+                        break;
+                    case HPIV:
+                        if (pkm1->iv(0) < pkm2->iv(0)) return true;
+                        if (pkm2->iv(0) < pkm1->iv(0)) return false;
+                        break;
+                    case ATKIV:
+                        if (pkm1->iv(1) < pkm2->iv(1)) return true;
+                        if (pkm2->iv(1) < pkm1->iv(1)) return false;
+                        break;
+                    case DEFIV:
+                        if (pkm1->iv(2) < pkm2->iv(2)) return true;
+                        if (pkm2->iv(2) < pkm1->iv(2)) return false;
+                        break;
+                    case SATKIV:
+                        if (pkm1->iv(4) < pkm2->iv(4)) return true;
+                        if (pkm2->iv(4) < pkm1->iv(4)) return false;
+                        break;
+                    case SDEFIV:
+                        if (pkm1->iv(5) < pkm2->iv(5)) return true;
+                        if (pkm2->iv(5) < pkm1->iv(5)) return false;
+                        break;
+                    case SPEIV:
+                        if (pkm1->iv(3) < pkm2->iv(3)) return true;
+                        if (pkm2->iv(3) < pkm1->iv(3)) return false;
+                        break;
+                    case HIDDENPOWER:
+                        if (pkm1->hpType() < pkm2->hpType()) return true;
+                        if (pkm2->hpType() < pkm1->hpType()) return false;
+                        break;
+                    case FRIENDSHIP:
+                        if (pkm1->currentFriendship() < pkm2->currentFriendship()) return true;
+                        if (pkm2->currentFriendship() < pkm1->currentFriendship()) return false;
+                        break;
+                    case NICKNAME:
+                        if (pkm1->nickname() < pkm2->nickname()) return true;
+                        if (pkm2->nickname() < pkm1->nickname()) return false;
+                        break;
+                    case SPECIESNAME:
+                        if (i18n::species(Configuration::getInstance().language(), pkm1->species()) < i18n::species(Configuration::getInstance().language(), pkm2->species())) return true;
+                        if (i18n::species(Configuration::getInstance().language(), pkm2->species()) < i18n::species(Configuration::getInstance().language(), pkm1->species())) return false;
+                        break;
+                    case OTNAME:
+                        if (pkm1->otName() < pkm2->otName()) return true;
+                        if (pkm2->otName() < pkm1->otName()) return false;
+                        break;
+                }
             }
             return false;
         });

@@ -34,6 +34,7 @@ enum SortType
 {
     NONE,
     DEX,
+    SPECIESNAME,
     FORM,
     TYPE1,
     TYPE2,
@@ -53,7 +54,9 @@ enum SortType
     LEVEL,
     TID,
     HIDDENPOWER,
-    FRIENDSHIP
+    FRIENDSHIP,
+    NICKNAME,
+    OTNAME
 };
 
 static constexpr std::string_view sortTypeToString(SortType type)
@@ -105,6 +108,12 @@ static constexpr std::string_view sortTypeToString(SortType type)
             return "HIDDEN_POWER";
         case FRIENDSHIP:
             return "FRIENDSHIP";
+        case NICKNAME:
+            return "NICKNAME";
+        case SPECIESNAME:
+            return "SPECIES_NAME";
+        case OTNAME:
+            return "OT_NAME";
     }
 }
 
@@ -121,9 +130,10 @@ private:
     mutable bool firstDraw = true;
     bool finished = false;
     SortType original;
-    static constexpr std::array<SortType, 22> vals = {
+    static constexpr std::array<SortType, 25> vals = {
         NONE,
         DEX,
+        SPECIESNAME,
         FORM,
         TYPE1,
         TYPE2,
@@ -143,7 +153,9 @@ private:
         LEVEL,
         TID,
         HIDDENPOWER,
-        FRIENDSHIP
+        FRIENDSHIP,
+        NICKNAME,
+        OTNAME
     };
 };
 
