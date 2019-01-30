@@ -65,6 +65,7 @@ private:
     bool isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTransfer = false);
     bool pickSort(size_t number);
     bool sort();
+    bool selectBox();
 
     bool storageChosen = false;
     bool fromStorage = false;

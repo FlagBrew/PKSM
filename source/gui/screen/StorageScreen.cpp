@@ -36,6 +36,7 @@
 #include "SavLGPE.hpp"
 #include "random.hpp"
 #include "SortSelectionScreen.hpp"
+#include "BoxSelectionScreen.hpp"
 #include <variant>
 
 static bool backHeld = false;
@@ -631,6 +632,11 @@ void StorageScreen::update(touchPosition* touch)
             else if (kDown & KEY_START)
             {
                 funcSelector = true;
+            }
+            else if (kDown & KEY_SELECT)
+            {
+                selectBox();
+                return;
             }
             else if (buttonCooldown <= 0)
             {
@@ -1606,4 +1612,31 @@ bool StorageScreen::sort()
     }
     sortSelector = false;
     return false;
+}
+
+bool StorageScreen::selectBox()
+{
+    std::vector<std::string> boxes;
+    int* boxToChange = nullptr;
+    if (storageChosen)
+    {
+        for (int i = 0; i < Configuration::getInstance().storageSize(); i++)
+        {
+            boxes.push_back(bank.boxName(i));
+        }
+        boxToChange = &storageBox;
+    }
+    else
+    {
+        for (int i = 0; i < TitleLoader::save->maxBoxes(); i++)
+        {
+            boxes.push_back(TitleLoader::save->boxName(i));
+        }
+        boxToChange = &boxBox;
+    }
+
+    BoxSelectionScreen box(boxes, *boxToChange);
+    *boxToChange = box.run();
+
+    return true;
 }
