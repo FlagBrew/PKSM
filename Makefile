@@ -111,7 +111,7 @@ CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O2 -mword-relocations \
 			-fomit-frame-pointer -ffunction-sections \
 			-Wno-implicit-fallthrough -Wno-unused-parameter \
 			$(ARCH) \
-			-DQUIRC_MAX_REGIONS=65534 \
+			-DQUIRC_MAX_REGIONS=10000 \
 			-DUNIX_HOST \
 			-DVERSION_MAJOR=${VERSION_MAJOR} \
 			-DVERSION_MINOR=${VERSION_MINOR} \
