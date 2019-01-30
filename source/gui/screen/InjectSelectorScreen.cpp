@@ -282,7 +282,24 @@ void InjectSelectorScreen::draw() const
 bool InjectSelectorScreen::doQR()
 {
     u8* data = nullptr;
-    QRMode initMode = QRMode(TitleLoader::save->generation());
+    QRMode initMode;
+    switch (TitleLoader::save->generation())
+    {
+        case Generation::FOUR:
+            initMode = WCX4;
+            break;
+        case Generation::FIVE:
+            initMode = WCX5;
+            break;
+        case Generation::SIX:
+            initMode = WCX6;
+            break;
+        case Generation::SEVEN:
+            initMode = WCX7;
+            break;
+        default:
+            return false;
+    }
 
     QRScanner::init(initMode, data);
 
