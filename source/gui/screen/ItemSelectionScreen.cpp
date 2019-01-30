@@ -68,6 +68,8 @@ ItemSelectionScreen::ItemSelectionScreen(std::shared_ptr<PKX> pkm) : SelectionSc
     for (int i = 1; i <= TitleLoader::save->maxItem(); i++)
     {
         if (rawItems[i].find("\uFF1F\uFF1F\uFF1F") != std::string::npos || rawItems[i].find("???") != std::string::npos) continue;
+        else if (i >= 807 && i <= 835) continue; // Bag Z-Crystals
+        else if (i >= 927 && i <= 932) continue; // Bag Z-Crystals
         items.push_back({i, rawItems[i]});
     }
     std::sort(items.begin(), items.end(), stringComp);
