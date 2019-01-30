@@ -359,7 +359,7 @@ std::string StringUtils::splitWord(const std::string& text, float scaleX, float 
             }
             else
             {
-                widthCache.insert_or_assign(codepoint, fontGetCharWidthInfo(fontGlyphIndexFromCodePoint(codepoint)));
+                widthCache.insert_or_assign(codepoint, fontGetCharWidthInfo(nullptr, fontGlyphIndexFromCodePoint(nullptr, codepoint)));
                 widthCacheOrder.push(codepoint);
                 if (widthCache.size() > 512)
                 {
@@ -419,7 +419,7 @@ float StringUtils::textWidth(const std::string& text, float scaleX)
         }
         else
         {
-            widthCache.insert_or_assign(codepoint, fontGetCharWidthInfo(fontGlyphIndexFromCodePoint(codepoint)));
+            widthCache.insert_or_assign(codepoint, fontGetCharWidthInfo(nullptr, fontGlyphIndexFromCodePoint(nullptr, codepoint)));
             widthCacheOrder.push(codepoint);
             if (widthCache.size() > 1000)
             {
@@ -453,7 +453,7 @@ float StringUtils::textWidth(const std::u16string& text, float scaleX)
         }
         else
         {
-            widthCache.insert_or_assign(text[i], fontGetCharWidthInfo(fontGlyphIndexFromCodePoint(text[i])));
+            widthCache.insert_or_assign(text[i], fontGetCharWidthInfo(nullptr, fontGlyphIndexFromCodePoint(nullptr, text[i])));
             widthCacheOrder.push(text[i]);
             if (widthCache.size() > 512)
             {
@@ -589,7 +589,7 @@ std::string StringUtils::wrap(const std::string& text, float scaleX, float maxWi
         split.pop_back();
     }
 
-    const float ellipsis = fontGetCharWidthInfo(fontGlyphIndexFromCodePoint('.'))->charWidth * 3 * scaleX;
+    const float ellipsis = fontGetCharWidthInfo(nullptr, fontGlyphIndexFromCodePoint(nullptr, '.'))->charWidth * 3 * scaleX;
 
     // If there's space for the ellipsis, add it
     if (textWidth(split[lines - 1], scaleX) + ellipsis <= maxWidth)
@@ -649,7 +649,7 @@ static u16 defaultCharacterIndex(const C2D_Font& font)
     }
     else
     {
-        return fontGetInfo()->alterCharIndex;
+        return fontGetInfo(nullptr)->alterCharIndex;
     }
 }
 

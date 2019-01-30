@@ -249,7 +249,7 @@ std::vector<C2D_Text> Gui::parseText(const std::string& str, C2D_TextBuf buffer)
 
 void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY)
 {
-    const float lineMod = ceilf(scaleY * fontGetInfo()->lineFeed);
+    const float lineMod = ceilf(scaleY * fontGetInfo(nullptr)->lineFeed);
 
     static std::vector<std::string> print;
     static std::vector<int> printX;
@@ -340,7 +340,7 @@ void Gui::clearStaticText()
 
 void Gui::staticText(const std::string& strKey, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY)
 {
-    const float lineMod = ceilf(scaleY * fontGetInfo()->lineFeed);
+    const float lineMod = ceilf(scaleY * fontGetInfo(nullptr)->lineFeed);
 
     static std::vector<std::string> print;
     static std::vector<int> printX;
