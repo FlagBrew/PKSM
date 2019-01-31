@@ -1042,7 +1042,7 @@ bool StorageScreen::isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTrans
         if (!bulkTransfer) Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_SPECIES"));
         return false;
     }
-    else if (moveMon->alternativeForm() > formCounter(moveMon->species()))
+    else if (moveMon->alternativeForm() > formCounter(moveMon->species()) && !((moveMon->species() == 664 || moveMon->species() == 665) && moveMon->alternativeForm() <= formCounter(666)))
     {
         if (!bulkTransfer) Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_FORM"));
         return false;

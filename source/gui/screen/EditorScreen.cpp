@@ -989,6 +989,10 @@ bool EditorScreen::selectForm()
             break;
     }
     u8 count = formCounter(pkm->species());
+    if (pkm->species() == 664 || pkm->species() == 665)
+    {
+        count = formCounter(666);
+    }
     if (count > 1)
     {
         saved = false;
