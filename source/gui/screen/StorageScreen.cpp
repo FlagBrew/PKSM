@@ -1455,7 +1455,7 @@ bool StorageScreen::sort()
         std::vector<std::shared_ptr<PKX>> sortMe;
         if (storageChosen)
         {
-            for (size_t i = 0; i < Configuration::getInstance().storageSize() * 30; i++)
+            for (int i = 0; i < Configuration::getInstance().storageSize() * 30; i++)
             {
                 std::shared_ptr<PKX> pkm = bank.pkm(i / 30, i % 30);
                 if (pkm->encryptionConstant() != 0 && pkm->species() != 0)
@@ -1575,6 +1575,8 @@ bool StorageScreen::sort()
                     case OTNAME:
                         if (pkm1->otName() < pkm2->otName()) return true;
                         if (pkm2->otName() < pkm1->otName()) return false;
+                        break;
+                    default:
                         break;
                 }
             }

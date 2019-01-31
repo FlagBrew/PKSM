@@ -323,7 +323,7 @@ static void uiThread(void* arg)
                 }
                 u32 dstPos = ((((y >> 3) * (512 >> 3) + (x >> 3)) << 6) + ((x & 1) | ((y & 1) << 1) | ((x & 2) << 1) | ((y & 2) << 2) | ((x & 4) << 2) | ((y & 4) << 3))) * 2;
                 u32 srcPos = (y * 400 + x) * 2;
-                memcpy(&((u8*)data->image.tex->data)[dstPos], &((u8*)data->camera_buffer)[srcPos], 2);
+                memcpy((u8*)data->image.tex->data + dstPos, (u8*)data->camera_buffer + srcPos, 2);
             }
         }
         svcReleaseMutex(data->mutex);
