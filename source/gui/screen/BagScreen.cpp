@@ -526,7 +526,7 @@ void BagScreen::editCount(bool up, int selected)
         }
         else
         {
-            if (item->count() > 2)
+            if (item->count() > 1)
             {
                 item->count(item->count() - 1);
             }
