@@ -122,19 +122,19 @@ ConfigScreen::ConfigScreen() : oldStorage(Configuration::getInstance().storageSi
     tabs[2] = new Button(215, 2, 104, 17, [&](){ currentTab = 2; return false; }, ui_sheet_res_null_idx, "", 0.0f, 0);
 
     // First column of language buttons
-    tabButtons[0].push_back(new Button(37, 52, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::JP); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[0].push_back(new Button(37, 74, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::EN); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[0].push_back(new Button(37, 96, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::FR); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[0].push_back(new Button(37, 118, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::DE); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[0].push_back(new Button(37, 140, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::IT); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[0].push_back(new Button(37, 162, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::ES); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
+    tabButtons[0].push_back(new ClickButton(37, 52, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::JP); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
+    tabButtons[0].push_back(new ClickButton(37, 74, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::EN); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
+    tabButtons[0].push_back(new ClickButton(37, 96, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::FR); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
+    tabButtons[0].push_back(new ClickButton(37, 118, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::DE); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
+    tabButtons[0].push_back(new ClickButton(37, 140, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::IT); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
+    tabButtons[0].push_back(new ClickButton(37, 162, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::ES); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
 
     // Second column of language buttons
-    tabButtons[0].push_back(new Button(177, 52, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::ZH); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[0].push_back(new Button(177, 74, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::KO); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[0].push_back(new Button(177, 96, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::NL); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[0].push_back(new Button(177, 118, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::PT); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[0].push_back(new Button(177, 140, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::RU); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
+    tabButtons[0].push_back(new ClickButton(177, 52, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::ZH); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
+    tabButtons[0].push_back(new ClickButton(177, 74, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::KO); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
+    tabButtons[0].push_back(new ClickButton(177, 96, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::NL); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
+    tabButtons[0].push_back(new ClickButton(177, 118, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::PT); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
+    tabButtons[0].push_back(new ClickButton(177, 140, 8, 8, [](){ Gui::clearStaticText(); Configuration::getInstance().language(Language::RU); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
 
     // Defaults buttons
     tabButtons[1].push_back(new Button(112, 38, 15, 12, [](){ Gui::setNextKeyboardFunc([](){ inputNumber([](u16 a){ Configuration::getInstance().defaultTID(a); }, 5, 0xFFFF); }); return false; }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
