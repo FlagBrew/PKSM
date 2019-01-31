@@ -154,11 +154,12 @@ void Gui::clearTextBufs(void)
     C2D_TextBufClear(dynamicBuf);
 }
 
-static void drawVector(std::vector<C2D_Text> draw, int x, int y, float scaleX, float scaleY, u32 color)
+static void drawVector(std::vector<C2D_Text> draw, int x, int y, int line, float scaleX, float scaleY, u32 color)
 {
     for (auto text : draw)
     {
-        C2D_DrawText(&text, C2D_WithColor, x, y, 0.5f, scaleX, scaleY, color);
+        float lineFeed = scaleY * (text.font ? text.font->cfnt->finf.lineFeed : fontGetInfo(nullptr)->lineFeed);
+        C2D_DrawText(&text, C2D_WithColor | C2D_AtBaseline, x, y + (lineFeed * (float)(line + 1) - (float)(5 * scaleY)), 0.5f, scaleX, scaleY, color);
         x += StringUtils::textWidth(text, scaleX);
     }
 }
@@ -305,7 +306,7 @@ void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float 
         // C2D_TextFontParse(&text, font, dynamicBuf, print[i].c_str());
         // C2D_TextOptimize(&text);
         auto text = parseText(print[i], dynamicBuf);
-        drawVector(text, printX[i], y + lineMod * i, scaleX, scaleY, color);
+        drawVector(text, printX[i], y, i, scaleX, scaleY, color);
         //C2D_DrawText(&text, C2D_WithColor, printX[i], y + lineMod * i, 0.5f, scaleX, scaleY, color);
     }
 
@@ -394,7 +395,7 @@ void Gui::staticText(const std::string& strKey, int x, int y, float scaleX, floa
     {
         auto text = cacheStaticText(print[i]);
         // C2D_DrawText(&text, C2D_WithColor, printX[i], y + lineMod * i, 0.5f, scaleX, scaleY, color);
-        drawVector(text, printX[i], y + lineMod * i, scaleX, scaleY, color);
+        drawVector(text, printX[i], y, i, scaleX, scaleY, color);
     }
 
     print.clear();
