@@ -166,88 +166,19 @@ static void drawVector(std::vector<C2D_Text> draw, int x, int y, int line, float
     }
 }
 
-std::vector<C2D_Text> Gui::parseText(const std::string& str, C2D_TextBuf buffer)
+std::vector<C2D_Text> Gui::parseText(const std::vector<std::string>& str, C2D_TextBuf buffer)
 {
     std::vector<C2D_Text> ret;
-    std::string parseMe = "", currentChar = "";
-    size_t currentFont = 0;
-    for (size_t i = 0; i < str.size() + 1; i++)
+    for (auto i = str.begin(); i != str.end(); i++)
     {
-        u16 codepoint = 0xFFFD;
-        if (str[i] & 0x80 && str[i] & 0x40 && str[i] & 0x20 && !(str[i] & 0x10) && i + 2 < str.size())
-        {
-            codepoint = str[i] & 0x0F;
-            currentChar += str[i];
-            codepoint = codepoint << 6 | (str[i + 1] & 0x3F);
-            currentChar += str[i + 1];
-            codepoint = codepoint << 6 | (str[i + 2] & 0x3F);
-            currentChar += str[i + 2];
-            i += 2;
-        }
-        else if (str[i] & 0x80 && str[i] & 0x40 && !(str[i] & 0x20) && i + 1 < str.size())
-        {
-            codepoint = str[i] & 0x1F;
-            currentChar += str[i];
-            codepoint = codepoint << 6 | (str[i + 1] & 0x3F);
-            currentChar += str[i + 1];
-            i += 1;
-        }
-        else if (!(str[i] & 0x80))
-        {
-            codepoint = str[i];
-            currentChar += str[i];
-        }
-        if (codepoint == 0xFFFD)
-        {
-            parseMe += "\uFFFD";
-            currentChar = "";
-            continue;
-        }
-        else if (codepoint == 0)
-        {
-            C2D_Text text;
-            C2D_TextFontParse(&text, fonts[currentFont], buffer, parseMe.c_str());
-            C2D_TextOptimize(&text);
-            ret.push_back(text);
-            return ret;
-        }
+        C2D_Font font = StringUtils::fontForSplitString(*i);
 
-        if (!StringUtils::fontHasChar(fonts[currentFont], codepoint))
-        {
-            size_t prevFont = currentFont;
-            for (currentFont = 0; currentFont < fonts.size(); currentFont++)
-            {
-                if (currentFont == prevFont)
-                    continue;
-                if (StringUtils::fontHasChar(fonts[currentFont], codepoint))
-                    break;
-            }
-            if (currentFont >= fonts.size())
-            {
-                parseMe += "\uFFFD";
-                currentFont = prevFont;
-            }
-            else
-            {
-                C2D_Text text;
-                C2D_TextFontParse(&text, fonts[prevFont], buffer, parseMe.c_str());
-                C2D_TextOptimize(&text);
-                ret.push_back(text);
-                parseMe = currentChar;
-            }
-        }
-        else
-        {
-            parseMe += currentChar;
-        }
-        currentChar = "";
+        C2D_Text text;
+        C2D_TextFontParse(&text, font, buffer, i->c_str());
+        C2D_TextOptimize(&text);
+        ret.push_back(text);
     }
-    return ret; // Should never reach this point
-    // iterate through string's characters. Example string "Hello, world" but pretend the font doesn't have "world"
-        // character 1 is in X font, and add any other characters in X font
-        // character 8 is in Y font, so parse first substring and add it. Start new substring
-        // character 13 is the null terminator, so parse the second substring and add it
-    // return a vector {C2D_Text{ Font X, "Hello, "}, C2D_Text{ Font Y, "world"}}
+    return ret;
 }
 
 void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY)
@@ -307,8 +238,8 @@ void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float 
         // C2D_Text text;
         // C2D_TextFontParse(&text, font, dynamicBuf, print[i].c_str());
         // C2D_TextOptimize(&text);
-        auto text = parseText(print[i], dynamicBuf);
-        drawVector(text, printX[i], y, i, scaleX, scaleY, color);
+        auto text = StringUtils::fontSplit(print[i]);
+        drawVector(parseText(text, dynamicBuf), printX[i], y, i, scaleX, scaleY, color);
         //C2D_DrawText(&text, C2D_WithColor, printX[i], y + lineMod * i, 0.5f, scaleX, scaleY, color);
     }
 
@@ -324,8 +255,8 @@ std::vector<C2D_Text> Gui::cacheStaticText(const std::string& strKey)
     {
         // C2D_TextFontParse(&text, font, staticBuf, strKey.c_str());
         // C2D_TextOptimize(&text);
-        text = parseText(strKey, staticBuf);
-        staticMap.emplace(strKey, text);
+        auto text = StringUtils::fontSplit(strKey);
+        staticMap.emplace(strKey, parseText(text, staticBuf));
     }
     else
     {

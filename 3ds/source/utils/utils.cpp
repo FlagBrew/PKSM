@@ -359,7 +359,8 @@ std::string StringUtils::splitWord(const std::string& text, float scaleX, float 
             }
             else
             {
-                widthCache.insert_or_assign(codepoint, fontGetCharWidthInfo(nullptr, fontGlyphIndexFromCodePoint(nullptr, codepoint)));
+                std::string tmpString = word.substr(i, iMod + 1); // The character
+                widthCache.insert_or_assign(codepoint, C2D_FontGetCharWidthInfo(fontForSplitString(tmpString), C2D_FontGlyphIndexFromCodePoint(fontForSplitString(tmpString), codepoint)));
                 widthCacheOrder.push(codepoint);
                 if (widthCache.size() > 512)
                 {
@@ -385,6 +386,7 @@ float StringUtils::textWidth(const std::string& text, float scaleX)
 {
     float ret = 0.0f;
     float largestRet = 0.0f;
+    int iMod = 0;
     for (size_t i = 0; i < text.size(); i++)
     {
         if (text[i] == '\n')
@@ -399,17 +401,18 @@ float StringUtils::textWidth(const std::string& text, float scaleX)
             codepoint = text[i] & 0x0F;
             codepoint = codepoint << 6 | (text[i + 1] & 0x3F);
             codepoint = codepoint << 6 | (text[i + 2] & 0x3F);
-            i += 2;
+            iMod = 2;
         }
         else if (text[i] & 0x80 && text[i] & 0x40 && !(text[i] & 0x20) && i + 1 < text.size())
         {
             codepoint = text[i] & 0x1F;
             codepoint = codepoint << 6 | (text[i + 1] & 0x3F);
-            i += 1;
+            iMod = 1;
         }
         else if (!(text[i] & 0x80))
         {
             codepoint = text[i];
+            iMod = 0;
         }
         float charWidth;
         auto width = widthCache.find(codepoint);
@@ -419,7 +422,8 @@ float StringUtils::textWidth(const std::string& text, float scaleX)
         }
         else
         {
-            widthCache.insert_or_assign(codepoint, fontGetCharWidthInfo(nullptr, fontGlyphIndexFromCodePoint(nullptr, codepoint)));
+            std::string tmpString = text.substr(i, iMod + 1); // The character
+            widthCache.insert_or_assign(codepoint, C2D_FontGetCharWidthInfo(fontForSplitString(tmpString), C2D_FontGlyphIndexFromCodePoint(fontForSplitString(tmpString), codepoint)));
             widthCacheOrder.push(codepoint);
             if (widthCache.size() > 1000)
             {
@@ -429,42 +433,15 @@ float StringUtils::textWidth(const std::string& text, float scaleX)
             charWidth = widthCache[codepoint]->charWidth * scaleX;
         }
         ret += charWidth;
+        i += iMod;
+        iMod = 0;
     }
     return std::max(largestRet, ret);
 }
 
 float StringUtils::textWidth(const std::u16string& text, float scaleX)
 {
-    float ret = 0.0f;
-    float largestRet = 0.0f;
-    for (size_t i = 0; i < text.size(); i++)
-    {
-        if (text[i] == u'\n')
-        {
-            largestRet = std::max(ret, largestRet);
-            ret = 0.0f;
-            continue;
-        }
-        float charWidth;
-        auto width = widthCache.find(text[i]);
-        if (width != widthCache.end())
-        {
-            charWidth = width->second->charWidth * scaleX;
-        }
-        else
-        {
-            widthCache.insert_or_assign(text[i], fontGetCharWidthInfo(nullptr, fontGlyphIndexFromCodePoint(nullptr, text[i])));
-            widthCacheOrder.push(text[i]);
-            if (widthCache.size() > 512)
-            {
-                widthCache.erase(widthCacheOrder.front());
-                widthCacheOrder.pop();
-            }
-            charWidth = widthCache[text[i]]->charWidth * scaleX;
-        }
-        ret += charWidth;
-    }
-    return std::max(largestRet, ret);
+    return textWidth(UTF16toUTF8(text), scaleX);
 }
 
 float StringUtils::textWidth(const C2D_Text& text, float scaleX)
@@ -589,7 +566,7 @@ std::string StringUtils::wrap(const std::string& text, float scaleX, float maxWi
         split.pop_back();
     }
 
-    const float ellipsis = fontGetCharWidthInfo(nullptr, fontGlyphIndexFromCodePoint(nullptr, '.'))->charWidth * 3 * scaleX;
+    const float ellipsis = C2D_FontGetCharWidthInfo(Gui::fonts[0], C2D_FontGlyphIndexFromCodePoint(Gui::fonts[0], '.'))->charWidth * 3 * scaleX;
 
     // If there's space for the ellipsis, add it
     if (textWidth(split[lines - 1], scaleX) + ellipsis <= maxWidth)
@@ -665,4 +642,114 @@ bool StringUtils::fontHasChar(const C2D_Font& font, u16 codepoint)
         return false;
     }
     return true;
+}
+
+std::vector<std::string> StringUtils::fontSplit(const std::string& str)
+{
+    std::vector<std::string> ret;
+    std::string parseMe = "", currentChar = "";
+    size_t currentFont = 0;
+    for (size_t i = 0; i < str.size() + 1; i++)
+    {
+        u16 codepoint = 0xFFFD;
+        if (str[i] & 0x80 && str[i] & 0x40 && str[i] & 0x20 && !(str[i] & 0x10) && i + 2 < str.size())
+        {
+            codepoint = str[i] & 0x0F;
+            currentChar += str[i];
+            codepoint = codepoint << 6 | (str[i + 1] & 0x3F);
+            currentChar += str[i + 1];
+            codepoint = codepoint << 6 | (str[i + 2] & 0x3F);
+            currentChar += str[i + 2];
+            i += 2;
+        }
+        else if (str[i] & 0x80 && str[i] & 0x40 && !(str[i] & 0x20) && i + 1 < str.size())
+        {
+            codepoint = str[i] & 0x1F;
+            currentChar += str[i];
+            codepoint = codepoint << 6 | (str[i + 1] & 0x3F);
+            currentChar += str[i + 1];
+            i += 1;
+        }
+        else if (!(str[i] & 0x80))
+        {
+            codepoint = str[i];
+            currentChar += str[i];
+        }
+        if (codepoint == 0xFFFD)
+        {
+            parseMe += "\uFFFD";
+            currentChar = "";
+            continue;
+        }
+        else if (codepoint == 0)
+        {
+            ret.push_back(parseMe);
+            return ret;
+        }
+
+        if (!StringUtils::fontHasChar(Gui::fonts[currentFont], codepoint))
+        {
+            size_t prevFont = currentFont;
+            for (currentFont = 0; currentFont < Gui::fonts.size(); currentFont++)
+            {
+                if (currentFont == prevFont)
+                    continue;
+                if (StringUtils::fontHasChar(Gui::fonts[currentFont], codepoint))
+                    break;
+            }
+            if (currentFont >= Gui::fonts.size())
+            {
+                parseMe += "\uFFFD";
+                currentFont = prevFont;
+            }
+            else
+            {
+                ret.push_back(parseMe);
+                parseMe = currentChar;
+            }
+        }
+        else
+        {
+            parseMe += currentChar;
+        }
+        currentChar = "";
+    }
+    return ret;
+}
+
+C2D_Font StringUtils::fontForSplitString(const std::string& string)
+{
+    u16 codepoint = 0xFFFD;
+    if (string[0] & 0x80 && string[0] & 0x40 && string[0] & 0x20 && !(string[0] & 0x10) && 2 < string.size())
+    {
+        codepoint = string[0] & 0x0F;
+        codepoint = codepoint << 6 | (string[1] & 0x3F);
+        codepoint = codepoint << 6 | (string[2] & 0x3F);
+    }
+    else if (string[0] & 0x80 && string[0] & 0x40 && !(string[0] & 0x20) && 1 < string.size())
+    {
+        codepoint = string[0] & 0x1F;
+        codepoint = codepoint << 6 | (string[1] & 0x3F);
+    }
+    else if (!(string[0] & 0x80))
+    {
+        codepoint = string[0];
+    }
+
+    if (!StringUtils::fontHasChar(Gui::fonts[0], codepoint))
+    {
+        int currentFont;
+        for (currentFont = 1; currentFont < Gui::fonts.size(); currentFont++)
+        {
+            if (StringUtils::fontHasChar(Gui::fonts[currentFont], codepoint))
+            {
+                return Gui::fonts[currentFont];
+            }
+        }
+        if (currentFont >= Gui::fonts.size())
+        {
+            return Gui::fonts[0];
+        }
+    }
+    return Gui::fonts[0];
 }

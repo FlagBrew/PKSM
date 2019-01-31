@@ -35,6 +35,7 @@
 #include <locale>
 #include <memory>
 #include <optional>
+#include <vector>
 
 namespace StringUtils
 {
@@ -409,6 +410,8 @@ namespace StringUtils
     std::string wrap(const std::string& str, float scaleX, float maxWidth, size_t lines);
 
     bool fontHasChar(const C2D_Font& font, u16 codepoint);
+    std::vector<std::string> fontSplit(const std::string& str);
+    C2D_Font fontForSplitString(const std::string& str);
 }
 
 #endif
