@@ -77,7 +77,6 @@
     "CLONE": "コピー",
     "CONFIG_BACKUP_INJECTION": "書き込み前に不思議なカードをバックアップする",
     "CONFIG_BACKUP_SAVE": "自動的にバックアップを読み込む",
-    "CONFIG_BAD_SECTORS": "終了時に不良セクタを修正する",
     "CONFIG_EDIT_TRANSFERS": "転送中の変更を有効にする",
     "CONFIG_RANDOM_MUSIC": "音楽をランダムに再生する",
     "CONFIG_SAVE_INFO": "セーブ情報を利用する",

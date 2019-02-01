@@ -83,7 +83,6 @@
     "CLONE": "Cloner",
     "CONFIG_BACKUP_INJECTION": "Activer l'injection de backups",
     "CONFIG_BACKUP_SAVE": "Archivage auto au lancement",
-    "CONFIG_BAD_SECTORS": "Fix bad sectors on exit",
     "CONFIG_EDIT_TRANSFERS": "Editer pendant les transferts",
     "CONFIG_RANDOM_MUSIC": "Randomize music",
     "CONFIG_SAVE_INFO": "Utiliser les infos de Sauvegarde",
