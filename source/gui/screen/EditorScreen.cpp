@@ -193,6 +193,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index)
     buttons[tab].push_back(new ClickButton(204, 171, 108, 30, [this](){ saved = true; this->save(); this->goBack(); return true; }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_SAVE"), FONT_SIZE_12, COLOR_BLACK));
     buttons[tab].push_back(NO_TEXT_BUTTON(25, 5, 120, 13, [this](){ saved = false; return this->selectSpecies(); }, ui_sheet_res_null_idx));
     buttons[tab].push_back(NO_TEXT_CLICK(186, 7, 12, 12, [this](){ return this->genderSwitch(); }, ui_sheet_res_null_idx));
+    buttons[tab].push_back(NO_TEXT_CLICK(239, 3, 43, 22, [this](){ saved = false; return this->setSaveInfo(); }, ui_sheet_button_trainer_info_idx));
 
     tab = 1;
     buttons[tab].push_back(buttons[0][0]);
