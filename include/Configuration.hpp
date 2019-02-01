@@ -53,11 +53,6 @@ public:
         return mJson["autoBackup"];
     }
 
-    bool fixSectors(void)
-    {
-        return mJson["fixBadSectors"];
-    }
-
     int storageSize(void) const
     {
         return mJson["storageSize"];
@@ -144,11 +139,6 @@ public:
     void autoBackup(bool backup)
     {
         mJson["autoBackup"] = backup;
-    }
-
-    void fixSectors(bool fix)
-    {
-        mJson["fixBadSectors"] = fix;
     }
 
     void storageSize(int size)
