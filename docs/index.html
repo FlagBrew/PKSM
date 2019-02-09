@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Document</title>
+  <title>PKSM Manual</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <meta name="description" content="Description">
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
@@ -25,7 +25,16 @@
       search: 'auto',
       themeable: {
         readyTransition: true
-      }
+      },
+      plugins: [
+        function (hook, vm) {
+          hook.beforeEach(function (html) {
+              return html
+              + '\n\n----\n\n'
+              + 'Enjoy using PKSM? Consider supporting FlagBrew on <a href="https://www.patreon.com/FlagBrew" style="">Patreon</a>!'
+          })
+        }
+      ]
     }
   </script>
   <script src="https://unpkg.com/docsify/lib/docsify.min.js"></script>

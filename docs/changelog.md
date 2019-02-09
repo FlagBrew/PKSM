@@ -1,4 +1,56 @@
 # Changelog
+## 6.1.0
++ Storage: Fix backwards transfer when a pokemon has an invalid move, item,
+  form, species, ball or ability.
++ Storage: Allow moving between storage boxes with `ZL` and `ZR`.
++ Storage: Implemented storage sorting and filtering.
++ Storage: Implemented box jumping.
++ Storage: Fix storage size to match the old storage size while converting a
+  pre-6.x storage file to 6.x+.
++ Editor: Default met location values added for generated pokemon.
++ Editor: Set pokemon language from the configurations while generating a new
+  one.
++ Editor: Added default, non-zero PP value and fix relearn moves during
+  generation.
++ Editor: Fixed bug with OT names during generation in old gen games.
++ Editor: Fix Gen4 Nature and shinyness editing.
++ Editor: Add check for impossible genderless.
++ Editor: Fix Vivillon chain form editing.
++ Editor: Add back the `Use Save Info` button (the yellow one).
++ Editor: Fixed a couple race conditions happening in the QR Code reader.
++ Events: Wondercard database updated and unreleased wondercards added as well.
++ Hex Editor: Button behaviour fixed when changing values.
++ Hex Editor: Added display of certain editable values (fixes regression from
+  v5.1.4).
++ Hex Editor: Add Marking editing.
++ Bag Editor: Fixed item count limits during editing. 
++ Bag Editor: Fixed search results.
++ Bag Editor: Z-Crystals can't be edited anymore.
++ Scripts: Added new C scripts API:
+  + A function to move between boxes to choose a box/slot. It works with both
+    the save boxes and the storage boxes.
+  + A few functions to get pokemon data from save boxes and party.
+  + A few networking function to receive/send arbitrary amount of data through
+    TCP and UDP sockets.
++ General: Added Citra compatibility (you need to compile PKSM with
+  `CITRA_DEBUG=1` to be able to use it on Citra).
++ Scripts: Increase C Scripts stack size and fix script loading/parsing for long
+  scripts.
++ Scripts: Fix location of names and images for the pokemon choice script API.
++ Scripts: C Scripts now give feedbacks and return to the Scripts screen if they
+  crash, rather than shutting down the console.
++ Scripts: Updated bundled scripts, `servepkx_server` script added.
+  + Note: the `servepkx` client hasn't been updated yet, check back in the
+    future.
++ Configuration: Region and Country default values have been added to the
+  configuration menu to be used during generation.
++ Configuration: References to bad sectors have been removed.
++ General: Translations have been updated to include Portuguese.
++ General: Added Gen7 TID displaying.
++ General: Fixed error message display when PKSM fails to launch.
++ General: Crypto operations optimized.
++ General: Optimized text rendering functions.
+
 ## 6.0.1
 + **Fix crash when a flashcard was inserted**. You can now plug your cartridge
   reader with whatever you want.
@@ -27,7 +79,7 @@
 + Hex Editor now enabled for LGPE.
 + Backup bridged save to the SD card in case the bridge disconnects, so you can
   reinject it manually later.
-## 6.0.0
+  ## 6.0.0
 + **Game support has been extended to cover every functionality from Generation
   4 to LGPE**. This includes, among the others, *Storage*, *Editor* and
   *Scripts*.
