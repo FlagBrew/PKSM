@@ -36,6 +36,38 @@
 extern int bobPointer();
 static bool dirtyBack = true;
 
+static inline int getTID(PKX& pkm)
+{
+    switch (pkm.generation())
+    {
+        case Generation::FOUR:
+        case Generation::FIVE:
+        case Generation::SIX:
+            return pkm.TID();
+        case Generation::SEVEN:
+        case Generation::LGPE:
+            return (pkm.SID() << 16 | pkm.TID()) % 1000000;
+        default:
+            return 0;
+    }
+}
+
+static inline int getSID(PKX& pkm)
+{
+    switch (pkm.generation())
+    {
+        case Generation::FOUR:
+        case Generation::FIVE:
+        case Generation::SIX:
+            return pkm.SID();
+        case Generation::SEVEN:
+        case Generation::LGPE:
+            return (pkm.SID() << 16 | pkm.TID()) / 1000000;
+        default:
+            return 0;
+    }
+}
+
 void EditSelectorScreen::changeBoxName()
 {
     switch (TitleLoader::save->generation())
@@ -356,7 +388,7 @@ void EditSelectorScreen::draw() const
 
     if (infoMon)
     {
-        Gui::dynamicText(StringUtils::format(i18n::localize("EDITOR_IDS"), infoMon->TID(), infoMon->SID(), infoMon->TSV()), 160, 224, 
+        Gui::dynamicText(StringUtils::format(i18n::localize("EDITOR_IDS"), getTID(*infoMon), getSID(*infoMon), infoMon->TSV()), 160, 224, 
                         FONT_SIZE_9, FONT_SIZE_9, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
 

@@ -48,6 +48,38 @@ static constexpr std::string_view displayKeys[] = {
     "SPEED"
 };
 
+static inline int getTID(PKX& pkm)
+{
+    switch (pkm.generation())
+    {
+        case Generation::FOUR:
+        case Generation::FIVE:
+        case Generation::SIX:
+            return pkm.TID();
+        case Generation::SEVEN:
+        case Generation::LGPE:
+            return (pkm.SID() << 16 | pkm.TID()) % 1000000;
+        default:
+            return 0;
+    }
+}
+
+static inline int getSID(PKX& pkm)
+{
+    switch (pkm.generation())
+    {
+        case Generation::FOUR:
+        case Generation::FIVE:
+        case Generation::SIX:
+            return pkm.SID();
+        case Generation::SEVEN:
+        case Generation::LGPE:
+            return (pkm.SID() << 16 | pkm.TID()) / 1000000;
+        default:
+            return 0;
+    }
+}
+
 void ViewerScreen::draw() const
 {
     C2D_SceneBegin(g_renderTargetTop);
@@ -128,7 +160,7 @@ void ViewerScreen::draw() const
         Gui::dynamicText(i18n::ability(Configuration::getInstance().language(), pkm->ability()), 87, 116, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         Gui::dynamicText(i18n::item(Configuration::getInstance().language(), pkm->heldItem()), 87, 136, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         Gui::dynamicText(StringUtils::format("%i/%i", pkm->PSV(), pkm->TSV()), 87, 156, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        Gui::dynamicText(StringUtils::format("%i/%i", pkm->TID(), pkm->SID()), 87, 176, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::dynamicText(StringUtils::format("%i/%i", getTID(*pkm), getSID(*pkm)), 87, 176, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         Gui::dynamicText(StringUtils::format("%i/%i", (int)pkm->currentFriendship(), (int)pkm->otFriendship()), 122, 196, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         Gui::dynamicText(i18n::hp(Configuration::getInstance().language(), pkm->hpType()), 122, 216, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
