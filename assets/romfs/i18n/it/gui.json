@@ -226,6 +226,7 @@
     "HYPER_SPATK": "Hyper Train Sp. Attacco",
     "HYPER_SPDEF": "Hyper Train Sp. Difesa",
     "HYPER_SPEED": "Hyper Train Velocità",
+    "HYPER_TRAIN_FLAGS": "Hyper Train Flags",
     "INJECT_TO_SLOT": "Inserisci nello slot",
     "INVALID_ABILITY": "Abilità non valida",
     "INVALID_BALL": "Ball non valida",
