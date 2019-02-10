@@ -41,7 +41,7 @@
     "BANK_FAILED_EXIT": "Exiting is not allowed when a Pok\u00E9mon is held!",
     "BANK_LOAD": "Loading storage...",
     "BANK_NAME_ERROR": "Could not save box names!",
-    "BANK_OPEN_FAILED": "Impossibile avviare lo scaricamento!",
+    "BANK_OPEN_FAILED": "Storage open failed!",
     "BANK_SAVE_CHANGES": "Save changes to storage?",
     "BANK_SAVE_ERROR": "Could not save storage!",
     "BANK_SAVE": "Saving storage...",

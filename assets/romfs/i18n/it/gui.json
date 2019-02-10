@@ -40,7 +40,7 @@
     "BANK_FAILED_EXIT": "Impossibile uscire quando tieni un Pok\u00E9mon!",
     "BANK_LOAD": "Caricamento storage...",
     "BANK_NAME_ERROR": "Impossibile salvare i nomi dei box!",
-    "BANK_OPEN_FAILED": "Impossibile avviare lo scaricamento!",
+    "BANK_OPEN_FAILED": "Impossibile aprire lo storage!",
     "BANK_SAVE_CHANGES": "Salvare i cambiamenti allo storage?",
     "BANK_SAVE_ERROR": "Impossibile salvare lo storage!",
     "BANK_SAVE": "Salvataggio storage...",
