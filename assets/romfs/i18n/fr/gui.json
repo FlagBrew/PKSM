@@ -151,7 +151,7 @@
     "EDITOR_CHECK_EXIT": "Quitter sans sauvegarder?",
     "EDITOR_CP": "CP: ",
     "EDITOR_HIDDEN_POWER": "Puissance Cachée ",
-    "EDITOR_IDS": "TID: %i / SID: %i / TSV: %i",
+    "EDITOR_IDS": "TID: %u / SID: %u / TSV: %u",
     "EDITOR_INST": "Presser \ue000 pour sélectionner,\n\ue001 pour retourner en arrière",
     "EDITOR_MOVES": "CAPACITÉS",
     "EDITOR_NOT_APPLICABLE_GEN": "Pas applicable pour cette génération",

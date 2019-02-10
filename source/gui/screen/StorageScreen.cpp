@@ -79,22 +79,6 @@ static u8 type2(Generation generation, u16 species)
     return 0;
 }
 
-static inline int getTID(PKX& pkm)
-{
-    switch (pkm.generation())
-    {
-        case Generation::FOUR:
-        case Generation::FIVE:
-        case Generation::SIX:
-            return pkm.TID();
-        case Generation::SEVEN:
-        case Generation::LGPE:
-            return (pkm.SID() << 16 | pkm.TID()) % 1000000;
-        default:
-            return 0;
-    }
-}
-
 int bobPointer()
 {
     static int currentBob = 0;
@@ -536,7 +520,7 @@ void StorageScreen::draw() const
                 Gui::type(Configuration::getInstance().language(), firstType, 300, 115);
             }
 
-            info = infoMon->otName() + '\n' + i18n::localize("LOADER_ID") + std::to_string(getTID(*infoMon));
+            info = infoMon->otName() + '\n' + i18n::localize("LOADER_ID") + std::to_string(infoMon->displayTID());
             Gui::dynamicText(info, 276, 141, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
             info = i18n::nature(Configuration::getInstance().language(), infoMon->nature());

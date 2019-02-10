@@ -151,7 +151,7 @@
     "EDITOR_CHECK_EXIT": "Uscire senza salvare?",
     "EDITOR_CP": "PL: ",
     "EDITOR_HIDDEN_POWER": "Introforza ",
-    "EDITOR_IDS": "TID: %i / SID: %i / TSV: %i",
+    "EDITOR_IDS": "TID: %u / SID: %u / TSV: %u",
     "EDITOR_INST": "Clicca \ue000 per selezionare,\n\ue001 per tornare indietro",
     "EDITOR_MOVES": "MOSSE",
     "EDITOR_NOT_APPLICABLE_GEN": "Non disponibile in questa generazione",

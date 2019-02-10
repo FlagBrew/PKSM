@@ -151,7 +151,7 @@
     "EDITOR_CHECK_EXIT": "Exit without saving?",
     "EDITOR_CP": "PC: ",
     "EDITOR_HIDDEN_POWER": "Poder Oculto ",
-    "EDITOR_IDS": "TID: %i / SID: %i / TSV: %i",
+    "EDITOR_IDS": "TID: %u / SID: %u / TSV: %u",
     "EDITOR_INST": "Presiona \ue000 para seleccionar,\n\ue001 para volver",
     "EDITOR_MOVES": "MOVIMIENTOS",
     "EDITOR_NOT_APPLICABLE_GEN": "No aplicable para esta generación",

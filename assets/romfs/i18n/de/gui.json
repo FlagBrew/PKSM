@@ -151,7 +151,7 @@
     "EDITOR_CHECK_EXIT": "Ohne Speichern verlassen?",
     "EDITOR_CP": "GP: ",
     "EDITOR_HIDDEN_POWER": "Kraftreserve ",
-    "EDITOR_IDS": "TID: %i / SID: %i / TSV: %i",
+    "EDITOR_IDS": "TID: %u / SID: %u / TSV: %u",
     "EDITOR_INST": "\ue000 auswählen, \ue001 zurück gehen",
     "EDITOR_MOVES": "ATTACKEN",
     "EDITOR_NOT_APPLICABLE_GEN": "Nicht anwendbar für diese Generation",

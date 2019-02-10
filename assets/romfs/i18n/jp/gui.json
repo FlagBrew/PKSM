@@ -145,7 +145,7 @@
     "EDITOR_CHECK_EXIT": "保存せずに終了しますか?",
     "EDITOR_CP": "CP: ",
     "EDITOR_HIDDEN_POWER": "めざめるパワー ",
-    "EDITOR_IDS": "TID: %i / SID: %i / TSV: %i",
+    "EDITOR_IDS": "TID: %u / SID: %u / TSV: %u",
     "EDITOR_INST": "\ue000 :選択、 \ue001 :戻る",
     "EDITOR_MOVES": "技",
     "EDITOR_NOT_APPLICABLE_GEN": "この世代には設定できません",

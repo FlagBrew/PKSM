@@ -152,7 +152,7 @@
     "EDITOR_CHECK_EXIT": "Exit without saving?",
     "EDITOR_CP": "CP: ",
     "EDITOR_HIDDEN_POWER": "Hidden Power ",
-    "EDITOR_IDS": "TID: %i / SID: %i / TSV: %i",
+    "EDITOR_IDS": "TID: %u / SID: %u / TSV: %u",
     "EDITOR_INST": "Press \ue000 to select, \ue001 to go back",
     "EDITOR_MOVES": "MOVES",
     "EDITOR_NOT_APPLICABLE_GEN": "Not applicable for this generation",
