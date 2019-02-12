@@ -47,6 +47,7 @@ namespace i18n
     std::string species(u8 lang, u16 value);
     std::string form(u8 lang, u16 species, u8 form, Generation generation);
     std::string location(u8 lang, u16 value, Generation generation);
+    std::string location(u8 lang, u16 value, u8 originGame);
     std::string game(u8 lang, u8 value);
 
     // Used for general GUI stuff; not for PKM values

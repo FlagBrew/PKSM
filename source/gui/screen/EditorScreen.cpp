@@ -1076,5 +1076,6 @@ bool EditorScreen::setSaveInfo()
         saved = false;
         pkm->SID(TitleLoader::save->SID());
     }
+    pkm->currentHandler(0);
     return false;
 }

@@ -329,6 +329,14 @@ static constexpr std::string_view gen67ToggleTexts[] = {
     "UNUSED",
     "UNUSED",
     "UNUSED",
+    "UNUSED", // TODO get these text values & translations: Distribution Super Training
+    "FEARSOME_TWIN_TALES_OF_JUTTING_JAWS",
+    "DANGER_ZIPPED_UP_TIGHT",
+    "STUCK_BETWEEN_STRONG_AND_STRONG",
+    "DAZZLING_DIZZYING_DANCE_SPOONS",
+    "WHAT_UPSTART_MAGIKARP_MOVING_UP",
+    "WATCH_MULTIPLE_MEGA",
+    "UNUSED",
     "UNUSED"
 };
 
@@ -1263,7 +1271,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                 // Super Training Flags
                 case 0x2C ... 0x2F:
                 // Ribbons
-                case 0x30 ... 0x35:
+                case 0x30 ... 0x36:
                 // Distribution Super Training (???)
                 case 0x3A:
                     for (int j = 0; j < 4; j++)
@@ -1699,7 +1707,7 @@ void HexEditScreen::drawMeaning() const
                         break;
                     }
                 case 0x7E ... 0x7F:
-                    Gui::dynamicText(i18n::location(Configuration::getInstance().language(), pkm->eggLocation(), pkm->generation()), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::dynamicText(i18n::location(Configuration::getInstance().language(), pkm->eggLocation(), pkm->version()), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x46 ... 0x47:
                     if (pkm->generation() == Generation::FIVE)
@@ -1707,7 +1715,7 @@ void HexEditScreen::drawMeaning() const
                         break;
                     }
                 case 0x80 ... 0x81:
-                    Gui::dynamicText(i18n::location(Configuration::getInstance().language(), pkm->metLocation(), pkm->generation()), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::dynamicText(i18n::location(Configuration::getInstance().language(), pkm->metLocation(), pkm->version()), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
             }
             break;
@@ -1734,22 +1742,22 @@ void HexEditScreen::drawMeaning() const
                 case 0x6A ... 0x71:
                     if (pkm->generation() == Generation::SEVEN)
                     {
-                        Gui::dynamicText(i18n::move(Configuration::getInstance().language(), ((PK7*)pkm.get())->relearnMove((i - 0x5A) / 2)), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                        Gui::dynamicText(i18n::move(Configuration::getInstance().language(), ((PK7*)pkm.get())->relearnMove((i - 0x6A) / 2)), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     }
                     else if (pkm->generation() == Generation::SIX)
                     {
-                        Gui::dynamicText(i18n::move(Configuration::getInstance().language(), ((PK6*)pkm.get())->relearnMove((i - 0x5A) / 2)), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                        Gui::dynamicText(i18n::move(Configuration::getInstance().language(), ((PK6*)pkm.get())->relearnMove((i - 0x6A) / 2)), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     }
                     else
                     {
-                        Gui::dynamicText(i18n::move(Configuration::getInstance().language(), ((PB7*)pkm.get())->relearnMove((i - 0x5A) / 2)), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                        Gui::dynamicText(i18n::move(Configuration::getInstance().language(), ((PB7*)pkm.get())->relearnMove((i - 0x6A) / 2)), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     }
                     break;
                 case 0xD8 ... 0xD9:
-                    Gui::dynamicText(i18n::location(Configuration::getInstance().language(), pkm->eggLocation(), pkm->generation()), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::dynamicText(i18n::location(Configuration::getInstance().language(), pkm->eggLocation(), pkm->version()), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0xDA ... 0xDB:
-                    Gui::dynamicText(i18n::location(Configuration::getInstance().language(), pkm->metLocation(), pkm->generation()), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::dynamicText(i18n::location(Configuration::getInstance().language(), pkm->metLocation(), pkm->version()), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
             }
             break;

@@ -530,6 +530,38 @@ std::string i18n::location(u8 lang, u16 v, Generation generation)
     return "";
 }
 
+std::string i18n::location(u8 lang, u16 v, u8 originGame)
+{
+    switch (originGame)
+    {
+        case 7:
+        case 8:
+        case 10:
+        case 11:
+        case 12:
+            return location(lang, v, Generation::FOUR);
+        case 20:
+        case 21:
+        case 22:
+        case 23:
+            return location(lang, v, Generation::FIVE);
+        case 24:
+        case 25:
+        case 26:
+        case 27:
+            return location(lang, v, Generation::SIX);
+        case 30:
+        case 31:
+        case 32:
+        case 33:
+            return location(lang, v, Generation::SEVEN);
+        case 42:
+        case 43:
+            return location(lang, v, Generation::LGPE);
+    }
+    return "";
+}
+
 std::string i18n::game(u8 lang, u8 v)
 {
     switch (lang)
