@@ -255,7 +255,7 @@ void PK6::fullness(u8 v) { data[0xAE] = v; }
 u8 PK6::enjoyment(void) const { return data[0xAF]; }
 void PK6::enjoyment(u8 v) { data[0xAF] = v; }
 
-std::string PK6::otName(void) const { return StringUtils::getString(data, 0xB0, 12); }
+std::string PK6::otName(void) const { return StringUtils::getString(data, 0xB0, 13); }
 void PK6::otName(const char* v) { StringUtils::setString(data, v, 0xB0, 12); }
 
 u8 PK6::otFriendship(void) const { return data[0xCA]; }

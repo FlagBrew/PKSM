@@ -240,7 +240,7 @@ void PK7::fullness(u8 v) { data[0xAE] = v; }
 u8 PK7::enjoyment(void) const { return data[0xAF]; }
 void PK7::enjoyment(u8 v) { data[0xAF] = v; }
 
-std::string PK7::otName(void) const { return StringUtils::getString(data, 0xB0, 12); }
+std::string PK7::otName(void) const { return StringUtils::getString(data, 0xB0, 13); }
 void PK7::otName(const char* v) { StringUtils::setString(data, v, 0xB0, 12); }
 
 u8 PK7::otFriendship(void) const { return data[0xCA]; }
