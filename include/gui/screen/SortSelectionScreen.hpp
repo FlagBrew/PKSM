@@ -57,7 +57,7 @@ enum SortType
     FRIENDSHIP,
     NICKNAME,
     OTNAME,
-	SHINY
+    SHINY
 };
 
 static constexpr std::string_view sortTypeToString(SortType type)
@@ -115,7 +115,7 @@ static constexpr std::string_view sortTypeToString(SortType type)
             return "SPECIES_NAME";
         case OTNAME:
             return "OT_NAME";
-	case SHINY:
+        case SHINY:
             return "SHINY";
     }
 }
@@ -159,7 +159,7 @@ private:
         FRIENDSHIP,
         NICKNAME,
         OTNAME,
-	SHINY
+        SHINY
     };
 };
 
