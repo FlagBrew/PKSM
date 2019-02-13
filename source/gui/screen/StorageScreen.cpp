@@ -1577,8 +1577,8 @@ bool StorageScreen::sort()
                         if (pkm2->otName() < pkm1->otName()) return false;
                         break;
                     case SHINY:
-                        if (pkm1.shiny() && !pkm2.shiny()) return true;
-                        if (pkm2.shiny() && !pkm1.shiny()) return false;
+                        if (pkm1->shiny() && !pkm2->shiny()) return true;
+                        if (pkm2->shiny() && !pkm1->shiny()) return false;
                         break;
                     default:
                         break;
