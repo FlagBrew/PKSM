@@ -41,5 +41,7 @@ enum class Generation
 
 std::string genToString(Generation gen);
 const char* genToCstring(Generation gen);
+bool operator<(Generation g1, Generation g2);
+bool operator>(Generation g1, Generation g2);
 
 #endif

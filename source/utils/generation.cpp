@@ -48,3 +48,47 @@ const char* genToCstring(Generation gen)
             return "7";
     }
 }
+
+bool operator<(Generation g1, Generation g2)
+{
+    switch (g1)
+    {
+        case Generation::FOUR:
+            if (g2 == Generation::FIVE)
+            {
+                return true;
+            }
+        case Generation::FIVE:
+            if (g2 == Generation::SIX)
+            {
+                return true;
+            }
+        case Generation::SIX:
+            if (g2 == Generation::SEVEN)
+            {
+                return true;
+            }
+        case Generation::SEVEN:
+            if (g2 == Generation::LGPE)
+            {
+                return true;
+            }
+        case Generation::LGPE:
+            return g2 == Generation::UNUSED;
+        case Generation::UNUSED:
+        default:
+            return false;
+    }
+}
+
+bool operator>(Generation g1, Generation g2)
+{
+    if (g1 == g2)
+    {
+        return false;
+    }
+    else
+    {
+        return !(g1 < g2);
+    }
+}
