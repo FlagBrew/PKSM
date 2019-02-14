@@ -295,8 +295,9 @@ void EditorScreen::draw() const
                 case 1:
                     Gui::sprite(ui_sheet_icon_female_idx, 187, 7);
                     break;
+                case 2:
+                    Gui::sprite(ui_sheet_icon_genderless_idx, 187, 7);
                 default:
-                    // Gui::sprite(ui_sheet_icon_genderless_idx, 186, 7);
                     break;
             }
             Gui::dynamicText(std::to_string((int)pkm->level()), 107 + 35 / 2, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
@@ -1053,6 +1054,10 @@ bool EditorScreen::genderSwitch()
             pkm->gender(1);
             break;
         case 1:
+            saved = false;
+            pkm->gender(2);
+            break;
+        case 2:
             saved = false;
             pkm->gender(0);
             break;

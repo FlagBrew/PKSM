@@ -263,6 +263,10 @@ void BoxChoice::draw() const
             {
                 Gui::sprite(ui_sheet_icon_female_idx, 364 - (int) width, 80);
             }
+            else if (infoMon->gender() == 2)
+            {
+                Gui::sprite(ui_sheet_icon_genderless_idx, 364 - (int) width, 80);
+            }
             if (infoMon->shiny())
             {
                 Gui::sprite(ui_sheet_icon_shiny_idx, 352 - (int) width, 81);

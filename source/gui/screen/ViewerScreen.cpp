@@ -115,6 +115,10 @@ void ViewerScreen::draw() const
         {
             Gui::sprite(ui_sheet_icon_female_idx, 129, 10);
         }
+        else if (pkm->gender() == 2)
+        {
+            Gui::sprite(ui_sheet_icon_genderless_idx, 129, 10);
+        }
         Gui::dynamicText(StringUtils::format(i18n::localize("LVL"), pkm->level()), 143, 10, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         if (pkm->shiny())
         {
