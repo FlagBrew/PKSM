@@ -1077,6 +1077,11 @@ bool EditorScreen::setSaveInfo()
         saved = false;
         pkm->SID(TitleLoader::save->SID());
     }
+    if (pkm->otGender() != TitleLoader::save->gender())
+    {
+        saved = false;
+        pkm->otGender(TitleLoader::save->gender());
+    }
     pkm->currentHandler(0);
     return false;
 }
