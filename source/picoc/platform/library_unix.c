@@ -39,6 +39,8 @@ struct LibraryFunction UnixFunctions[] =
     { net_tcp_receiver, "int net_tcp_recv(char* buffer, int size, int* received);" },
     { net_tcp_sender,   "int net_tcp_send(char* ip, int port, char* buffer, int size);" },
     { net_udp_receiver, "int net_udp_recv(char* buffer, int size, int* received);" },
+    // i18n
+    { i18n_species,     "const char* i18n_species(int species);" },
     // end
     { NULL,             NULL }
 };

@@ -60,5 +60,6 @@ void sav_inject_pkx(struct ParseState*, struct Value*, struct Value**, int);
 void sav_inject_ekx(struct ParseState*, struct Value*, struct Value**, int);
 void current_directory(struct ParseState*, struct Value*, struct Value**, int);
 void read_directory(struct ParseState*, struct Value*, struct Value**, int);
+void i18n_species(struct ParseState*, struct Value*, struct Value**, int);
 
 #endif
