@@ -39,6 +39,9 @@ static LanguageStrings* nl = nullptr;
 static LanguageStrings* pt = nullptr;
 static LanguageStrings* ru = nullptr;
 
+static const std::string emptyString = "";
+static const std::vector<std::string> emptyVector = {};
+
 void i18n::init(void)
 {
     jp = new LanguageStrings(Language::JP);
@@ -71,7 +74,7 @@ void i18n::exit(void)
     delete ru;
 }
 
-std::string i18n::ability(u8 lang, u8 val)
+const std::string& i18n::ability(u8 lang, u8 val)
 {
     switch (lang)
     {
@@ -100,10 +103,10 @@ std::string i18n::ability(u8 lang, u8 val)
         case Language::RU:
             return ru->ability(val);
     }
-    return "";
+    return emptyString;
 }
 
-std::string i18n::ball(u8 lang, u8 val)
+const std::string& i18n::ball(u8 lang, u8 val)
 {
     switch (lang)
     {
@@ -132,10 +135,10 @@ std::string i18n::ball(u8 lang, u8 val)
         case Language::RU:
             return ru->ball(val);
     }
-    return "";
+    return emptyString;
 }
 
-std::string i18n::form(u8 lang, u16 species, u8 form, Generation generation)
+const std::string& i18n::form(u8 lang, u16 species, u8 form, Generation generation)
 {
     switch (lang)
     {
@@ -164,10 +167,10 @@ std::string i18n::form(u8 lang, u16 species, u8 form, Generation generation)
         case Language::RU:
             return ru->form(species, form, generation);
     }
-    return "";
+    return emptyString;
 }
 
-std::string i18n::hp(u8 lang, u8 val)
+const std::string& i18n::hp(u8 lang, u8 val)
 {
     switch (lang)
     {
@@ -196,10 +199,10 @@ std::string i18n::hp(u8 lang, u8 val)
         case Language::RU:
             return ru->hp(val);
     }
-    return "";
+    return emptyString;
 }
 
-std::string i18n::item(u8 lang, u16 val)
+const std::string& i18n::item(u8 lang, u16 val)
 {
     switch (lang)
     {
@@ -228,10 +231,10 @@ std::string i18n::item(u8 lang, u16 val)
         case Language::RU:
             return ru->item(val);
     }
-    return "";
+    return emptyString;
 }
 
-std::string i18n::move(u8 lang, u16 val)
+const std::string& i18n::move(u8 lang, u16 val)
 {
     switch (lang)
     {
@@ -260,10 +263,10 @@ std::string i18n::move(u8 lang, u16 val)
         case Language::RU:
             return ru->move(val);
     }
-    return "";
+    return emptyString;
 }
 
-std::string i18n::nature(u8 lang, u8 val)
+const std::string& i18n::nature(u8 lang, u8 val)
 {
     switch (lang)
     {
@@ -292,10 +295,10 @@ std::string i18n::nature(u8 lang, u8 val)
         case Language::RU:
             return ru->nature(val);
     }
-    return "";
+    return emptyString;
 }
 
-std::string i18n::species(u8 lang, u16 val)
+const std::string& i18n::species(u8 lang, u16 val)
 {
     switch (lang)
     {
@@ -324,10 +327,10 @@ std::string i18n::species(u8 lang, u16 val)
         case Language::RU:
             return ru->species(val);
     }
-    return "";
+    return emptyString;
 }
 
-std::string i18n::localize(Language lang, const std::string& val)
+const std::string& i18n::localize(Language lang, const std::string& val)
 {
     switch (lang)
     {
@@ -356,40 +359,49 @@ std::string i18n::localize(Language lang, const std::string& val)
         case Language::RU:
             return ru->localize(val);
         default:
-            return "";
+            return emptyString;
     }
-    return "";
+    return emptyString;
 }
 
-std::string i18n::localize(const std::string& index)
+const std::string& i18n::localize(const std::string& index)
 {
     return localize(Configuration::getInstance().language(), index);
 }
 
-std::string i18n::langString(Language l)
+const std::string& i18n::langString(Language l)
 {
+    static const std::string JPN = "JPN";
+    static const std::string ENG = "ENG";
+    static const std::string FRE = "FRE";
+    static const std::string ITA = "ITA";
+    static const std::string GER = "GER";
+    static const std::string SPA = "SPA";
+    static const std::string KOR = "KOR";
+    static const std::string CHS = "CHS";
+    static const std::string CHT = "CHT";
     switch (l)
     {
         case Language::JP:
-            return "JPN";
+            return JPN;
         case Language::EN:
-            return "ENG";
+            return ENG;
         case Language::FR:
-            return "FRE";
+            return FRE;
         case Language::IT:
-            return "ITA";
+            return ITA;
         case Language::DE:
-            return "GER";
+            return GER;
         case Language::ES:
-            return "SPA";
+            return SPA;
         case Language::KO:
-            return "KOR";
+            return KOR;
         case Language::ZH:
-            return "CHS";
+            return CHS;
         case Language::TW:
-            return "CHT";
+            return CHT;
         default:
-            return "ENG";
+            return ENG;
     }
 }
 
@@ -434,7 +446,7 @@ Language i18n::langFromString(const std::string& value)
     return Language::EN;
 }
 
-std::vector<std::string> i18n::rawItems(u8 lang)
+const std::vector<std::string>& i18n::rawItems(u8 lang)
 {
     switch (lang)
     {
@@ -463,10 +475,10 @@ std::vector<std::string> i18n::rawItems(u8 lang)
         case Language::RU:
             return ru->rawItems();
     }
-    return {};
+    return emptyVector;
 }
 
-std::vector<std::string> i18n::rawMoves(u8 lang)
+const std::vector<std::string>& i18n::rawMoves(u8 lang)
 {
     switch (lang)
     {
@@ -495,10 +507,10 @@ std::vector<std::string> i18n::rawMoves(u8 lang)
         case Language::RU:
             return ru->rawMoves();
     }
-    return {};
+    return emptyVector;
 }
 
-std::string i18n::location(u8 lang, u16 v, Generation generation)
+const std::string& i18n::location(u8 lang, u16 v, Generation generation)
 {
     switch (lang)
     {
@@ -527,10 +539,10 @@ std::string i18n::location(u8 lang, u16 v, Generation generation)
         case Language::RU:
             return ru->location(v, generation);
     }
-    return "";
+    return emptyString;
 }
 
-std::string i18n::location(u8 lang, u16 v, u8 originGame)
+const std::string& i18n::location(u8 lang, u16 v, u8 originGame)
 {
     switch (originGame)
     {
@@ -559,10 +571,10 @@ std::string i18n::location(u8 lang, u16 v, u8 originGame)
         case 43:
             return location(lang, v, Generation::LGPE);
     }
-    return "";
+    return emptyString;
 }
 
-std::string i18n::game(u8 lang, u8 v)
+const std::string& i18n::game(u8 lang, u8 v)
 {
     switch (lang)
     {
@@ -591,5 +603,5 @@ std::string i18n::game(u8 lang, u8 v)
         case Language::RU:
             return ru->game(v);
     }
-    return "";
+    return emptyString;
 }

@@ -82,21 +82,21 @@ public:
     LanguageStrings(Language lang);
     std::string folder(Language lang) const;
 
-    std::vector<std::string> rawItems() const;
-    std::vector<std::string> rawMoves() const;
+    const std::vector<std::string>& rawItems() const;
+    const std::vector<std::string>& rawMoves() const;
 
-    std::string ability(u8 v) const;
-    std::string ball(u8 v) const;
-    std::string hp(u8 v) const;
-    std::string item(u16 v) const;
-    std::string move(u16 v) const;
-    std::string nature(u8 v) const;
-    std::string species(u16 v) const;
-    std::string form(u16 species, u8 form, Generation generation) const;
-    std::string location(u16 v, Generation generation) const;
-    std::string game(u8 v) const;
+    const std::string& ability(u8 v) const;
+    const std::string& ball(u8 v) const;
+    const std::string& hp(u8 v) const;
+    const std::string& item(u16 v) const;
+    const std::string& move(u16 v) const;
+    const std::string& nature(u8 v) const;
+    const std::string& species(u16 v) const;
+    const std::string& form(u16 species, u8 form, Generation generation) const;
+    const std::string& location(u16 v, Generation generation) const;
+    const std::string& game(u8 v) const;
 
-    std::string localize(const std::string& v) const;
+    const std::string& localize(const std::string& v) const;
 };
 
 #endif

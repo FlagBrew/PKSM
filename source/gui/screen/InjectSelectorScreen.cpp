@@ -211,7 +211,7 @@ void InjectSelectorScreen::draw() const
             else
             {
                 MysteryGift::giftData data;
-                std::string lang = i18n::langString(Configuration::getInstance().language());
+                const std::string& lang = i18n::langString(Configuration::getInstance().language());
                 if (wondercards[i].find(lang) != wondercards[i].end())
                 {
                     data = MysteryGift::wondercardInfo(wondercards[i][lang]);

@@ -338,8 +338,8 @@ void EditorScreen::draw() const
             }
             Gui::staticText(i18n::localize("EDITOR_STATS"), 4, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             Gui::staticText(i18n::localize("IV"), 132, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-            text = pkm->generation() == Generation::LGPE ? i18n::localize("AWAKENED") : i18n::localize("EV");
-            Gui::staticText(text, 213, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+            Gui::staticText(pkm->generation() == Generation::LGPE ? i18n::localize("AWAKENED") : i18n::localize("EV"),
+                                213, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
             Gui::staticText(i18n::localize("TOTAL"), 274, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
             Gui::staticText(i18n::localize("HP"), 4, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             Gui::staticText(i18n::localize("ATTACK"), 4, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);

@@ -123,19 +123,18 @@ void LanguageStrings::loadGui(Language lang)
     values.close();
 }
 
-std::string LanguageStrings::ability(u8 v) const
+const std::string& LanguageStrings::ability(u8 v) const
 {
     return v < abilities.size() ? abilities.at(v) : localize("INVALID_ABILITY");
 }
 
-std::string LanguageStrings::ball(u8 v) const
+const std::string& LanguageStrings::ball(u8 v) const
 {
     return v < balls.size() ? balls.at(v) : localize("INVALID_BALL");
 }
 
-std::string LanguageStrings::form(u16 species, u8 form, Generation generation) const
+const std::string& LanguageStrings::form(u16 species, u8 form, Generation generation) const
 {
-    std::string ret = localize("INVALID_FORM");
     std::string sSpecies = std::to_string((int)species);
     if (formJson().find(sSpecies) == formJson().end())
     {
@@ -144,8 +143,18 @@ std::string LanguageStrings::form(u16 species, u8 form, Generation generation) c
         {
             if (i == species)
             {
-                ret = form == 1 ? forms.at(146) : forms.at(0);
-                break;
+                if (form == 1)
+                {
+                    return forms.at(146);
+                }
+                else if (form == 0)
+                {
+                    return forms.at(0);
+                }
+                else
+                {
+                    return localize("INVALID_FORM");
+                }
             }
         }
     }
@@ -169,54 +178,67 @@ std::string LanguageStrings::form(u16 species, u8 form, Generation generation) c
             size_t formNameIndex = formIndices[form];
             if (formNameIndex < forms.size())
             {
-                ret = forms.at(formNameIndex);
+                return forms.at(formNameIndex);
             }
         }
     }
-    return ret;
+    return localize("INVALID_FORM");
 }
 
-std::string LanguageStrings::hp(u8 v) const
+const std::string& LanguageStrings::hp(u8 v) const
 {
     return v < hps.size() ? hps.at(v) : localize("INVALID_HP");
 }
 
-std::string LanguageStrings::item(u16 v) const
+const std::string& LanguageStrings::item(u16 v) const
 {
     return v < items.size() ? items.at(v) : localize("INVALID_ITEM");
 }
 
-std::string LanguageStrings::move(u16 v) const
+const std::string& LanguageStrings::move(u16 v) const
 {
     return v < moves.size() ? moves.at(v) : localize("INVALID_MOVE");
 }
 
-std::string LanguageStrings::nature(u8 v) const
+const std::string& LanguageStrings::nature(u8 v) const
 {
     return v < natures.size() ? natures.at(v) : localize("INVALID_NATURE");
 }
 
-std::string LanguageStrings::species(u16 v) const
+const std::string& LanguageStrings::species(u16 v) const
 {
     return v < speciess.size() ? speciess.at(v) : localize("INVALID_SPECIES");
 }
 
-std::string LanguageStrings::localize(const std::string& v) const
+const std::string& LanguageStrings::localize(const std::string& v) const
 {
-    return gui.value(v, "MISSING: " + v);
+    static std::string MISSING = "MISSING: ";
+    if (MISSING != "MISSING: ")
+    {
+        MISSING = "MISSING: ";
+    }
+    if (gui.count(v))
+    {
+        return gui.at(v).get_ref<const std::string&>();
+    }
+    else
+    {
+        MISSING += v;
+        return MISSING;
+    }
 }
 
-std::vector<std::string> LanguageStrings::rawItems() const
+const std::vector<std::string>& LanguageStrings::rawItems() const
 {
     return items;
 }
 
-std::vector<std::string> LanguageStrings::rawMoves() const
+const std::vector<std::string>& LanguageStrings::rawMoves() const
 {
     return moves;
 }
 
-std::string LanguageStrings::location(u16 v, Generation generation) const
+const std::string& LanguageStrings::location(u16 v, Generation generation) const
 {
     std::unordered_map<u16, std::string>::const_iterator i;
     switch (generation)
@@ -257,12 +279,11 @@ std::string LanguageStrings::location(u16 v, Generation generation) const
     return localize("INVALID_LOCATION");
 }
 
-std::string LanguageStrings::game(u8 v) const
+const std::string& LanguageStrings::game(u8 v) const
 {
-    std::string ret = "";
-    if (v < games.size())
+    if (v < games.size() && games.at(v) != "")
     {
-        ret = games.at(v);
+        return games.at(v);
     }
-    return ret == "" ? localize("INVALID_GAME") : ret;
+    return localize("INVALID_GAME");
 }

@@ -35,25 +35,25 @@ namespace i18n
     void init(void);
     void exit(void);
 
-    std::vector<std::string> rawItems(u8 lang);
-    std::vector<std::string> rawMoves(u8 lang);
+    const std::vector<std::string>& rawItems(u8 lang);
+    const std::vector<std::string>& rawMoves(u8 lang);
     
-    std::string ability(u8 lang, u8 value);
-    std::string ball(u8 lang, u8 value);
-    std::string hp(u8 lang, u8 value);
-    std::string item(u8 lang, u16 value);
-    std::string move(u8 lang, u16 value);
-    std::string nature(u8 lang, u8 value);
-    std::string species(u8 lang, u16 value);
-    std::string form(u8 lang, u16 species, u8 form, Generation generation);
-    std::string location(u8 lang, u16 value, Generation generation);
-    std::string location(u8 lang, u16 value, u8 originGame);
-    std::string game(u8 lang, u8 value);
+    const std::string& ability(u8 lang, u8 value);
+    const std::string& ball(u8 lang, u8 value);
+    const std::string& hp(u8 lang, u8 value);
+    const std::string& item(u8 lang, u16 value);
+    const std::string& move(u8 lang, u16 value);
+    const std::string& nature(u8 lang, u8 value);
+    const std::string& species(u8 lang, u16 value);
+    const std::string& form(u8 lang, u16 species, u8 form, Generation generation);
+    const std::string& location(u8 lang, u16 value, Generation generation);
+    const std::string& location(u8 lang, u16 value, u8 originGame);
+    const std::string& game(u8 lang, u8 value);
 
     // Used for general GUI stuff; not for PKM values
-    std::string localize(Language lang, const std::string& index);
-    std::string localize(const std::string& index);
-    std::string langString(Language l);
+    const std::string& localize(Language lang, const std::string& index);
+    const std::string& localize(const std::string& index);
+    const std::string& langString(Language l);
     Language langFromString(const std::string& value);
 };
 

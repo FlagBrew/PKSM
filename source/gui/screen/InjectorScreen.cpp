@@ -46,8 +46,7 @@ bool InjectorScreen::setLanguage(Language language)
     if (isLangAvailable(language))
     {
         lang = language;
-        std::string langString = i18n::langString(lang);
-        wondercard = MysteryGift::wondercard(ids[langString]);
+        wondercard = MysteryGift::wondercard(ids[i18n::langString(lang)]);
         
         changeDate();
     }
@@ -57,7 +56,7 @@ bool InjectorScreen::setLanguage(Language language)
 InjectorScreen::InjectorScreen(nlohmann::json ids) : hid(40, 8), ids(ids), emptySlot(TitleLoader::save->emptyGiftLocation()),
                                                      gifts(TitleLoader::save->currentGifts())
 {
-    std::string langString = i18n::langString(Configuration::getInstance().language());
+    const std::string& langString = i18n::langString(Configuration::getInstance().language());
     if (ids.find(langString) != ids.end())
     {
         wondercard = MysteryGift::wondercard(ids[langString]);
@@ -188,7 +187,7 @@ void InjectorScreen::draw() const
         bool first = true;
         for (int x = 235; x < 274; x += 38)
         {
-            std::string word = first ? i18n::localize("YES") : i18n::localize("NO");
+            const std::string& word = first ? i18n::localize("YES") : i18n::localize("NO");
             if (overwriteCard)
             {
                 Gui::sprite(ui_sheet_button_selected_text_button_idx, x, y);
@@ -309,17 +308,18 @@ void InjectorScreen::draw() const
         {
             Gui::staticText(i18n::localize("NA"), 87, 35, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             Gui::staticText(i18n::localize("NA"), 87, 55, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            std::string itemString = i18n::item(Configuration::getInstance().language(), wondercard->object());
+            const std::string* itemString = &i18n::item(Configuration::getInstance().language(), wondercard->object());
+            std::string numString = "";
             if (wondercard->generation() == Generation::SIX)
             {
-                itemString += " x " + std::to_string(((WC6*)wondercard.get())->objectQuantity());
+                numString = " x " + std::to_string(((WC6*)wondercard.get())->objectQuantity());
             }
             else if (wondercard->generation() == Generation::SEVEN)
             {
-                itemString = i18n::item(Configuration::getInstance().language(), ((WC7*)wondercard.get())->object(item));
-                itemString += " x " + std::to_string(((WC7*)wondercard.get())->objectQuantity(item));
+                itemString = &i18n::item(Configuration::getInstance().language(), ((WC7*)wondercard.get())->object(item));
+                numString = " x " + std::to_string(((WC7*)wondercard.get())->objectQuantity(item));
             }
-            Gui::dynamicText(itemString, 87, 75, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::dynamicText(numString.empty() ? *itemString : *itemString + numString, 87, 75, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             Gui::staticText(i18n::localize("NA"), 87, 95, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             Gui::staticText(i18n::localize("NA"), 87, 115, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             Gui::dynamicText(game, 87, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
@@ -469,8 +469,7 @@ void InjectorScreen::update(touchPosition* touch)
 
 bool InjectorScreen::isLangAvailable(Language l) const
 {
-    std::string langString = i18n::langString(l);
-    return ids.find(langString) != ids.end();
+    return ids.find(i18n::langString(l)) != ids.end();
 }
 
 void InjectorScreen::changeDate()

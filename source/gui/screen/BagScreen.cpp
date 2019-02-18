@@ -426,11 +426,12 @@ bool BagScreen::switchPouch(int newPouch)
 
 void BagScreen::editItem()
 {
+    //! CHECK THAT THIS WORKS
     int limit = allowedItems[limits[currentPouch].first].size() + 1; // Add one for None
-    std::vector<std::pair<std::string, int>> items(limit);
-    items[0] = { i18n::item(Configuration::getInstance().language(), 0), 0 };
+    std::vector<std::pair<const std::string*, int>> items(limit);
+    items[0] = std::make_pair(&i18n::item(Configuration::getInstance().language(), 0), 0);
     auto currentItem = TitleLoader::save->item(limits[currentPouch].first, firstItem + selectedItem);
-    std::pair<std::string, int> currentItemPair = std::make_pair(i18n::item(Configuration::getInstance().language(), currentItem->id()), currentItem->id());
+    std::pair<const std::string*, int> currentItemPair = std::make_pair(&i18n::item(Configuration::getInstance().language(), currentItem->id()), currentItem->id());
 
     if (!canEdit(limits[currentPouch].first, *currentItem))
     {
@@ -440,10 +441,10 @@ void BagScreen::editItem()
     for (int i = 1; i < limit; i++)
     {
         int itemId = allowedItems[limits[currentPouch].first][i - 1];
-        items[i] = std::make_pair(i18n::item(Configuration::getInstance().language(), itemId), itemId); // Store the string so that the pointer isn't deleted
+        items[i] = std::make_pair(&i18n::item(Configuration::getInstance().language(), itemId), itemId); // Store the string so that the pointer isn't deleted
     }
-    std::sort(items.begin() + 1, items.end(), [](std::pair<std::string, int> p1, std::pair<std::string, int> p2){
-        return p1.first < p2.first;
+    std::sort(items.begin() + 1, items.end(), [](std::pair<const std::string*, int> p1, std::pair<const std::string*, int> p2){
+        return (*p1.first) < (*p2.first);
     });
 
     size_t currItemIndex = 0;

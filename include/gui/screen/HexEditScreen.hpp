@@ -63,13 +63,13 @@ private:
         OPEN,
         UNRESTRICTED
     };
-    std::pair<std::string, SecurityLevel> describe(int i) const;
+    std::pair<const std::string*, SecurityLevel> describe(int i) const;
     bool toggleBit(int selected, int offset);
     bool editNumber(bool high, bool up);
     bool checkValue(void);
     void drawMeaning(void) const;
     bool rotateMark(u8 mark);
-    std::pair<std::string, SecurityLevel> selectedDescription;
+    std::pair<const std::string*, SecurityLevel> selectedDescription;
     std::vector<int> selectBytes;
     std::shared_ptr<PKX> pkm;
     HidHorizontal hid;

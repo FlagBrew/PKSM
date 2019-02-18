@@ -272,8 +272,8 @@ void BoxChoice::draw() const
                 Gui::sprite(ui_sheet_icon_shiny_idx, 352 - (int) width, 81);
             }
 
-            info = i18n::species(Configuration::getInstance().language(), infoMon->species());
-            Gui::dynamicText(info, 276, 98, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::dynamicText(i18n::species(Configuration::getInstance().language(), infoMon->species()),
+                                276, 98, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             u8 firstType = type1(infoMon->generation(), infoMon->formSpecies());
             u8 secondType = type2(infoMon->generation(), infoMon->formSpecies());
             if (infoMon->generation() == Generation::FOUR)
@@ -296,8 +296,8 @@ void BoxChoice::draw() const
             info = infoMon->otName() + '\n' + i18n::localize("LOADER_ID") + std::to_string(infoMon->TID());
             Gui::dynamicText(info, 276, 141, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
-            info = i18n::nature(Configuration::getInstance().language(), infoMon->nature());
-            Gui::dynamicText(info, 276, 181, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::dynamicText(i18n::nature(Configuration::getInstance().language(), infoMon->nature()),
+                                276, 181, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             info = i18n::localize("IV") + ": ";
             width = StringUtils::textWidth(info, FONT_SIZE_12);
             Gui::dynamicText(info, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);

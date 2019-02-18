@@ -549,135 +549,135 @@ bool HexEditScreen::editNumber(bool high, bool up)
     return true;
 }
 
-std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int i) const
+std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::describe(int i) const
 {
-    static const std::pair<std::string, HexEditScreen::SecurityLevel> UNKNOWN = std::make_pair(i18n::localize("UNKNOWN"), UNRESTRICTED);
-    static const std::pair<std::string, HexEditScreen::SecurityLevel> UNUSED = std::make_pair(i18n::localize("UNUSED"), UNRESTRICTED);
+    static const std::pair<const std::string*, HexEditScreen::SecurityLevel> UNKNOWN = std::make_pair(&i18n::localize("UNKNOWN"), UNRESTRICTED);
+    static const std::pair<const std::string*, HexEditScreen::SecurityLevel> UNUSED = std::make_pair(&i18n::localize("UNUSED"), UNRESTRICTED);
     if (pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN || pkm->generation() == Generation::LGPE)
     {
         switch (i)
         {
             case 0x00 ... 0x03:
-                return std::make_pair(i18n::localize("ENCRYPTION_KEY"), UNRESTRICTED);
+                return std::make_pair(&i18n::localize("ENCRYPTION_KEY"), UNRESTRICTED);
             case 0x04 ... 0x05:
-                return std::make_pair(i18n::localize("SANITY_PLACEHOLDER"), UNRESTRICTED);
+                return std::make_pair(&i18n::localize("SANITY_PLACEHOLDER"), UNRESTRICTED);
             case 0x06 ... 0x07:
-                return std::make_pair(i18n::localize("CHECKSUM"), UNRESTRICTED);
+                return std::make_pair(&i18n::localize("CHECKSUM"), UNRESTRICTED);
             case 0x08 ... 0x09:
-                return std::make_pair(i18n::localize("SPECIES"), NORMAL);
+                return std::make_pair(&i18n::localize("SPECIES"), NORMAL);
             case 0x0A ... 0x0B:
-                return std::make_pair(i18n::localize("ITEM"), NORMAL);
+                return std::make_pair(&i18n::localize("ITEM"), NORMAL);
             case 0x0C ... 0x0D:
-                return std::make_pair(i18n::localize("OT_ID"), NORMAL);
+                return std::make_pair(&i18n::localize("OT_ID"), NORMAL);
             case 0x0E ... 0x0F:
-                return std::make_pair(i18n::localize("OT_SID"), NORMAL);
+                return std::make_pair(&i18n::localize("OT_SID"), NORMAL);
             case 0x10 ... 0x13:
-                return std::make_pair(i18n::localize("EXPERIENCE"), OPEN);
+                return std::make_pair(&i18n::localize("EXPERIENCE"), OPEN);
             case 0x14:
-                return std::make_pair(i18n::localize("ABILITY"), NORMAL);
+                return std::make_pair(&i18n::localize("ABILITY"), NORMAL);
             case 0x15:
-                return std::make_pair(i18n::localize("ABILITY_NUMBER"), OPEN);
+                return std::make_pair(&i18n::localize("ABILITY_NUMBER"), OPEN);
             case 0x16 ... 0x17:
                 if (pkm->generation() == Generation::SIX)
                 {
-                    return std::make_pair(i18n::localize("TRAINING_BAG_HITS_LEFT"), NORMAL);
+                    return std::make_pair(&i18n::localize("TRAINING_BAG_HITS_LEFT"), NORMAL);
                 }
                 else
                 {
-                    return std::make_pair(i18n::localize("MARKINGS"), NORMAL);
+                    return std::make_pair(&i18n::localize("MARKINGS"), NORMAL);
                 }
             case 0x18 ... 0x1B:
-                return std::make_pair(i18n::localize("PID"), NORMAL);
+                return std::make_pair(&i18n::localize("PID"), NORMAL);
             case 0x1C:
-                return std::make_pair(i18n::localize("NATURE"), OPEN);
+                return std::make_pair(&i18n::localize("NATURE"), OPEN);
             //Gender, fateful encounter, and form bits
             case 0x1D:
-                return std::make_pair(i18n::localize("GENDER_FATEFUL_ENCOUNTER_FORM"), OPEN);
+                return std::make_pair(&i18n::localize("GENDER_FATEFUL_ENCOUNTER_FORM"), OPEN);
             case 0x1E:
-                return std::make_pair(i18n::localize("HP_EV"), NORMAL);
+                return std::make_pair(&i18n::localize("HP_EV"), NORMAL);
             case 0x1F:
-                return std::make_pair(i18n::localize("ATTACK_EV"), NORMAL);
+                return std::make_pair(&i18n::localize("ATTACK_EV"), NORMAL);
             case 0x20:
-                return std::make_pair(i18n::localize("DEFENSE_EV"), NORMAL);
+                return std::make_pair(&i18n::localize("DEFENSE_EV"), NORMAL);
             case 0x21:
-                return std::make_pair(i18n::localize("SPEED_EV"), NORMAL);
+                return std::make_pair(&i18n::localize("SPEED_EV"), NORMAL);
             case 0x22:
-                return std::make_pair(i18n::localize("SPATK_EV"), NORMAL);
+                return std::make_pair(&i18n::localize("SPATK_EV"), NORMAL);
             case 0x23:
-                return std::make_pair(i18n::localize("SPDEF_EV"), NORMAL);
+                return std::make_pair(&i18n::localize("SPDEF_EV"), NORMAL);
             case 0x24:
                 if (pkm->generation() == Generation::LGPE)
                 {
-                    return std::make_pair(i18n::localize("AWAKENED_HP"), NORMAL);
+                    return std::make_pair(&i18n::localize("AWAKENED_HP"), NORMAL);
                 }
                 else
                 {
-                    return std::make_pair(i18n::localize("CONTEST_VALUE_COOL"), NORMAL);
+                    return std::make_pair(&i18n::localize("CONTEST_VALUE_COOL"), NORMAL);
                 }
             case 0x25:
                 if (pkm->generation() == Generation::LGPE)
                 {
-                    return std::make_pair(i18n::localize("AWAKENED_ATTACK"), NORMAL);
+                    return std::make_pair(&i18n::localize("AWAKENED_ATTACK"), NORMAL);
                 }
                 else
                 {
-                    return std::make_pair(i18n::localize("CONTEST_VALUE_BEAUTY"), NORMAL);
+                    return std::make_pair(&i18n::localize("CONTEST_VALUE_BEAUTY"), NORMAL);
                 }
             case 0x26:
                 if (pkm->generation() == Generation::LGPE)
                 {
-                    return std::make_pair(i18n::localize("AWAKENED_DEFENSE"), NORMAL);
+                    return std::make_pair(&i18n::localize("AWAKENED_DEFENSE"), NORMAL);
                 }
                 else
                 {
-                    return std::make_pair(i18n::localize("CONTEST_VALUE_CUTE"), NORMAL);
+                    return std::make_pair(&i18n::localize("CONTEST_VALUE_CUTE"), NORMAL);
                 }
             case 0x27:
                 if (pkm->generation() == Generation::LGPE)
                 {
-                    return std::make_pair(i18n::localize("AWAKENED_SPEED"), NORMAL);
+                    return std::make_pair(&i18n::localize("AWAKENED_SPEED"), NORMAL);
                 }
                 else
                 {
-                    return std::make_pair(i18n::localize("CONTEST_VALUE_SMART"), NORMAL);
+                    return std::make_pair(&i18n::localize("CONTEST_VALUE_SMART"), NORMAL);
                 }
             case 0x28:
                 if (pkm->generation() == Generation::LGPE)
                 {
-                    return std::make_pair(i18n::localize("AWAKENED_SPATK"), NORMAL);
+                    return std::make_pair(&i18n::localize("AWAKENED_SPATK"), NORMAL);
                 }
                 else
                 {
-                    return std::make_pair(i18n::localize("CONTEST_VALUE_TOUGH"), NORMAL);
+                    return std::make_pair(&i18n::localize("CONTEST_VALUE_TOUGH"), NORMAL);
                 }
             case 0x29:
                 if (pkm->generation() == Generation::LGPE)
                 {
-                    return std::make_pair(i18n::localize("AWAKENED_SPDEF"), NORMAL);
+                    return std::make_pair(&i18n::localize("AWAKENED_SPDEF"), NORMAL);
                 }
                 else
                 {
-                    return std::make_pair(i18n::localize("CONTEST_VALUE_SHEEN"), NORMAL);
+                    return std::make_pair(&i18n::localize("CONTEST_VALUE_SHEEN"), NORMAL);
                 }
             case 0x2A:
                 if (pkm->generation() == Generation::SIX)
                 {
-                    return std::make_pair(i18n::localize("MARKINGS"), NORMAL);
+                    return std::make_pair(&i18n::localize("MARKINGS"), NORMAL);
                 }
                 return UNUSED;
             case 0x2B:
-                return std::make_pair(i18n::localize("POKERUS"), NORMAL);
+                return std::make_pair(&i18n::localize("POKERUS"), NORMAL);
             case 0x2C ... 0x2F:
                 if (pkm->generation() == Generation::LGPE)
                 {
-                    return std::make_pair(i18n::localize("HEIGHT_ABSOLUTE"), OPEN);
+                    return std::make_pair(&i18n::localize("HEIGHT_ABSOLUTE"), OPEN);
                 }
                 else
                 {
-                    return std::make_pair(i18n::localize("SUPER_TRAINING_FLAGS"), NORMAL);
+                    return std::make_pair(&i18n::localize("SUPER_TRAINING_FLAGS"), NORMAL);
                 }
             case 0x30 ... 0x36:
-                return std::make_pair(i18n::localize("RIBBONS"), NORMAL);
+                return std::make_pair(&i18n::localize("RIBBONS"), NORMAL);
             case 0x37:
                 return UNUSED;
             case 0x38:
@@ -687,7 +687,7 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 }
                 else
                 {
-                    return std::make_pair(i18n::localize("CONTEST_MEMORY_RIBBON_COUNT"), NORMAL);
+                    return std::make_pair(&i18n::localize("CONTEST_MEMORY_RIBBON_COUNT"), NORMAL);
                 }
             case 0x39:
                 if (pkm->generation() == Generation::LGPE)
@@ -696,199 +696,199 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
                 }
                 else
                 {
-                    return std::make_pair(i18n::localize("BATTLE_MEMORY_RIBBON_COUNT"), NORMAL);
+                    return std::make_pair(&i18n::localize("BATTLE_MEMORY_RIBBON_COUNT"), NORMAL);
                 }
                 
             case 0x3A:
                 if (pkm->generation() == Generation::LGPE)
                 {
-                    return std::make_pair(i18n::localize("HEIGHT"), NORMAL);
+                    return std::make_pair(&i18n::localize("HEIGHT"), NORMAL);
                 }
                 else
                 {
-                    return std::make_pair(i18n::localize("DISTRIBUTION_SUPER_TRAINING_FLAGS"), NORMAL);
+                    return std::make_pair(&i18n::localize("DISTRIBUTION_SUPER_TRAINING_FLAGS"), NORMAL);
                 }
             case 0x3B:
                 if (pkm->generation() == Generation::LGPE)
                 {
-                    return std::make_pair(i18n::localize("WEIGHT"), NORMAL);
+                    return std::make_pair(&i18n::localize("WEIGHT"), NORMAL);
                 }
             case 0x3C ... 0x3F:
                 return UNUSED;
             case 0x40 ... 0x57:
-                return std::make_pair(i18n::localize("NICKNAME"), NORMAL);
+                return std::make_pair(&i18n::localize("NICKNAME"), NORMAL);
             case 0x58 ... 0x59:
-                return std::make_pair(i18n::localize("NULL_TERMINATOR"), UNRESTRICTED);
+                return std::make_pair(&i18n::localize("NULL_TERMINATOR"), UNRESTRICTED);
             case 0x5A ... 0x5B:
-                return std::make_pair(i18n::localize("MOVE_1_ID"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_1_ID"), NORMAL);
             case 0x5C ... 0x5D:
-                return std::make_pair(i18n::localize("MOVE_2_ID"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_2_ID"), NORMAL);
             case 0x5E ... 0x5F:
-                return std::make_pair(i18n::localize("MOVE_3_ID"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_3_ID"), NORMAL);
             case 0x60 ... 0x61:
-                return std::make_pair(i18n::localize("MOVE_4_ID"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_4_ID"), NORMAL);
             case 0x62:
-                return std::make_pair(i18n::localize("MOVE_1_CURRENT_PP"), OPEN);
+                return std::make_pair(&i18n::localize("MOVE_1_CURRENT_PP"), OPEN);
             case 0x63:
-                return std::make_pair(i18n::localize("MOVE_2_CURRENT_PP"), OPEN);
+                return std::make_pair(&i18n::localize("MOVE_2_CURRENT_PP"), OPEN);
             case 0x64:
-                return std::make_pair(i18n::localize("MOVE_3_CURRENT_PP"), OPEN);
+                return std::make_pair(&i18n::localize("MOVE_3_CURRENT_PP"), OPEN);
             case 0x65:
-                return std::make_pair(i18n::localize("MOVE_4_CURRENT_PP"), OPEN);
+                return std::make_pair(&i18n::localize("MOVE_4_CURRENT_PP"), OPEN);
             case 0x66:
-                return std::make_pair(i18n::localize("MOVE_1_PP_UPS"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_1_PP_UPS"), NORMAL);
             case 0x67:
-                return std::make_pair(i18n::localize("MOVE_2_PP_UPS"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_2_PP_UPS"), NORMAL);
             case 0x68:
-                return std::make_pair(i18n::localize("MOVE_3_PP_UPS"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_3_PP_UPS"), NORMAL);
             case 0x69:
-                return std::make_pair(i18n::localize("MOVE_4_PP_UPS"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_4_PP_UPS"), NORMAL);
             case 0x6A ... 0x6B:
-                return std::make_pair(i18n::localize("RELEARN_MOVE_1_ID"), NORMAL);
+                return std::make_pair(&i18n::localize("RELEARN_MOVE_1_ID"), NORMAL);
             case 0x6C ... 0x6D:
-                return std::make_pair(i18n::localize("RELEARN_MOVE_2_ID"), NORMAL);
+                return std::make_pair(&i18n::localize("RELEARN_MOVE_2_ID"), NORMAL);
             case 0x6E ... 0x6F:
-                return std::make_pair(i18n::localize("RELEARN_MOVE_3_ID"), NORMAL);
+                return std::make_pair(&i18n::localize("RELEARN_MOVE_3_ID"), NORMAL);
             case 0x70 ... 0x71:
-                return std::make_pair(i18n::localize("RELEARN_MOVE_4_ID"), NORMAL);
+                return std::make_pair(&i18n::localize("RELEARN_MOVE_4_ID"), NORMAL);
             case 0x72:
                 if (pkm->generation() != Generation::LGPE)
                 {
-                    return std::make_pair(i18n::localize("SECRET_SUPER_TRAINING_FLAG"), NORMAL);
+                    return std::make_pair(&i18n::localize("SECRET_SUPER_TRAINING_FLAG"), NORMAL);
                 }
             case 0x73:
                 return UNUSED;
             case 0x74 ... 0x76:
-                return std::make_pair(i18n::localize("IVS"), NORMAL);
+                return std::make_pair(&i18n::localize("IVS"), NORMAL);
             case 0x77:
-                return std::make_pair(i18n::localize("IVS_EGG_AND_NICKNAMED_FLAGS"), NORMAL);
+                return std::make_pair(&i18n::localize("IVS_EGG_AND_NICKNAMED_FLAGS"), NORMAL);
             case 0x78 ... 0x8F:
-                return std::make_pair(i18n::localize("CURRENT_TRAINER_NAME"), NORMAL);
+                return std::make_pair(&i18n::localize("CURRENT_TRAINER_NAME"), NORMAL);
             case 0x90 ... 0x91:
-                return std::make_pair(i18n::localize("NULL_TERMINATOR"), UNRESTRICTED);
+                return std::make_pair(&i18n::localize("NULL_TERMINATOR"), UNRESTRICTED);
             case 0x92:
-                return std::make_pair(i18n::localize("CURRENT_TRAINER_GENDER"), NORMAL);
+                return std::make_pair(&i18n::localize("CURRENT_TRAINER_GENDER"), NORMAL);
             case 0x93:
-                return std::make_pair(i18n::localize("CURRENT_HANDLER"), NORMAL);
+                return std::make_pair(&i18n::localize("CURRENT_HANDLER"), NORMAL);
             case 0x94 ... 0x95:
-                return std::make_pair(i18n::localize("GEOLOCATION_1"), NORMAL);
+                return std::make_pair(&i18n::localize("GEOLOCATION_1"), NORMAL);
             case 0x96 ... 0x97:
-                return std::make_pair(i18n::localize("GEOLOCATION_2"), NORMAL);
+                return std::make_pair(&i18n::localize("GEOLOCATION_2"), NORMAL);
             case 0x98 ... 0x99:
-                return std::make_pair(i18n::localize("GEOLOCATION_3"), NORMAL);
+                return std::make_pair(&i18n::localize("GEOLOCATION_3"), NORMAL);
             case 0x9A ... 0x9B:
-                return std::make_pair(i18n::localize("GEOLOCATION_4"), NORMAL);
+                return std::make_pair(&i18n::localize("GEOLOCATION_4"), NORMAL);
             case 0x9C ... 0x9D:
-                return std::make_pair(i18n::localize("GEOLOCATION_5"), NORMAL);
+                return std::make_pair(&i18n::localize("GEOLOCATION_5"), NORMAL);
             case 0x9E ... 0xA1:
                 return UNUSED;
             case 0xA2:
-                return std::make_pair(i18n::localize("CURRENT_TRAINER_FRIENDSHIP"), NORMAL);
+                return std::make_pair(&i18n::localize("CURRENT_TRAINER_FRIENDSHIP"), NORMAL);
             case 0xA3:
-                return std::make_pair(i18n::localize("CURRENT_TRAINER_AFFECTION"), NORMAL);
+                return std::make_pair(&i18n::localize("CURRENT_TRAINER_AFFECTION"), NORMAL);
             case 0xA4:
-                return std::make_pair(i18n::localize("CURRENT_TRAINER_MEMORY_INTENSITY"), OPEN);
+                return std::make_pair(&i18n::localize("CURRENT_TRAINER_MEMORY_INTENSITY"), OPEN);
             case 0xA5:
-                return std::make_pair(i18n::localize("CURRENT_TRAINER_MEMORY_LINE"), OPEN);
+                return std::make_pair(&i18n::localize("CURRENT_TRAINER_MEMORY_LINE"), OPEN);
             case 0xA6:
-                return std::make_pair(i18n::localize("CURRENT_TRAINER_MEMORY_FEELING"), OPEN);
+                return std::make_pair(&i18n::localize("CURRENT_TRAINER_MEMORY_FEELING"), OPEN);
             case 0xA7:
                 return UNUSED;
             case 0xA8 ... 0xA9:
-                return std::make_pair(i18n::localize("CURRENT_TRAINER_MEMORY_TEXTVAR"), OPEN);
+                return std::make_pair(&i18n::localize("CURRENT_TRAINER_MEMORY_TEXTVAR"), OPEN);
             case 0xAA ... 0xAD:
                 return UNUSED;
             case 0xAE:
-                return std::make_pair(i18n::localize("FULLNESS"), NORMAL);
+                return std::make_pair(&i18n::localize("FULLNESS"), NORMAL);
             case 0xAF:
-                return std::make_pair(i18n::localize("ENJOYMENT"), NORMAL);
+                return std::make_pair(&i18n::localize("ENJOYMENT"), NORMAL);
             case 0xB0 ... 0xC7:
-                return std::make_pair(i18n::localize("ORIGINAL_TRAINER_NAME"), NORMAL);
+                return std::make_pair(&i18n::localize("ORIGINAL_TRAINER_NAME"), NORMAL);
             case 0xC8 ... 0xC9:
-                return std::make_pair(i18n::localize("NULL_TERMINATOR"), UNRESTRICTED);
+                return std::make_pair(&i18n::localize("NULL_TERMINATOR"), UNRESTRICTED);
             case 0xCA:
-                return std::make_pair(i18n::localize("ORIGINAL_TRAINER_FRIENDSHIP"), NORMAL);
+                return std::make_pair(&i18n::localize("ORIGINAL_TRAINER_FRIENDSHIP"), NORMAL);
             case 0xCB:
-                return std::make_pair(i18n::localize("ORIGINAL_TRAINER_AFFECTION"), NORMAL);
+                return std::make_pair(&i18n::localize("ORIGINAL_TRAINER_AFFECTION"), NORMAL);
             case 0xCC:
-                return std::make_pair(i18n::localize("ORIGINAL_TRAINER_MEMORY_INTENSITY"), OPEN);
+                return std::make_pair(&i18n::localize("ORIGINAL_TRAINER_MEMORY_INTENSITY"), OPEN);
             case 0xCD:
-                return std::make_pair(i18n::localize("ORIGINAL_TRAINER_MEMORY_LINE"), OPEN);
+                return std::make_pair(&i18n::localize("ORIGINAL_TRAINER_MEMORY_LINE"), OPEN);
             case 0xCE:
             case 0xCF:
-                return std::make_pair(i18n::localize("ORIGINAL_TRAINER_MEMORY_TEXTVAR"), OPEN);
+                return std::make_pair(&i18n::localize("ORIGINAL_TRAINER_MEMORY_TEXTVAR"), OPEN);
             case 0xD0:
-                return std::make_pair(i18n::localize("ORIGINAL_TRAINER_MEMORY_FEELING"), OPEN);
+                return std::make_pair(&i18n::localize("ORIGINAL_TRAINER_MEMORY_FEELING"), OPEN);
             case 0xD1 ... 0xD3:
-                return std::make_pair(i18n::localize("EGG_RECEIVED_DATE"), NORMAL);
+                return std::make_pair(&i18n::localize("EGG_RECEIVED_DATE"), NORMAL);
             case 0xD4 ... 0xD6:
-                return std::make_pair(i18n::localize("MET_DATE"), NORMAL);
+                return std::make_pair(&i18n::localize("MET_DATE"), NORMAL);
             case 0xD7:
                 return UNKNOWN;
             case 0xD8 ... 0xD9:
-                return std::make_pair(i18n::localize("EGG_LOCATION"), NORMAL);
+                return std::make_pair(&i18n::localize("EGG_LOCATION"), NORMAL);
             case 0xDA ... 0xDB:
-                return std::make_pair(i18n::localize("MET_LOCATION"), NORMAL);
+                return std::make_pair(&i18n::localize("MET_LOCATION"), NORMAL);
             case 0xDC:
-                return std::make_pair(i18n::localize("POKEBALL"), NORMAL);
+                return std::make_pair(&i18n::localize("POKEBALL"), NORMAL);
             case 0xDD:
-                return std::make_pair(i18n::localize("MET_LEVEL_&_ORIGINAL_TRAINER_GENDER"), NORMAL);
+                return std::make_pair(&i18n::localize("MET_LEVEL_&_ORIGINAL_TRAINER_GENDER"), NORMAL);
             case 0xDE:
                 if (pkm->generation() == Generation::SIX)
                 {
-                    return std::make_pair(i18n::localize("GEN_4_ENCOUNTER_TYPE"), OPEN);
+                    return std::make_pair(&i18n::localize("GEN_4_ENCOUNTER_TYPE"), OPEN);
                 }
                 else
                 {
-                    return std::make_pair(i18n::localize("HYPER_TRAIN_FLAGS"), NORMAL);
+                    return std::make_pair(&i18n::localize("HYPER_TRAIN_FLAGS"), NORMAL);
                 }
             case 0xDF:
-                return std::make_pair(i18n::localize("ORIGINAL_TRAINER_GAME_ID"), NORMAL);
+                return std::make_pair(&i18n::localize("ORIGINAL_TRAINER_GAME_ID"), NORMAL);
             case 0xE0:
-                return std::make_pair(i18n::localize("COUNTRY_ID"), OPEN);
+                return std::make_pair(&i18n::localize("COUNTRY_ID"), OPEN);
             case 0xE1:
-                return std::make_pair(i18n::localize("REGION_ID"), OPEN);
+                return std::make_pair(&i18n::localize("REGION_ID"), OPEN);
             case 0xE2:
-                return std::make_pair(i18n::localize("3DS_REGION_ID"), OPEN);
+                return std::make_pair(&i18n::localize("3DS_REGION_ID"), OPEN);
             case 0xE3:
-                return std::make_pair(i18n::localize("ORIGINAL_TRAINER_LANGUAGE_ID"), NORMAL);
+                return std::make_pair(&i18n::localize("ORIGINAL_TRAINER_LANGUAGE_ID"), NORMAL);
             case 0xE4 ... 0xE7:
                 return UNUSED;
             case 0xE8 ... 0xEB:
-                return std::make_pair(i18n::localize("STATUS_CONDITIONS"), NORMAL);
+                return std::make_pair(&i18n::localize("STATUS_CONDITIONS"), NORMAL);
             case 0xEC:
-                return std::make_pair(i18n::localize("LEVEL"), NORMAL); // TODO CHECK LGPE
+                return std::make_pair(&i18n::localize("LEVEL"), NORMAL); // TODO CHECK LGPE
             // Refresh dirt
             case 0xED:
                 if (pkm->generation() != Generation::SIX)
                 {
-                    return std::make_pair(i18n::localize("DIRT_TYPE"), OPEN); // TODO CHECK LGPE
+                    return std::make_pair(&i18n::localize("DIRT_TYPE"), OPEN); // TODO CHECK LGPE
                 }
             case 0xEE:
                 if (pkm->generation() != Generation::SIX)
                 {
-                    return std::make_pair(i18n::localize("DIRT_LOCATION"), OPEN); // TODO CHECK LGPE
+                    return std::make_pair(&i18n::localize("DIRT_LOCATION"), OPEN); // TODO CHECK LGPE
                 }
             case 0xEF:
                 return UNKNOWN;
             case 0xF0 ... 0xF1:
-                return std::make_pair(i18n::localize("CURRENT_HP"), OPEN);
+                return std::make_pair(&i18n::localize("CURRENT_HP"), OPEN);
             case 0xF2 ...  0xF3:
-                return std::make_pair(i18n::localize("MAX_HP"), OPEN);
+                return std::make_pair(&i18n::localize("MAX_HP"), OPEN);
             case 0xF4 ... 0xF5:
-                return std::make_pair(i18n::localize("ATTACK"), OPEN);
+                return std::make_pair(&i18n::localize("ATTACK"), OPEN);
             case 0xF6 ... 0xF7:
-                return std::make_pair(i18n::localize("DEFENSE"), OPEN);
+                return std::make_pair(&i18n::localize("DEFENSE"), OPEN);
             case 0xF8 ... 0xF9:
-                return std::make_pair(i18n::localize("SPEED"), OPEN);
+                return std::make_pair(&i18n::localize("SPEED"), OPEN);
             case 0xFA ... 0xFB:
-                return std::make_pair(i18n::localize("SPATK"), OPEN);
+                return std::make_pair(&i18n::localize("SPATK"), OPEN);
             case 0xFC ... 0xFD:
-                return std::make_pair(i18n::localize("SPDEF"), OPEN);
+                return std::make_pair(&i18n::localize("SPDEF"), OPEN);
             case 0xFE ... 0xFF:
                 if (pkm->generation() == Generation::LGPE)
                 {
-                    return std::make_pair(i18n::localize("CP"), OPEN);
+                    return std::make_pair(&i18n::localize("CP"), OPEN);
                 }
             case 0x100 ... 0x103:
                 return UNKNOWN;
@@ -899,147 +899,147 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
         switch(i)
         {
             case 0x00 ... 0x03:
-                return std::make_pair(i18n::localize("PID"), NORMAL);
+                return std::make_pair(&i18n::localize("PID"), NORMAL);
             case 0x04 ... 0x05:
                 return UNUSED;
             case 0x06 ... 0x07:
-                return std::make_pair(i18n::localize("CHECKSUM"), UNRESTRICTED);
+                return std::make_pair(&i18n::localize("CHECKSUM"), UNRESTRICTED);
             case 0x08 ... 0x09:
-                return std::make_pair(i18n::localize("SPECIES"), NORMAL);
+                return std::make_pair(&i18n::localize("SPECIES"), NORMAL);
             case 0x0A ... 0x0B:
-                return std::make_pair(i18n::localize("ITEM"), NORMAL);
+                return std::make_pair(&i18n::localize("ITEM"), NORMAL);
             case 0x0C ... 0x0D:
-                return std::make_pair(i18n::localize("ORIGINAL_TRAINER_ID"), NORMAL);
+                return std::make_pair(&i18n::localize("ORIGINAL_TRAINER_ID"), NORMAL);
             case 0x0E ... 0x0F:
-                return std::make_pair(i18n::localize("ORIGINAL_TRAINER_SID"), NORMAL);
+                return std::make_pair(&i18n::localize("ORIGINAL_TRAINER_SID"), NORMAL);
             case 0x10 ... 0x13:
-                return std::make_pair(i18n::localize("EXPERIENCE"), NORMAL);
+                return std::make_pair(&i18n::localize("EXPERIENCE"), NORMAL);
             case 0x14:
-                return std::make_pair(i18n::localize("FRIENDSHIP"), NORMAL);
+                return std::make_pair(&i18n::localize("FRIENDSHIP"), NORMAL);
             case 0x15:
-                return std::make_pair(i18n::localize("ABILITY"), NORMAL);
+                return std::make_pair(&i18n::localize("ABILITY"), NORMAL);
             case 0x16:
-                return std::make_pair(i18n::localize("MARKINGS"), NORMAL);
+                return std::make_pair(&i18n::localize("MARKINGS"), NORMAL);
             case 0x17:
-                return std::make_pair(i18n::localize("ORIGINAL_LANGUAGE"), OPEN);
+                return std::make_pair(&i18n::localize("ORIGINAL_LANGUAGE"), OPEN);
             case 0x18:
-                return std::make_pair(i18n::localize("HP_EV"), NORMAL);
+                return std::make_pair(&i18n::localize("HP_EV"), NORMAL);
             case 0x19:
-                return std::make_pair(i18n::localize("ATTACK_EV"), NORMAL);
+                return std::make_pair(&i18n::localize("ATTACK_EV"), NORMAL);
             case 0x1A:
-                return std::make_pair(i18n::localize("DEFENSE_EV"), NORMAL);
+                return std::make_pair(&i18n::localize("DEFENSE_EV"), NORMAL);
             case 0x1B:
-                return std::make_pair(i18n::localize("SPEED_EV"), NORMAL);
+                return std::make_pair(&i18n::localize("SPEED_EV"), NORMAL);
             case 0x1C:
-                return std::make_pair(i18n::localize("SPATK_EV"), NORMAL);
+                return std::make_pair(&i18n::localize("SPATK_EV"), NORMAL);
             case 0x1D:
-                return std::make_pair(i18n::localize("SPDEF_EV"), NORMAL);
+                return std::make_pair(&i18n::localize("SPDEF_EV"), NORMAL);
             case 0x1E:
-                return std::make_pair(i18n::localize("COOL_CONTEST_VALUE"), NORMAL);
+                return std::make_pair(&i18n::localize("COOL_CONTEST_VALUE"), NORMAL);
             case 0x1F:
-                return std::make_pair(i18n::localize("BEAUTY_CONTEST_VALUE"), NORMAL);
+                return std::make_pair(&i18n::localize("BEAUTY_CONTEST_VALUE"), NORMAL);
             case 0x20:
-                return std::make_pair(i18n::localize("CUTE_CONTEST_VALUE"), NORMAL);
+                return std::make_pair(&i18n::localize("CUTE_CONTEST_VALUE"), NORMAL);
             case 0x21:
-                return std::make_pair(i18n::localize("SMART_CONTEST_VALUE"), NORMAL);
+                return std::make_pair(&i18n::localize("SMART_CONTEST_VALUE"), NORMAL);
             case 0x22:
-                return std::make_pair(i18n::localize("TOUGH_CONTEST_VALUE"), NORMAL);
+                return std::make_pair(&i18n::localize("TOUGH_CONTEST_VALUE"), NORMAL);
             case 0x23:
-                return std::make_pair(i18n::localize("SHEEN_CONTEST_VALUE"), NORMAL);
+                return std::make_pair(&i18n::localize("SHEEN_CONTEST_VALUE"), NORMAL);
             case 0x24 ... 0x27:
-                return std::make_pair(i18n::localize("RIBBONS"), NORMAL);
+                return std::make_pair(&i18n::localize("RIBBONS"), NORMAL);
             case 0x28 ... 0x29:
-                return std::make_pair(i18n::localize("MOVE_1"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_1"), NORMAL);
             case 0x2A ... 0x2B:
-                return std::make_pair(i18n::localize("MOVE_2"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_2"), NORMAL);
             case 0x2C ... 0x2D:
-                return std::make_pair(i18n::localize("MOVE_3"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_3"), NORMAL);
             case 0x2E ... 0x2F:
-                return std::make_pair(i18n::localize("MOVE_4"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_4"), NORMAL);
             case 0x30:
-                return std::make_pair(i18n::localize("MOVE_1_PP"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_1_PP"), NORMAL);
             case 0x31:
-                return std::make_pair(i18n::localize("MOVE_2_PP"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_2_PP"), NORMAL);
             case 0x32:
-                return std::make_pair(i18n::localize("MOVE_3_PP"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_3_PP"), NORMAL);
             case 0x33:
-                return std::make_pair(i18n::localize("MOVE_4_PP"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_4_PP"), NORMAL);
             case 0x34:
-                return std::make_pair(i18n::localize("MOVE_1_PP_UPS"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_1_PP_UPS"), NORMAL);
             case 0x35:
-                return std::make_pair(i18n::localize("MOVE_2_PP_UPS"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_2_PP_UPS"), NORMAL);
             case 0x36:
-                return std::make_pair(i18n::localize("MOVE_3_PP_UPS"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_3_PP_UPS"), NORMAL);
             case 0x37:
-                return std::make_pair(i18n::localize("MOVE_4_PP_UPS"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_4_PP_UPS"), NORMAL);
             case 0x38 ... 0x3B:
-                return std::make_pair(i18n::localize("IVS_EGG_AND_NICKNAMED_FLAGS"), NORMAL);
+                return std::make_pair(&i18n::localize("IVS_EGG_AND_NICKNAMED_FLAGS"), NORMAL);
             case 0x3C ... 0x3F:
-                return std::make_pair(i18n::localize("HOENN_RIBBONS"), NORMAL);
+                return std::make_pair(&i18n::localize("HOENN_RIBBONS"), NORMAL);
             case 0x40:
-                return std::make_pair(i18n::localize("GENDER_&_FORMS"), NORMAL);
+                return std::make_pair(&i18n::localize("GENDER_&_FORMS"), NORMAL);
             case 0x41:
-                return std::make_pair(i18n::localize("NATURE"), NORMAL);
+                return std::make_pair(&i18n::localize("NATURE"), NORMAL);
             case 0x42:
-                return std::make_pair(i18n::localize("MISC_FLAGS"), NORMAL);
+                return std::make_pair(&i18n::localize("MISC_FLAGS"), NORMAL);
             case 0x43 ... 0x47:
                 return UNUSED;
             case 0x48 ... 0x5D:
-                return std::make_pair(i18n::localize("NICKNAME"), NORMAL);
+                return std::make_pair(&i18n::localize("NICKNAME"), NORMAL);
             case 0x5E:
                 return UNKNOWN;
             case 0x5F:
-                return std::make_pair(i18n::localize("ORIGIN_GAME"), NORMAL);
+                return std::make_pair(&i18n::localize("ORIGIN_GAME"), NORMAL);
             case 0x60 ... 0x63:
-                return std::make_pair(i18n::localize("RIBBONS"), NORMAL);
+                return std::make_pair(&i18n::localize("RIBBONS"), NORMAL);
             case 0x64 ... 0x67:
                 return UNUSED;
             case 0x68 ... 0x77:
-                return std::make_pair(i18n::localize("ORIGINAL_TRAINER_NAME"), NORMAL);
+                return std::make_pair(&i18n::localize("ORIGINAL_TRAINER_NAME"), NORMAL);
             case 0x78 ... 0x7A:
-                return std::make_pair(i18n::localize("EGG_DATE"), NORMAL);
+                return std::make_pair(&i18n::localize("EGG_DATE"), NORMAL);
             case 0x7B ... 0x7D:
-                return std::make_pair(i18n::localize("MET_DATE"), NORMAL);
+                return std::make_pair(&i18n::localize("MET_DATE"), NORMAL);
             case 0x7E ... 0x7F:
-                return std::make_pair(i18n::localize("EGG_LOCATION"), NORMAL);
+                return std::make_pair(&i18n::localize("EGG_LOCATION"), NORMAL);
             case 0x80 ... 0x81:
-                return std::make_pair(i18n::localize("MET_LOCATION"), NORMAL);
+                return std::make_pair(&i18n::localize("MET_LOCATION"), NORMAL);
             case 0x82:
-                return std::make_pair(i18n::localize("POKERUS"), NORMAL);
+                return std::make_pair(&i18n::localize("POKERUS"), NORMAL);
             case 0x83:
-                return std::make_pair(i18n::localize("POKEBALL"), NORMAL);
+                return std::make_pair(&i18n::localize("POKEBALL"), NORMAL);
             case 0x84:
-                return std::make_pair(i18n::localize("MET_LEVEL_&_ORIGINAL_TRAINER_GENDER"), NORMAL);
+                return std::make_pair(&i18n::localize("MET_LEVEL_&_ORIGINAL_TRAINER_GENDER"), NORMAL);
             case 0x85:
-                return std::make_pair(i18n::localize("ENCOUNTER_TYPE"), NORMAL);
+                return std::make_pair(&i18n::localize("ENCOUNTER_TYPE"), NORMAL);
             case 0x86 ... 0x87:
                 return UNUSED;
             case 0x88:
-                return std::make_pair(i18n::localize("STATUS_CONDITIONS"), NORMAL);
+                return std::make_pair(&i18n::localize("STATUS_CONDITIONS"), NORMAL);
             case 0x89:
-                return std::make_pair(i18n::localize("UNKNOWN_FLAGS"), UNRESTRICTED);
+                return std::make_pair(&i18n::localize("UNKNOWN_FLAGS"), UNRESTRICTED);
             case 0x8A ... 0x8B:
                 return UNKNOWN;
             case 0x8C:
-                return std::make_pair(i18n::localize("LEVEL"), NORMAL);
+                return std::make_pair(&i18n::localize("LEVEL"), NORMAL);
             case 0x8D:
-                return std::make_pair(i18n::localize("CAPSULE_INDEX_(SEALS)"), OPEN);
+                return std::make_pair(&i18n::localize("CAPSULE_INDEX_(SEALS)"), OPEN);
             case 0x8E ... 0x8F:
-                return std::make_pair(i18n::localize("CURRENT_HP"), OPEN);
+                return std::make_pair(&i18n::localize("CURRENT_HP"), OPEN);
             case 0x90 ... 0x91:
-                return std::make_pair(i18n::localize("MAX_HP"), OPEN);
+                return std::make_pair(&i18n::localize("MAX_HP"), OPEN);
             case 0x92 ... 0x93:
-                return std::make_pair(i18n::localize("ATTACK"), OPEN);
+                return std::make_pair(&i18n::localize("ATTACK"), OPEN);
             case 0x94 ... 0x95:
-                return std::make_pair(i18n::localize("DEFENSE"), OPEN);
+                return std::make_pair(&i18n::localize("DEFENSE"), OPEN);
             case 0x96 ... 0x97:
-                return std::make_pair(i18n::localize("SPEED"), OPEN);
+                return std::make_pair(&i18n::localize("SPEED"), OPEN);
             case 0x98 ... 0x99:
-                return std::make_pair(i18n::localize("SPATK"), OPEN);
+                return std::make_pair(&i18n::localize("SPATK"), OPEN);
             case 0x9A ... 0x9B:
-                return std::make_pair(i18n::localize("SPDEF"), OPEN);
+                return std::make_pair(&i18n::localize("SPDEF"), OPEN);
             case 0x9C ... 0xD3:
-                return std::make_pair(i18n::localize("MAIL_MESSAGE_+_OT_NAME"), OPEN);
+                return std::make_pair(&i18n::localize("MAIL_MESSAGE_+_OT_NAME"), OPEN);
             case 0xD4 ... 0xDB:
                 return UNKNOWN;
         }
@@ -1049,156 +1049,156 @@ std::pair<std::string, HexEditScreen::SecurityLevel> HexEditScreen::describe(int
         switch(i)
         {
             case 0x00 ... 0x03:
-                return std::make_pair(i18n::localize("PID"), NORMAL);
+                return std::make_pair(&i18n::localize("PID"), NORMAL);
             case 0x04 ... 0x05:
                 return UNUSED;
             case 0x06 ... 0x07:
-                return std::make_pair(i18n::localize("CHECKSUM"), UNRESTRICTED);
+                return std::make_pair(&i18n::localize("CHECKSUM"), UNRESTRICTED);
             case 0x08 ... 0x09:
-                return std::make_pair(i18n::localize("SPECIES"), NORMAL);
+                return std::make_pair(&i18n::localize("SPECIES"), NORMAL);
             case 0x0A ... 0x0B:
-                return std::make_pair(i18n::localize("ITEM"), NORMAL);
+                return std::make_pair(&i18n::localize("ITEM"), NORMAL);
             case 0x0C ... 0x0D:
-                return std::make_pair(i18n::localize("ORIGINAL_TRAINER_ID"), NORMAL);
+                return std::make_pair(&i18n::localize("ORIGINAL_TRAINER_ID"), NORMAL);
             case 0x0E ... 0x0F:
-                return std::make_pair(i18n::localize("ORIGINAL_TRAINER_SID"), NORMAL);
+                return std::make_pair(&i18n::localize("ORIGINAL_TRAINER_SID"), NORMAL);
             case 0x10 ... 0x13:
-                return std::make_pair(i18n::localize("EXPERIENCE"), NORMAL);
+                return std::make_pair(&i18n::localize("EXPERIENCE"), NORMAL);
             case 0x14:
-                return std::make_pair(i18n::localize("FRIENDSHIP"), NORMAL);
+                return std::make_pair(&i18n::localize("FRIENDSHIP"), NORMAL);
             case 0x15:
-                return std::make_pair(i18n::localize("ABILITY"), NORMAL);
+                return std::make_pair(&i18n::localize("ABILITY"), NORMAL);
             case 0x16:
-                return std::make_pair(i18n::localize("MARKINGS"), NORMAL);
+                return std::make_pair(&i18n::localize("MARKINGS"), NORMAL);
             case 0x17:
-                return std::make_pair(i18n::localize("ORIGINAL_LANGUAGE"), OPEN);
+                return std::make_pair(&i18n::localize("ORIGINAL_LANGUAGE"), OPEN);
             case 0x18:
-                return std::make_pair(i18n::localize("HP_EV"), NORMAL);
+                return std::make_pair(&i18n::localize("HP_EV"), NORMAL);
             case 0x19:
-                return std::make_pair(i18n::localize("ATTACK_EV"), NORMAL);
+                return std::make_pair(&i18n::localize("ATTACK_EV"), NORMAL);
             case 0x1A:
-                return std::make_pair(i18n::localize("DEFENSE_EV"), NORMAL);
+                return std::make_pair(&i18n::localize("DEFENSE_EV"), NORMAL);
             case 0x1B:
-                return std::make_pair(i18n::localize("SPEED_EV"), NORMAL);
+                return std::make_pair(&i18n::localize("SPEED_EV"), NORMAL);
             case 0x1C:
-                return std::make_pair(i18n::localize("SPATK_EV"), NORMAL);
+                return std::make_pair(&i18n::localize("SPATK_EV"), NORMAL);
             case 0x1D:
-                return std::make_pair(i18n::localize("SPDEF_EV"), NORMAL);
+                return std::make_pair(&i18n::localize("SPDEF_EV"), NORMAL);
             case 0x1E:
-                return std::make_pair(i18n::localize("COOL_CONTEST_VALUE"), NORMAL);
+                return std::make_pair(&i18n::localize("COOL_CONTEST_VALUE"), NORMAL);
             case 0x1F:
-                return std::make_pair(i18n::localize("BEAUTY_CONTEST_VALUE"), NORMAL);
+                return std::make_pair(&i18n::localize("BEAUTY_CONTEST_VALUE"), NORMAL);
             case 0x20:
-                return std::make_pair(i18n::localize("CUTE_CONTEST_VALUE"), NORMAL);
+                return std::make_pair(&i18n::localize("CUTE_CONTEST_VALUE"), NORMAL);
             case 0x21:
-                return std::make_pair(i18n::localize("SMART_CONTEST_VALUE"), NORMAL);
+                return std::make_pair(&i18n::localize("SMART_CONTEST_VALUE"), NORMAL);
             case 0x22:
-                return std::make_pair(i18n::localize("TOUGH_CONTEST_VALUE"), NORMAL);
+                return std::make_pair(&i18n::localize("TOUGH_CONTEST_VALUE"), NORMAL);
             case 0x23:
-                return std::make_pair(i18n::localize("SHEEN_CONTEST_VALUE"), NORMAL);
+                return std::make_pair(&i18n::localize("SHEEN_CONTEST_VALUE"), NORMAL);
             case 0x24 ... 0x27:
-                return std::make_pair(i18n::localize("RIBBONS"), NORMAL);
+                return std::make_pair(&i18n::localize("RIBBONS"), NORMAL);
             case 0x28 ... 0x29:
-                return std::make_pair(i18n::localize("MOVE_1"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_1"), NORMAL);
             case 0x2A ... 0x2B:
-                return std::make_pair(i18n::localize("MOVE_2"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_2"), NORMAL);
             case 0x2C ... 0x2D:
-                return std::make_pair(i18n::localize("MOVE_3"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_3"), NORMAL);
             case 0x2E ... 0x2F:
-                return std::make_pair(i18n::localize("MOVE_4"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_4"), NORMAL);
             case 0x30:
-                return std::make_pair(i18n::localize("MOVE_1_PP"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_1_PP"), NORMAL);
             case 0x31:
-                return std::make_pair(i18n::localize("MOVE_2_PP"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_2_PP"), NORMAL);
             case 0x32:
-                return std::make_pair(i18n::localize("MOVE_3_PP"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_3_PP"), NORMAL);
             case 0x33:
-                return std::make_pair(i18n::localize("MOVE_4_PP"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_4_PP"), NORMAL);
             case 0x34:
-                return std::make_pair(i18n::localize("MOVE_1_PP_UPS"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_1_PP_UPS"), NORMAL);
             case 0x35:
-                return std::make_pair(i18n::localize("MOVE_2_PP_UPS"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_2_PP_UPS"), NORMAL);
             case 0x36:
-                return std::make_pair(i18n::localize("MOVE_3_PP_UPS"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_3_PP_UPS"), NORMAL);
             case 0x37:
-                return std::make_pair(i18n::localize("MOVE_4_PP_UPS"), NORMAL);
+                return std::make_pair(&i18n::localize("MOVE_4_PP_UPS"), NORMAL);
             case 0x38 ... 0x3B:
-                return std::make_pair(i18n::localize("IVS_EGG_AND_NICKNAMED_FLAGS"), NORMAL);
+                return std::make_pair(&i18n::localize("IVS_EGG_AND_NICKNAMED_FLAGS"), NORMAL);
             case 0x3C ... 0x3F:
-                return std::make_pair(i18n::localize("HOENN_RIBBONS"), NORMAL);
+                return std::make_pair(&i18n::localize("HOENN_RIBBONS"), NORMAL);
             case 0x40:
-                return std::make_pair(i18n::localize("GENDER_&_FORMS"), NORMAL);
+                return std::make_pair(&i18n::localize("GENDER_&_FORMS"), NORMAL);
             case 0x41:
-                return std::make_pair(i18n::localize("SHINY_LEAVES_(HGSS)"), NORMAL);
+                return std::make_pair(&i18n::localize("SHINY_LEAVES_(HGSS)"), NORMAL);
             case 0x42 ... 0x43:
                 return UNUSED;
             case 0x44 ... 0x45:
-                return std::make_pair(i18n::localize("EGG_LOCATION_(PLATINUM)"), NORMAL);
+                return std::make_pair(&i18n::localize("EGG_LOCATION_(PLATINUM)"), NORMAL);
             case 0x46 ... 0x47:
-                return std::make_pair(i18n::localize("MET_LOCATION_(PLATINUM)"), NORMAL);
+                return std::make_pair(&i18n::localize("MET_LOCATION_(PLATINUM)"), NORMAL);
             case 0x48 ... 0x5D:
-                return std::make_pair(i18n::localize("NICKNAME"), NORMAL);
+                return std::make_pair(&i18n::localize("NICKNAME"), NORMAL);
             case 0x5E:
                 return UNUSED;
             case 0x5F:
-                return std::make_pair(i18n::localize("ORIGIN_GAME"), NORMAL);
+                return std::make_pair(&i18n::localize("ORIGIN_GAME"), NORMAL);
             case 0x60 ... 0x63:
-                return std::make_pair(i18n::localize("RIBBONS"), NORMAL);
+                return std::make_pair(&i18n::localize("RIBBONS"), NORMAL);
             case 0x64 ... 0x67:
                 return UNUSED;
             case 0x68 ... 0x77:
-                return std::make_pair(i18n::localize("ORIGINAL_TRAINER_NAME"), NORMAL);
+                return std::make_pair(&i18n::localize("ORIGINAL_TRAINER_NAME"), NORMAL);
             case 0x78 ... 0x7A:
-                return std::make_pair(i18n::localize("EGG_DATE"), NORMAL);
+                return std::make_pair(&i18n::localize("EGG_DATE"), NORMAL);
             case 0x7B ... 0x7D:
-                return std::make_pair(i18n::localize("MET_DATE"), NORMAL);
+                return std::make_pair(&i18n::localize("MET_DATE"), NORMAL);
             case 0x7E ... 0x7F:
-                return std::make_pair(i18n::localize("EGG_LOCATION_(DIAMOND_&_PEARL)"), NORMAL);
+                return std::make_pair(&i18n::localize("EGG_LOCATION_(DIAMOND_&_PEARL)"), NORMAL);
             case 0x80 ... 0x81:
-                return std::make_pair(i18n::localize("MET_LOCATION_(DIAMOND_&_PEARL"), NORMAL);
+                return std::make_pair(&i18n::localize("MET_LOCATION_(DIAMOND_&_PEARL"), NORMAL);
             case 0x82:
-                return std::make_pair(i18n::localize("POKERUS"), NORMAL);
+                return std::make_pair(&i18n::localize("POKERUS"), NORMAL);
             case 0x83:
-                return std::make_pair(i18n::localize("POKEBALL"), NORMAL);
+                return std::make_pair(&i18n::localize("POKEBALL"), NORMAL);
             case 0x84:
-                return std::make_pair(i18n::localize("MET_LEVEL_&_ORIGINAL_TRAINER_GENDER"), NORMAL);
+                return std::make_pair(&i18n::localize("MET_LEVEL_&_ORIGINAL_TRAINER_GENDER"), NORMAL);
             case 0x85:
-                return std::make_pair(i18n::localize("ENCOUNTER_TYPE"), NORMAL);
+                return std::make_pair(&i18n::localize("ENCOUNTER_TYPE"), NORMAL);
             case 0x86:
-                return std::make_pair(i18n::localize("HGSS_POKEBALL"), NORMAL);
+                return std::make_pair(&i18n::localize("HGSS_POKEBALL"), NORMAL);
             case 0x87:
                 return UNUSED;
             case 0x88:
-                return std::make_pair(i18n::localize("STATUS_CONDITIONS"), NORMAL);
+                return std::make_pair(&i18n::localize("STATUS_CONDITIONS"), NORMAL);
             case 0x89:
-                return std::make_pair(i18n::localize("UNKNOWN_FLAGS"), UNRESTRICTED);
+                return std::make_pair(&i18n::localize("UNKNOWN_FLAGS"), UNRESTRICTED);
             case 0x8A ... 0x8B:
                 return UNKNOWN;
             case 0x8C:
-                return std::make_pair(i18n::localize("LEVEL"), NORMAL);
+                return std::make_pair(&i18n::localize("LEVEL"), NORMAL);
             case 0x8D:
-                return std::make_pair(i18n::localize("CAPSULE_INDEX_(SEALS)"), OPEN);
+                return std::make_pair(&i18n::localize("CAPSULE_INDEX_(SEALS)"), OPEN);
             case 0x8E ... 0x8F:
-                return std::make_pair(i18n::localize("CURRENT_HP"), OPEN);
+                return std::make_pair(&i18n::localize("CURRENT_HP"), OPEN);
             case 0x90 ... 0x91:
-                return std::make_pair(i18n::localize("MAX_HP"), OPEN);
+                return std::make_pair(&i18n::localize("MAX_HP"), OPEN);
             case 0x92 ... 0x93:
-                return std::make_pair(i18n::localize("ATTACK"), OPEN);
+                return std::make_pair(&i18n::localize("ATTACK"), OPEN);
             case 0x94 ... 0x95:
-                return std::make_pair(i18n::localize("DEFENSE"), OPEN);
+                return std::make_pair(&i18n::localize("DEFENSE"), OPEN);
             case 0x96 ... 0x97:
-                return std::make_pair(i18n::localize("SPEED"), OPEN);
+                return std::make_pair(&i18n::localize("SPEED"), OPEN);
             case 0x98 ... 0x99:
-                return std::make_pair(i18n::localize("SPATK"), OPEN);
+                return std::make_pair(&i18n::localize("SPATK"), OPEN);
             case 0x9A ... 0x9B:
-                return std::make_pair(i18n::localize("SPDEF"), OPEN);
+                return std::make_pair(&i18n::localize("SPDEF"), OPEN);
             case 0x9C ... 0xD3:
-                return std::make_pair(i18n::localize("MAIL_MESSAGE_+_OT_NAME"), OPEN);
+                return std::make_pair(&i18n::localize("MAIL_MESSAGE_+_OT_NAME"), OPEN);
             case 0xD4 ... 0xEB:
-                return std::make_pair(i18n::localize("SEAL_COORDINATES"), OPEN);
+                return std::make_pair(&i18n::localize("SEAL_COORDINATES"), OPEN);
         }
     }
-    return std::make_pair(i18n::localize("REPORT_THIS_TO_FLAGBREW"), UNRESTRICTED);
+    return std::make_pair(&i18n::localize("REPORT_THIS_TO_FLAGBREW"), UNRESTRICTED);
 }
 
 HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
@@ -1511,7 +1511,7 @@ void HexEditScreen::draw() const
         {
             if (x + y * 16 + hid.page() * hid.maxVisibleEntries() < pkm->length)
             {
-                std::pair<std::string, SecurityLevel> description = describe(x + y * 16 + hid.page() * hid.maxVisibleEntries());
+                std::pair<const std::string*, SecurityLevel> description = describe(x + y * 16 + hid.page() * hid.maxVisibleEntries());
                 u32 color = COLOR_WHITE;
                 if (level < description.second)
                 {
@@ -1526,7 +1526,7 @@ void HexEditScreen::draw() const
         }
     }
 
-    Gui::dynamicText(selectedDescription.first, 200, 227, FONT_SIZE_9, FONT_SIZE_9, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::dynamicText(*selectedDescription.first, 200, 227, FONT_SIZE_9, FONT_SIZE_9, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
 
     C2D_SceneBegin(g_renderTargetBottom);
     Gui::backgroundBottom(false);

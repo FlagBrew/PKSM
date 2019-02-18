@@ -32,7 +32,7 @@
 #include "ClickButton.hpp"
 
 namespace {
-    int index(std::vector<std::pair<int, std::string>>& search, std::string v)
+    int index(std::vector<std::pair<int, std::string>>& search, const std::string& v)
     {
         if (v == search[0].second || v == "")
         {
@@ -62,7 +62,7 @@ namespace {
 
 MoveSelectionScreen::MoveSelectionScreen(std::shared_ptr<PKX> pkm, int moveIndex) : SelectionScreen(pkm), moveIndex(moveIndex), hid(40, 2)
 {
-    std::vector<std::string> rawMoves = i18n::rawMoves(Configuration::getInstance().language());
+    const std::vector<std::string>& rawMoves = i18n::rawMoves(Configuration::getInstance().language());
     for (int i = 1; i <= TitleLoader::save->maxMove(); i++)
     {
         if (i >= 622 && i <= 658) continue;

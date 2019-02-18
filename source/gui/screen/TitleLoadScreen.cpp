@@ -126,8 +126,8 @@ void TitleLoadScreen::draw() const
         Gui::dynamicText(titleFromIndex(selectedTitle)->name(), 27, 26, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::dynamicText(StringUtils::format("%08X", titleFromIndex(selectedTitle)->lowId()), nextIdPart, 46, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         
-        std::string mediaType = selectedTitle == -1 ? i18n::localize("LOADER_CARTRIDGE") : i18n::localize("LOADER_SD");
-        Gui::staticText(mediaType, nextMediaPart, 58, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::staticText(selectedTitle == -1 ? i18n::localize("LOADER_CARTRIDGE") : i18n::localize("LOADER_SD"),
+                            nextMediaPart, 58, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     }
     else
     {

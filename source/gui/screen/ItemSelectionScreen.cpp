@@ -34,7 +34,7 @@
 static constexpr auto stringComp = [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2){ return pair1.second < pair2.second; };
 
 namespace {
-    int index(std::vector<std::pair<int, std::string>>& search, std::string v)
+    int index(std::vector<std::pair<int, std::string>>& search, const std::string& v)
     {
         if (v == search[0].second || v == "")
         {
@@ -64,7 +64,7 @@ namespace {
 
 ItemSelectionScreen::ItemSelectionScreen(std::shared_ptr<PKX> pkm) : SelectionScreen(pkm), hid(40, 2)
 {
-    std::vector<std::string> rawItems = i18n::rawItems(Configuration::getInstance().language());
+    const std::vector<std::string>& rawItems = i18n::rawItems(Configuration::getInstance().language());
     for (int i = 1; i <= TitleLoader::save->maxItem(); i++)
     {
         if (rawItems[i].find("\uFF1F\uFF1F\uFF1F") != std::string::npos || rawItems[i].find("???") != std::string::npos) continue;

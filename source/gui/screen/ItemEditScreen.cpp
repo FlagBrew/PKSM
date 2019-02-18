@@ -81,7 +81,7 @@ void ItemEditScreen::draw() const
             break;
         }
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
-        Gui::dynamicText(items[i + hid.page() * hid.maxVisibleEntries()].first, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::dynamicText(*items[i + hid.page() * hid.maxVisibleEntries()].first, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     }
 }
 
@@ -108,7 +108,7 @@ void ItemEditScreen::update(touchPosition* touch)
         items.push_back(validItems[0]);
         for (size_t i = 1; i < validItems.size(); i++)
         {
-            std::string itemName = validItems[i].first.substr(0, searchString.size());
+            std::string itemName = validItems[i].first->substr(0, searchString.size());
             StringUtils::toLower(itemName);
             if (itemName == searchString)
             {
