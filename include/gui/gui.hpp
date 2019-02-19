@@ -150,7 +150,7 @@ namespace Gui
 
     void setScreen(std::unique_ptr<Screen> screen);
     void screenBack(void);
-    bool showChoiceMessage(const std::string& message, std::optional<std::string> message2 = std::nullopt);
+    bool showChoiceMessage(const std::string& message, std::optional<std::string> message2 = std::nullopt, int timer = 0);
     void showRestoreProgress(u32 partial, u32 total);
     void waitFrame(const std::string& message, std::optional<std::string> message2 = std::nullopt);
     void warn(const std::string& message, std::optional<std::string> message2 = std::nullopt, std::optional<std::string> bottomScreen = std::nullopt);

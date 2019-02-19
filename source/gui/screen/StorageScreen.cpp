@@ -39,6 +39,8 @@
 #include "BoxSelectionScreen.hpp"
 #include <variant>
 
+extern std::stack<std::unique_ptr<Screen>> screens;
+
 static bool backHeld = false;
 
 static u8 type1(Generation generation, u16 species)
@@ -857,11 +859,14 @@ bool StorageScreen::backButton()
         }
         else
         {
+            bool timer = false;
             if (Gui::showChoiceMessage(i18n::localize("BANK_SAVE_CHANGES")))
             {
                 bank.save();
+                timer = true;
             }
             Gui::screenBack();
+            ((MainMenu*)screens.top().get())->setTimer(timer);
         }
     }
     return true;

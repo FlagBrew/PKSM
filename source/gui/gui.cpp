@@ -37,7 +37,7 @@ static C2D_TextBuf dynamicBuf;
 static C2D_TextBuf staticBuf;
 static std::unordered_map<std::string, C2D_Text> staticMap;
 
-static std::stack<std::unique_ptr<Screen>> screens;
+std::stack<std::unique_ptr<Screen>> screens;
 static std::function<void()> keyboardFunc;
 
 static Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int endX, int endY)
@@ -1300,7 +1300,7 @@ u8 transparencyWaver()
     return currentAmount;
 }
 
-bool Gui::showChoiceMessage(const std::string& message, std::optional<std::string> message2)
+bool Gui::showChoiceMessage(const std::string& message, std::optional<std::string> message2, int timer)
 {
     u32 keys = 0;
     C3D_FrameEnd(0);
@@ -1333,6 +1333,11 @@ bool Gui::showChoiceMessage(const std::string& message, std::optional<std::strin
 
         C3D_FrameEnd(0);
         Gui::clearTextBufs();
+        if (timer)
+        {
+            svcSleepThread(timer);
+            timer = 0;
+        }
         if (keys & KEY_A)
         {
             hidScanInput();

@@ -146,7 +146,7 @@ void MainMenu::update(touchPosition* touch)
     }
     if (keysDown() & KEY_B)
     {
-        if (Gui::showChoiceMessage(i18n::localize("SAVE_CHANGES_1"), i18n::localize("SAVE_CHANGES_2")))
+        if (Gui::showChoiceMessage(i18n::localize("SAVE_CHANGES_1"), i18n::localize("SAVE_CHANGES_2"), doTimer ? 250000000 : 0)) // Half second
         {
             TitleLoader::saveChanges();
         }

@@ -178,7 +178,7 @@ extern "C" {
         SwkbdState state;
         swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, numChars);
         swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
-        swkbdSetButton(&state, SWKBD_BUTTON_LEFT, "What?", true);
+        swkbdSetButton(&state, SWKBD_BUTTON_LEFT, "What?", false);
         SwkbdButton button;
         do
         {
