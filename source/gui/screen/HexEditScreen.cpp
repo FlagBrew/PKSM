@@ -1492,6 +1492,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
         }
     }
     hid.update(pkm->length);
+    selectedDescription = describe(0);
 }
 
 void HexEditScreen::draw() const
