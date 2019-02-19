@@ -234,7 +234,7 @@ void EditSelectorScreen::draw() const
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
     Gui::sprite(ui_sheet_bar_bottom_blue_idx, 0, 216);
     Gui::sprite(ui_sheet_stripe_camera_idx, 218, 14);
-    Gui::dynamicText("\uE004+\uE005 \uE01E", 311, 15, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::RIGHT, TextPosY::TOP);
+    // Gui::staticText(CAMERA, 311, 15, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::RIGHT, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_bar_boxname_with_arrows_idx, 7, 15);
     Gui::sprite(ui_sheet_storage_box_corner_idx, 2, 44);

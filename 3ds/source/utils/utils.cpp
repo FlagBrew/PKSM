@@ -377,7 +377,7 @@ std::string StringUtils::splitWord(const std::string& text, float scaleX, float 
                 std::string tmpString = word.substr(i, iMod + 1); // The character
                 widthCache.insert_or_assign(codepoint, C2D_FontGetCharWidthInfo(fontForSplitString(tmpString), C2D_FontGlyphIndexFromCodePoint(fontForSplitString(tmpString), codepoint)));
                 widthCacheOrder.push(codepoint);
-                if (widthCache.size() > 512)
+                if (widthCache.size() > 1000)
                 {
                     widthCache.erase(widthCacheOrder.front());
                     widthCacheOrder.pop();
