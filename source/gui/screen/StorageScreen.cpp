@@ -269,16 +269,9 @@ StorageScreen::~StorageScreen()
 void StorageScreen::draw() const
 {
     std::shared_ptr<PKX> infoMon = nullptr;
-    if (moveMon)
+    if (cursorIndex != 0)
     {
-        infoMon = moveMon;
-    }
-    else
-    {
-        if (cursorIndex != 0)
-        {
-            infoMon = storageChosen ? bank.pkm(storageBox, cursorIndex - 1) : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
-        }
+        infoMon = storageChosen ? bank.pkm(storageBox, cursorIndex - 1) : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
     }
     if (infoMon && (infoMon->encryptionConstant() == 0 && infoMon->species() == 0))
     {
@@ -347,22 +340,36 @@ void StorageScreen::draw() const
         if (cursorIndex == 0)
         {
             int dy = bobPointer();
-            if (moveMon)
+            for (size_t i = 0; i < moveMon.size(); i++)
             {
-                Gui::pkm(moveMon.get()->species(), moveMon.get()->alternativeForm(), moveMon.get()->generation(), 97, 10 + dy, 1.0f, COLOR_GREY_BLEND, 1.0f);
-                Gui::pkm(moveMon.get(), 94, 5 + dy);
+                int x = 97 + (i % selectDimensions.first) * 34;
+                int y = 10 + dy + (i / selectDimensions.first) * 30;
+                if (moveMon[i])
+                {
+                    Gui::pkm(moveMon[i]->species(), moveMon[i]->alternativeForm(), moveMon[i]->generation(), x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
+                    Gui::pkm(moveMon[i].get(), x - 3, y - 5);
+                }
             }
+            // Gui::pkm(moveMon.get()->species(), moveMon.get()->alternativeForm(), moveMon.get()->generation(), 97, 10 + dy, 1.0f, COLOR_GREY_BLEND, 1.0f);
+            // Gui::pkm(moveMon.get(), 94, 5 + dy);
             Gui::sprite(ui_sheet_pointer_arrow_idx, 106, -4 + dy);
         }
         else
         {
             int tempIndex = cursorIndex - 1;
             int yMod = (tempIndex / 6) * 30 + bobPointer();
-            if (moveMon)
+            for (size_t i = 0; i < moveMon.size(); i++)
             {
-                Gui::pkm(moveMon.get()->species(), moveMon.get()->alternativeForm(), moveMon.get()->generation(), 12 + (tempIndex % 6) * 34, 44 + yMod, 1.0f, COLOR_GREY_BLEND, 1.0f);
-                Gui::pkm(moveMon.get(), 9 + (tempIndex % 6) * 34, 39 + yMod);
+                int x = 12 + (tempIndex % 6) * 34 + (i % selectDimensions.first) * 34;
+                int y = 44 + yMod + (i / selectDimensions.first) * 30;
+                if (moveMon[i])
+                {
+                    Gui::pkm(moveMon[i]->species(), moveMon[i]->alternativeForm(), moveMon[i]->generation(), x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
+                    Gui::pkm(moveMon[i].get(), x - 3, y - 5);
+                }
             }
+            // Gui::pkm(moveMon.get()->species(), moveMon.get()->alternativeForm(), moveMon.get()->generation(), 12 + (tempIndex % 6) * 34, 44 + yMod, 1.0f, COLOR_GREY_BLEND, 1.0f);
+            // Gui::pkm(moveMon.get(), 9 + (tempIndex % 6) * 34, 39 + yMod);
             Gui::sprite(ui_sheet_pointer_arrow_idx, 21 + (tempIndex % 6) * 34, 30 + yMod);
         }
     }
@@ -370,7 +377,7 @@ void StorageScreen::draw() const
     if (viewer)
     {
         C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, COLOR_MASKBLACK);
-        if (!moveMon)
+        if (moveMon.empty())
         {
             Gui::staticText(i18n::localize("PRESS_TO_CLONE"), 160, 110, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
         }
@@ -460,10 +467,15 @@ void StorageScreen::draw() const
             if (cursorIndex == 0)
             {
                 int dy = bobPointer();
-                if (moveMon)
+                for (size_t i = 0; i < moveMon.size(); i++)
                 {
-                    Gui::pkm(moveMon.get()->species(), moveMon.get()->alternativeForm(), moveMon.get()->generation(), 138, 16 + dy, 1.0f, COLOR_GREY_BLEND, 1.0f);
-                    Gui::pkm(moveMon.get(), 135, 11 + dy);
+                    int x = 138 + (i % selectDimensions.first) * 34;
+                    int y = 16 + dy + (i / selectDimensions.first) * 30;
+                    if (moveMon[i])
+                    {
+                        Gui::pkm(moveMon[i]->species(), moveMon[i]->alternativeForm(), moveMon[i]->generation(), x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
+                        Gui::pkm(moveMon[i].get(), x - 3, y - 5);
+                    }
                 }
                 Gui::sprite(ui_sheet_pointer_arrow_idx, 147, 2 + dy);
             }
@@ -471,11 +483,18 @@ void StorageScreen::draw() const
             {
                 int tempIndex = cursorIndex - 1;
                 int yMod = (tempIndex / 6) * 30 + bobPointer();
-                if (moveMon)
+                for (size_t i = 0; i < moveMon.size(); i++)
                 {
-                    Gui::pkm(moveMon.get()->species(), moveMon.get()->alternativeForm(), moveMon.get()->generation(), 53 + (tempIndex % 6) * 34, 65 + yMod, 1.0f, COLOR_GREY_BLEND, 1.0f);
-                    Gui::pkm(moveMon.get(), 50 + (tempIndex % 6) * 34, 60 + yMod);
+                    int x = 53 + (tempIndex % 6) * 34 + (i % selectDimensions.first) * 34;
+                    int y = 65 + yMod + (i / selectDimensions.first) * 30;
+                    if (moveMon[i])
+                    {
+                        Gui::pkm(moveMon[i]->species(), moveMon[i]->alternativeForm(), moveMon[i]->generation(), x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
+                        Gui::pkm(moveMon[i].get(), x - 3, y - 5);
+                    }
                 }
+                // Gui::pkm(moveMon.get()->species(), moveMon.get()->alternativeForm(), moveMon.get()->generation(), 53 + (tempIndex % 6) * 34, 65 + yMod, 1.0f, COLOR_GREY_BLEND, 1.0f);
+                // Gui::pkm(moveMon.get(), 50 + (tempIndex % 6) * 34, 60 + yMod);
                 Gui::sprite(ui_sheet_pointer_arrow_idx, 62 + (tempIndex % 6) * 34, 51 + yMod);
             }
         }
@@ -566,15 +585,16 @@ void StorageScreen::update(touchPosition* touch)
         {
             backButton();
         }
-        else if (!moveMon && kDown & KEY_X)
+        else if (moveMon.empty() && kDown & KEY_X)
         {
-            moveMon = viewer->getPkm()->clone();
+            moveMon.emplace_back(viewer->getPkm()->clone());
+            selectDimensions = {1,1};
+            currentlySelecting = false;
             backButton();
         }
     }
     else
     {
-        
         if (kDown & KEY_B)
         {
             backButton();
@@ -620,7 +640,7 @@ void StorageScreen::update(touchPosition* touch)
             {
                 if (cursorIndex == 0)
                 {
-                    if (!moveMon)
+                    if (moveMon.empty())
                     {
                         Gui::setNextKeyboardFunc(std::bind(&StorageScreen::setBoxName, this, storageChosen));
                     }
@@ -661,6 +681,7 @@ void StorageScreen::update(touchPosition* touch)
                     {
                         prevBox();
                         cursorIndex = 30;
+                        currentlySelecting = false;
                     }
                     sleep = true;
                 }
@@ -678,6 +699,7 @@ void StorageScreen::update(touchPosition* touch)
                     {
                         nextBox();
                         cursorIndex = 1;
+                        currentlySelecting = false;
                     }
                     sleep = true;
                 }
@@ -691,6 +713,7 @@ void StorageScreen::update(touchPosition* touch)
                     else if (cursorIndex > 0 && cursorIndex <= 6)
                     {
                         cursorIndex = 0;
+                        currentlySelecting = false;
                     }
                     else if (cursorIndex > 6)
                     {			
@@ -704,6 +727,7 @@ void StorageScreen::update(touchPosition* touch)
                     {
                         storageChosen = false;
                         cursorIndex = 0;
+                        currentlySelecting = false;
                     }
                     else if (cursorIndex == 0)
                     {
@@ -813,7 +837,7 @@ bool StorageScreen::clickBottomIndex(int index)
     {
         if (cursorIndex == 0)
         {
-            if (!moveMon)
+            if (moveMon.empty())
             {
                 Gui::setNextKeyboardFunc(std::bind(&StorageScreen::setBoxName, this, false));
                 return true;
@@ -827,6 +851,11 @@ bool StorageScreen::clickBottomIndex(int index)
     else
     {
         cursorIndex = index;
+        if (storageChosen && currentlySelecting)
+        {
+            currentlySelecting = false;
+            selectDimensions = std::pair{0,0};
+        }
         storageChosen = false;
     }
     return false;
@@ -853,7 +882,11 @@ bool StorageScreen::backButton()
         {
             filterSelector = false;
         }
-        else if (moveMon)
+        else if (currentlySelecting)
+        {
+            currentlySelecting = false;
+        }
+        else if (!moveMon.empty())
         {
             Gui::warn(i18n::localize("BANK_FAILED_EXIT"));
         }
@@ -909,13 +942,9 @@ bool StorageScreen::clearBox()
 bool StorageScreen::releasePkm()
 {
     backHeld = true;
-    if ((cursorIndex != 0 || moveMon) && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_RELEASE")))
+    if (cursorIndex != 0 && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_RELEASE")))
     {
-        if (moveMon)
-        {
-            moveMon = nullptr;
-        }
-        else if (storageChosen)
+        if (storageChosen)
         {
             bank.pkm(*TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1);
         }
@@ -997,6 +1026,10 @@ static void memoryChange(PK7* pkm)
 
 bool StorageScreen::isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTransfer)
 {
+    if (!moveMon)
+    {
+        return false;
+    }
     u8 (*formCounter)(u16);
     switch (TitleLoader::save->generation())
     {
@@ -1076,157 +1109,253 @@ bool StorageScreen::isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTrans
 
 void StorageScreen::pickup()
 {
-    if (!moveMon)
+    if (moveMon.empty())
     {
-        if (storageChosen)
+        if (multiplePickup)
         {
-            moveMon = bank.pkm(storageBox, cursorIndex - 1);
-        }
-        else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
-        {
-            if (TitleLoader::save->generation() == Generation::LGPE)
+            if (currentlySelecting)
             {
-                SavLGPE* sav = (SavLGPE*)TitleLoader::save.get();
-                partyNum = -1;
-                for (int i = 0; i < TitleLoader::save->partyCount(); i++)
+                int cursorX = (cursorIndex - 1) % 6;
+                int cursorY = (cursorIndex - 1) / 6;
+                int baseIndex = std::min(selectDimensions.first + selectDimensions.second * 6, cursorIndex - 1);
+                // Convert to actual dimensions
+                selectDimensions.first = std::abs(selectDimensions.first - cursorX) + 1;
+                selectDimensions.second = std::abs(selectDimensions.second - cursorY) + 1;
+
+
+                for (int y = 0; y < selectDimensions.second; y++)
                 {
-                    if (sav->partyBoxSlot(i) == boxBox * 30 + cursorIndex - 1)
+                    for (int x = 0; x < selectDimensions.first; x++)
                     {
-                        partyNum = i;
-                        break;
+                        int pickupIndex = baseIndex + x + y * 6;
+                        if (storageChosen)
+                        {
+                            fromStorage = true;
+                            moveMon.emplace_back(bank.pkm(storageBox, pickupIndex));
+                            partyNum.push_back(-1);
+                            if (moveMon.back()->encryptionConstant() == 0 && moveMon.back()->species() == 0)
+                            {
+                                *moveMon.rbegin() = nullptr;
+                            }
+                            bank.pkm(*TitleLoader::save->emptyPkm(), storageBox, pickupIndex);
+                        }
+                        else if (boxBox * 30 + pickupIndex - 1 < TitleLoader::save->maxSlot())
+                        {
+                            fromStorage = false;
+                            partyNum.push_back(-1);
+                            if (TitleLoader::save->generation() == Generation::LGPE)
+                            {
+                                SavLGPE* sav = (SavLGPE*)TitleLoader::save.get();
+                                for (int i = 0; i < TitleLoader::save->partyCount(); i++)
+                                {
+                                    if (sav->partyBoxSlot(i) == boxBox * 30 + pickupIndex)
+                                    {
+                                        *partyNum.rbegin() = i;
+                                        break;
+                                    }
+                                }
+                            }
+                            moveMon.emplace_back(TitleLoader::save->pkm(boxBox, pickupIndex));
+                            if (moveMon.back()->encryptionConstant() == 0 && moveMon.back()->species() == 0)
+                            {
+                                *moveMon.rbegin() = nullptr;
+                            }
+                            TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), boxBox, pickupIndex);
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
                 }
+                currentlySelecting = false;
+                if (std::find_if(moveMon.begin(), moveMon.end(), [](const std::shared_ptr<PKX>& pkm){ return (bool)pkm; }) == moveMon.end())
+                {
+                    moveMon.clear();
+                    partyNum.clear();
+                    selectDimensions = std::pair{0,0};
+                }
             }
-            moveMon = TitleLoader::save->pkm(boxBox, cursorIndex - 1);
+            else
+            {
+                selectDimensions.first = (cursorIndex - 1) % 6;
+                selectDimensions.second = (cursorIndex - 1) / 6;
+                currentlySelecting = true;
+            }
         }
         else
         {
-            return;
-        }
+            if (storageChosen)
+            {
+                moveMon.emplace_back(bank.pkm(storageBox, cursorIndex - 1));
+                partyNum.push_back(-1);
+                bank.pkm(*TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1);
+                fromStorage = true;
+            }
+            else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
+            {
+                partyNum.push_back(-1);
+                if (TitleLoader::save->generation() == Generation::LGPE)
+                {
+                    SavLGPE* sav = (SavLGPE*)TitleLoader::save.get();
+                    for (int i = 0; i < TitleLoader::save->partyCount(); i++)
+                    {
+                        if (sav->partyBoxSlot(i) == boxBox * 30 + cursorIndex - 1)
+                        {
+                            partyNum[0] = i;
+                            break;
+                        }
+                    }
+                }
+                moveMon.push_back(TitleLoader::save->pkm(boxBox, cursorIndex - 1));
+                TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), boxBox, cursorIndex - 1);
+                fromStorage = false;
+            }
+            else
+            {
+                return;
+            }
+            selectDimensions = std::pair{1,1};
 
-        if (storageChosen)
-        {
-            bank.pkm(*TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1);
-            fromStorage = true;
-        }
-        else
-        {
-            TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), boxBox, cursorIndex - 1);
-            fromStorage = false;
-        }
-
-        if ((moveMon->encryptionConstant() == 0 && moveMon->species() == 0))
-        {
-            moveMon = nullptr;
-            partyNum = -1;
+            if ((moveMon.back()->encryptionConstant() == 0 && moveMon.back()->species() == 0))
+            {
+                moveMon.clear();
+                partyNum.clear();
+                selectDimensions = std::pair{0,0};
+            }
         }
     }
     else
     {
-        if (storageChosen)
+        if (storageChosen && cursorIndex + (selectDimensions.first - 1) + (selectDimensions.second - 1) * 6 <= 30)
         {
-            std::shared_ptr<PKX> temPkm = bank.pkm(storageBox, cursorIndex - 1);
-            bank.pkm(*moveMon, storageBox, cursorIndex - 1);
-            moveMon = temPkm;
-            
-            if (moveMon && moveMon->species() > 0)
+            for (int y = 0; y < selectDimensions.second; y++)
             {
-                fromStorage = true;
-            }
-            else
-            {
-                moveMon = nullptr;
-                fromStorage = false;
+                for (int x = 0; x < selectDimensions.first; x++)
+                {
+                    int index = x + y * selectDimensions.first;
+                    std::shared_ptr<PKX> temPkm = bank.pkm(storageBox, cursorIndex - 1 + x + y * 6);
+                    if (moveMon[index])
+                    {
+                        bank.pkm(*moveMon[index], storageBox, cursorIndex - 1 + x + y * 6);
+                    }
+                    moveMon[index] = temPkm;
+                    
+                    if (moveMon[index] && moveMon[index]->species() > 0)
+                    {
+                        fromStorage = true;
+                    }
+                    else
+                    {
+                        moveMon[index] = nullptr;
+                        fromStorage = false;
+                    }
+                }
             }
         }
-        else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
+        else if (boxBox * 30 + cursorIndex + (selectDimensions.first - 1) + (selectDimensions.second - 1) * 6 <= TitleLoader::save->maxSlot()
+                    && cursorIndex + (selectDimensions.first - 1) + (selectDimensions.second - 1) * 6 <= 30)
         {
-            if (!isValidTransfer(moveMon))
+            for (int y = 0; y < selectDimensions.second; y++)
             {
-                return;
-            }
-            std::shared_ptr<PKX> temPkm = TitleLoader::save->pkm(boxBox, cursorIndex - 1);
-            if ((Configuration::getInstance().transferEdit() || moveMon->generation() == TitleLoader::save->generation()) || Gui::showChoiceMessage(StringUtils::format(i18n::localize("GEN_CHANGE_1"), genToCstring(moveMon->generation()), genToCstring(TitleLoader::save->generation())), i18n::localize("GEN_CHANGE_2")))
-            {
-                while (moveMon->generation() != TitleLoader::save->generation())
+                for (int x = 0; x < selectDimensions.first; x++)
                 {
-                    if (moveMon->generation() > TitleLoader::save->generation())
+                    int index = x + y * selectDimensions.first;
+                    if (!isValidTransfer(moveMon[index], true))
                     {
-                        moveMon = moveMon->previous();
+                        continue;
                     }
-                    else
+                    std::shared_ptr<PKX> temPkm = TitleLoader::save->pkm(boxBox, cursorIndex - 1 + x + y * 6);
+                    if ((Configuration::getInstance().transferEdit() || moveMon[index]->generation() == TitleLoader::save->generation()) || Gui::showChoiceMessage(StringUtils::format(i18n::localize("GEN_CHANGE_1"), genToCstring(moveMon[index]->generation()), genToCstring(TitleLoader::save->generation())), i18n::localize("GEN_CHANGE_2")))
                     {
-                        moveMon = moveMon->next();
-                    }
-                }
-                if (Configuration::getInstance().transferEdit() && fromStorage)
-                {
-                    if (TitleLoader::save->otName() == moveMon->otName() && TitleLoader::save->TID() == moveMon->TID() && TitleLoader::save->SID() == moveMon->SID() && TitleLoader::save->gender() == moveMon->otGender())
-                    {
-                        if (moveMon->generation() == Generation::SIX)
+                        while (moveMon[index]->generation() != TitleLoader::save->generation())
                         {
-                            PK6* movePkm = (PK6*)moveMon.get();
-                            movePkm->currentHandler(0);
-                            regionChange(movePkm);
-                        }
-                        else if (moveMon->generation() == Generation::SEVEN)
-                        {
-                            PK7* movePkm = (PK7*)moveMon.get();
-                            movePkm->currentHandler(0);
-                            regionChange(movePkm);
-                        }
-                    }
-                    else
-                    {
-                        if (moveMon->generation() == Generation::SIX)
-                        {
-                            PK6* movePkm = (PK6*)moveMon.get();
-                            movePkm->currentHandler(1);
-                            regionChange(movePkm);
-                            movePkm->htName(TitleLoader::save->otName().c_str());
-                            movePkm->htGender(TitleLoader::save->gender());
-                            if (movePkm->htMemory() == 0)
+                            if (moveMon[index]->generation() > TitleLoader::save->generation())
                             {
-                                memoryChange(movePkm);
+                                moveMon[index] = moveMon[index]->previous();
+                            }
+                            else
+                            {
+                                moveMon[index] = moveMon[index]->next();
                             }
                         }
-                        else if (moveMon->generation() == Generation::SEVEN)
+                        if (Configuration::getInstance().transferEdit() && fromStorage)
                         {
-                            PK7* movePkm = (PK7*)moveMon.get();
-                            movePkm->currentHandler(1);
-                            regionChange(movePkm);
-                            movePkm->htName(TitleLoader::save->otName().c_str());
-                            movePkm->htGender(TitleLoader::save->gender());
-                            if (movePkm->htMemory() == 0)
+                            if (TitleLoader::save->otName() == moveMon[index]->otName() && TitleLoader::save->TID() == moveMon[index]->TID() && TitleLoader::save->SID() == moveMon[index]->SID() && TitleLoader::save->gender() == moveMon[index]->otGender())
                             {
-                                memoryChange(movePkm);
+                                if (moveMon[index]->generation() == Generation::SIX)
+                                {
+                                    PK6* movePkm = (PK6*)moveMon[index].get();
+                                    movePkm->currentHandler(0);
+                                    regionChange(movePkm);
+                                }
+                                else if (moveMon[index]->generation() == Generation::SEVEN)
+                                {
+                                    PK7* movePkm = (PK7*)moveMon[index].get();
+                                    movePkm->currentHandler(0);
+                                    regionChange(movePkm);
+                                }
+                            }
+                            else
+                            {
+                                if (moveMon[index]->generation() == Generation::SIX)
+                                {
+                                    PK6* movePkm = (PK6*)moveMon[index].get();
+                                    movePkm->currentHandler(1);
+                                    regionChange(movePkm);
+                                    movePkm->htName(TitleLoader::save->otName().c_str());
+                                    movePkm->htGender(TitleLoader::save->gender());
+                                    if (movePkm->htMemory() == 0)
+                                    {
+                                        memoryChange(movePkm);
+                                    }
+                                }
+                                else if (moveMon[index]->generation() == Generation::SEVEN)
+                                {
+                                    PK7* movePkm = (PK7*)moveMon[index].get();
+                                    movePkm->currentHandler(1);
+                                    regionChange(movePkm);
+                                    movePkm->htName(TitleLoader::save->otName().c_str());
+                                    movePkm->htGender(TitleLoader::save->gender());
+                                    if (movePkm->htMemory() == 0)
+                                    {
+                                        memoryChange(movePkm);
+                                    }
+                                }
                             }
                         }
+                        TitleLoader::save->pkm(*moveMon[index], boxBox, cursorIndex - 1 + x + y * 6);
+                        TitleLoader::save->dex(*moveMon[index]);
+                        if (partyNum[index] != -1)
+                        {
+                            ((SavLGPE*)TitleLoader::save.get())->partyBoxSlot(partyNum[index], boxBox * 30 + cursorIndex - 1 + x + y * 6);
+                        }
+                        if ((temPkm->encryptionConstant() == 0 && temPkm->species() == 0))
+                        {
+                            moveMon[index] = nullptr;
+                        }
+                        else
+                        {
+                            moveMon[index] = temPkm;
+                        }
                     }
-                }
-                TitleLoader::save->pkm(*moveMon, boxBox, cursorIndex - 1);
-                TitleLoader::save->dex(*moveMon);
-                if (partyNum != -1)
-                {
-                    ((SavLGPE*)TitleLoader::save.get())->partyBoxSlot(partyNum, boxBox * 30 + cursorIndex - 1);
-                }
-                if ((temPkm->encryptionConstant() == 0 && temPkm->species() == 0))
-                {
-                    moveMon = nullptr;
-                }
-                else
-                {
-                    moveMon = temPkm;
+                    fromStorage = false;
                 }
             }
-            fromStorage = false;
+
+            if (std::find_if(moveMon.begin(), moveMon.end(), [](const std::shared_ptr<PKX>& pkm){ return (bool)pkm; }) == moveMon.end())
+            {
+                moveMon.clear();
+                partyNum.clear();
+                selectDimensions = std::pair{0,0};
+            }
         }
     }
 }
 
 bool StorageScreen::dumpPkm()
 {
-    if ((cursorIndex != 0 || moveMon) && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_DUMP")))
+    if (cursorIndex != 0 && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_DUMP")))
     {
         char stringDate[11] = {0};
         char stringTime[10] = {0};
@@ -1237,70 +1366,53 @@ bool StorageScreen::dumpPkm()
         std::string path = std::string("/3ds/PKSM/dumps/") + stringDate;
         mkdir(path.c_str(), 777);
         path += stringTime;
-        if (moveMon)
+        std::shared_ptr<PKX> dumpMon;
+        if (!storageChosen)
         {
-            path += " - " + std::to_string(moveMon->species()) + moveMon->nickname() + " - " + StringUtils::format("%08X") + (moveMon->generation() != Generation::LGPE ? ".pk" + genToString(moveMon->generation()) : ".pb7");
-            FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, moveMon->length);
-            if (out.good())
+            if (cursorIndex == 0)
             {
-                out.write(moveMon->rawData(), moveMon->length);
+                return false;
             }
             else
             {
-                Gui::error(i18n::localize("FAILED_OPEN_DUMP"), out.result());
+                if (boxBox * 30 + cursorIndex - 1 >= TitleLoader::save->maxSlot())
+                {
+                    return false;
+                }
+                dumpMon = TitleLoader::save->pkm(boxBox, cursorIndex - 1);
+                path += " - " + std::to_string(dumpMon->species()) + " - " + dumpMon->nickname() + " - " + StringUtils::format("%08X") + (dumpMon->generation() != Generation::LGPE ? ".pk" + genToString(dumpMon->generation()) : ".pb7");
+                FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, dumpMon->length);
+                if (out.good())
+                {
+                    out.write(dumpMon->rawData(), dumpMon->length);
+                }
+                else
+                {
+                    Gui::error(i18n::localize("FAILED_OPEN_DUMP"), out.result());
+                }
+                out.close();
             }
-            out.close();
         }
         else
         {
-            std::shared_ptr<PKX> dumpMon;
-            if (!storageChosen)
+            if (cursorIndex == 0)
             {
-                if (cursorIndex == 0)
-                {
-                    return false;
-                }
-                else
-                {
-                    if (boxBox * 30 + cursorIndex - 1 >= TitleLoader::save->maxSlot())
-                    {
-                        return false;
-                    }
-                    dumpMon = TitleLoader::save->pkm(boxBox, cursorIndex - 1);
-                    path += " - " + std::to_string(dumpMon->species()) + " - " + dumpMon->nickname() + " - " + StringUtils::format("%08X") + (dumpMon->generation() != Generation::LGPE ? ".pk" + genToString(dumpMon->generation()) : ".pb7");
-                    FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, dumpMon->length);
-                    if (out.good())
-                    {
-                        out.write(dumpMon->rawData(), dumpMon->length);
-                    }
-                    else
-                    {
-                        Gui::error(i18n::localize("FAILED_OPEN_DUMP"), out.result());
-                    }
-                    out.close();
-                }
+                return false;
             }
             else
             {
-                if (cursorIndex == 0)
+                dumpMon = bank.pkm(storageBox, cursorIndex - 1);
+                path += " - " + std::to_string(dumpMon->species()) + " - " + dumpMon->nickname() + " - " + StringUtils::format("%08X") + (dumpMon->generation() != Generation::LGPE ? ".pk" + genToString(dumpMon->generation()) : ".pb7");
+                FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, dumpMon->length);
+                if (out.good())
                 {
-                    return false;
+                    out.write(dumpMon->rawData(), dumpMon->length);
                 }
                 else
                 {
-                    dumpMon = bank.pkm(storageBox, cursorIndex - 1);
-                    path += " - " + std::to_string(dumpMon->species()) + " - " + dumpMon->nickname() + " - " + StringUtils::format("%08X") + (dumpMon->generation() != Generation::LGPE ? ".pk" + genToString(dumpMon->generation()) : ".pb7");
-                    FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, dumpMon->length);
-                    if (out.good())
-                    {
-                        out.write(dumpMon->rawData(), dumpMon->length);
-                    }
-                    else
-                    {
-                        Gui::error(i18n::localize("FAILED_OPEN_DUMP"), out.result());
-                    }
-                    out.close();
+                    Gui::error(i18n::localize("FAILED_OPEN_DUMP"), out.result());
                 }
+                out.close();
             }
         }
         return true;
@@ -1310,11 +1422,11 @@ bool StorageScreen::dumpPkm()
 
 bool StorageScreen::duplicate()
 {
-    if (!moveMon && cursorIndex > 0)
+    if (moveMon.empty() && cursorIndex > 0)
     {
         if (storageChosen)
         {
-            moveMon = bank.pkm(storageBox, cursorIndex - 1);
+            moveMon.emplace_back(bank.pkm(storageBox, cursorIndex - 1));
         }
         else
         {
@@ -1322,11 +1434,16 @@ bool StorageScreen::duplicate()
             {
                 return false;
             }
-            moveMon = TitleLoader::save->pkm(boxBox, cursorIndex - 1)->clone();
+            moveMon.emplace_back(TitleLoader::save->pkm(boxBox, cursorIndex - 1)->clone());
         }
-        if ((moveMon->encryptionConstant() == 0 && moveMon->species() == 0))
+        if ((moveMon.back()->encryptionConstant() == 0 && moveMon.back()->species() == 0))
         {
-            moveMon = nullptr;
+            moveMon.clear();
+        }
+        else
+        {
+            partyNum.push_back(-1);
+            selectDimensions = std::pair{1,1};
         }
     }
     return false;

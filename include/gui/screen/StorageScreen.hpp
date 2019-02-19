@@ -79,10 +79,15 @@ private:
     std::vector<SortType> sortTypes;
     int cursorIndex = 0, storageBox = 0, boxBox = 0;
     std::unique_ptr<ViewerScreen> viewer;
-    std::shared_ptr<PKX> moveMon = nullptr;
-    int partyNum = -1;
+    std::vector<std::shared_ptr<PKX>> moveMon;
+    std::vector<int> partyNum;
     bool justSwitched = true;
     Bank bank;
+    bool multiplePickup = false;
+    // While selecting, XY coords of original selection.
+    // When selected, dimensions of moveMon
+    std::pair<int, int> selectDimensions = {0,0};
+    bool currentlySelecting = false;
 };
 
 #endif
