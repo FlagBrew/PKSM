@@ -42,7 +42,6 @@ int ScriptChoice::run()
         update(&touch);
 
         C3D_FrameEnd(0);
-        Gui::clearTextBufs();
     }
     return finalVal;
 }

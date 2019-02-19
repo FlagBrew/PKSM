@@ -284,7 +284,6 @@ std::tuple<int, int, int> BoxChoice::run()
         draw();
 
         C3D_FrameEnd(0);
-        Gui::clearTextBufs();
     }
     return result;
 }

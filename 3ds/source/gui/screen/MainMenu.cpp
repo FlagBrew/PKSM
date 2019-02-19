@@ -121,7 +121,6 @@ static void menuTop()
 
 void MainMenu::draw() const
 {
-    Gui::clearTextBufs();
     C2D_SceneBegin(g_renderTargetTop);
     menuTop();
     C2D_SceneBegin(g_renderTargetBottom);

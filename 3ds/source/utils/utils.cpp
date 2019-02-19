@@ -57,6 +57,14 @@ std::string StringUtils::UTF16toUTF8(const std::u16string& src)
     return convert.to_bytes(src);
 }
 
+std::u16string StringUtils::getU16String(const u8* data, int ofs, int len)
+{
+    len *= 2;
+    u8 buffer[len];
+    std::copy(data + ofs, data + ofs + len, buffer);
+    return std::u16string{(char16_t*)buffer};
+}
+
 std::string StringUtils::getString(const u8* data, int ofs, int len)
 {
     len *= 2;
@@ -64,6 +72,13 @@ std::string StringUtils::getString(const u8* data, int ofs, int len)
     std::copy(data + ofs, data + ofs + len, buffer);
     std::string dst = convert.to_bytes((char16_t*)buffer);
     return dst;
+}
+
+std::u16string StringUtils::getTrimmedU16String(const u8* data, int ofs, int len, char16_t* substr)
+{
+    std::u16string str = getU16String(data, ofs, len);
+    size_t found = str.find(substr);
+    return found != std::string::npos ? str.substr(0, found) : str;
 }
 
 std::string StringUtils::getTrimmedString(const u8* data, int ofs, int len, char* substr)
@@ -425,7 +440,7 @@ float StringUtils::textWidth(const std::string& text, float scaleX)
             std::string tmpString = text.substr(i, iMod + 1); // The character
             widthCache.insert_or_assign(codepoint, C2D_FontGetCharWidthInfo(fontForSplitString(tmpString), C2D_FontGlyphIndexFromCodePoint(fontForSplitString(tmpString), codepoint)));
             widthCacheOrder.push(codepoint);
-            if (widthCache.size() > 1000)
+            if (widthCache.size() > 1024)
             {
                 widthCache.erase(widthCacheOrder.front());
                 widthCacheOrder.pop();
@@ -738,7 +753,7 @@ C2D_Font StringUtils::fontForSplitString(const std::string& string)
 
     if (!StringUtils::fontHasChar(Gui::fonts[0], codepoint))
     {
-        int currentFont;
+        size_t currentFont;
         for (currentFont = 1; currentFont < Gui::fonts.size(); currentFont++)
         {
             if (StringUtils::fontHasChar(Gui::fonts[currentFont], codepoint))

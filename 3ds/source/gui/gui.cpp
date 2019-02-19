@@ -25,6 +25,7 @@
 */
 
 #include "gui.hpp"
+#include <queue>
 
 C3D_RenderTarget* g_renderTargetTop;
 C3D_RenderTarget* g_renderTargetBottom;
@@ -36,6 +37,7 @@ static C2D_Image bgBoxes;
 static C2D_TextBuf dynamicBuf;
 static C2D_TextBuf staticBuf;
 static std::unordered_map<std::string, std::vector<C2D_Text>> staticMap;
+static std::unordered_map<std::string, std::vector<C2D_Text>> dynamicMap;
 
 std::vector<C2D_Font> Gui::fonts;
 
@@ -43,6 +45,12 @@ std::stack<std::unique_ptr<Screen>> screens;
 static std::function<void()> keyboardFunc;
 
 constexpr u32 magicNumber = 0xC7D84AB9;
+static size_t hackyGetCurrentGlyphCount(C2D_TextBuf buf)
+{
+    struct access { u32 res[2]; size_t count; };
+    access* a = (access*)buf;
+    return a->count;
+}
 
 static Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int endX, int endY)
 {
@@ -154,7 +162,7 @@ void Gui::clearTextBufs(void)
     C2D_TextBufClear(dynamicBuf);
 }
 
-static void drawVector(std::vector<C2D_Text> draw, int x, int y, int line, float scaleX, float scaleY, u32 color)
+static void drawVector(const std::vector<C2D_Text>& draw, int x, int y, int line, float scaleX, float scaleY, u32 color)
 {
     for (auto text : draw)
     {
@@ -179,6 +187,26 @@ std::vector<C2D_Text> Gui::parseText(const std::vector<std::string>& str, C2D_Te
         ret.push_back(text);
     }
     return ret;
+}
+
+const std::vector<C2D_Text>& Gui::cacheDynamicText(const std::string& strKey)
+{
+    std::unordered_map<std::string, std::vector<C2D_Text>>::const_iterator index = dynamicMap.find(strKey);
+    if (index == dynamicMap.end())
+    {
+        if (hackyGetCurrentGlyphCount(dynamicBuf) >= 2000)
+        {
+            dynamicMap.clear();
+            Gui::clearTextBufs();
+        }
+        auto text = StringUtils::fontSplit(strKey);
+        dynamicMap[strKey] = parseText(text, dynamicBuf);
+        return dynamicMap[strKey];
+    }
+    else
+    {
+        return index->second;
+    }
 }
 
 void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY)
@@ -235,35 +263,27 @@ void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float 
 
     for (size_t i = 0; i < print.size(); i++)
     {
-        // C2D_Text text;
-        // C2D_TextFontParse(&text, font, dynamicBuf, print[i].c_str());
-        // C2D_TextOptimize(&text);
-        auto text = StringUtils::fontSplit(print[i]);
-        drawVector(parseText(text, dynamicBuf), printX[i], y, i, scaleX, scaleY, color);
-        //C2D_DrawText(&text, C2D_WithColor, printX[i], y + lineMod * i, 0.5f, scaleX, scaleY, color);
+        auto text = cacheDynamicText(print[i]);
+        drawVector(text, printX[i], y, i, scaleX, scaleY, color);
     }
 
     print.clear();
     printX.clear();
 }
 
-std::vector<C2D_Text> Gui::cacheStaticText(const std::string& strKey)
+const std::vector<C2D_Text>& Gui::cacheStaticText(const std::string& strKey)
 {
-    std::vector<C2D_Text> text;
     std::unordered_map<std::string, std::vector<C2D_Text>>::const_iterator index = staticMap.find(strKey);
     if (index == staticMap.end())
     {
-        // C2D_TextFontParse(&text, font, staticBuf, strKey.c_str());
-        // C2D_TextOptimize(&text);
         auto text = StringUtils::fontSplit(strKey);
         staticMap.emplace(strKey, parseText(text, staticBuf));
+        return staticMap[strKey];
     }
     else
     {
         return index->second;
     }
-
-    return text;
 }
 
 void Gui::clearStaticText()
@@ -327,7 +347,6 @@ void Gui::staticText(const std::string& strKey, int x, int y, float scaleX, floa
     for (size_t i = 0; i < print.size(); i++)
     {
         auto text = cacheStaticText(print[i]);
-        // C2D_DrawText(&text, C2D_WithColor, printX[i], y + lineMod * i, 0.5f, scaleX, scaleY, color);
         drawVector(text, printX[i], y, i, scaleX, scaleY, color);
     }
 
@@ -378,8 +397,8 @@ Result Gui::init(void)
     spritesheet_types = C2D_SpriteSheetLoad("/3ds/PKSM/assets/types_spritesheet.t3x");
 
     fonts.push_back(C2D_FontLoadSystem(CFG_REGION_USA));
-    fonts.push_back(C2D_FontLoadSystem(CFG_REGION_CHN));
     fonts.push_back(C2D_FontLoadSystem(CFG_REGION_KOR));
+    fonts.push_back(C2D_FontLoadSystem(CFG_REGION_CHN));
     fonts.push_back(C2D_FontLoadSystem(CFG_REGION_TWN));
 
     bgBoxes = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_anim_squares_idx);
@@ -405,7 +424,6 @@ void Gui::mainLoop(void)
         exit = screens.top()->type() == ScreenType::TITLELOAD && (hidKeysDown() & KEY_START);
 
         C3D_FrameEnd(0);
-        Gui::clearTextBufs();
         if (keyboardFunc != nullptr)
         {
             keyboardFunc();
@@ -1428,7 +1446,6 @@ bool Gui::showChoiceMessage(const std::string& message, std::optional<std::strin
 {
     u32 keys = 0;
     C3D_FrameEnd(0);
-    clearTextBufs();
     hidScanInput();
     while (aptMainLoop() && !((keys = hidKeysDown()) & KEY_B))
     {
@@ -1456,7 +1473,6 @@ bool Gui::showChoiceMessage(const std::string& message, std::optional<std::strin
         sprite(ui_sheet_part_info_bottom_idx, 0, 0);
 
         C3D_FrameEnd(0);
-        Gui::clearTextBufs();
         if (timer)
         {
             svcSleepThread(timer);
@@ -1496,14 +1512,12 @@ void Gui::waitFrame(const std::string& message, std::optional<std::string> messa
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
 
     C3D_FrameEnd(0);
-    Gui::clearTextBufs();
 }
 
 void Gui::warn(const std::string& message, std::optional<std::string> message2, std::optional<std::string> bottomScreen)
 {
     u32 keys = 0;
     C3D_FrameEnd(0);
-    clearTextBufs();
     hidScanInput();
     while (aptMainLoop() && !((keys = hidKeysDown()) & KEY_A))
     {
@@ -1540,7 +1554,6 @@ void Gui::warn(const std::string& message, std::optional<std::string> message2, 
         }
 
         C3D_FrameEnd(0);
-        Gui::clearTextBufs();
     }
     hidScanInput();
 }
@@ -1557,7 +1570,6 @@ void Gui::setNextKeyboardFunc(std::function<void()> func)
 
 void Gui::showRestoreProgress(u32 partial, u32 total)
 {
-    clearTextBufs();
     C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
     C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
     C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
@@ -1572,7 +1584,6 @@ void Gui::showRestoreProgress(u32 partial, u32 total)
 
 void Gui::showResizeStorage()
 {
-    clearTextBufs();
     C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
     C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
     C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
@@ -1588,7 +1599,6 @@ void Gui::error(const std::string& message, Result errorCode)
 {
     u32 keys = 0;
     C3D_FrameEnd(0);
-    clearTextBufs();
     hidScanInput();
     while (aptMainLoop() && !((keys = hidKeysDown()) & KEY_A))
     {
@@ -1609,7 +1619,6 @@ void Gui::error(const std::string& message, Result errorCode)
         sprite(ui_sheet_part_info_bottom_idx, 0, 0);
 
         C3D_FrameEnd(0);
-        Gui::clearTextBufs();
     }
     hidScanInput();
 }
