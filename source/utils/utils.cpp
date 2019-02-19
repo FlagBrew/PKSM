@@ -369,7 +369,7 @@ float StringUtils::textWidth(const std::string& text, float scaleX)
         {
             widthCache.insert_or_assign(codepoint, fontGetCharWidthInfo(fontGlyphIndexFromCodePoint(codepoint)));
             widthCacheOrder.push(codepoint);
-            if (widthCache.size() > 512)
+            if (widthCache.size() > 1000)
             {
                 widthCache.erase(widthCacheOrder.front());
                 widthCacheOrder.pop();

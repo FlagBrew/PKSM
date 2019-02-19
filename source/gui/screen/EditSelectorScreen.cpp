@@ -155,6 +155,8 @@ EditSelectorScreen::EditSelectorScreen()
     buttons.push_back(new ClickButton(32, 15, 164, 24, [this](){ return this->clickIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0));
     buttons.push_back(new AccelButton(8, 15, 17, 24, [this](){ return this->prevBox(); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5));
     buttons.push_back(new AccelButton(189, 15, 17, 24, [this](){ return this->nextBox(); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5));
+    int cameraButtonWidth = StringUtils::textWidth("\uE004+\uE005 \uE01E", FONT_SIZE_14);
+    buttons.push_back(new ClickButton(310 - cameraButtonWidth, 16, cameraButtonWidth + 2, 16, [this](){ return this->doQR(); }, ui_sheet_res_null_idx, "\uE004+\uE005 \uE01E", FONT_SIZE_14, COLOR_BLACK));
 
     // Pokemon buttons
     u16 y = 45;
