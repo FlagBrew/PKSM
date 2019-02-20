@@ -308,6 +308,12 @@ void StorageScreen::draw() const
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
+            // C2D_Color32(0x50, 0xF0, 0x40, 0x80);
+            if (currentlySelecting && !storageChosen && column <= std::max((cursorIndex - 1) % 6, selectDimensions.first) && column >= std::min((cursorIndex - 1) % 6, selectDimensions.first)
+                    && row <= std::max((cursorIndex - 1) / 6, selectDimensions.second) && row >= std::min((cursorIndex - 1) / 6, selectDimensions.second))
+            {
+                C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+            }
             if (TitleLoader::save->generation() == Generation::LGPE && row * 6 + column + boxBox * 30 >= TitleLoader::save->maxSlot())
             {
                 C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(128, 128, 128, 128));
@@ -352,7 +358,7 @@ void StorageScreen::draw() const
             }
             // Gui::pkm(moveMon.get()->species(), moveMon.get()->alternativeForm(), moveMon.get()->generation(), 97, 10 + dy, 1.0f, COLOR_GREY_BLEND, 1.0f);
             // Gui::pkm(moveMon.get(), 94, 5 + dy);
-            Gui::sprite(ui_sheet_pointer_arrow_idx, 106, -4 + dy);
+            Gui::sprite(multiplePickup ? ui_sheet_pointer_arrow2_idx : ui_sheet_pointer_arrow_idx, 106, -4 + dy);
         }
         else
         {
@@ -370,7 +376,7 @@ void StorageScreen::draw() const
             }
             // Gui::pkm(moveMon.get()->species(), moveMon.get()->alternativeForm(), moveMon.get()->generation(), 12 + (tempIndex % 6) * 34, 44 + yMod, 1.0f, COLOR_GREY_BLEND, 1.0f);
             // Gui::pkm(moveMon.get(), 9 + (tempIndex % 6) * 34, 39 + yMod);
-            Gui::sprite(ui_sheet_pointer_arrow_idx, 21 + (tempIndex % 6) * 34, 30 + yMod);
+            Gui::sprite(multiplePickup ? ui_sheet_pointer_arrow2_idx : ui_sheet_pointer_arrow_idx, 21 + (tempIndex % 6) * 34, 30 + yMod);
         }
     }
 
@@ -444,6 +450,12 @@ void StorageScreen::draw() const
             u16 x = 45;
             for (u8 column = 0; column < 6; column++)
             {
+                // C2D_Color32(0x50, 0xF0, 0x40, 0x80);
+                if (currentlySelecting && storageChosen && column <= std::max((cursorIndex - 1) % 6, selectDimensions.first) && column >= std::min((cursorIndex - 1) % 6, selectDimensions.first)
+                        && row <= std::max((cursorIndex - 1) / 6, selectDimensions.second) && row >= std::min((cursorIndex - 1) / 6, selectDimensions.second))
+                {
+                    C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                }
                 auto pkm = bank.pkm(storageBox, row * 6 + column);
                 if (pkm->species() > 0)
                 {
@@ -477,7 +489,7 @@ void StorageScreen::draw() const
                         Gui::pkm(moveMon[i].get(), x - 3, y - 5);
                     }
                 }
-                Gui::sprite(ui_sheet_pointer_arrow_idx, 147, 2 + dy);
+                Gui::sprite(multiplePickup ? ui_sheet_pointer_arrow2_idx : ui_sheet_pointer_arrow_idx, 147, 2 + dy);
             }
             else
             {
@@ -495,7 +507,7 @@ void StorageScreen::draw() const
                 }
                 // Gui::pkm(moveMon.get()->species(), moveMon.get()->alternativeForm(), moveMon.get()->generation(), 53 + (tempIndex % 6) * 34, 65 + yMod, 1.0f, COLOR_GREY_BLEND, 1.0f);
                 // Gui::pkm(moveMon.get(), 50 + (tempIndex % 6) * 34, 60 + yMod);
-                Gui::sprite(ui_sheet_pointer_arrow_idx, 62 + (tempIndex % 6) * 34, 51 + yMod);
+                Gui::sprite(multiplePickup ? ui_sheet_pointer_arrow2_idx : ui_sheet_pointer_arrow_idx, 62 + (tempIndex % 6) * 34, 51 + yMod);
             }
         }
 
@@ -598,6 +610,11 @@ void StorageScreen::update(touchPosition* touch)
         if (kDown & KEY_B)
         {
             backButton();
+            return;
+        }
+        if (kDown & KEY_Y)
+        {
+            multiplePickup = !multiplePickup;
             return;
         }
         if (funcSelector)
@@ -1117,7 +1134,7 @@ void StorageScreen::pickup()
             {
                 int cursorX = (cursorIndex - 1) % 6;
                 int cursorY = (cursorIndex - 1) / 6;
-                int baseIndex = std::min(selectDimensions.first + selectDimensions.second * 6, cursorIndex - 1);
+                int baseIndex = std::min(selectDimensions.first, cursorX) + std::min(selectDimensions.second, cursorY) * 6;
                 // Convert to actual dimensions
                 selectDimensions.first = std::abs(selectDimensions.first - cursorX) + 1;
                 selectDimensions.second = std::abs(selectDimensions.second - cursorY) + 1;
