@@ -1359,13 +1359,13 @@ void StorageScreen::pickup()
                     fromStorage = false;
                 }
             }
-
-            if (std::find_if(moveMon.begin(), moveMon.end(), [](const std::shared_ptr<PKX>& pkm){ return (bool)pkm; }) == moveMon.end())
-            {
-                moveMon.clear();
-                partyNum.clear();
-                selectDimensions = std::pair{0,0};
-            }
+        }
+        if (std::find_if(moveMon.begin(), moveMon.end(), [](const std::shared_ptr<PKX>& pkm){ return (bool)pkm; }) == moveMon.end())
+        {
+            moveMon.clear();
+            partyNum.clear();
+            selectDimensions = std::pair{0,0};
+            currentlySelecting = false;
         }
     }
 }
