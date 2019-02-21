@@ -168,7 +168,7 @@ static void drawVector(const std::vector<C2D_Text>& draw, int x, int y, int line
     {
         CFNT_s* font = text.font ? text.font->cfnt : nullptr;
         float lineFeed = scaleY * (fontGetInfo(font)->lineFeed);
-        float baselinePos = scaleY * (fontGetGlyphInfo(font)->cellHeight - fontGetGlyphInfo(font)->baselinePos);
+        float baselinePos = scaleY * (std::min(fontGetGlyphInfo(font)->cellHeight, fontGetInfo(font)->lineFeed) - fontGetGlyphInfo(font)->baselinePos);
         C2D_DrawText(&text, C2D_WithColor | C2D_AtBaseline, x, y + (lineFeed * (float)(line + 1) - baselinePos), 0.5f, scaleX, scaleY, color);
         x += StringUtils::textWidth(text, scaleX);
     }
@@ -396,6 +396,7 @@ Result Gui::init(void)
     spritesheet_pkm = C2D_SpriteSheetLoad("/3ds/PKSM/assets/pkm_spritesheet.t3x");
     spritesheet_types = C2D_SpriteSheetLoad("/3ds/PKSM/assets/types_spritesheet.t3x");
 
+    fonts.push_back(C2D_FontLoad("romfs:/gfx/pksm.bcfnt"));
     fonts.push_back(C2D_FontLoadSystem(CFG_REGION_USA));
     fonts.push_back(C2D_FontLoadSystem(CFG_REGION_KOR));
     fonts.push_back(C2D_FontLoadSystem(CFG_REGION_CHN));
