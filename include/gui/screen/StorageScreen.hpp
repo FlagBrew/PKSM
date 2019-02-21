@@ -66,6 +66,8 @@ private:
     bool pickSort(size_t number);
     bool sort();
     bool selectBox();
+    void fixMon(std::shared_ptr<PKX> pkm, bool fromStorage);
+    void virtualTrade(std::shared_ptr<PKX> pkm);
 
     bool storageChosen = false;
     bool fromStorage = false;
@@ -83,9 +85,10 @@ private:
     std::vector<int> partyNum;
     bool justSwitched = true;
     Bank bank;
-    bool multiplePickup = false;
+    enum PickupMode { SINGLE, SWAP, MULTI } pickupMode = SINGLE;
     // While selecting, XY coords of original selection.
     // When selected, dimensions of moveMon
+    // If pickupMode == SWAP, box number & slot pair
     std::pair<int, int> selectDimensions = {0,0};
     bool currentlySelecting = false;
 };
