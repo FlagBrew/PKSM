@@ -109,7 +109,7 @@ Z
 女王造型
 歌舞伎造型
 国王造型
-Average
+普通尺寸
 小尺寸
 大尺寸
 特大尺寸
@@ -126,13 +126,13 @@ Average
 白昼的样子
 黑夜的样子
 黑夜的样子
-Covered Red
-Covered Orange
-Covered Yellow
-Covered Green
-Covered Blue
-Covered Indigo
-Covered Violet
+红色核心
+橙色核心
+黄色核心
+绿色核心
+浅蓝色核心
+蓝色核心
+紫色核心
 红色核心
 橙色核心
 黄色核心
@@ -143,15 +143,15 @@ Covered Violet
 ５００年前的颜色
 刺刺耳皮丘
 雌性的样子
-Totem
+霸主
 Mega
-Dawn Wings
-Dusk Mane
-Ultra
-Primal
+拂晓之翼
+黄昏之鬃
+究极
+原始
 Mega X
 Mega Y
-Partner
+搭档
 100%
 格斗
 飞行
