@@ -1178,7 +1178,7 @@ bool StorageScreen::isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTrans
     return true;
 }
 
-void StorageScreen::fixMon(std::shared_ptr<PKX> pkm, bool fromStorage)
+void StorageScreen::fixMon(std::shared_ptr<PKX>& pkm, bool fromStorage)
 {
     while (pkm->generation() != TitleLoader::save->generation())
     {

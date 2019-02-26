@@ -66,7 +66,7 @@ private:
     bool pickSort(size_t number);
     bool sort();
     bool selectBox();
-    void fixMon(std::shared_ptr<PKX> pkm, bool fromStorage);
+    void fixMon(std::shared_ptr<PKX>& pkm, bool fromStorage);
     void virtualTrade(std::shared_ptr<PKX> pkm);
 
     bool storageChosen = false;
