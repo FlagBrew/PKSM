@@ -403,6 +403,7 @@ namespace StringUtils
     std::string getString4(const u8* data, int ofs, int len);
     void setString4(u8* data, const std::string v, int ofs, int len);
     std::string& toLower(std::string& in);
+    std::string& toUpper(std::string& in);
     std::string splitWord(const std::string& word, float scaleX, float maxWidth);
     float textWidth(const std::string& str, float scaleX);
     float textWidth(const std::u16string& str, float scaleX);

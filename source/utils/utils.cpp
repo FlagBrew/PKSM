@@ -219,6 +219,56 @@ void StringUtils::setString4(u8* data, const std::string v, int ofs, int len)
     memcpy(data + ofs, output, len * 2);
 }
 
+std::string& StringUtils::toUpper(std::string& in)
+{
+    std::transform(in.begin(), in.end(), in.begin(), ::toupper);
+    std::u16string otherIn = StringUtils::UTF8toUTF16(in);
+    for (size_t i = 0; i < otherIn.size(); i++)
+    {
+        switch (otherIn[i])
+        {
+            case u'í':
+                otherIn[i] = u'Í';
+                break;
+            case u'ó':
+                otherIn[i] = u'Ó';
+                break;
+            case u'ú':
+                otherIn[i] = u'Ú';
+                break;
+            case u'é':
+                otherIn[i] = u'É';
+                break;
+            case u'á':
+                otherIn[i] = u'Á';
+                break;
+            case u'ì':
+                otherIn[i] = u'Ì';
+                break;
+            case u'ò':
+                otherIn[i] = u'Ò';
+                break;
+            case u'ù':
+                otherIn[i] = u'Ù';
+                break;
+            case u'è':
+                otherIn[i] = u'È';
+                break;
+            case u'à':
+                otherIn[i] = u'À';
+                break;
+            case u'ñ':
+                otherIn[i] = u'Ñ';
+                break;
+            case u'æ':
+                otherIn[i] = u'Æ';
+                break;
+        }
+    }
+    in = StringUtils::UTF16toUTF8(otherIn);
+    return in;
+}
+
 std::string& StringUtils::toLower(std::string& in)
 {
     std::transform(in.begin(), in.end(), in.begin(), ::tolower);

@@ -605,6 +605,19 @@ void EditorScreen::setNick()
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
         pkm->nickname(input);
+        std::string speciesName = i18n::species(pkm->language(), pkm->species());
+        if (pkm->generation() == Generation::FOUR)
+        {
+            StringUtils::toUpper(speciesName);
+        }
+        if (pkm->nickname() == speciesName)
+        {
+            pkm->nicknamed(false);
+        }
+        else
+        {
+            pkm->nicknamed(true);
+        }
     }
 }
 
