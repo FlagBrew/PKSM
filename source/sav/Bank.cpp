@@ -185,18 +185,15 @@ void Bank::loadExtData()
         if (memcmp(data, BANK_MAGIC.data(), 8))
         {
             Gui::warn(i18n::localize("BANK_CORRUPT"));
-            goto createBank;
+            createBank();
+            needSave = true;
         }
     }
     else
     {
-createBank:
         Gui::waitFrame(i18n::localize("BANK_CREATE"));
         in.close();
-        data = new u8[size = sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30];
-        std::copy(BANK_MAGIC.data(), BANK_MAGIC.data() + BANK_MAGIC.size(), data);
-        *(int*)(data + 8) = BANK_VERSION;
-        std::fill_n(data + sizeof(BankHeader), sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30, 0xFF);
+        createBank();
         needSave = true;
     }
     
@@ -209,12 +206,20 @@ createBank:
         in.close();
         jsonData[jsonSize] = '\0';
         boxNames = nlohmann::json::parse(jsonData);
-        for (int i = boxNames.size(); i < Configuration::getInstance().storageSize(); i++)
+        if (boxNames.is_discarded())
         {
-            boxNames[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
-            if (!needSave)
+            createJSON();
+            needSave = true;
+        }
+        else
+        {
+            for (int i = boxNames.size(); i < Configuration::getInstance().storageSize(); i++)
             {
-                needSave = true;
+                boxNames[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
+                if (!needSave)
+                {
+                    needSave = true;
+                }
             }
         }
     }
@@ -259,18 +264,16 @@ void Bank::loadSD()
         if (memcmp(data, BANK_MAGIC.data(), 8))
         {
             Gui::warn(i18n::localize("BANK_CORRUPT"));
-            goto createBank;
+            createBank();
+            needSave = true;
+            needResize = false;
         }
     }
     else
     {
-createBank:
         // Gui::waitFrame(i18n::localize("BANK_LOAD"));
         in.close();
-        data = new u8[size = sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30];
-        std::copy(BANK_MAGIC.data(), BANK_MAGIC.data() + BANK_MAGIC.size(), data);
-        *(int*)(data + 8) = BANK_VERSION;
-        std::fill_n(data + sizeof(BankHeader), sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30, 0xFF);
+        createBank();
         needSave = true;
     }
 
@@ -278,12 +281,20 @@ createBank:
     if (in.good())
     {
         in >> boxNames;
-        for (int i = boxNames.size(); i < Configuration::getInstance().storageSize(); i++)
+        if (boxNames.is_discarded())
         {
-            boxNames[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
-            if (!needSave)
+            createJSON();
+            needSave = true;
+        }
+        else
+        {
+            for (int i = boxNames.size(); i < Configuration::getInstance().storageSize(); i++)
             {
-                needSave = true;
+                boxNames[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
+                if (!needSave)
+                {
+                    needSave = true;
+                }
             }
         }
         in.close();
@@ -291,11 +302,7 @@ createBank:
     else
     {
         in.close();
-        boxNames = nlohmann::json::array();
-        for (int i = 0; i < Configuration::getInstance().storageSize(); i++)
-        {
-            boxNames[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
-        }
+        createJSON();
         needSave = true;
     }
 
@@ -507,4 +514,25 @@ std::string Bank::boxName(int box) const
 void Bank::boxName(std::string name, int box)
 {
     boxNames[box] = name;
+}
+
+void Bank::createJSON()
+{
+    boxNames = nlohmann::json::array();
+    for (int i = 0; i < Configuration::getInstance().storageSize(); i++)
+    {
+        boxNames[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
+    }
+}
+
+void Bank::createBank()
+{
+    if (data)
+    {
+        delete[] data;
+    }
+    data = new u8[size = sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30];
+    std::copy(BANK_MAGIC.data(), BANK_MAGIC.data() + BANK_MAGIC.size(), data);
+    *(int*)(data + 8) = BANK_VERSION;
+    std::fill_n(data + sizeof(BankHeader), sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30, 0xFF);
 }

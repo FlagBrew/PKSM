@@ -35,6 +35,13 @@ void MysteryGift::init(Generation g)
     sheet >> mysteryGiftSheet;
     sheet.close();
 
+    if (mysteryGiftSheet.is_discarded())
+    {
+        mysteryGiftSheet = nlohmann::json::object();
+        mysteryGiftSheet["gen"] = "BAD";
+        mysteryGiftSheet["matches"] = nlohmann::json::array();
+    }
+
     std::ifstream data(StringUtils::format("romfs:/mg/data%s.bin", genToCstring(g)), std::ios::binary | std::ios::ate);
     size_t size = data.tellg();
     data.seekg(0, std::ios::beg);

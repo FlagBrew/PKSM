@@ -49,6 +49,8 @@ private:
     static constexpr std::string_view BANK_MAGIC = "PKSMBANK";
     void loadExtData();
     void loadSD();
+    void createJSON();
+    void createBank();
     struct BankHeader {
         const char MAGIC[8];
         int version;

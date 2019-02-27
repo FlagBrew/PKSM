@@ -48,7 +48,12 @@ Configuration::Configuration()
         mJson = nlohmann::json::parse(jsonData);
         delete[] jsonData;
 
-        if (mJson.find("version") == mJson.end())
+        if (mJson.is_discarded())
+        {
+            Gui::warn("Configuration file is corrupted!", "Using default.");
+            loadFromRomfs();
+        }
+        else if (mJson.find("version") == mJson.end())
         {
             loadFromRomfs();
         }

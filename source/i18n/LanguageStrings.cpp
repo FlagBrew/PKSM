@@ -119,7 +119,7 @@ void LanguageStrings::loadGui(Language lang)
     std::string path = io::exists(base + folder(lang) + "/gui.json") ? base + folder(lang) + "/gui.json" : base + folder(Language::EN) + "/gui.json";
 
     std::ifstream values(path);
-    gui << values;
+    values >> gui;
     values.close();
 }
 
