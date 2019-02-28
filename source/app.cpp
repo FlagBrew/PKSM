@@ -53,9 +53,9 @@ static bool matchSha256HashFromFile(const std::string& path, unsigned char* sha)
         char hash[SHA256_BLOCK_SIZE];
         sha256((unsigned char*)hash, (unsigned char*)data, size);
         delete[] data;
-        //std::ofstream out(path + ".bin", std::ios::binary);
-        //out.write(hash, SHA256_BLOCK_SIZE);
-        //out.close();
+        // std::ofstream out(path + ".bin", std::ios::binary);
+        // out.write(hash, SHA256_BLOCK_SIZE);
+        // out.close();
         match = memcmp(sha, hash, SHA256_BLOCK_SIZE) == 0;
     }
     file.close();
@@ -65,7 +65,9 @@ static bool matchSha256HashFromFile(const std::string& path, unsigned char* sha)
 static Result downloadAdditionalAssets(void) {
     Result res = 0;
     asset assets[2] = {
-        {"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/pkm_spritesheet.t3x", "/3ds/PKSM/assets/pkm_spritesheet.t3x",
+        {
+            "https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/pkm_spritesheet.t3x",
+            "/3ds/PKSM/assets/pkm_spritesheet.t3x",
             {
                 0xa5, 0x0e, 0x59, 0x75, 0x00, 0xf0, 0xe1, 0x6a,
                 0x6e, 0xe9, 0xd4, 0x5b, 0xb3, 0x3b, 0x9c, 0x08,
@@ -73,12 +75,14 @@ static Result downloadAdditionalAssets(void) {
                 0xbe, 0x7e, 0x2c, 0xa4, 0xe7, 0x6d, 0xcc, 0x48
             }
         },
-        {"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/types_spritesheet.t3x", "/3ds/PKSM/assets/types_spritesheet.t3x",
+        {
+            "https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/types_spritesheet.t3x",
+            "/3ds/PKSM/assets/types_spritesheet.t3x",
             {
-                0x59, 0x31, 0xa2, 0x1e, 0x1d, 0x00, 0x0b, 0x82,
-                0xe3, 0x1a, 0x07, 0x16, 0xd6, 0xc6, 0x96, 0xe1,
-                0x61, 0x62, 0xb0, 0xf6, 0xc6, 0x29, 0xd4, 0x9a,
-                0x9c, 0xa8, 0xf1, 0x8a, 0x3d, 0xd5, 0x2d, 0x0c
+                0x96, 0xd1, 0xd7, 0x4e, 0x7c, 0x4e, 0xee, 0x8f,
+                0x5f, 0x00, 0xc4, 0xf6, 0xa6, 0xec, 0xdf, 0x40,
+                0x10, 0x2b, 0x72, 0x66, 0x33, 0x1f, 0x71, 0x9f,
+                0xed, 0x28, 0x42, 0x1c, 0x0d, 0xd7, 0x16, 0x67
             }
         }
     };
