@@ -651,6 +651,7 @@ void StorageScreen::update(touchPosition* touch)
         else if (moveMon.empty() && kDown & KEY_X)
         {
             moveMon.emplace_back(viewer->getPkm()->clone());
+            partyNum.push_back(-1);
             selectDimensions = {1,1};
             currentlySelecting = false;
             backButton();
