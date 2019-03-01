@@ -606,7 +606,7 @@ void EditorScreen::setNick()
     {
         pkm->nickname(input);
         std::string speciesName = i18n::species(pkm->language(), pkm->species());
-        if (pkm->generation() == Generation::FOUR)
+        if (pkm->generation() == Generation::FOUR || pkm->version() <= 15 || (pkm->version() >= 35 && pkm->version() <= 41)) // Gen 4, less than or equal to Colosseum/XD, or in VC territory
         {
             StringUtils::toUpper(speciesName);
         }
