@@ -358,7 +358,7 @@ void EditSelectorScreen::draw() const
 
     if (infoMon)
     {
-        Gui::dynamicText(StringUtils::format(i18n::localize("EDITOR_IDS"), infoMon->displayTID(), infoMon->displaySID(), infoMon->TSV()), 160, 224, 
+        Gui::dynamicText(StringUtils::format(i18n::localize("EDITOR_IDS"), infoMon->formatTID(), infoMon->formatSID(), infoMon->TSV()), 160, 224, 
                         FONT_SIZE_9, FONT_SIZE_9, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
 

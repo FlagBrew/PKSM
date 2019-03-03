@@ -608,7 +608,7 @@ void StorageScreen::draw() const
                 Gui::type(Configuration::getInstance().language(), firstType, 300, 115);
             }
 
-            info = infoMon->otName() + '\n' + i18n::localize("LOADER_ID") + std::to_string(infoMon->displayTID());
+            info = infoMon->otName() + '\n' + i18n::localize("LOADER_ID") + std::to_string(infoMon->versionTID());
             Gui::dynamicText(info, 276, 141, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
             Gui::dynamicText(i18n::nature(Configuration::getInstance().language(), infoMon->nature()),

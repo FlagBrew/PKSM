@@ -213,8 +213,6 @@ public:
     void hpType(u8 v) override;
     u16 TSV(void) const override;
     u16 PSV(void) const override;
-    u32 displayTID(void) const override { return (u32)(SID() << 16 | TID()) % 1000000; }
-    u32 displaySID(void) const override { return (u32)(SID() << 16 | TID()) / 1000000; }
     u8 level(void) const override;
     void level(u8 v) override;
     bool shiny(void) const override;

@@ -410,3 +410,58 @@ u32 PKX::getRandomPID(u16 species, u8 gender, u8 originGame, u8 nature, u8 form,
         }
     }
 }
+
+u32 PKX::versionTID() const
+{
+    switch (version())
+    {
+        default:
+            return SID();
+        case 30: // SM
+        case 31:
+        case 32: // USUM
+        case 33:
+        case 42: // LGPE
+        case 43:
+            return (u32)(SID() << 16 | TID()) % 1000000;
+    }
+}
+
+u32 PKX::versionSID() const
+{
+    switch (version())
+    {
+        default:
+            return SID();
+        case 30: // SM
+        case 31:
+        case 32: // USUM
+        case 33:
+        case 42: // LGPE
+        case 43:
+            return (u32)(SID() << 16 | TID()) / 1000000;
+    }
+}
+
+u32 PKX::formatTID() const
+{
+    switch (generation())
+    {
+        default:
+            return SID();
+        case Generation::SEVEN:
+        case Generation::LGPE:
+            return (u32)(SID() << 16 | TID()) % 1000000;
+    }
+}
+u32 PKX::formatSID() const
+{
+    switch (generation())
+    {
+        default:
+            return SID();
+        case Generation::SEVEN:
+        case Generation::LGPE:
+            return (u32)(SID() << 16 | TID()) / 1000000;
+    }
+}

@@ -184,8 +184,10 @@ public:
     virtual void hpType(u8 v) = 0;
     virtual u16 TSV(void) const = 0;
     virtual u16 PSV(void) const = 0;
-    virtual u32 displayTID(void) const { return TID(); }
-    virtual u32 displaySID(void) const { return SID(); }
+    u32 versionTID(void) const;
+    u32 versionSID(void) const;
+    u32 formatTID(void) const;
+    u32 formatSID(void) const;
     virtual u8 level(void) const = 0;
     virtual void level(u8 v) = 0;
     virtual bool shiny(void) const = 0;
