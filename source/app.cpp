@@ -53,9 +53,6 @@ static bool matchSha256HashFromFile(const std::string& path, unsigned char* sha)
         char hash[SHA256_BLOCK_SIZE];
         sha256((unsigned char*)hash, (unsigned char*)data, size);
         delete[] data;
-        // std::ofstream out(path + ".bin", std::ios::binary);
-        // out.write(hash, SHA256_BLOCK_SIZE);
-        // out.close();
         match = memcmp(sha, hash, SHA256_BLOCK_SIZE) == 0;
     }
     file.close();
