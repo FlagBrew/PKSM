@@ -170,3 +170,14 @@ Ice
 Dragon
 Dark
 Fairy
+Overcast
+Sunshine
+Zen
+Ash
+Shield
+Blade
+Solo
+School
+Sunny
+Rainy
+Snowy
