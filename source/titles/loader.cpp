@@ -116,7 +116,7 @@ void TitleLoader::scanTitles(void)
 
     // sort the list alphabetically
     std::sort(nandTitles.begin(), nandTitles.end(), [](std::shared_ptr<Title>& l, std::shared_ptr<Title>& r) {
-        return l->name() < r->name();
+        return l->ID() < r->ID();
     });
 }
 

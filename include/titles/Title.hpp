@@ -46,6 +46,7 @@ public:
     CardType SPICardType(void);
     u32 highId(void);
     u32 lowId(void);
+    u64 ID(void) { return (u64)highId() << 32 | lowId(); }
     std::string name(void);
     C2D_Image icon(void);
     FS_MediaType mediaType(void);
