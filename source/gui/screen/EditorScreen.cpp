@@ -144,22 +144,22 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index)
         switch (pkm->generation())
         {
             case Generation::FOUR:
-            case Generation::FIVE:
                 if (pkm->getLength() == 136)
                 {
                     u8 pkmData[236] = {0};
                     std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
-                    if (pkm->generation() == Generation::FOUR)
-                    {
-                        pkm = std::make_shared<PK4>(pkmData, false, true);
-                    }
-                    else
-                    {
-                        pkm = std::make_shared<PK5>(pkmData, false, true);
-                    }
+                    pkm = std::make_shared<PK4>(pkmData, false, true);
                     partyUpdate();
-                    view->setPkm(nullptr);
-                    view->setPkm(pkm);
+                    selector = std::make_unique<SpeciesSelectionScreen>(pkm);
+                }
+            break;
+            case Generation::FIVE:
+                if (pkm->getLength() == 136)
+                {
+                    u8 pkmData[220] = {0};
+                    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
+                    pkm = std::make_shared<PK5>(pkmData, false, true);
+                    partyUpdate();
                     selector = std::make_unique<SpeciesSelectionScreen>(pkm);
                 }
             break;
