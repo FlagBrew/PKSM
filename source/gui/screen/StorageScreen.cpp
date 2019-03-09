@@ -350,6 +350,10 @@ void StorageScreen::draw() const
             {
                 int x = 97 + (i % selectDimensions.first) * 34;
                 int y = 10 + dy + (i / selectDimensions.first) * 30;
+                if (selectDimensions.first > 1 || selectDimensions.second > 1)
+                {
+                    C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                }
                 if (moveMon[i])
                 {
                     Gui::pkm(moveMon[i]->species(), moveMon[i]->alternativeForm(), moveMon[i]->generation(), x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
@@ -381,6 +385,10 @@ void StorageScreen::draw() const
             {
                 int x = 12 + (tempIndex % 6) * 34 + (i % selectDimensions.first) * 34;
                 int y = 44 + yMod + (i / selectDimensions.first) * 30;
+                if (selectDimensions.first > 1 || selectDimensions.second > 1)
+                {
+                    C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                }
                 if (moveMon[i])
                 {
                     Gui::pkm(moveMon[i]->species(), moveMon[i]->alternativeForm(), moveMon[i]->generation(), x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
@@ -509,6 +517,10 @@ void StorageScreen::draw() const
                 {
                     int x = 138 + (i % selectDimensions.first) * 34;
                     int y = 16 + dy + (i / selectDimensions.first) * 30;
+                    if (selectDimensions.first > 1 || selectDimensions.second > 1)
+                    {
+                        C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                    }
                     if (moveMon[i])
                     {
                         Gui::pkm(moveMon[i]->species(), moveMon[i]->alternativeForm(), moveMon[i]->generation(), x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
@@ -537,6 +549,10 @@ void StorageScreen::draw() const
                 {
                     int x = 53 + (tempIndex % 6) * 34 + (i % selectDimensions.first) * 34;
                     int y = 65 + yMod + (i / selectDimensions.first) * 30;
+                    if (selectDimensions.first > 1 || selectDimensions.second > 1)
+                    {
+                        C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                    }
                     if (moveMon[i])
                     {
                         Gui::pkm(moveMon[i]->species(), moveMon[i]->alternativeForm(), moveMon[i]->generation(), x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
@@ -1366,7 +1382,9 @@ void StorageScreen::pickup()
     }
     else
     {
-        if (pickupMode != SWAP && storageChosen && cursorIndex + (selectDimensions.first - 1) + (selectDimensions.second - 1) * 6 <= 30)
+        if (pickupMode != SWAP && storageChosen
+            && cursorIndex + (selectDimensions.first - 1) + (selectDimensions.second - 1) * 6 <= 30 // Checks Y bounds
+            && (cursorIndex - 1) % 6 + selectDimensions.first <= 6) // Checks X bounds
         {
             for (int y = 0; y < selectDimensions.second; y++)
             {
@@ -1377,6 +1395,10 @@ void StorageScreen::pickup()
                     if (moveMon[index])
                     {
                         bank.pkm(*moveMon[index], storageBox, cursorIndex - 1 + x + y * 6);
+                    }
+                    else
+                    {
+                        bank.pkm(*TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1 + x + y * 6);
                     }
                     moveMon[index] = temPkm;
                     
@@ -1392,8 +1414,10 @@ void StorageScreen::pickup()
                 }
             }
         }
-        else if (pickupMode != SWAP && !storageChosen && boxBox * 30 + cursorIndex + (selectDimensions.first - 1) + (selectDimensions.second - 1) * 6 <= TitleLoader::save->maxSlot()
-                    && cursorIndex + (selectDimensions.first - 1) + (selectDimensions.second - 1) * 6 <= 30)
+        else if (pickupMode != SWAP && !storageChosen
+                    && boxBox * 30 + cursorIndex + (selectDimensions.first - 1) + (selectDimensions.second - 1) * 6 <= TitleLoader::save->maxSlot() // Checks full bounds
+                    && cursorIndex + (selectDimensions.first - 1) + (selectDimensions.second - 1) * 6 <= 30 // Checks Y bounds
+                    && (cursorIndex - 1) % 6 + selectDimensions.first <= 6) // Checks X bounds
         {
             for (int y = 0; y < selectDimensions.second; y++)
             {
