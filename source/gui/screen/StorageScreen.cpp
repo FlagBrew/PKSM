@@ -1323,6 +1323,7 @@ void StorageScreen::pickup()
                     partyNum.clear();
                     selectDimensions = std::pair{0,0};
                 }
+                scrunchSelection();
             }
             else
             {
@@ -1538,6 +1539,7 @@ void StorageScreen::pickup()
             selectDimensions = std::pair{0,0};
             currentlySelecting = false;
         }
+        scrunchSelection();
     }
 }
 
@@ -1959,4 +1961,129 @@ bool StorageScreen::selectBox()
     *boxToChange = box.run();
 
     return true;
+}
+
+void StorageScreen::scrunchSelection()
+{
+    if (selectDimensions.first <= 1 && selectDimensions.second <= 1)
+    {
+        return;
+    }
+    std::vector<int> removableRows, removableColumns;
+
+    bool colDone = false, rowDone = false;
+    int firstCol = 0, lastCol = selectDimensions.first - 1, firstRow = 0, lastRow = selectDimensions.second - 1;
+    while (!(colDone && rowDone))
+    {
+        if (!colDone)
+        {
+            colDone = true;
+            bool canRemove = true, doLast = firstCol < lastCol;
+            for (int row = 0; row < selectDimensions.second; row++)
+            {
+                if (moveMon[row * selectDimensions.first + firstCol])
+                {
+                    canRemove = false;
+                    break;
+                }
+            }
+            if (canRemove)
+            {
+                removableColumns.push_back(firstCol++);
+                colDone = false;
+            }
+            if (doLast)
+            {
+                canRemove = true;
+                for (int row = 0; row < selectDimensions.second; row++)
+                {
+                    if (moveMon[row * selectDimensions.first + lastCol])
+                    {
+                        canRemove = false;
+                        break;
+                    }
+                }
+                if (canRemove)
+                {
+                    removableColumns.push_back(lastCol--);
+                    colDone = false;
+                }
+            }
+            else
+            {
+                colDone = true;
+            }
+        }
+
+        if (!rowDone)
+        {
+            rowDone = true;
+            bool canRemove = true, doLast = firstRow < lastRow;
+            for (int col = 0; col < selectDimensions.first; col++)
+            {
+                if (moveMon[firstRow * selectDimensions.first + col])
+                {
+                    canRemove = false;
+                    break;
+                }
+            }
+            if (canRemove)
+            {
+                removableRows.push_back(firstRow++);
+                rowDone = false;
+            }
+            if (doLast)
+            {
+                canRemove = true;
+                for (int col = 0; col < selectDimensions.first; col++)
+                {
+                    if (moveMon[lastRow * selectDimensions.first + col])
+                    {
+                        canRemove = false;
+                        break;
+                    }
+                }
+                if (canRemove)
+                {
+                    removableRows.push_back(lastRow--);
+                    rowDone = false;
+                }
+            }
+            else
+            {
+                rowDone = true;
+            }
+        }
+    }
+    // for (int y = 0; y < selectDimensions.second; y++)
+    // {
+    //     for (int x = 0; x < selectDimensions.first; x++)
+    //     {
+    //         if (moveMon[y * selectDimensions.first + x])
+    //         {
+    //             auto found = std::find(removableColumns.begin(), removableColumns.end(), x);
+    //             if (found != removableColumns.end())
+    //             {
+    //                 removableColumns.erase(found);
+    //             }
+    //             found = std::find(removableRows.begin(), removableRows.end(), y);
+    //             if (found != removableRows.end())
+    //             {
+    //                 removableRows.erase(found);
+    //             }
+    //         }
+    //     }
+    // }
+    for (size_t i = moveMon.size(); i != 0; i--)
+    {
+        int x = (i - 1) % selectDimensions.first;
+        int y = (i - 1) / selectDimensions.first;
+        if (std::find(removableColumns.begin(), removableColumns.end(), x) != removableColumns.end()
+            || std::find(removableRows.begin(), removableRows.end(), y) != removableRows.end())
+        {
+            moveMon.erase(moveMon.begin() + (i - 1));
+        }
+    }
+    selectDimensions.first -= removableColumns.size();
+    selectDimensions.second -= removableRows.size();
 }

@@ -68,6 +68,7 @@ private:
     bool selectBox();
     void fixMon(std::shared_ptr<PKX>& pkm, bool fromStorage);
     void virtualTrade(std::shared_ptr<PKX> pkm);
+    void scrunchSelection();
 
     bool storageChosen = false;
     bool fromStorage = false;
