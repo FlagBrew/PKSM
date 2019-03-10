@@ -1323,6 +1323,10 @@ void StorageScreen::pickup()
                     partyNum.clear();
                     selectDimensions = std::pair{0,0};
                 }
+                else
+                {
+                    cursorIndex = baseIndex + 1;
+                }
                 scrunchSelection();
             }
             else
