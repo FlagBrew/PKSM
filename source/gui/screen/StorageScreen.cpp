@@ -2055,25 +2055,6 @@ void StorageScreen::scrunchSelection()
             }
         }
     }
-    // for (int y = 0; y < selectDimensions.second; y++)
-    // {
-    //     for (int x = 0; x < selectDimensions.first; x++)
-    //     {
-    //         if (moveMon[y * selectDimensions.first + x])
-    //         {
-    //             auto found = std::find(removableColumns.begin(), removableColumns.end(), x);
-    //             if (found != removableColumns.end())
-    //             {
-    //                 removableColumns.erase(found);
-    //             }
-    //             found = std::find(removableRows.begin(), removableRows.end(), y);
-    //             if (found != removableRows.end())
-    //             {
-    //                 removableRows.erase(found);
-    //             }
-    //         }
-    //     }
-    // }
     for (size_t i = moveMon.size(); i != 0; i--)
     {
         int x = (i - 1) % selectDimensions.first;
