@@ -225,6 +225,8 @@ StorageScreen::StorageScreen()
     sortButtons[3] = new ClickButton(51, 161, 108, 28, [this](){ return this->pickSort(3); }, ui_sheet_button_editor_idx, "", 0.0f, 0);
     sortButtons[4] = new ClickButton(51, 192, 108, 28, [this](){ return this->pickSort(4); }, ui_sheet_button_editor_idx, "", 0.0f, 0);
     sortButtons[5] = new ClickButton(161, 108, 108, 28, [this](){ justSwitched = true; return this->sort(); }, ui_sheet_button_editor_idx, i18n::localize("SORT"), FONT_SIZE_12, COLOR_BLACK);
+
+    boxBox = TitleLoader::save->currentBox();
 }
 
 StorageScreen::~StorageScreen()
@@ -264,6 +266,7 @@ StorageScreen::~StorageScreen()
         ((SavLGPE*)TitleLoader::save.get())->boxedPkm(occupiedSlots);
     }
     TitleLoader::save->cryptBoxData(false);
+    TitleLoader::save->currentBox((u8)boxBox);
 }
 
 void StorageScreen::draw() const

@@ -185,6 +185,7 @@ EditSelectorScreen::EditSelectorScreen()
     viewerButtons.push_back(new ClickButton(212, 109, 108, 28, [this](){ return this->clonePkm(); }, ui_sheet_button_editor_idx,
                                     "\uE002: " + i18n::localize("CLONE"), FONT_SIZE_12, COLOR_BLACK));
     TitleLoader::save->cryptBoxData(true);
+    box = TitleLoader::save->currentBox();
 }
 
 EditSelectorScreen::~EditSelectorScreen()
@@ -223,6 +224,7 @@ EditSelectorScreen::~EditSelectorScreen()
         ((SavLGPE*)TitleLoader::save.get())->boxedPkm(occupiedSlots);
     }
     TitleLoader::save->cryptBoxData(false);
+    TitleLoader::save->currentBox((u8)box);
 }
 
 void EditSelectorScreen::draw() const
