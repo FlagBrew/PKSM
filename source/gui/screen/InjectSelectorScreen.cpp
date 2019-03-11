@@ -29,6 +29,18 @@
 #include "loader.hpp"
 #include "FSStream.hpp"
 
+static constexpr std::string_view langs[] = {
+    "JPN",
+    "ENG",
+    "FRE",
+    "ITA",
+    "GER",
+    "SPA",
+    "KOR",
+    "CHS",
+    "CHT"
+};
+
 InjectSelectorScreen::InjectSelectorScreen() : hid(10, 2), dumpHid(40, 8)
 {
     MysteryGift::init(TitleLoader::save->generation());
@@ -48,7 +60,14 @@ InjectSelectorScreen::InjectSelectorScreen() : hid(10, 2), dumpHid(40, 8)
 
     gifts = TitleLoader::save->currentGifts();
 
+    // QR
     buttons.push_back(new Button(160 - 70/2, 207 - 23, 70, 23, [this](){ return this->doQR(); }, ui_sheet_emulated_button_qr_idx, "", FONT_SIZE_14, COLOR_WHITE));
+    // Filter
+    for (int i = 0; i < 9; i++)
+    {
+        langFilters.push_back(new ToggleButton(268, 3 + i * 24, 38, 23, [this, i](){ return this->toggleFilter(std::string(langs[i])); }, ui_sheet_button_selected_text_button_idx, std::string(langs[i]), FONT_SIZE_14, COLOR_WHITE, ui_sheet_button_unselected_text_button_idx, std::nullopt, std::nullopt, COLOR_BLACK, &langFilters, true));
+        langFilters.back()->setState(false);
+    }
 }
 
 InjectSelectorScreen::~InjectSelectorScreen()
@@ -112,14 +131,27 @@ void InjectSelectorScreen::update(touchPosition* touch)
             return;
         }
 
-        if (downKeys & KEY_TOUCH)
+        for (auto button : buttons)
         {
-            for (auto button : buttons)
+            if (button->update(touch))
             {
-                if (button->update(touch))
-                {
-                    return;
-                }
+                return;
+            }
+        }
+
+        for (auto button : langFilters)
+        {
+            if (button->update(touch))
+            {
+                return;
+            }
+        }
+
+        for (auto button : typeFilters)
+        {
+            if (button->update(touch))
+            {
+                return;
             }
         }
     }
@@ -151,6 +183,16 @@ void InjectSelectorScreen::draw() const
     Gui::dynamicText(StringUtils::format("%d/%d", hid.page() + 1, wondercards.size() % 10 == 0 ? wondercards.size() / 10 : wondercards.size() / 10 + 1), 160, 20, FONT_SIZE_12, FONT_SIZE_12, C2D_Color32(197, 202, 233, 255), TextPosX::CENTER, TextPosY::TOP);
 
     for (auto button : buttons)
+    {
+        button->draw();
+    }
+
+    for (auto button : langFilters)
+    {
+        button->draw();
+    }
+
+    for (auto button : typeFilters)
     {
         button->draw();
     }
@@ -383,4 +425,32 @@ void InjectSelectorScreen::dumpCard(void) const
         Gui::error(i18n::localize("FAILED_OPEN_DUMP"), out.result());
     }
     out.close();
+}
+
+bool InjectSelectorScreen::toggleFilter(const std::string& lang)
+{
+    if (langFilter != lang)
+    {
+        wondercards = MysteryGift::wondercards();
+        for (size_t i = wondercards.size(); i > 0; i--)
+        {
+            if (wondercards[i - 1].find(lang) == wondercards[i - 1].end())
+            {
+                wondercards.erase(wondercards.begin() + i - 1);
+            }
+        }
+        langFilter = lang;
+    }
+    else
+    {
+        wondercards = MysteryGift::wondercards();
+        langFilter = "";
+    }
+    return false;
+}
+
+bool InjectSelectorScreen::toggleFilter(u8 type)
+{
+    // Stubbed for now
+    return false;
 }

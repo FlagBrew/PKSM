@@ -36,7 +36,7 @@ public:
     ~ClickButton(void) {}
 
     virtual bool update(touchPosition* touch) override;
-private:
+protected:
     bool isClicked = false;
 };
 

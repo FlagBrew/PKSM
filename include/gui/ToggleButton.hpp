@@ -24,43 +24,34 @@
 *         reasonable ways as different from the original version.
 */
 
-#include "Screen.hpp"
-#include "HidHorizontal.hpp"
-#include "gui.hpp"
-#include "mysterygift.hpp"
-#include "QRScanner.hpp"
-#include "Button.hpp"
-#include "ToggleButton.hpp"
-#include <vector>
+#ifndef TOGGLEBUTTON_HPP
+#define TOGGLEBUTTON_HPP
 
-#ifndef INJECTSELECTORSCREEN_HPP
-#define INJECTSELECTORSCREEN_HPP
+#include "ClickButton.hpp"
+#include <optional>
 
-class InjectSelectorScreen : public Screen
+class ToggleButton : public ClickButton
 {
 public:
-    InjectSelectorScreen();
-    virtual ~InjectSelectorScreen();
-    void update(touchPosition* touch) override;
-    void draw(void) const override;
-    ScreenType type() const override { return ScreenType::EVENTS; }
-private:
-    bool doQR(void);
-    bool toggleFilter(const std::string& lang);
-    bool toggleFilter(u8 type);
-    HidHorizontal hid;
-    std::vector<nlohmann::json> wondercards;
-    std::vector<Button*> buttons;
-    std::vector<ToggleButton*> langFilters;
-    std::vector<ToggleButton*> typeFilters;
+    ToggleButton(int x, int y, u16 w, u16 h, std::function<bool()> callback, int onImage, std::string onText, float onTextScale, u32 onTextColor,
+            std::optional<int> offImage = std::nullopt, std::optional<std::string> offText = std::nullopt, std::optional<float> offTextScale = std::nullopt,
+            std::optional<u32> offTextColor = std::nullopt, std::vector<ToggleButton*>* radioCategory = nullptr, bool disablable = false);
+    ~ToggleButton(void) { }
 
-    bool dump = false;
-    bool updateGifts = false;
-    HidHorizontal dumpHid;
-    void dumpCard(void) const;
-    std::vector<MysteryGift::giftData> gifts;
-    std::string langFilter = "";
-    int typeFilter = -1;
+    virtual bool update(touchPosition* touch) override;
+    virtual void setState(bool newState);
+
+protected:
+    int onImage;
+    std::string onText;
+    float onScale;
+    u32 onColor;
+    int offImage;
+    std::string offText;
+    float offScale;
+    u32 offColor;
+    std::vector<ToggleButton*>* radioCategory;
+    bool currentState = true, disablable;
 };
 
 #endif
