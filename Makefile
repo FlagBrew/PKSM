@@ -18,4 +18,7 @@ docs:
 	@mkdir -p $(OUTDIR)
 	@gwtc -o $(OUTDIR) -n "$(APP_TITLE) Manual" -t "$(APP_TITLE) v$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_MICRO) Documentation" --logo-img $(ICON) docs/wiki
 
-.PHONY: 3ds docs
+clean:
+	$(MAKE) -C 3ds clean
+
+.PHONY: 3ds docs clean
