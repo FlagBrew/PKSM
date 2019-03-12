@@ -520,15 +520,15 @@ std::vector<MysteryGift::giftData> SavDP::currentGifts(void) const
         if (*(wonderCards + i * PGT::length) == 1 || *(wonderCards + i * PGT::length) == 2)
         {
             PK4 getData(wonderCards + i * PGT::length + 8, true);
-            ret.push_back({ "Wonder Card", "", getData.species(), getData.alternativeForm() });
+            ret.push_back({ "Wonder Card", "", getData.species(), getData.alternativeForm(), getData.gender() });
         }
         else if (*(wonderCards + i * PGT::length) == 7)
         {
-            ret.push_back({ "Wonder Card", "", 490, -1 });
+            ret.push_back({ "Wonder Card", "", 490, -1, -1 });
         }
         else
         {
-            ret.push_back({ "Wonder Card", "", -1, -1 });
+            ret.push_back({ "Wonder Card", "", -1, -1, -1 });
         }
     }
     return ret;

@@ -44,6 +44,7 @@ namespace MysteryGift
         std::string game;
         int species;
         int form;
+        int gender;
     };
     void init(Generation gen);
     std::vector<nlohmann::json> wondercards();

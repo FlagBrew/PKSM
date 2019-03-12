@@ -57,7 +57,7 @@ void FormSelectionScreen::draw() const
             {
                 break;
             }
-            Gui::pkm(pkm->species(), x + y * 6, TitleLoader::save->generation(), x * 66 + 19, y * 48 + 1);
+            Gui::pkm(pkm->species(), x + y * 6, TitleLoader::save->generation(), pkm->gender(), x * 66 + 19, y * 48 + 1);
             std::string text = StringUtils::wrap(i18n::form(Configuration::getInstance().language(), pkm->species(), x + y * 6, TitleLoader::save->generation()), FONT_SIZE_9, 65.0f, 2);
             Gui::dynamicText(text, x * 67 + 32, y * 48 + 39, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
             //Gui::dynamicText(x * 50, y * 48 + 30, 50, i18n::form(Configuration::getInstance().language(), pkm->species(), x + y * 8, TitleLoader::save->generation()), FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);

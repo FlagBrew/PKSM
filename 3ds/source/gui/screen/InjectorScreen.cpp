@@ -255,8 +255,8 @@ void InjectorScreen::draw() const
             }
             else
             {
-                Gui::pkm(wondercard->species(), wondercard->alternativeForm(), wondercard->generation(), 276, 49, 2.0f, COLOR_GREY_BLEND, 1.0f);
-                Gui::pkm(wondercard->species(), wondercard->alternativeForm(), wondercard->generation(), 272, 44, 2.0f);
+                Gui::pkm(wondercard->species(), wondercard->alternativeForm(), wondercard->generation(), wondercard->gender(), 276, 49, 2.0f, COLOR_GREY_BLEND, 1.0f);
+                Gui::pkm(wondercard->species(), wondercard->alternativeForm(), wondercard->generation(), wondercard->gender(), 44, 2.0f);
             }
         }
         else
@@ -375,7 +375,7 @@ void InjectorScreen::draw() const
             {
                 if (gifts[fullI].species > -1)
                 {
-                    Gui::pkm(gifts[fullI].species, gifts[fullI].form, saveGeneration, x * 50 + 7, y * 48 + 2);
+                    Gui::pkm(gifts[fullI].species, gifts[fullI].form, saveGeneration, gifts[fullI].gender, x * 50 + 7, y * 48 + 2);
                 }
                 else
                 {

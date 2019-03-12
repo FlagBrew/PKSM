@@ -309,7 +309,7 @@ void EditorScreen::draw() const
             Gui::dynamicText(pkm->otName(), 95, 152, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             Gui::dynamicText(pkm->nickname(), 95, 172, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             Gui::dynamicText(std::to_string((int) pkm->currentFriendship()), 107 + 35 / 2, 192, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-            Gui::pkm(pkm.get()->species(), pkm.get()->alternativeForm(), pkm.get()->generation(), 228, 38, 2.0f, COLOR_GREY_BLEND, 1.0f);
+            Gui::pkm(pkm.get(), 228, 38, 2.0f, COLOR_GREY_BLEND, 1.0f);
             Gui::pkm(pkm.get(), 224, 33, 2.0f);
             break;
         // Stats screen

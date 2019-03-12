@@ -396,3 +396,7 @@
 #define types_spritesheet_201_26_idx 392
 #define types_spritesheet_201_27_idx 393
 #define types_spritesheet_490_e_idx 394
+#define types_spritesheet_521_1_idx 395
+#define types_spritesheet_592_1_idx 396
+#define types_spritesheet_593_1_idx 397
+#define types_spritesheet_668_1_idx 398

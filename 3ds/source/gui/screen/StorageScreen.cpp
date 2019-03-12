@@ -359,7 +359,7 @@ void StorageScreen::draw() const
                 }
                 if (moveMon[i])
                 {
-                    Gui::pkm(moveMon[i]->species(), moveMon[i]->alternativeForm(), moveMon[i]->generation(), x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
+                    Gui::pkm(moveMon[i].get(), x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
                     Gui::pkm(moveMon[i].get(), x - 3, y - 5);
                 }
             }
@@ -394,7 +394,7 @@ void StorageScreen::draw() const
                 }
                 if (moveMon[i])
                 {
-                    Gui::pkm(moveMon[i]->species(), moveMon[i]->alternativeForm(), moveMon[i]->generation(), x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
+                    Gui::pkm(moveMon[i].get(), x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
                     Gui::pkm(moveMon[i].get(), x - 3, y - 5);
                 }
             }
@@ -526,7 +526,7 @@ void StorageScreen::draw() const
                     }
                     if (moveMon[i])
                     {
-                        Gui::pkm(moveMon[i]->species(), moveMon[i]->alternativeForm(), moveMon[i]->generation(), x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
+                        Gui::pkm(moveMon[i].get(), x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
                         Gui::pkm(moveMon[i].get(), x - 3, y - 5);
                     }
                 }
@@ -558,7 +558,7 @@ void StorageScreen::draw() const
                     }
                     if (moveMon[i])
                     {
-                        Gui::pkm(moveMon[i]->species(), moveMon[i]->alternativeForm(), moveMon[i]->generation(), x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
+                        Gui::pkm(moveMon[i].get(), x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
                         Gui::pkm(moveMon[i].get(), x - 3, y - 5);
                     }
                 }

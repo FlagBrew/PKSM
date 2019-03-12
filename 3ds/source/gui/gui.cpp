@@ -863,7 +863,7 @@ void Gui::pkm(PKX* pokemon, int x, int y, float scale, u32 color, float blend)
     {
         if (pokemon->species() != 490)
         {
-            pkm(pokemon->species(), pokemon->alternativeForm(), pokemon->generation(), x, y, scale, color, blend);
+            pkm(pokemon->species(), pokemon->alternativeForm(), pokemon->generation(), pokemon->gender(), x, y, scale, color, blend);
             C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x - 13 + ceilf(3 * scale), y + 4 + 30 * (scale - 1), 0.5f);
         }
         else
@@ -873,7 +873,7 @@ void Gui::pkm(PKX* pokemon, int x, int y, float scale, u32 color, float blend)
     }
     else
     {
-        pkm(pokemon->species(), pokemon->alternativeForm(), pokemon->generation(), x, y, scale, color, blend);
+        pkm(pokemon->species(), pokemon->alternativeForm(), pokemon->generation(), pokemon->gender(), x, y, scale, color, blend);
         if (pokemon->heldItem() > 0)
         {
             C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_item_idx), x + ceilf(3 * scale), y + 21 + ceilf(30 * (scale - 1)), 0.5f, &tint);
@@ -886,7 +886,7 @@ void Gui::pkm(PKX* pokemon, int x, int y, float scale, u32 color, float blend)
     }
 }
 
-void Gui::pkm(int species, int form, Generation generation, int x, int y, float scale, u32 color, float blend)
+void Gui::pkm(int species, int form, Generation generation, int gender, int x, int y, float scale, u32 color, float blend)
 {
     static C2D_ImageTint tint;
     C2D_PlainImageTint(&tint, color, blend);
@@ -909,6 +909,26 @@ void Gui::pkm(int species, int form, Generation generation, int x, int y, float 
     else if (species > 809)
     {
         C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y, 0.5f, &tint, scale, scale);
+    }
+    // Unfezant
+    else if (species == 521 && gender == 1)
+    {
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_521_1_idx), x, y, 0.5f, &tint, scale, scale);
+    }
+    // Unfezant
+    else if (species == 592 && gender == 1)
+    {
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_592_1_idx), x, y, 0.5f, &tint, scale, scale);
+    }
+    // Unfezant
+    else if (species == 593 && gender == 1)
+    {
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_593_1_idx), x, y, 0.5f, &tint, scale, scale);
+    }
+    // Unfezant
+    else if (species == 668 && gender == 1)
+    {
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_668_1_idx), x, y, 0.5f, &tint, scale, scale);
     }
     else if (form == 0)
     {

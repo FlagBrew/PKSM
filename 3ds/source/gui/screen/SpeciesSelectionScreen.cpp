@@ -94,7 +94,7 @@ void SpeciesSelectionScreen::draw() const
                 break;
             }
             size_t species = dispPkm[pkmIndex];
-            Gui::pkm(species, 0, TitleLoader::save->generation(), x * 50 + 7, y * 48 + 2);
+            Gui::pkm(species, 0, TitleLoader::save->generation(), 0, x * 50 + 7, y * 48 + 2);
             Gui::dynamicText(std::to_string(species), x * 50 + 25, y * 48 + 34, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
         }
     }

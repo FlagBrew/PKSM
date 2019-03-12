@@ -271,7 +271,7 @@ void InjectSelectorScreen::draw() const
                 }
                 else
                 {
-                    Gui::pkm(data.species, data.form, TitleLoader::save->generation(), x, y);
+                    Gui::pkm(data.species, data.form, TitleLoader::save->generation(), data.gender, x, y);
                 }
                 std::string text = data.name;
                 text = StringUtils::wrap(data.name, FONT_SIZE_11, 138, 2);
@@ -305,7 +305,7 @@ void InjectSelectorScreen::draw() const
             {
                 if (gifts[fullI].species > -1)
                 {
-                    Gui::pkm(gifts[fullI].species, gifts[fullI].form, saveGeneration, x * 50 + 7, y * 48 + 2);
+                    Gui::pkm(gifts[fullI].species, gifts[fullI].form, saveGeneration, gifts[fullI].gender, x * 50 + 7, y * 48 + 2);
                 }
                 else
                 {

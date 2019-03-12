@@ -52,6 +52,7 @@ def scanDir(root, sheet, origOffset):
 					if type == 'wc7' or type == 'wc6':
 						entry['species'] = -1 if tempdata[0x51] != 0 else struct.unpack('<H', tempdata[0x82:0x84])[0]
 						entry['form'] = -1 if tempdata[0x51] != 0 else tempdata[0x84]
+						entry['gender'] = -1 if tempdata[0x51] != 0 else tempdata[0xA1]
 						cardId = struct.unpack('<H', tempdata[:0x2])[0]
 						# get event title
 						name = tempdata[0x2:0x4C]
@@ -70,7 +71,7 @@ def scanDir(root, sheet, origOffset):
 						entry['name'] = "%04i - " % cardId + name
 						inMatches = False
 						for i in range(len(sheet['matches'])):
-							if sheet['matches'][i]['id'] == cardId and sheet['matches'][i]['species'] == entry['species'] and sheet['matches'][i]['form'] == entry['form']:
+							if sheet['matches'][i]['id'] == cardId and sheet['matches'][i]['species'] == entry['species'] and sheet['matches'][i]['form'] == entry['form'] and sheet['matches'][i]['gender'] == entry['gender']:
 								sheet['matches'][i]['indices'][lang] = len(sheet['wondercards']) - 1
 								inMatches = True
 						if not inMatches:
@@ -78,12 +79,14 @@ def scanDir(root, sheet, origOffset):
 							match['id'] = cardId
 							match['species'] = entry['species']
 							match['form'] = entry['form']
+							match['gender'] = entry['gender']
 							match['indices'] = {}
 							match['indices'][lang] = len(sheet['wondercards']) - 1
 							sheet['matches'].append(match)
 					elif type == 'wc7full' or type == 'wc6full':
 						entry['species'] = -1 if tempdata[0x51 + 0x208] != 0 else struct.unpack('<H', tempdata[0x28A:0x28C])[0]
 						entry['form'] = -1 if tempdata[0x51 + 0x208] != 0 else tempdata[0x28C]
+						entry['gender'] = -1 if tempdata[0x51 + 0x208] != 0 else tempdata[0x2A9]
 						cardId = struct.unpack('<H', tempdata[0x208:0x20A])[0]
 						# get event title
 						name = tempdata[0x20A:0x254]
@@ -96,7 +99,7 @@ def scanDir(root, sheet, origOffset):
 						entry['name'] = "%04i - " % cardId + name
 						inMatches = False
 						for i in range(len(sheet['matches'])):
-							if sheet['matches'][i]['id'] == cardId and sheet['matches'][i]['species'] == entry['species'] and sheet['matches'][i]['form'] == entry['form']:
+							if sheet['matches'][i]['id'] == cardId and sheet['matches'][i]['species'] == entry['species'] and sheet['matches'][i]['form'] == entry['form'] and sheet['matches'][i]['gender'] == entry['gender']:
 								sheet['matches'][i]['indices'][lang] = len(sheet['wondercards']) - 1
 								inMatches = True
 						if not inMatches:
@@ -104,12 +107,14 @@ def scanDir(root, sheet, origOffset):
 							match['id'] = cardId
 							match['species'] = entry['species']
 							match['form'] = entry['form']
+							match['gender'] = entry['gender']
 							match['indices'] = {}
 							match['indices'][lang] = len(sheet['wondercards']) - 1
 							sheet['matches'].append(match)
 					elif type == 'pgf':
 						entry['species'] = -1 if tempdata[0xB3] != 1 else struct.unpack('<H', tempdata[0x1A:0x1C])[0]
 						entry['form'] = -1 if tempdata[0xB3] != 1 else tempdata[0x1C]
+						entry['gender'] = -1 if tempdata[0xB3] != 1 else tempdata[0x35]
 						cardId = struct.unpack('<H', tempdata[0xB0:0xB2])[0]
 						# get event title
 						name = tempdata[0x60:0xAA]
@@ -122,7 +127,7 @@ def scanDir(root, sheet, origOffset):
 						entry['name'] = "%04i - " % cardId + name
 						inMatches = False
 						for i in range(len(sheet['matches'])):
-							if sheet['matches'][i]['id'] == cardId and sheet['matches'][i]['species'] == entry['species'] and sheet['matches'][i]['form'] == entry['form']:
+							if sheet['matches'][i]['id'] == cardId and sheet['matches'][i]['species'] == entry['species'] and sheet['matches'][i]['form'] == entry['form'] and sheet['matches'][i]['gender'] == entry['gender']:
 								sheet['matches'][i]['indices'][lang] = len(sheet['wondercards']) - 1
 								inMatches = True
 						if not inMatches:
@@ -130,6 +135,7 @@ def scanDir(root, sheet, origOffset):
 							match['id'] = cardId
 							match['species'] = entry['species']
 							match['form'] = entry['form']
+							match['gender'] = entry['gender']
 							match['indices'] = {}
 							match['indices'][lang] = len(sheet['wondercards']) - 1
 							sheet['matches'].append(match)
@@ -138,19 +144,22 @@ def scanDir(root, sheet, origOffset):
 							pk4 = getWC4(tempdata)
 							entry['species'] = struct.unpack('<H', pk4[0x8:0x0A])[0]
 							entry['form'] = pk4[0x40] >> 3
+							entry['gender'] = pk4[0x40] >> 1 & 0x3
 						elif tempdata[0] == 7:
 							entry['species'] = 470
-							entry['form'] = 0
+							entry['form'] = -1 # special meaning for Manaphy: egg
+							entry['gender'] = 2
 						else:
 							entry['species'] = -1
 							entry['form'] = -1
+							entry['gender'] = -1
 						cardId = struct.unpack('<H', tempdata[0x150:0x152])[0]
 						entry['name'] = "%03i - " % cardId + gen4string.translateG4String(tempdata[0x104:0x104+0x48]).replace("Mystery Gift ","")
 						if entry['name'] == "%03i - " % cardId:
 							entry['name'] = name.replace("Item ", "").replace(" " + game, "").replace(" (" + lang + ")","")
 						inMatches = False
 						for i in range(len(sheet['matches'])):
-							if sheet['matches'][i]['id'] == cardId and sheet['matches'][i]['species'] == entry['species'] and sheet['matches'][i]['form'] == entry['form']:
+							if sheet['matches'][i]['id'] == cardId and sheet['matches'][i]['species'] == entry['species'] and sheet['matches'][i]['form'] == entry['form'] and sheet['matches'][i]['gender'] == entry['gender']:
 								sheet['matches'][i]['indices'][lang] = len(sheet['wondercards']) - 1
 								inMatches = True
 						if not inMatches:
@@ -158,6 +167,7 @@ def scanDir(root, sheet, origOffset):
 							match['id'] = cardId
 							match['species'] = entry['species']
 							match['form'] = entry['form']
+							match['gender'] = entry['gender']
 							match['indices'] = {}
 							match['indices'][lang] = len(sheet['wondercards']) - 1
 							sheet['matches'].append(match)
@@ -166,18 +176,21 @@ def scanDir(root, sheet, origOffset):
 							pk4 = getWC4(tempdata)
 							entry['species'] = struct.unpack('<H', pk4[0x8:0x0A])[0]
 							entry['form'] = pk4[0x40] >> 3
+							entry['gender'] = pk4[0x40] >> 1 & 0x3
 						elif tempdata[0] == 7:
 							entry['species'] = 490
 							entry['form'] = -1 # special meaning for Manaphy: egg
+							entry['gender'] = 2
 						else:
 							entry['species'] = -1
 							entry['form'] = -1
+							entry['gender'] = -1
 						cardId = entry['name'][:3]
 						if not any(elem in "1234567890" for elem in cardId):
 							cardId = 999
 						inMatches = False
 						for i in range(len(sheet['matches'])):
-							if sheet['matches'][i]['id'] == cardId and sheet['matches'][i]['species'] == entry['species'] and sheet['matches'][i]['form'] == entry['form']:
+							if sheet['matches'][i]['id'] == cardId and sheet['matches'][i]['species'] == entry['species'] and sheet['matches'][i]['form'] == entry['form'] and sheet['matches'][i]['gender'] == entry['gender']:
 								sheet['matches'][i]['indices'][lang] = len(sheet['wondercards']) - 1
 								inMatches = True
 						if not inMatches:
@@ -185,6 +198,7 @@ def scanDir(root, sheet, origOffset):
 							match['id'] = cardId
 							match['species'] = entry['species']
 							match['form'] = entry['form']
+							match['gender'] = entry['gender']
 							match['indices'] = {}
 							match['indices'][lang] = len(sheet['wondercards']) - 1
 							sheet['matches'].append(match)
