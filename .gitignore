@@ -1,5 +1,6 @@
 .vscode
-build/
+3ds/build/
+3ds/out/
 out/
 release/
 assets/gfx/pkm
@@ -10,7 +11,7 @@ assets/romfs/gfx/*
 !assets/romfs/gfx/pkm_spritesheet.t3x
 !assets/romfs/gfx/types_spritesheet.t3x
 assets/romfs/scripts/
-!build/EventsGalleryPacker
-build/EventsGalleryPacker/EventsGallery
-build/EventsGalleryPacker/out
-build/EventsGalleryPacker/__pycache__
+!common/EventsGalleryPacker
+common/EventsGalleryPacker/EventsGallery
+common/EventsGalleryPacker/out
+common/EventsGalleryPacker/__pycache__
