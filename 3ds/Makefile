@@ -43,39 +43,39 @@ GIT_REV="$(shell git rev-parse --short HEAD)"
 TARGET			:=	$(subst $e ,_,$(notdir $(APP_TITLE)))
 OUTDIR			:=	out
 BUILD			:=	build
-SOURCES			:=	../common/memecrypto \
-					../common/source \
+SOURCES			:=	../common/source \
 					../common/source/io \
 					../common/source/personal \
 					../common/source/picoc \
 					../common/source/picoc/cstdlib \
 					../common/source/picoc/platform \
-					../common/source/pkx \
 					../common/source/quirc \
-					../common/source/sav \
 					../common/source/utils \
-					../common/source/wcx \
+					../core/source/i18n \
+					../core/source/pkx \
+					../core/source/sav \
+					../core/source/wcx \
+					../external/memecrypto \
 					source \
 					source/gui \
 					source/gui/screen \
 					source/gui/scripts \
-					source/i18n \
 					source/io \
 					source/picoc \
-					source/sav \
 					source/titles \
 					source/utils
 DATA			:=	data
 INCLUDES		:=	../common/include \
-					../common/include/i18n \
 					../common/include/io \
 					../common/include/personal \
 					../common/include/picoc \
-					../common/include/pkx \
 					../common/include/quirc \
-					../common/include/sav \
 					../common/include/utils \
-					../common/include/wcx \
+					../core/include/i18n \
+					../core/include/pkx \
+					../core/include/sav \
+					../core/include/wcx \
+					../external/memecrypto \
 					include \
 					include/gui \
 					include/gui/screen \
@@ -89,7 +89,7 @@ GRAPHICS		:=	../assets/gfx/ui # \
 ROMFS			:=	../assets/romfs
 GFXBUILD		:=	$(ROMFS)/gfx
 PACKER			:=	../common/EventsGalleryPacker
-SCRIPTS			:=	../common/PKSM-Scripts
+SCRIPTS			:=	../external/PKSM-Scripts
 CITRA_DEBUG		:=	0
 
 # If left blank, will try to use "icon.png", "$(TARGET).png", or the default ctrulib icon, in that order

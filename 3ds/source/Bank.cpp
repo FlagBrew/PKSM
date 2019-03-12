@@ -33,6 +33,11 @@
 
 Bank::Bank()
 {
+    load();
+}
+
+void Bank::load()
+{
     if (io::exists("/3ds/PKSM/bank/bank.bin"))
     {
         bool deleteOld = true;

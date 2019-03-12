@@ -1,8 +1,8 @@
 [submodule "source/memecrypto"]
-	path = common/memecrypto
+	path = external/memecrypto
 	url = https://github.com/dsoldier/memecrypto.git
 [submodule "build/PKSM-Scripts"]
-	path = common/PKSM-Scripts
+	path = external/PKSM-Scripts
 	url = https://github.com/FlagBrew/PKSM-Scripts
 [submodule "docs/wiki"]
 	path = docs/wiki

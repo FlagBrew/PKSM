@@ -27,7 +27,6 @@
 #ifndef LANGUAGESTRINGS_HPP
 #define LANGUAGESTRINGS_HPP
 
-#include <3ds.h>
 #include <algorithm>
 #include <vector>
 #include <string>
@@ -37,6 +36,7 @@
 #include "io.hpp"
 #include "json.hpp"
 #include "generation.hpp"
+#include "types.h"
 
 enum Language
 {

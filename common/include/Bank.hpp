@@ -40,6 +40,7 @@ public:
     std::unique_ptr<PKX> pkm(int box, int slot) const;
     void pkm(PKX& pkm, int box, int slot);
     void resize();
+    void load();
     bool save() const;
     void backup() const;
     std::string boxName(int box) const;
