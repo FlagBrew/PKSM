@@ -55,7 +55,7 @@ SOURCES			:=	../common/source \
 					../core/source/pkx \
 					../core/source/sav \
 					../core/source/wcx \
-					../external/memecrypto \
+					../core/memecrypto \
 					source \
 					source/gui \
 					source/gui/screen \
@@ -75,7 +75,7 @@ INCLUDES		:=	../common/include \
 					../core/include/pkx \
 					../core/include/sav \
 					../core/include/wcx \
-					../external/memecrypto \
+					../core/memecrypto \
 					include \
 					include/gui \
 					include/gui/screen \
