@@ -1394,6 +1394,7 @@ void StorageScreen::pickup()
             && cursorIndex + (selectDimensions.first - 1) + (selectDimensions.second - 1) * 6 <= 30 // Checks Y bounds
             && (cursorIndex - 1) % 6 + selectDimensions.first <= 6) // Checks X bounds
         {
+            fromStorage = false;
             for (int y = 0; y < selectDimensions.second; y++)
             {
                 for (int x = 0; x < selectDimensions.first; x++)
@@ -1417,7 +1418,6 @@ void StorageScreen::pickup()
                     else
                     {
                         moveMon[index] = nullptr;
-                        fromStorage = false;
                     }
                 }
             }
@@ -1459,9 +1459,9 @@ void StorageScreen::pickup()
                             moveMon[index] = temPkm;
                         }
                     }
-                    fromStorage = false;
                 }
             }
+            fromStorage = false;
         }
         else if (pickupMode == SWAP && (storageChosen || boxBox * 30 + cursorIndex <= TitleLoader::save->maxSlot()))
         {
@@ -1536,6 +1536,7 @@ void StorageScreen::pickup()
                     }
                     moveMon.clear();
                     partyNum.clear();
+                    fromStorage = !fromStorage;
                 }
             }
         }
