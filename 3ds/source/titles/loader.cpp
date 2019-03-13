@@ -499,17 +499,18 @@ void TitleLoader::exit()
     loadedTitle = nullptr;
 }
 
-void TitleLoader::scanCard()
+bool TitleLoader::scanCard()
 {
     static bool isScanning = false;
     if (isScanning)
     {
-        return;
+        return false;
     }
     else
     {
         isScanning = true;
     }
+    bool ret = false;
     cardTitle = nullptr;
     Result res = 0;
     u32 count = 0;
@@ -523,6 +524,7 @@ void TitleLoader::scanCard()
             res = AM_GetTitleCount(MEDIATYPE_GAME_CARD, &count);
             if (R_SUCCEEDED(res) && count > 0)
             {
+                ret = true;
                 u64 id;
                 res = AM_GetTitleList(NULL, MEDIATYPE_GAME_CARD, count, &id);
                 // check if this id is in our list
@@ -543,6 +545,7 @@ void TitleLoader::scanCard()
             auto title = std::make_shared<Title>();
             if (title->load(0, MEDIATYPE_GAME_CARD, cardType))
             {
+                ret = true;
                 CardType cardType = title->SPICardType();
                 u32 saveSize = SPIGetCapacity(cardType);
                 u32 sectorSize = (saveSize < 0x10000) ? saveSize : 0x10000;
@@ -563,9 +566,18 @@ void TitleLoader::scanCard()
 
                 delete[] saveFile;
             }
+            else
+            {
+                if (title->checkpointPrefix() != "") // It only failed at SPIGetCardType
+                {
+                    ret = true;
+                }
+                // Otherwise keep trying
+            }
         }
     }
     isScanning = false;
+    return ret;
 }
 
 bool TitleLoader::cardUpdate()
@@ -585,27 +597,34 @@ bool TitleLoader::cardUpdate()
     if (cardIn != oldCardIn)
     {
         bool power;
+        FSUSER_CardSlotGetCardIFPowerStatus(&power);
         if (cardIn)
         {
-            FSUSER_CardSlotPowerOn(&power);
+            if (!power)
+            {
+                FSUSER_CardSlotPowerOn(&power);
+            }
             while (!power)
             {
                 FSUSER_CardSlotGetCardIFPowerStatus(&power);
             }
             svcSleepThread(1000000000);
-            scanCard();
+            return oldCardIn = scanCard();
         }
         else
         {
-            FSUSER_CardSlotPowerOff(&power);
+            if (power)
+            {
+                FSUSER_CardSlotPowerOff(&power);
+            }
             while (power)
             {
                 FSUSER_CardSlotGetCardIFPowerStatus(&power);
             }
             cardTitle = nullptr;
+            oldCardIn = false;
+            return true;
         }
-        oldCardIn = cardIn;
-        return true;
     }
 #endif
     return false;

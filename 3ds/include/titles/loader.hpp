@@ -56,7 +56,7 @@ void backupBridgeChanges(void);
 namespace TitleLoader
 {
     void scanTitles(void);
-    void scanCard(void);
+    bool scanCard(void);
     bool cardUpdate(void);
     void scanSaves(void);
     bool load(std::shared_ptr<Title> title);
