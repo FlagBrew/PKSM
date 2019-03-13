@@ -45,13 +45,13 @@ OUTDIR			:=	out
 BUILD			:=	build
 SOURCES			:=	../common/source \
 					../common/source/io \
-					../common/source/personal \
 					../common/source/picoc \
 					../common/source/picoc/cstdlib \
 					../common/source/picoc/platform \
 					../common/source/quirc \
 					../common/source/utils \
 					../core/source/i18n \
+					../core/source/personal \
 					../core/source/pkx \
 					../core/source/sav \
 					../core/source/wcx \
@@ -67,11 +67,11 @@ SOURCES			:=	../common/source \
 DATA			:=	data
 INCLUDES		:=	../common/include \
 					../common/include/io \
-					../common/include/personal \
 					../common/include/picoc \
 					../common/include/quirc \
 					../common/include/utils \
 					../core/include/i18n \
+					../core/include/personal \
 					../core/include/pkx \
 					../core/include/sav \
 					../core/include/wcx \
