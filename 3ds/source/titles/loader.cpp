@@ -608,19 +608,10 @@ bool TitleLoader::cardUpdate()
             {
                 FSUSER_CardSlotGetCardIFPowerStatus(&power);
             }
-            svcSleepThread(1000000000);
             return oldCardIn = scanCard();
         }
         else
         {
-            if (power)
-            {
-                FSUSER_CardSlotPowerOff(&power);
-            }
-            while (power)
-            {
-                FSUSER_CardSlotGetCardIFPowerStatus(&power);
-            }
             cardTitle = nullptr;
             oldCardIn = false;
             return true;
