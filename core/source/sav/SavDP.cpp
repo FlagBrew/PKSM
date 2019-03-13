@@ -263,7 +263,7 @@ void SavDP::dex(PKX& pk)
     if ((data[ofs + brSize * 1] & mask) == 0) // Not seen
     {
         data[ofs + brSize * 1] |= mask; // Set seen
-        int gr = PersonalDPPtHGSS::gender(pk.species());
+        int gr = pk.genderType();
         switch (gr)
         {
             case 255: // Genderless

@@ -43,44 +43,6 @@ extern std::stack<std::unique_ptr<Screen>> screens;
 
 static bool backHeld = false;
 
-static u8 type1(Generation generation, u16 species)
-{
-    switch (generation)
-    {
-        case Generation::FOUR:
-            return PersonalDPPtHGSS::type1(species);
-        case Generation::FIVE:
-            return PersonalBWB2W2::type1(species);
-        case Generation::SIX:
-            return PersonalXYORAS::type1(species);
-        case Generation::SEVEN:
-            return PersonalSMUSUM::type1(species);
-        case Generation::LGPE:
-        case Generation::UNUSED:
-            return 0; //PersonalLGPE::type1(species);
-    }
-    return 0;
-}
-
-static u8 type2(Generation generation, u16 species)
-{
-    switch (generation)
-    {
-        case Generation::FOUR:
-            return PersonalDPPtHGSS::type2(species);
-        case Generation::FIVE:
-            return PersonalBWB2W2::type2(species);
-        case Generation::SIX:
-            return PersonalXYORAS::type2(species);
-        case Generation::SEVEN:
-            return PersonalSMUSUM::type2(species);
-        case Generation::LGPE:
-        case Generation::UNUSED:
-            return 0; //PersonalLGPE::type2(species);
-    }
-    return 0;
-}
-
 int bobPointer()
 {
     static int currentBob = 0;
@@ -608,8 +570,8 @@ void StorageScreen::draw() const
 
             Gui::dynamicText(i18n::species(Configuration::getInstance().language(), infoMon->species()),
                                 276, 98, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            u8 firstType = type1(infoMon->generation(), infoMon->formSpecies());
-            u8 secondType = type2(infoMon->generation(), infoMon->formSpecies());
+            u8 firstType = infoMon->type1();
+            u8 secondType = infoMon->type2();
             if (infoMon->generation() == Generation::FOUR)
             {
                 if (firstType > 8)
@@ -1121,23 +1083,6 @@ bool StorageScreen::isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTrans
     {
         return false;
     }
-    u8 (*formCounter)(u16);
-    switch (TitleLoader::save->generation())
-    {
-        case Generation::FOUR:
-            formCounter = PersonalDPPtHGSS::formCount;
-            break;
-        case Generation::FIVE:
-            formCounter = PersonalBWB2W2::formCount;
-            break;
-        case Generation::SIX:
-            formCounter = PersonalXYORAS::formCount;
-            break;
-        case Generation::SEVEN:
-        default:
-            formCounter = PersonalSMUSUM::formCount;
-            break;
-    }
     bool moveBad = false;
     for (int i = 0; i < 4; i++)
     {
@@ -1175,7 +1120,7 @@ bool StorageScreen::isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTrans
         if (!bulkTransfer) Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_SPECIES"));
         return false;
     }
-    else if (moveMon->alternativeForm() > formCounter(moveMon->species()) && !((moveMon->species() == 664 || moveMon->species() == 665) && moveMon->alternativeForm() <= formCounter(666)))
+    else if (moveMon->alternativeForm() > TitleLoader::save->formCount(moveMon->species()) && !((moveMon->species() == 664 || moveMon->species() == 665) && moveMon->alternativeForm() <= TitleLoader::save->formCount(666)))
     {
         if (!bulkTransfer) Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_FORM"));
         return false;
@@ -1813,12 +1758,12 @@ bool StorageScreen::sort()
                         if (pkm2->alternativeForm() < pkm1->alternativeForm()) return false;
                         break;
                     case TYPE1:
-                        if (type1(pkm1->generation(), pkm1->formSpecies()) < type1(pkm2->generation(), pkm2->formSpecies())) return true;
-                        if (type1(pkm2->generation(), pkm2->formSpecies()) < type1(pkm1->generation(), pkm1->formSpecies())) return false;
+                        if (pkm1->type1() < pkm2->type1()) return true;
+                        if (pkm2->type1() < pkm1->type1()) return false;
                         break;
                     case TYPE2:
-                        if (type2(pkm1->generation(), pkm1->formSpecies()) < type2(pkm2->generation(), pkm2->formSpecies())) return true;
-                        if (type2(pkm2->generation(), pkm2->formSpecies()) < type2(pkm1->generation(), pkm1->formSpecies())) return false;
+                        if (pkm1->type2() < pkm2->type2()) return true;
+                        if (pkm2->type2() < pkm1->type2()) return false;
                         break;
                     case HP:
                         if (pkm1->stat(0) < pkm2->stat(0)) return true;
@@ -1910,12 +1855,6 @@ bool StorageScreen::sort()
             }
             return false;
         });
-        // for (auto type : sortTypes)
-        // {
-        //     if (type != NONE)
-        //         container.sort(type);
-        // }
-        // auto sortMe = container.join();
 
         if (storageChosen)
         {

@@ -895,11 +895,11 @@ bool EditorScreen::selectAbility()
     if (pkm->generation() == Generation::FOUR)
     {
         u8 setAbility = pkm->ability();
-        if (PersonalDPPtHGSS::ability(pkm->species(), 0) != setAbility && PersonalDPPtHGSS::ability(pkm->species(), 0) != 0)
+        if (pkm->abilities(0) != setAbility && pkm->abilities(0) != 0)
         {
             pkm->setAbility(0);
         }
-        else if (PersonalDPPtHGSS::ability(pkm->species(), 1) != 0)
+        else if (pkm->abilities(1) != 0)
         {
             pkm->setAbility(1);
         }
@@ -911,46 +911,45 @@ bool EditorScreen::selectAbility()
     else if (pkm->generation() == Generation::FIVE)
     {
         PK5* pk5 = (PK5*) pkm.get();
-        auto abilityResolver = PersonalBWB2W2::ability;
         switch (pkm->abilityNumber() >> 1)
         {
             case 0:
-                if (abilityResolver(pkm->species(), 1) != pkm->ability() && abilityResolver(pkm->species(), 1) != 0)
+                if (pkm->abilities(1) != pkm->ability() && pkm->abilities(1) != 0)
                 {
-                    pkm->ability(abilityResolver(pkm->species(), 1));
-                    if (abilityResolver(pkm->species(), 1) == abilityResolver(pkm->species(), 2))
+                    pkm->ability(pkm->abilities(1));
+                    if (pkm->abilities(1) == pkm->abilities(2))
                     {
                         pk5->hiddenAbility(true);
                     }
                 }
-                else if (abilityResolver(pkm->species(), 2) != 0)
+                else if (pkm->abilities(2) != 0)
                 {
-                    pkm->ability(abilityResolver(pkm->species(), 2));
+                    pkm->ability(pkm->abilities(2));
                     pk5->hiddenAbility(true);
                 }
                 break;
             case 1:
-                if (abilityResolver(pkm->species(), 2) != pkm->ability() && abilityResolver(pkm->species(), 2) != 0)
+                if (pkm->abilities(2) != pkm->ability() && pkm->abilities(2) != 0)
                 {
-                    pkm->ability(abilityResolver(pkm->species(), 2));
+                    pkm->ability(pkm->abilities(2));
                     pk5->hiddenAbility(true);
                 }
-                else if (abilityResolver(pkm->species(), 0) != 0)
+                else if (pkm->abilities(0) != 0)
                 {
-                    pkm->ability(abilityResolver(pkm->species(), 0));
+                    pkm->ability(pkm->abilities(0));
                     pk5->hiddenAbility(false);
                 }
                 break;
             case 2:
-                if (abilityResolver(pkm->species(), 0) != pkm->ability() && abilityResolver(pkm->species(), 0) != 0)
+                if (pkm->abilities(0) != pkm->ability() && pkm->abilities(0) != 0)
                 {
-                    pkm->ability(abilityResolver(pkm->species(), 0));
+                    pkm->ability(pkm->abilities(0));
                     pk5->hiddenAbility(false);
                 }
-                else if (abilityResolver(pkm->species(), 1) != 0)
+                else if (pkm->abilities(1) != 0)
                 {
-                    pkm->ability(abilityResolver(pkm->species(), 1));
-                    if (abilityResolver(pkm->species(), 1) == abilityResolver(pkm->species(), 2))
+                    pkm->ability(pkm->abilities(1));
+                    if (pkm->abilities(1) == pkm->abilities(2))
                     {
                         pk5->hiddenAbility(true);
                     }
@@ -964,35 +963,34 @@ bool EditorScreen::selectAbility()
     }
     else if (pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN)
     {
-        auto abilityResolver = pkm->generation() == Generation::SIX ? PersonalXYORAS::ability : PersonalSMUSUM::ability;
         switch (pkm->abilityNumber() >> 1)
         {
             case 0:
-                if (abilityResolver(pkm->species(), 1) != pkm->ability() && abilityResolver(pkm->species(), 1) != 0)
+                if (pkm->abilities(1) != pkm->ability() && pkm->abilities(1) != 0)
                 {
                     pkm->setAbility(1);
                 }
-                else if (abilityResolver(pkm->species(), 2) != 0)
+                else if (pkm->abilities(2) != 0)
                 {
                     pkm->setAbility(2);
                 }
                 break;
             case 1:
-                if (abilityResolver(pkm->species(), 2) != pkm->ability() && abilityResolver(pkm->species(), 2) != 0)
+                if (pkm->abilities(2) != pkm->ability() && pkm->abilities(2) != 0)
                 {
                     pkm->setAbility(2);
                 }
-                else if (abilityResolver(pkm->species(), 0) != 0)
+                else if (pkm->abilities(0) != 0)
                 {
                     pkm->setAbility(0);
                 }
                 break;
             case 2:
-                if (abilityResolver(pkm->species(), 0) != pkm->ability() && abilityResolver(pkm->species(), 0) != 0)
+                if (pkm->abilities(0) != pkm->ability() && pkm->abilities(0) != 0)
                 {
                     pkm->setAbility(0);
                 }
-                else if (abilityResolver(pkm->species(), 1) != 0)
+                else if (pkm->abilities(1) != 0)
                 {
                     pkm->setAbility(1);
                 }
@@ -1016,27 +1014,10 @@ bool EditorScreen::selectForm()
         if (bad == pkm->species())
             return false;
     }
-    u8 (*formCounter)(u16);
-    switch (TitleLoader::save->generation())
-    {
-        case Generation::FOUR:
-            formCounter = PersonalDPPtHGSS::formCount;
-            break;
-        case Generation::FIVE:
-            formCounter = PersonalBWB2W2::formCount;
-            break;
-        case Generation::SIX:
-            formCounter = PersonalXYORAS::formCount;
-            break;
-        case Generation::SEVEN:
-        default:
-            formCounter = PersonalSMUSUM::formCount;
-            break;
-    }
-    u8 count = formCounter(pkm->species());
+    u8 count = TitleLoader::save->formCount(pkm->species());
     if (pkm->species() == 664 || pkm->species() == 665)
     {
-        count = formCounter(666);
+        count = TitleLoader::save->formCount(666);
     }
     if (count > 1)
     {

@@ -40,7 +40,7 @@ PGT::PGT(u8* pgt, bool fromWC4)
         pokemonData->egg(true);
         pokemonData->gender(2);
         pokemonData->level(1);
-        pokemonData->ability(PersonalDPPtHGSS::ability(490, 0));
+        pokemonData->ability(pokemonData->abilities(0));
         pokemonData->move(0, 294);
         pokemonData->move(1, 145);
         pokemonData->move(2, 346);

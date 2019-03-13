@@ -176,6 +176,20 @@ public:
     void partyLevel(u8 v) override;
     
     std::unique_ptr<PKX> next(void) const override;
+
+    u8 baseHP(void) const override { return PersonalDPPtHGSS::baseHP(species()); }
+    u8 baseAtk(void) const override { return PersonalDPPtHGSS::baseAtk(species()); }
+    u8 baseDef(void) const override { return PersonalDPPtHGSS::baseDef(species()); }
+    u8 baseSpe(void) const override { return PersonalDPPtHGSS::baseSpe(species()); }
+    u8 baseSpa(void) const override { return PersonalDPPtHGSS::baseSpa(species()); }
+    u8 baseSpd(void) const override { return PersonalDPPtHGSS::baseSpd(species()); }
+    u8 type1(void) const override { return PersonalDPPtHGSS::type1(species()); }
+    u8 type2(void) const override { return PersonalDPPtHGSS::type2(species()); }
+    u8 genderType(void) const override { return PersonalDPPtHGSS::gender(species()); }
+    u8 baseFriendship(void) const override { return PersonalDPPtHGSS::baseFriendship(species()); }
+    u8 expType(void) const override { return PersonalDPPtHGSS::expType(species()); }
+    u8 abilities(u8 n) const override { return PersonalDPPtHGSS::ability(species(), n); }
+    u16 formStatIndex(void) const override { return PersonalDPPtHGSS::formStatIndex(species()); }
 };
 
 #endif

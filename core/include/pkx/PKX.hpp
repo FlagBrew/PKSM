@@ -216,6 +216,21 @@ public:
 
     u32 getLength(void) const { return length; }
     static u8 genFromBytes(u8* data, size_t length, bool ekx = false);
+    
+    // Personal interface
+    virtual u8 baseHP(void) const = 0;
+    virtual u8 baseAtk(void) const = 0;
+    virtual u8 baseDef(void) const = 0;
+    virtual u8 baseSpe(void) const = 0;
+    virtual u8 baseSpa(void) const = 0;
+    virtual u8 baseSpd(void) const = 0;
+    virtual u8 type1(void) const = 0;
+    virtual u8 type2(void) const = 0;
+    virtual u8 genderType(void) const = 0;
+    virtual u8 baseFriendship(void) const = 0;
+    virtual u8 expType(void) const = 0;
+    virtual u8 abilities(u8 n) const = 0;
+    virtual u16 formStatIndex(void) const = 0;
 };
 
 #endif

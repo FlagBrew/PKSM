@@ -228,6 +228,20 @@ public:
     void height(u8 v);
     u8 weight(void) const;
     void weight(u8 v);
+
+    u8 baseHP(void) const override { return PersonalSMUSUM::baseHP(species()); }
+    u8 baseAtk(void) const override { return PersonalSMUSUM::baseAtk(species()); }
+    u8 baseDef(void) const override { return PersonalSMUSUM::baseDef(species()); }
+    u8 baseSpe(void) const override { return PersonalSMUSUM::baseSpe(species()); }
+    u8 baseSpa(void) const override { return PersonalSMUSUM::baseSpa(species()); }
+    u8 baseSpd(void) const override { return PersonalSMUSUM::baseSpd(species()); }
+    u8 type1(void) const override { return PersonalSMUSUM::type1(species()); }
+    u8 type2(void) const override { return PersonalSMUSUM::type2(species()); }
+    u8 genderType(void) const override { return PersonalSMUSUM::gender(species()); }
+    u8 baseFriendship(void) const override { return PersonalSMUSUM::baseFriendship(species()); }
+    u8 expType(void) const override { return PersonalSMUSUM::expType(species()); }
+    u8 abilities(u8 n) const override { return PersonalSMUSUM::ability(species(), n); }
+    u16 formStatIndex(void) const override { return PersonalSMUSUM::formStatIndex(species()); }
 };
 
 #endif

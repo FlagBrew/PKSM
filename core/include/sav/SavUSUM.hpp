@@ -176,6 +176,8 @@ public:
     std::vector<std::pair<Pouch, int>> pouches(void) const override;
     std::map<Pouch, std::vector<int>> validItems(void) const override;
     std::string pouchName(Pouch pouch) const override;
+
+    u8 formCount(u16 species) const override { return PersonalSMUSUM::formCount(species); }
 };
 
 #endif

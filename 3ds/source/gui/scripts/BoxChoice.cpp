@@ -39,44 +39,6 @@ static bool backHeld = false;
 
 extern int bobPointer();
 
-static u8 type1(Generation generation, u16 species)
-{
-    switch (generation)
-    {
-        case Generation::FOUR:
-            return PersonalDPPtHGSS::type1(species);
-        case Generation::FIVE:
-            return PersonalBWB2W2::type1(species);
-        case Generation::SIX:
-            return PersonalXYORAS::type1(species);
-        case Generation::SEVEN:
-            return PersonalSMUSUM::type1(species);
-        case Generation::LGPE:
-        case Generation::UNUSED:
-            return 0; //PersonalLGPE::type1(species);
-    }
-    return 0;
-}
-
-static u8 type2(Generation generation, u16 species)
-{
-    switch (generation)
-    {
-        case Generation::FOUR:
-            return PersonalDPPtHGSS::type2(species);
-        case Generation::FIVE:
-            return PersonalBWB2W2::type2(species);
-        case Generation::SIX:
-            return PersonalXYORAS::type2(species);
-        case Generation::SEVEN:
-            return PersonalSMUSUM::type2(species);
-        case Generation::LGPE:
-        case Generation::UNUSED:
-            return 0; //PersonalLGPE::type2(species);
-    }
-    return 0;
-}
-
 BoxChoice::BoxChoice()
 {
     mainButtons[0] = new Button(212, 47, 108, 28, [this](){ return this->showViewer(); }, ui_sheet_button_editor_idx,
@@ -274,8 +236,8 @@ void BoxChoice::draw() const
 
             Gui::dynamicText(i18n::species(Configuration::getInstance().language(), infoMon->species()),
                                 276, 98, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            u8 firstType = type1(infoMon->generation(), infoMon->formSpecies());
-            u8 secondType = type2(infoMon->generation(), infoMon->formSpecies());
+            u8 firstType = infoMon->type1();
+            u8 secondType = infoMon->type2();
             if (infoMon->generation() == Generation::FOUR)
             {
                 if (firstType > 8)

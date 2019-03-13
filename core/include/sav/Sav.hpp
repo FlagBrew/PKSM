@@ -180,6 +180,9 @@ public:
 
     u32 getLength() { return length; }
     u8* rawData() { return data; }
+
+    // Personal interface
+    virtual u8 formCount(u16 species) const = 0;
 };
 
 #endif

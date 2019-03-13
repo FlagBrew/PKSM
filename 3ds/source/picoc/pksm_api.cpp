@@ -284,23 +284,6 @@ extern "C" {
                             pkm = pkm->previous();
                         }
                     }
-                    u8 (*formCounter)(u16);
-                    switch (TitleLoader::save->generation())
-                    {
-                        case Generation::FOUR:
-                            formCounter = PersonalDPPtHGSS::formCount;
-                            break;
-                        case Generation::FIVE:
-                            formCounter = PersonalBWB2W2::formCount;
-                            break;
-                        case Generation::SIX:
-                            formCounter = PersonalXYORAS::formCount;
-                            break;
-                        case Generation::SEVEN:
-                        default:
-                            formCounter = PersonalSMUSUM::formCount;
-                            break;
-                    }
                     bool moveBad = false;
                     for (int i = 0; i < 4; i++)
                     {
@@ -333,7 +316,7 @@ extern "C" {
                         Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_SPECIES"));
                         return;
                     }
-                    else if (pkm->alternativeForm() > formCounter(pkm->species()))
+                    else if (pkm->alternativeForm() > TitleLoader::save->formCount(pkm->species()))
                     {
                         Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_FORM"));
                         return;
@@ -419,23 +402,6 @@ extern "C" {
                             pkm = pkm->previous();
                         }
                     }
-                    u8 (*formCounter)(u16);
-                    switch (TitleLoader::save->generation())
-                    {
-                        case Generation::FOUR:
-                            formCounter = PersonalDPPtHGSS::formCount;
-                            break;
-                        case Generation::FIVE:
-                            formCounter = PersonalBWB2W2::formCount;
-                            break;
-                        case Generation::SIX:
-                            formCounter = PersonalXYORAS::formCount;
-                            break;
-                        case Generation::SEVEN:
-                        default:
-                            formCounter = PersonalSMUSUM::formCount;
-                            break;
-                    }
                     bool moveBad = false;
                     for (int i = 0; i < 4; i++)
                     {
@@ -468,7 +434,7 @@ extern "C" {
                         Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_SPECIES"));
                         return;
                     }
-                    else if (pkm->alternativeForm() > formCounter(pkm->species()))
+                    else if (pkm->alternativeForm() > TitleLoader::save->formCount(pkm->species()))
                     {
                         Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_FORM"));
                         return;
