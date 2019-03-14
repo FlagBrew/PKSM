@@ -227,19 +227,19 @@ public:
     std::unique_ptr<PKX> next(void) const override;
     std::unique_ptr<PKX> previous(void) const override;
 
-    u8 baseHP(void) const override { return PersonalXYORAS::baseHP(species()); }
-    u8 baseAtk(void) const override { return PersonalXYORAS::baseAtk(species()); }
-    u8 baseDef(void) const override { return PersonalXYORAS::baseDef(species()); }
-    u8 baseSpe(void) const override { return PersonalXYORAS::baseSpe(species()); }
-    u8 baseSpa(void) const override { return PersonalXYORAS::baseSpa(species()); }
-    u8 baseSpd(void) const override { return PersonalXYORAS::baseSpd(species()); }
-    u8 type1(void) const override { return PersonalXYORAS::type1(species()); }
-    u8 type2(void) const override { return PersonalXYORAS::type2(species()); }
-    u8 genderType(void) const override { return PersonalXYORAS::gender(species()); }
-    u8 baseFriendship(void) const override { return PersonalXYORAS::baseFriendship(species()); }
-    u8 expType(void) const override { return PersonalXYORAS::expType(species()); }
-    u8 abilities(u8 n) const override { return PersonalXYORAS::ability(species(), n); }
-    u16 formStatIndex(void) const override { return PersonalXYORAS::formStatIndex(species()); }
+    u8 baseHP(void) const override { return PersonalXYORAS::baseHP(formSpecies()); }
+    u8 baseAtk(void) const override { return PersonalXYORAS::baseAtk(formSpecies()); }
+    u8 baseDef(void) const override { return PersonalXYORAS::baseDef(formSpecies()); }
+    u8 baseSpe(void) const override { return PersonalXYORAS::baseSpe(formSpecies()); }
+    u8 baseSpa(void) const override { return PersonalXYORAS::baseSpa(formSpecies()); }
+    u8 baseSpd(void) const override { return PersonalXYORAS::baseSpd(formSpecies()); }
+    u8 type1(void) const override { return PersonalXYORAS::type1(formSpecies()); }
+    u8 type2(void) const override { return PersonalXYORAS::type2(formSpecies()); }
+    u8 genderType(void) const override { return PersonalXYORAS::gender(formSpecies()); }
+    u8 baseFriendship(void) const override { return PersonalXYORAS::baseFriendship(formSpecies()); }
+    u8 expType(void) const override { return PersonalXYORAS::expType(formSpecies()); }
+    u8 abilities(u8 n) const override { return PersonalXYORAS::ability(formSpecies(), n); }
+    u16 formStatIndex(void) const override { return PersonalXYORAS::formStatIndex(formSpecies()); }
 };
 
 #endif

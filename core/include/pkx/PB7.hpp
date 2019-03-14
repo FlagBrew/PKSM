@@ -229,19 +229,19 @@ public:
     u8 weight(void) const;
     void weight(u8 v);
 
-    u8 baseHP(void) const override { return PersonalLGPE::baseHP(species()); }
-    u8 baseAtk(void) const override { return PersonalLGPE::baseAtk(species()); }
-    u8 baseDef(void) const override { return PersonalLGPE::baseDef(species()); }
-    u8 baseSpe(void) const override { return PersonalLGPE::baseSpe(species()); }
-    u8 baseSpa(void) const override { return PersonalLGPE::baseSpa(species()); }
-    u8 baseSpd(void) const override { return PersonalLGPE::baseSpd(species()); }
-    u8 type1(void) const override { return PersonalLGPE::type1(species()); }
-    u8 type2(void) const override { return PersonalLGPE::type2(species()); }
-    u8 genderType(void) const override { return PersonalLGPE::gender(species()); }
-    u8 baseFriendship(void) const override { return PersonalLGPE::baseFriendship(species()); }
-    u8 expType(void) const override { return PersonalLGPE::expType(species()); }
-    u8 abilities(u8 n) const override { return PersonalLGPE::ability(species(), n); }
-    u16 formStatIndex(void) const override { return PersonalLGPE::formStatIndex(species()); }
+    u8 baseHP(void) const override { return PersonalLGPE::baseHP(formSpecies()); }
+    u8 baseAtk(void) const override { return PersonalLGPE::baseAtk(formSpecies()); }
+    u8 baseDef(void) const override { return PersonalLGPE::baseDef(formSpecies()); }
+    u8 baseSpe(void) const override { return PersonalLGPE::baseSpe(formSpecies()); }
+    u8 baseSpa(void) const override { return PersonalLGPE::baseSpa(formSpecies()); }
+    u8 baseSpd(void) const override { return PersonalLGPE::baseSpd(formSpecies()); }
+    u8 type1(void) const override { return PersonalLGPE::type1(formSpecies()); }
+    u8 type2(void) const override { return PersonalLGPE::type2(formSpecies()); }
+    u8 genderType(void) const override { return PersonalLGPE::gender(formSpecies()); }
+    u8 baseFriendship(void) const override { return PersonalLGPE::baseFriendship(formSpecies()); }
+    u8 expType(void) const override { return PersonalLGPE::expType(formSpecies()); }
+    u8 abilities(u8 n) const override { return PersonalLGPE::ability(formSpecies(), n); }
+    u16 formStatIndex(void) const override { return PersonalLGPE::formStatIndex(formSpecies()); }
 };
 
 #endif

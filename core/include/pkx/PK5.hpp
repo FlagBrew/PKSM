@@ -173,19 +173,19 @@ public:
     std::unique_ptr<PKX> next(void) const override;
     std::unique_ptr<PKX> previous(void) const override;
 
-    u8 baseHP(void) const override { return PersonalBWB2W2::baseHP(species()); }
-    u8 baseAtk(void) const override { return PersonalBWB2W2::baseAtk(species()); }
-    u8 baseDef(void) const override { return PersonalBWB2W2::baseDef(species()); }
-    u8 baseSpe(void) const override { return PersonalBWB2W2::baseSpe(species()); }
-    u8 baseSpa(void) const override { return PersonalBWB2W2::baseSpa(species()); }
-    u8 baseSpd(void) const override { return PersonalBWB2W2::baseSpd(species()); }
-    u8 type1(void) const override { return PersonalBWB2W2::type1(species()); }
-    u8 type2(void) const override { return PersonalBWB2W2::type2(species()); }
-    u8 genderType(void) const override { return PersonalBWB2W2::gender(species()); }
-    u8 baseFriendship(void) const override { return PersonalBWB2W2::baseFriendship(species()); }
-    u8 expType(void) const override { return PersonalBWB2W2::expType(species()); }
-    u8 abilities(u8 n) const override { return PersonalBWB2W2::ability(species(), n); }
-    u16 formStatIndex(void) const override { return PersonalBWB2W2::formStatIndex(species()); }
+    u8 baseHP(void) const override { return PersonalBWB2W2::baseHP(formSpecies()); }
+    u8 baseAtk(void) const override { return PersonalBWB2W2::baseAtk(formSpecies()); }
+    u8 baseDef(void) const override { return PersonalBWB2W2::baseDef(formSpecies()); }
+    u8 baseSpe(void) const override { return PersonalBWB2W2::baseSpe(formSpecies()); }
+    u8 baseSpa(void) const override { return PersonalBWB2W2::baseSpa(formSpecies()); }
+    u8 baseSpd(void) const override { return PersonalBWB2W2::baseSpd(formSpecies()); }
+    u8 type1(void) const override { return PersonalBWB2W2::type1(formSpecies()); }
+    u8 type2(void) const override { return PersonalBWB2W2::type2(formSpecies()); }
+    u8 genderType(void) const override { return PersonalBWB2W2::gender(formSpecies()); }
+    u8 baseFriendship(void) const override { return PersonalBWB2W2::baseFriendship(formSpecies()); }
+    u8 expType(void) const override { return PersonalBWB2W2::expType(formSpecies()); }
+    u8 abilities(u8 n) const override { return PersonalBWB2W2::ability(formSpecies(), n); }
+    u16 formStatIndex(void) const override { return PersonalBWB2W2::formStatIndex(formSpecies()); }
 };
 
 #endif
