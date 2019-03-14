@@ -144,7 +144,6 @@ void PK5::ability(u8 v) { data[0x15] = v; }
 
 void PK5::setAbility(u8 v)
 {
-    u16 tmpSpecies = formSpecies();
     u8 abilitynum;
 
     if (v == 0) abilitynum = 1;
@@ -152,7 +151,7 @@ void PK5::setAbility(u8 v)
     else abilitynum = 4;
 
     abilityNumber(abilitynum);
-    ability(PersonalBWB2W2::ability(tmpSpecies, v));
+    ability(abilities(v));
 }
 
 u16 PK5::markValue(void) const { return data[0x16]; }
@@ -343,14 +342,14 @@ u16 PK5::PSV(void) const { return ((PID() >> 16) ^ (PID() & 0xFFFF)) >> 3; }
 u8 PK5::level(void) const
 {
     u8 i = 1;
-    u8 xpType = PersonalBWB2W2::expType(species());
+    u8 xpType = expType();
     while (experience() >= expTable(i, xpType) && ++i < 100);
     return i;
 }
 
 void PK5::level(u8 v)
 {
-    experience(expTable(v - 1, PersonalBWB2W2::expType(species())));
+    experience(expTable(v - 1, expType()));
 }
 
 bool PK5::shiny(void) const { return TSV() == PSV(); }
@@ -397,23 +396,23 @@ u16 PK5::formSpecies(void) const
 
 u16 PK5::stat(const u8 stat) const
 {
-    u16 tmpSpecies = formSpecies(), final;
+    u16 calc;
     u8 mult = 10, basestat = 0;
 
-    if (stat == 0) basestat = PersonalBWB2W2::baseHP(tmpSpecies);
-    else if (stat == 1) basestat = PersonalBWB2W2::baseAtk(tmpSpecies);
-    else if (stat == 2) basestat = PersonalBWB2W2::baseDef(tmpSpecies);
-    else if (stat == 3) basestat = PersonalBWB2W2::baseSpe(tmpSpecies);
-    else if (stat == 4) basestat = PersonalBWB2W2::baseSpa(tmpSpecies);
-    else if (stat == 5) basestat = PersonalBWB2W2::baseSpd(tmpSpecies);
+    if (stat == 0) basestat = baseHP();
+    else if (stat == 1) basestat = baseAtk();
+    else if (stat == 2) basestat = baseDef();
+    else if (stat == 3) basestat = baseSpe();
+    else if (stat == 4) basestat = baseSpa();
+    else if (stat == 5) basestat = baseSpd();
 
     if (stat == 0) 
-        final = 10 + (2 * basestat + iv(stat) + ev(stat) / 4 + 100) * level() / 100;
+        calc = 10 + (2 * basestat + iv(stat) + ev(stat) / 4 + 100) * level() / 100;
     else
-        final = 5 + (2 * basestat + iv(stat) + ev(stat) / 4) * level() / 100; 
+        calc = 5 + (2 * basestat + iv(stat) + ev(stat) / 4) * level() / 100; 
     if (nature() / 5 + 1 == stat) mult++;
     if (nature() % 5 + 1 == stat) mult--;
-    return final * mult / 10;
+    return calc * mult / 10;
 }
 
 static void fixString(std::u16string& fixString)
@@ -512,9 +511,9 @@ std::unique_ptr<PKX> PK5::next(void) const
     pk6->PID(PID());
     pk6->ability(ability());
 
-    u8 abilities[3] = { PersonalBWB2W2::ability(species(), 0), PersonalBWB2W2::ability(species(), 1), PersonalBWB2W2::ability(species(), 2) };
-    u8 abilVal = std::distance(abilities, std::find(abilities, abilities + 3, ability()));
-    if (abilVal <= 3 && abilities[abilVal] == abilities[2] && hiddenAbility())
+    u8 pkmAbilities[3] = { abilities(0), abilities(1), abilities(2) };
+    u8 abilVal = std::distance(pkmAbilities, std::find(pkmAbilities, pkmAbilities + 3, ability()));
+    if (abilVal <= 3 && pkmAbilities[abilVal] == pkmAbilities[2] && hiddenAbility())
     {
         abilVal = 2; // HA shared by normal ability
     }
@@ -662,8 +661,8 @@ std::unique_ptr<PKX> PK5::next(void) const
     pk6->htIntensity(1);
     pk6->htMemory(4);
     pk6->htFeeling(randomNumbers() % 10);
-    pk6->otFriendship(PersonalXYORAS::baseFriendship(pk6->species()));
-    pk6->htFriendship(PersonalXYORAS::baseFriendship(pk6->species()));
+    pk6->otFriendship(pk6->baseFriendship());
+    pk6->htFriendship(pk6->baseFriendship());
 
     u32 shiny = 0;
     shiny = (PID() >> 16) ^ (PID() & 0xFFFF) ^ TID() ^ SID();

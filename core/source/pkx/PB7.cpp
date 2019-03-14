@@ -112,7 +112,6 @@ void PB7::ability(u8 v) { data[0x14] = v; }
 
 void PB7::setAbility(u8 v)
 {
-    u16 tmpSpecies = formSpecies();
     u8 abilitynum;
 
     if (v == 0) abilitynum = 1;
@@ -120,7 +119,7 @@ void PB7::setAbility(u8 v)
     else abilitynum = 4;
 
     abilityNumber(abilitynum);
-    data[0x14] = PersonalSMUSUM::ability(tmpSpecies, v);    
+    data[0x14] = abilities(v);    
 }
 
 u8 PB7::abilityNumber(void) const { return data[0x15]; }
@@ -361,14 +360,14 @@ u16 PB7::PSV(void) const { return ((PID() >> 16) ^ (PID() & 0xFFFF)) >> 4; }
 u8 PB7::level(void) const
 {
     u8 i = 1;
-    u8 xpType = PersonalSMUSUM::expType(species());
+    u8 xpType = expType();
     while (experience() >= expTable(i, xpType) && ++i < 100);
     return i;
 }
 
 void PB7::level(u8 v)
 {
-    experience(expTable(v - 1, PersonalSMUSUM::expType(species())));
+    experience(expTable(v - 1, expType()));
 }
 
 bool PB7::shiny(void) const { return TSV() == PSV(); }
@@ -394,12 +393,12 @@ u16 PB7::formSpecies(void) const
 {
     u16 tmpSpecies = species();
     u8 form = alternativeForm();
-    u8 formcount = PersonalSMUSUM::formCount(tmpSpecies);
+    u8 formcount = PersonalLGPE::formCount(tmpSpecies);
 
     if (form && form < formcount)
     {
         u16 backSpecies = tmpSpecies;
-        tmpSpecies = PersonalSMUSUM::formStatIndex(tmpSpecies);
+        tmpSpecies = PersonalLGPE::formStatIndex(tmpSpecies);
         if (!tmpSpecies)
         {
             tmpSpecies = backSpecies;
@@ -415,24 +414,23 @@ u16 PB7::formSpecies(void) const
 
 u16 PB7::stat(const u8 stat) const
 {
-    u16 tmpSpecies = formSpecies(), final;
+    u16 calc;
     u8 mult = 10, basestat = 0;
 
-    // TODO: PersonalLGPE
-    if (stat == 0) basestat = PersonalSMUSUM::baseHP(tmpSpecies);
-    else if (stat == 1) basestat = PersonalSMUSUM::baseAtk(tmpSpecies);
-    else if (stat == 2) basestat = PersonalSMUSUM::baseDef(tmpSpecies);
-    else if (stat == 3) basestat = PersonalSMUSUM::baseSpe(tmpSpecies);
-    else if (stat == 4) basestat = PersonalSMUSUM::baseSpa(tmpSpecies);
-    else if (stat == 5) basestat = PersonalSMUSUM::baseSpd(tmpSpecies);
+    if (stat == 0) basestat = baseHP();
+    else if (stat == 1) basestat = baseAtk();
+    else if (stat == 2) basestat = baseDef();
+    else if (stat == 3) basestat = baseSpe();
+    else if (stat == 4) basestat = baseSpa();
+    else if (stat == 5) basestat = baseSpd();
 
-    if (stat == 0) 
-        final = 10 + ((2 * basestat) + ((((data[0xDE] >> hyperTrainLookup[stat]) & 1) == 1) ? 31 : iv(stat)) + ev(stat) / 4 + 100) * level() / 100;
+    if (stat == 0)
+        calc = 10 + ((2 * basestat) + ((((data[0xDE] >> hyperTrainLookup[stat]) & 1) == 1) ? 31 : iv(stat)) + ev(stat) / 4 + 100) * level() / 100;
     else
-        final = 5 + (2 * basestat + ((((data[0xDE] >> hyperTrainLookup[stat]) & 1) == 1) ? 31 : iv(stat)) + ev(stat) / 4) * level() / 100; 
+        calc = 5 + (2 * basestat + ((((data[0xDE] >> hyperTrainLookup[stat]) & 1) == 1) ? 31 : iv(stat)) + ev(stat) / 4) * level() / 100; 
     if (nature() / 5 + 1 == stat) mult++;
     if (nature() % 5 + 1 == stat) mult--;
-    return final * mult / 10 + awakened(stat);
+    return calc * mult / 10 + awakened(stat);
 }
 
 int PB7::partyCurrHP(void) const

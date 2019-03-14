@@ -143,7 +143,6 @@ void PK4::ability(u8 v) { data[0x15] = v; }
 
 void PK4::setAbility(u8 v)
 {
-    u16 tmpSpecies = formSpecies();
     u8 abilitynum;
 
     if (v == 0) abilitynum = 1;
@@ -151,7 +150,7 @@ void PK4::setAbility(u8 v)
     else abilitynum = 4;
 
     abilityNumber(abilitynum);
-    ability(PersonalDPPtHGSS::ability(tmpSpecies, v));
+    ability(abilities(v));
 }
 
 u16 PK4::markValue(void) const { return data[0x16]; }
@@ -427,14 +426,14 @@ u16 PK4::PSV(void) const { return ((PID() >> 16) ^ (PID() & 0xFFFF)) >> 3; }
 u8 PK4::level(void) const
 {
     u8 i = 1;
-    u8 xpType = PersonalDPPtHGSS::expType(species());
+    u8 xpType = expType();
     while (experience() >= expTable(i, xpType) && ++i < 100);
     return i;
 }
 
 void PK4::level(u8 v)
 {
-    experience(expTable(v - 1, PersonalDPPtHGSS::expType(species())));
+    experience(expTable(v - 1, expType()));
 }
 
 bool PK4::shiny(void) const { return TSV() == PSV(); }
@@ -481,23 +480,23 @@ u16 PK4::formSpecies(void) const
 
 u16 PK4::stat(const u8 stat) const
 {
-    u16 tmpSpecies = formSpecies(), final;
+    u16 calc;
     u8 mult = 10, basestat = 0;
 
-    if (stat == 0) basestat = PersonalDPPtHGSS::baseHP(tmpSpecies);
-    else if (stat == 1) basestat = PersonalDPPtHGSS::baseAtk(tmpSpecies);
-    else if (stat == 2) basestat = PersonalDPPtHGSS::baseDef(tmpSpecies);
-    else if (stat == 3) basestat = PersonalDPPtHGSS::baseSpe(tmpSpecies);
-    else if (stat == 4) basestat = PersonalDPPtHGSS::baseSpa(tmpSpecies);
-    else if (stat == 5) basestat = PersonalDPPtHGSS::baseSpd(tmpSpecies);
+    if (stat == 0) basestat = baseHP();
+    else if (stat == 1) basestat = baseAtk();
+    else if (stat == 2) basestat = baseDef();
+    else if (stat == 3) basestat = baseSpe();
+    else if (stat == 4) basestat = baseSpa();
+    else if (stat == 5) basestat = baseSpd();
 
     if (stat == 0) 
-        final = 10 + (2 * basestat + iv(stat) + ev(stat) / 4 + 100) * level() / 100;
+        calc = 10 + (2 * basestat + iv(stat) + ev(stat) / 4 + 100) * level() / 100;
     else
-        final = 5 + (2 * basestat + iv(stat) + ev(stat) / 4) * level() / 100; 
+        calc = 5 + (2 * basestat + iv(stat) + ev(stat) / 4) * level() / 100; 
     if (nature() / 5 + 1 == stat) mult++;
     if (nature() % 5 + 1 == stat) mult--;
-    return final * mult / 10;
+    return calc * mult / 10;
 }
 
 std::unique_ptr<PKX> PK4::next(void) const

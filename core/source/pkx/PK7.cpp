@@ -113,7 +113,6 @@ void PK7::ability(u8 v) { data[0x14] = v; }
 
 void PK7::setAbility(u8 v)
 {
-    u16 tmpSpecies = formSpecies();
     u8 abilitynum;
 
     if (v == 0) abilitynum = 1;
@@ -121,7 +120,7 @@ void PK7::setAbility(u8 v)
     else abilitynum = 4;
 
     abilityNumber(abilitynum);
-    data[0x14] = PersonalSMUSUM::ability(tmpSpecies, v);
+    data[0x14] = abilities(v);
 }
 
 u8 PK7::abilityNumber(void) const { return data[0x15]; }
@@ -363,14 +362,14 @@ u16 PK7::PSV(void) const { return ((PID() >> 16) ^ (PID() & 0xFFFF)) >> 4; }
 u8 PK7::level(void) const
 {
     u8 i = 1;
-    u8 xpType = PersonalSMUSUM::expType(species());
+    u8 xpType = expType();
     while (experience() >= expTable(i, xpType) && ++i < 100);
     return i;
 }
 
 void PK7::level(u8 v)
 {
-    experience(expTable(v - 1, PersonalSMUSUM::expType(species())));
+    experience(expTable(v - 1, expType()));
 }
 
 bool PK7::shiny(void) const { return TSV() == PSV(); }
@@ -417,23 +416,23 @@ u16 PK7::formSpecies(void) const
 
 u16 PK7::stat(const u8 stat) const
 {
-    u16 tmpSpecies = formSpecies(), final;
+    u16 calc;
     u8 mult = 10, basestat = 0;
 
-    if (stat == 0) basestat = PersonalSMUSUM::baseHP(tmpSpecies);
-    else if (stat == 1) basestat = PersonalSMUSUM::baseAtk(tmpSpecies);
-    else if (stat == 2) basestat = PersonalSMUSUM::baseDef(tmpSpecies);
-    else if (stat == 3) basestat = PersonalSMUSUM::baseSpe(tmpSpecies);
-    else if (stat == 4) basestat = PersonalSMUSUM::baseSpa(tmpSpecies);
-    else if (stat == 5) basestat = PersonalSMUSUM::baseSpd(tmpSpecies);
+    if (stat == 0) basestat = baseHP();
+    else if (stat == 1) basestat = baseAtk();
+    else if (stat == 2) basestat = baseDef();
+    else if (stat == 3) basestat = baseSpe();
+    else if (stat == 4) basestat = baseSpa();
+    else if (stat == 5) basestat = baseSpd();
 
     if (stat == 0) 
-        final = 10 + ((2 * basestat) + ((((data[0xDE] >> hyperTrainLookup[stat]) & 1) == 1) ? 31 : iv(stat)) + ev(stat) / 4 + 100) * level() / 100;
+        calc = 10 + ((2 * basestat) + ((((data[0xDE] >> hyperTrainLookup[stat]) & 1) == 1) ? 31 : iv(stat)) + ev(stat) / 4 + 100) * level() / 100;
     else
-        final = 5 + (2 * basestat + ((((data[0xDE] >> hyperTrainLookup[stat]) & 1) == 1) ? 31 : iv(stat)) + ev(stat) / 4) * level() / 100; 
+        calc = 5 + (2 * basestat + ((((data[0xDE] >> hyperTrainLookup[stat]) & 1) == 1) ? 31 : iv(stat)) + ev(stat) / 4) * level() / 100; 
     if (nature() / 5 + 1 == stat) mult++;
     if (nature() % 5 + 1 == stat) mult--;
-    return final * mult / 10;
+    return calc * mult / 10;
 }
 
 std::unique_ptr<PKX> PK7::previous(void) const
@@ -454,8 +453,10 @@ std::unique_ptr<PKX> PK7::previous(void) const
         case 2:
         case 4:
             u8 index = abilityNumber() >> 1;
-            if (PersonalSMUSUM::ability(species(), index) == ability())
-                pk6->ability(PersonalXYORAS::ability(species(), index));
+            if (abilities(index) == ability())
+            {
+                pk6->ability(pk6->abilities(index));
+            }
     }
 
     pk6->htMemory(4);

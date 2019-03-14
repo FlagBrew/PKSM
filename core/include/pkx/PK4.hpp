@@ -177,19 +177,19 @@ public:
     
     std::unique_ptr<PKX> next(void) const override;
 
-    u8 baseHP(void) const override { return PersonalDPPtHGSS::baseHP(formSpecies()); }
-    u8 baseAtk(void) const override { return PersonalDPPtHGSS::baseAtk(formSpecies()); }
-    u8 baseDef(void) const override { return PersonalDPPtHGSS::baseDef(formSpecies()); }
-    u8 baseSpe(void) const override { return PersonalDPPtHGSS::baseSpe(formSpecies()); }
-    u8 baseSpa(void) const override { return PersonalDPPtHGSS::baseSpa(formSpecies()); }
-    u8 baseSpd(void) const override { return PersonalDPPtHGSS::baseSpd(formSpecies()); }
-    u8 type1(void) const override { return PersonalDPPtHGSS::type1(formSpecies()); }
-    u8 type2(void) const override { return PersonalDPPtHGSS::type2(formSpecies()); }
-    u8 genderType(void) const override { return PersonalDPPtHGSS::gender(formSpecies()); }
-    u8 baseFriendship(void) const override { return PersonalDPPtHGSS::baseFriendship(formSpecies()); }
-    u8 expType(void) const override { return PersonalDPPtHGSS::expType(formSpecies()); }
-    u8 abilities(u8 n) const override { return PersonalDPPtHGSS::ability(formSpecies(), n); }
-    u16 formStatIndex(void) const override { return PersonalDPPtHGSS::formStatIndex(formSpecies()); }
+    inline u8 baseHP(void) const override { return PersonalDPPtHGSS::baseHP(formSpecies()); }
+    inline u8 baseAtk(void) const override { return PersonalDPPtHGSS::baseAtk(formSpecies()); }
+    inline u8 baseDef(void) const override { return PersonalDPPtHGSS::baseDef(formSpecies()); }
+    inline u8 baseSpe(void) const override { return PersonalDPPtHGSS::baseSpe(formSpecies()); }
+    inline u8 baseSpa(void) const override { return PersonalDPPtHGSS::baseSpa(formSpecies()); }
+    inline u8 baseSpd(void) const override { return PersonalDPPtHGSS::baseSpd(formSpecies()); }
+    inline u8 type1(void) const override { return PersonalDPPtHGSS::type1(formSpecies()); }
+    inline u8 type2(void) const override { return PersonalDPPtHGSS::type2(formSpecies()); }
+    inline u8 genderType(void) const override { return PersonalDPPtHGSS::gender(formSpecies()); }
+    inline u8 baseFriendship(void) const override { return PersonalDPPtHGSS::baseFriendship(formSpecies()); }
+    inline u8 expType(void) const override { return PersonalDPPtHGSS::expType(formSpecies()); }
+    inline u8 abilities(u8 n) const override { return PersonalDPPtHGSS::ability(formSpecies(), n); }
+    inline u16 formStatIndex(void) const override { return PersonalDPPtHGSS::formStatIndex(formSpecies()); }
 };
 
 #endif

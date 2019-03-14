@@ -113,7 +113,6 @@ void PK6::ability(u8 v) { data[0x14] = v; }
 
 void PK6::setAbility(u8 v)
 {
-    u16 tmpSpecies = formSpecies();
     u8 abilitynum;
 
     if (v == 0) abilitynum = 1;
@@ -121,7 +120,7 @@ void PK6::setAbility(u8 v)
     else abilitynum = 4;
 
     abilityNumber(abilitynum);
-    data[0x14] = PersonalXYORAS::ability(tmpSpecies, v);
+    data[0x14] = abilities(v);
 }
 
 u8 PK6::abilityNumber(void) const { return data[0x15]; }
@@ -377,14 +376,14 @@ u16 PK6::PSV(void) const { return ((PID() >> 16) ^ (PID() & 0xFFFF)) >> 4; }
 u8 PK6::level(void) const
 {
     u8 i = 1;
-    u8 xpType = PersonalXYORAS::expType(species());
+    u8 xpType = expType();
     while (experience() >= expTable(i, xpType) && ++i < 100);
     return i;
 }
 
 void PK6::level(u8 v)
 {
-    experience(expTable(v - 1, PersonalXYORAS::expType(species())));
+    experience(expTable(v - 1, expType()));
 }
 
 bool PK6::shiny(void) const { return TSV() == PSV(); }
@@ -431,23 +430,23 @@ u16 PK6::formSpecies(void) const
 
 u16 PK6::stat(const u8 stat) const
 {
-    u16 tmpSpecies = formSpecies(), final;
+    u16 calc;
     u8 mult = 10, basestat = 0;
 
-    if (stat == 0) basestat = PersonalXYORAS::baseHP(tmpSpecies);
-    else if (stat == 1) basestat = PersonalXYORAS::baseAtk(tmpSpecies);
-    else if (stat == 2) basestat = PersonalXYORAS::baseDef(tmpSpecies);
-    else if (stat == 3) basestat = PersonalXYORAS::baseSpe(tmpSpecies);
-    else if (stat == 4) basestat = PersonalXYORAS::baseSpa(tmpSpecies);
-    else if (stat == 5) basestat = PersonalXYORAS::baseSpd(tmpSpecies);
+    if (stat == 0) basestat = baseHP();
+    else if (stat == 1) basestat = baseAtk();
+    else if (stat == 2) basestat = baseDef();
+    else if (stat == 3) basestat = baseSpe();
+    else if (stat == 4) basestat = baseSpa();
+    else if (stat == 5) basestat = baseSpd();
 
     if (stat == 0) 
-        final = 10 + (2 * basestat + iv(stat) + ev(stat) / 4 + 100) * level() / 100;
+        calc = 10 + (2 * basestat + iv(stat) + ev(stat) / 4 + 100) * level() / 100;
     else
-        final = 5 + (2 * basestat + iv(stat) + ev(stat) / 4) * level() / 100; 
+        calc = 5 + (2 * basestat + iv(stat) + ev(stat) / 4) * level() / 100; 
     if (nature() / 5 + 1 == stat) mult++;
     if (nature() % 5 + 1 == stat) mult--;
-    return final * mult / 10;
+    return calc * mult / 10;
 }
 
 std::unique_ptr<PKX> PK6::next(void) const
@@ -478,8 +477,10 @@ std::unique_ptr<PKX> PK6::next(void) const
         case 2:
         case 4:
             u8 index = abilityNumber() >> 1;
-            if (PersonalXYORAS::ability(species(), index) == ability())
-                pk7->ability(PersonalSMUSUM::ability(species(), index));
+            if (abilities(index) == ability())
+            {
+                pk7->ability(abilities(index));
+            }
     }
 
     pk7->htMemory(4);
@@ -591,7 +592,7 @@ std::unique_ptr<PKX> PK6::previous(void) const
     pk5->ribbon(7, 3, ribbon(4, 3)); // National Champion
     pk5->ribbon(2, 5, ribbon(4, 4)); // World Champion
 
-    pk5->otFriendship(PersonalBWB2W2::baseFriendship(pk5->species()));
+    pk5->otFriendship(pk5->baseFriendship());
 
     // Check if shiny pid needs to be modified
     u16 val = TID() ^ SID() ^ (PID() >> 16) ^ (PID() & 0xFFFF);
