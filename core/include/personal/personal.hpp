@@ -48,9 +48,7 @@ namespace PersonalSMUSUM
     u8 expType(u16 species);
     u8 ability(u16 species, u8 n);
     u16 formStatIndex(u16 species);
-    u16 formSprite(u16 species);
     u8 formCount(u16 species);
-    u16 baseExp(u16 species);
 }
 
 namespace PersonalXYORAS
@@ -68,9 +66,7 @@ namespace PersonalXYORAS
     u8 expType(u16 species);
     u8 ability(u16 species, u8 n);
     u16 formStatIndex(u16 species);
-    u16 formSprite(u16 species);
     u8 formCount(u16 species);
-    u16 baseExp(u16 species);
 }
 
 namespace PersonalBWB2W2
@@ -88,9 +84,7 @@ namespace PersonalBWB2W2
     u8 expType(u16 species);
     u8 ability(u16 species, u8 n);
     u16 formStatIndex(u16 species);
-    u16 formSprite(u16 species);
     u8 formCount(u16 species);
-    u16 baseExp(u16 species);
 }
 
 namespace PersonalDPPtHGSS
