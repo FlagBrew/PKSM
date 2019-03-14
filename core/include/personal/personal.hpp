@@ -28,10 +28,29 @@
 #define PERSONAL_HPP
 
 #include "types.h"
+#include "personal_lgpe.h"
 #include "personal_smusum.h"
 #include "personal_xyoras.h"
 #include "personal_bwb2w2.h"
 #include "personal_dppthgss.h"
+
+namespace PersonalLGPE
+{
+    u8 baseHP(u16 species);
+    u8 baseAtk(u16 species);
+    u8 baseDef(u16 species);
+    u8 baseSpe(u16 species);
+    u8 baseSpa(u16 species);
+    u8 baseSpd(u16 species);
+    u8 type1(u16 species);
+    u8 type2(u16 species);
+    u8 gender(u16 species);
+    u8 baseFriendship(u16 species);
+    u8 expType(u16 species);
+    u8 ability(u16 species, u8 n);
+    u16 formStatIndex(u16 species);
+    u8 formCount(u16 species); 
+}
 
 namespace PersonalSMUSUM
 {
@@ -102,8 +121,8 @@ namespace PersonalDPPtHGSS
     u8 baseFriendship(u16 species);
     u8 expType(u16 species);
     u8 ability(u16 species, u8 n);
-    u8 formCount(u16 species);
     u16 formStatIndex(u16 species);
+    u8 formCount(u16 species);
 }
 
 #endif
