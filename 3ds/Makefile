@@ -253,8 +253,7 @@ clean:
 	@echo clean ...
 	@rm -fr $(OUTDIR)
 	@cd $(ROMFS)/mg && find -maxdepth 1 ! -name .gitkeep ! -name . | xargs --no-run-if-empty rm
-	@cd $(BUILD) && find -maxdepth 1 ! -name $(PACKER) ! -name . ! -name $(SCRIPTS) | xargs --no-run-if-empty rm
-	@rm -fr $(BUILD)/$(PACKER)/out $(BUILD)/$(PACKER)/EventsGallery 
+	@rm -fr $(BUILD) $(PACKER)/out $(PACKER)/EventsGallery
 #---------------------------------------------------------------------------------
 no-deps:
 	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR)
