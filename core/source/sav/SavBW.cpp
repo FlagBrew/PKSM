@@ -41,7 +41,7 @@ SavBW::SavBW(u8* dt)
     BattleSubway = 0x21D00;
     Party = 0x18E00;
     PokeDex = 0x21600;
-    PokeDexLanguageFlags = PokeDex + 0x320;
+    PokeDexLanguageFlags = 0x21920;
     WondercardData = 0x1C800;
     PouchHeldItem = 0x18400;
     PouchKeyItem = 0x188D8;
