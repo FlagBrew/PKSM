@@ -24,23 +24,33 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef SAV5_HPP
-#define SAV5_HPP
+#ifndef SAV7_HPP
+#define SAV7_HPP
 
+#include <algorithm>
 #include "personal.hpp"
 #include "Sav.hpp"
-#include "PK5.hpp"
-#include "PGF.hpp"
+#include "PK7.hpp"
+#include "WC7.hpp"
 
-class Sav5 : public Sav
+extern "C" {
+#include "memecrypto.h"
+#include "sha256.h"
+}
+
+class Sav7 : public Sav
 {
 protected:
-    int PCLayout, Trainer1, Trainer2, BattleSubway, PokeDexLanguageFlags;
-    
-private:
-    int dexFormIndex(int species, int formct) const;
+    int TrainerCard, Misc, PlayTime, LastViewedBox, PokeDexLanguageFlags, WondercardFlags, PCLayout;
+    int PouchZCrystals, BattleItems;
+
+    virtual int dexFormIndex(int species, int formct, int start) const = 0;
+    virtual int dexFormCount(int species) const = 0;
+    void setDexFlags(int index, int gender, int shiny, int baseSpecies);
+    bool sanitizeFormsToIterate(int species, int& fs, int& fe, int formIn) const;
 
 public:
+    u16 check16(u8* buf, u32 blockID, u32 len) const;
     virtual void resign(void) = 0;
 
     u16 TID(void) const override;
@@ -94,20 +104,19 @@ public:
     void mysteryGift(WCX& wc, int& pos) override;
     std::unique_ptr<WCX> mysteryGift(int pos) const override;
     void cryptBoxData(bool crypted) override;
-    void cryptMysteryGiftData(void);
     std::string boxName(u8 box) const override;
     void boxName(u8 box, std::string name) override;
     u8 partyCount(void) const override;
     void partyCount(u8 count) override;
 
-    int maxBoxes(void) const override { return 24; }
-    size_t maxWondercards(void) const override { return 12; }
-    Generation generation(void) const override { return Generation::FIVE; }
-    int maxSpecies(void) const { return 649; }
-    int maxMove(void) const { return 559; }
-    int maxItem(void) const { return game == Game::BW ? 632 : 638; }
-    int maxAbility(void) const { return 164; }
-    int maxBall(void) const { return 0x19; }
+    int maxBoxes(void) const override { return 32; }
+    size_t maxWondercards(void) const override { return 48; }
+    Generation generation(void) const override { return Generation::SEVEN; }
+    int maxSpecies(void) const { return game == Game::SM ? 802 : 807; }
+    int maxMove(void) const { return game == Game::SM ? 720 : 728; }
+    int maxItem(void) const { return game == Game::SM ? 920 : 959; }
+    int maxAbility(void) const { return game == Game::SM ? 232 : 233; }
+    int maxBall(void) const { return 0x1A; }
 
     void item(Item& item, Pouch pouch, u16 slot) override;
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
@@ -115,7 +124,7 @@ public:
     virtual std::map<Pouch, std::vector<int>> validItems(void) const = 0;
     std::string pouchName(Pouch pouch) const override;
 
-    u8 formCount(u16 species) const override { return PersonalBWB2W2::formCount(species); }
+    u8 formCount(u16 species) const override { return PersonalSMUSUM::formCount(species); }
 };
 
 #endif

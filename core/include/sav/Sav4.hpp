@@ -35,8 +35,8 @@
 class Sav4 : public Sav
 {
 protected:
-    int Trainer1, Box, Party, PokeDex, WondercardFlags, WondercardData;
-    int PouchHeldItem, PouchKeyItem, PouchTMHM, MailItems, PouchMedicine, PouchBerry, PouchBalls, BattleItems;
+    int Trainer1, WondercardFlags;
+    int MailItems, PouchBalls, BattleItems;
     int GBOOffset, SBOOffset;
 
     int gbo = -1;

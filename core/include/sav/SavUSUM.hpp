@@ -27,18 +27,9 @@
 #ifndef SAVUSUM_HPP
 #define SAVUSUM_HPP
 
-#include <algorithm>
-#include "personal.hpp"
-#include "Sav.hpp"
-#include "PK7.hpp"
-#include "WC7.hpp"
+#include "Sav7.hpp"
 
-extern "C" {
-#include "memecrypto.h"
-#include "sha256.h"
-}
-
-class SavUSUM : public Sav
+class SavUSUM : public Sav7
 {
 protected:
     static constexpr u32 chkofs[39] = { 
@@ -94,90 +85,17 @@ protected:
         0x0310, 0x0002, 0x0320, 0x0004, 0x0321, 0x0002
     };
 
-    int dexFormIndex(int species, int formct, int start) const;
-    int dexFormCount(int species) const;
-    void setDexFlags(int index, int gender, int shiny, int baseSpecies);
-    bool sanitizeFormsToIterate(int species, int& fs, int& fe, int formIn) const;
+    int dexFormIndex(int species, int formct, int start) const override;
+    int dexFormCount(int species) const override;
 
 public:
     SavUSUM(u8* dt);
     virtual ~SavUSUM() { };
-
-    u16 check16(u8* buf, u32 blockID, u32 len) const;
-    void resign(void) override;
-
-    u16 TID(void) const override;
-    void TID(u16 v) override;
-    u16 SID(void) const override;
-    void SID(u16 v) override;
-    u8 version(void) const override;
-    void version(u8 v) override;
-    u8 gender(void) const override;
-    void gender(u8 v) override;
-    u8 subRegion(void) const override;
-    void subRegion(u8 v) override;
-    u8 country(void) const override;
-    void country(u8 v) override;
-    u8 consoleRegion(void) const override;
-    void consoleRegion(u8 v) override;
-    u8 language(void) const override;
-    void language(u8 v) override;
-    std::string otName(void) const override;
-    void otName(const char* v) override;
-    u32 money(void) const override;
-    void money(u32 v) override;
-    u32 BP(void) const override;
-    void BP(u32 v) override;
-    u16 playedHours(void) const override;
-    void playedHours(u16 v) override;
-    u8 playedMinutes(void) const override;
-    void playedMinutes(u8 v) override;
-    u8 playedSeconds(void) const override;
-    void playedSeconds(u8 v) override;
-
-    u8 currentBox(void) const override;
-    void currentBox(u8 v) override;
-    u32 boxOffset(u8 box, u8 slot) const override;
-    u32 partyOffset(u8 slot) const override;
     
-    std::unique_ptr<PKX> pkm(u8 slot) const override;
-    std::unique_ptr<PKX> pkm(u8 box, u8 slot, bool ekx = false) const override;
-
-    // NOTICE: this sets a pkx into the savefile, not a pkx
-    // that's because PKSM works with decrypted boxes and
-    // crypts them back during resigning
-    void pkm(PKX& pk, u8 box, u8 slot) override;
-    void pkm(PKX& pk, u8 slot) override;
-
-    std::shared_ptr<PKX> emptyPkm() const override;
-
-    void dex(PKX& pk) override;
-    int emptyGiftLocation(void) const override;
-    std::vector<MysteryGift::giftData> currentGifts(void) const override;
-    void mysteryGift(WCX& wc, int& pos) override;
-    std::unique_ptr<WCX> mysteryGift(int pos) const override;
-    void cryptBoxData(bool crypted) override;
-    std::string boxName(u8 box) const override;
-    void boxName(u8 box, std::string name) override;
-    u8 partyCount(void) const override;
-    void partyCount(u8 count) override;
-
-    int maxBoxes(void) const override { return 32; }
-    size_t maxWondercards(void) const override { return 48; }
-    Generation generation(void) const override { return Generation::SEVEN; }
-    int maxSpecies(void) const { return 807; }
-    int maxMove(void) const { return 728; }
-    int maxItem(void) const { return 959; }
-    int maxAbility(void) const { return 233; }
-    int maxBall(void) const { return 0x1A; }
-
-    void item(Item& item, Pouch pouch, u16 slot) override;
-    std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
-    std::vector<std::pair<Pouch, int>> pouches(void) const override;
+    void resign(void) override;
+    
     std::map<Pouch, std::vector<int>> validItems(void) const override;
-    std::string pouchName(Pouch pouch) const override;
 
-    u8 formCount(u16 species) const override { return PersonalSMUSUM::formCount(species); }
 };
 
 #endif
