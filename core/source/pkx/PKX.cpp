@@ -416,7 +416,7 @@ u32 PKX::versionTID() const
     switch (version())
     {
         default:
-            return SID();
+            return TID();
         case 30: // SM
         case 31:
         case 32: // USUM
