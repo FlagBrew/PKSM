@@ -27,9 +27,7 @@
 #ifndef SAVDP_HPP
 #define SAVDP_HPP
 
-#include "personal.hpp"
 #include "Sav4.hpp"
-#include "PK4.hpp"
 
 class SavDP : public Sav4
 {

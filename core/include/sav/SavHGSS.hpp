@@ -27,9 +27,7 @@
 #ifndef SAVHGSS_HPP
 #define SAVHGSS_HPP
 
-#include "personal.hpp"
 #include "Sav4.hpp"
-#include "PK4.hpp"
 
 class SavHGSS : public Sav4
 {
