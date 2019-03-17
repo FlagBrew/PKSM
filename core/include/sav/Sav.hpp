@@ -34,6 +34,7 @@
 #include "utils.hpp"
 #include "mysterygift.hpp"
 #include "generation.hpp"
+#include "game.hpp"
 #include "Item.hpp"
 #include "i18n.hpp"
 
@@ -97,6 +98,7 @@ protected:
     
     u8* data;
     u32 length = 0;
+    Game game;
     static u16 ccitt16(const u8* buf, u32 len);
     static std::unique_ptr<Sav> checkDSType(u8* dt);
     static bool validSequence(u8* dt, u8* pattern, int shift = 0);
