@@ -864,7 +864,7 @@ void Gui::pkm(PKX* pokemon, int x, int y, float scale, u32 color, float blend)
         if (pokemon->species() != 490)
         {
             pkm(pokemon->species(), pokemon->alternativeForm(), pokemon->generation(), pokemon->gender(), x, y, scale, color, blend);
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x - 13 + ceilf(3 * scale), y + 4 + 30 * (scale - 1), 0.5f);
+            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x - 13 + ceilf(3 * scale), y + 4 + 30 * (scale - 1), 0.5f, &tint);
         }
         else
         {

@@ -256,7 +256,7 @@ void InjectorScreen::draw() const
             else
             {
                 Gui::pkm(wondercard->species(), wondercard->alternativeForm(), wondercard->generation(), wondercard->gender(), 276, 49, 2.0f, COLOR_GREY_BLEND, 1.0f);
-                Gui::pkm(wondercard->species(), wondercard->alternativeForm(), wondercard->generation(), wondercard->gender(), 44, 2.0f);
+                Gui::pkm(wondercard->species(), wondercard->alternativeForm(), wondercard->generation(), wondercard->gender(), 272, 44, 2.0f);
             }
         }
         else
