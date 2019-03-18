@@ -42,7 +42,8 @@ SavBW::SavBW(u8* dt)
     Party = 0x18E00;
     PokeDex = 0x21600;
     PokeDexLanguageFlags = 0x21920;
-    WondercardData = 0x1C800;
+    WondercardFlags = 0x1C800;
+    WondercardData = 0x1C900;
     PouchHeldItem = 0x18400;
     PouchKeyItem = 0x188D8;
     PouchTMHM = 0x18A24;

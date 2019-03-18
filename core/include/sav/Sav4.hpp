@@ -35,7 +35,7 @@
 class Sav4 : public Sav
 {
 protected:
-    int Trainer1, WondercardFlags;
+    int Trainer1;
     int MailItems, PouchBalls, BattleItems;
     int GBOOffset, SBOOffset;
 

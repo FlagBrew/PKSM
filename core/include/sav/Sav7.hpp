@@ -41,11 +41,13 @@ extern "C" {
 class Sav7 : public Sav
 {
 protected:
-    int TrainerCard, Misc, PlayTime, LastViewedBox, PokeDexLanguageFlags, WondercardFlags, PCLayout;
+    int TrainerCard, Misc, PlayTime, LastViewedBox, PokeDexLanguageFlags, PCLayout;
     int PouchZCrystals, BattleItems;
 
     virtual int dexFormIndex(int species, int formct, int start) const = 0;
     virtual int dexFormCount(int species) const = 0;
+
+private:
     void setDexFlags(int index, int gender, int shiny, int baseSpecies);
     bool sanitizeFormsToIterate(int species, int& fs, int& fe, int formIn) const;
 

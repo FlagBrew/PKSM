@@ -241,8 +241,8 @@ void Sav5::mysteryGift(WCX& wc, int& pos)
 {
     PGF* pgf = (PGF*)&wc;
 
-    *(data + WondercardData + pgf->ID()) |= 0x1 << (pgf->ID() & 7);
-    std::copy(pgf->rawData(), pgf->rawData() + PGF::length, data + WondercardData + 0x100 + pos * PGF::length);
+    *(data + WondercardFlags + pgf->ID()) |= 0x1 << (pgf->ID() & 7);
+    std::copy(pgf->rawData(), pgf->rawData() + PGF::length, data + WondercardData + pos * PGF::length);
     pos = (pos + 1) % 12;
 }
 
@@ -272,7 +272,7 @@ int Sav5::emptyGiftLocation(void) const
         empty = true;
         for (u32 j = 0; j < PGF::length; j++)
         {
-            if (*(data + WondercardData + 0x100 + t * PGF::length + j) != 0)
+            if (*(data + WondercardData + t * PGF::length + j) != 0)
             {
                 empty = false;
                 break;
@@ -291,7 +291,7 @@ int Sav5::emptyGiftLocation(void) const
 std::vector<MysteryGift::giftData> Sav5::currentGifts(void) const
 {
     std::vector<MysteryGift::giftData> ret;
-    u8* wonderCards = data + WondercardData + 0x100;
+    u8* wonderCards = data + WondercardData;
     for (int i = 0; i < emptyGiftLocation(); i++)
     {
         if (*(wonderCards + i * PGF::length + 0xB3) == 1)
@@ -312,13 +312,13 @@ void Sav5::cryptMysteryGiftData()
     for (int i = 0; i < 0xA90; i += 2)
     {
         seed = seed * 0x41C64E6D + 0x6073; // Replace with seedStep?
-        *(u16*)(data + WondercardData + i) ^= (seed >> 16);
+        *(u16*)(data + WondercardFlags + i) ^= (seed >> 16);
     }
 }
 
 std::unique_ptr<WCX> Sav5::mysteryGift(int pos) const
 {
-    return std::make_unique<PGF>(data + WondercardData + 0x100 + pos * PGF::length);
+    return std::make_unique<PGF>(data + WondercardData + pos * PGF::length);
 }
 
 void Sav5::item(Item& item, Pouch pouch, u16 slot)

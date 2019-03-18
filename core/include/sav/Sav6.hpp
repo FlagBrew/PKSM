@@ -35,7 +35,7 @@
 class Sav6 : public Sav
 {
 protected:
-    int TrainerCard, Trainer2, PlayTime, LastViewedBox, PokeDexLanguageFlags, EncounterCount, WondercardFlags, PCLayout;
+    int TrainerCard, Trainer2, PlayTime, LastViewedBox, PokeDexLanguageFlags, EncounterCount, PCLayout;
 
 private:
     int dexFormIndex(int species, int formct) const;

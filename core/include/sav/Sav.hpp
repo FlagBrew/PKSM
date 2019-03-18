@@ -61,7 +61,7 @@ enum Pouch
 class Sav
 {
 protected:
-    int Box, Party, PokeDex, WondercardData;
+    int Box, Party, PokeDex, WondercardData, WondercardFlags;
     int PouchHeldItem, PouchKeyItem, PouchTMHM, PouchMedicine, PouchBerry;
 
     static constexpr u16 crc16[256] = {
