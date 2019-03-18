@@ -24,19 +24,21 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef SAVDP_HPP
-#define SAVDP_HPP
+#ifndef Game_HPP
+#define Game_HPP
 
-#include "Sav4.hpp"
-
-class SavDP : public Sav4
+enum Game
 {
-public:
-    SavDP(u8* dt);
-    virtual ~SavDP() { };
-
-    std::map<Pouch, std::vector<int>> validItems(void) const override;
-
+    DP,
+    Pt,
+    HGSS,
+    BW,
+    B2W2,
+    XY,
+    ORAS,
+    SM,
+    USUM,
+    LGPE
 };
 
 #endif

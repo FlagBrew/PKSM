@@ -34,6 +34,7 @@
 #include "utils.hpp"
 #include "mysterygift.hpp"
 #include "generation.hpp"
+#include "game.hpp"
 #include "Item.hpp"
 #include "i18n.hpp"
 
@@ -60,6 +61,9 @@ enum Pouch
 class Sav
 {
 protected:
+    int Box, Party, PokeDex, WondercardData, WondercardFlags;
+    int PouchHeldItem, PouchKeyItem, PouchTMHM, PouchMedicine, PouchBerry;
+
     static constexpr u16 crc16[256] = {
         0x0000, 0xC0C1, 0xC181, 0x0140, 0xC301, 0x03C0, 0x0280, 0xC241,
         0xC601, 0x06C0, 0x0780, 0xC741, 0x0500, 0xC5C1, 0xC481, 0x0440,
@@ -97,6 +101,7 @@ protected:
     
     u8* data;
     u32 length = 0;
+    Game game;
     static u16 ccitt16(const u8* buf, u32 len);
     static std::unique_ptr<Sav> checkDSType(u8* dt);
     static bool validSequence(u8* dt, u8* pattern, int shift = 0);

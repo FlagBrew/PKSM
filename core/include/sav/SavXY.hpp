@@ -27,12 +27,9 @@
 #ifndef SAVXY_HPP
 #define SAVXY_HPP
 
-#include "personal.hpp"
-#include "Sav.hpp"
-#include "PK6.hpp"
-#include "WC6.hpp"
+#include "Sav6.hpp"
 
-class SavXY : public Sav
+class SavXY : public Sav6
 {
 protected:
     static constexpr u32 chkofs[55] = {
@@ -56,86 +53,14 @@ protected:
         0x00308, 0x00618, 0x0025C, 0x00834, 0x00318, 0x007D0, 0x00C48, 
         0x00078, 0x00200, 0x00C84, 0x00628, 0x34AD0, 0x0E058
     };
-
-    int dexFormIndex(int species, int formct) const;
+    
 public:
     SavXY(u8* dt);
     virtual ~SavXY() { };
 
     void resign(void) override;
 
-    u16 TID(void) const override;
-    void TID(u16 v) override;
-    u16 SID(void) const override;
-    void SID(u16 v) override;
-    u8 version(void) const override;
-    void version(u8 v) override;
-    u8 gender(void) const override;
-    void gender(u8 v) override;
-    u8 subRegion(void) const override;
-    void subRegion(u8 v) override;
-    u8 country(void) const override;
-    void country(u8 v) override;
-    u8 consoleRegion(void) const override;
-    void consoleRegion(u8 v) override;
-    u8 language(void) const override;
-    void language(u8 v) override;
-    std::string otName(void) const override;
-    void otName(const char* v) override;
-    u32 money(void) const override;
-    void money(u32 v) override;
-    u32 BP(void) const override;
-    void BP(u32 v) override;
-    u16 playedHours(void) const override;
-    void playedHours(u16 v) override;
-    u8 playedMinutes(void) const override;
-    void playedMinutes(u8 v) override;
-    u8 playedSeconds(void) const override;
-    void playedSeconds(u8 v) override;
-
-    u8 currentBox(void) const override;
-    void currentBox(u8 v) override;
-    u32 boxOffset(u8 box, u8 slot) const override;
-    u32 partyOffset(u8 slot) const override;
-    
-    std::unique_ptr<PKX> pkm(u8 slot) const override;
-    std::unique_ptr<PKX> pkm(u8 box, u8 slot, bool ekx = false) const override;
-
-    // NOTICE: this sets a pkx into the savefile, not a pkx
-    // that's because PKSM works with decrypted boxes and
-    // crypts them back during resigning
-    void pkm(PKX& pk, u8 box, u8 slot) override;
-    void pkm(PKX& pk, u8 slot) override;
-
-    std::shared_ptr<PKX> emptyPkm() const override;
-
-    void dex(PKX& pk) override;
-    int emptyGiftLocation(void) const override;
-    std::vector<MysteryGift::giftData> currentGifts(void) const override;
-    void mysteryGift(WCX& wc, int& pos) override;
-    std::unique_ptr<WCX> mysteryGift(int pos) const override;
-    void cryptBoxData(bool crypted) override;
-    std::string boxName(u8 box) const override;
-    void boxName(u8 box, std::string name) override;
-    u8 partyCount(void) const override;
-    void partyCount(u8 count) override;
-
-    int maxBoxes(void) const override { return 31; }
-    size_t maxWondercards(void) const override { return 24; }
-    Generation generation(void) const override { return Generation::SIX; }
-    int maxSpecies(void) const { return 721; }
-    int maxMove(void) const { return 617; }
-    int maxItem(void) const { return 717; }
-    int maxAbility(void) const { return 188; }
-    int maxBall(void) const { return 0x19; }
-
-    void item(Item& item, Pouch pouch, u16 slot) override;
-    std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
-    std::vector<std::pair<Pouch, int>> pouches(void) const override;
     std::map<Pouch, std::vector<int>> validItems(void) const override;
-    std::string pouchName(Pouch pouch) const override;
-
-    u8 formCount(u16 species) const override { return PersonalXYORAS::formCount(species); }
 };
 
 #endif

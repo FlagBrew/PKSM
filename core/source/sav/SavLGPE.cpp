@@ -34,6 +34,7 @@ SavLGPE::SavLGPE(u8* dt)
 {
     length = 0x100000;
     boxes = 34; // Ish
+    game = Game::LGPE;
 
     data = new u8[length]{0};
     std::copy(dt, dt + 0xB8800, data);
