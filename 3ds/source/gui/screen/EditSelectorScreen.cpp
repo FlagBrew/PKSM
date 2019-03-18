@@ -299,7 +299,7 @@ void EditSelectorScreen::draw() const
                 std::unique_ptr<PKX> pokemon = TitleLoader::save->pkm(box, row * 6 + column);
                 if (pokemon->species() > 0)
                 {
-                    Gui::pkm(pokemon.get(), x, y);
+                    Gui::pkm(*pokemon, x, y);
                 }
                 if (TitleLoader::save->generation() == Generation::LGPE)
                 {
@@ -322,7 +322,7 @@ void EditSelectorScreen::draw() const
         std::unique_ptr<PKX> pokemon = TitleLoader::save->pkm(i);
         if (pokemon->species() > 0)
         {
-            Gui::pkm(pokemon.get(), x, y);
+            Gui::pkm(*pokemon, x, y);
         }
     }
 
@@ -333,7 +333,7 @@ void EditSelectorScreen::draw() const
         int dy = bobPointer();
         if (moveMon)
         {
-            Gui::pkm(moveMon.get(), 94, 5 + dy);
+            Gui::pkm(*moveMon, 94, 5 + dy);
         }
         Gui::sprite(ui_sheet_pointer_arrow_idx, 106, -4 + dy);
     }
@@ -343,7 +343,7 @@ void EditSelectorScreen::draw() const
         int yMod = (tempIndex / 6) * 30 + bobPointer();
         if (moveMon)
         {
-            Gui::pkm(moveMon.get(), 9 + (tempIndex % 6) * 34, 39 + yMod);
+            Gui::pkm(*moveMon, 9 + (tempIndex % 6) * 34, 39 + yMod);
         }
         Gui::sprite(ui_sheet_pointer_arrow_idx, 21 + (tempIndex % 6) * 34, 30 + yMod);
     }
@@ -353,7 +353,7 @@ void EditSelectorScreen::draw() const
         int y = ((cursorPos - 1) % 2 == 0 ? 35 : 51) + (((cursorPos - 1) - 30) / 2) * 45 + bobPointer();
         if (moveMon)
         {
-            Gui::pkm(moveMon.get(), x - 12, y + 9);
+            Gui::pkm(*moveMon, x - 12, y + 9);
         }
         Gui::sprite(ui_sheet_pointer_arrow_idx, x, y);
     }

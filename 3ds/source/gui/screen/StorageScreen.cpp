@@ -288,7 +288,7 @@ void StorageScreen::draw() const
                 std::unique_ptr<PKX> pokemon = TitleLoader::save->pkm(boxBox, row * 6 + column);
                 if (pokemon->species() > 0)
                 {
-                    Gui::pkm(pokemon.get(), x, y);
+                    Gui::pkm(*pokemon, x, y);
                 }
                 if (TitleLoader::save->generation() == Generation::LGPE)
                 {
@@ -321,12 +321,10 @@ void StorageScreen::draw() const
                 }
                 if (moveMon[i])
                 {
-                    Gui::pkm(moveMon[i].get(), x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
-                    Gui::pkm(moveMon[i].get(), x - 3, y - 5);
+                    Gui::pkm(*moveMon[i], x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
+                    Gui::pkm(*moveMon[i], x - 3, y - 5);
                 }
             }
-            // Gui::pkm(moveMon.get()->species(), moveMon.get()->alternativeForm(), moveMon.get()->generation(), 97, 10 + dy, 1.0f, COLOR_GREY_BLEND, 1.0f);
-            // Gui::pkm(moveMon.get(), 94, 5 + dy);
             switch (pickupMode)
             {
                 case SINGLE:
@@ -340,7 +338,6 @@ void StorageScreen::draw() const
                     Gui::sprite(ui_sheet_pointer_arrow2_idx, 106, -4 + dy);
                     break;
             }
-            // Gui::sprite(multiplePickup ? ui_sheet_pointer_arrow2_idx : ui_sheet_pointer_arrow_idx, 106, -4 + dy);
         }
         else
         {
@@ -356,12 +353,10 @@ void StorageScreen::draw() const
                 }
                 if (moveMon[i])
                 {
-                    Gui::pkm(moveMon[i].get(), x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
-                    Gui::pkm(moveMon[i].get(), x - 3, y - 5);
+                    Gui::pkm(*moveMon[i], x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
+                    Gui::pkm(*moveMon[i], x - 3, y - 5);
                 }
             }
-            // Gui::pkm(moveMon.get()->species(), moveMon.get()->alternativeForm(), moveMon.get()->generation(), 12 + (tempIndex % 6) * 34, 44 + yMod, 1.0f, COLOR_GREY_BLEND, 1.0f);
-            // Gui::pkm(moveMon.get(), 9 + (tempIndex % 6) * 34, 39 + yMod);
             switch (pickupMode)
             {
                 case SINGLE:
@@ -375,7 +370,6 @@ void StorageScreen::draw() const
                     Gui::sprite(ui_sheet_pointer_arrow2_idx, 21 + (tempIndex % 6) * 34, 30 + yMod);
                     break;
             }
-            // Gui::sprite(multiplePickup ? ui_sheet_pointer_arrow2_idx : ui_sheet_pointer_arrow_idx, 21 + (tempIndex % 6) * 34, 30 + yMod);
         }
     }
 
@@ -458,7 +452,7 @@ void StorageScreen::draw() const
                 auto pkm = bank.pkm(storageBox, row * 6 + column);
                 if (pkm->species() > 0)
                 {
-                    Gui::pkm(pkm.get(), x, y);
+                    Gui::pkm(*pkm, x, y);
                 }
                 x += 34;
             }
@@ -488,8 +482,8 @@ void StorageScreen::draw() const
                     }
                     if (moveMon[i])
                     {
-                        Gui::pkm(moveMon[i].get(), x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
-                        Gui::pkm(moveMon[i].get(), x - 3, y - 5);
+                        Gui::pkm(*moveMon[i], x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
+                        Gui::pkm(*moveMon[i], x - 3, y - 5);
                     }
                 }
                 switch (pickupMode)
@@ -520,12 +514,10 @@ void StorageScreen::draw() const
                     }
                     if (moveMon[i])
                     {
-                        Gui::pkm(moveMon[i].get(), x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
-                        Gui::pkm(moveMon[i].get(), x - 3, y - 5);
+                        Gui::pkm(*moveMon[i], x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
+                        Gui::pkm(*moveMon[i], x - 3, y - 5);
                     }
                 }
-                // Gui::pkm(moveMon.get()->species(), moveMon.get()->alternativeForm(), moveMon.get()->generation(), 53 + (tempIndex % 6) * 34, 65 + yMod, 1.0f, COLOR_GREY_BLEND, 1.0f);
-                // Gui::pkm(moveMon.get(), 50 + (tempIndex % 6) * 34, 60 + yMod);
                 switch (pickupMode)
                 {
                     case SINGLE:
@@ -539,7 +531,6 @@ void StorageScreen::draw() const
                         Gui::sprite(ui_sheet_pointer_arrow2_idx, 62 + (tempIndex % 6) * 34, 51 + yMod);
                         break;
                 }
-                // Gui::sprite(multiplePickup ? ui_sheet_pointer_arrow2_idx : ui_sheet_pointer_arrow_idx, 62 + (tempIndex % 6) * 34, 51 + yMod);
             }
         }
 
@@ -601,7 +592,7 @@ void StorageScreen::draw() const
             Gui::dynamicText(info, 276 + (int) width + 70 / 2, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
             info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(4), infoMon->iv(5), infoMon->iv(3));
             Gui::dynamicText(info, 276 + (int) width + 70 / 2, 209, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-            Gui::format(infoMon.get(), 276, 213);
+            Gui::format(*infoMon, 276, 213);
         }
     }
 }

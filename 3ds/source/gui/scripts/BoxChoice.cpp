@@ -118,7 +118,7 @@ void BoxChoice::draw() const
                 std::unique_ptr<PKX> pokemon = TitleLoader::save->pkm(boxBox, row * 6 + column);
                 if (pokemon->species() > 0)
                 {
-                    Gui::pkm(pokemon.get(), x, y);
+                    Gui::pkm(*pokemon, x, y);
                 }
             }
             x += 34;
@@ -179,7 +179,7 @@ void BoxChoice::draw() const
                 auto pkm = bank.pkm(storageBox, row * 6 + column);
                 if (pkm->species() > 0)
                 {
-                    Gui::pkm(pkm.get(), x, y);
+                    Gui::pkm(*pkm, x, y);
                 }
                 x += 34;
             }
@@ -267,7 +267,7 @@ void BoxChoice::draw() const
             Gui::dynamicText(info, 276 + (int) width + 70 / 2, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
             info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(4), infoMon->iv(5), infoMon->iv(3));
             Gui::dynamicText(info, 276 + (int) width + 70 / 2, 209, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-            Gui::format(infoMon.get(), 276, 213);
+            Gui::format(*infoMon, 276, 213);
         }
     }
 }

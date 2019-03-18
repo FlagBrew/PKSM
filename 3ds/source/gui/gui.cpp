@@ -740,9 +740,9 @@ void Gui::sprite(int key, int x, int y)
     }
 }
 
-void Gui::format(PKX* pkm, int x, int y)
+void Gui::format(const PKX& pkm, int x, int y)
 {
-    switch (pkm->generation())
+    switch (pkm.generation())
     {
         // case 1: // sapphire
 		// case 2: // ruby
@@ -780,9 +780,9 @@ void Gui::format(PKX* pkm, int x, int y)
     }
 }
 
-void Gui::generation(PKX* pkm, int x, int y)
+void Gui::generation(const PKX& pkm, int x, int y)
 {
-    switch (pkm->version())
+    switch (pkm.version())
     {
         case 1: // sapphire
 		case 2: // ruby
@@ -850,20 +850,16 @@ void Gui::sprite(int key, int x, int y, u32 color)
     }
 }
 
-void Gui::pkm(PKX* pokemon, int x, int y, float scale, u32 color, float blend)
+void Gui::pkm(const PKX& pokemon, int x, int y, float scale, u32 color, float blend)
 {
-    if (pokemon == NULL)
-    {
-        return;
-    }
     static C2D_ImageTint tint;
     C2D_PlainImageTint(&tint, color, blend);
 
-    if (pokemon->egg())
+    if (pokemon.egg())
     {
-        if (pokemon->species() != 490)
+        if (pokemon.species() != 490)
         {
-            pkm(pokemon->species(), pokemon->alternativeForm(), pokemon->generation(), pokemon->gender(), x, y, scale, color, blend);
+            pkm(pokemon.species(), pokemon.alternativeForm(), pokemon.generation(), pokemon.gender(), x, y, scale, color, blend);
             C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x - 13 + ceilf(3 * scale), y + 4 + 30 * (scale - 1), 0.5f, &tint);
         }
         else
@@ -873,14 +869,14 @@ void Gui::pkm(PKX* pokemon, int x, int y, float scale, u32 color, float blend)
     }
     else
     {
-        pkm(pokemon->species(), pokemon->alternativeForm(), pokemon->generation(), pokemon->gender(), x, y, scale, color, blend);
-        if (pokemon->heldItem() > 0)
+        pkm(pokemon.species(), pokemon.alternativeForm(), pokemon.generation(), pokemon.gender(), x, y, scale, color, blend);
+        if (pokemon.heldItem() > 0)
         {
             C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_item_idx), x + ceilf(3 * scale), y + 21 + ceilf(30 * (scale - 1)), 0.5f, &tint);
         }
     }
 
-    if (pokemon->shiny())
+    if (pokemon.shiny())
     {
         C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx), x, y, 0.5f, &tint);
     }

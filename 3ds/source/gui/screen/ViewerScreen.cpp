@@ -106,7 +106,7 @@ void ViewerScreen::draw() const
     {
         Gui::dynamicText(i18n::species(Configuration::getInstance().language(), pkm->species()), 25, 7, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::ball(pkm->ball(), 4, 6);
-        Gui::generation(pkm.get(), 115, 11);
+        Gui::generation(*pkm, 115, 11);
         if (pkm->gender() == 0)
         {
             Gui::sprite(ui_sheet_icon_male_idx, 127, 10);
