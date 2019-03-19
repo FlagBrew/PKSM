@@ -211,7 +211,7 @@ static void qrHandler(qr_data* data, QRMode mode, u8*& buff)
                             u32 tmpBox = box + (slot + i) / 30;
                             if ((int) tmpBox < TitleLoader::save->maxBoxes() && tmpSlot < 30)
                             {
-                                TitleLoader::save->pkm(*pkx, tmpBox, tmpSlot);
+                                TitleLoader::save->pkm(pkx, tmpBox, tmpSlot);
                             }
                         }
                     }

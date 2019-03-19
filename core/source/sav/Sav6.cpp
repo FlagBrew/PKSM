@@ -75,21 +75,21 @@ u32 Sav6::boxOffset(u8 box, u8 slot) const { return Box + 232*30*box + 232*slot;
 
 u32 Sav6::partyOffset(u8 slot) const { return Party + 260*slot; }
 
-std::unique_ptr<PKX> Sav6::pkm(u8 slot) const
+std::shared_ptr<PKX> Sav6::pkm(u8 slot) const
 {
     u8 tmp[260];
     std::copy(data + partyOffset(slot), data + partyOffset(slot) + 260, tmp);
-    return std::make_unique<PK6>(tmp, true, true);
+    return std::make_shared<PK6>(tmp, true, true);
 }
 
-void Sav6::pkm(PKX& pk, u8 slot)
+void Sav6::pkm(std::shared_ptr<PKX> pk, u8 slot)
 {
-    PK6* pk6 = (PK6*)&pk;
-    if (pk6->getLength() != 260)
+    u8 buf[260] = {0};
+    std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
+    std::unique_ptr<PK6> pk6 = std::make_unique<PK6>(buf, false, true);
+
+    if (pk->getLength() != 260)
     {
-        u8 buf[260] = {0};
-        std::copy(pk6->rawData(), pk6->rawData() + pk6->getLength(), buf);
-        pk6 = new PK6(buf, false, true);
         for (int i = 0; i < 6; i++)
         {
             pk6->partyStat(i, pk6->stat(i));
@@ -97,27 +97,22 @@ void Sav6::pkm(PKX& pk, u8 slot)
         pk6->partyLevel(pk6->level());
         pk6->partyCurrHP(pk6->stat(0));
     }
+
     pk6->encrypt();
     std::fill(data + partyOffset(slot), data + partyOffset(slot + 1), (u8)0);
     std::copy(pk6->rawData(), pk6->rawData() + pk6->getLength(), data + partyOffset(slot));
-    pk6->decrypt();
-    if (pk6 != &pk)
-    {
-        delete pk6;
-    }
 }
 
-std::unique_ptr<PKX> Sav6::pkm(u8 box, u8 slot, bool ekx) const
+std::shared_ptr<PKX> Sav6::pkm(u8 box, u8 slot, bool ekx) const
 {
     u8 tmp[232];
     std::copy(data + boxOffset(box, slot), data + boxOffset(box, slot) + 232, tmp);
-    return std::make_unique<PK6>(tmp, ekx);
+    return std::make_shared<PK6>(tmp, ekx);
 }
 
-void Sav6::pkm(PKX& pk, u8 box, u8 slot)
+void Sav6::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot)
 {
-    PK6* pk6 = (PK6*)&pk;
-    std::copy(pk6->rawData(), pk6->rawData() + 232, data + boxOffset(box, slot));
+    std::copy(pk->rawData(), pk->rawData() + 232, data + boxOffset(box, slot));
 }
 
 void Sav6::cryptBoxData(bool crypted)
@@ -126,12 +121,12 @@ void Sav6::cryptBoxData(bool crypted)
     {
         for (u8 slot = 0; slot < 30; slot++)
         {
-            std::unique_ptr<PKX> pk6 = pkm(box, slot, crypted);
+            std::shared_ptr<PKX> pk6 = pkm(box, slot, crypted);
             if (!crypted)
             {
                 pk6->encrypt();
             }
-            pkm(*pk6, box, slot);
+            pkm(pk6, box, slot);
         }
     }
 }
@@ -236,19 +231,19 @@ int Sav6::dexFormIndex(int species, int formct) const
     }
 }
 
-void Sav6::dex(PKX& pk)
+void Sav6::dex(std::shared_ptr<PKX> pk)
 {
-    if (pk.species() == 0)
+    if (pk->species() == 0)
         return;
-    if (pk.species() > 721)
+    if (pk->species() > 721)
         return;
 
     const int brSize = 0x60;
-    int bit = pk.species() - 1;
-    int lang = pk.language() - 1; if (lang > 5) lang--; // 0-6 language vals
-    int origin = pk.version();
-    int gender = pk.gender() % 2; // genderless -> male
-    int shiny = pk.shiny() ? 1 : 0;
+    int bit = pk->species() - 1;
+    int lang = pk->language() - 1; if (lang > 5) lang--; // 0-6 language vals
+    int origin = pk->version();
+    int gender = pk->gender() % 2; // genderless -> male
+    int shiny = pk->shiny() ? 1 : 0;
     int shiftoff = brSize*(1 + gender + 2*shiny); // after the Owned region
     int bd = bit >> 3; // div8
     int bm = bit & 7; // mod8
@@ -278,17 +273,17 @@ void Sav6::dex(PKX& pk)
     data[PokeDexLanguageFlags + (bit * 7 + lang) / 8] |= (u8)(1 << ((bit * 7 + lang) % 8));
 
     // Set DexNav count (only if not encountered previously)
-    if (game == Game::ORAS && *(u16*)(data + EncounterCount + (pk.species() - 1) * 2) == 0)
-        *(u16*)(data + EncounterCount + (pk.species() - 1) * 2) = 1;
+    if (game == Game::ORAS && *(u16*)(data + EncounterCount + (pk->species() - 1) * 2) == 0)
+        *(u16*)(data + EncounterCount + (pk->species() - 1) * 2) = 1;
 
     // Set Form flags
-    int fc = PersonalXYORAS::formCount(pk.species());
-    int f = dexFormIndex(pk.species(), fc);
+    int fc = PersonalXYORAS::formCount(pk->species());
+    int f = dexFormIndex(pk->species(), fc);
     if (f < 0) return;
 
     int formLen = game == Game::XY ? 0x18 : 0x26;
     int formDex = PokeDex + 0x8 + brSize*9;
-    bit = f + pk.alternativeForm();
+    bit = f + pk->alternativeForm();
 
     // Set Form Seen Flag
     data[formDex + formLen*shiny + bit/8] |= (u8)(1 << (bit%8));
@@ -302,7 +297,7 @@ void Sav6::dex(PKX& pk)
         if ((data[formDex + formLen*3 + bit/8] & (u8) (1 << (bit%8))) != 0) // Shiny
             return; // already set
     }
-    bit = f + pk.alternativeForm();
+    bit = f + pk->alternativeForm();
     data[formDex + formLen * (2 + shiny) + bit / 8] |= (u8)(1 << (bit % 8));
 }
 

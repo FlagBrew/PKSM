@@ -285,7 +285,7 @@ void StorageScreen::draw() const
             }
             else
             {
-                std::unique_ptr<PKX> pokemon = TitleLoader::save->pkm(boxBox, row * 6 + column);
+                std::shared_ptr<PKX> pokemon = TitleLoader::save->pkm(boxBox, row * 6 + column);
                 if (pokemon->species() > 0)
                 {
                     Gui::pkm(*pokemon, x, y);
@@ -972,11 +972,11 @@ bool StorageScreen::clearBox()
         {
             if (storageChosen)
             {
-                bank.pkm(*TitleLoader::save->emptyPkm(), storageBox, i);
+                bank.pkm(TitleLoader::save->emptyPkm(), storageBox, i);
             }
             else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
             {
-                TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), boxBox, i);
+                TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), boxBox, i);
             }
         }
     }
@@ -990,11 +990,11 @@ bool StorageScreen::releasePkm()
     {
         if (storageChosen)
         {
-            bank.pkm(*TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1);
+            bank.pkm(TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1);
         }
         else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
         {
-            TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), boxBox, cursorIndex - 1);
+            TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), boxBox, cursorIndex - 1);
             if (TitleLoader::save->generation() == Generation::LGPE)
             {
                 SavLGPE* sav = (SavLGPE*)TitleLoader::save.get();
@@ -1224,7 +1224,7 @@ void StorageScreen::pickup()
                             {
                                 *moveMon.rbegin() = nullptr;
                             }
-                            bank.pkm(*TitleLoader::save->emptyPkm(), storageBox, pickupIndex);
+                            bank.pkm(TitleLoader::save->emptyPkm(), storageBox, pickupIndex);
                         }
                         else if (boxBox * 30 + pickupIndex - 1 < TitleLoader::save->maxSlot())
                         {
@@ -1247,7 +1247,7 @@ void StorageScreen::pickup()
                             {
                                 *moveMon.rbegin() = nullptr;
                             }
-                            TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), boxBox, pickupIndex);
+                            TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), boxBox, pickupIndex);
                         }
                         else
                         {
@@ -1281,7 +1281,7 @@ void StorageScreen::pickup()
             {
                 moveMon.emplace_back(bank.pkm(storageBox, cursorIndex - 1));
                 partyNum.push_back(-1);
-                bank.pkm(*TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1);
+                bank.pkm(TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1);
                 fromStorage = true;
             }
             else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
@@ -1300,7 +1300,7 @@ void StorageScreen::pickup()
                     }
                 }
                 moveMon.push_back(TitleLoader::save->pkm(boxBox, cursorIndex - 1));
-                TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), boxBox, cursorIndex - 1);
+                TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), boxBox, cursorIndex - 1);
                 fromStorage = false;
             }
             else
@@ -1339,11 +1339,11 @@ void StorageScreen::pickup()
                     std::shared_ptr<PKX> temPkm = bank.pkm(storageBox, cursorIndex - 1 + x + y * 6);
                     if (moveMon[index])
                     {
-                        bank.pkm(*moveMon[index], storageBox, cursorIndex - 1 + x + y * 6);
+                        bank.pkm(moveMon[index], storageBox, cursorIndex - 1 + x + y * 6);
                     }
                     else
                     {
-                        bank.pkm(*TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1 + x + y * 6);
+                        bank.pkm(TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1 + x + y * 6);
                     }
                     moveMon[index] = temPkm;
                     
@@ -1380,8 +1380,8 @@ void StorageScreen::pickup()
                         {
                             virtualTrade(moveMon[index]);
                         }
-                        TitleLoader::save->pkm(*moveMon[index], boxBox, cursorIndex - 1 + x + y * 6);
-                        TitleLoader::save->dex(*moveMon[index]);
+                        TitleLoader::save->pkm(moveMon[index], boxBox, cursorIndex - 1 + x + y * 6);
+                        TitleLoader::save->dex(moveMon[index]);
                         if (partyNum[index] != -1)
                         {
                             ((SavLGPE*)TitleLoader::save.get())->partyBoxSlot(partyNum[index], boxBox * 30 + cursorIndex - 1 + x + y * 6);
@@ -1403,15 +1403,15 @@ void StorageScreen::pickup()
         {
             if (storageChosen && fromStorage)
             {
-                bank.pkm(*bank.pkm(storageBox, cursorIndex - 1), selectDimensions.first, selectDimensions.second);
-                bank.pkm(*moveMon[0], storageBox, cursorIndex - 1);
+                bank.pkm(bank.pkm(storageBox, cursorIndex - 1), selectDimensions.first, selectDimensions.second);
+                bank.pkm(moveMon[0], storageBox, cursorIndex - 1);
                 moveMon.clear();
                 partyNum.clear();
             }
             else if (!storageChosen && !fromStorage)
             {
-                TitleLoader::save->pkm(*TitleLoader::save->pkm(boxBox, cursorIndex - 1), selectDimensions.first, selectDimensions.second);
-                TitleLoader::save->pkm(*moveMon[0], boxBox, cursorIndex - 1);
+                TitleLoader::save->pkm(TitleLoader::save->pkm(boxBox, cursorIndex - 1), selectDimensions.first, selectDimensions.second);
+                TitleLoader::save->pkm(moveMon[0], boxBox, cursorIndex - 1);
                 if (TitleLoader::save->generation() == Generation::LGPE)
                 {
                     SavLGPE* save = (SavLGPE*)TitleLoader::save.get();
@@ -1453,8 +1453,8 @@ void StorageScreen::pickup()
                             ((SavLGPE*)TitleLoader::save.get())->partyBoxSlot(partyNum[0], 1001);
                             TitleLoader::save->fixParty();
                         }
-                        TitleLoader::save->pkm(*bankMon, selectDimensions.first, selectDimensions.second);
-                        bank.pkm(*saveMon, storageBox, cursorIndex - 1);
+                        TitleLoader::save->pkm(bankMon, selectDimensions.first, selectDimensions.second);
+                        bank.pkm(saveMon, storageBox, cursorIndex - 1);
                     }
                     else
                     {
@@ -1467,8 +1467,8 @@ void StorageScreen::pickup()
                                 break;
                             }
                         }
-                        TitleLoader::save->pkm(*bankMon, boxBox, cursorIndex - 1);
-                        bank.pkm(*saveMon, selectDimensions.first, selectDimensions.second);
+                        TitleLoader::save->pkm(bankMon, boxBox, cursorIndex - 1);
+                        bank.pkm(saveMon, selectDimensions.first, selectDimensions.second);
                     }
                     moveMon.clear();
                     partyNum.clear();
@@ -1665,9 +1665,9 @@ bool StorageScreen::swapBoxWithStorage()
                         }
                     }
                 }
-                TitleLoader::save->pkm(*temPkm, boxBox, i);
-                TitleLoader::save->dex(*temPkm);
-                bank.pkm(*otherTemPkm, storageBox, i);
+                TitleLoader::save->pkm(temPkm, boxBox, i);
+                TitleLoader::save->dex(temPkm);
+                bank.pkm(otherTemPkm, storageBox, i);
             }
         }
         else
@@ -1851,22 +1851,22 @@ bool StorageScreen::sort()
         {
             for (size_t i = 0; i < sortMe.size(); i++)
             {
-                bank.pkm(*sortMe[i], i / 30, i % 30);
+                bank.pkm(sortMe[i], i / 30, i % 30);
             }
             for (int i = sortMe.size(); i < Configuration::getInstance().storageSize() * 30; i++)
             {
-                bank.pkm(*TitleLoader::save->emptyPkm(), i / 30, i % 30);
+                bank.pkm(TitleLoader::save->emptyPkm(), i / 30, i % 30);
             }
         }
         else
         {
             for (size_t i = 0; i < sortMe.size(); i++)
             {
-                TitleLoader::save->pkm(*sortMe[i], i / 30, i % 30);
+                TitleLoader::save->pkm(sortMe[i], i / 30, i % 30);
             }
             for (int i = sortMe.size(); i < TitleLoader::save->maxSlot(); i++)
             {
-                TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), i / 30, i % 30);
+                TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), i / 30, i % 30);
             }
         }
     }

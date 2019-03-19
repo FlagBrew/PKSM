@@ -448,7 +448,7 @@ u32 PKX::formatTID() const
     switch (generation())
     {
         default:
-            return SID();
+            return TID();
         case Generation::SEVEN:
         case Generation::LGPE:
             return (u32)(SID() << 16 | TID()) % 1000000;

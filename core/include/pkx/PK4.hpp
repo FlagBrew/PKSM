@@ -45,7 +45,7 @@ public:
     PK4(u8* dt, bool ekx = false, bool party = false);
     virtual ~PK4() { delete[] data; };
 
-    std::unique_ptr<PKX> clone(void) override;
+    std::shared_ptr<PKX> clone(void) override;
 
     Generation generation(void) const;
 
@@ -175,7 +175,7 @@ public:
     int partyLevel() const override;
     void partyLevel(u8 v) override;
     
-    std::unique_ptr<PKX> next(void) const override;
+    std::shared_ptr<PKX> next(void) const override;
 
     inline u8 baseHP(void) const override { return PersonalDPPtHGSS::baseHP(formSpecies()); }
     inline u8 baseAtk(void) const override { return PersonalDPPtHGSS::baseAtk(formSpecies()); }

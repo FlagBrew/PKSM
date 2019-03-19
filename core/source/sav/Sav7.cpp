@@ -91,21 +91,21 @@ u32 Sav7::boxOffset(u8 box, u8 slot) const { return Box + 232*30*box + 232*slot;
 
 u32 Sav7::partyOffset(u8 slot) const { return Party + 260*slot; }
 
-std::unique_ptr<PKX> Sav7::pkm(u8 slot) const
+std::shared_ptr<PKX> Sav7::pkm(u8 slot) const
 {
     u8 buf[260];
     std::copy(data + partyOffset(slot), data + partyOffset(slot) + 260, buf);
     return std::make_unique<PK7>(buf, true, true);
 }
 
-void Sav7::pkm(PKX& pk, u8 slot)
+void Sav7::pkm(std::shared_ptr<PKX> pk, u8 slot)
 {
-    PK7* pk7 = (PK7*)&pk;
-    if (pk7->getLength() != 260)
+    u8 buf[260] = {0};
+    std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
+    std::unique_ptr<PKX> pk7 = std::make_unique<PK7>(buf, false, true);
+
+    if (pk->getLength() != 260)
     {
-        u8 buf[260] = {0};
-        std::copy(pk7->rawData(), pk7->rawData() + pk7->getLength(), buf);
-        pk7 = new PK7(buf, false, true);
         for (int i = 0; i < 6; i++)
         {
             pk7->partyStat(i, pk7->stat(i));
@@ -113,28 +113,23 @@ void Sav7::pkm(PKX& pk, u8 slot)
         pk7->partyLevel(pk7->level());
         pk7->partyCurrHP(pk7->stat(0));
     }
+
     pk7->encrypt();
     std::fill(data + partyOffset(slot), data + partyOffset(slot + 1), (u8)0);
     std::copy(pk7->rawData(), pk7->rawData() + pk7->getLength(), data + partyOffset(slot));
-    pk7->decrypt();
-    if (pk7 != &pk)
-    {
-        delete pk7;
-    }
 }
 
-std::unique_ptr<PKX> Sav7::pkm(u8 box, u8 slot, bool ekx) const
+std::shared_ptr<PKX> Sav7::pkm(u8 box, u8 slot, bool ekx) const
 {
     u8 buf[232];
     std::copy(data + boxOffset(box, slot), data + boxOffset(box, slot) + 232, buf);
     return std::make_unique<PK7>(buf, ekx);
 }
 
-void Sav7::pkm(PKX& pk, u8 box, u8 slot)
+void Sav7::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot)
 {
     // TODO: trade logic
-    PK7* pk7 = (PK7*)&pk;
-    std::copy(pk7->rawData(), pk7->rawData() + 232, data + boxOffset(box, slot));
+    std::copy(pk->rawData(), pk->rawData() + 232, data + boxOffset(box, slot));
 }
 
 void Sav7::cryptBoxData(bool crypted)
@@ -143,12 +138,12 @@ void Sav7::cryptBoxData(bool crypted)
     {
         for (u8 slot = 0; slot < 30; slot++)
         {
-            std::unique_ptr<PKX> pk7 = pkm(box, slot, crypted);
+            std::shared_ptr<PKX> pk7 = pkm(box, slot, crypted);
             if (!crypted)
             {
                 pk7->encrypt();
             }
-            pkm(*pk7, box, slot);
+            pkm(pk7, box, slot);
         }
     }
 }
@@ -246,26 +241,26 @@ bool Sav7::sanitizeFormsToIterate(int species, int& fs, int& fe, int formIn) con
     return true;
 }
 
-void Sav7::dex(PKX& pk)
+void Sav7::dex(std::shared_ptr<PKX> pk)
 {
     int MaxSpeciesID = game == Game::SM ? 802 : 807;
-    if (pk.species() == 0 || pk.species() > MaxSpeciesID || pk.egg())
+    if (pk->species() == 0 || pk->species() > MaxSpeciesID || pk->egg())
         return;
 
-    int bit = pk.species() - 1;
+    int bit = pk->species() - 1;
     int bd = bit >> 3;
     int bm = bit & 7;
-    int gender = pk.gender() % 2;
-    int shiny = pk.shiny() ? 1 : 0;
-    if (pk.species() == 351)
+    int gender = pk->gender() % 2;
+    int shiny = pk->shiny() ? 1 : 0;
+    if (pk->species() == 351)
         shiny = 0;
     int shift = gender | (shiny << 1);
     
-    if (pk.species() == 327) // Spinda
+    if (pk->species() == 327) // Spinda
     {
         if ((data[PokeDex + 0x84] & (1 << (shift + 4))) != 0)
         { // Already 2
-            *(u32*)(data + PokeDex + 0x8E8 + shift*4) = pk.encryptionConstant();
+            *(u32*)(data + PokeDex + 0x8E8 + shift*4) = pk->encryptionConstant();
             data[PokeDex + 0x84] |= (u8)(1 << shift);
         }
         else if ((data[PokeDex + 0x84] & (1 << shift)) == 0) 
@@ -277,11 +272,11 @@ void Sav7::dex(PKX& pk)
     int off = PokeDex + 0x08 + 0x80;
     data[off + bd] |= (u8)(1 << bm);
 
-    int formstart = pk.alternativeForm();
+    int formstart = pk->alternativeForm();
     int formend = formstart;
 
     int fs = 0, fe = 0;
-    if (sanitizeFormsToIterate(pk.species(), fs, fe, formstart))
+    if (sanitizeFormsToIterate(pk->species(), fs, fe, formstart))
     {
         formstart = fs;
         formend = fe;
@@ -292,18 +287,18 @@ void Sav7::dex(PKX& pk)
         int bitIndex = bit;
         if (form > 0)
         {
-            u8 fc = PersonalSMUSUM::formCount(pk.species());
+            u8 fc = PersonalSMUSUM::formCount(pk->species());
             if (fc > 1)
             { // actually has forms
-                int f = dexFormIndex(pk.species(), fc, MaxSpeciesID - 1);
+                int f = dexFormIndex(pk->species(), fc, MaxSpeciesID - 1);
                 if (f >= 0) // bit index valid
                     bitIndex = f + form;
             }
         }
-        setDexFlags(bitIndex, gender, shiny, pk.species() - 1);
+        setDexFlags(bitIndex, gender, shiny, pk->species() - 1);
     }
 
-    int lang = pk.language();
+    int lang = pk->language();
     const int langCount = 9;
     if (lang <= 10 && lang != 6 && lang != 0)
     {

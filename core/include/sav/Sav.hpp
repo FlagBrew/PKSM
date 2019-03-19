@@ -149,13 +149,13 @@ public:
     virtual u32 boxOffset(u8 box, u8 slot) const = 0;
     virtual u32 partyOffset(u8 slot) const = 0;
     
-    virtual std::unique_ptr<PKX> pkm(u8 slot) const = 0;
-    virtual void pkm(PKX& pk, u8 slot) = 0;
-    virtual std::unique_ptr<PKX> pkm(u8 box, u8 slot, bool ekx = false) const = 0;
-    virtual void pkm(PKX& pk, u8 box, u8 slot) = 0;
+    virtual std::shared_ptr<PKX> pkm(u8 slot) const = 0;
+    virtual void pkm(std::shared_ptr<PKX> pk, u8 slot) = 0;
+    virtual std::shared_ptr<PKX> pkm(u8 box, u8 slot, bool ekx = false) const = 0;
+    virtual void pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot) = 0;
     virtual std::shared_ptr<PKX> emptyPkm() const = 0;
     
-    virtual void dex(PKX& pk) = 0;
+    virtual void dex(std::shared_ptr<PKX> pk) = 0;
     virtual int emptyGiftLocation(void) const = 0;
     virtual std::vector<MysteryGift::giftData> currentGifts(void) const = 0;
     virtual std::unique_ptr<WCX> mysteryGift(int pos) const = 0;

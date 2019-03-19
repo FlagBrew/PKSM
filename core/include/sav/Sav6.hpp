@@ -77,18 +77,18 @@ public:
     u32 boxOffset(u8 box, u8 slot) const override;
     u32 partyOffset(u8 slot) const override;
     
-    std::unique_ptr<PKX> pkm(u8 slot) const override;
-    std::unique_ptr<PKX> pkm(u8 box, u8 slot, bool ekx = false) const override;
+    std::shared_ptr<PKX> pkm(u8 slot) const override;
+    std::shared_ptr<PKX> pkm(u8 box, u8 slot, bool ekx = false) const override;
 
     // NOTICE: this sets a pkx into the savefile, not a pkx
     // that's because PKSM works with decrypted boxes and
     // crypts them back during resigning
-    void pkm(PKX& pk, u8 box, u8 slot) override;
-    void pkm(PKX& pk, u8 slot) override;
+    void pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot) override;
+    void pkm(std::shared_ptr<PKX> pk, u8 slot) override;
 
     std::shared_ptr<PKX> emptyPkm() const override;
 
-    void dex(PKX& pk) override;
+    void dex(std::shared_ptr<PKX> pk) override;
     int emptyGiftLocation(void) const override;
     std::vector<MysteryGift::giftData> currentGifts(void) const override;
     void mysteryGift(WCX& wc, int& pos) override;

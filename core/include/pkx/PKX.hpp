@@ -59,7 +59,7 @@ public:
     virtual u8* rawData(void) { return data; }
     void decrypt(void);
     void encrypt(void);
-    virtual std::unique_ptr<PKX> clone(void) = 0;
+    virtual std::shared_ptr<PKX> clone(void) = 0;
     virtual ~PKX() { };
 
     virtual Generation generation(void) const = 0;
@@ -211,8 +211,8 @@ public:
     virtual int partyLevel(void) const = 0;
     virtual void partyLevel(u8 v) = 0;
 
-    virtual std::unique_ptr<PKX> previous(void) const { return std::unique_ptr<PKX>(const_cast<PKX*>(this)); }
-    virtual std::unique_ptr<PKX> next(void) const { return std::unique_ptr<PKX>(const_cast<PKX*>(this)); }
+    virtual std::shared_ptr<PKX> previous(void) const { return std::shared_ptr<PKX>(const_cast<PKX*>(this)); }
+    virtual std::shared_ptr<PKX> next(void) const { return std::shared_ptr<PKX>(const_cast<PKX*>(this)); }
 
     u32 getLength(void) const { return length; }
     static u8 genFromBytes(u8* data, size_t length, bool ekx = false);

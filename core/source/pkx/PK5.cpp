@@ -78,7 +78,7 @@ PK5::PK5(u8* dt, bool ekx, bool party)
         decrypt();
 }
 
-std::unique_ptr<PKX> PK5::clone(void) { return std::make_unique<PK5>(data, false, length == 236); }
+std::shared_ptr<PKX> PK5::clone(void) { return std::make_shared<PK5>(data, false, length == 236); }
 
 Generation PK5::generation(void) const { return Generation::FIVE; }
 
@@ -498,7 +498,7 @@ static void fixString(std::u16string& fixString)
     }
 }
 
-std::unique_ptr<PKX> PK5::next(void) const
+std::shared_ptr<PKX> PK5::next(void) const
 {
     u8 dt[232] = {0};
     PK6 *pk6 = new PK6(dt);
@@ -680,10 +680,10 @@ std::unique_ptr<PKX> PK5::next(void) const
     pk6->nickname(StringUtils::UTF16toUTF8(toFix).c_str());
 
     pk6->refreshChecksum();
-    return std::unique_ptr<PKX>(pk6);
+    return std::shared_ptr<PKX>(pk6);
 }
 
-std::unique_ptr<PKX> PK5::previous(void) const
+std::shared_ptr<PKX> PK5::previous(void) const
 {
     u8 dt[136];
     std::copy(data, data + 136, dt);
@@ -691,7 +691,7 @@ std::unique_ptr<PKX> PK5::previous(void) const
     // Clear nature field
     dt[0x41] = 0;
 
-    PK4* pk4 = new PK4(dt);
+    std::shared_ptr<PKX> pk4 = std::make_shared<PK4>(dt);
 
     // Force normal Arceus form
     if (pk4->species() == 493)
@@ -715,7 +715,7 @@ std::unique_ptr<PKX> PK5::previous(void) const
     pk4->fixMoves();
 
     pk4->refreshChecksum();
-    return std::unique_ptr<PKX>(pk4);
+    return pk4;
 }
 
 int PK5::partyCurrHP(void) const

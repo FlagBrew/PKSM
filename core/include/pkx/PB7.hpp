@@ -44,7 +44,7 @@ public:
     PB7(u8* dt, bool ekx = false);
     virtual ~PB7() { delete[] data; }
 
-    std::unique_ptr<PKX> clone(void) override;
+    std::shared_ptr<PKX> clone(void) override;
 
     Generation generation() const override;
 

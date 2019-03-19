@@ -80,7 +80,7 @@ PK7::PK7(u8* dt, bool ekx, bool party)
     }
 }
 
-std::unique_ptr<PKX> PK7::clone(void) { return std::make_unique<PK7>(data, false, length == 260); }
+std::shared_ptr<PKX> PK7::clone(void) { return std::make_shared<PK7>(data, false, length == 260); }
 
 Generation PK7::generation(void) const { return Generation::SEVEN; }
 
@@ -435,7 +435,7 @@ u16 PK7::stat(const u8 stat) const
     return calc * mult / 10;
 }
 
-std::unique_ptr<PKX> PK7::previous(void) const
+std::shared_ptr<PKX> PK7::previous(void) const
 {
     u8 dt[232];
     std::copy(data, data + 232, dt);
@@ -480,7 +480,7 @@ std::unique_ptr<PKX> PK7::previous(void) const
     pk6->fixMoves();
 
     pk6->refreshChecksum();
-    return std::unique_ptr<PKX>(pk6);
+    return std::shared_ptr<PKX>(pk6);
 }
 
 int PK7::partyCurrHP(void) const
