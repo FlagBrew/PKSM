@@ -216,7 +216,7 @@ StorageScreen::~StorageScreen()
         int occupiedSlots = 0;
         for (int i = 0; i < TitleLoader::save->maxSlot(); i++)
         {
-            if (TitleLoader::save->pkm(0, i)->encryptionConstant())
+            if (TitleLoader::save->pkm(u8(0), i)->encryptionConstant())
             {
                 occupiedSlots++;
             }
