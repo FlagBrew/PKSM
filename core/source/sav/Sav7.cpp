@@ -102,7 +102,7 @@ void Sav7::pkm(std::shared_ptr<PKX> pk, u8 slot)
 {
     u8 buf[260] = {0};
     std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
-    std::unique_ptr<PKX> pk7 = std::make_unique<PK7>(buf, false, true);
+    std::unique_ptr<PK7> pk7 = std::make_unique<PK7>(buf, false, true);
 
     if (pk->getLength() != 260)
     {
