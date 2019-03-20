@@ -210,7 +210,7 @@ void Bank::loadExtData()
         in.read(jsonData, jsonSize);
         in.close();
         jsonData[jsonSize] = '\0';
-        boxNames = nlohmann::json::parse(jsonData);
+        boxNames = nlohmann::json::parse(jsonData, nullptr, false);
         if (boxNames.is_discarded())
         {
             createJSON();

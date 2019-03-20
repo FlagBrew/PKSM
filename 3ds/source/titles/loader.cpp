@@ -151,26 +151,29 @@ void TitleLoader::scanSaves(void)
                 }
             }
         }
-        auto others = Configuration::getInstance().extraSaves(id);
-        if (!others.first.empty())
+        auto extraSaves = Configuration::getInstance().extraSaves(id);
+        // if (!others.first.empty())
+        // {
+        //     for (auto saveDir : others.first)
+        //     {
+        //         Directory dir(Archive::sd(), StringUtils::UTF8toUTF16(saveDir));
+        //         for (size_t j = 0; j < dir.count(); j++)
+        //         {
+        //             if (dir.folder(j))
+        //             {
+        //                 saves.push_back(saveDir + StringUtils::UTF16toUTF8(sSeparator + dir.item(j)) + "/main");
+        //             }
+        //         }
+        //     }
+        // }
+        if (!extraSaves.empty())
         {
-            for (auto saveDir : others.first)
+            for (auto& save : extraSaves)
             {
-                Directory dir(Archive::sd(), StringUtils::UTF8toUTF16(saveDir));
-                for (size_t j = 0; j < dir.count(); j++)
+                if (io::exists(save))
                 {
-                    if (dir.folder(j))
-                    {
-                        saves.push_back(saveDir + StringUtils::UTF16toUTF8(sSeparator + dir.item(j)) + "/main");
-                    }
+                    saves.push_back(save);
                 }
-            }
-        }
-        if (!others.second.empty())
-        {
-            for (auto save : others.second)
-            {
-                saves.push_back(save);
             }
         }
         sdSaves[id] = saves;
@@ -204,35 +207,15 @@ void TitleLoader::scanSaves(void)
                     }
                 }
             }
-            auto others = Configuration::getInstance().extraSaves(id);
-            if (!others.first.empty())
+            auto extraSaves = Configuration::getInstance().extraSaves(id);
+            if (!extraSaves.empty())
             {
-                for (auto saveDir : others.first)
+                for (auto& save : extraSaves)
                 {
-                    Directory dir(Archive::sd(), StringUtils::UTF8toUTF16(saveDir));
-                    for (size_t i = 0; i < dir.count(); i++)
+                    if (io::exists(save))
                     {
-                        if (dir.folder(i))
-                        {
-                            std::u16string thisDir = StringUtils::UTF8toUTF16(saveDir) + sSeparator + dir.item(i);
-                            Directory subdir(Archive::sd(), thisDir);
-                            for (size_t j = 0; j < subdir.count(); j++)
-                            {
-                                std::u16string file = subdir.item(j);
-                                if (file.substr(file.size() - 3) == StringUtils::UTF8toUTF16("sav"))
-                                {
-                                    saves.push_back(StringUtils::UTF16toUTF8(thisDir + sSeparator + file));
-                                }
-                            }
-                        }
+                        saves.push_back(save);
                     }
-                }
-            }
-            if (!others.second.empty())
-            {
-                for (auto save : others.second)
-                {
-                    saves.push_back(save);
                 }
             }
             sdSaves[id] = saves;

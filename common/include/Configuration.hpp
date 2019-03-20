@@ -35,7 +35,7 @@
 class Configuration
 {
 public:
-    static constexpr int CURRENT_VERSION = 4;
+    static constexpr int CURRENT_VERSION = 5;
 
     static Configuration& getInstance(void)
     {
@@ -103,8 +103,8 @@ public:
         return mJson["defaults"]["date"]["year"];
     }
 
-    // Folders, then files
-    std::pair<std::vector<std::string>, std::vector<std::string>> extraSaves(std::string id);
+    // Files
+    std::vector<std::string> extraSaves(const std::string& id);
 
     bool writeFileSave(void)
     {
@@ -166,7 +166,7 @@ public:
         mJson["defaults"]["sid"] = sid;
     }
 
-    void defaultOT(std::string ot)
+    void defaultOT(const std::string& ot)
     {
         mJson["defaults"]["ot"] = ot;
     }
@@ -194,7 +194,7 @@ public:
     // This assumes that we'll have a way to set them in the config screen, something that I'm not sure about
     // as that would require basically implementing a file browser. Maybe have it be manual, just like Checkpoint?
     // I implemented it just in case
-    void extraSaves(std::string id, std::pair<std::vector<std::string>, std::vector<std::string>>& saves);
+    void extraSaves(const std::string& id, std::vector<std::string>& saves);
 
     void writeFileSave(bool write)
     {

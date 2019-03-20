@@ -45,7 +45,7 @@ Configuration::Configuration()
         jsonData[oldSize] = '\0';
         stream.read(jsonData, oldSize);
         stream.close();
-        mJson = nlohmann::json::parse(jsonData);
+        mJson = nlohmann::json::parse(jsonData, nullptr, false);
         delete[] jsonData;
 
         if (mJson.is_discarded())
@@ -55,6 +55,7 @@ Configuration::Configuration()
         }
         else if (mJson.find("version") == mJson.end())
         {
+            Gui::warn("Version not found in config file!", "Using default.");
             loadFromRomfs();
         }
         else if (mJson["version"].get<int>() != CURRENT_VERSION)
@@ -81,6 +82,22 @@ Configuration::Configuration()
                 CFGU_SecureInfoGetRegion(countryData);
                 mJson["defaults"]["nationality"] = countryData[0];
             }
+            if (mJson["version"].get<int>() < 5)
+            {
+                for (auto& game : mJson["extraSaves"])
+                {
+                    game.erase("folders");
+                    if (game.count("files") > 0)
+                    {
+                        nlohmann::json tmp = game["files"];
+                        game = tmp;
+                    }
+                    else
+                    {
+                        game = nlohmann::json::array();
+                    }
+                }
+            }
 
             mJson["version"] = CURRENT_VERSION;
             save();
@@ -106,41 +123,18 @@ void Configuration::save()
     stream.close();
 }
 
-std::pair<std::vector<std::string>, std::vector<std::string>> Configuration::extraSaves(std::string id)
+std::vector<std::string> Configuration::extraSaves(const std::string& id)
 {
-    std::vector<std::string> folders = {}, files = {};
-    if (mJson["extraSaves"].find(id) != mJson["extraSaves"].end())
+    if (mJson["extraSaves"].count(id) > 0)
     {
-        if (mJson["extraSaves"][id].find("folders") != mJson["extraSaves"][id].end())
-        {
-            nlohmann::json add = mJson["extraSaves"][id]["folders"];
-            for (size_t i = 0; i < add.size(); i++)
-            {
-                folders.push_back(add[i]);
-            }
-        }
-        if (mJson["extraSaves"][id].find("files") != mJson["extraSaves"][id].end())
-        {
-            nlohmann::json add = mJson["extraSaves"][id]["files"];
-            for (size_t i = 0; i < add.size(); i++)
-            {
-                files.push_back(add[i]);
-            }
-        }
+        return mJson["extraSaves"][id].get<std::vector<std::string>>();
     }
-    return {folders, files};
+    return {};
 }
 
-void Configuration::extraSaves(std::string id, std::pair<std::vector<std::string>, std::vector<std::string>>& value)
+void Configuration::extraSaves(const std::string& id, std::vector<std::string>& value)
 {
-    if (!value.first.empty())
-    {
-        mJson["extraSaves"][id]["folders"] = value.first;
-    }
-    if (!value.second.empty())
-    {
-        mJson["extraSaves"][id]["files"] = value.second;
-    }
+    mJson["extraSaves"][id] = value;
 }
 
 void Configuration::loadFromRomfs()
