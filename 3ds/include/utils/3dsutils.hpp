@@ -33,6 +33,10 @@
 namespace StringUtils
 {
     float textWidth(const C2D_Text& str, float scaleX);
+
+    bool fontHasChar(const C2D_Font& font, u16 codepoint);
+    std::vector<std::string> fontSplit(const std::string& str);
+    C2D_Font fontForSplitString(const std::string& str);
 }
 
 #endif

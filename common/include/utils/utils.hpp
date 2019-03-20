@@ -410,10 +410,6 @@ namespace StringUtils
     std::string wrap(const std::string& str, float scaleX, float maxWidth);
     // Wraps and truncates to X lines, adding an ellipsis to the end
     std::string wrap(const std::string& str, float scaleX, float maxWidth, size_t lines);
-
-    bool fontHasChar(const C2D_Font& font, u16 codepoint);
-    std::vector<std::string> fontSplit(const std::string& str);
-    C2D_Font fontForSplitString(const std::string& str);
 }
 
 #endif
