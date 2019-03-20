@@ -71,10 +71,10 @@ void Bank::load()
             for (int slot = 0; slot < 30; slot++)
             {
                 u8* pkmData = oldData + box * (232 * 30) + slot * 232;
-                std::unique_ptr<PKX> pkm = std::make_unique<PK6>(pkmData, false);
+                std::shared_ptr<PKX> pkm = std::make_shared<PK6>(pkmData, false);
                 if ((pkm->encryptionConstant() == 0 && pkm->species() == 0))
                 {
-                    this->pkm(*pkm, box, slot);
+                    this->pkm(pkm, box, slot);
                     continue;
                 }
                 bool badMove = false;
@@ -97,7 +97,7 @@ void Bank::load()
                     || pkm->heldItem() > 775
                     || badMove)
                 {
-                    pkm = std::make_unique<PK7>(pkmData, false);
+                    pkm = std::make_shared<PK7>(pkmData, false);
                 }
                 else if (((PK6*)pkm.get())->encounterType() != 0)
                 {
@@ -105,11 +105,11 @@ void Bank::load()
                     {
                         if (!pkm->gen4() || ((PK6*)pkm.get())->encounterType() > 24) // Either isn't from Gen 4 or has invalid encounter type
                         {
-                            pkm = std::make_unique<PK7>(pkmData, false);
+                            pkm = std::make_shared<PK7>(pkmData, false);
                         }
                     }
                 }
-                this->pkm(*pkm, box, slot);
+                this->pkm(pkm, box, slot);
             }
         }
 
@@ -415,7 +415,7 @@ void Bank::resize()
     size = newSize;
 }
 
-std::unique_ptr<PKX> Bank::pkm(int box, int slot) const
+std::shared_ptr<PKX> Bank::pkm(int box, int slot) const
 {
     BankEntry* bank = (BankEntry*)(data + sizeof(BankHeader));
     int index = box * 30 + slot;
@@ -431,7 +431,7 @@ std::unique_ptr<PKX> Bank::pkm(int box, int slot) const
                     break;
                 }
             }
-            return std::make_unique<PK4>(bank[index].data, false, party);
+            return std::make_shared<PK4>(bank[index].data, false, party);
 
         case Generation::FIVE:
             for (int i = 260; i > 136; i--)
@@ -442,7 +442,7 @@ std::unique_ptr<PKX> Bank::pkm(int box, int slot) const
                     break;
                 }
             }
-            return std::make_unique<PK5>(bank[index].data, false, party);
+            return std::make_shared<PK5>(bank[index].data, false, party);
 
         case Generation::SIX:
             for (int i = 260; i > 232; i--)
@@ -453,7 +453,7 @@ std::unique_ptr<PKX> Bank::pkm(int box, int slot) const
                     break;
                 }
             }
-            return std::make_unique<PK6>(bank[index].data, false, party);
+            return std::make_shared<PK6>(bank[index].data, false, party);
 
         case Generation::SEVEN:
             for (int i = 260; i > 232; i--)
@@ -464,33 +464,33 @@ std::unique_ptr<PKX> Bank::pkm(int box, int slot) const
                     break;
                 }
             }
-            return std::make_unique<PK7>(bank[index].data, false, party);
+            return std::make_shared<PK7>(bank[index].data, false, party);
 
         case Generation::LGPE:
-            return std::make_unique<PB7>(bank[index].data, false);
+            return std::make_shared<PB7>(bank[index].data, false);
 
         case Generation::UNUSED:
         default:
-            return std::make_unique<PK7>();
+            return std::make_shared<PK7>();
     }
 }
 
-void Bank::pkm(PKX& pkm, int box, int slot)
+void Bank::pkm(std::shared_ptr<PKX> pkm, int box, int slot)
 {
     BankEntry* bank = (BankEntry*)(data + sizeof(BankHeader));
     int index = box * 30 + slot;
     BankEntry newEntry;
-    if (pkm.species() == 0)
+    if (pkm->species() == 0)
     {
         std::fill_n((char*) &newEntry, sizeof(BankEntry), 0xFF);
         bank[index] = newEntry;
         return;
     }
-    newEntry.gen = pkm.generation();
-    std::copy(pkm.rawData(), pkm.rawData() + pkm.getLength(), newEntry.data);
-    if (pkm.getLength() < 260)
+    newEntry.gen = pkm->generation();
+    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), newEntry.data);
+    if (pkm->getLength() < 260)
     {
-        std::fill_n(newEntry.data + pkm.getLength(), 260 - pkm.getLength(), 0xFF);
+        std::fill_n(newEntry.data + pkm->getLength(), 260 - pkm->getLength(), 0xFF);
     }
     bank[index] = newEntry;
 }

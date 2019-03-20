@@ -149,22 +149,22 @@ void Sav4::currentBox(u8 v)
 u32 Sav4::boxOffset(u8 box, u8 slot) const { return Box + 136*box*30 + (game == Game::HGSS ? box*0x10 : 0) + slot*136; }
 u32 Sav4::partyOffset(u8 slot) const { return Party + slot*236; }
 
-std::unique_ptr<PKX> Sav4::pkm(u8 slot) const
+std::shared_ptr<PKX> Sav4::pkm(u8 slot) const
 {
     u8 buf[236];
     u32 ofs = partyOffset(slot);
     std::copy(data + ofs, data + ofs + 236, buf);
-    return std::make_unique<PK4>(buf, true, true);
+    return std::make_shared<PK4>(buf, true, true);
 }
 
-void Sav4::pkm(PKX& pk, u8 slot)
+void Sav4::pkm(std::shared_ptr<PKX> pk, u8 slot)
 {
-    PK4* pk4 = (PK4*)&pk;
-    if (pk4->getLength() != 236)
-    {
-        u8 buf[236] = {0};
-        std::copy(pk4->rawData(), pk4->rawData() + pk4->getLength(), buf);
-        pk4 = new PK4(buf, false, true);
+    u8 buf[236] = {0};
+    std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
+    std::unique_ptr<PK4> pk4 = std::make_unique<PK4>(buf, false, true);
+
+    if (pk->getLength() != 236)
+    {        
         for (int i = 0; i < 6; i++)
         {
             pk4->partyStat(i, pk4->stat(i));
@@ -172,28 +172,23 @@ void Sav4::pkm(PKX& pk, u8 slot)
         pk4->partyLevel(pk4->level());
         pk4->partyCurrHP(pk4->stat(0));
     }
+
     pk4->encrypt();
     std::fill(data + partyOffset(slot), data + partyOffset(slot + 1), (u8)0);
     std::copy(pk4->rawData(), pk4->rawData() + pk4->getLength(), data + partyOffset(slot));
-    pk4->decrypt();
-    if (pk4 != &pk)
-    {
-        delete pk4;
-    }
 }
 
-std::unique_ptr<PKX> Sav4::pkm(u8 box, u8 slot, bool ekx) const
+std::shared_ptr<PKX> Sav4::pkm(u8 box, u8 slot, bool ekx) const
 {
     u8 buf[136];
     u32 ofs = boxOffset(box, slot);
     std::copy(data + ofs, data + ofs + 136, buf);
-    return std::make_unique<PK4>(buf, ekx);
+    return std::make_shared<PK4>(buf, ekx);
 }
 
-void Sav4::pkm(PKX& pk, u8 box, u8 slot)
+void Sav4::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot)
 {
-    PK4* pk4 = (PK4*)&pk;
-    std::copy(pk4->rawData(), pk4->rawData() + 136, data + boxOffset(box, slot));
+    std::copy(pk->rawData(), pk->rawData() + 136, data + boxOffset(box, slot));
 }
 
 void Sav4::cryptBoxData(bool crypted)
@@ -202,12 +197,12 @@ void Sav4::cryptBoxData(bool crypted)
     {
         for (u8 slot = 0; slot < 30; slot++)
         {
-            std::unique_ptr<PKX> pk4 = pkm(box, slot, crypted);
+            std::shared_ptr<PKX> pk4 = pkm(box, slot, crypted);
             if (!crypted)
             {
                 pk4->encrypt();
             }
-            pkm(*pk4, box, slot);
+            pkm(pk4, box, slot);
         }
     }
 }
@@ -230,15 +225,15 @@ void Sav4::boxName(u8 box, std::string name)
 u8 Sav4::partyCount(void) const { return data[Party - 4]; }
 void Sav4::partyCount(u8 v) { data[Party - 4] = v; }
 
-void Sav4::dex(PKX& pk)
+void Sav4::dex(std::shared_ptr<PKX> pk)
 {
-    if (pk.species() == 0 || pk.species() > 493)
+    if (pk->species() == 0 || pk->species() > 493)
     {
         return;
     }
 
     static const int brSize = 0x40;
-    int bit = pk.species() - 1;
+    int bit = pk->species() - 1;
     u8 mask = (u8)(1 << (bit & 7));
     int ofs = PokeDex + (bit >> 3) + 0x4;
 
@@ -261,7 +256,7 @@ void Sav4::dex(PKX& pk)
     if ((data[ofs + brSize * 1] & mask) == 0) // Not seen
     {
         data[ofs + brSize * 1] |= mask; // Set seen
-        u8 gr = pk.genderType();
+        u8 gr = pk->genderType();
         switch (gr)
         {
             case 255: // Genderless
@@ -278,7 +273,7 @@ void Sav4::dex(PKX& pk)
                 bool f = (data[ofs + brSize * 3] & mask) != 0;
                 if (m || f) // bit already set?
                     break;
-                u8 gender = pk.gender() & 1;
+                u8 gender = pk->gender() & 1;
                 data[ofs + brSize * 2] &= ~mask; // unset
                 data[ofs + brSize * 3] &= ~mask; // unset
                 gender ^= 1; // Set OTHER gender seen bit so it appears second
@@ -288,33 +283,33 @@ void Sav4::dex(PKX& pk)
     }
 
     int formOffset = PokeDex + 4 + (brSize * 4) + 4;
-    std::vector<u8> forms = getForms(pk.species());
+    std::vector<u8> forms = getForms(pk->species());
     if (forms.size() > 0)
     {
-        if (pk.species() == 201) // Unown
+        if (pk->species() == 201) // Unown
         {
             for (u8 i = 0; i < 0x1C; i++)
             {
                 u8 val = data[formOffset + 4 + i];
-                if (val == pk.alternativeForm())
+                if (val == pk->alternativeForm())
                     break; // already set
                 if (val != 0xFF)
                     continue; // keep searching
 
-                data[formOffset + 4 + i] = (u8)pk.alternativeForm();
+                data[formOffset + 4 + i] = (u8)pk->alternativeForm();
                 break; // form now set
             }
         }
-        else if (pk.species() == 172 && game == Game::HGSS) // Pichu
+        else if (pk->species() == 172 && game == Game::HGSS) // Pichu
         {
-            u8 form = pk.alternativeForm() == 1 ? 2 : pk.gender();
+            u8 form = pk->alternativeForm() == 1 ? 2 : pk->gender();
             checkInsertForm(forms, form);
-            setForms(forms, pk.species());
+            setForms(forms, pk->species());
         }
         else
         {
-            checkInsertForm(forms, pk.alternativeForm());
-            setForms(forms, pk.species());
+            checkInsertForm(forms, pk->alternativeForm());
+            setForms(forms, pk->species());
         }
     }
 
@@ -324,7 +319,7 @@ void Sav4::dex(PKX& pk)
         int DPLangSpecies[] = { 23, 25, 54, 77, 120, 129, 202, 214, 215, 216, 228, 278, 287, 315 };
         for (int i = 0; i < 14; i++)
         {
-            if (pk.species() == DPLangSpecies[i])
+            if (pk->species() == DPLangSpecies[i])
             {
                 dpl = i + 1;
                 break;
@@ -335,7 +330,7 @@ void Sav4::dex(PKX& pk)
     
     // Set the Language
     int languageFlags = formOffset + (game == Game::HGSS ? 0x3C : 0x20);
-    int lang = pk.language() - 1;
+    int lang = pk->language() - 1;
     switch (lang) // invert ITA/GER
     {
         case 3:
@@ -348,7 +343,7 @@ void Sav4::dex(PKX& pk)
     if (lang > 5)
         lang = 0; // no KOR+
     lang = (lang < 0) ? 1 : lang; // default English
-    data[languageFlags + (game == Game::DP ? dpl : pk.species())] |= (u8)(1 << lang);
+    data[languageFlags + (game == Game::DP ? dpl : pk->species())] |= (u8)(1 << lang);
 }
 
 bool Sav4::checkInsertForm(std::vector<u8> &forms, u8 formNum)

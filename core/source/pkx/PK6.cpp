@@ -80,7 +80,7 @@ PK6::PK6(u8* dt, bool ekx, bool party)
     }
 }
 
-std::unique_ptr<PKX> PK6::clone(void) { return std::make_unique<PK6>(data, false, length == 260); }
+std::shared_ptr<PKX> PK6::clone(void) { return std::make_shared<PK6>(data, false, length == 260); }
 
 Generation PK6::generation(void) const { return Generation::SIX; }
 
@@ -449,7 +449,7 @@ u16 PK6::stat(const u8 stat) const
     return calc * mult / 10;
 }
 
-std::unique_ptr<PKX> PK6::next(void) const
+std::shared_ptr<PKX> PK6::next(void) const
 {
     u8 dt[232];
     std::copy(data, data + 232, dt);
@@ -491,10 +491,10 @@ std::unique_ptr<PKX> PK6::next(void) const
     pk7->geoRegion(0, TitleLoader::save->subRegion());
 
     pk7->refreshChecksum();
-    return std::unique_ptr<PKX>(pk7);
+    return std::shared_ptr<PKX>(pk7);
 }
 
-std::unique_ptr<PKX> PK6::previous(void) const
+std::shared_ptr<PKX> PK6::previous(void) const
 {
     u8 dt[232] = {0};
     PK5 *pk5 = new PK5(dt);
@@ -608,7 +608,7 @@ std::unique_ptr<PKX> PK6::previous(void) const
     }
 
     pk5->refreshChecksum();
-    return std::unique_ptr<PKX>(pk5);
+    return std::shared_ptr<PKX>(pk5);
 }
 
 int PK6::partyCurrHP(void) const

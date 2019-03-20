@@ -79,7 +79,7 @@ PB7::PB7(u8* dt, bool ekx)
     }
 }
 
-std::unique_ptr<PKX> PB7::clone(void) { return std::make_unique<PB7>(data); }
+std::shared_ptr<PKX> PB7::clone(void) { return std::make_shared<PB7>(data); }
 
 Generation PB7::generation(void) const { return Generation::LGPE; }
 

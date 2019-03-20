@@ -115,7 +115,7 @@ void BoxChoice::draw() const
             }
             else
             {
-                std::unique_ptr<PKX> pokemon = TitleLoader::save->pkm(boxBox, row * 6 + column);
+                std::shared_ptr<PKX> pokemon = TitleLoader::save->pkm(boxBox, row * 6 + column);
                 if (pokemon->species() > 0)
                 {
                     Gui::pkm(*pokemon, x, y);

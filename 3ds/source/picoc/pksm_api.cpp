@@ -237,24 +237,24 @@ extern "C" {
         int box = Param[2]->Val->Integer;
         int slot = Param[3]->Val->Integer;
 
-        std::unique_ptr<PKX> pkm = nullptr;
+        std::shared_ptr<PKX> pkm = nullptr;
 
         switch (gen)
         {
             case Generation::FOUR:
-                pkm = std::make_unique<PK4>(data, false);
+                pkm = std::make_shared<PK4>(data, false);
                 break;
             case Generation::FIVE:
-                pkm = std::make_unique<PK5>(data, false);
+                pkm = std::make_shared<PK5>(data, false);
                 break;
             case Generation::SIX:
-                pkm = std::make_unique<PK6>(data, false);
+                pkm = std::make_shared<PK6>(data, false);
                 break;
             case Generation::SEVEN:
-                pkm = std::make_unique<PK7>(data, false);
+                pkm = std::make_shared<PK7>(data, false);
                 break;
             case Generation::LGPE:
-                pkm = std::make_unique<PB7>(data, false);
+                pkm = std::make_shared<PB7>(data, false);
                 break;
             default:
                 Gui::warn("What did you do?", "Generation is incorrect!");
@@ -266,7 +266,7 @@ extern "C" {
             {
                 if (pkm->generation() == Generation::LGPE)
                 {
-                    TitleLoader::save->pkm(*pkm, box, slot);
+                    TitleLoader::save->pkm(pkm, box, slot);
                 }
             }
             else
@@ -342,7 +342,7 @@ extern "C" {
                         Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_MOVE"));
                         return;
                     }
-                    TitleLoader::save->pkm(*pkm, box, slot);
+                    TitleLoader::save->pkm(pkm, box, slot);
                 }
             }
         }
@@ -355,24 +355,24 @@ extern "C" {
         int box = Param[2]->Val->Integer;
         int slot = Param[3]->Val->Integer;
 
-        std::unique_ptr<PKX> pkm = nullptr;
+        std::shared_ptr<PKX> pkm = nullptr;
 
         switch (gen)
         {
             case Generation::FOUR:
-                pkm = std::make_unique<PK4>(data, true);
+                pkm = std::make_shared<PK4>(data, true);
                 break;
             case Generation::FIVE:
-                pkm = std::make_unique<PK5>(data, true);
+                pkm = std::make_shared<PK5>(data, true);
                 break;
             case Generation::SIX:
-                pkm = std::make_unique<PK6>(data, true);
+                pkm = std::make_shared<PK6>(data, true);
                 break;
             case Generation::SEVEN:
-                pkm = std::make_unique<PK7>(data, true);
+                pkm = std::make_shared<PK7>(data, true);
                 break;
             case Generation::LGPE:
-                pkm = std::make_unique<PB7>(data, true);
+                pkm = std::make_shared<PB7>(data, true);
                 break;
             default:
                 Gui::warn("What did you do?", "Generation is incorrect!");
@@ -384,7 +384,7 @@ extern "C" {
             {
                 if (pkm->generation() == Generation::LGPE)
                 {
-                    TitleLoader::save->pkm(*pkm, box, slot);
+                    TitleLoader::save->pkm(pkm, box, slot);
                 }
             }
             else
@@ -460,7 +460,7 @@ extern "C" {
                         Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_MOVE"));
                         return;
                     }
-                    TitleLoader::save->pkm(*pkm, box, slot);
+                    TitleLoader::save->pkm(pkm, box, slot);
                 }
             }
         }
@@ -642,24 +642,24 @@ extern "C" {
         int box = Param[2]->Val->Integer;
         int slot = Param[3]->Val->Integer;
 
-        std::unique_ptr<PKX> pkm = nullptr;
+        std::shared_ptr<PKX> pkm = nullptr;
 
         switch (gen)
         {
             case Generation::FOUR:
-                pkm = std::make_unique<PK4>(data, false);
+                pkm = std::make_shared<PK4>(data, false);
                 break;
             case Generation::FIVE:
-                pkm = std::make_unique<PK5>(data, false);
+                pkm = std::make_shared<PK5>(data, false);
                 break;
             case Generation::SIX:
-                pkm = std::make_unique<PK6>(data, false);
+                pkm = std::make_shared<PK6>(data, false);
                 break;
             case Generation::SEVEN:
-                pkm = std::make_unique<PK7>(data, false);
+                pkm = std::make_shared<PK7>(data, false);
                 break;
             case Generation::LGPE:
-                pkm = std::make_unique<PB7>(data, false);
+                pkm = std::make_shared<PB7>(data, false);
                 break;
             default:
                 Gui::warn("What did you do?", "Generation is incorrect!");
@@ -667,7 +667,7 @@ extern "C" {
         }
 
         Bank bank;
-        bank.pkm(*pkm, box, slot);
+        bank.pkm(pkm, box, slot);
         bank.save();
     }
 

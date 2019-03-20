@@ -288,12 +288,12 @@ void SavLGPE::playedSeconds(u8 v)
     *(data + 0x45403) = v;
 }
     
-std::unique_ptr<PKX> SavLGPE::pkm(u8 slot) const
+std::shared_ptr<PKX> SavLGPE::pkm(u8 slot) const
 {
     u32 off = partyOffset(slot);
     if (off != 0)
     {
-        return std::make_unique<PB7>(data + off);
+        return std::make_shared<PB7>(data + off);
     }
     else
     {
@@ -301,23 +301,21 @@ std::unique_ptr<PKX> SavLGPE::pkm(u8 slot) const
     }
 }
 
-std::unique_ptr<PKX> SavLGPE::pkm(u8 box, u8 slot, bool ekx) const
+std::shared_ptr<PKX> SavLGPE::pkm(u8 box, u8 slot, bool ekx) const
 {
-    return std::make_unique<PB7>(data + boxOffset(box, slot), ekx);
+    return std::make_shared<PB7>(data + boxOffset(box, slot), ekx);
 }
 
-void SavLGPE::pkm(PKX& pk, u8 box, u8 slot)
+void SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot)
 {
-    PB7* pb7 = (PB7*)&pk;
-    std::copy(pb7->rawData(), pb7->rawData() + pb7->getLength(), data + boxOffset(box, slot));
+    std::copy(pk->rawData(), pk->rawData() + pk->getLength(), data + boxOffset(box, slot));
 }
 
-void SavLGPE::pkm(PKX& pk, u8 slot)
+void SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 slot)
 {
-    PB7* pb7 = (PB7*)&pk;
     u32 off = partyOffset(slot);
     u16 newSlot = partyBoxSlot(slot);
-    if (pb7->encryptionConstant() == 0 && pb7->species() == 0)
+    if (pk->encryptionConstant() == 0 && pk->species() == 0)
     {
         if (off != 0)
         {
@@ -344,7 +342,7 @@ void SavLGPE::pkm(PKX& pk, u8 slot)
         }
     }
 
-    std::copy(pb7->rawData(), pb7->rawData() + pb7->getLength(), data + off);
+    std::copy(pk->rawData(), pk->rawData() + pk->getLength(), data + off);
     partyBoxSlot(slot, newSlot);
 }
 
@@ -446,21 +444,21 @@ void SavLGPE::setDexFlags(int index, int gender, int shiny, int baseSpecies)
     data[off + (4 + shift) * brSize + bd] |= (u8)(1 << bm);
 }
 
-void SavLGPE::dex(PKX& pk)
+void SavLGPE::dex(std::shared_ptr<PKX> pk)
 {
-    int n = pk.species();
+    int n = pk->species();
     int MaxSpeciesID = 809;
     int PokeDex = 0x2A00;
     int PokeDexLanguageFlags = PokeDex + 0x550;
 
-    if (n == 0 || n > MaxSpeciesID || pk.egg())
+    if (n == 0 || n > MaxSpeciesID || pk->egg())
         return;
 
     int bit = n - 1;
     int bd = bit >> 3;
     int bm = bit & 7;
-    int gender = pk.gender() % 2;
-    int shiny = pk.shiny() ? 1 : 0;
+    int gender = pk->gender() % 2;
+    int shiny = pk->shiny() ? 1 : 0;
     if (n == 351)
         shiny = 0;
     int shift = gender | (shiny << 1);
@@ -469,7 +467,7 @@ void SavLGPE::dex(PKX& pk)
     {
         if ((data[PokeDex + 0x84] & (1 << (shift + 4))) != 0)
         { // Already 2
-            *(u32*)(data + PokeDex + 0x8E8 + shift*4) = pk.encryptionConstant();
+            *(u32*)(data + PokeDex + 0x8E8 + shift*4) = pk->encryptionConstant();
             data[PokeDex + 0x84] |= (u8)(1 << shift);
         }
         else if ((data[PokeDex + 0x84] & (1 << shift)) == 0) 
@@ -481,7 +479,7 @@ void SavLGPE::dex(PKX& pk)
     int off = PokeDex + 0x08 + 0x80;
     data[off + bd] |= (u8)(1 << bm);
 
-    int formstart = pk.alternativeForm();
+    int formstart = pk->alternativeForm();
     int formend = formstart;
 
     int fs = 0, fe = 0;
@@ -507,7 +505,7 @@ void SavLGPE::dex(PKX& pk)
         setDexFlags(bitIndex, gender, shiny, n - 1);
     }
 
-    int lang = pk.language();
+    int lang = pk->language();
     const int langCount = 9;
     if (lang <= 10 && lang != 6 && lang != 0)
     {
@@ -535,7 +533,7 @@ void SavLGPE::cryptBoxData(bool crypted)
             {
                 pb7->encrypt();
             }
-            pkm(*pb7, box, slot);
+            pkm(pb7, box, slot);
         }
     }
 }
@@ -550,101 +548,101 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
             // Gui::warn(i18n::localize("LGPE_TOO_MANY_PKM"), i18n::localize("BAD_INJECT"));
             return;
         }
-        PB7 pkm;
-        pkm.species(wb7->species());
-        pkm.alternativeForm(wb7->alternativeForm());
+        std::shared_ptr<PB7> pkm = std::make_shared<PB7>();
+        pkm->species(wb7->species());
+        pkm->alternativeForm(wb7->alternativeForm());
         if (wb7->level() > 0)
         {
-            pkm.level(wb7->level());
-            pkm.partyLevel(wb7->level());
+            pkm->level(wb7->level());
+            pkm->partyLevel(wb7->level());
         }
         else
         {
-            pkm.level(randomNumbers() % 100 + 1);
-            pkm.partyLevel(pkm.level());
+            pkm->level(randomNumbers() % 100 + 1);
+            pkm->partyLevel(pkm->level());
         }
         if (wb7->metLevel() > 0)
         {
-            pkm.metLevel(wb7->metLevel());
+            pkm->metLevel(wb7->metLevel());
         }
         else
         {
-            pkm.metLevel(pkm.level());
+            pkm->metLevel(pkm->level());
         }
-        pkm.TID(wb7->TID());
-        pkm.SID(wb7->SID());
+        pkm->TID(wb7->TID());
+        pkm->SID(wb7->SID());
         for (int i = 0; i < 4; i++)
         {
-            pkm.move(i, wb7->move(i));
-            pkm.relearnMove(i, wb7->move(i));
+            pkm->move(i, wb7->move(i));
+            pkm->relearnMove(i, wb7->move(i));
         }
         if (wb7->nature() == 255)
         {
-            pkm.nature(randomNumbers() % 25);
+            pkm->nature(randomNumbers() % 25);
         }
         else
         {
-            pkm.nature(wb7->nature());
+            pkm->nature(wb7->nature());
         }
         if (wb7->gender() == 3)
         {
-            pkm.gender(randomNumbers() % 3);
+            pkm->gender(randomNumbers() % 3);
         }
         else
         {
-            pkm.gender(wb7->gender());
+            pkm->gender(wb7->gender());
         }
-        pkm.heldItem(wb7->heldItem());
-        pkm.encryptionConstant(wb7->encryptionConstant());
+        pkm->heldItem(wb7->heldItem());
+        pkm->encryptionConstant(wb7->encryptionConstant());
         if (wb7->version() == 0)
         {
-            pkm.version(wb7->version());
+            pkm->version(wb7->version());
         }
         else
         {
-            pkm.version(version());
+            pkm->version(version());
         }
-        pkm.language(language());
-        pkm.ball(wb7->ball());
-        pkm.country(country());
-        pkm.region(subRegion());
-        pkm.consoleRegion(consoleRegion());
-        pkm.metLocation(wb7->metLocation());
-        pkm.eggLocation(wb7->eggLocation());
+        pkm->language(language());
+        pkm->ball(wb7->ball());
+        pkm->country(country());
+        pkm->region(subRegion());
+        pkm->consoleRegion(consoleRegion());
+        pkm->metLocation(wb7->metLocation());
+        pkm->eggLocation(wb7->eggLocation());
         for (int i = 0; i < 6; i++)
         {
-            pkm.awakened(i, wb7->awakened(i));
-            pkm.ev(i, wb7->ev(i));
+            pkm->awakened(i, wb7->awakened(i));
+            pkm->ev(i, wb7->ev(i));
         }
         if (wb7->nickname((Language)language()).length() == 0)
         {
-            pkm.nickname(i18n::species(language(), pkm.species()).c_str());
+            pkm->nickname(i18n::species(language(), pkm->species()).c_str());
         }
         else
         {
-            pkm.nickname(wb7->nickname((Language)language()).c_str());
-            pkm.nicknamed(pkm.nickname() != i18n::species(language(), pkm.species()));
+            pkm->nickname(wb7->nickname((Language)language()).c_str());
+            pkm->nicknamed(pkm->nickname() != i18n::species(language(), pkm->species()));
         }
         if (wb7->otName((Language)language()).length() == 0)
         {
-            pkm.otName(otName().c_str());
-            pkm.otGender(gender());
-            pkm.currentHandler(0);
+            pkm->otName(otName().c_str());
+            pkm->otGender(gender());
+            pkm->currentHandler(0);
         }
         else
         {
-            pkm.otName(wb7->otName((Language)language()).c_str());
-            pkm.htName(otName().c_str());
-            pkm.otGender(wb7->otGender());
-            pkm.htGender(gender());
-            pkm.otFriendship(PersonalSMUSUM::baseFriendship(pkm.formSpecies())); // TODO: PersonalLGPE
-            pkm.currentHandler(1);
+            pkm->otName(wb7->otName((Language)language()).c_str());
+            pkm->htName(otName().c_str());
+            pkm->otGender(wb7->otGender());
+            pkm->htGender(gender());
+            pkm->otFriendship(PersonalSMUSUM::baseFriendship(pkm->formSpecies())); // TODO: PersonalLGPE
+            pkm->currentHandler(1);
         }
 
         int perfectIVs = 0;
         for (int i = 0; i < 6; i++)
         {
-            pkm.iv(randomNumbers() % 30 + 1); // Initialize IVs so that none are perfect (though they can be close)
+            pkm->iv(randomNumbers() % 30 + 1); // Initialize IVs so that none are perfect (though they can be close)
             if (wb7->iv(i) - 0xFC < 3)
             {
                 perfectIVs = wb7->iv(i) - 0xFB; // How many perfects should there be?
@@ -659,14 +657,14 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
                 do {
                     chosenIV = randomNumbers() % 6;
                 }
-                while (pkm.iv(chosenIV) == 31);
-                pkm.iv(chosenIV, 31);
+                while (pkm->iv(chosenIV) == 31);
+                pkm->iv(chosenIV, 31);
             }
             for (int i = 0; i < 6; i++)
             {
-                if (pkm.iv(i) != 31)
+                if (pkm->iv(i) != 31)
                 {
-                    pkm.iv(i, randomNumbers() % 32);
+                    pkm->iv(i, randomNumbers() % 32);
                 }
             }
         }
@@ -674,14 +672,14 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
         {
             for (int i = 0; i < 6; i++)
             {
-                pkm.iv(i, randomNumbers() % 32);
+                pkm->iv(i, randomNumbers() % 32);
             }
         }
 
         if (wb7->otGender() == 3)
         {
-            pkm.TID(TID());
-            pkm.SID(SID());
+            pkm->TID(TID());
+            pkm->SID(SID());
         }
 
         // Sets the ability to the one specific to the formSpecies and sets abilitynumber (Why? Don't quite understand that)
@@ -690,59 +688,59 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
             case 0:
             case 1:
             case 2:
-                pkm.ability(wb7->abilityType());
+                pkm->ability(wb7->abilityType());
                 break;
             case 3:
             case 4:
-                pkm.ability(randomNumbers() % (wb7->abilityType() - 1));
+                pkm->ability(randomNumbers() % (wb7->abilityType() - 1));
                 break;
         }
 
         switch (wb7->PIDType())
         {
             case 0: // Fixed value
-                pkm.PID(wb7->PID());
+                pkm->PID(wb7->PID());
                 break;
             case 1: // Random
-                pkm.PID((u32)randomNumbers());
+                pkm->PID((u32)randomNumbers());
                 break;
             case 2: // Always shiny
-                pkm.PID((u32)randomNumbers());
-                pkm.shiny(true);
+                pkm->PID((u32)randomNumbers());
+                pkm->shiny(true);
                 break;
             case 3: // Never shiny
-                pkm.PID((u32)randomNumbers());
-                pkm.shiny(false);
+                pkm->PID((u32)randomNumbers());
+                pkm->shiny(false);
                 break;
         }
 
         if (wb7->egg())
         {
-            pkm.egg(true);
-            pkm.eggYear(wb7->year());
-            pkm.eggMonth(wb7->month());
-            pkm.eggDay(wb7->day());
-            pkm.nickname(i18n::species(language(), pkm.species()).c_str());
-            pkm.nicknamed(true);
+            pkm->egg(true);
+            pkm->eggYear(wb7->year());
+            pkm->eggMonth(wb7->month());
+            pkm->eggDay(wb7->day());
+            pkm->nickname(i18n::species(language(), pkm->species()).c_str());
+            pkm->nicknamed(true);
         }
 
-        pkm.metDay(wb7->day());
-        pkm.metMonth(wb7->month());
-        pkm.metYear(wb7->year());
-        pkm.currentFriendship(PersonalSMUSUM::baseFriendship(pkm.formSpecies())); // TODO: PersonalLGPE
+        pkm->metDay(wb7->day());
+        pkm->metMonth(wb7->month());
+        pkm->metYear(wb7->year());
+        pkm->currentFriendship(PersonalSMUSUM::baseFriendship(pkm->formSpecies())); // TODO: PersonalLGPE
 
-        pkm.partyCP(pkm.CP());
-        pkm.partyCurrHP(pkm.stat(0));
+        pkm->partyCP(pkm->CP());
+        pkm->partyCurrHP(pkm->stat(0));
         for (int i = 0; i < 6; i++)
         {
-            pkm.partyStat(pkm.stat(i));
+            pkm->partyStat(pkm->stat(i));
         }
         
-        pkm.height(randomNumbers() % 256);
-        pkm.weight(randomNumbers() % 256);
-        pkm.fatefulEncounter(true);
+        pkm->height(randomNumbers() % 256);
+        pkm->weight(randomNumbers() % 256);
+        pkm->fatefulEncounter(true);
 
-        pkm.refreshChecksum();
+        pkm->refreshChecksum();
         SavLGPE::pkm(pkm, boxedPkm()); // qualify so there are no stupid errors
         boxedPkm(this->boxedPkm() + 1);
     }

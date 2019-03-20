@@ -77,7 +77,7 @@ PK4::PK4(u8* dt, bool ekx, bool party)
         decrypt();
 }
 
-std::unique_ptr<PKX> PK4::clone(void) { return std::make_unique<PK4>(data, false, length == 236); }
+std::shared_ptr<PKX> PK4::clone(void) { return std::make_shared<PK4>(data, false, length == 236); }
 
 Generation PK4::generation(void) const { return Generation::FOUR; }
 
@@ -499,7 +499,7 @@ u16 PK4::stat(const u8 stat) const
     return calc * mult / 10;
 }
 
-std::unique_ptr<PKX> PK4::next(void) const
+std::shared_ptr<PKX> PK4::next(void) const
 {
     u8 dt[136];
     std::copy(data, data + 136, dt);
@@ -510,7 +510,7 @@ std::unique_ptr<PKX> PK4::next(void) const
     // Clear PtHGSS met data
     *(u32*)(dt + 0x44) = 0;
 
-    std::unique_ptr<PKX> pk5(new PK5(dt));
+    std::shared_ptr<PKX> pk5 = std::make_shared<PK5>(dt);
 
     time_t t = time(NULL);
     struct tm* timeStruct = gmtime((const time_t *) &t);

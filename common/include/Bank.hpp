@@ -37,8 +37,8 @@ public:
     {
         delete[] data;
     }
-    std::unique_ptr<PKX> pkm(int box, int slot) const;
-    void pkm(PKX& pkm, int box, int slot);
+    std::shared_ptr<PKX> pkm(int box, int slot) const;
+    void pkm(std::shared_ptr<PKX> pkm, int box, int slot);
     void resize();
     void load();
     bool save() const;
