@@ -490,6 +490,8 @@ std::shared_ptr<PKX> PK6::next(void) const
     pk7->geoCountry(0, TitleLoader::save->country());
     pk7->geoRegion(0, TitleLoader::save->subRegion());
 
+    pk7->currentHandler(1);
+
     pk7->refreshChecksum();
     return std::shared_ptr<PKX>(pk7);
 }
