@@ -649,16 +649,18 @@ void Gui::sprite(int key, int x, int y)
     }
     else if (key == ui_sheet_emulated_button_qr_idx)
     {
-        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_box_hex_value_idx);
+        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx);
+        C2D_ImageTint tint;
+        C2D_PlainImageTint(&tint, COLOR_SELECTBLUE, 1.0f);
 
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, 5, 0);
         // Left
-        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f);
+        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f, &tint, 1.0f, 1.0f);
         // Right
-        C2D_DrawImageAt({sprite.tex, &tex}, x + 65, y, 0.5f, nullptr, -1.0f, 1.0f);
+        C2D_DrawImageAt({sprite.tex, &tex}, x + 65, y, 0.5f, &tint, -1.0f, 1.0f);
         // Middle
         tex = _select_box(sprite, 5, 0, 6, 0);
-        C2D_DrawImageAt({sprite.tex, &tex}, x + 5, y, 0.5f, nullptr, 60.0f, 1.0f);
+        C2D_DrawImageAt({sprite.tex, &tex}, x + 5, y, 0.5f, &tint, 60.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_button_item_idx)
     {
@@ -688,16 +690,18 @@ void Gui::sprite(int key, int x, int y)
     }
     else if (key == ui_sheet_emulated_box_search_idx)
     {
-        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_box_hex_value_idx);
+        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx);
+        C2D_ImageTint tint;
+        C2D_PlainImageTint(&tint, COLOR_SELECTBLUE, 1.0f);
         
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, 5, 0);
         // Left
-        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f);
+        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f, &tint, 1.0f, 1.0f);
         // Right
-        C2D_DrawImageAt({sprite.tex, &tex}, x + 165, y, 0.5f, nullptr, -1.0f, 1.0f);
+        C2D_DrawImageAt({sprite.tex, &tex}, x + 165, y, 0.5f, &tint, -1.0f, 1.0f);
         // Middle
         tex = _select_box(sprite, 5, 0, 6, 0);
-        C2D_DrawImageAt({sprite.tex, &tex}, x + 5, y, 0.5f, nullptr, 160.0f, 1.0f);
+        C2D_DrawImageAt({sprite.tex, &tex}, x + 5, y, 0.5f, &tint, 160.0f, 1.0f);
 
         C2D_DrawRectSolid(x + 20, y + 17, 0.5f, 144, 1, COLOR_WHITE);
     }
@@ -732,6 +736,42 @@ void Gui::sprite(int key, int x, int y)
     else if (key == ui_sheet_emulated_party_indicator_6_idx)
     {
         staticText("\u2465", x, y - 3, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    }
+    else if (key == ui_sheet_emulated_button_selected_blue_idx)
+    {
+        C2D_ImageTint tint;
+        C2D_PlainImageTint(&tint, COLOR_SELECTBLUE, 1.0f);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, 0.5f, &tint, 1.0f, 1.0f);
+    }
+    else if (key == ui_sheet_emulated_button_unselected_blue_idx)
+    {
+        C2D_ImageTint tint;
+        C2D_PlainImageTint(&tint, COLOR_UNSELECTBLUE, 1.0f);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, 0.5f, &tint, 1.0f, 1.0f);
+    }
+    else if (key == ui_sheet_emulated_button_unavailable_blue_idx)
+    {
+        C2D_ImageTint tint;
+        C2D_PlainImageTint(&tint, COLOR_UNAVAILBLUE, 1.0f);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, 0.5f, &tint, 1.0f, 1.0f);
+    }
+    else if (key == ui_sheet_emulated_button_selected_red_idx)
+    {
+        C2D_ImageTint tint;
+        C2D_PlainImageTint(&tint, COLOR_SELECTRED, 1.0f);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, 0.5f, &tint, 1.0f, 1.0f);
+    }
+    else if (key == ui_sheet_emulated_button_unselected_red_idx)
+    {
+        C2D_ImageTint tint;
+        C2D_PlainImageTint(&tint, COLOR_UNSELECTRED, 1.0f);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, 0.5f, &tint, 1.0f, 1.0f);
+    }
+    else if (key == ui_sheet_emulated_button_unavailable_red_idx)
+    {
+        C2D_ImageTint tint;
+        C2D_PlainImageTint(&tint, COLOR_UNAVAILRED, 1.0f);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, 0.5f, &tint, 1.0f, 1.0f);
     }
     // standard case
     else

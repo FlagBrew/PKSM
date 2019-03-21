@@ -9,7 +9,6 @@ bar_bottom_blue.png
 bar_bottom_red.png
 bar_boxname_empty.png
 bar_boxname_with_arrows.png
-box_hex_value.png
 bg_bottom_greyscale.png
 bg_stripe_bottom.png
 bg_stripe_top.png
@@ -18,15 +17,13 @@ bg_style_top.png
 bg_top_greyscale.png
 button_back.png
 button_editor.png
+button_greyscale.png
 button_info_detail_editor_dark.png
 button_info_detail_editor_light.png
 button_minus_small.png
 button_plus_small.png
-button_selected_text_button.png
 button_swap_boxes.png
 button_trainer_info.png
-button_unavailable_text_button.png
-button_unselected_text_button.png
 button_wireless.png
 eventmenu_bar_selected.png
 eventmenu_bar_unselected.png

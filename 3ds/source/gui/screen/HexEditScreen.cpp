@@ -1533,7 +1533,7 @@ void HexEditScreen::draw() const
     Gui::backgroundBottom(false);
     Gui::dynamicText(StringUtils::format("%s 0x%02X", i18n::localize("HEX_SELECTED_BYTE").c_str(), hid.fullIndex()), 160, 8, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-    Gui::sprite(ui_sheet_box_hex_value_idx, 140, 50);
+    Gui::sprite(ui_sheet_emulated_button_selected_blue_idx, 140, 50);
     Gui::dynamicText(StringUtils::format("%01X %01X", pkm->rawData()[hid.fullIndex()] >> 4, pkm->rawData()[hid.fullIndex()] & 0x0F), 160, 52, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     if (level >= selectedDescription.second)
     {

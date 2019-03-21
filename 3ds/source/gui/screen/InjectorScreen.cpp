@@ -87,7 +87,7 @@ InjectorScreen::InjectorScreen(nlohmann::json ids) : hid(40, 8), ids(ids), empty
     buttons.push_back(new Button(273, 102, 38, 23, [this](){ overwriteCard = false; return false; }, ui_sheet_res_null_idx, "", 0, 0));
     buttons.push_back(new Button(235, 135, 38, 23, [this](){ adaptLanguage = true; return false; }, ui_sheet_res_null_idx, "", 0, 0));
     buttons.push_back(new Button(273, 135, 38, 23, [this](){ adaptLanguage = false; return false; }, ui_sheet_res_null_idx, "", 0, 0));
-    buttons.push_back(new Button(255, 168, 38, 23, [this](){ choosingSlot = true; hid.select(slot - 1); return true; }, ui_sheet_button_unselected_text_button_idx, "", 0.0f, 0));
+    buttons.push_back(new Button(255, 168, 38, 23, [this](){ choosingSlot = true; hid.select(slot - 1); return true; }, ui_sheet_emulated_button_unselected_red_idx, "", 0.0f, 0));
     buttons.push_back(new Button(282, 212, 34, 28, [](){ Gui::screenBack(); return true; }, ui_sheet_button_back_idx, "", 0.0f, 0));
 
     changeDate();
@@ -125,7 +125,7 @@ InjectorScreen::InjectorScreen(std::unique_ptr<WCX> wcx) : wondercard(std::move(
             {
                 choosingSlot = true; hid.select(slot - 1); return true;
             }
-        }, TitleLoader::save->generation() == Generation::LGPE ? ui_sheet_button_unavailable_text_button_idx : ui_sheet_button_unselected_text_button_idx, "", 0.0f, 0));
+        }, TitleLoader::save->generation() == Generation::LGPE ? ui_sheet_emulated_button_unavailable_red_idx : ui_sheet_emulated_button_unselected_red_idx, "", 0.0f, 0));
     buttons.push_back(new Button(282, 212, 34, 28, [](){ Gui::screenBack(); return true; }, ui_sheet_button_back_idx, "", 0.0f, 0));
 }
 
@@ -158,18 +158,18 @@ void InjectorScreen::draw() const
                 {
                     if (langIndex == (int) lang)
                     {
-                        Gui::sprite(ui_sheet_button_selected_text_button_idx, x, y);
+                        Gui::sprite(ui_sheet_emulated_button_selected_red_idx, x, y);
                         Gui::dynamicText(std::string(languages[langIndex - 1]), x + 38 / 2, y + 2, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     }
                     else
                     {
-                        Gui::sprite(ui_sheet_button_unselected_text_button_idx, x, y);
+                        Gui::sprite(ui_sheet_emulated_button_unselected_red_idx, x, y);
                         Gui::dynamicText(std::string(languages[langIndex - 1]), x + 38 / 2, y + 2, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
                     }
                 }
                 else
                 {
-                    Gui::sprite(ui_sheet_button_unavailable_text_button_idx, x, y);
+                    Gui::sprite(ui_sheet_emulated_button_unavailable_red_idx, x, y);
                     Gui::dynamicText(std::string(languages[langIndex - 1]), x + 38 / 2, y + 2, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
                 }
             }
@@ -190,12 +190,12 @@ void InjectorScreen::draw() const
             const std::string& word = first ? i18n::localize("YES") : i18n::localize("NO");
             if (overwriteCard)
             {
-                Gui::sprite(ui_sheet_button_selected_text_button_idx, x, y);
+                Gui::sprite(ui_sheet_emulated_button_selected_red_idx, x, y);
                 Gui::dynamicText(word, x + 38 / 2, y + 2, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
             }
             else
             {
-                Gui::sprite(ui_sheet_button_unselected_text_button_idx, x, y);
+                Gui::sprite(ui_sheet_emulated_button_unselected_red_idx, x, y);
                 Gui::dynamicText(word, x + 38 / 2, y + 2, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
             }
             first = false;
@@ -203,31 +203,31 @@ void InjectorScreen::draw() const
     }
     if (overwriteCard)
     {
-        Gui::sprite(ui_sheet_button_selected_text_button_idx, 235, 103);
+        Gui::sprite(ui_sheet_emulated_button_selected_red_idx, 235, 103);
         Gui::dynamicText(i18n::localize("YES"), 235 + 38 / 2, 106, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-        Gui::sprite(ui_sheet_button_unselected_text_button_idx, 273, 103);
+        Gui::sprite(ui_sheet_emulated_button_unselected_red_idx, 273, 103);
         Gui::dynamicText(i18n::localize("NO"), 273 + 38 / 2, 106, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
     else
     {
-        Gui::sprite(ui_sheet_button_unselected_text_button_idx, 235, 103);
+        Gui::sprite(ui_sheet_emulated_button_unselected_red_idx, 235, 103);
         Gui::dynamicText(i18n::localize("YES"), 235 + 38 / 2, 106, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        Gui::sprite(ui_sheet_button_selected_text_button_idx, 273, 103);
+        Gui::sprite(ui_sheet_emulated_button_selected_red_idx, 273, 103);
         Gui::dynamicText(i18n::localize("NO"), 273 + 38 / 2, 106, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     }
 
     if (adaptLanguage)
     {
-        Gui::sprite(ui_sheet_button_selected_text_button_idx, 235, 136);
+        Gui::sprite(ui_sheet_emulated_button_selected_red_idx, 235, 136);
         Gui::dynamicText(i18n::localize("YES"), 235 + 38 / 2, 139, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-        Gui::sprite(ui_sheet_button_unselected_text_button_idx, 273, 136);
+        Gui::sprite(ui_sheet_emulated_button_unselected_red_idx, 273, 136);
         Gui::dynamicText(i18n::localize("NO"), 273 + 38 / 2, 139, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
     else
     {
-        Gui::sprite(ui_sheet_button_unselected_text_button_idx, 235, 136);
+        Gui::sprite(ui_sheet_emulated_button_unselected_red_idx, 235, 136);
         Gui::dynamicText(i18n::localize("YES"), 235 + 38 / 2, 139, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        Gui::sprite(ui_sheet_button_selected_text_button_idx, 273, 136);
+        Gui::sprite(ui_sheet_emulated_button_selected_red_idx, 273, 136);
         Gui::dynamicText(i18n::localize("NO"), 273 + 38 / 2, 139, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     }
 
