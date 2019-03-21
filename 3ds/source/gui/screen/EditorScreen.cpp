@@ -116,7 +116,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index)
         const time_t current = time(NULL);
         pkm->metDay(Configuration::getInstance().day() ? Configuration::getInstance().day() : gmtime(&current)->tm_mday);
         pkm->metMonth(Configuration::getInstance().month() ? Configuration::getInstance().month() : gmtime(&current)->tm_mon);
-        pkm->metYear(Configuration::getInstance().year() ? Configuration::getInstance().year() - 2000 : gmtime(&current)->tm_year);
+        pkm->metYear(Configuration::getInstance().year() ? Configuration::getInstance().year() - 2000 : gmtime(&current)->tm_year - 2000);
         pkm->metLevel(1);
         if (pkm->generation() == Generation::SIX)
         {

@@ -478,15 +478,11 @@ void InjectorScreen::changeDate()
     time_t current = time(NULL);
     int day = Configuration::getInstance().day() ? Configuration::getInstance().day() : gmtime(&current)->tm_mday;
     int month = Configuration::getInstance().month() ? Configuration::getInstance().month() : gmtime(&current)->tm_mon;
-    int year = Configuration::getInstance().year() ? Configuration::getInstance().year() - 2000 : gmtime(&current)->tm_year;
+    int year = Configuration::getInstance().year() ? Configuration::getInstance().year() - 2000 : gmtime(&current)->tm_year - 2000;
     switch (wondercard->generation())
     {
         case Generation::FOUR:
             newDate = day | (month << 8) | (year << 16);
-            if (newDate > (2000 << 16)) // get rid of the 2000 because u8 date
-            {
-                newDate -= (2000 << 16);
-            }
             wondercard->rawDate(newDate);
             break;
         case Generation::FIVE:
