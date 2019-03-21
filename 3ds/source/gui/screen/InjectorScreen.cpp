@@ -475,10 +475,14 @@ bool InjectorScreen::isLangAvailable(Language l) const
 void InjectorScreen::changeDate()
 {
     u32 newDate = 0;
+    time_t current = time(NULL);
+    int day = Configuration::getInstance().day() ? Configuration::getInstance().day() : gmtime(&current)->tm_mday;
+    int month = Configuration::getInstance().month() ? Configuration::getInstance().month() : gmtime(&current)->tm_mon;
+    int year = Configuration::getInstance().year() ? Configuration::getInstance().year() - 2000 : gmtime(&current)->tm_year;
     switch (wondercard->generation())
     {
         case Generation::FOUR:
-            newDate = Configuration::getInstance().day() | (Configuration::getInstance().month() << 8) | (Configuration::getInstance().year() << 16);
+            newDate = day | (month << 8) | (year << 16);
             if (newDate > (2000 << 16)) // get rid of the 2000 because u8 date
             {
                 newDate -= (2000 << 16);
@@ -486,17 +490,17 @@ void InjectorScreen::changeDate()
             wondercard->rawDate(newDate);
             break;
         case Generation::FIVE:
-            *((u8*)(&newDate)) = (u8)Configuration::getInstance().day();
-            *((u8*)(&newDate) + 1) = (u8)Configuration::getInstance().month();
-            *((u16*)(&newDate) + 1) = (u16)Configuration::getInstance().year();
+            *((u8*)(&newDate)) = (u8)day;
+            *((u8*)(&newDate) + 1) = (u8)month;
+            *((u16*)(&newDate) + 1) = (u16)year;
             wondercard->rawDate(newDate);
             break;
         case Generation::SIX:
         case Generation::SEVEN:
         case Generation::LGPE:
-            newDate = Configuration::getInstance().year() * 10000;
-            newDate += Configuration::getInstance().month() * 100;
-            newDate += Configuration::getInstance().day();
+            newDate = year * 10000;
+            newDate += month * 100;
+            newDate += day;
             wondercard->rawDate(newDate);
             break;
         case Generation::UNUSED:
