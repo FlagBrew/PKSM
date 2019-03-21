@@ -57,9 +57,10 @@ void sav_boxEncrypt(struct ParseState*, struct Value*, struct Value**, int);
 void sav_boxDecrypt(struct ParseState*, struct Value*, struct Value**, int);
 void sav_get_pkx(struct ParseState*, struct Value*, struct Value**, int);
 void sav_inject_pkx(struct ParseState*, struct Value*, struct Value**, int);
-void sav_inject_ekx(struct ParseState*, struct Value*, struct Value**, int);
 void current_directory(struct ParseState*, struct Value*, struct Value**, int);
 void read_directory(struct ParseState*, struct Value*, struct Value**, int);
 void i18n_species(struct ParseState*, struct Value*, struct Value**, int);
+void pkx_decrypt(struct ParseState*, struct Value*, struct Value**, int);
+void pkx_encrypt(struct ParseState*, struct Value*, struct Value**, int);
 
 #endif

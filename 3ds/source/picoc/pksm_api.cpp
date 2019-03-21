@@ -348,124 +348,6 @@ extern "C" {
         }
     }
 
-    void sav_inject_ekx(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
-    {
-        u8* data = (u8*) Param[0]->Val->Pointer;
-        Generation gen = Generation(Param[1]->Val->Integer);
-        int box = Param[2]->Val->Integer;
-        int slot = Param[3]->Val->Integer;
-
-        std::shared_ptr<PKX> pkm = nullptr;
-
-        switch (gen)
-        {
-            case Generation::FOUR:
-                pkm = std::make_shared<PK4>(data, true);
-                break;
-            case Generation::FIVE:
-                pkm = std::make_shared<PK5>(data, true);
-                break;
-            case Generation::SIX:
-                pkm = std::make_shared<PK6>(data, true);
-                break;
-            case Generation::SEVEN:
-                pkm = std::make_shared<PK7>(data, true);
-                break;
-            case Generation::LGPE:
-                pkm = std::make_shared<PB7>(data, true);
-                break;
-            default:
-                Gui::warn("What did you do?", "Generation is incorrect!");
-        }
-
-        if (pkm)
-        {
-            if (TitleLoader::save->generation() == Generation::LGPE)
-            {
-                if (pkm->generation() == Generation::LGPE)
-                {
-                    TitleLoader::save->pkm(pkm, box, slot);
-                }
-            }
-            else
-            {
-                if (pkm->generation() != Generation::LGPE)
-                {
-                    while (pkm->generation() != TitleLoader::save->generation())
-                    {
-                        if (pkm->generation() < TitleLoader::save->generation())
-                        {
-                            pkm = pkm->next();
-                        }
-                        else
-                        {
-                            pkm = pkm->previous();
-                        }
-                    }
-                    bool moveBad = false;
-                    for (int i = 0; i < 4; i++)
-                    {
-                        if (pkm->move(i) > TitleLoader::save->maxMove())
-                        {
-                            moveBad = true;
-                            break;
-                        }
-                        if (pkm->generation() == Generation::SIX)
-                        {
-                            PK6* pk6 = (PK6*) pkm.get();
-                            if (pk6->relearnMove(i) > TitleLoader::save->maxMove())
-                            {
-                                moveBad = true;
-                                break;
-                            }
-                        }
-                        else if (pkm->generation() == Generation::SEVEN)
-                        {
-                            PK7* pk7 = (PK7*) pkm.get();
-                            if (pk7->relearnMove(i) > TitleLoader::save->maxMove())
-                            {
-                                moveBad = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (pkm->species() > TitleLoader::save->maxSpecies())
-                    {
-                        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_SPECIES"));
-                        return;
-                    }
-                    else if (pkm->alternativeForm() > TitleLoader::save->formCount(pkm->species()))
-                    {
-                        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_FORM"));
-                        return;
-                    }
-                    else if (pkm->ability() > TitleLoader::save->maxAbility())
-                    {
-                        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_ABILITY"));
-                        return;
-                    }
-                    else if (pkm->heldItem() > TitleLoader::save->maxItem())
-                    {
-                        
-                        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_ITEM"));
-                        return;
-                    }
-                    else if (pkm->ball() > TitleLoader::save->maxBall())
-                    {
-                        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_BALL"));
-                        return;
-                    }
-                    else if (moveBad)
-                    {
-                        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_MOVE"));
-                        return;
-                    }
-                    TitleLoader::save->pkm(pkm, box, slot);
-                }
-            }
-        }
-    }
-
     void cfg_default_ot(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
     {
         ReturnValue->Val->Pointer = (void*)Configuration::getInstance().defaultOT().c_str();
@@ -708,5 +590,71 @@ extern "C" {
     void i18n_species(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
     {
         ReturnValue->Val->Pointer = (void*) i18n::species(Configuration::getInstance().language(), Param[0]->Val->Integer).c_str();
+    }
+
+    void pkx_decrypt(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        u8* data = (u8*) Param[0]->Val->Pointer;
+        Generation gen = Generation(Param[1]->Val->Integer);
+
+        std::shared_ptr<PKX> pkm = nullptr;
+
+        switch (gen)
+        {
+            case Generation::FOUR:
+                pkm = std::make_shared<PK4>(data, true);
+                break;
+            case Generation::FIVE:
+                pkm = std::make_shared<PK5>(data, true);
+                break;
+            case Generation::SIX:
+                pkm = std::make_shared<PK6>(data, true);
+                break;
+            case Generation::SEVEN:
+                pkm = std::make_shared<PK7>(data, true);
+                break;
+            case Generation::LGPE:
+                pkm = std::make_shared<PB7>(data, true);
+                break;
+            default:
+                Gui::warn("What did you do?", "Generation is incorrect!");
+                return;
+        }
+
+        std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), data);
+    }
+
+    void pkx_encrypt(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        u8* data = (u8*) Param[0]->Val->Pointer;
+        Generation gen = Generation(Param[1]->Val->Integer);
+
+        std::shared_ptr<PKX> pkm = nullptr;
+
+        switch (gen)
+        {
+            case Generation::FOUR:
+                pkm = std::make_shared<PK4>(data, false);
+                break;
+            case Generation::FIVE:
+                pkm = std::make_shared<PK5>(data, false);
+                break;
+            case Generation::SIX:
+                pkm = std::make_shared<PK6>(data, false);
+                break;
+            case Generation::SEVEN:
+                pkm = std::make_shared<PK7>(data, false);
+                break;
+            case Generation::LGPE:
+                pkm = std::make_shared<PB7>(data, false);
+                break;
+            default:
+                Gui::warn("What did you do?", "Generation is incorrect!");
+                return;
+        }
+
+        pkm->encrypt();
+
+        std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), data);
     }
 }
