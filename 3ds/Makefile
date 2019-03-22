@@ -127,8 +127,7 @@ CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O2 -mword-relocations \
 			-DUNIQUE_ID=${UNIQUE_ID} \
 			-DGIT_REV=\"$(GIT_REV)\" \
 			-DCITRA_DEBUG=${CITRA_DEBUG} \
-			`sdl-config --cflags` \
-			-DPICOC_DEBUG
+			`sdl-config --cflags`
 
 CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS -D_GNU_SOURCE=1
 

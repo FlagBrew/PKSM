@@ -174,11 +174,6 @@ Result App::init(std::string execPath)
     randomNumbers.seed(osGetTime());
 
     Gui::setScreen(std::make_unique<TitleLoadScreen>());
-
-#ifdef PICOC_DEBUG
-    // dup2(2, 1); // Redirects stdout to stderr for GDB to capture
-    consoleDebugInit(debugDevice_SVC);
-#endif
     // uncomment when needing to debug with GDB
     // while(aptMainLoop() && !(hidKeysDown() & KEY_START)) { hidScanInput(); }
 
