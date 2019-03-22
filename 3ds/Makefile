@@ -116,7 +116,7 @@ ICON_FLAGS		:=	nosavebackups,visible
 ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
 
 CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O2 -mword-relocations \
-			-fomit-frame-pointer -ffunction-sections \
+			-fomit-frame-pointer -ffunction-sections -flto \
 			-Wno-implicit-fallthrough -Wno-unused-parameter \
 			$(ARCH) \
 			-DQUIRC_MAX_REGIONS=10000 \

@@ -728,13 +728,13 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
             case 0x60 ... 0x61:
                 return std::make_pair(&i18n::localize("MOVE_4_ID"), NORMAL);
             case 0x62:
-                return std::make_pair(&i18n::localize("MOVE_1_CURRENT_PP"), OPEN);
+                return std::make_pair(&i18n::localize("MOVE_1_CURRENT_PP"), NORMAL);
             case 0x63:
-                return std::make_pair(&i18n::localize("MOVE_2_CURRENT_PP"), OPEN);
+                return std::make_pair(&i18n::localize("MOVE_2_CURRENT_PP"), NORMAL);
             case 0x64:
-                return std::make_pair(&i18n::localize("MOVE_3_CURRENT_PP"), OPEN);
+                return std::make_pair(&i18n::localize("MOVE_3_CURRENT_PP"), NORMAL);
             case 0x65:
-                return std::make_pair(&i18n::localize("MOVE_4_CURRENT_PP"), OPEN);
+                return std::make_pair(&i18n::localize("MOVE_4_CURRENT_PP"), NORMAL);
             case 0x66:
                 return std::make_pair(&i18n::localize("MOVE_1_PP_UPS"), NORMAL);
             case 0x67:
