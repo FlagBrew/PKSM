@@ -103,6 +103,11 @@ static Result downloadAdditionalAssets(void) {
             if (status == 0) return -1;
             Result res1 = download(item.url.c_str(), item.path.c_str());
             if (R_FAILED(res1)) return res1;
+            if (!matchSha256HashFromFile(item.path, item.hash))
+            {
+                std::remove(item.path.c_str());
+                return -1;
+            }
         }
     }
     return res;
@@ -161,7 +166,7 @@ Result App::init(std::string execPath)
     }
 
     if (R_FAILED(res = downloadAdditionalAssets()))
-        return consoleDisplayError("Additional assets download failed.\n\nAlways make sure you're connected to the internet.", res);
+        return consoleDisplayError("Additional assets download failed.\n\nAlways make sure you're connected to the internet and on the lastest version.", res);
     if (R_FAILED(res = Gui::init()))
         return consoleDisplayError("Gui::init failed.", res);
     
