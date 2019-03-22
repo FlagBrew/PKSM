@@ -43,6 +43,9 @@ struct LibraryFunction UnixFunctions[] =
     { net_udp_receiver, "int net_udp_recv(char* buffer, int size, int* received);" },
     // i18n
     { i18n_species,     "char* i18n_species(int species);" },
+    // text conversion
+    { pksm_utf16_to_utf8, "char* utf16_to_utf8(char* data);" },
+    { pksm_utf8_to_utf16, "char* utf8_to_utf16(char* data);" },
     // end
     { NULL,             NULL }
 };

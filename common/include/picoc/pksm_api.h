@@ -62,5 +62,8 @@ void read_directory(struct ParseState*, struct Value*, struct Value**, int);
 void i18n_species(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_decrypt(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_encrypt(struct ParseState*, struct Value*, struct Value**, int);
+// PKSM prefix to prevent name hiding
+void pksm_utf8_to_utf16(struct ParseState*, struct Value*, struct Value**, int);
+void pksm_utf16_to_utf8(struct ParseState*, struct Value*, struct Value**, int);
 
 #endif

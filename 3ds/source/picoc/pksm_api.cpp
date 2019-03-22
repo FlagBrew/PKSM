@@ -43,6 +43,22 @@
 extern "C" {
 #include "pksm_api.h"
 
+    static void checkGen(struct ParseState* Parser, Generation gen)
+    {
+        switch (gen)
+        {
+            case Generation::FOUR:
+            case Generation::FIVE:
+            case Generation::SIX:
+            case Generation::SEVEN:
+            case Generation::LGPE:
+                break;
+            default:
+                ProgramFail(Parser, "Generation is not possible!");
+                break;
+        }
+    }
+
     void gui_warn(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
     {
         char* lineOne = (char*) Param[0]->Val->Pointer;
@@ -236,6 +252,7 @@ extern "C" {
         Generation gen = Generation(Param[1]->Val->Integer);
         int box = Param[2]->Val->Integer;
         int slot = Param[3]->Val->Integer;
+        checkGen(Parser, gen);
 
         std::shared_ptr<PKX> pkm = nullptr;
 
@@ -254,10 +271,9 @@ extern "C" {
                 pkm = std::make_shared<PK7>(data, false);
                 break;
             case Generation::LGPE:
+            default:
                 pkm = std::make_shared<PB7>(data, false);
                 break;
-            default:
-                Gui::warn("What did you do?", "Generation is incorrect!");
         }
 
         if (pkm)
@@ -524,6 +540,8 @@ extern "C" {
         int box = Param[2]->Val->Integer;
         int slot = Param[3]->Val->Integer;
 
+        checkGen(Parser, gen);
+
         std::shared_ptr<PKX> pkm = nullptr;
 
         switch (gen)
@@ -541,11 +559,9 @@ extern "C" {
                 pkm = std::make_shared<PK7>(data, false);
                 break;
             case Generation::LGPE:
+            default:
                 pkm = std::make_shared<PB7>(data, false);
                 break;
-            default:
-                Gui::warn("What did you do?", "Generation is incorrect!");
-                return;
         }
 
         Bank bank;
@@ -597,6 +613,8 @@ extern "C" {
         u8* data = (u8*) Param[0]->Val->Pointer;
         Generation gen = Generation(Param[1]->Val->Integer);
 
+        checkGen(Parser, gen);
+
         std::shared_ptr<PKX> pkm = nullptr;
 
         switch (gen)
@@ -614,11 +632,9 @@ extern "C" {
                 pkm = std::make_shared<PK7>(data, true);
                 break;
             case Generation::LGPE:
+            default:
                 pkm = std::make_shared<PB7>(data, true);
                 break;
-            default:
-                Gui::warn("What did you do?", "Generation is incorrect!");
-                return;
         }
 
         std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), data);
@@ -628,6 +644,8 @@ extern "C" {
     {
         u8* data = (u8*) Param[0]->Val->Pointer;
         Generation gen = Generation(Param[1]->Val->Integer);
+
+        checkGen(Parser, gen);
 
         std::shared_ptr<PKX> pkm = nullptr;
 
@@ -646,15 +664,43 @@ extern "C" {
                 pkm = std::make_shared<PK7>(data, false);
                 break;
             case Generation::LGPE:
+            default:
                 pkm = std::make_shared<PB7>(data, false);
                 break;
-            default:
-                Gui::warn("What did you do?", "Generation is incorrect!");
-                return;
         }
 
         pkm->encrypt();
 
         std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), data);
+    }
+
+    void pksm_utf8_to_utf16(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        u8* data = (u8*) Param[0]->Val->Pointer;
+        // Get full length of data
+        int length = utf8_to_utf16(nullptr, data, 0);
+        // Create returned buffer
+        u16* ret = (u16*)malloc((length + 1) * sizeof(u16));
+        // Translate data into buffer
+        utf8_to_utf16(ret, data, length);
+
+        ret[length] = u'\0';
+
+        ReturnValue->Val->Pointer = ret;
+    }
+
+    void pksm_utf16_to_utf8(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+    {
+        u16* data = (u16*) Param[0]->Val->Pointer;
+        // Get full length of data
+        int length = utf16_to_utf8(nullptr, data, 0);
+        // Create returned buffer
+        u8* ret = (u8*)malloc((length + 1) * sizeof(u8));
+        // Translate data into buffer
+        utf16_to_utf8(ret, data, length);
+
+        ret[length] = '\0';
+
+        ReturnValue->Val->Pointer = ret;
     }
 }

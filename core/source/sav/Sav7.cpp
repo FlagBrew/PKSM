@@ -411,6 +411,9 @@ void Sav7::item(Item& item, Pouch pouch, u16 slot)
         case ZCrystals:
             std::copy(write.first, write.first + write.second, data + PouchZCrystals + slot * 4);
             break;
+        case Battle:
+            std::copy(write.first, write.first + write.second, data + BattleItems + slot * 4);
+            break;
         default:
             return;
     }
@@ -432,6 +435,8 @@ std::unique_ptr<Item> Sav7::item(Pouch pouch, u16 slot) const
             return std::make_unique<Item7>(data + PouchBerry + slot * 4);
         case ZCrystals:
             return std::make_unique<Item7>(data + PouchZCrystals + slot * 4);
+        case Battle:
+            return std::make_unique<Item7>(data + BattleItems + slot * 4);
         default:
             return nullptr;
     }
@@ -471,6 +476,8 @@ std::string Sav7::pouchName(Pouch pouch) const
             return i18n::localize("BERRIES");
         case ZCrystals:
             return i18n::localize("ZCRYSTALS");
+        case Battle:
+            return i18n::localize("ROTOM_POWERS");
         default:
             return "";
     }

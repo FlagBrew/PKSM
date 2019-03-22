@@ -40,6 +40,8 @@ static std::unordered_map<std::string, C2D_Text> staticMap;
 std::stack<std::unique_ptr<Screen>> screens;
 static std::function<void()> keyboardFunc;
 
+constexpr u32 magicNumber = 0xC7D84AB9;
+
 static Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int endX, int endY)
 {
     Tex3DS_SubTexture tex = *image.subtex;
@@ -671,10 +673,10 @@ void Gui::sprite(int key, int x, int y)
         C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f);
         // Right
         tex = _select_box(sprite, 92, 0, 108, 0);
-        C2D_DrawImageAt({sprite.tex, &tex}, x + 168, y, 0.5f);
+        C2D_DrawImageAt({sprite.tex, &tex}, x + 182, y, 0.5f);
         // Center
         tex = _select_box(sprite, 16, 0, 17, 0);
-        C2D_DrawImageAt({sprite.tex, &tex}, x + 16, y, 0.5f, nullptr, 152.0f, 1.0f);
+        C2D_DrawImageAt({sprite.tex, &tex}, x + 16, y, 0.5f, nullptr, 166.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_button_plus_small_black_idx)
     {
@@ -772,6 +774,20 @@ void Gui::sprite(int key, int x, int y)
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, COLOR_UNAVAILRED, 1.0f);
         C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, 0.5f, &tint, 1.0f, 1.0f);
+    }
+    else if (key == ui_sheet_emulated_button_pouch_idx)
+    {
+        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_editor_idx);
+
+        Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, 16, 0);
+        // Left
+        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f);
+        // Right
+        tex = _select_box(sprite, 92, 0, 108, 0);
+        C2D_DrawImageAt({sprite.tex, &tex}, x + 84, y, 0.5f);
+        // Center
+        tex = _select_box(sprite, 16, 0, 17, 0);
+        C2D_DrawImageAt({sprite.tex, &tex}, x + 16, y, 0.5f, nullptr, 68.0f, 1.0f);
     }
     // standard case
     else
@@ -926,6 +942,12 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
 {
     static C2D_ImageTint tint;
     C2D_PlainImageTint(&tint, color, blend);
+    time_t thing = time(NULL);
+    if (gmtime(&thing)->tm_mday == ((u16)(~magicNumber >> 16) ^ 0x3826) && gmtime(&thing)->tm_mon == ((u16)(~magicNumber) ^ 0xB545))
+    {
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, (u8)(~magicNumber >> 8)), x, y, 0.5f, &tint, scale, scale);
+        return;
+    }
     if (species == 490 && form == -1)
     {
         C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_490_e_idx), x, y, 0.5f, &tint, scale, scale);
