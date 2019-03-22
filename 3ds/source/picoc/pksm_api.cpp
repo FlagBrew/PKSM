@@ -399,8 +399,9 @@ extern "C" {
         int* fromStorage = (int*) Param[0]->Val->Pointer;
         int* box = (int*) Param[1]->Val->Pointer;
         int* slot = (int*) Param[2]->Val->Pointer;
+        int doCrypt = Param[3]->Val->Integer;
 
-        BoxChoice screen = BoxChoice();
+        BoxChoice screen = BoxChoice((bool)doCrypt);
         auto result = screen.run();
 
         *fromStorage = std::get<0>(result);

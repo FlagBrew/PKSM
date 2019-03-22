@@ -1485,12 +1485,15 @@ void Gui::warn(const std::string& message, std::optional<std::string> message2, 
         dynamicText(i18n::localize("CONTINUE"), 200, 130, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
         C2D_SceneBegin(g_renderTargetBottom);
-        sprite(ui_sheet_part_info_bottom_idx, 0, 0);
 
         if (bottomScreen)
         {
             std::string bottom = StringUtils::wrap(bottomScreen.value(), FONT_SIZE_12, 316.0f);
             dynamicText(bottom, 2, 2, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        }
+        else
+        {
+            sprite(ui_sheet_part_info_bottom_idx, 0, 0);
         }
 
         C3D_FrameEnd(0);

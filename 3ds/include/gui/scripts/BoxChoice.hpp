@@ -39,7 +39,7 @@
 class BoxChoice : public Screen
 {
 public:
-    BoxChoice();
+    BoxChoice(bool doCrypt);
     ~BoxChoice();
 
     std::tuple<int, int, int> run();
@@ -64,6 +64,7 @@ private:
     std::unique_ptr<ViewerScreen> viewer;
     bool justSwitched = true;
     Bank bank;
+    bool doCrypt;
 };
 
 #endif

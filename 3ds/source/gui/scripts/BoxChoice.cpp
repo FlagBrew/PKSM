@@ -39,7 +39,7 @@ static bool backHeld = false;
 
 extern int bobPointer();
 
-BoxChoice::BoxChoice()
+BoxChoice::BoxChoice(bool doCrypt) : doCrypt(doCrypt)
 {
     mainButtons[0] = new Button(212, 47, 108, 28, [this](){ return this->showViewer(); }, ui_sheet_button_editor_idx,
                                     i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
@@ -60,7 +60,11 @@ BoxChoice::BoxChoice()
         }
         y += 30;
     }
-    TitleLoader::save->cryptBoxData(true);
+
+    if (doCrypt)
+    {
+        TitleLoader::save->cryptBoxData(true);
+    }
 }
 
 BoxChoice::~BoxChoice()
@@ -73,8 +77,10 @@ BoxChoice::~BoxChoice()
     {
         delete button;
     }
-
-    TitleLoader::save->cryptBoxData(false);
+    if (doCrypt)
+    {
+        TitleLoader::save->cryptBoxData(false);
+    }
 }
 
 void BoxChoice::draw() const
