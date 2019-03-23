@@ -663,7 +663,7 @@ std::vector<std::string> StringUtils::fontSplit(const std::string& str)
 {
     std::vector<std::string> ret;
     std::string parseMe = "", currentChar = "";
-    size_t currentFont = 0;
+    size_t prevFont = 0;
     for (size_t i = 0; i < str.size() + 1; i++)
     {
         u16 codepoint = 0xFFFD;
@@ -702,30 +702,25 @@ std::vector<std::string> StringUtils::fontSplit(const std::string& str)
             return ret;
         }
 
-        if (!StringUtils::fontHasChar(Gui::fonts[currentFont], codepoint))
+        size_t font;
+        for (font = 0; font < Gui::fonts.size(); font++)
         {
-            size_t prevFont = currentFont;
-            for (currentFont = 0; currentFont < Gui::fonts.size(); currentFont++)
-            {
-                if (currentFont == prevFont)
-                    continue;
-                if (StringUtils::fontHasChar(Gui::fonts[currentFont], codepoint))
-                    break;
-            }
-            if (currentFont >= Gui::fonts.size())
-            {
-                parseMe += "\uFFFD";
-                currentFont = prevFont;
-            }
-            else
-            {
-                ret.push_back(parseMe);
-                parseMe = currentChar;
-            }
+            if (StringUtils::fontHasChar(Gui::fonts[font], codepoint))
+                break;
+        }
+        if (font >= Gui::fonts.size())
+        {
+            parseMe += "\uFFFD";
+        }
+        else if (prevFont == font)
+        {
+            parseMe += currentChar;
         }
         else
         {
-            parseMe += currentChar;
+            ret.push_back(parseMe);
+            parseMe = currentChar;
+            prevFont = font;
         }
         currentChar = "";
     }
