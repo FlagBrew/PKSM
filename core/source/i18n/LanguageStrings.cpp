@@ -25,6 +25,7 @@
 */
 
 #include "LanguageStrings.hpp"
+#include <stdio.h>
 
 static nlohmann::json& formJson()
 {
@@ -32,12 +33,12 @@ static nlohmann::json& formJson()
     static bool first = true;
     if (first)
     {
-        std::ifstream in("romfs:/i18n/forms.json");
-        if (in.good())
+        FILE* in = fopen("romfs:/i18n/forms.json", "rt");
+        if (!ferror(in))
         {
-            in >> forms;
+            forms = nlohmann::json::parse(in, nullptr, false);
         }
-        in.close();
+        fclose(in);
         first = false;
     }
     return forms;
@@ -89,13 +90,23 @@ void LanguageStrings::load(Language lang, const std::string name, std::vector<st
     std::string path = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
     
     std::string tmp;
-    std::ifstream values(path);
-    if (values.bad()) return;
-    while (std::getline(values, tmp))
+    FILE* values = fopen(path.c_str(), "rt");
+    if (ferror(values))
     {
+        fclose(values);
+        return;
+    }
+    char* data = (char*)malloc(128);
+    size_t size;
+    while (!feof(values))
+    {
+        size = std::max(size, (size_t)128);
+        __getline(&data, &size, values);
+        tmp = std::string(data, size);
         array.push_back(tmp.substr(0, tmp.find('\r')));
     }
-    values.close();
+    fclose(values);
+    free(data);
 }
 
 void LanguageStrings::loadMap(Language lang, const std::string name, std::unordered_map<u16, std::string>& map)
@@ -104,13 +115,24 @@ void LanguageStrings::loadMap(Language lang, const std::string name, std::unorde
     std::string path = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
 
     std::string tmp;
-    std::ifstream values(path);
-    if (values.bad()) return;
-    while (std::getline(values, tmp))
+    FILE* values = fopen(path.c_str(), "rt");
+    if (ferror(values))
     {
-        u16 val = std::stoi(tmp.substr(0, 4), 0, 16);
-        map[val] = tmp.substr(5);
+        fclose(values);
+        return;
     }
+    char* data = (char*)malloc(128);
+    size_t size;
+    while (!feof(values))
+    {
+        size = std::max(size, (size_t)128);
+        __getline(&data, &size, values);
+        tmp = std::string(data, size);
+        u16 val = std::stoi(tmp.substr(0, 4), 0, 16);
+        map[val] = tmp.substr(0, tmp.find('\r')).substr(5);
+    }
+    fclose(values);
+    free(data);
 }
 
 void LanguageStrings::loadGui(Language lang)
@@ -118,9 +140,9 @@ void LanguageStrings::loadGui(Language lang)
     static const std::string base = "romfs:/i18n/";
     std::string path = io::exists(base + folder(lang) + "/gui.json") ? base + folder(lang) + "/gui.json" : base + folder(Language::EN) + "/gui.json";
 
-    std::ifstream values(path);
-    values >> gui;
-    values.close();
+    FILE* values = fopen(path.c_str(), "rt");
+    gui = nlohmann::json::parse(values, nullptr, false);
+    fclose(values);
 }
 
 const std::string& LanguageStrings::ability(u8 v) const

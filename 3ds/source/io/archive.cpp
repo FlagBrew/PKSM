@@ -119,13 +119,13 @@ Result Archive::createPKSMExtdataArchive(std::string& execPath)
     else
     {
         smdh = new smdh_s;
-        std::ifstream in(execPath.substr(execPath.find('/')), std::ios::binary);
-        in.seekg(0x20);
+        FILE* in = fopen(execPath.substr(execPath.find('/')).c_str(), "rb");
+        fseek(in, 0x20, SEEK_SET);
         u32 pos;
-        in.read((char*) &pos, 4);
-        in.seekg(pos);
-        in.read((char*) smdh, sizeof(smdh_s));
-        in.close();
+        fread(&pos, sizeof(pos), 1, in);
+        fseek(in, pos, SEEK_SET);
+        fread(smdh, 1, sizeof(smdh_s), in);
+        fclose(in);
     }
     
     Result res = FSUSER_CreateExtSaveData(esdi, ndirs, nfiles, sizeLimit, sizeof(smdh_s), (u8*)smdh);

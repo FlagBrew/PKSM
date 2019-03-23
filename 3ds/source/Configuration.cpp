@@ -139,9 +139,9 @@ void Configuration::extraSaves(const std::string& id, std::vector<std::string>& 
 
 void Configuration::loadFromRomfs()
 {
-    std::ifstream istream("romfs:/config.json");
-    istream >> mJson;
-    istream.close();
+    FILE* in = fopen("romfs:/config.json", "rt");
+    mJson = nlohmann::json::parse(in, nullptr, false);
+    fclose(in);
 
     // load system language
     u8 systemLanguage;

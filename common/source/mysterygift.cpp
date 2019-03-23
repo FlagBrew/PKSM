@@ -31,9 +31,9 @@ static u8* mysteryGiftData;
 
 void MysteryGift::init(Generation g)
 {
-    std::ifstream sheet(StringUtils::format("romfs:/mg/sheet%s.json", genToCstring(g)));
-    sheet >> mysteryGiftSheet;
-    sheet.close();
+    FILE* in = fopen(StringUtils::format("romfs:/mg/sheet%s.json", genToCstring(g)).c_str(), "rt");
+    mysteryGiftSheet = nlohmann::json::parse(in, nullptr, false);
+    fclose(in);
 
     if (mysteryGiftSheet.is_discarded())
     {
@@ -42,13 +42,14 @@ void MysteryGift::init(Generation g)
         mysteryGiftSheet["matches"] = nlohmann::json::array();
     }
 
-    std::ifstream data(StringUtils::format("romfs:/mg/data%s.bin", genToCstring(g)), std::ios::binary | std::ios::ate);
-    size_t size = data.tellg();
-    data.seekg(0, std::ios::beg);
+    in = fopen(StringUtils::format("romfs:/mg/data%s.bin", genToCstring(g)).c_str(), "rb");
+    fseek(in, 0, SEEK_END);
+    size_t size = ftell(in);
+    fseek(in, 0, SEEK_SET);
 
     mysteryGiftData = new u8[size];
-    data.read((char*)mysteryGiftData, size);
-    data.close();
+    fread(mysteryGiftData, 1, size, in);
+    fclose(in);
 }
 
 std::unique_ptr<WCX> MysteryGift::wondercard(size_t index)

@@ -41,21 +41,22 @@ void Bank::load()
     if (io::exists("/3ds/PKSM/bank/bank.bin"))
     {
         bool deleteOld = true;
-        std::ifstream in("/3ds/PKSM/bank/bank.bin", std::ios::binary | std::ios::ate);
+        FILE* in = fopen("/3ds/PKSM/bank/bank.bin", "rb");
+        fseek(in, 0, SEEK_END);
         Gui::waitFrame(i18n::localize("BANK_CONVERT"));
-        size_t oldSize = in.tellg();
-        in.seekg(0, std::ios::beg);
+        size_t oldSize = ftell(in);
+        fseek(in, 0, SEEK_SET);
         u8* oldData = new u8[oldSize];
-        if (in.good())
+        if (!ferror(in))
         {
-            in.read((char*)oldData, oldSize);
+            fread(oldData, 1, oldSize, in);
         }
         else
         {
             Gui::error(i18n::localize("BANK_BAD_CONVERT"), errno);
             deleteOld = false;
         }
-        in.close();
+        fclose(in);
 
         Configuration::getInstance().storageSize(oldSize / 232 / 30);
         Configuration::getInstance().save();
@@ -118,9 +119,9 @@ void Bank::load()
             boxNames[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
         }
 
-        std::ofstream bkp("/3ds/PKSM/backups/bank.bin");
-        bkp.write((char*)oldData, oldSize);
-        bkp.close();
+        FILE* bkp = fopen("/3ds/PKSM/backups/bank.bin", "wb");
+        fwrite(oldData, 1, oldSize, bkp);
+        fclose(bkp);
         
         delete[] oldData;
 
@@ -252,15 +253,16 @@ void Bank::loadExtData()
 void Bank::loadSD()
 {
     bool needResize = false, needSave = false;
-    std::fstream in("/3ds/PKSM/banks/pksm_1.bnk", std::ios::in | std::ios::binary | std::ios::ate);
-    if (in.good())
+    FILE* in = fopen("/3ds/PKSM/banks/pksm_1.bnk", "rb");
+    fseek(in, 0, SEEK_END);
+    if (!ferror(in))
     {
         // Gui::waitFrame(i18n::localize("BANK_LOAD"));
-        size = in.tellg();
-        in.seekg(0, std::ios::beg);
+        size = ftell(in);
+        fseek(in, 0, SEEK_SET);
         data = new u8[size];
-        in.read((char*) data, size);
-        in.close();
+        fread(data, 1, size, in);
+        fclose(in);
         if (size != sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30)
         {
             needResize = true;
@@ -277,15 +279,15 @@ void Bank::loadSD()
     else
     {
         // Gui::waitFrame(i18n::localize("BANK_LOAD"));
-        in.close();
+        fclose(in);
         createBank();
         needSave = true;
     }
 
-    in = std::fstream("/3ds/PKSM/banks/pksm_1.json", std::ios::in);
-    if (in.good())
+    in = fopen("/3ds/PKSM/banks/pksm_1.json", "rb");
+    if (!ferror(in))
     {
-        in >> boxNames;
+        boxNames = nlohmann::json::parse(in, nullptr, false);
         if (boxNames.is_discarded())
         {
             createJSON();
@@ -302,11 +304,11 @@ void Bank::loadSD()
                 }
             }
         }
-        in.close();
+        fclose(in);
     }
     else
     {
-        in.close();
+        fclose(in);
         createJSON();
         needSave = true;
     }
@@ -356,28 +358,28 @@ bool Bank::save() const
     }
     else
     {
-        std::ofstream out("/3ds/PKSM/banks/pksm_1.bnk");
-        if (out.good())
+        FILE* out = fopen("/3ds/PKSM/banks/pksm_1.bnk", "wb");
+        if (!ferror(out))
         {
-            out.write((char*) data, sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30);
-            out.close();
+            fwrite(data, 1, sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30, out);
+            fclose(out);
 
             std::string jsonData = boxNames.dump(2);
-            out = std::ofstream("/3ds/PKSM/banks/pksm_1.json");
-            if (out.good())
+            out = fopen("/3ds/PKSM/banks/pksm_1.json", "wt");
+            if (!ferror(out))
             {
-                out.write(jsonData.data(), jsonData.size());
+                fwrite(jsonData.data(), 1, jsonData.size(), out);
             }
             else
             {
                 Gui::error(i18n::localize("BANK_NAME_ERROR"), errno);
             }
-            out.close();
+            fclose(out);
             return true;
         }
         else
         {
-            out.close();
+            fclose(out);
             Gui::error(i18n::localize("BANK_SAVE_ERROR"), errno);
             return false;
         }
@@ -501,14 +503,14 @@ void Bank::backup() const
     FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_UTF16, u"/3ds/PKSM/banks/pksm_1.bnk.bak"));
     FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_UTF16, u"/3ds/PKSM/banks/pksm_1.json.bak"));
 
-    std::ofstream out("/3ds/PKSM/banks/pksm_1.bnk.bak");
-    out.write((char*)data, sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30);
-    out.close();
+    FILE* out = fopen("/3ds/PKSM/banks/pksm_1.bnk.bak", "wb");
+    fwrite(data, 1, sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30, out);
+    fclose(out);
 
     std::string jsonData = boxNames.dump(2);
-    out = std::ofstream("/3ds/PKSM/banks/pksm_1.json.bak");
-    out.write(jsonData.data(), jsonData.size());
-    out.close();
+    out = fopen("/3ds/PKSM/banks/pksm_1.json.bak", "wt");
+    fwrite(jsonData.data(), 1, jsonData.size(), out);
+    fclose(out);
 }
 
 std::string Bank::boxName(int box) const

@@ -253,25 +253,26 @@ void ScriptScreen::updateEntries()
     });
 }
 
-static std::pair<u8*, size_t> scriptRead(std::string path)
+static std::vector<u8> scriptRead(const std::string& path)
 {
-    u8* data = nullptr;
+    std::vector<u8> ret;
     size_t size = 0;
-    std::ifstream in(path, std::ios::binary | std::ios::ate);
-    if (in.good())
+    FILE* in = fopen(path.c_str(), "rb");
+    fseek(in, 0, SEEK_END);
+    if (!ferror(in))
     {
-        size = in.tellg();
-        in.seekg(0, std::ios::beg);
-        data = new u8[size];
-        in.read((char*)data, size);
+        size = ftell(in);
+        fseek(in, 0, SEEK_SET);
+        ret = std::vector<u8>(size);
+        fread(ret.data(), 1, size, in);
     }
     else
     {
         Gui::error(i18n::localize("SCRIPTS_FAILED_OPEN"), errno);
     }
-    in.close();
+    fclose(in);
 
-    return {data, size};
+    return ret;
 }
 
 void ScriptScreen::applyScript()
@@ -284,14 +285,14 @@ void ScriptScreen::applyScript()
     }
     auto scriptData = scriptRead(scriptFile);
 
-    if (!scriptData.first)
+    if (scriptData.empty())
     {
         return;
     }
 
-    for (size_t i = 0; i < std::min(MAGIC.size(), scriptData.second); i++)
+    for (size_t i = 0; i < std::min(MAGIC.size(), scriptData.size()); i++)
     {
-        if (scriptData.first[i] != MAGIC[i])
+        if (scriptData[i] != MAGIC[i])
         {
             Gui::warn(i18n::localize("SCRIPTS_INVALID"));
             return;
@@ -299,11 +300,11 @@ void ScriptScreen::applyScript()
     }
 
     size_t index = MAGIC.size();
-    while (index < scriptData.second)
+    while (index < scriptData.size())
     {
-        u32 offset = *(u32*)(scriptData.first + index);
-        u32 length = *(u32*)(scriptData.first + index + 4);
-        u32 repeat = *(u32*)(scriptData.first + index + 8 + length);
+        u32 offset = *(u32*)(scriptData.data() + index);
+        u32 length = *(u32*)(scriptData.data() + index + 4);
+        u32 repeat = *(u32*)(scriptData.data() + index + 8 + length);
 
         if (TitleLoader::save->generation() == Generation::FOUR)
         {
@@ -338,13 +339,11 @@ void ScriptScreen::applyScript()
 
         for (size_t i = 0; i < repeat; i++)
         {
-            std::copy(scriptData.first + index + 8, scriptData.first + index + 8 + length, TitleLoader::save->rawData() + offset + i * length);
+            std::copy(scriptData.data() + index + 8, scriptData.data() + index + 8 + length, TitleLoader::save->rawData() + offset + i * length);
         }
 
         index += 12 + length;
     }
-
-    delete[] scriptData.first;
 }
 
 void ScriptScreen::parsePicoCScript(std::string& file)

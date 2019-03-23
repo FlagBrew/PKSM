@@ -41,19 +41,20 @@ struct asset {
 static bool matchSha256HashFromFile(const std::string& path, unsigned char* sha)
 {
     bool match = false;
-    std::ifstream file(path, std::ios::binary | std::ios::ate);
-    if (file.good())
+    FILE* in = fopen(path.c_str(), "rb");
+    if (!ferror(in))
     {
-        size_t size = file.tellg();
-        file.seekg(0, std::ios::beg);
+        fseek(in, 0, SEEK_END);
+        size_t size = ftell(in);
+        fseek(in, 0, SEEK_SET);
         char* data = new char[size];
-        file.read(data, size);
+        fread(data, 1, size, in);
         char hash[SHA256_BLOCK_SIZE];
         sha256((unsigned char*)hash, (unsigned char*)data, size);
         delete[] data;
         match = memcmp(sha, hash, SHA256_BLOCK_SIZE) == 0;
     }
-    file.close();
+    fclose(in);
     return match;
 }
 
