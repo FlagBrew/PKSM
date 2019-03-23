@@ -26,7 +26,6 @@
 
 #include "archive.hpp"
 #include <sys/stat.h>
-#include <fstream>
 
 static FS_Archive sdmc;
 static FS_Archive mData;

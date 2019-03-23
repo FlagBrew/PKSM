@@ -30,7 +30,6 @@
 #include <3ds.h>
 #include <citro2d.h>
 #include <unordered_map>
-#include <fstream>
 #include <string.h>
 #include <random>
 #include <stack>
