@@ -98,12 +98,18 @@ void LanguageStrings::load(Language lang, const std::string name, std::vector<st
     }
     char* data = (char*)malloc(128);
     size_t size = 0;
-    while (!feof(values))
+    while (!feof(values) && !ferror(values))
     {
         size = std::max(size, (size_t)128);
-        __getline(&data, &size, values);
-        tmp = std::string(data);
-        array.push_back(tmp.substr(0, tmp.find('\r')));
+        if (__getline(&data, &size, values) >= 0)
+        {
+            tmp = std::string(data);
+            array.push_back(tmp.substr(0, tmp.find('\r')));
+        }
+        else
+        {
+            break;
+        }
     }
     fclose(values);
     free(data);
@@ -123,13 +129,19 @@ void LanguageStrings::loadMap(Language lang, const std::string name, std::unorde
     }
     char* data = (char*)malloc(128);
     size_t size = 0;
-    while (!feof(values))
+    while (!feof(values) && !ferror(values))
     {
         size = std::max(size, (size_t)128);
-        __getline(&data, &size, values);
-        tmp = std::string(data);
-        u16 val = std::stoi(tmp.substr(0, 4), 0, 16);
-        map[val] = tmp.substr(0, tmp.find('\r')).substr(5);
+        if (__getline(&data, &size, values) >= 0)
+        {
+            tmp = std::string(data);
+            u16 val = std::stoi(tmp.substr(0, 4), 0, 16);
+            map[val] = tmp.substr(0, tmp.find('\r')).substr(5);
+        }
+        else
+        {
+            break;
+        }
     }
     fclose(values);
     free(data);
