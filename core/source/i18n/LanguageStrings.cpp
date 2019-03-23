@@ -97,11 +97,11 @@ void LanguageStrings::load(Language lang, const std::string name, std::vector<st
         return;
     }
     char* data = (char*)malloc(128);
-    size_t size;
+    size_t size = 0;
     while (!feof(values))
     {
         size = std::max(size, (size_t)128);
-        __getline(&data, &size, values);
+        size = __getline(&data, &size, values);
         tmp = std::string(data, size);
         array.push_back(tmp.substr(0, tmp.find('\r')));
     }
@@ -122,11 +122,11 @@ void LanguageStrings::loadMap(Language lang, const std::string name, std::unorde
         return;
     }
     char* data = (char*)malloc(128);
-    size_t size;
+    size_t size = 0;
     while (!feof(values))
     {
         size = std::max(size, (size_t)128);
-        __getline(&data, &size, values);
+        size = __getline(&data, &size, values);
         tmp = std::string(data, size);
         u16 val = std::stoi(tmp.substr(0, 4), 0, 16);
         map[val] = tmp.substr(0, tmp.find('\r')).substr(5);
