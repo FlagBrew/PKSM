@@ -166,7 +166,7 @@ Result App::init(std::string execPath)
     }
 
     if (R_FAILED(res = downloadAdditionalAssets()))
-        return consoleDisplayError("Additional assets download failed.\n\nAlways make sure you're connected to the internet and on the lastest version.", res);
+        return consoleDisplayError("Additional assets download failed.\n\nAlways make sure you're connected to the internet and on the latest version.", res);
     if (R_FAILED(res = Gui::init()))
         return consoleDisplayError("Gui::init failed.", res);
     

@@ -36,8 +36,8 @@ APP_DESCRIPTION	:=	Gen IV to Gen VII save manager
 APP_AUTHOR		:=	FlagBrew
 
 VERSION_MAJOR := 6
-VERSION_MINOR := 1
-VERSION_MICRO := 1
+VERSION_MINOR := 2
+VERSION_MICRO := 0
 GIT_REV="$(shell git rev-parse --short HEAD)"
 
 TARGET			:=	$(subst $e ,_,$(notdir $(APP_TITLE)))
@@ -45,6 +45,7 @@ OUTDIR			:=	out
 BUILD			:=	build
 SOURCES			:=	../common/source \
 					../common/source/io \
+					../common/source/mongoose \
 					../common/source/picoc \
 					../common/source/picoc/cstdlib \
 					../common/source/picoc/platform \
@@ -67,6 +68,7 @@ SOURCES			:=	../common/source \
 DATA			:=	data
 INCLUDES		:=	../common/include \
 					../common/include/io \
+					../common/include/mongoose \
 					../common/include/picoc \
 					../common/include/quirc \
 					../common/include/utils \
@@ -83,27 +85,19 @@ INCLUDES		:=	../common/include \
 					include/io \
 					include/titles \
 					include/utils
-GRAPHICS		:=	../assets/gfx/ui # \
-					# assets/gfx/pkm \
-					# assets/gfx/types
+GRAPHICS		:=	../assets/gfx/ui 
+
 ROMFS			:=	../assets/romfs
 GFXBUILD		:=	$(ROMFS)/gfx
 PACKER			:=	../common/EventsGalleryPacker
 SCRIPTS			:=	../external/PKSM-Scripts
 CITRA_DEBUG		:=	0
 
-# If left blank, will try to use "icon.png", "$(TARGET).png", or the default ctrulib icon, in that order
 ICON			:=	../assets/icon.png
-
 BANNER_AUDIO	:=	../assets/audio.wav
 BANNER_IMAGE	:=	../assets/banner.png
 RSF_PATH		:=	../assets/app.rsf
-
-
-# If left blank, makerom will use the default Homebrew logo
 LOGO			:=
-
-# If left blank, makerom will use default values (0xff3ff and CTR-P-CTAP, respectively)
 UNIQUE_ID		:=	0xEC100
 PRODUCT_CODE	:=	CTR-HB-PKSM
 
@@ -116,11 +110,12 @@ ICON_FLAGS		:=	nosavebackups,visible
 ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
 
 CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O2 -mword-relocations \
-			-fomit-frame-pointer -ffunction-sections -flto \
+			-fomit-frame-pointer -ffunction-sections \
 			-Wno-implicit-fallthrough -Wno-unused-parameter \
 			$(ARCH) \
 			-DQUIRC_MAX_REGIONS=10000 \
 			-DUNIX_HOST \
+			-DCS_PLATFORM=CS_P_CUSTOM \
 			-DVERSION_MAJOR=${VERSION_MAJOR} \
 			-DVERSION_MINOR=${VERSION_MINOR} \
 			-DVERSION_MICRO=${VERSION_MICRO} \

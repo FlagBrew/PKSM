@@ -29,6 +29,23 @@
 #include "FSStream.hpp"
 #include "gui.hpp"
 
+static struct mg_mgr mgr;
+static struct mg_connection *nc;
+//static struct mg_serve_http_opts s_http_server_opts;
+static const char *s_http_port = "8000";
+
+static void ev_handler(struct mg_connection *nc, int ev, void *ev_data)
+{
+    struct http_message *hm = (struct http_message *) ev_data;
+
+    switch (ev) {
+        case MG_EV_HTTP_REQUEST:
+            break;
+        default:
+            break;
+    }
+}
+
 Configuration::Configuration()
 {
     static const std::u16string path = StringUtils::UTF8toUTF16("/config.json");
@@ -103,6 +120,18 @@ Configuration::Configuration()
             save();
         }
     }
+
+    // load server
+    mg_mgr_init(&mgr, NULL);
+    nc = mg_bind(&mgr, s_http_port, ev_handler);
+    mg_set_protocol_http_websocket(nc);
+    // s_http_server_opts.document_root = "romfs:/web_root";
+    // s_http_server_opts.auth_domain = "flagbrew.org";
+}
+
+Configuration::~Configuration(void)
+{
+    mg_mgr_free(&mgr);
 }
 
 void Configuration::save()
@@ -198,4 +227,9 @@ void Configuration::loadFromRomfs()
     mJson["language"] = systemLanguage;
 
     save();
+}
+
+void Configuration::pollServer(void)
+{
+    mg_mgr_poll(&mgr, 1000/60);
 }

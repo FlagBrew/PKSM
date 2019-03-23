@@ -373,6 +373,8 @@ void Gui::mainLoop(void)
             keyboardFunc();
             keyboardFunc = nullptr;
         }
+
+        Configuration::getInstance().pollServer();
     }
 }
 

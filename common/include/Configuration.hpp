@@ -31,6 +31,9 @@
 #include "json.hpp"
 #include "i18n.hpp"
 #include "utils.hpp"
+extern "C" {
+#include "mongoose.h"
+}
 
 class Configuration
 {
@@ -222,10 +225,11 @@ public:
     }
 
     void save(void);
+    void pollServer(void);
 
 private:
     Configuration(void);
-    ~Configuration(void) {}
+    ~Configuration(void);
 
     Configuration(Configuration const&) = delete;
     void operator=(Configuration const&) = delete;
