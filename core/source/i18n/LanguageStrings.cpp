@@ -104,6 +104,7 @@ void LanguageStrings::load(Language lang, const std::string name, std::vector<st
         if (__getline(&data, &size, values) >= 0)
         {
             tmp = std::string(data);
+            tmp = tmp.substr(0, tmp.find('\n'));
             array.push_back(tmp.substr(0, tmp.find('\r')));
         }
         else
@@ -135,6 +136,7 @@ void LanguageStrings::loadMap(Language lang, const std::string name, std::unorde
         if (__getline(&data, &size, values) >= 0)
         {
             tmp = std::string(data);
+            tmp = tmp.substr(0, tmp.find('\n'));
             u16 val = std::stoi(tmp.substr(0, 4), 0, 16);
             map[val] = tmp.substr(0, tmp.find('\r')).substr(5);
         }
