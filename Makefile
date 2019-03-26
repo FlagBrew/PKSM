@@ -3,8 +3,8 @@ APP_DESCRIPTION	:=	Gen IV to Gen VII save manager
 APP_AUTHOR		:=	FlagBrew
 
 VERSION_MAJOR	:=	6
-VERSION_MINOR	:=	1
-VERSION_MICRO	:=	1
+VERSION_MINOR	:=	2
+VERSION_MICRO	:=	0
 
 OUTDIR			:= 	out
 ICON			:=	assets/icon.png
