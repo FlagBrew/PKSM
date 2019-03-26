@@ -244,14 +244,14 @@ void PK5::hiddenAbility(bool v) { data[0x42] = (u8)((data[0x42] & ~0x01) | (v ? 
 bool PK5::nPokemon(void) const { return (data[0x42] & 2) == 2; }
 void PK5::nPokemon(bool v) { data[0x42] = (u8)((data[0x42] & ~0x02) | (v ? 2 : 0)); }
 
-std::string PK5::nickname(void) const { return StringUtils::getTrimmedString(data, 0x48, 11, (char*)"\uFFFF"); }
-void PK5::nickname(const std::string& v) { StringUtils::setStringWithBytes(data, v, 0x48, 11, (char*)"\uFFFF"); }
+std::string PK5::nickname(void) const { return StringUtils::transString45(StringUtils::getTrimmedString(data, 0x48, 11, (char*)"\uFFFF")); }
+void PK5::nickname(const std::string& v) { StringUtils::setStringWithBytes(data, StringUtils::transString45(v), 0x48, 11, (char*)"\uFFFF"); }
 
 u8 PK5::version(void) const { return data[0x5F]; }
 void PK5::version(u8 v) { data[0x5F] = v; }
 
-std::string PK5::otName(void) const { return StringUtils::getTrimmedString(data, 0x68, 8, (char*)"\uFFFF"); }
-void PK5::otName(const std::string& v) { StringUtils::setStringWithBytes(data, v, 0x68, 8, (char*)"\uFFFF"); }
+std::string PK5::otName(void) const { return StringUtils::transString45(StringUtils::getTrimmedString(data, 0x68, 8, (char*)"\uFFFF")); }
+void PK5::otName(const std::string& v) { StringUtils::setStringWithBytes(data, StringUtils::transString45(v), 0x68, 8, (char*)"\uFFFF"); }
 
 u8 PK5::eggYear(void) const { return data[0x78]; }
 void PK5::eggYear(u8 v) { data[0x78] = v; }
