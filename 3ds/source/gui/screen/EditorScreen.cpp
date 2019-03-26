@@ -810,7 +810,7 @@ bool EditorScreen::changeSecondaryStat(int which, bool up)
                 total += pkm->ev(i);
             }
             // TODO: remove hardcoded value and set it in classes
-            if (total < 510)
+            if (total < 510 || pkm->ev(which) == 0xFC)
             {
                 if (pkm->ev(which) < 0xFC)
                 {
@@ -851,7 +851,7 @@ bool EditorScreen::changeSecondaryStat(int which, bool up)
                     total += pkm->ev(i);
                 }
                 // TODO: remove hardcoded value and set it in classes
-                if (total < 510)
+                if (total <= 510)
                 {
                     pkm->ev(which, 0xFC);
                 }   
