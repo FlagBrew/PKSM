@@ -44,7 +44,7 @@ public:
     std::shared_ptr<PKX> pkm(int box, int slot) const;
     void pkm(std::shared_ptr<PKX> pkm, int box, int slot);
     void resize();
-    void load();
+    void load(std::optional<bool> backupOverride = std::nullopt);
     bool save() const;
     void backup() const;
     std::string boxName(int box) const;

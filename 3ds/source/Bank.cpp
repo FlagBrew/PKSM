@@ -36,7 +36,7 @@ Bank::Bank()
     load();
 }
 
-void Bank::load()
+void Bank::load(std::optional<bool> backupOverride)
 {
     if (io::exists("/3ds/PKSM/bank/bank.bin"))
     {
@@ -166,7 +166,7 @@ void Bank::load()
         }
     }
 
-    if (Configuration::getInstance().autoBackup())
+    if (backupOverride.value_or(Configuration::getInstance().autoBackup()))
     {
         backup();
     }

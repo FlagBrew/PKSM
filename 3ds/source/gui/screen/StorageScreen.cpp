@@ -937,10 +937,17 @@ bool StorageScreen::backButton()
         else
         {
             bool timer = false;
-            if (TitleLoader::bank->hasChanged() && Gui::showChoiceMessage(i18n::localize("BANK_SAVE_CHANGES")))
+            if (TitleLoader::bank->hasChanged())
             {
-                TitleLoader::bank->save();
-                timer = true;
+                if (Gui::showChoiceMessage(i18n::localize("BANK_SAVE_CHANGES")))
+                {
+                    TitleLoader::bank->save();
+                    timer = true;
+                }
+                else
+                {
+                    TitleLoader::bank->load(false);
+                }
             }
             Gui::screenBack();
             ((MainMenu*)screens.top().get())->setTimer(timer);
