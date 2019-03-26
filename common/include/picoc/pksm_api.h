@@ -51,6 +51,7 @@ void net_tcp_receiver(struct ParseState*, struct Value*, struct Value**, int);
 void net_tcp_sender(struct ParseState*, struct Value*, struct Value**, int);
 void net_udp_receiver(struct ParseState*, struct Value*, struct Value**, int);
 void party_get_pkx(struct ParseState*, struct Value*, struct Value**, int);
+void party_inject_pkx(struct ParseState*, struct Value*, struct Value**, int);
 void sav_sbo(struct ParseState*, struct Value*, struct Value**, int);
 void sav_gbo(struct ParseState*, struct Value*, struct Value**, int);
 void sav_boxEncrypt(struct ParseState*, struct Value*, struct Value**, int);
