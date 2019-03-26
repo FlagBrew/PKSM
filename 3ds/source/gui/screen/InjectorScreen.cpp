@@ -251,7 +251,8 @@ void InjectorScreen::draw() const
         {
             if (wondercard->species() == 490 && wondercard->egg())
             {
-                Gui::pkm(490, -1, wondercard->generation(), 272, 44, 2.0f);
+                Gui::pkm(490, -1, wondercard->generation(), wondercard->gender(), 276, 49, 2.0f, COLOR_GREY_BLEND, 1.0f);
+                Gui::pkm(490, -1, wondercard->generation(), wondercard->gender(), 272, 44, 2.0f);
             }
             else
             {
