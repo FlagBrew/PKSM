@@ -202,7 +202,7 @@ void SpeciesSelectionScreen::update(touchPosition* touch)
         int species = dispPkm[hid.fullIndex()];
         if (pkm->species() == 0 || !pkm->nicknamed())
         {
-            pkm->nickname(i18n::species(Configuration::getInstance().language(), species).c_str());
+            pkm->nickname(i18n::species(Configuration::getInstance().language(), species));
         }
         pkm->species((u16) species);
         pkm->alternativeForm(0);

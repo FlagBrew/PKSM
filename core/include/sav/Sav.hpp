@@ -132,7 +132,7 @@ public:
     virtual u8 language(void) const = 0;
     virtual void language(u8 v) = 0;
     virtual std::string otName(void) const = 0;
-    virtual void otName(const char* v) = 0;
+    virtual void otName(const std::string& v) = 0;
     virtual u32 money(void) const = 0;
     virtual void money(u32 v) = 0;
     virtual u32 BP(void) const = 0;
@@ -162,7 +162,7 @@ public:
     virtual void mysteryGift(WCX& wc, int& pos) = 0;
     virtual void cryptBoxData(bool crypted) = 0;
     virtual std::string boxName(u8 box) const = 0;
-    virtual void boxName(u8 box, std::string name) = 0;
+    virtual void boxName(u8 box, const std::string& name) = 0;
     virtual u8 partyCount(void) const = 0;
     virtual void partyCount(u8 count) = 0;
     virtual void fixParty(void); // Has to be overridden by SavLGPE because it works stupidly

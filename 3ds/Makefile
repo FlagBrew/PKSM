@@ -50,6 +50,7 @@ SOURCES			:=	../common/source \
 					../common/source/picoc/platform \
 					../common/source/quirc \
 					../common/source/utils \
+					../core/source \
 					../core/source/i18n \
 					../core/source/personal \
 					../core/source/pkx \
@@ -70,6 +71,7 @@ INCLUDES		:=	../common/include \
 					../common/include/picoc \
 					../common/include/quirc \
 					../common/include/utils \
+					../core/include \
 					../core/include/i18n \
 					../core/include/personal \
 					../core/include/pkx \

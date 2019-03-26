@@ -59,7 +59,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index)
         {
             pkm->TID(TitleLoader::save->TID());
             pkm->SID(TitleLoader::save->SID());
-            pkm->otName(TitleLoader::save->otName().c_str());
+            pkm->otName(TitleLoader::save->otName());
         }
         else
         {
@@ -70,11 +70,11 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index)
                 case Generation::FOUR:
                 case Generation::FIVE:
                 default:
-                    pkm->otName(Configuration::getInstance().defaultOT().substr(0, 7).c_str());
+                    pkm->otName(Configuration::getInstance().defaultOT().substr(0, 7));
                     break;
                 case Generation::SIX:
                 case Generation::SEVEN:
-                    pkm->otName(Configuration::getInstance().defaultOT().c_str());
+                    pkm->otName(Configuration::getInstance().defaultOT());
                     break;
             }
         }
@@ -182,7 +182,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index)
                 }
             break;
             case Generation::LGPE:
-                break; // Always a party Pokémon
+                break; // Always a party Pokemon
             default:
                 Gui::warn(i18n::localize("THE_FUCK"));
         }
@@ -1064,7 +1064,7 @@ bool EditorScreen::setSaveInfo()
     if (pkm->otName() != TitleLoader::save->otName())
     {
         saved = false;
-        pkm->otName(TitleLoader::save->otName().c_str());
+        pkm->otName(TitleLoader::save->otName());
     }
     if (pkm->TID() != TitleLoader::save->TID())
     {

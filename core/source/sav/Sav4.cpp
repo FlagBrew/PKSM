@@ -117,7 +117,7 @@ u8 Sav4::language(void) const { return data[Trainer1 + 0x19]; }
 void Sav4::language(u8 v) { data[Trainer1 + 0x19] = v; }
 
 std::string Sav4::otName(void) const { return StringUtils::getString4(data, Trainer1, 8); }
-void Sav4::otName(const char* v) { StringUtils::setString4(data, v, Trainer1, 8); }
+void Sav4::otName(const std::string& v) { StringUtils::setString4(data, v, Trainer1, 8); }
 
 u32 Sav4::money(void) const { return *(u32*)(data + Trainer1 + 0x14); }
 void Sav4::money(u32 v) { *(u32*)(data + Trainer1 + 0x14) = v; }
@@ -217,7 +217,7 @@ void Sav4::mysteryGift(WCX& wc, int& pos)
 
 std::string Sav4::boxName(u8 box) const { return StringUtils::getString4(data, boxOffset(18, 0) + box*0x28 + (game == Game::HGSS ? 0x8 : 0), 9); }
 
-void Sav4::boxName(u8 box, std::string name)
+void Sav4::boxName(u8 box, const std::string& name)
 {
     StringUtils::setString4(data, name, boxOffset(18, 0) + box*0x28 + (game == Game::HGSS ? 0x8 : 0), 9);
 }

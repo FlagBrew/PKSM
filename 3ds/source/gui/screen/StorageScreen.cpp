@@ -1180,7 +1180,7 @@ void StorageScreen::virtualTrade(std::shared_ptr<PKX> pkm)
             PK6* movePkm = (PK6*)pkm.get();
             movePkm->currentHandler(1);
             regionChange(movePkm);
-            movePkm->htName(TitleLoader::save->otName().c_str());
+            movePkm->htName(TitleLoader::save->otName());
             movePkm->htGender(TitleLoader::save->gender());
             if (movePkm->htMemory() == 0)
             {
@@ -1192,7 +1192,7 @@ void StorageScreen::virtualTrade(std::shared_ptr<PKX> pkm)
             PK7* movePkm = (PK7*)pkm.get();
             movePkm->currentHandler(1);
             regionChange(movePkm);
-            movePkm->htName(TitleLoader::save->otName().c_str());
+            movePkm->htName(TitleLoader::save->otName());
             movePkm->htGender(TitleLoader::save->gender());
             if (movePkm->htMemory() == 0)
             {
@@ -1651,7 +1651,7 @@ bool StorageScreen::swapBoxWithStorage()
                             PK6* movePkm = (PK6*)temPkm.get();
                             movePkm->currentHandler(1);
                             regionChange(movePkm);
-                            movePkm->htName(TitleLoader::save->otName().c_str());
+                            movePkm->htName(TitleLoader::save->otName());
                             movePkm->htGender(TitleLoader::save->gender());
                             if (movePkm->htMemory() == 0)
                             {
@@ -1663,7 +1663,7 @@ bool StorageScreen::swapBoxWithStorage()
                             PK7* movePkm = (PK7*)temPkm.get();
                             movePkm->currentHandler(1);
                             regionChange(movePkm);
-                            movePkm->htName(TitleLoader::save->otName().c_str());
+                            movePkm->htName(TitleLoader::save->otName());
                             movePkm->htGender(TitleLoader::save->gender());
                             if (movePkm->htMemory() == 0)
                             {

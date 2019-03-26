@@ -245,13 +245,13 @@ bool PK5::nPokemon(void) const { return (data[0x42] & 2) == 2; }
 void PK5::nPokemon(bool v) { data[0x42] = (u8)((data[0x42] & ~0x02) | (v ? 2 : 0)); }
 
 std::string PK5::nickname(void) const { return StringUtils::getTrimmedString(data, 0x48, 11, (char*)"\uFFFF"); }
-void PK5::nickname(const char* v) { StringUtils::setStringWithBytes(data, v, 0x48, 11, (char*)"\uFFFF"); }
+void PK5::nickname(const std::string& v) { StringUtils::setStringWithBytes(data, v, 0x48, 11, (char*)"\uFFFF"); }
 
 u8 PK5::version(void) const { return data[0x5F]; }
 void PK5::version(u8 v) { data[0x5F] = v; }
 
 std::string PK5::otName(void) const { return StringUtils::getTrimmedString(data, 0x68, 8, (char*)"\uFFFF"); }
-void PK5::otName(const char* v) { StringUtils::setStringWithBytes(data, v, 0x68, 8, (char*)"\uFFFF"); }
+void PK5::otName(const std::string& v) { StringUtils::setStringWithBytes(data, v, 0x68, 8, (char*)"\uFFFF"); }
 
 u8 PK5::eggYear(void) const { return data[0x78]; }
 void PK5::eggYear(u8 v) { data[0x78] = v; }
@@ -559,13 +559,13 @@ std::shared_ptr<PKX> PK5::next(void) const
     pk6->alternativeForm(alternativeForm());
     pk6->nature(nature());
 
-    pk6->nickname(i18n::species(pk6->language(), pk6->species()).c_str());
+    pk6->nickname(i18n::species(pk6->language(), pk6->species()));
     if (nicknamed())
-        pk6->nickname(nickname().c_str());
+        pk6->nickname(nickname());
 
     pk6->version(version());
 
-    pk6->otName(otName().c_str());
+    pk6->otName(otName());
 
     pk6->metYear(metYear());
     pk6->metMonth(metMonth());
@@ -654,7 +654,7 @@ std::shared_ptr<PKX> PK5::next(void) const
     pk6->consoleRegion(TitleLoader::save->consoleRegion());
 
     pk6->currentHandler(1);
-    pk6->htName(TitleLoader::save->otName().c_str());
+    pk6->htName(TitleLoader::save->otName());
     pk6->htGender(TitleLoader::save->gender());
     pk6->geoRegion(0, TitleLoader::save->subRegion());
     pk6->geoCountry(0, TitleLoader::save->country());
@@ -673,11 +673,11 @@ std::shared_ptr<PKX> PK5::next(void) const
 
     std::u16string toFix = StringUtils::UTF8toUTF16(pk6->otName());
     fixString(toFix);
-    pk6->otName(StringUtils::UTF16toUTF8(toFix).c_str());
+    pk6->otName(StringUtils::UTF16toUTF8(toFix));
 
     toFix = StringUtils::UTF8toUTF16(pk6->nickname());
     fixString(toFix);
-    pk6->nickname(StringUtils::UTF16toUTF8(toFix).c_str());
+    pk6->nickname(StringUtils::UTF16toUTF8(toFix));
 
     pk6->refreshChecksum();
     return std::shared_ptr<PKX>(pk6);
@@ -699,8 +699,8 @@ std::shared_ptr<PKX> PK5::previous(void) const
         pk4->alternativeForm(0);
     }
 
-    pk4->nickname(nickname().c_str());
-    pk4->otName(otName().c_str());
+    pk4->nickname(nickname());
+    pk4->otName(otName());
     pk4->heldItem(0);
     pk4->otFriendship(70);
     pk4->ball(ball());

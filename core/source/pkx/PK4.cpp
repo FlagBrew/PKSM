@@ -259,13 +259,13 @@ u8 PK4::shinyLeaf(void) const { return *(u8*)(data + 0x41); }
 void PK4::shinyLeaf(u8 v) { *(u8*)(data + 0x41) = v; }
 
 std::string PK4::nickname(void) const { return StringUtils::getString4(data, 0x48, 11); }
-void PK4::nickname(const char* v) { StringUtils::setString4(data, v, 0x48, 11); }
+void PK4::nickname(const std::string& v) { StringUtils::setString4(data, v, 0x48, 11); }
 
 u8 PK4::version(void) const { return data[0x5F]; }
 void PK4::version(u8 v) { data[0x5F] = v; }
 
 std::string PK4::otName(void) const { return StringUtils::getString4(data, 0x68, 8); }
-void PK4::otName(const char* v) { StringUtils::setString4(data, v, 0x68, 8); }
+void PK4::otName(const std::string& v) { StringUtils::setString4(data, v, 0x68, 8); }
 
 u8 PK4::eggYear(void) const { return data[0x78]; }
 void PK4::eggYear(u8 v) { data[0x78] = v; }
@@ -537,8 +537,8 @@ std::shared_ptr<PKX> PK4::next(void) const
 
     pk5->ball(ball());
 
-    pk5->nickname(nickname().c_str());
-    pk5->otName(otName().c_str());
+    pk5->nickname(nickname());
+    pk5->otName(otName());
 
     // Check level
     pk5->metLevel(pk5->level());

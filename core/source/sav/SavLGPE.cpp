@@ -242,7 +242,7 @@ std::string SavLGPE::otName() const
     return "";
 }
 
-void SavLGPE::otName(const char* v)
+void SavLGPE::otName(const std::string& v)
 {
     (void) v;
 }
@@ -357,7 +357,7 @@ std::string SavLGPE::boxName(u8 box) const
     return i18n::localize("BOX") + " " + std::to_string((int)box + 1);
 }
 
-void SavLGPE::boxName(u8 box, std::string name)
+void SavLGPE::boxName(u8 box, const std::string& name)
 {
     (void) box, (void) name;
 }
@@ -616,26 +616,26 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
         }
         if (wb7->nickname((Language)language()).length() == 0)
         {
-            pkm->nickname(i18n::species(language(), pkm->species()).c_str());
+            pkm->nickname(i18n::species(language(), pkm->species()));
         }
         else
         {
-            pkm->nickname(wb7->nickname((Language)language()).c_str());
+            pkm->nickname(wb7->nickname((Language)language()));
             pkm->nicknamed(pkm->nickname() != i18n::species(language(), pkm->species()));
         }
         if (wb7->otName((Language)language()).length() == 0)
         {
-            pkm->otName(otName().c_str());
+            pkm->otName(otName());
             pkm->otGender(gender());
             pkm->currentHandler(0);
         }
         else
         {
-            pkm->otName(wb7->otName((Language)language()).c_str());
-            pkm->htName(otName().c_str());
+            pkm->otName(wb7->otName((Language)language()));
+            pkm->htName(otName());
             pkm->otGender(wb7->otGender());
             pkm->htGender(gender());
-            pkm->otFriendship(PersonalSMUSUM::baseFriendship(pkm->formSpecies())); // TODO: PersonalLGPE
+            pkm->otFriendship(PersonalLGPE::baseFriendship(pkm->formSpecies()));
             pkm->currentHandler(1);
         }
 
@@ -720,14 +720,14 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
             pkm->eggYear(wb7->year());
             pkm->eggMonth(wb7->month());
             pkm->eggDay(wb7->day());
-            pkm->nickname(i18n::species(language(), pkm->species()).c_str());
+            pkm->nickname(i18n::species(language(), pkm->species()));
             pkm->nicknamed(true);
         }
 
         pkm->metDay(wb7->day());
         pkm->metMonth(wb7->month());
         pkm->metYear(wb7->year());
-        pkm->currentFriendship(PersonalSMUSUM::baseFriendship(pkm->formSpecies())); // TODO: PersonalLGPE
+        pkm->currentFriendship(PersonalLGPE::baseFriendship(pkm->formSpecies()));
 
         pkm->partyCP(pkm->CP());
         pkm->partyCurrHP(pkm->stat(0));

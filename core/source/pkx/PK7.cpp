@@ -166,7 +166,7 @@ bool PK7::ribbon(u8 ribcat, u8 ribnum) const { return (data[0x30 + ribcat] & (1 
 void PK7::ribbon(u8 ribcat, u8 ribnum, u8 v) { data[0x30 + ribcat] = (u8)((data[0x30 + ribcat] & ~(1 << ribnum)) | (v ? 1 << ribnum : 0)); }
 
 std::string PK7::nickname(void) const { return StringUtils::getString(data, 0x40, 12); }
-void PK7::nickname(const char* v) { StringUtils::setString(data, v, 0x40, 12); }
+void PK7::nickname(const std::string& v) { StringUtils::setString(data, v, 0x40, 12); }
 
 u16 PK7::move(u8 m) const { return *(u16*)(data + 0x5A + m*2); }
 void PK7::move(u8 m, u16 v) { *(u16*)(data + 0x5A + m*2) = v; }
@@ -201,7 +201,7 @@ bool PK7::nicknamed(void) const { return ((*(u32*)(data + 0x74) >> 31) & 0x1) ==
 void PK7::nicknamed(bool v) { *(u32*)(data + 0x74) = (*(u32*)(data + 0x74) & 0x7FFFFFFF) | (v ? 0x80000000 : 0); }
 
 std::string PK7::htName(void) const { return StringUtils::getString(data, 0x78, 12); }
-void PK7::htName(const char* v) { StringUtils::setString(data, v, 0x78, 12); }
+void PK7::htName(const std::string& v) { StringUtils::setString(data, v, 0x78, 12); }
 
 u8 PK7::htGender(void) const { return data[0x92]; }
 void PK7::htGender(u8 v) { data[0x92] = v; }
@@ -240,7 +240,7 @@ u8 PK7::enjoyment(void) const { return data[0xAF]; }
 void PK7::enjoyment(u8 v) { data[0xAF] = v; }
 
 std::string PK7::otName(void) const { return StringUtils::getString(data, 0xB0, 13); }
-void PK7::otName(const char* v) { StringUtils::setString(data, v, 0xB0, 12); }
+void PK7::otName(const std::string& v) { StringUtils::setString(data, v, 0xB0, 12); }
 
 u8 PK7::otFriendship(void) const { return data[0xCA]; }
 void PK7::otFriendship(u8 v) { data[0xCA] = v; }

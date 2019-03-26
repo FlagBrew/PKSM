@@ -175,7 +175,7 @@ u8 PK6::ribbonBattleCount(void) const { return data[0x39]; }
 void PK6::ribbonBattleCount(u8 v) { data[0x39] = v; }
 
 std::string PK6::nickname(void) const { return StringUtils::getString(data, 0x40, 12); }
-void PK6::nickname(const char* v) { StringUtils::setString(data, v, 0x40, 12); }
+void PK6::nickname(const std::string& v) { StringUtils::setString(data, v, 0x40, 12); }
 
 u16 PK6::move(u8 m) const { return *(u16*)(data + 0x5A + m*2); }
 void PK6::move(u8 m, u16 v) { *(u16*)(data + 0x5A + m*2) = v; }
@@ -216,7 +216,7 @@ bool PK6::nicknamed(void) const { return ((*(u32*)(data + 0x74) >> 31) & 0x1) ==
 void PK6::nicknamed(bool v) { *(u32*)(data + 0x74) = (*(u32*)(data + 0x74) & 0x7FFFFFFF) | (v ? 0x80000000 : 0); }
 
 std::string PK6::htName(void) const { return StringUtils::getString(data, 0x78, 12); }
-void PK6::htName(const char* v) { StringUtils::setString(data, v, 0x78, 12); }
+void PK6::htName(const std::string& v) { StringUtils::setString(data, v, 0x78, 12); }
 
 u8 PK6::htGender(void) const { return data[0x92]; }
 void PK6::htGender(u8 v) { data[0x92] = v; }
@@ -255,7 +255,7 @@ u8 PK6::enjoyment(void) const { return data[0xAF]; }
 void PK6::enjoyment(u8 v) { data[0xAF] = v; }
 
 std::string PK6::otName(void) const { return StringUtils::getString(data, 0xB0, 13); }
-void PK6::otName(const char* v) { StringUtils::setString(data, v, 0xB0, 12); }
+void PK6::otName(const std::string& v) { StringUtils::setString(data, v, 0xB0, 12); }
 
 u8 PK6::otFriendship(void) const { return data[0xCA]; }
 void PK6::otFriendship(u8 v) { data[0xCA] = v; }
@@ -536,8 +536,8 @@ std::shared_ptr<PKX> PK6::previous(void) const
 
     pk5->version(version());
 
-    pk5->nickname(nickname().substr(0, 11).c_str());
-    pk5->otName(otName().substr(0, 7).c_str());
+    pk5->nickname(nickname().substr(0, 11));
+    pk5->otName(otName().substr(0, 7));
 
     pk5->metYear(metYear());
     pk5->metMonth(metMonth());

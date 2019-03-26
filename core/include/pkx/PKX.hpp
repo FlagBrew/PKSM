@@ -122,7 +122,7 @@ public:
 
     // BLOCK B
     virtual std::string nickname(void) const = 0;
-    virtual void nickname(const char* v) = 0;
+    virtual void nickname(const std::string& v) = 0;
     virtual u16 move(u8 move) const = 0;
     virtual void move(u8 move, u16 v) = 0;
     virtual u8 PP(u8 move) const = 0;
@@ -142,7 +142,7 @@ public:
 
     // BLOCK D
     virtual std::string otName(void) const = 0;
-    virtual void otName(const char* v) = 0;
+    virtual void otName(const std::string& v) = 0;
     virtual u8 otFriendship(void) const = 0;
     virtual void otFriendship(u8 v) = 0;
     virtual u8 eggYear(void) const = 0;

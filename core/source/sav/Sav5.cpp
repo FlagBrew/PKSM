@@ -51,7 +51,7 @@ u8 Sav5::language(void) const { return data[Trainer1 + 0x1E]; }
 void Sav5::language(u8 v) { data[Trainer1 + 0x1E] = v; }
 
 std::string Sav5::otName(void) const { return StringUtils::getTrimmedString(data, Trainer1 + 0x4, 8, (char*)"\uFFFF"); }
-void Sav5::otName(const char* v) { StringUtils::setStringWithBytes(data, v, Trainer1 + 0x4, 8, (char*)"\uFFFF"); }
+void Sav5::otName(const std::string& v) { StringUtils::setStringWithBytes(data, v, Trainer1 + 0x4, 8, (char*)"\uFFFF"); }
 
 u32 Sav5::money(void) const { return *(u32*)(data + Trainer2); }
 void Sav5::money(u32 v) { *(u32*)(data + Trainer2) = v; }
@@ -243,9 +243,9 @@ void Sav5::mysteryGift(WCX& wc, int& pos)
 
 std::string Sav5::boxName(u8 box) const { return StringUtils::getTrimmedString(data, PCLayout + 0x28 * box + 4, 9, (char*)"\uFFFF"); }
 
-void Sav5::boxName(u8 box, std::string name)
+void Sav5::boxName(u8 box, const std::string& name)
 {
-    StringUtils::setStringWithBytes(data, name.c_str(), PCLayout + 0x28 * box + 4, 9, (char*)"\uFFFF");
+    StringUtils::setStringWithBytes(data, name, PCLayout + 0x28 * box + 4, 9, (char*)"\uFFFF");
 }
 
 u8 Sav5::partyCount(void) const { return data[Party + 4]; }

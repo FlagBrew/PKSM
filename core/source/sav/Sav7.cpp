@@ -67,7 +67,7 @@ u8 Sav7::language(void) const { return data[TrainerCard + 0x35]; }
 void Sav7::language(u8 v) { data[TrainerCard + 0x35] = v; }
 
 std::string Sav7::otName(void) const { return StringUtils::getString(data, TrainerCard + 0x38, 13); }
-void Sav7::otName(const char* v) { return StringUtils::setString(data, v, TrainerCard + 0x38, 13); }
+void Sav7::otName(const std::string& v) { return StringUtils::setString(data, v, TrainerCard + 0x38, 13); }
 
 u32 Sav7::money(void) const { return *(u32*)(data + Misc + 0x4); }
 void Sav7::money(u32 v) { *(u32*)(data + Misc + 0x4) = v > 9999999 ? 9999999 : v; }
@@ -324,9 +324,9 @@ std::string Sav7::boxName(u8 box) const
     return StringUtils::getString(data, PCLayout + 0x22*box, 17);
 }
 
-void Sav7::boxName(u8 box, std::string name)
+void Sav7::boxName(u8 box, const std::string& name)
 {
-    StringUtils::setString(data, name.c_str(), PCLayout + 0x22*box, 17);
+    StringUtils::setString(data, name, PCLayout + 0x22*box, 17);
 }
 
 u8 Sav7::partyCount(void) const { return data[Party + 6*260]; }

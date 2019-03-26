@@ -32,7 +32,7 @@
 
 static std::wstring_convert<std::codecvt_utf8_utf16<char16_t>,char16_t> convert;
 
-std::string StringUtils::format(const std::string fmt_str, ...)
+std::string StringUtils::format(const std::string& fmt_str, ...)
 {
     va_list ap;
     char *fp = NULL;
@@ -43,12 +43,12 @@ std::string StringUtils::format(const std::string fmt_str, ...)
     return std::string(formatted.get());
 }
 
-std::u16string StringUtils::UTF8toUTF16(std::string src)
+std::u16string StringUtils::UTF8toUTF16(const std::string& src)
 {
     return convert.from_bytes(src);
 }
 
-std::string StringUtils::UTF16toUTF8(std::u16string src)
+std::string StringUtils::UTF16toUTF8(const std::u16string& src)
 {
     return convert.to_bytes(src);
 }
@@ -69,17 +69,17 @@ std::string StringUtils::getTrimmedString(const u8* data, int ofs, int len, char
     return found != std::string::npos ? str.substr(0, found) : str;
 }
 
-void StringUtils::setString(u8* data, const char* v, int ofs, int len)
+void StringUtils::setString(u8* data, const std::string& v, int ofs, int len)
 {
     len *= 2;
     u8 toinsert[len] = {0};
-    if (!memcmp(v, toinsert, len)) return;
+    if (v.empty()) return;
     
     char buf;
-    int nicklen = strlen(v), r = 0, w = 0, i = 0;
+    int nicklen = v.length(), r = 0, w = 0, i = 0;
     while (r < nicklen || w > len)
     {
-        buf = *(v + r++);
+        buf = v[r++];
         if ((buf & 0x80) == 0)
         {
             toinsert[w] = buf & 0x7f;
@@ -99,7 +99,7 @@ void StringUtils::setString(u8* data, const char* v, int ofs, int len)
         
         for (int j = 0; j < i; j++)
         {
-            buf = *(v + r++);
+            buf = v[r++];
             if (toinsert[w] > 0x04)
             {
                 toinsert[w + 1] = (toinsert[w + 1] << 6) | (((toinsert[w] & 0xfc) >> 2) & 0x3f);
@@ -112,11 +112,9 @@ void StringUtils::setString(u8* data, const char* v, int ofs, int len)
     memcpy(data + ofs, toinsert, len);
 }
 
-void StringUtils::setStringWithBytes(u8* data, const char* v, int ofs, int len, char* padding)
+void StringUtils::setStringWithBytes(u8* data, const std::string& v, int ofs, int len, char* padding)
 {
-    std::string toSet = v;
-    toSet.append(padding);
-    setString(data, toSet.c_str(), ofs, len);
+    setString(data, v + padding, ofs, len);
 }
 
 std::string StringUtils::getString4(const u8* data, int ofs, int len)
@@ -174,7 +172,7 @@ std::string StringUtils::getString4(const u8* data, int ofs, int len)
     return output;
 }
 
-void StringUtils::setString4(u8* data, const std::string v, int ofs, int len)
+void StringUtils::setString4(u8* data, const std::string& v, int ofs, int len)
 {
     u16 output[len] = {0};
     u16 outIndex = 0, charIndex = 0;
@@ -638,4 +636,3 @@ std::string StringUtils::wrap(const std::string& text, float scaleX, float maxWi
 
     return wrapped;
 }
-

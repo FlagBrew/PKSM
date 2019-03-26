@@ -72,7 +72,7 @@ public:
     u8 language(void) const override;
     void language(u8 v) override;
     std::string otName(void) const override;
-    void otName(const char* v) override;
+    void otName(const std::string& v) override;
     u32 money(void) const override;
     void money(u32 v) override;
     u32 BP(void) const override;
@@ -107,7 +107,7 @@ public:
     std::unique_ptr<WCX> mysteryGift(int pos) const override;
     void cryptBoxData(bool crypted) override;
     std::string boxName(u8 box) const override;
-    void boxName(u8 box, std::string name) override;
+    void boxName(u8 box, const std::string& name) override;
     u8 partyCount(void) const override;
     void partyCount(u8 count) override;
 

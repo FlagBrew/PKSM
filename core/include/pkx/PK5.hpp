@@ -114,12 +114,12 @@ public:
     void nPokemon(bool v);
 
     std::string nickname(void) const override;
-    void nickname(const char* v) override;
+    void nickname(const std::string& v) override;
     u8 version(void) const override;
     void version(u8 v) override;
 
     std::string otName(void) const override;
-    void otName(const char* v) override;
+    void otName(const std::string& v) override;
     u8 eggYear(void) const override;
     void eggYear(u8 v) override;
     u8 eggMonth(void) const override;
