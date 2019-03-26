@@ -647,10 +647,6 @@ static u16 defaultCharacterIndex(const C2D_Font& font)
 
 bool StringUtils::fontHasChar(const C2D_Font& font, u16 codepoint)
 {
-    if (codepoint == 0xFFFD)
-    {
-        return true;
-    }
     u16 alterCharIndex = defaultCharacterIndex(font);
     if (C2D_FontGlyphIndexFromCodePoint(font, codepoint) == alterCharIndex)
     {
@@ -702,8 +698,8 @@ std::vector<std::string> StringUtils::fontSplit(const std::string& str)
             return ret;
         }
 
-        size_t font;
-        for (font = 0; font < Gui::fonts.size(); font++)
+        size_t font = codepoint == u' ' ? 1 : 0;
+        for (; font < Gui::fonts.size(); font++)
         {
             if (StringUtils::fontHasChar(Gui::fonts[font], codepoint))
                 break;
@@ -744,6 +740,11 @@ C2D_Font StringUtils::fontForSplitString(const std::string& string)
     else if (!(string[0] & 0x80))
     {
         codepoint = string[0];
+    }
+
+    if (codepoint == u' ')
+    {
+        return Gui::fonts[1];
     }
 
     if (!StringUtils::fontHasChar(Gui::fonts[0], codepoint))
