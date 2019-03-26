@@ -66,7 +66,7 @@ InjectSelectorScreen::InjectSelectorScreen() : hid(10, 2), dumpHid(40, 8)
     // Filter
     for (int i = 0; i < 9; i++)
     {
-        langFilters.push_back(new ToggleButton(268, 3 + i * 24, 38, 23, [this, i](){ return this->toggleFilter(std::string(langs[i])); }, ui_sheet_emulated_button_selected_blue_idx, std::string(langs[i]), FONT_SIZE_14, COLOR_WHITE, ui_sheet_emulated_button_unselected_blue_idx, std::nullopt, std::nullopt, COLOR_BLACK, &langFilters, true));
+        langFilters.push_back(new ToggleButton(268, 3 + i * 24, 38, 23, [this, i](){ hid.select(0); return this->toggleFilter(std::string(langs[i])); }, ui_sheet_emulated_button_selected_blue_idx, std::string(langs[i]), FONT_SIZE_14, COLOR_WHITE, ui_sheet_emulated_button_unselected_blue_idx, std::nullopt, std::nullopt, COLOR_BLACK, &langFilters, true));
         langFilters.back()->setState(false);
     }
 }
