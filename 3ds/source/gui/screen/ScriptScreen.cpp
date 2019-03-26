@@ -382,5 +382,6 @@ void ScriptScreen::parsePicoCScript(std::string& file)
         // while (aptMainLoop() && !hidKeysDown()) hidScanInput();
         // Gui::warn(error);
     }
+    TitleLoader::bank->save();
     PicocCleanup(picoc);
 }

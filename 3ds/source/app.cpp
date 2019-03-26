@@ -189,6 +189,7 @@ Result App::init(std::string execPath)
 
 Result App::exit(void)
 {
+    TitleLoader::bank->save();
     TitleLoader::exit();
     Gui::exit();
     socExit();

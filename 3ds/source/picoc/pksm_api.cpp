@@ -565,9 +565,7 @@ extern "C" {
                 break;
         }
 
-        Bank bank;
-        bank.pkm(pkm, box, slot);
-        bank.save();
+        TitleLoader::bank->pkm(pkm, box, slot);
     }
 
     void net_ip(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
