@@ -29,6 +29,10 @@
 
 #include "Sav.hpp"
 
+extern "C" {
+#include "sha256.h"
+}
+
 class Bank
 {
 public:
@@ -45,6 +49,7 @@ public:
     void backup() const;
     std::string boxName(int box) const;
     void boxName(std::string name, int box);
+    bool hasChanged() const;
 private:
     static constexpr int BANK_VERSION = 1;
     static constexpr std::string_view BANK_MAGIC = "PKSMBANK";
@@ -63,6 +68,7 @@ private:
     u8* data = nullptr;
     nlohmann::json boxNames;
     size_t size;
+    mutable std::array<u8, SHA256_BLOCK_SIZE> prevHash;
 };
 
 #endif

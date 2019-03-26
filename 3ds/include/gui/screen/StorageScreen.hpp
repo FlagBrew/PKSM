@@ -85,7 +85,6 @@ private:
     std::vector<std::shared_ptr<PKX>> moveMon;
     std::vector<int> partyNum;
     bool justSwitched = true;
-    Bank bank;
     enum PickupMode { SINGLE, SWAP, MULTI } pickupMode = SINGLE;
     // While selecting, XY coords of original selection.
     // When selected, dimensions of moveMon

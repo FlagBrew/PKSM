@@ -176,6 +176,7 @@ Result App::init(std::string execPath)
 
     Threads::create((ThreadFunc)TitleLoader::scanTitles);
     TitleLoader::scanSaves();
+    TitleLoader::bank = std::make_shared<Bank>();
 
     randomNumbers.seed(osGetTime());
 

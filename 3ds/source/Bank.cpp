@@ -248,6 +248,10 @@ void Bank::loadExtData()
     {
         save();
     }
+    else
+    {
+        sha256(prevHash.data(), data, sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30);
+    }
 }
 
 void Bank::loadSD()
@@ -321,10 +325,18 @@ void Bank::loadSD()
     {
         save();
     }
+    else
+    {
+        sha256(prevHash.data(), data, sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30);
+    }
 }
 
 bool Bank::save() const
 {
+    if (!hasChanged())
+    {
+        return true;
+    }
     Gui::waitFrame(i18n::localize("BANK_SAVE"));
     if (Configuration::getInstance().useExtData())
     {
@@ -341,6 +353,7 @@ bool Bank::save() const
             if (out.good())
             {
                 out.write(jsonData.data(), jsonData.size() + 1);
+                sha256(prevHash.data(), data, sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30);
             }
             else
             {
@@ -369,6 +382,7 @@ bool Bank::save() const
             if (!ferror(out))
             {
                 fwrite(jsonData.data(), 1, jsonData.size(), out);
+                sha256(prevHash.data(), data, sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30);
             }
             else
             {
@@ -542,4 +556,15 @@ void Bank::createBank()
     std::copy(BANK_MAGIC.data(), BANK_MAGIC.data() + BANK_MAGIC.size(), data);
     *(int*)(data + 8) = BANK_VERSION;
     std::fill_n(data + sizeof(BankHeader), sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30, 0xFF);
+}
+
+bool Bank::hasChanged() const
+{
+    u8 hash[SHA256_BLOCK_SIZE];
+    sha256(hash, data, sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30);
+    if (memcmp(hash, prevHash.data(), SHA256_BLOCK_SIZE))
+    {
+        return true;
+    }
+    return false;
 }
