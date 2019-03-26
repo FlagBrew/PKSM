@@ -147,7 +147,7 @@ public:
     std::map<Pouch, std::vector<int>> validItems(void) const override;
     std::string pouchName(Pouch pouch) const override;
 
-    u8 formCount(u16 species) const override { return PersonalSMUSUM::formCount(species); } // TODO: PersonalLGPE
+    u8 formCount(u16 species) const override { return PersonalLGPE::formCount(species); }
 };
 
 #endif

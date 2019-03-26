@@ -637,49 +637,5 @@ std::string StringUtils::wrap(const std::string& text, float scaleX, float maxWi
     }
 
     return wrapped;
-
-    // maxWidth -= ellipsis;
-    // float currentSize = 0.0f;
-    // int currentLines = 1;
-    // for (size_t i = 0; i < text.size(); i++)
-    // {
-    //     u16 codepoint = 0xFFFF;
-    //     int iMod = 0;
-    //     if (text[i] & 0x80 && text[i] & 0x40 && text[i] & 0x20 && !(text[i] & 0x10) && i + 2 < text.size())
-    //     {
-    //         codepoint = text[i] & 0x0F;
-    //         codepoint = codepoint << 6 | (text[i + 1] & 0x3F);
-    //         codepoint = codepoint << 6 | (text[i + 2] & 0x3F);
-    //         iMod = 2;
-    //     }
-    //     else if (text[i] & 0x80 && text[i] & 0x40 && !(text[i] & 0x20) && i + 1 < text.size())
-    //     {
-    //         codepoint = text[i] & 0x1F;
-    //         codepoint = codepoint << 6 | (text[i + 1] & 0x3F);
-    //         iMod = 1;
-    //     }
-    //     else if (!(text[i] & 0x80))
-    //     {
-    //         codepoint = text[i];
-    //     }
-    //     currentSize += fontGetCharWidthInfo(fontGlyphIndexFromCodePoint(codepoint))->charWidth * scaleX;
-
-    //     if (currentSize > maxWidth)
-    //     {
-    //         if (currentLines < lines)
-    //         {
-    //             text.insert(i, 1, '\n');
-    //             currentSize = 0.0f;
-    //         }
-    //         else
-    //         {
-    //             text = text.substr(0, i) + "...";
-    //             return text;
-    //         }
-    //     }
-
-    //     i += iMod;
-    // }
-    // return text; // Should never happen
 }
 

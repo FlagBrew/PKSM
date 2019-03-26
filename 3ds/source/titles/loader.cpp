@@ -153,20 +153,6 @@ void TitleLoader::scanSaves(void)
             }
         }
         auto extraSaves = Configuration::getInstance().extraSaves(id);
-        // if (!others.first.empty())
-        // {
-        //     for (auto saveDir : others.first)
-        //     {
-        //         Directory dir(Archive::sd(), StringUtils::UTF8toUTF16(saveDir));
-        //         for (size_t j = 0; j < dir.count(); j++)
-        //         {
-        //             if (dir.folder(j))
-        //             {
-        //                 saves.push_back(saveDir + StringUtils::UTF16toUTF8(sSeparator + dir.item(j)) + "/main");
-        //             }
-        //         }
-        //     }
-        // }
         if (!extraSaves.empty())
         {
             for (auto& save : extraSaves)
