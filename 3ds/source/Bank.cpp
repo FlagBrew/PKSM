@@ -576,5 +576,6 @@ bool Bank::hasChanged() const
     {
         return true;
     }
+    needsCheck = false;
     return false;
 }
