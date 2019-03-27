@@ -118,7 +118,7 @@ Result Archive::createPKSMExtdataArchive(std::string& execPath)
     else
     {
         smdh = new smdh_s;
-        FILE* in = fopen(execPath.substr(execPath.find('/')).c_str(), "rb");
+        FILE* in = fopen(execPath.c_str(), "rb");
         fseek(in, 0x20, SEEK_SET);
         u32 pos;
         fread(&pos, sizeof(pos), 1, in);
