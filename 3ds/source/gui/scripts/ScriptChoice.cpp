@@ -42,7 +42,6 @@ int ScriptChoice::run()
         update(&touch);
 
         C3D_FrameEnd(0);
-        Gui::clearTextBufs();
     }
     return finalVal;
 }
@@ -51,19 +50,5 @@ void ScriptChoice::drawBottom() const
 {
     C2D_SceneBegin(g_renderTargetBottom);
     Gui::backgroundBottom(false);
-    std::vector<std::string> lines;
-    std::string tmp = question;
-    while (tmp.find('\n') != std::string::npos)
-    {
-        lines.push_back(tmp.substr(0, tmp.find('\n')));
-        tmp = tmp.substr(tmp.find('\n') + 1);
-    }
-    // Add the final line
-    lines.push_back(tmp);
-    int y = 115 - 10 * lines.size();
-    for (size_t i = 0; i < lines.size(); i++)
-    {
-        y += 20 * i;
-        Gui::dynamicText(lines[i], 160, y, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-    }
+    Gui::dynamicText(question, 160, 120, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 }
