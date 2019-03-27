@@ -43,6 +43,7 @@ void Bank::load(std::optional<bool> backupOverride)
         delete[] data;
         data = nullptr;
     }
+    needsCheck = false;
     if (io::exists("/3ds/PKSM/bank/bank.bin"))
     {
         bool deleteOld = true;
