@@ -162,7 +162,7 @@ void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float 
     size_t index = 0;
     while (index != std::string::npos)
     {
-        print.push_back(str.substr(index, str.find('\n', index)));
+        print.push_back(str.substr(index, str.find('\n', index) - index));
         index = str.find('\n', index);
         if (index != std::string::npos)
         {
@@ -250,7 +250,7 @@ void Gui::staticText(const std::string& strKey, int x, int y, float scaleX, floa
     size_t index = 0;
     while (index != std::string::npos)
     {
-        print.push_back(strKey.substr(index, strKey.find('\n', index)));
+        print.push_back(strKey.substr(index, strKey.find('\n', index) - index));
         index = strKey.find('\n', index);
         if (index != std::string::npos)
         {
