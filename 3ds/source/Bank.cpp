@@ -333,10 +333,6 @@ void Bank::loadSD()
 
 bool Bank::save() const
 {
-    if (!hasChanged())
-    {
-        return true;
-    }
     Gui::waitFrame(i18n::localize("BANK_SAVE"));
     if (Configuration::getInstance().useExtData())
     {
