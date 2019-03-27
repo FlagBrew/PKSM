@@ -30,6 +30,7 @@
 #include "Configuration.hpp"
 #include <vector>
 #include <array>
+#include "loader.hpp"
 
 #ifndef CONFIGSCREEN_HPP
 #define CONFIGSCREEN_HPP
@@ -60,6 +61,8 @@ private:
     void back(void);
     void drawTop(void) const;
     bool justSwitched = true;
+    bool storageSizeChanged = false;
+    bool useExtDataChanged = false;
 };
 
 #endif
