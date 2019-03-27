@@ -250,7 +250,7 @@ void Bank::loadExtData()
     }
     else
     {
-        sha256(prevHash.data(), data, sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30);
+        sha256(prevHash.data(), data, size);
     }
 }
 
@@ -398,6 +398,8 @@ bool Bank::save() const
             return false;
         }
     }
+
+    needsCheck = false;
 }
 
 void Bank::resize()
@@ -500,6 +502,7 @@ void Bank::pkm(std::shared_ptr<PKX> pkm, int box, int slot)
     {
         std::fill_n((char*) &newEntry, sizeof(BankEntry), 0xFF);
         bank[index] = newEntry;
+        needsCheck = true;
         return;
     }
     newEntry.gen = pkm->generation();
@@ -509,6 +512,7 @@ void Bank::pkm(std::shared_ptr<PKX> pkm, int box, int slot)
         std::fill_n(newEntry.data + pkm->getLength(), 260 - pkm->getLength(), 0xFF);
     }
     bank[index] = newEntry;
+    needsCheck = true;
 }
 
 void Bank::backup() const
@@ -518,7 +522,7 @@ void Bank::backup() const
     FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_UTF16, u"/3ds/PKSM/banks/pksm_1.json.bak"));
 
     FILE* out = fopen("/3ds/PKSM/banks/pksm_1.bnk.bak", "wb");
-    fwrite(data, 1, sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30, out);
+    fwrite(data, 1, size, out);
     fclose(out);
 
     std::string jsonData = boxNames.dump(2);
@@ -560,6 +564,10 @@ void Bank::createBank()
 
 bool Bank::hasChanged() const
 {
+    if (!needsCheck)
+    {
+        return false;
+    }
     u8 hash[SHA256_BLOCK_SIZE];
     sha256(hash, data, sizeof(BankHeader) + sizeof(BankEntry) * Configuration::getInstance().storageSize() * 30);
     if (memcmp(hash, prevHash.data(), SHA256_BLOCK_SIZE))

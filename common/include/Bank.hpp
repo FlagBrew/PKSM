@@ -69,6 +69,7 @@ private:
     nlohmann::json boxNames;
     size_t size;
     mutable std::array<u8, SHA256_BLOCK_SIZE> prevHash;
+    mutable bool needsCheck = false;
 };
 
 #endif
