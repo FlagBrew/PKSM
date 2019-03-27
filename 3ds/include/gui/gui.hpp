@@ -136,7 +136,7 @@ namespace Gui
     void backgroundAnimatedTop(void);
     void backgroundAnimatedBottom(void);
 
-    std::vector<C2D_Text> parseText(const std::vector<std::string>& str, C2D_TextBuf buffer);
+    std::vector<C2D_Text> parseText(const std::vector<FontString>& str, C2D_TextBuf buffer);
     const std::vector<C2D_Text>& cacheDynamicText(const std::string& strKey);
     void clearTextBufs(void);
     void dynamicText(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY);

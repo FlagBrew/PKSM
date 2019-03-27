@@ -30,13 +30,18 @@
 #ifndef _3DSUTILS_HPP
 #define _3DSUTILS_HPP
 
+struct FontString {
+    C2D_Font font;
+    std::string text;
+};
+
 namespace StringUtils
 {
     float textWidth(const C2D_Text& str, float scaleX);
 
     bool fontHasChar(const C2D_Font& font, u16 codepoint);
-    std::vector<std::string> fontSplit(const std::string& str);
-    C2D_Font fontForSplitString(const std::string& str);
+    std::vector<FontString> fontSplit(const std::string& str);
+    C2D_Font fontForCodepoint(u16 codepoint);
 }
 
 #endif

@@ -375,9 +375,9 @@ std::string StringUtils::splitWord(const std::string& text, float scaleX, float 
             else
             {
                 std::string tmpString = word.substr(i, iMod + 1); // The character
-                widthCache.insert_or_assign(codepoint, C2D_FontGetCharWidthInfo(fontForSplitString(tmpString), C2D_FontGlyphIndexFromCodePoint(fontForSplitString(tmpString), codepoint)));
+                widthCache.insert_or_assign(codepoint, C2D_FontGetCharWidthInfo(fontForCodepoint(codepoint), C2D_FontGlyphIndexFromCodePoint(fontForCodepoint(codepoint), codepoint)));
                 widthCacheOrder.push(codepoint);
-                if (widthCache.size() > 1000)
+                if (widthCache.size() > 1024)
                 {
                     widthCache.erase(widthCacheOrder.front());
                     widthCacheOrder.pop();
@@ -437,8 +437,7 @@ float StringUtils::textWidth(const std::string& text, float scaleX)
         }
         else
         {
-            std::string tmpString = text.substr(i, iMod + 1); // The character
-            widthCache.insert_or_assign(codepoint, C2D_FontGetCharWidthInfo(fontForSplitString(tmpString), C2D_FontGlyphIndexFromCodePoint(fontForSplitString(tmpString), codepoint)));
+            widthCache.insert_or_assign(codepoint, C2D_FontGetCharWidthInfo(fontForCodepoint(codepoint), C2D_FontGlyphIndexFromCodePoint(fontForCodepoint(codepoint), codepoint)));
             widthCacheOrder.push(codepoint);
             if (widthCache.size() > 1024)
             {
@@ -581,7 +580,7 @@ std::string StringUtils::wrap(const std::string& text, float scaleX, float maxWi
         split.pop_back();
     }
 
-    const float ellipsis = C2D_FontGetCharWidthInfo(Gui::fonts[0], C2D_FontGlyphIndexFromCodePoint(Gui::fonts[0], '.'))->charWidth * 3 * scaleX;
+    const float ellipsis = C2D_FontGetCharWidthInfo(Gui::fonts[1], C2D_FontGlyphIndexFromCodePoint(Gui::fonts[1], '.'))->charWidth * 3 * scaleX;
 
     // If there's space for the ellipsis, add it
     if (textWidth(split[lines - 1], scaleX) + ellipsis <= maxWidth)
@@ -655,11 +654,11 @@ bool StringUtils::fontHasChar(const C2D_Font& font, u16 codepoint)
     return true;
 }
 
-std::vector<std::string> StringUtils::fontSplit(const std::string& str)
+std::vector<FontString> StringUtils::fontSplit(const std::string& str)
 {
-    std::vector<std::string> ret;
+    std::vector<FontString> ret;
     std::string parseMe = "", currentChar = "";
-    size_t prevFont = 0;
+    C2D_Font prevFont = nullptr;
     for (size_t i = 0; i < str.size() + 1; i++)
     {
         u16 codepoint = 0xFFFD;
@@ -694,27 +693,18 @@ std::vector<std::string> StringUtils::fontSplit(const std::string& str)
         }
         else if (codepoint == 0)
         {
-            ret.push_back(parseMe);
+            ret.push_back({prevFont, parseMe});
             return ret;
         }
 
-        size_t font = codepoint == u' ' ? 1 : 0;
-        for (; font < Gui::fonts.size(); font++)
-        {
-            if (StringUtils::fontHasChar(Gui::fonts[font], codepoint))
-                break;
-        }
-        if (font >= Gui::fonts.size())
-        {
-            parseMe += "\uFFFD";
-        }
-        else if (prevFont == font)
+        C2D_Font font = fontForCodepoint(codepoint);
+        if (prevFont == font)
         {
             parseMe += currentChar;
         }
         else
         {
-            ret.push_back(parseMe);
+            ret.push_back({prevFont, parseMe});
             parseMe = currentChar;
             prevFont = font;
         }
@@ -723,46 +713,20 @@ std::vector<std::string> StringUtils::fontSplit(const std::string& str)
     return ret;
 }
 
-C2D_Font StringUtils::fontForSplitString(const std::string& string)
+C2D_Font StringUtils::fontForCodepoint(u16 codepoint)
 {
-    u16 codepoint = 0xFFFD;
-    if (string[0] & 0x80 && string[0] & 0x40 && string[0] & 0x20 && !(string[0] & 0x10) && 2 < string.size())
+    if (codepoint != u' ')
     {
-        codepoint = string[0] & 0x0F;
-        codepoint = codepoint << 6 | (string[1] & 0x3F);
-        codepoint = codepoint << 6 | (string[2] & 0x3F);
-    }
-    else if (string[0] & 0x80 && string[0] & 0x40 && !(string[0] & 0x20) && 1 < string.size())
-    {
-        codepoint = string[0] & 0x1F;
-        codepoint = codepoint << 6 | (string[1] & 0x3F);
-    }
-    else if (!(string[0] & 0x80))
-    {
-        codepoint = string[0];
-    }
-
-    if (codepoint == u' ')
-    {
-        return Gui::fonts[1];
-    }
-
-    if (!StringUtils::fontHasChar(Gui::fonts[0], codepoint))
-    {
-        size_t currentFont;
-        for (currentFont = 1; currentFont < Gui::fonts.size(); currentFont++)
+        for (size_t font = 0; font < Gui::fonts.size(); font++)
         {
-            if (StringUtils::fontHasChar(Gui::fonts[currentFont], codepoint))
+            if (StringUtils::fontHasChar(Gui::fonts[font], codepoint))
             {
-                return Gui::fonts[currentFont];
+                return Gui::fonts[font];
             }
         }
-        if (currentFont >= Gui::fonts.size())
-        {
-            return Gui::fonts[0];
-        }
     }
-    return Gui::fonts[0];
+    // Either space, in which case we want to use the system font, or not found, in which case we want to use the system font
+    return Gui::fonts[1];
 }
 
 // TODO Implement this without using two intermediate strings

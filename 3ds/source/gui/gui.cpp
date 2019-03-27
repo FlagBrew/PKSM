@@ -174,15 +174,13 @@ static void drawVector(const std::vector<C2D_Text>& draw, int x, int y, int line
     }
 }
 
-std::vector<C2D_Text> Gui::parseText(const std::vector<std::string>& str, C2D_TextBuf buffer)
+std::vector<C2D_Text> Gui::parseText(const std::vector<FontString>& str, C2D_TextBuf buffer)
 {
     std::vector<C2D_Text> ret;
     for (auto i = str.begin(); i != str.end(); i++)
     {
-        C2D_Font font = StringUtils::fontForSplitString(*i);
-
         C2D_Text text;
-        C2D_TextFontParse(&text, font, buffer, i->c_str());
+        C2D_TextFontParse(&text, i->font, buffer, i->text.c_str());
         C2D_TextOptimize(&text);
         ret.push_back(text);
     }
