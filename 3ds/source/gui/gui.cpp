@@ -192,7 +192,7 @@ const std::vector<C2D_Text>& Gui::cacheDynamicText(const std::string& strKey)
     std::unordered_map<std::string, std::vector<C2D_Text>>::const_iterator index = dynamicMap.find(strKey);
     if (index == dynamicMap.end())
     {
-        if (hackyGetCurrentGlyphCount(dynamicBuf) >= 2000)
+        if (hackyGetCurrentGlyphCount(dynamicBuf) >= 1950)
         {
             dynamicMap.clear();
             Gui::clearTextBufs();
