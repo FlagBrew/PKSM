@@ -183,7 +183,7 @@ void Bank::loadExtData()
     FSStream in(Archive::data(), u"/banks/pksm_1.bnk", FS_OPEN_READ);
     if (in.good())
     {
-        // Gui::waitFrame(i18n::localize("BANK_LOAD"));
+        Gui::waitFrame(i18n::localize("BANK_LOAD"));
         size = in.size();
         data = new u8[size];
         in.read(data, size);
@@ -266,7 +266,7 @@ void Bank::loadSD()
     fseek(in, 0, SEEK_END);
     if (!ferror(in))
     {
-        // Gui::waitFrame(i18n::localize("BANK_LOAD"));
+        Gui::waitFrame(i18n::localize("BANK_LOAD"));
         size = ftell(in);
         fseek(in, 0, SEEK_SET);
         data = new u8[size];
@@ -287,7 +287,7 @@ void Bank::loadSD()
     }
     else
     {
-        // Gui::waitFrame(i18n::localize("BANK_LOAD"));
+        Gui::waitFrame(i18n::localize("BANK_CREATE"));
         fclose(in);
         createBank();
         needSave = true;
