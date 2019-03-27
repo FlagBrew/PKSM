@@ -357,8 +357,9 @@ void BagScreen::update(touchPosition* touch)
     }
     for (int i = 0; i < std::min(std::min(firstEmpty - firstItem + mod, 7), limits[currentPouch].second); i++)
     {
-        amountButtons[i*2]->update(touch);
-        amountButtons[i*2+1]->update(touch);
+        amountButtons[i*3]->update(touch);
+        amountButtons[i*3+1]->update(touch);
+        amountButtons[i*3+2]->update(touch);
     }
 
     if (timer > 0)
