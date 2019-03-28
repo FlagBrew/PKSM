@@ -68,9 +68,14 @@ namespace StringUtils
      * 0x2479, 0x247A, 0x247B, 0x247C, 0x247D,
      * 0x247E, 0x247F, 0x2480, 0x2481, 0x2482,
      * 0x2483, 0x2484, 0x2485, 0x2486, and 0x2487
-    */
+     */
     std::string transString45(const std::string& str);
     std::u16string transString45(const std::u16string& str);
+    /** Swaps and reswaps Pokemon specific characters, namely:
+     * 0xE088, 0xE089, 0xE08A, 0xE08B, 0xE08C, 0xE0A6
+     */
+    std::string transString67(const std::string& str);
+    std::u16string transString67(const std::u16string& str);
 }
 
 #endif

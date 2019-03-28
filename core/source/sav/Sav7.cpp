@@ -66,8 +66,8 @@ void Sav7::consoleRegion(u8 v) { data[TrainerCard + 0x34] = v; }
 u8 Sav7::language(void) const { return data[TrainerCard + 0x35]; }
 void Sav7::language(u8 v) { data[TrainerCard + 0x35] = v; }
 
-std::string Sav7::otName(void) const { return StringUtils::getString(data, TrainerCard + 0x38, 13); }
-void Sav7::otName(const std::string& v) { return StringUtils::setString(data, v, TrainerCard + 0x38, 13); }
+std::string Sav7::otName(void) const { return StringUtils::transString67(StringUtils::getString(data, TrainerCard + 0x38, 13)); }
+void Sav7::otName(const std::string& v) { return StringUtils::setString(data, StringUtils::transString67(v), TrainerCard + 0x38, 13); }
 
 u32 Sav7::money(void) const { return *(u32*)(data + Misc + 0x4); }
 void Sav7::money(u32 v) { *(u32*)(data + Misc + 0x4) = v > 9999999 ? 9999999 : v; }
@@ -399,12 +399,12 @@ void Sav7::mysteryGift(WCX& wc, int& pos)
 
 std::string Sav7::boxName(u8 box) const
 {
-    return StringUtils::getString(data, PCLayout + 0x22*box, 17);
+    return StringUtils::transString67(StringUtils::getString(data, PCLayout + 0x22*box, 17));
 }
 
 void Sav7::boxName(u8 box, const std::string& name)
 {
-    StringUtils::setString(data, name, PCLayout + 0x22*box, 17);
+    StringUtils::setString(data, StringUtils::transString67(name), PCLayout + 0x22*box, 17);
 }
 
 u8 Sav7::partyCount(void) const { return data[Party + 6*260]; }

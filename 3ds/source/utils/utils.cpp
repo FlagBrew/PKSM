@@ -743,7 +743,7 @@ std::u16string StringUtils::transString45(const std::u16string& str)
                 codepoint = u'\uE069';
                 break;
             case u'\u246B':
-                codepoint = u'\uE0A8';
+                codepoint = u'\uE0AB';
                 break;
             case u'\u246C':
                 codepoint = u'\uE08D';
@@ -824,10 +824,10 @@ std::u16string StringUtils::transString45(const std::u16string& str)
                 codepoint = u'\uE06A';
                 break;
             case u'\u2486':
-                codepoint = u'\uE0A6';
+                codepoint = u'\uE0A7';
                 break;
             case u'\u2487':
-                codepoint = u'\uE0A7';
+                codepoint = u'\uE0A8';
                 break;
 
             case u'\uE0A9':
@@ -863,7 +863,7 @@ std::u16string StringUtils::transString45(const std::u16string& str)
             case u'\uE069':
                 codepoint = u'\u246A';
                 break;
-            case u'\uE0A8':
+            case u'\uE0AB':
                 codepoint = u'\u246B';
                 break;
             case u'\uE08D':
@@ -944,13 +944,68 @@ std::u16string StringUtils::transString45(const std::u16string& str)
             case u'\uE06A':
                 codepoint = u'\u2485';
                 break;
-            case u'\uE0A6':
+            case u'\uE0A7':
                 codepoint = u'\u2486';
                 break;
-            case u'\uE0A7':
+            case u'\uE0A8':
                 codepoint = u'\u2487';
                 break;
             default:
+                break;
+        }
+    }
+    return ret;
+}
+
+// TODO Make this not require two intermediate strings
+std::string StringUtils::transString67(const std::string& str)
+{
+    return StringUtils::UTF16toUTF8(StringUtils::transString67(StringUtils::UTF8toUTF16(str)));
+}
+
+std::u16string StringUtils::transString67(const std::u16string& str)
+{
+    std::u16string ret = str;
+    for (auto& codepoint : ret)
+    {
+        switch (codepoint)
+        {
+            case u'\uE088':
+                codepoint = u'\u00D7';
+                break;
+            case u'\uE089':
+                codepoint = u'\u00F7';
+                break;
+            case u'\uE08A':
+                codepoint = u'\uE068';
+                break;
+            case u'\uE08B':
+                codepoint = u'\uE069';
+                break;
+            case u'\uE08C':
+                codepoint = u'\uE0AB';
+                break;
+            case u'\uE0A6':
+                codepoint = u'\uE06A';
+                break;
+
+            case u'\u00D7':
+                codepoint = u'\uE088';
+                break;
+            case u'\u00F7':
+                codepoint = u'\uE089';
+                break;
+            case u'\uE068':
+                codepoint = u'\uE08A';
+                break;
+            case u'\uE069':
+                codepoint = u'\uE08B';
+                break;
+            case u'\uE0AB':
+                codepoint = u'\uE08C';
+                break;
+            case u'\uE06A':
+                codepoint = u'\uE0A6';
                 break;
         }
     }

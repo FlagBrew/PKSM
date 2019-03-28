@@ -50,8 +50,8 @@ void Sav6::consoleRegion(u8 v) { data[TrainerCard + 0x2C] = v; }
 u8 Sav6::language(void) const { return data[TrainerCard + 0x2D]; }
 void Sav6::language(u8 v) { data[TrainerCard + 0x2D] = v; }
 
-std::string Sav6::otName(void) const { return StringUtils::getString(data, TrainerCard + 0x48, 13); }
-void Sav6::otName(const std::string& v) { StringUtils::setString(data, v, TrainerCard + 0x48, 13); }
+std::string Sav6::otName(void) const { return StringUtils::transString67(StringUtils::getString(data, TrainerCard + 0x48, 13)); }
+void Sav6::otName(const std::string& v) { StringUtils::setString(data, StringUtils::transString67(v), TrainerCard + 0x48, 13); }
 
 u32 Sav6::money(void) const { return *(u32*)(data + Trainer2 + 0x8); }
 void Sav6::money(u32 v) { *(u32*)(data + Trainer2 + 0x8) = v; }
@@ -439,11 +439,11 @@ void Sav6::mysteryGift(WCX& wc, int& pos)
     pos = (pos + 1) % 24;
 }
 
-std::string Sav6::boxName(u8 box) const { return StringUtils::getString(data, PCLayout + 0x22*box, 17); }
+std::string Sav6::boxName(u8 box) const { return StringUtils::transString67(StringUtils::getString(data, PCLayout + 0x22*box, 17)); }
 
 void Sav6::boxName(u8 box, const std::string& name)
 {
-    StringUtils::setString(data, name, PCLayout + 0x22*box, 17);
+    StringUtils::setString(data, StringUtils::transString67(name), PCLayout + 0x22*box, 17);
 }
 
 u8 Sav6::partyCount(void) const { return data[Party + 6*260]; }
