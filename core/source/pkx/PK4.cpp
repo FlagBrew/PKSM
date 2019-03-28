@@ -258,14 +258,14 @@ void PK4::nature(u8 v)
 u8 PK4::shinyLeaf(void) const { return *(u8*)(data + 0x41); }
 void PK4::shinyLeaf(u8 v) { *(u8*)(data + 0x41) = v; }
 
-std::string PK4::nickname(void) const { return StringUtils::getString4(data, 0x48, 11); }
-void PK4::nickname(const std::string& v) { StringUtils::setString4(data, v, 0x48, 11); }
+std::string PK4::nickname(void) const { return StringUtils::transString45(StringUtils::getString4(data, 0x48, 11)); }
+void PK4::nickname(const std::string& v) { StringUtils::setString4(data, StringUtils::transString45(v), 0x48, 11); }
 
 u8 PK4::version(void) const { return data[0x5F]; }
 void PK4::version(u8 v) { data[0x5F] = v; }
 
-std::string PK4::otName(void) const { return StringUtils::getString4(data, 0x68, 8); }
-void PK4::otName(const std::string& v) { StringUtils::setString4(data, v, 0x68, 8); }
+std::string PK4::otName(void) const { return StringUtils::transString45(StringUtils::getString4(data, 0x68, 8)); }
+void PK4::otName(const std::string& v) { StringUtils::setString4(data, StringUtils::transString45(v), 0x68, 8); }
 
 u8 PK4::eggYear(void) const { return data[0x78]; }
 void PK4::eggYear(u8 v) { data[0x78] = v; }

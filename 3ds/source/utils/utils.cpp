@@ -29,6 +29,7 @@
 #include <vector>
 #include <map>
 #include <queue>
+#include "g4text.h"
 
 static std::wstring_convert<std::codecvt_utf8_utf16<char16_t>,char16_t> convert;
 namespace Gui
