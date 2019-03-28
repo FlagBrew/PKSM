@@ -638,7 +638,7 @@ void StorageScreen::update(touchPosition* touch)
         }
         if (kDown & KEY_Y)
         {
-            if (moveMon.empty())
+            if (moveMon.empty() && !currentlySelecting)
             {
                 pickupMode = PickupMode((pickupMode + 1) % 3);
                 return;
