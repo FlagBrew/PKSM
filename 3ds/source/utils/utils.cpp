@@ -632,22 +632,9 @@ std::string StringUtils::wrap(const std::string& text, float scaleX, float maxWi
     return wrapped;
 }
 
-static u16 defaultCharacterIndex(const C2D_Font& font)
-{
-    if (font)
-    {
-        return font->cfnt->finf.alterCharIndex;
-    }
-    else
-    {
-        return fontGetInfo(nullptr)->alterCharIndex;
-    }
-}
-
 bool StringUtils::fontHasChar(const C2D_Font& font, u16 codepoint)
 {
-    u16 alterCharIndex = defaultCharacterIndex(font);
-    if (C2D_FontGlyphIndexFromCodePoint(font, codepoint) == alterCharIndex)
+    if (C2D_FontGlyphIndexFromCodePoint(font, codepoint) == C2D_FontGetInfo(font)->alterCharIndex)
     {
         return false;
     }

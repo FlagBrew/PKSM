@@ -166,9 +166,9 @@ static void drawVector(const std::vector<C2D_Text>& draw, int x, int y, int line
 {
     for (auto text : draw)
     {
-        CFNT_s* font = text.font ? text.font->cfnt : nullptr;
-        float lineFeed = scaleY * (fontGetInfo(font)->lineFeed);
-        float baselinePos = scaleY * (std::min(fontGetGlyphInfo(font)->cellHeight, fontGetInfo(font)->lineFeed) - fontGetGlyphInfo(font)->baselinePos);
+        FINF_s* font = C2D_FontGetInfo(text.font);
+        float lineFeed = scaleY * (font->lineFeed);
+        float baselinePos = scaleY * (std::min(font->tglp->cellHeight, font->lineFeed) - font->tglp->baselinePos);
         C2D_DrawText(&text, C2D_WithColor | C2D_AtBaseline, x, y + (lineFeed * (float)(line + 1) - baselinePos), 0.5f, scaleX, scaleY, color);
         x += StringUtils::textWidth(text, scaleX);
     }
