@@ -152,17 +152,6 @@ std::string StringUtils::getString4(const u8* data, int ofs, int len)
         codepoint = G4Chars[index];
         if (codepoint == 0xFFFF)
             break;
-
-        // Stupid stupid stupid
-        switch (codepoint)
-        {
-            case 0x246E:
-                codepoint = 0x2640;
-                break;
-            case 0x246D:
-                codepoint = 0x2642;
-                break;
-        }
         
         char* addChar;
         if (codepoint < 0x0080)
@@ -213,16 +202,6 @@ void StringUtils::setString4(u8* data, const std::string& v, int ofs, int len)
                 codepoint = v[charIndex] & 0x1F;
                 codepoint = codepoint << 6 | (v[charIndex + 1] & 0x3F);
                 charIndex += 1;
-            }
-            // GAHHHHHH WHY
-            switch (codepoint)
-            {
-                case 0x2640:
-                    codepoint = 0x246E; // Female
-                    break;
-                case 0x2642:
-                    codepoint = 0x246D; // Male
-                    break;
             }
             size_t index = std::distance(G4Chars, std::find(G4Chars, G4Chars + G4TEXT_LENGTH, codepoint));
             output[outIndex] = (index < G4TEXT_LENGTH ? G4Values[index] : 0x0000); 
