@@ -696,7 +696,14 @@ void StorageScreen::update(touchPosition* touch)
             }
             else if (kDown & KEY_X)
             {
-                showViewer();
+                if (currentlySelecting)
+                {
+                    grabSelection(false);
+                }
+                else
+                {
+                    showViewer();
+                }
                 return;
             }
             else if (kDown & KEY_START)
@@ -1210,70 +1217,7 @@ void StorageScreen::pickup()
         {
             if (currentlySelecting)
             {
-                int cursorX = (cursorIndex - 1) % 6;
-                int cursorY = (cursorIndex - 1) / 6;
-                int baseIndex = std::min(selectDimensions.first, cursorX) + std::min(selectDimensions.second, cursorY) * 6;
-                // Convert to actual dimensions
-                selectDimensions.first = std::abs(selectDimensions.first - cursorX) + 1;
-                selectDimensions.second = std::abs(selectDimensions.second - cursorY) + 1;
-
-                for (int y = 0; y < selectDimensions.second; y++)
-                {
-                    for (int x = 0; x < selectDimensions.first; x++)
-                    {
-                        int pickupIndex = baseIndex + x + y * 6;
-                        if (storageChosen)
-                        {
-                            fromStorage = true;
-                            moveMon.emplace_back(TitleLoader::bank->pkm(storageBox, pickupIndex));
-                            partyNum.push_back(-1);
-                            if (moveMon.back()->encryptionConstant() == 0 && moveMon.back()->species() == 0)
-                            {
-                                *moveMon.rbegin() = nullptr;
-                            }
-                            TitleLoader::bank->pkm(TitleLoader::save->emptyPkm(), storageBox, pickupIndex);
-                        }
-                        else if (boxBox * 30 + pickupIndex - 1 < TitleLoader::save->maxSlot())
-                        {
-                            fromStorage = false;
-                            partyNum.push_back(-1);
-                            if (TitleLoader::save->generation() == Generation::LGPE)
-                            {
-                                SavLGPE* sav = (SavLGPE*)TitleLoader::save.get();
-                                for (int i = 0; i < TitleLoader::save->partyCount(); i++)
-                                {
-                                    if (sav->partyBoxSlot(i) == boxBox * 30 + pickupIndex)
-                                    {
-                                        *partyNum.rbegin() = i;
-                                        break;
-                                    }
-                                }
-                            }
-                            moveMon.emplace_back(TitleLoader::save->pkm(boxBox, pickupIndex));
-                            if (moveMon.back()->encryptionConstant() == 0 && moveMon.back()->species() == 0)
-                            {
-                                *moveMon.rbegin() = nullptr;
-                            }
-                            TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), boxBox, pickupIndex);
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-                }
-                currentlySelecting = false;
-                if (std::find_if(moveMon.begin(), moveMon.end(), [](const std::shared_ptr<PKX>& pkm){ return (bool)pkm; }) == moveMon.end())
-                {
-                    moveMon.clear();
-                    partyNum.clear();
-                    selectDimensions = std::pair{0,0};
-                }
-                else
-                {
-                    cursorIndex = baseIndex + 1;
-                }
-                scrunchSelection();
+                grabSelection(true);
             }
             else
             {
@@ -2012,4 +1956,78 @@ void StorageScreen::scrunchSelection()
     }
     selectDimensions.first -= removableColumns.size();
     selectDimensions.second -= removableRows.size();
+}
+
+void StorageScreen::grabSelection(bool remove)
+{
+    int cursorX = (cursorIndex - 1) % 6;
+    int cursorY = (cursorIndex - 1) / 6;
+    int baseIndex = std::min(selectDimensions.first, cursorX) + std::min(selectDimensions.second, cursorY) * 6;
+    // Convert to actual dimensions
+    selectDimensions.first = std::abs(selectDimensions.first - cursorX) + 1;
+    selectDimensions.second = std::abs(selectDimensions.second - cursorY) + 1;
+
+    for (int y = 0; y < selectDimensions.second; y++)
+    {
+        for (int x = 0; x < selectDimensions.first; x++)
+        {
+            int pickupIndex = baseIndex + x + y * 6;
+            if (storageChosen)
+            {
+                fromStorage = true;
+                moveMon.emplace_back(TitleLoader::bank->pkm(storageBox, pickupIndex));
+                partyNum.push_back(-1);
+                if (moveMon.back()->encryptionConstant() == 0 && moveMon.back()->species() == 0)
+                {
+                    *moveMon.rbegin() = nullptr;
+                }
+                if (remove)
+                {
+                    TitleLoader::bank->pkm(TitleLoader::save->emptyPkm(), storageBox, pickupIndex);
+                }
+            }
+            else if (boxBox * 30 + pickupIndex - 1 < TitleLoader::save->maxSlot())
+            {
+                fromStorage = false;
+                partyNum.push_back(-1);
+                if (TitleLoader::save->generation() == Generation::LGPE)
+                {
+                    SavLGPE* sav = (SavLGPE*)TitleLoader::save.get();
+                    for (int i = 0; i < TitleLoader::save->partyCount(); i++)
+                    {
+                        if (sav->partyBoxSlot(i) == boxBox * 30 + pickupIndex)
+                        {
+                            *partyNum.rbegin() = i;
+                            break;
+                        }
+                    }
+                }
+                moveMon.emplace_back(TitleLoader::save->pkm(boxBox, pickupIndex));
+                if (moveMon.back()->encryptionConstant() == 0 && moveMon.back()->species() == 0)
+                {
+                    *moveMon.rbegin() = nullptr;
+                }
+                if (remove)
+                {
+                    TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), boxBox, pickupIndex);
+                }
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+    currentlySelecting = false;
+    if (std::find_if(moveMon.begin(), moveMon.end(), [](const std::shared_ptr<PKX>& pkm){ return (bool)pkm; }) == moveMon.end())
+    {
+        moveMon.clear();
+        partyNum.clear();
+        selectDimensions = std::pair{0,0};
+    }
+    else
+    {
+        cursorIndex = baseIndex + 1;
+    }
+    scrunchSelection();
 }
