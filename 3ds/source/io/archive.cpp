@@ -39,6 +39,7 @@ Result Archive::init(std::string& execPath)
         if (R_FAILED(res = createPKSMExtdataArchive(execPath))) return res;
     }
     else if (R_FAILED(res = extdata(&mData, UNIQUE_ID))) return res;
+    mkdir("/3ds", 777);
     mkdir("/3ds/PKSM", 777);
     mkdir("/3ds/PKSM/assets", 777);
     mkdir("/3ds/PKSM/backups", 777);
