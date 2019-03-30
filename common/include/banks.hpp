@@ -24,28 +24,19 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef BOXSELECTIONSCREEN_HPP
-#define BOXSELECTIONSCREEN_HPP
+#ifndef BANKS_HPP
+#define BANKS_HPP
+#include "types.h"
+#include "Bank.hpp"
 
-#include "Screen.hpp"
-#include "HidVertical.hpp"
-#include <vector>
-#include <string>
-
-class BoxSelectionScreen : public Screen
+namespace Banks
 {
-public:
-    BoxSelectionScreen(std::vector<std::string> boxes, size_t current) : hid(40, 2), strings(boxes), previous(current) { hid.update(strings.size()); hid.select(current); }
-    size_t run();
-    void draw() const override;
-    void update(touchPosition* touch) override;
-    ScreenType type() const override { return ScreenType::SELECTOR; }
-private:
-    HidVertical hid;
-    std::vector<std::string> strings;
-    size_t previous;
-    mutable bool firstDraw = true;
-    bool finished = false;
-};
+    extern std::shared_ptr<Bank> bank;
+    Result init();
+    void loadBank(const std::string& name);
+    void removeBank(const std::string& name);
+    void swapBank(size_t which1, size_t which2);
+    std::vector<std::string> bankNames();
+}
 
 #endif

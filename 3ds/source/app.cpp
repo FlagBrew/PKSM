@@ -26,6 +26,7 @@
 
 #include "app.hpp"
 #include "random.hpp"
+#include "banks.hpp"
 
 // increase the stack in order to allow quirc to decode large qrs
 int __stacksize__ = 64 * 1024;
@@ -173,10 +174,11 @@ Result App::init(std::string execPath)
     
     Configuration::getInstance();
     i18n::init();
+    if (R_FAILED(res = Banks::init()))
+        return consoleDisplayError("Banks::init failed.", res);
 
     Threads::create((ThreadFunc)TitleLoader::scanTitles);
     TitleLoader::scanSaves();
-    TitleLoader::bank = std::make_shared<Bank>();
 
     randomNumbers.seed(osGetTime());
 

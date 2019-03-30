@@ -30,8 +30,6 @@
 #include <3ds.h>
 #include <string>
 
-#define BUFFER_SIZE 0x10000
-
 class FSStream
 {
 public:

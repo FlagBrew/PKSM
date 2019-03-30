@@ -28,6 +28,7 @@
 #include "gui.hpp"
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
+#include "banks.hpp"
 
 #define STORAGE_BOX_LIMIT 2000
 
@@ -366,11 +367,11 @@ void ConfigScreen::back()
     Configuration::getInstance().save();
     if (storageSizeChanged)
     {
-        TitleLoader::bank->resize();
+        Banks::bank->resize(Configuration::getInstance().storageSize());
     }
     else if (useExtDataChanged)
     {
-        TitleLoader::bank->save();
+        Banks::bank->save();
     }
     Gui::screenBack();
 }

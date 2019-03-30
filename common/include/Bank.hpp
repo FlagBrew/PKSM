@@ -36,30 +36,34 @@ extern "C" {
 class Bank
 {
 public:
-    Bank();
+    Bank(const std::string& name);
     ~Bank()
     {
         delete[] data;
     }
     std::shared_ptr<PKX> pkm(int box, int slot) const;
     void pkm(std::shared_ptr<PKX> pkm, int box, int slot);
-    void resize();
+    void resize(int boxes);
     void load(std::optional<bool> backupOverride = std::nullopt);
     bool save() const;
     void backup() const;
     std::string boxName(int box) const;
     void boxName(std::string name, int box);
     bool hasChanged() const;
+    int boxes() const;
+    const std::string& name();
 private:
-    static constexpr int BANK_VERSION = 1;
+    static constexpr int BANK_VERSION = 2;
     static constexpr std::string_view BANK_MAGIC = "PKSMBANK";
     void loadExtData();
     void loadSD();
     void createJSON();
     void createBank();
+    void convert();
     struct BankHeader {
         const char MAGIC[8];
         int version;
+        int boxes;
     };
     struct BankEntry {
         Generation gen;
@@ -70,6 +74,8 @@ private:
     size_t size;
     mutable std::array<u8, SHA256_BLOCK_SIZE> prevHash;
     mutable bool needsCheck = false;
+    std::string bankName;
+    const std::string bankPath, jsonPath;
 };
 
 #endif

@@ -63,7 +63,6 @@ private:
     int cursorIndex = 0, storageBox = 0, boxBox = 0;
     std::unique_ptr<ViewerScreen> viewer;
     bool justSwitched = true;
-    Bank bank;
     bool doCrypt;
 };
 

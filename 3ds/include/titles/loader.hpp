@@ -34,7 +34,6 @@
 #include "gui.hpp"
 #include "thread.hpp"
 #include "Title.hpp"
-#include "Bank.hpp"
 
 #include "Sav.hpp"
 #include "SavB2W2.hpp"
@@ -71,7 +70,6 @@ namespace TitleLoader
     extern std::shared_ptr<Title> cardTitle;
     extern std::unordered_map<std::string, std::vector<std::string>> sdSaves;
     extern std::shared_ptr<Sav> save;
-    extern std::shared_ptr<Bank> bank;
 }
 
 #endif

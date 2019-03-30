@@ -29,6 +29,7 @@
 #include "archive.hpp"
 #include "loader.hpp"
 #include "FSStream.hpp"
+#include "banks.hpp"
 extern "C" {
     #include "picoc.h"
 }
@@ -382,9 +383,9 @@ void ScriptScreen::parsePicoCScript(std::string& file)
         // while (aptMainLoop() && !hidKeysDown()) hidScanInput();
         // Gui::warn(error);
     }
-    if (TitleLoader::bank->hasChanged())
+    if (Banks::bank->hasChanged())
     {
-        TitleLoader::bank->save();
+        Banks::bank->save();
     }
     PicocCleanup(picoc);
 }

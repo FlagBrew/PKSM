@@ -31,6 +31,7 @@
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
 #include "random.hpp"
+#include "banks.hpp"
 
 // storage, box, slot
 auto result = std::make_tuple(0, -1, -1);
@@ -88,7 +89,7 @@ void BoxChoice::draw() const
     std::shared_ptr<PKX> infoMon = nullptr;
     if (cursorIndex != 0)
     {
-        infoMon = storageChosen ? bank.pkm(storageBox, cursorIndex - 1) : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
+        infoMon = storageChosen ? Banks::bank->pkm(storageBox, cursorIndex - 1) : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
     }
     if (infoMon && (infoMon->encryptionConstant() == 0 && infoMon->species() == 0))
     {
@@ -169,7 +170,7 @@ void BoxChoice::draw() const
         Gui::sprite(ui_sheet_bar_boxname_empty_idx, 44, 21);
         Gui::staticText("\uE004", 45 + 24 / 2, 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         Gui::staticText("\uE005", 225 + 24 / 2, 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        Gui::dynamicText(bank.boxName(storageBox), 69 + 156 / 2, 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::dynamicText(Banks::bank->boxName(storageBox), 69 + 156 / 2, 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
 
         Gui::sprite(ui_sheet_storagemenu_cross_idx, 36, 50);
         Gui::sprite(ui_sheet_storagemenu_cross_idx, 246, 50);
@@ -182,7 +183,7 @@ void BoxChoice::draw() const
             u16 x = 45;
             for (u8 column = 0; column < 6; column++)
             {
-                auto pkm = bank.pkm(storageBox, row * 6 + column);
+                auto pkm = Banks::bank->pkm(storageBox, row * 6 + column);
                 if (pkm->species() > 0)
                 {
                     Gui::pkm(*pkm, x, y);
@@ -513,7 +514,7 @@ bool BoxChoice::showViewer()
     {
         return false;
     }
-    std::shared_ptr<PKX> view = storageChosen ? bank.pkm(storageBox, cursorIndex - 1) : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
+    std::shared_ptr<PKX> view = storageChosen ? Banks::bank->pkm(storageBox, cursorIndex - 1) : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
     if (view->species() != 0)
     {
         viewer = std::make_unique<ViewerScreen>(view, true);

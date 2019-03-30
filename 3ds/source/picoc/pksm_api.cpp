@@ -35,6 +35,7 @@
 #include "PK5.hpp"
 #include "PK6.hpp"
 #include "PK7.hpp"
+#include "banks.hpp"
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <errno.h>
@@ -565,7 +566,7 @@ extern "C" {
                 break;
         }
 
-        TitleLoader::bank->pkm(pkm, box, slot);
+        Banks::bank->pkm(pkm, box, slot);
     }
 
     void net_ip(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
