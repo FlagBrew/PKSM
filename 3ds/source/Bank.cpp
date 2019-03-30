@@ -112,7 +112,7 @@ void Bank::loadExtData()
             // NOTE: THIS IS THE CONVERSION SECTION. WILL NEED TO BE MODIFIED WHEN THE FORMAT IS CHANGED
             if (h.version == 1)
             {
-                h.boxes = (size - (sizeof(BankHeader) - sizeof(int))) / sizeof(BankEntry);
+                h.boxes = (size - (sizeof(BankHeader) - sizeof(int))) / sizeof(BankEntry) / 30;
                 data = new u8[size = size + sizeof(int)];
                 h.version = BANK_VERSION;
                 needSave = true;
@@ -214,7 +214,7 @@ void Bank::loadSD()
                 data = new u8[size = sizeof(BankHeader) + currentPkmSize];
                 fread(data, 1, sizeof(BankHeader) - sizeof(int), in);
                 ((BankHeader*)data)->version = BANK_VERSION;
-                ((BankHeader*)data)->boxes = currentPkmSize / sizeof(BankEntry);
+                ((BankHeader*)data)->boxes = currentPkmSize / sizeof(BankEntry) / 30;
                 fread(data + sizeof(BankHeader), 1, currentPkmSize, in);
                 needSave = true;
             }
@@ -613,4 +613,9 @@ void Bank::convert()
 const std::string& Bank::name()
 {
     return bankName;
+}
+
+int Bank::boxes() const
+{
+    return ((BankHeader*)data)->boxes;
 }
