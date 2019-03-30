@@ -70,6 +70,7 @@ private:
     void virtualTrade(std::shared_ptr<PKX> pkm);
     void scrunchSelection();
     void grabSelection(bool remove);
+    bool selectBank();
 
     bool storageChosen = false;
     bool fromStorage = false;

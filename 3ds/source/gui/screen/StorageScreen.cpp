@@ -38,6 +38,7 @@
 #include "SortSelectionScreen.hpp"
 #include "BoxSelectionScreen.hpp"
 #include "banks.hpp"
+#include "BankSelectionScreen.hpp"
 #include <variant>
 
 extern std::stack<std::unique_ptr<Screen>> screens;
@@ -426,7 +427,7 @@ void StorageScreen::draw() const
         Gui::sprite(ui_sheet_bar_arc_top_green_idx, 0, 0);
 
         Gui::sprite(ui_sheet_textbox_pksm_idx, 261, 3);
-        Gui::staticText("PKSM", 394, 7, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
+        Gui::dynamicText(Banks::bank->name(), 394, 7, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
 
         Gui::sprite(ui_sheet_bar_boxname_empty_idx, 44, 21);
         Gui::staticText("\uE004", 45 + 24 / 2, 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
@@ -713,7 +714,14 @@ void StorageScreen::update(touchPosition* touch)
             }
             else if (kDown & KEY_SELECT)
             {
-                selectBox();
+                if (storageChosen && cursorIndex == 0)
+                {
+                    selectBank();
+                }
+                else
+                {
+                    selectBox();
+                }
                 return;
             }
             else if (buttonCooldown <= 0)
@@ -828,7 +836,7 @@ bool StorageScreen::prevBox(bool forceBottom)
         storageBox--;
         if (storageBox == -1)
         {
-            storageBox = Configuration::getInstance().storageSize() - 1;
+            storageBox = Banks::bank->boxes() - 1;
         }
     }
     else
@@ -847,7 +855,7 @@ bool StorageScreen::prevBoxTop()
     storageBox--;
     if (storageBox == -1)
     {
-        storageBox = Configuration::getInstance().storageSize() - 1;
+        storageBox = Banks::bank->boxes() - 1;
     }
     return false;
 }
@@ -857,7 +865,7 @@ bool StorageScreen::nextBox(bool forceBottom)
     if (storageChosen && !forceBottom)
     {
         storageBox++;
-        if (storageBox == Configuration::getInstance().storageSize())
+        if (storageBox == Banks::bank->boxes())
         {
             storageBox = 0;
         }
@@ -876,7 +884,7 @@ bool StorageScreen::nextBox(bool forceBottom)
 bool StorageScreen::nextBoxTop()
 {
     storageBox++;
-    if (storageBox == Configuration::getInstance().storageSize())
+    if (storageBox == Banks::bank->boxes())
     {
         storageBox = 0;
     }
@@ -1667,7 +1675,7 @@ bool StorageScreen::sort()
         std::vector<std::shared_ptr<PKX>> sortMe;
         if (storageChosen)
         {
-            for (int i = 0; i < Configuration::getInstance().storageSize() * 30; i++)
+            for (int i = 0; i < Banks::bank->boxes() * 30; i++)
             {
                 std::shared_ptr<PKX> pkm = Banks::bank->pkm(i / 30, i % 30);
                 if (pkm->encryptionConstant() != 0 && pkm->species() != 0)
@@ -1805,7 +1813,7 @@ bool StorageScreen::sort()
             {
                 Banks::bank->pkm(sortMe[i], i / 30, i % 30);
             }
-            for (int i = sortMe.size(); i < Configuration::getInstance().storageSize() * 30; i++)
+            for (int i = sortMe.size(); i < Banks::bank->boxes() * 30; i++)
             {
                 Banks::bank->pkm(TitleLoader::save->emptyPkm(), i / 30, i % 30);
             }
@@ -1832,7 +1840,7 @@ bool StorageScreen::selectBox()
     int* boxToChange = nullptr;
     if (storageChosen)
     {
-        for (int i = 0; i < Configuration::getInstance().storageSize(); i++)
+        for (int i = 0; i < Banks::bank->boxes(); i++)
         {
             boxes.push_back(Banks::bank->boxName(i));
         }
@@ -1850,6 +1858,17 @@ bool StorageScreen::selectBox()
     BoxSelectionScreen box(boxes, *boxToChange);
     *boxToChange = box.run();
 
+    return true;
+}
+
+bool StorageScreen::selectBank()
+{
+    BankSelectionScreen bank(Banks::bank->name());
+    auto res = bank.run();
+    if (Banks::loadBank(res.first, res.second))
+    {
+        storageBox = 0;
+    }
     return true;
 }
 

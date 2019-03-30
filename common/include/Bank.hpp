@@ -36,7 +36,7 @@ extern "C" {
 class Bank
 {
 public:
-    Bank(const std::string& name);
+    Bank(const std::string& name, int maxBoxes);
     ~Bank()
     {
         delete[] data;
@@ -44,21 +44,22 @@ public:
     std::shared_ptr<PKX> pkm(int box, int slot) const;
     void pkm(std::shared_ptr<PKX> pkm, int box, int slot);
     void resize(int boxes);
-    void load(std::optional<bool> backupOverride = std::nullopt);
+    void load(int maxBoxes);
     bool save() const;
     void backup() const;
     std::string boxName(int box) const;
     void boxName(std::string name, int box);
     bool hasChanged() const;
     int boxes() const;
-    const std::string& name();
+    const std::string& name() const;
+    bool setName(const std::string& name);
 private:
     static constexpr int BANK_VERSION = 2;
     static constexpr std::string_view BANK_MAGIC = "PKSMBANK";
-    void loadExtData();
-    void loadSD();
+    void loadExtData(int maxBoxes);
+    void loadSD(int maxBoxes);
     void createJSON();
-    void createBank();
+    void createBank(int maxBoxes);
     void convert();
     struct BankHeader {
         const char MAGIC[8];
@@ -75,7 +76,7 @@ private:
     mutable std::array<u8, SHA256_BLOCK_SIZE> prevHash;
     mutable bool needsCheck = false;
     std::string bankName;
-    const std::string bankPath, jsonPath;
+    std::string bankPath, jsonPath;
 };
 
 #endif

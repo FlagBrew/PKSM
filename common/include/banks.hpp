@@ -29,14 +29,19 @@
 #include "types.h"
 #include "Bank.hpp"
 
+#define BANKS_VERSION 1
+#define BANK_DEFAULT_SIZE 50
+#define BANK_MAX_SIZE 500
+
 namespace Banks
 {
     extern std::shared_ptr<Bank> bank;
     Result init();
-    void loadBank(const std::string& name);
+    bool loadBank(const std::string& name, std::optional<int> maxBoxes = std::nullopt);
     void removeBank(const std::string& name);
-    void swapBank(size_t which1, size_t which2);
-    std::vector<std::string> bankNames();
+    void renameBank(const std::string& oldName, const std::string& newName);
+    void setBankSize(const std::string& name, int size);
+    std::vector<std::pair<std::string, int>> bankNames();
 }
 
 #endif

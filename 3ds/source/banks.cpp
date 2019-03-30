@@ -67,8 +67,8 @@ static Result saveJson()
 
 static Result createJson()
 {
-    banks = nlohmann::json::array();
-    banks.push_back("pksm_1");
+    banks = nlohmann::json::object();
+    banks["pksm_1"] = BANK_DEFAULT_SIZE;
     return saveJson();
 }
 
@@ -96,8 +96,9 @@ static Result readExtData()
     if (in.good())
     {
         size_t size = in.size();
-        char data[size];
+        char data[size + 1];
         in.read(data, size);
+        data[size] = '\0';
         in.close();
         banks = nlohmann::json::parse(data, nullptr, false);
     }
@@ -111,7 +112,6 @@ static Result readExtData()
 
 Result Banks::init()
 {
-    Result res = 0;
     if (Configuration::getInstance().useExtData())
     {
         if (io::exists("/3ds/PKSM/banks.json"))
@@ -121,21 +121,7 @@ Result Banks::init()
         }
         else
         {
-            FSStream in = FSStream(Archive::data(), u"/banks.json", FS_OPEN_READ);
-            if (in.good())
-            {
-                size_t size = in.size();
-                char data[size];
-                in.read(data, size);
-                in.close();
-                banks = nlohmann::json::parse(data, nullptr, false);
-            }
-            else
-            {
-                in.close();
-                if (R_FAILED(res = createJson()))
-                    return res;
-            }
+            readExtData();
         }
     }
     else
@@ -150,33 +136,36 @@ Result Banks::init()
         else
         {
             in.close();
-            FILE* in = fopen("/3ds/PKSM/banks.json", "rt");
-            if (in)
-            {
-                banks = nlohmann::json::parse(in, nullptr, false);
-                fclose(in);
-            }
-            else
-            {
-                fclose(in);
-                if (R_FAILED(res = createJson()))
-                    return res;
-            }
+            readSD();
         }
     }
     if (banks.is_discarded())
         return -1;
 
-    loadBank(banks[0]);
+    auto i = banks.find("pksm_1");
+    if (i == banks.end())
+    {
+        i = banks.begin();
+    }
+    loadBank(i.key(), i.value());
     return 0;
 }
 
-void Banks::loadBank(const std::string& name)
+bool Banks::loadBank(const std::string& name, std::optional<int> maxBoxes)
 {
-    if (bank->name() != name)
+    if (!bank || bank->name() != name)
     {
-        bank = std::make_shared<Bank>(name);
+        auto found = banks.find(name);
+        if (found == banks.end())
+        {
+            banks[name] = maxBoxes.value_or(BANK_DEFAULT_SIZE);
+            saveJson();
+            found = banks.find(name);
+        }
+        bank = std::make_shared<Bank>(found.key(), found.value().get<int>());
+        return true;
     }
+    return false;
 }
 
 void Banks::removeBank(const std::string& name)
@@ -185,36 +174,77 @@ void Banks::removeBank(const std::string& name)
     {
         return;
     }
-    if (bank && bank->name() == name)
+    if (banks.count(name))
     {
-        bank = nullptr;
-    }
-    remove(("/3ds/PKSM/banks/" + name + ".bnk").c_str());
-    remove(("/3ds/PKSM/banks/" + name + ".json").c_str());
-    FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, (u"/banks/" + StringUtils::UTF8toUTF16(name) + u".bnk").c_str()));
-    FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, (u"/banks/" + StringUtils::UTF8toUTF16(name) + u".json").c_str()));
-    for (auto i = banks.begin(); i != banks.end(); i++)
-    {
-        if (i->get<std::string>() == name)
+        if (bank && bank->name() == name)
         {
-            banks.erase(i);
-            saveJson();
-            break;
+            bank = nullptr;
+            if (banks.begin().key() == name)
+            {
+                loadBank((banks.begin() + 1).key());
+            }
+            else
+            {
+                loadBank(banks.begin().key());
+            }
+        }
+        remove(("/3ds/PKSM/banks/" + name + ".bnk").c_str());
+        remove(("/3ds/PKSM/banks/" + name + ".json").c_str());
+        FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, (u"/banks/" + StringUtils::UTF8toUTF16(name) + u".bnk").c_str()));
+        FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, (u"/banks/" + StringUtils::UTF8toUTF16(name) + u".json").c_str()));
+        for (auto i = banks.begin(); i != banks.end(); i++)
+        {
+            if (i.key() == name)
+            {
+                banks.erase(i);
+                saveJson();
+                break;
+            }
         }
     }
-    loadBank(banks[0].get<std::string>());
 }
 
-std::vector<std::string> Banks::bankNames()
+std::vector<std::pair<std::string, int>> Banks::bankNames()
 {
-    return banks.get<std::vector<std::string>>();
-}
-
-void Banks::swapBank(size_t which1, size_t which2)
-{
-    if (which1 < banks.size() && which2 < banks.size())
+    std::vector<std::pair<std::string, int>> ret(banks.size());
+    for (auto i = banks.begin(); i != banks.end(); i++)
     {
-        banks[which1].swap(banks[which2]);
-        saveJson();
+        ret[std::distance(banks.begin(), i)] = {i.key(), i.value().get<int>()};
+    }
+    return ret;
+}
+
+void Banks::renameBank(const std::string& oldName, const std::string& newName)
+{
+    if (oldName != newName && banks.count(oldName))
+    {
+        if (bank->name() == oldName)
+        {
+            if (!bank->setName(newName))
+            {
+                return;
+            }
+        }
+        else
+        {
+            FSUSER_RenameFile(Archive::data(), fsMakePath(PATH_UTF16, (u"/banks/" + StringUtils::UTF8toUTF16(oldName) + u".bnk").c_str()), Archive::data(), fsMakePath(PATH_UTF16, (u"/banks/" + StringUtils::UTF8toUTF16(newName) + u".bnk").c_str()));
+            FSUSER_RenameFile(Archive::data(), fsMakePath(PATH_UTF16, (u"/banks/" + StringUtils::UTF8toUTF16(oldName) + u".json").c_str()), Archive::data(), fsMakePath(PATH_UTF16, (u"/banks/" + StringUtils::UTF8toUTF16(newName) + u".json").c_str()));
+            FSUSER_RenameFile(Archive::sd(), fsMakePath(PATH_UTF16, (u"/3ds/PKSM/banks/" + StringUtils::UTF8toUTF16(oldName) + u".bnk").c_str()), Archive::sd(), fsMakePath(PATH_UTF16, (u"/3ds/PKSM/banks/" + StringUtils::UTF8toUTF16(newName) + u".bnk").c_str()));
+            FSUSER_RenameFile(Archive::sd(), fsMakePath(PATH_UTF16, (u"/3ds/PKSM/banks/" + StringUtils::UTF8toUTF16(oldName) + u".json").c_str()), Archive::sd(), fsMakePath(PATH_UTF16, (u"/3ds/PKSM/banks/" + StringUtils::UTF8toUTF16(newName) + u".json").c_str()));
+        }
+        banks[newName] = banks[oldName];
+        banks.erase(oldName);
+    }
+}
+
+void Banks::setBankSize(const std::string& name, int size)
+{
+    if (banks.count(name))
+    {
+        banks[name] = size;
+        if (bank->name() == name && size != bank->boxes())
+        {
+            bank->resize(size);
+        }
     }
 }
