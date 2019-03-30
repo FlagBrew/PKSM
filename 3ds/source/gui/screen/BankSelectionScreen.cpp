@@ -98,27 +98,6 @@ void BankSelectionScreen::update(touchPosition* touch)
     }
 }
 
-void BankSelectionScreen::setNewBankName()
-{
-    static SwkbdState state;
-    static bool first = true;
-    if (first)
-    {
-        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 20);
-        first = false;
-    }
-    swkbdSetHintText(&state, i18n::localize("BANK_BOX_NAME").c_str());
-    swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
-    char input[41] = {0};
-    SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-    input[40] = '\0';
-    if (ret == SWKBD_BUTTON_CONFIRM)
-    {
-        strings[strings.size() - 1].first = std::string(input);
-        finished = true;
-    }
-}
-
 std::pair<std::string, int> BankSelectionScreen::run()
 {
     while (aptMainLoop() && !finished)
@@ -153,7 +132,7 @@ void BankSelectionScreen::renameBank()
         swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 20);
         first = false;
     }
-    swkbdSetHintText(&state, i18n::localize("BANK_BOX_NAME").c_str());
+    swkbdSetHintText(&state, i18n::localize("BANK_NAME").c_str());
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
     char input[41] = {0};
     SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));

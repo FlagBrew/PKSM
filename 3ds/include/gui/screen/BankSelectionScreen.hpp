@@ -52,7 +52,6 @@ public:
     void update(touchPosition* touch) override;
     ScreenType type() const override { return ScreenType::SELECTOR; }
 private:
-    void setNewBankName();
     void renameBank();
     void resizeBank();
     std::function<void()> keyboardFunc = nullptr;

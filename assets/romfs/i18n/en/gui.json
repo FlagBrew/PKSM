@@ -41,6 +41,7 @@
     "BANK_DELETE": "Delete bank %s?",
     "BANK_FAILED_EXIT": "Exiting is not allowed when a Pok\u00E9mon is held!",
     "BANK_LOAD": "Loading storage...",
+    "BANK_NAME": "Bank Name",
     "BANK_NAME_ERROR": "Could not save box names!",
     "BANK_OPEN_FAILED": "Storage open failed!",
     "BANK_SAVE_CHANGES": "Save changes to storage?",
