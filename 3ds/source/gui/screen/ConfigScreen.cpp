@@ -371,7 +371,8 @@ void ConfigScreen::back()
     }
     else if (useExtDataChanged)
     {
-        Banks::bank->save();
+        Banks::bank = nullptr;
+        Banks::init();
     }
     Gui::screenBack();
 }

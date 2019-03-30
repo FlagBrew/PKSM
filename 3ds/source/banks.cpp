@@ -50,13 +50,18 @@ static Result saveJson()
     else
     {
         FILE* out = fopen("/3ds/PKSM/banks.json", "wt");
-        if (out && !ferror(out))
+        int ret = 0;
+        if (out)
         {
             fwrite(jsonData.data(), 1, jsonData.size() + 1, out);
+            ret = ferror(out);
         }
-        int ret = ferror(out);
+        else
+        {
+            ret = errno;
+        }
         fclose(out);
-        return ret;
+        return -ret;
     }
 }
 
@@ -67,40 +72,96 @@ static Result createJson()
     return saveJson();
 }
 
+static int readSD()
+{
+    int ret = 0;
+    FILE* in = fopen("/3ds/PKSM/banks.json", "rt");
+    if (in)
+    {
+        banks = nlohmann::json::parse(in, nullptr, false);
+        ret = ferror(in);
+        fclose(in);
+        return -ret;
+    }
+    else
+    {
+        fclose(in);
+        return createJson();
+    }
+}
+
+static Result readExtData()
+{
+    FSStream in(Archive::data(), u"/banks.json", FS_OPEN_READ);
+    if (in.good())
+    {
+        size_t size = in.size();
+        char data[size];
+        in.read(data, size);
+        in.close();
+        banks = nlohmann::json::parse(data, nullptr, false);
+    }
+    else
+    {
+        in.close();
+        return createJson();
+    }
+    return 0;
+}
+
 Result Banks::init()
 {
     Result res = 0;
     if (Configuration::getInstance().useExtData())
     {
-        FSStream in = FSStream(Archive::data(), u"/banks.json", FS_OPEN_READ);
-        if (in.good())
+        if (io::exists("/3ds/PKSM/banks.json"))
         {
-            size_t size = in.size();
-            char data[size];
-            in.read(data, size);
-            in.close();
-            banks = nlohmann::json::parse(data, nullptr, false);
+            readSD();
+            saveJson();
         }
         else
         {
-            in.close();
-            if (R_FAILED(res = createJson()))
-                return res;
+            FSStream in = FSStream(Archive::data(), u"/banks.json", FS_OPEN_READ);
+            if (in.good())
+            {
+                size_t size = in.size();
+                char data[size];
+                in.read(data, size);
+                in.close();
+                banks = nlohmann::json::parse(data, nullptr, false);
+            }
+            else
+            {
+                in.close();
+                if (R_FAILED(res = createJson()))
+                    return res;
+            }
         }
     }
     else
     {
-        FILE* in = fopen("/3ds/PKSM/banks.json", "rt");
-        if (in)
+        FSStream in(Archive::data(), u"/banks.json", FS_OPEN_READ);
+        if (in.good())
         {
-            banks = nlohmann::json::parse(in, nullptr, false);
-            fclose(in);
+            in.close();
+            readExtData();
+            saveJson();
         }
         else
         {
-            fclose(in);
-            if (R_FAILED(res = createJson()))
-                return res;
+            in.close();
+            FILE* in = fopen("/3ds/PKSM/banks.json", "rt");
+            if (in)
+            {
+                banks = nlohmann::json::parse(in, nullptr, false);
+                fclose(in);
+            }
+            else
+            {
+                fclose(in);
+                if (R_FAILED(res = createJson()))
+                    return res;
+            }
         }
     }
     if (banks.is_discarded())
@@ -112,7 +173,10 @@ Result Banks::init()
 
 void Banks::loadBank(const std::string& name)
 {
-    bank = std::make_shared<Bank>(name);
+    if (bank->name() != name)
+    {
+        bank = std::make_shared<Bank>(name);
+    }
 }
 
 void Banks::removeBank(const std::string& name)
@@ -134,6 +198,7 @@ void Banks::removeBank(const std::string& name)
         if (i->get<std::string>() == name)
         {
             banks.erase(i);
+            saveJson();
             break;
         }
     }
@@ -150,5 +215,6 @@ void Banks::swapBank(size_t which1, size_t which2)
     if (which1 < banks.size() && which2 < banks.size())
     {
         banks[which1].swap(banks[which2]);
+        saveJson();
     }
 }
