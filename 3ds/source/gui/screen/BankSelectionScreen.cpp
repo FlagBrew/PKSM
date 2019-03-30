@@ -84,6 +84,10 @@ void BankSelectionScreen::update(touchPosition* touch)
     {
         if (hid.fullIndex() != strings.size() - 1)
         {
+            return;
+        }
+        if (strings.size() > 2)
+        {
             if (Gui::showChoiceMessage(StringUtils::format(i18n::localize("BANK_DELETE"), strings[hid.fullIndex()].first.c_str())))
             {
                 auto i = strings.begin() + hid.fullIndex();
