@@ -253,6 +253,7 @@ extern "C" {
         Generation gen = Generation(Param[1]->Val->Integer);
         int box = Param[2]->Val->Integer;
         int slot = Param[3]->Val->Integer;
+        bool doTradeEdits = Param[4]->Val->Integer;
         checkGen(Parser, gen);
 
         std::shared_ptr<PKX> pkm = nullptr;
@@ -283,84 +284,71 @@ extern "C" {
             {
                 if (pkm->generation() == Generation::LGPE)
                 {
-                    TitleLoader::save->pkm(pkm, box, slot);
+                    TitleLoader::save->pkm(pkm, box, slot, doTradeEdits);
                 }
             }
             else
             {
-                if (pkm->generation() != Generation::LGPE)
+                TitleLoader::save->transfer(pkm);
+                bool moveBad = false;
+                for (int i = 0; i < 4; i++)
                 {
-                    while (pkm->generation() != TitleLoader::save->generation())
+                    if (pkm->move(i) > TitleLoader::save->maxMove())
                     {
-                        if (pkm->generation() < TitleLoader::save->generation())
-                        {
-                            pkm = pkm->next();
-                        }
-                        else
-                        {
-                            pkm = pkm->previous();
-                        }
+                        moveBad = true;
+                        break;
                     }
-                    bool moveBad = false;
-                    for (int i = 0; i < 4; i++)
+                    if (pkm->generation() == Generation::SIX)
                     {
-                        if (pkm->move(i) > TitleLoader::save->maxMove())
+                        PK6* pk6 = (PK6*) pkm.get();
+                        if (pk6->relearnMove(i) > TitleLoader::save->maxMove())
                         {
                             moveBad = true;
                             break;
                         }
-                        if (pkm->generation() == Generation::SIX)
+                    }
+                    else if (pkm->generation() == Generation::SEVEN)
+                    {
+                        PK7* pk7 = (PK7*) pkm.get();
+                        if (pk7->relearnMove(i) > TitleLoader::save->maxMove())
                         {
-                            PK6* pk6 = (PK6*) pkm.get();
-                            if (pk6->relearnMove(i) > TitleLoader::save->maxMove())
-                            {
-                                moveBad = true;
-                                break;
-                            }
-                        }
-                        else if (pkm->generation() == Generation::SEVEN)
-                        {
-                            PK7* pk7 = (PK7*) pkm.get();
-                            if (pk7->relearnMove(i) > TitleLoader::save->maxMove())
-                            {
-                                moveBad = true;
-                                break;
-                            }
+                            moveBad = true;
+                            break;
                         }
                     }
-                    if (pkm->species() > TitleLoader::save->maxSpecies())
-                    {
-                        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_SPECIES"));
-                        return;
-                    }
-                    else if (pkm->alternativeForm() > TitleLoader::save->formCount(pkm->species()))
-                    {
-                        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_FORM"));
-                        return;
-                    }
-                    else if (pkm->ability() > TitleLoader::save->maxAbility())
-                    {
-                        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_ABILITY"));
-                        return;
-                    }
-                    else if (pkm->heldItem() > TitleLoader::save->maxItem())
-                    {
-                        
-                        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_ITEM"));
-                        return;
-                    }
-                    else if (pkm->ball() > TitleLoader::save->maxBall())
-                    {
-                        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_BALL"));
-                        return;
-                    }
-                    else if (moveBad)
-                    {
-                        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_MOVE"));
-                        return;
-                    }
-                    TitleLoader::save->pkm(pkm, box, slot);
                 }
+                if (pkm->species() > TitleLoader::save->maxSpecies())
+                {
+                    Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_SPECIES"));
+                    return;
+                }
+                else if (pkm->alternativeForm() > TitleLoader::save->formCount(pkm->species()))
+                {
+                    Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_FORM"));
+                    return;
+                }
+                else if (pkm->ability() > TitleLoader::save->maxAbility())
+                {
+                    Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_ABILITY"));
+                    return;
+                }
+                else if (pkm->heldItem() > TitleLoader::save->maxItem())
+                {
+                    
+                    Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_ITEM"));
+                    return;
+                }
+                else if (pkm->ball() > TitleLoader::save->maxBall())
+                {
+                    Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_BALL"));
+                    return;
+                }
+                else if (moveBad)
+                {
+                    Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_MOVE"));
+                    return;
+                }
+                TitleLoader::save->pkm(pkm, box, slot, doTradeEdits);
             }
         }
     }

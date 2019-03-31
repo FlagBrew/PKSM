@@ -20,7 +20,7 @@ struct LibraryFunction UnixFunctions[] =
     { sav_boxDecrypt,   "void sav_box_decrypt();" },
     { sav_boxEncrypt,   "void sav_box_encrypt();" },
     { sav_get_pkx,      "void sav_get_pkx(char* data, int box, int slot);" },
-    { sav_inject_pkx,   "void sav_inject_pkx(char* data, enum Generation type, int box, int slot);" },
+    { sav_inject_pkx,   "void sav_inject_pkx(char* data, enum Generation type, int box, int slot, int doTradeEdits);" },
     { party_get_pkx,    "void party_get_pkx(char* data, int slot);" },
     { party_inject_pkx, "void party_inject_pkx(char* data, enum Generation type, int slot);" },
     { bank_inject_pkx,  "void bank_inject_pkx(char* data, enum Generation type, int box, int slot);" },
