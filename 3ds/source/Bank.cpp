@@ -199,9 +199,9 @@ void Bank::loadSD(int maxBoxes)
 {
     bool needSave = false;
     FILE* in = fopen(("/3ds/PKSM" + bankPath).c_str(), "rb");
-    fseek(in, 0, SEEK_END);
-    if (!ferror(in))
+    if (in && !ferror(in))
     {
+        fseek(in, 0, SEEK_END);
         Gui::waitFrame(i18n::localize("BANK_LOAD"));
         size = ftell(in);
         fseek(in, 0, SEEK_SET);
@@ -246,7 +246,7 @@ void Bank::loadSD(int maxBoxes)
     }
 
     in = fopen(("/3ds/PKSM" + jsonPath).c_str(), "rt");
-    if (!ferror(in))
+    if (in && !ferror(in))
     {
         boxNames = nlohmann::json::parse(in, nullptr, false);
         if (boxNames.is_discarded())
