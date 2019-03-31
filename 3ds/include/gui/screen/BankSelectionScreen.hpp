@@ -43,7 +43,7 @@ public:
         {
             newBankNum++;
         }
-        strings.push_back({i18n::localize("NEW_BANK") + " " + std::to_string(newBankNum), 0});
+        strings.push_back({i18n::localize("NEW_BANK") + " " + std::to_string(newBankNum), 1});
         hid.update(strings.size());
         hid.select(previous);
     }

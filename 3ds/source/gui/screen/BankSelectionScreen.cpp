@@ -93,6 +93,10 @@ void BankSelectionScreen::update(touchPosition* touch)
                 auto i = strings.begin() + hid.fullIndex();
                 Banks::removeBank(i->first);
                 strings.erase(i);
+                if (previous == hid.fullIndex())
+                {
+                    previous = 0;
+                }
             }
         }
     }
@@ -171,7 +175,7 @@ void BankSelectionScreen::resizeBank()
     input[3] = '\0';
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
-        int num = std::min(std::stoi(input), BANK_MAX_SIZE);
+        int num = std::max(1, std::min(std::stoi(input), BANK_MAX_SIZE));
         if (hid.fullIndex() != strings.size() - 1)
         { 
             Banks::setBankSize(strings[hid.fullIndex()].first, num);
