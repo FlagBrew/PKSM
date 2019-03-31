@@ -139,7 +139,7 @@ bool EditSelectorScreen::doQR()
         if (pkm) // Should be true, but just make sure
         {
             int slot = cursorPos ? cursorPos - 1 : 0; // make sure it writes to a good position, AKA not the title bar
-            TitleLoader::save->pkm(pkm, box, slot);
+            TitleLoader::save->pkm(pkm, box, slot, false);
         }
 
         delete[] data;
@@ -526,7 +526,7 @@ void EditSelectorScreen::update(touchPosition* touch)
                     {
                         tmpMon = nullptr;
                     }
-                    TitleLoader::save->pkm(moveMon, box, cursorPos - 1);
+                    TitleLoader::save->pkm(moveMon, box, cursorPos - 1, false);
                     moveMon = tmpMon;
                 }
             }
@@ -957,7 +957,7 @@ bool EditSelectorScreen::clonePkm()
                 {
                     tmpMon = nullptr;
                 }
-                TitleLoader::save->pkm(moveMon, box, cursorPos - 1);
+                TitleLoader::save->pkm(moveMon, box, cursorPos - 1, false);
                 moveMon = tmpMon;
             }
         }
@@ -984,7 +984,7 @@ bool EditSelectorScreen::releasePokemon()
     {
         if (cursorPos < 31 && box * 30 + cursorPos - 1 < TitleLoader::save->maxSlot())
         {
-            TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), box, cursorPos - 1);
+            TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), box, cursorPos - 1, false);
             if (TitleLoader::save->generation() == Generation::LGPE)
             {
                 SavLGPE* sav = (SavLGPE*)TitleLoader::save.get();

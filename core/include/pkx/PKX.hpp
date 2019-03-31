@@ -68,6 +68,7 @@ public:
     bool gen5(void) const;
     bool gen4(void) const;
     bool gen3(void) const;
+    int genNumber(void) const;
     void fixMoves(void);
 
     static u32 getRandomPID(u16 species, u8 gender, u8 originGame, u8 nature, u8 form, u8 abilityNum, u32 oldPid, Generation gen);

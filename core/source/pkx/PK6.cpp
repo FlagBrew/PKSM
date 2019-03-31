@@ -84,6 +84,16 @@ std::shared_ptr<PKX> PK6::clone(void) { return std::make_shared<PK6>(data, false
 
 Generation PK6::generation(void) const { return Generation::SIX; }
 
+bool PK6::untraded(void) const
+{
+    return data[0x78] == 0 && data[0x79] == 0 && genNumber() == 6;
+}
+
+bool PK6::untradedEvent(void) const
+{
+    return geoCountry(0) == 0 && geoRegion(0) == 0 && (metLocation() / 10000 == 4) && gen6();
+}
+
 u32 PK6::encryptionConstant(void) const { return *(u32*)(data); }
 void PK6::encryptionConstant(u32 v) { *(u32*)(data) = v; }
 

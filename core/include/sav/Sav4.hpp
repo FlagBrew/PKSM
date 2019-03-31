@@ -94,9 +94,10 @@ public:
     // NOTICE: this sets a pkx into the savefile, not a pkx
     // that's because PKSM works with decrypted boxes and
     // crypts them back during resigning
-    void pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot) override;
+    void pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade) override;
     void pkm(std::shared_ptr<PKX> pk, u8 slot) override;
 
+    void trade(std::shared_ptr<PKX> pk) override;
     std::shared_ptr<PKX> emptyPkm() const override;
 
     void dex(std::shared_ptr<PKX> pk) override;

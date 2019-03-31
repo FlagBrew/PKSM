@@ -243,6 +243,34 @@ bool PKX::gen4(void) const { return version() >= 7 && version() <= 12 && version
 
 bool PKX::gen3(void) const { return (version() >= 1 && version() <= 5) || (version() == 15); }
 
+int PKX::genNumber(void) const
+{
+    if (gen7())
+    {
+        return 7;
+    }
+    else if (gen6())
+    {
+        return 6;
+    }
+    else if (gen5())
+    {
+        return 5;
+    }
+    else if (gen4())
+    {
+        return 4;
+    }
+    else if (gen3())
+    {
+        return 3;
+    }
+    else
+    {
+        return -1;
+    }
+}
+
 void PKX::fixMoves(void)
 {
     reorderMoves();

@@ -158,6 +158,21 @@ bool Sav::validSequence(u8* dt, u8* pattern, int shift)
     return true;
 }
 
+void Sav::transfer(std::shared_ptr<PKX> &pk)
+{
+    while (pk->generation() != generation())
+    {
+        if (pk->generation() > generation())
+        {
+            pk = pk->previous();
+        }
+        else
+        {
+            pk = pk->next();
+        }
+    }
+}
+
 void Sav::fixParty()
 {
     // Poor man's bubble sort-like thing

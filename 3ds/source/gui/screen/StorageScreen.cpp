@@ -999,7 +999,7 @@ bool StorageScreen::clearBox()
             }
             else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
             {
-                TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), boxBox, i);
+                TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), boxBox, i, false);
             }
         }
     }
@@ -1017,7 +1017,7 @@ bool StorageScreen::releasePkm()
         }
         else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
         {
-            TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), boxBox, cursorIndex - 1);
+            TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), boxBox, cursorIndex - 1, false);
             if (TitleLoader::save->generation() == Generation::LGPE)
             {
                 SavLGPE* sav = (SavLGPE*)TitleLoader::save.get();
@@ -1033,62 +1033,6 @@ bool StorageScreen::releasePkm()
         }
     }
     return false;
-}
-
-static void regionChange(PK6* pkm)
-{
-    if (pkm->htName() != "" && (TitleLoader::save->country() != pkm->geoCountry(0) || TitleLoader::save->subRegion() != pkm->geoRegion(0)))
-    {
-        for (u8 i = 4; i > 0; i--)
-        {
-            pkm->geoCountry(i, pkm->geoCountry(i-1));
-            pkm->geoRegion(i, pkm->geoRegion(i-1));
-        }
-        pkm->geoCountry(0, TitleLoader::save->country());
-        pkm->geoRegion(0, TitleLoader::save->subRegion());
-    }
-}
-
-static void regionChange(PK7* pkm)
-{
-    if (pkm->htName() != "" && (TitleLoader::save->country() != pkm->geoCountry(0) || TitleLoader::save->subRegion() != pkm->geoRegion(0)))
-    {
-        for (u8 i = 4; i > 0; i--)
-        {
-            pkm->geoCountry(i, pkm->geoCountry(i-1));
-            pkm->geoRegion(i, pkm->geoRegion(i-1));
-        }
-        pkm->geoCountry(0, TitleLoader::save->country());
-        pkm->geoRegion(0, TitleLoader::save->subRegion());
-    }
-}
-
-static void memoryChange(PK6* pkm)
-{
-    static const int allowedFeelings = 0x04CBFD;
-    pkm->htMemory(4);
-    pkm->htTextVar(0);
-    pkm->htIntensity(1);
-    int feel = 20; // Too high of a value, the next condition will always be false with it
-    while ((allowedFeelings & (1 << feel)) == 0)
-    {
-        feel = randomNumbers() % 10;
-    }
-    pkm->htFeeling(feel);
-}
-
-static void memoryChange(PK7* pkm)
-{
-    static const int allowedFeelings = 0x04CBFD;
-    pkm->htMemory(4);
-    pkm->htTextVar(0);
-    pkm->htIntensity(1);
-    int feel = 20; // Too high of a value, the next condition will always be false with it
-    while ((allowedFeelings & (1 << feel)) == 0)
-    {
-        feel = randomNumbers() % 10;
-    }
-    pkm->htFeeling(feel);
 }
 
 bool StorageScreen::isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTransfer)
@@ -1157,67 +1101,6 @@ bool StorageScreen::isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTrans
     return true;
 }
 
-void StorageScreen::fixMon(std::shared_ptr<PKX>& pkm, bool fromStorage)
-{
-    while (pkm->generation() != TitleLoader::save->generation())
-    {
-        if (pkm->generation() > TitleLoader::save->generation())
-        {
-            pkm = pkm->previous();
-        }
-        else
-        {
-            pkm = pkm->next();
-        }
-    }
-}
-
-void StorageScreen::virtualTrade(std::shared_ptr<PKX> pkm)
-{
-    if (TitleLoader::save->otName() == pkm->otName() && TitleLoader::save->TID() == pkm->TID() && TitleLoader::save->SID() == pkm->SID() && TitleLoader::save->gender() == pkm->otGender())
-    {
-        if (pkm->generation() == Generation::SIX)
-        {
-            PK6* movePkm = (PK6*)pkm.get();
-            movePkm->currentHandler(0);
-            regionChange(movePkm);
-        }
-        else if (pkm->generation() == Generation::SEVEN)
-        {
-            PK7* movePkm = (PK7*)pkm.get();
-            movePkm->currentHandler(0);
-            regionChange(movePkm);
-        }
-    }
-    else
-    {
-        if (pkm->generation() == Generation::SIX)
-        {
-            PK6* movePkm = (PK6*)pkm.get();
-            movePkm->currentHandler(1);
-            regionChange(movePkm);
-            movePkm->htName(TitleLoader::save->otName());
-            movePkm->htGender(TitleLoader::save->gender());
-            if (movePkm->htMemory() == 0)
-            {
-                memoryChange(movePkm);
-            }
-        }
-        else if (pkm->generation() == Generation::SEVEN)
-        {
-            PK7* movePkm = (PK7*)pkm.get();
-            movePkm->currentHandler(1);
-            regionChange(movePkm);
-            movePkm->htName(TitleLoader::save->otName());
-            movePkm->htGender(TitleLoader::save->gender());
-            if (movePkm->htMemory() == 0)
-            {
-                memoryChange(movePkm);
-            }
-        }
-    }
-}
-
 void StorageScreen::pickup()
 {
     if (moveMon.empty())
@@ -1260,7 +1143,7 @@ void StorageScreen::pickup()
                     }
                 }
                 moveMon.push_back(TitleLoader::save->pkm(boxBox, cursorIndex - 1));
-                TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), boxBox, cursorIndex - 1);
+                TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), boxBox, cursorIndex - 1, false);
                 fromStorage = false;
             }
             else
@@ -1335,12 +1218,7 @@ void StorageScreen::pickup()
                     std::shared_ptr<PKX> temPkm = TitleLoader::save->pkm(boxBox, cursorIndex - 1 + x + y * 6);
                     if ((Configuration::getInstance().transferEdit() || moveMon[index]->generation() == TitleLoader::save->generation()) || Gui::showChoiceMessage(StringUtils::format(i18n::localize("GEN_CHANGE_1"), genToCstring(moveMon[index]->generation()), genToCstring(TitleLoader::save->generation())), i18n::localize("GEN_CHANGE_2")))
                     {
-                        fixMon(moveMon[index], fromStorage);
-                        if (Configuration::getInstance().transferEdit() && fromStorage)
-                        {
-                            virtualTrade(moveMon[index]);
-                        }
-                        TitleLoader::save->pkm(moveMon[index], boxBox, cursorIndex - 1 + x + y * 6);
+                        TitleLoader::save->pkm(moveMon[index], boxBox, cursorIndex - 1 + x + y * 6, Configuration::getInstance().transferEdit() && fromStorage);
                         TitleLoader::save->dex(moveMon[index]);
                         if (partyNum[index] != -1)
                         {
@@ -1370,8 +1248,8 @@ void StorageScreen::pickup()
             }
             else if (!storageChosen && !fromStorage)
             {
-                TitleLoader::save->pkm(TitleLoader::save->pkm(boxBox, cursorIndex - 1), selectDimensions.first, selectDimensions.second);
-                TitleLoader::save->pkm(moveMon[0], boxBox, cursorIndex - 1);
+                TitleLoader::save->pkm(TitleLoader::save->pkm(boxBox, cursorIndex - 1), selectDimensions.first, selectDimensions.second, false);
+                TitleLoader::save->pkm(moveMon[0], boxBox, cursorIndex - 1, false);
                 if (TitleLoader::save->generation() == Generation::LGPE)
                 {
                     SavLGPE* save = (SavLGPE*)TitleLoader::save.get();
@@ -1401,11 +1279,6 @@ void StorageScreen::pickup()
                 }
                 if ((Configuration::getInstance().transferEdit() || bankMon->generation() == TitleLoader::save->generation()) || Gui::showChoiceMessage(StringUtils::format(i18n::localize("GEN_CHANGE_1"), genToCstring(bankMon->generation()), genToCstring(TitleLoader::save->generation())), i18n::localize("GEN_CHANGE_2")))
                 {
-                    fixMon(bankMon, true);
-                    if (Configuration::getInstance().transferEdit() && fromStorage)
-                    {
-                        virtualTrade(bankMon);
-                    }
                     if (storageChosen)
                     {
                         if (partyNum[0] != -1)
@@ -1413,7 +1286,7 @@ void StorageScreen::pickup()
                             ((SavLGPE*)TitleLoader::save.get())->partyBoxSlot(partyNum[0], 1001);
                             TitleLoader::save->fixParty();
                         }
-                        TitleLoader::save->pkm(bankMon, selectDimensions.first, selectDimensions.second);
+                        TitleLoader::save->pkm(bankMon, selectDimensions.first, selectDimensions.second, Configuration::getInstance().transferEdit() && fromStorage);
                         Banks::bank->pkm(saveMon, storageBox, cursorIndex - 1);
                     }
                     else
@@ -1427,7 +1300,7 @@ void StorageScreen::pickup()
                                 break;
                             }
                         }
-                        TitleLoader::save->pkm(bankMon, boxBox, cursorIndex - 1);
+                        TitleLoader::save->pkm(bankMon, boxBox, cursorIndex - 1, Configuration::getInstance().transferEdit() && fromStorage);
                         Banks::bank->pkm(saveMon, selectDimensions.first, selectDimensions.second);
                     }
                     moveMon.clear();
@@ -1566,66 +1439,11 @@ bool StorageScreen::swapBoxWithStorage()
         }
         if (acceptGenChange || temPkm->generation() == TitleLoader::save->generation())
         {
-            while (temPkm->generation() != TitleLoader::save->generation())
-            {
-                if (temPkm->generation() > TitleLoader::save->generation())
-                {
-                    temPkm = temPkm->previous();
-                }
-                else
-                {
-                    temPkm = temPkm->next();
-                }
-            }
+            TitleLoader::save->transfer(temPkm);
             if (isValidTransfer(temPkm, true))
             {
                 auto otherTemPkm = TitleLoader::save->pkm(boxBox, i);
-                if (Configuration::getInstance().transferEdit())
-                {
-                    if (TitleLoader::save->otName() == temPkm->otName() && TitleLoader::save->TID() == temPkm->TID() && TitleLoader::save->SID() == temPkm->SID() && TitleLoader::save->gender() == temPkm->otGender())
-                    {
-                        if (temPkm->generation() == Generation::SIX)
-                        {
-                            PK6* movePkm = (PK6*)temPkm.get();
-                            movePkm->currentHandler(0);
-                            regionChange(movePkm);
-                        }
-                        else if (temPkm->generation() == Generation::SEVEN)
-                        {
-                            PK7* movePkm = (PK7*)temPkm.get();
-                            movePkm->currentHandler(0);
-                            regionChange(movePkm);
-                        }
-                    }
-                    else
-                    {
-                        if (temPkm->generation() == Generation::SIX)
-                        {
-                            PK6* movePkm = (PK6*)temPkm.get();
-                            movePkm->currentHandler(1);
-                            regionChange(movePkm);
-                            movePkm->htName(TitleLoader::save->otName());
-                            movePkm->htGender(TitleLoader::save->gender());
-                            if (movePkm->htMemory() == 0)
-                            {
-                                memoryChange(movePkm);
-                            }
-                        }
-                        else if (temPkm->generation() == Generation::SEVEN)
-                        {
-                            PK7* movePkm = (PK7*)temPkm.get();
-                            movePkm->currentHandler(1);
-                            regionChange(movePkm);
-                            movePkm->htName(TitleLoader::save->otName());
-                            movePkm->htGender(TitleLoader::save->gender());
-                            if (movePkm->htMemory() == 0)
-                            {
-                                memoryChange(movePkm);
-                            }
-                        }
-                    }
-                }
-                TitleLoader::save->pkm(temPkm, boxBox, i);
+                TitleLoader::save->pkm(temPkm, boxBox, i, Configuration::getInstance().transferEdit());
                 TitleLoader::save->dex(temPkm);
                 Banks::bank->pkm(otherTemPkm, storageBox, i);
             }
@@ -1822,11 +1640,11 @@ bool StorageScreen::sort()
         {
             for (size_t i = 0; i < sortMe.size(); i++)
             {
-                TitleLoader::save->pkm(sortMe[i], i / 30, i % 30);
+                TitleLoader::save->pkm(sortMe[i], i / 30, i % 30, false);
             }
             for (int i = sortMe.size(); i < TitleLoader::save->maxSlot(); i++)
             {
-                TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), i / 30, i % 30);
+                TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), i / 30, i % 30, false);
             }
         }
     }
@@ -2036,7 +1854,7 @@ void StorageScreen::grabSelection(bool remove)
                 }
                 if (remove)
                 {
-                    TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), boxBox, pickupIndex);
+                    TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), boxBox, pickupIndex, false);
                 }
             }
             else

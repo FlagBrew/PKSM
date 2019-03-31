@@ -109,9 +109,26 @@ std::shared_ptr<PKX> Sav5::pkm(u8 box, u8 slot, bool ekx) const
     return std::make_shared<PK5>(buf, ekx);
 }
 
-void Sav5::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot)
+void Sav5::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 {
+    transfer(pk);
+    if (applyTrade)
+    {
+        trade(pk);
+    }
+
     std::copy(pk->rawData(), pk->rawData() + 136, data + boxOffset(box, slot));
+}
+
+void Sav5::trade(std::shared_ptr<PKX> pk)
+{
+    if (pk->egg() && !(otName() == pk->otName() && TID() == pk->TID() && SID() == pk->SID() && gender() == pk->otGender()))
+    {
+        pk->metDay(Configuration::getInstance().day());
+        pk->metMonth(Configuration::getInstance().month());
+        pk->metYear(Configuration::getInstance().year() - 2000);
+        pk->metLocation(30003);
+    }
 }
 
 void Sav5::cryptBoxData(bool crypted)
@@ -125,7 +142,7 @@ void Sav5::cryptBoxData(bool crypted)
             {
                 pk5->encrypt();
             }
-            pkm(pk5, box, slot);
+            pkm(pk5, box, slot, false);
         }
     }
 }
