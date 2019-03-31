@@ -325,14 +325,14 @@ bool Bank::save() const
     else
     {
         FILE* out = fopen(("/3ds/PKSM" + bankPath).c_str(), "wb");
-        if (!ferror(out))
+        if (out && !ferror(out))
         {
             fwrite(data, 1, sizeof(BankHeader) + sizeof(BankEntry) * boxes() * 30, out);
             fclose(out);
 
             std::string jsonData = boxNames.dump(2);
             out = fopen(("/3ds/PKSM" + jsonPath).c_str(), "wt");
-            if (!ferror(out))
+            if (out && !ferror(out))
             {
                 fwrite(jsonData.data(), 1, jsonData.size(), out);
                 sha256(prevHash.data(), data, sizeof(BankHeader) + sizeof(BankEntry) * boxes() * 30);
