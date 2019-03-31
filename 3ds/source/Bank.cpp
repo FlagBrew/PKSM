@@ -117,6 +117,9 @@ void Bank::loadExtData(int maxBoxes)
             if (h.version == 1)
             {
                 h.boxes = (size - (sizeof(BankHeader) - sizeof(int))) / sizeof(BankEntry) / 30;
+                maxBoxes = h.boxes;
+                extern nlohmann::json g_banks;
+                g_banks[bankName] = maxBoxes;
                 data = new u8[size = size + sizeof(int)];
                 h.version = BANK_VERSION;
                 needSave = true;
