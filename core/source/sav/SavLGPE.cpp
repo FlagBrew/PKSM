@@ -306,8 +306,12 @@ std::shared_ptr<PKX> SavLGPE::pkm(u8 box, u8 slot, bool ekx) const
     return std::make_shared<PB7>(data + boxOffset(box, slot), ekx);
 }
 
-void SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot)
+void SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 {
+    if (applyTrade)
+    {
+        trade(pk);
+    }
     std::copy(pk->rawData(), pk->rawData() + pk->getLength(), data + boxOffset(box, slot));
 }
 
@@ -344,6 +348,33 @@ void SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 slot)
 
     std::copy(pk->rawData(), pk->rawData() + pk->getLength(), data + off);
     partyBoxSlot(slot, newSlot);
+}
+
+void SavLGPE::trade(std::shared_ptr<PKX> pk)
+{
+    PB7 *pb7 = (PB7*)pk.get();
+    if (pb7->egg() && !(otName() == pb7->otName() && TID() == pb7->TID() && SID() == pb7->SID() && gender() == pb7->otGender()))
+    {
+        pb7->metDay(Configuration::getInstance().day());
+        pb7->metMonth(Configuration::getInstance().month());
+        pb7->metYear(Configuration::getInstance().year() - 2000);
+        pb7->metLocation(30002);
+    }
+    else if (!(otName() == pb7->otName() && TID() == pb7->TID() && SID() == pb7->SID() && gender() == pb7->otGender()))
+    {
+        pb7->currentHandler(0);
+    }
+    else
+    {
+        if (pb7->htName() != otName())
+        {
+            pb7->htFriendship(pb7->currentFriendship());// copy friendship instead of resetting (don't alter CP)
+            pb7->htAffection(0);
+        }
+        pb7->currentHandler(1);
+        pb7->htName(otName());
+        pb7->htGender(gender());
+    }
 }
 
 std::shared_ptr<PKX> SavLGPE::emptyPkm() const
@@ -533,7 +564,7 @@ void SavLGPE::cryptBoxData(bool crypted)
             {
                 pb7->encrypt();
             }
-            pkm(pb7, box, slot);
+            pkm(pb7, box, slot, false);
         }
     }
 }

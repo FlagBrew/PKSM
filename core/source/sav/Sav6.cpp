@@ -110,9 +110,92 @@ std::shared_ptr<PKX> Sav6::pkm(u8 box, u8 slot, bool ekx) const
     return std::make_shared<PK6>(tmp, ekx);
 }
 
-void Sav6::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot)
+void Sav6::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 {
+    transfer(pk);
+    if (applyTrade)
+    {
+        trade(pk);
+    }
+
     std::copy(pk->rawData(), pk->rawData() + 232, data + boxOffset(box, slot));
+}
+
+void Sav6::trade(std::shared_ptr<PKX> pk)
+{
+    PK6 *pk6 = (PK6*)pk.get();
+    if (pk6->egg() && !(otName() == pk6->otName() && TID() == pk6->TID() && SID() == pk6->SID() && gender() == pk6->otGender()))
+    {
+        pk6->metDay(Configuration::getInstance().day());
+        pk6->metMonth(Configuration::getInstance().month());
+        pk6->metYear(Configuration::getInstance().year() - 2000);
+        pk6->metLocation(30002);
+    }
+    else if (otName() == pk6->otName() && TID() == pk6->TID() && SID() == pk6->SID() && gender() == pk6->otGender())
+    {
+        pk6->currentHandler(0);
+
+        if (!pk6->untraded() && (country() != pk6->geoCountry(0) || subRegion() != pk6->geoRegion(0)))
+        {
+            for (int i = 5; i > 0; i--)
+            {
+                pk6->geoCountry(pk6->geoCountry(i - 1), i);
+                pk6->geoRegion(pk6->geoRegion(i - 1), i);
+            }
+            pk6->geoCountry(country());
+            pk6->geoRegion(subRegion());
+        }
+    }
+    else
+    {
+        if (otName() != pk6->htName() || gender() != pk6->htGender() || (pk6->geoCountry(0) == 0 && pk6->geoRegion(0) == 0 && !pk6->untradedEvent()))
+        {
+            for (int i = 5; i > 0; i--)
+            {
+                pk6->geoCountry(pk6->geoCountry(i - 1), i);
+                pk6->geoRegion(pk6->geoRegion(i - 1), i);
+            }
+            pk6->geoCountry(country());
+            pk6->geoRegion(subRegion());
+        }
+
+        if (pk6->htName() != otName())
+        {
+            pk6->htFriendship(pk6->baseFriendship());
+            pk6->htAffection(0);
+        }
+        pk6->currentHandler(1);
+        pk6->htName(otName());
+        pk6->htGender(gender());
+
+        if (pk6->htMemory() == 0)
+        {
+            pk6->htMemory(4);
+            pk6->htTextVar(9);
+            pk6->htIntensity(1);
+
+            /*static constexpr u32 memoryBits[70] = { 
+                0x000000, 0x04CBFD, 0x004BFD, 0x04CBFD, 0x04CBFD, 0xFFFBFB, 0x84FFF9, 0x47FFFF, 0xBF7FFA, 0x7660B0,
+                0x80BDF9, 0x88FB7A, 0x083F79, 0x0001FE, 0xCFEFFF, 0x84EBAF, 0xB368B0, 0x091F7E, 0x0320A0, 0x080DDD,
+                0x081A7B, 0x404030, 0x0FFFFF, 0x9A08BC, 0x089A7B, 0x0032AA, 0x80FF7A, 0x0FFFFF, 0x0805FD, 0x098278,
+                0x0B3FFF, 0x8BBFFA, 0x8BBFFE, 0x81A97C, 0x8BB97C, 0x8BBF7F, 0x8BBF7F, 0x8BBF7F, 0x8BBF7F, 0xAC3ABE,
+                0xBFFFFF, 0x8B837C, 0x848AFA, 0x88FFFE, 0x8B0B7C, 0xB76AB2, 0x8B1FFF, 0xBE7AB8, 0xB77EB8, 0x8C9FFD,
+                0xBF9BFF, 0xF408B0, 0xBCFE7A, 0x8F3F72, 0x90DB7A, 0xBCEBFF, 0xBC5838, 0x9C3FFE, 0x9CFFFF, 0x96D83A,
+                0xB770B0, 0x881F7A, 0x839F7A, 0x839F7A, 0x839F7A, 0x53897F, 0x41BB6F, 0x0C35FF, 0x8BBF7F, 0x8BBF7F 
+            };*/
+
+            u32 bits = 0x04CBFD; //memoryBits[pk6->htMemory()];
+            while (true)
+            {
+                u32 feel = randomNumbers() % 20;
+                if ((bits & (1 << feel)) != 0)
+                {
+                    pk6->htFeeling(feel);
+                    break;
+                }
+            }
+        }
+    }
 }
 
 void Sav6::cryptBoxData(bool crypted)
@@ -126,7 +209,7 @@ void Sav6::cryptBoxData(bool crypted)
             {
                 pk6->encrypt();
             }
-            pkm(pk6, box, slot);
+            pkm(pk6, box, slot, false);
         }
     }
 }

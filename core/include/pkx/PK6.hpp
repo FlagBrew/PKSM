@@ -47,6 +47,9 @@ public:
 
     Generation generation(void) const override;
 
+    bool untraded(void) const;
+    bool untradedEvent(void) const;
+
     u32 encryptionConstant(void) const override;
     void encryptionConstant(u32 v) override;
     u16 sanity(void) const override;
