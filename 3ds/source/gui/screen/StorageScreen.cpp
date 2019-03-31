@@ -1865,9 +1865,16 @@ bool StorageScreen::selectBank()
 {
     BankSelectionScreen bank(Banks::bank->name());
     auto res = bank.run();
-    if (Banks::loadBank(res.first, res.second))
+    if (res.first != Banks::bank->name())
     {
-        storageBox = 0;
+        if (Banks::bank->hasChanged() && Gui::showChoiceMessage(i18n::localize("BANK_SAVE_CHANGES")))
+        {
+            Banks::bank->save();
+        }
+        if (Banks::loadBank(res.first, res.second))
+        {
+            storageBox = 0;
+        }
     }
     return true;
 }
