@@ -702,7 +702,7 @@ bool EditorScreen::save()
         {
             partyUpdate();
         }
-        TitleLoader::save->pkm(pkm, box, index);
+        TitleLoader::save->pkm(pkm, box, index, false);
     }
     else
     {

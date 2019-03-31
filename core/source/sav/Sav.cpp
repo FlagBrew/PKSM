@@ -158,7 +158,7 @@ bool Sav::validSequence(u8* dt, u8* pattern, int shift)
     return true;
 }
 
-void Sav::transfer(std::shared_ptr<PKX> pk)
+void Sav::transfer(std::shared_ptr<PKX> &pk)
 {
     while (pk->generation() != generation())
     {

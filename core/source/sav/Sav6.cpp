@@ -137,7 +137,7 @@ void Sav6::trade(std::shared_ptr<PKX> pk)
 
         if (!pk6->untraded() && (country() != pk6->geoCountry(0) || subRegion() != pk6->geoRegion(0)))
         {
-            for (int i = 5; i > 0; i--)
+            for (int i = 4; i > 0; i--)
             {
                 pk6->geoCountry(pk6->geoCountry(i - 1), i);
                 pk6->geoRegion(pk6->geoRegion(i - 1), i);
@@ -150,7 +150,7 @@ void Sav6::trade(std::shared_ptr<PKX> pk)
     {
         if (otName() != pk6->htName() || gender() != pk6->htGender() || (pk6->geoCountry(0) == 0 && pk6->geoRegion(0) == 0 && !pk6->untradedEvent()))
         {
-            for (int i = 5; i > 0; i--)
+            for (int i = 4; i > 0; i--)
             {
                 pk6->geoCountry(pk6->geoCountry(i - 1), i);
                 pk6->geoRegion(pk6->geoRegion(i - 1), i);
