@@ -82,7 +82,7 @@ void BankSelectionScreen::update(touchPosition* touch)
     }
     else if (downKeys & KEY_START)
     {
-        if (hid.fullIndex() != strings.size() - 1)
+        if (hid.fullIndex() == strings.size() - 1)
         {
             return;
         }
