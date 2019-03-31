@@ -1439,17 +1439,7 @@ bool StorageScreen::swapBoxWithStorage()
         }
         if (acceptGenChange || temPkm->generation() == TitleLoader::save->generation())
         {
-            while (temPkm->generation() != TitleLoader::save->generation())
-            {
-                if (temPkm->generation() > TitleLoader::save->generation())
-                {
-                    temPkm = temPkm->previous();
-                }
-                else
-                {
-                    temPkm = temPkm->next();
-                }
-            }
+            TitleLoader::save->transfer(temPkm);
             if (isValidTransfer(temPkm, true))
             {
                 auto otherTemPkm = TitleLoader::save->pkm(boxBox, i);
