@@ -383,6 +383,11 @@ void Bank::resize(int boxes)
 
         ((BankHeader*)data)->boxes = boxes;
 
+        for (size_t i = boxNames.size(); i < boxes; i++)
+        {
+            boxNames[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
+        }
+
         save();
     }
     size = newSize;
