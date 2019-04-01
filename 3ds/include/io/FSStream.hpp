@@ -45,6 +45,7 @@ public:
     Result result(void);
     u32    size(void);
     u32    write(const void *buf, u32 size);
+    void   seek(u32 offset, int from);
     
 private:
     Handle mHandle;
