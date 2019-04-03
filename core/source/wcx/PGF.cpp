@@ -46,6 +46,12 @@ u32 PGF::month(void) const { return (u32)(*(u8*)(data + 0xAD)); }
 
 u32 PGF::day(void) const { return (u32)(*(u8*)(data + 0xAC)); }
 
+void PGF::year(u32 v) { *(u16*)(data + 0xAE) = v < 2000 ? (u16)v + 2000 : v; }
+
+void PGF::month(u32 v) { *(u8*)(data + 0xAD) = (u8) v; }
+
+void PGF::day(u32 v) { *(u8*)(data + 0xAC) = (u8) v; }
+
 bool PGF::item(void) const { return type() == 2; }
 
 u16 PGF::object(void) const { return *(u16*)(data); }

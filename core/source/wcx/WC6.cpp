@@ -41,15 +41,37 @@ std::string WC6::title(void) const { return StringUtils::getString(data, 0x2, 36
 u32 WC6::rawDate(void) const { return *(u32*)(data + 0x4C); }
 void WC6::rawDate(u32 v) { *(u32*)(data + 0x4C) = v; }
 
-u32 WC6::year(void) const
-{ 
-	u32 year = rawDate() / 10000;
-	return year < 2000 ? year + 2000 : year;
-}
+u32 WC6::year(void) const { return rawDate() / 10000; }
 
 u32 WC6::month(void) const { return rawDate() % 10000 / 100; }
 
 u32 WC6::day(void) const { return rawDate() % 100; }
+
+void WC6::year(u32 v)
+{
+    u32 newVal = v < 2000 ? v + 2000 : v;
+    newVal *= 10000;
+    newVal += rawDate() % 10000;
+    rawDate(newVal);
+}
+
+void WC6::month(u32 v)
+{
+    u32 newVal = rawDate() / 10000;
+    newVal *= 100;
+    newVal += v;
+    newVal *= 100;
+    newVal += rawDate() % 100;
+    rawDate(newVal);
+}
+
+void WC6::day(u32 v)
+{
+    u32 newVal = rawDate() / 100;
+    newVal *= 100;
+    newVal += v;
+    rawDate(newVal);
+}
 
 u8 WC6::type(void) const { return *(u8*)(data + 0x51); }
 

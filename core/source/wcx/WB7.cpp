@@ -50,15 +50,37 @@ std::string WB7::title() const { return StringUtils::getString(data, 2, 36); }
 u32 WB7::rawDate() const { return *(u32*)(data + 0x4C); }
 void WB7::rawDate(u32 date) { *(u32*)(data + 0x4C) = date; }
 
-u32 WB7::year() const
-{
-    u32 year = rawDate() / 10000;
-    return year < 2000 ? year + 2000 : year;
-}
+u32 WB7::year() const { return rawDate() / 10000 + 2000; }
 
 u32 WB7::month() const { return rawDate() % 10000 / 100; }
 
 u32 WB7::day() const { return rawDate() % 100; }
+
+void WB7::year(u32 v)
+{
+    u32 newVal = v < 2000 ? v : v - 2000;
+    newVal *= 10000;
+    newVal += rawDate() % 10000;
+    rawDate(newVal);
+}
+
+void WB7::month(u32 v)
+{
+    u32 newVal = rawDate() / 10000;
+    newVal *= 100;
+    newVal += v;
+    newVal *= 100;
+    newVal += rawDate() % 100;
+    rawDate(newVal);
+}
+
+void WB7::day(u32 v)
+{
+    u32 newVal = rawDate() / 100;
+    newVal *= 100;
+    newVal += v;
+    rawDate(newVal);
+}
 
 u8 WB7::cardLocation() const { return data[0x50]; }
 

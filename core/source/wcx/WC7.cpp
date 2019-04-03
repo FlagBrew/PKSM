@@ -49,15 +49,37 @@ std::string WC7::title(void) const { return StringUtils::getString(data, 0x2, 36
 u32 WC7::rawDate(void) const { return *(u32*)(data + 0x4C); }
 void WC7::rawDate(u32 v) { *(u32*)(data + 0x4C) = v; }
 
-u32 WC7::year(void) const
-{ 
-	u32 year = rawDate() / 10000;
-	return year < 2000 ? year + 2000 : year;
-}
+u32 WC7::year(void) const { return rawDate() / 10000 + 2000; }
 
 u32 WC7::month(void) const { return rawDate() % 10000 / 100; }
 
 u32 WC7::day(void) const { return rawDate() % 100; }
+
+void WC7::year(u32 v)
+{
+    u32 newVal = v < 2000 ? v : v - 2000;
+    newVal *= 10000;
+    newVal += rawDate() % 10000;
+    rawDate(newVal);
+}
+
+void WC7::month(u32 v)
+{
+    u32 newVal = rawDate() / 10000;
+    newVal *= 100;
+    newVal += v;
+    newVal *= 100;
+    newVal += rawDate() % 100;
+    rawDate(newVal);
+}
+
+void WC7::day(u32 v)
+{
+    u32 newVal = rawDate() / 100;
+    newVal *= 100;
+    newVal += v;
+    rawDate(newVal);
+}
 
 u8 WC7::type(void) const { return *(u8*)(data + 0x51); }
 

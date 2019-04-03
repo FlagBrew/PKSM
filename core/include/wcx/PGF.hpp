@@ -49,6 +49,9 @@ public:
     u32 year(void) const override;
     u32 month(void) const override;
     u32 day(void) const override;
+    void year(u32 v) override;
+    void month(u32 v) override;
+    void day(u32 v) override;
     bool item(void) const override;
     u16 object(void) const override;
     bool pokemon(void) const override;

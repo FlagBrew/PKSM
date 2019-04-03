@@ -112,6 +112,34 @@ u32 PGT::month(void) const { return pokemonData->egg() ? pokemonData->eggMonth()
 
 u32 PGT::day(void) const { return pokemonData->egg() ? pokemonData->eggDay() : pokemonData->metDay(); }
 
+void PGT::year(u32 v)
+{
+    v = v >= 2000 ? v - 2000 : v;
+    pokemonData->egg() ? pokemonData->eggYear((u8)v) : pokemonData->metYear((u8)v);
+    pokemonData->refreshChecksum();
+    pokemonData->encrypt();
+    std::copy(pokemonData->rawData(), pokemonData->rawData() + 236, data + 0x8); // Actually set the data
+    pokemonData->decrypt();
+}
+
+void PGT::month(u32 v)
+{
+    pokemonData->egg() ? pokemonData->eggMonth((u8)v) : pokemonData->metMonth((u8)v);
+    pokemonData->refreshChecksum();
+    pokemonData->encrypt();
+    std::copy(pokemonData->rawData(), pokemonData->rawData() + 236, data + 0x8); // Actually set the data
+    pokemonData->decrypt();
+}
+
+void PGT::day(u32 v)
+{
+    pokemonData->egg() ? pokemonData->eggDay((u8)v) : pokemonData->metDay((u8)v);
+    pokemonData->refreshChecksum();
+    pokemonData->encrypt();
+    std::copy(pokemonData->rawData(), pokemonData->rawData() + 236, data + 0x8); // Actually set the data
+    pokemonData->decrypt();
+}
+
 u32 PGT::rawDate(void) const
 {
     return (year() << 16) | (month() << 8) | day();

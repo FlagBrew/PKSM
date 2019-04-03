@@ -52,6 +52,9 @@ public:
     virtual u32 year(void) const = 0;
     virtual u32 month(void) const = 0;
     virtual u32 day(void) const = 0;
+    virtual void year(u32 v) = 0;
+    virtual void month(u32 v) = 0;
+    virtual void day(u32 v) = 0;
     virtual u16 ID(void) const = 0;
     virtual u16 object(void) const = 0;
     virtual bool multiObtainable(void) const = 0;
