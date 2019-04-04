@@ -53,7 +53,7 @@ Configuration::Configuration()
             Gui::warn("Configuration file is corrupted!", "Using default.");
             loadFromRomfs();
         }
-        else if (mJson.find("version") == mJson.end())
+        else if (!mJson.contains("version"))
         {
             Gui::warn("Version not found in config file!", "Using default.");
             loadFromRomfs();

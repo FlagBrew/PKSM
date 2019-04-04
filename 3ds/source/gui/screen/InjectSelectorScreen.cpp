@@ -435,7 +435,7 @@ bool InjectSelectorScreen::toggleFilter(const std::string& lang)
         wondercards = MysteryGift::wondercards();
         for (size_t i = wondercards.size(); i > 0; i--)
         {
-            if (wondercards[i - 1].find(lang) == wondercards[i - 1].end())
+            if (!wondercards[i-1].contains(lang))
             {
                 wondercards.erase(wondercards.begin() + i - 1);
             }
