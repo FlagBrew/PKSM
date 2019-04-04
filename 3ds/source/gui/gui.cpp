@@ -73,9 +73,9 @@ void Gui::backgroundBottom(bool stripes)
 {
     if (stripes)
     {
-        for (int x = 0; x < 320; x += 7)
+        for (int x = 0; x < 320; x += 14)
         {
-            for (int y = 0; y < 240; y += 7)
+            for (int y = 0; y < 240; y += 14)
             {
                 C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_stripe_bottom_idx), x, y, 0.5f);
             }
@@ -92,9 +92,9 @@ void Gui::backgroundTop(bool stripes)
 {
     if (stripes)
     {
-        for (int x = 0; x < 400; x += 7)
+        for (int x = 0; x < 400; x += 14)
         {
-            for (int y = 0; y < 240; y += 7)
+            for (int y = 0; y < 240; y += 14)
             {
                 C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_stripe_top_idx), x, y, 0.5f);
             }
