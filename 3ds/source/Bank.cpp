@@ -502,10 +502,10 @@ bool Bank::setName(const std::string& name)
 {
     std::string oldName = bankName;
     bankName = name;
-    std::string oldBankPath = Configuration::getInstance().useExtData() ? "/3ds/PKSM/banks/" + oldName + ".bnk" : "/banks/" + oldName + ".bnk";
-    std::string oldJsonPath = Configuration::getInstance().useExtData() ? "/3ds/PKSM/banks/" + oldName + ".json" : "/banks/" + oldName + ".json";
-    std::string newBankPath = Configuration::getInstance().useExtData() ? "/3ds/PKSM/banks/" + bankName + ".bnk" : "/banks/" + bankName + ".bnk";
-    std::string newJsonPath = Configuration::getInstance().useExtData() ? "/3ds/PKSM/banks/" + bankName + ".json" : "/banks/" + bankName + ".json";
+    std::string oldBankPath = Configuration::getInstance().useExtData() ? "/banks/" + oldName + ".bnk" : "/3ds/PKSM/banks/" + oldName + ".bnk";
+    std::string oldJsonPath = Configuration::getInstance().useExtData() ? "/banks/" + oldName + ".json" : "/3ds/PKSM/banks/" + oldName + ".json";
+    std::string newBankPath = Configuration::getInstance().useExtData() ? "/banks/" + bankName + ".bnk" : "/3ds/PKSM/banks/" + bankName + ".bnk";
+    std::string newJsonPath = Configuration::getInstance().useExtData() ? "/banks/" + bankName + ".json" : "/3ds/PKSM/banks/" + bankName + ".json";
     auto archive = Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd();
     if (R_FAILED(Archive::moveFile(archive, oldBankPath, archive, newBankPath)))
     {

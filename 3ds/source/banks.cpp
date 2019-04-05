@@ -160,7 +160,7 @@ std::vector<std::pair<std::string, int>> Banks::bankNames()
 
 void Banks::renameBank(const std::string& oldName, const std::string& newName)
 {
-    if (oldName != newName && g_banks.count(oldName))
+    if (oldName != newName && g_banks.contains(oldName))
     {
         if (bank->name() == oldName)
         {
@@ -171,10 +171,10 @@ void Banks::renameBank(const std::string& oldName, const std::string& newName)
         }
         else
         {
-            FSUSER_RenameFile(Archive::data(), fsMakePath(PATH_UTF16, (u"/banks/" + StringUtils::UTF8toUTF16(oldName) + u".bnk").c_str()), Archive::data(), fsMakePath(PATH_UTF16, (u"/banks/" + StringUtils::UTF8toUTF16(newName) + u".bnk").c_str()));
-            FSUSER_RenameFile(Archive::data(), fsMakePath(PATH_UTF16, (u"/banks/" + StringUtils::UTF8toUTF16(oldName) + u".json").c_str()), Archive::data(), fsMakePath(PATH_UTF16, (u"/banks/" + StringUtils::UTF8toUTF16(newName) + u".json").c_str()));
-            FSUSER_RenameFile(Archive::sd(), fsMakePath(PATH_UTF16, (u"/3ds/PKSM/banks/" + StringUtils::UTF8toUTF16(oldName) + u".bnk").c_str()), Archive::sd(), fsMakePath(PATH_UTF16, (u"/3ds/PKSM/banks/" + StringUtils::UTF8toUTF16(newName) + u".bnk").c_str()));
-            FSUSER_RenameFile(Archive::sd(), fsMakePath(PATH_UTF16, (u"/3ds/PKSM/banks/" + StringUtils::UTF8toUTF16(oldName) + u".json").c_str()), Archive::sd(), fsMakePath(PATH_UTF16, (u"/3ds/PKSM/banks/" + StringUtils::UTF8toUTF16(newName) + u".json").c_str()));
+            Archive::moveFile(Archive::data(), "/banks/" + oldName + ".bnk", Archive::data(), "/banks/" + newName + ".bnk");
+            Archive::moveFile(Archive::data(), "/banks/" + oldName + ".json", Archive::data(), "/banks/" + newName + ".json");
+            Archive::moveFile(Archive::sd(), "/3ds/PKSM/banks/" + oldName + ".bnk", Archive::sd(), "/3ds/PKSM/banks/" + newName + ".bnk");
+            Archive::moveFile(Archive::sd(), "/3ds/PKSM/banks/" + oldName + ".json", Archive::sd(), "/3ds/PKSM/banks/" + newName + ".json");
         }
         g_banks[newName] = g_banks[oldName];
         g_banks.erase(oldName);
