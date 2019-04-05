@@ -216,8 +216,8 @@ bool Bank::save() const
 void Bank::resize(int boxes)
 {
     size_t newSize = sizeof(BankHeader) + sizeof(BankEntry) * boxes * 30;
-    std::string bankPath = Configuration::getInstance().useExtData() ? "/3ds/PKSM/banks/" + bankName + ".bnk" : "/banks/" + bankName + ".bnk";
-    std::string jsonPath = Configuration::getInstance().useExtData() ? "/3ds/PKSM/banks/" + bankName + ".json" : "/banks/" + bankName + ".json";
+    std::string bankPath = Configuration::getInstance().useExtData() ? "/banks/" + bankName + ".bnk" : "/3ds/PKSM/banks/" + bankName + ".bnk";
+    std::string jsonPath = Configuration::getInstance().useExtData() ? "/banks/" + bankName + ".json" : "/3ds/PKSM/banks/" + bankName + ".json";
     if (newSize != size)
     {
         Gui::showResizeStorage();
@@ -330,8 +330,8 @@ void Bank::pkm(std::shared_ptr<PKX> pkm, int box, int slot)
 void Bank::backup() const
 {
     Gui::waitFrame(i18n::localize("BANK_BACKUP"));
-    std::string bankPath = "/3ds/PKSM/banks/" + bankName + ".bnk";
-    std::string jsonPath = "/3ds/PKSM/banks/" + bankName + ".json";
+    std::string bankPath = "/3ds/PKSM/banks/" + bankName + ".bnk.bak";
+    std::string jsonPath = "/3ds/PKSM/banks/" + bankName + ".json.bak";
     FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(bankPath).c_str()));
     FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(jsonPath).c_str()));
 
