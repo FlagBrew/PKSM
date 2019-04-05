@@ -120,19 +120,17 @@ void Banks::removeBank(const std::string& name)
     {
         return;
     }
-    if (g_banks.count(name))
+    if (g_banks.contains(name))
     {
         if (bank && bank->name() == name)
         {
             bank = nullptr;
-            if (g_banks.begin().key() == name)
+            auto i = g_banks.begin();
+            if (i.key() == name)
             {
-                loadBank((g_banks.begin() + 1).key());
+                i++;
             }
-            else
-            {
-                loadBank(g_banks.begin().key());
-            }
+            loadBank(i.key(), i.value());
         }
         remove(("/3ds/PKSM/banks/" + name + ".bnk").c_str());
         remove(("/3ds/PKSM/banks/" + name + ".json").c_str());
