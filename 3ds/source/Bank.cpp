@@ -330,8 +330,8 @@ void Bank::pkm(std::shared_ptr<PKX> pkm, int box, int slot)
 void Bank::backup() const
 {
     Gui::waitFrame(i18n::localize("BANK_BACKUP"));
-    std::string bankPath = "/3ds/PKSM/banks/" + bankName + ".bnk.bak";
-    std::string jsonPath = "/3ds/PKSM/banks/" + bankName + ".json.bak";
+    std::string bankPath = "/3ds/PKSM/backups/" + bankName + ".bnk.bak";
+    std::string jsonPath = "/3ds/PKSM/backups/" + bankName + ".json.bak";
     FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(bankPath).c_str()));
     FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(jsonPath).c_str()));
 
