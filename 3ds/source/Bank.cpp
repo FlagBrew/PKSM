@@ -32,7 +32,7 @@
 #include "PB7.hpp"
 
 // TODO actually do stuff with the name
-Bank::Bank(const std::string& name, int maxBoxes) : bankName(name), bankPath("/banks/" + bankName + ".bnk"), jsonPath("/banks/" + bankName + ".json")
+Bank::Bank(const std::string& name, int maxBoxes) : bankName(name)
 {
     load(maxBoxes);
     if (boxes() != maxBoxes)
@@ -53,38 +53,107 @@ void Bank::load(int maxBoxes)
     {
         convert();
     }
-    else if (Configuration::getInstance().useExtData())
-    {
-        if (io::exists("/3ds/PKSM" + bankPath))
-        {
-            loadSD(maxBoxes);
-            if (save()) // Make sure it's saved to ExtData before deletion
-            {
-                FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_UTF16, (u"/3ds/PKSM" + StringUtils::UTF8toUTF16(bankName)).c_str()));
-                FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_UTF16, (u"/3ds/PKSM" + StringUtils::UTF8toUTF16(bankName)).c_str()));
-            }
-        }
-        else
-        {
-            loadExtData(maxBoxes);
-        }
-    }
     else
     {
-        FSStream exists(Archive::data(), StringUtils::UTF8toUTF16(bankPath), FS_OPEN_READ);
-        if (exists.good())
+        std::string bankPath = Configuration::getInstance().useExtData() ? "/3ds/PKSM/banks/" + bankName + ".bnk" : "/banks/" + bankName + ".bnk";
+        std::string jsonPath = Configuration::getInstance().useExtData() ? "/3ds/PKSM/banks/" + bankName + ".json" : "/banks/" + bankName + ".json";
+        auto archive = Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd();
+        bool needSave = false;
+        FSStream in(archive, bankPath, FS_OPEN_READ);
+        if (in.good())
         {
-            exists.close();
-            loadExtData(maxBoxes);
-            if (save())
+            Gui::waitFrame(i18n::localize("BANK_LOAD"));
+            BankHeader h{"BAD_MGC", 0, 0};
+            size = in.size();
+            in.read((char*)&h, sizeof(BankHeader) - sizeof(int));
+            if (memcmp(&h, BANK_MAGIC.data(), 8))
             {
-                FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(bankName).c_str()));
-                FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(bankName).c_str()));
+                Gui::warn(i18n::localize("BANK_CORRUPT"));
+                in.close();
+                createBank(maxBoxes);
+                needSave = true;
+            }
+            else
+            {
+                // NOTE: THIS IS THE CONVERSION SECTION. WILL NEED TO BE MODIFIED WHEN THE FORMAT IS CHANGED
+                if (h.version == 1)
+                {
+                    h.boxes = (size - (sizeof(BankHeader) - sizeof(int))) / sizeof(BankEntry) / 30;
+                    maxBoxes = h.boxes;
+                    extern nlohmann::json g_banks;
+                    g_banks[bankName] = maxBoxes;
+                    data = new u8[size = size + sizeof(int)];
+                    h.version = BANK_VERSION;
+                    needSave = true;
+                }
+                else
+                {
+                    data = new u8[size];
+                    in.read(&h.boxes, sizeof(int));
+                }
+                std::copy((char*)&h, (char*)(&h + 1), data);
+                in.read(data + sizeof(BankHeader), size - sizeof(BankHeader));
+                in.close();
             }
         }
         else
         {
-            loadSD(maxBoxes);
+            Gui::waitFrame(i18n::localize("BANK_CREATE"));
+            in.close();
+            createBank(maxBoxes);
+            needSave = true;
+        }
+        
+        in = FSStream(archive, StringUtils::UTF8toUTF16(jsonPath), FS_OPEN_READ);
+        if (in.good())
+        {
+            size_t jsonSize = in.size();
+            char jsonData[jsonSize + 1];
+            in.read(jsonData, jsonSize);
+            in.close();
+            jsonData[jsonSize] = '\0';
+            boxNames = nlohmann::json::parse(jsonData, nullptr, false);
+            if (boxNames.is_discarded())
+            {
+                createJSON();
+                needSave = true;
+            }
+            else
+            {
+                for (int i = boxNames.size(); i < boxes(); i++)
+                {
+                    boxNames[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
+                    if (!needSave)
+                    {
+                        needSave = true;
+                    }
+                }
+            }
+        }
+        else
+        {
+            in.close();
+            boxNames = nlohmann::json::array();
+            for (int i = 0; i < boxes(); i++)
+            {
+                boxNames[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
+            }
+
+            needSave = true;
+        }
+
+        if (boxes() != maxBoxes)
+        {
+            resize(maxBoxes);
+        }
+        
+        if (needSave)
+        {
+            save();
+        }
+        else
+        {
+            sha256(prevHash.data(), data, size);
         }
     }
 
@@ -94,262 +163,51 @@ void Bank::load(int maxBoxes)
     }
 }
 
-void Bank::loadExtData(int maxBoxes)
-{
-    bool needSave = false;
-    FSStream in(Archive::data(), StringUtils::UTF8toUTF16(bankPath), FS_OPEN_READ);
-    if (in.good())
-    {
-        Gui::waitFrame(i18n::localize("BANK_LOAD"));
-        BankHeader h{"BAD_MGC", 0, 0};
-        size = in.size();
-        in.read((char*)&h, sizeof(BankHeader) - sizeof(int));
-        if (memcmp(&h, BANK_MAGIC.data(), 8))
-        {
-            Gui::warn(i18n::localize("BANK_CORRUPT"));
-            in.close();
-            createBank(maxBoxes);
-            needSave = true;
-        }
-        else
-        {
-            // NOTE: THIS IS THE CONVERSION SECTION. WILL NEED TO BE MODIFIED WHEN THE FORMAT IS CHANGED
-            if (h.version == 1)
-            {
-                h.boxes = (size - (sizeof(BankHeader) - sizeof(int))) / sizeof(BankEntry) / 30;
-                maxBoxes = h.boxes;
-                extern nlohmann::json g_banks;
-                g_banks[bankName] = maxBoxes;
-                data = new u8[size = size + sizeof(int)];
-                h.version = BANK_VERSION;
-                needSave = true;
-            }
-            else
-            {
-                data = new u8[size];
-                in.read(&h.boxes, sizeof(int));
-            }
-            std::copy((char*)&h, (char*)(&h + 1), data);
-            in.read(data + sizeof(BankHeader), size - sizeof(BankHeader));
-            in.close();
-        }
-    }
-    else
-    {
-        Gui::waitFrame(i18n::localize("BANK_CREATE"));
-        in.close();
-        createBank(maxBoxes);
-        needSave = true;
-    }
-    
-    in = FSStream(Archive::data(), StringUtils::UTF8toUTF16(jsonPath), FS_OPEN_READ);
-    if (in.good())
-    {
-        size_t jsonSize = in.size();
-        char jsonData[jsonSize + 1];
-        in.read(jsonData, jsonSize);
-        in.close();
-        jsonData[jsonSize] = '\0';
-        boxNames = nlohmann::json::parse(jsonData, nullptr, false);
-        if (boxNames.is_discarded())
-        {
-            createJSON();
-            needSave = true;
-        }
-        else
-        {
-            for (int i = boxNames.size(); i < boxes(); i++)
-            {
-                boxNames[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
-                if (!needSave)
-                {
-                    needSave = true;
-                }
-            }
-        }
-    }
-    else
-    {
-        in.close();
-        boxNames = nlohmann::json::array();
-        for (int i = 0; i < boxes(); i++)
-        {
-            boxNames[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
-        }
-
-        needSave = true;
-    }
-
-    if (boxes() != maxBoxes)
-    {
-        resize(maxBoxes);
-    }
-    
-    if (needSave)
-    {
-        save();
-    }
-    else
-    {
-        sha256(prevHash.data(), data, size);
-    }
-}
-
-void Bank::loadSD(int maxBoxes)
-{
-    bool needSave = false;
-    FILE* in = fopen(("/3ds/PKSM" + bankPath).c_str(), "rb");
-    if (in && !ferror(in))
-    {
-        fseek(in, 0, SEEK_END);
-        Gui::waitFrame(i18n::localize("BANK_LOAD"));
-        size = ftell(in);
-        fseek(in, 0, SEEK_SET);
-        data = new u8[size];
-        fread(data, 1, sizeof(BankHeader), in);
-        if (memcmp(data, BANK_MAGIC.data(), 8))
-        {
-            Gui::warn(i18n::localize("BANK_CORRUPT"));
-            fclose(in);
-            createBank(maxBoxes);
-            needSave = true;
-        }
-        else
-        {
-            // NOTE: THIS IS THE CONVERSION SECTION. WILL NEED TO BE MODIFIED WHEN THE FORMAT IS CHANGED
-            int currentVersion = ((BankHeader*)data)->version;
-            if (currentVersion == 1)
-            {
-                fseek(in, 0, SEEK_SET);
-                size_t currentPkmSize = size - (sizeof(BankHeader) - sizeof(int));
-                delete[] data;
-                data = new u8[size = sizeof(BankHeader) + currentPkmSize];
-                fread(data, 1, sizeof(BankHeader) - sizeof(int), in);
-                ((BankHeader*)data)->version = BANK_VERSION;
-                ((BankHeader*)data)->boxes = currentPkmSize / sizeof(BankEntry) / 30;
-                fread(data + sizeof(BankHeader), 1, currentPkmSize, in);
-                needSave = true;
-            }
-            else
-            {
-                fread(data + sizeof(BankHeader), 1, size - sizeof(BankHeader), in);
-            }
-            fclose(in);
-        }
-    }
-    else
-    {
-        Gui::waitFrame(i18n::localize("BANK_CREATE"));
-        fclose(in);
-        createBank(maxBoxes);
-        needSave = true;
-    }
-
-    in = fopen(("/3ds/PKSM" + jsonPath).c_str(), "rt");
-    if (in && !ferror(in))
-    {
-        boxNames = nlohmann::json::parse(in, nullptr, false);
-        if (boxNames.is_discarded())
-        {
-            createJSON();
-            needSave = true;
-        }
-        else
-        {
-            for (int i = boxNames.size(); i < boxes(); i++)
-            {
-                boxNames[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
-                if (!needSave)
-                {
-                    needSave = true;
-                }
-            }
-        }
-        fclose(in);
-    }
-    else
-    {
-        fclose(in);
-        createJSON();
-        needSave = true;
-    }
-
-    if (boxes() != maxBoxes)
-    {
-        resize(maxBoxes);
-    }
-
-    if (needSave)
-    {
-        save();
-    }
-    else
-    {
-        sha256(prevHash.data(), data, sizeof(BankHeader) + sizeof(BankEntry) * boxes() * 30);
-    }
-}
-
 bool Bank::save() const
 {
-    Gui::waitFrame(i18n::localize("BANK_SAVE"));
+    std::string bankPath;
+    std::string jsonPath;
+    FS_Archive archive;
     if (Configuration::getInstance().useExtData())
     {
-        FSStream out(Archive::data(), StringUtils::UTF8toUTF16(bankPath), FS_OPEN_WRITE, sizeof(BankHeader) + sizeof(BankEntry) * boxes() * 30);
-        if (out.good())
-        {
-            out.write(data, sizeof(BankHeader) + sizeof(BankEntry) * boxes() * 30);
-            out.close();
-
-            std::string jsonData = boxNames.dump(2);
-            FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(jsonPath).c_str()));
-            out = FSStream(Archive::data(), StringUtils::UTF8toUTF16(jsonPath), FS_OPEN_WRITE, jsonData.size());
-            if (out.good())
-            {
-                out.write(jsonData.data(), jsonData.size() + 1);
-                sha256(prevHash.data(), data, sizeof(BankHeader) + sizeof(BankEntry) * boxes() * 30);
-            }
-            else
-            {
-                Gui::error(i18n::localize("BANK_NAME_ERROR"), out.result());
-            }
-            out.close();
-            return true;
-        }
-        else
-        {
-            out.close();
-            Gui::error(i18n::localize("BANK_SAVE_ERROR"), out.result());
-            return false;
-        }
+        bankPath = "/banks/" + bankName + ".bnk";
+        jsonPath = "/banks/" + bankName + ".json";
+        archive = Archive::data();
     }
     else
     {
-        FILE* out = fopen(("/3ds/PKSM" + bankPath).c_str(), "wb");
-        if (out && !ferror(out))
-        {
-            fwrite(data, 1, sizeof(BankHeader) + sizeof(BankEntry) * boxes() * 30, out);
-            fclose(out);
+        bankPath = "/3ds/PKSM/banks/" + bankName + ".bnk";
+        jsonPath = "/3ds/PKSM/banks/" + bankName + ".json";
+        archive = Archive::sd();
+    }
+    Gui::waitFrame(i18n::localize("BANK_SAVE"));
+    FSUSER_DeleteFile(archive, fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(bankPath).c_str()));
+    FSStream out(archive, bankPath, FS_OPEN_WRITE, sizeof(BankHeader) + sizeof(BankEntry) * boxes() * 30);
+    if (out.good())
+    {
+        out.write(data, sizeof(BankHeader) + sizeof(BankEntry) * boxes() * 30);
+        out.close();
 
-            std::string jsonData = boxNames.dump(2);
-            out = fopen(("/3ds/PKSM" + jsonPath).c_str(), "wt");
-            if (out && !ferror(out))
-            {
-                fwrite(jsonData.data(), 1, jsonData.size(), out);
-                sha256(prevHash.data(), data, sizeof(BankHeader) + sizeof(BankEntry) * boxes() * 30);
-            }
-            else
-            {
-                Gui::error(i18n::localize("BANK_NAME_ERROR"), errno);
-            }
-            fclose(out);
-            return true;
+        std::string jsonData = boxNames.dump(2);
+        FSUSER_DeleteFile(archive, fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(jsonPath).c_str()));
+        out = FSStream(archive, jsonPath, FS_OPEN_WRITE, jsonData.size());
+        if (out.good())
+        {
+            out.write(jsonData.data(), jsonData.size() + 1);
+            sha256(prevHash.data(), data, sizeof(BankHeader) + sizeof(BankEntry) * boxes() * 30);
         }
         else
         {
-            fclose(out);
-            Gui::error(i18n::localize("BANK_SAVE_ERROR"), errno);
-            return false;
+            Gui::error(i18n::localize("BANK_NAME_ERROR"), out.result());
         }
+        out.close();
+        return true;
+    }
+    else
+    {
+        Gui::error(i18n::localize("BANK_SAVE_ERROR"), out.result());
+        out.close();
+        return false;
     }
 
     needsCheck = false;
@@ -358,6 +216,8 @@ bool Bank::save() const
 void Bank::resize(int boxes)
 {
     size_t newSize = sizeof(BankHeader) + sizeof(BankEntry) * boxes * 30;
+    std::string bankPath = Configuration::getInstance().useExtData() ? "/3ds/PKSM/banks/" + bankName + ".bnk" : "/banks/" + bankName + ".bnk";
+    std::string jsonPath = Configuration::getInstance().useExtData() ? "/3ds/PKSM/banks/" + bankName + ".json" : "/banks/" + bankName + ".json";
     if (newSize != size)
     {
         Gui::showResizeStorage();
@@ -370,16 +230,8 @@ void Bank::resize(int boxes)
         }
         data = newData;
 
-        if (Configuration::getInstance().useExtData())
-        {
-            FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(bankPath).c_str()));
-            FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(jsonPath).c_str()));
-        }
-        else
-        {
-            FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_UTF16, (u"/3ds/PKSM" + StringUtils::UTF8toUTF16(bankPath)).c_str()));
-            FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_UTF16, (u"/3ds/PKSM" + StringUtils::UTF8toUTF16(jsonPath)).c_str()));
-        }
+        FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(bankPath).c_str()));
+        FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(jsonPath).c_str()));
 
         ((BankHeader*)data)->boxes = boxes;
 
@@ -478,17 +330,19 @@ void Bank::pkm(std::shared_ptr<PKX> pkm, int box, int slot)
 void Bank::backup() const
 {
     Gui::waitFrame(i18n::localize("BANK_BACKUP"));
-    FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_UTF16, (u"/3ds/PKSM/" + StringUtils::UTF8toUTF16(bankPath) + u".bak").c_str()));
-    FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_UTF16, (u"/3ds/PKSM/" + StringUtils::UTF8toUTF16(jsonPath) + u".bak").c_str()));
+    std::string bankPath = "/3ds/PKSM/banks/" + bankName + ".bnk";
+    std::string jsonPath = "/3ds/PKSM/banks/" + bankName + ".json";
+    FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(bankPath).c_str()));
+    FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(jsonPath).c_str()));
 
-    FILE* out = fopen(("/3ds/PKSM" + bankPath + ".bak").c_str(), "wb");
-    fwrite(data, 1, size, out);
-    fclose(out);
+    FSStream out(Archive::sd(), bankPath, FS_OPEN_WRITE, size);
+    out.write(data, size);
+    out.close();
 
     std::string jsonData = boxNames.dump(2);
-    out = fopen(("/3ds/PKSM" + jsonPath + ".bak").c_str(), "wt");
-    fwrite(jsonData.data(), 1, jsonData.size(), out);
-    fclose(out);
+    out = FSStream(Archive::sd(), jsonPath, FS_OPEN_WRITE, jsonData.size());
+    out.write(jsonData.data(), jsonData.size());
+    out.close();
 }
 
 std::string Bank::boxName(int box) const
@@ -542,22 +396,22 @@ bool Bank::hasChanged() const
 void Bank::convert()
 {
     bool deleteOld = true;
-    FILE* in = fopen("/3ds/PKSM/bank/bank.bin", "rb");
-    fseek(in, 0, SEEK_END);
     Gui::waitFrame(i18n::localize("BANK_CONVERT"));
-    size_t oldSize = ftell(in);
-    fseek(in, 0, SEEK_SET);
+    FSStream stream(Archive::sd(), "/3ds/PKSM/bank/bank.bin", FS_OPEN_READ);
+    size_t oldSize = stream.size();
     u8* oldData = new u8[oldSize];
-    if (!ferror(in))
+    if (stream.good())
     {
-        fread(oldData, 1, oldSize, in);
+        stream.read(oldData, oldSize);
     }
     else
     {
-        Gui::error(i18n::localize("BANK_BAD_CONVERT"), errno);
-        deleteOld = false;
+        Gui::error(i18n::localize("BANK_BAD_CONVERT"), stream.result());
+        delete[] oldData;
+        stream.close();
+        return;
     }
-    fclose(in);
+    stream.close();
 
     Configuration::getInstance().storageSize(oldSize / 232 / 30);
     Configuration::getInstance().save();
@@ -620,9 +474,10 @@ void Bank::convert()
         boxNames[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
     }
 
-    FILE* bkp = fopen("/3ds/PKSM/backups/bank.bin", "wb");
-    fwrite(oldData, 1, oldSize, bkp);
-    fclose(bkp);
+
+    stream = FSStream(Archive::sd(), "/3ds/PKSM/backups/bank.bin", FS_OPEN_WRITE, oldSize);
+    stream.write(oldData, oldSize);
+    stream.close();
     
     delete[] oldData;
 
@@ -647,17 +502,25 @@ bool Bank::setName(const std::string& name)
 {
     std::string oldName = bankName;
     bankName = name;
-    if (save())
-    {
-        FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, (u"/banks/" + StringUtils::UTF8toUTF16(oldName) + u".bnk").c_str()));
-        FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, (u"/banks/" + StringUtils::UTF8toUTF16(oldName) + u".json").c_str()));
-        FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_UTF16, (u"/3ds/PKSM/banks/" + StringUtils::UTF8toUTF16(oldName) + u".bnk").c_str()));
-        FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_UTF16, (u"/3ds/PKSM/banks/" + StringUtils::UTF8toUTF16(oldName) + u".json").c_str()));
-        return true;
-    }
-    else
+    std::string oldBankPath = Configuration::getInstance().useExtData() ? "/3ds/PKSM/banks/" + oldName + ".bnk" : "/banks/" + oldName + ".bnk";
+    std::string oldJsonPath = Configuration::getInstance().useExtData() ? "/3ds/PKSM/banks/" + oldName + ".json" : "/banks/" + oldName + ".json";
+    std::string newBankPath = Configuration::getInstance().useExtData() ? "/3ds/PKSM/banks/" + bankName + ".bnk" : "/banks/" + bankName + ".bnk";
+    std::string newJsonPath = Configuration::getInstance().useExtData() ? "/3ds/PKSM/banks/" + bankName + ".json" : "/banks/" + bankName + ".json";
+    auto archive = Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd();
+    if (R_FAILED(Archive::moveFile(archive, oldBankPath, archive, newBankPath)))
     {
         bankName = oldName;
         return false;
     }
+    if (R_FAILED(Archive::moveFile(archive, oldJsonPath, archive, newJsonPath)))
+    {
+        bankName = oldName;
+        if (R_FAILED(Archive::moveFile(archive, newBankPath, archive, oldBankPath)))
+        {
+            Gui::warn("Very bad things have happened.");
+            return false;
+        }
+        return false;
+    }
+    return true;
 }

@@ -371,8 +371,7 @@ void ConfigScreen::back()
     }
     else if (useExtDataChanged)
     {
-        Banks::bank = nullptr;
-        Banks::init();
+        Banks::swapSD(!Configuration::getInstance().useExtData());
     }
     Gui::screenBack();
 }

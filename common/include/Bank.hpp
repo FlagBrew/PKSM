@@ -56,8 +56,6 @@ public:
 private:
     static constexpr int BANK_VERSION = 2;
     static constexpr std::string_view BANK_MAGIC = "PKSMBANK";
-    void loadExtData(int maxBoxes);
-    void loadSD(int maxBoxes);
     void createJSON();
     void createBank(int maxBoxes);
     void convert();
@@ -76,7 +74,6 @@ private:
     mutable std::array<u8, SHA256_BLOCK_SIZE> prevHash;
     mutable bool needsCheck = false;
     std::string bankName;
-    std::string bankPath, jsonPath;
 };
 
 #endif

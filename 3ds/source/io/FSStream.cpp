@@ -132,5 +132,7 @@ void FSStream::seek(u32 offset, int from)
         case SEEK_END:
             mOffset = mSize - offset;
             break;
+        default:
+            break;
     }
 }

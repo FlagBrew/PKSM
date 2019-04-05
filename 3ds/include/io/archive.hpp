@@ -42,6 +42,10 @@ namespace Archive
 	bool saveAccessible(FS_MediaType mediatype, u32 lowid, u32 highid);
 	bool extdataAccessible(u32 id);
 	Result createPKSMExtdataArchive(std::string& execPath);
+	Result moveDir(FS_Archive src, const std::u16string& dir, FS_Archive dst, const std::u16string& dest);
+	Result moveFile(FS_Archive src, const std::u16string& file, FS_Archive dst, const std::u16string& dest);
+	inline Result moveDir(FS_Archive src, const std::string& dir, FS_Archive dst, const std::string& dest) { return moveDir(src, StringUtils::UTF8toUTF16(dir), dst, StringUtils::UTF8toUTF16(dest)); }
+	inline Result moveFile(FS_Archive src, const std::string& file, FS_Archive dst, const std::string& dest) { return moveFile(src, StringUtils::UTF8toUTF16(file), dst, StringUtils::UTF8toUTF16(dest)); }
 }
 
 #endif

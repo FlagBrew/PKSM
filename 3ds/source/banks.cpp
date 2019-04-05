@@ -36,32 +36,19 @@ nlohmann::json g_banks;
 static Result saveJson()
 {
     std::string jsonData = g_banks.dump(2);
-    if (Configuration::getInstance().useExtData())
+    FSUSER_DeleteFile(Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd(), fsMakePath(PATH_UTF16, u"/banks.json"));
+    FSStream out(Archive::data(), u"/banks.json", FS_OPEN_WRITE, jsonData.size());
+    if (out.good())
     {
-        FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, u"/banks.json"));
-        FSStream out(Archive::data(), u"/banks.json", FS_OPEN_WRITE, jsonData.size());
-        if (out.good())
-        {
-            out.write(jsonData.data(), jsonData.size() + 1);
-        }
+        out.write(jsonData.data(), jsonData.size() + 1);
         out.close();
         return out.result();
     }
     else
     {
-        FILE* out = fopen("/3ds/PKSM/banks.json", "wt");
-        int ret = 0;
-        if (out)
-        {
-            fwrite(jsonData.data(), 1, jsonData.size() + 1, out);
-            ret = ferror(out);
-        }
-        else
-        {
-            ret = errno;
-        }
-        fclose(out);
-        return -ret;
+        Result ret = out.result();
+        out.close();
+        return ret;
     }
 }
 
@@ -72,27 +59,10 @@ static Result createJson()
     return saveJson();
 }
 
-static int readSD()
+static Result read()
 {
-    int ret = 0;
-    FILE* in = fopen("/3ds/PKSM/banks.json", "rt");
-    if (in)
-    {
-        g_banks = nlohmann::json::parse(in, nullptr, false);
-        ret = ferror(in);
-        fclose(in);
-        return -ret;
-    }
-    else
-    {
-        fclose(in);
-        return createJson();
-    }
-}
-
-static Result readExtData()
-{
-    FSStream in(Archive::data(), u"/banks.json", FS_OPEN_READ);
+    std::string path = Configuration::getInstance().useExtData() ? "/banks.json" : "/3ds/PKSM/banks.json";
+    FSStream in(Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd(), path, FS_OPEN_READ);
     if (in.good())
     {
         size_t size = in.size();
@@ -112,33 +82,9 @@ static Result readExtData()
 
 Result Banks::init()
 {
-    if (Configuration::getInstance().useExtData())
-    {
-        if (io::exists("/3ds/PKSM/banks.json"))
-        {
-            readSD();
-            saveJson();
-        }
-        else
-        {
-            readExtData();
-        }
-    }
-    else
-    {
-        FSStream in(Archive::data(), u"/banks.json", FS_OPEN_READ);
-        if (in.good())
-        {
-            in.close();
-            readExtData();
-            saveJson();
-        }
-        else
-        {
-            in.close();
-            readSD();
-        }
-    }
+    Result res;
+    if (R_FAILED(res = read())) return res;
+
     if (g_banks.is_discarded())
         return -1;
 
@@ -247,4 +193,20 @@ void Banks::setBankSize(const std::string& name, int size)
             bank->resize(size);
         }
     }
+}
+
+Result Banks::swapSD(bool toSD)
+{
+    Result res = 0;
+    if (toSD)
+    {
+        if (R_FAILED(res = Archive::moveDir(Archive::data(), "/banks", Archive::sd(), "/3ds/PKSM/banks"))) return res;
+        if (R_FAILED(res = Archive::moveFile(Archive::data(), "/banks.json", Archive::sd(), "/3ds/PKSM/banks.json"))) return res;
+    }
+    else
+    {
+        if (R_FAILED(res = Archive::moveDir(Archive::sd(), "/3ds/PKSM/banks", Archive::data(), "/banks"))) return res;
+        if (R_FAILED(res = Archive::moveFile(Archive::sd(), "/3ds/PKSM/banks.json", Archive::data(), "/banks.json"))) return res;
+    }
+    return res;
 }
