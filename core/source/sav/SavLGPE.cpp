@@ -257,6 +257,23 @@ void SavLGPE::money(u32 v)
     *(u32*)(data + 0x4C04) = v;
 }
 
+u8 SavLGPE::badges() const
+{
+    struct {
+        u8 unimportant1 : 4;
+        u8 b1 : 1;
+        u8 b2 : 1;
+        u8 b3 : 1;
+        u8 b4 : 1;
+        u8 b5 : 1;
+        u8 b6 : 1;
+        u8 b7 : 1;
+        u8 b8 : 1;
+        u8 unimportant2 : 4;
+    } badgeBits;
+    std::copy(data + 0x21b1, data + 0x21b1 + 2, (u8*)&badgeBits);
+    return badgeBits.b1 + badgeBits.b2 + badgeBits.b3 + badgeBits.b4 + badgeBits.b5 + badgeBits.b6 + badgeBits.b7 + badgeBits.b8;
+}
 
 u16 SavLGPE::playedHours(void) const
 {

@@ -96,6 +96,7 @@ public:
     void money(u32 v) override;
     u32 BP(void) const override { return 0; } // TODO
     void BP(u32 v) override { (void) v; } // TODO
+    u8 badges(void) const override;
     u16 playedHours(void) const override;
     void playedHours(u16 v) override;
     u8 playedMinutes(void) const override;

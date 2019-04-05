@@ -108,6 +108,12 @@ static void menuTop()
 {
     Gui::backgroundTop(false);
     Gui::staticText("PKSM", 200, 4, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLUE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::staticText(i18n::localize("SAVE_INFO"), 200, 26, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::dynamicText(StringUtils::format(i18n::localize("GENERATION"), genToCstring(TitleLoader::save->generation())), 30, 40, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::dynamicText(StringUtils::format(i18n::localize("TRAINER_NAME"), TitleLoader::save->otName().c_str()), 30, 54, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::dynamicText(i18n::localize("TID_SID") + ": " + std::to_string(TitleLoader::save->displayTID()) + "/" + std::to_string(TitleLoader::save->displaySID()), 30, 68, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::dynamicText(StringUtils::format(TitleLoader::save->generation() == Generation::SEVEN ? i18n::localize("STAMPS") : i18n::localize("BADGES"), TitleLoader::save->badges()), 30, 82, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::dynamicText(StringUtils::format(i18n::localize("WC_NUM"), TitleLoader::save->currentGifts().size()), 30, 96, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 }
 
 void MainMenu::draw() const

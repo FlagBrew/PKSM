@@ -75,6 +75,17 @@ void Sav7::money(u32 v) { *(u32*)(data + Misc + 0x4) = v > 9999999 ? 9999999 : v
 u32 Sav7::BP(void) const { return *(u32*)(data + Misc + 0x11C); }
 void Sav7::BP(u32 v) { *(u32*)(data + Misc + 0x11C) = v > 9999 ? 9999 : v; }
 
+u8 Sav7::badges(void) const
+{
+    u32 badgeBits = (*(u32*)(data + Misc + 0x8) << 13) >> 17;
+    u8 ret = 0;
+    for (size_t i = 0; i < sizeof(badgeBits) * 8; i++)
+    {
+        ret += badgeBits & BIT(i) ? 1 : 0;
+    }
+    return ret;
+}
+
 u16 Sav7::playedHours(void) const { return *(u16*)(data + PlayTime); }
 void Sav7::playedHours(u16 v) { *(u16*)(data + PlayTime) = v; }
 

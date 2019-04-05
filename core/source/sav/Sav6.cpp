@@ -59,6 +59,17 @@ void Sav6::money(u32 v) { *(u32*)(data + Trainer2 + 0x8) = v; }
 u32 Sav6::BP(void) const { return *(u32*)(data + Trainer2 + (game == Game::XY ? 0x3C : 0x30)); }
 void Sav6::BP(u32 v) { *(u32*)(data + Trainer2 + (game == Game::XY ? 0x3C : 0x30)) = v; }
 
+u8 Sav6::badges(void) const
+{
+    u8& badgeBits = data[Trainer2 + 0xC];
+    u8 ret = 0;
+    for (size_t i = 0; i < sizeof(badgeBits) * 8; i++)
+    {
+        ret += badgeBits & BIT(i) ? 1 : 0;
+    }
+    return ret;
+}
+
 u16 Sav6::playedHours(void) const { return *(u16*)(data + PlayTime); }
 void Sav6::playedHours(u16 v) { *(u16*)(data + PlayTime) = v; }
 

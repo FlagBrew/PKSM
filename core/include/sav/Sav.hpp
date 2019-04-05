@@ -137,12 +137,16 @@ public:
     virtual void money(u32 v) = 0;
     virtual u32 BP(void) const = 0;
     virtual void BP(u32 v) = 0;
+    virtual u8 badges(void) const = 0;
     virtual u16 playedHours(void) const = 0;
     virtual void playedHours(u16 v) = 0;
     virtual u8 playedMinutes(void) const = 0;
     virtual void playedMinutes(u8 v) = 0;
     virtual u8 playedSeconds(void) const = 0;
     virtual void playedSeconds(u8 v) = 0;
+
+    u32 displayTID(void) const;
+    u32 displaySID(void) const;
 
     virtual u8 currentBox(void) const = 0;
     virtual void currentBox(u8 v) = 0;

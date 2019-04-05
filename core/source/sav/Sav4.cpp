@@ -125,6 +125,25 @@ void Sav4::money(u32 v) { *(u32*)(data + Trainer1 + 0x14) = v; }
 u32 Sav4::BP(void) const { return *(u16*)(data + Trainer1 + 0x20); } // Returns Coins @ Game Corner
 void Sav4::BP(u32 v) { *(u16*)(data + Trainer1 + 0x20) = v; }
 
+u8 Sav4::badges(void) const
+{
+    u8 badgeBits = data[Trainer1 + 0x1A];
+    u8 ret = 0;
+    for (size_t i = 0; i < sizeof(badgeBits) * 8; i++)
+    {
+        ret += badgeBits & BIT(i) ? 1 : 0;
+    }
+    if (game == Game::HGSS)
+    {
+        badgeBits = data[Trainer1 + 0x1F];
+        for (size_t i = 0; i < sizeof(badgeBits) * 8; i++)
+        {
+            ret += badgeBits & BIT(i) ? 1 : 0;
+        }
+    }
+    return ret;
+}
+
 u16 Sav4::playedHours(void) const { return *(u16*)(data + Trainer1 + 0x22); }
 void Sav4::playedHours(u16 v) { *(u16*)(data + Trainer1 + 0x22) = v; }
 

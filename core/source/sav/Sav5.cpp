@@ -59,6 +59,17 @@ void Sav5::money(u32 v) { *(u32*)(data + Trainer2) = v; }
 u32 Sav5::BP(void) const { return *(u32*)(data + BattleSubway); }
 void Sav5::BP(u32 v) { *(u32*)(data + BattleSubway) = v; }
 
+u8 Sav5::badges(void) const
+{
+    u8& badgeBits = data[Trainer2 + 0x4];
+    u8 ret = 0;
+    for (size_t i = 0; i < sizeof(badgeBits) * 8; i++)
+    {
+        ret += badgeBits & BIT(i) ? 1 : 0;
+    }
+    return ret;
+}
+
 u16 Sav5::playedHours(void) const { return *(u16*)(data + Trainer1 + 0x24); }
 void Sav5::playedHours(u16 v) { *(u16*)(data + Trainer1 + 0x24) = v; }
 

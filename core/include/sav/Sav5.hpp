@@ -65,6 +65,7 @@ public:
     void money(u32 v) override;
     u32 BP(void) const override;
     void BP(u32 v) override;
+    u8 badges(void) const override;
     u16 playedHours(void) const override;
     void playedHours(u16 v) override;
     u8 playedMinutes(void) const override;
