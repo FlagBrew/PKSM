@@ -962,7 +962,7 @@ bool StorageScreen::backButton()
                 }
                 else
                 {
-                    Banks::bank->load(false);
+                    Banks::bank->load(Banks::bank->boxes());
                 }
             }
             Gui::screenBack();
