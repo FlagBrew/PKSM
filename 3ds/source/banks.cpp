@@ -178,6 +178,7 @@ void Banks::renameBank(const std::string& oldName, const std::string& newName)
         }
         g_banks[newName] = g_banks[oldName];
         g_banks.erase(oldName);
+        saveJson();
     }
 }
 
@@ -190,6 +191,7 @@ void Banks::setBankSize(const std::string& name, int size)
         {
             bank->resize(size);
         }
+        saveJson();
     }
 }
 
