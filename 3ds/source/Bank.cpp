@@ -218,6 +218,7 @@ void Bank::resize(int boxes)
     size_t newSize = sizeof(BankHeader) + sizeof(BankEntry) * boxes * 30;
     std::string bankPath = Configuration::getInstance().useExtData() ? "/banks/" + bankName + ".bnk" : "/3ds/PKSM/banks/" + bankName + ".bnk";
     std::string jsonPath = Configuration::getInstance().useExtData() ? "/banks/" + bankName + ".json" : "/3ds/PKSM/banks/" + bankName + ".json";
+    FS_Archive archive = Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd();
     if (newSize != size)
     {
         Gui::showResizeStorage();
@@ -230,8 +231,8 @@ void Bank::resize(int boxes)
         }
         data = newData;
 
-        FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(bankPath).c_str()));
-        FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(jsonPath).c_str()));
+        FSUSER_DeleteFile(archive, fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(bankPath).c_str()));
+        FSUSER_DeleteFile(archive, fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(jsonPath).c_str()));
 
         ((BankHeader*)data)->boxes = boxes;
 

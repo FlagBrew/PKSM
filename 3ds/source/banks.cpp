@@ -186,7 +186,7 @@ void Banks::setBankSize(const std::string& name, int size)
     if (g_banks.count(name))
     {
         g_banks[name] = size;
-        if (bank->name() == name && size != bank->boxes())
+        if (bank && bank->name() == name && size != bank->boxes())
         {
             bank->resize(size);
         }

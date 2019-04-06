@@ -367,7 +367,7 @@ void ConfigScreen::back()
     Configuration::getInstance().save();
     if (storageSizeChanged)
     {
-        Banks::bank->resize(Configuration::getInstance().storageSize());
+        Banks::setBankSize(Banks::bank->name(), Configuration::getInstance().storageSize());
     }
     else if (useExtDataChanged)
     {
