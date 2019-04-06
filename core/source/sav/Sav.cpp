@@ -214,7 +214,7 @@ u32 Sav::displaySID() const
     switch (generation())
     {
         default:
-            return TID();
+            return SID();
         case Generation::SEVEN:
         case Generation::LGPE:
             return (u32)(SID() << 16 | TID()) / 1000000;
