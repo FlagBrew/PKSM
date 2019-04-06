@@ -35,7 +35,7 @@
 class Configuration
 {
 public:
-    static constexpr int CURRENT_VERSION = 5;
+    static constexpr int CURRENT_VERSION = 6;
 
     static Configuration& getInstance(void)
     {
@@ -51,11 +51,6 @@ public:
     bool autoBackup(void) const
     {
         return mJson["autoBackup"];
-    }
-
-    int storageSize(void) const
-    {
-        return mJson["storageSize"];
     }
 
     bool transferEdit(void) const
@@ -131,6 +126,11 @@ public:
         return mJson["defaults"]["country"];
     }
 
+    bool showBackups(void)
+    {
+        return mJson["showBackups"];
+    }
+
     void language(Language lang)
     {
         mJson["language"] = lang;
@@ -139,11 +139,6 @@ public:
     void autoBackup(bool backup)
     {
         mJson["autoBackup"] = backup;
-    }
-
-    void storageSize(int size)
-    {
-        mJson["storageSize"] = size;
     }
 
     void transferEdit(bool edit)
@@ -219,6 +214,11 @@ public:
     void defaultCountry(u8 value)
     {
         mJson["defaults"]["country"] = value;
+    }
+
+    void showBackups(bool value)
+    {
+        mJson["showBackups"] = value;
     }
 
     void save(void);

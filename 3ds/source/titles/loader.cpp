@@ -54,6 +54,50 @@ static constexpr std::string_view dsIds[9] = {
     "IRD"  //White 2
 };
 
+static std::string idToSaveName(const std::string& id)
+{
+    if (id.size() == 3 || id.size() == 4)
+    {
+        if (id.substr(0, 3) == "ADA")
+        {
+            return "POKEMON D.sav";
+        }
+        if (id.substr(0, 3) == "APA")
+        {
+            return "POKEMON P.sav";
+        }
+        if (id.substr(0, 3) == "CPU")
+        {
+            return "POKEMON PL.sav";
+        }
+        if (id.substr(0, 3) == "IPK")
+        {
+            return "POKEMON HG.sav";
+        }
+        if (id.substr(0, 3) == "IPG")
+        {
+            return "POKEMON SS.sav";
+        }
+        if (id.substr(0, 3) == "IRB")
+        {
+            return "POKEMON B.sav";
+        }
+        if (id.substr(0, 3) == "IRA")
+        {
+            return "POKEMON W.sav";
+        }
+        if (id.substr(0, 3) == "IRE")
+        {
+            return "POKEMON B2.sav";
+        }
+        if (id.substr(0, 3) == "IRD")
+        {
+            return "POKEMON W2.sav";
+        }
+    }
+    return "main";
+}
+
 // known 3ds title ids
 static constexpr std::array<unsigned long long, 8> ctrTitleIds = {
     0x0004000000055D00, // X
@@ -121,35 +165,49 @@ void TitleLoader::scanTitles(void)
     });
 }
 
-void TitleLoader::scanSaves(void)
+static std::vector<std::string> scanDirectoryFor(const std::u16string& dir, const std::string& id)
 {
-    std::u16string chkpntDir = StringUtils::UTF8toUTF16("/3ds/Checkpoint/saves");
-    Directory checkpoint(Archive::sd(), chkpntDir);
-    std::u16string sSeparator = StringUtils::UTF8toUTF16("/");
-    for (size_t i = 0; i < ctrTitleIds.size(); i++)
+    static const std::u16string sSeparator = u"/";
+    std::vector<std::string> ret;
+    Directory directory(Archive::sd(), dir);
+    if (directory.loaded())
     {
-        u32 uniqueId = (u32) ctrTitleIds[i] >> 8;
-        std::string id = StringUtils::format("0x%05X", uniqueId);
-        std::vector<std::string> saves;
-        for (size_t j = 0; j < checkpoint.count(); j++)
+        for (size_t j = 0; j < directory.count(); j++)
         {
-            if (checkpoint.folder(j))
+            if (directory.folder(j))
             {
-                std::u16string fileName = checkpoint.item(j);
-                if (fileName.substr(0, 7) == StringUtils::UTF8toUTF16(id.c_str()))
+                std::u16string fileName = directory.item(j);
+                if (fileName.substr(0, id.size()) == StringUtils::UTF8toUTF16(id.c_str()))
                 {
-                    Directory subdir(Archive::sd(), chkpntDir + sSeparator + fileName);
+                    Directory subdir(Archive::sd(), dir + sSeparator + fileName);
                     for (size_t k = 0; k < subdir.count(); k++)
                     {
                         if (subdir.folder(k))
                         {
-                            std::u16string savePath = chkpntDir + sSeparator + fileName + sSeparator + subdir.item(k)
-                                                      + StringUtils::UTF8toUTF16("/main");
-                            saves.push_back(StringUtils::UTF16toUTF8(savePath));
+                            std::u16string savePath = dir + sSeparator + fileName + sSeparator + subdir.item(k)
+                                                      + sSeparator + StringUtils::UTF8toUTF16(idToSaveName(id));
+                            ret.push_back(StringUtils::UTF16toUTF8(savePath));
                         }
                     }
                 }
             }
+        }
+    }
+    return ret;
+}
+
+void TitleLoader::scanSaves(void)
+{
+    static const std::u16string chkpntDir = u"/3ds/Checkpoint/saves";
+    for (size_t i = 0; i < ctrTitleIds.size(); i++)
+    {
+        u32 uniqueId = (u32) ctrTitleIds[i] >> 8;
+        std::string id = StringUtils::format("0x%05X", uniqueId);
+        std::vector<std::string> saves = scanDirectoryFor(chkpntDir, id);
+        if (Configuration::getInstance().showBackups())
+        {
+            std::vector<std::string> moreSaves = scanDirectoryFor(u"/3ds/PKSM/backups", id);
+            saves.insert(saves.end(), moreSaves.begin(), moreSaves.end());
         }
         auto extraSaves = Configuration::getInstance().extraSaves(id);
         if (!extraSaves.empty())
@@ -170,28 +228,11 @@ void TitleLoader::scanSaves(void)
         for (size_t lang = 0; lang < 8; lang++)
         {
             std::string id = std::string(dsIds[game]) + langIds[lang];
-            std::vector<std::string> saves;
-            for (size_t i = 0; i < checkpoint.count(); i++)
+            std::vector<std::string> saves = scanDirectoryFor(chkpntDir, id);
+            if (Configuration::getInstance().showBackups())
             {
-                if (checkpoint.folder(i))
-                {
-                    std::u16string fileName = checkpoint.item(i);
-                    if (StringUtils::UTF16toUTF8(fileName).substr(0, 4) == id)
-                    {
-                        Directory subdir(Archive::sd(), chkpntDir + sSeparator + fileName);
-                        {
-                            for(size_t j = 0; j < subdir.count(); j++)
-                            {
-                                if (subdir.folder(j))
-                                {
-                                    std::u16string savePath = chkpntDir + sSeparator + fileName + sSeparator + subdir.item(j) + sSeparator
-                                                              + fileName.substr(5) + StringUtils::UTF8toUTF16(".sav");
-                                    saves.push_back(StringUtils::UTF16toUTF8(savePath));
-                                }
-                            }
-                        }
-                    }
-                }
+                std::vector<std::string> moreSaves = scanDirectoryFor(u"/3ds/PKSM/backups", id);
+                saves.insert(saves.end(), moreSaves.begin(), moreSaves.end());
             }
             auto extraSaves = Configuration::getInstance().extraSaves(id);
             if (!extraSaves.empty())
@@ -209,42 +250,23 @@ void TitleLoader::scanSaves(void)
     }
 }
 
-void TitleLoader::backupSave()
+void TitleLoader::backupSave(const std::string& id)
 {
+    if (!save)
+    {
+        return;
+    }
     Gui::waitFrame(i18n::localize("LOADER_BACKING_UP"));
     char stringTime[15] = {0};
     time_t unixTime = time(NULL);
     struct tm* timeStruct = gmtime((const time_t *)&unixTime);
     std::strftime(stringTime, 14,"%Y%m%d%H%M%S", timeStruct);
-    std::string path = "/3ds/PKSM/backups/";
-    if (loadedTitle)
-    {
-        path += loadedTitle->checkpointPrefix();
-    }
-    else
-    {
-        path += saveFileName.substr(saveFileName.find_last_of('/') + 1);
-        path = path.substr(0, path.find(".sav"));
-    }
+    std::string path = "/3ds/PKSM/backups/" + id;
     mkdir(path.c_str(), 777);
     path += '/' + std::string(stringTime);
     mkdir(path.c_str(), 777);
-    if (!loadedTitle || saveIsFile)
-    {
-        path += '/' + saveFileName.substr(saveFileName.find_last_of('/') + 1);
-    }
-    else
-    {
-        if (save->generation() == Generation::FOUR || save->generation() == Generation::FIVE)
-        {
-            path += '/' + loadedTitle->name() + ".sav";
-        }
-        else
-        {
-            path += "/main";
-        }
-    }
-    FSStream out = FSStream(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_WRITE | FS_OPEN_CREATE, TitleLoader::save->getLength());
+    path += idToSaveName(id);
+    FSStream out = FSStream(Archive::sd(), path, FS_OPEN_WRITE | FS_OPEN_CREATE, TitleLoader::save->getLength());
     if (out.good())
     {
         out.write(TitleLoader::save->rawData(), TitleLoader::save->getLength());
@@ -281,7 +303,7 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
             FSUSER_CloseArchive(archive);
             if (Configuration::getInstance().autoBackup())
             {
-                backupSave();
+                backupSave(title->checkpointPrefix());
             }
             return true;
         }
@@ -314,7 +336,7 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
         delete[] data;
         if (Configuration::getInstance().autoBackup())
         {
-            backupSave();
+            backupSave(title->checkpointPrefix());
         }
         return save != nullptr;
     }
@@ -322,7 +344,7 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
     return false;
 }
 
-bool TitleLoader::load(std::shared_ptr<Title> title, std::string savePath)
+bool TitleLoader::load(std::shared_ptr<Title> title, const std::string& savePath)
 {
     saveIsFile = true;
     saveFileName = savePath;
@@ -356,7 +378,27 @@ bool TitleLoader::load(std::shared_ptr<Title> title, std::string savePath)
     }
     if (Configuration::getInstance().autoBackup())
     {
-        backupSave();
+        std::string id;
+        if (title)
+        {
+            backupSave(title->checkpointPrefix());
+        }
+        else
+        {
+            bool done = false;
+            for (auto i = sdSaves.begin(); !done && i != sdSaves.end(); i++)
+            {
+                for (auto j = i->second.begin(); j != i->second.end(); j++)
+                {
+                    if (*j == savePath)
+                    {
+                        backupSave(i->first);
+                        done = true;
+                        break;
+                    }
+                }
+            }
+        }
     }
     return true;
 }

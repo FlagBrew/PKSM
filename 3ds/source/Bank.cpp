@@ -414,12 +414,12 @@ void Bank::convert()
     }
     stream.close();
 
-    Configuration::getInstance().storageSize(oldSize / 232 / 30);
-    Configuration::getInstance().save();
-
-    data = new u8[size = sizeof(BankHeader) + sizeof(BankEntry) * boxes() * 30];
+    data = new u8[size = sizeof(BankHeader) + sizeof(BankEntry) * oldSize / 232];
     std::copy(BANK_MAGIC.data(), BANK_MAGIC.data() + BANK_MAGIC.size(), data);
-    *(int*)(data + 8) = BANK_VERSION;
+    ((BankHeader*) data)->version = BANK_VERSION;
+    ((BankHeader*) data)->boxes = oldSize / 232 / 30;
+    extern nlohmann::json g_banks;
+    g_banks["pksm_1"] = ((BankHeader*) data)->boxes;
     std::fill_n(data + sizeof(BankHeader), sizeof(BankEntry) * boxes() * 30, 0xFF);
     boxNames = nlohmann::json::array();
 

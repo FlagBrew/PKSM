@@ -90,6 +90,7 @@
     "CONFIG_EDIT_TRANSFERS": "Edit during transfers",
     "CONFIG_RANDOM_MUSIC": "Randomize music",
     "CONFIG_SAVE_INFO": "Use Save info",
+    "CONFIG_SHOW_BACKUPS": "Show backups",
     "CONFIG_STORAGE_SIZE": "Storage size",
     "CONFIG_USE_EXTDATA": "Use ExtData",
     "CONTEST_MEMORY_RIBBON_COUNT": "Contest Memory Ribbon Count",

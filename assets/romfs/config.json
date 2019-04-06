@@ -1,8 +1,7 @@
 {
-  "version": 5,
+  "version": 6,
   "language": 2,
   "autoBackup": true,
-  "storageSize": 150,
   "transferEdit": false,
   "useExtData": true,
   "defaults": {
@@ -22,5 +21,6 @@
   },
   "writeFileSave": false,
   "useSaveInfo": false,
-  "randomMusic": false
+  "randomMusic": false,
+  "showBackups": false
 }

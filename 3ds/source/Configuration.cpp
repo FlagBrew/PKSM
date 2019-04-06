@@ -98,6 +98,11 @@ Configuration::Configuration()
                     }
                 }
             }
+            if (mJson["version"].get<int>() < 6)
+            {
+                mJson.erase("storageSize");
+                mJson["showBackups"] = false;
+            }
 
             mJson["version"] = CURRENT_VERSION;
             save();

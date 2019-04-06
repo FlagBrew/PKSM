@@ -38,12 +38,6 @@
 #include "Item.hpp"
 #include "i18n.hpp"
 
-namespace TitleLoader {
-    void backupSave();
-    void saveChanges();
-    void saveToTitle(bool ask);
-}
-
 enum Pouch
 {
     NormalItem,

@@ -455,7 +455,7 @@ bool BoxChoice::prevBox(bool forceBottom)
         storageBox--;
         if (storageBox == -1)
         {
-            storageBox = Configuration::getInstance().storageSize() - 1;
+            storageBox = Banks::bank->boxes() - 1;
         }
     }
     else
@@ -474,7 +474,7 @@ bool BoxChoice::nextBox(bool forceBottom)
     if (storageChosen && !forceBottom)
     {
         storageBox++;
-        if (storageBox == Configuration::getInstance().storageSize())
+        if (storageBox == Banks::bank->boxes())
         {
             storageBox = 0;
         }

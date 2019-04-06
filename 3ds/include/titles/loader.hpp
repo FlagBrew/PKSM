@@ -59,9 +59,9 @@ namespace TitleLoader
     bool cardUpdate(void);
     void scanSaves(void);
     bool load(std::shared_ptr<Title> title);
-    bool load(std::shared_ptr<Title> title, std::string path);
+    bool load(std::shared_ptr<Title> title, const std::string& path);
     bool load(u8* data, size_t size);
-    void backupSave(void);
+    void backupSave(const std::string& id);
     void saveChanges(void);
     void saveToTitle(bool ask);
     void exit(void);

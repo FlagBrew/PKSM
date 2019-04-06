@@ -26,7 +26,7 @@
 
 #include "Directory.hpp"
 
-Directory::Directory(FS_Archive archive, std::u16string root)
+Directory::Directory(FS_Archive archive, const std::u16string& root)
 {
 	load = false;
 	err = 0;

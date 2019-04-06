@@ -55,7 +55,7 @@ static Result saveJson()
 static Result createJson()
 {
     g_banks = nlohmann::json::object();
-    g_banks["pksm_1"] = Configuration::getInstance().storageSize();
+    g_banks["pksm_1"] = BANK_DEFAULT_SIZE;
     return saveJson();
 }
 

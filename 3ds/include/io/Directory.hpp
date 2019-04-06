@@ -30,11 +30,13 @@
 #include <3ds.h>
 #include <string>
 #include <vector>
+#include "utils.hpp"
 
 class Directory
 {
 public:
-	Directory(FS_Archive archive, std::u16string root);
+	Directory(FS_Archive archive, const std::u16string& root);
+	Directory(FS_Archive archive, const std::string& root) : Directory(archive, StringUtils::UTF8toUTF16(root)) {}
 	Result error(void) const;
 	bool loaded(void) const;
 	std::u16string item(size_t index) const;
