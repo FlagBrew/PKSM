@@ -566,6 +566,19 @@ void SavLGPE::dex(std::shared_ptr<PKX> pk)
     }
 }
 
+int SavLGPE::dexCaught(void) const
+{
+    int ret = 0;
+    for (int i = 0; i < maxSpecies(); i++)
+    {
+        if (data[PokeDex + 0x88 + i/8] & BIT(i%8))
+        {
+            ret++;
+        }
+    }
+    return ret;
+}
+
 void SavLGPE::cryptBoxData(bool crypted)
 {
     for (u8 box = 0; box < maxBoxes(); box++)

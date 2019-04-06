@@ -123,6 +123,8 @@ public:
     std::shared_ptr<PKX> emptyPkm() const override;
 
     void dex(std::shared_ptr<PKX> pk) override;
+    // int dexSeen(void) const override;
+    int dexCaught(void) const override;
     int emptyGiftLocation(void) const override { return 0; } // Data not stored
     std::vector<MysteryGift::giftData> currentGifts(void) const override { return {}; } // Data not stored
     void mysteryGift(WCX& wc, int& pos) override;

@@ -395,6 +395,20 @@ void Sav6::dex(std::shared_ptr<PKX> pk)
     data[formDex + formLen * (2 + shiny) + bit / 8] |= (u8)(1 << (bit % 8));
 }
 
+// Maybe? I don't know for certain
+int Sav6::dexCaught(void) const
+{
+    int ret = 0;
+    for (int i = 0; i < maxSpecies(); i++)
+    {
+        if (data[PokeDex + 0x8 + i/8] & BIT(i%8) || (game == Game::XY && data[PokeDex + 0x8 + i/8 + 0x644] & BIT(i%8)))
+        {
+            ret++;
+        }
+    }
+    return ret;
+}
+
 void Sav6::mysteryGift(WCX& wc, int& pos)
 {
     WC6* wc6 = (WC6*)&wc;

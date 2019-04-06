@@ -382,6 +382,34 @@ void Sav4::dex(std::shared_ptr<PKX> pk)
     data[languageFlags + (game == Game::DP ? dpl : pk->species())] |= (u8)(1 << lang);
 }
 
+// Works
+// int Sav4::dexSeen(void) const
+// {
+//     static constexpr int brSize = 0x40;
+//     int ret = 0;
+//     for (int i = 0; i < maxSpecies(); i++)
+//     {
+//         if (data[PokeDex + 0x4 + brSize + i / 8] & BIT(i % 8))
+//         {
+//             ret++;
+//         }
+//     }
+//     return ret;
+// }
+
+int Sav4::dexCaught(void) const
+{
+    int ret = 0;
+    for (int i = 0; i < maxSpecies(); i++)
+    {
+        if (data[PokeDex + 0x4 + i/8] & BIT(i%8))
+        {
+            ret++;
+        }
+    }
+    return ret;
+}
+
 bool Sav4::checkInsertForm(std::vector<u8> &forms, u8 formNum)
 {
     for (size_t i = 0; i < forms.size(); i++)

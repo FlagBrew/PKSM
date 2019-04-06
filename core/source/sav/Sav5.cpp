@@ -260,6 +260,34 @@ void Sav5::dex(std::shared_ptr<PKX> pk)
     data[formDex + formLen * (2 + shiny) + (bit>>3)] |= (u8)(1 << (bit&7));
 }
 
+// TODO
+// int Sav5::dexSeen(void) const
+// {
+//     static constexpr int brSize = 0x54;
+//     int ret = 0;
+//     for (int i = 0; i < maxSpecies(); i++)
+//     {
+//         if (data[PokeDex + 0x4 + brSize + i / 8] & BIT(i % 8))
+//         {
+//             ret++;
+//         }
+//     }
+//     return ret;
+// }
+
+int Sav5::dexCaught(void) const
+{
+    int ret = 0;
+    for (int i = 0; i < maxSpecies(); i++)
+    {
+        if (data[PokeDex + 0x8 + i/8] & BIT(i%8))
+        {
+            ret++;
+        }
+    }
+    return ret;
+}
+
 void Sav5::mysteryGift(WCX& wc, int& pos)
 {
     PGF* pgf = (PGF*)&wc;

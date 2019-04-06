@@ -358,6 +358,19 @@ void Sav7::dex(std::shared_ptr<PKX> pk)
     }
 }
 
+int Sav7::dexCaught(void) const
+{
+    int ret = 0;
+    for (int i = 0; i < maxSpecies(); i++)
+    {
+        if (data[PokeDex + 0x88 + i/8] & BIT(i%8))
+        {
+            ret++;
+        }
+    }
+    return ret;
+}
+
 void Sav7::mysteryGift(WCX& wc, int& pos)
 {
     WC7* wc7 = (WC7*)&wc;
