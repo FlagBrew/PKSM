@@ -395,13 +395,31 @@ void Sav6::dex(std::shared_ptr<PKX> pk)
     data[formDex + formLen * (2 + shiny) + bit / 8] |= (u8)(1 << (bit % 8));
 }
 
+int Sav6::dexSeen(void) const
+{
+    int ret = 0;
+    static constexpr int brSize = 0x60;
+    for (int i = 0; i < maxSpecies(); i++)
+    {
+        for (int j = 1; j <= 4; j++) // All seen flags: gender & shinies
+        {
+            if (data[PokeDex + 0x8 + j * brSize + i / 8] & BIT(i%8))
+            {
+                ret++;
+                break;
+            }
+        }
+    }
+    return ret;
+}
+
 // Maybe? I don't know for certain
 int Sav6::dexCaught(void) const
 {
     int ret = 0;
     for (int i = 0; i < maxSpecies(); i++)
     {
-        if (data[PokeDex + 0x8 + i/8] & BIT(i%8) || (game == Game::XY && data[PokeDex + 0x8 + i/8 + 0x644] & BIT(i%8)))
+        if (data[PokeDex + 0x8 + i/8] & BIT(i%8) || (game == Game::XY && i < 649 && data[PokeDex + 0x8 + i/8 + 0x644] & BIT(i%8)))
         {
             ret++;
         }

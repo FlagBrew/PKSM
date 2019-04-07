@@ -91,7 +91,7 @@ public:
     std::shared_ptr<PKX> emptyPkm() const override;
 
     void dex(std::shared_ptr<PKX> pk) override;
-    // int dexSeen(void) const override;
+    int dexSeen(void) const override;
     int dexCaught(void) const override;
     int emptyGiftLocation(void) const override;
     std::vector<MysteryGift::giftData> currentGifts(void) const override;

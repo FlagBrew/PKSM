@@ -156,7 +156,7 @@ public:
     virtual std::shared_ptr<PKX> emptyPkm() const = 0;
     
     virtual void dex(std::shared_ptr<PKX> pk) = 0;
-    // virtual int dexSeen(void) const = 0;
+    virtual int dexSeen(void) const = 0;
     virtual int dexCaught(void) const = 0;
     virtual int emptyGiftLocation(void) const = 0;
     virtual std::vector<MysteryGift::giftData> currentGifts(void) const = 0;

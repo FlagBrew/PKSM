@@ -116,7 +116,6 @@ CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O2 -mword-relocations \
 			-DVERSION_MINOR=${VERSION_MINOR} \
 			-DVERSION_MICRO=${VERSION_MICRO} \
 			-DUNIQUE_ID=${UNIQUE_ID} \
-			-DGIT_REV=\"$(GIT_REV)\" \
 			-DCITRA_DEBUG=${CITRA_DEBUG} \
 			`sdl-config --cflags`
 
@@ -247,6 +246,7 @@ clean:
 #---------------------------------------------------------------------------------
 no-deps:
 	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR)
+	@echo \#define GIT_REV \"$(GIT_REV)\" > $(BUILD)/revision.h
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile $(OUTPUT).3dsx
 	@bannertool makebanner -i "$(BANNER_IMAGE)" -a "$(BANNER_AUDIO)" -o $(BUILD)/banner.bnr
 	@bannertool makesmdh -s "$(APP_TITLE)" -l "$(APP_DESCRIPTION)" -p "$(APP_AUTHOR)" -i "$(APP_ICON)" -f "$(ICON_FLAGS)" -o $(BUILD)/icon.icn

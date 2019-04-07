@@ -27,6 +27,7 @@
 #include "app.hpp"
 #include "random.hpp"
 #include "banks.hpp"
+#include "revision.h"
 
 // increase the stack in order to allow quirc to decode large qrs
 int __stacksize__ = 64 * 1024;
