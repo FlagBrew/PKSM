@@ -72,11 +72,6 @@ bool SDLH_Init(void)
         }
     }
 
-    if (songs.empty())
-    {
-        songs.push_back("romfs:/audio.mp3");
-    }
-
     std::sort(songs.begin(), songs.end());
 
     HIDUSER_GetSoundVolume(&currentVolume);
@@ -106,7 +101,7 @@ void SDLH_Exit(void)
 
 void SDLH_Play(void)
 {
-    musicMutex = true;
+    musicMutex = !songs.empty();
     while (musicMutex)
     {
         HIDUSER_GetSoundVolume(&currentVolume);
