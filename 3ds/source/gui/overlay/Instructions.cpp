@@ -76,6 +76,8 @@ void Instructions::draw() const
     }
     for (auto& text : texts)
     {
+        target = text.top ? g_renderTargetTop : g_renderTargetBottom;
+        C2D_SceneBegin(target);
         Gui::dynamicText(text.string, text.x, text.y, FONT_SIZE_12, FONT_SIZE_12, text.color, text.xPos, text.yPos);
     }
 }
