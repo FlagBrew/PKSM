@@ -24,28 +24,20 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef OVERLAY_HPP
-#define OVERLAY_HPP
+#ifndef TEXTPOS_HPP
+#define TEXTPOS_HPP
 
-#include <3ds.h>
-#include <memory>
-#include "Instructions.hpp"
-
-class Screen;
-
-class Overlay
+enum class TextPosX
 {
-public:
-    Overlay(Screen& screen);
-    virtual ~Overlay() {}
-    virtual void update(touchPosition* touch) = 0;
-    virtual void draw() const = 0;
-    void dim(void) const;
-    const Instructions& getInstructions() const { return instructions; }
-protected:
-    Instructions instructions;
-    Screen& screen;
-    std::shared_ptr<Overlay>& me;
+    LEFT,
+    CENTER,
+    RIGHT
+};
+enum class TextPosY
+{
+    TOP,
+    CENTER,
+    BOTTOM
 };
 
 #endif

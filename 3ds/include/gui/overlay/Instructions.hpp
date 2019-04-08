@@ -24,28 +24,49 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef OVERLAY_HPP
-#define OVERLAY_HPP
+#ifndef INSTRUCTIONS_HPP
+#define INSTRUCTIONS_HPP
 
-#include <3ds.h>
-#include <memory>
-#include "Instructions.hpp"
+#include "types.h"
+#include <string>
+#include <vector>
+#include "colors.hpp"
+#include "TextPos.hpp"
 
-class Screen;
-
-class Overlay
+class Instructions
 {
 public:
-    Overlay(Screen& screen);
-    virtual ~Overlay() {}
-    virtual void update(touchPosition* touch) = 0;
-    virtual void draw() const = 0;
-    void dim(void) const;
-    const Instructions& getInstructions() const { return instructions; }
-protected:
-    Instructions instructions;
-    Screen& screen;
-    std::shared_ptr<Overlay>& me;
+    Instructions(const std::string& simpleInstructions = "");
+    void draw() const;
+    void addBox(bool top, int x, int y, int width, int height, u32 color, const std::string& text = "", u32 textColor = COLOR_BLACK);
+    void addText(bool top, int x, int y, int maxWidth, TextPosX xPos, TextPosY yPos, u32 color, const std::string& text);
+private:
+    void dim() const;
+    struct Box
+    {
+        Box(bool top, int x, int y, int w, int h, u32 color)
+            : top(top), x(x), y(y), w(w), h(h), color(color) {}
+        bool top;
+        int x;
+        int y;
+        int w;
+        int h;
+        u32 color;
+    };
+    struct Text
+    {
+        Text(bool top, int x, int y, TextPosX xPos, TextPosY yPos, u32 color, std::string string)
+             : top(top), x(x), y(y), xPos(xPos), yPos(yPos), color(color), string(string) {}
+        bool top;
+        int x;
+        int y;
+        TextPosX xPos;
+        TextPosY yPos;
+        u32 color;
+        std::string string;
+    };
+    std::vector<Box> boxes;
+    std::vector<Text> texts;
 };
 
 #endif

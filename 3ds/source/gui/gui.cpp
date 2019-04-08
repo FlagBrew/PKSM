@@ -360,11 +360,20 @@ void Gui::mainLoop(void)
         C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
         C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
 
-        screens.top()->doDraw();
-        touchPosition touch;
-        hidTouchRead(&touch);
-        screens.top()->doUpdate(&touch);
-        exit = screens.top()->type() == ScreenType::TITLELOAD && (hidKeysDown() & KEY_START);
+        u32 kHeld = hidKeysHeld();
+        if (kHeld & KEY_SELECT)
+        {
+            screens.top()->doDraw();
+            screens.top()->getInstructions().draw();
+        }
+        else
+        {
+            screens.top()->doDraw();
+            touchPosition touch;
+            hidTouchRead(&touch);
+            screens.top()->doUpdate(&touch);
+            exit = screens.top()->type() == ScreenType::TITLELOAD && (kHeld & KEY_START);
+        }
 
         C3D_FrameEnd(0);
         Gui::clearTextBufs();
