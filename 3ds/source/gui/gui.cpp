@@ -361,7 +361,7 @@ void Gui::mainLoop(void)
         C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
 
         u32 kHeld = hidKeysHeld();
-        if (kHeld & KEY_SELECT)
+        if (kHeld & KEY_SELECT && !screens.top()->getInstructions().empty())
         {
             screens.top()->doDraw();
             screens.top()->getInstructions().draw();

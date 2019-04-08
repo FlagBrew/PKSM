@@ -40,6 +40,7 @@ public:
     void draw() const;
     void addBox(bool top, int x, int y, int width, int height, u32 color, const std::string& text = "", u32 textColor = COLOR_BLACK);
     void addText(bool top, int x, int y, int maxWidth, TextPosX xPos, TextPosY yPos, u32 color, const std::string& text);
+    bool empty() const { return boxes.empty() && texts.empty(); }
 private:
     void dim() const;
     struct Box
