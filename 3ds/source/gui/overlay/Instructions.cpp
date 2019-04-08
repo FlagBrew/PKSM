@@ -40,7 +40,7 @@ Instructions::Instructions(const std::string& simpleInstructions)
                 lines++;
             }
         }
-        int height = fontGetInfo()->lineFeed * (lines + 2);
+        int height = fontGetInfo()->lineFeed * lines;
         addBox(true, 40, 220 - height, 320, height, COLOR_GREY);
         addBox(true, 44, 224 - height, 312, height - 8, COLOR_DARKGREY, wrapped, COLOR_WHITE);
     }

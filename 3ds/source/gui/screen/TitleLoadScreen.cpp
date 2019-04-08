@@ -45,7 +45,7 @@ bool TitleLoadScreen::loadSave() const
     return status;
 }
 
-TitleLoadScreen::TitleLoadScreen()
+TitleLoadScreen::TitleLoadScreen() : Screen("START: Exit\nDPAD: Move\nA: Select\nY: Absent Games")
 {
     buttons.push_back(new AccelButton(24, 96, 175, 16, [this](){ return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
     for (int i = 1; i < 5; i++)
