@@ -24,43 +24,24 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef EDITSELECTORSCREEN_HPP
-#define EDITSELECTORSCREEN_HPP
+#ifndef VIEWOVERLAY_HPP
+#define VIEWOVERLAY_HPP
 
-#include "Screen.hpp"
-#include <vector>
-#include "ViewOverlay.hpp"
-#include "QRScanner.hpp"
-#include "Button.hpp"
-#include "loader.hpp"
+#include "Sav.hpp"
+#include "PKX.hpp"
+#include "Overlay.hpp"
 
-class EditSelectorScreen : public Screen
+class ViewOverlay : public Overlay
 {
 public:
-    ~EditSelectorScreen();
-    EditSelectorScreen();
-    void draw() const override;
-    void update(touchPosition* touch) override;
-    ScreenType type() const override { return ScreenType::EDITSELECT; }
-private:
-    bool prevBox();
-    bool nextBox();
-    bool editPokemon();
-    void changeBoxName();
-    bool clickIndex(int i);
-    bool doQR();
-    bool releasePokemon();
-    bool clonePkm();
-    bool goBack();
-    std::vector<Button*> buttons;
-    std::array<Button*, 36> pkmButtons;
-    std::vector<Button*> viewerButtons;
-    std::shared_ptr<PKX> moveMon = nullptr;
-    std::shared_ptr<PKX> infoMon = nullptr;
-    int cursorPos = 0;
-    int box = 0;
-    bool justSwitched = true;
-    bool menu = false;
+    // if it's not green, it's blue
+    ViewOverlay(Screen& screen, std::shared_ptr<PKX>& pokemon, bool green) : Overlay(screen), pkm(pokemon), green(green) {}
+    virtual ~ViewOverlay() {}
+    virtual void draw() const override;
+    virtual void update(touchPosition* touch) override;
+protected:
+    std::shared_ptr<PKX>& pkm;
+    bool green;
 };
 
 #endif

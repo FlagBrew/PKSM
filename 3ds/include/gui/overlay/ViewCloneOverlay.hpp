@@ -24,43 +24,24 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef EDITSELECTORSCREEN_HPP
-#define EDITSELECTORSCREEN_HPP
+#ifndef VIEWCLONEOVERLAY_HPP
+#define VIEWCLONEOVERLAY_HPP
 
-#include "Screen.hpp"
-#include <vector>
 #include "ViewOverlay.hpp"
-#include "QRScanner.hpp"
-#include "Button.hpp"
-#include "loader.hpp"
+#include <vector>
 
-class EditSelectorScreen : public Screen
+class ViewCloneOverlay : public ViewOverlay
 {
 public:
-    ~EditSelectorScreen();
-    EditSelectorScreen();
-    void draw() const override;
+    ViewCloneOverlay(Screen& screen, std::shared_ptr<PKX>& pkm, std::vector<std::shared_ptr<PKX>>& clone, std::vector<int>& partyNum, std::pair<int, int>& cloneDims, bool& currentlySelecting) : ViewOverlay(screen, pkm, true), clone(clone), partyNum(partyNum), cloneDims(cloneDims), currentlySelecting(currentlySelecting) {}
+    virtual ~ViewCloneOverlay() {}
     void update(touchPosition* touch) override;
-    ScreenType type() const override { return ScreenType::EDITSELECT; }
+    void draw() const override;
 private:
-    bool prevBox();
-    bool nextBox();
-    bool editPokemon();
-    void changeBoxName();
-    bool clickIndex(int i);
-    bool doQR();
-    bool releasePokemon();
-    bool clonePkm();
-    bool goBack();
-    std::vector<Button*> buttons;
-    std::array<Button*, 36> pkmButtons;
-    std::vector<Button*> viewerButtons;
-    std::shared_ptr<PKX> moveMon = nullptr;
-    std::shared_ptr<PKX> infoMon = nullptr;
-    int cursorPos = 0;
-    int box = 0;
-    bool justSwitched = true;
-    bool menu = false;
+    std::vector<std::shared_ptr<PKX>>& clone;
+    std::vector<int>& partyNum;
+    std::pair<int, int>& cloneDims;
+    bool& currentlySelecting;
 };
 
 #endif

@@ -24,23 +24,27 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef BALLSELECTIONSCREEN_HPP
-#define BALLSELECTIONSCREEN_HPP
+#ifndef BALLOVERLAY_HPP
+#define BALLOVERLAY_HPP
 
-#include "SelectionScreen.hpp"
+#include "Overlay.hpp"
 #include "HidHorizontal.hpp"
+#include "PKX.hpp"
+#include <memory>
 
-class BallSelectionScreen : public SelectionScreen
+class BallOverlay : public Overlay
 {
 public:
-    BallSelectionScreen(std::shared_ptr<PKX> pkm) : SelectionScreen(pkm), hid(30, 6)
+    BallOverlay(Screen& screen, std::shared_ptr<PKX> pkm) : Overlay(screen), pkm(pkm), hid(30, 6)
     {
         hid.update(24);
         hid.select(pkm->ball() - 1);
     }
+    virtual ~BallOverlay() {}
     void draw() const override;
     void update(touchPosition* touch) override;
 private:
+    std::shared_ptr<PKX> pkm;
     HidHorizontal hid;
 };
 

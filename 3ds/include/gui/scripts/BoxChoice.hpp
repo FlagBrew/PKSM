@@ -30,7 +30,7 @@
 #include "Screen.hpp"
 #include "Sav.hpp"
 #include "PKX.hpp"
-#include "ViewerScreen.hpp"
+#include "ViewOverlay.hpp"
 #include "Button.hpp"
 #include "loader.hpp"
 #include <array>
@@ -61,7 +61,7 @@ private:
     std::array<Button*, 5> mainButtons;
     std::array<Button*, 30> clickButtons;
     int cursorIndex = 0, storageBox = 0, boxBox = 0;
-    std::unique_ptr<ViewerScreen> viewer;
+    std::shared_ptr<PKX> infoMon = nullptr;
     bool justSwitched = true;
     bool doCrypt;
 };

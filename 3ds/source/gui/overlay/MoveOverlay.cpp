@@ -24,7 +24,7 @@
 *         reasonable ways as different from the original version.
 */
 
-#include "MoveSelectionScreen.hpp"
+#include "MoveOverlay.hpp"
 #include "gui.hpp"
 #include "Configuration.hpp"
 #include "loader.hpp"
@@ -60,7 +60,7 @@ namespace {
     }
 }
 
-MoveSelectionScreen::MoveSelectionScreen(std::shared_ptr<PKX> pkm, int moveIndex) : SelectionScreen(pkm), moveIndex(moveIndex), hid(40, 2)
+MoveOverlay::MoveOverlay(Screen& screen, std::shared_ptr<PKX> pkm, int moveIndex) : Overlay(screen), pkm(pkm), moveIndex(moveIndex), hid(40, 2)
 {
     const std::vector<std::string>& rawMoves = i18n::rawMoves(Configuration::getInstance().language());
     for (int i = 1; i <= TitleLoader::save->maxMove(); i++)
@@ -94,8 +94,12 @@ MoveSelectionScreen::MoveSelectionScreen(std::shared_ptr<PKX> pkm, int moveIndex
     searchButton = new ClickButton(75, 30, 170, 23, [this](){ Gui::setNextKeyboardFunc([this](){ this->searchBar(); }); return false; }, ui_sheet_emulated_box_search_idx, "", 0, 0);
 }
 
-void MoveSelectionScreen::draw() const
+void MoveOverlay::draw() const
 {
+    C2D_SceneBegin(g_renderTargetBottom);
+    dim();
+    Gui::staticText(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+
     C2D_SceneBegin(g_renderTargetTop);
     Gui::sprite(ui_sheet_part_editor_20x2_idx, 0, 0);
     int x = hid.index() < hid.maxVisibleEntries() / 2 ? 2 : 200;
@@ -124,7 +128,7 @@ void MoveSelectionScreen::draw() const
     Gui::dynamicText(searchString, 95, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 }
 
-void MoveSelectionScreen::update(touchPosition* touch)
+void MoveOverlay::update(touchPosition* touch)
 {
     if (justSwitched && ((hidKeysHeld() | hidKeysDown()) & KEY_TOUCH))
     {
@@ -189,17 +193,17 @@ void MoveSelectionScreen::update(touchPosition* touch)
                 ((PB7*)pkm.get())->relearnMove(moveIndex - 4, (u16) moves[hid.fullIndex()].first);
             }
         }
-        done = true;
+        screen.removeOverlay();
         return;
     }
     else if (downKeys & KEY_B)
     {
-        done = true;
+        screen.removeOverlay();
         return;
     }
 }
 
-void MoveSelectionScreen::searchBar()
+void MoveOverlay::searchBar()
 {
     SwkbdState state;
     swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 20);

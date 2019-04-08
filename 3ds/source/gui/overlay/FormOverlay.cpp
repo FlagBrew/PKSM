@@ -24,13 +24,17 @@
 *         reasonable ways as different from the original version.
 */
 
-#include "FormSelectionScreen.hpp"
+#include "FormOverlay.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
 #include "Configuration.hpp"
 
-void FormSelectionScreen::draw() const
+void FormOverlay::draw() const
 {
+    C2D_SceneBegin(g_renderTargetBottom);
+    dim();
+    Gui::staticText(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+
     C2D_SceneBegin(g_renderTargetTop);
     Gui::sprite(ui_sheet_part_mtx_5x6_idx, 0, 0);
 
@@ -65,19 +69,19 @@ void FormSelectionScreen::draw() const
     }
 }
 
-void FormSelectionScreen::update(touchPosition* touch)
+void FormOverlay::update(touchPosition* touch)
 {
     hid.update(formCount);
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {
         pkm->alternativeForm(hid.fullIndex());
-        done = true;
+        screen.removeOverlay();
         return;
     }
     else if (downKeys & KEY_B)
     {
-        done = true;
+        screen.removeOverlay();
         return;
     }
 }

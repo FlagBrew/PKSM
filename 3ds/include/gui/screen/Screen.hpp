@@ -27,8 +27,10 @@
 #ifndef SCREEN_HPP
 #define SCREEN_HPP
 
-#include "3ds.h"
+#include <3ds.h>
 #include <citro3d.h>
+#include <memory>
+#include "Overlay.hpp"
 
 extern C3D_RenderTarget* g_renderTargetTop;
 extern C3D_RenderTarget* g_renderTargetBottom;
@@ -55,16 +57,27 @@ enum ScreenType
 
 class Screen
 {
+friend class Overlay;
 public:
     virtual ~Screen() {}
     virtual void update(void) {
         // increase timer
         mTimer += 0.025f;
     }
+    // Call currentOverlay->update if it exists, and update if it doesn't
+    virtual void doUpdate(touchPosition* touch) final;
     virtual void update(touchPosition* touch) = 0;
     virtual ScreenType type() const = 0;
+    // Call draw, then currentOverlay->draw if it exists
+    virtual void doDraw() const final;
     virtual void draw() const = 0;
     virtual float timer() const final { return mTimer; }
+    void removeOverlay() { currentOverlay = nullptr; }
+    void setOverlay(std::shared_ptr<Overlay>& overlay) { currentOverlay = overlay; }
+
+protected:
+    // No point in restricting this to only being editable during update, especially since it's drawn afterwards. Allows setting it before the first draw loop is done
+    mutable std::shared_ptr<Overlay> currentOverlay = nullptr;
 
 private:
     float mTimer = 0;

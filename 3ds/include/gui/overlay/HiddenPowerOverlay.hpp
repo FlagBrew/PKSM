@@ -24,24 +24,26 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef NATURESELECTIONSCREEN_HPP
-#define NATURESELECTIONSCREEN_HPP
+#ifndef HIDDENPOWEROVERLAY_HPP
+#define HIDDENPOWEROVERLAY_HPP
 
-#include "SelectionScreen.hpp"
+#include "Overlay.hpp"
 #include "HidHorizontal.hpp"
 #include "PKX.hpp"
 
-class NatureSelectionScreen : public SelectionScreen
+class HiddenPowerOverlay : public Overlay
 {
 public:
-    NatureSelectionScreen(std::shared_ptr<PKX> pkm) : SelectionScreen(pkm), hid(25, 5)
+    HiddenPowerOverlay(Screen& screen, std::shared_ptr<PKX> pkm) : Overlay(screen), pkm(pkm), hid(16, 4)
     {
-        hid.update(25);
-        hid.select(pkm->nature());
+        hid.update(16);
+        hid.select(pkm->hpType());
     }
+    virtual ~HiddenPowerOverlay() {}
     void draw() const override;
     void update(touchPosition* touch) override;
 private:
+    std::shared_ptr<PKX> pkm;
     HidHorizontal hid;
 };
 

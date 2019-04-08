@@ -465,34 +465,7 @@ void BagScreen::editItem()
         }
     }
 
-    select = std::make_unique<ItemEditScreen>(items, currItemIndex);
-    int retItem = select->run();
-
-    static Item4 emptyItem;
-
-    if (retItem == 0 && firstItem + selectedItem < firstEmpty)
-    {
-        for (int i = firstItem + selectedItem; i < firstEmpty - 1; i++)
-        {
-            auto item = TitleLoader::save->item(limits[currentPouch].first, i + 1);
-            TitleLoader::save->item(*item, limits[currentPouch].first, i);
-        }
-        TitleLoader::save->item(emptyItem, limits[currentPouch].first, --firstEmpty);
-    }
-    else if (retItem != 0)
-    {
-        auto item = TitleLoader::save->item(limits[currentPouch].first, firstItem + selectedItem);
-        item->id(items[retItem].second);
-        if (item->count() == 0 && retItem != 0)
-        {
-            item->count(1);
-        }
-        TitleLoader::save->item(*item, limits[currentPouch].first, firstItem + selectedItem);
-        if (firstItem + selectedItem == firstEmpty)
-        {
-            firstEmpty = std::min(firstEmpty + 1, limits[currentPouch].second);
-        }
-    }
+    currentOverlay = std::make_unique<BagItemOverlay>(*this, items, currItemIndex, limits[currentPouch], firstItem + selectedItem, firstEmpty);
 }
 
 void BagScreen::editCount(bool up, int selected)

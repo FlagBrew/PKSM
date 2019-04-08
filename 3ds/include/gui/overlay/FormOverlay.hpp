@@ -24,24 +24,29 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef VIEWERSCREEN_HPP
-#define VIEWERSCREEN_HPP
+#ifndef FORMOVERLAY_HPP
+#define FORMOVERLAY_HPP
 
-#include "Sav.hpp"
+#include "Overlay.hpp"
+#include "HidHorizontal.hpp"
 #include "PKX.hpp"
+#include <memory>
 
-class ViewerScreen
+class FormOverlay : public Overlay
 {
 public:
-    // If it's not green, it's blue
-    ViewerScreen(std::shared_ptr<PKX> pokemon, bool green) : pkm(pokemon), green(green) {}
-    void draw() const;
-
-    void setPkm(std::shared_ptr<PKX> pokemon) { pkm = pokemon; }
-    std::shared_ptr<PKX> getPkm(void) { return pkm; }
+    FormOverlay(Screen& screen, std::shared_ptr<PKX> pkm, u8 formCount) : Overlay(screen), pkm(pkm), hid(40, 6), formCount(formCount)
+    {
+        hid.update(40);
+        hid.select(pkm->alternativeForm());
+    }
+    virtual ~FormOverlay() {}
+    void draw() const override;
+    void update(touchPosition* touch) override;
 private:
     std::shared_ptr<PKX> pkm;
-    bool green;
+    HidHorizontal hid;
+    u8 formCount;
 };
 
 #endif

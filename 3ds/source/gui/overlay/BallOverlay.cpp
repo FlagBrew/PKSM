@@ -24,61 +24,56 @@
 *         reasonable ways as different from the original version.
 */
 
-#include "NatureSelectionScreen.hpp"
+#include "BallOverlay.hpp"
 #include "gui.hpp"
+#include "loader.hpp"
 #include "Configuration.hpp"
 
-static constexpr std::string_view stats[] = {
-    "ATTACK",
-    "DEFENSE",
-    "SPEED",
-    "SPATK.",
-    "SPDEF."
-};
-
-void NatureSelectionScreen::draw() const
+void BallOverlay::draw() const
 {
+    C2D_SceneBegin(g_renderTargetBottom);
+    dim();
+    Gui::staticText(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+
     C2D_SceneBegin(g_renderTargetTop);
-    Gui::sprite(ui_sheet_part_editor_6x6_idx, 0, 0);
+    Gui::sprite(ui_sheet_part_mtx_5x6_idx, 0, 0);
 
-    Gui::staticText(i18n::localize("NEUTRAL"), 0 + 65 / 2, 12, FONT_SIZE_11, FONT_SIZE_11, COLOR_YELLOW, TextPosX::CENTER, TextPosY::TOP);
-    for (int i = 0; i < 5; i++)
-    {
-        Gui::staticText(std::string("-") + i18n::localize(std::string(stats[i])), i * 67 + 99, 12, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-        Gui::staticText(std::string("+") + i18n::localize(std::string(stats[i])), 32, i * 40 + 52, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-    }
-
-    int x = (hid.index() % 5) * 67 + 66;
-    int y = (hid.index() / 5) * 40 + 40;
+    int x = (hid.index() % 6) * 67;
+    int y = (hid.index() / 6) * 48;
     // Selector
-    C2D_DrawRectSolid(x, y, 0.5f, 66, 39, COLOR_MASKBLACK);
+    C2D_DrawRectSolid(x, y, 0.5f, 66, 47, COLOR_MASKBLACK);
     C2D_DrawRectSolid(x, y, 0.5f, 66, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y, 0.5f, 1, 39, COLOR_YELLOW);
-    C2D_DrawRectSolid(x + 65, y, 0.5f, 1, 39, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y + 38, 0.5f, 66, 1, COLOR_YELLOW);
+    C2D_DrawRectSolid(x, y, 0.5f, 1, 47, COLOR_YELLOW);
+    C2D_DrawRectSolid(x + 65, y, 0.5f, 1, 47, COLOR_YELLOW);
+    C2D_DrawRectSolid(x, y + 46, 0.5f, 66, 1, COLOR_YELLOW);
 
     for (int y = 0; y < 5; y++)
     {
-        for (int x = 0; x < 5; x++)
+        for (int x = 0; x < 6; x++)
         {
-            Gui::staticText(i18n::nature(Configuration::getInstance().language(), x + y * 5), x * 67 + 99, y * 40 + 52, FONT_SIZE_11, FONT_SIZE_11, x == y ? COLOR_YELLOW : COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+            if (x + y * 6 >= TitleLoader::save->maxBall())
+            {
+                break;
+            }
+            Gui::ball(x + y * 6 + 1, x * 67 + 24, y * 48 + 8);
+            Gui::dynamicText(i18n::ball(Configuration::getInstance().language(), x + y * 6), x * 67 + 33, y * 48 + 30, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
         }
     }
 }
 
-void NatureSelectionScreen::update(touchPosition* touch)
+void BallOverlay::update(touchPosition* touch)
 {
-    hid.update(25);
+    hid.update(TitleLoader::save->maxBall());
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {
-        pkm->nature((u8) hid.fullIndex());
-        done = true;
+        pkm->ball((u8) hid.fullIndex() + 1);
+        screen.removeOverlay();
         return;
     }
     else if (downKeys & KEY_B)
     {
-        done = true;
+        screen.removeOverlay();
         return;
     }
 }

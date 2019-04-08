@@ -24,41 +24,51 @@
 *         reasonable ways as different from the original version.
 */
 
-#include "HiddenPowerSelectionScreen.hpp"
+#include "BoxOverlay.hpp"
 #include "gui.hpp"
-#include "Configuration.hpp"
 
-void HiddenPowerSelectionScreen::draw() const
+void BoxOverlay::draw() const
 {
+    C2D_SceneBegin(g_renderTargetBottom);
+    dim();
+    Gui::staticText(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+
     C2D_SceneBegin(g_renderTargetTop);
-    Gui::sprite(ui_sheet_part_mtx_4x4_idx, 0, 0);
-    int x = (hid.index() % 4) * 100;
-    int y = (hid.index() / 4) * 60;
-    // Selector
-    C2D_DrawRectSolid(x, y, 0.5f, 99, 59, COLOR_MASKBLACK);
-    C2D_DrawRectSolid(x, y, 0.5f, 99, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y, 0.5f, 1, 59, COLOR_YELLOW);
-    C2D_DrawRectSolid(x + 98, y, 0.5f, 1, 59, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y + 58, 0.5f, 99, 1, COLOR_YELLOW);
-    for (int i = 0; i < 16; i++)
+    Gui::sprite(ui_sheet_part_editor_20x2_idx, 0, 0);
+    int x = hid.index() < hid.maxVisibleEntries() / 2 ? 2 : 200;
+    int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 12;
+    C2D_DrawRectSolid(x, y, 0.5f, 198, 11, COLOR_MASKBLACK);
+    C2D_DrawRectSolid(x, y, 0.5f, 198, 1, COLOR_YELLOW);
+    C2D_DrawRectSolid(x, y, 0.5f, 1, 11, COLOR_YELLOW);
+    C2D_DrawRectSolid(x, y + 10, 0.5f, 198, 1, COLOR_YELLOW);
+    C2D_DrawRectSolid(x + 197, y, 0.5f, 1, 11, COLOR_YELLOW);
+    for (size_t i = 0; i < hid.maxVisibleEntries(); i++)
     {
-        Gui::type(Configuration::getInstance().language(), (u8) i + 1, 23 + (i % 4) * 100, 20 + (i / 4) * 60);
+        x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
+        if (hid.page() * hid.maxVisibleEntries() + i < strings.size())
+        {
+            Gui::dynamicText(strings[hid.page() * hid.maxVisibleEntries() + i], x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        }
+        else
+        {
+            break;
+        }
     }
 }
 
-void HiddenPowerSelectionScreen::update(touchPosition* touch)
+void BoxOverlay::update(touchPosition* touch)
 {
-    hid.update(16);
+    hid.update(strings.size());
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {
-        pkm->hpType((u8) hid.fullIndex());
-        done = true;
+        out = hid.fullIndex();
+        screen.removeOverlay();
         return;
     }
     else if (downKeys & KEY_B)
     {
-        done = true;
+        screen.removeOverlay();
         return;
     }
 }

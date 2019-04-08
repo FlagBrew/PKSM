@@ -59,6 +59,7 @@ SOURCES			:=	../common/source \
 					../core/memecrypto \
 					source \
 					source/gui \
+					source/gui/overlay \
 					source/gui/screen \
 					source/gui/scripts \
 					source/io \
@@ -80,6 +81,7 @@ INCLUDES		:=	../common/include \
 					../core/memecrypto \
 					include \
 					include/gui \
+					include/gui/overlay \
 					include/gui/screen \
 					include/gui/scripts \
 					include/io \

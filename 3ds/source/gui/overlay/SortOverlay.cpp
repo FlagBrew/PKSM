@@ -24,10 +24,10 @@
 *         reasonable ways as different from the original version.
 */
 
-#include "BoxSelectionScreen.hpp"
+#include "SortOverlay.hpp"
 #include "gui.hpp"
 
-void BoxSelectionScreen::draw() const
+void SortOverlay::draw() const
 {
     if (firstDraw)
     {
@@ -48,9 +48,9 @@ void BoxSelectionScreen::draw() const
     for (size_t i = 0; i < hid.maxVisibleEntries(); i++)
     {
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
-        if (hid.page() * hid.maxVisibleEntries() + i < strings.size())
+        if (hid.page() * hid.maxVisibleEntries() + i < vals.size())
         {
-            Gui::dynamicText(strings[hid.page() * hid.maxVisibleEntries() + i], x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            Gui::dynamicText(i18n::localize(std::string(sortTypeToString(vals[hid.page() * hid.maxVisibleEntries() + i]))), x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         }
         else
         {
@@ -59,39 +59,19 @@ void BoxSelectionScreen::draw() const
     }
 }
 
-void BoxSelectionScreen::update(touchPosition* touch)
+void SortOverlay::update(touchPosition* touch)
 {
-    hid.update(strings.size());
+    hid.update(vals.size());
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {
-        finished = true;
+        out = SortType(hid.fullIndex());
+        screen.removeOverlay();
         return;
     }
     else if (downKeys & KEY_B)
     {
-        hid.select(previous);
-        finished = true;
+        screen.removeOverlay();
         return;
     }
-}
-
-size_t BoxSelectionScreen::run()
-{
-    while (aptMainLoop() && !finished)
-    {
-        hidScanInput();
-        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-        C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
-
-        draw();
-        touchPosition touch;
-        hidTouchRead(&touch);
-        update(&touch);
-
-        C3D_FrameEnd(0);
-        Gui::clearTextBufs();
-    }
-
-    return hid.fullIndex();
 }

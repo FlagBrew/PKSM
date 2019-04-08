@@ -24,34 +24,45 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef ITEMSELECTIONSCREEN_HPP
-#define ITEMSELECTIONSCREEN_HPP
-
-#include "SelectionScreen.hpp"
-#include "HidVertical.hpp"
+#include "HiddenPowerOverlay.hpp"
+#include "gui.hpp"
 #include "Configuration.hpp"
-#include "loader.hpp"
-#include "Button.hpp"
 
-class ItemSelectionScreen : public SelectionScreen
+void HiddenPowerOverlay::draw() const
 {
-public:
-    ItemSelectionScreen(std::shared_ptr<PKX> pkm);
-    ~ItemSelectionScreen()
-    {
-        delete searchButton;
-    }
-    void draw() const override;
-    void update(touchPosition* touch) override;
-private:
-    void searchBar();
-    HidVertical hid;
-    std::vector<std::pair<int, std::string>> items;
-    std::vector<std::pair<int, std::string>> validItems;
-    std::string searchString = "";
-    std::string oldSearchString = "";
-    Button* searchButton;
-    bool justSwitched = true;
-};
+    C2D_SceneBegin(g_renderTargetBottom);
+    dim();
+    Gui::staticText(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-#endif
+    C2D_SceneBegin(g_renderTargetTop);
+    Gui::sprite(ui_sheet_part_mtx_4x4_idx, 0, 0);
+    int x = (hid.index() % 4) * 100;
+    int y = (hid.index() / 4) * 60;
+    // Selector
+    C2D_DrawRectSolid(x, y, 0.5f, 99, 59, COLOR_MASKBLACK);
+    C2D_DrawRectSolid(x, y, 0.5f, 99, 1, COLOR_YELLOW);
+    C2D_DrawRectSolid(x, y, 0.5f, 1, 59, COLOR_YELLOW);
+    C2D_DrawRectSolid(x + 98, y, 0.5f, 1, 59, COLOR_YELLOW);
+    C2D_DrawRectSolid(x, y + 58, 0.5f, 99, 1, COLOR_YELLOW);
+    for (int i = 0; i < 16; i++)
+    {
+        Gui::type(Configuration::getInstance().language(), (u8) i + 1, 23 + (i % 4) * 100, 20 + (i / 4) * 60);
+    }
+}
+
+void HiddenPowerOverlay::update(touchPosition* touch)
+{
+    hid.update(16);
+    u32 downKeys = hidKeysDown();
+    if (downKeys & KEY_A)
+    {
+        pkm->hpType((u8) hid.fullIndex());
+        screen.removeOverlay();
+        return;
+    }
+    else if (downKeys & KEY_B)
+    {
+        screen.removeOverlay();
+        return;
+    }
+}

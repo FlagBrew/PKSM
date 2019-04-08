@@ -30,10 +30,9 @@
 #include "Screen.hpp"
 #include "Sav.hpp"
 #include "PKX.hpp"
-#include "ViewerScreen.hpp"
 #include "Button.hpp"
 #include "loader.hpp"
-#include "SortSelectionScreen.hpp"
+#include "SortOverlay.hpp"
 #include <array>
 
 class StorageScreen : public Screen
@@ -81,7 +80,7 @@ private:
     std::array<Button*, 6> sortButtons;
     std::vector<SortType> sortTypes;
     int cursorIndex = 0, storageBox = 0, boxBox = 0;
-    std::unique_ptr<ViewerScreen> viewer;
+    std::shared_ptr<PKX> infoMon = nullptr;
     std::vector<std::shared_ptr<PKX>> moveMon;
     std::vector<int> partyNum;
     bool justSwitched = true;

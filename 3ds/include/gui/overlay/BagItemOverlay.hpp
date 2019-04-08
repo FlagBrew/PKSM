@@ -24,43 +24,45 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef EDITSELECTORSCREEN_HPP
-#define EDITSELECTORSCREEN_HPP
+#ifndef BAGITEMOVERLAY_HPP
+#define BAGITEMOVERLAY_HPP
 
-#include "Screen.hpp"
+#include "Overlay.hpp"
+#include "HidVertical.hpp"
 #include <vector>
-#include "ViewOverlay.hpp"
-#include "QRScanner.hpp"
-#include "Button.hpp"
-#include "loader.hpp"
+#include <string>
+#include "ClickButton.hpp"
+#include "gui.hpp"
 
-class EditSelectorScreen : public Screen
+class BagItemOverlay : public Overlay
 {
 public:
-    ~EditSelectorScreen();
-    EditSelectorScreen();
+    BagItemOverlay(Screen& screen, std::vector<std::pair<const std::string*, int>>& items, size_t selected, std::pair<Pouch, int> pouch, int slot, int& firstEmpty) : Overlay(screen), hid(40,2), validItems(items), items(items), origItem(selected), pouch(pouch), slot(slot), firstEmpty(firstEmpty)
+    {
+        searchButton = new ClickButton(75, 30, 170, 23, [this](){ startSearch = true; return false; }, ui_sheet_emulated_box_search_idx, "", 0, 0);
+        hid.update(items.size());
+        hid.select(selected);
+    }
+    ~BagItemOverlay()
+    {
+        delete searchButton;
+    }
     void draw() const override;
     void update(touchPosition* touch) override;
-    ScreenType type() const override { return ScreenType::EDITSELECT; }
 private:
-    bool prevBox();
-    bool nextBox();
-    bool editPokemon();
-    void changeBoxName();
-    bool clickIndex(int i);
-    bool doQR();
-    bool releasePokemon();
-    bool clonePkm();
-    bool goBack();
-    std::vector<Button*> buttons;
-    std::array<Button*, 36> pkmButtons;
-    std::vector<Button*> viewerButtons;
-    std::shared_ptr<PKX> moveMon = nullptr;
-    std::shared_ptr<PKX> infoMon = nullptr;
-    int cursorPos = 0;
-    int box = 0;
+    void searchBar();
+    HidVertical hid;
+    const std::vector<std::pair<const std::string*, int>> validItems;
+    std::vector<std::pair<const std::string*, int>> items;
+    int origItem;
+    std::pair<Pouch, int> pouch;
+    int slot;
+    int& firstEmpty;
     bool justSwitched = true;
-    bool menu = false;
+    std::string searchString = "";
+    std::string oldSearchString = "";
+    Button* searchButton;
+    bool startSearch = false;
 };
 
 #endif

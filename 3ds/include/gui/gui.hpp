@@ -47,6 +47,8 @@
 
 #include "Screen.hpp"
 
+#include "colors.hpp"
+
 // emulated
 #define ui_sheet_res_null_idx 500
 #define ui_sheet_emulated_pointer_horizontal_flipped_idx 501
@@ -88,27 +90,6 @@
 #define ui_sheet_emulated_button_unselected_red_idx 537
 #define ui_sheet_emulated_button_unavailable_red_idx 538
 #define ui_sheet_emulated_button_pouch_idx 539
-
-// colors
-#define COLOR_WHITE         C2D_Color32(255, 255, 255, 255)
-#define COLOR_BLACK         C2D_Color32(  0,   0,   0, 255)
-#define COLOR_BLUE          C2D_Color32(124, 147, 225, 255)
-#define COLOR_YELLOW        C2D_Color32(237, 247, 157, 255)
-#define COLOR_LIGHTBLUE     C2D_Color32(187, 208, 254, 255)
-#define COLOR_DARKBLUE      C2D_Color32( 55,  89, 187, 255)
-#define COLOR_HIGHBLUE      C2D_Color32( 48,  65, 106, 255)
-#define COLOR_MASKBLACK     C2D_Color32(  0,   0,   0, 190)
-#define COLOR_PALEBLUE      C2D_Color32( 90, 115, 164, 255)
-#define COLOR_MENUBLUE      C2D_Color32( 55,  89, 157, 255)
-#define COLOR_SELECTOR      C2D_Color32( 29,  50, 253, 255)
-#define COLOR_GREY_BLEND    C2D_Color32(  0,   0,   0, 100)
-#define COLOR_SELECTBLUE    C2D_Color32( 33,  33,  66, 255)
-#define COLOR_UNAVAILBLUE   C2D_Color32(131, 131, 182, 255)
-#define COLOR_UNSELECTBLUE  C2D_Color32( 77,  77, 254, 255)
-#define COLOR_SELECTRED     C2D_Color32( 66,  33,  33, 255)
-#define COLOR_UNAVAILRED    C2D_Color32(182, 131, 131, 255)
-#define COLOR_UNSELECTRED   C2D_Color32(254,  77,  77, 255)
-#define COLOR_GREY          C2D_Color32(128, 128, 128, 255)
 
 #define FONT_SIZE_18 0.72f
 #define FONT_SIZE_15 0.6f

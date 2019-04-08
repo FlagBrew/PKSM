@@ -29,13 +29,13 @@
 #include "Configuration.hpp"
 #include "loader.hpp"
 #include "HexEditScreen.hpp"
-#include "MoveSelectionScreen.hpp"
-#include "HiddenPowerSelectionScreen.hpp"
-#include "NatureSelectionScreen.hpp"
-#include "ItemSelectionScreen.hpp"
-#include "SpeciesSelectionScreen.hpp"
-#include "FormSelectionScreen.hpp"
-#include "BallSelectionScreen.hpp"
+#include "MoveOverlay.hpp"
+#include "HiddenPowerOverlay.hpp"
+#include "NatureOverlay.hpp"
+#include "PkmItemOverlay.hpp"
+#include "SpeciesOverlay.hpp"
+#include "FormOverlay.hpp"
+#include "BallOverlay.hpp"
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
 #include "PB7.hpp"
@@ -136,7 +136,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index)
         //     ((PB7*)pkm.get())->geoCountry(0, Configuration::getInstance().defaultCountry());
         //     ((PB7*)pkm.get())->geoRegion(0, Configuration::getInstance().defaultRegion());
         // }
-        selector = std::make_unique<SpeciesSelectionScreen>(pkm);
+        currentOverlay = std::make_unique<SpeciesOverlay>(*this, pkm);
     }
 
     if (this->box == 0xFF)
@@ -150,7 +150,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index)
                     std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
                     pkm = std::make_shared<PK4>(pkmData, false, true);
                     partyUpdate();
-                    selector = std::make_unique<SpeciesSelectionScreen>(pkm);
+                    currentOverlay = std::make_unique<SpeciesOverlay>(*this, pkm);
                 }
             break;
             case Generation::FIVE:
@@ -160,7 +160,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index)
                     std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
                     pkm = std::make_shared<PK5>(pkmData, false, true);
                     partyUpdate();
-                    selector = std::make_unique<SpeciesSelectionScreen>(pkm);
+                    currentOverlay = std::make_unique<SpeciesOverlay>(*this, pkm);
                 }
             break;
             case Generation::SIX:
@@ -178,7 +178,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index)
                         pkm = std::make_shared<PK7>(pkmData, false, true);
                     }
                     partyUpdate();
-                    selector = std::make_unique<SpeciesSelectionScreen>(pkm);
+                    currentOverlay = std::make_unique<SpeciesOverlay>(*this, pkm);
                 }
             break;
             case Generation::LGPE:
@@ -247,7 +247,10 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index)
         buttons[tab].push_back(new ClickButton(0, 30 + 20 * i, 240, 20, [=](){ moveSelected = i; return true; }, ui_sheet_res_null_idx, "", 0.0f, 0));
         buttons[tab].push_back(new ClickButton(0, 140 + 20 * i, 240, 20, [=](){ moveSelected = i + 4; return true; }, ui_sheet_res_null_idx, "", 0.0f, 0));
     }
-    view = std::make_shared<ViewerScreen>(pkm, false);
+    if (!currentOverlay)
+    {
+        currentOverlay = std::make_shared<ViewOverlay>(*this, pkm, false);
+    }
 }
 
 void EditorScreen::draw() const
@@ -413,20 +416,14 @@ void EditorScreen::draw() const
             }
             break;
     }
-    if (!selector)
-    {
-        view->draw();
-    }
-    else
-    {
-        C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, COLOR_MASKBLACK);
-        Gui::staticText(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-        selector->draw();
-    }
 }
 
 void EditorScreen::update(touchPosition* touch)
 {
+    if (!currentOverlay)
+    {
+        currentOverlay = std::make_shared<ViewOverlay>(*this, pkm, false);
+    }
     if (justSwitched)
     {
         if (keysHeld() & KEY_TOUCH)
@@ -438,64 +435,44 @@ void EditorScreen::update(touchPosition* touch)
             justSwitched = false;
         }
     }
-    if (!selector)
+    u32 downKeys = keysDown();
+
+    for (size_t i = 0; i < buttons[currentTab].size(); i++)
     {
-        u32 downKeys = keysDown();
-
-        for (size_t i = 0; i < buttons[currentTab].size(); i++)
+        if (buttons[currentTab][i]->update(touch))
         {
-            if (buttons[currentTab][i]->update(touch))
-            {
-                return;
-            }
-        }
-
-        if (downKeys & KEY_B)
-        {
-            if (goBack())
-            {
-                return;
-            }
-        }
-
-        if (currentTab == 2)
-        {
-            if (downKeys & KEY_A)
-            {
-                saved = false;
-                changeMove();
-            }
-            else if (downKeys & KEY_DOWN)
-            {
-                if (moveSelected < 7)
-                {
-                    moveSelected++;
-                }
-            }
-            else if (downKeys & KEY_UP)
-            {
-                if (moveSelected > 0)
-                {
-                    moveSelected--;
-                }
-            }
+            return;
         }
     }
-    else
+
+    if (downKeys & KEY_B)
     {
-        selector->update(touch);
-        if (selector->finished())
+        if (goBack())
         {
-            if (selector->type() == ScreenType::SPECIES_SELECT)
+            return;
+        }
+    }
+
+    if (currentTab == 2)
+    {
+        if (downKeys & KEY_A)
+        {
+            saved = false;
+            changeMove();
+        }
+        else if (downKeys & KEY_DOWN)
+        {
+            if (moveSelected < 7)
             {
-                if (pkm->species() == 0)
-                {
-                    selector = nullptr;
-                    Gui::screenBack();
-                    return;
-                }
+                moveSelected++;
             }
-            selector = nullptr;
+        }
+        else if (downKeys & KEY_UP)
+        {
+            if (moveSelected > 0)
+            {
+                moveSelected--;
+            }
         }
     }
 }
@@ -875,18 +852,18 @@ bool EditorScreen::changeSecondaryStat(int which, bool up)
 
 bool EditorScreen::setHP()
 {
-    selector = std::make_unique<HiddenPowerSelectionScreen>(pkm);
+    currentOverlay = std::make_unique<HiddenPowerOverlay>(*this, pkm);
     return false;
 }
 
 void EditorScreen::changeMove()
 {
-    selector = std::make_unique<MoveSelectionScreen>(pkm, moveSelected);
+    currentOverlay = std::make_unique<MoveOverlay>(*this, pkm, moveSelected);
 }
 
 bool EditorScreen::selectNature()
 {
-    selector = std::make_unique<NatureSelectionScreen>(pkm);
+    currentOverlay = std::make_unique<NatureOverlay>(*this, pkm);
     return false;
 }
 
@@ -1002,7 +979,7 @@ bool EditorScreen::selectAbility()
 
 bool EditorScreen::selectItem()
 {
-    selector = std::make_unique<ItemSelectionScreen>(pkm);
+    currentOverlay = std::make_unique<PkmItemOverlay>(*this, pkm);
     return false;
 }
 
@@ -1022,20 +999,20 @@ bool EditorScreen::selectForm()
     if (count > 1)
     {
         saved = false;
-        selector = std::make_unique<FormSelectionScreen>(pkm, count);
+        currentOverlay = std::make_unique<FormOverlay>(*this, pkm, count);
     }
     return false;
 }
 
 bool EditorScreen::selectBall()
 {
-    selector = std::make_unique<BallSelectionScreen>(pkm);
+    currentOverlay = std::make_unique<BallOverlay>(*this, pkm);
     return false;
 }
 
 bool EditorScreen::selectSpecies()
 {
-    selector = std::make_unique<SpeciesSelectionScreen>(pkm);
+    currentOverlay = std::make_unique<SpeciesOverlay>(*this, pkm);
     return false;
 }
 

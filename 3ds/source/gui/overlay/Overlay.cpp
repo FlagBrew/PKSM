@@ -24,25 +24,13 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef FORMSELECTIONSCREEN_HPP
-#define FORMSELECTIONSCREEN_HPP
+#include "Overlay.hpp"
+#include "colors.hpp"
+#include "Screen.hpp"
 
-#include "SelectionScreen.hpp"
-#include "HidHorizontal.hpp"
+Overlay::Overlay(Screen& screen) : screen(screen), me(screen.currentOverlay) {}
 
-class FormSelectionScreen : public SelectionScreen
+void Overlay::dim() const
 {
-public:
-    FormSelectionScreen(std::shared_ptr<PKX> pkm, u8 formCount) : SelectionScreen(pkm), hid(40, 6), formCount(formCount)
-    {
-        hid.update(40);
-        hid.select(pkm->alternativeForm());
-    }
-    void draw() const override;
-    void update(touchPosition* touch) override;
-private:
-    HidHorizontal hid;
-    u8 formCount;
-};
-
-#endif
+    C2D_DrawRectSolid(0, 0, 0.5f, 400, 240, COLOR_MASKBLACK);
+}

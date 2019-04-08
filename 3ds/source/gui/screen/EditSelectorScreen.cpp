@@ -149,7 +149,7 @@ bool EditSelectorScreen::doQR()
 
 EditSelectorScreen::EditSelectorScreen()
 {
-    viewer = std::make_shared<ViewerScreen>(nullptr, false);
+    currentOverlay = std::make_shared<ViewOverlay>(*this, infoMon, false);
     
     buttons.push_back(new ClickButton(283, 211, 34, 28, [](){ Gui::screenBack(); return true; }, ui_sheet_button_back_idx, "", 0.0f, 0));
     buttons.push_back(new ClickButton(32, 15, 164, 24, [this](){ return this->clickIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0));
@@ -229,23 +229,6 @@ EditSelectorScreen::~EditSelectorScreen()
 
 void EditSelectorScreen::draw() const
 {
-    std::shared_ptr<PKX> infoMon = moveMon;
-    if (!infoMon && cursorPos != 0)
-    {
-        if (cursorPos < 31)
-        {
-            infoMon = TitleLoader::save->pkm(box, cursorPos - 1);
-        }
-        else
-        {
-            infoMon = TitleLoader::save->pkm(cursorPos - 31);
-        }
-    }
-    if (infoMon && (infoMon->encryptionConstant() == 0 && infoMon->species() == 0))
-    {
-        infoMon = nullptr;
-    }
-    //std::shared_ptr<PKX> infoMon = cursorPos == 0 ? nullptr : (cursorPos < 31 ? TitleLoader::save->pkm(box, cursorPos - 1) : TitleLoader::save->pkm(cursorPos - 31));
     C2D_SceneBegin(g_renderTargetBottom);
     Gui::sprite(ui_sheet_emulated_bg_bottom_blue, 0, 0);
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
@@ -372,8 +355,6 @@ void EditSelectorScreen::draw() const
             button->draw();
         }
     }
-
-    viewer->draw();
 }
 
 void EditSelectorScreen::update(touchPosition* touch)
@@ -392,7 +373,6 @@ void EditSelectorScreen::update(touchPosition* touch)
     static bool sleep = true;
     static int sleepTimer = 10;
 
-    std::shared_ptr<PKX> infoMon = moveMon;
     if (moveMon)
     {
         infoMon = moveMon;
@@ -411,11 +391,14 @@ void EditSelectorScreen::update(touchPosition* touch)
             infoMon = TitleLoader::save->pkm(cursorPos - 31);
         }
     }
+    else
+    {
+        infoMon = nullptr;
+    }
     if (infoMon && (infoMon->encryptionConstant() == 0 && infoMon->species() == 0))
     {
         infoMon = nullptr;
     }
-    viewer->setPkm(infoMon);
 
     u32 downKeys = hidKeysDown();
     u32 heldKeys = hidKeysHeld();

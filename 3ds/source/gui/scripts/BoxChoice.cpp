@@ -86,15 +86,6 @@ BoxChoice::~BoxChoice()
 
 void BoxChoice::draw() const
 {
-    std::shared_ptr<PKX> infoMon = nullptr;
-    if (cursorIndex != 0)
-    {
-        infoMon = storageChosen ? Banks::bank->pkm(storageBox, cursorIndex - 1) : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
-    }
-    if (infoMon && (infoMon->encryptionConstant() == 0 && infoMon->species() == 0))
-    {
-        infoMon = nullptr;
-    }
     C2D_SceneBegin(g_renderTargetBottom);
     Gui::sprite(ui_sheet_emulated_bg_bottom_green, 0, 0);
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
@@ -150,11 +141,9 @@ void BoxChoice::draw() const
         }
     }
 
-    if (viewer)
+    if (currentOverlay)
     {
         C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, COLOR_MASKBLACK);
-        mainButtons[1]->draw();
-        viewer->draw();
     }
     else
     {
@@ -302,6 +291,18 @@ std::tuple<int, int, int> BoxChoice::run()
 
 void BoxChoice::update(touchPosition* touch)
 {
+    if (cursorIndex != 0)
+    {
+        infoMon = storageChosen ? Banks::bank->pkm(storageBox, cursorIndex - 1) : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
+    }
+    else
+    {
+        infoMon = nullptr;
+    }
+    if (infoMon && (infoMon->encryptionConstant() == 0 && infoMon->species() == 0))
+    {
+        infoMon = nullptr;
+    }
     if (justSwitched)
     {
         if (keysHeld() & KEY_TOUCH)
@@ -317,7 +318,7 @@ void BoxChoice::update(touchPosition* touch)
     static bool sleep = true;
     u32 kDown = hidKeysDown();
     u32 kHeld = hidKeysHeld();
-    if (!viewer)
+    if (!currentOverlay)
     {
         for (size_t i = 0; i < mainButtons.size(); i++)
         {
@@ -441,7 +442,7 @@ void BoxChoice::update(touchPosition* touch)
     }
     else
     {
-        if (kDown & KEY_B || mainButtons[1]->update(touch))
+        if (kDown & KEY_B)
         {
             backButton();
         }
@@ -495,9 +496,9 @@ bool BoxChoice::backButton()
     if (!backHeld)
     {
         backHeld = true;
-        if (viewer)
+        if (currentOverlay)
         {
-            viewer = nullptr;
+            currentOverlay = nullptr;
         }
         else
         {
@@ -514,10 +515,10 @@ bool BoxChoice::showViewer()
     {
         return false;
     }
-    std::shared_ptr<PKX> view = storageChosen ? Banks::bank->pkm(storageBox, cursorIndex - 1) : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
-    if (view->species() != 0)
+
+    if (infoMon && infoMon->species() != 0)
     {
-        viewer = std::make_unique<ViewerScreen>(view, true);
+        currentOverlay = std::make_unique<ViewOverlay>(*this, infoMon, true);
     }
     return true;
 }

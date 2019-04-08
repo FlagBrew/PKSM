@@ -29,9 +29,8 @@
 
 #include "Screen.hpp"
 #include "Button.hpp"
-#include "ViewerScreen.hpp"
+#include "ViewOverlay.hpp"
 #include "PKX.hpp"
-#include "SelectionScreen.hpp"
 
 class EditorScreen : public Screen
 {
@@ -81,9 +80,7 @@ private:
     void changeMove();
     bool setSaveInfo();
     std::array<std::vector<Button*>, 3> buttons;
-    std::shared_ptr<ViewerScreen> view;
     std::shared_ptr<PKX> pkm;
-    std::unique_ptr<SelectionScreen> selector;
     int currentTab = 0;
     int moveSelected = 0;
     int box = 0;

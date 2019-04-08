@@ -24,23 +24,34 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef SELECTIONSCREEN_HPP
-#define SELECTIONSCREEN_HPP
+#include "ViewCloneOverlay.hpp"
+#include "gui.hpp"
 
-#include "Screen.hpp"
-#include "PKX.hpp"
-#include "i18n.hpp"
-
-class SelectionScreen : public Screen
+void ViewCloneOverlay::draw() const
 {
-public:
-    SelectionScreen(std::shared_ptr<PKX> pkm) : pkm(pkm) {}
-    virtual ~SelectionScreen() {}
-    ScreenType type() const override { return ScreenType::SELECTOR; }
-    bool finished() const { return done; }
-protected:
-    std::shared_ptr<PKX> pkm;
-    bool done = false;
-};
+    ViewOverlay::draw();
 
-#endif
+    C2D_SceneBegin(g_renderTargetBottom);
+    dim();
+    if (clone.empty())
+    {
+        Gui::staticText(i18n::localize("PRESS_TO_CLONE"), 160, 110, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    }
+}
+
+void ViewCloneOverlay::update(touchPosition* touch)
+{
+    u32 kDown = hidKeysDown();
+    if (kDown & KEY_B)
+    {
+        screen.removeOverlay();
+    }
+    else if (clone.empty() && kDown & KEY_X)
+    {
+        clone.emplace_back(pkm->clone());
+        partyNum.push_back(-1);
+        cloneDims = {1,1};
+        currentlySelecting = false;
+        screen.removeOverlay();
+    }
+}

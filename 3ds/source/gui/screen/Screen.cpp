@@ -24,24 +24,26 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef HIDDENPOWERSELECTIONSCREEN_HPP
-#define HIDDENPOWERSELECTIONSCREEN_HPP
+#include "Screen.hpp"
+#include "Overlay.hpp"
 
-#include "SelectionScreen.hpp"
-#include "HidHorizontal.hpp"
-
-class HiddenPowerSelectionScreen : public SelectionScreen
+void Screen::doDraw() const
 {
-public:
-    HiddenPowerSelectionScreen(std::shared_ptr<PKX> pkm) : SelectionScreen(pkm), hid(16, 4)
+    draw();
+    if (currentOverlay)
     {
-        hid.update(16);
-        hid.select(pkm->hpType());
+        currentOverlay->draw();
     }
-    void draw() const override;
-    void update(touchPosition* touch) override;
-private:
-    HidHorizontal hid;
-};
+}
 
-#endif
+void Screen::doUpdate(touchPosition* touch)
+{
+    if (currentOverlay)
+    {
+        currentOverlay->update(touch);
+    }
+    else
+    {
+        update(touch);
+    }
+}

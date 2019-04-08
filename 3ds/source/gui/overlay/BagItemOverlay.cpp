@@ -24,43 +24,14 @@
 *         reasonable ways as different from the original version.
 */
 
-#include "ItemEditScreen.hpp"
+#include "BagItemOverlay.hpp"
 #include "gui.hpp"
+#include "loader.hpp"
 
-int ItemEditScreen::run()
+void BagItemOverlay::draw() const
 {
-    while (aptMainLoop() && !finished)
-    {
-        hidScanInput();
-        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-        C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
-
-        draw();
-        touchPosition touch;
-        hidTouchRead(&touch);
-        update(&touch);
-
-        C3D_FrameEnd(0);
-        Gui::clearTextBufs();
-
-        if (startSearch)
-        {
-            searchBar();
-        }
-    }
-    return finalVal;
-}
-
-void ItemEditScreen::draw() const
-{
-    if (firstDraw)
-    {
-        C2D_SceneBegin(g_renderTargetBottom);
-        C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, C2D_Color32(0, 0, 0, 128));
-        firstDraw = false;
-    }
-
     C2D_SceneBegin(g_renderTargetBottom);
+    dim();
     searchButton->draw();
     Gui::sprite(ui_sheet_icon_search_idx, 79, 33);
     Gui::dynamicText(searchString, 95, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
@@ -85,7 +56,7 @@ void ItemEditScreen::draw() const
     }
 }
 
-void ItemEditScreen::update(touchPosition* touch)
+void BagItemOverlay::update(touchPosition* touch)
 {
     if (justSwitched && ((hidKeysHeld() | hidKeysDown()) & KEY_TOUCH))
     {
@@ -130,17 +101,39 @@ void ItemEditScreen::update(touchPosition* touch)
     hid.update(items.size());
     if (downKeys & KEY_A)
     {
-        finalVal = hid.fullIndex();
-        finished = true;
+        if (hid.fullIndex() == 0)
+        {
+            static Item4 emptyItem;
+            for (int i = slot; i < --firstEmpty; i++)
+            {
+                auto item = TitleLoader::save->item(pouch.first, i + 1);
+                TitleLoader::save->item(*item, pouch.first, i);
+            }
+            TitleLoader::save->item(emptyItem, pouch.first, firstEmpty);
+        }
+        else
+        {
+            auto item = TitleLoader::save->item(pouch.first, slot);
+            item->id(items[hid.fullIndex()].second);
+            if (item->count() == 0)
+            {
+                item->count(1);
+            }
+            TitleLoader::save->item(*item, pouch.first, slot);
+            if (slot == firstEmpty)
+            {
+                firstEmpty = std::min(firstEmpty + 1, pouch.second);
+            }
+        }
+        screen.removeOverlay();
     }
     else if (downKeys & KEY_B)
     {
-        finalVal = origItem;
-        finished = true;
+        screen.removeOverlay();
     }
 }
 
-void ItemEditScreen::searchBar()
+void BagItemOverlay::searchBar()
 {
     SwkbdState state;
     swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 20);

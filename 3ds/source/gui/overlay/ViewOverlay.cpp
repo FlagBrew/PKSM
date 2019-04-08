@@ -24,7 +24,7 @@
 *         reasonable ways as different from the original version.
 */
 
-#include "ViewerScreen.hpp"
+#include "ViewOverlay.hpp"
 #include "gui.hpp"
 #include "Configuration.hpp"
 #include "PB7.hpp"
@@ -48,7 +48,7 @@ static constexpr std::string_view displayKeys[] = {
     "SPEED"
 };
 
-void ViewerScreen::draw() const
+void ViewOverlay::draw() const
 {
     C2D_SceneBegin(g_renderTargetTop);
     Gui::sprite(green ? ui_sheet_emulated_bg_top_green : ui_sheet_emulated_bg_top_blue, 0, 0);
@@ -164,4 +164,9 @@ void ViewerScreen::draw() const
             Gui::dynamicText(i18n::move(Configuration::getInstance().language(), 0), 252, 156 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         }
     }
+}
+
+void ViewOverlay::update(touchPosition* touch)
+{
+    screen.update(touch);
 }

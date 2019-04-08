@@ -24,13 +24,13 @@
 *         reasonable ways as different from the original version.
 */
 
-#include "SpeciesSelectionScreen.hpp"
+#include "SpeciesOverlay.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
 #include "Configuration.hpp"
 #include "ClickButton.hpp"
 
-SpeciesSelectionScreen::SpeciesSelectionScreen(std::shared_ptr<PKX> pkm) : SelectionScreen(pkm), hid(40, 8)
+SpeciesOverlay::SpeciesOverlay(Screen& screen, std::shared_ptr<PKX> pkm) : Overlay(screen), pkm(pkm), hid(40, 8)
 {
     searchButton = new ClickButton(75, 30, 170, 23, [this](){ Gui::setNextKeyboardFunc([this](){ this->searchBar(); }); return false; }, ui_sheet_emulated_box_search_idx, "", 0, 0);
     if (TitleLoader::save->generation() != Generation::LGPE)
@@ -62,8 +62,12 @@ SpeciesSelectionScreen::SpeciesSelectionScreen(std::shared_ptr<PKX> pkm) : Selec
     }
 }
 
-void SpeciesSelectionScreen::draw() const
+void SpeciesOverlay::draw() const
 {
+    C2D_SceneBegin(g_renderTargetBottom);
+    dim();
+    Gui::staticText(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+
     C2D_SceneBegin(g_renderTargetBottom);
     searchButton->draw();
     Gui::sprite(ui_sheet_icon_search_idx, 79, 33);
@@ -100,7 +104,7 @@ void SpeciesSelectionScreen::draw() const
     }
 }
 
-void SpeciesSelectionScreen::update(touchPosition* touch)
+void SpeciesOverlay::update(touchPosition* touch)
 {
     if (justSwitched && ((hidKeysHeld() | hidKeysDown()) & KEY_TOUCH))
     {
@@ -208,17 +212,17 @@ void SpeciesSelectionScreen::update(touchPosition* touch)
         pkm->alternativeForm(0);
         pkm->setAbility(0);
         pkm->PID(PKX::getRandomPID(pkm->species(), pkm->gender(), pkm->version(), pkm->nature(), pkm->alternativeForm(), pkm->abilityNumber(), pkm->PID(), pkm->generation()));
-        done = true;
+        screen.removeOverlay();
         return;
     }
     else if (downKeys & KEY_B)
     {
-        done = true;
+        screen.removeOverlay();
         return;
     }
 }
 
-void SpeciesSelectionScreen::searchBar()
+void SpeciesOverlay::searchBar()
 {
     SwkbdState state;
     swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 20);

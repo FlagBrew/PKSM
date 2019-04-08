@@ -30,7 +30,7 @@
 #include "Screen.hpp"
 #include "Sav.hpp"
 #include "Button.hpp"
-#include "ItemEditScreen.hpp"
+#include "BagItemOverlay.hpp"
 
 class BagScreen : public Screen
 {
@@ -56,7 +56,6 @@ private:
     bool clickIndex(int i);
     bool switchPouch(int i);
     void editItem();
-    std::unique_ptr<ItemEditScreen> select = nullptr;
     void editCount(bool up, int selected);
     void setCount(int selected);
     bool canEdit(Pouch pouch, Item& item) const;

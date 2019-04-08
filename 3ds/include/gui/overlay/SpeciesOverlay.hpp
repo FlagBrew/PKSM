@@ -24,43 +24,34 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef EDITSELECTORSCREEN_HPP
-#define EDITSELECTORSCREEN_HPP
+#ifndef SPECIESOVERLAY_HPP
+#define SPECIESOVERLAY_HPP
 
-#include "Screen.hpp"
-#include <vector>
-#include "ViewOverlay.hpp"
-#include "QRScanner.hpp"
+#include "Overlay.hpp"
+#include "HidHorizontal.hpp"
 #include "Button.hpp"
-#include "loader.hpp"
+#include "PKX.hpp"
+#include <memory>
 
-class EditSelectorScreen : public Screen
+class SpeciesOverlay : public Overlay
 {
 public:
-    ~EditSelectorScreen();
-    EditSelectorScreen();
+    SpeciesOverlay(Screen& screen, std::shared_ptr<PKX> pkm);
+    ~SpeciesOverlay()
+    {
+        delete searchButton;
+    }
     void draw() const override;
     void update(touchPosition* touch) override;
-    ScreenType type() const override { return ScreenType::EDITSELECT; }
 private:
-    bool prevBox();
-    bool nextBox();
-    bool editPokemon();
-    void changeBoxName();
-    bool clickIndex(int i);
-    bool doQR();
-    bool releasePokemon();
-    bool clonePkm();
-    bool goBack();
-    std::vector<Button*> buttons;
-    std::array<Button*, 36> pkmButtons;
-    std::vector<Button*> viewerButtons;
-    std::shared_ptr<PKX> moveMon = nullptr;
-    std::shared_ptr<PKX> infoMon = nullptr;
-    int cursorPos = 0;
-    int box = 0;
+    std::shared_ptr<PKX> pkm;
+    void searchBar();
+    HidHorizontal hid;
+    Button* searchButton;
+    std::string searchString = "";
+    std::string oldSearchString = "";
+    std::vector<int> dispPkm;
     bool justSwitched = true;
-    bool menu = false;
 };
 
 #endif

@@ -24,11 +24,13 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef SORTSELECTIONSCREEN_HPP
-#define SORTSELECTIONSCREEN_HPP
+#ifndef SORTOVERLAY_HPP
+#define SORTOVERLAY_HPP
 
-#include "SelectionScreen.hpp"
+#include "Overlay.hpp"
 #include "HidVertical.hpp"
+#include <string>
+#include <array>
 
 enum SortType
 {
@@ -120,19 +122,18 @@ static constexpr std::string_view sortTypeToString(SortType type)
     }
 }
 
-class SortSelectionScreen : public Screen
+class SortOverlay : public Overlay
 {
 public:
-    SortSelectionScreen(SortType type) : hid(40, 2), original(type) { hid.update(vals.size()); hid.select(original); }
-    SortType run();
+    SortOverlay(Screen& screen, SortType& type) : Overlay(screen), hid(40, 2), out(type) { hid.update(vals.size()); hid.select(int(type)); }
+    virtual ~SortOverlay() {}
     void draw() const override;
     void update(touchPosition* touch) override;
-    ScreenType type() const override { return ScreenType::SELECTOR; }
 private:
     HidVertical hid;
     mutable bool firstDraw = true;
     bool finished = false;
-    SortType original;
+    SortType& out;
     static constexpr std::array<SortType, 26> vals = {
         NONE,
         DEX,

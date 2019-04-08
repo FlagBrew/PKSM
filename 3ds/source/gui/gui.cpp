@@ -360,10 +360,10 @@ void Gui::mainLoop(void)
         C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
         C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
 
-        screens.top()->draw();
+        screens.top()->doDraw();
         touchPosition touch;
         hidTouchRead(&touch);
-        screens.top()->update(&touch);
+        screens.top()->doUpdate(&touch);
         exit = screens.top()->type() == ScreenType::TITLELOAD && (hidKeysDown() & KEY_START);
 
         C3D_FrameEnd(0);

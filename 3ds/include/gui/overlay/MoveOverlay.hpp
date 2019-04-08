@@ -24,10 +24,10 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef MOVESELECTIONSCREEN_HPP
-#define MOVESELECTIONSCREEN_HPP
+#ifndef MOVEOVERLAY_HPP
+#define MOVEOVERLAY_HPP
 
-#include "SelectionScreen.hpp"
+#include "Overlay.hpp"
 #include "HidVertical.hpp"
 #include "Configuration.hpp"
 #include "PK7.hpp"
@@ -35,11 +35,11 @@
 #include "loader.hpp"
 #include "Button.hpp"
 
-class MoveSelectionScreen : public SelectionScreen
+class MoveOverlay : public Overlay
 {
 public:
-    MoveSelectionScreen(std::shared_ptr<PKX> pkm, int moveIndex);
-    ~MoveSelectionScreen()
+    MoveOverlay(Screen& screen, std::shared_ptr<PKX> pkm, int moveIndex);
+    ~MoveOverlay()
     {
         pkm->fixMoves();
         delete searchButton;
@@ -47,6 +47,7 @@ public:
     void draw() const override;
     void update(touchPosition* touch) override;
 private:
+    std::shared_ptr<PKX> pkm;
     void searchBar();
     int moveIndex;
     HidVertical hid;

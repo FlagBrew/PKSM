@@ -24,43 +24,25 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef EDITSELECTORSCREEN_HPP
-#define EDITSELECTORSCREEN_HPP
+#ifndef BOXOVERLAY_HPP
+#define BOXOVERLAY_HPP
 
-#include "Screen.hpp"
+#include "Overlay.hpp"
+#include "HidVertical.hpp"
 #include <vector>
-#include "ViewOverlay.hpp"
-#include "QRScanner.hpp"
-#include "Button.hpp"
-#include "loader.hpp"
+#include <string>
 
-class EditSelectorScreen : public Screen
+class BoxOverlay : public Overlay
 {
 public:
-    ~EditSelectorScreen();
-    EditSelectorScreen();
+    BoxOverlay(Screen& screen, std::vector<std::string>& boxes, int& current) : Overlay(screen), hid(40, 2), strings(boxes), out(current) { hid.update(strings.size()); hid.select(current); }
+    virtual ~BoxOverlay() {}
     void draw() const override;
     void update(touchPosition* touch) override;
-    ScreenType type() const override { return ScreenType::EDITSELECT; }
 private:
-    bool prevBox();
-    bool nextBox();
-    bool editPokemon();
-    void changeBoxName();
-    bool clickIndex(int i);
-    bool doQR();
-    bool releasePokemon();
-    bool clonePkm();
-    bool goBack();
-    std::vector<Button*> buttons;
-    std::array<Button*, 36> pkmButtons;
-    std::vector<Button*> viewerButtons;
-    std::shared_ptr<PKX> moveMon = nullptr;
-    std::shared_ptr<PKX> infoMon = nullptr;
-    int cursorPos = 0;
-    int box = 0;
-    bool justSwitched = true;
-    bool menu = false;
+    HidVertical hid;
+    std::vector<std::string> strings;
+    int& out;
 };
 
 #endif
