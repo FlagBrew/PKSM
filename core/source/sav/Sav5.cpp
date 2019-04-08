@@ -133,7 +133,7 @@ void Sav5::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 
 void Sav5::trade(std::shared_ptr<PKX> pk)
 {
-    if (pk->egg() && !(otName() == pk->otName() && TID() == pk->TID() && SID() == pk->SID() && gender() == pk->otGender()))
+    if (pk->egg() && (otName() != pk->otName() || TID() != pk->TID() || SID() != pk->SID() || gender() != pk->otGender()))
     {
         pk->metDay(Configuration::getInstance().day());
         pk->metMonth(Configuration::getInstance().month());

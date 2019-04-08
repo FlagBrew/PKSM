@@ -151,31 +151,31 @@ void Sav7::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 void Sav7::trade(std::shared_ptr<PKX> pk)
 {
     PK7 *pk7 = (PK7*)pk.get();
-    if (pk7->egg() && !(otName() == pk7->otName() && TID() == pk7->TID() && SID() == pk7->SID() && gender() == pk7->otGender()))
+    if (pk7->egg())
     {
-        pk7->metDay(Configuration::getInstance().day());
-        pk7->metMonth(Configuration::getInstance().month());
-        pk7->metYear(Configuration::getInstance().year() - 2000);
-        pk7->metLocation(30002);
+        if (otName() != pk7->otName() || TID() != pk7->TID() || SID() != pk7->SID() || gender() != pk7->otGender())
+        {
+            pk7->metDay(Configuration::getInstance().day());
+            pk7->metMonth(Configuration::getInstance().month());
+            pk7->metYear(Configuration::getInstance().year() - 2000);
+            pk7->metLocation(30002);
+        }
+        return;
     }
-    else if (!(otName() == pk7->otName() && TID() == pk7->TID() && SID() == pk7->SID() && gender() == pk7->otGender()))
+    else if (otName() == pk7->otName() && TID() == pk7->TID() && SID() == pk7->SID() && gender() == pk7->otGender())
     {
         pk7->currentHandler(0);   
     }
     else
     {
-        // Bank geolocation handling ???
-
         if (pk7->htName() != otName())
         {
             pk7->htFriendship(pk7->baseFriendship());
             pk7->htAffection(0);
+            pk7->htName(otName());
         }
         pk7->currentHandler(1);
-        pk7->htName(otName());
         pk7->htGender(gender());
-
-        // Bank memory handling ???
     }
 }
 

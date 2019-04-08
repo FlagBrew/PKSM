@@ -135,12 +135,16 @@ void Sav6::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 void Sav6::trade(std::shared_ptr<PKX> pk)
 {
     PK6 *pk6 = (PK6*)pk.get();
-    if (pk6->egg() && !(otName() == pk6->otName() && TID() == pk6->TID() && SID() == pk6->SID() && gender() == pk6->otGender()))
+    if (pk6->egg())
     {
-        pk6->metDay(Configuration::getInstance().day());
-        pk6->metMonth(Configuration::getInstance().month());
-        pk6->metYear(Configuration::getInstance().year() - 2000);
-        pk6->metLocation(30002);
+        if (otName() != pk6->otName() || TID() != pk6->TID() || SID() != pk6->SID() || gender() != pk6->otGender())
+        {
+            pk6->metDay(Configuration::getInstance().day());
+            pk6->metMonth(Configuration::getInstance().month());
+            pk6->metYear(Configuration::getInstance().year() - 2000);
+            pk6->metLocation(30002);
+        }
+        return;
     }
     else if (otName() == pk6->otName() && TID() == pk6->TID() && SID() == pk6->SID() && gender() == pk6->otGender())
     {
@@ -174,9 +178,9 @@ void Sav6::trade(std::shared_ptr<PKX> pk)
         {
             pk6->htFriendship(pk6->baseFriendship());
             pk6->htAffection(0);
+            pk6->htName(otName());
         }
         pk6->currentHandler(1);
-        pk6->htName(otName());
         pk6->htGender(gender());
 
         if (pk6->htMemory() == 0)

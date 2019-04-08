@@ -282,7 +282,7 @@ u16 PK7::eggLocation(void) const { return *(u16*)(data + 0xD8); }
 void PK7::eggLocation(u16 v) { *(u16*)(data + 0xD8) = v; }
 
 u16 PK7::metLocation(void) const { return *(u16*)(data + 0xDA); }
-void PK7::metLocation(u16 v) { *(u16*)(data + 0xDA) = v;}
+void PK7::metLocation(u16 v) { *(u16*)(data + 0xDA) = v; }
 
 u8 PK7::ball(void) const { return data[0xDC]; }
 void PK7::ball(u8 v) { data[0xDC] = v; }
