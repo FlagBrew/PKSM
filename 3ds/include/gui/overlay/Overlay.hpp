@@ -36,16 +36,16 @@ class Screen;
 class Overlay
 {
 public:
-    Overlay(Screen& screen);
+    Overlay(Screen& screen, const std::string& instructions = "");
     virtual ~Overlay() {}
     virtual void update(touchPosition* touch) = 0;
     virtual void draw() const = 0;
     void dim(void) const;
     const Instructions& getInstructions() const { return instructions; }
 protected:
-    Instructions instructions;
     Screen& screen;
     std::shared_ptr<Overlay>& me;
+    Instructions instructions;
 };
 
 #endif
