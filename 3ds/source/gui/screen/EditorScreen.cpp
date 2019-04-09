@@ -29,8 +29,6 @@
 #include "Configuration.hpp"
 #include "loader.hpp"
 #include "HexEditScreen.hpp"
-#include "MoveOverlay.hpp"
-#include "HiddenPowerOverlay.hpp"
 #include "NatureOverlay.hpp"
 #include "PkmItemOverlay.hpp"
 #include "SpeciesOverlay.hpp"
@@ -40,14 +38,14 @@
 #include "ClickButton.hpp"
 #include "PB7.hpp"
 #include "random.hpp"
+#include "StatsEditScreen.hpp"
+#include "MoveEditScreen.hpp"
 
 #define NO_TEXT_BUTTON(x, y, w, h, function, image) new Button(x, y, w, h, function, image, "", 0.0f, 0)
 #define NO_TEXT_ACCEL(x, y, w, h, function, image) new AccelButton(x, y, w, h, function, image, "", 0.0f, 0)
 #define NO_TEXT_CLICK(x, y, w, h, function, image) new ClickButton(x, y, w, h, function, image, "", 0.0f, 0)
 
 static constexpr int statValues[] = { 0, 1, 2, 4, 5, 3 };
-
-extern int bobPointer();
 
 EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index)
                 : pkm(pokemon), box(box), index(index)
@@ -199,58 +197,31 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index)
         }
     }
 
-    u8 tab = 0;
-    // Back button first, always. Needs to have the same index for each one
-    buttons[tab].push_back(NO_TEXT_CLICK(283, 211, 34, 28, [this](){ return this->goBack(); }, ui_sheet_button_back_idx));
-    buttons[tab].push_back(NO_TEXT_BUTTON(4, 3, 20, 19, [this](){ saved = false; return this->selectBall(); }, ui_sheet_res_null_idx));
-    buttons[tab].push_back(NO_TEXT_BUTTON(224, 33, 60, 68, [this](){ return this->selectForm(); }, ui_sheet_res_null_idx));
-    buttons[tab].push_back(NO_TEXT_BUTTON(291, 2, 27, 23, [this](){ saved = false; return this->hexEdit(); }, ui_sheet_icon_hex_idx));
-    buttons[tab].push_back(NO_TEXT_ACCEL(94, 34, 13, 13, [this](){ saved = false; return this->changeLevel(false); }, ui_sheet_button_minus_small_idx));
-    buttons[tab].push_back(NO_TEXT_BUTTON(109, 34, 31, 13, [this](){ saved = false; Gui::setNextKeyboardFunc([this](){ setLevel(); }); return false; }, ui_sheet_res_null_idx));
-    buttons[tab].push_back(NO_TEXT_ACCEL(142, 34, 13, 13, [this](){ saved = false; return this->changeLevel(true); }, ui_sheet_button_plus_small_idx));
-    buttons[tab].push_back(NO_TEXT_BUTTON(75, 54, 15, 12, [this](){ saved = false; return this->selectNature(); }, ui_sheet_button_info_detail_editor_dark_idx));
-    buttons[tab].push_back(NO_TEXT_CLICK(75, 74, 15, 12, [this](){ saved = false; return this->selectAbility(); }, ui_sheet_button_info_detail_editor_dark_idx));
-    buttons[tab].push_back(NO_TEXT_BUTTON(75, 94, 15, 12, [this](){ saved = false; return this->selectItem(); }, ui_sheet_button_info_detail_editor_dark_idx));
-    buttons[tab].push_back(NO_TEXT_CLICK(75, 114, 15, 12, [this](){ saved = false; pkm->shiny(!pkm->shiny()); return false; }, ui_sheet_button_info_detail_editor_dark_idx));
-    buttons[tab].push_back(NO_TEXT_CLICK(75, 134, 15, 12, [this](){ saved = false; return this->togglePokerus(); }, ui_sheet_button_info_detail_editor_dark_idx));
-    buttons[tab].push_back(NO_TEXT_BUTTON(75, 154, 15, 12, [this](){ saved = false; Gui::setNextKeyboardFunc([this](){ return this->setOT(); }); return false; }, ui_sheet_button_info_detail_editor_dark_idx));
-    buttons[tab].push_back(NO_TEXT_BUTTON(75, 174, 15, 12, [this](){ saved = false; Gui::setNextKeyboardFunc([this](){ return this->setNick(); }); return false; }, ui_sheet_button_info_detail_editor_dark_idx));
-    buttons[tab].push_back(NO_TEXT_ACCEL(94, 194, 13, 13, [this](){ saved = false; return this->changeFriendship(false); }, ui_sheet_button_minus_small_idx));
-    buttons[tab].push_back(NO_TEXT_BUTTON(109, 194, 31, 13, [this](){ saved = false; Gui::setNextKeyboardFunc([this](){ return this->setFriendship(); }); return false; }, ui_sheet_res_null_idx));
-    buttons[tab].push_back(NO_TEXT_ACCEL(142, 194, 13, 13, [this](){ saved = false; return this->changeFriendship(true); }, ui_sheet_button_plus_small_idx));
-    buttons[tab].push_back(new Button(204, 109, 108, 30, [this](){ currentTab = 1; return true; }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_STATS"), FONT_SIZE_12, COLOR_BLACK));
-    buttons[tab].push_back(new Button(204, 140, 108, 30, [this](){ currentTab = 2; return true; }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_MOVES"), FONT_SIZE_12, COLOR_BLACK));
-    buttons[tab].push_back(new ClickButton(204, 171, 108, 30, [this](){ saved = true; this->save(); this->goBack(); return true; }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_SAVE"), FONT_SIZE_12, COLOR_BLACK));
-    buttons[tab].push_back(NO_TEXT_BUTTON(25, 5, 120, 13, [this](){ saved = false; return this->selectSpecies(); }, ui_sheet_res_null_idx));
-    buttons[tab].push_back(NO_TEXT_CLICK(186, 7, 12, 12, [this](){ return this->genderSwitch(); }, ui_sheet_res_null_idx));
-    buttons[tab].push_back(NO_TEXT_CLICK(239, 3, 43, 22, [this](){ saved = false; return this->setSaveInfo(); }, ui_sheet_button_trainer_info_idx));
+    buttons.push_back(NO_TEXT_CLICK(283, 211, 34, 28, [this](){ return this->goBack(); }, ui_sheet_button_back_idx));
+    buttons.push_back(NO_TEXT_BUTTON(4, 3, 20, 19, [this](){ return this->selectBall(); }, ui_sheet_res_null_idx));
+    buttons.push_back(NO_TEXT_BUTTON(224, 33, 60, 68, [this](){ return this->selectForm(); }, ui_sheet_res_null_idx));
+    buttons.push_back(NO_TEXT_BUTTON(291, 2, 27, 23, [this](){ return this->hexEdit(); }, ui_sheet_icon_hex_idx));
+    buttons.push_back(NO_TEXT_ACCEL(94, 34, 13, 13, [this](){ return this->changeLevel(false); }, ui_sheet_button_minus_small_idx));
+    buttons.push_back(NO_TEXT_BUTTON(109, 34, 31, 13, [this](){ Gui::setNextKeyboardFunc([this](){ setLevel(); }); return false; }, ui_sheet_res_null_idx));
+    buttons.push_back(NO_TEXT_ACCEL(142, 34, 13, 13, [this](){ return this->changeLevel(true); }, ui_sheet_button_plus_small_idx));
+    buttons.push_back(NO_TEXT_BUTTON(75, 54, 15, 12, [this](){ return this->selectNature(); }, ui_sheet_button_info_detail_editor_dark_idx));
+    buttons.push_back(NO_TEXT_CLICK(75, 74, 15, 12, [this](){ return this->selectAbility(); }, ui_sheet_button_info_detail_editor_dark_idx));
+    buttons.push_back(NO_TEXT_BUTTON(75, 94, 15, 12, [this](){ return this->selectItem(); }, ui_sheet_button_info_detail_editor_dark_idx));
+    buttons.push_back(NO_TEXT_CLICK(75, 114, 15, 12, [this](){ pkm->shiny(!pkm->shiny()); return false; }, ui_sheet_button_info_detail_editor_dark_idx));
+    buttons.push_back(NO_TEXT_CLICK(75, 134, 15, 12, [this](){ return this->togglePokerus(); }, ui_sheet_button_info_detail_editor_dark_idx));
+    buttons.push_back(NO_TEXT_BUTTON(75, 154, 15, 12, [this](){ Gui::setNextKeyboardFunc([this](){ return this->setOT(); }); return false; }, ui_sheet_button_info_detail_editor_dark_idx));
+    buttons.push_back(NO_TEXT_BUTTON(75, 174, 15, 12, [this](){ Gui::setNextKeyboardFunc([this](){ return this->setNick(); }); return false; }, ui_sheet_button_info_detail_editor_dark_idx));
+    buttons.push_back(NO_TEXT_ACCEL(94, 194, 13, 13, [this](){ return this->changeFriendship(false); }, ui_sheet_button_minus_small_idx));
+    buttons.push_back(NO_TEXT_BUTTON(109, 194, 31, 13, [this](){ Gui::setNextKeyboardFunc([this](){ return this->setFriendship(); }); return false; }, ui_sheet_res_null_idx));
+    buttons.push_back(NO_TEXT_ACCEL(142, 194, 13, 13, [this](){ return this->changeFriendship(true); }, ui_sheet_button_plus_small_idx));
+    buttons.push_back(new Button(204, 109, 108, 30, [this](){ Gui::setScreen(std::make_unique<StatsEditScreen>(pkm)); justSwitched = true; return true; }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_STATS"), FONT_SIZE_12, COLOR_BLACK));
+    buttons.push_back(new Button(204, 140, 108, 30, [this](){ Gui::setScreen(std::make_unique<MoveEditScreen>(pkm)); justSwitched = true; return true; }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_MOVES"), FONT_SIZE_12, COLOR_BLACK));
+    buttons.push_back(new ClickButton(204, 171, 108, 30, [this](){ this->save(); this->goBack(); return true; }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_SAVE"), FONT_SIZE_12, COLOR_BLACK));
+    buttons.push_back(NO_TEXT_BUTTON(25, 5, 120, 13, [this](){ return this->selectSpecies(); }, ui_sheet_res_null_idx));
+    buttons.push_back(NO_TEXT_CLICK(186, 7, 12, 12, [this](){ return this->genderSwitch(); }, ui_sheet_res_null_idx));
+    buttons.push_back(NO_TEXT_CLICK(239, 3, 43, 22, [this](){ return this->setSaveInfo(); }, ui_sheet_button_trainer_info_idx));
 
-    tab = 1;
-    buttons[tab].push_back(buttons[0][0]);
-    for (int i = 0; i < 6; i++)
-    {
-        int y = 54 + i * 20;
-        buttons[tab].push_back(NO_TEXT_ACCEL(106, y, 13, 13, [=](){ saved = false; return this->changeIV(statValues[i], false); }, ui_sheet_button_minus_small_idx));
-        buttons[tab].push_back(NO_TEXT_BUTTON(121, y, 23, 13, [=](){ saved = false; Gui::setNextKeyboardFunc([=](){ return this->setIV(statValues[i]); }); return false; }, ui_sheet_res_null_idx));
-        buttons[tab].push_back(NO_TEXT_ACCEL(146, y, 13, 13, [=](){ saved = false; return this->changeIV(statValues[i], true); }, ui_sheet_button_plus_small_idx));
-
-        buttons[tab].push_back(NO_TEXT_ACCEL(182, y, 13, 13, [=](){ saved = false; return this->changeSecondaryStat(statValues[i], false); }, ui_sheet_button_minus_small_idx));
-        buttons[tab].push_back(NO_TEXT_BUTTON(197, y, 32, 13, [=](){ saved = false; Gui::setNextKeyboardFunc([=](){ return this->setSecondaryStat(statValues[i]); }); return false; }, ui_sheet_res_null_idx));
-        buttons[tab].push_back(NO_TEXT_ACCEL(231, y, 13, 13, [=](){ saved = false; return this->changeSecondaryStat(statValues[i], true); }, ui_sheet_button_plus_small_idx));
-    }
-    buttons[tab].push_back(NO_TEXT_BUTTON(300, 184, 15, 12, [this](){ saved = false; return this->setHP(); }, ui_sheet_button_info_detail_editor_light_idx));
-
-    tab = 2;
-    buttons[tab].push_back(buttons[0][0]);
-    for (int i = 0; i < 4; i++)
-    {
-        buttons[tab].push_back(new ClickButton(0, 30 + 20 * i, 240, 20, [=](){ moveSelected = i; return true; }, ui_sheet_res_null_idx, "", 0.0f, 0));
-        buttons[tab].push_back(new ClickButton(0, 140 + 20 * i, 240, 20, [=](){ moveSelected = i + 4; return true; }, ui_sheet_res_null_idx, "", 0.0f, 0));
-    }
-    if (!currentOverlay)
-    {
-        currentOverlay = std::make_shared<ViewOverlay>(*this, pkm, false);
-    }
+    sha256(origHash.data(), pkm->rawData(), pkm->getLength());
 }
 
 void EditorScreen::draw() const
@@ -263,159 +234,53 @@ void EditorScreen::draw() const
     Gui::backgroundAnimatedBottom();
 
     Gui::sprite(ui_sheet_textbox_name_bottom_idx, 0, 1);
-    std::string text;
-    switch (currentTab)
+
+    for (int i = 0; i < 5; i++)
     {
-        // Main part
+        Gui::sprite(ui_sheet_stripe_info_row_idx, 0, 30 + i * 40);
+    }
+
+    for (auto button : buttons)
+    {
+        button->draw();
+    }
+
+    Gui::staticText(i18n::localize("LEVEL"), 5, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::staticText(i18n::localize("NATURE"), 5, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::staticText(i18n::localize("ABILITY"), 5, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::staticText(i18n::localize("ITEM"), 5, 92, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::staticText(i18n::localize("SHINY"), 5, 112, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::staticText(i18n::localize("POKERUS"), 5, 132, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::staticText(i18n::localize("OT"), 5, 152, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::staticText(i18n::localize("NICKNAME"), 5, 172, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::staticText(i18n::localize("FRIENDSHIP"), 5, 192, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+
+    Gui::ball(pkm->ball(), 4, 3);
+    Gui::dynamicText(i18n::species(lang, pkm->species()), 25, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    switch (pkm->gender())
+    {
         case 0:
-            for (int i = 0; i < 5; i++)
-            {
-                Gui::sprite(ui_sheet_stripe_info_row_idx, 0, 30 + i * 40);
-            }
-
-            for (auto button : buttons[currentTab])
-            {
-                button->draw();
-            }
-
-            Gui::staticText(i18n::localize("LEVEL"), 5, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::staticText(i18n::localize("NATURE"), 5, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::staticText(i18n::localize("ABILITY"), 5, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::staticText(i18n::localize("ITEM"), 5, 92, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::staticText(i18n::localize("SHINY"), 5, 112, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::staticText(i18n::localize("POKERUS"), 5, 132, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::staticText(i18n::localize("OT"), 5, 152, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::staticText(i18n::localize("NICKNAME"), 5, 172, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::staticText(i18n::localize("FRIENDSHIP"), 5, 192, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-
-            Gui::ball(pkm->ball(), 4, 3);
-            Gui::dynamicText(i18n::species(lang, pkm->species()), 25, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-            switch (pkm->gender())
-            {
-                case 0:
-                    Gui::sprite(ui_sheet_icon_male_idx, 186, 7);
-                    break;
-                case 1:
-                    Gui::sprite(ui_sheet_icon_female_idx, 187, 7);
-                    break;
-                case 2:
-                    Gui::sprite(ui_sheet_icon_genderless_idx, 187, 7);
-                default:
-                    break;
-            }
-            Gui::dynamicText(std::to_string((int)pkm->level()), 107 + 35 / 2, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-            Gui::dynamicText(i18n::nature(lang, pkm->nature()), 95, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::dynamicText(i18n::ability(lang, pkm->ability()), 95, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::dynamicText(i18n::item(lang, pkm->heldItem()), 95, 92, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::dynamicText(pkm->shiny() ? i18n::localize("YES") : i18n::localize("NO"), 95, 112, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::dynamicText(pkm->pkrsDays() > 0 ? i18n::localize("YES") : i18n::localize("NO"), 95, 132, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::dynamicText(pkm->otName(), 95, 152, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::dynamicText(pkm->nickname(), 95, 172, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::dynamicText(std::to_string((int) pkm->currentFriendship()), 107 + 35 / 2, 192, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-            Gui::pkm(*pkm, 228, 38, 2.0f, COLOR_GREY_BLEND, 1.0f);
-            Gui::pkm(*pkm, 224, 33, 2.0f);
+            Gui::sprite(ui_sheet_icon_male_idx, 186, 7);
             break;
-        // Stats screen
         case 1:
-            Gui::sprite(ui_sheet_textbox_hidden_power_idx, 57, 177);
-
-            for (int i = 0; i < 4; i++)
-            {
-                Gui::sprite(ui_sheet_stripe_stats_editor_idx, 0, 30 + i * 40);
-            }
-            for (int i = 0; i < 6; i++)
-            {
-                Gui::sprite(ui_sheet_point_small_idx, 92, 58 + i * 20);
-                Gui::sprite(ui_sheet_point_small_idx, 168, 58 + i * 20);
-                Gui::sprite(ui_sheet_point_big_idx, 252, 57 + i * 20);
-            }
-
-            for (auto button : buttons[currentTab])
-            {
-                button->draw();
-            }
-            
-            if (pkm->generation() == Generation::LGPE)
-            {
-                Gui::dynamicText(i18n::localize("EDITOR_CP") + std::to_string((int)((PB7*)pkm.get())->CP()), 4, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-            }
-            Gui::staticText(i18n::localize("EDITOR_STATS"), 4, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::staticText(i18n::localize("IV"), 132, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-            Gui::staticText(pkm->generation() == Generation::LGPE ? i18n::localize("AWAKENED") : i18n::localize("EV"),
-                                213, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-            Gui::staticText(i18n::localize("TOTAL"), 274, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-            Gui::staticText(i18n::localize("HP"), 4, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::staticText(i18n::localize("ATTACK"), 4, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::staticText(i18n::localize("DEFENSE"), 4, 92, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::staticText(i18n::localize("SPATK"), 4, 112, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::staticText(i18n::localize("SPDEF"), 4, 132, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::staticText(i18n::localize("SPEED"), 4, 152, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-
-            for (int i = 0; i < 6; i++)
-            {
-                Gui::dynamicText(std::to_string((int) pkm->iv(statValues[i])), 132, 52 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-                if (pkm->generation() != Generation::LGPE)
-                {
-                    Gui::dynamicText(std::to_string((int) pkm->ev(statValues[i])), 213, 52 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-                }
-                else
-                {
-                    Gui::dynamicText(std::to_string((int) ((PB7*)pkm.get())->awakened(statValues[i])), 213, 52 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-                }
-                Gui::dynamicText(std::to_string((int) pkm->stat(statValues[i])), 274, 52 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-            }
-            Gui::dynamicText(i18n::localize("EDITOR_HIDDEN_POWER") + i18n::hp(lang, pkm->hpType()), 295, 181, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
+            Gui::sprite(ui_sheet_icon_female_idx, 187, 7);
             break;
-        // Moves screen
         case 2:
-            Gui::sprite(ui_sheet_textbox_relearn_moves_idx, 0, 109);
-            for (int i = 0; i < 2; i++)
-            {
-                Gui::sprite(ui_sheet_stripe_move_editor_row_idx, 0, 30 + i * 40);
-                Gui::sprite(ui_sheet_stripe_move_editor_row_idx, 0, 139 + i * 40);
-            }
-            for (int i = 0; i < 4; i++)
-            {
-                Gui::sprite(ui_sheet_point_small_idx, 15, 37 + i * 20);
-                Gui::sprite(ui_sheet_point_small_idx, 15, 146 + i * 20);
-            }
-            for (auto button : buttons[currentTab])
-            {
-                button->draw();
-            }
-
-            Gui::staticText(i18n::localize("MOVES"), 12, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-            Gui::staticText(i18n::localize("RELEARN_MOVES"), 12, 113, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-
-            for (int i = 0; i < 4; i++)
-            {
-                Gui::dynamicText(i18n::move(lang, pkm->move(i)), 24, 32 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-                if (pkm->generation() == Generation::SIX)
-                {
-                    Gui::dynamicText(i18n::move(lang, ((PK6*)pkm.get())->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-                }
-                else if (pkm->generation() == Generation::SEVEN)
-                {
-                    Gui::dynamicText(i18n::move(lang, ((PK7*)pkm.get())->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-                }
-                else
-                {
-                    Gui::staticText(i18n::localize("EDITOR_NOT_APPLICABLE_GEN"), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-                }
-            }
-
-            if (moveSelected < 4)
-            {
-                Gui::sprite(ui_sheet_emulated_pointer_horizontal_flipped_idx, 169 + bobPointer(), 31 + moveSelected * 20);
-                Gui::staticText("\uE000", 194, 29 + moveSelected * 20, FONT_SIZE_18, FONT_SIZE_18, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            }
-            else
-            {
-                Gui::sprite(ui_sheet_emulated_pointer_horizontal_flipped_idx, 169 + bobPointer(), 140 + (moveSelected - 4) * 20);
-                Gui::staticText("\uE000", 194, 138 + (moveSelected - 4) * 20, FONT_SIZE_18, FONT_SIZE_18, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            }
+            Gui::sprite(ui_sheet_icon_genderless_idx, 187, 7);
+        default:
             break;
     }
+    Gui::dynamicText(std::to_string((int)pkm->level()), 107 + 35 / 2, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::dynamicText(i18n::nature(lang, pkm->nature()), 95, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::dynamicText(i18n::ability(lang, pkm->ability()), 95, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::dynamicText(i18n::item(lang, pkm->heldItem()), 95, 92, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::dynamicText(pkm->shiny() ? i18n::localize("YES") : i18n::localize("NO"), 95, 112, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::dynamicText(pkm->pkrsDays() > 0 ? i18n::localize("YES") : i18n::localize("NO"), 95, 132, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::dynamicText(pkm->otName(), 95, 152, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::dynamicText(pkm->nickname(), 95, 172, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::dynamicText(std::to_string((int) pkm->currentFriendship()), 107 + 35 / 2, 192, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::pkm(*pkm, 228, 38, 2.0f, COLOR_GREY_BLEND, 1.0f);
+    Gui::pkm(*pkm, 224, 33, 2.0f);
 }
 
 void EditorScreen::update(touchPosition* touch)
@@ -437,9 +302,9 @@ void EditorScreen::update(touchPosition* touch)
     }
     u32 downKeys = keysDown();
 
-    for (size_t i = 0; i < buttons[currentTab].size(); i++)
+    for (size_t i = 0; i < buttons.size(); i++)
     {
-        if (buttons[currentTab][i]->update(touch))
+        if (buttons[i]->update(touch))
         {
             return;
         }
@@ -452,48 +317,17 @@ void EditorScreen::update(touchPosition* touch)
             return;
         }
     }
-
-    if (currentTab == 2)
-    {
-        if (downKeys & KEY_A)
-        {
-            saved = false;
-            changeMove();
-        }
-        else if (downKeys & KEY_DOWN)
-        {
-            if (moveSelected < 7)
-            {
-                moveSelected++;
-            }
-        }
-        else if (downKeys & KEY_UP)
-        {
-            if (moveSelected > 0)
-            {
-                moveSelected--;
-            }
-        }
-    }
 }
 
 bool EditorScreen::goBack()
 {
-    if (currentTab != 0)
+    if (saved() || Gui::showChoiceMessage(i18n::localize("EDITOR_CHECK_EXIT")))
     {
-        currentTab = 0;
-        return false;
+        Gui::screenBack();
+        TitleLoader::save->fixParty();
+        return true;
     }
-    else
-    {
-        if (saved || Gui::showChoiceMessage(i18n::localize("EDITOR_CHECK_EXIT")))
-        {
-            Gui::screenBack();
-            TitleLoader::save->fixParty();
-            return true;
-        }
-        return false;
-    }
+    return false;
 }
 
 bool EditorScreen::hexEdit()
@@ -687,178 +521,8 @@ bool EditorScreen::save()
         TitleLoader::save->pkm(pkm, index);
     }
     TitleLoader::save->dex(pkm);
+    sha256(origHash.data(), pkm->rawData(), pkm->getLength());
     return false;
-}
-
-void EditorScreen::setIV(int which)
-{
-    static SwkbdState state;
-    static bool first = true;
-    if (first)
-    {
-        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 2);
-        first = false;
-    }
-    swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
-    swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
-    char input[3] = {0};
-    SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-    input[2] = '\0';
-    if (ret == SWKBD_BUTTON_CONFIRM)
-    {
-        u8 iv = (u8) std::stoi(input);
-        pkm->iv(which, std::min((u8)31, iv));
-    }
-}
-
-bool EditorScreen::changeIV(int which, bool up)
-{
-    if (up)
-    {
-        if (pkm->iv(which) < 31)
-        {
-            pkm->iv(which, pkm->iv(which) + 1);
-        }
-        else
-        {
-            pkm->iv(which, 0);
-        }
-    }
-    else
-    {
-        if (pkm->iv(which) > 0)
-        {
-            pkm->iv(which, pkm->iv(which) - 1);
-        }
-        else
-        {
-            pkm->iv(which, 31);
-        }
-    }
-    return false;
-}
-
-void EditorScreen::setSecondaryStat(int which)
-{
-    static SwkbdState state;
-    static bool first = true;
-    if (first)
-    {
-        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 3);
-        first = false;
-    }
-    swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
-    swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
-    char input[4] = {0};
-    SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-    input[3] = '\0';
-    if (ret == SWKBD_BUTTON_CONFIRM)
-    {
-        u8 val = (u8) std::min(std::stoi(input), 0xFF);
-        if (pkm->generation() != Generation::LGPE)
-        {
-            pkm->ev(which, val);
-            u16 total = 0;
-            for (int i = 0; i < 6; i++)
-            {
-                total += i != which ? pkm->ev(i) : 0;
-            }
-            if (total + val > 510)
-            {
-                pkm->ev(which, 510 - total);
-            }
-        }
-        else
-        {
-            ((PB7*)pkm.get())->awakened(which, std::min((int)val, 200));
-        }
-    }
-}
-
-bool EditorScreen::changeSecondaryStat(int which, bool up)
-{
-    if (up)
-    {
-        if (pkm->generation() != Generation::LGPE)
-        {
-            u16 total = 0;
-            for (int i = 0; i < 6; i++)
-            {
-                total += pkm->ev(i);
-            }
-            // TODO: remove hardcoded value and set it in classes
-            if (total < 510 || pkm->ev(which) == 0xFC)
-            {
-                if (pkm->ev(which) < 0xFC)
-                {
-                    pkm->ev(which, pkm->ev(which) + 1);
-                }
-                else
-                {
-                    pkm->ev(which, 0);
-                }
-            }
-        }
-        else
-        {
-            PB7* pb7 = (PB7*)pkm.get();
-            if (pb7->awakened(which) < 200)
-            {
-                pb7->awakened(which, pb7->awakened(which) + 1);
-            }
-            else
-            {
-                pb7->awakened(which, 0);
-            }
-        }
-    }
-    else
-    {
-        if (pkm->generation() != Generation::LGPE)
-        {
-            if (pkm->ev(which) > 0)
-            {
-                pkm->ev(which, pkm->ev(which) - 1);
-            }
-            else
-            {
-                u16 total = 0xFC;
-                for (int i = 0; i < 6; i++)
-                {
-                    total += pkm->ev(i);
-                }
-                // TODO: remove hardcoded value and set it in classes
-                if (total <= 510)
-                {
-                    pkm->ev(which, 0xFC);
-                }   
-            }
-        }
-        else
-        {
-            PB7* pb7 = (PB7*)pkm.get();
-            if (pb7->awakened(which) > 0)
-            {
-                pb7->awakened(which, pb7->awakened(which) - 1);
-            }
-            else
-            {
-                pb7->awakened(which, 200);
-            }
-        }
-    }
-    return false;
-}
-
-bool EditorScreen::setHP()
-{
-    currentOverlay = std::make_unique<HiddenPowerOverlay>(*this, pkm);
-    return false;
-}
-
-void EditorScreen::changeMove()
-{
-    currentOverlay = std::make_unique<MoveOverlay>(*this, pkm, moveSelected);
 }
 
 bool EditorScreen::selectNature()
@@ -998,7 +662,6 @@ bool EditorScreen::selectForm()
     }
     if (count > 1)
     {
-        saved = false;
         currentOverlay = std::make_unique<FormOverlay>(*this, pkm, count);
     }
     return false;
@@ -1021,15 +684,12 @@ bool EditorScreen::genderSwitch()
     switch (pkm->gender())
     {
         case 0:
-            saved = false;
             pkm->gender(1);
             break;
         case 1:
-            saved = false;
             pkm->gender(2);
             break;
         case 2:
-            saved = false;
             pkm->gender(0);
             break;
     }
@@ -1040,29 +700,31 @@ bool EditorScreen::setSaveInfo()
 {
     if (pkm->otName() != TitleLoader::save->otName())
     {
-        saved = false;
         pkm->otName(TitleLoader::save->otName());
     }
     if (pkm->TID() != TitleLoader::save->TID())
     {
-        saved = false;
         pkm->TID(TitleLoader::save->TID());
     }
     if (pkm->SID() != TitleLoader::save->SID())
     {
-        saved = false;
         pkm->SID(TitleLoader::save->SID());
     }
     if (pkm->otGender() != TitleLoader::save->gender())
     {
-        saved = false;
         pkm->otGender(TitleLoader::save->gender());
     }
     if (pkm->version() != TitleLoader::save->version())
     {
-        saved = false;
         pkm->version(TitleLoader::save->version());
     }
     pkm->currentHandler(0);
     return false;
+}
+
+bool EditorScreen::saved()
+{
+    static std::array<u8, SHA256_BLOCK_SIZE> newHash;
+    sha256(newHash.data(), pkm->rawData(), pkm->getLength());
+    return !memcmp(newHash.data(), origHash.data(), SHA256_BLOCK_SIZE);
 }

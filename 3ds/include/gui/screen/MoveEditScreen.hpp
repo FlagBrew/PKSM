@@ -24,64 +24,27 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef EDITORSCREEN_HPP
-#define EDITORSCREEN_HPP
+#ifndef MOVEEDITSCREEN_HPP
+#define MOVEEDITSCREEN_HPP
 
 #include "Screen.hpp"
-#include "Button.hpp"
-#include "ViewOverlay.hpp"
 #include "PKX.hpp"
-extern "C" {
-#include "sha256.h"
-}
+#include "Button.hpp"
+#include <memory>
+#include <vector>
 
-class EditorScreen : public Screen
+class MoveEditScreen : public Screen
 {
 public:
-    ~EditorScreen()
-    {
-        for (auto button : buttons)
-        {
-            delete button;
-        }
-    }
-    EditorScreen(std::shared_ptr<PKX> pkm, int box, int index);
+    MoveEditScreen(std::shared_ptr<PKX> pkm);
     void draw() const override;
     void update(touchPosition* touch) override;
     ScreenType type() const override { return ScreenType::EDITOR; }
 private:
-    bool changeLevel(bool up);
-    void setLevel();
-    bool selectNature();
-    bool selectAbility();
-    bool selectItem();
-    bool selectForm();
-    bool selectBall();
-    bool selectSpecies();
-    bool togglePokerus();
-    void setOT();
-    void setNick();
-    bool changeFriendship(bool up);
-    void setFriendship();
-    bool hexEdit();
-    bool save();
-    bool genderSwitch();
-    void partyUpdate();
-    
-    bool goBack();
-    bool setSaveInfo();
-    bool saved();
-    std::vector<Button*> buttons;
+    void changeMove();
     std::shared_ptr<PKX> pkm;
-    std::array<u8, SHA256_BLOCK_SIZE> origHash;
-    int box = 0;
-    int index = 0;
-    int origPartyStats[6] = {0};
-    int origPartyLevel = 0;
-    int origPartyCurrHP = 0;
-    int origPartyCP = 0;
-    bool justSwitched = true;
-
+    int moveSelected = 0;
+    std::vector<std::unique_ptr<Button>> buttons;
 };
 
 #endif
