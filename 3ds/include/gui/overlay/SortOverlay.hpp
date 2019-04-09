@@ -31,6 +31,7 @@
 #include "HidVertical.hpp"
 #include <string>
 #include <array>
+#include "i18n.hpp"
 
 enum SortType
 {
@@ -125,7 +126,12 @@ static constexpr std::string_view sortTypeToString(SortType type)
 class SortOverlay : public Overlay
 {
 public:
-    SortOverlay(Screen& screen, SortType& type) : Overlay(screen), hid(40, 2), out(type) { hid.update(vals.size()); hid.select(int(type)); }
+    SortOverlay(Screen& screen, SortType& type)
+        : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), hid(40, 2), out(type)
+    {
+        hid.update(vals.size());
+        hid.select(int(type));
+    }
     virtual ~SortOverlay() {}
     void draw() const override;
     void update(touchPosition* touch) override;

@@ -33,7 +33,9 @@
 class ViewCloneOverlay : public ViewOverlay
 {
 public:
-    ViewCloneOverlay(Screen& screen, std::shared_ptr<PKX>& pkm, std::vector<std::shared_ptr<PKX>>& clone, std::vector<int>& partyNum, std::pair<int, int>& cloneDims, bool& currentlySelecting) : ViewOverlay(screen, pkm, true), clone(clone), partyNum(partyNum), cloneDims(cloneDims), currentlySelecting(currentlySelecting) {}
+    ViewCloneOverlay(Screen& screen, std::shared_ptr<PKX>& pkm, std::vector<std::shared_ptr<PKX>>& clone, std::vector<int>& partyNum, std::pair<int, int>& cloneDims, bool& currentlySelecting)
+        : ViewOverlay(screen, pkm, true, i18n::localize("A_SELECT") + '\n' + i18n::localize("X_CLONE") + '\n' + i18n::localize("B_BACK")),
+        clone(clone), partyNum(partyNum), cloneDims(cloneDims), currentlySelecting(currentlySelecting) {}
     virtual ~ViewCloneOverlay() {}
     void update(touchPosition* touch) override;
     void draw() const override;

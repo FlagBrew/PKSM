@@ -62,8 +62,10 @@ namespace {
     }
 }
 
-PkmItemOverlay::PkmItemOverlay(Screen& screen, std::shared_ptr<PKX> pkm) : Overlay(screen), pkm(pkm), hid(40, 2)
+PkmItemOverlay::PkmItemOverlay(Screen& screen, std::shared_ptr<PKX> pkm)
+    : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(40, 2)
 {
+    instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     const std::vector<std::string>& rawItems = i18n::rawItems(Configuration::getInstance().language());
     for (int i = 1; i <= TitleLoader::save->maxItem(); i++)
     {

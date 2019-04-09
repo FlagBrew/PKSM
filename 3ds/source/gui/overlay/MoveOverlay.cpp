@@ -60,8 +60,10 @@ namespace {
     }
 }
 
-MoveOverlay::MoveOverlay(Screen& screen, std::shared_ptr<PKX> pkm, int moveIndex) : Overlay(screen), pkm(pkm), moveIndex(moveIndex), hid(40, 2)
+MoveOverlay::MoveOverlay(Screen& screen, std::shared_ptr<PKX> pkm, int moveIndex)
+    : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), moveIndex(moveIndex), hid(40, 2)
 {
+    instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     const std::vector<std::string>& rawMoves = i18n::rawMoves(Configuration::getInstance().language());
     for (int i = 1; i <= TitleLoader::save->maxMove(); i++)
     {

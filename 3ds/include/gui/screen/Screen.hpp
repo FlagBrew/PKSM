@@ -76,7 +76,7 @@ public:
     virtual float timer() const final { return mTimer; }
     void removeOverlay() { currentOverlay = nullptr; }
     void setOverlay(std::shared_ptr<Overlay>& overlay) { currentOverlay = overlay; }
-    const Instructions& getInstructions() const { return currentOverlay ? currentOverlay->getInstructions() : instructions; }
+    const Instructions& getInstructions() const { return currentOverlay && !currentOverlay->getInstructions().empty() ? currentOverlay->getInstructions() : instructions; }
 
 protected:
     // No point in restricting this to only being editable during update, especially since it's drawn afterwards. Allows setting it before the first draw loop is done

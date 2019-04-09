@@ -30,11 +30,13 @@
 #include "Overlay.hpp"
 #include "HidHorizontal.hpp"
 #include "PKX.hpp"
+#include "i18n.hpp"
 
 class HiddenPowerOverlay : public Overlay
 {
 public:
-    HiddenPowerOverlay(Screen& screen, std::shared_ptr<PKX> pkm) : Overlay(screen), pkm(pkm), hid(16, 4)
+    HiddenPowerOverlay(Screen& screen, std::shared_ptr<PKX> pkm)
+        : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(16, 4)
     {
         hid.update(16);
         hid.select(pkm->hpType());
