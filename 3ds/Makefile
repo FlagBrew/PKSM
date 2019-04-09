@@ -132,6 +132,8 @@ LIBS	:= -lSDL_mixer -lSDL -lmpg123 -lvorbisidec -logg -lmikmod -lmad  \
 		   -lcurl -lmbedtls -lmbedx509 -lmbedcrypto \
 		   -lz -lcitro2d -lcitro3d -lctru -lm 
 
+CXX		:= `which ccache` $(CXX)
+
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
 # include and lib
