@@ -42,7 +42,9 @@ static constexpr std::string_view langs[] = {
     "CHT"
 };
 
-InjectSelectorScreen::InjectSelectorScreen() : hid(10, 2), dumpHid(40, 8)
+InjectSelectorScreen::InjectSelectorScreen()
+    : Screen(i18n::localize("A_SELECT") + '\n' + i18n::localize("L_PAGE_PREV") + '\n'
+             + i18n::localize("R_PAGE_NEXT") + '\n' + i18n::localize("B_BACK")), hid(10, 2), dumpHid(40, 8)
 {
     MysteryGift::init(TitleLoader::save->generation());
     wondercards = MysteryGift::wondercards();
@@ -62,6 +64,9 @@ InjectSelectorScreen::InjectSelectorScreen() : hid(10, 2), dumpHid(40, 8)
     gifts = TitleLoader::save->currentGifts();
 
     // QR
+    instructions.addCircle(false, 160, 195, 11, COLOR_GREY);
+    instructions.addBox(false, 158, 177, 4, 29, COLOR_GREY);
+    instructions.addBox(false, 160 - 100/2, 177 - 23, 100, 23, COLOR_GREY, i18n::localize("QR_SCANNER"));
     buttons.push_back(new Button(160 - 70/2, 207 - 23, 70, 23, [this](){ return this->doQR(); }, ui_sheet_emulated_button_qr_idx, "", FONT_SIZE_14, COLOR_WHITE));
     // Filter
     for (int i = 0; i < 9; i++)

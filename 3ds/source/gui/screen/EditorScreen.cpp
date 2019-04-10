@@ -48,7 +48,7 @@
 static constexpr int statValues[] = { 0, 1, 2, 4, 5, 3 };
 
 EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index)
-                : pkm(pokemon), box(box), index(index)
+                : Screen(i18n::localize("B_BACK")), pkm(pokemon), box(box), index(index)
 {
     if (!pkm || (pkm->encryptionConstant() == 0 && pkm->species() == 0))
     {
@@ -198,7 +198,11 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index)
     }
 
     buttons.push_back(NO_TEXT_CLICK(283, 211, 34, 28, [this](){ return this->goBack(); }, ui_sheet_button_back_idx));
+    instructions.addCircle(false, 12, 11, 4, COLOR_GREY);
+    instructions.addBox(false, 10, 11, 4, 32, COLOR_GREY);
+    instructions.addBox(false, 10, 43, 50, 16, COLOR_GREY, i18n::localize("BALL"), COLOR_WHITE);
     buttons.push_back(NO_TEXT_BUTTON(4, 3, 20, 19, [this](){ return this->selectBall(); }, ui_sheet_res_null_idx));
+    instructions.addBox(false, 224, 33, 60, 68, COLOR_GREY, i18n::localize("CHANGE_FORM"), COLOR_WHITE);
     buttons.push_back(NO_TEXT_BUTTON(224, 33, 60, 68, [this](){ return this->selectForm(); }, ui_sheet_res_null_idx));
     buttons.push_back(NO_TEXT_BUTTON(291, 2, 27, 23, [this](){ return this->hexEdit(); }, ui_sheet_icon_hex_idx));
     buttons.push_back(NO_TEXT_ACCEL(94, 34, 13, 13, [this](){ return this->changeLevel(false); }, ui_sheet_button_minus_small_idx));
@@ -217,7 +221,11 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index)
     buttons.push_back(new Button(204, 109, 108, 30, [this](){ Gui::setScreen(std::make_unique<StatsEditScreen>(pkm)); justSwitched = true; return true; }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_STATS"), FONT_SIZE_12, COLOR_BLACK));
     buttons.push_back(new Button(204, 140, 108, 30, [this](){ Gui::setScreen(std::make_unique<MoveEditScreen>(pkm)); justSwitched = true; return true; }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_MOVES"), FONT_SIZE_12, COLOR_BLACK));
     buttons.push_back(new ClickButton(204, 171, 108, 30, [this](){ this->save(); this->goBack(); return true; }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_SAVE"), FONT_SIZE_12, COLOR_BLACK));
+    instructions.addBox(false, 25, 5, 120, 15, COLOR_GREY, i18n::localize("CHANGE_SPECIES"), COLOR_WHITE);
     buttons.push_back(NO_TEXT_BUTTON(25, 5, 120, 13, [this](){ return this->selectSpecies(); }, ui_sheet_res_null_idx));
+    instructions.addCircle(false, 192, 13, 6, COLOR_GREY);
+    instructions.addBox(false, 190, 11, 4, 32, COLOR_GREY);
+    instructions.addBox(false, 165, 43, 50, 16, COLOR_GREY, i18n::localize("GENDER"), COLOR_WHITE);
     buttons.push_back(NO_TEXT_CLICK(186, 7, 12, 12, [this](){ return this->genderSwitch(); }, ui_sheet_res_null_idx));
     buttons.push_back(NO_TEXT_CLICK(239, 3, 43, 22, [this](){ return this->setSaveInfo(); }, ui_sheet_button_trainer_info_idx));
 

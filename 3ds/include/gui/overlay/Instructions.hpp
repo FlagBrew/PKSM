@@ -40,7 +40,8 @@ public:
     void draw() const;
     void addBox(bool top, int x, int y, int width, int height, u32 color, const std::string& text = "", u32 textColor = COLOR_BLACK);
     void addText(bool top, int x, int y, int maxWidth, TextPosX xPos, TextPosY yPos, u32 color, const std::string& text);
-    bool empty() const { return boxes.empty() && texts.empty(); }
+    void addCircle(bool top, int x, int y, int radius, u32 color);
+    bool empty() const { return boxes.empty() && texts.empty() && circles.empty(); }
 private:
     void dim() const;
     struct Box
@@ -66,8 +67,19 @@ private:
         u32 color;
         std::string string;
     };
+    struct Circle
+    {
+        Circle(bool top, int x, int y, int radius, u32 color)
+             : top(top), x(x), y(y), radius(radius), color(color) {}
+        bool top;
+        int x;
+        int y;
+        int radius;
+        u32 color;
+    };
     std::vector<Box> boxes;
     std::vector<Text> texts;
+    std::vector<Circle> circles;
 };
 
 #endif

@@ -60,6 +60,11 @@ void Instructions::addText(bool top, int x, int y, int maxWidth, TextPosX xPos, 
     texts.emplace_back(top, x, y, xPos, yPos, color, StringUtils::wrap(text, FONT_SIZE_12, maxWidth));
 }
 
+void Instructions::addCircle(bool top, int x, int y, int radius, u32 color)
+{
+    circles.emplace_back(top, x, y, radius, color);
+}
+
 void Instructions::draw() const
 {
     C2D_SceneBegin(g_renderTargetTop);
@@ -79,6 +84,12 @@ void Instructions::draw() const
         target = text.top ? g_renderTargetTop : g_renderTargetBottom;
         C2D_SceneBegin(target);
         Gui::dynamicText(text.string, text.x, text.y, FONT_SIZE_12, FONT_SIZE_12, text.color, text.xPos, text.yPos);
+    }
+    for (auto& circle : circles)
+    {
+        target = circle.top ? g_renderTargetTop : g_renderTargetBottom;
+        C2D_SceneBegin(target);
+        C2D_DrawCircleSolid(circle.x, circle.y, 0.5f, circle.radius, circle.color);
     }
 }
 

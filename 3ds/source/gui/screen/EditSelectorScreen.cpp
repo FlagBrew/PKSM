@@ -148,14 +148,19 @@ bool EditSelectorScreen::doQR()
 }
 
 EditSelectorScreen::EditSelectorScreen()
+    : Screen(i18n::localize("A_SELECT") + '\n' + i18n::localize("X_CLONE") + '\n' + i18n::localize("B_BACK"))
 {
     currentOverlay = std::make_shared<ViewOverlay>(*this, infoMon, false);
     
     buttons.push_back(new ClickButton(283, 211, 34, 28, [](){ Gui::screenBack(); return true; }, ui_sheet_button_back_idx, "", 0.0f, 0));
-    buttons.push_back(new ClickButton(32, 15, 164, 24, [this](){ return this->clickIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0));
+    instructions.addBox(false, 25, 15, 164, 24, COLOR_GREY, i18n::localize("A_BOX_NAME"), COLOR_WHITE);
+    buttons.push_back(new ClickButton(25, 15, 164, 24, [this](){ return this->clickIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0));
     buttons.push_back(new AccelButton(8, 15, 17, 24, [this](){ return this->prevBox(); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5));
     buttons.push_back(new AccelButton(189, 15, 17, 24, [this](){ return this->nextBox(); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5));
     int cameraButtonWidth = StringUtils::textWidth("\uE004+\uE005 \uE01E", FONT_SIZE_14);
+    instructions.addCircle(false, 310 - cameraButtonWidth / 2, 24, 8, COLOR_GREY);
+    instructions.addBox(false, 308 - cameraButtonWidth / 2, 24, 4, 20, COLOR_GREY);
+    instructions.addBox(false, 222 - cameraButtonWidth / 2, 44, 90, 16, COLOR_GREY, i18n::localize("QR_SCANNER"), COLOR_WHITE);
     buttons.push_back(new ClickButton(310 - cameraButtonWidth, 16, cameraButtonWidth + 2, 16, [this](){ return this->doQR(); }, ui_sheet_res_null_idx, "\uE004+\uE005 \uE01E", FONT_SIZE_14, COLOR_BLACK));
 
     // Pokemon buttons
