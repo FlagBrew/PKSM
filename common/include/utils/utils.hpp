@@ -392,10 +392,9 @@ namespace StringUtils
     std::string format(const std::string& fmt_str, ...);
     std::u16string UTF8toUTF16(const std::string& src);
     std::string UTF16toUTF8(const std::u16string& src);
-    std::string getString(const u8* data, int ofs, int len);
-    std::string getTrimmedString(const u8* data, int ofs, int len, char* substr);
-    void setString(u8* data, const std::string& v, int ofs, int len);
-    void setStringWithBytes(u8* data, const std::string& v, int ofs, int len, char* padding);
+    std::string getString(const u8* data, int ofs, int len, char16_t term = 0);
+    void setString(u8* data, const std::u16string& v, int ofs, int len, char16_t terminator = 0, char16_t padding = 0);
+    void setString(u8* data, const std::string& v, int ofs, int len, char16_t terminator = 0, char16_t padding = 0);
     std::string getString4(const u8* data, int ofs, int len);
     void setString4(u8* data, const std::string& v, int ofs, int len);
     std::string& toLower(std::string& in);

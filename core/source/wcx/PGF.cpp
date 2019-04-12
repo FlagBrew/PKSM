@@ -32,7 +32,7 @@ Generation PGF::generation(void) const { return Generation::FIVE; }
 
 u16 PGF::ID(void) const { return *(u16*)(data + 0xB0); }
 
-std::string PGF::title(void) const { return StringUtils::getTrimmedString(data, 0x60, 37, (char*)"\uFFFF"); }
+std::string PGF::title(void) const { return StringUtils::getString(data, 0x60, 37, u'\uFFFF'); }
 
 u8 PGF::type(void) const { return *(u8*)(data + 0xB3); }
 
@@ -90,7 +90,7 @@ u16 PGF::species(void) const { return *(u16*)(data + 0x1A); }
 
 u8 PGF::gender(void) const { return *(u8*)(data + 0x35); }
 
-std::string PGF::otName(void) const { return *((u16*)(data + 0x4A)) != 0xFFFF ? StringUtils::getTrimmedString(data, 0x4A, 8, (char*)"\uFFFF") : "Your OT Name"; }
+std::string PGF::otName(void) const { return *((u16*)(data + 0x4A)) != 0xFFFF ? StringUtils::getString(data, 0x4A, 8, u'\uFFFF') : "Your OT Name"; }
 
 u8 PGF::level(void) const { return *(u8*)(data + 0x5B); }
 
@@ -102,7 +102,7 @@ u8 PGF::alternativeForm(void) const { return *(u8*)(data + 0x1C); }
 
 u8 PGF::language(void) const { return *(u8*)(data + 0x1D); }
 
-std::string PGF::nickname(void) const { return *((u16*)(data + 0x1E)) != 0xFFFF ? StringUtils::getTrimmedString(data, 0x1E, 11, (char*)"\uFFFF") : "Pokemon Name"; }
+std::string PGF::nickname(void) const { return *((u16*)(data + 0x1E)) != 0xFFFF ? StringUtils::getString(data, 0x1E, 11, u'\uFFFF') : "Pokemon Name"; }
 
 u8 PGF::nature(void) const { return *(u8*)(data + 0x34); }
 
