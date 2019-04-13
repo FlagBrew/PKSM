@@ -24,39 +24,27 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef BANKSELECTIONSCREEN_HPP
-#define BANKSELECTIONSCREEN_HPP
+#ifndef SORTSCREEN_HPP
+#define SORTSCREEN_HPP
 
 #include "Screen.hpp"
-#include "HidVertical.hpp"
-#include "banks.hpp"
-#include <vector>
-#include <string>
+#include "Button.hpp"
+#include "SortOverlay.hpp"
 
-class BankSelectionScreen : public Screen
+class SortScreen : public Screen
 {
 public:
-    BankSelectionScreen(int& storageBox) : hid(40, 2), strings(Banks::bankNames()), storageBox(storageBox)
-    {
-        int newBankNum = 0;
-        while (std::find_if(strings.begin(), strings.end(), [&newBankNum](const std::pair<std::string, int>& v){ return v.first == i18n::localize("NEW_BANK") + " " + std::to_string(newBankNum); }) != strings.end())
-        {
-            newBankNum++;
-        }
-        strings.push_back({i18n::localize("NEW_BANK") + " " + std::to_string(newBankNum), 1});
-        hid.update(strings.size());
-        hid.select(std::distance(strings.begin(), std::find_if(strings.begin(), strings.end(), [](const std::pair<std::string, int>& v){ return v.first == Banks::bank->name(); })));
-    }
+    SortScreen(bool storage);
     void draw() const override;
     void update(touchPosition* touch) override;
-    ScreenType type() const override { return ScreenType::SELECTOR; }
+    ScreenType type(void) const override { return ScreenType::STORAGE; }
 private:
-    void renameBank();
-    void resizeBank();
-    HidVertical hid;
-    std::vector<std::pair<std::string, int>> strings;
-    bool finished = false;
-    int& storageBox;
+    void pickSort(size_t number);
+    void sort();
+    std::vector<std::unique_ptr<Button>> buttons;
+    std::vector<SortType> sortTypes;
+    bool justSwitched = true;
+    bool storage;
 };
 
 #endif

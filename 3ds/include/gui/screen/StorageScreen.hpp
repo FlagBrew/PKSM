@@ -62,23 +62,13 @@ private:
     void setBoxName(bool storage);
     void pickup();
     bool isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTransfer = false);
-    bool pickSort(size_t number);
-    bool sort();
-    bool selectBox();
     void scrunchSelection();
     void grabSelection(bool remove);
-    bool selectBank();
 
     bool storageChosen = false;
     bool fromStorage = false;
-    bool sortSelector = false;
-    mutable bool filterSelector = false;
-    bool funcSelector = false;
     std::array<Button*, 10> mainButtons;
     std::array<Button*, 31> clickButtons;
-    std::array<Button*, 2> funcButtons;
-    std::array<Button*, 6> sortButtons;
-    std::vector<SortType> sortTypes;
     int cursorIndex = 0, storageBox = 0, boxBox = 0;
     std::shared_ptr<PKX> infoMon = nullptr;
     std::vector<std::shared_ptr<PKX>> moveMon;

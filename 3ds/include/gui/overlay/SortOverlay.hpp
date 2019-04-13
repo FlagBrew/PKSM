@@ -137,7 +137,6 @@ public:
     void update(touchPosition* touch) override;
 private:
     HidVertical hid;
-    mutable bool firstDraw = true;
     bool finished = false;
     SortType& out;
     static constexpr std::array<SortType, 26> vals = {
