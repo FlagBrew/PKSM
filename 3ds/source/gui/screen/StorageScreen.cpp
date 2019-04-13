@@ -148,7 +148,14 @@ void StorageScreen::setBoxName(bool storage)
 }
 
 StorageScreen::StorageScreen()
+    : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_VIEW") + '\n' + i18n::localize("Y_CURSOR_MODE") + '\n'
+             + i18n::localize("L_BOX_PREV") + '\n' + i18n::localize("R_BOX_NEXT") + '\n'
+             + i18n::localize("START_EXTRA_FUNC") + '\n' + i18n::localize("B_BACK"))
 {
+    instructions.addBox(true, 69, 21, 156, 24, COLOR_GREY, i18n::localize("A_BOX_NAME"), COLOR_WHITE);
+    instructions.addCircle(false, 266, 23, 11, COLOR_GREY);
+    instructions.addBox(false, 264, 23, 4, 50, COLOR_GREY);
+    instructions.addBox(false, 148, 57, 120, 16, COLOR_GREY, i18n::localize("BOX_SWAP"), COLOR_WHITE);
     mainButtons[0] = new ClickButton(242, 12, 47, 22, [this](){ return this->swapBoxWithStorage(); }, ui_sheet_button_swap_boxes_idx, "", 0.0f, 0);
     mainButtons[1] = new Button(212, 47, 108, 28, [this](){ return this->showViewer(); }, ui_sheet_button_editor_idx,
                                     i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
@@ -160,10 +167,9 @@ StorageScreen::StorageScreen()
                                     i18n::localize("DUMP"), FONT_SIZE_12, COLOR_BLACK);
     mainButtons[5] = new Button(212, 171, 108, 28, [this](){ return this->duplicate(); }, ui_sheet_button_editor_idx,
                                     i18n::localize("CLONE"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[6] = new Button(4, 212, 33, 28, [this](){ return false; }, ui_sheet_res_null_idx, "", 0.0f, 0);
-    mainButtons[7] = new Button(283, 211, 34, 28, [this](){ return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
-    mainButtons[8] = new AccelButton(8, 15, 17, 24, [this](){ return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
-    mainButtons[9] = new AccelButton(189, 15, 17, 24, [this](){ return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+    mainButtons[6] = new Button(283, 211, 34, 28, [this](){ return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
+    mainButtons[7] = new AccelButton(8, 15, 17, 24, [this](){ return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+    mainButtons[8] = new AccelButton(189, 15, 17, 24, [this](){ return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
 
     // Pokemon buttons
     u16 y = 45;
@@ -177,7 +183,8 @@ StorageScreen::StorageScreen()
         }
         y += 30;
     }
-    clickButtons[30] = new ClickButton(32, 15, 164, 24, [this](){ return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0);
+    instructions.addBox(false, 25, 15, 164, 24, COLOR_GREY, i18n::localize("A_BOX_NAME"), COLOR_WHITE);
+    clickButtons[30] = new ClickButton(25, 15, 164, 24, [this](){ return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0);
     TitleLoader::save->cryptBoxData(true);
 
     boxBox = TitleLoader::save->currentBox();

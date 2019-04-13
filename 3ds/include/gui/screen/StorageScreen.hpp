@@ -67,7 +67,7 @@ private:
 
     bool storageChosen = false;
     bool fromStorage = false;
-    std::array<Button*, 10> mainButtons;
+    std::array<Button*, 9> mainButtons;
     std::array<Button*, 31> clickButtons;
     int cursorIndex = 0, storageBox = 0, boxBox = 0;
     std::shared_ptr<PKX> infoMon = nullptr;
