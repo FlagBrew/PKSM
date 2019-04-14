@@ -31,7 +31,6 @@
 #include <queue>
 #include "g4text.h"
 
-static std::wstring_convert<std::codecvt_utf8_utf16<char16_t>,char16_t> convert;
 namespace Gui
 {
     extern std::vector<C2D_Font> fonts;
@@ -50,91 +49,149 @@ std::string StringUtils::format(const std::string& fmt_str, ...)
 
 std::u16string StringUtils::UTF8toUTF16(const std::string& src)
 {
-    return convert.from_bytes(src);
+    std::u16string ret;
+    for (size_t i = 0; i < src.size(); i++)
+    {
+        u16 codepoint = 0xFFFD;
+        int iMod = 0;
+        if (src[i] & 0x80 && src[i] & 0x40 && src[i] & 0x20 && !(src[i] & 0x10) && i + 2 < src.size())
+        {
+            codepoint = src[i] & 0x0F;
+            codepoint = codepoint << 6 | (src[i + 1] & 0x3F);
+            codepoint = codepoint << 6 | (src[i + 2] & 0x3F);
+            iMod = 2;
+        }
+        else if (src[i] & 0x80 && src[i] & 0x40 && !(src[i] & 0x20) && i + 1 < src.size())
+        {
+            codepoint = src[i] & 0x1F;
+            codepoint = codepoint << 6 | (src[i + 1] & 0x3F);
+            iMod = 1;
+        }
+        else if (!(src[i] & 0x80))
+        {
+            codepoint = src[i];
+        }
+
+        ret.push_back((char16_t) codepoint);
+        i += iMod;
+    }
+    return ret;
+}
+
+static std::string utf16DataToUtf8(const char16_t* data, size_t size, char16_t delim = 0)
+{
+    std::string ret;
+    char addChar[4] = {0};
+    for (size_t i = 0; i < size; i++)
+    {
+        if (data[i] == delim)
+        {
+            return ret;
+        }
+        else if (data[i] < 0x0080)
+        {
+            addChar[0] = data[i];
+            addChar[1] = '\0';
+        }
+        else if (data[i] < 0x0800)
+        {
+            addChar[0] = 0xC0 | ((data[i] >> 6) & 0x1F);
+            addChar[1] = 0x80 | (data[i] & 0x3F);
+            addChar[2] = '\0';
+        }
+        else
+        {
+            addChar[0] = 0xE0 | ((data[i] >> 12) & 0x0F);
+            addChar[1] = 0x80 | ((data[i] >> 6) & 0x3F);
+            addChar[2] = 0x80 | (data[i] & 0x3F);
+            addChar[3] = '\0';
+        }
+        ret.append(addChar);
+    }
+    return ret;
 }
 
 std::string StringUtils::UTF16toUTF8(const std::u16string& src)
 {
-    return convert.to_bytes(src);
+    return utf16DataToUtf8(src.data(), src.size());
 }
 
-std::u16string StringUtils::getU16String(const u8* data, int ofs, int len)
+std::u16string StringUtils::getU16String(const u8* data, int ofs, int len, char16_t term)
 {
-    len *= 2;
-    u8 buffer[len];
-    std::copy(data + ofs, data + ofs + len, buffer);
-    return std::u16string{(char16_t*)buffer};
-}
-
-std::string StringUtils::getString(const u8* data, int ofs, int len)
-{
-    len *= 2;
-    u8 buffer[len];
-    std::copy(data + ofs, data + ofs + len, buffer);
-    std::string dst = convert.to_bytes((char16_t*)buffer);
-    return dst;
-}
-
-std::u16string StringUtils::getTrimmedU16String(const u8* data, int ofs, int len, char16_t* substr)
-{
-    std::u16string str = getU16String(data, ofs, len);
-    size_t found = str.find(substr);
-    return found != std::string::npos ? str.substr(0, found) : str;
-}
-
-std::string StringUtils::getTrimmedString(const u8* data, int ofs, int len, char* substr)
-{
-    std::string str = getString(data, ofs, len);
-    size_t found = str.find(substr);
-    return found != std::string::npos ? str.substr(0, found) : str;
-}
-
-void StringUtils::setString(u8* data, const std::string& v, int ofs, int len)
-{
-    len *= 2;
-    u8 toinsert[len] = {0};
-    if (v.empty()) return;
-    
-    char buf;
-    int nicklen = v.length(), r = 0, w = 0, i = 0;
-    while (r < nicklen || w > len)
+    std::u16string ret;
+    const char16_t* buf = (char16_t*)(data + ofs);
+    for (int i = 0; i < len; i++)
     {
-        buf = v[r++];
-        if ((buf & 0x80) == 0)
+        if (buf[i] == term)
         {
-            toinsert[w] = buf & 0x7f;
-            i = 0;
+            return ret;
         }
-        else if ((buf & 0xe0) == 0xc0)
-        {
-            toinsert[w] = buf & 0x1f;
-            i = 1;
-        }
-        else if ((buf & 0xf0) == 0xe0)
-        {
-            toinsert[w] = buf & 0x0f;
-            i = 2;
-        }
-        else break;
-        
-        for (int j = 0; j < i; j++)
-        {
-            buf = v[r++];
-            if (toinsert[w] > 0x04)
-            {
-                toinsert[w + 1] = (toinsert[w + 1] << 6) | (((toinsert[w] & 0xfc) >> 2) & 0x3f);
-                toinsert[w] &= 0x03;
-            }
-            toinsert[w] = (toinsert[w] << 6) | (buf & 0x3f);
-        }
-        w += 2;
+        ret.push_back(buf[i]);
     }
-    memcpy(data + ofs, toinsert, len);
+    return ret;
 }
 
-void StringUtils::setStringWithBytes(u8* data, const std::string& v, int ofs, int len, char* padding)
+std::string StringUtils::getString(const u8* data, int ofs, int len, char16_t term)
 {
-    setString(data, v + padding, ofs, len);
+    return utf16DataToUtf8((char16_t*)(data + ofs), len, term);
+}
+
+void StringUtils::setString(u8* data, const std::u16string& v, int ofs, int len, char16_t terminator, char16_t padding)
+{
+    int i = 0;
+    for (; i < std::min(len - 1, (int)v.size()); i++) // len includes terminator
+    {
+        *(u16*)(data + ofs + i * 2) = v[i];
+    }
+    *(u16*)(data + ofs + i++ * 2) = terminator; // Set terminator
+    for (; i < len; i++)
+    {
+        *(u16*)(data + ofs + i * 2) = padding; // Set final padding bytes
+    }
+}
+
+void StringUtils::setString(u8* data, const std::string& v, int ofs, int len, char16_t terminator, char16_t padding)
+{
+    setString(data, UTF8toUTF16(v), ofs, len, terminator, padding);
+    // len *= 2;
+    // u8 toinsert[len] = {0};
+    // if (v.empty()) return;
+    
+    // char buf;
+    // int nicklen = v.length(), r = 0, w = 0, i = 0;
+    // while (r < nicklen || w > len)
+    // {
+    //     buf = v[r++];
+    //     if ((buf & 0x80) == 0)
+    //     {
+    //         toinsert[w] = buf & 0x7f;
+    //         i = 0;
+    //     }
+    //     else if ((buf & 0xe0) == 0xc0)
+    //     {
+    //         toinsert[w] = buf & 0x1f;
+    //         i = 1;
+    //     }
+    //     else if ((buf & 0xf0) == 0xe0)
+    //     {
+    //         toinsert[w] = buf & 0x0f;
+    //         i = 2;
+    //     }
+    //     else break;
+        
+    //     for (int j = 0; j < i; j++)
+    //     {
+    //         buf = v[r++];
+    //         if (toinsert[w] > 0x04)
+    //         {
+    //             toinsert[w + 1] = (toinsert[w + 1] << 6) | (((toinsert[w] & 0xfc) >> 2) & 0x3f);
+    //             toinsert[w] &= 0x03;
+    //         }
+    //         toinsert[w] = (toinsert[w] << 6) | (buf & 0x3f);
+    //     }
+    //     w += 2;
+    // }
+    // memcpy(data + ofs, toinsert, len);
 }
 
 std::string StringUtils::getString4(const u8* data, int ofs, int len)

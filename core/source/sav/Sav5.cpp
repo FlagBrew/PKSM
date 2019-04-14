@@ -50,8 +50,8 @@ void Sav5::consoleRegion(u8 v) { (void)v; }
 u8 Sav5::language(void) const { return data[Trainer1 + 0x1E]; }
 void Sav5::language(u8 v) { data[Trainer1 + 0x1E] = v; }
 
-std::string Sav5::otName(void) const { return StringUtils::transString45(StringUtils::getTrimmedString(data, Trainer1 + 0x4, 8, (char*)"\uFFFF")); }
-void Sav5::otName(const std::string& v) { StringUtils::setStringWithBytes(data, StringUtils::transString45(v), Trainer1 + 0x4, 8, (char*)"\uFFFF"); }
+std::string Sav5::otName(void) const { return StringUtils::transString45(StringUtils::getString(data, Trainer1 + 0x4, 8, u'\uFFFF')); }
+void Sav5::otName(const std::string& v) { StringUtils::setString(data, StringUtils::transString45(v), Trainer1 + 0x4, 8, u'\uFFFF', 0); }
 
 u32 Sav5::money(void) const { return *(u32*)(data + Trainer2); }
 void Sav5::money(u32 v) { *(u32*)(data + Trainer2) = v; }
@@ -300,11 +300,11 @@ void Sav5::mysteryGift(WCX& wc, int& pos)
     pos = (pos + 1) % 12;
 }
 
-std::string Sav5::boxName(u8 box) const { return StringUtils::transString45(StringUtils::getTrimmedString(data, PCLayout + 0x28 * box + 4, 9, (char*)"\uFFFF")); }
+std::string Sav5::boxName(u8 box) const { return StringUtils::transString45(StringUtils::getString(data, PCLayout + 0x28 * box + 4, 9, u'\uFFFF')); }
 
 void Sav5::boxName(u8 box, const std::string& name)
 {
-    StringUtils::setStringWithBytes(data, StringUtils::transString45(name), PCLayout + 0x28 * box + 4, 9, (char*)"\uFFFF");
+    StringUtils::setString(data, StringUtils::transString45(name), PCLayout + 0x28 * box + 4, 9, u'\uFFFF', 0);
 }
 
 u8 Sav5::partyCount(void) const { return data[Party + 4]; }
@@ -350,11 +350,11 @@ std::vector<MysteryGift::giftData> Sav5::currentGifts(void) const
     {
         if (*(wonderCards + i * PGF::length + 0xB3) == 1)
         {
-            ret.push_back({ StringUtils::getTrimmedString(wonderCards + i * PGF::length, 0x60, 37, (char*)"\uFFFF"), "", *(u16*)(wonderCards + i * PGF::length + 0x1A), *(wonderCards + i * PGF::length + 0x1C), *(wonderCards + i * PGF::length + 0x35)});
+            ret.push_back({ StringUtils::getString(wonderCards + i * PGF::length, 0x60, 37, u'\uFFFF'), "", *(u16*)(wonderCards + i * PGF::length + 0x1A), *(wonderCards + i * PGF::length + 0x1C), *(wonderCards + i * PGF::length + 0x35)});
         }
         else
         {
-            ret.push_back({ StringUtils::getTrimmedString(wonderCards + i * PGF::length, 0x60, 37, (char*)"\uFFFF"), "", -1, -1, -1 });
+            ret.push_back({ StringUtils::getString(wonderCards + i * PGF::length, 0x60, 37, u'\uFFFF'), "", -1, -1, -1 });
         }
     }
     return ret;
