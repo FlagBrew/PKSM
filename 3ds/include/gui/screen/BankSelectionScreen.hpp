@@ -36,7 +36,7 @@
 class BankSelectionScreen : public Screen
 {
 public:
-    BankSelectionScreen(const std::string& current) : hid(40, 2), strings(Banks::bankNames()), previous(std::distance(strings.begin(), std::find_if(strings.begin(), strings.end(), [current](const std::pair<std::string, int>& v){ return v.first == current; })))
+    BankSelectionScreen(int& storageBox) : hid(40, 2), strings(Banks::bankNames()), storageBox(storageBox)
     {
         int newBankNum = 0;
         while (std::find_if(strings.begin(), strings.end(), [&newBankNum](const std::pair<std::string, int>& v){ return v.first == i18n::localize("NEW_BANK") + " " + std::to_string(newBankNum); }) != strings.end())
@@ -45,20 +45,18 @@ public:
         }
         strings.push_back({i18n::localize("NEW_BANK") + " " + std::to_string(newBankNum), 1});
         hid.update(strings.size());
-        hid.select(previous);
+        hid.select(std::distance(strings.begin(), std::find_if(strings.begin(), strings.end(), [](const std::pair<std::string, int>& v){ return v.first == Banks::bank->name(); })));
     }
-    std::pair<std::string, int> run();
     void draw() const override;
     void update(touchPosition* touch) override;
     ScreenType type() const override { return ScreenType::SELECTOR; }
 private:
     void renameBank();
     void resizeBank();
-    std::function<void()> keyboardFunc = nullptr;
     HidVertical hid;
     std::vector<std::pair<std::string, int>> strings;
-    size_t previous;
     bool finished = false;
+    int& storageBox;
 };
 
 #endif

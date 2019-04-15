@@ -35,7 +35,8 @@ class ViewOverlay : public Overlay
 {
 public:
     // if it's not green, it's blue
-    ViewOverlay(Screen& screen, std::shared_ptr<PKX>& pokemon, bool green) : Overlay(screen), pkm(pokemon), green(green) {}
+    ViewOverlay(Screen& screen, std::shared_ptr<PKX>& pokemon, bool green, const std::string& instr = "")
+        : Overlay(screen, instr), pkm(pokemon), green(green) {}
     virtual ~ViewOverlay() {}
     virtual void draw() const override;
     virtual void update(touchPosition* touch) override;

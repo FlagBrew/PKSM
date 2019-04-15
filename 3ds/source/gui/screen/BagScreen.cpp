@@ -30,7 +30,10 @@
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
 
-BagScreen::BagScreen() : limits(TitleLoader::save->pouches()), allowedItems(TitleLoader::save->validItems())
+BagScreen::BagScreen()
+    : Screen(i18n::localize("A_ITEM_EDIT") + '\n' + i18n::localize("L_POUCH") + '\n'
+             + i18n::localize("R_ITEM") + '\n' + i18n::localize("B_BACK")),
+      limits(TitleLoader::save->pouches()), allowedItems(TitleLoader::save->validItems())
 {
     currentPouch = limits[0].first;
     for (size_t i = 0; i < limits.size(); i++)

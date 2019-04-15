@@ -28,7 +28,7 @@
 #include "colors.hpp"
 #include "Screen.hpp"
 
-Overlay::Overlay(Screen& screen) : screen(screen), me(screen.currentOverlay) {}
+Overlay::Overlay(Screen& screen, const std::string& instructions) : screen(screen), me(screen.currentOverlay), instructions(instructions) {}
 
 void Overlay::dim() const
 {

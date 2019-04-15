@@ -30,11 +30,13 @@
 #include "Overlay.hpp"
 #include "HidHorizontal.hpp"
 #include "PKX.hpp"
+#include "i18n.hpp"
 
 class NatureOverlay : public Overlay
 {
 public:
-    NatureOverlay(Screen& screen, std::shared_ptr<PKX> pkm) : Overlay(screen), pkm(pkm), hid(25, 5)
+    NatureOverlay(Screen& screen, std::shared_ptr<PKX> pkm)
+        : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(25, 5)
     {
         hid.update(25);
         hid.select(pkm->nature());

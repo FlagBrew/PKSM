@@ -31,11 +31,13 @@
 #include "HidHorizontal.hpp"
 #include "PKX.hpp"
 #include <memory>
+#include "i18n.hpp"
 
 class BallOverlay : public Overlay
 {
 public:
-    BallOverlay(Screen& screen, std::shared_ptr<PKX> pkm) : Overlay(screen), pkm(pkm), hid(30, 6)
+    BallOverlay(Screen& screen, std::shared_ptr<PKX> pkm)
+        : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(30, 6)
     {
         hid.update(24);
         hid.select(pkm->ball() - 1);

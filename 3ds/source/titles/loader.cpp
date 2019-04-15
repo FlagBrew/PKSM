@@ -31,6 +31,8 @@
 #include <ctime>
 #include <sys/stat.h>
 
+static std::map<std::u16string, std::shared_ptr<Directory>> directories;
+
 static constexpr char langIds[8] = {
     'E', //USA
     'S', //Spain
@@ -167,16 +169,28 @@ void TitleLoader::scanTitles(void)
 
 static std::vector<std::string> scanDirectoryFor(const std::u16string& dir, const std::string& id)
 {
+    if (directories.count(dir) == 0)
+    {
+        directories.emplace(dir, std::make_shared<Directory>(Archive::sd(), dir));
+    }
+    else
+    {
+        // Attempt to re-read directory
+        if (!directories[dir]->loaded())
+        {
+            directories[dir] = std::make_shared<Directory>(Archive::sd(), dir);
+        }
+    }
     static const std::u16string sSeparator = u"/";
     std::vector<std::string> ret;
-    Directory directory(Archive::sd(), dir);
-    if (directory.loaded())
+    auto& directory = directories[dir];
+    if (directory->loaded())
     {
-        for (size_t j = 0; j < directory.count(); j++)
+        for (size_t j = 0; j < directory->count(); j++)
         {
-            if (directory.folder(j))
+            if (directory->folder(j))
             {
-                std::u16string fileName = directory.item(j);
+                std::u16string fileName = directory->item(j);
                 if (fileName.substr(0, id.size()) == StringUtils::UTF8toUTF16(id.c_str()))
                 {
                     Directory subdir(Archive::sd(), dir + sSeparator + fileName);
@@ -184,9 +198,12 @@ static std::vector<std::string> scanDirectoryFor(const std::u16string& dir, cons
                     {
                         if (subdir.folder(k))
                         {
-                            std::u16string savePath = dir + sSeparator + fileName + sSeparator + subdir.item(k)
-                                                      + sSeparator + StringUtils::UTF8toUTF16(idToSaveName(id));
-                            ret.push_back(StringUtils::UTF16toUTF8(savePath));
+                            std::string savePath = StringUtils::UTF16toUTF8(dir + sSeparator + fileName + sSeparator + subdir.item(k)
+                                                      + sSeparator) + idToSaveName(id);
+                            if (io::exists(savePath))
+                            {
+                                ret.push_back(savePath);
+                            }
                         }
                     }
                 }
@@ -198,6 +215,7 @@ static std::vector<std::string> scanDirectoryFor(const std::u16string& dir, cons
 
 void TitleLoader::scanSaves(void)
 {
+    Gui::waitFrame(i18n::localize("SCAN_SAVES"));
     static const std::u16string chkpntDir = u"/3ds/Checkpoint/saves";
     for (size_t i = 0; i < ctrTitleIds.size(); i++)
     {
@@ -270,6 +288,7 @@ void TitleLoader::backupSave(const std::string& id)
     if (out.good())
     {
         out.write(TitleLoader::save->rawData(), TitleLoader::save->getLength());
+        sdSaves[id].push_back(path);
     }
     else
     {

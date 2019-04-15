@@ -46,6 +46,7 @@ bool TitleLoadScreen::loadSave() const
 }
 
 TitleLoadScreen::TitleLoadScreen()
+    : Screen(i18n::localize("A_SELECT") + '\n' + i18n::localize("X_SETTINGS") + '\n' + i18n::localize("Y_ABSENT") + '\n' + i18n::localize("START_EXIT"))
 {
     buttons.push_back(new AccelButton(24, 96, 175, 16, [this](){ return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
     for (int i = 1; i < 5; i++)
@@ -224,11 +225,6 @@ void TitleLoadScreen::update(touchPosition* touch)
         if (buttonsDown & KEY_A)
         {
             loadSave();
-            return;
-        }
-        if (buttonsDown & KEY_X)
-        {
-            receiveSaveFromBridge();
             return;
         }
         if (buttonsDown & KEY_DOWN)
@@ -438,7 +434,7 @@ void TitleLoadScreen::update(touchPosition* touch)
     }
     availableCheckpointSaves = TitleLoader::sdSaves[titleFromIndex(selectedTitle)->checkpointPrefix()];
 
-    if (buttonsDown & KEY_SELECT)
+    if (buttonsDown & KEY_X)
     {
         Gui::setScreen(std::make_unique<ConfigScreen>());
     }

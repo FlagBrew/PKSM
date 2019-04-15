@@ -63,22 +63,33 @@ void BankSelectionScreen::update(touchPosition* touch)
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {
-        finished = true;
+        auto& res = strings[hid.fullIndex()];
+        if (res.first != Banks::bank->name())
+        {
+            if (Banks::bank->hasChanged() && Gui::showChoiceMessage(i18n::localize("BANK_SAVE_CHANGES")))
+            {
+                Banks::bank->save();
+            }
+            if (Banks::loadBank(res.first, res.second))
+            {
+                storageBox = 0;
+            }
+        }
+        Gui::screenBack();
         return;
     }
     else if (downKeys & KEY_B)
     {
-        hid.select(previous);
-        finished = true;
+        Gui::screenBack();
         return;
     }
     else if (downKeys & KEY_X)
     {
-        keyboardFunc = [this](){ renameBank(); };
+        Gui::setNextKeyboardFunc([this](){ renameBank(); });
     }
     else if (downKeys & KEY_Y)
     {
-        keyboardFunc = [this](){ resizeBank(); };
+        Gui::setNextKeyboardFunc([this](){ resizeBank(); });
     }
     else if (downKeys & KEY_START)
     {
@@ -93,38 +104,9 @@ void BankSelectionScreen::update(touchPosition* touch)
                 auto i = strings.begin() + hid.fullIndex();
                 Banks::removeBank(i->first);
                 strings.erase(i);
-                if (previous == hid.fullIndex())
-                {
-                    previous = 0;
-                }
             }
         }
     }
-}
-
-std::pair<std::string, int> BankSelectionScreen::run()
-{
-    while (aptMainLoop() && !finished)
-    {
-        hidScanInput();
-        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-        C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
-
-        draw();
-        touchPosition touch;
-        hidTouchRead(&touch);
-        update(&touch);
-
-        C3D_FrameEnd(0);
-        if (keyboardFunc)
-        {
-            keyboardFunc();
-            keyboardFunc = nullptr;
-        }
-        Gui::clearTextBufs();
-    }
-
-    return strings[hid.fullIndex()];
 }
 
 void BankSelectionScreen::renameBank()

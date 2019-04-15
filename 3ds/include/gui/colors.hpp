@@ -48,5 +48,6 @@
 #define COLOR_UNAVAILRED    C2D_Color32(182, 131, 131, 255)
 #define COLOR_UNSELECTRED   C2D_Color32(254,  77,  77, 255)
 #define COLOR_GREY          C2D_Color32(128, 128, 128, 255)
+#define COLOR_DARKGREY      C2D_Color32( 96,  96,  96, 255)
 
 #endif

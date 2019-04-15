@@ -31,11 +31,17 @@
 #include "HidVertical.hpp"
 #include <vector>
 #include <string>
+#include "i18n.hpp"
 
 class BoxOverlay : public Overlay
 {
 public:
-    BoxOverlay(Screen& screen, std::vector<std::string>& boxes, int& current) : Overlay(screen), hid(40, 2), strings(boxes), out(current) { hid.update(strings.size()); hid.select(current); }
+    BoxOverlay(Screen& screen, std::vector<std::string>& boxes, int& current)
+        : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), hid(40, 2), strings(boxes), out(current)
+    {
+        hid.update(strings.size());
+        hid.select(current);
+    }
     virtual ~BoxOverlay() {}
     void draw() const override;
     void update(touchPosition* touch) override;

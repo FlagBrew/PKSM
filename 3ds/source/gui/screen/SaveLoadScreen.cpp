@@ -70,6 +70,7 @@ static constexpr std::string_view dsNames[] = {
 };
 
 SaveLoadScreen::SaveLoadScreen()
+    : Screen(i18n::localize("A_SELECT") + '\n' + i18n::localize("Y_PRESENT") + '\n' + i18n::localize("START_EXIT"))
 {
     buttons.push_back(new AccelButton(24, 96, 175, 16, [this](){ return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
     for (int i = 1; i < 5; i++)

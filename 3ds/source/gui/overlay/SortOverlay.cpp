@@ -29,12 +29,8 @@
 
 void SortOverlay::draw() const
 {
-    if (firstDraw)
-    {
-        C2D_SceneBegin(g_renderTargetBottom);
-        C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, C2D_Color32(0, 0, 0, 128));
-        firstDraw = false;
-    }
+    C2D_SceneBegin(g_renderTargetBottom);
+    dim();
 
     C2D_SceneBegin(g_renderTargetTop);
     Gui::sprite(ui_sheet_part_editor_20x2_idx, 0, 0);

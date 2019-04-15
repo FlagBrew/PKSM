@@ -31,11 +31,13 @@
 #include "HidHorizontal.hpp"
 #include "PKX.hpp"
 #include <memory>
+#include "i18n.hpp"
 
 class FormOverlay : public Overlay
 {
 public:
-    FormOverlay(Screen& screen, std::shared_ptr<PKX> pkm, u8 formCount) : Overlay(screen), pkm(pkm), hid(40, 6), formCount(formCount)
+    FormOverlay(Screen& screen, std::shared_ptr<PKX> pkm, u8 formCount)
+        : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(40, 6), formCount(formCount)
     {
         hid.update(40);
         hid.select(pkm->alternativeForm());

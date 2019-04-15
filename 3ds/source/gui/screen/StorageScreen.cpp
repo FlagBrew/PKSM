@@ -40,6 +40,7 @@
 #include "ViewCloneOverlay.hpp"
 #include "banks.hpp"
 #include "BankSelectionScreen.hpp"
+#include "StorageOverlay.hpp"
 #include <variant>
 
 extern std::stack<std::unique_ptr<Screen>> screens;
@@ -147,7 +148,14 @@ void StorageScreen::setBoxName(bool storage)
 }
 
 StorageScreen::StorageScreen()
+    : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_VIEW") + '\n' + i18n::localize("Y_CURSOR_MODE") + '\n'
+             + i18n::localize("L_BOX_PREV") + '\n' + i18n::localize("R_BOX_NEXT") + '\n'
+             + i18n::localize("START_EXTRA_FUNC") + '\n' + i18n::localize("B_BACK"))
 {
+    instructions.addBox(true, 69, 21, 156, 24, COLOR_GREY, i18n::localize("A_BOX_NAME"), COLOR_WHITE);
+    instructions.addCircle(false, 266, 23, 11, COLOR_GREY);
+    instructions.addBox(false, 264, 23, 4, 50, COLOR_GREY);
+    instructions.addBox(false, 148, 57, 120, 16, COLOR_GREY, i18n::localize("BOX_SWAP"), COLOR_WHITE);
     mainButtons[0] = new ClickButton(242, 12, 47, 22, [this](){ return this->swapBoxWithStorage(); }, ui_sheet_button_swap_boxes_idx, "", 0.0f, 0);
     mainButtons[1] = new Button(212, 47, 108, 28, [this](){ return this->showViewer(); }, ui_sheet_button_editor_idx,
                                     i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
@@ -159,10 +167,9 @@ StorageScreen::StorageScreen()
                                     i18n::localize("DUMP"), FONT_SIZE_12, COLOR_BLACK);
     mainButtons[5] = new Button(212, 171, 108, 28, [this](){ return this->duplicate(); }, ui_sheet_button_editor_idx,
                                     i18n::localize("CLONE"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[6] = new Button(4, 212, 33, 28, [this](){ return false; }, ui_sheet_res_null_idx, "", 0.0f, 0);
-    mainButtons[7] = new Button(283, 211, 34, 28, [this](){ return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
-    mainButtons[8] = new AccelButton(8, 15, 17, 24, [this](){ return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
-    mainButtons[9] = new AccelButton(189, 15, 17, 24, [this](){ return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+    mainButtons[6] = new Button(283, 211, 34, 28, [this](){ return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
+    mainButtons[7] = new AccelButton(8, 15, 17, 24, [this](){ return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+    mainButtons[8] = new AccelButton(189, 15, 17, 24, [this](){ return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
 
     // Pokemon buttons
     u16 y = 45;
@@ -176,20 +183,9 @@ StorageScreen::StorageScreen()
         }
         y += 30;
     }
-    clickButtons[30] = new ClickButton(32, 15, 164, 24, [this](){ return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0);
+    instructions.addBox(false, 25, 15, 164, 24, COLOR_GREY, i18n::localize("A_BOX_NAME"), COLOR_WHITE);
+    clickButtons[30] = new ClickButton(25, 15, 164, 24, [this](){ return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0);
     TitleLoader::save->cryptBoxData(true);
-
-    funcButtons[0] = new ClickButton(106, 99, 108, 28, [this](){ sortSelector = true; funcSelector = false; justSwitched = true; return true; }, ui_sheet_button_editor_idx,
-                                        i18n::localize("SORT"), FONT_SIZE_12, COLOR_BLACK);
-    funcButtons[1] = new ClickButton(106, 130, 108, 28, [this](){ filterSelector = true; funcSelector = false; justSwitched = true; return true; }, ui_sheet_button_editor_idx,
-                                        i18n::localize("FILTER"), FONT_SIZE_12, COLOR_BLACK);
-
-    sortButtons[0] = new ClickButton(51, 68, 108, 28, [this](){ return this->pickSort(0); }, ui_sheet_button_editor_idx, "", 0.0f, 0);
-    sortButtons[1] = new ClickButton(51, 99, 108, 28, [this](){ return this->pickSort(1); }, ui_sheet_button_editor_idx, "", 0.0f, 0);
-    sortButtons[2] = new ClickButton(51, 130, 108, 28, [this](){ return this->pickSort(2); }, ui_sheet_button_editor_idx, "", 0.0f, 0);
-    sortButtons[3] = new ClickButton(51, 161, 108, 28, [this](){ return this->pickSort(3); }, ui_sheet_button_editor_idx, "", 0.0f, 0);
-    sortButtons[4] = new ClickButton(51, 192, 108, 28, [this](){ return this->pickSort(4); }, ui_sheet_button_editor_idx, "", 0.0f, 0);
-    sortButtons[5] = new ClickButton(161, 108, 108, 28, [this](){ justSwitched = true; return this->sort(); }, ui_sheet_button_editor_idx, i18n::localize("SORT"), FONT_SIZE_12, COLOR_BLACK);
 
     boxBox = TitleLoader::save->currentBox();
 }
@@ -201,14 +197,6 @@ StorageScreen::~StorageScreen()
         delete button;
     }
     for (auto button : clickButtons)
-    {
-        delete button;
-    }
-    for (auto button : funcButtons)
-    {
-        delete button;
-    }
-    for (auto button : sortButtons)
     {
         delete button;
     }
@@ -367,39 +355,6 @@ void StorageScreen::draw() const
         }
     }
 
-    if (funcSelector)
-    {
-        C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, COLOR_MASKBLACK);
-        for (auto button : funcButtons)
-        {
-            button->draw();
-        }
-        mainButtons[7]->draw();
-    }
-    else if (sortSelector)
-    {
-        C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, COLOR_MASKBLACK);
-        for (auto button : sortButtons)
-        {
-            button->draw();
-        }
-        mainButtons[7]->draw();
-        for (size_t i = 0; i < 5; i++)
-        {
-            if (i >= sortTypes.size())
-            {
-                Gui::dynamicText(i18n::localize(std::string(sortTypeToString(NONE))), 105, 82 + 31 *i, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER);
-            }
-            else
-            {
-                Gui::dynamicText(i18n::localize(std::string(sortTypeToString(sortTypes[i]))), 105, 82 + 31 *i, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER);
-            }
-        }
-    }
-    else if (filterSelector)
-    {
-        // Draw filter buttons
-    }
     C2D_SceneBegin(g_renderTargetTop);
     Gui::sprite(ui_sheet_emulated_bg_top_green, 0, 0);
     Gui::sprite(ui_sheet_bg_style_top_idx, 0, 0);
@@ -609,186 +564,154 @@ void StorageScreen::update(touchPosition* touch)
             return;
         }
     }
-    if (funcSelector)
-    {
-        for (auto button : funcButtons)
-        {
-            button->update(touch);
-        }
-        mainButtons[7]->update(touch);
-    }
-    else if (sortSelector)
-    {
-        for (auto button : sortButtons)
-        {
-            button->update(touch);
-        }
-        mainButtons[7]->update(touch);
-    }
-    else if (filterSelector)
-    {
-        filterSelector = false;
-    }
-    else
-    {
-        for (size_t i = 0; i < mainButtons.size(); i++)
-        {
-            if (mainButtons[i]->update(touch))
-                return;
-        }
-        backHeld = false;
-        for (Button* button : clickButtons)
-        {
-            if (button->update(touch))
-                return;
-        }
 
-        static int buttonCooldown = 10;
+    for (size_t i = 0; i < mainButtons.size(); i++)
+    {
+        if (mainButtons[i]->update(touch))
+            return;
+    }
+    backHeld = false;
+    for (Button* button : clickButtons)
+    {
+        if (button->update(touch))
+            return;
+    }
 
-        if (kDown & KEY_A)
+    static int buttonCooldown = 10;
+
+    if (kDown & KEY_A)
+    {
+        if (cursorIndex == 0)
+        {
+            if (moveMon.empty())
+            {
+                Gui::setNextKeyboardFunc(std::bind(&StorageScreen::setBoxName, this, storageChosen));
+            }
+        }
+        else
+        {
+            pickup();
+        }
+    }
+    else if (kDown & KEY_X)
+    {
+        if (currentlySelecting)
+        {
+            grabSelection(false);
+        }
+        else
+        {
+            showViewer();
+        }
+        return;
+    }
+    else if (kDown & KEY_START)
+    {
+        currentOverlay = std::make_unique<StorageOverlay>(*this, storageChosen, boxBox, storageBox);
+        justSwitched = true;
+    }
+    else if (buttonCooldown <= 0)
+    {
+        sleep = false;
+        if (kHeld & KEY_LEFT)
         {
             if (cursorIndex == 0)
             {
-                if (moveMon.empty())
-                {
-                    Gui::setNextKeyboardFunc(std::bind(&StorageScreen::setBoxName, this, storageChosen));
-                }
+                prevBox();
             }
-            else
+            else if (cursorIndex > 1) 
             {
-                pickup();
+                cursorIndex--;
             }
-        }
-        else if (kDown & KEY_X)
-        {
-            if (currentlySelecting)
-            {
-                grabSelection(false);
-            }
-            else
-            {
-                showViewer();
-            }
-            return;
-        }
-        else if (kDown & KEY_START)
-        {
-            funcSelector = true;
-        }
-        else if (kDown & KEY_SELECT)
-        {
-            if (storageChosen && cursorIndex == 0)
-            {
-                selectBank();
-            }
-            else
-            {
-                selectBox();
-            }
-            return;
-        }
-        else if (buttonCooldown <= 0)
-        {
-            sleep = false;
-            if (kHeld & KEY_LEFT)
-            {
-                if (cursorIndex == 0)
-                {
-                    prevBox();
-                }
-                else if (cursorIndex > 1) 
-                {
-                    cursorIndex--;
-                }
-                else if (cursorIndex == 1)
-                {
-                    prevBox();
-                    cursorIndex = 30;
-                    currentlySelecting = false;
-                }
-                sleep = true;
-            }
-            else if (kHeld & KEY_RIGHT)
-            {
-                if (cursorIndex == 0)
-                {
-                    nextBox();
-                }
-                else if (cursorIndex < 30)
-                {
-                    cursorIndex++;
-                }
-                else if (cursorIndex == 30)
-                {
-                    nextBox();
-                    cursorIndex = 1;
-                    currentlySelecting = false;
-                }
-                sleep = true;
-            }
-            else if (kHeld & KEY_UP)
-            {
-                if (cursorIndex == 0 && !storageChosen)
-                {
-                    storageChosen = true;
-                    cursorIndex = 27;
-                }
-                else if (cursorIndex > 0 && cursorIndex <= 6)
-                {
-                    cursorIndex = 0;
-                    currentlySelecting = false;
-                }
-                else if (cursorIndex > 6)
-                {			
-                    cursorIndex -= 6;
-                }
-                sleep = true;
-            }
-            else if (kHeld & KEY_DOWN)
-            {
-                if (cursorIndex >= 25 && storageChosen)
-                {
-                    storageChosen = false;
-                    cursorIndex = 0;
-                    currentlySelecting = false;
-                }
-                else if (cursorIndex == 0)
-                {
-                    cursorIndex = 3;
-                }
-                else if (cursorIndex < 25)
-                {
-                    cursorIndex += 6;
-                }
-                sleep = true;
-            }
-            else if (kHeld & KEY_R)
-            {
-                nextBox();
-                sleep = true;
-            }
-            else if (kHeld & KEY_L)
+            else if (cursorIndex == 1)
             {
                 prevBox();
-                sleep = true;
+                cursorIndex = 30;
+                currentlySelecting = false;
             }
-            else if (kHeld & KEY_ZR)
-            {
-                nextBoxTop();
-                sleep = true;
-            }
-            else if (kHeld & KEY_ZL)
-            {
-                prevBoxTop();
-                sleep = true;
-            }
-
-            if (sleep)
-                buttonCooldown = 10;
+            sleep = true;
         }
+        else if (kHeld & KEY_RIGHT)
+        {
+            if (cursorIndex == 0)
+            {
+                nextBox();
+            }
+            else if (cursorIndex < 30)
+            {
+                cursorIndex++;
+            }
+            else if (cursorIndex == 30)
+            {
+                nextBox();
+                cursorIndex = 1;
+                currentlySelecting = false;
+            }
+            sleep = true;
+        }
+        else if (kHeld & KEY_UP)
+        {
+            if (cursorIndex == 0 && !storageChosen)
+            {
+                storageChosen = true;
+                cursorIndex = 27;
+            }
+            else if (cursorIndex > 0 && cursorIndex <= 6)
+            {
+                cursorIndex = 0;
+                currentlySelecting = false;
+            }
+            else if (cursorIndex > 6)
+            {			
+                cursorIndex -= 6;
+            }
+            sleep = true;
+        }
+        else if (kHeld & KEY_DOWN)
+        {
+            if (cursorIndex >= 25 && storageChosen)
+            {
+                storageChosen = false;
+                cursorIndex = 0;
+                currentlySelecting = false;
+            }
+            else if (cursorIndex == 0)
+            {
+                cursorIndex = 3;
+            }
+            else if (cursorIndex < 25)
+            {
+                cursorIndex += 6;
+            }
+            sleep = true;
+        }
+        else if (kHeld & KEY_R)
+        {
+            nextBox();
+            sleep = true;
+        }
+        else if (kHeld & KEY_L)
+        {
+            prevBox();
+            sleep = true;
+        }
+        else if (kHeld & KEY_ZR)
+        {
+            nextBoxTop();
+            sleep = true;
+        }
+        else if (kHeld & KEY_ZL)
+        {
+            prevBoxTop();
+            sleep = true;
+        }
+
         if (sleep)
-            buttonCooldown--;
+            buttonCooldown = 10;
     }
+    if (sleep)
+        buttonCooldown--;
+
     if (cursorIndex != 0)
     {
         infoMon = storageChosen ? Banks::bank->pkm(storageBox, cursorIndex - 1) : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
@@ -900,19 +823,7 @@ bool StorageScreen::backButton()
     if (!backHeld)
     {
         backHeld = true;
-        if (funcSelector)
-        {
-            funcSelector = false;
-        }
-        else if (sortSelector)
-        {
-            sortSelector = false;
-        }
-        else if (filterSelector)
-        {
-            filterSelector = false;
-        }
-        else if (currentlySelecting)
+        if (currentlySelecting)
         {
             currentlySelecting = false;
         }
@@ -1434,232 +1345,6 @@ bool StorageScreen::swapBoxWithStorage()
         Gui::warn(i18n::localize("NO_SWAP_BULK"), unswapped);
     }
     return false;
-}
-
-bool StorageScreen::pickSort(size_t number)
-{
-    if (number >= sortTypes.size())
-    {
-        number = sortTypes.size();
-        sortTypes.push_back(NONE);
-    }
-    currentOverlay = std::make_shared<SortOverlay>(*this, sortTypes[number]);
-    return false;
-}
-
-bool StorageScreen::sort()
-{
-    while (!sortTypes.empty() && sortTypes.back() == NONE)
-    {
-        sortTypes.pop_back();
-    }
-    if (!sortTypes.empty())
-    {
-        if (std::find(sortTypes.begin(), sortTypes.end(), DEX) == sortTypes.end())
-        {
-            sortTypes.push_back(DEX);
-        }
-        std::vector<std::shared_ptr<PKX>> sortMe;
-        if (storageChosen)
-        {
-            for (int i = 0; i < Banks::bank->boxes() * 30; i++)
-            {
-                std::shared_ptr<PKX> pkm = Banks::bank->pkm(i / 30, i % 30);
-                if (pkm->encryptionConstant() != 0 && pkm->species() != 0)
-                {
-                    sortMe.push_back(pkm);
-                }
-            }
-        }
-        else
-        {
-            for (int i = 0; i < TitleLoader::save->maxSlot(); i++)
-            {
-                std::shared_ptr<PKX> pkm = TitleLoader::save->pkm(i / 30, i % 30);
-                if (pkm->encryptionConstant() != 0 && pkm->species() != 0)
-                {
-                    sortMe.push_back(pkm);
-                }
-            }
-        }
-        std::stable_sort(sortMe.begin(), sortMe.end(), [this](const std::shared_ptr<PKX>& pkm1, const std::shared_ptr<PKX>& pkm2){
-            for (auto type : sortTypes)
-            {
-                switch (type)
-                {
-                    case DEX:
-                        if (pkm1->species() < pkm2->species()) return true;
-                        if (pkm2->species() < pkm1->species()) return false;
-                        break;
-                    case FORM:
-                        if (pkm1->alternativeForm() < pkm2->alternativeForm()) return true;
-                        if (pkm2->alternativeForm() < pkm1->alternativeForm()) return false;
-                        break;
-                    case TYPE1:
-                        if (pkm1->type1() < pkm2->type1()) return true;
-                        if (pkm2->type1() < pkm1->type1()) return false;
-                        break;
-                    case TYPE2:
-                        if (pkm1->type2() < pkm2->type2()) return true;
-                        if (pkm2->type2() < pkm1->type2()) return false;
-                        break;
-                    case HP:
-                        if (pkm1->stat(0) < pkm2->stat(0)) return true;
-                        if (pkm2->stat(0) < pkm1->stat(0)) return false;
-                        break;
-                    case ATK:
-                        if (pkm1->stat(1) < pkm2->stat(1)) return true;
-                        if (pkm2->stat(1) < pkm1->stat(1)) return false;
-                        break;
-                    case DEF:
-                        if (pkm1->stat(2) < pkm2->stat(2)) return true;
-                        if (pkm2->stat(2) < pkm1->stat(2)) return false;
-                        break;
-                    case SATK:
-                        if (pkm1->stat(4) < pkm2->stat(4)) return true;
-                        if (pkm2->stat(4) < pkm1->stat(4)) return false;
-                        break;
-                    case SDEF:
-                        if (pkm1->stat(5) < pkm2->stat(5)) return true;
-                        if (pkm2->stat(5) < pkm1->stat(5)) return false;
-                        break;
-                    case SPE:
-                        if (pkm1->stat(3) < pkm2->stat(3)) return true;
-                        if (pkm2->stat(3) < pkm1->stat(3)) return false;
-                        break;
-                    case NATURE:
-                        if (pkm1->nature() < pkm2->nature()) return true;
-                        if (pkm2->nature() < pkm1->nature()) return false;
-                        break;
-                    case LEVEL:
-                        if (pkm1->level() < pkm2->level()) return true;
-                        if (pkm2->level() < pkm1->level()) return false;
-                        break;
-                    case TID:
-                        if (pkm1->TID() < pkm2->TID()) return true;
-                        if (pkm2->TID() < pkm1->TID()) return false;
-                        break;
-                    case HPIV:
-                        if (pkm1->iv(0) < pkm2->iv(0)) return true;
-                        if (pkm2->iv(0) < pkm1->iv(0)) return false;
-                        break;
-                    case ATKIV:
-                        if (pkm1->iv(1) < pkm2->iv(1)) return true;
-                        if (pkm2->iv(1) < pkm1->iv(1)) return false;
-                        break;
-                    case DEFIV:
-                        if (pkm1->iv(2) < pkm2->iv(2)) return true;
-                        if (pkm2->iv(2) < pkm1->iv(2)) return false;
-                        break;
-                    case SATKIV:
-                        if (pkm1->iv(4) < pkm2->iv(4)) return true;
-                        if (pkm2->iv(4) < pkm1->iv(4)) return false;
-                        break;
-                    case SDEFIV:
-                        if (pkm1->iv(5) < pkm2->iv(5)) return true;
-                        if (pkm2->iv(5) < pkm1->iv(5)) return false;
-                        break;
-                    case SPEIV:
-                        if (pkm1->iv(3) < pkm2->iv(3)) return true;
-                        if (pkm2->iv(3) < pkm1->iv(3)) return false;
-                        break;
-                    case HIDDENPOWER:
-                        if (pkm1->hpType() < pkm2->hpType()) return true;
-                        if (pkm2->hpType() < pkm1->hpType()) return false;
-                        break;
-                    case FRIENDSHIP:
-                        if (pkm1->currentFriendship() < pkm2->currentFriendship()) return true;
-                        if (pkm2->currentFriendship() < pkm1->currentFriendship()) return false;
-                        break;
-                    case NICKNAME:
-                        if (pkm1->nickname() < pkm2->nickname()) return true;
-                        if (pkm2->nickname() < pkm1->nickname()) return false;
-                        break;
-                    case SPECIESNAME:
-                        if (i18n::species(Configuration::getInstance().language(), pkm1->species()) < i18n::species(Configuration::getInstance().language(), pkm2->species())) return true;
-                        if (i18n::species(Configuration::getInstance().language(), pkm2->species()) < i18n::species(Configuration::getInstance().language(), pkm1->species())) return false;
-                        break;
-                    case OTNAME:
-                        if (pkm1->otName() < pkm2->otName()) return true;
-                        if (pkm2->otName() < pkm1->otName()) return false;
-                        break;
-                    case SHINY:
-                        if (pkm1->shiny() && !pkm2->shiny()) return true;
-                        if (pkm2->shiny() && !pkm1->shiny()) return false;
-                        break;
-                    default:
-                        break;
-                }
-            }
-            return false;
-        });
-
-        if (storageChosen)
-        {
-            for (size_t i = 0; i < sortMe.size(); i++)
-            {
-                Banks::bank->pkm(sortMe[i], i / 30, i % 30);
-            }
-            for (int i = sortMe.size(); i < Banks::bank->boxes() * 30; i++)
-            {
-                Banks::bank->pkm(TitleLoader::save->emptyPkm(), i / 30, i % 30);
-            }
-        }
-        else
-        {
-            for (size_t i = 0; i < sortMe.size(); i++)
-            {
-                TitleLoader::save->pkm(sortMe[i], i / 30, i % 30, false);
-            }
-            for (int i = sortMe.size(); i < TitleLoader::save->maxSlot(); i++)
-            {
-                TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), i / 30, i % 30, false);
-            }
-        }
-    }
-    sortSelector = false;
-    return false;
-}
-
-bool StorageScreen::selectBox()
-{
-    std::vector<std::string> boxes;
-    if (storageChosen)
-    {
-        for (int i = 0; i < Banks::bank->boxes(); i++)
-        {
-            boxes.push_back(Banks::bank->boxName(i));
-        }
-        currentOverlay = std::make_shared<BoxOverlay>(*this, boxes, storageBox);
-    }
-    else
-    {
-        for (int i = 0; i < TitleLoader::save->maxBoxes(); i++)
-        {
-            boxes.push_back(TitleLoader::save->boxName(i));
-        }
-        currentOverlay = std::make_shared<BoxOverlay>(*this, boxes, boxBox);
-    }
-
-    return true;
-}
-
-bool StorageScreen::selectBank()
-{
-    BankSelectionScreen bank(Banks::bank->name());
-    auto res = bank.run();
-    if (res.first != Banks::bank->name())
-    {
-        if (Banks::bank->hasChanged() && Gui::showChoiceMessage(i18n::localize("BANK_SAVE_CHANGES")))
-        {
-            Banks::bank->save();
-        }
-        if (Banks::loadBank(res.first, res.second))
-        {
-            storageBox = 0;
-        }
-    }
-    return true;
 }
 
 void StorageScreen::scrunchSelection()

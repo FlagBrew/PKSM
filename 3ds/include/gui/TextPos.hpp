@@ -24,29 +24,20 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef HIDDENPOWEROVERLAY_HPP
-#define HIDDENPOWEROVERLAY_HPP
+#ifndef TEXTPOS_HPP
+#define TEXTPOS_HPP
 
-#include "Overlay.hpp"
-#include "HidHorizontal.hpp"
-#include "PKX.hpp"
-#include "i18n.hpp"
-
-class HiddenPowerOverlay : public Overlay
+enum class TextPosX
 {
-public:
-    HiddenPowerOverlay(Screen& screen, std::shared_ptr<PKX> pkm)
-        : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(16, 4)
-    {
-        hid.update(16);
-        hid.select(pkm->hpType());
-    }
-    virtual ~HiddenPowerOverlay() {}
-    void draw() const override;
-    void update(touchPosition* touch) override;
-private:
-    std::shared_ptr<PKX> pkm;
-    HidHorizontal hid;
+    LEFT,
+    CENTER,
+    RIGHT
+};
+enum class TextPosY
+{
+    TOP,
+    CENTER,
+    BOTTOM
 };
 
 #endif

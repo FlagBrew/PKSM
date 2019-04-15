@@ -48,6 +48,7 @@
 #include "Screen.hpp"
 
 #include "colors.hpp"
+#include "TextPos.hpp"
 
 // emulated
 #define ui_sheet_res_null_idx 500
@@ -97,19 +98,6 @@
 #define FONT_SIZE_12 0.50f
 #define FONT_SIZE_11 0.46f
 #define FONT_SIZE_9 0.37f
-
-enum class TextPosX
-{
-    LEFT,
-    CENTER,
-    RIGHT
-};
-enum class TextPosY
-{
-    TOP,
-    CENTER,
-    BOTTOM
-};
 
 namespace Gui
 {

@@ -31,6 +31,7 @@
 #include <citro3d.h>
 #include <memory>
 #include "Overlay.hpp"
+#include "Instructions.hpp"
 
 extern C3D_RenderTarget* g_renderTargetTop;
 extern C3D_RenderTarget* g_renderTargetBottom;
@@ -59,6 +60,7 @@ class Screen
 {
 friend class Overlay;
 public:
+    Screen(const std::string& instructions = "") : instructions(instructions) {}
     virtual ~Screen() {}
     virtual void update(void) {
         // increase timer
@@ -74,10 +76,13 @@ public:
     virtual float timer() const final { return mTimer; }
     void removeOverlay() { currentOverlay = nullptr; }
     void setOverlay(std::shared_ptr<Overlay>& overlay) { currentOverlay = overlay; }
+    const Instructions& getInstructions() const { return currentOverlay && !currentOverlay->getInstructions().empty() ? currentOverlay->getInstructions() : instructions; }
 
 protected:
     // No point in restricting this to only being editable during update, especially since it's drawn afterwards. Allows setting it before the first draw loop is done
     mutable std::shared_ptr<Overlay> currentOverlay = nullptr;
+    // Should only be changed in constructor
+    Instructions instructions;
 
 private:
     float mTimer = 0;
