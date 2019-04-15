@@ -141,8 +141,10 @@ bool EditSelectorScreen::doQR()
             int slot = cursorPos ? cursorPos - 1 : 0; // make sure it writes to a good position, AKA not the title bar
             TitleLoader::save->pkm(pkm, box, slot, false);
         }
-
-        delete[] data;
+        if (data)
+        {
+            delete[] data;
+        }
     }
     return true;
 }
