@@ -188,9 +188,18 @@ static void qrHandler(qr_data* data, QRMode mode, u8*& buff)
                     return;
                 }
 
-                u32 box = *(u32*)(scan_data.payload + 8) - 1;
-                u32 slot = *(u32*)(scan_data.payload + 12) - 1;
+                u32 box = *(u32*)(scan_data.payload + 8);
+                u32 slot = *(u32*)(scan_data.payload + 12);
                 u32 copies = *(u32*)(scan_data.payload + 16);
+
+                if (box > 31)
+                {
+                    box = 31;
+                }
+                if (slot > 29)
+                {
+                    slot = 29;
+                }
 
                 if (copies > 1)
                 {
