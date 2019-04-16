@@ -139,6 +139,7 @@ Result Archive::init(std::string& execPath)
     mkdir("/3ds/PKSM/banks", 777);
     mkdir("/3ds/PKSM/songs", 777);
     FSUSER_CreateDirectory(Archive::data(), fsMakePath(PATH_UTF16, u"/banks"), 0);
+    FSUSER_DeleteDirectoryRecursively(Archive::sd(), fsMakePath(PATH_UTF16, u"/3ds/PKSM/additionalassets"));
     return res;
 }
 
