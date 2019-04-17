@@ -69,8 +69,6 @@ void SpeciesOverlay::draw() const
     C2D_SceneBegin(g_renderTargetBottom);
     dim();
     Gui::staticText(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-
-    C2D_SceneBegin(g_renderTargetBottom);
     searchButton->draw();
     Gui::sprite(ui_sheet_icon_search_idx, 79, 33);
     Gui::dynamicText(searchString, 95, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
