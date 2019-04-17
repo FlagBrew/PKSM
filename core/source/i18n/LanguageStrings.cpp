@@ -116,7 +116,7 @@ void LanguageStrings::load(Language lang, const std::string name, std::vector<st
     free(data);
 }
 
-void LanguageStrings::loadMap(Language lang, const std::string name, std::unordered_map<u16, std::string>& map)
+void LanguageStrings::loadMap(Language lang, const std::string name, std::map<u16, std::string>& map)
 {
     static const std::string base = "romfs:/i18n/";
     std::string path = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
@@ -276,7 +276,7 @@ const std::vector<std::string>& LanguageStrings::rawMoves() const
 
 const std::string& LanguageStrings::location(u16 v, Generation generation) const
 {
-    std::unordered_map<u16, std::string>::const_iterator i;
+    std::map<u16, std::string>::const_iterator i;
     switch (generation)
     {
         case Generation::FOUR:
@@ -322,4 +322,29 @@ const std::string& LanguageStrings::game(u8 v) const
         return games.at(v);
     }
     return localize("INVALID_GAME");
+}
+
+const std::map<u16, std::string>& LanguageStrings::locations(Generation g) const
+{
+    static std::map<u16, std::string> emptyMap;
+    switch (g)
+    {
+        case Generation::FOUR:
+            return locations4;
+        case Generation::FIVE:
+            return locations5;
+        case Generation::SIX:
+            return locations6;
+        case Generation::SEVEN:
+            return locations7;
+        case Generation::LGPE:
+            return locationsLGPE;
+        default:
+            return emptyMap;
+    }
+}
+
+size_t LanguageStrings::numGameStrings() const
+{
+    return games.size();
 }

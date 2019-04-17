@@ -65,15 +65,15 @@ protected:
     std::vector<std::string> natures;
     std::vector<std::string> speciess;
     std::vector<std::string> games;
-    std::unordered_map<u16, std::string> locations4;
-    std::unordered_map<u16, std::string> locations5;
-    std::unordered_map<u16, std::string> locations6;
-    std::unordered_map<u16, std::string> locations7;
-    std::unordered_map<u16, std::string> locationsLGPE;
+    std::map<u16, std::string> locations4;
+    std::map<u16, std::string> locations5;
+    std::map<u16, std::string> locations6;
+    std::map<u16, std::string> locations7;
+    std::map<u16, std::string> locationsLGPE;
     nlohmann::json gui;
 
     void load(Language lang, const std::string name, std::vector<std::string>& array);
-    void loadMap(Language lang, const std::string name, std::unordered_map<u16, std::string>& map);
+    void loadMap(Language lang, const std::string name, std::map<u16, std::string>& map);
     void loadGui(Language lang);
 
 public:
@@ -82,6 +82,8 @@ public:
 
     const std::vector<std::string>& rawItems() const;
     const std::vector<std::string>& rawMoves() const;
+    const std::map<u16, std::string>& locations(Generation g) const;
+    size_t numGameStrings() const;
 
     const std::string& ability(u8 v) const;
     const std::string& ball(u8 v) const;

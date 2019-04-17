@@ -40,6 +40,7 @@
 #include "random.hpp"
 #include "StatsEditScreen.hpp"
 #include "MoveEditScreen.hpp"
+#include "MiscEditScreen.hpp"
 
 #define NO_TEXT_BUTTON(x, y, w, h, function, image) new Button(x, y, w, h, function, image, "", 0.0f, 0)
 #define NO_TEXT_ACCEL(x, y, w, h, function, image) new AccelButton(x, y, w, h, function, image, "", 0.0f, 0)
@@ -197,7 +198,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index)
         }
     }
 
-    buttons.push_back(NO_TEXT_CLICK(283, 211, 34, 28, [this](){ return this->goBack(); }, ui_sheet_button_back_idx));
+    buttons.push_back(NO_TEXT_CLICK(9, 211, 34, 28, [this](){ return this->goBack(); }, ui_sheet_button_back_idx));
     instructions.addCircle(false, 12, 11, 4, COLOR_GREY);
     instructions.addBox(false, 10, 11, 4, 32, COLOR_GREY);
     instructions.addBox(false, 10, 43, 50, 16, COLOR_GREY, i18n::localize("BALL"), COLOR_WHITE);
@@ -223,7 +224,8 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index)
     buttons.push_back(NO_TEXT_ACCEL(142, 194, 13, 13, [this](){ return this->changeFriendship(true); }, ui_sheet_button_plus_small_idx));
     buttons.push_back(new Button(204, 109, 108, 30, [this](){ Gui::setScreen(std::make_unique<StatsEditScreen>(pkm)); justSwitched = true; return true; }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_STATS"), FONT_SIZE_12, COLOR_BLACK));
     buttons.push_back(new Button(204, 140, 108, 30, [this](){ Gui::setScreen(std::make_unique<MoveEditScreen>(pkm)); justSwitched = true; return true; }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_MOVES"), FONT_SIZE_12, COLOR_BLACK));
-    buttons.push_back(new ClickButton(204, 171, 108, 30, [this](){ this->save(); this->goBack(); return true; }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_SAVE"), FONT_SIZE_12, COLOR_BLACK));
+    buttons.push_back(new Button(204, 171, 108, 30, [this](){ Gui::setScreen(std::make_unique<MiscEditScreen>(pkm)); justSwitched = true; return true; }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_MISC"), FONT_SIZE_12, COLOR_BLACK));
+    buttons.push_back(new ClickButton(204, 202, 108, 30, [this](){ this->save(); this->goBack(); return true; }, ui_sheet_button_editor_idx, i18n::localize("EDITOR_SAVE"), FONT_SIZE_12, COLOR_BLACK));
     instructions.addBox(false, 25, 5, 120, 15, COLOR_GREY, i18n::localize("CHANGE_SPECIES"), COLOR_WHITE);
     buttons.push_back(NO_TEXT_BUTTON(25, 5, 120, 13, [this](){ return this->selectSpecies(); }, ui_sheet_res_null_idx));
     instructions.addCircle(false, 192, 13, 6, COLOR_GREY);
