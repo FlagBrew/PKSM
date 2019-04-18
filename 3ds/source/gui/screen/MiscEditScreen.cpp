@@ -37,6 +37,7 @@ MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
 {
     buttons.push_back(std::make_unique<ClickButton>(283, 211, 34, 28, [this](){ Gui::screenBack(); return true; }, ui_sheet_button_back_idx, "", 0.0f, 0));
     buttons.push_back(std::make_unique<ClickButton>(204, 171, 108, 30, [this](){ otAndMet = !otAndMet; return true; }, ui_sheet_button_editor_idx, "", 0.0f, 0));
+    buttons.push_back(std::make_unique<ClickButton>(3, 211, 34, 28, [this](){ validate(); return true; }, ui_sheet_button_wireless_idx, "", 0.0f, 0));
 
     buttons.push_back(std::make_unique<AccelButton>(94, 34, 13, 13, [this](){ return this->changeMetLevel(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
     buttons.push_back(std::make_unique<Button>(109, 34, 31, 13, [this](){ Gui::setNextKeyboardFunc([this](){ setMetLevel(); }); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
@@ -587,4 +588,9 @@ void MiscEditScreen::year()
             pkm->eggYear((u8)year);
         }
     }
+}
+
+void MiscEditScreen::validate()
+{
+    return;
 }

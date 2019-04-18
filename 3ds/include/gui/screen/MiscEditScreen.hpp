@@ -52,7 +52,7 @@ private:
     void day();
     void month();
     void year();
-    // void coreConsole();
+    void validate();
     std::vector<std::unique_ptr<Button>> buttons;
     std::shared_ptr<PKX> pkm;
     bool otAndMet = true;
