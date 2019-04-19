@@ -984,6 +984,8 @@ bool StorageScreen::isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTrans
 
 void StorageScreen::pickup()
 {
+    bool acceptGenChange = Configuration::getInstance().transferEdit();
+    bool checkedWithUser = Configuration::getInstance().transferEdit();
     if (moveMon.empty())
     {
         if (pickupMode == MULTI)
@@ -1096,8 +1098,13 @@ void StorageScreen::pickup()
                     {
                         continue;
                     }
+                    if (!checkedWithUser && moveMon[index]->generation() != TitleLoader::save->generation())
+                    {
+                        checkedWithUser = true;
+                        acceptGenChange = Gui::showChoiceMessage(i18n::localize("GEN_CHANGE_1"), i18n::localize("GEN_CHANGE_2"));
+                    }
                     std::shared_ptr<PKX> temPkm = TitleLoader::save->pkm(boxBox, cursorIndex - 1 + x + y * 6);
-                    if ((Configuration::getInstance().transferEdit() || moveMon[index]->generation() == TitleLoader::save->generation()) || Gui::showChoiceMessage(StringUtils::format(i18n::localize("GEN_CHANGE_1"), genToCstring(moveMon[index]->generation()), genToCstring(TitleLoader::save->generation())), i18n::localize("GEN_CHANGE_2")))
+                    if (moveMon[index]->generation() == TitleLoader::save->generation() || acceptGenChange)
                     {
                         TitleLoader::save->pkm(moveMon[index], boxBox, cursorIndex - 1 + x + y * 6, Configuration::getInstance().transferEdit() && fromStorage);
                         TitleLoader::save->dex(moveMon[index]);
@@ -1158,7 +1165,7 @@ void StorageScreen::pickup()
                 {
                     return;
                 }
-                if ((Configuration::getInstance().transferEdit() || bankMon->generation() == TitleLoader::save->generation()) || Gui::showChoiceMessage(StringUtils::format(i18n::localize("GEN_CHANGE_1"), genToCstring(bankMon->generation()), genToCstring(TitleLoader::save->generation())), i18n::localize("GEN_CHANGE_2")))
+                if ((Configuration::getInstance().transferEdit() || bankMon->generation() == TitleLoader::save->generation()) || Gui::showChoiceMessage(i18n::localize("GEN_CHANGE_1"), i18n::localize("GEN_CHANGE_2")))
                 {
                     if (storageChosen)
                     {
@@ -1316,7 +1323,7 @@ bool StorageScreen::swapBoxWithStorage()
         if (!checkedWithUser && temPkm->generation() != TitleLoader::save->generation())
         {
             checkedWithUser = true;
-            acceptGenChange = Gui::showChoiceMessage(StringUtils::format(i18n::localize("GEN_CHANGE_1"), genToCstring(temPkm->generation()), genToCstring(TitleLoader::save->generation())), i18n::localize("GEN_CHANGE_2"));
+            acceptGenChange = Gui::showChoiceMessage(i18n::localize("GEN_CHANGE_1"), i18n::localize("GEN_CHANGE_2"));
         }
         if (acceptGenChange || temPkm->generation() == TitleLoader::save->generation())
         {
