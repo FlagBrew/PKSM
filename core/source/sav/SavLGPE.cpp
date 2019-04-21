@@ -35,6 +35,7 @@ SavLGPE::SavLGPE(u8* dt)
     length = 0x100000;
     boxes = 34; // Ish
     game = Game::LGPE;
+    PokeDex = 0x2A00;
 
     data = new u8[length]{0};
     std::copy(dt, dt + 0xB8800, data);
@@ -238,13 +239,12 @@ void SavLGPE::language(u8 v)
 
 std::string SavLGPE::otName() const
 {
-    // TODO StringUtils GetString7b
-    return "";
+    return StringUtils::getString(data, 0x1000 + 0x38, 13);
 }
 
 void SavLGPE::otName(const std::string& v)
 {
-    (void) v;
+    StringUtils::setString(data, v, 0x1000 + 0x38, 13);
 }
 
 u32 SavLGPE::money() const
@@ -572,9 +572,9 @@ int SavLGPE::dexSeen(void) const
     static constexpr int brSize = 0x8C;
     for (int i = 0; i < maxSpecies(); i++)
     {
-        for (int j = 1; j <= 4; j++)
+        for (int j = 0; j < 4; j++)
         {
-            if (data[PokeDex + 0x88 + brSize * j + i/8] & BIT(i%8))
+            if (data[PokeDex + 0x88 + 0x68 + brSize * j + i/8] & BIT(i%8))
             {
                 ret++;
                 break;
