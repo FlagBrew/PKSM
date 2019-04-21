@@ -297,8 +297,8 @@ void Sav4::dex(std::shared_ptr<PKX> pk)
         {
             case 255: // Genderless
             case 0: // Male Only
-                data[ofs + brSize * 2] &= mask;
-                data[ofs + brSize * 3] &= mask;
+                data[ofs + brSize * 2] &= ~mask;
+                data[ofs + brSize * 3] &= ~mask;
                 break;
             case 254: // Female Only
                 data[ofs + brSize * 2] |= mask;
