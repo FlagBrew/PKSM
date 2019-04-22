@@ -32,6 +32,11 @@
 #include "LocationOverlay.hpp"
 #include "AccelButton.hpp"
 #include "PB7.hpp"
+#include <curl/curl.h>
+
+extern "C" {
+#include "base64.h"
+}
 
 MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
 {
@@ -590,7 +595,111 @@ void MiscEditScreen::year()
     }
 }
 
+void MiscEditScreen::appendWriteData(char* data, size_t size)
+{
+    for (size_t i = 0; i < size; i++)
+    {
+        dataToWrite.push_back(data[i]);
+    }
+}
+
+static size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata)
+{
+    ((MiscEditScreen*)userdata)->appendWriteData(ptr, size * nmemb);
+    return size * nmemb;
+}
+
+static std::string getVersionString(int version)
+{
+    switch (version)
+    {
+		case 10: // diamond
+            return "D";
+		case 11: // pearl
+            return "P";
+		case 12: // platinum
+            return "Pt";
+		case 7: // heart gold
+            return "HG";
+		case 8: // soul silver
+            return "SS";
+        case 20: // white
+            return "W";
+		case 21: // black
+            return "B";
+		case 22: // white2
+            return "W2";
+		case 23: // black2
+            return "B2";
+		case 24: // x
+            return "X";
+		case 25: // y
+            return "Y";
+		case 26: // as
+            return "AS";
+		case 27: // or
+            return "OR";
+		case 30: // sun
+            return "S";
+		case 31: // moon
+            return "M";
+		case 32: // us
+            return "US";
+		case 33: // um
+            return "UM";
+        case 42: // let's go Pikachu
+            return "GP";
+        case 43: // let's go Eevee
+            return "GE";
+    }
+    return "";
+}
+
 void MiscEditScreen::validate()
 {
+    if (!Gui::showChoiceMessage("MAJOR FUCKAGE MAY OCCUR", "USE AT YOUR OWN RISK"))
+    {
+        return;
+    }
+    const u8* rawData = pkm->rawData();
+    CURLcode res;
+    std::string postdata = "";
+    size_t outSize;
+    char* b64Data = base64_encode((char*)rawData, pkm->getLength(), &outSize);
+    postdata += b64Data;
+    std::string size = "size: " + std::to_string(pkm->getLength());
+    std::string version = "Version: " + getVersionString(TitleLoader::save->version());
+    free(b64Data);
+
+    CURL* curl = curl_easy_init();
+    if (curl) {
+        struct curl_slist *h = NULL;
+        h = curl_slist_append(h, version.c_str()); // um ultra moon is the placeholder
+        h = curl_slist_append(h, "Content-Type: application/octet-stream"); // set the application type for now
+        h = curl_slist_append(h, size.c_str()); // set the application type for now
+        curl_easy_setopt(curl, CURLOPT_URL, "https://pksm.flagbrew.org/api/legalize");
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, h);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postdata.data());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, postdata.length());
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+        curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
+        curl_easy_setopt(curl, CURLOPT_USERAGENT, "PKSM-curl/7.59.0");
+        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, this);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
+        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
+
+        res = curl_easy_perform(curl);
+        if (res != CURLE_OK)
+        {
+            Gui::error("PLACEHOLDER", abs(res));
+        }
+        if (dataToWrite.size() == pkm->getLength())
+        {
+            std::copy(dataToWrite.begin(), dataToWrite.end(), pkm->rawData());
+        }
+        curl_easy_cleanup(curl);
+    }
+    dataToWrite.clear();
     return;
 }

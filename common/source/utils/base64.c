@@ -73,3 +73,30 @@ unsigned char *base64_decode(const char *data, size_t input_length, size_t *outp
 	free(decoding_table);
     return decoded_data;
 }
+
+char* base64_encode(const char *data, size_t input_length, size_t* output_length)
+{
+    *output_length = 4 * ((input_length + 2) / 3);
+
+    char* ret = malloc(*output_length + 1);
+    size_t out_index = 0;
+    ret[*output_length] = '\0';
+
+    for (size_t i = 0, j = 0; i < input_length; j += 4) {
+        uint32_t octet_a = i < input_length ? (unsigned char)data[i++] : 0;
+        uint32_t octet_b = i < input_length ? (unsigned char)data[i++] : 0;
+        uint32_t octet_c = i < input_length ? (unsigned char)data[i++] : 0;
+
+        uint32_t triple = (octet_a << 0x10) + (octet_b << 0x08) + octet_c;
+
+        ret[out_index++] = encoding_table[(triple >> 3 * 6) & 0x3F];
+        ret[out_index++] = encoding_table[(triple >> 2 * 6) & 0x3F];
+        ret[out_index++] = encoding_table[(triple >> 1 * 6) & 0x3F];
+        ret[out_index++] = encoding_table[(triple >> 0 * 6) & 0x3F];
+    }
+
+    for (; out_index < *output_length; out_index++)
+        ret[out_index] = '=';
+
+    return ret;
+}
