@@ -657,7 +657,7 @@ static std::string getVersionString(int version)
 
 void MiscEditScreen::validate()
 {
-    if (!Gui::showChoiceMessage("MAJOR FUCKAGE MAY OCCUR", "USE AT YOUR OWN RISK"))
+    if (!Gui::showChoiceMessage("COLOSSAL FUCKAGE MAY OCCUR", "USE AT YOUR OWN RISK"))
     {
         return;
     }
@@ -667,17 +667,17 @@ void MiscEditScreen::validate()
     size_t outSize;
     char* b64Data = base64_encode((char*)rawData, pkm->getLength(), &outSize);
     postdata += b64Data;
-    std::string size = "size: " + std::to_string(pkm->getLength());
+    std::string size = "Size: " + std::to_string(pkm->getLength());
     std::string version = "Version: " + getVersionString(TitleLoader::save->version());
     free(b64Data);
 
     CURL* curl = curl_easy_init();
     if (curl) {
         struct curl_slist *h = NULL;
-        h = curl_slist_append(h, version.c_str()); // um ultra moon is the placeholder
-        h = curl_slist_append(h, "Content-Type: application/octet-stream"); // set the application type for now
-        h = curl_slist_append(h, size.c_str()); // set the application type for now
-        curl_easy_setopt(curl, CURLOPT_URL, "https://pksm.flagbrew.org/api/legalize");
+        h = curl_slist_append(h, version.c_str());
+        h = curl_slist_append(h, "Content-Type: application/base64");
+        h = curl_slist_append(h, size.c_str());
+        curl_easy_setopt(curl, CURLOPT_URL, "https://pksm.flagbrew.org/api/legalize"); // TODO: allow people to use their own local version in-case the main version goes offline.
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, h);
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postdata.data());
         curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, postdata.length());
@@ -697,6 +697,8 @@ void MiscEditScreen::validate()
         if (dataToWrite.size() == pkm->getLength())
         {
             std::copy(dataToWrite.begin(), dataToWrite.end(), pkm->rawData());
+        } else {
+            Gui::error("Invalid Data Size!", abs(1337));
         }
         curl_easy_cleanup(curl);
     }
