@@ -351,6 +351,15 @@ void EditorScreen::update(touchPosition* touch)
         setSaveInfo();
         return;
     }
+
+    if (downKeys & KEY_L)
+    {
+        advanceMon(false);
+    }
+    else if (downKeys & KEY_R)
+    {
+        advanceMon(true);
+    }
 }
 
 bool EditorScreen::goBack()
@@ -360,6 +369,71 @@ bool EditorScreen::goBack()
         Gui::screenBack();
         TitleLoader::save->fixParty();
         return true;
+    }
+    return false;
+}
+
+bool EditorScreen::advanceMon(bool forward)
+{
+    if (saved() || Gui::showChoiceMessage(i18n::localize("EDITOR_CHECK_EXIT")))
+    {
+        TitleLoader::save->fixParty();
+        do {
+            if (box == 0xFF)
+            {
+                if (forward)
+                {
+                    index = (index + 1) % 6;
+                }
+                else
+                {
+                    index--;
+                    if (index < 0)
+                    {
+                        index = 5;
+                    }
+                }
+                pkm = TitleLoader::save->pkm(index);
+            }
+            else
+            {
+                if (forward)
+                {
+                    index++;
+                    if (index >= 30)
+                    {
+                        box++;
+                        index = 0;
+                    }
+                    if (box * 30 + index >= TitleLoader::save->maxSlot())
+                    {
+                        index = 0;
+                        box = 0;
+                    }
+                }
+                else
+                {
+                    index--;
+                    if (index < 0)
+                    {
+                        box--;
+                        index = 29;
+                    }
+                    if (box < 0)
+                    {
+                        box = TitleLoader::save->maxBoxes() - 1;
+                    }
+                    if (box * 30 + index >= TitleLoader::save->maxSlot())
+                    {
+                        box = TitleLoader::save->maxBoxes() - 1;
+                        index = TitleLoader::save->maxSlot() - box * 30 - 1;
+                    }
+                }
+                pkm = TitleLoader::save->pkm(box, index);
+            }
+        }
+        while (pkm->encryptionConstant() == 0 && pkm->species() == 0);
+        sha256(origHash.data(), pkm->rawData(), pkm->getLength());
     }
     return false;
 }

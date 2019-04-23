@@ -69,6 +69,7 @@ private:
     void partyUpdate();
     
     bool goBack();
+    bool advanceMon(bool forward);
     bool setSaveInfo();
     bool saved();
     std::vector<Button*> buttons;
