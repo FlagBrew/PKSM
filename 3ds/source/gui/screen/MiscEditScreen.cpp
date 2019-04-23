@@ -698,7 +698,7 @@ void MiscEditScreen::validate()
         {
             std::copy(dataToWrite.begin(), dataToWrite.end(), pkm->rawData());
         } else {
-            Gui::error("Invalid Data Size!", abs(1337));
+            Gui::error("Invalid Data Size!", dataToWrite.size());
         }
         curl_easy_cleanup(curl);
     }
