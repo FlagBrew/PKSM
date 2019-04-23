@@ -694,20 +694,17 @@ void MiscEditScreen::validate()
         if (res != CURLE_OK)
         {
             Gui::error("PLACEHOLDER", abs(res));
-        } else {
+        }
+        else
+        {
             curl_easy_getinfo (curl, CURLINFO_RESPONSE_CODE, &status_code);
             switch (status_code)
             {
                 case 200:
-                    if (dataToWrite.size() == pkm->getLength())
-                    {
-                        std::copy(dataToWrite.begin(), dataToWrite.end(), pkm->rawData());
-                    } else {
-                        Gui::error("Invalid Data Size!", dataToWrite.size());
-                    }
+                    std::copy(dataToWrite.begin(), dataToWrite.end(), pkm->rawData());
                     break;
                 case 400:
-                    Gui::error("Your Pokémon cannot be auto legalized!", abs(1337));
+                    Gui::error("Your Pokémon cannot be auto legalized!", abs(0x1337));
                     break;
                 case 502:
                     Gui::error("Server appears to be offline!", status_code);
