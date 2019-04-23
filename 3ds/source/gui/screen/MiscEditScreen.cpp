@@ -203,11 +203,11 @@ void MiscEditScreen::update(touchPosition* touch)
         Gui::screenBack();
         return;
     }
-    // else if (kDown & KEY_Y)
-    // {
-    //     coreConsole();
-    //     return;
-    // }
+    else if (kDown & KEY_Y)
+    {
+        validate();
+        return;
+    }
 
     for (auto& button : buttons)
     {
@@ -665,7 +665,8 @@ void MiscEditScreen::validate()
     CURLcode res;
     std::string postdata = "";
     size_t outSize;
-    char* b64Data = base64_encode((char*)rawData, pkm->getLength(), &outSize);
+    long status_code = 0;
+    char *b64Data = base64_encode((char *)rawData, pkm->getLength(), &outSize);
     postdata += b64Data;
     std::string size = "Size: " + std::to_string(pkm->getLength());
     std::string version = "Version: " + getVersionString(TitleLoader::save->version());
@@ -693,12 +694,28 @@ void MiscEditScreen::validate()
         if (res != CURLE_OK)
         {
             Gui::error("PLACEHOLDER", abs(res));
-        }
-        if (dataToWrite.size() == pkm->getLength())
-        {
-            std::copy(dataToWrite.begin(), dataToWrite.end(), pkm->rawData());
         } else {
-            Gui::error("Invalid Data Size!", dataToWrite.size());
+            curl_easy_getinfo (curl, CURLINFO_RESPONSE_CODE, &status_code);
+            switch (status_code)
+            {
+                case 200:
+                    if (dataToWrite.size() == pkm->getLength())
+                    {
+                        std::copy(dataToWrite.begin(), dataToWrite.end(), pkm->rawData());
+                    } else {
+                        Gui::error("Invalid Data Size!", dataToWrite.size());
+                    }
+                    break;
+                case 400:
+                    Gui::error("Your Pokémon cannot be auto legalized!", abs(1337));
+                    break;
+                case 502:
+                    Gui::error("Server appears to be offline!", status_code);
+                    break;
+                default:
+                    Gui::error("Haven't accounted for this error, sorry!", status_code);
+                    break;
+                }
         }
         curl_easy_cleanup(curl);
     }

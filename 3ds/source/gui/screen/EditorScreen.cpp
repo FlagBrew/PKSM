@@ -334,6 +334,13 @@ void EditorScreen::update(touchPosition* touch)
             return;
         }
     }
+    
+    if (downKeys & KEY_Y)
+    {
+        Gui::setScreen(std::make_unique<MiscEditScreen>(pkm)); 
+        justSwitched = true;
+        return;
+    }
 }
 
 bool EditorScreen::goBack()
