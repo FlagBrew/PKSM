@@ -281,7 +281,7 @@ void TitleLoader::backupSave(const std::string& id)
     std::strftime(stringTime, 14,"%Y%m%d%H%M%S", timeStruct);
     std::string path = "/3ds/PKSM/backups/" + id;
     mkdir(path.c_str(), 777);
-    path += '/' + std::string(stringTime);
+    path += '/' + std::string(stringTime) + '/';
     mkdir(path.c_str(), 777);
     path += idToSaveName(id);
     FSStream out = FSStream(Archive::sd(), path, FS_OPEN_WRITE | FS_OPEN_CREATE, TitleLoader::save->getLength());
