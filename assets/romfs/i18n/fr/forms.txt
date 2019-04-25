@@ -109,7 +109,7 @@ Coupe Monsieur
 Coupe Reine
 Coupe Kabuki
 Coupe Pharaon
-Average
+Moyenne
 Taille Mini
 Taille Maxi
 Taille Ultra
