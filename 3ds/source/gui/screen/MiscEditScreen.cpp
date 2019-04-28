@@ -657,7 +657,7 @@ static std::string getVersionString(int version)
 
 void MiscEditScreen::validate()
 {
-    if (!Gui::showChoiceMessage("COLOSSAL FUCKAGE MAY OCCUR", "USE AT YOUR OWN RISK"))
+    if (!Gui::showChoiceMessage(i18n::localize("AUTO_LEGALIZE_WARNING_1"), i18n::localize("AUTO_LEGALIZE_WARNING_2")))
     {
         return;
     }
@@ -693,7 +693,7 @@ void MiscEditScreen::validate()
         res = curl_easy_perform(curl);
         if (res != CURLE_OK)
         {
-            Gui::error("PLACEHOLDER", abs(res));
+            Gui::error(i18n::localize("CURL_ERROR"), abs(res));
         }
         else
         {
@@ -704,13 +704,13 @@ void MiscEditScreen::validate()
                     std::copy(dataToWrite.begin(), dataToWrite.end(), pkm->rawData());
                     break;
                 case 400:
-                    Gui::error("Your Pokémon cannot be auto legalized!", abs(0x1337));
+                    Gui::error(i18n::localize("AUTO_LEGALIZE_ERROR"), abs(0x1337));
                     break;
                 case 502:
-                    Gui::error("Server appears to be offline!", status_code);
+                    Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
                     break;
                 default:
-                    Gui::error("Haven't accounted for this error, sorry!", status_code);
+                    Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
                     break;
                 }
         }

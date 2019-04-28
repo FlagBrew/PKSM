@@ -24,7 +24,7 @@
 *         reasonable ways as different from the original version.
 */
 
-#include "ViewCloneOverlay.hpp"
+#include "ViewPokemonOverlay.hpp"
 #include "gui.hpp"
 #include <curl/curl.h>
 #include <loader.hpp>
@@ -33,7 +33,7 @@ extern "C" {
 #include "base64.h"
 }
 
-void ViewCloneOverlay::draw() const
+void ViewPokemonOverlay::draw() const
 {
     ViewOverlay::draw();
 
@@ -42,11 +42,11 @@ void ViewCloneOverlay::draw() const
     if (clone.empty())
     {
         Gui::staticText(i18n::localize("PRESS_TO_CLONE"), 160, 110, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-        Gui::staticText("Press Y to share this Pokemon", 160, 130, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        Gui::staticText(i18n::localize("SHARE_PRESS_TO_SHARE"), 160, 130, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     }
 }
 
-void ViewCloneOverlay::update(touchPosition* touch)
+void ViewPokemonOverlay::update(touchPosition* touch)
 {
     u32 kDown = hidKeysDown();
     if (kDown & KEY_B)
@@ -74,10 +74,8 @@ static size_t write_callback(char *ptr, size_t size, size_t nmemb, void* userdat
     return size * nmemb;
 }
  
-void ViewCloneOverlay::share()
+void ViewPokemonOverlay::share()
 {
-    Gui::warn("This feature has not been fully implemented yet!");
-
     const u8* rawData = pkm->rawData();
     CURLcode res;
     std::string postdata = "";
@@ -111,7 +109,7 @@ void ViewCloneOverlay::share()
         res = curl_easy_perform(curl);
         if (res != CURLE_OK)
         {
-            Gui::error("There was an error with curl!", abs(res));
+            Gui::error(i18n::localize("CURL_ERROR"), abs(res));
         }
         else
         {
@@ -119,13 +117,13 @@ void ViewCloneOverlay::share()
             switch (status_code)
             {
                 case 200:
-                    Gui::warn("Your download code is", s);
+                    Gui::warn(i18n::localize("SHARE_DOWNLOAD_CODE"), s);
                     break;
                 case 502:
-                    Gui::error("Server appears to be offline!", status_code);
+                    Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
                     break;
                 default:
-                    Gui::error("Haven't accounted for this error, sorry!", status_code);
+                    Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
                     break;
             }
         }

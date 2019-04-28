@@ -37,7 +37,7 @@
 #include "random.hpp"
 #include "SortOverlay.hpp"
 #include "BoxOverlay.hpp"
-#include "ViewCloneOverlay.hpp"
+#include "ViewPokemonOverlay.hpp"
 #include "banks.hpp"
 #include "BankSelectionScreen.hpp"
 #include "StorageOverlay.hpp"
@@ -607,7 +607,7 @@ void StorageScreen::update(touchPosition* touch)
         }
         else if (!infoMon)
         {
-            if (!Gui::showChoiceMessage("You are about to enter a share code", "the code should be only 8 characters!"))
+            if (!Gui::showChoiceMessage(i18n::localize("SHARE_CODE_ENTER_PROMPT")))
             {
                 return;
             }
@@ -875,7 +875,7 @@ bool StorageScreen::showViewer()
 
     if (infoMon && infoMon->species() != 0)
     {
-        currentOverlay = std::make_unique<ViewCloneOverlay>(*this, infoMon, moveMon, partyNum, selectDimensions, currentlySelecting);
+        currentOverlay = std::make_unique<ViewPokemonOverlay>(*this, infoMon, moveMon, partyNum, selectDimensions, currentlySelecting);
     }
     return true;
 }
@@ -1672,7 +1672,7 @@ void StorageScreen::download()
             res = curl_easy_perform(curl);
             if (res != CURLE_OK)
             {
-                Gui::error("There was an error with curl!", abs(res));
+                Gui::error(i18n::localize("CURL_ERROR"), abs(res));
             }
             else
             {
@@ -1683,15 +1683,15 @@ void StorageScreen::download()
                         break;
                     case 400:
                     case 404:
-                        Gui::error("Your download code is invalid or expired!", status_code);
+                        Gui::error(i18n::localize("SHARE_INVALID_CODE"), status_code);
                         curl_easy_cleanup(curl);
                         return;
                     case 502:
-                        Gui::error("Server appears to be offline!", status_code);
+                        Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
                         curl_easy_cleanup(curl);
                         return;
                     default:
-                        Gui::error("Haven't accounted for this error, sorry!", status_code);
+                        Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
                         curl_easy_cleanup(curl);
                         return;
                 }
@@ -1706,7 +1706,7 @@ void StorageScreen::download()
                         static constexpr size_t targetLength = 138;
                         if (outSize != targetLength)
                         {
-                            Gui::error("Incorrect size for version received", outSize);
+                            Gui::error(i18n::localize("SHARE_ERROR_INCORRECT_VERSION"), outSize);
                             free(retData);
                             curl_easy_cleanup(curl);
                             return;
@@ -1719,7 +1719,7 @@ void StorageScreen::download()
                         static constexpr size_t targetLength = 138;
                         if (outSize != targetLength)
                         {
-                            Gui::error("Incorrect size for version received", outSize);
+                            Gui::error(i18n::localize("SHARE_ERROR_INCORRECT_VERSION"), outSize);
                             free(retData);
                             curl_easy_cleanup(curl);
                             return;
@@ -1732,7 +1732,7 @@ void StorageScreen::download()
                         static constexpr size_t targetLength = 234;
                         if (outSize != targetLength)
                         {
-                            Gui::error("Incorrect size for version received", outSize);
+                            Gui::error(i18n::localize("SHARE_ERROR_INCORRECT_VERSION"), outSize);
                             free(retData);
                             curl_easy_cleanup(curl);
                             return;
@@ -1745,7 +1745,7 @@ void StorageScreen::download()
                         static constexpr size_t targetLength = 234;
                         if (outSize != targetLength)
                         {
-                            Gui::error("Incorrect size for version received", outSize);
+                            Gui::error(i18n::localize("SHARE_ERROR_INCORRECT_VERSION"), outSize);
                             free(retData);
                             curl_easy_cleanup(curl);
                             return;
@@ -1758,7 +1758,7 @@ void StorageScreen::download()
                         static constexpr size_t targetLength = 261;
                         if (outSize != targetLength)
                         {
-                            Gui::error("Incorrect size for version received", outSize);
+                            Gui::error(i18n::localize("SHARE_ERROR_INCORRECT_VERSION"), outSize);
                             free(retData);
                             curl_easy_cleanup(curl);
                             return;
@@ -1768,7 +1768,7 @@ void StorageScreen::download()
                     }
                     default:
                     {
-                        Gui::error("Invalid generation", (Result) gen);
+                        Gui::error(i18n::localize("SHARE_INVALID_GENERATION"), (Result) gen);
                         free(retData);
                         curl_easy_cleanup(curl);
                         return;
@@ -1791,7 +1791,7 @@ void StorageScreen::download()
                     }
                     else
                     {
-                        Gui::warn("Cannot transfer between G4-7 and LGPE");
+                        Gui::warn(i18n::localize("SHARE_GENERATION_TRANSFER_ERROR"));
                     }
                 }
                 free(retData);
