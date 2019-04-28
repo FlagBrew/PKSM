@@ -708,9 +708,8 @@ void MiscEditScreen::validate()
             }
         }
         Fetch::exit();
-
-        curl_slist_free_all(headers);
     }
+    curl_slist_free_all(headers);
     dataToWrite.clear();
     return;
 }

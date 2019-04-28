@@ -26,13 +26,6 @@
 
 #include "ViewCloneOverlay.hpp"
 #include "gui.hpp"
-#include <fetch.hpp>
-#include <curl/curl.h>
-#include <loader.hpp>
-
-extern "C" {
-#include "base64.h"
-}
 
 void ViewCloneOverlay::draw() const
 {

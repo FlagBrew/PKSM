@@ -1609,7 +1609,8 @@ static bool transferFine(std::shared_ptr<PKX>& pkm)
 static size_t header_callback(char* buffer, size_t size, size_t nitems, void* userdata)
 {
     std::string tmp(buffer, size*nitems);
-    if (tmp.find("Generation:") == 0) {
+    if (tmp.find("Generation:") == 0)
+    {
         tmp = tmp.substr(12);
         if (tmp.find("4") == 0)
         {
@@ -1643,6 +1644,7 @@ void StorageScreen::shareSend()
     char *b64Data = base64_encode((char *)rawData, infoMon->getLength(), &outSize);
     std::string postdata = b64Data;
     free(b64Data);
+
     std::string version = "Generation: " + genToString(infoMon->generation());
     std::string size = "Size: " + std::to_string(infoMon->getLength());
     std::string info = "Info: name-" + infoMon->nickname() + ",ot_name-" + infoMon->otName() + ",lvl-" + std::to_string((int)infoMon->level());
@@ -1651,9 +1653,9 @@ void StorageScreen::shareSend()
     headers = curl_slist_append(headers, version.c_str());
     headers = curl_slist_append(headers, size.c_str());
     headers = curl_slist_append(headers, info.c_str());
+
     std::string writeData = "";
     CURL *curl = Fetch::init("http://192.168.2.101:8080/pksm/share", true, false, &writeData, headers, postdata);
-    Gui::warn(StringUtils::wrap(postdata, FONT_SIZE_15, 396.0f));
     if (curl)
     {
         CURLcode res = Fetch::perform();
@@ -1678,8 +1680,8 @@ void StorageScreen::shareSend()
             }
         }
         Fetch::exit();
-        curl_slist_free_all(headers);
     }
+    curl_slist_free_all(headers);
 }
 
 void StorageScreen::shareReceive()
