@@ -502,7 +502,7 @@ void EditorScreen::setOT()
     SwkbdState state;
     swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN ? 12 : (8 - 1));
     swkbdSetHintText(&state, i18n::localize("OT_NAME").c_str());
-    swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+    swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, SWKBD_FILTER_PROFANITY, 0);
     char input[25] = {0};
     SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
     input[24] = '\0';
@@ -517,7 +517,7 @@ void EditorScreen::setNick()
     SwkbdState state;
     swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN ? 12 : (11 - 1));
     swkbdSetHintText(&state, i18n::localize("NICKNAME").c_str());
-    swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+    swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, SWKBD_FILTER_PROFANITY, 0);
     char input[25] = {0};
     SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
     input[24] = '\0';

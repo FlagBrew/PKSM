@@ -194,7 +194,7 @@ StorageScreen::StorageScreen()
             shareSend();
         }
         return true;
-    }, ui_sheet_button_wireless_idx, "", 0.0f, 0);
+    }, ui_sheet_button_wireless_no_y_idx, "", 0.0f, 0);
 
     // Pokemon buttons
     u16 y = 45;
@@ -217,15 +217,6 @@ StorageScreen::StorageScreen()
 
 StorageScreen::~StorageScreen()
 {
-    for (auto button : mainButtons)
-    {
-        delete button;
-    }
-    for (auto button : clickButtons)
-    {
-        delete button;
-    }
-
     if (TitleLoader::save->generation() == Generation::LGPE)
     {
         ((SavLGPE*)TitleLoader::save.get())->compressBox();
@@ -259,7 +250,7 @@ void StorageScreen::draw() const
     Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_horizontal_idx, 202, 44);
     Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_vertical_idx, 2, 193);
     Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_both_idx, 202, 193);
-    for (Button* b : mainButtons)
+    for (auto& b : mainButtons)
     {
         b->draw();
     }
