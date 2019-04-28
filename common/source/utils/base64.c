@@ -25,6 +25,7 @@
 */
 
 #include "base64.h"
+#include <string.h>
 
 static char encoding_table[] = {
 	'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
@@ -51,6 +52,7 @@ unsigned char *base64_decode(const char *data, size_t input_length, size_t *outp
     if (data[input_length - 2] == '=') (*output_length)--;
 
     unsigned char *decoded_data = malloc(*output_length);
+    memset(decoded_data, 0, *output_length);
     if (decoded_data == NULL) return NULL;
 
     for (size_t i = 0, j = 0; i < input_length;) {

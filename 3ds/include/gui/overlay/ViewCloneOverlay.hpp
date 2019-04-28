@@ -39,6 +39,8 @@ public:
     virtual ~ViewCloneOverlay() {}
     void update(touchPosition* touch) override;
     void draw() const override;
+    void share();
+
 private:
     std::vector<std::shared_ptr<PKX>>& clone;
     std::vector<int>& partyNum;

@@ -41,7 +41,12 @@
 #include "banks.hpp"
 #include "BankSelectionScreen.hpp"
 #include "StorageOverlay.hpp"
+#include <curl/curl.h>
 #include <variant>
+
+extern "C" {
+#include "base64.h"
+}
 
 extern std::stack<std::unique_ptr<Screen>> screens;
 
@@ -599,6 +604,14 @@ void StorageScreen::update(touchPosition* touch)
         {
             grabSelection(false);
         }
+        else if (!infoMon)
+        {
+            if (!Gui::showChoiceMessage("You are about to enter a share code", "the code should be only 8 characters!"))
+            {
+                return;
+            }
+            Gui::setNextKeyboardFunc([this](){ this->download(); });
+        }
         else
         {
             showViewer();
@@ -705,7 +718,6 @@ void StorageScreen::update(touchPosition* touch)
             prevBoxTop();
             sleep = true;
         }
-
         if (sleep)
             buttonCooldown = 10;
     }
@@ -1532,4 +1544,70 @@ void StorageScreen::grabSelection(bool remove)
         cursorIndex = baseIndex + 1;
     }
     scrunchSelection();
+}
+
+static size_t write_callback(char *ptr, size_t size, size_t nmemb, void* userdata) {
+    std::string* str = (std::string*) userdata;
+    str->append(ptr, size*nmemb);
+    return size * nmemb;
+}
+
+void StorageScreen::download()
+{
+    static SwkbdState state;
+    static bool first = true;
+    if (first)
+    {
+        swkbdInit(&state, SWKBD_TYPE_QWERTY, 2, 8);
+        first = false;
+    }
+    swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
+    swkbdSetValidation(&state, SWKBD_FIXEDLEN, 0, 0);
+    char input[9] = {0};
+    SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
+    input[8] = '\0';
+    CURLcode res;
+    if (ret == SWKBD_BUTTON_CONFIRM)
+    {
+        const std::string url = "http://192.168.2.101:8080/pksm/download/" + std::string(input);
+        CURL* curl = curl_easy_init();
+        if (curl)
+        {
+            std::string retB64Data = "";
+            curl_easy_setopt(curl, CURLOPT_URL, url.c_str()); // replace with https://flagbrew.org/pksm/download/[codehere] after testing is done
+            curl_easy_setopt(curl, CURLOPT_WRITEDATA, &retB64Data);
+            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
+            res = curl_easy_perform(curl);
+            if (res != CURLE_OK)
+            {
+                Gui::error("PLACEHOLDER", abs(res));
+            }
+            else
+            {
+                size_t outSize;
+                u8* retData = base64_decode(retB64Data.data(), retB64Data.size(), &outSize);
+                size_t targetLength = TitleLoader::save->emptyPkm()->getLength();
+                targetLength += 3 - (targetLength % 3);
+                if (outSize != targetLength)
+                {
+                    Gui::error("Is this the correct generation Pokemon?", outSize);
+                }
+                else
+                {
+                    auto pkm = TitleLoader::save->emptyPkm()->clone();
+                    std::copy(retData, retData + pkm->getLength(), pkm->rawData());
+                    if (storageChosen)
+                    {
+                        Banks::bank->pkm(pkm, storageBox, cursorIndex - 1);
+                    }
+                    else
+                    {
+                        TitleLoader::save->pkm(pkm, boxBox, cursorIndex - 1, true);
+                    }
+                }
+                free(retData);
+            }
+            curl_easy_cleanup(curl);
+        }
+    }
 }

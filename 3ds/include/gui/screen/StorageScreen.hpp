@@ -64,6 +64,7 @@ private:
     bool isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTransfer = false);
     void scrunchSelection();
     void grabSelection(bool remove);
+    void download();
 
     bool storageChosen = false;
     bool fromStorage = false;

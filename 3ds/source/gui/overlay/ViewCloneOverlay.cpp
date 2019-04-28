@@ -26,6 +26,12 @@
 
 #include "ViewCloneOverlay.hpp"
 #include "gui.hpp"
+#include <curl/curl.h>
+#include <loader.hpp>
+
+extern "C" {
+#include "base64.h"
+}
 
 void ViewCloneOverlay::draw() const
 {
@@ -36,6 +42,7 @@ void ViewCloneOverlay::draw() const
     if (clone.empty())
     {
         Gui::staticText(i18n::localize("PRESS_TO_CLONE"), 160, 110, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        Gui::staticText("Press Y to share this Pokemon", 160, 130, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     }
 }
 
@@ -54,4 +61,55 @@ void ViewCloneOverlay::update(touchPosition* touch)
         currentlySelecting = false;
         screen.removeOverlay();
     }
+    else if (kDown & KEY_Y)
+    {
+        share();
+        screen.removeOverlay();
+    }
+}
+
+static size_t write_callback(char *ptr, size_t size, size_t nmemb, void* userdata) {
+    std::string* str = (std::string*) userdata;
+    str->append(ptr, size*nmemb);
+    return size * nmemb;
+}
+ 
+void ViewCloneOverlay::share() {
+    Gui::warn("This feature has not been fully implemented yet!");
+    const u8* rawData = pkm->rawData();
+    CURLcode res;
+    std::string postdata = "";
+    size_t outSize;
+    long status_code = 0;
+    char *b64Data = base64_encode((char *)rawData, pkm->getLength(), &outSize);
+    postdata += b64Data;
+    std::string version = "Version: " + std::to_string(TitleLoader::save->version());
+    std::string size = "Size: " + std::to_string(pkm->getLength());
+    free(b64Data);
+        CURL* curl = curl_easy_init();
+    if (curl) {
+        std::string s = "";
+        struct curl_slist *h = NULL;
+        h = curl_slist_append(h, "Content-Type: application/base64");
+        h = curl_slist_append(h, size.c_str());
+        curl_easy_setopt(curl, CURLOPT_URL, "http://192.168.2.101:8080/pksm/share");
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, h);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postdata.data());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, postdata.length());
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+        curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
+        curl_easy_setopt(curl, CURLOPT_USERAGENT, "PKSM-curl/7.59.0");
+        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
+        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
+        res = curl_easy_perform(curl);
+        if (res != CURLE_OK)
+        {
+            Gui::error("PLACEHOLDER", abs(res));
+        }
+        Gui::warn(s);
+        curl_easy_cleanup(curl);
+    }
+    return;
 }
