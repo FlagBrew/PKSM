@@ -27,6 +27,7 @@
 #ifndef MYSTERYGIFT_HPP
 #define MYSTERYGIFT_HPP
 
+#include <bzlib.h>
 #include "WB7.hpp"
 #include "WC7.hpp"
 #include "WC6.hpp"

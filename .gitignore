@@ -5,8 +5,8 @@ out/
 release/
 assets/gfx/pkm
 assets/gfx/types
-assets/romfs/mg/*.json
-assets/romfs/mg/*.bin
+assets/romfs/mg/*.json.bz2
+assets/romfs/mg/*.bin.bz2
 assets/romfs/gfx/*
 !assets/romfs/gfx/pkm_spritesheet.t3x
 !assets/romfs/gfx/types_spritesheet.t3x

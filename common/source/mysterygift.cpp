@@ -31,9 +31,27 @@ static u8* mysteryGiftData;
 
 void MysteryGift::init(Generation g)
 {
-    FILE* in = fopen(StringUtils::format("romfs:/mg/sheet%s.json", genToCstring(g)).c_str(), "rt");
-    mysteryGiftSheet = nlohmann::json::parse(in, nullptr, false);
-    fclose(in);
+    std::string path = StringUtils::format("romfs:/mg/sheet%s.json.bz2", genToCstring(g));
+    FILE* f = fopen(path.c_str(), "rb");
+    if (f != NULL)
+    {
+        fseek(f, 0, SEEK_END);
+        size_t size = ftell(f);
+        unsigned int destLen = 700 * 1024; // big enough
+        char* s = new char[size];
+        char* d = new char[destLen]();
+        rewind(f);
+        fread(s, 1, size, f);
+        
+        int r = BZ2_bzBuffToBuffDecompress(d, &destLen, s, size, 0, 0);
+        if (r == BZ_OK)
+        {
+            mysteryGiftSheet = nlohmann::json::parse(d);
+        }
+
+        delete[] s;
+        delete[] d;
+    }
 
     if (mysteryGiftSheet.is_discarded())
     {
@@ -42,14 +60,26 @@ void MysteryGift::init(Generation g)
         mysteryGiftSheet["matches"] = nlohmann::json::array();
     }
 
-    in = fopen(StringUtils::format("romfs:/mg/data%s.bin", genToCstring(g)).c_str(), "rb");
-    fseek(in, 0, SEEK_END);
-    size_t size = ftell(in);
-    fseek(in, 0, SEEK_SET);
+    path = StringUtils::format("romfs:/mg/data%s.bin.bz2", genToCstring(g));
+    f = fopen(path.c_str(), "rb");
+    if (f != NULL)
+    {
+        fseek(f, 0, SEEK_END);
+        u32 size = ftell(f);
+        unsigned int destLen = 800 * 1024;
+        char* s = new char[size];
+        mysteryGiftData = new u8[destLen]();
+        rewind(f);
+        fread(s, 1, size, f);
+        
+        int r = BZ2_bzBuffToBuffDecompress((char*)mysteryGiftData, &destLen, s, size, 0, 0);
+        if (r != BZ_OK)
+        {
+            // TODO
+        }
 
-    mysteryGiftData = new u8[size];
-    fread(mysteryGiftData, 1, size, in);
-    fclose(in);
+        delete[] s;
+    }
 }
 
 std::unique_ptr<WCX> MysteryGift::wondercard(size_t index)

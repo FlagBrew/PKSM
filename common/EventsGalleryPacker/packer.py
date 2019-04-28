@@ -3,6 +3,7 @@ import git
 import os
 import json
 import struct
+import bz2
 import gen4string
 
 validLangs = ["CHS", "CHT", "ENG", "FRE", "GER", "ITA", "JPN", "KOR", "SPA"]
@@ -250,10 +251,11 @@ for gen in range (4, 7+1):
 		sheet['matches'][i]
 		
 	# export sheet
-	sheet_data = json.dumps(sheet)
-	with open("./out/sheet{}.json".format(gen), 'w') as f:
-		f.write(sheet_data)
+	compressed = bz2.compress(str.encode(json.dumps(sheet)))
+	with open("./out/sheet{}.json.bz2".format(gen), 'wb') as f:
+		f.write(compressed)
 
 	# export data
-	with open("./out/data{}.bin".format(gen), 'wb') as f:
-		f.write(data)	
+	compressed = bz2.compress(data)
+	with open("./out/data{}.bin.bz2".format(gen), 'wb') as f:
+		f.write(compressed)
