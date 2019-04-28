@@ -44,8 +44,9 @@ const char* genToCstring(Generation gen)
         case Generation::SIX:
             return "6";
         case Generation::SEVEN:
-        default:
             return "7";
+        default:
+            return "INVALID";
     }
 }
 

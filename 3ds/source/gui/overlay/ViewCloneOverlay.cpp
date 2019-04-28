@@ -74,8 +74,10 @@ static size_t write_callback(char *ptr, size_t size, size_t nmemb, void* userdat
     return size * nmemb;
 }
  
-void ViewCloneOverlay::share() {
+void ViewCloneOverlay::share()
+{
     Gui::warn("This feature has not been fully implemented yet!");
+
     const u8* rawData = pkm->rawData();
     CURLcode res;
     std::string postdata = "";
@@ -83,16 +85,19 @@ void ViewCloneOverlay::share() {
     long status_code = 0;
     char *b64Data = base64_encode((char *)rawData, pkm->getLength(), &outSize);
     postdata += b64Data;
-    std::string version = "Version: " + std::to_string(TitleLoader::save->version());
+
+    std::string version = "Generation: " + genToString(pkm->generation());
     std::string size = "Size: " + std::to_string(pkm->getLength());
     free(b64Data);
-        CURL* curl = curl_easy_init();
-    if (curl) {
+    CURL* curl = curl_easy_init();
+    if (curl)
+    {
         std::string s = "";
         struct curl_slist *h = NULL;
         h = curl_slist_append(h, "Content-Type: application/base64");
+        h = curl_slist_append(h, version.c_str());
         h = curl_slist_append(h, size.c_str());
-        curl_easy_setopt(curl, CURLOPT_URL, "http://192.168.2.101:8080/pksm/share");
+        curl_easy_setopt(curl, CURLOPT_URL, "https://flagbrew.org/pksm/share");
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, h);
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postdata.data());
         curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, postdata.length());
@@ -106,9 +111,24 @@ void ViewCloneOverlay::share() {
         res = curl_easy_perform(curl);
         if (res != CURLE_OK)
         {
-            Gui::error("PLACEHOLDER", abs(res));
+            Gui::error("There was an error with curl!", abs(res));
         }
-        Gui::warn(s);
+        else
+        {
+            curl_easy_getinfo (curl, CURLINFO_RESPONSE_CODE, &status_code);
+            switch (status_code)
+            {
+                case 200:
+                    Gui::warn("Your download code is", s);
+                    break;
+                case 502:
+                    Gui::error("Server appears to be offline!", status_code);
+                    break;
+                default:
+                    Gui::error("Haven't accounted for this error, sorry!", status_code);
+                    break;
+            }
+        }
         curl_easy_cleanup(curl);
     }
     return;

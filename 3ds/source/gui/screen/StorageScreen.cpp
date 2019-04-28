@@ -42,6 +42,7 @@
 #include "BankSelectionScreen.hpp"
 #include "StorageOverlay.hpp"
 #include <curl/curl.h>
+#include <PB7.hpp>
 #include <variant>
 
 extern "C" {
@@ -1552,6 +1553,92 @@ static size_t write_callback(char *ptr, size_t size, size_t nmemb, void* userdat
     return size * nmemb;
 }
 
+static bool transferFine(std::shared_ptr<PKX>& pkm)
+{
+    TitleLoader::save->transfer(pkm);
+    for (int i = 0; i < 4; i++)
+    {
+        if (pkm->move(i) > TitleLoader::save->maxMove())
+        {
+            Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_MOVE"));
+            return false;
+        }
+        if (pkm->generation() == Generation::SIX)
+        {
+            PK6* pk6 = (PK6*) pkm.get();
+            if (pk6->relearnMove(i) > TitleLoader::save->maxMove())
+            {
+                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_MOVE"));
+                return false;
+            }
+        }
+        else if (pkm->generation() == Generation::SEVEN)
+        {
+            PK7* pk7 = (PK7*) pkm.get();
+            if (pk7->relearnMove(i) > TitleLoader::save->maxMove())
+            {
+                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_MOVE"));
+                return false;
+            }
+        }
+    }
+    if (pkm->species() > TitleLoader::save->maxSpecies())
+    {
+        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_SPECIES"));
+        return false;
+    }
+    else if (pkm->alternativeForm() > TitleLoader::save->formCount(pkm->species()))
+    {
+        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_FORM"));
+        return false;
+    }
+    else if (pkm->ability() > TitleLoader::save->maxAbility())
+    {
+        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_ABILITY"));
+        return false;
+    }
+    else if (pkm->heldItem() > TitleLoader::save->maxItem())
+    {
+        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_ITEM"));
+        return false;
+    }
+    else if (pkm->ball() > TitleLoader::save->maxBall())
+    {
+        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_BALL"));
+        return false;
+    }
+    return true;
+}
+
+static size_t header_callback(char* buffer, size_t size, size_t nitems, void* userdata)
+{
+    std::string tmp(buffer, size*nitems);
+    if (tmp.find("Generation:") == 0) {
+        tmp = tmp.substr(12);
+        if (tmp.find("4") == 0)
+        {
+            *(Generation*)(userdata) = Generation::FOUR;
+        }
+        else if (tmp.find("5") == 0)
+        {
+            *(Generation*)(userdata) = Generation::FIVE;
+        }
+        else if (tmp.find("6") == 0)
+        {
+            *(Generation*)(userdata) = Generation::SIX;
+        }
+        else if (tmp.find("7") == 0)
+        {
+            *(Generation*)(userdata) = Generation::SEVEN;
+        }
+        else if (tmp.find("LGPE") == 0)
+        {
+            *(Generation*)(userdata) = Generation::LGPE;
+        }
+    }
+    return nitems * size;
+}
+
 void StorageScreen::download()
 {
     static SwkbdState state;
@@ -1569,45 +1656,147 @@ void StorageScreen::download()
     CURLcode res;
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
-        const std::string url = "http://192.168.2.101:8080/pksm/download/" + std::string(input);
+        const std::string url = "https://flagbrew.org/pksm/download/" + std::string(input);
         CURL* curl = curl_easy_init();
         if (curl)
         {
             std::string retB64Data = "";
-            curl_easy_setopt(curl, CURLOPT_URL, url.c_str()); // replace with https://flagbrew.org/pksm/download/[codehere] after testing is done
+            long status_code = 0;
+            Generation gen = Generation::UNUSED;
+            curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
             curl_easy_setopt(curl, CURLOPT_WRITEDATA, &retB64Data);
+            curl_easy_setopt(curl, CURLOPT_HEADERDATA, &gen);
+            curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+            curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, header_callback);
             curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
             res = curl_easy_perform(curl);
             if (res != CURLE_OK)
             {
-                Gui::error("PLACEHOLDER", abs(res));
+                Gui::error("There was an error with curl!", abs(res));
             }
             else
             {
+                curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &status_code);
+                switch (status_code)
+                {
+                    case 200:
+                        break;
+                    case 400:
+                    case 404:
+                        Gui::error("Your download code is invalid or expired!", status_code);
+                        curl_easy_cleanup(curl);
+                        return;
+                    case 502:
+                        Gui::error("Server appears to be offline!", status_code);
+                        curl_easy_cleanup(curl);
+                        return;
+                    default:
+                        Gui::error("Haven't accounted for this error, sorry!", status_code);
+                        curl_easy_cleanup(curl);
+                        return;
+                }
                 size_t outSize;
                 u8* retData = base64_decode(retB64Data.data(), retB64Data.size(), &outSize);
-                size_t targetLength = TitleLoader::save->emptyPkm()->getLength();
-                targetLength += 3 - (targetLength % 3);
-                if (outSize != targetLength)
+
+                std::shared_ptr<PKX> pkm;
+                switch (gen)
                 {
-                    Gui::error("Is this the correct generation Pokemon?", outSize);
+                    case Generation::FOUR:
+                    {
+                        static constexpr size_t targetLength = 138;
+                        if (outSize != targetLength)
+                        {
+                            Gui::error("Incorrect size for version received", outSize);
+                            free(retData);
+                            curl_easy_cleanup(curl);
+                            return;
+                        }
+                        pkm = std::make_shared<PK4>(retData, false);
+                        break;
+                    }
+                    case Generation::FIVE:
+                    {
+                        static constexpr size_t targetLength = 138;
+                        if (outSize != targetLength)
+                        {
+                            Gui::error("Incorrect size for version received", outSize);
+                            free(retData);
+                            curl_easy_cleanup(curl);
+                            return;
+                        }
+                        pkm = std::make_shared<PK5>(retData, false);
+                        break;
+                    }
+                    case Generation::SIX:
+                    {
+                        static constexpr size_t targetLength = 234;
+                        if (outSize != targetLength)
+                        {
+                            Gui::error("Incorrect size for version received", outSize);
+                            free(retData);
+                            curl_easy_cleanup(curl);
+                            return;
+                        }
+                        pkm = std::make_shared<PK6>(retData, false);
+                        break;
+                    }
+                    case Generation::SEVEN:
+                    {
+                        static constexpr size_t targetLength = 234;
+                        if (outSize != targetLength)
+                        {
+                            Gui::error("Incorrect size for version received", outSize);
+                            free(retData);
+                            curl_easy_cleanup(curl);
+                            return;
+                        }
+                        pkm = std::make_shared<PK7>(retData, false);
+                        break;
+                    }
+                    case Generation::LGPE:
+                    {
+                        static constexpr size_t targetLength = 261;
+                        if (outSize != targetLength)
+                        {
+                            Gui::error("Incorrect size for version received", outSize);
+                            free(retData);
+                            curl_easy_cleanup(curl);
+                            return;
+                        }
+                        pkm = std::make_shared<PB7>(retData, false);
+                        break;
+                    }
+                    default:
+                    {
+                        Gui::error("Invalid generation", (Result) gen);
+                        free(retData);
+                        curl_easy_cleanup(curl);
+                        return;
+                    }
+                }
+
+                if (storageChosen)
+                {
+                    Banks::bank->pkm(pkm, storageBox, cursorIndex - 1);
                 }
                 else
                 {
-                    auto pkm = TitleLoader::save->emptyPkm()->clone();
-                    std::copy(retData, retData + pkm->getLength(), pkm->rawData());
-                    if (storageChosen)
+                    if ((TitleLoader::save->generation() != Generation::LGPE && pkm->generation() != Generation::LGPE) ||
+                        (TitleLoader::save->generation() == Generation::LGPE && pkm->generation() == Generation::LGPE))
                     {
-                        Banks::bank->pkm(pkm, storageBox, cursorIndex - 1);
+                        if (transferFine(pkm))
+                        {
+                            TitleLoader::save->pkm(pkm, boxBox, cursorIndex - 1, true);
+                        }
                     }
                     else
                     {
-                        TitleLoader::save->pkm(pkm, boxBox, cursorIndex - 1, true);
+                        Gui::warn("Cannot transfer between G4-7 and LGPE");
                     }
                 }
                 free(retData);
             }
-            curl_easy_cleanup(curl);
         }
+        curl_easy_cleanup(curl);
     }
 }
