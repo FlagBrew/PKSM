@@ -37,11 +37,11 @@
 #include "random.hpp"
 #include "SortOverlay.hpp"
 #include "BoxOverlay.hpp"
-#include "ViewPokemonOverlay.hpp"
+#include "ViewCloneOverlay.hpp"
 #include "banks.hpp"
 #include "BankSelectionScreen.hpp"
 #include "StorageOverlay.hpp"
-#include <curl/curl.h>
+#include "fetch.hpp"
 #include <PB7.hpp>
 #include <variant>
 
@@ -162,20 +162,39 @@ StorageScreen::StorageScreen()
     instructions.addCircle(false, 266, 23, 11, COLOR_GREY);
     instructions.addBox(false, 264, 23, 4, 50, COLOR_GREY);
     instructions.addBox(false, 148, 57, 120, 16, COLOR_GREY, i18n::localize("BOX_SWAP"), COLOR_WHITE);
-    mainButtons[0] = new ClickButton(242, 12, 47, 22, [this](){ return this->swapBoxWithStorage(); }, ui_sheet_button_swap_boxes_idx, "", 0.0f, 0);
-    mainButtons[1] = new Button(212, 47, 108, 28, [this](){ return this->showViewer(); }, ui_sheet_button_editor_idx,
+    mainButtons[0] = std::make_unique<ClickButton>(242, 12, 47, 22, [this](){ return this->swapBoxWithStorage(); }, ui_sheet_button_swap_boxes_idx, "", 0.0f, 0);
+    mainButtons[1] = std::make_unique<Button>(212, 47, 108, 28, [this](){ return this->showViewer(); }, ui_sheet_button_editor_idx,
                                     i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[2] = new Button(212, 78, 108, 28, [this](){ return this->clearBox(); }, ui_sheet_button_editor_idx,
+    mainButtons[2] = std::make_unique<Button>(212, 78, 108, 28, [this](){ return this->clearBox(); }, ui_sheet_button_editor_idx,
                                     i18n::localize("CLEAR"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[3] = new Button(212, 109, 108, 28, [this](){ return this->releasePkm(); }, ui_sheet_button_editor_idx,
+    mainButtons[3] = std::make_unique<Button>(212, 109, 108, 28, [this](){ return this->releasePkm(); }, ui_sheet_button_editor_idx,
                                     i18n::localize("RELEASE"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[4] = new Button(212, 140, 108, 28, [this](){ return this->dumpPkm(); }, ui_sheet_button_editor_idx,
+    mainButtons[4] = std::make_unique<Button>(212, 140, 108, 28, [this](){ return this->dumpPkm(); }, ui_sheet_button_editor_idx,
                                     i18n::localize("DUMP"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[5] = new Button(212, 171, 108, 28, [this](){ return this->duplicate(); }, ui_sheet_button_editor_idx,
+    mainButtons[5] = std::make_unique<Button>(212, 171, 108, 28, [this](){ return this->duplicate(); }, ui_sheet_button_editor_idx,
                                     i18n::localize("CLONE"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[6] = new Button(283, 211, 34, 28, [this](){ return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
-    mainButtons[7] = new AccelButton(8, 15, 17, 24, [this](){ return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
-    mainButtons[8] = new AccelButton(189, 15, 17, 24, [this](){ return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+    mainButtons[6] = std::make_unique<Button>(283, 211, 34, 28, [this](){ return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
+    mainButtons[7] = std::make_unique<AccelButton>(8, 15, 17, 24, [this](){ return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+    mainButtons[8] = std::make_unique<AccelButton>(189, 15, 17, 24, [this](){ return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+    mainButtons[9] = std::make_unique<ClickButton>(3, 211, 34, 28, [this](){
+        if (!infoMon)
+        {
+            if (!Gui::showChoiceMessage(i18n::localize("SHARE_CODE_ENTER_PROMPT")))
+            {
+                return false;
+            }
+            Gui::setNextKeyboardFunc([this](){ this->shareReceive(); });
+        }
+        else
+        {
+            if (!Gui::showChoiceMessage(i18n::localize("SHARE_SEND_CONFIRM")))
+            {
+                return false;
+            }
+            shareSend();
+        }
+        return true;
+    }, ui_sheet_button_wireless_idx, "", 0.0f, 0);
 
     // Pokemon buttons
     u16 y = 45;
@@ -184,13 +203,13 @@ StorageScreen::StorageScreen()
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            clickButtons[row*6 + column] = new ClickButton(x, y, 34, 30, [this, row, column](){ return this->clickBottomIndex(row*6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, 0);
+            clickButtons[row*6 + column] = std::make_unique<ClickButton>(x, y, 34, 30, [this, row, column](){ return this->clickBottomIndex(row*6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, 0);
             x += 34;
         }
         y += 30;
     }
     instructions.addBox(false, 25, 15, 164, 24, COLOR_GREY, i18n::localize("A_BOX_NAME"), COLOR_WHITE);
-    clickButtons[30] = new ClickButton(25, 15, 164, 24, [this](){ return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0);
+    clickButtons[30] = std::make_unique<ClickButton>(25, 15, 164, 24, [this](){ return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0);
     TitleLoader::save->cryptBoxData(true);
 
     boxBox = TitleLoader::save->currentBox();
@@ -571,13 +590,13 @@ void StorageScreen::update(touchPosition* touch)
         }
     }
 
-    for (size_t i = 0; i < mainButtons.size(); i++)
+    for (auto& button : mainButtons)
     {
-        if (mainButtons[i]->update(touch))
+        if (button->update(touch))
             return;
     }
     backHeld = false;
-    for (Button* button : clickButtons)
+    for (auto& button : clickButtons)
     {
         if (button->update(touch))
             return;
@@ -604,14 +623,6 @@ void StorageScreen::update(touchPosition* touch)
         if (currentlySelecting)
         {
             grabSelection(false);
-        }
-        else if (!infoMon)
-        {
-            if (!Gui::showChoiceMessage(i18n::localize("SHARE_CODE_ENTER_PROMPT")))
-            {
-                return;
-            }
-            Gui::setNextKeyboardFunc([this](){ this->download(); });
         }
         else
         {
@@ -875,7 +886,7 @@ bool StorageScreen::showViewer()
 
     if (infoMon && infoMon->species() != 0)
     {
-        currentOverlay = std::make_unique<ViewPokemonOverlay>(*this, infoMon, moveMon, partyNum, selectDimensions, currentlySelecting);
+        currentOverlay = std::make_unique<ViewCloneOverlay>(*this, infoMon, moveMon, partyNum, selectDimensions, currentlySelecting);
     }
     return true;
 }
@@ -1547,12 +1558,6 @@ void StorageScreen::grabSelection(bool remove)
     scrunchSelection();
 }
 
-static size_t write_callback(char *ptr, size_t size, size_t nmemb, void* userdata) {
-    std::string* str = (std::string*) userdata;
-    str->append(ptr, size*nmemb);
-    return size * nmemb;
-}
-
 static bool transferFine(std::shared_ptr<PKX>& pkm)
 {
     TitleLoader::save->transfer(pkm);
@@ -1639,37 +1644,80 @@ static size_t header_callback(char* buffer, size_t size, size_t nitems, void* us
     return nitems * size;
 }
 
-void StorageScreen::download()
+void StorageScreen::shareSend()
+{
+    const u8* rawData = infoMon->rawData();
+    size_t outSize;
+    long status_code = 0;
+    char *b64Data = base64_encode((char *)rawData, infoMon->getLength(), &outSize);
+    std::string postdata = b64Data;
+    free(b64Data);
+    std::string version = "Generation: " + genToString(infoMon->generation());
+    std::string size = "Size: " + std::to_string(infoMon->getLength());
+    std::string info = "Info: name-" + infoMon->nickname() + ",ot_name-" + infoMon->otName() + ",lvl-" + std::to_string((int)infoMon->level());
+    struct curl_slist *headers = NULL;
+    headers = curl_slist_append(headers, "Content-Type: application/base64");
+    headers = curl_slist_append(headers, version.c_str());
+    headers = curl_slist_append(headers, size.c_str());
+    headers = curl_slist_append(headers, info.c_str());
+    std::string writeData = "";
+    CURL *curl = Fetch::init("http://192.168.2.101:8080/pksm/share", true, false, &writeData, headers, postdata);
+    Gui::warn(StringUtils::wrap(postdata, FONT_SIZE_15, 396.0f));
+    if (curl)
+    {
+        CURLcode res = Fetch::perform();
+        if (res != CURLE_OK)
+        {
+            Gui::error(i18n::localize("CURL_ERROR"), abs(res));
+        }
+        else
+        {
+            curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &status_code);
+            switch (status_code)
+            {
+                case 200:
+                    Gui::warn(i18n::localize("SHARE_DOWNLOAD_CODE"), writeData);
+                    break;
+                case 502:
+                    Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
+                    break;
+                default:
+                    Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
+                    break;
+            }
+        }
+        Fetch::exit();
+        curl_slist_free_all(headers);
+    }
+}
+
+void StorageScreen::shareReceive()
 {
     static SwkbdState state;
     static bool first = true;
     if (first)
     {
-        swkbdInit(&state, SWKBD_TYPE_QWERTY, 2, 8);
+        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 10);
         first = false;
     }
     swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
     swkbdSetValidation(&state, SWKBD_FIXEDLEN, 0, 0);
-    char input[9] = {0};
+    char input[11] = {0};
     SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-    input[8] = '\0';
+    input[10] = '\0';
     CURLcode res;
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
-        const std::string url = "https://flagbrew.org/pksm/download/" + std::string(input);
-        CURL* curl = curl_easy_init();
+        const std::string url = "http://192.168.2.101:8080/pksm/download/" + std::string(input);
+        std::string retB64Data = "";
+        CURL* curl = Fetch::init(url, false, true, &retB64Data, nullptr, "");
         if (curl)
         {
-            std::string retB64Data = "";
             long status_code = 0;
             Generation gen = Generation::UNUSED;
-            curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-            curl_easy_setopt(curl, CURLOPT_WRITEDATA, &retB64Data);
             curl_easy_setopt(curl, CURLOPT_HEADERDATA, &gen);
-            curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
             curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, header_callback);
-            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
-            res = curl_easy_perform(curl);
+            res = Fetch::perform();
             if (res != CURLE_OK)
             {
                 Gui::error(i18n::localize("CURL_ERROR"), abs(res));
@@ -1684,96 +1732,46 @@ void StorageScreen::download()
                     case 400:
                     case 404:
                         Gui::error(i18n::localize("SHARE_INVALID_CODE"), status_code);
-                        curl_easy_cleanup(curl);
+                        Fetch::exit();
                         return;
                     case 502:
                         Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
-                        curl_easy_cleanup(curl);
+                        Fetch::exit();
                         return;
                     default:
                         Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
-                        curl_easy_cleanup(curl);
+                        Fetch::exit();
                         return;
                 }
                 size_t outSize;
                 u8* retData = base64_decode(retB64Data.data(), retB64Data.size(), &outSize);
 
-                std::shared_ptr<PKX> pkm;
+                size_t targetLength = 0;
                 switch (gen)
                 {
                     case Generation::FOUR:
-                    {
-                        static constexpr size_t targetLength = 138;
-                        if (outSize != targetLength)
-                        {
-                            Gui::error(i18n::localize("SHARE_ERROR_INCORRECT_VERSION"), outSize);
-                            free(retData);
-                            curl_easy_cleanup(curl);
-                            return;
-                        }
-                        pkm = std::make_shared<PK4>(retData, false);
-                        break;
-                    }
                     case Generation::FIVE:
-                    {
-                        static constexpr size_t targetLength = 138;
-                        if (outSize != targetLength)
-                        {
-                            Gui::error(i18n::localize("SHARE_ERROR_INCORRECT_VERSION"), outSize);
-                            free(retData);
-                            curl_easy_cleanup(curl);
-                            return;
-                        }
-                        pkm = std::make_shared<PK5>(retData, false);
+                        targetLength = 138;
                         break;
-                    }
                     case Generation::SIX:
-                    {
-                        static constexpr size_t targetLength = 234;
-                        if (outSize != targetLength)
-                        {
-                            Gui::error(i18n::localize("SHARE_ERROR_INCORRECT_VERSION"), outSize);
-                            free(retData);
-                            curl_easy_cleanup(curl);
-                            return;
-                        }
-                        pkm = std::make_shared<PK6>(retData, false);
-                        break;
-                    }
                     case Generation::SEVEN:
-                    {
-                        static constexpr size_t targetLength = 234;
-                        if (outSize != targetLength)
-                        {
-                            Gui::error(i18n::localize("SHARE_ERROR_INCORRECT_VERSION"), outSize);
-                            free(retData);
-                            curl_easy_cleanup(curl);
-                            return;
-                        }
-                        pkm = std::make_shared<PK7>(retData, false);
+                        targetLength = 234;
                         break;
-                    }
                     case Generation::LGPE:
-                    {
-                        static constexpr size_t targetLength = 261;
-                        if (outSize != targetLength)
-                        {
-                            Gui::error(i18n::localize("SHARE_ERROR_INCORRECT_VERSION"), outSize);
-                            free(retData);
-                            curl_easy_cleanup(curl);
-                            return;
-                        }
-                        pkm = std::make_shared<PB7>(retData, false);
+                        targetLength = 261;
                         break;
-                    }
                     default:
-                    {
-                        Gui::error(i18n::localize("SHARE_INVALID_GENERATION"), (Result) gen);
-                        free(retData);
-                        curl_easy_cleanup(curl);
-                        return;
-                    }
+                        break;
                 }
+                if (outSize != targetLength)
+                {
+                    Gui::error(i18n::localize("SHARE_ERROR_INCORRECT_VERSION"), outSize);
+                    free(retData);
+                    Fetch::exit();
+                    return;
+                }
+
+                auto pkm = PKX::getPKM(gen, retData);
 
                 if (storageChosen)
                 {
@@ -1797,6 +1795,6 @@ void StorageScreen::download()
                 free(retData);
             }
         }
-        curl_easy_cleanup(curl);
+        Fetch::exit();
     }
 }

@@ -61,6 +61,7 @@ public:
     void encrypt(void);
     virtual std::shared_ptr<PKX> clone(void) = 0;
     virtual ~PKX() { };
+    static std::shared_ptr<PKX> getPKM(Generation gen, u8* data, bool ekx = false, bool party = false);
 
     virtual Generation generation(void) const = 0;
     bool gen7(void) const;

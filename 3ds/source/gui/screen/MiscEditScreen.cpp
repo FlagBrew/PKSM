@@ -32,7 +32,7 @@
 #include "LocationOverlay.hpp"
 #include "AccelButton.hpp"
 #include "PB7.hpp"
-#include <curl/curl.h>
+#include "fetch.hpp"
 
 extern "C" {
 #include "base64.h"
@@ -668,36 +668,29 @@ void MiscEditScreen::validate()
     long status_code = 0;
     char *b64Data = base64_encode((char *)rawData, pkm->getLength(), &outSize);
     postdata += b64Data;
+    free(b64Data);
     std::string size = "Size: " + std::to_string(pkm->getLength());
     std::string version = "Version: " + getVersionString(TitleLoader::save->version());
-    free(b64Data);
 
-    CURL* curl = curl_easy_init();
-    if (curl) {
-        struct curl_slist *h = NULL;
-        h = curl_slist_append(h, version.c_str());
-        h = curl_slist_append(h, "Content-Type: application/base64");
-        h = curl_slist_append(h, size.c_str());
-        curl_easy_setopt(curl, CURLOPT_URL, "https://pksm.flagbrew.org/api/legalize"); // TODO: allow people to use their own local version in-case the main version goes offline.
-        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, h);
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postdata.data());
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, postdata.length());
-        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
-        curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
-        curl_easy_setopt(curl, CURLOPT_USERAGENT, "PKSM-curl/7.59.0");
-        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+    struct curl_slist *headers = NULL;
+    headers = curl_slist_append(headers, version.c_str());
+    headers = curl_slist_append(headers, "Content-Type: application/base64");
+    headers = curl_slist_append(headers, size.c_str());
+
+    CURL* curl = Fetch::init("https://pksm.flagbrew.org/api/legalize", true, true, nullptr, headers, postdata);
+    if (curl)
+    {
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, this);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
-        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
 
-        res = curl_easy_perform(curl);
+        res = Fetch::perform();
         if (res != CURLE_OK)
         {
             Gui::error(i18n::localize("CURL_ERROR"), abs(res));
         }
         else
         {
-            curl_easy_getinfo (curl, CURLINFO_RESPONSE_CODE, &status_code);
+            curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &status_code);
             switch (status_code)
             {
                 case 200:
@@ -712,9 +705,11 @@ void MiscEditScreen::validate()
                 default:
                     Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
                     break;
-                }
+            }
         }
-        curl_easy_cleanup(curl);
+        Fetch::exit();
+
+        curl_slist_free_all(headers);
     }
     dataToWrite.clear();
     return;
