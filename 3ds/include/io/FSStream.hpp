@@ -49,6 +49,7 @@ public:
     u32    size(void);
     u32    write(const void *buf, u32 size);
     void   seek(u32 offset, int from);
+    Handle getRawHandle(void);
     
 private:
     Handle mHandle;

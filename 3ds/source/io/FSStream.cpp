@@ -136,3 +136,8 @@ void FSStream::seek(u32 offset, int from)
             break;
     }
 }
+
+Handle FSStream::getRawHandle(void)
+{
+    return mHandle;
+}

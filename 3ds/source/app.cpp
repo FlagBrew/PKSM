@@ -28,6 +28,8 @@
 #include "random.hpp"
 #include "banks.hpp"
 #include "revision.h"
+#include "fetch.hpp"
+#include <3ds.h>
 
 // increase the stack in order to allow quirc to decode large qrs
 int __stacksize__ = 64 * 1024;
@@ -128,6 +130,157 @@ static Result consoleDisplayError(const std::string& message, Result res)
     return res;
 }
 
+static bool update(const std::string& execPath)
+{
+    std::string retString = "";
+    CURL* curl = Fetch::init("https://api.github.com/repos/FlagBrew/PKSM/releases/latest", false, true, &retString, nullptr, "");
+    if (curl)
+    {
+        Gui::waitFrame("Checking for update");
+        CURLcode res = Fetch::perform();
+        if (res != CURLE_OK)
+        {
+            Gui::error(i18n::localize("CURL_ERROR"), abs(res));
+        }
+        else
+        {
+            long status_code;
+            curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &status_code);
+            switch (status_code)
+            {
+                case 200:
+                {
+                    Fetch::exit();
+                    nlohmann::json retJson = nlohmann::json::parse(retString, nullptr, false);
+                    if (retJson.is_discarded())
+                    {
+                        Gui::warn("Error checking for update", "Bad JSON");
+                        return false;
+                    }
+                    else if (retJson["tag_name"].get<std::string>() != StringUtils::format("%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO))
+                    {
+                        Gui::waitFrame("Update found! Downloading...");
+                        std::string url = "https://github.com/FlagBrew/PKSM/releases/download/" + retJson["tag_name"].get<std::string>() + "/PKSM";
+                        std::string path = "";
+                        if (execPath != "")
+                        {
+                            url += ".3dsx";
+                            path = execPath + ".new";
+                        }
+                        else
+                        {
+                            url += ".cia";
+                            path = "/3ds/PKSM/PKSM.cia";
+                        }
+                        Result res = download(url.c_str(), path.c_str());
+                        if (R_FAILED(res))
+                        {
+                            Gui::error("Update found, but could not download.", res);
+                            FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_ASCII, path.c_str()));
+                            return false;
+                        }
+
+                        Gui::waitFrame("Installing update...");
+                        if (execPath != "")
+                        {
+                            FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_ASCII, execPath.c_str()));
+                            Archive::moveFile(Archive::sd(), path, Archive::sd(), execPath);
+                            return true;
+                        }
+                        else
+                        {
+                            // Adapted from https://github.com/joel16/3DShell/blob/master/source/cia.c
+                            AM_TitleEntry title;
+                            Handle dstHandle;
+                            FSStream ciaFile(Archive::sd(), path, FS_OPEN_READ);
+                            if (ciaFile.good())
+                            {
+                                if (R_FAILED(res = AM_GetCiaFileInfo(MEDIATYPE_SD, &title, ciaFile.getRawHandle())))
+                                {
+                                    Gui::error("A wild error appeared! Duddudududududu", res);
+                                    ciaFile.close();
+                                    return false;
+                                }
+
+                                if (R_FAILED(res = AM_StartCiaInstall(MEDIATYPE_SD, &dstHandle)))
+                                {
+                                    Gui::error("AM_StartCiaInstall failed", res);
+                                    ciaFile.close();
+                                    return false;
+                                }
+
+                                u8 buf[0x1000];
+                                u32 bytesWritten, bytesRead;
+                                u64 offset = 0;
+                                bool ciaInstallGood = true;
+                                do
+                                {
+                                    memset(buf, 0, 0x1000);
+
+                                    bytesRead = ciaFile.read(buf, 0x1000);
+                                    if (R_FAILED(ciaFile.result()))
+                                    {
+                                        Gui::error("Error while reading CIA update", ciaFile.result());
+                                        ciaFile.close();
+                                        FSFILE_Close(dstHandle);
+                                        return false;
+                                    }
+
+                                    if (R_FAILED(res = FSFILE_Write(dstHandle, &bytesWritten, offset, buf, bytesRead, FS_WRITE_FLUSH)))
+                                    {
+                                        Gui::error("Error while writing CIA update", res);
+                                        ciaFile.close();
+                                        FSFILE_Close(dstHandle);
+                                        return false;
+                                    }
+
+                                    if (bytesWritten != bytesRead)
+                                    {
+                                        ciaInstallGood = false;
+                                    }
+
+                                    offset += bytesRead;
+                                } while (offset < ciaFile.size() && ciaInstallGood);
+
+                                if (!ciaInstallGood)
+                                {
+                                    AM_CancelCIAInstall(dstHandle);
+                                    ciaFile.close();
+                                    Gui::warn("Bytes written doesn't match bytes read:", std::to_string(bytesWritten) + " vs " + std::to_string(bytesRead));
+                                    return false;
+                                }
+
+                                if (R_FAILED(res = AM_FinishCiaInstall(dstHandle)))
+                                {
+                                    Gui::error("AM_FinishCiaInstall failed", res);
+                                    ciaFile.close();
+                                    return false;
+                                }
+
+                                ciaFile.close();
+
+                                FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_ASCII, path.c_str()));
+
+                                return true;
+                            }
+                        }
+                    }
+                    break;
+                }
+                case 502:
+                    Fetch::exit();
+                    Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
+                    break;
+                default:
+                    Fetch::exit();
+                    Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
+                    break;
+            }
+        }
+    }
+    return false;
+}
+
 Result App::init(std::string execPath)
 {
     Result res;
@@ -139,6 +292,8 @@ Result App::init(std::string execPath)
     Handle hbldrHandle;
     if (R_FAILED(res = svcConnectToPort(&hbldrHandle, "hb:ldr")))
         return consoleDisplayError("Rosalina sysmodule has not been found.\n\nMake sure you're running latest Luma3DS.", res);
+    else
+        svcCloseHandle(hbldrHandle);
 #endif
     APT_GetAppCpuTimeLimit(&old_time_limit);
     APT_SetAppCpuTimeLimit(30);
@@ -173,6 +328,13 @@ Result App::init(std::string execPath)
     
     Configuration::getInstance();
     i18n::init();
+
+    if (update(execPath))
+    {
+        Gui::warn("Update successfully downloaded!", "Please reopen the application");
+        return -1;
+    }
+
     if (R_FAILED(res = Banks::init()))
         return consoleDisplayError("Banks::init failed.", res);
 
@@ -183,7 +345,6 @@ Result App::init(std::string execPath)
 
     Gui::setScreen(std::make_unique<TitleLoadScreen>());
     // uncomment when needing to debug with GDB
-    // while(aptMainLoop() && !(hidKeysDown() & KEY_START)) { hidScanInput(); }
 
     return 0;
 }

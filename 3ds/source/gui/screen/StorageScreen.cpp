@@ -1647,7 +1647,11 @@ void StorageScreen::shareSend()
 
     std::string version = "Generation: " + genToString(infoMon->generation());
     std::string size = "Size: " + std::to_string(infoMon->getLength());
-    std::string info = "Info: name-" + infoMon->nickname() + ",ot_name-" + infoMon->otName() + ",lvl-" + std::to_string((int)infoMon->level());
+    std::string info = "Info: " + infoMon->nickname() + "," + infoMon->otName() + "," + std::to_string((int)infoMon->level())
+                        + "," + std::to_string(infoMon->species()) + "," + std::to_string(infoMon->move(0)) + "," + std::to_string(infoMon->move(1))
+                        + "," + std::to_string(infoMon->move(2)) + "," + std::to_string(infoMon->move(3)) + "," + std::to_string((int) infoMon->nature())
+                        + "," + std::to_string((int) infoMon->iv(0)) + "," + std::to_string((int)infoMon->iv(1)) + "," + std::to_string((int)infoMon->iv(2)) // HP, Atk, Def
+                        + "," + std::to_string((int) infoMon->iv(5)) + "," + std::to_string((int)infoMon->iv(3)) + "," + std::to_string((int)infoMon->iv(4)); // Sp. Atk, Sp. Def, Speed
     struct curl_slist *headers = NULL;
     headers = curl_slist_append(headers, "Content-Type: application/base64");
     headers = curl_slist_append(headers, version.c_str());
@@ -1655,7 +1659,7 @@ void StorageScreen::shareSend()
     headers = curl_slist_append(headers, info.c_str());
 
     std::string writeData = "";
-    CURL *curl = Fetch::init("http://192.168.2.101:8080/pksm/share", true, false, &writeData, headers, postdata);
+    CURL *curl = Fetch::init("https://flagbrew.org/pksm/share", true, true, &writeData, headers, postdata);
     if (curl)
     {
         CURLcode res = Fetch::perform();
@@ -1701,7 +1705,7 @@ void StorageScreen::shareReceive()
     CURLcode res;
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
-        const std::string url = "http://192.168.2.101:8080/pksm/download/" + std::string(input);
+        const std::string url = "https://flagbrew.org/pksm/download/" + std::string(input);
         std::string retB64Data = "";
         CURL* curl = Fetch::init(url, false, true, &retB64Data, nullptr, "");
         if (curl)
