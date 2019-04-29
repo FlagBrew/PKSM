@@ -288,7 +288,10 @@ void TitleLoader::backupSave(const std::string& id)
     if (out.good())
     {
         out.write(TitleLoader::save->rawData(), TitleLoader::save->getLength());
-        sdSaves[id].push_back(path);
+        if (Configuration::getInstance().showBackups())
+        {
+            sdSaves[id].push_back(path);
+        }
     }
     else
     {
