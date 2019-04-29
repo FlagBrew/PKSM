@@ -1647,11 +1647,9 @@ void StorageScreen::shareSend()
 
     std::string version = "Generation: " + genToString(infoMon->generation());
     std::string size = "Size: " + std::to_string(infoMon->getLength());
-    std::string info = "Info: " + infoMon->nickname() + "," + infoMon->otName() + "," + std::to_string((int)infoMon->level())
-                        + "," + std::to_string(infoMon->species()) + "," + std::to_string(infoMon->move(0)) + "," + std::to_string(infoMon->move(1))
-                        + "," + std::to_string(infoMon->move(2)) + "," + std::to_string(infoMon->move(3)) + "," + std::to_string((int) infoMon->nature())
-                        + "," + std::to_string((int) infoMon->iv(0)) + "," + std::to_string((int)infoMon->iv(1)) + "," + std::to_string((int)infoMon->iv(2)) // HP, Atk, Def
-                        + "," + std::to_string((int) infoMon->iv(5)) + "," + std::to_string((int)infoMon->iv(3)) + "," + std::to_string((int)infoMon->iv(4)); // Sp. Atk, Sp. Def, Speed
+    std::string info = "Info: " + infoMon->nickname() + "," + infoMon->otName() + "," + std::to_string((int)infoMon->level()) + "," + std::to_string(infoMon->species()) + "," + std::to_string(infoMon->move(0)) + "," + std::to_string(infoMon->move(1)) + "," + std::to_string(infoMon->move(2)) + "," + std::to_string(infoMon->move(3)) + "," + std::to_string((int)infoMon->nature()) + "," + std::to_string((int)infoMon->iv(0)) + "," + std::to_string((int)infoMon->iv(1)) + "," + std::to_string((int)infoMon->iv(2)) // HP, Atk, Def
+    + "," + std::to_string((int)infoMon->iv(5)) + "," + std::to_string((int)infoMon->iv(3)) + "," + std::to_string((int)infoMon->iv(4)) // Sp. Atk, Sp. Def, Speed
+    + "," + std::to_string((int)infoMon->gender()) + "," + std::to_string((bool)infoMon->shiny()) + "," + std::to_string((int)infoMon->ability()) + "," + std::to_string((int) infoMon->heldItem());
     struct curl_slist *headers = NULL;
     headers = curl_slist_append(headers, "Content-Type: application/base64");
     headers = curl_slist_append(headers, version.c_str());
