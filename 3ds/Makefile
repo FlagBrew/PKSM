@@ -35,11 +35,6 @@ APP_TITLE		:= 	PKSM
 APP_DESCRIPTION	:=	Gen IV to Gen VII save manager
 APP_AUTHOR		:=	FlagBrew
 
-VERSION_MAJOR := 6
-VERSION_MINOR := 2
-VERSION_MICRO := 1
-GIT_REV="$(shell git rev-parse --short HEAD)"
-
 TARGET			:=	$(subst $e ,_,$(notdir $(APP_TITLE)))
 OUTDIR			:=	out
 BUILD			:=	build
@@ -114,9 +109,6 @@ CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O2 -mword-relocations -flto \
 			$(ARCH) \
 			-DQUIRC_MAX_REGIONS=10000 \
 			-DUNIX_HOST \
-			-DVERSION_MAJOR=${VERSION_MAJOR} \
-			-DVERSION_MINOR=${VERSION_MINOR} \
-			-DVERSION_MICRO=${VERSION_MICRO} \
 			-DUNIQUE_ID=${UNIQUE_ID} \
 			-DCITRA_DEBUG=${CITRA_DEBUG} \
 			`sdl-config --cflags`
@@ -251,7 +243,6 @@ clean:
 #---------------------------------------------------------------------------------
 no-deps:
 	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR)
-	@echo \#define GIT_REV \"$(GIT_REV)\" > $(BUILD)/revision.h
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile $(OUTPUT).3dsx
 	@bannertool makebanner -i "$(BANNER_IMAGE)" -a "$(BANNER_AUDIO)" -o $(BUILD)/banner.bnr
 	@bannertool makesmdh -s "$(APP_TITLE)" -l "$(APP_DESCRIPTION)" -p "$(APP_AUTHOR)" -i "$(APP_ICON)" -f "$(ICON_FLAGS)" -o $(BUILD)/icon.icn

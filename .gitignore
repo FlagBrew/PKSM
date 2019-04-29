@@ -15,3 +15,4 @@ assets/romfs/scripts/
 common/EventsGalleryPacker/EventsGallery
 common/EventsGalleryPacker/out
 common/EventsGalleryPacker/__pycache__
+common/include/revision.h
