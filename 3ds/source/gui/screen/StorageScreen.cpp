@@ -1657,8 +1657,7 @@ void StorageScreen::shareSend()
     headers = curl_slist_append(headers, info.c_str());
 
     std::string writeData = "";
-    CURL *curl = Fetch::init("https://flagbrew.org/pksm/share", true, true, &writeData, headers, postdata);
-    if (curl)
+    if (Fetch::init("https://flagbrew.org/pksm/share", true, true, &writeData, headers, postdata))
     {
         CURLcode res = Fetch::perform();
         if (res != CURLE_OK)
@@ -1667,7 +1666,7 @@ void StorageScreen::shareSend()
         }
         else
         {
-            curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &status_code);
+            Fetch::getinfo(CURLINFO_RESPONSE_CODE, &status_code);
             switch (status_code)
             {
                 case 200:
@@ -1705,13 +1704,12 @@ void StorageScreen::shareReceive()
     {
         const std::string url = "https://flagbrew.org/pksm/download/" + std::string(input);
         std::string retB64Data = "";
-        CURL* curl = Fetch::init(url, false, true, &retB64Data, nullptr, "");
-        if (curl)
+        if (Fetch::init(url, false, true, &retB64Data, nullptr, ""))
         {
             long status_code = 0;
             Generation gen = Generation::UNUSED;
-            curl_easy_setopt(curl, CURLOPT_HEADERDATA, &gen);
-            curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, header_callback);
+            Fetch::setopt(CURLOPT_HEADERDATA, &gen);
+            Fetch::setopt(CURLOPT_HEADERFUNCTION, header_callback);
             res = Fetch::perform();
             if (res != CURLE_OK)
             {
@@ -1719,7 +1717,7 @@ void StorageScreen::shareReceive()
             }
             else
             {
-                curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &status_code);
+                Fetch::getinfo(CURLINFO_RESPONSE_CODE, &status_code);
                 switch (status_code)
                 {
                     case 200:

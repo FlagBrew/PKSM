@@ -38,7 +38,6 @@
 #include "thread.hpp"
 
 extern "C" {
-#include "download.h"
 #include "sha256.h"
 }
 

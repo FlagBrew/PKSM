@@ -104,7 +104,7 @@ static Result downloadAdditionalAssets(void) {
             u32 status;
             ACU_GetWifiStatus(&status);
             if (status == 0) return -1;
-            Result res1 = download(item.url.c_str(), item.path.c_str());
+            Result res1 = Fetch::download(item.url, item.path);
             if (R_FAILED(res1)) return res1;
             if (!matchSha256HashFromFile(item.path, item.hash))
             {
@@ -133,8 +133,7 @@ static Result consoleDisplayError(const std::string& message, Result res)
 static bool update(const std::string& execPath)
 {
     std::string retString = "";
-    CURL* curl = Fetch::init("https://api.github.com/repos/FlagBrew/PKSM/releases/latest", false, true, &retString, nullptr, "");
-    if (curl)
+    if (Fetch::init("https://api.github.com/repos/FlagBrew/PKSM/releases/latest", false, true, &retString, nullptr, ""))
     {
         Gui::waitFrame("Checking for update");
         CURLcode res = Fetch::perform();
@@ -145,7 +144,7 @@ static bool update(const std::string& execPath)
         else
         {
             long status_code;
-            curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &status_code);
+            Fetch::getinfo(CURLINFO_RESPONSE_CODE, &status_code);
             switch (status_code)
             {
                 case 200:
@@ -172,7 +171,7 @@ static bool update(const std::string& execPath)
                             url += ".cia";
                             path = "/3ds/PKSM/PKSM.cia";
                         }
-                        Result res = download(url.c_str(), path.c_str());
+                        Result res = Fetch::download(url, path);
                         if (R_FAILED(res))
                         {
                             Gui::error("Update found, but could not download.", res);
