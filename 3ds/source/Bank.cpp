@@ -213,7 +213,7 @@ bool Bank::save() const
     needsCheck = false;
 }
 
-void Bank::resize(int boxes)
+void Bank::resize(size_t boxes)
 {
     size_t newSize = sizeof(BankHeader) + sizeof(BankEntry) * boxes * 30;
     std::string bankPath = Configuration::getInstance().useExtData() ? "/banks/" + bankName + ".bnk" : "/3ds/PKSM/banks/" + bankName + ".bnk";
