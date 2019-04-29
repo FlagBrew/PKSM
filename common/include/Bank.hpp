@@ -43,7 +43,7 @@ public:
     }
     std::shared_ptr<PKX> pkm(int box, int slot) const;
     void pkm(std::shared_ptr<PKX> pkm, int box, int slot);
-    void resize(int boxes);
+    void resize(size_t boxes);
     void load(int maxBoxes);
     bool save() const;
     void backup() const;
