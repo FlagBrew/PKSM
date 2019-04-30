@@ -154,9 +154,7 @@ void StorageScreen::setBoxName(bool storage)
 }
 
 StorageScreen::StorageScreen()
-    : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_VIEW") + '\n' + i18n::localize("Y_CURSOR_MODE") + '\n'
-             + i18n::localize("L_BOX_PREV") + '\n' + i18n::localize("R_BOX_NEXT") + '\n'
-             + i18n::localize("START_EXTRA_FUNC") + '\n' + i18n::localize("B_BACK"))
+    : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_VIEW") + '\n' + i18n::localize("Y_CURSOR_MODE") + '\n' + i18n::localize("L_BOX_PREV") + '\n' + i18n::localize("R_BOX_NEXT") + '\n' + i18n::localize("START_EXTRA_FUNC") + '\n' + i18n::localize("B_BACK") +'\n' + i18n::localize("X_Y_SHARE_DOWNLOAD"))
 {
     instructions.addBox(true, 69, 21, 156, 24, COLOR_GREY, i18n::localize("A_BOX_NAME"), COLOR_WHITE);
     instructions.addCircle(false, 266, 23, 11, COLOR_GREY);
@@ -567,6 +565,26 @@ void StorageScreen::update(touchPosition* touch)
     u32 kDown = hidKeysDown();
     u32 kHeld = hidKeysHeld();
 
+    if (((kHeld & KEY_X) && (kHeld & KEY_Y)) || ((kDown & KEY_X) && (kDown & KEY_Y))) 
+    {
+        if (!infoMon)
+        {
+            if (!Gui::showChoiceMessage(i18n::localize("SHARE_CODE_ENTER_PROMPT")))
+            {
+                return;
+            }
+            Gui::setNextKeyboardFunc([this](){ this->shareReceive(); });
+        }
+        else
+        {
+            if (!Gui::showChoiceMessage(i18n::localize("SHARE_SEND_CONFIRM")))
+            {
+                return;
+            }
+            shareSend();
+        }
+        return;
+    }
     if (kDown & KEY_B)
     {
         backButton();
@@ -1649,7 +1667,7 @@ void StorageScreen::shareSend()
     std::string size = "Size: " + std::to_string(infoMon->getLength());
     std::string info = "Info: " + infoMon->nickname() + "," + infoMon->otName() + "," + std::to_string((int)infoMon->level()) + "," + std::to_string(infoMon->species()) + "," + std::to_string(infoMon->move(0)) + "," + std::to_string(infoMon->move(1)) + "," + std::to_string(infoMon->move(2)) + "," + std::to_string(infoMon->move(3)) + "," + std::to_string((int)infoMon->nature()) + "," + std::to_string((int)infoMon->iv(0)) + "," + std::to_string((int)infoMon->iv(1)) + "," + std::to_string((int)infoMon->iv(2)) // HP, Atk, Def
     + "," + std::to_string((int)infoMon->iv(5)) + "," + std::to_string((int)infoMon->iv(3)) + "," + std::to_string((int)infoMon->iv(4)) // Sp. Atk, Sp. Def, Speed
-    + "," + std::to_string((int)infoMon->gender()) + "," + std::to_string((bool)infoMon->shiny()) + "," + std::to_string((int)infoMon->ability()) + "," + std::to_string((int) infoMon->heldItem());
+    + "," + std::to_string((int)infoMon->gender()) + "," + std::to_string((bool)infoMon->shiny()) + "," + std::to_string((int)infoMon->ability()) + "," + std::to_string((int) infoMon->heldItem()) + "," + std::to_string((int) infoMon->TID());
     struct curl_slist *headers = NULL;
     headers = curl_slist_append(headers, "Content-Type: application/base64");
     headers = curl_slist_append(headers, version.c_str());
