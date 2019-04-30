@@ -1,37 +1,37 @@
 /*
-*   This file is part of PKSM
-*   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
-*
-*   This program is free software: you can redistribute it and/or modify
-*   it under the terms of the GNU General Public License as published by
-*   the Free Software Foundation, either version 3 of the License, or
-*   (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-*   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
-*       * Requiring preservation of specified reasonable legal notices or
-*         author attributions in that material or in the Appropriate Legal
-*         Notices displayed by works containing it.
-*       * Prohibiting misrepresentation of the origin of that material,
-*         or requiring that modified versions of such material be marked in
-*         reasonable ways as different from the original version.
-*/
+ *   This file is part of PKSM
+ *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
+ *       * Requiring preservation of specified reasonable legal notices or
+ *         author attributions in that material or in the Appropriate Legal
+ *         Notices displayed by works containing it.
+ *       * Prohibiting misrepresentation of the origin of that material,
+ *         or requiring that modified versions of such material be marked in
+ *         reasonable ways as different from the original version.
+ */
 
 #include "BoxChoice.hpp"
-#include "gui.hpp"
-#include "Configuration.hpp"
-#include "TitleLoadScreen.hpp"
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
-#include "random.hpp"
+#include "Configuration.hpp"
+#include "TitleLoadScreen.hpp"
 #include "banks.hpp"
+#include "gui.hpp"
+#include "random.hpp"
 
 // storage, box, slot
 auto result = std::make_tuple(0, -1, -1);
@@ -42,12 +42,12 @@ extern int bobPointer();
 
 BoxChoice::BoxChoice(bool doCrypt) : doCrypt(doCrypt)
 {
-    mainButtons[0] = new Button(212, 47, 108, 28, [this](){ return this->showViewer(); }, ui_sheet_button_editor_idx,
-                                    i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[1] = new Button(4, 212, 33, 28, [this](){ return false; }, ui_sheet_res_null_idx, "", 0.0f, 0);
-    mainButtons[2] = new Button(283, 211, 34, 28, [this](){ return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
-    mainButtons[3] = new AccelButton(8, 15, 17, 24, [this](){ return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
-    mainButtons[4] = new AccelButton(189, 15, 17, 24, [this](){ return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+    mainButtons[0] = new Button(
+        212, 47, 108, 28, [this]() { return this->showViewer(); }, ui_sheet_button_editor_idx, i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
+    mainButtons[1] = new Button(4, 212, 33, 28, [this]() { return false; }, ui_sheet_res_null_idx, "", 0.0f, 0);
+    mainButtons[2] = new Button(283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
+    mainButtons[3] = new AccelButton(8, 15, 17, 24, [this]() { return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+    mainButtons[4] = new AccelButton(189, 15, 17, 24, [this]() { return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
 
     // Pokemon buttons
     u16 y = 45;
@@ -56,7 +56,8 @@ BoxChoice::BoxChoice(bool doCrypt) : doCrypt(doCrypt)
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            clickButtons[row*6 + column] = new ClickButton(x, y, 34, 30, [this, row, column](){ return this->clickBottomIndex(row*6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, 0);
+            clickButtons[row * 6 + column] = new ClickButton(
+                x, y, 34, 30, [this, row, column]() { return this->clickBottomIndex(row * 6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, 0);
             x += 34;
         }
         y += 30;
@@ -136,7 +137,7 @@ void BoxChoice::draw() const
         else
         {
             int tempIndex = cursorIndex - 1;
-            int yMod = (tempIndex / 6) * 30 + bobPointer();
+            int yMod      = (tempIndex / 6) * 30 + bobPointer();
             Gui::sprite(ui_sheet_pointer_arrow_idx, 21 + (tempIndex % 6) * 34, 30 + yMod);
         }
     }
@@ -159,7 +160,8 @@ void BoxChoice::draw() const
         Gui::sprite(ui_sheet_bar_boxname_empty_idx, 44, 21);
         Gui::staticText("\uE004", 45 + 24 / 2, 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         Gui::staticText("\uE005", 225 + 24 / 2, 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        Gui::dynamicText(Banks::bank->boxName(storageBox), 69 + 156 / 2, 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::dynamicText(
+            Banks::bank->boxName(storageBox), 69 + 156 / 2, 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
 
         Gui::sprite(ui_sheet_storagemenu_cross_idx, 36, 50);
         Gui::sprite(ui_sheet_storagemenu_cross_idx, 246, 50);
@@ -200,7 +202,7 @@ void BoxChoice::draw() const
             else
             {
                 int tempIndex = cursorIndex - 1;
-                int yMod = (tempIndex / 6) * 30 + bobPointer();
+                int yMod      = (tempIndex / 6) * 30 + bobPointer();
                 Gui::sprite(ui_sheet_pointer_arrow_idx, 62 + (tempIndex % 6) * 34, 51 + yMod);
             }
         }
@@ -210,29 +212,29 @@ void BoxChoice::draw() const
             Gui::dynamicText(infoMon->nickname(), 276, 61, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             std::string info = "#" + std::to_string(infoMon->species());
             Gui::dynamicText(info, 273, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            info = i18n::localize("LV") + std::to_string(infoMon->level());
+            info        = i18n::localize("LV") + std::to_string(infoMon->level());
             float width = StringUtils::textWidth(info, FONT_SIZE_12);
-            Gui::dynamicText(info, 375 - (int) width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::dynamicText(info, 375 - (int)width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             if (infoMon->gender() == 0)
             {
-                Gui::sprite(ui_sheet_icon_male_idx, 362 - (int) width, 80);
+                Gui::sprite(ui_sheet_icon_male_idx, 362 - (int)width, 80);
             }
             else if (infoMon->gender() == 1)
             {
-                Gui::sprite(ui_sheet_icon_female_idx, 364 - (int) width, 80);
+                Gui::sprite(ui_sheet_icon_female_idx, 364 - (int)width, 80);
             }
             else if (infoMon->gender() == 2)
             {
-                Gui::sprite(ui_sheet_icon_genderless_idx, 364 - (int) width, 80);
+                Gui::sprite(ui_sheet_icon_genderless_idx, 364 - (int)width, 80);
             }
             if (infoMon->shiny())
             {
-                Gui::sprite(ui_sheet_icon_shiny_idx, 352 - (int) width, 81);
+                Gui::sprite(ui_sheet_icon_shiny_idx, 352 - (int)width, 81);
             }
 
-            Gui::dynamicText(i18n::species(Configuration::getInstance().language(), infoMon->species()),
-                                276, 98, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            u8 firstType = infoMon->type1();
+            Gui::dynamicText(i18n::species(Configuration::getInstance().language(), infoMon->species()), 276, 98, FONT_SIZE_12, FONT_SIZE_12,
+                COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            u8 firstType  = infoMon->type1();
             u8 secondType = infoMon->type2();
             if (infoMon->generation() == Generation::FOUR)
             {
@@ -254,15 +256,15 @@ void BoxChoice::draw() const
             info = infoMon->otName() + '\n' + i18n::localize("LOADER_ID") + std::to_string(infoMon->TID());
             Gui::dynamicText(info, 276, 141, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
-            Gui::dynamicText(i18n::nature(Configuration::getInstance().language(), infoMon->nature()),
-                                276, 181, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            info = i18n::localize("IV") + ": ";
+            Gui::dynamicText(i18n::nature(Configuration::getInstance().language(), infoMon->nature()), 276, 181, FONT_SIZE_12, FONT_SIZE_12,
+                COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            info  = i18n::localize("IV") + ": ";
             width = StringUtils::textWidth(info, FONT_SIZE_12);
             Gui::dynamicText(info, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(0), infoMon->iv(1), infoMon->iv(2));
-            Gui::dynamicText(info, 276 + (int) width + 70 / 2, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+            Gui::dynamicText(info, 276 + (int)width + 70 / 2, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
             info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(4), infoMon->iv(5), infoMon->iv(3));
-            Gui::dynamicText(info, 276 + (int) width + 70 / 2, 209, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+            Gui::dynamicText(info, 276 + (int)width + 70 / 2, 209, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
             Gui::format(*infoMon, 276, 213);
         }
     }
@@ -279,7 +281,7 @@ std::tuple<int, int, int> BoxChoice::run()
 
         touchPosition touch;
         hidTouchRead(&touch);
-        update(&touch);        
+        update(&touch);
 
         draw();
 
@@ -316,8 +318,8 @@ void BoxChoice::update(touchPosition* touch)
     }
     Screen::update();
     static bool sleep = true;
-    u32 kDown = hidKeysDown();
-    u32 kHeld = hidKeysHeld();
+    u32 kDown         = hidKeysDown();
+    u32 kHeld         = hidKeysHeld();
     if (!currentOverlay)
     {
         for (size_t i = 0; i < mainButtons.size(); i++)
@@ -339,7 +341,7 @@ void BoxChoice::update(touchPosition* touch)
             if (cursorIndex != 0)
             {
                 result = std::make_tuple(storageChosen ? 1 : 0, storageChosen ? storageBox : boxBox, cursorIndex);
-                done = true;
+                done   = true;
             }
         }
         else if (kDown & KEY_B)
@@ -361,7 +363,7 @@ void BoxChoice::update(touchPosition* touch)
                 {
                     prevBox();
                 }
-                else if (cursorIndex > 1) 
+                else if (cursorIndex > 1)
                 {
                     cursorIndex--;
                 }
@@ -394,14 +396,14 @@ void BoxChoice::update(touchPosition* touch)
                 if (cursorIndex == 0 && !storageChosen)
                 {
                     storageChosen = true;
-                    cursorIndex = 27;
+                    cursorIndex   = 27;
                 }
                 else if (cursorIndex > 0 && cursorIndex <= 6)
                 {
                     cursorIndex = 0;
                 }
                 else if (cursorIndex > 6)
-                {			
+                {
                     cursorIndex -= 6;
                 }
                 sleep = true;
@@ -411,7 +413,7 @@ void BoxChoice::update(touchPosition* touch)
                 if (cursorIndex >= 25 && storageChosen)
                 {
                     storageChosen = false;
-                    cursorIndex = 0;
+                    cursorIndex   = 0;
                 }
                 else if (cursorIndex == 0)
                 {
@@ -503,7 +505,7 @@ bool BoxChoice::backButton()
         else
         {
             result = std::make_tuple(0, -1, -1);
-            done = true;
+            done   = true;
         }
     }
     return true;
@@ -530,12 +532,12 @@ bool BoxChoice::clickBottomIndex(int index)
         if (cursorIndex != 0)
         {
             result = std::make_tuple(storageChosen ? 1 : 0, storageChosen ? storageBox : boxBox, cursorIndex);
-            done = true;
+            done   = true;
         }
     }
     else
     {
-        cursorIndex = index;
+        cursorIndex   = index;
         storageChosen = false;
     }
     return false;

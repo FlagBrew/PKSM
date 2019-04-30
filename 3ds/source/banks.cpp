@@ -1,33 +1,33 @@
 /*
-*   This file is part of PKSM
-*   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
-*
-*   This program is free software: you can redistribute it and/or modify
-*   it under the terms of the GNU General Public License as published by
-*   the Free Software Foundation, either version 3 of the License, or
-*   (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-*   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
-*       * Requiring preservation of specified reasonable legal notices or
-*         author attributions in that material or in the Appropriate Legal
-*         Notices displayed by works containing it.
-*       * Prohibiting misrepresentation of the origin of that material,
-*         or requiring that modified versions of such material be marked in
-*         reasonable ways as different from the original version.
-*/
+ *   This file is part of PKSM
+ *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
+ *       * Requiring preservation of specified reasonable legal notices or
+ *         author attributions in that material or in the Appropriate Legal
+ *         Notices displayed by works containing it.
+ *       * Prohibiting misrepresentation of the origin of that material,
+ *         or requiring that modified versions of such material be marked in
+ *         reasonable ways as different from the original version.
+ */
 
 #include "banks.hpp"
 #include "FSStream.hpp"
-#include "json.hpp"
 #include "archive.hpp"
+#include "json.hpp"
 
 std::shared_ptr<Bank> Banks::bank = nullptr;
 
@@ -54,7 +54,7 @@ static Result saveJson()
 
 static Result createJson()
 {
-    g_banks = nlohmann::json::object();
+    g_banks           = nlohmann::json::object();
     g_banks["pksm_1"] = BANK_DEFAULT_SIZE;
     return saveJson();
 }
@@ -83,7 +83,8 @@ static Result read()
 Result Banks::init()
 {
     Result res;
-    if (R_FAILED(res = read())) return res;
+    if (R_FAILED(res = read()))
+        return res;
 
     if (g_banks.is_discarded())
         return -1;
@@ -124,7 +125,7 @@ void Banks::removeBank(const std::string& name)
     {
         if (bank && bank->name() == name)
         {
-            bank = nullptr;
+            bank   = nullptr;
             auto i = g_banks.begin();
             if (i.key() == name)
             {
@@ -200,13 +201,17 @@ Result Banks::swapSD(bool toSD)
     Result res = 0;
     if (toSD)
     {
-        if (R_FAILED(res = Archive::moveDir(Archive::data(), "/banks", Archive::sd(), "/3ds/PKSM/banks"))) return res;
-        if (R_FAILED(res = Archive::moveFile(Archive::data(), "/banks.json", Archive::sd(), "/3ds/PKSM/banks.json"))) return res;
+        if (R_FAILED(res = Archive::moveDir(Archive::data(), "/banks", Archive::sd(), "/3ds/PKSM/banks")))
+            return res;
+        if (R_FAILED(res = Archive::moveFile(Archive::data(), "/banks.json", Archive::sd(), "/3ds/PKSM/banks.json")))
+            return res;
     }
     else
     {
-        if (R_FAILED(res = Archive::moveDir(Archive::sd(), "/3ds/PKSM/banks", Archive::data(), "/banks"))) return res;
-        if (R_FAILED(res = Archive::moveFile(Archive::sd(), "/3ds/PKSM/banks.json", Archive::data(), "/banks.json"))) return res;
+        if (R_FAILED(res = Archive::moveDir(Archive::sd(), "/3ds/PKSM/banks", Archive::data(), "/banks")))
+            return res;
+        if (R_FAILED(res = Archive::moveFile(Archive::sd(), "/3ds/PKSM/banks.json", Archive::data(), "/banks.json")))
+            return res;
     }
     return res;
 }

@@ -1,54 +1,74 @@
 /*
-*   This file is part of PKSM
-*   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
-*
-*   This program is free software: you can redistribute it and/or modify
-*   it under the terms of the GNU General Public License as published by
-*   the Free Software Foundation, either version 3 of the License, or
-*   (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-*   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
-*       * Requiring preservation of specified reasonable legal notices or
-*         author attributions in that material or in the Appropriate Legal
-*         Notices displayed by works containing it.
-*       * Prohibiting misrepresentation of the origin of that material,
-*         or requiring that modified versions of such material be marked in
-*         reasonable ways as different from the original version.
-*/
+ *   This file is part of PKSM
+ *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
+ *       * Requiring preservation of specified reasonable legal notices or
+ *         author attributions in that material or in the Appropriate Legal
+ *         Notices displayed by works containing it.
+ *       * Prohibiting misrepresentation of the origin of that material,
+ *         or requiring that modified versions of such material be marked in
+ *         reasonable ways as different from the original version.
+ */
 
 #include "StatsEditScreen.hpp"
-#include "gui.hpp"
-#include "ClickButton.hpp"
 #include "AccelButton.hpp"
-#include "PB7.hpp"
+#include "ClickButton.hpp"
 #include "HiddenPowerOverlay.hpp"
+#include "PB7.hpp"
 #include "ViewOverlay.hpp"
+#include "gui.hpp"
 
-static constexpr int statValues[] = { 0, 1, 2, 4, 5, 3 };
+static constexpr int statValues[] = {0, 1, 2, 4, 5, 3};
 
 StatsEditScreen::StatsEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
 {
-    buttons.push_back(std::make_unique<ClickButton>(283, 211, 34, 28, [this](){ Gui::screenBack(); return true; }, ui_sheet_button_back_idx, "", 0.0f, 0));
+    buttons.push_back(std::make_unique<ClickButton>(283, 211, 34, 28,
+        [this]() {
+            Gui::screenBack();
+            return true;
+        },
+        ui_sheet_button_back_idx, "", 0.0f, 0));
     for (int i = 0; i < 6; i++)
     {
         int y = 54 + i * 20;
-        buttons.push_back(std::make_unique<AccelButton>(106, y, 13, 13, [=](){ return this->changeIV(statValues[i], false); }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
-        buttons.push_back(std::make_unique<Button>(121, y, 23, 13, [=](){ Gui::setNextKeyboardFunc([=](){ return this->setIV(statValues[i]); }); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
-        buttons.push_back(std::make_unique<AccelButton>(146, y, 13, 13, [=](){ return this->changeIV(statValues[i], true); }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
+        buttons.push_back(std::make_unique<AccelButton>(
+            106, y, 13, 13, [=]() { return this->changeIV(statValues[i], false); }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
+        buttons.push_back(std::make_unique<Button>(121, y, 23, 13,
+            [=]() {
+                Gui::setNextKeyboardFunc([=]() { return this->setIV(statValues[i]); });
+                return false;
+            },
+            ui_sheet_res_null_idx, "", 0.0f, 0));
+        buttons.push_back(std::make_unique<AccelButton>(
+            146, y, 13, 13, [=]() { return this->changeIV(statValues[i], true); }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
 
-        buttons.push_back(std::make_unique<AccelButton>(182, y, 13, 13, [=](){ return this->changeSecondaryStat(statValues[i], false); }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
-        buttons.push_back(std::make_unique<Button>(197, y, 32, 13, [=](){ Gui::setNextKeyboardFunc([=](){ return this->setSecondaryStat(statValues[i]); }); return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
-        buttons.push_back(std::make_unique<AccelButton>(231, y, 13, 13, [=](){ return this->changeSecondaryStat(statValues[i], true); }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
+        buttons.push_back(std::make_unique<AccelButton>(
+            182, y, 13, 13, [=]() { return this->changeSecondaryStat(statValues[i], false); }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
+        buttons.push_back(std::make_unique<Button>(197, y, 32, 13,
+            [=]() {
+                Gui::setNextKeyboardFunc([=]() { return this->setSecondaryStat(statValues[i]); });
+                return false;
+            },
+            ui_sheet_res_null_idx, "", 0.0f, 0));
+        buttons.push_back(std::make_unique<AccelButton>(
+            231, y, 13, 13, [=]() { return this->changeSecondaryStat(statValues[i], true); }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
     }
-    buttons.push_back(std::make_unique<Button>(300, 184, 15, 12, [this](){ return this->setHP(); }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    buttons.push_back(
+        std::make_unique<Button>(300, 184, 15, 12, [this]() { return this->setHP(); }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
 }
 
 void StatsEditScreen::setIV(int which)
@@ -62,12 +82,12 @@ void StatsEditScreen::setIV(int which)
     }
     swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
-    char input[3] = {0};
+    char input[3]   = {0};
     SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-    input[2] = '\0';
+    input[2]        = '\0';
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
-        u8 iv = (u8) std::stoi(input);
+        u8 iv = (u8)std::stoi(input);
         pkm->iv(which, std::min((u8)31, iv));
     }
 }
@@ -110,12 +130,12 @@ void StatsEditScreen::setSecondaryStat(int which)
     }
     swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
-    char input[4] = {0};
+    char input[4]   = {0};
     SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-    input[3] = '\0';
+    input[3]        = '\0';
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
-        u8 val = (u8) std::min(std::stoi(input), 0xFF);
+        u8 val = (u8)std::min(std::stoi(input), 0xFF);
         if (pkm->generation() != Generation::LGPE)
         {
             pkm->ev(which, val);
@@ -192,7 +212,7 @@ bool StatsEditScreen::changeSecondaryStat(int which, bool up)
                 if (total <= 510)
                 {
                     pkm->ev(which, 0xFC);
-                }   
+                }
             }
         }
         else
@@ -244,15 +264,16 @@ void StatsEditScreen::draw() const
     {
         button->draw();
     }
-    
+
     if (pkm->generation() == Generation::LGPE)
     {
-        Gui::dynamicText(i18n::localize("EDITOR_CP") + std::to_string((int)((PB7*)pkm.get())->CP()), 4, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::dynamicText(i18n::localize("EDITOR_CP") + std::to_string((int)((PB7*)pkm.get())->CP()), 4, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
     }
     Gui::staticText(i18n::localize("EDITOR_STATS"), 4, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::staticText(i18n::localize("IV"), 132, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::staticText(pkm->generation() == Generation::LGPE ? i18n::localize("AWAKENED") : i18n::localize("EV"),
-                        213, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::staticText(pkm->generation() == Generation::LGPE ? i18n::localize("AWAKENED") : i18n::localize("EV"), 213, 32, FONT_SIZE_12, FONT_SIZE_12,
+        COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     Gui::staticText(i18n::localize("TOTAL"), 274, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     Gui::staticText(i18n::localize("HP"), 4, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::staticText(i18n::localize("ATTACK"), 4, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
@@ -263,18 +284,23 @@ void StatsEditScreen::draw() const
 
     for (int i = 0; i < 6; i++)
     {
-        Gui::dynamicText(std::to_string((int) pkm->iv(statValues[i])), 132, 52 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::dynamicText(
+            std::to_string((int)pkm->iv(statValues[i])), 132, 52 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         if (pkm->generation() != Generation::LGPE)
         {
-            Gui::dynamicText(std::to_string((int) pkm->ev(statValues[i])), 213, 52 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+            Gui::dynamicText(std::to_string((int)pkm->ev(statValues[i])), 213, 52 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
+                TextPosY::TOP);
         }
         else
         {
-            Gui::dynamicText(std::to_string((int) ((PB7*)pkm.get())->awakened(statValues[i])), 213, 52 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+            Gui::dynamicText(std::to_string((int)((PB7*)pkm.get())->awakened(statValues[i])), 213, 52 + i * 20, FONT_SIZE_12, FONT_SIZE_12,
+                COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         }
-        Gui::dynamicText(std::to_string((int) pkm->stat(statValues[i])), 274, 52 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::dynamicText(std::to_string((int)pkm->stat(statValues[i])), 274, 52 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
+            TextPosY::TOP);
     }
-    Gui::dynamicText(i18n::localize("EDITOR_HIDDEN_POWER") + i18n::hp(lang, pkm->hpType()), 295, 181, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
+    Gui::dynamicText(i18n::localize("EDITOR_HIDDEN_POWER") + i18n::hp(lang, pkm->hpType()), 295, 181, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE,
+        TextPosX::RIGHT, TextPosY::TOP);
 }
 
 void StatsEditScreen::update(touchPosition* touch)

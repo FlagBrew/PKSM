@@ -29,4 +29,7 @@ clean:
 	@rm -f common/include/revision.h
 	$(MAKE) -C 3ds clean
 
-.PHONY: revision 3ds docs clean
+format:
+	$(MAKE) -C 3ds format
+
+.PHONY: revision 3ds docs clean format
