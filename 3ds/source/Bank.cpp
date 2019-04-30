@@ -1,35 +1,35 @@
 /*
-*   This file is part of PKSM
-*   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
-*
-*   This program is free software: you can redistribute it and/or modify
-*   it under the terms of the GNU General Public License as published by
-*   the Free Software Foundation, either version 3 of the License, or
-*   (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-*   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
-*       * Requiring preservation of specified reasonable legal notices or
-*         author attributions in that material or in the Appropriate Legal
-*         Notices displayed by works containing it.
-*       * Prohibiting misrepresentation of the origin of that material,
-*         or requiring that modified versions of such material be marked in
-*         reasonable ways as different from the original version.
-*/
+ *   This file is part of PKSM
+ *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
+ *       * Requiring preservation of specified reasonable legal notices or
+ *         author attributions in that material or in the Appropriate Legal
+ *         Notices displayed by works containing it.
+ *       * Prohibiting misrepresentation of the origin of that material,
+ *         or requiring that modified versions of such material be marked in
+ *         reasonable ways as different from the original version.
+ */
 
 #include "Bank.hpp"
 #include "Configuration.hpp"
 #include "FSStream.hpp"
+#include "PB7.hpp"
 #include "archive.hpp"
 #include "gui.hpp"
-#include "PB7.hpp"
 
 // TODO actually do stuff with the name
 Bank::Bank(const std::string& name, int maxBoxes) : bankName(name)
@@ -57,8 +57,8 @@ void Bank::load(int maxBoxes)
     {
         std::string bankPath = Configuration::getInstance().useExtData() ? "/banks/" + bankName + ".bnk" : "/3ds/PKSM/banks/" + bankName + ".bnk";
         std::string jsonPath = Configuration::getInstance().useExtData() ? "/banks/" + bankName + ".json" : "/3ds/PKSM/banks/" + bankName + ".json";
-        auto archive = Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd();
-        bool needSave = false;
+        auto archive         = Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd();
+        bool needSave        = false;
         FSStream in(archive, bankPath, FS_OPEN_READ);
         if (in.good())
         {
@@ -78,13 +78,13 @@ void Bank::load(int maxBoxes)
                 // NOTE: THIS IS THE CONVERSION SECTION. WILL NEED TO BE MODIFIED WHEN THE FORMAT IS CHANGED
                 if (h.version == 1)
                 {
-                    h.boxes = (size - (sizeof(BankHeader) - sizeof(int))) / sizeof(BankEntry) / 30;
+                    h.boxes  = (size - (sizeof(BankHeader) - sizeof(int))) / sizeof(BankEntry) / 30;
                     maxBoxes = h.boxes;
                     extern nlohmann::json g_banks;
                     g_banks[bankName] = maxBoxes;
-                    data = new u8[size = size + sizeof(int)];
-                    h.version = BANK_VERSION;
-                    needSave = true;
+                    data              = new u8[size = size + sizeof(int)];
+                    h.version         = BANK_VERSION;
+                    needSave          = true;
                 }
                 else
                 {
@@ -103,7 +103,7 @@ void Bank::load(int maxBoxes)
             createBank(maxBoxes);
             needSave = true;
         }
-        
+
         in = FSStream(archive, StringUtils::UTF8toUTF16(jsonPath), FS_OPEN_READ);
         if (in.good())
         {
@@ -112,7 +112,7 @@ void Bank::load(int maxBoxes)
             in.read(jsonData, jsonSize);
             in.close();
             jsonData[jsonSize] = '\0';
-            boxNames = nlohmann::json::parse(jsonData, nullptr, false);
+            boxNames           = nlohmann::json::parse(jsonData, nullptr, false);
             if (boxNames.is_discarded())
             {
                 createJSON();
@@ -146,7 +146,7 @@ void Bank::load(int maxBoxes)
         {
             resize(maxBoxes);
         }
-        
+
         if (needSave)
         {
             save();
@@ -172,13 +172,13 @@ bool Bank::save() const
     {
         bankPath = "/banks/" + bankName + ".bnk";
         jsonPath = "/banks/" + bankName + ".json";
-        archive = Archive::data();
+        archive  = Archive::data();
     }
     else
     {
         bankPath = "/3ds/PKSM/banks/" + bankName + ".bnk";
         jsonPath = "/3ds/PKSM/banks/" + bankName + ".json";
-        archive = Archive::sd();
+        archive  = Archive::sd();
     }
     Gui::waitFrame(i18n::localize("BANK_SAVE"));
     FSUSER_DeleteFile(archive, fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(bankPath).c_str()));
@@ -213,12 +213,12 @@ bool Bank::save() const
     needsCheck = false;
 }
 
-void Bank::resize(int boxes)
+void Bank::resize(size_t boxes)
 {
-    size_t newSize = sizeof(BankHeader) + sizeof(BankEntry) * boxes * 30;
+    size_t newSize       = sizeof(BankHeader) + sizeof(BankEntry) * boxes * 30;
     std::string bankPath = Configuration::getInstance().useExtData() ? "/banks/" + bankName + ".bnk" : "/3ds/PKSM/banks/" + bankName + ".bnk";
     std::string jsonPath = Configuration::getInstance().useExtData() ? "/banks/" + bankName + ".json" : "/3ds/PKSM/banks/" + bankName + ".json";
-    FS_Archive archive = Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd();
+    FS_Archive archive   = Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd();
     if (newSize != size)
     {
         Gui::showResizeStorage();
@@ -249,73 +249,73 @@ void Bank::resize(int boxes)
 std::shared_ptr<PKX> Bank::pkm(int box, int slot) const
 {
     BankEntry* bank = (BankEntry*)(data + sizeof(BankHeader));
-    int index = box * 30 + slot;
-    bool party = false;
+    int index       = box * 30 + slot;
+    bool party      = false;
     switch (bank[index].gen)
     {
-        case Generation::FOUR:
-            for (int i = 260; i > 136; i--)
+    case Generation::FOUR:
+        for (int i = 260; i > 136; i--)
+        {
+            if (bank[index].data[i] != 0xFF)
             {
-                if (bank[index].data[i] != 0xFF)
-                {
-                    party = true;
-                    break;
-                }
+                party = true;
+                break;
             }
-            return std::make_shared<PK4>(bank[index].data, false, party);
+        }
+        return std::make_shared<PK4>(bank[index].data, false, party);
 
-        case Generation::FIVE:
-            for (int i = 260; i > 136; i--)
+    case Generation::FIVE:
+        for (int i = 260; i > 136; i--)
+        {
+            if (bank[index].data[i] != 0xFF)
             {
-                if (bank[index].data[i] != 0xFF)
-                {
-                    party = true;
-                    break;
-                }
+                party = true;
+                break;
             }
-            return std::make_shared<PK5>(bank[index].data, false, party);
+        }
+        return std::make_shared<PK5>(bank[index].data, false, party);
 
-        case Generation::SIX:
-            for (int i = 260; i > 232; i--)
+    case Generation::SIX:
+        for (int i = 260; i > 232; i--)
+        {
+            if (bank[index].data[i] != 0xFF)
             {
-                if (bank[index].data[i] != 0xFF)
-                {
-                    party = true;
-                    break;
-                }
+                party = true;
+                break;
             }
-            return std::make_shared<PK6>(bank[index].data, false, party);
+        }
+        return std::make_shared<PK6>(bank[index].data, false, party);
 
-        case Generation::SEVEN:
-            for (int i = 260; i > 232; i--)
+    case Generation::SEVEN:
+        for (int i = 260; i > 232; i--)
+        {
+            if (bank[index].data[i] != 0xFF)
             {
-                if (bank[index].data[i] != 0xFF)
-                {
-                    party = true;
-                    break;
-                }
+                party = true;
+                break;
             }
-            return std::make_shared<PK7>(bank[index].data, false, party);
+        }
+        return std::make_shared<PK7>(bank[index].data, false, party);
 
-        case Generation::LGPE:
-            return std::make_shared<PB7>(bank[index].data, false);
+    case Generation::LGPE:
+        return std::make_shared<PB7>(bank[index].data, false);
 
-        case Generation::UNUSED:
-        default:
-            return std::make_shared<PK7>();
+    case Generation::UNUSED:
+    default:
+        return std::make_shared<PK7>();
     }
 }
 
 void Bank::pkm(std::shared_ptr<PKX> pkm, int box, int slot)
 {
     BankEntry* bank = (BankEntry*)(data + sizeof(BankHeader));
-    int index = box * 30 + slot;
+    int index       = box * 30 + slot;
     BankEntry newEntry;
     if (pkm->species() == 0)
     {
-        std::fill_n((char*) &newEntry, sizeof(BankEntry), 0xFF);
+        std::fill_n((char*)&newEntry, sizeof(BankEntry), 0xFF);
         bank[index] = newEntry;
-        needsCheck = true;
+        needsCheck  = true;
         return;
     }
     newEntry.gen = pkm->generation();
@@ -325,7 +325,7 @@ void Bank::pkm(std::shared_ptr<PKX> pkm, int box, int slot)
         std::fill_n(newEntry.data + pkm->getLength(), 260 - pkm->getLength(), 0xFF);
     }
     bank[index] = newEntry;
-    needsCheck = true;
+    needsCheck  = true;
 }
 
 void Bank::backup() const
@@ -341,7 +341,7 @@ void Bank::backup() const
     out.close();
 
     std::string jsonData = boxNames.dump(2);
-    out = FSStream(Archive::sd(), jsonPath, FS_OPEN_WRITE, jsonData.size());
+    out                  = FSStream(Archive::sd(), jsonPath, FS_OPEN_WRITE, jsonData.size());
     out.write(jsonData.data(), jsonData.size());
     out.close();
 }
@@ -373,7 +373,7 @@ void Bank::createBank(int maxBoxes)
     }
     data = new u8[size = sizeof(BankHeader) + sizeof(BankEntry) * maxBoxes * 30];
     std::copy(BANK_MAGIC.data(), BANK_MAGIC.data() + BANK_MAGIC.size(), data);
-    *(int*)(data + 8) = BANK_VERSION;
+    *(int*)(data + 8)  = BANK_VERSION;
     *(int*)(data + 12) = maxBoxes;
     std::fill_n(data + sizeof(BankHeader), sizeof(BankEntry) * boxes() * 30, 0xFF);
 }
@@ -400,7 +400,7 @@ void Bank::convert()
     Gui::waitFrame(i18n::localize("BANK_CONVERT"));
     FSStream stream(Archive::sd(), "/3ds/PKSM/bank/bank.bin", FS_OPEN_READ);
     size_t oldSize = stream.size();
-    u8* oldData = new u8[oldSize];
+    u8* oldData    = new u8[oldSize];
     if (stream.good())
     {
         stream.read(oldData, oldSize);
@@ -416,18 +416,18 @@ void Bank::convert()
 
     data = new u8[size = sizeof(BankHeader) + sizeof(BankEntry) * oldSize / 232];
     std::copy(BANK_MAGIC.data(), BANK_MAGIC.data() + BANK_MAGIC.size(), data);
-    ((BankHeader*) data)->version = BANK_VERSION;
-    ((BankHeader*) data)->boxes = oldSize / 232 / 30;
+    ((BankHeader*)data)->version = BANK_VERSION;
+    ((BankHeader*)data)->boxes   = oldSize / 232 / 30;
     extern nlohmann::json g_banks;
-    g_banks["pksm_1"] = ((BankHeader*) data)->boxes;
+    g_banks["pksm_1"] = ((BankHeader*)data)->boxes;
     std::fill_n(data + sizeof(BankHeader), sizeof(BankEntry) * boxes() * 30, 0xFF);
     boxNames = nlohmann::json::array();
 
-    for (int box = 0; box < std::min((int) oldSize / (232 * 30), boxes()); box++)
+    for (int box = 0; box < std::min((int)oldSize / (232 * 30), boxes()); box++)
     {
         for (int slot = 0; slot < 30; slot++)
         {
-            u8* pkmData = oldData + box * (232 * 30) + slot * 232;
+            u8* pkmData              = oldData + box * (232 * 30) + slot * 232;
             std::shared_ptr<PKX> pkm = std::make_shared<PK6>(pkmData, false);
             if ((pkm->encryptionConstant() == 0 && pkm->species() == 0))
             {
@@ -448,11 +448,7 @@ void Bank::convert()
                     break;
                 }
             }
-            if (pkm->version() > 27
-                || pkm->species() > 721
-                || pkm->ability() > 191
-                || pkm->heldItem() > 775
-                || badMove)
+            if (pkm->version() > 27 || pkm->species() > 721 || pkm->ability() > 191 || pkm->heldItem() > 775 || badMove)
             {
                 pkm = std::make_shared<PK7>(pkmData, false);
             }
@@ -475,11 +471,10 @@ void Bank::convert()
         boxNames[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
     }
 
-
     stream = FSStream(Archive::sd(), "/3ds/PKSM/backups/bank.bin", FS_OPEN_WRITE, oldSize);
     stream.write(oldData, oldSize);
     stream.close();
-    
+
     delete[] oldData;
 
     if (deleteOld)
@@ -501,13 +496,13 @@ int Bank::boxes() const
 
 bool Bank::setName(const std::string& name)
 {
-    std::string oldName = bankName;
-    bankName = name;
+    std::string oldName     = bankName;
+    bankName                = name;
     std::string oldBankPath = Configuration::getInstance().useExtData() ? "/banks/" + oldName + ".bnk" : "/3ds/PKSM/banks/" + oldName + ".bnk";
     std::string oldJsonPath = Configuration::getInstance().useExtData() ? "/banks/" + oldName + ".json" : "/3ds/PKSM/banks/" + oldName + ".json";
     std::string newBankPath = Configuration::getInstance().useExtData() ? "/banks/" + bankName + ".bnk" : "/3ds/PKSM/banks/" + bankName + ".bnk";
     std::string newJsonPath = Configuration::getInstance().useExtData() ? "/banks/" + bankName + ".json" : "/3ds/PKSM/banks/" + bankName + ".json";
-    auto archive = Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd();
+    auto archive            = Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd();
     if (R_FAILED(Archive::moveFile(archive, oldBankPath, archive, newBankPath)))
     {
         bankName = oldName;

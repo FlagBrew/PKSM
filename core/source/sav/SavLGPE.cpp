@@ -1,40 +1,40 @@
 /*
-*   This file is part of PKSM
-*   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
-*
-*   This program is free software: you can redistribute it and/or modify
-*   it under the terms of the GNU General Public License as published by
-*   the Free Software Foundation, either version 3 of the License, or
-*   (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-*   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
-*       * Requiring preservation of specified reasonable legal notices or
-*         author attributions in that material or in the Appropriate Legal
-*         Notices displayed by works containing it.
-*       * Prohibiting misrepresentation of the origin of that material,
-*         or requiring that modified versions of such material be marked in
-*         reasonable ways as different from the original version.
-*/
+ *   This file is part of PKSM
+ *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
+ *       * Requiring preservation of specified reasonable legal notices or
+ *         author attributions in that material or in the Appropriate Legal
+ *         Notices displayed by works containing it.
+ *       * Prohibiting misrepresentation of the origin of that material,
+ *         or requiring that modified versions of such material be marked in
+ *         reasonable ways as different from the original version.
+ */
 
 #include "SavLGPE.hpp"
 #include "PB7.hpp"
-#include "gui.hpp"
 #include "WB7.hpp"
+#include "gui.hpp"
 #include "random.hpp"
 
 SavLGPE::SavLGPE(u8* dt)
 {
-    length = 0x100000;
-    boxes = 34; // Ish
-    game = Game::LGPE;
+    length  = 0x100000;
+    boxes   = 34; // Ish
+    game    = Game::LGPE;
     PokeDex = 0x2A00;
 
     data = new u8[length]{0};
@@ -101,7 +101,10 @@ u8 SavLGPE::partyCount() const
     return ret;
 }
 
-void SavLGPE::partyCount(u8 v) { (void) v;}
+void SavLGPE::partyCount(u8 v)
+{
+    (void)v;
+}
 
 void SavLGPE::fixParty()
 {
@@ -127,7 +130,7 @@ static bool isPKM(u8* pkmData)
 
 void SavLGPE::compressBox()
 {
-    u16 emptyIndex = 1001;
+    u16 emptyIndex    = 1001;
     u8 emptyData[260] = {0};
     for (u16 i = 0; i < 1000; i++)
     {
@@ -175,13 +178,13 @@ u16 SavLGPE::check16(u8* buf, u32 blockID, u32 len) const
 void SavLGPE::resign()
 {
     const u8 blockCount = 21;
-    u8* tmp = new u8[*std::max_element(chklen, chklen + blockCount)];
-    const u32 csoff = 0xB861A;
+    u8* tmp             = new u8[*std::max_element(chklen, chklen + blockCount)];
+    const u32 csoff     = 0xB861A;
 
     for (u8 i = 0; i < blockCount; i++)
     {
         std::copy(data + chkofs[i], data + chkofs[i] + chklen[i], tmp);
-        *(u16*)(data + csoff + i*8) = check16(tmp, *(u16*)(data + csoff + i*8 - 2), chklen[i]);
+        *(u16*)(data + csoff + i * 8) = check16(tmp, *(u16*)(data + csoff + i * 8 - 2), chklen[i]);
     }
 
     delete[] tmp;
@@ -259,7 +262,8 @@ void SavLGPE::money(u32 v)
 
 u8 SavLGPE::badges() const
 {
-    struct {
+    struct
+    {
         u8 unimportant1 : 4;
         u8 b1 : 1;
         u8 b2 : 1;
@@ -304,7 +308,7 @@ void SavLGPE::playedSeconds(u8 v)
 {
     *(data + 0x45403) = v;
 }
-    
+
 std::shared_ptr<PKX> SavLGPE::pkm(u8 slot) const
 {
     u32 off = partyOffset(slot);
@@ -334,7 +338,7 @@ void SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 
 void SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 slot)
 {
-    u32 off = partyOffset(slot);
+    u32 off     = partyOffset(slot);
     u16 newSlot = partyBoxSlot(slot);
     if (pk->encryptionConstant() == 0 && pk->species() == 0)
     {
@@ -351,7 +355,7 @@ void SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 slot)
         {
             if (!isPKM(data + 0x5C00 + i * 260))
             {
-                off = boxOffset(i / 30, i % 30);
+                off     = boxOffset(i / 30, i % 30);
                 newSlot = i;
                 break;
             }
@@ -369,7 +373,7 @@ void SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 slot)
 
 void SavLGPE::trade(std::shared_ptr<PKX> pk)
 {
-    PB7 *pb7 = (PB7*)pk.get();
+    PB7* pb7 = (PB7*)pk.get();
     if (pb7->egg() && !(otName() == pb7->otName() && TID() == pb7->TID() && SID() == pb7->SID() && gender() == pb7->otGender()))
     {
         pb7->metDay(Configuration::getInstance().day());
@@ -385,7 +389,7 @@ void SavLGPE::trade(std::shared_ptr<PKX> pk)
     {
         if (pb7->htName() != otName())
         {
-            pb7->htFriendship(pb7->currentFriendship());// copy friendship instead of resetting (don't alter CP)
+            pb7->htFriendship(pb7->currentFriendship()); // copy friendship instead of resetting (don't alter CP)
             pb7->htAffection(0);
         }
         pb7->currentHandler(1);
@@ -407,7 +411,7 @@ std::string SavLGPE::boxName(u8 box) const
 
 void SavLGPE::boxName(u8 box, const std::string& name)
 {
-    (void) box, (void) name;
+    (void)box, (void)name;
 }
 
 int SavLGPE::dexFormCount(int species) const
@@ -429,7 +433,7 @@ int SavLGPE::dexFormCount(int species) const
 int SavLGPE::dexFormIndex(int species, int formct, int start) const
 {
     int formindex = start;
-    int f = 0;
+    int f         = 0;
     for (int i = 0; i < 62; i += 2)
     {
         if (formtable[i] == species)
@@ -446,27 +450,27 @@ bool SavLGPE::sanitizeFormsToIterate(int species, int& fs, int& fe, int formIn) 
 {
     switch (species)
     {
-        case 20: // Raticate
-        case 105: // Marowak
-            fs = 0;
-            fe = 1;
-            return true;
-        default:
-            int count = dexFormCount(species);
-            fs = fe = 0;
-            return count < formIn;
+    case 20:  // Raticate
+    case 105: // Marowak
+        fs = 0;
+        fe = 1;
+        return true;
+    default:
+        int count = dexFormCount(species);
+        fs = fe = 0;
+        return count < formIn;
     }
 }
 
 void SavLGPE::setDexFlags(int index, int gender, int shiny, int baseSpecies)
 {
     const int brSize = 0x8C;
-    int shift = gender | (shiny << 1);
-    int off = 0x2AF0;
-    int bd = index >> 3; 
-    int bm = index & 7;
-    int bd1 = baseSpecies >> 3;
-    int bm1 = baseSpecies & 7;
+    int shift        = gender | (shiny << 1);
+    int off          = 0x2AF0;
+    int bd           = index >> 3;
+    int bm           = index & 7;
+    int bd1          = baseSpecies >> 3;
+    int bm1          = baseSpecies & 7;
 
     int brSeen = shift * brSize;
     data[off + brSeen + bd] |= (u8)(1 << bm);
@@ -494,32 +498,32 @@ void SavLGPE::setDexFlags(int index, int gender, int shiny, int baseSpecies)
 
 void SavLGPE::dex(std::shared_ptr<PKX> pk)
 {
-    int n = pk->species();
-    int MaxSpeciesID = 809;
-    int PokeDex = 0x2A00;
+    int n                    = pk->species();
+    int MaxSpeciesID         = 809;
+    int PokeDex              = 0x2A00;
     int PokeDexLanguageFlags = PokeDex + 0x550;
 
     if (n == 0 || n > MaxSpeciesID || pk->egg())
         return;
 
-    int bit = n - 1;
-    int bd = bit >> 3;
-    int bm = bit & 7;
+    int bit    = n - 1;
+    int bd     = bit >> 3;
+    int bm     = bit & 7;
     int gender = pk->gender() % 2;
-    int shiny = pk->shiny() ? 1 : 0;
+    int shiny  = pk->shiny() ? 1 : 0;
     if (n == 351)
         shiny = 0;
     int shift = gender | (shiny << 1);
-    
+
     if (n == 327) // Spinda
     {
         if ((data[PokeDex + 0x84] & (1 << (shift + 4))) != 0)
         { // Already 2
-            *(u32*)(data + PokeDex + 0x8E8 + shift*4) = pk->encryptionConstant();
+            *(u32*)(data + PokeDex + 0x8E8 + shift * 4) = pk->encryptionConstant();
             data[PokeDex + 0x84] |= (u8)(1 << shift);
         }
-        else if ((data[PokeDex + 0x84] & (1 << shift)) == 0) 
-        { // Not yet 1
+        else if ((data[PokeDex + 0x84] & (1 << shift)) == 0)
+        {                                             // Not yet 1
             data[PokeDex + 0x84] |= (u8)(1 << shift); // 1
         }
     }
@@ -528,13 +532,13 @@ void SavLGPE::dex(std::shared_ptr<PKX> pk)
     data[off + bd] |= (u8)(1 << bm);
 
     int formstart = pk->alternativeForm();
-    int formend = formstart;
+    int formend   = formstart;
 
     int fs = 0, fe = 0;
     if (sanitizeFormsToIterate(n, fs, fe, formstart))
     {
         formstart = fs;
-        formend = fe;
+        formend   = fe;
     }
 
     for (int form = formstart; form <= formend; form++)
@@ -553,13 +557,15 @@ void SavLGPE::dex(std::shared_ptr<PKX> pk)
         setDexFlags(bitIndex, gender, shiny, n - 1);
     }
 
-    int lang = pk->language();
+    int lang            = pk->language();
     const int langCount = 9;
     if (lang <= 10 && lang != 6 && lang != 0)
     {
-        if (lang >= 7) lang--;
+        if (lang >= 7)
+            lang--;
         lang--;
-        if (lang < 0) lang = 1;
+        if (lang < 0)
+            lang = 1;
         int lbit = bit * langCount + lang;
         if (lbit >> 3 < 920)
             data[PokeDexLanguageFlags + (lbit >> 3)] |= (u8)(1 << (lbit & 7));
@@ -568,13 +574,13 @@ void SavLGPE::dex(std::shared_ptr<PKX> pk)
 
 int SavLGPE::dexSeen(void) const
 {
-    int ret = 0;
+    int ret                     = 0;
     static constexpr int brSize = 0x8C;
     for (int i = 0; i < maxSpecies(); i++)
     {
         for (int j = 0; j < 4; j++)
         {
-            if (data[PokeDex + 0x88 + 0x68 + brSize * j + i/8] & BIT(i%8))
+            if (data[PokeDex + 0x88 + 0x68 + brSize * j + i / 8] & BIT(i % 8))
             {
                 ret++;
                 break;
@@ -589,7 +595,7 @@ int SavLGPE::dexCaught(void) const
     int ret = 0;
     for (int i = 0; i < maxSpecies(); i++)
     {
-        if (data[PokeDex + 0x88 + i/8] & BIT(i%8))
+        if (data[PokeDex + 0x88 + i / 8] & BIT(i % 8))
         {
             ret++;
         }
@@ -733,10 +739,10 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
             for (int i = 0; i < perfectIVs; i++)
             {
                 u8 chosenIV;
-                do {
+                do
+                {
                     chosenIV = randomNumbers() % 6;
-                }
-                while (pkm->iv(chosenIV) == 31);
+                } while (pkm->iv(chosenIV) == 31);
                 pkm->iv(chosenIV, 31);
             }
             for (int i = 0; i < 6; i++)
@@ -764,33 +770,33 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
         // Sets the ability to the one specific to the formSpecies and sets abilitynumber (Why? Don't quite understand that)
         switch (wb7->abilityType())
         {
-            case 0:
-            case 1:
-            case 2:
-                pkm->ability(wb7->abilityType());
-                break;
-            case 3:
-            case 4:
-                pkm->ability(randomNumbers() % (wb7->abilityType() - 1));
-                break;
+        case 0:
+        case 1:
+        case 2:
+            pkm->ability(wb7->abilityType());
+            break;
+        case 3:
+        case 4:
+            pkm->ability(randomNumbers() % (wb7->abilityType() - 1));
+            break;
         }
 
         switch (wb7->PIDType())
         {
-            case 0: // Fixed value
-                pkm->PID(wb7->PID());
-                break;
-            case 1: // Random
-                pkm->PID((u32)randomNumbers());
-                break;
-            case 2: // Always shiny
-                pkm->PID((u32)randomNumbers());
-                pkm->shiny(true);
-                break;
-            case 3: // Never shiny
-                pkm->PID((u32)randomNumbers());
-                pkm->shiny(false);
-                break;
+        case 0: // Fixed value
+            pkm->PID(wb7->PID());
+            break;
+        case 1: // Random
+            pkm->PID((u32)randomNumbers());
+            break;
+        case 2: // Always shiny
+            pkm->PID((u32)randomNumbers());
+            pkm->shiny(true);
+            break;
+        case 3: // Never shiny
+            pkm->PID((u32)randomNumbers());
+            pkm->shiny(false);
+            break;
         }
 
         if (wb7->egg())
@@ -814,7 +820,7 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
         {
             pkm->partyStat(pkm->stat(i));
         }
-        
+
         pkm->height(randomNumbers() % 256);
         pkm->weight(randomNumbers() % 256);
         pkm->fatefulEncounter(true);
@@ -825,21 +831,15 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
     }
     else if (wb7->item())
     {
-        
-        static constexpr int tms[] = {
-            328, 329, 330, 331, 332, 333, 334, 335, 336, 337,
-            338, 339, 340, 341, 342, 343, 344, 345, 346, 347,
-            348, 349, 350, 351, 352, 353, 354, 355, 356, 357,
-            358, 359, 360, 361, 362, 363, 364, 365, 366, 367,
-            368, 369, 370, 371, 372, 373, 374, 375, 376, 377,
-            378, 379, 380, 381, 382, 383, 384, 385, 386, 387
-        };
+        static constexpr int tms[] = {328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349,
+            350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376,
+            377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387};
         for (int itemNum = 0; itemNum < wb7->items(); itemNum++)
         {
-            Pouch place = NormalItem;
-            int slot = -1;
-            static constexpr Pouch search[] = { NormalItem, TM, Medicine, Candy, ZCrystals, Ball, Battle };
-            static constexpr int limits[] =   { 150,        108,60,       200,   150,       50,   150 };
+            Pouch place                     = NormalItem;
+            int slot                        = -1;
+            static constexpr Pouch search[] = {NormalItem, TM, Medicine, Candy, ZCrystals, Ball, Battle};
+            static constexpr int limits[]   = {150, 108, 60, 200, 150, 50, 150};
             for (int i = 0; i < 7; i++)
             {
                 for (int j = 0; j < limits[i]; j++)
@@ -853,10 +853,11 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
                     {
                         if (std::find(tms, tms + 60, find->id()) == tms + 60)
                         {
-                            slot = j;
+                            slot  = j;
                             place = search[i];
                         }
-                        else slot = -2;
+                        else
+                            slot = -2;
                         break;
                     }
                 }
@@ -879,17 +880,11 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
             }
             else
             {
-                static constexpr int medicines[] = { 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 38, 39, 40, 41, 709, 903 };
-                static constexpr int zCrystals[] = { 51, 53, 81, 82, 83, 84, 85, 849 };
-                static constexpr int balls[] = {
-                    1, 2, 3, 4, 12, 164, 166, 168,
-                    861, 862, 863, 864, 865, 866
-                };
-                static constexpr int battle[] = {
-                    55, 56, 57, 58, 59, 60, 61, 62,
-                    656, 659, 660, 661, 662, 663, 671, 672, 675, 676, 678, 679,
-                    760, 762, 770, 773
-                };
+                static constexpr int medicines[] = {17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 38, 39, 40, 41, 709, 903};
+                static constexpr int zCrystals[] = {51, 53, 81, 82, 83, 84, 85, 849};
+                static constexpr int balls[]     = {1, 2, 3, 4, 12, 164, 166, 168, 861, 862, 863, 864, 865, 866};
+                static constexpr int battle[]    = {
+                    55, 56, 57, 58, 59, 60, 61, 62, 656, 659, 660, 661, 662, 663, 671, 672, 675, 676, 678, 679, 760, 762, 770, 773};
                 Item7b inject;
                 inject.id(wb7->object(itemNum));
                 inject.count(wb7->objectQuantity(itemNum));
@@ -982,84 +977,84 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
 
 void SavLGPE::item(Item& item, Pouch pouch, u16 slot)
 {
-    Item7b write = (Item7b)item;
+    Item7b write   = (Item7b)item;
     auto writeData = write.bytes();
     switch (pouch)
     {
-        case Pouch::Medicine:
-            if (slot < 60)
-            {
-                std::copy(writeData.first, writeData.first + writeData.second, data + slot * 4);
-            }
-            else
-            {
-                // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Medicine LGPE)");
-            }
-            break;
-        case Pouch::TM:
-            if (slot < 108)
-            {
-                std::copy(writeData.first, writeData.first + writeData.second, data + 0xF0 + slot * 4);
-            }
-            else
-            {
-                // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(TM LGPE)");
-            }
-            break;
-        case Pouch::Candy:
-            if (slot < 200)
-            {
-                std::copy(writeData.first, writeData.first + writeData.second, data + 0x2A0 + slot * 4);
-            }
-            else
-            {
-                // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Candy LGPE)");
-            }
-            break;
-        case Pouch::ZCrystals:
-            if (slot < 150)
-            {
-                std::copy(writeData.first, writeData.first + writeData.second, data + 0x5C0 + slot * 4);
-            }
-            else
-            {
-                // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(ZCrystals LGPE)");
-            }
-            break;
-        case Pouch::Ball:
-            if (slot < 50)
-            {
-                std::copy(writeData.first, writeData.first + writeData.second, data + 0x818 + slot * 4);
-            }
-            else
-            {
-                // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Ball LGPE)");
-            }
-            break;
-        case Pouch::Battle:
-            if (slot < 150)
-            {
-                std::copy(writeData.first, writeData.first + writeData.second, data + 0x8E0 + slot * 4);
-            }
-            else
-            {
-                // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Battle LGPE)");
-            }
-            break;
-        case Pouch::KeyItem:
-        case Pouch::NormalItem:
-            if (slot < 150)
-            {
-                std::copy(writeData.first, writeData.first + writeData.second, data + 0xB38 + slot * 4);
-            }
-            else
-            {
-                // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Normal/Key LGPE)");
-            }
-            break;
-        default:
-            // Gui::warn(i18n::localize("THE_FUCK"), std::to_string((int)pouch));
-            break;
+    case Pouch::Medicine:
+        if (slot < 60)
+        {
+            std::copy(writeData.first, writeData.first + writeData.second, data + slot * 4);
+        }
+        else
+        {
+            // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Medicine LGPE)");
+        }
+        break;
+    case Pouch::TM:
+        if (slot < 108)
+        {
+            std::copy(writeData.first, writeData.first + writeData.second, data + 0xF0 + slot * 4);
+        }
+        else
+        {
+            // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(TM LGPE)");
+        }
+        break;
+    case Pouch::Candy:
+        if (slot < 200)
+        {
+            std::copy(writeData.first, writeData.first + writeData.second, data + 0x2A0 + slot * 4);
+        }
+        else
+        {
+            // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Candy LGPE)");
+        }
+        break;
+    case Pouch::ZCrystals:
+        if (slot < 150)
+        {
+            std::copy(writeData.first, writeData.first + writeData.second, data + 0x5C0 + slot * 4);
+        }
+        else
+        {
+            // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(ZCrystals LGPE)");
+        }
+        break;
+    case Pouch::Ball:
+        if (slot < 50)
+        {
+            std::copy(writeData.first, writeData.first + writeData.second, data + 0x818 + slot * 4);
+        }
+        else
+        {
+            // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Ball LGPE)");
+        }
+        break;
+    case Pouch::Battle:
+        if (slot < 150)
+        {
+            std::copy(writeData.first, writeData.first + writeData.second, data + 0x8E0 + slot * 4);
+        }
+        else
+        {
+            // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Battle LGPE)");
+        }
+        break;
+    case Pouch::KeyItem:
+    case Pouch::NormalItem:
+        if (slot < 150)
+        {
+            std::copy(writeData.first, writeData.first + writeData.second, data + 0xB38 + slot * 4);
+        }
+        else
+        {
+            // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Normal/Key LGPE)");
+        }
+        break;
+    default:
+        // Gui::warn(i18n::localize("THE_FUCK"), std::to_string((int)pouch));
+        break;
     }
 }
 
@@ -1067,23 +1062,23 @@ std::unique_ptr<Item> SavLGPE::item(Pouch pouch, u16 slot) const
 {
     switch (pouch)
     {
-        case Pouch::Medicine:
-            return std::make_unique<Item7b>(data + slot * 4);
-        case Pouch::TM:
-            return std::make_unique<Item7b>(data + 0xF0 + slot * 4);
-        case Pouch::Candy:
-            return std::make_unique<Item7b>(data + 0x2A0 + slot * 4);
-        case Pouch::ZCrystals:
-            return std::make_unique<Item7b>(data + 0x5C0 + slot * 4);
-        case Pouch::Ball:
-            return std::make_unique<Item7b>(data + 0x818 + slot * 4);
-        case Pouch::Battle:
-            return std::make_unique<Item7b>(data + 0x8E0 + slot * 4);
-        case Pouch::KeyItem:
-        case Pouch::NormalItem:
-            return std::make_unique<Item7b>(data + 0xB38 + slot * 4);
-        default:
-            return nullptr;
+    case Pouch::Medicine:
+        return std::make_unique<Item7b>(data + slot * 4);
+    case Pouch::TM:
+        return std::make_unique<Item7b>(data + 0xF0 + slot * 4);
+    case Pouch::Candy:
+        return std::make_unique<Item7b>(data + 0x2A0 + slot * 4);
+    case Pouch::ZCrystals:
+        return std::make_unique<Item7b>(data + 0x5C0 + slot * 4);
+    case Pouch::Ball:
+        return std::make_unique<Item7b>(data + 0x818 + slot * 4);
+    case Pouch::Battle:
+        return std::make_unique<Item7b>(data + 0x8E0 + slot * 4);
+    case Pouch::KeyItem:
+    case Pouch::NormalItem:
+        return std::make_unique<Item7b>(data + 0xB38 + slot * 4);
+    default:
+        return nullptr;
     }
 }
 
@@ -1094,88 +1089,47 @@ std::unique_ptr<WCX> SavLGPE::mysteryGift(int pos) const
 
 std::vector<std::pair<Pouch, int>> SavLGPE::pouches() const
 {
-    return {
-        { Pouch::Medicine, 60 },
-        { Pouch::TM, 108 },
-        { Pouch::Candy, 200 },
-        { Pouch::ZCrystals, 150 },
-        { Pouch::Ball, 50 },
-        { Pouch::Battle, 150 },
-        { Pouch::NormalItem, 150 }
-    };
+    return {{Pouch::Medicine, 60}, {Pouch::TM, 108}, {Pouch::Candy, 200}, {Pouch::ZCrystals, 150}, {Pouch::Ball, 50}, {Pouch::Battle, 150},
+        {Pouch::NormalItem, 150}};
 }
 
 std::map<Pouch, std::vector<int>> SavLGPE::validItems() const
 {
-    return {
-        { Medicine, {
-            17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
-            29, 30, 31, 32, 38, 39, 40, 41, 709, 903
-        }},
-        { TM, {
-            328, 329, 330, 331, 332, 333, 334, 335, 336, 337,
-            338, 339, 340, 341, 342, 343, 344, 345, 346, 347,
-            348, 349, 350, 351, 352, 353, 354, 355, 356, 357,
-            358, 359, 360, 361, 362, 363, 364, 365, 366, 367,
-            368, 369, 370, 371, 372, 373, 374, 375, 376, 377,
-            378, 379, 380, 381, 382, 383, 384, 385, 386, 387
-        }},
-        { Candy, {
-            50, 960, 961, 962, 963, 964, 965, 966, 967, 968,
-            969, 970, 971, 972, 973, 974, 975, 976, 977, 978,
-            979, 980, 981, 982, 983, 984, 985, 986, 987, 988,
-            989, 990, 991, 992, 993, 994, 995, 996, 997, 998,
-            999, 1000, 1001, 1002, 1003, 1004, 1005, 1006,
-            1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014,
-            1015, 1016, 1017, 1018, 1019, 1020, 1021, 1022,
-            1023, 1024, 1025, 1026, 1027, 1028, 1029, 1030,
-            1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038,
-            1039, 1040, 1041, 1042, 1043, 1044, 1045, 1046,
-            1047, 1048, 1049, 1050, 1051, 1052, 1053, 1054,
-            1055, 1056, 1057
-        }},
-        { ZCrystals, {
-            51, 53, 81, 82, 83, 84, 85, 849
-        }},
-        { Ball, {
-            1, 2, 3, 4, 12, 164, 166, 168, 861, 862, 863, 864,
-            865, 866
-        }},
-        { Battle, {
-            55, 56, 57, 58, 59, 60, 61, 62, 656, 659, 660,
-            661, 662, 663, 671, 672, 675, 676, 678, 679, 760,
-            762, 770, 773
-        }},
-        { NormalItem, {
-            76, 77, 78, 79, 86, 87, 88, 89, 90, 91, 92, 93,
-            101, 102, 103, 113, 115, 121, 122, 123, 124, 125,
-            126, 127, 128, 442, 571, 632, 651, 795, 796, 872,
-            873, 874, 875, 876, 877, 878, 885, 886, 887, 888,
-            889, 890, 891, 892, 893, 894, 895, 896, 900, 901,
-            902
-        }}
-    };
+    return {{Medicine, {17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 38, 39, 40, 41, 709, 903}},
+        {TM, {328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354,
+                 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380,
+                 381, 382, 383, 384, 385, 386, 387}},
+        {Candy, {50, 960, 961, 962, 963, 964, 965, 966, 967, 968, 969, 970, 971, 972, 973, 974, 975, 976, 977, 978, 979, 980, 981, 982, 983, 984, 985,
+                    986, 987, 988, 989, 990, 991, 992, 993, 994, 995, 996, 997, 998, 999, 1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009,
+                    1010, 1011, 1012, 1013, 1014, 1015, 1016, 1017, 1018, 1019, 1020, 1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1029, 1030,
+                    1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038, 1039, 1040, 1041, 1042, 1043, 1044, 1045, 1046, 1047, 1048, 1049, 1050, 1051,
+                    1052, 1053, 1054, 1055, 1056, 1057}},
+        {ZCrystals, {51, 53, 81, 82, 83, 84, 85, 849}}, {Ball, {1, 2, 3, 4, 12, 164, 166, 168, 861, 862, 863, 864, 865, 866}},
+        {Battle, {55, 56, 57, 58, 59, 60, 61, 62, 656, 659, 660, 661, 662, 663, 671, 672, 675, 676, 678, 679, 760, 762, 770, 773}},
+        {NormalItem,
+            {76, 77, 78, 79, 86, 87, 88, 89, 90, 91, 92, 93, 101, 102, 103, 113, 115, 121, 122, 123, 124, 125, 126, 127, 128, 442, 571, 632, 651, 795,
+                796, 872, 873, 874, 875, 876, 877, 878, 885, 886, 887, 888, 889, 890, 891, 892, 893, 894, 895, 896, 900, 901, 902}}};
 }
 
 std::string SavLGPE::pouchName(Pouch pouch) const
 {
     switch (pouch)
     {
-        case Medicine:
-            return i18n::localize("MEDICINE");
-        case TM:
-            return i18n::localize("TMS");
-        case Candy:
-            return i18n::localize("CANDIES");
-        case ZCrystals:
-            return i18n::localize("ZCRYSTALS");
-        case Ball:
-            return i18n::localize("CATCHING_ITEMS");
-        case Battle:
-            return i18n::localize("BATTLE_ITEMS");
-        case NormalItem:
-            return i18n::localize("ITEMS");
-        default:
-            return "";
+    case Medicine:
+        return i18n::localize("MEDICINE");
+    case TM:
+        return i18n::localize("TMS");
+    case Candy:
+        return i18n::localize("CANDIES");
+    case ZCrystals:
+        return i18n::localize("ZCRYSTALS");
+    case Ball:
+        return i18n::localize("CATCHING_ITEMS");
+    case Battle:
+        return i18n::localize("BATTLE_ITEMS");
+    case NormalItem:
+        return i18n::localize("ITEMS");
+    default:
+        return "";
     }
 }

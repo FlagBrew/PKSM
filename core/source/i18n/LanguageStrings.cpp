@@ -1,28 +1,28 @@
 /*
-*   This file is part of PKSM
-*   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
-*
-*   This program is free software: you can redistribute it and/or modify
-*   it under the terms of the GNU General Public License as published by
-*   the Free Software Foundation, either version 3 of the License, or
-*   (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-*   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
-*       * Requiring preservation of specified reasonable legal notices or
-*         author attributions in that material or in the Appropriate Legal
-*         Notices displayed by works containing it.
-*       * Prohibiting misrepresentation of the origin of that material,
-*         or requiring that modified versions of such material be marked in
-*         reasonable ways as different from the original version.
-*/
+ *   This file is part of PKSM
+ *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
+ *       * Requiring preservation of specified reasonable legal notices or
+ *         author attributions in that material or in the Appropriate Legal
+ *         Notices displayed by works containing it.
+ *       * Prohibiting misrepresentation of the origin of that material,
+ *         or requiring that modified versions of such material be marked in
+ *         reasonable ways as different from the original version.
+ */
 
 #include "LanguageStrings.hpp"
 #include <stdio.h>
@@ -48,18 +48,30 @@ std::string LanguageStrings::folder(Language lang) const
 {
     switch (lang)
     {
-        case Language::EN: return "en";
-        case Language::ES: return "es";
-        case Language::DE: return "de";
-        case Language::FR: return "fr";
-        case Language::IT: return "it";
-        case Language::JP: return "jp";
-        case Language::KO: return "ko";
-        case Language::NL: return "nl";
-        case Language::PT: return "pt";
-        case Language::ZH: return "zh";
-        case Language::TW: return "tw";
-        default: return "en";
+    case Language::EN:
+        return "en";
+    case Language::ES:
+        return "es";
+    case Language::DE:
+        return "de";
+    case Language::FR:
+        return "fr";
+    case Language::IT:
+        return "it";
+    case Language::JP:
+        return "jp";
+    case Language::KO:
+        return "ko";
+    case Language::NL:
+        return "nl";
+    case Language::PT:
+        return "pt";
+    case Language::ZH:
+        return "zh";
+    case Language::TW:
+        return "tw";
+    default:
+        return "en";
     }
 
     return "en";
@@ -87,8 +99,8 @@ LanguageStrings::LanguageStrings(Language lang)
 void LanguageStrings::load(Language lang, const std::string name, std::vector<std::string>& array)
 {
     static const std::string base = "romfs:/i18n/";
-    std::string path = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
-    
+    std::string path              = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
+
     std::string tmp;
     FILE* values = fopen(path.c_str(), "rt");
     if (ferror(values))
@@ -96,7 +108,7 @@ void LanguageStrings::load(Language lang, const std::string name, std::vector<st
         fclose(values);
         return;
     }
-    char* data = (char*)malloc(128);
+    char* data  = (char*)malloc(128);
     size_t size = 0;
     while (!feof(values) && !ferror(values))
     {
@@ -119,7 +131,7 @@ void LanguageStrings::load(Language lang, const std::string name, std::vector<st
 void LanguageStrings::loadMap(Language lang, const std::string name, std::map<u16, std::string>& map)
 {
     static const std::string base = "romfs:/i18n/";
-    std::string path = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
+    std::string path              = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
 
     std::string tmp;
     FILE* values = fopen(path.c_str(), "rt");
@@ -128,16 +140,16 @@ void LanguageStrings::loadMap(Language lang, const std::string name, std::map<u1
         fclose(values);
         return;
     }
-    char* data = (char*)malloc(128);
+    char* data  = (char*)malloc(128);
     size_t size = 0;
     while (!feof(values) && !ferror(values))
     {
         size = std::max(size, (size_t)128);
         if (__getline(&data, &size, values) >= 0)
         {
-            tmp = std::string(data);
-            tmp = tmp.substr(0, tmp.find('\n'));
-            u16 val = std::stoi(tmp.substr(0, 4), 0, 16);
+            tmp      = std::string(data);
+            tmp      = tmp.substr(0, tmp.find('\n'));
+            u16 val  = std::stoi(tmp.substr(0, 4), 0, 16);
             map[val] = tmp.substr(0, tmp.find('\r')).substr(5);
         }
         else
@@ -155,7 +167,7 @@ void LanguageStrings::loadGui(Language lang)
     std::string path = io::exists(base + folder(lang) + "/gui.json") ? base + folder(lang) + "/gui.json" : base + folder(Language::EN) + "/gui.json";
 
     FILE* values = fopen(path.c_str(), "rt");
-    gui = nlohmann::json::parse(values, nullptr, false);
+    gui          = nlohmann::json::parse(values, nullptr, false);
     fclose(values);
 }
 
@@ -279,38 +291,38 @@ const std::string& LanguageStrings::location(u16 v, Generation generation) const
     std::map<u16, std::string>::const_iterator i;
     switch (generation)
     {
-        case Generation::FOUR:
-            if ((i = locations4.find(v)) != locations4.end())
-            {
-                return i->second;
-            }
-            break;
-        case Generation::FIVE:
-            if ((i = locations5.find(v)) != locations5.end())
-            {
-                return i->second;
-            }
-            break;
-        case Generation::SIX:
-            if ((i = locations6.find(v)) != locations6.end())
-            {
-                return i->second;
-            }
-            break;
-        case Generation::SEVEN:
-            if ((i = locations7.find(v)) != locations7.end())
-            {
-                return i->second;
-            }
-            break;
-        case Generation::LGPE:
-            if ((i = locationsLGPE.find(v)) != locationsLGPE.end())
-            {
-                return i->second;
-            }
-            break;
-        default:
-            break;
+    case Generation::FOUR:
+        if ((i = locations4.find(v)) != locations4.end())
+        {
+            return i->second;
+        }
+        break;
+    case Generation::FIVE:
+        if ((i = locations5.find(v)) != locations5.end())
+        {
+            return i->second;
+        }
+        break;
+    case Generation::SIX:
+        if ((i = locations6.find(v)) != locations6.end())
+        {
+            return i->second;
+        }
+        break;
+    case Generation::SEVEN:
+        if ((i = locations7.find(v)) != locations7.end())
+        {
+            return i->second;
+        }
+        break;
+    case Generation::LGPE:
+        if ((i = locationsLGPE.find(v)) != locationsLGPE.end())
+        {
+            return i->second;
+        }
+        break;
+    default:
+        break;
     }
     return localize("INVALID_LOCATION");
 }
@@ -329,18 +341,18 @@ const std::map<u16, std::string>& LanguageStrings::locations(Generation g) const
     static std::map<u16, std::string> emptyMap;
     switch (g)
     {
-        case Generation::FOUR:
-            return locations4;
-        case Generation::FIVE:
-            return locations5;
-        case Generation::SIX:
-            return locations6;
-        case Generation::SEVEN:
-            return locations7;
-        case Generation::LGPE:
-            return locationsLGPE;
-        default:
-            return emptyMap;
+    case Generation::FOUR:
+        return locations4;
+    case Generation::FIVE:
+        return locations5;
+    case Generation::SIX:
+        return locations6;
+    case Generation::SEVEN:
+        return locations7;
+    case Generation::LGPE:
+        return locationsLGPE;
+    default:
+        return emptyMap;
     }
 }
 

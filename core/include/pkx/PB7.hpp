@@ -1,28 +1,28 @@
 /*
-*   This file is part of PKSM
-*   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
-*
-*   This program is free software: you can redistribute it and/or modify
-*   it under the terms of the GNU General Public License as published by
-*   the Free Software Foundation, either version 3 of the License, or
-*   (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-*   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
-*       * Requiring preservation of specified reasonable legal notices or
-*         author attributions in that material or in the Appropriate Legal
-*         Notices displayed by works containing it.
-*       * Prohibiting misrepresentation of the origin of that material,
-*         or requiring that modified versions of such material be marked in
-*         reasonable ways as different from the original version.
-*/
+ *   This file is part of PKSM
+ *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
+ *       * Requiring preservation of specified reasonable legal notices or
+ *         author attributions in that material or in the Appropriate Legal
+ *         Notices displayed by works containing it.
+ *       * Prohibiting misrepresentation of the origin of that material,
+ *         or requiring that modified versions of such material be marked in
+ *         reasonable ways as different from the original version.
+ */
 
 #ifndef PB7_HPP
 #define PB7_HPP
@@ -40,7 +40,12 @@ protected:
     void reorderMoves(void) override;
 
 public:
-    PB7() { length = 260; data = new u8[length]; std::fill_n(data, length, 0); }
+    PB7()
+    {
+        length = 260;
+        data   = new u8[length];
+        std::fill_n(data, length, 0);
+    }
     PB7(u8* dt, bool ekx = false);
     virtual ~PB7() { delete[] data; }
 
@@ -84,8 +89,8 @@ public:
     u8 ev(u8 ev) const override;
     void ev(u8 ev, u8 v) override;
     // Stubbed; data no longer exists
-    u8 contest(u8 contest) const { return 0;};
-    void contest(u8 contest, u8 v) { (void) contest, (void) v; };
+    u8 contest(u8 contest) const { return 0; };
+    void contest(u8 contest, u8 v) { (void)contest, (void)v; };
     // Replaced by
     u8 awakened(u8 stat) const;
     void awakened(u8 stat, u8 v);
@@ -101,7 +106,7 @@ public:
     void pkrsStrain(u8 v) override;
     bool ribbon(u8 ribcat, u8 ribnum) const override;
     void ribbon(u8 ribcat, u8 ribnum, u8 v) override;
-    
+
     std::string nickname(void) const override;
     void nickname(const std::string& v) override;
     u16 move(u8 move) const override;
@@ -183,7 +188,7 @@ public:
     void metLevel(u8 v) override;
     u8 otGender(void) const override;
     void otGender(u8 v) override;
-    
+
     bool hyperTrain(u8 num) const;
     void hyperTrain(u8 num, bool v);
 
