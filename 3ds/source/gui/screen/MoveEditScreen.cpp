@@ -1,44 +1,59 @@
 /*
-*   This file is part of PKSM
-*   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
-*
-*   This program is free software: you can redistribute it and/or modify
-*   it under the terms of the GNU General Public License as published by
-*   the Free Software Foundation, either version 3 of the License, or
-*   (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-*   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
-*       * Requiring preservation of specified reasonable legal notices or
-*         author attributions in that material or in the Appropriate Legal
-*         Notices displayed by works containing it.
-*       * Prohibiting misrepresentation of the origin of that material,
-*         or requiring that modified versions of such material be marked in
-*         reasonable ways as different from the original version.
-*/
+ *   This file is part of PKSM
+ *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
+ *       * Requiring preservation of specified reasonable legal notices or
+ *         author attributions in that material or in the Appropriate Legal
+ *         Notices displayed by works containing it.
+ *       * Prohibiting misrepresentation of the origin of that material,
+ *         or requiring that modified versions of such material be marked in
+ *         reasonable ways as different from the original version.
+ */
 
 #include "MoveEditScreen.hpp"
 #include "ClickButton.hpp"
-#include "gui.hpp"
-#include "ViewOverlay.hpp"
 #include "MoveOverlay.hpp"
+#include "ViewOverlay.hpp"
+#include "gui.hpp"
 
 extern int bobPointer();
 
 MoveEditScreen::MoveEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
 {
-    buttons.push_back(std::make_unique<ClickButton>(283, 211, 34, 28, [this](){ Gui::screenBack(); return true; }, ui_sheet_button_back_idx, "", 0.0f, 0));
+    buttons.push_back(std::make_unique<ClickButton>(283, 211, 34, 28,
+        [this]() {
+            Gui::screenBack();
+            return true;
+        },
+        ui_sheet_button_back_idx, "", 0.0f, 0));
     for (int i = 0; i < 4; i++)
     {
-        buttons.push_back(std::make_unique<ClickButton>(0, 30 + 20 * i, 240, 20, [=](){ moveSelected = i; return true; }, ui_sheet_res_null_idx, "", 0.0f, 0));
-        buttons.push_back(std::make_unique<ClickButton>(0, 140 + 20 * i, 240, 20, [=](){ moveSelected = i + 4; return true; }, ui_sheet_res_null_idx, "", 0.0f, 0));
+        buttons.push_back(std::make_unique<ClickButton>(0, 30 + 20 * i, 240, 20,
+            [=]() {
+                moveSelected = i;
+                return true;
+            },
+            ui_sheet_res_null_idx, "", 0.0f, 0));
+        buttons.push_back(std::make_unique<ClickButton>(0, 140 + 20 * i, 240, 20,
+            [=]() {
+                moveSelected = i + 4;
+                return true;
+            },
+            ui_sheet_res_null_idx, "", 0.0f, 0));
     }
 }
 
@@ -119,15 +134,18 @@ void MoveEditScreen::draw() const
         Gui::dynamicText(i18n::move(lang, pkm->move(i)), 24, 32 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         if (pkm->generation() == Generation::SIX)
         {
-            Gui::dynamicText(i18n::move(lang, ((PK6*)pkm.get())->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::dynamicText(i18n::move(lang, ((PK6*)pkm.get())->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
+                TextPosX::LEFT, TextPosY::TOP);
         }
         else if (pkm->generation() == Generation::SEVEN)
         {
-            Gui::dynamicText(i18n::move(lang, ((PK7*)pkm.get())->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::dynamicText(i18n::move(lang, ((PK7*)pkm.get())->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
+                TextPosX::LEFT, TextPosY::TOP);
         }
         else
         {
-            Gui::staticText(i18n::localize("EDITOR_NOT_APPLICABLE_GEN"), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::staticText(i18n::localize("EDITOR_NOT_APPLICABLE_GEN"), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+                TextPosY::TOP);
         }
     }
 

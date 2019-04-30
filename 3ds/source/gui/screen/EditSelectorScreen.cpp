@@ -1,36 +1,36 @@
 /*
-*   This file is part of PKSM
-*   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
-*
-*   This program is free software: you can redistribute it and/or modify
-*   it under the terms of the GNU General Public License as published by
-*   the Free Software Foundation, either version 3 of the License, or
-*   (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-*   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
-*       * Requiring preservation of specified reasonable legal notices or
-*         author attributions in that material or in the Appropriate Legal
-*         Notices displayed by works containing it.
-*       * Prohibiting misrepresentation of the origin of that material,
-*         or requiring that modified versions of such material be marked in
-*         reasonable ways as different from the original version.
-*/
+ *   This file is part of PKSM
+ *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
+ *       * Requiring preservation of specified reasonable legal notices or
+ *         author attributions in that material or in the Appropriate Legal
+ *         Notices displayed by works containing it.
+ *       * Prohibiting misrepresentation of the origin of that material,
+ *         or requiring that modified versions of such material be marked in
+ *         reasonable ways as different from the original version.
+ */
 
 #include "EditSelectorScreen.hpp"
+#include "AccelButton.hpp"
+#include "ClickButton.hpp"
+#include "EditorScreen.hpp"
+#include "SavLGPE.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
-#include "EditorScreen.hpp"
-#include "ClickButton.hpp"
-#include "AccelButton.hpp"
-#include "SavLGPE.hpp"
 #include <memory>
 
 extern int bobPointer();
@@ -40,52 +40,52 @@ void EditSelectorScreen::changeBoxName()
 {
     switch (TitleLoader::save->generation())
     {
-        case Generation::FOUR:
-        case Generation::FIVE:
+    case Generation::FOUR:
+    case Generation::FIVE:
+    {
+        static SwkbdState state;
+        static bool first = true;
+        if (first)
         {
-            static SwkbdState state;
-            static bool first = true;
-            if (first)
-            {
-                swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 8);
-                first = false;
-            }
-            swkbdSetHintText(&state, i18n::localize("BOX_NAME").c_str());
-            swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
-            char input[18] = {0};
-            SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-            input[16] = '\0';
-            input[17] = '\0';
-            if (ret == SWKBD_BUTTON_CONFIRM)
-            {
-                TitleLoader::save->boxName(box, input);
-            }
+            swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 8);
+            first = false;
         }
-        break;
-        case Generation::SIX:
-        case Generation::SEVEN:
+        swkbdSetHintText(&state, i18n::localize("BOX_NAME").c_str());
+        swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+        char input[18]  = {0};
+        SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
+        input[16]       = '\0';
+        input[17]       = '\0';
+        if (ret == SWKBD_BUTTON_CONFIRM)
         {
-            static SwkbdState state;
-            static bool first = true;
-            if (first)
-            {
-                swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 16);
-                first = false;
-            }
-            swkbdSetHintText(&state, i18n::localize("BOX_NAME").c_str());
-            swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
-            char input[34] = {0};
-            SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-            input[32] = '\0';
-            input[33] = '\0';
-            if (ret == SWKBD_BUTTON_CONFIRM)
-            {
-                TitleLoader::save->boxName(box, input);
-            }
+            TitleLoader::save->boxName(box, input);
         }
-        break;
-        case Generation::LGPE:
-        case Generation::UNUSED:
+    }
+    break;
+    case Generation::SIX:
+    case Generation::SEVEN:
+    {
+        static SwkbdState state;
+        static bool first = true;
+        if (first)
+        {
+            swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 16);
+            first = false;
+        }
+        swkbdSetHintText(&state, i18n::localize("BOX_NAME").c_str());
+        swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+        char input[34]  = {0};
+        SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
+        input[32]       = '\0';
+        input[33]       = '\0';
+        if (ret == SWKBD_BUTTON_CONFIRM)
+        {
+            TitleLoader::save->boxName(box, input);
+        }
+    }
+    break;
+    case Generation::LGPE:
+    case Generation::UNUSED:
         // Nothing happens
         break;
     }
@@ -97,19 +97,19 @@ bool EditSelectorScreen::doQR()
     QRMode initMode;
     switch (TitleLoader::save->generation())
     {
-        case Generation::FOUR:
-            initMode = QRMode::PKM4;
-            break;
-        case Generation::FIVE:
-            initMode = QRMode::PKM5;
-            break;
-        case Generation::SIX:
-            initMode = QRMode::PKM6;
-            break;
-        case Generation::SEVEN:
-        default:
-            initMode = QRMode::PKM7;
-            break;
+    case Generation::FOUR:
+        initMode = QRMode::PKM4;
+        break;
+    case Generation::FIVE:
+        initMode = QRMode::PKM5;
+        break;
+    case Generation::SIX:
+        initMode = QRMode::PKM6;
+        break;
+    case Generation::SEVEN:
+    default:
+        initMode = QRMode::PKM7;
+        break;
     }
 
     QRScanner::init(initMode, data);
@@ -120,20 +120,20 @@ bool EditSelectorScreen::doQR()
 
         switch (TitleLoader::save->generation())
         {
-            case Generation::FOUR:
-                pkm = std::make_shared<PK4>(data, true);
-                break;
-            case Generation::FIVE:
-                pkm = std::make_shared<PK5>(data, true);
-                break;
-            case Generation::SIX:
-                pkm = std::make_shared<PK6>(data, true);
-                break;
-            case Generation::SEVEN:
-                pkm = std::make_shared<PK7>(data, true);
-                break;
-            default:
-                break;
+        case Generation::FOUR:
+            pkm = std::make_shared<PK4>(data, true);
+            break;
+        case Generation::FIVE:
+            pkm = std::make_shared<PK5>(data, true);
+            break;
+        case Generation::SIX:
+            pkm = std::make_shared<PK6>(data, true);
+            break;
+        case Generation::SEVEN:
+            pkm = std::make_shared<PK7>(data, true);
+            break;
+        default:
+            break;
         }
 
         if (pkm) // Should be true, but just make sure
@@ -149,21 +149,26 @@ bool EditSelectorScreen::doQR()
     return true;
 }
 
-EditSelectorScreen::EditSelectorScreen()
-    : Screen(i18n::localize("A_SELECT") + '\n' + i18n::localize("X_CLONE") + '\n' + i18n::localize("B_BACK"))
+EditSelectorScreen::EditSelectorScreen() : Screen(i18n::localize("A_SELECT") + '\n' + i18n::localize("X_CLONE") + '\n' + i18n::localize("B_BACK"))
 {
     currentOverlay = std::make_shared<ViewOverlay>(*this, infoMon, false);
-    
-    buttons.push_back(new ClickButton(283, 211, 34, 28, [](){ Gui::screenBack(); return true; }, ui_sheet_button_back_idx, "", 0.0f, 0));
+
+    buttons.push_back(new ClickButton(283, 211, 34, 28,
+        []() {
+            Gui::screenBack();
+            return true;
+        },
+        ui_sheet_button_back_idx, "", 0.0f, 0));
     instructions.addBox(false, 25, 15, 164, 24, COLOR_GREY, i18n::localize("A_BOX_NAME"), COLOR_WHITE);
-    buttons.push_back(new ClickButton(25, 15, 164, 24, [this](){ return this->clickIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0));
-    buttons.push_back(new AccelButton(8, 15, 17, 24, [this](){ return this->prevBox(); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5));
-    buttons.push_back(new AccelButton(189, 15, 17, 24, [this](){ return this->nextBox(); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5));
+    buttons.push_back(new ClickButton(25, 15, 164, 24, [this]() { return this->clickIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0));
+    buttons.push_back(new AccelButton(8, 15, 17, 24, [this]() { return this->prevBox(); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5));
+    buttons.push_back(new AccelButton(189, 15, 17, 24, [this]() { return this->nextBox(); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5));
     int cameraButtonWidth = StringUtils::textWidth("\uE004+\uE005 \uE01E", FONT_SIZE_14);
     instructions.addCircle(false, 310 - cameraButtonWidth / 2, 24, 8, COLOR_GREY);
     instructions.addBox(false, 308 - cameraButtonWidth / 2, 24, 4, 20, COLOR_GREY);
     instructions.addBox(false, 222 - cameraButtonWidth / 2, 44, 90, 16, COLOR_GREY, i18n::localize("QR_SCANNER"), COLOR_WHITE);
-    buttons.push_back(new ClickButton(310 - cameraButtonWidth, 16, cameraButtonWidth + 2, 16, [this](){ return this->doQR(); }, ui_sheet_res_null_idx, "\uE004+\uE005 \uE01E", FONT_SIZE_14, COLOR_BLACK));
+    buttons.push_back(new ClickButton(310 - cameraButtonWidth, 16, cameraButtonWidth + 2, 16, [this]() { return this->doQR(); },
+        ui_sheet_res_null_idx, "\uE004+\uE005 \uE01E", FONT_SIZE_14, COLOR_BLACK));
 
     // Pokemon buttons
     u16 y = 45;
@@ -172,25 +177,26 @@ EditSelectorScreen::EditSelectorScreen()
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            pkmButtons[row*6 + column] = new ClickButton(x, y, 34, 30, [this, row, column](){ return this->clickIndex(row * 6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, 0);
+            pkmButtons[row * 6 + column] = new ClickButton(
+                x, y, 34, 30, [this, row, column]() { return this->clickIndex(row * 6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, 0);
             x += 34;
         }
         y += 30;
     }
     for (int i = 0; i < 6; i++)
     {
-        int x = (i % 2 == 0 ? 221 : 271);
-        int y = (i % 2 == 0 ? 50 + 45 * (i / 2) : 66 + 45 * (i / 2));
-        pkmButtons[30 + i] = new ClickButton(x, y, 34, 30, [this, i](){ return this->clickIndex(31 + i); }, ui_sheet_res_null_idx, "", 0.0f, 0);
+        int x              = (i % 2 == 0 ? 221 : 271);
+        int y              = (i % 2 == 0 ? 50 + 45 * (i / 2) : 66 + 45 * (i / 2));
+        pkmButtons[30 + i] = new ClickButton(x, y, 34, 30, [this, i]() { return this->clickIndex(31 + i); }, ui_sheet_res_null_idx, "", 0.0f, 0);
     }
 
     viewerButtons.push_back(buttons[0]);
-    viewerButtons.push_back(new ClickButton(212, 47, 108, 28, [this](){ return this->editPokemon(); }, ui_sheet_button_editor_idx,
-                                    "\uE000: " + i18n::localize("EDIT"), FONT_SIZE_12, COLOR_BLACK));
-    viewerButtons.push_back(new ClickButton(212, 78, 108, 28, [this](){ return this->releasePokemon(); }, ui_sheet_button_editor_idx,
-                                    "\uE003: " + i18n::localize("RELEASE"), FONT_SIZE_12, COLOR_BLACK));
-    viewerButtons.push_back(new ClickButton(212, 109, 108, 28, [this](){ return this->clonePkm(); }, ui_sheet_button_editor_idx,
-                                    "\uE002: " + i18n::localize("CLONE"), FONT_SIZE_12, COLOR_BLACK));
+    viewerButtons.push_back(new ClickButton(212, 47, 108, 28, [this]() { return this->editPokemon(); }, ui_sheet_button_editor_idx,
+        "\uE000: " + i18n::localize("EDIT"), FONT_SIZE_12, COLOR_BLACK));
+    viewerButtons.push_back(new ClickButton(212, 78, 108, 28, [this]() { return this->releasePokemon(); }, ui_sheet_button_editor_idx,
+        "\uE003: " + i18n::localize("RELEASE"), FONT_SIZE_12, COLOR_BLACK));
+    viewerButtons.push_back(new ClickButton(212, 109, 108, 28, [this]() { return this->clonePkm(); }, ui_sheet_button_editor_idx,
+        "\uE002: " + i18n::localize("CLONE"), FONT_SIZE_12, COLOR_BLACK));
     TitleLoader::save->cryptBoxData(true);
     box = TitleLoader::save->currentBox();
 }
@@ -201,7 +207,7 @@ EditSelectorScreen::~EditSelectorScreen()
     {
         delete button;
     }
-    
+
     for (Button* button : pkmButtons)
     {
         delete button;
@@ -307,8 +313,8 @@ void EditSelectorScreen::draw() const
 
     for (int i = 0; i < TitleLoader::save->partyCount(); i++)
     {
-        int x = (i % 2 == 0 ? 221 : 271);
-        int y = (i % 2 == 0 ? 50 + 45 * (i / 2) : 66 + 45 * (i / 2));
+        int x                        = (i % 2 == 0 ? 221 : 271);
+        int y                        = (i % 2 == 0 ? 50 + 45 * (i / 2) : 66 + 45 * (i / 2));
         std::shared_ptr<PKX> pokemon = TitleLoader::save->pkm(i);
         if (pokemon->species() > 0)
         {
@@ -330,7 +336,7 @@ void EditSelectorScreen::draw() const
     else if (cursorPos < 31)
     {
         int tempIndex = cursorPos - 1;
-        int yMod = (tempIndex / 6) * 30 + bobPointer();
+        int yMod      = (tempIndex / 6) * 30 + bobPointer();
         if (moveMon)
         {
             Gui::pkm(*moveMon, 9 + (tempIndex % 6) * 34, 39 + yMod);
@@ -350,8 +356,8 @@ void EditSelectorScreen::draw() const
 
     if (infoMon)
     {
-        Gui::dynamicText(StringUtils::format(i18n::localize("EDITOR_IDS"), infoMon->formatTID(), infoMon->formatSID(), infoMon->TSV()), 160, 224, 
-                        FONT_SIZE_9, FONT_SIZE_9, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::dynamicText(StringUtils::format(i18n::localize("EDITOR_IDS"), infoMon->formatTID(), infoMon->formatSID(), infoMon->TSV()), 160, 224,
+            FONT_SIZE_9, FONT_SIZE_9, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
 
     if (menu)
@@ -377,7 +383,7 @@ void EditSelectorScreen::update(touchPosition* touch)
             justSwitched = false;
         }
     }
-    static bool sleep = true;
+    static bool sleep     = true;
     static int sleepTimer = 10;
 
     if (moveMon)
@@ -440,7 +446,7 @@ void EditSelectorScreen::update(touchPosition* touch)
                 viewerButtons[i]->update(touch);
             }
         }
-        
+
         if (downKeys & KEY_B)
         {
             menu = false;
@@ -583,7 +589,7 @@ void EditSelectorScreen::update(touchPosition* touch)
                     cursorPos--;
                 }
             }
-            else if (cursorPos > 1) 
+            else if (cursorPos > 1)
             {
                 cursorPos--;
             }
@@ -596,7 +602,7 @@ void EditSelectorScreen::update(touchPosition* touch)
             {
                 prevBox();
             }
-            sleep = true;
+            sleep      = true;
             sleepTimer = 10;
         }
         else if (downKeys & KEY_RIGHT)
@@ -626,7 +632,7 @@ void EditSelectorScreen::update(touchPosition* touch)
             {
                 cursorPos = 25;
             }
-            sleep = true;
+            sleep      = true;
             sleepTimer = 10;
         }
         else if (downKeys & KEY_UP)
@@ -651,10 +657,10 @@ void EditSelectorScreen::update(touchPosition* touch)
                 }
             }
             else
-            {			
+            {
                 cursorPos -= 6;
             }
-            sleep = true;
+            sleep      = true;
             sleepTimer = 10;
         }
         else if (downKeys & KEY_DOWN)
@@ -682,19 +688,19 @@ void EditSelectorScreen::update(touchPosition* touch)
             {
                 cursorPos += 6;
             }
-            sleep = true;
+            sleep      = true;
             sleepTimer = 10;
         }
         else if (downKeys & KEY_R)
         {
             nextBox();
-            sleep = true;
+            sleep      = true;
             sleepTimer = 10;
         }
         else if (downKeys & KEY_L)
         {
             prevBox();
-            sleep = true;
+            sleep      = true;
             sleepTimer = 10;
         }
         else if (sleepTimer < 0)
@@ -720,7 +726,7 @@ void EditSelectorScreen::update(touchPosition* touch)
                         cursorPos--;
                     }
                 }
-                else if (cursorPos > 1) 
+                else if (cursorPos > 1)
                 {
                     cursorPos--;
                 }
@@ -786,7 +792,7 @@ void EditSelectorScreen::update(touchPosition* touch)
                     }
                 }
                 else
-                {			
+                {
                     cursorPos -= 6;
                 }
                 sleep = true;
@@ -892,7 +898,7 @@ bool EditSelectorScreen::clickIndex(int i)
         }
         else
         {
-            menu = true;
+            menu         = true;
             justSwitched = true;
         }
         return true;

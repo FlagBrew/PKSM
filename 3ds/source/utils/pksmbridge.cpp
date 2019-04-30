@@ -3,8 +3,14 @@
 static bool saveFromBridge = false;
 static struct in_addr lastIPAddr;
 
-bool isLoadedSaveFromBridge(void) { return saveFromBridge; }
-void setLoadedSaveFromBridge(bool v) { saveFromBridge = false; }
+bool isLoadedSaveFromBridge(void)
+{
+    return saveFromBridge;
+}
+void setLoadedSaveFromBridge(bool v)
+{
+    saveFromBridge = false;
+}
 
 static char* getHostId()
 {
@@ -19,7 +25,7 @@ bool receiveSaveFromBridge(void)
     {
         return false;
     }
-    
+
     int fd;
     struct sockaddr_in servaddr;
     if ((fd = socket(AF_INET, SOCK_STREAM, IPPROTO_IP)) < 0)
@@ -29,17 +35,17 @@ bool receiveSaveFromBridge(void)
     }
 
     memset(&servaddr, 0, sizeof(servaddr));
-    servaddr.sin_family = AF_INET;
-    servaddr.sin_port = htons(PKSM_PORT);
+    servaddr.sin_family      = AF_INET;
+    servaddr.sin_port        = htons(PKSM_PORT);
     servaddr.sin_addr.s_addr = INADDR_ANY;
-    
+
     if (bind(fd, (struct sockaddr*)&servaddr, sizeof(servaddr)) < 0)
     {
         Gui::error("Socket bind failed.", errno);
         close(fd);
         return false;
     }
-    
+
     if (listen(fd, 5) < 0)
     {
         Gui::error("Socket listen failed.", errno);
@@ -59,16 +65,20 @@ bool receiveSaveFromBridge(void)
     lastIPAddr = servaddr.sin_addr;
 
     size_t size = 0x100000;
-    char* data = new char[size];
+    char* data  = new char[size];
 
     size_t total = 0;
     size_t chunk = 1024;
     int n;
-    while (total < size) {
+    while (total < size)
+    {
         size_t torecv = size - total > chunk ? chunk : size - total;
-        n = recv(fdconn, data + total, torecv, 0);
+        n             = recv(fdconn, data + total, torecv, 0);
         total += n;
-        if (n <= 0) { break; }
+        if (n <= 0)
+        {
+            break;
+        }
         fprintf(stderr, "Recv %u bytes, %u still missing\n", total, size - total);
     }
 
@@ -105,8 +115,8 @@ bool sendSaveToBridge(void)
     }
     memset(&servaddr, 0, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
-    servaddr.sin_port = htons(PKSM_PORT);
-    servaddr.sin_addr = lastIPAddr;
+    servaddr.sin_port   = htons(PKSM_PORT);
+    servaddr.sin_addr   = lastIPAddr;
 
     if (connect(fd, (struct sockaddr*)&servaddr, sizeof(servaddr)) < 0)
     {
@@ -115,20 +125,24 @@ bool sendSaveToBridge(void)
         return result;
     }
 
-    size_t size = TitleLoader::save->getLength();
+    size_t size  = TitleLoader::save->getLength();
     size_t total = 0;
     size_t chunk = 1024;
     int n;
-    while (total < size) {
+    while (total < size)
+    {
         size_t tosend = size - total > chunk ? chunk : size - total;
-        n = send(fd, TitleLoader::save->rawData() + total, tosend, 0);
-        if (n == -1) { break; }
+        n             = send(fd, TitleLoader::save->rawData() + total, tosend, 0);
+        if (n == -1)
+        {
+            break;
+        }
         total += n;
         fprintf(stderr, "Sent %u bytes, %u still missing\n", total, size - total);
     }
     if (total == size)
     {
-        //Gui::createInfo("Success!", "Data sent back correctly.");
+        // Gui::createInfo("Success!", "Data sent back correctly.");
         result = true;
     }
     else
@@ -143,12 +157,12 @@ bool sendSaveToBridge(void)
 
 void backupBridgeChanges()
 {
-    char stringTime[15] = {0};
-    time_t unixTime = time(NULL);
-    struct tm* timeStruct = gmtime((const time_t *)&unixTime);
-    std::strftime(stringTime, 14,"%Y%m%d%H%M%S", timeStruct);
+    char stringTime[15]   = {0};
+    time_t unixTime       = time(NULL);
+    struct tm* timeStruct = gmtime((const time_t*)&unixTime);
+    std::strftime(stringTime, 14, "%Y%m%d%H%M%S", timeStruct);
     std::string path = "/3ds/PKSM/backups/bridge/" + std::string(stringTime) + ".bak";
-    FSStream out = FSStream(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_WRITE | FS_OPEN_CREATE, TitleLoader::save->getLength());
+    FSStream out     = FSStream(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_WRITE | FS_OPEN_CREATE, TitleLoader::save->getLength());
     if (out.good())
     {
         out.write(TitleLoader::save->rawData(), TitleLoader::save->getLength());

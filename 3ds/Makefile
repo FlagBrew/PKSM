@@ -35,20 +35,11 @@ APP_TITLE		:= 	PKSM
 APP_DESCRIPTION	:=	Gen IV to Gen VII save manager
 APP_AUTHOR		:=	FlagBrew
 
-VERSION_MAJOR := 6
-VERSION_MINOR := 2
-VERSION_MICRO := 1
-GIT_REV="$(shell git rev-parse --short HEAD)"
-
 TARGET			:=	$(subst $e ,_,$(notdir $(APP_TITLE)))
 OUTDIR			:=	out
 BUILD			:=	build
-SOURCES			:=	../common/source \
+FORMATSOURCES	:=	../common/source \
 					../common/source/io \
-					../common/source/picoc \
-					../common/source/picoc/cstdlib \
-					../common/source/picoc/platform \
-					../common/source/quirc \
 					../common/source/utils \
 					../core/source \
 					../core/source/i18n \
@@ -56,7 +47,6 @@ SOURCES			:=	../common/source \
 					../core/source/pkx \
 					../core/source/sav \
 					../core/source/wcx \
-					../core/memecrypto \
 					source \
 					source/gui \
 					source/gui/overlay \
@@ -66,11 +56,15 @@ SOURCES			:=	../common/source \
 					source/picoc \
 					source/titles \
 					source/utils
+SOURCES			:=	$(FORMATSOURCES) \
+					../common/source/picoc \
+					../common/source/picoc/cstdlib \
+					../common/source/picoc/platform \
+					../common/source/quirc \
+					../core/memecrypto
 DATA			:=	data
-INCLUDES		:=	../common/include \
+FORMATINCLUDES	:=	../common/include \
 					../common/include/io \
-					../common/include/picoc \
-					../common/include/quirc \
 					../common/include/utils \
 					../core/include \
 					../core/include/i18n \
@@ -78,7 +72,6 @@ INCLUDES		:=	../common/include \
 					../core/include/pkx \
 					../core/include/sav \
 					../core/include/wcx \
-					../core/memecrypto \
 					include \
 					include/gui \
 					include/gui/overlay \
@@ -87,6 +80,10 @@ INCLUDES		:=	../common/include \
 					include/io \
 					include/titles \
 					include/utils
+INCLUDES		:=	$(FORMATINCLUDES) \
+					../common/include/picoc \
+					../common/include/quirc \
+					../core/memecrypto
 GRAPHICS		:=	../assets/gfx/ui
 ROMFS			:=	../assets/romfs
 GFXBUILD		:=	$(ROMFS)/gfx
@@ -108,15 +105,12 @@ ICON_FLAGS		:=	nosavebackups,visible
 #---------------------------------------------------------------------------------
 ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
 
-CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O2 -mword-relocations \
+CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O2 -mword-relocations -flto \
 			-fomit-frame-pointer -ffunction-sections \
 			-Wno-implicit-fallthrough -Wno-unused-parameter \
 			$(ARCH) \
 			-DQUIRC_MAX_REGIONS=10000 \
 			-DUNIX_HOST \
-			-DVERSION_MAJOR=${VERSION_MAJOR} \
-			-DVERSION_MINOR=${VERSION_MINOR} \
-			-DVERSION_MICRO=${VERSION_MICRO} \
 			-DUNIQUE_ID=${UNIQUE_ID} \
 			-DCITRA_DEBUG=${CITRA_DEBUG} \
 			`sdl-config --cflags`
@@ -128,8 +122,8 @@ CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++17
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS	:= -lSDL_mixer -lSDL -lmpg123 -lvorbisidec -logg -lmikmod -lmad  \
-		   -lcurl -lmbedtls -lmbedx509 -lmbedcrypto \
+LIBS	:= -lSDL_mixer -lSDL -lmpg123 -lvorbisidec -logg -lmikmod -lmad \
+		   -lcurl -lmbedtls -lmbedx509 -lmbedcrypto -lbz2 \
 		   -lz -lcitro2d -lcitro3d -lctru -lm 
 
 CXX		:= `which ccache` $(CXX)
@@ -222,7 +216,7 @@ ifneq ($(ROMFS),)
 	export _3DSXFLAGS += --romfs=$(CURDIR)/$(ROMFS)
 endif
 
-.PHONY: all clean deps no-deps
+.PHONY: all clean deps no-deps format
 
 #---------------------------------------------------------------------------------
 all: deps no-deps
@@ -234,7 +228,7 @@ ifeq ($(OS),Windows_NT)
 else
 	@cd $(PACKER) && python3 packer.py
 endif
-	@cd $(PACKER) && mv out/*.bin out/*.json ../../assets/romfs/mg
+	@cd $(PACKER) && mv out/*.bin.bz2 out/*.json.bz2 ../../assets/romfs/mg
 ifeq ($(OS),Windows_NT)
 	@cd $(SCRIPTS) && py -3 genScripts.py
 else
@@ -251,12 +245,14 @@ clean:
 #---------------------------------------------------------------------------------
 no-deps:
 	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR)
-	@echo \#define GIT_REV \"$(GIT_REV)\" > $(BUILD)/revision.h
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile $(OUTPUT).3dsx
 	@bannertool makebanner -i "$(BANNER_IMAGE)" -a "$(BANNER_AUDIO)" -o $(BUILD)/banner.bnr
 	@bannertool makesmdh -s "$(APP_TITLE)" -l "$(APP_DESCRIPTION)" -p "$(APP_AUTHOR)" -i "$(APP_ICON)" -f "$(ICON_FLAGS)" -o $(BUILD)/icon.icn
 	@3dstool -ctf romfs "$(BUILD)/romfs.bin" --romfs-dir "$(ROMFS)"
 	@makerom -f cia -o $(OUTPUT).cia -target t -exefslogo -elf "$(OUTPUT).elf" -rsf "$(RSF_PATH)" -ver "$$(($(VERSION_MAJOR)*1024+$(VERSION_MINOR)*16+$(VERSION_MICRO)))" -banner "$(BUILD)/banner.bnr" -icon "$(BUILD)/icon.icn" -DAPP_TITLE="$(APP_TITLE)" -DAPP_PRODUCT_CODE="$(PRODUCT_CODE)" -DAPP_UNIQUE_ID="$(UNIQUE_ID)" -romfs "$(BUILD)/romfs.bin"
+#---------------------------------------------------------------------------------
+format:
+	clang-format -i -style=file $(foreach dir,$(FORMATSOURCES),$(wildcard $(dir)/*.c) $(wildcard $(dir)/*.cpp)) $(foreach dir,$(FORMATINCLUDES),$(wildcard $(dir)/*.h) $(wildcard $(dir)/*.hpp))
 else
 
 #---------------------------------------------------------------------------------

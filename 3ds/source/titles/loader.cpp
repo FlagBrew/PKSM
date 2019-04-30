@@ -1,28 +1,28 @@
 /*
-*   This file is part of PKSM
-*   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
-*
-*   This program is free software: you can redistribute it and/or modify
-*   it under the terms of the GNU General Public License as published by
-*   the Free Software Foundation, either version 3 of the License, or
-*   (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-*   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
-*       * Requiring preservation of specified reasonable legal notices or
-*         author attributions in that material or in the Appropriate Legal
-*         Notices displayed by works containing it.
-*       * Prohibiting misrepresentation of the origin of that material,
-*         or requiring that modified versions of such material be marked in
-*         reasonable ways as different from the original version.
-*/
+ *   This file is part of PKSM
+ *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
+ *       * Requiring preservation of specified reasonable legal notices or
+ *         author attributions in that material or in the Appropriate Legal
+ *         Notices displayed by works containing it.
+ *       * Prohibiting misrepresentation of the origin of that material,
+ *         or requiring that modified versions of such material be marked in
+ *         reasonable ways as different from the original version.
+ */
 
 #include "loader.hpp"
 #include "Configuration.hpp"
@@ -34,26 +34,26 @@
 static std::map<std::u16string, std::shared_ptr<Directory>> directories;
 
 static constexpr char langIds[8] = {
-    'E', //USA
-    'S', //Spain
-    'K', //Korea
-    'J', //Japan
-    'I', //Italy
-    'D', //Germany
-    'F', //France
-    'O'  //Europe? Definitely some sort of English
+    'E', // USA
+    'S', // Spain
+    'K', // Korea
+    'J', // Japan
+    'I', // Italy
+    'D', // Germany
+    'F', // France
+    'O'  // Europe? Definitely some sort of English
 };
 
 static constexpr std::string_view dsIds[9] = {
-    "ADA", //Diamond
-    "APA", //Pearl
-    "CPU", //Platinum
-    "IPK", //HeartGold
-    "IPG", //SoulSilver
-    "IRB", //Black
-    "IRA", //White
-    "IRE", //Black 2
-    "IRD"  //White 2
+    "ADA", // Diamond
+    "APA", // Pearl
+    "CPU", // Platinum
+    "IPK", // HeartGold
+    "IPG", // SoulSilver
+    "IRB", // Black
+    "IRA", // White
+    "IRE", // Black 2
+    "IRD"  // White 2
 };
 
 static std::string idToSaveName(const std::string& id)
@@ -109,7 +109,7 @@ static constexpr std::array<unsigned long long, 8> ctrTitleIds = {
     0x0004000000164800, // Sun
     0x0004000000175E00, // Moon
     0x00040000001B5000, // Ultrasun
-    0x00040000001B5100  // Ultramoon 
+    0x00040000001B5100  // Ultramoon
 };
 
 // title list
@@ -125,8 +125,8 @@ static std::shared_ptr<Title> loadedTitle;
 void TitleLoader::scanTitles(void)
 {
     Result res = 0;
-    u32 count = 0;
-    
+    u32 count  = 0;
+
     // clear title list if filled previously
     nandTitles.clear();
 
@@ -142,7 +142,7 @@ void TitleLoader::scanTitles(void)
     // get title list and check if a title matches the ids we want
     std::vector<u64> ids(count);
     u64* p = ids.data();
-    res = AM_GetTitleList(NULL, MEDIATYPE_SD, count, p);
+    res    = AM_GetTitleList(NULL, MEDIATYPE_SD, count, p);
     if (R_FAILED(res))
     {
         return;
@@ -162,9 +162,7 @@ void TitleLoader::scanTitles(void)
     }
 
     // sort the list alphabetically
-    std::sort(nandTitles.begin(), nandTitles.end(), [](std::shared_ptr<Title>& l, std::shared_ptr<Title>& r) {
-        return l->ID() < r->ID();
-    });
+    std::sort(nandTitles.begin(), nandTitles.end(), [](std::shared_ptr<Title>& l, std::shared_ptr<Title>& r) { return l->ID() < r->ID(); });
 }
 
 static std::vector<std::string> scanDirectoryFor(const std::u16string& dir, const std::string& id)
@@ -198,8 +196,8 @@ static std::vector<std::string> scanDirectoryFor(const std::u16string& dir, cons
                     {
                         if (subdir.folder(k))
                         {
-                            std::string savePath = StringUtils::UTF16toUTF8(dir + sSeparator + fileName + sSeparator + subdir.item(k)
-                                                      + sSeparator) + idToSaveName(id);
+                            std::string savePath =
+                                StringUtils::UTF16toUTF8(dir + sSeparator + fileName + sSeparator + subdir.item(k) + sSeparator) + idToSaveName(id);
                             if (io::exists(savePath))
                             {
                                 ret.push_back(savePath);
@@ -219,8 +217,8 @@ void TitleLoader::scanSaves(void)
     static const std::u16string chkpntDir = u"/3ds/Checkpoint/saves";
     for (size_t i = 0; i < ctrTitleIds.size(); i++)
     {
-        u32 uniqueId = (u32) ctrTitleIds[i] >> 8;
-        std::string id = StringUtils::format("0x%05X", uniqueId);
+        u32 uniqueId                   = (u32)ctrTitleIds[i] >> 8;
+        std::string id                 = StringUtils::format("0x%05X", uniqueId);
         std::vector<std::string> saves = scanDirectoryFor(chkpntDir, id);
         if (Configuration::getInstance().showBackups())
         {
@@ -245,7 +243,7 @@ void TitleLoader::scanSaves(void)
     {
         for (size_t lang = 0; lang < 8; lang++)
         {
-            std::string id = std::string(dsIds[game]) + langIds[lang];
+            std::string id                 = std::string(dsIds[game]) + langIds[lang];
             std::vector<std::string> saves = scanDirectoryFor(chkpntDir, id);
             if (Configuration::getInstance().showBackups())
             {
@@ -275,10 +273,10 @@ void TitleLoader::backupSave(const std::string& id)
         return;
     }
     Gui::waitFrame(i18n::localize("LOADER_BACKING_UP"));
-    char stringTime[15] = {0};
-    time_t unixTime = time(NULL);
-    struct tm* timeStruct = gmtime((const time_t *)&unixTime);
-    std::strftime(stringTime, 14,"%Y%m%d%H%M%S", timeStruct);
+    char stringTime[15]   = {0};
+    time_t unixTime       = time(NULL);
+    struct tm* timeStruct = gmtime((const time_t*)&unixTime);
+    std::strftime(stringTime, 14, "%Y%m%d%H%M%S", timeStruct);
     std::string path = "/3ds/PKSM/backups/" + id;
     mkdir(path.c_str(), 777);
     path += '/' + std::string(stringTime) + '/';
@@ -288,7 +286,10 @@ void TitleLoader::backupSave(const std::string& id)
     if (out.good())
     {
         out.write(TitleLoader::save->rawData(), TitleLoader::save->getLength());
-        sdSaves[id].push_back(path);
+        if (Configuration::getInstance().showBackups())
+        {
+            sdSaves[id].push_back(path);
+        }
     }
     else
     {
@@ -305,7 +306,7 @@ bool TitleLoader::load(u8* data, size_t size)
 
 bool TitleLoader::load(std::shared_ptr<Title> title)
 {
-    saveIsFile = false;
+    saveIsFile  = false;
     loadedTitle = title;
     if (title->mediaType() == FS_MediaType::MEDIATYPE_SD || title->cardType() == FS_CardType::CARD_CTR)
     {
@@ -344,10 +345,11 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
             return false;
         }
 
-        u8* data = new u8[cap];
+        u8* data       = new u8[cap];
         u32 sectorSize = (cap < 0x10000) ? cap : 0x10000;
 
-        for (u32 i = 0; i < cap / sectorSize; ++i) {
+        for (u32 i = 0; i < cap / sectorSize; ++i)
+        {
             SPIReadSaveData(title->SPICardType(), sectorSize * i, data + sectorSize * i, sectorSize);
         }
 
@@ -365,22 +367,22 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
 
 bool TitleLoader::load(std::shared_ptr<Title> title, const std::string& savePath)
 {
-    saveIsFile = true;
+    saveIsFile   = true;
     saveFileName = savePath;
-    loadedTitle = title;
+    loadedTitle  = title;
     FSStream in(Archive::sd(), StringUtils::UTF8toUTF16(savePath), FS_OPEN_READ);
     u32 size;
     u8* saveData = nullptr;
     if (in.good())
     {
-        size = in.size();
+        size     = in.size();
         saveData = new u8[size];
         in.read(saveData, size);
     }
     else
     {
         Gui::error(i18n::localize("BAD_OPEN_SAVE"), in.result());
-        loadedTitle = nullptr;
+        loadedTitle  = nullptr;
         saveFileName = "";
         in.close();
         return false;
@@ -392,7 +394,7 @@ bool TitleLoader::load(std::shared_ptr<Title> title, const std::string& savePath
     {
         Gui::warn(saveFileName, i18n::localize("SAVE_INVALID"));
         saveFileName = "";
-        loadedTitle = nullptr;
+        loadedTitle  = nullptr;
         return false;
     }
     if (Configuration::getInstance().autoBackup())
@@ -427,7 +429,8 @@ void TitleLoader::saveToTitle(bool ask)
     Result res;
     if (loadedTitle)
     {
-        if (TitleLoader::cardTitle == loadedTitle && (!ask || Gui::showChoiceMessage(i18n::localize("SAVE_OVERWRITE_1"), i18n::localize("SAVE_OVERWRITE_CARD"))))
+        if (TitleLoader::cardTitle == loadedTitle &&
+            (!ask || Gui::showChoiceMessage(i18n::localize("SAVE_OVERWRITE_1"), i18n::localize("SAVE_OVERWRITE_CARD"))))
         {
             auto& title = TitleLoader::cardTitle;
             if (title->cardType() == FS_CardType::CARD_CTR)
@@ -455,7 +458,7 @@ void TitleLoader::saveToTitle(bool ask)
             }
             else
             {
-                Result res = 0;
+                Result res   = 0;
                 u32 pageSize = SPIGetPageSize(title->SPICardType());
                 for (u32 i = 0; i < save->getLength() / pageSize; ++i)
                 {
@@ -473,7 +476,8 @@ void TitleLoader::saveToTitle(bool ask)
             // Just a linear search because it's a maximum of eight titles
             for (auto title : TitleLoader::nandTitles)
             {
-                if (title == loadedTitle && (!ask || Gui::showChoiceMessage(i18n::localize("SAVE_OVERWRITE_1"), i18n::localize("SAVE_OVERWRITE_INSTALL"))))
+                if (title == loadedTitle &&
+                    (!ask || Gui::showChoiceMessage(i18n::localize("SAVE_OVERWRITE_1"), i18n::localize("SAVE_OVERWRITE_INSTALL"))))
                 {
                     FS_Archive archive;
                     Archive::save(&archive, title->mediaType(), title->lowId(), title->highId());
@@ -525,7 +529,7 @@ void TitleLoader::saveChanges()
 void TitleLoader::exit()
 {
     nandTitles.clear();
-    cardTitle = nullptr;
+    cardTitle   = nullptr;
     loadedTitle = nullptr;
 }
 
@@ -540,10 +544,10 @@ bool TitleLoader::scanCard()
     {
         isScanning = true;
     }
-    bool ret = false;
-    cardTitle = nullptr;
+    bool ret   = false;
+    cardTitle  = nullptr;
     Result res = 0;
-    u32 count = 0;
+    u32 count  = 0;
     // check for cartridge and push at the beginning of the title list
     FS_CardType cardType;
     res = FSUSER_GetCardType(&cardType);
@@ -575,14 +579,14 @@ bool TitleLoader::scanCard()
             auto title = std::make_shared<Title>();
             if (title->load(0, MEDIATYPE_GAME_CARD, cardType))
             {
-                ret = true;
+                ret               = true;
                 CardType cardType = title->SPICardType();
-                u32 saveSize = SPIGetCapacity(cardType);
-                u32 sectorSize = (saveSize < 0x10000) ? saveSize : 0x10000;
-                u8* saveFile = new u8[saveSize];
-                for (u32 i = 0; i < saveSize/sectorSize; ++i)
+                u32 saveSize      = SPIGetCapacity(cardType);
+                u32 sectorSize    = (saveSize < 0x10000) ? saveSize : 0x10000;
+                u8* saveFile      = new u8[saveSize];
+                for (u32 i = 0; i < saveSize / sectorSize; ++i)
                 {
-                    res = SPIReadSaveData(cardType, sectorSize*i, saveFile + sectorSize*i, sectorSize);
+                    res = SPIReadSaveData(cardType, sectorSize * i, saveFile + sectorSize * i, sectorSize);
                     if (R_FAILED(res))
                     {
                         break;
@@ -613,7 +617,7 @@ bool TitleLoader::scanCard()
 bool TitleLoader::cardUpdate()
 {
 #if !CITRA_DEBUG
-    static bool first = true;
+    static bool first     = true;
     static bool oldCardIn = false;
     if (first)
     {
