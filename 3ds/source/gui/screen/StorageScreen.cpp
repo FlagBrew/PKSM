@@ -99,54 +99,54 @@ void StorageScreen::setBoxName(bool storage)
     {
         switch (TitleLoader::save->generation())
         {
-        case Generation::FOUR:
-        case Generation::FIVE:
-        {
-            static SwkbdState state;
-            static bool first = true;
-            if (first)
+            case Generation::FOUR:
+            case Generation::FIVE:
             {
-                swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 8);
-                first = false;
+                static SwkbdState state;
+                static bool first = true;
+                if (first)
+                {
+                    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 8);
+                    first = false;
+                }
+                swkbdSetHintText(&state, i18n::localize("BOX_NAME").c_str());
+                swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+                char input[18]  = {0};
+                SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
+                input[16]       = '\0';
+                input[17]       = '\0';
+                if (ret == SWKBD_BUTTON_CONFIRM)
+                {
+                    TitleLoader::save->boxName(boxBox, input);
+                }
             }
-            swkbdSetHintText(&state, i18n::localize("BOX_NAME").c_str());
-            swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
-            char input[18]  = {0};
-            SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-            input[16]       = '\0';
-            input[17]       = '\0';
-            if (ret == SWKBD_BUTTON_CONFIRM)
-            {
-                TitleLoader::save->boxName(boxBox, input);
-            }
-        }
-        break;
-        case Generation::SIX:
-        case Generation::SEVEN:
-        {
-            static SwkbdState state;
-            static bool first = true;
-            if (first)
-            {
-                swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 16);
-                first = false;
-            }
-            swkbdSetHintText(&state, i18n::localize("BOX_NAME").c_str());
-            swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
-            char input[34]  = {0};
-            SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-            input[32]       = '\0';
-            input[33]       = '\0';
-            if (ret == SWKBD_BUTTON_CONFIRM)
-            {
-                TitleLoader::save->boxName(boxBox, input);
-            }
-        }
-        break;
-        case Generation::LGPE:
-        case Generation::UNUSED:
-            // Do nothing
             break;
+            case Generation::SIX:
+            case Generation::SEVEN:
+            {
+                static SwkbdState state;
+                static bool first = true;
+                if (first)
+                {
+                    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 16);
+                    first = false;
+                }
+                swkbdSetHintText(&state, i18n::localize("BOX_NAME").c_str());
+                swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+                char input[34]  = {0};
+                SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
+                input[32]       = '\0';
+                input[33]       = '\0';
+                if (ret == SWKBD_BUTTON_CONFIRM)
+                {
+                    TitleLoader::save->boxName(boxBox, input);
+                }
+            }
+            break;
+            case Generation::LGPE:
+            case Generation::UNUSED:
+                // Do nothing
+                break;
         }
     }
 }
@@ -331,16 +331,16 @@ void StorageScreen::draw() const
             }
             switch (pickupMode)
             {
-            case SINGLE:
-            default:
-                Gui::sprite(ui_sheet_pointer_arrow_idx, 106, -4 + dy);
-                break;
-            case SWAP:
-                Gui::sprite(ui_sheet_pointer_arrow3_idx, 106, -4 + dy);
-                break;
-            case MULTI:
-                Gui::sprite(ui_sheet_pointer_arrow2_idx, 106, -4 + dy);
-                break;
+                case SINGLE:
+                default:
+                    Gui::sprite(ui_sheet_pointer_arrow_idx, 106, -4 + dy);
+                    break;
+                case SWAP:
+                    Gui::sprite(ui_sheet_pointer_arrow3_idx, 106, -4 + dy);
+                    break;
+                case MULTI:
+                    Gui::sprite(ui_sheet_pointer_arrow2_idx, 106, -4 + dy);
+                    break;
             }
         }
         else
@@ -363,16 +363,16 @@ void StorageScreen::draw() const
             }
             switch (pickupMode)
             {
-            case SINGLE:
-            default:
-                Gui::sprite(ui_sheet_pointer_arrow_idx, 21 + (tempIndex % 6) * 34, 30 + yMod);
-                break;
-            case SWAP:
-                Gui::sprite(ui_sheet_pointer_arrow3_idx, 21 + (tempIndex % 6) * 34, 30 + yMod);
-                break;
-            case MULTI:
-                Gui::sprite(ui_sheet_pointer_arrow2_idx, 21 + (tempIndex % 6) * 34, 30 + yMod);
-                break;
+                case SINGLE:
+                default:
+                    Gui::sprite(ui_sheet_pointer_arrow_idx, 21 + (tempIndex % 6) * 34, 30 + yMod);
+                    break;
+                case SWAP:
+                    Gui::sprite(ui_sheet_pointer_arrow3_idx, 21 + (tempIndex % 6) * 34, 30 + yMod);
+                    break;
+                case MULTI:
+                    Gui::sprite(ui_sheet_pointer_arrow2_idx, 21 + (tempIndex % 6) * 34, 30 + yMod);
+                    break;
             }
         }
     }
@@ -448,16 +448,16 @@ void StorageScreen::draw() const
             }
             switch (pickupMode)
             {
-            case SINGLE:
-            default:
-                Gui::sprite(ui_sheet_pointer_arrow_idx, 147, 2 + dy);
-                break;
-            case SWAP:
-                Gui::sprite(ui_sheet_pointer_arrow3_idx, 147, 2 + dy);
-                break;
-            case MULTI:
-                Gui::sprite(ui_sheet_pointer_arrow2_idx, 147, 2 + dy);
-                break;
+                case SINGLE:
+                default:
+                    Gui::sprite(ui_sheet_pointer_arrow_idx, 147, 2 + dy);
+                    break;
+                case SWAP:
+                    Gui::sprite(ui_sheet_pointer_arrow3_idx, 147, 2 + dy);
+                    break;
+                case MULTI:
+                    Gui::sprite(ui_sheet_pointer_arrow2_idx, 147, 2 + dy);
+                    break;
             }
         }
         else
@@ -480,16 +480,16 @@ void StorageScreen::draw() const
             }
             switch (pickupMode)
             {
-            case SINGLE:
-            default:
-                Gui::sprite(ui_sheet_pointer_arrow_idx, 62 + (tempIndex % 6) * 34, 51 + yMod);
-                break;
-            case SWAP:
-                Gui::sprite(ui_sheet_pointer_arrow3_idx, 62 + (tempIndex % 6) * 34, 51 + yMod);
-                break;
-            case MULTI:
-                Gui::sprite(ui_sheet_pointer_arrow2_idx, 62 + (tempIndex % 6) * 34, 51 + yMod);
-                break;
+                case SINGLE:
+                default:
+                    Gui::sprite(ui_sheet_pointer_arrow_idx, 62 + (tempIndex % 6) * 34, 51 + yMod);
+                    break;
+                case SWAP:
+                    Gui::sprite(ui_sheet_pointer_arrow3_idx, 62 + (tempIndex % 6) * 34, 51 + yMod);
+                    break;
+                case MULTI:
+                    Gui::sprite(ui_sheet_pointer_arrow2_idx, 62 + (tempIndex % 6) * 34, 51 + yMod);
+                    break;
             }
         }
     }
@@ -1715,15 +1715,15 @@ void StorageScreen::shareSend()
             Fetch::getinfo(CURLINFO_RESPONSE_CODE, &status_code);
             switch (status_code)
             {
-            case 200:
-                Gui::warn(i18n::localize("SHARE_DOWNLOAD_CODE"), writeData);
-                break;
-            case 502:
-                Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
-                break;
-            default:
-                Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
-                break;
+                case 200:
+                    Gui::warn(i18n::localize("SHARE_DOWNLOAD_CODE"), writeData);
+                    break;
+                case 502:
+                    Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
+                    break;
+                default:
+                    Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
+                    break;
             }
         }
         Fetch::exit();
@@ -1766,21 +1766,21 @@ void StorageScreen::shareReceive()
                 Fetch::getinfo(CURLINFO_RESPONSE_CODE, &status_code);
                 switch (status_code)
                 {
-                case 200:
-                    break;
-                case 400:
-                case 404:
-                    Gui::error(i18n::localize("SHARE_INVALID_CODE"), status_code);
-                    Fetch::exit();
-                    return;
-                case 502:
-                    Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
-                    Fetch::exit();
-                    return;
-                default:
-                    Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
-                    Fetch::exit();
-                    return;
+                    case 200:
+                        break;
+                    case 400:
+                    case 404:
+                        Gui::error(i18n::localize("SHARE_INVALID_CODE"), status_code);
+                        Fetch::exit();
+                        return;
+                    case 502:
+                        Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
+                        Fetch::exit();
+                        return;
+                    default:
+                        Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
+                        Fetch::exit();
+                        return;
                 }
                 size_t outSize;
                 u8* retData = base64_decode(retB64Data.data(), retB64Data.size(), &outSize);
@@ -1788,19 +1788,19 @@ void StorageScreen::shareReceive()
                 size_t targetLength = 0;
                 switch (gen)
                 {
-                case Generation::FOUR:
-                case Generation::FIVE:
-                    targetLength = 138;
-                    break;
-                case Generation::SIX:
-                case Generation::SEVEN:
-                    targetLength = 234;
-                    break;
-                case Generation::LGPE:
-                    targetLength = 261;
-                    break;
-                default:
-                    break;
+                    case Generation::FOUR:
+                    case Generation::FIVE:
+                        targetLength = 138;
+                        break;
+                    case Generation::SIX:
+                    case Generation::SEVEN:
+                        targetLength = 234;
+                        break;
+                    case Generation::LGPE:
+                        targetLength = 261;
+                        break;
+                    default:
+                        break;
                 }
                 if (outSize != targetLength)
                 {

@@ -265,27 +265,27 @@ static void camThread(void* arg)
         svcWaitSynchronizationN(&index, events, 3, false, U64_MAX);
         switch (index)
         {
-        case 0:
-            cancel = true;
-            break;
-        case 1:
-            svcCloseHandle(events[1]);
-            events[1] = 0;
-            svcWaitSynchronization(data->mutex, U64_MAX);
-            memcpy(data->camera_buffer, buffer, 400 * 240 * sizeof(u16));
-            GSPGPU_FlushDataCache(data->camera_buffer, 400 * 240 * sizeof(u16));
-            svcReleaseMutex(data->mutex);
-            CAMU_SetReceiving(&events[1], buffer, PORT_CAM1, 400 * 240 * sizeof(u16), transferUnit);
-            break;
-        case 2:
-            svcCloseHandle(events[1]);
-            events[1] = 0;
-            CAMU_ClearBuffer(PORT_CAM1);
-            CAMU_SetReceiving(&events[1], buffer, PORT_CAM1, 400 * 240 * sizeof(u16), transferUnit);
-            CAMU_StartCapture(PORT_CAM1);
-            break;
-        default:
-            break;
+            case 0:
+                cancel = true;
+                break;
+            case 1:
+                svcCloseHandle(events[1]);
+                events[1] = 0;
+                svcWaitSynchronization(data->mutex, U64_MAX);
+                memcpy(data->camera_buffer, buffer, 400 * 240 * sizeof(u16));
+                GSPGPU_FlushDataCache(data->camera_buffer, 400 * 240 * sizeof(u16));
+                svcReleaseMutex(data->mutex);
+                CAMU_SetReceiving(&events[1], buffer, PORT_CAM1, 400 * 240 * sizeof(u16), transferUnit);
+                break;
+            case 2:
+                svcCloseHandle(events[1]);
+                events[1] = 0;
+                CAMU_ClearBuffer(PORT_CAM1);
+                CAMU_SetReceiving(&events[1], buffer, PORT_CAM1, 400 * 240 * sizeof(u16), transferUnit);
+                CAMU_StartCapture(PORT_CAM1);
+                break;
+            default:
+                break;
         }
     }
 

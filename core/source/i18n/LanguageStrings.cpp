@@ -48,30 +48,30 @@ std::string LanguageStrings::folder(Language lang) const
 {
     switch (lang)
     {
-    case Language::EN:
-        return "en";
-    case Language::ES:
-        return "es";
-    case Language::DE:
-        return "de";
-    case Language::FR:
-        return "fr";
-    case Language::IT:
-        return "it";
-    case Language::JP:
-        return "jp";
-    case Language::KO:
-        return "ko";
-    case Language::NL:
-        return "nl";
-    case Language::PT:
-        return "pt";
-    case Language::ZH:
-        return "zh";
-    case Language::TW:
-        return "tw";
-    default:
-        return "en";
+        case Language::EN:
+            return "en";
+        case Language::ES:
+            return "es";
+        case Language::DE:
+            return "de";
+        case Language::FR:
+            return "fr";
+        case Language::IT:
+            return "it";
+        case Language::JP:
+            return "jp";
+        case Language::KO:
+            return "ko";
+        case Language::NL:
+            return "nl";
+        case Language::PT:
+            return "pt";
+        case Language::ZH:
+            return "zh";
+        case Language::TW:
+            return "tw";
+        default:
+            return "en";
     }
 
     return "en";
@@ -291,38 +291,38 @@ const std::string& LanguageStrings::location(u16 v, Generation generation) const
     std::map<u16, std::string>::const_iterator i;
     switch (generation)
     {
-    case Generation::FOUR:
-        if ((i = locations4.find(v)) != locations4.end())
-        {
-            return i->second;
-        }
-        break;
-    case Generation::FIVE:
-        if ((i = locations5.find(v)) != locations5.end())
-        {
-            return i->second;
-        }
-        break;
-    case Generation::SIX:
-        if ((i = locations6.find(v)) != locations6.end())
-        {
-            return i->second;
-        }
-        break;
-    case Generation::SEVEN:
-        if ((i = locations7.find(v)) != locations7.end())
-        {
-            return i->second;
-        }
-        break;
-    case Generation::LGPE:
-        if ((i = locationsLGPE.find(v)) != locationsLGPE.end())
-        {
-            return i->second;
-        }
-        break;
-    default:
-        break;
+        case Generation::FOUR:
+            if ((i = locations4.find(v)) != locations4.end())
+            {
+                return i->second;
+            }
+            break;
+        case Generation::FIVE:
+            if ((i = locations5.find(v)) != locations5.end())
+            {
+                return i->second;
+            }
+            break;
+        case Generation::SIX:
+            if ((i = locations6.find(v)) != locations6.end())
+            {
+                return i->second;
+            }
+            break;
+        case Generation::SEVEN:
+            if ((i = locations7.find(v)) != locations7.end())
+            {
+                return i->second;
+            }
+            break;
+        case Generation::LGPE:
+            if ((i = locationsLGPE.find(v)) != locationsLGPE.end())
+            {
+                return i->second;
+            }
+            break;
+        default:
+            break;
     }
     return localize("INVALID_LOCATION");
 }
@@ -341,18 +341,18 @@ const std::map<u16, std::string>& LanguageStrings::locations(Generation g) const
     static std::map<u16, std::string> emptyMap;
     switch (g)
     {
-    case Generation::FOUR:
-        return locations4;
-    case Generation::FIVE:
-        return locations5;
-    case Generation::SIX:
-        return locations6;
-    case Generation::SEVEN:
-        return locations7;
-    case Generation::LGPE:
-        return locationsLGPE;
-    default:
-        return emptyMap;
+        case Generation::FOUR:
+            return locations4;
+        case Generation::FIVE:
+            return locations5;
+        case Generation::SIX:
+            return locations6;
+        case Generation::SEVEN:
+            return locations7;
+        case Generation::LGPE:
+            return locationsLGPE;
+        default:
+            return emptyMap;
     }
 }
 

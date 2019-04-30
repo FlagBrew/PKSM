@@ -347,20 +347,20 @@ bool InjectSelectorScreen::doQR()
     QRMode initMode;
     switch (TitleLoader::save->generation())
     {
-    case Generation::FOUR:
-        initMode = WCX4;
-        break;
-    case Generation::FIVE:
-        initMode = WCX5;
-        break;
-    case Generation::SIX:
-        initMode = WCX6;
-        break;
-    case Generation::SEVEN:
-        initMode = WCX7;
-        break;
-    default:
-        return false;
+        case Generation::FOUR:
+            initMode = WCX4;
+            break;
+        case Generation::FIVE:
+            initMode = WCX5;
+            break;
+        case Generation::SIX:
+            initMode = WCX6;
+            break;
+        case Generation::SEVEN:
+            initMode = WCX7;
+            break;
+        default:
+            return false;
     }
 
     QRScanner::init(initMode, data);
@@ -371,20 +371,20 @@ bool InjectSelectorScreen::doQR()
 
         switch (TitleLoader::save->generation())
         {
-        case Generation::FOUR:
-            wcx = std::make_unique<PGT>(data);
-            break;
-        case Generation::FIVE:
-            wcx = std::make_unique<PGF>(data);
-            break;
-        case Generation::SIX:
-            wcx = std::make_unique<WC6>(data);
-            break;
-        case Generation::SEVEN:
-            wcx = std::make_unique<WC7>(data);
-            break;
-        default:
-            break;
+            case Generation::FOUR:
+                wcx = std::make_unique<PGT>(data);
+                break;
+            case Generation::FIVE:
+                wcx = std::make_unique<PGF>(data);
+                break;
+            case Generation::SIX:
+                wcx = std::make_unique<WC6>(data);
+                break;
+            case Generation::SEVEN:
+                wcx = std::make_unique<WC7>(data);
+                break;
+            default:
+                break;
         }
 
         if (wcx)
@@ -416,24 +416,24 @@ void InjectSelectorScreen::dumpCard(void) const
     path += " - " + std::to_string(wc->ID()) + " - " + wc->title();
     switch (wc->generation())
     {
-    case Generation::FOUR:
-        path += ".pgt";
-        break;
-    case Generation::FIVE:
-        path += ".pgf";
-        break;
-    case Generation::SIX:
-        path += ".wc6";
-        break;
-    case Generation::SEVEN:
-        path += ".wc7";
-        break;
-    case Generation::LGPE:
-        path += ".wb7";
-        break;
-    case Generation::UNUSED:
-        Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS"));
-        return;
+        case Generation::FOUR:
+            path += ".pgt";
+            break;
+        case Generation::FIVE:
+            path += ".pgf";
+            break;
+        case Generation::SIX:
+            path += ".wc6";
+            break;
+        case Generation::SEVEN:
+            path += ".wc7";
+            break;
+        case Generation::LGPE:
+            path += ".wb7";
+            break;
+        case Generation::UNUSED:
+            Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS"));
+            return;
     }
     FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, wc->size());
     if (out.good())

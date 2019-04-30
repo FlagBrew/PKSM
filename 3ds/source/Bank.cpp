@@ -253,56 +253,56 @@ std::shared_ptr<PKX> Bank::pkm(int box, int slot) const
     bool party      = false;
     switch (bank[index].gen)
     {
-    case Generation::FOUR:
-        for (int i = 260; i > 136; i--)
-        {
-            if (bank[index].data[i] != 0xFF)
+        case Generation::FOUR:
+            for (int i = 260; i > 136; i--)
             {
-                party = true;
-                break;
+                if (bank[index].data[i] != 0xFF)
+                {
+                    party = true;
+                    break;
+                }
             }
-        }
-        return std::make_shared<PK4>(bank[index].data, false, party);
+            return std::make_shared<PK4>(bank[index].data, false, party);
 
-    case Generation::FIVE:
-        for (int i = 260; i > 136; i--)
-        {
-            if (bank[index].data[i] != 0xFF)
+        case Generation::FIVE:
+            for (int i = 260; i > 136; i--)
             {
-                party = true;
-                break;
+                if (bank[index].data[i] != 0xFF)
+                {
+                    party = true;
+                    break;
+                }
             }
-        }
-        return std::make_shared<PK5>(bank[index].data, false, party);
+            return std::make_shared<PK5>(bank[index].data, false, party);
 
-    case Generation::SIX:
-        for (int i = 260; i > 232; i--)
-        {
-            if (bank[index].data[i] != 0xFF)
+        case Generation::SIX:
+            for (int i = 260; i > 232; i--)
             {
-                party = true;
-                break;
+                if (bank[index].data[i] != 0xFF)
+                {
+                    party = true;
+                    break;
+                }
             }
-        }
-        return std::make_shared<PK6>(bank[index].data, false, party);
+            return std::make_shared<PK6>(bank[index].data, false, party);
 
-    case Generation::SEVEN:
-        for (int i = 260; i > 232; i--)
-        {
-            if (bank[index].data[i] != 0xFF)
+        case Generation::SEVEN:
+            for (int i = 260; i > 232; i--)
             {
-                party = true;
-                break;
+                if (bank[index].data[i] != 0xFF)
+                {
+                    party = true;
+                    break;
+                }
             }
-        }
-        return std::make_shared<PK7>(bank[index].data, false, party);
+            return std::make_shared<PK7>(bank[index].data, false, party);
 
-    case Generation::LGPE:
-        return std::make_shared<PB7>(bank[index].data, false);
+        case Generation::LGPE:
+            return std::make_shared<PB7>(bank[index].data, false);
 
-    case Generation::UNUSED:
-    default:
-        return std::make_shared<PK7>();
+        case Generation::UNUSED:
+        default:
+            return std::make_shared<PK7>();
     }
 }
 

@@ -169,42 +169,42 @@ Result SPIWriteSaveData(CardType type, u32 offset, void* data, u32 size)
     {
         switch (type)
         {
-        case EEPROM_512B:
-            cmdSize = 2;
-            cmd[0]  = (pos >= 0x100) ? SPI_512B_EEPROM_CMD_WRHI : SPI_512B_EEPROM_CMD_WRLO;
-            cmd[1]  = (u8)pos;
-            break;
-        case EEPROM_8KB:
-        case EEPROM_64KB:
-            cmdSize = 3;
-            cmd[0]  = SPI_EEPROM_CMD_WRITE;
-            cmd[1]  = (u8)(pos >> 8);
-            cmd[2]  = (u8)pos;
-            break;
-        case EEPROM_128KB:
-            cmdSize = 4;
-            cmd[0]  = SPI_EEPROM_CMD_WRITE;
-            cmd[1]  = (u8)(pos >> 16);
-            cmd[2]  = (u8)(pos >> 8);
-            cmd[3]  = (u8)pos;
-            break;
-        case FLASH_256KB_1:
-        case FLASH_256KB_2:
-        case FLASH_512KB_1:
-        case FLASH_512KB_2:
-        case FLASH_1MB:
-        case FLASH_512KB_INFRARED:
-        case FLASH_256KB_INFRARED:
-            cmdSize = 4;
-            cmd[0]  = SPI_FLASH_CMD_PW;
-            cmd[1]  = (u8)(pos >> 16);
-            cmd[2]  = (u8)(pos >> 8);
-            cmd[3]  = (u8)pos;
-            break;
-        case FLASH_8MB:
-            return 0xC8E13404; // writing is unsupported (so is reading? need to test)
-        default:
-            return 0; // never happens
+            case EEPROM_512B:
+                cmdSize = 2;
+                cmd[0]  = (pos >= 0x100) ? SPI_512B_EEPROM_CMD_WRHI : SPI_512B_EEPROM_CMD_WRLO;
+                cmd[1]  = (u8)pos;
+                break;
+            case EEPROM_8KB:
+            case EEPROM_64KB:
+                cmdSize = 3;
+                cmd[0]  = SPI_EEPROM_CMD_WRITE;
+                cmd[1]  = (u8)(pos >> 8);
+                cmd[2]  = (u8)pos;
+                break;
+            case EEPROM_128KB:
+                cmdSize = 4;
+                cmd[0]  = SPI_EEPROM_CMD_WRITE;
+                cmd[1]  = (u8)(pos >> 16);
+                cmd[2]  = (u8)(pos >> 8);
+                cmd[3]  = (u8)pos;
+                break;
+            case FLASH_256KB_1:
+            case FLASH_256KB_2:
+            case FLASH_512KB_1:
+            case FLASH_512KB_2:
+            case FLASH_1MB:
+            case FLASH_512KB_INFRARED:
+            case FLASH_256KB_INFRARED:
+                cmdSize = 4;
+                cmd[0]  = SPI_FLASH_CMD_PW;
+                cmd[1]  = (u8)(pos >> 16);
+                cmd[2]  = (u8)(pos >> 8);
+                cmd[3]  = (u8)pos;
+                break;
+            case FLASH_8MB:
+                return 0xC8E13404; // writing is unsupported (so is reading? need to test)
+            default:
+                return 0; // never happens
         }
 
         u32 remaining = end - pos;
@@ -278,36 +278,36 @@ Result SPIReadSaveData(CardType type, u32 offset, void* data, u32 size)
     u32 pos = offset;
     switch (type)
     {
-    case EEPROM_512B:
-        return _SPIReadSaveData_512B_impl(offset, data, size);
-        break;
-    case EEPROM_8KB:
-    case EEPROM_64KB:
-        cmdSize = 3;
-        cmd[1]  = (u8)(pos >> 8);
-        cmd[2]  = (u8)pos;
-        break;
-    case EEPROM_128KB:
-        cmdSize = 4;
-        cmd[1]  = (u8)(pos >> 16);
-        cmd[2]  = (u8)(pos >> 8);
-        cmd[3]  = (u8)pos;
-        break;
-    case FLASH_256KB_1:
-    case FLASH_256KB_2:
-    case FLASH_512KB_1:
-    case FLASH_512KB_2:
-    case FLASH_1MB:
-    case FLASH_8MB:
-    case FLASH_512KB_INFRARED:
-    case FLASH_256KB_INFRARED:
-        cmdSize = 4;
-        cmd[1]  = (u8)(pos >> 16);
-        cmd[2]  = (u8)(pos >> 8);
-        cmd[3]  = (u8)pos;
-        break;
-    default:
-        return 0; // never happens
+        case EEPROM_512B:
+            return _SPIReadSaveData_512B_impl(offset, data, size);
+            break;
+        case EEPROM_8KB:
+        case EEPROM_64KB:
+            cmdSize = 3;
+            cmd[1]  = (u8)(pos >> 8);
+            cmd[2]  = (u8)pos;
+            break;
+        case EEPROM_128KB:
+            cmdSize = 4;
+            cmd[1]  = (u8)(pos >> 16);
+            cmd[2]  = (u8)(pos >> 8);
+            cmd[3]  = (u8)pos;
+            break;
+        case FLASH_256KB_1:
+        case FLASH_256KB_2:
+        case FLASH_512KB_1:
+        case FLASH_512KB_2:
+        case FLASH_1MB:
+        case FLASH_8MB:
+        case FLASH_512KB_INFRARED:
+        case FLASH_256KB_INFRARED:
+            cmdSize = 4;
+            cmd[1]  = (u8)(pos >> 16);
+            cmd[2]  = (u8)(pos >> 8);
+            cmd[3]  = (u8)pos;
+            break;
+        default:
+            return 0; // never happens
     }
 
     return SPIWriteRead(type, cmd, cmdSize, data, size, NULL, 0);

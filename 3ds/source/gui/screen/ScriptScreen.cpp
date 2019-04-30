@@ -43,37 +43,37 @@ namespace
     {
         switch (version)
         {
-        case 7:
-        case 8:
-            return "/scripts/hgss";
-        case 10:
-        case 11:
-            return "/scripts/dp";
-        case 12:
-            return "/scripts/pt";
-        case 20:
-        case 21:
-            return "/scripts/bw";
-        case 22:
-        case 23:
-            return "/scripts/b2w2";
-        case 24:
-        case 25:
-            return "/scripts/xy";
-        case 26:
-        case 27:
-            return "/scripts/oras";
-        case 30:
-        case 31:
-            return "/scripts/sm";
-        case 32:
-        case 33:
-            return "/scripts/usum";
-        case 42:
-        case 43:
-            return "/scripts/lgpe";
-        default:
-            return "/scripts/" + std::to_string(version);
+            case 7:
+            case 8:
+                return "/scripts/hgss";
+            case 10:
+            case 11:
+                return "/scripts/dp";
+            case 12:
+                return "/scripts/pt";
+            case 20:
+            case 21:
+                return "/scripts/bw";
+            case 22:
+            case 23:
+                return "/scripts/b2w2";
+            case 24:
+            case 25:
+                return "/scripts/xy";
+            case 26:
+            case 27:
+                return "/scripts/oras";
+            case 30:
+            case 31:
+                return "/scripts/sm";
+            case 32:
+            case 33:
+                return "/scripts/usum";
+            case 42:
+            case 43:
+                return "/scripts/lgpe";
+            default:
+                return "/scripts/" + std::to_string(version);
         }
     }
 
@@ -316,20 +316,20 @@ void ScriptScreen::applyScript()
             u32 gbo = 0;
             switch (TitleLoader::save->version())
             {
-            case 7:
-            case 8:
-                sbo = ((SavHGSS*)TitleLoader::save.get())->getSBO();
-                gbo = ((SavHGSS*)TitleLoader::save.get())->getGBO();
-                break;
-            case 10:
-            case 11:
-                sbo = ((SavDP*)TitleLoader::save.get())->getSBO();
-                gbo = ((SavDP*)TitleLoader::save.get())->getGBO();
-                break;
-            case 12:
-                sbo = ((SavPT*)TitleLoader::save.get())->getSBO();
-                gbo = ((SavPT*)TitleLoader::save.get())->getGBO();
-                break;
+                case 7:
+                case 8:
+                    sbo = ((SavHGSS*)TitleLoader::save.get())->getSBO();
+                    gbo = ((SavHGSS*)TitleLoader::save.get())->getGBO();
+                    break;
+                case 10:
+                case 11:
+                    sbo = ((SavDP*)TitleLoader::save.get())->getSBO();
+                    gbo = ((SavDP*)TitleLoader::save.get())->getGBO();
+                    break;
+                case 12:
+                    sbo = ((SavPT*)TitleLoader::save.get())->getSBO();
+                    gbo = ((SavPT*)TitleLoader::save.get())->getGBO();
+                    break;
             }
             if (TitleLoader::save->boxOffset(0, 0) - sbo <= offset && TitleLoader::save->boxOffset(TitleLoader::save->boxes, 0) - sbo >= offset)
             {

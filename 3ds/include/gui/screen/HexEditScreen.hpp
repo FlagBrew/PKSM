@@ -148,31 +148,31 @@ private:
         {
             switch (key)
             {
-            case ui_sheet_emulated_toggle_gray_idx:
-                key = ui_sheet_emulated_toggle_blue_idx;
-                break;
-            case ui_sheet_emulated_toggle_blue_idx:
-                key = ui_sheet_emulated_toggle_red_idx;
-                break;
-            case ui_sheet_emulated_toggle_red_idx:
-            default:
-                key = ui_sheet_emulated_toggle_gray_idx;
-                break;
+                case ui_sheet_emulated_toggle_gray_idx:
+                    key = ui_sheet_emulated_toggle_blue_idx;
+                    break;
+                case ui_sheet_emulated_toggle_blue_idx:
+                    key = ui_sheet_emulated_toggle_red_idx;
+                    break;
+                case ui_sheet_emulated_toggle_red_idx:
+                default:
+                    key = ui_sheet_emulated_toggle_gray_idx;
+                    break;
             }
         }
         void setColor(u8 val)
         {
             switch (val)
             {
-            case 0:
-            default:
-                key = ui_sheet_emulated_toggle_gray_idx;
-                break;
-            case 1:
-                key = ui_sheet_emulated_toggle_blue_idx;
-                break;
-            case 2:
-                key = ui_sheet_emulated_toggle_red_idx;
+                case 0:
+                default:
+                    key = ui_sheet_emulated_toggle_gray_idx;
+                    break;
+                case 1:
+                    key = ui_sheet_emulated_toggle_blue_idx;
+                    break;
+                case 2:
+                    key = ui_sheet_emulated_toggle_red_idx;
             }
         }
         u8 bit() { return bitVal; }

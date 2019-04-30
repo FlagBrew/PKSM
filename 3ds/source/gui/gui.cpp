@@ -172,36 +172,36 @@ void Gui::dynamicText(const std::string& str, int x, int y, float scaleX, float 
 
     switch (positionX)
     {
-    case TextPosX::LEFT:
-        for (size_t i = 0; i < print.size(); i++)
-        {
-            printX.push_back(x);
-        }
-        break;
-    case TextPosX::CENTER:
-        for (size_t i = 0; i < print.size(); i++)
-        {
-            printX.push_back(x - (ceilf(StringUtils::textWidth(print[i], scaleX)) / 2));
-        }
-        break;
-    case TextPosX::RIGHT:
-        for (size_t i = 0; i < print.size(); i++)
-        {
-            printX.push_back(x - (ceilf(StringUtils::textWidth(print[i], scaleX))));
-        }
-        break;
+        case TextPosX::LEFT:
+            for (size_t i = 0; i < print.size(); i++)
+            {
+                printX.push_back(x);
+            }
+            break;
+        case TextPosX::CENTER:
+            for (size_t i = 0; i < print.size(); i++)
+            {
+                printX.push_back(x - (ceilf(StringUtils::textWidth(print[i], scaleX)) / 2));
+            }
+            break;
+        case TextPosX::RIGHT:
+            for (size_t i = 0; i < print.size(); i++)
+            {
+                printX.push_back(x - (ceilf(StringUtils::textWidth(print[i], scaleX))));
+            }
+            break;
     }
 
     switch (positionY)
     {
-    case TextPosY::TOP:
-        break;
-    case TextPosY::CENTER:
-        y -= ceilf(0.5f * lineMod * (float)print.size());
-        break;
-    case TextPosY::BOTTOM:
-        y -= lineMod * (float)print.size();
-        break;
+        case TextPosY::TOP:
+            break;
+        case TextPosY::CENTER:
+            y -= ceilf(0.5f * lineMod * (float)print.size());
+            break;
+        case TextPosY::BOTTOM:
+            y -= lineMod * (float)print.size();
+            break;
     }
 
     for (size_t i = 0; i < print.size(); i++)
@@ -260,36 +260,36 @@ void Gui::staticText(const std::string& strKey, int x, int y, float scaleX, floa
 
     switch (positionX)
     {
-    case TextPosX::LEFT:
-        for (size_t i = 0; i < print.size(); i++)
-        {
-            printX.push_back(x);
-        }
-        break;
-    case TextPosX::CENTER:
-        for (size_t i = 0; i < print.size(); i++)
-        {
-            printX.push_back(x - (ceilf(StringUtils::textWidth(print[i], scaleX)) / 2));
-        }
-        break;
-    case TextPosX::RIGHT:
-        for (size_t i = 0; i < print.size(); i++)
-        {
-            printX.push_back(x - (ceilf(StringUtils::textWidth(print[i], scaleX))));
-        }
-        break;
+        case TextPosX::LEFT:
+            for (size_t i = 0; i < print.size(); i++)
+            {
+                printX.push_back(x);
+            }
+            break;
+        case TextPosX::CENTER:
+            for (size_t i = 0; i < print.size(); i++)
+            {
+                printX.push_back(x - (ceilf(StringUtils::textWidth(print[i], scaleX)) / 2));
+            }
+            break;
+        case TextPosX::RIGHT:
+            for (size_t i = 0; i < print.size(); i++)
+            {
+                printX.push_back(x - (ceilf(StringUtils::textWidth(print[i], scaleX))));
+            }
+            break;
     }
 
     switch (positionY)
     {
-    case TextPosY::TOP:
-        break;
-    case TextPosY::CENTER:
-        y -= ceilf(0.5f * lineMod * (float)print.size());
-        break;
-    case TextPosY::BOTTOM:
-        y -= lineMod * (float)print.size();
-        break;
+        case TextPosY::TOP:
+            break;
+        case TextPosY::CENTER:
+            y -= ceilf(0.5f * lineMod * (float)print.size());
+            break;
+        case TextPosY::BOTTOM:
+            y -= lineMod * (float)print.size();
+            break;
     }
 
     for (size_t i = 0; i < print.size(); i++)
@@ -809,39 +809,39 @@ void Gui::format(const PKX& pkm, int x, int y)
 {
     switch (pkm.generation())
     {
-        // case 1: // sapphire
-        // case 2: // ruby
-        // case 3: // emerald
-        // case 4: // fire red
-        // case 5: // leaf green
-        // case 15: // colosseum/XD
-        // 	Gui::sprite(ui_sheet_icon_generation_3_idx, x, y);
-        //     break;
-    case Generation::FOUR:
-        Gui::sprite(ui_sheet_icon_generation_4_idx, x, y);
-        break;
-    case Generation::FIVE:
-        Gui::sprite(ui_sheet_icon_generation_5_idx, x, y);
-        break;
-    case Generation::SIX:
-        Gui::sprite(ui_sheet_icon_generation_6_idx, x, y);
-        break;
-    case Generation::SEVEN:
-        Gui::sprite(ui_sheet_icon_generation_7_idx, x, y);
-        break;
-    case Generation::LGPE:
-        Gui::sprite(ui_sheet_icon_generation_go_idx, x, y);
-        break;
-        // case 35: // rd
-        // case 36: // gn
-        // case 37: // bu
-        // case 38: // yw
-        // case 39: // gd
-        // case 40: // sv
-        // 	Gui::sprite(ui_sheet_icon_generation_gb_idx, x, y);
-        //     break;
-    default:
-        break;
+            // case 1: // sapphire
+            // case 2: // ruby
+            // case 3: // emerald
+            // case 4: // fire red
+            // case 5: // leaf green
+            // case 15: // colosseum/XD
+            // 	Gui::sprite(ui_sheet_icon_generation_3_idx, x, y);
+            //     break;
+        case Generation::FOUR:
+            Gui::sprite(ui_sheet_icon_generation_4_idx, x, y);
+            break;
+        case Generation::FIVE:
+            Gui::sprite(ui_sheet_icon_generation_5_idx, x, y);
+            break;
+        case Generation::SIX:
+            Gui::sprite(ui_sheet_icon_generation_6_idx, x, y);
+            break;
+        case Generation::SEVEN:
+            Gui::sprite(ui_sheet_icon_generation_7_idx, x, y);
+            break;
+        case Generation::LGPE:
+            Gui::sprite(ui_sheet_icon_generation_go_idx, x, y);
+            break;
+            // case 35: // rd
+            // case 36: // gn
+            // case 37: // bu
+            // case 38: // yw
+            // case 39: // gd
+            // case 40: // sv
+            // 	Gui::sprite(ui_sheet_icon_generation_gb_idx, x, y);
+            //     break;
+        default:
+            break;
     }
 }
 
@@ -849,53 +849,53 @@ void Gui::generation(const PKX& pkm, int x, int y)
 {
     switch (pkm.version())
     {
-    case 1:  // sapphire
-    case 2:  // ruby
-    case 3:  // emerald
-    case 4:  // fire red
-    case 5:  // leaf green
-    case 15: // colosseum/XD
-        Gui::sprite(ui_sheet_icon_generation_3_idx, x, y);
-        break;
-    case 10: // diamond
-    case 11: // pearl
-    case 12: // platinum
-    case 7:  // heart gold
-    case 8:  // soul silver
-        Gui::sprite(ui_sheet_icon_generation_4_idx, x, y);
-        break;
-    case 20: // white
-    case 21: // black
-    case 22: // white2
-    case 23: // black2
-        Gui::sprite(ui_sheet_icon_generation_5_idx, x, y);
-        break;
-    case 24: // x
-    case 25: // y
-    case 26: // as
-    case 27: // or
-        Gui::sprite(ui_sheet_icon_generation_6_idx, x, y);
-        break;
-    case 30: // sun
-    case 31: // moon
-    case 32: // us
-    case 33: // um
-        Gui::sprite(ui_sheet_icon_generation_7_idx, x, y);
-        break;
-    case 34: // go
-        Gui::sprite(ui_sheet_icon_generation_go_idx, x, y);
-        break;
-    case 35: // rd
-    case 36: // gn
-    case 37: // bu
-    case 38: // yw
-    case 39: // gd
-    case 40: // sv
-    case 41: // cr
-        Gui::sprite(ui_sheet_icon_generation_gb_idx, x, y);
-        break;
-    default:
-        break;
+        case 1:  // sapphire
+        case 2:  // ruby
+        case 3:  // emerald
+        case 4:  // fire red
+        case 5:  // leaf green
+        case 15: // colosseum/XD
+            Gui::sprite(ui_sheet_icon_generation_3_idx, x, y);
+            break;
+        case 10: // diamond
+        case 11: // pearl
+        case 12: // platinum
+        case 7:  // heart gold
+        case 8:  // soul silver
+            Gui::sprite(ui_sheet_icon_generation_4_idx, x, y);
+            break;
+        case 20: // white
+        case 21: // black
+        case 22: // white2
+        case 23: // black2
+            Gui::sprite(ui_sheet_icon_generation_5_idx, x, y);
+            break;
+        case 24: // x
+        case 25: // y
+        case 26: // as
+        case 27: // or
+            Gui::sprite(ui_sheet_icon_generation_6_idx, x, y);
+            break;
+        case 30: // sun
+        case 31: // moon
+        case 32: // us
+        case 33: // um
+            Gui::sprite(ui_sheet_icon_generation_7_idx, x, y);
+            break;
+        case 34: // go
+            Gui::sprite(ui_sheet_icon_generation_go_idx, x, y);
+            break;
+        case 35: // rd
+        case 36: // gn
+        case 37: // bu
+        case 38: // yw
+        case 39: // gd
+        case 40: // sv
+        case 41: // cr
+            Gui::sprite(ui_sheet_icon_generation_gb_idx, x, y);
+            break;
+        default:
+            break;
     }
 }
 
@@ -1069,237 +1069,237 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
 
         switch (species)
         {
-        default:
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint, scale, scale);
-            return;
-        case 801:
-            imageOffsetFromBack += 3;
-        case 800:
-            imageOffsetFromBack += 1;
-        case 784:
-            imageOffsetFromBack += 1;
-        case 778:
-            imageOffsetFromBack += 1;
-        case 777:
-            imageOffsetFromBack += 7;
-        case 774:
-            imageOffsetFromBack += 1;
-        case 758:
-            imageOffsetFromBack += 1;
-        case 754:
-            imageOffsetFromBack += 1;
-        case 752:
-            imageOffsetFromBack += 1;
-        case 746:
-            imageOffsetFromBack += 2;
-        case 745:
-            imageOffsetFromBack += 1;
-        case 744:
-            imageOffsetFromBack += 1;
-        case 743:
-            imageOffsetFromBack += 3;
-        case 741:
-            imageOffsetFromBack += 1;
-        case 738:
-            imageOffsetFromBack += 1;
-        case 735:
-            imageOffsetFromBack += 1;
-        case 720:
-            imageOffsetFromBack += 1;
-        case 719:
-            imageOffsetFromBack += 4;
-        case 718:
-            imageOffsetFromBack += 1;
-        case 681:
-            imageOffsetFromBack += 1;
-        case 678:
-            imageOffsetFromBack += 9;
-        case 676:
-            imageOffsetFromBack += 4;
-        case 671:
-            imageOffsetFromBack += 5;
-        case 670:
-            imageOffsetFromBack += 4;
-        case 669:
-            imageOffsetFromBack += 19;
-        case 666:
-            imageOffsetFromBack += 2;
-        case 658:
-            imageOffsetFromBack += 1;
-        case 648:
-            imageOffsetFromBack += 1;
-        case 647:
-            imageOffsetFromBack += 2;
-        case 646:
-            imageOffsetFromBack += 1;
-        case 645:
-            imageOffsetFromBack += 1;
-        case 642:
-            imageOffsetFromBack += 1;
-        case 641:
-            imageOffsetFromBack += 3;
-        case 586:
-            imageOffsetFromBack += 3;
-        case 585:
-            imageOffsetFromBack += 1;
-        case 555:
-            imageOffsetFromBack += 1;
-        case 550:
-            imageOffsetFromBack += 1;
-        case 531:
-            imageOffsetFromBack += 1;
-        case 492:
-            imageOffsetFromBack += 1;
-        case 487:
-            imageOffsetFromBack += 5;
-        case 479:
-            imageOffsetFromBack += 1;
-        case 475:
-            imageOffsetFromBack += 1;
-        case 460:
-            imageOffsetFromBack += 1;
-        case 448:
-            imageOffsetFromBack += 1;
-        case 445:
-            imageOffsetFromBack += 1;
-        case 428:
-            imageOffsetFromBack += 1;
-        case 423:
-            imageOffsetFromBack += 1;
-        case 422:
-            imageOffsetFromBack += 1;
-        case 421:
-            imageOffsetFromBack += 2;
-        case 413:
-            imageOffsetFromBack += 2;
-        case 412:
-            imageOffsetFromBack += 3;
-        case 386:
-            imageOffsetFromBack += 1;
-        case 384:
-            imageOffsetFromBack += 1;
-        case 383:
-            imageOffsetFromBack += 1;
-        case 382:
-            imageOffsetFromBack += 1;
-        case 381:
-            imageOffsetFromBack += 1;
-        case 380:
-            imageOffsetFromBack += 1;
-        case 376:
-            imageOffsetFromBack += 1;
-        case 373:
-            imageOffsetFromBack += 1;
-        case 362:
-            imageOffsetFromBack += 1;
-        case 359:
-            imageOffsetFromBack += 1;
-        case 354:
-            imageOffsetFromBack += 3;
-        case 351:
-            imageOffsetFromBack += 1;
-        case 334:
-            imageOffsetFromBack += 1;
-        case 323:
-            imageOffsetFromBack += 1;
-        case 319:
-            imageOffsetFromBack += 1;
-        case 310:
-            imageOffsetFromBack += 1;
-        case 308:
-            imageOffsetFromBack += 1;
-        case 306:
-            imageOffsetFromBack += 1;
-        case 303:
-            imageOffsetFromBack += 1;
-        case 302:
-            imageOffsetFromBack += 1;
-        case 282:
-            imageOffsetFromBack += 1;
-        case 260:
-            imageOffsetFromBack += 1;
-        case 257:
-            imageOffsetFromBack += 1;
-        case 254:
-            imageOffsetFromBack += 1;
-        case 248:
-            imageOffsetFromBack += 1;
-        case 229:
-            imageOffsetFromBack += 1;
-        case 214:
-            imageOffsetFromBack += 1;
-        case 212:
-            imageOffsetFromBack += 1;
-        case 208:
-            imageOffsetFromBack += 1;
-        case 181:
-            imageOffsetFromBack += 1;
-        case 172:
-            imageOffsetFromBack += 2;
-        case 150:
-            imageOffsetFromBack += 1;
-        case 142:
-            imageOffsetFromBack += 1;
-        case 130:
-            imageOffsetFromBack += 1;
-        case 127:
-            imageOffsetFromBack += 1;
-        case 115:
-            imageOffsetFromBack += 2;
-        case 105:
-            imageOffsetFromBack += 1;
-        case 103:
-            imageOffsetFromBack += 1;
-        case 94:
-            imageOffsetFromBack += 1;
-        case 89:
-            imageOffsetFromBack += 1;
-        case 88:
-            imageOffsetFromBack += 1;
-        case 80:
-            imageOffsetFromBack += 1;
-        case 76:
-            imageOffsetFromBack += 1;
-        case 75:
-            imageOffsetFromBack += 1;
-        case 74:
-            imageOffsetFromBack += 1;
-        case 65:
-            imageOffsetFromBack += 1;
-        case 53:
-            imageOffsetFromBack += 1;
-        case 52:
-            imageOffsetFromBack += 1;
-        case 51:
-            imageOffsetFromBack += 1;
-        case 50:
-            imageOffsetFromBack += 1;
-        case 38:
-            imageOffsetFromBack += 1;
-        case 37:
-            imageOffsetFromBack += 1;
-        case 28:
-            imageOffsetFromBack += 1;
-        case 27:
-            imageOffsetFromBack += 1;
-        case 26:
-            imageOffsetFromBack += 13;
-        case 25:
-            imageOffsetFromBack += 2;
-        case 20:
-            imageOffsetFromBack += 1;
-        case 19:
-            imageOffsetFromBack += 1;
-        case 18:
-            imageOffsetFromBack += 1;
-        case 15:
-            imageOffsetFromBack += 1;
-        case 9:
-            imageOffsetFromBack += 2;
-        case 6:
-            imageOffsetFromBack += 1;
-        case 3:
-            imageOffsetFromBack += 0;
+            default:
+                C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint, scale, scale);
+                return;
+            case 801:
+                imageOffsetFromBack += 3;
+            case 800:
+                imageOffsetFromBack += 1;
+            case 784:
+                imageOffsetFromBack += 1;
+            case 778:
+                imageOffsetFromBack += 1;
+            case 777:
+                imageOffsetFromBack += 7;
+            case 774:
+                imageOffsetFromBack += 1;
+            case 758:
+                imageOffsetFromBack += 1;
+            case 754:
+                imageOffsetFromBack += 1;
+            case 752:
+                imageOffsetFromBack += 1;
+            case 746:
+                imageOffsetFromBack += 2;
+            case 745:
+                imageOffsetFromBack += 1;
+            case 744:
+                imageOffsetFromBack += 1;
+            case 743:
+                imageOffsetFromBack += 3;
+            case 741:
+                imageOffsetFromBack += 1;
+            case 738:
+                imageOffsetFromBack += 1;
+            case 735:
+                imageOffsetFromBack += 1;
+            case 720:
+                imageOffsetFromBack += 1;
+            case 719:
+                imageOffsetFromBack += 4;
+            case 718:
+                imageOffsetFromBack += 1;
+            case 681:
+                imageOffsetFromBack += 1;
+            case 678:
+                imageOffsetFromBack += 9;
+            case 676:
+                imageOffsetFromBack += 4;
+            case 671:
+                imageOffsetFromBack += 5;
+            case 670:
+                imageOffsetFromBack += 4;
+            case 669:
+                imageOffsetFromBack += 19;
+            case 666:
+                imageOffsetFromBack += 2;
+            case 658:
+                imageOffsetFromBack += 1;
+            case 648:
+                imageOffsetFromBack += 1;
+            case 647:
+                imageOffsetFromBack += 2;
+            case 646:
+                imageOffsetFromBack += 1;
+            case 645:
+                imageOffsetFromBack += 1;
+            case 642:
+                imageOffsetFromBack += 1;
+            case 641:
+                imageOffsetFromBack += 3;
+            case 586:
+                imageOffsetFromBack += 3;
+            case 585:
+                imageOffsetFromBack += 1;
+            case 555:
+                imageOffsetFromBack += 1;
+            case 550:
+                imageOffsetFromBack += 1;
+            case 531:
+                imageOffsetFromBack += 1;
+            case 492:
+                imageOffsetFromBack += 1;
+            case 487:
+                imageOffsetFromBack += 5;
+            case 479:
+                imageOffsetFromBack += 1;
+            case 475:
+                imageOffsetFromBack += 1;
+            case 460:
+                imageOffsetFromBack += 1;
+            case 448:
+                imageOffsetFromBack += 1;
+            case 445:
+                imageOffsetFromBack += 1;
+            case 428:
+                imageOffsetFromBack += 1;
+            case 423:
+                imageOffsetFromBack += 1;
+            case 422:
+                imageOffsetFromBack += 1;
+            case 421:
+                imageOffsetFromBack += 2;
+            case 413:
+                imageOffsetFromBack += 2;
+            case 412:
+                imageOffsetFromBack += 3;
+            case 386:
+                imageOffsetFromBack += 1;
+            case 384:
+                imageOffsetFromBack += 1;
+            case 383:
+                imageOffsetFromBack += 1;
+            case 382:
+                imageOffsetFromBack += 1;
+            case 381:
+                imageOffsetFromBack += 1;
+            case 380:
+                imageOffsetFromBack += 1;
+            case 376:
+                imageOffsetFromBack += 1;
+            case 373:
+                imageOffsetFromBack += 1;
+            case 362:
+                imageOffsetFromBack += 1;
+            case 359:
+                imageOffsetFromBack += 1;
+            case 354:
+                imageOffsetFromBack += 3;
+            case 351:
+                imageOffsetFromBack += 1;
+            case 334:
+                imageOffsetFromBack += 1;
+            case 323:
+                imageOffsetFromBack += 1;
+            case 319:
+                imageOffsetFromBack += 1;
+            case 310:
+                imageOffsetFromBack += 1;
+            case 308:
+                imageOffsetFromBack += 1;
+            case 306:
+                imageOffsetFromBack += 1;
+            case 303:
+                imageOffsetFromBack += 1;
+            case 302:
+                imageOffsetFromBack += 1;
+            case 282:
+                imageOffsetFromBack += 1;
+            case 260:
+                imageOffsetFromBack += 1;
+            case 257:
+                imageOffsetFromBack += 1;
+            case 254:
+                imageOffsetFromBack += 1;
+            case 248:
+                imageOffsetFromBack += 1;
+            case 229:
+                imageOffsetFromBack += 1;
+            case 214:
+                imageOffsetFromBack += 1;
+            case 212:
+                imageOffsetFromBack += 1;
+            case 208:
+                imageOffsetFromBack += 1;
+            case 181:
+                imageOffsetFromBack += 1;
+            case 172:
+                imageOffsetFromBack += 2;
+            case 150:
+                imageOffsetFromBack += 1;
+            case 142:
+                imageOffsetFromBack += 1;
+            case 130:
+                imageOffsetFromBack += 1;
+            case 127:
+                imageOffsetFromBack += 1;
+            case 115:
+                imageOffsetFromBack += 2;
+            case 105:
+                imageOffsetFromBack += 1;
+            case 103:
+                imageOffsetFromBack += 1;
+            case 94:
+                imageOffsetFromBack += 1;
+            case 89:
+                imageOffsetFromBack += 1;
+            case 88:
+                imageOffsetFromBack += 1;
+            case 80:
+                imageOffsetFromBack += 1;
+            case 76:
+                imageOffsetFromBack += 1;
+            case 75:
+                imageOffsetFromBack += 1;
+            case 74:
+                imageOffsetFromBack += 1;
+            case 65:
+                imageOffsetFromBack += 1;
+            case 53:
+                imageOffsetFromBack += 1;
+            case 52:
+                imageOffsetFromBack += 1;
+            case 51:
+                imageOffsetFromBack += 1;
+            case 50:
+                imageOffsetFromBack += 1;
+            case 38:
+                imageOffsetFromBack += 1;
+            case 37:
+                imageOffsetFromBack += 1;
+            case 28:
+                imageOffsetFromBack += 1;
+            case 27:
+                imageOffsetFromBack += 1;
+            case 26:
+                imageOffsetFromBack += 13;
+            case 25:
+                imageOffsetFromBack += 2;
+            case 20:
+                imageOffsetFromBack += 1;
+            case 19:
+                imageOffsetFromBack += 1;
+            case 18:
+                imageOffsetFromBack += 1;
+            case 15:
+                imageOffsetFromBack += 1;
+            case 9:
+                imageOffsetFromBack += 2;
+            case 6:
+                imageOffsetFromBack += 1;
+            case 3:
+                imageOffsetFromBack += 0;
         }
         int drawIndex = types_spritesheet_beast_idx + imageOffsetFromBack + form;
         if (drawIndex < types_spritesheet_201_1_idx)
@@ -1333,26 +1333,26 @@ static C2D_Image typeImage(Language lang, u8 type)
     }
     switch (lang)
     {
-    case Language::ES:
-        return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_es_00_idx + type);
-    case Language::DE:
-        return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_de_00_idx + type);
-    case Language::FR:
-        return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_fr_00_idx + type);
-    case Language::IT:
-        return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_it_00_idx + type);
-    case Language::JP:
-        return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_jp_00_idx + type);
-    case Language::KO:
-        return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_ko_00_idx + type);
-    case Language::TW:
-    case Language::ZH:
-        return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_zh_00_idx + type);
-    case Language::EN:
-    case Language::PT:
-    case Language::NL:
-    default:
-        return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_en_00_idx + type);
+        case Language::ES:
+            return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_es_00_idx + type);
+        case Language::DE:
+            return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_de_00_idx + type);
+        case Language::FR:
+            return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_fr_00_idx + type);
+        case Language::IT:
+            return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_it_00_idx + type);
+        case Language::JP:
+            return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_jp_00_idx + type);
+        case Language::KO:
+            return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_ko_00_idx + type);
+        case Language::TW:
+        case Language::ZH:
+            return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_zh_00_idx + type);
+        case Language::EN:
+        case Language::PT:
+        case Language::NL:
+        default:
+            return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_en_00_idx + type);
     }
 }
 

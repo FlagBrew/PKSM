@@ -690,44 +690,44 @@ static std::string getVersionString(int version)
 {
     switch (version)
     {
-    case 10: // diamond
-        return "D";
-    case 11: // pearl
-        return "P";
-    case 12: // platinum
-        return "Pt";
-    case 7: // heart gold
-        return "HG";
-    case 8: // soul silver
-        return "SS";
-    case 20: // white
-        return "W";
-    case 21: // black
-        return "B";
-    case 22: // white2
-        return "W2";
-    case 23: // black2
-        return "B2";
-    case 24: // x
-        return "X";
-    case 25: // y
-        return "Y";
-    case 26: // as
-        return "AS";
-    case 27: // or
-        return "OR";
-    case 30: // sun
-        return "S";
-    case 31: // moon
-        return "M";
-    case 32: // us
-        return "US";
-    case 33: // um
-        return "UM";
-    case 42: // let's go Pikachu
-        return "GP";
-    case 43: // let's go Eevee
-        return "GE";
+        case 10: // diamond
+            return "D";
+        case 11: // pearl
+            return "P";
+        case 12: // platinum
+            return "Pt";
+        case 7: // heart gold
+            return "HG";
+        case 8: // soul silver
+            return "SS";
+        case 20: // white
+            return "W";
+        case 21: // black
+            return "B";
+        case 22: // white2
+            return "W2";
+        case 23: // black2
+            return "B2";
+        case 24: // x
+            return "X";
+        case 25: // y
+            return "Y";
+        case 26: // as
+            return "AS";
+        case 27: // or
+            return "OR";
+        case 30: // sun
+            return "S";
+        case 31: // moon
+            return "M";
+        case 32: // us
+            return "US";
+        case 33: // um
+            return "UM";
+        case 42: // let's go Pikachu
+            return "GP";
+        case 43: // let's go Eevee
+            return "GE";
     }
     return "";
 }
@@ -769,18 +769,18 @@ void MiscEditScreen::validate()
             Fetch::getinfo(CURLINFO_RESPONSE_CODE, &status_code);
             switch (status_code)
             {
-            case 200:
-                std::copy(dataToWrite.begin(), dataToWrite.end(), pkm->rawData());
-                break;
-            case 400:
-                Gui::error(i18n::localize("AUTO_LEGALIZE_ERROR"), abs(0x1337));
-                break;
-            case 502:
-                Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
-                break;
-            default:
-                Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
-                break;
+                case 200:
+                    std::copy(dataToWrite.begin(), dataToWrite.end(), pkm->rawData());
+                    break;
+                case 400:
+                    Gui::error(i18n::localize("AUTO_LEGALIZE_ERROR"), abs(0x1337));
+                    break;
+                case 502:
+                    Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
+                    break;
+                default:
+                    Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
+                    break;
             }
         }
         Fetch::exit();

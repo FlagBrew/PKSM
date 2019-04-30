@@ -65,15 +65,15 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index) : p
             pkm->SID(Configuration::getInstance().defaultSID());
             switch (pkm->generation())
             {
-            case Generation::FOUR:
-            case Generation::FIVE:
-            default:
-                pkm->otName(Configuration::getInstance().defaultOT().substr(0, 7));
-                break;
-            case Generation::SIX:
-            case Generation::SEVEN:
-                pkm->otName(Configuration::getInstance().defaultOT());
-                break;
+                case Generation::FOUR:
+                case Generation::FIVE:
+                default:
+                    pkm->otName(Configuration::getInstance().defaultOT().substr(0, 7));
+                    break;
+                case Generation::SIX:
+                case Generation::SEVEN:
+                    pkm->otName(Configuration::getInstance().defaultOT());
+                    break;
             }
         }
         pkm->ball(4);
@@ -81,32 +81,32 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index) : p
         pkm->version(TitleLoader::save->version());
         switch (pkm->version())
         {
-        case 7:
-        case 8:
-            pkm->metLocation(0x0095); // Route 1, HGSS
-        case 10:
-        case 11:
-        case 12:
-            pkm->metLocation(0x0010); // Route 201, DPPt
-        case 20:
-        case 21:
-        case 22:
-        case 23:
-            pkm->metLocation(0x000e); // Route 1, BWB2W2
-        case 24:
-        case 25:
-            pkm->metLocation(0x0008); // Route 1, XY
-        case 26:
-        case 27:
-            pkm->metLocation(0x00cc); // Route 101, ORAS
-        case 30:
-        case 31:
-        case 32:
-        case 33:
-            pkm->metLocation(0x0006); // Route 1, SMUSUM
-        case 42:
-        case 43:
-            pkm->metLocation(0x0003); // Route 1, LGPE
+            case 7:
+            case 8:
+                pkm->metLocation(0x0095); // Route 1, HGSS
+            case 10:
+            case 11:
+            case 12:
+                pkm->metLocation(0x0010); // Route 201, DPPt
+            case 20:
+            case 21:
+            case 22:
+            case 23:
+                pkm->metLocation(0x000e); // Route 1, BWB2W2
+            case 24:
+            case 25:
+                pkm->metLocation(0x0008); // Route 1, XY
+            case 26:
+            case 27:
+                pkm->metLocation(0x00cc); // Route 101, ORAS
+            case 30:
+            case 31:
+            case 32:
+            case 33:
+                pkm->metLocation(0x0006); // Route 1, SMUSUM
+            case 42:
+            case 43:
+                pkm->metLocation(0x0003); // Route 1, LGPE
         }
         pkm->fixMoves();
         // pkm->PID((u32)randomNumbers());
@@ -141,48 +141,48 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index) : p
     {
         switch (pkm->generation())
         {
-        case Generation::FOUR:
-            if (pkm->getLength() == 136)
-            {
-                u8 pkmData[236] = {0};
-                std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
-                pkm = std::make_shared<PK4>(pkmData, false, true);
-                partyUpdate();
-                currentOverlay = std::make_unique<SpeciesOverlay>(*this, pkm);
-            }
-            break;
-        case Generation::FIVE:
-            if (pkm->getLength() == 136)
-            {
-                u8 pkmData[220] = {0};
-                std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
-                pkm = std::make_shared<PK5>(pkmData, false, true);
-                partyUpdate();
-                currentOverlay = std::make_unique<SpeciesOverlay>(*this, pkm);
-            }
-            break;
-        case Generation::SIX:
-        case Generation::SEVEN:
-            if (pkm->getLength() == 232)
-            {
-                u8 pkmData[260] = {0};
-                std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
-                if (pkm->generation() == Generation::SIX)
+            case Generation::FOUR:
+                if (pkm->getLength() == 136)
                 {
-                    pkm = std::make_shared<PK6>(pkmData, false, true);
+                    u8 pkmData[236] = {0};
+                    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
+                    pkm = std::make_shared<PK4>(pkmData, false, true);
+                    partyUpdate();
+                    currentOverlay = std::make_unique<SpeciesOverlay>(*this, pkm);
                 }
-                else
+                break;
+            case Generation::FIVE:
+                if (pkm->getLength() == 136)
                 {
-                    pkm = std::make_shared<PK7>(pkmData, false, true);
+                    u8 pkmData[220] = {0};
+                    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
+                    pkm = std::make_shared<PK5>(pkmData, false, true);
+                    partyUpdate();
+                    currentOverlay = std::make_unique<SpeciesOverlay>(*this, pkm);
                 }
-                partyUpdate();
-                currentOverlay = std::make_unique<SpeciesOverlay>(*this, pkm);
-            }
-            break;
-        case Generation::LGPE:
-            break; // Always a party Pokemon
-        default:
-            Gui::warn(i18n::localize("THE_FUCK"));
+                break;
+            case Generation::SIX:
+            case Generation::SEVEN:
+                if (pkm->getLength() == 232)
+                {
+                    u8 pkmData[260] = {0};
+                    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
+                    if (pkm->generation() == Generation::SIX)
+                    {
+                        pkm = std::make_shared<PK6>(pkmData, false, true);
+                    }
+                    else
+                    {
+                        pkm = std::make_shared<PK7>(pkmData, false, true);
+                    }
+                    partyUpdate();
+                    currentOverlay = std::make_unique<SpeciesOverlay>(*this, pkm);
+                }
+                break;
+            case Generation::LGPE:
+                break; // Always a party Pokemon
+            default:
+                Gui::warn(i18n::localize("THE_FUCK"));
         }
 
         for (int i = 0; i < 6; i++)
@@ -324,16 +324,16 @@ void EditorScreen::draw() const
     Gui::dynamicText(i18n::species(lang, pkm->species()), 25, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     switch (pkm->gender())
     {
-    case 0:
-        Gui::sprite(ui_sheet_icon_male_idx, 186, 7);
-        break;
-    case 1:
-        Gui::sprite(ui_sheet_icon_female_idx, 187, 7);
-        break;
-    case 2:
-        Gui::sprite(ui_sheet_icon_genderless_idx, 187, 7);
-    default:
-        break;
+        case 0:
+            Gui::sprite(ui_sheet_icon_male_idx, 186, 7);
+            break;
+        case 1:
+            Gui::sprite(ui_sheet_icon_female_idx, 187, 7);
+            break;
+        case 2:
+            Gui::sprite(ui_sheet_icon_genderless_idx, 187, 7);
+        default:
+            break;
     }
     Gui::dynamicText(std::to_string((int)pkm->level()), 107 + 35 / 2, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     Gui::dynamicText(i18n::nature(lang, pkm->nature()), 95, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
@@ -714,88 +714,88 @@ bool EditorScreen::selectAbility()
         PK5* pk5 = (PK5*)pkm.get();
         switch (pkm->abilityNumber() >> 1)
         {
-        case 0:
-            if (pkm->abilities(1) != pkm->ability() && pkm->abilities(1) != 0)
-            {
-                pkm->ability(pkm->abilities(1));
-                if (pkm->abilities(1) == pkm->abilities(2))
+            case 0:
+                if (pkm->abilities(1) != pkm->ability() && pkm->abilities(1) != 0)
                 {
+                    pkm->ability(pkm->abilities(1));
+                    if (pkm->abilities(1) == pkm->abilities(2))
+                    {
+                        pk5->hiddenAbility(true);
+                    }
+                }
+                else if (pkm->abilities(2) != 0)
+                {
+                    pkm->ability(pkm->abilities(2));
                     pk5->hiddenAbility(true);
                 }
-            }
-            else if (pkm->abilities(2) != 0)
-            {
-                pkm->ability(pkm->abilities(2));
-                pk5->hiddenAbility(true);
-            }
-            break;
-        case 1:
-            if (pkm->abilities(2) != pkm->ability() && pkm->abilities(2) != 0)
-            {
-                pkm->ability(pkm->abilities(2));
-                pk5->hiddenAbility(true);
-            }
-            else if (pkm->abilities(0) != 0)
-            {
-                pkm->ability(pkm->abilities(0));
-                pk5->hiddenAbility(false);
-            }
-            break;
-        case 2:
-            if (pkm->abilities(0) != pkm->ability() && pkm->abilities(0) != 0)
-            {
-                pkm->ability(pkm->abilities(0));
-                pk5->hiddenAbility(false);
-            }
-            else if (pkm->abilities(1) != 0)
-            {
-                pkm->ability(pkm->abilities(1));
-                if (pkm->abilities(1) == pkm->abilities(2))
+                break;
+            case 1:
+                if (pkm->abilities(2) != pkm->ability() && pkm->abilities(2) != 0)
                 {
+                    pkm->ability(pkm->abilities(2));
                     pk5->hiddenAbility(true);
                 }
-                else
+                else if (pkm->abilities(0) != 0)
                 {
+                    pkm->ability(pkm->abilities(0));
                     pk5->hiddenAbility(false);
                 }
-            }
-            break;
+                break;
+            case 2:
+                if (pkm->abilities(0) != pkm->ability() && pkm->abilities(0) != 0)
+                {
+                    pkm->ability(pkm->abilities(0));
+                    pk5->hiddenAbility(false);
+                }
+                else if (pkm->abilities(1) != 0)
+                {
+                    pkm->ability(pkm->abilities(1));
+                    if (pkm->abilities(1) == pkm->abilities(2))
+                    {
+                        pk5->hiddenAbility(true);
+                    }
+                    else
+                    {
+                        pk5->hiddenAbility(false);
+                    }
+                }
+                break;
         }
     }
     else if (pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN)
     {
         switch (pkm->abilityNumber() >> 1)
         {
-        case 0:
-            if (pkm->abilities(1) != pkm->ability() && pkm->abilities(1) != 0)
-            {
-                pkm->setAbility(1);
-            }
-            else if (pkm->abilities(2) != 0)
-            {
-                pkm->setAbility(2);
-            }
-            break;
-        case 1:
-            if (pkm->abilities(2) != pkm->ability() && pkm->abilities(2) != 0)
-            {
-                pkm->setAbility(2);
-            }
-            else if (pkm->abilities(0) != 0)
-            {
-                pkm->setAbility(0);
-            }
-            break;
-        case 2:
-            if (pkm->abilities(0) != pkm->ability() && pkm->abilities(0) != 0)
-            {
-                pkm->setAbility(0);
-            }
-            else if (pkm->abilities(1) != 0)
-            {
-                pkm->setAbility(1);
-            }
-            break;
+            case 0:
+                if (pkm->abilities(1) != pkm->ability() && pkm->abilities(1) != 0)
+                {
+                    pkm->setAbility(1);
+                }
+                else if (pkm->abilities(2) != 0)
+                {
+                    pkm->setAbility(2);
+                }
+                break;
+            case 1:
+                if (pkm->abilities(2) != pkm->ability() && pkm->abilities(2) != 0)
+                {
+                    pkm->setAbility(2);
+                }
+                else if (pkm->abilities(0) != 0)
+                {
+                    pkm->setAbility(0);
+                }
+                break;
+            case 2:
+                if (pkm->abilities(0) != pkm->ability() && pkm->abilities(0) != 0)
+                {
+                    pkm->setAbility(0);
+                }
+                else if (pkm->abilities(1) != 0)
+                {
+                    pkm->setAbility(1);
+                }
+                break;
         }
     }
     return false;
@@ -844,15 +844,15 @@ bool EditorScreen::genderSwitch()
 {
     switch (pkm->gender())
     {
-    case 0:
-        pkm->gender(1);
-        break;
-    case 1:
-        pkm->gender(2);
-        break;
-    case 2:
-        pkm->gender(0);
-        break;
+        case 0:
+            pkm->gender(1);
+            break;
+        case 1:
+            pkm->gender(2);
+            break;
+        case 2:
+            pkm->gender(0);
+            break;
     }
     return false;
 }

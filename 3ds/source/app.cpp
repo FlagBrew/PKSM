@@ -140,134 +140,134 @@ static bool update(const std::string& execPath)
             Fetch::getinfo(CURLINFO_RESPONSE_CODE, &status_code);
             switch (status_code)
             {
-            case 200:
-            {
-                Fetch::exit();
-                nlohmann::json retJson = nlohmann::json::parse(retString, nullptr, false);
-                if (retJson.is_discarded())
+                case 200:
                 {
-                    Gui::warn("Error checking for update", "Bad JSON");
-                    return false;
-                }
-                else if (retJson["tag_name"].get<std::string>() != StringUtils::format("%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO))
-                {
-                    Gui::waitFrame("Update found! Downloading...");
-                    std::string url  = "https://github.com/FlagBrew/PKSM/releases/download/" + retJson["tag_name"].get<std::string>() + "/PKSM";
-                    std::string path = "";
-                    if (execPath != "")
+                    Fetch::exit();
+                    nlohmann::json retJson = nlohmann::json::parse(retString, nullptr, false);
+                    if (retJson.is_discarded())
                     {
-                        url += ".3dsx";
-                        path = execPath + ".new";
-                    }
-                    else
-                    {
-                        url += ".cia";
-                        path = "/3ds/PKSM/PKSM.cia";
-                    }
-                    Result res = Fetch::download(url, path);
-                    if (R_FAILED(res))
-                    {
-                        Gui::error("Update found, but could not download.", res);
-                        FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_ASCII, path.c_str()));
+                        Gui::warn("Error checking for update", "Bad JSON");
                         return false;
                     }
-
-                    Gui::waitFrame("Installing update...");
-                    if (execPath != "")
+                    else if (retJson["tag_name"].get<std::string>() != StringUtils::format("%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO))
                     {
-                        FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_ASCII, execPath.c_str()));
-                        Archive::moveFile(Archive::sd(), path, Archive::sd(), execPath);
-                        return true;
-                    }
-                    else
-                    {
-                        // Adapted from https://github.com/joel16/3DShell/blob/master/source/cia.c
-                        AM_TitleEntry title;
-                        Handle dstHandle;
-                        FSStream ciaFile(Archive::sd(), path, FS_OPEN_READ);
-                        if (ciaFile.good())
+                        Gui::waitFrame("Update found! Downloading...");
+                        std::string url  = "https://github.com/FlagBrew/PKSM/releases/download/" + retJson["tag_name"].get<std::string>() + "/PKSM";
+                        std::string path = "";
+                        if (execPath != "")
                         {
-                            if (R_FAILED(res = AM_GetCiaFileInfo(MEDIATYPE_SD, &title, ciaFile.getRawHandle())))
-                            {
-                                Gui::error("A wild error appeared! Duddudududududu", res);
-                                ciaFile.close();
-                                return false;
-                            }
-
-                            if (R_FAILED(res = AM_StartCiaInstall(MEDIATYPE_SD, &dstHandle)))
-                            {
-                                Gui::error("AM_StartCiaInstall failed", res);
-                                ciaFile.close();
-                                return false;
-                            }
-
-                            u8 buf[0x1000];
-                            u32 bytesWritten, bytesRead;
-                            u64 offset          = 0;
-                            bool ciaInstallGood = true;
-                            do
-                            {
-                                memset(buf, 0, 0x1000);
-
-                                bytesRead = ciaFile.read(buf, 0x1000);
-                                if (R_FAILED(ciaFile.result()))
-                                {
-                                    Gui::error("Error while reading CIA update", ciaFile.result());
-                                    ciaFile.close();
-                                    FSFILE_Close(dstHandle);
-                                    return false;
-                                }
-
-                                if (R_FAILED(res = FSFILE_Write(dstHandle, &bytesWritten, offset, buf, bytesRead, FS_WRITE_FLUSH)))
-                                {
-                                    Gui::error("Error while writing CIA update", res);
-                                    ciaFile.close();
-                                    FSFILE_Close(dstHandle);
-                                    return false;
-                                }
-
-                                if (bytesWritten != bytesRead)
-                                {
-                                    ciaInstallGood = false;
-                                }
-
-                                offset += bytesRead;
-                            } while (offset < ciaFile.size() && ciaInstallGood);
-
-                            if (!ciaInstallGood)
-                            {
-                                AM_CancelCIAInstall(dstHandle);
-                                ciaFile.close();
-                                Gui::warn(
-                                    "Bytes written doesn't match bytes read:", std::to_string(bytesWritten) + " vs " + std::to_string(bytesRead));
-                                return false;
-                            }
-
-                            if (R_FAILED(res = AM_FinishCiaInstall(dstHandle)))
-                            {
-                                Gui::error("AM_FinishCiaInstall failed", res);
-                                ciaFile.close();
-                                return false;
-                            }
-
-                            ciaFile.close();
-
+                            url += ".3dsx";
+                            path = execPath + ".new";
+                        }
+                        else
+                        {
+                            url += ".cia";
+                            path = "/3ds/PKSM/PKSM.cia";
+                        }
+                        Result res = Fetch::download(url, path);
+                        if (R_FAILED(res))
+                        {
+                            Gui::error("Update found, but could not download.", res);
                             FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_ASCII, path.c_str()));
+                            return false;
+                        }
 
+                        Gui::waitFrame("Installing update...");
+                        if (execPath != "")
+                        {
+                            FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_ASCII, execPath.c_str()));
+                            Archive::moveFile(Archive::sd(), path, Archive::sd(), execPath);
                             return true;
                         }
+                        else
+                        {
+                            // Adapted from https://github.com/joel16/3DShell/blob/master/source/cia.c
+                            AM_TitleEntry title;
+                            Handle dstHandle;
+                            FSStream ciaFile(Archive::sd(), path, FS_OPEN_READ);
+                            if (ciaFile.good())
+                            {
+                                if (R_FAILED(res = AM_GetCiaFileInfo(MEDIATYPE_SD, &title, ciaFile.getRawHandle())))
+                                {
+                                    Gui::error("A wild error appeared! Duddudududududu", res);
+                                    ciaFile.close();
+                                    return false;
+                                }
+
+                                if (R_FAILED(res = AM_StartCiaInstall(MEDIATYPE_SD, &dstHandle)))
+                                {
+                                    Gui::error("AM_StartCiaInstall failed", res);
+                                    ciaFile.close();
+                                    return false;
+                                }
+
+                                u8 buf[0x1000];
+                                u32 bytesWritten, bytesRead;
+                                u64 offset          = 0;
+                                bool ciaInstallGood = true;
+                                do
+                                {
+                                    memset(buf, 0, 0x1000);
+
+                                    bytesRead = ciaFile.read(buf, 0x1000);
+                                    if (R_FAILED(ciaFile.result()))
+                                    {
+                                        Gui::error("Error while reading CIA update", ciaFile.result());
+                                        ciaFile.close();
+                                        FSFILE_Close(dstHandle);
+                                        return false;
+                                    }
+
+                                    if (R_FAILED(res = FSFILE_Write(dstHandle, &bytesWritten, offset, buf, bytesRead, FS_WRITE_FLUSH)))
+                                    {
+                                        Gui::error("Error while writing CIA update", res);
+                                        ciaFile.close();
+                                        FSFILE_Close(dstHandle);
+                                        return false;
+                                    }
+
+                                    if (bytesWritten != bytesRead)
+                                    {
+                                        ciaInstallGood = false;
+                                    }
+
+                                    offset += bytesRead;
+                                } while (offset < ciaFile.size() && ciaInstallGood);
+
+                                if (!ciaInstallGood)
+                                {
+                                    AM_CancelCIAInstall(dstHandle);
+                                    ciaFile.close();
+                                    Gui::warn(
+                                        "Bytes written doesn't match bytes read:", std::to_string(bytesWritten) + " vs " + std::to_string(bytesRead));
+                                    return false;
+                                }
+
+                                if (R_FAILED(res = AM_FinishCiaInstall(dstHandle)))
+                                {
+                                    Gui::error("AM_FinishCiaInstall failed", res);
+                                    ciaFile.close();
+                                    return false;
+                                }
+
+                                ciaFile.close();
+
+                                FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_ASCII, path.c_str()));
+
+                                return true;
+                            }
+                        }
                     }
+                    break;
                 }
-                break;
-            }
-            case 502:
-                Fetch::exit();
-                Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
-                break;
-            default:
-                Fetch::exit();
-                Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
-                break;
+                case 502:
+                    Fetch::exit();
+                    Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
+                    break;
+                default:
+                    Fetch::exit();
+                    Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
+                    break;
             }
         }
     }

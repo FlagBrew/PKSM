@@ -35,18 +35,18 @@ const char* genToCstring(Generation gen)
 {
     switch (gen)
     {
-    case Generation::LGPE:
-        return "LGPE";
-    case Generation::FOUR:
-        return "4";
-    case Generation::FIVE:
-        return "5";
-    case Generation::SIX:
-        return "6";
-    case Generation::SEVEN:
-        return "7";
-    default:
-        return "INVALID";
+        case Generation::LGPE:
+            return "LGPE";
+        case Generation::FOUR:
+            return "4";
+        case Generation::FIVE:
+            return "5";
+        case Generation::SIX:
+            return "6";
+        case Generation::SEVEN:
+            return "7";
+        default:
+            return "INVALID";
     }
 }
 
@@ -54,31 +54,31 @@ bool operator<(Generation g1, Generation g2)
 {
     switch (g1)
     {
-    case Generation::FOUR:
-        if (g2 == Generation::FIVE)
-        {
-            return true;
-        }
-    case Generation::FIVE:
-        if (g2 == Generation::SIX)
-        {
-            return true;
-        }
-    case Generation::SIX:
-        if (g2 == Generation::SEVEN)
-        {
-            return true;
-        }
-    case Generation::SEVEN:
-        if (g2 == Generation::LGPE)
-        {
-            return true;
-        }
-    case Generation::LGPE:
-        return g2 == Generation::UNUSED;
-    case Generation::UNUSED:
-    default:
-        return false;
+        case Generation::FOUR:
+            if (g2 == Generation::FIVE)
+            {
+                return true;
+            }
+        case Generation::FIVE:
+            if (g2 == Generation::SIX)
+            {
+                return true;
+            }
+        case Generation::SIX:
+            if (g2 == Generation::SEVEN)
+            {
+                return true;
+            }
+        case Generation::SEVEN:
+            if (g2 == Generation::LGPE)
+            {
+                return true;
+            }
+        case Generation::LGPE:
+            return g2 == Generation::UNUSED;
+        case Generation::UNUSED:
+        default:
+            return false;
     }
 }
 

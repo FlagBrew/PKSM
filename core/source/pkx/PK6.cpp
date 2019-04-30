@@ -959,14 +959,14 @@ std::shared_ptr<PKX> PK6::next(void) const
 
     switch (abilityNumber())
     {
-    case 1:
-    case 2:
-    case 4:
-        u8 index = abilityNumber() >> 1;
-        if (abilities(index) == ability())
-        {
-            pk7->ability(abilities(index));
-        }
+        case 1:
+        case 2:
+        case 4:
+            u8 index = abilityNumber() >> 1;
+            if (abilities(index) == ability())
+            {
+                pk7->ability(abilities(index));
+            }
     }
 
     pk7->htMemory(4);

@@ -380,18 +380,18 @@ u8 PKX::genFromBytes(u8* data, size_t length, bool ekx)
 
             switch (test.version())
             {
-            case 7:
-            case 8:
-            case 10:
-            case 11:
-            case 12:
-                if (et > 24)
-                {
+                case 7:
+                case 8:
+                case 10:
+                case 11:
+                case 12:
+                    if (et > 24)
+                    {
+                        return 7;
+                    }
+                    break;
+                default:
                     return 7;
-                }
-                break;
-            default:
-                return 7;
             }
         }
         return 6;
@@ -403,14 +403,14 @@ static inline u8 genderFromRatio(u32 pid, u8 gt)
 {
     switch (gt)
     {
-    case 0xFF:
-        return 2;
-    case 0xFE:
-        return 1;
-    case 0:
-        return 0;
-    default:
-        return (pid & 0xFF) < gt ? 1 : 0;
+        case 0xFF:
+            return 2;
+        case 0xFE:
+            return 1;
+        case 0:
+            return 0;
+        default:
+            return (pid & 0xFF) < gt ? 1 : 0;
     }
 }
 
@@ -430,19 +430,19 @@ u32 PKX::getRandomPID(u16 species, u8 gender, u8 originGame, u8 nature, u8 form,
     u8 (*genderTypeFinder)(u16 species);
     switch (gen)
     {
-    case Generation::FOUR:
-        genderTypeFinder = PersonalDPPtHGSS::gender;
-        break;
-    case Generation::FIVE:
-        genderTypeFinder = PersonalBWB2W2::gender;
-        break;
-    case Generation::SIX:
-        genderTypeFinder = PersonalXYORAS::gender;
-        break;
-    case Generation::SEVEN:
-    default:
-        genderTypeFinder = PersonalSMUSUM::gender;
-        break;
+        case Generation::FOUR:
+            genderTypeFinder = PersonalDPPtHGSS::gender;
+            break;
+        case Generation::FIVE:
+            genderTypeFinder = PersonalBWB2W2::gender;
+            break;
+        case Generation::SIX:
+            genderTypeFinder = PersonalXYORAS::gender;
+            break;
+        case Generation::SEVEN:
+        default:
+            genderTypeFinder = PersonalSMUSUM::gender;
+            break;
     }
 
     u8 genderType = genderTypeFinder(species);
@@ -490,15 +490,15 @@ u32 PKX::versionTID() const
 {
     switch (version())
     {
-    default:
-        return TID();
-    case 30: // SM
-    case 31:
-    case 32: // USUM
-    case 33:
-    case 42: // LGPE
-    case 43:
-        return (u32)(SID() << 16 | TID()) % 1000000;
+        default:
+            return TID();
+        case 30: // SM
+        case 31:
+        case 32: // USUM
+        case 33:
+        case 42: // LGPE
+        case 43:
+            return (u32)(SID() << 16 | TID()) % 1000000;
     }
 }
 
@@ -506,15 +506,15 @@ u32 PKX::versionSID() const
 {
     switch (version())
     {
-    default:
-        return SID();
-    case 30: // SM
-    case 31:
-    case 32: // USUM
-    case 33:
-    case 42: // LGPE
-    case 43:
-        return (u32)(SID() << 16 | TID()) / 1000000;
+        default:
+            return SID();
+        case 30: // SM
+        case 31:
+        case 32: // USUM
+        case 33:
+        case 42: // LGPE
+        case 43:
+            return (u32)(SID() << 16 | TID()) / 1000000;
     }
 }
 
@@ -522,22 +522,22 @@ u32 PKX::formatTID() const
 {
     switch (generation())
     {
-    default:
-        return TID();
-    case Generation::SEVEN:
-    case Generation::LGPE:
-        return (u32)(SID() << 16 | TID()) % 1000000;
+        default:
+            return TID();
+        case Generation::SEVEN:
+        case Generation::LGPE:
+            return (u32)(SID() << 16 | TID()) % 1000000;
     }
 }
 u32 PKX::formatSID() const
 {
     switch (generation())
     {
-    default:
-        return SID();
-    case Generation::SEVEN:
-    case Generation::LGPE:
-        return (u32)(SID() << 16 | TID()) / 1000000;
+        default:
+            return SID();
+        case Generation::SEVEN:
+        case Generation::LGPE:
+            return (u32)(SID() << 16 | TID()) / 1000000;
     }
 }
 
@@ -545,17 +545,17 @@ std::shared_ptr<PKX> PKX::getPKM(Generation gen, u8* data, bool ekx, bool party)
 {
     switch (gen)
     {
-    case Generation::FOUR:
-        return std::make_shared<PK4>(data, ekx, party);
-    case Generation::FIVE:
-        return std::make_shared<PK5>(data, ekx, party);
-    case Generation::SIX:
-        return std::make_shared<PK6>(data, ekx, party);
-    case Generation::SEVEN:
-        return std::make_shared<PK7>(data, ekx, party);
-    case Generation::LGPE:
-        return std::make_shared<PB7>(data, ekx);
-    default:
-        return nullptr;
+        case Generation::FOUR:
+            return std::make_shared<PK4>(data, ekx, party);
+        case Generation::FIVE:
+            return std::make_shared<PK5>(data, ekx, party);
+        case Generation::SIX:
+            return std::make_shared<PK6>(data, ekx, party);
+        case Generation::SEVEN:
+            return std::make_shared<PK7>(data, ekx, party);
+        case Generation::LGPE:
+            return std::make_shared<PB7>(data, ekx);
+        default:
+            return nullptr;
     }
 }

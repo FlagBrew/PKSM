@@ -263,55 +263,55 @@ int Sav5::dexFormIndex(int species, int formct) const
     {
         switch (species)
         {
-        case 646:
-            return 72; // 3 Kyurem
-        case 647:
-            return 75; // 2 Keldeo
-        case 642:
-            return 77; // 2 Thundurus
-        case 641:
-            return 79; // 2 Tornadus
-        case 645:
-            return 81; // 2 Landorus
+            case 646:
+                return 72; // 3 Kyurem
+            case 647:
+                return 75; // 2 Keldeo
+            case 642:
+                return 77; // 2 Thundurus
+            case 641:
+                return 79; // 2 Tornadus
+            case 645:
+                return 81; // 2 Landorus
         }
     }
 
     switch (species)
     {
-    case 201:
-        return 0; // 28 Unown
-    case 386:
-        return 28; // 4 Deoxys
-    case 492:
-        return 32; // 2 Shaymin
-    case 487:
-        return 34; // 2 Giratina
-    case 479:
-        return 36; // 6 Rotom
-    case 422:
-        return 42; // 2 Shellos
-    case 423:
-        return 44; // 2 Gastrodon
-    case 412:
-        return 46; // 3 Burmy
-    case 413:
-        return 49; // 3 Wormadam
-    case 351:
-        return 52; // 4 Castform
-    case 421:
-        return 56; // 2 Cherrim
-    case 585:
-        return 58; // 4 Deerling
-    case 586:
-        return 62; // 4 Sawsbuck
-    case 648:
-        return 66; // 2 Meloetta
-    case 555:
-        return 68; // 2 Darmanitan
-    case 550:
-        return 70; // 2 Basculin
-    default:
-        return -1;
+        case 201:
+            return 0; // 28 Unown
+        case 386:
+            return 28; // 4 Deoxys
+        case 492:
+            return 32; // 2 Shaymin
+        case 487:
+            return 34; // 2 Giratina
+        case 479:
+            return 36; // 6 Rotom
+        case 422:
+            return 42; // 2 Shellos
+        case 423:
+            return 44; // 2 Gastrodon
+        case 412:
+            return 46; // 3 Burmy
+        case 413:
+            return 49; // 3 Wormadam
+        case 351:
+            return 52; // 4 Castform
+        case 421:
+            return 56; // 2 Cherrim
+        case 585:
+            return 58; // 4 Deerling
+        case 586:
+            return 62; // 4 Sawsbuck
+        case 648:
+            return 66; // 2 Meloetta
+        case 555:
+            return 68; // 2 Darmanitan
+        case 550:
+            return 70; // 2 Basculin
+        default:
+            return -1;
     }
 }
 
@@ -513,23 +513,23 @@ void Sav5::item(Item& item, Pouch pouch, u16 slot)
     auto write   = inject.bytes();
     switch (pouch)
     {
-    case NormalItem:
-        std::copy(write.first, write.first + write.second, data + PouchHeldItem + slot * 4);
-        break;
-    case KeyItem:
-        std::copy(write.first, write.first + write.second, data + PouchKeyItem + slot * 4);
-        break;
-    case TM:
-        std::copy(write.first, write.first + write.second, data + PouchTMHM + slot * 4);
-        break;
-    case Medicine:
-        std::copy(write.first, write.first + write.second, data + PouchMedicine + slot * 4);
-        break;
-    case Berry:
-        std::copy(write.first, write.first + write.second, data + PouchBerry + slot * 4);
-        break;
-    default:
-        return;
+        case NormalItem:
+            std::copy(write.first, write.first + write.second, data + PouchHeldItem + slot * 4);
+            break;
+        case KeyItem:
+            std::copy(write.first, write.first + write.second, data + PouchKeyItem + slot * 4);
+            break;
+        case TM:
+            std::copy(write.first, write.first + write.second, data + PouchTMHM + slot * 4);
+            break;
+        case Medicine:
+            std::copy(write.first, write.first + write.second, data + PouchMedicine + slot * 4);
+            break;
+        case Berry:
+            std::copy(write.first, write.first + write.second, data + PouchBerry + slot * 4);
+            break;
+        default:
+            return;
     }
 }
 
@@ -537,18 +537,18 @@ std::unique_ptr<Item> Sav5::item(Pouch pouch, u16 slot) const
 {
     switch (pouch)
     {
-    case NormalItem:
-        return std::make_unique<Item5>(data + PouchHeldItem + slot * 4);
-    case KeyItem:
-        return std::make_unique<Item5>(data + PouchKeyItem + slot * 4);
-    case TM:
-        return std::make_unique<Item5>(data + PouchTMHM + slot * 4);
-    case Medicine:
-        return std::make_unique<Item5>(data + PouchMedicine + slot * 4);
-    case Berry:
-        return std::make_unique<Item5>(data + PouchBerry + slot * 4);
-    default:
-        return nullptr;
+        case NormalItem:
+            return std::make_unique<Item5>(data + PouchHeldItem + slot * 4);
+        case KeyItem:
+            return std::make_unique<Item5>(data + PouchKeyItem + slot * 4);
+        case TM:
+            return std::make_unique<Item5>(data + PouchTMHM + slot * 4);
+        case Medicine:
+            return std::make_unique<Item5>(data + PouchMedicine + slot * 4);
+        case Berry:
+            return std::make_unique<Item5>(data + PouchBerry + slot * 4);
+        default:
+            return nullptr;
     }
 }
 
@@ -561,17 +561,17 @@ std::string Sav5::pouchName(Pouch pouch) const
 {
     switch (pouch)
     {
-    case NormalItem:
-        return i18n::localize("ITEMS");
-    case KeyItem:
-        return i18n::localize("KEY_ITEMS");
-    case TM:
-        return i18n::localize("TMHM");
-    case Medicine:
-        return i18n::localize("MEDICINE");
-    case Berry:
-        return i18n::localize("BERRIES");
-    default:
-        return "";
+        case NormalItem:
+            return i18n::localize("ITEMS");
+        case KeyItem:
+            return i18n::localize("KEY_ITEMS");
+        case TM:
+            return i18n::localize("TMHM");
+        case Medicine:
+            return i18n::localize("MEDICINE");
+        case Berry:
+            return i18n::localize("BERRIES");
+        default:
+            return "";
     }
 }

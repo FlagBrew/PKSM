@@ -1288,24 +1288,24 @@ namespace nlohmann
         {
             switch (static_cast<value_t>(j))
             {
-            case value_t::number_unsigned:
-            {
-                val = static_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::number_unsigned_t*>());
-                break;
-            }
-            case value_t::number_integer:
-            {
-                val = static_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::number_integer_t*>());
-                break;
-            }
-            case value_t::number_float:
-            {
-                val = static_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::number_float_t*>());
-                break;
-            }
+                case value_t::number_unsigned:
+                {
+                    val = static_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::number_unsigned_t*>());
+                    break;
+                }
+                case value_t::number_integer:
+                {
+                    val = static_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::number_integer_t*>());
+                    break;
+                }
+                case value_t::number_float:
+                {
+                    val = static_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::number_float_t*>());
+                    break;
+                }
 
-            default:
-                JSON_THROW(type_error::create(302, "type must be number, but is " + std::string(j.type_name())));
+                default:
+                    JSON_THROW(type_error::create(302, "type must be number, but is " + std::string(j.type_name())));
             }
         }
 
@@ -1484,29 +1484,29 @@ namespace nlohmann
         {
             switch (static_cast<value_t>(j))
             {
-            case value_t::number_unsigned:
-            {
-                val = static_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::number_unsigned_t*>());
-                break;
-            }
-            case value_t::number_integer:
-            {
-                val = static_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::number_integer_t*>());
-                break;
-            }
-            case value_t::number_float:
-            {
-                val = static_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::number_float_t*>());
-                break;
-            }
-            case value_t::boolean:
-            {
-                val = static_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::boolean_t*>());
-                break;
-            }
+                case value_t::number_unsigned:
+                {
+                    val = static_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::number_unsigned_t*>());
+                    break;
+                }
+                case value_t::number_integer:
+                {
+                    val = static_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::number_integer_t*>());
+                    break;
+                }
+                case value_t::number_float:
+                {
+                    val = static_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::number_float_t*>());
+                    break;
+                }
+                case value_t::boolean:
+                {
+                    val = static_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::boolean_t*>());
+                    break;
+                }
 
-            default:
-                JSON_THROW(type_error::create(302, "type must be number, but is " + std::string(j.type_name())));
+                default:
+                    JSON_THROW(type_error::create(302, "type must be number, but is " + std::string(j.type_name())));
             }
         }
 
@@ -1660,24 +1660,24 @@ namespace nlohmann
 
                 switch (anchor.m_object->type())
                 {
-                // use integer array index as key
-                case value_t::array:
-                {
-                    if (array_index != array_index_last)
+                    // use integer array index as key
+                    case value_t::array:
                     {
-                        array_index_str  = std::to_string(array_index);
-                        array_index_last = array_index;
+                        if (array_index != array_index_last)
+                        {
+                            array_index_str  = std::to_string(array_index);
+                            array_index_last = array_index;
+                        }
+                        return array_index_str;
                     }
-                    return array_index_str;
-                }
 
-                // use key from the object
-                case value_t::object:
-                    return anchor.key();
+                    // use key from the object
+                    case value_t::object:
+                        return anchor.key();
 
-                // use an empty key for all primitive types
-                default:
-                    return empty_str;
+                    // use an empty key for all primitive types
+                    default:
+                        return empty_str;
                 }
             }
 
@@ -2805,20 +2805,20 @@ namespace nlohmann
                     // determine the proper exception type from the id
                     switch ((ex.id / 100) % 100)
                     {
-                    case 1:
-                        JSON_THROW(*static_cast<const detail::parse_error*>(&ex));
-                    case 4:
-                        JSON_THROW(*static_cast<const detail::out_of_range*>(&ex));
-                    // LCOV_EXCL_START
-                    case 2:
-                        JSON_THROW(*static_cast<const detail::invalid_iterator*>(&ex));
-                    case 3:
-                        JSON_THROW(*static_cast<const detail::type_error*>(&ex));
-                    case 5:
-                        JSON_THROW(*static_cast<const detail::other_error*>(&ex));
-                    default:
-                        assert(false);
-                        // LCOV_EXCL_STOP
+                        case 1:
+                            JSON_THROW(*static_cast<const detail::parse_error*>(&ex));
+                        case 4:
+                            JSON_THROW(*static_cast<const detail::out_of_range*>(&ex));
+                        // LCOV_EXCL_START
+                        case 2:
+                            JSON_THROW(*static_cast<const detail::invalid_iterator*>(&ex));
+                        case 3:
+                            JSON_THROW(*static_cast<const detail::type_error*>(&ex));
+                        case 5:
+                            JSON_THROW(*static_cast<const detail::other_error*>(&ex));
+                        default:
+                            assert(false);
+                            // LCOV_EXCL_STOP
                     }
                 }
                 return false;
@@ -3045,20 +3045,20 @@ namespace nlohmann
                     // determine the proper exception type from the id
                     switch ((ex.id / 100) % 100)
                     {
-                    case 1:
-                        JSON_THROW(*static_cast<const detail::parse_error*>(&ex));
-                    case 4:
-                        JSON_THROW(*static_cast<const detail::out_of_range*>(&ex));
-                    // LCOV_EXCL_START
-                    case 2:
-                        JSON_THROW(*static_cast<const detail::invalid_iterator*>(&ex));
-                    case 3:
-                        JSON_THROW(*static_cast<const detail::type_error*>(&ex));
-                    case 5:
-                        JSON_THROW(*static_cast<const detail::other_error*>(&ex));
-                    default:
-                        assert(false);
-                        // LCOV_EXCL_STOP
+                        case 1:
+                            JSON_THROW(*static_cast<const detail::parse_error*>(&ex));
+                        case 4:
+                            JSON_THROW(*static_cast<const detail::out_of_range*>(&ex));
+                        // LCOV_EXCL_START
+                        case 2:
+                            JSON_THROW(*static_cast<const detail::invalid_iterator*>(&ex));
+                        case 3:
+                            JSON_THROW(*static_cast<const detail::type_error*>(&ex));
+                        case 5:
+                            JSON_THROW(*static_cast<const detail::other_error*>(&ex));
+                        default:
+                            assert(false);
+                            // LCOV_EXCL_STOP
                     }
                 }
                 return false;
@@ -3370,24 +3370,24 @@ namespace nlohmann
 
                 switch (format)
                 {
-                case input_format_t::bson:
-                    result = parse_bson_internal();
-                    break;
+                    case input_format_t::bson:
+                        result = parse_bson_internal();
+                        break;
 
-                case input_format_t::cbor:
-                    result = parse_cbor_internal();
-                    break;
+                    case input_format_t::cbor:
+                        result = parse_cbor_internal();
+                        break;
 
-                case input_format_t::msgpack:
-                    result = parse_msgpack_internal();
-                    break;
+                    case input_format_t::msgpack:
+                        result = parse_msgpack_internal();
+                        break;
 
-                case input_format_t::ubjson:
-                    result = parse_ubjson_internal();
-                    break;
+                    case input_format_t::ubjson:
+                        result = parse_ubjson_internal();
+                        break;
 
-                default:           // LCOV_EXCL_LINE
-                    assert(false); // LCOV_EXCL_LINE
+                    default:           // LCOV_EXCL_LINE
+                        assert(false); // LCOV_EXCL_LINE
                 }
 
                 // strict mode: next byte must be EOF
@@ -3515,58 +3515,58 @@ namespace nlohmann
             {
                 switch (element_type)
                 {
-                case 0x01: // double
-                {
-                    double number;
-                    return get_number<double, true>(input_format_t::bson, number) and sax->number_float(static_cast<number_float_t>(number), "");
-                }
+                    case 0x01: // double
+                    {
+                        double number;
+                        return get_number<double, true>(input_format_t::bson, number) and sax->number_float(static_cast<number_float_t>(number), "");
+                    }
 
-                case 0x02: // string
-                {
-                    std::int32_t len;
-                    string_t value;
-                    return get_number<std::int32_t, true>(input_format_t::bson, len) and get_bson_string(len, value) and sax->string(value);
-                }
+                    case 0x02: // string
+                    {
+                        std::int32_t len;
+                        string_t value;
+                        return get_number<std::int32_t, true>(input_format_t::bson, len) and get_bson_string(len, value) and sax->string(value);
+                    }
 
-                case 0x03: // object
-                {
-                    return parse_bson_internal();
-                }
+                    case 0x03: // object
+                    {
+                        return parse_bson_internal();
+                    }
 
-                case 0x04: // array
-                {
-                    return parse_bson_array();
-                }
+                    case 0x04: // array
+                    {
+                        return parse_bson_array();
+                    }
 
-                case 0x08: // boolean
-                {
-                    return sax->boolean(get() != 0);
-                }
+                    case 0x08: // boolean
+                    {
+                        return sax->boolean(get() != 0);
+                    }
 
-                case 0x0A: // null
-                {
-                    return sax->null();
-                }
+                    case 0x0A: // null
+                    {
+                        return sax->null();
+                    }
 
-                case 0x10: // int32
-                {
-                    std::int32_t value;
-                    return get_number<std::int32_t, true>(input_format_t::bson, value) and sax->number_integer(value);
-                }
+                    case 0x10: // int32
+                    {
+                        std::int32_t value;
+                        return get_number<std::int32_t, true>(input_format_t::bson, value) and sax->number_integer(value);
+                    }
 
-                case 0x12: // int64
-                {
-                    std::int64_t value;
-                    return get_number<std::int64_t, true>(input_format_t::bson, value) and sax->number_integer(value);
-                }
+                    case 0x12: // int64
+                    {
+                        std::int64_t value;
+                        return get_number<std::int64_t, true>(input_format_t::bson, value) and sax->number_integer(value);
+                    }
 
-                default: // anything else not supported (yet)
-                {
-                    std::array<char, 3> cr{{}};
-                    (std::snprintf)(cr.data(), cr.size(), "%.2hhX", static_cast<unsigned char>(element_type));
-                    return sax->parse_error(element_type_parse_position, std::string(cr.data()),
-                        parse_error::create(114, element_type_parse_position, "Unsupported BSON record type 0x" + std::string(cr.data())));
-                }
+                    default: // anything else not supported (yet)
+                    {
+                        std::array<char, 3> cr{{}};
+                        (std::snprintf)(cr.data(), cr.size(), "%.2hhX", static_cast<unsigned char>(element_type));
+                        return sax->parse_error(element_type_parse_position, std::string(cr.data()),
+                            parse_error::create(114, element_type_parse_position, "Unsupported BSON record type 0x" + std::string(cr.data())));
+                    }
                 }
             }
 
@@ -3652,326 +3652,326 @@ namespace nlohmann
             {
                 switch (get_char ? get() : current)
                 {
-                // EOF
-                case std::char_traits<char>::eof():
-                    return unexpect_eof(input_format_t::cbor, "value");
+                    // EOF
+                    case std::char_traits<char>::eof():
+                        return unexpect_eof(input_format_t::cbor, "value");
 
-                // Integer 0x00..0x17 (0..23)
-                case 0x00:
-                case 0x01:
-                case 0x02:
-                case 0x03:
-                case 0x04:
-                case 0x05:
-                case 0x06:
-                case 0x07:
-                case 0x08:
-                case 0x09:
-                case 0x0A:
-                case 0x0B:
-                case 0x0C:
-                case 0x0D:
-                case 0x0E:
-                case 0x0F:
-                case 0x10:
-                case 0x11:
-                case 0x12:
-                case 0x13:
-                case 0x14:
-                case 0x15:
-                case 0x16:
-                case 0x17:
-                    return sax->number_unsigned(static_cast<number_unsigned_t>(current));
+                    // Integer 0x00..0x17 (0..23)
+                    case 0x00:
+                    case 0x01:
+                    case 0x02:
+                    case 0x03:
+                    case 0x04:
+                    case 0x05:
+                    case 0x06:
+                    case 0x07:
+                    case 0x08:
+                    case 0x09:
+                    case 0x0A:
+                    case 0x0B:
+                    case 0x0C:
+                    case 0x0D:
+                    case 0x0E:
+                    case 0x0F:
+                    case 0x10:
+                    case 0x11:
+                    case 0x12:
+                    case 0x13:
+                    case 0x14:
+                    case 0x15:
+                    case 0x16:
+                    case 0x17:
+                        return sax->number_unsigned(static_cast<number_unsigned_t>(current));
 
-                case 0x18: // Unsigned integer (one-byte uint8_t follows)
-                {
-                    std::uint8_t number;
-                    return get_number(input_format_t::cbor, number) and sax->number_unsigned(number);
-                }
-
-                case 0x19: // Unsigned integer (two-byte uint16_t follows)
-                {
-                    std::uint16_t number;
-                    return get_number(input_format_t::cbor, number) and sax->number_unsigned(number);
-                }
-
-                case 0x1A: // Unsigned integer (four-byte uint32_t follows)
-                {
-                    std::uint32_t number;
-                    return get_number(input_format_t::cbor, number) and sax->number_unsigned(number);
-                }
-
-                case 0x1B: // Unsigned integer (eight-byte uint64_t follows)
-                {
-                    std::uint64_t number;
-                    return get_number(input_format_t::cbor, number) and sax->number_unsigned(number);
-                }
-
-                // Negative integer -1-0x00..-1-0x17 (-1..-24)
-                case 0x20:
-                case 0x21:
-                case 0x22:
-                case 0x23:
-                case 0x24:
-                case 0x25:
-                case 0x26:
-                case 0x27:
-                case 0x28:
-                case 0x29:
-                case 0x2A:
-                case 0x2B:
-                case 0x2C:
-                case 0x2D:
-                case 0x2E:
-                case 0x2F:
-                case 0x30:
-                case 0x31:
-                case 0x32:
-                case 0x33:
-                case 0x34:
-                case 0x35:
-                case 0x36:
-                case 0x37:
-                    return sax->number_integer(static_cast<std::int8_t>(0x20 - 1 - current));
-
-                case 0x38: // Negative integer (one-byte uint8_t follows)
-                {
-                    std::uint8_t number;
-                    return get_number(input_format_t::cbor, number) and sax->number_integer(static_cast<number_integer_t>(-1) - number);
-                }
-
-                case 0x39: // Negative integer -1-n (two-byte uint16_t follows)
-                {
-                    std::uint16_t number;
-                    return get_number(input_format_t::cbor, number) and sax->number_integer(static_cast<number_integer_t>(-1) - number);
-                }
-
-                case 0x3A: // Negative integer -1-n (four-byte uint32_t follows)
-                {
-                    std::uint32_t number;
-                    return get_number(input_format_t::cbor, number) and sax->number_integer(static_cast<number_integer_t>(-1) - number);
-                }
-
-                case 0x3B: // Negative integer -1-n (eight-byte uint64_t follows)
-                {
-                    std::uint64_t number;
-                    return get_number(input_format_t::cbor, number) and
-                           sax->number_integer(static_cast<number_integer_t>(-1) - static_cast<number_integer_t>(number));
-                }
-
-                // UTF-8 string (0x00..0x17 bytes follow)
-                case 0x60:
-                case 0x61:
-                case 0x62:
-                case 0x63:
-                case 0x64:
-                case 0x65:
-                case 0x66:
-                case 0x67:
-                case 0x68:
-                case 0x69:
-                case 0x6A:
-                case 0x6B:
-                case 0x6C:
-                case 0x6D:
-                case 0x6E:
-                case 0x6F:
-                case 0x70:
-                case 0x71:
-                case 0x72:
-                case 0x73:
-                case 0x74:
-                case 0x75:
-                case 0x76:
-                case 0x77:
-                case 0x78: // UTF-8 string (one-byte uint8_t for n follows)
-                case 0x79: // UTF-8 string (two-byte uint16_t for n follow)
-                case 0x7A: // UTF-8 string (four-byte uint32_t for n follow)
-                case 0x7B: // UTF-8 string (eight-byte uint64_t for n follow)
-                case 0x7F: // UTF-8 string (indefinite length)
-                {
-                    string_t s;
-                    return get_cbor_string(s) and sax->string(s);
-                }
-
-                // array (0x00..0x17 data items follow)
-                case 0x80:
-                case 0x81:
-                case 0x82:
-                case 0x83:
-                case 0x84:
-                case 0x85:
-                case 0x86:
-                case 0x87:
-                case 0x88:
-                case 0x89:
-                case 0x8A:
-                case 0x8B:
-                case 0x8C:
-                case 0x8D:
-                case 0x8E:
-                case 0x8F:
-                case 0x90:
-                case 0x91:
-                case 0x92:
-                case 0x93:
-                case 0x94:
-                case 0x95:
-                case 0x96:
-                case 0x97:
-                    return get_cbor_array(static_cast<std::size_t>(static_cast<unsigned int>(current) & 0x1Fu));
-
-                case 0x98: // array (one-byte uint8_t for n follows)
-                {
-                    std::uint8_t len;
-                    return get_number(input_format_t::cbor, len) and get_cbor_array(static_cast<std::size_t>(len));
-                }
-
-                case 0x99: // array (two-byte uint16_t for n follow)
-                {
-                    std::uint16_t len;
-                    return get_number(input_format_t::cbor, len) and get_cbor_array(static_cast<std::size_t>(len));
-                }
-
-                case 0x9A: // array (four-byte uint32_t for n follow)
-                {
-                    std::uint32_t len;
-                    return get_number(input_format_t::cbor, len) and get_cbor_array(static_cast<std::size_t>(len));
-                }
-
-                case 0x9B: // array (eight-byte uint64_t for n follow)
-                {
-                    std::uint64_t len;
-                    return get_number(input_format_t::cbor, len) and get_cbor_array(static_cast<std::size_t>(len));
-                }
-
-                case 0x9F: // array (indefinite length)
-                    return get_cbor_array(std::size_t(-1));
-
-                // map (0x00..0x17 pairs of data items follow)
-                case 0xA0:
-                case 0xA1:
-                case 0xA2:
-                case 0xA3:
-                case 0xA4:
-                case 0xA5:
-                case 0xA6:
-                case 0xA7:
-                case 0xA8:
-                case 0xA9:
-                case 0xAA:
-                case 0xAB:
-                case 0xAC:
-                case 0xAD:
-                case 0xAE:
-                case 0xAF:
-                case 0xB0:
-                case 0xB1:
-                case 0xB2:
-                case 0xB3:
-                case 0xB4:
-                case 0xB5:
-                case 0xB6:
-                case 0xB7:
-                    return get_cbor_object(static_cast<std::size_t>(static_cast<unsigned int>(current) & 0x1Fu));
-
-                case 0xB8: // map (one-byte uint8_t for n follows)
-                {
-                    std::uint8_t len;
-                    return get_number(input_format_t::cbor, len) and get_cbor_object(static_cast<std::size_t>(len));
-                }
-
-                case 0xB9: // map (two-byte uint16_t for n follow)
-                {
-                    std::uint16_t len;
-                    return get_number(input_format_t::cbor, len) and get_cbor_object(static_cast<std::size_t>(len));
-                }
-
-                case 0xBA: // map (four-byte uint32_t for n follow)
-                {
-                    std::uint32_t len;
-                    return get_number(input_format_t::cbor, len) and get_cbor_object(static_cast<std::size_t>(len));
-                }
-
-                case 0xBB: // map (eight-byte uint64_t for n follow)
-                {
-                    std::uint64_t len;
-                    return get_number(input_format_t::cbor, len) and get_cbor_object(static_cast<std::size_t>(len));
-                }
-
-                case 0xBF: // map (indefinite length)
-                    return get_cbor_object(std::size_t(-1));
-
-                case 0xF4: // false
-                    return sax->boolean(false);
-
-                case 0xF5: // true
-                    return sax->boolean(true);
-
-                case 0xF6: // null
-                    return sax->null();
-
-                case 0xF9: // Half-Precision Float (two-byte IEEE 754)
-                {
-                    const int byte1_raw = get();
-                    if (JSON_UNLIKELY(not unexpect_eof(input_format_t::cbor, "number")))
+                    case 0x18: // Unsigned integer (one-byte uint8_t follows)
                     {
-                        return false;
-                    }
-                    const int byte2_raw = get();
-                    if (JSON_UNLIKELY(not unexpect_eof(input_format_t::cbor, "number")))
-                    {
-                        return false;
+                        std::uint8_t number;
+                        return get_number(input_format_t::cbor, number) and sax->number_unsigned(number);
                     }
 
-                    const auto byte1 = static_cast<unsigned char>(byte1_raw);
-                    const auto byte2 = static_cast<unsigned char>(byte2_raw);
+                    case 0x19: // Unsigned integer (two-byte uint16_t follows)
+                    {
+                        std::uint16_t number;
+                        return get_number(input_format_t::cbor, number) and sax->number_unsigned(number);
+                    }
 
-                    // code from RFC 7049, Appendix D, Figure 3:
-                    // As half-precision floating-point numbers were only added
-                    // to IEEE 754 in 2008, today's programming platforms often
-                    // still only have limited support for them. It is very
-                    // easy to include at least decoding support for them even
-                    // without such support. An example of a small decoder for
-                    // half-precision floating-point numbers in the C language
-                    // is shown in Fig. 3.
-                    const auto half  = static_cast<unsigned int>((byte1 << 8u) + byte2);
-                    const double val = [&half] {
-                        const int exp           = (half >> 10u) & 0x1Fu;
-                        const unsigned int mant = half & 0x3FFu;
-                        assert(0 <= exp and exp <= 32);
-                        assert(0 <= mant and mant <= 1024);
-                        switch (exp)
+                    case 0x1A: // Unsigned integer (four-byte uint32_t follows)
+                    {
+                        std::uint32_t number;
+                        return get_number(input_format_t::cbor, number) and sax->number_unsigned(number);
+                    }
+
+                    case 0x1B: // Unsigned integer (eight-byte uint64_t follows)
+                    {
+                        std::uint64_t number;
+                        return get_number(input_format_t::cbor, number) and sax->number_unsigned(number);
+                    }
+
+                    // Negative integer -1-0x00..-1-0x17 (-1..-24)
+                    case 0x20:
+                    case 0x21:
+                    case 0x22:
+                    case 0x23:
+                    case 0x24:
+                    case 0x25:
+                    case 0x26:
+                    case 0x27:
+                    case 0x28:
+                    case 0x29:
+                    case 0x2A:
+                    case 0x2B:
+                    case 0x2C:
+                    case 0x2D:
+                    case 0x2E:
+                    case 0x2F:
+                    case 0x30:
+                    case 0x31:
+                    case 0x32:
+                    case 0x33:
+                    case 0x34:
+                    case 0x35:
+                    case 0x36:
+                    case 0x37:
+                        return sax->number_integer(static_cast<std::int8_t>(0x20 - 1 - current));
+
+                    case 0x38: // Negative integer (one-byte uint8_t follows)
+                    {
+                        std::uint8_t number;
+                        return get_number(input_format_t::cbor, number) and sax->number_integer(static_cast<number_integer_t>(-1) - number);
+                    }
+
+                    case 0x39: // Negative integer -1-n (two-byte uint16_t follows)
+                    {
+                        std::uint16_t number;
+                        return get_number(input_format_t::cbor, number) and sax->number_integer(static_cast<number_integer_t>(-1) - number);
+                    }
+
+                    case 0x3A: // Negative integer -1-n (four-byte uint32_t follows)
+                    {
+                        std::uint32_t number;
+                        return get_number(input_format_t::cbor, number) and sax->number_integer(static_cast<number_integer_t>(-1) - number);
+                    }
+
+                    case 0x3B: // Negative integer -1-n (eight-byte uint64_t follows)
+                    {
+                        std::uint64_t number;
+                        return get_number(input_format_t::cbor, number) and
+                               sax->number_integer(static_cast<number_integer_t>(-1) - static_cast<number_integer_t>(number));
+                    }
+
+                    // UTF-8 string (0x00..0x17 bytes follow)
+                    case 0x60:
+                    case 0x61:
+                    case 0x62:
+                    case 0x63:
+                    case 0x64:
+                    case 0x65:
+                    case 0x66:
+                    case 0x67:
+                    case 0x68:
+                    case 0x69:
+                    case 0x6A:
+                    case 0x6B:
+                    case 0x6C:
+                    case 0x6D:
+                    case 0x6E:
+                    case 0x6F:
+                    case 0x70:
+                    case 0x71:
+                    case 0x72:
+                    case 0x73:
+                    case 0x74:
+                    case 0x75:
+                    case 0x76:
+                    case 0x77:
+                    case 0x78: // UTF-8 string (one-byte uint8_t for n follows)
+                    case 0x79: // UTF-8 string (two-byte uint16_t for n follow)
+                    case 0x7A: // UTF-8 string (four-byte uint32_t for n follow)
+                    case 0x7B: // UTF-8 string (eight-byte uint64_t for n follow)
+                    case 0x7F: // UTF-8 string (indefinite length)
+                    {
+                        string_t s;
+                        return get_cbor_string(s) and sax->string(s);
+                    }
+
+                    // array (0x00..0x17 data items follow)
+                    case 0x80:
+                    case 0x81:
+                    case 0x82:
+                    case 0x83:
+                    case 0x84:
+                    case 0x85:
+                    case 0x86:
+                    case 0x87:
+                    case 0x88:
+                    case 0x89:
+                    case 0x8A:
+                    case 0x8B:
+                    case 0x8C:
+                    case 0x8D:
+                    case 0x8E:
+                    case 0x8F:
+                    case 0x90:
+                    case 0x91:
+                    case 0x92:
+                    case 0x93:
+                    case 0x94:
+                    case 0x95:
+                    case 0x96:
+                    case 0x97:
+                        return get_cbor_array(static_cast<std::size_t>(static_cast<unsigned int>(current) & 0x1Fu));
+
+                    case 0x98: // array (one-byte uint8_t for n follows)
+                    {
+                        std::uint8_t len;
+                        return get_number(input_format_t::cbor, len) and get_cbor_array(static_cast<std::size_t>(len));
+                    }
+
+                    case 0x99: // array (two-byte uint16_t for n follow)
+                    {
+                        std::uint16_t len;
+                        return get_number(input_format_t::cbor, len) and get_cbor_array(static_cast<std::size_t>(len));
+                    }
+
+                    case 0x9A: // array (four-byte uint32_t for n follow)
+                    {
+                        std::uint32_t len;
+                        return get_number(input_format_t::cbor, len) and get_cbor_array(static_cast<std::size_t>(len));
+                    }
+
+                    case 0x9B: // array (eight-byte uint64_t for n follow)
+                    {
+                        std::uint64_t len;
+                        return get_number(input_format_t::cbor, len) and get_cbor_array(static_cast<std::size_t>(len));
+                    }
+
+                    case 0x9F: // array (indefinite length)
+                        return get_cbor_array(std::size_t(-1));
+
+                    // map (0x00..0x17 pairs of data items follow)
+                    case 0xA0:
+                    case 0xA1:
+                    case 0xA2:
+                    case 0xA3:
+                    case 0xA4:
+                    case 0xA5:
+                    case 0xA6:
+                    case 0xA7:
+                    case 0xA8:
+                    case 0xA9:
+                    case 0xAA:
+                    case 0xAB:
+                    case 0xAC:
+                    case 0xAD:
+                    case 0xAE:
+                    case 0xAF:
+                    case 0xB0:
+                    case 0xB1:
+                    case 0xB2:
+                    case 0xB3:
+                    case 0xB4:
+                    case 0xB5:
+                    case 0xB6:
+                    case 0xB7:
+                        return get_cbor_object(static_cast<std::size_t>(static_cast<unsigned int>(current) & 0x1Fu));
+
+                    case 0xB8: // map (one-byte uint8_t for n follows)
+                    {
+                        std::uint8_t len;
+                        return get_number(input_format_t::cbor, len) and get_cbor_object(static_cast<std::size_t>(len));
+                    }
+
+                    case 0xB9: // map (two-byte uint16_t for n follow)
+                    {
+                        std::uint16_t len;
+                        return get_number(input_format_t::cbor, len) and get_cbor_object(static_cast<std::size_t>(len));
+                    }
+
+                    case 0xBA: // map (four-byte uint32_t for n follow)
+                    {
+                        std::uint32_t len;
+                        return get_number(input_format_t::cbor, len) and get_cbor_object(static_cast<std::size_t>(len));
+                    }
+
+                    case 0xBB: // map (eight-byte uint64_t for n follow)
+                    {
+                        std::uint64_t len;
+                        return get_number(input_format_t::cbor, len) and get_cbor_object(static_cast<std::size_t>(len));
+                    }
+
+                    case 0xBF: // map (indefinite length)
+                        return get_cbor_object(std::size_t(-1));
+
+                    case 0xF4: // false
+                        return sax->boolean(false);
+
+                    case 0xF5: // true
+                        return sax->boolean(true);
+
+                    case 0xF6: // null
+                        return sax->null();
+
+                    case 0xF9: // Half-Precision Float (two-byte IEEE 754)
+                    {
+                        const int byte1_raw = get();
+                        if (JSON_UNLIKELY(not unexpect_eof(input_format_t::cbor, "number")))
                         {
-                        case 0:
-                            return std::ldexp(mant, -24);
-                        case 31:
-                            return (mant == 0) ? std::numeric_limits<double>::infinity() : std::numeric_limits<double>::quiet_NaN();
-                        default:
-                            return std::ldexp(mant + 1024, exp - 25);
+                            return false;
                         }
-                    }();
-                    return sax->number_float((half & 0x8000u) != 0 ? static_cast<number_float_t>(-val) : static_cast<number_float_t>(val), "");
-                }
+                        const int byte2_raw = get();
+                        if (JSON_UNLIKELY(not unexpect_eof(input_format_t::cbor, "number")))
+                        {
+                            return false;
+                        }
 
-                case 0xFA: // Single-Precision Float (four-byte IEEE 754)
-                {
-                    float number;
-                    return get_number(input_format_t::cbor, number) and sax->number_float(static_cast<number_float_t>(number), "");
-                }
+                        const auto byte1 = static_cast<unsigned char>(byte1_raw);
+                        const auto byte2 = static_cast<unsigned char>(byte2_raw);
 
-                case 0xFB: // Double-Precision Float (eight-byte IEEE 754)
-                {
-                    double number;
-                    return get_number(input_format_t::cbor, number) and sax->number_float(static_cast<number_float_t>(number), "");
-                }
+                        // code from RFC 7049, Appendix D, Figure 3:
+                        // As half-precision floating-point numbers were only added
+                        // to IEEE 754 in 2008, today's programming platforms often
+                        // still only have limited support for them. It is very
+                        // easy to include at least decoding support for them even
+                        // without such support. An example of a small decoder for
+                        // half-precision floating-point numbers in the C language
+                        // is shown in Fig. 3.
+                        const auto half  = static_cast<unsigned int>((byte1 << 8u) + byte2);
+                        const double val = [&half] {
+                            const int exp           = (half >> 10u) & 0x1Fu;
+                            const unsigned int mant = half & 0x3FFu;
+                            assert(0 <= exp and exp <= 32);
+                            assert(0 <= mant and mant <= 1024);
+                            switch (exp)
+                            {
+                                case 0:
+                                    return std::ldexp(mant, -24);
+                                case 31:
+                                    return (mant == 0) ? std::numeric_limits<double>::infinity() : std::numeric_limits<double>::quiet_NaN();
+                                default:
+                                    return std::ldexp(mant + 1024, exp - 25);
+                            }
+                        }();
+                        return sax->number_float((half & 0x8000u) != 0 ? static_cast<number_float_t>(-val) : static_cast<number_float_t>(val), "");
+                    }
 
-                default: // anything else (0xFF is handled inside the other types)
-                {
-                    auto last_token = get_token_string();
-                    return sax->parse_error(chars_read, last_token,
-                        parse_error::create(112, chars_read, exception_message(input_format_t::cbor, "invalid byte: 0x" + last_token, "value")));
-                }
+                    case 0xFA: // Single-Precision Float (four-byte IEEE 754)
+                    {
+                        float number;
+                        return get_number(input_format_t::cbor, number) and sax->number_float(static_cast<number_float_t>(number), "");
+                    }
+
+                    case 0xFB: // Double-Precision Float (eight-byte IEEE 754)
+                    {
+                        double number;
+                        return get_number(input_format_t::cbor, number) and sax->number_float(static_cast<number_float_t>(number), "");
+                    }
+
+                    default: // anything else (0xFF is handled inside the other types)
+                    {
+                        auto last_token = get_token_string();
+                        return sax->parse_error(chars_read, last_token,
+                            parse_error::create(112, chars_read, exception_message(input_format_t::cbor, "invalid byte: 0x" + last_token, "value")));
+                    }
                 }
             }
 
@@ -3995,81 +3995,82 @@ namespace nlohmann
 
                 switch (current)
                 {
-                // UTF-8 string (0x00..0x17 bytes follow)
-                case 0x60:
-                case 0x61:
-                case 0x62:
-                case 0x63:
-                case 0x64:
-                case 0x65:
-                case 0x66:
-                case 0x67:
-                case 0x68:
-                case 0x69:
-                case 0x6A:
-                case 0x6B:
-                case 0x6C:
-                case 0x6D:
-                case 0x6E:
-                case 0x6F:
-                case 0x70:
-                case 0x71:
-                case 0x72:
-                case 0x73:
-                case 0x74:
-                case 0x75:
-                case 0x76:
-                case 0x77:
-                {
-                    return get_string(input_format_t::cbor, static_cast<unsigned int>(current) & 0x1Fu, result);
-                }
-
-                case 0x78: // UTF-8 string (one-byte uint8_t for n follows)
-                {
-                    std::uint8_t len;
-                    return get_number(input_format_t::cbor, len) and get_string(input_format_t::cbor, len, result);
-                }
-
-                case 0x79: // UTF-8 string (two-byte uint16_t for n follow)
-                {
-                    std::uint16_t len;
-                    return get_number(input_format_t::cbor, len) and get_string(input_format_t::cbor, len, result);
-                }
-
-                case 0x7A: // UTF-8 string (four-byte uint32_t for n follow)
-                {
-                    std::uint32_t len;
-                    return get_number(input_format_t::cbor, len) and get_string(input_format_t::cbor, len, result);
-                }
-
-                case 0x7B: // UTF-8 string (eight-byte uint64_t for n follow)
-                {
-                    std::uint64_t len;
-                    return get_number(input_format_t::cbor, len) and get_string(input_format_t::cbor, len, result);
-                }
-
-                case 0x7F: // UTF-8 string (indefinite length)
-                {
-                    while (get() != 0xFF)
+                    // UTF-8 string (0x00..0x17 bytes follow)
+                    case 0x60:
+                    case 0x61:
+                    case 0x62:
+                    case 0x63:
+                    case 0x64:
+                    case 0x65:
+                    case 0x66:
+                    case 0x67:
+                    case 0x68:
+                    case 0x69:
+                    case 0x6A:
+                    case 0x6B:
+                    case 0x6C:
+                    case 0x6D:
+                    case 0x6E:
+                    case 0x6F:
+                    case 0x70:
+                    case 0x71:
+                    case 0x72:
+                    case 0x73:
+                    case 0x74:
+                    case 0x75:
+                    case 0x76:
+                    case 0x77:
                     {
-                        string_t chunk;
-                        if (not get_cbor_string(chunk))
-                        {
-                            return false;
-                        }
-                        result.append(chunk);
+                        return get_string(input_format_t::cbor, static_cast<unsigned int>(current) & 0x1Fu, result);
                     }
-                    return true;
-                }
 
-                default:
-                {
-                    auto last_token = get_token_string();
-                    return sax->parse_error(chars_read, last_token,
-                        parse_error::create(113, chars_read,
-                            exception_message(input_format_t::cbor,
-                                "expected length specification (0x60-0x7B) or indefinite string type (0x7F); last byte: 0x" + last_token, "string")));
-                }
+                    case 0x78: // UTF-8 string (one-byte uint8_t for n follows)
+                    {
+                        std::uint8_t len;
+                        return get_number(input_format_t::cbor, len) and get_string(input_format_t::cbor, len, result);
+                    }
+
+                    case 0x79: // UTF-8 string (two-byte uint16_t for n follow)
+                    {
+                        std::uint16_t len;
+                        return get_number(input_format_t::cbor, len) and get_string(input_format_t::cbor, len, result);
+                    }
+
+                    case 0x7A: // UTF-8 string (four-byte uint32_t for n follow)
+                    {
+                        std::uint32_t len;
+                        return get_number(input_format_t::cbor, len) and get_string(input_format_t::cbor, len, result);
+                    }
+
+                    case 0x7B: // UTF-8 string (eight-byte uint64_t for n follow)
+                    {
+                        std::uint64_t len;
+                        return get_number(input_format_t::cbor, len) and get_string(input_format_t::cbor, len, result);
+                    }
+
+                    case 0x7F: // UTF-8 string (indefinite length)
+                    {
+                        while (get() != 0xFF)
+                        {
+                            string_t chunk;
+                            if (not get_cbor_string(chunk))
+                            {
+                                return false;
+                            }
+                            result.append(chunk);
+                        }
+                        return true;
+                    }
+
+                    default:
+                    {
+                        auto last_token = get_token_string();
+                        return sax->parse_error(chars_read, last_token,
+                            parse_error::create(113, chars_read,
+                                exception_message(input_format_t::cbor,
+                                    "expected length specification (0x60-0x7B) or indefinite string type (0x7F); last byte: 0x" + last_token,
+                                    "string")));
+                    }
                 }
             }
 
@@ -4170,359 +4171,360 @@ namespace nlohmann
             {
                 switch (get())
                 {
-                // EOF
-                case std::char_traits<char>::eof():
-                    return unexpect_eof(input_format_t::msgpack, "value");
+                    // EOF
+                    case std::char_traits<char>::eof():
+                        return unexpect_eof(input_format_t::msgpack, "value");
 
-                // positive fixint
-                case 0x00:
-                case 0x01:
-                case 0x02:
-                case 0x03:
-                case 0x04:
-                case 0x05:
-                case 0x06:
-                case 0x07:
-                case 0x08:
-                case 0x09:
-                case 0x0A:
-                case 0x0B:
-                case 0x0C:
-                case 0x0D:
-                case 0x0E:
-                case 0x0F:
-                case 0x10:
-                case 0x11:
-                case 0x12:
-                case 0x13:
-                case 0x14:
-                case 0x15:
-                case 0x16:
-                case 0x17:
-                case 0x18:
-                case 0x19:
-                case 0x1A:
-                case 0x1B:
-                case 0x1C:
-                case 0x1D:
-                case 0x1E:
-                case 0x1F:
-                case 0x20:
-                case 0x21:
-                case 0x22:
-                case 0x23:
-                case 0x24:
-                case 0x25:
-                case 0x26:
-                case 0x27:
-                case 0x28:
-                case 0x29:
-                case 0x2A:
-                case 0x2B:
-                case 0x2C:
-                case 0x2D:
-                case 0x2E:
-                case 0x2F:
-                case 0x30:
-                case 0x31:
-                case 0x32:
-                case 0x33:
-                case 0x34:
-                case 0x35:
-                case 0x36:
-                case 0x37:
-                case 0x38:
-                case 0x39:
-                case 0x3A:
-                case 0x3B:
-                case 0x3C:
-                case 0x3D:
-                case 0x3E:
-                case 0x3F:
-                case 0x40:
-                case 0x41:
-                case 0x42:
-                case 0x43:
-                case 0x44:
-                case 0x45:
-                case 0x46:
-                case 0x47:
-                case 0x48:
-                case 0x49:
-                case 0x4A:
-                case 0x4B:
-                case 0x4C:
-                case 0x4D:
-                case 0x4E:
-                case 0x4F:
-                case 0x50:
-                case 0x51:
-                case 0x52:
-                case 0x53:
-                case 0x54:
-                case 0x55:
-                case 0x56:
-                case 0x57:
-                case 0x58:
-                case 0x59:
-                case 0x5A:
-                case 0x5B:
-                case 0x5C:
-                case 0x5D:
-                case 0x5E:
-                case 0x5F:
-                case 0x60:
-                case 0x61:
-                case 0x62:
-                case 0x63:
-                case 0x64:
-                case 0x65:
-                case 0x66:
-                case 0x67:
-                case 0x68:
-                case 0x69:
-                case 0x6A:
-                case 0x6B:
-                case 0x6C:
-                case 0x6D:
-                case 0x6E:
-                case 0x6F:
-                case 0x70:
-                case 0x71:
-                case 0x72:
-                case 0x73:
-                case 0x74:
-                case 0x75:
-                case 0x76:
-                case 0x77:
-                case 0x78:
-                case 0x79:
-                case 0x7A:
-                case 0x7B:
-                case 0x7C:
-                case 0x7D:
-                case 0x7E:
-                case 0x7F:
-                    return sax->number_unsigned(static_cast<number_unsigned_t>(current));
+                    // positive fixint
+                    case 0x00:
+                    case 0x01:
+                    case 0x02:
+                    case 0x03:
+                    case 0x04:
+                    case 0x05:
+                    case 0x06:
+                    case 0x07:
+                    case 0x08:
+                    case 0x09:
+                    case 0x0A:
+                    case 0x0B:
+                    case 0x0C:
+                    case 0x0D:
+                    case 0x0E:
+                    case 0x0F:
+                    case 0x10:
+                    case 0x11:
+                    case 0x12:
+                    case 0x13:
+                    case 0x14:
+                    case 0x15:
+                    case 0x16:
+                    case 0x17:
+                    case 0x18:
+                    case 0x19:
+                    case 0x1A:
+                    case 0x1B:
+                    case 0x1C:
+                    case 0x1D:
+                    case 0x1E:
+                    case 0x1F:
+                    case 0x20:
+                    case 0x21:
+                    case 0x22:
+                    case 0x23:
+                    case 0x24:
+                    case 0x25:
+                    case 0x26:
+                    case 0x27:
+                    case 0x28:
+                    case 0x29:
+                    case 0x2A:
+                    case 0x2B:
+                    case 0x2C:
+                    case 0x2D:
+                    case 0x2E:
+                    case 0x2F:
+                    case 0x30:
+                    case 0x31:
+                    case 0x32:
+                    case 0x33:
+                    case 0x34:
+                    case 0x35:
+                    case 0x36:
+                    case 0x37:
+                    case 0x38:
+                    case 0x39:
+                    case 0x3A:
+                    case 0x3B:
+                    case 0x3C:
+                    case 0x3D:
+                    case 0x3E:
+                    case 0x3F:
+                    case 0x40:
+                    case 0x41:
+                    case 0x42:
+                    case 0x43:
+                    case 0x44:
+                    case 0x45:
+                    case 0x46:
+                    case 0x47:
+                    case 0x48:
+                    case 0x49:
+                    case 0x4A:
+                    case 0x4B:
+                    case 0x4C:
+                    case 0x4D:
+                    case 0x4E:
+                    case 0x4F:
+                    case 0x50:
+                    case 0x51:
+                    case 0x52:
+                    case 0x53:
+                    case 0x54:
+                    case 0x55:
+                    case 0x56:
+                    case 0x57:
+                    case 0x58:
+                    case 0x59:
+                    case 0x5A:
+                    case 0x5B:
+                    case 0x5C:
+                    case 0x5D:
+                    case 0x5E:
+                    case 0x5F:
+                    case 0x60:
+                    case 0x61:
+                    case 0x62:
+                    case 0x63:
+                    case 0x64:
+                    case 0x65:
+                    case 0x66:
+                    case 0x67:
+                    case 0x68:
+                    case 0x69:
+                    case 0x6A:
+                    case 0x6B:
+                    case 0x6C:
+                    case 0x6D:
+                    case 0x6E:
+                    case 0x6F:
+                    case 0x70:
+                    case 0x71:
+                    case 0x72:
+                    case 0x73:
+                    case 0x74:
+                    case 0x75:
+                    case 0x76:
+                    case 0x77:
+                    case 0x78:
+                    case 0x79:
+                    case 0x7A:
+                    case 0x7B:
+                    case 0x7C:
+                    case 0x7D:
+                    case 0x7E:
+                    case 0x7F:
+                        return sax->number_unsigned(static_cast<number_unsigned_t>(current));
 
-                // fixmap
-                case 0x80:
-                case 0x81:
-                case 0x82:
-                case 0x83:
-                case 0x84:
-                case 0x85:
-                case 0x86:
-                case 0x87:
-                case 0x88:
-                case 0x89:
-                case 0x8A:
-                case 0x8B:
-                case 0x8C:
-                case 0x8D:
-                case 0x8E:
-                case 0x8F:
-                    return get_msgpack_object(static_cast<std::size_t>(static_cast<unsigned int>(current) & 0x0Fu));
+                    // fixmap
+                    case 0x80:
+                    case 0x81:
+                    case 0x82:
+                    case 0x83:
+                    case 0x84:
+                    case 0x85:
+                    case 0x86:
+                    case 0x87:
+                    case 0x88:
+                    case 0x89:
+                    case 0x8A:
+                    case 0x8B:
+                    case 0x8C:
+                    case 0x8D:
+                    case 0x8E:
+                    case 0x8F:
+                        return get_msgpack_object(static_cast<std::size_t>(static_cast<unsigned int>(current) & 0x0Fu));
 
-                // fixarray
-                case 0x90:
-                case 0x91:
-                case 0x92:
-                case 0x93:
-                case 0x94:
-                case 0x95:
-                case 0x96:
-                case 0x97:
-                case 0x98:
-                case 0x99:
-                case 0x9A:
-                case 0x9B:
-                case 0x9C:
-                case 0x9D:
-                case 0x9E:
-                case 0x9F:
-                    return get_msgpack_array(static_cast<std::size_t>(static_cast<unsigned int>(current) & 0x0Fu));
+                    // fixarray
+                    case 0x90:
+                    case 0x91:
+                    case 0x92:
+                    case 0x93:
+                    case 0x94:
+                    case 0x95:
+                    case 0x96:
+                    case 0x97:
+                    case 0x98:
+                    case 0x99:
+                    case 0x9A:
+                    case 0x9B:
+                    case 0x9C:
+                    case 0x9D:
+                    case 0x9E:
+                    case 0x9F:
+                        return get_msgpack_array(static_cast<std::size_t>(static_cast<unsigned int>(current) & 0x0Fu));
 
-                // fixstr
-                case 0xA0:
-                case 0xA1:
-                case 0xA2:
-                case 0xA3:
-                case 0xA4:
-                case 0xA5:
-                case 0xA6:
-                case 0xA7:
-                case 0xA8:
-                case 0xA9:
-                case 0xAA:
-                case 0xAB:
-                case 0xAC:
-                case 0xAD:
-                case 0xAE:
-                case 0xAF:
-                case 0xB0:
-                case 0xB1:
-                case 0xB2:
-                case 0xB3:
-                case 0xB4:
-                case 0xB5:
-                case 0xB6:
-                case 0xB7:
-                case 0xB8:
-                case 0xB9:
-                case 0xBA:
-                case 0xBB:
-                case 0xBC:
-                case 0xBD:
-                case 0xBE:
-                case 0xBF:
-                {
-                    string_t s;
-                    return get_msgpack_string(s) and sax->string(s);
-                }
+                    // fixstr
+                    case 0xA0:
+                    case 0xA1:
+                    case 0xA2:
+                    case 0xA3:
+                    case 0xA4:
+                    case 0xA5:
+                    case 0xA6:
+                    case 0xA7:
+                    case 0xA8:
+                    case 0xA9:
+                    case 0xAA:
+                    case 0xAB:
+                    case 0xAC:
+                    case 0xAD:
+                    case 0xAE:
+                    case 0xAF:
+                    case 0xB0:
+                    case 0xB1:
+                    case 0xB2:
+                    case 0xB3:
+                    case 0xB4:
+                    case 0xB5:
+                    case 0xB6:
+                    case 0xB7:
+                    case 0xB8:
+                    case 0xB9:
+                    case 0xBA:
+                    case 0xBB:
+                    case 0xBC:
+                    case 0xBD:
+                    case 0xBE:
+                    case 0xBF:
+                    {
+                        string_t s;
+                        return get_msgpack_string(s) and sax->string(s);
+                    }
 
-                case 0xC0: // nil
-                    return sax->null();
+                    case 0xC0: // nil
+                        return sax->null();
 
-                case 0xC2: // false
-                    return sax->boolean(false);
+                    case 0xC2: // false
+                        return sax->boolean(false);
 
-                case 0xC3: // true
-                    return sax->boolean(true);
+                    case 0xC3: // true
+                        return sax->boolean(true);
 
-                case 0xCA: // float 32
-                {
-                    float number;
-                    return get_number(input_format_t::msgpack, number) and sax->number_float(static_cast<number_float_t>(number), "");
-                }
+                    case 0xCA: // float 32
+                    {
+                        float number;
+                        return get_number(input_format_t::msgpack, number) and sax->number_float(static_cast<number_float_t>(number), "");
+                    }
 
-                case 0xCB: // float 64
-                {
-                    double number;
-                    return get_number(input_format_t::msgpack, number) and sax->number_float(static_cast<number_float_t>(number), "");
-                }
+                    case 0xCB: // float 64
+                    {
+                        double number;
+                        return get_number(input_format_t::msgpack, number) and sax->number_float(static_cast<number_float_t>(number), "");
+                    }
 
-                case 0xCC: // uint 8
-                {
-                    std::uint8_t number;
-                    return get_number(input_format_t::msgpack, number) and sax->number_unsigned(number);
-                }
+                    case 0xCC: // uint 8
+                    {
+                        std::uint8_t number;
+                        return get_number(input_format_t::msgpack, number) and sax->number_unsigned(number);
+                    }
 
-                case 0xCD: // uint 16
-                {
-                    std::uint16_t number;
-                    return get_number(input_format_t::msgpack, number) and sax->number_unsigned(number);
-                }
+                    case 0xCD: // uint 16
+                    {
+                        std::uint16_t number;
+                        return get_number(input_format_t::msgpack, number) and sax->number_unsigned(number);
+                    }
 
-                case 0xCE: // uint 32
-                {
-                    std::uint32_t number;
-                    return get_number(input_format_t::msgpack, number) and sax->number_unsigned(number);
-                }
+                    case 0xCE: // uint 32
+                    {
+                        std::uint32_t number;
+                        return get_number(input_format_t::msgpack, number) and sax->number_unsigned(number);
+                    }
 
-                case 0xCF: // uint 64
-                {
-                    std::uint64_t number;
-                    return get_number(input_format_t::msgpack, number) and sax->number_unsigned(number);
-                }
+                    case 0xCF: // uint 64
+                    {
+                        std::uint64_t number;
+                        return get_number(input_format_t::msgpack, number) and sax->number_unsigned(number);
+                    }
 
-                case 0xD0: // int 8
-                {
-                    std::int8_t number;
-                    return get_number(input_format_t::msgpack, number) and sax->number_integer(number);
-                }
+                    case 0xD0: // int 8
+                    {
+                        std::int8_t number;
+                        return get_number(input_format_t::msgpack, number) and sax->number_integer(number);
+                    }
 
-                case 0xD1: // int 16
-                {
-                    std::int16_t number;
-                    return get_number(input_format_t::msgpack, number) and sax->number_integer(number);
-                }
+                    case 0xD1: // int 16
+                    {
+                        std::int16_t number;
+                        return get_number(input_format_t::msgpack, number) and sax->number_integer(number);
+                    }
 
-                case 0xD2: // int 32
-                {
-                    std::int32_t number;
-                    return get_number(input_format_t::msgpack, number) and sax->number_integer(number);
-                }
+                    case 0xD2: // int 32
+                    {
+                        std::int32_t number;
+                        return get_number(input_format_t::msgpack, number) and sax->number_integer(number);
+                    }
 
-                case 0xD3: // int 64
-                {
-                    std::int64_t number;
-                    return get_number(input_format_t::msgpack, number) and sax->number_integer(number);
-                }
+                    case 0xD3: // int 64
+                    {
+                        std::int64_t number;
+                        return get_number(input_format_t::msgpack, number) and sax->number_integer(number);
+                    }
 
-                case 0xD9: // str 8
-                case 0xDA: // str 16
-                case 0xDB: // str 32
-                {
-                    string_t s;
-                    return get_msgpack_string(s) and sax->string(s);
-                }
+                    case 0xD9: // str 8
+                    case 0xDA: // str 16
+                    case 0xDB: // str 32
+                    {
+                        string_t s;
+                        return get_msgpack_string(s) and sax->string(s);
+                    }
 
-                case 0xDC: // array 16
-                {
-                    std::uint16_t len;
-                    return get_number(input_format_t::msgpack, len) and get_msgpack_array(static_cast<std::size_t>(len));
-                }
+                    case 0xDC: // array 16
+                    {
+                        std::uint16_t len;
+                        return get_number(input_format_t::msgpack, len) and get_msgpack_array(static_cast<std::size_t>(len));
+                    }
 
-                case 0xDD: // array 32
-                {
-                    std::uint32_t len;
-                    return get_number(input_format_t::msgpack, len) and get_msgpack_array(static_cast<std::size_t>(len));
-                }
+                    case 0xDD: // array 32
+                    {
+                        std::uint32_t len;
+                        return get_number(input_format_t::msgpack, len) and get_msgpack_array(static_cast<std::size_t>(len));
+                    }
 
-                case 0xDE: // map 16
-                {
-                    std::uint16_t len;
-                    return get_number(input_format_t::msgpack, len) and get_msgpack_object(static_cast<std::size_t>(len));
-                }
+                    case 0xDE: // map 16
+                    {
+                        std::uint16_t len;
+                        return get_number(input_format_t::msgpack, len) and get_msgpack_object(static_cast<std::size_t>(len));
+                    }
 
-                case 0xDF: // map 32
-                {
-                    std::uint32_t len;
-                    return get_number(input_format_t::msgpack, len) and get_msgpack_object(static_cast<std::size_t>(len));
-                }
+                    case 0xDF: // map 32
+                    {
+                        std::uint32_t len;
+                        return get_number(input_format_t::msgpack, len) and get_msgpack_object(static_cast<std::size_t>(len));
+                    }
 
-                // negative fixint
-                case 0xE0:
-                case 0xE1:
-                case 0xE2:
-                case 0xE3:
-                case 0xE4:
-                case 0xE5:
-                case 0xE6:
-                case 0xE7:
-                case 0xE8:
-                case 0xE9:
-                case 0xEA:
-                case 0xEB:
-                case 0xEC:
-                case 0xED:
-                case 0xEE:
-                case 0xEF:
-                case 0xF0:
-                case 0xF1:
-                case 0xF2:
-                case 0xF3:
-                case 0xF4:
-                case 0xF5:
-                case 0xF6:
-                case 0xF7:
-                case 0xF8:
-                case 0xF9:
-                case 0xFA:
-                case 0xFB:
-                case 0xFC:
-                case 0xFD:
-                case 0xFE:
-                case 0xFF:
-                    return sax->number_integer(static_cast<std::int8_t>(current));
+                    // negative fixint
+                    case 0xE0:
+                    case 0xE1:
+                    case 0xE2:
+                    case 0xE3:
+                    case 0xE4:
+                    case 0xE5:
+                    case 0xE6:
+                    case 0xE7:
+                    case 0xE8:
+                    case 0xE9:
+                    case 0xEA:
+                    case 0xEB:
+                    case 0xEC:
+                    case 0xED:
+                    case 0xEE:
+                    case 0xEF:
+                    case 0xF0:
+                    case 0xF1:
+                    case 0xF2:
+                    case 0xF3:
+                    case 0xF4:
+                    case 0xF5:
+                    case 0xF6:
+                    case 0xF7:
+                    case 0xF8:
+                    case 0xF9:
+                    case 0xFA:
+                    case 0xFB:
+                    case 0xFC:
+                    case 0xFD:
+                    case 0xFE:
+                    case 0xFF:
+                        return sax->number_integer(static_cast<std::int8_t>(current));
 
-                default: // anything else
-                {
-                    auto last_token = get_token_string();
-                    return sax->parse_error(chars_read, last_token,
-                        parse_error::create(112, chars_read, exception_message(input_format_t::msgpack, "invalid byte: 0x" + last_token, "value")));
-                }
+                    default: // anything else
+                    {
+                        auto last_token = get_token_string();
+                        return sax->parse_error(chars_read, last_token,
+                            parse_error::create(
+                                112, chars_read, exception_message(input_format_t::msgpack, "invalid byte: 0x" + last_token, "value")));
+                    }
                 }
             }
 
@@ -4545,69 +4547,69 @@ namespace nlohmann
 
                 switch (current)
                 {
-                // fixstr
-                case 0xA0:
-                case 0xA1:
-                case 0xA2:
-                case 0xA3:
-                case 0xA4:
-                case 0xA5:
-                case 0xA6:
-                case 0xA7:
-                case 0xA8:
-                case 0xA9:
-                case 0xAA:
-                case 0xAB:
-                case 0xAC:
-                case 0xAD:
-                case 0xAE:
-                case 0xAF:
-                case 0xB0:
-                case 0xB1:
-                case 0xB2:
-                case 0xB3:
-                case 0xB4:
-                case 0xB5:
-                case 0xB6:
-                case 0xB7:
-                case 0xB8:
-                case 0xB9:
-                case 0xBA:
-                case 0xBB:
-                case 0xBC:
-                case 0xBD:
-                case 0xBE:
-                case 0xBF:
-                {
-                    return get_string(input_format_t::msgpack, static_cast<unsigned int>(current) & 0x1Fu, result);
-                }
+                    // fixstr
+                    case 0xA0:
+                    case 0xA1:
+                    case 0xA2:
+                    case 0xA3:
+                    case 0xA4:
+                    case 0xA5:
+                    case 0xA6:
+                    case 0xA7:
+                    case 0xA8:
+                    case 0xA9:
+                    case 0xAA:
+                    case 0xAB:
+                    case 0xAC:
+                    case 0xAD:
+                    case 0xAE:
+                    case 0xAF:
+                    case 0xB0:
+                    case 0xB1:
+                    case 0xB2:
+                    case 0xB3:
+                    case 0xB4:
+                    case 0xB5:
+                    case 0xB6:
+                    case 0xB7:
+                    case 0xB8:
+                    case 0xB9:
+                    case 0xBA:
+                    case 0xBB:
+                    case 0xBC:
+                    case 0xBD:
+                    case 0xBE:
+                    case 0xBF:
+                    {
+                        return get_string(input_format_t::msgpack, static_cast<unsigned int>(current) & 0x1Fu, result);
+                    }
 
-                case 0xD9: // str 8
-                {
-                    std::uint8_t len;
-                    return get_number(input_format_t::msgpack, len) and get_string(input_format_t::msgpack, len, result);
-                }
+                    case 0xD9: // str 8
+                    {
+                        std::uint8_t len;
+                        return get_number(input_format_t::msgpack, len) and get_string(input_format_t::msgpack, len, result);
+                    }
 
-                case 0xDA: // str 16
-                {
-                    std::uint16_t len;
-                    return get_number(input_format_t::msgpack, len) and get_string(input_format_t::msgpack, len, result);
-                }
+                    case 0xDA: // str 16
+                    {
+                        std::uint16_t len;
+                        return get_number(input_format_t::msgpack, len) and get_string(input_format_t::msgpack, len, result);
+                    }
 
-                case 0xDB: // str 32
-                {
-                    std::uint32_t len;
-                    return get_number(input_format_t::msgpack, len) and get_string(input_format_t::msgpack, len, result);
-                }
+                    case 0xDB: // str 32
+                    {
+                        std::uint32_t len;
+                        return get_number(input_format_t::msgpack, len) and get_string(input_format_t::msgpack, len, result);
+                    }
 
-                default:
-                {
-                    auto last_token = get_token_string();
-                    return sax->parse_error(chars_read, last_token,
-                        parse_error::create(113, chars_read,
-                            exception_message(input_format_t::msgpack,
-                                "expected length specification (0xA0-0xBF, 0xD9-0xDB); last byte: 0x" + last_token, "string")));
-                }
+                    default:
+                    {
+                        auto last_token = get_token_string();
+                        return sax->parse_error(chars_read, last_token,
+                            parse_error::create(113, chars_read,
+                                exception_message(input_format_t::msgpack,
+                                    "expected length specification (0xA0-0xBF, 0xD9-0xDB); last byte: 0x" + last_token, "string")));
+                    }
                 }
             }
 
@@ -4704,42 +4706,42 @@ namespace nlohmann
 
                 switch (current)
                 {
-                case 'U':
-                {
-                    std::uint8_t len;
-                    return get_number(input_format_t::ubjson, len) and get_string(input_format_t::ubjson, len, result);
-                }
+                    case 'U':
+                    {
+                        std::uint8_t len;
+                        return get_number(input_format_t::ubjson, len) and get_string(input_format_t::ubjson, len, result);
+                    }
 
-                case 'i':
-                {
-                    std::int8_t len;
-                    return get_number(input_format_t::ubjson, len) and get_string(input_format_t::ubjson, len, result);
-                }
+                    case 'i':
+                    {
+                        std::int8_t len;
+                        return get_number(input_format_t::ubjson, len) and get_string(input_format_t::ubjson, len, result);
+                    }
 
-                case 'I':
-                {
-                    std::int16_t len;
-                    return get_number(input_format_t::ubjson, len) and get_string(input_format_t::ubjson, len, result);
-                }
+                    case 'I':
+                    {
+                        std::int16_t len;
+                        return get_number(input_format_t::ubjson, len) and get_string(input_format_t::ubjson, len, result);
+                    }
 
-                case 'l':
-                {
-                    std::int32_t len;
-                    return get_number(input_format_t::ubjson, len) and get_string(input_format_t::ubjson, len, result);
-                }
+                    case 'l':
+                    {
+                        std::int32_t len;
+                        return get_number(input_format_t::ubjson, len) and get_string(input_format_t::ubjson, len, result);
+                    }
 
-                case 'L':
-                {
-                    std::int64_t len;
-                    return get_number(input_format_t::ubjson, len) and get_string(input_format_t::ubjson, len, result);
-                }
+                    case 'L':
+                    {
+                        std::int64_t len;
+                        return get_number(input_format_t::ubjson, len) and get_string(input_format_t::ubjson, len, result);
+                    }
 
-                default:
-                    auto last_token = get_token_string();
-                    return sax->parse_error(chars_read, last_token,
-                        parse_error::create(113, chars_read,
-                            exception_message(
-                                input_format_t::ubjson, "expected length type specification (U, i, I, l, L); last byte: 0x" + last_token, "string")));
+                    default:
+                        auto last_token = get_token_string();
+                        return sax->parse_error(chars_read, last_token,
+                            parse_error::create(113, chars_read,
+                                exception_message(input_format_t::ubjson,
+                                    "expected length type specification (U, i, I, l, L); last byte: 0x" + last_token, "string")));
                 }
             }
 
@@ -4751,69 +4753,69 @@ namespace nlohmann
             {
                 switch (get_ignore_noop())
                 {
-                case 'U':
-                {
-                    std::uint8_t number;
-                    if (JSON_UNLIKELY(not get_number(input_format_t::ubjson, number)))
+                    case 'U':
                     {
-                        return false;
+                        std::uint8_t number;
+                        if (JSON_UNLIKELY(not get_number(input_format_t::ubjson, number)))
+                        {
+                            return false;
+                        }
+                        result = static_cast<std::size_t>(number);
+                        return true;
                     }
-                    result = static_cast<std::size_t>(number);
-                    return true;
-                }
 
-                case 'i':
-                {
-                    std::int8_t number;
-                    if (JSON_UNLIKELY(not get_number(input_format_t::ubjson, number)))
+                    case 'i':
                     {
-                        return false;
+                        std::int8_t number;
+                        if (JSON_UNLIKELY(not get_number(input_format_t::ubjson, number)))
+                        {
+                            return false;
+                        }
+                        result = static_cast<std::size_t>(number);
+                        return true;
                     }
-                    result = static_cast<std::size_t>(number);
-                    return true;
-                }
 
-                case 'I':
-                {
-                    std::int16_t number;
-                    if (JSON_UNLIKELY(not get_number(input_format_t::ubjson, number)))
+                    case 'I':
                     {
-                        return false;
+                        std::int16_t number;
+                        if (JSON_UNLIKELY(not get_number(input_format_t::ubjson, number)))
+                        {
+                            return false;
+                        }
+                        result = static_cast<std::size_t>(number);
+                        return true;
                     }
-                    result = static_cast<std::size_t>(number);
-                    return true;
-                }
 
-                case 'l':
-                {
-                    std::int32_t number;
-                    if (JSON_UNLIKELY(not get_number(input_format_t::ubjson, number)))
+                    case 'l':
                     {
-                        return false;
+                        std::int32_t number;
+                        if (JSON_UNLIKELY(not get_number(input_format_t::ubjson, number)))
+                        {
+                            return false;
+                        }
+                        result = static_cast<std::size_t>(number);
+                        return true;
                     }
-                    result = static_cast<std::size_t>(number);
-                    return true;
-                }
 
-                case 'L':
-                {
-                    std::int64_t number;
-                    if (JSON_UNLIKELY(not get_number(input_format_t::ubjson, number)))
+                    case 'L':
                     {
-                        return false;
+                        std::int64_t number;
+                        if (JSON_UNLIKELY(not get_number(input_format_t::ubjson, number)))
+                        {
+                            return false;
+                        }
+                        result = static_cast<std::size_t>(number);
+                        return true;
                     }
-                    result = static_cast<std::size_t>(number);
-                    return true;
-                }
 
-                default:
-                {
-                    auto last_token = get_token_string();
-                    return sax->parse_error(chars_read, last_token,
-                        parse_error::create(113, chars_read,
-                            exception_message(input_format_t::ubjson,
-                                "expected length type specification (U, i, I, l, L) after '#'; last byte: 0x" + last_token, "size")));
-                }
+                    default:
+                    {
+                        auto last_token = get_token_string();
+                        return sax->parse_error(chars_read, last_token,
+                            parse_error::create(113, chars_read,
+                                exception_message(input_format_t::ubjson,
+                                    "expected length type specification (U, i, I, l, L) after '#'; last byte: 0x" + last_token, "size")));
+                    }
                 }
             }
 
@@ -4875,96 +4877,97 @@ namespace nlohmann
             {
                 switch (prefix)
                 {
-                case std::char_traits<char>::eof(): // EOF
-                    return unexpect_eof(input_format_t::ubjson, "value");
+                    case std::char_traits<char>::eof(): // EOF
+                        return unexpect_eof(input_format_t::ubjson, "value");
 
-                case 'T': // true
-                    return sax->boolean(true);
-                case 'F': // false
-                    return sax->boolean(false);
+                    case 'T': // true
+                        return sax->boolean(true);
+                    case 'F': // false
+                        return sax->boolean(false);
 
-                case 'Z': // null
-                    return sax->null();
+                    case 'Z': // null
+                        return sax->null();
 
-                case 'U':
-                {
-                    std::uint8_t number;
-                    return get_number(input_format_t::ubjson, number) and sax->number_unsigned(number);
-                }
-
-                case 'i':
-                {
-                    std::int8_t number;
-                    return get_number(input_format_t::ubjson, number) and sax->number_integer(number);
-                }
-
-                case 'I':
-                {
-                    std::int16_t number;
-                    return get_number(input_format_t::ubjson, number) and sax->number_integer(number);
-                }
-
-                case 'l':
-                {
-                    std::int32_t number;
-                    return get_number(input_format_t::ubjson, number) and sax->number_integer(number);
-                }
-
-                case 'L':
-                {
-                    std::int64_t number;
-                    return get_number(input_format_t::ubjson, number) and sax->number_integer(number);
-                }
-
-                case 'd':
-                {
-                    float number;
-                    return get_number(input_format_t::ubjson, number) and sax->number_float(static_cast<number_float_t>(number), "");
-                }
-
-                case 'D':
-                {
-                    double number;
-                    return get_number(input_format_t::ubjson, number) and sax->number_float(static_cast<number_float_t>(number), "");
-                }
-
-                case 'C': // char
-                {
-                    get();
-                    if (JSON_UNLIKELY(not unexpect_eof(input_format_t::ubjson, "char")))
+                    case 'U':
                     {
-                        return false;
+                        std::uint8_t number;
+                        return get_number(input_format_t::ubjson, number) and sax->number_unsigned(number);
                     }
-                    if (JSON_UNLIKELY(current > 127))
+
+                    case 'i':
+                    {
+                        std::int8_t number;
+                        return get_number(input_format_t::ubjson, number) and sax->number_integer(number);
+                    }
+
+                    case 'I':
+                    {
+                        std::int16_t number;
+                        return get_number(input_format_t::ubjson, number) and sax->number_integer(number);
+                    }
+
+                    case 'l':
+                    {
+                        std::int32_t number;
+                        return get_number(input_format_t::ubjson, number) and sax->number_integer(number);
+                    }
+
+                    case 'L':
+                    {
+                        std::int64_t number;
+                        return get_number(input_format_t::ubjson, number) and sax->number_integer(number);
+                    }
+
+                    case 'd':
+                    {
+                        float number;
+                        return get_number(input_format_t::ubjson, number) and sax->number_float(static_cast<number_float_t>(number), "");
+                    }
+
+                    case 'D':
+                    {
+                        double number;
+                        return get_number(input_format_t::ubjson, number) and sax->number_float(static_cast<number_float_t>(number), "");
+                    }
+
+                    case 'C': // char
+                    {
+                        get();
+                        if (JSON_UNLIKELY(not unexpect_eof(input_format_t::ubjson, "char")))
+                        {
+                            return false;
+                        }
+                        if (JSON_UNLIKELY(current > 127))
+                        {
+                            auto last_token = get_token_string();
+                            return sax->parse_error(chars_read, last_token,
+                                parse_error::create(113, chars_read,
+                                    exception_message(
+                                        input_format_t::ubjson, "byte after 'C' must be in range 0x00..0x7F; last byte: 0x" + last_token, "char")));
+                        }
+                        string_t s(1, static_cast<char>(current));
+                        return sax->string(s);
+                    }
+
+                    case 'S': // string
+                    {
+                        string_t s;
+                        return get_ubjson_string(s) and sax->string(s);
+                    }
+
+                    case '[': // array
+                        return get_ubjson_array();
+
+                    case '{': // object
+                        return get_ubjson_object();
+
+                    default: // anything else
                     {
                         auto last_token = get_token_string();
                         return sax->parse_error(chars_read, last_token,
-                            parse_error::create(113, chars_read,
-                                exception_message(
-                                    input_format_t::ubjson, "byte after 'C' must be in range 0x00..0x7F; last byte: 0x" + last_token, "char")));
+                            parse_error::create(
+                                112, chars_read, exception_message(input_format_t::ubjson, "invalid byte: 0x" + last_token, "value")));
                     }
-                    string_t s(1, static_cast<char>(current));
-                    return sax->string(s);
-                }
-
-                case 'S': // string
-                {
-                    string_t s;
-                    return get_ubjson_string(s) and sax->string(s);
-                }
-
-                case '[': // array
-                    return get_ubjson_array();
-
-                case '{': // object
-                    return get_ubjson_object();
-
-                default: // anything else
-                {
-                    auto last_token = get_token_string();
-                    return sax->parse_error(chars_read, last_token,
-                        parse_error::create(112, chars_read, exception_message(input_format_t::ubjson, "invalid byte: 0x" + last_token, "value")));
-                }
                 }
             }
 
@@ -5245,24 +5248,24 @@ namespace nlohmann
 
                 switch (format)
                 {
-                case input_format_t::cbor:
-                    error_msg += "CBOR";
-                    break;
+                    case input_format_t::cbor:
+                        error_msg += "CBOR";
+                        break;
 
-                case input_format_t::msgpack:
-                    error_msg += "MessagePack";
-                    break;
+                    case input_format_t::msgpack:
+                        error_msg += "MessagePack";
+                        break;
 
-                case input_format_t::ubjson:
-                    error_msg += "UBJSON";
-                    break;
+                    case input_format_t::ubjson:
+                        error_msg += "UBJSON";
+                        break;
 
-                case input_format_t::bson:
-                    error_msg += "BSON";
-                    break;
+                    case input_format_t::bson:
+                        error_msg += "BSON";
+                        break;
 
-                default:           // LCOV_EXCL_LINE
-                    assert(false); // LCOV_EXCL_LINE
+                    default:           // LCOV_EXCL_LINE
+                        assert(false); // LCOV_EXCL_LINE
                 }
 
                 return error_msg + " " + context + ": " + detail;
@@ -5356,42 +5359,42 @@ namespace nlohmann
             {
                 switch (t)
                 {
-                case token_type::uninitialized:
-                    return "<uninitialized>";
-                case token_type::literal_true:
-                    return "true literal";
-                case token_type::literal_false:
-                    return "false literal";
-                case token_type::literal_null:
-                    return "null literal";
-                case token_type::value_string:
-                    return "string literal";
-                case lexer::token_type::value_unsigned:
-                case lexer::token_type::value_integer:
-                case lexer::token_type::value_float:
-                    return "number literal";
-                case token_type::begin_array:
-                    return "'['";
-                case token_type::begin_object:
-                    return "'{'";
-                case token_type::end_array:
-                    return "']'";
-                case token_type::end_object:
-                    return "'}'";
-                case token_type::name_separator:
-                    return "':'";
-                case token_type::value_separator:
-                    return "','";
-                case token_type::parse_error:
-                    return "<parse error>";
-                case token_type::end_of_input:
-                    return "end of input";
-                case token_type::literal_or_value:
-                    return "'[', '{', or a literal";
-                // LCOV_EXCL_START
-                default: // catch non-enum values
-                    return "unknown token";
-                    // LCOV_EXCL_STOP
+                    case token_type::uninitialized:
+                        return "<uninitialized>";
+                    case token_type::literal_true:
+                        return "true literal";
+                    case token_type::literal_false:
+                        return "false literal";
+                    case token_type::literal_null:
+                        return "null literal";
+                    case token_type::value_string:
+                        return "string literal";
+                    case lexer::token_type::value_unsigned:
+                    case lexer::token_type::value_integer:
+                    case lexer::token_type::value_float:
+                        return "number literal";
+                    case token_type::begin_array:
+                        return "'['";
+                    case token_type::begin_object:
+                        return "'{'";
+                    case token_type::end_array:
+                        return "']'";
+                    case token_type::end_object:
+                        return "'}'";
+                    case token_type::name_separator:
+                        return "':'";
+                    case token_type::value_separator:
+                        return "','";
+                    case token_type::parse_error:
+                        return "<parse error>";
+                    case token_type::end_of_input:
+                        return "end of input";
+                    case token_type::literal_or_value:
+                        return "'[', '{', or a literal";
+                    // LCOV_EXCL_START
+                    default: // catch non-enum values
+                        return "unknown token";
+                        // LCOV_EXCL_STOP
                 }
             }
 
@@ -5534,575 +5537,575 @@ namespace nlohmann
                     // get next character
                     switch (get())
                     {
-                    // end of file while parsing string
-                    case std::char_traits<char>::eof():
-                    {
-                        error_message = "invalid string: missing closing quote";
-                        return token_type::parse_error;
-                    }
-
-                    // closing quote
-                    case '\"':
-                    {
-                        return token_type::value_string;
-                    }
-
-                    // escapes
-                    case '\\':
-                    {
-                        switch (get())
+                        // end of file while parsing string
+                        case std::char_traits<char>::eof():
                         {
-                        // quotation mark
+                            error_message = "invalid string: missing closing quote";
+                            return token_type::parse_error;
+                        }
+
+                        // closing quote
                         case '\"':
-                            add('\"');
-                            break;
-                        // reverse solidus
-                        case '\\':
-                            add('\\');
-                            break;
-                        // solidus
-                        case '/':
-                            add('/');
-                            break;
-                        // backspace
-                        case 'b':
-                            add('\b');
-                            break;
-                        // form feed
-                        case 'f':
-                            add('\f');
-                            break;
-                        // line feed
-                        case 'n':
-                            add('\n');
-                            break;
-                        // carriage return
-                        case 'r':
-                            add('\r');
-                            break;
-                        // tab
-                        case 't':
-                            add('\t');
-                            break;
-
-                        // unicode escapes
-                        case 'u':
                         {
-                            const int codepoint1 = get_codepoint();
-                            int codepoint        = codepoint1; // start with codepoint1
+                            return token_type::value_string;
+                        }
 
-                            if (JSON_UNLIKELY(codepoint1 == -1))
+                        // escapes
+                        case '\\':
+                        {
+                            switch (get())
                             {
-                                error_message = "invalid string: '\\u' must be followed by 4 hex digits";
-                                return token_type::parse_error;
-                            }
+                                // quotation mark
+                                case '\"':
+                                    add('\"');
+                                    break;
+                                // reverse solidus
+                                case '\\':
+                                    add('\\');
+                                    break;
+                                // solidus
+                                case '/':
+                                    add('/');
+                                    break;
+                                // backspace
+                                case 'b':
+                                    add('\b');
+                                    break;
+                                // form feed
+                                case 'f':
+                                    add('\f');
+                                    break;
+                                // line feed
+                                case 'n':
+                                    add('\n');
+                                    break;
+                                // carriage return
+                                case 'r':
+                                    add('\r');
+                                    break;
+                                // tab
+                                case 't':
+                                    add('\t');
+                                    break;
 
-                            // check if code point is a high surrogate
-                            if (0xD800 <= codepoint1 and codepoint1 <= 0xDBFF)
-                            {
-                                // expect next \uxxxx entry
-                                if (JSON_LIKELY(get() == '\\' and get() == 'u'))
+                                // unicode escapes
+                                case 'u':
                                 {
-                                    const int codepoint2 = get_codepoint();
+                                    const int codepoint1 = get_codepoint();
+                                    int codepoint        = codepoint1; // start with codepoint1
 
-                                    if (JSON_UNLIKELY(codepoint2 == -1))
+                                    if (JSON_UNLIKELY(codepoint1 == -1))
                                     {
                                         error_message = "invalid string: '\\u' must be followed by 4 hex digits";
                                         return token_type::parse_error;
                                     }
 
-                                    // check if codepoint2 is a low surrogate
-                                    if (JSON_LIKELY(0xDC00 <= codepoint2 and codepoint2 <= 0xDFFF))
+                                    // check if code point is a high surrogate
+                                    if (0xD800 <= codepoint1 and codepoint1 <= 0xDBFF)
                                     {
-                                        // overwrite codepoint
-                                        codepoint = static_cast<int>(
-                                            // high surrogate occupies the most significant 22 bits
-                                            (static_cast<unsigned int>(codepoint1) << 10u)
-                                            // low surrogate occupies the least significant 15 bits
-                                            + static_cast<unsigned int>(codepoint2)
-                                            // there is still the 0xD800, 0xDC00 and 0x10000 noise
-                                            // in the result so we have to subtract with:
-                                            // (0xD800 << 10) + DC00 - 0x10000 = 0x35FDC00
-                                            - 0x35FDC00u);
+                                        // expect next \uxxxx entry
+                                        if (JSON_LIKELY(get() == '\\' and get() == 'u'))
+                                        {
+                                            const int codepoint2 = get_codepoint();
+
+                                            if (JSON_UNLIKELY(codepoint2 == -1))
+                                            {
+                                                error_message = "invalid string: '\\u' must be followed by 4 hex digits";
+                                                return token_type::parse_error;
+                                            }
+
+                                            // check if codepoint2 is a low surrogate
+                                            if (JSON_LIKELY(0xDC00 <= codepoint2 and codepoint2 <= 0xDFFF))
+                                            {
+                                                // overwrite codepoint
+                                                codepoint = static_cast<int>(
+                                                    // high surrogate occupies the most significant 22 bits
+                                                    (static_cast<unsigned int>(codepoint1) << 10u)
+                                                    // low surrogate occupies the least significant 15 bits
+                                                    + static_cast<unsigned int>(codepoint2)
+                                                    // there is still the 0xD800, 0xDC00 and 0x10000 noise
+                                                    // in the result so we have to subtract with:
+                                                    // (0xD800 << 10) + DC00 - 0x10000 = 0x35FDC00
+                                                    - 0x35FDC00u);
+                                            }
+                                            else
+                                            {
+                                                error_message = "invalid string: surrogate U+DC00..U+DFFF must be followed by U+DC00..U+DFFF";
+                                                return token_type::parse_error;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            error_message = "invalid string: surrogate U+DC00..U+DFFF must be followed by U+DC00..U+DFFF";
+                                            return token_type::parse_error;
+                                        }
                                     }
                                     else
                                     {
-                                        error_message = "invalid string: surrogate U+DC00..U+DFFF must be followed by U+DC00..U+DFFF";
-                                        return token_type::parse_error;
+                                        if (JSON_UNLIKELY(0xDC00 <= codepoint1 and codepoint1 <= 0xDFFF))
+                                        {
+                                            error_message = "invalid string: surrogate U+DC00..U+DFFF must follow U+D800..U+DBFF";
+                                            return token_type::parse_error;
+                                        }
                                     }
-                                }
-                                else
-                                {
-                                    error_message = "invalid string: surrogate U+DC00..U+DFFF must be followed by U+DC00..U+DFFF";
-                                    return token_type::parse_error;
-                                }
-                            }
-                            else
-                            {
-                                if (JSON_UNLIKELY(0xDC00 <= codepoint1 and codepoint1 <= 0xDFFF))
-                                {
-                                    error_message = "invalid string: surrogate U+DC00..U+DFFF must follow U+D800..U+DBFF";
-                                    return token_type::parse_error;
-                                }
-                            }
 
-                            // result of the above calculation yields a proper codepoint
-                            assert(0x00 <= codepoint and codepoint <= 0x10FFFF);
+                                    // result of the above calculation yields a proper codepoint
+                                    assert(0x00 <= codepoint and codepoint <= 0x10FFFF);
 
-                            // translate codepoint into bytes
-                            if (codepoint < 0x80)
-                            {
-                                // 1-byte characters: 0xxxxxxx (ASCII)
-                                add(codepoint);
-                            }
-                            else if (codepoint <= 0x7FF)
-                            {
-                                // 2-byte characters: 110xxxxx 10xxxxxx
-                                add(static_cast<int>(0xC0u | (static_cast<unsigned int>(codepoint) >> 6u)));
-                                add(static_cast<int>(0x80u | (static_cast<unsigned int>(codepoint) & 0x3Fu)));
-                            }
-                            else if (codepoint <= 0xFFFF)
-                            {
-                                // 3-byte characters: 1110xxxx 10xxxxxx 10xxxxxx
-                                add(static_cast<int>(0xE0u | (static_cast<unsigned int>(codepoint) >> 12u)));
-                                add(static_cast<int>(0x80u | ((static_cast<unsigned int>(codepoint) >> 6u) & 0x3Fu)));
-                                add(static_cast<int>(0x80u | (static_cast<unsigned int>(codepoint) & 0x3Fu)));
-                            }
-                            else
-                            {
-                                // 4-byte characters: 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
-                                add(static_cast<int>(0xF0u | (static_cast<unsigned int>(codepoint) >> 18u)));
-                                add(static_cast<int>(0x80u | ((static_cast<unsigned int>(codepoint) >> 12u) & 0x3Fu)));
-                                add(static_cast<int>(0x80u | ((static_cast<unsigned int>(codepoint) >> 6u) & 0x3Fu)));
-                                add(static_cast<int>(0x80u | (static_cast<unsigned int>(codepoint) & 0x3Fu)));
+                                    // translate codepoint into bytes
+                                    if (codepoint < 0x80)
+                                    {
+                                        // 1-byte characters: 0xxxxxxx (ASCII)
+                                        add(codepoint);
+                                    }
+                                    else if (codepoint <= 0x7FF)
+                                    {
+                                        // 2-byte characters: 110xxxxx 10xxxxxx
+                                        add(static_cast<int>(0xC0u | (static_cast<unsigned int>(codepoint) >> 6u)));
+                                        add(static_cast<int>(0x80u | (static_cast<unsigned int>(codepoint) & 0x3Fu)));
+                                    }
+                                    else if (codepoint <= 0xFFFF)
+                                    {
+                                        // 3-byte characters: 1110xxxx 10xxxxxx 10xxxxxx
+                                        add(static_cast<int>(0xE0u | (static_cast<unsigned int>(codepoint) >> 12u)));
+                                        add(static_cast<int>(0x80u | ((static_cast<unsigned int>(codepoint) >> 6u) & 0x3Fu)));
+                                        add(static_cast<int>(0x80u | (static_cast<unsigned int>(codepoint) & 0x3Fu)));
+                                    }
+                                    else
+                                    {
+                                        // 4-byte characters: 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+                                        add(static_cast<int>(0xF0u | (static_cast<unsigned int>(codepoint) >> 18u)));
+                                        add(static_cast<int>(0x80u | ((static_cast<unsigned int>(codepoint) >> 12u) & 0x3Fu)));
+                                        add(static_cast<int>(0x80u | ((static_cast<unsigned int>(codepoint) >> 6u) & 0x3Fu)));
+                                        add(static_cast<int>(0x80u | (static_cast<unsigned int>(codepoint) & 0x3Fu)));
+                                    }
+
+                                    break;
+                                }
+
+                                // other characters after escape
+                                default:
+                                    error_message = "invalid string: forbidden character after backslash";
+                                    return token_type::parse_error;
                             }
 
                             break;
                         }
 
-                        // other characters after escape
+                        // invalid control characters
+                        case 0x00:
+                        {
+                            error_message = "invalid string: control character U+0000 (NUL) must be escaped to \\u0000";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x01:
+                        {
+                            error_message = "invalid string: control character U+0001 (SOH) must be escaped to \\u0001";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x02:
+                        {
+                            error_message = "invalid string: control character U+0002 (STX) must be escaped to \\u0002";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x03:
+                        {
+                            error_message = "invalid string: control character U+0003 (ETX) must be escaped to \\u0003";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x04:
+                        {
+                            error_message = "invalid string: control character U+0004 (EOT) must be escaped to \\u0004";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x05:
+                        {
+                            error_message = "invalid string: control character U+0005 (ENQ) must be escaped to \\u0005";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x06:
+                        {
+                            error_message = "invalid string: control character U+0006 (ACK) must be escaped to \\u0006";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x07:
+                        {
+                            error_message = "invalid string: control character U+0007 (BEL) must be escaped to \\u0007";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x08:
+                        {
+                            error_message = "invalid string: control character U+0008 (BS) must be escaped to \\u0008 or \\b";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x09:
+                        {
+                            error_message = "invalid string: control character U+0009 (HT) must be escaped to \\u0009 or \\t";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x0A:
+                        {
+                            error_message = "invalid string: control character U+000A (LF) must be escaped to \\u000A or \\n";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x0B:
+                        {
+                            error_message = "invalid string: control character U+000B (VT) must be escaped to \\u000B";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x0C:
+                        {
+                            error_message = "invalid string: control character U+000C (FF) must be escaped to \\u000C or \\f";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x0D:
+                        {
+                            error_message = "invalid string: control character U+000D (CR) must be escaped to \\u000D or \\r";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x0E:
+                        {
+                            error_message = "invalid string: control character U+000E (SO) must be escaped to \\u000E";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x0F:
+                        {
+                            error_message = "invalid string: control character U+000F (SI) must be escaped to \\u000F";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x10:
+                        {
+                            error_message = "invalid string: control character U+0010 (DLE) must be escaped to \\u0010";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x11:
+                        {
+                            error_message = "invalid string: control character U+0011 (DC1) must be escaped to \\u0011";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x12:
+                        {
+                            error_message = "invalid string: control character U+0012 (DC2) must be escaped to \\u0012";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x13:
+                        {
+                            error_message = "invalid string: control character U+0013 (DC3) must be escaped to \\u0013";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x14:
+                        {
+                            error_message = "invalid string: control character U+0014 (DC4) must be escaped to \\u0014";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x15:
+                        {
+                            error_message = "invalid string: control character U+0015 (NAK) must be escaped to \\u0015";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x16:
+                        {
+                            error_message = "invalid string: control character U+0016 (SYN) must be escaped to \\u0016";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x17:
+                        {
+                            error_message = "invalid string: control character U+0017 (ETB) must be escaped to \\u0017";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x18:
+                        {
+                            error_message = "invalid string: control character U+0018 (CAN) must be escaped to \\u0018";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x19:
+                        {
+                            error_message = "invalid string: control character U+0019 (EM) must be escaped to \\u0019";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x1A:
+                        {
+                            error_message = "invalid string: control character U+001A (SUB) must be escaped to \\u001A";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x1B:
+                        {
+                            error_message = "invalid string: control character U+001B (ESC) must be escaped to \\u001B";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x1C:
+                        {
+                            error_message = "invalid string: control character U+001C (FS) must be escaped to \\u001C";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x1D:
+                        {
+                            error_message = "invalid string: control character U+001D (GS) must be escaped to \\u001D";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x1E:
+                        {
+                            error_message = "invalid string: control character U+001E (RS) must be escaped to \\u001E";
+                            return token_type::parse_error;
+                        }
+
+                        case 0x1F:
+                        {
+                            error_message = "invalid string: control character U+001F (US) must be escaped to \\u001F";
+                            return token_type::parse_error;
+                        }
+
+                        // U+0020..U+007F (except U+0022 (quote) and U+005C (backspace))
+                        case 0x20:
+                        case 0x21:
+                        case 0x23:
+                        case 0x24:
+                        case 0x25:
+                        case 0x26:
+                        case 0x27:
+                        case 0x28:
+                        case 0x29:
+                        case 0x2A:
+                        case 0x2B:
+                        case 0x2C:
+                        case 0x2D:
+                        case 0x2E:
+                        case 0x2F:
+                        case 0x30:
+                        case 0x31:
+                        case 0x32:
+                        case 0x33:
+                        case 0x34:
+                        case 0x35:
+                        case 0x36:
+                        case 0x37:
+                        case 0x38:
+                        case 0x39:
+                        case 0x3A:
+                        case 0x3B:
+                        case 0x3C:
+                        case 0x3D:
+                        case 0x3E:
+                        case 0x3F:
+                        case 0x40:
+                        case 0x41:
+                        case 0x42:
+                        case 0x43:
+                        case 0x44:
+                        case 0x45:
+                        case 0x46:
+                        case 0x47:
+                        case 0x48:
+                        case 0x49:
+                        case 0x4A:
+                        case 0x4B:
+                        case 0x4C:
+                        case 0x4D:
+                        case 0x4E:
+                        case 0x4F:
+                        case 0x50:
+                        case 0x51:
+                        case 0x52:
+                        case 0x53:
+                        case 0x54:
+                        case 0x55:
+                        case 0x56:
+                        case 0x57:
+                        case 0x58:
+                        case 0x59:
+                        case 0x5A:
+                        case 0x5B:
+                        case 0x5D:
+                        case 0x5E:
+                        case 0x5F:
+                        case 0x60:
+                        case 0x61:
+                        case 0x62:
+                        case 0x63:
+                        case 0x64:
+                        case 0x65:
+                        case 0x66:
+                        case 0x67:
+                        case 0x68:
+                        case 0x69:
+                        case 0x6A:
+                        case 0x6B:
+                        case 0x6C:
+                        case 0x6D:
+                        case 0x6E:
+                        case 0x6F:
+                        case 0x70:
+                        case 0x71:
+                        case 0x72:
+                        case 0x73:
+                        case 0x74:
+                        case 0x75:
+                        case 0x76:
+                        case 0x77:
+                        case 0x78:
+                        case 0x79:
+                        case 0x7A:
+                        case 0x7B:
+                        case 0x7C:
+                        case 0x7D:
+                        case 0x7E:
+                        case 0x7F:
+                        {
+                            add(current);
+                            break;
+                        }
+
+                        // U+0080..U+07FF: bytes C2..DF 80..BF
+                        case 0xC2:
+                        case 0xC3:
+                        case 0xC4:
+                        case 0xC5:
+                        case 0xC6:
+                        case 0xC7:
+                        case 0xC8:
+                        case 0xC9:
+                        case 0xCA:
+                        case 0xCB:
+                        case 0xCC:
+                        case 0xCD:
+                        case 0xCE:
+                        case 0xCF:
+                        case 0xD0:
+                        case 0xD1:
+                        case 0xD2:
+                        case 0xD3:
+                        case 0xD4:
+                        case 0xD5:
+                        case 0xD6:
+                        case 0xD7:
+                        case 0xD8:
+                        case 0xD9:
+                        case 0xDA:
+                        case 0xDB:
+                        case 0xDC:
+                        case 0xDD:
+                        case 0xDE:
+                        case 0xDF:
+                        {
+                            if (JSON_UNLIKELY(not next_byte_in_range({0x80, 0xBF})))
+                            {
+                                return token_type::parse_error;
+                            }
+                            break;
+                        }
+
+                        // U+0800..U+0FFF: bytes E0 A0..BF 80..BF
+                        case 0xE0:
+                        {
+                            if (JSON_UNLIKELY(not(next_byte_in_range({0xA0, 0xBF, 0x80, 0xBF}))))
+                            {
+                                return token_type::parse_error;
+                            }
+                            break;
+                        }
+
+                        // U+1000..U+CFFF: bytes E1..EC 80..BF 80..BF
+                        // U+E000..U+FFFF: bytes EE..EF 80..BF 80..BF
+                        case 0xE1:
+                        case 0xE2:
+                        case 0xE3:
+                        case 0xE4:
+                        case 0xE5:
+                        case 0xE6:
+                        case 0xE7:
+                        case 0xE8:
+                        case 0xE9:
+                        case 0xEA:
+                        case 0xEB:
+                        case 0xEC:
+                        case 0xEE:
+                        case 0xEF:
+                        {
+                            if (JSON_UNLIKELY(not(next_byte_in_range({0x80, 0xBF, 0x80, 0xBF}))))
+                            {
+                                return token_type::parse_error;
+                            }
+                            break;
+                        }
+
+                        // U+D000..U+D7FF: bytes ED 80..9F 80..BF
+                        case 0xED:
+                        {
+                            if (JSON_UNLIKELY(not(next_byte_in_range({0x80, 0x9F, 0x80, 0xBF}))))
+                            {
+                                return token_type::parse_error;
+                            }
+                            break;
+                        }
+
+                        // U+10000..U+3FFFF F0 90..BF 80..BF 80..BF
+                        case 0xF0:
+                        {
+                            if (JSON_UNLIKELY(not(next_byte_in_range({0x90, 0xBF, 0x80, 0xBF, 0x80, 0xBF}))))
+                            {
+                                return token_type::parse_error;
+                            }
+                            break;
+                        }
+
+                        // U+40000..U+FFFFF F1..F3 80..BF 80..BF 80..BF
+                        case 0xF1:
+                        case 0xF2:
+                        case 0xF3:
+                        {
+                            if (JSON_UNLIKELY(not(next_byte_in_range({0x80, 0xBF, 0x80, 0xBF, 0x80, 0xBF}))))
+                            {
+                                return token_type::parse_error;
+                            }
+                            break;
+                        }
+
+                        // U+100000..U+10FFFF F4 80..8F 80..BF 80..BF
+                        case 0xF4:
+                        {
+                            if (JSON_UNLIKELY(not(next_byte_in_range({0x80, 0x8F, 0x80, 0xBF, 0x80, 0xBF}))))
+                            {
+                                return token_type::parse_error;
+                            }
+                            break;
+                        }
+
+                        // remaining bytes (80..C1 and F5..FF) are ill-formed
                         default:
-                            error_message = "invalid string: forbidden character after backslash";
-                            return token_type::parse_error;
-                        }
-
-                        break;
-                    }
-
-                    // invalid control characters
-                    case 0x00:
-                    {
-                        error_message = "invalid string: control character U+0000 (NUL) must be escaped to \\u0000";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x01:
-                    {
-                        error_message = "invalid string: control character U+0001 (SOH) must be escaped to \\u0001";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x02:
-                    {
-                        error_message = "invalid string: control character U+0002 (STX) must be escaped to \\u0002";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x03:
-                    {
-                        error_message = "invalid string: control character U+0003 (ETX) must be escaped to \\u0003";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x04:
-                    {
-                        error_message = "invalid string: control character U+0004 (EOT) must be escaped to \\u0004";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x05:
-                    {
-                        error_message = "invalid string: control character U+0005 (ENQ) must be escaped to \\u0005";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x06:
-                    {
-                        error_message = "invalid string: control character U+0006 (ACK) must be escaped to \\u0006";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x07:
-                    {
-                        error_message = "invalid string: control character U+0007 (BEL) must be escaped to \\u0007";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x08:
-                    {
-                        error_message = "invalid string: control character U+0008 (BS) must be escaped to \\u0008 or \\b";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x09:
-                    {
-                        error_message = "invalid string: control character U+0009 (HT) must be escaped to \\u0009 or \\t";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x0A:
-                    {
-                        error_message = "invalid string: control character U+000A (LF) must be escaped to \\u000A or \\n";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x0B:
-                    {
-                        error_message = "invalid string: control character U+000B (VT) must be escaped to \\u000B";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x0C:
-                    {
-                        error_message = "invalid string: control character U+000C (FF) must be escaped to \\u000C or \\f";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x0D:
-                    {
-                        error_message = "invalid string: control character U+000D (CR) must be escaped to \\u000D or \\r";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x0E:
-                    {
-                        error_message = "invalid string: control character U+000E (SO) must be escaped to \\u000E";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x0F:
-                    {
-                        error_message = "invalid string: control character U+000F (SI) must be escaped to \\u000F";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x10:
-                    {
-                        error_message = "invalid string: control character U+0010 (DLE) must be escaped to \\u0010";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x11:
-                    {
-                        error_message = "invalid string: control character U+0011 (DC1) must be escaped to \\u0011";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x12:
-                    {
-                        error_message = "invalid string: control character U+0012 (DC2) must be escaped to \\u0012";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x13:
-                    {
-                        error_message = "invalid string: control character U+0013 (DC3) must be escaped to \\u0013";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x14:
-                    {
-                        error_message = "invalid string: control character U+0014 (DC4) must be escaped to \\u0014";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x15:
-                    {
-                        error_message = "invalid string: control character U+0015 (NAK) must be escaped to \\u0015";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x16:
-                    {
-                        error_message = "invalid string: control character U+0016 (SYN) must be escaped to \\u0016";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x17:
-                    {
-                        error_message = "invalid string: control character U+0017 (ETB) must be escaped to \\u0017";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x18:
-                    {
-                        error_message = "invalid string: control character U+0018 (CAN) must be escaped to \\u0018";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x19:
-                    {
-                        error_message = "invalid string: control character U+0019 (EM) must be escaped to \\u0019";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x1A:
-                    {
-                        error_message = "invalid string: control character U+001A (SUB) must be escaped to \\u001A";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x1B:
-                    {
-                        error_message = "invalid string: control character U+001B (ESC) must be escaped to \\u001B";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x1C:
-                    {
-                        error_message = "invalid string: control character U+001C (FS) must be escaped to \\u001C";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x1D:
-                    {
-                        error_message = "invalid string: control character U+001D (GS) must be escaped to \\u001D";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x1E:
-                    {
-                        error_message = "invalid string: control character U+001E (RS) must be escaped to \\u001E";
-                        return token_type::parse_error;
-                    }
-
-                    case 0x1F:
-                    {
-                        error_message = "invalid string: control character U+001F (US) must be escaped to \\u001F";
-                        return token_type::parse_error;
-                    }
-
-                    // U+0020..U+007F (except U+0022 (quote) and U+005C (backspace))
-                    case 0x20:
-                    case 0x21:
-                    case 0x23:
-                    case 0x24:
-                    case 0x25:
-                    case 0x26:
-                    case 0x27:
-                    case 0x28:
-                    case 0x29:
-                    case 0x2A:
-                    case 0x2B:
-                    case 0x2C:
-                    case 0x2D:
-                    case 0x2E:
-                    case 0x2F:
-                    case 0x30:
-                    case 0x31:
-                    case 0x32:
-                    case 0x33:
-                    case 0x34:
-                    case 0x35:
-                    case 0x36:
-                    case 0x37:
-                    case 0x38:
-                    case 0x39:
-                    case 0x3A:
-                    case 0x3B:
-                    case 0x3C:
-                    case 0x3D:
-                    case 0x3E:
-                    case 0x3F:
-                    case 0x40:
-                    case 0x41:
-                    case 0x42:
-                    case 0x43:
-                    case 0x44:
-                    case 0x45:
-                    case 0x46:
-                    case 0x47:
-                    case 0x48:
-                    case 0x49:
-                    case 0x4A:
-                    case 0x4B:
-                    case 0x4C:
-                    case 0x4D:
-                    case 0x4E:
-                    case 0x4F:
-                    case 0x50:
-                    case 0x51:
-                    case 0x52:
-                    case 0x53:
-                    case 0x54:
-                    case 0x55:
-                    case 0x56:
-                    case 0x57:
-                    case 0x58:
-                    case 0x59:
-                    case 0x5A:
-                    case 0x5B:
-                    case 0x5D:
-                    case 0x5E:
-                    case 0x5F:
-                    case 0x60:
-                    case 0x61:
-                    case 0x62:
-                    case 0x63:
-                    case 0x64:
-                    case 0x65:
-                    case 0x66:
-                    case 0x67:
-                    case 0x68:
-                    case 0x69:
-                    case 0x6A:
-                    case 0x6B:
-                    case 0x6C:
-                    case 0x6D:
-                    case 0x6E:
-                    case 0x6F:
-                    case 0x70:
-                    case 0x71:
-                    case 0x72:
-                    case 0x73:
-                    case 0x74:
-                    case 0x75:
-                    case 0x76:
-                    case 0x77:
-                    case 0x78:
-                    case 0x79:
-                    case 0x7A:
-                    case 0x7B:
-                    case 0x7C:
-                    case 0x7D:
-                    case 0x7E:
-                    case 0x7F:
-                    {
-                        add(current);
-                        break;
-                    }
-
-                    // U+0080..U+07FF: bytes C2..DF 80..BF
-                    case 0xC2:
-                    case 0xC3:
-                    case 0xC4:
-                    case 0xC5:
-                    case 0xC6:
-                    case 0xC7:
-                    case 0xC8:
-                    case 0xC9:
-                    case 0xCA:
-                    case 0xCB:
-                    case 0xCC:
-                    case 0xCD:
-                    case 0xCE:
-                    case 0xCF:
-                    case 0xD0:
-                    case 0xD1:
-                    case 0xD2:
-                    case 0xD3:
-                    case 0xD4:
-                    case 0xD5:
-                    case 0xD6:
-                    case 0xD7:
-                    case 0xD8:
-                    case 0xD9:
-                    case 0xDA:
-                    case 0xDB:
-                    case 0xDC:
-                    case 0xDD:
-                    case 0xDE:
-                    case 0xDF:
-                    {
-                        if (JSON_UNLIKELY(not next_byte_in_range({0x80, 0xBF})))
                         {
+                            error_message = "invalid string: ill-formed UTF-8 byte";
                             return token_type::parse_error;
                         }
-                        break;
-                    }
-
-                    // U+0800..U+0FFF: bytes E0 A0..BF 80..BF
-                    case 0xE0:
-                    {
-                        if (JSON_UNLIKELY(not(next_byte_in_range({0xA0, 0xBF, 0x80, 0xBF}))))
-                        {
-                            return token_type::parse_error;
-                        }
-                        break;
-                    }
-
-                    // U+1000..U+CFFF: bytes E1..EC 80..BF 80..BF
-                    // U+E000..U+FFFF: bytes EE..EF 80..BF 80..BF
-                    case 0xE1:
-                    case 0xE2:
-                    case 0xE3:
-                    case 0xE4:
-                    case 0xE5:
-                    case 0xE6:
-                    case 0xE7:
-                    case 0xE8:
-                    case 0xE9:
-                    case 0xEA:
-                    case 0xEB:
-                    case 0xEC:
-                    case 0xEE:
-                    case 0xEF:
-                    {
-                        if (JSON_UNLIKELY(not(next_byte_in_range({0x80, 0xBF, 0x80, 0xBF}))))
-                        {
-                            return token_type::parse_error;
-                        }
-                        break;
-                    }
-
-                    // U+D000..U+D7FF: bytes ED 80..9F 80..BF
-                    case 0xED:
-                    {
-                        if (JSON_UNLIKELY(not(next_byte_in_range({0x80, 0x9F, 0x80, 0xBF}))))
-                        {
-                            return token_type::parse_error;
-                        }
-                        break;
-                    }
-
-                    // U+10000..U+3FFFF F0 90..BF 80..BF 80..BF
-                    case 0xF0:
-                    {
-                        if (JSON_UNLIKELY(not(next_byte_in_range({0x90, 0xBF, 0x80, 0xBF, 0x80, 0xBF}))))
-                        {
-                            return token_type::parse_error;
-                        }
-                        break;
-                    }
-
-                    // U+40000..U+FFFFF F1..F3 80..BF 80..BF 80..BF
-                    case 0xF1:
-                    case 0xF2:
-                    case 0xF3:
-                    {
-                        if (JSON_UNLIKELY(not(next_byte_in_range({0x80, 0xBF, 0x80, 0xBF, 0x80, 0xBF}))))
-                        {
-                            return token_type::parse_error;
-                        }
-                        break;
-                    }
-
-                    // U+100000..U+10FFFF F4 80..8F 80..BF 80..BF
-                    case 0xF4:
-                    {
-                        if (JSON_UNLIKELY(not(next_byte_in_range({0x80, 0x8F, 0x80, 0xBF, 0x80, 0xBF}))))
-                        {
-                            return token_type::parse_error;
-                        }
-                        break;
-                    }
-
-                    // remaining bytes (80..C1 and F5..FF) are ill-formed
-                    default:
-                    {
-                        error_message = "invalid string: ill-formed UTF-8 byte";
-                        return token_type::parse_error;
-                    }
                     }
                 }
             }
@@ -6165,35 +6168,35 @@ namespace nlohmann
                 // state (init): we just found out we need to scan a number
                 switch (current)
                 {
-                case '-':
-                {
-                    add(current);
-                    goto scan_number_minus;
-                }
+                    case '-':
+                    {
+                        add(current);
+                        goto scan_number_minus;
+                    }
 
-                case '0':
-                {
-                    add(current);
-                    goto scan_number_zero;
-                }
+                    case '0':
+                    {
+                        add(current);
+                        goto scan_number_zero;
+                    }
 
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                case '9':
-                {
-                    add(current);
-                    goto scan_number_any1;
-                }
+                    case '1':
+                    case '2':
+                    case '3':
+                    case '4':
+                    case '5':
+                    case '6':
+                    case '7':
+                    case '8':
+                    case '9':
+                    {
+                        add(current);
+                        goto scan_number_any1;
+                    }
 
-                // all other characters are rejected outside scan_number()
-                default:           // LCOV_EXCL_LINE
-                    assert(false); // LCOV_EXCL_LINE
+                    // all other characters are rejected outside scan_number()
+                    default:           // LCOV_EXCL_LINE
+                        assert(false); // LCOV_EXCL_LINE
                 }
 
             scan_number_minus:
@@ -6201,88 +6204,88 @@ namespace nlohmann
                 number_type = token_type::value_integer;
                 switch (get())
                 {
-                case '0':
-                {
-                    add(current);
-                    goto scan_number_zero;
-                }
+                    case '0':
+                    {
+                        add(current);
+                        goto scan_number_zero;
+                    }
 
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                case '9':
-                {
-                    add(current);
-                    goto scan_number_any1;
-                }
+                    case '1':
+                    case '2':
+                    case '3':
+                    case '4':
+                    case '5':
+                    case '6':
+                    case '7':
+                    case '8':
+                    case '9':
+                    {
+                        add(current);
+                        goto scan_number_any1;
+                    }
 
-                default:
-                {
-                    error_message = "invalid number; expected digit after '-'";
-                    return token_type::parse_error;
-                }
+                    default:
+                    {
+                        error_message = "invalid number; expected digit after '-'";
+                        return token_type::parse_error;
+                    }
                 }
 
             scan_number_zero:
                 // state: we just parse a zero (maybe with a leading minus sign)
                 switch (get())
                 {
-                case '.':
-                {
-                    add(decimal_point_char);
-                    goto scan_number_decimal1;
-                }
+                    case '.':
+                    {
+                        add(decimal_point_char);
+                        goto scan_number_decimal1;
+                    }
 
-                case 'e':
-                case 'E':
-                {
-                    add(current);
-                    goto scan_number_exponent;
-                }
+                    case 'e':
+                    case 'E':
+                    {
+                        add(current);
+                        goto scan_number_exponent;
+                    }
 
-                default:
-                    goto scan_number_done;
+                    default:
+                        goto scan_number_done;
                 }
 
             scan_number_any1:
                 // state: we just parsed a number 0-9 (maybe with a leading minus sign)
                 switch (get())
                 {
-                case '0':
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                case '9':
-                {
-                    add(current);
-                    goto scan_number_any1;
-                }
+                    case '0':
+                    case '1':
+                    case '2':
+                    case '3':
+                    case '4':
+                    case '5':
+                    case '6':
+                    case '7':
+                    case '8':
+                    case '9':
+                    {
+                        add(current);
+                        goto scan_number_any1;
+                    }
 
-                case '.':
-                {
-                    add(decimal_point_char);
-                    goto scan_number_decimal1;
-                }
+                    case '.':
+                    {
+                        add(decimal_point_char);
+                        goto scan_number_decimal1;
+                    }
 
-                case 'e':
-                case 'E':
-                {
-                    add(current);
-                    goto scan_number_exponent;
-                }
+                    case 'e':
+                    case 'E':
+                    {
+                        add(current);
+                        goto scan_number_exponent;
+                    }
 
-                default:
-                    goto scan_number_done;
+                    default:
+                        goto scan_number_done;
                 }
 
             scan_number_decimal1:
@@ -6290,56 +6293,56 @@ namespace nlohmann
                 number_type = token_type::value_float;
                 switch (get())
                 {
-                case '0':
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                case '9':
-                {
-                    add(current);
-                    goto scan_number_decimal2;
-                }
+                    case '0':
+                    case '1':
+                    case '2':
+                    case '3':
+                    case '4':
+                    case '5':
+                    case '6':
+                    case '7':
+                    case '8':
+                    case '9':
+                    {
+                        add(current);
+                        goto scan_number_decimal2;
+                    }
 
-                default:
-                {
-                    error_message = "invalid number; expected digit after '.'";
-                    return token_type::parse_error;
-                }
+                    default:
+                    {
+                        error_message = "invalid number; expected digit after '.'";
+                        return token_type::parse_error;
+                    }
                 }
 
             scan_number_decimal2:
                 // we just parsed at least one number after a decimal point
                 switch (get())
                 {
-                case '0':
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                case '9':
-                {
-                    add(current);
-                    goto scan_number_decimal2;
-                }
+                    case '0':
+                    case '1':
+                    case '2':
+                    case '3':
+                    case '4':
+                    case '5':
+                    case '6':
+                    case '7':
+                    case '8':
+                    case '9':
+                    {
+                        add(current);
+                        goto scan_number_decimal2;
+                    }
 
-                case 'e':
-                case 'E':
-                {
-                    add(current);
-                    goto scan_number_exponent;
-                }
+                    case 'e':
+                    case 'E':
+                    {
+                        add(current);
+                        goto scan_number_exponent;
+                    }
 
-                default:
-                    goto scan_number_done;
+                    default:
+                        goto scan_number_done;
                 }
 
             scan_number_exponent:
@@ -6347,82 +6350,82 @@ namespace nlohmann
                 number_type = token_type::value_float;
                 switch (get())
                 {
-                case '+':
-                case '-':
-                {
-                    add(current);
-                    goto scan_number_sign;
-                }
+                    case '+':
+                    case '-':
+                    {
+                        add(current);
+                        goto scan_number_sign;
+                    }
 
-                case '0':
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                case '9':
-                {
-                    add(current);
-                    goto scan_number_any2;
-                }
+                    case '0':
+                    case '1':
+                    case '2':
+                    case '3':
+                    case '4':
+                    case '5':
+                    case '6':
+                    case '7':
+                    case '8':
+                    case '9':
+                    {
+                        add(current);
+                        goto scan_number_any2;
+                    }
 
-                default:
-                {
-                    error_message = "invalid number; expected '+', '-', or digit after exponent";
-                    return token_type::parse_error;
-                }
+                    default:
+                    {
+                        error_message = "invalid number; expected '+', '-', or digit after exponent";
+                        return token_type::parse_error;
+                    }
                 }
 
             scan_number_sign:
                 // we just parsed an exponent sign
                 switch (get())
                 {
-                case '0':
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                case '9':
-                {
-                    add(current);
-                    goto scan_number_any2;
-                }
+                    case '0':
+                    case '1':
+                    case '2':
+                    case '3':
+                    case '4':
+                    case '5':
+                    case '6':
+                    case '7':
+                    case '8':
+                    case '9':
+                    {
+                        add(current);
+                        goto scan_number_any2;
+                    }
 
-                default:
-                {
-                    error_message = "invalid number; expected digit after exponent sign";
-                    return token_type::parse_error;
-                }
+                    default:
+                    {
+                        error_message = "invalid number; expected digit after exponent sign";
+                        return token_type::parse_error;
+                    }
                 }
 
             scan_number_any2:
                 // we just parsed a number after the exponent or exponent sign
                 switch (get())
                 {
-                case '0':
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                case '9':
-                {
-                    add(current);
-                    goto scan_number_any2;
-                }
+                    case '0':
+                    case '1':
+                    case '2':
+                    case '3':
+                    case '4':
+                    case '5':
+                    case '6':
+                    case '7':
+                    case '8':
+                    case '9':
+                    {
+                        add(current);
+                        goto scan_number_any2;
+                    }
 
-                default:
-                    goto scan_number_done;
+                    default:
+                        goto scan_number_done;
                 }
 
             scan_number_done:
@@ -6676,56 +6679,56 @@ namespace nlohmann
 
                 switch (current)
                 {
-                // structural characters
-                case '[':
-                    return token_type::begin_array;
-                case ']':
-                    return token_type::end_array;
-                case '{':
-                    return token_type::begin_object;
-                case '}':
-                    return token_type::end_object;
-                case ':':
-                    return token_type::name_separator;
-                case ',':
-                    return token_type::value_separator;
+                    // structural characters
+                    case '[':
+                        return token_type::begin_array;
+                    case ']':
+                        return token_type::end_array;
+                    case '{':
+                        return token_type::begin_object;
+                    case '}':
+                        return token_type::end_object;
+                    case ':':
+                        return token_type::name_separator;
+                    case ',':
+                        return token_type::value_separator;
 
-                // literals
-                case 't':
-                    return scan_literal("true", 4, token_type::literal_true);
-                case 'f':
-                    return scan_literal("false", 5, token_type::literal_false);
-                case 'n':
-                    return scan_literal("null", 4, token_type::literal_null);
+                    // literals
+                    case 't':
+                        return scan_literal("true", 4, token_type::literal_true);
+                    case 'f':
+                        return scan_literal("false", 5, token_type::literal_false);
+                    case 'n':
+                        return scan_literal("null", 4, token_type::literal_null);
 
-                // string
-                case '\"':
-                    return scan_string();
+                    // string
+                    case '\"':
+                        return scan_string();
 
-                // number
-                case '-':
-                case '0':
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                case '9':
-                    return scan_number();
+                    // number
+                    case '-':
+                    case '0':
+                    case '1':
+                    case '2':
+                    case '3':
+                    case '4':
+                    case '5':
+                    case '6':
+                    case '7':
+                    case '8':
+                    case '9':
+                        return scan_number();
 
-                // end of input (the null byte is needed when parsing from
-                // string literals)
-                case '\0':
-                case std::char_traits<char>::eof():
-                    return token_type::end_of_input;
+                    // end of input (the null byte is needed when parsing from
+                    // string literals)
+                    case '\0':
+                    case std::char_traits<char>::eof():
+                        return token_type::end_of_input;
 
-                // error
-                default:
-                    error_message = "invalid literal";
-                    return token_type::parse_error;
+                    // error
+                    default:
+                        error_message = "invalid literal";
+                        return token_type::parse_error;
                 }
             }
 
@@ -6942,158 +6945,158 @@ namespace nlohmann
                         // invariant: get_token() was called before each iteration
                         switch (last_token)
                         {
-                        case token_type::begin_object:
-                        {
-                            if (JSON_UNLIKELY(not sax->start_object(std::size_t(-1))))
+                            case token_type::begin_object:
                             {
-                                return false;
+                                if (JSON_UNLIKELY(not sax->start_object(std::size_t(-1))))
+                                {
+                                    return false;
+                                }
+
+                                // closing } -> we are done
+                                if (get_token() == token_type::end_object)
+                                {
+                                    if (JSON_UNLIKELY(not sax->end_object()))
+                                    {
+                                        return false;
+                                    }
+                                    break;
+                                }
+
+                                // parse key
+                                if (JSON_UNLIKELY(last_token != token_type::value_string))
+                                {
+                                    return sax->parse_error(m_lexer.get_position(), m_lexer.get_token_string(),
+                                        parse_error::create(101, m_lexer.get_position(), exception_message(token_type::value_string, "object key")));
+                                }
+                                if (JSON_UNLIKELY(not sax->key(m_lexer.get_string())))
+                                {
+                                    return false;
+                                }
+
+                                // parse separator (:)
+                                if (JSON_UNLIKELY(get_token() != token_type::name_separator))
+                                {
+                                    return sax->parse_error(m_lexer.get_position(), m_lexer.get_token_string(),
+                                        parse_error::create(
+                                            101, m_lexer.get_position(), exception_message(token_type::name_separator, "object separator")));
+                                }
+
+                                // remember we are now inside an object
+                                states.push_back(false);
+
+                                // parse values
+                                get_token();
+                                continue;
                             }
 
-                            // closing } -> we are done
-                            if (get_token() == token_type::end_object)
+                            case token_type::begin_array:
                             {
-                                if (JSON_UNLIKELY(not sax->end_object()))
+                                if (JSON_UNLIKELY(not sax->start_array(std::size_t(-1))))
+                                {
+                                    return false;
+                                }
+
+                                // closing ] -> we are done
+                                if (get_token() == token_type::end_array)
+                                {
+                                    if (JSON_UNLIKELY(not sax->end_array()))
+                                    {
+                                        return false;
+                                    }
+                                    break;
+                                }
+
+                                // remember we are now inside an array
+                                states.push_back(true);
+
+                                // parse values (no need to call get_token)
+                                continue;
+                            }
+
+                            case token_type::value_float:
+                            {
+                                const auto res = m_lexer.get_number_float();
+
+                                if (JSON_UNLIKELY(not std::isfinite(res)))
+                                {
+                                    return sax->parse_error(m_lexer.get_position(), m_lexer.get_token_string(),
+                                        out_of_range::create(406, "number overflow parsing '" + m_lexer.get_token_string() + "'"));
+                                }
+
+                                if (JSON_UNLIKELY(not sax->number_float(res, m_lexer.get_string())))
+                                {
+                                    return false;
+                                }
+
+                                break;
+                            }
+
+                            case token_type::literal_false:
+                            {
+                                if (JSON_UNLIKELY(not sax->boolean(false)))
                                 {
                                     return false;
                                 }
                                 break;
                             }
 
-                            // parse key
-                            if (JSON_UNLIKELY(last_token != token_type::value_string))
+                            case token_type::literal_null:
                             {
-                                return sax->parse_error(m_lexer.get_position(), m_lexer.get_token_string(),
-                                    parse_error::create(101, m_lexer.get_position(), exception_message(token_type::value_string, "object key")));
-                            }
-                            if (JSON_UNLIKELY(not sax->key(m_lexer.get_string())))
-                            {
-                                return false;
-                            }
-
-                            // parse separator (:)
-                            if (JSON_UNLIKELY(get_token() != token_type::name_separator))
-                            {
-                                return sax->parse_error(m_lexer.get_position(), m_lexer.get_token_string(),
-                                    parse_error::create(
-                                        101, m_lexer.get_position(), exception_message(token_type::name_separator, "object separator")));
-                            }
-
-                            // remember we are now inside an object
-                            states.push_back(false);
-
-                            // parse values
-                            get_token();
-                            continue;
-                        }
-
-                        case token_type::begin_array:
-                        {
-                            if (JSON_UNLIKELY(not sax->start_array(std::size_t(-1))))
-                            {
-                                return false;
-                            }
-
-                            // closing ] -> we are done
-                            if (get_token() == token_type::end_array)
-                            {
-                                if (JSON_UNLIKELY(not sax->end_array()))
+                                if (JSON_UNLIKELY(not sax->null()))
                                 {
                                     return false;
                                 }
                                 break;
                             }
 
-                            // remember we are now inside an array
-                            states.push_back(true);
+                            case token_type::literal_true:
+                            {
+                                if (JSON_UNLIKELY(not sax->boolean(true)))
+                                {
+                                    return false;
+                                }
+                                break;
+                            }
 
-                            // parse values (no need to call get_token)
-                            continue;
-                        }
+                            case token_type::value_integer:
+                            {
+                                if (JSON_UNLIKELY(not sax->number_integer(m_lexer.get_number_integer())))
+                                {
+                                    return false;
+                                }
+                                break;
+                            }
 
-                        case token_type::value_float:
-                        {
-                            const auto res = m_lexer.get_number_float();
+                            case token_type::value_string:
+                            {
+                                if (JSON_UNLIKELY(not sax->string(m_lexer.get_string())))
+                                {
+                                    return false;
+                                }
+                                break;
+                            }
 
-                            if (JSON_UNLIKELY(not std::isfinite(res)))
+                            case token_type::value_unsigned:
+                            {
+                                if (JSON_UNLIKELY(not sax->number_unsigned(m_lexer.get_number_unsigned())))
+                                {
+                                    return false;
+                                }
+                                break;
+                            }
+
+                            case token_type::parse_error:
+                            {
+                                // using "uninitialized" to avoid "expected" message
+                                return sax->parse_error(m_lexer.get_position(), m_lexer.get_token_string(),
+                                    parse_error::create(101, m_lexer.get_position(), exception_message(token_type::uninitialized, "value")));
+                            }
+
+                            default: // the last token was unexpected
                             {
                                 return sax->parse_error(m_lexer.get_position(), m_lexer.get_token_string(),
-                                    out_of_range::create(406, "number overflow parsing '" + m_lexer.get_token_string() + "'"));
+                                    parse_error::create(101, m_lexer.get_position(), exception_message(token_type::literal_or_value, "value")));
                             }
-
-                            if (JSON_UNLIKELY(not sax->number_float(res, m_lexer.get_string())))
-                            {
-                                return false;
-                            }
-
-                            break;
-                        }
-
-                        case token_type::literal_false:
-                        {
-                            if (JSON_UNLIKELY(not sax->boolean(false)))
-                            {
-                                return false;
-                            }
-                            break;
-                        }
-
-                        case token_type::literal_null:
-                        {
-                            if (JSON_UNLIKELY(not sax->null()))
-                            {
-                                return false;
-                            }
-                            break;
-                        }
-
-                        case token_type::literal_true:
-                        {
-                            if (JSON_UNLIKELY(not sax->boolean(true)))
-                            {
-                                return false;
-                            }
-                            break;
-                        }
-
-                        case token_type::value_integer:
-                        {
-                            if (JSON_UNLIKELY(not sax->number_integer(m_lexer.get_number_integer())))
-                            {
-                                return false;
-                            }
-                            break;
-                        }
-
-                        case token_type::value_string:
-                        {
-                            if (JSON_UNLIKELY(not sax->string(m_lexer.get_string())))
-                            {
-                                return false;
-                            }
-                            break;
-                        }
-
-                        case token_type::value_unsigned:
-                        {
-                            if (JSON_UNLIKELY(not sax->number_unsigned(m_lexer.get_number_unsigned())))
-                            {
-                                return false;
-                            }
-                            break;
-                        }
-
-                        case token_type::parse_error:
-                        {
-                            // using "uninitialized" to avoid "expected" message
-                            return sax->parse_error(m_lexer.get_position(), m_lexer.get_token_string(),
-                                parse_error::create(101, m_lexer.get_position(), exception_message(token_type::uninitialized, "value")));
-                        }
-
-                        default: // the last token was unexpected
-                        {
-                            return sax->parse_error(m_lexer.get_position(), m_lexer.get_token_string(),
-                                parse_error::create(101, m_lexer.get_position(), exception_message(token_type::literal_or_value, "value")));
-                        }
                         }
                     }
                     else
@@ -7454,23 +7457,23 @@ namespace nlohmann
 
                 switch (m_object->m_type)
                 {
-                case value_t::object:
-                {
-                    m_it.object_iterator = typename object_t::iterator();
-                    break;
-                }
+                    case value_t::object:
+                    {
+                        m_it.object_iterator = typename object_t::iterator();
+                        break;
+                    }
 
-                case value_t::array:
-                {
-                    m_it.array_iterator = typename array_t::iterator();
-                    break;
-                }
+                    case value_t::array:
+                    {
+                        m_it.array_iterator = typename array_t::iterator();
+                        break;
+                    }
 
-                default:
-                {
-                    m_it.primitive_iterator = primitive_iterator_t();
-                    break;
-                }
+                    default:
+                    {
+                        m_it.primitive_iterator = primitive_iterator_t();
+                        break;
+                    }
                 }
             }
 
@@ -7516,30 +7519,30 @@ namespace nlohmann
 
                 switch (m_object->m_type)
                 {
-                case value_t::object:
-                {
-                    m_it.object_iterator = m_object->m_value.object->begin();
-                    break;
-                }
+                    case value_t::object:
+                    {
+                        m_it.object_iterator = m_object->m_value.object->begin();
+                        break;
+                    }
 
-                case value_t::array:
-                {
-                    m_it.array_iterator = m_object->m_value.array->begin();
-                    break;
-                }
+                    case value_t::array:
+                    {
+                        m_it.array_iterator = m_object->m_value.array->begin();
+                        break;
+                    }
 
-                case value_t::null:
-                {
-                    // set to end so begin()==end() is true: null is empty
-                    m_it.primitive_iterator.set_end();
-                    break;
-                }
+                    case value_t::null:
+                    {
+                        // set to end so begin()==end() is true: null is empty
+                        m_it.primitive_iterator.set_end();
+                        break;
+                    }
 
-                default:
-                {
-                    m_it.primitive_iterator.set_begin();
-                    break;
-                }
+                    default:
+                    {
+                        m_it.primitive_iterator.set_begin();
+                        break;
+                    }
                 }
             }
 
@@ -7553,23 +7556,23 @@ namespace nlohmann
 
                 switch (m_object->m_type)
                 {
-                case value_t::object:
-                {
-                    m_it.object_iterator = m_object->m_value.object->end();
-                    break;
-                }
+                    case value_t::object:
+                    {
+                        m_it.object_iterator = m_object->m_value.object->end();
+                        break;
+                    }
 
-                case value_t::array:
-                {
-                    m_it.array_iterator = m_object->m_value.array->end();
-                    break;
-                }
+                    case value_t::array:
+                    {
+                        m_it.array_iterator = m_object->m_value.array->end();
+                        break;
+                    }
 
-                default:
-                {
-                    m_it.primitive_iterator.set_end();
-                    break;
-                }
+                    default:
+                    {
+                        m_it.primitive_iterator.set_end();
+                        break;
+                    }
                 }
             }
 
@@ -7584,30 +7587,30 @@ namespace nlohmann
 
                 switch (m_object->m_type)
                 {
-                case value_t::object:
-                {
-                    assert(m_it.object_iterator != m_object->m_value.object->end());
-                    return m_it.object_iterator->second;
-                }
-
-                case value_t::array:
-                {
-                    assert(m_it.array_iterator != m_object->m_value.array->end());
-                    return *m_it.array_iterator;
-                }
-
-                case value_t::null:
-                    JSON_THROW(invalid_iterator::create(214, "cannot get value"));
-
-                default:
-                {
-                    if (JSON_LIKELY(m_it.primitive_iterator.is_begin()))
+                    case value_t::object:
                     {
-                        return *m_object;
+                        assert(m_it.object_iterator != m_object->m_value.object->end());
+                        return m_it.object_iterator->second;
                     }
 
-                    JSON_THROW(invalid_iterator::create(214, "cannot get value"));
-                }
+                    case value_t::array:
+                    {
+                        assert(m_it.array_iterator != m_object->m_value.array->end());
+                        return *m_it.array_iterator;
+                    }
+
+                    case value_t::null:
+                        JSON_THROW(invalid_iterator::create(214, "cannot get value"));
+
+                    default:
+                    {
+                        if (JSON_LIKELY(m_it.primitive_iterator.is_begin()))
+                        {
+                            return *m_object;
+                        }
+
+                        JSON_THROW(invalid_iterator::create(214, "cannot get value"));
+                    }
                 }
             }
 
@@ -7621,27 +7624,27 @@ namespace nlohmann
 
                 switch (m_object->m_type)
                 {
-                case value_t::object:
-                {
-                    assert(m_it.object_iterator != m_object->m_value.object->end());
-                    return &(m_it.object_iterator->second);
-                }
-
-                case value_t::array:
-                {
-                    assert(m_it.array_iterator != m_object->m_value.array->end());
-                    return &*m_it.array_iterator;
-                }
-
-                default:
-                {
-                    if (JSON_LIKELY(m_it.primitive_iterator.is_begin()))
+                    case value_t::object:
                     {
-                        return m_object;
+                        assert(m_it.object_iterator != m_object->m_value.object->end());
+                        return &(m_it.object_iterator->second);
                     }
 
-                    JSON_THROW(invalid_iterator::create(214, "cannot get value"));
-                }
+                    case value_t::array:
+                    {
+                        assert(m_it.array_iterator != m_object->m_value.array->end());
+                        return &*m_it.array_iterator;
+                    }
+
+                    default:
+                    {
+                        if (JSON_LIKELY(m_it.primitive_iterator.is_begin()))
+                        {
+                            return m_object;
+                        }
+
+                        JSON_THROW(invalid_iterator::create(214, "cannot get value"));
+                    }
                 }
             }
 
@@ -7666,23 +7669,23 @@ namespace nlohmann
 
                 switch (m_object->m_type)
                 {
-                case value_t::object:
-                {
-                    std::advance(m_it.object_iterator, 1);
-                    break;
-                }
+                    case value_t::object:
+                    {
+                        std::advance(m_it.object_iterator, 1);
+                        break;
+                    }
 
-                case value_t::array:
-                {
-                    std::advance(m_it.array_iterator, 1);
-                    break;
-                }
+                    case value_t::array:
+                    {
+                        std::advance(m_it.array_iterator, 1);
+                        break;
+                    }
 
-                default:
-                {
-                    ++m_it.primitive_iterator;
-                    break;
-                }
+                    default:
+                    {
+                        ++m_it.primitive_iterator;
+                        break;
+                    }
                 }
 
                 return *this;
@@ -7709,23 +7712,23 @@ namespace nlohmann
 
                 switch (m_object->m_type)
                 {
-                case value_t::object:
-                {
-                    std::advance(m_it.object_iterator, -1);
-                    break;
-                }
+                    case value_t::object:
+                    {
+                        std::advance(m_it.object_iterator, -1);
+                        break;
+                    }
 
-                case value_t::array:
-                {
-                    std::advance(m_it.array_iterator, -1);
-                    break;
-                }
+                    case value_t::array:
+                    {
+                        std::advance(m_it.array_iterator, -1);
+                        break;
+                    }
 
-                default:
-                {
-                    --m_it.primitive_iterator;
-                    break;
-                }
+                    default:
+                    {
+                        --m_it.primitive_iterator;
+                        break;
+                    }
                 }
 
                 return *this;
@@ -7747,14 +7750,14 @@ namespace nlohmann
 
                 switch (m_object->m_type)
                 {
-                case value_t::object:
-                    return (m_it.object_iterator == other.m_it.object_iterator);
+                    case value_t::object:
+                        return (m_it.object_iterator == other.m_it.object_iterator);
 
-                case value_t::array:
-                    return (m_it.array_iterator == other.m_it.array_iterator);
+                    case value_t::array:
+                        return (m_it.array_iterator == other.m_it.array_iterator);
 
-                default:
-                    return (m_it.primitive_iterator == other.m_it.primitive_iterator);
+                    default:
+                        return (m_it.primitive_iterator == other.m_it.primitive_iterator);
                 }
             }
 
@@ -7780,14 +7783,14 @@ namespace nlohmann
 
                 switch (m_object->m_type)
                 {
-                case value_t::object:
-                    JSON_THROW(invalid_iterator::create(213, "cannot compare order of object iterators"));
+                    case value_t::object:
+                        JSON_THROW(invalid_iterator::create(213, "cannot compare order of object iterators"));
 
-                case value_t::array:
-                    return (m_it.array_iterator < other.m_it.array_iterator);
+                    case value_t::array:
+                        return (m_it.array_iterator < other.m_it.array_iterator);
 
-                default:
-                    return (m_it.primitive_iterator < other.m_it.primitive_iterator);
+                    default:
+                        return (m_it.primitive_iterator < other.m_it.primitive_iterator);
                 }
             }
 
@@ -7819,20 +7822,20 @@ namespace nlohmann
 
                 switch (m_object->m_type)
                 {
-                case value_t::object:
-                    JSON_THROW(invalid_iterator::create(209, "cannot use offsets with object iterators"));
+                    case value_t::object:
+                        JSON_THROW(invalid_iterator::create(209, "cannot use offsets with object iterators"));
 
-                case value_t::array:
-                {
-                    std::advance(m_it.array_iterator, i);
-                    break;
-                }
+                    case value_t::array:
+                    {
+                        std::advance(m_it.array_iterator, i);
+                        break;
+                    }
 
-                default:
-                {
-                    m_it.primitive_iterator += i;
-                    break;
-                }
+                    default:
+                    {
+                        m_it.primitive_iterator += i;
+                        break;
+                    }
                 }
 
                 return *this;
@@ -7887,14 +7890,14 @@ namespace nlohmann
 
                 switch (m_object->m_type)
                 {
-                case value_t::object:
-                    JSON_THROW(invalid_iterator::create(209, "cannot use offsets with object iterators"));
+                    case value_t::object:
+                        JSON_THROW(invalid_iterator::create(209, "cannot use offsets with object iterators"));
 
-                case value_t::array:
-                    return m_it.array_iterator - other.m_it.array_iterator;
+                    case value_t::array:
+                        return m_it.array_iterator - other.m_it.array_iterator;
 
-                default:
-                    return m_it.primitive_iterator - other.m_it.primitive_iterator;
+                    default:
+                        return m_it.primitive_iterator - other.m_it.primitive_iterator;
                 }
             }
 
@@ -7908,24 +7911,24 @@ namespace nlohmann
 
                 switch (m_object->m_type)
                 {
-                case value_t::object:
-                    JSON_THROW(invalid_iterator::create(208, "cannot use operator[] for object iterators"));
+                    case value_t::object:
+                        JSON_THROW(invalid_iterator::create(208, "cannot use operator[] for object iterators"));
 
-                case value_t::array:
-                    return *std::next(m_it.array_iterator, n);
+                    case value_t::array:
+                        return *std::next(m_it.array_iterator, n);
 
-                case value_t::null:
-                    JSON_THROW(invalid_iterator::create(214, "cannot get value"));
+                    case value_t::null:
+                        JSON_THROW(invalid_iterator::create(214, "cannot get value"));
 
-                default:
-                {
-                    if (JSON_LIKELY(m_it.primitive_iterator.get_value() == -n))
+                    default:
                     {
-                        return *m_object;
-                    }
+                        if (JSON_LIKELY(m_it.primitive_iterator.get_value() == -n))
+                        {
+                            return *m_object;
+                        }
 
-                    JSON_THROW(invalid_iterator::create(214, "cannot get value"));
-                }
+                        JSON_THROW(invalid_iterator::create(214, "cannot get value"));
+                    }
                 }
             }
 
@@ -8398,47 +8401,47 @@ namespace nlohmann
             {
                 switch (result->m_type)
                 {
-                case detail::value_t::null:
-                {
-                    if (reference_token == "0")
+                    case detail::value_t::null:
                     {
-                        // start a new array if reference token is 0
-                        result = &result->operator[](0);
+                        if (reference_token == "0")
+                        {
+                            // start a new array if reference token is 0
+                            result = &result->operator[](0);
+                        }
+                        else
+                        {
+                            // start a new object otherwise
+                            result = &result->operator[](reference_token);
+                        }
+                        break;
                     }
-                    else
+
+                    case detail::value_t::object:
                     {
-                        // start a new object otherwise
+                        // create an entry in the object
                         result = &result->operator[](reference_token);
+                        break;
                     }
-                    break;
-                }
 
-                case detail::value_t::object:
-                {
-                    // create an entry in the object
-                    result = &result->operator[](reference_token);
-                    break;
-                }
-
-                case detail::value_t::array:
-                {
-                    // create an entry in the array
-                    JSON_TRY { result = &result->operator[](static_cast<size_type>(array_index(reference_token))); }
-                    JSON_CATCH(std::invalid_argument&)
+                    case detail::value_t::array:
                     {
-                        JSON_THROW(detail::parse_error::create(109, 0, "array index '" + reference_token + "' is not a number"));
+                        // create an entry in the array
+                        JSON_TRY { result = &result->operator[](static_cast<size_type>(array_index(reference_token))); }
+                        JSON_CATCH(std::invalid_argument&)
+                        {
+                            JSON_THROW(detail::parse_error::create(109, 0, "array index '" + reference_token + "' is not a number"));
+                        }
+                        break;
                     }
-                    break;
-                }
 
-                /*
-                The following code is only reached if there exists a reference
-                token _and_ the current value is primitive. In this case, we have
-                an error situation, because primitive values may only occur as
-                single value; that is, with an empty list of reference tokens.
-                */
-                default:
-                    JSON_THROW(detail::type_error::create(313, "invalid value to unflatten"));
+                    /*
+                    The following code is only reached if there exists a reference
+                    token _and_ the current value is primitive. In this case, we have
+                    an error situation, because primitive values may only occur as
+                    single value; that is, with an empty list of reference tokens.
+                    */
+                    default:
+                        JSON_THROW(detail::type_error::create(313, "invalid value to unflatten"));
                 }
             }
 
@@ -8481,40 +8484,40 @@ namespace nlohmann
 
                 switch (ptr->m_type)
                 {
-                case detail::value_t::object:
-                {
-                    // use unchecked object access
-                    ptr = &ptr->operator[](reference_token);
-                    break;
-                }
-
-                case detail::value_t::array:
-                {
-                    // error condition (cf. RFC 6901, Sect. 4)
-                    if (JSON_UNLIKELY(reference_token.size() > 1 and reference_token[0] == '0'))
+                    case detail::value_t::object:
                     {
-                        JSON_THROW(detail::parse_error::create(106, 0, "array index '" + reference_token + "' must not begin with '0'"));
+                        // use unchecked object access
+                        ptr = &ptr->operator[](reference_token);
+                        break;
                     }
 
-                    if (reference_token == "-")
+                    case detail::value_t::array:
                     {
-                        // explicitly treat "-" as index beyond the end
-                        ptr = &ptr->operator[](ptr->m_value.array->size());
-                    }
-                    else
-                    {
-                        // convert array index to number; unchecked access
-                        JSON_TRY { ptr = &ptr->operator[](static_cast<size_type>(array_index(reference_token))); }
-                        JSON_CATCH(std::invalid_argument&)
+                        // error condition (cf. RFC 6901, Sect. 4)
+                        if (JSON_UNLIKELY(reference_token.size() > 1 and reference_token[0] == '0'))
                         {
-                            JSON_THROW(detail::parse_error::create(109, 0, "array index '" + reference_token + "' is not a number"));
+                            JSON_THROW(detail::parse_error::create(106, 0, "array index '" + reference_token + "' must not begin with '0'"));
                         }
-                    }
-                    break;
-                }
 
-                default:
-                    JSON_THROW(detail::out_of_range::create(404, "unresolved reference token '" + reference_token + "'"));
+                        if (reference_token == "-")
+                        {
+                            // explicitly treat "-" as index beyond the end
+                            ptr = &ptr->operator[](ptr->m_value.array->size());
+                        }
+                        else
+                        {
+                            // convert array index to number; unchecked access
+                            JSON_TRY { ptr = &ptr->operator[](static_cast<size_type>(array_index(reference_token))); }
+                            JSON_CATCH(std::invalid_argument&)
+                            {
+                                JSON_THROW(detail::parse_error::create(109, 0, "array index '" + reference_token + "' is not a number"));
+                            }
+                        }
+                        break;
+                    }
+
+                    default:
+                        JSON_THROW(detail::out_of_range::create(404, "unresolved reference token '" + reference_token + "'"));
                 }
             }
 
@@ -8534,39 +8537,39 @@ namespace nlohmann
             {
                 switch (ptr->m_type)
                 {
-                case detail::value_t::object:
-                {
-                    // note: at performs range check
-                    ptr = &ptr->at(reference_token);
-                    break;
-                }
-
-                case detail::value_t::array:
-                {
-                    if (JSON_UNLIKELY(reference_token == "-"))
+                    case detail::value_t::object:
                     {
-                        // "-" always fails the range check
-                        JSON_THROW(detail::out_of_range::create(
-                            402, "array index '-' (" + std::to_string(ptr->m_value.array->size()) + ") is out of range"));
+                        // note: at performs range check
+                        ptr = &ptr->at(reference_token);
+                        break;
                     }
 
-                    // error condition (cf. RFC 6901, Sect. 4)
-                    if (JSON_UNLIKELY(reference_token.size() > 1 and reference_token[0] == '0'))
+                    case detail::value_t::array:
                     {
-                        JSON_THROW(detail::parse_error::create(106, 0, "array index '" + reference_token + "' must not begin with '0'"));
+                        if (JSON_UNLIKELY(reference_token == "-"))
+                        {
+                            // "-" always fails the range check
+                            JSON_THROW(detail::out_of_range::create(
+                                402, "array index '-' (" + std::to_string(ptr->m_value.array->size()) + ") is out of range"));
+                        }
+
+                        // error condition (cf. RFC 6901, Sect. 4)
+                        if (JSON_UNLIKELY(reference_token.size() > 1 and reference_token[0] == '0'))
+                        {
+                            JSON_THROW(detail::parse_error::create(106, 0, "array index '" + reference_token + "' must not begin with '0'"));
+                        }
+
+                        // note: at performs range check
+                        JSON_TRY { ptr = &ptr->at(static_cast<size_type>(array_index(reference_token))); }
+                        JSON_CATCH(std::invalid_argument&)
+                        {
+                            JSON_THROW(detail::parse_error::create(109, 0, "array index '" + reference_token + "' is not a number"));
+                        }
+                        break;
                     }
 
-                    // note: at performs range check
-                    JSON_TRY { ptr = &ptr->at(static_cast<size_type>(array_index(reference_token))); }
-                    JSON_CATCH(std::invalid_argument&)
-                    {
-                        JSON_THROW(detail::parse_error::create(109, 0, "array index '" + reference_token + "' is not a number"));
-                    }
-                    break;
-                }
-
-                default:
-                    JSON_THROW(detail::out_of_range::create(404, "unresolved reference token '" + reference_token + "'"));
+                    default:
+                        JSON_THROW(detail::out_of_range::create(404, "unresolved reference token '" + reference_token + "'"));
                 }
             }
 
@@ -8593,39 +8596,39 @@ namespace nlohmann
             {
                 switch (ptr->m_type)
                 {
-                case detail::value_t::object:
-                {
-                    // use unchecked object access
-                    ptr = &ptr->operator[](reference_token);
-                    break;
-                }
-
-                case detail::value_t::array:
-                {
-                    if (JSON_UNLIKELY(reference_token == "-"))
+                    case detail::value_t::object:
                     {
-                        // "-" cannot be used for const access
-                        JSON_THROW(detail::out_of_range::create(
-                            402, "array index '-' (" + std::to_string(ptr->m_value.array->size()) + ") is out of range"));
+                        // use unchecked object access
+                        ptr = &ptr->operator[](reference_token);
+                        break;
                     }
 
-                    // error condition (cf. RFC 6901, Sect. 4)
-                    if (JSON_UNLIKELY(reference_token.size() > 1 and reference_token[0] == '0'))
+                    case detail::value_t::array:
                     {
-                        JSON_THROW(detail::parse_error::create(106, 0, "array index '" + reference_token + "' must not begin with '0'"));
+                        if (JSON_UNLIKELY(reference_token == "-"))
+                        {
+                            // "-" cannot be used for const access
+                            JSON_THROW(detail::out_of_range::create(
+                                402, "array index '-' (" + std::to_string(ptr->m_value.array->size()) + ") is out of range"));
+                        }
+
+                        // error condition (cf. RFC 6901, Sect. 4)
+                        if (JSON_UNLIKELY(reference_token.size() > 1 and reference_token[0] == '0'))
+                        {
+                            JSON_THROW(detail::parse_error::create(106, 0, "array index '" + reference_token + "' must not begin with '0'"));
+                        }
+
+                        // use unchecked array access
+                        JSON_TRY { ptr = &ptr->operator[](static_cast<size_type>(array_index(reference_token))); }
+                        JSON_CATCH(std::invalid_argument&)
+                        {
+                            JSON_THROW(detail::parse_error::create(109, 0, "array index '" + reference_token + "' is not a number"));
+                        }
+                        break;
                     }
 
-                    // use unchecked array access
-                    JSON_TRY { ptr = &ptr->operator[](static_cast<size_type>(array_index(reference_token))); }
-                    JSON_CATCH(std::invalid_argument&)
-                    {
-                        JSON_THROW(detail::parse_error::create(109, 0, "array index '" + reference_token + "' is not a number"));
-                    }
-                    break;
-                }
-
-                default:
-                    JSON_THROW(detail::out_of_range::create(404, "unresolved reference token '" + reference_token + "'"));
+                    default:
+                        JSON_THROW(detail::out_of_range::create(404, "unresolved reference token '" + reference_token + "'"));
                 }
             }
 
@@ -8645,39 +8648,39 @@ namespace nlohmann
             {
                 switch (ptr->m_type)
                 {
-                case detail::value_t::object:
-                {
-                    // note: at performs range check
-                    ptr = &ptr->at(reference_token);
-                    break;
-                }
-
-                case detail::value_t::array:
-                {
-                    if (JSON_UNLIKELY(reference_token == "-"))
+                    case detail::value_t::object:
                     {
-                        // "-" always fails the range check
-                        JSON_THROW(detail::out_of_range::create(
-                            402, "array index '-' (" + std::to_string(ptr->m_value.array->size()) + ") is out of range"));
+                        // note: at performs range check
+                        ptr = &ptr->at(reference_token);
+                        break;
                     }
 
-                    // error condition (cf. RFC 6901, Sect. 4)
-                    if (JSON_UNLIKELY(reference_token.size() > 1 and reference_token[0] == '0'))
+                    case detail::value_t::array:
                     {
-                        JSON_THROW(detail::parse_error::create(106, 0, "array index '" + reference_token + "' must not begin with '0'"));
+                        if (JSON_UNLIKELY(reference_token == "-"))
+                        {
+                            // "-" always fails the range check
+                            JSON_THROW(detail::out_of_range::create(
+                                402, "array index '-' (" + std::to_string(ptr->m_value.array->size()) + ") is out of range"));
+                        }
+
+                        // error condition (cf. RFC 6901, Sect. 4)
+                        if (JSON_UNLIKELY(reference_token.size() > 1 and reference_token[0] == '0'))
+                        {
+                            JSON_THROW(detail::parse_error::create(106, 0, "array index '" + reference_token + "' must not begin with '0'"));
+                        }
+
+                        // note: at performs range check
+                        JSON_TRY { ptr = &ptr->at(static_cast<size_type>(array_index(reference_token))); }
+                        JSON_CATCH(std::invalid_argument&)
+                        {
+                            JSON_THROW(detail::parse_error::create(109, 0, "array index '" + reference_token + "' is not a number"));
+                        }
+                        break;
                     }
 
-                    // note: at performs range check
-                    JSON_TRY { ptr = &ptr->at(static_cast<size_type>(array_index(reference_token))); }
-                    JSON_CATCH(std::invalid_argument&)
-                    {
-                        JSON_THROW(detail::parse_error::create(109, 0, "array index '" + reference_token + "' is not a number"));
-                    }
-                    break;
-                }
-
-                default:
-                    JSON_THROW(detail::out_of_range::create(404, "unresolved reference token '" + reference_token + "'"));
+                    default:
+                        JSON_THROW(detail::out_of_range::create(404, "unresolved reference token '" + reference_token + "'"));
                 }
             }
 
@@ -8798,48 +8801,48 @@ namespace nlohmann
         {
             switch (value.m_type)
             {
-            case detail::value_t::array:
-            {
-                if (value.m_value.array->empty())
+                case detail::value_t::array:
                 {
-                    // flatten empty array as null
-                    result[reference_string] = nullptr;
-                }
-                else
-                {
-                    // iterate array and use index as reference string
-                    for (std::size_t i = 0; i < value.m_value.array->size(); ++i)
+                    if (value.m_value.array->empty())
                     {
-                        flatten(reference_string + "/" + std::to_string(i), value.m_value.array->operator[](i), result);
+                        // flatten empty array as null
+                        result[reference_string] = nullptr;
                     }
-                }
-                break;
-            }
-
-            case detail::value_t::object:
-            {
-                if (value.m_value.object->empty())
-                {
-                    // flatten empty object as null
-                    result[reference_string] = nullptr;
-                }
-                else
-                {
-                    // iterate object and use keys as reference string
-                    for (const auto& element : *value.m_value.object)
+                    else
                     {
-                        flatten(reference_string + "/" + escape(element.first), element.second, result);
+                        // iterate array and use index as reference string
+                        for (std::size_t i = 0; i < value.m_value.array->size(); ++i)
+                        {
+                            flatten(reference_string + "/" + std::to_string(i), value.m_value.array->operator[](i), result);
+                        }
                     }
+                    break;
                 }
-                break;
-            }
 
-            default:
-            {
-                // add primitive value with its reference string
-                result[reference_string] = value;
-                break;
-            }
+                case detail::value_t::object:
+                {
+                    if (value.m_value.object->empty())
+                    {
+                        // flatten empty object as null
+                        result[reference_string] = nullptr;
+                    }
+                    else
+                    {
+                        // iterate object and use keys as reference string
+                        for (const auto& element : *value.m_value.object)
+                        {
+                            flatten(reference_string + "/" + escape(element.first), element.second, result);
+                        }
+                    }
+                    break;
+                }
+
+                default:
+                {
+                    // add primitive value with its reference string
+                    result[reference_string] = value;
+                    break;
+                }
             }
         }
 
@@ -9107,16 +9110,17 @@ namespace nlohmann
             {
                 switch (j.type())
                 {
-                case value_t::object:
-                {
-                    write_bson_object(*j.m_value.object);
-                    break;
-                }
+                    case value_t::object:
+                    {
+                        write_bson_object(*j.m_value.object);
+                        break;
+                    }
 
-                default:
-                {
-                    JSON_THROW(type_error::create(317, "to serialize to BSON, top-level type must be object, but is " + std::string(j.type_name())));
-                }
+                    default:
+                    {
+                        JSON_THROW(
+                            type_error::create(317, "to serialize to BSON, top-level type must be object, but is " + std::string(j.type_name())));
+                    }
                 }
             }
 
@@ -9127,236 +9131,236 @@ namespace nlohmann
             {
                 switch (j.type())
                 {
-                case value_t::null:
-                {
-                    oa->write_character(to_char_type(0xF6));
-                    break;
-                }
-
-                case value_t::boolean:
-                {
-                    oa->write_character(j.m_value.boolean ? to_char_type(0xF5) : to_char_type(0xF4));
-                    break;
-                }
-
-                case value_t::number_integer:
-                {
-                    if (j.m_value.number_integer >= 0)
+                    case value_t::null:
                     {
-                        // CBOR does not differentiate between positive signed
-                        // integers and unsigned integers. Therefore, we used the
-                        // code from the value_t::number_unsigned case here.
-                        if (j.m_value.number_integer <= 0x17)
+                        oa->write_character(to_char_type(0xF6));
+                        break;
+                    }
+
+                    case value_t::boolean:
+                    {
+                        oa->write_character(j.m_value.boolean ? to_char_type(0xF5) : to_char_type(0xF4));
+                        break;
+                    }
+
+                    case value_t::number_integer:
+                    {
+                        if (j.m_value.number_integer >= 0)
                         {
-                            write_number(static_cast<std::uint8_t>(j.m_value.number_integer));
+                            // CBOR does not differentiate between positive signed
+                            // integers and unsigned integers. Therefore, we used the
+                            // code from the value_t::number_unsigned case here.
+                            if (j.m_value.number_integer <= 0x17)
+                            {
+                                write_number(static_cast<std::uint8_t>(j.m_value.number_integer));
+                            }
+                            else if (j.m_value.number_integer <= (std::numeric_limits<std::uint8_t>::max)())
+                            {
+                                oa->write_character(to_char_type(0x18));
+                                write_number(static_cast<std::uint8_t>(j.m_value.number_integer));
+                            }
+                            else if (j.m_value.number_integer <= (std::numeric_limits<std::uint16_t>::max)())
+                            {
+                                oa->write_character(to_char_type(0x19));
+                                write_number(static_cast<std::uint16_t>(j.m_value.number_integer));
+                            }
+                            else if (j.m_value.number_integer <= (std::numeric_limits<std::uint32_t>::max)())
+                            {
+                                oa->write_character(to_char_type(0x1A));
+                                write_number(static_cast<std::uint32_t>(j.m_value.number_integer));
+                            }
+                            else
+                            {
+                                oa->write_character(to_char_type(0x1B));
+                                write_number(static_cast<std::uint64_t>(j.m_value.number_integer));
+                            }
                         }
-                        else if (j.m_value.number_integer <= (std::numeric_limits<std::uint8_t>::max)())
+                        else
+                        {
+                            // The conversions below encode the sign in the first
+                            // byte, and the value is converted to a positive number.
+                            const auto positive_number = -1 - j.m_value.number_integer;
+                            if (j.m_value.number_integer >= -24)
+                            {
+                                write_number(static_cast<std::uint8_t>(0x20 + positive_number));
+                            }
+                            else if (positive_number <= (std::numeric_limits<std::uint8_t>::max)())
+                            {
+                                oa->write_character(to_char_type(0x38));
+                                write_number(static_cast<std::uint8_t>(positive_number));
+                            }
+                            else if (positive_number <= (std::numeric_limits<std::uint16_t>::max)())
+                            {
+                                oa->write_character(to_char_type(0x39));
+                                write_number(static_cast<std::uint16_t>(positive_number));
+                            }
+                            else if (positive_number <= (std::numeric_limits<std::uint32_t>::max)())
+                            {
+                                oa->write_character(to_char_type(0x3A));
+                                write_number(static_cast<std::uint32_t>(positive_number));
+                            }
+                            else
+                            {
+                                oa->write_character(to_char_type(0x3B));
+                                write_number(static_cast<std::uint64_t>(positive_number));
+                            }
+                        }
+                        break;
+                    }
+
+                    case value_t::number_unsigned:
+                    {
+                        if (j.m_value.number_unsigned <= 0x17)
+                        {
+                            write_number(static_cast<std::uint8_t>(j.m_value.number_unsigned));
+                        }
+                        else if (j.m_value.number_unsigned <= (std::numeric_limits<std::uint8_t>::max)())
                         {
                             oa->write_character(to_char_type(0x18));
-                            write_number(static_cast<std::uint8_t>(j.m_value.number_integer));
+                            write_number(static_cast<std::uint8_t>(j.m_value.number_unsigned));
                         }
-                        else if (j.m_value.number_integer <= (std::numeric_limits<std::uint16_t>::max)())
+                        else if (j.m_value.number_unsigned <= (std::numeric_limits<std::uint16_t>::max)())
                         {
                             oa->write_character(to_char_type(0x19));
-                            write_number(static_cast<std::uint16_t>(j.m_value.number_integer));
+                            write_number(static_cast<std::uint16_t>(j.m_value.number_unsigned));
                         }
-                        else if (j.m_value.number_integer <= (std::numeric_limits<std::uint32_t>::max)())
+                        else if (j.m_value.number_unsigned <= (std::numeric_limits<std::uint32_t>::max)())
                         {
                             oa->write_character(to_char_type(0x1A));
-                            write_number(static_cast<std::uint32_t>(j.m_value.number_integer));
+                            write_number(static_cast<std::uint32_t>(j.m_value.number_unsigned));
                         }
                         else
                         {
                             oa->write_character(to_char_type(0x1B));
-                            write_number(static_cast<std::uint64_t>(j.m_value.number_integer));
+                            write_number(static_cast<std::uint64_t>(j.m_value.number_unsigned));
                         }
+                        break;
                     }
-                    else
+
+                    case value_t::number_float:
                     {
-                        // The conversions below encode the sign in the first
-                        // byte, and the value is converted to a positive number.
-                        const auto positive_number = -1 - j.m_value.number_integer;
-                        if (j.m_value.number_integer >= -24)
+                        oa->write_character(get_cbor_float_prefix(j.m_value.number_float));
+                        write_number(j.m_value.number_float);
+                        break;
+                    }
+
+                    case value_t::string:
+                    {
+                        // step 1: write control byte and the string length
+                        const auto N = j.m_value.string->size();
+                        if (N <= 0x17)
                         {
-                            write_number(static_cast<std::uint8_t>(0x20 + positive_number));
+                            write_number(static_cast<std::uint8_t>(0x60 + N));
                         }
-                        else if (positive_number <= (std::numeric_limits<std::uint8_t>::max)())
+                        else if (N <= (std::numeric_limits<std::uint8_t>::max)())
                         {
-                            oa->write_character(to_char_type(0x38));
-                            write_number(static_cast<std::uint8_t>(positive_number));
+                            oa->write_character(to_char_type(0x78));
+                            write_number(static_cast<std::uint8_t>(N));
                         }
-                        else if (positive_number <= (std::numeric_limits<std::uint16_t>::max)())
+                        else if (N <= (std::numeric_limits<std::uint16_t>::max)())
                         {
-                            oa->write_character(to_char_type(0x39));
-                            write_number(static_cast<std::uint16_t>(positive_number));
+                            oa->write_character(to_char_type(0x79));
+                            write_number(static_cast<std::uint16_t>(N));
                         }
-                        else if (positive_number <= (std::numeric_limits<std::uint32_t>::max)())
+                        else if (N <= (std::numeric_limits<std::uint32_t>::max)())
                         {
-                            oa->write_character(to_char_type(0x3A));
-                            write_number(static_cast<std::uint32_t>(positive_number));
+                            oa->write_character(to_char_type(0x7A));
+                            write_number(static_cast<std::uint32_t>(N));
                         }
-                        else
+                        // LCOV_EXCL_START
+                        else if (N <= (std::numeric_limits<std::uint64_t>::max)())
                         {
-                            oa->write_character(to_char_type(0x3B));
-                            write_number(static_cast<std::uint64_t>(positive_number));
+                            oa->write_character(to_char_type(0x7B));
+                            write_number(static_cast<std::uint64_t>(N));
                         }
-                    }
-                    break;
-                }
+                        // LCOV_EXCL_STOP
 
-                case value_t::number_unsigned:
-                {
-                    if (j.m_value.number_unsigned <= 0x17)
-                    {
-                        write_number(static_cast<std::uint8_t>(j.m_value.number_unsigned));
+                        // step 2: write the string
+                        oa->write_characters(reinterpret_cast<const CharType*>(j.m_value.string->c_str()), j.m_value.string->size());
+                        break;
                     }
-                    else if (j.m_value.number_unsigned <= (std::numeric_limits<std::uint8_t>::max)())
-                    {
-                        oa->write_character(to_char_type(0x18));
-                        write_number(static_cast<std::uint8_t>(j.m_value.number_unsigned));
-                    }
-                    else if (j.m_value.number_unsigned <= (std::numeric_limits<std::uint16_t>::max)())
-                    {
-                        oa->write_character(to_char_type(0x19));
-                        write_number(static_cast<std::uint16_t>(j.m_value.number_unsigned));
-                    }
-                    else if (j.m_value.number_unsigned <= (std::numeric_limits<std::uint32_t>::max)())
-                    {
-                        oa->write_character(to_char_type(0x1A));
-                        write_number(static_cast<std::uint32_t>(j.m_value.number_unsigned));
-                    }
-                    else
-                    {
-                        oa->write_character(to_char_type(0x1B));
-                        write_number(static_cast<std::uint64_t>(j.m_value.number_unsigned));
-                    }
-                    break;
-                }
 
-                case value_t::number_float:
-                {
-                    oa->write_character(get_cbor_float_prefix(j.m_value.number_float));
-                    write_number(j.m_value.number_float);
-                    break;
-                }
+                    case value_t::array:
+                    {
+                        // step 1: write control byte and the array size
+                        const auto N = j.m_value.array->size();
+                        if (N <= 0x17)
+                        {
+                            write_number(static_cast<std::uint8_t>(0x80 + N));
+                        }
+                        else if (N <= (std::numeric_limits<std::uint8_t>::max)())
+                        {
+                            oa->write_character(to_char_type(0x98));
+                            write_number(static_cast<std::uint8_t>(N));
+                        }
+                        else if (N <= (std::numeric_limits<std::uint16_t>::max)())
+                        {
+                            oa->write_character(to_char_type(0x99));
+                            write_number(static_cast<std::uint16_t>(N));
+                        }
+                        else if (N <= (std::numeric_limits<std::uint32_t>::max)())
+                        {
+                            oa->write_character(to_char_type(0x9A));
+                            write_number(static_cast<std::uint32_t>(N));
+                        }
+                        // LCOV_EXCL_START
+                        else if (N <= (std::numeric_limits<std::uint64_t>::max)())
+                        {
+                            oa->write_character(to_char_type(0x9B));
+                            write_number(static_cast<std::uint64_t>(N));
+                        }
+                        // LCOV_EXCL_STOP
 
-                case value_t::string:
-                {
-                    // step 1: write control byte and the string length
-                    const auto N = j.m_value.string->size();
-                    if (N <= 0x17)
-                    {
-                        write_number(static_cast<std::uint8_t>(0x60 + N));
+                        // step 2: write each element
+                        for (const auto& el : *j.m_value.array)
+                        {
+                            write_cbor(el);
+                        }
+                        break;
                     }
-                    else if (N <= (std::numeric_limits<std::uint8_t>::max)())
-                    {
-                        oa->write_character(to_char_type(0x78));
-                        write_number(static_cast<std::uint8_t>(N));
-                    }
-                    else if (N <= (std::numeric_limits<std::uint16_t>::max)())
-                    {
-                        oa->write_character(to_char_type(0x79));
-                        write_number(static_cast<std::uint16_t>(N));
-                    }
-                    else if (N <= (std::numeric_limits<std::uint32_t>::max)())
-                    {
-                        oa->write_character(to_char_type(0x7A));
-                        write_number(static_cast<std::uint32_t>(N));
-                    }
-                    // LCOV_EXCL_START
-                    else if (N <= (std::numeric_limits<std::uint64_t>::max)())
-                    {
-                        oa->write_character(to_char_type(0x7B));
-                        write_number(static_cast<std::uint64_t>(N));
-                    }
-                    // LCOV_EXCL_STOP
 
-                    // step 2: write the string
-                    oa->write_characters(reinterpret_cast<const CharType*>(j.m_value.string->c_str()), j.m_value.string->size());
-                    break;
-                }
+                    case value_t::object:
+                    {
+                        // step 1: write control byte and the object size
+                        const auto N = j.m_value.object->size();
+                        if (N <= 0x17)
+                        {
+                            write_number(static_cast<std::uint8_t>(0xA0 + N));
+                        }
+                        else if (N <= (std::numeric_limits<std::uint8_t>::max)())
+                        {
+                            oa->write_character(to_char_type(0xB8));
+                            write_number(static_cast<std::uint8_t>(N));
+                        }
+                        else if (N <= (std::numeric_limits<std::uint16_t>::max)())
+                        {
+                            oa->write_character(to_char_type(0xB9));
+                            write_number(static_cast<std::uint16_t>(N));
+                        }
+                        else if (N <= (std::numeric_limits<std::uint32_t>::max)())
+                        {
+                            oa->write_character(to_char_type(0xBA));
+                            write_number(static_cast<std::uint32_t>(N));
+                        }
+                        // LCOV_EXCL_START
+                        else if (N <= (std::numeric_limits<std::uint64_t>::max)())
+                        {
+                            oa->write_character(to_char_type(0xBB));
+                            write_number(static_cast<std::uint64_t>(N));
+                        }
+                        // LCOV_EXCL_STOP
 
-                case value_t::array:
-                {
-                    // step 1: write control byte and the array size
-                    const auto N = j.m_value.array->size();
-                    if (N <= 0x17)
-                    {
-                        write_number(static_cast<std::uint8_t>(0x80 + N));
+                        // step 2: write each element
+                        for (const auto& el : *j.m_value.object)
+                        {
+                            write_cbor(el.first);
+                            write_cbor(el.second);
+                        }
+                        break;
                     }
-                    else if (N <= (std::numeric_limits<std::uint8_t>::max)())
-                    {
-                        oa->write_character(to_char_type(0x98));
-                        write_number(static_cast<std::uint8_t>(N));
-                    }
-                    else if (N <= (std::numeric_limits<std::uint16_t>::max)())
-                    {
-                        oa->write_character(to_char_type(0x99));
-                        write_number(static_cast<std::uint16_t>(N));
-                    }
-                    else if (N <= (std::numeric_limits<std::uint32_t>::max)())
-                    {
-                        oa->write_character(to_char_type(0x9A));
-                        write_number(static_cast<std::uint32_t>(N));
-                    }
-                    // LCOV_EXCL_START
-                    else if (N <= (std::numeric_limits<std::uint64_t>::max)())
-                    {
-                        oa->write_character(to_char_type(0x9B));
-                        write_number(static_cast<std::uint64_t>(N));
-                    }
-                    // LCOV_EXCL_STOP
 
-                    // step 2: write each element
-                    for (const auto& el : *j.m_value.array)
-                    {
-                        write_cbor(el);
-                    }
-                    break;
-                }
-
-                case value_t::object:
-                {
-                    // step 1: write control byte and the object size
-                    const auto N = j.m_value.object->size();
-                    if (N <= 0x17)
-                    {
-                        write_number(static_cast<std::uint8_t>(0xA0 + N));
-                    }
-                    else if (N <= (std::numeric_limits<std::uint8_t>::max)())
-                    {
-                        oa->write_character(to_char_type(0xB8));
-                        write_number(static_cast<std::uint8_t>(N));
-                    }
-                    else if (N <= (std::numeric_limits<std::uint16_t>::max)())
-                    {
-                        oa->write_character(to_char_type(0xB9));
-                        write_number(static_cast<std::uint16_t>(N));
-                    }
-                    else if (N <= (std::numeric_limits<std::uint32_t>::max)())
-                    {
-                        oa->write_character(to_char_type(0xBA));
-                        write_number(static_cast<std::uint32_t>(N));
-                    }
-                    // LCOV_EXCL_START
-                    else if (N <= (std::numeric_limits<std::uint64_t>::max)())
-                    {
-                        oa->write_character(to_char_type(0xBB));
-                        write_number(static_cast<std::uint64_t>(N));
-                    }
-                    // LCOV_EXCL_STOP
-
-                    // step 2: write each element
-                    for (const auto& el : *j.m_value.object)
-                    {
-                        write_cbor(el.first);
-                        write_cbor(el.second);
-                    }
-                    break;
-                }
-
-                default:
-                    break;
+                    default:
+                        break;
                 }
             }
 
@@ -9367,25 +9371,96 @@ namespace nlohmann
             {
                 switch (j.type())
                 {
-                case value_t::null: // nil
-                {
-                    oa->write_character(to_char_type(0xC0));
-                    break;
-                }
-
-                case value_t::boolean: // true and false
-                {
-                    oa->write_character(j.m_value.boolean ? to_char_type(0xC3) : to_char_type(0xC2));
-                    break;
-                }
-
-                case value_t::number_integer:
-                {
-                    if (j.m_value.number_integer >= 0)
+                    case value_t::null: // nil
                     {
-                        // MessagePack does not differentiate between positive
-                        // signed integers and unsigned integers. Therefore, we used
-                        // the code from the value_t::number_unsigned case here.
+                        oa->write_character(to_char_type(0xC0));
+                        break;
+                    }
+
+                    case value_t::boolean: // true and false
+                    {
+                        oa->write_character(j.m_value.boolean ? to_char_type(0xC3) : to_char_type(0xC2));
+                        break;
+                    }
+
+                    case value_t::number_integer:
+                    {
+                        if (j.m_value.number_integer >= 0)
+                        {
+                            // MessagePack does not differentiate between positive
+                            // signed integers and unsigned integers. Therefore, we used
+                            // the code from the value_t::number_unsigned case here.
+                            if (j.m_value.number_unsigned < 128)
+                            {
+                                // positive fixnum
+                                write_number(static_cast<std::uint8_t>(j.m_value.number_integer));
+                            }
+                            else if (j.m_value.number_unsigned <= (std::numeric_limits<std::uint8_t>::max)())
+                            {
+                                // uint 8
+                                oa->write_character(to_char_type(0xCC));
+                                write_number(static_cast<std::uint8_t>(j.m_value.number_integer));
+                            }
+                            else if (j.m_value.number_unsigned <= (std::numeric_limits<std::uint16_t>::max)())
+                            {
+                                // uint 16
+                                oa->write_character(to_char_type(0xCD));
+                                write_number(static_cast<std::uint16_t>(j.m_value.number_integer));
+                            }
+                            else if (j.m_value.number_unsigned <= (std::numeric_limits<std::uint32_t>::max)())
+                            {
+                                // uint 32
+                                oa->write_character(to_char_type(0xCE));
+                                write_number(static_cast<std::uint32_t>(j.m_value.number_integer));
+                            }
+                            else if (j.m_value.number_unsigned <= (std::numeric_limits<std::uint64_t>::max)())
+                            {
+                                // uint 64
+                                oa->write_character(to_char_type(0xCF));
+                                write_number(static_cast<std::uint64_t>(j.m_value.number_integer));
+                            }
+                        }
+                        else
+                        {
+                            if (j.m_value.number_integer >= -32)
+                            {
+                                // negative fixnum
+                                write_number(static_cast<std::int8_t>(j.m_value.number_integer));
+                            }
+                            else if (j.m_value.number_integer >= (std::numeric_limits<std::int8_t>::min)() and
+                                     j.m_value.number_integer <= (std::numeric_limits<std::int8_t>::max)())
+                            {
+                                // int 8
+                                oa->write_character(to_char_type(0xD0));
+                                write_number(static_cast<std::int8_t>(j.m_value.number_integer));
+                            }
+                            else if (j.m_value.number_integer >= (std::numeric_limits<std::int16_t>::min)() and
+                                     j.m_value.number_integer <= (std::numeric_limits<std::int16_t>::max)())
+                            {
+                                // int 16
+                                oa->write_character(to_char_type(0xD1));
+                                write_number(static_cast<std::int16_t>(j.m_value.number_integer));
+                            }
+                            else if (j.m_value.number_integer >= (std::numeric_limits<std::int32_t>::min)() and
+                                     j.m_value.number_integer <= (std::numeric_limits<std::int32_t>::max)())
+                            {
+                                // int 32
+                                oa->write_character(to_char_type(0xD2));
+                                write_number(static_cast<std::int32_t>(j.m_value.number_integer));
+                            }
+                            else if (j.m_value.number_integer >= (std::numeric_limits<std::int64_t>::min)() and
+                                     j.m_value.number_integer <= (std::numeric_limits<std::int64_t>::max)())
+                            {
+                                // int 64
+                                oa->write_character(to_char_type(0xD3));
+                                write_number(static_cast<std::int64_t>(j.m_value.number_integer));
+                            }
+                        }
+                        break;
+                    }
+
+                    case value_t::number_unsigned:
+                    {
                         if (j.m_value.number_unsigned < 128)
                         {
                             // positive fixnum
@@ -9415,183 +9490,112 @@ namespace nlohmann
                             oa->write_character(to_char_type(0xCF));
                             write_number(static_cast<std::uint64_t>(j.m_value.number_integer));
                         }
+                        break;
                     }
-                    else
+
+                    case value_t::number_float:
                     {
-                        if (j.m_value.number_integer >= -32)
+                        oa->write_character(get_msgpack_float_prefix(j.m_value.number_float));
+                        write_number(j.m_value.number_float);
+                        break;
+                    }
+
+                    case value_t::string:
+                    {
+                        // step 1: write control byte and the string length
+                        const auto N = j.m_value.string->size();
+                        if (N <= 31)
                         {
-                            // negative fixnum
-                            write_number(static_cast<std::int8_t>(j.m_value.number_integer));
+                            // fixstr
+                            write_number(static_cast<std::uint8_t>(0xA0 | N));
                         }
-                        else if (j.m_value.number_integer >= (std::numeric_limits<std::int8_t>::min)() and
-                                 j.m_value.number_integer <= (std::numeric_limits<std::int8_t>::max)())
+                        else if (N <= (std::numeric_limits<std::uint8_t>::max)())
                         {
-                            // int 8
-                            oa->write_character(to_char_type(0xD0));
-                            write_number(static_cast<std::int8_t>(j.m_value.number_integer));
+                            // str 8
+                            oa->write_character(to_char_type(0xD9));
+                            write_number(static_cast<std::uint8_t>(N));
                         }
-                        else if (j.m_value.number_integer >= (std::numeric_limits<std::int16_t>::min)() and
-                                 j.m_value.number_integer <= (std::numeric_limits<std::int16_t>::max)())
+                        else if (N <= (std::numeric_limits<std::uint16_t>::max)())
                         {
-                            // int 16
-                            oa->write_character(to_char_type(0xD1));
-                            write_number(static_cast<std::int16_t>(j.m_value.number_integer));
+                            // str 16
+                            oa->write_character(to_char_type(0xDA));
+                            write_number(static_cast<std::uint16_t>(N));
                         }
-                        else if (j.m_value.number_integer >= (std::numeric_limits<std::int32_t>::min)() and
-                                 j.m_value.number_integer <= (std::numeric_limits<std::int32_t>::max)())
+                        else if (N <= (std::numeric_limits<std::uint32_t>::max)())
                         {
-                            // int 32
-                            oa->write_character(to_char_type(0xD2));
-                            write_number(static_cast<std::int32_t>(j.m_value.number_integer));
+                            // str 32
+                            oa->write_character(to_char_type(0xDB));
+                            write_number(static_cast<std::uint32_t>(N));
                         }
-                        else if (j.m_value.number_integer >= (std::numeric_limits<std::int64_t>::min)() and
-                                 j.m_value.number_integer <= (std::numeric_limits<std::int64_t>::max)())
+
+                        // step 2: write the string
+                        oa->write_characters(reinterpret_cast<const CharType*>(j.m_value.string->c_str()), j.m_value.string->size());
+                        break;
+                    }
+
+                    case value_t::array:
+                    {
+                        // step 1: write control byte and the array size
+                        const auto N = j.m_value.array->size();
+                        if (N <= 15)
                         {
-                            // int 64
-                            oa->write_character(to_char_type(0xD3));
-                            write_number(static_cast<std::int64_t>(j.m_value.number_integer));
+                            // fixarray
+                            write_number(static_cast<std::uint8_t>(0x90 | N));
                         }
-                    }
-                    break;
-                }
+                        else if (N <= (std::numeric_limits<std::uint16_t>::max)())
+                        {
+                            // array 16
+                            oa->write_character(to_char_type(0xDC));
+                            write_number(static_cast<std::uint16_t>(N));
+                        }
+                        else if (N <= (std::numeric_limits<std::uint32_t>::max)())
+                        {
+                            // array 32
+                            oa->write_character(to_char_type(0xDD));
+                            write_number(static_cast<std::uint32_t>(N));
+                        }
 
-                case value_t::number_unsigned:
-                {
-                    if (j.m_value.number_unsigned < 128)
-                    {
-                        // positive fixnum
-                        write_number(static_cast<std::uint8_t>(j.m_value.number_integer));
-                    }
-                    else if (j.m_value.number_unsigned <= (std::numeric_limits<std::uint8_t>::max)())
-                    {
-                        // uint 8
-                        oa->write_character(to_char_type(0xCC));
-                        write_number(static_cast<std::uint8_t>(j.m_value.number_integer));
-                    }
-                    else if (j.m_value.number_unsigned <= (std::numeric_limits<std::uint16_t>::max)())
-                    {
-                        // uint 16
-                        oa->write_character(to_char_type(0xCD));
-                        write_number(static_cast<std::uint16_t>(j.m_value.number_integer));
-                    }
-                    else if (j.m_value.number_unsigned <= (std::numeric_limits<std::uint32_t>::max)())
-                    {
-                        // uint 32
-                        oa->write_character(to_char_type(0xCE));
-                        write_number(static_cast<std::uint32_t>(j.m_value.number_integer));
-                    }
-                    else if (j.m_value.number_unsigned <= (std::numeric_limits<std::uint64_t>::max)())
-                    {
-                        // uint 64
-                        oa->write_character(to_char_type(0xCF));
-                        write_number(static_cast<std::uint64_t>(j.m_value.number_integer));
-                    }
-                    break;
-                }
-
-                case value_t::number_float:
-                {
-                    oa->write_character(get_msgpack_float_prefix(j.m_value.number_float));
-                    write_number(j.m_value.number_float);
-                    break;
-                }
-
-                case value_t::string:
-                {
-                    // step 1: write control byte and the string length
-                    const auto N = j.m_value.string->size();
-                    if (N <= 31)
-                    {
-                        // fixstr
-                        write_number(static_cast<std::uint8_t>(0xA0 | N));
-                    }
-                    else if (N <= (std::numeric_limits<std::uint8_t>::max)())
-                    {
-                        // str 8
-                        oa->write_character(to_char_type(0xD9));
-                        write_number(static_cast<std::uint8_t>(N));
-                    }
-                    else if (N <= (std::numeric_limits<std::uint16_t>::max)())
-                    {
-                        // str 16
-                        oa->write_character(to_char_type(0xDA));
-                        write_number(static_cast<std::uint16_t>(N));
-                    }
-                    else if (N <= (std::numeric_limits<std::uint32_t>::max)())
-                    {
-                        // str 32
-                        oa->write_character(to_char_type(0xDB));
-                        write_number(static_cast<std::uint32_t>(N));
+                        // step 2: write each element
+                        for (const auto& el : *j.m_value.array)
+                        {
+                            write_msgpack(el);
+                        }
+                        break;
                     }
 
-                    // step 2: write the string
-                    oa->write_characters(reinterpret_cast<const CharType*>(j.m_value.string->c_str()), j.m_value.string->size());
-                    break;
-                }
+                    case value_t::object:
+                    {
+                        // step 1: write control byte and the object size
+                        const auto N = j.m_value.object->size();
+                        if (N <= 15)
+                        {
+                            // fixmap
+                            write_number(static_cast<std::uint8_t>(0x80 | (N & 0xF)));
+                        }
+                        else if (N <= (std::numeric_limits<std::uint16_t>::max)())
+                        {
+                            // map 16
+                            oa->write_character(to_char_type(0xDE));
+                            write_number(static_cast<std::uint16_t>(N));
+                        }
+                        else if (N <= (std::numeric_limits<std::uint32_t>::max)())
+                        {
+                            // map 32
+                            oa->write_character(to_char_type(0xDF));
+                            write_number(static_cast<std::uint32_t>(N));
+                        }
 
-                case value_t::array:
-                {
-                    // step 1: write control byte and the array size
-                    const auto N = j.m_value.array->size();
-                    if (N <= 15)
-                    {
-                        // fixarray
-                        write_number(static_cast<std::uint8_t>(0x90 | N));
-                    }
-                    else if (N <= (std::numeric_limits<std::uint16_t>::max)())
-                    {
-                        // array 16
-                        oa->write_character(to_char_type(0xDC));
-                        write_number(static_cast<std::uint16_t>(N));
-                    }
-                    else if (N <= (std::numeric_limits<std::uint32_t>::max)())
-                    {
-                        // array 32
-                        oa->write_character(to_char_type(0xDD));
-                        write_number(static_cast<std::uint32_t>(N));
-                    }
-
-                    // step 2: write each element
-                    for (const auto& el : *j.m_value.array)
-                    {
-                        write_msgpack(el);
-                    }
-                    break;
-                }
-
-                case value_t::object:
-                {
-                    // step 1: write control byte and the object size
-                    const auto N = j.m_value.object->size();
-                    if (N <= 15)
-                    {
-                        // fixmap
-                        write_number(static_cast<std::uint8_t>(0x80 | (N & 0xF)));
-                    }
-                    else if (N <= (std::numeric_limits<std::uint16_t>::max)())
-                    {
-                        // map 16
-                        oa->write_character(to_char_type(0xDE));
-                        write_number(static_cast<std::uint16_t>(N));
-                    }
-                    else if (N <= (std::numeric_limits<std::uint32_t>::max)())
-                    {
-                        // map 32
-                        oa->write_character(to_char_type(0xDF));
-                        write_number(static_cast<std::uint32_t>(N));
+                        // step 2: write each element
+                        for (const auto& el : *j.m_value.object)
+                        {
+                            write_msgpack(el.first);
+                            write_msgpack(el.second);
+                        }
+                        break;
                     }
 
-                    // step 2: write each element
-                    for (const auto& el : *j.m_value.object)
-                    {
-                        write_msgpack(el.first);
-                        write_msgpack(el.second);
-                    }
-                    break;
-                }
-
-                default:
-                    break;
+                    default:
+                        break;
                 }
             }
 
@@ -9605,141 +9609,141 @@ namespace nlohmann
             {
                 switch (j.type())
                 {
-                case value_t::null:
-                {
-                    if (add_prefix)
+                    case value_t::null:
                     {
-                        oa->write_character(to_char_type('Z'));
-                    }
-                    break;
-                }
-
-                case value_t::boolean:
-                {
-                    if (add_prefix)
-                    {
-                        oa->write_character(j.m_value.boolean ? to_char_type('T') : to_char_type('F'));
-                    }
-                    break;
-                }
-
-                case value_t::number_integer:
-                {
-                    write_number_with_ubjson_prefix(j.m_value.number_integer, add_prefix);
-                    break;
-                }
-
-                case value_t::number_unsigned:
-                {
-                    write_number_with_ubjson_prefix(j.m_value.number_unsigned, add_prefix);
-                    break;
-                }
-
-                case value_t::number_float:
-                {
-                    write_number_with_ubjson_prefix(j.m_value.number_float, add_prefix);
-                    break;
-                }
-
-                case value_t::string:
-                {
-                    if (add_prefix)
-                    {
-                        oa->write_character(to_char_type('S'));
-                    }
-                    write_number_with_ubjson_prefix(j.m_value.string->size(), true);
-                    oa->write_characters(reinterpret_cast<const CharType*>(j.m_value.string->c_str()), j.m_value.string->size());
-                    break;
-                }
-
-                case value_t::array:
-                {
-                    if (add_prefix)
-                    {
-                        oa->write_character(to_char_type('['));
-                    }
-
-                    bool prefix_required = true;
-                    if (use_type and not j.m_value.array->empty())
-                    {
-                        assert(use_count);
-                        const CharType first_prefix = ubjson_prefix(j.front());
-                        const bool same_prefix      = std::all_of(
-                            j.begin() + 1, j.end(), [this, first_prefix](const BasicJsonType& v) { return ubjson_prefix(v) == first_prefix; });
-
-                        if (same_prefix)
+                        if (add_prefix)
                         {
-                            prefix_required = false;
-                            oa->write_character(to_char_type('$'));
-                            oa->write_character(first_prefix);
+                            oa->write_character(to_char_type('Z'));
                         }
+                        break;
                     }
 
-                    if (use_count)
+                    case value_t::boolean:
                     {
-                        oa->write_character(to_char_type('#'));
-                        write_number_with_ubjson_prefix(j.m_value.array->size(), true);
-                    }
-
-                    for (const auto& el : *j.m_value.array)
-                    {
-                        write_ubjson(el, use_count, use_type, prefix_required);
-                    }
-
-                    if (not use_count)
-                    {
-                        oa->write_character(to_char_type(']'));
-                    }
-
-                    break;
-                }
-
-                case value_t::object:
-                {
-                    if (add_prefix)
-                    {
-                        oa->write_character(to_char_type('{'));
-                    }
-
-                    bool prefix_required = true;
-                    if (use_type and not j.m_value.object->empty())
-                    {
-                        assert(use_count);
-                        const CharType first_prefix = ubjson_prefix(j.front());
-                        const bool same_prefix      = std::all_of(
-                            j.begin(), j.end(), [this, first_prefix](const BasicJsonType& v) { return ubjson_prefix(v) == first_prefix; });
-
-                        if (same_prefix)
+                        if (add_prefix)
                         {
-                            prefix_required = false;
-                            oa->write_character(to_char_type('$'));
-                            oa->write_character(first_prefix);
+                            oa->write_character(j.m_value.boolean ? to_char_type('T') : to_char_type('F'));
                         }
+                        break;
                     }
 
-                    if (use_count)
+                    case value_t::number_integer:
                     {
-                        oa->write_character(to_char_type('#'));
-                        write_number_with_ubjson_prefix(j.m_value.object->size(), true);
+                        write_number_with_ubjson_prefix(j.m_value.number_integer, add_prefix);
+                        break;
                     }
 
-                    for (const auto& el : *j.m_value.object)
+                    case value_t::number_unsigned:
                     {
-                        write_number_with_ubjson_prefix(el.first.size(), true);
-                        oa->write_characters(reinterpret_cast<const CharType*>(el.first.c_str()), el.first.size());
-                        write_ubjson(el.second, use_count, use_type, prefix_required);
+                        write_number_with_ubjson_prefix(j.m_value.number_unsigned, add_prefix);
+                        break;
                     }
 
-                    if (not use_count)
+                    case value_t::number_float:
                     {
-                        oa->write_character(to_char_type('}'));
+                        write_number_with_ubjson_prefix(j.m_value.number_float, add_prefix);
+                        break;
                     }
 
-                    break;
-                }
+                    case value_t::string:
+                    {
+                        if (add_prefix)
+                        {
+                            oa->write_character(to_char_type('S'));
+                        }
+                        write_number_with_ubjson_prefix(j.m_value.string->size(), true);
+                        oa->write_characters(reinterpret_cast<const CharType*>(j.m_value.string->c_str()), j.m_value.string->size());
+                        break;
+                    }
 
-                default:
-                    break;
+                    case value_t::array:
+                    {
+                        if (add_prefix)
+                        {
+                            oa->write_character(to_char_type('['));
+                        }
+
+                        bool prefix_required = true;
+                        if (use_type and not j.m_value.array->empty())
+                        {
+                            assert(use_count);
+                            const CharType first_prefix = ubjson_prefix(j.front());
+                            const bool same_prefix      = std::all_of(
+                                j.begin() + 1, j.end(), [this, first_prefix](const BasicJsonType& v) { return ubjson_prefix(v) == first_prefix; });
+
+                            if (same_prefix)
+                            {
+                                prefix_required = false;
+                                oa->write_character(to_char_type('$'));
+                                oa->write_character(first_prefix);
+                            }
+                        }
+
+                        if (use_count)
+                        {
+                            oa->write_character(to_char_type('#'));
+                            write_number_with_ubjson_prefix(j.m_value.array->size(), true);
+                        }
+
+                        for (const auto& el : *j.m_value.array)
+                        {
+                            write_ubjson(el, use_count, use_type, prefix_required);
+                        }
+
+                        if (not use_count)
+                        {
+                            oa->write_character(to_char_type(']'));
+                        }
+
+                        break;
+                    }
+
+                    case value_t::object:
+                    {
+                        if (add_prefix)
+                        {
+                            oa->write_character(to_char_type('{'));
+                        }
+
+                        bool prefix_required = true;
+                        if (use_type and not j.m_value.object->empty())
+                        {
+                            assert(use_count);
+                            const CharType first_prefix = ubjson_prefix(j.front());
+                            const bool same_prefix      = std::all_of(
+                                j.begin(), j.end(), [this, first_prefix](const BasicJsonType& v) { return ubjson_prefix(v) == first_prefix; });
+
+                            if (same_prefix)
+                            {
+                                prefix_required = false;
+                                oa->write_character(to_char_type('$'));
+                                oa->write_character(first_prefix);
+                            }
+                        }
+
+                        if (use_count)
+                        {
+                            oa->write_character(to_char_type('#'));
+                            write_number_with_ubjson_prefix(j.m_value.object->size(), true);
+                        }
+
+                        for (const auto& el : *j.m_value.object)
+                        {
+                            write_number_with_ubjson_prefix(el.first.size(), true);
+                            oa->write_characters(reinterpret_cast<const CharType*>(el.first.c_str()), el.first.size());
+                            write_ubjson(el.second, use_count, use_type, prefix_required);
+                        }
+
+                        if (not use_count)
+                        {
+                            oa->write_character(to_char_type('}'));
+                        }
+
+                        break;
+                    }
+
+                    default:
+                        break;
                 }
             }
 
@@ -9921,35 +9925,35 @@ namespace nlohmann
                 const auto header_size = calc_bson_entry_header_size(name);
                 switch (j.type())
                 {
-                case value_t::object:
-                    return header_size + calc_bson_object_size(*j.m_value.object);
+                    case value_t::object:
+                        return header_size + calc_bson_object_size(*j.m_value.object);
 
-                case value_t::array:
-                    return header_size + calc_bson_array_size(*j.m_value.array);
+                    case value_t::array:
+                        return header_size + calc_bson_array_size(*j.m_value.array);
 
-                case value_t::boolean:
-                    return header_size + 1ul;
+                    case value_t::boolean:
+                        return header_size + 1ul;
 
-                case value_t::number_float:
-                    return header_size + 8ul;
+                    case value_t::number_float:
+                        return header_size + 8ul;
 
-                case value_t::number_integer:
-                    return header_size + calc_bson_integer_size(j.m_value.number_integer);
+                    case value_t::number_integer:
+                        return header_size + calc_bson_integer_size(j.m_value.number_integer);
 
-                case value_t::number_unsigned:
-                    return header_size + calc_bson_unsigned_size(j.m_value.number_unsigned);
+                    case value_t::number_unsigned:
+                        return header_size + calc_bson_unsigned_size(j.m_value.number_unsigned);
 
-                case value_t::string:
-                    return header_size + calc_bson_string_size(*j.m_value.string);
+                    case value_t::string:
+                        return header_size + calc_bson_string_size(*j.m_value.string);
 
-                case value_t::null:
-                    return header_size + 0ul;
+                    case value_t::null:
+                        return header_size + 0ul;
 
-                // LCOV_EXCL_START
-                default:
-                    assert(false);
-                    return 0ul;
-                    // LCOV_EXCL_STOP
+                    // LCOV_EXCL_START
+                    default:
+                        assert(false);
+                        return 0ul;
+                        // LCOV_EXCL_STOP
                 }
             }
 
@@ -9964,35 +9968,35 @@ namespace nlohmann
             {
                 switch (j.type())
                 {
-                case value_t::object:
-                    return write_bson_object_entry(name, *j.m_value.object);
+                    case value_t::object:
+                        return write_bson_object_entry(name, *j.m_value.object);
 
-                case value_t::array:
-                    return write_bson_array(name, *j.m_value.array);
+                    case value_t::array:
+                        return write_bson_array(name, *j.m_value.array);
 
-                case value_t::boolean:
-                    return write_bson_boolean(name, j.m_value.boolean);
+                    case value_t::boolean:
+                        return write_bson_boolean(name, j.m_value.boolean);
 
-                case value_t::number_float:
-                    return write_bson_double(name, j.m_value.number_float);
+                    case value_t::number_float:
+                        return write_bson_double(name, j.m_value.number_float);
 
-                case value_t::number_integer:
-                    return write_bson_integer(name, j.m_value.number_integer);
+                    case value_t::number_integer:
+                        return write_bson_integer(name, j.m_value.number_integer);
 
-                case value_t::number_unsigned:
-                    return write_bson_unsigned(name, j.m_value.number_unsigned);
+                    case value_t::number_unsigned:
+                        return write_bson_unsigned(name, j.m_value.number_unsigned);
 
-                case value_t::string:
-                    return write_bson_string(name, *j.m_value.string);
+                    case value_t::string:
+                        return write_bson_string(name, *j.m_value.string);
 
-                case value_t::null:
-                    return write_bson_null(name);
+                    case value_t::null:
+                        return write_bson_null(name);
 
-                // LCOV_EXCL_START
-                default:
-                    assert(false);
-                    return;
-                    // LCOV_EXCL_STOP
+                    // LCOV_EXCL_START
+                    default:
+                        assert(false);
+                        return;
+                        // LCOV_EXCL_STOP
                 }
             }
 
@@ -10190,74 +10194,74 @@ namespace nlohmann
             {
                 switch (j.type())
                 {
-                case value_t::null:
-                    return 'Z';
+                    case value_t::null:
+                        return 'Z';
 
-                case value_t::boolean:
-                    return j.m_value.boolean ? 'T' : 'F';
+                    case value_t::boolean:
+                        return j.m_value.boolean ? 'T' : 'F';
 
-                case value_t::number_integer:
-                {
-                    if ((std::numeric_limits<std::int8_t>::min)() <= j.m_value.number_integer and
-                        j.m_value.number_integer <= (std::numeric_limits<std::int8_t>::max)())
+                    case value_t::number_integer:
                     {
-                        return 'i';
+                        if ((std::numeric_limits<std::int8_t>::min)() <= j.m_value.number_integer and
+                            j.m_value.number_integer <= (std::numeric_limits<std::int8_t>::max)())
+                        {
+                            return 'i';
+                        }
+                        if ((std::numeric_limits<std::uint8_t>::min)() <= j.m_value.number_integer and
+                            j.m_value.number_integer <= (std::numeric_limits<std::uint8_t>::max)())
+                        {
+                            return 'U';
+                        }
+                        if ((std::numeric_limits<std::int16_t>::min)() <= j.m_value.number_integer and
+                            j.m_value.number_integer <= (std::numeric_limits<std::int16_t>::max)())
+                        {
+                            return 'I';
+                        }
+                        if ((std::numeric_limits<std::int32_t>::min)() <= j.m_value.number_integer and
+                            j.m_value.number_integer <= (std::numeric_limits<std::int32_t>::max)())
+                        {
+                            return 'l';
+                        }
+                        // no check and assume int64_t (see note above)
+                        return 'L';
                     }
-                    if ((std::numeric_limits<std::uint8_t>::min)() <= j.m_value.number_integer and
-                        j.m_value.number_integer <= (std::numeric_limits<std::uint8_t>::max)())
-                    {
-                        return 'U';
-                    }
-                    if ((std::numeric_limits<std::int16_t>::min)() <= j.m_value.number_integer and
-                        j.m_value.number_integer <= (std::numeric_limits<std::int16_t>::max)())
-                    {
-                        return 'I';
-                    }
-                    if ((std::numeric_limits<std::int32_t>::min)() <= j.m_value.number_integer and
-                        j.m_value.number_integer <= (std::numeric_limits<std::int32_t>::max)())
-                    {
-                        return 'l';
-                    }
-                    // no check and assume int64_t (see note above)
-                    return 'L';
-                }
 
-                case value_t::number_unsigned:
-                {
-                    if (j.m_value.number_unsigned <= (std::numeric_limits<std::int8_t>::max)())
+                    case value_t::number_unsigned:
                     {
-                        return 'i';
+                        if (j.m_value.number_unsigned <= (std::numeric_limits<std::int8_t>::max)())
+                        {
+                            return 'i';
+                        }
+                        if (j.m_value.number_unsigned <= (std::numeric_limits<std::uint8_t>::max)())
+                        {
+                            return 'U';
+                        }
+                        if (j.m_value.number_unsigned <= (std::numeric_limits<std::int16_t>::max)())
+                        {
+                            return 'I';
+                        }
+                        if (j.m_value.number_unsigned <= (std::numeric_limits<std::int32_t>::max)())
+                        {
+                            return 'l';
+                        }
+                        // no check and assume int64_t (see note above)
+                        return 'L';
                     }
-                    if (j.m_value.number_unsigned <= (std::numeric_limits<std::uint8_t>::max)())
-                    {
-                        return 'U';
-                    }
-                    if (j.m_value.number_unsigned <= (std::numeric_limits<std::int16_t>::max)())
-                    {
-                        return 'I';
-                    }
-                    if (j.m_value.number_unsigned <= (std::numeric_limits<std::int32_t>::max)())
-                    {
-                        return 'l';
-                    }
-                    // no check and assume int64_t (see note above)
-                    return 'L';
-                }
 
-                case value_t::number_float:
-                    return get_ubjson_float_prefix(j.m_value.number_float);
+                    case value_t::number_float:
+                        return get_ubjson_float_prefix(j.m_value.number_float);
 
-                case value_t::string:
-                    return 'S';
+                    case value_t::string:
+                        return 'S';
 
-                case value_t::array:
-                    return '[';
+                    case value_t::array:
+                        return '[';
 
-                case value_t::object:
-                    return '{';
+                    case value_t::object:
+                        return '{';
 
-                default: // discarded values
-                    return 'N';
+                    default: // discarded values
+                        return 'N';
                 }
             }
 
@@ -11533,189 +11537,189 @@ namespace nlohmann
             {
                 switch (val.m_type)
                 {
-                case value_t::object:
-                {
-                    if (val.m_value.object->empty())
+                    case value_t::object:
                     {
-                        o->write_characters("{}", 2);
-                        return;
-                    }
-
-                    if (pretty_print)
-                    {
-                        o->write_characters("{\n", 2);
-
-                        // variable to hold indentation for recursive calls
-                        const auto new_indent = current_indent + indent_step;
-                        if (JSON_UNLIKELY(indent_string.size() < new_indent))
+                        if (val.m_value.object->empty())
                         {
-                            indent_string.resize(indent_string.size() * 2, ' ');
+                            o->write_characters("{}", 2);
+                            return;
                         }
 
-                        // first n-1 elements
-                        auto i = val.m_value.object->cbegin();
-                        for (std::size_t cnt = 0; cnt < val.m_value.object->size() - 1; ++cnt, ++i)
+                        if (pretty_print)
                         {
+                            o->write_characters("{\n", 2);
+
+                            // variable to hold indentation for recursive calls
+                            const auto new_indent = current_indent + indent_step;
+                            if (JSON_UNLIKELY(indent_string.size() < new_indent))
+                            {
+                                indent_string.resize(indent_string.size() * 2, ' ');
+                            }
+
+                            // first n-1 elements
+                            auto i = val.m_value.object->cbegin();
+                            for (std::size_t cnt = 0; cnt < val.m_value.object->size() - 1; ++cnt, ++i)
+                            {
+                                o->write_characters(indent_string.c_str(), new_indent);
+                                o->write_character('\"');
+                                dump_escaped(i->first, ensure_ascii);
+                                o->write_characters("\": ", 3);
+                                dump(i->second, true, ensure_ascii, indent_step, new_indent);
+                                o->write_characters(",\n", 2);
+                            }
+
+                            // last element
+                            assert(i != val.m_value.object->cend());
+                            assert(std::next(i) == val.m_value.object->cend());
                             o->write_characters(indent_string.c_str(), new_indent);
                             o->write_character('\"');
                             dump_escaped(i->first, ensure_ascii);
                             o->write_characters("\": ", 3);
                             dump(i->second, true, ensure_ascii, indent_step, new_indent);
-                            o->write_characters(",\n", 2);
+
+                            o->write_character('\n');
+                            o->write_characters(indent_string.c_str(), current_indent);
+                            o->write_character('}');
                         }
-
-                        // last element
-                        assert(i != val.m_value.object->cend());
-                        assert(std::next(i) == val.m_value.object->cend());
-                        o->write_characters(indent_string.c_str(), new_indent);
-                        o->write_character('\"');
-                        dump_escaped(i->first, ensure_ascii);
-                        o->write_characters("\": ", 3);
-                        dump(i->second, true, ensure_ascii, indent_step, new_indent);
-
-                        o->write_character('\n');
-                        o->write_characters(indent_string.c_str(), current_indent);
-                        o->write_character('}');
-                    }
-                    else
-                    {
-                        o->write_character('{');
-
-                        // first n-1 elements
-                        auto i = val.m_value.object->cbegin();
-                        for (std::size_t cnt = 0; cnt < val.m_value.object->size() - 1; ++cnt, ++i)
+                        else
                         {
+                            o->write_character('{');
+
+                            // first n-1 elements
+                            auto i = val.m_value.object->cbegin();
+                            for (std::size_t cnt = 0; cnt < val.m_value.object->size() - 1; ++cnt, ++i)
+                            {
+                                o->write_character('\"');
+                                dump_escaped(i->first, ensure_ascii);
+                                o->write_characters("\":", 2);
+                                dump(i->second, false, ensure_ascii, indent_step, current_indent);
+                                o->write_character(',');
+                            }
+
+                            // last element
+                            assert(i != val.m_value.object->cend());
+                            assert(std::next(i) == val.m_value.object->cend());
                             o->write_character('\"');
                             dump_escaped(i->first, ensure_ascii);
                             o->write_characters("\":", 2);
                             dump(i->second, false, ensure_ascii, indent_step, current_indent);
-                            o->write_character(',');
+
+                            o->write_character('}');
                         }
 
-                        // last element
-                        assert(i != val.m_value.object->cend());
-                        assert(std::next(i) == val.m_value.object->cend());
-                        o->write_character('\"');
-                        dump_escaped(i->first, ensure_ascii);
-                        o->write_characters("\":", 2);
-                        dump(i->second, false, ensure_ascii, indent_step, current_indent);
-
-                        o->write_character('}');
-                    }
-
-                    return;
-                }
-
-                case value_t::array:
-                {
-                    if (val.m_value.array->empty())
-                    {
-                        o->write_characters("[]", 2);
                         return;
                     }
 
-                    if (pretty_print)
+                    case value_t::array:
                     {
-                        o->write_characters("[\n", 2);
-
-                        // variable to hold indentation for recursive calls
-                        const auto new_indent = current_indent + indent_step;
-                        if (JSON_UNLIKELY(indent_string.size() < new_indent))
+                        if (val.m_value.array->empty())
                         {
-                            indent_string.resize(indent_string.size() * 2, ' ');
+                            o->write_characters("[]", 2);
+                            return;
                         }
 
-                        // first n-1 elements
-                        for (auto i = val.m_value.array->cbegin(); i != val.m_value.array->cend() - 1; ++i)
+                        if (pretty_print)
                         {
+                            o->write_characters("[\n", 2);
+
+                            // variable to hold indentation for recursive calls
+                            const auto new_indent = current_indent + indent_step;
+                            if (JSON_UNLIKELY(indent_string.size() < new_indent))
+                            {
+                                indent_string.resize(indent_string.size() * 2, ' ');
+                            }
+
+                            // first n-1 elements
+                            for (auto i = val.m_value.array->cbegin(); i != val.m_value.array->cend() - 1; ++i)
+                            {
+                                o->write_characters(indent_string.c_str(), new_indent);
+                                dump(*i, true, ensure_ascii, indent_step, new_indent);
+                                o->write_characters(",\n", 2);
+                            }
+
+                            // last element
+                            assert(not val.m_value.array->empty());
                             o->write_characters(indent_string.c_str(), new_indent);
-                            dump(*i, true, ensure_ascii, indent_step, new_indent);
-                            o->write_characters(",\n", 2);
+                            dump(val.m_value.array->back(), true, ensure_ascii, indent_step, new_indent);
+
+                            o->write_character('\n');
+                            o->write_characters(indent_string.c_str(), current_indent);
+                            o->write_character(']');
                         }
-
-                        // last element
-                        assert(not val.m_value.array->empty());
-                        o->write_characters(indent_string.c_str(), new_indent);
-                        dump(val.m_value.array->back(), true, ensure_ascii, indent_step, new_indent);
-
-                        o->write_character('\n');
-                        o->write_characters(indent_string.c_str(), current_indent);
-                        o->write_character(']');
-                    }
-                    else
-                    {
-                        o->write_character('[');
-
-                        // first n-1 elements
-                        for (auto i = val.m_value.array->cbegin(); i != val.m_value.array->cend() - 1; ++i)
+                        else
                         {
-                            dump(*i, false, ensure_ascii, indent_step, current_indent);
-                            o->write_character(',');
+                            o->write_character('[');
+
+                            // first n-1 elements
+                            for (auto i = val.m_value.array->cbegin(); i != val.m_value.array->cend() - 1; ++i)
+                            {
+                                dump(*i, false, ensure_ascii, indent_step, current_indent);
+                                o->write_character(',');
+                            }
+
+                            // last element
+                            assert(not val.m_value.array->empty());
+                            dump(val.m_value.array->back(), false, ensure_ascii, indent_step, current_indent);
+
+                            o->write_character(']');
                         }
 
-                        // last element
-                        assert(not val.m_value.array->empty());
-                        dump(val.m_value.array->back(), false, ensure_ascii, indent_step, current_indent);
-
-                        o->write_character(']');
+                        return;
                     }
 
-                    return;
-                }
-
-                case value_t::string:
-                {
-                    o->write_character('\"');
-                    dump_escaped(*val.m_value.string, ensure_ascii);
-                    o->write_character('\"');
-                    return;
-                }
-
-                case value_t::boolean:
-                {
-                    if (val.m_value.boolean)
+                    case value_t::string:
                     {
-                        o->write_characters("true", 4);
+                        o->write_character('\"');
+                        dump_escaped(*val.m_value.string, ensure_ascii);
+                        o->write_character('\"');
+                        return;
                     }
-                    else
+
+                    case value_t::boolean:
                     {
-                        o->write_characters("false", 5);
+                        if (val.m_value.boolean)
+                        {
+                            o->write_characters("true", 4);
+                        }
+                        else
+                        {
+                            o->write_characters("false", 5);
+                        }
+                        return;
                     }
-                    return;
-                }
 
-                case value_t::number_integer:
-                {
-                    dump_integer(val.m_value.number_integer);
-                    return;
-                }
+                    case value_t::number_integer:
+                    {
+                        dump_integer(val.m_value.number_integer);
+                        return;
+                    }
 
-                case value_t::number_unsigned:
-                {
-                    dump_integer(val.m_value.number_unsigned);
-                    return;
-                }
+                    case value_t::number_unsigned:
+                    {
+                        dump_integer(val.m_value.number_unsigned);
+                        return;
+                    }
 
-                case value_t::number_float:
-                {
-                    dump_float(val.m_value.number_float);
-                    return;
-                }
+                    case value_t::number_float:
+                    {
+                        dump_float(val.m_value.number_float);
+                        return;
+                    }
 
-                case value_t::discarded:
-                {
-                    o->write_characters("<discarded>", 11);
-                    return;
-                }
+                    case value_t::discarded:
+                    {
+                        o->write_characters("<discarded>", 11);
+                        return;
+                    }
 
-                case value_t::null:
-                {
-                    o->write_characters("null", 4);
-                    return;
-                }
+                    case value_t::null:
+                    {
+                        o->write_characters("null", 4);
+                        return;
+                    }
 
-                default:           // LCOV_EXCL_LINE
-                    assert(false); // LCOV_EXCL_LINE
+                    default:           // LCOV_EXCL_LINE
+                        assert(false); // LCOV_EXCL_LINE
                 }
             }
 
@@ -11750,184 +11754,184 @@ namespace nlohmann
 
                     switch (decode(state, codepoint, byte))
                     {
-                    case UTF8_ACCEPT: // decode found a new code point
-                    {
-                        switch (codepoint)
+                        case UTF8_ACCEPT: // decode found a new code point
                         {
-                        case 0x08: // backspace
-                        {
-                            string_buffer[bytes++] = '\\';
-                            string_buffer[bytes++] = 'b';
-                            break;
-                        }
-
-                        case 0x09: // horizontal tab
-                        {
-                            string_buffer[bytes++] = '\\';
-                            string_buffer[bytes++] = 't';
-                            break;
-                        }
-
-                        case 0x0A: // newline
-                        {
-                            string_buffer[bytes++] = '\\';
-                            string_buffer[bytes++] = 'n';
-                            break;
-                        }
-
-                        case 0x0C: // formfeed
-                        {
-                            string_buffer[bytes++] = '\\';
-                            string_buffer[bytes++] = 'f';
-                            break;
-                        }
-
-                        case 0x0D: // carriage return
-                        {
-                            string_buffer[bytes++] = '\\';
-                            string_buffer[bytes++] = 'r';
-                            break;
-                        }
-
-                        case 0x22: // quotation mark
-                        {
-                            string_buffer[bytes++] = '\\';
-                            string_buffer[bytes++] = '\"';
-                            break;
-                        }
-
-                        case 0x5C: // reverse solidus
-                        {
-                            string_buffer[bytes++] = '\\';
-                            string_buffer[bytes++] = '\\';
-                            break;
-                        }
-
-                        default:
-                        {
-                            // escape control characters (0x00..0x1F) or, if
-                            // ensure_ascii parameter is used, non-ASCII characters
-                            if ((codepoint <= 0x1F) or (ensure_ascii and (codepoint >= 0x7F)))
+                            switch (codepoint)
                             {
-                                if (codepoint <= 0xFFFF)
-                                {
-                                    (std::snprintf)(string_buffer.data() + bytes, 7, "\\u%04x", static_cast<std::uint16_t>(codepoint));
-                                    bytes += 6;
-                                }
-                                else
-                                {
-                                    (std::snprintf)(string_buffer.data() + bytes, 13, "\\u%04x\\u%04x",
-                                        static_cast<std::uint16_t>(0xD7C0u + (codepoint >> 10u)),
-                                        static_cast<std::uint16_t>(0xDC00u + (codepoint & 0x3FFu)));
-                                    bytes += 12;
-                                }
-                            }
-                            else
-                            {
-                                // copy byte to buffer (all previous bytes
-                                // been copied have in default case above)
-                                string_buffer[bytes++] = s[i];
-                            }
-                            break;
-                        }
-                        }
-
-                        // write buffer and reset index; there must be 13 bytes
-                        // left, as this is the maximal number of bytes to be
-                        // written ("\uxxxx\uxxxx\0") for one code point
-                        if (string_buffer.size() - bytes < 13)
-                        {
-                            o->write_characters(string_buffer.data(), bytes);
-                            bytes = 0;
-                        }
-
-                        // remember the byte position of this accept
-                        bytes_after_last_accept = bytes;
-                        undumped_chars          = 0;
-                        break;
-                    }
-
-                    case UTF8_REJECT: // decode found invalid UTF-8 byte
-                    {
-                        switch (error_handler)
-                        {
-                        case error_handler_t::strict:
-                        {
-                            std::string sn(3, '\0');
-                            (std::snprintf)(&sn[0], sn.size(), "%.2X", byte);
-                            JSON_THROW(type_error::create(316, "invalid UTF-8 byte at index " + std::to_string(i) + ": 0x" + sn));
-                        }
-
-                        case error_handler_t::ignore:
-                        case error_handler_t::replace:
-                        {
-                            // in case we saw this character the first time, we
-                            // would like to read it again, because the byte
-                            // may be OK for itself, but just not OK for the
-                            // previous sequence
-                            if (undumped_chars > 0)
-                            {
-                                --i;
-                            }
-
-                            // reset length buffer to the last accepted index;
-                            // thus removing/ignoring the invalid characters
-                            bytes = bytes_after_last_accept;
-
-                            if (error_handler == error_handler_t::replace)
-                            {
-                                // add a replacement character
-                                if (ensure_ascii)
+                                case 0x08: // backspace
                                 {
                                     string_buffer[bytes++] = '\\';
-                                    string_buffer[bytes++] = 'u';
-                                    string_buffer[bytes++] = 'f';
-                                    string_buffer[bytes++] = 'f';
-                                    string_buffer[bytes++] = 'f';
-                                    string_buffer[bytes++] = 'd';
-                                }
-                                else
-                                {
-                                    string_buffer[bytes++] = detail::binary_writer<BasicJsonType, char>::to_char_type('\xEF');
-                                    string_buffer[bytes++] = detail::binary_writer<BasicJsonType, char>::to_char_type('\xBF');
-                                    string_buffer[bytes++] = detail::binary_writer<BasicJsonType, char>::to_char_type('\xBD');
+                                    string_buffer[bytes++] = 'b';
+                                    break;
                                 }
 
-                                // write buffer and reset index; there must be 13 bytes
-                                // left, as this is the maximal number of bytes to be
-                                // written ("\uxxxx\uxxxx\0") for one code point
-                                if (string_buffer.size() - bytes < 13)
+                                case 0x09: // horizontal tab
                                 {
-                                    o->write_characters(string_buffer.data(), bytes);
-                                    bytes = 0;
+                                    string_buffer[bytes++] = '\\';
+                                    string_buffer[bytes++] = 't';
+                                    break;
                                 }
 
-                                bytes_after_last_accept = bytes;
+                                case 0x0A: // newline
+                                {
+                                    string_buffer[bytes++] = '\\';
+                                    string_buffer[bytes++] = 'n';
+                                    break;
+                                }
+
+                                case 0x0C: // formfeed
+                                {
+                                    string_buffer[bytes++] = '\\';
+                                    string_buffer[bytes++] = 'f';
+                                    break;
+                                }
+
+                                case 0x0D: // carriage return
+                                {
+                                    string_buffer[bytes++] = '\\';
+                                    string_buffer[bytes++] = 'r';
+                                    break;
+                                }
+
+                                case 0x22: // quotation mark
+                                {
+                                    string_buffer[bytes++] = '\\';
+                                    string_buffer[bytes++] = '\"';
+                                    break;
+                                }
+
+                                case 0x5C: // reverse solidus
+                                {
+                                    string_buffer[bytes++] = '\\';
+                                    string_buffer[bytes++] = '\\';
+                                    break;
+                                }
+
+                                default:
+                                {
+                                    // escape control characters (0x00..0x1F) or, if
+                                    // ensure_ascii parameter is used, non-ASCII characters
+                                    if ((codepoint <= 0x1F) or (ensure_ascii and (codepoint >= 0x7F)))
+                                    {
+                                        if (codepoint <= 0xFFFF)
+                                        {
+                                            (std::snprintf)(string_buffer.data() + bytes, 7, "\\u%04x", static_cast<std::uint16_t>(codepoint));
+                                            bytes += 6;
+                                        }
+                                        else
+                                        {
+                                            (std::snprintf)(string_buffer.data() + bytes, 13, "\\u%04x\\u%04x",
+                                                static_cast<std::uint16_t>(0xD7C0u + (codepoint >> 10u)),
+                                                static_cast<std::uint16_t>(0xDC00u + (codepoint & 0x3FFu)));
+                                            bytes += 12;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // copy byte to buffer (all previous bytes
+                                        // been copied have in default case above)
+                                        string_buffer[bytes++] = s[i];
+                                    }
+                                    break;
+                                }
                             }
 
-                            undumped_chars = 0;
+                            // write buffer and reset index; there must be 13 bytes
+                            // left, as this is the maximal number of bytes to be
+                            // written ("\uxxxx\uxxxx\0") for one code point
+                            if (string_buffer.size() - bytes < 13)
+                            {
+                                o->write_characters(string_buffer.data(), bytes);
+                                bytes = 0;
+                            }
 
-                            // continue processing the string
-                            state = UTF8_ACCEPT;
+                            // remember the byte position of this accept
+                            bytes_after_last_accept = bytes;
+                            undumped_chars          = 0;
                             break;
                         }
 
-                        default:           // LCOV_EXCL_LINE
-                            assert(false); // LCOV_EXCL_LINE
-                        }
-                        break;
-                    }
-
-                    default: // decode found yet incomplete multi-byte code point
-                    {
-                        if (not ensure_ascii)
+                        case UTF8_REJECT: // decode found invalid UTF-8 byte
                         {
-                            // code point will not be escaped - copy byte to buffer
-                            string_buffer[bytes++] = s[i];
+                            switch (error_handler)
+                            {
+                                case error_handler_t::strict:
+                                {
+                                    std::string sn(3, '\0');
+                                    (std::snprintf)(&sn[0], sn.size(), "%.2X", byte);
+                                    JSON_THROW(type_error::create(316, "invalid UTF-8 byte at index " + std::to_string(i) + ": 0x" + sn));
+                                }
+
+                                case error_handler_t::ignore:
+                                case error_handler_t::replace:
+                                {
+                                    // in case we saw this character the first time, we
+                                    // would like to read it again, because the byte
+                                    // may be OK for itself, but just not OK for the
+                                    // previous sequence
+                                    if (undumped_chars > 0)
+                                    {
+                                        --i;
+                                    }
+
+                                    // reset length buffer to the last accepted index;
+                                    // thus removing/ignoring the invalid characters
+                                    bytes = bytes_after_last_accept;
+
+                                    if (error_handler == error_handler_t::replace)
+                                    {
+                                        // add a replacement character
+                                        if (ensure_ascii)
+                                        {
+                                            string_buffer[bytes++] = '\\';
+                                            string_buffer[bytes++] = 'u';
+                                            string_buffer[bytes++] = 'f';
+                                            string_buffer[bytes++] = 'f';
+                                            string_buffer[bytes++] = 'f';
+                                            string_buffer[bytes++] = 'd';
+                                        }
+                                        else
+                                        {
+                                            string_buffer[bytes++] = detail::binary_writer<BasicJsonType, char>::to_char_type('\xEF');
+                                            string_buffer[bytes++] = detail::binary_writer<BasicJsonType, char>::to_char_type('\xBF');
+                                            string_buffer[bytes++] = detail::binary_writer<BasicJsonType, char>::to_char_type('\xBD');
+                                        }
+
+                                        // write buffer and reset index; there must be 13 bytes
+                                        // left, as this is the maximal number of bytes to be
+                                        // written ("\uxxxx\uxxxx\0") for one code point
+                                        if (string_buffer.size() - bytes < 13)
+                                        {
+                                            o->write_characters(string_buffer.data(), bytes);
+                                            bytes = 0;
+                                        }
+
+                                        bytes_after_last_accept = bytes;
+                                    }
+
+                                    undumped_chars = 0;
+
+                                    // continue processing the string
+                                    state = UTF8_ACCEPT;
+                                    break;
+                                }
+
+                                default:           // LCOV_EXCL_LINE
+                                    assert(false); // LCOV_EXCL_LINE
+                            }
+                            break;
                         }
-                        ++undumped_chars;
-                        break;
-                    }
+
+                        default: // decode found yet incomplete multi-byte code point
+                        {
+                            if (not ensure_ascii)
+                            {
+                                // code point will not be escaped - copy byte to buffer
+                                string_buffer[bytes++] = s[i];
+                            }
+                            ++undumped_chars;
+                            break;
+                        }
                     }
                 }
 
@@ -11945,38 +11949,38 @@ namespace nlohmann
                     // we finish reading, but do not accept: string was incomplete
                     switch (error_handler)
                     {
-                    case error_handler_t::strict:
-                    {
-                        std::string sn(3, '\0');
-                        (std::snprintf)(&sn[0], sn.size(), "%.2X", static_cast<std::uint8_t>(s.back()));
-                        JSON_THROW(type_error::create(316, "incomplete UTF-8 string; last byte: 0x" + sn));
-                    }
-
-                    case error_handler_t::ignore:
-                    {
-                        // write all accepted bytes
-                        o->write_characters(string_buffer.data(), bytes_after_last_accept);
-                        break;
-                    }
-
-                    case error_handler_t::replace:
-                    {
-                        // write all accepted bytes
-                        o->write_characters(string_buffer.data(), bytes_after_last_accept);
-                        // add a replacement character
-                        if (ensure_ascii)
+                        case error_handler_t::strict:
                         {
-                            o->write_characters("\\ufffd", 6);
+                            std::string sn(3, '\0');
+                            (std::snprintf)(&sn[0], sn.size(), "%.2X", static_cast<std::uint8_t>(s.back()));
+                            JSON_THROW(type_error::create(316, "incomplete UTF-8 string; last byte: 0x" + sn));
                         }
-                        else
-                        {
-                            o->write_characters("\xEF\xBF\xBD", 3);
-                        }
-                        break;
-                    }
 
-                    default:           // LCOV_EXCL_LINE
-                        assert(false); // LCOV_EXCL_LINE
+                        case error_handler_t::ignore:
+                        {
+                            // write all accepted bytes
+                            o->write_characters(string_buffer.data(), bytes_after_last_accept);
+                            break;
+                        }
+
+                        case error_handler_t::replace:
+                        {
+                            // write all accepted bytes
+                            o->write_characters(string_buffer.data(), bytes_after_last_accept);
+                            // add a replacement character
+                            if (ensure_ascii)
+                            {
+                                o->write_characters("\\ufffd", 6);
+                            }
+                            else
+                            {
+                                o->write_characters("\xEF\xBF\xBD", 3);
+                            }
+                            break;
+                        }
+
+                        default:           // LCOV_EXCL_LINE
+                            assert(false); // LCOV_EXCL_LINE
                     }
                 }
             }
@@ -13170,63 +13174,63 @@ namespace nlohmann
             {
                 switch (t)
                 {
-                case value_t::object:
-                {
-                    object = create<object_t>();
-                    break;
-                }
-
-                case value_t::array:
-                {
-                    array = create<array_t>();
-                    break;
-                }
-
-                case value_t::string:
-                {
-                    string = create<string_t>("");
-                    break;
-                }
-
-                case value_t::boolean:
-                {
-                    boolean = boolean_t(false);
-                    break;
-                }
-
-                case value_t::number_integer:
-                {
-                    number_integer = number_integer_t(0);
-                    break;
-                }
-
-                case value_t::number_unsigned:
-                {
-                    number_unsigned = number_unsigned_t(0);
-                    break;
-                }
-
-                case value_t::number_float:
-                {
-                    number_float = number_float_t(0.0);
-                    break;
-                }
-
-                case value_t::null:
-                {
-                    object = nullptr; // silence warning, see #821
-                    break;
-                }
-
-                default:
-                {
-                    object = nullptr; // silence warning, see #821
-                    if (JSON_UNLIKELY(t == value_t::null))
+                    case value_t::object:
                     {
-                        JSON_THROW(other_error::create(500, "961c151d2e87f2686a955a9be24d316f1362bf21 3.6.1")); // LCOV_EXCL_LINE
+                        object = create<object_t>();
+                        break;
                     }
-                    break;
-                }
+
+                    case value_t::array:
+                    {
+                        array = create<array_t>();
+                        break;
+                    }
+
+                    case value_t::string:
+                    {
+                        string = create<string_t>("");
+                        break;
+                    }
+
+                    case value_t::boolean:
+                    {
+                        boolean = boolean_t(false);
+                        break;
+                    }
+
+                    case value_t::number_integer:
+                    {
+                        number_integer = number_integer_t(0);
+                        break;
+                    }
+
+                    case value_t::number_unsigned:
+                    {
+                        number_unsigned = number_unsigned_t(0);
+                        break;
+                    }
+
+                    case value_t::number_float:
+                    {
+                        number_float = number_float_t(0.0);
+                        break;
+                    }
+
+                    case value_t::null:
+                    {
+                        object = nullptr; // silence warning, see #821
+                        break;
+                    }
+
+                    default:
+                    {
+                        object = nullptr; // silence warning, see #821
+                        if (JSON_UNLIKELY(t == value_t::null))
+                        {
+                            JSON_THROW(other_error::create(500, "961c151d2e87f2686a955a9be24d316f1362bf21 3.6.1")); // LCOV_EXCL_LINE
+                        }
+                        break;
+                    }
                 }
             }
 
@@ -13252,34 +13256,34 @@ namespace nlohmann
             {
                 switch (t)
                 {
-                case value_t::object:
-                {
-                    AllocatorType<object_t> alloc;
-                    std::allocator_traits<decltype(alloc)>::destroy(alloc, object);
-                    std::allocator_traits<decltype(alloc)>::deallocate(alloc, object, 1);
-                    break;
-                }
+                    case value_t::object:
+                    {
+                        AllocatorType<object_t> alloc;
+                        std::allocator_traits<decltype(alloc)>::destroy(alloc, object);
+                        std::allocator_traits<decltype(alloc)>::deallocate(alloc, object, 1);
+                        break;
+                    }
 
-                case value_t::array:
-                {
-                    AllocatorType<array_t> alloc;
-                    std::allocator_traits<decltype(alloc)>::destroy(alloc, array);
-                    std::allocator_traits<decltype(alloc)>::deallocate(alloc, array, 1);
-                    break;
-                }
+                    case value_t::array:
+                    {
+                        AllocatorType<array_t> alloc;
+                        std::allocator_traits<decltype(alloc)>::destroy(alloc, array);
+                        std::allocator_traits<decltype(alloc)>::deallocate(alloc, array, 1);
+                        break;
+                    }
 
-                case value_t::string:
-                {
-                    AllocatorType<string_t> alloc;
-                    std::allocator_traits<decltype(alloc)>::destroy(alloc, string);
-                    std::allocator_traits<decltype(alloc)>::deallocate(alloc, string, 1);
-                    break;
-                }
+                    case value_t::string:
+                    {
+                        AllocatorType<string_t> alloc;
+                        std::allocator_traits<decltype(alloc)>::destroy(alloc, string);
+                        std::allocator_traits<decltype(alloc)>::deallocate(alloc, string, 1);
+                        break;
+                    }
 
-                default:
-                {
-                    break;
-                }
+                    default:
+                    {
+                        break;
+                    }
                 }
             }
         };
@@ -13540,35 +13544,35 @@ namespace nlohmann
 
             switch (val.type())
             {
-            case value_t::boolean:
-                JSONSerializer<other_boolean_t>::to_json(*this, val.template get<other_boolean_t>());
-                break;
-            case value_t::number_float:
-                JSONSerializer<other_number_float_t>::to_json(*this, val.template get<other_number_float_t>());
-                break;
-            case value_t::number_integer:
-                JSONSerializer<other_number_integer_t>::to_json(*this, val.template get<other_number_integer_t>());
-                break;
-            case value_t::number_unsigned:
-                JSONSerializer<other_number_unsigned_t>::to_json(*this, val.template get<other_number_unsigned_t>());
-                break;
-            case value_t::string:
-                JSONSerializer<other_string_t>::to_json(*this, val.template get_ref<const other_string_t&>());
-                break;
-            case value_t::object:
-                JSONSerializer<other_object_t>::to_json(*this, val.template get_ref<const other_object_t&>());
-                break;
-            case value_t::array:
-                JSONSerializer<other_array_t>::to_json(*this, val.template get_ref<const other_array_t&>());
-                break;
-            case value_t::null:
-                *this = nullptr;
-                break;
-            case value_t::discarded:
-                m_type = value_t::discarded;
-                break;
-            default:           // LCOV_EXCL_LINE
-                assert(false); // LCOV_EXCL_LINE
+                case value_t::boolean:
+                    JSONSerializer<other_boolean_t>::to_json(*this, val.template get<other_boolean_t>());
+                    break;
+                case value_t::number_float:
+                    JSONSerializer<other_number_float_t>::to_json(*this, val.template get<other_number_float_t>());
+                    break;
+                case value_t::number_integer:
+                    JSONSerializer<other_number_integer_t>::to_json(*this, val.template get<other_number_integer_t>());
+                    break;
+                case value_t::number_unsigned:
+                    JSONSerializer<other_number_unsigned_t>::to_json(*this, val.template get<other_number_unsigned_t>());
+                    break;
+                case value_t::string:
+                    JSONSerializer<other_string_t>::to_json(*this, val.template get_ref<const other_string_t&>());
+                    break;
+                case value_t::object:
+                    JSONSerializer<other_object_t>::to_json(*this, val.template get_ref<const other_object_t&>());
+                    break;
+                case value_t::array:
+                    JSONSerializer<other_array_t>::to_json(*this, val.template get_ref<const other_array_t&>());
+                    break;
+                case value_t::null:
+                    *this = nullptr;
+                    break;
+                case value_t::discarded:
+                    m_type = value_t::discarded;
+                    break;
+                default:           // LCOV_EXCL_LINE
+                    assert(false); // LCOV_EXCL_LINE
             }
             assert_invariant();
         }
@@ -13876,69 +13880,69 @@ namespace nlohmann
             // check if iterator range is complete for primitive values
             switch (m_type)
             {
-            case value_t::boolean:
-            case value_t::number_float:
-            case value_t::number_integer:
-            case value_t::number_unsigned:
-            case value_t::string:
-            {
-                if (JSON_UNLIKELY(not first.m_it.primitive_iterator.is_begin() or not last.m_it.primitive_iterator.is_end()))
+                case value_t::boolean:
+                case value_t::number_float:
+                case value_t::number_integer:
+                case value_t::number_unsigned:
+                case value_t::string:
                 {
-                    JSON_THROW(invalid_iterator::create(204, "iterators out of range"));
+                    if (JSON_UNLIKELY(not first.m_it.primitive_iterator.is_begin() or not last.m_it.primitive_iterator.is_end()))
+                    {
+                        JSON_THROW(invalid_iterator::create(204, "iterators out of range"));
+                    }
+                    break;
                 }
-                break;
-            }
 
-            default:
-                break;
+                default:
+                    break;
             }
 
             switch (m_type)
             {
-            case value_t::number_integer:
-            {
-                m_value.number_integer = first.m_object->m_value.number_integer;
-                break;
-            }
+                case value_t::number_integer:
+                {
+                    m_value.number_integer = first.m_object->m_value.number_integer;
+                    break;
+                }
 
-            case value_t::number_unsigned:
-            {
-                m_value.number_unsigned = first.m_object->m_value.number_unsigned;
-                break;
-            }
+                case value_t::number_unsigned:
+                {
+                    m_value.number_unsigned = first.m_object->m_value.number_unsigned;
+                    break;
+                }
 
-            case value_t::number_float:
-            {
-                m_value.number_float = first.m_object->m_value.number_float;
-                break;
-            }
+                case value_t::number_float:
+                {
+                    m_value.number_float = first.m_object->m_value.number_float;
+                    break;
+                }
 
-            case value_t::boolean:
-            {
-                m_value.boolean = first.m_object->m_value.boolean;
-                break;
-            }
+                case value_t::boolean:
+                {
+                    m_value.boolean = first.m_object->m_value.boolean;
+                    break;
+                }
 
-            case value_t::string:
-            {
-                m_value = *first.m_object->m_value.string;
-                break;
-            }
+                case value_t::string:
+                {
+                    m_value = *first.m_object->m_value.string;
+                    break;
+                }
 
-            case value_t::object:
-            {
-                m_value.object = create<object_t>(first.m_it.object_iterator, last.m_it.object_iterator);
-                break;
-            }
+                case value_t::object:
+                {
+                    m_value.object = create<object_t>(first.m_it.object_iterator, last.m_it.object_iterator);
+                    break;
+                }
 
-            case value_t::array:
-            {
-                m_value.array = create<array_t>(first.m_it.array_iterator, last.m_it.array_iterator);
-                break;
-            }
+                case value_t::array:
+                {
+                    m_value.array = create<array_t>(first.m_it.array_iterator, last.m_it.array_iterator);
+                    break;
+                }
 
-            default:
-                JSON_THROW(invalid_iterator::create(206, "cannot construct with iterators from " + std::string(first.m_object->type_name())));
+                default:
+                    JSON_THROW(invalid_iterator::create(206, "cannot construct with iterators from " + std::string(first.m_object->type_name())));
             }
 
             assert_invariant();
@@ -13983,50 +13987,50 @@ namespace nlohmann
 
             switch (m_type)
             {
-            case value_t::object:
-            {
-                m_value = *other.m_value.object;
-                break;
-            }
+                case value_t::object:
+                {
+                    m_value = *other.m_value.object;
+                    break;
+                }
 
-            case value_t::array:
-            {
-                m_value = *other.m_value.array;
-                break;
-            }
+                case value_t::array:
+                {
+                    m_value = *other.m_value.array;
+                    break;
+                }
 
-            case value_t::string:
-            {
-                m_value = *other.m_value.string;
-                break;
-            }
+                case value_t::string:
+                {
+                    m_value = *other.m_value.string;
+                    break;
+                }
 
-            case value_t::boolean:
-            {
-                m_value = other.m_value.boolean;
-                break;
-            }
+                case value_t::boolean:
+                {
+                    m_value = other.m_value.boolean;
+                    break;
+                }
 
-            case value_t::number_integer:
-            {
-                m_value = other.m_value.number_integer;
-                break;
-            }
+                case value_t::number_integer:
+                {
+                    m_value = other.m_value.number_integer;
+                    break;
+                }
 
-            case value_t::number_unsigned:
-            {
-                m_value = other.m_value.number_unsigned;
-                break;
-            }
+                case value_t::number_unsigned:
+                {
+                    m_value = other.m_value.number_unsigned;
+                    break;
+                }
 
-            case value_t::number_float:
-            {
-                m_value = other.m_value.number_float;
-                break;
-            }
+                case value_t::number_float:
+                {
+                    m_value = other.m_value.number_float;
+                    break;
+                }
 
-            default:
-                break;
+                default:
+                    break;
             }
 
             assert_invariant();
@@ -15721,44 +15725,44 @@ namespace nlohmann
 
             switch (m_type)
             {
-            case value_t::boolean:
-            case value_t::number_float:
-            case value_t::number_integer:
-            case value_t::number_unsigned:
-            case value_t::string:
-            {
-                if (JSON_UNLIKELY(not pos.m_it.primitive_iterator.is_begin()))
+                case value_t::boolean:
+                case value_t::number_float:
+                case value_t::number_integer:
+                case value_t::number_unsigned:
+                case value_t::string:
                 {
-                    JSON_THROW(invalid_iterator::create(205, "iterator out of range"));
+                    if (JSON_UNLIKELY(not pos.m_it.primitive_iterator.is_begin()))
+                    {
+                        JSON_THROW(invalid_iterator::create(205, "iterator out of range"));
+                    }
+
+                    if (is_string())
+                    {
+                        AllocatorType<string_t> alloc;
+                        std::allocator_traits<decltype(alloc)>::destroy(alloc, m_value.string);
+                        std::allocator_traits<decltype(alloc)>::deallocate(alloc, m_value.string, 1);
+                        m_value.string = nullptr;
+                    }
+
+                    m_type = value_t::null;
+                    assert_invariant();
+                    break;
                 }
 
-                if (is_string())
+                case value_t::object:
                 {
-                    AllocatorType<string_t> alloc;
-                    std::allocator_traits<decltype(alloc)>::destroy(alloc, m_value.string);
-                    std::allocator_traits<decltype(alloc)>::deallocate(alloc, m_value.string, 1);
-                    m_value.string = nullptr;
+                    result.m_it.object_iterator = m_value.object->erase(pos.m_it.object_iterator);
+                    break;
                 }
 
-                m_type = value_t::null;
-                assert_invariant();
-                break;
-            }
+                case value_t::array:
+                {
+                    result.m_it.array_iterator = m_value.array->erase(pos.m_it.array_iterator);
+                    break;
+                }
 
-            case value_t::object:
-            {
-                result.m_it.object_iterator = m_value.object->erase(pos.m_it.object_iterator);
-                break;
-            }
-
-            case value_t::array:
-            {
-                result.m_it.array_iterator = m_value.array->erase(pos.m_it.array_iterator);
-                break;
-            }
-
-            default:
-                JSON_THROW(type_error::create(307, "cannot use erase() with " + std::string(type_name())));
+                default:
+                    JSON_THROW(type_error::create(307, "cannot use erase() with " + std::string(type_name())));
             }
 
             return result;
@@ -15825,44 +15829,44 @@ namespace nlohmann
 
             switch (m_type)
             {
-            case value_t::boolean:
-            case value_t::number_float:
-            case value_t::number_integer:
-            case value_t::number_unsigned:
-            case value_t::string:
-            {
-                if (JSON_LIKELY(not first.m_it.primitive_iterator.is_begin() or not last.m_it.primitive_iterator.is_end()))
+                case value_t::boolean:
+                case value_t::number_float:
+                case value_t::number_integer:
+                case value_t::number_unsigned:
+                case value_t::string:
                 {
-                    JSON_THROW(invalid_iterator::create(204, "iterators out of range"));
+                    if (JSON_LIKELY(not first.m_it.primitive_iterator.is_begin() or not last.m_it.primitive_iterator.is_end()))
+                    {
+                        JSON_THROW(invalid_iterator::create(204, "iterators out of range"));
+                    }
+
+                    if (is_string())
+                    {
+                        AllocatorType<string_t> alloc;
+                        std::allocator_traits<decltype(alloc)>::destroy(alloc, m_value.string);
+                        std::allocator_traits<decltype(alloc)>::deallocate(alloc, m_value.string, 1);
+                        m_value.string = nullptr;
+                    }
+
+                    m_type = value_t::null;
+                    assert_invariant();
+                    break;
                 }
 
-                if (is_string())
+                case value_t::object:
                 {
-                    AllocatorType<string_t> alloc;
-                    std::allocator_traits<decltype(alloc)>::destroy(alloc, m_value.string);
-                    std::allocator_traits<decltype(alloc)>::deallocate(alloc, m_value.string, 1);
-                    m_value.string = nullptr;
+                    result.m_it.object_iterator = m_value.object->erase(first.m_it.object_iterator, last.m_it.object_iterator);
+                    break;
                 }
 
-                m_type = value_t::null;
-                assert_invariant();
-                break;
-            }
+                case value_t::array:
+                {
+                    result.m_it.array_iterator = m_value.array->erase(first.m_it.array_iterator, last.m_it.array_iterator);
+                    break;
+                }
 
-            case value_t::object:
-            {
-                result.m_it.object_iterator = m_value.object->erase(first.m_it.object_iterator, last.m_it.object_iterator);
-                break;
-            }
-
-            case value_t::array:
-            {
-                result.m_it.array_iterator = m_value.array->erase(first.m_it.array_iterator, last.m_it.array_iterator);
-                break;
-            }
-
-            default:
-                JSON_THROW(type_error::create(307, "cannot use erase() with " + std::string(type_name())));
+                default:
+                    JSON_THROW(type_error::create(307, "cannot use erase() with " + std::string(type_name())));
             }
 
             return result;
@@ -16520,29 +16524,29 @@ namespace nlohmann
         {
             switch (m_type)
             {
-            case value_t::null:
-            {
-                // null values are empty
-                return true;
-            }
+                case value_t::null:
+                {
+                    // null values are empty
+                    return true;
+                }
 
-            case value_t::array:
-            {
-                // delegate call to array_t::empty()
-                return m_value.array->empty();
-            }
+                case value_t::array:
+                {
+                    // delegate call to array_t::empty()
+                    return m_value.array->empty();
+                }
 
-            case value_t::object:
-            {
-                // delegate call to object_t::empty()
-                return m_value.object->empty();
-            }
+                case value_t::object:
+                {
+                    // delegate call to object_t::empty()
+                    return m_value.object->empty();
+                }
 
-            default:
-            {
-                // all other types are nonempty
-                return false;
-            }
+                default:
+                {
+                    // all other types are nonempty
+                    return false;
+                }
             }
         }
 
@@ -16592,29 +16596,29 @@ namespace nlohmann
         {
             switch (m_type)
             {
-            case value_t::null:
-            {
-                // null values are empty
-                return 0;
-            }
+                case value_t::null:
+                {
+                    // null values are empty
+                    return 0;
+                }
 
-            case value_t::array:
-            {
-                // delegate call to array_t::size()
-                return m_value.array->size();
-            }
+                case value_t::array:
+                {
+                    // delegate call to array_t::size()
+                    return m_value.array->size();
+                }
 
-            case value_t::object:
-            {
-                // delegate call to object_t::size()
-                return m_value.object->size();
-            }
+                case value_t::object:
+                {
+                    // delegate call to object_t::size()
+                    return m_value.object->size();
+                }
 
-            default:
-            {
-                // all other types have size 1
-                return 1;
-            }
+                default:
+                {
+                    // all other types have size 1
+                    return 1;
+                }
             }
         }
 
@@ -16662,23 +16666,23 @@ namespace nlohmann
         {
             switch (m_type)
             {
-            case value_t::array:
-            {
-                // delegate call to array_t::max_size()
-                return m_value.array->max_size();
-            }
+                case value_t::array:
+                {
+                    // delegate call to array_t::max_size()
+                    return m_value.array->max_size();
+                }
 
-            case value_t::object:
-            {
-                // delegate call to object_t::max_size()
-                return m_value.object->max_size();
-            }
+                case value_t::object:
+                {
+                    // delegate call to object_t::max_size()
+                    return m_value.object->max_size();
+                }
 
-            default:
-            {
-                // all other types have max_size() == size()
-                return size();
-            }
+                default:
+                {
+                    // all other types have max_size() == size()
+                    return size();
+                }
             }
         }
 
@@ -16731,50 +16735,50 @@ namespace nlohmann
         {
             switch (m_type)
             {
-            case value_t::number_integer:
-            {
-                m_value.number_integer = 0;
-                break;
-            }
+                case value_t::number_integer:
+                {
+                    m_value.number_integer = 0;
+                    break;
+                }
 
-            case value_t::number_unsigned:
-            {
-                m_value.number_unsigned = 0;
-                break;
-            }
+                case value_t::number_unsigned:
+                {
+                    m_value.number_unsigned = 0;
+                    break;
+                }
 
-            case value_t::number_float:
-            {
-                m_value.number_float = 0.0;
-                break;
-            }
+                case value_t::number_float:
+                {
+                    m_value.number_float = 0.0;
+                    break;
+                }
 
-            case value_t::boolean:
-            {
-                m_value.boolean = false;
-                break;
-            }
+                case value_t::boolean:
+                {
+                    m_value.boolean = false;
+                    break;
+                }
 
-            case value_t::string:
-            {
-                m_value.string->clear();
-                break;
-            }
+                case value_t::string:
+                {
+                    m_value.string->clear();
+                    break;
+                }
 
-            case value_t::array:
-            {
-                m_value.array->clear();
-                break;
-            }
+                case value_t::array:
+                {
+                    m_value.array->clear();
+                    break;
+                }
 
-            case value_t::object:
-            {
-                m_value.object->clear();
-                break;
-            }
+                case value_t::object:
+                {
+                    m_value.object->clear();
+                    break;
+                }
 
-            default:
-                break;
+                default:
+                    break;
             }
         }
 
@@ -17599,32 +17603,32 @@ namespace nlohmann
             {
                 switch (lhs_type)
                 {
-                case value_t::array:
-                    return *lhs.m_value.array == *rhs.m_value.array;
+                    case value_t::array:
+                        return *lhs.m_value.array == *rhs.m_value.array;
 
-                case value_t::object:
-                    return *lhs.m_value.object == *rhs.m_value.object;
+                    case value_t::object:
+                        return *lhs.m_value.object == *rhs.m_value.object;
 
-                case value_t::null:
-                    return true;
+                    case value_t::null:
+                        return true;
 
-                case value_t::string:
-                    return *lhs.m_value.string == *rhs.m_value.string;
+                    case value_t::string:
+                        return *lhs.m_value.string == *rhs.m_value.string;
 
-                case value_t::boolean:
-                    return lhs.m_value.boolean == rhs.m_value.boolean;
+                    case value_t::boolean:
+                        return lhs.m_value.boolean == rhs.m_value.boolean;
 
-                case value_t::number_integer:
-                    return lhs.m_value.number_integer == rhs.m_value.number_integer;
+                    case value_t::number_integer:
+                        return lhs.m_value.number_integer == rhs.m_value.number_integer;
 
-                case value_t::number_unsigned:
-                    return lhs.m_value.number_unsigned == rhs.m_value.number_unsigned;
+                    case value_t::number_unsigned:
+                        return lhs.m_value.number_unsigned == rhs.m_value.number_unsigned;
 
-                case value_t::number_float:
-                    return lhs.m_value.number_float == rhs.m_value.number_float;
+                    case value_t::number_float:
+                        return lhs.m_value.number_float == rhs.m_value.number_float;
 
-                default:
-                    return false;
+                    default:
+                        return false;
                 }
             }
             else if (lhs_type == value_t::number_integer and rhs_type == value_t::number_float)
@@ -17750,34 +17754,34 @@ namespace nlohmann
             {
                 switch (lhs_type)
                 {
-                case value_t::array:
-                    // note parentheses are necessary, see
-                    // https://github.com/nlohmann/json/issues/1530
-                    return (*lhs.m_value.array) < (*rhs.m_value.array);
+                    case value_t::array:
+                        // note parentheses are necessary, see
+                        // https://github.com/nlohmann/json/issues/1530
+                        return (*lhs.m_value.array) < (*rhs.m_value.array);
 
-                case value_t::object:
-                    return *lhs.m_value.object < *rhs.m_value.object;
+                    case value_t::object:
+                        return *lhs.m_value.object < *rhs.m_value.object;
 
-                case value_t::null:
-                    return false;
+                    case value_t::null:
+                        return false;
 
-                case value_t::string:
-                    return *lhs.m_value.string < *rhs.m_value.string;
+                    case value_t::string:
+                        return *lhs.m_value.string < *rhs.m_value.string;
 
-                case value_t::boolean:
-                    return lhs.m_value.boolean < rhs.m_value.boolean;
+                    case value_t::boolean:
+                        return lhs.m_value.boolean < rhs.m_value.boolean;
 
-                case value_t::number_integer:
-                    return lhs.m_value.number_integer < rhs.m_value.number_integer;
+                    case value_t::number_integer:
+                        return lhs.m_value.number_integer < rhs.m_value.number_integer;
 
-                case value_t::number_unsigned:
-                    return lhs.m_value.number_unsigned < rhs.m_value.number_unsigned;
+                    case value_t::number_unsigned:
+                        return lhs.m_value.number_unsigned < rhs.m_value.number_unsigned;
 
-                case value_t::number_float:
-                    return lhs.m_value.number_float < rhs.m_value.number_float;
+                    case value_t::number_float:
+                        return lhs.m_value.number_float < rhs.m_value.number_float;
 
-                default:
-                    return false;
+                    default:
+                        return false;
                 }
             }
             else if (lhs_type == value_t::number_integer and rhs_type == value_t::number_float)
@@ -18322,20 +18326,20 @@ namespace nlohmann
             {
                 switch (m_type)
                 {
-                case value_t::null:
-                    return "null";
-                case value_t::object:
-                    return "object";
-                case value_t::array:
-                    return "array";
-                case value_t::string:
-                    return "string";
-                case value_t::boolean:
-                    return "boolean";
-                case value_t::discarded:
-                    return "discarded";
-                default:
-                    return "number";
+                    case value_t::null:
+                        return "null";
+                    case value_t::object:
+                        return "object";
+                    case value_t::array:
+                        return "array";
+                    case value_t::string:
+                        return "string";
+                    case value_t::boolean:
+                        return "boolean";
+                    case value_t::discarded:
+                        return "discarded";
+                    default:
+                        return "number";
                 }
             }
         }
@@ -19447,39 +19451,39 @@ namespace nlohmann
 
                 switch (parent.m_type)
                 {
-                case value_t::null:
-                case value_t::object:
-                {
-                    // use operator[] to add value
-                    parent[last_path] = val;
-                    break;
-                }
-
-                case value_t::array:
-                {
-                    if (last_path == "-")
+                    case value_t::null:
+                    case value_t::object:
                     {
-                        // special case: append to back
-                        parent.push_back(val);
+                        // use operator[] to add value
+                        parent[last_path] = val;
+                        break;
                     }
-                    else
+
+                    case value_t::array:
                     {
-                        const auto idx = json_pointer::array_index(last_path);
-                        if (JSON_UNLIKELY(static_cast<size_type>(idx) > parent.size()))
+                        if (last_path == "-")
                         {
-                            // avoid undefined behavior
-                            JSON_THROW(out_of_range::create(401, "array index " + std::to_string(idx) + " is out of range"));
+                            // special case: append to back
+                            parent.push_back(val);
                         }
+                        else
+                        {
+                            const auto idx = json_pointer::array_index(last_path);
+                            if (JSON_UNLIKELY(static_cast<size_type>(idx) > parent.size()))
+                            {
+                                // avoid undefined behavior
+                                JSON_THROW(out_of_range::create(401, "array index " + std::to_string(idx) + " is out of range"));
+                            }
 
-                        // default case: insert add offset
-                        parent.insert(parent.begin() + static_cast<difference_type>(idx), val);
+                            // default case: insert add offset
+                            parent.insert(parent.begin() + static_cast<difference_type>(idx), val);
+                        }
+                        break;
                     }
-                    break;
-                }
 
-                // if there exists a parent it cannot be primitive
-                default:           // LCOV_EXCL_LINE
-                    assert(false); // LCOV_EXCL_LINE
+                    // if there exists a parent it cannot be primitive
+                    default:           // LCOV_EXCL_LINE
+                        assert(false); // LCOV_EXCL_LINE
                 }
             };
 
@@ -19557,86 +19561,86 @@ namespace nlohmann
 
                 switch (get_op(op))
                 {
-                case patch_operations::add:
-                {
-                    operation_add(ptr, get_value("add", "value", false));
-                    break;
-                }
-
-                case patch_operations::remove:
-                {
-                    operation_remove(ptr);
-                    break;
-                }
-
-                case patch_operations::replace:
-                {
-                    // the "path" location must exist - use at()
-                    result.at(ptr) = get_value("replace", "value", false);
-                    break;
-                }
-
-                case patch_operations::move:
-                {
-                    const std::string from_path = get_value("move", "from", true);
-                    json_pointer from_ptr(from_path);
-
-                    // the "from" location must exist - use at()
-                    basic_json v = result.at(from_ptr);
-
-                    // The move operation is functionally identical to a
-                    // "remove" operation on the "from" location, followed
-                    // immediately by an "add" operation at the target
-                    // location with the value that was just removed.
-                    operation_remove(from_ptr);
-                    operation_add(ptr, v);
-                    break;
-                }
-
-                case patch_operations::copy:
-                {
-                    const std::string from_path = get_value("copy", "from", true);
-                    const json_pointer from_ptr(from_path);
-
-                    // the "from" location must exist - use at()
-                    basic_json v = result.at(from_ptr);
-
-                    // The copy is functionally identical to an "add"
-                    // operation at the target location using the value
-                    // specified in the "from" member.
-                    operation_add(ptr, v);
-                    break;
-                }
-
-                case patch_operations::test:
-                {
-                    bool success = false;
-                    JSON_TRY
+                    case patch_operations::add:
                     {
-                        // check if "value" matches the one at "path"
+                        operation_add(ptr, get_value("add", "value", false));
+                        break;
+                    }
+
+                    case patch_operations::remove:
+                    {
+                        operation_remove(ptr);
+                        break;
+                    }
+
+                    case patch_operations::replace:
+                    {
                         // the "path" location must exist - use at()
-                        success = (result.at(ptr) == get_value("test", "value", false));
+                        result.at(ptr) = get_value("replace", "value", false);
+                        break;
                     }
-                    JSON_INTERNAL_CATCH(out_of_range&)
+
+                    case patch_operations::move:
                     {
-                        // ignore out of range errors: success remains false
+                        const std::string from_path = get_value("move", "from", true);
+                        json_pointer from_ptr(from_path);
+
+                        // the "from" location must exist - use at()
+                        basic_json v = result.at(from_ptr);
+
+                        // The move operation is functionally identical to a
+                        // "remove" operation on the "from" location, followed
+                        // immediately by an "add" operation at the target
+                        // location with the value that was just removed.
+                        operation_remove(from_ptr);
+                        operation_add(ptr, v);
+                        break;
                     }
 
-                    // throw an exception if test fails
-                    if (JSON_UNLIKELY(not success))
+                    case patch_operations::copy:
                     {
-                        JSON_THROW(other_error::create(501, "unsuccessful: " + val.dump()));
+                        const std::string from_path = get_value("copy", "from", true);
+                        const json_pointer from_ptr(from_path);
+
+                        // the "from" location must exist - use at()
+                        basic_json v = result.at(from_ptr);
+
+                        // The copy is functionally identical to an "add"
+                        // operation at the target location using the value
+                        // specified in the "from" member.
+                        operation_add(ptr, v);
+                        break;
                     }
 
-                    break;
-                }
+                    case patch_operations::test:
+                    {
+                        bool success = false;
+                        JSON_TRY
+                        {
+                            // check if "value" matches the one at "path"
+                            // the "path" location must exist - use at()
+                            success = (result.at(ptr) == get_value("test", "value", false));
+                        }
+                        JSON_INTERNAL_CATCH(out_of_range&)
+                        {
+                            // ignore out of range errors: success remains false
+                        }
 
-                default:
-                {
-                    // op must be "add", "remove", "replace", "move", "copy", or
-                    // "test"
-                    JSON_THROW(parse_error::create(105, 0, "operation value '" + op + "' is invalid"));
-                }
+                        // throw an exception if test fails
+                        if (JSON_UNLIKELY(not success))
+                        {
+                            JSON_THROW(other_error::create(501, "unsuccessful: " + val.dump()));
+                        }
+
+                        break;
+                    }
+
+                    default:
+                    {
+                        // op must be "add", "remove", "replace", "move", "copy", or
+                        // "test"
+                        JSON_THROW(parse_error::create(105, 0, "operation value '" + op + "' is invalid"));
+                    }
                 }
             }
 
@@ -19697,82 +19701,82 @@ namespace nlohmann
 
             switch (source.type())
             {
-            case value_t::array:
-            {
-                // first pass: traverse common elements
-                std::size_t i = 0;
-                while (i < source.size() and i < target.size())
+                case value_t::array:
                 {
-                    // recursive call to compare array values at index i
-                    auto temp_diff = diff(source[i], target[i], path + "/" + std::to_string(i));
-                    result.insert(result.end(), temp_diff.begin(), temp_diff.end());
-                    ++i;
-                }
-
-                // i now reached the end of at least one array
-                // in a second pass, traverse the remaining elements
-
-                // remove my remaining elements
-                const auto end_index = static_cast<difference_type>(result.size());
-                while (i < source.size())
-                {
-                    // add operations in reverse order to avoid invalid
-                    // indices
-                    result.insert(result.begin() + end_index, object({{"op", "remove"}, {"path", path + "/" + std::to_string(i)}}));
-                    ++i;
-                }
-
-                // add other remaining elements
-                while (i < target.size())
-                {
-                    result.push_back({{"op", "add"}, {"path", path + "/" + std::to_string(i)}, {"value", target[i]}});
-                    ++i;
-                }
-
-                break;
-            }
-
-            case value_t::object:
-            {
-                // first pass: traverse this object's elements
-                for (auto it = source.cbegin(); it != source.cend(); ++it)
-                {
-                    // escape the key name to be used in a JSON patch
-                    const auto key = json_pointer::escape(it.key());
-
-                    if (target.find(it.key()) != target.end())
+                    // first pass: traverse common elements
+                    std::size_t i = 0;
+                    while (i < source.size() and i < target.size())
                     {
-                        // recursive call to compare object values at key it
-                        auto temp_diff = diff(it.value(), target[it.key()], path + "/" + key);
+                        // recursive call to compare array values at index i
+                        auto temp_diff = diff(source[i], target[i], path + "/" + std::to_string(i));
                         result.insert(result.end(), temp_diff.begin(), temp_diff.end());
+                        ++i;
                     }
-                    else
+
+                    // i now reached the end of at least one array
+                    // in a second pass, traverse the remaining elements
+
+                    // remove my remaining elements
+                    const auto end_index = static_cast<difference_type>(result.size());
+                    while (i < source.size())
                     {
-                        // found a key that is not in o -> remove it
-                        result.push_back(object({{"op", "remove"}, {"path", path + "/" + key}}));
+                        // add operations in reverse order to avoid invalid
+                        // indices
+                        result.insert(result.begin() + end_index, object({{"op", "remove"}, {"path", path + "/" + std::to_string(i)}}));
+                        ++i;
                     }
+
+                    // add other remaining elements
+                    while (i < target.size())
+                    {
+                        result.push_back({{"op", "add"}, {"path", path + "/" + std::to_string(i)}, {"value", target[i]}});
+                        ++i;
+                    }
+
+                    break;
                 }
 
-                // second pass: traverse other object's elements
-                for (auto it = target.cbegin(); it != target.cend(); ++it)
+                case value_t::object:
                 {
-                    if (source.find(it.key()) == source.end())
+                    // first pass: traverse this object's elements
+                    for (auto it = source.cbegin(); it != source.cend(); ++it)
                     {
-                        // found a key that is not in this -> add it
+                        // escape the key name to be used in a JSON patch
                         const auto key = json_pointer::escape(it.key());
-                        result.push_back({{"op", "add"}, {"path", path + "/" + key}, {"value", it.value()}});
+
+                        if (target.find(it.key()) != target.end())
+                        {
+                            // recursive call to compare object values at key it
+                            auto temp_diff = diff(it.value(), target[it.key()], path + "/" + key);
+                            result.insert(result.end(), temp_diff.begin(), temp_diff.end());
+                        }
+                        else
+                        {
+                            // found a key that is not in o -> remove it
+                            result.push_back(object({{"op", "remove"}, {"path", path + "/" + key}}));
+                        }
                     }
+
+                    // second pass: traverse other object's elements
+                    for (auto it = target.cbegin(); it != target.cend(); ++it)
+                    {
+                        if (source.find(it.key()) == source.end())
+                        {
+                            // found a key that is not in this -> add it
+                            const auto key = json_pointer::escape(it.key());
+                            result.push_back({{"op", "add"}, {"path", path + "/" + key}, {"value", it.value()}});
+                        }
+                    }
+
+                    break;
                 }
 
-                break;
-            }
-
-            default:
-            {
-                // both primitive type: replace value
-                result.push_back({{"op", "replace"}, {"path", path}, {"value", target}});
-                break;
-            }
+                default:
+                {
+                    // both primitive type: replace value
+                    result.push_back({{"op", "replace"}, {"path", path}, {"value", target}});
+                    break;
+                }
             }
 
             return result;
