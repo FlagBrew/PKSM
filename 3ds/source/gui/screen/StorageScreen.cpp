@@ -1703,7 +1703,7 @@ void StorageScreen::shareSend()
     headers                    = curl_slist_append(headers, info.c_str());
 
     std::string writeData = "";
-    if (Fetch::init("https://flagbrew.org/pksm/share", true, true, &writeData, headers, postdata))
+    if (Fetch::init("https://flagbrew.org/gpss/share", true, true, &writeData, headers, postdata))
     {
         CURLcode res = Fetch::perform();
         if (res != CURLE_OK)
@@ -1748,7 +1748,7 @@ void StorageScreen::shareReceive()
     CURLcode res;
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
-        const std::string url  = "https://flagbrew.org/pksm/download/" + std::string(input);
+        const std::string url  = "https://flagbrew.org/gpss/download/" + std::string(input);
         std::string retB64Data = "";
         if (Fetch::init(url, false, true, &retB64Data, nullptr, ""))
         {
