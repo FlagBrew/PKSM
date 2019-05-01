@@ -1718,6 +1718,9 @@ void StorageScreen::shareSend()
                 case 200:
                     Gui::warn(i18n::localize("SHARE_DOWNLOAD_CODE"), writeData);
                     break;
+                case 400:
+                    Gui::error(i18n::localize("SHARE_FAILED_CHECK"), status_code);
+                    break;
                 case 502:
                     Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
                     break;

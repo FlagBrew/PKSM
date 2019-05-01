@@ -397,6 +397,7 @@
     "SHARE_CODE_ENTER_PROMPT": "Do you want to enter a share code? (Please translate this)",
     "SHARE_DOWNLOAD_CODE": "Your download code is (Please translate this)",
     "SHARE_ERROR_INCORRECT_VERSION": "Incorrect size for version received (Please translate this)",
+    "SHARE_FAILED_CHECK": "Pokemon failed a critical check done by the Server! (Please translate this)",
     "SHARE_INVALID_CODE": "Your code appears to be invalid or has expired! (Please translate this)",
     "SHARE_INVALID_GENERATION": "This Pok\u00e9mon has an invalid generation! (Please translate this)",
     "SHARE_PRESS_TO_SHARE": "Press \uE003 to share this Pok\u00e9mon! (Please translate this)",
