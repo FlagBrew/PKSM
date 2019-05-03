@@ -6,7 +6,7 @@ steps:
   image: docker:git
   commands:
   - git submodule update --recursive --remote
-- name: compile
+- name: compile_pksm
   image: fmcore/pksm_docker
   environment:
     TOKEN:
