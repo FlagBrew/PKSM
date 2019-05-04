@@ -475,7 +475,7 @@ bool Bank::setName(const std::string& name)
         bankName = oldName;
         if (R_FAILED(Archive::moveFile(archive, newBankPath, archive, oldBankPath)))
         {
-            Gui::warn("Very bad things have happened.");
+            Gui::warn(i18n::localize("CRITICAL_BANK_ERROR_1"), i18n::localize("CRITICAL_BANK_ERROR_2"));
             return false;
         }
         return false;

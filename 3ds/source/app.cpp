@@ -128,7 +128,7 @@ static bool update(const std::string& execPath)
     std::string retString = "";
     if (Fetch::init("https://api.github.com/repos/FlagBrew/PKSM/releases/latest", false, true, &retString, nullptr, ""))
     {
-        Gui::waitFrame("Checking for update");
+        Gui::waitFrame(i18n::localize("UPDATE_CHECKING"));
         CURLcode res = Fetch::perform();
         if (res != CURLE_OK)
         {
@@ -146,12 +146,12 @@ static bool update(const std::string& execPath)
                     nlohmann::json retJson = nlohmann::json::parse(retString, nullptr, false);
                     if (retJson.is_discarded())
                     {
-                        Gui::warn("Error checking for update", "Bad JSON");
+                        Gui::warn(i18n::localize("UPDATE_CHECK_ERROR_BAD_JSON_1"), i18n::localize("UPDATE_CHECK_ERROR_BAD_JSON_2"));
                         return false;
                     }
                     else if (retJson["tag_name"].get<std::string>() != StringUtils::format("%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO))
                     {
-                        Gui::waitFrame("Update found! Downloading...");
+                        Gui::waitFrame(i18n::localize("UPDATE_FOUND"));
                         std::string url  = "https://github.com/FlagBrew/PKSM/releases/download/" + retJson["tag_name"].get<std::string>() + "/PKSM";
                         std::string path = "";
                         if (execPath != "")
@@ -167,12 +167,12 @@ static bool update(const std::string& execPath)
                         Result res = Fetch::download(url, path);
                         if (R_FAILED(res))
                         {
-                            Gui::error("Update found, but could not download.", res);
+                            Gui::error(i18n::localize("UPDATE_FOUND_BUT_FAILED_DOWNLOAD"), res);
                             FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_ASCII, path.c_str()));
                             return false;
                         }
 
-                        Gui::waitFrame("Installing update...");
+                        Gui::waitFrame(i18n::localize("UPDATE_INSTALLING"));
                         if (execPath != "")
                         {
                             FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_ASCII, execPath.c_str()));
@@ -189,14 +189,14 @@ static bool update(const std::string& execPath)
                             {
                                 if (R_FAILED(res = AM_GetCiaFileInfo(MEDIATYPE_SD, &title, ciaFile.getRawHandle())))
                                 {
-                                    Gui::error("A wild error appeared! Duddudududududu", res);
+                                    Gui::error(i18n::localize("BAD_CIA_FILE"), res);
                                     ciaFile.close();
                                     return false;
                                 }
 
                                 if (R_FAILED(res = AM_StartCiaInstall(MEDIATYPE_SD, &dstHandle)))
                                 {
-                                    Gui::error("AM_StartCiaInstall failed", res);
+                                    Gui::error(i18n::localize("CIA_INSTALL_START_FAIL"), res);
                                     ciaFile.close();
                                     return false;
                                 }
@@ -212,7 +212,7 @@ static bool update(const std::string& execPath)
                                     bytesRead = ciaFile.read(buf, 0x1000);
                                     if (R_FAILED(ciaFile.result()))
                                     {
-                                        Gui::error("Error while reading CIA update", ciaFile.result());
+                                        Gui::error(i18n::localize("CIA_UPDATE_READ_FAIL"), ciaFile.result());
                                         ciaFile.close();
                                         FSFILE_Close(dstHandle);
                                         return false;
@@ -220,7 +220,7 @@ static bool update(const std::string& execPath)
 
                                     if (R_FAILED(res = FSFILE_Write(dstHandle, &bytesWritten, offset, buf, bytesRead, FS_WRITE_FLUSH)))
                                     {
-                                        Gui::error("Error while writing CIA update", res);
+                                        Gui::error(i18n::localize("CIA_UPDATE_WRITE_FAIL"), res);
                                         ciaFile.close();
                                         FSFILE_Close(dstHandle);
                                         return false;
@@ -245,7 +245,7 @@ static bool update(const std::string& execPath)
 
                                 if (R_FAILED(res = AM_FinishCiaInstall(dstHandle)))
                                 {
-                                    Gui::error("AM_FinishCiaInstall failed", res);
+                                    Gui::error(i18n::localize("CIA_INSTALL_FINISH_FAIL"), res);
                                     ciaFile.close();
                                     return false;
                                 }
@@ -325,7 +325,7 @@ Result App::init(std::string execPath)
 
     if (update(execPath))
     {
-        Gui::warn("Update successfully downloaded!", "Please reopen the application");
+        Gui::warn(i18n::localize("UPDATE_SUCCESS_1"), i18n::localize("UPDATE_SUCCESS_2"));
         return -1;
     }
 

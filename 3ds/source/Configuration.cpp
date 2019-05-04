@@ -50,12 +50,12 @@ Configuration::Configuration()
 
         if (mJson.is_discarded())
         {
-            Gui::warn("Configuration file is corrupted!", "Using default.");
+            Gui::warn(i18n::localize("CONFIGURATION_FILE_CORRUPTED_1"), i18n::localize("CONFIGURATION_FILE_CORRUPTED_2"));
             loadFromRomfs();
         }
         else if (!mJson.contains("version"))
         {
-            Gui::warn("Version not found in config file!", "Using default.");
+            Gui::warn(i18n::localize("CONFIGURATION_VERSION_MISSING_1"), i18n::localize("CONFIGURATION_VERSION_MISSING_2"));
             loadFromRomfs();
         }
         else if (mJson["version"].get<int>() != CURRENT_VERSION)

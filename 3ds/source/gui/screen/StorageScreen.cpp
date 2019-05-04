@@ -152,9 +152,9 @@ void StorageScreen::setBoxName(bool storage)
 }
 
 StorageScreen::StorageScreen()
-    : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_VIEW") + '\n' + i18n::localize("Y_CURSOR_MODE") + '\n' +
+    : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_SHARE") + '\n' + i18n::localize("Y_CURSOR_MODE") + '\n' +
              i18n::localize("L_BOX_PREV") + '\n' + i18n::localize("R_BOX_NEXT") + '\n' + i18n::localize("START_EXTRA_FUNC") + '\n' +
-             i18n::localize("B_BACK") + '\n' + i18n::localize("X_Y_SHARE_DOWNLOAD"))
+             i18n::localize("B_BACK"))
 {
     instructions.addBox(true, 69, 21, 156, 24, COLOR_GREY, i18n::localize("A_BOX_NAME"), COLOR_WHITE);
     instructions.addCircle(false, 266, 23, 11, COLOR_GREY);
@@ -574,38 +574,10 @@ void StorageScreen::update(touchPosition* touch)
     u32 kDown         = hidKeysDown();
     u32 kHeld         = hidKeysHeld();
 
-    if (((kHeld & KEY_X) && (kHeld & KEY_Y)) || ((kDown & KEY_X) && (kDown & KEY_Y)))
-    {
-        if (!infoMon)
-        {
-            if (!Gui::showChoiceMessage(i18n::localize("SHARE_CODE_ENTER_PROMPT")))
-            {
-                return;
-            }
-            Gui::setNextKeyboardFunc([this]() { this->shareReceive(); });
-        }
-        else
-        {
-            if (!Gui::showChoiceMessage(i18n::localize("SHARE_SEND_CONFIRM")))
-            {
-                return;
-            }
-            shareSend();
-        }
-        return;
-    }
     if (kDown & KEY_B)
     {
         backButton();
         return;
-    }
-    if (kDown & KEY_Y)
-    {
-        if (moveMon.empty() && !currentlySelecting)
-        {
-            pickupMode = PickupMode((pickupMode + 1) % 3);
-            return;
-        }
     }
 
     for (auto& button : mainButtons)
@@ -636,18 +608,6 @@ void StorageScreen::update(touchPosition* touch)
             pickup();
         }
     }
-    else if (kDown & KEY_X)
-    {
-        if (currentlySelecting)
-        {
-            grabSelection(false);
-        }
-        else
-        {
-            showViewer();
-        }
-        return;
-    }
     else if (kDown & KEY_START)
     {
         currentOverlay = std::make_unique<StorageOverlay>(*this, storageChosen, boxBox, storageBox);
@@ -655,6 +615,26 @@ void StorageScreen::update(touchPosition* touch)
     }
     else if (buttonCooldown <= 0)
     {
+        if (kDown & KEY_X)
+        {
+            if (!infoMon)
+            {
+                if (!Gui::showChoiceMessage(i18n::localize("SHARE_CODE_ENTER_PROMPT")))
+                {
+                    return;
+                }
+                Gui::setNextKeyboardFunc([this]() { this->shareReceive(); });
+            }
+            else
+            {
+                if (!Gui::showChoiceMessage(i18n::localize("SHARE_SEND_CONFIRM")))
+                {
+                    return;
+                }
+                shareSend();
+            }
+            return;
+        }
         sleep = false;
         if (kHeld & KEY_LEFT)
         {
@@ -748,6 +728,16 @@ void StorageScreen::update(touchPosition* touch)
             prevBoxTop();
             sleep = true;
         }
+        if (kDown & KEY_Y)
+        {
+            sleep = true;
+            if (moveMon.empty() && !currentlySelecting)
+            {
+                pickupMode = PickupMode((pickupMode + 1) % 3);
+                return;
+            }
+        }
+
         if (sleep)
             buttonCooldown = 10;
     }
