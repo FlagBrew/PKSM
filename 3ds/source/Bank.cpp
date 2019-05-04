@@ -250,59 +250,21 @@ std::shared_ptr<PKX> Bank::pkm(int box, int slot) const
 {
     BankEntry* bank = (BankEntry*)(data + sizeof(BankHeader));
     int index       = box * 30 + slot;
-    bool party      = false;
     switch (bank[index].gen)
     {
-    case Generation::FOUR:
-        for (int i = 260; i > 136; i--)
-        {
-            if (bank[index].data[i] != 0xFF)
-            {
-                party = true;
-                break;
-            }
-        }
-        return std::make_shared<PK4>(bank[index].data, false, party);
-
-    case Generation::FIVE:
-        for (int i = 260; i > 136; i--)
-        {
-            if (bank[index].data[i] != 0xFF)
-            {
-                party = true;
-                break;
-            }
-        }
-        return std::make_shared<PK5>(bank[index].data, false, party);
-
-    case Generation::SIX:
-        for (int i = 260; i > 232; i--)
-        {
-            if (bank[index].data[i] != 0xFF)
-            {
-                party = true;
-                break;
-            }
-        }
-        return std::make_shared<PK6>(bank[index].data, false, party);
-
-    case Generation::SEVEN:
-        for (int i = 260; i > 232; i--)
-        {
-            if (bank[index].data[i] != 0xFF)
-            {
-                party = true;
-                break;
-            }
-        }
-        return std::make_shared<PK7>(bank[index].data, false, party);
-
-    case Generation::LGPE:
-        return std::make_shared<PB7>(bank[index].data, false);
-
-    case Generation::UNUSED:
-    default:
-        return std::make_shared<PK7>();
+        case Generation::FOUR:
+            return std::make_shared<PK4>(bank[index].data, false, false);
+        case Generation::FIVE:
+            return std::make_shared<PK5>(bank[index].data, false, false);
+        case Generation::SIX:
+            return std::make_shared<PK6>(bank[index].data, false, false);
+        case Generation::SEVEN:
+            return std::make_shared<PK7>(bank[index].data, false, false);
+        case Generation::LGPE:
+            return std::make_shared<PB7>(bank[index].data, false);
+        case Generation::UNUSED:
+        default:
+            return std::make_shared<PK7>();
     }
 }
 
@@ -513,7 +475,7 @@ bool Bank::setName(const std::string& name)
         bankName = oldName;
         if (R_FAILED(Archive::moveFile(archive, newBankPath, archive, oldBankPath)))
         {
-            Gui::warn("Very bad things have happened.");
+            Gui::warn(i18n::localize("CRITICAL_BANK_ERROR_1"), i18n::localize("CRITICAL_BANK_ERROR_2"));
             return false;
         }
         return false;

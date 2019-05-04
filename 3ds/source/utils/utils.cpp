@@ -192,12 +192,12 @@ std::string StringUtils::getString4(const u8* data, int ofs, int len)
         // Stupid stupid stupid
         switch (codepoint)
         {
-        case 0x246E:
-            codepoint = 0x2640;
-            break;
-        case 0x246D:
-            codepoint = 0x2642;
-            break;
+            case 0x246E:
+                codepoint = 0x2640;
+                break;
+            case 0x246D:
+                codepoint = 0x2642;
+                break;
         }
 
         char* addChar;
@@ -253,12 +253,12 @@ void StringUtils::setString4(u8* data, const std::string& v, int ofs, int len)
             // GAHHHHHH WHY
             switch (codepoint)
             {
-            case 0x2640:
-                codepoint = 0x246E; // Female
-                break;
-            case 0x2642:
-                codepoint = 0x246D; // Male
-                break;
+                case 0x2640:
+                    codepoint = 0x246E; // Female
+                    break;
+                case 0x2642:
+                    codepoint = 0x246D; // Male
+                    break;
             }
             size_t index     = std::distance(G4Chars, std::find(G4Chars, G4Chars + G4TEXT_LENGTH, codepoint));
             output[outIndex] = (index < G4TEXT_LENGTH ? G4Values[index] : 0x0000);
@@ -281,42 +281,42 @@ std::string& StringUtils::toUpper(std::string& in)
     {
         switch (otherIn[i])
         {
-        case u'í':
-            otherIn[i] = u'Í';
-            break;
-        case u'ó':
-            otherIn[i] = u'Ó';
-            break;
-        case u'ú':
-            otherIn[i] = u'Ú';
-            break;
-        case u'é':
-            otherIn[i] = u'É';
-            break;
-        case u'á':
-            otherIn[i] = u'Á';
-            break;
-        case u'ì':
-            otherIn[i] = u'Ì';
-            break;
-        case u'ò':
-            otherIn[i] = u'Ò';
-            break;
-        case u'ù':
-            otherIn[i] = u'Ù';
-            break;
-        case u'è':
-            otherIn[i] = u'È';
-            break;
-        case u'à':
-            otherIn[i] = u'À';
-            break;
-        case u'ñ':
-            otherIn[i] = u'Ñ';
-            break;
-        case u'æ':
-            otherIn[i] = u'Æ';
-            break;
+            case u'í':
+                otherIn[i] = u'Í';
+                break;
+            case u'ó':
+                otherIn[i] = u'Ó';
+                break;
+            case u'ú':
+                otherIn[i] = u'Ú';
+                break;
+            case u'é':
+                otherIn[i] = u'É';
+                break;
+            case u'á':
+                otherIn[i] = u'Á';
+                break;
+            case u'ì':
+                otherIn[i] = u'Ì';
+                break;
+            case u'ò':
+                otherIn[i] = u'Ò';
+                break;
+            case u'ù':
+                otherIn[i] = u'Ù';
+                break;
+            case u'è':
+                otherIn[i] = u'È';
+                break;
+            case u'à':
+                otherIn[i] = u'À';
+                break;
+            case u'ñ':
+                otherIn[i] = u'Ñ';
+                break;
+            case u'æ':
+                otherIn[i] = u'Æ';
+                break;
         }
     }
     in = StringUtils::UTF16toUTF8(otherIn);
@@ -331,42 +331,42 @@ std::string& StringUtils::toLower(std::string& in)
     {
         switch (otherIn[i])
         {
-        case u'Í':
-            otherIn[i] = u'í';
-            break;
-        case u'Ó':
-            otherIn[i] = u'ó';
-            break;
-        case u'Ú':
-            otherIn[i] = u'ú';
-            break;
-        case u'É':
-            otherIn[i] = u'é';
-            break;
-        case u'Á':
-            otherIn[i] = u'á';
-            break;
-        case u'Ì':
-            otherIn[i] = u'ì';
-            break;
-        case u'Ò':
-            otherIn[i] = u'ò';
-            break;
-        case u'Ù':
-            otherIn[i] = u'ù';
-            break;
-        case u'È':
-            otherIn[i] = u'è';
-            break;
-        case u'À':
-            otherIn[i] = u'à';
-            break;
-        case u'Ñ':
-            otherIn[i] = u'ñ';
-            break;
-        case u'Æ':
-            otherIn[i] = u'æ';
-            break;
+            case u'Í':
+                otherIn[i] = u'í';
+                break;
+            case u'Ó':
+                otherIn[i] = u'ó';
+                break;
+            case u'Ú':
+                otherIn[i] = u'ú';
+                break;
+            case u'É':
+                otherIn[i] = u'é';
+                break;
+            case u'Á':
+                otherIn[i] = u'á';
+                break;
+            case u'Ì':
+                otherIn[i] = u'ì';
+                break;
+            case u'Ò':
+                otherIn[i] = u'ò';
+                break;
+            case u'Ù':
+                otherIn[i] = u'ù';
+                break;
+            case u'È':
+                otherIn[i] = u'è';
+                break;
+            case u'À':
+                otherIn[i] = u'à';
+                break;
+            case u'Ñ':
+                otherIn[i] = u'ñ';
+                break;
+            case u'Æ':
+                otherIn[i] = u'æ';
+                break;
         }
     }
     in = StringUtils::UTF16toUTF8(otherIn);

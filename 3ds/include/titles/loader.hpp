@@ -54,22 +54,22 @@ void backupBridgeChanges(void);
 
 namespace TitleLoader
 {
-void scanTitles(void);
-bool scanCard(void);
-bool cardUpdate(void);
-void scanSaves(void);
-bool load(std::shared_ptr<Title> title);
-bool load(std::shared_ptr<Title> title, const std::string& path);
-bool load(u8* data, size_t size);
-void backupSave(const std::string& id);
-void saveChanges(void);
-void saveToTitle(bool ask);
-void exit(void);
+    void scanTitles(void);
+    bool scanCard(void);
+    bool cardUpdate(void);
+    void scanSaves(void);
+    bool load(std::shared_ptr<Title> title);
+    bool load(std::shared_ptr<Title> title, const std::string& path);
+    bool load(u8* data, size_t size);
+    void backupSave(const std::string& id);
+    void saveChanges(void);
+    void saveToTitle(bool ask);
+    void exit(void);
 
-extern std::vector<std::shared_ptr<Title>> nandTitles;
-extern std::shared_ptr<Title> cardTitle;
-extern std::unordered_map<std::string, std::vector<std::string>> sdSaves;
-extern std::shared_ptr<Sav> save;
+    extern std::vector<std::shared_ptr<Title>> nandTitles;
+    extern std::shared_ptr<Title> cardTitle;
+    extern std::unordered_map<std::string, std::vector<std::string>> sdSaves;
+    extern std::shared_ptr<Sav> save;
 }
 
 #endif

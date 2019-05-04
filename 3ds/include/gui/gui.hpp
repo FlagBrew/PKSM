@@ -101,44 +101,44 @@
 
 namespace Gui
 {
-Result init(void);
-void mainLoop(void);
-void exit(void);
+    Result init(void);
+    void mainLoop(void);
+    void exit(void);
 
-C3D_RenderTarget* target(gfxScreen_t t);
-C2D_Image TWLIcon(void);
+    C3D_RenderTarget* target(gfxScreen_t t);
+    C2D_Image TWLIcon(void);
 
-void ball(size_t index, int x, int y);
-void type(Language lang, u8 type, int x, int y);
-void generation(const PKX& pkm, int x, int y);
-void format(const PKX& pkm, int x, int y);
-void sprite(int key, int x, int y);
-void sprite(int key, int x, int y, u32 color);
-void pkm(const PKX& pkm, int x, int y, float scale = 1.0f, u32 color = C2D_Color32(0, 0, 0, 255), float blend = 0.0f);
-void pkm(int species, int form, Generation generation, int gender, int x, int y, float scale = 1.0f, u32 color = C2D_Color32(0, 0, 0, 255),
-    float blend = 0.0f);
+    void ball(size_t index, int x, int y);
+    void type(Language lang, u8 type, int x, int y);
+    void generation(const PKX& pkm, int x, int y);
+    void format(const PKX& pkm, int x, int y);
+    void sprite(int key, int x, int y);
+    void sprite(int key, int x, int y, u32 color);
+    void pkm(const PKX& pkm, int x, int y, float scale = 1.0f, u32 color = C2D_Color32(0, 0, 0, 255), float blend = 0.0f);
+    void pkm(int species, int form, Generation generation, int gender, int x, int y, float scale = 1.0f, u32 color = C2D_Color32(0, 0, 0, 255),
+        float blend = 0.0f);
 
-void backgroundTop(bool stripes);
-void backgroundBottom(bool stripes);
-void backgroundAnimatedTop(void);
-void backgroundAnimatedBottom(void);
+    void backgroundTop(bool stripes);
+    void backgroundBottom(bool stripes);
+    void backgroundAnimatedTop(void);
+    void backgroundAnimatedBottom(void);
 
-void clearTextBufs(void);
-void dynamicText(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY);
+    void clearTextBufs(void);
+    void dynamicText(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY);
 
-C2D_Text cacheStaticText(const std::string& strKey);
-void clearStaticText(void);
-void staticText(const std::string& strKey, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY);
+    C2D_Text cacheStaticText(const std::string& strKey);
+    void clearStaticText(void);
+    void staticText(const std::string& strKey, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY);
 
-void setScreen(std::unique_ptr<Screen> screen);
-void screenBack(void);
-bool showChoiceMessage(const std::string& message, std::optional<std::string> message2 = std::nullopt, int timer = 0);
-void showRestoreProgress(u32 partial, u32 total);
-void waitFrame(const std::string& message, std::optional<std::string> message2 = std::nullopt);
-void warn(const std::string& message, std::optional<std::string> message2 = std::nullopt, std::optional<std::string> bottomScreen = std::nullopt);
-void error(const std::string& message, Result errorCode);
-void setNextKeyboardFunc(std::function<void()> callback);
-void showResizeStorage(void);
+    void setScreen(std::unique_ptr<Screen> screen);
+    void screenBack(void);
+    bool showChoiceMessage(const std::string& message, std::optional<std::string> message2 = std::nullopt, int timer = 0);
+    void showRestoreProgress(u32 partial, u32 total);
+    void waitFrame(const std::string& message, std::optional<std::string> message2 = std::nullopt);
+    void warn(const std::string& message, std::optional<std::string> message2 = std::nullopt, std::optional<std::string> bottomScreen = std::nullopt);
+    void error(const std::string& message, Result errorCode);
+    void setNextKeyboardFunc(std::function<void()> callback);
+    void showResizeStorage(void);
 }
 
 #endif

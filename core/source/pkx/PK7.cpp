@@ -895,14 +895,14 @@ std::shared_ptr<PKX> PK7::previous(void) const
 
     switch (abilityNumber())
     {
-    case 1:
-    case 2:
-    case 4:
-        u8 index = abilityNumber() >> 1;
-        if (abilities(index) == ability())
-        {
-            pk6->ability(pk6->abilities(index));
-        }
+        case 1:
+        case 2:
+        case 4:
+            u8 index = abilityNumber() >> 1;
+            if (abilities(index) == ability())
+            {
+                pk6->ability(pk6->abilities(index));
+            }
     }
 
     pk6->htMemory(4);

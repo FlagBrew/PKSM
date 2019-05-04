@@ -40,54 +40,54 @@ void EditSelectorScreen::changeBoxName()
 {
     switch (TitleLoader::save->generation())
     {
-    case Generation::FOUR:
-    case Generation::FIVE:
-    {
-        static SwkbdState state;
-        static bool first = true;
-        if (first)
+        case Generation::FOUR:
+        case Generation::FIVE:
         {
-            swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 8);
-            first = false;
+            static SwkbdState state;
+            static bool first = true;
+            if (first)
+            {
+                swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 8);
+                first = false;
+            }
+            swkbdSetHintText(&state, i18n::localize("BOX_NAME").c_str());
+            swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+            char input[18]  = {0};
+            SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
+            input[16]       = '\0';
+            input[17]       = '\0';
+            if (ret == SWKBD_BUTTON_CONFIRM)
+            {
+                TitleLoader::save->boxName(box, input);
+            }
         }
-        swkbdSetHintText(&state, i18n::localize("BOX_NAME").c_str());
-        swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
-        char input[18]  = {0};
-        SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-        input[16]       = '\0';
-        input[17]       = '\0';
-        if (ret == SWKBD_BUTTON_CONFIRM)
-        {
-            TitleLoader::save->boxName(box, input);
-        }
-    }
-    break;
-    case Generation::SIX:
-    case Generation::SEVEN:
-    {
-        static SwkbdState state;
-        static bool first = true;
-        if (first)
-        {
-            swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 16);
-            first = false;
-        }
-        swkbdSetHintText(&state, i18n::localize("BOX_NAME").c_str());
-        swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
-        char input[34]  = {0};
-        SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-        input[32]       = '\0';
-        input[33]       = '\0';
-        if (ret == SWKBD_BUTTON_CONFIRM)
-        {
-            TitleLoader::save->boxName(box, input);
-        }
-    }
-    break;
-    case Generation::LGPE:
-    case Generation::UNUSED:
-        // Nothing happens
         break;
+        case Generation::SIX:
+        case Generation::SEVEN:
+        {
+            static SwkbdState state;
+            static bool first = true;
+            if (first)
+            {
+                swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 16);
+                first = false;
+            }
+            swkbdSetHintText(&state, i18n::localize("BOX_NAME").c_str());
+            swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+            char input[34]  = {0};
+            SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
+            input[32]       = '\0';
+            input[33]       = '\0';
+            if (ret == SWKBD_BUTTON_CONFIRM)
+            {
+                TitleLoader::save->boxName(box, input);
+            }
+        }
+        break;
+        case Generation::LGPE:
+        case Generation::UNUSED:
+            // Nothing happens
+            break;
     }
 }
 
@@ -97,19 +97,19 @@ bool EditSelectorScreen::doQR()
     QRMode initMode;
     switch (TitleLoader::save->generation())
     {
-    case Generation::FOUR:
-        initMode = QRMode::PKM4;
-        break;
-    case Generation::FIVE:
-        initMode = QRMode::PKM5;
-        break;
-    case Generation::SIX:
-        initMode = QRMode::PKM6;
-        break;
-    case Generation::SEVEN:
-    default:
-        initMode = QRMode::PKM7;
-        break;
+        case Generation::FOUR:
+            initMode = QRMode::PKM4;
+            break;
+        case Generation::FIVE:
+            initMode = QRMode::PKM5;
+            break;
+        case Generation::SIX:
+            initMode = QRMode::PKM6;
+            break;
+        case Generation::SEVEN:
+        default:
+            initMode = QRMode::PKM7;
+            break;
     }
 
     QRScanner::init(initMode, data);
@@ -120,20 +120,20 @@ bool EditSelectorScreen::doQR()
 
         switch (TitleLoader::save->generation())
         {
-        case Generation::FOUR:
-            pkm = std::make_shared<PK4>(data, true);
-            break;
-        case Generation::FIVE:
-            pkm = std::make_shared<PK5>(data, true);
-            break;
-        case Generation::SIX:
-            pkm = std::make_shared<PK6>(data, true);
-            break;
-        case Generation::SEVEN:
-            pkm = std::make_shared<PK7>(data, true);
-            break;
-        default:
-            break;
+            case Generation::FOUR:
+                pkm = std::make_shared<PK4>(data, true);
+                break;
+            case Generation::FIVE:
+                pkm = std::make_shared<PK5>(data, true);
+                break;
+            case Generation::SIX:
+                pkm = std::make_shared<PK6>(data, true);
+                break;
+            case Generation::SEVEN:
+                pkm = std::make_shared<PK7>(data, true);
+                break;
+            default:
+                break;
         }
 
         if (pkm) // Should be true, but just make sure

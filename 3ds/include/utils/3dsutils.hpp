@@ -32,7 +32,7 @@
 
 namespace StringUtils
 {
-float textWidth(const C2D_Text& str, float scaleX);
+    float textWidth(const C2D_Text& str, float scaleX);
 }
 
 #endif

@@ -31,8 +31,8 @@
 #include "PB7.hpp"
 #include "VersionOverlay.hpp"
 #include "ViewOverlay.hpp"
+#include "fetch.hpp"
 #include "gui.hpp"
-#include <curl/curl.h>
 
 extern "C" {
 #include "base64.h"
@@ -690,51 +690,51 @@ static std::string getVersionString(int version)
 {
     switch (version)
     {
-    case 10: // diamond
-        return "D";
-    case 11: // pearl
-        return "P";
-    case 12: // platinum
-        return "Pt";
-    case 7: // heart gold
-        return "HG";
-    case 8: // soul silver
-        return "SS";
-    case 20: // white
-        return "W";
-    case 21: // black
-        return "B";
-    case 22: // white2
-        return "W2";
-    case 23: // black2
-        return "B2";
-    case 24: // x
-        return "X";
-    case 25: // y
-        return "Y";
-    case 26: // as
-        return "AS";
-    case 27: // or
-        return "OR";
-    case 30: // sun
-        return "S";
-    case 31: // moon
-        return "M";
-    case 32: // us
-        return "US";
-    case 33: // um
-        return "UM";
-    case 42: // let's go Pikachu
-        return "GP";
-    case 43: // let's go Eevee
-        return "GE";
+        case 10: // diamond
+            return "D";
+        case 11: // pearl
+            return "P";
+        case 12: // platinum
+            return "Pt";
+        case 7: // heart gold
+            return "HG";
+        case 8: // soul silver
+            return "SS";
+        case 20: // white
+            return "W";
+        case 21: // black
+            return "B";
+        case 22: // white2
+            return "W2";
+        case 23: // black2
+            return "B2";
+        case 24: // x
+            return "X";
+        case 25: // y
+            return "Y";
+        case 26: // as
+            return "AS";
+        case 27: // or
+            return "OR";
+        case 30: // sun
+            return "S";
+        case 31: // moon
+            return "M";
+        case 32: // us
+            return "US";
+        case 33: // um
+            return "UM";
+        case 42: // let's go Pikachu
+            return "GP";
+        case 43: // let's go Eevee
+            return "GE";
     }
     return "";
 }
 
 void MiscEditScreen::validate()
 {
-    if (!Gui::showChoiceMessage("COLOSSAL FUCKAGE MAY OCCUR", "USE AT YOUR OWN RISK"))
+    if (!Gui::showChoiceMessage(i18n::localize("AUTO_LEGALIZE_WARNING_1"), i18n::localize("AUTO_LEGALIZE_WARNING_2")))
     {
         return;
     }
@@ -745,56 +745,47 @@ void MiscEditScreen::validate()
     long status_code = 0;
     char* b64Data    = base64_encode((char*)rawData, pkm->getLength(), &outSize);
     postdata += b64Data;
+    free(b64Data);
     std::string size    = "Size: " + std::to_string(pkm->getLength());
     std::string version = "Version: " + getVersionString(TitleLoader::save->version());
-    free(b64Data);
 
-    CURL* curl = curl_easy_init();
-    if (curl)
+    struct curl_slist* headers = NULL;
+    headers                    = curl_slist_append(headers, version.c_str());
+    headers                    = curl_slist_append(headers, "Content-Type: application/base64");
+    headers                    = curl_slist_append(headers, size.c_str());
+
+    if (Fetch::init("https://pksm.flagbrew.org/api/legalize", true, true, nullptr, headers, postdata))
     {
-        struct curl_slist* h = NULL;
-        h                    = curl_slist_append(h, version.c_str());
-        h                    = curl_slist_append(h, "Content-Type: application/base64");
-        h                    = curl_slist_append(h, size.c_str());
-        curl_easy_setopt(curl, CURLOPT_URL,
-            "https://pksm.flagbrew.org/api/legalize"); // TODO: allow people to use their own local version in-case the main version goes offline.
-        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, h);
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postdata.data());
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, postdata.length());
-        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
-        curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
-        curl_easy_setopt(curl, CURLOPT_USERAGENT, "PKSM-curl/7.59.0");
-        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, this);
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
-        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
+        Fetch::setopt(CURLOPT_WRITEDATA, this);
+        Fetch::setopt(CURLOPT_WRITEFUNCTION, write_callback);
 
-        res = curl_easy_perform(curl);
+        res = Fetch::perform();
         if (res != CURLE_OK)
         {
-            Gui::error("PLACEHOLDER", abs(res));
+            Gui::error(i18n::localize("CURL_ERROR"), abs(res));
         }
         else
         {
-            curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &status_code);
+            Fetch::getinfo(CURLINFO_RESPONSE_CODE, &status_code);
             switch (status_code)
             {
-            case 200:
-                std::copy(dataToWrite.begin(), dataToWrite.end(), pkm->rawData());
-                break;
-            case 400:
-                Gui::error("Your Pokémon cannot be auto legalized!", abs(0x1337));
-                break;
-            case 502:
-                Gui::error("Server appears to be offline!", status_code);
-                break;
-            default:
-                Gui::error("Haven't accounted for this error, sorry!", status_code);
-                break;
+                case 200:
+                    std::copy(dataToWrite.begin(), dataToWrite.end(), pkm->rawData());
+                    break;
+                case 400:
+                    Gui::error(i18n::localize("AUTO_LEGALIZE_ERROR"), abs(0x1337));
+                    break;
+                case 502:
+                    Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
+                    break;
+                default:
+                    Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
+                    break;
             }
         }
-        curl_easy_cleanup(curl);
+        Fetch::exit();
     }
+    curl_slist_free_all(headers);
     dataToWrite.clear();
     return;
 }

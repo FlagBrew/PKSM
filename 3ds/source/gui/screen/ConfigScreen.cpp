@@ -80,30 +80,30 @@ static bool countryChoice()
 {
     switch (Configuration::getInstance().nationality())
     {
-    case 0:
-        Configuration::getInstance().nationality(1);
-        break;
-    case 1:
-        Configuration::getInstance().nationality(2);
-        break;
-    case 2:
-        Configuration::getInstance().nationality(3);
-        break;
-    case 3:
-        Configuration::getInstance().nationality(4);
-        break;
-    case 4:
-        Configuration::getInstance().nationality(5);
-        break;
-    case 5:
-        Configuration::getInstance().nationality(6);
-        break;
-    case 6:
-        Configuration::getInstance().nationality(0);
-        break;
-    default:
-        Configuration::getInstance().nationality(0);
-        break;
+        case 0:
+            Configuration::getInstance().nationality(1);
+            break;
+        case 1:
+            Configuration::getInstance().nationality(2);
+            break;
+        case 2:
+            Configuration::getInstance().nationality(3);
+            break;
+        case 3:
+            Configuration::getInstance().nationality(4);
+            break;
+        case 4:
+            Configuration::getInstance().nationality(5);
+            break;
+        case 5:
+            Configuration::getInstance().nationality(6);
+            break;
+        case 6:
+            Configuration::getInstance().nationality(0);
+            break;
+        default:
+            Configuration::getInstance().nationality(0);
+            break;
     }
     return false;
 }
@@ -352,41 +352,41 @@ void ConfigScreen::draw() const
 
         switch (Configuration::getInstance().language())
         {
-        case Language::JP:
-            C2D_DrawRectSolid(36, 51, 0.5f, 10, 10, COLOR_HIGHBLUE);
-            break;
-        case Language::EN:
-        case Language::UNUSED:
-            C2D_DrawRectSolid(36, 73, 0.5f, 10, 10, COLOR_HIGHBLUE);
-            break;
-        case Language::FR:
-            C2D_DrawRectSolid(36, 95, 0.5f, 10, 10, COLOR_HIGHBLUE);
-            break;
-        case Language::DE:
-            C2D_DrawRectSolid(36, 117, 0.5f, 10, 10, COLOR_HIGHBLUE);
-            break;
-        case Language::IT:
-            C2D_DrawRectSolid(36, 139, 0.5f, 10, 10, COLOR_HIGHBLUE);
-            break;
-        case Language::ES:
-            C2D_DrawRectSolid(36, 161, 0.5f, 10, 10, COLOR_HIGHBLUE);
-            break;
-        case Language::ZH:
-        case Language::TW:
-            C2D_DrawRectSolid(176, 51, 0.5f, 10, 10, COLOR_HIGHBLUE);
-            break;
-        case Language::KO:
-            C2D_DrawRectSolid(176, 73, 0.5f, 10, 10, COLOR_HIGHBLUE);
-            break;
-        case Language::NL:
-            C2D_DrawRectSolid(176, 95, 0.5f, 10, 10, COLOR_HIGHBLUE);
-            break;
-        case Language::PT:
-            C2D_DrawRectSolid(176, 117, 0.5f, 10, 10, COLOR_HIGHBLUE);
-            break;
-        case Language::RU:
-            C2D_DrawRectSolid(176, 139, 0.5f, 10, 10, COLOR_HIGHBLUE);
-            break;
+            case Language::JP:
+                C2D_DrawRectSolid(36, 51, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                break;
+            case Language::EN:
+            case Language::UNUSED:
+                C2D_DrawRectSolid(36, 73, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                break;
+            case Language::FR:
+                C2D_DrawRectSolid(36, 95, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                break;
+            case Language::DE:
+                C2D_DrawRectSolid(36, 117, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                break;
+            case Language::IT:
+                C2D_DrawRectSolid(36, 139, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                break;
+            case Language::ES:
+                C2D_DrawRectSolid(36, 161, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                break;
+            case Language::ZH:
+            case Language::TW:
+                C2D_DrawRectSolid(176, 51, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                break;
+            case Language::KO:
+                C2D_DrawRectSolid(176, 73, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                break;
+            case Language::NL:
+                C2D_DrawRectSolid(176, 95, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                break;
+            case Language::PT:
+                C2D_DrawRectSolid(176, 117, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                break;
+            case Language::RU:
+                C2D_DrawRectSolid(176, 139, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                break;
         }
     }
     else if (currentTab == 1)
@@ -409,30 +409,30 @@ void ConfigScreen::draw() const
         std::string data;
         switch (Configuration::getInstance().nationality())
         {
-        case 0:
-            data = "JPN";
-            break;
-        case 1:
-            data = "USA";
-            break;
-        case 2:
-            data = "EUR";
-            break;
-        case 3:
-            data = "AUS";
-            break;
-        case 4:
-            data = "CHN";
-            break;
-        case 5:
-            data = "KOR";
-            break;
-        case 6:
-            data = "TWN";
-            break;
-        default:
-            data = "USA";
-            break;
+            case 0:
+                data = "JPN";
+                break;
+            case 1:
+                data = "USA";
+                break;
+            case 2:
+                data = "EUR";
+                break;
+            case 3:
+                data = "AUS";
+                break;
+            case 4:
+                data = "CHN";
+                break;
+            case 5:
+                data = "KOR";
+                break;
+            case 6:
+                data = "TWN";
+                break;
+            default:
+                data = "USA";
+                break;
         }
         Gui::dynamicText(i18n::localize(data), 150, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::dynamicText(

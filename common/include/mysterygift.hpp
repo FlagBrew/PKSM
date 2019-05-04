@@ -39,19 +39,19 @@
 
 namespace MysteryGift
 {
-struct giftData
-{
-    std::string name;
-    std::string game;
-    int species;
-    int form;
-    int gender;
-};
-void init(Generation gen);
-std::vector<nlohmann::json> wondercards();
-MysteryGift::giftData wondercardInfo(size_t index);
-std::unique_ptr<WCX> wondercard(size_t index);
-void exit();
+    struct giftData
+    {
+        std::string name;
+        std::string game;
+        int species;
+        int form;
+        int gender;
+    };
+    void init(Generation gen);
+    std::vector<nlohmann::json> wondercards();
+    MysteryGift::giftData wondercardInfo(size_t index);
+    std::unique_ptr<WCX> wondercard(size_t index);
+    void exit();
 }
 
 #endif

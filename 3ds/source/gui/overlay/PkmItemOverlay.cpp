@@ -37,32 +37,32 @@ static constexpr auto stringComp = [](const std::pair<int, std::string>& pair1, 
 
 namespace
 {
-int index(std::vector<std::pair<int, std::string>>& search, const std::string& v)
-{
-    if (v == search[0].second || v == "")
+    int index(std::vector<std::pair<int, std::string>>& search, const std::string& v)
     {
-        return 0;
+        if (v == search[0].second || v == "")
+        {
+            return 0;
+        }
+        int index = -1, min = 0, mid = 0, max = search.size();
+        while (min <= max)
+        {
+            mid = min + (max - min) / 2;
+            if (search[mid].second == v)
+            {
+                index = mid;
+                break;
+            }
+            if (search[mid].second < v)
+            {
+                min = mid + 1;
+            }
+            else
+            {
+                max = mid - 1;
+            }
+        }
+        return index >= 0 ? index : 0;
     }
-    int index = -1, min = 0, mid = 0, max = search.size();
-    while (min <= max)
-    {
-        mid = min + (max - min) / 2;
-        if (search[mid].second == v)
-        {
-            index = mid;
-            break;
-        }
-        if (search[mid].second < v)
-        {
-            min = mid + 1;
-        }
-        else
-        {
-            max = mid - 1;
-        }
-    }
-    return index >= 0 ? index : 0;
-}
 }
 
 PkmItemOverlay::PkmItemOverlay(Screen& screen, std::shared_ptr<PKX> pkm)

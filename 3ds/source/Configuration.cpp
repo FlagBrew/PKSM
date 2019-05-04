@@ -50,12 +50,12 @@ Configuration::Configuration()
 
         if (mJson.is_discarded())
         {
-            Gui::warn("Configuration file is corrupted!", "Using default.");
+            Gui::warn(i18n::localize("CONFIGURATION_FILE_CORRUPTED_1"), i18n::localize("CONFIGURATION_FILE_CORRUPTED_2"));
             loadFromRomfs();
         }
         else if (!mJson.contains("version"))
         {
-            Gui::warn("Version not found in config file!", "Using default.");
+            Gui::warn(i18n::localize("CONFIGURATION_VERSION_MISSING_1"), i18n::localize("CONFIGURATION_VERSION_MISSING_2"));
             loadFromRomfs();
         }
         else if (mJson["version"].get<int>() != CURRENT_VERSION)
@@ -160,45 +160,45 @@ void Configuration::loadFromRomfs()
 
     switch (systemLanguage)
     {
-    case CFG_LANGUAGE_JP:
-        systemLanguage = Language::JP;
-        break;
-    case CFG_LANGUAGE_EN:
-        systemLanguage = Language::EN;
-        break;
-    case CFG_LANGUAGE_FR:
-        systemLanguage = Language::FR;
-        break;
-    case CFG_LANGUAGE_DE:
-        systemLanguage = Language::DE;
-        break;
-    case CFG_LANGUAGE_IT:
-        systemLanguage = Language::IT;
-        break;
-    case CFG_LANGUAGE_ES:
-        systemLanguage = Language::ES;
-        break;
-    case CFG_LANGUAGE_ZH:
-        systemLanguage = Language::ZH;
-        break;
-    case CFG_LANGUAGE_KO:
-        systemLanguage = Language::KO;
-        break;
-    case CFG_LANGUAGE_NL:
-        systemLanguage = Language::NL;
-        break;
-    case CFG_LANGUAGE_PT:
-        systemLanguage = Language::PT;
-        break;
-    case CFG_LANGUAGE_RU:
-        systemLanguage = Language::RU;
-        break;
-    case CFG_LANGUAGE_TW:
-        systemLanguage = Language::TW;
-        break;
-    default:
-        systemLanguage = Language::EN;
-        break;
+        case CFG_LANGUAGE_JP:
+            systemLanguage = Language::JP;
+            break;
+        case CFG_LANGUAGE_EN:
+            systemLanguage = Language::EN;
+            break;
+        case CFG_LANGUAGE_FR:
+            systemLanguage = Language::FR;
+            break;
+        case CFG_LANGUAGE_DE:
+            systemLanguage = Language::DE;
+            break;
+        case CFG_LANGUAGE_IT:
+            systemLanguage = Language::IT;
+            break;
+        case CFG_LANGUAGE_ES:
+            systemLanguage = Language::ES;
+            break;
+        case CFG_LANGUAGE_ZH:
+            systemLanguage = Language::ZH;
+            break;
+        case CFG_LANGUAGE_KO:
+            systemLanguage = Language::KO;
+            break;
+        case CFG_LANGUAGE_NL:
+            systemLanguage = Language::NL;
+            break;
+        case CFG_LANGUAGE_PT:
+            systemLanguage = Language::PT;
+            break;
+        case CFG_LANGUAGE_RU:
+            systemLanguage = Language::RU;
+            break;
+        case CFG_LANGUAGE_TW:
+            systemLanguage = Language::TW;
+            break;
+        default:
+            systemLanguage = Language::EN;
+            break;
     }
     mJson["language"] = systemLanguage;
 

@@ -30,7 +30,7 @@ bool receiveSaveFromBridge(void)
     struct sockaddr_in servaddr;
     if ((fd = socket(AF_INET, SOCK_STREAM, IPPROTO_IP)) < 0)
     {
-        Gui::error("Socket creation failed.", errno);
+        Gui::error(i18n::localize("SOCKET_CREATE_FAIL"), errno);
         return false;
     }
 
@@ -41,14 +41,14 @@ bool receiveSaveFromBridge(void)
 
     if (bind(fd, (struct sockaddr*)&servaddr, sizeof(servaddr)) < 0)
     {
-        Gui::error("Socket bind failed.", errno);
+        Gui::error(i18n::localize("SOCKET_BIND_FAIL"), errno);
         close(fd);
         return false;
     }
 
     if (listen(fd, 5) < 0)
     {
-        Gui::error("Socket listen failed.", errno);
+        Gui::error(i18n::localize("SOCKET_LISTEN_FAIL"), errno);
         close(fd);
         return false;
     }
@@ -57,7 +57,7 @@ bool receiveSaveFromBridge(void)
     int addrlen = sizeof(servaddr);
     if ((fdconn = accept(fd, (struct sockaddr*)&servaddr, (socklen_t*)&addrlen)) < 0)
     {
-        Gui::error("Socket accept failed.", errno);
+        Gui::error(i18n::localize("SOCKET_ACCEPT_FAIL"), errno);
         close(fd);
         return false;
     }
@@ -95,7 +95,7 @@ bool receiveSaveFromBridge(void)
     }
     else
     {
-        Gui::error("Failed to receive data.", errno);
+        Gui::error(i18n::localize("DATA_RECEIVE_FAIL"), errno);
     }
 
     delete[] data;
@@ -110,7 +110,7 @@ bool sendSaveToBridge(void)
     struct sockaddr_in servaddr;
     if ((fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
-        Gui::error("Socket creation failed.", errno);
+        Gui::error(i18n::localize("SOCKET_CREATE_FAIL"), errno);
         return result;
     }
     memset(&servaddr, 0, sizeof(servaddr));
@@ -120,7 +120,7 @@ bool sendSaveToBridge(void)
 
     if (connect(fd, (struct sockaddr*)&servaddr, sizeof(servaddr)) < 0)
     {
-        Gui::error("Socket connection failed.", errno);
+        Gui::error(i18n::localize("SOCKET_CONNECTION_FAIL"), errno);
         close(fd);
         return result;
     }
@@ -147,7 +147,7 @@ bool sendSaveToBridge(void)
     }
     else
     {
-        Gui::error("Failed to send data.", errno);
+        Gui::error(i18n::localize("DATA_SEND_FAIL"), errno);
     }
 
     close(fd);

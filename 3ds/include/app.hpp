@@ -38,7 +38,6 @@
 #include <stdio.h>
 
 extern "C" {
-#include "download.h"
 #include "sha256.h"
 }
 
@@ -47,8 +46,8 @@ extern "C" {
 
 namespace App
 {
-Result init(std::string execPath);
-Result exit(void);
+    Result init(std::string execPath);
+    Result exit(void);
 }
 
 #endif

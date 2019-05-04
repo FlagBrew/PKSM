@@ -334,177 +334,177 @@ int Sav6::dexFormIndex(int species, int formct) const
     {
         switch (species)
         {
-        case 25:
-            return 189; // 7 Pikachu
-        case 720:
-            return 196; // 2 Hoopa
-        case 15:
-            return 198; // 2 Beedrill
-        case 18:
-            return 200; // 2 Pidgeot
-        case 80:
-            return 202; // 2 Slowbro
-        case 208:
-            return 204; // 2 Steelix
-        case 254:
-            return 206; // 2 Sceptile
-        case 260:
-            return 208; // 2 Swampert
-        case 302:
-            return 210; // 2 Sableye
-        case 319:
-            return 212; // 2 Sharpedo
-        case 323:
-            return 214; // 2 Camerupt
-        case 334:
-            return 216; // 2 Altaria
-        case 362:
-            return 218; // 2 Glalie
-        case 373:
-            return 220; // 2 Salamence
-        case 376:
-            return 222; // 2 Metagross
-        case 384:
-            return 224; // 2 Rayquaza
-        case 428:
-            return 226; // 2 Lopunny
-        case 475:
-            return 228; // 2 Gallade
-        case 531:
-            return 230; // 2 Audino
-        case 719:
-            return 232; // 2 Diancie
-        case 382:
-            return 234; // 2 Kyogre
-        case 383:
-            return 236; // 2 Groudon
-        case 493:
-            return 238; // 18 Arceus
-        case 649:
-            return 256; // 5 Genesect
-        case 676:
-            return 261; // 10 Furfrou
+            case 25:
+                return 189; // 7 Pikachu
+            case 720:
+                return 196; // 2 Hoopa
+            case 15:
+                return 198; // 2 Beedrill
+            case 18:
+                return 200; // 2 Pidgeot
+            case 80:
+                return 202; // 2 Slowbro
+            case 208:
+                return 204; // 2 Steelix
+            case 254:
+                return 206; // 2 Sceptile
+            case 260:
+                return 208; // 2 Swampert
+            case 302:
+                return 210; // 2 Sableye
+            case 319:
+                return 212; // 2 Sharpedo
+            case 323:
+                return 214; // 2 Camerupt
+            case 334:
+                return 216; // 2 Altaria
+            case 362:
+                return 218; // 2 Glalie
+            case 373:
+                return 220; // 2 Salamence
+            case 376:
+                return 222; // 2 Metagross
+            case 384:
+                return 224; // 2 Rayquaza
+            case 428:
+                return 226; // 2 Lopunny
+            case 475:
+                return 228; // 2 Gallade
+            case 531:
+                return 230; // 2 Audino
+            case 719:
+                return 232; // 2 Diancie
+            case 382:
+                return 234; // 2 Kyogre
+            case 383:
+                return 236; // 2 Groudon
+            case 493:
+                return 238; // 18 Arceus
+            case 649:
+                return 256; // 5 Genesect
+            case 676:
+                return 261; // 10 Furfrou
         }
     }
 
     switch (species)
     {
-    case 666:
-        return 83; // 20 Vivillion
-    case 669:
-        return 103; // 5 Flabébé
-    case 670:
-        return 108; // 6 Floette
-    case 671:
-        return 114; // 5 Florges
-    case 710:
-        return 119; // 4 Pumpkaboo
-    case 711:
-        return 123; // 4 Gourgeist
-    case 681:
-        return 127; // 2 Aegislash
-    case 716:
-        return 129; // 2 Xerneas
-    case 3:
-        return 131; // 2 Venusaur
-    case 6:
-        return 133; // 3 Charizard
-    case 9:
-        return 136; // 2 Blastoise
-    case 65:
-        return 138; // 2 Alakazam
-    case 94:
-        return 140; // 2 Gengar
-    case 115:
-        return 142; // 2 Kangaskhan
-    case 127:
-        return 144; // 2 Pinsir
-    case 130:
-        return 146; // 2 Gyarados
-    case 142:
-        return 148; // 2 Aerodactyl
-    case 150:
-        return 150; // 3 Mewtwo
-    case 181:
-        return 153; // 2 Ampharos
-    case 212:
-        return 155; // 2 Scizor
-    case 214:
-        return 157; // 2 Heracros
-    case 229:
-        return 159; // 2 Houndoom
-    case 248:
-        return 161; // 2 Tyranitar
-    case 257:
-        return 163; // 2 Blaziken
-    case 282:
-        return 165; // 2 Gardevoir
-    case 303:
-        return 167; // 2 Mawile
-    case 306:
-        return 169; // 2 Aggron
-    case 308:
-        return 171; // 2 Medicham
-    case 310:
-        return 173; // 2 Manetric
-    case 354:
-        return 175; // 2 Banette
-    case 359:
-        return 177; // 2 Absol
-    case 380:
-        return 179; // 2 Latias
-    case 381:
-        return 181; // 2 Latios
-    case 445:
-        return 183; // 2 Garchomp
-    case 448:
-        return 185; // 2 Lucario
-    case 460:
-        return 187; // 2 Abomasnow
-    case 646:
-        return 72; // 3 Kyurem
-    case 647:
-        return 75; // 2 Keldeo
-    case 642:
-        return 77; // 2 Thundurus
-    case 641:
-        return 79; // 2 Tornadus
-    case 645:
-        return 81; // 2 Landorus
-    case 201:
-        return 0; // 28 Unown
-    case 386:
-        return 28; // 4 Deoxys
-    case 492:
-        return 32; // 2 Shaymin
-    case 487:
-        return 34; // 2 Giratina
-    case 479:
-        return 36; // 6 Rotom
-    case 422:
-        return 42; // 2 Shellos
-    case 423:
-        return 44; // 2 Gastrodon
-    case 412:
-        return 46; // 3 Burmy
-    case 413:
-        return 49; // 3 Wormadam
-    case 351:
-        return 52; // 4 Castform
-    case 421:
-        return 56; // 2 Cherrim
-    case 585:
-        return 58; // 4 Deerling
-    case 586:
-        return 62; // 4 Sawsbuck
-    case 648:
-        return 66; // 2 Meloetta
-    case 555:
-        return 68; // 2 Darmanitan
-    case 550:
-        return 70; // 2 Basculin
-    default:
-        return -1;
+        case 666:
+            return 83; // 20 Vivillion
+        case 669:
+            return 103; // 5 Flabébé
+        case 670:
+            return 108; // 6 Floette
+        case 671:
+            return 114; // 5 Florges
+        case 710:
+            return 119; // 4 Pumpkaboo
+        case 711:
+            return 123; // 4 Gourgeist
+        case 681:
+            return 127; // 2 Aegislash
+        case 716:
+            return 129; // 2 Xerneas
+        case 3:
+            return 131; // 2 Venusaur
+        case 6:
+            return 133; // 3 Charizard
+        case 9:
+            return 136; // 2 Blastoise
+        case 65:
+            return 138; // 2 Alakazam
+        case 94:
+            return 140; // 2 Gengar
+        case 115:
+            return 142; // 2 Kangaskhan
+        case 127:
+            return 144; // 2 Pinsir
+        case 130:
+            return 146; // 2 Gyarados
+        case 142:
+            return 148; // 2 Aerodactyl
+        case 150:
+            return 150; // 3 Mewtwo
+        case 181:
+            return 153; // 2 Ampharos
+        case 212:
+            return 155; // 2 Scizor
+        case 214:
+            return 157; // 2 Heracros
+        case 229:
+            return 159; // 2 Houndoom
+        case 248:
+            return 161; // 2 Tyranitar
+        case 257:
+            return 163; // 2 Blaziken
+        case 282:
+            return 165; // 2 Gardevoir
+        case 303:
+            return 167; // 2 Mawile
+        case 306:
+            return 169; // 2 Aggron
+        case 308:
+            return 171; // 2 Medicham
+        case 310:
+            return 173; // 2 Manetric
+        case 354:
+            return 175; // 2 Banette
+        case 359:
+            return 177; // 2 Absol
+        case 380:
+            return 179; // 2 Latias
+        case 381:
+            return 181; // 2 Latios
+        case 445:
+            return 183; // 2 Garchomp
+        case 448:
+            return 185; // 2 Lucario
+        case 460:
+            return 187; // 2 Abomasnow
+        case 646:
+            return 72; // 3 Kyurem
+        case 647:
+            return 75; // 2 Keldeo
+        case 642:
+            return 77; // 2 Thundurus
+        case 641:
+            return 79; // 2 Tornadus
+        case 645:
+            return 81; // 2 Landorus
+        case 201:
+            return 0; // 28 Unown
+        case 386:
+            return 28; // 4 Deoxys
+        case 492:
+            return 32; // 2 Shaymin
+        case 487:
+            return 34; // 2 Giratina
+        case 479:
+            return 36; // 6 Rotom
+        case 422:
+            return 42; // 2 Shellos
+        case 423:
+            return 44; // 2 Gastrodon
+        case 412:
+            return 46; // 3 Burmy
+        case 413:
+            return 49; // 3 Wormadam
+        case 351:
+            return 52; // 4 Castform
+        case 421:
+            return 56; // 2 Cherrim
+        case 585:
+            return 58; // 4 Deerling
+        case 586:
+            return 62; // 4 Sawsbuck
+        case 648:
+            return 66; // 2 Meloetta
+        case 555:
+            return 68; // 2 Darmanitan
+        case 550:
+            return 70; // 2 Basculin
+        default:
+            return -1;
     }
 }
 
@@ -703,23 +703,23 @@ void Sav6::item(Item& item, Pouch pouch, u16 slot)
     auto write   = inject.bytes();
     switch (pouch)
     {
-    case NormalItem:
-        std::copy(write.first, write.first + write.second, data + PouchHeldItem + slot * 4);
-        break;
-    case KeyItem:
-        std::copy(write.first, write.first + write.second, data + PouchKeyItem + slot * 4);
-        break;
-    case TM:
-        std::copy(write.first, write.first + write.second, data + PouchTMHM + slot * 4);
-        break;
-    case Medicine:
-        std::copy(write.first, write.first + write.second, data + PouchMedicine + slot * 4);
-        break;
-    case Berry:
-        std::copy(write.first, write.first + write.second, data + PouchBerry + slot * 4);
-        break;
-    default:
-        return;
+        case NormalItem:
+            std::copy(write.first, write.first + write.second, data + PouchHeldItem + slot * 4);
+            break;
+        case KeyItem:
+            std::copy(write.first, write.first + write.second, data + PouchKeyItem + slot * 4);
+            break;
+        case TM:
+            std::copy(write.first, write.first + write.second, data + PouchTMHM + slot * 4);
+            break;
+        case Medicine:
+            std::copy(write.first, write.first + write.second, data + PouchMedicine + slot * 4);
+            break;
+        case Berry:
+            std::copy(write.first, write.first + write.second, data + PouchBerry + slot * 4);
+            break;
+        default:
+            return;
     }
 }
 
@@ -727,18 +727,18 @@ std::unique_ptr<Item> Sav6::item(Pouch pouch, u16 slot) const
 {
     switch (pouch)
     {
-    case NormalItem:
-        return std::make_unique<Item6>(data + PouchHeldItem + slot * 4);
-    case KeyItem:
-        return std::make_unique<Item6>(data + PouchKeyItem + slot * 4);
-    case TM:
-        return std::make_unique<Item6>(data + PouchTMHM + slot * 4);
-    case Medicine:
-        return std::make_unique<Item6>(data + PouchMedicine + slot * 4);
-    case Berry:
-        return std::make_unique<Item6>(data + PouchBerry + slot * 4);
-    default:
-        return nullptr;
+        case NormalItem:
+            return std::make_unique<Item6>(data + PouchHeldItem + slot * 4);
+        case KeyItem:
+            return std::make_unique<Item6>(data + PouchKeyItem + slot * 4);
+        case TM:
+            return std::make_unique<Item6>(data + PouchTMHM + slot * 4);
+        case Medicine:
+            return std::make_unique<Item6>(data + PouchMedicine + slot * 4);
+        case Berry:
+            return std::make_unique<Item6>(data + PouchBerry + slot * 4);
+        default:
+            return nullptr;
     }
 }
 
@@ -752,17 +752,17 @@ std::string Sav6::pouchName(Pouch pouch) const
 {
     switch (pouch)
     {
-    case NormalItem:
-        return i18n::localize("ITEMS");
-    case KeyItem:
-        return i18n::localize("KEY_ITEMS");
-    case TM:
-        return i18n::localize("TMHM");
-    case Medicine:
-        return i18n::localize("MEDICINE");
-    case Berry:
-        return i18n::localize("BERRIES");
-    default:
-        return "";
+        case NormalItem:
+            return i18n::localize("ITEMS");
+        case KeyItem:
+            return i18n::localize("KEY_ITEMS");
+        case TM:
+            return i18n::localize("TMHM");
+        case Medicine:
+            return i18n::localize("MEDICINE");
+        case Berry:
+            return i18n::localize("BERRIES");
+        default:
+            return "";
     }
 }

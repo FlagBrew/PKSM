@@ -27,7 +27,7 @@
 #ifndef CONFIGURATION_HPP
 #define CONFIGURATION_HPP
 
-#include "i18n.hpp"
+#include "LanguageStrings.hpp"
 #include "json.hpp"
 #include "types.h"
 #include "utils.hpp"

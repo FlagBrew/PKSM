@@ -329,54 +329,54 @@ bool Sav7::sanitizeFormsToIterate(int species, int& fs, int& fe, int formIn) con
 {
     switch (species)
     {
-    case 351: // Castform
-        fs = 0;
-        fe = 3;
-        return true;
+        case 351: // Castform
+            fs = 0;
+            fe = 3;
+            return true;
 
-    case 421: // Cherrim
-    case 555: // Darmanitan
-    case 648: // Meloetta
-    case 746: // Wishiwashi
-    case 778: // Mimikyu
-              // Alolans
-    case 020: // Raticate
-    case 105: // Marowak
-        fs = 0;
-        fe = 1;
-        return true;
+        case 421: // Cherrim
+        case 555: // Darmanitan
+        case 648: // Meloetta
+        case 746: // Wishiwashi
+        case 778: // Mimikyu
+                  // Alolans
+        case 020: // Raticate
+        case 105: // Marowak
+            fs = 0;
+            fe = 1;
+            return true;
 
-    case 735: // Gumshoos
-    case 758: // Salazzle
-    case 754: // Lurantis
-    case 738: // Vikavolt
-    case 784: // Kommo-o
-    case 752: // Araquanid
-    case 777: // Togedemaru
-    case 743: // Ribombee
-    case 744: // Rockruff
-        break;
-
-    case 774: // Minior
-        if (formIn <= 6)
+        case 735: // Gumshoos
+        case 758: // Salazzle
+        case 754: // Lurantis
+        case 738: // Vikavolt
+        case 784: // Kommo-o
+        case 752: // Araquanid
+        case 777: // Togedemaru
+        case 743: // Ribombee
+        case 744: // Rockruff
             break;
-        else
-        {
-            int count = dexFormCount(species);
-            fs        = 0;
-            fe        = 0;
-            return count < formIn;
-        }
-    case 718:
-        if (formIn > 1)
-            break;
-        else
-        {
-            int count = dexFormCount(species);
-            fs        = 0;
-            fe        = 0;
-            return count < formIn;
-        }
+
+        case 774: // Minior
+            if (formIn <= 6)
+                break;
+            else
+            {
+                int count = dexFormCount(species);
+                fs        = 0;
+                fe        = 0;
+                return count < formIn;
+            }
+        case 718:
+            if (formIn > 1)
+                break;
+            else
+            {
+                int count = dexFormCount(species);
+                fs        = 0;
+                fe        = 0;
+                return count < formIn;
+            }
     }
 
     fs = 0;
@@ -576,29 +576,29 @@ void Sav7::item(Item& item, Pouch pouch, u16 slot)
     auto write   = inject.bytes();
     switch (pouch)
     {
-    case NormalItem:
-        std::copy(write.first, write.first + write.second, data + PouchHeldItem + slot * 4);
-        break;
-    case KeyItem:
-        std::copy(write.first, write.first + write.second, data + PouchKeyItem + slot * 4);
-        break;
-    case TM:
-        std::copy(write.first, write.first + write.second, data + PouchTMHM + slot * 4);
-        break;
-    case Medicine:
-        std::copy(write.first, write.first + write.second, data + PouchMedicine + slot * 4);
-        break;
-    case Berry:
-        std::copy(write.first, write.first + write.second, data + PouchBerry + slot * 4);
-        break;
-    case ZCrystals:
-        std::copy(write.first, write.first + write.second, data + PouchZCrystals + slot * 4);
-        break;
-    case Battle:
-        std::copy(write.first, write.first + write.second, data + BattleItems + slot * 4);
-        break;
-    default:
-        return;
+        case NormalItem:
+            std::copy(write.first, write.first + write.second, data + PouchHeldItem + slot * 4);
+            break;
+        case KeyItem:
+            std::copy(write.first, write.first + write.second, data + PouchKeyItem + slot * 4);
+            break;
+        case TM:
+            std::copy(write.first, write.first + write.second, data + PouchTMHM + slot * 4);
+            break;
+        case Medicine:
+            std::copy(write.first, write.first + write.second, data + PouchMedicine + slot * 4);
+            break;
+        case Berry:
+            std::copy(write.first, write.first + write.second, data + PouchBerry + slot * 4);
+            break;
+        case ZCrystals:
+            std::copy(write.first, write.first + write.second, data + PouchZCrystals + slot * 4);
+            break;
+        case Battle:
+            std::copy(write.first, write.first + write.second, data + BattleItems + slot * 4);
+            break;
+        default:
+            return;
     }
 }
 
@@ -606,22 +606,22 @@ std::unique_ptr<Item> Sav7::item(Pouch pouch, u16 slot) const
 {
     switch (pouch)
     {
-    case NormalItem:
-        return std::make_unique<Item7>(data + PouchHeldItem + slot * 4);
-    case KeyItem:
-        return std::make_unique<Item7>(data + PouchKeyItem + slot * 4);
-    case TM:
-        return std::make_unique<Item7>(data + PouchTMHM + slot * 4);
-    case Medicine:
-        return std::make_unique<Item7>(data + PouchMedicine + slot * 4);
-    case Berry:
-        return std::make_unique<Item7>(data + PouchBerry + slot * 4);
-    case ZCrystals:
-        return std::make_unique<Item7>(data + PouchZCrystals + slot * 4);
-    case Battle:
-        return std::make_unique<Item7>(data + BattleItems + slot * 4);
-    default:
-        return nullptr;
+        case NormalItem:
+            return std::make_unique<Item7>(data + PouchHeldItem + slot * 4);
+        case KeyItem:
+            return std::make_unique<Item7>(data + PouchKeyItem + slot * 4);
+        case TM:
+            return std::make_unique<Item7>(data + PouchTMHM + slot * 4);
+        case Medicine:
+            return std::make_unique<Item7>(data + PouchMedicine + slot * 4);
+        case Berry:
+            return std::make_unique<Item7>(data + PouchBerry + slot * 4);
+        case ZCrystals:
+            return std::make_unique<Item7>(data + PouchZCrystals + slot * 4);
+        case Battle:
+            return std::make_unique<Item7>(data + BattleItems + slot * 4);
+        default:
+            return nullptr;
     }
 }
 
@@ -640,21 +640,21 @@ std::string Sav7::pouchName(Pouch pouch) const
 {
     switch (pouch)
     {
-    case NormalItem:
-        return i18n::localize("ITEMS");
-    case KeyItem:
-        return i18n::localize("KEY_ITEMS");
-    case TM:
-        return i18n::localize("TMS");
-    case Medicine:
-        return i18n::localize("MEDICINE");
-    case Berry:
-        return i18n::localize("BERRIES");
-    case ZCrystals:
-        return i18n::localize("ZCRYSTALS");
-    case Battle:
-        return i18n::localize("ROTOM_POWERS");
-    default:
-        return "";
+        case NormalItem:
+            return i18n::localize("ITEMS");
+        case KeyItem:
+            return i18n::localize("KEY_ITEMS");
+        case TM:
+            return i18n::localize("TMS");
+        case Medicine:
+            return i18n::localize("MEDICINE");
+        case Berry:
+            return i18n::localize("BERRIES");
+        case ZCrystals:
+            return i18n::localize("ZCRYSTALS");
+        case Battle:
+            return i18n::localize("ROTOM_POWERS");
+        default:
+            return "";
     }
 }

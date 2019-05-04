@@ -123,16 +123,21 @@ void FSStream::seek(u32 offset, int from)
 {
     switch (from)
     {
-    case SEEK_SET:
-        mOffset = offset;
-        break;
-    case SEEK_CUR:
-        mOffset += offset;
-        break;
-    case SEEK_END:
-        mOffset = mSize - offset;
-        break;
-    default:
-        break;
+        case SEEK_SET:
+            mOffset = offset;
+            break;
+        case SEEK_CUR:
+            mOffset += offset;
+            break;
+        case SEEK_END:
+            mOffset = mSize - offset;
+            break;
+        default:
+            break;
     }
+}
+
+Handle FSStream::getRawHandle(void)
+{
+    return mHandle;
 }

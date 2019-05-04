@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62, Allen Lydiard
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -25,5 +25,26 @@
  */
 
 #include "types.h"
+#include <curl/curl.h>
+#include <functional>
+#include <memory>
+#include <string>
 
-Result download(const char* url, const char* path);
+namespace Fetch
+{
+    extern std::unique_ptr<CURL, decltype(curl_easy_cleanup)*> curl;
+    bool init(const std::string& url, bool post, bool ssl, std::string* writeData, struct curl_slist* headers, const std::string& postdata);
+    CURLcode perform();
+    template <typename T>
+    CURLcode setopt(CURLoption opt, T data)
+    {
+        return curl_easy_setopt(curl.get(), opt, data);
+    }
+    template <typename T>
+    CURLcode getinfo(CURLINFO info, T outvar)
+    {
+        return curl_easy_getinfo(curl.get(), info, outvar);
+    }
+    Result download(const std::string& url, const std::string& path);
+    void exit();
+} // namespace Fetch

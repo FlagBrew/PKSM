@@ -400,26 +400,26 @@ void Sav4::dex(std::shared_ptr<PKX> pk)
         u8 gr = pk->genderType();
         switch (gr)
         {
-        case 255: // Genderless
-        case 0:   // Male Only
-            data[ofs + brSize * 2] &= ~mask;
-            data[ofs + brSize * 3] &= ~mask;
-            break;
-        case 254: // Female Only
-            data[ofs + brSize * 2] |= mask;
-            data[ofs + brSize * 3] |= mask;
-            break;
-        default: // Male or Female
-            bool m = (data[ofs + brSize * 2] & mask) != 0;
-            bool f = (data[ofs + brSize * 3] & mask) != 0;
-            if (m || f) // bit already set?
+            case 255: // Genderless
+            case 0:   // Male Only
+                data[ofs + brSize * 2] &= ~mask;
+                data[ofs + brSize * 3] &= ~mask;
                 break;
-            u8 gender = pk->gender() & 1;
-            data[ofs + brSize * 2] &= ~mask; // unset
-            data[ofs + brSize * 3] &= ~mask; // unset
-            gender ^= 1;                     // Set OTHER gender seen bit so it appears second
-            data[ofs + brSize * (2 + gender)] |= mask;
-            break;
+            case 254: // Female Only
+                data[ofs + brSize * 2] |= mask;
+                data[ofs + brSize * 3] |= mask;
+                break;
+            default: // Male or Female
+                bool m = (data[ofs + brSize * 2] & mask) != 0;
+                bool f = (data[ofs + brSize * 3] & mask) != 0;
+                if (m || f) // bit already set?
+                    break;
+                u8 gender = pk->gender() & 1;
+                data[ofs + brSize * 2] &= ~mask; // unset
+                data[ofs + brSize * 3] &= ~mask; // unset
+                gender ^= 1;                     // Set OTHER gender seen bit so it appears second
+                data[ofs + brSize * (2 + gender)] |= mask;
+                break;
         }
     }
 
@@ -475,12 +475,12 @@ void Sav4::dex(std::shared_ptr<PKX> pk)
     int lang          = pk->language() - 1;
     switch (lang) // invert ITA/GER
     {
-    case 3:
-        lang = 4;
-        break;
-    case 4:
-        lang = 3;
-        break;
+        case 3:
+            lang = 4;
+            break;
+        case 4:
+            lang = 3;
+            break;
     }
     if (lang > 5)
         lang = 0;                 // no KOR+
@@ -564,19 +564,19 @@ std::vector<u8> Sav4::getForms(u16 species)
     int formOffset = PokeDex + 4 + 4 * brSize + 4;
     switch (species)
     {
-    case 422: // Shellos
-        return getDexFormValues(data[formOffset + 0], 1, 2);
-    case 423: // Gastrodon
-        return getDexFormValues(data[formOffset + 1], 1, 2);
-    case 412: // Burmy
-        return getDexFormValues(data[formOffset + 2], 2, 3);
-    case 413: // Wormadam
-        return getDexFormValues(data[formOffset + 3], 2, 3);
-    case 201: // Unown
-        int ofs = formOffset + 4;
-        std::vector<u8> forms(0x1C);
-        std::copy(data + ofs, data + ofs + 0x1C, forms.begin());
-        return forms;
+        case 422: // Shellos
+            return getDexFormValues(data[formOffset + 0], 1, 2);
+        case 423: // Gastrodon
+            return getDexFormValues(data[formOffset + 1], 1, 2);
+        case 412: // Burmy
+            return getDexFormValues(data[formOffset + 2], 2, 3);
+        case 413: // Wormadam
+            return getDexFormValues(data[formOffset + 3], 2, 3);
+        case 201: // Unown
+            int ofs = formOffset + 4;
+            std::vector<u8> forms(0x1C);
+            std::copy(data + ofs, data + ofs + 0x1C, forms.begin());
+            return forms;
     }
 
     if (game == Game::DP)
@@ -586,15 +586,15 @@ std::vector<u8> Sav4::getForms(u16 species)
     int formOffset2   = languageFlags + 0x1F4;
     switch (species)
     {
-    case 479: // Rotom
-        return getDexFormValues(*(u32*)(data + formOffset2), 3, 6);
-    case 492: // Shaymin
-        return getDexFormValues(data[formOffset2 + 4], 1, 2);
-    case 487: // Giratina
-        return getDexFormValues(data[formOffset2 + 5], 1, 2);
-    case 172: // Pichu
-        if (game == Game::HGSS)
-            return getDexFormValues(data[formOffset2 + 6], 2, 3);
+        case 479: // Rotom
+            return getDexFormValues(*(u32*)(data + formOffset2), 3, 6);
+        case 492: // Shaymin
+            return getDexFormValues(data[formOffset2 + 4], 1, 2);
+        case 487: // Giratina
+            return getDexFormValues(data[formOffset2 + 5], 1, 2);
+        case 172: // Pichu
+            if (game == Game::HGSS)
+                return getDexFormValues(data[formOffset2 + 6], 2, 3);
     }
 
     return std::vector<u8>();
@@ -632,28 +632,28 @@ void Sav4::setForms(std::vector<u8> forms, u16 species)
     int formOffset = PokeDex + 4 + 4 * brSize + 4;
     switch (species)
     {
-    case 422: // Shellos
-        data[formOffset + 0] = (u8)setDexFormValues(forms, 1, 2);
-        return;
-    case 423: // Gastrodon
-        data[formOffset + 1] = (u8)setDexFormValues(forms, 1, 2);
-        return;
-    case 412: // Burmy
-        data[formOffset + 2] = (u8)setDexFormValues(forms, 2, 3);
-        return;
-    case 413: // Wormadam
-        data[formOffset + 3] = (u8)setDexFormValues(forms, 2, 3);
-        return;
-    case 201: // Unown
-    {
-        int ofs = formOffset + 4;
-        int len = forms.size();
-        forms.resize(0x1C);
-        for (size_t i = len; i < forms.size(); i++)
-            forms[i] = 0xFF;
-        std::copy(forms.begin(), forms.end(), data + ofs);
-        return;
-    }
+        case 422: // Shellos
+            data[formOffset + 0] = (u8)setDexFormValues(forms, 1, 2);
+            return;
+        case 423: // Gastrodon
+            data[formOffset + 1] = (u8)setDexFormValues(forms, 1, 2);
+            return;
+        case 412: // Burmy
+            data[formOffset + 2] = (u8)setDexFormValues(forms, 2, 3);
+            return;
+        case 413: // Wormadam
+            data[formOffset + 3] = (u8)setDexFormValues(forms, 2, 3);
+            return;
+        case 201: // Unown
+        {
+            int ofs = formOffset + 4;
+            int len = forms.size();
+            forms.resize(0x1C);
+            for (size_t i = len; i < forms.size(); i++)
+                forms[i] = 0xFF;
+            std::copy(forms.begin(), forms.end(), data + ofs);
+            return;
+        }
     }
 
     if (game == Game::DP)
@@ -663,34 +663,34 @@ void Sav4::setForms(std::vector<u8> forms, u16 species)
     int formOffset2   = languageFlags + 0x1F4;
     switch (species)
     {
-    case 479: // Rotom
-    {
-        u32 num    = setDexFormValues(forms, 3, 6);
-        u8* values = (u8*)&num;
-        for (int i = formOffset2; i < formOffset2 + 6; i++)
+        case 479: // Rotom
         {
-            data[i] = values[i - formOffset2];
-        }
-        return;
-    }
-    case 492: // Shaymin
-    {
-        data[formOffset2 + 4] = (u8)setDexFormValues(forms, 1, 2);
-        return;
-    }
-    case 487: // Giratina
-    {
-        data[formOffset2 + 5] = (u8)setDexFormValues(forms, 1, 2);
-        return;
-    }
-    case 172: // Pichu
-    {
-        if (game == Game::HGSS)
-        {
-            data[formOffset2 + 6] = (u8)setDexFormValues(forms, 2, 3);
+            u32 num    = setDexFormValues(forms, 3, 6);
+            u8* values = (u8*)&num;
+            for (int i = formOffset2; i < formOffset2 + 6; i++)
+            {
+                data[i] = values[i - formOffset2];
+            }
             return;
         }
-    }
+        case 492: // Shaymin
+        {
+            data[formOffset2 + 4] = (u8)setDexFormValues(forms, 1, 2);
+            return;
+        }
+        case 487: // Giratina
+        {
+            data[formOffset2 + 5] = (u8)setDexFormValues(forms, 1, 2);
+            return;
+        }
+        case 172: // Pichu
+        {
+            if (game == Game::HGSS)
+            {
+                data[formOffset2 + 6] = (u8)setDexFormValues(forms, 2, 3);
+                return;
+            }
+        }
     }
 }
 
@@ -774,32 +774,32 @@ void Sav4::item(Item& item, Pouch pouch, u16 slot)
     auto write   = inject.bytes();
     switch (pouch)
     {
-    case NormalItem:
-        std::copy(write.first, write.first + write.second, data + PouchHeldItem + slot * 4);
-        break;
-    case KeyItem:
-        std::copy(write.first, write.first + write.second, data + PouchKeyItem + slot * 4);
-        break;
-    case TM:
-        std::copy(write.first, write.first + write.second, data + PouchTMHM + slot * 4);
-        break;
-    case Mail:
-        std::copy(write.first, write.first + write.second, data + MailItems + slot * 4);
-        break;
-    case Medicine:
-        std::copy(write.first, write.first + write.second, data + PouchMedicine + slot * 4);
-        break;
-    case Berry:
-        std::copy(write.first, write.first + write.second, data + PouchBerry + slot * 4);
-        break;
-    case Ball:
-        std::copy(write.first, write.first + write.second, data + PouchBalls + slot * 4);
-        break;
-    case Battle:
-        std::copy(write.first, write.first + write.second, data + BattleItems + slot * 4);
-        break;
-    default:
-        return;
+        case NormalItem:
+            std::copy(write.first, write.first + write.second, data + PouchHeldItem + slot * 4);
+            break;
+        case KeyItem:
+            std::copy(write.first, write.first + write.second, data + PouchKeyItem + slot * 4);
+            break;
+        case TM:
+            std::copy(write.first, write.first + write.second, data + PouchTMHM + slot * 4);
+            break;
+        case Mail:
+            std::copy(write.first, write.first + write.second, data + MailItems + slot * 4);
+            break;
+        case Medicine:
+            std::copy(write.first, write.first + write.second, data + PouchMedicine + slot * 4);
+            break;
+        case Berry:
+            std::copy(write.first, write.first + write.second, data + PouchBerry + slot * 4);
+            break;
+        case Ball:
+            std::copy(write.first, write.first + write.second, data + PouchBalls + slot * 4);
+            break;
+        case Battle:
+            std::copy(write.first, write.first + write.second, data + BattleItems + slot * 4);
+            break;
+        default:
+            return;
     }
 }
 
@@ -807,24 +807,24 @@ std::unique_ptr<Item> Sav4::item(Pouch pouch, u16 slot) const
 {
     switch (pouch)
     {
-    case NormalItem:
-        return std::make_unique<Item4>(data + PouchHeldItem + slot * 4);
-    case KeyItem:
-        return std::make_unique<Item4>(data + PouchKeyItem + slot * 4);
-    case TM:
-        return std::make_unique<Item4>(data + PouchTMHM + slot * 4);
-    case Mail:
-        return std::make_unique<Item4>(data + MailItems + slot * 4);
-    case Medicine:
-        return std::make_unique<Item4>(data + PouchMedicine + slot * 4);
-    case Berry:
-        return std::make_unique<Item4>(data + PouchBerry + slot * 4);
-    case Ball:
-        return std::make_unique<Item4>(data + PouchBalls + slot * 4);
-    case Battle:
-        return std::make_unique<Item4>(data + BattleItems + slot * 4);
-    default:
-        return nullptr;
+        case NormalItem:
+            return std::make_unique<Item4>(data + PouchHeldItem + slot * 4);
+        case KeyItem:
+            return std::make_unique<Item4>(data + PouchKeyItem + slot * 4);
+        case TM:
+            return std::make_unique<Item4>(data + PouchTMHM + slot * 4);
+        case Mail:
+            return std::make_unique<Item4>(data + MailItems + slot * 4);
+        case Medicine:
+            return std::make_unique<Item4>(data + PouchMedicine + slot * 4);
+        case Berry:
+            return std::make_unique<Item4>(data + PouchBerry + slot * 4);
+        case Ball:
+            return std::make_unique<Item4>(data + PouchBalls + slot * 4);
+        case Battle:
+            return std::make_unique<Item4>(data + BattleItems + slot * 4);
+        default:
+            return nullptr;
     }
 }
 
@@ -865,23 +865,23 @@ std::string Sav4::pouchName(Pouch pouch) const
 {
     switch (pouch)
     {
-    case NormalItem:
-        return i18n::localize("ITEMS");
-    case KeyItem:
-        return i18n::localize("KEY_ITEMS");
-    case TM:
-        return i18n::localize("TMHM");
-    case Mail:
-        return i18n::localize("MAIL");
-    case Medicine:
-        return i18n::localize("MEDICINE");
-    case Berry:
-        return i18n::localize("BERRIES");
-    case Ball:
-        return i18n::localize("BALLS");
-    case Battle:
-        return i18n::localize("BATTLE_ITEMS");
-    default:
-        return "";
+        case NormalItem:
+            return i18n::localize("ITEMS");
+        case KeyItem:
+            return i18n::localize("KEY_ITEMS");
+        case TM:
+            return i18n::localize("TMHM");
+        case Mail:
+            return i18n::localize("MAIL");
+        case Medicine:
+            return i18n::localize("MEDICINE");
+        case Berry:
+            return i18n::localize("BERRIES");
+        case Ball:
+            return i18n::localize("BALLS");
+        case Battle:
+            return i18n::localize("BATTLE_ITEMS");
+        default:
+            return "";
     }
 }

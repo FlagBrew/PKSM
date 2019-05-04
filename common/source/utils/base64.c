@@ -25,6 +25,7 @@
  */
 
 #include "base64.h"
+#include <string.h>
 
 // clang-format off
 static char encoding_table[] = {
@@ -58,6 +59,7 @@ unsigned char* base64_decode(const char* data, size_t input_length, size_t* outp
     unsigned char* decoded_data = malloc(*output_length);
     if (decoded_data == NULL)
         return NULL;
+    memset(decoded_data, 0, *output_length);
 
     for (size_t i = 0, j = 0; i < input_length;)
     {

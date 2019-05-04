@@ -361,7 +361,7 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
         }
         return save != nullptr;
     }
-    Gui::warn("This should never happen!");
+    Gui::warn(i18n::localize("LOADER_CRITICAL_ERROR"));
     return false;
 }
 

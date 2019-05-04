@@ -450,15 +450,15 @@ bool SavLGPE::sanitizeFormsToIterate(int species, int& fs, int& fe, int formIn) 
 {
     switch (species)
     {
-    case 20:  // Raticate
-    case 105: // Marowak
-        fs = 0;
-        fe = 1;
-        return true;
-    default:
-        int count = dexFormCount(species);
-        fs = fe = 0;
-        return count < formIn;
+        case 20:  // Raticate
+        case 105: // Marowak
+            fs = 0;
+            fe = 1;
+            return true;
+        default:
+            int count = dexFormCount(species);
+            fs = fe = 0;
+            return count < formIn;
     }
 }
 
@@ -770,33 +770,33 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
         // Sets the ability to the one specific to the formSpecies and sets abilitynumber (Why? Don't quite understand that)
         switch (wb7->abilityType())
         {
-        case 0:
-        case 1:
-        case 2:
-            pkm->ability(wb7->abilityType());
-            break;
-        case 3:
-        case 4:
-            pkm->ability(randomNumbers() % (wb7->abilityType() - 1));
-            break;
+            case 0:
+            case 1:
+            case 2:
+                pkm->ability(wb7->abilityType());
+                break;
+            case 3:
+            case 4:
+                pkm->ability(randomNumbers() % (wb7->abilityType() - 1));
+                break;
         }
 
         switch (wb7->PIDType())
         {
-        case 0: // Fixed value
-            pkm->PID(wb7->PID());
-            break;
-        case 1: // Random
-            pkm->PID((u32)randomNumbers());
-            break;
-        case 2: // Always shiny
-            pkm->PID((u32)randomNumbers());
-            pkm->shiny(true);
-            break;
-        case 3: // Never shiny
-            pkm->PID((u32)randomNumbers());
-            pkm->shiny(false);
-            break;
+            case 0: // Fixed value
+                pkm->PID(wb7->PID());
+                break;
+            case 1: // Random
+                pkm->PID((u32)randomNumbers());
+                break;
+            case 2: // Always shiny
+                pkm->PID((u32)randomNumbers());
+                pkm->shiny(true);
+                break;
+            case 3: // Never shiny
+                pkm->PID((u32)randomNumbers());
+                pkm->shiny(false);
+                break;
         }
 
         if (wb7->egg())
@@ -981,80 +981,80 @@ void SavLGPE::item(Item& item, Pouch pouch, u16 slot)
     auto writeData = write.bytes();
     switch (pouch)
     {
-    case Pouch::Medicine:
-        if (slot < 60)
-        {
-            std::copy(writeData.first, writeData.first + writeData.second, data + slot * 4);
-        }
-        else
-        {
-            // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Medicine LGPE)");
-        }
-        break;
-    case Pouch::TM:
-        if (slot < 108)
-        {
-            std::copy(writeData.first, writeData.first + writeData.second, data + 0xF0 + slot * 4);
-        }
-        else
-        {
-            // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(TM LGPE)");
-        }
-        break;
-    case Pouch::Candy:
-        if (slot < 200)
-        {
-            std::copy(writeData.first, writeData.first + writeData.second, data + 0x2A0 + slot * 4);
-        }
-        else
-        {
-            // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Candy LGPE)");
-        }
-        break;
-    case Pouch::ZCrystals:
-        if (slot < 150)
-        {
-            std::copy(writeData.first, writeData.first + writeData.second, data + 0x5C0 + slot * 4);
-        }
-        else
-        {
-            // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(ZCrystals LGPE)");
-        }
-        break;
-    case Pouch::Ball:
-        if (slot < 50)
-        {
-            std::copy(writeData.first, writeData.first + writeData.second, data + 0x818 + slot * 4);
-        }
-        else
-        {
-            // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Ball LGPE)");
-        }
-        break;
-    case Pouch::Battle:
-        if (slot < 150)
-        {
-            std::copy(writeData.first, writeData.first + writeData.second, data + 0x8E0 + slot * 4);
-        }
-        else
-        {
-            // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Battle LGPE)");
-        }
-        break;
-    case Pouch::KeyItem:
-    case Pouch::NormalItem:
-        if (slot < 150)
-        {
-            std::copy(writeData.first, writeData.first + writeData.second, data + 0xB38 + slot * 4);
-        }
-        else
-        {
-            // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Normal/Key LGPE)");
-        }
-        break;
-    default:
-        // Gui::warn(i18n::localize("THE_FUCK"), std::to_string((int)pouch));
-        break;
+        case Pouch::Medicine:
+            if (slot < 60)
+            {
+                std::copy(writeData.first, writeData.first + writeData.second, data + slot * 4);
+            }
+            else
+            {
+                // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Medicine LGPE)");
+            }
+            break;
+        case Pouch::TM:
+            if (slot < 108)
+            {
+                std::copy(writeData.first, writeData.first + writeData.second, data + 0xF0 + slot * 4);
+            }
+            else
+            {
+                // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(TM LGPE)");
+            }
+            break;
+        case Pouch::Candy:
+            if (slot < 200)
+            {
+                std::copy(writeData.first, writeData.first + writeData.second, data + 0x2A0 + slot * 4);
+            }
+            else
+            {
+                // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Candy LGPE)");
+            }
+            break;
+        case Pouch::ZCrystals:
+            if (slot < 150)
+            {
+                std::copy(writeData.first, writeData.first + writeData.second, data + 0x5C0 + slot * 4);
+            }
+            else
+            {
+                // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(ZCrystals LGPE)");
+            }
+            break;
+        case Pouch::Ball:
+            if (slot < 50)
+            {
+                std::copy(writeData.first, writeData.first + writeData.second, data + 0x818 + slot * 4);
+            }
+            else
+            {
+                // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Ball LGPE)");
+            }
+            break;
+        case Pouch::Battle:
+            if (slot < 150)
+            {
+                std::copy(writeData.first, writeData.first + writeData.second, data + 0x8E0 + slot * 4);
+            }
+            else
+            {
+                // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Battle LGPE)");
+            }
+            break;
+        case Pouch::KeyItem:
+        case Pouch::NormalItem:
+            if (slot < 150)
+            {
+                std::copy(writeData.first, writeData.first + writeData.second, data + 0xB38 + slot * 4);
+            }
+            else
+            {
+                // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Normal/Key LGPE)");
+            }
+            break;
+        default:
+            // Gui::warn(i18n::localize("THE_FUCK"), std::to_string((int)pouch));
+            break;
     }
 }
 
@@ -1062,23 +1062,23 @@ std::unique_ptr<Item> SavLGPE::item(Pouch pouch, u16 slot) const
 {
     switch (pouch)
     {
-    case Pouch::Medicine:
-        return std::make_unique<Item7b>(data + slot * 4);
-    case Pouch::TM:
-        return std::make_unique<Item7b>(data + 0xF0 + slot * 4);
-    case Pouch::Candy:
-        return std::make_unique<Item7b>(data + 0x2A0 + slot * 4);
-    case Pouch::ZCrystals:
-        return std::make_unique<Item7b>(data + 0x5C0 + slot * 4);
-    case Pouch::Ball:
-        return std::make_unique<Item7b>(data + 0x818 + slot * 4);
-    case Pouch::Battle:
-        return std::make_unique<Item7b>(data + 0x8E0 + slot * 4);
-    case Pouch::KeyItem:
-    case Pouch::NormalItem:
-        return std::make_unique<Item7b>(data + 0xB38 + slot * 4);
-    default:
-        return nullptr;
+        case Pouch::Medicine:
+            return std::make_unique<Item7b>(data + slot * 4);
+        case Pouch::TM:
+            return std::make_unique<Item7b>(data + 0xF0 + slot * 4);
+        case Pouch::Candy:
+            return std::make_unique<Item7b>(data + 0x2A0 + slot * 4);
+        case Pouch::ZCrystals:
+            return std::make_unique<Item7b>(data + 0x5C0 + slot * 4);
+        case Pouch::Ball:
+            return std::make_unique<Item7b>(data + 0x818 + slot * 4);
+        case Pouch::Battle:
+            return std::make_unique<Item7b>(data + 0x8E0 + slot * 4);
+        case Pouch::KeyItem:
+        case Pouch::NormalItem:
+            return std::make_unique<Item7b>(data + 0xB38 + slot * 4);
+        default:
+            return nullptr;
     }
 }
 
@@ -1115,21 +1115,21 @@ std::string SavLGPE::pouchName(Pouch pouch) const
 {
     switch (pouch)
     {
-    case Medicine:
-        return i18n::localize("MEDICINE");
-    case TM:
-        return i18n::localize("TMS");
-    case Candy:
-        return i18n::localize("CANDIES");
-    case ZCrystals:
-        return i18n::localize("ZCRYSTALS");
-    case Ball:
-        return i18n::localize("CATCHING_ITEMS");
-    case Battle:
-        return i18n::localize("BATTLE_ITEMS");
-    case NormalItem:
-        return i18n::localize("ITEMS");
-    default:
-        return "";
+        case Medicine:
+            return i18n::localize("MEDICINE");
+        case TM:
+            return i18n::localize("TMS");
+        case Candy:
+            return i18n::localize("CANDIES");
+        case ZCrystals:
+            return i18n::localize("ZCRYSTALS");
+        case Ball:
+            return i18n::localize("CATCHING_ITEMS");
+        case Battle:
+            return i18n::localize("BATTLE_ITEMS");
+        case NormalItem:
+            return i18n::localize("ITEMS");
+        default:
+            return "";
     }
 }
