@@ -13,7 +13,7 @@ steps:
       from_secret: token
   commands:
   - make
-  - zip -r PKSM.zip output/ 3ds/out/PKSM.cia 3ds/out/PKSM.3dsx
+  - zip -r PKSM.zip out/ 3ds/out/PKSM.cia 3ds/out/PKSM.3dsx
   - "curl -F 'cia=@3ds/out/PKSM.cia' -F 'zip=@PKSM.zip' --header \"secret: $TOKEN\" --header \"commit: $DRONE_COMMIT\" https://flagbrew.org/api/v1/jenkins/PKSM"
   when:
     event:
