@@ -41,6 +41,13 @@ int ScriptChoice::run()
         hidTouchRead(&touch);
         update(&touch);
 
+        if (!aptIsHomeAllowed() && aptIsHomePressed())
+        {
+            Gui::setDoHomeDraw();
+        }
+
+        Gui::drawNoHome();
+
         C3D_FrameEnd(0);
     }
     return finalVal;

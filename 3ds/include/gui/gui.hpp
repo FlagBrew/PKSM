@@ -124,6 +124,8 @@ namespace Gui
     void backgroundBottom(bool stripes);
     void backgroundAnimatedTop(void);
     void backgroundAnimatedBottom(void);
+    void setDoHomeDraw(void);
+    void drawNoHome(void);
 
     std::vector<C2D_Text> parseText(const std::vector<FontString>& str, C2D_TextBuf buffer);
     const std::vector<C2D_Text>& cacheDynamicText(const std::string& strKey);

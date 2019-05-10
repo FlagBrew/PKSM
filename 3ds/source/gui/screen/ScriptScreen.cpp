@@ -352,6 +352,8 @@ void ScriptScreen::applyScript()
 
 void ScriptScreen::parsePicoCScript(std::string& file)
 {
+    // The loops used in PicoC make this basically a necessity
+    aptSetHomeAllowed(false);
     // setup for printing errors
     static char error[1024];
     std::fill_n(error, 1024, '\0');
@@ -391,4 +393,6 @@ void ScriptScreen::parsePicoCScript(std::string& file)
         Banks::bank->save();
     }
     PicocCleanup(picoc);
+    // And here we'll clean up
+    aptSetHomeAllowed(true);
 }

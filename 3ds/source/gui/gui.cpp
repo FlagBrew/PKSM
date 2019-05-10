@@ -45,6 +45,8 @@ std::stack<std::unique_ptr<Screen>> screens;
 static std::function<void()> keyboardFunc;
 
 constexpr u32 magicNumber = 0xC7D84AB9;
+static float noHomeAlpha = 0.0f;
+
 static size_t hackyGetCurrentGlyphCount(C2D_TextBuf buf)
 {
     struct access
@@ -76,6 +78,23 @@ static Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int e
         tex.height  = deltaY;
     }
     return tex;
+}
+
+void Gui::setDoHomeDraw()
+{
+    noHomeAlpha = 1.0f;
+}
+
+void Gui::drawNoHome()
+{
+    static C2D_ImageTint tint;
+    if (noHomeAlpha > 0.0f)
+    {
+        C2D_AlphaImageTint(&tint, noHomeAlpha);
+        C2D_SceneBegin(g_renderTargetBottom);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_home_blocked_idx), 130.0f, 90.0f, 0.5f, &tint);
+        noHomeAlpha -= 0.05f;
+    }
 }
 
 C2D_Image Gui::TWLIcon(void)
@@ -434,6 +453,13 @@ void Gui::mainLoop(void)
             screens.top()->doUpdate(&touch);
             exit = screens.top()->type() == ScreenType::TITLELOAD && (kHeld & KEY_START);
         }
+
+        if (!aptIsHomeAllowed() && aptIsHomePressed())
+        {
+            setDoHomeDraw();
+        }
+
+        drawNoHome();
 
         C3D_FrameEnd(0);
         if (keyboardFunc != nullptr)
@@ -1486,6 +1512,13 @@ bool Gui::showChoiceMessage(const std::string& message, std::optional<std::strin
         C2D_SceneBegin(g_renderTargetBottom);
         sprite(ui_sheet_part_info_bottom_idx, 0, 0);
 
+        if (!aptIsHomeAllowed() && aptIsHomePressed())
+        {
+            setDoHomeDraw();
+        }
+
+        drawNoHome();
+
         C3D_FrameEnd(0);
         if (timer)
         {
@@ -1569,6 +1602,13 @@ void Gui::warn(const std::string& message, std::optional<std::string> message2, 
             sprite(ui_sheet_part_info_bottom_idx, 0, 0);
         }
 
+        if (!aptIsHomeAllowed() && aptIsHomePressed())
+        {
+            setDoHomeDraw();
+        }
+
+        drawNoHome();
+
         C3D_FrameEnd(0);
     }
     hidScanInput();
@@ -1635,6 +1675,13 @@ void Gui::error(const std::string& message, Result errorCode)
 
         C2D_SceneBegin(g_renderTargetBottom);
         sprite(ui_sheet_part_info_bottom_idx, 0, 0);
+
+        if (!aptIsHomeAllowed() && aptIsHomePressed())
+        {
+            setDoHomeDraw();
+        }
+
+        drawNoHome();
 
         C3D_FrameEnd(0);
     }

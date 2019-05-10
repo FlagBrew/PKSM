@@ -285,6 +285,13 @@ std::tuple<int, int, int> BoxChoice::run()
 
         draw();
 
+        if (!aptIsHomeAllowed() && aptIsHomePressed())
+        {
+            Gui::setDoHomeDraw();
+        }
+
+        Gui::drawNoHome();
+
         C3D_FrameEnd(0);
     }
     return result;
