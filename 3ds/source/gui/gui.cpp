@@ -46,6 +46,8 @@ static std::function<void()> keyboardFunc;
 
 constexpr u32 magicNumber = 0xC7D84AB9;
 static float noHomeAlpha = 0.0f;
+#define NOHOMEALPHA_ACCEL 0.001f
+static float dNoHomeAlpha = NOHOMEALPHA_ACCEL;
 
 static size_t hackyGetCurrentGlyphCount(C2D_TextBuf buf)
 {
@@ -83,6 +85,7 @@ static Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int e
 void Gui::setDoHomeDraw()
 {
     noHomeAlpha = 1.0f;
+    dNoHomeAlpha = NOHOMEALPHA_ACCEL;
 }
 
 void Gui::drawNoHome()
@@ -93,7 +96,8 @@ void Gui::drawNoHome()
         C2D_AlphaImageTint(&tint, noHomeAlpha);
         C2D_SceneBegin(g_renderTargetBottom);
         C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_home_blocked_idx), 130.0f, 90.0f, 0.5f, &tint);
-        noHomeAlpha -= 0.05f;
+        noHomeAlpha -= dNoHomeAlpha;
+        dNoHomeAlpha += NOHOMEALPHA_ACCEL;
     }
 }
 
