@@ -42,6 +42,7 @@
 #include "fetch.hpp"
 #include <PB7.hpp>
 #include <variant>
+#include "QRScanner.hpp"
 
 extern "C" {
 #include "base64.h"
@@ -1734,15 +1735,31 @@ void StorageScreen::shareReceive()
     static bool first = true;
     if (first)
     {
-        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 10);
+        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 3, 10);
         first = false;
     }
     swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
     swkbdSetValidation(&state, SWKBD_FIXEDLEN, 0, 0);
+    swkbdSetButton(&state, SwkbdButton::SWKBD_BUTTON_MIDDLE, i18n::localize("QR_SCANNER").c_str(), false);
     char input[11]  = {0};
     SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
     input[10]       = '\0';
     CURLcode res;
+    if (ret == SWKBD_BUTTON_MIDDLE)
+    {
+        u8* buff = nullptr;
+        QRScanner::init(NUMBER, buff);
+        if (buff)
+        {
+            if (strlen((char*)buff) < 11)
+            {
+                std::copy(buff, buff + strlen((char*)buff), input);
+                input[10] = '\0';
+                ret = SWKBD_BUTTON_CONFIRM;
+            }
+            delete[] buff;
+        }
+    }
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
         const std::string url  = "https://flagbrew.org/gpss/download/" + std::string(input);
