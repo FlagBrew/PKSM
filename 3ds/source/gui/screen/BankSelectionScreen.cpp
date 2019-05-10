@@ -1,28 +1,28 @@
 /*
-*   This file is part of PKSM
-*   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
-*
-*   This program is free software: you can redistribute it and/or modify
-*   it under the terms of the GNU General Public License as published by
-*   the Free Software Foundation, either version 3 of the License, or
-*   (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-*   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
-*       * Requiring preservation of specified reasonable legal notices or
-*         author attributions in that material or in the Appropriate Legal
-*         Notices displayed by works containing it.
-*       * Prohibiting misrepresentation of the origin of that material,
-*         or requiring that modified versions of such material be marked in
-*         reasonable ways as different from the original version.
-*/
+ *   This file is part of PKSM
+ *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
+ *       * Requiring preservation of specified reasonable legal notices or
+ *         author attributions in that material or in the Appropriate Legal
+ *         Notices displayed by works containing it.
+ *       * Prohibiting misrepresentation of the origin of that material,
+ *         or requiring that modified versions of such material be marked in
+ *         reasonable ways as different from the original version.
+ */
 
 #include "BankSelectionScreen.hpp"
 #include "gui.hpp"
@@ -31,7 +31,8 @@ void BankSelectionScreen::draw() const
 {
     C2D_SceneBegin(g_renderTargetBottom);
     Gui::sprite(ui_sheet_part_info_bottom_idx, 0, 0);
-    Gui::staticText(i18n::localize("X_RENAME") + "\n" + i18n::localize("Y_RESIZE") + "\n" + i18n::localize("START_DELETE"), 160, 120, FONT_SIZE_18, FONT_SIZE_18, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::staticText(i18n::localize("X_RENAME") + "\n" + i18n::localize("Y_RESIZE") + "\n" + i18n::localize("START_DELETE"), 160, 120, FONT_SIZE_18,
+        FONT_SIZE_18, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER);
 
     C2D_SceneBegin(g_renderTargetTop);
     Gui::sprite(ui_sheet_part_editor_20x2_idx, 0, 0);
@@ -47,8 +48,10 @@ void BankSelectionScreen::draw() const
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 204;
         if (hid.page() * hid.maxVisibleEntries() + i < strings.size())
         {
-            Gui::dynamicText(strings[hid.page() * hid.maxVisibleEntries() + i].first, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-            Gui::dynamicText(std::to_string(strings[hid.page() * hid.maxVisibleEntries() + i].second), x + 192, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
+            Gui::dynamicText(strings[hid.page() * hid.maxVisibleEntries() + i].first, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9,
+                FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            Gui::dynamicText(std::to_string(strings[hid.page() * hid.maxVisibleEntries() + i].second), x + 192,
+                (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
         }
         else
         {
@@ -63,22 +66,33 @@ void BankSelectionScreen::update(touchPosition* touch)
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {
-        finished = true;
+        auto& res = strings[hid.fullIndex()];
+        if (res.first != Banks::bank->name())
+        {
+            if (Banks::bank->hasChanged() && Gui::showChoiceMessage(i18n::localize("BANK_SAVE_CHANGES")))
+            {
+                Banks::bank->save();
+            }
+            if (Banks::loadBank(res.first, res.second))
+            {
+                storageBox = 0;
+            }
+        }
+        Gui::screenBack();
         return;
     }
     else if (downKeys & KEY_B)
     {
-        hid.select(previous);
-        finished = true;
+        Gui::screenBack();
         return;
     }
     else if (downKeys & KEY_X)
     {
-        keyboardFunc = [this](){ renameBank(); };
+        Gui::setNextKeyboardFunc([this]() { renameBank(); });
     }
     else if (downKeys & KEY_Y)
     {
-        keyboardFunc = [this](){ resizeBank(); };
+        Gui::setNextKeyboardFunc([this]() { resizeBank(); });
     }
     else if (downKeys & KEY_START)
     {
@@ -93,38 +107,9 @@ void BankSelectionScreen::update(touchPosition* touch)
                 auto i = strings.begin() + hid.fullIndex();
                 Banks::removeBank(i->first);
                 strings.erase(i);
-                if (previous == hid.fullIndex())
-                {
-                    previous = 0;
-                }
             }
         }
     }
-}
-
-std::pair<std::string, int> BankSelectionScreen::run()
-{
-    while (aptMainLoop() && !finished)
-    {
-        hidScanInput();
-        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-        C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
-
-        draw();
-        touchPosition touch;
-        hidTouchRead(&touch);
-        update(&touch);
-
-        C3D_FrameEnd(0);
-        if (keyboardFunc)
-        {
-            keyboardFunc();
-            keyboardFunc = nullptr;
-        }
-        Gui::clearTextBufs();
-    }
-
-    return strings[hid.fullIndex()];
 }
 
 void BankSelectionScreen::renameBank()
@@ -138,13 +123,14 @@ void BankSelectionScreen::renameBank()
     }
     swkbdSetHintText(&state, i18n::localize("CONFIG_STORAGE_SIZE").c_str());
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
-    char input[41] = {0};
+    char input[41]  = {0};
     SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-    input[40] = '\0';
+    input[40]       = '\0';
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
         std::string string(input);
-        if (std::find_if(strings.begin(), strings.end(), [&string](const std::pair<std::string, int>& v){ return v.first == string; }) != strings.end())
+        if (std::find_if(strings.begin(), strings.end(), [&string](const std::pair<std::string, int>& v) { return v.first == string; }) !=
+            strings.end())
         {
             Gui::warn(i18n::localize("NO_DUPES"));
         }
@@ -168,16 +154,16 @@ void BankSelectionScreen::resizeBank()
         swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 3);
         first = false;
     }
-	swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
+    swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
     swkbdSetValidation(&state, SWKBD_NOTEMPTY_NOTBLANK, 0, 0);
-    char input[4] = {0};
+    char input[4]   = {0};
     SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-    input[3] = '\0';
+    input[3]        = '\0';
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
         int num = std::max(1, std::min(std::stoi(input), BANK_MAX_SIZE));
         if (hid.fullIndex() != strings.size() - 1)
-        { 
+        {
             Banks::setBankSize(strings[hid.fullIndex()].first, num);
         }
         strings[hid.fullIndex()].second = num;

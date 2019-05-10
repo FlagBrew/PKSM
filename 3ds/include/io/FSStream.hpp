@@ -1,35 +1,35 @@
 /*
-*   This file is part of PKSM
-*   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
-*
-*   This program is free software: you can redistribute it and/or modify
-*   it under the terms of the GNU General Public License as published by
-*   the Free Software Foundation, either version 3 of the License, or
-*   (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-*   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
-*       * Requiring preservation of specified reasonable legal notices or
-*         author attributions in that material or in the Appropriate Legal
-*         Notices displayed by works containing it.
-*       * Prohibiting misrepresentation of the origin of that material,
-*         or requiring that modified versions of such material be marked in
-*         reasonable ways as different from the original version.
-*/
+ *   This file is part of PKSM
+ *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
+ *       * Requiring preservation of specified reasonable legal notices or
+ *         author attributions in that material or in the Appropriate Legal
+ *         Notices displayed by works containing it.
+ *       * Prohibiting misrepresentation of the origin of that material,
+ *         or requiring that modified versions of such material be marked in
+ *         reasonable ways as different from the original version.
+ */
 
 #ifndef FSSTREAM_HPP
 #define FSSTREAM_HPP
 
+#include "utils.hpp"
 #include <3ds.h>
 #include <string>
-#include "utils.hpp"
 
 class FSStream
 {
@@ -38,24 +38,25 @@ public:
     FSStream(FS_Archive archive, const std::u16string& path, u32 flags, u32 size);
     FSStream(FS_Archive archive, const std::string& path, u32 flags) : FSStream(archive, StringUtils::UTF8toUTF16(path), flags) {}
     FSStream(FS_Archive archive, const std::string& path, u32 flags, u32 size) : FSStream(archive, StringUtils::UTF8toUTF16(path), flags, size) {}
-    ~FSStream(void) { };
+    ~FSStream(void){};
 
     Result close(void);
-    bool   eof(void);
-    bool   good(void);
-    u32    offset(void);
-    u32    read(void *buf, u32 size);
+    bool eof(void);
+    bool good(void);
+    u32 offset(void);
+    u32 read(void* buf, u32 size);
     Result result(void);
-    u32    size(void);
-    u32    write(const void *buf, u32 size);
-    void   seek(u32 offset, int from);
-    
+    u32 size(void);
+    u32 write(const void* buf, u32 size);
+    void seek(u32 offset, int from);
+    Handle getRawHandle(void);
+
 private:
     Handle mHandle;
-    u32    mSize;
-    u32    mOffset;
+    u32 mSize;
+    u32 mOffset;
     Result mResult;
-    bool   mGood;
+    bool mGood;
 };
 
 #endif

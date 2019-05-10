@@ -1,40 +1,40 @@
 /*
-*   This file is part of PKSM
-*   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
-*
-*   This program is free software: you can redistribute it and/or modify
-*   it under the terms of the GNU General Public License as published by
-*   the Free Software Foundation, either version 3 of the License, or
-*   (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-*   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
-*       * Requiring preservation of specified reasonable legal notices or
-*         author attributions in that material or in the Appropriate Legal
-*         Notices displayed by works containing it.
-*       * Prohibiting misrepresentation of the origin of that material,
-*         or requiring that modified versions of such material be marked in
-*         reasonable ways as different from the original version.
-*/
+ *   This file is part of PKSM
+ *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
+ *       * Requiring preservation of specified reasonable legal notices or
+ *         author attributions in that material or in the Appropriate Legal
+ *         Notices displayed by works containing it.
+ *       * Prohibiting misrepresentation of the origin of that material,
+ *         or requiring that modified versions of such material be marked in
+ *         reasonable ways as different from the original version.
+ */
 
 #ifndef LANGUAGESTRINGS_HPP
 #define LANGUAGESTRINGS_HPP
 
-#include <algorithm>
-#include <vector>
-#include <string>
-#include <unordered_map>
+#include "generation.hpp"
 #include "io.hpp"
 #include "json.hpp"
-#include "generation.hpp"
 #include "types.h"
+#include <algorithm>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 enum Language
 {
@@ -65,15 +65,15 @@ protected:
     std::vector<std::string> natures;
     std::vector<std::string> speciess;
     std::vector<std::string> games;
-    std::unordered_map<u16, std::string> locations4;
-    std::unordered_map<u16, std::string> locations5;
-    std::unordered_map<u16, std::string> locations6;
-    std::unordered_map<u16, std::string> locations7;
-    std::unordered_map<u16, std::string> locationsLGPE;
+    std::map<u16, std::string> locations4;
+    std::map<u16, std::string> locations5;
+    std::map<u16, std::string> locations6;
+    std::map<u16, std::string> locations7;
+    std::map<u16, std::string> locationsLGPE;
     nlohmann::json gui;
 
     void load(Language lang, const std::string name, std::vector<std::string>& array);
-    void loadMap(Language lang, const std::string name, std::unordered_map<u16, std::string>& map);
+    void loadMap(Language lang, const std::string name, std::map<u16, std::string>& map);
     void loadGui(Language lang);
 
 public:
@@ -82,6 +82,8 @@ public:
 
     const std::vector<std::string>& rawItems() const;
     const std::vector<std::string>& rawMoves() const;
+    const std::map<u16, std::string>& locations(Generation g) const;
+    size_t numGameStrings() const;
 
     const std::string& ability(u8 v) const;
     const std::string& ball(u8 v) const;

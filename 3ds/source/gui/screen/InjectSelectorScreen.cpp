@@ -1,48 +1,42 @@
 /*
-*   This file is part of PKSM
-*   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
-*
-*   This program is free software: you can redistribute it and/or modify
-*   it under the terms of the GNU General Public License as published by
-*   the Free Software Foundation, either version 3 of the License, or
-*   (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-*   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
-*       * Requiring preservation of specified reasonable legal notices or
-*         author attributions in that material or in the Appropriate Legal
-*         Notices displayed by works containing it.
-*       * Prohibiting misrepresentation of the origin of that material,
-*         or requiring that modified versions of such material be marked in
-*         reasonable ways as different from the original version.
-*/
+ *   This file is part of PKSM
+ *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
+ *       * Requiring preservation of specified reasonable legal notices or
+ *         author attributions in that material or in the Appropriate Legal
+ *         Notices displayed by works containing it.
+ *       * Prohibiting misrepresentation of the origin of that material,
+ *         or requiring that modified versions of such material be marked in
+ *         reasonable ways as different from the original version.
+ */
 
 #include "InjectSelectorScreen.hpp"
+#include "FSStream.hpp"
 #include "InjectorScreen.hpp"
 #include "loader.hpp"
-#include "FSStream.hpp"
 #include <sys/stat.h>
 
-static constexpr std::string_view langs[] = {
-    "JPN",
-    "ENG",
-    "FRE",
-    "ITA",
-    "GER",
-    "SPA",
-    "KOR",
-    "CHS",
-    "CHT"
-};
+static constexpr std::string_view langs[] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR", "CHS", "CHT"};
 
-InjectSelectorScreen::InjectSelectorScreen() : hid(10, 2), dumpHid(40, 8)
+InjectSelectorScreen::InjectSelectorScreen()
+    : Screen(
+          i18n::localize("A_SELECT") + '\n' + i18n::localize("L_PAGE_PREV") + '\n' + i18n::localize("R_PAGE_NEXT") + '\n' + i18n::localize("B_BACK")),
+      hid(10, 2),
+      dumpHid(40, 8)
 {
     MysteryGift::init(TitleLoader::save->generation());
     wondercards = MysteryGift::wondercards();
@@ -62,11 +56,21 @@ InjectSelectorScreen::InjectSelectorScreen() : hid(10, 2), dumpHid(40, 8)
     gifts = TitleLoader::save->currentGifts();
 
     // QR
-    buttons.push_back(new Button(160 - 70/2, 207 - 23, 70, 23, [this](){ return this->doQR(); }, ui_sheet_emulated_button_qr_idx, "", FONT_SIZE_14, COLOR_WHITE));
+    instructions.addCircle(false, 160, 195, 11, COLOR_GREY);
+    instructions.addBox(false, 158, 177, 4, 29, COLOR_GREY);
+    instructions.addBox(false, 160 - 100 / 2, 177 - 23, 100, 23, COLOR_GREY, i18n::localize("QR_SCANNER"));
+    buttons.push_back(new Button(
+        160 - 70 / 2, 207 - 23, 70, 23, [this]() { return this->doQR(); }, ui_sheet_emulated_button_qr_idx, "", FONT_SIZE_14, COLOR_WHITE));
     // Filter
     for (int i = 0; i < 9; i++)
     {
-        langFilters.push_back(new ToggleButton(268, 3 + i * 24, 38, 23, [this, i](){ hid.select(0); return this->toggleFilter(std::string(langs[i])); }, ui_sheet_emulated_button_selected_blue_idx, std::string(langs[i]), FONT_SIZE_14, COLOR_WHITE, ui_sheet_emulated_button_unselected_blue_idx, std::nullopt, std::nullopt, COLOR_BLACK, &langFilters, true));
+        langFilters.push_back(new ToggleButton(268, 3 + i * 24, 38, 23,
+            [this, i]() {
+                hid.select(0);
+                return this->toggleFilter(std::string(langs[i]));
+            },
+            ui_sheet_emulated_button_selected_blue_idx, std::string(langs[i]), FONT_SIZE_14, COLOR_WHITE,
+            ui_sheet_emulated_button_unselected_blue_idx, std::nullopt, std::nullopt, COLOR_BLACK, &langFilters, true));
         langFilters.back()->setState(false);
     }
 }
@@ -175,13 +179,16 @@ void InjectSelectorScreen::draw() const
 {
     C2D_SceneBegin(g_renderTargetBottom);
     Gui::backgroundBottom(true);
-    Gui::dynamicText(i18n::localize("WC_INST1"), 160, 222, FONT_SIZE_11, FONT_SIZE_11, C2D_Color32(197, 202, 233, 255), TextPosX::CENTER, TextPosY::TOP);
+    Gui::dynamicText(
+        i18n::localize("WC_INST1"), 160, 222, FONT_SIZE_11, FONT_SIZE_11, C2D_Color32(197, 202, 233, 255), TextPosX::CENTER, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_eventmenu_page_indicator_idx, 65, 13);
 
     Gui::staticText("\uE004", 75, 17, FONT_SIZE_18, FONT_SIZE_18, C2D_Color32(197, 202, 233, 255), TextPosX::LEFT, TextPosY::TOP);
     Gui::staticText("\uE005", 228, 17, FONT_SIZE_18, FONT_SIZE_18, C2D_Color32(197, 202, 233, 255), TextPosX::LEFT, TextPosY::TOP);
-    Gui::dynamicText(StringUtils::format("%d/%d", hid.page() + 1, wondercards.size() % 10 == 0 ? wondercards.size() / 10 : wondercards.size() / 10 + 1), 160, 20, FONT_SIZE_12, FONT_SIZE_12, C2D_Color32(197, 202, 233, 255), TextPosX::CENTER, TextPosY::TOP);
+    Gui::dynamicText(
+        StringUtils::format("%d/%d", hid.page() + 1, wondercards.size() % 10 == 0 ? wondercards.size() / 10 : wondercards.size() / 10 + 1), 160, 20,
+        FONT_SIZE_12, FONT_SIZE_12, C2D_Color32(197, 202, 233, 255), TextPosX::CENTER, TextPosY::TOP);
 
     for (auto button : buttons)
     {
@@ -205,7 +212,8 @@ void InjectSelectorScreen::draw() const
         C2D_SceneBegin(g_renderTargetTop);
         Gui::backgroundTop(true);
 
-        Gui::dynamicText(i18n::localize("EVENT_DATABASE"), 200, 4, FONT_SIZE_14, FONT_SIZE_14, C2D_Color32(140, 158, 255, 255), TextPosX::CENTER, TextPosY::TOP);
+        Gui::dynamicText(
+            i18n::localize("EVENT_DATABASE"), 200, 4, FONT_SIZE_14, FONT_SIZE_14, C2D_Color32(140, 158, 255, 255), TextPosX::CENTER, TextPosY::TOP);
 
         for (size_t i = 0; i < 10; i++)
         {
@@ -219,11 +227,14 @@ void InjectSelectorScreen::draw() const
                 }
                 else if (i == 8)
                 {
-                    Gui::sprite(i == hid.index() ? ui_sheet_emulated_eventmenu_bar_selected_flipped_vertical_idx : ui_sheet_emulated_eventmenu_bar_unselected_flipped_vertical_idx, x, y);
+                    Gui::sprite(i == hid.index() ? ui_sheet_emulated_eventmenu_bar_selected_flipped_vertical_idx
+                                                 : ui_sheet_emulated_eventmenu_bar_unselected_flipped_vertical_idx,
+                        x, y);
                 }
                 else
                 {
-                    C2D_DrawRectSolid(x, y, 0.5f, 178, 34, i == hid.index() ? C2D_Color32(0x3D, 0x5A, 0xFE, 0xFF) : C2D_Color32(0x8C, 0x9E, 0xFF, 0xFF));
+                    C2D_DrawRectSolid(
+                        x, y, 0.5f, 178, 34, i == hid.index() ? C2D_Color32(0x3D, 0x5A, 0xFE, 0xFF) : C2D_Color32(0x8C, 0x9E, 0xFF, 0xFF));
                 }
             }
             else
@@ -232,20 +243,25 @@ void InjectSelectorScreen::draw() const
                 int y = 41 + (i / 2) * 37;
                 if (i == 1)
                 {
-                    Gui::sprite(i == hid.index() ? ui_sheet_emulated_eventmenu_bar_selected_flipped_horizontal_idx : ui_sheet_emulated_eventmenu_bar_unselected_flipped_horizontal_idx, x, y);
+                    Gui::sprite(i == hid.index() ? ui_sheet_emulated_eventmenu_bar_selected_flipped_horizontal_idx
+                                                 : ui_sheet_emulated_eventmenu_bar_unselected_flipped_horizontal_idx,
+                        x, y);
                 }
                 else if (i == 9)
                 {
-                    Gui::sprite(i == hid.index() ? ui_sheet_emulated_eventmenu_bar_selected_flipped_both_idx : ui_sheet_emulated_eventmenu_bar_unselected_flipped_both_idx, x, y);
+                    Gui::sprite(i == hid.index() ? ui_sheet_emulated_eventmenu_bar_selected_flipped_both_idx
+                                                 : ui_sheet_emulated_eventmenu_bar_unselected_flipped_both_idx,
+                        x, y);
                 }
                 else
                 {
-                    C2D_DrawRectSolid(x, y, 0.5f, 178, 34, i == hid.index() ? C2D_Color32(0x3D, 0x5A, 0xFE, 0xFF) : C2D_Color32(0x8C, 0x9E, 0xFF, 0xFF));
+                    C2D_DrawRectSolid(
+                        x, y, 0.5f, 178, 34, i == hid.index() ? C2D_Color32(0x3D, 0x5A, 0xFE, 0xFF) : C2D_Color32(0x8C, 0x9E, 0xFF, 0xFF));
                 }
             }
         }
 
-        for (size_t i = hid.page() * 10; i < (size_t) hid.page() * 10 + 10; i++)
+        for (size_t i = hid.page() * 10; i < (size_t)hid.page() * 10 + 10; i++)
         {
             if (i >= wondercards.size())
             {
@@ -274,9 +290,10 @@ void InjectSelectorScreen::draw() const
                     Gui::pkm(data.species, data.form, TitleLoader::save->generation(), data.gender, x, y);
                 }
                 std::string text = data.name;
-                text = StringUtils::wrap(data.name, FONT_SIZE_11, 138, 2);
+                text             = StringUtils::wrap(data.name, FONT_SIZE_11, 138, 2);
                 // TODO check this six
-                Gui::dynamicText(text, x + 103, y + 14, FONT_SIZE_11, FONT_SIZE_11, i == hid.fullIndex() ? C2D_Color32(232, 234, 246, 255) : C2D_Color32(26, 35, 126, 255), TextPosX::CENTER, TextPosY::CENTER);
+                Gui::dynamicText(text, x + 103, y + 14, FONT_SIZE_11, FONT_SIZE_11,
+                    i == hid.fullIndex() ? C2D_Color32(232, 234, 246, 255) : C2D_Color32(26, 35, 126, 255), TextPosX::CENTER, TextPosY::CENTER);
             }
         }
     }
@@ -290,8 +307,8 @@ void InjectSelectorScreen::draw() const
         auto saveGeneration = TitleLoader::save->generation();
         for (size_t i = 0; i < 40; i++)
         {
-            int x = i % 8;
-            int y = i / 8;
+            int x        = i % 8;
+            int y        = i / 8;
             size_t fullI = i + dumpHid.page() * 40;
             if (fullI >= TitleLoader::save->maxWondercards())
             {
@@ -312,11 +329,13 @@ void InjectSelectorScreen::draw() const
                     Gui::sprite(ui_sheet_icon_item_idx, x * 50 + 20, y * 48 + 18);
                 }
 
-                Gui::dynamicText(std::to_string(fullI + 1), x * 50 + 25, y * 48 + 36, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                Gui::dynamicText(
+                    std::to_string(fullI + 1), x * 50 + 25, y * 48 + 36, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
             }
             else
             {
-                Gui::dynamicText(std::to_string(fullI + 1), x * 50 + 25, y * 48 + 36, FONT_SIZE_9, FONT_SIZE_9, COLOR_MASKBLACK, TextPosX::CENTER, TextPosY::TOP);
+                Gui::dynamicText(
+                    std::to_string(fullI + 1), x * 50 + 25, y * 48 + 36, FONT_SIZE_9, FONT_SIZE_9, COLOR_MASKBLACK, TextPosX::CENTER, TextPosY::TOP);
             }
         }
     }
@@ -384,13 +403,13 @@ bool InjectSelectorScreen::doQR()
 
 void InjectSelectorScreen::dumpCard(void) const
 {
-    auto wc = TitleLoader::save->mysteryGift(dumpHid.fullIndex());
-    char stringDate[11] = {0};
-    char stringTime[10] = {0};
-    time_t unixTime = time(NULL);
-    struct tm* timeStruct = gmtime((const time_t *)&unixTime);
-    std::strftime(stringDate, 10,"%Y-%m-%d", timeStruct);
-    std::strftime(stringTime, 9,"/%H-%M-%S", timeStruct);
+    auto wc               = TitleLoader::save->mysteryGift(dumpHid.fullIndex());
+    char stringDate[11]   = {0};
+    char stringTime[10]   = {0};
+    time_t unixTime       = time(NULL);
+    struct tm* timeStruct = gmtime((const time_t*)&unixTime);
+    std::strftime(stringDate, 10, "%Y-%m-%d", timeStruct);
+    std::strftime(stringTime, 9, "/%H-%M-%S", timeStruct);
     std::string path = std::string("/3ds/PKSM/dumps/") + stringDate;
     mkdir(path.c_str(), 777);
     path += stringTime;
@@ -435,7 +454,7 @@ bool InjectSelectorScreen::toggleFilter(const std::string& lang)
         wondercards = MysteryGift::wondercards();
         for (size_t i = wondercards.size(); i > 0; i--)
         {
-            if (!wondercards[i-1].contains(lang))
+            if (!wondercards[i - 1].contains(lang))
             {
                 wondercards.erase(wondercards.begin() + i - 1);
             }
@@ -445,7 +464,7 @@ bool InjectSelectorScreen::toggleFilter(const std::string& lang)
     else
     {
         wondercards = MysteryGift::wondercards();
-        langFilter = "";
+        langFilter  = "";
     }
     return false;
 }

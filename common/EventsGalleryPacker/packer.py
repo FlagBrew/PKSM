@@ -3,6 +3,7 @@ import git
 import os
 import json
 import struct
+import bz2
 import gen4string
 
 validLangs = ["CHS", "CHT", "ENG", "FRE", "GER", "ITA", "JPN", "KOR", "SPA"]
@@ -239,12 +240,8 @@ for gen in range (4, 7+1):
 
 	# parse files
 	data += scanDir(root, sheet, 0)
-	if (gen == 4):
-		data += scanDir("./EventsGallery/Released/Gen 4/Pokemon Ranger Manaphy Egg", sheet, len(data))
-	if (gen == 5):
-		data += scanDir("./EventsGallery/Unreleased/Gen 5", sheet, len(data))
 	if (gen == 7):
-		data += scanDir("./EventsGallery/Unreleased/Gen 7", sheet, len(data))
+		data += scanDir("./EventsGallery/Unreleased/Gen 7/Movie 21", sheet, len(data))
 	
 	# sort, then get rid of data not needed in final product
 	sheet['matches'] = sorted(sheet['matches'], key=sortById)
@@ -254,10 +251,11 @@ for gen in range (4, 7+1):
 		sheet['matches'][i]
 		
 	# export sheet
-	sheet_data = json.dumps(sheet)
-	with open("./out/sheet{}.json".format(gen), 'w') as f:
-		f.write(sheet_data)
+	compressed = bz2.compress(str.encode(json.dumps(sheet)))
+	with open("./out/sheet{}.json.bz2".format(gen), 'wb') as f:
+		f.write(compressed)
 
 	# export data
-	with open("./out/data{}.bin".format(gen), 'wb') as f:
-		f.write(data)	
+	compressed = bz2.compress(data)
+	with open("./out/data{}.bin.bz2".format(gen), 'wb') as f:
+		f.write(compressed)

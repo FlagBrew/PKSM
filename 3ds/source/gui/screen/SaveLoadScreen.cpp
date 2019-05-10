@@ -1,83 +1,64 @@
 /*
-*   This file is part of PKSM
-*   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
-*
-*   This program is free software: you can redistribute it and/or modify
-*   it under the terms of the GNU General Public License as published by
-*   the Free Software Foundation, either version 3 of the License, or
-*   (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-*   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
-*       * Requiring preservation of specified reasonable legal notices or
-*         author attributions in that material or in the Appropriate Legal
-*         Notices displayed by works containing it.
-*       * Prohibiting misrepresentation of the origin of that material,
-*         or requiring that modified versions of such material be marked in
-*         reasonable ways as different from the original version.
-*/
+ *   This file is part of PKSM
+ *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
+ *       * Requiring preservation of specified reasonable legal notices or
+ *         author attributions in that material or in the Appropriate Legal
+ *         Notices displayed by works containing it.
+ *       * Prohibiting misrepresentation of the origin of that material,
+ *         or requiring that modified versions of such material be marked in
+ *         reasonable ways as different from the original version.
+ */
 
 #include "SaveLoadScreen.hpp"
-#include "TitleLoadScreen.hpp"
-#include "MainMenu.hpp"
-#include "ConfigScreen.hpp"
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
+#include "ConfigScreen.hpp"
+#include "MainMenu.hpp"
+#include "TitleLoadScreen.hpp"
 
 static constexpr std::string_view dsIds[9] = {
-    "ADA", //Diamond
-    "APA", //Pearl
-    "CPU", //Platinum
-    "IPK", //HeartGold
-    "IPG", //SoulSilver
-    "IRB", //Black
-    "IRA", //White
-    "IRE", //Black 2
-    "IRD"  //White 2
+    "ADA", // Diamond
+    "APA", // Pearl
+    "CPU", // Platinum
+    "IPK", // HeartGold
+    "IPG", // SoulSilver
+    "IRB", // Black
+    "IRA", // White
+    "IRE", // Black 2
+    "IRD"  // White 2
 };
 
-static constexpr std::string_view ctrIds[] = {
-    "0x0055D",
-    "0x0055E",
-    "0x011C4",
-    "0x011C5",
-    "0x01648",
-    "0x0175E",
-    "0x01B50",
-    "0x01B51"
-};
+static constexpr std::string_view ctrIds[] = {"0x0055D", "0x0055E", "0x011C4", "0x011C5", "0x01648", "0x0175E", "0x01B50", "0x01B51"};
 
-static constexpr std::string_view ctrNames[] = {
-    "XY",
-    "ORAS",
-    "SUMO",
-    "USUM"
-};
+static constexpr std::string_view ctrNames[] = {"XY", "ORAS", "SUMO", "USUM"};
 
-static constexpr std::string_view dsNames[] = {
-    "Pt",
-    "DP",
-    "HGSS",
-    "BW",
-    "B2W2"
-};
+static constexpr std::string_view dsNames[] = {"Pt", "DP", "HGSS", "BW", "B2W2"};
 
-SaveLoadScreen::SaveLoadScreen()
+SaveLoadScreen::SaveLoadScreen() : Screen(i18n::localize("A_SELECT") + '\n' + i18n::localize("Y_PRESENT") + '\n' + i18n::localize("START_EXIT"))
 {
-    buttons.push_back(new AccelButton(24, 96, 175, 16, [this](){ return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
+    buttons.push_back(new AccelButton(24, 96, 175, 16, [this]() { return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
     for (int i = 1; i < 5; i++)
     {
-        buttons.push_back(new ClickButton(24, 96 + 17 * i, 175, 16, [this, i](){ return this->setSelectedSave(i); }, ui_sheet_res_null_idx, "", 0.0f, 0));
+        buttons.push_back(
+            new ClickButton(24, 96 + 17 * i, 175, 16, [this, i]() { return this->setSelectedSave(i); }, ui_sheet_res_null_idx, "", 0.0f, 0));
     }
-    buttons.push_back(new AccelButton(24, 181, 175, 16, [this](){ return this->setSelectedSave(5); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
-    buttons.push_back(new Button(200, 95, 96, 51, [this](){ return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f, 0));
+    buttons.push_back(new AccelButton(24, 181, 175, 16, [this]() { return this->setSelectedSave(5); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
+    buttons.push_back(new Button(200, 95, 96, 51, [this]() { return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f, 0));
     buttons.push_back(new Button(200, 147, 96, 51, &receiveSaveFromBridge, ui_sheet_res_null_idx, "", 0.0f, 0));
 
     for (auto i = TitleLoader::sdSaves.begin(); i != TitleLoader::sdSaves.end(); i++)
@@ -85,63 +66,63 @@ SaveLoadScreen::SaveLoadScreen()
         std::string key = i->first;
         if (key.size() == 4)
         {
-            if (key.substr(0,3) == dsIds[0])
+            if (key.substr(0, 3) == dsIds[0])
             {
                 for (size_t j = 0; j < i->second.size(); j++)
                 {
                     saves[0].push_back({"D: ", i->second[j]});
                 }
             }
-            else if (key.substr(0,3) == dsIds[1])
+            else if (key.substr(0, 3) == dsIds[1])
             {
                 for (size_t j = 0; j < i->second.size(); j++)
                 {
                     saves[0].push_back({"P: ", i->second[j]});
                 }
             }
-            else if (key.substr(0,3) == dsIds[2])
+            else if (key.substr(0, 3) == dsIds[2])
             {
                 for (size_t j = 0; j < i->second.size(); j++)
                 {
                     saves[-1].push_back({"Pt: ", i->second[j]});
                 }
             }
-            else if (key.substr(0,3) == dsIds[3])
+            else if (key.substr(0, 3) == dsIds[3])
             {
                 for (size_t j = 0; j < i->second.size(); j++)
                 {
                     saves[1].push_back({"HG: ", i->second[j]});
                 }
             }
-            else if (key.substr(0,3) == dsIds[4])
+            else if (key.substr(0, 3) == dsIds[4])
             {
                 for (size_t j = 0; j < i->second.size(); j++)
                 {
                     saves[1].push_back({"SS: ", i->second[j]});
                 }
             }
-            else if (key.substr(0,3) == dsIds[5])
+            else if (key.substr(0, 3) == dsIds[5])
             {
                 for (size_t j = 0; j < i->second.size(); j++)
                 {
                     saves[2].push_back({"B: ", i->second[j]});
                 }
             }
-            else if (key.substr(0,3) == dsIds[6])
+            else if (key.substr(0, 3) == dsIds[6])
             {
                 for (size_t j = 0; j < i->second.size(); j++)
                 {
                     saves[2].push_back({"W: ", i->second[j]});
                 }
             }
-            else if (key.substr(0,3) == dsIds[7])
+            else if (key.substr(0, 3) == dsIds[7])
             {
                 for (size_t j = 0; j < i->second.size(); j++)
                 {
                     saves[3].push_back({"B2: ", i->second[j]});
                 }
             }
-            else if (key.substr(0,3) == dsIds[8])
+            else if (key.substr(0, 3) == dsIds[8])
             {
                 for (size_t j = 0; j < i->second.size(); j++)
                 {
@@ -213,18 +194,18 @@ SaveLoadScreen::SaveLoadScreen()
 
 void SaveLoadScreen::drawSelector(int x, int y) const
 {
-    static const int w = 2;
+    static const int w         = 2;
     float highlight_multiplier = fmax(0.0, fabs(fmod(Screen::timer(), 1.0) - 0.5) / 0.5);
-    u8 r = COLOR_SELECTOR & 0xFF;
-    u8 g = (COLOR_SELECTOR >> 8) & 0xFF;
-    u8 b = (COLOR_SELECTOR >> 16) & 0xFF;
+    u8 r                       = COLOR_SELECTOR & 0xFF;
+    u8 g                       = (COLOR_SELECTOR >> 8) & 0xFF;
+    u8 b                       = (COLOR_SELECTOR >> 16) & 0xFF;
     u32 color = C2D_Color32(r + (255 - r) * highlight_multiplier, g + (255 - g) * highlight_multiplier, b + (255 - b) * highlight_multiplier, 255);
 
-    C2D_DrawRectSolid(         x,          y, 0.5f, 50,       50, C2D_Color32(255, 255, 255, 100)); 
-    C2D_DrawRectSolid(         x,          y, 0.5f, 50,        w, color); // top
-    C2D_DrawRectSolid(         x,      y + w, 0.5f,  w, 50 - 2*w, color); // left
-    C2D_DrawRectSolid(x + 50 - w,      y + w, 0.5f,  w, 50 - 2*w, color); // right
-    C2D_DrawRectSolid(         x, y + 50 - w, 0.5f, 50,        w, color); // bottom
+    C2D_DrawRectSolid(x, y, 0.5f, 50, 50, C2D_Color32(255, 255, 255, 100));
+    C2D_DrawRectSolid(x, y, 0.5f, 50, w, color);                      // top
+    C2D_DrawRectSolid(x, y + w, 0.5f, w, 50 - 2 * w, color);          // left
+    C2D_DrawRectSolid(x + 50 - w, y + w, 0.5f, w, 50 - 2 * w, color); // right
+    C2D_DrawRectSolid(x, y + 50 - w, 0.5f, 50, w, color);             // bottom
 }
 
 void SaveLoadScreen::draw(void) const
@@ -237,7 +218,7 @@ void SaveLoadScreen::draw(void) const
 
     int x = 90;
     int y = 68;
-    
+
     // draw DS game boxes
     C2D_DrawRectSolid(x += 60, y, 0.5f, 48, 48, COLOR_HIGHBLUE);
     Gui::pkm(483, 0, Generation::SEVEN, 2, x - 4, y - 2);
@@ -308,7 +289,8 @@ void SaveLoadScreen::draw(void) const
         drawSelector(149 + (saveGroup - 4) * 60, 127);
     }
 
-    Gui::staticText(i18n::localize("LOADER_INSTRUCTIONS_TOP_PRESENT"), 200, 8, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::staticText(
+        i18n::localize("LOADER_INSTRUCTIONS_TOP_PRESENT"), 200, 8, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
     C2D_SceneBegin(g_renderTargetBottom);
     Gui::backgroundBottom(true);
@@ -324,11 +306,11 @@ void SaveLoadScreen::draw(void) const
     y = 97;
     for (int i = firstSave; i < firstSave + 6; i++)
     {
-        if (i < (int) saves[saveGroup].size())
+        if (i < (int)saves[saveGroup].size())
         {
             std::string save = saves[saveGroup][i].second.substr(0, saves[saveGroup][i].second.find_last_of('/'));
-            save = save.substr(save.find_last_of('/') + 1);
-            save = saves[saveGroup][i].first + save;
+            save             = save.substr(save.find_last_of('/') + 1);
+            save             = saves[saveGroup][i].first + save;
             Gui::dynamicText(save, 29, y, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         }
         else
@@ -341,17 +323,15 @@ void SaveLoadScreen::draw(void) const
     if (selectedSave > 0 && firstSave > 0)
     {
         C2D_DrawRectSolid(191, 102, 0.5f, 4, 5, C2D_Color32(0x0f, 0x16, 0x59, 255));
-        C2D_DrawTriangle(189, 102, C2D_Color32(0x0f, 0x16, 0x59, 255),
-                         197, 102, C2D_Color32(0x0f, 0x16, 0x59, 255),
-                         193, 97, C2D_Color32(0x0f, 0x16, 0x59, 255), 0.5f);
+        C2D_DrawTriangle(189, 102, C2D_Color32(0x0f, 0x16, 0x59, 255), 197, 102, C2D_Color32(0x0f, 0x16, 0x59, 255), 193, 97,
+            C2D_Color32(0x0f, 0x16, 0x59, 255), 0.5f);
     }
 
     if (selectedSave < 5 && (size_t)firstSave + 5 < saves[saveGroup].size() - 1)
     {
         C2D_DrawRectSolid(191, 186, 0.5f, 4, 5, C2D_Color32(0x0f, 0x16, 0x59, 255));
-        C2D_DrawTriangle(189, 191, C2D_Color32(0x0f, 0x16, 0x59, 255),
-                        197, 191, C2D_Color32(0x0f, 0x16, 0x59, 255),
-                        193, 196, C2D_Color32(0x0f, 0x16, 0x59, 255), 0.5f);
+        C2D_DrawTriangle(189, 191, C2D_Color32(0x0f, 0x16, 0x59, 255), 197, 191, C2D_Color32(0x0f, 0x16, 0x59, 255), 193, 196,
+            C2D_Color32(0x0f, 0x16, 0x59, 255), 0.5f);
     }
 
     Gui::staticText(i18n::localize("LOADER_LOAD"), 248, 113, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
@@ -373,8 +353,8 @@ void SaveLoadScreen::update(touchPosition* touch)
         if (downKeys & KEY_B)
         {
             selectedGroup = false;
-            selectedSave = -1;
-            firstSave = 0;
+            selectedSave  = -1;
+            firstSave     = 0;
         }
         if (downKeys & KEY_A)
         {
@@ -390,7 +370,7 @@ void SaveLoadScreen::update(touchPosition* touch)
         {
             if (selectedSave == 4)
             {
-                if (firstSave + 5 < (int) saves[saveGroup].size() - 1)
+                if (firstSave + 5 < (int)saves[saveGroup].size() - 1)
                 {
                     firstSave++;
                 }
@@ -401,7 +381,7 @@ void SaveLoadScreen::update(touchPosition* touch)
             }
             else
             {
-                if (firstSave + selectedSave < (int) saves[saveGroup].size() - 1)
+                if (firstSave + selectedSave < (int)saves[saveGroup].size() - 1)
                 {
                     selectedSave++;
                 }
@@ -503,7 +483,7 @@ void SaveLoadScreen::update(touchPosition* touch)
             if (saves[saveGroup].size() != 0)
             {
                 selectedGroup = true;
-                selectedSave = 0;
+                selectedSave  = 0;
             }
         }
     }
@@ -540,12 +520,12 @@ bool SaveLoadScreen::setSelectedSave(int i)
 {
     if (i == 5)
     {
-        if (firstSave + 5 < (int) saves[saveGroup].size() - 1)
+        if (firstSave + 5 < (int)saves[saveGroup].size() - 1)
         {
             firstSave++;
             selectedSave = 4;
         }
-        else if (firstSave + 5 < (int) saves[saveGroup].size())
+        else if (firstSave + 5 < (int)saves[saveGroup].size())
         {
             selectedSave = 5;
         }
@@ -555,7 +535,7 @@ bool SaveLoadScreen::setSelectedSave(int i)
         firstSave--;
         selectedSave = 1;
     }
-    else if (firstSave + i < (int) saves[saveGroup].size())
+    else if (firstSave + i < (int)saves[saveGroup].size())
     {
         selectedSave = i;
     }

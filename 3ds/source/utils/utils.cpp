@@ -1,45 +1,45 @@
 /*
-*   This file is part of PKSM
-*   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
-*
-*   This program is free software: you can redistribute it and/or modify
-*   it under the terms of the GNU General Public License as published by
-*   the Free Software Foundation, either version 3 of the License, or
-*   (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-*   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
-*       * Requiring preservation of specified reasonable legal notices or
-*         author attributions in that material or in the Appropriate Legal
-*         Notices displayed by works containing it.
-*       * Prohibiting misrepresentation of the origin of that material,
-*         or requiring that modified versions of such material be marked in
-*         reasonable ways as different from the original version.
-*/
+ *   This file is part of PKSM
+ *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
+ *       * Requiring preservation of specified reasonable legal notices or
+ *         author attributions in that material or in the Appropriate Legal
+ *         Notices displayed by works containing it.
+ *       * Prohibiting misrepresentation of the origin of that material,
+ *         or requiring that modified versions of such material be marked in
+ *         reasonable ways as different from the original version.
+ */
 
 #include "3dsutils.hpp"
+#include "g4text.h"
 #include <algorithm>
-#include <vector>
 #include <map>
 #include <queue>
-#include "g4text.h"
 
 namespace Gui
 {
     extern std::vector<C2D_Font> fonts;
 }
+#include <vector>
 
 std::string StringUtils::format(const std::string& fmt_str, ...)
 {
     va_list ap;
-    char *fp = NULL;
+    char* fp = NULL;
     va_start(ap, fmt_str);
     vasprintf(&fp, fmt_str.c_str(), ap);
     va_end(ap);
@@ -53,26 +53,26 @@ std::u16string StringUtils::UTF8toUTF16(const std::string& src)
     for (size_t i = 0; i < src.size(); i++)
     {
         u16 codepoint = 0xFFFD;
-        int iMod = 0;
+        int iMod      = 0;
         if (src[i] & 0x80 && src[i] & 0x40 && src[i] & 0x20 && !(src[i] & 0x10) && i + 2 < src.size())
         {
             codepoint = src[i] & 0x0F;
             codepoint = codepoint << 6 | (src[i + 1] & 0x3F);
             codepoint = codepoint << 6 | (src[i + 2] & 0x3F);
-            iMod = 2;
+            iMod      = 2;
         }
         else if (src[i] & 0x80 && src[i] & 0x40 && !(src[i] & 0x20) && i + 1 < src.size())
         {
             codepoint = src[i] & 0x1F;
             codepoint = codepoint << 6 | (src[i + 1] & 0x3F);
-            iMod = 1;
+            iMod      = 1;
         }
         else if (!(src[i] & 0x80))
         {
             codepoint = src[i];
         }
 
-        ret.push_back((char16_t) codepoint);
+        ret.push_back((char16_t)codepoint);
         i += iMod;
     }
     return ret;
@@ -156,7 +156,7 @@ void StringUtils::setString(u8* data, const std::string& v, int ofs, int len, ch
     // len *= 2;
     // u8 toinsert[len] = {0};
     // if (v.empty()) return;
-    
+
     // char buf;
     // int nicklen = v.length(), r = 0, w = 0, i = 0;
     // while (r < nicklen || w > len)
@@ -178,7 +178,7 @@ void StringUtils::setString(u8* data, const std::string& v, int ofs, int len, ch
     //         i = 2;
     //     }
     //     else break;
-        
+
     //     for (int j = 0; j < i; j++)
     //     {
     //         buf = v[r++];
@@ -209,24 +209,23 @@ std::string StringUtils::getString4(const u8* data, int ofs, int len)
         codepoint = G4Chars[index];
         if (codepoint == 0xFFFF)
             break;
-        
         char* addChar;
         if (codepoint < 0x0080)
         {
-            addChar = new char[2];
+            addChar    = new char[2];
             addChar[0] = codepoint;
             addChar[1] = '\0';
         }
         else if (codepoint < 0x0800)
         {
-            addChar = new char[3];
+            addChar    = new char[3];
             addChar[0] = 0xC0 | ((codepoint >> 6) & 0x1F);
             addChar[1] = 0x80 | (codepoint & 0x3F);
             addChar[2] = '\0';
         }
         else
         {
-            addChar = new char[4];
+            addChar    = new char[4];
             addChar[0] = 0xE0 | ((codepoint >> 12) & 0x0F);
             addChar[1] = 0x80 | ((codepoint >> 6) & 0x3F);
             addChar[2] = 0x80 | (codepoint & 0x3F);
@@ -260,12 +259,12 @@ void StringUtils::setString4(u8* data, const std::string& v, int ofs, int len)
                 codepoint = codepoint << 6 | (v[charIndex + 1] & 0x3F);
                 charIndex += 1;
             }
-            size_t index = std::distance(G4Chars, std::find(G4Chars, G4Chars + G4TEXT_LENGTH, codepoint));
-            output[outIndex] = (index < G4TEXT_LENGTH ? G4Values[index] : 0x0000); 
+            size_t index     = std::distance(G4Chars, std::find(G4Chars, G4Chars + G4TEXT_LENGTH, codepoint));
+            output[outIndex] = (index < G4TEXT_LENGTH ? G4Values[index] : 0x0000);
         }
         else
         {
-            size_t index = std::distance(G4Chars, std::find(G4Chars, G4Chars + G4TEXT_LENGTH, v[charIndex]));
+            size_t index     = std::distance(G4Chars, std::find(G4Chars, G4Chars + G4TEXT_LENGTH, v[charIndex]));
             output[outIndex] = (index < G4TEXT_LENGTH ? G4Values[index] : 0x0000);
         }
     }
@@ -378,26 +377,26 @@ static std::queue<u16> widthCacheOrder;
 
 std::string StringUtils::splitWord(const std::string& text, float scaleX, float maxWidth)
 {
-    std::string word = text;
+    std::string word   = text;
     float currentWidth = 0.0f;
     if (StringUtils::textWidth(word, scaleX) > maxWidth)
     {
         for (size_t i = 0; i < word.size(); i++)
         {
             u16 codepoint = 0xFFFF;
-            int iMod = 0;
+            int iMod      = 0;
             if (word[i] & 0x80 && word[i] & 0x40 && word[i] & 0x20 && !(word[i] & 0x10) && i + 2 < word.size())
             {
                 codepoint = word[i] & 0x0F;
                 codepoint = codepoint << 6 | (word[i + 1] & 0x3F);
                 codepoint = codepoint << 6 | (word[i + 2] & 0x3F);
-                iMod = 2;
+                iMod      = 2;
             }
             else if (word[i] & 0x80 && word[i] & 0x40 && !(word[i] & 0x20) && i + 1 < word.size())
             {
                 codepoint = word[i] & 0x1F;
                 codepoint = codepoint << 6 | (word[i + 1] & 0x3F);
-                iMod = 1;
+                iMod      = 1;
             }
             else if (!(word[i] & 0x80))
             {
@@ -412,7 +411,8 @@ std::string StringUtils::splitWord(const std::string& text, float scaleX, float 
             else
             {
                 std::string tmpString = word.substr(i, iMod + 1); // The character
-                widthCache.insert_or_assign(codepoint, C2D_FontGetCharWidthInfo(fontForCodepoint(codepoint), C2D_FontGlyphIndexFromCodePoint(fontForCodepoint(codepoint), codepoint)));
+                widthCache.insert_or_assign(codepoint,
+                    C2D_FontGetCharWidthInfo(fontForCodepoint(codepoint), C2D_FontGlyphIndexFromCodePoint(fontForCodepoint(codepoint), codepoint)));
                 widthCacheOrder.push(codepoint);
                 if (widthCache.size() > 1024)
                 {
@@ -436,15 +436,15 @@ std::string StringUtils::splitWord(const std::string& text, float scaleX, float 
 
 float StringUtils::textWidth(const std::string& text, float scaleX)
 {
-    float ret = 0.0f;
+    float ret        = 0.0f;
     float largestRet = 0.0f;
-    int iMod = 0;
+    int iMod         = 0;
     for (size_t i = 0; i < text.size(); i++)
     {
         if (text[i] == '\n')
         {
             largestRet = std::max(largestRet, ret);
-            ret = 0.0f;
+            ret        = 0.0f;
             continue;
         }
         u16 codepoint = 0xFFFD;
@@ -453,18 +453,18 @@ float StringUtils::textWidth(const std::string& text, float scaleX)
             codepoint = text[i] & 0x0F;
             codepoint = codepoint << 6 | (text[i + 1] & 0x3F);
             codepoint = codepoint << 6 | (text[i + 2] & 0x3F);
-            iMod = 2;
+            iMod      = 2;
         }
         else if (text[i] & 0x80 && text[i] & 0x40 && !(text[i] & 0x20) && i + 1 < text.size())
         {
             codepoint = text[i] & 0x1F;
             codepoint = codepoint << 6 | (text[i + 1] & 0x3F);
-            iMod = 1;
+            iMod      = 1;
         }
         else if (!(text[i] & 0x80))
         {
             codepoint = text[i];
-            iMod = 0;
+            iMod      = 0;
         }
         float charWidth;
         auto width = widthCache.find(codepoint);
@@ -474,7 +474,8 @@ float StringUtils::textWidth(const std::string& text, float scaleX)
         }
         else
         {
-            widthCache.insert_or_assign(codepoint, C2D_FontGetCharWidthInfo(fontForCodepoint(codepoint), C2D_FontGlyphIndexFromCodePoint(fontForCodepoint(codepoint), codepoint)));
+            widthCache.insert_or_assign(codepoint,
+                C2D_FontGetCharWidthInfo(fontForCodepoint(codepoint), C2D_FontGlyphIndexFromCodePoint(fontForCodepoint(codepoint), codepoint)));
             widthCacheOrder.push(codepoint);
             if (widthCache.size() > 1024)
             {
@@ -497,7 +498,7 @@ float StringUtils::textWidth(const std::u16string& text, float scaleX)
 
 float StringUtils::textWidth(const C2D_Text& text, float scaleX)
 {
-    return ceilf(text.width*scaleX);
+    return ceilf(text.width * scaleX);
 }
 
 std::string StringUtils::wrap(const std::string& text, float scaleX, float maxWidth)
@@ -525,7 +526,7 @@ std::string StringUtils::wrap(const std::string& text, float scaleX, float maxWi
                 {
                     line += word;
                     line = StringUtils::splitWord(line, scaleX, maxWidth);
-                    word = line.substr(line.find('\n')+1, std::string::npos);
+                    word = line.substr(line.find('\n') + 1, std::string::npos);
                     line = line.substr(0, line.find('\n')); // Split line on first newLine; assign second part to word and first to line
                 }
                 if (line[line.size() - 1] == ' ')
@@ -555,7 +556,7 @@ std::string StringUtils::wrap(const std::string& text, float scaleX, float maxWi
         {
             line += word;
             line = StringUtils::splitWord(line, scaleX, maxWidth);
-            word = line.substr(line.find('\n')+1, std::string::npos);
+            word = line.substr(line.find('\n') + 1, std::string::npos);
             line = line.substr(0, line.find('\n'));
         }
         if (line[line.size() - 1] == ' ')
@@ -591,8 +592,8 @@ std::string StringUtils::wrap(const std::string& text, float scaleX, float maxWi
         if (wrapped[i] == '\n')
         {
             split.push_back(wrapped.substr(0, i));
-            wrapped = wrapped.substr(i+1, std::string::npos);
-            i = 0;
+            wrapped = wrapped.substr(i + 1, std::string::npos);
+            i       = 0;
         }
     }
     if (!wrapped.empty())
@@ -629,11 +630,12 @@ std::string StringUtils::wrap(const std::string& text, float scaleX, float maxWi
     {
         std::string& finalLine = split[lines - 1];
         // If there's a long enough word and a large enough space on the top line, move stuff up & add ellipsis to the end
-        if (lines > 1 && textWidth(split[lines - 2], scaleX) <= maxWidth / 2 && textWidth(finalLine.substr(0, finalLine.find(' ')), scaleX) > maxWidth * 0.75f)
+        if (lines > 1 && textWidth(split[lines - 2], scaleX) <= maxWidth / 2 &&
+            textWidth(finalLine.substr(0, finalLine.find(' ')), scaleX) > maxWidth * 0.75f)
         {
             std::string sliced = wrap(finalLine, scaleX, maxWidth * 0.4f);
             split[lines - 2] += ' ' + sliced.substr(0, sliced.find('\n'));
-            sliced = sliced.substr(sliced.find('\n')+1);
+            sliced = sliced.substr(sliced.find('\n') + 1);
             for (size_t i = sliced.size(); i > 0; i--)
             {
                 if (sliced[i - 1] == '\n')
@@ -648,11 +650,11 @@ std::string StringUtils::wrap(const std::string& text, float scaleX, float maxWi
         {
             for (size_t i = finalLine.size(); i > 0; i--)
             {
-                if ((finalLine[i-1] & 0x80 && finalLine[i-1] & 0x40) || !(finalLine[i-1] & 0x80)) // Beginning UTF-8 byte
+                if ((finalLine[i - 1] & 0x80 && finalLine[i - 1] & 0x40) || !(finalLine[i - 1] & 0x80)) // Beginning UTF-8 byte
                 {
-                    if (textWidth(finalLine.substr(0, i-1), scaleX) + ellipsis <= maxWidth)
+                    if (textWidth(finalLine.substr(0, i - 1), scaleX) + ellipsis <= maxWidth)
                     {
-                        finalLine = finalLine.substr(0, i-1) + "...";
+                        finalLine = finalLine.substr(0, i - 1) + "...";
                     }
                 }
             }
@@ -729,7 +731,7 @@ std::vector<FontString> StringUtils::fontSplit(const std::string& str)
         else
         {
             ret.push_back({prevFont, parseMe});
-            parseMe = currentChar;
+            parseMe  = currentChar;
             prevFont = font;
         }
         currentChar = "";
@@ -1018,8 +1020,8 @@ std::string StringUtils::transString45(const std::string& str)
         }
         else
         {
-            codepoint = swapCodepoints45(codepoint);
-            char codepoints[4] = {'\0'};
+            codepoint                   = swapCodepoints45(codepoint);
+            char codepoints[4]          = {'\0'};
             ssize_t necessaryCodepoints = encode_utf8((u8*)codepoints, codepoint);
             if (necessaryCodepoints == -1)
             {
@@ -1101,8 +1103,8 @@ std::string StringUtils::transString67(const std::string& str)
         }
         else
         {
-            codepoint = swapCodepoints67(codepoint);
-            char codepoints[4] = {'\0'};
+            codepoint                   = swapCodepoints67(codepoint);
+            char codepoints[4]          = {'\0'};
             ssize_t necessaryCodepoints = encode_utf8((u8*)codepoints, codepoint);
             if (necessaryCodepoints == -1)
             {

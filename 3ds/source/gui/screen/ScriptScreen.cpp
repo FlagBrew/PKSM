@@ -1,37 +1,37 @@
 /*
-*   This file is part of PKSM
-*   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
-*
-*   This program is free software: you can redistribute it and/or modify
-*   it under the terms of the GNU General Public License as published by
-*   the Free Software Foundation, either version 3 of the License, or
-*   (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-*   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
-*       * Requiring preservation of specified reasonable legal notices or
-*         author attributions in that material or in the Appropriate Legal
-*         Notices displayed by works containing it.
-*       * Prohibiting misrepresentation of the origin of that material,
-*         or requiring that modified versions of such material be marked in
-*         reasonable ways as different from the original version.
-*/
+ *   This file is part of PKSM
+ *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
+ *       * Requiring preservation of specified reasonable legal notices or
+ *         author attributions in that material or in the Appropriate Legal
+ *         Notices displayed by works containing it.
+ *       * Prohibiting misrepresentation of the origin of that material,
+ *         or requiring that modified versions of such material be marked in
+ *         reasonable ways as different from the original version.
+ */
 
 #include "ScriptScreen.hpp"
 #include "Directory.hpp"
-#include "archive.hpp"
-#include "loader.hpp"
 #include "FSStream.hpp"
+#include "archive.hpp"
 #include "banks.hpp"
+#include "loader.hpp"
 extern "C" {
-    #include "picoc.h"
+#include "picoc.h"
 }
 #undef min // Get rid of picoc's min function
 
@@ -98,13 +98,13 @@ namespace
     }
 }
 
-ScriptScreen::ScriptScreen() : currDirString("romfs:" + getScriptDir(TitleLoader::save->version())),
-                               currDir(currDirString), hid(8, 1), sdSearch(false), cScripts(false)
+ScriptScreen::ScriptScreen()
+    : currDirString("romfs:" + getScriptDir(TitleLoader::save->version())), currDir(currDirString), hid(8, 1), sdSearch(false), cScripts(false)
 {
     if (!currDir.good())
     {
         std::string tmp = "/3ds/PKSM" + getScriptDir(TitleLoader::save->version());
-        currDir = STDirectory(tmp);
+        currDir         = STDirectory(tmp);
         if (!currDir.good())
         {
             currDir = STDirectory(currDirString);
@@ -138,7 +138,8 @@ void ScriptScreen::draw() const
         else
         {
             Gui::sprite(currFiles[i].second ? ui_sheet_icon_folder_idx : ui_sheet_icon_script_idx, 3, 23 + i % hid.maxVisibleEntries() * 25);
-            Gui::dynamicText(currFiles[i].first, 30, 24 + (i % hid.maxVisibleEntries() * 25), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            Gui::dynamicText(currFiles[i].first, 30, 24 + (i % hid.maxVisibleEntries() * 25), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT,
+                TextPosY::TOP);
         }
     }
 
@@ -158,7 +159,8 @@ void ScriptScreen::update(touchPosition* touch)
     u32 down = hidKeysDown();
     if (down & KEY_B)
     {
-        if (currDirString == (sdSearch ? "/3ds/PKSM" : "romfs:") + (cScripts ? std::string("/scripts/universal") : getScriptDir(TitleLoader::save->version())))
+        if (currDirString ==
+            (sdSearch ? "/3ds/PKSM" : "romfs:") + (cScripts ? std::string("/scripts/universal") : getScriptDir(TitleLoader::save->version())))
         {
             Gui::screenBack();
             return;
@@ -166,7 +168,7 @@ void ScriptScreen::update(touchPosition* touch)
         else
         {
             currDirString = currDirString.substr(0, currDirString.find_last_of('/'));
-            currDir = STDirectory(currDirString);
+            currDir       = STDirectory(currDirString);
             updateEntries();
         }
     }
@@ -188,13 +190,14 @@ void ScriptScreen::update(touchPosition* touch)
     }
     else if (down & KEY_X)
     {
-        std::string dirString = (!sdSearch ? "/3ds/PKSM" : "romfs:") + (cScripts ? std::string("/scripts/universal") : getScriptDir(TitleLoader::save->version()));
+        std::string dirString =
+            (!sdSearch ? "/3ds/PKSM" : "romfs:") + (cScripts ? std::string("/scripts/universal") : getScriptDir(TitleLoader::save->version()));
         STDirectory dir = STDirectory(dirString);
         if (dir.good())
         {
-            sdSearch = !sdSearch;
+            sdSearch      = !sdSearch;
             currDirString = dirString;
-            currDir = dir;
+            currDir       = dir;
             updateEntries();
         }
         else
@@ -204,13 +207,14 @@ void ScriptScreen::update(touchPosition* touch)
     }
     else if (down & KEY_Y)
     {
-        std::string dirString = (sdSearch ? "/3ds/PKSM" : "romfs:") + (!cScripts ? std::string("/scripts/universal") : getScriptDir(TitleLoader::save->version()));
+        std::string dirString =
+            (sdSearch ? "/3ds/PKSM" : "romfs:") + (!cScripts ? std::string("/scripts/universal") : getScriptDir(TitleLoader::save->version()));
         STDirectory dir = STDirectory(dirString);
         if (dir.good())
         {
-            cScripts = !cScripts;
+            cScripts      = !cScripts;
             currDirString = dirString;
-            currDir = dir;
+            currDir       = dir;
             updateEntries();
         }
         else
@@ -237,8 +241,7 @@ void ScriptScreen::updateEntries()
             currFiles.push_back(std::make_pair(item, currDir.folder(i)));
         }
     }
-    std::sort(currFiles.begin(), currFiles.end(), [this](std::pair<std::string, bool>& first, std::pair<std::string, bool>& second)
-    {
+    std::sort(currFiles.begin(), currFiles.end(), [this](std::pair<std::string, bool>& first, std::pair<std::string, bool>& second) {
         if ((first.second && second.second) || (!first.second && !second.second))
         {
             return first.first < second.first;
@@ -258,7 +261,7 @@ static std::vector<u8> scriptRead(const std::string& path)
 {
     std::vector<u8> ret;
     size_t size = 0;
-    FILE* in = fopen(path.c_str(), "rb");
+    FILE* in    = fopen(path.c_str(), "rb");
     fseek(in, 0, SEEK_END);
     if (!ferror(in))
     {
@@ -362,12 +365,12 @@ void ScriptScreen::parsePicoCScript(std::string& file)
     {
         PicocPlatformScanFile(picoc, file.c_str());
         char* args[3];
-        std::string data = std::to_string((int)TitleLoader::save->rawData());
-        args[0] = data.data();
+        std::string data   = std::to_string((int)TitleLoader::save->rawData());
+        args[0]            = data.data();
         std::string length = std::to_string(TitleLoader::save->getLength());
-        args[1] = length.data();
-        char version = TitleLoader::save->version();
-        args[2] = &version;
+        args[1]            = length.data();
+        char version       = TitleLoader::save->version();
+        args[2]            = &version;
         PicocCallMain(picoc, 3, args);
         // Restore stdout state
         dup2(stdout_save, STDOUT_FILENO);

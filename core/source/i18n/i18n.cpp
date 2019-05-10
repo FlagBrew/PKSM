@@ -1,28 +1,28 @@
 /*
-*   This file is part of PKSM
-*   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
-*
-*   This program is free software: you can redistribute it and/or modify
-*   it under the terms of the GNU General Public License as published by
-*   the Free Software Foundation, either version 3 of the License, or
-*   (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-*   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
-*       * Requiring preservation of specified reasonable legal notices or
-*         author attributions in that material or in the Appropriate Legal
-*         Notices displayed by works containing it.
-*       * Prohibiting misrepresentation of the origin of that material,
-*         or requiring that modified versions of such material be marked in
-*         reasonable ways as different from the original version.
-*/
+ *   This file is part of PKSM
+ *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
+ *       * Requiring preservation of specified reasonable legal notices or
+ *         author attributions in that material or in the Appropriate Legal
+ *         Notices displayed by works containing it.
+ *       * Prohibiting misrepresentation of the origin of that material,
+ *         or requiring that modified versions of such material be marked in
+ *         reasonable ways as different from the original version.
+ */
 
 #include "i18n.hpp"
 
@@ -39,8 +39,9 @@ static LanguageStrings* nl = nullptr;
 static LanguageStrings* pt = nullptr;
 static LanguageStrings* ru = nullptr;
 
-static const std::string emptyString = "";
-static const std::vector<std::string> emptyVector = {};
+static const std::string emptyString                = "";
+static const std::vector<std::string> emptyVector   = {};
+static const std::map<u16, std::string> emptyU16Map = {};
 
 void i18n::init(void)
 {
@@ -604,4 +605,68 @@ const std::string& i18n::game(u8 lang, u8 v)
             return ru->game(v);
     }
     return emptyString;
+}
+
+const std::map<u16, std::string>& i18n::locations(u8 lang, Generation g)
+{
+    switch (lang)
+    {
+        case Language::DE:
+            return de->locations(g);
+        case Language::EN:
+            return en->locations(g);
+        case Language::ES:
+            return es->locations(g);
+        case Language::FR:
+            return fr->locations(g);
+        case Language::IT:
+            return it->locations(g);
+        case Language::JP:
+            return jp->locations(g);
+        case Language::KO:
+            return ko->locations(g);
+        case Language::NL:
+            return nl->locations(g);
+        case Language::PT:
+            return pt->locations(g);
+        case Language::ZH:
+            return zh->locations(g);
+        case Language::TW:
+            return tw->locations(g);
+        case Language::RU:
+            return ru->locations(g);
+    }
+    return emptyU16Map;
+}
+
+size_t i18n::numGameStrings(u8 lang)
+{
+    switch (lang)
+    {
+        case Language::DE:
+            return de->numGameStrings();
+        case Language::EN:
+            return en->numGameStrings();
+        case Language::ES:
+            return es->numGameStrings();
+        case Language::FR:
+            return fr->numGameStrings();
+        case Language::IT:
+            return it->numGameStrings();
+        case Language::JP:
+            return jp->numGameStrings();
+        case Language::KO:
+            return ko->numGameStrings();
+        case Language::NL:
+            return nl->numGameStrings();
+        case Language::PT:
+            return pt->numGameStrings();
+        case Language::ZH:
+            return zh->numGameStrings();
+        case Language::TW:
+            return tw->numGameStrings();
+        case Language::RU:
+            return ru->numGameStrings();
+    }
+    return 0;
 }

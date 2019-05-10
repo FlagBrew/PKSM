@@ -1,53 +1,54 @@
 /*
-*   This file is part of PKSM
-*   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
-*
-*   This program is free software: you can redistribute it and/or modify
-*   it under the terms of the GNU General Public License as published by
-*   the Free Software Foundation, either version 3 of the License, or
-*   (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-*   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
-*       * Requiring preservation of specified reasonable legal notices or
-*         author attributions in that material or in the Appropriate Legal
-*         Notices displayed by works containing it.
-*       * Prohibiting misrepresentation of the origin of that material,
-*         or requiring that modified versions of such material be marked in
-*         reasonable ways as different from the original version.
-*/
+ *   This file is part of PKSM
+ *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
+ *       * Requiring preservation of specified reasonable legal notices or
+ *         author attributions in that material or in the Appropriate Legal
+ *         Notices displayed by works containing it.
+ *       * Prohibiting misrepresentation of the origin of that material,
+ *         or requiring that modified versions of such material be marked in
+ *         reasonable ways as different from the original version.
+ */
 
 #ifndef GUI_HPP
 #define GUI_HPP
 
-#include <3ds.h>
-#include <citro2d.h>
-#include <unordered_map>
-#include <string.h>
-#include <random>
-#include <stack>
-#include "mixer.hpp"
-#include "json.hpp"
-#include "i18n.hpp"
+#include "3dsutils.hpp"
 #include "PKX.hpp"
 #include "Sav.hpp"
+#include "i18n.hpp"
+#include "json.hpp"
+#include "mixer.hpp"
 #include "thread.hpp"
-#include "3dsutils.hpp"
+#include <3ds.h>
+#include <citro2d.h>
+#include <random>
+#include <stack>
+#include <string.h>
+#include <unordered_map>
 
-#include "ui_sheet.h"
+#include "WCX.hpp"
 #include "pkm_spritesheet.h"
 #include "types_spritesheet.h"
-#include "WCX.hpp"
+#include "ui_sheet.h"
 
 #include "Screen.hpp"
 
+#include "TextPos.hpp"
 #include "colors.hpp"
 
 // emulated
@@ -99,19 +100,6 @@
 #define FONT_SIZE_11 0.46f
 #define FONT_SIZE_9 0.37f
 
-enum class TextPosX
-{
-    LEFT,
-    CENTER,
-    RIGHT
-};
-enum class TextPosY
-{
-    TOP,
-    CENTER,
-    BOTTOM
-};
-
 namespace Gui
 {
     extern std::vector<C2D_Font> fonts;
@@ -129,7 +117,8 @@ namespace Gui
     void sprite(int key, int x, int y);
     void sprite(int key, int x, int y, u32 color);
     void pkm(const PKX& pkm, int x, int y, float scale = 1.0f, u32 color = C2D_Color32(0, 0, 0, 255), float blend = 0.0f);
-    void pkm(int species, int form, Generation generation, int gender, int x, int y, float scale = 1.0f, u32 color = C2D_Color32(0, 0, 0, 255), float blend = 0.0f);
+    void pkm(int species, int form, Generation generation, int gender, int x, int y, float scale = 1.0f, u32 color = C2D_Color32(0, 0, 0, 255),
+        float blend = 0.0f);
 
     void backgroundTop(bool stripes);
     void backgroundBottom(bool stripes);

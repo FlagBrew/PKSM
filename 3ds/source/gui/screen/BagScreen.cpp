@@ -1,53 +1,81 @@
 /*
-*   This file is part of PKSM
-*   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
-*
-*   This program is free software: you can redistribute it and/or modify
-*   it under the terms of the GNU General Public License as published by
-*   the Free Software Foundation, either version 3 of the License, or
-*   (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-*   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
-*       * Requiring preservation of specified reasonable legal notices or
-*         author attributions in that material or in the Appropriate Legal
-*         Notices displayed by works containing it.
-*       * Prohibiting misrepresentation of the origin of that material,
-*         or requiring that modified versions of such material be marked in
-*         reasonable ways as different from the original version.
-*/
+ *   This file is part of PKSM
+ *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
+ *       * Requiring preservation of specified reasonable legal notices or
+ *         author attributions in that material or in the Appropriate Legal
+ *         Notices displayed by works containing it.
+ *       * Prohibiting misrepresentation of the origin of that material,
+ *         or requiring that modified versions of such material be marked in
+ *         reasonable ways as different from the original version.
+ */
 
 #include "BagScreen.hpp"
-#include "loader.hpp"
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
+#include "loader.hpp"
 
-BagScreen::BagScreen() : limits(TitleLoader::save->pouches()), allowedItems(TitleLoader::save->validItems())
+BagScreen::BagScreen()
+    : Screen(i18n::localize("A_ITEM_EDIT") + '\n' + i18n::localize("L_POUCH") + '\n' + i18n::localize("R_ITEM") + '\n' + i18n::localize("B_BACK")),
+      limits(TitleLoader::save->pouches()),
+      allowedItems(TitleLoader::save->validItems())
 {
     currentPouch = limits[0].first;
     for (size_t i = 0; i < limits.size(); i++)
     {
-        buttons.push_back(new Button(3, i * 30 + 1, 100, 30, [this, i](){ return switchPouch(i); }, ui_sheet_emulated_button_pouch_idx, TitleLoader::save->pouchName(limits[i].first), FONT_SIZE_12, COLOR_BLACK));
+        buttons.push_back(new Button(3, i * 30 + 1, 100, 30, [this, i]() { return switchPouch(i); }, ui_sheet_emulated_button_pouch_idx,
+            TitleLoader::save->pouchName(limits[i].first), FONT_SIZE_12, COLOR_BLACK));
     }
-    buttons.push_back(new AccelButton(117, -15, 198, 30, [this](){ return clickIndex(-1); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 5));
+    buttons.push_back(
+        new AccelButton(117, -15, 198, 30, [this]() { return clickIndex(-1); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 5));
     for (size_t i = 0; i < std::min(allowedItems[limits[0].first].size(), (size_t)7); i++)
     {
-        buttons.push_back(new ClickButton(117, 15 + i * 30, 131, 30, [this, i](){ return clickIndex(i); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK));
+        buttons.push_back(
+            new ClickButton(117, 15 + i * 30, 131, 30, [this, i]() { return clickIndex(i); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK));
     }
-    buttons.push_back(new AccelButton(117, 225, 198, 30, [this](){ return clickIndex(7); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 5));
+    buttons.push_back(
+        new AccelButton(117, 225, 198, 30, [this]() { return clickIndex(7); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 5));
     for (int i = 0; i < 7; i++)
     {
-        amountButtons.push_back(new AccelButton(249, 23 + i * 30, 13, 13, [this, i](){ editCount(false, i); selectingPouch = false; selectedItem = i; return false; }, ui_sheet_emulated_button_minus_small_black_idx, "", 0.0f, 0));
-        amountButtons.push_back(new ClickButton(262, 23 + i * 30, 37, 13, [this, i](){ Gui::setNextKeyboardFunc([this,i](){ setCount(i); }); selectingPouch = false; selectedItem = i; return false; }, ui_sheet_res_null_idx, "", 0.0f, 0));
-        amountButtons.push_back(new AccelButton(299, 23 + i * 30, 13, 13, [this, i](){ editCount(true, i); selectingPouch = false; selectedItem = i; return false; }, ui_sheet_emulated_button_plus_small_black_idx, "", 0.0f, 0));
+        amountButtons.push_back(new AccelButton(249, 23 + i * 30, 13, 13,
+            [this, i]() {
+                editCount(false, i);
+                selectingPouch = false;
+                selectedItem   = i;
+                return false;
+            },
+            ui_sheet_emulated_button_minus_small_black_idx, "", 0.0f, 0));
+        amountButtons.push_back(new ClickButton(262, 23 + i * 30, 37, 13,
+            [this, i]() {
+                Gui::setNextKeyboardFunc([this, i]() { setCount(i); });
+                selectingPouch = false;
+                selectedItem   = i;
+                return false;
+            },
+            ui_sheet_res_null_idx, "", 0.0f, 0));
+        amountButtons.push_back(new AccelButton(299, 23 + i * 30, 13, 13,
+            [this, i]() {
+                editCount(true, i);
+                selectingPouch = false;
+                selectedItem   = i;
+                return false;
+            },
+            ui_sheet_emulated_button_plus_small_black_idx, "", 0.0f, 0));
     }
 
     for (int i = 0; i < limits[0].second; i++)
@@ -72,7 +100,7 @@ BagScreen::~BagScreen()
 static int bobPointer()
 {
     static int currentBob = 0;
-    static bool up = true;
+    static bool up        = true;
     if (up)
     {
         currentBob++;
@@ -125,12 +153,15 @@ void BagScreen::draw() const
         // {
         //     print += " x " + std::to_string((int)item->count());
         // }
-        Gui::dynamicText(i18n::item(Configuration::getInstance().language(), item->id()), 117 + 131 / 2, 20 + 30 * i, FONT_SIZE_12, FONT_SIZE_12, canEdit(limits[currentPouch].first, *item) ? COLOR_BLACK : COLOR_GREY, TextPosX::CENTER, TextPosY::TOP);
+        Gui::dynamicText(i18n::item(Configuration::getInstance().language(), item->id()), 117 + 131 / 2, 20 + 30 * i, FONT_SIZE_12, FONT_SIZE_12,
+            canEdit(limits[currentPouch].first, *item) ? COLOR_BLACK : COLOR_GREY, TextPosX::CENTER, TextPosY::TOP);
         if (item->id() > 0)
         {
-            Gui::dynamicText(std::to_string((int)item->count()), 262 + 37/2, 20 + 30 * i, FONT_SIZE_12, FONT_SIZE_12, canEdit(limits[currentPouch].first, *item) ? COLOR_BLACK : COLOR_GREY, TextPosX::CENTER, TextPosY::TOP);
+            Gui::dynamicText(std::to_string((int)item->count()), 262 + 37 / 2, 20 + 30 * i, FONT_SIZE_12, FONT_SIZE_12,
+                canEdit(limits[currentPouch].first, *item) ? COLOR_BLACK : COLOR_GREY, TextPosX::CENTER, TextPosY::TOP);
         }
-        // Gui::dynamicText(print, 223, 20 + 30 * i, FONT_SIZE_12, FONT_SIZE_12, canEdit(limits[currentPouch].first, *item) ? COLOR_BLACK : C2D_Color32(128, 128, 128, 255), TextPosX::CENTER, TextPosY::TOP);
+        // Gui::dynamicText(print, 223, 20 + 30 * i, FONT_SIZE_12, FONT_SIZE_12, canEdit(limits[currentPouch].first, *item) ? COLOR_BLACK :
+        // C2D_Color32(128, 128, 128, 255), TextPosX::CENTER, TextPosY::TOP);
     }
 
     u8 mod = 0;
@@ -142,8 +173,8 @@ void BagScreen::draw() const
     {
         if (canEdit(limits[currentPouch].first, *TitleLoader::save->item(limits[currentPouch].first, firstItem + i)))
         {
-            amountButtons[i*3]->draw();
-            amountButtons[i*3+2]->draw();
+            amountButtons[i * 3]->draw();
+            amountButtons[i * 3 + 2]->draw();
         }
     }
 
@@ -170,8 +201,8 @@ void BagScreen::update(touchPosition* touch)
         }
     }
     static int timer = 0;
-    u32 downKeys = hidKeysDown();
-    u32 heldKeys = hidKeysHeld();
+    u32 downKeys     = hidKeysDown();
+    u32 heldKeys     = hidKeysHeld();
     if (downKeys & KEY_B)
     {
         Gui::screenBack();
@@ -206,7 +237,7 @@ void BagScreen::update(touchPosition* touch)
             else
             {
                 selectedItem = 0;
-                firstItem = 0;
+                firstItem    = 0;
             }
             timer = 10;
         }
@@ -229,7 +260,7 @@ void BagScreen::update(touchPosition* touch)
             else
             {
                 selectedItem = 0;
-                firstItem = 0;
+                firstItem    = 0;
             }
             timer = 10;
         }
@@ -357,9 +388,9 @@ void BagScreen::update(touchPosition* touch)
     }
     for (int i = 0; i < std::min(std::min(firstEmpty - firstItem + mod, 7), limits[currentPouch].second); i++)
     {
-        amountButtons[i*3]->update(touch);
-        amountButtons[i*3+1]->update(touch);
-        amountButtons[i*3+2]->update(touch);
+        amountButtons[i * 3]->update(touch);
+        amountButtons[i * 3 + 1]->update(touch);
+        amountButtons[i * 3 + 2]->update(touch);
     }
 
     if (timer > 0)
@@ -379,7 +410,7 @@ bool BagScreen::clickIndex(int i)
         }
         else
         {
-            firstItem = std::max(0, firstEmpty - 6);
+            firstItem    = std::max(0, firstEmpty - 6);
             selectedItem = 6;
         }
     }
@@ -392,7 +423,7 @@ bool BagScreen::clickIndex(int i)
         }
         else
         {
-            firstItem = 0;
+            firstItem    = 0;
             selectedItem = 0;
         }
     }
@@ -425,8 +456,8 @@ bool BagScreen::switchPouch(int newPouch)
             break;
         }
     }
-    
-    firstItem = 0;
+
+    firstItem    = 0;
     selectedItem = 0;
     return false;
 }
@@ -436,9 +467,10 @@ void BagScreen::editItem()
     //! CHECK THAT THIS WORKS
     int limit = allowedItems[limits[currentPouch].first].size() + 1; // Add one for None
     std::vector<std::pair<const std::string*, int>> items(limit);
-    items[0] = std::make_pair(&i18n::item(Configuration::getInstance().language(), 0), 0);
+    items[0]         = std::make_pair(&i18n::item(Configuration::getInstance().language(), 0), 0);
     auto currentItem = TitleLoader::save->item(limits[currentPouch].first, firstItem + selectedItem);
-    std::pair<const std::string*, int> currentItemPair = std::make_pair(&i18n::item(Configuration::getInstance().language(), currentItem->id()), currentItem->id());
+    std::pair<const std::string*, int> currentItemPair =
+        std::make_pair(&i18n::item(Configuration::getInstance().language(), currentItem->id()), currentItem->id());
 
     if (!canEdit(limits[currentPouch].first, *currentItem))
     {
@@ -448,11 +480,11 @@ void BagScreen::editItem()
     for (int i = 1; i < limit; i++)
     {
         int itemId = allowedItems[limits[currentPouch].first][i - 1];
-        items[i] = std::make_pair(&i18n::item(Configuration::getInstance().language(), itemId), itemId); // Store the string so that the pointer isn't deleted
+        items[i]   = std::make_pair(
+            &i18n::item(Configuration::getInstance().language(), itemId), itemId); // Store the string so that the pointer isn't deleted
     }
-    std::sort(items.begin() + 1, items.end(), [](std::pair<const std::string*, int> p1, std::pair<const std::string*, int> p2){
-        return (*p1.first) < (*p2.first);
-    });
+    std::sort(items.begin() + 1, items.end(),
+        [](std::pair<const std::string*, int> p1, std::pair<const std::string*, int> p2) { return (*p1.first) < (*p2.first); });
 
     size_t currItemIndex = 0;
 
@@ -582,9 +614,9 @@ void BagScreen::setCount(int selected)
         swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, item->generation() == Generation::SEVEN ? 4 : 5);
         swkbdSetHintText(&state, i18n::localize("ITEMS").c_str());
         swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
-        char input[6] = {0};
+        char input[6]   = {0};
         SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-        input[5] = '\0';
+        input[5]        = '\0';
         if (ret == SWKBD_BUTTON_CONFIRM)
         {
             int newCount = std::atoi(input);

@@ -1,38 +1,45 @@
 /*
-*   This file is part of PKSM
-*   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
-*
-*   This program is free software: you can redistribute it and/or modify
-*   it under the terms of the GNU General Public License as published by
-*   the Free Software Foundation, either version 3 of the License, or
-*   (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-*   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
-*       * Requiring preservation of specified reasonable legal notices or
-*         author attributions in that material or in the Appropriate Legal
-*         Notices displayed by works containing it.
-*       * Prohibiting misrepresentation of the origin of that material,
-*         or requiring that modified versions of such material be marked in
-*         reasonable ways as different from the original version.
-*/
+ *   This file is part of PKSM
+ *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
+ *       * Requiring preservation of specified reasonable legal notices or
+ *         author attributions in that material or in the Appropriate Legal
+ *         Notices displayed by works containing it.
+ *       * Prohibiting misrepresentation of the origin of that material,
+ *         or requiring that modified versions of such material be marked in
+ *         reasonable ways as different from the original version.
+ */
 
 #include "SpeciesOverlay.hpp"
+#include "ClickButton.hpp"
+#include "Configuration.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
-#include "Configuration.hpp"
-#include "ClickButton.hpp"
 
-SpeciesOverlay::SpeciesOverlay(Screen& screen, std::shared_ptr<PKX> pkm) : Overlay(screen), pkm(pkm), hid(40, 8)
+SpeciesOverlay::SpeciesOverlay(Screen& screen, std::shared_ptr<PKX> pkm)
+    : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(40, 8)
 {
-    searchButton = new ClickButton(75, 30, 170, 23, [this](){ Gui::setNextKeyboardFunc([this](){ this->searchBar(); }); return false; }, ui_sheet_emulated_box_search_idx, "", 0, 0);
+    instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
+    searchButton = new ClickButton(75, 30, 170, 23,
+        [this]() {
+            Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+            return false;
+        },
+        ui_sheet_emulated_box_search_idx, "", 0, 0);
     if (TitleLoader::save->generation() != Generation::LGPE)
     {
         for (int i = 1; i <= TitleLoader::save->maxSpecies(); i++)
@@ -67,8 +74,6 @@ void SpeciesOverlay::draw() const
     C2D_SceneBegin(g_renderTargetBottom);
     dim();
     Gui::staticText(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-
-    C2D_SceneBegin(g_renderTargetBottom);
     searchButton->draw();
     Gui::sprite(ui_sheet_icon_search_idx, 79, 33);
     Gui::dynamicText(searchString, 95, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
@@ -99,7 +104,8 @@ void SpeciesOverlay::draw() const
             }
             size_t species = dispPkm[pkmIndex];
             Gui::pkm(species, 0, TitleLoader::save->generation(), 0, x * 50 + 7, y * 48 + 2);
-            Gui::dynamicText(std::to_string(species), x * 50 + 25, y * 48 + 34, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+            Gui::dynamicText(
+                std::to_string(species), x * 50 + 25, y * 48 + 34, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
         }
     }
 }
@@ -117,7 +123,7 @@ void SpeciesOverlay::update(touchPosition* touch)
 
     if (hidKeysDown() & KEY_X)
     {
-        Gui::setNextKeyboardFunc([this](){ this->searchBar(); });
+        Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
     }
     searchButton->update(touch);
     if (!searchString.empty() && searchString != oldSearchString)
@@ -208,10 +214,11 @@ void SpeciesOverlay::update(touchPosition* touch)
         {
             pkm->nickname(i18n::species(Configuration::getInstance().language(), species));
         }
-        pkm->species((u16) species);
+        pkm->species((u16)species);
         pkm->alternativeForm(0);
         pkm->setAbility(0);
-        pkm->PID(PKX::getRandomPID(pkm->species(), pkm->gender(), pkm->version(), pkm->nature(), pkm->alternativeForm(), pkm->abilityNumber(), pkm->PID(), pkm->generation()));
+        pkm->PID(PKX::getRandomPID(pkm->species(), pkm->gender(), pkm->version(), pkm->nature(), pkm->alternativeForm(), pkm->abilityNumber(),
+            pkm->PID(), pkm->generation()));
         screen.removeOverlay();
         return;
     }
@@ -228,9 +235,9 @@ void SpeciesOverlay::searchBar()
     swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 20);
     swkbdSetHintText(&state, i18n::localize("SPECIES").c_str());
     swkbdSetValidation(&state, SWKBD_ANYTHING, 0, 0);
-    char input[25] = {0};
+    char input[25]  = {0};
     SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-    input[24] = '\0';
+    input[24]       = '\0';
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
         searchString = input;

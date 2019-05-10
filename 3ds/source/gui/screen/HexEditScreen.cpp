@@ -1,349 +1,85 @@
 /*
-*   This file is part of PKSM
-*   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
-*
-*   This program is free software: you can redistribute it and/or modify
-*   it under the terms of the GNU General Public License as published by
-*   the Free Software Foundation, either version 3 of the License, or
-*   (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-*   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
-*       * Requiring preservation of specified reasonable legal notices or
-*         author attributions in that material or in the Appropriate Legal
-*         Notices displayed by works containing it.
-*       * Prohibiting misrepresentation of the origin of that material,
-*         or requiring that modified versions of such material be marked in
-*         reasonable ways as different from the original version.
-*/
+ *   This file is part of PKSM
+ *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
+ *       * Requiring preservation of specified reasonable legal notices or
+ *         author attributions in that material or in the Appropriate Legal
+ *         Notices displayed by works containing it.
+ *       * Prohibiting misrepresentation of the origin of that material,
+ *         or requiring that modified versions of such material be marked in
+ *         reasonable ways as different from the original version.
+ */
 
 #include "HexEditScreen.hpp"
+#include "PB7.hpp"
 #include "loader.hpp"
 #include <bitset>
-#include "PB7.hpp"
 
-static constexpr std::string_view hyperVals[] = {
-    "HYPER_HP",
-    "HYPER_ATTACK",
-    "HYPER_DEFENSE",
-    "HYPER_SPATK",
-    "HYPER_SPDEF",
-    "HYPER_SPEED"
-};
-static constexpr std::string_view marks[] = {
-    "CIRCLE",
-    "TRIANGLE",
-    "SQUARE",
-    "HEART",
-    "STAR",
-    "DIAMOND"
-};
-static constexpr std::string_view gen4ToggleTexts[] = {
-    "SINNOH_CHAMP_RIBBON",
-    "ABILITY_RIBBON",
-    "GREAT_ABILITY_RIBBON",
-    "DOUBLE_ABILITY_RIBBON",
-    "MULTI_ABILITY_RIBBON",
-    "PAIR_ABILITY_RIBBON",
-    "WORLD_ABILITY_RIBBON",
-    "ALERT_RIBBON",
-    "SHOCK_RIBBON",
-    "DOWNCAST_RIBBON",
-    "CARELESS_RIBBON",
-    "RELAX_RIBBON",
-    "SNOOZE_RIBBON",
-    "SMILE_RIBBON",
-    "GORGEOUS_RIBBON",
-    "ROYAL_RIBBON",
-    "GORGEOUS_ROYAL_RIBBON",
-    "FOOTPRINT_RIBBON",
-    "RECORD_RIBBON",
-    "HISTORY_RIBBON",
-    "LEGEND_RIBBON",
-    "RED_RIBBON",
-    "GREEN_RIBBON",
-    "BLUE_RIBBON",
-    "FESTIVAL_RIBBON",
-    "CARNIVAL_RIBBON",
-    "CLASSIC_RIBBON",
-    "PREMIER_RIBBON",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED",
-    "COOL_RIBBON",
-    "COOL_RIBBON_SUPER",
-    "COOL_RIBBON_HYPER",
-    "COOL_RIBBON_MASTER",
-    "BEAUTY_RIBBON",
-    "BEAUTY_RIBBON_SUPER",
-    "BEAUTY_RIBBON_HYPER",
-    "BEAUTY_RIBBON_MASTER",
-    "CUTE_RIBBON",
-    "CUTE_RIBBON_SUPER",
-    "CUTE_RIBBON_HYPER",
-    "CUTE_RIBBON_MASTER",
-    "SMART_RIBBON",
-    "SMART_RIBBON_SUPER",
-    "SMART_RIBBON_HYPER",
-    "SMART_RIBBON_MASTER",
-    "TOUGH_RIBBON",
-    "TOUGH_RIBBON_SUPER",
-    "TOUGH_RIBBON_HYPER",
-    "TOUGH_RIBBON_MASTER",
-    "CHAMPION_RIBBON",
-    "WINNING_RIBBON",
-    "VICTORY_RIBBON",
-    "ARTIST_RIBBON",
-    "EFFORT_RIBBON",
-    "BATTLE_CHAMPION_RIBBON",
-    "REGIONAL_CHAMPION_RIBBON",
-    "NATIONAL_CHAMPION_RIBBON",
-    "COUNTRY_RIBBON",
-    "NATIONAL_RIBBON",
-    "EARTH_RIBBON",
-    "WORLD_RIBBON",
-    "COOL_RIBBON",
-    "COOL_RIBBON_GREAT",
-    "COOL_RIBBON_ULTRA",
-    "COOL_RIBBON_MASTER",
-    "BEAUTY_RIBBON",
-    "BEAUTY_RIBBON_GREAT",
-    "BEAUTY_RIBBON_ULTRA",
-    "BEAUTY_RIBBON_MASTER",
-    "CUTE_RIBBON",
-    "CUTE_RIBBON_GREAT",
-    "CUTE_RIBBON_ULTRA",
-    "CUTE_RIBBON_MASTER",
-    "SMART_RIBBON",
-    "SMART_RIBBON_GREAT",
-    "SMART_RIBBON_ULTRA",
-    "SMART_RIBBON_MASTER",
-    "TOUGH_RIBBON",
-    "TOUGH_RIBBON_GREAT",
-    "TOUGH_RIBBON_ULTRA",
-    "TOUGH_RIBBON_MASTER",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED"
-};
-static constexpr std::string_view gen5ToggleTexts[] = {
-    "SINNOH_CHAMP_RIBBON",
-    "ABILITY_RIBBON",
-    "GREAT_ABILITY_RIBBON",
-    "DOUBLE_ABILITY_RIBBON",
-    "MULTI_ABILITY_RIBBON",
-    "PAIR_ABILITY_RIBBON",
-    "WORLD_ABILITY_RIBBON",
-    "ALERT_RIBBON",
-    "SHOCK_RIBBON",
-    "DOWNCAST_RIBBON",
-    "CARELESS_RIBBON",
-    "RELAX_RIBBON",
-    "SNOOZE_RIBBON",
-    "SMILE_RIBBON",
-    "GORGEOUS_RIBBON",
-    "ROYAL_RIBBON",
-    "GORGEOUS_ROYAL_RIBBON",
-    "FOOTPRINT_RIBBON",
-    "RECORD_RIBBON",
-    "EVENT_RIBBON",
-    "LEGEND_RIBBON",
-    "WORLD_CHAMPION_RIBBON",
-    "BIRTHDAY_RIBBON",
-    "SPECIAL_RIBBON",
-    "SOUVENIR_RIBBON",
-    "WISHING_RIBBON",
-    "CLASSIC_RIBBON",
-    "PREMIER_RIBBON",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED",
-    "COOL_RIBBON",
-    "COOL_RIBBON_SUPER",
-    "COOL_RIBBON_HYPER",
-    "COOL_RIBBON_MASTER",
-    "BEAUTY_RIBBON",
-    "BEAUTY_RIBBON_SUPER",
-    "BEAUTY_RIBBON_HYPER",
-    "BEAUTY_RIBBON_MASTER",
-    "CUTE_RIBBON",
-    "CUTE_RIBBON_SUPER",
-    "CUTE_RIBBON_HYPER",
-    "CUTE_RIBBON_MASTER",
-    "SMART_RIBBON",
-    "SMART_RIBBON_SUPER",
-    "SMART_RIBBON_HYPER",
-    "SMART_RIBBON_MASTER",
-    "TOUGH_RIBBON",
-    "TOUGH_RIBBON_SUPER",
-    "TOUGH_RIBBON_HYPER",
-    "TOUGH_RIBBON_MASTER",
-    "CHAMPION_RIBBON",
-    "WINNING_RIBBON",
-    "VICTORY_RIBBON",
-    "ARTIST_RIBBON",
-    "EFFORT_RIBBON",
-    "BATTLE_CHAMPION_RIBBON",
-    "REGIONAL_CHAMPION_RIBBON",
-    "NATIONAL_CHAMPION_RIBBON",
-    "COUNTRY_RIBBON",
-    "NATIONAL_RIBBON",
-    "EARTH_RIBBON",
-    "WORLD_RIBBON",
-    "COOL_RIBBON",
-    "COOL_RIBBON_GREAT",
-    "COOL_RIBBON_ULTRA",
-    "COOL_RIBBON_MASTER",
-    "BEAUTY_RIBBON",
-    "BEAUTY_RIBBON_GREAT",
-    "BEAUTY_RIBBON_ULTRA",
-    "BEAUTY_RIBBON_MASTER",
-    "CUTE_RIBBON",
-    "CUTE_RIBBON_GREAT",
-    "CUTE_RIBBON_ULTRA",
-    "CUTE_RIBBON_MASTER",
-    "SMART_RIBBON",
-    "SMART_RIBBON_GREAT",
-    "SMART_RIBBON_ULTRA",
-    "SMART_RIBBON_MASTER",
-    "TOUGH_RIBBON",
-    "TOUGH_RIBBON_GREAT",
-    "TOUGH_RIBBON_ULTRA",
-    "TOUGH_RIBBON_MASTER",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED"
-};
-static constexpr std::string_view gen67ToggleTexts[] = {
-    "UNUSED",
-    "UNUSED",
-    "SPATK_LEVEL_1",
-    "HP_LEVEL_1",
-    "ATTACK_LEVEL_1",
-    "SPDEF_LEVEL_1",
-    "SPEED_LEVEL_1",
-    "DEFENSE_LEVEL_1",
-    "SPATK_LEVEL_2",
-    "HP_LEVEL_2",
-    "ATTACK_LEVEL_2",
-    "SPDEF_LEVEL_2",
-    "SPEED_LEVEL_2",
-    "DEFENSE_LEVEL_2",
-    "SPATK_LEVEL_3",
-    "HP_LEVEL_3",
-    "ATTACK_LEVEL_3",
-    "SPDEF_LEVEL_3",
-    "SPEED_LEVEL_3",
-    "DEFENSE_LEVEL_3",
-    "THE_TROUBLES_KEEP_ON_COMING?",
-    "THE_LEAF_STONE_CUP_BEGINS",
-    "THE_FIRE_STONE_CUP_BEGINS",
-    "THE_WATER_STONE_CUP_BEGINS",
-    "FOLLOW_THOSE_FLEEING_GOALS",
-    "WATCH_OUT_THATS_ONE_TRICKY_SECOND_HALF",
-    "AN_OPENING_OF_LIGHTING_QUICK_ATTACKS",
-    "THOSE_LONG_SHOTS_ARE_NO_LONG_SHOT",
-    "SCATTERBUG_LUGS_BACK",
-    "A_BARRAGE_OF_BITBOTS",
-    "DRAG_DOWN_HYDREIGON",
-    "THE_BATTLE_FOR_THE_BEST_VERSION_X/Y",
-    "KALOS_CHAMP_RIBBON",
-    "CHAMPION_RIBBON",
-    "SINNOH_CHAMP_RIBBON",
-    "BEST_FRIENDS_RIBBON",
-    "TRAINING_RIBBON",
-    "SKILLFUL_BATTLER_RIBBON",
-    "EXPERT_BATTLER_RIBBON",
-    "EFFORT_RIBBON",
-    "ALERT_RIBBON",
-    "SHOCK_RIBBON",
-    "DOWNCAST_RIBBON",
-    "CARELESS_RIBBON",
-    "RELAX_RIBBON",
-    "SNOOZE_RIBBON",
-    "SMILE_RIBBON",
-    "GORGEOUS_RIBBON",
-    "ROYAL_RIBBON",
-    "GORGEOUS_ROYAL_RIBBON",
-    "ARTIST_RIBBON",
-    "FOOTPRINT_RIBBON",
-    "RECORD_RIBBON",
-    "LEGEND_RIBBON",
-    "COUNTRY_RIBBON",
-    "NATIONAL_RIBBON",
-    "EARTH_RIBBON",
-    "WORLD_RIBBON",
-    "CLASSIC_RIBBON",
-    "PREMIER_RIBBON",
-    "EVENT_RIBBON",
-    "BIRTHDAY_RIBBON",
-    "SPECIAL_RIBBON",
-    "SOUVENIR_RIBBON",
-    "WISHING_RIBBON",
-    "BATTLE_CHAMPION_RIBBON",
-    "REGIONAL_CHAMPION_RIBBON",
-    "NATIONAL_CHAMPION_RIBBON",
-    "WORLD_CHAMPION_RIBBON",
-    "UNUSED",
-    "UNUSED",
-    "HOENN_CHAMPION_RIBBON",
-    "CONTEST_STAR_RIBBON",
-    "COOLNESS_MASTER_RIBBON",
-    "BEAUTY_MASTER_RIBBON",
-    "CUTENESS_MASTER_RIBBON",
-    "CLEVERNESS_MASTER_RIBBON",
-    "TOUGHNESS_MASTER_RIBBON",
-    "ALOLA_CHAMPION_RIBBON",
-    "BATTLE_ROYAL_RIBBON",
-    "BATTLE_TREE_GREAT_RIBBON",
-    "BATTLE_TREE_MASTER_RIBBON",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED",
-    "UNUSED",
+static constexpr std::string_view hyperVals[]        = {"HYPER_HP", "HYPER_ATTACK", "HYPER_DEFENSE", "HYPER_SPATK", "HYPER_SPDEF", "HYPER_SPEED"};
+static constexpr std::string_view marks[]            = {"CIRCLE", "TRIANGLE", "SQUARE", "HEART", "STAR", "DIAMOND"};
+static constexpr std::string_view gen4ToggleTexts[]  = {"SINNOH_CHAMP_RIBBON", "ABILITY_RIBBON", "GREAT_ABILITY_RIBBON", "DOUBLE_ABILITY_RIBBON",
+    "MULTI_ABILITY_RIBBON", "PAIR_ABILITY_RIBBON", "WORLD_ABILITY_RIBBON", "ALERT_RIBBON", "SHOCK_RIBBON", "DOWNCAST_RIBBON", "CARELESS_RIBBON",
+    "RELAX_RIBBON", "SNOOZE_RIBBON", "SMILE_RIBBON", "GORGEOUS_RIBBON", "ROYAL_RIBBON", "GORGEOUS_ROYAL_RIBBON", "FOOTPRINT_RIBBON", "RECORD_RIBBON",
+    "HISTORY_RIBBON", "LEGEND_RIBBON", "RED_RIBBON", "GREEN_RIBBON", "BLUE_RIBBON", "FESTIVAL_RIBBON", "CARNIVAL_RIBBON", "CLASSIC_RIBBON",
+    "PREMIER_RIBBON", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "COOL_RIBBON", "COOL_RIBBON_SUPER", "COOL_RIBBON_HYPER", "COOL_RIBBON_MASTER",
+    "BEAUTY_RIBBON", "BEAUTY_RIBBON_SUPER", "BEAUTY_RIBBON_HYPER", "BEAUTY_RIBBON_MASTER", "CUTE_RIBBON", "CUTE_RIBBON_SUPER", "CUTE_RIBBON_HYPER",
+    "CUTE_RIBBON_MASTER", "SMART_RIBBON", "SMART_RIBBON_SUPER", "SMART_RIBBON_HYPER", "SMART_RIBBON_MASTER", "TOUGH_RIBBON", "TOUGH_RIBBON_SUPER",
+    "TOUGH_RIBBON_HYPER", "TOUGH_RIBBON_MASTER", "CHAMPION_RIBBON", "WINNING_RIBBON", "VICTORY_RIBBON", "ARTIST_RIBBON", "EFFORT_RIBBON",
+    "BATTLE_CHAMPION_RIBBON", "REGIONAL_CHAMPION_RIBBON", "NATIONAL_CHAMPION_RIBBON", "COUNTRY_RIBBON", "NATIONAL_RIBBON", "EARTH_RIBBON",
+    "WORLD_RIBBON", "COOL_RIBBON", "COOL_RIBBON_GREAT", "COOL_RIBBON_ULTRA", "COOL_RIBBON_MASTER", "BEAUTY_RIBBON", "BEAUTY_RIBBON_GREAT",
+    "BEAUTY_RIBBON_ULTRA", "BEAUTY_RIBBON_MASTER", "CUTE_RIBBON", "CUTE_RIBBON_GREAT", "CUTE_RIBBON_ULTRA", "CUTE_RIBBON_MASTER", "SMART_RIBBON",
+    "SMART_RIBBON_GREAT", "SMART_RIBBON_ULTRA", "SMART_RIBBON_MASTER", "TOUGH_RIBBON", "TOUGH_RIBBON_GREAT", "TOUGH_RIBBON_ULTRA",
+    "TOUGH_RIBBON_MASTER", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED"};
+static constexpr std::string_view gen5ToggleTexts[]  = {"SINNOH_CHAMP_RIBBON", "ABILITY_RIBBON", "GREAT_ABILITY_RIBBON", "DOUBLE_ABILITY_RIBBON",
+    "MULTI_ABILITY_RIBBON", "PAIR_ABILITY_RIBBON", "WORLD_ABILITY_RIBBON", "ALERT_RIBBON", "SHOCK_RIBBON", "DOWNCAST_RIBBON", "CARELESS_RIBBON",
+    "RELAX_RIBBON", "SNOOZE_RIBBON", "SMILE_RIBBON", "GORGEOUS_RIBBON", "ROYAL_RIBBON", "GORGEOUS_ROYAL_RIBBON", "FOOTPRINT_RIBBON", "RECORD_RIBBON",
+    "EVENT_RIBBON", "LEGEND_RIBBON", "WORLD_CHAMPION_RIBBON", "BIRTHDAY_RIBBON", "SPECIAL_RIBBON", "SOUVENIR_RIBBON", "WISHING_RIBBON",
+    "CLASSIC_RIBBON", "PREMIER_RIBBON", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "COOL_RIBBON", "COOL_RIBBON_SUPER", "COOL_RIBBON_HYPER",
+    "COOL_RIBBON_MASTER", "BEAUTY_RIBBON", "BEAUTY_RIBBON_SUPER", "BEAUTY_RIBBON_HYPER", "BEAUTY_RIBBON_MASTER", "CUTE_RIBBON", "CUTE_RIBBON_SUPER",
+    "CUTE_RIBBON_HYPER", "CUTE_RIBBON_MASTER", "SMART_RIBBON", "SMART_RIBBON_SUPER", "SMART_RIBBON_HYPER", "SMART_RIBBON_MASTER", "TOUGH_RIBBON",
+    "TOUGH_RIBBON_SUPER", "TOUGH_RIBBON_HYPER", "TOUGH_RIBBON_MASTER", "CHAMPION_RIBBON", "WINNING_RIBBON", "VICTORY_RIBBON", "ARTIST_RIBBON",
+    "EFFORT_RIBBON", "BATTLE_CHAMPION_RIBBON", "REGIONAL_CHAMPION_RIBBON", "NATIONAL_CHAMPION_RIBBON", "COUNTRY_RIBBON", "NATIONAL_RIBBON",
+    "EARTH_RIBBON", "WORLD_RIBBON", "COOL_RIBBON", "COOL_RIBBON_GREAT", "COOL_RIBBON_ULTRA", "COOL_RIBBON_MASTER", "BEAUTY_RIBBON",
+    "BEAUTY_RIBBON_GREAT", "BEAUTY_RIBBON_ULTRA", "BEAUTY_RIBBON_MASTER", "CUTE_RIBBON", "CUTE_RIBBON_GREAT", "CUTE_RIBBON_ULTRA",
+    "CUTE_RIBBON_MASTER", "SMART_RIBBON", "SMART_RIBBON_GREAT", "SMART_RIBBON_ULTRA", "SMART_RIBBON_MASTER", "TOUGH_RIBBON", "TOUGH_RIBBON_GREAT",
+    "TOUGH_RIBBON_ULTRA", "TOUGH_RIBBON_MASTER", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED",
+    "UNUSED", "UNUSED"};
+static constexpr std::string_view gen67ToggleTexts[] = {"UNUSED", "UNUSED", "SPATK_LEVEL_1", "HP_LEVEL_1", "ATTACK_LEVEL_1", "SPDEF_LEVEL_1",
+    "SPEED_LEVEL_1", "DEFENSE_LEVEL_1", "SPATK_LEVEL_2", "HP_LEVEL_2", "ATTACK_LEVEL_2", "SPDEF_LEVEL_2", "SPEED_LEVEL_2", "DEFENSE_LEVEL_2",
+    "SPATK_LEVEL_3", "HP_LEVEL_3", "ATTACK_LEVEL_3", "SPDEF_LEVEL_3", "SPEED_LEVEL_3", "DEFENSE_LEVEL_3", "THE_TROUBLES_KEEP_ON_COMING?",
+    "THE_LEAF_STONE_CUP_BEGINS", "THE_FIRE_STONE_CUP_BEGINS", "THE_WATER_STONE_CUP_BEGINS", "FOLLOW_THOSE_FLEEING_GOALS",
+    "WATCH_OUT_THATS_ONE_TRICKY_SECOND_HALF", "AN_OPENING_OF_LIGHTING_QUICK_ATTACKS", "THOSE_LONG_SHOTS_ARE_NO_LONG_SHOT", "SCATTERBUG_LUGS_BACK",
+    "A_BARRAGE_OF_BITBOTS", "DRAG_DOWN_HYDREIGON", "THE_BATTLE_FOR_THE_BEST_VERSION_X/Y", "KALOS_CHAMP_RIBBON", "CHAMPION_RIBBON",
+    "SINNOH_CHAMP_RIBBON", "BEST_FRIENDS_RIBBON", "TRAINING_RIBBON", "SKILLFUL_BATTLER_RIBBON", "EXPERT_BATTLER_RIBBON", "EFFORT_RIBBON",
+    "ALERT_RIBBON", "SHOCK_RIBBON", "DOWNCAST_RIBBON", "CARELESS_RIBBON", "RELAX_RIBBON", "SNOOZE_RIBBON", "SMILE_RIBBON", "GORGEOUS_RIBBON",
+    "ROYAL_RIBBON", "GORGEOUS_ROYAL_RIBBON", "ARTIST_RIBBON", "FOOTPRINT_RIBBON", "RECORD_RIBBON", "LEGEND_RIBBON", "COUNTRY_RIBBON",
+    "NATIONAL_RIBBON", "EARTH_RIBBON", "WORLD_RIBBON", "CLASSIC_RIBBON", "PREMIER_RIBBON", "EVENT_RIBBON", "BIRTHDAY_RIBBON", "SPECIAL_RIBBON",
+    "SOUVENIR_RIBBON", "WISHING_RIBBON", "BATTLE_CHAMPION_RIBBON", "REGIONAL_CHAMPION_RIBBON", "NATIONAL_CHAMPION_RIBBON", "WORLD_CHAMPION_RIBBON",
+    "UNUSED", "UNUSED", "HOENN_CHAMPION_RIBBON", "CONTEST_STAR_RIBBON", "COOLNESS_MASTER_RIBBON", "BEAUTY_MASTER_RIBBON", "CUTENESS_MASTER_RIBBON",
+    "CLEVERNESS_MASTER_RIBBON", "TOUGHNESS_MASTER_RIBBON", "ALOLA_CHAMPION_RIBBON", "BATTLE_ROYAL_RIBBON", "BATTLE_TREE_GREAT_RIBBON",
+    "BATTLE_TREE_MASTER_RIBBON", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED",
     "UNUSED", // TODO get these text values & translations: Distribution Super Training
-    "FEARSOME_TWIN_TALES_OF_JUTTING_JAWS",
-    "DANGER_ZIPPED_UP_TIGHT",
-    "STUCK_BETWEEN_STRONG_AND_STRONG",
-    "DAZZLING_DIZZYING_DANCE_SPOONS",
-    "WHAT_UPSTART_MAGIKARP_MOVING_UP",
-    "WATCH_MULTIPLE_MEGA",
-    "UNUSED",
-    "UNUSED"
-};
+    "FEARSOME_TWIN_TALES_OF_JUTTING_JAWS", "DANGER_ZIPPED_UP_TIGHT", "STUCK_BETWEEN_STRONG_AND_STRONG", "DAZZLING_DIZZYING_DANCE_SPOONS",
+    "WHAT_UPSTART_MAGIKARP_MOVING_UP", "WATCH_MULTIPLE_MEGA", "UNUSED", "UNUSED"};
 
 static int currRibbon = 0;
 
-static constexpr int FAST_TIME = 1;
-static constexpr int SLOW_TIME = 5;
+static constexpr int FAST_TIME     = 1;
+static constexpr int SLOW_TIME     = 5;
 static constexpr int TIME_TO_ACCEL = 5;
 
 bool HexEditScreen::toggleBit(int selected, int offset)
@@ -512,7 +248,7 @@ bool HexEditScreen::checkValue()
 
 bool HexEditScreen::editNumber(bool high, bool up)
 {
-    u8* chosen = pkm->rawData() + hid.fullIndex();
+    u8* chosen  = pkm->rawData() + hid.fullIndex();
     u8 oldValue = *chosen;
     if (high)
     {
@@ -552,7 +288,7 @@ bool HexEditScreen::editNumber(bool high, bool up)
 std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::describe(int i) const
 {
     static const std::pair<const std::string*, HexEditScreen::SecurityLevel> UNKNOWN = std::make_pair(&i18n::localize("UNKNOWN"), UNRESTRICTED);
-    static const std::pair<const std::string*, HexEditScreen::SecurityLevel> UNUSED = std::make_pair(&i18n::localize("UNUSED"), UNRESTRICTED);
+    static const std::pair<const std::string*, HexEditScreen::SecurityLevel> UNUSED  = std::make_pair(&i18n::localize("UNUSED"), UNRESTRICTED);
     if (pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN || pkm->generation() == Generation::LGPE)
     {
         switch (i)
@@ -590,7 +326,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                 return std::make_pair(&i18n::localize("PID"), NORMAL);
             case 0x1C:
                 return std::make_pair(&i18n::localize("NATURE"), OPEN);
-            //Gender, fateful encounter, and form bits
+            // Gender, fateful encounter, and form bits
             case 0x1D:
                 return std::make_pair(&i18n::localize("GENDER_FATEFUL_ENCOUNTER_FORM"), OPEN);
             case 0x1E:
@@ -698,7 +434,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                 {
                     return std::make_pair(&i18n::localize("BATTLE_MEMORY_RIBBON_COUNT"), NORMAL);
                 }
-                
+
             case 0x3A:
                 if (pkm->generation() == Generation::LGPE)
                 {
@@ -873,7 +609,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                 return UNKNOWN;
             case 0xF0 ... 0xF1:
                 return std::make_pair(&i18n::localize("CURRENT_HP"), OPEN);
-            case 0xF2 ...  0xF3:
+            case 0xF2 ... 0xF3:
                 return std::make_pair(&i18n::localize("MAX_HP"), OPEN);
             case 0xF4 ... 0xF5:
                 return std::make_pair(&i18n::localize("ATTACK"), OPEN);
@@ -896,7 +632,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
     }
     else if (pkm->generation() == Generation::FIVE)
     {
-        switch(i)
+        switch (i)
         {
             case 0x00 ... 0x03:
                 return std::make_pair(&i18n::localize("PID"), NORMAL);
@@ -1046,7 +782,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
     }
     else if (pkm->generation() == Generation::FOUR)
     {
-        switch(i)
+        switch (i)
         {
             case 0x00 ... 0x03:
                 return std::make_pair(&i18n::localize("PID"), NORMAL);
@@ -1223,17 +959,21 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
             }
             return true;
         };
-        buttons[i].push_back(new HexEditButton(145, 33, 13, 13, [edit](){ return edit(true, true); }, ui_sheet_button_plus_small_idx, "", false, 0));
-        buttons[i].push_back(new HexEditButton(161, 33, 13, 13, [edit](){ return edit(false, true); }, ui_sheet_button_plus_small_idx, "", false, 0));
-        buttons[i].push_back(new HexEditButton(145, 75, 13, 13, [edit](){ return edit(true, false); }, ui_sheet_button_minus_small_idx, "", false, 0));
-        buttons[i].push_back(new HexEditButton(161, 75, 13, 13, [edit](){ return edit(false, false); }, ui_sheet_button_minus_small_idx, "", false, 0));
+        buttons[i].push_back(new HexEditButton(145, 33, 13, 13, [edit]() { return edit(true, true); }, ui_sheet_button_plus_small_idx, "", false, 0));
+        buttons[i].push_back(
+            new HexEditButton(161, 33, 13, 13, [edit]() { return edit(false, true); }, ui_sheet_button_plus_small_idx, "", false, 0));
+        buttons[i].push_back(
+            new HexEditButton(145, 75, 13, 13, [edit]() { return edit(true, false); }, ui_sheet_button_minus_small_idx, "", false, 0));
+        buttons[i].push_back(
+            new HexEditButton(161, 75, 13, 13, [edit]() { return edit(false, false); }, ui_sheet_button_minus_small_idx, "", false, 0));
         if (pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN || pkm->generation() == Generation::LGPE)
         {
             switch (i)
             {
                 // Fateful Encounter
                 case 0x1D:
-                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i](){ return this->toggleBit(i, 0); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("FATEFUL_ENCOUNTER"), true, 0));
+                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i]() { return this->toggleBit(i, 0); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("FATEFUL_ENCOUNTER"), true, 0));
                     buttons[i].back()->setToggled(pkm->rawData()[i] & 0x1);
                     break;
                 // Markings
@@ -1248,7 +988,9 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                         for (int j = 0; j < (i == 0x16 ? 4 : 2); j++)
                         {
                             u8 currentMark = i == 0x16 ? j : j + 4;
-                            buttons[i].push_back(new HexEditButton(30, 90 + j * 16, 13, 13, [this, currentMark](){ return this->rotateMark(currentMark); }, ui_sheet_emulated_toggle_gray_idx, i18n::localize(std::string(marks[currentMark])), false, currentMark, true));
+                            buttons[i].push_back(
+                                new HexEditButton(30, 90 + j * 16, 13, 13, [this, currentMark]() { return this->rotateMark(currentMark); },
+                                    ui_sheet_emulated_toggle_gray_idx, i18n::localize(std::string(marks[currentMark])), false, currentMark, true));
                             buttons[i].back()->setColor((pkm->rawData()[i] >> (j * 2)) & 0x3);
                         }
                     }
@@ -1263,7 +1005,8 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                         }
                         for (int j = 0; j < 6; j++)
                         {
-                            buttons[i].push_back(new HexEditButton(30, 90 + j * 16, 13, 13, [this, i, j](){ return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, i18n::localize(std::string(marks[j])), true, j));
+                            buttons[i].push_back(new HexEditButton(30, 90 + j * 16, 13, 13, [this, i, j]() { return this->toggleBit(i, j); },
+                                ui_sheet_emulated_toggle_green_idx, i18n::localize(std::string(marks[j])), true, j));
                             buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
                         }
                     }
@@ -1281,7 +1024,8 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     }
                     for (int j = 0; j < 8; j++)
                     {
-                        buttons[i].push_back(new HexEditButton(30, 90 + j * 16, 13, 13, [this, i, j](){ return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, i18n::localize(std::string(gen67ToggleTexts[currRibbon])), true, j));
+                        buttons[i].push_back(new HexEditButton(30, 90 + j * 16, 13, 13, [this, i, j]() { return this->toggleBit(i, j); },
+                            ui_sheet_emulated_toggle_green_idx, i18n::localize(std::string(gen67ToggleTexts[currRibbon])), true, j));
                         buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
                         currRibbon++;
                     }
@@ -1293,19 +1037,23 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                         delete buttons[i].back();
                         buttons[i].pop_back();
                     }
-                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i](){ return this->toggleBit(i, 0); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("SECRET_SUPER_TRAINING"), true, 0));
+                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i]() { return this->toggleBit(i, 0); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("SECRET_SUPER_TRAINING"), true, 0));
                     buttons[i].back()->setToggled(pkm->rawData()[i] & 0x1);
                     break;
                 // Egg, & Nicknamed Flag
                 case 0x77:
-                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i](){ return this->toggleBit(i, 6); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("EGG"), true, 6));
+                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i]() { return this->toggleBit(i, 6); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("EGG"), true, 6));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 6) & 0x1);
-                    buttons[i].push_back(new HexEditButton(30, 106, 13, 13, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("NICKNAMED"), true, 7));
+                    buttons[i].push_back(new HexEditButton(30, 106, 13, 13, [this, i]() { return this->toggleBit(i, 7); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("NICKNAMED"), true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
                     break;
                 // OT Gender
                 case 0xDD:
-                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("FEMALE_OT"), true, 7));
+                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i]() { return this->toggleBit(i, 7); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("FEMALE_OT"), true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
                     break;
                 case 0xDE:
@@ -1318,22 +1066,28 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                         }
                         for (int j = 0; j < 6; j++)
                         {
-                            buttons[i].push_back(new HexEditButton(30, 90 + j * 16, 13, 13, [this, i, j](){ return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, i18n::localize(std::string(hyperVals[j])), true, j));
+                            buttons[i].push_back(new HexEditButton(30, 90 + j * 16, 13, 13, [this, i, j]() { return this->toggleBit(i, j); },
+                                ui_sheet_emulated_toggle_green_idx, i18n::localize(std::string(hyperVals[j])), true, j));
                             buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
                         }
                     }
                     break;
                 // Status
                 case 0xE8:
-                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i](){ return this->toggleBit(i, 3); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("POISONED"), true, 3));
+                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i]() { return this->toggleBit(i, 3); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("POISONED"), true, 3));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 3) & 0x1);
-                    buttons[i].push_back(new HexEditButton(30, 106, 13, 13, [this, i](){ return this->toggleBit(i, 4); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("BURNED"), true, 4));
+                    buttons[i].push_back(new HexEditButton(30, 106, 13, 13, [this, i]() { return this->toggleBit(i, 4); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("BURNED"), true, 4));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 4) & 0x1);
-                    buttons[i].push_back(new HexEditButton(30, 122, 13, 13, [this, i](){ return this->toggleBit(i, 5); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("FROZEN"), true, 5));
+                    buttons[i].push_back(new HexEditButton(30, 122, 13, 13, [this, i]() { return this->toggleBit(i, 5); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("FROZEN"), true, 5));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 5) & 0x1);
-                    buttons[i].push_back(new HexEditButton(30, 138, 13, 13, [this, i](){ return this->toggleBit(i, 6); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("PARALYZED"), true, 6));
+                    buttons[i].push_back(new HexEditButton(30, 138, 13, 13, [this, i]() { return this->toggleBit(i, 6); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("PARALYZED"), true, 6));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 6) & 0x1);
-                    buttons[i].push_back(new HexEditButton(30, 154, 13, 13, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("TOXIC"), true, 7));
+                    buttons[i].push_back(new HexEditButton(30, 154, 13, 13, [this, i]() { return this->toggleBit(i, 7); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("TOXIC"), true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
                     break;
             }
@@ -1351,7 +1105,8 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     }
                     for (int j = 0; j < 6; j++)
                     {
-                        buttons[i].push_back(new HexEditButton(30, 90 + j * 16, 13, 13, [this, i, j](){ return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, i18n::localize(std::string(marks[j])), true, j));
+                        buttons[i].push_back(new HexEditButton(30, 90 + j * 16, 13, 13, [this, i, j]() { return this->toggleBit(i, j); },
+                            ui_sheet_emulated_toggle_green_idx, i18n::localize(std::string(marks[j])), true, j));
                         buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
                     }
                     break;
@@ -1366,46 +1121,58 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     }
                     for (int j = 0; j < 8; j++)
                     {
-                        buttons[i].push_back(new HexEditButton(30, 90 + j * 16, 13, 13, [this, i, j](){ return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, i18n::localize(std::string(gen5ToggleTexts[currRibbon])), true, j));
+                        buttons[i].push_back(new HexEditButton(30, 90 + j * 16, 13, 13, [this, i, j]() { return this->toggleBit(i, j); },
+                            ui_sheet_emulated_toggle_green_idx, i18n::localize(std::string(gen5ToggleTexts[currRibbon])), true, j));
                         buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
                         currRibbon++;
                     }
                     break;
                 // Egg and Nicknamed Flags
                 case 0x3B:
-                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i](){ return this->toggleBit(i, 6); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("EGG"), true, 6));
+                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i]() { return this->toggleBit(i, 6); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("EGG"), true, 6));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 6) & 0x1);
-                    buttons[i].push_back(new HexEditButton(30, 106, 13, 13, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("NICKNAMED"), true, 7));
+                    buttons[i].push_back(new HexEditButton(30, 106, 13, 13, [this, i]() { return this->toggleBit(i, 7); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("NICKNAMED"), true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
                     break;
                 // Fateful Encounter
                 case 0x40:
-                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i](){ return this->toggleBit(i, 0); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("FATEFUL_ENCOUNTER"), true, 0));
+                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i]() { return this->toggleBit(i, 0); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("FATEFUL_ENCOUNTER"), true, 0));
                     buttons[i].back()->setToggled(pkm->rawData()[i] & 0x1);
                     break;
                 // DreamWorldAbility & N's Pokemon Flags
                 case 0x42:
-                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i](){ return this->toggleBit(i, 0); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("HIDDEN_ABILITY?"), true, 0));
+                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i]() { return this->toggleBit(i, 0); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("HIDDEN_ABILITY?"), true, 0));
                     buttons[i].back()->setToggled(pkm->rawData()[i] & 0x1);
-                    buttons[i].push_back(new HexEditButton(30, 106, 13, 13, [this, i](){ return this->toggleBit(i, 1); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("NS_POKEMON?"), true, 1));
+                    buttons[i].push_back(new HexEditButton(30, 106, 13, 13, [this, i]() { return this->toggleBit(i, 1); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("NS_POKEMON?"), true, 1));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 1) & 0x1);
                     break;
                 // OT Gender
                 case 0x84:
-                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("FEMALE_OT"), true, 7));
+                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i]() { return this->toggleBit(i, 7); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("FEMALE_OT"), true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
                     break;
                 // Status
                 case 0x88:
-                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i](){ return this->toggleBit(i, 3); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("POISONED"), true, 3));
+                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i]() { return this->toggleBit(i, 3); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("POISONED"), true, 3));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 3) & 0x1);
-                    buttons[i].push_back(new HexEditButton(30, 106, 13, 13, [this, i](){ return this->toggleBit(i, 4); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("BURNED"), true, 4));
+                    buttons[i].push_back(new HexEditButton(30, 106, 13, 13, [this, i]() { return this->toggleBit(i, 4); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("BURNED"), true, 4));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 4) & 0x1);
-                    buttons[i].push_back(new HexEditButton(30, 122, 13, 13, [this, i](){ return this->toggleBit(i, 5); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("FROZEN"), true, 5));
+                    buttons[i].push_back(new HexEditButton(30, 122, 13, 13, [this, i]() { return this->toggleBit(i, 5); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("FROZEN"), true, 5));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 5) & 0x1);
-                    buttons[i].push_back(new HexEditButton(30, 138, 13, 13, [this, i](){ return this->toggleBit(i, 6); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("PARALYZED"), true, 6));
+                    buttons[i].push_back(new HexEditButton(30, 138, 13, 13, [this, i]() { return this->toggleBit(i, 6); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("PARALYZED"), true, 6));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 6) & 0x1);
-                    buttons[i].push_back(new HexEditButton(30, 154, 13, 13, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("TOXIC"), true, 7));
+                    buttons[i].push_back(new HexEditButton(30, 154, 13, 13, [this, i]() { return this->toggleBit(i, 7); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("TOXIC"), true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
                     break;
             }
@@ -1423,7 +1190,8 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     }
                     for (int j = 0; j < 6; j++)
                     {
-                        buttons[i].push_back(new HexEditButton(30, 90 + j * 16, 13, 13, [this, i, j](){ return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, i18n::localize(std::string(marks[j])), true, j));
+                        buttons[i].push_back(new HexEditButton(30, 90 + j * 16, 13, 13, [this, i, j]() { return this->toggleBit(i, j); },
+                            ui_sheet_emulated_toggle_green_idx, i18n::localize(std::string(marks[j])), true, j));
                         buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
                     }
                     break;
@@ -1438,21 +1206,25 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     }
                     for (int j = 0; j < 8; j++)
                     {
-                        buttons[i].push_back(new HexEditButton(30, 90 + j * 16, 13, 13, [this, i, j](){ return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, i18n::localize(std::string(gen4ToggleTexts[currRibbon])), true, j));
+                        buttons[i].push_back(new HexEditButton(30, 90 + j * 16, 13, 13, [this, i, j]() { return this->toggleBit(i, j); },
+                            ui_sheet_emulated_toggle_green_idx, i18n::localize(std::string(gen4ToggleTexts[currRibbon])), true, j));
                         buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
                         currRibbon++;
                     }
                     break;
                 // Egg and Nicknamed Flags
                 case 0x3B:
-                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i](){ return this->toggleBit(i, 6); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("EGG"), true, 6));
+                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i]() { return this->toggleBit(i, 6); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("EGG"), true, 6));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 6) & 0x1);
-                    buttons[i].push_back(new HexEditButton(30, 106, 13, 13, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("NICKNAMED"), true, 7));
+                    buttons[i].push_back(new HexEditButton(30, 106, 13, 13, [this, i]() { return this->toggleBit(i, 7); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("NICKNAMED"), true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
                     break;
                 // Fateful Encounter
                 case 0x40:
-                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i](){ return this->toggleBit(i, 0); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("FATEFUL_ENCOUNTER"), true, 0));
+                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i]() { return this->toggleBit(i, 0); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("FATEFUL_ENCOUNTER"), true, 0));
                     buttons[i].back()->setToggled(pkm->rawData()[i] & 0x1);
                     break;
                 // Gold Leaves & Crown
@@ -1464,28 +1236,36 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     }
                     for (int j = 0; j < 5; j++)
                     {
-                        buttons[i].push_back(new HexEditButton(30, 90 + j * 16, 13, 13, [this, i, j](){ return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, (i18n::localize("SHINY_LEAF") + ' ') + (char)('A' + j), true, j));
+                        buttons[i].push_back(new HexEditButton(30, 90 + j * 16, 13, 13, [this, i, j]() { return this->toggleBit(i, j); },
+                            ui_sheet_emulated_toggle_green_idx, (i18n::localize("SHINY_LEAF") + ' ') + (char)('A' + j), true, j));
                         buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
                     }
-                    buttons[i].push_back(new HexEditButton(30, 170, 13, 13, [this, i](){ return this->toggleBit(i, 5); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("SHINY_CROWN"), true, 5));
+                    buttons[i].push_back(new HexEditButton(30, 170, 13, 13, [this, i]() { return this->toggleBit(i, 5); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("SHINY_CROWN"), true, 5));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 5) & 0x1);
                     break;
                 // OT Gender
                 case 0x84:
-                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("FEMALE_OT"), true, 7));
+                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i]() { return this->toggleBit(i, 7); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("FEMALE_OT"), true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
                     break;
                 // Status
                 case 0x88:
-                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i](){ return this->toggleBit(i, 3); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("POISONED"), true, 3));
+                    buttons[i].push_back(new HexEditButton(30, 90, 13, 13, [this, i]() { return this->toggleBit(i, 3); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("POISONED"), true, 3));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 3) & 0x1);
-                    buttons[i].push_back(new HexEditButton(30, 106, 13, 13, [this, i](){ return this->toggleBit(i, 4); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("BURNED"), true, 4));
+                    buttons[i].push_back(new HexEditButton(30, 106, 13, 13, [this, i]() { return this->toggleBit(i, 4); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("BURNED"), true, 4));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 4) & 0x1);
-                    buttons[i].push_back(new HexEditButton(30, 122, 13, 13, [this, i](){ return this->toggleBit(i, 5); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("FROZEN"), true, 5));
+                    buttons[i].push_back(new HexEditButton(30, 122, 13, 13, [this, i]() { return this->toggleBit(i, 5); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("FROZEN"), true, 5));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 5) & 0x1);
-                    buttons[i].push_back(new HexEditButton(30, 138, 13, 13, [this, i](){ return this->toggleBit(i, 6); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("PARALYZED"), true, 6));
+                    buttons[i].push_back(new HexEditButton(30, 138, 13, 13, [this, i]() { return this->toggleBit(i, 6); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("PARALYZED"), true, 6));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 6) & 0x1);
-                    buttons[i].push_back(new HexEditButton(30, 154, 13, 13, [this, i](){ return this->toggleBit(i, 7); }, ui_sheet_emulated_toggle_green_idx, i18n::localize("TOXIC"), true, 7));
+                    buttons[i].push_back(new HexEditButton(30, 154, 13, 13, [this, i]() { return this->toggleBit(i, 7); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("TOXIC"), true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
                     break;
             }
@@ -1499,7 +1279,7 @@ void HexEditScreen::draw() const
 {
     C2D_SceneBegin(g_renderTargetTop);
     Gui::sprite(ui_sheet_part_mtx_15x16_idx, 0, 0);
-    
+
     // Selected box
     C2D_DrawRectSolid((hid.index() % 16) * 25, (hid.index() / 16) * 15, 0.5f, 24, 14, C2D_Color32(15, 22, 89, 0));
     C2D_DrawRectSolid((hid.index() % 16) * 25, (hid.index() / 16) * 15, 0.5f, 1, 14, COLOR_YELLOW);
@@ -1513,12 +1293,13 @@ void HexEditScreen::draw() const
             if (x + y * 16 + hid.page() * hid.maxVisibleEntries() < pkm->getLength())
             {
                 std::pair<const std::string*, SecurityLevel> description = describe(x + y * 16 + hid.page() * hid.maxVisibleEntries());
-                u32 color = COLOR_WHITE;
+                u32 color                                                = COLOR_WHITE;
                 if (level < description.second)
                 {
                     color = C2D_Color32(0, 0, 0, 120);
                 }
-                Gui::dynamicText(StringUtils::format("%02X", pkm->rawData()[x + y * 16 + hid.page() * hid.maxVisibleEntries()]), x * 25 + 24 / 2, y * 15 + 1, FONT_SIZE_9, FONT_SIZE_9, color, TextPosX::CENTER, TextPosY::TOP);
+                Gui::dynamicText(StringUtils::format("%02X", pkm->rawData()[x + y * 16 + hid.page() * hid.maxVisibleEntries()]), x * 25 + 24 / 2,
+                    y * 15 + 1, FONT_SIZE_9, FONT_SIZE_9, color, TextPosX::CENTER, TextPosY::TOP);
             }
             else
             {
@@ -1531,10 +1312,12 @@ void HexEditScreen::draw() const
 
     C2D_SceneBegin(g_renderTargetBottom);
     Gui::backgroundBottom(false);
-    Gui::dynamicText(StringUtils::format("%s 0x%02X", i18n::localize("HEX_SELECTED_BYTE").c_str(), hid.fullIndex()), 160, 8, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::dynamicText(StringUtils::format("%s 0x%02X", i18n::localize("HEX_SELECTED_BYTE").c_str(), hid.fullIndex()), 160, 8, FONT_SIZE_14,
+        FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_emulated_button_selected_blue_idx, 140, 50);
-    Gui::dynamicText(StringUtils::format("%01X %01X", pkm->rawData()[hid.fullIndex()] >> 4, pkm->rawData()[hid.fullIndex()] & 0x0F), 160, 52, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::dynamicText(StringUtils::format("%01X %01X", pkm->rawData()[hid.fullIndex()] >> 4, pkm->rawData()[hid.fullIndex()] & 0x0F), 160, 52,
+        FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     if (level >= selectedDescription.second)
     {
         for (auto button : buttons[hid.fullIndex()])
@@ -1547,14 +1330,14 @@ void HexEditScreen::draw() const
 
 void HexEditScreen::update(touchPosition* touch)
 {
-    u32 down = hidKeysDown();
-    u32 held = hidKeysHeld();
-    static int superSecretTimer = 600;
+    u32 down                                        = hidKeysDown();
+    u32 held                                        = hidKeysHeld();
+    static int superSecretTimer                     = 600;
     static std::bitset<8> superSecretCornersPressed = {false};
-    static bool countDownSecretTimer = false;
-    static int timer = SLOW_TIME;
-    static int timerCount = 0;
-    //u32 held = hidKeysHeld();
+    static bool countDownSecretTimer                = false;
+    static int timer                                = SLOW_TIME;
+    static int timerCount                           = 0;
+    // u32 held = hidKeysHeld();
 
     if (down & KEY_B)
     {
@@ -1571,8 +1354,8 @@ void HexEditScreen::update(touchPosition* touch)
                 superSecretCornersPressed[4] = true;
             }
             superSecretCornersPressed[0] = true;
-            countDownSecretTimer = true;
-            superSecretTimer = 600;
+            countDownSecretTimer         = true;
+            superSecretTimer             = 600;
         }
         else if (touch->px > 290 && touch->px < 320 && touch->py < 30 && touch->py > 0)
         {
@@ -1581,8 +1364,8 @@ void HexEditScreen::update(touchPosition* touch)
                 superSecretCornersPressed[5] = true;
             }
             superSecretCornersPressed[1] = true;
-            countDownSecretTimer = true;
-            superSecretTimer = 600;
+            countDownSecretTimer         = true;
+            superSecretTimer             = 600;
         }
         else if (touch->px > 0 && touch->px < 30 && touch->py > 210 && touch->py < 240)
         {
@@ -1591,8 +1374,8 @@ void HexEditScreen::update(touchPosition* touch)
                 superSecretCornersPressed[6] = true;
             }
             superSecretCornersPressed[2] = true;
-            countDownSecretTimer = true;
-            superSecretTimer = 600;
+            countDownSecretTimer         = true;
+            superSecretTimer             = 600;
         }
         else if (touch->px > 290 && touch->px < 320 && touch->py > 210 && touch->py < 240)
         {
@@ -1601,24 +1384,22 @@ void HexEditScreen::update(touchPosition* touch)
                 superSecretCornersPressed[7] = true;
             }
             superSecretCornersPressed[3] = true;
-            countDownSecretTimer = true;
-            superSecretTimer = 600;
+            countDownSecretTimer         = true;
+            superSecretTimer             = 600;
         }
         if (level == NORMAL)
         {
-            if (superSecretCornersPressed[0] && superSecretCornersPressed[1]
-                && superSecretCornersPressed[2] && superSecretCornersPressed[3])
+            if (superSecretCornersPressed[0] && superSecretCornersPressed[1] && superSecretCornersPressed[2] && superSecretCornersPressed[3])
             {
-                level = OPEN;
+                level            = OPEN;
                 superSecretTimer = 0;
             }
         }
         else if (level == OPEN)
         {
-            if (superSecretCornersPressed[4] && superSecretCornersPressed[5]
-                && superSecretCornersPressed[6] && superSecretCornersPressed[7])
+            if (superSecretCornersPressed[4] && superSecretCornersPressed[5] && superSecretCornersPressed[6] && superSecretCornersPressed[7])
             {
-                level = UNRESTRICTED;
+                level            = UNRESTRICTED;
                 superSecretTimer = 0;
             }
         }
@@ -1633,7 +1414,7 @@ void HexEditScreen::update(touchPosition* touch)
         {
             buttons[hid.fullIndex()][i]->update(touch);
         }
-        
+
         if (down & KEY_A || held & KEY_A)
         {
             if (timer == 0)
@@ -1688,19 +1469,24 @@ void HexEditScreen::drawMeaning() const
             switch (i)
             {
                 case 0x8 ... 0x9:
-                    Gui::dynamicText(i18n::species(Configuration::getInstance().language(), pkm->species()), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::dynamicText(i18n::species(Configuration::getInstance().language(), pkm->species()), 160, 100, FONT_SIZE_12, FONT_SIZE_12,
+                        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0xA ... 0xB:
-                    Gui::dynamicText(i18n::item(Configuration::getInstance().language(), pkm->heldItem()), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::dynamicText(i18n::item(Configuration::getInstance().language(), pkm->heldItem()), 160, 100, FONT_SIZE_12, FONT_SIZE_12,
+                        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x15:
-                    Gui::dynamicText(i18n::ability(Configuration::getInstance().language(), pkm->ability()), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::dynamicText(i18n::ability(Configuration::getInstance().language(), pkm->ability()), 160, 100, FONT_SIZE_12, FONT_SIZE_12,
+                        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x28 ... 0x2F:
-                    Gui::dynamicText(i18n::move(Configuration::getInstance().language(), pkm->move((i - 0x28) / 2)), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::dynamicText(i18n::move(Configuration::getInstance().language(), pkm->move((i - 0x28) / 2)), 160, 100, FONT_SIZE_12,
+                        FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x5F:
-                    Gui::dynamicText(i18n::game(Configuration::getInstance().language(), pkm->version()), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::dynamicText(i18n::game(Configuration::getInstance().language(), pkm->version()), 160, 100, FONT_SIZE_12, FONT_SIZE_12,
+                        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x44 ... 0x45:
                     if (pkm->generation() == Generation::FIVE)
@@ -1708,7 +1494,8 @@ void HexEditScreen::drawMeaning() const
                         break;
                     }
                 case 0x7E ... 0x7F:
-                    Gui::dynamicText(i18n::location(Configuration::getInstance().language(), pkm->eggLocation(), pkm->version()), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::dynamicText(i18n::location(Configuration::getInstance().language(), pkm->eggLocation(), pkm->version()), 160, 100,
+                        FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x46 ... 0x47:
                     if (pkm->generation() == Generation::FIVE)
@@ -1716,7 +1503,8 @@ void HexEditScreen::drawMeaning() const
                         break;
                     }
                 case 0x80 ... 0x81:
-                    Gui::dynamicText(i18n::location(Configuration::getInstance().language(), pkm->metLocation(), pkm->version()), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::dynamicText(i18n::location(Configuration::getInstance().language(), pkm->metLocation(), pkm->version()), 160, 100,
+                        FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
             }
             break;
@@ -1726,39 +1514,49 @@ void HexEditScreen::drawMeaning() const
             switch (i)
             {
                 case 0x8 ... 0x9:
-                    Gui::dynamicText(i18n::species(Configuration::getInstance().language(), pkm->species()), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::dynamicText(i18n::species(Configuration::getInstance().language(), pkm->species()), 160, 100, FONT_SIZE_12, FONT_SIZE_12,
+                        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0xA ... 0xB:
-                    Gui::dynamicText(i18n::item(Configuration::getInstance().language(), pkm->heldItem()), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::dynamicText(i18n::item(Configuration::getInstance().language(), pkm->heldItem()), 160, 100, FONT_SIZE_12, FONT_SIZE_12,
+                        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x14:
-                    Gui::dynamicText(i18n::ability(Configuration::getInstance().language(), pkm->ability()), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::dynamicText(i18n::ability(Configuration::getInstance().language(), pkm->ability()), 160, 100, FONT_SIZE_12, FONT_SIZE_12,
+                        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x5A ... 0x61:
-                    Gui::dynamicText(i18n::move(Configuration::getInstance().language(), pkm->move((i - 0x5A) / 2)), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::dynamicText(i18n::move(Configuration::getInstance().language(), pkm->move((i - 0x5A) / 2)), 160, 100, FONT_SIZE_12,
+                        FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0xDF:
-                    Gui::dynamicText(i18n::game(Configuration::getInstance().language(), pkm->version()), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::dynamicText(i18n::game(Configuration::getInstance().language(), pkm->version()), 160, 100, FONT_SIZE_12, FONT_SIZE_12,
+                        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x6A ... 0x71:
                     if (pkm->generation() == Generation::SEVEN)
                     {
-                        Gui::dynamicText(i18n::move(Configuration::getInstance().language(), ((PK7*)pkm.get())->relearnMove((i - 0x6A) / 2)), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                        Gui::dynamicText(i18n::move(Configuration::getInstance().language(), ((PK7*)pkm.get())->relearnMove((i - 0x6A) / 2)), 160,
+                            100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     }
                     else if (pkm->generation() == Generation::SIX)
                     {
-                        Gui::dynamicText(i18n::move(Configuration::getInstance().language(), ((PK6*)pkm.get())->relearnMove((i - 0x6A) / 2)), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                        Gui::dynamicText(i18n::move(Configuration::getInstance().language(), ((PK6*)pkm.get())->relearnMove((i - 0x6A) / 2)), 160,
+                            100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     }
                     else
                     {
-                        Gui::dynamicText(i18n::move(Configuration::getInstance().language(), ((PB7*)pkm.get())->relearnMove((i - 0x6A) / 2)), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                        Gui::dynamicText(i18n::move(Configuration::getInstance().language(), ((PB7*)pkm.get())->relearnMove((i - 0x6A) / 2)), 160,
+                            100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     }
                     break;
                 case 0xD8 ... 0xD9:
-                    Gui::dynamicText(i18n::location(Configuration::getInstance().language(), pkm->eggLocation(), pkm->version()), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::dynamicText(i18n::location(Configuration::getInstance().language(), pkm->eggLocation(), pkm->version()), 160, 100,
+                        FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0xDA ... 0xDB:
-                    Gui::dynamicText(i18n::location(Configuration::getInstance().language(), pkm->metLocation(), pkm->version()), 160, 100, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::dynamicText(i18n::location(Configuration::getInstance().language(), pkm->metLocation(), pkm->version()), 160, 100,
+                        FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
             }
             break;
