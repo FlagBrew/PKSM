@@ -177,7 +177,11 @@ StorageScreen::StorageScreen()
         std::make_unique<AccelButton>(8, 15, 17, 24, [this]() { return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
     mainButtons[8] =
         std::make_unique<AccelButton>(189, 15, 17, 24, [this]() { return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
-    mainButtons[9] = std::make_unique<ClickButton>(3, 211, 34, 28,
+
+    instructions.addCircle(false, 17, 225, 8, COLOR_GREY);
+    instructions.addBox(false, 15, 175, 4, 50, COLOR_GREY);
+    instructions.addBox(false, 15, 175, 120, 18, COLOR_GREY, i18n::localize("SHARE_HINT"), COLOR_WHITE);
+    mainButtons[9] = std::make_unique<ClickButton>(3, 211, 28, 28,
         [this]() {
             if (!infoMon)
             {
