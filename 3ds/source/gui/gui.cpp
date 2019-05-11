@@ -34,11 +34,7 @@ static C2D_SpriteSheet spritesheet_ui;
 static C2D_SpriteSheet spritesheet_pkm;
 static C2D_SpriteSheet spritesheet_types;
 static C2D_Image bgBoxes;
-// static C2D_TextBuf dynamicBuf;
-// static C2D_TextBuf staticBuf;
 static C2D_TextBuf textBuf;
-// static std::unordered_map<std::string, std::vector<C2D_Text>> staticMap;
-// static std::unordered_map<std::string, std::vector<C2D_Text>> dynamicMap;
 static std::unordered_map<std::string, std::vector<C2D_Text>> textMap;
 
 std::vector<C2D_Font> Gui::fonts;
@@ -297,89 +293,6 @@ void Gui::text(const std::string& str, int x, int y, float scaleX, float scaleY,
     printX.clear();
 }
 
-// const std::vector<C2D_Text>& Gui::cacheStaticText(const std::string& strKey)
-// {
-//     std::unordered_map<std::string, std::vector<C2D_Text>>::const_iterator index = staticMap.find(strKey);
-//     if (index == staticMap.end())
-//     {
-//         auto text = StringUtils::fontSplit(strKey);
-//         staticMap.emplace(strKey, parseText(text, staticBuf));
-//         return staticMap[strKey];
-//     }
-//     else
-//     {
-//         return index->second;
-//     }
-// }
-
-// void Gui::clearStaticText()
-// {
-//     C2D_TextBufClear(staticBuf);
-//     staticMap.clear();
-// }
-
-// void Gui::staticText(const std::string& strKey, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY)
-// {
-//     const float lineMod = ceilf(scaleY * fontGetInfo(nullptr)->lineFeed);
-
-//     static std::vector<std::string> print;
-//     static std::vector<int> printX;
-
-//     size_t index = 0;
-//     while (index != std::string::npos)
-//     {
-//         print.push_back(strKey.substr(index, strKey.find('\n', index) - index));
-//         index = strKey.find('\n', index);
-//         if (index != std::string::npos)
-//         {
-//             index++;
-//         }
-//     }
-
-//     switch (positionX)
-//     {
-//         case TextPosX::LEFT:
-//             for (size_t i = 0; i < print.size(); i++)
-//             {
-//                 printX.push_back(x);
-//             }
-//             break;
-//         case TextPosX::CENTER:
-//             for (size_t i = 0; i < print.size(); i++)
-//             {
-//                 printX.push_back(x - (ceilf(StringUtils::textWidth(print[i], scaleX)) / 2));
-//             }
-//             break;
-//         case TextPosX::RIGHT:
-//             for (size_t i = 0; i < print.size(); i++)
-//             {
-//                 printX.push_back(x - (ceilf(StringUtils::textWidth(print[i], scaleX))));
-//             }
-//             break;
-//     }
-
-//     switch (positionY)
-//     {
-//         case TextPosY::TOP:
-//             break;
-//         case TextPosY::CENTER:
-//             y -= ceilf(0.5f * lineMod * (float)print.size());
-//             break;
-//         case TextPosY::BOTTOM:
-//             y -= lineMod * (float)print.size();
-//             break;
-//     }
-
-//     for (size_t i = 0; i < print.size(); i++)
-//     {
-//         auto text = cacheStaticText(print[i]);
-//         drawVector(text, printX[i], y, i, scaleX, scaleY, color);
-//     }
-
-//     print.clear();
-//     printX.clear();
-// }
-
 static void _draw_mirror_scale(int key, int x, int y, int off, int rep)
 {
     C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, key);
@@ -503,14 +416,6 @@ void Gui::exit(void)
     {
         C2D_SpriteSheetFree(spritesheet_types);
     }
-    // if (dynamicBuf)
-    // {
-    //     C2D_TextBufDelete(dynamicBuf);
-    // }
-    // if (staticBuf)
-    // {
-    //     C2D_TextBufDelete(staticBuf);
-    // }
     if (textBuf)
     {
         C2D_TextBufDelete(textBuf);
