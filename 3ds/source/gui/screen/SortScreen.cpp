@@ -57,13 +57,14 @@ SortScreen::SortScreen(bool storage) : storage(storage)
         ui_sheet_button_back_idx, "", 0.0f, 0));
 }
 
-void SortScreen::draw() const
+void SortScreen::drawTop() const
 {
-    C2D_SceneBegin(g_renderTargetTop);
     Gui::backgroundTop(false);
     Gui::backgroundAnimatedTop();
+}
 
-    C2D_SceneBegin(g_renderTargetBottom);
+void SortScreen::drawBottom() const
+{
     Gui::backgroundBottom(false);
     Gui::backgroundAnimatedBottom();
 
@@ -76,12 +77,12 @@ void SortScreen::draw() const
     {
         if (i >= sortTypes.size())
         {
-            Gui::dynamicText(i18n::localize(std::string(sortTypeToString(NONE))), 160, 29 + 35 * i, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
+            Gui::text(i18n::localize(std::string(sortTypeToString(NONE))), 160, 29 + 35 * i, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
                 TextPosX::CENTER, TextPosY::CENTER);
         }
         else
         {
-            Gui::dynamicText(i18n::localize(std::string(sortTypeToString(sortTypes[i]))), 160, 29 + 35 * i, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
+            Gui::text(i18n::localize(std::string(sortTypeToString(sortTypes[i]))), 160, 29 + 35 * i, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
                 TextPosX::CENTER, TextPosY::CENTER);
         }
     }

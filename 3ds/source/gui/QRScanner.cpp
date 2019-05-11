@@ -339,13 +339,15 @@ static void uiThread(void* arg)
         }
         svcReleaseMutex(data->mutex);
 
+        extern C3D_RenderTarget* g_renderTargetTop;
         C2D_SceneBegin(g_renderTargetTop);
         C2D_DrawImageAt(data->image, 0.0f, 0.0f, 0.5f, NULL, 1.0f, 1.0f);
         if (first)
         {
+            extern C3D_RenderTarget* g_renderTargetBottom;
             C2D_SceneBegin(g_renderTargetBottom);
             C2D_DrawRectSolid(0, 0, 0.5f, 320.0f, 240.0f, COLOR_MASKBLACK);
-            Gui::staticText(i18n::localize("SCANNER_EXIT"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+            Gui::text(i18n::localize("SCANNER_EXIT"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
             first = false;
         }
         C3D_FrameEnd(0);

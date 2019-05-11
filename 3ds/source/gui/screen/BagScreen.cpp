@@ -120,13 +120,14 @@ static int bobPointer()
     return currentBob / 4;
 }
 
-void BagScreen::draw() const
+void BagScreen::drawTop() const
 {
-    C2D_SceneBegin(g_renderTargetTop);
     Gui::backgroundTop(false);
     Gui::backgroundAnimatedTop();
+}
 
-    C2D_SceneBegin(g_renderTargetBottom);
+void BagScreen::drawBottom() const
+{
     C2D_DrawRectSolid(0, 0, 0.5f, 106, 240, COLOR_DARKBLUE);
     C2D_DrawRectSolid(107, 0, 0.5f, 213, 240, COLOR_BLUE);
 
@@ -153,14 +154,14 @@ void BagScreen::draw() const
         // {
         //     print += " x " + std::to_string((int)item->count());
         // }
-        Gui::dynamicText(i18n::item(Configuration::getInstance().language(), item->id()), 117 + 131 / 2, 20 + 30 * i, FONT_SIZE_12, FONT_SIZE_12,
+        Gui::text(i18n::item(Configuration::getInstance().language(), item->id()), 117 + 131 / 2, 20 + 30 * i, FONT_SIZE_12, FONT_SIZE_12,
             canEdit(limits[currentPouch].first, *item) ? COLOR_BLACK : COLOR_GREY, TextPosX::CENTER, TextPosY::TOP);
         if (item->id() > 0)
         {
-            Gui::dynamicText(std::to_string((int)item->count()), 262 + 37 / 2, 20 + 30 * i, FONT_SIZE_12, FONT_SIZE_12,
+            Gui::text(std::to_string((int)item->count()), 262 + 37 / 2, 20 + 30 * i, FONT_SIZE_12, FONT_SIZE_12,
                 canEdit(limits[currentPouch].first, *item) ? COLOR_BLACK : COLOR_GREY, TextPosX::CENTER, TextPosY::TOP);
         }
-        // Gui::dynamicText(print, 223, 20 + 30 * i, FONT_SIZE_12, FONT_SIZE_12, canEdit(limits[currentPouch].first, *item) ? COLOR_BLACK :
+        // Gui::text(print, 223, 20 + 30 * i, FONT_SIZE_12, FONT_SIZE_12, canEdit(limits[currentPouch].first, *item) ? COLOR_BLACK :
         // C2D_Color32(128, 128, 128, 255), TextPosX::CENTER, TextPosY::TOP);
     }
 

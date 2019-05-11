@@ -61,12 +61,13 @@ StorageOverlay::StorageOverlay(Screen& screen, bool store, int& boxBox, int& sto
         ui_sheet_button_back_idx, "", 0.0f, 0));
 }
 
-void StorageOverlay::draw() const
+void StorageOverlay::drawTop() const
 {
-    C2D_SceneBegin(g_renderTargetTop);
     dim();
+}
 
-    C2D_SceneBegin(g_renderTargetBottom);
+void StorageOverlay::drawBottom() const
+{
     dim();
 
     for (auto& button : buttons)

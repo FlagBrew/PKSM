@@ -40,5 +40,5 @@ void Button::draw() const
 {
     Gui::sprite(key, xPos, yPos);
     std::string draw = StringUtils::wrap(text, textScale, width);
-    Gui::staticText(draw, xPos + width / 2, yPos + height / 2, textScale, textScale, textColor, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text(draw, xPos + width / 2, yPos + height / 2, textScale, textScale, textColor, TextPosX::CENTER, TextPosY::CENTER);
 }

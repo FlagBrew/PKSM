@@ -27,9 +27,8 @@
 #include "ThirtyChoice.hpp"
 #include "gui.hpp"
 
-void ThirtyChoice::draw() const
+void ThirtyChoice::drawTop() const
 {
-    C2D_SceneBegin(g_renderTargetTop);
     Gui::sprite(ui_sheet_part_mtx_5x6_idx, 0, 0);
 
     int x = (hid.index() % 6) * 67;
@@ -52,11 +51,9 @@ void ThirtyChoice::draw() const
             }
             Gui::pkm(pkms[index].species, pkms[index].form, gen, 0, x * 67 + 18, y * 48 + 1);
             std::string text = StringUtils::wrap(labels[index], FONT_SIZE_9, 65.0f, 2);
-            Gui::dynamicText(labels[index], x * 67 + 32, y * 48 + 39, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+            Gui::text(labels[index], x * 67 + 32, y * 48 + 39, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
         }
     }
-
-    drawBottom();
 }
 
 void ThirtyChoice::update(touchPosition* touch)

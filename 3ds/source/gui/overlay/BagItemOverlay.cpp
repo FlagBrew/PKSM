@@ -28,15 +28,16 @@
 #include "gui.hpp"
 #include "loader.hpp"
 
-void BagItemOverlay::draw() const
+void BagItemOverlay::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     dim();
     searchButton->draw();
     Gui::sprite(ui_sheet_icon_search_idx, 79, 33);
-    Gui::dynamicText(searchString, 95, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(searchString, 95, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+}
 
-    C2D_SceneBegin(g_renderTargetTop);
+void BagItemOverlay::drawTop() const
+{
     Gui::sprite(ui_sheet_part_editor_20x2_idx, 0, 0);
     int x = hid.index() < hid.maxVisibleEntries() / 2 ? 2 : 200;
     int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 12;
@@ -52,8 +53,8 @@ void BagItemOverlay::draw() const
             break;
         }
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
-        Gui::dynamicText(*items[i + hid.page() * hid.maxVisibleEntries()].first, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9,
-            FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(*items[i + hid.page() * hid.maxVisibleEntries()].first, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9,
+            COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     }
 }
 

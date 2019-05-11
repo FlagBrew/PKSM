@@ -33,10 +33,17 @@ int ScriptChoice::run()
     {
         hidScanInput();
         C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-        C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
-        C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
 
-        draw();
+        extern C3D_RenderTarget* g_renderTargetTop;
+        C2D_SceneBegin(g_renderTargetTop);
+        C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
+        drawTop();
+
+        extern C3D_RenderTarget* g_renderTargetBottom;
+        C2D_SceneBegin(g_renderTargetBottom);
+        C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
+        drawBottom();
+
         touchPosition touch;
         hidTouchRead(&touch);
         update(&touch);
@@ -55,7 +62,6 @@ int ScriptChoice::run()
 
 void ScriptChoice::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     Gui::backgroundBottom(false);
-    Gui::dynamicText(question, 160, 120, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text(question, 160, 120, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 }

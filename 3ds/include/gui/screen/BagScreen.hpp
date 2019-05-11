@@ -39,7 +39,8 @@ public:
     virtual ~BagScreen();
 
     void update(touchPosition* touch) override;
-    void draw() const override;
+    void drawTop() const override;
+    void drawBottom() const override;
 
     ScreenType type() const { return ScreenType::BAG; }
 

@@ -237,9 +237,8 @@ bool StatsEditScreen::setHP()
     return false;
 }
 
-void StatsEditScreen::draw() const
+void StatsEditScreen::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     Language lang = Configuration::getInstance().language();
     Gui::sprite(ui_sheet_emulated_bg_bottom_blue, 0, 0);
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
@@ -267,39 +266,39 @@ void StatsEditScreen::draw() const
 
     if (pkm->generation() == Generation::LGPE)
     {
-        Gui::dynamicText(i18n::localize("EDITOR_CP") + std::to_string((int)((PB7*)pkm.get())->CP()), 4, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE,
+        Gui::text(i18n::localize("EDITOR_CP") + std::to_string((int)((PB7*)pkm.get())->CP()), 4, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE,
             TextPosX::LEFT, TextPosY::TOP);
     }
-    Gui::staticText(i18n::localize("EDITOR_STATS"), 4, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText(i18n::localize("IV"), 132, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::staticText(pkm->generation() == Generation::LGPE ? i18n::localize("AWAKENED") : i18n::localize("EV"), 213, 32, FONT_SIZE_12, FONT_SIZE_12,
+    Gui::text(i18n::localize("EDITOR_STATS"), 4, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("IV"), 132, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(pkm->generation() == Generation::LGPE ? i18n::localize("AWAKENED") : i18n::localize("EV"), 213, 32, FONT_SIZE_12, FONT_SIZE_12,
         COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::staticText(i18n::localize("TOTAL"), 274, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::staticText(i18n::localize("HP"), 4, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText(i18n::localize("ATTACK"), 4, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText(i18n::localize("DEFENSE"), 4, 92, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText(i18n::localize("SPATK"), 4, 112, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText(i18n::localize("SPDEF"), 4, 132, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText(i18n::localize("SPEED"), 4, 152, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("TOTAL"), 274, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("HP"), 4, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("ATTACK"), 4, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("DEFENSE"), 4, 92, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("SPATK"), 4, 112, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("SPDEF"), 4, 132, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("SPEED"), 4, 152, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
     for (int i = 0; i < 6; i++)
     {
-        Gui::dynamicText(
+        Gui::text(
             std::to_string((int)pkm->iv(statValues[i])), 132, 52 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         if (pkm->generation() != Generation::LGPE)
         {
-            Gui::dynamicText(std::to_string((int)pkm->ev(statValues[i])), 213, 52 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
+            Gui::text(std::to_string((int)pkm->ev(statValues[i])), 213, 52 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
                 TextPosY::TOP);
         }
         else
         {
-            Gui::dynamicText(std::to_string((int)((PB7*)pkm.get())->awakened(statValues[i])), 213, 52 + i * 20, FONT_SIZE_12, FONT_SIZE_12,
-                COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+            Gui::text(std::to_string((int)((PB7*)pkm.get())->awakened(statValues[i])), 213, 52 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
+                TextPosX::CENTER, TextPosY::TOP);
         }
-        Gui::dynamicText(std::to_string((int)pkm->stat(statValues[i])), 274, 52 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
+        Gui::text(std::to_string((int)pkm->stat(statValues[i])), 274, 52 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
             TextPosY::TOP);
     }
-    Gui::dynamicText(i18n::localize("EDITOR_HIDDEN_POWER") + i18n::hp(lang, pkm->hpType()), 295, 181, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE,
+    Gui::text(i18n::localize("EDITOR_HIDDEN_POWER") + i18n::hp(lang, pkm->hpType()), 295, 181, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE,
         TextPosX::RIGHT, TextPosY::TOP);
 }
 

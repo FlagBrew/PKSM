@@ -65,31 +65,57 @@ void Instructions::addCircle(bool top, int x, int y, int radius, u32 color)
     circles.emplace_back(top, x, y, radius, color);
 }
 
-void Instructions::draw() const
+void Instructions::drawTop() const
 {
-    C2D_SceneBegin(g_renderTargetTop);
     dim();
-    C2D_SceneBegin(g_renderTargetBottom);
-    dim();
-    C3D_RenderTarget* target = nullptr;
 
     for (auto& box : boxes)
     {
-        target = box.top ? g_renderTargetTop : g_renderTargetBottom;
-        C2D_SceneBegin(target);
-        C2D_DrawRectSolid(box.x, box.y, 0.5f, box.w, box.h, box.color);
-    }
-    for (auto& text : texts)
-    {
-        target = text.top ? g_renderTargetTop : g_renderTargetBottom;
-        C2D_SceneBegin(target);
-        Gui::dynamicText(text.string, text.x, text.y, FONT_SIZE_12, FONT_SIZE_12, text.color, text.xPos, text.yPos);
+        if (box.top)
+        {
+            C2D_DrawRectSolid(box.x, box.y, 0.5f, box.w, box.h, box.color);
+        }
     }
     for (auto& circle : circles)
     {
-        target = circle.top ? g_renderTargetTop : g_renderTargetBottom;
-        C2D_SceneBegin(target);
-        C2D_DrawCircleSolid(circle.x, circle.y, 0.5f, circle.radius, circle.color);
+        if (circle.top)
+        {
+            C2D_DrawCircleSolid(circle.x, circle.y, 0.5f, circle.radius, circle.color);
+        }
+    }
+    for (auto& text : texts)
+    {
+        if (text.top)
+        {
+            Gui::text(text.string, text.x, text.y, FONT_SIZE_12, FONT_SIZE_12, text.color, text.xPos, text.yPos);
+        }
+    }
+}
+
+void Instructions::drawBottom() const
+{
+    dim();
+
+    for (auto& box : boxes)
+    {
+        if (!box.top)
+        {
+            C2D_DrawRectSolid(box.x, box.y, 0.5f, box.w, box.h, box.color);
+        }
+    }
+    for (auto& circle : circles)
+    {
+        if (!circle.top)
+        {
+            C2D_DrawCircleSolid(circle.x, circle.y, 0.5f, circle.radius, circle.color);
+        }
+    }
+    for (auto& text : texts)
+    {
+        if (!text.top)
+        {
+            Gui::text(text.string, text.x, text.y, FONT_SIZE_12, FONT_SIZE_12, text.color, text.xPos, text.yPos);
+        }
     }
 }
 

@@ -42,7 +42,7 @@ public:
             labels.push_back(text[i]);
         }
     }
-    void draw() const override;
+    void drawTop() const override;
     void update(touchPosition* touch) override;
 
 private:

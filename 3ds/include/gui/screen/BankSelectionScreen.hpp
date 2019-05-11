@@ -50,7 +50,8 @@ public:
         hid.select(std::distance(strings.begin(),
             std::find_if(strings.begin(), strings.end(), [](const std::pair<std::string, int>& v) { return v.first == Banks::bank->name(); })));
     }
-    void draw() const override;
+    void drawTop() const override;
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
     ScreenType type() const override { return ScreenType::SELECTOR; }
 

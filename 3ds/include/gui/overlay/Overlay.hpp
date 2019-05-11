@@ -39,7 +39,8 @@ public:
     Overlay(Screen& screen, const std::string& instructions = "");
     virtual ~Overlay() {}
     virtual void update(touchPosition* touch) = 0;
-    virtual void draw() const                 = 0;
+    virtual void drawTop() const = 0;
+    virtual void drawBottom() const = 0;
     void dim(void) const;
     const Instructions& getInstructions() const { return instructions; }
 

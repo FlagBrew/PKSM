@@ -49,7 +49,8 @@ public:
         }
     }
     void update(touchPosition* touch) override;
-    void draw(void) const override;
+    void drawTop(void) const override;
+    void drawBottom(void) const override;
     ScreenType type() const override { return ScreenType::INJECTOR; }
 
 private:

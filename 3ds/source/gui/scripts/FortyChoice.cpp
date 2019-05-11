@@ -27,9 +27,8 @@
 #include "FortyChoice.hpp"
 #include "gui.hpp"
 
-void FortyChoice::draw() const
+void FortyChoice::drawTop() const
 {
-    C2D_SceneBegin(g_renderTargetTop);
     Gui::sprite(ui_sheet_part_editor_20x2_idx, 0, 0);
     int x = hid.index() < hid.maxVisibleEntries() / 2 ? 2 : 200;
     int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 12;
@@ -45,11 +44,9 @@ void FortyChoice::draw() const
             break;
         }
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
-        Gui::dynamicText(labels[i + hid.page() * hid.maxVisibleEntries()], x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9,
+        Gui::text(labels[i + hid.page() * hid.maxVisibleEntries()], x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9,
             COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     }
-
-    drawBottom();
 }
 
 void FortyChoice::update(touchPosition* touch)

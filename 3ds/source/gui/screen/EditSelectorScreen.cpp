@@ -240,14 +240,13 @@ EditSelectorScreen::~EditSelectorScreen()
     TitleLoader::save->currentBox((u8)box);
 }
 
-void EditSelectorScreen::draw() const
+void EditSelectorScreen::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     Gui::sprite(ui_sheet_emulated_bg_bottom_blue, 0, 0);
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
     Gui::sprite(ui_sheet_bar_bottom_blue_idx, 0, 216);
     Gui::sprite(ui_sheet_stripe_camera_idx, 218, 14);
-    // Gui::staticText(CAMERA, 311, 15, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::RIGHT, TextPosY::TOP);
+    // Gui::text(CAMERA, 311, 15, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::RIGHT, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_bar_boxname_with_arrows_idx, 7, 15);
     Gui::sprite(ui_sheet_storage_box_corner_idx, 2, 44);
@@ -322,7 +321,7 @@ void EditSelectorScreen::draw() const
         }
     }
 
-    Gui::dynamicText(TitleLoader::save->boxName(box), 107, 18, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(TitleLoader::save->boxName(box), 107, 18, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
 
     if (cursorPos == 0)
     {
@@ -356,7 +355,7 @@ void EditSelectorScreen::draw() const
 
     if (infoMon)
     {
-        Gui::dynamicText(StringUtils::format(i18n::localize("EDITOR_IDS"), infoMon->formatTID(), infoMon->formatSID(), infoMon->TSV()), 160, 224,
+        Gui::text(StringUtils::format(i18n::localize("EDITOR_IDS"), infoMon->formatTID(), infoMon->formatSID(), infoMon->TSV()), 160, 224,
             FONT_SIZE_9, FONT_SIZE_9, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
 

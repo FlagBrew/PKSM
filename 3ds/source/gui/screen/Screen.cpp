@@ -27,12 +27,21 @@
 #include "Screen.hpp"
 #include "Overlay.hpp"
 
-void Screen::doDraw() const
+void Screen::doTopDraw() const
 {
-    draw();
+    drawTop();
     if (currentOverlay)
     {
-        currentOverlay->draw();
+        currentOverlay->drawTop();
+    }
+}
+
+void Screen::doBottomDraw() const
+{
+    drawBottom();
+    if (currentOverlay)
+    {
+        currentOverlay->drawBottom();
     }
 }
 

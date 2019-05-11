@@ -37,7 +37,8 @@ class VersionOverlay : public Overlay
 {
 public:
     VersionOverlay(Screen& screen, std::shared_ptr<PKX> pkm);
-    void draw() const override;
+    void drawTop() const override;
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
 
 private:

@@ -27,15 +27,12 @@
 #include "ViewCloneOverlay.hpp"
 #include "gui.hpp"
 
-void ViewCloneOverlay::draw() const
+void ViewCloneOverlay::drawBottom() const
 {
-    ViewOverlay::draw();
-
-    C2D_SceneBegin(g_renderTargetBottom);
     dim();
     if (clone.empty())
     {
-        Gui::staticText(i18n::localize("PRESS_TO_CLONE"), 160, 110, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(i18n::localize("PRESS_TO_CLONE"), 160, 110, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     }
 }
 

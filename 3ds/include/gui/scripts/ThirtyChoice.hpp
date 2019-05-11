@@ -51,7 +51,7 @@ public:
             pkms.push_back(pokemon[i]);
         }
     }
-    void draw() const override;
+    void drawTop() const override;
     void update(touchPosition* touch) override;
 
 private:

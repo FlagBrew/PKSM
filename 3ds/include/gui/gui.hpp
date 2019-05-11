@@ -127,14 +127,14 @@ namespace Gui
     void setDoHomeDraw(void);
     void drawNoHome(void);
 
-    std::vector<C2D_Text> parseText(const std::vector<FontString>& str, C2D_TextBuf buffer);
-    const std::vector<C2D_Text>& cacheDynamicText(const std::string& strKey);
-    void clearTextBufs(void);
-    void dynamicText(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY);
+    std::vector<C2D_Text> parseText(const std::vector<FontString>& str);
+    const std::vector<C2D_Text>& cacheText(const std::string& strKey);
+    void clearText(void);
+    void text(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY);
 
-    const std::vector<C2D_Text>& cacheStaticText(const std::string& strKey);
-    void clearStaticText(void);
-    void staticText(const std::string& strKey, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY);
+    // const std::vector<C2D_Text>& cacheStaticText(const std::string& strKey);
+    // void clearStaticText(void);
+    // void staticText(const std::string& strKey, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY);
 
     void setScreen(std::unique_ptr<Screen> screen);
     void screenBack(void);

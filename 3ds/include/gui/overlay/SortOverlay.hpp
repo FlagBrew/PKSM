@@ -132,7 +132,8 @@ public:
         hid.select(int(type));
     }
     virtual ~SortOverlay() {}
-    void draw() const override;
+    void drawTop() const override;
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
 
 private:

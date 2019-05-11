@@ -31,5 +31,5 @@ void MainMenuButton::draw() const
 {
     Gui::sprite(key, xPos, yPos);
     Gui::sprite(menuImage, xPos + 10, imageY);
-    Gui::staticText(i18n::localize(text), xPos + 94, yPos + 16, textScale, textScale, textColor, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize(text), xPos + 94, yPos + 16, textScale, textScale, textColor, TextPosX::CENTER, TextPosY::TOP);
 }

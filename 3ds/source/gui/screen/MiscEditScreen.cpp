@@ -142,9 +142,8 @@ MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
     }
 }
 
-void MiscEditScreen::draw() const
+void MiscEditScreen::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     Language lang = Configuration::getInstance().language();
     Gui::sprite(ui_sheet_emulated_bg_bottom_blue, 0, 0);
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
@@ -163,40 +162,36 @@ void MiscEditScreen::draw() const
         button->draw();
     }
 
-    Gui::staticText(
-        i18n::localize(otAndMet ? "HT_EGG" : "OT_MET"), 254, 186, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::staticText(i18n::localize("MET_LEVEL"), 5, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText(i18n::localize(otAndMet ? "MET_DAY" : "EGG_DAY"), 5, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText(
-        i18n::localize(otAndMet ? "MET_MONTH" : "EGG_MONTH"), 5, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText(
-        i18n::localize(otAndMet ? "MET_YEAR" : "EGG_YEAR"), 5, 92, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText(
+    Gui::text(i18n::localize(otAndMet ? "HT_EGG" : "OT_MET"), 254, 186, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text(i18n::localize("MET_LEVEL"), 5, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize(otAndMet ? "MET_DAY" : "EGG_DAY"), 5, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize(otAndMet ? "MET_MONTH" : "EGG_MONTH"), 5, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize(otAndMet ? "MET_YEAR" : "EGG_YEAR"), 5, 92, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(
         i18n::localize(otAndMet ? "MET_LOCATION" : "EGG_LOCATION"), 5, 112, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText(i18n::localize("ORIGIN_GAME"), 5, 132, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("ORIGIN_GAME"), 5, 132, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     if (pkm->generation() > Generation::FIVE)
     {
-        Gui::staticText(i18n::localize("ENJOYMENT"), 5, 152, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(i18n::localize("FULLNESS"), 5, 172, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(i18n::localize(otAndMet ? "OT_AFFECTION" : "HT_AFFECTION"), 5, 192, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+        Gui::text(i18n::localize("ENJOYMENT"), 5, 152, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("FULLNESS"), 5, 172, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize(otAndMet ? "OT_AFFECTION" : "HT_AFFECTION"), 5, 192, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
             TextPosY::TOP);
     }
 
-    Gui::dynamicText(
-        std::to_string((int)pkm->metLevel()), 107 + 35 / 2, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::dynamicText(std::to_string((int)(otAndMet ? pkm->metDay() : pkm->eggDay())), 115, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
-        TextPosX::LEFT, TextPosY::TOP);
-    Gui::dynamicText(std::to_string((int)(otAndMet ? pkm->metMonth() : pkm->eggMonth())), 115, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
-        TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(std::to_string((int)pkm->metLevel()), 107 + 35 / 2, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(std::to_string((int)(otAndMet ? pkm->metDay() : pkm->eggDay())), 115, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+        TextPosY::TOP);
+    Gui::text(std::to_string((int)(otAndMet ? pkm->metMonth() : pkm->eggMonth())), 115, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+        TextPosY::TOP);
     int print = otAndMet ? pkm->metYear() : pkm->eggYear();
     if (print < 2000)
     {
         print += 2000;
     }
-    Gui::dynamicText(std::to_string(print), 115, 92, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::dynamicText(i18n::location(lang, otAndMet ? pkm->metLocation() : pkm->eggLocation(), pkm->version()), 115, 112, FONT_SIZE_12, FONT_SIZE_12,
+    Gui::text(std::to_string(print), 115, 92, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::location(lang, otAndMet ? pkm->metLocation() : pkm->eggLocation(), pkm->version()), 115, 112, FONT_SIZE_12, FONT_SIZE_12,
         COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::dynamicText(i18n::game(lang, pkm->version()), 115, 132, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::game(lang, pkm->version()), 115, 132, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     if (pkm->generation() > Generation::FIVE)
     {
         if (pkm->generation() == Generation::SIX)
@@ -211,7 +206,7 @@ void MiscEditScreen::draw() const
         {
             print = ((PB7*)pkm.get())->enjoyment();
         }
-        Gui::staticText(std::to_string(print), 107 + 35 / 2, 152, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(std::to_string(print), 107 + 35 / 2, 152, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         if (pkm->generation() == Generation::SIX)
         {
             print = ((PK6*)pkm.get())->fullness();
@@ -224,7 +219,7 @@ void MiscEditScreen::draw() const
         {
             print = ((PB7*)pkm.get())->fullness();
         }
-        Gui::staticText(std::to_string(print), 107 + 35 / 2, 172, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(std::to_string(print), 107 + 35 / 2, 172, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         if (otAndMet)
         {
             if (pkm->generation() == Generation::SIX)
@@ -255,7 +250,7 @@ void MiscEditScreen::draw() const
                 print = ((PB7*)pkm.get())->htAffection();
             }
         }
-        Gui::staticText(std::to_string(print), 107 + 35 / 2, 192, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(std::to_string(print), 107 + 35 / 2, 192, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
 }
 

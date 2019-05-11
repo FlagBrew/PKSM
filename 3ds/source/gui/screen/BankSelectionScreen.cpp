@@ -27,14 +27,15 @@
 #include "BankSelectionScreen.hpp"
 #include "gui.hpp"
 
-void BankSelectionScreen::draw() const
+void BankSelectionScreen::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     Gui::sprite(ui_sheet_part_info_bottom_idx, 0, 0);
-    Gui::staticText(i18n::localize("X_RENAME") + "\n" + i18n::localize("Y_RESIZE") + "\n" + i18n::localize("START_DELETE"), 160, 120, FONT_SIZE_18,
+    Gui::text(i18n::localize("X_RENAME") + "\n" + i18n::localize("Y_RESIZE") + "\n" + i18n::localize("START_DELETE"), 160, 120, FONT_SIZE_18,
         FONT_SIZE_18, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER);
+}
 
-    C2D_SceneBegin(g_renderTargetTop);
+void BankSelectionScreen::drawTop() const
+{
     Gui::sprite(ui_sheet_part_editor_20x2_idx, 0, 0);
     int x = hid.index() < hid.maxVisibleEntries() / 2 ? 2 : 200;
     int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 12;
@@ -48,10 +49,10 @@ void BankSelectionScreen::draw() const
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 204;
         if (hid.page() * hid.maxVisibleEntries() + i < strings.size())
         {
-            Gui::dynamicText(strings[hid.page() * hid.maxVisibleEntries() + i].first, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9,
-                FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-            Gui::dynamicText(std::to_string(strings[hid.page() * hid.maxVisibleEntries() + i].second), x + 192,
-                (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
+            Gui::text(strings[hid.page() * hid.maxVisibleEntries() + i].first, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9,
+                COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(std::to_string(strings[hid.page() * hid.maxVisibleEntries() + i].second), x + 192, (i % (hid.maxVisibleEntries() / 2)) * 12,
+                FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
         }
         else
         {

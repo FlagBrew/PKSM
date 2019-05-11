@@ -29,13 +29,14 @@
 #include "gui.hpp"
 #include "loader.hpp"
 
-void FormOverlay::draw() const
+void FormOverlay::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     dim();
-    Gui::staticText(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+}
 
-    C2D_SceneBegin(g_renderTargetTop);
+void FormOverlay::drawTop() const
+{
     Gui::sprite(ui_sheet_part_mtx_5x6_idx, 0, 0);
 
     int x  = (hid.index() % 6) * 67;
@@ -65,8 +66,8 @@ void FormOverlay::draw() const
             std::string text =
                 StringUtils::wrap(i18n::form(Configuration::getInstance().language(), pkm->species(), x + y * 6, TitleLoader::save->generation()),
                     FONT_SIZE_9, 65.0f, 2);
-            Gui::dynamicText(text, x * 67 + 32, y * 48 + 39, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-            // Gui::dynamicText(x * 50, y * 48 + 30, 50, i18n::form(Configuration::getInstance().language(), pkm->species(), x + y * 8,
+            Gui::text(text, x * 67 + 32, y * 48 + 39, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+            // Gui::text(x * 50, y * 48 + 30, 50, i18n::form(Configuration::getInstance().language(), pkm->species(), x + y * 8,
             // TitleLoader::save->generation()), FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
         }
     }

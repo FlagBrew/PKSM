@@ -29,13 +29,14 @@
 #include "gui.hpp"
 #include "loader.hpp"
 
-void BallOverlay::draw() const
+void BallOverlay::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     dim();
-    Gui::staticText(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+}
 
-    C2D_SceneBegin(g_renderTargetTop);
+void BallOverlay::drawTop() const
+{
     Gui::sprite(ui_sheet_part_mtx_5x6_idx, 0, 0);
 
     int x = (hid.index() % 6) * 67;
@@ -56,8 +57,8 @@ void BallOverlay::draw() const
                 break;
             }
             Gui::ball(x + y * 6 + 1, x * 67 + 24, y * 48 + 8);
-            Gui::dynamicText(i18n::ball(Configuration::getInstance().language(), x + y * 6), x * 67 + 33, y * 48 + 30, FONT_SIZE_9, FONT_SIZE_9,
-                COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+            Gui::text(i18n::ball(Configuration::getInstance().language(), x + y * 6), x * 67 + 33, y * 48 + 30, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE,
+                TextPosX::CENTER, TextPosY::TOP);
         }
     }
 }

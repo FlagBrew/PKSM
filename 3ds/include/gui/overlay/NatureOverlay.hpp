@@ -42,7 +42,8 @@ public:
         hid.select(pkm->nature());
     }
     virtual ~NatureOverlay() {}
-    void draw() const override;
+    void drawTop() const override;
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
 
 private:

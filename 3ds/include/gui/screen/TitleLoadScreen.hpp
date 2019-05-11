@@ -53,7 +53,8 @@ public:
         }
     }
     void drawSelector(int x, int y) const;
-    void draw() const override;
+    void drawTop() const override;
+    void drawBottom() const override;
     ScreenType type() const override { return ScreenType::TITLELOAD; }
     void update(touchPosition* touch) override;
 

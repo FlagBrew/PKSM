@@ -39,7 +39,9 @@ class EditSelectorScreen : public Screen
 public:
     ~EditSelectorScreen();
     EditSelectorScreen();
-    void draw() const override;
+    // Done with Overlay
+    void drawTop() const override {}
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
     ScreenType type() const override { return ScreenType::EDITSELECT; }
 

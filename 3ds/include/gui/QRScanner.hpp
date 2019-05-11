@@ -55,7 +55,8 @@ enum QRMode
     WCX4,
     WCX5,
     WCX6,
-    WCX7
+    WCX7,
+    NUMBER
 };
 
 namespace QRScanner

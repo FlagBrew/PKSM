@@ -28,13 +28,14 @@
 #include "Configuration.hpp"
 #include "gui.hpp"
 
-void HiddenPowerOverlay::draw() const
+void HiddenPowerOverlay::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     dim();
-    Gui::staticText(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+}
 
-    C2D_SceneBegin(g_renderTargetTop);
+void HiddenPowerOverlay::drawTop() const
+{
     Gui::sprite(ui_sheet_part_mtx_4x4_idx, 0, 0);
     int x = (hid.index() % 4) * 100;
     int y = (hid.index() / 4) * 60;

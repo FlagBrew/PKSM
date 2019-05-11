@@ -37,7 +37,8 @@ class Instructions
 {
 public:
     Instructions(const std::string& simpleInstructions = "");
-    void draw() const;
+    void drawTop() const;
+    void drawBottom() const;
     void addBox(bool top, int x, int y, int width, int height, u32 color, const std::string& text = "", u32 textColor = COLOR_BLACK);
     void addText(bool top, int x, int y, int maxWidth, TextPosX xPos, TextPosY yPos, u32 color, const std::string& text);
     void addCircle(bool top, int x, int y, int radius, u32 color);

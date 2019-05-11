@@ -41,13 +41,14 @@ VersionOverlay::VersionOverlay(Screen& screen, std::shared_ptr<PKX> pkm) : Overl
         std::find_if(games.begin(), games.end(), [pkm](const std::pair<u8, const std::string&>& pair) { return pair.first == pkm->version(); })));
 }
 
-void VersionOverlay::draw() const
+void VersionOverlay::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     dim();
-    Gui::staticText(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+}
 
-    C2D_SceneBegin(g_renderTargetTop);
+void VersionOverlay::drawTop() const
+{
     Gui::sprite(ui_sheet_part_editor_20x2_idx, 0, 0);
     int x = hid.index() < hid.maxVisibleEntries() / 2 ? 2 : 200;
     int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 12;
@@ -61,8 +62,8 @@ void VersionOverlay::draw() const
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
         if (hid.page() * hid.maxVisibleEntries() + i < games.size())
         {
-            Gui::dynamicText(std::to_string(games[hid.page() * hid.maxVisibleEntries() + i].first) + " - " +
-                                 games[hid.page() * hid.maxVisibleEntries() + i].second,
+            Gui::text(std::to_string(games[hid.page() * hid.maxVisibleEntries() + i].first) + " - " +
+                          games[hid.page() * hid.maxVisibleEntries() + i].second,
                 x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         }
         else

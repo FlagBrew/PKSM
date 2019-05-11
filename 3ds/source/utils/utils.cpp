@@ -153,45 +153,6 @@ void StringUtils::setString(u8* data, const std::u16string& v, int ofs, int len,
 void StringUtils::setString(u8* data, const std::string& v, int ofs, int len, char16_t terminator, char16_t padding)
 {
     setString(data, UTF8toUTF16(v), ofs, len, terminator, padding);
-    // len *= 2;
-    // u8 toinsert[len] = {0};
-    // if (v.empty()) return;
-
-    // char buf;
-    // int nicklen = v.length(), r = 0, w = 0, i = 0;
-    // while (r < nicklen || w > len)
-    // {
-    //     buf = v[r++];
-    //     if ((buf & 0x80) == 0)
-    //     {
-    //         toinsert[w] = buf & 0x7f;
-    //         i = 0;
-    //     }
-    //     else if ((buf & 0xe0) == 0xc0)
-    //     {
-    //         toinsert[w] = buf & 0x1f;
-    //         i = 1;
-    //     }
-    //     else if ((buf & 0xf0) == 0xe0)
-    //     {
-    //         toinsert[w] = buf & 0x0f;
-    //         i = 2;
-    //     }
-    //     else break;
-
-    //     for (int j = 0; j < i; j++)
-    //     {
-    //         buf = v[r++];
-    //         if (toinsert[w] > 0x04)
-    //         {
-    //             toinsert[w + 1] = (toinsert[w + 1] << 6) | (((toinsert[w] & 0xfc) >> 2) & 0x3f);
-    //             toinsert[w] &= 0x03;
-    //         }
-    //         toinsert[w] = (toinsert[w] << 6) | (buf & 0x3f);
-    //     }
-    //     w += 2;
-    // }
-    // memcpy(data + ofs, toinsert, len);
 }
 
 std::string StringUtils::getString4(const u8* data, int ofs, int len)
@@ -414,7 +375,7 @@ std::string StringUtils::splitWord(const std::string& text, float scaleX, float 
                 widthCache.insert_or_assign(codepoint,
                     C2D_FontGetCharWidthInfo(fontForCodepoint(codepoint), C2D_FontGlyphIndexFromCodePoint(fontForCodepoint(codepoint), codepoint)));
                 widthCacheOrder.push(codepoint);
-                if (widthCache.size() > 1024)
+                if (widthCache.size() > 2048)
                 {
                     widthCache.erase(widthCacheOrder.front());
                     widthCacheOrder.pop();
@@ -477,7 +438,7 @@ float StringUtils::textWidth(const std::string& text, float scaleX)
             widthCache.insert_or_assign(codepoint,
                 C2D_FontGetCharWidthInfo(fontForCodepoint(codepoint), C2D_FontGlyphIndexFromCodePoint(fontForCodepoint(codepoint), codepoint)));
             widthCacheOrder.push(codepoint);
-            if (widthCache.size() > 1024)
+            if (widthCache.size() > 2048)
             {
                 widthCache.erase(widthCacheOrder.front());
                 widthCacheOrder.pop();
@@ -493,7 +454,37 @@ float StringUtils::textWidth(const std::string& text, float scaleX)
 
 float StringUtils::textWidth(const std::u16string& text, float scaleX)
 {
-    return textWidth(UTF16toUTF8(text), scaleX);
+    float ret        = 0.0f;
+    float largestRet = 0.0f;
+    for (size_t i = 0; i < text.size(); i++)
+    {
+        if (text[i] == u'\n')
+        {
+            largestRet = std::max(ret, largestRet);
+            ret        = 0.0f;
+            continue;
+        }
+        float charWidth;
+        auto width = widthCache.find(text[i]);
+        if (width != widthCache.end())
+        {
+            charWidth = width->second->charWidth * scaleX;
+        }
+        else
+        {
+            widthCache.insert_or_assign(
+                text[i], C2D_FontGetCharWidthInfo(fontForCodepoint(text[i]), C2D_FontGlyphIndexFromCodePoint(fontForCodepoint(text[i]), text[i])));
+            widthCacheOrder.push(text[i]);
+            if (widthCache.size() > 2048)
+            {
+                widthCache.erase(widthCacheOrder.front());
+                widthCacheOrder.pop();
+            }
+            charWidth = widthCache[text[i]]->charWidth * scaleX;
+        }
+        ret += charWidth;
+    }
+    return std::max(largestRet, ret);
 }
 
 float StringUtils::textWidth(const C2D_Text& text, float scaleX)
@@ -1006,7 +997,6 @@ static u32 swapCodepoints45(u32 codepoint)
     return codepoint;
 }
 
-// TODO Implement this without using two intermediate strings
 std::string StringUtils::transString45(const std::string& str)
 {
     std::string ret = str;
@@ -1089,7 +1079,6 @@ static u32 swapCodepoints67(u32 codepoint)
     return codepoint;
 }
 
-// TODO Make this not require two intermediate strings
 std::string StringUtils::transString67(const std::string& str)
 {
     std::string ret = str;

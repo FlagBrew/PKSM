@@ -38,7 +38,8 @@ class SpeciesOverlay : public Overlay
 public:
     SpeciesOverlay(Screen& screen, std::shared_ptr<PKX> pkm);
     ~SpeciesOverlay() { delete searchButton; }
-    void draw() const override;
+    void drawTop() const override;
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
 
 private:

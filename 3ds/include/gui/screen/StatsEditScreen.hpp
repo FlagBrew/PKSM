@@ -37,7 +37,9 @@ class StatsEditScreen : public Screen
 {
 public:
     StatsEditScreen(std::shared_ptr<PKX> pkm);
-    void draw() const override;
+    // Done in Overlay
+    void drawTop() const override {}
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
     ScreenType type() const override { return ScreenType::EDITOR; }
 
