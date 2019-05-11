@@ -33,6 +33,7 @@
 #include "FSStream.hpp"
 #include "MainMenu.hpp"
 #include "PK4.hpp"
+#include "QRScanner.hpp"
 #include "SavLGPE.hpp"
 #include "SortOverlay.hpp"
 #include "StorageOverlay.hpp"
@@ -42,7 +43,6 @@
 #include "fetch.hpp"
 #include <PB7.hpp>
 #include <variant>
-#include "QRScanner.hpp"
 
 extern "C" {
 #include "base64.h"
@@ -1755,7 +1755,7 @@ void StorageScreen::shareReceive()
             {
                 std::copy(buff, buff + strlen((char*)buff), input);
                 input[10] = '\0';
-                ret = SWKBD_BUTTON_CONFIRM;
+                ret       = SWKBD_BUTTON_CONFIRM;
             }
             delete[] buff;
         }

@@ -233,7 +233,7 @@ static void qrHandler(qr_data* data, QRMode mode, u8*& buff)
             }
             else if (mode == NUMBER)
             {
-                buff = new u8[scan_data.payload_len + 1];
+                buff                        = new u8[scan_data.payload_len + 1];
                 buff[scan_data.payload_len] = '\0';
                 std::copy(scan_data.payload, scan_data.payload + scan_data.payload_len, buff);
             }
