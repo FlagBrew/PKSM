@@ -202,12 +202,13 @@ static void drawVector(const std::vector<C2D_Text>& draw, int x, int y, int line
 std::vector<C2D_Text> Gui::parseText(const std::vector<FontString>& str)
 {
     std::vector<C2D_Text> ret;
+    ret.reserve(str.size());
     for (auto i = str.begin(); i != str.end(); i++)
     {
         C2D_Text text;
         C2D_TextFontParse(&text, i->font, textBuf, i->text.c_str());
         C2D_TextOptimize(&text);
-        ret.push_back(text);
+        ret.emplace_back(text);
     }
     return ret;
 }
@@ -222,8 +223,8 @@ const std::vector<C2D_Text>& Gui::cacheText(const std::string& strKey)
             Gui::clearText();
         }
         auto text       = StringUtils::fontSplit(strKey);
-        textMap[strKey] = parseText(text);
-        return textMap[strKey];
+        const auto& ret = textMap.emplace(strKey, parseText(text));
+        return ret.first->second;
     }
     else
     {
@@ -241,7 +242,7 @@ void Gui::text(const std::string& str, int x, int y, float scaleX, float scaleY,
     size_t index = 0;
     while (index != std::string::npos)
     {
-        print.push_back(str.substr(index, str.find('\n', index) - index));
+        print.emplace_back(str.substr(index, str.find('\n', index) - index));
         index = str.find('\n', index);
         if (index != std::string::npos)
         {
@@ -336,11 +337,11 @@ Result Gui::init(void)
     spritesheet_pkm   = C2D_SpriteSheetLoad("/3ds/PKSM/assets/pkm_spritesheet.t3x");
     spritesheet_types = C2D_SpriteSheetLoad("/3ds/PKSM/assets/types_spritesheet.t3x");
 
-    fonts.push_back(C2D_FontLoad("romfs:/gfx/pksm.bcfnt"));
-    fonts.push_back(C2D_FontLoadSystem(CFG_REGION_USA));
-    fonts.push_back(C2D_FontLoadSystem(CFG_REGION_KOR));
-    fonts.push_back(C2D_FontLoadSystem(CFG_REGION_CHN));
-    fonts.push_back(C2D_FontLoadSystem(CFG_REGION_TWN));
+    fonts.emplace_back(C2D_FontLoad("romfs:/gfx/pksm.bcfnt"));
+    fonts.emplace_back(C2D_FontLoadSystem(CFG_REGION_USA));
+    fonts.emplace_back(C2D_FontLoadSystem(CFG_REGION_KOR));
+    fonts.emplace_back(C2D_FontLoadSystem(CFG_REGION_CHN));
+    fonts.emplace_back(C2D_FontLoadSystem(CFG_REGION_TWN));
 
     bgBoxes = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_anim_squares_idx);
 

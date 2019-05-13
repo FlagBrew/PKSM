@@ -39,7 +39,7 @@ public:
     {
         for (int i = 0; i < items; i++)
         {
-            labels.push_back(text[i]);
+            labels.emplace_back(text[i]);
         }
     }
     void drawTop() const override;

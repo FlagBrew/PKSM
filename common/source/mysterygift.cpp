@@ -142,11 +142,7 @@ std::vector<nlohmann::json> MysteryGift::wondercards()
 
 MysteryGift::giftData MysteryGift::wondercardInfo(size_t index)
 {
-    giftData ret;
     nlohmann::json entry = mysteryGiftSheet["wondercards"][index];
-    ret.name             = entry["name"].get<std::string>();
-    ret.game             = entry["game"].get<std::string>();
-    ret.form             = entry["form"];
-    ret.species          = entry["species"];
+    giftData ret(entry["name"].get<std::string>(), entry["game"].get<std::string>(), entry["species"].get<int>(), entry["form"].get<int>());
     return ret;
 }

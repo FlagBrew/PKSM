@@ -50,6 +50,7 @@ std::string StringUtils::format(const std::string& fmt_str, ...)
 std::u16string StringUtils::UTF8toUTF16(const std::string& src)
 {
     std::u16string ret;
+    ret.reserve(src.size());
     for (size_t i = 0; i < src.size(); i++)
     {
         u16 codepoint = 0xFFFD;
@@ -81,6 +82,7 @@ std::u16string StringUtils::UTF8toUTF16(const std::string& src)
 static std::string utf16DataToUtf8(const char16_t* data, size_t size, char16_t delim = 0)
 {
     std::string ret;
+    ret.reserve(size);
     char addChar[4] = {0};
     for (size_t i = 0; i < size; i++)
     {
@@ -119,6 +121,7 @@ std::string StringUtils::UTF16toUTF8(const std::u16string& src)
 std::u16string StringUtils::getU16String(const u8* data, int ofs, int len, char16_t term)
 {
     std::u16string ret;
+    ret.reserve(len);
     const char16_t* buf = (char16_t*)(data + ofs);
     for (int i = 0; i < len; i++)
     {
@@ -435,7 +438,7 @@ float StringUtils::textWidth(const std::string& text, float scaleX)
         }
         else
         {
-            widthCache.insert_or_assign(codepoint,
+            const auto& item = widthCache.insert_or_assign(codepoint,
                 C2D_FontGetCharWidthInfo(fontForCodepoint(codepoint), C2D_FontGlyphIndexFromCodePoint(fontForCodepoint(codepoint), codepoint)));
             widthCacheOrder.push(codepoint);
             if (widthCache.size() > 2048)
@@ -443,7 +446,7 @@ float StringUtils::textWidth(const std::string& text, float scaleX)
                 widthCache.erase(widthCacheOrder.front());
                 widthCacheOrder.pop();
             }
-            charWidth = widthCache[codepoint]->charWidth * scaleX;
+            charWidth = item.first->second->charWidth * scaleX;
         }
         ret += charWidth;
         i += iMod;
@@ -472,7 +475,7 @@ float StringUtils::textWidth(const std::u16string& text, float scaleX)
         }
         else
         {
-            widthCache.insert_or_assign(
+            const auto& item = widthCache.insert_or_assign(
                 text[i], C2D_FontGetCharWidthInfo(fontForCodepoint(text[i]), C2D_FontGlyphIndexFromCodePoint(fontForCodepoint(text[i]), text[i])));
             widthCacheOrder.push(text[i]);
             if (widthCache.size() > 2048)
@@ -480,7 +483,7 @@ float StringUtils::textWidth(const std::u16string& text, float scaleX)
                 widthCache.erase(widthCacheOrder.front());
                 widthCacheOrder.pop();
             }
-            charWidth = widthCache[text[i]]->charWidth * scaleX;
+            charWidth = item.first->second->charWidth * scaleX;
         }
         ret += charWidth;
     }
@@ -500,6 +503,7 @@ std::string StringUtils::wrap(const std::string& text, float scaleX, float maxWi
     }
     std::string dst, line, word;
     dst = line = word = "";
+    dst.reserve(text.size());
 
     for (std::string::const_iterator it = text.begin(); it != text.end(); it++)
     {
@@ -582,14 +586,14 @@ std::string StringUtils::wrap(const std::string& text, float scaleX, float maxWi
     {
         if (wrapped[i] == '\n')
         {
-            split.push_back(wrapped.substr(0, i));
+            split.emplace_back(wrapped.substr(0, i));
             wrapped = wrapped.substr(i + 1, std::string::npos);
             i       = 0;
         }
     }
     if (!wrapped.empty())
     {
-        split.push_back(wrapped);
+        split.emplace_back(wrapped);
     }
 
     // If it's already the correct amount of lines, return it
@@ -710,7 +714,7 @@ std::vector<FontString> StringUtils::fontSplit(const std::string& str)
         }
         else if (codepoint == 0)
         {
-            ret.push_back({prevFont, parseMe});
+            ret.emplace_back(prevFont, parseMe);
             return ret;
         }
 
@@ -721,7 +725,7 @@ std::vector<FontString> StringUtils::fontSplit(const std::string& str)
         }
         else
         {
-            ret.push_back({prevFont, parseMe});
+            ret.emplace_back(prevFont, parseMe);
             parseMe  = currentChar;
             prevFont = font;
         }

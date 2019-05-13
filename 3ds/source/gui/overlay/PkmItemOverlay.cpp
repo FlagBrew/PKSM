@@ -78,7 +78,7 @@ PkmItemOverlay::PkmItemOverlay(Screen& screen, std::shared_ptr<PKX> pkm)
             continue; // Bag Z-Crystals
         else if (i >= 927 && i <= 932)
             continue; // Bag Z-Crystals
-        items.push_back({i, rawItems[i]});
+        items.emplace_back(i, rawItems[i]);
     }
     std::sort(items.begin(), items.end(), stringComp);
     items.insert(items.begin(), {0, rawItems[0]});
@@ -162,14 +162,14 @@ void PkmItemOverlay::update(touchPosition* touch)
     if (!searchString.empty() && searchString != oldSearchString)
     {
         items.clear();
-        items.push_back(validItems[0]);
+        items.emplace_back(validItems[0]);
         for (size_t i = 1; i < validItems.size(); i++)
         {
             std::string itemName = validItems[i].second.substr(0, searchString.size());
             StringUtils::toLower(itemName);
             if (itemName == searchString)
             {
-                items.push_back(validItems[i]);
+                items.emplace_back(validItems[i]);
             }
         }
         oldSearchString = searchString;

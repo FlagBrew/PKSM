@@ -554,12 +554,12 @@ std::vector<MysteryGift::giftData> Sav7::currentGifts(void) const
     {
         if (*(wonderCards + i * WC7::length + 0x51) == 0)
         {
-            ret.push_back({StringUtils::getString(wonderCards + i * WC7::length, 0x2, 36), "", *(u16*)(wonderCards + i * WC7::length + 0x82),
-                *(wonderCards + i * WC7::length + 0x84), *(wonderCards + i * WC6::length + 0xA1)});
+            ret.emplace_back(StringUtils::getString(wonderCards + i * WC7::length, 0x2, 36), "", *(u16*)(wonderCards + i * WC7::length + 0x82),
+                *(wonderCards + i * WC7::length + 0x84), *(wonderCards + i * WC6::length + 0xA1));
         }
         else
         {
-            ret.push_back({StringUtils::getString(wonderCards + i * WC7::length, 0x2, 36), "", -1, -1, -1});
+            ret.emplace_back(StringUtils::getString(wonderCards + i * WC7::length, 0x2, 36), "", -1, -1, -1);
         }
     }
     return ret;

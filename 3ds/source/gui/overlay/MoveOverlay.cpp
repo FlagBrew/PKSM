@@ -70,7 +70,7 @@ MoveOverlay::MoveOverlay(Screen& screen, std::shared_ptr<PKX> pkm, int moveIndex
     {
         if (i >= 622 && i <= 658)
             continue;
-        moves.push_back({i, rawMoves[i]});
+        moves.emplace_back(i, rawMoves[i]);
     }
     static const auto less = [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2) {
         return pair1.second < pair2.second;
@@ -160,14 +160,14 @@ void MoveOverlay::update(touchPosition* touch)
     if (!searchString.empty() && searchString != oldSearchString)
     {
         moves.clear();
-        moves.push_back(validMoves[0]);
+        moves.emplace_back(validMoves[0]);
         for (size_t i = 1; i < validMoves.size(); i++)
         {
             std::string itemName = validMoves[i].second.substr(0, searchString.size());
             StringUtils::toLower(itemName);
             if (itemName == searchString)
             {
-                moves.push_back(validMoves[i]);
+                moves.emplace_back(validMoves[i]);
             }
         }
         oldSearchString = searchString;

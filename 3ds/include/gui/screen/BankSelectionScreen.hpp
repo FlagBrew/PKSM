@@ -45,7 +45,7 @@ public:
         {
             newBankNum++;
         }
-        strings.push_back({i18n::localize("NEW_BANK") + " " + std::to_string(newBankNum), 1});
+        strings.emplace_back(i18n::localize("NEW_BANK") + " " + std::to_string(newBankNum), 1);
         hid.update(strings.size());
         hid.select(std::distance(strings.begin(),
             std::find_if(strings.begin(), strings.end(), [](const std::pair<std::string, int>& v) { return v.first == Banks::bank->name(); })));

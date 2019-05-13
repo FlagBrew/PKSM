@@ -65,7 +65,7 @@ bool SDLH_Init(void)
                     std::string songName = d.item(i);
                     if (songName.substr(songName.size() - 3, 3) == "mp3")
                     {
-                        songs.push_back("/3ds/PKSM/songs/" + songName);
+                        songs.emplace_back("/3ds/PKSM/songs/" + songName);
                     }
                 }
             }

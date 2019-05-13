@@ -78,14 +78,14 @@ void BagItemOverlay::update(touchPosition* touch)
     if (!searchString.empty() && searchString != oldSearchString)
     {
         items.clear();
-        items.push_back(validItems[0]);
+        items.emplace_back(validItems[0]);
         for (size_t i = 1; i < validItems.size(); i++)
         {
             std::string itemName = validItems[i].first->substr(0, searchString.size());
             StringUtils::toLower(itemName);
             if (itemName == searchString)
             {
-                items.push_back(validItems[i]);
+                items.emplace_back(validItems[i]);
             }
         }
         oldSearchString = searchString;

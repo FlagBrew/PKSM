@@ -200,7 +200,7 @@ static std::vector<std::string> scanDirectoryFor(const std::u16string& dir, cons
                                 StringUtils::UTF16toUTF8(dir + sSeparator + fileName + sSeparator + subdir.item(k) + sSeparator) + idToSaveName(id);
                             if (io::exists(savePath))
                             {
-                                ret.push_back(savePath);
+                                ret.emplace_back(savePath);
                             }
                         }
                     }
@@ -232,7 +232,7 @@ void TitleLoader::scanSaves(void)
             {
                 if (io::exists(save))
                 {
-                    saves.push_back(save);
+                    saves.emplace_back(save);
                 }
             }
         }
@@ -257,7 +257,7 @@ void TitleLoader::scanSaves(void)
                 {
                     if (io::exists(save))
                     {
-                        saves.push_back(save);
+                        saves.emplace_back(save);
                     }
                 }
             }
@@ -288,7 +288,7 @@ void TitleLoader::backupSave(const std::string& id)
         out.write(TitleLoader::save->rawData(), TitleLoader::save->getLength());
         if (Configuration::getInstance().showBackups())
         {
-            sdSaves[id].push_back(path);
+            sdSaves[id].emplace_back(path);
         }
     }
     else

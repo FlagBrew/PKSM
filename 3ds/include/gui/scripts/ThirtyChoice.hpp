@@ -47,8 +47,8 @@ public:
     {
         for (int i = 0; i < items; i++)
         {
-            labels.push_back(text[i]);
-            pkms.push_back(pokemon[i]);
+            labels.emplace_back(text[i]);
+            pkms.emplace_back(pokemon[i]);
         }
     }
     void drawTop() const override;

@@ -32,6 +32,7 @@
 
 struct FontString
 {
+    FontString(C2D_Font font = nullptr, const std::string& text = "") : font(font), text(text) {}
     C2D_Font font;
     std::string text;
 };
