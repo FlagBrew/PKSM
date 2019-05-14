@@ -29,6 +29,28 @@
 
 namespace TextParse
 {
+    void Text::addWord(std::pair<std::vector<Glyph>, float>&& word, float maxWidth)
+    {
+        if (maxWidth > 0.0f && lineWidths.back() + word.second > maxWidth)
+        {
+            lineWidths.push_back(word.second);
+            for (auto& glyph : word.first)
+            {
+                glyph.line = lineWidths.size();
+            }
+        }
+        else
+        {
+            for (auto& glyph : word.first)
+            {
+                glyph.xPos += lineWidths.back();
+                glyph.line = lineWidths.size();
+            }
+            lineWidths.back() += word.second;
+        }
+        glyphs.insert(glyphs.end(), word.first.begin(), word.first.end());
+    }
+
     TextBuf::TextBuf(size_t maxGlyphs, const std::vector<C2D_Font>& fonts) : fonts(fonts), maxGlyphs(maxGlyphs), currentGlyphs(0)
     {
         for (auto& font : this->fonts)
@@ -106,6 +128,40 @@ namespace TextParse
         return nullptr;
     }
 
+    std::pair<std::vector<Glyph>, float> TextBuf::parseWord(const std::string& str, size_t& offset)
+    {
+        std::vector<Glyph> ret;
+        float width  = 0.0f;
+        ssize_t iMod = 0;
+        for (; offset < str.size(); offset += iMod)
+        {
+            u32 chr;
+            iMod = decode_utf8(&chr, (u8*)str.data() + offset);
+            if (iMod == -1)
+            {
+                chr  = 0xFFFD;
+                iMod = 1;
+            }
+            if (iMod == '\0' || iMod == ' ' || iMod == '\n')
+            {
+                offset++;
+                return {ret, width};
+            }
+            C2D_Font font = fontForCodepoint(chr);
+            fontGlyphPos_s glyphPos;
+            C2D_FontCalcGlyphPos(font, &glyphPos, C2D_FontGlyphIndexFromCodePoint(font, chr), 0, 1.0f, 1.0f);
+            if (glyphPos.width > 0.0f)
+            {
+                ret.emplace_back(Tex3DS_SubTexture{static_cast<u16>(ceilf(glyphPos.width)), (u16)C2D_FontGetInfo(font)->tglp->cellHeight,
+                                     glyphPos.texcoord.left, glyphPos.texcoord.top, glyphPos.texcoord.right, glyphPos.texcoord.bottom},
+                    &glyphSheets[font][glyphPos.sheetIndex], font, 0, width + glyphPos.xOffset, glyphPos.width);
+            }
+            width += glyphPos.xAdvance;
+        }
+        // SHOULD never happen
+        return {ret, width};
+    }
+
     std::shared_ptr<Text> TextBuf::parse(const std::string& str, float maxWidth)
     {
         auto it = parsedText.find(str);
@@ -118,44 +174,53 @@ namespace TextParse
             std::shared_ptr<Text> tmp = std::make_shared<Text>();
             tmp->glyphs.reserve(str.size());
             tmp->lineWidths.push_back(0.0f);
-            ssize_t iMod = 0;
-            for (size_t i = 0; i < str.size(); i += iMod)
+            size_t offset = 0;
+            do
             {
-                u32 chr;
-                iMod = decode_utf8(&chr, (u8*)str.data());
-                if (iMod == -1)
-                {
-                    chr  = 0xFFFD;
-                    iMod = 1;
-                }
-                if (chr == u'\n')
-                {
-                    tmp->maxLineWidth = std::max(tmp->lineWidths[tmp->lines], tmp->maxLineWidth);
-                    tmp->lines++;
-                    tmp->lineWidths.push_back(0.0f);
-                    continue;
-                }
-                C2D_Font font = fontForCodepoint(chr);
-                fontGlyphPos_s glyphPos;
-                C2D_FontCalcGlyphPos(font, &glyphPos, C2D_FontGlyphIndexFromCodePoint(font, chr), 0, 1.0f, 1.0f);
-                if (glyphPos.width > 0.0f)
-                {
-                    if (maxWidth != 0.0f && tmp->lineWidths[tmp->lines] + glyphPos.xAdvance > maxWidth)
-                    {
-                        tmp->maxLineWidth = std::max(tmp->lineWidths[tmp->lines], tmp->maxLineWidth);
-                        tmp->lines++;
-                        tmp->lineWidths.push_back(0.0f);
-                    }
-                    tmp->glyphs.emplace_back(Tex3DS_SubTexture{static_cast<u16>(ceilf(glyphPos.width)), (u16)C2D_FontGetInfo(font)->tglp->cellHeight,
-                                                 glyphPos.texcoord.left, glyphPos.texcoord.top, glyphPos.texcoord.right, glyphPos.texcoord.bottom},
-                        &glyphSheets[font][glyphPos.sheetIndex], font, tmp->lines, tmp->lineWidths[tmp->lines] + glyphPos.xOffset, glyphPos.width);
-                    currentGlyphs++;
-                }
-                tmp->lineWidths[tmp->lines] += glyphPos.xAdvance;
-            }
+                auto word = parseWord(str, offset);
+                tmp->addWord(std::move(word), maxWidth);
+            } while (offset < str.size());
+
+            tmp->maxLineWidth = *std::max_element(tmp->lineWidths.begin(), tmp->lineWidths.end());
 
             auto ret = parsedText.emplace(str, std::move(tmp));
             return ret.first->second;
+            // ssize_t iMod = 0;
+            // for (size_t i = 0; i < str.size(); i += iMod)
+            // {
+            //     u32 chr;
+            //     iMod = decode_utf8(&chr, (u8*)str.data() + i);
+            //     if (iMod == -1)
+            //     {
+            //         chr  = 0xFFFD;
+            //         iMod = 1;
+            //     }
+            //     if (chr == u'\n')
+            //     {
+            //         tmp->maxLineWidth = std::max(tmp->lineWidths[tmp->lines], tmp->maxLineWidth);
+            //         tmp->lines++;
+            //         tmp->lineWidths.push_back(0.0f);
+            //         continue;
+            //     }
+            //     C2D_Font font = fontForCodepoint(chr);
+            //     fontGlyphPos_s glyphPos;
+            //     C2D_FontCalcGlyphPos(font, &glyphPos, C2D_FontGlyphIndexFromCodePoint(font, chr), 0, 1.0f, 1.0f);
+            //     if (glyphPos.width > 0.0f)
+            //     {
+            //         if (maxWidth != 0.0f && tmp->lineWidths[tmp->lines] + glyphPos.xAdvance > maxWidth)
+            //         {
+            //             tmp->maxLineWidth = std::max(tmp->lineWidths[tmp->lines], tmp->maxLineWidth);
+            //             tmp->lines++;
+            //             tmp->lineWidths.push_back(0.0f);
+            //         }
+            //         tmp->glyphs.emplace_back(Tex3DS_SubTexture{static_cast<u16>(ceilf(glyphPos.width)),
+            //         (u16)C2D_FontGetInfo(font)->tglp->cellHeight,
+            //                                      glyphPos.texcoord.left, glyphPos.texcoord.top, glyphPos.texcoord.right, glyphPos.texcoord.bottom},
+            //             &glyphSheets[font][glyphPos.sheetIndex], font, tmp->lines, tmp->lineWidths[tmp->lines] + glyphPos.xOffset, glyphPos.width);
+            //         currentGlyphs++;
+            //     }
+            //     tmp->lineWidths[tmp->lines] += glyphPos.xAdvance;
+            // }
         }
     }
 
@@ -201,11 +266,11 @@ namespace TextParse
 
     void ScreenText::draw() const
     {
-        // C2D_ImageTint tint;
+        C2D_ImageTint tint;
         for (auto& glyph : glyphs)
         {
-            // C2D_PlainImageTint(&tint, glyph.color, 1.0f);
-            C2D_DrawImageAt({glyph.glyph.tex, &glyph.glyph.subtex}, glyph.x, glyph.y, 0.5f, nullptr, glyph.scaleX, glyph.scaleY);
+            C2D_PlainImageTint(&tint, glyph.color, 1.0f);
+            C2D_DrawImageAt({glyph.glyph.tex, &glyph.glyph.subtex}, glyph.x, glyph.y, 0.5f, &tint, glyph.scaleX, glyph.scaleY);
         }
     }
 

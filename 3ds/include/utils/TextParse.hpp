@@ -59,14 +59,14 @@ namespace TextParse
 
     struct Text
     {
-        Text(const std::vector<Glyph>& glyphs = {}, const std::vector<float>& lineWidths = {}, float maxLineWidth = 0.0f, size_t lines = 0)
-            : glyphs(glyphs), lineWidths(lineWidths), maxLineWidth(maxLineWidth), lines(lines)
+        Text(const std::vector<Glyph>& glyphs = {}, const std::vector<float>& lineWidths = {}, float maxLineWidth = 0.0f)
+            : glyphs(glyphs), lineWidths(lineWidths), maxLineWidth(maxLineWidth)
         {
         }
+        void addWord(std::pair<std::vector<Glyph>, float>&& word, float maxWidth = 0.0f);
         std::vector<Glyph> glyphs;
         std::vector<float> lineWidths;
         float maxLineWidth;
-        size_t lines;
     };
 
     class TextBuf
@@ -85,6 +85,7 @@ namespace TextParse
         bool fontHasChar(const C2D_Font& font, u32 codepoint);
         C2D_Font fontForCodepoint(u32 codepoint);
         void makeGlyphSheets(C2D_Font font);
+        std::pair<std::vector<Glyph>, float> parseWord(const std::string& str, size_t& offset);
         std::vector<C2D_Font> fonts;
         std::unordered_map<std::string, std::shared_ptr<Text>> parsedText;
         size_t maxGlyphs;

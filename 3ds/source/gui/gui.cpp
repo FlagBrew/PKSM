@@ -309,11 +309,11 @@ void Gui::text(const std::string& str, int x, int y, float scaleX, float scaleY,
             break;
         case TextPosY::CENTER:
             // y -= ceilf(0.5f * lineMod * (float)print.size());
-            y -= ceilf(0.5f * lineMod * (float)text->lines);
+            y -= ceilf(0.5f * lineMod * (float)text->lineWidths.size());
             break;
         case TextPosY::BOTTOM:
             // y -= lineMod * (float)print.size();
-            y -= lineMod * (float)text->lines;
+            y -= lineMod * (float)text->lineWidths.size();
             break;
     }
 
