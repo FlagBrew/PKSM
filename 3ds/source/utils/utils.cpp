@@ -239,100 +239,34 @@ void StringUtils::setString4(u8* data, const std::string& v, int ofs, int len)
 std::string& StringUtils::toUpper(std::string& in)
 {
     std::transform(in.begin(), in.end(), in.begin(), ::toupper);
-    std::u16string otherIn = StringUtils::UTF8toUTF16(in);
-    for (size_t i = 0; i < otherIn.size(); i++)
+    // Just saying, I have NO clue why two outer braces levels are necessary
+    static constexpr std::array<std::pair<std::string_view, std::string_view>, 12> transStrings = {{{"í", "Í"}, {"ó", "Ó"}, {"ú", "Ú"}, {"é", "É"}, {"á", "Á"},
+        {"ì", "Ì"}, {"ò", "Ò"}, {"ù", "Ù"}, {"è", "È"}, {"à", "À"}, {"ñ", "Ñ"}, {"æ", "Æ"}}};
+    for (auto& str : transStrings)
     {
-        switch (otherIn[i])
+        size_t found;
+        while ((found = in.find(str.first)) != std::string::npos)
         {
-            case u'í':
-                otherIn[i] = u'Í';
-                break;
-            case u'ó':
-                otherIn[i] = u'Ó';
-                break;
-            case u'ú':
-                otherIn[i] = u'Ú';
-                break;
-            case u'é':
-                otherIn[i] = u'É';
-                break;
-            case u'á':
-                otherIn[i] = u'Á';
-                break;
-            case u'ì':
-                otherIn[i] = u'Ì';
-                break;
-            case u'ò':
-                otherIn[i] = u'Ò';
-                break;
-            case u'ù':
-                otherIn[i] = u'Ù';
-                break;
-            case u'è':
-                otherIn[i] = u'È';
-                break;
-            case u'à':
-                otherIn[i] = u'À';
-                break;
-            case u'ñ':
-                otherIn[i] = u'Ñ';
-                break;
-            case u'æ':
-                otherIn[i] = u'Æ';
-                break;
+            in.replace(found, str.first.size(), str.second);
         }
     }
-    in = StringUtils::UTF16toUTF8(otherIn);
     return in;
 }
 
 std::string& StringUtils::toLower(std::string& in)
 {
     std::transform(in.begin(), in.end(), in.begin(), ::tolower);
-    std::u16string otherIn = StringUtils::UTF8toUTF16(in);
-    for (size_t i = 0; i < otherIn.size(); i++)
+    // Just saying, I have NO clue why two outer braces levels are necessary
+    static constexpr std::array<std::pair<std::string_view, std::string_view>, 12> transStrings = {{{"Í", "í"}, {"Ó", "ó"}, {"Ú", "ú"}, {"É", "é"}, {"Á", "á"},
+        {"Ì", "ì"}, {"Ò", "ò"}, {"Ù", "ù"}, {"È", "è"}, {"À", "à"}, {"Ñ", "ñ"}, {"Æ", "æ"}}};
+    for (auto& str : transStrings)
     {
-        switch (otherIn[i])
+        size_t found;
+        while ((found = in.find(str.first)) != std::string::npos)
         {
-            case u'Í':
-                otherIn[i] = u'í';
-                break;
-            case u'Ó':
-                otherIn[i] = u'ó';
-                break;
-            case u'Ú':
-                otherIn[i] = u'ú';
-                break;
-            case u'É':
-                otherIn[i] = u'é';
-                break;
-            case u'Á':
-                otherIn[i] = u'á';
-                break;
-            case u'Ì':
-                otherIn[i] = u'ì';
-                break;
-            case u'Ò':
-                otherIn[i] = u'ò';
-                break;
-            case u'Ù':
-                otherIn[i] = u'ù';
-                break;
-            case u'È':
-                otherIn[i] = u'è';
-                break;
-            case u'À':
-                otherIn[i] = u'à';
-                break;
-            case u'Ñ':
-                otherIn[i] = u'ñ';
-                break;
-            case u'Æ':
-                otherIn[i] = u'æ';
-                break;
+            in.replace(found, str.first.size(), str.second);
         }
     }
-    in = StringUtils::UTF16toUTF8(otherIn);
     return in;
 }
 
