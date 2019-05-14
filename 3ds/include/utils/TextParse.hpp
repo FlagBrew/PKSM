@@ -35,6 +35,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <variant>
 
 namespace TextParse
 {
@@ -67,6 +68,7 @@ namespace TextParse
         std::vector<Glyph> glyphs;
         std::vector<float> lineWidths;
         float maxLineWidth;
+        float maxWidth(float sizeX) { return sizeX * maxLineWidth; }
     };
 
     class TextBuf
@@ -85,7 +87,8 @@ namespace TextParse
         bool fontHasChar(const C2D_Font& font, u32 codepoint);
         C2D_Font fontForCodepoint(u32 codepoint);
         void makeGlyphSheets(C2D_Font font);
-        std::pair<std::vector<Glyph>, float> parseWord(const std::string& str, size_t& offset);
+        std::pair<std::vector<Glyph>, float> parseWord(std::string::const_iterator& str, float maxWidth);
+        std::variant<float, size_t> parseWhitespace(std::string::const_iterator& str);
         std::vector<C2D_Font> fonts;
         std::unordered_map<std::string, std::shared_ptr<Text>> parsedText;
         size_t maxGlyphs;

@@ -294,9 +294,23 @@ void InjectSelectorScreen::drawTop() const
                 {
                     Gui::pkm(data.species, data.form, TitleLoader::save->generation(), data.gender, x, y);
                 }
-                std::string text = data.name;
-                text             = StringUtils::wrap(data.name, FONT_SIZE_11, 138, 2);
-                // TODO check this six
+                auto text = Gui::parseText(data.name, FONT_SIZE_11, 138.0f);
+                // Truncate to two lines
+                for (size_t i = 0; i < text->glyphs.size(); i++)
+                {
+                    if (text->glyphs[i].line > 2)
+                    {
+                        text->glyphs.erase(text->glyphs.begin() + i);
+                        i--;
+                    }
+                }
+                while (text->lineWidths.size() > 2)
+                {
+                    text->lineWidths.pop_back();
+                }
+                // Use max_element just in case there's only one line
+                text->maxLineWidth = *std::max_element(text->lineWidths.begin(), text->lineWidths.end());
+                // Then display it
                 Gui::text(text, x + 103, y + 14, FONT_SIZE_11, FONT_SIZE_11,
                     i == hid.fullIndex() ? C2D_Color32(232, 234, 246, 255) : C2D_Color32(26, 35, 126, 255), TextPosX::CENTER, TextPosY::CENTER);
             }

@@ -121,11 +121,14 @@ void TitleLoadScreen::drawBottom() const
     Gui::backgroundBottom(true);
     Gui::sprite(ui_sheet_gameselector_savebox_idx, 22, 94);
 
-    int nextIdPart    = ceilf(27 + StringUtils::textWidth(i18n::localize("LOADER_ID"), FONT_SIZE_11));
-    int nextMediaPart = ceilf(27 + StringUtils::textWidth(i18n::localize("LOADER_MEDIA_TYPE"), FONT_SIZE_11));
+    auto text      = Gui::parseText(i18n::localize("LOADER_ID"), FONT_SIZE_11, 0.0f);
+    int nextIdPart = 27 + text->maxWidth(FONT_SIZE_11);
+    Gui::text(text, 27, 46, FONT_SIZE_11, FONT_SIZE_11, COLOR_LIGHTBLUE, TextPosX::LEFT, TextPosY::TOP);
 
-    Gui::text(i18n::localize("LOADER_ID"), 27, 46, FONT_SIZE_11, FONT_SIZE_11, COLOR_LIGHTBLUE, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(i18n::localize("LOADER_MEDIA_TYPE"), 27, 58, FONT_SIZE_11, FONT_SIZE_11, COLOR_LIGHTBLUE, TextPosX::LEFT, TextPosY::TOP);
+    text              = Gui::parseText(i18n::localize("LOADER_MEDIA_TYPE"), FONT_SIZE_11, 0.0f);
+    int nextMediaPart = 27 + text->maxWidth(FONT_SIZE_11);
+    Gui::text(text, 27, 58, FONT_SIZE_11, FONT_SIZE_11, COLOR_LIGHTBLUE, TextPosX::LEFT, TextPosY::TOP);
+
     if (selectedTitle != -2)
     {
         C2D_DrawRectSolid(243, 21, 0.5f, 52, 52, C2D_Color32(15, 22, 89, 255));

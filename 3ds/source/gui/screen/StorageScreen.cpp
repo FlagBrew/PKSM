@@ -504,24 +504,25 @@ void StorageScreen::drawTop() const
         Gui::text(infoMon->nickname(), 276, 61, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         std::string info = "#" + std::to_string(infoMon->species());
         Gui::text(info, 273, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        info        = i18n::localize("LV") + std::to_string(infoMon->level());
-        float width = StringUtils::textWidth(info, FONT_SIZE_12);
-        Gui::text(info, 375 - (int)width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        info      = i18n::localize("LV") + std::to_string(infoMon->level());
+        auto text = Gui::parseText(info, FONT_SIZE_12, 0.0f);
+        int width = text->maxWidth(FONT_SIZE_12);
+        Gui::text(text, 375 - width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         if (infoMon->gender() == 0)
         {
-            Gui::sprite(ui_sheet_icon_male_idx, 362 - (int)width, 80);
+            Gui::sprite(ui_sheet_icon_male_idx, 362 - width, 80);
         }
         else if (infoMon->gender() == 1)
         {
-            Gui::sprite(ui_sheet_icon_female_idx, 364 - (int)width, 80);
+            Gui::sprite(ui_sheet_icon_female_idx, 364 - width, 80);
         }
         else if (infoMon->gender() == 2)
         {
-            Gui::sprite(ui_sheet_icon_genderless_idx, 364 - (int)width, 80);
+            Gui::sprite(ui_sheet_icon_genderless_idx, 364 - width, 80);
         }
         if (infoMon->shiny())
         {
-            Gui::sprite(ui_sheet_icon_shiny_idx, 352 - (int)width, 81);
+            Gui::sprite(ui_sheet_icon_shiny_idx, 352 - width, 81);
         }
 
         Gui::text(i18n::species(Configuration::getInstance().language(), infoMon->species()), 276, 98, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
@@ -551,12 +552,13 @@ void StorageScreen::drawTop() const
         Gui::text(i18n::nature(Configuration::getInstance().language(), infoMon->nature()), 276, 181, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
             TextPosX::LEFT, TextPosY::TOP);
         info  = i18n::localize("IV") + ": ";
-        width = StringUtils::textWidth(info, FONT_SIZE_12);
-        Gui::text(info, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        text  = Gui::parseText(info, FONT_SIZE_12, 0.0f);
+        width = text->maxWidth(FONT_SIZE_12);
+        Gui::text(text, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(0), infoMon->iv(1), infoMon->iv(2));
-        Gui::text(info, 276 + (int)width + 70 / 2, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(info, 276 + width + 70 / 2, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(4), infoMon->iv(5), infoMon->iv(3));
-        Gui::text(info, 276 + (int)width + 70 / 2, 209, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(info, 276 + width + 70 / 2, 209, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         Gui::format(*infoMon, 276, 213);
     }
 }

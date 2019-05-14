@@ -27,29 +27,27 @@
 #ifndef GUI_HPP
 #define GUI_HPP
 
-#include "3dsutils.hpp"
+#include "utils.hpp"
 #include "PKX.hpp"
 #include "Sav.hpp"
+#include "Screen.hpp"
+#include "TextParse.hpp"
+#include "TextPos.hpp"
+#include "WCX.hpp"
+#include "colors.hpp"
 #include "i18n.hpp"
 #include "json.hpp"
 #include "mixer.hpp"
+#include "pkm_spritesheet.h"
 #include "thread.hpp"
+#include "types_spritesheet.h"
+#include "ui_sheet.h"
 #include <3ds.h>
 #include <citro2d.h>
 #include <random>
 #include <stack>
 #include <string.h>
 #include <unordered_map>
-
-#include "WCX.hpp"
-#include "pkm_spritesheet.h"
-#include "types_spritesheet.h"
-#include "ui_sheet.h"
-
-#include "Screen.hpp"
-
-#include "TextPos.hpp"
-#include "colors.hpp"
 
 // emulated
 #define ui_sheet_res_null_idx 500
@@ -128,10 +126,12 @@ namespace Gui
     void setDoHomeDraw(void);
     void drawNoHome(void);
 
-    std::vector<C2D_Text> parseText(const std::vector<FontString>& str);
-    const std::vector<C2D_Text>& cacheText(const std::string& strKey);
+    std::shared_ptr<TextParse::Text> parseText(const std::string& str, float scaleX, float maxWidth = 0.0f);
     void clearText(void);
-    void text(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY);
+    void text(
+        const std::shared_ptr<TextParse::Text> text, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY);
+    void text(
+        const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY, float maxWidth = 0.0f);
 
     // const std::vector<C2D_Text>& cacheStaticText(const std::string& strKey);
     // void clearStaticText(void);

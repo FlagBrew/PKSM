@@ -259,74 +259,35 @@ void Gui::clearText(void)
 //     }
 // }
 
-void Gui::text(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY)
+std::shared_ptr<TextParse::Text> Gui::parseText(const std::string& str, float scaleX, float maxWidth)
 {
-    const float lineMod = ceilf(scaleY * fontGetInfo(nullptr)->lineFeed);
+    maxWidth /= scaleX;
+    return textBuffer->parse(str, maxWidth);
+}
 
-    // static std::vector<std::string> print;
-    // static std::vector<int> printX;
-
-    // size_t index = 0;
-    // while (index != std::string::npos)
-    // {
-    //     print.emplace_back(str.substr(index, str.find('\n', index) - index));
-    //     index = str.find('\n', index);
-    //     if (index != std::string::npos)
-    //     {
-    //         index++;
-    //     }
-    // }
-
-    auto text = textBuffer->parse(str, 0.0f);
-
-    switch (positionX)
-    {
-        case TextPosX::LEFT:
-            // for (size_t i = 0; i < print.size(); i++)
-            // {
-            //     printX.push_back(x);
-            // }
-            break;
-        case TextPosX::CENTER:
-            // for (size_t i = 0; i < print.size(); i++)
-            // {
-            //     printX.push_back(x - (ceilf(StringUtils::textWidth(print[i], scaleX)) / 2));
-            // }
-            x -= ceilf(text->maxLineWidth) / 2;
-            break;
-        case TextPosX::RIGHT:
-            // for (size_t i = 0; i < print.size(); i++)
-            // {
-            //     printX.push_back(x - (ceilf(StringUtils::textWidth(print[i], scaleX))));
-            // }
-            x -= ceilf(text->maxLineWidth);
-            break;
-    }
-
+void Gui::text(std::shared_ptr<TextParse::Text> text, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY)
+{
+    const float lineMod = scaleY * fontGetInfo(nullptr)->lineFeed;
     switch (positionY)
     {
         case TextPosY::TOP:
             break;
         case TextPosY::CENTER:
-            // y -= ceilf(0.5f * lineMod * (float)print.size());
             y -= ceilf(0.5f * lineMod * (float)text->lineWidths.size());
             break;
         case TextPosY::BOTTOM:
-            // y -= lineMod * (float)print.size();
             y -= lineMod * (float)text->lineWidths.size();
             break;
     }
 
     currentText->addText(text, x, y, scaleX, scaleY, positionX, color);
+}
 
-    // for (size_t i = 0; i < print.size(); i++)
-    // {
-    //     auto text = cacheText(print[i]);
-    //     drawVector(text, printX[i], y, i, scaleX, scaleY, color);
-    // }
+void Gui::text(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY, float maxWidth)
+{
+    auto text = parseText(str, scaleX, maxWidth);
 
-    // print.clear();
-    // printX.clear();
+    Gui::text(text, x, y, scaleX, scaleY, color, positionX, positionY);
 }
 
 static void _draw_mirror_scale(int key, int x, int y, int off, int rep)
@@ -459,6 +420,10 @@ void Gui::exit(void)
     if (spritesheet_types)
     {
         C2D_SpriteSheetFree(spritesheet_types);
+    }
+    if (textBuffer)
+    {
+        delete textBuffer;
     }
     // if (textBuf)
     // {
@@ -1568,8 +1533,7 @@ void Gui::warn(const std::string& message, std::optional<std::string> message2, 
 
         if (bottomScreen)
         {
-            std::string bottom = StringUtils::wrap(bottomScreen.value(), FONT_SIZE_12, 316.0f);
-            text(bottom, 2, 2, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            text(bottomScreen.value(), 2, 2, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 316.0f);
             drawCurrentText();
         }
         else
