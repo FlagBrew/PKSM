@@ -25,6 +25,7 @@
  */
 
 #include "gui.hpp"
+#include "TextParse.hpp"
 #include <queue>
 
 C3D_RenderTarget* g_renderTargetTop;
@@ -34,7 +35,11 @@ static C2D_SpriteSheet spritesheet_ui;
 static C2D_SpriteSheet spritesheet_pkm;
 static C2D_SpriteSheet spritesheet_types;
 static C2D_Image bgBoxes;
-static C2D_TextBuf textBuf;
+// static C2D_TextBuf textBuf;
+static TextParse::TextBuf* textBuffer;
+static TextParse::ScreenText topText;
+static TextParse::ScreenText bottomText;
+static TextParse::ScreenText* currentText = nullptr;
 static std::unordered_map<std::string, std::vector<C2D_Text>> textMap;
 
 std::vector<C2D_Font> Gui::fonts;
@@ -47,16 +52,16 @@ static float noHomeAlpha  = 0.0f;
 #define NOHOMEALPHA_ACCEL 0.001f
 static float dNoHomeAlpha = NOHOMEALPHA_ACCEL;
 
-static size_t hackyGetCurrentGlyphCount(C2D_TextBuf buf)
-{
-    struct access
-    {
-        u32 res[2];
-        size_t count;
-    };
-    access* a = (access*)buf;
-    return a->count;
-}
+// static size_t hackyGetCurrentGlyphCount(C2D_TextBuf buf)
+// {
+//     struct access
+//     {
+//         u32 res[2];
+//         size_t count;
+//     };
+//     access* a = (access*)buf;
+//     return a->count;
+// }
 
 static Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int endX, int endY)
 {
@@ -98,9 +103,30 @@ void Gui::drawNoHome()
     }
 }
 
+void Gui::target(gfxScreen_t screen)
+{
+    if (screen == GFX_BOTTOM)
+    {
+        currentText = &bottomText;
+        C2D_SceneBegin(g_renderTargetBottom);
+    }
+    else
+    {
+        currentText = &topText;
+        C2D_SceneBegin(g_renderTargetTop);
+    }
+    currentText->clear();
+}
+
 C2D_Image Gui::TWLIcon(void)
 {
     return C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_gameselector_twlcart_idx);
+}
+
+void Gui::drawCurrentText()
+{
+    currentText->optimize();
+    currentText->draw();
 }
 
 void Gui::backgroundBottom(bool stripes)
@@ -183,92 +209,97 @@ void Gui::backgroundAnimatedBottom()
 
 void Gui::clearText(void)
 {
-    C2D_TextBufClear(textBuf);
-    textMap.clear();
+    textBuffer->clearUnconditional();
+    // C2D_TextBufClear(textBuf);
+    // textMap.clear();
 }
 
-static void drawVector(const std::vector<C2D_Text>& draw, int x, int y, int line, float scaleX, float scaleY, u32 color)
-{
-    for (auto text : draw)
-    {
-        FINF_s* font      = C2D_FontGetInfo(text.font);
-        float lineFeed    = scaleY * (font->lineFeed);
-        float baselinePos = scaleY * (std::min(font->tglp->cellHeight, font->lineFeed) - font->tglp->baselinePos);
-        C2D_DrawText(&text, C2D_WithColor | C2D_AtBaseline, x, y + (lineFeed * (float)(line + 1) - baselinePos), 0.5f, scaleX, scaleY, color);
-        x += StringUtils::textWidth(text, scaleX);
-    }
-}
+// static void drawVector(const std::vector<C2D_Text>& draw, int x, int y, int line, float scaleX, float scaleY, u32 color)
+// {
+//     for (auto text : draw)
+//     {
+//         FINF_s* font      = C2D_FontGetInfo(text.font);
+//         float lineFeed    = scaleY * (font->lineFeed);
+//         float baselinePos = scaleY * (std::min(font->tglp->cellHeight, font->lineFeed) - font->tglp->baselinePos);
+//         C2D_DrawText(&text, C2D_WithColor | C2D_AtBaseline, x, y + (lineFeed * (float)(line + 1) - baselinePos), 0.5f, scaleX, scaleY, color);
+//         x += StringUtils::textWidth(text, scaleX);
+//     }
+// }
 
-std::vector<C2D_Text> Gui::parseText(const std::vector<FontString>& str)
-{
-    std::vector<C2D_Text> ret;
-    ret.reserve(str.size());
-    for (auto i = str.begin(); i != str.end(); i++)
-    {
-        C2D_Text text;
-        C2D_TextFontParse(&text, i->font, textBuf, i->text.c_str());
-        C2D_TextOptimize(&text);
-        ret.emplace_back(text);
-    }
-    return ret;
-}
+// std::vector<C2D_Text> Gui::parseText(const std::vector<FontString>& str)
+// {
+//     std::vector<C2D_Text> ret;
+//     ret.reserve(str.size());
+//     for (auto i = str.begin(); i != str.end(); i++)
+//     {
+//         C2D_Text text;
+//         C2D_TextFontParse(&text, i->font, textBuf, i->text.c_str());
+//         C2D_TextOptimize(&text);
+//         ret.emplace_back(text);
+//     }
+//     return ret;
+// }
 
-const std::vector<C2D_Text>& Gui::cacheText(const std::string& strKey)
-{
-    std::unordered_map<std::string, std::vector<C2D_Text>>::const_iterator index = textMap.find(strKey);
-    if (index == textMap.end())
-    {
-        if (hackyGetCurrentGlyphCount(textBuf) >= 8100)
-        {
-            Gui::clearText();
-        }
-        auto text       = StringUtils::fontSplit(strKey);
-        const auto& ret = textMap.emplace(strKey, parseText(text));
-        return ret.first->second;
-    }
-    else
-    {
-        return index->second;
-    }
-}
+// const std::vector<C2D_Text>& Gui::cacheText(const std::string& strKey)
+// {
+//     std::unordered_map<std::string, std::vector<C2D_Text>>::const_iterator index = textMap.find(strKey);
+//     if (index == textMap.end())
+//     {
+//         if (hackyGetCurrentGlyphCount(textBuf) >= 8100)
+//         {
+//             Gui::clearText();
+//         }
+//         auto text       = StringUtils::fontSplit(strKey);
+//         const auto& ret = textMap.emplace(strKey, parseText(text));
+//         return ret.first->second;
+//     }
+//     else
+//     {
+//         return index->second;
+//     }
+// }
 
 void Gui::text(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY)
 {
     const float lineMod = ceilf(scaleY * fontGetInfo(nullptr)->lineFeed);
 
-    static std::vector<std::string> print;
-    static std::vector<int> printX;
+    // static std::vector<std::string> print;
+    // static std::vector<int> printX;
 
-    size_t index = 0;
-    while (index != std::string::npos)
-    {
-        print.emplace_back(str.substr(index, str.find('\n', index) - index));
-        index = str.find('\n', index);
-        if (index != std::string::npos)
-        {
-            index++;
-        }
-    }
+    // size_t index = 0;
+    // while (index != std::string::npos)
+    // {
+    //     print.emplace_back(str.substr(index, str.find('\n', index) - index));
+    //     index = str.find('\n', index);
+    //     if (index != std::string::npos)
+    //     {
+    //         index++;
+    //     }
+    // }
+
+    auto text = textBuffer->parse(str, 0.0f);
 
     switch (positionX)
     {
         case TextPosX::LEFT:
-            for (size_t i = 0; i < print.size(); i++)
-            {
-                printX.push_back(x);
-            }
+            // for (size_t i = 0; i < print.size(); i++)
+            // {
+            //     printX.push_back(x);
+            // }
             break;
         case TextPosX::CENTER:
-            for (size_t i = 0; i < print.size(); i++)
-            {
-                printX.push_back(x - (ceilf(StringUtils::textWidth(print[i], scaleX)) / 2));
-            }
+            // for (size_t i = 0; i < print.size(); i++)
+            // {
+            //     printX.push_back(x - (ceilf(StringUtils::textWidth(print[i], scaleX)) / 2));
+            // }
+            x -= ceilf(text->maxLineWidth) / 2;
             break;
         case TextPosX::RIGHT:
-            for (size_t i = 0; i < print.size(); i++)
-            {
-                printX.push_back(x - (ceilf(StringUtils::textWidth(print[i], scaleX))));
-            }
+            // for (size_t i = 0; i < print.size(); i++)
+            // {
+            //     printX.push_back(x - (ceilf(StringUtils::textWidth(print[i], scaleX))));
+            // }
+            x -= ceilf(text->maxLineWidth);
             break;
     }
 
@@ -277,21 +308,25 @@ void Gui::text(const std::string& str, int x, int y, float scaleX, float scaleY,
         case TextPosY::TOP:
             break;
         case TextPosY::CENTER:
-            y -= ceilf(0.5f * lineMod * (float)print.size());
+            // y -= ceilf(0.5f * lineMod * (float)print.size());
+            y -= ceilf(0.5f * lineMod * (float)text->lines);
             break;
         case TextPosY::BOTTOM:
-            y -= lineMod * (float)print.size();
+            // y -= lineMod * (float)print.size();
+            y -= lineMod * (float)text->lines;
             break;
     }
 
-    for (size_t i = 0; i < print.size(); i++)
-    {
-        auto text = cacheText(print[i]);
-        drawVector(text, printX[i], y, i, scaleX, scaleY, color);
-    }
+    currentText->addText(text, x, y, scaleX, scaleY, positionX, color);
 
-    print.clear();
-    printX.clear();
+    // for (size_t i = 0; i < print.size(); i++)
+    // {
+    //     auto text = cacheText(print[i]);
+    //     drawVector(text, printX[i], y, i, scaleX, scaleY, color);
+    // }
+
+    // print.clear();
+    // printX.clear();
 }
 
 static void _draw_mirror_scale(int key, int x, int y, int off, int rep)
@@ -329,7 +364,7 @@ Result Gui::init(void)
     g_renderTargetTop    = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
     g_renderTargetBottom = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
 
-    textBuf = C2D_TextBufNew(8192);
+    // textBuf = C2D_TextBufNew(8192);
     // dynamicBuf = C2D_TextBufNew(2048);
     // staticBuf  = C2D_TextBufNew(4096);
 
@@ -342,6 +377,8 @@ Result Gui::init(void)
     fonts.emplace_back(C2D_FontLoadSystem(CFG_REGION_KOR));
     fonts.emplace_back(C2D_FontLoadSystem(CFG_REGION_CHN));
     fonts.emplace_back(C2D_FontLoadSystem(CFG_REGION_TWN));
+
+    textBuffer = new TextParse::TextBuf(8192, fonts);
 
     bgBoxes = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_anim_squares_idx);
 
@@ -362,20 +399,24 @@ void Gui::mainLoop(void)
         u32 kHeld = hidKeysHeld();
         if (kHeld & KEY_SELECT && !screens.top()->getInstructions().empty())
         {
-            C2D_SceneBegin(g_renderTargetTop);
+            target(GFX_TOP);
             screens.top()->doTopDraw();
             screens.top()->getInstructions().drawTop();
-            C2D_SceneBegin(g_renderTargetBottom);
+            drawCurrentText();
+            target(GFX_BOTTOM);
             screens.top()->doBottomDraw();
             screens.top()->getInstructions().drawBottom();
+            drawCurrentText();
         }
         else
         {
-            C2D_SceneBegin(g_renderTargetTop);
+            target(GFX_TOP);
             screens.top()->doTopDraw();
+            drawCurrentText();
 
-            C2D_SceneBegin(g_renderTargetBottom);
+            target(GFX_BOTTOM);
             screens.top()->doBottomDraw();
+            drawCurrentText();
 
             touchPosition touch;
             hidTouchRead(&touch);
@@ -393,6 +434,8 @@ void Gui::mainLoop(void)
         text("DrawTime: " + std::to_string(C3D_GetDrawingTime()) + "\nProcessingTime: " + std::to_string(C3D_GetProcessingTime()) +
                  "\nCmdBuf Use: " + std::to_string(C3D_GetCmdBufUsage()),
             20, 100, FONT_SIZE_18, FONT_SIZE_18, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+
+        textBuffer->clear();
 
         C3D_FrameEnd(0);
         if (keyboardFunc != nullptr)
@@ -417,10 +460,10 @@ void Gui::exit(void)
     {
         C2D_SpriteSheetFree(spritesheet_types);
     }
-    if (textBuf)
-    {
-        C2D_TextBufDelete(textBuf);
-    }
+    // if (textBuf)
+    // {
+    //     C2D_TextBufDelete(textBuf);
+    // }
     for (auto font : fonts)
     {
         if (font)
@@ -1421,7 +1464,7 @@ bool Gui::showChoiceMessage(const std::string& message, std::optional<std::strin
         C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
         C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
 
-        C2D_SceneBegin(g_renderTargetTop);
+        target(GFX_TOP);
         sprite(ui_sheet_part_info_top_idx, 0, 0);
         if (!message2)
         {
@@ -1436,7 +1479,9 @@ bool Gui::showChoiceMessage(const std::string& message, std::optional<std::strin
 
         text(i18n::localize("CONTINUE_CANCEL"), 200, 130, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-        C2D_SceneBegin(g_renderTargetBottom);
+        drawCurrentText();
+
+        target(GFX_BOTTOM);
         sprite(ui_sheet_part_info_bottom_idx, 0, 0);
 
         if (!aptIsHomeAllowed() && aptIsHomePressed())
@@ -1468,7 +1513,7 @@ void Gui::waitFrame(const std::string& message, std::optional<std::string> messa
     C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
     C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
 
-    C2D_SceneBegin(g_renderTargetTop);
+    target(GFX_TOP);
     sprite(ui_sheet_part_info_top_idx, 0, 0);
     if (!message2)
     {
@@ -1482,7 +1527,9 @@ void Gui::waitFrame(const std::string& message, std::optional<std::string> messa
 
     text(i18n::localize("PLEASE_WAIT"), 200, 130, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-    C2D_SceneBegin(g_renderTargetBottom);
+    drawCurrentText();
+
+    target(GFX_BOTTOM);
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
 
     C3D_FrameEnd(0);
@@ -1500,7 +1547,7 @@ void Gui::warn(const std::string& message, std::optional<std::string> message2, 
         C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
         C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
 
-        C2D_SceneBegin(g_renderTargetTop);
+        target(GFX_TOP);
         sprite(ui_sheet_part_info_top_idx, 0, 0);
         if (!message2)
         {
@@ -1515,12 +1562,15 @@ void Gui::warn(const std::string& message, std::optional<std::string> message2, 
 
         text(i18n::localize("CONTINUE"), 200, 130, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-        C2D_SceneBegin(g_renderTargetBottom);
+        drawCurrentText();
+
+        target(GFX_BOTTOM);
 
         if (bottomScreen)
         {
             std::string bottom = StringUtils::wrap(bottomScreen.value(), FONT_SIZE_12, 316.0f);
             text(bottom, 2, 2, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            drawCurrentText();
         }
         else
         {
@@ -1554,12 +1604,14 @@ void Gui::showRestoreProgress(u32 partial, u32 total)
     C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
     C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
     C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
-    C2D_SceneBegin(g_renderTargetTop);
+    target(GFX_TOP);
     sprite(ui_sheet_part_info_top_idx, 0, 0);
     text(i18n::localize("SAVING"), 200, 95, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     text(StringUtils::format(i18n::localize("SAVE_PROGRESS"), partial, total), 200, 130, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
         TextPosY::TOP);
-    C2D_SceneBegin(g_renderTargetBottom);
+    drawCurrentText();
+
+    target(GFX_BOTTOM);
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
     C3D_FrameEnd(0);
 }
@@ -1569,10 +1621,12 @@ void Gui::showResizeStorage()
     C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
     C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
     C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
-    C2D_SceneBegin(g_renderTargetTop);
+    target(GFX_TOP);
     sprite(ui_sheet_part_info_top_idx, 0, 0);
     text(i18n::localize("STORAGE_RESIZE"), 200, 95, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-    C2D_SceneBegin(g_renderTargetBottom);
+    drawCurrentText();
+
+    target(GFX_BOTTOM);
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
     C3D_FrameEnd(0);
 }
@@ -1589,7 +1643,7 @@ void Gui::error(const std::string& message, Result errorCode)
         C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
         C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
 
-        C2D_SceneBegin(g_renderTargetTop);
+        target(GFX_TOP);
         sprite(ui_sheet_part_info_top_idx, 0, 0);
         u8 transparency = transparencyWaver();
         text(message, 200, 85, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
@@ -1598,7 +1652,9 @@ void Gui::error(const std::string& message, Result errorCode)
 
         text(i18n::localize("CONTINUE"), 200, 130, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-        C2D_SceneBegin(g_renderTargetBottom);
+        drawCurrentText();
+
+        target(GFX_BOTTOM);
         sprite(ui_sheet_part_info_bottom_idx, 0, 0);
 
         if (!aptIsHomeAllowed() && aptIsHomePressed())

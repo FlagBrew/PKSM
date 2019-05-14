@@ -107,7 +107,8 @@ namespace Gui
     void mainLoop(void);
     void exit(void);
 
-    C3D_RenderTarget* target(gfxScreen_t t);
+    void target(gfxScreen_t t);
+    void drawCurrentText();
     C2D_Image TWLIcon(void);
 
     void ball(size_t index, int x, int y);
