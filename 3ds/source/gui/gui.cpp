@@ -51,9 +51,6 @@ static float noHomeAlpha  = 0.0f;
 #define NOHOMEALPHA_ACCEL 0.001f
 static float dNoHomeAlpha = NOHOMEALPHA_ACCEL;
 
-static float currentDepth;
-#define DEPTH_STEP (1.0f / 65535.0f)
-
 bool textMode = false;
 
 static Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int endX, int endY)
@@ -81,29 +78,25 @@ static Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int e
 void Gui::drawImageAt(const C2D_Image& img, float x, float y, const C2D_ImageTint* tint, float scaleX, float scaleY)
 {
     flushText();
-    C2D_DrawImageAt(img, x, y, currentDepth, tint, scaleX, scaleY);
-    currentDepth += DEPTH_STEP;
+    C2D_DrawImageAt(img, x, y, 0.5f, tint, scaleX, scaleY);
 }
 
 void Gui::drawSolidCircle(float x, float y, float rad, u32 color)
 {
     flushText();
-    C2D_DrawCircleSolid(x, y, currentDepth, rad, color);
-    currentDepth += DEPTH_STEP;
+    C2D_DrawCircleSolid(x, y, 0.5f, rad, color);
 }
 
 void Gui::drawSolidRect(float x, float y, float w, float h, u32 color)
 {
     flushText();
-    C2D_DrawRectSolid(x, y, currentDepth, w, h, color);
-    currentDepth += DEPTH_STEP;
+    C2D_DrawRectSolid(x, y, 0.5f, w, h, color);
 }
 
 void Gui::drawSolidTriangle(float x1, float y1, float x2, float y2, float x3, float y3, u32 color)
 {
     flushText();
-    C2D_DrawTriangle(x1, y1, color, x2, y2, color, x3, y3, color, currentDepth);
-    currentDepth += DEPTH_STEP;
+    C2D_DrawTriangle(x1, y1, color, x2, y2, color, x3, y3, color, 0.5f);
 }
 
 void Gui::setDoHomeDraw()
@@ -137,7 +130,18 @@ void Gui::target(gfxScreen_t screen)
         C2D_SceneBegin(g_renderTargetTop);
     }
     currentText->clear();
-    currentDepth = DEPTH_STEP;
+}
+
+void Gui::clearScreen(gfxScreen_t screen)
+{
+    if (screen == GFX_BOTTOM)
+    {
+        C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
+    }
+    else
+    {
+        C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
+    }
 }
 
 C2D_Image Gui::TWLIcon(void)
@@ -261,8 +265,7 @@ void Gui::text(std::shared_ptr<TextParse::Text> text, int x, int y, float scaleX
             break;
     }
 
-    currentText->addText(text, x, y, currentDepth, scaleX, scaleY, positionX, color);
-    currentDepth += DEPTH_STEP;
+    currentText->addText(text, x, y, 0.5f, scaleX, scaleY, positionX, color);
 }
 
 void Gui::text(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY, float maxWidth)
@@ -332,8 +335,8 @@ void Gui::mainLoop(void)
     {
         hidScanInput();
         C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-        C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
-        C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
+        Gui::clearScreen(GFX_TOP);
+        Gui::clearScreen(GFX_BOTTOM);
 
         u32 kHeld = hidKeysHeld();
         if (kHeld & KEY_SELECT && !screens.top()->getInstructions().empty())
@@ -1396,8 +1399,8 @@ bool Gui::showChoiceMessage(const std::string& message, std::optional<std::strin
     {
         hidScanInput();
         C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-        C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
-        C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
+        Gui::clearScreen(GFX_TOP);
+        Gui::clearScreen(GFX_BOTTOM);
 
         target(GFX_TOP);
         sprite(ui_sheet_part_info_top_idx, 0, 0);
@@ -1445,8 +1448,8 @@ bool Gui::showChoiceMessage(const std::string& message, std::optional<std::strin
 void Gui::waitFrame(const std::string& message, std::optional<std::string> message2)
 {
     C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-    C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
-    C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
+    Gui::clearScreen(GFX_TOP);
+    Gui::clearScreen(GFX_BOTTOM);
 
     target(GFX_TOP);
     sprite(ui_sheet_part_info_top_idx, 0, 0);
@@ -1479,8 +1482,8 @@ void Gui::warn(const std::string& message, std::optional<std::string> message2, 
     {
         hidScanInput();
         C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-        C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
-        C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
+        Gui::clearScreen(GFX_TOP);
+        Gui::clearScreen(GFX_BOTTOM);
 
         target(GFX_TOP);
         sprite(ui_sheet_part_info_top_idx, 0, 0);
@@ -1536,8 +1539,8 @@ void Gui::setNextKeyboardFunc(std::function<void()> func)
 void Gui::showRestoreProgress(u32 partial, u32 total)
 {
     C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-    C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
-    C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
+    Gui::clearScreen(GFX_TOP);
+    Gui::clearScreen(GFX_BOTTOM);
     target(GFX_TOP);
     sprite(ui_sheet_part_info_top_idx, 0, 0);
     text(i18n::localize("SAVING"), 200, 95, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
@@ -1553,8 +1556,8 @@ void Gui::showRestoreProgress(u32 partial, u32 total)
 void Gui::showResizeStorage()
 {
     C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-    C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
-    C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
+    Gui::clearScreen(GFX_TOP);
+    Gui::clearScreen(GFX_BOTTOM);
     target(GFX_TOP);
     sprite(ui_sheet_part_info_top_idx, 0, 0);
     text(i18n::localize("STORAGE_RESIZE"), 200, 95, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
@@ -1574,8 +1577,8 @@ void Gui::error(const std::string& message, Result errorCode)
     {
         hidScanInput();
         C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-        C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
-        C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
+        Gui::clearScreen(GFX_TOP);
+        Gui::clearScreen(GFX_BOTTOM);
 
         target(GFX_TOP);
         sprite(ui_sheet_part_info_top_idx, 0, 0);

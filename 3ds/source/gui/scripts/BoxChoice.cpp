@@ -280,15 +280,13 @@ std::tuple<int, int, int> BoxChoice::run()
         hidScanInput();
         C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 
-        extern C3D_RenderTarget* g_renderTargetTop;
         Gui::target(GFX_TOP);
-        C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
+        Gui::clearScreen(GFX_TOP);
         drawTop();
         Gui::flushText();
 
-        extern C3D_RenderTarget* g_renderTargetBottom;
         Gui::target(GFX_BOTTOM);
-        C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
+        Gui::clearScreen(GFX_BOTTOM);
         drawBottom();
         Gui::flushText();
 
