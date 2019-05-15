@@ -344,7 +344,6 @@ void InjectSelectorScreen::drawTop() const
 
 bool InjectSelectorScreen::doQR()
 {
-    u8* data = nullptr;
     QRMode initMode;
     switch (TitleLoader::save->generation())
     {
@@ -364,25 +363,25 @@ bool InjectSelectorScreen::doQR()
             return false;
     }
 
-    QRScanner::init(initMode, data);
+    std::vector<u8> data = QRScanner::scan(initMode);
 
-    if (data != nullptr)
+    if (!data.empty())
     {
         std::unique_ptr<WCX> wcx = nullptr;
 
         switch (TitleLoader::save->generation())
         {
             case Generation::FOUR:
-                wcx = std::make_unique<PGT>(data);
+                wcx = std::make_unique<PGT>(data.data());
                 break;
             case Generation::FIVE:
-                wcx = std::make_unique<PGF>(data);
+                wcx = std::make_unique<PGF>(data.data());
                 break;
             case Generation::SIX:
-                wcx = std::make_unique<WC6>(data);
+                wcx = std::make_unique<WC6>(data.data());
                 break;
             case Generation::SEVEN:
-                wcx = std::make_unique<WC7>(data);
+                wcx = std::make_unique<WC7>(data.data());
                 break;
             default:
                 break;
@@ -392,12 +391,8 @@ bool InjectSelectorScreen::doQR()
         {
             Gui::setScreen(std::make_unique<InjectorScreen>(std::move(wcx)));
             updateGifts = true;
-
-            delete[] data;
             return true;
         }
-
-        delete data;
     }
     return false;
 }

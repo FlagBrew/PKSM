@@ -124,7 +124,7 @@ LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
 LIBS	:= -lSDL_mixer -lSDL -lmpg123 -lvorbisidec -logg -lmikmod -lmad \
 		   -lcurl -lmbedtls -lmbedx509 -lmbedcrypto -lbz2 \
-		   -lz -lcitro2d -lcitro3d -lctru -lm 
+		   -lz -lcitro2d -lcitro3d -lctru -lm
 
 CXX		:= `which ccache` $(CXX)
 CC		:= `which ccache` $(CC)

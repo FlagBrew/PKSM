@@ -462,6 +462,7 @@
     "SHARE_ERROR_INCORRECT_VERSION": "Incorrect size for version received (Please translate this)",
     "SHARE_FAILED_CHECK": "Pokemon failed a critical check done by the Server! (Please translate this)",
     "SHARE_GENERATION_TRANSFER_ERROR": "Generation 4-7 to LGPE is impossible! (Please translate this)",
+    "SHARE_HINT": "Share Pok\u00e9mon",
     "SHARE_INVALID_CODE": "Your code appears to be invalid or has expired! (Please translate this)",
     "SHARE_INVALID_GENERATION": "This Pok\u00e9mon has an invalid generation! (Please translate this)",
     "SHARE_PRESS_TO_SHARE": "Press \ue003 to share this Pok\u00e9mon! (Please translate this)",
@@ -604,6 +605,7 @@
     "YOUR_OT_NAME": "Seu nome OT",
     "Y_ABSENT": "\ue003: Absent games",
     "Y_CURSOR_MODE": "\ue003: Cursor mode",
+    "Y_LEGALIZE": "\uE003: Legalize",
     "Y_PRESENT": "\ue003: Present games",
     "Y_RESIZE": "\ue003: Resize",
     "ZCRYSTALS": "Cristais-Z"
