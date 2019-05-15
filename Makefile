@@ -32,4 +32,7 @@ clean:
 format:
 	$(MAKE) -C 3ds format
 
-.PHONY: revision 3ds docs clean format
+cppcheck:
+	$(MAKE) -C 3ds cppcheck
+
+.PHONY: revision 3ds docs clean format cppcheck
