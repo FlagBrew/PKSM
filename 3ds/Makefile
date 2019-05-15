@@ -253,6 +253,11 @@ no-deps:
 #---------------------------------------------------------------------------------
 format:
 	clang-format -i -style=file $(foreach dir,$(FORMATSOURCES),$(wildcard $(dir)/*.c) $(wildcard $(dir)/*.cpp)) $(foreach dir,$(FORMATINCLUDES),$(wildcard $(dir)/*.h) $(wildcard $(dir)/*.hpp))
+#---------------------------------------------------------------------------------
+cppcheck:
+	@rm -f $(BUILD)/cppcheck.log
+	@cppcheck . --enable=all -I ../common 2> $(BUILD)/cppcheck.log
+	@echo build/cppcheck.log file created...
 else
 
 #---------------------------------------------------------------------------------
