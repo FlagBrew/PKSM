@@ -114,14 +114,14 @@ void ScriptScreen::drawTop() const
             Gui::sprite(ui_sheet_bg_stripe_top_idx, x, y);
         }
     }
-    C2D_DrawRectSolid(0, 0, 0.5f, 400, 20, C2D_Color32(15, 22, 89, 255));
+    Gui::drawSolidRect(0, 0, 400, 20, C2D_Color32(15, 22, 89, 255));
 
     // Leaving space for the icon
     Gui::text(currDirString, 15, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_YELLOW, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(i18n::localize("SCRIPTS_INST1"), 200, 224, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-    C2D_DrawRectSolid(0, 20 + hid.index() * 25, 0.5f, 400, 25, C2D_Color32(128, 128, 128, 255));
-    C2D_DrawRectSolid(1, 21 + hid.index() * 25, 0.5f, 398, 23, COLOR_MASKBLACK);
+    Gui::drawSolidRect(0, 20 + hid.index() * 25, 400, 25, C2D_Color32(128, 128, 128, 255));
+    Gui::drawSolidRect(1, 21 + hid.index() * 25, 398, 23, COLOR_MASKBLACK);
 
     for (size_t i = hid.page() * hid.maxVisibleEntries(); i < (hid.page() + 1) * hid.maxVisibleEntries(); i++)
     {
@@ -141,8 +141,8 @@ void ScriptScreen::drawTop() const
 void ScriptScreen::drawBottom() const
 {
     Gui::backgroundBottom(true);
-    C2D_DrawRectSolid(20, 40, 0.5f, 280, 60, C2D_Color32(128, 128, 128, 255));
-    C2D_DrawRectSolid(21, 41, 0.5f, 278, 58, COLOR_MASKBLACK);
+    Gui::drawSolidRect(20, 40, 280, 60, C2D_Color32(128, 128, 128, 255));
+    Gui::drawSolidRect(21, 41, 278, 58, COLOR_MASKBLACK);
     Gui::text(i18n::localize("SCRIPTS_INST2"), 160, 224, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
     Gui::text(currFiles[hid.fullIndex()].first, 30, 44, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 260.0f);

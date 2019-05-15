@@ -292,7 +292,7 @@ void InjectorScreen::drawBottom() const
 
     if (choosingSlot)
     {
-        C2D_DrawRectSolid(0, 0, 0.5, 320, 240, COLOR_MASKBLACK);
+        Gui::drawSolidRect(0, 0, 320, 240, COLOR_MASKBLACK);
         Gui::text(i18n::localize("WC_CHANGE_SLOT"), 160, 100, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
         Gui::text(i18n::localize("WC_DUMP2"), 160, 128, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     }
@@ -437,7 +437,7 @@ void InjectorScreen::drawTop() const
             }
             if (hid.index() == i)
             {
-                C2D_DrawRectSolid(x * 50, y * 48, 0.5f, 49, 47, C2D_Color32(15, 22, 89, 255));
+                Gui::drawSolidRect(x * 50, y * 48, 49, 47, C2D_Color32(15, 22, 89, 255));
             }
             if (fullI < gifts.size())
             {

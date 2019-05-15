@@ -282,7 +282,7 @@ void EditSelectorScreen::drawBottom() const
         {
             if (TitleLoader::save->generation() == Generation::LGPE && row * 6 + column + box * 30 >= TitleLoader::save->maxSlot())
             {
-                C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(128, 128, 128, 128));
+                Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(128, 128, 128, 128));
             }
             else
             {
@@ -356,7 +356,7 @@ void EditSelectorScreen::drawBottom() const
 
     if (menu)
     {
-        C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, COLOR_MASKBLACK);
+        Gui::drawSolidRect(0, 0, 320, 240, COLOR_MASKBLACK);
         for (auto button : viewerButtons)
         {
             button->draw();

@@ -119,11 +119,11 @@ void MoveOverlay::drawTop() const
     Gui::sprite(ui_sheet_part_editor_20x2_idx, 0, 0);
     int x = hid.index() < hid.maxVisibleEntries() / 2 ? 2 : 200;
     int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 12;
-    C2D_DrawRectSolid(x, y, 0.5f, 198, 11, COLOR_MASKBLACK);
-    C2D_DrawRectSolid(x, y, 0.5f, 198, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y, 0.5f, 1, 11, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y + 10, 0.5f, 198, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid(x + 197, y, 0.5f, 1, 11, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 198, 11, COLOR_MASKBLACK);
+    Gui::drawSolidRect(x, y, 198, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 1, 11, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y + 10, 198, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x + 197, y, 1, 11, COLOR_YELLOW);
     for (size_t i = 0; i < hid.maxVisibleEntries(); i++)
     {
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;

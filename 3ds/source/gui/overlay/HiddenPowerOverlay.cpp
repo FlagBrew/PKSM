@@ -40,11 +40,11 @@ void HiddenPowerOverlay::drawTop() const
     int x = (hid.index() % 4) * 100;
     int y = (hid.index() / 4) * 60;
     // Selector
-    C2D_DrawRectSolid(x, y, 0.5f, 99, 59, COLOR_MASKBLACK);
-    C2D_DrawRectSolid(x, y, 0.5f, 99, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y, 0.5f, 1, 59, COLOR_YELLOW);
-    C2D_DrawRectSolid(x + 98, y, 0.5f, 1, 59, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y + 58, 0.5f, 99, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 99, 59, COLOR_MASKBLACK);
+    Gui::drawSolidRect(x, y, 99, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 1, 59, COLOR_YELLOW);
+    Gui::drawSolidRect(x + 98, y, 1, 59, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y + 58, 99, 1, COLOR_YELLOW);
     for (int i = 0; i < 16; i++)
     {
         Gui::type(Configuration::getInstance().language(), (u8)i + 1, 23 + (i % 4) * 100, 20 + (i / 4) * 60);

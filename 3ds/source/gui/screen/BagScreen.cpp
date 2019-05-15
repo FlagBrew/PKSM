@@ -128,8 +128,8 @@ void BagScreen::drawTop() const
 
 void BagScreen::drawBottom() const
 {
-    C2D_DrawRectSolid(0, 0, 0.5f, 106, 240, COLOR_DARKBLUE);
-    C2D_DrawRectSolid(107, 0, 0.5f, 213, 240, COLOR_BLUE);
+    Gui::drawSolidRect(0, 0, 106, 240, COLOR_DARKBLUE);
+    Gui::drawSolidRect(107, 0, 213, 240, COLOR_BLUE);
 
     for (auto button : buttons)
     {

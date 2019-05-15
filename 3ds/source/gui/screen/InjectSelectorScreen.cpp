@@ -206,7 +206,7 @@ void InjectSelectorScreen::drawBottom() const
 
     if (dump)
     {
-        C2D_DrawRectSolid(0, 0, 0.5, 320, 240, COLOR_MASKBLACK);
+        Gui::drawSolidRect(0, 0, 320, 240, COLOR_MASKBLACK);
         Gui::text(i18n::localize("WC_DUMP1"), 160, 107, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     }
 }
@@ -238,8 +238,8 @@ void InjectSelectorScreen::drawTop() const
                 }
                 else
                 {
-                    C2D_DrawRectSolid(
-                        x, y, 0.5f, 178, 34, i == hid.index() ? C2D_Color32(0x3D, 0x5A, 0xFE, 0xFF) : C2D_Color32(0x8C, 0x9E, 0xFF, 0xFF));
+                    Gui::drawSolidRect(
+                        x, y, 178, 34, i == hid.index() ? C2D_Color32(0x3D, 0x5A, 0xFE, 0xFF) : C2D_Color32(0x8C, 0x9E, 0xFF, 0xFF));
                 }
             }
             else
@@ -260,8 +260,8 @@ void InjectSelectorScreen::drawTop() const
                 }
                 else
                 {
-                    C2D_DrawRectSolid(
-                        x, y, 0.5f, 178, 34, i == hid.index() ? C2D_Color32(0x3D, 0x5A, 0xFE, 0xFF) : C2D_Color32(0x8C, 0x9E, 0xFF, 0xFF));
+                    Gui::drawSolidRect(
+                        x, y, 178, 34, i == hid.index() ? C2D_Color32(0x3D, 0x5A, 0xFE, 0xFF) : C2D_Color32(0x8C, 0x9E, 0xFF, 0xFF));
                 }
             }
         }
@@ -331,7 +331,7 @@ void InjectSelectorScreen::drawTop() const
             }
             if (dumpHid.index() == i)
             {
-                C2D_DrawRectSolid(x * 50, y * 48, 0.5f, 49, 47, C2D_Color32(15, 22, 89, 255));
+                Gui::drawSolidRect(x * 50, y * 48, 49, 47, C2D_Color32(15, 22, 89, 255));
             }
             if (fullI < gifts.size())
             {

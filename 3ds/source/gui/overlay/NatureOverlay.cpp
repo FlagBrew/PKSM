@@ -52,11 +52,11 @@ void NatureOverlay::drawTop() const
     int x = (hid.index() % 5) * 67 + 66;
     int y = (hid.index() / 5) * 40 + 40;
     // Selector
-    C2D_DrawRectSolid(x, y, 0.5f, 66, 39, COLOR_MASKBLACK);
-    C2D_DrawRectSolid(x, y, 0.5f, 66, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y, 0.5f, 1, 39, COLOR_YELLOW);
-    C2D_DrawRectSolid(x + 65, y, 0.5f, 1, 39, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y + 38, 0.5f, 66, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 66, 39, COLOR_MASKBLACK);
+    Gui::drawSolidRect(x, y, 66, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 1, 39, COLOR_YELLOW);
+    Gui::drawSolidRect(x + 65, y, 1, 39, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y + 38, 66, 1, COLOR_YELLOW);
 
     for (int y = 0; y < 5; y++)
     {

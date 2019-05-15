@@ -65,14 +65,14 @@ void Instructions::drawTop() const
     {
         if (box.top)
         {
-            C2D_DrawRectSolid(box.x, box.y, 0.5f, box.w, box.h, box.color);
+            Gui::drawSolidRect(box.x, box.y, box.w, box.h, box.color);
         }
     }
     for (auto& circle : circles)
     {
         if (circle.top)
         {
-            C2D_DrawCircleSolid(circle.x, circle.y, 0.5f, circle.radius, circle.color);
+            Gui::drawSolidCircle(circle.x, circle.y, circle.radius, circle.color);
         }
     }
     for (auto& text : texts)
@@ -92,14 +92,14 @@ void Instructions::drawBottom() const
     {
         if (!box.top)
         {
-            C2D_DrawRectSolid(box.x, box.y, 0.5f, box.w, box.h, box.color);
+            Gui::drawSolidRect(box.x, box.y, box.w, box.h, box.color);
         }
     }
     for (auto& circle : circles)
     {
         if (!circle.top)
         {
-            C2D_DrawCircleSolid(circle.x, circle.y, 0.5f, circle.radius, circle.color);
+            Gui::drawSolidCircle(circle.x, circle.y, circle.radius, circle.color);
         }
     }
     for (auto& text : texts)
@@ -113,5 +113,5 @@ void Instructions::drawBottom() const
 
 void Instructions::dim() const
 {
-    C2D_DrawRectSolid(0, 0, 0.5f, 400, 240, COLOR_MASKBLACK);
+    Gui::drawSolidRect(0, 0, 400, 240, COLOR_MASKBLACK);
 }

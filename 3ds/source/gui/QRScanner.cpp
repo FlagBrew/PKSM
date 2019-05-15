@@ -109,8 +109,6 @@ void QRData::finish()
     svcReleaseMutex(bufferMutex);
 }
 
-extern C3D_RenderTarget *g_renderTargetTop, *g_renderTargetBottom;
-
 void QRData::drawThread()
 {
     bool first = true;
@@ -119,12 +117,12 @@ void QRData::drawThread()
         C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
         buffToImage();
 
-        C2D_SceneBegin(g_renderTargetTop);
-        C2D_DrawImageAt(image, 0, 0, 0.5f, nullptr, 1.0f, 1.0f);
+        Gui::target(GFX_TOP);
+        Gui::drawImageAt(image, 0, 0, nullptr, 1.0f, 1.0f);
         if (first)
         {
-            C2D_SceneBegin(g_renderTargetBottom);
-            C2D_DrawRectSolid(0, 0, 0.5f, 320.0f, 240.0f, COLOR_MASKBLACK);
+            Gui::target(GFX_BOTTOM);
+            Gui::drawSolidRect(0, 0, 320.0f, 240.0f, COLOR_MASKBLACK);
             Gui::text(i18n::localize("SCANNER_EXIT"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
             first = false;
             Gui::drawCurrentText();

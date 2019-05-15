@@ -1279,11 +1279,11 @@ void HexEditScreen::drawTop() const
     Gui::sprite(ui_sheet_part_mtx_15x16_idx, 0, 0);
 
     // Selected box
-    C2D_DrawRectSolid((hid.index() % 16) * 25, (hid.index() / 16) * 15, 0.5f, 24, 14, C2D_Color32(15, 22, 89, 0));
-    C2D_DrawRectSolid((hid.index() % 16) * 25, (hid.index() / 16) * 15, 0.5f, 1, 14, COLOR_YELLOW);
-    C2D_DrawRectSolid((hid.index() % 16) * 25, (hid.index() / 16) * 15, 0.5f, 24, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid((hid.index() % 16) * 25, (hid.index() / 16) * 15 + 13, 0.5f, 24, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid((hid.index() % 16) * 25 + 23, (hid.index() / 16) * 15, 0.5f, 1, 14, COLOR_YELLOW);
+    Gui::drawSolidRect((hid.index() % 16) * 25, (hid.index() / 16) * 15, 24, 14, C2D_Color32(15, 22, 89, 0));
+    Gui::drawSolidRect((hid.index() % 16) * 25, (hid.index() / 16) * 15, 1, 14, COLOR_YELLOW);
+    Gui::drawSolidRect((hid.index() % 16) * 25, (hid.index() / 16) * 15, 24, 1, COLOR_YELLOW);
+    Gui::drawSolidRect((hid.index() % 16) * 25, (hid.index() / 16) * 15 + 13, 24, 1, COLOR_YELLOW);
+    Gui::drawSolidRect((hid.index() % 16) * 25 + 23, (hid.index() / 16) * 15, 1, 14, COLOR_YELLOW);
     for (int y = 0; y < 15; y++)
     {
         for (int x = 0; x < 16; x++)

@@ -119,6 +119,11 @@ namespace Gui
     void pkm(int species, int form, Generation generation, int gender, int x, int y, float scale = 1.0f, u32 color = C2D_Color32(0, 0, 0, 255),
         float blend = 0.0f);
 
+    void drawImageAt(const C2D_Image& img, float x, float y, const C2D_ImageTint* tint = nullptr, float scaleX = 1.0f, float scaleY = 1.0f);
+    void drawSolidRect(float x, float y, float w, float h, u32 color);
+    void drawSolidCircle(float x, float y, float radius, u32 color);
+    void drawSolidTriangle(float x1, float y1, float x2, float y2, float x3, float y3, u32 color);
+
     void backgroundTop(bool stripes);
     void backgroundBottom(bool stripes);
     void backgroundAnimatedTop(void);

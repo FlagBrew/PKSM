@@ -285,11 +285,11 @@ void StorageScreen::drawBottom() const
                 column >= std::min((cursorIndex - 1) % 6, selectDimensions.first) &&
                 row <= std::max((cursorIndex - 1) / 6, selectDimensions.second) && row >= std::min((cursorIndex - 1) / 6, selectDimensions.second))
             {
-                C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
             }
             if (TitleLoader::save->generation() == Generation::LGPE && row * 6 + column + boxBox * 30 >= TitleLoader::save->maxSlot())
             {
-                C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(128, 128, 128, 128));
+                Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(128, 128, 128, 128));
             }
             else
             {
@@ -325,7 +325,7 @@ void StorageScreen::drawBottom() const
                 int y = 10 + dy + (i / selectDimensions.first) * 30;
                 if (selectDimensions.first > 1 || selectDimensions.second > 1)
                 {
-                    C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                    Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
                 }
                 if (moveMon[i])
                 {
@@ -357,7 +357,7 @@ void StorageScreen::drawBottom() const
                 int y = 44 + yMod + (i / selectDimensions.first) * 30;
                 if (selectDimensions.first > 1 || selectDimensions.second > 1)
                 {
-                    C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                    Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
                 }
                 if (moveMon[i])
                 {
@@ -413,7 +413,7 @@ void StorageScreen::drawTop() const
                 column >= std::min((cursorIndex - 1) % 6, selectDimensions.first) &&
                 row <= std::max((cursorIndex - 1) / 6, selectDimensions.second) && row >= std::min((cursorIndex - 1) / 6, selectDimensions.second))
             {
-                C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
             }
             auto pkm = Banks::bank->pkm(storageBox, row * 6 + column);
             if (pkm->species() > 0)
@@ -444,7 +444,7 @@ void StorageScreen::drawTop() const
                 int y = 16 + dy + (i / selectDimensions.first) * 30;
                 if (selectDimensions.first > 1 || selectDimensions.second > 1)
                 {
-                    C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                    Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
                 }
                 if (moveMon[i])
                 {
@@ -476,7 +476,7 @@ void StorageScreen::drawTop() const
                 int y = 65 + yMod + (i / selectDimensions.first) * 30;
                 if (selectDimensions.first > 1 || selectDimensions.second > 1)
                 {
-                    C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                    Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
                 }
                 if (moveMon[i])
                 {

@@ -257,7 +257,7 @@ namespace TextParse
         }
     }
 
-    void ScreenText::addText(std::shared_ptr<Text> text, float x, float y, float scaleX, float scaleY, TextPosX textPos, u32 color)
+    void ScreenText::addText(std::shared_ptr<Text> text, float x, float y, float z, float scaleX, float scaleY, TextPosX textPos, u32 color)
     {
         if (!text || text->glyphs.empty())
             return;
@@ -278,7 +278,7 @@ namespace TextParse
             }
             FINF_s* info = C2D_FontGetInfo(glyph.font);
             float glyphY = y + scaleY * (std::max(info->tglp->cellHeight, info->lineFeed) * glyph.line - info->tglp->baselinePos);
-            glyphs.emplace_back(glyph, glyphX, glyphY, scaleX, scaleY, color);
+            glyphs.emplace_back(glyph, glyphX, glyphY, z, scaleX, scaleY, color);
         }
     }
 
@@ -304,7 +304,8 @@ namespace TextParse
         for (auto& glyph : glyphs)
         {
             C2D_PlainImageTint(&tint, glyph.color, 1.0f);
-            C2D_DrawImageAt({glyph.glyph.tex, &glyph.glyph.subtex}, glyph.x, glyph.y, 0.5f, &tint, glyph.scaleX, glyph.scaleY);
+            // The one exception to using Gui::drawImageAt: we want to control depth here
+            C2D_DrawImageAt({glyph.glyph.tex, &glyph.glyph.subtex}, glyph.x, glyph.y, glyph.z, &tint, glyph.scaleX, glyph.scaleY);
         }
     }
 

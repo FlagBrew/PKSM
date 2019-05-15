@@ -302,17 +302,17 @@ void ConfigScreen::drawBottom() const
 
     if (currentTab != 0)
     {
-        C2D_DrawRectSolid(1, 2, 0.5f, 104, 17, COLOR_DARKBLUE);
+        Gui::drawSolidRect(1, 2, 104, 17, COLOR_DARKBLUE);
         Gui::text(i18n::localize("LANGUAGE"), 53, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
     if (currentTab != 1)
     {
-        C2D_DrawRectSolid(108, 2, 0.5f, 104, 17, COLOR_DARKBLUE);
+        Gui::drawSolidRect(108, 2, 104, 17, COLOR_DARKBLUE);
         Gui::text(i18n::localize("DEFAULTS"), 160, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
     if (currentTab != 2)
     {
-        C2D_DrawRectSolid(215, 2, 0.5f, 104, 17, COLOR_DARKBLUE);
+        Gui::drawSolidRect(215, 2, 104, 17, COLOR_DARKBLUE);
         Gui::text(i18n::localize("MISC"), 267, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
 
@@ -333,55 +333,55 @@ void ConfigScreen::drawBottom() const
         Gui::text("Português", 199, 113, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text("русский", 199, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
-        C2D_DrawRectSolid(37, 52, 0.5f, 8, 8, COLOR_MENUBLUE);
-        C2D_DrawRectSolid(37, 74, 0.5f, 8, 8, COLOR_MENUBLUE);
-        C2D_DrawRectSolid(37, 96, 0.5f, 8, 8, COLOR_MENUBLUE);
-        C2D_DrawRectSolid(37, 118, 0.5f, 8, 8, COLOR_MENUBLUE);
-        C2D_DrawRectSolid(37, 140, 0.5f, 8, 8, COLOR_MENUBLUE);
-        C2D_DrawRectSolid(37, 162, 0.5f, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(37, 52, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(37, 74, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(37, 96, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(37, 118, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(37, 140, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(37, 162, 8, 8, COLOR_MENUBLUE);
 
-        C2D_DrawRectSolid(177, 52, 0.5f, 8, 8, COLOR_MENUBLUE);
-        C2D_DrawRectSolid(177, 74, 0.5f, 8, 8, COLOR_MENUBLUE);
-        C2D_DrawRectSolid(177, 96, 0.5f, 8, 8, COLOR_MENUBLUE);
-        C2D_DrawRectSolid(177, 118, 0.5f, 8, 8, COLOR_MENUBLUE);
-        C2D_DrawRectSolid(177, 140, 0.5f, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(177, 52, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(177, 74, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(177, 96, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(177, 118, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(177, 140, 8, 8, COLOR_MENUBLUE);
 
         switch (Configuration::getInstance().language())
         {
             case Language::JP:
-                C2D_DrawRectSolid(36, 51, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(36, 51, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::EN:
             case Language::UNUSED:
-                C2D_DrawRectSolid(36, 73, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(36, 73, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::FR:
-                C2D_DrawRectSolid(36, 95, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(36, 95, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::DE:
-                C2D_DrawRectSolid(36, 117, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(36, 117, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::IT:
-                C2D_DrawRectSolid(36, 139, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(36, 139, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::ES:
-                C2D_DrawRectSolid(36, 161, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(36, 161, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::ZH:
             case Language::TW:
-                C2D_DrawRectSolid(176, 51, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(176, 51, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::KO:
-                C2D_DrawRectSolid(176, 73, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(176, 73, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::NL:
-                C2D_DrawRectSolid(176, 95, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(176, 95, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::PT:
-                C2D_DrawRectSolid(176, 117, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(176, 117, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::RU:
-                C2D_DrawRectSolid(176, 139, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(176, 139, 10, 10, COLOR_HIGHBLUE);
                 break;
         }
     }

@@ -87,11 +87,11 @@ void SpeciesOverlay::drawTop() const
     // Selector
     if (dispPkm.size() > 0)
     {
-        C2D_DrawRectSolid(x, y, 0.5f, 49, 47, COLOR_MASKBLACK);
-        C2D_DrawRectSolid(x, y, 0.5f, 49, 1, COLOR_YELLOW);
-        C2D_DrawRectSolid(x, y, 0.5f, 1, 47, COLOR_YELLOW);
-        C2D_DrawRectSolid(x + 48, y, 0.5f, 1, 47, COLOR_YELLOW);
-        C2D_DrawRectSolid(x, y + 46, 0.5f, 49, 1, COLOR_YELLOW);
+        Gui::drawSolidRect(x, y, 49, 47, COLOR_MASKBLACK);
+        Gui::drawSolidRect(x, y, 49, 1, COLOR_YELLOW);
+        Gui::drawSolidRect(x, y, 1, 47, COLOR_YELLOW);
+        Gui::drawSolidRect(x + 48, y, 1, 47, COLOR_YELLOW);
+        Gui::drawSolidRect(x, y + 46, 49, 1, COLOR_YELLOW);
     }
 
     for (int y = 0; y < 5; y++)

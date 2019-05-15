@@ -48,11 +48,11 @@ void FormOverlay::drawTop() const
         dx -= 1;
     }
     // Selector
-    C2D_DrawRectSolid(x, y, 0.5f, dx, dy, COLOR_MASKBLACK);
-    C2D_DrawRectSolid(x, y, 0.5f, dx, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y, 0.5f, 1, dy, COLOR_YELLOW);
-    C2D_DrawRectSolid(x + dx - 1, y, 0.5f, 1, dy, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y + dy - 1, 0.5f, dx, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, dx, dy, COLOR_MASKBLACK);
+    Gui::drawSolidRect(x, y, dx, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 1, dy, COLOR_YELLOW);
+    Gui::drawSolidRect(x + dx - 1, y, 1, dy, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y + dy - 1, dx, 1, COLOR_YELLOW);
 
     for (int y = 0; y < 5; y++)
     {

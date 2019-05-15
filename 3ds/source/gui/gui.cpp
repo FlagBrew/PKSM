@@ -52,6 +52,9 @@ static float noHomeAlpha  = 0.0f;
 #define NOHOMEALPHA_ACCEL 0.001f
 static float dNoHomeAlpha = NOHOMEALPHA_ACCEL;
 
+static float currentDepth;
+#define DEPTH_STEP (1.0f/65535.0f)
+
 // static size_t hackyGetCurrentGlyphCount(C2D_TextBuf buf)
 // {
 //     struct access
@@ -85,6 +88,30 @@ static Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int e
     return tex;
 }
 
+void Gui::drawImageAt(const C2D_Image& img, float x, float y, const C2D_ImageTint* tint, float scaleX, float scaleY)
+{
+    C2D_DrawImageAt(img, x, y, currentDepth, tint, scaleX, scaleY);
+    currentDepth += DEPTH_STEP;
+}
+
+void Gui::drawSolidCircle(float x, float y, float rad, u32 color)
+{
+    C2D_DrawCircleSolid(x, y, currentDepth, rad, color);
+    currentDepth += DEPTH_STEP;
+}
+
+void Gui::drawSolidRect(float x, float y, float w, float h, u32 color)
+{
+    C2D_DrawRectSolid(x, y, currentDepth, w, h, color);
+    currentDepth += DEPTH_STEP;
+}
+
+void Gui::drawSolidTriangle(float x1, float y1, float x2, float y2, float x3, float y3, u32 color)
+{
+    C2D_DrawTriangle(x1, y1, color, x2, y2, color, x3, y3, color, currentDepth);
+    currentDepth += DEPTH_STEP;
+}
+
 void Gui::setDoHomeDraw()
 {
     noHomeAlpha  = 1.0f;
@@ -97,7 +124,7 @@ void Gui::drawNoHome()
     if (noHomeAlpha > 0.0f)
     {
         C2D_AlphaImageTint(&tint, noHomeAlpha);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_home_blocked_idx), 130.0f, 90.0f, 0.5f, &tint);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_home_blocked_idx), 130.0f, 90.0f, &tint);
         noHomeAlpha -= dNoHomeAlpha;
         dNoHomeAlpha += NOHOMEALPHA_ACCEL;
     }
@@ -116,6 +143,7 @@ void Gui::target(gfxScreen_t screen)
         C2D_SceneBegin(g_renderTargetTop);
     }
     currentText->clear();
+    currentDepth = DEPTH_STEP;
 }
 
 C2D_Image Gui::TWLIcon(void)
@@ -137,15 +165,15 @@ void Gui::backgroundBottom(bool stripes)
         {
             for (int y = 0; y < 240; y += 14)
             {
-                C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_stripe_bottom_idx), x, y, 0.5f);
+                Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_stripe_bottom_idx), x, y);
             }
         }
     }
     else
     {
-        C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, C2D_Color32(40, 53, 147, 255));
+        Gui::drawSolidRect(0, 0, 320, 240, C2D_Color32(40, 53, 147, 255));
     }
-    C2D_DrawRectSolid(0, 220, 0.5f, 320, 20, C2D_Color32(26, 35, 126, 255));
+    Gui::drawSolidRect(0, 220, 320, 20, C2D_Color32(26, 35, 126, 255));
 }
 
 void Gui::backgroundTop(bool stripes)
@@ -156,15 +184,15 @@ void Gui::backgroundTop(bool stripes)
         {
             for (int y = 0; y < 240; y += 14)
             {
-                C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_stripe_top_idx), x, y, 0.5f);
+                Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_stripe_top_idx), x, y);
             }
         }
     }
     else
     {
-        C2D_DrawRectSolid(0, 0, 0.5f, 400, 240, C2D_Color32(26, 35, 126, 255));
+        Gui::drawSolidRect(0, 0, 400, 240, C2D_Color32(26, 35, 126, 255));
     }
-    C2D_DrawRectSolid(0, 0, 0.5f, 400, 25, C2D_Color32(15, 22, 89, 255));
+    Gui::drawSolidRect(0, 0, 400, 25, C2D_Color32(15, 22, 89, 255));
 }
 
 void Gui::backgroundAnimatedTop()
@@ -183,8 +211,8 @@ void Gui::backgroundAnimatedTop()
         x2 = 400;
     }
 
-    C2D_DrawImageAt({bgBoxes.tex, &boxes1}, x1--, 0, 0.5f);
-    C2D_DrawImageAt({bgBoxes.tex, &boxes2}, x2--, 0, 0.5f);
+    Gui::drawImageAt({bgBoxes.tex, &boxes1}, x1--, 0);
+    Gui::drawImageAt({bgBoxes.tex, &boxes2}, x2--, 0);
 }
 
 void Gui::backgroundAnimatedBottom()
@@ -203,8 +231,8 @@ void Gui::backgroundAnimatedBottom()
         x2 = 400;
     }
 
-    C2D_DrawImageAt({bgBoxes.tex, &boxes1}, x1--, 0, 0.5f);
-    C2D_DrawImageAt({bgBoxes.tex, &boxes2}, x2--, 0, 0.5f);
+    Gui::drawImageAt({bgBoxes.tex, &boxes1}, x1--, 0);
+    Gui::drawImageAt({bgBoxes.tex, &boxes2}, x2--, 0);
 }
 
 void Gui::clearText(void)
@@ -280,7 +308,8 @@ void Gui::text(std::shared_ptr<TextParse::Text> text, int x, int y, float scaleX
             break;
     }
 
-    currentText->addText(text, x, y, scaleX, scaleY, positionX, color);
+    currentText->addText(text, x, y, currentDepth, scaleX, scaleY, positionX, color);
+    currentDepth += DEPTH_STEP;
 }
 
 void Gui::text(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY, float maxWidth)
@@ -295,12 +324,12 @@ static void _draw_mirror_scale(int key, int x, int y, int off, int rep)
     C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, key);
     // Left side
     Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, off, 0);
-    C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f);
+    Gui::drawImageAt({sprite.tex, &tex}, x, y);
     // Right side
-    C2D_DrawImageAt({sprite.tex, &tex}, x + off + rep, y, 0.5f, nullptr, -1.0f, 1.0f);
+    Gui::drawImageAt({sprite.tex, &tex}, x + off + rep, y, nullptr, -1.0f, 1.0f);
     // Center
     tex = _select_box(sprite, off, 0, sprite.subtex->width, 0);
-    C2D_DrawImageAt({sprite.tex, &tex}, x + off, y, 0.5f, nullptr, rep, 1.0f);
+    Gui::drawImageAt({sprite.tex, &tex}, x + off, y, nullptr, rep, 1.0f);
 }
 
 static void _draw_repeat(int key, int x, int y, u8 rows, u8 cols)
@@ -310,7 +339,7 @@ static void _draw_repeat(int key, int x, int y, u8 rows, u8 cols)
     {
         for (u8 col = 0; col < cols; col++)
         {
-            C2D_DrawImageAt(sprite, x + col * sprite.subtex->width, y + row * sprite.subtex->height, 0.5f);
+            Gui::drawImageAt(sprite, x + col * sprite.subtex->width, y + row * sprite.subtex->height);
         }
     }
 }
@@ -392,10 +421,6 @@ void Gui::mainLoop(void)
 
         drawNoHome();
 
-        text("DrawTime: " + std::to_string(C3D_GetDrawingTime()) + "\nProcessingTime: " + std::to_string(C3D_GetProcessingTime()) +
-                 "\nCmdBuf Use: " + std::to_string(C3D_GetCmdBufUsage()),
-            20, 100, FONT_SIZE_18, FONT_SIZE_18, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-
         textBuffer->clear();
 
         C3D_FrameEnd(0);
@@ -451,10 +476,10 @@ void Gui::sprite(int key, int x, int y)
         C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, key);
         // Left side
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, off, 0);
-        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y);
         // Center
         tex = _select_box(sprite, off, 0, sprite.subtex->width, 0);
-        C2D_DrawImageAt({sprite.tex, &tex}, x + off, y, 0.5f, nullptr, rep, 1.0f);
+        Gui::drawImageAt({sprite.tex, &tex}, x + off, y, nullptr, rep, 1.0f);
     }
     else if (key == ui_sheet_eventmenu_page_indicator_idx)
     {
@@ -466,9 +491,9 @@ void Gui::sprite(int key, int x, int y)
         C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, key);
         // Top side
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, 0, off);
-        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y);
         // Bottom side
-        C2D_DrawImageAt({sprite.tex, &tex}, x, y + off - 1, 0.5f, nullptr, 1.0f, -1.0f);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y + off - 1, nullptr, 1.0f, -1.0f);
     }
     else if (key == ui_sheet_mainmenu_button_idx)
     {
@@ -483,13 +508,13 @@ void Gui::sprite(int key, int x, int y)
         C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, key);
         int width = sprite.subtex->width, height = sprite.subtex->height;
         // Top left
-        C2D_DrawImageAt(sprite, x, y, 0.5f);
+        Gui::drawImageAt(sprite, x, y);
         // Top right
-        C2D_DrawImageAt(sprite, x + width, y, 0.5f, NULL, -1.0f, 1.0f);
+        Gui::drawImageAt(sprite, x + width, y, NULL, -1.0f, 1.0f);
         // Bottom left
-        C2D_DrawImageAt(sprite, x, y + height, 0.5f, NULL, 1.0f, -1.0f);
+        Gui::drawImageAt(sprite, x, y + height, NULL, 1.0f, -1.0f);
         // Bottom right
-        C2D_DrawImageAt(sprite, x + width, y + height, 0.5f, NULL, -1.0f, -1.0f);
+        Gui::drawImageAt(sprite, x + width, y + height, NULL, -1.0f, -1.0f);
     }
     else if (key == ui_sheet_part_mtx_4x4_idx)
     {
@@ -506,14 +531,14 @@ void Gui::sprite(int key, int x, int y)
     else if (key == ui_sheet_part_mtx_15x16_idx)
     {
         _draw_repeat(key, x, y, 15, 16);
-        C2D_DrawRectSolid(0, 225, 0.5f, 400, 15, COLOR_WHITE);
+        Gui::drawSolidRect(0, 225, 400, 15, COLOR_WHITE);
     }
 
     // emulated
     else if (key == ui_sheet_emulated_pointer_horizontal_flipped_idx)
     {
         C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_pointer_horizontal_idx);
-        C2D_DrawImageAt(sprite, x, y, 0.5f, NULL, -1.0f, 1.0f);
+        Gui::drawImageAt(sprite, x, y, NULL, -1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_bg_top_red)
     {
@@ -522,7 +547,7 @@ void Gui::sprite(int key, int x, int y)
         C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(201, 95, 84, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(239, 163, 151, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(214, 117, 106, 255), 1);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_top_greyscale_idx), x, y, 0.5f, &tint);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_top_greyscale_idx), x, y, &tint);
     }
     else if (key == ui_sheet_emulated_bg_top_blue)
     {
@@ -531,7 +556,7 @@ void Gui::sprite(int key, int x, int y)
         C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(93, 134, 193, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(158, 186, 233, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(113, 150, 205, 255), 1);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_top_greyscale_idx), x, y, 0.5f, &tint);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_top_greyscale_idx), x, y, &tint);
     }
     else if (key == ui_sheet_emulated_bg_top_green)
     {
@@ -540,7 +565,7 @@ void Gui::sprite(int key, int x, int y)
         C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(101, 193, 93, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(161, 233, 158, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(119, 205, 113, 255), 1);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_top_greyscale_idx), x, y, 0.5f, &tint);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_top_greyscale_idx), x, y, &tint);
     }
     else if (key == ui_sheet_emulated_bg_bottom_red)
     {
@@ -549,7 +574,7 @@ void Gui::sprite(int key, int x, int y)
         C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(239, 163, 151, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(201, 95, 84, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(224, 134, 123, 255), 1);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_bottom_greyscale_idx), x, y, 0.5f, &tint);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_bottom_greyscale_idx), x, y, &tint);
     }
     else if (key == ui_sheet_emulated_bg_bottom_blue)
     {
@@ -558,7 +583,7 @@ void Gui::sprite(int key, int x, int y)
         C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(158, 186, 233, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(93, 134, 193, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(131, 165, 217, 255), 1);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_bottom_greyscale_idx), x, y, 0.5f, &tint);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_bottom_greyscale_idx), x, y, &tint);
     }
     else if (key == ui_sheet_emulated_bg_bottom_green)
     {
@@ -567,7 +592,7 @@ void Gui::sprite(int key, int x, int y)
         C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(161, 233, 158, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(101, 193, 93, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(136, 217, 131, 255), 1);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_bottom_greyscale_idx), x, y, 0.5f, &tint);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_bottom_greyscale_idx), x, y, &tint);
     }
     else if (key == ui_sheet_emulated_eventmenu_bar_selected_flipped_horizontal_idx)
     {
@@ -575,10 +600,10 @@ void Gui::sprite(int key, int x, int y)
         C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_eventmenu_bar_selected_idx);
         // Right side
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, off, 0);
-        C2D_DrawImageAt({sprite.tex, &tex}, x + rep, y, 0.5f, nullptr, -1.0f, 1.0f);
+        Gui::drawImageAt({sprite.tex, &tex}, x + rep, y, nullptr, -1.0f, 1.0f);
         // Center
         tex = _select_box(sprite, off, 0, sprite.subtex->width, 0);
-        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f, nullptr, -rep, 1.0f);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y, nullptr, -rep, 1.0f);
     }
     else if (key == ui_sheet_emulated_eventmenu_bar_selected_flipped_vertical_idx)
     {
@@ -586,10 +611,10 @@ void Gui::sprite(int key, int x, int y)
         C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_eventmenu_bar_selected_idx);
         // Left side
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, off, 0);
-        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f, nullptr, 1.0f, -1.0f);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y, nullptr, 1.0f, -1.0f);
         // Center
         tex = _select_box(sprite, off, 0, sprite.subtex->width, 0);
-        C2D_DrawImageAt({sprite.tex, &tex}, x + off, y, 0.5f, nullptr, rep, -1.0f);
+        Gui::drawImageAt({sprite.tex, &tex}, x + off, y, nullptr, rep, -1.0f);
     }
     else if (key == ui_sheet_emulated_eventmenu_bar_selected_flipped_both_idx)
     {
@@ -597,10 +622,10 @@ void Gui::sprite(int key, int x, int y)
         C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_eventmenu_bar_selected_idx);
         // Right side
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, off, 0);
-        C2D_DrawImageAt({sprite.tex, &tex}, x + rep, y, 0.5f, nullptr, -1.0f, -1.0f);
+        Gui::drawImageAt({sprite.tex, &tex}, x + rep, y, nullptr, -1.0f, -1.0f);
         // Center
         tex = _select_box(sprite, off, 0, sprite.subtex->width, 0);
-        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f, nullptr, -rep, -1.0f);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y, nullptr, -rep, -1.0f);
     }
     else if (key == ui_sheet_emulated_eventmenu_bar_unselected_flipped_horizontal_idx)
     {
@@ -608,10 +633,10 @@ void Gui::sprite(int key, int x, int y)
         C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_eventmenu_bar_unselected_idx);
         // Right side
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, off, 0);
-        C2D_DrawImageAt({sprite.tex, &tex}, x + rep, y, 0.5f, nullptr, -1.0f, 1.0f);
+        Gui::drawImageAt({sprite.tex, &tex}, x + rep, y, nullptr, -1.0f, 1.0f);
         // Center
         tex = _select_box(sprite, off, 0, sprite.subtex->width, 0);
-        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f, nullptr, -rep, 1.0f);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y, nullptr, -rep, 1.0f);
     }
     else if (key == ui_sheet_emulated_eventmenu_bar_unselected_flipped_vertical_idx)
     {
@@ -619,10 +644,10 @@ void Gui::sprite(int key, int x, int y)
         C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_eventmenu_bar_unselected_idx);
         // Left side
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, off, 0);
-        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f, nullptr, 1.0f, -1.0f);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y, nullptr, 1.0f, -1.0f);
         // Center
         tex = _select_box(sprite, off, 0, sprite.subtex->width, 0);
-        C2D_DrawImageAt({sprite.tex, &tex}, x + off, y, 0.5f, nullptr, rep, -1.0f);
+        Gui::drawImageAt({sprite.tex, &tex}, x + off, y, nullptr, rep, -1.0f);
     }
     else if (key == ui_sheet_emulated_eventmenu_bar_unselected_flipped_both_idx)
     {
@@ -630,30 +655,30 @@ void Gui::sprite(int key, int x, int y)
         C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_eventmenu_bar_unselected_idx);
         // Right side
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, off, 0);
-        C2D_DrawImageAt({sprite.tex, &tex}, x + rep, y, 0.5f, nullptr, -1.0f, -1.0f);
+        Gui::drawImageAt({sprite.tex, &tex}, x + rep, y, nullptr, -1.0f, -1.0f);
         // Center
         tex = _select_box(sprite, off, 0, sprite.subtex->width, 0);
-        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f, nullptr, -rep, -1.0f);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y, nullptr, -rep, -1.0f);
     }
     else if (key == ui_sheet_emulated_storage_box_corner_flipped_horizontal_idx)
     {
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_storage_box_corner_idx), x, y, 0.5f, nullptr, -1.0f, 1.0f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_storage_box_corner_idx), x, y, nullptr, -1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_storage_box_corner_flipped_vertical_idx)
     {
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_storage_box_corner_idx), x, y, 0.5f, nullptr, 1.0f, -1.0f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_storage_box_corner_idx), x, y, nullptr, 1.0f, -1.0f);
     }
     else if (key == ui_sheet_emulated_storage_box_corner_flipped_both_idx)
     {
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_storage_box_corner_idx), x, y, 0.5f, nullptr, -1.0f, -1.0f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_storage_box_corner_idx), x, y, nullptr, -1.0f, -1.0f);
     }
     else if (key == ui_sheet_emulated_toggle_green_idx)
     {
-        C2D_DrawRectSolid(x, y, 0.5f, 13, 13, C2D_Color32(0x35, 0xC1, 0x3E, 0xFF));
+        Gui::drawSolidRect(x, y, 13, 13, C2D_Color32(0x35, 0xC1, 0x3E, 0xFF));
     }
     else if (key == ui_sheet_emulated_toggle_red_idx)
     {
-        C2D_DrawRectSolid(x, y, 0.5f, 13, 13, C2D_Color32(0xCC, 0x3F, 0x26, 0xFF));
+        Gui::drawSolidRect(x, y, 13, 13, C2D_Color32(0xCC, 0x3F, 0x26, 0xFF));
     }
     else if (key == ui_sheet_emulated_gameselector_bg_idx)
     {
@@ -662,28 +687,28 @@ void Gui::sprite(int key, int x, int y)
         C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_gameselector_bg_left_idx);
         // Top side
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, 0, off);
-        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y);
         // Bottom side
-        C2D_DrawImageAt({sprite.tex, &tex}, x, y + off + rep, 0.5f, nullptr, 1.0f, -1.0f);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y + off + rep, nullptr, 1.0f, -1.0f);
         // Center
         tex = _select_box(sprite, 0, off, 0, sprite.subtex->height);
-        C2D_DrawImageAt({sprite.tex, &tex}, x, y + off, 0.5f, nullptr, 1.0f, rep);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y + off, nullptr, 1.0f, rep);
         x += 5;
-        C2D_DrawRectSolid(x, y, 0.5f, 115, rep + 10, C2D_Color32(26, 35, 126, 255));
+        Gui::drawSolidRect(x, y, 115, rep + 10, C2D_Color32(26, 35, 126, 255));
 
         /* RIGHT */
         x += 119;
-        C2D_DrawRectSolid(x, y, 0.5f, 263, rep + 10, C2D_Color32(26, 35, 126, 255));
+        Gui::drawSolidRect(x, y, 263, rep + 10, C2D_Color32(26, 35, 126, 255));
         x += 263;
         sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_gameselector_bg_left_idx);
         // Top side
         tex = _select_box(sprite, 0, 0, 0, off);
-        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f, nullptr, -1.0f, 1.0f);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y, nullptr, -1.0f, 1.0f);
         // Bottom side
-        C2D_DrawImageAt({sprite.tex, &tex}, x, y + off + rep, 0.5f, nullptr, -1.0f, -1.0f);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y + off + rep, nullptr, -1.0f, -1.0f);
         // Center
         tex = _select_box(sprite, 0, off, 0, sprite.subtex->height);
-        C2D_DrawImageAt({sprite.tex, &tex}, x, y + off, 0.5f, nullptr, 1.0f, rep);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y + off, nullptr, 1.0f, rep);
     }
     else if (key == ui_sheet_emulated_button_qr_idx)
     {
@@ -693,12 +718,12 @@ void Gui::sprite(int key, int x, int y)
 
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, 5, 0);
         // Left
-        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f, &tint, 1.0f, 1.0f);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y, &tint, 1.0f, 1.0f);
         // Right
-        C2D_DrawImageAt({sprite.tex, &tex}, x + 65, y, 0.5f, &tint, -1.0f, 1.0f);
+        Gui::drawImageAt({sprite.tex, &tex}, x + 65, y, &tint, -1.0f, 1.0f);
         // Middle
         tex = _select_box(sprite, 5, 0, 6, 0);
-        C2D_DrawImageAt({sprite.tex, &tex}, x + 5, y, 0.5f, &tint, 60.0f, 1.0f);
+        Gui::drawImageAt({sprite.tex, &tex}, x + 5, y, &tint, 60.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_button_item_idx)
     {
@@ -706,25 +731,25 @@ void Gui::sprite(int key, int x, int y)
 
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, 16, 0);
         // Left
-        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y);
         // Right
         tex = _select_box(sprite, 92, 0, 108, 0);
-        C2D_DrawImageAt({sprite.tex, &tex}, x + 182, y, 0.5f);
+        Gui::drawImageAt({sprite.tex, &tex}, x + 182, y);
         // Center
         tex = _select_box(sprite, 16, 0, 17, 0);
-        C2D_DrawImageAt({sprite.tex, &tex}, x + 16, y, 0.5f, nullptr, 166.0f, 1.0f);
+        Gui::drawImageAt({sprite.tex, &tex}, x + 16, y, nullptr, 166.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_button_plus_small_black_idx)
     {
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, COLOR_BLACK, 1.0f);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_plus_small_idx), x, y, 0.5f, &tint, 1.0f, 1.0f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_plus_small_idx), x, y, &tint, 1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_button_minus_small_black_idx)
     {
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, COLOR_BLACK, 1.0f);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_minus_small_idx), x, y, 0.5f, &tint, 1.0f, 1.0f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_minus_small_idx), x, y, &tint, 1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_box_search_idx)
     {
@@ -734,22 +759,22 @@ void Gui::sprite(int key, int x, int y)
 
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, 5, 0);
         // Left
-        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f, &tint, 1.0f, 1.0f);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y, &tint, 1.0f, 1.0f);
         // Right
-        C2D_DrawImageAt({sprite.tex, &tex}, x + 165, y, 0.5f, &tint, -1.0f, 1.0f);
+        Gui::drawImageAt({sprite.tex, &tex}, x + 165, y, &tint, -1.0f, 1.0f);
         // Middle
         tex = _select_box(sprite, 5, 0, 6, 0);
-        C2D_DrawImageAt({sprite.tex, &tex}, x + 5, y, 0.5f, &tint, 160.0f, 1.0f);
+        Gui::drawImageAt({sprite.tex, &tex}, x + 5, y, &tint, 160.0f, 1.0f);
 
-        C2D_DrawRectSolid(x + 20, y + 17, 0.5f, 144, 1, COLOR_WHITE);
+        Gui::drawSolidRect(x + 20, y + 17, 144, 1, COLOR_WHITE);
     }
     else if (key == ui_sheet_emulated_toggle_gray_idx)
     {
-        C2D_DrawRectSolid(x, y, 0.5f, 13, 13, C2D_Color32(0x80, 0x80, 0x80, 0xFF));
+        Gui::drawSolidRect(x, y, 13, 13, C2D_Color32(0x80, 0x80, 0x80, 0xFF));
     }
     else if (key == ui_sheet_emulated_toggle_blue_idx)
     {
-        C2D_DrawRectSolid(x, y, 0.5f, 13, 13, C2D_Color32(0x00, 0x00, 0xFF, 0xFF));
+        Gui::drawSolidRect(x, y, 13, 13, C2D_Color32(0x00, 0x00, 0xFF, 0xFF));
     }
     else if (key == ui_sheet_emulated_party_indicator_1_idx)
     {
@@ -779,37 +804,37 @@ void Gui::sprite(int key, int x, int y)
     {
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, COLOR_SELECTBLUE, 1.0f);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, 0.5f, &tint, 1.0f, 1.0f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, &tint, 1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_button_unselected_blue_idx)
     {
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, COLOR_UNSELECTBLUE, 1.0f);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, 0.5f, &tint, 1.0f, 1.0f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, &tint, 1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_button_unavailable_blue_idx)
     {
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, COLOR_UNAVAILBLUE, 1.0f);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, 0.5f, &tint, 1.0f, 1.0f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, &tint, 1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_button_selected_red_idx)
     {
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, COLOR_SELECTRED, 1.0f);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, 0.5f, &tint, 1.0f, 1.0f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, &tint, 1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_button_unselected_red_idx)
     {
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, COLOR_UNSELECTRED, 1.0f);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, 0.5f, &tint, 1.0f, 1.0f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, &tint, 1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_button_unavailable_red_idx)
     {
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, COLOR_UNAVAILRED, 1.0f);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, 0.5f, &tint, 1.0f, 1.0f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, &tint, 1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_button_pouch_idx)
     {
@@ -817,18 +842,18 @@ void Gui::sprite(int key, int x, int y)
 
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, 16, 0);
         // Left
-        C2D_DrawImageAt({sprite.tex, &tex}, x, y, 0.5f);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y);
         // Right
         tex = _select_box(sprite, 92, 0, 108, 0);
-        C2D_DrawImageAt({sprite.tex, &tex}, x + 84, y, 0.5f);
+        Gui::drawImageAt({sprite.tex, &tex}, x + 84, y);
         // Center
         tex = _select_box(sprite, 16, 0, 17, 0);
-        C2D_DrawImageAt({sprite.tex, &tex}, x + 16, y, 0.5f, nullptr, 68.0f, 1.0f);
+        Gui::drawImageAt({sprite.tex, &tex}, x + 16, y, nullptr, 68.0f, 1.0f);
     }
     // standard case
     else
     {
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, key), x, y, 0.5f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, key), x, y);
     }
 }
 
@@ -936,7 +961,7 @@ void Gui::sprite(int key, int x, int y, u32 color)
         {
             tint.corners[i] = {color, 1.0f};
         }
-        C2D_DrawImageAt(sprite, x, y, 0.5f, &tint);
+        Gui::drawImageAt(sprite, x, y, &tint);
     }
 }
 
@@ -950,12 +975,12 @@ void Gui::pkm(const PKX& pokemon, int x, int y, float scale, u32 color, float bl
         if (pokemon.species() != 490)
         {
             pkm(pokemon.species(), pokemon.alternativeForm(), pokemon.generation(), pokemon.gender(), x, y, scale, color, blend);
-            C2D_DrawImageAt(
-                C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x - 13 + ceilf(3 * scale), y + 4 + 30 * (scale - 1), 0.5f, &tint);
+            Gui::drawImageAt(
+                C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x - 13 + ceilf(3 * scale), y + 4 + 30 * (scale - 1), &tint);
         }
         else
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_490_e_idx), x, y, 0.5f, &tint, scale, scale);
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_490_e_idx), x, y, &tint, scale, scale);
         }
     }
     else
@@ -963,14 +988,14 @@ void Gui::pkm(const PKX& pokemon, int x, int y, float scale, u32 color, float bl
         pkm(pokemon.species(), pokemon.alternativeForm(), pokemon.generation(), pokemon.gender(), x, y, scale, color, blend);
         if (pokemon.heldItem() > 0)
         {
-            C2D_DrawImageAt(
-                C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_item_idx), x + ceilf(3 * scale), y + 21 + ceilf(30 * (scale - 1)), 0.5f, &tint);
+            Gui::drawImageAt(
+                C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_item_idx), x + ceilf(3 * scale), y + 21 + ceilf(30 * (scale - 1)), &tint);
         }
     }
 
     if (pokemon.shiny())
     {
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx), x, y, 0.5f, &tint);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx), x, y, &tint);
     }
 }
 
@@ -981,63 +1006,63 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
     time_t thing = time(NULL);
     if (gmtime(&thing)->tm_mday == ((u16)(~magicNumber >> 16) ^ 0x3826) && gmtime(&thing)->tm_mon == ((u16)(~magicNumber) ^ 0xB545))
     {
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, (u8)(~magicNumber >> 8)), x, y, 0.5f, &tint, scale, scale);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, (u8)(~magicNumber >> 8)), x, y, &tint, scale, scale);
         return;
     }
     if (species == 490 && form == -1)
     {
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_490_e_idx), x, y, 0.5f, &tint, scale, scale);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_490_e_idx), x, y, &tint, scale, scale);
     }
     else if (species == 201)
     {
         if (form == 0)
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint, scale, scale);
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
         }
         else
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_801_1_idx + form), x, y, 0.5f, &tint, scale, scale);
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_801_1_idx + form), x, y, &tint, scale, scale);
         }
     }
     // For possible hex editor mishaps
     else if (species > 809)
     {
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y, 0.5f, &tint, scale, scale);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y, &tint, scale, scale);
     }
     // Unfezant
     else if (species == 521 && gender == 1)
     {
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_521_1_idx), x, y, 0.5f, &tint, scale, scale);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_521_1_idx), x, y, &tint, scale, scale);
     }
     // Unfezant
     else if (species == 592 && gender == 1)
     {
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_592_1_idx), x, y, 0.5f, &tint, scale, scale);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_592_1_idx), x, y, &tint, scale, scale);
     }
     // Unfezant
     else if (species == 593 && gender == 1)
     {
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_593_1_idx), x, y, 0.5f, &tint, scale, scale);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_593_1_idx), x, y, &tint, scale, scale);
     }
     // Unfezant
     else if (species == 668 && gender == 1)
     {
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_668_1_idx), x, y, 0.5f, &tint, scale, scale);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_668_1_idx), x, y, &tint, scale, scale);
     }
     else if (form == 0)
     {
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint, scale, scale);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
     }
     // Mimikyu
     else if (species == 778)
     {
         if (form == 1)
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_778_idx), x, y, 0.5f, &tint, scale, scale);
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_778_idx), x, y, &tint, scale, scale);
         }
         else
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_778_2_idx), x, y, 0.5f, &tint, scale, scale);
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_778_2_idx), x, y, &tint, scale, scale);
         }
     }
     // Minior
@@ -1045,50 +1070,50 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
     {
         if (form < 7)
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_774_idx), x, y, 0.5f, &tint, scale, scale);
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_774_idx), x, y, &tint, scale, scale);
         }
         else
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_774_7_idx + form - 7), x, y, 0.5f, &tint, scale, scale);
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_774_7_idx + form - 7), x, y, &tint, scale, scale);
         }
     }
     // Pumpkaboo, Gourgeist, & Genesect
     else if (species == 710 || species == 711 || species == 649)
     {
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint, scale, scale);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
     }
     // Pikachu
     else if (species == 25)
     {
         if (generation == Generation::SIX)
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_20_2_idx + form), x, y, 0.5f, &tint, scale, scale);
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_20_2_idx + form), x, y, &tint, scale, scale);
         }
         else if (form <= 7)
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_25_6_idx + form), x, y, 0.5f, &tint, scale, scale);
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_25_6_idx + form), x, y, &tint, scale, scale);
         }
         else // LGPE starter
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint, scale, scale);
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx), x + 25 + 34 * (scale - 1), y + 5, 0.5f);
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx), x + 25 + 34 * (scale - 1), y + 5);
         }
     }
     // LGPE starter Eevee
     else if (species == 133)
     {
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint, scale, scale);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx), x + 25 + 34 * (scale - 1), y + 5, 0.5f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx), x + 25 + 34 * (scale - 1), y + 5);
     }
     // Arceus
     else if (species == 493)
     {
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint, scale, scale);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
     }
     // Vivillon chain
     else if (species == 664 || species == 665)
     {
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint, scale, scale);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
     }
     else
     {
@@ -1097,7 +1122,7 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
         switch (species)
         {
             default:
-                C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, 0.5f, &tint, scale, scale);
+                Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
                 return;
             case 801:
                 imageOffsetFromBack += 3;
@@ -1331,11 +1356,11 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
         int drawIndex = types_spritesheet_beast_idx + imageOffsetFromBack + form;
         if (drawIndex < types_spritesheet_201_1_idx)
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, drawIndex), x, y, 0.5f, &tint, scale, scale);
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, drawIndex), x, y, &tint, scale, scale);
         }
         else
         {
-            C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y, 0.5f, &tint, scale, scale);
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y, &tint, scale, scale);
         }
     }
 }
@@ -1344,11 +1369,11 @@ void Gui::ball(size_t index, int x, int y)
 {
     if (index < 27)
     {
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, index + types_spritesheet_empty_idx), x, y, 0.5f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, index + types_spritesheet_empty_idx), x, y);
     }
     else
     {
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_empty_idx), x, y, 0.5f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_empty_idx), x, y);
     }
 }
 
@@ -1385,7 +1410,7 @@ static C2D_Image typeImage(Language lang, u8 type)
 
 void Gui::type(Language lang, u8 type, int x, int y)
 {
-    C2D_DrawImageAt(typeImage(lang, type), x, y, 0.5f);
+    Gui::drawImageAt(typeImage(lang, type), x, y);
 }
 
 void Gui::setScreen(std::unique_ptr<Screen> screen)
