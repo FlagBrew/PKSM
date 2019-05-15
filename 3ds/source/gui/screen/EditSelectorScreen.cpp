@@ -93,7 +93,6 @@ void EditSelectorScreen::changeBoxName()
 
 bool EditSelectorScreen::doQR()
 {
-    u8* data = nullptr;
     QRMode initMode;
     switch (TitleLoader::save->generation())
     {
@@ -112,25 +111,25 @@ bool EditSelectorScreen::doQR()
             break;
     }
 
-    QRScanner::init(initMode, data);
+    std::vector<u8> data = QRScanner::scan(initMode);
 
-    if (data != nullptr)
+    if (!data.empty())
     {
         std::shared_ptr<PKX> pkm = nullptr;
 
         switch (TitleLoader::save->generation())
         {
             case Generation::FOUR:
-                pkm = std::make_shared<PK4>(data, true);
+                pkm = std::make_shared<PK4>(data.data(), true);
                 break;
             case Generation::FIVE:
-                pkm = std::make_shared<PK5>(data, true);
+                pkm = std::make_shared<PK5>(data.data(), true);
                 break;
             case Generation::SIX:
-                pkm = std::make_shared<PK6>(data, true);
+                pkm = std::make_shared<PK6>(data.data(), true);
                 break;
             case Generation::SEVEN:
-                pkm = std::make_shared<PK7>(data, true);
+                pkm = std::make_shared<PK7>(data.data(), true);
                 break;
             default:
                 break;
@@ -140,10 +139,6 @@ bool EditSelectorScreen::doQR()
         {
             int slot = cursorPos ? cursorPos - 1 : 0; // make sure it writes to a good position, AKA not the title bar
             TitleLoader::save->pkm(pkm, box, slot, false);
-        }
-        if (data)
-        {
-            delete[] data;
         }
     }
     return true;

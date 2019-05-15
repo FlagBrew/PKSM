@@ -106,7 +106,7 @@ ICON_FLAGS		:=	nosavebackups,visible
 ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
 
 CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O2 -mword-relocations \
-			-fomit-frame-pointer -ffunction-sections \
+			-fomit-frame-pointer -ffunction-sections -flto \
 			-Wno-implicit-fallthrough -Wno-unused-parameter \
 			$(ARCH) \
 			-DQUIRC_MAX_REGIONS=10000 \
@@ -124,7 +124,7 @@ LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
 LIBS	:= -lSDL_mixer -lSDL -lmpg123 -lvorbisidec -logg -lmikmod -lmad \
 		   -lcurl -lmbedtls -lmbedx509 -lmbedcrypto -lbz2 \
-		   -lz -lcitro2d -lcitro3d -lctru -lm 
+		   -lz -lcitro2d -lcitro3d -lctru -lm
 
 CXX		:= `which ccache` $(CXX)
 CC		:= `which ccache` $(CC)

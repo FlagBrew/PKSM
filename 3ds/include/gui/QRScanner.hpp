@@ -61,10 +61,7 @@ enum QRMode
 
 namespace QRScanner
 {
-    void init(QRMode mode, u8*& buff);
-
-    // note: exposed, but not required to be called outside QRScanner.cpp
-    void exit(qr_data* data);
+    std::vector<u8> scan(QRMode mode);
 }
 
 #endif
