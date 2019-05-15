@@ -1747,17 +1747,12 @@ void StorageScreen::shareReceive()
     CURLcode res;
     if (ret == SWKBD_BUTTON_MIDDLE)
     {
-        u8* buff = nullptr;
-        QRScanner::init(NUMBER, buff);
-        if (buff)
+        std::vector<u8> data = QRScanner::scan(NUMBER);
+        if (!data.empty() && data.size() < 12)
         {
-            if (strlen((char*)buff) < 11)
-            {
-                std::copy(buff, buff + strlen((char*)buff), input);
-                input[10] = '\0';
-                ret       = SWKBD_BUTTON_CONFIRM;
-            }
-            delete[] buff;
+            std::copy(data.begin(), data.end(), input);
+            input[10] = '\0';
+            ret = SWKBD_BUTTON_CONFIRM;
         }
     }
     if (ret == SWKBD_BUTTON_CONFIRM)
