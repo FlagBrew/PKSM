@@ -154,7 +154,7 @@ namespace TextParse
                 if (maxWidth == 0.0f || width + glyphPos.xAdvance <= maxWidth)
                 {
                     ret.emplace_back(Tex3DS_SubTexture{static_cast<u16>(ceilf(glyphPos.width)), (u16)C2D_FontGetInfo(font)->tglp->cellHeight,
-                                        glyphPos.texcoord.left, glyphPos.texcoord.top, glyphPos.texcoord.right, glyphPos.texcoord.bottom},
+                                         glyphPos.texcoord.left, glyphPos.texcoord.top, glyphPos.texcoord.right, glyphPos.texcoord.bottom},
                         &glyphSheets[font][glyphPos.sheetIndex], font, 0, width + glyphPos.xOffset, glyphPos.width);
                     width += glyphPos.xAdvance;
                 }
@@ -173,7 +173,7 @@ namespace TextParse
 
     std::variant<float, size_t> TextBuf::parseWhitespace(std::string::const_iterator& str)
     {
-        float width = 0.0f;
+        float width  = 0.0f;
         size_t lines = 0;
         ssize_t iMod = 0;
         for (; *str != '\0'; str += iMod)
@@ -220,7 +220,7 @@ namespace TextParse
             std::shared_ptr<Text> tmp = std::make_shared<Text>();
             tmp->lineWidths.push_back(0.0f);
             size_t offset = 0;
-            auto it = str.begin();
+            auto it       = str.begin();
             do
             {
                 auto word = parseWord(it, maxWidth);

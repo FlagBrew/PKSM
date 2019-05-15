@@ -58,28 +58,29 @@ public:
     void captureThread();
     void handler(QRMode mode, std::vector<u8>& out);
     bool done() { return finished; }
+
 private:
     void buffToImage();
     void finish();
-    std::array<u16, 400*240> cameraBuffer;
+    std::array<u16, 400 * 240> cameraBuffer;
     Handle bufferMutex;
     C2D_Image image;
     quirc* data;
     Handle exitEvent;
-    volatile bool finished = false;
-    bool capturing = false;
+    volatile bool finished                    = false;
+    bool capturing                            = false;
     static constexpr Tex3DS_SubTexture subtex = {512, 256, 0.0f, 1.0f, 1.0f, 0.0f};
 };
 
 static void drawHelp(void* arg)
 {
-    QRData* data = (QRData*) arg;
+    QRData* data = (QRData*)arg;
     data->drawThread();
 }
 
 static void captureHelp(void* arg)
 {
-    QRData* data = (QRData*) arg;
+    QRData* data = (QRData*)arg;
     data->captureThread();
 }
 
@@ -91,8 +92,8 @@ void QRData::buffToImage()
         for (u32 y = 0; y < 240; y++)
         {
             u32 dstPos = ((((y >> 3) * (512 >> 3) + (x >> 3)) << 6) +
-                                ((x & 1) | ((y & 1) << 1) | ((x & 2) << 1) | ((y & 2) << 2) | ((x & 4) << 2) | ((y & 4) << 3))) *
-                            2;
+                             ((x & 1) | ((y & 1) << 1) | ((x & 2) << 1) | ((y & 2) << 2) | ((x & 4) << 2) | ((y & 4) << 3))) *
+                         2;
             u32 srcPos = (y * 400 + x) * 2;
             memcpy((u8*)image.tex->data + dstPos, (u8*)cameraBuffer.data() + srcPos, 2);
         }
@@ -138,7 +139,7 @@ void QRData::captureThread()
     u32 transferUnit;
 
     u16* buffer = new u16[400 * 240];
-    std::fill(buffer, buffer + 400*240, 0);
+    std::fill(buffer, buffer + 400 * 240, 0);
     camInit();
     CAMU_SetSize(SELECT_OUT1, SIZE_CTR_TOP_LCD, CONTEXT_A);
     CAMU_SetOutputFormat(SELECT_OUT1, OUTPUT_RGB_565, CONTEXT_A);
@@ -261,7 +262,7 @@ void QRData::handler(QRMode mode, std::vector<u8>& out)
             {
                 size_t outSize;
                 static constexpr int wcHeader = 38; // strlen("http://lunarcookies.github.io/wc.html#)
-                u8* retData                       = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader, &outSize);
+                u8* retData                   = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader, &outSize);
 
                 if (outSize == PGT::length || outSize == WC4::length)
                 {
@@ -275,7 +276,7 @@ void QRData::handler(QRMode mode, std::vector<u8>& out)
             {
                 size_t outSize;
                 static constexpr int wcHeader = 38; // strlen("http://lunarcookies.github.io/wc.html#)
-                u8* retData                       = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader, &outSize);
+                u8* retData                   = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader, &outSize);
 
                 if (outSize == PGF::length)
                 {
@@ -289,7 +290,7 @@ void QRData::handler(QRMode mode, std::vector<u8>& out)
             {
                 size_t outSize;
                 static constexpr int wcHeader = 38; // strlen("http://lunarcookies.github.io/wc.html#)
-                u8* retData                       = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader, &outSize);
+                u8* retData                   = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader, &outSize);
 
                 if (outSize == WC6::length || outSize == WC6::lengthFull)
                 {
@@ -305,7 +306,7 @@ void QRData::handler(QRMode mode, std::vector<u8>& out)
             {
                 size_t outSize;
                 static constexpr int pkHeader = 6; // strlen("null/#")
-                u8* retData                       = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader, &outSize);
+                u8* retData                   = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader, &outSize);
 
                 if (outSize == 136) // PK4/5 length
                 {
@@ -319,7 +320,7 @@ void QRData::handler(QRMode mode, std::vector<u8>& out)
             {
                 size_t outSize;
                 static constexpr int pkHeader = 6; // strlen("null/#")
-                u8* retData                       = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader, &outSize);
+                u8* retData                   = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader, &outSize);
 
                 Gui::warn(std::to_string(outSize));
 
@@ -335,7 +336,7 @@ void QRData::handler(QRMode mode, std::vector<u8>& out)
             {
                 size_t outSize;
                 static constexpr int pkHeader = 40; // strlen("http://lunarcookies.github.io/b1s1.html#")
-                u8* retData                       = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader, &outSize);
+                u8* retData                   = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader, &outSize);
 
                 if (PKX::genFromBytes(retData, outSize, true) == 6) // PK6 length
                 {
@@ -408,7 +409,7 @@ void QRData::handler(QRMode mode, std::vector<u8>& out)
 std::vector<u8> QRScanner::scan(QRMode mode)
 {
     C3D_FrameEnd(0);
-    std::vector<u8> out = {};
+    std::vector<u8> out          = {};
     std::unique_ptr<QRData> data = std::make_unique<QRData>();
     threadCreate((ThreadFunc)&drawHelp, data.get(), 0x10000, 0x1A, 1, true);
     while (!data->done())

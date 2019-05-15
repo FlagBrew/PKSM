@@ -238,8 +238,7 @@ void InjectSelectorScreen::drawTop() const
                 }
                 else
                 {
-                    Gui::drawSolidRect(
-                        x, y, 178, 34, i == hid.index() ? C2D_Color32(0x3D, 0x5A, 0xFE, 0xFF) : C2D_Color32(0x8C, 0x9E, 0xFF, 0xFF));
+                    Gui::drawSolidRect(x, y, 178, 34, i == hid.index() ? C2D_Color32(0x3D, 0x5A, 0xFE, 0xFF) : C2D_Color32(0x8C, 0x9E, 0xFF, 0xFF));
                 }
             }
             else
@@ -260,8 +259,7 @@ void InjectSelectorScreen::drawTop() const
                 }
                 else
                 {
-                    Gui::drawSolidRect(
-                        x, y, 178, 34, i == hid.index() ? C2D_Color32(0x3D, 0x5A, 0xFE, 0xFF) : C2D_Color32(0x8C, 0x9E, 0xFF, 0xFF));
+                    Gui::drawSolidRect(x, y, 178, 34, i == hid.index() ? C2D_Color32(0x3D, 0x5A, 0xFE, 0xFF) : C2D_Color32(0x8C, 0x9E, 0xFF, 0xFF));
                 }
             }
         }

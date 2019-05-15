@@ -149,11 +149,6 @@ void BagScreen::drawBottom() const
     {
         auto item = TitleLoader::save->item(limits[currentPouch].first, firstItem + i);
         Gui::sprite(ui_sheet_emulated_button_item_idx, 117, 15 + 30 * i);
-        // std::string print = i18n::item(Configuration::getInstance().language(), item->id());
-        // if (item->id() > 0)
-        // {
-        //     print += " x " + std::to_string((int)item->count());
-        // }
         Gui::text(i18n::item(Configuration::getInstance().language(), item->id()), 117 + 131 / 2, 20 + 30 * i, FONT_SIZE_12, FONT_SIZE_12,
             canEdit(limits[currentPouch].first, *item) ? COLOR_BLACK : COLOR_GREY, TextPosX::CENTER, TextPosY::TOP);
         if (item->id() > 0)
@@ -161,8 +156,6 @@ void BagScreen::drawBottom() const
             Gui::text(std::to_string((int)item->count()), 262 + 37 / 2, 20 + 30 * i, FONT_SIZE_12, FONT_SIZE_12,
                 canEdit(limits[currentPouch].first, *item) ? COLOR_BLACK : COLOR_GREY, TextPosX::CENTER, TextPosY::TOP);
         }
-        // Gui::text(print, 223, 20 + 30 * i, FONT_SIZE_12, FONT_SIZE_12, canEdit(limits[currentPouch].first, *item) ? COLOR_BLACK :
-        // C2D_Color32(128, 128, 128, 255), TextPosX::CENTER, TextPosY::TOP);
     }
 
     u8 mod = 0;

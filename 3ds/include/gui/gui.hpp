@@ -27,7 +27,6 @@
 #ifndef GUI_HPP
 #define GUI_HPP
 
-#include "utils.hpp"
 #include "PKX.hpp"
 #include "Sav.hpp"
 #include "Screen.hpp"
@@ -42,6 +41,7 @@
 #include "thread.hpp"
 #include "types_spritesheet.h"
 #include "ui_sheet.h"
+#include "utils.hpp"
 #include <3ds.h>
 #include <citro2d.h>
 #include <random>
@@ -137,10 +137,6 @@ namespace Gui
         const std::shared_ptr<TextParse::Text> text, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY);
     void text(
         const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY, float maxWidth = 0.0f);
-
-    // const std::vector<C2D_Text>& cacheStaticText(const std::string& strKey);
-    // void clearStaticText(void);
-    // void staticText(const std::string& strKey, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY);
 
     void setScreen(std::unique_ptr<Screen> screen);
     void screenBack(void);

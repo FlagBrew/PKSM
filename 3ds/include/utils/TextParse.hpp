@@ -34,8 +34,8 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <vector>
 #include <variant>
+#include <vector>
 
 namespace TextParse
 {
@@ -101,8 +101,8 @@ namespace TextParse
     public:
         ScreenText() { glyphs.reserve(1024); }
         // y is always from baseline
-        void addText(
-            std::shared_ptr<Text> text, float x, float y, float z, float scaleX, float scaleY, TextPosX textPos, u32 color = C2D_Color32(0, 0, 0, 255));
+        void addText(std::shared_ptr<Text> text, float x, float y, float z, float scaleX, float scaleY, TextPosX textPos,
+            u32 color = C2D_Color32(0, 0, 0, 255));
         void optimize();
         void draw() const;
         void clear();
@@ -110,8 +110,8 @@ namespace TextParse
     private:
         struct PositionedGlyph
         {
-            PositionedGlyph(
-                Glyph glyph, float x = 0.0f, float y = 0.0f, float z = 0.0f, float scaleX = 1.0f, float scaleY = 1.0f, u32 color = C2D_Color32(0, 0, 0, 255))
+            PositionedGlyph(Glyph glyph, float x = 0.0f, float y = 0.0f, float z = 0.0f, float scaleX = 1.0f, float scaleY = 1.0f,
+                u32 color = C2D_Color32(0, 0, 0, 255))
                 : x(x), y(y), z(z), scaleX(scaleX), scaleY(scaleY), color(color), glyph(glyph)
             {
             }

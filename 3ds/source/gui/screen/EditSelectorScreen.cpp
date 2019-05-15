@@ -162,8 +162,8 @@ EditSelectorScreen::EditSelectorScreen() : Screen(i18n::localize("A_SELECT") + '
     instructions.addCircle(false, 310 - cameraButtonText->maxWidth(FONT_SIZE_14) / 2, 24, 8, COLOR_GREY);
     instructions.addBox(false, 308 - cameraButtonText->maxWidth(FONT_SIZE_14) / 2, 24, 4, 20, COLOR_GREY);
     instructions.addBox(false, 222 - cameraButtonText->maxWidth(FONT_SIZE_14) / 2, 44, 90, 16, COLOR_GREY, i18n::localize("QR_SCANNER"), COLOR_WHITE);
-    buttons.push_back(new ClickButton(310 - cameraButtonText->maxWidth(FONT_SIZE_14), 16, cameraButtonText->maxWidth(FONT_SIZE_14) + 2, 16, [this]() { return this->doQR(); },
-        ui_sheet_res_null_idx, "\uE004+\uE005 \uE01E", FONT_SIZE_14, COLOR_BLACK));
+    buttons.push_back(new ClickButton(310 - cameraButtonText->maxWidth(FONT_SIZE_14), 16, cameraButtonText->maxWidth(FONT_SIZE_14) + 2, 16,
+        [this]() { return this->doQR(); }, ui_sheet_res_null_idx, "\uE004+\uE005 \uE01E", FONT_SIZE_14, COLOR_BLACK));
 
     // Pokemon buttons
     u16 y = 45;
@@ -241,7 +241,6 @@ void EditSelectorScreen::drawBottom() const
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
     Gui::sprite(ui_sheet_bar_bottom_blue_idx, 0, 216);
     Gui::sprite(ui_sheet_stripe_camera_idx, 218, 14);
-    // Gui::text(CAMERA, 311, 15, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::RIGHT, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_bar_boxname_with_arrows_idx, 7, 15);
     Gui::sprite(ui_sheet_storage_box_corner_idx, 2, 44);

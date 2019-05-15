@@ -1755,7 +1755,7 @@ void StorageScreen::shareReceive()
         {
             std::copy(data.begin(), data.end(), input);
             input[10] = '\0';
-            ret = SWKBD_BUTTON_CONFIRM;
+            ret       = SWKBD_BUTTON_CONFIRM;
         }
     }
     if (ret == SWKBD_BUTTON_CONFIRM)

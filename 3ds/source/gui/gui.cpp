@@ -35,7 +35,6 @@ static C2D_SpriteSheet spritesheet_ui;
 static C2D_SpriteSheet spritesheet_pkm;
 static C2D_SpriteSheet spritesheet_types;
 static C2D_Image bgBoxes;
-// static C2D_TextBuf textBuf;
 static TextParse::TextBuf* textBuffer;
 static TextParse::ScreenText topText;
 static TextParse::ScreenText bottomText;
@@ -53,20 +52,9 @@ static float noHomeAlpha  = 0.0f;
 static float dNoHomeAlpha = NOHOMEALPHA_ACCEL;
 
 static float currentDepth;
-#define DEPTH_STEP (1.0f/65535.0f)
+#define DEPTH_STEP (1.0f / 65535.0f)
 
 bool textMode = false;
-
-// static size_t hackyGetCurrentGlyphCount(C2D_TextBuf buf)
-// {
-//     struct access
-//     {
-//         u32 res[2];
-//         size_t count;
-//     };
-//     access* a = (access*)buf;
-//     return a->count;
-// }
 
 static Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int endX, int endY)
 {
@@ -249,54 +237,7 @@ void Gui::backgroundAnimatedBottom()
 void Gui::clearText(void)
 {
     textBuffer->clearUnconditional();
-    // C2D_TextBufClear(textBuf);
-    // textMap.clear();
 }
-
-// static void drawVector(const std::vector<C2D_Text>& draw, int x, int y, int line, float scaleX, float scaleY, u32 color)
-// {
-//     for (auto text : draw)
-//     {
-//         FINF_s* font      = C2D_FontGetInfo(text.font);
-//         float lineFeed    = scaleY * (font->lineFeed);
-//         float baselinePos = scaleY * (std::min(font->tglp->cellHeight, font->lineFeed) - font->tglp->baselinePos);
-//         C2D_DrawText(&text, C2D_WithColor | C2D_AtBaseline, x, y + (lineFeed * (float)(line + 1) - baselinePos), 0.5f, scaleX, scaleY, color);
-//         x += StringUtils::textWidth(text, scaleX);
-//     }
-// }
-
-// std::vector<C2D_Text> Gui::parseText(const std::vector<FontString>& str)
-// {
-//     std::vector<C2D_Text> ret;
-//     ret.reserve(str.size());
-//     for (auto i = str.begin(); i != str.end(); i++)
-//     {
-//         C2D_Text text;
-//         C2D_TextFontParse(&text, i->font, textBuf, i->text.c_str());
-//         C2D_TextOptimize(&text);
-//         ret.emplace_back(text);
-//     }
-//     return ret;
-// }
-
-// const std::vector<C2D_Text>& Gui::cacheText(const std::string& strKey)
-// {
-//     std::unordered_map<std::string, std::vector<C2D_Text>>::const_iterator index = textMap.find(strKey);
-//     if (index == textMap.end())
-//     {
-//         if (hackyGetCurrentGlyphCount(textBuf) >= 8100)
-//         {
-//             Gui::clearText();
-//         }
-//         auto text       = StringUtils::fontSplit(strKey);
-//         const auto& ret = textMap.emplace(strKey, parseText(text));
-//         return ret.first->second;
-//     }
-//     else
-//     {
-//         return index->second;
-//     }
-// }
 
 std::shared_ptr<TextParse::Text> Gui::parseText(const std::string& str, float scaleX, float maxWidth)
 {
@@ -306,7 +247,7 @@ std::shared_ptr<TextParse::Text> Gui::parseText(const std::string& str, float sc
 
 void Gui::text(std::shared_ptr<TextParse::Text> text, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY)
 {
-    textMode = true;
+    textMode            = true;
     const float lineMod = scaleY * fontGetInfo(nullptr)->lineFeed;
     switch (positionY)
     {
@@ -361,18 +302,10 @@ Result Gui::init(void)
     C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
     C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
     C2D_Prepare();
-    // Allow drawing text underneath stuff
-    C3D_AlphaTest(true, GPU_GREATER, 0);
-    // C3D_DepthTest(false, GPU_ALWAYS, GPU_WRITE_ALL);
-    // C3D_DepthTest(true, GPU_GREATER, (GPU_WRITEMASK)(GPU_WRITE_RED | GPU_WRITE_GREEN | GPU_WRITE_BLUE | GPU_WRITE_DEPTH));
     SDLH_Init();
 
     g_renderTargetTop    = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
     g_renderTargetBottom = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
-
-    // textBuf = C2D_TextBufNew(8192);
-    // dynamicBuf = C2D_TextBufNew(2048);
-    // staticBuf  = C2D_TextBufNew(4096);
 
     spritesheet_ui    = C2D_SpriteSheetLoad("romfs:/gfx/ui_sheet.t3x");
     spritesheet_pkm   = C2D_SpriteSheetLoad("/3ds/PKSM/assets/pkm_spritesheet.t3x");
@@ -466,10 +399,6 @@ void Gui::exit(void)
     {
         delete textBuffer;
     }
-    // if (textBuf)
-    // {
-    //     C2D_TextBufDelete(textBuf);
-    // }
     for (auto font : fonts)
     {
         if (font)

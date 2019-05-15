@@ -224,29 +224,24 @@ void SaveLoadScreen::drawTop(void) const
     Gui::text("D", x + 48 - 9, y + 12, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::pkm(484, 0, Generation::SEVEN, 2, x + 18, y + 20);
     Gui::text("P", x + 9, y + 37, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    // Gui::text("DP", x + 24, y + 18, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     Gui::drawSolidRect(x += 60, y, 48, 48, COLOR_HIGHBLUE);
     Gui::pkm(250, 0, Generation::SEVEN, 2, x - 5, y - 2);
     Gui::text("HG", x + 48 - 9, y + 12, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::pkm(249, 0, Generation::SEVEN, 2, x + 17, y + 20);
     Gui::text("SS", x + 9, y + 37, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    // Gui::text("HGSS", x + 24, y + 18, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     Gui::drawSolidRect(x += 60, y, 48, 48, COLOR_HIGHBLUE);
     Gui::pkm(643, 0, Generation::SEVEN, 2, x - 3, y - 2);
     Gui::text("B", x + 48 - 9, y + 12, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::pkm(644, 0, Generation::SEVEN, 2, x + 18, y + 20);
     Gui::text("W", x + 9, y + 37, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    // Gui::text("BW", x + 24, y + 18, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     Gui::drawSolidRect(x += 60, y, 48, 48, COLOR_HIGHBLUE);
     Gui::pkm(646, 2, Generation::SEVEN, 2, x - 6, y - 2);
     Gui::text("B2", x + 48 - 9, y + 12, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::pkm(646, 1, Generation::SEVEN, 2, x + 16, y + 20);
     Gui::text("W2", x + 11, y + 37, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    // Gui::text("B2W2", x + 24, y + 18, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     Gui::drawSolidRect(40, 98, 48, 48, COLOR_HIGHBLUE);
     Gui::pkm(487, 1, Generation::SEVEN, 2, 48, 98);
     Gui::text("Pt", 40 + 24, 98 + 30, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-    // Gui::text("Pt", 40 + 24, 116, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
     x = 90, y = 128;
     // draw 3DS game boxes
@@ -255,25 +250,21 @@ void SaveLoadScreen::drawTop(void) const
     Gui::text("X", x + 48 - 9, y + 12, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::pkm(717, 0, Generation::SEVEN, 2, x + 16, y + 20);
     Gui::text("Y", x + 9, y + 37, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    // Gui::text("XY", x + 24, y + 18, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     Gui::drawSolidRect(x += 60, y, 48, 48, COLOR_HIGHBLUE);
     Gui::pkm(383, 1, Generation::SEVEN, 2, x - 2, y - 2);
     Gui::text("OR", x + 48 - 7, y + 12, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::pkm(382, 1, Generation::SEVEN, 2, x + 16, y + 20);
     Gui::text("AS", x + 9, y + 37, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    // Gui::text("ORAS", x + 24, y + 18, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     Gui::drawSolidRect(x += 60, y, 48, 48, COLOR_HIGHBLUE);
     Gui::pkm(791, 0, Generation::SEVEN, 2, x - 4, y - 2);
     Gui::text("S", x + 48 - 9, y + 12, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::pkm(792, 0, Generation::SEVEN, 2, x + 18, y + 20);
     Gui::text("M", x + 9, y + 37, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    // Gui::text("SUMO", x + 24, y + 18, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     Gui::drawSolidRect(x += 60, y, 48, 48, COLOR_HIGHBLUE);
     Gui::pkm(800, 1, Generation::SEVEN, 2, x - 3, y - 2);
     Gui::text("US", x + 48 - 9, y + 12, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::pkm(800, 2, Generation::SEVEN, 2, x + 19, y + 20);
     Gui::text("UM", x + 11, y + 37, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    // Gui::text("USUM", x + 24, y + 18, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
     if (saveGroup == -1)
     {
@@ -323,15 +314,13 @@ void SaveLoadScreen::drawBottom() const
     if (selectedSave > 0 && firstSave > 0)
     {
         Gui::drawSolidRect(191, 102, 4, 5, C2D_Color32(0x0f, 0x16, 0x59, 255));
-        Gui::drawSolidTriangle(189, 102, 197, 102, 193, 97,
-            C2D_Color32(0x0f, 0x16, 0x59, 255));
+        Gui::drawSolidTriangle(189, 102, 197, 102, 193, 97, C2D_Color32(0x0f, 0x16, 0x59, 255));
     }
 
     if (selectedSave < 5 && (size_t)firstSave + 5 < saves[saveGroup].size() - 1)
     {
         Gui::drawSolidRect(191, 186, 4, 5, C2D_Color32(0x0f, 0x16, 0x59, 255));
-        Gui::drawSolidTriangle(189, 191, 197, 191, 193, 196,
-            C2D_Color32(0x0f, 0x16, 0x59, 255));
+        Gui::drawSolidTriangle(189, 191, 197, 191, 193, 196, C2D_Color32(0x0f, 0x16, 0x59, 255));
     }
 
     Gui::text(i18n::localize("LOADER_LOAD"), 248, 113, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);

@@ -26,11 +26,11 @@
 
 #include "utils.hpp"
 #include "g4text.h"
+#include <3ds.h>
 #include <algorithm>
 #include <map>
 #include <queue>
 #include <vector>
-#include <3ds.h>
 
 std::string StringUtils::format(const std::string& fmt_str, ...)
 {
@@ -232,8 +232,8 @@ std::string& StringUtils::toUpper(std::string& in)
 {
     std::transform(in.begin(), in.end(), in.begin(), ::toupper);
     // Just saying, I have NO clue why two outer braces levels are necessary
-    static constexpr std::array<std::pair<std::string_view, std::string_view>, 12> transStrings = {{{"í", "Í"}, {"ó", "Ó"}, {"ú", "Ú"}, {"é", "É"}, {"á", "Á"},
-        {"ì", "Ì"}, {"ò", "Ò"}, {"ù", "Ù"}, {"è", "È"}, {"à", "À"}, {"ñ", "Ñ"}, {"æ", "Æ"}}};
+    static constexpr std::array<std::pair<std::string_view, std::string_view>, 12> transStrings = {{{"í", "Í"}, {"ó", "Ó"}, {"ú", "Ú"}, {"é", "É"},
+        {"á", "Á"}, {"ì", "Ì"}, {"ò", "Ò"}, {"ù", "Ù"}, {"è", "È"}, {"à", "À"}, {"ñ", "Ñ"}, {"æ", "Æ"}}};
     for (auto& str : transStrings)
     {
         size_t found;
@@ -249,8 +249,8 @@ std::string& StringUtils::toLower(std::string& in)
 {
     std::transform(in.begin(), in.end(), in.begin(), ::tolower);
     // Just saying, I have NO clue why two outer braces levels are necessary
-    static constexpr std::array<std::pair<std::string_view, std::string_view>, 12> transStrings = {{{"Í", "í"}, {"Ó", "ó"}, {"Ú", "ú"}, {"É", "é"}, {"Á", "á"},
-        {"Ì", "ì"}, {"Ò", "ò"}, {"Ù", "ù"}, {"È", "è"}, {"À", "à"}, {"Ñ", "ñ"}, {"Æ", "æ"}}};
+    static constexpr std::array<std::pair<std::string_view, std::string_view>, 12> transStrings = {{{"Í", "í"}, {"Ó", "ó"}, {"Ú", "ú"}, {"É", "é"},
+        {"Á", "á"}, {"Ì", "ì"}, {"Ò", "ò"}, {"Ù", "ù"}, {"È", "è"}, {"À", "à"}, {"Ñ", "ñ"}, {"Æ", "æ"}}};
     for (auto& str : transStrings)
     {
         size_t found;

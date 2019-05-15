@@ -173,15 +173,13 @@ void TitleLoadScreen::drawBottom() const
     if (selectedSave > 0 && firstSave > -1)
     {
         Gui::drawSolidRect(191, 102, 4, 5, C2D_Color32(0x0f, 0x16, 0x59, 255));
-        Gui::drawSolidTriangle(189, 102, 197, 102, 193, 97,
-            C2D_Color32(0x0f, 0x16, 0x59, 255));
+        Gui::drawSolidTriangle(189, 102, 197, 102, 193, 97, C2D_Color32(0x0f, 0x16, 0x59, 255));
     }
 
     if (selectedSave < 5 && (size_t)firstSave + 5 < availableCheckpointSaves.size() - 1)
     {
         Gui::drawSolidRect(191, 186, 4, 5, C2D_Color32(0x0f, 0x16, 0x59, 255));
-        Gui::drawSolidTriangle(189, 191, 197, 191, 193, 196,
-            C2D_Color32(0x0f, 0x16, 0x59, 255));
+        Gui::drawSolidTriangle(189, 191, 197, 191, 193, 196, C2D_Color32(0x0f, 0x16, 0x59, 255));
     }
 
     Gui::text(i18n::localize("LOADER_LOAD"), 200 + 96 / 2, 113, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
