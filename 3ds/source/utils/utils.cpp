@@ -32,7 +32,7 @@
 #include <queue>
 #include <vector>
 
-std::string StringUtils::format(const std::string& fmt_str, ...)
+std::string StringUtils::format(std::string fmt_str, ...)
 {
     va_list ap;
     char* fp = NULL;

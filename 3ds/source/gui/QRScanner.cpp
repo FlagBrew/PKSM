@@ -40,6 +40,7 @@ class QRData
 public:
     QRData() : image{new C3D_Tex, &subtex}, data(quirc_new())
     {
+        std::fill(cameraBuffer.begin(), cameraBuffer.end(), 0);
         C3D_TexInit(image.tex, 512, 256, GPU_RGB565);
         C3D_TexSetFilter(image.tex, GPU_LINEAR, GPU_LINEAR);
         svcCreateMutex(&bufferMutex, false);
@@ -95,7 +96,7 @@ void QRData::buffToImage()
                              ((x & 1) | ((y & 1) << 1) | ((x & 2) << 1) | ((y & 2) << 2) | ((x & 4) << 2) | ((y & 4) << 3))) *
                          2;
             u32 srcPos = (y * 400 + x) * 2;
-            memcpy((u8*)image.tex->data + dstPos, (u8*)cameraBuffer.data() + srcPos, 2);
+            memcpy(((u8*)image.tex->data) + dstPos, ((u8*)cameraBuffer.data()) + srcPos, 2);
         }
     }
     svcReleaseMutex(bufferMutex);
@@ -139,7 +140,6 @@ void QRData::captureThread()
     u32 transferUnit;
 
     u16* buffer = new u16[400 * 240];
-    std::fill(buffer, buffer + 400 * 240, 0);
     camInit();
     CAMU_SetSize(SELECT_OUT1, SIZE_CTR_TOP_LCD, CONTEXT_A);
     CAMU_SetOutputFormat(SELECT_OUT1, OUTPUT_RGB_565, CONTEXT_A);
