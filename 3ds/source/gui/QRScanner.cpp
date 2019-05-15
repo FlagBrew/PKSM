@@ -125,7 +125,7 @@ void QRData::drawThread()
             Gui::drawSolidRect(0, 0, 320.0f, 240.0f, COLOR_MASKBLACK);
             Gui::text(i18n::localize("SCANNER_EXIT"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
             first = false;
-            Gui::drawCurrentText();
+            Gui::flushText();
         }
         C3D_FrameEnd(0);
     }

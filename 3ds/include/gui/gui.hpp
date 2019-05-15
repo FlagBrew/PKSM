@@ -106,7 +106,7 @@ namespace Gui
     void exit(void);
 
     void target(gfxScreen_t t);
-    void drawCurrentText();
+    void flushText();
     C2D_Image TWLIcon(void);
 
     void ball(size_t index, int x, int y);

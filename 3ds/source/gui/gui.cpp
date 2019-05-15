@@ -55,6 +55,8 @@ static float dNoHomeAlpha = NOHOMEALPHA_ACCEL;
 static float currentDepth;
 #define DEPTH_STEP (1.0f/65535.0f)
 
+bool textMode = false;
+
 // static size_t hackyGetCurrentGlyphCount(C2D_TextBuf buf)
 // {
 //     struct access
@@ -90,24 +92,28 @@ static Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int e
 
 void Gui::drawImageAt(const C2D_Image& img, float x, float y, const C2D_ImageTint* tint, float scaleX, float scaleY)
 {
+    flushText();
     C2D_DrawImageAt(img, x, y, currentDepth, tint, scaleX, scaleY);
     currentDepth += DEPTH_STEP;
 }
 
 void Gui::drawSolidCircle(float x, float y, float rad, u32 color)
 {
+    flushText();
     C2D_DrawCircleSolid(x, y, currentDepth, rad, color);
     currentDepth += DEPTH_STEP;
 }
 
 void Gui::drawSolidRect(float x, float y, float w, float h, u32 color)
 {
+    flushText();
     C2D_DrawRectSolid(x, y, currentDepth, w, h, color);
     currentDepth += DEPTH_STEP;
 }
 
 void Gui::drawSolidTriangle(float x1, float y1, float x2, float y2, float x3, float y3, u32 color)
 {
+    flushText();
     C2D_DrawTriangle(x1, y1, color, x2, y2, color, x3, y3, color, currentDepth);
     currentDepth += DEPTH_STEP;
 }
@@ -151,10 +157,15 @@ C2D_Image Gui::TWLIcon(void)
     return C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_gameselector_twlcart_idx);
 }
 
-void Gui::drawCurrentText()
+void Gui::flushText()
 {
-    currentText->optimize();
-    currentText->draw();
+    if (textMode)
+    {
+        currentText->optimize();
+        currentText->draw();
+        currentText->clear();
+    }
+    textMode = false;
 }
 
 void Gui::backgroundBottom(bool stripes)
@@ -295,6 +306,7 @@ std::shared_ptr<TextParse::Text> Gui::parseText(const std::string& str, float sc
 
 void Gui::text(std::shared_ptr<TextParse::Text> text, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY)
 {
+    textMode = true;
     const float lineMod = scaleY * fontGetInfo(nullptr)->lineFeed;
     switch (positionY)
     {
@@ -349,6 +361,10 @@ Result Gui::init(void)
     C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
     C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
     C2D_Prepare();
+    // Allow drawing text underneath stuff
+    C3D_AlphaTest(true, GPU_GREATER, 0);
+    // C3D_DepthTest(false, GPU_ALWAYS, GPU_WRITE_ALL);
+    // C3D_DepthTest(true, GPU_GREATER, (GPU_WRITEMASK)(GPU_WRITE_RED | GPU_WRITE_GREEN | GPU_WRITE_BLUE | GPU_WRITE_DEPTH));
     SDLH_Init();
 
     g_renderTargetTop    = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
@@ -392,21 +408,21 @@ void Gui::mainLoop(void)
             target(GFX_TOP);
             screens.top()->doTopDraw();
             screens.top()->getInstructions().drawTop();
-            drawCurrentText();
+            flushText();
             target(GFX_BOTTOM);
             screens.top()->doBottomDraw();
             screens.top()->getInstructions().drawBottom();
-            drawCurrentText();
+            flushText();
         }
         else
         {
             target(GFX_TOP);
             screens.top()->doTopDraw();
-            drawCurrentText();
+            flushText();
 
             target(GFX_BOTTOM);
             screens.top()->doBottomDraw();
-            drawCurrentText();
+            flushText();
 
             touchPosition touch;
             hidTouchRead(&touch);
@@ -1469,7 +1485,7 @@ bool Gui::showChoiceMessage(const std::string& message, std::optional<std::strin
 
         text(i18n::localize("CONTINUE_CANCEL"), 200, 130, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-        drawCurrentText();
+        flushText();
 
         target(GFX_BOTTOM);
         sprite(ui_sheet_part_info_bottom_idx, 0, 0);
@@ -1517,7 +1533,7 @@ void Gui::waitFrame(const std::string& message, std::optional<std::string> messa
 
     text(i18n::localize("PLEASE_WAIT"), 200, 130, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-    drawCurrentText();
+    flushText();
 
     target(GFX_BOTTOM);
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
@@ -1552,14 +1568,14 @@ void Gui::warn(const std::string& message, std::optional<std::string> message2, 
 
         text(i18n::localize("CONTINUE"), 200, 130, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-        drawCurrentText();
+        flushText();
 
         target(GFX_BOTTOM);
 
         if (bottomScreen)
         {
             text(bottomScreen.value(), 2, 2, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 316.0f);
-            drawCurrentText();
+            flushText();
         }
         else
         {
@@ -1598,7 +1614,7 @@ void Gui::showRestoreProgress(u32 partial, u32 total)
     text(i18n::localize("SAVING"), 200, 95, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     text(StringUtils::format(i18n::localize("SAVE_PROGRESS"), partial, total), 200, 130, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
         TextPosY::TOP);
-    drawCurrentText();
+    flushText();
 
     target(GFX_BOTTOM);
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
@@ -1613,7 +1629,7 @@ void Gui::showResizeStorage()
     target(GFX_TOP);
     sprite(ui_sheet_part_info_top_idx, 0, 0);
     text(i18n::localize("STORAGE_RESIZE"), 200, 95, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-    drawCurrentText();
+    flushText();
 
     target(GFX_BOTTOM);
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
@@ -1641,7 +1657,7 @@ void Gui::error(const std::string& message, Result errorCode)
 
         text(i18n::localize("CONTINUE"), 200, 130, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-        drawCurrentText();
+        flushText();
 
         target(GFX_BOTTOM);
         sprite(ui_sheet_part_info_bottom_idx, 0, 0);

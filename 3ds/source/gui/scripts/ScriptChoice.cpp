@@ -38,13 +38,13 @@ int ScriptChoice::run()
         Gui::target(GFX_TOP);
         C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
         drawTop();
-        Gui::drawCurrentText();
+        Gui::flushText();
 
         extern C3D_RenderTarget* g_renderTargetBottom;
         Gui::target(GFX_BOTTOM);
         C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
         drawBottom();
-        Gui::drawCurrentText();
+        Gui::flushText();
 
         touchPosition touch;
         hidTouchRead(&touch);
