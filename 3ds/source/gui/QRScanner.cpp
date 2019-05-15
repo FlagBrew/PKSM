@@ -71,6 +71,18 @@ private:
     static constexpr Tex3DS_SubTexture subtex = {512, 256, 0.0f, 1.0f, 1.0f, 0.0f};
 };
 
+static void drawHelp(void* arg)
+{
+    QRData* data = (QRData*) arg;
+    data->drawThread();
+}
+
+static void captureHelp(void* arg)
+{
+    QRData* data = (QRData*) arg;
+    data->captureThread();
+}
+
 void QRData::buffToImage()
 {
     svcWaitSynchronization(bufferMutex, U64_MAX);
@@ -209,7 +221,7 @@ void QRData::handler(QRMode mode, std::vector<u8>& out)
     if (!capturing)
     {
         // create cam thread
-        if (threadCreate((ThreadFunc)&QRData::captureThread, this, 0x10000, 0x1A, 1, true) != NULL)
+        if (threadCreate((ThreadFunc)&captureHelp, this, 0x10000, 0x1A, 1, true) != NULL)
         {
             capturing = true;
         }
@@ -399,7 +411,7 @@ std::vector<u8> QRScanner::scan(QRMode mode)
     C3D_FrameEnd(0);
     std::vector<u8> out = {};
     std::unique_ptr<QRData> data = std::make_unique<QRData>();
-    threadCreate((ThreadFunc)&QRData::drawThread, data.get(), 0x10000, 0x1A, 1, true);
+    threadCreate((ThreadFunc)&drawHelp, data.get(), 0x10000, 0x1A, 1, true);
     while (!data->done())
     {
         data->handler(mode, out);
