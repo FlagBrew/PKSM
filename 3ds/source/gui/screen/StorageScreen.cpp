@@ -33,6 +33,7 @@
 #include "FSStream.hpp"
 #include "MainMenu.hpp"
 #include "PK4.hpp"
+#include "QRScanner.hpp"
 #include "SavLGPE.hpp"
 #include "SortOverlay.hpp"
 #include "StorageOverlay.hpp"
@@ -1737,15 +1738,26 @@ void StorageScreen::shareReceive()
     static bool first = true;
     if (first)
     {
-        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 10);
+        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 3, 10);
         first = false;
     }
     swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
     swkbdSetValidation(&state, SWKBD_FIXEDLEN, 0, 0);
+    swkbdSetButton(&state, SwkbdButton::SWKBD_BUTTON_MIDDLE, i18n::localize("QR_SCANNER").c_str(), false);
     char input[11]  = {0};
     SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
     input[10]       = '\0';
     CURLcode res;
+    if (ret == SWKBD_BUTTON_MIDDLE)
+    {
+        std::vector<u8> data = QRScanner::scan(NUMBER);
+        if (!data.empty() && data.size() < 12)
+        {
+            std::copy(data.begin(), data.end(), input);
+            input[10] = '\0';
+            ret = SWKBD_BUTTON_CONFIRM;
+        }
+    }
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
         const std::string url  = "https://flagbrew.org/gpss/download/" + std::string(input);
