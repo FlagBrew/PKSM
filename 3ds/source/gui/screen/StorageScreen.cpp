@@ -186,7 +186,7 @@ StorageScreen::StorageScreen()
         [this]() {
             if (!infoMon)
             {
-                if (!Gui::showChoiceMessage(i18n::localize("SHARE_CODE_ENTER_PROMPT")))
+                if (cursorIndex == 0 || !Gui::showChoiceMessage(i18n::localize("SHARE_CODE_ENTER_PROMPT")))
                 {
                     return false;
                 }
