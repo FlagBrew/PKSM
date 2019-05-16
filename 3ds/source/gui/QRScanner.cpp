@@ -43,6 +43,7 @@ public:
         C3D_TexInit(image.tex, 512, 256, GPU_RGB565);
         C3D_TexSetFilter(image.tex, GPU_LINEAR, GPU_LINEAR);
         svcCreateMutex(&bufferMutex, false);
+        svcCreateMutex(&imageMutex, false);
         svcCreateEvent(&exitEvent, RESET_STICKY);
         quirc_resize(data, 400, 240);
     }
@@ -52,6 +53,7 @@ public:
         delete image.tex;
         quirc_destroy(data);
         svcCloseHandle(bufferMutex);
+        svcCloseHandle(imageMutex);
         svcCloseHandle(exitEvent);
     }
     void drawThread();
@@ -64,6 +66,7 @@ private:
     std::array<u16, 400*240> cameraBuffer;
     Handle bufferMutex;
     C2D_Image image;
+    Handle imageMutex;
     quirc* data;
     Handle exitEvent;
     volatile bool finished = false;
@@ -107,6 +110,8 @@ void QRData::finish()
         svcSleepThread(1000000);
     svcWaitSynchronization(bufferMutex, U64_MAX);
     svcReleaseMutex(bufferMutex);
+    svcWaitSynchronization(imageMutex, U64_MAX);
+    svcReleaseMutex(imageMutex);
 }
 
 extern C3D_RenderTarget *g_renderTargetTop, *g_renderTargetBottom;
@@ -114,6 +119,7 @@ extern C3D_RenderTarget *g_renderTargetTop, *g_renderTargetBottom;
 void QRData::drawThread()
 {
     bool first = true;
+    svcWaitSynchronization(imageMutex, U64_MAX);
     while (aptMainLoop() && !finished)
     {
         C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
@@ -130,6 +136,7 @@ void QRData::drawThread()
         }
         C3D_FrameEnd(0);
     }
+    svcReleaseMutex(imageMutex);
 }
 
 void QRData::captureThread()
