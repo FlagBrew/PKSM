@@ -259,6 +259,7 @@ namespace TextParse
 
     void ScreenText::addText(std::shared_ptr<Text> text, float x, float y, float z, float scaleX, float scaleY, TextPosX textPos, u32 color)
     {
+        static const u8 lineFeed = fontGetInfo(nullptr)->lineFeed;
         if (!text || text->glyphs.empty())
             return;
 
@@ -276,8 +277,7 @@ namespace TextParse
                     glyphX -= scaleX * text->lineWidths[glyph.line - 1];
                     break;
             }
-            FINF_s* info = C2D_FontGetInfo(glyph.font);
-            float glyphY = y + scaleY * (std::max(info->tglp->cellHeight, info->lineFeed) * glyph.line - info->tglp->baselinePos);
+            float glyphY = y + scaleY * (lineFeed * glyph.line - C2D_FontGetInfo(glyph.font)->tglp->baselinePos);
             glyphs.emplace_back(glyph, glyphX, glyphY, z, scaleX, scaleY, color);
         }
     }
