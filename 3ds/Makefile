@@ -256,7 +256,7 @@ format:
 #---------------------------------------------------------------------------------
 cppcheck:
 	@rm -f $(BUILD)/cppcheck.log
-	@cppcheck . --enable=all -I ../common 2> $(BUILD)/cppcheck.log
+	@cppcheck . --enable=all $(INCLUDE) --force 2> $(BUILD)/cppcheck.log
 	@echo build/cppcheck.log file created...
 else
 
