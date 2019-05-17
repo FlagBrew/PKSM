@@ -870,12 +870,14 @@ bool EditSelectorScreen::editPokemon()
     {
         if (box * 30 + cursorPos - 1 < TitleLoader::save->maxSlot())
         {
+            justSwitched = true;
             Gui::setScreen(std::make_unique<EditorScreen>(TitleLoader::save->pkm(box, cursorPos - 1), box, cursorPos - 1));
             return true;
         }
     }
     else if (cursorPos > 30)
     {
+        justSwitched = true;
         Gui::setScreen(std::make_unique<EditorScreen>(TitleLoader::save->pkm(cursorPos - 31), 0xFF, cursorPos - 31));
         return true;
     }
