@@ -32,6 +32,8 @@
 static FS_Archive sdmc;
 static FS_Archive mData;
 
+static constexpr size_t MOVE_BUFFER_SIZE = 16 * 1024;
+
 static constexpr FS_ExtSaveDataInfo PKSM_ARCHIVE_DATA = {MEDIATYPE_SD, 0, 0, UNIQUE_ID, 0};
 
 Result Archive::moveDir(FS_Archive src, const std::u16string& dir, FS_Archive dst, const std::u16string& dest)
@@ -74,27 +76,83 @@ Result Archive::moveFile(FS_Archive src, const std::u16string& file, FS_Archive 
     FSStream stream(src, file, FS_OPEN_READ);
     if (stream.good())
     {
-        size_t size = stream.size();
-        u8* data    = new u8[size];
-        stream.read(data, size);
-        stream.close();
+        size_t target = stream.size();
         FSUSER_DeleteFile(dst, fsMakePath(PATH_UTF16, dest.data()));
-        stream = FSStream(dst, dest, FS_OPEN_WRITE, size);
-        if (stream.good())
+        FSStream out(dst, dest, FS_OPEN_WRITE, target);
+        if (out.good())
         {
-            stream.write(data, size);
-            if (R_SUCCEEDED(stream.result()))
+            size_t written = 0;
+            u8* data       = new u8[MOVE_BUFFER_SIZE];
+            while (written < target)
+            {
+                stream.read(data, std::min(MOVE_BUFFER_SIZE, target - written));
+                if (R_FAILED(res = stream.result()))
+                {
+                    break;
+                }
+                written += out.write(data, std::min(MOVE_BUFFER_SIZE, target - written));
+                if (R_FAILED(res = out.result()))
+                {
+                    break;
+                }
+            }
+            stream.close();
+            out.close();
+            delete[] data;
+            if (R_SUCCEEDED(res))
             {
                 FSUSER_DeleteFile(src, fsMakePath(PATH_UTF16, file.data()));
             }
-            stream.close();
         }
         else
         {
-            res = stream.result();
-            stream.close();
+            res = out.result();
+            out.close();
         }
-        delete[] data;
+    }
+    else
+    {
+        res = stream.result();
+        stream.close();
+    }
+    return res;
+}
+
+Result Archive::copyFile(FS_Archive src, const std::u16string& file, FS_Archive dst, const std::u16string& dest)
+{
+    Result res = 0;
+    FSStream stream(src, file, FS_OPEN_READ);
+    if (stream.good())
+    {
+        size_t target = stream.size();
+        FSUSER_DeleteFile(dst, fsMakePath(PATH_UTF16, dest.data()));
+        FSStream out(dst, dest, FS_OPEN_WRITE, target);
+        if (out.good())
+        {
+            size_t written = 0;
+            u8* data       = new u8[MOVE_BUFFER_SIZE];
+            while (written < target)
+            {
+                stream.read(data, std::min(MOVE_BUFFER_SIZE, target - written));
+                if (R_FAILED(res = stream.result()))
+                {
+                    break;
+                }
+                written += out.write(data, std::min(MOVE_BUFFER_SIZE, target - written));
+                if (R_FAILED(res = out.result()))
+                {
+                    break;
+                }
+            }
+            stream.close();
+            out.close();
+            delete[] data;
+        }
+        else
+        {
+            res = out.result();
+            out.close();
+        }
     }
     else
     {

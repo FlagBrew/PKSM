@@ -31,6 +31,11 @@
 #include "archive.hpp"
 #include "gui.hpp"
 
+#define BANK(paths) paths.first
+#define JSON(paths) paths.second
+#define ARCHIVE Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd()
+#define OTHERARCHIVE Configuration::getInstance().useExtData() ? Archive::sd() : Archive::data()
+
 // TODO actually do stuff with the name
 Bank::Bank(const std::string& name, int maxBoxes) : bankName(name)
 {
@@ -55,11 +60,9 @@ void Bank::load(int maxBoxes)
     }
     else
     {
-        std::string bankPath = Configuration::getInstance().useExtData() ? "/banks/" + bankName + ".bnk" : "/3ds/PKSM/banks/" + bankName + ".bnk";
-        std::string jsonPath = Configuration::getInstance().useExtData() ? "/banks/" + bankName + ".json" : "/3ds/PKSM/banks/" + bankName + ".json";
-        auto archive         = Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd();
-        bool needSave        = false;
-        FSStream in(archive, bankPath, FS_OPEN_READ);
+        auto paths    = this->paths();
+        bool needSave = false;
+        FSStream in(ARCHIVE, BANK(paths), FS_OPEN_READ);
         if (in.good())
         {
             Gui::waitFrame(i18n::localize("BANK_LOAD"));
@@ -104,7 +107,7 @@ void Bank::load(int maxBoxes)
             needSave = true;
         }
 
-        in = FSStream(archive, StringUtils::UTF8toUTF16(jsonPath), FS_OPEN_READ);
+        in = FSStream(ARCHIVE, StringUtils::UTF8toUTF16(JSON(paths)), FS_OPEN_READ);
         if (in.good())
         {
             size_t jsonSize = in.size();
@@ -156,41 +159,29 @@ void Bank::load(int maxBoxes)
             sha256(prevHash.data(), data, size);
         }
     }
-
-    if (Configuration::getInstance().autoBackup())
-    {
-        backup();
-    }
 }
 
 bool Bank::save() const
 {
-    std::string bankPath;
-    std::string jsonPath;
-    FS_Archive archive;
-    if (Configuration::getInstance().useExtData())
+    if (Configuration::getInstance().autoBackup())
     {
-        bankPath = "/banks/" + bankName + ".bnk";
-        jsonPath = "/banks/" + bankName + ".json";
-        archive  = Archive::data();
+        if (!backup() && !Gui::showChoiceMessage(i18n::localize("BACKUP_FAIL_SAVE_1"), i18n::localize("BACKUP_FAIL_SAVE_2")))
+        {
+            return false;
+        }
     }
-    else
-    {
-        bankPath = "/3ds/PKSM/banks/" + bankName + ".bnk";
-        jsonPath = "/3ds/PKSM/banks/" + bankName + ".json";
-        archive  = Archive::sd();
-    }
+    auto paths = this->paths();
     Gui::waitFrame(i18n::localize("BANK_SAVE"));
-    FSUSER_DeleteFile(archive, fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(bankPath).c_str()));
-    FSStream out(archive, bankPath, FS_OPEN_WRITE, sizeof(BankHeader) + sizeof(BankEntry) * boxes() * 30);
+    FSUSER_DeleteFile(ARCHIVE, fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(BANK(paths)).c_str()));
+    FSStream out(ARCHIVE, BANK(paths), FS_OPEN_WRITE, sizeof(BankHeader) + sizeof(BankEntry) * boxes() * 30);
     if (out.good())
     {
         out.write(data, sizeof(BankHeader) + sizeof(BankEntry) * boxes() * 30);
         out.close();
 
         std::string jsonData = boxNames.dump(2);
-        FSUSER_DeleteFile(archive, fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(jsonPath).c_str()));
-        out = FSStream(archive, jsonPath, FS_OPEN_WRITE, jsonData.size());
+        FSUSER_DeleteFile(ARCHIVE, fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(JSON(paths)).c_str()));
+        out = FSStream(ARCHIVE, JSON(paths), FS_OPEN_WRITE, jsonData.size());
         if (out.good())
         {
             out.write(jsonData.data(), jsonData.size() + 1);
@@ -215,10 +206,8 @@ bool Bank::save() const
 
 void Bank::resize(size_t boxes)
 {
-    size_t newSize       = sizeof(BankHeader) + sizeof(BankEntry) * boxes * 30;
-    std::string bankPath = Configuration::getInstance().useExtData() ? "/banks/" + bankName + ".bnk" : "/3ds/PKSM/banks/" + bankName + ".bnk";
-    std::string jsonPath = Configuration::getInstance().useExtData() ? "/banks/" + bankName + ".json" : "/3ds/PKSM/banks/" + bankName + ".json";
-    FS_Archive archive   = Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd();
+    size_t newSize = sizeof(BankHeader) + sizeof(BankEntry) * boxes * 30;
+    auto paths     = this->paths();
     if (newSize != size)
     {
         Gui::showResizeStorage();
@@ -231,8 +220,8 @@ void Bank::resize(size_t boxes)
         }
         data = newData;
 
-        FSUSER_DeleteFile(archive, fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(bankPath).c_str()));
-        FSUSER_DeleteFile(archive, fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(jsonPath).c_str()));
+        FSUSER_DeleteFile(ARCHIVE, fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(BANK(paths)).c_str()));
+        FSUSER_DeleteFile(ARCHIVE, fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(JSON(paths)).c_str()));
 
         ((BankHeader*)data)->boxes = boxes;
 
@@ -290,22 +279,18 @@ void Bank::pkm(std::shared_ptr<PKX> pkm, int box, int slot)
     needsCheck  = true;
 }
 
-void Bank::backup() const
+bool Bank::backup() const
 {
     Gui::waitFrame(i18n::localize("BANK_BACKUP"));
-    std::string bankPath = "/3ds/PKSM/backups/" + bankName + ".bnk.bak";
-    std::string jsonPath = "/3ds/PKSM/backups/" + bankName + ".json.bak";
-    FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(bankPath).c_str()));
-    FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_UTF16, StringUtils::UTF8toUTF16(jsonPath).c_str()));
-
-    FSStream out(Archive::sd(), bankPath, FS_OPEN_WRITE, size);
-    out.write(data, size);
-    out.close();
-
-    std::string jsonData = boxNames.dump(2);
-    out                  = FSStream(Archive::sd(), jsonPath, FS_OPEN_WRITE, jsonData.size());
-    out.write(jsonData.data(), jsonData.size());
-    out.close();
+    auto paths = this->paths();
+    // Archive::copyFile(Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".bnk.bak", Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".bnk.bak.old");
+    // Archive::copyFile(Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".json.bak", Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".json.bak.old");
+    if (R_FAILED(Archive::copyFile(ARCHIVE, BANK(paths), Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".bnk.bak")))
+    {
+        return false;
+    }
+    Archive::copyFile(ARCHIVE, JSON(paths), Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".json.bak");
+    return true;
 }
 
 std::string Bank::boxName(int box) const
@@ -458,22 +443,19 @@ int Bank::boxes() const
 
 bool Bank::setName(const std::string& name)
 {
-    std::string oldName     = bankName;
-    bankName                = name;
-    std::string oldBankPath = Configuration::getInstance().useExtData() ? "/banks/" + oldName + ".bnk" : "/3ds/PKSM/banks/" + oldName + ".bnk";
-    std::string oldJsonPath = Configuration::getInstance().useExtData() ? "/banks/" + oldName + ".json" : "/3ds/PKSM/banks/" + oldName + ".json";
-    std::string newBankPath = Configuration::getInstance().useExtData() ? "/banks/" + bankName + ".bnk" : "/3ds/PKSM/banks/" + bankName + ".bnk";
-    std::string newJsonPath = Configuration::getInstance().useExtData() ? "/banks/" + bankName + ".json" : "/3ds/PKSM/banks/" + bankName + ".json";
-    auto archive            = Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd();
-    if (R_FAILED(Archive::moveFile(archive, oldBankPath, archive, newBankPath)))
+    auto oldPaths       = paths();
+    std::string oldName = bankName;
+    bankName            = name;
+    auto newPaths       = paths();
+    if (R_FAILED(Archive::moveFile(ARCHIVE, BANK(oldPaths), ARCHIVE, BANK(newPaths))))
     {
         bankName = oldName;
         return false;
     }
-    if (R_FAILED(Archive::moveFile(archive, oldJsonPath, archive, newJsonPath)))
+    if (R_FAILED(Archive::moveFile(ARCHIVE, JSON(oldPaths), ARCHIVE, JSON(newPaths))))
     {
         bankName = oldName;
-        if (R_FAILED(Archive::moveFile(archive, newBankPath, archive, oldBankPath)))
+        if (R_FAILED(Archive::moveFile(ARCHIVE, BANK(newPaths), ARCHIVE, BANK(oldPaths))))
         {
             Gui::warn(i18n::localize("CRITICAL_BANK_ERROR_1"), i18n::localize("CRITICAL_BANK_ERROR_2"));
             return false;
@@ -481,4 +463,16 @@ bool Bank::setName(const std::string& name)
         return false;
     }
     return true;
+}
+
+std::pair<std::string, std::string> Bank::paths() const
+{
+    if (Configuration::getInstance().useExtData())
+    {
+        return {"/banks/" + bankName + ".bnk", "/banks/" + bankName + ".json"};
+    }
+    else
+    {
+        return {"/3ds/PKSM/banks/" + bankName + ".bnk", "/3ds/PKSM/banks/" + bankName + ".json"};
+    }
 }
