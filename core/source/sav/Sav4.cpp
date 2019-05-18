@@ -345,6 +345,12 @@ void Sav4::mysteryGift(WCX& wc, int& pos)
     *(data + WondercardFlags + (2047 >> 3)) = 0x80;
     std::copy(pgt->rawData(), pgt->rawData() + PGT::length, data + WondercardData + pos * PGT::length);
     pos++;
+    if (game == Game::DP)
+    {
+        static constexpr size_t dpSlotActive = 0xEDB88320;
+        static const int ofs = WondercardFlags + 0x100;
+        *(u32*)(data + ofs + 4*pos) = dpSlotActive;
+    }
 }
 
 std::string Sav4::boxName(u8 box) const
