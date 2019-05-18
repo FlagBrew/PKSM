@@ -1690,7 +1690,7 @@ void StorageScreen::shareSend()
         + "," + std::to_string((int)infoMon->iv(5)) + "," + std::to_string((int)infoMon->iv(3)) + "," +
         std::to_string((int)infoMon->iv(4)) // Sp. Atk, Sp. Def, Speed
         + "," + std::to_string((int)infoMon->gender()) + "," + std::to_string((bool)infoMon->shiny()) + "," +
-        std::to_string((int)infoMon->ability()) + "," + std::to_string((int)infoMon->heldItem()) + "," + std::to_string((int)infoMon->TID());
+        std::to_string((int)infoMon->ability()) + "," + std::to_string((int)infoMon->heldItem()) + "," + std::to_string((int)infoMon->TID()) + "," + std::to_string((int) infoMon->ball()) + "," + std::to_string((int) infoMon->pkrs());
     struct curl_slist* headers = NULL;
     headers                    = curl_slist_append(headers, "Content-Type: application/base64");
     headers                    = curl_slist_append(headers, version.c_str());
