@@ -135,9 +135,9 @@ namespace Gui
     std::shared_ptr<TextParse::Text> parseText(const std::string& str, float scaleX, float maxWidth = 0.0f);
     void clearText(void);
     void text(
-        const std::shared_ptr<TextParse::Text> text, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY);
+        const std::shared_ptr<TextParse::Text> text, float x, float y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY);
     void text(
-        const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY, float maxWidth = 0.0f);
+        const std::string& str, float x, float y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY, float maxWidth = 0.0f);
 
     void setScreen(std::unique_ptr<Screen> screen);
     void screenBack(void);

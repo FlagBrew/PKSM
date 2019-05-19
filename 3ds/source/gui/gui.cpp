@@ -249,17 +249,18 @@ std::shared_ptr<TextParse::Text> Gui::parseText(const std::string& str, float sc
     return textBuffer->parse(str, maxWidth);
 }
 
-void Gui::text(std::shared_ptr<TextParse::Text> text, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY)
+void Gui::text(std::shared_ptr<TextParse::Text> text, float x, float y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY)
 {
     textMode            = true;
     const float lineMod = scaleY * C2D_FontGetInfo(fonts[1])->lineFeed;
+    const float posMod = scaleY * 6;
     switch (positionY)
     {
         case TextPosY::TOP:
-            y -= 3;
+            y -= posMod;
             break;
         case TextPosY::CENTER:
-            y -= ceilf(0.5f * (3 + lineMod * (float)text->lineWidths.size()));
+            y -= 0.5f * (posMod + lineMod * (float)text->lineWidths.size());
             break;
         case TextPosY::BOTTOM:
             y -= lineMod * (float)text->lineWidths.size();
@@ -269,7 +270,7 @@ void Gui::text(std::shared_ptr<TextParse::Text> text, int x, int y, float scaleX
     currentText->addText(text, x, y, 0.5f, scaleX, scaleY, positionX, color);
 }
 
-void Gui::text(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY, float maxWidth)
+void Gui::text(const std::string& str, float x, float y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY, float maxWidth)
 {
     auto text = parseText(str, scaleX, maxWidth);
 
