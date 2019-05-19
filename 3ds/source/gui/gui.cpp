@@ -252,13 +252,14 @@ std::shared_ptr<TextParse::Text> Gui::parseText(const std::string& str, float sc
 void Gui::text(std::shared_ptr<TextParse::Text> text, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY)
 {
     textMode            = true;
-    const float lineMod = scaleY * fontGetInfo(nullptr)->lineFeed;
+    const float lineMod = scaleY * C2D_FontGetInfo(fonts[1])->lineFeed;
     switch (positionY)
     {
         case TextPosY::TOP:
+            y -= 3;
             break;
         case TextPosY::CENTER:
-            y -= ceilf(0.5f * lineMod * (float)text->lineWidths.size());
+            y -= ceilf(0.5f * (3 + lineMod * (float)text->lineWidths.size()));
             break;
         case TextPosY::BOTTOM:
             y -= lineMod * (float)text->lineWidths.size();
