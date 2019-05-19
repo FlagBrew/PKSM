@@ -45,7 +45,7 @@ public:
             delete button;
         }
     }
-    EditorScreen(std::shared_ptr<PKX> pkm, int box, int index);
+    EditorScreen(std::shared_ptr<PKX> pkm, int box, int index, bool emergency = false);
     void draw() const override;
     void update(touchPosition* touch) override;
     ScreenType type() const override { return ScreenType::EDITOR; }
@@ -83,6 +83,7 @@ private:
     int origPartyCurrHP   = 0;
     int origPartyCP       = 0;
     bool justSwitched     = true;
+    bool emergency;
 };
 
 #endif

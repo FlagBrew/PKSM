@@ -41,6 +41,7 @@
 #include "gui.hpp"
 #include "loader.hpp"
 #include "random.hpp"
+#include "banks.hpp"
 
 #define NO_TEXT_BUTTON(x, y, w, h, function, image) new Button(x, y, w, h, function, image, "", 0.0f, 0)
 #define NO_TEXT_ACCEL(x, y, w, h, function, image) new AccelButton(x, y, w, h, function, image, "", 0.0f, 0)
@@ -48,7 +49,7 @@
 
 static constexpr int statValues[] = {0, 1, 2, 4, 5, 3};
 
-EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index) : pkm(pokemon), box(box), index(index)
+EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, bool emergency) : pkm(pokemon), box(box), index(index), emergency(emergency)
 {
     if (!pkm || (pkm->encryptionConstant() == 0 && pkm->species() == 0))
     {
@@ -667,20 +668,27 @@ void EditorScreen::partyUpdate()
 bool EditorScreen::save()
 {
     pkm->refreshChecksum();
-    if (box != 0xFF)
+    if (emergency)
     {
-        if (TitleLoader::save->generation() == Generation::LGPE)
-        {
-            partyUpdate();
-        }
-        TitleLoader::save->pkm(pkm, box, index, false);
+        Banks::bank->pkm(pkm, box, index);
     }
     else
     {
-        partyUpdate();
-        TitleLoader::save->pkm(pkm, index);
+        if (box != 0xFF)
+        {
+            if (TitleLoader::save->generation() == Generation::LGPE)
+            {
+                partyUpdate();
+            }
+            TitleLoader::save->pkm(pkm, box, index, false);
+        }
+        else
+        {
+            partyUpdate();
+            TitleLoader::save->pkm(pkm, index);
+        }
+        TitleLoader::save->dex(pkm);
     }
-    TitleLoader::save->dex(pkm);
     sha256(origHash.data(), pkm->rawData(), pkm->getLength());
     return false;
 }

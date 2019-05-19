@@ -33,10 +33,12 @@
 #include "Screen.hpp"
 #include "SortOverlay.hpp"
 #include "loader.hpp"
+#include "StorageViewOverlay.hpp"
 #include <array>
 
 class StorageScreen : public Screen
 {
+friend class StorageViewOverlay;
 public:
     StorageScreen();
     ~StorageScreen();

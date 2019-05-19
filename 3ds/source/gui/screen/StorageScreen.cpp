@@ -38,7 +38,7 @@
 #include "SortOverlay.hpp"
 #include "StorageOverlay.hpp"
 #include "TitleLoadScreen.hpp"
-#include "ViewCloneOverlay.hpp"
+#include "StorageViewOverlay.hpp"
 #include "banks.hpp"
 #include "fetch.hpp"
 #include <PB7.hpp>
@@ -565,7 +565,7 @@ void StorageScreen::update(touchPosition* touch)
 {
     if (justSwitched)
     {
-        if (keysHeld() & KEY_TOUCH)
+        if ((keysHeld() | keysDown()) & KEY_TOUCH)
         {
             return;
         }
@@ -899,7 +899,8 @@ bool StorageScreen::showViewer()
 
     if (infoMon && infoMon->species() != 0)
     {
-        currentOverlay = std::make_unique<ViewCloneOverlay>(*this, infoMon, moveMon, partyNum, selectDimensions, currentlySelecting);
+        justSwitched = true;
+        currentOverlay = std::make_unique<StorageViewOverlay>(*this, infoMon, moveMon, partyNum, selectDimensions, currentlySelecting, std::pair<int,int>{storageChosen ? storageBox : -1, cursorIndex - 1});
     }
     return true;
 }

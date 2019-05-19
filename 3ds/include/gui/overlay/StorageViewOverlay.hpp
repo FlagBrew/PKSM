@@ -24,34 +24,37 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "ViewCloneOverlay.hpp"
-#include "gui.hpp"
+#ifndef STORAGEVIEWOVERLAY_HPP
+#define STORAGEVIEWOVERLAY_HPP
 
-void ViewCloneOverlay::draw() const
+#include "ViewOverlay.hpp"
+#include <vector>
+#include <bitset>
+
+class StorageViewOverlay : public ViewOverlay
 {
-    ViewOverlay::draw();
+public:
+    StorageViewOverlay(Screen& screen, std::shared_ptr<PKX>& pkm, std::vector<std::shared_ptr<PKX>>& clone, std::vector<int>& partyNum,
+        std::pair<int, int>& cloneDims, bool& currentlySelecting, std::pair<int, int> emergencyInfo)
+        : ViewOverlay(screen, pkm, true, i18n::localize("A_SELECT") + '\n' + i18n::localize("X_CLONE") + '\n' + i18n::localize("B_BACK")),
+          clone(clone),
+          partyNum(partyNum),
+          cloneDims(cloneDims),
+          currentlySelecting(currentlySelecting),
+          emergencyInfo(emergencyInfo)
+    {
+    }
+    virtual ~StorageViewOverlay() {}
+    void update(touchPosition* touch) override;
+    void draw() const override;
 
-    C2D_SceneBegin(g_renderTargetBottom);
-    dim();
-    if (clone.empty())
-    {
-        Gui::staticText(i18n::localize("PRESS_TO_CLONE"), 160, 110, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-    }
-}
+private:
+    std::vector<std::shared_ptr<PKX>>& clone;
+    std::vector<int>& partyNum;
+    std::pair<int, int>& cloneDims;
+    bool& currentlySelecting;
+    std::pair<int, int> emergencyInfo;
+    std::bitset<9> emergencyMode;
+};
 
-void ViewCloneOverlay::update(touchPosition* touch)
-{
-    u32 kDown = hidKeysDown();
-    if (kDown & KEY_B)
-    {
-        screen.removeOverlay();
-    }
-    else if (clone.empty() && kDown & KEY_X)
-    {
-        clone.emplace_back(pkm->clone());
-        partyNum.push_back(-1);
-        cloneDims          = {1, 1};
-        currentlySelecting = false;
-        screen.removeOverlay();
-    }
-}
+#endif
