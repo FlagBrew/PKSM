@@ -253,14 +253,13 @@ void Gui::text(std::shared_ptr<TextParse::Text> text, float x, float y, float sc
 {
     textMode            = true;
     const float lineMod = scaleY * C2D_FontGetInfo(fonts[1])->lineFeed;
-    const float posMod = scaleY * 6;
+    y -= scaleY * 6;
     switch (positionY)
     {
         case TextPosY::TOP:
-            y -= posMod;
             break;
         case TextPosY::CENTER:
-            y -= 0.5f * (posMod + lineMod * (float)text->lineWidths.size());
+            y -= 0.5f * (lineMod * (float)text->lineWidths.size());
             break;
         case TextPosY::BOTTOM:
             y -= lineMod * (float)text->lineWidths.size();
