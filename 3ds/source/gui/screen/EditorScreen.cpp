@@ -404,13 +404,16 @@ void EditorScreen::update(touchPosition* touch)
         return;
     }
 
-    if (downKeys & KEY_L)
+    if (!emergency)
     {
-        advanceMon(false);
-    }
-    else if (downKeys & KEY_R)
-    {
-        advanceMon(true);
+        if (downKeys & KEY_L)
+        {
+            advanceMon(false);
+        }
+        else if (downKeys & KEY_R)
+        {
+            advanceMon(true);
+        }
     }
 }
 
