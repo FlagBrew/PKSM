@@ -31,6 +31,8 @@
     "A_ITEM_EDIT": "\ue000: Cambiar \u00cdtem",
     "A_PICKUP": "\ue000: Recoger",
     "A_SELECT": "\ue000: Seleccionar",
+    "BACKUP_FAIL_SAVE_1": "Failed to save bank backup.",
+    "BACKUP_FAIL_SAVE_2": "Continue saving?",
     "BADGES": "Medallas: %i",
     "BAD_CIA_FILE": "The CIA could not be read!",
     "BAD_INJECT": "No se puede inyectar",
