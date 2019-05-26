@@ -269,7 +269,8 @@ void Gui::text(std::shared_ptr<TextParse::Text> text, float x, float y, float sc
     currentText->addText(text, x, y, 0.5f, scaleX, scaleY, positionX, color);
 }
 
-void Gui::text(const std::string& str, float x, float y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY, float maxWidth)
+void Gui::text(
+    const std::string& str, float x, float y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY, float maxWidth)
 {
     auto text = parseText(str, scaleX, maxWidth);
 

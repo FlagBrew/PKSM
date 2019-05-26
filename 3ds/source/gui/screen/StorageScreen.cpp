@@ -40,13 +40,10 @@
 #include "TitleLoadScreen.hpp"
 #include "ViewCloneOverlay.hpp"
 #include "banks.hpp"
+#include "base64.hpp"
 #include "fetch.hpp"
 #include <PB7.hpp>
 #include <variant>
-
-extern "C" {
-#include "base64.h"
-}
 
 extern std::stack<std::unique_ptr<Screen>> screens;
 
@@ -1676,15 +1673,10 @@ static size_t header_callback(char* buffer, size_t size, size_t nitems, void* us
 
 void StorageScreen::shareSend()
 {
-    const u8* rawData = infoMon->rawData();
-    size_t outSize;
     long status_code     = 0;
-    char* b64Data        = base64_encode((char*)rawData, infoMon->getLength(), &outSize);
-    std::string postdata = b64Data;
-    free(b64Data);
-
-    std::string version = "Generation: " + genToString(infoMon->generation());
-    std::string size    = "Size: " + std::to_string(infoMon->getLength());
+    std::string postdata = base64_encode(infoMon->rawData(), infoMon->getLength());
+    std::string version  = "Generation: " + genToString(infoMon->generation());
+    std::string size     = "Size: " + std::to_string(infoMon->getLength());
     std::string info =
         "Info: " + infoMon->nickname() + "," + infoMon->otName() + "," + std::to_string((int)infoMon->level()) + "," +
         std::to_string(infoMon->species()) + "," + std::to_string(infoMon->move(0)) + "," + std::to_string(infoMon->move(1)) + "," +
@@ -1694,6 +1686,7 @@ void StorageScreen::shareSend()
         std::to_string((int)infoMon->iv(4)) // Sp. Atk, Sp. Def, Speed
         + "," + std::to_string((int)infoMon->gender()) + "," + std::to_string((bool)infoMon->shiny()) + "," +
         std::to_string((int)infoMon->ability()) + "," + std::to_string((int)infoMon->heldItem()) + "," + std::to_string((int)infoMon->TID());
+
     struct curl_slist* headers = NULL;
     headers                    = curl_slist_append(headers, "Content-Type: application/base64");
     headers                    = curl_slist_append(headers, version.c_str());
@@ -1794,8 +1787,7 @@ void StorageScreen::shareReceive()
                         Fetch::exit();
                         return;
                 }
-                size_t outSize;
-                u8* retData = base64_decode(retB64Data.data(), retB64Data.size(), &outSize);
+                auto retData = base64_decode(retB64Data.data(), retB64Data.size());
 
                 size_t targetLength = 0;
                 switch (gen)
@@ -1814,15 +1806,14 @@ void StorageScreen::shareReceive()
                     default:
                         break;
                 }
-                if (outSize != targetLength)
+                if (retData.size() != targetLength)
                 {
-                    Gui::error(i18n::localize("SHARE_ERROR_INCORRECT_VERSION"), outSize);
-                    free(retData);
+                    Gui::error(i18n::localize("SHARE_ERROR_INCORRECT_VERSION"), retData.size());
                     Fetch::exit();
                     return;
                 }
 
-                auto pkm = PKX::getPKM(gen, retData);
+                auto pkm = PKX::getPKM(gen, retData.data());
 
                 if (storageChosen)
                 {
@@ -1843,7 +1834,6 @@ void StorageScreen::shareReceive()
                         Gui::warn(i18n::localize("SHARE_GENERATION_TRANSFER_ERROR"));
                     }
                 }
-                free(retData);
             }
         }
         Fetch::exit();

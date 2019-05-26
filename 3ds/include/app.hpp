@@ -33,13 +33,10 @@
 #include "gui.hpp"
 #include "i18n.hpp"
 #include "loader.hpp"
+#include "sha256.h"
 #include "thread.hpp"
 #include <3ds.h>
 #include <stdio.h>
-
-extern "C" {
-#include "sha256.h"
-}
 
 #define SOC_ALIGN 0x1000
 #define SOC_BUFFERSIZE 0x100000

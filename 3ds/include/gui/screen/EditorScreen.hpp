@@ -31,9 +31,7 @@
 #include "PKX.hpp"
 #include "Screen.hpp"
 #include "ViewOverlay.hpp"
-extern "C" {
 #include "sha256.h"
-}
 
 class EditorScreen : public Screen
 {

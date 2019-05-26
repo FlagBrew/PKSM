@@ -31,12 +31,9 @@
 #include "PB7.hpp"
 #include "VersionOverlay.hpp"
 #include "ViewOverlay.hpp"
+#include "base64.hpp"
 #include "fetch.hpp"
 #include "gui.hpp"
-
-extern "C" {
-#include "base64.h"
-}
 
 MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
 {
@@ -737,16 +734,11 @@ void MiscEditScreen::validate()
     {
         return;
     }
-    const u8* rawData = pkm->rawData();
     CURLcode res;
-    std::string postdata = "";
-    size_t outSize;
-    long status_code = 0;
-    char* b64Data    = base64_encode((char*)rawData, pkm->getLength(), &outSize);
-    postdata += b64Data;
-    free(b64Data);
-    std::string size    = "Size: " + std::to_string(pkm->getLength());
-    std::string version = "Version: " + getVersionString(TitleLoader::save->version());
+    long status_code     = 0;
+    std::string postdata = base64_encode(pkm->rawData(), pkm->getLength());
+    std::string size     = "Size: " + std::to_string(pkm->getLength());
+    std::string version  = "Version: " + getVersionString(TitleLoader::save->version());
 
     struct curl_slist* headers = NULL;
     headers                    = curl_slist_append(headers, version.c_str());

@@ -24,13 +24,33 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef BASE64_H
-#define BASE64_H
+#ifndef BASE64_HPP
+#define BASE64_HPP
 
-#include <stdint.h>
-#include <stdlib.h>
+#include <string>
+#include <vector>
 
-unsigned char* base64_decode(const char* data, size_t input_length, size_t* output_length);
-char* base64_encode(const char* data, size_t input_length, size_t* output_length);
+std::vector<unsigned char> base64_decode(const char* data, size_t input_length);
+inline std::vector<unsigned char> base64_decode(const std::string& data)
+{
+    return base64_decode(data.data(), data.size());
+}
+inline std::vector<unsigned char> base64_decode(const uint8_t* data, size_t input_length)
+{
+    return base64_decode((char*)data, input_length);
+}
+std::string base64_encode(const char* data, size_t input_length);
+inline std::string base64_encode(const unsigned char* data, size_t input_length)
+{
+    return base64_encode((char*)data, input_length);
+}
+inline std::string base64_encode(const std::vector<char>& data)
+{
+    return base64_encode(data.data(), data.size());
+}
+inline std::string base64_encode(const std::vector<unsigned char>& data)
+{
+    return base64_encode(data.data(), data.size());
+}
 
 #endif

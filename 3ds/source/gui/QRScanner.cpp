@@ -260,91 +260,63 @@ void QRData::handler(QRMode mode, std::vector<u8>& out)
             finish();
             if (mode == WCX4)
             {
-                size_t outSize;
                 static constexpr int wcHeader = 38; // strlen("http://lunarcookies.github.io/wc.html#)
-                u8* retData                   = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader, &outSize);
+                out                           = base64_decode(scan_data.payload + wcHeader, scan_data.payload_len - wcHeader);
 
-                if (outSize == PGT::length || outSize == WC4::length)
+                if (out.size() != PGT::length && out.size() != WC4::length)
                 {
-                    out.resize(outSize);
-                    std::copy(retData, retData + outSize, out.begin());
+                    out.clear();
                 }
-
-                free(retData);
             }
             else if (mode == WCX5)
             {
-                size_t outSize;
                 static constexpr int wcHeader = 38; // strlen("http://lunarcookies.github.io/wc.html#)
-                u8* retData                   = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader, &outSize);
+                out                           = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader);
 
-                if (outSize == PGF::length)
+                if (out.size() != PGF::length)
                 {
-                    out.resize(outSize);
-                    std::copy(retData, retData + outSize, out.begin());
+                    out.clear();
                 }
-
-                free(retData);
             }
             else if (mode == WCX6 || mode == WCX7)
             {
-                size_t outSize;
                 static constexpr int wcHeader = 38; // strlen("http://lunarcookies.github.io/wc.html#)
-                u8* retData                   = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader, &outSize);
+                out                           = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader);
 
-                if (outSize == WC6::length || outSize == WC6::lengthFull)
+                if (out.size() != WC6::length && out.size() != WC6::lengthFull)
                 {
-                    out.resize(WC6::length);
-                    int ofs = outSize == WC6::lengthFull ? 0x206 : 0;
-
-                    std::copy(retData + ofs, retData + ofs + WC6::length, out.begin());
+                    out.clear();
                 }
-
-                free(retData);
             }
             else if (mode == PKM4)
             {
-                size_t outSize;
                 static constexpr int pkHeader = 6; // strlen("null/#")
-                u8* retData                   = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader, &outSize);
+                out                           = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader);
 
-                if (outSize == 136) // PK4/5 length
+                if (out.size() != 136) // PK4/5 length
                 {
-                    out.resize(outSize);
-                    std::copy(retData, retData + outSize, out.begin());
+                    out.clear();
                 }
-
-                free(retData);
             }
             else if (mode == PKM5)
             {
-                size_t outSize;
                 static constexpr int pkHeader = 6; // strlen("null/#")
-                u8* retData                   = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader, &outSize);
+                out                           = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader);
 
-                Gui::warn(std::to_string(outSize));
-
-                if (outSize == 136) // PK4/5 length
+                if (out.size() != 136) // PK4/5 length
                 {
-                    out.resize(outSize);
-                    std::copy(retData, retData + outSize, out.begin());
+                    out.clear();
                 }
-
-                free(retData);
             }
             else if (mode == PKM6)
             {
-                size_t outSize;
                 static constexpr int pkHeader = 40; // strlen("http://lunarcookies.github.io/b1s1.html#")
-                u8* retData                   = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader, &outSize);
+                out                           = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader);
 
-                if (PKX::genFromBytes(retData, outSize, true) == 6) // PK6 length
+                if (PKX::genFromBytes(out.data(), out.size(), true) != 6) // PK6 length
                 {
-                    out.resize(outSize);
-                    std::copy(retData, retData + outSize, out.begin());
+                    out.clear();
                 }
-
-                free(retData);
             }
             else if (mode == PKM7)
             {

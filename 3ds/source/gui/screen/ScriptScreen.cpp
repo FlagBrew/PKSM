@@ -30,9 +30,7 @@
 #include "archive.hpp"
 #include "banks.hpp"
 #include "loader.hpp"
-extern "C" {
 #include "picoc.h"
-}
 #undef min // Get rid of picoc's min function
 
 static constexpr std::string_view MAGIC = "PKSMSCRIPT";

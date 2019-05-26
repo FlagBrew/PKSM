@@ -27,12 +27,9 @@
 #ifndef QRSCANNER_HPP
 #define QRSCANNER_HPP
 
+#include "base64.hpp"
 #include "gui.hpp"
-
-extern "C" {
-#include "base64.h"
 #include "quirc/quirc.h"
-}
 
 typedef struct
 {

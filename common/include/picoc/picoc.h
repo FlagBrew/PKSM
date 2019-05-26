@@ -3,6 +3,10 @@
 #ifndef PICOC_H
 #define PICOC_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* picoc version number */
 #ifdef VER
 #define PICOC_VERSION "v2.2 beta r" VER         /* VER is the subversion version number, obtained via the Makefile */
@@ -45,5 +49,9 @@ void PicocPlatformScanFile(Picoc *pc, const char *FileName);
 
 /* include.c */
 void PicocIncludeAllSystemHeaders(Picoc *pc);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* PICOC_H */
