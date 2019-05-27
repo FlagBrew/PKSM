@@ -222,7 +222,7 @@ StorageScreen::StorageScreen()
         std::make_unique<ClickButton>(25, 15, 164, 24, [this]() { return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0);
     TitleLoader::save->cryptBoxData(true);
 
-    boxBox = TitleLoader::save->currentBox();
+    boxBox = TitleLoader::save->currentBox() % TitleLoader::save->maxBoxes();
 }
 
 StorageScreen::~StorageScreen()
