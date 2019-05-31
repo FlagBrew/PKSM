@@ -44,9 +44,19 @@ static bool goToScreen(int buttonNum)
                 Gui::warn(i18n::localize("STORAGE_IMPLEMENTATION"), i18n::localize("STORAGE_CHECKBACK"));
                 return false;
             }
+            if (TitleLoader::save->partyCount() < 1)
+            {
+                Gui::warn(i18n::localize("NEED_ONE_POKEMON"), i18n::localize("GET_STARTER"));
+                return false;
+            }
             Gui::setScreen(std::make_unique<StorageScreen>());
             return true;
         case 1:
+            if (TitleLoader::save->partyCount() < 1)
+            {
+                Gui::warn(i18n::localize("NEED_ONE_POKEMON"), i18n::localize("GET_STARTER"));
+                return false;
+            }
             Gui::setScreen(std::make_unique<EditSelectorScreen>());
             return true;
         case 2:
