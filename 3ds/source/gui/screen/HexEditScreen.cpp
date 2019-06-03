@@ -106,19 +106,19 @@ bool HexEditScreen::checkValue()
                 }
                 return true;
             case 0xA ... 0xB:
-                if (pkm->heldItem() > TitleLoader::save->maxItem())
+                if (pkm->heldItem() >= TitleLoader::save->maxItem())
                 {
                     return false;
                 }
                 return true;
             case 0x14:
-                if (pkm->ability() > TitleLoader::save->maxAbility())
+                if (pkm->ability() >= TitleLoader::save->maxAbility())
                 {
                     return false;
                 }
                 return true;
             case 0x5A ... 0x61:
-                if (pkm->move((i - 0x5A) / 2) > TitleLoader::save->maxMove())
+                if (pkm->move((i - 0x5A) / 2) >= TitleLoader::save->maxMove())
                 {
                     return false;
                 }
@@ -132,21 +132,21 @@ bool HexEditScreen::checkValue()
             case 0x6A ... 0x71:
                 if (pkm->generation() == Generation::SEVEN)
                 {
-                    if (((PK7*)pkm.get())->relearnMove((i - 0x6A) / 2) > TitleLoader::save->maxMove())
+                    if (((PK7*)pkm.get())->relearnMove((i - 0x6A) / 2) >= TitleLoader::save->maxMove())
                     {
                         return false;
                     }
                 }
                 else if (pkm->generation() == Generation::SIX)
                 {
-                    if (((PK6*)pkm.get())->relearnMove((i - 0x6A) / 2) > TitleLoader::save->maxMove())
+                    if (((PK6*)pkm.get())->relearnMove((i - 0x6A) / 2) >= TitleLoader::save->maxMove())
                     {
                         return false;
                     }
                 }
                 else
                 {
-                    if (((PB7*)pkm.get())->relearnMove((i - 0x6A) / 2) > TitleLoader::save->maxMove())
+                    if (((PB7*)pkm.get())->relearnMove((i - 0x6A) / 2) >= TitleLoader::save->maxMove())
                     {
                         return false;
                     }
@@ -192,19 +192,19 @@ bool HexEditScreen::checkValue()
                 }
                 return true;
             case 0xA ... 0xB:
-                if (pkm->heldItem() > TitleLoader::save->maxItem())
+                if (pkm->heldItem() >= TitleLoader::save->maxItem())
                 {
                     return false;
                 }
                 return true;
             case 0x15:
-                if (pkm->ability() > TitleLoader::save->maxAbility())
+                if (pkm->ability() >= TitleLoader::save->maxAbility())
                 {
                     return false;
                 }
                 return true;
             case 0x28 ... 0x2F:
-                if (pkm->move((i - 0x28) / 2) > TitleLoader::save->maxMove())
+                if (pkm->move((i - 0x28) / 2) >= TitleLoader::save->maxMove())
                 {
                     return false;
                 }
