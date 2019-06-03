@@ -24,24 +24,19 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "thread.hpp"
+#ifndef SOUND_HPP
+#define SOUND_HPP
 
-static std::vector<Thread> threads;
+#include <string>
 
-void Threads::create(ThreadFunc entrypoint, void* arg)
+namespace Sound
 {
-    s32 prio = 0;
-    svcGetThreadPriority(&prio, CUR_THREAD_HANDLE);
-    Thread thread = threadCreate((ThreadFunc)entrypoint, arg, 4 * 1024, prio - 1, -2, false);
-    threads.push_back(thread);
+    Result init(void);
+    void registerEffect(const std::string& effectName, const std::string& fileName);
+    void exit(void);
+
+    void startBGM(void);
+    void playEffect(const std::string& effectName);
 }
 
-void Threads::destroy(void)
-{
-    for (u32 i = 0; i < threads.size(); i++)
-    {
-        threadJoin(threads.at(i), U64_MAX);
-        threadFree(threads.at(i));
-    }
-    threads.clear();
-}
+#endif

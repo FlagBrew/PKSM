@@ -24,24 +24,25 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "thread.hpp"
+#ifndef DECODER_HPP
+#define DECODER_HPP
 
-static std::vector<Thread> threads;
+#include "types.h"
+#include <vector>
+#include <string>
+#include <memory>
 
-void Threads::create(ThreadFunc entrypoint, void* arg)
+class Decoder
 {
-    s32 prio = 0;
-    svcGetThreadPriority(&prio, CUR_THREAD_HANDLE);
-    Thread thread = threadCreate((ThreadFunc)entrypoint, arg, 4 * 1024, prio - 1, -2, false);
-    threads.push_back(thread);
-}
+public:
+    bool good() { return initialized; }
+    virtual u32 pos() = 0;
+    virtual u32 length() = 0;
+    virtual std::vector<u8> decode() = 0;
+    virtual int channels() = 0;
+    static Decoder* get(const std::string& fileName);
+protected:
+    bool initialized = false;
+};
 
-void Threads::destroy(void)
-{
-    for (u32 i = 0; i < threads.size(); i++)
-    {
-        threadJoin(threads.at(i), U64_MAX);
-        threadFree(threads.at(i));
-    }
-    threads.clear();
-}
+#endif
