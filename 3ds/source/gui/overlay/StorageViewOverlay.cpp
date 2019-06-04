@@ -73,7 +73,7 @@ void StorageViewOverlay::update(touchPosition* touch)
         {
             emergencyMode.set(3);
         }
-        else if (!emergencyMode[3])
+        else if (!emergencyMode[3] && emergencyMode[1])
         {
             emergencyMode.set(2);
         }
@@ -88,7 +88,7 @@ void StorageViewOverlay::update(touchPosition* touch)
         {
             emergencyMode.set(6);
         }
-        else if (!emergencyMode[5])
+        else if (!emergencyMode[5] && emergencyMode[3])
         {
             emergencyMode.set(4);
         }
@@ -103,7 +103,7 @@ void StorageViewOverlay::update(touchPosition* touch)
         {
             emergencyMode.set(7);
         }
-        else if (!emergencyMode[6])
+        else if (!emergencyMode[6] && emergencyMode[4])
         {
             emergencyMode.set(5);
         }
