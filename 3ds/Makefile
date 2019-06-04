@@ -54,6 +54,7 @@ FORMATSOURCES	:=	../common/source \
 					source/gui/scripts \
 					source/io \
 					source/picoc \
+					source/sound \
 					source/titles \
 					source/utils
 SOURCES			:=	$(FORMATSOURCES) \
@@ -65,6 +66,7 @@ SOURCES			:=	$(FORMATSOURCES) \
 DATA			:=	data
 FORMATINCLUDES	:=	../common/include \
 					../common/include/io \
+					../common/include/sound \
 					../common/include/utils \
 					../core/include \
 					../core/include/i18n \

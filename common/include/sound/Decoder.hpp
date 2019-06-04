@@ -28,18 +28,20 @@
 #define DECODER_HPP
 
 #include "types.h"
-#include <vector>
 #include <string>
 #include <memory>
 
 class Decoder
 {
 public:
+    virtual ~Decoder() {}
     bool good() { return initialized; }
     virtual u32 pos() = 0;
     virtual u32 length() = 0;
-    virtual std::vector<u8> decode() = 0;
-    virtual int channels() = 0;
+    virtual u32 decode(void* buffer) = 0;
+    virtual bool stereo() = 0;
+    virtual u32 sampleRate() = 0;
+    virtual u32 bufferSize() = 0;
     static Decoder* get(const std::string& fileName);
 protected:
     bool initialized = false;
