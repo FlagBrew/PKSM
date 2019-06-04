@@ -42,7 +42,7 @@ public:
     virtual bool stereo() = 0;
     virtual u32 sampleRate() = 0;
     virtual u32 bufferSize() = 0;
-    static Decoder* get(const std::string& fileName);
+    static std::shared_ptr<Decoder> get(const std::string& fileName);
 protected:
     bool initialized = false;
 };

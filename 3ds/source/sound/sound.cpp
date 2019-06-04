@@ -37,8 +37,8 @@
 
 struct EffectThreadArg;
 
-static std::unordered_map<std::string, Decoder*> effects;
-static std::unique_ptr<Decoder> currentBGM = nullptr;
+static std::unordered_map<std::string, std::string> effects; // effect name to file name
+static std::shared_ptr<Decoder> currentBGM = nullptr;
 static std::vector<std::string> bgm;
 static std::list<EffectThreadArg> effectThreads;
 static size_t currentSong = 0;
@@ -52,8 +52,8 @@ static u8 currentVolume = 0;
 
 struct EffectThreadArg
 {
-    EffectThreadArg(Decoder* decoder, s16* linearMem) : decoder(decoder), linearMem(linearMem), channel(effectThreads.size()), inUse(true) {}
-    Decoder* decoder;
+    EffectThreadArg(std::shared_ptr<Decoder> decoder, s16* linearMem) : decoder(decoder), linearMem(linearMem), channel(effectThreads.size()), inUse(true) {}
+    std::shared_ptr<Decoder> decoder;
     s16* linearMem;
     int channel;
     bool inUse;
@@ -102,7 +102,7 @@ void Sound::registerEffect(const std::string& effectName, const std::string& fil
         auto dec = Decoder::get(fileName);
         if (dec && dec->good())
         {
-            effects.emplace(effectName, std::move(dec));
+            effects.emplace(effectName, fileName);
         }
     }
 }
@@ -213,7 +213,7 @@ static void bgmControlThread(void*)
             {
                 currentSong = (currentSong + 1) % bgm.size();
             }
-            currentBGM = std::unique_ptr<Decoder>(Decoder::get(bgm[currentSong]));
+            currentBGM = Decoder::get(bgm[currentSong]);
             sizeGood = false;
             while (playMusic && !sizeGood)
             {
@@ -334,8 +334,12 @@ void Sound::playEffect(const std::string& effectName)
     clearDoneEffects();
     if (effect != effects.end())
     {
-        effectThreads.emplace_back(effect->second, (s16*)linearAlloc((effect->second->bufferSize() * sizeof(u16)) * 2));
-        Threads::create(&playEffectThread, (void*) &*effectThreads.rbegin());
+        auto decoder = Decoder::get(effect->second);
+        if (decoder && decoder->good())
+        {
+            effectThreads.emplace_back(decoder, (s16*)linearAlloc((decoder->bufferSize() * sizeof(u16)) * 2));
+            Threads::create(&playEffectThread, (void*) &*effectThreads.rbegin());
+        }
     }
 }
 
