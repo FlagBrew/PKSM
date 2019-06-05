@@ -119,7 +119,7 @@ CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O2 -mword-relocations \
 			-DUNIQUE_ID=${UNIQUE_ID} \
 			-DCITRA_DEBUG=${CITRA_DEBUG} \
 			`sdl-config --cflags` \
-			`pkg-config opusfile --cflags`
+			`arm-none-eabi-pkg-config opusfile --cflags`
 
 CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS -D_GNU_SOURCE=1
 
