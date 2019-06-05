@@ -40,6 +40,8 @@ OUTDIR			:=	out
 BUILD			:=	build
 FORMATSOURCES	:=	../common/source \
 					../common/source/io \
+					../common/source/sound \
+					../common/source/sound/decoder \
 					../common/source/utils \
 					../core/source \
 					../core/source/i18n \
@@ -67,6 +69,7 @@ DATA			:=	data
 FORMATINCLUDES	:=	../common/include \
 					../common/include/io \
 					../common/include/sound \
+					../common/include/sound/decoder \
 					../common/include/utils \
 					../core/include \
 					../core/include/i18n \
@@ -115,7 +118,8 @@ CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O2 -mword-relocations \
 			-DUNIX_HOST \
 			-DUNIQUE_ID=${UNIQUE_ID} \
 			-DCITRA_DEBUG=${CITRA_DEBUG} \
-			`sdl-config --cflags`
+			`sdl-config --cflags` \
+			`pkg-config opusfile --cflags`
 
 CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS -D_GNU_SOURCE=1
 
@@ -124,7 +128,7 @@ CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++17
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS	:= -lSDL_mixer -lSDL -lmpg123 -lvorbisidec -logg -lmikmod -lmad \
+LIBS	:= -lSDL_mixer -lSDL -lmpg123 -lvorbisidec -lopusfile -lopus -logg -lmikmod -lmad \
 		   -lcurl -lmbedtls -lmbedx509 -lmbedcrypto -lbz2 \
 		   -lz -lcitro2d -lcitro3d -lctru -lm
 
