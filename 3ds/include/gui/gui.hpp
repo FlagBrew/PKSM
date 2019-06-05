@@ -31,7 +31,7 @@
 #include "Sav.hpp"
 #include "i18n.hpp"
 #include "json.hpp"
-#include "mixer.hpp"
+#include "sound.hpp"
 #include "thread.hpp"
 #include <3ds.h>
 #include <citro2d.h>
