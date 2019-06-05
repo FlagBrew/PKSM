@@ -81,7 +81,7 @@ Result Sound::init()
         {
             if (!dir.folder(i))
             {
-                bgm.emplace_back(dir.item(i));
+                bgm.emplace_back("/3ds/PKSM/songs/" + dir.item(i));
             }
         }
     }
