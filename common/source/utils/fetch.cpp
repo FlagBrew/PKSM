@@ -63,7 +63,7 @@ bool Fetch::init(const std::string& url, bool post, bool ssl, std::string* write
         Fetch::setopt(CURLOPT_USERAGENT, "PKSM-curl/7.59.0");
         Fetch::setopt(CURLOPT_FOLLOWLOCATION, 1L);
         Fetch::setopt(CURLOPT_LOW_SPEED_LIMIT, 300L);
-        Fetch::setopt(CURLOPT_LOW_SPEED_TIME, 60);
+        Fetch::setopt(CURLOPT_LOW_SPEED_TIME, 30);
     }
     return (bool)curl;
 }
