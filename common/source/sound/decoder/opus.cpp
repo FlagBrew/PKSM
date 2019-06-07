@@ -32,7 +32,6 @@
 #include "opus.hpp"
 
 static OggOpusFile*        opusFile;
-static const OpusHead*    opusHead;
 static const size_t        buffSize = 32 * 1024;
 
 static uint64_t fillOpusBuffer(int16_t* bufferOut);
@@ -41,13 +40,13 @@ static uint64_t fillOpusBuffer(int16_t* bufferOut);
 OpusDecoder::OpusDecoder(const char* filename) {
     int err = 0;
 
-    if((opusFile = op_open_file(filename, &err)) == NULL)
+    if(((opusFile = op_open_file(filename, &err)) == NULL) && err != OPUS_OK) {
+        fprintf(stderr, "Err: Opus decoder failed to init %d.", err);
         return;
+    }
 
     if((err = op_current_link(opusFile)) < 0)
         return;
-
-    opusHead = op_head(opusFile, err);
 
     initialized = true;
 }
@@ -101,8 +100,8 @@ static uint64_t fillOpusBuffer(int16_t* bufferOut)
 
     while(samplesToRead > 0)
     {
-        int samplesJustRead = op_read_stereo(opusFile, bufferOut,
-                samplesToRead > 120*48*2 ? 120*48*2 : samplesToRead);
+		int samplesJustRead = op_read_stereo(opusFile, bufferOut,
+                    samplesToRead > 120*48*2 ? 120*48*2 : samplesToRead);
 
         if(samplesJustRead < 0)
             return samplesJustRead;
