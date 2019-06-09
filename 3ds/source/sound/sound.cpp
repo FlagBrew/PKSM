@@ -147,7 +147,8 @@ static void bgmPlayThread(void*)
 
     for (int i = 0; !ndspChnIsPlaying(0); i++)
     {
-        if (i > 90000) // Timeout
+        svcSleepThread(1000000); // About one millisecond.
+        if (i > 5 * 1000) // Timeout in about 5 seconds.
         {
             return;
         }
@@ -279,7 +280,8 @@ static void playEffectThread(void* rawArg)
 
         for (int i = 0; !ndspChnIsPlaying(arg->channel); i++)
         {
-            if (i > 90000) // Timeout
+            svcSleepThread(1000000); // About one millisecond.
+            if (i > 5 * 1000) // Timeout in about 5 seconds.
             {
                 arg->inUse = false;
                 return;
