@@ -22,7 +22,7 @@ std::shared_ptr<Decoder> Decoder::get(const std::string& fileName)
 
     fseek(fp, 0, SEEK_SET);
     fread(magic, 1, 4, fp);
-    fseek(fp, 0, SEEK_SET);
+    fclose(fp);
 
     /*Wave*/
     if (!strncmp(magic, "RIFF", 4))
