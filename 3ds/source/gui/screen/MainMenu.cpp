@@ -72,17 +72,18 @@ static bool goToScreen(int buttonNum)
 
 MainMenu::MainMenu()
 {
-    buttons[0] =
-        new MainMenuButton(15, 20, 140, 53, []() { return goToScreen(0); }, ui_sheet_icon_storage_idx, "STORAGE", FONT_SIZE_15, COLOR_WHITE, 27);
-    buttons[1] =
-        new MainMenuButton(165, 20, 140, 53, []() { return goToScreen(1); }, ui_sheet_icon_editor_idx, "EDITOR", FONT_SIZE_15, COLOR_WHITE, 28);
-    buttons[2] =
-        new MainMenuButton(15, 83, 140, 53, []() { return goToScreen(2); }, ui_sheet_icon_events_idx, "EVENTS", FONT_SIZE_15, COLOR_WHITE, 93);
-    buttons[3] =
-        new MainMenuButton(165, 83, 140, 53, []() { return goToScreen(3); }, ui_sheet_icon_scripts_idx, "SCRIPTS", FONT_SIZE_15, COLOR_WHITE, 91);
-    buttons[4] = new MainMenuButton(15, 146, 140, 53, []() { return goToScreen(4); }, ui_sheet_icon_bag_idx, "BAG", FONT_SIZE_15, COLOR_WHITE, 157);
-    buttons[5] =
-        new MainMenuButton(165, 146, 140, 53, []() { return goToScreen(5); }, ui_sheet_icon_settings_idx, "SETTINGS", FONT_SIZE_15, COLOR_WHITE, 160);
+    buttons[0] = new MainMenuButton(
+        15, 20, 140, 53, []() { return goToScreen(0); }, ui_sheet_icon_storage_idx, "STORAGE", FONT_SIZE_15, COLOR_WHITE, 27);
+    buttons[1] = new MainMenuButton(
+        165, 20, 140, 53, []() { return goToScreen(1); }, ui_sheet_icon_editor_idx, "EDITOR", FONT_SIZE_15, COLOR_WHITE, 28);
+    buttons[2] = new MainMenuButton(
+        15, 83, 140, 53, []() { return goToScreen(2); }, ui_sheet_icon_events_idx, "EVENTS", FONT_SIZE_15, COLOR_WHITE, 93);
+    buttons[3] = new MainMenuButton(
+        165, 83, 140, 53, []() { return goToScreen(3); }, ui_sheet_icon_scripts_idx, "SCRIPTS", FONT_SIZE_15, COLOR_WHITE, 91);
+    buttons[4] = new MainMenuButton(
+        15, 146, 140, 53, []() { return goToScreen(4); }, ui_sheet_icon_bag_idx, "BAG", FONT_SIZE_15, COLOR_WHITE, 157);
+    buttons[5] = new MainMenuButton(
+        165, 146, 140, 53, []() { return goToScreen(5); }, ui_sheet_icon_settings_idx, "SETTINGS", FONT_SIZE_15, COLOR_WHITE, 160);
 }
 
 MainMenu::~MainMenu()
@@ -131,34 +132,38 @@ void MainMenu::drawTop() const
     for (int i = 0; i < 7; i++)
     {
         int y = 36 + i * 20;
-        switch(i)
+        switch (i)
         {
             case 0:
-                Gui::text(StringUtils::format(i18n::localize("GENERATION"), genToCstring(TitleLoader::save->generation())), 10, y, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+                Gui::text(StringUtils::format(i18n::localize("GENERATION"), genToCstring(TitleLoader::save->generation())), 10, y, FONT_SIZE_12,
+                    FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 1:
-                Gui::text(StringUtils::format(i18n::localize("TRAINER_NAME"), TitleLoader::save->otName().c_str()), 10, y, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+                Gui::text(StringUtils::format(i18n::localize("TRAINER_NAME"), TitleLoader::save->otName().c_str()), 10, y, FONT_SIZE_12, FONT_SIZE_12,
+                    COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 2:
-                Gui::text(
-                    i18n::localize("TID_SID") + ": " + std::to_string(TitleLoader::save->displayTID()) + "/" + std::to_string(TitleLoader::save->displaySID()),
+                Gui::text(i18n::localize("TID_SID") + ": " + std::to_string(TitleLoader::save->displayTID()) + "/" +
+                              std::to_string(TitleLoader::save->displaySID()),
                     10, y, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 3:
-                Gui::text(StringUtils::format(TitleLoader::save->generation() == Generation::SEVEN ? i18n::localize("STAMPS") : i18n::localize("BADGES"), TitleLoader::save->badges()),
+                Gui::text(
+                    StringUtils::format(TitleLoader::save->generation() == Generation::SEVEN ? i18n::localize("STAMPS") : i18n::localize("BADGES"),
+                        TitleLoader::save->badges()),
                     10, y, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-                break;            
+                break;
             case 4:
                 Gui::text(StringUtils::format(i18n::localize("WC_NUM"), TitleLoader::save->currentGifts().size()), 10, y, FONT_SIZE_12, FONT_SIZE_12,
                     COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 5:
-                Gui::text(StringUtils::format(i18n::localize("DEX_SEEN"), TitleLoader::save->dexSeen()), 10, y, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
-                    TextPosX::LEFT, TextPosY::TOP);
+                Gui::text(StringUtils::format(i18n::localize("DEX_SEEN"), TitleLoader::save->dexSeen()), 10, y, FONT_SIZE_12, FONT_SIZE_12,
+                    COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 6:
-                Gui::text(StringUtils::format(i18n::localize("DEX_CAUGHT"), TitleLoader::save->dexCaught()), 10, y, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
-                    TextPosX::LEFT, TextPosY::TOP);
+                Gui::text(StringUtils::format(i18n::localize("DEX_CAUGHT"), TitleLoader::save->dexCaught()), 10, y, FONT_SIZE_12, FONT_SIZE_12,
+                    COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             default:
                 break;

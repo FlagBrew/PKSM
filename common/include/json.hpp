@@ -2503,12 +2503,11 @@ namespace nlohmann
 #ifndef NDEBUG
                 // assertion to check that the iterator range is indeed contiguous,
                 // see http://stackoverflow.com/a/35008842/266378 for more discussion
-                const auto is_contiguous = std::accumulate(first, last, std::pair<bool, int>(true, 0),
-                    [&first](std::pair<bool, int> res, decltype(*first) val) {
+                const auto is_contiguous =
+                    std::accumulate(first, last, std::pair<bool, int>(true, 0), [&first](std::pair<bool, int> res, decltype(*first) val) {
                         res.first &= (val == *(std::next(std::addressof(*first), res.second++)));
                         return res;
-                    })
-                                               .first;
+                    }).first;
                 assert(is_contiguous);
 #endif
 
@@ -8773,7 +8772,8 @@ namespace nlohmann
                  pos != std::string::npos;        // make sure f was found
                  s.replace(pos, f.size(), t),     // replace with t, and
                  pos = s.find(f, pos + t.size())) // find next occurrence of f
-            {} }
+            {}
+        }
 
         /// escape "~" to "~0" and "/" to "~1"
         static std::string escape(std::string s)

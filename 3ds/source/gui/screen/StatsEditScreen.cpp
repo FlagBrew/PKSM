@@ -36,7 +36,8 @@ static constexpr int statValues[] = {0, 1, 2, 4, 5, 3};
 
 StatsEditScreen::StatsEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
 {
-    buttons.push_back(std::make_unique<ClickButton>(283, 211, 34, 28,
+    buttons.push_back(std::make_unique<ClickButton>(
+        283, 211, 34, 28,
         [this]() {
             Gui::screenBack();
             return true;
@@ -47,7 +48,8 @@ StatsEditScreen::StatsEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
         int y = 54 + i * 20;
         buttons.push_back(std::make_unique<AccelButton>(
             106, y, 13, 13, [=]() { return this->changeIV(statValues[i], false); }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
-        buttons.push_back(std::make_unique<Button>(121, y, 23, 13,
+        buttons.push_back(std::make_unique<Button>(
+            121, y, 23, 13,
             [=]() {
                 Gui::setNextKeyboardFunc([=]() { return this->setIV(statValues[i]); });
                 return false;
@@ -58,7 +60,8 @@ StatsEditScreen::StatsEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
 
         buttons.push_back(std::make_unique<AccelButton>(
             182, y, 13, 13, [=]() { return this->changeSecondaryStat(statValues[i], false); }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
-        buttons.push_back(std::make_unique<Button>(197, y, 32, 13,
+        buttons.push_back(std::make_unique<Button>(
+            197, y, 32, 13,
             [=]() {
                 Gui::setNextKeyboardFunc([=]() { return this->setSecondaryStat(statValues[i]); });
                 return false;
@@ -67,8 +70,8 @@ StatsEditScreen::StatsEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
         buttons.push_back(std::make_unique<AccelButton>(
             231, y, 13, 13, [=]() { return this->changeSecondaryStat(statValues[i], true); }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
     }
-    buttons.push_back(
-        std::make_unique<Button>(300, 184, 15, 12, [this]() { return this->setHP(); }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    buttons.push_back(std::make_unique<Button>(
+        300, 184, 15, 12, [this]() { return this->setHP(); }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
 }
 
 void StatsEditScreen::setIV(int which)

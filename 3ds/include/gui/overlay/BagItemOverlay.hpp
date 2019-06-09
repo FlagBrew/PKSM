@@ -50,7 +50,8 @@ public:
           firstEmpty(firstEmpty)
     {
         instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
-        searchButton = new ClickButton(75, 30, 170, 23,
+        searchButton = new ClickButton(
+            75, 30, 170, 23,
             [this]() {
                 startSearch = true;
                 return false;

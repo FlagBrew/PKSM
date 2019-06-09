@@ -37,13 +37,15 @@
 
 MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
 {
-    buttons.push_back(std::make_unique<ClickButton>(283, 211, 34, 28,
+    buttons.push_back(std::make_unique<ClickButton>(
+        283, 211, 34, 28,
         [this]() {
             Gui::screenBack();
             return true;
         },
         ui_sheet_button_back_idx, "", 0.0f, 0));
-    buttons.push_back(std::make_unique<ClickButton>(204, 171, 108, 30,
+    buttons.push_back(std::make_unique<ClickButton>(
+        204, 171, 108, 30,
         [this]() {
             otAndMet = !otAndMet;
             return true;
@@ -53,7 +55,8 @@ MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
     instructions.addCircle(false, 22, 225, 8, COLOR_GREY);
     instructions.addBox(false, 20, 175, 4, 50, COLOR_GREY);
     instructions.addBox(false, 20, 175, 90, 18, COLOR_GREY, i18n::localize("Y_LEGALIZE"), COLOR_WHITE);
-    buttons.push_back(std::make_unique<ClickButton>(3, 211, 34, 28,
+    buttons.push_back(std::make_unique<ClickButton>(
+        3, 211, 34, 28,
         [this]() {
             validate();
             return true;
@@ -62,40 +65,46 @@ MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
 
     buttons.push_back(std::make_unique<AccelButton>(
         94, 34, 13, 13, [this]() { return this->changeMetLevel(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
-    buttons.push_back(std::make_unique<Button>(109, 34, 31, 13,
+    buttons.push_back(std::make_unique<Button>(
+        109, 34, 31, 13,
         [this]() {
             Gui::setNextKeyboardFunc([this]() { setMetLevel(); });
             return false;
         },
         ui_sheet_res_null_idx, "", 0.0f, 0));
-    buttons.push_back(
-        std::make_unique<AccelButton>(142, 34, 13, 13, [this]() { return this->changeMetLevel(true); }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
+    buttons.push_back(std::make_unique<AccelButton>(
+        142, 34, 13, 13, [this]() { return this->changeMetLevel(true); }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
 
-    buttons.push_back(std::make_unique<Button>(95, 54, 15, 12,
+    buttons.push_back(std::make_unique<Button>(
+        95, 54, 15, 12,
         [this]() {
             Gui::setNextKeyboardFunc([this]() { day(); });
             return true;
         },
         ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, 0));
-    buttons.push_back(std::make_unique<ClickButton>(95, 74, 15, 12,
+    buttons.push_back(std::make_unique<ClickButton>(
+        95, 74, 15, 12,
         [this]() {
             Gui::setNextKeyboardFunc([this]() { month(); });
             return true;
         },
         ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, 0));
-    buttons.push_back(std::make_unique<Button>(95, 94, 15, 12,
+    buttons.push_back(std::make_unique<Button>(
+        95, 94, 15, 12,
         [this]() {
             Gui::setNextKeyboardFunc([this]() { year(); });
             return true;
         },
         ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, 0));
-    buttons.push_back(std::make_unique<Button>(95, 114, 15, 12,
+    buttons.push_back(std::make_unique<Button>(
+        95, 114, 15, 12,
         [this]() {
             currentOverlay = std::make_shared<LocationOverlay>(*this, this->pkm, this->otAndMet);
             return true;
         },
         ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, 0));
-    buttons.push_back(std::make_unique<Button>(95, 134, 15, 12,
+    buttons.push_back(std::make_unique<Button>(
+        95, 134, 15, 12,
         [this]() {
             currentOverlay = std::make_shared<VersionOverlay>(*this, this->pkm);
             return true;
@@ -106,7 +115,8 @@ MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
     {
         buttons.push_back(std::make_unique<AccelButton>(
             94, 154, 13, 13, [this]() { return this->changeEnjoyment(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
-        buttons.push_back(std::make_unique<Button>(109, 154, 31, 13,
+        buttons.push_back(std::make_unique<Button>(
+            109, 154, 31, 13,
             [this]() {
                 Gui::setNextKeyboardFunc([this]() { setEnjoyment(); });
                 return false;
@@ -117,7 +127,8 @@ MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
 
         buttons.push_back(std::make_unique<AccelButton>(
             94, 174, 13, 13, [this]() { return this->changeFullness(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
-        buttons.push_back(std::make_unique<Button>(109, 174, 31, 13,
+        buttons.push_back(std::make_unique<Button>(
+            109, 174, 31, 13,
             [this]() {
                 Gui::setNextKeyboardFunc([this]() { setFullness(); });
                 return false;
@@ -128,7 +139,8 @@ MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
 
         buttons.push_back(std::make_unique<AccelButton>(
             94, 194, 13, 13, [this]() { return this->changeAffection(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
-        buttons.push_back(std::make_unique<Button>(109, 194, 31, 13,
+        buttons.push_back(std::make_unique<Button>(
+            109, 194, 31, 13,
             [this]() {
                 Gui::setNextKeyboardFunc([this]() { setAffection(); });
                 return false;
