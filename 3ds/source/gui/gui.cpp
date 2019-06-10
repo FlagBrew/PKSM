@@ -356,6 +356,7 @@ void Gui::mainLoop(void)
 {
     bool exit = false;
     Sound::startBGM();
+    Sound::registerEffect("test", "/3ds/PKSM/click.wav");
     while (aptMainLoop() && !exit)
     {
         hidScanInput();
@@ -366,6 +367,7 @@ void Gui::mainLoop(void)
         u32 kHeld = hidKeysHeld();
         if (kHeld & KEY_SELECT && !screens.top()->getInstructions().empty())
         {
+            Sound::playEffect("test");
             screens.top()->doDraw();
             screens.top()->getInstructions().draw();
         }

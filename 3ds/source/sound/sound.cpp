@@ -46,8 +46,8 @@ static ndspWaveBuf bgmBuffers[2];
 static s16* bgmData;
 static bool sizeGood = false;
 static bool playMusic;
-static bool bgmDone = false;
-static Handle effectCountMutex;
+static bool bgmDone = true;
+static bool exitBGM = false;
 static u8 currentVolume = 0;
 
 struct EffectThreadArg
@@ -90,7 +90,6 @@ Result Sound::init()
     {
         return res;
     }
-    svcCreateMutex(&effectCountMutex, false);
     ndspSetOutputMode(NDSP_OUTPUT_STEREO);
     return 0;
 }
@@ -170,6 +169,10 @@ static void bgmPlayThread(void*)
                 continue;
             }
         }
+        if (exitBGM)
+        {
+            break;
+        }
 
         for (auto& buf : bgmBuffers)
         {
@@ -200,11 +203,17 @@ static void bgmControlThread(void*)
     while (playMusic)
     {
         HIDUSER_GetSoundVolume(&currentVolume);
-        if (!ndspChnIsPlaying(0) || (currentVolume == 0 && bgm.size() > 1))
+        if (bgmDone || (currentVolume == 0 && bgm.size() > 1))
         {
             if (currentBGM)
             {
+                exitBGM = true;
+                while (!bgmDone)
+                {
+                    svcSleepThread(125000000);
+                }
                 currentBGM = nullptr;
+                exitBGM = false;
             }
             if (Configuration::getInstance().randomMusic())
             {
@@ -261,7 +270,7 @@ static void playEffectThread(void* rawArg)
     {
         ndspChnReset(arg->channel);
         ndspChnWaveBufClear(arg->channel);
-        ndspChnSetInterp(0, arg->decoder->stereo() ? NDSP_INTERP_POLYPHASE : NDSP_INTERP_LINEAR);
+        ndspChnSetInterp(arg->channel, arg->decoder->stereo() ? NDSP_INTERP_POLYPHASE : NDSP_INTERP_LINEAR);
         ndspChnSetRate(arg->channel, arg->decoder->sampleRate());
         ndspChnSetFormat(arg->channel, arg->decoder->stereo() ? NDSP_FORMAT_STEREO_PCM16 : NDSP_FORMAT_MONO_PCM16);
 
@@ -334,7 +343,7 @@ void Sound::playEffect(const std::string& effectName)
 {
     auto effect = effects.find(effectName);
     clearDoneEffects();
-    if (effect != effects.end())
+    if (effect != effects.end() && effectThreads.size() < 23)
     {
         auto decoder = Decoder::get(effect->second);
         if (decoder && decoder->good())
