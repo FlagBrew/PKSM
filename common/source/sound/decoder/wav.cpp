@@ -23,18 +23,11 @@
  *         or requiring that modified versions of such material be marked in
  *         reasonable ways as different from the original version.
  */
-
 #define DR_WAV_IMPLEMENTATION
-#include <dr_libs/dr_wav.h>
-
 #include "wav.hpp"
 
-static const size_t    buffSize    = 16 * 1024;
-static drwav*          pWav        = NULL;
-static uint32_t        wavprogress;
-
-WavDecoder::WavDecoder(const char* filename) {
-    pWav = drwav_open_file(filename);
+WavDecoder::WavDecoder(const std::string& filename) {
+    pWav = drwav_open_file(filename.c_str());
     wavprogress = 0;
     if (pWav == NULL)
         return;

@@ -27,20 +27,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <tremor/ivorbiscodec.h>
-#include <tremor/ivorbisfile.h>
-
 #include "vorbis.hpp"
 
-static OggVorbis_File        vorbisFile;
-static vorbis_info        *vi;
-static FILE            *f;
-static const size_t        buffSize = 8 * 4096;
-
-static uint64_t fillVorbisBuffer(char* bufferOut);
-
-VorbisDecoder::VorbisDecoder(const char* filename) {
-    if((f = fopen(filename, "rb")) == NULL)
+VorbisDecoder::VorbisDecoder(const std::string& filename) {
+    if((f = fopen(filename.c_str(), "rb")) == NULL)
         return;
 
     if(ov_open(f, &vorbisFile, NULL, 0) < 0)
@@ -86,9 +76,9 @@ uint32_t VorbisDecoder::bufferSize(void)
     return buffSize;
 }
 
-int isVorbis(const char *in)
+int isVorbis(const std::string& in)
 {
-    FILE *ft = fopen(in, "r");
+    FILE *ft = fopen(in.c_str(), "r");
     OggVorbis_File testvf;
     int err;
 
@@ -102,7 +92,7 @@ int isVorbis(const char *in)
     return err;
 }
 
-static uint64_t fillVorbisBuffer(char* bufferOut)
+uint64_t VorbisDecoder::fillVorbisBuffer(char* bufferOut)
 {
     uint64_t samplesRead = 0;
     int samplesToRead = buffSize;

@@ -27,20 +27,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <opusfile.h>
-
 #include "opus.hpp"
 
-static OggOpusFile*        opusFile;
-static const size_t        buffSize = 32 * 1024;
-
-static uint64_t fillOpusBuffer(int16_t* bufferOut);
-
-
-OpusDecoder::OpusDecoder(const char* filename) {
+OpusDecoder::OpusDecoder(const std::string& filename) {
     int err = 0;
 
-    if(((opusFile = op_open_file(filename, &err)) == NULL) && err != OPUS_OK) {
+    if(((opusFile = op_open_file(filename.c_str(), &err)) == NULL) && err != OPUS_OK) {
         fprintf(stderr, "Err: Opus decoder failed to init %d.", err);
         return;
     }
@@ -84,16 +76,16 @@ uint32_t OpusDecoder::bufferSize(void)
     return buffSize;
 }
 
-int isOpus(const char* in)
+int isOpus(const std::string& in)
 {
     int err = 0;
-    OggOpusFile* opusTest = op_test_file(in, &err);
+    OggOpusFile* opusTest = op_test_file(in.c_str(), &err);
 
     op_free(opusTest);
     return err;
 }
 
-static uint64_t fillOpusBuffer(int16_t* bufferOut)
+uint64_t OpusDecoder::fillOpusBuffer(int16_t* bufferOut)
 {
     uint64_t samplesRead = 0;
     int samplesToRead = buffSize;

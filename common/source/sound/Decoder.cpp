@@ -28,7 +28,7 @@ std::shared_ptr<Decoder> Decoder::get(const std::string& fileName)
     if (!strncmp(magic, "RIFF", 4))
     {
         fprintf(stderr, "Decoder: Using wav.");
-        auto wavdec = std::shared_ptr<Decoder>(new WavDecoder(fileName.c_str()));
+        auto wavdec = std::shared_ptr<Decoder>(new WavDecoder(fileName));
             if (wavdec->good())
                 return wavdec;
     }
@@ -36,24 +36,24 @@ std::shared_ptr<Decoder> Decoder::get(const std::string& fileName)
     else if (!strncmp(magic, "fLaC", 4))
     {
         fprintf(stderr, "Decoder: Using flac.");
-        auto flacdec = std::shared_ptr<Decoder>(new FlacDecoder(fileName.c_str()));
+        auto flacdec = std::shared_ptr<Decoder>(new FlacDecoder(fileName));
             if (flacdec->good())
                 return flacdec;
     }
     /*Ogg or Opus*/
     else if (!strncmp(magic, "OggS", 4))
     {
-        if (isOpus(fileName.c_str()) == 0)
+        if (isOpus(fileName) == 0)
         {
             fprintf(stderr, "Decoder: Using ogg opus");
-            auto opusdec = std::shared_ptr<Decoder>(new OpusDecoder(fileName.c_str()));
+            auto opusdec = std::shared_ptr<Decoder>(new OpusDecoder(fileName));
             if (opusdec->good())
                 return opusdec;
         }
-        else if (isVorbis(fileName.c_str()) == 0)
+        else if (isVorbis(fileName) == 0)
         {
             fprintf(stderr, "Decoder: Using ogg vorbis");
-            auto vorbisdec = std::shared_ptr<Decoder>(new VorbisDecoder(fileName.c_str()));
+            auto vorbisdec = std::shared_ptr<Decoder>(new VorbisDecoder(fileName));
             if (vorbisdec->good())
                 return vorbisdec;
         }
@@ -64,7 +64,7 @@ std::shared_ptr<Decoder> Decoder::get(const std::string& fileName)
     else if (!strncmp(magic, "ID3", 3))
     {
         fprintf(stderr, "Decoder: Using mpeg3");
-        auto mp3dec = std::shared_ptr<Decoder>(new Mp3Decoder(fileName.c_str()));
+        auto mp3dec = std::shared_ptr<Decoder>(new Mp3Decoder(fileName));
         if (mp3dec->good())
             return mp3dec;
     }

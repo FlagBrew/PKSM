@@ -23,18 +23,11 @@
  *         or requiring that modified versions of such material be marked in
  *         reasonable ways as different from the original version.
  */
-
 #define DR_FLAC_IMPLEMENTATION
-#include <dr_libs/dr_flac.h>
-
 #include "flac.hpp"
 
-static drflac*         pFlac;
-static const size_t    buffSize = 16 * 1024;
-uint32_t flacprogress;
-
-FlacDecoder::FlacDecoder(const char* filename) {
-    pFlac = drflac_open_file(filename);
+FlacDecoder::FlacDecoder(const std::string& filename) {
+    pFlac = drflac_open_file(filename.c_str());
     flacprogress = 0;
     if (!pFlac)
         return;

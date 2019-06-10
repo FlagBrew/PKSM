@@ -218,7 +218,7 @@ static void bgmControlThread(void*)
             sizeGood = false;
             while (playMusic && !sizeGood)
             {
-                svcSleepThread(2000); // Yield execution
+                svcSleepThread(125000000); // Yield execution
             }
             if (!playMusic) // Make sure to not create a new thread if we're exiting
             {

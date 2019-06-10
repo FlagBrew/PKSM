@@ -23,20 +23,13 @@
  *         or requiring that modified versions of such material be marked in
  *         reasonable ways as different from the original version.
  */
-
-#include <mpg123.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "mp3.hpp"
 
-static size_t        buffSize;
-static mpg123_handle*    mh;
-static uint32_t        rate;
-static uint8_t        channels;
-
-Mp3Decoder::Mp3Decoder(const char* filename) {
+Mp3Decoder::Mp3Decoder(const std::string& filename) {
     int err = 0;
     int encoding = 0;
 
@@ -49,7 +42,7 @@ Mp3Decoder::Mp3Decoder(const char* filename) {
         return;
     }
 
-    if(mpg123_open(mh, filename) != MPG123_OK ||
+    if(mpg123_open(mh, filename.c_str()) != MPG123_OK ||
             mpg123_getformat(mh, (long *) &rate, (int *) &channels, &encoding) != MPG123_OK)
     {
         fprintf(stderr, "Trouble with mpg123: %s\n", mpg123_strerror(mh));
