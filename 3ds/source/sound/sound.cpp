@@ -45,7 +45,7 @@ static size_t currentSong = 0;
 static ndspWaveBuf bgmBuffers[2];
 static s16* bgmData;
 static bool sizeGood = false;
-static bool playMusic;
+static bool playMusic = false;
 static bool bgmDone = true;
 static bool exitBGM = false;
 static u8 currentVolume = 0;
@@ -61,13 +61,17 @@ struct EffectThreadArg
 
 static void clearDoneEffects()
 {
-    for (auto i = effectThreads.begin(); i != effectThreads.end(); i++)
+    auto i = effectThreads.begin();
+    while (i != effectThreads.end())
     {
         if (!i->inUse)
         {
             linearFree(i->linearMem);
             i = effectThreads.erase(i);
-            i--;
+        }
+        else
+        {
+            i++;
         }
     }
 }
@@ -116,7 +120,7 @@ void Sound::exit()
     {
         bgmDone = true;
     }
-    while (!bgmDone && !effectThreads.empty())
+    while (!bgmDone || !effectThreads.empty())
     {
         svcSleepThread(125000000); // wait for play and playEffect to be done
         clearDoneEffects();
@@ -153,6 +157,7 @@ static void bgmPlayThread(void*)
     }
     if (bgmBuffers[0].status == NDSP_WBUF_DONE && bgmBuffers[1].status == NDSP_WBUF_DONE)
     {
+        bgmDone = true;
         return;
     }
 
@@ -191,14 +196,14 @@ static void bgmPlayThread(void*)
             if (buf.status == NDSP_WBUF_DONE)
             {
                 buf.nsamples = currentBGM->decode((void*)buf.data_pcm16);
-                if (buf.nsamples == 0)
-                {
-                    lastBuf = true;
-                    break;
-                }
                 if (currentBGM->stereo())
                 {
                     buf.nsamples /= 2;
+                }
+                if (buf.nsamples <= 0)
+                {
+                    lastBuf = true;
+                    break;
                 }
 
                 ndspChnWaveBufAdd(0, &buf);
@@ -308,6 +313,7 @@ static void playEffectThread(void* rawArg)
         }
         if (effectBuffer[0].status == NDSP_WBUF_DONE && effectBuffer[1].status == NDSP_WBUF_DONE)
         {
+            arg->inUse = false;
             return;
         }
 
@@ -343,14 +349,14 @@ static void playEffectThread(void* rawArg)
                 if (buf.status == NDSP_WBUF_DONE)
                 {
                     buf.nsamples = arg->decoder->decode((void*)buf.data_pcm16);
-                    if (buf.nsamples == 0)
-                    {
-                        lastBuf = true;
-                        break;
-                    }
                     if (arg->decoder->stereo())
                     {
                         buf.nsamples /= 2;
+                    }
+                    if (buf.nsamples <= 0)
+                    {
+                        lastBuf = true;
+                        break;
                     }
 
                     ndspChnWaveBufAdd(arg->channel, &buf);
@@ -359,6 +365,7 @@ static void playEffectThread(void* rawArg)
             }
         }
         ndspChnWaveBufClear(arg->channel);
+        ndspChnReset(arg->channel);
     }
     arg->inUse = false;
 }
