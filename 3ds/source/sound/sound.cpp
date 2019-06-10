@@ -52,7 +52,7 @@ static u8 currentVolume = 0;
 
 struct EffectThreadArg
 {
-    EffectThreadArg(std::shared_ptr<Decoder> decoder, s16* linearMem) : decoder(decoder), linearMem(linearMem), channel(effectThreads.size()), inUse(true) {}
+    EffectThreadArg(std::shared_ptr<Decoder> decoder, s16* linearMem, int channel) : decoder(decoder), linearMem(linearMem), channel(channel), inUse(true) {}
     std::shared_ptr<Decoder> decoder;
     s16* linearMem;
     int channel;
@@ -141,7 +141,19 @@ static void bgmPlayThread(void*)
         {
             buf.nsamples /= 2;
         }
-        ndspChnWaveBufAdd(0, &buf);
+        if (buf.nsamples > 0)
+        {
+            ndspChnWaveBufAdd(0, &buf);
+        }
+        else
+        {
+            buf.status = NDSP_WBUF_DONE;
+        }
+        DSP_FlushDataCache(buf.data_pcm16, currentBGM->bufferSize() * sizeof(u16));
+    }
+    if (bgmBuffers[0].status == NDSP_WBUF_DONE && bgmBuffers[1].status == NDSP_WBUF_DONE)
+    {
+        return;
     }
 
     for (int i = 0; !ndspChnIsPlaying(0); i++)
@@ -158,6 +170,10 @@ static void bgmPlayThread(void*)
     {
         svcSleepThread(125000000);
 
+        if (exitBGM)
+        {
+            break;
+        }
         if (lastBuf == true)
         {
             if (bgmBuffers[0].status == NDSP_WBUF_DONE && bgmBuffers[1].status == NDSP_WBUF_DONE)
@@ -168,10 +184,6 @@ static void bgmPlayThread(void*)
             {
                 continue;
             }
-        }
-        if (exitBGM)
-        {
-            break;
         }
 
         for (auto& buf : bgmBuffers)
@@ -191,7 +203,7 @@ static void bgmPlayThread(void*)
 
                 ndspChnWaveBufAdd(0, &buf);
             }
-            DSP_FlushDataCache(buf.data_pcm16, currentBGM->bufferSize() * sizeof(u16)); // Huh?
+            DSP_FlushDataCache(buf.data_pcm16, currentBGM->bufferSize() * sizeof(u16));
         }
     }
     ndspChnWaveBufClear(0);
@@ -284,7 +296,19 @@ static void playEffectThread(void* rawArg)
             {
                 buf.nsamples /= 2;
             }
-            ndspChnWaveBufAdd(arg->channel, &buf);
+            if (buf.nsamples > 0)
+            {
+                ndspChnWaveBufAdd(arg->channel, &buf);
+            }
+            else
+            {
+                buf.status = NDSP_WBUF_DONE;
+            }
+            DSP_FlushDataCache(buf.data_pcm16, arg->decoder->bufferSize() * sizeof(u16));
+        }
+        if (effectBuffer[0].status == NDSP_WBUF_DONE && effectBuffer[1].status == NDSP_WBUF_DONE)
+        {
+            return;
         }
 
         for (int i = 0; !ndspChnIsPlaying(arg->channel); i++)
@@ -331,7 +355,7 @@ static void playEffectThread(void* rawArg)
 
                     ndspChnWaveBufAdd(arg->channel, &buf);
                 }
-                DSP_FlushDataCache(buf.data_pcm16, arg->decoder->bufferSize() * sizeof(u16)); // Huh?
+                DSP_FlushDataCache(buf.data_pcm16, arg->decoder->bufferSize() * sizeof(u16));
             }
         }
         ndspChnWaveBufClear(arg->channel);
@@ -348,7 +372,7 @@ void Sound::playEffect(const std::string& effectName)
         auto decoder = Decoder::get(effect->second);
         if (decoder && decoder->good())
         {
-            effectThreads.emplace_back(decoder, (s16*)linearAlloc((decoder->bufferSize() * sizeof(u16)) * 2));
+            effectThreads.emplace_back(decoder, (s16*)linearAlloc((decoder->bufferSize() * sizeof(u16)) * 2), effectThreads.size() + 1);
             Threads::create(&playEffectThread, (void*) &*effectThreads.rbegin());
         }
     }
