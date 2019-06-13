@@ -44,10 +44,14 @@ BoxChoice::BoxChoice(bool doCrypt) : doCrypt(doCrypt)
 {
     mainButtons[0] = new Button(
         212, 47, 108, 28, [this]() { return this->showViewer(); }, ui_sheet_button_editor_idx, i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[1] = new Button(4, 212, 33, 28, [this]() { return false; }, ui_sheet_res_null_idx, "", 0.0f, 0);
-    mainButtons[2] = new Button(283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
-    mainButtons[3] = new AccelButton(8, 15, 17, 24, [this]() { return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
-    mainButtons[4] = new AccelButton(189, 15, 17, 24, [this]() { return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+    mainButtons[1] = new Button(
+        4, 212, 33, 28, [this]() { return false; }, ui_sheet_res_null_idx, "", 0.0f, 0);
+    mainButtons[2] = new Button(
+        283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
+    mainButtons[3] = new AccelButton(
+        8, 15, 17, 24, [this]() { return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+    mainButtons[4] = new AccelButton(
+        189, 15, 17, 24, [this]() { return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
 
     // Pokemon buttons
     u16 y = 45;
@@ -109,7 +113,7 @@ void BoxChoice::drawBottom() const
         {
             if (TitleLoader::save->generation() == Generation::LGPE && row * 6 + column + boxBox * 30 >= TitleLoader::save->maxSlot())
             {
-                C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(128, 128, 128, 128));
+                Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(128, 128, 128, 128));
             }
             else
             {
@@ -143,7 +147,7 @@ void BoxChoice::drawBottom() const
 
     if (currentOverlay)
     {
-        C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, COLOR_MASKBLACK);
+        Gui::drawSolidRect(0, 0, 320, 240, COLOR_MASKBLACK);
     }
 }
 
@@ -213,24 +217,25 @@ void BoxChoice::drawTop() const
             Gui::text(infoMon->nickname(), 276, 61, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             std::string info = "#" + std::to_string(infoMon->species());
             Gui::text(info, 273, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            info        = i18n::localize("LV") + std::to_string(infoMon->level());
-            float width = StringUtils::textWidth(info, FONT_SIZE_12);
-            Gui::text(info, 375 - (int)width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            info      = i18n::localize("LV") + std::to_string(infoMon->level());
+            auto text = Gui::parseText(info, FONT_SIZE_12, 0.0f);
+            int width = text->maxWidth(FONT_SIZE_12);
+            Gui::text(text, 375 - width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             if (infoMon->gender() == 0)
             {
-                Gui::sprite(ui_sheet_icon_male_idx, 362 - (int)width, 80);
+                Gui::sprite(ui_sheet_icon_male_idx, 362 - width, 80);
             }
             else if (infoMon->gender() == 1)
             {
-                Gui::sprite(ui_sheet_icon_female_idx, 364 - (int)width, 80);
+                Gui::sprite(ui_sheet_icon_female_idx, 364 - width, 80);
             }
             else if (infoMon->gender() == 2)
             {
-                Gui::sprite(ui_sheet_icon_genderless_idx, 364 - (int)width, 80);
+                Gui::sprite(ui_sheet_icon_genderless_idx, 364 - width, 80);
             }
             if (infoMon->shiny())
             {
-                Gui::sprite(ui_sheet_icon_shiny_idx, 352 - (int)width, 81);
+                Gui::sprite(ui_sheet_icon_shiny_idx, 352 - width, 81);
             }
 
             Gui::text(i18n::species(Configuration::getInstance().language(), infoMon->species()), 276, 98, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
@@ -260,12 +265,13 @@ void BoxChoice::drawTop() const
             Gui::text(i18n::nature(Configuration::getInstance().language(), infoMon->nature()), 276, 181, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
                 TextPosX::LEFT, TextPosY::TOP);
             info  = i18n::localize("IV") + ": ";
-            width = StringUtils::textWidth(info, FONT_SIZE_12);
-            Gui::text(info, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            text  = Gui::parseText(info, FONT_SIZE_12, 0.0f);
+            width = text->maxWidth(FONT_SIZE_12);
+            Gui::text(text, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(0), infoMon->iv(1), infoMon->iv(2));
-            Gui::text(info, 276 + (int)width + 70 / 2, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+            Gui::text(info, 276 + width + 70 / 2, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
             info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(4), infoMon->iv(5), infoMon->iv(3));
-            Gui::text(info, 276 + (int)width + 70 / 2, 209, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+            Gui::text(info, 276 + width + 70 / 2, 209, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
             Gui::format(*infoMon, 276, 213);
         }
     }
@@ -278,15 +284,15 @@ std::tuple<int, int, int> BoxChoice::run()
         hidScanInput();
         C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 
-        extern C3D_RenderTarget* g_renderTargetTop;
-        C2D_SceneBegin(g_renderTargetTop);
-        C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
+        Gui::target(GFX_TOP);
+        Gui::clearScreen(GFX_TOP);
         drawTop();
+        Gui::flushText();
 
-        extern C3D_RenderTarget* g_renderTargetBottom;
-        C2D_SceneBegin(g_renderTargetBottom);
-        C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
+        Gui::target(GFX_BOTTOM);
+        Gui::clearScreen(GFX_BOTTOM);
         drawBottom();
+        Gui::flushText();
 
         touchPosition touch;
         hidTouchRead(&touch);

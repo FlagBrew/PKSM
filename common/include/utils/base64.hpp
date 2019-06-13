@@ -24,26 +24,33 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "utils.hpp"
-#include <citro2d.h>
+#ifndef BASE64_HPP
+#define BASE64_HPP
 
-#ifndef _3DSUTILS_HPP
-#define _3DSUTILS_HPP
+#include <string>
+#include <vector>
 
-struct FontString
+std::vector<unsigned char> base64_decode(const char* data, size_t input_length);
+inline std::vector<unsigned char> base64_decode(const std::string& data)
 {
-    FontString(C2D_Font font = nullptr, const std::string& text = "") : font(font), text(text) {}
-    C2D_Font font;
-    std::string text;
-};
-
-namespace StringUtils
+    return base64_decode(data.data(), data.size());
+}
+inline std::vector<unsigned char> base64_decode(const uint8_t* data, size_t input_length)
 {
-    float textWidth(const C2D_Text& str, float scaleX);
-
-    bool fontHasChar(const C2D_Font& font, u16 codepoint);
-    std::vector<FontString> fontSplit(const std::string& str);
-    C2D_Font fontForCodepoint(u16 codepoint);
+    return base64_decode((char*)data, input_length);
+}
+std::string base64_encode(const char* data, size_t input_length);
+inline std::string base64_encode(const unsigned char* data, size_t input_length)
+{
+    return base64_encode((char*)data, input_length);
+}
+inline std::string base64_encode(const std::vector<char>& data)
+{
+    return base64_encode(data.data(), data.size());
+}
+inline std::string base64_encode(const std::vector<unsigned char>& data)
+{
+    return base64_encode(data.data(), data.size());
 }
 
 #endif

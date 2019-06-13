@@ -34,15 +34,15 @@ int ScriptChoice::run()
         hidScanInput();
         C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 
-        extern C3D_RenderTarget* g_renderTargetTop;
-        C2D_SceneBegin(g_renderTargetTop);
-        C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
+        Gui::target(GFX_TOP);
+        Gui::clearScreen(GFX_TOP);
         drawTop();
+        Gui::flushText();
 
-        extern C3D_RenderTarget* g_renderTargetBottom;
-        C2D_SceneBegin(g_renderTargetBottom);
-        C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
+        Gui::target(GFX_BOTTOM);
+        Gui::clearScreen(GFX_BOTTOM);
         drawBottom();
+        Gui::flushText();
 
         touchPosition touch;
         hidTouchRead(&touch);

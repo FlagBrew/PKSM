@@ -39,7 +39,7 @@
 
 namespace StringUtils
 {
-    std::string format(const std::string& fmt_str, ...);
+    std::string format(std::string fmt_str, ...);
     std::u16string UTF8toUTF16(const std::string& src);
     std::string UTF16toUTF8(const std::u16string& src);
     std::u16string getU16String(const u8* data, int ofs, int len, char16_t term);
@@ -50,13 +50,6 @@ namespace StringUtils
     void setString4(u8* data, const std::string& v, int ofs, int len);
     std::string& toLower(std::string& in);
     std::string& toUpper(std::string& in);
-    std::string splitWord(const std::string& word, float scaleX, float maxWidth);
-    float textWidth(const std::string& str, float scaleX);
-    float textWidth(const std::u16string& str, float scaleX);
-    // Just wraps according to spaces
-    std::string wrap(const std::string& str, float scaleX, float maxWidth);
-    // Wraps and truncates to X lines, adding an ellipsis to the end
-    std::string wrap(const std::string& str, float scaleX, float maxWidth, size_t lines);
     /** Swaps and reswaps Pokemon specific characters, namely:
      * 0x2227, 0x2228, 0x2460, 0x2461, 0x2462,
      * 0x2463, 0x2464, 0x2465, 0x2466, 0x2469,

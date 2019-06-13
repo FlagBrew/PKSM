@@ -34,7 +34,8 @@ SpeciesOverlay::SpeciesOverlay(Screen& screen, std::shared_ptr<PKX> pkm)
     : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(40, 8)
 {
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
-    searchButton = new ClickButton(75, 30, 170, 23,
+    searchButton = new ClickButton(
+        75, 30, 170, 23,
         [this]() {
             Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
             return false;
@@ -87,11 +88,11 @@ void SpeciesOverlay::drawTop() const
     // Selector
     if (dispPkm.size() > 0)
     {
-        C2D_DrawRectSolid(x, y, 0.5f, 49, 47, COLOR_MASKBLACK);
-        C2D_DrawRectSolid(x, y, 0.5f, 49, 1, COLOR_YELLOW);
-        C2D_DrawRectSolid(x, y, 0.5f, 1, 47, COLOR_YELLOW);
-        C2D_DrawRectSolid(x + 48, y, 0.5f, 1, 47, COLOR_YELLOW);
-        C2D_DrawRectSolid(x, y + 46, 0.5f, 49, 1, COLOR_YELLOW);
+        Gui::drawSolidRect(x, y, 49, 47, COLOR_MASKBLACK);
+        Gui::drawSolidRect(x, y, 49, 1, COLOR_YELLOW);
+        Gui::drawSolidRect(x, y, 1, 47, COLOR_YELLOW);
+        Gui::drawSolidRect(x + 48, y, 1, 47, COLOR_YELLOW);
+        Gui::drawSolidRect(x, y + 46, 49, 1, COLOR_YELLOW);
     }
 
     for (int y = 0; y < 5; y++)

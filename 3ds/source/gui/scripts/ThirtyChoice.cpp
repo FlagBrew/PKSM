@@ -34,11 +34,11 @@ void ThirtyChoice::drawTop() const
     int x = (hid.index() % 6) * 67;
     int y = (hid.index() / 6) * 48;
     // Selector
-    C2D_DrawRectSolid(x, y, 0.5f, 66, 47, COLOR_MASKBLACK);
-    C2D_DrawRectSolid(x, y, 0.5f, 66, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y, 0.5f, 1, 47, COLOR_YELLOW);
-    C2D_DrawRectSolid(x + 65, y, 0.5f, 1, 47, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y + 46, 0.5f, 66, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 66, 47, COLOR_MASKBLACK);
+    Gui::drawSolidRect(x, y, 66, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 1, 47, COLOR_YELLOW);
+    Gui::drawSolidRect(x + 65, y, 1, 47, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y + 46, 66, 1, COLOR_YELLOW);
 
     for (int y = 0; y < 5; y++)
     {
@@ -50,8 +50,7 @@ void ThirtyChoice::drawTop() const
                 break;
             }
             Gui::pkm(pkms[index].species, pkms[index].form, gen, 0, x * 67 + 18, y * 48 + 1);
-            std::string text = StringUtils::wrap(labels[index], FONT_SIZE_9, 65.0f, 2);
-            Gui::text(labels[index], x * 67 + 32, y * 48 + 39, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+            Gui::text(labels[index], x * 67 + 32, y * 48 + 39, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, 65.0f);
         }
     }
 }

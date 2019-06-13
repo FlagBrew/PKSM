@@ -58,13 +58,14 @@ private:
     };
     struct Text
     {
-        Text(bool top, int x, int y, TextPosX xPos, TextPosY yPos, u32 color, std::string string)
-            : top(top), x(x), y(y), xPos(xPos), yPos(yPos), color(color), string(string)
+        Text(bool top, int x, int y, int maxWidth, TextPosX xPos, TextPosY yPos, u32 color, std::string string)
+            : top(top), x(x), y(y), maxWidth(maxWidth), xPos(xPos), yPos(yPos), color(color), string(string)
         {
         }
         bool top;
         int x;
         int y;
+        int maxWidth;
         TextPosX xPos;
         TextPosY yPos;
         u32 color;

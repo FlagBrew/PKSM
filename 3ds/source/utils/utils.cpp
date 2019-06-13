@@ -24,19 +24,15 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "3dsutils.hpp"
+#include "utils.hpp"
 #include "g4text.h"
+#include <3ds.h>
 #include <algorithm>
 #include <map>
 #include <queue>
-
-namespace Gui
-{
-    extern std::vector<C2D_Font> fonts;
-}
 #include <vector>
 
-std::string StringUtils::format(const std::string& fmt_str, ...)
+std::string StringUtils::format(std::string fmt_str, ...)
 {
     va_list ap;
     char* fp = NULL;
@@ -164,6 +160,7 @@ std::string StringUtils::getString4(const u8* data, int ofs, int len)
     len *= 2;
     u16 temp;
     u16 codepoint;
+    char addChar[4];
     for (u8 i = 0; i < len; i += 2)
     {
         temp = *(u16*)(data + ofs + i);
@@ -173,30 +170,25 @@ std::string StringUtils::getString4(const u8* data, int ofs, int len)
         codepoint = G4Chars[index];
         if (codepoint == 0xFFFF)
             break;
-        char* addChar;
         if (codepoint < 0x0080)
         {
-            addChar    = new char[2];
             addChar[0] = codepoint;
             addChar[1] = '\0';
         }
         else if (codepoint < 0x0800)
         {
-            addChar    = new char[3];
             addChar[0] = 0xC0 | ((codepoint >> 6) & 0x1F);
             addChar[1] = 0x80 | (codepoint & 0x3F);
             addChar[2] = '\0';
         }
         else
         {
-            addChar    = new char[4];
             addChar[0] = 0xE0 | ((codepoint >> 12) & 0x0F);
             addChar[1] = 0x80 | ((codepoint >> 6) & 0x3F);
             addChar[2] = 0x80 | (codepoint & 0x3F);
             addChar[3] = '\0';
         }
         output.append(addChar);
-        delete[] addChar;
     }
     return output;
 }
@@ -240,8 +232,8 @@ std::string& StringUtils::toUpper(std::string& in)
 {
     std::transform(in.begin(), in.end(), in.begin(), ::toupper);
     // Just saying, I have NO clue why two outer braces levels are necessary
-    static constexpr std::array<std::pair<std::string_view, std::string_view>, 12> transStrings = {{{"í", "Í"}, {"ó", "Ó"}, {"ú", "Ú"}, {"é", "É"}, {"á", "Á"},
-        {"ì", "Ì"}, {"ò", "Ò"}, {"ù", "Ù"}, {"è", "È"}, {"à", "À"}, {"ñ", "Ñ"}, {"æ", "Æ"}}};
+    static constexpr std::array<std::pair<std::string_view, std::string_view>, 12> transStrings = {{{"í", "Í"}, {"ó", "Ó"}, {"ú", "Ú"}, {"é", "É"},
+        {"á", "Á"}, {"ì", "Ì"}, {"ò", "Ò"}, {"ù", "Ù"}, {"è", "È"}, {"à", "À"}, {"ñ", "Ñ"}, {"æ", "Æ"}}};
     for (auto& str : transStrings)
     {
         size_t found;
@@ -257,8 +249,8 @@ std::string& StringUtils::toLower(std::string& in)
 {
     std::transform(in.begin(), in.end(), in.begin(), ::tolower);
     // Just saying, I have NO clue why two outer braces levels are necessary
-    static constexpr std::array<std::pair<std::string_view, std::string_view>, 12> transStrings = {{{"Í", "í"}, {"Ó", "ó"}, {"Ú", "ú"}, {"É", "é"}, {"Á", "á"},
-        {"Ì", "ì"}, {"Ò", "ò"}, {"Ù", "ù"}, {"È", "è"}, {"À", "à"}, {"Ñ", "ñ"}, {"Æ", "æ"}}};
+    static constexpr std::array<std::pair<std::string_view, std::string_view>, 12> transStrings = {{{"Í", "í"}, {"Ó", "ó"}, {"Ú", "ú"}, {"É", "é"},
+        {"Á", "á"}, {"Ì", "ì"}, {"Ò", "ò"}, {"Ù", "ù"}, {"È", "è"}, {"À", "à"}, {"Ñ", "ñ"}, {"Æ", "æ"}}};
     for (auto& str : transStrings)
     {
         size_t found;
@@ -268,420 +260,6 @@ std::string& StringUtils::toLower(std::string& in)
         }
     }
     return in;
-}
-
-static std::map<u16, charWidthInfo_s*> widthCache;
-static std::queue<u16> widthCacheOrder;
-
-std::string StringUtils::splitWord(const std::string& text, float scaleX, float maxWidth)
-{
-    std::string word   = text;
-    float currentWidth = 0.0f;
-    if (StringUtils::textWidth(word, scaleX) > maxWidth)
-    {
-        for (size_t i = 0; i < word.size(); i++)
-        {
-            u16 codepoint = 0xFFFF;
-            int iMod      = 0;
-            if (word[i] & 0x80 && word[i] & 0x40 && word[i] & 0x20 && !(word[i] & 0x10) && i + 2 < word.size())
-            {
-                codepoint = word[i] & 0x0F;
-                codepoint = codepoint << 6 | (word[i + 1] & 0x3F);
-                codepoint = codepoint << 6 | (word[i + 2] & 0x3F);
-                iMod      = 2;
-            }
-            else if (word[i] & 0x80 && word[i] & 0x40 && !(word[i] & 0x20) && i + 1 < word.size())
-            {
-                codepoint = word[i] & 0x1F;
-                codepoint = codepoint << 6 | (word[i + 1] & 0x3F);
-                iMod      = 1;
-            }
-            else if (!(word[i] & 0x80))
-            {
-                codepoint = word[i];
-            }
-            float charWidth;
-            auto width = widthCache.find(codepoint);
-            if (width != widthCache.end())
-            {
-                charWidth = width->second->charWidth * scaleX;
-            }
-            else
-            {
-                std::string tmpString = word.substr(i, iMod + 1); // The character
-                widthCache.insert_or_assign(codepoint,
-                    C2D_FontGetCharWidthInfo(fontForCodepoint(codepoint), C2D_FontGlyphIndexFromCodePoint(fontForCodepoint(codepoint), codepoint)));
-                widthCacheOrder.push(codepoint);
-                if (widthCache.size() > 2048)
-                {
-                    widthCache.erase(widthCacheOrder.front());
-                    widthCacheOrder.pop();
-                }
-                charWidth = widthCache[codepoint]->charWidth * scaleX;
-            }
-            currentWidth += charWidth;
-            if (currentWidth > maxWidth)
-            {
-                word.insert(i, 1, '\n');
-                currentWidth = charWidth;
-            }
-
-            i += iMod; // Yay, variable width encodings
-        }
-    }
-    return word;
-}
-
-float StringUtils::textWidth(const std::string& text, float scaleX)
-{
-    float ret        = 0.0f;
-    float largestRet = 0.0f;
-    int iMod         = 0;
-    for (size_t i = 0; i < text.size(); i++)
-    {
-        if (text[i] == '\n')
-        {
-            largestRet = std::max(largestRet, ret);
-            ret        = 0.0f;
-            continue;
-        }
-        u16 codepoint = 0xFFFD;
-        if (text[i] & 0x80 && text[i] & 0x40 && text[i] & 0x20 && !(text[i] & 0x10) && i + 2 < text.size())
-        {
-            codepoint = text[i] & 0x0F;
-            codepoint = codepoint << 6 | (text[i + 1] & 0x3F);
-            codepoint = codepoint << 6 | (text[i + 2] & 0x3F);
-            iMod      = 2;
-        }
-        else if (text[i] & 0x80 && text[i] & 0x40 && !(text[i] & 0x20) && i + 1 < text.size())
-        {
-            codepoint = text[i] & 0x1F;
-            codepoint = codepoint << 6 | (text[i + 1] & 0x3F);
-            iMod      = 1;
-        }
-        else if (!(text[i] & 0x80))
-        {
-            codepoint = text[i];
-            iMod      = 0;
-        }
-        float charWidth;
-        auto width = widthCache.find(codepoint);
-        if (width != widthCache.end())
-        {
-            charWidth = width->second->charWidth * scaleX;
-        }
-        else
-        {
-            const auto& item = widthCache.insert_or_assign(codepoint,
-                C2D_FontGetCharWidthInfo(fontForCodepoint(codepoint), C2D_FontGlyphIndexFromCodePoint(fontForCodepoint(codepoint), codepoint)));
-            widthCacheOrder.push(codepoint);
-            if (widthCache.size() > 2048)
-            {
-                widthCache.erase(widthCacheOrder.front());
-                widthCacheOrder.pop();
-            }
-            charWidth = item.first->second->charWidth * scaleX;
-        }
-        ret += charWidth;
-        i += iMod;
-        iMod = 0;
-    }
-    return std::max(largestRet, ret);
-}
-
-float StringUtils::textWidth(const std::u16string& text, float scaleX)
-{
-    float ret        = 0.0f;
-    float largestRet = 0.0f;
-    for (size_t i = 0; i < text.size(); i++)
-    {
-        if (text[i] == u'\n')
-        {
-            largestRet = std::max(ret, largestRet);
-            ret        = 0.0f;
-            continue;
-        }
-        float charWidth;
-        auto width = widthCache.find(text[i]);
-        if (width != widthCache.end())
-        {
-            charWidth = width->second->charWidth * scaleX;
-        }
-        else
-        {
-            const auto& item = widthCache.insert_or_assign(
-                text[i], C2D_FontGetCharWidthInfo(fontForCodepoint(text[i]), C2D_FontGlyphIndexFromCodePoint(fontForCodepoint(text[i]), text[i])));
-            widthCacheOrder.push(text[i]);
-            if (widthCache.size() > 2048)
-            {
-                widthCache.erase(widthCacheOrder.front());
-                widthCacheOrder.pop();
-            }
-            charWidth = item.first->second->charWidth * scaleX;
-        }
-        ret += charWidth;
-    }
-    return std::max(largestRet, ret);
-}
-
-float StringUtils::textWidth(const C2D_Text& text, float scaleX)
-{
-    return ceilf(text.width * scaleX);
-}
-
-std::string StringUtils::wrap(const std::string& text, float scaleX, float maxWidth)
-{
-    if (textWidth(text, scaleX) <= maxWidth)
-    {
-        return text;
-    }
-    std::string dst, line, word;
-    dst = line = word = "";
-    dst.reserve(text.size());
-
-    for (std::string::const_iterator it = text.begin(); it != text.end(); it++)
-    {
-        word += *it;
-        if (*it == ' ')
-        {
-            // split single words that are bigger than maxWidth
-            if (StringUtils::textWidth(line + word, scaleX) <= maxWidth)
-            {
-                line += word;
-            }
-            else
-            {
-                if (StringUtils::textWidth(word, scaleX) > maxWidth)
-                {
-                    line += word;
-                    line = StringUtils::splitWord(line, scaleX, maxWidth);
-                    word = line.substr(line.find('\n') + 1, std::string::npos);
-                    line = line.substr(0, line.find('\n')); // Split line on first newLine; assign second part to word and first to line
-                }
-                if (line[line.size() - 1] == ' ')
-                {
-                    dst += line.substr(0, line.size() - 1) + '\n';
-                }
-                else
-                {
-                    dst += line + '\n';
-                }
-                line = word;
-            }
-            word = "";
-        }
-    }
-
-    // "Another iteration" of the loop b/c it probably won't end with a space
-    // If it does, no harm done
-    // word = StringUtils::splitWord(word, scaleX, maxWidth);
-    if (StringUtils::textWidth(line + word, scaleX) <= maxWidth)
-    {
-        dst += line + word;
-    }
-    else
-    {
-        if (StringUtils::textWidth(word, scaleX) > maxWidth)
-        {
-            line += word;
-            line = StringUtils::splitWord(line, scaleX, maxWidth);
-            word = line.substr(line.find('\n') + 1, std::string::npos);
-            line = line.substr(0, line.find('\n'));
-        }
-        if (line[line.size() - 1] == ' ')
-        {
-            dst += line.substr(0, line.size() - 1) + '\n' + word;
-        }
-        else
-        {
-            dst += line + '\n' + word;
-        }
-    }
-    return dst;
-}
-
-std::string StringUtils::wrap(const std::string& text, float scaleX, float maxWidth, size_t lines)
-{
-    if (textWidth(text, scaleX) <= maxWidth)
-    {
-        return text;
-    }
-
-    // Get the wrapped string
-    std::string wrapped = wrap(text, scaleX, maxWidth);
-    if (lines == 0)
-    {
-        return wrapped;
-    }
-
-    // string.split('\n')
-    std::vector<std::string> split;
-    for (size_t i = 0; i < wrapped.size(); i++)
-    {
-        if (wrapped[i] == '\n')
-        {
-            split.emplace_back(wrapped.substr(0, i));
-            wrapped = wrapped.substr(i + 1, std::string::npos);
-            i       = 0;
-        }
-    }
-    if (!wrapped.empty())
-    {
-        split.emplace_back(wrapped);
-    }
-
-    // If it's already the correct amount of lines, return it
-    if (split.size() <= lines)
-    {
-        wrapped = split[0];
-        for (size_t i = 1; i < split.size(); i++)
-        {
-            wrapped += '\n' + split[i];
-        }
-        return wrapped;
-    }
-
-    // Otherwise truncate it to the correct amount
-    for (size_t i = split.size(); i > lines; i--)
-    {
-        split.pop_back();
-    }
-
-    const float ellipsis = C2D_FontGetCharWidthInfo(Gui::fonts[1], C2D_FontGlyphIndexFromCodePoint(Gui::fonts[1], '.'))->charWidth * 3 * scaleX;
-
-    // If there's space for the ellipsis, add it
-    if (textWidth(split[lines - 1], scaleX) + ellipsis <= maxWidth)
-    {
-        split[lines - 1] += "...";
-    }
-    // Otherwise do some sort of magic
-    else
-    {
-        std::string& finalLine = split[lines - 1];
-        // If there's a long enough word and a large enough space on the top line, move stuff up & add ellipsis to the end
-        if (lines > 1 && textWidth(split[lines - 2], scaleX) <= maxWidth / 2 &&
-            textWidth(finalLine.substr(0, finalLine.find(' ')), scaleX) > maxWidth * 0.75f)
-        {
-            std::string sliced = wrap(finalLine, scaleX, maxWidth * 0.4f);
-            split[lines - 2] += ' ' + sliced.substr(0, sliced.find('\n'));
-            sliced = sliced.substr(sliced.find('\n') + 1);
-            for (size_t i = sliced.size(); i > 0; i--)
-            {
-                if (sliced[i - 1] == '\n')
-                {
-                    sliced.erase(i - 1, 1);
-                }
-            }
-            finalLine = sliced + "...";
-        }
-        // Or get rid of enough characters for it to fit
-        else
-        {
-            for (size_t i = finalLine.size(); i > 0; i--)
-            {
-                if ((finalLine[i - 1] & 0x80 && finalLine[i - 1] & 0x40) || !(finalLine[i - 1] & 0x80)) // Beginning UTF-8 byte
-                {
-                    if (textWidth(finalLine.substr(0, i - 1), scaleX) + ellipsis <= maxWidth)
-                    {
-                        finalLine = finalLine.substr(0, i - 1) + "...";
-                    }
-                }
-            }
-        }
-    }
-
-    // Concatenate them and return
-    wrapped = split[0];
-    for (size_t i = 1; i < split.size(); i++)
-    {
-        wrapped += '\n' + split[i];
-    }
-
-    return wrapped;
-}
-
-bool StringUtils::fontHasChar(const C2D_Font& font, u16 codepoint)
-{
-    if (C2D_FontGlyphIndexFromCodePoint(font, codepoint) == C2D_FontGetInfo(font)->alterCharIndex)
-    {
-        return false;
-    }
-    return true;
-}
-
-std::vector<FontString> StringUtils::fontSplit(const std::string& str)
-{
-    std::vector<FontString> ret;
-    std::string parseMe = "", currentChar = "";
-    C2D_Font prevFont = nullptr;
-    for (size_t i = 0; i < str.size() + 1; i++)
-    {
-        u16 codepoint = 0xFFFD;
-        if (str[i] & 0x80 && str[i] & 0x40 && str[i] & 0x20 && !(str[i] & 0x10) && i + 2 < str.size())
-        {
-            codepoint = str[i] & 0x0F;
-            currentChar += str[i];
-            codepoint = codepoint << 6 | (str[i + 1] & 0x3F);
-            currentChar += str[i + 1];
-            codepoint = codepoint << 6 | (str[i + 2] & 0x3F);
-            currentChar += str[i + 2];
-            i += 2;
-        }
-        else if (str[i] & 0x80 && str[i] & 0x40 && !(str[i] & 0x20) && i + 1 < str.size())
-        {
-            codepoint = str[i] & 0x1F;
-            currentChar += str[i];
-            codepoint = codepoint << 6 | (str[i + 1] & 0x3F);
-            currentChar += str[i + 1];
-            i += 1;
-        }
-        else if (!(str[i] & 0x80))
-        {
-            codepoint = str[i];
-            currentChar += str[i];
-        }
-        if (codepoint == 0xFFFD)
-        {
-            parseMe += "\uFFFD";
-            currentChar = "";
-            continue;
-        }
-        else if (codepoint == 0)
-        {
-            ret.emplace_back(prevFont, parseMe);
-            return ret;
-        }
-
-        C2D_Font font = fontForCodepoint(codepoint);
-        if (prevFont == font)
-        {
-            parseMe += currentChar;
-        }
-        else
-        {
-            ret.emplace_back(prevFont, parseMe);
-            parseMe  = currentChar;
-            prevFont = font;
-        }
-        currentChar = "";
-    }
-    return ret;
-}
-
-C2D_Font StringUtils::fontForCodepoint(u16 codepoint)
-{
-    if (codepoint != u' ')
-    {
-        for (size_t font = 0; font < Gui::fonts.size(); font++)
-        {
-            if (StringUtils::fontHasChar(Gui::fonts[font], codepoint))
-            {
-                return Gui::fonts[font];
-            }
-        }
-    }
-    // Either space, in which case we want to use the system font, or not found, in which case we want to use the system font
-    return Gui::fonts[1];
 }
 
 static u32 swapCodepoints45(u32 codepoint)

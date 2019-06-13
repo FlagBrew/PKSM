@@ -99,7 +99,8 @@ PkmItemOverlay::PkmItemOverlay(Screen& screen, std::shared_ptr<PKX> pkm)
         }
     }
     hid.select(index(items, i18n::item(Configuration::getInstance().language(), pkm->heldItem())));
-    searchButton = new ClickButton(75, 30, 170, 23,
+    searchButton = new ClickButton(
+        75, 30, 170, 23,
         [this]() {
             Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
             return false;
@@ -121,11 +122,11 @@ void PkmItemOverlay::drawTop() const
     Gui::sprite(ui_sheet_part_editor_20x2_idx, 0, 0);
     int x = hid.index() < hid.maxVisibleEntries() / 2 ? 2 : 200;
     int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 12;
-    C2D_DrawRectSolid(x, y, 0.5f, 198, 11, COLOR_MASKBLACK);
-    C2D_DrawRectSolid(x, y, 0.5f, 198, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y, 0.5f, 1, 11, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y + 10, 0.5f, 198, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid(x + 197, y, 0.5f, 1, 11, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 198, 11, COLOR_MASKBLACK);
+    Gui::drawSolidRect(x, y, 198, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 1, 11, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y + 10, 198, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x + 197, y, 1, 11, COLOR_YELLOW);
     for (size_t i = 0; i < hid.maxVisibleEntries(); i++)
     {
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;

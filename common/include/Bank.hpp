@@ -28,10 +28,7 @@
 #define BANK_HPP
 
 #include "Sav.hpp"
-
-extern "C" {
 #include "sha256.h"
-}
 
 class Bank
 {

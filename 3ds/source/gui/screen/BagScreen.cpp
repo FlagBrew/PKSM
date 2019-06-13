@@ -38,21 +38,23 @@ BagScreen::BagScreen()
     currentPouch = limits[0].first;
     for (size_t i = 0; i < limits.size(); i++)
     {
-        buttons.push_back(new Button(3, i * 30 + 1, 100, 30, [this, i]() { return switchPouch(i); }, ui_sheet_emulated_button_pouch_idx,
+        buttons.push_back(new Button(
+            3, i * 30 + 1, 100, 30, [this, i]() { return switchPouch(i); }, ui_sheet_emulated_button_pouch_idx,
             TitleLoader::save->pouchName(limits[i].first), FONT_SIZE_12, COLOR_BLACK));
     }
-    buttons.push_back(
-        new AccelButton(117, -15, 198, 30, [this]() { return clickIndex(-1); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 5));
+    buttons.push_back(new AccelButton(
+        117, -15, 198, 30, [this]() { return clickIndex(-1); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 5));
     for (size_t i = 0; i < std::min(allowedItems[limits[0].first].size(), (size_t)7); i++)
     {
-        buttons.push_back(
-            new ClickButton(117, 15 + i * 30, 131, 30, [this, i]() { return clickIndex(i); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK));
+        buttons.push_back(new ClickButton(
+            117, 15 + i * 30, 131, 30, [this, i]() { return clickIndex(i); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK));
     }
-    buttons.push_back(
-        new AccelButton(117, 225, 198, 30, [this]() { return clickIndex(7); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 5));
+    buttons.push_back(new AccelButton(
+        117, 225, 198, 30, [this]() { return clickIndex(7); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 5));
     for (int i = 0; i < 7; i++)
     {
-        amountButtons.push_back(new AccelButton(249, 23 + i * 30, 13, 13,
+        amountButtons.push_back(new AccelButton(
+            249, 23 + i * 30, 13, 13,
             [this, i]() {
                 editCount(false, i);
                 selectingPouch = false;
@@ -60,7 +62,8 @@ BagScreen::BagScreen()
                 return false;
             },
             ui_sheet_emulated_button_minus_small_black_idx, "", 0.0f, 0));
-        amountButtons.push_back(new ClickButton(262, 23 + i * 30, 37, 13,
+        amountButtons.push_back(new ClickButton(
+            262, 23 + i * 30, 37, 13,
             [this, i]() {
                 Gui::setNextKeyboardFunc([this, i]() { setCount(i); });
                 selectingPouch = false;
@@ -68,7 +71,8 @@ BagScreen::BagScreen()
                 return false;
             },
             ui_sheet_res_null_idx, "", 0.0f, 0));
-        amountButtons.push_back(new AccelButton(299, 23 + i * 30, 13, 13,
+        amountButtons.push_back(new AccelButton(
+            299, 23 + i * 30, 13, 13,
             [this, i]() {
                 editCount(true, i);
                 selectingPouch = false;
@@ -128,8 +132,8 @@ void BagScreen::drawTop() const
 
 void BagScreen::drawBottom() const
 {
-    C2D_DrawRectSolid(0, 0, 0.5f, 106, 240, COLOR_DARKBLUE);
-    C2D_DrawRectSolid(107, 0, 0.5f, 213, 240, COLOR_BLUE);
+    Gui::drawSolidRect(0, 0, 106, 240, COLOR_DARKBLUE);
+    Gui::drawSolidRect(107, 0, 213, 240, COLOR_BLUE);
 
     for (auto button : buttons)
     {
@@ -149,11 +153,6 @@ void BagScreen::drawBottom() const
     {
         auto item = TitleLoader::save->item(limits[currentPouch].first, firstItem + i);
         Gui::sprite(ui_sheet_emulated_button_item_idx, 117, 15 + 30 * i);
-        // std::string print = i18n::item(Configuration::getInstance().language(), item->id());
-        // if (item->id() > 0)
-        // {
-        //     print += " x " + std::to_string((int)item->count());
-        // }
         Gui::text(i18n::item(Configuration::getInstance().language(), item->id()), 117 + 131 / 2, 20 + 30 * i, FONT_SIZE_12, FONT_SIZE_12,
             canEdit(limits[currentPouch].first, *item) ? COLOR_BLACK : COLOR_GREY, TextPosX::CENTER, TextPosY::TOP);
         if (item->id() > 0)
@@ -161,8 +160,6 @@ void BagScreen::drawBottom() const
             Gui::text(std::to_string((int)item->count()), 262 + 37 / 2, 20 + 30 * i, FONT_SIZE_12, FONT_SIZE_12,
                 canEdit(limits[currentPouch].first, *item) ? COLOR_BLACK : COLOR_GREY, TextPosX::CENTER, TextPosY::TOP);
         }
-        // Gui::text(print, 223, 20 + 30 * i, FONT_SIZE_12, FONT_SIZE_12, canEdit(limits[currentPouch].first, *item) ? COLOR_BLACK :
-        // C2D_Color32(128, 128, 128, 255), TextPosX::CENTER, TextPosY::TOP);
     }
 
     u8 mod = 0;

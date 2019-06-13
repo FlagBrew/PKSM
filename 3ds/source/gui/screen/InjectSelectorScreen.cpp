@@ -64,7 +64,8 @@ InjectSelectorScreen::InjectSelectorScreen()
     // Filter
     for (int i = 0; i < 9; i++)
     {
-        langFilters.push_back(new ToggleButton(268, 3 + i * 24, 38, 23,
+        langFilters.push_back(new ToggleButton(
+            268, 3 + i * 24, 38, 23,
             [this, i]() {
                 hid.select(0);
                 return this->toggleFilter(std::string(langs[i]));
@@ -206,7 +207,7 @@ void InjectSelectorScreen::drawBottom() const
 
     if (dump)
     {
-        C2D_DrawRectSolid(0, 0, 0.5, 320, 240, COLOR_MASKBLACK);
+        Gui::drawSolidRect(0, 0, 320, 240, COLOR_MASKBLACK);
         Gui::text(i18n::localize("WC_DUMP1"), 160, 107, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     }
 }
@@ -238,8 +239,7 @@ void InjectSelectorScreen::drawTop() const
                 }
                 else
                 {
-                    C2D_DrawRectSolid(
-                        x, y, 0.5f, 178, 34, i == hid.index() ? C2D_Color32(0x3D, 0x5A, 0xFE, 0xFF) : C2D_Color32(0x8C, 0x9E, 0xFF, 0xFF));
+                    Gui::drawSolidRect(x, y, 178, 34, i == hid.index() ? C2D_Color32(0x3D, 0x5A, 0xFE, 0xFF) : C2D_Color32(0x8C, 0x9E, 0xFF, 0xFF));
                 }
             }
             else
@@ -260,8 +260,7 @@ void InjectSelectorScreen::drawTop() const
                 }
                 else
                 {
-                    C2D_DrawRectSolid(
-                        x, y, 0.5f, 178, 34, i == hid.index() ? C2D_Color32(0x3D, 0x5A, 0xFE, 0xFF) : C2D_Color32(0x8C, 0x9E, 0xFF, 0xFF));
+                    Gui::drawSolidRect(x, y, 178, 34, i == hid.index() ? C2D_Color32(0x3D, 0x5A, 0xFE, 0xFF) : C2D_Color32(0x8C, 0x9E, 0xFF, 0xFF));
                 }
             }
         }
@@ -294,9 +293,23 @@ void InjectSelectorScreen::drawTop() const
                 {
                     Gui::pkm(data.species, data.form, TitleLoader::save->generation(), data.gender, x, y);
                 }
-                std::string text = data.name;
-                text             = StringUtils::wrap(data.name, FONT_SIZE_11, 138, 2);
-                // TODO check this six
+                auto text = Gui::parseText(data.name, FONT_SIZE_11, 138.0f);
+                // Truncate to two lines
+                for (size_t i = 0; i < text->glyphs.size(); i++)
+                {
+                    if (text->glyphs[i].line > 2)
+                    {
+                        text->glyphs.erase(text->glyphs.begin() + i);
+                        i--;
+                    }
+                }
+                while (text->lineWidths.size() > 2)
+                {
+                    text->lineWidths.pop_back();
+                }
+                // Use max_element just in case there's only one line
+                text->maxLineWidth = *std::max_element(text->lineWidths.begin(), text->lineWidths.end());
+                // Then display it
                 Gui::text(text, x + 103, y + 14, FONT_SIZE_11, FONT_SIZE_11,
                     i == hid.fullIndex() ? C2D_Color32(232, 234, 246, 255) : C2D_Color32(26, 35, 126, 255), TextPosX::CENTER, TextPosY::CENTER);
             }
@@ -317,7 +330,7 @@ void InjectSelectorScreen::drawTop() const
             }
             if (dumpHid.index() == i)
             {
-                C2D_DrawRectSolid(x * 50, y * 48, 0.5f, 49, 47, C2D_Color32(15, 22, 89, 255));
+                Gui::drawSolidRect(x * 50, y * 48, 49, 47, C2D_Color32(15, 22, 89, 255));
             }
             if (fullI < gifts.size())
             {

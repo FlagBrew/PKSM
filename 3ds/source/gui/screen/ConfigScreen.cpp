@@ -110,19 +110,22 @@ static bool countryChoice()
 
 ConfigScreen::ConfigScreen()
 {
-    tabs[0] = new Button(1, 2, 104, 17,
+    tabs[0] = new Button(
+        1, 2, 104, 17,
         [&]() {
             currentTab = 0;
             return false;
         },
         ui_sheet_res_null_idx, "", 0.0f, 0);
-    tabs[1] = new Button(108, 2, 104, 17,
+    tabs[1] = new Button(
+        108, 2, 104, 17,
         [&]() {
             currentTab = 1;
             return false;
         },
         ui_sheet_res_null_idx, "", 0.0f, 0);
-    tabs[2] = new Button(215, 2, 104, 17,
+    tabs[2] = new Button(
+        215, 2, 104, 17,
         [&]() {
             currentTab = 2;
             return false;
@@ -130,42 +133,48 @@ ConfigScreen::ConfigScreen()
         ui_sheet_res_null_idx, "", 0.0f, 0);
 
     // First column of language buttons
-    tabButtons[0].push_back(new ClickButton(37, 52, 8, 8,
+    tabButtons[0].push_back(new ClickButton(
+        37, 52, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::JP);
             return false;
         },
         ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[0].push_back(new ClickButton(37, 74, 8, 8,
+    tabButtons[0].push_back(new ClickButton(
+        37, 74, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::EN);
             return false;
         },
         ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[0].push_back(new ClickButton(37, 96, 8, 8,
+    tabButtons[0].push_back(new ClickButton(
+        37, 96, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::FR);
             return false;
         },
         ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[0].push_back(new ClickButton(37, 118, 8, 8,
+    tabButtons[0].push_back(new ClickButton(
+        37, 118, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::DE);
             return false;
         },
         ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[0].push_back(new ClickButton(37, 140, 8, 8,
+    tabButtons[0].push_back(new ClickButton(
+        37, 140, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::IT);
             return false;
         },
         ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[0].push_back(new ClickButton(37, 162, 8, 8,
+    tabButtons[0].push_back(new ClickButton(
+        37, 162, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::ES);
@@ -174,35 +183,40 @@ ConfigScreen::ConfigScreen()
         ui_sheet_res_null_idx, "", 0.0f, 0));
 
     // Second column of language buttons
-    tabButtons[0].push_back(new ClickButton(177, 52, 8, 8,
+    tabButtons[0].push_back(new ClickButton(
+        177, 52, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::ZH);
             return false;
         },
         ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[0].push_back(new ClickButton(177, 74, 8, 8,
+    tabButtons[0].push_back(new ClickButton(
+        177, 74, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::KO);
             return false;
         },
         ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[0].push_back(new ClickButton(177, 96, 8, 8,
+    tabButtons[0].push_back(new ClickButton(
+        177, 96, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::NL);
             return false;
         },
         ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[0].push_back(new ClickButton(177, 118, 8, 8,
+    tabButtons[0].push_back(new ClickButton(
+        177, 118, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::PT);
             return false;
         },
         ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[0].push_back(new ClickButton(177, 140, 8, 8,
+    tabButtons[0].push_back(new ClickButton(
+        177, 140, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::RU);
@@ -211,38 +225,44 @@ ConfigScreen::ConfigScreen()
         ui_sheet_res_null_idx, "", 0.0f, 0));
 
     // Defaults buttons
-    tabButtons[1].push_back(new Button(122, 38, 15, 12,
+    tabButtons[1].push_back(new Button(
+        122, 38, 15, 12,
         []() {
             Gui::setNextKeyboardFunc([]() { inputNumber([](u16 a) { Configuration::getInstance().defaultTID(a); }, 5, 0xFFFF); });
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(new Button(122, 62, 15, 12,
+    tabButtons[1].push_back(new Button(
+        122, 62, 15, 12,
         []() {
             Gui::setNextKeyboardFunc([]() { inputNumber([](u16 a) { Configuration::getInstance().defaultSID(a); }, 5, 0xFFFF); });
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(new Button(122, 86, 15, 12,
+    tabButtons[1].push_back(new Button(
+        122, 86, 15, 12,
         []() {
             Gui::setNextKeyboardFunc(&inputOT);
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
     tabButtons[1].push_back(new ClickButton(122, 110, 15, 12, &countryChoice, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(new Button(122, 134, 15, 12,
+    tabButtons[1].push_back(new Button(
+        122, 134, 15, 12,
         []() {
             Gui::setNextKeyboardFunc([]() { inputNumber([](u16 a) { Configuration::getInstance().day(a); }, 2, 31); });
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(new Button(122, 158, 15, 12,
+    tabButtons[1].push_back(new Button(
+        122, 158, 15, 12,
         []() {
             Gui::setNextKeyboardFunc([]() { inputNumber([](u16 a) { Configuration::getInstance().month(a); }, 2, 12); });
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(new Button(122, 182, 15, 12,
+    tabButtons[1].push_back(new Button(
+        122, 182, 15, 12,
         []() {
             Gui::setNextKeyboardFunc([]() { inputNumber([](u16 a) { Configuration::getInstance().year(a); }, 4, 9999); });
             return false;
@@ -250,44 +270,51 @@ ConfigScreen::ConfigScreen()
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
 
     // Miscellaneous buttons
-    tabButtons[2].push_back(new ClickButton(247, 39, 15, 12,
+    tabButtons[2].push_back(new ClickButton(
+        247, 39, 15, 12,
         []() {
             Configuration::getInstance().autoBackup(!Configuration::getInstance().autoBackup());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new ClickButton(247, 62, 15, 12,
+    tabButtons[2].push_back(new ClickButton(
+        247, 62, 15, 12,
         []() {
             Configuration::getInstance().transferEdit(!Configuration::getInstance().transferEdit());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new ClickButton(247, 87, 15, 12,
+    tabButtons[2].push_back(new ClickButton(
+        247, 87, 15, 12,
         []() {
             Configuration::getInstance().writeFileSave(!Configuration::getInstance().writeFileSave());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new ClickButton(247, 111, 15, 12,
+    tabButtons[2].push_back(new ClickButton(
+        247, 111, 15, 12,
         []() {
             Configuration::getInstance().useSaveInfo(!Configuration::getInstance().useSaveInfo());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new ClickButton(247, 135, 15, 12,
+    tabButtons[2].push_back(new ClickButton(
+        247, 135, 15, 12,
         [this]() {
             Configuration::getInstance().useExtData(!Configuration::getInstance().useExtData());
             useExtDataChanged = !useExtDataChanged;
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new ClickButton(247, 159, 15, 12,
+    tabButtons[2].push_back(new ClickButton(
+        247, 159, 15, 12,
         []() {
             Configuration::getInstance().randomMusic(!Configuration::getInstance().randomMusic());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new ClickButton(247, 183, 15, 12,
+    tabButtons[2].push_back(new ClickButton(
+        247, 183, 15, 12,
         [this]() {
             Configuration::getInstance().showBackups(!Configuration::getInstance().showBackups());
             showBackupsChanged = !showBackupsChanged;
@@ -302,17 +329,17 @@ void ConfigScreen::drawBottom() const
 
     if (currentTab != 0)
     {
-        C2D_DrawRectSolid(1, 2, 0.5f, 104, 17, COLOR_DARKBLUE);
+        Gui::drawSolidRect(1, 2, 104, 17, COLOR_DARKBLUE);
         Gui::text(i18n::localize("LANGUAGE"), 53, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
     if (currentTab != 1)
     {
-        C2D_DrawRectSolid(108, 2, 0.5f, 104, 17, COLOR_DARKBLUE);
+        Gui::drawSolidRect(108, 2, 104, 17, COLOR_DARKBLUE);
         Gui::text(i18n::localize("DEFAULTS"), 160, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
     if (currentTab != 2)
     {
-        C2D_DrawRectSolid(215, 2, 0.5f, 104, 17, COLOR_DARKBLUE);
+        Gui::drawSolidRect(215, 2, 104, 17, COLOR_DARKBLUE);
         Gui::text(i18n::localize("MISC"), 267, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
 
@@ -333,55 +360,55 @@ void ConfigScreen::drawBottom() const
         Gui::text("Português", 199, 113, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text("русский", 199, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
-        C2D_DrawRectSolid(37, 52, 0.5f, 8, 8, COLOR_MENUBLUE);
-        C2D_DrawRectSolid(37, 74, 0.5f, 8, 8, COLOR_MENUBLUE);
-        C2D_DrawRectSolid(37, 96, 0.5f, 8, 8, COLOR_MENUBLUE);
-        C2D_DrawRectSolid(37, 118, 0.5f, 8, 8, COLOR_MENUBLUE);
-        C2D_DrawRectSolid(37, 140, 0.5f, 8, 8, COLOR_MENUBLUE);
-        C2D_DrawRectSolid(37, 162, 0.5f, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(37, 52, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(37, 74, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(37, 96, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(37, 118, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(37, 140, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(37, 162, 8, 8, COLOR_MENUBLUE);
 
-        C2D_DrawRectSolid(177, 52, 0.5f, 8, 8, COLOR_MENUBLUE);
-        C2D_DrawRectSolid(177, 74, 0.5f, 8, 8, COLOR_MENUBLUE);
-        C2D_DrawRectSolid(177, 96, 0.5f, 8, 8, COLOR_MENUBLUE);
-        C2D_DrawRectSolid(177, 118, 0.5f, 8, 8, COLOR_MENUBLUE);
-        C2D_DrawRectSolid(177, 140, 0.5f, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(177, 52, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(177, 74, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(177, 96, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(177, 118, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(177, 140, 8, 8, COLOR_MENUBLUE);
 
         switch (Configuration::getInstance().language())
         {
             case Language::JP:
-                C2D_DrawRectSolid(36, 51, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(36, 51, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::EN:
             case Language::UNUSED:
-                C2D_DrawRectSolid(36, 73, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(36, 73, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::FR:
-                C2D_DrawRectSolid(36, 95, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(36, 95, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::DE:
-                C2D_DrawRectSolid(36, 117, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(36, 117, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::IT:
-                C2D_DrawRectSolid(36, 139, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(36, 139, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::ES:
-                C2D_DrawRectSolid(36, 161, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(36, 161, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::ZH:
             case Language::TW:
-                C2D_DrawRectSolid(176, 51, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(176, 51, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::KO:
-                C2D_DrawRectSolid(176, 73, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(176, 73, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::NL:
-                C2D_DrawRectSolid(176, 95, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(176, 95, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::PT:
-                C2D_DrawRectSolid(176, 117, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(176, 117, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::RU:
-                C2D_DrawRectSolid(176, 139, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(176, 139, 10, 10, COLOR_HIGHBLUE);
                 break;
         }
     }

@@ -40,13 +40,10 @@
 #include "TitleLoadScreen.hpp"
 #include "ViewCloneOverlay.hpp"
 #include "banks.hpp"
+#include "base64.hpp"
 #include "fetch.hpp"
 #include <PB7.hpp>
 #include <variant>
-
-extern "C" {
-#include "base64.h"
-}
 
 extern std::stack<std::unique_ptr<Screen>> screens;
 
@@ -161,8 +158,8 @@ StorageScreen::StorageScreen()
     instructions.addCircle(false, 266, 23, 11, COLOR_GREY);
     instructions.addBox(false, 264, 23, 4, 50, COLOR_GREY);
     instructions.addBox(false, 148, 57, 120, 16, COLOR_GREY, i18n::localize("BOX_SWAP"), COLOR_WHITE);
-    mainButtons[0] =
-        std::make_unique<ClickButton>(242, 12, 47, 22, [this]() { return this->swapBoxWithStorage(); }, ui_sheet_button_swap_boxes_idx, "", 0.0f, 0);
+    mainButtons[0] = std::make_unique<ClickButton>(
+        242, 12, 47, 22, [this]() { return this->swapBoxWithStorage(); }, ui_sheet_button_swap_boxes_idx, "", 0.0f, 0);
     mainButtons[1] = std::make_unique<Button>(
         212, 47, 108, 28, [this]() { return this->showViewer(); }, ui_sheet_button_editor_idx, i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
     mainButtons[2] = std::make_unique<Button>(
@@ -173,16 +170,18 @@ StorageScreen::StorageScreen()
         212, 140, 108, 28, [this]() { return this->dumpPkm(); }, ui_sheet_button_editor_idx, i18n::localize("DUMP"), FONT_SIZE_12, COLOR_BLACK);
     mainButtons[5] = std::make_unique<Button>(
         212, 171, 108, 28, [this]() { return this->duplicate(); }, ui_sheet_button_editor_idx, i18n::localize("CLONE"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[6] = std::make_unique<Button>(283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
-    mainButtons[7] =
-        std::make_unique<AccelButton>(8, 15, 17, 24, [this]() { return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
-    mainButtons[8] =
-        std::make_unique<AccelButton>(189, 15, 17, 24, [this]() { return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+    mainButtons[6] = std::make_unique<Button>(
+        283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
+    mainButtons[7] = std::make_unique<AccelButton>(
+        8, 15, 17, 24, [this]() { return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+    mainButtons[8] = std::make_unique<AccelButton>(
+        189, 15, 17, 24, [this]() { return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
 
     instructions.addCircle(false, 17, 225, 8, COLOR_GREY);
     instructions.addBox(false, 15, 175, 4, 50, COLOR_GREY);
     instructions.addBox(false, 15, 175, 120, 18, COLOR_GREY, i18n::localize("SHARE_HINT"), COLOR_WHITE);
-    mainButtons[9] = std::make_unique<ClickButton>(3, 211, 28, 28,
+    mainButtons[9] = std::make_unique<ClickButton>(
+        3, 211, 28, 28,
         [this]() {
             if (!infoMon)
             {
@@ -218,8 +217,8 @@ StorageScreen::StorageScreen()
         y += 30;
     }
     instructions.addBox(false, 25, 15, 164, 24, COLOR_GREY, i18n::localize("A_BOX_NAME"), COLOR_WHITE);
-    clickButtons[30] =
-        std::make_unique<ClickButton>(25, 15, 164, 24, [this]() { return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0);
+    clickButtons[30] = std::make_unique<ClickButton>(
+        25, 15, 164, 24, [this]() { return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0);
     TitleLoader::save->cryptBoxData(true);
 
     boxBox = TitleLoader::save->currentBox();
@@ -285,11 +284,11 @@ void StorageScreen::drawBottom() const
                 column >= std::min((cursorIndex - 1) % 6, selectDimensions.first) &&
                 row <= std::max((cursorIndex - 1) / 6, selectDimensions.second) && row >= std::min((cursorIndex - 1) / 6, selectDimensions.second))
             {
-                C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
             }
             if (TitleLoader::save->generation() == Generation::LGPE && row * 6 + column + boxBox * 30 >= TitleLoader::save->maxSlot())
             {
-                C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(128, 128, 128, 128));
+                Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(128, 128, 128, 128));
             }
             else
             {
@@ -325,7 +324,7 @@ void StorageScreen::drawBottom() const
                 int y = 10 + dy + (i / selectDimensions.first) * 30;
                 if (selectDimensions.first > 1 || selectDimensions.second > 1)
                 {
-                    C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                    Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
                 }
                 if (moveMon[i])
                 {
@@ -357,7 +356,7 @@ void StorageScreen::drawBottom() const
                 int y = 44 + yMod + (i / selectDimensions.first) * 30;
                 if (selectDimensions.first > 1 || selectDimensions.second > 1)
                 {
-                    C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                    Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
                 }
                 if (moveMon[i])
                 {
@@ -413,7 +412,7 @@ void StorageScreen::drawTop() const
                 column >= std::min((cursorIndex - 1) % 6, selectDimensions.first) &&
                 row <= std::max((cursorIndex - 1) / 6, selectDimensions.second) && row >= std::min((cursorIndex - 1) / 6, selectDimensions.second))
             {
-                C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
             }
             auto pkm = Banks::bank->pkm(storageBox, row * 6 + column);
             if (pkm->species() > 0)
@@ -444,7 +443,7 @@ void StorageScreen::drawTop() const
                 int y = 16 + dy + (i / selectDimensions.first) * 30;
                 if (selectDimensions.first > 1 || selectDimensions.second > 1)
                 {
-                    C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                    Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
                 }
                 if (moveMon[i])
                 {
@@ -476,7 +475,7 @@ void StorageScreen::drawTop() const
                 int y = 65 + yMod + (i / selectDimensions.first) * 30;
                 if (selectDimensions.first > 1 || selectDimensions.second > 1)
                 {
-                    C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                    Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
                 }
                 if (moveMon[i])
                 {
@@ -505,24 +504,25 @@ void StorageScreen::drawTop() const
         Gui::text(infoMon->nickname(), 276, 61, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         std::string info = "#" + std::to_string(infoMon->species());
         Gui::text(info, 273, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        info        = i18n::localize("LV") + std::to_string(infoMon->level());
-        float width = StringUtils::textWidth(info, FONT_SIZE_12);
-        Gui::text(info, 375 - (int)width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        info      = i18n::localize("LV") + std::to_string(infoMon->level());
+        auto text = Gui::parseText(info, FONT_SIZE_12, 0.0f);
+        int width = text->maxWidth(FONT_SIZE_12);
+        Gui::text(text, 375 - width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         if (infoMon->gender() == 0)
         {
-            Gui::sprite(ui_sheet_icon_male_idx, 362 - (int)width, 80);
+            Gui::sprite(ui_sheet_icon_male_idx, 362 - width, 80);
         }
         else if (infoMon->gender() == 1)
         {
-            Gui::sprite(ui_sheet_icon_female_idx, 364 - (int)width, 80);
+            Gui::sprite(ui_sheet_icon_female_idx, 364 - width, 80);
         }
         else if (infoMon->gender() == 2)
         {
-            Gui::sprite(ui_sheet_icon_genderless_idx, 364 - (int)width, 80);
+            Gui::sprite(ui_sheet_icon_genderless_idx, 364 - width, 80);
         }
         if (infoMon->shiny())
         {
-            Gui::sprite(ui_sheet_icon_shiny_idx, 352 - (int)width, 81);
+            Gui::sprite(ui_sheet_icon_shiny_idx, 352 - width, 81);
         }
 
         Gui::text(i18n::species(Configuration::getInstance().language(), infoMon->species()), 276, 98, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
@@ -552,12 +552,13 @@ void StorageScreen::drawTop() const
         Gui::text(i18n::nature(Configuration::getInstance().language(), infoMon->nature()), 276, 181, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
             TextPosX::LEFT, TextPosY::TOP);
         info  = i18n::localize("IV") + ": ";
-        width = StringUtils::textWidth(info, FONT_SIZE_12);
-        Gui::text(info, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        text  = Gui::parseText(info, FONT_SIZE_12, 0.0f);
+        width = text->maxWidth(FONT_SIZE_12);
+        Gui::text(text, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(0), infoMon->iv(1), infoMon->iv(2));
-        Gui::text(info, 276 + (int)width + 70 / 2, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(info, 276 + width + 70 / 2, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(4), infoMon->iv(5), infoMon->iv(3));
-        Gui::text(info, 276 + (int)width + 70 / 2, 209, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(info, 276 + width + 70 / 2, 209, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         Gui::format(*infoMon, 276, 213);
     }
 }
@@ -1674,15 +1675,10 @@ static size_t header_callback(char* buffer, size_t size, size_t nitems, void* us
 
 void StorageScreen::shareSend()
 {
-    const u8* rawData = infoMon->rawData();
-    size_t outSize;
     long status_code     = 0;
-    char* b64Data        = base64_encode((char*)rawData, infoMon->getLength(), &outSize);
-    std::string postdata = b64Data;
-    free(b64Data);
-
-    std::string version = "Generation: " + genToString(infoMon->generation());
-    std::string size    = "Size: " + std::to_string(infoMon->getLength());
+    std::string postdata = base64_encode(infoMon->rawData(), infoMon->getLength());
+    std::string version  = "Generation: " + genToString(infoMon->generation());
+    std::string size     = "Size: " + std::to_string(infoMon->getLength());
     std::string info =
         "Info: " + infoMon->nickname() + "," + infoMon->otName() + "," + std::to_string((int)infoMon->level()) + "," +
         std::to_string(infoMon->species()) + "," + std::to_string(infoMon->move(0)) + "," + std::to_string(infoMon->move(1)) + "," +
@@ -1692,6 +1688,7 @@ void StorageScreen::shareSend()
         std::to_string((int)infoMon->iv(4)) // Sp. Atk, Sp. Def, Speed
         + "," + std::to_string((int)infoMon->gender()) + "," + std::to_string((bool)infoMon->shiny()) + "," +
         std::to_string((int)infoMon->ability()) + "," + std::to_string((int)infoMon->heldItem()) + "," + std::to_string((int)infoMon->TID());
+
     struct curl_slist* headers = NULL;
     headers                    = curl_slist_append(headers, "Content-Type: application/base64");
     headers                    = curl_slist_append(headers, version.c_str());
@@ -1753,7 +1750,7 @@ void StorageScreen::shareReceive()
         {
             std::copy(data.begin(), data.end(), input);
             input[10] = '\0';
-            ret = SWKBD_BUTTON_CONFIRM;
+            ret       = SWKBD_BUTTON_CONFIRM;
         }
     }
     if (ret == SWKBD_BUTTON_CONFIRM)
@@ -1792,8 +1789,7 @@ void StorageScreen::shareReceive()
                         Fetch::exit();
                         return;
                 }
-                size_t outSize;
-                u8* retData = base64_decode(retB64Data.data(), retB64Data.size(), &outSize);
+                auto retData = base64_decode(retB64Data.data(), retB64Data.size());
 
                 size_t targetLength = 0;
                 switch (gen)
@@ -1812,15 +1808,14 @@ void StorageScreen::shareReceive()
                     default:
                         break;
                 }
-                if (outSize != targetLength)
+                if (retData.size() != targetLength)
                 {
-                    Gui::error(i18n::localize("SHARE_ERROR_INCORRECT_VERSION"), outSize);
-                    free(retData);
+                    Gui::error(i18n::localize("SHARE_ERROR_INCORRECT_VERSION"), retData.size());
                     Fetch::exit();
                     return;
                 }
 
-                auto pkm = PKX::getPKM(gen, retData);
+                auto pkm = PKX::getPKM(gen, retData.data());
 
                 if (storageChosen)
                 {
@@ -1841,7 +1836,6 @@ void StorageScreen::shareReceive()
                         Gui::warn(i18n::localize("SHARE_GENERATION_TRANSFER_ERROR"));
                     }
                 }
-                free(retData);
             }
         }
         Fetch::exit();
