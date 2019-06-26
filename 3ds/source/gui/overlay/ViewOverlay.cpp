@@ -109,7 +109,30 @@ void ViewOverlay::drawTop() const
             StringUtils::format(i18n::localize("LVL"), pkm->level()), 143, 10, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         if (pkm->shiny())
         {
-            Gui::sprite(ui_sheet_icon_shiny_idx, 191, 8);
+            Gui::sprite(ui_sheet_icon_shiny_idx, 191, 5);
+        }
+        if (pkm->pkrsDays() > 0)
+        {
+            switch (Configuration::getInstance().language())
+            {
+                case Language::TW:
+                case Language::ZH:
+                    Gui::sprite(ui_sheet_pkrs_chn_idx, 192, 15);
+                    break;
+                case Language::JP:
+                    Gui::sprite(ui_sheet_pkrs_jpn_idx, 192, 15);
+                    break;
+                case Language::RU:
+                    Gui::sprite(ui_sheet_pkrs_rus_idx, 192, 15);
+                    break;
+                default:
+                    Gui::sprite(ui_sheet_pkrs_eng_idx, 192, 15);
+                    break;
+            }
+        }
+        else if (pkm->pkrs())
+        {
+            Gui::sprite(ui_sheet_pkrs_cured_idx, 201, 7);
         }
 
         Gui::text(pkm->nickname(), 87, 36, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
