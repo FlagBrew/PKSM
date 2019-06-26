@@ -323,10 +323,10 @@ endef
 	@tex3ds -i $< -H $*.h -d $*.d -o $(TOPDIR)/$(GFXBUILD)/$*.t3x
 
 #---------------------------------------------------------------------------------
-$(GFXBUILD)/%.bcfnt :		%.ttf
+%.bcfnt :		%.ttf
 #---------------------------------------------------------------------------------
 	@echo $(notdir $<)
-	@mkbcfnt -o $(GFXBUILD)/$*.bcfnt $<
+	@mkbcfnt -o $*.bcfnt $<
 
 -include $(DEPSDIR)/*.d
 
