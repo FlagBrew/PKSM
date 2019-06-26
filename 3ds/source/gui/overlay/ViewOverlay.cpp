@@ -29,7 +29,7 @@
 #include "PB7.hpp"
 #include "gui.hpp"
 
-static constexpr std::string_view displayKeys[] = {"NICKNAME", "OT", "POKERUS", "NATURE", "ABILITY", "ITEM", "ESV_TSV", "TID_SID", "CTOT_FSHIP",
+static constexpr std::string_view displayKeys[] = {"TYPE", "NICKNAME", "OT", "NATURE", "ABILITY", "ITEM", "ESV_TSV", "TID_SID", "CTOT_FSHIP",
     "HIDDEN_POWER", "HP", "ATTACK", "DEFENSE", "SPATK.", "SPDEF.", "SPEED"};
 
 void ViewOverlay::drawTop() const
@@ -135,10 +135,27 @@ void ViewOverlay::drawTop() const
             Gui::sprite(ui_sheet_pkrs_cured_idx, 201, 7);
         }
 
-        Gui::text(pkm->nickname(), 87, 36, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(pkm->otName(), 87, 56, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(pkm->pkrsDays() > 0 ? i18n::localize("YES") : i18n::localize("NO"), 87, 76, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
-            TextPosY::TOP);
+        u8 firstType  = pkm->type1();
+        u8 secondType = pkm->type2();
+        if (pkm->generation() == Generation::FOUR)
+        {
+            if (firstType > 8)
+                firstType--;
+            if (secondType > 8)
+                secondType--;
+        }
+        if (firstType != secondType)
+        {
+            Gui::type(Configuration::getInstance().language(), firstType, 59, 35);
+            Gui::type(Configuration::getInstance().language(), secondType, 108, 35);
+        }
+        else
+        {
+            Gui::type(Configuration::getInstance().language(), firstType, 83, 35);
+        }
+
+        Gui::text(pkm->nickname(), 87, 56, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(pkm->otName(), 87, 76, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(i18n::nature(Configuration::getInstance().language(), pkm->nature()), 87, 96, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
             TextPosX::LEFT, TextPosY::TOP);
         Gui::text(i18n::ability(Configuration::getInstance().language(), pkm->ability()), 87, 116, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
