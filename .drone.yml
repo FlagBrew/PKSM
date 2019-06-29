@@ -7,7 +7,7 @@ steps:
   commands:
   - git submodule update --init --force --remote
 - name: compile_pksm
-  image: fmcore/pksm_docker
+  image: fmcore/pksm_docker:latest
   environment:
     TOKEN:
       from_secret: token
