@@ -38,23 +38,21 @@ BagScreen::BagScreen()
     currentPouch = limits[0].first;
     for (size_t i = 0; i < limits.size(); i++)
     {
-        buttons.push_back(new Button(
-            3, i * 30 + 1, 100, 30, [this, i]() { return switchPouch(i); }, ui_sheet_emulated_button_pouch_idx,
+        buttons.push_back(new Button(3, i * 30 + 1, 100, 30, [this, i]() { return switchPouch(i); }, ui_sheet_emulated_button_pouch_idx,
             TitleLoader::save->pouchName(limits[i].first), FONT_SIZE_12, COLOR_BLACK));
     }
-    buttons.push_back(new AccelButton(
-        117, -15, 198, 30, [this]() { return clickIndex(-1); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 5));
+    buttons.push_back(
+        new AccelButton(117, -15, 198, 30, [this]() { return clickIndex(-1); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 5));
     for (size_t i = 0; i < std::min(allowedItems[limits[0].first].size(), (size_t)7); i++)
     {
-        buttons.push_back(new ClickButton(
-            117, 15 + i * 30, 131, 30, [this, i]() { return clickIndex(i); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK));
+        buttons.push_back(
+            new ClickButton(117, 15 + i * 30, 131, 30, [this, i]() { return clickIndex(i); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK));
     }
-    buttons.push_back(new AccelButton(
-        117, 225, 198, 30, [this]() { return clickIndex(7); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 5));
+    buttons.push_back(
+        new AccelButton(117, 225, 198, 30, [this]() { return clickIndex(7); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 5));
     for (int i = 0; i < 7; i++)
     {
-        amountButtons.push_back(new AccelButton(
-            249, 23 + i * 30, 13, 13,
+        amountButtons.push_back(new AccelButton(249, 23 + i * 30, 13, 13,
             [this, i]() {
                 editCount(false, i);
                 selectingPouch = false;
@@ -62,8 +60,7 @@ BagScreen::BagScreen()
                 return false;
             },
             ui_sheet_emulated_button_minus_small_black_idx, "", 0.0f, 0));
-        amountButtons.push_back(new ClickButton(
-            262, 23 + i * 30, 37, 13,
+        amountButtons.push_back(new ClickButton(262, 23 + i * 30, 37, 13,
             [this, i]() {
                 Gui::setNextKeyboardFunc([this, i]() { setCount(i); });
                 selectingPouch = false;
@@ -71,8 +68,7 @@ BagScreen::BagScreen()
                 return false;
             },
             ui_sheet_res_null_idx, "", 0.0f, 0));
-        amountButtons.push_back(new AccelButton(
-            299, 23 + i * 30, 13, 13,
+        amountButtons.push_back(new AccelButton(299, 23 + i * 30, 13, 13,
             [this, i]() {
                 editCount(true, i);
                 selectingPouch = false;

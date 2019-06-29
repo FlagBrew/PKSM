@@ -37,8 +37,7 @@ LocationOverlay::LocationOverlay(Screen& screen, std::shared_ptr<PKX> pkm, bool 
       met(met)
 {
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
-    searchButton = std::make_unique<ClickButton>(
-        75, 30, 170, 23,
+    searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
         [this]() {
             Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
             return false;

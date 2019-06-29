@@ -197,98 +197,77 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index) : p
         }
     }
 
-    buttons.push_back(NO_TEXT_CLICK(
-        9, 211, 34, 28, [this]() { return this->goBack(); }, ui_sheet_button_back_idx));
+    buttons.push_back(NO_TEXT_CLICK(9, 211, 34, 28, [this]() { return this->goBack(); }, ui_sheet_button_back_idx));
     instructions.addCircle(false, 12, 11, 4, COLOR_GREY);
     instructions.addBox(false, 10, 11, 4, 32, COLOR_GREY);
     instructions.addBox(false, 10, 43, 50, 16, COLOR_GREY, i18n::localize("BALL"), COLOR_WHITE);
-    buttons.push_back(NO_TEXT_BUTTON(
-        4, 3, 20, 19, [this]() { return this->selectBall(); }, ui_sheet_res_null_idx));
+    buttons.push_back(NO_TEXT_BUTTON(4, 3, 20, 19, [this]() { return this->selectBall(); }, ui_sheet_res_null_idx));
     instructions.addBox(false, 224, 33, 60, 68, COLOR_GREY, i18n::localize("CHANGE_FORM"), COLOR_WHITE);
-    buttons.push_back(NO_TEXT_BUTTON(
-        224, 33, 60, 68, [this]() { return this->selectForm(); }, ui_sheet_res_null_idx));
+    buttons.push_back(NO_TEXT_BUTTON(224, 33, 60, 68, [this]() { return this->selectForm(); }, ui_sheet_res_null_idx));
     instructions.addCircle(false, 305, 14, 11, COLOR_GREY);
     instructions.addBox(false, 303, 14, 4, 92, COLOR_GREY);
     instructions.addBox(false, 207, 106, 100, 16, COLOR_GREY, i18n::localize("HEX_EDIT"), COLOR_WHITE);
-    buttons.push_back(NO_TEXT_BUTTON(
-        291, 2, 27, 23, [this]() { return this->hexEdit(); }, ui_sheet_icon_hex_idx));
-    buttons.push_back(NO_TEXT_ACCEL(
-        94, 34, 13, 13, [this]() { return this->changeLevel(false); }, ui_sheet_button_minus_small_idx));
-    buttons.push_back(NO_TEXT_BUTTON(
-        109, 34, 31, 13,
+    buttons.push_back(NO_TEXT_BUTTON(291, 2, 27, 23, [this]() { return this->hexEdit(); }, ui_sheet_icon_hex_idx));
+    buttons.push_back(NO_TEXT_ACCEL(94, 34, 13, 13, [this]() { return this->changeLevel(false); }, ui_sheet_button_minus_small_idx));
+    buttons.push_back(NO_TEXT_BUTTON(109, 34, 31, 13,
         [this]() {
             Gui::setNextKeyboardFunc([this]() { setLevel(); });
             return false;
         },
         ui_sheet_res_null_idx));
-    buttons.push_back(NO_TEXT_ACCEL(
-        142, 34, 13, 13, [this]() { return this->changeLevel(true); }, ui_sheet_button_plus_small_idx));
-    buttons.push_back(NO_TEXT_BUTTON(
-        75, 54, 15, 12, [this]() { return this->selectNature(); }, ui_sheet_button_info_detail_editor_dark_idx));
-    buttons.push_back(NO_TEXT_CLICK(
-        75, 74, 15, 12, [this]() { return this->selectAbility(); }, ui_sheet_button_info_detail_editor_dark_idx));
-    buttons.push_back(NO_TEXT_BUTTON(
-        75, 94, 15, 12, [this]() { return this->selectItem(); }, ui_sheet_button_info_detail_editor_dark_idx));
-    buttons.push_back(NO_TEXT_CLICK(
-        75, 114, 15, 12,
+    buttons.push_back(NO_TEXT_ACCEL(142, 34, 13, 13, [this]() { return this->changeLevel(true); }, ui_sheet_button_plus_small_idx));
+    buttons.push_back(NO_TEXT_BUTTON(75, 54, 15, 12, [this]() { return this->selectNature(); }, ui_sheet_button_info_detail_editor_dark_idx));
+    buttons.push_back(NO_TEXT_CLICK(75, 74, 15, 12, [this]() { return this->selectAbility(); }, ui_sheet_button_info_detail_editor_dark_idx));
+    buttons.push_back(NO_TEXT_BUTTON(75, 94, 15, 12, [this]() { return this->selectItem(); }, ui_sheet_button_info_detail_editor_dark_idx));
+    buttons.push_back(NO_TEXT_CLICK(75, 114, 15, 12,
         [this]() {
             pkm->shiny(!pkm->shiny());
             return false;
         },
         ui_sheet_button_info_detail_editor_dark_idx));
-    buttons.push_back(NO_TEXT_CLICK(
-        75, 134, 15, 12, [this]() { return this->togglePokerus(); }, ui_sheet_button_info_detail_editor_dark_idx));
-    buttons.push_back(NO_TEXT_BUTTON(
-        75, 154, 15, 12,
+    buttons.push_back(NO_TEXT_CLICK(75, 134, 15, 12, [this]() { return this->togglePokerus(); }, ui_sheet_button_info_detail_editor_dark_idx));
+    buttons.push_back(NO_TEXT_BUTTON(75, 154, 15, 12,
         [this]() {
             Gui::setNextKeyboardFunc([this]() { return this->setOT(); });
             return false;
         },
         ui_sheet_button_info_detail_editor_dark_idx));
-    buttons.push_back(NO_TEXT_BUTTON(
-        75, 174, 15, 12,
+    buttons.push_back(NO_TEXT_BUTTON(75, 174, 15, 12,
         [this]() {
             Gui::setNextKeyboardFunc([this]() { return this->setNick(); });
             return false;
         },
         ui_sheet_button_info_detail_editor_dark_idx));
-    buttons.push_back(NO_TEXT_ACCEL(
-        94, 194, 13, 13, [this]() { return this->changeFriendship(false); }, ui_sheet_button_minus_small_idx));
-    buttons.push_back(NO_TEXT_BUTTON(
-        109, 194, 31, 13,
+    buttons.push_back(NO_TEXT_ACCEL(94, 194, 13, 13, [this]() { return this->changeFriendship(false); }, ui_sheet_button_minus_small_idx));
+    buttons.push_back(NO_TEXT_BUTTON(109, 194, 31, 13,
         [this]() {
             Gui::setNextKeyboardFunc([this]() { return this->setFriendship(); });
             return false;
         },
         ui_sheet_res_null_idx));
-    buttons.push_back(NO_TEXT_ACCEL(
-        142, 194, 13, 13, [this]() { return this->changeFriendship(true); }, ui_sheet_button_plus_small_idx));
-    buttons.push_back(new Button(
-        204, 109, 108, 30,
+    buttons.push_back(NO_TEXT_ACCEL(142, 194, 13, 13, [this]() { return this->changeFriendship(true); }, ui_sheet_button_plus_small_idx));
+    buttons.push_back(new Button(204, 109, 108, 30,
         [this]() {
             Gui::setScreen(std::make_unique<StatsEditScreen>(pkm));
             justSwitched = true;
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("EDITOR_STATS"), FONT_SIZE_12, COLOR_BLACK));
-    buttons.push_back(new Button(
-        204, 140, 108, 30,
+    buttons.push_back(new Button(204, 140, 108, 30,
         [this]() {
             Gui::setScreen(std::make_unique<MoveEditScreen>(pkm));
             justSwitched = true;
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("EDITOR_MOVES"), FONT_SIZE_12, COLOR_BLACK));
-    buttons.push_back(new Button(
-        204, 171, 108, 30,
+    buttons.push_back(new Button(204, 171, 108, 30,
         [this]() {
             Gui::setScreen(std::make_unique<MiscEditScreen>(pkm));
             justSwitched = true;
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("EDITOR_MISC"), FONT_SIZE_12, COLOR_BLACK));
-    buttons.push_back(new ClickButton(
-        204, 202, 108, 30,
+    buttons.push_back(new ClickButton(204, 202, 108, 30,
         [this]() {
             this->save();
             this->goBack();
@@ -296,19 +275,16 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index) : p
         },
         ui_sheet_button_editor_idx, i18n::localize("EDITOR_SAVE"), FONT_SIZE_12, COLOR_BLACK));
     instructions.addBox(false, 25, 5, 120, 15, COLOR_GREY, i18n::localize("CHANGE_SPECIES"), COLOR_WHITE);
-    buttons.push_back(NO_TEXT_BUTTON(
-        25, 5, 120, 13, [this]() { return this->selectSpecies(); }, ui_sheet_res_null_idx));
+    buttons.push_back(NO_TEXT_BUTTON(25, 5, 120, 13, [this]() { return this->selectSpecies(); }, ui_sheet_res_null_idx));
     instructions.addCircle(false, 192, 13, 6, COLOR_GREY);
     instructions.addBox(false, 190, 11, 4, 32, COLOR_GREY);
     instructions.addBox(false, 124, 43, 70, 16, COLOR_GREY, i18n::localize("GENDER"), COLOR_WHITE);
-    buttons.push_back(NO_TEXT_CLICK(
-        186, 7, 12, 12, [this]() { return this->genderSwitch(); }, ui_sheet_res_null_idx));
+    buttons.push_back(NO_TEXT_CLICK(186, 7, 12, 12, [this]() { return this->genderSwitch(); }, ui_sheet_res_null_idx));
     instructions.addCircle(false, 260, 14, 11, COLOR_GREY);
     instructions.addBox(false, 214, 12, 46, 4, COLOR_GREY);
     instructions.addBox(false, 214, 16, 4, 48, COLOR_GREY);
     instructions.addBox(false, 98, 64, 120, 16, COLOR_GREY, i18n::localize("SET_SAVE_INFO"), COLOR_WHITE);
-    buttons.push_back(NO_TEXT_CLICK(
-        239, 3, 43, 22, [this]() { return this->setSaveInfo(); }, ui_sheet_button_trainer_info_idx));
+    buttons.push_back(NO_TEXT_CLICK(239, 3, 43, 22, [this]() { return this->setSaveInfo(); }, ui_sheet_button_trainer_info_idx));
 
     sha256(origHash.data(), pkm->rawData(), pkm->getLength());
 }

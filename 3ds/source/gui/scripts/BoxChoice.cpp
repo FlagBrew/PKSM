@@ -44,14 +44,10 @@ BoxChoice::BoxChoice(bool doCrypt) : doCrypt(doCrypt)
 {
     mainButtons[0] = new Button(
         212, 47, 108, 28, [this]() { return this->showViewer(); }, ui_sheet_button_editor_idx, i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[1] = new Button(
-        4, 212, 33, 28, [this]() { return false; }, ui_sheet_res_null_idx, "", 0.0f, 0);
-    mainButtons[2] = new Button(
-        283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
-    mainButtons[3] = new AccelButton(
-        8, 15, 17, 24, [this]() { return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
-    mainButtons[4] = new AccelButton(
-        189, 15, 17, 24, [this]() { return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+    mainButtons[1] = new Button(4, 212, 33, 28, [this]() { return false; }, ui_sheet_res_null_idx, "", 0.0f, 0);
+    mainButtons[2] = new Button(283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
+    mainButtons[3] = new AccelButton(8, 15, 17, 24, [this]() { return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+    mainButtons[4] = new AccelButton(189, 15, 17, 24, [this]() { return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
 
     // Pokemon buttons
     u16 y = 45;

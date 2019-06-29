@@ -73,44 +73,38 @@ InjectorScreen::InjectorScreen(nlohmann::json ids)
             langIndex++;
         }
     }
-    buttons.push_back(new Button(
-        235, 102, 38, 23,
+    buttons.push_back(new Button(235, 102, 38, 23,
         [this]() {
             overwriteCard = true;
             return false;
         },
         ui_sheet_res_null_idx, "", 0, 0));
-    buttons.push_back(new Button(
-        273, 102, 38, 23,
+    buttons.push_back(new Button(273, 102, 38, 23,
         [this]() {
             overwriteCard = false;
             return false;
         },
         ui_sheet_res_null_idx, "", 0, 0));
-    buttons.push_back(new Button(
-        235, 135, 38, 23,
+    buttons.push_back(new Button(235, 135, 38, 23,
         [this]() {
             adaptLanguage = true;
             return false;
         },
         ui_sheet_res_null_idx, "", 0, 0));
-    buttons.push_back(new Button(
-        273, 135, 38, 23,
+    buttons.push_back(new Button(273, 135, 38, 23,
         [this]() {
             adaptLanguage = false;
             return false;
         },
         ui_sheet_res_null_idx, "", 0, 0));
-    buttons.push_back(new Button(
-        255, 168, 38, 23,
+    buttons.push_back(new Button(255, 168, 38, 23,
         [this]() {
             choosingSlot = true;
             hid.select(slot - 1);
             return true;
         },
         ui_sheet_emulated_button_unselected_red_idx, "", 0.0f, 0));
-    buttons.push_back(new Button(
-        282, 212, 34, 28,
+    buttons.push_back(new Button(282, 212, 34, 28,
         []() {
             Gui::screenBack();
             return true;
@@ -139,36 +133,31 @@ InjectorScreen::InjectorScreen(std::unique_ptr<WCX> wcx)
             langIndex++;
         }
     }
-    buttons.push_back(new Button(
-        235, 102, 38, 23,
+    buttons.push_back(new Button(235, 102, 38, 23,
         [this]() {
             overwriteCard = true;
             return false;
         },
         ui_sheet_res_null_idx, "", 0, 0));
-    buttons.push_back(new Button(
-        273, 102, 38, 23,
+    buttons.push_back(new Button(273, 102, 38, 23,
         [this]() {
             overwriteCard = false;
             return false;
         },
         ui_sheet_res_null_idx, "", 0, 0));
-    buttons.push_back(new Button(
-        235, 135, 38, 23,
+    buttons.push_back(new Button(235, 135, 38, 23,
         [this]() {
             adaptLanguage = true;
             return false;
         },
         ui_sheet_res_null_idx, "", 0, 0));
-    buttons.push_back(new Button(
-        273, 135, 38, 23,
+    buttons.push_back(new Button(273, 135, 38, 23,
         [this]() {
             adaptLanguage = false;
             return false;
         },
         ui_sheet_res_null_idx, "", 0, 0));
-    buttons.push_back(new Button(
-        255, 168, 38, 23,
+    buttons.push_back(new Button(255, 168, 38, 23,
         [this]() {
             if (TitleLoader::save->generation() == Generation::LGPE)
             {
@@ -185,8 +174,7 @@ InjectorScreen::InjectorScreen(std::unique_ptr<WCX> wcx)
         TitleLoader::save->generation() == Generation::LGPE ? ui_sheet_emulated_button_unavailable_red_idx
                                                             : ui_sheet_emulated_button_unselected_red_idx,
         "", 0.0f, 0));
-    buttons.push_back(new Button(
-        282, 212, 34, 28,
+    buttons.push_back(new Button(282, 212, 34, 28,
         []() {
             Gui::screenBack();
             return true;

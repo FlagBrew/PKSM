@@ -31,22 +31,26 @@
 #include <bitset>
 #include <string>
 
-#define MAKE_DEFN(name, type) public: \
-                                  type name(void) const { return type ## name; } \
-                                  void name(type v) { type ## name = v; } \
-                                  bool name ## Enabled(void) const { return name ## Bool; } \
-                                  void name ## Enabled(bool v) { name ## Bool = v; } \
-                              private: \
-                                  type type ## name; \
-                                  bool name ## Bool
-#define MAKE_NUM_DEFN(name, type, amount) public: \
-                                              type name(u8 which) const { return type ## name[which]; } \
-                                              void name(u8 which, type v) { type ## name[which] = v; } \
-                                              bool name ## Enabled(u8 which) const { return name ## Bool[which]; } \
-                                              void name ## Enabled(u8 which, bool v) { name ## Bool[which] = v; } \
-                                          private: \
-                                              type type ## name[amount]; \
-                                              std::bitset<amount> name ## Bool
+#define MAKE_DEFN(name, type)                                                                                                                        \
+public:                                                                                                                                              \
+    type name(void) const { return type##name; }                                                                                                     \
+    void name(type v) { type##name = v; }                                                                                                            \
+    bool name##Enabled(void) const { return name##Bool; }                                                                                            \
+    void name##Enabled(bool v) { name##Bool = v; }                                                                                                   \
+                                                                                                                                                     \
+private:                                                                                                                                             \
+    type type##name;                                                                                                                                 \
+    bool name##Bool
+#define MAKE_NUM_DEFN(name, type, amount)                                                                                                            \
+public:                                                                                                                                              \
+    type name(u8 which) const { return type##name[which]; }                                                                                          \
+    void name(u8 which, type v) { type##name[which] = v; }                                                                                           \
+    bool name##Enabled(u8 which) const { return name##Bool[which]; }                                                                                 \
+    void name##Enabled(u8 which, bool v) { name##Bool[which] = v; }                                                                                  \
+                                                                                                                                                     \
+private:                                                                                                                                             \
+    type type##name[amount];                                                                                                                         \
+    std::bitset<amount> name##Bool
 
 class PKFilter
 {
