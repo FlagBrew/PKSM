@@ -99,9 +99,8 @@ void MoveEditScreen::update(touchPosition* touch)
     }
 }
 
-void MoveEditScreen::draw() const
+void MoveEditScreen::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     Language lang = Configuration::getInstance().language();
     Gui::sprite(ui_sheet_emulated_bg_bottom_blue, 0, 0);
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
@@ -126,25 +125,25 @@ void MoveEditScreen::draw() const
         button->draw();
     }
 
-    Gui::staticText(i18n::localize("MOVES"), 12, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText(i18n::localize("RELEARN_MOVES"), 12, 113, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("MOVES"), 12, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("RELEARN_MOVES"), 12, 113, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
     for (int i = 0; i < 4; i++)
     {
-        Gui::dynamicText(i18n::move(lang, pkm->move(i)), 24, 32 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::move(lang, pkm->move(i)), 24, 32 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         if (pkm->generation() == Generation::SIX)
         {
-            Gui::dynamicText(i18n::move(lang, ((PK6*)pkm.get())->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
-                TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(i18n::move(lang, ((PK6*)pkm.get())->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+                TextPosY::TOP);
         }
         else if (pkm->generation() == Generation::SEVEN)
         {
-            Gui::dynamicText(i18n::move(lang, ((PK7*)pkm.get())->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
-                TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(i18n::move(lang, ((PK7*)pkm.get())->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+                TextPosY::TOP);
         }
         else
         {
-            Gui::staticText(i18n::localize("EDITOR_NOT_APPLICABLE_GEN"), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+            Gui::text(i18n::localize("EDITOR_NOT_APPLICABLE_GEN"), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
                 TextPosY::TOP);
         }
     }
@@ -152,12 +151,12 @@ void MoveEditScreen::draw() const
     if (moveSelected < 4)
     {
         Gui::sprite(ui_sheet_emulated_pointer_horizontal_flipped_idx, 169 + bobPointer(), 31 + moveSelected * 20);
-        Gui::staticText("\uE000", 194, 29 + moveSelected * 20, FONT_SIZE_18, FONT_SIZE_18, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text("\uE000", 194, 29 + moveSelected * 20, FONT_SIZE_18, FONT_SIZE_18, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     }
     else
     {
         Gui::sprite(ui_sheet_emulated_pointer_horizontal_flipped_idx, 169 + bobPointer(), 140 + (moveSelected - 4) * 20);
-        Gui::staticText("\uE000", 194, 138 + (moveSelected - 4) * 20, FONT_SIZE_18, FONT_SIZE_18, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text("\uE000", 194, 138 + (moveSelected - 4) * 20, FONT_SIZE_18, FONT_SIZE_18, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     }
 }
 

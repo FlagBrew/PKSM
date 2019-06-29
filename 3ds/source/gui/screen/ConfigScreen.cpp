@@ -132,42 +132,42 @@ ConfigScreen::ConfigScreen()
     // First column of language buttons
     tabButtons[0].push_back(new ClickButton(37, 52, 8, 8,
         []() {
-            Gui::clearStaticText();
+            Gui::clearText();
             Configuration::getInstance().language(Language::JP);
             return false;
         },
         ui_sheet_res_null_idx, "", 0.0f, 0));
     tabButtons[0].push_back(new ClickButton(37, 74, 8, 8,
         []() {
-            Gui::clearStaticText();
+            Gui::clearText();
             Configuration::getInstance().language(Language::EN);
             return false;
         },
         ui_sheet_res_null_idx, "", 0.0f, 0));
     tabButtons[0].push_back(new ClickButton(37, 96, 8, 8,
         []() {
-            Gui::clearStaticText();
+            Gui::clearText();
             Configuration::getInstance().language(Language::FR);
             return false;
         },
         ui_sheet_res_null_idx, "", 0.0f, 0));
     tabButtons[0].push_back(new ClickButton(37, 118, 8, 8,
         []() {
-            Gui::clearStaticText();
+            Gui::clearText();
             Configuration::getInstance().language(Language::DE);
             return false;
         },
         ui_sheet_res_null_idx, "", 0.0f, 0));
     tabButtons[0].push_back(new ClickButton(37, 140, 8, 8,
         []() {
-            Gui::clearStaticText();
+            Gui::clearText();
             Configuration::getInstance().language(Language::IT);
             return false;
         },
         ui_sheet_res_null_idx, "", 0.0f, 0));
     tabButtons[0].push_back(new ClickButton(37, 162, 8, 8,
         []() {
-            Gui::clearStaticText();
+            Gui::clearText();
             Configuration::getInstance().language(Language::ES);
             return false;
         },
@@ -176,35 +176,35 @@ ConfigScreen::ConfigScreen()
     // Second column of language buttons
     tabButtons[0].push_back(new ClickButton(177, 52, 8, 8,
         []() {
-            Gui::clearStaticText();
+            Gui::clearText();
             Configuration::getInstance().language(Language::ZH);
             return false;
         },
         ui_sheet_res_null_idx, "", 0.0f, 0));
     tabButtons[0].push_back(new ClickButton(177, 74, 8, 8,
         []() {
-            Gui::clearStaticText();
+            Gui::clearText();
             Configuration::getInstance().language(Language::KO);
             return false;
         },
         ui_sheet_res_null_idx, "", 0.0f, 0));
     tabButtons[0].push_back(new ClickButton(177, 96, 8, 8,
         []() {
-            Gui::clearStaticText();
+            Gui::clearText();
             Configuration::getInstance().language(Language::NL);
             return false;
         },
         ui_sheet_res_null_idx, "", 0.0f, 0));
     tabButtons[0].push_back(new ClickButton(177, 118, 8, 8,
         []() {
-            Gui::clearStaticText();
+            Gui::clearText();
             Configuration::getInstance().language(Language::PT);
             return false;
         },
         ui_sheet_res_null_idx, "", 0.0f, 0));
     tabButtons[0].push_back(new ClickButton(177, 140, 8, 8,
         []() {
-            Gui::clearStaticText();
+            Gui::clearText();
             Configuration::getInstance().language(Language::RU);
             return false;
         },
@@ -296,116 +296,112 @@ ConfigScreen::ConfigScreen()
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
 }
 
-void ConfigScreen::draw() const
+void ConfigScreen::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetTop);
-    drawTop();
-
-    C2D_SceneBegin(g_renderTargetBottom);
     Gui::backgroundBottom(false);
 
     if (currentTab != 0)
     {
-        C2D_DrawRectSolid(1, 2, 0.5f, 104, 17, COLOR_DARKBLUE);
-        Gui::staticText(i18n::localize("LANGUAGE"), 53, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::drawSolidRect(1, 2, 104, 17, COLOR_DARKBLUE);
+        Gui::text(i18n::localize("LANGUAGE"), 53, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
     if (currentTab != 1)
     {
-        C2D_DrawRectSolid(108, 2, 0.5f, 104, 17, COLOR_DARKBLUE);
-        Gui::staticText(i18n::localize("DEFAULTS"), 160, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::drawSolidRect(108, 2, 104, 17, COLOR_DARKBLUE);
+        Gui::text(i18n::localize("DEFAULTS"), 160, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
     if (currentTab != 2)
     {
-        C2D_DrawRectSolid(215, 2, 0.5f, 104, 17, COLOR_DARKBLUE);
-        Gui::staticText(i18n::localize("MISC"), 267, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::drawSolidRect(215, 2, 104, 17, COLOR_DARKBLUE);
+        Gui::text(i18n::localize("MISC"), 267, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
 
     if (currentTab == 0)
     {
-        Gui::staticText(i18n::localize("LANGUAGE"), 53, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(i18n::localize("LANGUAGE"), 53, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-        Gui::staticText("日本語", 59, 47, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText("English", 59, 69, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText("Français", 59, 91, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText("Deutsche", 59, 113, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText("Italiano", 59, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText("Español", 59, 157, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text("日本語", 59, 47, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text("English", 59, 69, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text("Français", 59, 91, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text("Deutsche", 59, 113, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text("Italiano", 59, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text("Español", 59, 157, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
-        Gui::staticText("中文", 199, 47, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText("한국어", 199, 69, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText("Nederlands", 199, 91, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText("Português", 199, 113, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText("русский", 199, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text("中文", 199, 47, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text("한국어", 199, 69, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text("Nederlands", 199, 91, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text("Português", 199, 113, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text("русский", 199, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
-        C2D_DrawRectSolid(37, 52, 0.5f, 8, 8, COLOR_MENUBLUE);
-        C2D_DrawRectSolid(37, 74, 0.5f, 8, 8, COLOR_MENUBLUE);
-        C2D_DrawRectSolid(37, 96, 0.5f, 8, 8, COLOR_MENUBLUE);
-        C2D_DrawRectSolid(37, 118, 0.5f, 8, 8, COLOR_MENUBLUE);
-        C2D_DrawRectSolid(37, 140, 0.5f, 8, 8, COLOR_MENUBLUE);
-        C2D_DrawRectSolid(37, 162, 0.5f, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(37, 52, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(37, 74, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(37, 96, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(37, 118, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(37, 140, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(37, 162, 8, 8, COLOR_MENUBLUE);
 
-        C2D_DrawRectSolid(177, 52, 0.5f, 8, 8, COLOR_MENUBLUE);
-        C2D_DrawRectSolid(177, 74, 0.5f, 8, 8, COLOR_MENUBLUE);
-        C2D_DrawRectSolid(177, 96, 0.5f, 8, 8, COLOR_MENUBLUE);
-        C2D_DrawRectSolid(177, 118, 0.5f, 8, 8, COLOR_MENUBLUE);
-        C2D_DrawRectSolid(177, 140, 0.5f, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(177, 52, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(177, 74, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(177, 96, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(177, 118, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(177, 140, 8, 8, COLOR_MENUBLUE);
 
         switch (Configuration::getInstance().language())
         {
             case Language::JP:
-                C2D_DrawRectSolid(36, 51, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(36, 51, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::EN:
             case Language::UNUSED:
-                C2D_DrawRectSolid(36, 73, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(36, 73, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::FR:
-                C2D_DrawRectSolid(36, 95, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(36, 95, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::DE:
-                C2D_DrawRectSolid(36, 117, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(36, 117, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::IT:
-                C2D_DrawRectSolid(36, 139, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(36, 139, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::ES:
-                C2D_DrawRectSolid(36, 161, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(36, 161, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::ZH:
             case Language::TW:
-                C2D_DrawRectSolid(176, 51, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(176, 51, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::KO:
-                C2D_DrawRectSolid(176, 73, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(176, 73, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::NL:
-                C2D_DrawRectSolid(176, 95, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(176, 95, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::PT:
-                C2D_DrawRectSolid(176, 117, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(176, 117, 10, 10, COLOR_HIGHBLUE);
                 break;
             case Language::RU:
-                C2D_DrawRectSolid(176, 139, 0.5f, 10, 10, COLOR_HIGHBLUE);
+                Gui::drawSolidRect(176, 139, 10, 10, COLOR_HIGHBLUE);
                 break;
         }
     }
     else if (currentTab == 1)
     {
-        Gui::staticText(i18n::localize("DEFAULTS"), 160, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(i18n::localize("DEFAULTS"), 160, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-        Gui::staticText(i18n::localize("TID"), 19, 36, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(i18n::localize("SID"), 19, 60, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(i18n::localize("OT"), 19, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(i18n::localize("NATIONALITY"), 19, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(i18n::localize("DAY"), 19, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(i18n::localize("MONTH"), 19, 156, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(i18n::localize("YEAR"), 19, 180, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("TID"), 19, 36, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("SID"), 19, 60, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("OT"), 19, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("NATIONALITY"), 19, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("DAY"), 19, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("MONTH"), 19, 156, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("YEAR"), 19, 180, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
-        Gui::dynamicText(std::to_string(Configuration::getInstance().defaultTID()), 150, 36, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT,
+        Gui::text(std::to_string(Configuration::getInstance().defaultTID()), 150, 36, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP);
-        Gui::dynamicText(std::to_string(Configuration::getInstance().defaultSID()), 150, 60, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT,
+        Gui::text(std::to_string(Configuration::getInstance().defaultSID()), 150, 60, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP);
-        Gui::dynamicText(Configuration::getInstance().defaultOT(), 150, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(Configuration::getInstance().defaultOT(), 150, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         std::string data;
         switch (Configuration::getInstance().nationality())
         {
@@ -434,12 +430,12 @@ void ConfigScreen::draw() const
                 data = "USA";
                 break;
         }
-        Gui::dynamicText(i18n::localize(data), 150, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::dynamicText(
+        Gui::text(i18n::localize(data), 150, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(
             std::to_string(Configuration::getInstance().day()), 150, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::dynamicText(
+        Gui::text(
             std::to_string(Configuration::getInstance().month()), 150, 156, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::dynamicText(
+        Gui::text(
             std::to_string(Configuration::getInstance().year()), 150, 180, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
         for (Button* button : tabButtons[currentTab])
@@ -449,35 +445,35 @@ void ConfigScreen::draw() const
     }
     else if (currentTab == 2)
     {
-        Gui::staticText(i18n::localize("MISC"), 215 + 104 / 2, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(i18n::localize("MISC"), 215 + 104 / 2, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-        Gui::staticText(i18n::localize("CONFIG_BACKUP_SAVE"), 19, 36, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(i18n::localize("CONFIG_EDIT_TRANSFERS"), 19, 60, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(i18n::localize("CONFIG_BACKUP_INJECTION"), 19, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(i18n::localize("CONFIG_SAVE_INFO"), 19, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(i18n::localize("CONFIG_USE_EXTDATA"), 19, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(i18n::localize("CONFIG_RANDOM_MUSIC"), 19, 156, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(i18n::localize("CONFIG_SHOW_BACKUPS"), 19, 180, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("CONFIG_BACKUP_SAVE"), 19, 36, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("CONFIG_EDIT_TRANSFERS"), 19, 60, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("CONFIG_BACKUP_INJECTION"), 19, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("CONFIG_SAVE_INFO"), 19, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("CONFIG_USE_EXTDATA"), 19, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("CONFIG_RANDOM_MUSIC"), 19, 156, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("CONFIG_SHOW_BACKUPS"), 19, 180, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
         for (Button* button : tabButtons[currentTab])
         {
             button->draw();
         }
 
-        Gui::staticText(Configuration::getInstance().autoBackup() ? i18n::localize("YES") : i18n::localize("NO"), 270, 36, FONT_SIZE_14, FONT_SIZE_14,
+        Gui::text(Configuration::getInstance().autoBackup() ? i18n::localize("YES") : i18n::localize("NO"), 270, 36, FONT_SIZE_14, FONT_SIZE_14,
             COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(Configuration::getInstance().transferEdit() ? i18n::localize("YES") : i18n::localize("NO"), 270, 60, FONT_SIZE_14,
-            FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(Configuration::getInstance().writeFileSave() ? i18n::localize("YES") : i18n::localize("NO"), 270, 84, FONT_SIZE_14,
-            FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(Configuration::getInstance().useSaveInfo() ? i18n::localize("YES") : i18n::localize("NO"), 270, 108, FONT_SIZE_14,
-            FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(Configuration::getInstance().useExtData() ? i18n::localize("YES") : i18n::localize("NO"), 270, 132, FONT_SIZE_14,
-            FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(Configuration::getInstance().randomMusic() ? i18n::localize("YES") : i18n::localize("NO"), 270, 156, FONT_SIZE_14,
-            FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(Configuration::getInstance().showBackups() ? i18n::localize("YES") : i18n::localize("NO"), 270, 180, FONT_SIZE_14,
-            FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(Configuration::getInstance().transferEdit() ? i18n::localize("YES") : i18n::localize("NO"), 270, 60, FONT_SIZE_14, FONT_SIZE_14,
+            COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(Configuration::getInstance().writeFileSave() ? i18n::localize("YES") : i18n::localize("NO"), 270, 84, FONT_SIZE_14, FONT_SIZE_14,
+            COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(Configuration::getInstance().useSaveInfo() ? i18n::localize("YES") : i18n::localize("NO"), 270, 108, FONT_SIZE_14, FONT_SIZE_14,
+            COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(Configuration::getInstance().useExtData() ? i18n::localize("YES") : i18n::localize("NO"), 270, 132, FONT_SIZE_14, FONT_SIZE_14,
+            COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(Configuration::getInstance().randomMusic() ? i18n::localize("YES") : i18n::localize("NO"), 270, 156, FONT_SIZE_14, FONT_SIZE_14,
+            COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(Configuration::getInstance().showBackups() ? i18n::localize("YES") : i18n::localize("NO"), 270, 180, FONT_SIZE_14, FONT_SIZE_14,
+            COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     }
 }
 
@@ -558,11 +554,11 @@ static u8 getNextAlpha(int off)
 void ConfigScreen::drawTop() const
 {
     Gui::backgroundTop(false);
-    Gui::staticText("PKSM", 200, 4, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLUE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text("PKSM", 200, 4, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLUE, TextPosX::CENTER, TextPosY::TOP);
     int y = 25;
     for (size_t i = 0; i < credits.size(); i++)
     {
-        Gui::dynamicText(std::string(credits[i]), 200, y += 16, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(0xFF, 0xFF, 0xFF, getNextAlpha(i)),
-            TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(std::string(credits[i]), 200, y += 16, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(0xFF, 0xFF, 0xFF, getNextAlpha(i)), TextPosX::CENTER,
+            TextPosY::TOP);
     }
 }

@@ -34,6 +34,7 @@ gameselector_cart.png
 gameselector_savebox.png
 gameselector_twlcart.png
 gameselector_unknown.png
+home_blocked.png
 icon_bag.png
 icon_credits.png
 icon_editor.png
@@ -67,6 +68,11 @@ part_mtx_15x16.png
 part_mtx_4x4.png
 part_mtx_5x6.png
 part_mtx_5x8.png
+pkrs_chn.png
+pkrs_cured.png
+pkrs_eng.png
+pkrs_jpn.png
+pkrs_rus.png
 point_big.png
 point_small.png
 pointer_arrow.png

@@ -38,7 +38,8 @@ class PkmItemOverlay : public Overlay
 public:
     PkmItemOverlay(Screen& screen, std::shared_ptr<PKX> pkm);
     ~PkmItemOverlay() { delete searchButton; }
-    void draw() const override;
+    void drawTop() const override;
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
 
 private:

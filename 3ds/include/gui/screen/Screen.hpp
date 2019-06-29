@@ -33,9 +33,6 @@
 #include <citro3d.h>
 #include <memory>
 
-extern C3D_RenderTarget* g_renderTargetTop;
-extern C3D_RenderTarget* g_renderTargetBottom;
-
 enum ScreenType
 {
     TITLELOAD,
@@ -73,8 +70,10 @@ public:
     virtual void update(touchPosition* touch) = 0;
     virtual ScreenType type() const           = 0;
     // Call draw, then currentOverlay->draw if it exists
-    virtual void doDraw() const final;
-    virtual void draw() const = 0;
+    virtual void doTopDraw() const final;
+    virtual void drawTop() const = 0;
+    virtual void doBottomDraw() const final;
+    virtual void drawBottom() const = 0;
     virtual float timer() const final { return mTimer; }
     void removeOverlay() { currentOverlay = nullptr; }
     void setOverlay(std::shared_ptr<Overlay>& overlay) { currentOverlay = overlay; }

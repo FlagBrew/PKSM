@@ -415,11 +415,11 @@ void PK5::nPokemon(bool v)
 
 std::string PK5::nickname(void) const
 {
-    return StringUtils::getString(data, 0x48, 11, u'\uFFFF');
+    return StringUtils::transString45(StringUtils::getString(data, 0x48, 11, u'\uFFFF'));
 }
 void PK5::nickname(const std::string& v)
 {
-    StringUtils::setString(data, v, 0x48, 11, u'\uFFFF', 0);
+    StringUtils::setString(data, StringUtils::transString45(v), 0x48, 11, u'\uFFFF', 0);
 }
 
 u8 PK5::version(void) const
@@ -433,11 +433,11 @@ void PK5::version(u8 v)
 
 std::string PK5::otName(void) const
 {
-    return StringUtils::getString(data, 0x68, 8, u'\uFFFF');
+    return StringUtils::transString45(StringUtils::getString(data, 0x68, 8, u'\uFFFF'));
 }
 void PK5::otName(const std::string& v)
 {
-    StringUtils::setString(data, v, 0x68, 8, u'\uFFFF', 0);
+    StringUtils::setString(data, StringUtils::transString45(v), 0x68, 8, u'\uFFFF', 0);
 }
 
 u8 PK5::eggYear(void) const

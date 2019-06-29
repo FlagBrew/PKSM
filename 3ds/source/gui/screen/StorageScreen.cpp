@@ -40,13 +40,10 @@
 #include "TitleLoadScreen.hpp"
 #include "StorageViewOverlay.hpp"
 #include "banks.hpp"
+#include "base64.hpp"
 #include "fetch.hpp"
 #include <PB7.hpp>
 #include <variant>
-
-extern "C" {
-#include "base64.h"
-}
 
 extern std::stack<std::unique_ptr<Screen>> screens;
 
@@ -248,9 +245,8 @@ StorageScreen::~StorageScreen()
     TitleLoader::save->currentBox((u8)boxBox);
 }
 
-void StorageScreen::draw() const
+void StorageScreen::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     Gui::sprite(ui_sheet_emulated_bg_bottom_green, 0, 0);
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
     Gui::sprite(ui_sheet_bar_arc_bottom_green_idx, 0, 206);
@@ -286,11 +282,11 @@ void StorageScreen::draw() const
                 column >= std::min((cursorIndex - 1) % 6, selectDimensions.first) &&
                 row <= std::max((cursorIndex - 1) / 6, selectDimensions.second) && row >= std::min((cursorIndex - 1) / 6, selectDimensions.second))
             {
-                C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
             }
             if (TitleLoader::save->generation() == Generation::LGPE && row * 6 + column + boxBox * 30 >= TitleLoader::save->maxSlot())
             {
-                C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(128, 128, 128, 128));
+                Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(128, 128, 128, 128));
             }
             else
             {
@@ -313,7 +309,7 @@ void StorageScreen::draw() const
         y += 30;
     }
 
-    Gui::dynamicText(TitleLoader::save->boxName(boxBox), 25 + 164 / 2, 18, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(TitleLoader::save->boxName(boxBox), 25 + 164 / 2, 18, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
 
     if (!storageChosen)
     {
@@ -326,7 +322,7 @@ void StorageScreen::draw() const
                 int y = 10 + dy + (i / selectDimensions.first) * 30;
                 if (selectDimensions.first > 1 || selectDimensions.second > 1)
                 {
-                    C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                    Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
                 }
                 if (moveMon[i])
                 {
@@ -358,7 +354,7 @@ void StorageScreen::draw() const
                 int y = 44 + yMod + (i / selectDimensions.first) * 30;
                 if (selectDimensions.first > 1 || selectDimensions.second > 1)
                 {
-                    C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                    Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
                 }
                 if (moveMon[i])
                 {
@@ -381,27 +377,29 @@ void StorageScreen::draw() const
             }
         }
     }
+}
 
-    C2D_SceneBegin(g_renderTargetTop);
+void StorageScreen::drawTop() const
+{
     Gui::sprite(ui_sheet_emulated_bg_top_green, 0, 0);
     Gui::sprite(ui_sheet_bg_style_top_idx, 0, 0);
     Gui::backgroundAnimatedTop();
     Gui::sprite(ui_sheet_bar_arc_top_green_idx, 0, 0);
 
     Gui::sprite(ui_sheet_textbox_pksm_idx, 261, 3);
-    Gui::dynamicText(Banks::bank->name(), 394, 7, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
+    Gui::text(Banks::bank->name(), 394, 7, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_bar_boxname_empty_idx, 44, 21);
-    Gui::staticText("\uE004", 45 + 24 / 2, 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::staticText("\uE005", 225 + 24 / 2, 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::dynamicText(Banks::bank->boxName(storageBox), 69 + 156 / 2, 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text("\uE004", 45 + 24 / 2, 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text("\uE005", 225 + 24 / 2, 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(Banks::bank->boxName(storageBox), 69 + 156 / 2, 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 36, 50);
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 246, 50);
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 36, 220);
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 246, 220);
 
-    y = 66;
+    int y = 66;
     for (u8 row = 0; row < 5; row++)
     {
         u16 x = 45;
@@ -412,7 +410,7 @@ void StorageScreen::draw() const
                 column >= std::min((cursorIndex - 1) % 6, selectDimensions.first) &&
                 row <= std::max((cursorIndex - 1) / 6, selectDimensions.second) && row >= std::min((cursorIndex - 1) / 6, selectDimensions.second))
             {
-                C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
             }
             auto pkm = Banks::bank->pkm(storageBox, row * 6 + column);
             if (pkm->species() > 0)
@@ -443,7 +441,7 @@ void StorageScreen::draw() const
                 int y = 16 + dy + (i / selectDimensions.first) * 30;
                 if (selectDimensions.first > 1 || selectDimensions.second > 1)
                 {
-                    C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                    Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
                 }
                 if (moveMon[i])
                 {
@@ -475,7 +473,7 @@ void StorageScreen::draw() const
                 int y = 65 + yMod + (i / selectDimensions.first) * 30;
                 if (selectDimensions.first > 1 || selectDimensions.second > 1)
                 {
-                    C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                    Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
                 }
                 if (moveMon[i])
                 {
@@ -501,30 +499,31 @@ void StorageScreen::draw() const
 
     if (infoMon)
     {
-        Gui::dynamicText(infoMon->nickname(), 276, 61, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(infoMon->nickname(), 276, 61, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         std::string info = "#" + std::to_string(infoMon->species());
-        Gui::dynamicText(info, 273, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        info        = i18n::localize("LV") + std::to_string(infoMon->level());
-        float width = StringUtils::textWidth(info, FONT_SIZE_12);
-        Gui::dynamicText(info, 375 - (int)width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(info, 273, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        info      = i18n::localize("LV") + std::to_string(infoMon->level());
+        auto text = Gui::parseText(info, FONT_SIZE_12, 0.0f);
+        int width = text->maxWidth(FONT_SIZE_12);
+        Gui::text(text, 375 - width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         if (infoMon->gender() == 0)
         {
-            Gui::sprite(ui_sheet_icon_male_idx, 362 - (int)width, 80);
+            Gui::sprite(ui_sheet_icon_male_idx, 362 - width, 80);
         }
         else if (infoMon->gender() == 1)
         {
-            Gui::sprite(ui_sheet_icon_female_idx, 364 - (int)width, 80);
+            Gui::sprite(ui_sheet_icon_female_idx, 364 - width, 80);
         }
         else if (infoMon->gender() == 2)
         {
-            Gui::sprite(ui_sheet_icon_genderless_idx, 364 - (int)width, 80);
+            Gui::sprite(ui_sheet_icon_genderless_idx, 364 - width, 80);
         }
         if (infoMon->shiny())
         {
-            Gui::sprite(ui_sheet_icon_shiny_idx, 352 - (int)width, 81);
+            Gui::sprite(ui_sheet_icon_shiny_idx, 352 - width, 81);
         }
 
-        Gui::dynamicText(i18n::species(Configuration::getInstance().language(), infoMon->species()), 276, 98, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
+        Gui::text(i18n::species(Configuration::getInstance().language(), infoMon->species()), 276, 98, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
             TextPosX::LEFT, TextPosY::TOP);
         u8 firstType  = infoMon->type1();
         u8 secondType = infoMon->type2();
@@ -546,17 +545,18 @@ void StorageScreen::draw() const
         }
 
         info = infoMon->otName() + '\n' + i18n::localize("LOADER_ID") + std::to_string(infoMon->versionTID());
-        Gui::dynamicText(info, 276, 141, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(info, 276, 141, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
-        Gui::dynamicText(i18n::nature(Configuration::getInstance().language(), infoMon->nature()), 276, 181, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
+        Gui::text(i18n::nature(Configuration::getInstance().language(), infoMon->nature()), 276, 181, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
             TextPosX::LEFT, TextPosY::TOP);
         info  = i18n::localize("IV") + ": ";
-        width = StringUtils::textWidth(info, FONT_SIZE_12);
-        Gui::dynamicText(info, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        text  = Gui::parseText(info, FONT_SIZE_12, 0.0f);
+        width = text->maxWidth(FONT_SIZE_12);
+        Gui::text(text, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(0), infoMon->iv(1), infoMon->iv(2));
-        Gui::dynamicText(info, 276 + (int)width + 70 / 2, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(info, 276 + width + 70 / 2, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(4), infoMon->iv(5), infoMon->iv(3));
-        Gui::dynamicText(info, 276 + (int)width + 70 / 2, 209, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(info, 276 + width + 70 / 2, 209, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         Gui::format(*infoMon, 276, 213);
     }
 }
@@ -1674,15 +1674,10 @@ static size_t header_callback(char* buffer, size_t size, size_t nitems, void* us
 
 void StorageScreen::shareSend()
 {
-    const u8* rawData = infoMon->rawData();
-    size_t outSize;
     long status_code     = 0;
-    char* b64Data        = base64_encode((char*)rawData, infoMon->getLength(), &outSize);
-    std::string postdata = b64Data;
-    free(b64Data);
-
-    std::string version = "Generation: " + genToString(infoMon->generation());
-    std::string size    = "Size: " + std::to_string(infoMon->getLength());
+    std::string postdata = base64_encode(infoMon->rawData(), infoMon->getLength());
+    std::string version  = "Generation: " + genToString(infoMon->generation());
+    std::string size     = "Size: " + std::to_string(infoMon->getLength());
     std::string info =
         "Info: " + infoMon->nickname() + "," + infoMon->otName() + "," + std::to_string((int)infoMon->level()) + "," +
         std::to_string(infoMon->species()) + "," + std::to_string(infoMon->move(0)) + "," + std::to_string(infoMon->move(1)) + "," +
@@ -1753,7 +1748,7 @@ void StorageScreen::shareReceive()
         {
             std::copy(data.begin(), data.end(), input);
             input[10] = '\0';
-            ret = SWKBD_BUTTON_CONFIRM;
+            ret       = SWKBD_BUTTON_CONFIRM;
         }
     }
     if (ret == SWKBD_BUTTON_CONFIRM)
@@ -1792,8 +1787,7 @@ void StorageScreen::shareReceive()
                         Fetch::exit();
                         return;
                 }
-                size_t outSize;
-                u8* retData = base64_decode(retB64Data.data(), retB64Data.size(), &outSize);
+                auto retData = base64_decode(retB64Data.data(), retB64Data.size());
 
                 size_t targetLength = 0;
                 switch (gen)
@@ -1812,15 +1806,14 @@ void StorageScreen::shareReceive()
                     default:
                         break;
                 }
-                if (outSize != targetLength)
+                if (retData.size() != targetLength)
                 {
-                    Gui::error(i18n::localize("SHARE_ERROR_INCORRECT_VERSION"), outSize);
-                    free(retData);
+                    Gui::error(i18n::localize("SHARE_ERROR_INCORRECT_VERSION"), retData.size());
                     Fetch::exit();
                     return;
                 }
 
-                auto pkm = PKX::getPKM(gen, retData);
+                auto pkm = PKX::getPKM(gen, retData.data());
 
                 if (storageChosen)
                 {
@@ -1841,7 +1834,6 @@ void StorageScreen::shareReceive()
                         Gui::warn(i18n::localize("SHARE_GENERATION_TRANSFER_ERROR"));
                     }
                 }
-                free(retData);
             }
         }
         Fetch::exit();

@@ -52,7 +52,8 @@ public:
             delete button;
         }
     }
-    void draw() const override;
+    void drawTop() const override;
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
 
     ScreenType type() const override { return ScreenType::HEXEDIT; }
@@ -85,7 +86,7 @@ private:
         void draw() const override
         {
             Gui::sprite(key, xPos, yPos);
-            Gui::staticText(text, xPos + 27, yPos, textScale, textScale, textColor, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(text, xPos + 27, yPos, textScale, textScale, textColor, TextPosX::LEFT, TextPosY::TOP);
         }
         bool update(touchPosition* touch)
         {

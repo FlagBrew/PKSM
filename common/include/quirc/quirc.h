@@ -17,6 +17,10 @@
 #ifndef QUIRC_H_
 #define QUIRC_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdint.h>
 
 struct quirc;
@@ -161,5 +165,9 @@ void quirc_extract(const struct quirc *q, int index,
 /* Decode a QR-code, returning the payload data. */
 quirc_decode_error_t quirc_decode(const struct quirc_code *code,
 				  struct quirc_data *data);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

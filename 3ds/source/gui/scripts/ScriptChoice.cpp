@@ -33,23 +33,35 @@ int ScriptChoice::run()
     {
         hidScanInput();
         C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-        C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
-        C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
 
-        draw();
+        Gui::target(GFX_TOP);
+        Gui::clearScreen(GFX_TOP);
+        drawTop();
+        Gui::flushText();
+
+        Gui::target(GFX_BOTTOM);
+        Gui::clearScreen(GFX_BOTTOM);
+        drawBottom();
+        Gui::flushText();
+
         touchPosition touch;
         hidTouchRead(&touch);
         update(&touch);
 
+        if (!aptIsHomeAllowed() && aptIsHomePressed())
+        {
+            Gui::setDoHomeDraw();
+        }
+
+        Gui::drawNoHome();
+
         C3D_FrameEnd(0);
-        Gui::clearTextBufs();
     }
     return finalVal;
 }
 
 void ScriptChoice::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     Gui::backgroundBottom(false);
-    Gui::dynamicText(question, 160, 120, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text(question, 160, 120, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 }

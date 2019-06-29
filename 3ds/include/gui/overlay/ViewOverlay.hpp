@@ -40,7 +40,8 @@ public:
     {
     }
     virtual ~ViewOverlay() {}
-    virtual void draw() const override;
+    virtual void drawTop() const override;
+    virtual void drawBottom() const override {}
     virtual void update(touchPosition* touch) override;
 
 protected:

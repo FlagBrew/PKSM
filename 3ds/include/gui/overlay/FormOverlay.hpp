@@ -43,7 +43,8 @@ public:
         hid.select(pkm->alternativeForm());
     }
     virtual ~FormOverlay() {}
-    void draw() const override;
+    void drawTop() const override;
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
 
 private:

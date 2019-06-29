@@ -61,12 +61,13 @@ StorageOverlay::StorageOverlay(Screen& screen, bool store, int& boxBox, int& sto
         ui_sheet_button_back_idx, "", 0.0f, 0));
 }
 
-void StorageOverlay::draw() const
+void StorageOverlay::drawTop() const
 {
-    C2D_SceneBegin(g_renderTargetTop);
     dim();
+}
 
-    C2D_SceneBegin(g_renderTargetBottom);
+void StorageOverlay::drawBottom() const
+{
     dim();
 
     for (auto& button : buttons)
@@ -97,11 +98,12 @@ void StorageOverlay::update(touchPosition* touch)
 bool StorageOverlay::selectBox()
 {
     std::vector<std::string> boxes;
+    boxes.reserve(Banks::bank->boxes());
     if (storage)
     {
         for (int i = 0; i < Banks::bank->boxes(); i++)
         {
-            boxes.push_back(Banks::bank->boxName(i));
+            boxes.emplace_back(Banks::bank->boxName(i));
         }
         me = std::make_shared<BoxOverlay>(screen, boxes, storageBox);
     }
@@ -109,7 +111,7 @@ bool StorageOverlay::selectBox()
     {
         for (int i = 0; i < TitleLoader::save->maxBoxes(); i++)
         {
-            boxes.push_back(TitleLoader::save->boxName(i));
+            boxes.emplace_back(TitleLoader::save->boxName(i));
         }
         me = std::make_shared<BoxOverlay>(screen, boxes, boxBox);
     }

@@ -175,20 +175,17 @@ void InjectSelectorScreen::update(touchPosition* touch)
     }
 }
 
-void InjectSelectorScreen::draw() const
+void InjectSelectorScreen::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     Gui::backgroundBottom(true);
-    Gui::dynamicText(
-        i18n::localize("WC_INST1"), 160, 222, FONT_SIZE_11, FONT_SIZE_11, C2D_Color32(197, 202, 233, 255), TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("WC_INST1"), 160, 222, FONT_SIZE_11, FONT_SIZE_11, C2D_Color32(197, 202, 233, 255), TextPosX::CENTER, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_eventmenu_page_indicator_idx, 65, 13);
 
-    Gui::staticText("\uE004", 75, 17, FONT_SIZE_18, FONT_SIZE_18, C2D_Color32(197, 202, 233, 255), TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText("\uE005", 228, 17, FONT_SIZE_18, FONT_SIZE_18, C2D_Color32(197, 202, 233, 255), TextPosX::LEFT, TextPosY::TOP);
-    Gui::dynamicText(
-        StringUtils::format("%d/%d", hid.page() + 1, wondercards.size() % 10 == 0 ? wondercards.size() / 10 : wondercards.size() / 10 + 1), 160, 20,
-        FONT_SIZE_12, FONT_SIZE_12, C2D_Color32(197, 202, 233, 255), TextPosX::CENTER, TextPosY::TOP);
+    Gui::text("\uE004", 75, 17, FONT_SIZE_18, FONT_SIZE_18, C2D_Color32(197, 202, 233, 255), TextPosX::LEFT, TextPosY::TOP);
+    Gui::text("\uE005", 228, 17, FONT_SIZE_18, FONT_SIZE_18, C2D_Color32(197, 202, 233, 255), TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(StringUtils::format("%d/%d", hid.page() + 1, wondercards.size() % 10 == 0 ? wondercards.size() / 10 : wondercards.size() / 10 + 1), 160,
+        20, FONT_SIZE_12, FONT_SIZE_12, C2D_Color32(197, 202, 233, 255), TextPosX::CENTER, TextPosY::TOP);
 
     for (auto button : buttons)
     {
@@ -205,14 +202,22 @@ void InjectSelectorScreen::draw() const
         button->draw();
     }
 
-    Gui::staticText("\uE004+\uE005 \uE01E", 160, 207 - 21, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text("\uE004+\uE005 \uE01E", 160, 207 - 21, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
+    if (dump)
+    {
+        Gui::drawSolidRect(0, 0, 320, 240, COLOR_MASKBLACK);
+        Gui::text(i18n::localize("WC_DUMP1"), 160, 107, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    }
+}
+
+void InjectSelectorScreen::drawTop() const
+{
     if (!dump)
     {
-        C2D_SceneBegin(g_renderTargetTop);
         Gui::backgroundTop(true);
 
-        Gui::dynamicText(
+        Gui::text(
             i18n::localize("EVENT_DATABASE"), 200, 4, FONT_SIZE_14, FONT_SIZE_14, C2D_Color32(140, 158, 255, 255), TextPosX::CENTER, TextPosY::TOP);
 
         for (size_t i = 0; i < 10; i++)
@@ -233,8 +238,7 @@ void InjectSelectorScreen::draw() const
                 }
                 else
                 {
-                    C2D_DrawRectSolid(
-                        x, y, 0.5f, 178, 34, i == hid.index() ? C2D_Color32(0x3D, 0x5A, 0xFE, 0xFF) : C2D_Color32(0x8C, 0x9E, 0xFF, 0xFF));
+                    Gui::drawSolidRect(x, y, 178, 34, i == hid.index() ? C2D_Color32(0x3D, 0x5A, 0xFE, 0xFF) : C2D_Color32(0x8C, 0x9E, 0xFF, 0xFF));
                 }
             }
             else
@@ -255,8 +259,7 @@ void InjectSelectorScreen::draw() const
                 }
                 else
                 {
-                    C2D_DrawRectSolid(
-                        x, y, 0.5f, 178, 34, i == hid.index() ? C2D_Color32(0x3D, 0x5A, 0xFE, 0xFF) : C2D_Color32(0x8C, 0x9E, 0xFF, 0xFF));
+                    Gui::drawSolidRect(x, y, 178, 34, i == hid.index() ? C2D_Color32(0x3D, 0x5A, 0xFE, 0xFF) : C2D_Color32(0x8C, 0x9E, 0xFF, 0xFF));
                 }
             }
         }
@@ -289,20 +292,30 @@ void InjectSelectorScreen::draw() const
                 {
                     Gui::pkm(data.species, data.form, TitleLoader::save->generation(), data.gender, x, y);
                 }
-                std::string text = data.name;
-                text             = StringUtils::wrap(data.name, FONT_SIZE_11, 138, 2);
-                // TODO check this six
-                Gui::dynamicText(text, x + 103, y + 14, FONT_SIZE_11, FONT_SIZE_11,
+                auto text = Gui::parseText(data.name, FONT_SIZE_11, 138.0f);
+                // Truncate to two lines
+                for (size_t i = 0; i < text->glyphs.size(); i++)
+                {
+                    if (text->glyphs[i].line > 2)
+                    {
+                        text->glyphs.erase(text->glyphs.begin() + i);
+                        i--;
+                    }
+                }
+                while (text->lineWidths.size() > 2)
+                {
+                    text->lineWidths.pop_back();
+                }
+                // Use max_element just in case there's only one line
+                text->maxLineWidth = *std::max_element(text->lineWidths.begin(), text->lineWidths.end());
+                // Then display it
+                Gui::text(text, x + 103, y + 14, FONT_SIZE_11, FONT_SIZE_11,
                     i == hid.fullIndex() ? C2D_Color32(232, 234, 246, 255) : C2D_Color32(26, 35, 126, 255), TextPosX::CENTER, TextPosY::CENTER);
             }
         }
     }
     else
     {
-        C2D_DrawRectSolid(0, 0, 0.5, 320, 240, COLOR_MASKBLACK);
-        Gui::dynamicText(i18n::localize("WC_DUMP1"), 160, 107, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-
-        C2D_SceneBegin(g_renderTargetTop);
         Gui::sprite(ui_sheet_part_mtx_5x8_idx, 0, 0);
         auto saveGeneration = TitleLoader::save->generation();
         for (size_t i = 0; i < 40; i++)
@@ -316,7 +329,7 @@ void InjectSelectorScreen::draw() const
             }
             if (dumpHid.index() == i)
             {
-                C2D_DrawRectSolid(x * 50, y * 48, 0.5f, 49, 47, C2D_Color32(15, 22, 89, 255));
+                Gui::drawSolidRect(x * 50, y * 48, 49, 47, C2D_Color32(15, 22, 89, 255));
             }
             if (fullI < gifts.size())
             {
@@ -329,12 +342,12 @@ void InjectSelectorScreen::draw() const
                     Gui::sprite(ui_sheet_icon_item_idx, x * 50 + 20, y * 48 + 18);
                 }
 
-                Gui::dynamicText(
+                Gui::text(
                     std::to_string(fullI + 1), x * 50 + 25, y * 48 + 36, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
             }
             else
             {
-                Gui::dynamicText(
+                Gui::text(
                     std::to_string(fullI + 1), x * 50 + 25, y * 48 + 36, FONT_SIZE_9, FONT_SIZE_9, COLOR_MASKBLACK, TextPosX::CENTER, TextPosY::TOP);
             }
         }

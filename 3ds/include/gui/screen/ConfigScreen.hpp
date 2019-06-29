@@ -50,7 +50,8 @@ public:
         }
     }
     void update(touchPosition* touch) override;
-    void draw(void) const override;
+    void drawTop(void) const override;
+    void drawBottom(void) const override;
     ScreenType type(void) const override { return SETTINGS; }
 
 private:
@@ -58,7 +59,6 @@ private:
     std::array<std::vector<Button*>, 3> tabButtons;
     int currentTab = 0;
     void back(void);
-    void drawTop(void) const;
     bool justSwitched       = true;
     bool showBackupsChanged = false;
     bool useExtDataChanged  = false;

@@ -100,11 +100,11 @@ void Sav5::language(u8 v)
 
 std::string Sav5::otName(void) const
 {
-    return StringUtils::getString(data, Trainer1 + 0x4, 8, u'\uFFFF');
+    return StringUtils::transString45(StringUtils::getString(data, Trainer1 + 0x4, 8, u'\uFFFF'));
 }
 void Sav5::otName(const std::string& v)
 {
-    StringUtils::setString(data, v, Trainer1 + 0x4, 8, u'\uFFFF', 0);
+    StringUtils::setString(data, StringUtils::transString45(v), Trainer1 + 0x4, 8, u'\uFFFF', 0);
 }
 
 u32 Sav5::money(void) const
@@ -424,12 +424,12 @@ void Sav5::mysteryGift(WCX& wc, int& pos)
 
 std::string Sav5::boxName(u8 box) const
 {
-    return StringUtils::getString(data, PCLayout + 0x28 * box + 4, 9, u'\uFFFF');
+    return StringUtils::transString45(StringUtils::getString(data, PCLayout + 0x28 * box + 4, 9, u'\uFFFF'));
 }
 
 void Sav5::boxName(u8 box, const std::string& name)
 {
-    StringUtils::setString(data, name, PCLayout + 0x28 * box + 4, 9, u'\uFFFF', 0);
+    StringUtils::setString(data, StringUtils::transString45(name), PCLayout + 0x28 * box + 4, 9, u'\uFFFF', 0);
 }
 
 u8 Sav5::partyCount(void) const
@@ -481,12 +481,12 @@ std::vector<MysteryGift::giftData> Sav5::currentGifts(void) const
     {
         if (*(wonderCards + i * PGF::length + 0xB3) == 1)
         {
-            ret.push_back({StringUtils::getString(wonderCards + i * PGF::length, 0x60, 37, u'\uFFFF'), "",
-                *(u16*)(wonderCards + i * PGF::length + 0x1A), *(wonderCards + i * PGF::length + 0x1C), *(wonderCards + i * PGF::length + 0x35)});
+            ret.emplace_back(StringUtils::getString(wonderCards + i * PGF::length, 0x60, 37, u'\uFFFF'), "",
+                *(u16*)(wonderCards + i * PGF::length + 0x1A), *(wonderCards + i * PGF::length + 0x1C), *(wonderCards + i * PGF::length + 0x35));
         }
         else
         {
-            ret.push_back({StringUtils::getString(wonderCards + i * PGF::length, 0x60, 37, u'\uFFFF'), "", -1, -1, -1});
+            ret.emplace_back(StringUtils::getString(wonderCards + i * PGF::length, 0x60, 37, u'\uFFFF'), "", -1, -1, -1);
         }
     }
     return ret;

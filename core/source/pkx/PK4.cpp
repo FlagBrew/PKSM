@@ -418,11 +418,11 @@ void PK4::shinyLeaf(u8 v)
 
 std::string PK4::nickname(void) const
 {
-    return StringUtils::getString4(data, 0x48, 11);
+    return StringUtils::transString45(StringUtils::getString4(data, 0x48, 11));
 }
 void PK4::nickname(const std::string& v)
 {
-    StringUtils::setString4(data, v, 0x48, 11);
+    StringUtils::setString4(data, StringUtils::transString45(v), 0x48, 11);
 }
 
 u8 PK4::version(void) const
@@ -436,11 +436,11 @@ void PK4::version(u8 v)
 
 std::string PK4::otName(void) const
 {
-    return StringUtils::getString4(data, 0x68, 8);
+    return StringUtils::transString45(StringUtils::getString4(data, 0x68, 8));
 }
 void PK4::otName(const std::string& v)
 {
-    StringUtils::setString4(data, v, 0x68, 8);
+    StringUtils::setString4(data, StringUtils::transString45(v), 0x68, 8);
 }
 
 u8 PK4::eggYear(void) const

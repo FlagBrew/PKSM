@@ -310,11 +310,11 @@ void PK7::ribbon(u8 ribcat, u8 ribnum, u8 v)
 
 std::string PK7::nickname(void) const
 {
-    return StringUtils::getString(data, 0x40, 12);
+    return StringUtils::transString67(StringUtils::getString(data, 0x40, 12));
 }
 void PK7::nickname(const std::string& v)
 {
-    StringUtils::setString(data, v, 0x40, 12);
+    StringUtils::setString(data, StringUtils::transString67(v), 0x40, 12);
 }
 
 u16 PK7::move(u8 m) const
@@ -387,11 +387,11 @@ void PK7::nicknamed(bool v)
 
 std::string PK7::htName(void) const
 {
-    return StringUtils::getString(data, 0x78, 12);
+    return StringUtils::transString67(StringUtils::getString(data, 0x78, 12));
 }
 void PK7::htName(const std::string& v)
 {
-    StringUtils::setString(data, v, 0x78, 12);
+    StringUtils::setString(data, StringUtils::transString67(v), 0x78, 12);
 }
 
 u8 PK7::htGender(void) const
@@ -504,11 +504,11 @@ void PK7::enjoyment(u8 v)
 
 std::string PK7::otName(void) const
 {
-    return StringUtils::getString(data, 0xB0, 13);
+    return StringUtils::transString67(StringUtils::getString(data, 0xB0, 13));
 }
 void PK7::otName(const std::string& v)
 {
-    StringUtils::setString(data, v, 0xB0, 12);
+    StringUtils::setString(data, StringUtils::transString67(v), 0xB0, 12);
 }
 
 u8 PK7::otFriendship(void) const

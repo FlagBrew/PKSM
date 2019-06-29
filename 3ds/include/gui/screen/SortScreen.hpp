@@ -35,7 +35,8 @@ class SortScreen : public Screen
 {
 public:
     SortScreen(bool storage);
-    void draw() const override;
+    void drawTop() const override;
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
     ScreenType type(void) const override { return ScreenType::STORAGE; }
 

@@ -347,11 +347,11 @@ void PK6::ribbonBattleCount(u8 v)
 
 std::string PK6::nickname(void) const
 {
-    return StringUtils::getString(data, 0x40, 12);
+    return StringUtils::transString67(StringUtils::getString(data, 0x40, 12));
 }
 void PK6::nickname(const std::string& v)
 {
-    StringUtils::setString(data, v, 0x40, 12);
+    StringUtils::setString(data, StringUtils::transString67(v), 0x40, 12);
 }
 
 u16 PK6::move(u8 m) const
@@ -442,11 +442,11 @@ void PK6::nicknamed(bool v)
 
 std::string PK6::htName(void) const
 {
-    return StringUtils::getString(data, 0x78, 12);
+    return StringUtils::transString67(StringUtils::getString(data, 0x78, 12));
 }
 void PK6::htName(const std::string& v)
 {
-    StringUtils::setString(data, v, 0x78, 12);
+    StringUtils::setString(data, StringUtils::transString67(v), 0x78, 12);
 }
 
 u8 PK6::htGender(void) const
@@ -559,11 +559,11 @@ void PK6::enjoyment(u8 v)
 
 std::string PK6::otName(void) const
 {
-    return StringUtils::getString(data, 0xB0, 13);
+    return StringUtils::transString67(StringUtils::getString(data, 0xB0, 13));
 }
 void PK6::otName(const std::string& v)
 {
-    StringUtils::setString(data, v, 0xB0, 12);
+    StringUtils::setString(data, StringUtils::transString67(v), 0xB0, 12);
 }
 
 u8 PK6::otFriendship(void) const

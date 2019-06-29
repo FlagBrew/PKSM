@@ -27,26 +27,27 @@
 #include "SortOverlay.hpp"
 #include "gui.hpp"
 
-void SortOverlay::draw() const
+void SortOverlay::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     dim();
+}
 
-    C2D_SceneBegin(g_renderTargetTop);
+void SortOverlay::drawTop() const
+{
     Gui::sprite(ui_sheet_part_editor_20x2_idx, 0, 0);
     int x = hid.index() < hid.maxVisibleEntries() / 2 ? 2 : 200;
     int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 12;
-    C2D_DrawRectSolid(x, y, 0.5f, 198, 11, COLOR_MASKBLACK);
-    C2D_DrawRectSolid(x, y, 0.5f, 198, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y, 0.5f, 1, 11, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y + 10, 0.5f, 198, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid(x + 197, y, 0.5f, 1, 11, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 198, 11, COLOR_MASKBLACK);
+    Gui::drawSolidRect(x, y, 198, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 1, 11, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y + 10, 198, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x + 197, y, 1, 11, COLOR_YELLOW);
     for (size_t i = 0; i < hid.maxVisibleEntries(); i++)
     {
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
         if (hid.page() * hid.maxVisibleEntries() + i < vals.size())
         {
-            Gui::dynamicText(i18n::localize(std::string(sortTypeToString(vals[hid.page() * hid.maxVisibleEntries() + i]))), x,
+            Gui::text(i18n::localize(std::string(sortTypeToString(vals[hid.page() * hid.maxVisibleEntries() + i]))), x,
                 (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         }
         else

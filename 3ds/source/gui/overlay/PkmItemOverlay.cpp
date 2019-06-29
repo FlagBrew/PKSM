@@ -78,7 +78,7 @@ PkmItemOverlay::PkmItemOverlay(Screen& screen, std::shared_ptr<PKX> pkm)
             continue; // Bag Z-Crystals
         else if (i >= 927 && i <= 932)
             continue; // Bag Z-Crystals
-        items.push_back({i, rawItems[i]});
+        items.emplace_back(i, rawItems[i]);
     }
     std::sort(items.begin(), items.end(), stringComp);
     items.insert(items.begin(), {0, rawItems[0]});
@@ -107,31 +107,32 @@ PkmItemOverlay::PkmItemOverlay(Screen& screen, std::shared_ptr<PKX> pkm)
         ui_sheet_emulated_box_search_idx, "", 0, 0);
 }
 
-void PkmItemOverlay::draw() const
+void PkmItemOverlay::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     dim();
-    Gui::staticText(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     searchButton->draw();
     Gui::sprite(ui_sheet_icon_search_idx, 79, 33);
-    Gui::dynamicText(searchString, 95, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(searchString, 95, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+}
 
-    C2D_SceneBegin(g_renderTargetTop);
+void PkmItemOverlay::drawTop() const
+{
     Gui::sprite(ui_sheet_part_editor_20x2_idx, 0, 0);
     int x = hid.index() < hid.maxVisibleEntries() / 2 ? 2 : 200;
     int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 12;
-    C2D_DrawRectSolid(x, y, 0.5f, 198, 11, COLOR_MASKBLACK);
-    C2D_DrawRectSolid(x, y, 0.5f, 198, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y, 0.5f, 1, 11, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y + 10, 0.5f, 198, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid(x + 197, y, 0.5f, 1, 11, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 198, 11, COLOR_MASKBLACK);
+    Gui::drawSolidRect(x, y, 198, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 1, 11, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y + 10, 198, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x + 197, y, 1, 11, COLOR_YELLOW);
     for (size_t i = 0; i < hid.maxVisibleEntries(); i++)
     {
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
         if (hid.page() * hid.maxVisibleEntries() + i < items.size())
         {
-            Gui::dynamicText(std::to_string(items[hid.page() * hid.maxVisibleEntries() + i].first) + " - " +
-                                 items[hid.page() * hid.maxVisibleEntries() + i].second,
+            Gui::text(std::to_string(items[hid.page() * hid.maxVisibleEntries() + i].first) + " - " +
+                          items[hid.page() * hid.maxVisibleEntries() + i].second,
                 x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         }
         else
@@ -161,14 +162,14 @@ void PkmItemOverlay::update(touchPosition* touch)
     if (!searchString.empty() && searchString != oldSearchString)
     {
         items.clear();
-        items.push_back(validItems[0]);
+        items.emplace_back(validItems[0]);
         for (size_t i = 1; i < validItems.size(); i++)
         {
             std::string itemName = validItems[i].second.substr(0, searchString.size());
             StringUtils::toLower(itemName);
             if (itemName == searchString)
             {
-                items.push_back(validItems[i]);
+                items.emplace_back(validItems[i]);
             }
         }
         oldSearchString = searchString;

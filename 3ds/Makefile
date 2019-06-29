@@ -157,6 +157,7 @@ SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
 PICAFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.v.pica)))
 SHLISTFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.shlist)))
 GFXFILES	:=	$(foreach dir,$(GRAPHICS),$(notdir $(wildcard $(dir)/*.t3s)))
+FONTFILES	:=	$(foreach dir,$(GRAPHICS),$(notdir $(wildcard $(dir)/*.ttf)))
 BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
 
 #---------------------------------------------------------------------------------
@@ -174,6 +175,7 @@ endif
 #---------------------------------------------------------------------------------
 
 export T3XFILES		:=	$(GFXFILES:.t3s=.t3x)
+export ROMFS_FONTFILES	:=	$(patsubst %.ttf, $(GFXBUILD)/%.bcfnt, $(FONTFILES))
 
 export OFILES_SOURCES 	:=	$(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)
 
@@ -243,7 +245,7 @@ clean:
 	@cd $(ROMFS)/mg && find -maxdepth 1 ! -name .gitkeep ! -name . | xargs --no-run-if-empty rm
 	@rm -fr $(BUILD) $(PACKER)/out $(PACKER)/EventsGallery
 #---------------------------------------------------------------------------------
-no-deps:
+no-deps: $(ROMFS_FONTFILES)
 	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR)
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile $(OUTPUT).3dsx
 	@bannertool makebanner -i "$(BANNER_IMAGE)" -a "$(BANNER_AUDIO)" -o $(BUILD)/banner.bnr
@@ -256,8 +258,14 @@ format:
 #---------------------------------------------------------------------------------
 cppcheck:
 	@rm -f $(BUILD)/cppcheck.log
-	@cppcheck . --enable=all -I ../common 2> $(BUILD)/cppcheck.log
+	@cppcheck . --enable=all $(INCLUDE) --force 2> $(BUILD)/cppcheck.log
 	@echo build/cppcheck.log file created...
+
+#---------------------------------------------------------------------------------
+$(GFXBUILD)/%.bcfnt :		%.ttf
+#---------------------------------------------------------------------------------
+	@echo $(notdir $<)
+	@mkbcfnt -o $(GFXBUILD)/$*.bcfnt $<
 else
 
 #---------------------------------------------------------------------------------
@@ -313,6 +321,12 @@ endef
 #---------------------------------------------------------------------------------
 	@echo $(notdir $<)
 	@tex3ds -i $< -H $*.h -d $*.d -o $(TOPDIR)/$(GFXBUILD)/$*.t3x
+
+#---------------------------------------------------------------------------------
+%.bcfnt :		%.ttf
+#---------------------------------------------------------------------------------
+	@echo $(notdir $<)
+	@mkbcfnt -o $*.bcfnt $<
 
 -include $(DEPSDIR)/*.d
 

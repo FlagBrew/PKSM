@@ -35,6 +35,7 @@
 
 struct STDirectoryEntry
 {
+    STDirectoryEntry(const std::string& name, bool directory) : name(name), directory(directory) {}
     std::string name;
     bool directory;
 };

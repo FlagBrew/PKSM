@@ -24,13 +24,15 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "3dsutils.hpp"
+#include "utils.hpp"
+#include "g4text.h"
+#include <3ds.h>
 #include <algorithm>
 #include <map>
 #include <queue>
 #include <vector>
 
-std::string StringUtils::format(const std::string& fmt_str, ...)
+std::string StringUtils::format(std::string fmt_str, ...)
 {
     va_list ap;
     char* fp = NULL;
@@ -44,6 +46,7 @@ std::string StringUtils::format(const std::string& fmt_str, ...)
 std::u16string StringUtils::UTF8toUTF16(const std::string& src)
 {
     std::u16string ret;
+    ret.reserve(src.size());
     for (size_t i = 0; i < src.size(); i++)
     {
         u16 codepoint = 0xFFFD;
@@ -75,6 +78,7 @@ std::u16string StringUtils::UTF8toUTF16(const std::string& src)
 static std::string utf16DataToUtf8(const char16_t* data, size_t size, char16_t delim = 0)
 {
     std::string ret;
+    ret.reserve(size);
     char addChar[4] = {0};
     for (size_t i = 0; i < size; i++)
     {
@@ -110,6 +114,22 @@ std::string StringUtils::UTF16toUTF8(const std::u16string& src)
     return utf16DataToUtf8(src.data(), src.size());
 }
 
+std::u16string StringUtils::getU16String(const u8* data, int ofs, int len, char16_t term)
+{
+    std::u16string ret;
+    ret.reserve(len);
+    const char16_t* buf = (char16_t*)(data + ofs);
+    for (int i = 0; i < len; i++)
+    {
+        if (buf[i] == term)
+        {
+            return ret;
+        }
+        ret.push_back(buf[i]);
+    }
+    return ret;
+}
+
 std::string StringUtils::getString(const u8* data, int ofs, int len, char16_t term)
 {
     return utf16DataToUtf8((char16_t*)(data + ofs), len, term);
@@ -132,45 +152,6 @@ void StringUtils::setString(u8* data, const std::u16string& v, int ofs, int len,
 void StringUtils::setString(u8* data, const std::string& v, int ofs, int len, char16_t terminator, char16_t padding)
 {
     setString(data, UTF8toUTF16(v), ofs, len, terminator, padding);
-    // len *= 2;
-    // u8 toinsert[len] = {0};
-    // if (v.empty()) return;
-
-    // char buf;
-    // int nicklen = v.length(), r = 0, w = 0, i = 0;
-    // while (r < nicklen || w > len)
-    // {
-    //     buf = v[r++];
-    //     if ((buf & 0x80) == 0)
-    //     {
-    //         toinsert[w] = buf & 0x7f;
-    //         i = 0;
-    //     }
-    //     else if ((buf & 0xe0) == 0xc0)
-    //     {
-    //         toinsert[w] = buf & 0x1f;
-    //         i = 1;
-    //     }
-    //     else if ((buf & 0xf0) == 0xe0)
-    //     {
-    //         toinsert[w] = buf & 0x0f;
-    //         i = 2;
-    //     }
-    //     else break;
-
-    //     for (int j = 0; j < i; j++)
-    //     {
-    //         buf = v[r++];
-    //         if (toinsert[w] > 0x04)
-    //         {
-    //             toinsert[w + 1] = (toinsert[w + 1] << 6) | (((toinsert[w] & 0xfc) >> 2) & 0x3f);
-    //             toinsert[w] &= 0x03;
-    //         }
-    //         toinsert[w] = (toinsert[w] << 6) | (buf & 0x3f);
-    //     }
-    //     w += 2;
-    // }
-    // memcpy(data + ofs, toinsert, len);
 }
 
 std::string StringUtils::getString4(const u8* data, int ofs, int len)
@@ -179,6 +160,7 @@ std::string StringUtils::getString4(const u8* data, int ofs, int len)
     len *= 2;
     u16 temp;
     u16 codepoint;
+    char addChar[4];
     for (u8 i = 0; i < len; i += 2)
     {
         temp = *(u16*)(data + ofs + i);
@@ -188,42 +170,25 @@ std::string StringUtils::getString4(const u8* data, int ofs, int len)
         codepoint = G4Chars[index];
         if (codepoint == 0xFFFF)
             break;
-
-        // Stupid stupid stupid
-        switch (codepoint)
-        {
-            case 0x246E:
-                codepoint = 0x2640;
-                break;
-            case 0x246D:
-                codepoint = 0x2642;
-                break;
-        }
-
-        char* addChar;
         if (codepoint < 0x0080)
         {
-            addChar    = new char[2];
             addChar[0] = codepoint;
             addChar[1] = '\0';
         }
         else if (codepoint < 0x0800)
         {
-            addChar    = new char[3];
             addChar[0] = 0xC0 | ((codepoint >> 6) & 0x1F);
             addChar[1] = 0x80 | (codepoint & 0x3F);
             addChar[2] = '\0';
         }
         else
         {
-            addChar    = new char[4];
             addChar[0] = 0xE0 | ((codepoint >> 12) & 0x0F);
             addChar[1] = 0x80 | ((codepoint >> 6) & 0x3F);
             addChar[2] = 0x80 | (codepoint & 0x3F);
             addChar[3] = '\0';
         }
         output.append(addChar);
-        delete[] addChar;
     }
     return output;
 }
@@ -250,16 +215,6 @@ void StringUtils::setString4(u8* data, const std::string& v, int ofs, int len)
                 codepoint = codepoint << 6 | (v[charIndex + 1] & 0x3F);
                 charIndex += 1;
             }
-            // GAHHHHHH WHY
-            switch (codepoint)
-            {
-                case 0x2640:
-                    codepoint = 0x246E; // Female
-                    break;
-                case 0x2642:
-                    codepoint = 0x246D; // Male
-                    break;
-            }
             size_t index     = std::distance(G4Chars, std::find(G4Chars, G4Chars + G4TEXT_LENGTH, codepoint));
             output[outIndex] = (index < G4TEXT_LENGTH ? G4Values[index] : 0x0000);
         }
@@ -276,420 +231,403 @@ void StringUtils::setString4(u8* data, const std::string& v, int ofs, int len)
 std::string& StringUtils::toUpper(std::string& in)
 {
     std::transform(in.begin(), in.end(), in.begin(), ::toupper);
-    std::u16string otherIn = StringUtils::UTF8toUTF16(in);
-    for (size_t i = 0; i < otherIn.size(); i++)
+    // Just saying, I have NO clue why two outer braces levels are necessary
+    static constexpr std::array<std::pair<std::string_view, std::string_view>, 12> transStrings = {{{"í", "Í"}, {"ó", "Ó"}, {"ú", "Ú"}, {"é", "É"},
+        {"á", "Á"}, {"ì", "Ì"}, {"ò", "Ò"}, {"ù", "Ù"}, {"è", "È"}, {"à", "À"}, {"ñ", "Ñ"}, {"æ", "Æ"}}};
+    for (auto& str : transStrings)
     {
-        switch (otherIn[i])
+        size_t found;
+        while ((found = in.find(str.first)) != std::string::npos)
         {
-            case u'í':
-                otherIn[i] = u'Í';
-                break;
-            case u'ó':
-                otherIn[i] = u'Ó';
-                break;
-            case u'ú':
-                otherIn[i] = u'Ú';
-                break;
-            case u'é':
-                otherIn[i] = u'É';
-                break;
-            case u'á':
-                otherIn[i] = u'Á';
-                break;
-            case u'ì':
-                otherIn[i] = u'Ì';
-                break;
-            case u'ò':
-                otherIn[i] = u'Ò';
-                break;
-            case u'ù':
-                otherIn[i] = u'Ù';
-                break;
-            case u'è':
-                otherIn[i] = u'È';
-                break;
-            case u'à':
-                otherIn[i] = u'À';
-                break;
-            case u'ñ':
-                otherIn[i] = u'Ñ';
-                break;
-            case u'æ':
-                otherIn[i] = u'Æ';
-                break;
+            in.replace(found, str.first.size(), str.second);
         }
     }
-    in = StringUtils::UTF16toUTF8(otherIn);
     return in;
 }
 
 std::string& StringUtils::toLower(std::string& in)
 {
     std::transform(in.begin(), in.end(), in.begin(), ::tolower);
-    std::u16string otherIn = StringUtils::UTF8toUTF16(in);
-    for (size_t i = 0; i < otherIn.size(); i++)
+    // Just saying, I have NO clue why two outer braces levels are necessary
+    static constexpr std::array<std::pair<std::string_view, std::string_view>, 12> transStrings = {{{"Í", "í"}, {"Ó", "ó"}, {"Ú", "ú"}, {"É", "é"},
+        {"Á", "á"}, {"Ì", "ì"}, {"Ò", "ò"}, {"Ù", "ù"}, {"È", "è"}, {"À", "à"}, {"Ñ", "ñ"}, {"Æ", "æ"}}};
+    for (auto& str : transStrings)
     {
-        switch (otherIn[i])
+        size_t found;
+        while ((found = in.find(str.first)) != std::string::npos)
         {
-            case u'Í':
-                otherIn[i] = u'í';
-                break;
-            case u'Ó':
-                otherIn[i] = u'ó';
-                break;
-            case u'Ú':
-                otherIn[i] = u'ú';
-                break;
-            case u'É':
-                otherIn[i] = u'é';
-                break;
-            case u'Á':
-                otherIn[i] = u'á';
-                break;
-            case u'Ì':
-                otherIn[i] = u'ì';
-                break;
-            case u'Ò':
-                otherIn[i] = u'ò';
-                break;
-            case u'Ù':
-                otherIn[i] = u'ù';
-                break;
-            case u'È':
-                otherIn[i] = u'è';
-                break;
-            case u'À':
-                otherIn[i] = u'à';
-                break;
-            case u'Ñ':
-                otherIn[i] = u'ñ';
-                break;
-            case u'Æ':
-                otherIn[i] = u'æ';
-                break;
+            in.replace(found, str.first.size(), str.second);
         }
     }
-    in = StringUtils::UTF16toUTF8(otherIn);
     return in;
 }
 
-static std::map<u16, charWidthInfo_s*> widthCache;
-static std::queue<u16> widthCacheOrder;
-
-std::string StringUtils::splitWord(const std::string& text, float scaleX, float maxWidth)
+static u32 swapCodepoints45(u32 codepoint)
 {
-    std::string word   = text;
-    float currentWidth = 0.0f;
-    if (StringUtils::textWidth(word, scaleX) > maxWidth)
+    switch (codepoint)
     {
-        for (size_t i = 0; i < word.size(); i++)
-        {
-            u16 codepoint = 0xFFFF;
-            int iMod      = 0;
-            if (word[i] & 0x80 && word[i] & 0x40 && word[i] & 0x20 && !(word[i] & 0x10) && i + 2 < word.size())
-            {
-                codepoint = word[i] & 0x0F;
-                codepoint = codepoint << 6 | (word[i + 1] & 0x3F);
-                codepoint = codepoint << 6 | (word[i + 2] & 0x3F);
-                iMod      = 2;
-            }
-            else if (word[i] & 0x80 && word[i] & 0x40 && !(word[i] & 0x20) && i + 1 < word.size())
-            {
-                codepoint = word[i] & 0x1F;
-                codepoint = codepoint << 6 | (word[i + 1] & 0x3F);
-                iMod      = 1;
-            }
-            else if (!(word[i] & 0x80))
-            {
-                codepoint = word[i];
-            }
-            float charWidth;
-            auto width = widthCache.find(codepoint);
-            if (width != widthCache.end())
-            {
-                charWidth = width->second->charWidth * scaleX;
-            }
-            else
-            {
-                widthCache.insert_or_assign(codepoint, fontGetCharWidthInfo(fontGlyphIndexFromCodePoint(codepoint)));
-                widthCacheOrder.push(codepoint);
-                if (widthCache.size() > 512)
-                {
-                    widthCache.erase(widthCacheOrder.front());
-                    widthCacheOrder.pop();
-                }
-                charWidth = widthCache[codepoint]->charWidth * scaleX;
-            }
-            currentWidth += charWidth;
-            if (currentWidth > maxWidth)
-            {
-                word.insert(i, 1, '\n');
-                currentWidth = charWidth;
-            }
+        case u'\u2227':
+            codepoint = u'\uE0A9';
+            break;
+        case u'\u2228':
+            codepoint = u'\uE0AA';
+            break;
+        case u'\u2460':
+            codepoint = u'\uE081';
+            break;
+        case u'\u2461':
+            codepoint = u'\uE082';
+            break;
+        case u'\u2462':
+            codepoint = u'\uE083';
+            break;
+        case u'\u2463':
+            codepoint = u'\uE084';
+            break;
+        case u'\u2464':
+            codepoint = u'\uE085';
+            break;
+        case u'\u2465':
+            codepoint = u'\uE086';
+            break;
+        case u'\u2466':
+            codepoint = u'\uE087';
+            break;
+        case u'\u2469':
+            codepoint = u'\uE068';
+            break;
+        case u'\u246A':
+            codepoint = u'\uE069';
+            break;
+        case u'\u246B':
+            codepoint = u'\uE0AB';
+            break;
+        case u'\u246C':
+            codepoint = u'\uE08D';
+            break;
+        case u'\u246D':
+            codepoint = u'\uE08E';
+            break;
+        case u'\u246E':
+            codepoint = u'\uE08F';
+            break;
+        case u'\u246F':
+            codepoint = u'\uE090';
+            break;
+        case u'\u2470':
+            codepoint = u'\uE091';
+            break;
+        case u'\u2471':
+            codepoint = u'\uE092';
+            break;
+        case u'\u2472':
+            codepoint = u'\uE093';
+            break;
+        case u'\u2473':
+            codepoint = u'\uE094';
+            break;
+        case u'\u2474':
+            codepoint = u'\uE095';
+            break;
+        case u'\u2475':
+            codepoint = u'\uE096';
+            break;
+        case u'\u2476':
+            codepoint = u'\uE097';
+            break;
+        case u'\u2477':
+            codepoint = u'\uE098';
+            break;
+        case u'\u2478':
+            codepoint = u'\uE099';
+            break;
+        case u'\u2479':
+            codepoint = u'\uE09A';
+            break;
+        case u'\u247A':
+            codepoint = u'\uE09B';
+            break;
+        case u'\u247B':
+            codepoint = u'\uE09C';
+            break;
+        case u'\u247C':
+            codepoint = u'\uE09D';
+            break;
+        case u'\u247D':
+            codepoint = u'\uE09E';
+            break;
+        case u'\u247E':
+            codepoint = u'\uE09F';
+            break;
+        case u'\u247F':
+            codepoint = u'\uE0A0';
+            break;
+        case u'\u2480':
+            codepoint = u'\uE0A1';
+            break;
+        case u'\u2481':
+            codepoint = u'\uE0A2';
+            break;
+        case u'\u2482':
+            codepoint = u'\uE0A3';
+            break;
+        case u'\u2483':
+            codepoint = u'\uE0A4';
+            break;
+        case u'\u2484':
+            codepoint = u'\uE0A5';
+            break;
+        case u'\u2485':
+            codepoint = u'\uE06A';
+            break;
+        case u'\u2486':
+            codepoint = u'\uE0A7';
+            break;
+        case u'\u2487':
+            codepoint = u'\uE0A8';
+            break;
 
-            i += iMod; // Yay, variable width encodings
-        }
+        case u'\uE0A9':
+            codepoint = u'\u2227';
+            break;
+        case u'\uE0AA':
+            codepoint = u'\u2228';
+            break;
+        case u'\uE081':
+            codepoint = u'\u2460';
+            break;
+        case u'\uE082':
+            codepoint = u'\u2461';
+            break;
+        case u'\uE083':
+            codepoint = u'\u2462';
+            break;
+        case u'\uE084':
+            codepoint = u'\u2463';
+            break;
+        case u'\uE085':
+            codepoint = u'\u2464';
+            break;
+        case u'\uE086':
+            codepoint = u'\u2465';
+            break;
+        case u'\uE087':
+            codepoint = u'\u2466';
+            break;
+        case u'\uE068':
+            codepoint = u'\u2469';
+            break;
+        case u'\uE069':
+            codepoint = u'\u246A';
+            break;
+        case u'\uE0AB':
+            codepoint = u'\u246B';
+            break;
+        case u'\uE08D':
+            codepoint = u'\u246C';
+            break;
+        case u'\uE08E':
+            codepoint = u'\u246D';
+            break;
+        case u'\uE08F':
+            codepoint = u'\u246E';
+            break;
+        case u'\uE090':
+            codepoint = u'\u246F';
+            break;
+        case u'\uE091':
+            codepoint = u'\u2470';
+            break;
+        case u'\uE092':
+            codepoint = u'\u2471';
+            break;
+        case u'\uE093':
+            codepoint = u'\u2472';
+            break;
+        case u'\uE094':
+            codepoint = u'\u2473';
+            break;
+        case u'\uE095':
+            codepoint = u'\u2474';
+            break;
+        case u'\uE096':
+            codepoint = u'\u2475';
+            break;
+        case u'\uE097':
+            codepoint = u'\u2476';
+            break;
+        case u'\uE098':
+            codepoint = u'\u2477';
+            break;
+        case u'\uE099':
+            codepoint = u'\u2478';
+            break;
+        case u'\uE09A':
+            codepoint = u'\u2479';
+            break;
+        case u'\uE09B':
+            codepoint = u'\u247A';
+            break;
+        case u'\uE09C':
+            codepoint = u'\u247B';
+            break;
+        case u'\uE09D':
+            codepoint = u'\u247C';
+            break;
+        case u'\uE09E':
+            codepoint = u'\u247D';
+            break;
+        case u'\uE09F':
+            codepoint = u'\u247E';
+            break;
+        case u'\uE0A0':
+            codepoint = u'\u247F';
+            break;
+        case u'\uE0A1':
+            codepoint = u'\u2480';
+            break;
+        case u'\uE0A2':
+            codepoint = u'\u2481';
+            break;
+        case u'\uE0A3':
+            codepoint = u'\u2482';
+            break;
+        case u'\uE0A4':
+            codepoint = u'\u2483';
+            break;
+        case u'\uE0A5':
+            codepoint = u'\u2484';
+            break;
+        case u'\uE06A':
+            codepoint = u'\u2485';
+            break;
+        case u'\uE0A7':
+            codepoint = u'\u2486';
+            break;
+        case u'\uE0A8':
+            codepoint = u'\u2487';
+            break;
+        default:
+            break;
     }
-    return word;
+    return codepoint;
 }
 
-float StringUtils::textWidth(const std::string& text, float scaleX)
+std::string StringUtils::transString45(const std::string& str)
 {
-    float ret        = 0.0f;
-    float largestRet = 0.0f;
-    for (size_t i = 0; i < text.size(); i++)
+    std::string ret = str;
+    for (size_t i = 0; i < ret.size(); i++)
     {
-        if (text[i] == '\n')
+        u32 codepoint;
+        ssize_t consumedCodepoints = decode_utf8(&codepoint, (u8*)ret.data() + i);
+        if (consumedCodepoints == -1)
         {
-            largestRet = std::max(largestRet, ret);
-            ret        = 0.0f;
             continue;
         }
-        u16 codepoint = 0xFFFF;
-        if (text[i] & 0x80 && text[i] & 0x40 && text[i] & 0x20 && !(text[i] & 0x10) && i + 2 < text.size())
-        {
-            codepoint = text[i] & 0x0F;
-            codepoint = codepoint << 6 | (text[i + 1] & 0x3F);
-            codepoint = codepoint << 6 | (text[i + 2] & 0x3F);
-            i += 2;
-        }
-        else if (text[i] & 0x80 && text[i] & 0x40 && !(text[i] & 0x20) && i + 1 < text.size())
-        {
-            codepoint = text[i] & 0x1F;
-            codepoint = codepoint << 6 | (text[i + 1] & 0x3F);
-            i += 1;
-        }
-        else if (!(text[i] & 0x80))
-        {
-            codepoint = text[i];
-        }
-        float charWidth;
-        auto width = widthCache.find(codepoint);
-        if (width != widthCache.end())
-        {
-            charWidth = width->second->charWidth * scaleX;
-        }
         else
         {
-            widthCache.insert_or_assign(codepoint, fontGetCharWidthInfo(fontGlyphIndexFromCodePoint(codepoint)));
-            widthCacheOrder.push(codepoint);
-            if (widthCache.size() > 1000)
+            codepoint                   = swapCodepoints45(codepoint);
+            char codepoints[4]          = {'\0'};
+            ssize_t necessaryCodepoints = encode_utf8((u8*)codepoints, codepoint);
+            if (necessaryCodepoints == -1)
             {
-                widthCache.erase(widthCacheOrder.front());
-                widthCacheOrder.pop();
+                continue; // Should never happen
             }
-            charWidth = widthCache[codepoint]->charWidth * scaleX;
+            ret.replace(i, consumedCodepoints, codepoints, necessaryCodepoints);
+            i += necessaryCodepoints - 1;
         }
-        ret += charWidth;
     }
-    return std::max(largestRet, ret);
+    return ret;
 }
 
-float StringUtils::textWidth(const std::u16string& text, float scaleX)
+std::u16string StringUtils::transString45(const std::u16string& str)
 {
-    float ret        = 0.0f;
-    float largestRet = 0.0f;
-    for (size_t i = 0; i < text.size(); i++)
+    std::u16string ret = str;
+    for (auto& codepoint : ret)
     {
-        if (text[i] == u'\n')
+        codepoint = swapCodepoints45(codepoint);
+    }
+    return ret;
+}
+
+static u32 swapCodepoints67(u32 codepoint)
+{
+    switch (codepoint)
+    {
+        case u'\uE088':
+            codepoint = u'\u00D7';
+            break;
+        case u'\uE089':
+            codepoint = u'\u00F7';
+            break;
+        case u'\uE08A':
+            codepoint = u'\uE068';
+            break;
+        case u'\uE08B':
+            codepoint = u'\uE069';
+            break;
+        case u'\uE08C':
+            codepoint = u'\uE0AB';
+            break;
+        case u'\uE0A6':
+            codepoint = u'\uE06A';
+            break;
+
+        case u'\u00D7':
+            codepoint = u'\uE088';
+            break;
+        case u'\u00F7':
+            codepoint = u'\uE089';
+            break;
+        case u'\uE068':
+            codepoint = u'\uE08A';
+            break;
+        case u'\uE069':
+            codepoint = u'\uE08B';
+            break;
+        case u'\uE0AB':
+            codepoint = u'\uE08C';
+            break;
+        case u'\uE06A':
+            codepoint = u'\uE0A6';
+            break;
+    }
+    return codepoint;
+}
+
+std::string StringUtils::transString67(const std::string& str)
+{
+    std::string ret = str;
+    for (size_t i = 0; i < ret.size(); i++)
+    {
+        u32 codepoint;
+        ssize_t consumedCodepoints = decode_utf8(&codepoint, (u8*)ret.data() + i);
+        if (consumedCodepoints == -1)
         {
-            largestRet = std::max(ret, largestRet);
-            ret        = 0.0f;
             continue;
         }
-        float charWidth;
-        auto width = widthCache.find(text[i]);
-        if (width != widthCache.end())
-        {
-            charWidth = width->second->charWidth * scaleX;
-        }
         else
         {
-            widthCache.insert_or_assign(text[i], fontGetCharWidthInfo(fontGlyphIndexFromCodePoint(text[i])));
-            widthCacheOrder.push(text[i]);
-            if (widthCache.size() > 512)
+            codepoint                   = swapCodepoints67(codepoint);
+            char codepoints[4]          = {'\0'};
+            ssize_t necessaryCodepoints = encode_utf8((u8*)codepoints, codepoint);
+            if (necessaryCodepoints == -1)
             {
-                widthCache.erase(widthCacheOrder.front());
-                widthCacheOrder.pop();
+                continue; // Should never happen
             }
-            charWidth = widthCache[text[i]]->charWidth * scaleX;
+            ret.replace(i, consumedCodepoints, codepoints, necessaryCodepoints);
+            i += necessaryCodepoints - 1;
         }
-        ret += charWidth;
     }
-    return std::max(largestRet, ret);
+    return ret;
 }
 
-float StringUtils::textWidth(const C2D_Text& text, float scaleX)
+std::u16string StringUtils::transString67(const std::u16string& str)
 {
-    return ceilf(text.width * scaleX);
-}
-
-std::string StringUtils::wrap(const std::string& text, float scaleX, float maxWidth)
-{
-    if (textWidth(text, scaleX) <= maxWidth)
+    std::u16string ret = str;
+    for (auto& codepoint : ret)
     {
-        return text;
+        codepoint = swapCodepoints67(codepoint);
     }
-    std::string dst, line, word;
-    dst = line = word = "";
-
-    for (std::string::const_iterator it = text.begin(); it != text.end(); it++)
-    {
-        word += *it;
-        if (*it == ' ')
-        {
-            // split single words that are bigger than maxWidth
-            if (StringUtils::textWidth(line + word, scaleX) <= maxWidth)
-            {
-                line += word;
-            }
-            else
-            {
-                if (StringUtils::textWidth(word, scaleX) > maxWidth)
-                {
-                    line += word;
-                    line = StringUtils::splitWord(line, scaleX, maxWidth);
-                    word = line.substr(line.find('\n') + 1, std::string::npos);
-                    line = line.substr(0, line.find('\n')); // Split line on first newLine; assign second part to word and first to line
-                }
-                if (line[line.size() - 1] == ' ')
-                {
-                    dst += line.substr(0, line.size() - 1) + '\n';
-                }
-                else
-                {
-                    dst += line + '\n';
-                }
-                line = word;
-            }
-            word = "";
-        }
-    }
-
-    // "Another iteration" of the loop b/c it probably won't end with a space
-    // If it does, no harm done
-    // word = StringUtils::splitWord(word, scaleX, maxWidth);
-    if (StringUtils::textWidth(line + word, scaleX) <= maxWidth)
-    {
-        dst += line + word;
-    }
-    else
-    {
-        if (StringUtils::textWidth(word, scaleX) > maxWidth)
-        {
-            line += word;
-            line = StringUtils::splitWord(line, scaleX, maxWidth);
-            word = line.substr(line.find('\n') + 1, std::string::npos);
-            line = line.substr(0, line.find('\n'));
-        }
-        if (line[line.size() - 1] == ' ')
-        {
-            dst += line.substr(0, line.size() - 1) + '\n' + word;
-        }
-        else
-        {
-            dst += line + '\n' + word;
-        }
-    }
-    return dst;
-}
-
-std::string StringUtils::wrap(const std::string& text, float scaleX, float maxWidth, size_t lines)
-{
-    if (textWidth(text, scaleX) <= maxWidth)
-    {
-        return text;
-    }
-
-    // Get the wrapped string
-    std::string wrapped = wrap(text, scaleX, maxWidth);
-    if (lines == 0)
-    {
-        return wrapped;
-    }
-
-    // string.split('\n')
-    std::vector<std::string> split;
-    for (size_t i = 0; i < wrapped.size(); i++)
-    {
-        if (wrapped[i] == '\n')
-        {
-            split.push_back(wrapped.substr(0, i));
-            wrapped = wrapped.substr(i + 1, std::string::npos);
-            i       = 0;
-        }
-    }
-    if (!wrapped.empty())
-    {
-        split.push_back(wrapped);
-    }
-
-    // If it's already the correct amount of lines, return it
-    if (split.size() <= lines)
-    {
-        wrapped = split[0];
-        for (size_t i = 1; i < split.size(); i++)
-        {
-            wrapped += '\n' + split[i];
-        }
-        return wrapped;
-    }
-
-    // Otherwise truncate it to the correct amount
-    for (size_t i = split.size(); i > lines; i--)
-    {
-        split.pop_back();
-    }
-
-    const float ellipsis = fontGetCharWidthInfo(fontGlyphIndexFromCodePoint('.'))->charWidth * 3 * scaleX;
-
-    // If there's space for the ellipsis, add it
-    if (textWidth(split[lines - 1], scaleX) + ellipsis <= maxWidth)
-    {
-        split[lines - 1] += "...";
-    }
-    // Otherwise do some sort of magic
-    else
-    {
-        std::string& finalLine = split[lines - 1];
-        // If there's a long enough word and a large enough space on the top line, move stuff up & add ellipsis to the end
-        if (lines > 1 && textWidth(split[lines - 2], scaleX) <= maxWidth / 2 &&
-            textWidth(finalLine.substr(0, finalLine.find(' ')), scaleX) > maxWidth * 0.75f)
-        {
-            std::string sliced = wrap(finalLine, scaleX, maxWidth * 0.4f);
-            split[lines - 2] += ' ' + sliced.substr(0, sliced.find('\n'));
-            sliced = sliced.substr(sliced.find('\n') + 1);
-            for (size_t i = sliced.size(); i > 0; i--)
-            {
-                if (sliced[i - 1] == '\n')
-                {
-                    sliced.erase(i - 1, 1);
-                }
-            }
-            finalLine = sliced + "...";
-        }
-        // Or get rid of enough characters for it to fit
-        else
-        {
-            for (size_t i = finalLine.size(); i > 0; i--)
-            {
-                if ((finalLine[i - 1] & 0x80 && finalLine[i - 1] & 0x40) || !(finalLine[i - 1] & 0x80)) // Beginning UTF-8 byte
-                {
-                    if (textWidth(finalLine.substr(0, i - 1), scaleX) + ellipsis <= maxWidth)
-                    {
-                        finalLine = finalLine.substr(0, i - 1) + "...";
-                    }
-                }
-            }
-        }
-    }
-
-    // Concatenate them and return
-    wrapped = split[0];
-    for (size_t i = 1; i < split.size(); i++)
-    {
-        wrapped += '\n' + split[i];
-    }
-
-    return wrapped;
+    return ret;
 }

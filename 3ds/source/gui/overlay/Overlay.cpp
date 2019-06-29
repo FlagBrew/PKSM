@@ -26,11 +26,11 @@
 
 #include "Overlay.hpp"
 #include "Screen.hpp"
-#include "colors.hpp"
+#include "gui.hpp"
 
 Overlay::Overlay(Screen& screen, const std::string& instructions) : screen(screen), me(screen.currentOverlay), instructions(instructions) {}
 
 void Overlay::dim() const
 {
-    C2D_DrawRectSolid(0, 0, 0.5f, 400, 240, COLOR_MASKBLACK);
+    Gui::drawSolidRect(0, 0, 400, 240, COLOR_MASKBLACK);
 }

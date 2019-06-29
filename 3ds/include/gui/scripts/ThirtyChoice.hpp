@@ -47,11 +47,11 @@ public:
     {
         for (int i = 0; i < items; i++)
         {
-            labels.push_back(text[i]);
-            pkms.push_back(pokemon[i]);
+            labels.emplace_back(text[i]);
+            pkms.emplace_back(pokemon[i]);
         }
     }
-    void draw() const override;
+    void drawTop() const override;
     void update(touchPosition* touch) override;
 
 private:

@@ -120,42 +120,80 @@ MainMenu::~MainMenu()
     }
 }
 
-static void menuTop()
+void MainMenu::drawTop() const
 {
-    Gui::backgroundTop(false);
-    Gui::staticText("PKSM", 200, 4, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLUE, TextPosX::CENTER, TextPosY::TOP);
-    Gui::staticText(i18n::localize("SAVE_INFO"), 200, 26, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-    Gui::dynamicText(StringUtils::format(i18n::localize("GENERATION"), genToCstring(TitleLoader::save->generation())), 30, 40, FONT_SIZE_12,
-        FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-    Gui::dynamicText(StringUtils::format(i18n::localize("TRAINER_NAME"), TitleLoader::save->otName().c_str()), 30, 54, FONT_SIZE_12, FONT_SIZE_12,
-        COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-    Gui::dynamicText(
-        i18n::localize("TID_SID") + ": " + std::to_string(TitleLoader::save->displayTID()) + "/" + std::to_string(TitleLoader::save->displaySID()),
-        30, 68, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-    Gui::dynamicText(StringUtils::format(TitleLoader::save->generation() == Generation::SEVEN ? i18n::localize("STAMPS") : i18n::localize("BADGES"),
-                         TitleLoader::save->badges()),
-        30, 82, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-    Gui::dynamicText(StringUtils::format(i18n::localize("WC_NUM"), TitleLoader::save->currentGifts().size()), 30, 96, FONT_SIZE_12, FONT_SIZE_12,
-        COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-    Gui::dynamicText(StringUtils::format(i18n::localize("DEX_SEEN"), TitleLoader::save->dexSeen()), 30, 110, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE,
-        TextPosX::LEFT, TextPosY::TOP);
-    Gui::dynamicText(StringUtils::format(i18n::localize("DEX_CAUGHT"), TitleLoader::save->dexCaught()), 30, 124, FONT_SIZE_12, FONT_SIZE_12,
-        COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::sprite(ui_sheet_emulated_bg_top_blue, 0, 0);
+    Gui::sprite(ui_sheet_bg_style_top_idx, 0, 0);
+    Gui::sprite(ui_sheet_bar_arc_top_blue_idx, 0, 0);
+    Gui::backgroundAnimatedTop();
+    Gui::sprite(ui_sheet_textbox_hidden_power_idx, 137, 3);
+
+    for (int y = 34; y < 156; y += 40)
+    {
+        Gui::sprite(ui_sheet_stripe_info_row_idx, 0, y);
+    }
+
+    for (int y = 40; y < 180; y += 20)
+    {
+        Gui::sprite(ui_sheet_point_big_idx, 1, y);
+    }
+
+    for (int i = 0; i < 7; i++)
+    {
+        int y = 36 + i * 20;
+        switch (i)
+        {
+            case 0:
+                Gui::text(StringUtils::format(i18n::localize("GENERATION"), genToCstring(TitleLoader::save->generation())), 10, y, FONT_SIZE_12,
+                    FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+                break;
+            case 1:
+                Gui::text(StringUtils::format(i18n::localize("TRAINER_NAME"), TitleLoader::save->otName().c_str()), 10, y, FONT_SIZE_12, FONT_SIZE_12,
+                    COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+                break;
+            case 2:
+                Gui::text(i18n::localize("TID_SID") + ": " + std::to_string(TitleLoader::save->displayTID()) + "/" +
+                              std::to_string(TitleLoader::save->displaySID()),
+                    10, y, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+                break;
+            case 3:
+                Gui::text(
+                    StringUtils::format(TitleLoader::save->generation() == Generation::SEVEN ? i18n::localize("STAMPS") : i18n::localize("BADGES"),
+                        TitleLoader::save->badges()),
+                    10, y, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+                break;
+            case 4:
+                Gui::text(StringUtils::format(i18n::localize("WC_NUM"), TitleLoader::save->currentGifts().size()), 10, y, FONT_SIZE_12, FONT_SIZE_12,
+                    COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+                break;
+            case 5:
+                Gui::text(StringUtils::format(i18n::localize("DEX_SEEN"), TitleLoader::save->dexSeen()), 10, y, FONT_SIZE_12, FONT_SIZE_12,
+                    COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+                break;
+            case 6:
+                Gui::text(StringUtils::format(i18n::localize("DEX_CAUGHT"), TitleLoader::save->dexCaught()), 10, y, FONT_SIZE_12, FONT_SIZE_12,
+                    COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+                break;
+            default:
+                break;
+        }
+    }
+
+    static const std::string version = StringUtils::format("v%d.%d.%d-%s", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
+    Gui::text("PKSM", 282, 16, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::RIGHT, TextPosY::CENTER);
+    Gui::text(version, 398, 17, FONT_SIZE_11, FONT_SIZE_11, COLOR_LIGHTBLUE, TextPosX::RIGHT, TextPosY::CENTER);
 }
 
-void MainMenu::draw() const
+void MainMenu::drawBottom() const
 {
-    Gui::clearTextBufs();
-    C2D_SceneBegin(g_renderTargetTop);
-    menuTop();
-    C2D_SceneBegin(g_renderTargetBottom);
-    Gui::backgroundBottom(false);
+    Gui::sprite(ui_sheet_emulated_bg_bottom_blue, 0, 0);
+    Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
+    Gui::sprite(ui_sheet_bar_arc_bottom_blue_idx, 0, 206);
+    Gui::backgroundAnimatedBottom();
     for (MainMenuButton* button : buttons)
     {
         button->draw();
     }
-    static const std::string version = StringUtils::format("v%d.%d.%d-%s", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
-    Gui::staticText(version, 316, 223, FONT_SIZE_11, FONT_SIZE_11, COLOR_LIGHTBLUE, TextPosX::RIGHT, TextPosY::TOP);
 }
 
 void MainMenu::update(touchPosition* touch)

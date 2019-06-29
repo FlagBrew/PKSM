@@ -117,7 +117,7 @@ void LanguageStrings::load(Language lang, const std::string name, std::vector<st
         {
             tmp = std::string(data);
             tmp = tmp.substr(0, tmp.find('\n'));
-            array.push_back(tmp.substr(0, tmp.find('\r')));
+            array.emplace_back(tmp.substr(0, tmp.find('\r')));
         }
         else
         {

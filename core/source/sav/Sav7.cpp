@@ -116,11 +116,11 @@ void Sav7::language(u8 v)
 
 std::string Sav7::otName(void) const
 {
-    return StringUtils::getString(data, TrainerCard + 0x38, 13);
+    return StringUtils::transString67(StringUtils::getString(data, TrainerCard + 0x38, 13));
 }
 void Sav7::otName(const std::string& v)
 {
-    return StringUtils::setString(data, v, TrainerCard + 0x38, 13);
+    return StringUtils::setString(data, StringUtils::transString67(v), TrainerCard + 0x38, 13);
 }
 
 u32 Sav7::money(void) const
@@ -497,12 +497,12 @@ void Sav7::mysteryGift(WCX& wc, int& pos)
 
 std::string Sav7::boxName(u8 box) const
 {
-    return StringUtils::getString(data, PCLayout + 0x22 * box, 17);
+    return StringUtils::transString67(StringUtils::getString(data, PCLayout + 0x22 * box, 17));
 }
 
 void Sav7::boxName(u8 box, const std::string& name)
 {
-    StringUtils::setString(data, name, PCLayout + 0x22 * box, 17);
+    StringUtils::setString(data, StringUtils::transString67(name), PCLayout + 0x22 * box, 17);
 }
 
 u8 Sav7::partyCount(void) const
@@ -554,12 +554,12 @@ std::vector<MysteryGift::giftData> Sav7::currentGifts(void) const
     {
         if (*(wonderCards + i * WC7::length + 0x51) == 0)
         {
-            ret.push_back({StringUtils::getString(wonderCards + i * WC7::length, 0x2, 36), "", *(u16*)(wonderCards + i * WC7::length + 0x82),
-                *(wonderCards + i * WC7::length + 0x84), *(wonderCards + i * WC6::length + 0xA1)});
+            ret.emplace_back(StringUtils::getString(wonderCards + i * WC7::length, 0x2, 36), "", *(u16*)(wonderCards + i * WC7::length + 0x82),
+                *(wonderCards + i * WC7::length + 0x84), *(wonderCards + i * WC6::length + 0xA1));
         }
         else
         {
-            ret.push_back({StringUtils::getString(wonderCards + i * WC7::length, 0x2, 36), "", -1, -1, -1});
+            ret.emplace_back(StringUtils::getString(wonderCards + i * WC7::length, 0x2, 36), "", -1, -1, -1);
         }
     }
     return ret;

@@ -37,7 +37,9 @@ class MoveEditScreen : public Screen
 {
 public:
     MoveEditScreen(std::shared_ptr<PKX> pkm);
-    void draw() const override;
+    // Done with Overlay
+    void drawTop() const override {}
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
     ScreenType type() const override { return ScreenType::EDITOR; }
 

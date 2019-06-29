@@ -85,9 +85,8 @@ BoxChoice::~BoxChoice()
     }
 }
 
-void BoxChoice::draw() const
+void BoxChoice::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     Gui::sprite(ui_sheet_emulated_bg_bottom_green, 0, 0);
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
     Gui::sprite(ui_sheet_bar_arc_bottom_green_idx, 0, 206);
@@ -110,7 +109,7 @@ void BoxChoice::draw() const
         {
             if (TitleLoader::save->generation() == Generation::LGPE && row * 6 + column + boxBox * 30 >= TitleLoader::save->maxSlot())
             {
-                C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(128, 128, 128, 128));
+                Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(128, 128, 128, 128));
             }
             else
             {
@@ -125,7 +124,7 @@ void BoxChoice::draw() const
         y += 30;
     }
 
-    Gui::dynamicText(TitleLoader::save->boxName(boxBox), 25 + 164 / 2, 18, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(TitleLoader::save->boxName(boxBox), 25 + 164 / 2, 18, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
 
     if (!storageChosen)
     {
@@ -144,24 +143,26 @@ void BoxChoice::draw() const
 
     if (currentOverlay)
     {
-        C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, COLOR_MASKBLACK);
+        Gui::drawSolidRect(0, 0, 320, 240, COLOR_MASKBLACK);
     }
-    else
+}
+
+void BoxChoice::drawTop() const
+{
+    if (!currentOverlay)
     {
-        C2D_SceneBegin(g_renderTargetTop);
         Gui::sprite(ui_sheet_emulated_bg_top_green, 0, 0);
         Gui::sprite(ui_sheet_bg_style_top_idx, 0, 0);
         Gui::backgroundAnimatedTop();
         Gui::sprite(ui_sheet_bar_arc_top_green_idx, 0, 0);
 
         Gui::sprite(ui_sheet_textbox_pksm_idx, 261, 3);
-        Gui::staticText("PKSM", 394, 7, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
+        Gui::text("PKSM", 394, 7, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
 
         Gui::sprite(ui_sheet_bar_boxname_empty_idx, 44, 21);
-        Gui::staticText("\uE004", 45 + 24 / 2, 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        Gui::staticText("\uE005", 225 + 24 / 2, 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        Gui::dynamicText(
-            Banks::bank->boxName(storageBox), 69 + 156 / 2, 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text("\uE004", 45 + 24 / 2, 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text("\uE005", 225 + 24 / 2, 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(Banks::bank->boxName(storageBox), 69 + 156 / 2, 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
 
         Gui::sprite(ui_sheet_storagemenu_cross_idx, 36, 50);
         Gui::sprite(ui_sheet_storagemenu_cross_idx, 246, 50);
@@ -209,31 +210,32 @@ void BoxChoice::draw() const
 
         if (infoMon)
         {
-            Gui::dynamicText(infoMon->nickname(), 276, 61, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(infoMon->nickname(), 276, 61, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             std::string info = "#" + std::to_string(infoMon->species());
-            Gui::dynamicText(info, 273, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            info        = i18n::localize("LV") + std::to_string(infoMon->level());
-            float width = StringUtils::textWidth(info, FONT_SIZE_12);
-            Gui::dynamicText(info, 375 - (int)width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(info, 273, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            info      = i18n::localize("LV") + std::to_string(infoMon->level());
+            auto text = Gui::parseText(info, FONT_SIZE_12, 0.0f);
+            int width = text->maxWidth(FONT_SIZE_12);
+            Gui::text(text, 375 - width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             if (infoMon->gender() == 0)
             {
-                Gui::sprite(ui_sheet_icon_male_idx, 362 - (int)width, 80);
+                Gui::sprite(ui_sheet_icon_male_idx, 362 - width, 80);
             }
             else if (infoMon->gender() == 1)
             {
-                Gui::sprite(ui_sheet_icon_female_idx, 364 - (int)width, 80);
+                Gui::sprite(ui_sheet_icon_female_idx, 364 - width, 80);
             }
             else if (infoMon->gender() == 2)
             {
-                Gui::sprite(ui_sheet_icon_genderless_idx, 364 - (int)width, 80);
+                Gui::sprite(ui_sheet_icon_genderless_idx, 364 - width, 80);
             }
             if (infoMon->shiny())
             {
-                Gui::sprite(ui_sheet_icon_shiny_idx, 352 - (int)width, 81);
+                Gui::sprite(ui_sheet_icon_shiny_idx, 352 - width, 81);
             }
 
-            Gui::dynamicText(i18n::species(Configuration::getInstance().language(), infoMon->species()), 276, 98, FONT_SIZE_12, FONT_SIZE_12,
-                COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(i18n::species(Configuration::getInstance().language(), infoMon->species()), 276, 98, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
+                TextPosX::LEFT, TextPosY::TOP);
             u8 firstType  = infoMon->type1();
             u8 secondType = infoMon->type2();
             if (infoMon->generation() == Generation::FOUR)
@@ -254,17 +256,18 @@ void BoxChoice::draw() const
             }
 
             info = infoMon->otName() + '\n' + i18n::localize("LOADER_ID") + std::to_string(infoMon->TID());
-            Gui::dynamicText(info, 276, 141, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(info, 276, 141, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
-            Gui::dynamicText(i18n::nature(Configuration::getInstance().language(), infoMon->nature()), 276, 181, FONT_SIZE_12, FONT_SIZE_12,
-                COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(i18n::nature(Configuration::getInstance().language(), infoMon->nature()), 276, 181, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
+                TextPosX::LEFT, TextPosY::TOP);
             info  = i18n::localize("IV") + ": ";
-            width = StringUtils::textWidth(info, FONT_SIZE_12);
-            Gui::dynamicText(info, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            text  = Gui::parseText(info, FONT_SIZE_12, 0.0f);
+            width = text->maxWidth(FONT_SIZE_12);
+            Gui::text(text, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(0), infoMon->iv(1), infoMon->iv(2));
-            Gui::dynamicText(info, 276 + (int)width + 70 / 2, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+            Gui::text(info, 276 + width + 70 / 2, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
             info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(4), infoMon->iv(5), infoMon->iv(3));
-            Gui::dynamicText(info, 276 + (int)width + 70 / 2, 209, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+            Gui::text(info, 276 + width + 70 / 2, 209, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
             Gui::format(*infoMon, 276, 213);
         }
     }
@@ -276,17 +279,29 @@ std::tuple<int, int, int> BoxChoice::run()
     {
         hidScanInput();
         C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-        C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
-        C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
+
+        Gui::target(GFX_TOP);
+        Gui::clearScreen(GFX_TOP);
+        drawTop();
+        Gui::flushText();
+
+        Gui::target(GFX_BOTTOM);
+        Gui::clearScreen(GFX_BOTTOM);
+        drawBottom();
+        Gui::flushText();
 
         touchPosition touch;
         hidTouchRead(&touch);
         update(&touch);
 
-        draw();
+        if (!aptIsHomeAllowed() && aptIsHomePressed())
+        {
+            Gui::setDoHomeDraw();
+        }
+
+        Gui::drawNoHome();
 
         C3D_FrameEnd(0);
-        Gui::clearTextBufs();
     }
     return result;
 }

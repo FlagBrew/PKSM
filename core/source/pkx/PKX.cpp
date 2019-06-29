@@ -30,6 +30,7 @@
 #include "PK5.hpp"
 #include "PK6.hpp"
 #include "PK7.hpp"
+#include "PKFilter.hpp"
 
 u32 PKX::expTable(u8 row, u8 col) const
 {
@@ -558,4 +559,104 @@ std::shared_ptr<PKX> PKX::getPKM(Generation gen, u8* data, bool ekx, bool party)
         default:
             return nullptr;
     }
+}
+
+bool PKX::operator==(const PKFilter& filter) const
+{
+    if (filter.generationEnabled() && generation() != filter.generation())
+    {
+        return false;
+    }
+    if (filter.speciesEnabled() && species() != filter.species())
+    {
+        return false;
+    }
+    if (filter.heldItemEnabled() && heldItem() != filter.heldItem())
+    {
+        return false;
+    }
+    if (filter.levelEnabled() && level() != filter.level())
+    {
+        return false;
+    }
+    if (filter.abilityEnabled() && ability() != filter.ability())
+    {
+        return false;
+    }
+    if (filter.formatTIDEnabled() && formatTID() != filter.formatTID())
+    {
+        return false;
+    }
+    if (filter.formatSIDEnabled() && formatSID() != filter.formatSID())
+    {
+        return false;
+    }
+    if (filter.otNameEnabled() && otName() != filter.otName())
+    {
+        return false;
+    }
+    if (filter.natureEnabled() && nature() != filter.nature())
+    {
+        return false;
+    }
+    if (filter.genderEnabled() && gender() != filter.gender())
+    {
+        return false;
+    }
+    if (filter.ballEnabled() && ball() != filter.ball())
+    {
+        return false;
+    }
+    if (filter.languageEnabled() && language() != filter.language())
+    {
+        return false;
+    }
+    if (filter.eggEnabled() && egg() != filter.egg())
+    {
+        return false;
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        if (filter.moveEnabled(i) && move(i) != filter.move(i))
+        {
+            return false;
+        }
+        if (filter.relearnMoveEnabled(i))
+        {
+            switch (generation())
+            {
+                case Generation::FOUR:
+                case Generation::FIVE:
+                    return false;
+                case Generation::SIX:
+                    if (filter.relearnMove(i) != ((const PK6*)this)->relearnMove(i))
+                    {
+                        return false;
+                    }
+                    break;
+                case Generation::SEVEN:
+                    if (filter.relearnMove(i) != ((const PK7*)this)->relearnMove(i))
+                    {
+                        return false;
+                    }
+                    break;
+                case Generation::LGPE:
+                    if (filter.relearnMove(i) != ((const PB7*)this)->relearnMove(i))
+                    {
+                        return false;
+                    }
+                    break;
+                default:
+                    return false;
+            }
+        }
+    }
+    for (int i = 0; i < 6; i++)
+    {
+        if (filter.ivEnabled(i) && iv(i) != filter.iv(i))
+        {
+            return false;
+        }
+    }
+    return true;
 }

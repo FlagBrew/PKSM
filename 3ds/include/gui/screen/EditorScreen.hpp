@@ -31,9 +31,7 @@
 #include "PKX.hpp"
 #include "Screen.hpp"
 #include "ViewOverlay.hpp"
-extern "C" {
 #include "sha256.h"
-}
 
 class EditorScreen : public Screen
 {
@@ -46,7 +44,9 @@ public:
         }
     }
     EditorScreen(std::shared_ptr<PKX> pkm, int box, int index, bool emergency = false);
-    void draw() const override;
+    // Done with Overlay
+    void drawTop() const override {}
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
     ScreenType type() const override { return ScreenType::EDITOR; }
 

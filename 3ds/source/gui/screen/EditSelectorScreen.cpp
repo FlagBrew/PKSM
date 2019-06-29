@@ -157,12 +157,12 @@ EditSelectorScreen::EditSelectorScreen() : Screen(i18n::localize("A_SELECT") + '
     buttons.push_back(new ClickButton(25, 15, 164, 24, [this]() { return this->clickIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0));
     buttons.push_back(new AccelButton(8, 15, 17, 24, [this]() { return this->prevBox(); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5));
     buttons.push_back(new AccelButton(189, 15, 17, 24, [this]() { return this->nextBox(); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5));
-    int cameraButtonWidth = StringUtils::textWidth("\uE004+\uE005 \uE01E", FONT_SIZE_14);
-    instructions.addCircle(false, 310 - cameraButtonWidth / 2, 24, 8, COLOR_GREY);
-    instructions.addBox(false, 308 - cameraButtonWidth / 2, 24, 4, 20, COLOR_GREY);
-    instructions.addBox(false, 222 - cameraButtonWidth / 2, 44, 90, 16, COLOR_GREY, i18n::localize("QR_SCANNER"), COLOR_WHITE);
-    buttons.push_back(new ClickButton(310 - cameraButtonWidth, 16, cameraButtonWidth + 2, 16, [this]() { return this->doQR(); },
-        ui_sheet_res_null_idx, "\uE004+\uE005 \uE01E", FONT_SIZE_14, COLOR_BLACK));
+    auto cameraButtonText = Gui::parseText("\uE004+\uE005 \uE01E", FONT_SIZE_14, 0.0f);
+    instructions.addCircle(false, 310 - cameraButtonText->maxWidth(FONT_SIZE_14) / 2, 24, 8, COLOR_GREY);
+    instructions.addBox(false, 308 - cameraButtonText->maxWidth(FONT_SIZE_14) / 2, 24, 4, 20, COLOR_GREY);
+    instructions.addBox(false, 222 - cameraButtonText->maxWidth(FONT_SIZE_14) / 2, 44, 90, 16, COLOR_GREY, i18n::localize("QR_SCANNER"), COLOR_WHITE);
+    buttons.push_back(new ClickButton(310 - cameraButtonText->maxWidth(FONT_SIZE_14), 16, cameraButtonText->maxWidth(FONT_SIZE_14) + 2, 16,
+        [this]() { return this->doQR(); }, ui_sheet_res_null_idx, "\uE004+\uE005 \uE01E", FONT_SIZE_14, COLOR_BLACK));
 
     // Pokemon buttons
     u16 y = 45;
@@ -234,14 +234,12 @@ EditSelectorScreen::~EditSelectorScreen()
     TitleLoader::save->currentBox((u8)box);
 }
 
-void EditSelectorScreen::draw() const
+void EditSelectorScreen::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     Gui::sprite(ui_sheet_emulated_bg_bottom_blue, 0, 0);
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
     Gui::sprite(ui_sheet_bar_bottom_blue_idx, 0, 216);
     Gui::sprite(ui_sheet_stripe_camera_idx, 218, 14);
-    Gui::dynamicText("\uE004+\uE005 \uE01E", 311, 15, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::RIGHT, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_bar_boxname_with_arrows_idx, 7, 15);
     Gui::sprite(ui_sheet_storage_box_corner_idx, 2, 44);
@@ -282,7 +280,7 @@ void EditSelectorScreen::draw() const
         {
             if (TitleLoader::save->generation() == Generation::LGPE && row * 6 + column + box * 30 >= TitleLoader::save->maxSlot())
             {
-                C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(128, 128, 128, 128));
+                Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(128, 128, 128, 128));
             }
             else
             {
@@ -316,7 +314,7 @@ void EditSelectorScreen::draw() const
         }
     }
 
-    Gui::dynamicText(TitleLoader::save->boxName(box), 107, 18, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(TitleLoader::save->boxName(box), 107, 18, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
 
     if (cursorPos == 0)
     {
@@ -350,13 +348,13 @@ void EditSelectorScreen::draw() const
 
     if (infoMon)
     {
-        Gui::dynamicText(StringUtils::format(i18n::localize("EDITOR_IDS"), infoMon->formatTID(), infoMon->formatSID(), infoMon->TSV()), 160, 224,
+        Gui::text(StringUtils::format(i18n::localize("EDITOR_IDS"), infoMon->formatTID(), infoMon->formatSID(), infoMon->TSV()), 160, 224,
             FONT_SIZE_9, FONT_SIZE_9, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
 
     if (menu)
     {
-        C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, COLOR_MASKBLACK);
+        Gui::drawSolidRect(0, 0, 320, 240, COLOR_MASKBLACK);
         for (auto button : viewerButtons)
         {
             button->draw();

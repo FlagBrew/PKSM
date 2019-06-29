@@ -29,26 +29,25 @@
 
 #include "PKX.hpp"
 #include "Sav.hpp"
+#include "Screen.hpp"
+#include "TextParse.hpp"
+#include "TextPos.hpp"
+#include "WCX.hpp"
+#include "colors.hpp"
 #include "i18n.hpp"
 #include "json.hpp"
 #include "mixer.hpp"
+#include "pkm_spritesheet.h"
 #include "thread.hpp"
+#include "types_spritesheet.h"
+#include "ui_sheet.h"
+#include "utils.hpp"
 #include <3ds.h>
 #include <citro2d.h>
 #include <random>
 #include <stack>
 #include <string.h>
 #include <unordered_map>
-
-#include "WCX.hpp"
-#include "pkm_spritesheet.h"
-#include "types_spritesheet.h"
-#include "ui_sheet.h"
-
-#include "Screen.hpp"
-
-#include "TextPos.hpp"
-#include "colors.hpp"
 
 // emulated
 #define ui_sheet_res_null_idx 500
@@ -101,11 +100,14 @@
 
 namespace Gui
 {
+    extern std::vector<C2D_Font> fonts;
     Result init(void);
     void mainLoop(void);
     void exit(void);
 
-    C3D_RenderTarget* target(gfxScreen_t t);
+    void target(gfxScreen_t t);
+    void clearScreen(gfxScreen_t t);
+    void flushText();
     C2D_Image TWLIcon(void);
 
     void ball(size_t index, int x, int y);
@@ -118,17 +120,24 @@ namespace Gui
     void pkm(int species, int form, Generation generation, int gender, int x, int y, float scale = 1.0f, u32 color = C2D_Color32(0, 0, 0, 255),
         float blend = 0.0f);
 
+    void drawImageAt(const C2D_Image& img, float x, float y, const C2D_ImageTint* tint = nullptr, float scaleX = 1.0f, float scaleY = 1.0f);
+    void drawSolidRect(float x, float y, float w, float h, u32 color);
+    void drawSolidCircle(float x, float y, float radius, u32 color);
+    void drawSolidTriangle(float x1, float y1, float x2, float y2, float x3, float y3, u32 color);
+
     void backgroundTop(bool stripes);
     void backgroundBottom(bool stripes);
     void backgroundAnimatedTop(void);
     void backgroundAnimatedBottom(void);
+    void setDoHomeDraw(void);
+    void drawNoHome(void);
 
-    void clearTextBufs(void);
-    void dynamicText(const std::string& str, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY);
-
-    C2D_Text cacheStaticText(const std::string& strKey);
-    void clearStaticText(void);
-    void staticText(const std::string& strKey, int x, int y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY);
+    std::shared_ptr<TextParse::Text> parseText(const std::string& str, float scaleX, float maxWidth = 0.0f);
+    void clearText(void);
+    void text(
+        const std::shared_ptr<TextParse::Text> text, float x, float y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY);
+    void text(const std::string& str, float x, float y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY,
+        float maxWidth = 0.0f);
 
     void setScreen(std::unique_ptr<Screen> screen);
     void screenBack(void);

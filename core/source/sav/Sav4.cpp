@@ -172,11 +172,11 @@ void Sav4::language(u8 v)
 
 std::string Sav4::otName(void) const
 {
-    return StringUtils::getString4(data, Trainer1, 8);
+    return StringUtils::transString45(StringUtils::getString4(data, Trainer1, 8));
 }
 void Sav4::otName(const std::string& v)
 {
-    StringUtils::setString4(data, v, Trainer1, 8);
+    StringUtils::setString4(data, StringUtils::transString45(v), Trainer1, 8);
 }
 
 u32 Sav4::money(void) const
@@ -355,12 +355,12 @@ void Sav4::mysteryGift(WCX& wc, int& pos)
 
 std::string Sav4::boxName(u8 box) const
 {
-    return StringUtils::getString4(data, boxOffset(18, 0) + box * 0x28 + (game == Game::HGSS ? 0x8 : 0), 9);
+    return StringUtils::transString45(StringUtils::getString4(data, boxOffset(18, 0) + box * 0x28 + (game == Game::HGSS ? 0x8 : 0), 9));
 }
 
 void Sav4::boxName(u8 box, const std::string& name)
 {
-    StringUtils::setString4(data, name, boxOffset(18, 0) + box * 0x28 + (game == Game::HGSS ? 0x8 : 0), 9);
+    StringUtils::setString4(data, StringUtils::transString45(name), boxOffset(18, 0) + box * 0x28 + (game == Game::HGSS ? 0x8 : 0), 9);
 }
 
 u8 Sav4::partyCount(void) const
@@ -755,15 +755,15 @@ std::vector<MysteryGift::giftData> Sav4::currentGifts(void) const
         if (*(wonderCards + i * PGT::length) == 1 || *(wonderCards + i * PGT::length) == 2)
         {
             PK4 getData(wonderCards + i * PGT::length + 8, true);
-            ret.push_back({"Wonder Card", "", getData.species(), getData.alternativeForm(), getData.gender()});
+            ret.emplace_back("Wonder Card", "", getData.species(), getData.alternativeForm(), getData.gender());
         }
         else if (*(wonderCards + i * PGT::length) == 7)
         {
-            ret.push_back({"Wonder Card", "", 490, -1, -1});
+            ret.emplace_back("Wonder Card", "", 490, -1, -1);
         }
         else
         {
-            ret.push_back({"Wonder Card", "", -1, -1, -1});
+            ret.emplace_back("Wonder Card", "", -1, -1, -1);
         }
     }
     return ret;

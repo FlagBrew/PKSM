@@ -39,6 +39,8 @@
 #include "types.h"
 #include "utils.hpp"
 
+class PKFilter;
+
 class PKX
 {
 protected:
@@ -62,6 +64,7 @@ public:
     virtual std::shared_ptr<PKX> clone(void) = 0;
     virtual ~PKX(){};
     static std::shared_ptr<PKX> getPKM(Generation gen, u8* data, bool ekx = false, bool party = false);
+    bool operator==(const PKFilter& filter) const;
 
     virtual Generation generation(void) const = 0;
     bool gen7(void) const;

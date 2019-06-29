@@ -43,7 +43,8 @@ public:
         hid.select(current);
     }
     virtual ~BoxOverlay() {}
-    void draw() const override;
+    void drawTop() const override;
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
 
 private:
