@@ -5,9 +5,7 @@
 
 #include "mp3.hpp"
 #include "wav.hpp"
-#include "flac.hpp"
 #include "vorbis.hpp"
-#include "opus.hpp"
 
 std::shared_ptr<Decoder> Decoder::get(const std::string& fileName)
 {
@@ -32,25 +30,10 @@ std::shared_ptr<Decoder> Decoder::get(const std::string& fileName)
             if (wavdec->good())
                 return wavdec;
     }
-    /*Flac*/
-    else if (!strncmp(magic, "fLaC", 4))
-    {
-        fprintf(stderr, "Decoder: Using flac.");
-        auto flacdec = std::shared_ptr<Decoder>(new FlacDecoder(fileName));
-            if (flacdec->good())
-                return flacdec;
-    }
     /*Ogg or Opus*/
     else if (!strncmp(magic, "OggS", 4))
     {
-        if (isOpus(fileName) == 0)
-        {
-            fprintf(stderr, "Decoder: Using ogg opus");
-            auto opusdec = std::shared_ptr<Decoder>(new OpusDecoder(fileName));
-            if (opusdec->good())
-                return opusdec;
-        }
-        else if (isVorbis(fileName) == 0)
+        if (isVorbis(fileName) == 0)
         {
             fprintf(stderr, "Decoder: Using ogg vorbis");
             auto vorbisdec = std::shared_ptr<Decoder>(new VorbisDecoder(fileName));
