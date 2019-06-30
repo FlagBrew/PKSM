@@ -26,8 +26,8 @@
 
 #include "StorageViewOverlay.hpp"
 #include "EditorScreen.hpp"
-#include "gui.hpp"
 #include "StorageScreen.hpp"
+#include "gui.hpp"
 
 void StorageViewOverlay::drawBottom() const
 {

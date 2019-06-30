@@ -33,9 +33,9 @@
 class ToggleButton : public ClickButton
 {
 public:
-    ToggleButton(int x, int y, u16 w, u16 h, std::function<bool()> callback, int onImage, std::string onText, float onTextScale, u32 onTextColor,
-        std::optional<int> offImage = std::nullopt, std::optional<std::string> offText = std::nullopt,
-        std::optional<float> offTextScale = std::nullopt, std::optional<u32> offTextColor = std::nullopt,
+    ToggleButton(int x, int y, u16 w, u16 h, const std::function<bool()>& callback, int onImage, const std::string& onText, float onTextScale,
+        u32 onTextColor, const std::optional<int>& offImage = std::nullopt, const std::optional<std::string>& offText = std::nullopt,
+        const std::optional<float>& offTextScale = std::nullopt, const std::optional<u32>& offTextColor = std::nullopt,
         std::vector<ToggleButton*>* radioCategory = nullptr, bool disablable = false);
     ~ToggleButton(void) {}
 

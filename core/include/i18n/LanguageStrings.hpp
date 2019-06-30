@@ -72,8 +72,8 @@ protected:
     std::map<u16, std::string> locationsLGPE;
     nlohmann::json gui;
 
-    void load(Language lang, const std::string name, std::vector<std::string>& array);
-    void loadMap(Language lang, const std::string name, std::map<u16, std::string>& map);
+    void load(Language lang, const std::string& name, std::vector<std::string>& array);
+    void loadMap(Language lang, const std::string& name, std::map<u16, std::string>& map);
     void loadGui(Language lang);
 
 public:

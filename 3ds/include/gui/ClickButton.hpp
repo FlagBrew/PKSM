@@ -32,7 +32,8 @@
 class ClickButton : public Button
 {
 public:
-    ClickButton(int x, int y, u16 w, u16 h, std::function<bool()> callback, int image, std::string text, float textScale, u32 textColor);
+    ClickButton(
+        int x, int y, u16 w, u16 h, const std::function<bool()>& callback, int image, const std::string& text, float textScale, u32 textColor);
     ~ClickButton(void) {}
 
     virtual bool update(touchPosition* touch) override;

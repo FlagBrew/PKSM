@@ -46,7 +46,7 @@ namespace TextParse
 
     struct Glyph
     {
-        Glyph(Tex3DS_SubTexture subtex, C3D_Tex* tex = nullptr, C2D_Font font = nullptr, u32 line = 0, float xPos = 0.0f, float width = 0.0f)
+        Glyph(const Tex3DS_SubTexture& subtex, C3D_Tex* tex = nullptr, C2D_Font font = nullptr, u32 line = 0, float xPos = 0.0f, float width = 0.0f)
             : subtex(subtex), tex(tex), font(font), line(line), xPos(xPos), width(width)
         {
         }
@@ -110,7 +110,7 @@ namespace TextParse
     private:
         struct PositionedGlyph
         {
-            PositionedGlyph(Glyph glyph, float x = 0.0f, float y = 0.0f, float z = 0.0f, float scaleX = 1.0f, float scaleY = 1.0f,
+            PositionedGlyph(const Glyph& glyph, float x = 0.0f, float y = 0.0f, float z = 0.0f, float scaleX = 1.0f, float scaleY = 1.0f,
                 u32 color = C2D_Color32(0, 0, 0, 255))
                 : x(x), y(y), z(z), scaleX(scaleX), scaleY(scaleY), color(color), glyph(glyph)
             {

@@ -348,8 +348,8 @@ void Sav4::mysteryGift(WCX& wc, int& pos)
     if (game == Game::DP)
     {
         static constexpr size_t dpSlotActive = 0xEDB88320;
-        static const int ofs = WondercardFlags + 0x100;
-        *(u32*)(data + ofs + 4*pos) = dpSlotActive;
+        static const int ofs                 = WondercardFlags + 0x100;
+        *(u32*)(data + ofs + 4 * pos)        = dpSlotActive;
     }
 }
 

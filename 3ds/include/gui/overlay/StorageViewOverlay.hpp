@@ -28,8 +28,8 @@
 #define STORAGEVIEWOVERLAY_HPP
 
 #include "ViewOverlay.hpp"
-#include <vector>
 #include <bitset>
+#include <vector>
 
 class StorageViewOverlay : public ViewOverlay
 {

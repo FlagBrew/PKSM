@@ -98,7 +98,7 @@ Result Banks::init()
     return 0;
 }
 
-bool Banks::loadBank(const std::string& name, std::optional<int> maxBoxes)
+bool Banks::loadBank(const std::string& name, const std::optional<int>& maxBoxes)
 {
     if (!bank || bank->name() != name)
     {

@@ -37,8 +37,8 @@
 #include "SavLGPE.hpp"
 #include "SortOverlay.hpp"
 #include "StorageOverlay.hpp"
-#include "TitleLoadScreen.hpp"
 #include "StorageViewOverlay.hpp"
+#include "TitleLoadScreen.hpp"
 #include "banks.hpp"
 #include "base64.hpp"
 #include "fetch.hpp"
@@ -899,8 +899,9 @@ bool StorageScreen::showViewer()
 
     if (infoMon && infoMon->species() != 0)
     {
-        justSwitched = true;
-        currentOverlay = std::make_unique<StorageViewOverlay>(*this, infoMon, moveMon, partyNum, selectDimensions, currentlySelecting, std::pair<int,int>{storageChosen ? storageBox : -1, cursorIndex - 1});
+        justSwitched   = true;
+        currentOverlay = std::make_unique<StorageViewOverlay>(*this, infoMon, moveMon, partyNum, selectDimensions, currentlySelecting,
+            std::pair<int, int>{storageChosen ? storageBox : -1, cursorIndex - 1});
     }
     return true;
 }
@@ -1678,15 +1679,16 @@ void StorageScreen::shareSend()
     std::string postdata = base64_encode(infoMon->rawData(), infoMon->getLength());
     std::string version  = "Generation: " + genToString(infoMon->generation());
     std::string size     = "Size: " + std::to_string(infoMon->getLength());
-    std::string info =
-        "Info: " + infoMon->nickname() + "," + infoMon->otName() + "," + std::to_string((int)infoMon->level()) + "," +
-        std::to_string(infoMon->species()) + "," + std::to_string(infoMon->move(0)) + "," + std::to_string(infoMon->move(1)) + "," +
-        std::to_string(infoMon->move(2)) + "," + std::to_string(infoMon->move(3)) + "," + std::to_string((int)infoMon->nature()) + "," +
-        std::to_string((int)infoMon->iv(0)) + "," + std::to_string((int)infoMon->iv(1)) + "," + std::to_string((int)infoMon->iv(2)) // HP, Atk, Def
-        + "," + std::to_string((int)infoMon->iv(5)) + "," + std::to_string((int)infoMon->iv(3)) + "," +
-        std::to_string((int)infoMon->iv(4)) // Sp. Atk, Sp. Def, Speed
-        + "," + std::to_string((int)infoMon->gender()) + "," + std::to_string((bool)infoMon->shiny()) + "," +
-        std::to_string((int)infoMon->ability()) + "," + std::to_string((int)infoMon->heldItem()) + "," + std::to_string((int)infoMon->TID()) + "," + std::to_string((int) infoMon->ball()) + "," + std::to_string((int) infoMon->pkrs());
+    std::string info     = "Info: " + infoMon->nickname() + "," + infoMon->otName() + "," + std::to_string((int)infoMon->level()) + "," +
+                       std::to_string(infoMon->species()) + "," + std::to_string(infoMon->move(0)) + "," + std::to_string(infoMon->move(1)) + "," +
+                       std::to_string(infoMon->move(2)) + "," + std::to_string(infoMon->move(3)) + "," + std::to_string((int)infoMon->nature()) +
+                       "," + std::to_string((int)infoMon->iv(0)) + "," + std::to_string((int)infoMon->iv(1)) + "," +
+                       std::to_string((int)infoMon->iv(2)) // HP, Atk, Def
+                       + "," + std::to_string((int)infoMon->iv(5)) + "," + std::to_string((int)infoMon->iv(3)) + "," +
+                       std::to_string((int)infoMon->iv(4)) // Sp. Atk, Sp. Def, Speed
+                       + "," + std::to_string((int)infoMon->gender()) + "," + std::to_string((bool)infoMon->shiny()) + "," +
+                       std::to_string((int)infoMon->ability()) + "," + std::to_string((int)infoMon->heldItem()) + "," +
+                       std::to_string((int)infoMon->TID()) + "," + std::to_string((int)infoMon->ball()) + "," + std::to_string((int)infoMon->pkrs());
     struct curl_slist* headers = NULL;
     headers                    = curl_slist_append(headers, "Content-Type: application/base64");
     headers                    = curl_slist_append(headers, version.c_str());

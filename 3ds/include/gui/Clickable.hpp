@@ -33,7 +33,7 @@
 class Clickable
 {
 public:
-    Clickable(int x, int y, u16 w, u16 h, std::function<bool()> function) : xPos(x), yPos(y), width(w), height(h), noArg(function) {}
+    Clickable(int x, int y, u16 w, u16 h, const std::function<bool()>& function) : xPos(x), yPos(y), width(w), height(h), noArg(function) {}
     virtual ~Clickable(){};
 
     // returns return value of callback, or, if it's not executed, false

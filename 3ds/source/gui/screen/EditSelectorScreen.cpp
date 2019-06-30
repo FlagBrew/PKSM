@@ -148,11 +148,7 @@ EditSelectorScreen::EditSelectorScreen() : Screen(i18n::localize("A_SELECT") + '
 {
     currentOverlay = std::make_shared<ViewOverlay>(*this, infoMon, false);
 
-    buttons.push_back(new ClickButton(283, 211, 34, 28,
-        [this]() {
-            return goBack();
-        },
-        ui_sheet_button_back_idx, "", 0.0f, 0));
+    buttons.push_back(new ClickButton(283, 211, 34, 28, [this]() { return goBack(); }, ui_sheet_button_back_idx, "", 0.0f, 0));
     instructions.addBox(false, 25, 15, 164, 24, COLOR_GREY, i18n::localize("A_BOX_NAME"), COLOR_WHITE);
     buttons.push_back(new ClickButton(25, 15, 164, 24, [this]() { return this->clickIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0));
     buttons.push_back(new AccelButton(8, 15, 17, 24, [this]() { return this->prevBox(); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5));
@@ -187,10 +183,18 @@ EditSelectorScreen::EditSelectorScreen() : Screen(i18n::localize("A_SELECT") + '
     viewerButtons.push_back(buttons[0]);
     viewerButtons.push_back(new ClickButton(212, 47, 108, 28, [this]() { return this->editPokemon(); }, ui_sheet_button_editor_idx,
         "\uE000: " + i18n::localize("EDIT"), FONT_SIZE_12, COLOR_BLACK));
-    viewerButtons.push_back(new ClickButton(212, 78, 108, 28, [this]() { menu = false; return this->releasePokemon(); }, ui_sheet_button_editor_idx,
-        "\uE003: " + i18n::localize("RELEASE"), FONT_SIZE_12, COLOR_BLACK));
-    viewerButtons.push_back(new ClickButton(212, 109, 108, 28, [this]() { menu = false; return this->clonePkm(); }, ui_sheet_button_editor_idx,
-        "\uE002: " + i18n::localize("CLONE"), FONT_SIZE_12, COLOR_BLACK));
+    viewerButtons.push_back(new ClickButton(212, 78, 108, 28,
+        [this]() {
+            menu = false;
+            return this->releasePokemon();
+        },
+        ui_sheet_button_editor_idx, "\uE003: " + i18n::localize("RELEASE"), FONT_SIZE_12, COLOR_BLACK));
+    viewerButtons.push_back(new ClickButton(212, 109, 108, 28,
+        [this]() {
+            menu = false;
+            return this->clonePkm();
+        },
+        ui_sheet_button_editor_idx, "\uE002: " + i18n::localize("CLONE"), FONT_SIZE_12, COLOR_BLACK));
     TitleLoader::save->cryptBoxData(true);
     box = TitleLoader::save->currentBox() % TitleLoader::save->maxBoxes();
 }

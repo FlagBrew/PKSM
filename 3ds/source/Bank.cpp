@@ -283,8 +283,8 @@ bool Bank::backup() const
 {
     Gui::waitFrame(i18n::localize("BANK_BACKUP"));
     auto paths = this->paths();
-    // Archive::copyFile(Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".bnk.bak", Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".bnk.bak.old");
-    // Archive::copyFile(Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".json.bak", Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".json.bak.old");
+    Archive::copyFile(Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".bnk.bak", Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".bnk.bak.old");
+    Archive::copyFile(Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".json.bak", Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".json.bak.old");
     if (R_FAILED(Archive::copyFile(ARCHIVE, BANK(paths), Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".bnk.bak")))
     {
         return false;

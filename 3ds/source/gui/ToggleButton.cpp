@@ -26,9 +26,9 @@
 
 #include "ToggleButton.hpp"
 
-ToggleButton::ToggleButton(int x, int y, u16 w, u16 h, std::function<bool()> callback, int onImage, std::string onText, float onTextScale,
-    u32 onTextColor, std::optional<int> offImage, std::optional<std::string> offText, std::optional<float> offTextScale,
-    std::optional<u32> offTextColor, std::vector<ToggleButton*>* radioCategory, bool disablable)
+ToggleButton::ToggleButton(int x, int y, u16 w, u16 h, const std::function<bool()>& callback, int onImage, const std::string& onText,
+    float onTextScale, u32 onTextColor, const std::optional<int>& offImage, const std::optional<std::string>& offText,
+    const std::optional<float>& offTextScale, const std::optional<u32>& offTextColor, std::vector<ToggleButton*>* radioCategory, bool disablable)
     : ClickButton(x, y, w, h, callback, onImage, onText, onTextScale, onTextColor),
       onImage(onImage),
       onText(onText),

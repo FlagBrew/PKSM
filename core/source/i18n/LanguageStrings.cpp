@@ -96,7 +96,7 @@ LanguageStrings::LanguageStrings(Language lang)
     loadGui(lang);
 }
 
-void LanguageStrings::load(Language lang, const std::string name, std::vector<std::string>& array)
+void LanguageStrings::load(Language lang, const std::string& name, std::vector<std::string>& array)
 {
     static const std::string base = "romfs:/i18n/";
     std::string path              = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
@@ -128,7 +128,7 @@ void LanguageStrings::load(Language lang, const std::string name, std::vector<st
     free(data);
 }
 
-void LanguageStrings::loadMap(Language lang, const std::string name, std::map<u16, std::string>& map)
+void LanguageStrings::loadMap(Language lang, const std::string& name, std::map<u16, std::string>& map)
 {
     static const std::string base = "romfs:/i18n/";
     std::string path              = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
