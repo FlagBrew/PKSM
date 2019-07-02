@@ -47,8 +47,8 @@ public:
     bool pkm(std::shared_ptr<PKX> pk);
     int pages() const { return current->data["pages"].get<int>(); }
     int page() const { return pageNumber; }
-    void nextPage();
-    void prevPage();
+    bool nextPage();
+    bool prevPage();
     void sortType(SortType type)
     {
         if (sort != type)
@@ -76,7 +76,7 @@ public:
         }
     }
     bool filterLegal() const { return legal; }
-    bool good() const;
+    bool good() const { return isGood; }
     static std::string makeURL(int page, SortType type, bool ascend, bool legal);
     nlohmann::json grabPage(int page);
 

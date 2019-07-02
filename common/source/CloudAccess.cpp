@@ -236,22 +236,32 @@ std::shared_ptr<PKX> CloudAccess::fetchPkm(size_t slot) const
     return std::make_shared<PK7>();
 }
 
-void CloudAccess::nextPage()
+bool CloudAccess::nextPage()
 {
     if (current->data["pages"].get<int>() > 1)
     {
         pageNumber    = (pageNumber % current->data["pages"].get<int>()) + 1;
         current->data = grabPage(pageNumber);
+        if (current->data.is_discarded() || current->data.size() == 0)
+        {
+            isGood = false;
+        }
     }
+    return isGood;
 }
 
-void CloudAccess::prevPage()
+bool CloudAccess::prevPage()
 {
     if (current->data["pages"].get<int>() > 1)
     {
         pageNumber    = pageNumber - 1 == 0 ? current->data["pages"].get<int>() : pageNumber - 1;
         current->data = grabPage(pageNumber);
+        if (current->data.is_discarded() || current->data.size() == 0)
+        {
+            isGood = false;
+        }
     }
+    return isGood;
 }
 
 bool CloudAccess::pkm(std::shared_ptr<PKX> mon)

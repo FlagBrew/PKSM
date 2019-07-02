@@ -41,6 +41,12 @@ CloudScreen::CloudScreen(int storageBox)
              i18n::localize("R_BOX_NEXT") + '\n' + i18n::localize("B_BACK")),
       storageBox(storageBox)
 {
+    if (!access.good())
+    {
+        Gui::warn(i18n::localize("OFFLINE_ERROR"));
+        Gui::setNextKeyboardFunc([]() { Gui::screenBack(); });
+        return;
+    }
     mainButtons[0] = std::make_unique<Button>(
         212, 109, 108, 28, [this]() { return this->showViewer(); }, ui_sheet_button_editor_idx, i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
     mainButtons[1] = std::make_unique<Button>(
@@ -334,7 +340,10 @@ void CloudScreen::update(touchPosition* touch)
         {
             if (cursorIndex == 0)
             {
-                prevBox();
+                if (prevBox())
+                {
+                    return;
+                }
             }
             else if (cursorIndex > 1)
             {
@@ -342,7 +351,10 @@ void CloudScreen::update(touchPosition* touch)
             }
             else if (cursorIndex == 1)
             {
-                prevBox();
+                if (prevBox())
+                {
+                    return;
+                }
                 cursorIndex = 30;
             }
             sleep = true;
@@ -351,7 +363,10 @@ void CloudScreen::update(touchPosition* touch)
         {
             if (cursorIndex == 0)
             {
-                nextBox();
+                if (nextBox())
+                {
+                    return;
+                }
             }
             else if (cursorIndex < 30)
             {
@@ -359,7 +374,10 @@ void CloudScreen::update(touchPosition* touch)
             }
             else if (cursorIndex == 30)
             {
-                nextBox();
+                if (nextBox())
+                {
+                    return;
+                }
                 cursorIndex = 1;
             }
             sleep = true;
@@ -400,22 +418,34 @@ void CloudScreen::update(touchPosition* touch)
         }
         else if (kHeld & KEY_R)
         {
-            nextBox();
+            if (nextBox())
+            {
+                return;
+            }
             sleep = true;
         }
         else if (kHeld & KEY_L)
         {
-            prevBox();
+            if (prevBox())
+            {
+                return;
+            }
             sleep = true;
         }
         else if (kHeld & KEY_ZR)
         {
-            nextBoxTop();
+            if (nextBoxTop())
+            {
+                return;
+            }
             sleep = true;
         }
         else if (kHeld & KEY_ZL)
         {
-            prevBoxTop();
+            if (prevBoxTop())
+            {
+                return;
+            }
             sleep = true;
         }
 
@@ -493,7 +523,12 @@ bool CloudScreen::prevBox(bool forceBottom)
 {
     if (cloudChosen && !forceBottom)
     {
-        access.prevPage();
+        if (!access.prevPage())
+        {
+            Gui::warn(i18n::localize("OFFLINE_ERROR"));
+            Gui::screenBack();
+            return true;
+        }
     }
     else
     {
@@ -508,7 +543,12 @@ bool CloudScreen::prevBox(bool forceBottom)
 
 bool CloudScreen::prevBoxTop()
 {
-    access.prevPage();
+    if (!access.prevPage())
+    {
+        Gui::warn(i18n::localize("OFFLINE_ERROR"));
+        Gui::screenBack();
+        return true;
+    }
     return false;
 }
 
@@ -516,7 +556,12 @@ bool CloudScreen::nextBox(bool forceBottom)
 {
     if (cloudChosen && !forceBottom)
     {
-        access.nextPage();
+        if (!access.nextPage())
+        {
+            Gui::warn(i18n::localize("OFFLINE_ERROR"));
+            Gui::screenBack();
+            return true;
+        }
     }
     else
     {
@@ -531,7 +576,12 @@ bool CloudScreen::nextBox(bool forceBottom)
 
 bool CloudScreen::nextBoxTop()
 {
-    access.nextPage();
+    if (!access.nextPage())
+    {
+        Gui::warn(i18n::localize("OFFLINE_ERROR"));
+        Gui::screenBack();
+        return true;
+    }
     return false;
 }
 
