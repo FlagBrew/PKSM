@@ -745,19 +745,19 @@ void MiscEditScreen::validate()
     headers                    = curl_slist_append(headers, "Content-Type: application/base64");
     headers                    = curl_slist_append(headers, size.c_str());
 
-    if (Fetch::init("https://pksm.flagbrew.org/api/legalize", true, true, nullptr, headers, postdata))
+    if (auto fetch = Fetch::init("https://pksm.flagbrew.org/api/legalize", true, true, nullptr, headers, postdata))
     {
-        Fetch::setopt(CURLOPT_WRITEDATA, this);
-        Fetch::setopt(CURLOPT_WRITEFUNCTION, write_callback);
+        fetch->setopt(CURLOPT_WRITEDATA, this);
+        fetch->setopt(CURLOPT_WRITEFUNCTION, write_callback);
 
-        res = Fetch::perform();
+        res = fetch->perform();
         if (res != CURLE_OK)
         {
             Gui::error(i18n::localize("CURL_ERROR"), abs(res));
         }
         else
         {
-            Fetch::getinfo(CURLINFO_RESPONSE_CODE, &status_code);
+            fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
             switch (status_code)
             {
                 case 200:
@@ -774,7 +774,6 @@ void MiscEditScreen::validate()
                     break;
             }
         }
-        Fetch::exit();
     }
     curl_slist_free_all(headers);
     dataToWrite.clear();

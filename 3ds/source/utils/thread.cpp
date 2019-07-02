@@ -28,11 +28,11 @@
 
 static std::vector<Thread> threads;
 
-void Threads::create(ThreadFunc entrypoint)
+void Threads::create(ThreadFunc entrypoint, void* arg)
 {
     s32 prio = 0;
     svcGetThreadPriority(&prio, CUR_THREAD_HANDLE);
-    Thread thread = threadCreate((ThreadFunc)entrypoint, NULL, 4 * 1024, prio - 1, -2, false);
+    Thread thread = threadCreate((ThreadFunc)entrypoint, arg, 4 * 1024, prio - 1, -2, false);
     threads.push_back(thread);
 }
 

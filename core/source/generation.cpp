@@ -50,6 +50,31 @@ const char* genToCstring(Generation gen)
     }
 }
 
+Generation stringToGen(const std::string& str)
+{
+    if (str == "4")
+    {
+        return Generation::FOUR;
+    }
+    else if (str == "5")
+    {
+        return Generation::FIVE;
+    }
+    else if (str == "6")
+    {
+        return Generation::SIX;
+    }
+    else if (str == "7")
+    {
+        return Generation::SEVEN;
+    }
+    else if (str == "LGPE")
+    {
+        return Generation::LGPE;
+    }
+    return Generation::UNUSED;
+}
+
 bool operator<(Generation g1, Generation g2)
 {
     switch (g1)

@@ -24,25 +24,14 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef GENERATION_HPP
-#define GENERATION_HPP
+#include "CloudViewOverlay.hpp"
+#include "Screen.hpp"
 
-#include <string>
-
-enum class Generation
+void CloudViewOverlay::update(touchPosition* touch)
 {
-    FOUR,
-    FIVE,
-    SIX,
-    SEVEN,
-    LGPE,
-    UNUSED = 0xFF
-};
-
-std::string genToString(Generation gen);
-const char* genToCstring(Generation gen);
-Generation stringToGen(const std::string& str);
-bool operator<(Generation g1, Generation g2);
-bool operator>(Generation g1, Generation g2);
-
-#endif
+    if (hidKeysDown() & KEY_B)
+    {
+        screen.removeOverlay();
+        return;
+    }
+}

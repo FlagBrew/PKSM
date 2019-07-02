@@ -800,6 +800,12 @@ void Gui::sprite(int key, int x, int y)
         tex = _select_box(sprite, 16, 0, 17, 0);
         Gui::drawImageAt({sprite.tex, &tex}, x + 16, y, nullptr, 68.0f, 1.0f);
     }
+    else if (key == ui_sheet_emulated_textbox_illegal_idx)
+    {
+        C2D_ImageTint tint;
+        C2D_PlainImageTint(&tint, C2D_Color32(0xFF, 0, 0, 0xFF), 0.1f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_textbox_pksm_idx), x, y, &tint, 1.0f, 1.0f);
+    }
     // standard case
     else
     {

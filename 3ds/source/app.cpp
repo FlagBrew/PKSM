@@ -126,10 +126,10 @@ static Result consoleDisplayError(const std::string& message, Result res)
 static bool update(const std::string& execPath)
 {
     std::string retString = "";
-    if (Fetch::init("https://api.github.com/repos/FlagBrew/PKSM/releases/latest", false, true, &retString, nullptr, ""))
+    if (auto fetch = Fetch::init("https://api.github.com/repos/FlagBrew/PKSM/releases/latest", false, true, &retString, nullptr, ""))
     {
         Gui::waitFrame(i18n::localize("UPDATE_CHECKING"));
-        CURLcode res = Fetch::perform();
+        CURLcode res = fetch->perform();
         if (res != CURLE_OK)
         {
             Gui::error(i18n::localize("CURL_ERROR"), abs(res));
@@ -137,12 +137,11 @@ static bool update(const std::string& execPath)
         else
         {
             long status_code;
-            Fetch::getinfo(CURLINFO_RESPONSE_CODE, &status_code);
+            fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
             switch (status_code)
             {
                 case 200:
                 {
-                    Fetch::exit();
                     nlohmann::json retJson = nlohmann::json::parse(retString, nullptr, false);
                     if (retJson.is_discarded())
                     {
@@ -261,11 +260,9 @@ static bool update(const std::string& execPath)
                     break;
                 }
                 case 502:
-                    Fetch::exit();
                     Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
                     break;
                 default:
-                    Fetch::exit();
                     Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
                     break;
             }

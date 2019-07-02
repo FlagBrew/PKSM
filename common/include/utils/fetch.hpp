@@ -30,10 +30,13 @@
 #include <memory>
 #include <string>
 
-namespace Fetch
+class Fetch
 {
-    extern std::unique_ptr<CURL, decltype(curl_easy_cleanup)*> curl;
-    bool init(const std::string& url, bool post, bool ssl, std::string* writeData, struct curl_slist* headers, const std::string& postdata);
+public:
+    static std::unique_ptr<Fetch> init(
+        const std::string& url, bool post, bool ssl, std::string* writeData, struct curl_slist* headers, const std::string& postdata);
+    static Result download(const std::string& url, const std::string& path);
+
     CURLcode perform();
     template <typename T>
     CURLcode setopt(CURLoption opt, T data)
@@ -45,6 +48,8 @@ namespace Fetch
     {
         return curl_easy_getinfo(curl.get(), info, outvar);
     }
-    Result download(const std::string& url, const std::string& path);
-    void exit();
-} // namespace Fetch
+
+private:
+    Fetch() : curl(nullptr, &curl_easy_cleanup) {}
+    std::unique_ptr<CURL, decltype(curl_easy_cleanup)*> curl;
+};

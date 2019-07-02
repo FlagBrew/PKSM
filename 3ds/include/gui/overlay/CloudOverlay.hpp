@@ -24,25 +24,26 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef GENERATION_HPP
-#define GENERATION_HPP
+#ifndef CLOUDOVERLAY_HPP
+#define CLOUDOVERLAY_HPP
 
-#include <string>
+#include "Button.hpp"
+#include "CloudAccess.hpp"
+#include "Overlay.hpp"
+#include <memory>
+#include <vector>
 
-enum class Generation
+class CloudOverlay : public Overlay
 {
-    FOUR,
-    FIVE,
-    SIX,
-    SEVEN,
-    LGPE,
-    UNUSED = 0xFF
-};
+public:
+    CloudOverlay(Screen& screen, CloudAccess& access);
+    void drawTop() const override;
+    void drawBottom() const override;
+    void update(touchPosition* touch) override;
 
-std::string genToString(Generation gen);
-const char* genToCstring(Generation gen);
-Generation stringToGen(const std::string& str);
-bool operator<(Generation g1, Generation g2);
-bool operator>(Generation g1, Generation g2);
+private:
+    std::vector<std::unique_ptr<Button>> buttons;
+    CloudAccess& access;
+};
 
 #endif

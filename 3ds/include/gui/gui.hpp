@@ -90,6 +90,7 @@
 #define ui_sheet_emulated_button_unselected_red_idx 537
 #define ui_sheet_emulated_button_unavailable_red_idx 538
 #define ui_sheet_emulated_button_pouch_idx 539
+#define ui_sheet_emulated_textbox_illegal_idx 540
 
 #define FONT_SIZE_18 0.72f
 #define FONT_SIZE_15 0.6f

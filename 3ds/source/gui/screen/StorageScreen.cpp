@@ -29,6 +29,7 @@
 #include "BankSelectionScreen.hpp"
 #include "BoxOverlay.hpp"
 #include "ClickButton.hpp"
+#include "CloudScreen.hpp"
 #include "Configuration.hpp"
 #include "FSStream.hpp"
 #include "MainMenu.hpp"
@@ -181,22 +182,8 @@ StorageScreen::StorageScreen()
     instructions.addBox(false, 15, 175, 120, 18, COLOR_GREY, i18n::localize("SHARE_HINT"), COLOR_WHITE);
     mainButtons[9] = std::make_unique<ClickButton>(3, 211, 28, 28,
         [this]() {
-            if (!infoMon)
-            {
-                if (cursorIndex == 0 || !Gui::showChoiceMessage(i18n::localize("SHARE_CODE_ENTER_PROMPT")))
-                {
-                    return false;
-                }
-                Gui::setNextKeyboardFunc([this]() { this->shareReceive(); });
-            }
-            else
-            {
-                if (!Gui::showChoiceMessage(i18n::localize("SHARE_SEND_CONFIRM")))
-                {
-                    return false;
-                }
-                shareSend();
-            }
+            Gui::setScreen(std::make_unique<CloudScreen>(storageBox));
+            justSwitched = true;
             return true;
         },
         ui_sheet_button_wireless_no_y_idx, "", 0.0f, 0);
@@ -1696,19 +1683,20 @@ void StorageScreen::shareSend()
     headers                    = curl_slist_append(headers, info.c_str());
 
     std::string writeData = "";
-    if (Fetch::init("https://flagbrew.org/gpss/share", true, true, &writeData, headers, postdata))
+    if (auto fetch = Fetch::init("https://flagbrew.org/gpss/share", true, true, &writeData, headers, postdata))
     {
-        CURLcode res = Fetch::perform();
+        CURLcode res = fetch->perform();
         if (res != CURLE_OK)
         {
             Gui::error(i18n::localize("CURL_ERROR"), abs(res));
         }
         else
         {
-            Fetch::getinfo(CURLINFO_RESPONSE_CODE, &status_code);
+            fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
             switch (status_code)
             {
                 case 200:
+                case 201:
                     Gui::warn(i18n::localize("SHARE_DOWNLOAD_CODE"), writeData);
                     break;
                 case 400:
@@ -1722,7 +1710,6 @@ void StorageScreen::shareSend()
                     break;
             }
         }
-        Fetch::exit();
     }
     curl_slist_free_all(headers);
 }
@@ -1757,20 +1744,20 @@ void StorageScreen::shareReceive()
     {
         const std::string url  = "https://flagbrew.org/gpss/download/" + std::string(input);
         std::string retB64Data = "";
-        if (Fetch::init(url, false, true, &retB64Data, nullptr, ""))
+        if (auto fetch = Fetch::init(url, false, true, &retB64Data, nullptr, ""))
         {
             long status_code = 0;
             Generation gen   = Generation::UNUSED;
-            Fetch::setopt(CURLOPT_HEADERDATA, &gen);
-            Fetch::setopt(CURLOPT_HEADERFUNCTION, header_callback);
-            res = Fetch::perform();
+            fetch->setopt(CURLOPT_HEADERDATA, &gen);
+            fetch->setopt(CURLOPT_HEADERFUNCTION, header_callback);
+            res = fetch->perform();
             if (res != CURLE_OK)
             {
                 Gui::error(i18n::localize("CURL_ERROR"), abs(res));
             }
             else
             {
-                Fetch::getinfo(CURLINFO_RESPONSE_CODE, &status_code);
+                fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
                 switch (status_code)
                 {
                     case 200:
@@ -1778,15 +1765,12 @@ void StorageScreen::shareReceive()
                     case 400:
                     case 404:
                         Gui::error(i18n::localize("SHARE_INVALID_CODE"), status_code);
-                        Fetch::exit();
                         return;
                     case 502:
                         Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
-                        Fetch::exit();
                         return;
                     default:
                         Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
-                        Fetch::exit();
                         return;
                 }
                 auto retData = base64_decode(retB64Data.data(), retB64Data.size());
@@ -1811,7 +1795,6 @@ void StorageScreen::shareReceive()
                 if (retData.size() != targetLength)
                 {
                     Gui::error(i18n::localize("SHARE_ERROR_INCORRECT_VERSION"), retData.size());
-                    Fetch::exit();
                     return;
                 }
 
@@ -1838,6 +1821,5 @@ void StorageScreen::shareReceive()
                 }
             }
         }
-        Fetch::exit();
     }
 }

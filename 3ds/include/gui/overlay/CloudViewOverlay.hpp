@@ -24,25 +24,26 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef GENERATION_HPP
-#define GENERATION_HPP
+#ifndef CLOUDVIEWOVERLAY_HPP
+#define CLOUDVIEWOVERLAY_HPP
 
-#include <string>
+#include "ViewOverlay.hpp"
+#include <bitset>
+#include <vector>
 
-enum class Generation
+class CloudViewOverlay : public ViewOverlay
 {
-    FOUR,
-    FIVE,
-    SIX,
-    SEVEN,
-    LGPE,
-    UNUSED = 0xFF
-};
+public:
+    CloudViewOverlay(Screen& screen, std::shared_ptr<PKX> pk)
+        : ViewOverlay(screen, pkm, true, ""), pkm(pk)
+    {
+    }
+    virtual ~CloudViewOverlay() {}
+    void update(touchPosition* touch) override;
+    void drawBottom() const override { dim(); }
 
-std::string genToString(Generation gen);
-const char* genToCstring(Generation gen);
-Generation stringToGen(const std::string& str);
-bool operator<(Generation g1, Generation g2);
-bool operator>(Generation g1, Generation g2);
+private:
+    std::shared_ptr<PKX> pkm;
+};
 
 #endif

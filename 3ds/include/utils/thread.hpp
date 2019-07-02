@@ -32,7 +32,7 @@
 
 namespace Threads
 {
-    void create(ThreadFunc entrypoint);
+    void create(ThreadFunc entrypoint, void* arg = nullptr);
     void destroy(void);
 }
 
