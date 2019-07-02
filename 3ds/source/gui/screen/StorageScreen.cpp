@@ -1662,8 +1662,8 @@ static size_t header_callback(char* buffer, size_t size, size_t nitems, void* us
 
 void StorageScreen::shareSend()
 {
-    long status_code     = 0;
-    std::string version  = "Generation: " + genToString(infoMon->generation());
+    long status_code           = 0;
+    std::string version        = "Generation: " + genToString(infoMon->generation());
     struct curl_slist* headers = NULL;
     headers                    = curl_slist_append(headers, "Content-Type: multipart/form-data");
     headers                    = curl_slist_append(headers, version.c_str());
@@ -1671,13 +1671,13 @@ void StorageScreen::shareSend()
     std::string writeData = "";
     if (auto fetch = Fetch::init("https://flagbrew.org/gpss/share", false, true, &writeData, headers, ""))
     {
-        auto mimeThing = fetch->mimeInit();
+        auto mimeThing       = fetch->mimeInit();
         curl_mimepart* field = curl_mime_addpart(mimeThing.get());
         curl_mime_name(field, "pkmn");
         curl_mime_data(field, (char*)infoMon->rawData(), infoMon->getLength());
         curl_mime_filename(field, "pkmn");
         fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
-        
+
         CURLcode res = fetch->perform();
         if (res != CURLE_OK)
         {

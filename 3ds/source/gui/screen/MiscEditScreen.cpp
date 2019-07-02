@@ -29,12 +29,12 @@
 #include "ClickButton.hpp"
 #include "LocationOverlay.hpp"
 #include "PB7.hpp"
+#include "ScrollingTextScreen.hpp"
 #include "VersionOverlay.hpp"
 #include "ViewOverlay.hpp"
 #include "base64.hpp"
 #include "fetch.hpp"
 #include "gui.hpp"
-#include "ScrollingTextScreen.hpp"
 
 MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
 {
@@ -717,22 +717,21 @@ static std::string getVersionString(int version)
 
 void MiscEditScreen::validate()
 {
-    std::string version  = "Generation: " + genToString(pkm->generation());
+    std::string version        = "Generation: " + genToString(pkm->generation());
     struct curl_slist* headers = NULL;
     headers                    = curl_slist_append(headers, "Content-Type: multipart/form-data");
     headers                    = curl_slist_append(headers, version.c_str());
 
-    // "https://flagbrew.org/pksm/legality/check"
     std::string writeData = "";
     if (auto fetch = Fetch::init("https://flagbrew.org/pksm/legality/check", false, true, &writeData, headers, ""))
     {
-        auto mimeThing = fetch->mimeInit();
+        auto mimeThing       = fetch->mimeInit();
         curl_mimepart* field = curl_mime_addpart(mimeThing.get());
         curl_mime_name(field, "pkmn");
         curl_mime_data(field, (char*)pkm->rawData(), pkm->getLength());
         curl_mime_filename(field, "pkmn");
         fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
-        
+
         CURLcode res = fetch->perform();
         if (res != CURLE_OK)
         {

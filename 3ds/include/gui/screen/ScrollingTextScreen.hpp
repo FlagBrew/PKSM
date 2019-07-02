@@ -27,9 +27,9 @@
 #ifndef SCROLLINGTEXTSCREEN_HPP
 #define SCROLLINGTEXTSCREEN_HPP
 
+#include "PKX.hpp"
 #include "Screen.hpp"
 #include "TextParse.hpp"
-#include "PKX.hpp"
 
 class ScrollingTextScreen : public Screen
 {
@@ -40,10 +40,11 @@ public:
     void drawBottom() const override;
 
     ScreenType type() const override { return ScreenType::VIEWER; }
+
 private:
     std::shared_ptr<TextParse::Text> text;
     std::shared_ptr<PKX> pkm;
-    size_t lineOffset = 0;
+    size_t lineOffset                   = 0;
     static constexpr size_t SHOWN_LINES = 15;
 };
 

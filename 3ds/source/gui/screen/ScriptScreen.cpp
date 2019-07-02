@@ -27,11 +27,11 @@
 #include "ScriptScreen.hpp"
 #include "Directory.hpp"
 #include "FSStream.hpp"
+#include "ScrollingTextScreen.hpp"
 #include "archive.hpp"
 #include "banks.hpp"
 #include "loader.hpp"
 #include "picoc.h"
-#include "ScrollingTextScreen.hpp"
 #undef min // Get rid of picoc's min function
 
 static constexpr std::string_view MAGIC = "PKSMSCRIPT";
