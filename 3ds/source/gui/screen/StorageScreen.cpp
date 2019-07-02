@@ -179,7 +179,7 @@ StorageScreen::StorageScreen()
 
     instructions.addCircle(false, 17, 225, 8, COLOR_GREY);
     instructions.addBox(false, 15, 175, 4, 50, COLOR_GREY);
-    instructions.addBox(false, 15, 175, 120, 18, COLOR_GREY, i18n::localize("SHARE_HINT"), COLOR_WHITE);
+    instructions.addBox(false, 15, 175, 120, 18, COLOR_GREY, i18n::localize("GPSS_BROWSE"), COLOR_WHITE);
     mainButtons[9] = std::make_unique<ClickButton>(3, 211, 28, 28,
         [this]() {
             Gui::setScreen(std::make_unique<CloudScreen>(storageBox));

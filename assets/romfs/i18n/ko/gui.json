@@ -254,6 +254,7 @@
     "GEOLOCATION_5": "서식지 5",
     "GORGEOUS_RIBBON": "우아한 리본",
     "GORGEOUS_ROYAL_RIBBON": "우아한 로열 리본",
+    "GPSS_BROWSE": "Browse GPSS",
     "GPSS_DOWNLOAD": "Download this GPSS Pok\u00e9mon?",
     "GREAT_ABILITY_RIBBON": "그레이트 특성 리본",
     "GREEN_RIBBON": "초록 리본",
@@ -623,7 +624,7 @@
     "YOUR_OT_NAME": "당신의 어버이 이름",
     "Y_ABSENT": "\uE003: Absent games",
     "Y_CURSOR_MODE": "\uE003: Cursor mode",
-    "Y_LEGALIZE": "\uE003: Legalize",
+    "Y_LEGALIZE": "\uE003: Check legality",
     "Y_PRESENT": "\uE003: Present games",
     "Y_RESIZE": "\uE003: Resize",
     "ZCRYSTALS": "Z-크리스탈"
