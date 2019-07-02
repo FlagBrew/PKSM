@@ -1249,12 +1249,12 @@ bool StorageScreen::dumpPkm()
 {
     if (cursorIndex != 0 && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_DUMP")))
     {
-        char stringDate[11]   = {0};
-        char stringTime[10]   = {0};
+        char stringDate[12]   = {0};
+        char stringTime[11]   = {0};
         time_t unixTime       = time(NULL);
         struct tm* timeStruct = gmtime((const time_t*)&unixTime);
-        std::strftime(stringDate, 10, "%Y-%m-%d", timeStruct);
-        std::strftime(stringTime, 9, "/%H-%M-%S", timeStruct);
+        std::strftime(stringDate, 11, "%Y-%m-%d", timeStruct);
+        std::strftime(stringTime, 10, "/%H-%M-%S", timeStruct);
         std::string path = std::string("/3ds/PKSM/dumps/") + stringDate;
         mkdir(path.c_str(), 777);
         path += stringTime;
