@@ -34,6 +34,7 @@
 #include "base64.hpp"
 #include "fetch.hpp"
 #include "gui.hpp"
+#include "ScrollingTextScreen.hpp"
 
 MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
 {
@@ -668,19 +669,19 @@ void MiscEditScreen::year()
     }
 }
 
-void MiscEditScreen::appendWriteData(char* data, size_t size)
-{
-    for (size_t i = 0; i < size; i++)
-    {
-        dataToWrite.push_back(data[i]);
-    }
-}
+// void MiscEditScreen::appendWriteData(char* data, size_t size)
+// {
+//     for (size_t i = 0; i < size; i++)
+//     {
+//         dataToWrite.push_back(data[i]);
+//     }
+// }
 
-static size_t write_callback(char* ptr, size_t size, size_t nmemb, void* userdata)
-{
-    ((MiscEditScreen*)userdata)->appendWriteData(ptr, size * nmemb);
-    return size * nmemb;
-}
+// static size_t write_callback(char* ptr, size_t size, size_t nmemb, void* userdata)
+// {
+//     ((MiscEditScreen*)userdata)->appendWriteData(ptr, size * nmemb);
+//     return size * nmemb;
+// }
 
 static std::string getVersionString(int version)
 {
@@ -734,34 +735,40 @@ void MiscEditScreen::validate()
     {
         return;
     }
-    CURLcode res;
-    long status_code     = 0;
-    std::string postdata = base64_encode(pkm->rawData(), pkm->getLength());
-    std::string size     = "Size: " + std::to_string(pkm->getLength());
-    std::string version  = "Version: " + getVersionString(TitleLoader::save->version());
-
+    
+    std::string version  = "Generation: " + genToString(pkm->generation());
     struct curl_slist* headers = NULL;
+    headers                    = curl_slist_append(headers, "Content-Type: multipart/form-data");
     headers                    = curl_slist_append(headers, version.c_str());
-    headers                    = curl_slist_append(headers, "Content-Type: application/base64");
-    headers                    = curl_slist_append(headers, size.c_str());
 
-    if (auto fetch = Fetch::init("https://pksm.flagbrew.org/api/legalize", true, true, nullptr, headers, postdata))
+    // "https://flagbrew.org/pksm/legality/check"
+    std::string writeData = "";
+    if (auto fetch = Fetch::init("https://flagbrew.org/pksm/legality/check", false, true, &writeData, headers, ""))
     {
-        fetch->setopt(CURLOPT_WRITEDATA, this);
-        fetch->setopt(CURLOPT_WRITEFUNCTION, write_callback);
-
-        res = fetch->perform();
+        auto mimeThing = fetch->mimeInit();
+        curl_mimepart* field = curl_mime_addpart(mimeThing.get());
+        curl_mime_name(field, "pkmn");
+        curl_mime_data(field, (char*)pkm->rawData(), pkm->getLength());
+        curl_mime_filename(field, "pkmn");
+        fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
+        
+        CURLcode res = fetch->perform();
         if (res != CURLE_OK)
         {
             Gui::error(i18n::localize("CURL_ERROR"), abs(res));
         }
         else
         {
+            long status_code;
             fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
             switch (status_code)
             {
                 case 200:
-                    std::copy(dataToWrite.begin(), dataToWrite.end(), pkm->rawData());
+                    // std::copy(dataToWrite.begin(), dataToWrite.end(), pkm->rawData());
+                    if (writeData.size() > 0)
+                    {
+                        Gui::setScreen(std::make_unique<ScrollingTextScreen>(writeData, pkm));
+                    }
                     break;
                 case 400:
                     Gui::error(i18n::localize("AUTO_LEGALIZE_ERROR"), abs(0x1337));
@@ -776,6 +783,6 @@ void MiscEditScreen::validate()
         }
     }
     curl_slist_free_all(headers);
-    dataToWrite.clear();
+    // dataToWrite.clear();
     return;
 }

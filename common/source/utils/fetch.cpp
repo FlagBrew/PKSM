@@ -106,3 +106,12 @@ Result Fetch::download(const std::string& url, const std::string& path)
 
     return 0;
 }
+
+std::unique_ptr<curl_mime, decltype(curl_mime_free)*> Fetch::mimeInit()
+{
+    if (curl)
+    {
+        return std::unique_ptr<curl_mime, decltype(curl_mime_free)*>(curl_mime_init(curl.get()), &curl_mime_free);
+    }
+    return std::unique_ptr<curl_mime, decltype(curl_mime_free)*>(nullptr, &curl_mime_free);
+}

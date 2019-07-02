@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62, Allen Lydiard
+ *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -24,33 +24,27 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "types.h"
-#include <curl/curl.h>
-#include <functional>
-#include <memory>
-#include <string>
+#ifndef SCROLLINGTEXTSCREEN_HPP
+#define SCROLLINGTEXTSCREEN_HPP
 
-class Fetch
+#include "Screen.hpp"
+#include "TextParse.hpp"
+#include "PKX.hpp"
+
+class ScrollingTextScreen : public Screen
 {
 public:
-    static std::unique_ptr<Fetch> init(
-        const std::string& url, bool post, bool ssl, std::string* writeData, struct curl_slist* headers, const std::string& postdata);
-    static Result download(const std::string& url, const std::string& path);
+    ScrollingTextScreen(const std::string& text, std::shared_ptr<PKX> pkm);
+    void update(touchPosition* touch) override;
+    void drawTop() const override;
+    void drawBottom() const override;
 
-    CURLcode perform();
-    template <typename T>
-    CURLcode setopt(CURLoption opt, T data)
-    {
-        return curl_easy_setopt(curl.get(), opt, data);
-    }
-    template <typename T>
-    CURLcode getinfo(CURLINFO info, T outvar)
-    {
-        return curl_easy_getinfo(curl.get(), info, outvar);
-    }
-    std::unique_ptr<curl_mime, decltype(curl_mime_free)*> mimeInit();
-
+    ScreenType type() const override { return ScreenType::VIEWER; }
 private:
-    Fetch() : curl(nullptr, &curl_easy_cleanup) {}
-    std::unique_ptr<CURL, decltype(curl_easy_cleanup)*> curl;
+    std::shared_ptr<TextParse::Text> text;
+    std::shared_ptr<PKX> pkm;
+    int lineOffset = 0;
+    static constexpr int SHOWN_LINES = 15;
 };
+
+#endif

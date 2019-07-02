@@ -1663,28 +1663,21 @@ static size_t header_callback(char* buffer, size_t size, size_t nitems, void* us
 void StorageScreen::shareSend()
 {
     long status_code     = 0;
-    std::string postdata = base64_encode(infoMon->rawData(), infoMon->getLength());
     std::string version  = "Generation: " + genToString(infoMon->generation());
-    std::string size     = "Size: " + std::to_string(infoMon->getLength());
-    std::string info     = "Info: " + infoMon->nickname() + "," + infoMon->otName() + "," + std::to_string((int)infoMon->level()) + "," +
-                       std::to_string(infoMon->species()) + "," + std::to_string(infoMon->move(0)) + "," + std::to_string(infoMon->move(1)) + "," +
-                       std::to_string(infoMon->move(2)) + "," + std::to_string(infoMon->move(3)) + "," + std::to_string((int)infoMon->nature()) +
-                       "," + std::to_string((int)infoMon->iv(0)) + "," + std::to_string((int)infoMon->iv(1)) + "," +
-                       std::to_string((int)infoMon->iv(2)) // HP, Atk, Def
-                       + "," + std::to_string((int)infoMon->iv(5)) + "," + std::to_string((int)infoMon->iv(3)) + "," +
-                       std::to_string((int)infoMon->iv(4)) // Sp. Atk, Sp. Def, Speed
-                       + "," + std::to_string((int)infoMon->gender()) + "," + std::to_string((bool)infoMon->shiny()) + "," +
-                       std::to_string((int)infoMon->ability()) + "," + std::to_string((int)infoMon->heldItem()) + "," +
-                       std::to_string((int)infoMon->TID()) + "," + std::to_string((int)infoMon->ball()) + "," + std::to_string((int)infoMon->pkrs());
     struct curl_slist* headers = NULL;
-    headers                    = curl_slist_append(headers, "Content-Type: application/base64");
+    headers                    = curl_slist_append(headers, "Content-Type: multipart/form-data");
     headers                    = curl_slist_append(headers, version.c_str());
-    headers                    = curl_slist_append(headers, size.c_str());
-    headers                    = curl_slist_append(headers, info.c_str());
 
     std::string writeData = "";
-    if (auto fetch = Fetch::init("https://flagbrew.org/gpss/share", true, true, &writeData, headers, postdata))
+    if (auto fetch = Fetch::init("https://flagbrew.org/gpss/share", false, true, &writeData, headers, ""))
     {
+        auto mimeThing = fetch->mimeInit();
+        curl_mimepart* field = curl_mime_addpart(mimeThing.get());
+        curl_mime_name(field, "pkmn");
+        curl_mime_data(field, (char*)infoMon->rawData(), infoMon->getLength());
+        curl_mime_filename(field, "pkmn");
+        fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
+        
         CURLcode res = fetch->perform();
         if (res != CURLE_OK)
         {
