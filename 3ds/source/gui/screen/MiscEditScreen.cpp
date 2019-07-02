@@ -717,11 +717,6 @@ static std::string getVersionString(int version)
 
 void MiscEditScreen::validate()
 {
-    if (!Gui::showChoiceMessage(i18n::localize("AUTO_LEGALIZE_WARNING_1"), i18n::localize("AUTO_LEGALIZE_WARNING_2")))
-    {
-        return;
-    }
-    
     std::string version  = "Generation: " + genToString(pkm->generation());
     struct curl_slist* headers = NULL;
     headers                    = curl_slist_append(headers, "Content-Type: multipart/form-data");
