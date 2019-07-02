@@ -42,7 +42,6 @@ public:
     void drawBottom() const override;
     void update(touchPosition* touch) override;
     ScreenType type() const override { return ScreenType::EDITOR; }
-    void appendWriteData(char* data, size_t size);
 
 private:
     bool changeAffection(bool up);
@@ -61,7 +60,6 @@ private:
     std::shared_ptr<PKX> pkm;
     bool otAndMet     = true;
     bool justSwitched = true;
-    std::vector<u8> dataToWrite;
 };
 
 #endif

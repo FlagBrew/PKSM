@@ -31,6 +31,7 @@
 #include "banks.hpp"
 #include "loader.hpp"
 #include "picoc.h"
+#include "ScrollingTextScreen.hpp"
 #undef min // Get rid of picoc's min function
 
 static constexpr std::string_view MAGIC = "PKSMSCRIPT";
@@ -375,7 +376,8 @@ void ScriptScreen::parsePicoCScript(std::string& file)
         // consoleInit(GFX_BOTTOM, NULL);
         // Restore stdout state
         dup2(stdout_save, STDOUT_FILENO);
-        Gui::warn(i18n::localize("SCRIPTS_EXECUTION_ERROR"), file, error);
+        Gui::warn(i18n::localize("SCRIPTS_EXECUTION_ERROR"), file);
+        Gui::setScreen(std::make_unique<ScrollingTextScreen>(error, nullptr));
     }
     if (Banks::bank->hasChanged())
     {

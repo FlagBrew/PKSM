@@ -43,8 +43,8 @@ public:
 private:
     std::shared_ptr<TextParse::Text> text;
     std::shared_ptr<PKX> pkm;
-    int lineOffset = 0;
-    static constexpr int SHOWN_LINES = 15;
+    size_t lineOffset = 0;
+    static constexpr size_t SHOWN_LINES = 15;
 };
 
 #endif

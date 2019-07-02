@@ -669,20 +669,6 @@ void MiscEditScreen::year()
     }
 }
 
-// void MiscEditScreen::appendWriteData(char* data, size_t size)
-// {
-//     for (size_t i = 0; i < size; i++)
-//     {
-//         dataToWrite.push_back(data[i]);
-//     }
-// }
-
-// static size_t write_callback(char* ptr, size_t size, size_t nmemb, void* userdata)
-// {
-//     ((MiscEditScreen*)userdata)->appendWriteData(ptr, size * nmemb);
-//     return size * nmemb;
-// }
-
 static std::string getVersionString(int version)
 {
     switch (version)
