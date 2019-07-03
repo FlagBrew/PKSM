@@ -56,6 +56,80 @@ Configuration::Configuration()
             return;
         }
 
+        if (!(mJson.contains("version") && mJson["version"].is_number_integer()))
+        {
+            loadFromRomfs();
+            Gui::warn(i18n::localize(mJson["language"], "CONFIGURATION_INCORRECT_FORMAT"),
+                i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"));
+            return;
+        }
+
+        if (mJson["version"].get<int>() != CURRENT_VERSION)
+        {
+            if (mJson["version"].get<int>() > CURRENT_VERSION)
+            {
+                Gui::warn(i18n::localize(mJson["language"], "THE_FUCK"), i18n::localize(mJson["language"], "DO_NOT_DOWNGRADE"));
+                return;
+            }
+            if (mJson["version"].get<int>() < 2)
+            {
+                mJson["useSaveInfo"] = false;
+            }
+            if (mJson["version"].get<int>() < 3)
+            {
+                mJson["randomMusic"] = false;
+            }
+            if (mJson["version"].get<int>() < 4)
+            {
+                u8 countryData[4];
+                CFGU_GetConfigInfoBlk2(0x4, 0x000B0000, countryData);
+                if (!(mJson.contains("defaults") && mJson["defaults"].is_object()))
+                {
+                    loadFromRomfs();
+                    Gui::warn(i18n::localize(mJson["language"], "CONFIGURATION_INCORRECT_FORMAT"),
+                        i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"));
+                    return;
+                }
+                mJson["defaults"]["country"] = countryData[3];
+                mJson["defaults"]["region"]  = countryData[2];
+                CFGU_SecureInfoGetRegion(countryData);
+                mJson["defaults"]["nationality"] = countryData[0];
+            }
+            if (mJson["version"].get<int>() < 5)
+            {
+                if (!(mJson.contains("extraSaves") && mJson["extraSaves"].is_object()))
+                    for (auto& game : mJson["extraSaves"])
+                    {
+                        if (!game.is_object())
+                        {
+                            loadFromRomfs();
+                            Gui::warn(i18n::localize(mJson["language"], "CONFIGURATION_INCORRECT_FORMAT"),
+                                i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"));
+                            return;
+                        }
+
+                        game.erase("folders");
+                        if (game.contains("files") && game["files"].is_array())
+                        {
+                            nlohmann::json tmp = game["files"];
+                            game               = tmp;
+                        }
+                        else
+                        {
+                            game = nlohmann::json::array();
+                        }
+                    }
+            }
+            if (mJson["version"].get<int>() < 6)
+            {
+                mJson.erase("storageSize");
+                mJson["showBackups"] = false;
+            }
+
+            mJson["version"] = CURRENT_VERSION;
+            save();
+        }
+
         // clang-format off
         if (!(mJson.contains("version") && mJson["version"].is_number_integer()) ||
             !(mJson.contains("language") && mJson["language"].is_number_integer()) ||
@@ -92,7 +166,7 @@ Configuration::Configuration()
             {
                 for (auto& save : game)
                 {
-                    if (!game.is_string())
+                    if (!save.is_string())
                     {
                         loadFromRomfs();
                         Gui::warn(i18n::localize(mJson["language"], "CONFIGURATION_INCORRECT_FORMAT"),
@@ -108,56 +182,6 @@ Configuration::Configuration()
                     i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"));
                 return;
             }
-        }
-
-        if (mJson["version"].get<int>() != CURRENT_VERSION)
-        {
-            if (mJson["version"].get<int>() > CURRENT_VERSION)
-            {
-                Gui::warn(i18n::localize(mJson["language"], "THE_FUCK"), i18n::localize(mJson["language"], "DO_NOT_DOWNGRADE"));
-                return;
-            }
-            if (mJson["version"].get<int>() < 2)
-            {
-                mJson["useSaveInfo"] = false;
-            }
-            if (mJson["version"].get<int>() < 3)
-            {
-                mJson["randomMusic"] = false;
-            }
-            if (mJson["version"].get<int>() < 4)
-            {
-                u8 countryData[4];
-                CFGU_GetConfigInfoBlk2(0x4, 0x000B0000, countryData);
-                mJson["defaults"]["country"] = countryData[3];
-                mJson["defaults"]["region"]  = countryData[2];
-                CFGU_SecureInfoGetRegion(countryData);
-                mJson["defaults"]["nationality"] = countryData[0];
-            }
-            if (mJson["version"].get<int>() < 5)
-            {
-                for (auto& game : mJson["extraSaves"])
-                {
-                    game.erase("folders");
-                    if (game.count("files") > 0)
-                    {
-                        nlohmann::json tmp = game["files"];
-                        game               = tmp;
-                    }
-                    else
-                    {
-                        game = nlohmann::json::array();
-                    }
-                }
-            }
-            if (mJson["version"].get<int>() < 6)
-            {
-                mJson.erase("storageSize");
-                mJson["showBackups"] = false;
-            }
-
-            mJson["version"] = CURRENT_VERSION;
-            save();
         }
     }
 }
