@@ -207,19 +207,25 @@ void SpeciesOverlay::update(touchPosition* touch)
     }
     hid.update(dispPkm.size());
     u32 downKeys = hidKeysDown();
-    if (downKeys & KEY_A && dispPkm.size() > 0)
+    if (downKeys & KEY_A)
     {
-        int species = dispPkm[hid.fullIndex()];
-        if (pkm->species() == 0 || !pkm->nicknamed())
+        if (dispPkm.size() > 0)
         {
-            pkm->nickname(i18n::species(Configuration::getInstance().language(), species));
+            int species = dispPkm[hid.fullIndex()];
+            if (pkm->species() == 0 || !pkm->nicknamed())
+            {
+                pkm->nickname(i18n::species(Configuration::getInstance().language(), species));
+            }
+            pkm->species((u16)species);
+            pkm->alternativeForm(0);
+            pkm->setAbility(0);
+            pkm->PID(PKX::getRandomPID(pkm->species(), pkm->gender(), pkm->version(), pkm->nature(), pkm->alternativeForm(), pkm->abilityNumber(),
+                pkm->PID(), pkm->generation()));
         }
-        pkm->species((u16)species);
-        pkm->alternativeForm(0);
-        pkm->setAbility(0);
-        pkm->PID(PKX::getRandomPID(pkm->species(), pkm->gender(), pkm->version(), pkm->nature(), pkm->alternativeForm(), pkm->abilityNumber(),
-            pkm->PID(), pkm->generation()));
-        screen.removeOverlay();
+        if (pkm->species() != 0)
+        {
+            screen.removeOverlay();
+        }
         return;
     }
     else if (downKeys & KEY_B)

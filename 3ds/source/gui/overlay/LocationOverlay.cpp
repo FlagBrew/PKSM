@@ -135,18 +135,21 @@ void LocationOverlay::update(touchPosition* touch)
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {
-        auto locIt = locations.begin();
-        for (size_t i = 0; i < hid.fullIndex(); i++)
+        if (locations.size() > 0)
         {
-            locIt++;
-        }
-        if (met)
-        {
-            pkm->metLocation(locIt->first);
-        }
-        else
-        {
-            pkm->eggLocation(locIt->first);
+            auto locIt = locations.begin();
+            for (size_t i = 0; i < hid.fullIndex(); i++)
+            {
+                locIt++;
+            }
+            if (met)
+            {
+                pkm->metLocation(locIt->first);
+            }
+            else
+            {
+                pkm->eggLocation(locIt->first);
+            }
         }
         screen.removeOverlay();
         return;
