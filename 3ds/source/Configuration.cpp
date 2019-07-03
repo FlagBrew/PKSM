@@ -48,21 +48,73 @@ Configuration::Configuration()
         mJson = nlohmann::json::parse(jsonData, nullptr, false);
         delete[] jsonData;
 
-        if (mJson.is_discarded())
+        if (!mJson.is_object())
         {
-            Gui::warn(i18n::localize("CONFIGURATION_FILE_CORRUPTED_1"), i18n::localize("CONFIGURATION_FILE_CORRUPTED_2"));
             loadFromRomfs();
+            Gui::warn(i18n::localize(mJson["language"], "CONFIGURATION_FILE_CORRUPTED_1"),
+                i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"));
+            return;
         }
-        else if (!mJson.contains("version"))
+
+        // clang-format off
+        if (!(mJson.contains("version") && mJson["version"].is_number_integer()) ||
+            !(mJson.contains("language") && mJson["language"].is_number_integer()) ||
+            !(mJson.contains("autoBackup") && mJson["autoBackup"].is_boolean()) ||
+            !(mJson.contains("transferEdit") && mJson["transferEdit"].is_boolean()) ||
+            !(mJson.contains("useExtData") && mJson["useExtData"].is_boolean()) ||
+            !(mJson.contains("defaults") && mJson["defaults"].is_object()) ||
+            !(mJson.contains("extraSaves") && mJson["extraSaves"].is_object()) ||
+            !(mJson.contains("writeFileSave") && mJson["writeFileSave"].is_boolean()) ||
+            !(mJson.contains("useSaveInfo") && mJson["useSaveInfo"].is_boolean()) ||
+            !(mJson.contains("randomMusic") && mJson["randomMusic"].is_boolean()) ||
+            !(mJson.contains("showBackups") && mJson["showBackups"].is_boolean()) ||
+            !(mJson["defaults"].contains("pid") && mJson["defaults"]["pid"].is_number_integer()) ||
+            !(mJson["defaults"].contains("sid") && mJson["defaults"]["sid"].is_number_integer()) ||
+            !(mJson["defaults"].contains("ot") && mJson["defaults"]["ot"].is_string()) ||
+            !(mJson["defaults"].contains("nationality") && mJson["defaults"]["nationality"].is_number_integer()) ||
+            !(mJson["defaults"].contains("country") && mJson["defaults"]["country"].is_number_integer()) ||
+            !(mJson["defaults"].contains("region") && mJson["defaults"]["region"].is_number_integer()) ||
+            !(mJson["defaults"].contains("date") && mJson["defaults"]["date"].is_object()) ||
+            !(mJson["defaults"]["date"].contains("day") && mJson["defaults"]["date"]["day"].is_number_integer()) ||
+            !(mJson["defaults"]["date"].contains("month") && mJson["defaults"]["date"]["month"].is_number_integer()) ||
+            !(mJson["defaults"]["date"].contains("year") && mJson["defaults"]["date"]["year"].is_number_integer()))
+        // clang-format on
         {
-            Gui::warn(i18n::localize("CONFIGURATION_VERSION_MISSING_1"), i18n::localize("CONFIGURATION_VERSION_MISSING_2"));
             loadFromRomfs();
+            Gui::warn(i18n::localize(mJson["language"], "CONFIGURATION_INCORRECT_FORMAT"),
+                i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"));
+            return;
         }
-        else if (mJson["version"].get<int>() != CURRENT_VERSION)
+
+        for (auto& game : mJson["extraSaves"])
+        {
+            if (game.is_array())
+            {
+                for (auto& save : game)
+                {
+                    if (!game.is_string())
+                    {
+                        loadFromRomfs();
+                        Gui::warn(i18n::localize(mJson["language"], "CONFIGURATION_INCORRECT_FORMAT"),
+                            i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"));
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                loadFromRomfs();
+                Gui::warn(i18n::localize(mJson["language"], "CONFIGURATION_INCORRECT_FORMAT"),
+                    i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"));
+                return;
+            }
+        }
+
+        if (mJson["version"].get<int>() != CURRENT_VERSION)
         {
             if (mJson["version"].get<int>() > CURRENT_VERSION)
             {
-                Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("DO_NOT_DOWNGRADE"));
+                Gui::warn(i18n::localize(mJson["language"], "THE_FUCK"), i18n::localize(mJson["language"], "DO_NOT_DOWNGRADE"));
                 return;
             }
             if (mJson["version"].get<int>() < 2)
