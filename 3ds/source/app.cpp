@@ -317,8 +317,8 @@ Result App::init(std::string execPath)
     if (R_FAILED(res = Gui::init()))
         return consoleDisplayError("Gui::init failed.", res);
 
-    Configuration::getInstance();
     i18n::init();
+    Configuration::getInstance();
 
     if (update(execPath))
     {
