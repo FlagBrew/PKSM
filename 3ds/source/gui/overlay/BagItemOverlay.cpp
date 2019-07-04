@@ -149,5 +149,4 @@ void BagItemOverlay::searchBar()
         searchString = input;
         StringUtils::toLower(searchString);
     }
-    startSearch = false;
 }
