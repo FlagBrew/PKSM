@@ -112,12 +112,6 @@ static constexpr std::array<unsigned long long, 8> ctrTitleIds = {
     0x00040000001B5100  // Ultramoon
 };
 
-// title list
-std::vector<std::shared_ptr<Title>> TitleLoader::nandTitles;
-std::shared_ptr<Title> TitleLoader::cardTitle = nullptr;
-std::unordered_map<std::string, std::vector<std::string>> TitleLoader::sdSaves;
-std::shared_ptr<Sav> TitleLoader::save;
-
 static bool saveIsFile;
 static std::string saveFileName;
 static std::shared_ptr<Title> loadedTitle;

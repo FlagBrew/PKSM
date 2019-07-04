@@ -101,7 +101,6 @@
 
 namespace Gui
 {
-    extern std::vector<C2D_Font> fonts;
     Result init(void);
     void mainLoop(void);
     void exit(void);

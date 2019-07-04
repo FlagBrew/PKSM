@@ -29,6 +29,6 @@
 
 #include <random>
 
-extern std::mt19937 randomNumbers;
+inline std::mt19937 randomNumbers;
 
 #endif

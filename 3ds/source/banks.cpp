@@ -29,8 +29,6 @@
 #include "archive.hpp"
 #include "json.hpp"
 
-std::shared_ptr<Bank> Banks::bank = nullptr;
-
 nlohmann::json g_banks;
 
 static Result saveJson()

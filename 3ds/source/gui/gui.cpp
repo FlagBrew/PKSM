@@ -41,7 +41,7 @@ static TextParse::ScreenText bottomText;
 static TextParse::ScreenText* currentText = nullptr;
 static std::unordered_map<std::string, std::vector<C2D_Text>> textMap;
 
-std::vector<C2D_Font> Gui::fonts;
+static std::vector<C2D_Font> fonts;
 
 std::stack<std::unique_ptr<Screen>> screens;
 static std::function<void()> keyboardFunc;
@@ -1469,10 +1469,12 @@ bool Gui::showChoiceMessage(const std::string& message, std::optional<std::strin
 
 void Gui::waitFrame(const std::string& message, std::optional<std::string> message2)
 {
-    if (!inFrame)
+    if (inFrame)
     {
-        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+        C3D_FrameEnd(0);
     }
+
+    C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
     Gui::clearScreen(GFX_TOP);
     Gui::clearScreen(GFX_BOTTOM);
 
@@ -1495,9 +1497,11 @@ void Gui::waitFrame(const std::string& message, std::optional<std::string> messa
     target(GFX_BOTTOM);
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
 
-    if (!inFrame)
+    C3D_FrameEnd(0);
+
+    if (inFrame)
     {
-        C3D_FrameEnd(0);
+        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
     }
 }
 
@@ -1573,10 +1577,12 @@ void Gui::setNextKeyboardFunc(std::function<void()> func)
 
 void Gui::showRestoreProgress(u32 partial, u32 total)
 {
-    if (!inFrame)
+    if (inFrame)
     {
-        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+        C3D_FrameEnd(0);
     }
+
+    C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
     Gui::clearScreen(GFX_TOP);
     Gui::clearScreen(GFX_BOTTOM);
     target(GFX_TOP);
@@ -1588,18 +1594,23 @@ void Gui::showRestoreProgress(u32 partial, u32 total)
 
     target(GFX_BOTTOM);
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
-    if (!inFrame)
+
+    C3D_FrameEnd(0);
+
+    if (inFrame)
     {
-        C3D_FrameEnd(0);
+        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
     }
 }
 
 void Gui::showResizeStorage()
 {
-    if (!inFrame)
+    if (inFrame)
     {
-        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+        C3D_FrameEnd(0);
     }
+
+    C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
     Gui::clearScreen(GFX_TOP);
     Gui::clearScreen(GFX_BOTTOM);
     target(GFX_TOP);
@@ -1609,9 +1620,12 @@ void Gui::showResizeStorage()
 
     target(GFX_BOTTOM);
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
-    if (!inFrame)
+
+    C3D_FrameEnd(0);
+
+    if (inFrame)
     {
-        C3D_FrameEnd(0);
+        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
     }
 }
 
