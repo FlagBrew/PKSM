@@ -52,6 +52,7 @@ static float noHomeAlpha  = 0.0f;
 static float dNoHomeAlpha = NOHOMEALPHA_ACCEL;
 
 bool textMode = false;
+bool inFrame  = false;
 
 static Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int endX, int endY)
 {
@@ -337,6 +338,7 @@ void Gui::mainLoop(void)
     {
         hidScanInput();
         C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+        inFrame = true;
         Gui::clearScreen(GFX_TOP);
         Gui::clearScreen(GFX_BOTTOM);
 
@@ -377,6 +379,7 @@ void Gui::mainLoop(void)
 
         textBuffer->clear();
 
+        inFrame = false;
         C3D_FrameEnd(0);
         if (keyboardFunc != nullptr)
         {
@@ -1401,7 +1404,10 @@ u8 transparencyWaver()
 bool Gui::showChoiceMessage(const std::string& message, std::optional<std::string> message2, int timer)
 {
     u32 keys = 0;
-    C3D_FrameEnd(0);
+    if (inFrame)
+    {
+        C3D_FrameEnd(0);
+    }
     hidScanInput();
     while (aptMainLoop() && !((keys = hidKeysDown()) & KEY_B))
     {
@@ -1446,16 +1452,27 @@ bool Gui::showChoiceMessage(const std::string& message, std::optional<std::strin
         if (keys & KEY_A)
         {
             hidScanInput();
+            if (inFrame)
+            {
+                C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+            }
             return true;
         }
     }
     hidScanInput();
+    if (inFrame)
+    {
+        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+    }
     return false;
 }
 
 void Gui::waitFrame(const std::string& message, std::optional<std::string> message2)
 {
-    C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+    if (!inFrame)
+    {
+        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+    }
     Gui::clearScreen(GFX_TOP);
     Gui::clearScreen(GFX_BOTTOM);
 
@@ -1478,13 +1495,19 @@ void Gui::waitFrame(const std::string& message, std::optional<std::string> messa
     target(GFX_BOTTOM);
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
 
-    C3D_FrameEnd(0);
+    if (!inFrame)
+    {
+        C3D_FrameEnd(0);
+    }
 }
 
 void Gui::warn(const std::string& message, std::optional<std::string> message2, std::optional<std::string> bottomScreen)
 {
     u32 keys = 0;
-    C3D_FrameEnd(0);
+    if (inFrame)
+    {
+        C3D_FrameEnd(0);
+    }
     hidScanInput();
     while (aptMainLoop() && !((keys = hidKeysDown()) & KEY_A))
     {
@@ -1532,6 +1555,10 @@ void Gui::warn(const std::string& message, std::optional<std::string> message2, 
         C3D_FrameEnd(0);
     }
     hidScanInput();
+    if (inFrame)
+    {
+        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+    }
 }
 
 void Gui::screenBack()
@@ -1546,7 +1573,10 @@ void Gui::setNextKeyboardFunc(std::function<void()> func)
 
 void Gui::showRestoreProgress(u32 partial, u32 total)
 {
-    C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+    if (!inFrame)
+    {
+        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+    }
     Gui::clearScreen(GFX_TOP);
     Gui::clearScreen(GFX_BOTTOM);
     target(GFX_TOP);
@@ -1558,12 +1588,18 @@ void Gui::showRestoreProgress(u32 partial, u32 total)
 
     target(GFX_BOTTOM);
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
-    C3D_FrameEnd(0);
+    if (!inFrame)
+    {
+        C3D_FrameEnd(0);
+    }
 }
 
 void Gui::showResizeStorage()
 {
-    C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+    if (!inFrame)
+    {
+        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+    }
     Gui::clearScreen(GFX_TOP);
     Gui::clearScreen(GFX_BOTTOM);
     target(GFX_TOP);
@@ -1573,13 +1609,19 @@ void Gui::showResizeStorage()
 
     target(GFX_BOTTOM);
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
-    C3D_FrameEnd(0);
+    if (!inFrame)
+    {
+        C3D_FrameEnd(0);
+    }
 }
 
 void Gui::error(const std::string& message, Result errorCode)
 {
     u32 keys = 0;
-    C3D_FrameEnd(0);
+    if (inFrame)
+    {
+        C3D_FrameEnd(0);
+    }
     hidScanInput();
     while (aptMainLoop() && !((keys = hidKeysDown()) & KEY_A))
     {
@@ -1612,4 +1654,8 @@ void Gui::error(const std::string& message, Result errorCode)
         C3D_FrameEnd(0);
     }
     hidScanInput();
+    if (inFrame)
+    {
+        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+    }
 }
