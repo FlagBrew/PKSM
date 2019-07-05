@@ -1505,7 +1505,7 @@ void Gui::waitFrame(const std::string& message, std::optional<std::string> messa
     }
 }
 
-void Gui::warn(const std::string& message, std::optional<std::string> message2, std::optional<std::string> bottomScreen)
+void Gui::warn(const std::string& message, std::optional<std::string> message2, std::optional<Language> lang)
 {
     u32 keys = 0;
     if (inFrame)
@@ -1533,21 +1533,20 @@ void Gui::warn(const std::string& message, std::optional<std::string> message2, 
             text(message2.value(), 200, 105, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
         }
 
-        text(i18n::localize("CONTINUE"), 200, 130, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        if (lang)
+        {
+            text(i18n::localize(lang.value(), "CONTINUE"), 200, 130, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        }
+        else
+        {
+            text(i18n::localize("CONTINUE"), 200, 130, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        }
 
         flushText();
 
         target(GFX_BOTTOM);
-
-        if (bottomScreen)
-        {
-            text(bottomScreen.value(), 2, 2, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 316.0f);
-            flushText();
-        }
-        else
-        {
-            sprite(ui_sheet_part_info_bottom_idx, 0, 0);
-        }
+        
+        sprite(ui_sheet_part_info_bottom_idx, 0, 0);
 
         if (!aptIsHomeAllowed() && aptIsHomePressed())
         {

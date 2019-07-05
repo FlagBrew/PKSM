@@ -265,7 +265,7 @@ const std::string& LanguageStrings::localize(const std::string& v) const
     {
         MISSING = "MISSING: ";
     }
-    if (gui.count(v))
+    if (gui.contains(v))
     {
         return gui.at(v).get_ref<const std::string&>();
     }

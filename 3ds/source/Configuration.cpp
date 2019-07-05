@@ -52,7 +52,7 @@ Configuration::Configuration()
         {
             loadFromRomfs();
             Gui::warn(i18n::localize(mJson["language"], "CONFIGURATION_FILE_CORRUPTED_1"),
-                i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"));
+                i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"), mJson["language"]);
             return;
         }
 
@@ -60,7 +60,7 @@ Configuration::Configuration()
         {
             loadFromRomfs();
             Gui::warn(i18n::localize(mJson["language"], "CONFIGURATION_INCORRECT_FORMAT"),
-                i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"));
+                i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"), mJson["language"]);
             return;
         }
 
@@ -68,7 +68,7 @@ Configuration::Configuration()
         {
             if (mJson["version"].get<int>() > CURRENT_VERSION)
             {
-                Gui::warn(i18n::localize(mJson["language"], "THE_FUCK"), i18n::localize(mJson["language"], "DO_NOT_DOWNGRADE"));
+                Gui::warn(i18n::localize(mJson["language"], "THE_FUCK"), i18n::localize(mJson["language"], "DO_NOT_DOWNGRADE"), mJson["language"]);
                 return;
             }
             if (mJson["version"].get<int>() < 2)
@@ -87,7 +87,7 @@ Configuration::Configuration()
                 {
                     loadFromRomfs();
                     Gui::warn(i18n::localize(mJson["language"], "CONFIGURATION_INCORRECT_FORMAT"),
-                        i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"));
+                        i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"), mJson["language"]);
                     return;
                 }
                 mJson["defaults"]["country"] = countryData[3];
@@ -104,7 +104,7 @@ Configuration::Configuration()
                         {
                             loadFromRomfs();
                             Gui::warn(i18n::localize(mJson["language"], "CONFIGURATION_INCORRECT_FORMAT"),
-                                i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"));
+                                i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"), mJson["language"]);
                             return;
                         }
 
@@ -156,7 +156,7 @@ Configuration::Configuration()
         {
             loadFromRomfs();
             Gui::warn(i18n::localize(mJson["language"], "CONFIGURATION_INCORRECT_FORMAT"),
-                i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"));
+                i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"), mJson["language"]);
             return;
         }
 
@@ -170,7 +170,7 @@ Configuration::Configuration()
                     {
                         loadFromRomfs();
                         Gui::warn(i18n::localize(mJson["language"], "CONFIGURATION_INCORRECT_FORMAT"),
-                            i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"));
+                            i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"), mJson["language"]);
                         return;
                     }
                 }
@@ -179,7 +179,7 @@ Configuration::Configuration()
             {
                 loadFromRomfs();
                 Gui::warn(i18n::localize(mJson["language"], "CONFIGURATION_INCORRECT_FORMAT"),
-                    i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"));
+                    i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"), mJson["language"]);
                 return;
             }
         }
