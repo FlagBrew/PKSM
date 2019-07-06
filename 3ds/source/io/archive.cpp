@@ -171,6 +171,9 @@ Result Archive::init(std::string& execPath)
     {
         if (R_FAILED(res = createPKSMExtdataArchive(execPath)))
             return res;
+
+        if (R_FAILED(res = FSUSER_CreateFile(data(), fsMakePath(PATH_UTF16, u"/sizeCheck"), 0, 1)))
+            return res;
     }
     else
     {
