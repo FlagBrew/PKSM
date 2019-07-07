@@ -39,7 +39,7 @@ static constexpr FS_ExtSaveDataInfo PKSM_ARCHIVE_DATA = {MEDIATYPE_SD, 0, 0, UNI
 Result Archive::moveDir(FS_Archive src, const std::u16string& dir, FS_Archive dst, const std::u16string& dest)
 {
     Result res;
-    if (R_FAILED(res = FSUSER_CreateDirectory(dst, fsMakePath(PATH_UTF16, dest.data()), 0)) && res != 0xC82044BE && res != 0xC82044B9)
+    if (R_FAILED(res = FSUSER_CreateDirectory(dst, fsMakePath(PATH_UTF16, dest.data()), 0)) && res != (long)0xC82044BE && res != (long)0xC82044B9)
         return res;
     Directory d(src, dir);
     std::u16string srcDir = dir.back() == u'/' ? dir : dir + u'/';

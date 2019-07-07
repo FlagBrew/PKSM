@@ -448,6 +448,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                 {
                     return std::make_pair(&i18n::localize("WEIGHT"), NORMAL);
                 }
+                return UNUSED;
             case 0x3C ... 0x3F:
                 return UNUSED;
             case 0x40 ... 0x57:
@@ -491,6 +492,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                 {
                     return std::make_pair(&i18n::localize("SECRET_SUPER_TRAINING_FLAG"), NORMAL);
                 }
+                return UNUSED;
             case 0x73:
                 return UNUSED;
             case 0x74 ... 0x76:
@@ -599,11 +601,13 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                 {
                     return std::make_pair(&i18n::localize("DIRT_TYPE"), OPEN); // TODO CHECK LGPE
                 }
+                return UNKNOWN;
             case 0xEE:
                 if (pkm->generation() != Generation::SIX)
                 {
                     return std::make_pair(&i18n::localize("DIRT_LOCATION"), OPEN); // TODO CHECK LGPE
                 }
+                return UNKNOWN;
             case 0xEF:
                 return UNKNOWN;
             case 0xF0 ... 0xF1:
@@ -625,6 +629,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                 {
                     return std::make_pair(&i18n::localize("CP"), OPEN);
                 }
+                return UNKNOWN;
             case 0x100 ... 0x103:
                 return UNKNOWN;
         }
@@ -1493,6 +1498,7 @@ void HexEditScreen::drawMeaning() const
                     {
                         break;
                     }
+                    // falls through
                 case 0x7E ... 0x7F:
                     Gui::text(i18n::location(Configuration::getInstance().language(), pkm->eggLocation(), pkm->version()), 160, 100, FONT_SIZE_12,
                         FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
@@ -1502,6 +1508,7 @@ void HexEditScreen::drawMeaning() const
                     {
                         break;
                     }
+                    // falls through
                 case 0x80 ... 0x81:
                     Gui::text(i18n::location(Configuration::getInstance().language(), pkm->metLocation(), pkm->version()), 160, 100, FONT_SIZE_12,
                         FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);

@@ -1078,6 +1078,8 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
     {
         int imageOffsetFromBack = 0;
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
         switch (species)
         {
             default:
@@ -1312,6 +1314,7 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
             case 3:
                 imageOffsetFromBack += 0;
         }
+#pragma GCC diagnostic pop
         int drawIndex = types_spritesheet_beast_idx + imageOffsetFromBack + form;
         if (drawIndex < types_spritesheet_201_1_idx)
         {
@@ -1545,7 +1548,7 @@ void Gui::warn(const std::string& message, std::optional<std::string> message2, 
         flushText();
 
         target(GFX_BOTTOM);
-        
+
         sprite(ui_sheet_part_info_bottom_idx, 0, 0);
 
         if (!aptIsHomeAllowed() && aptIsHomePressed())

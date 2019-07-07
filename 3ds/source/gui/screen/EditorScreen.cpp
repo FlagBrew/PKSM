@@ -86,29 +86,36 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
             case 7:
             case 8:
                 pkm->metLocation(0x0095); // Route 1, HGSS
+                break;
             case 10:
             case 11:
             case 12:
                 pkm->metLocation(0x0010); // Route 201, DPPt
+                break;
             case 20:
             case 21:
             case 22:
             case 23:
                 pkm->metLocation(0x000e); // Route 1, BWB2W2
+                break;
             case 24:
             case 25:
                 pkm->metLocation(0x0008); // Route 1, XY
+                break;
             case 26:
             case 27:
                 pkm->metLocation(0x00cc); // Route 101, ORAS
+                break;
             case 30:
             case 31:
             case 32:
             case 33:
                 pkm->metLocation(0x0006); // Route 1, SMUSUM
+                break;
             case 42:
             case 43:
                 pkm->metLocation(0x0003); // Route 1, LGPE
+                break;
         }
         pkm->fixMoves();
         // pkm->PID((u32)randomNumbers());

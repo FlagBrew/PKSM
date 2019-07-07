@@ -291,6 +291,7 @@ bool CloudAccess::pkm(std::shared_ptr<PKX> mon)
             {
                 case 201:
                     refreshPages();
+                    // falls through
                 case 200:
                     ret = true;
                     break;

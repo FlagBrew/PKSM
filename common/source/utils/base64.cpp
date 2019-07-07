@@ -40,7 +40,6 @@ static constexpr std::array<char, 64> encoding_table = {
 	'4', '5', '6', '7', '8', '9', '+', '/'
 };
 // clang-format on
-static char* decoding_table = NULL;
 
 std::vector<unsigned char> base64_decode(const char* data, size_t input_length)
 {

@@ -50,6 +50,8 @@ const char* genToCstring(Generation gen)
     }
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
 Generation stringToGen(const std::string& str)
 {
     if (str == "4")
@@ -106,6 +108,7 @@ bool operator<(Generation g1, Generation g2)
             return false;
     }
 }
+#pragma GCC diagnostic pop
 
 bool operator>(Generation g1, Generation g2)
 {
