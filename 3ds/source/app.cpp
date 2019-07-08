@@ -278,7 +278,7 @@ static bool update(const std::string& execPath)
     return false;
 }
 
-Result App::init(std::string execPath)
+Result App::init(const std::string& execPath)
 {
     Result res;
 
