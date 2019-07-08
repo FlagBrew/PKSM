@@ -975,7 +975,7 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
     }
     else if (species == 201)
     {
-        if (form == 0)
+        if (form == 0 || form > 27)
         {
             Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
         }
@@ -1016,7 +1016,7 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
     // Mimikyu
     else if (species == 778)
     {
-        if (form == 1)
+        if (form == 1 || form > PersonalSMUSUM::formCount(778))
         {
             Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_778_idx), x, y, &tint, scale, scale);
         }
@@ -1028,7 +1028,7 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
     // Minior
     else if (species == 774)
     {
-        if (form < 7)
+        if (form < 7 || form > PersonalSMUSUM::formCount(774))
         {
             Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_774_idx), x, y, &tint, scale, scale);
         }
@@ -1045,18 +1045,22 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
     // Pikachu
     else if (species == 25)
     {
-        if (generation == Generation::SIX)
+        if (generation == Generation::SIX && form < PersonalXYORAS::formCount(25))
         {
             Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_20_2_idx + form), x, y, &tint, scale, scale);
         }
-        else if (form <= 7)
+        else if (form < PersonalSMUSUM::formCount(25))
         {
             Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_25_6_idx + form), x, y, &tint, scale, scale);
         }
-        else // LGPE starter
+        else if (form == PersonalLGPE::formCount(25) - 1)
         {
             Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
             Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx), x + 25 + 34 * (scale - 1), y + 5);
+        }
+        else
+        {
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
         }
     }
     // LGPE starter Eevee
@@ -1077,7 +1081,7 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
     }
     else
     {
-        if (TitleLoader::save && form > TitleLoader::save->formCount(species))
+        if (form > PersonalLGPE::formCount(species))
         {
             Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
             return;
@@ -1089,7 +1093,7 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
         switch (species)
         {
             // case NEXT_SPECIES_WITH_FORMS:
-                // imageOffsetFromBack += 1; 
+                // imageOffsetFromBack += 1;
             case 801:
                 imageOffsetFromBack += 3;
             case 800:
