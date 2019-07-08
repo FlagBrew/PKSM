@@ -25,6 +25,7 @@
  */
 
 #include "app.hpp"
+#include "appIcon.hpp"
 #include "banks.hpp"
 #include "fetch.hpp"
 #include "random.hpp"
@@ -283,6 +284,15 @@ Result App::init(std::string execPath)
 
     hidInit();
     gfxInitDefault();
+
+    int x = 176;
+    int y = 96;
+    u16 w, h;
+    for (auto& line : bootSplash)
+    {
+        std::copy(line.begin(), line.end(), gfxGetFramebuffer(GFX_TOP, GFX_LEFT, &w, &h) + x++ * 3 * 240 + y * 3);
+    }
+    gfxSwapBuffersGpu();
 
 #if !CITRA_DEBUG
     Handle hbldrHandle;

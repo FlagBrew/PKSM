@@ -27,7 +27,6 @@
 #include "gui.hpp"
 #include "TextParse.hpp"
 #include <queue>
-#include "loader.hpp"
 
 C3D_RenderTarget* g_renderTargetTop;
 C3D_RenderTarget* g_renderTargetBottom;
@@ -1093,7 +1092,7 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
         switch (species)
         {
             // case NEXT_SPECIES_WITH_FORMS:
-                // imageOffsetFromBack += 1;
+            // imageOffsetFromBack += 1;
             case 801:
                 imageOffsetFromBack += 3;
             case 800:
