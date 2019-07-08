@@ -162,7 +162,7 @@ Result Archive::copyFile(FS_Archive src, const std::u16string& file, FS_Archive 
     return res;
 }
 
-Result Archive::init(std::string& execPath)
+Result Archive::init(const std::string& execPath)
 {
     Result res = 0;
     if (R_FAILED(res = FSUSER_OpenArchive(&sdmc, ARCHIVE_SDMC, fsMakePath(PATH_EMPTY, ""))))
@@ -267,7 +267,7 @@ bool Archive::extdataAccessible(u32 id)
     return false;
 }
 
-Result Archive::createPKSMExtdataArchive(std::string& execPath)
+Result Archive::createPKSMExtdataArchive(const std::string& execPath)
 {
     u32 ndirs     = 100;                // TODO
     u32 nfiles    = 200;                // TODO
