@@ -125,6 +125,12 @@ static Result consoleDisplayError(const std::string& message, Result res)
 
 static bool update(const std::string& execPath)
 {
+    u32 status;
+    ACU_GetWifiStatus(&status);
+    if (status == 0)
+    {
+        return false;
+    }
     std::string retString = "";
     if (auto fetch = Fetch::init("https://api.github.com/repos/FlagBrew/PKSM/releases/latest", false, true, &retString, nullptr, ""))
     {
