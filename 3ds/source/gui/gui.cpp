@@ -27,6 +27,7 @@
 #include "gui.hpp"
 #include "TextParse.hpp"
 #include <queue>
+#include "loader.hpp"
 
 C3D_RenderTarget* g_renderTargetTop;
 C3D_RenderTarget* g_renderTargetBottom;
@@ -1076,15 +1077,19 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
     }
     else
     {
+        if (TitleLoader::save && form > TitleLoader::save->formCount(species))
+        {
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
+            return;
+        }
         int imageOffsetFromBack = 0;
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
         switch (species)
         {
-            default:
-                Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
-                return;
+            // case NEXT_SPECIES_WITH_FORMS:
+                // imageOffsetFromBack += 1; 
             case 801:
                 imageOffsetFromBack += 3;
             case 800:
