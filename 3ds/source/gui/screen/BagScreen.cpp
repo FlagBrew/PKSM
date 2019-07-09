@@ -122,14 +122,18 @@ static int bobPointer()
 
 void BagScreen::drawTop() const
 {
-    Gui::backgroundTop(false);
+    Gui::sprite(ui_sheet_emulated_bg_top_yellow_idx, 0, 0);
+    Gui::sprite(ui_sheet_bg_style_top_idx, 0, 0);
     Gui::backgroundAnimatedTop();
+    Gui::sprite(ui_sheet_bar_arc_top_red_idx, 0, 0);
 }
 
 void BagScreen::drawBottom() const
 {
-    Gui::drawSolidRect(0, 0, 106, 240, COLOR_DARKBLUE);
-    Gui::drawSolidRect(107, 0, 213, 240, COLOR_BLUE);
+    Gui::sprite(ui_sheet_emulated_bg_bottom_yellow_idx, 0, 0);
+    Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
+    Gui::drawSolidRect(0, 0, 110, 240, COLOR_DARKYELLOW);
+    // Gui::drawSolidRect(107, 0, 213, 240, COLOR_BLUE);
 
     for (auto button : buttons)
     {
