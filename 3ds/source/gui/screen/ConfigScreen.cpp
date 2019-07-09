@@ -38,7 +38,7 @@ static constexpr std::array<std::string_view, 12> credits = {"piepie62 and Admir
     "dsoldier for the gorgeous graphic work", "SpiredMoth, trainboy2019 and all the scripters", "The whole FlagBrew team for collaborating with us",
     "Kaphotics and SciresM for PKHeX documentation", "fincs and WinterMute for citro2d and devkitARM",
     "kamronbatman and ProjectPokemon for EventsGallery", "All of the translators", "Subject21_J and all the submitters for PKSM's icon",
-    "Mewmore for the default background music", "Allen (FMCore/FM1337) for the GPSS backend", "Bernardo for creating PKSM"};
+    "Allen (FMCore/FM1337) for the GPSS backend", "Bernardo for creating PKSM"};
 
 static void inputNumber(std::function<void(int)> callback, int digits, int maxValue)
 {
