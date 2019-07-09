@@ -34,11 +34,11 @@
 
 #define LIMITSTORAGE(number) number > STORAGE_BOX_LIMIT ? STORAGE_BOX_LIMIT : number < 0 ? 0 : number
 
-static constexpr std::array<std::string_view, 11> credits = {"piepie62 and Admiral-Fish for their dedication",
+static constexpr std::array<std::string_view, 12> credits = {"piepie62 and Admiral-Fish for their dedication",
     "dsoldier for the gorgeous graphic work", "SpiredMoth, trainboy2019 and all the scripters", "The whole FlagBrew team for collaborating with us",
     "Kaphotics and SciresM for PKHeX documentation", "fincs and WinterMute for citro2d and devkitARM",
     "kamronbatman and ProjectPokemon for EventsGallery", "All of the translators", "Subject21_J and all the submitters for PKSM's icon",
-    "Mewmore for the default background music", "Bernardo for creating PKSM"};
+    "Mewmore for the default background music", "Allen (FMCore/FM1337) for the GPSS backend", "Bernardo for creating PKSM"};
 
 static void inputNumber(std::function<void(int)> callback, int digits, int maxValue)
 {
@@ -524,9 +524,9 @@ void ConfigScreen::back()
 
 static u8 getNextAlpha(int off)
 {
-    static u8 retVals[11] = {205, 210, 215, 220, 225, 230, 235, 240, 245, 250, 255};
-    static bool up[11]    = {false, false, false, false, false, false, false, false, false, false, false};
-    static u8 timers[11]  = {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3};
+    static u8 retVals[12] = {200, 205, 210, 215, 220, 225, 230, 235, 240, 245, 250, 255};
+    static bool up[12]    = {false, false, false, false, false, false, false, false, false, false, false};
+    static u8 timers[12]  = {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3};
     if (timers[off] == 0)
     {
         if (retVals[off] < 105 && !up[off])
@@ -554,11 +554,11 @@ static u8 getNextAlpha(int off)
 void ConfigScreen::drawTop() const
 {
     Gui::backgroundTop(false);
-    Gui::text("PKSM", 200, 4, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLUE, TextPosX::CENTER, TextPosY::TOP);
-    int y = 25;
+    Gui::text("PKSM", 200, 12.5f, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLUE, TextPosX::CENTER, TextPosY::CENTER);
+    int y = 20;
     for (size_t i = 0; i < credits.size(); i++)
     {
-        Gui::text(std::string(credits[i]), 200, y += 16, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(0xFF, 0xFF, 0xFF, getNextAlpha(i)), TextPosX::CENTER,
+        Gui::text(std::string(credits[i]), 200, y += 15, FONT_SIZE_14, FONT_SIZE_14, C2D_Color32(0xFF, 0xFF, 0xFF, getNextAlpha(i)), TextPosX::CENTER,
             TextPosY::TOP);
     }
 }
