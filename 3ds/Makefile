@@ -105,7 +105,7 @@ ICON_FLAGS		:=	nosavebackups,visible
 #---------------------------------------------------------------------------------
 ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
 
-CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O2 -mword-relocations \
+CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O3 -mword-relocations \
 			-fomit-frame-pointer -ffunction-sections \
 			-Wno-unused-parameter \
 			$(ARCH) \
