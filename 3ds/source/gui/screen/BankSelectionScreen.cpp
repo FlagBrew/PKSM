@@ -122,7 +122,7 @@ void BankSelectionScreen::renameBank()
         swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 20);
         first = false;
     }
-    swkbdSetHintText(&state, i18n::localize("CONFIG_STORAGE_SIZE").c_str());
+    swkbdSetHintText(&state, i18n::localize("BANK_NAME").c_str());
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
     char input[41]  = {0};
     SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
