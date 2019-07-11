@@ -390,7 +390,7 @@ int Sav5::dexSeen(void) const
     {
         for (int j = 1; j <= 4; j++) // All seen flags: gender & shinies
         {
-            if (data[PokeDex + 0x4 + (brSize * j) + i / 8] & BIT(i % 8))
+            if (data[PokeDex + 0x8 + (brSize * j) + i / 8] & BIT(i % 8))
             {
                 ret++;
                 break;
