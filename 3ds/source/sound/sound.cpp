@@ -78,6 +78,7 @@ static void clearDoneEffects()
 
 Result Sound::init()
 {
+    playMusic = true;
     STDirectory dir("/3ds/PKSM/songs");
     if (dir.good())
     {
@@ -149,16 +150,7 @@ static void bgmPlayThread(void*)
         {
             ndspChnWaveBufAdd(0, &buf);
         }
-        else
-        {
-            buf.status = NDSP_WBUF_DONE;
-        }
         DSP_FlushDataCache(buf.data_pcm16, currentBGM->bufferSize() * sizeof(u16));
-    }
-    if (bgmBuffers[0].status == NDSP_WBUF_DONE && bgmBuffers[1].status == NDSP_WBUF_DONE)
-    {
-        bgmDone = true;
-        return;
     }
 
     for (int i = 0; !ndspChnIsPlaying(0); i++)
@@ -275,7 +267,6 @@ void Sound::startBGM()
 {
     if (!bgm.empty())
     {
-        playMusic = true;
         Threads::create(&bgmControlThread);
     }
 }
@@ -305,16 +296,7 @@ static void playEffectThread(void* rawArg)
             {
                 ndspChnWaveBufAdd(arg->channel, &buf);
             }
-            else
-            {
-                buf.status = NDSP_WBUF_DONE;
-            }
             DSP_FlushDataCache(buf.data_pcm16, arg->decoder->bufferSize() * sizeof(u16));
-        }
-        if (effectBuffer[0].status == NDSP_WBUF_DONE && effectBuffer[1].status == NDSP_WBUF_DONE)
-        {
-            arg->inUse = false;
-            return;
         }
 
         for (int i = 0; !ndspChnIsPlaying(arg->channel); i++)

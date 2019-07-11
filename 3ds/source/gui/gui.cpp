@@ -364,10 +364,16 @@ void Gui::mainLoop(void)
         C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
         C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
 
+        u32 kDown = hidKeysDown();
         u32 kHeld = hidKeysHeld();
-        if (kHeld & KEY_SELECT && !screens.top()->getInstructions().empty())
+
+        if (kDown & KEY_SELECT)
         {
             Sound::playEffect("test");
+        }
+
+        if (kHeld & KEY_SELECT && !screens.top()->getInstructions().empty())
+        {
             screens.top()->doDraw();
             screens.top()->getInstructions().draw();
         }
