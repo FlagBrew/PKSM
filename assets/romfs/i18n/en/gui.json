@@ -33,6 +33,8 @@
     "AWAKENED_SPDEF": "Awakened Sp. Defense",
     "AWAKENED_SPEED": "Awakened Speed",
     "B_BACK": "\uE001: Back",
+    "BACKUP_FAIL_SAVE_1": "Bank backup failed!",
+    "BACKUP_FAIL_SAVE_2": "Save the bank anyway?",
     "BAD_CIA_FILE": "The CIA could not be read!",
     "BAD_INJECT": "Cannot inject",
     "BAD_OPEN_BACKUP": "Could not open backup file!",

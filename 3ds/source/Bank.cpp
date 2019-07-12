@@ -36,14 +36,9 @@
 #define ARCHIVE Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd()
 #define OTHERARCHIVE Configuration::getInstance().useExtData() ? Archive::sd() : Archive::data()
 
-// TODO actually do stuff with the name
 Bank::Bank(const std::string& name, int maxBoxes) : bankName(name)
 {
     load(maxBoxes);
-    if (boxes() != maxBoxes)
-    {
-        resize(maxBoxes);
-    }
 }
 
 void Bank::load(int maxBoxes)
