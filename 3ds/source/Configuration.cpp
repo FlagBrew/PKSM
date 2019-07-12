@@ -125,6 +125,20 @@ Configuration::Configuration()
                 mJson.erase("storageSize");
                 mJson["showBackups"] = false;
             }
+            if (mJson["version"].get<int>() < 7)
+            {
+                if (!(mJson.contains("defaults") && mJson["defaults"].is_object()) ||
+                    !(mJson["defaults"].contains("pid") && mJson["defaults"]["pid"].is_number_integer()))
+                {
+                    loadFromRomfs();
+                    Gui::warn(i18n::localize(mJson["language"], "CONFIGURATION_INCORRECT_FORMAT"),
+                        i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"), mJson["language"]);
+                    return;
+                }
+                mJson["defaults"]["tid"] = mJson["defaults"]["pid"];
+                mJson["defaults"].erase("pid");
+                mJson["legalEndpoint"] = "https://flagbrew.org/pksm/legality/check";
+            }
 
             mJson["version"] = CURRENT_VERSION;
             save();
@@ -142,7 +156,8 @@ Configuration::Configuration()
             !(mJson.contains("useSaveInfo") && mJson["useSaveInfo"].is_boolean()) ||
             !(mJson.contains("randomMusic") && mJson["randomMusic"].is_boolean()) ||
             !(mJson.contains("showBackups") && mJson["showBackups"].is_boolean()) ||
-            !(mJson["defaults"].contains("pid") && mJson["defaults"]["pid"].is_number_integer()) ||
+            !(mJson.contains("legalEndpoint") && mJson["legalEndpoint"].is_string()) ||
+            !(mJson["defaults"].contains("tid") && mJson["defaults"]["tid"].is_number_integer()) ||
             !(mJson["defaults"].contains("sid") && mJson["defaults"]["sid"].is_number_integer()) ||
             !(mJson["defaults"].contains("ot") && mJson["defaults"]["ot"].is_string()) ||
             !(mJson["defaults"].contains("nationality") && mJson["defaults"]["nationality"].is_number_integer()) ||
@@ -204,7 +219,7 @@ void Configuration::save()
     stream.close();
 }
 
-std::vector<std::string> Configuration::extraSaves(const std::string& id)
+std::vector<std::string> Configuration::extraSaves(const std::string& id) const
 {
     if (mJson["extraSaves"].count(id) > 0)
     {

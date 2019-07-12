@@ -1,11 +1,11 @@
 {
-  "version": 6,
+  "version": 7,
   "language": 2,
   "autoBackup": true,
   "transferEdit": true,
   "useExtData": true,
   "defaults": {
-    "pid": 12345,
+    "tid": 12345,
     "sid": 54321,
     "ot": "PKSM",
     "nationality": 2,
@@ -22,5 +22,6 @@
   "writeFileSave": false,
   "useSaveInfo": false,
   "randomMusic": false,
-  "showBackups": false
+  "showBackups": false,
+  "legalEndpoint": "https://flagbrew.org/pksm/legality/check"
 }

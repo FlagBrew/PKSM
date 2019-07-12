@@ -723,7 +723,7 @@ void MiscEditScreen::validate()
     headers                    = curl_slist_append(headers, version.c_str());
 
     std::string writeData = "";
-    if (auto fetch = Fetch::init("https://flagbrew.org/pksm/legality/check", false, true, &writeData, headers, ""))
+    if (auto fetch = Fetch::init(Configuration::getInstance().legalEndpoint(), false, true, &writeData, headers, ""))
     {
         auto mimeThing       = fetch->mimeInit();
         curl_mimepart* field = curl_mime_addpart(mimeThing.get());
