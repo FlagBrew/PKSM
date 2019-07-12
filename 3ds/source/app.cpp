@@ -155,7 +155,7 @@ static bool update(const std::string& execPath)
                         Gui::warn(i18n::localize("UPDATE_CHECK_ERROR_BAD_JSON_1"), i18n::localize("UPDATE_CHECK_ERROR_BAD_JSON_2"));
                         return false;
                     }
-                    else if (retJson["tag_name"].get<std::string>() != StringUtils::format("%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO))
+                    else if (retJson["tag_name"].get<std::string>() > StringUtils::format("%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO))
                     {
                         Gui::waitFrame(i18n::localize("UPDATE_FOUND"));
                         std::string url  = "https://github.com/FlagBrew/PKSM/releases/download/" + retJson["tag_name"].get<std::string>() + "/PKSM";

@@ -823,8 +823,8 @@ void Gui::sprite(int key, int x, int y)
         C2D_ImageTint tint;
         C2D_SetImageTint(&tint, C2D_TopLeft, C2D_Color32(244, 220, 118, 255), 1);
         C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(246, 230, 158, 255), 1);
-        C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(242, 211, 78, 255), 1); 
-        C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(242, 221, 131, 255), 1); 
+        C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(242, 211, 78, 255), 1);
+        C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(242, 221, 131, 255), 1);
         C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_bottom_greyscale_idx), x, y, 0.5f, &tint);
     }
     // standard case
