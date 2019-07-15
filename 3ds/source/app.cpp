@@ -322,7 +322,7 @@ Result App::init(const std::string& execPath)
     }
     else
     {
-        username = StringUtils::UTF16toUTF8(StringUtils::getU16String(usernameData, 0, 14, 0));
+        username = StringUtils::UTF16toUTF8(StringUtils::getU16String(usernameData, 0, 10, 0));
     }
 
     if (R_FAILED(res = romfsInit()))
