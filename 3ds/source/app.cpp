@@ -25,12 +25,21 @@
  */
 
 #include "app.hpp"
+#include "Configuration.hpp"
+#include "TitleLoadScreen.hpp"
 #include "appIcon.hpp"
+#include "archive.hpp"
 #include "banks.hpp"
 #include "fetch.hpp"
+#include "gui.hpp"
+#include "i18n.hpp"
+#include "loader.hpp"
 #include "random.hpp"
 #include "revision.h"
+#include "sha256.h"
+#include "thread.hpp"
 #include <3ds.h>
+#include <stdio.h>
 
 // increase the stack in order to allow quirc to decode large qrs
 int __stacksize__ = 64 * 1024;
@@ -306,6 +315,16 @@ Result App::init(const std::string& execPath)
 
     if (R_FAILED(res = cfguInit()))
         return consoleDisplayError("cfguInit failed.", res);
+    u8 usernameData[0x1C];
+    if (R_FAILED(CFG_GetConfigInfoBlk8(0x1C, 0x000A0000, usernameData)))
+    {
+        username = "";
+    }
+    else
+    {
+        username = StringUtils::UTF16toUTF8(StringUtils::getU16String(usernameData, 0, 14, 0));
+    }
+
     if (R_FAILED(res = romfsInit()))
         return consoleDisplayError("romfsInit failed.", res);
     if (R_FAILED(res = Archive::init(execPath)))

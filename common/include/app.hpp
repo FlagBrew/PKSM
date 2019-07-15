@@ -27,16 +27,8 @@
 #ifndef APP_HPP
 #define APP_HPP
 
-#include "Configuration.hpp"
-#include "TitleLoadScreen.hpp"
-#include "archive.hpp"
-#include "gui.hpp"
-#include "i18n.hpp"
-#include "loader.hpp"
-#include "sha256.h"
-#include "thread.hpp"
-#include <3ds.h>
-#include <stdio.h>
+#include "types.h"
+#include <string>
 
 #define SOC_ALIGN 0x1000
 #define SOC_BUFFERSIZE 0x100000
@@ -45,6 +37,7 @@ namespace App
 {
     Result init(const std::string& execPath);
     Result exit(void);
+    inline std::string username;
 }
 
 #endif

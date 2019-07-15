@@ -29,6 +29,7 @@
 #include "base64.hpp"
 #include "fetch.hpp"
 #include "thread.hpp"
+#include "app.hpp"
 
 static Generation numToGen(int num)
 {
@@ -268,9 +269,11 @@ bool CloudAccess::pkm(std::shared_ptr<PKX> mon)
 {
     bool ret                   = false;
     std::string version        = "Generation: " + genToString(mon->generation());
+    std::string username       = "User: " + App::username;
     struct curl_slist* headers = NULL;
     headers                    = curl_slist_append(headers, "Content-Type: multipart/form-data");
     headers                    = curl_slist_append(headers, version.c_str());
+    headers                    = curl_slist_append(headers, username.c_str());
 
     std::string writeData = "";
     if (auto fetch = Fetch::init("https://flagbrew.org/gpss/share", false, true, &writeData, headers, ""))

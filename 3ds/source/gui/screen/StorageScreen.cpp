@@ -43,6 +43,7 @@
 #include "banks.hpp"
 #include "base64.hpp"
 #include "fetch.hpp"
+#include "app.hpp"
 #include <PB7.hpp>
 #include <variant>
 
@@ -1664,9 +1665,11 @@ void StorageScreen::shareSend()
 {
     long status_code           = 0;
     std::string version        = "Generation: " + genToString(infoMon->generation());
+    std::string username       = "User: " + App::username;
     struct curl_slist* headers = NULL;
     headers                    = curl_slist_append(headers, "Content-Type: multipart/form-data");
     headers                    = curl_slist_append(headers, version.c_str());
+    headers                    = curl_slist_append(headers, username.c_str());
 
     std::string writeData = "";
     if (auto fetch = Fetch::init("https://flagbrew.org/gpss/share", false, true, &writeData, headers, ""))
