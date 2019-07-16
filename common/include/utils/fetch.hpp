@@ -35,7 +35,7 @@ class Fetch
 public:
     static std::unique_ptr<Fetch> init(
         const std::string& url, bool post, bool ssl, std::string* writeData, struct curl_slist* headers, const std::string& postdata);
-    static Result download(const std::string& url, const std::string& path);
+    static Result download(const std::string& url, const std::string& path, const std::string& postData = "");
 
     CURLcode perform();
     template <typename T>

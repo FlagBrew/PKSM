@@ -30,6 +30,7 @@
 #include "i18n.hpp"
 #include "loader.hpp"
 #include <array>
+#include <bitset>
 #include <vector>
 
 #ifndef CONFIGSCREEN_HPP
@@ -56,12 +57,15 @@ public:
 
 private:
     std::array<Button*, 3> tabs;
-    std::array<std::vector<Button*>, 3> tabButtons;
+    std::array<std::vector<Button*>, 4> tabButtons;
+    std::bitset<4> patronMenu;
     int currentTab = 0;
     void back(void);
     bool justSwitched       = true;
     bool showBackupsChanged = false;
     bool useExtDataChanged  = false;
+    int patronMenuTimer;
+    int countPatronMenuTimer = false;
 };
 
 #endif

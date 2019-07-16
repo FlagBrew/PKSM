@@ -139,6 +139,12 @@ Configuration::Configuration()
                 mJson["defaults"].erase("pid");
                 mJson["legalEndpoint"] = "https://flagbrew.org/pksm/legality/check";
             }
+            if (mJson["version"].get<int>() < 8)
+            {
+                mJson["patronCode"]   = "";
+                mJson["alphaChannel"] = false;
+                mJson["autoUpdate"] = true;
+            }
 
             mJson["version"] = CURRENT_VERSION;
             save();
@@ -157,6 +163,9 @@ Configuration::Configuration()
             !(mJson.contains("randomMusic") && mJson["randomMusic"].is_boolean()) ||
             !(mJson.contains("showBackups") && mJson["showBackups"].is_boolean()) ||
             !(mJson.contains("legalEndpoint") && mJson["legalEndpoint"].is_string()) ||
+            !(mJson.contains("patronCode") && mJson["patronCode"].is_string()) ||
+            !(mJson.contains("alphaChannel") && mJson["alphaChannel"].is_boolean()) ||
+            !(mJson.contains("autoUpdate") && mJson["autoUpdate"].is_boolean()) ||
             !(mJson["defaults"].contains("tid") && mJson["defaults"]["tid"].is_number_integer()) ||
             !(mJson["defaults"].contains("sid") && mJson["defaults"]["sid"].is_number_integer()) ||
             !(mJson["defaults"].contains("ot") && mJson["defaults"]["ot"].is_string()) ||

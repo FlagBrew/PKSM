@@ -35,7 +35,7 @@
 class Configuration
 {
 public:
-    static constexpr int CURRENT_VERSION = 7;
+    static constexpr int CURRENT_VERSION = 8;
 
     static Configuration& getInstance(void)
     {
@@ -82,6 +82,12 @@ public:
 
     std::string legalEndpoint(void) const { return mJson["legalEndpoint"]; }
 
+    std::string patronCode(void) const { return mJson["patronCode"]; }
+
+    bool alphaChannel(void) const { return mJson["alphaChannel"]; }
+
+    bool autoUpdate(void) const { return mJson["autoUpdate"]; }
+
     void language(Language lang) { mJson["language"] = lang; }
 
     void autoBackup(bool backup) { mJson["autoBackup"] = backup; }
@@ -122,6 +128,12 @@ public:
     void showBackups(bool value) { mJson["showBackups"] = value; }
 
     void legalEndpoint(const std::string& value) { mJson["legalEndpoint"] = value; }
+
+    void patronCode(const std::string& value) { mJson["patronCode"] = value; }
+
+    void alphaChannel(bool value) { mJson["alphaChannel"] = value; }
+
+    void autoUpdate(bool value) { mJson["autoUpdate"] = value; }
 
     void save(void);
 

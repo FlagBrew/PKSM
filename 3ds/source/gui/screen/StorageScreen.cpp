@@ -40,10 +40,10 @@
 #include "StorageOverlay.hpp"
 #include "StorageViewOverlay.hpp"
 #include "TitleLoadScreen.hpp"
+#include "app.hpp"
 #include "banks.hpp"
 #include "base64.hpp"
 #include "fetch.hpp"
-#include "app.hpp"
 #include <PB7.hpp>
 #include <variant>
 
@@ -1663,13 +1663,20 @@ static size_t header_callback(char* buffer, size_t size, size_t nitems, void* us
 
 void StorageScreen::shareSend()
 {
-    long status_code           = 0;
-    std::string version        = "Generation: " + genToString(infoMon->generation());
-    std::string username       = "User: " + App::username;
+    long status_code    = 0;
+    std::string version = "Generation: " + genToString(infoMon->generation());
+    std::string code    = Configuration::getInstance().patronCode();
+    if (!code.empty())
+    {
+        code = "PC: " + code;
+    }
     struct curl_slist* headers = NULL;
     headers                    = curl_slist_append(headers, "Content-Type: multipart/form-data");
     headers                    = curl_slist_append(headers, version.c_str());
-    headers                    = curl_slist_append(headers, username.c_str());
+    if (!code.empty())
+    {
+        headers = curl_slist_append(headers, code.c_str());
+    }
 
     std::string writeData = "";
     if (auto fetch = Fetch::init("https://flagbrew.org/gpss/share", false, true, &writeData, headers, ""))

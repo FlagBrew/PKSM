@@ -37,7 +37,6 @@ namespace App
 {
     Result init(const std::string& execPath);
     Result exit(void);
-    inline std::string username;
 }
 
 #endif

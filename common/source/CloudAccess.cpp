@@ -25,11 +25,12 @@
  */
 
 #include "CloudAccess.hpp"
+#include "Configuration.hpp"
 #include "PK7.hpp"
+#include "app.hpp"
 #include "base64.hpp"
 #include "fetch.hpp"
 #include "thread.hpp"
-#include "app.hpp"
 
 static Generation numToGen(int num)
 {
@@ -267,13 +268,20 @@ bool CloudAccess::prevPage()
 
 bool CloudAccess::pkm(std::shared_ptr<PKX> mon)
 {
-    bool ret                   = false;
-    std::string version        = "Generation: " + genToString(mon->generation());
-    std::string username       = "User: " + App::username;
+    bool ret            = false;
+    std::string version = "Generation: " + genToString(mon->generation());
+    std::string code    = Configuration::getInstance().patronCode();
+    if (!code.empty())
+    {
+        code = "PC: " + code;
+    }
     struct curl_slist* headers = NULL;
     headers                    = curl_slist_append(headers, "Content-Type: multipart/form-data");
     headers                    = curl_slist_append(headers, version.c_str());
-    headers                    = curl_slist_append(headers, username.c_str());
+    if (!code.empty())
+    {
+        headers = curl_slist_append(headers, code.c_str());
+    }
 
     std::string writeData = "";
     if (auto fetch = Fetch::init("https://flagbrew.org/gpss/share", false, true, &writeData, headers, ""))

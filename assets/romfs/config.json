@@ -1,5 +1,5 @@
 {
-  "version": 7,
+  "version": 8,
   "language": 2,
   "autoBackup": true,
   "transferEdit": true,
@@ -23,5 +23,8 @@
   "useSaveInfo": false,
   "randomMusic": false,
   "showBackups": false,
-  "legalEndpoint": "https://flagbrew.org/pksm/legality/check"
+  "legalEndpoint": "https://flagbrew.org/pksm/legality/check",
+  "patronCode": "",
+  "alphaChannel": false,
+  "autoUpdate": true
 }

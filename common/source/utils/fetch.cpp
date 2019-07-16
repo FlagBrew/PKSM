@@ -56,8 +56,8 @@ std::unique_ptr<Fetch> Fetch::init(
         }
         if (post)
         {
-            fetch->setopt(CURLOPT_POSTFIELDS, postdata.data());
             fetch->setopt(CURLOPT_POSTFIELDSIZE, postdata.length());
+            fetch->setopt(CURLOPT_COPYPOSTFIELDS, postdata.data());
         }
         fetch->setopt(CURLOPT_NOPROGRESS, 1L);
         fetch->setopt(CURLOPT_USERAGENT, "PKSM-curl/7.59.0");
@@ -77,7 +77,7 @@ CURLcode Fetch::perform()
     return curl_easy_perform(curl.get());
 }
 
-Result Fetch::download(const std::string& url, const std::string& path)
+Result Fetch::download(const std::string& url, const std::string& path, const std::string& postData)
 {
     FILE* file = fopen(path.c_str(), "wb");
     if (!file)
@@ -85,7 +85,8 @@ Result Fetch::download(const std::string& url, const std::string& path)
         return -errno;
     }
 
-    if (auto fetch = Fetch::init(url, false, true, nullptr, nullptr, ""))
+    bool doPost = !postData.empty();
+    if (auto fetch = Fetch::init(url, doPost, true, nullptr, nullptr, postData))
     {
         fetch->setopt(CURLOPT_WRITEFUNCTION, fwrite);
         fetch->setopt(CURLOPT_WRITEDATA, file);
