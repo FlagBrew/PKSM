@@ -133,7 +133,7 @@ static Result consoleDisplayError(const std::string& message, Result res)
     return res;
 }
 
-static bool update(const std::string& execPath)
+static bool update(std::string execPath)
 {
     u32 status;
     ACU_GetWifiStatus(&status);
@@ -141,6 +141,7 @@ static bool update(const std::string& execPath)
     {
         return false;
     }
+    execPath = execPath.substr(execPath.find(':')+1);
     std::string url = "", path = "", retString = "";
     const std::string patronCode = Configuration::getInstance().patronCode();
     if (Configuration::getInstance().alphaChannel() && !patronCode.empty())
