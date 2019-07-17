@@ -82,7 +82,7 @@ static void inputPatronCode()
     static bool first = true;
     if (first)
     {
-        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 10);
+        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 22);
         first = false;
     }
     swkbdSetHintText(&state, i18n::localize("PATRON_CODE").c_str());
