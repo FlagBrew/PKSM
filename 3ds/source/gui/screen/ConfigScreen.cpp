@@ -82,16 +82,16 @@ static void inputPatronCode()
     static bool first = true;
     if (first)
     {
-        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 22);
+        swkbdInit(&state, SWKBD_TYPE_QWERTY, 2, 22);
         first = false;
     }
     swkbdSetHintText(&state, i18n::localize("PATRON_CODE").c_str());
     std::string patronCode = Configuration::getInstance().patronCode();
     swkbdSetInitialText(&state, patronCode.c_str());
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
-    char input[25]  = {0};
+    char input[45]  = {0};
     SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-    input[24]       = '\0';
+    input[44]       = '\0';
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
         Configuration::getInstance().patronCode(input);
