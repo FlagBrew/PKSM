@@ -260,20 +260,11 @@ const std::string& LanguageStrings::species(u16 v) const
 
 const std::string& LanguageStrings::localize(const std::string& v) const
 {
-    static std::string MISSING = "MISSING: ";
-    if (MISSING != "MISSING: ")
+    if (!gui.contains(v))
     {
-        MISSING = "MISSING: ";
+        const_cast<nlohmann::json&>(gui)[v] = "MISSING: " + v;
     }
-    if (gui.contains(v))
-    {
-        return gui.at(v).get_ref<const std::string&>();
-    }
-    else
-    {
-        MISSING += v;
-        return MISSING;
-    }
+    return gui.at(v).get_ref<const std::string&>();
 }
 
 const std::vector<std::string>& LanguageStrings::rawItems() const
