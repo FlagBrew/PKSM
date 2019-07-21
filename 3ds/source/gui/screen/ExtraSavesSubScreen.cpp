@@ -56,11 +56,15 @@ void ExtraSavesSubScreen::updateSaves()
     {
         dsCurrentSaves.clear();
         numSaves = 0;
+        selectedSave = -1;
+        firstSave = 0;
     }
     else
     {
         currentSaves.clear();
         numSaves = 0;
+        selectedSave = -1;
+        firstSave = 0;
     }
     switch (group)
     {
@@ -439,7 +443,14 @@ void ExtraSavesSubScreen::drawBottom() const
             {
                 for (; j < 6 && j < idSaves.second.size(); j++)
                 {
-                    Gui::text(idSaves.second[i - firstSave + j], 29, y, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+                    if ((int)j == selectedSave)
+                    {
+                        Gui::scrollingText(idSaves.second[i - firstSave + j], 29, y, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 169);
+                    }
+                    else
+                    {
+                        Gui::slicedText(idSaves.second[i - firstSave + j], 29, y, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 169);
+                    }
                     y += 17;
                 }
             }
@@ -457,7 +468,14 @@ void ExtraSavesSubScreen::drawBottom() const
         {
             if (i < (int)currentSaves.size())
             {
-                Gui::text(currentSaves[i], 29, y, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+                if (i - firstSave == selectedSave)
+                {
+                    Gui::scrollingText(currentSaves[i], 29, y, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 169);
+                }
+                else
+                {
+                    Gui::slicedText(currentSaves[i], 29, y, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 169);
+                }
             }
             else
             {
