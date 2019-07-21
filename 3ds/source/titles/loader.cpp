@@ -393,7 +393,6 @@ bool TitleLoader::load(std::shared_ptr<Title> title, const std::string& savePath
     }
     if (Configuration::getInstance().autoBackup())
     {
-        std::string id;
         if (title)
         {
             backupSave(title->checkpointPrefix());

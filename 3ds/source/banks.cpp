@@ -31,7 +31,7 @@
 
 nlohmann::json g_banks;
 
-static Result saveJson()
+Result Banks::saveJson()
 {
     std::string jsonData = g_banks.dump(2);
     FSUSER_DeleteFile(Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd(), fsMakePath(PATH_UTF16, u"/banks.json"));
@@ -54,7 +54,7 @@ static Result createJson()
 {
     g_banks           = nlohmann::json::object();
     g_banks["pksm_1"] = BANK_DEFAULT_SIZE;
-    return saveJson();
+    return Banks::saveJson();
 }
 
 static Result read()

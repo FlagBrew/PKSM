@@ -30,6 +30,7 @@
 #include "PB7.hpp"
 #include "archive.hpp"
 #include "gui.hpp"
+#include "banks.hpp"
 
 #define BANK(paths) paths.first
 #define JSON(paths) paths.second
@@ -80,6 +81,7 @@ void Bank::load(int maxBoxes)
                     maxBoxes = h.boxes;
                     extern nlohmann::json g_banks;
                     g_banks[bankName] = maxBoxes;
+                    Banks::saveJson();
                     data              = new u8[size = size + sizeof(int)];
                     h.version         = BANK_VERSION;
                     needSave          = true;
