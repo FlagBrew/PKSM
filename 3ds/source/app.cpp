@@ -141,7 +141,7 @@ static bool update(std::string execPath)
     {
         return false;
     }
-    execPath = execPath.substr(execPath.find(':')+1);
+    execPath        = execPath.substr(execPath.find(':') + 1);
     std::string url = "", path = "", retString = "";
     const std::string patronCode = Configuration::getInstance().patronCode();
     if (Configuration::getInstance().alphaChannel() && !patronCode.empty())

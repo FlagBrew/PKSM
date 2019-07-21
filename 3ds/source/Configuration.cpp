@@ -143,7 +143,7 @@ Configuration::Configuration()
             {
                 mJson["patronCode"]   = "";
                 mJson["alphaChannel"] = false;
-                mJson["autoUpdate"] = true;
+                mJson["autoUpdate"]   = true;
             }
 
             mJson["version"] = CURRENT_VERSION;

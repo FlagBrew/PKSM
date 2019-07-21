@@ -192,22 +192,6 @@ SaveLoadScreen::SaveLoadScreen() : Screen(i18n::localize("A_SELECT") + '\n' + i1
     }
 }
 
-void SaveLoadScreen::drawSelector(int x, int y) const
-{
-    static const int w         = 2;
-    float highlight_multiplier = fmax(0.0, fabs(fmod(Screen::timer(), 1.0) - 0.5) / 0.5);
-    u8 r                       = COLOR_SELECTOR & 0xFF;
-    u8 g                       = (COLOR_SELECTOR >> 8) & 0xFF;
-    u8 b                       = (COLOR_SELECTOR >> 16) & 0xFF;
-    u32 color = C2D_Color32(r + (255 - r) * highlight_multiplier, g + (255 - g) * highlight_multiplier, b + (255 - b) * highlight_multiplier, 255);
-
-    Gui::drawSolidRect(x, y, 50, 50, C2D_Color32(255, 255, 255, 100));
-    Gui::drawSolidRect(x, y, 50, w, color);                      // top
-    Gui::drawSolidRect(x, y + w, w, 50 - 2 * w, color);          // left
-    Gui::drawSolidRect(x + 50 - w, y + w, w, 50 - 2 * w, color); // right
-    Gui::drawSolidRect(x, y + 50 - w, 50, w, color);             // bottom
-}
-
 void SaveLoadScreen::drawTop(void) const
 {
     Gui::drawSolidRect(0, 0, 400.0f, 240.0f, C2D_Color32(15, 22, 89, 255));
@@ -268,15 +252,15 @@ void SaveLoadScreen::drawTop(void) const
 
     if (saveGroup == -1)
     {
-        drawSelector(39, 97);
+        Gui::drawSelector(39, 97);
     }
     else if (saveGroup < 4)
     {
-        drawSelector(149 + saveGroup * 60, 67);
+        Gui::drawSelector(149 + saveGroup * 60, 67);
     }
     else
     {
-        drawSelector(149 + (saveGroup - 4) * 60, 127);
+        Gui::drawSelector(149 + (saveGroup - 4) * 60, 127);
     }
 
     Gui::text(i18n::localize("LOADER_INSTRUCTIONS_TOP_PRESENT"), 200, 8, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
@@ -352,8 +336,7 @@ void SaveLoadScreen::update(touchPosition* touch)
         }
         if (downKeys & KEY_X)
         {
-            receiveSaveFromBridge();
-            return;
+            Gui::setScreen(std::make_unique<ConfigScreen>());
         }
         if (downKeys & KEY_DOWN)
         {
@@ -475,11 +458,6 @@ void SaveLoadScreen::update(touchPosition* touch)
                 selectedSave  = 0;
             }
         }
-    }
-
-    if (downKeys & KEY_SELECT)
-    {
-        Gui::setScreen(std::make_unique<ConfigScreen>());
     }
 }
 

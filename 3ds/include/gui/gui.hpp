@@ -133,6 +133,7 @@ namespace Gui
     void backgroundAnimatedBottom(void);
     void setDoHomeDraw(void);
     void drawNoHome(void);
+    void drawSelector(float x, float y);
 
     std::shared_ptr<TextParse::Text> parseText(const std::string& str, float scaleX, float maxWidth = 0.0f);
     void clearText(void);

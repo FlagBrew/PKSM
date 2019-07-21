@@ -27,6 +27,7 @@
 #include "ConfigScreen.hpp"
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
+#include "ExtraSavesScreen.hpp"
 #include "banks.hpp"
 #include "gui.hpp"
 
@@ -278,47 +279,53 @@ ConfigScreen::ConfigScreen()
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new ClickButton(247, 62, 15, 12,
+    tabButtons[2].push_back(new ClickButton(247, 60, 15, 12,
         []() {
             Configuration::getInstance().transferEdit(!Configuration::getInstance().transferEdit());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new ClickButton(247, 87, 15, 12,
+    tabButtons[2].push_back(new ClickButton(247, 81, 15, 12,
         []() {
             Configuration::getInstance().writeFileSave(!Configuration::getInstance().writeFileSave());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new ClickButton(247, 111, 15, 12,
+    tabButtons[2].push_back(new ClickButton(247, 102, 15, 12,
         []() {
             Configuration::getInstance().useSaveInfo(!Configuration::getInstance().useSaveInfo());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new ClickButton(247, 135, 15, 12,
+    tabButtons[2].push_back(new ClickButton(247, 123, 15, 12,
         [this]() {
             Configuration::getInstance().useExtData(!Configuration::getInstance().useExtData());
             useExtDataChanged = !useExtDataChanged;
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new ClickButton(247, 159, 15, 12,
+    tabButtons[2].push_back(new ClickButton(247, 144, 15, 12,
         []() {
             Configuration::getInstance().randomMusic(!Configuration::getInstance().randomMusic());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new ClickButton(247, 183, 15, 12,
+    tabButtons[2].push_back(new ClickButton(247, 165, 15, 12,
         [this]() {
             Configuration::getInstance().showBackups(!Configuration::getInstance().showBackups());
             showBackupsChanged = !showBackupsChanged;
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new ClickButton(247, 207, 15, 12,
+    tabButtons[2].push_back(new ClickButton(247, 186, 15, 12,
         [this]() {
             Configuration::getInstance().autoUpdate(!Configuration::getInstance().autoUpdate());
+            return true;
+        },
+        ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    tabButtons[2].push_back(new ClickButton(247, 207, 15, 12,
+        [this]() {
+            Gui::setScreen(std::make_unique<ExtraSavesScreen>());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
@@ -487,35 +494,35 @@ void ConfigScreen::drawBottom() const
     {
         Gui::text(i18n::localize("MISC"), 215 + 104 / 2, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-        Gui::text(i18n::localize("CONFIG_BACKUP_SAVE"), 19, 36, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("CONFIG_EDIT_TRANSFERS"), 19, 60, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("CONFIG_BACKUP_INJECTION"), 19, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("CONFIG_SAVE_INFO"), 19, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("CONFIG_USE_EXTDATA"), 19, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("CONFIG_RANDOM_MUSIC"), 19, 156, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("CONFIG_SHOW_BACKUPS"), 19, 180, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("CONFIG_AUTO_UPDATE"), 19, 204, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("CONFIG_BACKUP_SAVE"), 19, 36, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("CONFIG_EDIT_TRANSFERS"), 19, 57, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("CONFIG_BACKUP_INJECTION"), 19, 78, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("CONFIG_SAVE_INFO"), 19, 99, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("CONFIG_USE_EXTDATA"), 19, 120, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("CONFIG_RANDOM_MUSIC"), 19, 141, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("CONFIG_SHOW_BACKUPS"), 19, 162, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("CONFIG_AUTO_UPDATE"), 19, 183, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
         for (Button* button : tabButtons[currentTab])
         {
             button->draw();
         }
 
-        Gui::text(Configuration::getInstance().autoBackup() ? i18n::localize("YES") : i18n::localize("NO"), 270, 36, FONT_SIZE_14, FONT_SIZE_14,
+        Gui::text(Configuration::getInstance().autoBackup() ? i18n::localize("YES") : i18n::localize("NO"), 270, 36, FONT_SIZE_12, FONT_SIZE_12,
             COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().transferEdit() ? i18n::localize("YES") : i18n::localize("NO"), 270, 60, FONT_SIZE_14, FONT_SIZE_14,
+        Gui::text(Configuration::getInstance().transferEdit() ? i18n::localize("YES") : i18n::localize("NO"), 270, 57, FONT_SIZE_12, FONT_SIZE_12,
             COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().writeFileSave() ? i18n::localize("YES") : i18n::localize("NO"), 270, 84, FONT_SIZE_14, FONT_SIZE_14,
+        Gui::text(Configuration::getInstance().writeFileSave() ? i18n::localize("YES") : i18n::localize("NO"), 270, 78, FONT_SIZE_12, FONT_SIZE_12,
             COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().useSaveInfo() ? i18n::localize("YES") : i18n::localize("NO"), 270, 108, FONT_SIZE_14, FONT_SIZE_14,
+        Gui::text(Configuration::getInstance().useSaveInfo() ? i18n::localize("YES") : i18n::localize("NO"), 270, 99, FONT_SIZE_12, FONT_SIZE_12,
             COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().useExtData() ? i18n::localize("YES") : i18n::localize("NO"), 270, 132, FONT_SIZE_14, FONT_SIZE_14,
+        Gui::text(Configuration::getInstance().useExtData() ? i18n::localize("YES") : i18n::localize("NO"), 270, 120, FONT_SIZE_12, FONT_SIZE_12,
             COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().randomMusic() ? i18n::localize("YES") : i18n::localize("NO"), 270, 156, FONT_SIZE_14, FONT_SIZE_14,
+        Gui::text(Configuration::getInstance().randomMusic() ? i18n::localize("YES") : i18n::localize("NO"), 270, 141, FONT_SIZE_12, FONT_SIZE_12,
             COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().showBackups() ? i18n::localize("YES") : i18n::localize("NO"), 270, 180, FONT_SIZE_14, FONT_SIZE_14,
+        Gui::text(Configuration::getInstance().showBackups() ? i18n::localize("YES") : i18n::localize("NO"), 270, 162, FONT_SIZE_12, FONT_SIZE_12,
             COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().autoUpdate() ? i18n::localize("YES") : i18n::localize("NO"), 270, 204, FONT_SIZE_14, FONT_SIZE_14,
+        Gui::text(Configuration::getInstance().autoUpdate() ? i18n::localize("YES") : i18n::localize("NO"), 270, 183, FONT_SIZE_12, FONT_SIZE_12,
             COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     }
     else if (currentTab == 3)
@@ -569,31 +576,31 @@ void ConfigScreen::update(touchPosition* touch)
     {
         if (touch->px > 0 && touch->px < 30 && touch->py > 0 && touch->py < 30)
         {
-            patronMenu[0] = true;
-            countPatronMenuTimer         = true;
-            patronMenuTimer             = 600;
+            patronMenu[0]        = true;
+            countPatronMenuTimer = true;
+            patronMenuTimer      = 600;
         }
         else if (touch->px > 290 && touch->px < 320 && touch->py < 30 && touch->py > 0)
         {
-            patronMenu[1] = true;
-            countPatronMenuTimer         = true;
-            patronMenuTimer             = 600;
+            patronMenu[1]        = true;
+            countPatronMenuTimer = true;
+            patronMenuTimer      = 600;
         }
         else if (touch->px > 0 && touch->px < 30 && touch->py > 210 && touch->py < 240)
         {
-            patronMenu[2] = true;
-            countPatronMenuTimer         = true;
-            patronMenuTimer             = 600;
+            patronMenu[2]        = true;
+            countPatronMenuTimer = true;
+            patronMenuTimer      = 600;
         }
         else if (touch->px > 290 && touch->px < 320 && touch->py > 210 && touch->py < 240)
         {
-            patronMenu[3] = true;
-            countPatronMenuTimer         = true;
-            patronMenuTimer             = 600;
+            patronMenu[3]        = true;
+            countPatronMenuTimer = true;
+            patronMenuTimer      = 600;
         }
         if (patronMenu[0] && patronMenu[1] && patronMenu[2] && patronMenu[3])
         {
-            currentTab = 3;
+            currentTab      = 3;
             patronMenuTimer = 0;
         }
     }

@@ -60,22 +60,6 @@ TitleLoadScreen::TitleLoadScreen()
     buttons.push_back(new Button(200, 147, 96, 51, &receiveSaveFromBridge, ui_sheet_res_null_idx, "", 0.0f, 0));
 }
 
-void TitleLoadScreen::drawSelector(int x, int y) const
-{
-    static const int w         = 2;
-    float highlight_multiplier = fmax(0.0, fabs(fmod(Screen::timer(), 1.0) - 0.5) / 0.5);
-    u8 r                       = COLOR_SELECTOR & 0xFF;
-    u8 g                       = (COLOR_SELECTOR >> 8) & 0xFF;
-    u8 b                       = (COLOR_SELECTOR >> 16) & 0xFF;
-    u32 color = C2D_Color32(r + (255 - r) * highlight_multiplier, g + (255 - g) * highlight_multiplier, b + (255 - b) * highlight_multiplier, 255);
-
-    Gui::drawSolidRect(x, y, 50, 50, C2D_Color32(255, 255, 255, 100));
-    Gui::drawSolidRect(x, y, 50, w, color);                      // top
-    Gui::drawSolidRect(x, y + w, w, 50 - 2 * w, color);          // left
-    Gui::drawSolidRect(x + 50 - w, y + w, w, 50 - 2 * w, color); // right
-    Gui::drawSolidRect(x, y + 50 - w, 50, w, color);             // bottom
-}
-
 void TitleLoadScreen::drawTop() const
 {
     Gui::drawSolidRect(0, 0, 400.0f, 240.0f, C2D_Color32(15, 22, 89, 255));
@@ -88,7 +72,7 @@ void TitleLoadScreen::drawTop() const
         Gui::drawImageAt(TitleLoader::cardTitle->icon(), 40, 98, NULL, 1.0f, 1.0f);
         if (titleFromIndex(selectedTitle) == TitleLoader::cardTitle)
         {
-            drawSelector(39, 97);
+            Gui::drawSelector(39, 97);
         }
     }
 
@@ -105,7 +89,7 @@ void TitleLoadScreen::drawTop() const
         Gui::drawImageAt(TitleLoader::nandTitles[i]->icon(), x, y, NULL, 1.0f, 1.0f);
         if (titleFromIndex(selectedTitle) == TitleLoader::nandTitles[i])
         {
-            drawSelector(x - 1, y - 1);
+            Gui::drawSelector(x - 1, y - 1);
         }
     }
 

@@ -52,7 +52,6 @@ public:
             delete button;
         }
     }
-    void drawSelector(int x, int y) const;
     void drawTop() const override;
     void drawBottom() const override;
     ScreenType type() const override { return ScreenType::TITLELOAD; }
