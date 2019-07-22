@@ -502,6 +502,7 @@ void ConfigScreen::drawBottom() const
         Gui::text(i18n::localize("CONFIG_RANDOM_MUSIC"), 19, 141, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(i18n::localize("CONFIG_SHOW_BACKUPS"), 19, 162, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(i18n::localize("CONFIG_AUTO_UPDATE"), 19, 183, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("EXTRA_SAVES"), 19, 204, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
         for (Button* button : tabButtons[currentTab])
         {

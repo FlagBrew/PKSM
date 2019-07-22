@@ -29,7 +29,7 @@
 #include "i18n.hpp"
 
 FileChooseOverlay::FileChooseOverlay(Screen& screen, std::vector<std::string>& strings, const std::string& rootString)
-    : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), currDirString("/"), rootString(rootString), currDir("/"), strings(strings), hid(8, 1)
+    : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), currDirString("/"), rootString(rootString), currDir("/"), strings(strings), hid(9, 1)
 {
     updateEntries();
 }

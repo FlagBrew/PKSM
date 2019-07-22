@@ -29,11 +29,16 @@
 #include "gui.hpp"
 #include "loader.hpp"
 
-ExtraSavesScreen::ExtraSavesScreen() {}
+ExtraSavesScreen::ExtraSavesScreen() : Screen(i18n::localize("A_CHOOSE_GROUP") + '\n' + i18n::localize("B_BACK")) {}
 
 ExtraSavesScreen::~ExtraSavesScreen()
 {
     Threads::create((ThreadFunc)TitleLoader::scanSaves);
+}
+
+void ExtraSavesScreen::drawBottom() const
+{
+    Gui::sprite(ui_sheet_part_info_bottom_idx, 0, 0);
 }
 
 void ExtraSavesScreen::drawTop() const
@@ -107,7 +112,7 @@ void ExtraSavesScreen::drawTop() const
         Gui::drawSelector(149 + (saveGroup - 4) * 60, 127);
     }
 
-    Gui::text(i18n::localize("LOADER_INSTRUCTIONS_TOP_PRESENT"), 200, 8, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("GROUP_CHOICE_INSTR"), 200, 8, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 }
 
 void ExtraSavesScreen::update(touchPosition* touch)

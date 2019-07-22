@@ -45,7 +45,7 @@ static constexpr char dsPostfixes[] = {'E', 'S', 'K', 'J', 'I', 'D', 'F', 'O'};
 
 static const std::string ctrIds[] = {"0x0055D", "0x0055E", "0x011C4", "0x011C5", "0x01648", "0x0175E", "0x01B50", "0x01B51"};
 
-ExtraSavesSubScreen::ExtraSavesSubScreen(Group g) : group(g)
+ExtraSavesSubScreen::ExtraSavesSubScreen(Group g) : Screen(i18n::localize("A_ADD_SAVE") + '\n' + i18n::localize("X_DELETE_SAVE") + '\n' + i18n::localize("B_BACK")), group(g)
 {
     updateSaves();
 }
@@ -82,61 +82,61 @@ void ExtraSavesSubScreen::updateSaves()
         case ExtraSavesSubScreen::Group::DP:
             for (auto& postfix : dsPostfixes)
             {
-                auto pFixSaves = Configuration::getInstance().extraSaves(dsIds[1] + postfix);
+                auto pFixSaves = Configuration::getInstance().extraSaves((secondSelected ? dsIds[2] : dsIds[1]) + postfix);
                 if (!pFixSaves.empty())
                 {
                     numSaves += pFixSaves.size();
-                    dsCurrentSaves.emplace(dsIds[1] + postfix, std::move(pFixSaves));
+                    dsCurrentSaves.emplace((secondSelected ? dsIds[2] : dsIds[1]) + postfix, std::move(pFixSaves));
                 }
             }
             break;
         case ExtraSavesSubScreen::Group::HGSS:
             for (auto& postfix : dsPostfixes)
             {
-                auto pFixSaves = Configuration::getInstance().extraSaves(dsIds[3] + postfix);
+                auto pFixSaves = Configuration::getInstance().extraSaves((secondSelected ? dsIds[4] : dsIds[3]) + postfix);
                 if (!pFixSaves.empty())
                 {
                     numSaves += pFixSaves.size();
-                    dsCurrentSaves.emplace(dsIds[3] + postfix, std::move(pFixSaves));
+                    dsCurrentSaves.emplace((secondSelected ? dsIds[4] : dsIds[3]) + postfix, std::move(pFixSaves));
                 }
             }
             break;
         case ExtraSavesSubScreen::Group::BW:
             for (auto& postfix : dsPostfixes)
             {
-                auto pFixSaves = Configuration::getInstance().extraSaves(dsIds[5] + postfix);
+                auto pFixSaves = Configuration::getInstance().extraSaves((secondSelected ? dsIds[6] : dsIds[5]) + postfix);
                 if (!pFixSaves.empty())
                 {
                     numSaves += pFixSaves.size();
-                    dsCurrentSaves.emplace(dsIds[5] + postfix, std::move(pFixSaves));
+                    dsCurrentSaves.emplace((secondSelected ? dsIds[6] : dsIds[5]) + postfix, std::move(pFixSaves));
                 }
             }
             break;
         case ExtraSavesSubScreen::Group::B2W2:
             for (auto& postfix : dsPostfixes)
             {
-                auto pFixSaves = Configuration::getInstance().extraSaves(dsIds[7] + postfix);
+                auto pFixSaves = Configuration::getInstance().extraSaves((secondSelected ? dsIds[8] : dsIds[7]) + postfix);
                 if (!pFixSaves.empty())
                 {
                     numSaves += pFixSaves.size();
-                    dsCurrentSaves.emplace(dsIds[7] + postfix, std::move(pFixSaves));
+                    dsCurrentSaves.emplace((secondSelected ? dsIds[8] : dsIds[7]) + postfix, std::move(pFixSaves));
                 }
             }
             break;
         case ExtraSavesSubScreen::Group::XY:
-            currentSaves = Configuration::getInstance().extraSaves(ctrIds[0]);
+            currentSaves = Configuration::getInstance().extraSaves(secondSelected ? ctrIds[1] : ctrIds[0]);
             numSaves = currentSaves.size();
             break;
         case ExtraSavesSubScreen::Group::ORAS:
-            currentSaves = Configuration::getInstance().extraSaves(ctrIds[2]);
+            currentSaves = Configuration::getInstance().extraSaves(secondSelected ? ctrIds[3] : ctrIds[2]);
             numSaves = currentSaves.size();
             break;
         case ExtraSavesSubScreen::Group::SM:
-            currentSaves = Configuration::getInstance().extraSaves(ctrIds[4]);
+            currentSaves = Configuration::getInstance().extraSaves(secondSelected ? ctrIds[5] : ctrIds[4]);
             numSaves = currentSaves.size();
             break;
         case ExtraSavesSubScreen::Group::USUM:
-            currentSaves = Configuration::getInstance().extraSaves(ctrIds[6]);
+            currentSaves = Configuration::getInstance().extraSaves(secondSelected ? ctrIds[7] : ctrIds[6]);
             numSaves = currentSaves.size();
             break;
         default:
@@ -408,6 +408,7 @@ void ExtraSavesSubScreen::update(touchPosition* touch)
                     if (i + (int)idGroup.second.size() > selectedSave + firstSave)
                     {
                         idGroup.second.erase(idGroup.second.begin() + selectedSave + firstSave - i);
+                        break;
                     }
                 }
             }
@@ -497,10 +498,10 @@ void ExtraSavesSubScreen::drawBottom() const
         Gui::drawSolidTriangle(189, 191, 197, 191, 193, 196, C2D_Color32(0x0f, 0x16, 0x59, 255));
     }
 
-    Gui::text(i18n::localize("LOADER_LOAD"), 248, 113, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-    Gui::text(i18n::localize("LOADER_WIRELESS"), 248, 163, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("A_ADD_SAVE"), 248, 113, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("X_DELETE_SAVE"), 248, 172, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, 94);
 
-    Gui::text(i18n::localize("LOADER_INSTRUCTIONS_BOTTOM"), 160, 223, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("EXTRASAVES_CONFIGURE_INSTRUCTIONS"), 160, 223, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
     Gui::drawSolidRect(245, 23, 48, 48, COLOR_BLACK);
     Gui::drawSolidRect(243, 21, 52, 52, C2D_Color32(15, 22, 89, 255));
