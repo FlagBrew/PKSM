@@ -45,6 +45,7 @@
 int __stacksize__ = 64 * 1024;
 
 static u32 old_time_limit;
+static Handle hbldrHandle;
 
 struct asset
 {
@@ -131,6 +132,33 @@ static Result consoleDisplayError(const std::string& message, Result res)
         hidScanInput();
     }
     return res;
+}
+
+static Result HBLDR_SetTarget(const char* path)
+{
+	u32 pathLen = strlen(path) + 1;
+	u32* cmdbuf = getThreadCommandBuffer();
+
+	cmdbuf[0] = IPC_MakeHeader(2, 0, 2); //0x20002
+	cmdbuf[1] = IPC_Desc_StaticBuffer(pathLen, 0);
+	cmdbuf[2] = (u32)path;
+
+	Result rc = svcSendSyncRequest(hbldrHandle);
+	if (R_SUCCEEDED(rc)) rc = cmdbuf[1];
+	return rc;
+}
+
+static Result HBLDR_SetArgv(const void* buffer, u32 size)
+{
+	u32* cmdbuf = getThreadCommandBuffer();
+
+	cmdbuf[0] = IPC_MakeHeader(3, 0, 2); //0x30002
+	cmdbuf[1] = IPC_Desc_StaticBuffer(size, 1);
+	cmdbuf[2] = (u32)buffer;
+
+	Result rc = svcSendSyncRequest(hbldrHandle);
+	if (R_SUCCEEDED(rc)) rc = cmdbuf[1];
+	return rc;
 }
 
 static bool update(std::string execPath)
@@ -351,11 +379,8 @@ Result App::init(const std::string& execPath)
     gfxSwapBuffersGpu();
 
 #if !CITRA_DEBUG
-    Handle hbldrHandle;
     if (R_FAILED(res = svcConnectToPort(&hbldrHandle, "hb:ldr")))
         return consoleDisplayError("Rosalina sysmodule has not been found.\n\nMake sure you're running latest Luma3DS.", res);
-    else
-        svcCloseHandle(hbldrHandle);
 #endif
     APT_GetAppCpuTimeLimit(&old_time_limit);
     APT_SetAppCpuTimeLimit(30);
@@ -394,9 +419,33 @@ Result App::init(const std::string& execPath)
 
     if (Configuration::getInstance().autoUpdate() && update(execPath))
     {
-        Gui::warn(i18n::localize("UPDATE_SUCCESS_1"), i18n::localize("UPDATE_SUCCESS_2"));
+        Result res = -1;
+        if (execPath.empty())
+        {
+            u8 param[0x300];
+            u8 hmac[0x20];
+            
+            if (R_SUCCEEDED(res = APT_PrepareToDoApplicationJump(0, 0x000400000EC10000, MEDIATYPE_SD)))
+            {
+                res = APT_DoApplicationJump(param, sizeof(param), hmac);
+            }
+        }
+        else
+        {
+#if !CITRA_DEBUG
+            std::string path = execPath.substr(execPath.find('/'));
+            res = HBLDR_SetTarget(path.c_str());
+#endif
+        }
+        if (R_FAILED(res))
+        {
+            Gui::error("SetTarget failed", res);
+            Gui::warn(i18n::localize("UPDATE_SUCCESS_1"), i18n::localize("UPDATE_SUCCESS_2"));
+        }
         return -1;
     }
+
+    Gui::warn(execPath);
 
     if (R_FAILED(res = Banks::init()))
         return consoleDisplayError("Banks::init failed.", res);
@@ -414,6 +463,7 @@ Result App::init(const std::string& execPath)
 
 Result App::exit(void)
 {
+    svcCloseHandle(hbldrHandle);
     TitleLoader::exit();
     Gui::exit();
     socExit();
