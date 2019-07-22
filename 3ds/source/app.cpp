@@ -136,29 +136,17 @@ static Result consoleDisplayError(const std::string& message, Result res)
 
 static Result HBLDR_SetTarget(const char* path)
 {
-	u32 pathLen = strlen(path) + 1;
-	u32* cmdbuf = getThreadCommandBuffer();
+    u32 pathLen = strlen(path) + 1;
+    u32* cmdbuf = getThreadCommandBuffer();
 
-	cmdbuf[0] = IPC_MakeHeader(2, 0, 2); //0x20002
-	cmdbuf[1] = IPC_Desc_StaticBuffer(pathLen, 0);
-	cmdbuf[2] = (u32)path;
+    cmdbuf[0] = IPC_MakeHeader(2, 0, 2); // 0x20002
+    cmdbuf[1] = IPC_Desc_StaticBuffer(pathLen, 0);
+    cmdbuf[2] = (u32)path;
 
-	Result rc = svcSendSyncRequest(hbldrHandle);
-	if (R_SUCCEEDED(rc)) rc = cmdbuf[1];
-	return rc;
-}
-
-static Result HBLDR_SetArgv(const void* buffer, u32 size)
-{
-	u32* cmdbuf = getThreadCommandBuffer();
-
-	cmdbuf[0] = IPC_MakeHeader(3, 0, 2); //0x30002
-	cmdbuf[1] = IPC_Desc_StaticBuffer(size, 1);
-	cmdbuf[2] = (u32)buffer;
-
-	Result rc = svcSendSyncRequest(hbldrHandle);
-	if (R_SUCCEEDED(rc)) rc = cmdbuf[1];
-	return rc;
+    Result rc = svcSendSyncRequest(hbldrHandle);
+    if (R_SUCCEEDED(rc))
+        rc = cmdbuf[1];
+    return rc;
 }
 
 static bool update(std::string execPath)
@@ -424,7 +412,7 @@ Result App::init(const std::string& execPath)
         {
             u8 param[0x300];
             u8 hmac[0x20];
-            
+
             if (R_SUCCEEDED(res = APT_PrepareToDoApplicationJump(0, 0x000400000EC10000, MEDIATYPE_SD)))
             {
                 res = APT_DoApplicationJump(param, sizeof(param), hmac);
@@ -434,7 +422,7 @@ Result App::init(const std::string& execPath)
         {
 #if !CITRA_DEBUG
             std::string path = execPath.substr(execPath.find('/'));
-            res = HBLDR_SetTarget(path.c_str());
+            res              = HBLDR_SetTarget(path.c_str());
 #endif
         }
         if (R_FAILED(res))

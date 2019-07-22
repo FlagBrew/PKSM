@@ -458,8 +458,8 @@ void Sav7::dex(std::shared_ptr<PKX> pk)
 
 int Sav7::dexSeen(void) const
 {
-    int ret                     = 0;
-    static constexpr int brSize = 0x8C;
+    int ret                         = 0;
+    static constexpr int brSize     = 0x8C;
     static constexpr int caughtSize = 0x68;
     for (int i = 0; i < maxSpecies(); i++)
     {

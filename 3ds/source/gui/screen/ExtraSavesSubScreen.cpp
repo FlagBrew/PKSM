@@ -26,8 +26,8 @@
 
 #include "ExtraSavesSubScreen.hpp"
 #include "Configuration.hpp"
-#include "gui.hpp"
 #include "FileChooseOverlay.hpp"
+#include "gui.hpp"
 
 static const std::string dsIds[] = {
     "CPU", // Platinum
@@ -201,26 +201,28 @@ static constexpr int groupToGameId2(ExtraSavesSubScreen::Group g)
     return 0;
 }
 
-ExtraSavesSubScreen::ExtraSavesSubScreen(Group g) : Screen(i18n::localize("A_ADD_SAVE") + '\n' + i18n::localize("X_DELETE_SAVE") + '\n' + i18n::localize("B_BACK")), group(g)
+ExtraSavesSubScreen::ExtraSavesSubScreen(Group g)
+    : Screen(i18n::localize("A_ADD_SAVE") + '\n' + i18n::localize("X_DELETE_SAVE") + '\n' + i18n::localize("B_BACK")), group(g)
 {
     updateSaves();
 }
 
 void ExtraSavesSubScreen::updateSaves()
 {
-    if (group == ExtraSavesSubScreen::Group::Pt || group == ExtraSavesSubScreen::Group::DP || group == ExtraSavesSubScreen::Group::HGSS || group == ExtraSavesSubScreen::Group::BW || group == ExtraSavesSubScreen::Group::B2W2)
+    if (group == ExtraSavesSubScreen::Group::Pt || group == ExtraSavesSubScreen::Group::DP || group == ExtraSavesSubScreen::Group::HGSS ||
+        group == ExtraSavesSubScreen::Group::BW || group == ExtraSavesSubScreen::Group::B2W2)
     {
         dsCurrentSaves.clear();
-        numSaves = 0;
+        numSaves     = 0;
         selectedSave = -1;
-        firstSave = 0;
+        firstSave    = 0;
     }
     else
     {
         currentSaves.clear();
-        numSaves = 0;
+        numSaves     = 0;
         selectedSave = -1;
-        firstSave = 0;
+        firstSave    = 0;
     }
     switch (group)
     {
@@ -281,19 +283,19 @@ void ExtraSavesSubScreen::updateSaves()
             break;
         case ExtraSavesSubScreen::Group::XY:
             currentSaves = Configuration::getInstance().extraSaves(secondSelected ? ctrIds[1] : ctrIds[0]);
-            numSaves = currentSaves.size();
+            numSaves     = currentSaves.size();
             break;
         case ExtraSavesSubScreen::Group::ORAS:
             currentSaves = Configuration::getInstance().extraSaves(secondSelected ? ctrIds[3] : ctrIds[2]);
-            numSaves = currentSaves.size();
+            numSaves     = currentSaves.size();
             break;
         case ExtraSavesSubScreen::Group::SM:
             currentSaves = Configuration::getInstance().extraSaves(secondSelected ? ctrIds[5] : ctrIds[4]);
-            numSaves = currentSaves.size();
+            numSaves     = currentSaves.size();
             break;
         case ExtraSavesSubScreen::Group::USUM:
             currentSaves = Configuration::getInstance().extraSaves(secondSelected ? ctrIds[7] : ctrIds[6]);
-            numSaves = currentSaves.size();
+            numSaves     = currentSaves.size();
             break;
         default:
             break;
@@ -327,7 +329,7 @@ void ExtraSavesSubScreen::drawTop() const
     }
     else
     {
-        int x = 176;
+        int x      = 176;
         auto label = groupToLabel1(group);
         drawIcon(label, 176, 96);
         Gui::drawSelector(x - 1, 95);
@@ -339,7 +341,8 @@ void ExtraSavesSubScreen::update(touchPosition* touch)
 {
     if (updateConfig)
     {
-        if (group == ExtraSavesSubScreen::Group::Pt || group == ExtraSavesSubScreen::Group::DP || group == ExtraSavesSubScreen::Group::HGSS || group == ExtraSavesSubScreen::Group::BW || group == ExtraSavesSubScreen::Group::B2W2)
+        if (group == ExtraSavesSubScreen::Group::Pt || group == ExtraSavesSubScreen::Group::DP || group == ExtraSavesSubScreen::Group::HGSS ||
+            group == ExtraSavesSubScreen::Group::BW || group == ExtraSavesSubScreen::Group::B2W2)
         {
             for (auto& saves : dsCurrentSaves)
             {
@@ -403,7 +406,7 @@ void ExtraSavesSubScreen::update(touchPosition* touch)
     if (numSaves == 0)
     {
         selectedSave = -1;
-        firstSave = 0;
+        firstSave    = 0;
     }
     else if (selectedSave == -1)
     {
@@ -412,7 +415,8 @@ void ExtraSavesSubScreen::update(touchPosition* touch)
 
     if (down & KEY_A)
     {
-        if (group == ExtraSavesSubScreen::Group::Pt || group == ExtraSavesSubScreen::Group::DP || group == ExtraSavesSubScreen::Group::HGSS || group == ExtraSavesSubScreen::Group::BW || group == ExtraSavesSubScreen::Group::B2W2)
+        if (group == ExtraSavesSubScreen::Group::Pt || group == ExtraSavesSubScreen::Group::DP || group == ExtraSavesSubScreen::Group::HGSS ||
+            group == ExtraSavesSubScreen::Group::BW || group == ExtraSavesSubScreen::Group::B2W2)
         {
             if (dsCurrentSaves.empty())
             {
@@ -434,7 +438,8 @@ void ExtraSavesSubScreen::update(touchPosition* touch)
     else if (down & KEY_X && selectedSave != -1)
     {
         std::string* entry = nullptr;
-        if (group == ExtraSavesSubScreen::Group::Pt || group == ExtraSavesSubScreen::Group::DP || group == ExtraSavesSubScreen::Group::HGSS || group == ExtraSavesSubScreen::Group::BW || group == ExtraSavesSubScreen::Group::B2W2)
+        if (group == ExtraSavesSubScreen::Group::Pt || group == ExtraSavesSubScreen::Group::DP || group == ExtraSavesSubScreen::Group::HGSS ||
+            group == ExtraSavesSubScreen::Group::BW || group == ExtraSavesSubScreen::Group::B2W2)
         {
             int i = 0;
             for (auto& idGroup : dsCurrentSaves)
@@ -451,7 +456,8 @@ void ExtraSavesSubScreen::update(touchPosition* touch)
         }
         if (Gui::showChoiceMessage(i18n::localize("DELETE_EXTRASAVE_ENTRY"), "\'" + *entry + "\'"))
         {
-            if (group == ExtraSavesSubScreen::Group::Pt || group == ExtraSavesSubScreen::Group::DP || group == ExtraSavesSubScreen::Group::HGSS || group == ExtraSavesSubScreen::Group::BW || group == ExtraSavesSubScreen::Group::B2W2)
+            if (group == ExtraSavesSubScreen::Group::Pt || group == ExtraSavesSubScreen::Group::DP || group == ExtraSavesSubScreen::Group::HGSS ||
+                group == ExtraSavesSubScreen::Group::BW || group == ExtraSavesSubScreen::Group::B2W2)
             {
                 int i = 0;
                 for (auto& idGroup : dsCurrentSaves)
@@ -477,16 +483,19 @@ void ExtraSavesSubScreen::drawBottom() const
     Gui::backgroundBottom(true);
     Gui::sprite(ui_sheet_gameselector_savebox_idx, 22, 94);
 
-    Gui::text(secondSelected ? i18n::game(Configuration::getInstance().language(), groupToGameId2(group)) : i18n::game(Configuration::getInstance().language(), groupToGameId1(group)), 27, 26, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(secondSelected ? i18n::game(Configuration::getInstance().language(), groupToGameId2(group))
+                             : i18n::game(Configuration::getInstance().language(), groupToGameId1(group)),
+        27, 26, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
     if (selectedSave > -1)
     {
         Gui::drawSolidRect(24, 96 + 17 * selectedSave, 174, 16, C2D_Color32(0x0f, 0x16, 0x59, 255));
     }
 
-    if (group == ExtraSavesSubScreen::Group::Pt || group == ExtraSavesSubScreen::Group::DP || group == ExtraSavesSubScreen::Group::HGSS || group == ExtraSavesSubScreen::Group::BW || group == ExtraSavesSubScreen::Group::B2W2)
+    if (group == ExtraSavesSubScreen::Group::Pt || group == ExtraSavesSubScreen::Group::DP || group == ExtraSavesSubScreen::Group::HGSS ||
+        group == ExtraSavesSubScreen::Group::BW || group == ExtraSavesSubScreen::Group::B2W2)
     {
-        int y = 97;
+        int y    = 97;
         size_t i = 0;
         size_t j = 0;
         for (auto& idSaves : dsCurrentSaves)
@@ -497,11 +506,13 @@ void ExtraSavesSubScreen::drawBottom() const
                 {
                     if ((int)j == selectedSave)
                     {
-                        Gui::scrollingText(idSaves.second[i - firstSave + j], 29, y, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 169);
+                        Gui::scrollingText(
+                            idSaves.second[i - firstSave + j], 29, y, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 169);
                     }
                     else
                     {
-                        Gui::slicedText(idSaves.second[i - firstSave + j], 29, y, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 169);
+                        Gui::slicedText(
+                            idSaves.second[i - firstSave + j], 29, y, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 169);
                     }
                     y += 17;
                 }
@@ -552,7 +563,8 @@ void ExtraSavesSubScreen::drawBottom() const
     Gui::text(i18n::localize("A_ADD_SAVE"), 248, 113, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     Gui::text(i18n::localize("X_DELETE_SAVE"), 248, 172, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, 94);
 
-    Gui::text(i18n::localize("EXTRASAVES_CONFIGURE_INSTRUCTIONS"), 160, 223, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(
+        i18n::localize("EXTRASAVES_CONFIGURE_INSTRUCTIONS"), 160, 223, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
     Gui::drawSolidRect(245, 23, 48, 48, COLOR_BLACK);
     Gui::drawSolidRect(243, 21, 52, 52, C2D_Color32(15, 22, 89, 255));

@@ -30,9 +30,7 @@
 #include "Button.hpp"
 #include "Screen.hpp"
 #include <vector>
-
-#include <map>
-#include "gui.hpp"
+#include <unordered_map>
 
 class ExtraSavesSubScreen : public Screen
 {
@@ -65,7 +63,7 @@ private:
     bool secondSelected = false;
     int selectedSave = -1, firstSave = 0, numSaves = 0;
     std::vector<std::string> currentSaves;
-    std::map<std::string, std::vector<std::string>> dsCurrentSaves;
+    std::unordered_map<std::string, std::vector<std::string>> dsCurrentSaves;
     bool updateConfig = false;
     // std::vector<std::shared_ptr<Button>> deleteButtons;
 };
