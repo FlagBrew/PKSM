@@ -445,8 +445,6 @@ Result App::init(const std::string& execPath)
         return -1;
     }
 
-    Gui::warn(execPath);
-
     if (R_FAILED(res = Banks::init()))
         return consoleDisplayError("Banks::init failed.", res);
 
