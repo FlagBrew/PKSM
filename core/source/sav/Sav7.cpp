@@ -460,11 +460,12 @@ int Sav7::dexSeen(void) const
 {
     int ret                     = 0;
     static constexpr int brSize = 0x8C;
+    static constexpr int caughtSize = 0x68;
     for (int i = 0; i < maxSpecies(); i++)
     {
-        for (int j = 1; j <= 4; j++)
+        for (int j = 0; j < 4; j++)
         {
-            if (data[PokeDex + 0x88 + brSize * j + i / 8] & BIT(i % 8))
+            if (data[PokeDex + 0x88 + caughtSize + brSize * j + i / 8] & BIT(i % 8))
             {
                 ret++;
                 break;
