@@ -439,7 +439,6 @@ Result App::init(const std::string& execPath)
         }
         if (R_FAILED(res))
         {
-            Gui::error("SetTarget failed", res);
             Gui::warn(i18n::localize("UPDATE_SUCCESS_1"), i18n::localize("UPDATE_SUCCESS_2"));
         }
         return -1;
