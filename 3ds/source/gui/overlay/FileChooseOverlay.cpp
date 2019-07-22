@@ -28,8 +28,8 @@
 #include "gui.hpp"
 #include "i18n.hpp"
 
-FileChooseOverlay::FileChooseOverlay(Screen& screen, std::vector<std::string>& strings)
-    : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), currDirString("/"), currDir("/"), strings(strings), hid(8, 1)
+FileChooseOverlay::FileChooseOverlay(Screen& screen, std::vector<std::string>& strings, const std::string& rootString)
+    : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), currDirString("/"), rootString(rootString), currDir("/"), strings(strings), hid(8, 1)
 {
     updateEntries();
 }
@@ -113,7 +113,7 @@ void FileChooseOverlay::update(touchPosition* touch)
         }
         else
         {
-            currDirString = currDirString.substr(0, currDirString.find_last_of('/'));
+            currDirString = currDirString.substr(0, currDirString.substr(0, currDirString.size() - 1).find_last_of('/') + 1);
             currDir       = STDirectory(currDirString);
             updateEntries();
         }
