@@ -45,6 +45,162 @@ static constexpr char dsPostfixes[] = {'E', 'S', 'K', 'J', 'I', 'D', 'F', 'O'};
 
 static const std::string ctrIds[] = {"0x0055D", "0x0055E", "0x011C4", "0x011C5", "0x01648", "0x0175E", "0x01B50", "0x01B51"};
 
+static std::string groupToId1(ExtraSavesSubScreen::Group g)
+{
+    switch (g)
+    {
+        case ExtraSavesSubScreen::Group::Pt:
+            return dsIds[0] + dsPostfixes[0];
+        case ExtraSavesSubScreen::Group::DP:
+            return dsIds[1] + dsPostfixes[0];
+        case ExtraSavesSubScreen::Group::HGSS:
+            return dsIds[3] + dsPostfixes[0];
+        case ExtraSavesSubScreen::Group::BW:
+            return dsIds[5] + dsPostfixes[0];
+        case ExtraSavesSubScreen::Group::B2W2:
+            return dsIds[7] + dsPostfixes[0];
+        case ExtraSavesSubScreen::Group::XY:
+            return ctrIds[0];
+        case ExtraSavesSubScreen::Group::ORAS:
+            return ctrIds[2];
+        case ExtraSavesSubScreen::Group::SM:
+            return ctrIds[4];
+        case ExtraSavesSubScreen::Group::USUM:
+            return ctrIds[6];
+    }
+    return "";
+}
+
+static std::string groupToId2(ExtraSavesSubScreen::Group g)
+{
+    switch (g)
+    {
+        case ExtraSavesSubScreen::Group::Pt:
+            return dsIds[0] + dsPostfixes[0];
+        case ExtraSavesSubScreen::Group::DP:
+            return dsIds[2] + dsPostfixes[0];
+        case ExtraSavesSubScreen::Group::HGSS:
+            return dsIds[4] + dsPostfixes[0];
+        case ExtraSavesSubScreen::Group::BW:
+            return dsIds[6] + dsPostfixes[0];
+        case ExtraSavesSubScreen::Group::B2W2:
+            return dsIds[8] + dsPostfixes[0];
+        case ExtraSavesSubScreen::Group::XY:
+            return ctrIds[1];
+        case ExtraSavesSubScreen::Group::ORAS:
+            return ctrIds[3];
+        case ExtraSavesSubScreen::Group::SM:
+            return ctrIds[5];
+        case ExtraSavesSubScreen::Group::USUM:
+            return ctrIds[7];
+    }
+    return "";
+}
+
+static constexpr std::tuple<const char*, int, int> groupToLabel1(ExtraSavesSubScreen::Group g)
+{
+    switch (g)
+    {
+        case ExtraSavesSubScreen::Group::Pt:
+            return {"Pt", 487, 1};
+        case ExtraSavesSubScreen::Group::DP:
+            return {"D", 483, 0};
+        case ExtraSavesSubScreen::Group::HGSS:
+            return {"HG", 250, 0};
+        case ExtraSavesSubScreen::Group::BW:
+            return {"B", 643, 0};
+        case ExtraSavesSubScreen::Group::B2W2:
+            return {"B2", 646, 2};
+        case ExtraSavesSubScreen::Group::XY:
+            return {"X", 716, 0};
+        case ExtraSavesSubScreen::Group::ORAS:
+            return {"OR", 383, 1};
+        case ExtraSavesSubScreen::Group::SM:
+            return {"S", 791, 0};
+        case ExtraSavesSubScreen::Group::USUM:
+            return {"US", 800, 1};
+    }
+    return {"", 0, 0};
+}
+
+static constexpr std::tuple<const char*, int, int> groupToLabel2(ExtraSavesSubScreen::Group g)
+{
+    switch (g)
+    {
+        case ExtraSavesSubScreen::Group::Pt:
+            return {"Pt", 487, 1};
+        case ExtraSavesSubScreen::Group::DP:
+            return {"P", 484, 0};
+        case ExtraSavesSubScreen::Group::HGSS:
+            return {"SS", 249, 0};
+        case ExtraSavesSubScreen::Group::BW:
+            return {"W", 644, 0};
+        case ExtraSavesSubScreen::Group::B2W2:
+            return {"W2", 646, 1};
+        case ExtraSavesSubScreen::Group::XY:
+            return {"Y", 717, 0};
+        case ExtraSavesSubScreen::Group::ORAS:
+            return {"AS", 382, 1};
+        case ExtraSavesSubScreen::Group::SM:
+            return {"M", 792, 0};
+        case ExtraSavesSubScreen::Group::USUM:
+            return {"UM", 800, 2};
+    }
+    return {"", 0, 0};
+}
+
+static constexpr int groupToGameId1(ExtraSavesSubScreen::Group g)
+{
+    switch (g)
+    {
+        case ExtraSavesSubScreen::Group::Pt:
+            return 12;
+        case ExtraSavesSubScreen::Group::DP:
+            return 10;
+        case ExtraSavesSubScreen::Group::HGSS:
+            return 7;
+        case ExtraSavesSubScreen::Group::BW:
+            return 20;
+        case ExtraSavesSubScreen::Group::B2W2:
+            return 22;
+        case ExtraSavesSubScreen::Group::XY:
+            return 24;
+        case ExtraSavesSubScreen::Group::ORAS:
+            return 26;
+        case ExtraSavesSubScreen::Group::SM:
+            return 30;
+        case ExtraSavesSubScreen::Group::USUM:
+            return 32;
+    }
+    return 0;
+}
+
+static constexpr int groupToGameId2(ExtraSavesSubScreen::Group g)
+{
+    switch (g)
+    {
+        case ExtraSavesSubScreen::Group::Pt:
+            return 12;
+        case ExtraSavesSubScreen::Group::DP:
+            return 11;
+        case ExtraSavesSubScreen::Group::HGSS:
+            return 8;
+        case ExtraSavesSubScreen::Group::BW:
+            return 21;
+        case ExtraSavesSubScreen::Group::B2W2:
+            return 23;
+        case ExtraSavesSubScreen::Group::XY:
+            return 25;
+        case ExtraSavesSubScreen::Group::ORAS:
+            return 27;
+        case ExtraSavesSubScreen::Group::SM:
+            return 31;
+        case ExtraSavesSubScreen::Group::USUM:
+            return 33;
+    }
+    return 0;
+}
+
 ExtraSavesSubScreen::ExtraSavesSubScreen(Group g) : Screen(i18n::localize("A_ADD_SAVE") + '\n' + i18n::localize("X_DELETE_SAVE") + '\n' + i18n::localize("B_BACK")), group(g)
 {
     updateSaves();
@@ -144,56 +300,11 @@ void ExtraSavesSubScreen::updateSaves()
     }
 }
 
-static constexpr std::tuple<const char*, int, int> groupToLabel1(ExtraSavesSubScreen::Group g)
+static void drawIcon(std::tuple<const char*, int, int> label, int x, int y)
 {
-    switch (g)
-    {
-        case ExtraSavesSubScreen::Group::Pt:
-            return {"Pt", 487, 1};
-        case ExtraSavesSubScreen::Group::DP:
-            return {"D", 483, 0};
-        case ExtraSavesSubScreen::Group::HGSS:
-            return {"HG", 250, 0};
-        case ExtraSavesSubScreen::Group::BW:
-            return {"B", 643, 0};
-        case ExtraSavesSubScreen::Group::B2W2:
-            return {"B2", 646, 2};
-        case ExtraSavesSubScreen::Group::XY:
-            return {"X", 716, 0};
-        case ExtraSavesSubScreen::Group::ORAS:
-            return {"OR", 383, 1};
-        case ExtraSavesSubScreen::Group::SM:
-            return {"S", 791, 0};
-        case ExtraSavesSubScreen::Group::USUM:
-            return {"US", 800, 1};
-    }
-    return {"", 0, 0};
-}
-
-static constexpr std::tuple<const char*, int, int> groupToLabel2(ExtraSavesSubScreen::Group g)
-{
-    switch (g)
-    {
-        case ExtraSavesSubScreen::Group::Pt:
-            return {"Pt", 487, 1};
-        case ExtraSavesSubScreen::Group::DP:
-            return {"P", 484, 0};
-        case ExtraSavesSubScreen::Group::HGSS:
-            return {"SS", 249, 0};
-        case ExtraSavesSubScreen::Group::BW:
-            return {"W", 644, 0};
-        case ExtraSavesSubScreen::Group::B2W2:
-            return {"W2", 646, 1};
-        case ExtraSavesSubScreen::Group::XY:
-            return {"Y", 717, 0};
-        case ExtraSavesSubScreen::Group::ORAS:
-            return {"AS", 382, 1};
-        case ExtraSavesSubScreen::Group::SM:
-            return {"M", 792, 0};
-        case ExtraSavesSubScreen::Group::USUM:
-            return {"UM", 800, 2};
-    }
-    return {"", 0, 0};
+    Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
+    Gui::pkm(std::get<1>(label), std::get<2>(label), Generation::SEVEN, 2, x + 8, y);
+    Gui::text(std::get<0>(label), x + 24, y + 30, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 }
 
 void ExtraSavesSubScreen::drawTop() const
@@ -201,87 +312,27 @@ void ExtraSavesSubScreen::drawTop() const
     Gui::backgroundTop(true);
     if (group != ExtraSavesSubScreen::Group::Pt)
     {
-        int x = 128;
-        Gui::drawSolidRect(x, 96, 48, 48, COLOR_HIGHBLUE);
         auto label = groupToLabel1(group);
-        Gui::pkm(std::get<1>(label), std::get<2>(label), Generation::SEVEN, 2, x + 8, 96);
-        Gui::text(std::get<0>(label), x + 24, 96 + 30, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        drawIcon(label, 128, 96);
         if (!secondSelected)
         {
-            Gui::drawSelector(x - 1, 95);
+            Gui::drawSelector(127, 95);
         }
-        x = 224;
-        Gui::drawSolidRect(x, 96, 48, 48, COLOR_HIGHBLUE);
         label = groupToLabel2(group);
-        Gui::pkm(std::get<1>(label), std::get<2>(label), Generation::SEVEN, 2, x + 8, 96);
-        Gui::text(std::get<0>(label), x + 24, 96 + 30, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        drawIcon(label, 224, 96);
         if (secondSelected)
         {
-            Gui::drawSelector(x - 1, 95);
+            Gui::drawSelector(223, 95);
         }
     }
     else
     {
         int x = 176;
-        Gui::drawSolidRect(x, 96, 48, 48, COLOR_HIGHBLUE);
         auto label = groupToLabel1(group);
-        Gui::pkm(std::get<1>(label), std::get<2>(label), Generation::SEVEN, 2, x + 8, 96);
-        Gui::text(std::get<0>(label), x + 24, 96 + 30, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        drawIcon(label, 176, 96);
         Gui::drawSelector(x - 1, 95);
     }
     Gui::text(i18n::localize("EXTRA_SAVES"), 200, 12, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-}
-
-static std::string groupToId1(ExtraSavesSubScreen::Group g)
-{
-    switch (g)
-    {
-        case ExtraSavesSubScreen::Group::Pt:
-            return dsIds[0] + dsPostfixes[0];
-        case ExtraSavesSubScreen::Group::DP:
-            return dsIds[1] + dsPostfixes[0];
-        case ExtraSavesSubScreen::Group::HGSS:
-            return dsIds[3] + dsPostfixes[0];
-        case ExtraSavesSubScreen::Group::BW:
-            return dsIds[5] + dsPostfixes[0];
-        case ExtraSavesSubScreen::Group::B2W2:
-            return dsIds[7] + dsPostfixes[0];
-        case ExtraSavesSubScreen::Group::XY:
-            return ctrIds[0];
-        case ExtraSavesSubScreen::Group::ORAS:
-            return ctrIds[2];
-        case ExtraSavesSubScreen::Group::SM:
-            return ctrIds[4];
-        case ExtraSavesSubScreen::Group::USUM:
-            return ctrIds[6];
-    }
-    return "";
-}
-
-static std::string groupToId2(ExtraSavesSubScreen::Group g)
-{
-    switch (g)
-    {
-        case ExtraSavesSubScreen::Group::Pt:
-            return dsIds[0] + dsPostfixes[0];
-        case ExtraSavesSubScreen::Group::DP:
-            return dsIds[2] + dsPostfixes[0];
-        case ExtraSavesSubScreen::Group::HGSS:
-            return dsIds[4] + dsPostfixes[0];
-        case ExtraSavesSubScreen::Group::BW:
-            return dsIds[6] + dsPostfixes[0];
-        case ExtraSavesSubScreen::Group::B2W2:
-            return dsIds[8] + dsPostfixes[0];
-        case ExtraSavesSubScreen::Group::XY:
-            return ctrIds[1];
-        case ExtraSavesSubScreen::Group::ORAS:
-            return ctrIds[3];
-        case ExtraSavesSubScreen::Group::SM:
-            return ctrIds[5];
-        case ExtraSavesSubScreen::Group::USUM:
-            return ctrIds[7];
-    }
-    return "";
 }
 
 void ExtraSavesSubScreen::update(touchPosition* touch)
@@ -426,7 +477,7 @@ void ExtraSavesSubScreen::drawBottom() const
     Gui::backgroundBottom(true);
     Gui::sprite(ui_sheet_gameselector_savebox_idx, 22, 94);
 
-    Gui::text(secondSelected ? std::get<0>(groupToLabel2(group)) : std::get<0>(groupToLabel1(group)), 27, 26, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(secondSelected ? i18n::game(Configuration::getInstance().language(), groupToGameId2(group)) : i18n::game(Configuration::getInstance().language(), groupToGameId1(group)), 27, 26, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
     if (selectedSave > -1)
     {
@@ -505,5 +556,6 @@ void ExtraSavesSubScreen::drawBottom() const
 
     Gui::drawSolidRect(245, 23, 48, 48, COLOR_BLACK);
     Gui::drawSolidRect(243, 21, 52, 52, C2D_Color32(15, 22, 89, 255));
-    Gui::sprite(ui_sheet_gameselector_unknown_idx, 245, 23);
+    drawIcon(secondSelected ? groupToLabel2(group) : groupToLabel1(group), 245, 23);
+    // Gui::sprite(ui_sheet_gameselector_unknown_idx, 245, 23);
 }
