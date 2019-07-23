@@ -64,6 +64,7 @@ private:
     int selectedSave = -1, firstSave = 0, numSaves = 0;
     std::vector<std::string> currentSaves;
     std::unordered_map<std::string, std::vector<std::string>> dsCurrentSaves;
+    std::string addString = "";
     bool updateConfig = false;
     // std::vector<std::shared_ptr<Button>> deleteButtons;
 };

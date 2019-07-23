@@ -344,6 +344,10 @@ void ExtraSavesSubScreen::update(touchPosition* touch)
         if (group == ExtraSavesSubScreen::Group::Pt || group == ExtraSavesSubScreen::Group::DP || group == ExtraSavesSubScreen::Group::HGSS ||
             group == ExtraSavesSubScreen::Group::BW || group == ExtraSavesSubScreen::Group::B2W2)
         {
+            if (!addString.empty())
+            {
+                dsCurrentSaves.begin()->second.emplace_back(std::move(addString));
+            }
             for (auto& saves : dsCurrentSaves)
             {
                 Configuration::getInstance().extraSaves(saves.first, saves.second);
@@ -351,10 +355,15 @@ void ExtraSavesSubScreen::update(touchPosition* touch)
         }
         else
         {
+            if (!addString.empty())
+            {
+                currentSaves.emplace_back(std::move(addString));
+            }
             Configuration::getInstance().extraSaves(secondSelected ? groupToId2(group) : groupToId1(group), currentSaves);
         }
         updateConfig = false;
         updateSaves();
+        addString.clear();
     }
     u32 down = hidKeysDown();
     if (down & KEY_LEFT || down & KEY_RIGHT)
@@ -422,11 +431,11 @@ void ExtraSavesSubScreen::update(touchPosition* touch)
             {
                 dsCurrentSaves[secondSelected ? groupToId2(group) : groupToId1(group)] = {};
             }
-            currentOverlay = std::make_shared<FileChooseOverlay>(*this, dsCurrentSaves.begin()->second);
+            currentOverlay = std::make_shared<FileChooseOverlay>(*this, addString);
         }
         else
         {
-            currentOverlay = std::make_shared<FileChooseOverlay>(*this, currentSaves);
+            currentOverlay = std::make_shared<FileChooseOverlay>(*this, addString);
         }
         updateConfig = true;
     }

@@ -35,7 +35,7 @@
 class FileChooseOverlay : public Overlay
 {
 public:
-    FileChooseOverlay(Screen& screen, std::vector<std::string>& strings, const std::string& rootString = "/");
+    FileChooseOverlay(Screen& screen, std::string& retString, const std::string& rootString = "/");
 
     void update(touchPosition* touch) override;
     void drawTop() const override;
@@ -46,7 +46,7 @@ private:
     std::string currDirString;
     const std::string rootString;
     STDirectory currDir;
-    std::vector<std::string>& strings;
+    std::string& string;
     std::vector<std::pair<std::string, bool>> currFiles;
     HidHorizontal hid;
 };
