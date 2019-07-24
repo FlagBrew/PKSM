@@ -130,12 +130,16 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
             ((PK6*)pkm.get())->consoleRegion(Configuration::getInstance().nationality());
             ((PK6*)pkm.get())->geoCountry(0, Configuration::getInstance().defaultCountry());
             ((PK6*)pkm.get())->geoRegion(0, Configuration::getInstance().defaultRegion());
+            ((PK6*)pkm.get())->country(Configuration::getInstance().defaultCountry());
+            ((PK6*)pkm.get())->region(Configuration::getInstance().defaultRegion());
         }
         else if (pkm->generation() == Generation::SEVEN)
         {
             ((PK7*)pkm.get())->consoleRegion(Configuration::getInstance().nationality());
             ((PK7*)pkm.get())->geoCountry(0, Configuration::getInstance().defaultCountry());
             ((PK7*)pkm.get())->geoRegion(0, Configuration::getInstance().defaultRegion());
+            ((PK7*)pkm.get())->country(Configuration::getInstance().defaultCountry());
+            ((PK7*)pkm.get())->region(Configuration::getInstance().defaultRegion());
         }
         // if (pkm->generation() == Generation::LGPE)
         // {
