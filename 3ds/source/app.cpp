@@ -258,14 +258,14 @@ static bool update(std::string execPath)
         if (R_FAILED(res))
         {
             Gui::error(i18n::localize("UPDATE_FOUND_BUT_FAILED_DOWNLOAD"), res);
-            FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_ASCII, path.c_str()));
+            Archive::deleteFile(Archive::sd(), path);
             return false;
         }
 
         Gui::waitFrame(i18n::localize("UPDATE_INSTALLING"));
         if (execPath != "")
         {
-            FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_ASCII, execPath.c_str()));
+            Archive::deleteFile(Archive::sd(), execPath);
             Archive::moveFile(Archive::sd(), path, Archive::sd(), execPath);
             return true;
         }
@@ -341,7 +341,7 @@ static bool update(std::string execPath)
 
                 ciaFile.close();
 
-                FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_ASCII, path.c_str()));
+                Archive::deleteFile(Archive::sd(), path);
 
                 return true;
             }

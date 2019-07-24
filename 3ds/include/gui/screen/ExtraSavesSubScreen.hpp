@@ -29,8 +29,8 @@
 
 #include "Button.hpp"
 #include "Screen.hpp"
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
 class ExtraSavesSubScreen : public Screen
 {
@@ -65,7 +65,7 @@ private:
     std::vector<std::string> currentSaves;
     std::unordered_map<std::string, std::vector<std::string>> dsCurrentSaves;
     std::string addString = "";
-    bool updateConfig = false;
+    bool updateConfig     = false;
     // std::vector<std::shared_ptr<Button>> deleteButtons;
 };
 
