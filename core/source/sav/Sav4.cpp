@@ -496,11 +496,16 @@ void Sav4::dex(std::shared_ptr<PKX> pk)
 
 int Sav4::dexSeen(void) const
 {
-    static constexpr int brSize = 0x40;
     int ret                     = 0;
-    for (int i = 0; i < maxSpecies(); i++)
+    static constexpr int brSize = 0x40;
+    int ofs                     = PokeDex + 0x4;
+    for (int i = 1; i <= maxSpecies(); i++)
     {
-        if (data[PokeDex + 0x4 + brSize + i / 8] & BIT(i % 8))
+        int bit = i - 1;
+        int bd = bit >> 3;
+        int bm = bit & 7;
+
+        if ((1 << bm & data[ofs + bd + brSize]) != 0)
         {
             ret++;
         }
@@ -511,9 +516,14 @@ int Sav4::dexSeen(void) const
 int Sav4::dexCaught(void) const
 {
     int ret = 0;
-    for (int i = 0; i < maxSpecies(); i++)
+    int ofs = PokeDex + 0x4;
+    for (int i = 1; i <= maxSpecies(); i++)
     {
-        if (data[PokeDex + 0x4 + i / 8] & BIT(i % 8))
+        int bit = i - 1;
+        int bd = bit >> 3;
+        int bm = bit & 7;
+
+        if ((1 << bm & data[ofs + bd]) != 0)
         {
             ret++;
         }
