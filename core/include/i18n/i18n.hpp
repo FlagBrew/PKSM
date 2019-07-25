@@ -38,6 +38,8 @@ namespace i18n
     const std::vector<std::string>& rawItems(u8 lang);
     const std::vector<std::string>& rawMoves(u8 lang);
     const std::map<u16, std::string>& locations(u8 lang, Generation g);
+    const std::map<u8, std::string>& rawCountries(u8 lang);
+    const std::map<u8, std::string>& rawSubregions(u8 lang, u8 country);
     size_t numGameStrings(u8 lang);
 
     const std::string& ability(u8 lang, u8 value);

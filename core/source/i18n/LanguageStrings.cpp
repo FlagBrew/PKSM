@@ -417,3 +417,19 @@ size_t LanguageStrings::numGameStrings() const
 {
     return games.size();
 }
+
+const std::map<u8, std::string>& LanguageStrings::rawCountries() const
+{
+    return countries;
+}
+
+const std::map<u8, std::string>& LanguageStrings::rawSubregions(u8 country) const
+{
+    static std::map<u8, std::string> emptyMap;
+    auto i = subregions.find(country);
+    if (i == subregions.end())
+    {
+        return emptyMap;
+    }
+    return i->second;
+}

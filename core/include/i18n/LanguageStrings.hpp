@@ -86,6 +86,8 @@ public:
     const std::vector<std::string>& rawItems() const;
     const std::vector<std::string>& rawMoves() const;
     const std::map<u16, std::string>& locations(Generation g) const;
+    const std::map<u8, std::string>& rawCountries() const;
+    const std::map<u8, std::string>& rawSubregions(u8 country) const;
     size_t numGameStrings() const;
 
     const std::string& ability(u8 v) const;
