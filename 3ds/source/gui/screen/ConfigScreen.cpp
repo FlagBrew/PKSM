@@ -27,6 +27,8 @@
 #include "ConfigScreen.hpp"
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
+#include "ConfigCountryOverlay.hpp"
+#include "ConfigSubRegionOverlay.hpp"
 #include "ExtraSavesScreen.hpp"
 #include "banks.hpp"
 #include "gui.hpp"
@@ -99,7 +101,7 @@ static void inputPatronCode()
     }
 }
 
-static bool countryChoice()
+static bool nationalityChoice()
 {
     switch (Configuration::getInstance().nationality())
     {
@@ -240,32 +242,44 @@ ConfigScreen::ConfigScreen()
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(new Button(122, 62, 15, 12,
+    tabButtons[1].push_back(new Button(122, 59, 15, 12,
         []() {
             Gui::setNextKeyboardFunc([]() { inputNumber([](u16 a) { Configuration::getInstance().defaultSID(a); }, 5, 0xFFFF); });
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(new Button(122, 86, 15, 12,
+    tabButtons[1].push_back(new Button(122, 80, 15, 12,
         []() {
             Gui::setNextKeyboardFunc(&inputOT);
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(new ClickButton(122, 110, 15, 12, &countryChoice, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(new Button(122, 134, 15, 12,
+    tabButtons[1].push_back(new ClickButton(122, 101, 15, 12, &nationalityChoice, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    tabButtons[1].push_back(new ClickButton(122, 122, 15, 12,
+        [this]() {
+            currentOverlay = std::make_shared<ConfigCountryOverlay>(*this);
+            return false;
+        },
+        ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    tabButtons[1].push_back(new ClickButton(122, 143, 15, 12,
+        [this]() {
+            currentOverlay = std::make_shared<ConfigSubRegionOverlay>(*this);
+            return false;
+        },
+        ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    tabButtons[1].push_back(new Button(122, 164, 15, 12,
         []() {
             Gui::setNextKeyboardFunc([]() { inputNumber([](u16 a) { Configuration::getInstance().day(a); }, 2, 31); });
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(new Button(122, 158, 15, 12,
+    tabButtons[1].push_back(new Button(122, 185, 15, 12,
         []() {
             Gui::setNextKeyboardFunc([]() { inputNumber([](u16 a) { Configuration::getInstance().month(a); }, 2, 12); });
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(new Button(122, 182, 15, 12,
+    tabButtons[1].push_back(new Button(122, 206, 15, 12,
         []() {
             Gui::setNextKeyboardFunc([]() { inputNumber([](u16 a) { Configuration::getInstance().year(a); }, 4, 9999); });
             return false;
@@ -436,19 +450,21 @@ void ConfigScreen::drawBottom() const
     {
         Gui::text(i18n::localize("DEFAULTS"), 160, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-        Gui::text(i18n::localize("TID"), 19, 36, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("SID"), 19, 60, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("OT"), 19, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("NATIONALITY"), 19, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("DAY"), 19, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("MONTH"), 19, 156, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("YEAR"), 19, 180, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("TID"), 19, 36, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("SID"), 19, 57, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("OT"), 19, 78, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("3DS_REGION"), 19, 99, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("COUNTRY"), 19, 120, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("SUBREGION"), 19, 141, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("DAY"), 19, 162, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("MONTH"), 19, 183, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("YEAR"), 19, 204, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
-        Gui::text(std::to_string(Configuration::getInstance().defaultTID()), 150, 36, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT,
+        Gui::text(std::to_string(Configuration::getInstance().defaultTID()), 150, 36, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP);
-        Gui::text(std::to_string(Configuration::getInstance().defaultSID()), 150, 60, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT,
+        Gui::text(std::to_string(Configuration::getInstance().defaultSID()), 150, 57, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP);
-        Gui::text(Configuration::getInstance().defaultOT(), 150, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(Configuration::getInstance().defaultOT(), 150, 78, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         std::string data;
         switch (Configuration::getInstance().nationality())
         {
@@ -477,13 +493,18 @@ void ConfigScreen::drawBottom() const
                 data = "USA";
                 break;
         }
-        Gui::text(i18n::localize(data), 150, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize(data), 150, 99, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::country(Configuration::getInstance().language(), Configuration::getInstance().defaultCountry()), 150, 120, FONT_SIZE_12,
+            FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::subregion(Configuration::getInstance().language(), Configuration::getInstance().defaultCountry(),
+                      Configuration::getInstance().defaultRegion()),
+            150, 141, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(
-            std::to_string(Configuration::getInstance().day()), 150, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            std::to_string(Configuration::getInstance().day()), 150, 162, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(
-            std::to_string(Configuration::getInstance().month()), 150, 156, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            std::to_string(Configuration::getInstance().month()), 150, 183, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(
-            std::to_string(Configuration::getInstance().year()), 150, 180, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            std::to_string(Configuration::getInstance().year()), 150, 204, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
         for (Button* button : tabButtons[currentTab])
         {

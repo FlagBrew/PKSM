@@ -1,0 +1,27 @@
+000|—
+002|Île-de-France
+003|Elsass
+004|Aquitanien
+005|Auvergne
+006|Basse-Normandie
+007|Burgund
+008|Bretagne
+009|Centre
+010|Champagne-Ardenne
+011|Korsika
+012|Franche-Comté
+013|Haute-Normandie
+014|Languedoc-Roussillon
+015|Limousin
+016|Lothringen
+017|Midi-Pyrénées
+018|Nord-Pas-de-Calais
+019|Pays de la Loire
+020|Picardie
+021|Poitou-Charentes
+022|Provence-Alpes-Côte d'Azur
+023|Rhône-Alpes
+024|Guadeloupe
+025|Martinique
+026|Französisch-Guayana
+027|Réunion

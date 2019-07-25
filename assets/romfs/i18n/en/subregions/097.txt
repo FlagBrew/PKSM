@@ -1,0 +1,17 @@
+000|—
+002|Masovia
+003|Lower Silesia
+004|Kuyavian-Pomeranian Voivodeship
+005|Lodz
+006|Lublin
+007|Lubusz
+008|Lesser Poland
+009|Opole
+010|Subcarpathia
+011|Podlachia
+012|Pomerania
+013|Silesia
+014|Świętokrzyskie
+015|Warmian-Masurian Voivodeship
+016|Greater Poland
+017|Western Pomerania

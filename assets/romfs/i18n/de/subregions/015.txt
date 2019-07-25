@@ -1,0 +1,10 @@
+000|—
+002|La Paz
+003|Chuquisaca
+004|Cochabamba
+005|Beni
+006|Oruro
+007|Pando
+008|Potosí
+009|Santa Cruz
+010|Tarija

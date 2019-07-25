@@ -1,0 +1,18 @@
+000|—
+002|Managua
+003|Boaco
+004|Carazo
+005|Chinandega
+006|Chontales
+007|Estelí
+008|Granada
+009|Jinotega
+010|León
+011|Madriz
+012|Masaya
+013|Matagalpa
+014|Nueva Segovia
+015|Río San Juan
+016|Rivas
+017|Atlantico Settentrionale
+018|Atlantico Meridionale

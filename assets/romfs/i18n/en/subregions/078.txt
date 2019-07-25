@@ -1,0 +1,17 @@
+000|—
+002|Berlin
+003|Hesse
+004|Baden-Württemberg
+005|Bavaria
+006|Brandenburg
+007|Bremen
+008|Hamburg
+009|Mecklenburg-Vorpommern
+010|Lower Saxony
+011|North Rhine-Westphalia
+012|Rhineland-Palatinate
+013|Saarland
+014|Saxony
+015|Saxony-Anhalt
+016|Schleswig-Holstein
+017|Thuringia

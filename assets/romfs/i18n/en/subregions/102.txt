@@ -1,0 +1,9 @@
+000|—
+002|Bratislava
+003|Banská Bystrica
+004|Košice
+005|Nitra
+006|Prešov
+007|Trencín
+008|Trnava
+009|Žilina

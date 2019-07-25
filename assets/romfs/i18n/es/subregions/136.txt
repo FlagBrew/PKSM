@@ -1,0 +1,17 @@
+000|—
+002|Seúl
+003|Busán
+004|Daegu
+005|Incheon
+006|Gwangju
+007|Daejeon
+008|Ulsan
+009|Gyeonggi
+010|Gangwon
+011|Chungcheong del Norte
+012|Chungcheong del Sur
+013|Jeolla del Norte
+014|Jeolla del Sur
+015|Gyeongsang del Norte
+016|Gyeongsang del Sur
+017|Jeju

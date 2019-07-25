@@ -1,0 +1,21 @@
+000|—
+002|Budapest
+003|Bács-Kiskun County
+004|Baranya County
+005|Békés County
+006|Borsod-Abaúj-Zemplén County
+007|Csongrád County
+008|Fejér County
+009|Győr-Moson-Sopron County
+010|Hajdú-Bihar County
+011|Heves County
+012|Jász-Nagykun-Szolnok County
+013|Komárom-Esztergom County
+014|Nógrád County
+015|Pest County
+016|Somogy County
+017|Szabolcs-Szatmár-Bereg County
+018|Tolna County
+019|Vas County
+020|Veszprém County
+021|Zala County

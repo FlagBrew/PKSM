@@ -1,0 +1,17 @@
+000|—
+002|Wellington
+003|Auckland
+004|Bay of Plenty
+005|Canterbury
+006|Otago
+007|Hawke's Bay
+008|Manawatu-Wanganui
+009|Nelson
+010|Northland
+012|Southland
+013|Taranaki
+014|Waikato
+015|Gisborne
+016|West Coast
+017|Marlborough
+018|Tasman

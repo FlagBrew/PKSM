@@ -407,7 +407,7 @@ int Sav5::dexCaught(void) const
     for (int i = 1; i <= maxSpecies(); i++)
     {
         int bitIndex = (i - 1) & 7;
-        int ofs = PokeDex + 0x8 + ((i - 1) >> 3);
+        int ofs      = PokeDex + 0x8 + ((i - 1) >> 3);
         if ((data[ofs] >> bitIndex & 1) != 0)
         {
             ret++;

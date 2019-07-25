@@ -1,0 +1,11 @@
+000|—
+002|Demerara-Mahaica
+003|Barima-Waini
+004|Cuyuni-Mazaruni
+005|East Berbice-Corentyne
+006|Essequibo Islands-West Demerara
+007|Mahaica-Berbice
+008|Pomeroon-Supenaam
+009|Potaro-Siparuni
+010|Upper Demerara-Berbice
+011|Upper Takutu-Upper Essequibo

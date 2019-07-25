@@ -1,0 +1,21 @@
+000|—
+002|Latium
+003|Aostatal
+004|Piemont
+005|Ligurien
+006|Lombardei
+007|Trentino-Südtirol
+008|Venetien
+009|Friaul-Julisch Venetien
+010|Emilia-Romagna
+011|Toskana
+012|Umbrien
+013|Marken
+014|Abruzzen
+015|Molise
+016|Kampanien
+017|Apulien
+018|Basilikata
+019|Kalabrien
+020|Sizilien
+021|Sardinien

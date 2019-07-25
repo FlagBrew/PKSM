@@ -1,0 +1,15 @@
+000|—
+002|Prague
+003|Central Bohemian Region
+004|South Bohemian Region
+005|Plzeň Region
+006|Karlovy Vary Region
+007|Ústí nad Labem Region
+008|Liberec Region
+009|Hradec Králové Region
+010|Pardubice Region
+011|Olomouc Region
+012|Moravian-Silesian Region
+013|South Moravian Region
+014|Zlín Region
+015|Vysočina Region

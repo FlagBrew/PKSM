@@ -1,0 +1,17 @@
+000|—
+002|Mazovie
+003|Basse-Silésie
+004|Cujavie-Poméranie
+005|Łódź
+006|Lublin
+007|Lubusz
+008|Petite-Pologne
+009|Opole
+010|Basses-Carpates
+011|Podlachie
+012|Poméranie
+013|Silésie
+014|Sainte-Croix
+015|Warmie-Mazurie
+016|Grande-Pologne
+017|Poméranie occidentale

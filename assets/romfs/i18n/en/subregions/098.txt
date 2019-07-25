@@ -1,0 +1,21 @@
+000|—
+002|Lisbon
+007|Madeira
+008|Azores
+009|Aveiro
+010|Beja
+011|Braga
+012|Bragança
+013|Castelo Branco
+014|Coimbra
+015|Évora
+016|Faro
+017|Guarda
+018|Leiria
+019|Portalegre
+020|Porto
+021|Santarém
+022|Setúbal
+023|Viana do Castelo
+024|Vila Real
+025|Viseu

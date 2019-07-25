@@ -1,0 +1,23 @@
+000|—
+002|Guatemala
+003|Alta Verapaz
+004|Baja Verapaz
+005|Chimaltenango
+006|Chiquimula
+007|El Progreso
+008|Escuintla
+009|Huehuetenango
+010|Izabal
+011|Jalapa
+012|Jutiapa
+013|Petén
+014|Quetzaltenango
+015|Quiché
+016|Retalhuleu
+017|Sacatepéquez
+018|San Marcos
+019|Santa Rosa
+020|Sololá
+021|Suchitepéquez
+022|Totonicapán
+023|Zacapa

@@ -1,0 +1,11 @@
+000|—
+002|Maseru
+003|Berea
+004|Butha-Buthe
+005|Leribe
+006|Mafeteng
+007|Mohale's Hoek
+008|Mokhotlong
+009|Qacha's Nek
+010|Quthing
+011|Thaba-Tseka

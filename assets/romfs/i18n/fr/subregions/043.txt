@@ -1,0 +1,15 @@
+000|—
+002|Saint George Basseterre
+003|Christ Church Nichola Town
+004|Saint Anne Sandy Point
+005|Saint George Gingerland
+006|Saint James Windward
+007|Saint John Capesterre
+008|Saint John Figtree
+009|Saint Mary Cayon
+010|Saint Paul Capesterre
+011|Saint Paul Charlestown
+012|Saint Peter Basseterre
+013|Saint Thomas Lowland
+014|Saint Thomas Middle Island
+015|Trinity Palmetto Point

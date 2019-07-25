@@ -1,0 +1,10 @@
+000|—
+002|Gauteng
+003|Cap-Occidental
+004|Cap-du-Nord
+005|Cap-Oriental
+006|KwaZulu-Natal
+007|État-Libre
+008|Nord-Ouest
+009|Mpumalanga
+010|Limpopo

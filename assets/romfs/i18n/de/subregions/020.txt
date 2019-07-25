@@ -1,0 +1,14 @@
+000|—
+002|Región Metropolitana
+003|Valparaíso (Region V)
+004|Aisén (Region XI)
+005|Antofagasta (Region II)
+006|Araukanien (Region IX)
+007|Atacama (Region III)
+008|Bío-Bío (Region VIII)
+009|Coquimbo (Region IV)
+010|Libertador General Bernardo O'Higgins (Region VI)
+011|Los Lagos (Region X)
+012|Magallanes (Region XII) und Chilenische Antarktis
+013|Maule (Region VII)
+014|Tarapacá (Region I)

@@ -1,0 +1,14 @@
+000|—
+002|Attique
+003|Grèce-Centrale
+004|Macédoine-Centrale
+005|Crète
+006|Macédoine-Orientale-et-Thrace
+007|Épire
+008|Îles Ioniennes
+009|Égée-Septentrionale
+010|Péloponnèse
+011|Égée-Méridionale
+012|Thessalie
+013|Grèce-Occidentale
+014|Macédoine-Occidentale

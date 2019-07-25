@@ -1,0 +1,22 @@
+000|—
+006|Ciudad de Zagreb
+007|Condado de Bjelovar-Bilogora
+008|Condado de Brod-Posavina
+009|Condado de Dubrovnik-Neretva
+010|Condado de Istria
+011|Condado de Karlovac
+012|Condado de Koprivnica-Križevci
+013|Condado de Krapina-Zagorje
+014|Condado de Lika-Senj
+015|Condado de Medimurje
+016|Condado de Osijek-Baranja
+017|Condado de Požega-Eslavonia
+018|Condado de Primorje-Gorski Kotar
+019|Condado de Sisak-Moslavina
+020|Condado de Split-Dalmacia
+021|Condado de Šibenik-Knin
+022|Condado de Varaždin
+023|Condado de Virovitica-Podravina
+024|Condado de Vukovar-Srijem
+025|Condado de Zadar
+026|Condado de Zagreb
