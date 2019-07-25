@@ -1,0 +1,11 @@
+000|—
+002|Ouest
+003|Nord-Ouest
+004|Artibonite
+005|Centre
+006|Grand'Anse
+007|Nord
+008|Nord-Est
+009|Sud
+010|Sud-Est
+011|Nippes

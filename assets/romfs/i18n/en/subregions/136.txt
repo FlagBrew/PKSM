@@ -1,0 +1,17 @@
+000|—
+002|Seoul-teukbyeolsi
+003|Busan-gwangyeoksi
+004|Daegu-gwangyeoksi
+005|Incheon-gwangyeoksi
+006|Gwangju-gwangyeoksi
+007|Daejeon-gwangyeoksi
+008|Ulsan-gwangyeoksi
+009|Gyeonggi-do
+010|Gangwon-do
+011|Chungcheongbuk-do
+012|Chungcheongnam-do
+013|Jeollabuk-do
+014|Jeollanam-do
+015|Gyeongsangbuk-do
+016|Gyeongsangnam-do
+017|Jeju-teukbyeoljachido

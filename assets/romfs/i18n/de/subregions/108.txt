@@ -1,0 +1,27 @@
+000|—
+002|Bern
+004|Aargau
+005|Basel-Stadt
+006|Freiburg
+007|Genf
+008|Glarus
+009|Graubünden
+010|Jura
+011|Luzern
+012|Neuenburg
+013|Obwalden
+014|Sankt Gallen
+015|Schaffhausen
+016|Schwyz
+017|Solothurn
+018|Thurgau
+019|Tessin
+020|Uri
+021|Wallis
+022|Waadt
+023|Zug
+024|Zürich
+025|Appenzell Ausserrhoden
+026|Appenzell Innerrhoden
+027|Basel-Landschaft
+028|Nidwalden

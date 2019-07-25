@@ -1,0 +1,25 @@
+000|—
+002|Distrito Federal
+003|Buenos Aires
+004|Catamarca
+005|Chaco
+006|Chubut
+007|Córdoba
+008|Corrientes
+009|Entre Ríos
+010|Formosa
+011|Jujuy
+012|La Pampa
+013|La Rioja
+014|Mendoza
+015|Misiones
+016|Neuquén
+017|Río Negro
+018|Salta
+019|San Juan
+020|San Luis
+021|Santa Cruz
+022|Santa Fe
+023|Santiago del Estero
+024|Tierra del Fuego
+025|Tucumán

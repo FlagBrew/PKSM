@@ -1,0 +1,33 @@
+000|—
+002|Distrito Federal
+003|Aguascalientes
+004|Baja California
+005|Baja California Sur
+006|Campeche
+007|Chiapas
+008|Chihuahua
+009|Coahuila
+010|Colima
+011|Durango
+012|Guanajuato
+013|Guerrero
+014|Hidalgo
+015|Jalisco
+016|México
+017|Michoacán
+018|Morelos
+019|Nayarit
+020|Nuevo León
+021|Oaxaca
+022|Puebla
+023|Querétaro
+024|Quintana Roo
+025|San Luis Potosí
+026|Sinaloa
+027|Sonora
+028|Tabasco
+029|Tamaulipas
+030|Tlaxcala
+031|Veracruz
+032|Yucatán
+033|Zacatecas

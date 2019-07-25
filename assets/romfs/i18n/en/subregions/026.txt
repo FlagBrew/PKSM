@@ -1,0 +1,15 @@
+000|—
+002|San Salvador
+003|Ahuachapán
+004|Cabañas
+005|Chalatenango
+006|Cuscatlán
+007|La Libertad
+008|La Paz
+009|La Unión
+010|Morazán
+011|San Miguel
+012|Santa Ana
+013|San Vicente
+014|Sonsonate
+015|Usulután

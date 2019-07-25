@@ -70,15 +70,18 @@ protected:
     std::map<u16, std::string> locations6;
     std::map<u16, std::string> locations7;
     std::map<u16, std::string> locationsLGPE;
+    std::map<u8, std::string> countries;
+    std::map<u8, std::map<u8, std::string>> subregions;
     nlohmann::json gui;
 
-    void load(Language lang, const std::string& name, std::vector<std::string>& array);
-    void loadMap(Language lang, const std::string& name, std::map<u16, std::string>& map);
-    void loadGui(Language lang);
+    static void load(Language lang, const std::string& name, std::vector<std::string>& array);
+    static void loadMap(Language lang, const std::string& name, std::map<u16, std::string>& map);
+    static void loadMap(Language lang, const std::string& name, std::map<u8, std::string>& map);
+    static void loadJson(Language lang, const std::string& name, nlohmann::json& json);
 
 public:
     LanguageStrings(Language lang);
-    std::string folder(Language lang) const;
+    static std::string folder(Language lang);
 
     const std::vector<std::string>& rawItems() const;
     const std::vector<std::string>& rawMoves() const;
@@ -95,6 +98,8 @@ public:
     const std::string& form(u16 species, u8 form, Generation generation) const;
     const std::string& location(u16 v, Generation generation) const;
     const std::string& game(u8 v) const;
+    const std::string& subregion(u8 country, u8 v) const;
+    const std::string& country(u8 v) const;
 
     const std::string& localize(const std::string& v) const;
 };

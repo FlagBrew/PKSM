@@ -1,0 +1,26 @@
+000|—
+002|Lima Metropolitana
+003|Amazonas
+004|Ancash
+005|Apurímac
+006|Arequipa
+007|Ayacucho
+008|Cajamarca
+009|Callao
+010|Cusco
+011|Huancavelica
+012|Huánuco
+013|Ica
+014|Junín
+015|La Libertad
+016|Lambayeque
+017|Loreto
+018|Madre de Dios
+019|Moquegua
+020|Pasco
+021|Piura
+022|Puno
+023|San Martín
+024|Tacna
+025|Tumbes
+026|Ucayali

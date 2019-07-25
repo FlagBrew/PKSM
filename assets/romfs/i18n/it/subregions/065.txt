@@ -1,0 +1,9 @@
+000|—
+002|Territorio della Capitale Australiana
+003|Nuovo Galles del Sud
+004|Territorio del Nord
+005|Queensland
+006|Australia Meridionale
+007|Tasmania
+008|Victoria
+009|Australia Occidentale

@@ -1,0 +1,84 @@
+000|—
+009|Ciudad de Moscú
+010|República de Adigueya
+011|República de Altái
+012|Territorio de Altái
+013|Región de Amur
+014|Región de Arjánguelsk
+015|Región de Astracán
+016|República de Baskortostán
+017|Región de Bélgorod
+018|Región de Briansk
+019|República de Buriatia
+020|República de Chechenia
+021|Región de Cheliábinsk
+022|Distrito autónomo de Chukotka
+023|República de Chuvasia
+024|República de Daguestán
+025|República de Ingusetia
+026|Región de Irkutsk
+027|Región de Ivánovo
+028|República de Kabardino-Balkaria
+029|Región de Kaliningrado
+030|República de Kalmukia
+031|Región de Kaluga
+032|Territorio de Kamchatka
+033|República de Karacháyevo-Cherkesia
+034|República de Carelia
+035|Región de Kémerovo
+036|Territorio de Jabárovsk
+037|República de Jakasia
+038|Distrito autónomo de Janti-Mansi
+039|Región de Kírov
+040|República de Komi
+041|Región de Kostromá
+042|Territorio de Krasnodar
+043|Territorio de Krasnoyarsk
+044|Región de Kurgán
+045|Región de Kursk
+046|Región de Leningrado
+047|Región de Lípetsk
+048|Región de Magadán
+049|República de Mari-El
+050|República de Mordovia
+051|Región de Moscú
+052|Región de Múrmansk
+053|Distrito autónomo de Nenetsia
+054|Región de Nizhni Nóvgorod
+055|Región de Nóvgorod
+056|Región de Novosibirsk
+057|Región de Omsk
+058|Región de Oremburgo
+059|Región de Oriol
+060|Región de Penza
+061|Territorio de Perm
+062|Territorio de Primorie
+063|Región de Pskov
+064|Región de Rostov
+065|Región de Riazán
+066|República de Sajá (Yakutia)
+067|Región de Sajalín
+068|Región de Samara
+069|San Petersburgo
+070|Región de Sarátov
+071|República de Osetia del Norte-Alania
+072|Región de Smolensk
+073|Territorio de Stávropol
+074|Región de Sverdlovsk
+075|Región de Tambov
+076|República de Tartaristán
+077|Región de Tomsk
+078|Región de Tula
+079|Región de Tver
+080|Región de Tiumén
+081|República de Tuvá
+082|República de Udmurtia
+083|Región de Uliánovsk
+084|Región de Vladímir
+085|Región de Volgogrado
+086|Región de Vólogda
+087|Región de Vorónezh
+088|Distrito autónomo de Yamalo-Nénets
+089|Región de Yaroslavl
+090|Región Autónoma Hebrea
+091|Territorio de Zabaikalie

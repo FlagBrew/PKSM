@@ -502,8 +502,8 @@ int Sav4::dexSeen(void) const
     for (int i = 1; i <= maxSpecies(); i++)
     {
         int bit = i - 1;
-        int bd = bit >> 3;
-        int bm = bit & 7;
+        int bd  = bit >> 3;
+        int bm  = bit & 7;
 
         if ((1 << bm & data[ofs + bd + brSize]) != 0)
         {
@@ -520,8 +520,8 @@ int Sav4::dexCaught(void) const
     for (int i = 1; i <= maxSpecies(); i++)
     {
         int bit = i - 1;
-        int bd = bit >> 3;
-        int bm = bit & 7;
+        int bd  = bit >> 3;
+        int bm  = bit & 7;
 
         if ((1 << bm & data[ofs + bd]) != 0)
         {

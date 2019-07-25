@@ -1,0 +1,10 @@
+000|—
+002|Gauteng
+003|Westkap
+004|Nordkap
+005|Ostkap
+006|KwaZulu-Natal
+007|Freistaat
+008|Nordwest
+009|Mpumalanga
+010|Limpopo

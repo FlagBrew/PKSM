@@ -1,0 +1,25 @@
+000|—
+002|Pichincha
+003|Galápagos
+004|Azuay
+005|Bolívar
+006|Cañar
+007|Carchi
+008|Chimborazo
+009|Cotopaxi
+010|El Oro
+011|Esmeraldas
+012|Guayas
+013|Imbabura
+014|Loja
+015|Los Ríos
+016|Manabí
+017|Morona-Santiago
+018|Pastaza
+019|Tungurahua
+020|Zamora-Chinchipe
+021|Sucumbios
+022|Napo
+023|Orellana
+024|Santa Elena
+025|Santo Domingo de los Tsáchilas

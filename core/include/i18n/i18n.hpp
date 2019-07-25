@@ -51,6 +51,8 @@ namespace i18n
     const std::string& location(u8 lang, u16 value, Generation generation);
     const std::string& location(u8 lang, u16 value, u8 originGame);
     const std::string& game(u8 lang, u8 value);
+    const std::string& subregion(u8 lang, u8 country, u8 value);
+    const std::string& country(u8 lang, u8 value);
 
     // Used for general GUI stuff; not for PKM values
     const std::string& localize(Language lang, const std::string& index);

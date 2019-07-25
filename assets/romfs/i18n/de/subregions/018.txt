@@ -1,0 +1,14 @@
+000|—
+002|Ontario
+003|Alberta
+004|Britisch-Kolumbien
+005|Manitoba
+006|Neubraunschweig
+007|Neufundland und Labrador
+008|Neuschottland
+009|Prinz-Edward-Insel
+010|Québec
+011|Saskatchewan
+012|Yukon
+013|Nordwest-Territorien
+014|Nunavut

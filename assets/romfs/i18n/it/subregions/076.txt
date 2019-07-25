@@ -1,0 +1,21 @@
+000|—
+008|Uusimaa
+009|Lapponia
+010|Ostrobotnia Settentrionale
+011|Kainuu
+012|Carelia Settentrionale
+013|Savo Settentrionale
+014|Savo Meridionale
+015|Ostrobotnia Meridionale
+016|Ostrobotnia
+017|Pirkanmaa
+018|Satakunta
+019|Ostrobotnia Centrale
+020|Finlandia Centrale
+021|Finlandia Sud-Occidentale
+022|Carelia Meridionale
+023|Päijät-Häme
+024|Kanta-Häme
+025|Uusimaa Orientale
+026|Kymenlaakso
+027|Isole Åland

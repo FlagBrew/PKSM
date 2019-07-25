@@ -1,0 +1,23 @@
+000|—
+002|Taipei
+003|Kaohsiung
+004|Keelung
+005|Hsinchu
+006|Taichung
+007|Chiayi
+008|Tainan
+009|New Taipei
+010|Contea di Taoyuan
+011|Contea di HsinChu
+012|Contea di Miaoli
+014|Contea di Changhua
+015|Contea di Nantou
+016|Contea di Yunlin
+017|Contea di Chiayi
+020|Contea di Pingtung
+021|Contea di Yilan
+022|Contea di Hualien
+023|Contea di Taitung
+024|Contea di Penghu
+025|Contea di Kinmen
+026|Contea di Lienchiang

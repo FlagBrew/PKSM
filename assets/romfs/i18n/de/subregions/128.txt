@@ -1,0 +1,23 @@
+000|—
+002|Taipeh
+003|Kaohsiung
+004|Keelung
+005|Hsinchu
+006|Taichung
+007|Chiayi
+008|Tainan
+009|Xinbei
+010|Kreis Taoyuan
+011|Kreis Hsinchu
+012|Kreis Miaoli
+014|Kreis Changhua
+015|Kreis Nantou
+016|Kreis Yunlin
+017|Kreis Chiayi
+020|Kreis Pingtung
+021|Kreis Yilan
+022|Kreis Hualien
+023|Kreis Taitung
+024|Kreis Penghu
+025|Kreis Kinmen
+026|Kreis Lienchiang

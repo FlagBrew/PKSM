@@ -1,0 +1,14 @@
+000|—
+002|Attica
+003|Central Greece
+004|Central Macedonia
+005|Crete
+006|East Macedonia and Thrace
+007|Epirus
+008|Ionian Islands
+009|North Aegean
+010|Peloponnese
+011|South Aegean
+012|Thessaly
+013|West Greece
+014|West Macedonia

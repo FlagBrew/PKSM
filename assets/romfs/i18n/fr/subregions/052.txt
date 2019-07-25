@@ -1,0 +1,26 @@
+000|—
+002|District Fédéral
+003|Amazone
+004|Anzoátegui
+005|Apure
+006|Aragua
+007|Barinas
+008|Bolívar
+009|Carabobo
+010|Cojedes
+011|Delta Amacuro
+012|Falcón
+013|Guárico
+014|Lara
+015|Mérida
+016|Miranda
+017|Monagas
+018|Nueva Esparta
+019|Portuguesa
+020|Sucre
+021|Táchira
+022|Trujillo
+023|Yaracuy
+024|Zulia
+025|Dépendances Fédérales
+026|Vargas

@@ -1,0 +1,8 @@
+000|—
+002|San José
+003|Alajuela
+004|Cartago
+005|Guanacaste
+006|Heredia
+007|Limón
+008|Puntarenas

@@ -1,0 +1,17 @@
+000|—
+002|Mazovia
+003|Baja Silesia
+004|Cuyavia y Pomerania
+005|Lodz
+006|Lublin
+007|Lubus
+008|Pequeña Polonia
+009|Opole
+010|Subcarpacia
+011|Podlaquia
+012|Pomerania
+013|Silesia
+014|Santa Cruz
+015|Varmia y Masuria
+016|Gran Polonia
+017|Pomerania Occidental

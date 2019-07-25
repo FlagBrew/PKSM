@@ -1,0 +1,15 @@
+000|—
+002|Prag
+003|Mittelböhmische Region
+004|Südböhmische Region
+005|Region Pilsen
+006|Region Karlsbad
+007|Region Ústí
+008|Region Liberec
+009|Region Hradec Králové
+010|Region Pardubice
+011|Region Olmütz
+012|Region Mährisch-Schlesien
+013|Südmährische Region
+014|Region Zlin
+015|Region Vysočina

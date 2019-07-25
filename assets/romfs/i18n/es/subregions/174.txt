@@ -1,0 +1,14 @@
+000|—
+002|Riad
+003|Al Bahah
+004|Medina
+005|Región Oriental
+006|Al Qasim
+007|Asir
+008|Hail
+009|La Meca
+010|Frontera Norte
+011|Najran
+012|Jizan
+013|Tabuk
+014|Al Jouf
