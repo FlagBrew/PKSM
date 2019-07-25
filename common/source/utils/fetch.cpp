@@ -77,7 +77,7 @@ CURLcode Fetch::perform()
     return curl_easy_perform(curl.get());
 }
 
-Result Fetch::download(const std::string& url, const std::string& path, const std::string& postData)
+Result Fetch::download(const std::string& url, const std::string& path, const std::string& postData, curl_xferinfo_callback progress, void* progressInfo)
 {
     FILE* file = fopen(path.c_str(), "wb");
     if (!file)
@@ -90,6 +90,12 @@ Result Fetch::download(const std::string& url, const std::string& path, const st
     {
         fetch->setopt(CURLOPT_WRITEFUNCTION, fwrite);
         fetch->setopt(CURLOPT_WRITEDATA, file);
+        if (progress)
+        {
+            fetch->setopt(CURLOPT_NOPROGRESS, 0L);
+            fetch->setopt(CURLOPT_XFERINFOFUNCTION, progress);
+            fetch->setopt(CURLOPT_XFERINFODATA, progressInfo);
+        }
         CURLcode cres = fetch->perform();
 
         fclose(file);

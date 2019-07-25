@@ -149,6 +149,15 @@ static Result HBLDR_SetTarget(const char* path)
     return rc;
 }
 
+static int progress_callback(void *clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow)
+{
+    if (dltotal != 0)
+    {
+        Gui::showDownloadProgress(*(std::string*)clientp, dlnow / 1024, dltotal / 1024);
+    }
+    return 0;
+}
+
 static bool update(std::string execPath)
 {
     u32 status;
@@ -254,7 +263,8 @@ static bool update(std::string execPath)
     if (!url.empty())
     {
         Gui::waitFrame(i18n::localize("UPDATE_FOUND"));
-        Result res = Fetch::download(url, path, Configuration::getInstance().alphaChannel() ? "code=" + patronCode : "");
+        std::string fileName = path.substr(path.find('/')+1);
+        Result res = Fetch::download(url, path, Configuration::getInstance().alphaChannel() ? "code=" + patronCode : "", progress_callback, &fileName);
         if (R_FAILED(res))
         {
             Gui::error(i18n::localize("UPDATE_FOUND_BUT_FAILED_DOWNLOAD"), res);
