@@ -140,7 +140,7 @@ void ConfigSubRegionOverlay::update(touchPosition* touch)
             {
                 locIt++;
             }
-            Configuration::getInstance().defaultCountry(locIt->first);
+            Configuration::getInstance().defaultRegion(locIt->first);
         }
         screen.removeOverlay();
         return;
