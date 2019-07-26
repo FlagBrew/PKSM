@@ -286,7 +286,7 @@
     "HP_LEVEL_2": "KP Level 2",
     "HP_LEVEL_3": "KP Level 3",
     "HTTP_OFFLINE": "Der Server ist offline!",
-    "HTTP_UNKNOWN_ERROR": "Dieser Fehler sollte eigentlich nicht passieren!",
+    "HTTP_UNKNOWN_ERROR": "Got an unknown HTTP response",
     "HT_AFFECTION": "CT Zuneigung",
     "HT_EGG": "CT/Ei Daten",
     "HYPER_ATTACK": "Supertraining Angriff",

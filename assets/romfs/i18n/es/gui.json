@@ -286,7 +286,7 @@
     "HP_LEVEL_2": "PS Nivel 2",
     "HP_LEVEL_3": "PS Nivel 3",
     "HTTP_OFFLINE": "The server appears to be offline! (Please translate this)",
-    "HTTP_UNKNOWN_ERROR": "This error code was not predicted to happen! (Please translate this)",
+    "HTTP_UNKNOWN_ERROR": "Got an unknown HTTP response",
     "HT_AFFECTION": "CT Affection",
     "HT_EGG": "CT/Egg Data",
     "HYPER_ATTACK": "Super Entramiento de Ataque",

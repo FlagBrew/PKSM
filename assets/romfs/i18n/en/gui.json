@@ -288,7 +288,7 @@
     "HT_AFFECTION": "CT Affection",
     "HT_EGG": "CT/Egg Data",
     "HTTP_OFFLINE": "The server appears to be offline!",
-    "HTTP_UNKNOWN_ERROR": "This error code was not predicted to happen!",
+    "HTTP_UNKNOWN_ERROR": "Got an unknown HTTP response",
     "HYPER_ATTACK": "Hyper Train Attack",
     "HYPER_DEFENSE": "Hyper Train Defense",
     "HYPER_HP": "Hyper Train HP",
