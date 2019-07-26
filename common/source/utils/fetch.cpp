@@ -28,6 +28,10 @@
 #include <errno.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <time.h>
+
+#define SPEED_TOO_SLOW 300
+#define CALLS_TOO_SLOW 100
 
 static size_t string_write_callback(char* ptr, size_t size, size_t nmemb, void* userdata)
 {
@@ -77,7 +81,36 @@ CURLcode Fetch::perform()
     return curl_easy_perform(curl.get());
 }
 
-Result Fetch::download(const std::string& url, const std::string& path, const std::string& postData)
+struct callbackWrapper
+{
+    curl_xferinfo_callback progress;
+    void* progressInfo;
+};
+
+static int down_callback_wrap(void* wrapper, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow)
+{
+    callbackWrapper* data = (callbackWrapper*) wrapper;
+    static curl_off_t oldDlNow = dlnow;
+    static int timesTooSlow = 0;
+    if (oldDlNow + SPEED_TOO_SLOW >= dlnow)
+    {
+        timesTooSlow++;
+    }
+    if (timesTooSlow >= CALLS_TOO_SLOW)
+    {
+        return 1;
+    }
+    else
+    {
+        if (timesTooSlow > 0)
+        {
+            timesTooSlow--;
+        }
+        return data->progress(data->progressInfo, dltotal, dlnow, ultotal, ulnow);
+    }
+}
+
+Result Fetch::download(const std::string& url, const std::string& path, const std::string& postData, curl_xferinfo_callback progress, void* progressInfo)
 {
     FILE* file = fopen(path.c_str(), "wb");
     if (!file)
@@ -86,10 +119,19 @@ Result Fetch::download(const std::string& url, const std::string& path, const st
     }
 
     bool doPost = !postData.empty();
+    callbackWrapper wrapper = {progress, progressInfo};
     if (auto fetch = Fetch::init(url, doPost, true, nullptr, nullptr, postData))
     {
         fetch->setopt(CURLOPT_WRITEFUNCTION, fwrite);
         fetch->setopt(CURLOPT_WRITEDATA, file);
+        if (progress)
+        {
+            fetch->setopt(CURLOPT_NOPROGRESS, 0L);
+            fetch->setopt(CURLOPT_XFERINFOFUNCTION, down_callback_wrap);
+            fetch->setopt(CURLOPT_XFERINFODATA, &wrapper);
+            fetch->setopt(CURLOPT_LOW_SPEED_LIMIT, 0L);
+            fetch->setopt(CURLOPT_LOW_SPEED_TIME, 0L);
+        }
         CURLcode cres = fetch->perform();
 
         fclose(file);

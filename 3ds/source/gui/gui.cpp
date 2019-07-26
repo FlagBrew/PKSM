@@ -1716,6 +1716,34 @@ void Gui::showRestoreProgress(u32 partial, u32 total)
     }
 }
 
+void Gui::showDownloadProgress(const std::string& path, u32 partial, u32 total)
+{
+    if (inFrame)
+    {
+        C3D_FrameEnd(0);
+    }
+
+    C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+    Gui::clearScreen(GFX_TOP);
+    Gui::clearScreen(GFX_BOTTOM);
+    target(GFX_TOP);
+    sprite(ui_sheet_part_info_top_idx, 0, 0);
+    text(StringUtils::format(i18n::localize("DOWNLOADING_FILE"), path.c_str()), 200, 95, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    text(StringUtils::format(i18n::localize("SAVE_PROGRESS"), partial, total), 200, 130, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
+        TextPosY::TOP);
+    flushText();
+
+    target(GFX_BOTTOM);
+    sprite(ui_sheet_part_info_bottom_idx, 0, 0);
+
+    C3D_FrameEnd(0);
+
+    if (inFrame)
+    {
+        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+    }
+}
+
 void Gui::showResizeStorage()
 {
     if (inFrame)

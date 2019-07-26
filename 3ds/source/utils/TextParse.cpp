@@ -72,7 +72,6 @@ namespace TextParse
         static const u8 lineFeed = fontGetInfo(nullptr)->lineFeed;
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, color, 1.0f);
-        if (textPos == TextPosX::CENTER) {}
         for (auto& glyph : glyphs)
         {
             float drawY = y + scaleY * (lineFeed * glyph.line - C2D_FontGetInfo(glyph.font)->tglp->baselinePos);
