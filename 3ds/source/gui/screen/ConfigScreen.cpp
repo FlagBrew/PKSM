@@ -32,6 +32,7 @@
 #include "ExtraSavesScreen.hpp"
 #include "banks.hpp"
 #include "gui.hpp"
+#include "ToggleButton.hpp"
 
 #define STORAGE_BOX_LIMIT 2000
 
@@ -155,85 +156,122 @@ ConfigScreen::ConfigScreen()
         ui_sheet_res_null_idx, "", 0.0f, 0);
 
     // First column of language buttons
-    tabButtons[0].push_back(new ClickButton(37, 52, 8, 8,
+    tabButtons[0].push_back(new ToggleButton(37, 52, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::JP);
             return false;
         },
-        ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[0].push_back(new ClickButton(37, 74, 8, 8,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0, reinterpret_cast<std::vector<ToggleButton*>*>(&tabButtons[0]), false));
+    tabButtons[0].push_back(new ToggleButton(37, 74, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::EN);
             return false;
         },
-        ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[0].push_back(new ClickButton(37, 96, 8, 8,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0, reinterpret_cast<std::vector<ToggleButton*>*>(&tabButtons[0]), false));
+    tabButtons[0].push_back(new ToggleButton(37, 96, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::FR);
             return false;
         },
-        ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[0].push_back(new ClickButton(37, 118, 8, 8,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0, reinterpret_cast<std::vector<ToggleButton*>*>(&tabButtons[0]), false));
+    tabButtons[0].push_back(new ToggleButton(37, 118, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::DE);
             return false;
         },
-        ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[0].push_back(new ClickButton(37, 140, 8, 8,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0, reinterpret_cast<std::vector<ToggleButton*>*>(&tabButtons[0]), false));
+    tabButtons[0].push_back(new ToggleButton(37, 140, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::IT);
             return false;
         },
-        ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[0].push_back(new ClickButton(37, 162, 8, 8,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0, reinterpret_cast<std::vector<ToggleButton*>*>(&tabButtons[0]), false));
+    tabButtons[0].push_back(new ToggleButton(37, 162, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::ES);
             return false;
         },
-        ui_sheet_res_null_idx, "", 0.0f, 0));
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0, reinterpret_cast<std::vector<ToggleButton*>*>(&tabButtons[0]), false));
 
     // Second column of language buttons
-    tabButtons[0].push_back(new ClickButton(177, 52, 8, 8,
+    tabButtons[0].push_back(new ToggleButton(177, 52, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::ZH);
             return false;
         },
-        ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[0].push_back(new ClickButton(177, 74, 8, 8,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0, reinterpret_cast<std::vector<ToggleButton*>*>(&tabButtons[0]), false));
+    tabButtons[0].push_back(new ToggleButton(177, 74, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::KO);
             return false;
         },
-        ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[0].push_back(new ClickButton(177, 96, 8, 8,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0, reinterpret_cast<std::vector<ToggleButton*>*>(&tabButtons[0]), false));
+    tabButtons[0].push_back(new ToggleButton(177, 96, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::NL);
             return false;
         },
-        ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[0].push_back(new ClickButton(177, 118, 8, 8,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0, reinterpret_cast<std::vector<ToggleButton*>*>(&tabButtons[0]), false));
+    tabButtons[0].push_back(new ToggleButton(177, 118, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::PT);
             return false;
         },
-        ui_sheet_res_null_idx, "", 0.0f, 0));
-    tabButtons[0].push_back(new ClickButton(177, 140, 8, 8,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0, reinterpret_cast<std::vector<ToggleButton*>*>(&tabButtons[0]), false));
+    tabButtons[0].push_back(new ToggleButton(177, 140, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::RU);
             return false;
         },
-        ui_sheet_res_null_idx, "", 0.0f, 0));
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0, reinterpret_cast<std::vector<ToggleButton*>*>(&tabButtons[0]), false));
+    
+    switch (Configuration::getInstance().language())
+    {
+        case Language::JP:
+            ((ToggleButton*)tabButtons[0][0])->setState(true);
+            break;
+        case Language::EN:
+            ((ToggleButton*)tabButtons[0][1])->setState(true);
+            break;
+        case Language::FR:
+            ((ToggleButton*)tabButtons[0][2])->setState(true);
+            break;
+        case Language::DE:
+            ((ToggleButton*)tabButtons[0][3])->setState(true);
+            break;
+        case Language::IT:
+            ((ToggleButton*)tabButtons[0][4])->setState(true);
+            break;
+        case Language::ES:
+            ((ToggleButton*)tabButtons[0][5])->setState(true);
+            break;
+        case Language::ZH:
+            ((ToggleButton*)tabButtons[0][6])->setState(true);
+            break;
+        case Language::KO:
+            ((ToggleButton*)tabButtons[0][7])->setState(true);
+            break;
+        case Language::NL:
+            ((ToggleButton*)tabButtons[0][8])->setState(true);
+            break;
+        case Language::PT:
+            ((ToggleButton*)tabButtons[0][9])->setState(true);
+            break;
+        case Language::RU:
+            ((ToggleButton*)tabButtons[0][10])->setState(true);
+            break;
+    }
 
     // Defaults buttons
     tabButtons[1].push_back(new Button(122, 38, 15, 12,
@@ -394,56 +432,9 @@ void ConfigScreen::drawBottom() const
         Gui::text("Português", 199, 113, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text("русский", 199, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
-        Gui::drawSolidRect(37, 52, 8, 8, COLOR_MENUBLUE);
-        Gui::drawSolidRect(37, 74, 8, 8, COLOR_MENUBLUE);
-        Gui::drawSolidRect(37, 96, 8, 8, COLOR_MENUBLUE);
-        Gui::drawSolidRect(37, 118, 8, 8, COLOR_MENUBLUE);
-        Gui::drawSolidRect(37, 140, 8, 8, COLOR_MENUBLUE);
-        Gui::drawSolidRect(37, 162, 8, 8, COLOR_MENUBLUE);
-
-        Gui::drawSolidRect(177, 52, 8, 8, COLOR_MENUBLUE);
-        Gui::drawSolidRect(177, 74, 8, 8, COLOR_MENUBLUE);
-        Gui::drawSolidRect(177, 96, 8, 8, COLOR_MENUBLUE);
-        Gui::drawSolidRect(177, 118, 8, 8, COLOR_MENUBLUE);
-        Gui::drawSolidRect(177, 140, 8, 8, COLOR_MENUBLUE);
-
-        switch (Configuration::getInstance().language())
+        for (Button* button : tabButtons[currentTab])
         {
-            case Language::JP:
-                Gui::drawSolidRect(36, 51, 10, 10, COLOR_HIGHBLUE);
-                break;
-            case Language::EN:
-            case Language::UNUSED:
-                Gui::drawSolidRect(36, 73, 10, 10, COLOR_HIGHBLUE);
-                break;
-            case Language::FR:
-                Gui::drawSolidRect(36, 95, 10, 10, COLOR_HIGHBLUE);
-                break;
-            case Language::DE:
-                Gui::drawSolidRect(36, 117, 10, 10, COLOR_HIGHBLUE);
-                break;
-            case Language::IT:
-                Gui::drawSolidRect(36, 139, 10, 10, COLOR_HIGHBLUE);
-                break;
-            case Language::ES:
-                Gui::drawSolidRect(36, 161, 10, 10, COLOR_HIGHBLUE);
-                break;
-            case Language::ZH:
-            case Language::TW:
-                Gui::drawSolidRect(176, 51, 10, 10, COLOR_HIGHBLUE);
-                break;
-            case Language::KO:
-                Gui::drawSolidRect(176, 73, 10, 10, COLOR_HIGHBLUE);
-                break;
-            case Language::NL:
-                Gui::drawSolidRect(176, 95, 10, 10, COLOR_HIGHBLUE);
-                break;
-            case Language::PT:
-                Gui::drawSolidRect(176, 117, 10, 10, COLOR_HIGHBLUE);
-                break;
-            case Language::RU:
-                Gui::drawSolidRect(176, 139, 10, 10, COLOR_HIGHBLUE);
-                break;
+            button->draw();
         }
     }
     else if (currentTab == 1)
