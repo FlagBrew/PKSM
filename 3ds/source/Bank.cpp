@@ -52,7 +52,7 @@ void Bank::load(int maxBoxes)
     needsCheck = false;
     if (name() == "pksm_1" && io::exists("/3ds/PKSM/bank/bank.bin"))
     {
-        convert();
+        convertFromBankBin();
     }
     else
     {
@@ -338,7 +338,7 @@ bool Bank::hasChanged() const
     return false;
 }
 
-void Bank::convert()
+void Bank::convertFromBankBin()
 {
     bool deleteOld = true;
     Gui::waitFrame(i18n::localize("BANK_CONVERT"));
