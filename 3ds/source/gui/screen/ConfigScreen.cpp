@@ -271,6 +271,10 @@ ConfigScreen::ConfigScreen()
         case Language::RU:
             ((ToggleButton*)tabButtons[0][10])->setState(true);
             break;
+        default:
+            // Default to English
+            ((ToggleButton*)tabButtons[0][1])->setState(true);
+            break;
     }
 
     // Defaults buttons
