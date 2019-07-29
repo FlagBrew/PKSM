@@ -167,11 +167,6 @@ Result Archive::deleteFile(FS_Archive archive, const std::u16string& file)
     return FSUSER_DeleteFile(archive, fsMakePath(PATH_UTF16, file.c_str()));
 }
 
-Result Archive::deleteFile(FS_Archive archive, const std::string& file)
-{
-    return FSUSER_DeleteFile(archive, fsMakePath(PATH_ASCII, file.c_str()));
-}
-
 Result Archive::init(const std::string& execPath)
 {
     Result res = 0;

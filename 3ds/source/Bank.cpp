@@ -104,7 +104,7 @@ void Bank::load(int maxBoxes)
             needSave = true;
         }
 
-        in = FSStream(ARCHIVE, StringUtils::UTF8toUTF16(JSON(paths)), FS_OPEN_READ);
+        in = FSStream(ARCHIVE, JSON(paths), FS_OPEN_READ);
         if (in.good())
         {
             size_t jsonSize = in.size();
@@ -133,12 +133,7 @@ void Bank::load(int maxBoxes)
         else
         {
             in.close();
-            boxNames = nlohmann::json::array();
-            for (int i = 0; i < boxes(); i++)
-            {
-                boxNames[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
-            }
-
+            createJSON();
             needSave = true;
         }
 
