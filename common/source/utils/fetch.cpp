@@ -95,6 +95,7 @@ static int down_callback_wrap(void* wrapper, curl_off_t dltotal, curl_off_t dlno
     if (oldDlNow + SPEED_TOO_SLOW >= dlnow)
     {
         timesTooSlow++;
+        oldDlNow = dlnow;
     }
     if (timesTooSlow >= CALLS_TOO_SLOW)
     {
@@ -106,6 +107,7 @@ static int down_callback_wrap(void* wrapper, curl_off_t dltotal, curl_off_t dlno
         {
             timesTooSlow--;
         }
+        oldDlNow = dlnow;
         return data->progress(data->progressInfo, dltotal, dlnow, ultotal, ulnow);
     }
 }
