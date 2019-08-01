@@ -1189,6 +1189,11 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
     {
         Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
     }
+    // Silvally
+    else if (species == 773)
+    {
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
+    }
     else
     {
         if (form > PersonalLGPE::formCount(species))
