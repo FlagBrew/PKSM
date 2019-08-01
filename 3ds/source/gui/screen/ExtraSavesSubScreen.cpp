@@ -160,9 +160,9 @@ static constexpr int groupToGameId1(ExtraSavesSubScreen::Group g)
         case ExtraSavesSubScreen::Group::HGSS:
             return 7;
         case ExtraSavesSubScreen::Group::BW:
-            return 20;
+            return 21;
         case ExtraSavesSubScreen::Group::B2W2:
-            return 22;
+            return 23;
         case ExtraSavesSubScreen::Group::XY:
             return 24;
         case ExtraSavesSubScreen::Group::ORAS:
@@ -186,9 +186,9 @@ static constexpr int groupToGameId2(ExtraSavesSubScreen::Group g)
         case ExtraSavesSubScreen::Group::HGSS:
             return 8;
         case ExtraSavesSubScreen::Group::BW:
-            return 21;
+            return 20;
         case ExtraSavesSubScreen::Group::B2W2:
-            return 23;
+            return 22;
         case ExtraSavesSubScreen::Group::XY:
             return 25;
         case ExtraSavesSubScreen::Group::ORAS:
