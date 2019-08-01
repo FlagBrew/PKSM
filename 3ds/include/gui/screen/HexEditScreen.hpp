@@ -38,20 +38,7 @@ class HexEditScreen : public Screen
 {
 public:
     HexEditScreen(std::shared_ptr<PKX> pkm);
-    ~HexEditScreen()
-    {
-        for (auto subButtons : buttons)
-        {
-            for (auto button : subButtons)
-            {
-                delete button;
-            }
-        }
-        for (auto button : secretButtons)
-        {
-            delete button;
-        }
-    }
+    ~HexEditScreen() {}
     void drawTop() const override;
     void drawBottom() const override;
     void update(touchPosition* touch) override;
@@ -190,9 +177,9 @@ private:
     // Normally I would just use the same buttons for every byte, but since there are some odd things that can be done,
     // I think that this is the better solution. It allows for every byte to have its own set of buttons, allowing bytes
     // to have toggles, bitsetters, and just plain hexediting
-    std::vector<std::vector<HexEditButton*>> buttons;
+    std::vector<std::vector<std::unique_ptr<HexEditButton>>> buttons;
     // For Super Secret Mode
-    std::vector<Button*> secretButtons;
+    std::vector<std::unique_ptr<Button>> secretButtons;
 };
 
 #endif

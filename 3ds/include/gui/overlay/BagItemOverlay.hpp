@@ -50,7 +50,7 @@ public:
           firstEmpty(firstEmpty)
     {
         instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
-        searchButton = new ClickButton(75, 30, 170, 23,
+        searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
             [this]() {
                 Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
                 return false;
@@ -59,7 +59,7 @@ public:
         hid.update(items.size());
         hid.select(selected);
     }
-    ~BagItemOverlay() { delete searchButton; }
+    ~BagItemOverlay() {}
     void drawTop() const override;
     void drawBottom() const override;
     void update(touchPosition* touch) override;
@@ -76,7 +76,7 @@ private:
     bool justSwitched           = true;
     std::string searchString    = "";
     std::string oldSearchString = "";
-    Button* searchButton;
+    std::unique_ptr<Button> searchButton;
 };
 
 #endif

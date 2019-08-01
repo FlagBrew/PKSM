@@ -41,20 +41,14 @@ class InjectorScreen : public Screen
 public:
     InjectorScreen(nlohmann::json ids);
     InjectorScreen(std::unique_ptr<WCX> card);
-    ~InjectorScreen()
-    {
-        for (auto button : buttons)
-        {
-            delete button;
-        }
-    }
+    ~InjectorScreen() {}
     void update(touchPosition* touch) override;
     void drawTop(void) const override;
     void drawBottom(void) const override;
     ScreenType type() const override { return ScreenType::INJECTOR; }
 
 private:
-    std::vector<Button*> buttons;
+    std::vector<std::unique_ptr<Button>> buttons;
     std::unique_ptr<WCX> wondercard;
     std::string game;
     bool overwriteCard = false;

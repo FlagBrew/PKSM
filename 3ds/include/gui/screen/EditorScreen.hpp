@@ -36,13 +36,7 @@
 class EditorScreen : public Screen
 {
 public:
-    ~EditorScreen()
-    {
-        for (auto button : buttons)
-        {
-            delete button;
-        }
-    }
+    ~EditorScreen() {}
     EditorScreen(std::shared_ptr<PKX> pkm, int box, int index, bool emergency = false);
     // Done with Overlay
     void drawTop() const override {}
@@ -73,7 +67,7 @@ private:
     bool advanceMon(bool forward);
     bool setSaveInfo();
     bool saved();
-    std::vector<Button*> buttons;
+    std::vector<std::unique_ptr<Button>> buttons;
     std::shared_ptr<PKX> pkm;
     std::array<u8, SHA256_BLOCK_SIZE> origHash;
     int box               = 0;

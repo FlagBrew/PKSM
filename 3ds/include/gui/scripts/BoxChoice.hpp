@@ -59,8 +59,8 @@ private:
 
     bool done          = false;
     bool storageChosen = false;
-    std::array<Button*, 5> mainButtons;
-    std::array<Button*, 30> clickButtons;
+    std::array<std::unique_ptr<Button>, 5> mainButtons;
+    std::array<std::unique_ptr<Button>, 30> clickButtons;
     int cursorIndex = 0, storageBox = 0, boxBox = 0;
     std::shared_ptr<PKX> infoMon = nullptr;
     bool justSwitched            = true;

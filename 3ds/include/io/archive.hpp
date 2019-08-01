@@ -58,10 +58,7 @@ namespace Archive
     {
         return copyFile(src, StringUtils::UTF8toUTF16(file), dst, StringUtils::UTF8toUTF16(dest));
     }
-    inline Result deleteFile(FS_Archive archive, const std::string& file)
-    {
-        return deleteFile(archive, StringUtils::UTF8toUTF16(file));
-    }
+    inline Result deleteFile(FS_Archive archive, const std::string& file) { return deleteFile(archive, StringUtils::UTF8toUTF16(file)); }
 }
 
 #endif

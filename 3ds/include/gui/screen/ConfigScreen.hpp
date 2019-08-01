@@ -40,24 +40,15 @@ class ConfigScreen : public Screen
 {
 public:
     ConfigScreen(void);
-    virtual ~ConfigScreen()
-    {
-        for (auto tab : tabButtons)
-        {
-            for (auto button : tab)
-            {
-                delete button;
-            }
-        }
-    }
+    virtual ~ConfigScreen() {}
     void update(touchPosition* touch) override;
     void drawTop(void) const override;
     void drawBottom(void) const override;
     ScreenType type(void) const override { return SETTINGS; }
 
 private:
-    std::array<Button*, 3> tabs;
-    std::array<std::vector<Button*>, 4> tabButtons;
+    std::array<std::unique_ptr<Button>, 3> tabs;
+    std::array<std::vector<std::unique_ptr<Button>>, 4> tabButtons;
     std::bitset<4> patronMenu;
     int currentTab = 0;
     void back(void);

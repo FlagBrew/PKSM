@@ -43,9 +43,9 @@
 #include "loader.hpp"
 #include "random.hpp"
 
-#define NO_TEXT_BUTTON(x, y, w, h, function, image) new Button(x, y, w, h, function, image, "", 0.0f, 0)
-#define NO_TEXT_ACCEL(x, y, w, h, function, image) new AccelButton(x, y, w, h, function, image, "", 0.0f, 0)
-#define NO_TEXT_CLICK(x, y, w, h, function, image) new ClickButton(x, y, w, h, function, image, "", 0.0f, 0)
+#define NO_TEXT_BUTTON(x, y, w, h, function, image) std::make_unique<Button>(x, y, w, h, function, image, "", 0.0f, 0)
+#define NO_TEXT_ACCEL(x, y, w, h, function, image) std::make_unique<AccelButton>(x, y, w, h, function, image, "", 0.0f, 0)
+#define NO_TEXT_CLICK(x, y, w, h, function, image) std::make_unique<ClickButton>(x, y, w, h, function, image, "", 0.0f, 0)
 
 static constexpr int statValues[] = {0, 1, 2, 4, 5, 3};
 
@@ -259,28 +259,28 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
         },
         ui_sheet_res_null_idx));
     buttons.push_back(NO_TEXT_ACCEL(142, 194, 13, 13, [this]() { return this->changeFriendship(true); }, ui_sheet_button_plus_small_idx));
-    buttons.push_back(new Button(204, 109, 108, 30,
+    buttons.push_back(std::make_unique<Button>(204, 109, 108, 30,
         [this]() {
             Gui::setScreen(std::make_unique<StatsEditScreen>(pkm));
             justSwitched = true;
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("EDITOR_STATS"), FONT_SIZE_12, COLOR_BLACK));
-    buttons.push_back(new Button(204, 140, 108, 30,
+    buttons.push_back(std::make_unique<Button>(204, 140, 108, 30,
         [this]() {
             Gui::setScreen(std::make_unique<MoveEditScreen>(pkm));
             justSwitched = true;
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("EDITOR_MOVES"), FONT_SIZE_12, COLOR_BLACK));
-    buttons.push_back(new Button(204, 171, 108, 30,
+    buttons.push_back(std::make_unique<Button>(204, 171, 108, 30,
         [this]() {
             Gui::setScreen(std::make_unique<MiscEditScreen>(pkm));
             justSwitched = true;
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("EDITOR_MISC"), FONT_SIZE_12, COLOR_BLACK));
-    buttons.push_back(new ClickButton(204, 202, 108, 30,
+    buttons.push_back(std::make_unique<ClickButton>(204, 202, 108, 30,
         [this]() {
             this->save();
             this->goBack();
@@ -317,7 +317,7 @@ void EditorScreen::drawBottom() const
         Gui::sprite(ui_sheet_stripe_info_row_idx, 0, 30 + i * 40);
     }
 
-    for (auto button : buttons)
+    for (auto& button : buttons)
     {
         button->draw();
     }

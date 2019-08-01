@@ -52,13 +52,7 @@ class SaveLoadScreen : public Screen
 {
 public:
     SaveLoadScreen();
-    ~SaveLoadScreen()
-    {
-        for (auto b : buttons)
-        {
-            delete b;
-        }
-    }
+    ~SaveLoadScreen() {}
     void drawTop() const override;
     void drawBottom() const override;
     ScreenType type() const override { return ScreenType::TITLELOAD; }
@@ -69,7 +63,7 @@ private:
     // Has to be mutable because no const operator[]
     mutable std::unordered_map<int, std::vector<std::pair<std::string, std::string>>> saves;
     int firstSave = 0;
-    std::vector<Button*> buttons;
+    std::vector<std::unique_ptr<Button>> buttons;
     int selectedSave   = -1;
     bool selectedGroup = false;
     bool setSelectedSave(int i);

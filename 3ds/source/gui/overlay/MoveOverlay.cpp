@@ -97,7 +97,7 @@ MoveOverlay::MoveOverlay(Screen& screen, std::shared_ptr<PKX> pkm, int moveIndex
             hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), pk7->relearnMove(moveIndex - 4))));
         }
     }
-    searchButton = new ClickButton(75, 30, 170, 23,
+    searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
         [this]() {
             Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
             return false;

@@ -30,9 +30,9 @@
 #include "ConfigCountryOverlay.hpp"
 #include "ConfigSubRegionOverlay.hpp"
 #include "ExtraSavesScreen.hpp"
+#include "ToggleButton.hpp"
 #include "banks.hpp"
 #include "gui.hpp"
-#include "ToggleButton.hpp"
 
 #define STORAGE_BOX_LIMIT 2000
 
@@ -136,19 +136,19 @@ static bool nationalityChoice()
 
 ConfigScreen::ConfigScreen()
 {
-    tabs[0] = new ClickButton(1, 2, 104, 17,
+    tabs[0] = std::make_unique<ClickButton>(1, 2, 104, 17,
         [&]() {
             currentTab = 0;
             return false;
         },
         ui_sheet_res_null_idx, "", 0.0f, 0);
-    tabs[1] = new ClickButton(108, 2, 104, 17,
+    tabs[1] = std::make_unique<ClickButton>(108, 2, 104, 17,
         [&]() {
             currentTab = 1;
             return false;
         },
         ui_sheet_res_null_idx, "", 0.0f, 0);
-    tabs[2] = new ClickButton(215, 2, 104, 17,
+    tabs[2] = std::make_unique<ClickButton>(215, 2, 104, 17,
         [&]() {
             currentTab = 2;
             return false;
@@ -156,172 +156,184 @@ ConfigScreen::ConfigScreen()
         ui_sheet_res_null_idx, "", 0.0f, 0);
 
     // First column of language buttons
-    tabButtons[0].push_back(new ToggleButton(37, 52, 8, 8,
+    tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 52, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::JP);
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0, reinterpret_cast<std::vector<ToggleButton*>*>(&tabButtons[0]), false));
-    tabButtons[0].push_back(new ToggleButton(37, 74, 8, 8,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0,
+        reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
+    tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 74, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::EN);
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0, reinterpret_cast<std::vector<ToggleButton*>*>(&tabButtons[0]), false));
-    tabButtons[0].push_back(new ToggleButton(37, 96, 8, 8,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0,
+        reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
+    tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 96, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::FR);
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0, reinterpret_cast<std::vector<ToggleButton*>*>(&tabButtons[0]), false));
-    tabButtons[0].push_back(new ToggleButton(37, 118, 8, 8,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0,
+        reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
+    tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 118, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::DE);
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0, reinterpret_cast<std::vector<ToggleButton*>*>(&tabButtons[0]), false));
-    tabButtons[0].push_back(new ToggleButton(37, 140, 8, 8,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0,
+        reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
+    tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 140, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::IT);
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0, reinterpret_cast<std::vector<ToggleButton*>*>(&tabButtons[0]), false));
-    tabButtons[0].push_back(new ToggleButton(37, 162, 8, 8,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0,
+        reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
+    tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 162, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::ES);
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0, reinterpret_cast<std::vector<ToggleButton*>*>(&tabButtons[0]), false));
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0,
+        reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
 
     // Second column of language buttons
-    tabButtons[0].push_back(new ToggleButton(177, 52, 8, 8,
+    tabButtons[0].push_back(std::make_unique<ToggleButton>(177, 52, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::ZH);
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0, reinterpret_cast<std::vector<ToggleButton*>*>(&tabButtons[0]), false));
-    tabButtons[0].push_back(new ToggleButton(177, 74, 8, 8,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0,
+        reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
+    tabButtons[0].push_back(std::make_unique<ToggleButton>(177, 74, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::KO);
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0, reinterpret_cast<std::vector<ToggleButton*>*>(&tabButtons[0]), false));
-    tabButtons[0].push_back(new ToggleButton(177, 96, 8, 8,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0,
+        reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
+    tabButtons[0].push_back(std::make_unique<ToggleButton>(177, 96, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::NL);
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0, reinterpret_cast<std::vector<ToggleButton*>*>(&tabButtons[0]), false));
-    tabButtons[0].push_back(new ToggleButton(177, 118, 8, 8,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0,
+        reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
+    tabButtons[0].push_back(std::make_unique<ToggleButton>(177, 118, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::PT);
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0, reinterpret_cast<std::vector<ToggleButton*>*>(&tabButtons[0]), false));
-    tabButtons[0].push_back(new ToggleButton(177, 140, 8, 8,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0,
+        reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
+    tabButtons[0].push_back(std::make_unique<ToggleButton>(177, 140, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::RU);
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0, reinterpret_cast<std::vector<ToggleButton*>*>(&tabButtons[0]), false));
-    
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0,
+        reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
+
     switch (Configuration::getInstance().language())
     {
         case Language::JP:
-            ((ToggleButton*)tabButtons[0][0])->setState(true);
+            ((ToggleButton*)tabButtons[0][0].get())->setState(true);
             break;
         case Language::EN:
-            ((ToggleButton*)tabButtons[0][1])->setState(true);
+            ((ToggleButton*)tabButtons[0][1].get())->setState(true);
             break;
         case Language::FR:
-            ((ToggleButton*)tabButtons[0][2])->setState(true);
+            ((ToggleButton*)tabButtons[0][2].get())->setState(true);
             break;
         case Language::DE:
-            ((ToggleButton*)tabButtons[0][3])->setState(true);
+            ((ToggleButton*)tabButtons[0][3].get())->setState(true);
             break;
         case Language::IT:
-            ((ToggleButton*)tabButtons[0][4])->setState(true);
+            ((ToggleButton*)tabButtons[0][4].get())->setState(true);
             break;
         case Language::ES:
-            ((ToggleButton*)tabButtons[0][5])->setState(true);
+            ((ToggleButton*)tabButtons[0][5].get())->setState(true);
             break;
         case Language::ZH:
-            ((ToggleButton*)tabButtons[0][6])->setState(true);
+            ((ToggleButton*)tabButtons[0][6].get())->setState(true);
             break;
         case Language::KO:
-            ((ToggleButton*)tabButtons[0][7])->setState(true);
+            ((ToggleButton*)tabButtons[0][7].get())->setState(true);
             break;
         case Language::NL:
-            ((ToggleButton*)tabButtons[0][8])->setState(true);
+            ((ToggleButton*)tabButtons[0][8].get())->setState(true);
             break;
         case Language::PT:
-            ((ToggleButton*)tabButtons[0][9])->setState(true);
+            ((ToggleButton*)tabButtons[0][9].get())->setState(true);
             break;
         case Language::RU:
-            ((ToggleButton*)tabButtons[0][10])->setState(true);
+            ((ToggleButton*)tabButtons[0][10].get())->setState(true);
             break;
         default:
             // Default to English
-            ((ToggleButton*)tabButtons[0][1])->setState(true);
+            ((ToggleButton*)tabButtons[0][1].get())->setState(true);
             break;
     }
 
     // Defaults buttons
-    tabButtons[1].push_back(new Button(122, 38, 15, 12,
+    tabButtons[1].push_back(std::make_unique<Button>(122, 38, 15, 12,
         []() {
             Gui::setNextKeyboardFunc([]() { inputNumber([](u16 a) { Configuration::getInstance().defaultTID(a); }, 5, 0xFFFF); });
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(new Button(122, 59, 15, 12,
+    tabButtons[1].push_back(std::make_unique<Button>(122, 59, 15, 12,
         []() {
             Gui::setNextKeyboardFunc([]() { inputNumber([](u16 a) { Configuration::getInstance().defaultSID(a); }, 5, 0xFFFF); });
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(new Button(122, 80, 15, 12,
+    tabButtons[1].push_back(std::make_unique<Button>(122, 80, 15, 12,
         []() {
             Gui::setNextKeyboardFunc(&inputOT);
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(new ClickButton(122, 101, 15, 12, &nationalityChoice, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(new ClickButton(122, 122, 15, 12,
+    tabButtons[1].push_back(
+        std::make_unique<ClickButton>(122, 101, 15, 12, &nationalityChoice, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    tabButtons[1].push_back(std::make_unique<ClickButton>(122, 122, 15, 12,
         [this]() {
             currentOverlay = std::make_shared<ConfigCountryOverlay>(*this);
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(new ClickButton(122, 143, 15, 12,
+    tabButtons[1].push_back(std::make_unique<ClickButton>(122, 143, 15, 12,
         [this]() {
             currentOverlay = std::make_shared<ConfigSubRegionOverlay>(*this);
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(new Button(122, 164, 15, 12,
+    tabButtons[1].push_back(std::make_unique<Button>(122, 164, 15, 12,
         []() {
             Gui::setNextKeyboardFunc([]() { inputNumber([](u16 a) { Configuration::getInstance().day(a); }, 2, 31); });
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(new Button(122, 185, 15, 12,
+    tabButtons[1].push_back(std::make_unique<Button>(122, 185, 15, 12,
         []() {
             Gui::setNextKeyboardFunc([]() { inputNumber([](u16 a) { Configuration::getInstance().month(a); }, 2, 12); });
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(new Button(122, 206, 15, 12,
+    tabButtons[1].push_back(std::make_unique<Button>(122, 206, 15, 12,
         []() {
             Gui::setNextKeyboardFunc([]() { inputNumber([](u16 a) { Configuration::getInstance().year(a); }, 4, 9999); });
             return false;
@@ -329,69 +341,69 @@ ConfigScreen::ConfigScreen()
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
 
     // Miscellaneous buttons
-    tabButtons[2].push_back(new ClickButton(247, 39, 15, 12,
+    tabButtons[2].push_back(std::make_unique<ClickButton>(247, 39, 15, 12,
         []() {
             Configuration::getInstance().autoBackup(!Configuration::getInstance().autoBackup());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new ClickButton(247, 60, 15, 12,
+    tabButtons[2].push_back(std::make_unique<ClickButton>(247, 60, 15, 12,
         []() {
             Configuration::getInstance().transferEdit(!Configuration::getInstance().transferEdit());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new ClickButton(247, 81, 15, 12,
+    tabButtons[2].push_back(std::make_unique<ClickButton>(247, 81, 15, 12,
         []() {
             Configuration::getInstance().writeFileSave(!Configuration::getInstance().writeFileSave());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new ClickButton(247, 102, 15, 12,
+    tabButtons[2].push_back(std::make_unique<ClickButton>(247, 102, 15, 12,
         []() {
             Configuration::getInstance().useSaveInfo(!Configuration::getInstance().useSaveInfo());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new ClickButton(247, 123, 15, 12,
+    tabButtons[2].push_back(std::make_unique<ClickButton>(247, 123, 15, 12,
         [this]() {
             Configuration::getInstance().useExtData(!Configuration::getInstance().useExtData());
             useExtDataChanged = !useExtDataChanged;
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new ClickButton(247, 144, 15, 12,
+    tabButtons[2].push_back(std::make_unique<ClickButton>(247, 144, 15, 12,
         []() {
             Configuration::getInstance().randomMusic(!Configuration::getInstance().randomMusic());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new ClickButton(247, 165, 15, 12,
+    tabButtons[2].push_back(std::make_unique<ClickButton>(247, 165, 15, 12,
         [this]() {
             Configuration::getInstance().showBackups(!Configuration::getInstance().showBackups());
             showBackupsChanged = !showBackupsChanged;
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new ClickButton(247, 186, 15, 12,
+    tabButtons[2].push_back(std::make_unique<ClickButton>(247, 186, 15, 12,
         [this]() {
             Configuration::getInstance().autoUpdate(!Configuration::getInstance().autoUpdate());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(new ClickButton(247, 207, 15, 12,
+    tabButtons[2].push_back(std::make_unique<ClickButton>(247, 207, 15, 12,
         [this]() {
             Gui::setScreen(std::make_unique<ExtraSavesScreen>());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[3].push_back(new ClickButton(247, 87, 15, 12,
+    tabButtons[3].push_back(std::make_unique<ClickButton>(247, 87, 15, 12,
         [this]() {
             Gui::setNextKeyboardFunc(&inputPatronCode);
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[3].push_back(new ClickButton(247, 111, 15, 12,
+    tabButtons[3].push_back(std::make_unique<ClickButton>(247, 111, 15, 12,
         [this]() {
             Configuration::getInstance().alphaChannel(!Configuration::getInstance().alphaChannel());
             return true;
@@ -436,7 +448,7 @@ void ConfigScreen::drawBottom() const
         Gui::text("Português", 199, 113, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text("русский", 199, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
-        for (Button* button : tabButtons[currentTab])
+        for (auto& button : tabButtons[currentTab])
         {
             button->draw();
         }
@@ -501,7 +513,7 @@ void ConfigScreen::drawBottom() const
         Gui::text(
             std::to_string(Configuration::getInstance().year()), 150, 204, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
-        for (Button* button : tabButtons[currentTab])
+        for (auto& button : tabButtons[currentTab])
         {
             button->draw();
         }
@@ -520,7 +532,7 @@ void ConfigScreen::drawBottom() const
         Gui::text(i18n::localize("CONFIG_AUTO_UPDATE"), 19, 183, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(i18n::localize("EXTRA_SAVES"), 19, 204, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
-        for (Button* button : tabButtons[currentTab])
+        for (auto& button : tabButtons[currentTab])
         {
             button->draw();
         }
@@ -549,7 +561,7 @@ void ConfigScreen::drawBottom() const
         Gui::text(i18n::localize("PATRON_CODE"), 19, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(i18n::localize("ALPHA_UPDATES"), 19, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
-        for (Button* button : tabButtons[currentTab])
+        for (auto& button : tabButtons[currentTab])
         {
             button->draw();
         }
@@ -579,12 +591,12 @@ void ConfigScreen::update(touchPosition* touch)
         return;
     }
 
-    for (Button* button : tabs)
+    for (auto& button : tabs)
     {
         button->update(touch);
     }
 
-    for (Button* button : tabButtons[currentTab])
+    for (auto& button : tabButtons[currentTab])
     {
         button->update(touch);
     }

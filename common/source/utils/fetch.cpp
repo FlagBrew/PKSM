@@ -89,9 +89,9 @@ struct callbackWrapper
 
 static int down_callback_wrap(void* wrapper, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow)
 {
-    callbackWrapper* data = (callbackWrapper*) wrapper;
+    callbackWrapper* data      = (callbackWrapper*)wrapper;
     static curl_off_t oldDlNow = dlnow;
-    static int timesTooSlow = 0;
+    static int timesTooSlow    = 0;
     if (oldDlNow + SPEED_TOO_SLOW >= dlnow)
     {
         timesTooSlow++;
@@ -112,7 +112,8 @@ static int down_callback_wrap(void* wrapper, curl_off_t dltotal, curl_off_t dlno
     }
 }
 
-Result Fetch::download(const std::string& url, const std::string& path, const std::string& postData, curl_xferinfo_callback progress, void* progressInfo)
+Result Fetch::download(
+    const std::string& url, const std::string& path, const std::string& postData, curl_xferinfo_callback progress, void* progressInfo)
 {
     FILE* file = fopen(path.c_str(), "wb");
     if (!file)
@@ -120,7 +121,7 @@ Result Fetch::download(const std::string& url, const std::string& path, const st
         return -errno;
     }
 
-    bool doPost = !postData.empty();
+    bool doPost             = !postData.empty();
     callbackWrapper wrapper = {progress, progressInfo};
     if (auto fetch = Fetch::init(url, doPost, true, nullptr, nullptr, postData))
     {
