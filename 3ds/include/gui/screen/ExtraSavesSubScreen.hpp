@@ -55,8 +55,6 @@ public:
     // Awaiting ideas
     void drawBottom(void) const override;
 
-    ScreenType type() const { return ScreenType::SETTINGS; }
-
 private:
     void updateSaves();
     Group group;

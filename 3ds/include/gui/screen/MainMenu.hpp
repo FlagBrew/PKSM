@@ -39,7 +39,6 @@ public:
     void update(touchPosition* touch) override;
     void drawTop() const override;
     void drawBottom() const override;
-    ScreenType type() const override { return ScreenType::MAINMENU; }
     void setTimer(bool time) { doTimer = time; }
 
 private:

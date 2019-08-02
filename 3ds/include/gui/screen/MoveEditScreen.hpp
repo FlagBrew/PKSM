@@ -41,7 +41,6 @@ public:
     void drawTop() const override {}
     void drawBottom() const override;
     void update(touchPosition* touch) override;
-    ScreenType type() const override { return ScreenType::EDITOR; }
 
 private:
     void changeMove();

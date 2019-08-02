@@ -44,7 +44,6 @@ public:
     void update(touchPosition* touch) override;
     void drawTop(void) const override;
     void drawBottom(void) const override;
-    ScreenType type(void) const override { return SETTINGS; }
 
 private:
     std::array<std::unique_ptr<Button>, 3> tabs;

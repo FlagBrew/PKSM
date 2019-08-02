@@ -38,7 +38,6 @@ public:
     void drawTop() const override;
     void drawBottom() const override;
     void update(touchPosition* touch) override;
-    ScreenType type(void) const override { return ScreenType::STORAGE; }
 
 private:
     void pickSort(size_t number);

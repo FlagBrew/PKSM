@@ -44,7 +44,6 @@ public:
     void update(touchPosition* touch) override;
     void drawTop(void) const override;
     void drawBottom(void) const override;
-    ScreenType type() const override { return ScreenType::EVENTS; }
 
 private:
     bool doQR(void);

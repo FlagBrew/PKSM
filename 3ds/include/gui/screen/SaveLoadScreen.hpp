@@ -55,7 +55,6 @@ public:
     ~SaveLoadScreen() {}
     void drawTop() const override;
     void drawBottom() const override;
-    ScreenType type() const override { return ScreenType::TITLELOAD; }
     void update(touchPosition* touch) override;
 
 private:

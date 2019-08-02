@@ -42,8 +42,6 @@ public:
     void drawTop() const override;
     void drawBottom() const override;
 
-    ScreenType type() const { return ScreenType::BAG; }
-
 private:
     std::vector<std::pair<Pouch, int>> limits;
     std::map<Pouch, std::vector<int>> allowedItems;

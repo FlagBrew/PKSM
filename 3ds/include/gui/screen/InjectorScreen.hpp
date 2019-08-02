@@ -45,7 +45,6 @@ public:
     void update(touchPosition* touch) override;
     void drawTop(void) const override;
     void drawBottom(void) const override;
-    ScreenType type() const override { return ScreenType::INJECTOR; }
 
 private:
     std::vector<std::unique_ptr<Button>> buttons;

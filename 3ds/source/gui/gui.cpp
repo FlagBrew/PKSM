@@ -452,7 +452,7 @@ void Gui::mainLoop(void)
             touchPosition touch;
             hidTouchRead(&touch);
             screens.top()->doUpdate(&touch);
-            exit = screens.top()->type() == ScreenType::TITLELOAD && (kHeld & KEY_START);
+            exit = screens.size() == 1 && (kHeld & KEY_START);
         }
 
         if (!aptIsHomeAllowed() && aptIsHomePressed())
@@ -1501,11 +1501,6 @@ void Gui::type(Language lang, u8 type, int x, int y)
 
 void Gui::setScreen(std::unique_ptr<Screen> screen)
 {
-    if (!screens.empty() && screens.top()->type() == screen->type())
-    {
-        if (screen == screens.top())
-            return;
-    }
     screens.push(std::move(screen));
 }
 

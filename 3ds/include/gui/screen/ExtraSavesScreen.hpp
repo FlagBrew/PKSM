@@ -42,8 +42,6 @@ public:
     void drawTop(void) const override;
     void drawBottom(void) const override;
 
-    ScreenType type() const { return ScreenType::SETTINGS; }
-
 private:
     int saveGroup = -1;
     std::vector<std::string> currentSaves;

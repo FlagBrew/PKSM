@@ -43,7 +43,6 @@ public:
     ~BoxChoice();
 
     std::tuple<int, int, int> run();
-    ScreenType type() const override { return ScreenType::SCRIPTSELECT; }
 
 private:
     bool finished() const { return done; }
