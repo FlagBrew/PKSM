@@ -341,12 +341,12 @@ void cfg_default_ot(struct ParseState* Parser, struct Value* ReturnValue, struct
 
 void cfg_default_tid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    ReturnValue->Val->UnsignedInteger = Configuration::getInstance().defaultTID();
+    ReturnValue->Val->UnsignedShortInteger = Configuration::getInstance().defaultTID();
 }
 
 void cfg_default_sid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    ReturnValue->Val->UnsignedInteger = Configuration::getInstance().defaultSID();
+    ReturnValue->Val->UnsignedShortInteger = Configuration::getInstance().defaultSID();
 }
 
 void cfg_default_day(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -778,5 +778,382 @@ void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, stru
             TitleLoader::save->pkm(pkm, slot);
         }
     }
+}
+
+void pkx_box_size(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    Generation gen = Generation(Param[0]->Val->Integer);
+    checkGen(Parser, gen);
+
+    switch (gen)
+    {
+        case Generation::FOUR:
+        case Generation::FIVE:
+            ReturnValue->Val->Integer = 136;
+            break;
+        case Generation::SIX:
+        case Generation::SEVEN:
+            ReturnValue->Val->Integer = 232;
+            break;
+        case Generation::LGPE:
+        default:
+            ReturnValue->Val->Integer = 260;
+            break;
+    }
+}
+
+void pkx_party_size(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    Generation gen = Generation(Param[0]->Val->Integer);
+    checkGen(Parser, gen);
+
+    switch (gen)
+    {
+        case Generation::FOUR:
+            ReturnValue->Val->Integer = 236;
+            break;
+        case Generation::FIVE:
+            ReturnValue->Val->Integer = 220;
+            break;
+        case Generation::SIX:
+        case Generation::SEVEN:
+        case Generation::LGPE:
+        default:
+            ReturnValue->Val->Integer = 260;
+            break;
+    }
+}
+
+void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    u8* data       = (u8*)Param[0]->Val->Pointer;
+    int species    = Param[1]->Val->Integer;
+    std::unique_ptr<PKX> pkm = nullptr;
+    switch (TitleLoader::save->generation())
+    {
+        case Generation::FOUR:
+            std::fill_n(data, 136, 0);
+            pkm = std::make_unique<PK4>(data, false, false, true);
+            break;
+        case Generation::FIVE:
+            std::fill_n(data, 136, 0);
+            pkm = std::make_unique<PK5>(data, false, false, true);
+            break;
+        case Generation::SIX:
+            std::fill_n(data, 232, 0);
+            pkm = std::make_unique<PK6>(data, false, false, true);
+            break;
+        case Generation::SEVEN:
+            std::fill_n(data, 232, 0);
+            pkm = std::make_unique<PK7>(data, false, false, true);
+            break;
+        case Generation::LGPE:
+        default:
+            pkm = std::make_unique<PB7>(data, false, false, true);
+            std::fill_n(data, 260, 0);
+            break;
+    }
+
+    // From EditorScreen
+    if (Configuration::getInstance().useSaveInfo())
+    {
+        pkm->TID(TitleLoader::save->TID());
+        pkm->SID(TitleLoader::save->SID());
+        pkm->otName(TitleLoader::save->otName());
+    }
+    else
+    {
+        pkm->TID(Configuration::getInstance().defaultTID());
+        pkm->SID(Configuration::getInstance().defaultSID());
+        switch (pkm->generation())
+        {
+            case Generation::FOUR:
+            case Generation::FIVE:
+            default:
+                pkm->otName(Configuration::getInstance().defaultOT().substr(0, 7));
+                break;
+            case Generation::SIX:
+            case Generation::SEVEN:
+                pkm->otName(Configuration::getInstance().defaultOT());
+                break;
+        }
+    }
+    pkm->ball(4);
+    pkm->encryptionConstant((((u32)randomNumbers()) % 0xFFFFFFFF) + 1);
+    pkm->version(TitleLoader::save->version());
+    switch (pkm->version())
+    {
+        case 7:
+        case 8:
+            pkm->metLocation(0x0095); // Route 1, HGSS
+            break;
+        case 10:
+        case 11:
+        case 12:
+            pkm->metLocation(0x0010); // Route 201, DPPt
+            break;
+        case 20:
+        case 21:
+        case 22:
+        case 23:
+            pkm->metLocation(0x000e); // Route 1, BWB2W2
+            break;
+        case 24:
+        case 25:
+            pkm->metLocation(0x0008); // Route 1, XY
+            break;
+        case 26:
+        case 27:
+            pkm->metLocation(0x00cc); // Route 101, ORAS
+            break;
+        case 30:
+        case 31:
+        case 32:
+        case 33:
+            pkm->metLocation(0x0006); // Route 1, SMUSUM
+            break;
+        case 42:
+        case 43:
+            pkm->metLocation(0x0003); // Route 1, LGPE
+            break;
+    }
+    pkm->fixMoves();
+    // pkm->PID((u32)randomNumbers());
+    pkm->language(Configuration::getInstance().language());
+    const time_t current = time(NULL);
+    pkm->metDay(Configuration::getInstance().day() ? Configuration::getInstance().day() : gmtime(&current)->tm_mday);
+    pkm->metMonth(Configuration::getInstance().month() ? Configuration::getInstance().month() : gmtime(&current)->tm_mon);
+    pkm->metYear(Configuration::getInstance().year() ? Configuration::getInstance().year() - 2000 : gmtime(&current)->tm_year - 2000);
+    pkm->metLevel(1);
+    if (pkm->generation() == Generation::SIX)
+    {
+        ((PK6*)pkm.get())->consoleRegion(Configuration::getInstance().nationality());
+        ((PK6*)pkm.get())->geoCountry(0, Configuration::getInstance().defaultCountry());
+        ((PK6*)pkm.get())->geoRegion(0, Configuration::getInstance().defaultRegion());
+        ((PK6*)pkm.get())->country(Configuration::getInstance().defaultCountry());
+        ((PK6*)pkm.get())->region(Configuration::getInstance().defaultRegion());
+    }
+    else if (pkm->generation() == Generation::SEVEN)
+    {
+        ((PK7*)pkm.get())->consoleRegion(Configuration::getInstance().nationality());
+        ((PK7*)pkm.get())->geoCountry(0, Configuration::getInstance().defaultCountry());
+        ((PK7*)pkm.get())->geoRegion(0, Configuration::getInstance().defaultRegion());
+        ((PK7*)pkm.get())->country(Configuration::getInstance().defaultCountry());
+        ((PK7*)pkm.get())->region(Configuration::getInstance().defaultRegion());
+    }
+
+    // From SpeciesOverlay
+    pkm->nickname(i18n::species(Configuration::getInstance().language(), species));
+    pkm->species((u16)species);
+    pkm->alternativeForm(0);
+    pkm->setAbility(0);
+    pkm->PID(PKX::getRandomPID(pkm->species(), pkm->gender(), pkm->version(), pkm->nature(), pkm->alternativeForm(), pkm->abilityNumber(),
+        pkm->PID(), pkm->generation()));
+}
+
+void pkx_set_ot_name(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    char* data = (char*) Param[0]->Val->Pointer;
+    Generation gen = Generation(Param[1]->Val->Integer);
+    char* otName = (char*) Param[2]->Val->Pointer;
+    checkGen(Parser, gen);
+
+    std::unique_ptr<PKX> pkm = nullptr;
+    switch (gen)
+    {
+        case Generation::FOUR:
+            pkm = std::make_unique<PK4>(data, false, false, true);
+            break;
+        case Generation::FIVE:
+            pkm = std::make_unique<PK5>(data, false, false, true);
+            break;
+        case Generation::SIX:
+            pkm = std::make_unique<PK6>(data, false, false, true);
+            break;
+        case Generation::SEVEN:
+            pkm = std::make_unique<PK7>(data, false, false, true);
+            break;
+        case Generation::LGPE:
+        default:
+            pkm = std::make_unique<PB7>(data, false, true);
+            break;
+    }
+    pkm->otName(otName);
+}
+
+void pkx_set_tid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    char* data = (char*) Param[0]->Val->Pointer;
+    Generation gen = Generation(Param[1]->Val->Integer);
+    u16 TID = Param[2]->Val->UnsignedShortInteger;
+    checkGen(Parser, gen);
+
+    std::unique_ptr<PKX> pkm = nullptr;
+    switch (gen)
+    {
+        case Generation::FOUR:
+            pkm = std::make_unique<PK4>(data, false, false, true);
+            break;
+        case Generation::FIVE:
+            pkm = std::make_unique<PK5>(data, false, false, true);
+            break;
+        case Generation::SIX:
+            pkm = std::make_unique<PK6>(data, false, false, true);
+            break;
+        case Generation::SEVEN:
+            pkm = std::make_unique<PK7>(data, false, false, true);
+            break;
+        case Generation::LGPE:
+        default:
+            pkm = std::make_unique<PB7>(data, false, true);
+            break;
+    }
+    pkm->TID(TID);
+}
+
+void pkx_set_sid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    char* data = (char*) Param[0]->Val->Pointer;
+    Generation gen = Generation(Param[1]->Val->Integer);
+    u16 SID = Param[2]->Val->UnsignedShortInteger;
+    checkGen(Parser, gen);
+
+    std::unique_ptr<PKX> pkm = nullptr;
+    switch (gen)
+    {
+        case Generation::FOUR:
+            pkm = std::make_unique<PK4>(data, false, false, true);
+            break;
+        case Generation::FIVE:
+            pkm = std::make_unique<PK5>(data, false, false, true);
+            break;
+        case Generation::SIX:
+            pkm = std::make_unique<PK6>(data, false, false, true);
+            break;
+        case Generation::SEVEN:
+            pkm = std::make_unique<PK7>(data, false, false, true);
+            break;
+        case Generation::LGPE:
+        default:
+            pkm = std::make_unique<PB7>(data, false, true);
+            break;
+    }
+    pkm->SID(SID);
+}
+
+void sav_get_sid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    ReturnValue->Val->UnsignedShortInteger = TitleLoader::save->SID();
+}
+
+void sav_get_tid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    ReturnValue->Val->UnsignedShortInteger = TitleLoader::save->TID();
+}
+
+void pkx_is_valid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    char* data = (char*) Param[0]->Val->Pointer;
+    Generation gen = Generation(Param[1]->Val->Integer);
+    checkGen(Parser, gen);
+
+    std::unique_ptr<PKX> pkm = nullptr;
+    switch (gen)
+    {
+        case Generation::FOUR:
+            pkm = std::make_unique<PK4>(data, false, false, true);
+            break;
+        case Generation::FIVE:
+            pkm = std::make_unique<PK5>(data, false, false, true);
+            break;
+        case Generation::SIX:
+            pkm = std::make_unique<PK6>(data, false, false, true);
+            break;
+        case Generation::SEVEN:
+            pkm = std::make_unique<PK7>(data, false, false, true);
+            break;
+        case Generation::LGPE:
+        default:
+            pkm = std::make_unique<PB7>(data, false, true);
+            break;
+    }
+
+    if (pkm->species() == 0 && pkm->encryptionConstant() == 0)
+    {
+        ReturnValue->Val->Integer = 0;
+    }
+    else
+    {
+        ReturnValue->Val->Integer = 1;
+    }
+}
+
+void pkx_set_shiny(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    char* data = (char*) Param[0]->Val->Pointer;
+    Generation gen = Generation(Param[1]->Val->Integer);
+    bool shiny = (bool)Param[2]->Val->Integer;
+    checkGen(Parser, gen);
+
+    std::unique_ptr<PKX> pkm = nullptr;
+    switch (gen)
+    {
+        case Generation::FOUR:
+            pkm = std::make_unique<PK4>(data, false, false, true);
+            break;
+        case Generation::FIVE:
+            pkm = std::make_unique<PK5>(data, false, false, true);
+            break;
+        case Generation::SIX:
+            pkm = std::make_unique<PK6>(data, false, false, true);
+            break;
+        case Generation::SEVEN:
+            pkm = std::make_unique<PK7>(data, false, false, true);
+            break;
+        case Generation::LGPE:
+        default:
+            pkm = std::make_unique<PB7>(data, false, true);
+            break;
+    }
+    pkm->shiny(shiny);
+}
+
+void pkx_set_language(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    char* data = (char*) Param[0]->Val->Pointer;
+    Generation gen = Generation(Param[1]->Val->Integer);
+    Language lang = Language(Param[2]->Val->Integer);
+    checkGen(Parser, gen);
+
+    std::unique_ptr<PKX> pkm = nullptr;
+    switch (gen)
+    {
+        case Generation::FOUR:
+            pkm = std::make_unique<PK4>(data, false, false, true);
+            break;
+        case Generation::FIVE:
+            pkm = std::make_unique<PK5>(data, false, false, true);
+            break;
+        case Generation::SIX:
+            pkm = std::make_unique<PK6>(data, false, false, true);
+            break;
+        case Generation::SEVEN:
+            pkm = std::make_unique<PK7>(data, false, false, true);
+            break;
+        case Generation::LGPE:
+        default:
+            pkm = std::make_unique<PB7>(data, false, true);
+            break;
+    }
+    pkm->language(lang);
+}
+
+void sav_get_ot_name(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    std::string otName = TitleLoader::save->otName();
+    char* ret = (char*) malloc((otName.size() + 1) * sizeof(char));
+    std::copy(otName.begin(), otName.end(), ret);
+    ret[otName.size()] = '\0';
+    ReturnValue->Val->Pointer = ret;
 }
 }
