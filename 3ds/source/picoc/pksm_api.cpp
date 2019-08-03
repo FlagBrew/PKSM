@@ -849,7 +849,7 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
             break;
         case Generation::LGPE:
         default:
-            pkm = std::make_unique<PB7>(data, false, false, true);
+            pkm = std::make_unique<PB7>(data, false, true);
             std::fill_n(data, 260, 0);
             break;
     }
@@ -953,7 +953,7 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
 
 void pkx_set_ot_name(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    char* data = (char*) Param[0]->Val->Pointer;
+    u8* data = (u8*) Param[0]->Val->Pointer;
     Generation gen = Generation(Param[1]->Val->Integer);
     char* otName = (char*) Param[2]->Val->Pointer;
     checkGen(Parser, gen);
@@ -983,7 +983,7 @@ void pkx_set_ot_name(struct ParseState* Parser, struct Value* ReturnValue, struc
 
 void pkx_set_tid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    char* data = (char*) Param[0]->Val->Pointer;
+    u8* data = (u8*) Param[0]->Val->Pointer;
     Generation gen = Generation(Param[1]->Val->Integer);
     u16 TID = Param[2]->Val->UnsignedShortInteger;
     checkGen(Parser, gen);
@@ -1013,7 +1013,7 @@ void pkx_set_tid(struct ParseState* Parser, struct Value* ReturnValue, struct Va
 
 void pkx_set_sid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    char* data = (char*) Param[0]->Val->Pointer;
+    u8* data = (u8*) Param[0]->Val->Pointer;
     Generation gen = Generation(Param[1]->Val->Integer);
     u16 SID = Param[2]->Val->UnsignedShortInteger;
     checkGen(Parser, gen);
@@ -1053,7 +1053,7 @@ void sav_get_tid(struct ParseState* Parser, struct Value* ReturnValue, struct Va
 
 void pkx_is_valid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    char* data = (char*) Param[0]->Val->Pointer;
+    u8* data = (u8*) Param[0]->Val->Pointer;
     Generation gen = Generation(Param[1]->Val->Integer);
     checkGen(Parser, gen);
 
@@ -1090,7 +1090,7 @@ void pkx_is_valid(struct ParseState* Parser, struct Value* ReturnValue, struct V
 
 void pkx_set_shiny(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    char* data = (char*) Param[0]->Val->Pointer;
+    u8* data = (u8*) Param[0]->Val->Pointer;
     Generation gen = Generation(Param[1]->Val->Integer);
     bool shiny = (bool)Param[2]->Val->Integer;
     checkGen(Parser, gen);
@@ -1120,7 +1120,7 @@ void pkx_set_shiny(struct ParseState* Parser, struct Value* ReturnValue, struct 
 
 void pkx_set_language(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    char* data = (char*) Param[0]->Val->Pointer;
+    u8* data = (u8*) Param[0]->Val->Pointer;
     Generation gen = Generation(Param[1]->Val->Integer);
     Language lang = Language(Param[2]->Val->Integer);
     checkGen(Parser, gen);
