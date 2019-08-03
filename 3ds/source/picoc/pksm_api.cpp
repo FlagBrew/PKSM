@@ -110,43 +110,25 @@ void gui_menu20x2(struct ParseState* Parser, struct Value* ReturnValue, struct V
 
 void sav_sbo(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    switch (TitleLoader::save->version())
+    if (TitleLoader::save->generation() == Generation::FOUR)
     {
-        case 7:
-        case 8:
-            ReturnValue->Val->Integer = ((SavHGSS*)TitleLoader::save.get())->getSBO();
-            break;
-        case 10:
-        case 11:
-            ReturnValue->Val->Integer = ((SavDP*)TitleLoader::save.get())->getSBO();
-            break;
-        case 12:
-            ReturnValue->Val->Integer = ((SavPT*)TitleLoader::save.get())->getSBO();
-            break;
-        default:
-            ReturnValue->Val->Integer = 0;
-            break;
+        ReturnValue->Val->Integer = ((Sav4*)TitleLoader::save.get())->getSBO();
+    }
+    else
+    {
+        ReturnValue->Val->Integer = 0;
     }
 }
 
 void sav_gbo(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    switch (TitleLoader::save->version())
+    if (TitleLoader::save->generation() == Generation::FOUR)
     {
-        case 7:
-        case 8:
-            ReturnValue->Val->Integer = ((SavHGSS*)TitleLoader::save.get())->getGBO();
-            break;
-        case 10:
-        case 11:
-            ReturnValue->Val->Integer = ((SavDP*)TitleLoader::save.get())->getGBO();
-            break;
-        case 12:
-            ReturnValue->Val->Integer = ((SavPT*)TitleLoader::save.get())->getGBO();
-            break;
-        default:
-            ReturnValue->Val->Integer = 0;
-            break;
+        ReturnValue->Val->Integer = ((Sav4*)TitleLoader::save.get())->getGBO();
+    }
+    else
+    {
+        ReturnValue->Val->Integer = 0;
     }
 }
 
@@ -544,20 +526,20 @@ void bank_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struc
     switch (gen)
     {
         case Generation::FOUR:
-            pkm = std::make_shared<PK4>(data, false);
+            pkm = std::make_shared<PK4>(data, false, false, true);
             break;
         case Generation::FIVE:
-            pkm = std::make_shared<PK5>(data, false);
+            pkm = std::make_shared<PK5>(data, false, false, true);
             break;
         case Generation::SIX:
-            pkm = std::make_shared<PK6>(data, false);
+            pkm = std::make_shared<PK6>(data, false, false, true);
             break;
         case Generation::SEVEN:
-            pkm = std::make_shared<PK7>(data, false);
+            pkm = std::make_shared<PK7>(data, false, false, true);
             break;
         case Generation::LGPE:
         default:
-            pkm = std::make_shared<PB7>(data, false);
+            pkm = std::make_shared<PB7>(data, false, true);
             break;
     }
 
@@ -615,24 +597,22 @@ void pkx_decrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Va
     switch (gen)
     {
         case Generation::FOUR:
-            pkm = std::make_shared<PK4>(data, true);
+            pkm = std::make_shared<PK4>(data, true, false, true);
             break;
         case Generation::FIVE:
-            pkm = std::make_shared<PK5>(data, true);
+            pkm = std::make_shared<PK5>(data, true, false, true);
             break;
         case Generation::SIX:
-            pkm = std::make_shared<PK6>(data, true);
+            pkm = std::make_shared<PK6>(data, true, false, true);
             break;
         case Generation::SEVEN:
-            pkm = std::make_shared<PK7>(data, true);
+            pkm = std::make_shared<PK7>(data, true, false, true);
             break;
         case Generation::LGPE:
         default:
-            pkm = std::make_shared<PB7>(data, true);
+            pkm = std::make_shared<PB7>(data, true, true);
             break;
     }
-
-    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), data);
 }
 
 void pkx_encrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -647,26 +627,24 @@ void pkx_encrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Va
     switch (gen)
     {
         case Generation::FOUR:
-            pkm = std::make_shared<PK4>(data, false);
+            pkm = std::make_shared<PK4>(data, false, false, true);
             break;
         case Generation::FIVE:
-            pkm = std::make_shared<PK5>(data, false);
+            pkm = std::make_shared<PK5>(data, false, false, true);
             break;
         case Generation::SIX:
-            pkm = std::make_shared<PK6>(data, false);
+            pkm = std::make_shared<PK6>(data, false, false, true);
             break;
         case Generation::SEVEN:
-            pkm = std::make_shared<PK7>(data, false);
+            pkm = std::make_shared<PK7>(data, false, false, true);
             break;
         case Generation::LGPE:
         default:
-            pkm = std::make_shared<PB7>(data, false);
+            pkm = std::make_shared<PB7>(data, false, true);
             break;
     }
 
     pkm->encrypt();
-
-    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), data);
 }
 
 void pksm_utf8_to_utf16(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)

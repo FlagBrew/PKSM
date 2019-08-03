@@ -63,22 +63,28 @@ void PK6::crypt(void)
     }
 }
 
-PK6::PK6(u8* dt, bool ekx, bool party)
+PK6::PK6(u8* dt, bool ekx, bool party, bool direct) : directAccess(direct)
 {
     length = party ? 260 : 232;
-    data   = new u8[length];
-    std::fill_n(data, length, 0);
+    if (directAccess)
+    {
+        data = dt;
+    }
+    else
+    {
+        data = new u8[length];
+        std::copy(dt, dt + length, data);
+    }
 
-    std::copy(dt, dt + length, data);
     if (ekx)
     {
         decrypt();
     }
 }
 
-std::shared_ptr<PKX> PK6::clone(void)
+std::shared_ptr<PKX> PK6::clone(void) const
 {
-    return std::make_shared<PK6>(data, false, length == 260);
+    return std::make_shared<PK6>(const_cast<u8*>(data), false, length == 260);
 }
 
 Generation PK6::generation(void) const

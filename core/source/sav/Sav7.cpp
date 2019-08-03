@@ -200,16 +200,14 @@ u32 Sav7::partyOffset(u8 slot) const
 
 std::shared_ptr<PKX> Sav7::pkm(u8 slot) const
 {
-    u8 buf[260];
-    std::copy(data + partyOffset(slot), data + partyOffset(slot) + 260, buf);
-    return std::make_unique<PK7>(buf, true, true);
+    return std::make_unique<PK7>(data + partyOffset(slot), true, true);
 }
 
 void Sav7::pkm(std::shared_ptr<PKX> pk, u8 slot)
 {
     u8 buf[260] = {0};
     std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
-    std::unique_ptr<PK7> pk7 = std::make_unique<PK7>(buf, false, true);
+    std::unique_ptr<PK7> pk7 = std::make_unique<PK7>(buf, false, true, true);
 
     if (pk->getLength() != 260)
     {
@@ -228,9 +226,7 @@ void Sav7::pkm(std::shared_ptr<PKX> pk, u8 slot)
 
 std::shared_ptr<PKX> Sav7::pkm(u8 box, u8 slot, bool ekx) const
 {
-    u8 buf[232];
-    std::copy(data + boxOffset(box, slot), data + boxOffset(box, slot) + 232, buf);
-    return std::make_unique<PK7>(buf, ekx);
+    return std::make_unique<PK7>(data + boxOffset(box, slot), ekx);
 }
 
 void Sav7::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
@@ -281,12 +277,11 @@ void Sav7::cryptBoxData(bool crypted)
     {
         for (u8 slot = 0; slot < 30; slot++)
         {
-            std::shared_ptr<PKX> pk7 = pkm(box, slot, crypted);
+            std::unique_ptr<PKX> pk7 = std::make_unique<PK7>(data + boxOffset(box, slot), crypted, false, true);
             if (!crypted)
             {
                 pk7->encrypt();
             }
-            pkm(pk7, box, slot, false);
         }
     }
 }
@@ -519,8 +514,7 @@ void Sav7::partyCount(u8 v)
 
 std::shared_ptr<PKX> Sav7::emptyPkm() const
 {
-    static auto empty = std::make_shared<PK7>();
-    return empty;
+    return std::make_shared<PK7>();
 }
 
 int Sav7::emptyGiftLocation(void) const

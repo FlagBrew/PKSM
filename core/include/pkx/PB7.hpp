@@ -42,14 +42,21 @@ protected:
 public:
     PB7()
     {
-        length = 260;
-        data   = new u8[length];
+        directAccess = false;
+        length       = 260;
+        data         = new u8[length];
         std::fill_n(data, length, 0);
     }
-    PB7(u8* dt, bool ekx = false);
-    virtual ~PB7() { delete[] data; }
+    PB7(u8* dt, bool ekx = false, bool directAccess = false);
+    virtual ~PB7()
+    {
+        if (!directAccess)
+        {
+            delete[] data;
+        }
+    }
 
-    std::shared_ptr<PKX> clone(void) override;
+    std::shared_ptr<PKX> clone(void) const override;
 
     Generation generation() const override;
 
@@ -247,6 +254,9 @@ public:
     inline u8 expType(void) const override { return PersonalLGPE::expType(formSpecies()); }
     inline u8 abilities(u8 n) const override { return PersonalLGPE::ability(formSpecies(), n); }
     inline u16 formStatIndex(void) const override { return PersonalLGPE::formStatIndex(formSpecies()); }
+
+private:
+    bool directAccess;
 };
 
 #endif

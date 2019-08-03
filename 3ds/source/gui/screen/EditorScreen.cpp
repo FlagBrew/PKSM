@@ -54,7 +54,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
 {
     if (!pkm || (pkm->encryptionConstant() == 0 && pkm->species() == 0))
     {
-        pkm = TitleLoader::save->emptyPkm()->clone();
+        pkm = TitleLoader::save->emptyPkm();
         if (Configuration::getInstance().useSaveInfo())
         {
             pkm->TID(TitleLoader::save->TID());

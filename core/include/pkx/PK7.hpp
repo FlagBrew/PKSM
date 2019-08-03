@@ -42,14 +42,21 @@ protected:
 public:
     PK7()
     {
-        length = 232;
-        data   = new u8[length];
+        directAccess = false;
+        length       = 232;
+        data         = new u8[length];
         std::fill_n(data, length, 0);
     }
-    PK7(u8* dt, bool ekx = false, bool party = false);
-    virtual ~PK7() { delete[] data; };
+    PK7(u8* dt, bool ekx = false, bool party = false, bool directAccess = false);
+    virtual ~PK7()
+    {
+        if (!directAccess)
+        {
+            delete[] data;
+        }
+    }
 
-    std::shared_ptr<PKX> clone(void) override;
+    std::shared_ptr<PKX> clone(void) const override;
 
     Generation generation(void) const override;
 
@@ -237,6 +244,9 @@ public:
     inline u8 expType(void) const override { return PersonalSMUSUM::expType(formSpecies()); }
     inline u8 abilities(u8 n) const override { return PersonalSMUSUM::ability(formSpecies(), n); }
     inline u16 formStatIndex(void) const override { return PersonalSMUSUM::formStatIndex(formSpecies()); }
+
+private:
+    bool directAccess;
 };
 
 #endif
