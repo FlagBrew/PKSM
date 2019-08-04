@@ -56,7 +56,7 @@ struct LibraryFunction UnixFunctions[] =
     { pksm_utf16_to_utf8,   "char* utf16_to_utf8(char* data);" },
     { pksm_utf8_to_utf16,   "char* utf8_to_utf16(char* data);" },
     // end
-    { NULL,             NULL }
+    { NULL,                 NULL }
 };
 
 void PlatformLibraryInit(Picoc *pc)
