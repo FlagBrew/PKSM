@@ -1229,6 +1229,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 ProgramFail(Parser, "Incorrect number of args (%i) for FORM", NumArgs);
             }
             pkm->alternativeForm(Param[4]->Val->Integer);
+            break;
         default:
             ProgramFail(Parser, "Field number %i is invalid", (int) field);
             break;
