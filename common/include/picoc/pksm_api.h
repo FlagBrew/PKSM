@@ -59,6 +59,7 @@ enum PKX_FIELD {
     MET_DAY,
     MET_MONTH,
     MET_YEAR,
+    FORM,
     MAX_FIELD
 };
 
