@@ -60,6 +60,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
             pkm->TID(TitleLoader::save->TID());
             pkm->SID(TitleLoader::save->SID());
             pkm->otName(TitleLoader::save->otName());
+            pkm->otGender(TitleLoader::save->gender());
         }
         else
         {
