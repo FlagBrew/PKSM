@@ -1214,7 +1214,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for MET_MONTH");
             }
-            pkm->metMonth(Param[4]->Val->Integer):
+            pkm->metMonth(Param[4]->Val->Integer);
             break;
         case MET_YEAR:
             if (NumArgs != 4)
