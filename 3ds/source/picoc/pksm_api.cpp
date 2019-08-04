@@ -1158,4 +1158,69 @@ void sav_get_ot_name(struct ParseState* Parser, struct Value* ReturnValue, struc
     ret[otName.size()] = '\0';
     ReturnValue->Val->Pointer = ret;
 }
+
+void pkx_set_met_location(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    u8* data = (u8*) Param[0]->Val->Pointer;
+    Generation gen = Generation(Param[1]->Val->Integer);
+    int loc = Param[2]->Val->Integer;
+    checkGen(Parser, gen);
+
+    std::unique_ptr<PKX> pkm = nullptr;
+    switch (gen)
+    {
+        case Generation::FOUR:
+            pkm = std::make_unique<PK4>(data, false, false, true);
+            break;
+        case Generation::FIVE:
+            pkm = std::make_unique<PK5>(data, false, false, true);
+            break;
+        case Generation::SIX:
+            pkm = std::make_unique<PK6>(data, false, false, true);
+            break;
+        case Generation::SEVEN:
+            pkm = std::make_unique<PK7>(data, false, false, true);
+            break;
+        case Generation::LGPE:
+        default:
+            pkm = std::make_unique<PB7>(data, false, true);
+            break;
+    }
+    pkm->metLocation(loc);
+}
+
+void pkx_set_move(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    u8* data = (u8*) Param[0]->Val->Pointer;
+    Generation gen = Generation(Param[1]->Val->Integer);
+    int which = Param[2]->Val->Integer;
+    u16 id = Param[3]->Val->UnsignedShortInteger;
+    if (which >= 4)
+    {
+        ProgramFail(Parser, "Move number %i is invalid", which);
+    }
+    checkGen(Parser, gen);
+
+    std::unique_ptr<PKX> pkm = nullptr;
+    switch (gen)
+    {
+        case Generation::FOUR:
+            pkm = std::make_unique<PK4>(data, false, false, true);
+            break;
+        case Generation::FIVE:
+            pkm = std::make_unique<PK5>(data, false, false, true);
+            break;
+        case Generation::SIX:
+            pkm = std::make_unique<PK6>(data, false, false, true);
+            break;
+        case Generation::SEVEN:
+            pkm = std::make_unique<PK7>(data, false, false, true);
+            break;
+        case Generation::LGPE:
+        default:
+            pkm = std::make_unique<PB7>(data, false, true);
+            break;
+    }
+    pkm->move(which, id);
+}
 }

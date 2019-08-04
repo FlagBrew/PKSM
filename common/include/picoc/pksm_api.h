@@ -75,6 +75,8 @@ void pkx_set_sid(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_is_valid(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_set_shiny(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_set_language(struct ParseState*, struct Value*, struct Value**, int);
+void pkx_set_met_location(struct ParseState*, struct Value*, struct Value**, int);
+void pkx_set_move(struct ParseState*, struct Value*, struct Value**, int);
 // PKSM prefix to prevent name hiding
 void pksm_utf8_to_utf16(struct ParseState*, struct Value*, struct Value**, int);
 void pksm_utf16_to_utf8(struct ParseState*, struct Value*, struct Value**, int);
