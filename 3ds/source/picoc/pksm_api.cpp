@@ -267,6 +267,7 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
             if (pkm->generation() == Generation::LGPE)
             {
                 TitleLoader::save->pkm(pkm, box, slot, doTradeEdits);
+                TitleLoader::save->dex(pkm);
             }
         }
         else
@@ -330,6 +331,7 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
                 return;
             }
             TitleLoader::save->pkm(pkm, box, slot, doTradeEdits);
+            TitleLoader::save->dex(pkm);
         }
     }
 }
