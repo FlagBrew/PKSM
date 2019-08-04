@@ -953,104 +953,14 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
         pkm->PID(), pkm->generation()));
 }
 
-void pkx_set_ot_name(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
-{
-    u8* data = (u8*) Param[0]->Val->Pointer;
-    Generation gen = Generation(Param[1]->Val->Integer);
-    char* otName = (char*) Param[2]->Val->Pointer;
-    checkGen(Parser, gen);
-
-    std::unique_ptr<PKX> pkm = nullptr;
-    switch (gen)
-    {
-        case Generation::FOUR:
-            pkm = std::make_unique<PK4>(data, false, false, true);
-            break;
-        case Generation::FIVE:
-            pkm = std::make_unique<PK5>(data, false, false, true);
-            break;
-        case Generation::SIX:
-            pkm = std::make_unique<PK6>(data, false, false, true);
-            break;
-        case Generation::SEVEN:
-            pkm = std::make_unique<PK7>(data, false, false, true);
-            break;
-        case Generation::LGPE:
-        default:
-            pkm = std::make_unique<PB7>(data, false, true);
-            break;
-    }
-    pkm->otName(otName);
-}
-
-void pkx_set_tid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
-{
-    u8* data = (u8*) Param[0]->Val->Pointer;
-    Generation gen = Generation(Param[1]->Val->Integer);
-    u16 TID = Param[2]->Val->UnsignedShortInteger;
-    checkGen(Parser, gen);
-
-    std::unique_ptr<PKX> pkm = nullptr;
-    switch (gen)
-    {
-        case Generation::FOUR:
-            pkm = std::make_unique<PK4>(data, false, false, true);
-            break;
-        case Generation::FIVE:
-            pkm = std::make_unique<PK5>(data, false, false, true);
-            break;
-        case Generation::SIX:
-            pkm = std::make_unique<PK6>(data, false, false, true);
-            break;
-        case Generation::SEVEN:
-            pkm = std::make_unique<PK7>(data, false, false, true);
-            break;
-        case Generation::LGPE:
-        default:
-            pkm = std::make_unique<PB7>(data, false, true);
-            break;
-    }
-    pkm->TID(TID);
-}
-
-void pkx_set_sid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
-{
-    u8* data = (u8*) Param[0]->Val->Pointer;
-    Generation gen = Generation(Param[1]->Val->Integer);
-    u16 SID = Param[2]->Val->UnsignedShortInteger;
-    checkGen(Parser, gen);
-
-    std::unique_ptr<PKX> pkm = nullptr;
-    switch (gen)
-    {
-        case Generation::FOUR:
-            pkm = std::make_unique<PK4>(data, false, false, true);
-            break;
-        case Generation::FIVE:
-            pkm = std::make_unique<PK5>(data, false, false, true);
-            break;
-        case Generation::SIX:
-            pkm = std::make_unique<PK6>(data, false, false, true);
-            break;
-        case Generation::SEVEN:
-            pkm = std::make_unique<PK7>(data, false, false, true);
-            break;
-        case Generation::LGPE:
-        default:
-            pkm = std::make_unique<PB7>(data, false, true);
-            break;
-    }
-    pkm->SID(SID);
-}
-
 void sav_get_sid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    ReturnValue->Val->UnsignedShortInteger = TitleLoader::save->SID();
+    ReturnValue->Val->Integer = TitleLoader::save->SID();
 }
 
 void sav_get_tid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    ReturnValue->Val->UnsignedShortInteger = TitleLoader::save->TID();
+    ReturnValue->Val->Integer = TitleLoader::save->TID();
 }
 
 void pkx_is_valid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -1090,66 +1000,6 @@ void pkx_is_valid(struct ParseState* Parser, struct Value* ReturnValue, struct V
     }
 }
 
-void pkx_set_shiny(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
-{
-    u8* data = (u8*) Param[0]->Val->Pointer;
-    Generation gen = Generation(Param[1]->Val->Integer);
-    bool shiny = (bool)Param[2]->Val->Integer;
-    checkGen(Parser, gen);
-
-    std::unique_ptr<PKX> pkm = nullptr;
-    switch (gen)
-    {
-        case Generation::FOUR:
-            pkm = std::make_unique<PK4>(data, false, false, true);
-            break;
-        case Generation::FIVE:
-            pkm = std::make_unique<PK5>(data, false, false, true);
-            break;
-        case Generation::SIX:
-            pkm = std::make_unique<PK6>(data, false, false, true);
-            break;
-        case Generation::SEVEN:
-            pkm = std::make_unique<PK7>(data, false, false, true);
-            break;
-        case Generation::LGPE:
-        default:
-            pkm = std::make_unique<PB7>(data, false, true);
-            break;
-    }
-    pkm->shiny(shiny);
-}
-
-void pkx_set_language(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
-{
-    u8* data = (u8*) Param[0]->Val->Pointer;
-    Generation gen = Generation(Param[1]->Val->Integer);
-    Language lang = Language(Param[2]->Val->Integer);
-    checkGen(Parser, gen);
-
-    std::unique_ptr<PKX> pkm = nullptr;
-    switch (gen)
-    {
-        case Generation::FOUR:
-            pkm = std::make_unique<PK4>(data, false, false, true);
-            break;
-        case Generation::FIVE:
-            pkm = std::make_unique<PK5>(data, false, false, true);
-            break;
-        case Generation::SIX:
-            pkm = std::make_unique<PK6>(data, false, false, true);
-            break;
-        case Generation::SEVEN:
-            pkm = std::make_unique<PK7>(data, false, false, true);
-            break;
-        case Generation::LGPE:
-        default:
-            pkm = std::make_unique<PB7>(data, false, true);
-            break;
-    }
-    pkm->language(lang);
-}
-
 void sav_get_ot_name(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     std::string otName = TitleLoader::save->otName();
@@ -1159,11 +1009,11 @@ void sav_get_ot_name(struct ParseState* Parser, struct Value* ReturnValue, struc
     ReturnValue->Val->Pointer = ret;
 }
 
-void pkx_set_met_location(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     u8* data = (u8*) Param[0]->Val->Pointer;
     Generation gen = Generation(Param[1]->Val->Integer);
-    int loc = Param[2]->Val->Integer;
+    PKX_FIELD field = PKX_FIELD(Param[2]->Val->Integer);
     checkGen(Parser, gen);
 
     std::unique_ptr<PKX> pkm = nullptr;
@@ -1186,41 +1036,90 @@ void pkx_set_met_location(struct ParseState* Parser, struct Value* ReturnValue, 
             pkm = std::make_unique<PB7>(data, false, true);
             break;
     }
-    pkm->metLocation(loc);
-}
 
-void pkx_set_move(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
-{
-    u8* data = (u8*) Param[0]->Val->Pointer;
-    Generation gen = Generation(Param[1]->Val->Integer);
-    int which = Param[2]->Val->Integer;
-    u16 id = Param[3]->Val->UnsignedShortInteger;
-    if (which >= 4)
+    // For whatever reason, data for variadic arguments seems to be one-indexed
+    switch (field)
     {
-        ProgramFail(Parser, "Move number %i is invalid", which);
-    }
-    checkGen(Parser, gen);
-
-    std::unique_ptr<PKX> pkm = nullptr;
-    switch (gen)
-    {
-        case Generation::FOUR:
-            pkm = std::make_unique<PK4>(data, false, false, true);
+        case OT_NAME:
+            if (NumArgs != 4)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for OT_NAME", NumArgs);
+            }
+            pkm->otName((char*)Param[4]->Val->Pointer);
             break;
-        case Generation::FIVE:
-            pkm = std::make_unique<PK5>(data, false, false, true);
+        case TID:
+            if (NumArgs != 4)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for TID", NumArgs);
+            }
+            pkm->TID(Param[4]->Val->Integer);
             break;
-        case Generation::SIX:
-            pkm = std::make_unique<PK6>(data, false, false, true);
+        case SID:
+            if (NumArgs != 4)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for SID", NumArgs);
+            }
+            pkm->SID(Param[4]->Val->Integer);
             break;
-        case Generation::SEVEN:
-            pkm = std::make_unique<PK7>(data, false, false, true);
+        case SHINY:
+            if (NumArgs != 4)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for SHINY", NumArgs);
+            }
+            pkm->shiny((bool)Param[4]->Val->Integer);
             break;
-        case Generation::LGPE:
+        case LANGUAGE:
+            if (NumArgs != 4)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for LANGUAGE", NumArgs);
+            }
+            pkm->language(Language(Param[4]->Val->Integer));
+            break;
+        case MET_LOCATION:
+            if (NumArgs != 4)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for MET_LOCATION", NumArgs);
+            }
+            pkm->metLocation(Param[4]->Val->Integer);
+            break;
+        case MOVE:
+            if (NumArgs != 5)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for MOVE", NumArgs);
+            }
+            pkm->move(Param[4]->Val->Integer, Param[5]->Val->Integer);
+            break;
+        case BALL:
+            if (NumArgs != 4)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for BALL", NumArgs);
+            }
+            pkm->ball(Param[4]->Val->Integer);
+            break;
+        case LEVEL:
+            if (NumArgs != 4)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for LEVEL", NumArgs);
+            }
+            pkm->level(Param[4]->Val->Integer);
+            break;
+        case GENDER:
+            if (NumArgs != 4)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for GENDER", NumArgs);
+            }
+            pkm->gender(Param[4]->Val->Integer);
+            break;
+        case ABILITY:
+            if (NumArgs != 4)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for ABILITY", NumArgs);
+            }
+            pkm->ability(Param[4]->Val->Integer);
+            break;
         default:
-            pkm = std::make_unique<PB7>(data, false, true);
+            ProgramFail(Parser, "Field number %i is invalid", (int) field);
             break;
     }
-    pkm->move(which, id);
 }
 }

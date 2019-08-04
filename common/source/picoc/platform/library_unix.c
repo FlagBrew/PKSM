@@ -33,21 +33,15 @@ struct LibraryFunction UnixFunctions[] =
     { pkx_box_size,         "int pkx_box_size(enum Generation gen);" },
     { pkx_party_size,       "int pkx_party_size(enum Generation gen);" },
     { pkx_generate,         "void pkx_generate(char* data, int species);" },
-    { pkx_set_ot_name,      "void pkx_set_ot_name(char* data, enum Generation gen, char* name);" },
-    { pkx_set_tid,          "void pkx_set_tid(char* data, enum Generation gen, unsigned short id);" },
-    { pkx_set_sid,          "void pkx_set_sid(char* data, enum Generation gen, unsigned short id);" },
     { pkx_is_valid,         "int pkx_is_valid(char* data, enum Generation gen);" },
-    { pkx_set_shiny,        "void pkx_set_shiny(char* data, enum Generation gen, int shiny);" },
-    { pkx_set_language,     "void pkx_set_language(char* data, enum Generation gen, int lang);" },
-    { pkx_set_met_location, "void pkx_set_met_location(char* data, enum Generation gen, unsigned short location);" },
-    { pkx_set_move,         "void pkx_set_move(char* data, enum Generation gen, int whichMove, unsigned short moveId);" },
+    { pkx_set_value,        "void pkx_set_value(char* data, enum Generation gen, enum PKX_Field field, ...);" },
     // io
     { current_directory,    "char* current_directory();" },
     { read_directory,       "struct directory* read_directory(char* dir);" },
     // configurations
     { cfg_default_ot,       "char* cfg_default_ot();" },
-    { cfg_default_tid,      "unsigned short cfg_default_tid();" },
-    { cfg_default_sid,      "unsigned short cfg_default_sid();" },
+    { cfg_default_tid,      "int cfg_default_tid();" },
+    { cfg_default_sid,      "int cfg_default_sid();" },
     { cfg_default_day,      "int cfg_default_day();" },
     { cfg_default_month,    "int cfg_default_month();" },
     { cfg_default_year,     "int cfg_default_year();" },
@@ -67,5 +61,9 @@ struct LibraryFunction UnixFunctions[] =
 
 void PlatformLibraryInit(Picoc *pc)
 {
-    IncludeRegister(pc, "pksm.h", &UnixSetupFunc, &UnixFunctions[0], "struct pkx { int species; int form; }; enum Generation { GEN_FOUR, GEN_FIVE, GEN_SIX, GEN_SEVEN, GEN_LGPE }; struct directory { int count; char** files; };");
+    IncludeRegister(pc, "pksm.h", &UnixSetupFunc, &UnixFunctions[0],
+    "struct pkx { int species; int form; }; \
+    enum Generation { GEN_FOUR, GEN_FIVE, GEN_SIX, GEN_SEVEN, GEN_LGPE }; \
+    struct directory { int count; char** files; }; \
+    enum PKX_Field {OT_NAME, TID, SID, SHINY, LANGUAGE, MET_LOCATION, MOVE, BALL, LEVEL, GENDER, ABILITY};");
 }

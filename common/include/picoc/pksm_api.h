@@ -32,6 +32,21 @@
 
 #define PKSM_PORT 34567
 
+enum PKX_FIELD {
+    OT_NAME,
+    TID,
+    SID,
+    SHINY,
+    LANGUAGE,
+    MET_LOCATION,
+    MOVE,
+    BALL,
+    LEVEL,
+    GENDER,
+    ABILITY,
+    MAX_FIELD
+};
+
 void bank_inject_pkx(struct ParseState*, struct Value*, struct Value**, int);
 void cfg_default_ot(struct ParseState*, struct Value*, struct Value**, int);
 void cfg_default_tid(struct ParseState*, struct Value*, struct Value**, int);
@@ -69,14 +84,8 @@ void pkx_encrypt(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_box_size(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_party_size(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_generate(struct ParseState*, struct Value*, struct Value**, int);
-void pkx_set_ot_name(struct ParseState*, struct Value*, struct Value**, int);
-void pkx_set_tid(struct ParseState*, struct Value*, struct Value**, int);
-void pkx_set_sid(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_is_valid(struct ParseState*, struct Value*, struct Value**, int);
-void pkx_set_shiny(struct ParseState*, struct Value*, struct Value**, int);
-void pkx_set_language(struct ParseState*, struct Value*, struct Value**, int);
-void pkx_set_met_location(struct ParseState*, struct Value*, struct Value**, int);
-void pkx_set_move(struct ParseState*, struct Value*, struct Value**, int);
+void pkx_set_value(struct ParseState*, struct Value*, struct Value**, int);
 // PKSM prefix to prevent name hiding
 void pksm_utf8_to_utf16(struct ParseState*, struct Value*, struct Value**, int);
 void pksm_utf16_to_utf8(struct ParseState*, struct Value*, struct Value**, int);
