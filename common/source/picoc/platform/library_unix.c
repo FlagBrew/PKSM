@@ -62,9 +62,10 @@ struct LibraryFunction UnixFunctions[] =
 void PlatformLibraryInit(Picoc *pc)
 {
     IncludeRegister(pc, "pksm.h", &UnixSetupFunc, &UnixFunctions[0],
-    "struct pkx { int species; int form; }; \
-    enum Generation { GEN_FOUR, GEN_FIVE, GEN_SIX, GEN_SEVEN, GEN_LGPE }; \
-    struct directory { int count; char** files; }; \
-    enum PKX_Field {OT_NAME, TID, SID, SHINY, LANGUAGE, MET_LOCATION, MOVE, BALL, LEVEL, GENDER, \
-                    ABILITY, IV_HP, IV_ATK, IV_DEF, IV_SPATK, IV_SPDEF, IV_SPEED, NICKNAME, ITEM, \
-                    POKERUS, EGG_DAY, EGG_MONTH, EGG_YEAR, MET_DAY, MET_MONTH, MET_YEAR, FORM};");
+    "struct pkx { int species; int form; };"
+    "enum Generation { GEN_FOUR, GEN_FIVE, GEN_SIX, GEN_SEVEN, GEN_LGPE };"
+    "struct directory { int count; char** files; };"
+    "enum PKX_Field {OT_NAME, TID, SID, SHINY, LANGUAGE, MET_LOCATION, MOVE, BALL, LEVEL, GENDER,"
+                    "ABILITY, IV_HP, IV_ATK, IV_DEF, IV_SPATK, IV_SPDEF, IV_SPEED, NICKNAME, ITEM,"
+                    "POKERUS, EGG_DAY, EGG_MONTH, EGG_YEAR, MET_DAY, MET_MONTH, MET_YEAR, FORM};");
+}
