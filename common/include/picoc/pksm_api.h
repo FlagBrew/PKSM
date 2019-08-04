@@ -44,6 +44,21 @@ enum PKX_FIELD {
     LEVEL,
     GENDER,
     ABILITY,
+    IV_HP,
+    IV_ATK,
+    IV_DEF,
+    IV_SPATK,
+    IV_SPDEF,
+    IV_SPEED,
+    NICKNAME,
+    ITEM,
+    POKERUS,
+    EGG_DAY,
+    EGG_MONTH,
+    EGG_YEAR,
+    MET_DAY,
+    MET_MONTH,
+    MET_YEAR,
     MAX_FIELD
 };
 

@@ -1117,6 +1117,112 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             }
             pkm->ability(Param[4]->Val->Integer);
             break;
+        case IV_HP:
+            if (NumArgs != 4)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for IV_HP");
+            }
+            pkm->iv(0, Param[4]->Val->Integer);
+            break;
+        case IV_ATK:
+            if (NumArgs != 4)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for IV_ATK");
+            }
+            pkm->iv(1, Param[4]->Val->Integer);
+            break;
+        case IV_DEF:
+            if (NumArgs != 4)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for IV_DEF");
+            }
+            pkm->iv(2, Param[4]->Val->Integer);
+            break;
+        case IV_SPATK:
+            if (NumArgs != 4)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for IV_SPATK");
+            }
+            pkm->iv(4, Param[4]->Val->Integer);
+            break;
+        case IV_SPDEF:
+            if (NumArgs != 4)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for IV_SPDEF");
+            }
+            pkm->iv(5, Param[4]->Val->Integer);
+            break;
+        case IV_SPEED:
+            if (NumArgs != 4)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for IV_SPEED");
+            }
+            pkm->iv(3, Param[4]->Val->Integer);
+            break;
+        case NICKNAME:
+            if (NumArgs != 4)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for NICKNAME");
+            }
+            pkm->nickname((char*)Param[4]->Val->Pointer);
+            break;
+        case ITEM:
+            if (NumArgs != 4)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for ITEM");
+            }
+            pkm->heldItem(Param[4]->Val->Integer);
+            break;
+        case POKERUS:
+            if (NumArgs != 5)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for POKERUS");
+            }
+            pkm->pkrsStrain(Param[4]->Val->Integer);
+            pkm->pkrsDays(Param[5]->Val->Integer);
+            break;
+        case EGG_DAY:
+            if (NumArgs != 4)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for EGG_DAY");
+            }
+            pkm->eggDay(Param[4]->Val->Integer);
+            break;
+        case EGG_MONTH:
+            if (NumArgs != 4)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for EGG_MONTH");
+            }
+            pkm->eggMonth(Param[4]->Val->Integer);
+            break;
+        case EGG_YEAR:
+            if (NumArgs != 4)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for EGG_YEAR");
+            }
+            pkm->eggYear(Param[4]->Val->Integer);
+            break;
+        case MET_DAY:
+            if (NumArgs != 4)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for MET_DAY");
+            }
+            pkm->metDay(Param[4]->Val->Integer);
+            break;
+        case MET_MONTH:
+            if (NumArgs != 4)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for MET_MONTH");
+            }
+            pkm->metMonth(Param[4]->Val->Integer):
+            break;
+        case MET_YEAR:
+            if (NumArgs != 4)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for MET_YEAR");
+            }
+            pkm->metYear(Param[4]->Val->Integer);
+            break;
         default:
             ProgramFail(Parser, "Field number %i is invalid", (int) field);
             break;
