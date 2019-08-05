@@ -32,7 +32,7 @@ extern "C" {
 
 void PKSM_Rand(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
 {
-    ReturnValue->Val->Integer = randomNumbers();
+    ReturnValue->Val->Integer = randomNumbers() >> 1; 
 }
 
 void PKSM_Srand(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
