@@ -43,7 +43,6 @@
 
 extern "C" {
 #include "pksm_api.h"
-#define MEM_ALIGN(x) (((x) + sizeof(ALIGN_TYPE) - 1) & ~(sizeof(ALIGN_TYPE)-1))
 
 static void checkGen(struct ParseState* Parser, Generation gen)
 {
