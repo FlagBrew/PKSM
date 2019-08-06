@@ -94,6 +94,7 @@ void sav_get_tid(struct ParseState*, struct Value*, struct Value**, int);
 void sav_get_ot_name(struct ParseState*, struct Value*, struct Value**, int);
 void current_directory(struct ParseState*, struct Value*, struct Value**, int);
 void read_directory(struct ParseState*, struct Value*, struct Value**, int);
+void delete_directory(struct ParseState*, struct Value*, struct Value**, int);
 void i18n_species(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_decrypt(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_encrypt(struct ParseState*, struct Value*, struct Value**, int);

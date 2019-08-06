@@ -234,6 +234,25 @@ void read_directory(struct ParseState* Parser, struct Value* ReturnValue, struct
     ReturnValue->Val->Pointer = ret;
 }
 
+void delete_directory(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    struct dirData
+    {
+        int amount;
+        char** data;
+    };
+    dirData* dir = (dirData*) Param[0]->Val->Pointer;
+    if (dir)
+    {
+        for (int i = 0; i < dir->amount; i++)
+        {
+            free(dir->data[i]);
+        }
+        free(dir->data);
+        free(dir);
+    }
+}
+
 void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     u8* data          = (u8*)Param[0]->Val->Pointer;

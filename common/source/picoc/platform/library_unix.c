@@ -38,6 +38,7 @@ struct LibraryFunction UnixFunctions[] =
     // io
     { current_directory,    "char* current_directory();" },
     { read_directory,       "struct directory* read_directory(char* dir);" },
+    { delete_directory,     "void delete_directory(struct directory* dir);" },
     // configurations
     { cfg_default_ot,       "char* cfg_default_ot();" },
     { cfg_default_tid,      "int cfg_default_tid();" },
