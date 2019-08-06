@@ -60,6 +60,11 @@ static void checkGen(struct ParseState* Parser, Generation gen)
     }
 }
 
+static struct Value* getNextVarArg(struct Value* arg)
+{
+    return (struct Value*)((char*)arg + MEM_ALIGN(sizeof(struct Value) + TypeStackSizeValue(arg)));
+}
+
 void gui_warn(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     char* lineOne = (char*)Param[0]->Val->Pointer;
@@ -828,8 +833,8 @@ void pkx_party_size(struct ParseState* Parser, struct Value* ReturnValue, struct
 
 void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    u8* data       = (u8*)Param[0]->Val->Pointer;
-    int species    = Param[1]->Val->Integer;
+    u8* data                 = (u8*)Param[0]->Val->Pointer;
+    int species              = Param[1]->Val->Integer;
     std::unique_ptr<PKX> pkm = nullptr;
     switch (TitleLoader::save->generation())
     {
@@ -949,8 +954,8 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
     pkm->species((u16)species);
     pkm->alternativeForm(0);
     pkm->setAbility(0);
-    pkm->PID(PKX::getRandomPID(pkm->species(), pkm->gender(), pkm->version(), pkm->nature(), pkm->alternativeForm(), pkm->abilityNumber(),
-        pkm->PID(), pkm->generation()));
+    pkm->PID(PKX::getRandomPID(
+        pkm->species(), pkm->gender(), pkm->version(), pkm->nature(), pkm->alternativeForm(), pkm->abilityNumber(), pkm->PID(), pkm->generation()));
 }
 
 void sav_get_sid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -965,7 +970,7 @@ void sav_get_tid(struct ParseState* Parser, struct Value* ReturnValue, struct Va
 
 void pkx_is_valid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    u8* data = (u8*) Param[0]->Val->Pointer;
+    u8* data       = (u8*)Param[0]->Val->Pointer;
     Generation gen = Generation(Param[1]->Val->Integer);
     checkGen(Parser, gen);
 
@@ -1003,18 +1008,18 @@ void pkx_is_valid(struct ParseState* Parser, struct Value* ReturnValue, struct V
 void sav_get_ot_name(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     std::string otName = TitleLoader::save->otName();
-    char* ret = (char*) malloc((otName.size() + 1) * sizeof(char));
+    char* ret          = (char*)malloc((otName.size() + 1) * sizeof(char));
     std::copy(otName.begin(), otName.end(), ret);
-    ret[otName.size()] = '\0';
+    ret[otName.size()]        = '\0';
     ReturnValue->Val->Pointer = ret;
 }
 
 void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    u8* data = (u8*) Param[0]->Val->Pointer;
-    Generation gen = Generation(Param[1]->Val->Integer);
-    PKX_FIELD field = PKX_FIELD(Param[2]->Val->Integer);
-    struct Value* ThisArg = Param[2];
+    u8* data              = (u8*)Param[0]->Val->Pointer;
+    Generation gen        = Generation(Param[1]->Val->Integer);
+    PKX_FIELD field       = PKX_FIELD(Param[2]->Val->Integer);
+    struct Value* nextArg = getNextVarArg(Param[2]);
     checkGen(Parser, gen);
 
     std::unique_ptr<PKX> pkm = nullptr;
@@ -1038,7 +1043,6 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             break;
     }
 
-    ThisArg = (struct Value *)((char *)ThisArg + MEM_ALIGN(sizeof(struct Value) + TypeStackSizeValue(ThisArg)));
     switch (field)
     {
         case OT_NAME:
@@ -1046,198 +1050,193 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for OT_NAME", NumArgs);
             }
-            pkm->otName((char*)ThisArg->Val->Pointer);
+            pkm->otName((char*)nextArg->Val->Pointer);
             break;
         case TID:
             if (NumArgs != 4)
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for TID", NumArgs);
             }
-            pkm->TID(ThisArg->Val->Integer);
+            pkm->TID(nextArg->Val->Integer);
             break;
         case SID:
             if (NumArgs != 4)
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for SID", NumArgs);
             }
-            pkm->SID(ThisArg->Val->Integer);
+            pkm->SID(nextArg->Val->Integer);
             break;
         case SHINY:
             if (NumArgs != 4)
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for SHINY", NumArgs);
             }
-            pkm->shiny((bool)ThisArg->Val->Integer);
+            pkm->shiny((bool)nextArg->Val->Integer);
             break;
         case LANGUAGE:
             if (NumArgs != 4)
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for LANGUAGE", NumArgs);
             }
-            pkm->language(Language(ThisArg->Val->Integer));
+            pkm->language(Language(nextArg->Val->Integer));
             break;
         case MET_LOCATION:
             if (NumArgs != 4)
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for MET_LOCATION", NumArgs);
             }
-            pkm->metLocation(ThisArg->Val->Integer);
+            pkm->metLocation(nextArg->Val->Integer);
             break;
         case MOVE:
-        {
             if (NumArgs != 5)
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for MOVE", NumArgs);
             }
-            int which = ThisArg->Val->Integer;
-            ThisArg = (struct Value *)((char *)ThisArg + MEM_ALIGN(sizeof(struct Value) + TypeStackSizeValue(ThisArg)));
-            pkm->move(which, ThisArg->Val->Integer);
-        }
+            pkm->move(nextArg->Val->Integer, getNextVarArg(nextArg)->Val->Integer);
             break;
         case BALL:
             if (NumArgs != 4)
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for BALL", NumArgs);
             }
-            pkm->ball(ThisArg->Val->Integer);
+            pkm->ball(nextArg->Val->Integer);
             break;
         case LEVEL:
             if (NumArgs != 4)
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for LEVEL", NumArgs);
             }
-            pkm->level(ThisArg->Val->Integer);
+            pkm->level(nextArg->Val->Integer);
             break;
         case GENDER:
             if (NumArgs != 4)
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for GENDER", NumArgs);
             }
-            pkm->gender(ThisArg->Val->Integer);
+            pkm->gender(nextArg->Val->Integer);
             break;
         case ABILITY:
             if (NumArgs != 4)
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for ABILITY", NumArgs);
             }
-            pkm->ability(ThisArg->Val->Integer);
+            pkm->ability(nextArg->Val->Integer);
             break;
         case IV_HP:
             if (NumArgs != 4)
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for IV_HP", NumArgs);
             }
-            pkm->iv(0, ThisArg->Val->Integer);
+            pkm->iv(0, nextArg->Val->Integer);
             break;
         case IV_ATK:
             if (NumArgs != 4)
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for IV_ATK", NumArgs);
             }
-            pkm->iv(1, ThisArg->Val->Integer);
+            pkm->iv(1, nextArg->Val->Integer);
             break;
         case IV_DEF:
             if (NumArgs != 4)
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for IV_DEF", NumArgs);
             }
-            pkm->iv(2, ThisArg->Val->Integer);
+            pkm->iv(2, nextArg->Val->Integer);
             break;
         case IV_SPATK:
             if (NumArgs != 4)
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for IV_SPATK", NumArgs);
             }
-            pkm->iv(4, ThisArg->Val->Integer);
+            pkm->iv(4, nextArg->Val->Integer);
             break;
         case IV_SPDEF:
             if (NumArgs != 4)
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for IV_SPDEF", NumArgs);
             }
-            pkm->iv(5, ThisArg->Val->Integer);
+            pkm->iv(5, nextArg->Val->Integer);
             break;
         case IV_SPEED:
             if (NumArgs != 4)
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for IV_SPEED", NumArgs);
             }
-            pkm->iv(3, ThisArg->Val->Integer);
+            pkm->iv(3, nextArg->Val->Integer);
             break;
         case NICKNAME:
             if (NumArgs != 4)
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for NICKNAME", NumArgs);
             }
-            pkm->nickname((char*)ThisArg->Val->Pointer);
+            pkm->nickname((char*)nextArg->Val->Pointer);
             break;
         case ITEM:
             if (NumArgs != 4)
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for ITEM", NumArgs);
             }
-            pkm->heldItem(ThisArg->Val->Integer);
+            pkm->heldItem(nextArg->Val->Integer);
             break;
         case POKERUS:
             if (NumArgs != 5)
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for POKERUS", NumArgs);
             }
-            pkm->pkrsStrain(ThisArg->Val->Integer);
-            ThisArg = (struct Value *)((char *)ThisArg + MEM_ALIGN(sizeof(struct Value) + TypeStackSizeValue(ThisArg)));
-            pkm->pkrsDays(ThisArg->Val->Integer);
+            pkm->pkrsStrain(nextArg->Val->Integer);
+            pkm->pkrsDays(getNextVarArg(nextArg)->Val->Integer);
             break;
         case EGG_DAY:
             if (NumArgs != 4)
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for EGG_DAY", NumArgs);
             }
-            pkm->eggDay(ThisArg->Val->Integer);
+            pkm->eggDay(nextArg->Val->Integer);
             break;
         case EGG_MONTH:
             if (NumArgs != 4)
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for EGG_MONTH", NumArgs);
             }
-            pkm->eggMonth(ThisArg->Val->Integer);
+            pkm->eggMonth(nextArg->Val->Integer);
             break;
         case EGG_YEAR:
             if (NumArgs != 4)
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for EGG_YEAR", NumArgs);
             }
-            pkm->eggYear(ThisArg->Val->Integer);
+            pkm->eggYear(nextArg->Val->Integer);
             break;
         case MET_DAY:
             if (NumArgs != 4)
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for MET_DAY", NumArgs);
             }
-            pkm->metDay(ThisArg->Val->Integer);
+            pkm->metDay(nextArg->Val->Integer);
             break;
         case MET_MONTH:
             if (NumArgs != 4)
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for MET_MONTH", NumArgs);
             }
-            pkm->metMonth(ThisArg->Val->Integer);
+            pkm->metMonth(nextArg->Val->Integer);
             break;
         case MET_YEAR:
             if (NumArgs != 4)
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for MET_YEAR", NumArgs);
             }
-            pkm->metYear(ThisArg->Val->Integer);
+            pkm->metYear(nextArg->Val->Integer);
             break;
         case FORM:
             if (NumArgs != 4)
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for FORM", NumArgs);
             }
-            pkm->alternativeForm(ThisArg->Val->Integer);
+            pkm->alternativeForm(nextArg->Val->Integer);
             break;
         default:
-            ProgramFail(Parser, "Field number %i is invalid", (int) field);
+            ProgramFail(Parser, "Field number %i is invalid", (int)field);
             break;
     }
 }
