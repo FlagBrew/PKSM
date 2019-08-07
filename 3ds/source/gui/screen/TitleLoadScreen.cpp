@@ -231,7 +231,7 @@ void TitleLoadScreen::update(touchPosition* touch)
                 {
                     firstSave++;
                 }
-                else
+                else if (firstSave + selectedSave < (int)availableCheckpointSaves.size() - 1)
                 {
                     selectedSave++;
                 }

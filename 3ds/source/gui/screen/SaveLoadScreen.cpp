@@ -350,7 +350,7 @@ void SaveLoadScreen::update(touchPosition* touch)
                 {
                     firstSave++;
                 }
-                else
+                else if (firstSave + selectedSave < (int)saves[saveGroup].size() - 1)
                 {
                     selectedSave++;
                 }
