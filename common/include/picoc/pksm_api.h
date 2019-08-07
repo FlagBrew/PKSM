@@ -92,6 +92,7 @@ void sav_inject_pkx(struct ParseState*, struct Value*, struct Value**, int);
 void sav_get_sid(struct ParseState*, struct Value*, struct Value**, int);
 void sav_get_tid(struct ParseState*, struct Value*, struct Value**, int);
 void sav_get_ot_name(struct ParseState*, struct Value*, struct Value**, int);
+void sav_get_pkx_slots(struct ParseState*, struct Value*, struct Value**, int);
 void current_directory(struct ParseState*, struct Value*, struct Value**, int);
 void read_directory(struct ParseState*, struct Value*, struct Value**, int);
 void delete_directory(struct ParseState*, struct Value*, struct Value**, int);
@@ -103,6 +104,7 @@ void pkx_party_size(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_generate(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_is_valid(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_set_value(struct ParseState*, struct Value*, struct Value**, int);
+void pkx_get_value(struct ParseState*, struct Value*, struct Value**, int);
 // PKSM prefix to prevent name hiding
 void pksm_utf8_to_utf16(struct ParseState*, struct Value*, struct Value**, int);
 void pksm_utf16_to_utf8(struct ParseState*, struct Value*, struct Value**, int);

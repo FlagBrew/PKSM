@@ -24,6 +24,7 @@ struct LibraryFunction UnixFunctions[] =
     { sav_get_sid,          "unsigned short sav_get_sid();" },
     { sav_get_tid,          "unsigned short sav_get_tid();" },
     { sav_get_ot_name,      "char* sav_get_ot_name();" },
+    { sav_get_pkx_slots,    "int sav_get_pkx_slots();" },
     { party_get_pkx,        "void party_get_pkx(char* data, int slot);" },
     { party_inject_pkx,     "void party_inject_pkx(char* data, enum Generation type, int slot);" },
     { bank_inject_pkx,      "void bank_inject_pkx(char* data, enum Generation type, int box, int slot);" },
@@ -35,6 +36,7 @@ struct LibraryFunction UnixFunctions[] =
     { pkx_generate,         "void pkx_generate(char* data, int species);" },
     { pkx_is_valid,         "int pkx_is_valid(char* data, enum Generation gen);" },
     { pkx_set_value,        "void pkx_set_value(char* data, enum Generation gen, enum PKX_Field field, ...);" },
+    { pkx_get_value,        "unsigned int pkx_get_value(char* data, enum Generation gen, enum PKX_Field field, ...);" },
     // io
     { current_directory,    "char* current_directory();" },
     { read_directory,       "struct directory* read_directory(char* dir);" },
