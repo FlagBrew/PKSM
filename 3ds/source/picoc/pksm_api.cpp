@@ -440,7 +440,7 @@ void net_udp_receiver(struct ParseState* Parser, struct Value* ReturnValue, stru
     *bytesReceived = 0;
     while (*bytesReceived < size)
     {
-        int n = recvfrom(fd, buffer, size, 0, (struct sockaddr*)&addr, &addrlen);
+        int n = recvfrom(fd, buffer + *bytesReceived, size, 0, (struct sockaddr*)&addr, &addrlen);
         *bytesReceived += n;
         if (n <= 0)
             break;
@@ -490,7 +490,7 @@ void net_tcp_receiver(struct ParseState* Parser, struct Value* ReturnValue, stru
     *bytesReceived = 0;
     while (*bytesReceived < size)
     {
-        int n = recv(fdconn, buffer, size, 0);
+        int n = recv(fdconn, buffer + *bytesReceived, size, 0);
         *bytesReceived += n;
         if (n <= 0)
             break;
