@@ -1284,6 +1284,150 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             }
             pkm->alternativeForm(nextArg->Val->Integer);
             break;
+        case EV_HP:
+            if (NumArgs != 4)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for EV_HP", NumArgs);
+            }
+            pkm->ev(0, nextArg->Val->Integer);
+            break;
+        case EV_ATK:
+            if (NumArgs != 4)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for EV_ATK", NumArgs);
+            }
+            pkm->ev(1, nextArg->Val->Integer);
+            break;
+        case EV_DEF:
+            if (NumArgs != 4)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for EV_DEF", NumArgs);
+            }
+            pkm->ev(2, nextArg->Val->Integer);
+            break;
+        case EV_SPATK:
+            if (NumArgs != 4)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for EV_SPATK", NumArgs);
+            }
+            pkm->ev(4, nextArg->Val->Integer);
+            break;
+        case EV_SPDEF:
+            if (NumArgs != 4)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for EV_SPDEF", NumArgs);
+            }
+            pkm->ev(5, nextArg->Val->Integer);
+            break;
+        case EV_SPEED:
+            if (NumArgs != 4)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for EV_SPEED", NumArgs);
+            }
+            pkm->ev(3, nextArg->Val->Integer);
+            break;
+        case SPECIES:
+            if (NumArgs != 4)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for SPECIES", NumArgs);
+            }
+            pkm->species(nextArg->Val->Integer);
+            break;
+        case PID:
+            if (NumArgs != 4)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for PID", NumArgs);
+            }
+            pkm->PID(nextArg->Val->Integer);
+            break;
+        case NATURE:
+            if (NumArgs != 4)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for NATURE", NumArgs);
+            }
+            pkm->nature(nextArg->Val->Integer);
+            break;
+        case FATEFUL:
+            if (NumArgs != 4)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for FATEFUL", NumArgs);
+            }
+            pkm->fatefulEncounter((bool)nextArg->Val->Integer);
+            break;
+        case PP:
+            if (NumArgs != 5)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for PP", NumArgs);
+            }
+            pkm->PP(nextArg->Val->Integer, getNextVarArg(nextArg)->Val->Integer);
+            break;
+        case PP_UPS:
+            if (NumArgs != 5)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for PP_UPS", NumArgs);
+            }
+            pkm->PPUp(nextArg->Val->Integer, getNextVarArg(nextArg)->Val->Integer);
+            break;
+        case EGG:
+            if (NumArgs != 4)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for EGG", NumArgs);
+            }
+            pkm->egg((bool)nextArg->Val->Integer);
+            break;
+        case NICKNAMED:
+            if (NumArgs != 4)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for NICKNAMED", NumArgs);
+            }
+            pkm->nicknamed((bool)nextArg->Val->Integer);
+            break;
+        case EGG_LOCATION:
+            if (NumArgs != 4)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for EGG_LOCATION", NumArgs);
+            }
+            pkm->eggLocation(nextArg->Val->Integer);
+            break;
+        case MET_LEVEL:
+            if (NumArgs != 4)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for MET_LEVEL", NumArgs);
+            }
+            pkm->metLevel(nextArg->Val->Integer);
+            break;
+        case OT_GENDER:
+            if (NumArgs != 4)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for OT_GENDER", NumArgs);
+            }
+            pkm->otGender(nextArg->Val->Integer);
+            break;
+        case ORIGINAL_GAME:
+            if (NumArgs != 4)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for ORIGINAL_GAME", NumArgs);
+            }
+            pkm->version(nextArg->Val->Integer);
+            break;
         default:
             delete pkm;
             ProgramFail(Parser, "Field number %i is invalid", (int)field);
@@ -1540,7 +1684,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             ReturnValue->Val->UnsignedInteger = pkm->metDay();
             break;
         case MET_MONTH:
-            if (NumArgs != 4)
+            if (NumArgs != 3)
             {
                 delete pkm;
                 ProgramFail(Parser, "Incorrect number of args (%i) for MET_MONTH", NumArgs);
@@ -1548,7 +1692,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             ReturnValue->Val->UnsignedInteger = pkm->metMonth();
             break;
         case MET_YEAR:
-            if (NumArgs != 4)
+            if (NumArgs != 3)
             {
                 delete pkm;
                 ProgramFail(Parser, "Incorrect number of args (%i) for MET_YEAR", NumArgs);
@@ -1556,12 +1700,156 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             ReturnValue->Val->UnsignedInteger = pkm->metYear();
             break;
         case FORM:
-            if (NumArgs != 4)
+            if (NumArgs != 3)
             {
                 delete pkm;
                 ProgramFail(Parser, "Incorrect number of args (%i) for FORM", NumArgs);
             }
             ReturnValue->Val->UnsignedInteger = pkm->alternativeForm();
+            break;
+        case EV_HP:
+            if (NumArgs != 3)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for EV_HP", NumArgs);
+            }
+            ReturnValue->Val->Integer = pkm->ev(0);
+            break;
+        case EV_ATK:
+            if (NumArgs != 3)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for EV_ATK", NumArgs);
+            }
+            ReturnValue->Val->Integer = pkm->ev(1);
+            break;
+        case EV_DEF:
+            if (NumArgs != 3)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for EV_DEF", NumArgs);
+            }
+            ReturnValue->Val->Integer = pkm->ev(2);
+            break;
+        case EV_SPATK:
+            if (NumArgs != 3)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for EV_SPATK", NumArgs);
+            }
+            ReturnValue->Val->Integer = pkm->ev(4);
+            break;
+        case EV_SPDEF:
+            if (NumArgs != 3)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for EV_SPDEF", NumArgs);
+            }
+            ReturnValue->Val->Integer = pkm->ev(5);
+            break;
+        case EV_SPEED:
+            if (NumArgs != 3)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for EV_SPEED", NumArgs);
+            }
+            ReturnValue->Val->Integer = pkm->ev(3);
+            break;
+        case SPECIES:
+            if (NumArgs != 3)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for SPECIES", NumArgs);
+            }
+            ReturnValue->Val->Integer = pkm->species();
+            break;
+        case PID:
+            if (NumArgs != 3)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for PID", NumArgs);
+            }
+            ReturnValue->Val->Integer = pkm->PID();
+            break;
+        case NATURE:
+            if (NumArgs != 3)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for NATURE", NumArgs);
+            }
+            ReturnValue->Val->Integer = pkm->nature();
+            break;
+        case FATEFUL:
+            if (NumArgs != 3)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for FATEFUL", NumArgs);
+            }
+            ReturnValue->Val->Integer = pkm->fatefulEncounter();
+            break;
+        case PP:
+            if (NumArgs != 4)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for PP", NumArgs);
+            }
+            ReturnValue->Val->Integer = pkm->PP(nextArg->Val->Integer);
+            break;
+        case PP_UPS:
+            if (NumArgs != 4)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for PP_UPS", NumArgs);
+            }
+            ReturnValue->Val->Integer = pkm->PPUp(nextArg->Val->Integer);
+            break;
+        case EGG:
+            if (NumArgs != 3)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for EGG", NumArgs);
+            }
+            ReturnValue->Val->Integer = pkm->egg();
+            break;
+        case NICKNAMED:
+            if (NumArgs != 3)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for NICKNAMED", NumArgs);
+            }
+            ReturnValue->Val->Integer = pkm->nicknamed();
+            break;
+        case EGG_LOCATION:
+            if (NumArgs != 3)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for EGG_LOCATION", NumArgs);
+            }
+            ReturnValue->Val->Integer = pkm->eggLocation();
+            break;
+        case MET_LEVEL:
+            if (NumArgs != 3)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for MET_LEVEL", NumArgs);
+            }
+            ReturnValue->Val->Integer = pkm->metLevel();
+            break;
+        case OT_GENDER:
+            if (NumArgs != 3)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for OT_GENDER", NumArgs);
+            }
+            ReturnValue->Val->Integer = pkm->otGender();
+            break;
+        case ORIGINAL_GAME:
+            if (NumArgs != 3)
+            {
+                delete pkm;
+                ProgramFail(Parser, "Incorrect number of args (%i) for ORIGINAL_GAME", NumArgs);
+            }
+            ReturnValue->Val->Integer = pkm->version();
             break;
         default:
             delete pkm;

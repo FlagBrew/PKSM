@@ -70,5 +70,7 @@ void PlatformLibraryInit(Picoc *pc)
     "struct directory { int count; char** files; };"
     "enum PKX_Field {OT_NAME, TID, SID, SHINY, LANGUAGE, MET_LOCATION, MOVE, BALL, LEVEL, GENDER,"
                     "ABILITY, IV_HP, IV_ATK, IV_DEF, IV_SPATK, IV_SPDEF, IV_SPEED, NICKNAME, ITEM,"
-                    "POKERUS, EGG_DAY, EGG_MONTH, EGG_YEAR, MET_DAY, MET_MONTH, MET_YEAR, FORM};");
+                    "POKERUS, EGG_DAY, EGG_MONTH, EGG_YEAR, MET_DAY, MET_MONTH, MET_YEAR, FORM,"
+                    "EV_HP, EV_ATK, EV_DEF, EV_SPATK, EV_SPDEF, EV_SPEED, SPECIES, PID, NATURE, FATEFUL,"
+                    "PP, PP_UPS, EGG, NICKNAMED, EGG_LOCATION, MET_LEVEL, OT_GENDER, ORIGINAL_GAME};");
 }
