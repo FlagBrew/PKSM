@@ -67,7 +67,7 @@ StatsEditScreen::StatsEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
             },
             ui_sheet_res_null_idx, "", 0.0f, 0));
         instructions.addCircle(false, 213, y + 6, 9, COLOR_GREY);
-    
+
         buttons.push_back(std::make_unique<AccelButton>(
             231, y, 13, 13, [=]() { return this->changeSecondaryStat(statValues[i], true); }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
     }
