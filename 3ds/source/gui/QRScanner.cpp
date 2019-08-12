@@ -154,9 +154,6 @@ void QRData::captureThread()
     CAMU_SetNoiseFilter(SELECT_OUT1, true);
     CAMU_SetAutoExposure(SELECT_OUT1, true);
     CAMU_SetAutoWhiteBalance(SELECT_OUT1, true);
-    CAMU_SetPhotoMode(SELECT_OUT1, PHOTO_MODE_LETTER);
-    // No clue if this is actually effective or if it's just a placebo effect, but it seems to help?
-    CAMU_SetSharpness(SELECT_OUT1, 127);
     CAMU_Activate(SELECT_OUT1);
     CAMU_GetBufferErrorInterruptEvent(&events[2], PORT_CAM1);
     CAMU_SetTrimming(PORT_CAM1, false);

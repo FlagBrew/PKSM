@@ -62,28 +62,20 @@ void PK4::crypt(void)
     }
 }
 
-PK4::PK4(u8* dt, bool ekx, bool party, bool direct) : directAccess(direct)
+PK4::PK4(u8* dt, bool ekx, bool party)
 {
     length = party ? 236 : 136;
-    if (directAccess)
-    {
-        data = dt;
-    }
-    else
-    {
-        data = new u8[length];
-        std::copy(dt, dt + length, data);
-    }
+    data   = new u8[length];
+    std::fill_n(data, length, 0);
 
+    std::copy(dt, dt + length, data);
     if (ekx)
-    {
         decrypt();
-    }
 }
 
-std::shared_ptr<PKX> PK4::clone(void) const
+std::shared_ptr<PKX> PK4::clone(void)
 {
-    return std::make_shared<PK4>(const_cast<u8*>(data), false, length == 236);
+    return std::make_shared<PK4>(data, false, length == 236);
 }
 
 Generation PK4::generation(void) const

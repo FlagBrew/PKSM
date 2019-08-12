@@ -37,7 +37,7 @@ class PkmItemOverlay : public Overlay
 {
 public:
     PkmItemOverlay(Screen& screen, std::shared_ptr<PKX> pkm);
-    ~PkmItemOverlay() {}
+    ~PkmItemOverlay() { delete searchButton; }
     void drawTop() const override;
     void drawBottom() const override;
     void update(touchPosition* touch) override;
@@ -50,7 +50,7 @@ private:
     std::vector<std::pair<int, std::string>> validItems;
     std::string searchString    = "";
     std::string oldSearchString = "";
-    std::unique_ptr<Button> searchButton;
+    Button* searchButton;
     bool justSwitched = true;
 };
 

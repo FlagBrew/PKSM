@@ -1,6 +1,5 @@
 /* stdlib.h library for large systems - small embedded systems use clibrary.c instead */
 #include "interpreter.h"
-#include "pksm_random.h"
 
 #ifndef BUILTIN_MINI_STDLIB
 
@@ -60,15 +59,15 @@ void StdlibFree(struct ParseState *Parser, struct Value *ReturnValue, struct Val
     free(Param[0]->Val->Pointer);
 }
 
-// void StdlibRand(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
-// {
-//     ReturnValue->Val->Integer = rand();
-// }
+void StdlibRand(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+{
+    ReturnValue->Val->Integer = rand();
+}
 
-// void StdlibSrand(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
-// {
-//     srand(Param[0]->Val->Integer);
-// }
+void StdlibSrand(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+{
+    srand(Param[0]->Val->Integer);
+}
 
 void StdlibAbort(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
 {
@@ -147,8 +146,8 @@ struct LibraryFunction StdlibFunctions[] =
     { StdlibCalloc,         "void *calloc(int,int);" },
     { StdlibRealloc,        "void *realloc(void *,int);" },
     { StdlibFree,           "void free(void *);" },
-    { PKSM_Rand,           "int rand();" },
-    { PKSM_Srand,          "void srand(int);" },
+    { StdlibRand,           "int rand();" },
+    { StdlibSrand,          "void srand(int);" },
     { StdlibAbort,          "void abort();" },
     { StdlibExit,           "void exit(int);" },
     { StdlibGetenv,         "char *getenv(char *);" },

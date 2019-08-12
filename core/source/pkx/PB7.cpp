@@ -62,28 +62,22 @@ void PB7::crypt(void)
     }
 }
 
-PB7::PB7(u8* dt, bool ekx, bool direct) : directAccess(direct)
+PB7::PB7(u8* dt, bool ekx)
 {
     length = 260;
-    if (directAccess)
-    {
-        data = dt;
-    }
-    else
-    {
-        data = new u8[length];
-        std::copy(dt, dt + length, data);
-    }
+    data   = new u8[length];
+    std::fill_n(data, length, 0);
 
+    std::copy(dt, dt + length, data);
     if (ekx)
     {
         decrypt();
     }
 }
 
-std::shared_ptr<PKX> PB7::clone(void) const
+std::shared_ptr<PKX> PB7::clone(void)
 {
-    return std::make_shared<PB7>(const_cast<u8*>(data));
+    return std::make_shared<PB7>(data);
 }
 
 Generation PB7::generation(void) const

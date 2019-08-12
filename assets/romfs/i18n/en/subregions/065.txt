@@ -1,9 +1,0 @@
-000|—
-002|Australian Capital Territory
-003|New South Wales
-004|Northern Territory
-005|Queensland
-006|South Australia
-007|Tasmania
-008|Victoria
-009|Western Australia

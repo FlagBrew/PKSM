@@ -42,6 +42,8 @@ public:
     void drawBottom() const override;
     void update(touchPosition* touch) override;
 
+    ScreenType type() const override { return ScreenType::SCRIPTS; }
+
 private:
     void updateEntries();
     void applyScript();

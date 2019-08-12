@@ -39,7 +39,11 @@ class MoveOverlay : public Overlay
 {
 public:
     MoveOverlay(Screen& screen, std::shared_ptr<PKX> pkm, int moveIndex);
-    ~MoveOverlay() { pkm->fixMoves(); }
+    ~MoveOverlay()
+    {
+        pkm->fixMoves();
+        delete searchButton;
+    }
     void drawTop() const override;
     void drawBottom() const override;
     void update(touchPosition* touch) override;
@@ -53,7 +57,7 @@ private:
     std::vector<std::pair<int, std::string>> validMoves;
     std::string searchString    = "";
     std::string oldSearchString = "";
-    std::unique_ptr<Button> searchButton;
+    Button* searchButton;
     bool justSwitched = true;
 };
 

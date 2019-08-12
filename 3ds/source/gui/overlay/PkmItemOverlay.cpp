@@ -99,7 +99,7 @@ PkmItemOverlay::PkmItemOverlay(Screen& screen, std::shared_ptr<PKX> pkm)
         }
     }
     hid.select(index(items, i18n::item(Configuration::getInstance().language(), pkm->heldItem())));
-    searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
+    searchButton = new ClickButton(75, 30, 170, 23,
         [this]() {
             Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
             return false;

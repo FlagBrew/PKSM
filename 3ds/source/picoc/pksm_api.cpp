@@ -60,11 +60,6 @@ static void checkGen(struct ParseState* Parser, Generation gen)
     }
 }
 
-static struct Value* getNextVarArg(struct Value* arg)
-{
-    return (struct Value*)((char*)arg + MEM_ALIGN(sizeof(struct Value) + TypeStackSizeValue(arg)));
-}
-
 void gui_warn(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     char* lineOne = (char*)Param[0]->Val->Pointer;
@@ -115,25 +110,43 @@ void gui_menu20x2(struct ParseState* Parser, struct Value* ReturnValue, struct V
 
 void sav_sbo(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    if (TitleLoader::save->generation() == Generation::FOUR)
+    switch (TitleLoader::save->version())
     {
-        ReturnValue->Val->Integer = ((Sav4*)TitleLoader::save.get())->getSBO();
-    }
-    else
-    {
-        ReturnValue->Val->Integer = 0;
+        case 7:
+        case 8:
+            ReturnValue->Val->Integer = ((SavHGSS*)TitleLoader::save.get())->getSBO();
+            break;
+        case 10:
+        case 11:
+            ReturnValue->Val->Integer = ((SavDP*)TitleLoader::save.get())->getSBO();
+            break;
+        case 12:
+            ReturnValue->Val->Integer = ((SavPT*)TitleLoader::save.get())->getSBO();
+            break;
+        default:
+            ReturnValue->Val->Integer = 0;
+            break;
     }
 }
 
 void sav_gbo(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    if (TitleLoader::save->generation() == Generation::FOUR)
+    switch (TitleLoader::save->version())
     {
-        ReturnValue->Val->Integer = ((Sav4*)TitleLoader::save.get())->getGBO();
-    }
-    else
-    {
-        ReturnValue->Val->Integer = 0;
+        case 7:
+        case 8:
+            ReturnValue->Val->Integer = ((SavHGSS*)TitleLoader::save.get())->getGBO();
+            break;
+        case 10:
+        case 11:
+            ReturnValue->Val->Integer = ((SavDP*)TitleLoader::save.get())->getGBO();
+            break;
+        case 12:
+            ReturnValue->Val->Integer = ((SavPT*)TitleLoader::save.get())->getGBO();
+            break;
+        default:
+            ReturnValue->Val->Integer = 0;
+            break;
     }
 }
 
@@ -199,12 +212,9 @@ void gui_numpad(struct ParseState* Parser, struct Value* ReturnValue, struct Val
 
 void current_directory(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    std::string fileName = Parser->FileName;
-    fileName             = fileName.substr(0, fileName.rfind('/'));
-    char* ret            = (char*)malloc(fileName.size() + 1);
-    std::copy(fileName.begin(), fileName.end(), ret);
-    ret[fileName.size()]      = '\0';
-    ReturnValue->Val->Pointer = ret;
+    std::string fileName      = Parser->FileName;
+    fileName                  = fileName.substr(0, fileName.rfind('/'));
+    ReturnValue->Val->Pointer = fileName.data();
 }
 
 void read_directory(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -235,25 +245,6 @@ void read_directory(struct ParseState* Parser, struct Value* ReturnValue, struct
         ret->data   = nullptr;
     }
     ReturnValue->Val->Pointer = ret;
-}
-
-void delete_directory(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
-{
-    struct dirData
-    {
-        int amount;
-        char** data;
-    };
-    dirData* dir = (dirData*)Param[0]->Val->Pointer;
-    if (dir)
-    {
-        for (int i = 0; i < dir->amount; i++)
-        {
-            free(dir->data[i]);
-        }
-        free(dir->data);
-        free(dir);
-    }
 }
 
 void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -294,7 +285,6 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
             if (pkm->generation() == Generation::LGPE)
             {
                 TitleLoader::save->pkm(pkm, box, slot, doTradeEdits);
-                TitleLoader::save->dex(pkm);
             }
         }
         else
@@ -358,28 +348,23 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
                 return;
             }
             TitleLoader::save->pkm(pkm, box, slot, doTradeEdits);
-            TitleLoader::save->dex(pkm);
         }
     }
 }
 
 void cfg_default_ot(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    std::string ot = Configuration::getInstance().defaultOT();
-    char* ret      = (char*)malloc(ot.size() + 1);
-    std::copy(ot.begin(), ot.end(), ret);
-    ret[ot.size()]            = '\0';
-    ReturnValue->Val->Pointer = ret;
+    ReturnValue->Val->Pointer = (void*)Configuration::getInstance().defaultOT().c_str();
 }
 
 void cfg_default_tid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    ReturnValue->Val->UnsignedShortInteger = Configuration::getInstance().defaultTID();
+    ReturnValue->Val->UnsignedInteger = Configuration::getInstance().defaultTID();
 }
 
 void cfg_default_sid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    ReturnValue->Val->UnsignedShortInteger = Configuration::getInstance().defaultSID();
+    ReturnValue->Val->UnsignedInteger = Configuration::getInstance().defaultSID();
 }
 
 void cfg_default_day(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -440,7 +425,7 @@ void net_udp_receiver(struct ParseState* Parser, struct Value* ReturnValue, stru
     *bytesReceived = 0;
     while (*bytesReceived < size)
     {
-        int n = recvfrom(fd, buffer + *bytesReceived, size, 0, (struct sockaddr*)&addr, &addrlen);
+        int n = recvfrom(fd, buffer, size, 0, (struct sockaddr*)&addr, &addrlen);
         *bytesReceived += n;
         if (n <= 0)
             break;
@@ -490,7 +475,7 @@ void net_tcp_receiver(struct ParseState* Parser, struct Value* ReturnValue, stru
     *bytesReceived = 0;
     while (*bytesReceived < size)
     {
-        int n = recv(fdconn, buffer + *bytesReceived, size, 0);
+        int n = recv(fdconn, buffer, size, 0);
         *bytesReceived += n;
         if (n <= 0)
             break;
@@ -559,20 +544,20 @@ void bank_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struc
     switch (gen)
     {
         case Generation::FOUR:
-            pkm = std::make_shared<PK4>(data, false, false, true);
+            pkm = std::make_shared<PK4>(data, false);
             break;
         case Generation::FIVE:
-            pkm = std::make_shared<PK5>(data, false, false, true);
+            pkm = std::make_shared<PK5>(data, false);
             break;
         case Generation::SIX:
-            pkm = std::make_shared<PK6>(data, false, false, true);
+            pkm = std::make_shared<PK6>(data, false);
             break;
         case Generation::SEVEN:
-            pkm = std::make_shared<PK7>(data, false, false, true);
+            pkm = std::make_shared<PK7>(data, false);
             break;
         case Generation::LGPE:
         default:
-            pkm = std::make_shared<PB7>(data, false, true);
+            pkm = std::make_shared<PB7>(data, false);
             break;
     }
 
@@ -630,22 +615,24 @@ void pkx_decrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Va
     switch (gen)
     {
         case Generation::FOUR:
-            pkm = std::make_shared<PK4>(data, true, false, true);
+            pkm = std::make_shared<PK4>(data, true);
             break;
         case Generation::FIVE:
-            pkm = std::make_shared<PK5>(data, true, false, true);
+            pkm = std::make_shared<PK5>(data, true);
             break;
         case Generation::SIX:
-            pkm = std::make_shared<PK6>(data, true, false, true);
+            pkm = std::make_shared<PK6>(data, true);
             break;
         case Generation::SEVEN:
-            pkm = std::make_shared<PK7>(data, true, false, true);
+            pkm = std::make_shared<PK7>(data, true);
             break;
         case Generation::LGPE:
         default:
-            pkm = std::make_shared<PB7>(data, true, true);
+            pkm = std::make_shared<PB7>(data, true);
             break;
     }
+
+    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), data);
 }
 
 void pkx_encrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -660,48 +647,54 @@ void pkx_encrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Va
     switch (gen)
     {
         case Generation::FOUR:
-            pkm = std::make_shared<PK4>(data, false, false, true);
+            pkm = std::make_shared<PK4>(data, false);
             break;
         case Generation::FIVE:
-            pkm = std::make_shared<PK5>(data, false, false, true);
+            pkm = std::make_shared<PK5>(data, false);
             break;
         case Generation::SIX:
-            pkm = std::make_shared<PK6>(data, false, false, true);
+            pkm = std::make_shared<PK6>(data, false);
             break;
         case Generation::SEVEN:
-            pkm = std::make_shared<PK7>(data, false, false, true);
+            pkm = std::make_shared<PK7>(data, false);
             break;
         case Generation::LGPE:
         default:
-            pkm = std::make_shared<PB7>(data, false, true);
+            pkm = std::make_shared<PB7>(data, false);
             break;
     }
 
     pkm->encrypt();
+
+    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), data);
 }
 
 void pksm_utf8_to_utf16(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    std::u16string str = StringUtils::UTF8toUTF16((char*)Param[0]->Val->Pointer);
+    u8* data = (u8*)Param[0]->Val->Pointer;
+    // Get full length of data
+    int length = utf8_to_utf16(nullptr, data, 0);
     // Create returned buffer
-    u16* ret = (u16*)malloc((str.size() + 1) * sizeof(u16));
+    u16* ret = (u16*)malloc((length + 1) * sizeof(u16));
     // Translate data into buffer
-    std::copy(str.begin(), str.end(), ret);
+    utf8_to_utf16(ret, data, length);
 
-    ret[str.size()] = u'\0';
+    ret[length] = u'\0';
 
     ReturnValue->Val->Pointer = ret;
 }
 
 void pksm_utf16_to_utf8(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    std::string str = StringUtils::UTF16toUTF8((char16_t*)Param[0]->Val->Pointer);
+    u16* data = (u16*)Param[0]->Val->Pointer;
+    // Get full length of data
+    int length = utf16_to_utf8(nullptr, data, 0);
     // Create returned buffer
-    u8* ret = (u8*)malloc((str.size() + 1) * sizeof(u8));
+    u8* ret = (u8*)malloc((length + 1) * sizeof(u8));
     // Translate data into buffer
-    std::copy(str.begin(), str.end(), ret);
+    utf16_to_utf8(ret, data, length);
 
-    ret[str.size()] = '\0';
+    ret[length] = '\0';
 
     ReturnValue->Val->Pointer = ret;
 }
@@ -807,1055 +800,5 @@ void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, stru
             TitleLoader::save->pkm(pkm, slot);
         }
     }
-}
-
-void pkx_box_size(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
-{
-    Generation gen = Generation(Param[0]->Val->Integer);
-    checkGen(Parser, gen);
-
-    switch (gen)
-    {
-        case Generation::FOUR:
-        case Generation::FIVE:
-            ReturnValue->Val->Integer = 136;
-            break;
-        case Generation::SIX:
-        case Generation::SEVEN:
-            ReturnValue->Val->Integer = 232;
-            break;
-        case Generation::LGPE:
-        default:
-            ReturnValue->Val->Integer = 260;
-            break;
-    }
-}
-
-void pkx_party_size(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
-{
-    Generation gen = Generation(Param[0]->Val->Integer);
-    checkGen(Parser, gen);
-
-    switch (gen)
-    {
-        case Generation::FOUR:
-            ReturnValue->Val->Integer = 236;
-            break;
-        case Generation::FIVE:
-            ReturnValue->Val->Integer = 220;
-            break;
-        case Generation::SIX:
-        case Generation::SEVEN:
-        case Generation::LGPE:
-        default:
-            ReturnValue->Val->Integer = 260;
-            break;
-    }
-}
-
-void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
-{
-    u8* data                 = (u8*)Param[0]->Val->Pointer;
-    int species              = Param[1]->Val->Integer;
-    std::unique_ptr<PKX> pkm = nullptr;
-    switch (TitleLoader::save->generation())
-    {
-        case Generation::FOUR:
-            std::fill_n(data, 136, 0);
-            pkm = std::make_unique<PK4>(data, false, false, true);
-            break;
-        case Generation::FIVE:
-            std::fill_n(data, 136, 0);
-            pkm = std::make_unique<PK5>(data, false, false, true);
-            break;
-        case Generation::SIX:
-            std::fill_n(data, 232, 0);
-            pkm = std::make_unique<PK6>(data, false, false, true);
-            break;
-        case Generation::SEVEN:
-            std::fill_n(data, 232, 0);
-            pkm = std::make_unique<PK7>(data, false, false, true);
-            break;
-        case Generation::LGPE:
-        default:
-            pkm = std::make_unique<PB7>(data, false, true);
-            std::fill_n(data, 260, 0);
-            break;
-    }
-
-    // From EditorScreen
-    if (Configuration::getInstance().useSaveInfo())
-    {
-        pkm->TID(TitleLoader::save->TID());
-        pkm->SID(TitleLoader::save->SID());
-        pkm->otName(TitleLoader::save->otName());
-    }
-    else
-    {
-        pkm->TID(Configuration::getInstance().defaultTID());
-        pkm->SID(Configuration::getInstance().defaultSID());
-        switch (pkm->generation())
-        {
-            case Generation::FOUR:
-            case Generation::FIVE:
-            default:
-                pkm->otName(Configuration::getInstance().defaultOT().substr(0, 7));
-                break;
-            case Generation::SIX:
-            case Generation::SEVEN:
-                pkm->otName(Configuration::getInstance().defaultOT());
-                break;
-        }
-    }
-    pkm->ball(4);
-    pkm->encryptionConstant((((u32)randomNumbers()) % 0xFFFFFFFF) + 1);
-    pkm->version(TitleLoader::save->version());
-    switch (pkm->version())
-    {
-        case 7:
-        case 8:
-            pkm->metLocation(0x0095); // Route 1, HGSS
-            break;
-        case 10:
-        case 11:
-        case 12:
-            pkm->metLocation(0x0010); // Route 201, DPPt
-            break;
-        case 20:
-        case 21:
-        case 22:
-        case 23:
-            pkm->metLocation(0x000e); // Route 1, BWB2W2
-            break;
-        case 24:
-        case 25:
-            pkm->metLocation(0x0008); // Route 1, XY
-            break;
-        case 26:
-        case 27:
-            pkm->metLocation(0x00cc); // Route 101, ORAS
-            break;
-        case 30:
-        case 31:
-        case 32:
-        case 33:
-            pkm->metLocation(0x0006); // Route 1, SMUSUM
-            break;
-        case 42:
-        case 43:
-            pkm->metLocation(0x0003); // Route 1, LGPE
-            break;
-    }
-    pkm->fixMoves();
-    // pkm->PID((u32)randomNumbers());
-    pkm->language(Configuration::getInstance().language());
-    const time_t current = time(NULL);
-    pkm->metDay(Configuration::getInstance().day() ? Configuration::getInstance().day() : gmtime(&current)->tm_mday);
-    pkm->metMonth(Configuration::getInstance().month() ? Configuration::getInstance().month() : gmtime(&current)->tm_mon);
-    pkm->metYear(Configuration::getInstance().year() ? Configuration::getInstance().year() - 2000 : gmtime(&current)->tm_year - 2000);
-    pkm->metLevel(1);
-    if (pkm->generation() == Generation::SIX)
-    {
-        ((PK6*)pkm.get())->consoleRegion(Configuration::getInstance().nationality());
-        ((PK6*)pkm.get())->geoCountry(0, Configuration::getInstance().defaultCountry());
-        ((PK6*)pkm.get())->geoRegion(0, Configuration::getInstance().defaultRegion());
-        ((PK6*)pkm.get())->country(Configuration::getInstance().defaultCountry());
-        ((PK6*)pkm.get())->region(Configuration::getInstance().defaultRegion());
-    }
-    else if (pkm->generation() == Generation::SEVEN)
-    {
-        ((PK7*)pkm.get())->consoleRegion(Configuration::getInstance().nationality());
-        ((PK7*)pkm.get())->geoCountry(0, Configuration::getInstance().defaultCountry());
-        ((PK7*)pkm.get())->geoRegion(0, Configuration::getInstance().defaultRegion());
-        ((PK7*)pkm.get())->country(Configuration::getInstance().defaultCountry());
-        ((PK7*)pkm.get())->region(Configuration::getInstance().defaultRegion());
-    }
-
-    // From SpeciesOverlay
-    pkm->nickname(i18n::species(Configuration::getInstance().language(), species));
-    pkm->species((u16)species);
-    pkm->alternativeForm(0);
-    pkm->setAbility(0);
-    pkm->PID(PKX::getRandomPID(
-        pkm->species(), pkm->gender(), pkm->version(), pkm->nature(), pkm->alternativeForm(), pkm->abilityNumber(), pkm->PID(), pkm->generation()));
-}
-
-void sav_get_sid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
-{
-    ReturnValue->Val->Integer = TitleLoader::save->SID();
-}
-
-void sav_get_tid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
-{
-    ReturnValue->Val->Integer = TitleLoader::save->TID();
-}
-
-void pkx_is_valid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
-{
-    u8* data       = (u8*)Param[0]->Val->Pointer;
-    Generation gen = Generation(Param[1]->Val->Integer);
-    checkGen(Parser, gen);
-
-    std::unique_ptr<PKX> pkm = nullptr;
-    switch (gen)
-    {
-        case Generation::FOUR:
-            pkm = std::make_unique<PK4>(data, false, false, true);
-            break;
-        case Generation::FIVE:
-            pkm = std::make_unique<PK5>(data, false, false, true);
-            break;
-        case Generation::SIX:
-            pkm = std::make_unique<PK6>(data, false, false, true);
-            break;
-        case Generation::SEVEN:
-            pkm = std::make_unique<PK7>(data, false, false, true);
-            break;
-        case Generation::LGPE:
-        default:
-            pkm = std::make_unique<PB7>(data, false, true);
-            break;
-    }
-
-    if (pkm->species() == 0 && pkm->encryptionConstant() == 0)
-    {
-        ReturnValue->Val->Integer = 0;
-    }
-    else
-    {
-        ReturnValue->Val->Integer = 1;
-    }
-}
-
-void sav_get_ot_name(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
-{
-    std::string otName = TitleLoader::save->otName();
-    char* ret          = (char*)malloc((otName.size() + 1) * sizeof(char));
-    std::copy(otName.begin(), otName.end(), ret);
-    ret[otName.size()]        = '\0';
-    ReturnValue->Val->Pointer = ret;
-}
-
-void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
-{
-    u8* data              = (u8*)Param[0]->Val->Pointer;
-    Generation gen        = Generation(Param[1]->Val->Integer);
-    PKX_FIELD field       = PKX_FIELD(Param[2]->Val->Integer);
-    struct Value* nextArg = getNextVarArg(Param[2]);
-    checkGen(Parser, gen);
-
-    PKX* pkm = nullptr;
-    switch (gen)
-    {
-        case Generation::FOUR:
-            pkm = new PK4(data, false, false, true);
-            break;
-        case Generation::FIVE:
-            pkm = new PK5(data, false, false, true);
-            break;
-        case Generation::SIX:
-            pkm = new PK6(data, false, false, true);
-            break;
-        case Generation::SEVEN:
-            pkm = new PK7(data, false, false, true);
-            break;
-        case Generation::LGPE:
-        default:
-            pkm = new PB7(data, false, true);
-            break;
-    }
-
-    switch (field)
-    {
-        case OT_NAME:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for OT_NAME", NumArgs);
-            }
-            pkm->otName((char*)nextArg->Val->Pointer);
-            break;
-        case TID:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for TID", NumArgs);
-            }
-            pkm->TID(nextArg->Val->Integer);
-            break;
-        case SID:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for SID", NumArgs);
-            }
-            pkm->SID(nextArg->Val->Integer);
-            break;
-        case SHINY:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for SHINY", NumArgs);
-            }
-            pkm->shiny((bool)nextArg->Val->Integer);
-            break;
-        case LANGUAGE:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for LANGUAGE", NumArgs);
-            }
-            pkm->language(Language(nextArg->Val->Integer));
-            break;
-        case MET_LOCATION:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for MET_LOCATION", NumArgs);
-            }
-            pkm->metLocation(nextArg->Val->Integer);
-            break;
-        case MOVE:
-            if (NumArgs != 5)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for MOVE", NumArgs);
-            }
-            pkm->move(nextArg->Val->Integer, getNextVarArg(nextArg)->Val->Integer);
-            break;
-        case BALL:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for BALL", NumArgs);
-            }
-            pkm->ball(nextArg->Val->Integer);
-            break;
-        case LEVEL:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for LEVEL", NumArgs);
-            }
-            pkm->level(nextArg->Val->Integer);
-            break;
-        case GENDER:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for GENDER", NumArgs);
-            }
-            pkm->gender(nextArg->Val->Integer);
-            break;
-        case ABILITY:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for ABILITY", NumArgs);
-            }
-            pkm->ability(nextArg->Val->Integer);
-            break;
-        case IV_HP:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for IV_HP", NumArgs);
-            }
-            pkm->iv(0, nextArg->Val->Integer);
-            break;
-        case IV_ATK:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for IV_ATK", NumArgs);
-            }
-            pkm->iv(1, nextArg->Val->Integer);
-            break;
-        case IV_DEF:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for IV_DEF", NumArgs);
-            }
-            pkm->iv(2, nextArg->Val->Integer);
-            break;
-        case IV_SPATK:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for IV_SPATK", NumArgs);
-            }
-            pkm->iv(4, nextArg->Val->Integer);
-            break;
-        case IV_SPDEF:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for IV_SPDEF", NumArgs);
-            }
-            pkm->iv(5, nextArg->Val->Integer);
-            break;
-        case IV_SPEED:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for IV_SPEED", NumArgs);
-            }
-            pkm->iv(3, nextArg->Val->Integer);
-            break;
-        case NICKNAME:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for NICKNAME", NumArgs);
-            }
-            pkm->nickname((char*)nextArg->Val->Pointer);
-            break;
-        case ITEM:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for ITEM", NumArgs);
-            }
-            pkm->heldItem(nextArg->Val->Integer);
-            break;
-        case POKERUS:
-            if (NumArgs != 5)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for POKERUS", NumArgs);
-            }
-            pkm->pkrsStrain(nextArg->Val->Integer);
-            pkm->pkrsDays(getNextVarArg(nextArg)->Val->Integer);
-            break;
-        case EGG_DAY:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EGG_DAY", NumArgs);
-            }
-            pkm->eggDay(nextArg->Val->Integer);
-            break;
-        case EGG_MONTH:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EGG_MONTH", NumArgs);
-            }
-            pkm->eggMonth(nextArg->Val->Integer);
-            break;
-        case EGG_YEAR:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EGG_YEAR", NumArgs);
-            }
-            pkm->eggYear(nextArg->Val->Integer);
-            break;
-        case MET_DAY:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for MET_DAY", NumArgs);
-            }
-            pkm->metDay(nextArg->Val->Integer);
-            break;
-        case MET_MONTH:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for MET_MONTH", NumArgs);
-            }
-            pkm->metMonth(nextArg->Val->Integer);
-            break;
-        case MET_YEAR:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for MET_YEAR", NumArgs);
-            }
-            pkm->metYear(nextArg->Val->Integer);
-            break;
-        case FORM:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for FORM", NumArgs);
-            }
-            pkm->alternativeForm(nextArg->Val->Integer);
-            break;
-        case EV_HP:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EV_HP", NumArgs);
-            }
-            pkm->ev(0, nextArg->Val->Integer);
-            break;
-        case EV_ATK:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EV_ATK", NumArgs);
-            }
-            pkm->ev(1, nextArg->Val->Integer);
-            break;
-        case EV_DEF:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EV_DEF", NumArgs);
-            }
-            pkm->ev(2, nextArg->Val->Integer);
-            break;
-        case EV_SPATK:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EV_SPATK", NumArgs);
-            }
-            pkm->ev(4, nextArg->Val->Integer);
-            break;
-        case EV_SPDEF:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EV_SPDEF", NumArgs);
-            }
-            pkm->ev(5, nextArg->Val->Integer);
-            break;
-        case EV_SPEED:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EV_SPEED", NumArgs);
-            }
-            pkm->ev(3, nextArg->Val->Integer);
-            break;
-        case SPECIES:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for SPECIES", NumArgs);
-            }
-            pkm->species(nextArg->Val->Integer);
-            break;
-        case PID:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for PID", NumArgs);
-            }
-            pkm->PID(nextArg->Val->Integer);
-            break;
-        case NATURE:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for NATURE", NumArgs);
-            }
-            pkm->nature(nextArg->Val->Integer);
-            break;
-        case FATEFUL:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for FATEFUL", NumArgs);
-            }
-            pkm->fatefulEncounter((bool)nextArg->Val->Integer);
-            break;
-        case PP:
-            if (NumArgs != 5)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for PP", NumArgs);
-            }
-            pkm->PP(nextArg->Val->Integer, getNextVarArg(nextArg)->Val->Integer);
-            break;
-        case PP_UPS:
-            if (NumArgs != 5)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for PP_UPS", NumArgs);
-            }
-            pkm->PPUp(nextArg->Val->Integer, getNextVarArg(nextArg)->Val->Integer);
-            break;
-        case EGG:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EGG", NumArgs);
-            }
-            pkm->egg((bool)nextArg->Val->Integer);
-            break;
-        case NICKNAMED:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for NICKNAMED", NumArgs);
-            }
-            pkm->nicknamed((bool)nextArg->Val->Integer);
-            break;
-        case EGG_LOCATION:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EGG_LOCATION", NumArgs);
-            }
-            pkm->eggLocation(nextArg->Val->Integer);
-            break;
-        case MET_LEVEL:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for MET_LEVEL", NumArgs);
-            }
-            pkm->metLevel(nextArg->Val->Integer);
-            break;
-        case OT_GENDER:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for OT_GENDER", NumArgs);
-            }
-            pkm->otGender(nextArg->Val->Integer);
-            break;
-        case ORIGINAL_GAME:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for ORIGINAL_GAME", NumArgs);
-            }
-            pkm->version(nextArg->Val->Integer);
-            break;
-        default:
-            delete pkm;
-            ProgramFail(Parser, "Field number %i is invalid", (int)field);
-            break;
-    }
-    delete pkm;
-}
-
-void sav_get_pkx_slots(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
-{
-    if (TitleLoader::save->generation() == Generation::LGPE)
-    {
-        ReturnValue->Val->Integer = 1000;
-    }
-    else
-    {
-        ReturnValue->Val->Integer = TitleLoader::save->maxBoxes() * 30;
-    }
-}
-
-void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
-{
-    u8* data              = (u8*)Param[0]->Val->Pointer;
-    Generation gen        = Generation(Param[1]->Val->Integer);
-    PKX_FIELD field       = PKX_FIELD(Param[2]->Val->Integer);
-    struct Value* nextArg = getNextVarArg(Param[2]);
-    checkGen(Parser, gen);
-
-    PKX* pkm = nullptr;
-    switch (gen)
-    {
-        case Generation::FOUR:
-            pkm = new PK4(data, false, false, true);
-            break;
-        case Generation::FIVE:
-            pkm = new PK5(data, false, false, true);
-            break;
-        case Generation::SIX:
-            pkm = new PK6(data, false, false, true);
-            break;
-        case Generation::SEVEN:
-            pkm = new PK7(data, false, false, true);
-            break;
-        case Generation::LGPE:
-        default:
-            pkm = new PB7(data, false, true);
-            break;
-    }
-
-    switch (field)
-    {
-        case OT_NAME:
-        {
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for OT_NAME", NumArgs);
-            }
-            std::string name = pkm->otName();
-            char* ret        = (char*)malloc(name.size() + 1);
-            std::copy(name.begin(), name.end(), ret);
-            ret[name.size()]                  = '\0';
-            ReturnValue->Val->UnsignedInteger = (u32)ret;
-        }
-        break;
-        case TID:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for TID", NumArgs);
-            }
-            ReturnValue->Val->UnsignedInteger = pkm->TID();
-            break;
-        case SID:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for SID", NumArgs);
-            }
-            ReturnValue->Val->UnsignedInteger = pkm->SID();
-            break;
-        case SHINY:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for SHINY", NumArgs);
-            }
-            ReturnValue->Val->UnsignedInteger = pkm->shiny();
-            break;
-        case LANGUAGE:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for LANGUAGE", NumArgs);
-            }
-            ReturnValue->Val->UnsignedInteger = pkm->language();
-            break;
-        case MET_LOCATION:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for MET_LOCATION", NumArgs);
-            }
-            ReturnValue->Val->UnsignedInteger = pkm->metLocation();
-            break;
-        case MOVE:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for MOVE", NumArgs);
-            }
-            ReturnValue->Val->UnsignedInteger = pkm->move(nextArg->Val->Integer);
-            break;
-        case BALL:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for BALL", NumArgs);
-            }
-            ReturnValue->Val->UnsignedInteger = pkm->ball();
-            break;
-        case LEVEL:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for LEVEL", NumArgs);
-            }
-            ReturnValue->Val->UnsignedInteger = pkm->level();
-            break;
-        case GENDER:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for GENDER", NumArgs);
-            }
-            ReturnValue->Val->UnsignedInteger = pkm->gender();
-            break;
-        case ABILITY:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for ABILITY", NumArgs);
-            }
-            ReturnValue->Val->UnsignedInteger = pkm->ability();
-            break;
-        case IV_HP:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for IV_HP", NumArgs);
-            }
-            ReturnValue->Val->UnsignedInteger = pkm->iv(0);
-            break;
-        case IV_ATK:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for IV_ATK", NumArgs);
-            }
-            ReturnValue->Val->UnsignedInteger = pkm->iv(1);
-            break;
-        case IV_DEF:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for IV_DEF", NumArgs);
-            }
-            ReturnValue->Val->UnsignedInteger = pkm->iv(2);
-            break;
-        case IV_SPATK:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for IV_SPATK", NumArgs);
-            }
-            ReturnValue->Val->UnsignedInteger = pkm->iv(4);
-            break;
-        case IV_SPDEF:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for IV_SPDEF", NumArgs);
-            }
-            ReturnValue->Val->UnsignedInteger = pkm->iv(5);
-            break;
-        case IV_SPEED:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for IV_SPEED", NumArgs);
-            }
-            ReturnValue->Val->UnsignedInteger = pkm->iv(3);
-            break;
-        case NICKNAME:
-        {
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for NICKNAME", NumArgs);
-            }
-            std::string nick = pkm->nickname();
-            char* ret        = (char*)malloc(nick.size() + 1);
-            std::copy(nick.begin(), nick.end(), ret);
-            ret[nick.size()]                  = '\0';
-            ReturnValue->Val->UnsignedInteger = (u32)ret;
-        }
-        break;
-        case ITEM:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for ITEM", NumArgs);
-            }
-            ReturnValue->Val->UnsignedInteger = pkm->heldItem();
-            break;
-        case POKERUS:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for POKERUS", NumArgs);
-            }
-            ReturnValue->Val->UnsignedInteger = pkm->pkrs();
-            break;
-        case EGG_DAY:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EGG_DAY", NumArgs);
-            }
-            ReturnValue->Val->UnsignedInteger = pkm->eggDay();
-            break;
-        case EGG_MONTH:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EGG_MONTH", NumArgs);
-            }
-            ReturnValue->Val->UnsignedInteger = pkm->eggMonth();
-            break;
-        case EGG_YEAR:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EGG_YEAR", NumArgs);
-            }
-            ReturnValue->Val->UnsignedInteger = pkm->eggYear();
-            break;
-        case MET_DAY:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for MET_DAY", NumArgs);
-            }
-            ReturnValue->Val->UnsignedInteger = pkm->metDay();
-            break;
-        case MET_MONTH:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for MET_MONTH", NumArgs);
-            }
-            ReturnValue->Val->UnsignedInteger = pkm->metMonth();
-            break;
-        case MET_YEAR:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for MET_YEAR", NumArgs);
-            }
-            ReturnValue->Val->UnsignedInteger = pkm->metYear();
-            break;
-        case FORM:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for FORM", NumArgs);
-            }
-            ReturnValue->Val->UnsignedInteger = pkm->alternativeForm();
-            break;
-        case EV_HP:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EV_HP", NumArgs);
-            }
-            ReturnValue->Val->Integer = pkm->ev(0);
-            break;
-        case EV_ATK:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EV_ATK", NumArgs);
-            }
-            ReturnValue->Val->Integer = pkm->ev(1);
-            break;
-        case EV_DEF:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EV_DEF", NumArgs);
-            }
-            ReturnValue->Val->Integer = pkm->ev(2);
-            break;
-        case EV_SPATK:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EV_SPATK", NumArgs);
-            }
-            ReturnValue->Val->Integer = pkm->ev(4);
-            break;
-        case EV_SPDEF:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EV_SPDEF", NumArgs);
-            }
-            ReturnValue->Val->Integer = pkm->ev(5);
-            break;
-        case EV_SPEED:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EV_SPEED", NumArgs);
-            }
-            ReturnValue->Val->Integer = pkm->ev(3);
-            break;
-        case SPECIES:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for SPECIES", NumArgs);
-            }
-            ReturnValue->Val->Integer = pkm->species();
-            break;
-        case PID:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for PID", NumArgs);
-            }
-            ReturnValue->Val->Integer = pkm->PID();
-            break;
-        case NATURE:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for NATURE", NumArgs);
-            }
-            ReturnValue->Val->Integer = pkm->nature();
-            break;
-        case FATEFUL:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for FATEFUL", NumArgs);
-            }
-            ReturnValue->Val->Integer = pkm->fatefulEncounter();
-            break;
-        case PP:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for PP", NumArgs);
-            }
-            ReturnValue->Val->Integer = pkm->PP(nextArg->Val->Integer);
-            break;
-        case PP_UPS:
-            if (NumArgs != 4)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for PP_UPS", NumArgs);
-            }
-            ReturnValue->Val->Integer = pkm->PPUp(nextArg->Val->Integer);
-            break;
-        case EGG:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EGG", NumArgs);
-            }
-            ReturnValue->Val->Integer = pkm->egg();
-            break;
-        case NICKNAMED:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for NICKNAMED", NumArgs);
-            }
-            ReturnValue->Val->Integer = pkm->nicknamed();
-            break;
-        case EGG_LOCATION:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EGG_LOCATION", NumArgs);
-            }
-            ReturnValue->Val->Integer = pkm->eggLocation();
-            break;
-        case MET_LEVEL:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for MET_LEVEL", NumArgs);
-            }
-            ReturnValue->Val->Integer = pkm->metLevel();
-            break;
-        case OT_GENDER:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for OT_GENDER", NumArgs);
-            }
-            ReturnValue->Val->Integer = pkm->otGender();
-            break;
-        case ORIGINAL_GAME:
-            if (NumArgs != 3)
-            {
-                delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for ORIGINAL_GAME", NumArgs);
-            }
-            ReturnValue->Val->Integer = pkm->version();
-            break;
-        default:
-            delete pkm;
-            ProgramFail(Parser, "Field number %i is invalid", (int)field);
-            break;
-    }
-    delete pkm;
 }
 }

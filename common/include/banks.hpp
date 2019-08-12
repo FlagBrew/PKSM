@@ -38,7 +38,6 @@ namespace Banks
     inline std::shared_ptr<Bank> bank = nullptr;
     Result init();
     Result swapSD(bool toSD);
-    Result saveJson();
     bool loadBank(const std::string& name, const std::optional<int>& maxBoxes = std::nullopt);
     void removeBank(const std::string& name);
     void renameBank(const std::string& oldName, const std::string& newName);

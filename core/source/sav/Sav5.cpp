@@ -183,14 +183,16 @@ u32 Sav5::partyOffset(u8 slot) const
 
 std::shared_ptr<PKX> Sav5::pkm(u8 slot) const
 {
-    return std::make_shared<PK5>(data + partyOffset(slot), true, true);
+    u8 buf[220];
+    std::copy(data + partyOffset(slot), data + partyOffset(slot) + 220, buf);
+    return std::make_shared<PK5>(buf, true, true);
 }
 
 void Sav5::pkm(std::shared_ptr<PKX> pk, u8 slot)
 {
     u8 buf[220] = {0};
     std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
-    std::unique_ptr<PK5> pk5 = std::make_unique<PK5>(buf, false, true, true);
+    std::unique_ptr<PK5> pk5 = std::make_unique<PK5>(buf, false, true);
 
     if (pk->getLength() != 220)
     {
@@ -209,7 +211,9 @@ void Sav5::pkm(std::shared_ptr<PKX> pk, u8 slot)
 
 std::shared_ptr<PKX> Sav5::pkm(u8 box, u8 slot, bool ekx) const
 {
-    return std::make_shared<PK5>(data + boxOffset(box, slot), ekx);
+    u8 buf[136];
+    std::copy(data + boxOffset(box, slot), data + boxOffset(box, slot) + 136, buf);
+    return std::make_shared<PK5>(buf, ekx);
 }
 
 void Sav5::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
@@ -240,11 +244,12 @@ void Sav5::cryptBoxData(bool crypted)
     {
         for (u8 slot = 0; slot < 30; slot++)
         {
-            std::unique_ptr<PKX> pk5 = std::make_unique<PK5>(data + boxOffset(box, slot), crypted, false, true);
+            std::shared_ptr<PKX> pk5 = pkm(box, slot, crypted);
             if (!crypted)
             {
                 pk5->encrypt();
             }
+            pkm(pk5, box, slot, false);
         }
     }
 }
@@ -379,14 +384,13 @@ void Sav5::dex(std::shared_ptr<PKX> pk)
 
 int Sav5::dexSeen(void) const
 {
-    int ret = 0;
-    for (int i = 1; i <= maxSpecies(); i++)
+    static constexpr int brSize = 0x54;
+    int ret                     = 0;
+    for (int i = 0; i < maxSpecies(); i++)
     {
-        int bitIndex = (i - 1) & 7;
-        for (int j = 0; j < 4; j++) // All seen flags: gender & shinies
+        for (int j = 1; j <= 4; j++) // All seen flags: gender & shinies
         {
-            int ofs = PokeDex + (0x5C + (j * 0x54)) + ((i - 1) >> 3);
-            if ((data[ofs] >> bitIndex & 1) != 0)
+            if (data[PokeDex + 0x8 + (brSize * j) + i / 8] & BIT(i % 8))
             {
                 ret++;
                 break;
@@ -399,11 +403,9 @@ int Sav5::dexSeen(void) const
 int Sav5::dexCaught(void) const
 {
     int ret = 0;
-    for (int i = 1; i <= maxSpecies(); i++)
+    for (int i = 0; i < maxSpecies(); i++)
     {
-        int bitIndex = (i - 1) & 7;
-        int ofs      = PokeDex + 0x8 + ((i - 1) >> 3);
-        if ((data[ofs] >> bitIndex & 1) != 0)
+        if (data[PokeDex + 0x8 + i / 8] & BIT(i % 8))
         {
             ret++;
         }
@@ -441,7 +443,8 @@ void Sav5::partyCount(u8 v)
 
 std::shared_ptr<PKX> Sav5::emptyPkm() const
 {
-    return std::make_shared<PK5>();
+    static auto empty = std::make_shared<PK5>();
+    return empty;
 }
 
 int Sav5::emptyGiftLocation(void) const

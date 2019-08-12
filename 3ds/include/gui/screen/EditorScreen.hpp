@@ -36,12 +36,19 @@
 class EditorScreen : public Screen
 {
 public:
-    ~EditorScreen() {}
+    ~EditorScreen()
+    {
+        for (auto button : buttons)
+        {
+            delete button;
+        }
+    }
     EditorScreen(std::shared_ptr<PKX> pkm, int box, int index, bool emergency = false);
     // Done with Overlay
     void drawTop() const override {}
     void drawBottom() const override;
     void update(touchPosition* touch) override;
+    ScreenType type() const override { return ScreenType::EDITOR; }
 
 private:
     bool changeLevel(bool up);
@@ -66,7 +73,7 @@ private:
     bool advanceMon(bool forward);
     bool setSaveInfo();
     bool saved();
-    std::vector<std::unique_ptr<Button>> buttons;
+    std::vector<Button*> buttons;
     std::shared_ptr<PKX> pkm;
     std::array<u8, SHA256_BLOCK_SIZE> origHash;
     int box               = 0;

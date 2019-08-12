@@ -31,12 +31,11 @@
 
 nlohmann::json g_banks;
 
-Result Banks::saveJson()
+static Result saveJson()
 {
     std::string jsonData = g_banks.dump(2);
-    std::string path     = Configuration::getInstance().useExtData() ? "/banks.json" : "/3ds/PKSM/banks.json";
-    Archive::deleteFile(Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd(), path);
-    FSStream out(Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd(), path, FS_OPEN_WRITE, jsonData.size());
+    FSUSER_DeleteFile(Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd(), fsMakePath(PATH_UTF16, u"/banks.json"));
+    FSStream out(Archive::data(), u"/banks.json", FS_OPEN_WRITE, jsonData.size());
     if (out.good())
     {
         out.write(jsonData.data(), jsonData.size() + 1);
@@ -55,7 +54,7 @@ static Result createJson()
 {
     g_banks           = nlohmann::json::object();
     g_banks["pksm_1"] = BANK_DEFAULT_SIZE;
-    return Banks::saveJson();
+    return saveJson();
 }
 
 static Result read()
@@ -134,8 +133,8 @@ void Banks::removeBank(const std::string& name)
         }
         remove(("/3ds/PKSM/banks/" + name + ".bnk").c_str());
         remove(("/3ds/PKSM/banks/" + name + ".json").c_str());
-        Archive::deleteFile(Archive::data(), "/banks/" + name + ".bnk");
-        Archive::deleteFile(Archive::data(), "/banks/" + name + ".json");
+        FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, (u"/banks/" + StringUtils::UTF8toUTF16(name) + u".bnk").c_str()));
+        FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, (u"/banks/" + StringUtils::UTF8toUTF16(name) + u".json").c_str()));
         for (auto i = g_banks.begin(); i != g_banks.end(); i++)
         {
             if (i.key() == name)

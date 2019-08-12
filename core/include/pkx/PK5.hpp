@@ -41,21 +41,14 @@ protected:
 public:
     PK5()
     {
-        directAccess = false;
-        length       = 136;
-        data         = new u8[length];
+        length = 136;
+        data   = new u8[length];
         std::fill_n(data, length, 0);
     }
-    PK5(u8* dt, bool ekx = false, bool party = false, bool directAccess = false);
-    virtual ~PK5()
-    {
-        if (!directAccess)
-        {
-            delete[] data;
-        }
-    }
+    PK5(u8* dt, bool ekx = false, bool party = false);
+    virtual ~PK5() { delete[] data; };
 
-    std::shared_ptr<PKX> clone(void) const override;
+    std::shared_ptr<PKX> clone(void) override;
 
     Generation generation(void) const override;
 
@@ -198,9 +191,6 @@ public:
     inline u8 expType(void) const override { return PersonalBWB2W2::expType(formSpecies()); }
     inline u8 abilities(u8 n) const override { return PersonalBWB2W2::ability(formSpecies(), n); }
     inline u16 formStatIndex(void) const override { return PersonalBWB2W2::formStatIndex(formSpecies()); }
-
-private:
-    bool directAccess;
 };
 
 #endif

@@ -48,6 +48,8 @@ public:
     void drawTop() const override;
     void drawBottom() const override;
 
+    ScreenType type() const override { return ScreenType::STORAGE; }
+
 private:
     bool swapBoxWithStorage();
     bool showViewer();

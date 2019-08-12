@@ -1,9 +1,0 @@
-000|—
-002|Australisches Hauptstadtterritorium
-003|Neusüdwales
-004|Nördliches Territorium
-005|Queensland
-006|Südaustralien
-007|Tasmanien
-008|Victoria
-009|Westaustralien

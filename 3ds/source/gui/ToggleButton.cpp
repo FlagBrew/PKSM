@@ -28,8 +28,7 @@
 
 ToggleButton::ToggleButton(int x, int y, u16 w, u16 h, const std::function<bool()>& callback, int onImage, const std::string& onText,
     float onTextScale, u32 onTextColor, const std::optional<int>& offImage, const std::optional<std::string>& offText,
-    const std::optional<float>& offTextScale, const std::optional<u32>& offTextColor, std::vector<std::unique_ptr<ToggleButton>>* radioCategory,
-    bool disablable)
+    const std::optional<float>& offTextScale, const std::optional<u32>& offTextColor, std::vector<ToggleButton*>* radioCategory, bool disablable)
     : ClickButton(x, y, w, h, callback, onImage, onText, onTextScale, onTextColor),
       onImage(onImage),
       onText(onText),
@@ -79,9 +78,9 @@ void ToggleButton::setState(bool state)
     {
         if (radioCategory)
         {
-            for (auto& button : *radioCategory)
+            for (auto button : *radioCategory)
             {
-                if (button.get() != this)
+                if (button != this)
                 {
                     button->setState(false);
                 }

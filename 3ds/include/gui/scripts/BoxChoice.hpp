@@ -43,6 +43,7 @@ public:
     ~BoxChoice();
 
     std::tuple<int, int, int> run();
+    ScreenType type() const override { return ScreenType::SCRIPTSELECT; }
 
 private:
     bool finished() const { return done; }
@@ -58,8 +59,8 @@ private:
 
     bool done          = false;
     bool storageChosen = false;
-    std::array<std::unique_ptr<Button>, 5> mainButtons;
-    std::array<std::unique_ptr<Button>, 30> clickButtons;
+    std::array<Button*, 5> mainButtons;
+    std::array<Button*, 30> clickButtons;
     int cursorIndex = 0, storageBox = 0, boxBox = 0;
     std::shared_ptr<PKX> infoMon = nullptr;
     bool justSwitched            = true;

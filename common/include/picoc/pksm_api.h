@@ -32,55 +32,6 @@
 
 #define PKSM_PORT 34567
 
-enum PKX_FIELD {
-    OT_NAME,
-    TID,
-    SID,
-    SHINY,
-    LANGUAGE,
-    MET_LOCATION,
-    MOVE,
-    BALL,
-    LEVEL,
-    GENDER,
-    ABILITY,
-    IV_HP,
-    IV_ATK,
-    IV_DEF,
-    IV_SPATK,
-    IV_SPDEF,
-    IV_SPEED,
-    NICKNAME,
-    ITEM,
-    POKERUS,
-    EGG_DAY,
-    EGG_MONTH,
-    EGG_YEAR,
-    MET_DAY,
-    MET_MONTH,
-    MET_YEAR,
-    FORM,
-    EV_HP,
-    EV_ATK,
-    EV_DEF,
-    EV_SPATK,
-    EV_SPDEF,
-    EV_SPEED,
-    SPECIES,
-    PID,
-    NATURE,
-    FATEFUL,
-    PP,
-    PP_UPS,
-    EGG,
-    NICKNAMED,
-    EGG_LOCATION,
-    MET_LEVEL,
-    OT_GENDER,
-    ORIGINAL_GAME,
-    MAX_FIELD
-};
-
 void bank_inject_pkx(struct ParseState*, struct Value*, struct Value**, int);
 void cfg_default_ot(struct ParseState*, struct Value*, struct Value**, int);
 void cfg_default_tid(struct ParseState*, struct Value*, struct Value**, int);
@@ -107,22 +58,11 @@ void sav_boxEncrypt(struct ParseState*, struct Value*, struct Value**, int);
 void sav_boxDecrypt(struct ParseState*, struct Value*, struct Value**, int);
 void sav_get_pkx(struct ParseState*, struct Value*, struct Value**, int);
 void sav_inject_pkx(struct ParseState*, struct Value*, struct Value**, int);
-void sav_get_sid(struct ParseState*, struct Value*, struct Value**, int);
-void sav_get_tid(struct ParseState*, struct Value*, struct Value**, int);
-void sav_get_ot_name(struct ParseState*, struct Value*, struct Value**, int);
-void sav_get_pkx_slots(struct ParseState*, struct Value*, struct Value**, int);
 void current_directory(struct ParseState*, struct Value*, struct Value**, int);
 void read_directory(struct ParseState*, struct Value*, struct Value**, int);
-void delete_directory(struct ParseState*, struct Value*, struct Value**, int);
 void i18n_species(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_decrypt(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_encrypt(struct ParseState*, struct Value*, struct Value**, int);
-void pkx_box_size(struct ParseState*, struct Value*, struct Value**, int);
-void pkx_party_size(struct ParseState*, struct Value*, struct Value**, int);
-void pkx_generate(struct ParseState*, struct Value*, struct Value**, int);
-void pkx_is_valid(struct ParseState*, struct Value*, struct Value**, int);
-void pkx_set_value(struct ParseState*, struct Value*, struct Value**, int);
-void pkx_get_value(struct ParseState*, struct Value*, struct Value**, int);
 // PKSM prefix to prevent name hiding
 void pksm_utf8_to_utf16(struct ParseState*, struct Value*, struct Value**, int);
 void pksm_utf16_to_utf8(struct ParseState*, struct Value*, struct Value**, int);

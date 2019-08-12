@@ -51,47 +51,6 @@ namespace TextParse
         glyphs.insert(glyphs.end(), word.first.begin(), word.first.end());
     }
 
-    void Text::optimize()
-    {
-        std::sort(glyphs.begin(), glyphs.end(), [](const Glyph& g1, const Glyph& g2) {
-            if (g1.font != g2.font)
-            {
-                // These are arbitrarily ordered
-                return g1.font < g2.font;
-            }
-            else
-            {
-                // Also arbitrary, but keeps those of the same type together
-                return g1.tex < g2.tex;
-            }
-        });
-    }
-
-    void Text::draw(float x, float y, float z, float scaleX, float scaleY, TextPosX textPos, u32 color) const
-    {
-        static const u8 lineFeed = fontGetInfo(nullptr)->lineFeed;
-        C2D_ImageTint tint;
-        C2D_PlainImageTint(&tint, color, 1.0f);
-        for (auto& glyph : glyphs)
-        {
-            float drawY = y + scaleY * (lineFeed * glyph.line - C2D_FontGetInfo(glyph.font)->tglp->baselinePos);
-            // The one exception to using Gui::drawImageAt: we want to control depth here
-            float drawX = x + (float)glyph.xPos * scaleX;
-            switch (textPos)
-            {
-                case TextPosX::LEFT:
-                    break;
-                case TextPosX::CENTER:
-                    drawX -= scaleX * lineWidths[glyph.line - 1] / 2;
-                    break;
-                case TextPosX::RIGHT:
-                    drawX -= scaleX * lineWidths[glyph.line - 1];
-                    break;
-            }
-            C2D_DrawImageAt({glyph.tex, &glyph.subtex}, drawX, drawY, z, &tint, scaleX, scaleY);
-        }
-    }
-
     TextBuf::TextBuf(size_t maxGlyphs, const std::vector<C2D_Font>& fonts) : fonts(fonts), maxGlyphs(maxGlyphs), currentGlyphs(0)
     {
         for (auto& font : this->fonts)

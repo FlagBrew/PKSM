@@ -39,6 +39,8 @@ public:
     void drawTop() const override;
     void drawBottom() const override;
 
+    ScreenType type() const override { return ScreenType::VIEWER; }
+
 private:
     std::shared_ptr<TextParse::Text> text;
     std::shared_ptr<PKX> pkm;

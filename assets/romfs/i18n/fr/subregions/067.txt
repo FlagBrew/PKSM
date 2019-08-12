@@ -1,4 +1,0 @@
-000|—
-002|Région de Bruxelles-Capitale
-003|Région flamande
-004|Région wallonne

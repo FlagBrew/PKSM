@@ -28,7 +28,6 @@
 #define TOGGLEBUTTON_HPP
 
 #include "ClickButton.hpp"
-#include <memory>
 #include <optional>
 
 class ToggleButton : public ClickButton
@@ -37,7 +36,7 @@ public:
     ToggleButton(int x, int y, u16 w, u16 h, const std::function<bool()>& callback, int onImage, const std::string& onText, float onTextScale,
         u32 onTextColor, const std::optional<int>& offImage = std::nullopt, const std::optional<std::string>& offText = std::nullopt,
         const std::optional<float>& offTextScale = std::nullopt, const std::optional<u32>& offTextColor = std::nullopt,
-        std::vector<std::unique_ptr<ToggleButton>>* radioCategory = nullptr, bool disablable = false);
+        std::vector<ToggleButton*>* radioCategory = nullptr, bool disablable = false);
     ~ToggleButton(void) {}
 
     virtual bool update(touchPosition* touch) override;
@@ -52,7 +51,7 @@ protected:
     std::string offText;
     float offScale;
     u32 offColor;
-    std::vector<std::unique_ptr<ToggleButton>>* radioCategory;
+    std::vector<ToggleButton*>* radioCategory;
     bool currentState = true, disablable;
 };
 

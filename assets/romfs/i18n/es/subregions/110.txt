@@ -1,5 +1,0 @@
-000|—
-002|Inglaterra
-004|Escocia
-005|Gales
-006|Irlanda del Norte

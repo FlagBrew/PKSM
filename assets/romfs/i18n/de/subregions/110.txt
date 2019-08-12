@@ -1,5 +1,0 @@
-000|—
-002|England
-004|Schottland
-005|Wales
-006|Nordirland

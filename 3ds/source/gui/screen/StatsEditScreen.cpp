@@ -53,8 +53,6 @@ StatsEditScreen::StatsEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
                 return false;
             },
             ui_sheet_res_null_idx, "", 0.0f, 0));
-        instructions.addCircle(false, 132, y + 6, 9, COLOR_GREY);
-
         buttons.push_back(std::make_unique<AccelButton>(
             146, y, 13, 13, [=]() { return this->changeIV(statValues[i], true); }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
 
@@ -66,15 +64,9 @@ StatsEditScreen::StatsEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
                 return false;
             },
             ui_sheet_res_null_idx, "", 0.0f, 0));
-        instructions.addCircle(false, 213, y + 6, 9, COLOR_GREY);
-    
         buttons.push_back(std::make_unique<AccelButton>(
             231, y, 13, 13, [=]() { return this->changeSecondaryStat(statValues[i], true); }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
     }
-    instructions.addBox(false, 130, 34, 4, 134, COLOR_GREY);
-    instructions.addBox(false, 211, 34, 4, 134, COLOR_GREY);
-    instructions.addBox(false, 130, 18, 85, 16, COLOR_GREY, i18n::localize("EDIT"), COLOR_WHITE);
-
     buttons.push_back(
         std::make_unique<Button>(300, 184, 15, 12, [this]() { return this->setHP(); }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
 }

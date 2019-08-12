@@ -49,17 +49,31 @@ TitleLoadScreen::TitleLoadScreen()
     : Screen(
           i18n::localize("A_SELECT") + '\n' + i18n::localize("X_SETTINGS") + '\n' + i18n::localize("Y_ABSENT") + '\n' + i18n::localize("START_EXIT"))
 {
-    buttons.push_back(
-        std::make_unique<AccelButton>(24, 96, 175, 16, [this]() { return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
+    buttons.push_back(new AccelButton(24, 96, 175, 16, [this]() { return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
     for (int i = 1; i < 5; i++)
     {
-        buttons.push_back(std::make_unique<ClickButton>(
-            24, 96 + 17 * i, 175, 16, [this, i]() { return this->setSelectedSave(i); }, ui_sheet_res_null_idx, "", 0.0f, 0));
+        buttons.push_back(
+            new ClickButton(24, 96 + 17 * i, 175, 16, [this, i]() { return this->setSelectedSave(i); }, ui_sheet_res_null_idx, "", 0.0f, 0));
     }
-    buttons.push_back(
-        std::make_unique<AccelButton>(24, 181, 175, 16, [this]() { return this->setSelectedSave(5); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
-    buttons.push_back(std::make_unique<Button>(200, 95, 96, 51, [this]() { return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f, 0));
-    buttons.push_back(std::make_unique<Button>(200, 147, 96, 51, &receiveSaveFromBridge, ui_sheet_res_null_idx, "", 0.0f, 0));
+    buttons.push_back(new AccelButton(24, 181, 175, 16, [this]() { return this->setSelectedSave(5); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
+    buttons.push_back(new Button(200, 95, 96, 51, [this]() { return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f, 0));
+    buttons.push_back(new Button(200, 147, 96, 51, &receiveSaveFromBridge, ui_sheet_res_null_idx, "", 0.0f, 0));
+}
+
+void TitleLoadScreen::drawSelector(int x, int y) const
+{
+    static const int w         = 2;
+    float highlight_multiplier = fmax(0.0, fabs(fmod(Screen::timer(), 1.0) - 0.5) / 0.5);
+    u8 r                       = COLOR_SELECTOR & 0xFF;
+    u8 g                       = (COLOR_SELECTOR >> 8) & 0xFF;
+    u8 b                       = (COLOR_SELECTOR >> 16) & 0xFF;
+    u32 color = C2D_Color32(r + (255 - r) * highlight_multiplier, g + (255 - g) * highlight_multiplier, b + (255 - b) * highlight_multiplier, 255);
+
+    Gui::drawSolidRect(x, y, 50, 50, C2D_Color32(255, 255, 255, 100));
+    Gui::drawSolidRect(x, y, 50, w, color);                      // top
+    Gui::drawSolidRect(x, y + w, w, 50 - 2 * w, color);          // left
+    Gui::drawSolidRect(x + 50 - w, y + w, w, 50 - 2 * w, color); // right
+    Gui::drawSolidRect(x, y + 50 - w, 50, w, color);             // bottom
 }
 
 void TitleLoadScreen::drawTop() const
@@ -74,7 +88,7 @@ void TitleLoadScreen::drawTop() const
         Gui::drawImageAt(TitleLoader::cardTitle->icon(), 40, 98, NULL, 1.0f, 1.0f);
         if (titleFromIndex(selectedTitle) == TitleLoader::cardTitle)
         {
-            Gui::drawSelector(39, 97);
+            drawSelector(39, 97);
         }
     }
 
@@ -91,7 +105,7 @@ void TitleLoadScreen::drawTop() const
         Gui::drawImageAt(TitleLoader::nandTitles[i]->icon(), x, y, NULL, 1.0f, 1.0f);
         if (titleFromIndex(selectedTitle) == TitleLoader::nandTitles[i])
         {
-            Gui::drawSelector(x - 1, y - 1);
+            drawSelector(x - 1, y - 1);
         }
     }
 
@@ -202,10 +216,6 @@ void TitleLoadScreen::update(touchPosition* touch)
                 Gui::screenBack();
                 Gui::setScreen(std::make_unique<SaveLoadScreen>());
             }
-            else if (buttonsDown & KEY_X)
-            {
-                Gui::setScreen(std::make_unique<ConfigScreen>());
-            }
             return;
         }
     }
@@ -231,7 +241,7 @@ void TitleLoadScreen::update(touchPosition* touch)
                 {
                     firstSave++;
                 }
-                else if (firstSave + selectedSave < (int)availableCheckpointSaves.size() - 1)
+                else
                 {
                     selectedSave++;
                 }
@@ -262,7 +272,7 @@ void TitleLoadScreen::update(touchPosition* touch)
                 selectedSave--;
             }
         }
-        for (auto& button : buttons)
+        for (Button* button : buttons)
         {
             button->update(touch);
         }

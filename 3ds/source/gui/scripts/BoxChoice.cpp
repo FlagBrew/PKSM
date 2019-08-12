@@ -42,14 +42,12 @@ extern int bobPointer();
 
 BoxChoice::BoxChoice(bool doCrypt) : doCrypt(doCrypt)
 {
-    mainButtons[0] = std::make_unique<Button>(
+    mainButtons[0] = new Button(
         212, 47, 108, 28, [this]() { return this->showViewer(); }, ui_sheet_button_editor_idx, i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[1] = std::make_unique<Button>(4, 212, 33, 28, [this]() { return false; }, ui_sheet_res_null_idx, "", 0.0f, 0);
-    mainButtons[2] = std::make_unique<Button>(283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
-    mainButtons[3] =
-        std::make_unique<AccelButton>(8, 15, 17, 24, [this]() { return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
-    mainButtons[4] =
-        std::make_unique<AccelButton>(189, 15, 17, 24, [this]() { return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+    mainButtons[1] = new Button(4, 212, 33, 28, [this]() { return false; }, ui_sheet_res_null_idx, "", 0.0f, 0);
+    mainButtons[2] = new Button(283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
+    mainButtons[3] = new AccelButton(8, 15, 17, 24, [this]() { return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+    mainButtons[4] = new AccelButton(189, 15, 17, 24, [this]() { return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
 
     // Pokemon buttons
     u16 y = 45;
@@ -58,7 +56,7 @@ BoxChoice::BoxChoice(bool doCrypt) : doCrypt(doCrypt)
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            clickButtons[row * 6 + column] = std::make_unique<ClickButton>(
+            clickButtons[row * 6 + column] = new ClickButton(
                 x, y, 34, 30, [this, row, column]() { return this->clickBottomIndex(row * 6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, 0);
             x += 34;
         }
@@ -73,6 +71,14 @@ BoxChoice::BoxChoice(bool doCrypt) : doCrypt(doCrypt)
 
 BoxChoice::~BoxChoice()
 {
+    for (auto button : mainButtons)
+    {
+        delete button;
+    }
+    for (auto button : clickButtons)
+    {
+        delete button;
+    }
     if (doCrypt)
     {
         TitleLoader::save->cryptBoxData(false);
@@ -90,7 +96,7 @@ void BoxChoice::drawBottom() const
     Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_horizontal_idx, 202, 44);
     Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_vertical_idx, 2, 193);
     Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_both_idx, 202, 193);
-    for (auto& b : mainButtons)
+    for (Button* b : mainButtons)
     {
         b->draw();
     }
@@ -337,7 +343,7 @@ void BoxChoice::update(touchPosition* touch)
                 return;
         }
         backHeld = false;
-        for (auto& button : clickButtons)
+        for (Button* button : clickButtons)
         {
             if (button->update(touch))
                 return;

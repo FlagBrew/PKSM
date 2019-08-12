@@ -41,21 +41,14 @@ protected:
 public:
     PK6()
     {
-        directAccess = false;
-        length       = 232;
-        data         = new u8[length];
+        length = 232;
+        data   = new u8[length];
         std::fill_n(data, length, 0);
     }
-    PK6(u8* dt, bool ekx = false, bool party = false, bool directAccess = false);
-    virtual ~PK6()
-    {
-        if (!directAccess)
-        {
-            delete[] data;
-        }
-    }
+    PK6(u8* dt, bool ekx = false, bool party = false);
+    virtual ~PK6() { delete[] data; };
 
-    std::shared_ptr<PKX> clone(void) const override;
+    std::shared_ptr<PKX> clone(void) override;
 
     Generation generation(void) const override;
 
@@ -255,9 +248,6 @@ public:
     inline u8 expType(void) const override { return PersonalXYORAS::expType(formSpecies()); }
     inline u8 abilities(u8 n) const override { return PersonalXYORAS::ability(formSpecies(), n); }
     inline u16 formStatIndex(void) const override { return PersonalXYORAS::formStatIndex(formSpecies()); }
-
-private:
-    bool directAccess;
 };
 
 #endif

@@ -77,7 +77,7 @@ Result Archive::moveFile(FS_Archive src, const std::u16string& file, FS_Archive 
     if (stream.good())
     {
         size_t target = stream.size();
-        deleteFile(dst, dest);
+        FSUSER_DeleteFile(dst, fsMakePath(PATH_UTF16, dest.data()));
         FSStream out(dst, dest, FS_OPEN_WRITE, target);
         if (out.good())
         {
@@ -101,7 +101,7 @@ Result Archive::moveFile(FS_Archive src, const std::u16string& file, FS_Archive 
             delete[] data;
             if (R_SUCCEEDED(res))
             {
-                deleteFile(src, file);
+                FSUSER_DeleteFile(src, fsMakePath(PATH_UTF16, file.data()));
             }
         }
         else
@@ -125,7 +125,7 @@ Result Archive::copyFile(FS_Archive src, const std::u16string& file, FS_Archive 
     if (stream.good())
     {
         size_t target = stream.size();
-        deleteFile(dst, dest);
+        FSUSER_DeleteFile(dst, fsMakePath(PATH_UTF16, dest.data()));
         FSStream out(dst, dest, FS_OPEN_WRITE, target);
         if (out.good())
         {
@@ -160,11 +160,6 @@ Result Archive::copyFile(FS_Archive src, const std::u16string& file, FS_Archive 
         stream.close();
     }
     return res;
-}
-
-Result Archive::deleteFile(FS_Archive archive, const std::u16string& file)
-{
-    return FSUSER_DeleteFile(archive, fsMakePath(PATH_UTF16, file.c_str()));
 }
 
 Result Archive::init(const std::string& execPath)

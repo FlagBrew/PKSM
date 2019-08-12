@@ -27,10 +27,6 @@
 #include "ConfigScreen.hpp"
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
-#include "ConfigCountryOverlay.hpp"
-#include "ConfigSubRegionOverlay.hpp"
-#include "ExtraSavesScreen.hpp"
-#include "ToggleButton.hpp"
 #include "banks.hpp"
 #include "gui.hpp"
 
@@ -102,7 +98,7 @@ static void inputPatronCode()
     }
 }
 
-static bool nationalityChoice()
+static bool countryChoice()
 {
     switch (Configuration::getInstance().nationality())
     {
@@ -136,19 +132,19 @@ static bool nationalityChoice()
 
 ConfigScreen::ConfigScreen()
 {
-    tabs[0] = std::make_unique<ClickButton>(1, 2, 104, 17,
+    tabs[0] = new ClickButton(1, 2, 104, 17,
         [&]() {
             currentTab = 0;
             return false;
         },
         ui_sheet_res_null_idx, "", 0.0f, 0);
-    tabs[1] = std::make_unique<ClickButton>(108, 2, 104, 17,
+    tabs[1] = new ClickButton(108, 2, 104, 17,
         [&]() {
             currentTab = 1;
             return false;
         },
         ui_sheet_res_null_idx, "", 0.0f, 0);
-    tabs[2] = std::make_unique<ClickButton>(215, 2, 104, 17,
+    tabs[2] = new ClickButton(215, 2, 104, 17,
         [&]() {
             currentTab = 2;
             return false;
@@ -156,184 +152,119 @@ ConfigScreen::ConfigScreen()
         ui_sheet_res_null_idx, "", 0.0f, 0);
 
     // First column of language buttons
-    tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 52, 8, 8,
+    tabButtons[0].push_back(new ClickButton(37, 52, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::JP);
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0,
-        reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
-    tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 74, 8, 8,
+        ui_sheet_res_null_idx, "", 0.0f, 0));
+    tabButtons[0].push_back(new ClickButton(37, 74, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::EN);
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0,
-        reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
-    tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 96, 8, 8,
+        ui_sheet_res_null_idx, "", 0.0f, 0));
+    tabButtons[0].push_back(new ClickButton(37, 96, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::FR);
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0,
-        reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
-    tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 118, 8, 8,
+        ui_sheet_res_null_idx, "", 0.0f, 0));
+    tabButtons[0].push_back(new ClickButton(37, 118, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::DE);
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0,
-        reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
-    tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 140, 8, 8,
+        ui_sheet_res_null_idx, "", 0.0f, 0));
+    tabButtons[0].push_back(new ClickButton(37, 140, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::IT);
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0,
-        reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
-    tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 162, 8, 8,
+        ui_sheet_res_null_idx, "", 0.0f, 0));
+    tabButtons[0].push_back(new ClickButton(37, 162, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::ES);
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0,
-        reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
+        ui_sheet_res_null_idx, "", 0.0f, 0));
 
     // Second column of language buttons
-    tabButtons[0].push_back(std::make_unique<ToggleButton>(177, 52, 8, 8,
+    tabButtons[0].push_back(new ClickButton(177, 52, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::ZH);
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0,
-        reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
-    tabButtons[0].push_back(std::make_unique<ToggleButton>(177, 74, 8, 8,
+        ui_sheet_res_null_idx, "", 0.0f, 0));
+    tabButtons[0].push_back(new ClickButton(177, 74, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::KO);
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0,
-        reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
-    tabButtons[0].push_back(std::make_unique<ToggleButton>(177, 96, 8, 8,
+        ui_sheet_res_null_idx, "", 0.0f, 0));
+    tabButtons[0].push_back(new ClickButton(177, 96, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::NL);
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0,
-        reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
-    tabButtons[0].push_back(std::make_unique<ToggleButton>(177, 118, 8, 8,
+        ui_sheet_res_null_idx, "", 0.0f, 0));
+    tabButtons[0].push_back(new ClickButton(177, 118, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::PT);
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0,
-        reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
-    tabButtons[0].push_back(std::make_unique<ToggleButton>(177, 140, 8, 8,
+        ui_sheet_res_null_idx, "", 0.0f, 0));
+    tabButtons[0].push_back(new ClickButton(177, 140, 8, 8,
         []() {
             Gui::clearText();
             Configuration::getInstance().language(Language::RU);
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, 0, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, 0,
-        reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
-
-    switch (Configuration::getInstance().language())
-    {
-        case Language::JP:
-            ((ToggleButton*)tabButtons[0][0].get())->setState(true);
-            break;
-        case Language::EN:
-            ((ToggleButton*)tabButtons[0][1].get())->setState(true);
-            break;
-        case Language::FR:
-            ((ToggleButton*)tabButtons[0][2].get())->setState(true);
-            break;
-        case Language::DE:
-            ((ToggleButton*)tabButtons[0][3].get())->setState(true);
-            break;
-        case Language::IT:
-            ((ToggleButton*)tabButtons[0][4].get())->setState(true);
-            break;
-        case Language::ES:
-            ((ToggleButton*)tabButtons[0][5].get())->setState(true);
-            break;
-        case Language::ZH:
-            ((ToggleButton*)tabButtons[0][6].get())->setState(true);
-            break;
-        case Language::KO:
-            ((ToggleButton*)tabButtons[0][7].get())->setState(true);
-            break;
-        case Language::NL:
-            ((ToggleButton*)tabButtons[0][8].get())->setState(true);
-            break;
-        case Language::PT:
-            ((ToggleButton*)tabButtons[0][9].get())->setState(true);
-            break;
-        case Language::RU:
-            ((ToggleButton*)tabButtons[0][10].get())->setState(true);
-            break;
-        default:
-            // Default to English
-            ((ToggleButton*)tabButtons[0][1].get())->setState(true);
-            break;
-    }
+        ui_sheet_res_null_idx, "", 0.0f, 0));
 
     // Defaults buttons
-    tabButtons[1].push_back(std::make_unique<Button>(122, 38, 15, 12,
+    tabButtons[1].push_back(new Button(122, 38, 15, 12,
         []() {
             Gui::setNextKeyboardFunc([]() { inputNumber([](u16 a) { Configuration::getInstance().defaultTID(a); }, 5, 0xFFFF); });
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(std::make_unique<Button>(122, 59, 15, 12,
+    tabButtons[1].push_back(new Button(122, 62, 15, 12,
         []() {
             Gui::setNextKeyboardFunc([]() { inputNumber([](u16 a) { Configuration::getInstance().defaultSID(a); }, 5, 0xFFFF); });
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(std::make_unique<Button>(122, 80, 15, 12,
+    tabButtons[1].push_back(new Button(122, 86, 15, 12,
         []() {
             Gui::setNextKeyboardFunc(&inputOT);
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(
-        std::make_unique<ClickButton>(122, 101, 15, 12, &nationalityChoice, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(std::make_unique<ClickButton>(122, 122, 15, 12,
-        [this]() {
-            currentOverlay = std::make_shared<ConfigCountryOverlay>(*this);
-            return false;
-        },
-        ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(std::make_unique<ClickButton>(122, 143, 15, 12,
-        [this]() {
-            currentOverlay = std::make_shared<ConfigSubRegionOverlay>(*this);
-            return false;
-        },
-        ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(std::make_unique<Button>(122, 164, 15, 12,
+    tabButtons[1].push_back(new ClickButton(122, 110, 15, 12, &countryChoice, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+    tabButtons[1].push_back(new Button(122, 134, 15, 12,
         []() {
             Gui::setNextKeyboardFunc([]() { inputNumber([](u16 a) { Configuration::getInstance().day(a); }, 2, 31); });
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(std::make_unique<Button>(122, 185, 15, 12,
+    tabButtons[1].push_back(new Button(122, 158, 15, 12,
         []() {
             Gui::setNextKeyboardFunc([]() { inputNumber([](u16 a) { Configuration::getInstance().month(a); }, 2, 12); });
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[1].push_back(std::make_unique<Button>(122, 206, 15, 12,
+    tabButtons[1].push_back(new Button(122, 182, 15, 12,
         []() {
             Gui::setNextKeyboardFunc([]() { inputNumber([](u16 a) { Configuration::getInstance().year(a); }, 4, 9999); });
             return false;
@@ -341,69 +272,63 @@ ConfigScreen::ConfigScreen()
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
 
     // Miscellaneous buttons
-    tabButtons[2].push_back(std::make_unique<ClickButton>(247, 39, 15, 12,
+    tabButtons[2].push_back(new ClickButton(247, 39, 15, 12,
         []() {
             Configuration::getInstance().autoBackup(!Configuration::getInstance().autoBackup());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(std::make_unique<ClickButton>(247, 60, 15, 12,
+    tabButtons[2].push_back(new ClickButton(247, 62, 15, 12,
         []() {
             Configuration::getInstance().transferEdit(!Configuration::getInstance().transferEdit());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(std::make_unique<ClickButton>(247, 81, 15, 12,
+    tabButtons[2].push_back(new ClickButton(247, 87, 15, 12,
         []() {
             Configuration::getInstance().writeFileSave(!Configuration::getInstance().writeFileSave());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(std::make_unique<ClickButton>(247, 102, 15, 12,
+    tabButtons[2].push_back(new ClickButton(247, 111, 15, 12,
         []() {
             Configuration::getInstance().useSaveInfo(!Configuration::getInstance().useSaveInfo());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(std::make_unique<ClickButton>(247, 123, 15, 12,
+    tabButtons[2].push_back(new ClickButton(247, 135, 15, 12,
         [this]() {
             Configuration::getInstance().useExtData(!Configuration::getInstance().useExtData());
             useExtDataChanged = !useExtDataChanged;
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(std::make_unique<ClickButton>(247, 144, 15, 12,
+    tabButtons[2].push_back(new ClickButton(247, 159, 15, 12,
         []() {
             Configuration::getInstance().randomMusic(!Configuration::getInstance().randomMusic());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(std::make_unique<ClickButton>(247, 165, 15, 12,
+    tabButtons[2].push_back(new ClickButton(247, 183, 15, 12,
         [this]() {
             Configuration::getInstance().showBackups(!Configuration::getInstance().showBackups());
             showBackupsChanged = !showBackupsChanged;
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(std::make_unique<ClickButton>(247, 186, 15, 12,
+    tabButtons[2].push_back(new ClickButton(247, 207, 15, 12,
         [this]() {
             Configuration::getInstance().autoUpdate(!Configuration::getInstance().autoUpdate());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[2].push_back(std::make_unique<ClickButton>(247, 207, 15, 12,
-        [this]() {
-            Gui::setScreen(std::make_unique<ExtraSavesScreen>());
-            return true;
-        },
-        ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[3].push_back(std::make_unique<ClickButton>(247, 87, 15, 12,
+    tabButtons[3].push_back(new ClickButton(247, 87, 15, 12,
         [this]() {
             Gui::setNextKeyboardFunc(&inputPatronCode);
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
-    tabButtons[3].push_back(std::make_unique<ClickButton>(247, 111, 15, 12,
+    tabButtons[3].push_back(new ClickButton(247, 111, 15, 12,
         [this]() {
             Configuration::getInstance().alphaChannel(!Configuration::getInstance().alphaChannel());
             return true;
@@ -448,30 +373,75 @@ void ConfigScreen::drawBottom() const
         Gui::text("Português", 199, 113, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text("русский", 199, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
-        for (auto& button : tabButtons[currentTab])
+        Gui::drawSolidRect(37, 52, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(37, 74, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(37, 96, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(37, 118, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(37, 140, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(37, 162, 8, 8, COLOR_MENUBLUE);
+
+        Gui::drawSolidRect(177, 52, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(177, 74, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(177, 96, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(177, 118, 8, 8, COLOR_MENUBLUE);
+        Gui::drawSolidRect(177, 140, 8, 8, COLOR_MENUBLUE);
+
+        switch (Configuration::getInstance().language())
         {
-            button->draw();
+            case Language::JP:
+                Gui::drawSolidRect(36, 51, 10, 10, COLOR_HIGHBLUE);
+                break;
+            case Language::EN:
+            case Language::UNUSED:
+                Gui::drawSolidRect(36, 73, 10, 10, COLOR_HIGHBLUE);
+                break;
+            case Language::FR:
+                Gui::drawSolidRect(36, 95, 10, 10, COLOR_HIGHBLUE);
+                break;
+            case Language::DE:
+                Gui::drawSolidRect(36, 117, 10, 10, COLOR_HIGHBLUE);
+                break;
+            case Language::IT:
+                Gui::drawSolidRect(36, 139, 10, 10, COLOR_HIGHBLUE);
+                break;
+            case Language::ES:
+                Gui::drawSolidRect(36, 161, 10, 10, COLOR_HIGHBLUE);
+                break;
+            case Language::ZH:
+            case Language::TW:
+                Gui::drawSolidRect(176, 51, 10, 10, COLOR_HIGHBLUE);
+                break;
+            case Language::KO:
+                Gui::drawSolidRect(176, 73, 10, 10, COLOR_HIGHBLUE);
+                break;
+            case Language::NL:
+                Gui::drawSolidRect(176, 95, 10, 10, COLOR_HIGHBLUE);
+                break;
+            case Language::PT:
+                Gui::drawSolidRect(176, 117, 10, 10, COLOR_HIGHBLUE);
+                break;
+            case Language::RU:
+                Gui::drawSolidRect(176, 139, 10, 10, COLOR_HIGHBLUE);
+                break;
         }
     }
     else if (currentTab == 1)
     {
         Gui::text(i18n::localize("DEFAULTS"), 160, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-        Gui::text(i18n::localize("TID"), 19, 36, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("SID"), 19, 57, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("OT"), 19, 78, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("3DS_REGION"), 19, 99, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("COUNTRY"), 19, 120, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("SUBREGION"), 19, 141, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("DAY"), 19, 162, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("MONTH"), 19, 183, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("YEAR"), 19, 204, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("TID"), 19, 36, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("SID"), 19, 60, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("OT"), 19, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("NATIONALITY"), 19, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("DAY"), 19, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("MONTH"), 19, 156, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("YEAR"), 19, 180, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
-        Gui::text(std::to_string(Configuration::getInstance().defaultTID()), 150, 36, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+        Gui::text(std::to_string(Configuration::getInstance().defaultTID()), 150, 36, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP);
-        Gui::text(std::to_string(Configuration::getInstance().defaultSID()), 150, 57, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+        Gui::text(std::to_string(Configuration::getInstance().defaultSID()), 150, 60, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP);
-        Gui::text(Configuration::getInstance().defaultOT(), 150, 78, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(Configuration::getInstance().defaultOT(), 150, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         std::string data;
         switch (Configuration::getInstance().nationality())
         {
@@ -500,20 +470,15 @@ void ConfigScreen::drawBottom() const
                 data = "USA";
                 break;
         }
-        Gui::text(i18n::localize(data), 150, 99, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::country(Configuration::getInstance().language(), Configuration::getInstance().defaultCountry()), 150, 120, FONT_SIZE_12,
-            FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::subregion(Configuration::getInstance().language(), Configuration::getInstance().defaultCountry(),
-                      Configuration::getInstance().defaultRegion()),
-            150, 141, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize(data), 150, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(
-            std::to_string(Configuration::getInstance().day()), 150, 162, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            std::to_string(Configuration::getInstance().day()), 150, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(
-            std::to_string(Configuration::getInstance().month()), 150, 183, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            std::to_string(Configuration::getInstance().month()), 150, 156, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(
-            std::to_string(Configuration::getInstance().year()), 150, 204, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            std::to_string(Configuration::getInstance().year()), 150, 180, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
-        for (auto& button : tabButtons[currentTab])
+        for (Button* button : tabButtons[currentTab])
         {
             button->draw();
         }
@@ -522,36 +487,35 @@ void ConfigScreen::drawBottom() const
     {
         Gui::text(i18n::localize("MISC"), 215 + 104 / 2, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-        Gui::text(i18n::localize("CONFIG_BACKUP_SAVE"), 19, 36, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("CONFIG_EDIT_TRANSFERS"), 19, 57, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("CONFIG_BACKUP_INJECTION"), 19, 78, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("CONFIG_SAVE_INFO"), 19, 99, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("CONFIG_USE_EXTDATA"), 19, 120, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("CONFIG_RANDOM_MUSIC"), 19, 141, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("CONFIG_SHOW_BACKUPS"), 19, 162, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("CONFIG_AUTO_UPDATE"), 19, 183, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("EXTRA_SAVES"), 19, 204, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("CONFIG_BACKUP_SAVE"), 19, 36, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("CONFIG_EDIT_TRANSFERS"), 19, 60, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("CONFIG_BACKUP_INJECTION"), 19, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("CONFIG_SAVE_INFO"), 19, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("CONFIG_USE_EXTDATA"), 19, 132, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("CONFIG_RANDOM_MUSIC"), 19, 156, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("CONFIG_SHOW_BACKUPS"), 19, 180, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("CONFIG_AUTO_UPDATE"), 19, 204, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
-        for (auto& button : tabButtons[currentTab])
+        for (Button* button : tabButtons[currentTab])
         {
             button->draw();
         }
 
-        Gui::text(Configuration::getInstance().autoBackup() ? i18n::localize("YES") : i18n::localize("NO"), 270, 36, FONT_SIZE_12, FONT_SIZE_12,
+        Gui::text(Configuration::getInstance().autoBackup() ? i18n::localize("YES") : i18n::localize("NO"), 270, 36, FONT_SIZE_14, FONT_SIZE_14,
             COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().transferEdit() ? i18n::localize("YES") : i18n::localize("NO"), 270, 57, FONT_SIZE_12, FONT_SIZE_12,
+        Gui::text(Configuration::getInstance().transferEdit() ? i18n::localize("YES") : i18n::localize("NO"), 270, 60, FONT_SIZE_14, FONT_SIZE_14,
             COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().writeFileSave() ? i18n::localize("YES") : i18n::localize("NO"), 270, 78, FONT_SIZE_12, FONT_SIZE_12,
+        Gui::text(Configuration::getInstance().writeFileSave() ? i18n::localize("YES") : i18n::localize("NO"), 270, 84, FONT_SIZE_14, FONT_SIZE_14,
             COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().useSaveInfo() ? i18n::localize("YES") : i18n::localize("NO"), 270, 99, FONT_SIZE_12, FONT_SIZE_12,
+        Gui::text(Configuration::getInstance().useSaveInfo() ? i18n::localize("YES") : i18n::localize("NO"), 270, 108, FONT_SIZE_14, FONT_SIZE_14,
             COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().useExtData() ? i18n::localize("YES") : i18n::localize("NO"), 270, 120, FONT_SIZE_12, FONT_SIZE_12,
+        Gui::text(Configuration::getInstance().useExtData() ? i18n::localize("YES") : i18n::localize("NO"), 270, 132, FONT_SIZE_14, FONT_SIZE_14,
             COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().randomMusic() ? i18n::localize("YES") : i18n::localize("NO"), 270, 141, FONT_SIZE_12, FONT_SIZE_12,
+        Gui::text(Configuration::getInstance().randomMusic() ? i18n::localize("YES") : i18n::localize("NO"), 270, 156, FONT_SIZE_14, FONT_SIZE_14,
             COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().showBackups() ? i18n::localize("YES") : i18n::localize("NO"), 270, 162, FONT_SIZE_12, FONT_SIZE_12,
+        Gui::text(Configuration::getInstance().showBackups() ? i18n::localize("YES") : i18n::localize("NO"), 270, 180, FONT_SIZE_14, FONT_SIZE_14,
             COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().autoUpdate() ? i18n::localize("YES") : i18n::localize("NO"), 270, 183, FONT_SIZE_12, FONT_SIZE_12,
+        Gui::text(Configuration::getInstance().autoUpdate() ? i18n::localize("YES") : i18n::localize("NO"), 270, 204, FONT_SIZE_14, FONT_SIZE_14,
             COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     }
     else if (currentTab == 3)
@@ -561,7 +525,7 @@ void ConfigScreen::drawBottom() const
         Gui::text(i18n::localize("PATRON_CODE"), 19, 84, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(i18n::localize("ALPHA_UPDATES"), 19, 108, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
-        for (auto& button : tabButtons[currentTab])
+        for (Button* button : tabButtons[currentTab])
         {
             button->draw();
         }
@@ -591,12 +555,12 @@ void ConfigScreen::update(touchPosition* touch)
         return;
     }
 
-    for (auto& button : tabs)
+    for (Button* button : tabs)
     {
         button->update(touch);
     }
 
-    for (auto& button : tabButtons[currentTab])
+    for (Button* button : tabButtons[currentTab])
     {
         button->update(touch);
     }
@@ -605,31 +569,31 @@ void ConfigScreen::update(touchPosition* touch)
     {
         if (touch->px > 0 && touch->px < 30 && touch->py > 0 && touch->py < 30)
         {
-            patronMenu[0]        = true;
-            countPatronMenuTimer = true;
-            patronMenuTimer      = 600;
+            patronMenu[0] = true;
+            countPatronMenuTimer         = true;
+            patronMenuTimer             = 600;
         }
         else if (touch->px > 290 && touch->px < 320 && touch->py < 30 && touch->py > 0)
         {
-            patronMenu[1]        = true;
-            countPatronMenuTimer = true;
-            patronMenuTimer      = 600;
+            patronMenu[1] = true;
+            countPatronMenuTimer         = true;
+            patronMenuTimer             = 600;
         }
         else if (touch->px > 0 && touch->px < 30 && touch->py > 210 && touch->py < 240)
         {
-            patronMenu[2]        = true;
-            countPatronMenuTimer = true;
-            patronMenuTimer      = 600;
+            patronMenu[2] = true;
+            countPatronMenuTimer         = true;
+            patronMenuTimer             = 600;
         }
         else if (touch->px > 290 && touch->px < 320 && touch->py > 210 && touch->py < 240)
         {
-            patronMenu[3]        = true;
-            countPatronMenuTimer = true;
-            patronMenuTimer      = 600;
+            patronMenu[3] = true;
+            countPatronMenuTimer         = true;
+            patronMenuTimer             = 600;
         }
         if (patronMenu[0] && patronMenu[1] && patronMenu[2] && patronMenu[3])
         {
-            currentTab      = 3;
+            currentTab = 3;
             patronMenuTimer = 0;
         }
     }

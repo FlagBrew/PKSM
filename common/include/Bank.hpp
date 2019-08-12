@@ -54,7 +54,7 @@ private:
     static constexpr std::string_view BANK_MAGIC = "PKSMBANK";
     void createJSON();
     void createBank(int maxBoxes);
-    void convertFromBankBin();
+    void convert();
     struct BankHeader
     {
         const char MAGIC[8];

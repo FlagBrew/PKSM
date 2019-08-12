@@ -1,8 +1,0 @@
-000|—
-018|Greenland
-019|Capital Region of Denmark
-020|Central Denmark Region
-021|North Denmark Region
-022|Region Zealand
-023|Region of Southern Denmark
-024|Faroe Islands
