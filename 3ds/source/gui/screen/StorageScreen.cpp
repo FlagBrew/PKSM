@@ -265,7 +265,6 @@ void StorageScreen::drawBottom() const
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            // C2D_Color32(0x50, 0xF0, 0x40, 0x80);
             if (currentlySelecting && !storageChosen && column <= std::max((cursorIndex - 1) % 6, selectDimensions.first) &&
                 column >= std::min((cursorIndex - 1) % 6, selectDimensions.first) &&
                 row <= std::max((cursorIndex - 1) / 6, selectDimensions.second) && row >= std::min((cursorIndex - 1) / 6, selectDimensions.second))
@@ -281,7 +280,8 @@ void StorageScreen::drawBottom() const
                 std::shared_ptr<PKX> pokemon = TitleLoader::save->pkm(boxBox, row * 6 + column);
                 if (pokemon->species() > 0)
                 {
-                    Gui::pkm(*pokemon, x, y);
+                    float blend = *pokemon == filter ? 0.0f : 0.5f;
+                    Gui::pkm(*pokemon, x, y, 1.0f, COLOR_BLACK, blend);
                 }
                 if (TitleLoader::save->generation() == Generation::LGPE)
                 {
@@ -314,8 +314,9 @@ void StorageScreen::drawBottom() const
                 }
                 if (moveMon[i])
                 {
+                    float blend = *moveMon[i] == filter ? 0.0f : 0.5f;
                     Gui::pkm(*moveMon[i], x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
-                    Gui::pkm(*moveMon[i], x - 3, y - 5);
+                    Gui::pkm(*moveMon[i], x - 3, y - 5, 1.0f, COLOR_BLACK, blend);
                 }
             }
             switch (pickupMode)
@@ -346,8 +347,9 @@ void StorageScreen::drawBottom() const
                 }
                 if (moveMon[i])
                 {
+                    float blend = *moveMon[i] == filter ? 0.0f : 0.5f;
                     Gui::pkm(*moveMon[i], x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
-                    Gui::pkm(*moveMon[i], x - 3, y - 5);
+                    Gui::pkm(*moveMon[i], x - 3, y - 5, 1.0f, COLOR_BLACK, blend);
                 }
             }
             switch (pickupMode)
@@ -403,7 +405,8 @@ void StorageScreen::drawTop() const
             auto pkm = Banks::bank->pkm(storageBox, row * 6 + column);
             if (pkm->species() > 0)
             {
-                Gui::pkm(*pkm, x, y);
+                float blend = *pkm == filter ? 0.0f : 0.5f;
+                Gui::pkm(*pkm, x, y, 1.0f, COLOR_BLACK, blend);
             }
             x += 34;
         }
@@ -433,8 +436,9 @@ void StorageScreen::drawTop() const
                 }
                 if (moveMon[i])
                 {
+                    float blend = *moveMon[i] == filter ? 0.0f : 0.5f;
                     Gui::pkm(*moveMon[i], x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
-                    Gui::pkm(*moveMon[i], x - 3, y - 5);
+                    Gui::pkm(*moveMon[i], x - 3, y - 5, 1.0f, COLOR_BLACK, blend);
                 }
             }
             switch (pickupMode)
@@ -465,8 +469,9 @@ void StorageScreen::drawTop() const
                 }
                 if (moveMon[i])
                 {
+                    float blend = *moveMon[i] == filter ? 0.0f : 0.5f;
                     Gui::pkm(*moveMon[i], x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
-                    Gui::pkm(*moveMon[i], x - 3, y - 5);
+                    Gui::pkm(*moveMon[i], x - 3, y - 5, 1.0f, COLOR_BLACK, blend);
                 }
             }
             switch (pickupMode)

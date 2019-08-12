@@ -29,6 +29,7 @@
 
 #include "Button.hpp"
 #include "PKX.hpp"
+#include "PKFilter.hpp"
 #include "Sav.hpp"
 #include "Screen.hpp"
 #include "SortOverlay.hpp"
@@ -91,6 +92,7 @@ private:
     // If pickupMode == SWAP, box number & slot pair
     std::pair<int, int> selectDimensions = {0, 0};
     bool currentlySelecting              = false;
+    PKFilter filter;
 };
 
 #endif

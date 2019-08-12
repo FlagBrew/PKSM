@@ -40,7 +40,7 @@ public:                                                                         
                                                                                                                                                      \
 private:                                                                                                                                             \
     type type##name;                                                                                                                                 \
-    bool name##Bool
+    bool name##Bool = false
 #define MAKE_NUM_DEFN(name, type, amount)                                                                                                            \
 public:                                                                                                                                              \
     type name(u8 which) const { return type##name[which]; }                                                                                          \
@@ -50,7 +50,7 @@ public:                                                                         
                                                                                                                                                      \
 private:                                                                                                                                             \
     type type##name[amount];                                                                                                                         \
-    std::bitset<amount> name##Bool
+    std::bitset<amount> name##Bool = std::bitset<amount>(0)
 
 class PKFilter
 {
