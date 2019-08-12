@@ -1,0 +1,14 @@
+000|—
+002|Riyad
+003|Al Bâhah
+004|Médine
+005|Province Est
+006|Al Qasim
+007|Assir
+008|Haïl
+009|La Mecque
+010|Frontière Nord
+011|Najran
+012|Jizan
+013|Tabouk
+014|Al Djôf

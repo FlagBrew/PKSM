@@ -43,7 +43,6 @@ public:
     void drawTop() const override {}
     void drawBottom() const override;
     void update(touchPosition* touch) override;
-    ScreenType type() const override { return ScreenType::EDITSELECT; }
 
 private:
     bool prevBox();
@@ -55,9 +54,9 @@ private:
     bool releasePokemon();
     bool clonePkm();
     bool goBack();
-    std::vector<Button*> buttons;
-    std::array<Button*, 36> pkmButtons;
-    std::vector<Button*> viewerButtons;
+    std::vector<std::unique_ptr<Button>> buttons;
+    std::array<std::unique_ptr<Button>, 36> pkmButtons;
+    std::vector<std::unique_ptr<Button>> viewerButtons;
     std::shared_ptr<PKX> moveMon = nullptr;
     std::shared_ptr<PKX> infoMon = nullptr;
     int cursorPos                = 0;

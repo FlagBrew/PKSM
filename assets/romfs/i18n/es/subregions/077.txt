@@ -1,0 +1,27 @@
+000|—
+002|Isla de Francia
+003|Alsacia
+004|Aquitania
+005|Auvernia
+006|Baja Normandía
+007|Borgoña
+008|Bretaña
+009|Centro
+010|Champaña-Ardenas
+011|Córcega
+012|Franco Condado
+013|Alta Normandía
+014|Languedoc-Rosellón
+015|Lemosín
+016|Lorena
+017|Mediodía-Pirineos
+018|Norte-Paso de Calais
+019|Países del Loira
+020|Picardía
+021|Poitou-Charentes
+022|Provenza-Alpes-Costa Azul
+023|Ródano-Alpes
+024|Guadalupe
+025|Martinica
+026|Guayana Francesa
+027|La Reunión

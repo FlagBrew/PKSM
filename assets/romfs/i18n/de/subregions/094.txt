@@ -1,0 +1,13 @@
+000|—
+002|Nordholland
+003|Drenthe
+004|Flevoland
+005|Friesland
+006|Gelderland
+007|Groningen
+008|Limburg
+009|Nordbrabant
+010|Overijssel
+011|Südholland
+012|Utrecht
+013|Zeeland

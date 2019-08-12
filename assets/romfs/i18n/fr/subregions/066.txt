@@ -1,0 +1,10 @@
+000|—
+002|Vienne
+003|Burgenland
+004|Carinthie
+005|Basse-Autriche
+006|Haute-Autriche
+007|Salzbourg
+008|Styrie
+009|Tyrol
+010|Vorarlberg

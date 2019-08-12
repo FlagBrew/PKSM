@@ -44,7 +44,6 @@ public:
     void update(touchPosition* touch) override;
     void drawTop(void) const override;
     void drawBottom(void) const override;
-    ScreenType type() const override { return ScreenType::EVENTS; }
 
 private:
     bool doQR(void);
@@ -52,9 +51,9 @@ private:
     bool toggleFilter(u8 type);
     HidHorizontal hid;
     std::vector<nlohmann::json> wondercards;
-    std::vector<Button*> buttons;
-    std::vector<ToggleButton*> langFilters;
-    std::vector<ToggleButton*> typeFilters;
+    std::vector<std::unique_ptr<Button>> buttons;
+    std::vector<std::unique_ptr<ToggleButton>> langFilters;
+    std::vector<std::unique_ptr<ToggleButton>> typeFilters;
 
     bool dump        = false;
     bool updateGifts = false;

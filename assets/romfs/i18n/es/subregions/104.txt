@@ -1,0 +1,10 @@
+000|—
+002|Gauteng
+003|Cabo Occidental
+004|Cabo Septentrional
+005|Cabo Oriental
+006|KwaZulu-Natal
+007|Estado Libre
+008|Noroeste
+009|Mpumalanga
+010|Limpopo

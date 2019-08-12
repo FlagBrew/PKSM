@@ -31,8 +31,7 @@
 
 Configuration::Configuration()
 {
-    static const std::u16string path = StringUtils::UTF8toUTF16("/config.json");
-    FSStream stream(Archive::data(), path, FS_OPEN_READ);
+    FSStream stream(Archive::data(), u"/config.json", FS_OPEN_READ);
 
     if (R_FAILED(stream.result()))
     {
@@ -143,7 +142,7 @@ Configuration::Configuration()
             {
                 mJson["patronCode"]   = "";
                 mJson["alphaChannel"] = false;
-                mJson["autoUpdate"] = true;
+                mJson["autoUpdate"]   = true;
             }
 
             mJson["version"] = CURRENT_VERSION;
@@ -212,18 +211,16 @@ Configuration::Configuration()
 
 void Configuration::save()
 {
-    static const std::u16string path = StringUtils::UTF8toUTF16("/config.json");
-
     std::string writeData = mJson.dump(2);
     writeData.shrink_to_fit();
     size_t size = writeData.size();
 
     if (oldSize != size)
     {
-        FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, path.data()));
+        Archive::deleteFile(Archive::data(), "/config.json");
     }
 
-    FSStream stream(Archive::data(), path, FS_OPEN_WRITE, oldSize = size);
+    FSStream stream(Archive::data(), u"/config.json", FS_OPEN_WRITE, oldSize = size);
     stream.write(writeData.data(), size);
     stream.close();
 }

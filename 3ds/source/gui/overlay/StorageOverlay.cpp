@@ -33,7 +33,7 @@
 #include "loader.hpp"
 
 StorageOverlay::StorageOverlay(Screen& screen, bool store, int& boxBox, int& storageBox)
-    : Overlay(screen), storage(store), boxBox(boxBox), storageBox(storageBox)
+    : Overlay(screen, i18n::localize("B_BACK")), storage(store), boxBox(boxBox), storageBox(storageBox)
 {
     buttons.push_back(std::make_unique<ClickButton>(106, 63, 108, 28,
         [this]() {

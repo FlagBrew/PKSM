@@ -266,17 +266,14 @@ u32 Sav4::partyOffset(u8 slot) const
 
 std::shared_ptr<PKX> Sav4::pkm(u8 slot) const
 {
-    u8 buf[236];
-    u32 ofs = partyOffset(slot);
-    std::copy(data + ofs, data + ofs + 236, buf);
-    return std::make_shared<PK4>(buf, true, true);
+    return std::make_shared<PK4>(data + partyOffset(slot), true, true);
 }
 
 void Sav4::pkm(std::shared_ptr<PKX> pk, u8 slot)
 {
     u8 buf[236] = {0};
     std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
-    std::unique_ptr<PK4> pk4 = std::make_unique<PK4>(buf, false, true);
+    std::unique_ptr<PK4> pk4 = std::make_unique<PK4>(buf, false, true, true);
 
     if (pk->getLength() != 236)
     {
@@ -295,10 +292,7 @@ void Sav4::pkm(std::shared_ptr<PKX> pk, u8 slot)
 
 std::shared_ptr<PKX> Sav4::pkm(u8 box, u8 slot, bool ekx) const
 {
-    u8 buf[136];
-    u32 ofs = boxOffset(box, slot);
-    std::copy(data + ofs, data + ofs + 136, buf);
-    return std::make_shared<PK4>(buf, ekx);
+    return std::make_shared<PK4>(data + boxOffset(box, slot), ekx);
 }
 
 void Sav4::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
@@ -329,12 +323,11 @@ void Sav4::cryptBoxData(bool crypted)
     {
         for (u8 slot = 0; slot < 30; slot++)
         {
-            std::shared_ptr<PKX> pk4 = pkm(box, slot, crypted);
+            std::unique_ptr<PKX> pk4 = std::make_unique<PK4>(data + boxOffset(box, slot), crypted, false, true);
             if (!crypted)
             {
                 pk4->encrypt();
             }
-            pkm(pk4, box, slot, false);
         }
     }
 }
@@ -496,11 +489,16 @@ void Sav4::dex(std::shared_ptr<PKX> pk)
 
 int Sav4::dexSeen(void) const
 {
-    static constexpr int brSize = 0x40;
     int ret                     = 0;
-    for (int i = 0; i < maxSpecies(); i++)
+    static constexpr int brSize = 0x40;
+    int ofs                     = PokeDex + 0x4;
+    for (int i = 1; i <= maxSpecies(); i++)
     {
-        if (data[PokeDex + 0x4 + brSize + i / 8] & BIT(i % 8))
+        int bit = i - 1;
+        int bd  = bit >> 3;
+        int bm  = bit & 7;
+
+        if ((1 << bm & data[ofs + bd + brSize]) != 0)
         {
             ret++;
         }
@@ -511,9 +509,14 @@ int Sav4::dexSeen(void) const
 int Sav4::dexCaught(void) const
 {
     int ret = 0;
-    for (int i = 0; i < maxSpecies(); i++)
+    int ofs = PokeDex + 0x4;
+    for (int i = 1; i <= maxSpecies(); i++)
     {
-        if (data[PokeDex + 0x4 + i / 8] & BIT(i % 8))
+        int bit = i - 1;
+        int bd  = bit >> 3;
+        int bm  = bit & 7;
+
+        if ((1 << bm & data[ofs + bd]) != 0)
         {
             ret++;
         }
@@ -717,8 +720,7 @@ u32 Sav4::setDexFormValues(std::vector<u8> forms, u8 bitsPerForm, u8 readCt)
 
 std::shared_ptr<PKX> Sav4::emptyPkm() const
 {
-    static auto empty = std::make_shared<PK4>();
-    return empty;
+    return std::make_shared<PK4>();
 }
 
 int Sav4::emptyGiftLocation(void) const

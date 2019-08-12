@@ -59,12 +59,12 @@ InjectSelectorScreen::InjectSelectorScreen()
     instructions.addCircle(false, 160, 195, 11, COLOR_GREY);
     instructions.addBox(false, 158, 177, 4, 29, COLOR_GREY);
     instructions.addBox(false, 160 - 100 / 2, 177 - 23, 100, 23, COLOR_GREY, i18n::localize("QR_SCANNER"));
-    buttons.push_back(new Button(
+    buttons.push_back(std::make_unique<Button>(
         160 - 70 / 2, 207 - 23, 70, 23, [this]() { return this->doQR(); }, ui_sheet_emulated_button_qr_idx, "", FONT_SIZE_14, COLOR_WHITE));
     // Filter
     for (int i = 0; i < 9; i++)
     {
-        langFilters.push_back(new ToggleButton(268, 3 + i * 24, 38, 23,
+        langFilters.push_back(std::make_unique<ToggleButton>(268, 3 + i * 24, 38, 23,
             [this, i]() {
                 hid.select(0);
                 return this->toggleFilter(std::string(langs[i]));
@@ -88,10 +88,6 @@ InjectSelectorScreen::~InjectSelectorScreen()
         {
             ((SavBW*)TitleLoader::save.get())->cryptMysteryGiftData();
         }
-    }
-    for (auto button : buttons)
-    {
-        delete button;
     }
 }
 
@@ -136,7 +132,7 @@ void InjectSelectorScreen::update(touchPosition* touch)
             return;
         }
 
-        for (auto button : buttons)
+        for (auto& button : buttons)
         {
             if (button->update(touch))
             {
@@ -144,7 +140,7 @@ void InjectSelectorScreen::update(touchPosition* touch)
             }
         }
 
-        for (auto button : langFilters)
+        for (auto& button : langFilters)
         {
             if (button->update(touch))
             {
@@ -152,7 +148,7 @@ void InjectSelectorScreen::update(touchPosition* touch)
             }
         }
 
-        for (auto button : typeFilters)
+        for (auto& button : typeFilters)
         {
             if (button->update(touch))
             {
@@ -187,17 +183,17 @@ void InjectSelectorScreen::drawBottom() const
     Gui::text(StringUtils::format("%d/%d", hid.page() + 1, wondercards.size() % 10 == 0 ? wondercards.size() / 10 : wondercards.size() / 10 + 1), 160,
         20, FONT_SIZE_12, FONT_SIZE_12, C2D_Color32(197, 202, 233, 255), TextPosX::CENTER, TextPosY::TOP);
 
-    for (auto button : buttons)
+    for (auto& button : buttons)
     {
         button->draw();
     }
 
-    for (auto button : langFilters)
+    for (auto& button : langFilters)
     {
         button->draw();
     }
 
-    for (auto button : typeFilters)
+    for (auto& button : typeFilters)
     {
         button->draw();
     }

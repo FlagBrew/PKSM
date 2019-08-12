@@ -31,7 +31,7 @@
 #include <ctime>
 #include <sys/stat.h>
 
-static std::map<std::u16string, std::shared_ptr<Directory>> directories;
+static std::unordered_map<std::u16string, std::shared_ptr<Directory>> directories;
 
 static constexpr char langIds[8] = {
     'E', // USA
@@ -100,6 +100,50 @@ static std::string idToSaveName(const std::string& id)
     return "main";
 }
 
+static std::string idToSaveName(const std::u16string& id)
+{
+    if (id.size() == 3 || id.size() == 4)
+    {
+        if (id.substr(0, 3) == u"ADA")
+        {
+            return "POKEMON D.sav";
+        }
+        if (id.substr(0, 3) == u"APA")
+        {
+            return "POKEMON P.sav";
+        }
+        if (id.substr(0, 3) == u"CPU")
+        {
+            return "POKEMON PL.sav";
+        }
+        if (id.substr(0, 3) == u"IPK")
+        {
+            return "POKEMON HG.sav";
+        }
+        if (id.substr(0, 3) == u"IPG")
+        {
+            return "POKEMON SS.sav";
+        }
+        if (id.substr(0, 3) == u"IRB")
+        {
+            return "POKEMON B.sav";
+        }
+        if (id.substr(0, 3) == u"IRA")
+        {
+            return "POKEMON W.sav";
+        }
+        if (id.substr(0, 3) == u"IRE")
+        {
+            return "POKEMON B2.sav";
+        }
+        if (id.substr(0, 3) == u"IRD")
+        {
+            return "POKEMON W2.sav";
+        }
+    }
+    return "main";
+}
+
 // known 3ds title ids
 static constexpr std::array<unsigned long long, 8> ctrTitleIds = {
     0x0004000000055D00, // X
@@ -159,7 +203,7 @@ void TitleLoader::scanTitles(void)
     std::sort(nandTitles.begin(), nandTitles.end(), [](std::shared_ptr<Title>& l, std::shared_ptr<Title>& r) { return l->ID() < r->ID(); });
 }
 
-static std::vector<std::string> scanDirectoryFor(const std::u16string& dir, const std::string& id)
+static std::vector<std::string> scanDirectoryFor(const std::u16string& dir, const std::u16string& id)
 {
     if (directories.count(dir) == 0)
     {
@@ -183,7 +227,7 @@ static std::vector<std::string> scanDirectoryFor(const std::u16string& dir, cons
             if (directory->folder(j))
             {
                 std::u16string fileName = directory->item(j);
-                if (fileName.substr(0, id.size()) == StringUtils::UTF8toUTF16(id.c_str()))
+                if (fileName.substr(0, id.size()) == id)
                 {
                     Directory subdir(Archive::sd(), dir + sSeparator + fileName);
                     for (size_t k = 0; k < subdir.count(); k++)
@@ -203,6 +247,11 @@ static std::vector<std::string> scanDirectoryFor(const std::u16string& dir, cons
         }
     }
     return ret;
+}
+
+static std::vector<std::string> scanDirectoryFor(const std::u16string& dir, const std::string& id)
+{
+    return scanDirectoryFor(dir, StringUtils::UTF8toUTF16(id));
 }
 
 void TitleLoader::scanSaves(void)
@@ -393,7 +442,6 @@ bool TitleLoader::load(std::shared_ptr<Title> title, const std::string& savePath
     }
     if (Configuration::getInstance().autoBackup())
     {
-        std::string id;
         if (title)
         {
             backupSave(title->checkpointPrefix());

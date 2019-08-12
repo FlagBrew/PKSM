@@ -33,26 +33,6 @@
 #include <citro3d.h>
 #include <memory>
 
-enum ScreenType
-{
-    TITLELOAD,
-    MAINMENU,
-    STORAGE,
-    EDITOR,
-    EDITSELECT,
-    EVENTS,
-    HEXEDIT,
-    INJECTOR,
-    SCRIPTS,
-    SCRIPTSELECT,
-    SELECTOR,
-    SPECIES_SELECT,
-    SETTINGS,
-    VIEWER,
-    BAG,
-    ITEMEDIT
-};
-
 class Screen
 {
     friend class Overlay;
@@ -68,7 +48,6 @@ public:
     // Call currentOverlay->update if it exists, and update if it doesn't
     virtual void doUpdate(touchPosition* touch) final;
     virtual void update(touchPosition* touch) = 0;
-    virtual ScreenType type() const           = 0;
     // Call draw, then currentOverlay->draw if it exists
     virtual void doTopDraw() const final;
     virtual void drawTop() const = 0;

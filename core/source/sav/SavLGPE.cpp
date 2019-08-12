@@ -318,7 +318,7 @@ std::shared_ptr<PKX> SavLGPE::pkm(u8 slot) const
     }
     else
     {
-        return emptyPkm()->clone();
+        return emptyPkm();
     }
 }
 
@@ -400,8 +400,7 @@ void SavLGPE::trade(std::shared_ptr<PKX> pk)
 
 std::shared_ptr<PKX> SavLGPE::emptyPkm() const
 {
-    static auto empty = std::make_shared<PB7>();
-    return empty;
+    return std::make_shared<PB7>();
 }
 
 std::string SavLGPE::boxName(u8 box) const
@@ -613,12 +612,11 @@ void SavLGPE::cryptBoxData(bool crypted)
             {
                 return;
             }
-            auto pb7 = pkm(box, slot, crypted);
+            std::unique_ptr<PKX> pb7 = std::make_unique<PB7>(data + boxOffset(box, slot), crypted, true);
             if (!crypted)
             {
                 pb7->encrypt();
             }
-            pkm(pb7, box, slot, false);
         }
     }
 }

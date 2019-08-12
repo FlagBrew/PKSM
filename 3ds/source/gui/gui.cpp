@@ -30,6 +30,8 @@
 
 C3D_RenderTarget* g_renderTargetTop;
 C3D_RenderTarget* g_renderTargetBottom;
+C3D_RenderTarget* g_renderTargetTextChop;
+C3D_Tex textChopTexture;
 
 static C2D_SpriteSheet spritesheet_ui;
 static C2D_SpriteSheet spritesheet_pkm;
@@ -39,7 +41,6 @@ static TextParse::TextBuf* textBuffer;
 static TextParse::ScreenText topText;
 static TextParse::ScreenText bottomText;
 static TextParse::ScreenText* currentText = nullptr;
-static std::unordered_map<std::string, std::vector<C2D_Text>> textMap;
 
 static std::vector<C2D_Font> fonts;
 
@@ -53,6 +54,10 @@ static float dNoHomeAlpha = NOHOMEALPHA_ACCEL;
 
 bool textMode = false;
 bool inFrame  = false;
+bool drawingOnTopScreen;
+
+static int scrollingTextY = 0;
+static std::unordered_map<std::string, int> scrollingXOffsets;
 
 static Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int endX, int endY)
 {
@@ -278,6 +283,81 @@ void Gui::text(
     Gui::text(text, x, y, scaleX, scaleY, color, positionX, positionY);
 }
 
+void Gui::scrollingText(
+    const std::string& str, float x, float y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY, int width)
+{
+    static const Tex3DS_SubTexture t3x = {512, 256, 0.0f, 1.0f, 1.0f, 0.0f};
+    static const C2D_Image textImage   = {&textChopTexture, &t3x};
+
+    auto text = parseText(str, scaleX);
+    text->optimize();
+    if (!scrollingXOffsets.count(str))
+    {
+        scrollingXOffsets[str] = -30;
+    }
+
+    static const float lineMod     = scaleY * C2D_FontGetInfo(nullptr)->lineFeed;
+    static const float baselinePos = scaleY * C2D_FontGetInfo(nullptr)->tglp->baselinePos;
+    y -= scaleY * 6;
+    switch (positionY)
+    {
+        case TextPosY::TOP:
+            break;
+        case TextPosY::CENTER:
+            y -= 0.5f * (lineMod * (float)text->lineWidths.size());
+            break;
+        case TextPosY::BOTTOM:
+            y -= lineMod * (float)text->lineWidths.size();
+            break;
+    }
+
+    C2D_SceneBegin(g_renderTargetTextChop);
+    text->draw(0, scrollingTextY, 0, scaleX, scaleY, positionX, color);
+    C2D_SceneBegin(drawingOnTopScreen ? g_renderTargetTop : g_renderTargetBottom);
+    Tex3DS_SubTexture newt3x = _select_box(textImage, std::max(scrollingXOffsets[str], 0) / 3, scrollingTextY + lineMod - baselinePos,
+        std::max(scrollingXOffsets[str], 0) / 3 + width, scrollingTextY + lineMod * 2 - baselinePos);
+    scrollingTextY += ceilf(lineMod);
+    scrollingXOffsets[str] += 1;
+    if (scrollingXOffsets[str] / 3 + width > (int)text->maxLineWidth * scaleX + 10)
+    {
+        scrollingXOffsets[str] = -30;
+    }
+    C2D_DrawImageAt({&textChopTexture, &newt3x}, x, y + lineMod - baselinePos, 0.5f);
+}
+
+void Gui::slicedText(
+    const std::string& str, float x, float y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY, int width)
+{
+    static const Tex3DS_SubTexture t3x = {512, 256, 0.0f, 1.0f, 1.0f, 0.0f};
+    static const C2D_Image textImage   = {&textChopTexture, &t3x};
+
+    auto text = parseText(str, scaleX);
+    text->optimize();
+
+    static const float lineMod     = scaleY * C2D_FontGetInfo(nullptr)->lineFeed;
+    static const float baselinePos = scaleY * C2D_FontGetInfo(nullptr)->tglp->baselinePos;
+    y -= scaleY * 6;
+    switch (positionY)
+    {
+        case TextPosY::TOP:
+            break;
+        case TextPosY::CENTER:
+            y -= 0.5f * (lineMod * (float)text->lineWidths.size());
+            break;
+        case TextPosY::BOTTOM:
+            y -= lineMod * (float)text->lineWidths.size();
+            break;
+    }
+
+    C2D_SceneBegin(g_renderTargetTextChop);
+    text->draw(0, scrollingTextY, 0, scaleX, scaleY, positionX, color);
+    C2D_SceneBegin(drawingOnTopScreen ? g_renderTargetTop : g_renderTargetBottom);
+    Tex3DS_SubTexture newt3x = _select_box(textImage, 0, scrollingTextY + lineMod - baselinePos, width, scrollingTextY + lineMod * 2 - baselinePos);
+    scrollingTextY += ceilf(lineMod);
+    scrollingXOffsets[str] = -30;
+    C2D_DrawImageAt({&textChopTexture, &newt3x}, x, y + lineMod - baselinePos, 0.5f);
+}
+
 static void _draw_mirror_scale(int key, int x, int y, int off, int rep)
 {
     C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, key);
@@ -313,6 +393,9 @@ Result Gui::init(void)
     g_renderTargetTop    = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
     g_renderTargetBottom = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
 
+    C3D_TexInitVRAM(&textChopTexture, 512, 256, GPU_RGBA8);
+    g_renderTargetTextChop = C3D_RenderTargetCreateFromTex(&textChopTexture, GPU_TEXFACE_2D, 0, GPU_RB_DEPTH16);
+
     spritesheet_ui    = C2D_SpriteSheetLoad("romfs:/gfx/ui_sheet.t3x");
     spritesheet_pkm   = C2D_SpriteSheetLoad("/3ds/PKSM/assets/pkm_spritesheet.t3x");
     spritesheet_types = C2D_SpriteSheetLoad("/3ds/PKSM/assets/types_spritesheet.t3x");
@@ -341,6 +424,8 @@ void Gui::mainLoop(void)
         inFrame = true;
         Gui::clearScreen(GFX_TOP);
         Gui::clearScreen(GFX_BOTTOM);
+        C2D_TargetClear(g_renderTargetTextChop, 0);
+        scrollingTextY = 0;
 
         u32 kHeld = hidKeysHeld();
         if (kHeld & KEY_SELECT && !screens.top()->getInstructions().empty())
@@ -367,7 +452,7 @@ void Gui::mainLoop(void)
             touchPosition touch;
             hidTouchRead(&touch);
             screens.top()->doUpdate(&touch);
-            exit = screens.top()->type() == ScreenType::TITLELOAD && (kHeld & KEY_START);
+            exit = screens.size() == 1 && (kHeld & KEY_START);
         }
 
         if (!aptIsHomeAllowed() && aptIsHomePressed())
@@ -827,6 +912,14 @@ void Gui::sprite(int key, int x, int y)
         C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(242, 221, 131, 255), 1);
         C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_bottom_greyscale_idx), x, y, 0.5f, &tint);
     }
+    else if (key == ui_sheet_emulated_button_lang_disabled_idx)
+    {
+        drawSolidRect(x, y, 8, 8, COLOR_MENUBLUE);
+    }
+    else if (key == ui_sheet_emulated_button_lang_enabled_idx)
+    {
+        drawSolidRect(x - 1, y - 1, 10, 10, COLOR_HIGHBLUE);
+    }
     // standard case
     else
     {
@@ -1093,6 +1186,11 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
     }
     // Vivillon chain
     else if (species == 664 || species == 665)
+    {
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
+    }
+    // Silvally
+    else if (species == 773)
     {
         Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
     }
@@ -1403,11 +1501,6 @@ void Gui::type(Language lang, u8 type, int x, int y)
 
 void Gui::setScreen(std::unique_ptr<Screen> screen)
 {
-    if (!screens.empty() && screens.top()->type() == screen->type())
-    {
-        if (screen == screens.top())
-            return;
-    }
     screens.push(std::move(screen));
 }
 
@@ -1631,6 +1724,35 @@ void Gui::showRestoreProgress(u32 partial, u32 total)
     }
 }
 
+void Gui::showDownloadProgress(const std::string& path, u32 partial, u32 total)
+{
+    if (inFrame)
+    {
+        C3D_FrameEnd(0);
+    }
+
+    C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+    Gui::clearScreen(GFX_TOP);
+    Gui::clearScreen(GFX_BOTTOM);
+    target(GFX_TOP);
+    sprite(ui_sheet_part_info_top_idx, 0, 0);
+    text(StringUtils::format(i18n::localize("DOWNLOADING_FILE"), path.c_str()), 200, 95, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER,
+        TextPosY::TOP);
+    text(StringUtils::format(i18n::localize("SAVE_PROGRESS"), partial, total), 200, 130, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
+        TextPosY::TOP);
+    flushText();
+
+    target(GFX_BOTTOM);
+    sprite(ui_sheet_part_info_bottom_idx, 0, 0);
+
+    C3D_FrameEnd(0);
+
+    if (inFrame)
+    {
+        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+    }
+}
+
 void Gui::showResizeStorage()
 {
     if (inFrame)
@@ -1700,4 +1822,23 @@ void Gui::error(const std::string& message, Result errorCode)
     {
         C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
     }
+}
+
+void Gui::drawSelector(float x, float y)
+{
+    static constexpr int w     = 2;
+    static float timer         = 0.0f;
+    float highlight_multiplier = fmax(0.0, fabs(fmod(timer, 1.0) - 0.5) / 0.5);
+    u8 r                       = COLOR_SELECTOR & 0xFF;
+    u8 g                       = (COLOR_SELECTOR >> 8) & 0xFF;
+    u8 b                       = (COLOR_SELECTOR >> 16) & 0xFF;
+    u32 color = C2D_Color32(r + (255 - r) * highlight_multiplier, g + (255 - g) * highlight_multiplier, b + (255 - b) * highlight_multiplier, 255);
+
+    Gui::drawSolidRect(x, y, 50, 50, C2D_Color32(255, 255, 255, 100));
+    Gui::drawSolidRect(x, y, 50, w, color);                      // top
+    Gui::drawSolidRect(x, y + w, w, 50 - 2 * w, color);          // left
+    Gui::drawSolidRect(x + 50 - w, y + w, w, 50 - 2 * w, color); // right
+    Gui::drawSolidRect(x, y + 50 - w, 50, w, color);             // bottom
+
+    timer += .025f;
 }

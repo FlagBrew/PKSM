@@ -45,6 +45,7 @@
 int __stacksize__ = 64 * 1024;
 
 static u32 old_time_limit;
+static Handle hbldrHandle;
 
 struct asset
 {
@@ -133,6 +134,33 @@ static Result consoleDisplayError(const std::string& message, Result res)
     return res;
 }
 
+static Result HBLDR_SetTarget(const char* path)
+{
+    u32 pathLen = strlen(path) + 1;
+    u32* cmdbuf = getThreadCommandBuffer();
+
+    cmdbuf[0] = IPC_MakeHeader(2, 0, 2); // 0x20002
+    cmdbuf[1] = IPC_Desc_StaticBuffer(pathLen, 0);
+    cmdbuf[2] = (u32)path;
+
+    Result rc = svcSendSyncRequest(hbldrHandle);
+    if (R_SUCCEEDED(rc))
+        rc = cmdbuf[1];
+    return rc;
+}
+
+static int progress_callback(void* clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow)
+{
+    static auto oldTime = osGetTime();
+    auto time           = osGetTime();
+    if (dltotal != 0 && time >= oldTime + 1000)
+    {
+        Gui::showDownloadProgress(*(std::string*)clientp, dlnow / 1024, dltotal / 1024);
+        oldTime = time;
+    }
+    return 0;
+}
+
 static bool update(std::string execPath)
 {
     u32 status;
@@ -141,7 +169,7 @@ static bool update(std::string execPath)
     {
         return false;
     }
-    execPath = execPath.substr(execPath.find(':')+1);
+    execPath        = execPath.substr(execPath.find(':') + 1);
     std::string url = "", path = "", retString = "";
     const std::string patronCode = Configuration::getInstance().patronCode();
     if (Configuration::getInstance().alphaChannel() && !patronCode.empty())
@@ -238,18 +266,20 @@ static bool update(std::string execPath)
     if (!url.empty())
     {
         Gui::waitFrame(i18n::localize("UPDATE_FOUND"));
-        Result res = Fetch::download(url, path, Configuration::getInstance().alphaChannel() ? "code=" + patronCode : "");
+        std::string fileName = path.substr(path.find_last_of('/') + 1);
+        Result res =
+            Fetch::download(url, path, Configuration::getInstance().alphaChannel() ? "code=" + patronCode : "", progress_callback, &fileName);
         if (R_FAILED(res))
         {
             Gui::error(i18n::localize("UPDATE_FOUND_BUT_FAILED_DOWNLOAD"), res);
-            FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_ASCII, path.c_str()));
+            Archive::deleteFile(Archive::sd(), path);
             return false;
         }
 
         Gui::waitFrame(i18n::localize("UPDATE_INSTALLING"));
         if (execPath != "")
         {
-            FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_ASCII, execPath.c_str()));
+            Archive::deleteFile(Archive::sd(), execPath);
             Archive::moveFile(Archive::sd(), path, Archive::sd(), execPath);
             return true;
         }
@@ -325,7 +355,7 @@ static bool update(std::string execPath)
 
                 ciaFile.close();
 
-                FSUSER_DeleteFile(Archive::sd(), fsMakePath(PATH_ASCII, path.c_str()));
+                Archive::deleteFile(Archive::sd(), path);
 
                 return true;
             }
@@ -351,11 +381,8 @@ Result App::init(const std::string& execPath)
     gfxSwapBuffersGpu();
 
 #if !CITRA_DEBUG
-    Handle hbldrHandle;
     if (R_FAILED(res = svcConnectToPort(&hbldrHandle, "hb:ldr")))
         return consoleDisplayError("Rosalina sysmodule has not been found.\n\nMake sure you're running latest Luma3DS.", res);
-    else
-        svcCloseHandle(hbldrHandle);
 #endif
     APT_GetAppCpuTimeLimit(&old_time_limit);
     APT_SetAppCpuTimeLimit(30);
@@ -394,7 +421,28 @@ Result App::init(const std::string& execPath)
 
     if (Configuration::getInstance().autoUpdate() && update(execPath))
     {
-        Gui::warn(i18n::localize("UPDATE_SUCCESS_1"), i18n::localize("UPDATE_SUCCESS_2"));
+        Result res = -1;
+        if (execPath.empty())
+        {
+            u8 param[0x300];
+            u8 hmac[0x20];
+
+            if (R_SUCCEEDED(res = APT_PrepareToDoApplicationJump(0, 0x000400000EC10000, MEDIATYPE_SD)))
+            {
+                res = APT_DoApplicationJump(param, sizeof(param), hmac);
+            }
+        }
+        else
+        {
+#if !CITRA_DEBUG
+            std::string path = execPath.substr(execPath.find('/'));
+            res              = HBLDR_SetTarget(path.c_str());
+#endif
+        }
+        if (R_FAILED(res))
+        {
+            Gui::warn(i18n::localize("UPDATE_SUCCESS_1"), i18n::localize("UPDATE_SUCCESS_2"));
+        }
         return -1;
     }
 
@@ -414,6 +462,7 @@ Result App::init(const std::string& execPath)
 
 Result App::exit(void)
 {
+    svcCloseHandle(hbldrHandle);
     TitleLoader::exit();
     Gui::exit();
     socExit();

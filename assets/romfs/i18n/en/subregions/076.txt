@@ -1,0 +1,21 @@
+000|—
+008|Uusimaa / Nyland
+009|Lappi / Lapland
+010|Pohjois-Pohjanmaa / Norra Österbotten
+011|Kainuu / Kajanaland
+012|Pohjois-Karjala / Norra Karelen
+013|Pohjois-Savo / Norra Savolax
+014|Etelä-Savo / Södra Savolax
+015|Etelä-Pohjanmaa / Södra Österbotten
+016|Pohjanmaa / Österbotten
+017|Pirkanmaa / Birkaland
+018|Satakunta / Satakunda
+019|Keski-Pohjanmaa / Mellersta Österbotten
+020|Keski-Suomi / Mellersta Finland
+021|Varsinais-Suomi / Egentliga Finland
+022|Etelä-Karjala / Södra Karelen
+023|Päijät-Häme / Päijänne Tavastland
+024|Kanta-Häme / Egentliga Tavastland
+025|Itä-Uusimaa / Östra Nyland
+026|Kymenlaakso / Kymmenedalen
+027|Ahvenanmaa / Åland

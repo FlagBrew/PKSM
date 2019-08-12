@@ -45,6 +45,7 @@ namespace Archive
     Result moveDir(FS_Archive src, const std::u16string& dir, FS_Archive dst, const std::u16string& dest);
     Result moveFile(FS_Archive src, const std::u16string& file, FS_Archive dst, const std::u16string& dest);
     Result copyFile(FS_Archive src, const std::u16string& file, FS_Archive dst, const std::u16string& dest);
+    Result deleteFile(FS_Archive archive, const std::u16string& file);
     inline Result moveDir(FS_Archive src, const std::string& dir, FS_Archive dst, const std::string& dest)
     {
         return moveDir(src, StringUtils::UTF8toUTF16(dir), dst, StringUtils::UTF8toUTF16(dest));
@@ -57,6 +58,7 @@ namespace Archive
     {
         return copyFile(src, StringUtils::UTF8toUTF16(file), dst, StringUtils::UTF8toUTF16(dest));
     }
+    inline Result deleteFile(FS_Archive archive, const std::string& file) { return deleteFile(archive, StringUtils::UTF8toUTF16(file)); }
 }
 
 #endif

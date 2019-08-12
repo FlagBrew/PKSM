@@ -49,17 +49,21 @@ static constexpr std::string_view ctrNames[] = {"XY", "ORAS", "SUMO", "USUM"};
 
 static constexpr std::string_view dsNames[] = {"Pt", "DP", "HGSS", "BW", "B2W2"};
 
-SaveLoadScreen::SaveLoadScreen() : Screen(i18n::localize("A_SELECT") + '\n' + i18n::localize("Y_PRESENT") + '\n' + i18n::localize("START_EXIT"))
+SaveLoadScreen::SaveLoadScreen()
+    : Screen(
+          i18n::localize("A_SELECT") + '\n' + i18n::localize("X_SETTINGS") + '\n' + i18n::localize("Y_PRESENT") + '\n' + i18n::localize("START_EXIT"))
 {
-    buttons.push_back(new AccelButton(24, 96, 175, 16, [this]() { return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
+    buttons.push_back(
+        std::make_unique<AccelButton>(24, 96, 175, 16, [this]() { return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
     for (int i = 1; i < 5; i++)
     {
-        buttons.push_back(
-            new ClickButton(24, 96 + 17 * i, 175, 16, [this, i]() { return this->setSelectedSave(i); }, ui_sheet_res_null_idx, "", 0.0f, 0));
+        buttons.push_back(std::make_unique<ClickButton>(
+            24, 96 + 17 * i, 175, 16, [this, i]() { return this->setSelectedSave(i); }, ui_sheet_res_null_idx, "", 0.0f, 0));
     }
-    buttons.push_back(new AccelButton(24, 181, 175, 16, [this]() { return this->setSelectedSave(5); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
-    buttons.push_back(new Button(200, 95, 96, 51, [this]() { return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f, 0));
-    buttons.push_back(new Button(200, 147, 96, 51, &receiveSaveFromBridge, ui_sheet_res_null_idx, "", 0.0f, 0));
+    buttons.push_back(
+        std::make_unique<AccelButton>(24, 181, 175, 16, [this]() { return this->setSelectedSave(5); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
+    buttons.push_back(std::make_unique<Button>(200, 95, 96, 51, [this]() { return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f, 0));
+    buttons.push_back(std::make_unique<Button>(200, 147, 96, 51, &receiveSaveFromBridge, ui_sheet_res_null_idx, "", 0.0f, 0));
 
     for (auto i = TitleLoader::sdSaves.begin(); i != TitleLoader::sdSaves.end(); i++)
     {
@@ -192,22 +196,6 @@ SaveLoadScreen::SaveLoadScreen() : Screen(i18n::localize("A_SELECT") + '\n' + i1
     }
 }
 
-void SaveLoadScreen::drawSelector(int x, int y) const
-{
-    static const int w         = 2;
-    float highlight_multiplier = fmax(0.0, fabs(fmod(Screen::timer(), 1.0) - 0.5) / 0.5);
-    u8 r                       = COLOR_SELECTOR & 0xFF;
-    u8 g                       = (COLOR_SELECTOR >> 8) & 0xFF;
-    u8 b                       = (COLOR_SELECTOR >> 16) & 0xFF;
-    u32 color = C2D_Color32(r + (255 - r) * highlight_multiplier, g + (255 - g) * highlight_multiplier, b + (255 - b) * highlight_multiplier, 255);
-
-    Gui::drawSolidRect(x, y, 50, 50, C2D_Color32(255, 255, 255, 100));
-    Gui::drawSolidRect(x, y, 50, w, color);                      // top
-    Gui::drawSolidRect(x, y + w, w, 50 - 2 * w, color);          // left
-    Gui::drawSolidRect(x + 50 - w, y + w, w, 50 - 2 * w, color); // right
-    Gui::drawSolidRect(x, y + 50 - w, 50, w, color);             // bottom
-}
-
 void SaveLoadScreen::drawTop(void) const
 {
     Gui::drawSolidRect(0, 0, 400.0f, 240.0f, C2D_Color32(15, 22, 89, 255));
@@ -268,15 +256,15 @@ void SaveLoadScreen::drawTop(void) const
 
     if (saveGroup == -1)
     {
-        drawSelector(39, 97);
+        Gui::drawSelector(39, 97);
     }
     else if (saveGroup < 4)
     {
-        drawSelector(149 + saveGroup * 60, 67);
+        Gui::drawSelector(149 + saveGroup * 60, 67);
     }
     else
     {
-        drawSelector(149 + (saveGroup - 4) * 60, 127);
+        Gui::drawSelector(149 + (saveGroup - 4) * 60, 127);
     }
 
     Gui::text(i18n::localize("LOADER_INSTRUCTIONS_TOP_PRESENT"), 200, 8, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
@@ -352,8 +340,7 @@ void SaveLoadScreen::update(touchPosition* touch)
         }
         if (downKeys & KEY_X)
         {
-            receiveSaveFromBridge();
-            return;
+            Gui::setScreen(std::make_unique<ConfigScreen>());
         }
         if (downKeys & KEY_DOWN)
         {
@@ -363,7 +350,7 @@ void SaveLoadScreen::update(touchPosition* touch)
                 {
                     firstSave++;
                 }
-                else
+                else if (firstSave + selectedSave < (int)saves[saveGroup].size() - 1)
                 {
                     selectedSave++;
                 }
@@ -394,7 +381,7 @@ void SaveLoadScreen::update(touchPosition* touch)
                 selectedSave--;
             }
         }
-        for (Button* button : buttons)
+        for (auto& button : buttons)
         {
             button->update(touch);
         }
@@ -476,8 +463,7 @@ void SaveLoadScreen::update(touchPosition* touch)
             }
         }
     }
-
-    if (downKeys & KEY_SELECT)
+    if (downKeys & KEY_X)
     {
         Gui::setScreen(std::make_unique<ConfigScreen>());
     }

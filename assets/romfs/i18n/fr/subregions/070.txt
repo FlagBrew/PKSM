@@ -1,0 +1,29 @@
+000|—
+002|Sofia (ville)
+003|Sofia (oblast)
+004|Blagoevgrad
+005|Pleven
+006|Vidin
+007|Varna
+008|Bourgas
+009|Dobritch
+010|Gabrovo
+011|Khaskovo
+012|Yambol
+013|Kardjali
+014|Kyoustendil
+015|Lovetch
+016|Montana
+017|Pazardjik
+018|Pernik
+019|Plovdiv
+020|Razgrad
+021|Roussé
+022|Silistra
+023|Sliven
+024|Smolyan
+025|Stara Zagora
+026|Choumen
+027|Targovichte
+028|Veliko Tarnovo
+029|Vratsa

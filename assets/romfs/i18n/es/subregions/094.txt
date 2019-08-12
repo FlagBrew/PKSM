@@ -1,0 +1,13 @@
+000|—
+002|Holanda Septentrional
+003|Drente
+004|Flevoland
+005|Frisia
+006|Güeldres
+007|Groninga
+008|Limburgo
+009|Brabante Septentrional
+010|Overijssel
+011|Holanda Meridional
+012|Utrecht
+013|Zelanda

@@ -1,0 +1,23 @@
+000|—
+002|Taipéi
+003|Condado de Kaohsiung
+004|Keelung
+005|Hsinchu
+006|Taichung
+007|Chiayi
+008|Tainan
+009|Nuevo Taipéi
+010|Condado de Taoyuan
+011|Condado de Hsinchu
+012|Distrito de Miaoli
+014|Condado de Changhua
+015|Condado de Nantou
+016|Condado de Yunlin
+017|Condado de Chiayi
+020|Condado de Pingtung
+021|Condado de Yilan
+022|Condado de Hualien
+023|Condado de Taitung
+024|Islas Pescadores
+025|Condado de Kinmen
+026|Condado de Lienchiang

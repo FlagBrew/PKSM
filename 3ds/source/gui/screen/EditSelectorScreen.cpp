@@ -148,17 +148,18 @@ EditSelectorScreen::EditSelectorScreen() : Screen(i18n::localize("A_SELECT") + '
 {
     currentOverlay = std::make_shared<ViewOverlay>(*this, infoMon, false);
 
-    buttons.push_back(new ClickButton(283, 211, 34, 28, [this]() { return goBack(); }, ui_sheet_button_back_idx, "", 0.0f, 0));
+    buttons.push_back(std::make_unique<ClickButton>(283, 211, 34, 28, [this]() { return goBack(); }, ui_sheet_button_back_idx, "", 0.0f, 0));
     instructions.addBox(false, 25, 15, 164, 24, COLOR_GREY, i18n::localize("A_BOX_NAME"), COLOR_WHITE);
-    buttons.push_back(new ClickButton(25, 15, 164, 24, [this]() { return this->clickIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0));
-    buttons.push_back(new AccelButton(8, 15, 17, 24, [this]() { return this->prevBox(); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5));
-    buttons.push_back(new AccelButton(189, 15, 17, 24, [this]() { return this->nextBox(); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5));
+    buttons.push_back(std::make_unique<ClickButton>(25, 15, 164, 24, [this]() { return this->clickIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0));
+    buttons.push_back(std::make_unique<AccelButton>(8, 15, 17, 24, [this]() { return this->prevBox(); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5));
+    buttons.push_back(
+        std::make_unique<AccelButton>(189, 15, 17, 24, [this]() { return this->nextBox(); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5));
     auto cameraButtonText = Gui::parseText("\uE004+\uE005 \uE01E", FONT_SIZE_14, 0.0f);
     instructions.addCircle(false, 310 - cameraButtonText->maxWidth(FONT_SIZE_14) / 2, 24, 8, COLOR_GREY);
     instructions.addBox(false, 308 - cameraButtonText->maxWidth(FONT_SIZE_14) / 2, 24, 4, 20, COLOR_GREY);
     instructions.addBox(false, 222 - cameraButtonText->maxWidth(FONT_SIZE_14) / 2, 44, 90, 16, COLOR_GREY, i18n::localize("QR_SCANNER"), COLOR_WHITE);
-    buttons.push_back(new ClickButton(310 - cameraButtonText->maxWidth(FONT_SIZE_14), 16, cameraButtonText->maxWidth(FONT_SIZE_14) + 2, 16,
-        [this]() { return this->doQR(); }, ui_sheet_res_null_idx, "\uE004+\uE005 \uE01E", FONT_SIZE_14, COLOR_BLACK));
+    buttons.push_back(std::make_unique<ClickButton>(310 - cameraButtonText->maxWidth(FONT_SIZE_14), 16, cameraButtonText->maxWidth(FONT_SIZE_14) + 2,
+        16, [this]() { return this->doQR(); }, ui_sheet_res_null_idx, "\uE004+\uE005 \uE01E", FONT_SIZE_14, COLOR_BLACK));
 
     // Pokemon buttons
     u16 y = 45;
@@ -167,7 +168,7 @@ EditSelectorScreen::EditSelectorScreen() : Screen(i18n::localize("A_SELECT") + '
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            pkmButtons[row * 6 + column] = new ClickButton(
+            pkmButtons[row * 6 + column] = std::make_unique<ClickButton>(
                 x, y, 34, 30, [this, row, column]() { return this->clickIndex(row * 6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, 0);
             x += 34;
         }
@@ -175,21 +176,21 @@ EditSelectorScreen::EditSelectorScreen() : Screen(i18n::localize("A_SELECT") + '
     }
     for (int i = 0; i < 6; i++)
     {
-        int x              = (i % 2 == 0 ? 221 : 271);
-        int y              = (i % 2 == 0 ? 50 + 45 * (i / 2) : 66 + 45 * (i / 2));
-        pkmButtons[30 + i] = new ClickButton(x, y, 34, 30, [this, i]() { return this->clickIndex(31 + i); }, ui_sheet_res_null_idx, "", 0.0f, 0);
+        int x = (i % 2 == 0 ? 221 : 271);
+        int y = (i % 2 == 0 ? 50 + 45 * (i / 2) : 66 + 45 * (i / 2));
+        pkmButtons[30 + i] =
+            std::make_unique<ClickButton>(x, y, 34, 30, [this, i]() { return this->clickIndex(31 + i); }, ui_sheet_res_null_idx, "", 0.0f, 0);
     }
 
-    viewerButtons.push_back(buttons[0]);
-    viewerButtons.push_back(new ClickButton(212, 47, 108, 28, [this]() { return this->editPokemon(); }, ui_sheet_button_editor_idx,
+    viewerButtons.push_back(std::make_unique<ClickButton>(212, 47, 108, 28, [this]() { return this->editPokemon(); }, ui_sheet_button_editor_idx,
         "\uE000: " + i18n::localize("EDIT"), FONT_SIZE_12, COLOR_BLACK));
-    viewerButtons.push_back(new ClickButton(212, 78, 108, 28,
+    viewerButtons.push_back(std::make_unique<ClickButton>(212, 78, 108, 28,
         [this]() {
             menu = false;
             return this->releasePokemon();
         },
         ui_sheet_button_editor_idx, "\uE003: " + i18n::localize("RELEASE"), FONT_SIZE_12, COLOR_BLACK));
-    viewerButtons.push_back(new ClickButton(212, 109, 108, 28,
+    viewerButtons.push_back(std::make_unique<ClickButton>(212, 109, 108, 28,
         [this]() {
             menu = false;
             return this->clonePkm();
@@ -201,22 +202,6 @@ EditSelectorScreen::EditSelectorScreen() : Screen(i18n::localize("A_SELECT") + '
 
 EditSelectorScreen::~EditSelectorScreen()
 {
-    for (Button* button : buttons)
-    {
-        delete button;
-    }
-
-    for (Button* button : pkmButtons)
-    {
-        delete button;
-    }
-
-    // Skip shared back button
-    for (size_t i = 1; i < viewerButtons.size(); i++)
-    {
-        delete viewerButtons[i];
-    }
-
     if (TitleLoader::save->generation() == Generation::LGPE)
     {
         ((SavLGPE*)TitleLoader::save.get())->compressBox();
@@ -250,7 +235,7 @@ void EditSelectorScreen::drawBottom() const
     Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_horizontal_idx, 202, 44);
     Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_vertical_idx, 2, 193);
     Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_both_idx, 202, 193);
-    for (Button* b : buttons)
+    for (auto& b : buttons)
     {
         b->draw();
     }
@@ -359,10 +344,11 @@ void EditSelectorScreen::drawBottom() const
     if (menu)
     {
         Gui::drawSolidRect(0, 0, 320, 240, COLOR_MASKBLACK);
-        for (auto button : viewerButtons)
+        for (auto& button : viewerButtons)
         {
             button->draw();
         }
+        buttons[0]->draw();
     }
 }
 
@@ -414,33 +400,27 @@ void EditSelectorScreen::update(touchPosition* touch)
 
     if (menu)
     {
+        if (!dirtyBack)
+        {
+            if (buttons[0]->clicked(touch))
+            {
+                dirtyBack = true;
+            }
+            if (buttons[0]->update(touch))
+            {
+                return;
+            }
+        }
+        else
+        {
+            if (!buttons[0]->clicked(touch))
+            {
+                dirtyBack = false;
+            }
+        }
         for (size_t i = 0; i < viewerButtons.size(); i++)
         {
-            if (i == 0)
-            {
-                if (!dirtyBack)
-                {
-                    if (viewerButtons[i]->clicked(touch))
-                    {
-                        dirtyBack = true;
-                    }
-                    if (viewerButtons[i]->update(touch))
-                    {
-                        return;
-                    }
-                }
-                else
-                {
-                    if (!viewerButtons[i]->clicked(touch))
-                    {
-                        dirtyBack = false;
-                    }
-                }
-            }
-            else
-            {
-                viewerButtons[i]->update(touch);
-            }
+            viewerButtons[i]->update(touch);
         }
 
         if (downKeys & KEY_B)
@@ -492,7 +472,7 @@ void EditSelectorScreen::update(touchPosition* touch)
             }
         }
 
-        for (Button* button : pkmButtons)
+        for (auto& button : pkmButtons)
         {
             button->update(touch);
         }

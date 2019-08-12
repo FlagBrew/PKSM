@@ -1,0 +1,20 @@
+000|—
+002|Madrid
+003|Andalousie
+004|Aragon
+005|Asturies
+006|Îles Baléares
+007|Îles Canaries
+008|Cantabrie
+009|Castille-La Manche
+010|Castille-et-León
+011|Catalogne
+012|Valence
+013|Estrémadure
+014|Galice
+015|Murcie
+016|Navarre
+017|Pays basque
+018|La Rioja
+019|Ceuta
+020|Melilla

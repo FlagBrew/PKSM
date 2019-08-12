@@ -1,0 +1,14 @@
+000|—
+002|Riad
+003|Baha
+004|Medina
+005|Asch-Scharqiyya
+006|Qasim
+007|Asir
+008|Hail
+009|Mekka
+010|Al-Hudud asch-schamaliyya
+011|Nadschran
+012|Dschaizan
+013|Tabuk
+014|Dschauf

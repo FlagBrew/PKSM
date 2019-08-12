@@ -38,6 +38,8 @@ namespace i18n
     const std::vector<std::string>& rawItems(u8 lang);
     const std::vector<std::string>& rawMoves(u8 lang);
     const std::map<u16, std::string>& locations(u8 lang, Generation g);
+    const std::map<u8, std::string>& rawCountries(u8 lang);
+    const std::map<u8, std::string>& rawSubregions(u8 lang, u8 country);
     size_t numGameStrings(u8 lang);
 
     const std::string& ability(u8 lang, u8 value);
@@ -51,6 +53,8 @@ namespace i18n
     const std::string& location(u8 lang, u16 value, Generation generation);
     const std::string& location(u8 lang, u16 value, u8 originGame);
     const std::string& game(u8 lang, u8 value);
+    const std::string& subregion(u8 lang, u8 country, u8 value);
+    const std::string& country(u8 lang, u8 value);
 
     // Used for general GUI stuff; not for PKM values
     const std::string& localize(Language lang, const std::string& index);

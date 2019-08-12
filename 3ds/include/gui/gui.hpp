@@ -93,6 +93,8 @@
 #define ui_sheet_emulated_textbox_illegal_idx 540
 #define ui_sheet_emulated_bg_top_yellow_idx 541
 #define ui_sheet_emulated_bg_bottom_yellow_idx 542
+#define ui_sheet_emulated_button_lang_enabled_idx 543
+#define ui_sheet_emulated_button_lang_disabled_idx 544
 
 #define FONT_SIZE_18 0.72f
 #define FONT_SIZE_15 0.6f
@@ -133,6 +135,7 @@ namespace Gui
     void backgroundAnimatedBottom(void);
     void setDoHomeDraw(void);
     void drawNoHome(void);
+    void drawSelector(float x, float y);
 
     std::shared_ptr<TextParse::Text> parseText(const std::string& str, float scaleX, float maxWidth = 0.0f);
     void clearText(void);
@@ -140,11 +143,17 @@ namespace Gui
         const std::shared_ptr<TextParse::Text> text, float x, float y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY);
     void text(const std::string& str, float x, float y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY,
         float maxWidth = 0.0f);
+    // Only works with single lines, because why the fuck would you wrap AND scroll?
+    void scrollingText(
+        const std::string& str, float x, float y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY, int width);
+    void slicedText(
+        const std::string& str, float x, float y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY, int width);
 
     void setScreen(std::unique_ptr<Screen> screen);
     void screenBack(void);
     bool showChoiceMessage(const std::string& message, std::optional<std::string> message2 = std::nullopt, int timer = 0);
     void showRestoreProgress(u32 partial, u32 total);
+    void showDownloadProgress(const std::string& path, u32 partial, u32 total);
     void waitFrame(const std::string& message, std::optional<std::string> message2 = std::nullopt);
     void warn(const std::string& message, std::optional<std::string> message2 = std::nullopt, std::optional<Language> forceLang = std::nullopt);
     void error(const std::string& message, Result errorCode);

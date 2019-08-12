@@ -1,0 +1,23 @@
+000|—
+002|Taipei
+003|Kaohsiung
+004|Keelung
+005|Hsinchu
+006|Taichung
+007|Chiayi
+008|Tainan
+009|Nouveau Taipei
+010|Taoyuan (comté de)
+011|Hsinchu (comté de)
+012|Miaoli (comté de)
+014|Changhua (comté de)
+015|Nantou (comté de)
+016|Yunlin (comté de)
+017|Chiayi (comté de)
+020|Pingtung (comté de)
+021|Ilan (comté de)
+022|Hualien (comté de)
+023|Taitung (comté de)
+024|Penghu (comté de)
+025|Kinmen (comté de)
+026|Lienchiang (comté de)

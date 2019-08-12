@@ -1,0 +1,8 @@
+000|—
+002|Abu Dhabi
+003|Ajman
+004|Sharjah
+005|Ras al-Khaïmah
+006|Dubaï
+007|Fujaïrah
+008|Umm al-Qaiwain

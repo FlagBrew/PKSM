@@ -1,0 +1,13 @@
+000|—
+002|Tirana
+003|Berat
+004|Dibra
+005|Durrës
+006|Elbasan
+007|Fier
+008|Gjirokastra
+009|Korça
+010|Kukës
+011|Lezha
+012|Shkodra
+013|Vlora

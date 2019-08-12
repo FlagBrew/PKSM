@@ -1,0 +1,23 @@
+000|—
+002|Taipei City
+003|Kaohsiung City
+004|Keelung City
+005|Hsinchu City
+006|Taichung City
+007|Chiayi City
+008|Tainan City
+009|New Taipei City
+010|Taoyuan County
+011|HsinChu County
+012|Miaoli County
+014|Changhua County
+015|Nantou County
+016|Yunlin County
+017|Chiayi County
+020|Pingtung County
+021|Yilan County
+022|Hualien County
+023|Taitung County
+024|Penghu County
+025|Kinmen County
+026|Lienchiang County

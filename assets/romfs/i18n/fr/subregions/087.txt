@@ -1,0 +1,11 @@
+000|—
+002|Vilnius
+003|Alytus
+004|Kaunas
+005|Klaipėda
+006|Marijampolė
+007|Panevėžys
+008|Šiauliai
+009|Tauragė
+010|Telšiai
+011|Utena

@@ -1,0 +1,21 @@
+000|—
+002|Lacio
+003|Valle de Aosta
+004|Piamonte
+005|Liguria
+006|Lombardía
+007|Trentino-Alto Adigio
+008|Véneto
+009|Friuli-Venecia Julia
+010|Emilia-Romaña
+011|Toscana
+012|Umbría
+013|Las Marcas
+014|Abruzos
+015|Molise
+016|Campania
+017|Apulia
+018|Basilicata
+019|Calabria
+020|Sicilia
+021|Cerdeña

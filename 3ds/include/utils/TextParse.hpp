@@ -65,6 +65,9 @@ namespace TextParse
         {
         }
         void addWord(std::pair<std::vector<Glyph>, float>&& word, float maxWidth = 0.0f);
+        // These should ONLY be used when drawing text directly instead of using ScreenText, which shouldn't happen often!
+        void optimize();
+        void draw(float x, float y, float z, float scaleX, float scaleY, TextPosX textPos, u32 color = C2D_Color32(0, 0, 0, 255)) const;
         std::vector<Glyph> glyphs;
         std::vector<float> lineWidths;
         float maxLineWidth;

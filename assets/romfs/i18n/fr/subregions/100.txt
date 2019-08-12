@@ -1,0 +1,84 @@
+000|—
+009|Moscou (ville)
+010|Adyguée
+011|Altaï (république)
+012|Altaï (kraï)
+013|Amour
+014|Arkhangelsk
+015|Astrakhan
+016|Bachkirie
+017|Belgorod
+018|Briansk
+019|Bouriatie
+020|Tchétchénie
+021|Tcheliabinsk
+022|Tchoukotka
+023|Tchouvachie
+024|Daguestan
+025|Ingouchie
+026|Irkoutsk
+027|Ivanovo
+028|Kabardino-Balkarie
+029|Kaliningrad
+030|Kalmoukie
+031|Kalouga
+032|Kamtchatka
+033|Karatchaïévo-Tcherkessie
+034|Carélie
+035|Kemerovo
+036|Khabarovsk
+037|Khakassie
+038|Khantys-Mansis
+039|Kirov
+040|Komis
+041|Kostroma
+042|Krasnodar
+043|Krasnoïarsk
+044|Kourgan
+045|Koursk
+046|Léningrad
+047|Lipetsk
+048|Magadan
+049|Maris
+050|Mordovie
+051|Moscou (oblast)
+052|Mourmansk
+053|Nénétsie
+054|Nijni Novgorod
+055|Novgorod
+056|Novossibirsk
+057|Omsk
+058|Orenbourg
+059|Orel
+060|Penza
+061|Perm
+062|Primorie
+063|Pskov
+064|Rostov
+065|Riazan
+066|Sakha (Iakoutie)
+067|Sakhaline
+068|Samara
+069|Saint-Pétersbourg
+070|Saratov
+071|Ossétie-du-Nord-Alanie
+072|Smolensk
+073|Stavropol
+074|Sverdlovsk
+075|Tambov
+076|Tatarstan
+077|Tomsk
+078|Toula
+079|Tver
+080|Tioumen
+081|Touva
+082|Oudmourtie
+083|Oulianovsk
+084|Vladimir
+085|Volgograd
+086|Vologda
+087|Voronej
+088|Iamalie
+089|Iaroslavl
+090|Oblast autonome juif
+091|Transbaïkalie

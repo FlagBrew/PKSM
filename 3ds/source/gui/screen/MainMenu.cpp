@@ -82,26 +82,22 @@ static bool goToScreen(int buttonNum)
 
 MainMenu::MainMenu()
 {
-    buttons[0] =
-        new MainMenuButton(15, 20, 140, 53, []() { return goToScreen(0); }, ui_sheet_icon_storage_idx, "STORAGE", FONT_SIZE_15, COLOR_WHITE, 27);
-    buttons[1] =
-        new MainMenuButton(165, 20, 140, 53, []() { return goToScreen(1); }, ui_sheet_icon_editor_idx, "EDITOR", FONT_SIZE_15, COLOR_WHITE, 28);
-    buttons[2] =
-        new MainMenuButton(15, 83, 140, 53, []() { return goToScreen(2); }, ui_sheet_icon_events_idx, "EVENTS", FONT_SIZE_15, COLOR_WHITE, 93);
-    buttons[3] =
-        new MainMenuButton(165, 83, 140, 53, []() { return goToScreen(3); }, ui_sheet_icon_scripts_idx, "SCRIPTS", FONT_SIZE_15, COLOR_WHITE, 91);
-    buttons[4] = new MainMenuButton(15, 146, 140, 53, []() { return goToScreen(4); }, ui_sheet_icon_bag_idx, "BAG", FONT_SIZE_15, COLOR_WHITE, 157);
-    buttons[5] =
-        new MainMenuButton(165, 146, 140, 53, []() { return goToScreen(5); }, ui_sheet_icon_settings_idx, "SETTINGS", FONT_SIZE_15, COLOR_WHITE, 160);
+    buttons[0] = std::make_unique<MainMenuButton>(
+        15, 20, 140, 53, []() { return goToScreen(0); }, ui_sheet_icon_storage_idx, "STORAGE", FONT_SIZE_15, COLOR_WHITE, 27);
+    buttons[1] = std::make_unique<MainMenuButton>(
+        165, 20, 140, 53, []() { return goToScreen(1); }, ui_sheet_icon_editor_idx, "EDITOR", FONT_SIZE_15, COLOR_WHITE, 28);
+    buttons[2] = std::make_unique<MainMenuButton>(
+        15, 83, 140, 53, []() { return goToScreen(2); }, ui_sheet_icon_events_idx, "EVENTS", FONT_SIZE_15, COLOR_WHITE, 93);
+    buttons[3] = std::make_unique<MainMenuButton>(
+        165, 83, 140, 53, []() { return goToScreen(3); }, ui_sheet_icon_scripts_idx, "SCRIPTS", FONT_SIZE_15, COLOR_WHITE, 91);
+    buttons[4] = std::make_unique<MainMenuButton>(
+        15, 146, 140, 53, []() { return goToScreen(4); }, ui_sheet_icon_bag_idx, "BAG", FONT_SIZE_15, COLOR_WHITE, 157);
+    buttons[5] = std::make_unique<MainMenuButton>(
+        165, 146, 140, 53, []() { return goToScreen(5); }, ui_sheet_icon_settings_idx, "SETTINGS", FONT_SIZE_15, COLOR_WHITE, 160);
 }
 
 MainMenu::~MainMenu()
 {
-    for (auto button : buttons)
-    {
-        delete button;
-    }
-
     if (isLoadedSaveFromBridge())
     {
         if (Gui::showChoiceMessage(i18n::localize("BRIDGE_SHOULD_SEND_1"), i18n::localize("BRIDGE_SHOULD_SEND_2")))
@@ -190,7 +186,7 @@ void MainMenu::drawBottom() const
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
     Gui::sprite(ui_sheet_bar_arc_bottom_blue_idx, 0, 206);
     Gui::backgroundAnimatedBottom();
-    for (MainMenuButton* button : buttons)
+    for (auto& button : buttons)
     {
         button->draw();
     }
@@ -210,7 +206,7 @@ void MainMenu::update(touchPosition* touch)
         }
     }
     Screen::update();
-    for (MainMenuButton* button : buttons)
+    for (auto& button : buttons)
     {
         if (button->update(touch))
             return;

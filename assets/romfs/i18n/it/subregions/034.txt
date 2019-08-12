@@ -1,0 +1,15 @@
+000|—
+002|Saint Thomas
+003|Clarendon
+004|Hanover
+005|Manchester
+006|Portland
+007|Saint Andrew
+008|Saint Ann
+009|Saint Catherine
+010|Saint Elizabeth
+011|Saint James
+012|Saint Mary
+013|Trelawny
+014|Westmoreland
+015|Kingston

@@ -1,0 +1,122 @@
+1|Japón
+8|Anguila
+9|Antigua y Barbuda
+10|Argentina
+11|Aruba
+12|Bahamas
+13|Barbados
+14|Belice
+15|Bolivia
+16|Brasil
+17|Islas Vírgenes Británicas
+18|Canadá
+19|Islas Caimán
+20|Chile
+21|Colombia
+22|Costa Rica
+23|Dominica
+24|República Dominicana
+25|Ecuador
+26|El Salvador
+27|Guayana Francesa
+28|Granada
+29|Guadalupe
+30|Guatemala
+31|Guyana
+32|Haití
+33|Honduras
+34|Jamaica
+35|Martinica
+36|México
+37|Montserrat
+38|Antillas Neerlandesas
+39|Nicaragua
+40|Panamá
+41|Paraguay
+42|Perú
+43|San Cristóbal y Nieves
+44|Santa Lucía
+45|San Vicente y las Granadinas
+46|Surinam
+47|Trinidad y Tobago
+48|Islas Turcas y Caicos
+49|Estados Unidos de América
+50|Uruguay
+51|Islas Vírgenes de los EE. UU.
+52|Venezuela
+64|Albania
+65|Australia
+66|Austria
+67|Bélgica
+68|Bosnia-Herzegovina
+69|Botsuana
+70|Bulgaria
+71|Croacia
+72|Chipre
+73|República Checa
+74|Dinamarca (Reino)
+75|Estonia
+76|Finlandia
+77|Francia
+78|Alemania
+79|Grecia
+80|Hungría
+81|Islandia
+82|Irlanda
+83|Italia
+84|Letonia
+85|Lesoto
+86|Liechtenstein
+87|Lituania
+88|Luxemburgo
+89|Macedonia (República)
+90|Malta
+91|Montenegro
+92|Mozambique
+93|Namibia
+94|Países Bajos
+95|Nueva Zelanda
+96|Noruega
+97|Polonia
+98|Portugal
+99|Rumanía
+100|Rusia
+101|Serbia y Kosovo
+102|Eslovaquia
+103|Eslovenia
+104|Sudáfrica
+105|España
+106|Suazilandia
+107|Suecia
+108|Suiza
+109|Turquía
+110|Reino Unido
+111|Zambia
+112|Zimbabue
+113|Azerbaiyán
+114|Mauritania
+115|Malí
+116|Níger
+117|Chad
+118|Sudán
+119|Eritrea
+120|Yibuti
+121|Somalia
+122|Andorra
+123|Gibraltar
+124|Guernsey
+125|Isla de Man
+126|Jersey
+127|Mónaco
+128|Taiwán
+136|Corea del Sur
+144|Hong Kong
+153|Singapur
+156|Malasia
+160|China
+168|Emiratos Árabes Unidos
+169|India
+174|Arabia Saudí
+184|San Marino
+185|Vaticano
+186|Bermudas
