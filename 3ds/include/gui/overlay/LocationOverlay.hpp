@@ -39,6 +39,7 @@ class LocationOverlay : public Overlay
 public:
     LocationOverlay(Screen& screen, std::shared_ptr<PKX> pkm, bool met);
     void drawTop() const override;
+    bool replacesTop() const override { return true; }
     void drawBottom() const override;
     void update(touchPosition* touch) override;
 

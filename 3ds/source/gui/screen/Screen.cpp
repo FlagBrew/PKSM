@@ -29,19 +29,33 @@
 
 void Screen::doTopDraw() const
 {
-    drawTop();
     if (currentOverlay)
     {
+        if (!currentOverlay->replacesTop())
+        {
+            drawTop();
+        }
         currentOverlay->drawTop();
+    }
+    else
+    {
+        drawTop();
     }
 }
 
 void Screen::doBottomDraw() const
 {
-    drawBottom();
     if (currentOverlay)
     {
+        if (!currentOverlay->replacesBottom())
+        {
+            drawBottom();
+        }
         currentOverlay->drawBottom();
+    }
+    else
+    {
+        drawBottom();
     }
 }
 

@@ -41,6 +41,7 @@ public:
     MoveOverlay(Screen& screen, std::shared_ptr<PKX> pkm, int moveIndex);
     ~MoveOverlay() { pkm->fixMoves(); }
     void drawTop() const override;
+    bool replacesTop() const override { return true; }
     void drawBottom() const override;
     void update(touchPosition* touch) override;
 

@@ -38,6 +38,7 @@ class ConfigCountryOverlay : public Overlay
 public:
     ConfigCountryOverlay(Screen& screen);
     void drawTop() const override;
+    bool replacesTop() const override { return true; }
     void drawBottom() const override;
     void update(touchPosition* touch) override;
 

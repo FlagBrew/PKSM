@@ -41,6 +41,7 @@ public:
     }
     virtual ~ViewOverlay() {}
     virtual void drawTop() const override;
+    bool replacesTop() const override { return true; }
     virtual void drawBottom() const override {}
     virtual void update(touchPosition* touch) override;
 

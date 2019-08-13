@@ -39,6 +39,7 @@ public:
     SpeciesOverlay(Screen& screen, std::shared_ptr<PKX> pkm);
     ~SpeciesOverlay() {}
     void drawTop() const override;
+    bool replacesTop() const override { return true; }
     void drawBottom() const override;
     void update(touchPosition* touch) override;
 

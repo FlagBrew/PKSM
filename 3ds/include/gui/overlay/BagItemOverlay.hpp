@@ -62,6 +62,7 @@ public:
     ~BagItemOverlay() {}
     void drawTop() const override;
     void drawBottom() const override;
+    bool replacesTop() const override { return true; }
     void update(touchPosition* touch) override;
 
 private:

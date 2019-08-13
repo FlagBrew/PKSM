@@ -40,7 +40,9 @@ public:
     virtual ~Overlay() {}
     virtual void update(touchPosition* touch) = 0;
     virtual void drawTop() const              = 0;
+    virtual bool replacesTop() const { return false; }
     virtual void drawBottom() const           = 0;
+    virtual bool replacesBottom() const { return false; }
     void dim(void) const;
     const Instructions& getInstructions() const { return instructions; }
 

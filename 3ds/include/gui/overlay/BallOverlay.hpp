@@ -44,6 +44,7 @@ public:
     }
     virtual ~BallOverlay() {}
     void drawTop() const override;
+    bool replacesTop() const override { return true; }
     void drawBottom() const override;
     void update(touchPosition* touch) override;
 
