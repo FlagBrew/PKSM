@@ -317,10 +317,10 @@ void Gui::scrollingText(
     }
 
     C2D_SceneBegin(g_renderTargetTextChop);
-    text->draw(0, scrollingTextY, 0, scaleX, scaleY, positionX, color);
+    text->draw(-scrollOffsets[str].offset / 3, scrollingTextY, 0, scaleX, scaleY, positionX, color);
     C2D_SceneBegin(drawingOnTopScreen ? g_renderTargetTop : g_renderTargetBottom);
-    Tex3DS_SubTexture newt3x = _select_box(textImage, scrollOffsets[str].offset / 3, scrollingTextY + lineMod - baselinePos,
-        scrollOffsets[str].offset / 3 + width, scrollingTextY + lineMod * 2 - baselinePos);
+    Tex3DS_SubTexture newt3x = _select_box(textImage, 0, scrollingTextY + lineMod - baselinePos,
+        width, scrollingTextY + lineMod * 2 - baselinePos);
     scrollingTextY += ceilf(lineMod);
     if (scrollOffsets[str].pauseTime != 0)
     {
