@@ -51,8 +51,11 @@ void FileChooseOverlay::drawTop() const
     }
     Gui::drawSolidRect(0, 0, 400, 20, C2D_Color32(15, 22, 89, 255));
 
-    Gui::drawSolidRect(0, 20 + hid.index() * 25, 400, 25, C2D_Color32(128, 128, 128, 255));
-    Gui::drawSolidRect(1, 21 + hid.index() * 25, 398, 23, COLOR_MASKBLACK);
+    if (!currFiles.empty())
+    {
+        Gui::drawSolidRect(0, 20 + hid.index() * 25, 400, 25, C2D_Color32(128, 128, 128, 255));
+        Gui::drawSolidRect(1, 21 + hid.index() * 25, 398, 23, COLOR_MASKBLACK);
+    }
 
     for (size_t i = hid.page() * hid.maxVisibleEntries(); i < (hid.page() + 1) * hid.maxVisibleEntries(); i++)
     {
@@ -135,18 +138,21 @@ void FileChooseOverlay::update(touchPosition* touch)
     }
     else if (down & KEY_A)
     {
-        if (currFiles[hid.fullIndex()].second)
+        if (!currFiles.empty())
         {
-            currDirString += currFiles[hid.fullIndex()].first + '/';
-            currDir = STDirectory(currDirString);
-            updateEntries();
-        }
-        else
-        {
-            if (Gui::showChoiceMessage(i18n::localize("FILE_CONFIRM_CHOICE"), '\'' + currFiles[hid.fullIndex()].first + '\''))
+            if (currFiles[hid.fullIndex()].second)
             {
-                string = currDirString + currFiles[hid.fullIndex()].first;
-                screen.removeOverlay();
+                currDirString += currFiles[hid.fullIndex()].first + '/';
+                currDir = STDirectory(currDirString);
+                updateEntries();
+            }
+            else
+            {
+                if (Gui::showChoiceMessage(i18n::localize("FILE_CONFIRM_CHOICE"), '\'' + currFiles[hid.fullIndex()].first + '\''))
+                {
+                    string = currDirString + currFiles[hid.fullIndex()].first;
+                    screen.removeOverlay();
+                }
             }
         }
     }
