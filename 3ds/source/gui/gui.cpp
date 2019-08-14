@@ -57,7 +57,12 @@ bool inFrame  = false;
 bool drawingOnTopScreen;
 
 static int scrollingTextY = 0;
-static std::unordered_map<std::string, int> scrollingXOffsets;
+struct ScrollingTextOffset
+{
+    int offset;
+    int pauseTime;
+};
+static std::unordered_map<std::string, ScrollingTextOffset> scrollOffsets;
 
 static Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int endX, int endY)
 {
@@ -291,9 +296,9 @@ void Gui::scrollingText(
 
     auto text = parseText(str, scaleX);
     text->optimize();
-    if (!scrollingXOffsets.count(str))
+    if (!scrollOffsets.count(str))
     {
-        scrollingXOffsets[str] = -30;
+        scrollOffsets[str] = {0, 1};
     }
 
     static const float lineMod     = scaleY * C2D_FontGetInfo(nullptr)->lineFeed;
@@ -314,13 +319,35 @@ void Gui::scrollingText(
     C2D_SceneBegin(g_renderTargetTextChop);
     text->draw(0, scrollingTextY, 0, scaleX, scaleY, positionX, color);
     C2D_SceneBegin(drawingOnTopScreen ? g_renderTargetTop : g_renderTargetBottom);
-    Tex3DS_SubTexture newt3x = _select_box(textImage, std::max(scrollingXOffsets[str], 0) / 3, scrollingTextY + lineMod - baselinePos,
-        std::max(scrollingXOffsets[str], 0) / 3 + width, scrollingTextY + lineMod * 2 - baselinePos);
+    Tex3DS_SubTexture newt3x = _select_box(textImage, scrollOffsets[str].offset / 3, scrollingTextY + lineMod - baselinePos,
+        scrollOffsets[str].offset / 3 + width, scrollingTextY + lineMod * 2 - baselinePos);
     scrollingTextY += ceilf(lineMod);
-    scrollingXOffsets[str] += 1;
-    if (scrollingXOffsets[str] / 3 + width > (int)text->maxLineWidth * scaleX + 10)
+    if (scrollOffsets[str].pauseTime != 0)
     {
-        scrollingXOffsets[str] = -30;
+        if (scrollOffsets[str].pauseTime > 30)
+        {
+            if (scrollOffsets[str].offset == 0)
+            {
+                scrollOffsets[str].pauseTime = 0;
+            }
+            else
+            {
+                scrollOffsets[str].pauseTime = 1;
+            }
+            scrollOffsets[str].offset = 0;
+        }
+        else
+        {
+            scrollOffsets[str].pauseTime++;
+        }
+    }
+    else
+    {
+        scrollOffsets[str].offset += 1;
+        if (scrollOffsets[str].offset / 3 + width > (int)text->maxLineWidth * scaleX + 5)
+        {
+            scrollOffsets[str].pauseTime += 1;
+        }
     }
     C2D_DrawImageAt({&textChopTexture, &newt3x}, x, y + lineMod - baselinePos, 0.5f);
 }
@@ -354,7 +381,7 @@ void Gui::slicedText(
     C2D_SceneBegin(drawingOnTopScreen ? g_renderTargetTop : g_renderTargetBottom);
     Tex3DS_SubTexture newt3x = _select_box(textImage, 0, scrollingTextY + lineMod - baselinePos, width, scrollingTextY + lineMod * 2 - baselinePos);
     scrollingTextY += ceilf(lineMod);
-    scrollingXOffsets[str] = -30;
+    scrollOffsets[str] = {0, 1};
     C2D_DrawImageAt({&textChopTexture, &newt3x}, x, y + lineMod - baselinePos, 0.5f);
 }
 
