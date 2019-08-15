@@ -91,7 +91,7 @@ void FileChooseOverlay::updateEntries()
     currFiles.clear();
     if (!currDir.good())
     {
-        currFiles.push_back({i18n::localize("FOLDER_DOESNT_EXIST"), false});
+        Gui::warn(i18n::localize("FOLDER_DOESNT_EXIST"));
         return;
     }
     for (size_t i = 0; i < currDir.count(); i++)
