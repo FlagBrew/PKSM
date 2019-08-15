@@ -124,7 +124,7 @@ void FileChooseOverlay::update(touchPosition* touch)
     u32 down = hidKeysDown();
     if (down & KEY_B)
     {
-        if (currDirString == "/")
+        if (currDirString == rootString)
         {
             screen.removeOverlay();
             return;
