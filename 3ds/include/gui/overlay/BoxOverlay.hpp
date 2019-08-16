@@ -42,6 +42,12 @@ public:
         hid.update(strings.size());
         hid.select(current);
     }
+    BoxOverlay(Overlay& ovly, std::vector<std::string>& boxes, int& current)
+        : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), hid(40, 2), strings(boxes), out(current)
+    {
+        hid.update(strings.size());
+        hid.select(current);
+    }
     virtual ~BoxOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }

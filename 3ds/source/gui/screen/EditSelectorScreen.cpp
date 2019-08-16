@@ -146,7 +146,7 @@ bool EditSelectorScreen::doQR()
 
 EditSelectorScreen::EditSelectorScreen() : Screen(i18n::localize("A_SELECT") + '\n' + i18n::localize("X_CLONE") + '\n' + i18n::localize("B_BACK"))
 {
-    currentOverlay = std::make_shared<ViewOverlay>(*this, infoMon, false);
+    addOverlay<ViewOverlay>(infoMon, false);
 
     buttons.push_back(std::make_unique<ClickButton>(283, 211, 34, 28, [this]() { return goBack(); }, ui_sheet_button_back_idx, "", 0.0f, 0));
     instructions.addBox(false, 25, 15, 164, 24, COLOR_GREY, i18n::localize("A_BOX_NAME"), COLOR_WHITE);

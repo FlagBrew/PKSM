@@ -127,11 +127,11 @@ void BagItemOverlay::update(touchPosition* touch)
                 firstEmpty = std::min(firstEmpty + 1, pouch.second);
             }
         }
-        screen.removeOverlay();
+        me = nullptr;
     }
     else if (downKeys & KEY_B)
     {
-        screen.removeOverlay();
+        me = nullptr;
     }
 }
 

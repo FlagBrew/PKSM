@@ -65,8 +65,50 @@ CloudOverlay::CloudOverlay(Screen& screen, CloudAccess& acc) : Overlay(screen), 
     tbutton->setState(access.filterLegal());
     buttons.push_back(std::move(tbutton));
     buttons.push_back(std::make_unique<ClickButton>(283, 211, 34, 28,
-        [&screen]() {
-            screen.removeOverlay();
+        [this]() {
+            me = nullptr;
+            return true;
+        },
+        ui_sheet_button_back_idx, "", 0.0f, 0));
+}
+
+CloudOverlay::CloudOverlay(Overlay& ovly, CloudAccess& acc) : Overlay(ovly), access(acc)
+{
+    buttons.push_back(std::make_unique<ClickButton>(106, 82, 108, 28,
+        [this]() {
+            if (access.sortType() == CloudAccess::SortType::LATEST)
+            {
+                access.sortType(CloudAccess::SortType::POPULAR);
+            }
+            else
+            {
+                access.sortType(CloudAccess::SortType::LATEST);
+            }
+            return false;
+        },
+        ui_sheet_button_editor_idx, "", FONT_SIZE_12, COLOR_BLACK));
+
+    auto tbutton = std::make_unique<ToggleButton>(106, 113, 108, 28,
+        [this]() {
+            access.sortDir(!access.sortAscending());
+            return access.sortAscending();
+        },
+        ui_sheet_button_editor_idx, i18n::localize("ASCENDING"), FONT_SIZE_12, COLOR_BLACK, ui_sheet_button_editor_idx, i18n::localize("DESCENDING"),
+        FONT_SIZE_12, COLOR_BLACK, nullptr, true);
+    tbutton->setState(access.sortAscending());
+    buttons.push_back(std::move(tbutton));
+    tbutton = std::make_unique<ToggleButton>(106, 144, 108, 28,
+        [this]() {
+            access.filterLegal(!access.filterLegal());
+            return access.sortAscending();
+        },
+        ui_sheet_button_editor_idx, i18n::localize("LEGALITY_LEGAL"), FONT_SIZE_12, COLOR_BLACK, ui_sheet_button_editor_idx,
+        i18n::localize("LEGALITY_ANY"), FONT_SIZE_12, COLOR_BLACK, nullptr, true);
+    tbutton->setState(access.filterLegal());
+    buttons.push_back(std::move(tbutton));
+    buttons.push_back(std::make_unique<ClickButton>(283, 211, 34, 28,
+        [this]() {
+            me = nullptr;
             return true;
         },
         ui_sheet_button_back_idx, "", 0.0f, 0));
@@ -108,7 +150,7 @@ void CloudOverlay::update(touchPosition* touch)
 {
     if (hidKeysDown() & KEY_B)
     {
-        screen.removeOverlay();
+        me = nullptr;
         return;
     }
     else

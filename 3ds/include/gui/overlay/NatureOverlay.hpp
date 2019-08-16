@@ -41,6 +41,12 @@ public:
         hid.update(25);
         hid.select(pkm->nature());
     }
+    NatureOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm)
+        : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(25, 5)
+    {
+        hid.update(25);
+        hid.select(pkm->nature());
+    }
     virtual ~NatureOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }

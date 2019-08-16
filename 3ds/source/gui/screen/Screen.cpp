@@ -35,7 +35,7 @@ void Screen::doTopDraw() const
         {
             drawTop();
         }
-        currentOverlay->drawTop();
+        currentOverlay->doTopDraw();
     }
     else
     {
@@ -51,7 +51,7 @@ void Screen::doBottomDraw() const
         {
             drawBottom();
         }
-        currentOverlay->drawBottom();
+        currentOverlay->doBottomDraw();
     }
     else
     {
@@ -61,9 +61,9 @@ void Screen::doBottomDraw() const
 
 void Screen::doUpdate(touchPosition* touch)
 {
-    if (currentOverlay)
+    if (currentOverlay && currentOverlay->willHandleUpdate())
     {
-        currentOverlay->update(touch);
+        currentOverlay->doUpdate(touch);
     }
     else
     {

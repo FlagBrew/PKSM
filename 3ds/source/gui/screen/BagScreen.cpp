@@ -487,7 +487,7 @@ void BagScreen::editItem()
         }
     }
 
-    currentOverlay = std::make_unique<BagItemOverlay>(*this, items, currItemIndex, limits[currentPouch], firstItem + selectedItem, firstEmpty);
+    addOverlay<BagItemOverlay>(items, currItemIndex, limits[currentPouch], firstItem + selectedItem, firstEmpty);
 }
 
 void BagScreen::editCount(bool up, int selected)

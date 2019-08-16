@@ -54,8 +54,19 @@ public:
     virtual void doBottomDraw() const final;
     virtual void drawBottom() const = 0;
     virtual float timer() const final { return mTimer; }
-    void removeOverlay() { currentOverlay = nullptr; }
-    void setOverlay(std::shared_ptr<Overlay>& overlay) { currentOverlay = overlay; }
+    void removeOverlays() { currentOverlay = nullptr; }
+    template<typename Class, typename... Params>
+    void addOverlay(Params&&... args)
+    {
+        if (currentOverlay)
+        {
+            currentOverlay->addOverlay<Class>(std::forward<Params>(args)...);
+        }
+        else
+        {
+            currentOverlay = std::make_shared<Class>(*this, std::forward<Params>(args)...);
+        }
+    }
     const Instructions& getInstructions() const
     {
         return currentOverlay && !currentOverlay->getInstructions().empty() ? currentOverlay->getInstructions() : instructions;

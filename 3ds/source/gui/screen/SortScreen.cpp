@@ -122,7 +122,7 @@ void SortScreen::pickSort(size_t number)
         number = sortTypes.size();
         sortTypes.push_back(NONE);
     }
-    currentOverlay = std::make_shared<SortOverlay>(*this, sortTypes[number]);
+    addOverlay<SortOverlay>(sortTypes[number]);
 }
 
 void SortScreen::sort()

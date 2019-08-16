@@ -35,9 +35,11 @@ class CloudViewOverlay : public ViewOverlay
 {
 public:
     CloudViewOverlay(Screen& screen, std::shared_ptr<PKX>& pk) : ViewOverlay(screen, pk, true, "") {}
+    CloudViewOverlay(Overlay& ovly, std::shared_ptr<PKX>& pk) : ViewOverlay(ovly, pk, true, "") {}
     virtual ~CloudViewOverlay() {}
     void update(touchPosition* touch) override;
     void drawBottom() const override { dim(); }
+    bool handlesUpdate() const override { return true; }
 };
 
 #endif

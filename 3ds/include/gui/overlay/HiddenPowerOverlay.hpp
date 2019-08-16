@@ -41,6 +41,12 @@ public:
         hid.update(16);
         hid.select(pkm->hpType());
     }
+    HiddenPowerOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm)
+        : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(16, 4)
+    {
+        hid.update(16);
+        hid.select(pkm->hpType());
+    }
     virtual ~HiddenPowerOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }

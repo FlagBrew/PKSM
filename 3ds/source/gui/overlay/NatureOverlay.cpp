@@ -75,12 +75,12 @@ void NatureOverlay::update(touchPosition* touch)
     if (downKeys & KEY_A)
     {
         pkm->nature((u8)hid.fullIndex());
-        screen.removeOverlay();
+        me = nullptr;
         return;
     }
     else if (downKeys & KEY_B)
     {
-        screen.removeOverlay();
+        me = nullptr;
         return;
     }
 }

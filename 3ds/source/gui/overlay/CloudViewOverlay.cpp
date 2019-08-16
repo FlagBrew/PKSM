@@ -31,7 +31,7 @@ void CloudViewOverlay::update(touchPosition* touch)
 {
     if (hidKeysDown() & KEY_B)
     {
-        screen.removeOverlay();
+        me = nullptr;
         return;
     }
 }

@@ -42,6 +42,12 @@ public:
         hid.update(24);
         hid.select(pkm->ball() - 1);
     }
+    BallOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm)
+        : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(30, 6)
+    {
+        hid.update(24);
+        hid.select(pkm->ball() - 1);
+    }
     virtual ~BallOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }

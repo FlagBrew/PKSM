@@ -47,7 +47,7 @@ void StorageViewOverlay::update(touchPosition* touch)
         partyNum.push_back(-1);
         cloneDims          = {1, 1};
         currentlySelecting = false;
-        screen.removeOverlay();
+        me = nullptr;
     }
     else if (kDown & KEY_UP)
     {
@@ -126,6 +126,6 @@ void StorageViewOverlay::update(touchPosition* touch)
         {
             Gui::setScreen(std::make_unique<EditorScreen>(pkm, emergencyInfo.first, emergencyInfo.second, true));
         }
-        screen.removeOverlay();
+        me = nullptr;
     }
 }

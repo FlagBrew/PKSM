@@ -431,11 +431,11 @@ void ExtraSavesSubScreen::update(touchPosition* touch)
             {
                 dsCurrentSaves[secondSelected ? groupToId2(group) : groupToId1(group)] = {};
             }
-            currentOverlay = std::make_shared<FileChooseOverlay>(*this, addString);
+            addOverlay<FileChooseOverlay>(addString);
         }
         else
         {
-            currentOverlay = std::make_shared<FileChooseOverlay>(*this, addString);
+            addOverlay<FileChooseOverlay>(addString);
         }
         updateConfig = true;
     }

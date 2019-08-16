@@ -311,13 +311,13 @@ ConfigScreen::ConfigScreen()
         std::make_unique<ClickButton>(122, 101, 15, 12, &nationalityChoice, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
     tabButtons[1].push_back(std::make_unique<ClickButton>(122, 122, 15, 12,
         [this]() {
-            currentOverlay = std::make_shared<ConfigCountryOverlay>(*this);
+            addOverlay<ConfigCountryOverlay>();
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
     tabButtons[1].push_back(std::make_unique<ClickButton>(122, 143, 15, 12,
         [this]() {
-            currentOverlay = std::make_shared<ConfigSubRegionOverlay>(*this);
+            addOverlay<ConfigSubRegionOverlay>();
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));

@@ -39,11 +39,16 @@ public:
         : Overlay(screen, instr), pkm(pokemon), green(green)
     {
     }
+    ViewOverlay(Overlay& ovly, std::shared_ptr<PKX>& pokemon, bool green, const std::string& instr = "")
+        : Overlay(ovly, instr), pkm(pokemon), green(green)
+    {
+    }
     virtual ~ViewOverlay() {}
     virtual void drawTop() const override;
     bool replacesTop() const override { return true; }
     virtual void drawBottom() const override {}
-    virtual void update(touchPosition* touch) override;
+    bool handlesUpdate() const override { return false; }
+    void update(touchPosition* touch) {}
 
 protected:
     std::shared_ptr<PKX>& pkm;

@@ -39,6 +39,17 @@ FileChooseOverlay::FileChooseOverlay(Screen& screen, std::string& retString, con
     updateEntries();
 }
 
+FileChooseOverlay::FileChooseOverlay(Overlay& ovly, std::string& retString, const std::string& rootString)
+    : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
+      currDirString("/"),
+      rootString(rootString),
+      currDir("/"),
+      string(retString),
+      hid(9, 1)
+{
+    updateEntries();
+}
+
 void FileChooseOverlay::drawTop() const
 {
     // slight change to stripy top
@@ -126,7 +137,7 @@ void FileChooseOverlay::update(touchPosition* touch)
     {
         if (currDirString == rootString)
         {
-            screen.removeOverlay();
+            me = nullptr;
             return;
         }
         else
@@ -151,7 +162,7 @@ void FileChooseOverlay::update(touchPosition* touch)
                 if (Gui::showChoiceMessage(i18n::localize("FILE_CONFIRM_CHOICE"), '\'' + currFiles[hid.fullIndex()].first + '\''))
                 {
                     string = currDirString + currFiles[hid.fullIndex()].first;
-                    screen.removeOverlay();
+                    me = nullptr;
                 }
             }
         }

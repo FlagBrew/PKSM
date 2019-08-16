@@ -77,6 +77,8 @@ StatsEditScreen::StatsEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
 
     buttons.push_back(
         std::make_unique<Button>(300, 184, 15, 12, [this]() { return this->setHP(); }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+
+    addOverlay<ViewOverlay>(this->pkm, false);
 }
 
 void StatsEditScreen::setIV(int which)
@@ -241,7 +243,7 @@ bool StatsEditScreen::changeSecondaryStat(int which, bool up)
 
 bool StatsEditScreen::setHP()
 {
-    currentOverlay = std::make_unique<HiddenPowerOverlay>(*this, pkm);
+    addOverlay<HiddenPowerOverlay>(pkm);
     return false;
 }
 
@@ -312,10 +314,6 @@ void StatsEditScreen::drawBottom() const
 
 void StatsEditScreen::update(touchPosition* touch)
 {
-    if (!currentOverlay)
-    {
-        currentOverlay = std::make_shared<ViewOverlay>(*this, pkm, false);
-    }
     u32 downKeys = keysDown();
 
     for (size_t i = 0; i < buttons.size(); i++)

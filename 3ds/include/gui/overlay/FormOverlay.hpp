@@ -42,6 +42,12 @@ public:
         hid.update(40);
         hid.select(pkm->alternativeForm());
     }
+    FormOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm, u8 formCount)
+        : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(40, 6), formCount(formCount)
+    {
+        hid.update(40);
+        hid.select(pkm->alternativeForm());
+    }
     virtual ~FormOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }

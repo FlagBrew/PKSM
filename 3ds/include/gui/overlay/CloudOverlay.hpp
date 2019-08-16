@@ -37,6 +37,7 @@ class CloudOverlay : public Overlay
 {
 public:
     CloudOverlay(Screen& screen, CloudAccess& access);
+    CloudOverlay(Overlay& ovly, CloudAccess& access);
     void drawTop() const override;
     void drawBottom() const override;
     void update(touchPosition* touch) override;

@@ -92,13 +92,13 @@ MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
         ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, 0));
     buttons.push_back(std::make_unique<Button>(95, 114, 15, 12,
         [this]() {
-            currentOverlay = std::make_shared<LocationOverlay>(*this, this->pkm, this->otAndMet);
+            addOverlay<LocationOverlay>(this->pkm, this->otAndMet);
             return true;
         },
         ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, 0));
     buttons.push_back(std::make_unique<Button>(95, 134, 15, 12,
         [this]() {
-            currentOverlay = std::make_shared<VersionOverlay>(*this, this->pkm);
+            addOverlay<VersionOverlay>(this->pkm);
             return true;
         },
         ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, 0));
@@ -138,6 +138,8 @@ MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
         buttons.push_back(std::make_unique<AccelButton>(
             142, 194, 13, 13, [this]() { return this->changeAffection(true); }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
     }
+
+    addOverlay<ViewOverlay>(this->pkm, false);
 }
 
 void MiscEditScreen::drawBottom() const
@@ -254,11 +256,6 @@ void MiscEditScreen::drawBottom() const
 
 void MiscEditScreen::update(touchPosition* touch)
 {
-    if (!currentOverlay)
-    {
-        currentOverlay = std::make_shared<ViewOverlay>(*this, pkm, false);
-    }
-
     u32 kDown = hidKeysDown();
     if (justSwitched)
     {

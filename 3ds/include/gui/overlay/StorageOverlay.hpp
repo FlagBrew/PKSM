@@ -36,6 +36,7 @@ class StorageOverlay : public Overlay
 {
 public:
     StorageOverlay(Screen& screen, bool storage, int& boxBox, int& storageBox);
+    StorageOverlay(Overlay& ovly, bool storage, int& boxBox, int& storageBox);
     void drawTop() const override;
     void drawBottom() const override;
     void update(touchPosition* touch) override;

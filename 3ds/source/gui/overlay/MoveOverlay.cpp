@@ -105,6 +105,50 @@ MoveOverlay::MoveOverlay(Screen& screen, std::shared_ptr<PKX> pkm, int moveIndex
         ui_sheet_emulated_box_search_idx, "", 0, 0);
 }
 
+MoveOverlay::MoveOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm, int moveIndex)
+    : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), moveIndex(moveIndex), hid(40, 2)
+{
+    instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
+    const std::vector<std::string>& rawMoves = i18n::rawMoves(Configuration::getInstance().language());
+    for (int i = 1; i <= TitleLoader::save->maxMove(); i++)
+    {
+        if (i >= 622 && i <= 658)
+            continue;
+        moves.emplace_back(i, rawMoves[i]);
+    }
+    static const auto less = [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2) {
+        return pair1.second < pair2.second;
+    };
+    std::sort(moves.begin(), moves.end(), less);
+    moves.insert(moves.begin(), {0, rawMoves[0]});
+    validMoves = moves;
+
+    hid.update(moves.size());
+    if (moveIndex < 4)
+    {
+        hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), pkm->move(moveIndex))));
+    }
+    else
+    {
+        if (pkm->gen6())
+        {
+            PK6* pk6 = ((PK6*)pkm.get());
+            hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), pk6->relearnMove(moveIndex - 4))));
+        }
+        else if (pkm->gen7())
+        {
+            PK7* pk7 = ((PK7*)pkm.get());
+            hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), pk7->relearnMove(moveIndex - 4))));
+        }
+    }
+    searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
+        [this]() {
+            Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+            return false;
+        },
+        ui_sheet_emulated_box_search_idx, "", 0, 0);
+}
+
 void MoveOverlay::drawBottom() const
 {
     dim();
@@ -205,12 +249,12 @@ void MoveOverlay::update(touchPosition* touch)
                 ((PB7*)pkm.get())->relearnMove(moveIndex - 4, (u16)moves[hid.fullIndex()].first);
             }
         }
-        screen.removeOverlay();
+        me = nullptr;
         return;
     }
     else if (downKeys & KEY_B)
     {
-        screen.removeOverlay();
+        me = nullptr;
         return;
     }
 }

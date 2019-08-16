@@ -38,7 +38,7 @@ StorageOverlay::StorageOverlay(Screen& screen, bool store, int& boxBox, int& sto
     buttons.push_back(std::make_unique<ClickButton>(106, 63, 108, 28,
         [this]() {
             Gui::setScreen(std::make_unique<SortScreen>(storage));
-            this->screen.removeOverlay();
+            me = nullptr;
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("SORT"), FONT_SIZE_12, COLOR_BLACK));
@@ -47,15 +47,44 @@ StorageOverlay::StorageOverlay(Screen& screen, bool store, int& boxBox, int& sto
     buttons.push_back(std::make_unique<ClickButton>(
         106, 125, 108, 28, [this]() { return selectBox(); }, ui_sheet_button_editor_idx, i18n::localize("BOX_JUMP"), FONT_SIZE_12, COLOR_BLACK));
     buttons.push_back(std::make_unique<ClickButton>(106, 156, 108, 28,
-        [&screen, &storageBox]() {
-            Gui::setScreen(std::make_unique<BankSelectionScreen>(storageBox));
-            screen.removeOverlay();
+        [this]() {
+            Gui::setScreen(std::make_unique<BankSelectionScreen>(this->storageBox));
+            me = nullptr;
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("BANK_SWITCH"), FONT_SIZE_12, COLOR_BLACK));
     buttons.push_back(std::make_unique<ClickButton>(283, 211, 34, 28,
-        [&screen]() {
-            screen.removeOverlay();
+        [this]() {
+            me = nullptr;
+            return true;
+        },
+        ui_sheet_button_back_idx, "", 0.0f, 0));
+}
+
+StorageOverlay::StorageOverlay(Overlay& ovly, bool store, int& boxBox, int& storageBox)
+    : Overlay(ovly, i18n::localize("B_BACK")), storage(store), boxBox(boxBox), storageBox(storageBox)
+{
+    buttons.push_back(std::make_unique<ClickButton>(106, 63, 108, 28,
+        [this]() {
+            Gui::setScreen(std::make_unique<SortScreen>(storage));
+            me = nullptr;
+            return true;
+        },
+        ui_sheet_button_editor_idx, i18n::localize("SORT"), FONT_SIZE_12, COLOR_BLACK));
+    buttons.push_back(std::make_unique<ClickButton>(
+        106, 94, 108, 28, [this]() { return false; }, ui_sheet_button_editor_idx, i18n::localize("FILTER"), FONT_SIZE_12, COLOR_BLACK));
+    buttons.push_back(std::make_unique<ClickButton>(
+        106, 125, 108, 28, [this]() { return selectBox(); }, ui_sheet_button_editor_idx, i18n::localize("BOX_JUMP"), FONT_SIZE_12, COLOR_BLACK));
+    buttons.push_back(std::make_unique<ClickButton>(106, 156, 108, 28,
+        [this]() {
+            Gui::setScreen(std::make_unique<BankSelectionScreen>(this->storageBox));
+            me = nullptr;
+            return true;
+        },
+        ui_sheet_button_editor_idx, i18n::localize("BANK_SWITCH"), FONT_SIZE_12, COLOR_BLACK));
+    buttons.push_back(std::make_unique<ClickButton>(283, 211, 34, 28,
+        [this]() {
+            me = nullptr;
             return true;
         },
         ui_sheet_button_back_idx, "", 0.0f, 0));
@@ -80,7 +109,7 @@ void StorageOverlay::update(touchPosition* touch)
 {
     if (hidKeysDown() & KEY_B)
     {
-        screen.removeOverlay();
+        me = nullptr;
         return;
     }
     else
@@ -105,7 +134,7 @@ bool StorageOverlay::selectBox()
         {
             boxes.emplace_back(Banks::bank->boxName(i));
         }
-        me = std::make_shared<BoxOverlay>(screen, boxes, storageBox);
+        addOverlay<BoxOverlay>(boxes, storageBox);
     }
     else
     {
@@ -113,7 +142,7 @@ bool StorageOverlay::selectBox()
         {
             boxes.emplace_back(TitleLoader::save->boxName(i));
         }
-        me = std::make_shared<BoxOverlay>(screen, boxes, boxBox);
+        addOverlay<BoxOverlay>(boxes, boxBox);
     }
     return true;
 }

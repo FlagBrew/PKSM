@@ -37,6 +37,7 @@ class SpeciesOverlay : public Overlay
 {
 public:
     SpeciesOverlay(Screen& screen, std::shared_ptr<PKX> pkm);
+    SpeciesOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm);
     ~SpeciesOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }

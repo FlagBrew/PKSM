@@ -39,6 +39,7 @@ class MoveOverlay : public Overlay
 {
 public:
     MoveOverlay(Screen& screen, std::shared_ptr<PKX> pkm, int moveIndex);
+    MoveOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm, int moveIndex);
     ~MoveOverlay() { pkm->fixMoves(); }
     void drawTop() const override;
     bool replacesTop() const override { return true; }

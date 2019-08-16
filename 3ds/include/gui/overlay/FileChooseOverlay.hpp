@@ -36,6 +36,7 @@ class FileChooseOverlay : public Overlay
 {
 public:
     FileChooseOverlay(Screen& screen, std::string& retString, const std::string& rootString = "/");
+    FileChooseOverlay(Overlay& ovly, std::string& retString, const std::string& rootString = "/");
 
     void update(touchPosition* touch) override;
     void drawTop() const override;

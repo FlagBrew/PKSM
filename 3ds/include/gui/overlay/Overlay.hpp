@@ -37,18 +37,38 @@ class Overlay
 {
 public:
     Overlay(Screen& screen, const std::string& instructions = "");
+    Overlay(Overlay& overlay, const std::string& instructions = "");
     virtual ~Overlay() {}
+    template<typename Class, typename... Params>
+    void addOverlay(Params&&... args)
+    {
+        if (overlay)
+        {
+            overlay->addOverlay<Class>(std::forward<Params>(args)...);
+        }
+        else
+        {
+            overlay = std::make_shared<Class>(*this, std::forward<Params>(args)...);
+        }
+    }
+    bool willHandleUpdate() const;
+    bool willReplaceBottom() const;
+    bool willReplaceTop() const;
+    void doUpdate(touchPosition* touch);
+    void doTopDraw() const;
+    void doBottomDraw() const;
     virtual void update(touchPosition* touch) = 0;
     virtual void drawTop() const              = 0;
-    virtual bool replacesTop() const { return false; }
     virtual void drawBottom() const           = 0;
+    virtual bool replacesTop() const { return false; }
     virtual bool replacesBottom() const { return false; }
+    virtual bool handlesUpdate() const { return true; }
     void dim(void) const;
     const Instructions& getInstructions() const { return instructions; }
 
 protected:
-    Screen& screen;
     std::shared_ptr<Overlay>& me;
+    std::shared_ptr<Overlay> overlay = nullptr;
     Instructions instructions;
 };
 

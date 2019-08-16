@@ -330,7 +330,7 @@ void CloudScreen::update(touchPosition* touch)
     }
     else if (kDown & KEY_START)
     {
-        currentOverlay = std::make_unique<CloudOverlay>(*this, access);
+        addOverlay<CloudOverlay>(access);
         justSwitched   = true;
     }
     else if (buttonCooldown <= 0)
@@ -606,7 +606,7 @@ bool CloudScreen::showViewer()
     if (infoMon && infoMon->species() != 0)
     {
         justSwitched   = true;
-        currentOverlay = std::make_unique<CloudViewOverlay>(*this, infoMon);
+        addOverlay<CloudViewOverlay>(infoMon);
     }
     return true;
 }

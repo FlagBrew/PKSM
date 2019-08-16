@@ -107,6 +107,48 @@ PkmItemOverlay::PkmItemOverlay(Screen& screen, std::shared_ptr<PKX> pkm)
         ui_sheet_emulated_box_search_idx, "", 0, 0);
 }
 
+PkmItemOverlay::PkmItemOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm)
+    : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(40, 2)
+{
+    instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
+    const std::vector<std::string>& rawItems = i18n::rawItems(Configuration::getInstance().language());
+    for (int i = 1; i <= TitleLoader::save->maxItem(); i++)
+    {
+        if (rawItems[i].find("\uFF1F\uFF1F\uFF1F") != std::string::npos || rawItems[i].find("???") != std::string::npos)
+            continue;
+        else if (i >= 807 && i <= 835)
+            continue; // Bag Z-Crystals
+        else if (i >= 927 && i <= 932)
+            continue; // Bag Z-Crystals
+        items.emplace_back(i, rawItems[i]);
+    }
+    std::sort(items.begin(), items.end(), stringComp);
+    items.insert(items.begin(), {0, rawItems[0]});
+    validItems = items;
+
+    hid.update(items.size());
+    int itemIndex = index(items, i18n::item(Configuration::getInstance().language(), pkm->heldItem()));
+    // Checks to make sure that it's the correct item and not one with a duplicate name
+    if (items[itemIndex].first != pkm->heldItem())
+    {
+        if (items[itemIndex + 1].second == items[itemIndex].second)
+        {
+            itemIndex++;
+        }
+        else
+        {
+            itemIndex--;
+        }
+    }
+    hid.select(index(items, i18n::item(Configuration::getInstance().language(), pkm->heldItem())));
+    searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
+        [this]() {
+            Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+            return false;
+        },
+        ui_sheet_emulated_box_search_idx, "", 0, 0);
+}
+
 void PkmItemOverlay::drawBottom() const
 {
     dim();
@@ -189,12 +231,12 @@ void PkmItemOverlay::update(touchPosition* touch)
     if (downKeys & KEY_A)
     {
         pkm->heldItem((u16)items[hid.fullIndex()].first);
-        screen.removeOverlay();
+        me = nullptr;
         return;
     }
     else if (downKeys & KEY_B)
     {
-        screen.removeOverlay();
+        me = nullptr;
         return;
     }
 }

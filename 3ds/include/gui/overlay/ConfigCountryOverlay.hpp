@@ -37,6 +37,7 @@ class ConfigCountryOverlay : public Overlay
 {
 public:
     ConfigCountryOverlay(Screen& screen);
+    ConfigCountryOverlay(Overlay& ovly);
     void drawTop() const override;
     bool replacesTop() const override { return true; }
     void drawBottom() const override;

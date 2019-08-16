@@ -49,6 +49,27 @@ LocationOverlay::LocationOverlay(Screen& screen, std::shared_ptr<PKX> pkm, bool 
     })));
 }
 
+LocationOverlay::LocationOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm, bool met)
+    : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
+      pkm(pkm),
+      hid(40, 2),
+      validLocations(i18n::locations(Configuration::getInstance().language(), pkm->generation())),
+      locations(validLocations),
+      met(met)
+{
+    instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
+    searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
+        [this]() {
+            Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+            return false;
+        },
+        ui_sheet_emulated_box_search_idx, "", 0, 0);
+    hid.update(locations.size());
+    hid.select(std::distance(locations.begin(), std::find_if(locations.begin(), locations.end(), [pkm, met](const std::pair<u16, std::string>& pair) {
+        return pair.first == (met ? pkm->metLocation() : pkm->eggLocation());
+    })));
+}
+
 void LocationOverlay::drawBottom() const
 {
     dim();
@@ -151,12 +172,12 @@ void LocationOverlay::update(touchPosition* touch)
                 pkm->eggLocation(locIt->first);
             }
         }
-        screen.removeOverlay();
+        me = nullptr;
         return;
     }
     else if (downKeys & KEY_B)
     {
-        screen.removeOverlay();
+        me = nullptr;
         return;
     }
 }

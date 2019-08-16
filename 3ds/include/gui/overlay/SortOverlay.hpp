@@ -131,6 +131,11 @@ public:
         hid.update(vals.size());
         hid.select(int(type));
     }
+    SortOverlay(Overlay& ovly, SortType& type) : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), hid(40, 2), out(type)
+    {
+        hid.update(vals.size());
+        hid.select(int(type));
+    }
     virtual ~SortOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }

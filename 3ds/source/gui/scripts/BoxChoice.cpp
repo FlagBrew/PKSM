@@ -509,7 +509,7 @@ bool BoxChoice::backButton()
         backHeld = true;
         if (currentOverlay)
         {
-            currentOverlay = nullptr;
+            removeOverlays();
         }
         else
         {
@@ -529,7 +529,7 @@ bool BoxChoice::showViewer()
 
     if (infoMon && infoMon->species() != 0)
     {
-        currentOverlay = std::make_unique<ViewOverlay>(*this, infoMon, true);
+        addOverlay<ViewOverlay>(infoMon, true);
     }
     return true;
 }

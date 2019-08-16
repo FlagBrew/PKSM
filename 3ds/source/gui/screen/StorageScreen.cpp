@@ -608,7 +608,7 @@ void StorageScreen::update(touchPosition* touch)
     }
     else if (kDown & KEY_START)
     {
-        currentOverlay = std::make_unique<StorageOverlay>(*this, storageChosen, boxBox, storageBox);
+        addOverlay<StorageOverlay>(storageChosen, boxBox, storageBox);
         justSwitched   = true;
     }
     else if (buttonCooldown <= 0)

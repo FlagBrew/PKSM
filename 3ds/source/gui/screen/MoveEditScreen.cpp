@@ -55,6 +55,8 @@ MoveEditScreen::MoveEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
             },
             ui_sheet_res_null_idx, "", 0.0f, 0));
     }
+
+    addOverlay<ViewOverlay>(this->pkm, false);
 }
 
 void MoveEditScreen::update(touchPosition* touch)
@@ -92,10 +94,6 @@ void MoveEditScreen::update(touchPosition* touch)
         {
             moveSelected--;
         }
-    }
-    if (!currentOverlay)
-    {
-        currentOverlay = std::make_shared<ViewOverlay>(*this, pkm, false);
     }
 }
 
@@ -162,5 +160,5 @@ void MoveEditScreen::drawBottom() const
 
 void MoveEditScreen::changeMove()
 {
-    currentOverlay = std::make_unique<MoveOverlay>(*this, pkm, moveSelected);
+    addOverlay<MoveOverlay>(pkm, moveSelected);
 }

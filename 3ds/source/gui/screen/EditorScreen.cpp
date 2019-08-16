@@ -148,7 +148,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
         //     ((PB7*)pkm.get())->geoCountry(0, Configuration::getInstance().defaultCountry());
         //     ((PB7*)pkm.get())->geoRegion(0, Configuration::getInstance().defaultRegion());
         // }
-        currentOverlay = std::make_unique<SpeciesOverlay>(*this, pkm);
+        addOverlay<SpeciesOverlay>(pkm);
     }
 
     if (this->box == 0xFF)
@@ -162,7 +162,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
                     std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
                     pkm = std::make_shared<PK4>(pkmData, false, true);
                     partyUpdate();
-                    currentOverlay = std::make_unique<SpeciesOverlay>(*this, pkm);
+                    addOverlay<SpeciesOverlay>(pkm);
                 }
                 break;
             case Generation::FIVE:
@@ -172,7 +172,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
                     std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
                     pkm = std::make_shared<PK5>(pkmData, false, true);
                     partyUpdate();
-                    currentOverlay = std::make_unique<SpeciesOverlay>(*this, pkm);
+                    addOverlay<SpeciesOverlay>(pkm);
                 }
                 break;
             case Generation::SIX:
@@ -190,7 +190,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
                         pkm = std::make_shared<PK7>(pkmData, false, true);
                     }
                     partyUpdate();
-                    currentOverlay = std::make_unique<SpeciesOverlay>(*this, pkm);
+                    addOverlay<SpeciesOverlay>(pkm);
                 }
                 break;
             case Generation::LGPE:
@@ -301,6 +301,8 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
     buttons.push_back(NO_TEXT_CLICK(239, 3, 43, 22, [this]() { return this->setSaveInfo(); }, ui_sheet_button_trainer_info_idx));
 
     sha256(origHash.data(), pkm->rawData(), pkm->getLength());
+
+    addOverlay<ViewOverlay>(pkm, false);
 }
 
 void EditorScreen::drawBottom() const
@@ -366,10 +368,6 @@ void EditorScreen::drawBottom() const
 
 void EditorScreen::update(touchPosition* touch)
 {
-    if (!currentOverlay)
-    {
-        currentOverlay = std::make_shared<ViewOverlay>(*this, pkm, false);
-    }
     if (justSwitched)
     {
         if (keysHeld() & KEY_TOUCH)
@@ -710,7 +708,7 @@ bool EditorScreen::save()
 
 bool EditorScreen::selectNature()
 {
-    currentOverlay = std::make_unique<NatureOverlay>(*this, pkm);
+    addOverlay<NatureOverlay>(pkm);
     return false;
 }
 
@@ -826,7 +824,7 @@ bool EditorScreen::selectAbility()
 
 bool EditorScreen::selectItem()
 {
-    currentOverlay = std::make_unique<PkmItemOverlay>(*this, pkm);
+    addOverlay<PkmItemOverlay>(pkm);
     return false;
 }
 
@@ -846,20 +844,20 @@ bool EditorScreen::selectForm()
     }
     if (count > 1)
     {
-        currentOverlay = std::make_unique<FormOverlay>(*this, pkm, count);
+        addOverlay<FormOverlay>(pkm, count);
     }
     return false;
 }
 
 bool EditorScreen::selectBall()
 {
-    currentOverlay = std::make_unique<BallOverlay>(*this, pkm);
+    addOverlay<BallOverlay>(pkm);
     return false;
 }
 
 bool EditorScreen::selectSpecies()
 {
-    currentOverlay = std::make_unique<SpeciesOverlay>(*this, pkm);
+    addOverlay<SpeciesOverlay>(pkm);
     return false;
 }
 

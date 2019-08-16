@@ -44,9 +44,20 @@ public:
           emergencyInfo(emergencyInfo)
     {
     }
+    StorageViewOverlay(Overlay& ovly, std::shared_ptr<PKX>& pkm, std::vector<std::shared_ptr<PKX>>& clone, std::vector<int>& partyNum,
+        std::pair<int, int>& cloneDims, bool& currentlySelecting, std::pair<int, int> emergencyInfo)
+        : ViewOverlay(ovly, pkm, true, i18n::localize("A_SELECT") + '\n' + i18n::localize("X_CLONE") + '\n' + i18n::localize("B_BACK")),
+          clone(clone),
+          partyNum(partyNum),
+          cloneDims(cloneDims),
+          currentlySelecting(currentlySelecting),
+          emergencyInfo(emergencyInfo)
+    {
+    }
     virtual ~StorageViewOverlay() {}
     void update(touchPosition* touch) override;
     void drawBottom() const override;
+    bool handlesUpdate() const override { return true; }
 
 private:
     std::vector<std::shared_ptr<PKX>>& clone;

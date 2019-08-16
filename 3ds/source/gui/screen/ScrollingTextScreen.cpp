@@ -35,7 +35,7 @@ ScrollingTextScreen::ScrollingTextScreen(const std::string& text, std::shared_pt
 {
     if (pkm)
     {
-        currentOverlay = std::make_shared<ViewOverlay>(*this, pkm, false, "");
+        addOverlay<ViewOverlay>(this->pkm, false, "");
     }
 }
 

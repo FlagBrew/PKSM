@@ -206,8 +206,3 @@ void ViewOverlay::drawTop() const
         }
     }
 }
-
-void ViewOverlay::update(touchPosition* touch)
-{
-    screen.update(touch);
-}
