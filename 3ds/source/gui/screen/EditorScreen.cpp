@@ -52,6 +52,7 @@ static constexpr int statValues[] = {0, 1, 2, 4, 5, 3};
 EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, bool emergency)
     : pkm(pokemon), box(box), index(index), emergency(emergency)
 {
+    addOverlay<ViewOverlay>(pkm, false);
     if (!pkm || (pkm->encryptionConstant() == 0 && pkm->species() == 0))
     {
         pkm = TitleLoader::save->emptyPkm();
@@ -301,8 +302,6 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
     buttons.push_back(NO_TEXT_CLICK(239, 3, 43, 22, [this]() { return this->setSaveInfo(); }, ui_sheet_button_trainer_info_idx));
 
     sha256(origHash.data(), pkm->rawData(), pkm->getLength());
-
-    addOverlay<ViewOverlay>(pkm, false);
 }
 
 void EditorScreen::drawBottom() const
