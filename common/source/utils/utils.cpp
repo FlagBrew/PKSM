@@ -26,11 +26,16 @@
 
 #include "utils.hpp"
 #include "g4text.h"
-#include <3ds.h>
 #include <algorithm>
 #include <map>
 #include <queue>
 #include <vector>
+
+#if defined(_3DS)
+#include <3ds.h>
+#elif defined(__SWITCH__)
+#include <switch.h>
+#endif
 
 std::string StringUtils::format(std::string fmt_str, ...)
 {
