@@ -609,7 +609,7 @@ void StorageScreen::update(touchPosition* touch)
     else if (kDown & KEY_START)
     {
         addOverlay<StorageOverlay>(storageChosen, boxBox, storageBox);
-        justSwitched   = true;
+        justSwitched = true;
     }
     else if (buttonCooldown <= 0)
     {

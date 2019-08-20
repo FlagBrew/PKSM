@@ -162,7 +162,7 @@ void FileChooseOverlay::update(touchPosition* touch)
                 if (Gui::showChoiceMessage(i18n::localize("FILE_CONFIRM_CHOICE"), '\'' + currFiles[hid.fullIndex()].first + '\''))
                 {
                     string = currDirString + currFiles[hid.fullIndex()].first;
-                    me = nullptr;
+                    me     = nullptr;
                 }
             }
         }

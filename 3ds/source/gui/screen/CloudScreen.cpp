@@ -331,7 +331,7 @@ void CloudScreen::update(touchPosition* touch)
     else if (kDown & KEY_START)
     {
         addOverlay<CloudOverlay>(access);
-        justSwitched   = true;
+        justSwitched = true;
     }
     else if (buttonCooldown <= 0)
     {
@@ -605,7 +605,7 @@ bool CloudScreen::showViewer()
 
     if (infoMon && infoMon->species() != 0)
     {
-        justSwitched   = true;
+        justSwitched = true;
         addOverlay<CloudViewOverlay>(infoMon);
     }
     return true;

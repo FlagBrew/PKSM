@@ -64,7 +64,7 @@ void SortOverlay::update(touchPosition* touch)
     if (downKeys & KEY_A)
     {
         out = SortType(hid.fullIndex());
-        me = nullptr;
+        me  = nullptr;
         return;
     }
     else if (downKeys & KEY_B)

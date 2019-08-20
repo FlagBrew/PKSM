@@ -65,7 +65,7 @@ void BoxOverlay::update(touchPosition* touch)
     if (downKeys & KEY_A)
     {
         out = hid.fullIndex();
-        me = nullptr;
+        me  = nullptr;
         return;
     }
     else if (downKeys & KEY_B)

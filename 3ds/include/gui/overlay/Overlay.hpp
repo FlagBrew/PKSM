@@ -39,7 +39,7 @@ public:
     Overlay(Screen& screen, const std::string& instructions = "");
     Overlay(Overlay& overlay, const std::string& instructions = "");
     virtual ~Overlay() {}
-    template<typename Class, typename... Params>
+    template <typename Class, typename... Params>
     void addOverlay(Params&&... args)
     {
         if (overlay)

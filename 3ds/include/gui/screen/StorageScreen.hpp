@@ -28,8 +28,8 @@
 #define STORAGESCREEN_HPP
 
 #include "Button.hpp"
-#include "PKX.hpp"
 #include "PKFilter.hpp"
+#include "PKX.hpp"
 #include "Sav.hpp"
 #include "Screen.hpp"
 #include "SortOverlay.hpp"

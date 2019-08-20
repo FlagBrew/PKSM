@@ -619,8 +619,8 @@ void Sav6::mysteryGift(WCX& wc, int& pos)
     if (game == Game::ORAS && wc6->ID() == 2048 && wc6->object() == 726)
     {
         static constexpr u32 EON_MAGIC = 0x225D73C2;
-        *(u32*)(data + 0x319B8) = EON_MAGIC;
-        *(u32*)(data + 0x319DE) = EON_MAGIC;
+        *(u32*)(data + 0x319B8)        = EON_MAGIC;
+        *(u32*)(data + 0x319DE)        = EON_MAGIC;
     }
     pos = (pos + 1) % 24;
 }

@@ -55,7 +55,7 @@ public:
     virtual void drawBottom() const = 0;
     virtual float timer() const final { return mTimer; }
     void removeOverlays() { currentOverlay = nullptr; }
-    template<typename Class, typename... Params>
+    template <typename Class, typename... Params>
     void addOverlay(Params&&... args)
     {
         if (currentOverlay)

@@ -62,7 +62,7 @@ public:
     BagItemOverlay(Overlay& ovly, std::vector<std::pair<const std::string*, int>>& items, size_t selected, std::pair<Pouch, int> pouch, int slot,
         int& firstEmpty)
         : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("L_PAGE_PREV") + '\n' + i18n::localize("R_PAGE_NEXT") + '\n' +
-                              i18n::localize("B_BACK")),
+                            i18n::localize("B_BACK")),
           hid(40, 2),
           validItems(items),
           items(items),
