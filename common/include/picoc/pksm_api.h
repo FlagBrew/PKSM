@@ -32,7 +32,8 @@
 
 #define PKSM_PORT 34567
 
-enum PKX_FIELD {
+enum PKX_FIELD
+{
     OT_NAME,
     TID,
     SID,
@@ -77,8 +78,39 @@ enum PKX_FIELD {
     EGG_LOCATION,
     MET_LEVEL,
     OT_GENDER,
-    ORIGINAL_GAME,
-    MAX_FIELD
+    ORIGINAL_GAME
+};
+
+enum SAV_FIELD
+{
+    SAV_OT_NAME,
+    SAV_TID,
+    SAV_SID,
+    SAV_GENDER,
+    SAV_COUNTRY,
+    SAV_SUBREGION,
+    SAV_REGION,
+    SAV_LANGUAGE,
+    SAV_MONEY,
+    SAV_BP,
+    SAV_HOURS,
+    SAV_MINUTES,
+    SAV_SECONDS,
+    SAV_ITEM
+};
+
+enum SAV_MAX_FIELD
+{
+    MAX_SLOTS,
+    MAX_BOXES,
+    MAX_WONDER_CARDS,
+    MAX_SPECIES,
+    MAX_MOVE,
+    MAX_ITEM,
+    MAX_ABILITY,
+    MAX_BALL,
+    MAX_FORM,
+    MAX_IN_POUCH
 };
 
 void bank_inject_pkx(struct ParseState*, struct Value*, struct Value**, int);
@@ -107,10 +139,8 @@ void sav_boxEncrypt(struct ParseState*, struct Value*, struct Value**, int);
 void sav_boxDecrypt(struct ParseState*, struct Value*, struct Value**, int);
 void sav_get_pkx(struct ParseState*, struct Value*, struct Value**, int);
 void sav_inject_pkx(struct ParseState*, struct Value*, struct Value**, int);
-void sav_get_sid(struct ParseState*, struct Value*, struct Value**, int);
-void sav_get_tid(struct ParseState*, struct Value*, struct Value**, int);
-void sav_get_ot_name(struct ParseState*, struct Value*, struct Value**, int);
-void sav_get_pkx_slots(struct ParseState*, struct Value*, struct Value**, int);
+void sav_get_value(struct ParseState*, struct Value*, struct Value**, int);
+void sav_get_max(struct ParseState*, struct Value*, struct Value**, int);
 void current_directory(struct ParseState*, struct Value*, struct Value**, int);
 void read_directory(struct ParseState*, struct Value*, struct Value**, int);
 void delete_directory(struct ParseState*, struct Value*, struct Value**, int);
@@ -126,5 +156,7 @@ void pkx_get_value(struct ParseState*, struct Value*, struct Value**, int);
 // PKSM prefix to prevent name hiding
 void pksm_utf8_to_utf16(struct ParseState*, struct Value*, struct Value**, int);
 void pksm_utf16_to_utf8(struct ParseState*, struct Value*, struct Value**, int);
+void string_to_gen_4(struct ParseState*, struct Value*, struct Value**, int);
+void g4_strlen(struct ParseState*, struct Value*, struct Value**, int);
 
 #endif

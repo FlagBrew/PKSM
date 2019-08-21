@@ -198,6 +198,43 @@ std::string StringUtils::getString4(const u8* data, int ofs, int len)
     return output;
 }
 
+std::vector<u16> StringUtils::stringToG4(const std::string& v)
+{
+    std::vector<u16> ret;
+    for (size_t charIndex = 0; charIndex < v.length(); charIndex++)
+    {
+        if (v[charIndex] & 0x80)
+        {
+            u16 codepoint = 0;
+            if (v[charIndex] & 0x80 && v[charIndex] & 0x40 && v[charIndex] & 0x20)
+            {
+                codepoint = v[charIndex] & 0x0F;
+                codepoint = codepoint << 6 | (v[charIndex + 1] & 0x3F);
+                codepoint = codepoint << 6 | (v[charIndex + 2] & 0x3F);
+                charIndex += 2;
+            }
+            else if (v[charIndex] & 0x80 && v[charIndex] & 0x40)
+            {
+                codepoint = v[charIndex] & 0x1F;
+                codepoint = codepoint << 6 | (v[charIndex + 1] & 0x3F);
+                charIndex += 1;
+            }
+            size_t index     = std::distance(G4Chars, std::find(G4Chars, G4Chars + G4TEXT_LENGTH, codepoint));
+            ret.push_back(index < G4TEXT_LENGTH ? G4Values[index] : 0x0000);
+        }
+        else
+        {
+            size_t index     = std::distance(G4Chars, std::find(G4Chars, G4Chars + G4TEXT_LENGTH, v[charIndex]));
+            ret.push_back(index < G4TEXT_LENGTH ? G4Values[index] : 0x0000);
+        }
+    }
+    if (ret.back() != 0xFFFF)
+    {
+        ret.push_back(0xFFFF);
+    }
+    return ret;
+}
+
 void StringUtils::setString4(u8* data, const std::string& v, int ofs, int len)
 {
     u16 output[len] = {0};

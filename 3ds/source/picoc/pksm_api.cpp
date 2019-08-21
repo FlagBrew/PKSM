@@ -36,6 +36,7 @@
 #include "banks.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
+#include "utils.hpp"
 #include <arpa/inet.h>
 #include <errno.h>
 #include <netdb.h>
@@ -805,6 +806,7 @@ void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, stru
                 return;
             }
             TitleLoader::save->pkm(pkm, slot);
+            TitleLoader::save->dex(pkm);
         }
     }
 }
@@ -980,14 +982,225 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
         pkm->species(), pkm->gender(), pkm->version(), pkm->nature(), pkm->alternativeForm(), pkm->abilityNumber(), pkm->PID(), pkm->generation()));
 }
 
-void sav_get_sid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void sav_get_max(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    ReturnValue->Val->Integer = TitleLoader::save->SID();
+    SAV_MAX_FIELD field = SAV_MAX_FIELD(Param[0]->Val->Integer);
+
+    switch (field)
+    {
+        case MAX_SLOTS:
+            if (NumArgs != 1)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for MAX_SLOTS", NumArgs);
+            }
+            ReturnValue->Val->Integer = TitleLoader::save->maxSlot();
+            break;
+        case MAX_BOXES:
+            if (NumArgs != 1)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for MAX_BOXES", NumArgs);
+            }
+            ReturnValue->Val->Integer = TitleLoader::save->maxBoxes();
+            break;
+        case MAX_WONDER_CARDS:
+            if (NumArgs != 1)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for MAX_WONDER_CARDS", NumArgs);
+            }
+            ReturnValue->Val->Integer = TitleLoader::save->maxWondercards();
+            break;
+        case MAX_SPECIES:
+            if (NumArgs != 1)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for MAX_SPECIES", NumArgs);
+            }
+            ReturnValue->Val->Integer = TitleLoader::save->maxSpecies();
+            break;
+        case MAX_MOVE:
+            if (NumArgs != 1)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for MAX_MOVE", NumArgs);
+            }
+            ReturnValue->Val->Integer = TitleLoader::save->maxMove();
+            break;
+        case MAX_ITEM:
+            if (NumArgs != 1)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for MAX_ITEM", NumArgs);
+            }
+            ReturnValue->Val->Integer = TitleLoader::save->maxItem();
+            break;
+        case MAX_ABILITY:
+            if (NumArgs != 1)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for MAX_ABILITY", NumArgs);
+            }
+            ReturnValue->Val->Integer = TitleLoader::save->maxAbility();
+            break;
+        case MAX_BALL:
+            if (NumArgs != 1)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for MAX_BALL", NumArgs);
+            }
+            ReturnValue->Val->Integer = TitleLoader::save->maxBall();
+            break;
+        case MAX_FORM:
+            if (NumArgs != 2)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for MAX_FORM", NumArgs);
+            }
+            ReturnValue->Val->Integer = TitleLoader::save->formCount(getNextVarArg(Param[0])->Val->Integer);
+            break;
+        case MAX_IN_POUCH:
+            if (NumArgs != 2)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for MAX_IN_POUCH", NumArgs);
+            }
+            {
+                auto pouches = TitleLoader::save->pouches();
+                Pouch pouch  = Pouch(getNextVarArg(Param[0])->Val->Integer);
+                auto found = std::find_if(pouches.begin(), pouches.end(), [pouch](const std::pair<Pouch, int>& item) { return item.first == pouch; });
+                if (found != pouches.end())
+                {
+                    ReturnValue->Val->Integer = found->second;
+                }
+                else
+                {
+                    ReturnValue->Val->Integer = 0;
+                }
+            }
+            break;
+        default:
+            ProgramFail(Parser, "Field number %i is invalid", (int)field);
+            break;
+    }
 }
 
-void sav_get_tid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void sav_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    ReturnValue->Val->Integer = TitleLoader::save->TID();
+    SAV_FIELD field = SAV_FIELD(Param[0]->Val->Integer);
+
+    switch (field)
+    {
+        case SAV_OT_NAME:
+            if (NumArgs != 1)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_OT_NAME", NumArgs);
+            }
+            {
+                std::string otName = TitleLoader::save->otName();
+                char* ret          = (char*)malloc(otName.size() + 1);
+                std::copy(otName.begin(), otName.end(), ret);
+                ret[otName.size()]        = '\0';
+                ReturnValue->Val->Pointer = ret;
+            }
+            break;
+        case SAV_TID:
+            if (NumArgs != 1)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_TID", NumArgs);
+            }
+            ReturnValue->Val->Integer = TitleLoader::save->TID();
+            break;
+        case SAV_SID:
+            if (NumArgs != 1)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_SID", NumArgs);
+            }
+            ReturnValue->Val->Integer = TitleLoader::save->SID();
+            break;
+        case SAV_GENDER:
+            if (NumArgs != 1)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_GENDER", NumArgs);
+            }
+            ReturnValue->Val->Integer = TitleLoader::save->gender();
+            break;
+        case SAV_COUNTRY:
+            if (NumArgs != 1)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_COUNTRY", NumArgs);
+            }
+            ReturnValue->Val->Integer = TitleLoader::save->country();
+            break;
+        case SAV_SUBREGION:
+            if (NumArgs != 1)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_SUBREGION", NumArgs);
+            }
+            ReturnValue->Val->Integer = TitleLoader::save->subRegion();
+            break;
+        case SAV_REGION:
+            if (NumArgs != 1)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_REGION", NumArgs);
+            }
+            ReturnValue->Val->Integer = TitleLoader::save->consoleRegion();
+            break;
+        case SAV_LANGUAGE:
+            if (NumArgs != 1)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_LANGUAGE", NumArgs);
+            }
+            ReturnValue->Val->Integer = TitleLoader::save->language();
+            break;
+        case SAV_MONEY:
+            if (NumArgs != 1)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_MONEY", NumArgs);
+            }
+            ReturnValue->Val->Integer = TitleLoader::save->money();
+            break;
+        case SAV_BP:
+            if (NumArgs != 1)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_BP", NumArgs);
+            }
+            ReturnValue->Val->Integer = TitleLoader::save->BP();
+            break;
+        case SAV_HOURS:
+            if (NumArgs != 1)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_HOURS", NumArgs);
+            }
+            ReturnValue->Val->Integer = TitleLoader::save->playedHours();
+            break;
+        case SAV_MINUTES:
+            if (NumArgs != 1)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_MINUTES", NumArgs);
+            }
+            ReturnValue->Val->Integer = TitleLoader::save->playedMinutes();
+            break;
+        case SAV_SECONDS:
+            if (NumArgs != 1)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_SECONDS", NumArgs);
+            }
+            ReturnValue->Val->Integer = TitleLoader::save->playedSeconds();
+            break;
+        case SAV_ITEM:
+            if (NumArgs != 3)
+            {
+                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_ITEM", NumArgs);
+            }
+            {
+                struct Value* nextArg = getNextVarArg(Param[0]);
+                Pouch pouch           = Pouch(nextArg->Val->Integer);
+                if (auto item = TitleLoader::save->item(pouch, getNextVarArg(nextArg)->Val->Integer))
+                {
+                    ReturnValue->Val->Integer = item->id();
+                }
+                else
+                {
+                    ReturnValue->Val->Integer = 0;
+                }
+            }
+            break;
+        default:
+            ProgramFail(Parser, "Field number %i is invalid", (int)field);
+            break;
+    }
 }
 
 void pkx_is_valid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -1025,15 +1238,6 @@ void pkx_is_valid(struct ParseState* Parser, struct Value* ReturnValue, struct V
     {
         ReturnValue->Val->Integer = 1;
     }
-}
-
-void sav_get_ot_name(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
-{
-    std::string otName = TitleLoader::save->otName();
-    char* ret          = (char*)malloc((otName.size() + 1) * sizeof(char));
-    std::copy(otName.begin(), otName.end(), ret);
-    ret[otName.size()]        = '\0';
-    ReturnValue->Val->Pointer = ret;
 }
 
 void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -1434,18 +1638,6 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             break;
     }
     delete pkm;
-}
-
-void sav_get_pkx_slots(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
-{
-    if (TitleLoader::save->generation() == Generation::LGPE)
-    {
-        ReturnValue->Val->Integer = 1000;
-    }
-    else
-    {
-        ReturnValue->Val->Integer = TitleLoader::save->maxBoxes() * 30;
-    }
 }
 
 void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -1857,5 +2049,25 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             break;
     }
     delete pkm;
+}
+
+void string_to_gen_4(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    char* string = (char*) Param[0]->Val->Pointer;
+    auto ret = StringUtils::stringToG4(string);
+    u16* data = (u16*)malloc(ret.size() * sizeof(u16));
+    std::copy(ret.begin(), ret.end(), data);
+    ReturnValue->Val->Pointer = data;
+}
+
+void g4_strlen(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    u16* data = (u16*) Param[0]->Val->Pointer;
+    int size = 0;
+    while (data[size] != 0xFFFF)
+    {
+        size++;
+    }
+    ReturnValue->Val->Integer = size;
 }
 }
