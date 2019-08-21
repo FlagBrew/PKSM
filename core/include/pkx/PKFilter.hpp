@@ -59,6 +59,8 @@ private:
     using filterString = std::string;
     MAKE_DEFN(generation, Generation);
     MAKE_DEFN(species, u16);
+    MAKE_DEFN(alternativeForm, u8);
+    MAKE_DEFN(shiny, bool);
     MAKE_DEFN(heldItem, u16);
     MAKE_DEFN(level, u8);
     MAKE_DEFN(ability, u8);

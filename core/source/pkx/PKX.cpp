@@ -658,5 +658,13 @@ bool PKX::operator==(const PKFilter& filter) const
             return false;
         }
     }
+    if (filter.shinyEnabled() && filter.shiny() != shiny())
+    {
+        return false;
+    }
+    if (filter.alternativeFormEnabled() && filter.alternativeForm() != alternativeForm())
+    {
+        return false;
+    }
     return true;
 }
