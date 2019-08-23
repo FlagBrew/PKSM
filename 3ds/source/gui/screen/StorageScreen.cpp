@@ -51,29 +51,6 @@ extern std::stack<std::unique_ptr<Screen>> screens;
 
 static bool backHeld = false;
 
-int bobPointer()
-{
-    static int currentBob = 0;
-    static bool up        = true;
-    if (up)
-    {
-        currentBob++;
-        if (currentBob >= 12)
-        {
-            up = false;
-        }
-    }
-    else
-    {
-        currentBob--;
-        if (currentBob <= 0)
-        {
-            up = true;
-        }
-    }
-    return currentBob / 4;
-}
-
 void StorageScreen::setBoxName(bool storage)
 {
     if (storage)
@@ -303,7 +280,7 @@ void StorageScreen::drawBottom() const
     {
         if (cursorIndex == 0)
         {
-            int dy = bobPointer();
+            int dy = Gui::pointerBob();
             for (size_t i = 0; i < moveMon.size(); i++)
             {
                 int x = 97 + (i % selectDimensions.first) * 34;
@@ -336,7 +313,7 @@ void StorageScreen::drawBottom() const
         else
         {
             int tempIndex = cursorIndex - 1;
-            int yMod      = (tempIndex / 6) * 30 + bobPointer();
+            int yMod      = (tempIndex / 6) * 30 + Gui::pointerBob();
             for (size_t i = 0; i < moveMon.size(); i++)
             {
                 int x = 12 + (tempIndex % 6) * 34 + (i % selectDimensions.first) * 34;
@@ -425,7 +402,7 @@ void StorageScreen::drawTop() const
     {
         if (cursorIndex == 0)
         {
-            int dy = bobPointer();
+            int dy = Gui::pointerBob();
             for (size_t i = 0; i < moveMon.size(); i++)
             {
                 int x = 138 + (i % selectDimensions.first) * 34;
@@ -458,7 +435,7 @@ void StorageScreen::drawTop() const
         else
         {
             int tempIndex = cursorIndex - 1;
-            int yMod      = (tempIndex / 6) * 30 + bobPointer();
+            int yMod      = (tempIndex / 6) * 30 + Gui::pointerBob();
             for (size_t i = 0; i < moveMon.size(); i++)
             {
                 int x = 53 + (tempIndex % 6) * 34 + (i % selectDimensions.first) * 34;

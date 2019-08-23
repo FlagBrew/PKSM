@@ -30,8 +30,6 @@
 #include "ViewOverlay.hpp"
 #include "gui.hpp"
 
-extern int bobPointer();
-
 MoveEditScreen::MoveEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
 {
     buttons.push_back(std::make_unique<ClickButton>(283, 211, 34, 28,
@@ -148,12 +146,12 @@ void MoveEditScreen::drawBottom() const
 
     if (moveSelected < 4)
     {
-        Gui::sprite(ui_sheet_emulated_pointer_horizontal_flipped_idx, 169 + bobPointer(), 31 + moveSelected * 20);
+        Gui::sprite(ui_sheet_emulated_pointer_horizontal_flipped_idx, 169 + Gui::pointerBob(), 31 + moveSelected * 20);
         Gui::text("\uE000", 194, 29 + moveSelected * 20, FONT_SIZE_18, FONT_SIZE_18, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     }
     else
     {
-        Gui::sprite(ui_sheet_emulated_pointer_horizontal_flipped_idx, 169 + bobPointer(), 140 + (moveSelected - 4) * 20);
+        Gui::sprite(ui_sheet_emulated_pointer_horizontal_flipped_idx, 169 + Gui::pointerBob(), 140 + (moveSelected - 4) * 20);
         Gui::text("\uE000", 194, 138 + (moveSelected - 4) * 20, FONT_SIZE_18, FONT_SIZE_18, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     }
 }

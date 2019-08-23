@@ -1530,6 +1530,29 @@ void Gui::setScreen(std::unique_ptr<Screen> screen)
     screens.push(std::move(screen));
 }
 
+int Gui::pointerBob()
+{
+    static int currentBob = 0;
+    static bool up        = true;
+    if (up)
+    {
+        currentBob++;
+        if (currentBob >= 12)
+        {
+            up = false;
+        }
+    }
+    else
+    {
+        currentBob--;
+        if (currentBob <= 0)
+        {
+            up = true;
+        }
+    }
+    return currentBob / 4;
+}
+
 u8 transparencyWaver()
 {
     static u8 currentAmount = 255;

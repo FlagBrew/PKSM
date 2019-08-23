@@ -33,7 +33,6 @@
 #include "loader.hpp"
 #include <memory>
 
-extern int bobPointer();
 static bool dirtyBack = true;
 
 void EditSelectorScreen::changeBoxName()
@@ -307,7 +306,7 @@ void EditSelectorScreen::drawBottom() const
 
     if (cursorPos == 0)
     {
-        int dy = bobPointer();
+        int dy = Gui::pointerBob();
         if (moveMon)
         {
             Gui::pkm(*moveMon, 94, 5 + dy);
@@ -317,7 +316,7 @@ void EditSelectorScreen::drawBottom() const
     else if (cursorPos < 31)
     {
         int tempIndex = cursorPos - 1;
-        int yMod      = (tempIndex / 6) * 30 + bobPointer();
+        int yMod      = (tempIndex / 6) * 30 + Gui::pointerBob();
         if (moveMon)
         {
             Gui::pkm(*moveMon, 9 + (tempIndex % 6) * 34, 39 + yMod);
@@ -327,7 +326,7 @@ void EditSelectorScreen::drawBottom() const
     else
     {
         int x = 238 + ((cursorPos - 1) % 2) * 50;
-        int y = ((cursorPos - 1) % 2 == 0 ? 35 : 51) + (((cursorPos - 1) - 30) / 2) * 45 + bobPointer();
+        int y = ((cursorPos - 1) % 2 == 0 ? 35 : 51) + (((cursorPos - 1) - 30) / 2) * 45 + Gui::pointerBob();
         if (moveMon)
         {
             Gui::pkm(*moveMon, x - 12, y + 9);

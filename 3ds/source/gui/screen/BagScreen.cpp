@@ -89,29 +89,6 @@ BagScreen::BagScreen()
     }
 }
 
-static int bobPointer()
-{
-    static int currentBob = 0;
-    static bool up        = true;
-    if (up)
-    {
-        currentBob++;
-        if (currentBob >= 12)
-        {
-            up = false;
-        }
-    }
-    else
-    {
-        currentBob--;
-        if (currentBob <= 0)
-        {
-            up = true;
-        }
-    }
-    return currentBob / 4;
-}
-
 void BagScreen::drawTop() const
 {
     Gui::sprite(ui_sheet_emulated_bg_top_yellow_idx, 0, 0);
@@ -168,7 +145,7 @@ void BagScreen::drawBottom() const
         }
     }
 
-    int xMod = bobPointer();
+    int xMod = Gui::pointerBob();
 
     if (!selectingPouch)
     {

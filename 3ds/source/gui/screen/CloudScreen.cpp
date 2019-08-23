@@ -34,8 +34,6 @@
 #include "io.hpp"
 #include <sys/stat.h>
 
-extern int bobPointer();
-
 CloudScreen::CloudScreen(int storageBox)
     : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("START_SORT_FILTER") + '\n' + i18n::localize("L_BOX_PREV") + '\n' +
              i18n::localize("R_BOX_NEXT") + '\n' + i18n::localize("B_BACK")),
@@ -114,7 +112,7 @@ void CloudScreen::drawBottom() const
     {
         if (cursorIndex == 0)
         {
-            int dy = bobPointer();
+            int dy = Gui::pointerBob();
             if (moveMon)
             {
                 Gui::pkm(*moveMon, 97, 10 + dy, 1.0f, COLOR_GREY_BLEND, 1.0f);
@@ -125,7 +123,7 @@ void CloudScreen::drawBottom() const
         else
         {
             int tempIndex = cursorIndex - 1;
-            int yMod      = (tempIndex / 6) * 30 + bobPointer();
+            int yMod      = (tempIndex / 6) * 30 + Gui::pointerBob();
             if (moveMon)
             {
                 Gui::pkm(*moveMon, 12 + (tempIndex % 6) * 34, 44 + yMod, 1.0f, COLOR_GREY_BLEND, 1.0f);
@@ -199,7 +197,7 @@ void CloudScreen::drawTop() const
     {
         if (cursorIndex == 0)
         {
-            int dy = bobPointer();
+            int dy = Gui::pointerBob();
             if (moveMon)
             {
                 Gui::pkm(*moveMon, 138, 16 + dy, 1.0f, COLOR_GREY_BLEND, 1.0f);
@@ -210,7 +208,7 @@ void CloudScreen::drawTop() const
         else
         {
             int tempIndex = cursorIndex - 1;
-            int yMod      = (tempIndex / 6) * 30 + bobPointer();
+            int yMod      = (tempIndex / 6) * 30 + Gui::pointerBob();
             if (moveMon)
             {
                 Gui::pkm(*moveMon, 53 + (tempIndex % 6) * 34, 65 + yMod, 1.0f, COLOR_GREY_BLEND, 1.0f);

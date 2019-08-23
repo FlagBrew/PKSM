@@ -38,8 +38,6 @@ auto result = std::make_tuple(0, -1, -1);
 
 static bool backHeld = false;
 
-extern int bobPointer();
-
 BoxChoice::BoxChoice(bool doCrypt) : doCrypt(doCrypt)
 {
     mainButtons[0] = std::make_unique<Button>(
@@ -124,13 +122,13 @@ void BoxChoice::drawBottom() const
     {
         if (cursorIndex == 0)
         {
-            int dy = bobPointer();
+            int dy = Gui::pointerBob();
             Gui::sprite(ui_sheet_pointer_arrow_idx, 106, -4 + dy);
         }
         else
         {
             int tempIndex = cursorIndex - 1;
-            int yMod      = (tempIndex / 6) * 30 + bobPointer();
+            int yMod      = (tempIndex / 6) * 30 + Gui::pointerBob();
             Gui::sprite(ui_sheet_pointer_arrow_idx, 21 + (tempIndex % 6) * 34, 30 + yMod);
         }
     }
@@ -191,13 +189,13 @@ void BoxChoice::drawTop() const
         {
             if (cursorIndex == 0)
             {
-                int dy = bobPointer();
+                int dy = Gui::pointerBob();
                 Gui::sprite(ui_sheet_pointer_arrow_idx, 147, 2 + dy);
             }
             else
             {
                 int tempIndex = cursorIndex - 1;
-                int yMod      = (tempIndex / 6) * 30 + bobPointer();
+                int yMod      = (tempIndex / 6) * 30 + Gui::pointerBob();
                 Gui::sprite(ui_sheet_pointer_arrow_idx, 62 + (tempIndex % 6) * 34, 51 + yMod);
             }
         }
