@@ -86,15 +86,20 @@ MoveOverlay::MoveOverlay(Screen& screen, std::shared_ptr<PKX> pkm, int moveIndex
     }
     else
     {
-        if (pkm->gen6())
+        if (pkm->generation() == Generation::SIX)
         {
             PK6* pk6 = ((PK6*)pkm.get());
             hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), pk6->relearnMove(moveIndex - 4))));
         }
-        else if (pkm->gen7())
+        else if (pkm->generation() == Generation::SEVEN)
         {
             PK7* pk7 = ((PK7*)pkm.get());
             hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), pk7->relearnMove(moveIndex - 4))));
+        }
+        else if (pkm->generation() == Generation::LGPE)
+        {
+            PB7* pb7 = ((PB7*)pkm.get());
+            hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), pb7->relearnMove(moveIndex - 4))));
         }
     }
     searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
@@ -130,15 +135,20 @@ MoveOverlay::MoveOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm, int moveIndex)
     }
     else
     {
-        if (pkm->gen6())
+        if (pkm->generation() == Generation::SIX)
         {
             PK6* pk6 = ((PK6*)pkm.get());
             hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), pk6->relearnMove(moveIndex - 4))));
         }
-        else if (pkm->gen7())
+        else if (pkm->generation() == Generation::SEVEN)
         {
             PK7* pk7 = ((PK7*)pkm.get());
             hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), pk7->relearnMove(moveIndex - 4))));
+        }
+        else if (pkm->generation() == Generation::LGPE)
+        {
+            PB7* pb7 = ((PB7*)pkm.get());
+            hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), pb7->relearnMove(moveIndex - 4))));
         }
     }
     searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
