@@ -39,7 +39,7 @@ public:                                                                         
     void name##Enabled(bool v) { name##Bool = v; }                                                                                                   \
                                                                                                                                                      \
 private:                                                                                                                                             \
-    type type##name = type();                                                                                                                                 \
+    type type##name = type();                                                                                                                        \
     bool name##Bool = false
 #define MAKE_NUM_DEFN(name, type, amount)                                                                                                            \
 public:                                                                                                                                              \
@@ -49,7 +49,7 @@ public:                                                                         
     void name##Enabled(u8 which, bool v) { name##Bool[which] = v; }                                                                                  \
                                                                                                                                                      \
 private:                                                                                                                                             \
-    std::vector<type> type##name = std::vector<type>(amount, type());                                                                                                                         \
+    std::vector<type> type##name   = std::vector<type>(amount, type());                                                                              \
     std::bitset<amount> name##Bool = std::bitset<amount>(0)
 
 class PKFilter

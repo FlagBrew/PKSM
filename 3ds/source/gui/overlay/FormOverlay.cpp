@@ -62,9 +62,27 @@ void FormOverlay::drawTop() const
             {
                 break;
             }
-            Gui::pkm(pkm->species(), x + y * 6, TitleLoader::save->generation(), pkm->gender(), x * 66 + 19, y * 48 + 1);
-            const std::string& text = i18n::form(Configuration::getInstance().language(), pkm->species(), x + y * 6, TitleLoader::save->generation());
-            Gui::text(text, x * 67 + 32, y * 48 + 39, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, 65.0f);
+            switch (object.index())
+            {
+                case 0:
+                {
+                    Gui::pkm(std::get<0>(object)->species(), x + y * 6, TitleLoader::save->generation(), std::get<0>(object)->gender(), x * 66 + 19,
+                        y * 48 + 1);
+                    const std::string& text = i18n::form(
+                        Configuration::getInstance().language(), std::get<0>(object)->species(), x + y * 6, TitleLoader::save->generation());
+                    Gui::text(text, x * 67 + 32, y * 48 + 39, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, 65.0f);
+                }
+                break;
+                case 1:
+                {
+                    Gui::pkm(std::get<1>(object)->species(), x + y * 6, TitleLoader::save->generation(), std::get<1>(object)->gender(), x * 66 + 19,
+                        y * 48 + 1);
+                    const std::string& text = i18n::form(
+                        Configuration::getInstance().language(), std::get<1>(object)->species(), x + y * 6, TitleLoader::save->generation());
+                    Gui::text(text, x * 67 + 32, y * 48 + 39, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, 65.0f);
+                }
+                break;
+            }
         }
     }
 }
@@ -75,7 +93,15 @@ void FormOverlay::update(touchPosition* touch)
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {
-        pkm->alternativeForm(hid.fullIndex());
+        switch (object.index())
+        {
+            case 0:
+                std::get<0>(object)->alternativeForm(hid.fullIndex());
+                break;
+            case 1:
+                std::get<1>(object)->alternativeForm(hid.fullIndex());
+                break;
+        }
         me = nullptr;
         return;
     }

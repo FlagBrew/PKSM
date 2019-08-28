@@ -32,21 +32,34 @@
 #include "PKX.hpp"
 #include "i18n.hpp"
 #include <memory>
+#include <variant>
 
 class FormOverlay : public Overlay
 {
 public:
     FormOverlay(Screen& screen, std::shared_ptr<PKX> pkm, u8 formCount)
-        : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(40, 6), formCount(formCount)
+        : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(pkm), hid(40, 6), formCount(formCount)
     {
         hid.update(40);
         hid.select(pkm->alternativeForm());
     }
     FormOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm, u8 formCount)
-        : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(40, 6), formCount(formCount)
+        : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(pkm), hid(40, 6), formCount(formCount)
     {
         hid.update(40);
         hid.select(pkm->alternativeForm());
+    }
+    FormOverlay(Screen& screen, std::shared_ptr<PKFilter> filter, u8 formCount)
+        : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(filter), hid(40, 6), formCount(formCount)
+    {
+        hid.update(40);
+        hid.select(filter->alternativeForm());
+    }
+    FormOverlay(Overlay& ovly, std::shared_ptr<PKFilter> filter, u8 formCount)
+        : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(filter), hid(40, 6), formCount(formCount)
+    {
+        hid.update(40);
+        hid.select(filter->alternativeForm());
     }
     virtual ~FormOverlay() {}
     void drawTop() const override;
@@ -55,7 +68,7 @@ public:
     void update(touchPosition* touch) override;
 
 private:
-    std::shared_ptr<PKX> pkm;
+    std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>> object;
     HidHorizontal hid;
     u8 formCount;
 };

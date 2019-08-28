@@ -26,6 +26,8 @@
 
 #include "FilterScreen.hpp"
 #include "ClickButton.hpp"
+#include "EnablableToggleButton.hpp"
+#include "FormOverlay.hpp"
 #include "MoveOverlay.hpp"
 #include "SpeciesOverlay.hpp"
 #include "ToggleButton.hpp"
@@ -33,6 +35,10 @@
 
 FilterScreen::FilterScreen(std::shared_ptr<PKFilter> filter) : filter(filter)
 {
+    if (filter->species() == 0)
+    {
+        filter->species(1);
+    }
     for (int i = 0; i < 4; i++)
     {
         buttons.push_back(std::make_unique<ToggleButton>(26, 126 + 24 * i, 24, 24,
@@ -59,10 +65,32 @@ FilterScreen::FilterScreen(std::shared_ptr<PKFilter> filter) : filter(filter)
     buttons.push_back(std::make_unique<ToggleButton>(121, 63, 24, 24,
         [this]() {
             this->filter->speciesEnabled(!this->filter->speciesEnabled());
+            if (!this->filter->speciesEnabled())
+            {
+                this->filter->alternativeFormEnabled(false);
+            }
             return false;
         },
         ui_sheet_checkbox_on_idx, "", 0.0f, 0, ui_sheet_checkbox_off_idx, "", 0.0f, 0, nullptr, true));
     ((ToggleButton*)buttons.back().get())->setState(filter->speciesEnabled());
+
+    buttons.push_back(std::make_unique<ClickButton>(172, 53, 50, 44,
+        [this]() {
+            if (TitleLoader::save->formCount(this->filter->species()) > 1)
+            {
+                this->addOverlay<FormOverlay>(this->filter, TitleLoader::save->formCount(this->filter->species()));
+            }
+            return false;
+        },
+        ui_sheet_icon_party_idx, "", 0.0f, 0));
+    buttons.push_back(std::make_unique<EnablableToggleButton>(242, 63, 24, 24,
+        [this]() {
+            this->filter->alternativeFormEnabled(!this->filter->alternativeFormEnabled());
+            return false;
+        },
+        [this]() { return !this->filter->speciesEnabled(); }, ui_sheet_checkbox_on_idx, "", 0.0f, 0, ui_sheet_checkbox_off_idx, "", 0.0f, 0,
+        ui_sheet_checkbox_blank_idx, "", 0.0f, 0));
+    ((EnablableToggleButton*)buttons.back().get())->setState(filter->alternativeFormEnabled());
 }
 
 void FilterScreen::drawTop() const
@@ -88,6 +116,7 @@ void FilterScreen::drawBottom() const
     }
 
     Gui::pkm(filter->species(), 0, TitleLoader::save->generation(), 0, 58, 60);
+    Gui::pkm(filter->species(), filter->alternativeForm(), TitleLoader::save->generation(), 0, 179, 60);
 
     Gui::text(i18n::localize("FILTER_OPTIONS"), 160, 14, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::text(i18n::localize("B_BACK"), 160, 230.5f, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
@@ -96,7 +125,8 @@ void FilterScreen::drawBottom() const
 
     for (int i = 0; i < 4; i++)
     {
-        Gui::text(i18n::move(Configuration::getInstance().language(), filter->move(i)), 95, 138 + i * 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::CENTER);
+        Gui::text(i18n::move(Configuration::getInstance().language(), filter->move(i)), 95, 138 + i * 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::CENTER);
     }
 }
 
