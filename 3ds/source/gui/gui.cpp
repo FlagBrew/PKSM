@@ -952,6 +952,18 @@ void Gui::sprite(int key, int x, int y)
         C2D_PlainImageTint(&tint, COLOR_DARKGREY, 1.0f);
         C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_stripe_move_editor_row_idx), x, y, 0.5f, &tint);
     }
+    else if (key == ui_sheet_emulated_button_filter_positive_idx)
+    {
+        C2D_ImageTint tint;
+        C2D_PlainImageTint(&tint, C2D_Color32(0x10, 0x87, 0x1e, 255), 1.0f);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_plus_small_idx), x, y, 0.5f, &tint);
+    }
+    else if (key == ui_sheet_emulated_button_filter_negative_idx)
+    {
+        C2D_ImageTint tint;
+        C2D_PlainImageTint(&tint, C2D_Color32(0xbd, 0x30, 0x26, 255), 1.0f);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_minus_small_idx), x, y, 0.5f, &tint);
+    }
     // standard case
     else
     {

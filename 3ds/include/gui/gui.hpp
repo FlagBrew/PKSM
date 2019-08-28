@@ -96,6 +96,9 @@
 #define ui_sheet_emulated_button_lang_enabled_idx 543
 #define ui_sheet_emulated_button_lang_disabled_idx 544
 #define ui_sheet_emulated_stripe_move_grey_idx 545
+// These are both about 18x18
+#define ui_sheet_emulated_button_filter_positive_idx 546
+#define ui_sheet_emulated_button_filter_negative_idx 547
 
 #define FONT_SIZE_18 0.72f
 #define FONT_SIZE_15 0.6f
