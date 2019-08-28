@@ -92,7 +92,7 @@ private:
     // If pickupMode == SWAP, box number & slot pair
     std::pair<int, int> selectDimensions = {0, 0};
     bool currentlySelecting              = false;
-    PKFilter filter;
+    std::shared_ptr<PKFilter> filter     = std::make_shared<PKFilter>();
 };
 
 #endif

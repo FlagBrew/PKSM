@@ -24,31 +24,27 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef STORAGEOVERLAY_HPP
-#define STORAGEOVERLAY_HPP
+#ifndef FILTERSCREEN_HPP
+#define FILTERSCREEN_HPP
 
 #include "Button.hpp"
-#include "Overlay.hpp"
 #include "PKFilter.hpp"
+#include "Screen.hpp"
 #include <memory>
 #include <vector>
 
-class StorageOverlay : public Overlay
+class FilterScreen : public Screen
 {
 public:
-    StorageOverlay(Screen& screen, bool storage, int& boxBox, int& storageBox, std::shared_ptr<PKFilter> filter);
-    StorageOverlay(Overlay& ovly, bool storage, int& boxBox, int& storageBox, std::shared_ptr<PKFilter> filter);
+    FilterScreen(std::shared_ptr<PKFilter> filter);
+    void update(touchPosition* touch) override;
     void drawTop() const override;
     void drawBottom() const override;
-    void update(touchPosition* touch) override;
 
 private:
-    bool selectBox();
-    std::vector<std::unique_ptr<Button>> buttons;
-    bool storage;
-    int& boxBox;
-    int& storageBox;
     std::shared_ptr<PKFilter> filter;
+    std::vector<std::unique_ptr<Button>> buttons;
+    bool justSwitched = true;
 };
 
 #endif

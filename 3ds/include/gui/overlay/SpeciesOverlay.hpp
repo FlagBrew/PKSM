@@ -30,14 +30,18 @@
 #include "Button.hpp"
 #include "HidHorizontal.hpp"
 #include "Overlay.hpp"
+#include "PKFilter.hpp"
 #include "PKX.hpp"
 #include <memory>
+#include <variant>
 
 class SpeciesOverlay : public Overlay
 {
 public:
     SpeciesOverlay(Screen& screen, std::shared_ptr<PKX> pkm);
     SpeciesOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm);
+    SpeciesOverlay(Screen& screen, std::shared_ptr<PKFilter> filter);
+    SpeciesOverlay(Overlay& ovly, std::shared_ptr<PKFilter> filter);
     ~SpeciesOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }
@@ -45,7 +49,7 @@ public:
     void update(touchPosition* touch) override;
 
 private:
-    std::shared_ptr<PKX> pkm;
+    std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>> object;
     void searchBar();
     HidHorizontal hid;
     std::unique_ptr<Button> searchButton;

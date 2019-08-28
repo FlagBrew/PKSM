@@ -219,12 +219,12 @@ std::vector<u16> StringUtils::stringToG4(const std::string& v)
                 codepoint = codepoint << 6 | (v[charIndex + 1] & 0x3F);
                 charIndex += 1;
             }
-            size_t index     = std::distance(G4Chars, std::find(G4Chars, G4Chars + G4TEXT_LENGTH, codepoint));
+            size_t index = std::distance(G4Chars, std::find(G4Chars, G4Chars + G4TEXT_LENGTH, codepoint));
             ret.push_back(index < G4TEXT_LENGTH ? G4Values[index] : 0x0000);
         }
         else
         {
-            size_t index     = std::distance(G4Chars, std::find(G4Chars, G4Chars + G4TEXT_LENGTH, v[charIndex]));
+            size_t index = std::distance(G4Chars, std::find(G4Chars, G4Chars + G4TEXT_LENGTH, v[charIndex]));
             ret.push_back(index < G4TEXT_LENGTH ? G4Values[index] : 0x0000);
         }
     }

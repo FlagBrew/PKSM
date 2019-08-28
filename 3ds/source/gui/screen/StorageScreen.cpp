@@ -257,7 +257,7 @@ void StorageScreen::drawBottom() const
                 std::shared_ptr<PKX> pokemon = TitleLoader::save->pkm(boxBox, row * 6 + column);
                 if (pokemon->species() > 0)
                 {
-                    float blend = *pokemon == filter ? 0.0f : 0.5f;
+                    float blend = *pokemon == *filter ? 0.0f : 0.5f;
                     Gui::pkm(*pokemon, x, y, 1.0f, COLOR_BLACK, blend);
                 }
                 if (TitleLoader::save->generation() == Generation::LGPE)
@@ -291,7 +291,7 @@ void StorageScreen::drawBottom() const
                 }
                 if (moveMon[i])
                 {
-                    float blend = *moveMon[i] == filter ? 0.0f : 0.5f;
+                    float blend = *moveMon[i] == *filter ? 0.0f : 0.5f;
                     Gui::pkm(*moveMon[i], x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
                     Gui::pkm(*moveMon[i], x - 3, y - 5, 1.0f, COLOR_BLACK, blend);
                 }
@@ -324,7 +324,7 @@ void StorageScreen::drawBottom() const
                 }
                 if (moveMon[i])
                 {
-                    float blend = *moveMon[i] == filter ? 0.0f : 0.5f;
+                    float blend = *moveMon[i] == *filter ? 0.0f : 0.5f;
                     Gui::pkm(*moveMon[i], x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
                     Gui::pkm(*moveMon[i], x - 3, y - 5, 1.0f, COLOR_BLACK, blend);
                 }
@@ -382,7 +382,7 @@ void StorageScreen::drawTop() const
             auto pkm = Banks::bank->pkm(storageBox, row * 6 + column);
             if (pkm->species() > 0)
             {
-                float blend = *pkm == filter ? 0.0f : 0.5f;
+                float blend = *pkm == *filter ? 0.0f : 0.5f;
                 Gui::pkm(*pkm, x, y, 1.0f, COLOR_BLACK, blend);
             }
             x += 34;
@@ -413,7 +413,7 @@ void StorageScreen::drawTop() const
                 }
                 if (moveMon[i])
                 {
-                    float blend = *moveMon[i] == filter ? 0.0f : 0.5f;
+                    float blend = *moveMon[i] == *filter ? 0.0f : 0.5f;
                     Gui::pkm(*moveMon[i], x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
                     Gui::pkm(*moveMon[i], x - 3, y - 5, 1.0f, COLOR_BLACK, blend);
                 }
@@ -446,7 +446,7 @@ void StorageScreen::drawTop() const
                 }
                 if (moveMon[i])
                 {
-                    float blend = *moveMon[i] == filter ? 0.0f : 0.5f;
+                    float blend = *moveMon[i] == *filter ? 0.0f : 0.5f;
                     Gui::pkm(*moveMon[i], x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
                     Gui::pkm(*moveMon[i], x - 3, y - 5, 1.0f, COLOR_BLACK, blend);
                 }
@@ -585,7 +585,7 @@ void StorageScreen::update(touchPosition* touch)
     }
     else if (kDown & KEY_START)
     {
-        addOverlay<StorageOverlay>(storageChosen, boxBox, storageBox);
+        addOverlay<StorageOverlay>(storageChosen, boxBox, storageBox, filter);
         justSwitched = true;
     }
     else if (buttonCooldown <= 0)

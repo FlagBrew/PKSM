@@ -2053,17 +2053,17 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
 
 void string_to_gen_4(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    char* string = (char*) Param[0]->Val->Pointer;
-    auto ret = StringUtils::stringToG4(string);
-    u16* data = (u16*)malloc(ret.size() * sizeof(u16));
+    char* string = (char*)Param[0]->Val->Pointer;
+    auto ret     = StringUtils::stringToG4(string);
+    u16* data    = (u16*)malloc(ret.size() * sizeof(u16));
     std::copy(ret.begin(), ret.end(), data);
     ReturnValue->Val->Pointer = data;
 }
 
 void g4_strlen(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    u16* data = (u16*) Param[0]->Val->Pointer;
-    int size = 0;
+    u16* data = (u16*)Param[0]->Val->Pointer;
+    int size  = 0;
     while (data[size] != 0xFFFF)
     {
         size++;

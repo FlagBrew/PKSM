@@ -31,7 +31,7 @@
 #include "loader.hpp"
 
 SpeciesOverlay::SpeciesOverlay(Screen& screen, std::shared_ptr<PKX> pkm)
-    : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(40, 8)
+    : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(pkm), hid(40, 8)
 {
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
@@ -70,7 +70,7 @@ SpeciesOverlay::SpeciesOverlay(Screen& screen, std::shared_ptr<PKX> pkm)
 }
 
 SpeciesOverlay::SpeciesOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm)
-    : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(40, 8)
+    : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(pkm), hid(40, 8)
 {
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
@@ -104,6 +104,84 @@ SpeciesOverlay::SpeciesOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm)
         else
         {
             hid.select(pkm->species() == 0 ? 0 : pkm->species() - 1);
+        }
+    }
+}
+
+SpeciesOverlay::SpeciesOverlay(Screen& screen, std::shared_ptr<PKFilter> filter)
+    : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(filter), hid(40, 8)
+{
+    instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
+    searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
+        [this]() {
+            Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+            return false;
+        },
+        ui_sheet_emulated_box_search_idx, "", 0, 0);
+    if (TitleLoader::save->generation() != Generation::LGPE)
+    {
+        for (int i = 1; i <= TitleLoader::save->maxSpecies(); i++)
+        {
+            dispPkm.push_back(i);
+        }
+        hid.update(dispPkm.size());
+        hid.select(filter->species() == 0 ? 0 : filter->species() - 1);
+    }
+    else
+    {
+        for (size_t i = 1; i <= 151; i++)
+        {
+            dispPkm.push_back(i);
+        }
+        dispPkm.push_back(808);
+        dispPkm.push_back(809);
+        hid.update(dispPkm.size());
+        if (filter->species() == 808 || filter->species() == 809)
+        {
+            hid.select(filter->species() - 657);
+        }
+        else
+        {
+            hid.select(filter->species() == 0 ? 0 : filter->species() - 1);
+        }
+    }
+}
+
+SpeciesOverlay::SpeciesOverlay(Overlay& ovly, std::shared_ptr<PKFilter> filter)
+    : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(filter), hid(40, 8)
+{
+    instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
+    searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
+        [this]() {
+            Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+            return false;
+        },
+        ui_sheet_emulated_box_search_idx, "", 0, 0);
+    if (TitleLoader::save->generation() != Generation::LGPE)
+    {
+        for (int i = 1; i <= TitleLoader::save->maxSpecies(); i++)
+        {
+            dispPkm.push_back(i);
+        }
+        hid.update(dispPkm.size());
+        hid.select(filter->species() == 0 ? 0 : filter->species() - 1);
+    }
+    else
+    {
+        for (size_t i = 1; i <= 151; i++)
+        {
+            dispPkm.push_back(i);
+        }
+        dispPkm.push_back(808);
+        dispPkm.push_back(809);
+        hid.update(dispPkm.size());
+        if (filter->species() == 808 || filter->species() == 809)
+        {
+            hid.select(filter->species() - 657);
+        }
+        else
+        {
+            hid.select(filter->species() == 0 ? 0 : filter->species() - 1);
         }
     }
 }
@@ -217,7 +295,15 @@ void SpeciesOverlay::update(touchPosition* touch)
                 dispPkm.push_back(i);
             }
             hid.update(dispPkm.size());
-            hid.select(pkm->species() == 0 ? 0 : pkm->species() - 1);
+            switch (object.index())
+            {
+                case 0:
+                    hid.select(std::get<0>(object)->species() == 0 ? 0 : std::get<0>(object)->species() - 1);
+                    break;
+                case 1:
+                    hid.select(std::get<1>(object)->species() == 0 ? 0 : std::get<1>(object)->species() - 1);
+                    break;
+            }
         }
         else
         {
@@ -228,13 +314,28 @@ void SpeciesOverlay::update(touchPosition* touch)
             dispPkm.push_back(808);
             dispPkm.push_back(809);
             hid.update(dispPkm.size());
-            if (pkm->species() == 808 || pkm->species() == 809)
+            switch (object.index())
             {
-                hid.select(pkm->species() - 657);
-            }
-            else
-            {
-                hid.select(pkm->species() == 0 ? 0 : pkm->species() - 1);
+                case 0:
+                    if (std::get<0>(object)->species() == 808 || std::get<0>(object)->species() == 809)
+                    {
+                        hid.select(std::get<0>(object)->species() - 657);
+                    }
+                    else
+                    {
+                        hid.select(std::get<0>(object)->species() == 0 ? 0 : std::get<0>(object)->species() - 1);
+                    }
+                    break;
+                case 1:
+                    if (std::get<1>(object)->species() == 808 || std::get<1>(object)->species() == 809)
+                    {
+                        hid.select(std::get<1>(object)->species() - 657);
+                    }
+                    else
+                    {
+                        hid.select(std::get<1>(object)->species() == 0 ? 0 : std::get<1>(object)->species() - 1);
+                    }
+                    break;
             }
         }
 
@@ -251,17 +352,25 @@ void SpeciesOverlay::update(touchPosition* touch)
         if (dispPkm.size() > 0)
         {
             int species = dispPkm[hid.fullIndex()];
-            if (pkm->species() == 0 || !pkm->nicknamed())
+            if (object.index() == 0)
             {
-                pkm->nickname(i18n::species(Configuration::getInstance().language(), species));
+                auto pkm = std::get<0>(object);
+                if (pkm->species() == 0 || !pkm->nicknamed())
+                {
+                    pkm->nickname(i18n::species(Configuration::getInstance().language(), species));
+                }
+                pkm->species((u16)species);
+                pkm->alternativeForm(0);
+                pkm->setAbility(0);
+                pkm->PID(PKX::getRandomPID(pkm->species(), pkm->gender(), pkm->version(), pkm->nature(), pkm->alternativeForm(), pkm->abilityNumber(),
+                    pkm->PID(), pkm->generation()));
             }
-            pkm->species((u16)species);
-            pkm->alternativeForm(0);
-            pkm->setAbility(0);
-            pkm->PID(PKX::getRandomPID(pkm->species(), pkm->gender(), pkm->version(), pkm->nature(), pkm->alternativeForm(), pkm->abilityNumber(),
-                pkm->PID(), pkm->generation()));
+            else
+            {
+                std::get<1>(object)->species((u16)species);
+            }
         }
-        if (pkm->species() != 0)
+        if (object.index() == 1 || std::get<0>(object)->species() != 0)
         {
             me = nullptr;
         }

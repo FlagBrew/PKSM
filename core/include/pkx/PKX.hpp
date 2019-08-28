@@ -33,13 +33,12 @@
 #include <string>
 
 #include "Item.hpp"
+#include "PKFilter.hpp"
 #include "generation.hpp"
 #include "personal.hpp"
 #include "random.hpp"
 #include "types.h"
 #include "utils.hpp"
-
-class PKFilter;
 
 class PKX
 {

@@ -946,6 +946,12 @@ void Gui::sprite(int key, int x, int y)
     {
         drawSolidRect(x - 1, y - 1, 10, 10, COLOR_HIGHBLUE);
     }
+    else if (key == ui_sheet_emulated_stripe_move_grey_idx)
+    {
+        C2D_ImageTint tint;
+        C2D_PlainImageTint(&tint, COLOR_GREY, 1.0f);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_stripe_move_editor_row_idx), x, y, 0.5f, &tint);
+    }
     // standard case
     else
     {

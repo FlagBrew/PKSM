@@ -33,6 +33,7 @@
 #include "Overlay.hpp"
 #include "PK6.hpp"
 #include "PK7.hpp"
+#include "PKFilter.hpp"
 #include "loader.hpp"
 
 class MoveOverlay : public Overlay
@@ -40,14 +41,16 @@ class MoveOverlay : public Overlay
 public:
     MoveOverlay(Screen& screen, std::shared_ptr<PKX> pkm, int moveIndex);
     MoveOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm, int moveIndex);
-    ~MoveOverlay() { pkm->fixMoves(); }
+    MoveOverlay(Screen& screen, std::shared_ptr<PKFilter> filter, int moveIndex);
+    MoveOverlay(Overlay& ovly, std::shared_ptr<PKFilter> filter, int moveIndex);
+    ~MoveOverlay();
     void drawTop() const override;
     bool replacesTop() const override { return true; }
     void drawBottom() const override;
     void update(touchPosition* touch) override;
 
 private:
-    std::shared_ptr<PKX> pkm;
+    std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>> object;
     void searchBar();
     int moveIndex;
     HidVertical hid;

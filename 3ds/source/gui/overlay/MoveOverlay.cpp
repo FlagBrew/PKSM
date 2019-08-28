@@ -62,7 +62,7 @@ namespace
 }
 
 MoveOverlay::MoveOverlay(Screen& screen, std::shared_ptr<PKX> pkm, int moveIndex)
-    : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), moveIndex(moveIndex), hid(40, 2)
+    : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(pkm), moveIndex(moveIndex), hid(40, 2)
 {
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     const std::vector<std::string>& rawMoves = i18n::rawMoves(Configuration::getInstance().language());
@@ -111,7 +111,7 @@ MoveOverlay::MoveOverlay(Screen& screen, std::shared_ptr<PKX> pkm, int moveIndex
 }
 
 MoveOverlay::MoveOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm, int moveIndex)
-    : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), moveIndex(moveIndex), hid(40, 2)
+    : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(pkm), moveIndex(moveIndex), hid(40, 2)
 {
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     const std::vector<std::string>& rawMoves = i18n::rawMoves(Configuration::getInstance().language());
@@ -157,6 +157,84 @@ MoveOverlay::MoveOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm, int moveIndex)
             return false;
         },
         ui_sheet_emulated_box_search_idx, "", 0, 0);
+}
+
+MoveOverlay::MoveOverlay(Screen& screen, std::shared_ptr<PKFilter> filter, int moveIndex)
+    : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(filter), moveIndex(moveIndex), hid(40, 2)
+{
+    instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
+    const std::vector<std::string>& rawMoves = i18n::rawMoves(Configuration::getInstance().language());
+    for (int i = 1; i <= TitleLoader::save->maxMove(); i++)
+    {
+        if (i >= 622 && i <= 658)
+            continue;
+        moves.emplace_back(i, rawMoves[i]);
+    }
+    static const auto less = [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2) {
+        return pair1.second < pair2.second;
+    };
+    std::sort(moves.begin(), moves.end(), less);
+    moves.insert(moves.begin(), {0, rawMoves[0]});
+    validMoves = moves;
+
+    hid.update(moves.size());
+    if (moveIndex < 4)
+    {
+        hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), filter->move(moveIndex))));
+    }
+    else
+    {
+        hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), filter->relearnMove(moveIndex - 4))));
+    }
+    searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
+        [this]() {
+            Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+            return false;
+        },
+        ui_sheet_emulated_box_search_idx, "", 0, 0);
+}
+
+MoveOverlay::MoveOverlay(Overlay& ovly, std::shared_ptr<PKFilter> filter, int moveIndex)
+    : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(filter), moveIndex(moveIndex), hid(40, 2)
+{
+    instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
+    const std::vector<std::string>& rawMoves = i18n::rawMoves(Configuration::getInstance().language());
+    for (int i = 1; i <= TitleLoader::save->maxMove(); i++)
+    {
+        if (i >= 622 && i <= 658)
+            continue;
+        moves.emplace_back(i, rawMoves[i]);
+    }
+    static const auto less = [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2) {
+        return pair1.second < pair2.second;
+    };
+    std::sort(moves.begin(), moves.end(), less);
+    moves.insert(moves.begin(), {0, rawMoves[0]});
+    validMoves = moves;
+
+    hid.update(moves.size());
+    if (moveIndex < 4)
+    {
+        hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), filter->move(moveIndex))));
+    }
+    else
+    {
+        hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), filter->relearnMove(moveIndex - 4))));
+    }
+    searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
+        [this]() {
+            Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+            return false;
+        },
+        ui_sheet_emulated_box_search_idx, "", 0, 0);
+}
+
+MoveOverlay::~MoveOverlay()
+{
+    if (object.index() == 0)
+    {
+        std::get<0>(object)->fixMoves();
+    }
 }
 
 void MoveOverlay::drawBottom() const
@@ -242,21 +320,37 @@ void MoveOverlay::update(touchPosition* touch)
     {
         if (moveIndex < 4)
         {
-            pkm->move(moveIndex, (u16)moves[hid.fullIndex()].first);
+            switch (object.index())
+            {
+                case 0:
+                    std::get<0>(object)->move(moveIndex, (u16)moves[hid.fullIndex()].first);
+                    break;
+                case 1:
+                    std::get<1>(object)->move(moveIndex, (u16)moves[hid.fullIndex()].first);
+                    break;
+            }
         }
         else
         {
-            if (pkm->generation() == Generation::SIX)
+            if (object.index() == 0)
             {
-                ((PK6*)pkm.get())->relearnMove(moveIndex - 4, (u16)moves[hid.fullIndex()].first);
+                auto pkm = std::get<1>(object);
+                if (pkm->generation() == Generation::SIX)
+                {
+                    ((PK6*)pkm.get())->relearnMove(moveIndex - 4, (u16)moves[hid.fullIndex()].first);
+                }
+                else if (pkm->generation() == Generation::SEVEN)
+                {
+                    ((PK7*)pkm.get())->relearnMove(moveIndex - 4, (u16)moves[hid.fullIndex()].first);
+                }
+                else if (pkm->generation() == Generation::LGPE)
+                {
+                    ((PB7*)pkm.get())->relearnMove(moveIndex - 4, (u16)moves[hid.fullIndex()].first);
+                }
             }
-            else if (pkm->generation() == Generation::SEVEN)
+            else
             {
-                ((PK7*)pkm.get())->relearnMove(moveIndex - 4, (u16)moves[hid.fullIndex()].first);
-            }
-            else if (pkm->generation() == Generation::LGPE)
-            {
-                ((PB7*)pkm.get())->relearnMove(moveIndex - 4, (u16)moves[hid.fullIndex()].first);
+                std::get<1>(object)->relearnMove(moveIndex - 4, (u16)moves[hid.fullIndex()].first);
             }
         }
         me = nullptr;
