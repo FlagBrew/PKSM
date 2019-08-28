@@ -99,6 +99,7 @@
 // These are both about 18x18
 #define ui_sheet_emulated_button_filter_positive_idx 546
 #define ui_sheet_emulated_button_filter_negative_idx 547
+#define ui_sheet_emulated_button_tab_unselected_idx 548
 
 #define FONT_SIZE_18 0.72f
 #define FONT_SIZE_15 0.6f

@@ -25,6 +25,7 @@
  */
 
 #include "Button.hpp"
+#include "ToggleButton.hpp"
 #include "Configuration.hpp"
 #include "Screen.hpp"
 #include "i18n.hpp"
@@ -46,11 +47,12 @@ public:
     void drawBottom(void) const override;
 
 private:
-    std::array<std::unique_ptr<Button>, 3> tabs;
+    std::vector<std::unique_ptr<ToggleButton>> tabs;
     std::array<std::vector<std::unique_ptr<Button>>, 4> tabButtons;
     std::bitset<4> patronMenu;
     int currentTab = 0;
     void back(void);
+    void initButtons(void);
     bool justSwitched       = true;
     bool showBackupsChanged = false;
     bool useExtDataChanged  = false;

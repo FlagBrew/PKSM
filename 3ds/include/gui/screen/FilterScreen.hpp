@@ -43,7 +43,9 @@ public:
 
 private:
     std::shared_ptr<PKFilter> filter;
-    std::vector<std::unique_ptr<Button>> buttons;
+    int tab = 0;
+    std::vector<std::unique_ptr<Button>> tabButtons;
+    std::vector<std::vector<std::unique_ptr<Button>>> buttons;
     bool justSwitched = true;
 };
 
