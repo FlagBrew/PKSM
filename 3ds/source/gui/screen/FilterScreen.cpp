@@ -109,7 +109,7 @@ FilterScreen::FilterScreen(std::shared_ptr<PKFilter> filter) : filter(filter)
         ui_sheet_checkbox_blank_idx, "", 0.0f, 0));
     ((EnablableToggleButton*)buttons.back().get())->setState(filter->alternativeFormEnabled());
 
-    buttons.push_back(std::make_unique<ToggleButton>(105, 68, 13, 13, [this]() {
+    buttons.push_back(std::make_unique<ToggleButton>(226, 68, 13, 13, [this]() {
         this->filter->alternativeFormInversed(!this->filter->alternativeFormInversed());
         return false;
     }, ui_sheet_emulated_button_filter_positive_idx, "", 0.0f, 0, ui_sheet_emulated_button_filter_negative_idx, "", 0.0f, 0, nullptr, true));
