@@ -444,61 +444,61 @@ std::shared_ptr<PKX> PKX::getPKM(Generation gen, u8* data, bool ekx, bool party)
 
 bool PKX::operator==(const PKFilter& filter) const
 {
-    if (filter.generationEnabled() && generation() != filter.generation())
+    if (filter.generationEnabled() && (filter.generationInversed() != (generation() != filter.generation())))
     {
         return false;
     }
-    if (filter.speciesEnabled() && species() != filter.species())
+    if (filter.speciesEnabled() && (filter.speciesInversed() != (species() != filter.species())))
     {
         return false;
     }
-    if (filter.heldItemEnabled() && heldItem() != filter.heldItem())
+    if (filter.heldItemEnabled() && (filter.heldItemInversed() != (heldItem() != filter.heldItem())))
     {
         return false;
     }
-    if (filter.levelEnabled() && level() != filter.level())
+    if (filter.levelEnabled() && (filter.levelInversed() != (level() != filter.level())))
     {
         return false;
     }
-    if (filter.abilityEnabled() && ability() != filter.ability())
+    if (filter.abilityEnabled() && (filter.abilityInversed() != (ability() != filter.ability())))
     {
         return false;
     }
-    if (filter.formatTIDEnabled() && formatTID() != filter.formatTID())
+    if (filter.formatTIDEnabled() && (filter.formatTIDInversed() != (formatTID() != filter.formatTID())))
     {
         return false;
     }
-    if (filter.formatSIDEnabled() && formatSID() != filter.formatSID())
+    if (filter.formatSIDEnabled() && (filter.formatSIDInversed() != (formatSID() != filter.formatSID())))
     {
         return false;
     }
-    if (filter.otNameEnabled() && otName() != filter.otName())
+    if (filter.otNameEnabled() && (filter.otNameInversed() != (otName() != filter.otName())))
     {
         return false;
     }
-    if (filter.natureEnabled() && nature() != filter.nature())
+    if (filter.natureEnabled() && (filter.natureInversed() != (nature() != filter.nature())))
     {
         return false;
     }
-    if (filter.genderEnabled() && gender() != filter.gender())
+    if (filter.genderEnabled() && (filter.genderInversed() != (gender() != filter.gender())))
     {
         return false;
     }
-    if (filter.ballEnabled() && ball() != filter.ball())
+    if (filter.ballEnabled() && (filter.ballInversed() != (ball() != filter.ball())))
     {
         return false;
     }
-    if (filter.languageEnabled() && language() != filter.language())
+    if (filter.languageEnabled() && (filter.languageInversed() != (language() != filter.language())))
     {
         return false;
     }
-    if (filter.eggEnabled() && egg() != filter.egg())
+    if (filter.eggEnabled() && (filter.eggInversed() != (egg() != filter.egg())))
     {
         return false;
     }
     for (int i = 0; i < 4; i++)
     {
-        if (filter.moveEnabled(i) && move(i) != filter.move(i))
+        if (filter.moveEnabled(i) && (filter.moveInversed(i) != (move(i) != filter.move(i))))
         {
             return false;
         }
@@ -510,19 +510,19 @@ bool PKX::operator==(const PKFilter& filter) const
                 case Generation::FIVE:
                     return false;
                 case Generation::SIX:
-                    if (filter.relearnMove(i) != ((const PK6*)this)->relearnMove(i))
+                    if (filter.relearnMoveInversed(i) != (filter.relearnMove(i) != ((const PK6*)this)->relearnMove(i)))
                     {
                         return false;
                     }
                     break;
                 case Generation::SEVEN:
-                    if (filter.relearnMove(i) != ((const PK7*)this)->relearnMove(i))
+                    if (filter.relearnMoveInversed(i) != (filter.relearnMove(i) != ((const PK7*)this)->relearnMove(i)))
                     {
                         return false;
                     }
                     break;
                 case Generation::LGPE:
-                    if (filter.relearnMove(i) != ((const PB7*)this)->relearnMove(i))
+                    if (filter.relearnMoveInversed(i) != (filter.relearnMove(i) != ((const PB7*)this)->relearnMove(i)))
                     {
                         return false;
                     }
@@ -534,16 +534,16 @@ bool PKX::operator==(const PKFilter& filter) const
     }
     for (int i = 0; i < 6; i++)
     {
-        if (filter.ivEnabled(i) && iv(i) != filter.iv(i))
+        if (filter.ivEnabled(i) && (filter.ivInversed(i) != (iv(i) != filter.iv(i))))
         {
             return false;
         }
     }
-    if (filter.shinyEnabled() && filter.shiny() != shiny())
+    if (filter.shinyEnabled() && (filter.shinyInversed() != (filter.shiny() != shiny())))
     {
         return false;
     }
-    if (filter.alternativeFormEnabled() && filter.alternativeForm() != alternativeForm())
+    if (filter.alternativeFormEnabled() && (filter.alternativeFormInversed() != (filter.alternativeForm() != alternativeForm())))
     {
         return false;
     }
