@@ -1,2 +1,2 @@
-000|—
-001|Andorra
+0|—
+1|Andorra

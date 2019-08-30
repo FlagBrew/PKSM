@@ -1,244 +1,244 @@
-0000|－－－－－－－－－－
-0002|Mysteriöser Ort
-0004|Ferner Ort
-0006|Route 1
-0007|Hauholi-Stadtrand
-0008|Route 1
-000a|Route 3
-000c|Route 2
-000e|Kala’e-Bucht
-0010|Meer von Mele-Mele
-0012|Hauholi City
-0013|Strandpromenade
-0014|Hauholi City
-0015|Einkaufsviertel
-0016|Hauholi City
-0017|Hafen
-0018|Lili’i
-001a|Mahalo-Bergpfad
-001c|Mahalo-Bergpfad
-001d|Hängebrücke
-001e|Ruinen des Krieges
-0020|Ruinen des Krieges
-0021|[~ 33]
-0022|Tenkarat-Hügel
-0024|Tenkarat-Hügel
-0025|Zentraler Felskessel
-0026|Hauholi-Friedhof
-0028|Mele-Mele-Blumenmeer
-002a|Meereshöhle
-002c|Beerenfelder
-002e|Vegetationshöhle
-002f|Prüfungsbereich
-0030|Vegetationshöhle
-0031|Herrscherbereich
-0032|Route 4
-0034|Route 5
-0036|Route 6
-0038|Route 7
-003a|Route 8
-003c|Route 9
-003e|Hanohano-Resort
-0040|Hanohano-Strand
-0042|Akala-Blumenmeer
-0044|Ohana
-0046|Kantai City
-0048|Konikoni City
-004a|Avenue Royale
-004c|Hügel des Gedenkens
-004e|Ohana-Farm
-0050|[~ 80]
-0052|Wela-Vulkanpark
-0054|Wela-Vulkanpark
-0055|Herrscherbereich
-0056|Plätscherhügel
-0058|Plätscherhügel
-0059|Herrscherbereich
-005a|Schattendschungel
-005c|Ruinen des Lebens
-005e|Akala-Küstenstreifen
-0060|[~ 96]
-0061|[~ 97]
-0062|[~ 98]
-0063|[~ 99]
-0064|Digda-Tunnel
-0066|Hanohano-Resort
-0068|Dome Royale
-006a|Route 10
-006c|Route 11
-006e|Strand von Ula-Ula
-0070|Route 13
-0072|Dorf der Kapu
-0074|Route 15 (Wasserweg)
-0076|Route 16
-0078|Route 17
-007a|Route 12
-007c|Haina-Wüste
-007e|Route 14
-0080|Ula-Ula-Blumenmeer
-0082|Po’u
-0084|Malihe City
-0086|Malihe-Ziergarten
-0088|Hokulani-Berg
-008a|Glühberg
-008c|Ruinen des Gedeihens
-008e|Sonnenkreis-See
-0090|Mondscheiben-See
-0092|Mount Lanakila
-0094|Lottervilla
-0096|Schnäppchenparadies
-0097|Verlassener Laden
-0098|Hokulani-Sternwarte
-009a|Pokémon-Liga
-009c|Poni-Blumenmeer
-009e|Wildnis von Poni
-00a0|Alter Pfad von Poni
-00a2|Felsenküste von Poni
-00a4|Wald von Poni
-00a6|Ebene von Poni
-00a8|Küste von Poni
-00aa|Beschwerlicher Pfad
-00ac|Dorf des Seevolkes
-00ae|Canyon von Poni
-00b0|Sonnenkreis-Podium
-00b2|Mondscheiben-Podium
-00b4|Ruinen der Heimkehr
-00b6|Finalhöhle
-00b8|Kokowei-Eiland
-00ba|Kampfbaum
-00bc|Æther-Paradies
-00be|Ultratiefsee
-00c0|Malihe City
-00c1|Kap am Stadtrand
-00c2|Mele-Mele
-00c3|Akala
-00c4|Ula-Ula
-00c5|Poni
-00c6|Big Wave Beach
-00c8|Strandhöhle
-00ca|Kantai-Strand
-00cc|Strand von Poni
-00ce|Ultrametropolis
-00d0|Metropo Tower
-00d2|Ultrakraftwerk
-00d4|Ultratal
-00d6|Ultrawüste
-00d8|Ultrawald
-00da|Ultradschungel
-00dc|Ultrawolkenkratzer
-00de|Ultradimension Zero
-00e0|Rocket-Schloss
-00e2|Tunnel in der Ebene
-00e4|Pikachu-Tal
-00e6|Route 1
-00e7|Trainerschule
-00e8|Spaltberg-Tunnel
-7531|Link-Tausch
-7532|Link-Tausch
-7533|Kanto-Region
-7534|Johto-Region
-7535|Hoenn-Region
-7536|Sinnoh-Region
-7537|Fernes Land
-7538|－－－－－－－－－－
-7539|Einall-Region
-753a|Kalos-Region
-753b|Pokémon-Link
-753c|Pokémon GO
-753d|Kanto-Region
-753e|Hoenn-Region
-753f|Alola-Region
-7540|Pokémon-Resort
-7541|Johto-Region
-9c41|Netter Ort
-9c42|Ferner Ort
-9c43|Pokémon-Film
-9c44|Pokémon-Film 2016
-9c45|Pokémon-Film 2017
-9c46|Pokémon-Film 2018
-9c47|Pokémon-Film 2019
-9c48|Pokémon-Film 2020
-9c49|Pokémon-Film 2021
-9c4a|Pokémon Center
-9c4b|Pokémon-Zeichentrickserie
-9c4c|Pokémon Center MEGA TOKYO
-9c4d|Pokémon Center Osaka
-9c4e|Pokémon Center Fukuoka
-9c4f|Pokémon Center Nagoya
-9c50|Pokémon Center Sapporo
-9c51|Pokémon Center Yokohama
-9c52|Pokémon Center Tohoku
-9c53|Pokémon Center TOKYO-BAY
-9c54|Pokémon Center Hiroshima
-9c55|Pokémon Center Kyoto
-9c56|Pokémon Ctr. SKYTREE TOWN
-9c57|Pokémon Store
-9c58|WCS
-9c59|WCS 2016
-9c5a|WCS 2017
-9c5b|WCS 2018
-9c5c|WCS 2019
-9c5d|WCS 2020
-9c5e|WCS 2021
-9c5f|Worlds
-9c60|Worlds 2016
-9c61|Worlds 2017
-9c62|Worlds 2018
-9c63|Worlds 2019
-9c64|Worlds 2020
-9c65|Worlds 2021
-9c66|VGE
-9c67|VGE 2016
-9c68|VGE 2017
-9c69|VGE 2018
-9c6a|VGE 2019
-9c6b|VGE 2020
-9c6c|VGE 2021
-9c6d|Pokémon-Veranstaltung
-9c6e|Kampfturnier
-9c6f|Videospiel-Veranstaltung
-9c70|Pokémon Daisuki Club
-9c71|Pokémon-TV-Programm
-9c72|Konzert
-9c73|Online-Geschenk
-9c74|PGL
-9c75|Pokémon-Veranstaltung 2016
-9c76|Pokémon-Veranstaltung 2017
-9c77|Pokémon-Veranstaltung 2018
-9c78|Pokémon-Veranstaltung 2019
-9c79|Pokémon-Veranstaltung 2020
-9c7a|Pokémon-Veranstaltung 2021
-9c7b|Pokémon-Veranstaltung
-9c7c|Pokémon-Veranstaltung 2016
-9c7d|Pokémon-Veranstaltung 2017
-9c7e|Pokémon-Veranstaltung 2018
-9c7f|Pokémon-Veranstaltung 2019
-9c80|Pokémon-Veranstaltung 2020
-9c81|Pokémon-Veranstaltung 2021
-9c82|PokéPark
-9c83|PokéPark 2016
-9c84|PokéPark 2017
-9c85|PokéPark 2018
-9c86|PokéPark 2019
-9c87|PokéPark 2020
-9c88|PokéPark 2021
-9c89|Veranstaltung
-9c8a|GAME FREAK
-9c8b|Stadion
-9c8c|VGC
-9c8d|VGC 2016
-9c8e|VGC 2017
-9c8f|VGC 2018
-9c90|VGC 2019
-9c91|VGC 2020
-9c92|VGC 2021
-9c93|Virtual Console
-9c94|Pokémon GO
-9c95|Pokémon Bank
-9c96|Pokémon-Geschäft
-9c97|Demo-Version
-9c98|Pokémon Trainer Club
-ea61|Ferne Person
-ea62|Hortleiterinnen
-ea63|Schatzsucher
-ea64|Dame der Heißen Quellen
+0x0000|－－－－－－－－－－
+0x0002|Mysteriöser Ort
+0x0004|Ferner Ort
+0x0006|Route 1
+0x0007|Hauholi-Stadtrand
+0x0008|Route 1
+0x000a|Route 3
+0x000c|Route 2
+0x000e|Kala’e-Bucht
+0x0010|Meer von Mele-Mele
+0x0012|Hauholi City
+0x0013|Strandpromenade
+0x0014|Hauholi City
+0x0015|Einkaufsviertel
+0x0016|Hauholi City
+0x0017|Hafen
+0x0018|Lili’i
+0x001a|Mahalo-Bergpfad
+0x001c|Mahalo-Bergpfad
+0x001d|Hängebrücke
+0x001e|Ruinen des Krieges
+0x0020|Ruinen des Krieges
+0x0021|[~ 33]
+0x0022|Tenkarat-Hügel
+0x0024|Tenkarat-Hügel
+0x0025|Zentraler Felskessel
+0x0026|Hauholi-Friedhof
+0x0028|Mele-Mele-Blumenmeer
+0x002a|Meereshöhle
+0x002c|Beerenfelder
+0x002e|Vegetationshöhle
+0x002f|Prüfungsbereich
+0x0030|Vegetationshöhle
+0x0031|Herrscherbereich
+0x0032|Route 4
+0x0034|Route 5
+0x0036|Route 6
+0x0038|Route 7
+0x003a|Route 8
+0x003c|Route 9
+0x003e|Hanohano-Resort
+0x0040|Hanohano-Strand
+0x0042|Akala-Blumenmeer
+0x0044|Ohana
+0x0046|Kantai City
+0x0048|Konikoni City
+0x004a|Avenue Royale
+0x004c|Hügel des Gedenkens
+0x004e|Ohana-Farm
+0x0050|[~ 80]
+0x0052|Wela-Vulkanpark
+0x0054|Wela-Vulkanpark
+0x0055|Herrscherbereich
+0x0056|Plätscherhügel
+0x0058|Plätscherhügel
+0x0059|Herrscherbereich
+0x005a|Schattendschungel
+0x005c|Ruinen des Lebens
+0x005e|Akala-Küstenstreifen
+0x0060|[~ 96]
+0x0061|[~ 97]
+0x0062|[~ 98]
+0x0063|[~ 99]
+0x0064|Digda-Tunnel
+0x0066|Hanohano-Resort
+0x0068|Dome Royale
+0x006a|Route 10
+0x006c|Route 11
+0x006e|Strand von Ula-Ula
+0x0070|Route 13
+0x0072|Dorf der Kapu
+0x0074|Route 15 (Wasserweg)
+0x0076|Route 16
+0x0078|Route 17
+0x007a|Route 12
+0x007c|Haina-Wüste
+0x007e|Route 14
+0x0080|Ula-Ula-Blumenmeer
+0x0082|Po’u
+0x0084|Malihe City
+0x0086|Malihe-Ziergarten
+0x0088|Hokulani-Berg
+0x008a|Glühberg
+0x008c|Ruinen des Gedeihens
+0x008e|Sonnenkreis-See
+0x0090|Mondscheiben-See
+0x0092|Mount Lanakila
+0x0094|Lottervilla
+0x0096|Schnäppchenparadies
+0x0097|Verlassener Laden
+0x0098|Hokulani-Sternwarte
+0x009a|Pokémon-Liga
+0x009c|Poni-Blumenmeer
+0x009e|Wildnis von Poni
+0x00a0|Alter Pfad von Poni
+0x00a2|Felsenküste von Poni
+0x00a4|Wald von Poni
+0x00a6|Ebene von Poni
+0x00a8|Küste von Poni
+0x00aa|Beschwerlicher Pfad
+0x00ac|Dorf des Seevolkes
+0x00ae|Canyon von Poni
+0x00b0|Sonnenkreis-Podium
+0x00b2|Mondscheiben-Podium
+0x00b4|Ruinen der Heimkehr
+0x00b6|Finalhöhle
+0x00b8|Kokowei-Eiland
+0x00ba|Kampfbaum
+0x00bc|Æther-Paradies
+0x00be|Ultratiefsee
+0x00c0|Malihe City
+0x00c1|Kap am Stadtrand
+0x00c2|Mele-Mele
+0x00c3|Akala
+0x00c4|Ula-Ula
+0x00c5|Poni
+0x00c6|Big Wave Beach
+0x00c8|Strandhöhle
+0x00ca|Kantai-Strand
+0x00cc|Strand von Poni
+0x00ce|Ultrametropolis
+0x00d0|Metropo Tower
+0x00d2|Ultrakraftwerk
+0x00d4|Ultratal
+0x00d6|Ultrawüste
+0x00d8|Ultrawald
+0x00da|Ultradschungel
+0x00dc|Ultrawolkenkratzer
+0x00de|Ultradimension Zero
+0x00e0|Rocket-Schloss
+0x00e2|Tunnel in der Ebene
+0x00e4|Pikachu-Tal
+0x00e6|Route 1
+0x00e7|Trainerschule
+0x00e8|Spaltberg-Tunnel
+0x7531|Link-Tausch
+0x7532|Link-Tausch
+0x7533|Kanto-Region
+0x7534|Johto-Region
+0x7535|Hoenn-Region
+0x7536|Sinnoh-Region
+0x7537|Fernes Land
+0x7538|－－－－－－－－－－
+0x7539|Einall-Region
+0x753a|Kalos-Region
+0x753b|Pokémon-Link
+0x753c|Pokémon GO
+0x753d|Kanto-Region
+0x753e|Hoenn-Region
+0x753f|Alola-Region
+0x7540|Pokémon-Resort
+0x7541|Johto-Region
+0x9c41|Netter Ort
+0x9c42|Ferner Ort
+0x9c43|Pokémon-Film
+0x9c44|Pokémon-Film 2016
+0x9c45|Pokémon-Film 2017
+0x9c46|Pokémon-Film 2018
+0x9c47|Pokémon-Film 2019
+0x9c48|Pokémon-Film 2020
+0x9c49|Pokémon-Film 2021
+0x9c4a|Pokémon Center
+0x9c4b|Pokémon-Zeichentrickserie
+0x9c4c|Pokémon Center MEGA TOKYO
+0x9c4d|Pokémon Center Osaka
+0x9c4e|Pokémon Center Fukuoka
+0x9c4f|Pokémon Center Nagoya
+0x9c50|Pokémon Center Sapporo
+0x9c51|Pokémon Center Yokohama
+0x9c52|Pokémon Center Tohoku
+0x9c53|Pokémon Center TOKYO-BAY
+0x9c54|Pokémon Center Hiroshima
+0x9c55|Pokémon Center Kyoto
+0x9c56|Pokémon Ctr. SKYTREE TOWN
+0x9c57|Pokémon Store
+0x9c58|WCS
+0x9c59|WCS 2016
+0x9c5a|WCS 2017
+0x9c5b|WCS 2018
+0x9c5c|WCS 2019
+0x9c5d|WCS 2020
+0x9c5e|WCS 2021
+0x9c5f|Worlds
+0x9c60|Worlds 2016
+0x9c61|Worlds 2017
+0x9c62|Worlds 2018
+0x9c63|Worlds 2019
+0x9c64|Worlds 2020
+0x9c65|Worlds 2021
+0x9c66|VGE
+0x9c67|VGE 2016
+0x9c68|VGE 2017
+0x9c69|VGE 2018
+0x9c6a|VGE 2019
+0x9c6b|VGE 2020
+0x9c6c|VGE 2021
+0x9c6d|Pokémon-Veranstaltung
+0x9c6e|Kampfturnier
+0x9c6f|Videospiel-Veranstaltung
+0x9c70|Pokémon Daisuki Club
+0x9c71|Pokémon-TV-Programm
+0x9c72|Konzert
+0x9c73|Online-Geschenk
+0x9c74|PGL
+0x9c75|Pokémon-Veranstaltung 2016
+0x9c76|Pokémon-Veranstaltung 2017
+0x9c77|Pokémon-Veranstaltung 2018
+0x9c78|Pokémon-Veranstaltung 2019
+0x9c79|Pokémon-Veranstaltung 2020
+0x9c7a|Pokémon-Veranstaltung 2021
+0x9c7b|Pokémon-Veranstaltung
+0x9c7c|Pokémon-Veranstaltung 2016
+0x9c7d|Pokémon-Veranstaltung 2017
+0x9c7e|Pokémon-Veranstaltung 2018
+0x9c7f|Pokémon-Veranstaltung 2019
+0x9c80|Pokémon-Veranstaltung 2020
+0x9c81|Pokémon-Veranstaltung 2021
+0x9c82|PokéPark
+0x9c83|PokéPark 2016
+0x9c84|PokéPark 2017
+0x9c85|PokéPark 2018
+0x9c86|PokéPark 2019
+0x9c87|PokéPark 2020
+0x9c88|PokéPark 2021
+0x9c89|Veranstaltung
+0x9c8a|GAME FREAK
+0x9c8b|Stadion
+0x9c8c|VGC
+0x9c8d|VGC 2016
+0x9c8e|VGC 2017
+0x9c8f|VGC 2018
+0x9c90|VGC 2019
+0x9c91|VGC 2020
+0x9c92|VGC 2021
+0x9c93|Virtual Console
+0x9c94|Pokémon GO
+0x9c95|Pokémon Bank
+0x9c96|Pokémon-Geschäft
+0x9c97|Demo-Version
+0x9c98|Pokémon Trainer Club
+0xea61|Ferne Person
+0xea62|Hortleiterinnen
+0xea63|Schatzsucher
+0xea64|Dame der Heißen Quellen

@@ -1,21 +1,21 @@
-000|—
-002|Distrito de Lisboa
-007|Madeira
-008|Azores
-009|Distrito de Aveiro
-010|Distrito de Beja
-011|Distrito de Braga
-012|Distrito de Braganza
-013|Distrito de Castelo Branco
-014|Distrito de Coímbra
-015|Distrito de Évora
-016|Distrito de Faro
-017|Distrito de Guarda
-018|Distrito de Leiria
-019|Distrito de Portalegre
-020|Distrito de Oporto
-021|Distrito de Santarém
-022|Distrito de Setúbal
-023|Distrito de Viana do Castelo
-024|Distrito de Vila Real
-025|Distrito de Viseu
+0|—
+2|Distrito de Lisboa
+7|Madeira
+8|Azores
+9|Distrito de Aveiro
+10|Distrito de Beja
+11|Distrito de Braga
+12|Distrito de Braganza
+13|Distrito de Castelo Branco
+14|Distrito de Coímbra
+15|Distrito de Évora
+16|Distrito de Faro
+17|Distrito de Guarda
+18|Distrito de Leiria
+19|Distrito de Portalegre
+20|Distrito de Oporto
+21|Distrito de Santarém
+22|Distrito de Setúbal
+23|Distrito de Viana do Castelo
+24|Distrito de Vila Real
+25|Distrito de Viseu

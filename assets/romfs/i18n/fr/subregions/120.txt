@@ -1,2 +1,2 @@
-000|—
-001|Djibouti
+0|—
+1|Djibouti

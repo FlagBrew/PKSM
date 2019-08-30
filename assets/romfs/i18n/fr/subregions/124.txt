@@ -1,2 +1,2 @@
-000|—
-001|Guernesey
+0|—
+1|Guernesey

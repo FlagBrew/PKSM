@@ -1,21 +1,21 @@
-000|—
-002|Budapest
-003|Bács-Kiskun County
-004|Baranya County
-005|Békés County
-006|Borsod-Abaúj-Zemplén County
-007|Csongrád County
-008|Fejér County
-009|Győr-Moson-Sopron County
-010|Hajdú-Bihar County
-011|Heves County
-012|Jász-Nagykun-Szolnok County
-013|Komárom-Esztergom County
-014|Nógrád County
-015|Pest County
-016|Somogy County
-017|Szabolcs-Szatmár-Bereg County
-018|Tolna County
-019|Vas County
-020|Veszprém County
-021|Zala County
+0|—
+2|Budapest
+3|Bács-Kiskun County
+4|Baranya County
+5|Békés County
+6|Borsod-Abaúj-Zemplén County
+7|Csongrád County
+8|Fejér County
+9|Győr-Moson-Sopron County
+10|Hajdú-Bihar County
+11|Heves County
+12|Jász-Nagykun-Szolnok County
+13|Komárom-Esztergom County
+14|Nógrád County
+15|Pest County
+16|Somogy County
+17|Szabolcs-Szatmár-Bereg County
+18|Tolna County
+19|Vas County
+20|Veszprém County
+21|Zala County

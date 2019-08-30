@@ -1,2 +1,2 @@
-000|—
-001|Mosambik
+0|—
+1|Mosambik

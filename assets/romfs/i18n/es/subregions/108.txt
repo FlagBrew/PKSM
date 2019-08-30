@@ -1,27 +1,27 @@
-000|—
-002|Berna
-004|Argovia
-005|Ciudad de Basilea
-006|Friburgo
-007|Ginebra
-008|Glaris
-009|Grisones
-010|Jura
-011|Lucerna
-012|Neuchâtel
-013|Obwalden
-014|Sankt Gallen
-015|Schaffhausen
-016|Schwyz
-017|Soleura
-018|Turgovia
-019|Tesino
-020|Uri
-021|Valais
-022|Vaud
-023|Zug
-024|Zúrich
-025|Appenzell Rodas Exteriores
-026|Appenzell Rodas Interiores
-027|Basilea-Campiña
-028|Nidwalden
+0|—
+2|Berna
+4|Argovia
+5|Ciudad de Basilea
+6|Friburgo
+7|Ginebra
+8|Glaris
+9|Grisones
+10|Jura
+11|Lucerna
+12|Neuchâtel
+13|Obwalden
+14|Sankt Gallen
+15|Schaffhausen
+16|Schwyz
+17|Soleura
+18|Turgovia
+19|Tesino
+20|Uri
+21|Valais
+22|Vaud
+23|Zug
+24|Zúrich
+25|Appenzell Rodas Exteriores
+26|Appenzell Rodas Interiores
+27|Basilea-Campiña
+28|Nidwalden

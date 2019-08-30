@@ -1,10 +1,10 @@
-000|—
-002|Gauteng
-003|Western Cape
-004|Northern Cape
-005|Eastern Cape
-006|KwaZulu-Natal
-007|Free State
-008|North West
-009|Mpumalanga
-010|Limpopo
+0|—
+2|Gauteng
+3|Western Cape
+4|Northern Cape
+5|Eastern Cape
+6|KwaZulu-Natal
+7|Free State
+8|North West
+9|Mpumalanga
+10|Limpopo

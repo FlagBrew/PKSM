@@ -1,22 +1,22 @@
-000|—
-006|Zagreb (ville)
-007|Bjelovar-Bilogora
-008|Brod-Posavina
-009|Dubrovnik-Neretva
-010|Istrie
-011|Karlovac
-012|Koprivnica-Križevci
-013|Krapina-Zagorje
-014|Lika-Senj
-015|Međimurje
-016|Osijek-Baranja
-017|Požega-Slavonie
-018|Primorje-Gorski Kotar
-019|Sisak-Moslavina
-020|Split-Dalmatie
-021|Šibenik-Knin
-022|Varaždin
-023|Virovitica-Podravina
-024|Vukovar-Syrmie
-025|Zadar
-026|Zagreb (comitat)
+0|—
+6|Zagreb (ville)
+7|Bjelovar-Bilogora
+8|Brod-Posavina
+9|Dubrovnik-Neretva
+10|Istrie
+11|Karlovac
+12|Koprivnica-Križevci
+13|Krapina-Zagorje
+14|Lika-Senj
+15|Međimurje
+16|Osijek-Baranja
+17|Požega-Slavonie
+18|Primorje-Gorski Kotar
+19|Sisak-Moslavina
+20|Split-Dalmatie
+21|Šibenik-Knin
+22|Varaždin
+23|Virovitica-Podravina
+24|Vukovar-Syrmie
+25|Zadar
+26|Zagreb (comitat)

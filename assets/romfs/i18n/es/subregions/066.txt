@@ -1,10 +1,10 @@
-000|—
-002|Viena
-003|Burgenland
-004|Carintia
-005|Baja Austria
-006|Alta Austria
-007|Salzburgo
-008|Estiria
-009|Tirol
-010|Vorarlberg
+0|—
+2|Viena
+3|Burgenland
+4|Carintia
+5|Baja Austria
+6|Alta Austria
+7|Salzburgo
+8|Estiria
+9|Tirol
+10|Vorarlberg

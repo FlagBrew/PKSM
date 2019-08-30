@@ -1,8 +1,8 @@
-000|—
-002|Saint John
-003|Barbuda
-004|Saint George
-005|Saint Mary
-006|Saint Paul
-007|Saint Peter
-008|Saint Philip
+0|—
+2|Saint John
+3|Barbuda
+4|Saint George
+5|Saint Mary
+6|Saint Paul
+7|Saint Peter
+8|Saint Philip

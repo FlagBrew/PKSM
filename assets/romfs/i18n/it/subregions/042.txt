@@ -1,26 +1,26 @@
-000|—
-002|Lima
-003|Amazonas
-004|Ancash
-005|Apurímac
-006|Arequipa
-007|Ayacucho
-008|Cajamarca
-009|Callao
-010|Cusco
-011|Huancavelica
-012|Huánuco
-013|Ica
-014|Junín
-015|La Libertad
-016|Lambayeque
-017|Loreto
-018|Madre de Dios
-019|Moquegua
-020|Pasco
-021|Piura
-022|Puno
-023|San Martín
-024|Tacna
-025|Tumbes
-026|Ucayali
+0|—
+2|Lima
+3|Amazonas
+4|Ancash
+5|Apurímac
+6|Arequipa
+7|Ayacucho
+8|Cajamarca
+9|Callao
+10|Cusco
+11|Huancavelica
+12|Huánuco
+13|Ica
+14|Junín
+15|La Libertad
+16|Lambayeque
+17|Loreto
+18|Madre de Dios
+19|Moquegua
+20|Pasco
+21|Piura
+22|Puno
+23|San Martín
+24|Tacna
+25|Tumbes
+26|Ucayali

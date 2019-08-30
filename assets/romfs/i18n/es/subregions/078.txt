@@ -1,17 +1,17 @@
-000|—
-002|Berlín
-003|Hesse
-004|Baden-Wurtemberg
-005|Baviera
-006|Brandeburgo
-007|Bremen
-008|Hamburgo
-009|Mecklemburgo-Pomerania Occidental
-010|Baja Sajonia
-011|Renania del Norte-Westfalia
-012|Renania-Palatinado
-013|Sarre
-014|Sajonia
-015|Sajonia-Anhalt
-016|Schleswig-Holstein
-017|Turingia
+0|—
+2|Berlín
+3|Hesse
+4|Baden-Wurtemberg
+5|Baviera
+6|Brandeburgo
+7|Bremen
+8|Hamburgo
+9|Mecklemburgo-Pomerania Occidental
+10|Baja Sajonia
+11|Renania del Norte-Westfalia
+12|Renania-Palatinado
+13|Sarre
+14|Sajonia
+15|Sajonia-Anhalt
+16|Schleswig-Holstein
+17|Turingia

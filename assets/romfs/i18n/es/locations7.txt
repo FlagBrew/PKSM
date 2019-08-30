@@ -1,244 +1,244 @@
-0000|－
-0002|Lugar misterioso
-0004|Lugar lejano
-0006|Ruta 1
-0007|Afueras de Hauoli
-0008|Ruta 1
-000a|Ruta 3
-000c|Ruta 2
-000e|Bahía Kalae
-0010|Mar de Melemele
-0012|Ciudad Hauoli
-0013|Paseo Marítimo
-0014|Ciudad Hauoli
-0015|Zona Comercial
-0016|Ciudad Hauoli
-0017|Puerto
-0018|Pueblo Lilii
-001a|Senda Mahalo
-001c|Senda Mahalo
-001d|Puente Colgante
-001e|Ruinas de la Guerra
-0020|Ruinas de la Guerra
-0021|[~ 33]
-0022|Colina Dequilate
-0024|Colina Dequilate
-0025|Caldera Remota
-0026|Cementerio de Hauoli
-0028|Jardines de Melemele
-002a|Gruta Unemar
-002c|Huerto de Bayas
-002e|Cueva Sotobosque
-002f|Sala de la Prueba
-0030|Cueva Sotobosque
-0031|Sala del Dominante
-0032|Ruta 4
-0034|Ruta 5
-0036|Ruta 6
-0038|Ruta 7
-003a|Ruta 8
-003c|Ruta 9
-003e|Resort Hanohano
-0040|Playa de Hanohano
-0042|Jardines de Akala
-0044|Pueblo Ohana
-0046|Ciudad Kantai
-0048|Ciudad Konikoni
-004a|Avenida Royale
-004c|Colina del Recuerdo
-004e|Rancho Ohana
-0050|[~ 80]
-0052|Área Volcánica Wela
-0054|Área Volcánica Wela
-0055|Sala del Dominante
-0056|Colina Saltagua
-0058|Colina Saltagua
-0059|Sala del Dominante
-005a|Jungla Umbría
-005c|Ruinas de la Vida
-005e|Afueras de Akala
-0060|[~ 96]
-0061|[~ 97]
-0062|[~ 98]
-0063|[~ 99]
-0064|Túnel Diglett
-0066|Resort Hanohano
-0068|Estadio Royale
-006a|Ruta 10
-006c|Ruta 11
-006e|Playa de Ula-Ula
-0070|Ruta 13
-0072|Aldea Tapu
-0074|Ruta 15
-0076|Ruta 16
-0078|Ruta 17
-007a|Ruta 12
-007c|Desierto de Haina
-007e|Ruta 14
-0080|Jardines de Ula-Ula
-0082|Pueblo Po
-0084|Ciudad Malíe
-0086|Parque de Malíe
-0088|Pico Hokulani
-008a|Monte Rubor
-008c|Ruinas de la Cosecha
-008e|Lago Corosol
-0090|Lago Coroluna
-0092|Monte Lanakila
-0094|Mansión Misteriosa
-0096|Súper Ultraganga
-0097|Local Abandonado
-0098|Observ. de Hokulani
-009a|Liga Pokémon
-009c|Jardines de Poni
-009e|Prado de Poni
-00a0|Antiguo Paso de Poni
-00a2|Arrecife de Poni
-00a4|Bosque de Poni
-00a6|Llanura de Poni
-00a8|Costa de Poni
-00aa|Pendiente de Poni
-00ac|Aldea Marina
-00ae|Cañón de Poni
-00b0|Altar del Sol
-00b2|Altar de la Luna
-00b4|Ruinas del Tránsito
-00b6|Gruta Desenlace
-00b8|Isla Exeggutor
-00ba|Árbol de Combate
-00bc|Paraíso Æther
-00be|Ultraabismo
-00c0|Ciudad Malíe
-00c1|Cabo de las Afueras
-00c2|Melemele
-00c3|Akala
-00c4|Ula-Ula
-00c5|Poni
-00c6|Playa Big Wave
-00c8|Cueva Costera
-00ca|Playa de Kantai
-00cc|Playa de Poni
-00ce|Ultrópolis
-00d0|Torre Ultrópolis
-00d2|Ultragenerador
-00d4|Ultravalle
-00d6|Ultradesierto
-00d8|Ultrabosque
-00da|Ultrajungla
-00dc|Ultraurbe
-00de|Ultraespacio Cero
-00e0|Castillo Team Rocket
-00e2|Gruta de la Llanura
-00e4|Valle de los Pikachu
-00e6|Ruta 1
-00e7|Escuela Entrenadores
-00e8|Túnel del Volcán
-7531|Intercambio en conexión
-7532|Intercambio en conexión
-7533|Kanto
-7534|Johto
-7535|Hoenn
-7536|Sinnoh
-7537|Tierra lejana
-7538|－－－－－－－－－－
-7539|Teselia
-753a|Kalos
-753b|Nexo Pokémon
-753c|Pokémon GO
-753d|Kanto
-753e|Hoenn
-753f|Alola
-7540|Poké Resort
-7541|Johto
-9c41|Lugar encantador
-9c42|Lugar lejano
-9c43|Película Pokémon
-9c44|Película Pokémon 2016
-9c45|Película Pokémon 2017
-9c46|Película Pokémon 2018
-9c47|Película Pokémon 2019
-9c48|Película Pokémon 2020
-9c49|Película Pokémon 2021
-9c4a|Pokémon Center
-9c4b|Dibujos animados Pokémon
-9c4c|Pokémon Center MEGA TOKYO
-9c4d|Pokémon Center Osaka
-9c4e|Pokémon Center Fukuoka
-9c4f|Pokémon Center Nagoya
-9c50|Pokémon Center Sapporo
-9c51|Pokémon Center Yokohama
-9c52|Pokémon Center Tohoku
-9c53|Pokémon Center TOKYO-BAY
-9c54|Pokémon Center Hiroshima
-9c55|Pokémon Center Kyoto
-9c56|Pokémon Ctr. SKYTREE TOWN
-9c57|Pokémon Store
-9c58|WCS
-9c59|WCS 2016
-9c5a|WCS 2017
-9c5b|WCS 2018
-9c5c|WCS 2019
-9c5d|WCS 2020
-9c5e|WCS 2021
-9c5f|Worlds
-9c60|Worlds 2016
-9c61|Worlds 2017
-9c62|Worlds 2018
-9c63|Worlds 2019
-9c64|Worlds 2020
-9c65|Worlds 2021
-9c66|Evento de Videojuegos
-9c67|Evento Videojuegos 2016
-9c68|Evento Videojuegos 2017
-9c69|Evento Videojuegos 2018
-9c6a|Evento Videojuegos 2019
-9c6b|Evento Videojuegos 2020
-9c6c|Evento Videojuegos 2021
-9c6d|Evento Pokémon
-9c6e|Torneo
-9c6f|Evento de Videojuegos
-9c70|Pokémon Daisuki Club
-9c71|Programa sobre Pokémon
-9c72|Concierto
-9c73|Regalo en línea
-9c74|Pokémon Global Link
-9c75|Evento Pokémon 2016
-9c76|Evento Pokémon 2017
-9c77|Evento Pokémon 2018
-9c78|Evento Pokémon 2019
-9c79|Evento Pokémon 2020
-9c7a|Evento Pokémon 2021
-9c7b|Evento Pokémon
-9c7c|Evento Pokémon 2016
-9c7d|Evento Pokémon 2017
-9c7e|Evento Pokémon 2018
-9c7f|Evento Pokémon 2019
-9c80|Evento Pokémon 2020
-9c81|Evento Pokémon 2021
-9c82|PokéPark
-9c83|PokéPark 2016
-9c84|PokéPark 2017
-9c85|PokéPark 2018
-9c86|PokéPark 2019
-9c87|PokéPark 2020
-9c88|PokéPark 2021
-9c89|Evento
-9c8a|GAME FREAK
-9c8b|Estadio
-9c8c|VGC
-9c8d|VGC 2016
-9c8e|VGC 2017
-9c8f|VGC 2018
-9c90|VGC 2019
-9c91|VGC 2020
-9c92|VGC 2021
-9c93|Consola Virtual
-9c94|Pokémon GO
-9c95|Banco de Pokémon
-9c96|Establecimiento Pokémon
-9c97|versión de prueba
-9c98|Club de Entrenadores Pokémon
-ea61|Persona lejana
-ea62|Cuidados Pokémon
-ea63|Buscatesoros
-ea64|Anciana del Balneario
+0x0000|－
+0x0002|Lugar misterioso
+0x0004|Lugar lejano
+0x0006|Ruta 1
+0x0007|Afueras de Hauoli
+0x0008|Ruta 1
+0x000a|Ruta 3
+0x000c|Ruta 2
+0x000e|Bahía Kalae
+0x0010|Mar de Melemele
+0x0012|Ciudad Hauoli
+0x0013|Paseo Marítimo
+0x0014|Ciudad Hauoli
+0x0015|Zona Comercial
+0x0016|Ciudad Hauoli
+0x0017|Puerto
+0x0018|Pueblo Lilii
+0x001a|Senda Mahalo
+0x001c|Senda Mahalo
+0x001d|Puente Colgante
+0x001e|Ruinas de la Guerra
+0x0020|Ruinas de la Guerra
+0x0021|[~ 33]
+0x0022|Colina Dequilate
+0x0024|Colina Dequilate
+0x0025|Caldera Remota
+0x0026|Cementerio de Hauoli
+0x0028|Jardines de Melemele
+0x002a|Gruta Unemar
+0x002c|Huerto de Bayas
+0x002e|Cueva Sotobosque
+0x002f|Sala de la Prueba
+0x0030|Cueva Sotobosque
+0x0031|Sala del Dominante
+0x0032|Ruta 4
+0x0034|Ruta 5
+0x0036|Ruta 6
+0x0038|Ruta 7
+0x003a|Ruta 8
+0x003c|Ruta 9
+0x003e|Resort Hanohano
+0x0040|Playa de Hanohano
+0x0042|Jardines de Akala
+0x0044|Pueblo Ohana
+0x0046|Ciudad Kantai
+0x0048|Ciudad Konikoni
+0x004a|Avenida Royale
+0x004c|Colina del Recuerdo
+0x004e|Rancho Ohana
+0x0050|[~ 80]
+0x0052|Área Volcánica Wela
+0x0054|Área Volcánica Wela
+0x0055|Sala del Dominante
+0x0056|Colina Saltagua
+0x0058|Colina Saltagua
+0x0059|Sala del Dominante
+0x005a|Jungla Umbría
+0x005c|Ruinas de la Vida
+0x005e|Afueras de Akala
+0x0060|[~ 96]
+0x0061|[~ 97]
+0x0062|[~ 98]
+0x0063|[~ 99]
+0x0064|Túnel Diglett
+0x0066|Resort Hanohano
+0x0068|Estadio Royale
+0x006a|Ruta 10
+0x006c|Ruta 11
+0x006e|Playa de Ula-Ula
+0x0070|Ruta 13
+0x0072|Aldea Tapu
+0x0074|Ruta 15
+0x0076|Ruta 16
+0x0078|Ruta 17
+0x007a|Ruta 12
+0x007c|Desierto de Haina
+0x007e|Ruta 14
+0x0080|Jardines de Ula-Ula
+0x0082|Pueblo Po
+0x0084|Ciudad Malíe
+0x0086|Parque de Malíe
+0x0088|Pico Hokulani
+0x008a|Monte Rubor
+0x008c|Ruinas de la Cosecha
+0x008e|Lago Corosol
+0x0090|Lago Coroluna
+0x0092|Monte Lanakila
+0x0094|Mansión Misteriosa
+0x0096|Súper Ultraganga
+0x0097|Local Abandonado
+0x0098|Observ. de Hokulani
+0x009a|Liga Pokémon
+0x009c|Jardines de Poni
+0x009e|Prado de Poni
+0x00a0|Antiguo Paso de Poni
+0x00a2|Arrecife de Poni
+0x00a4|Bosque de Poni
+0x00a6|Llanura de Poni
+0x00a8|Costa de Poni
+0x00aa|Pendiente de Poni
+0x00ac|Aldea Marina
+0x00ae|Cañón de Poni
+0x00b0|Altar del Sol
+0x00b2|Altar de la Luna
+0x00b4|Ruinas del Tránsito
+0x00b6|Gruta Desenlace
+0x00b8|Isla Exeggutor
+0x00ba|Árbol de Combate
+0x00bc|Paraíso Æther
+0x00be|Ultraabismo
+0x00c0|Ciudad Malíe
+0x00c1|Cabo de las Afueras
+0x00c2|Melemele
+0x00c3|Akala
+0x00c4|Ula-Ula
+0x00c5|Poni
+0x00c6|Playa Big Wave
+0x00c8|Cueva Costera
+0x00ca|Playa de Kantai
+0x00cc|Playa de Poni
+0x00ce|Ultrópolis
+0x00d0|Torre Ultrópolis
+0x00d2|Ultragenerador
+0x00d4|Ultravalle
+0x00d6|Ultradesierto
+0x00d8|Ultrabosque
+0x00da|Ultrajungla
+0x00dc|Ultraurbe
+0x00de|Ultraespacio Cero
+0x00e0|Castillo Team Rocket
+0x00e2|Gruta de la Llanura
+0x00e4|Valle de los Pikachu
+0x00e6|Ruta 1
+0x00e7|Escuela Entrenadores
+0x00e8|Túnel del Volcán
+0x7531|Intercambio en conexión
+0x7532|Intercambio en conexión
+0x7533|Kanto
+0x7534|Johto
+0x7535|Hoenn
+0x7536|Sinnoh
+0x7537|Tierra lejana
+0x7538|－－－－－－－－－－
+0x7539|Teselia
+0x753a|Kalos
+0x753b|Nexo Pokémon
+0x753c|Pokémon GO
+0x753d|Kanto
+0x753e|Hoenn
+0x753f|Alola
+0x7540|Poké Resort
+0x7541|Johto
+0x9c41|Lugar encantador
+0x9c42|Lugar lejano
+0x9c43|Película Pokémon
+0x9c44|Película Pokémon 2016
+0x9c45|Película Pokémon 2017
+0x9c46|Película Pokémon 2018
+0x9c47|Película Pokémon 2019
+0x9c48|Película Pokémon 2020
+0x9c49|Película Pokémon 2021
+0x9c4a|Pokémon Center
+0x9c4b|Dibujos animados Pokémon
+0x9c4c|Pokémon Center MEGA TOKYO
+0x9c4d|Pokémon Center Osaka
+0x9c4e|Pokémon Center Fukuoka
+0x9c4f|Pokémon Center Nagoya
+0x9c50|Pokémon Center Sapporo
+0x9c51|Pokémon Center Yokohama
+0x9c52|Pokémon Center Tohoku
+0x9c53|Pokémon Center TOKYO-BAY
+0x9c54|Pokémon Center Hiroshima
+0x9c55|Pokémon Center Kyoto
+0x9c56|Pokémon Ctr. SKYTREE TOWN
+0x9c57|Pokémon Store
+0x9c58|WCS
+0x9c59|WCS 2016
+0x9c5a|WCS 2017
+0x9c5b|WCS 2018
+0x9c5c|WCS 2019
+0x9c5d|WCS 2020
+0x9c5e|WCS 2021
+0x9c5f|Worlds
+0x9c60|Worlds 2016
+0x9c61|Worlds 2017
+0x9c62|Worlds 2018
+0x9c63|Worlds 2019
+0x9c64|Worlds 2020
+0x9c65|Worlds 2021
+0x9c66|Evento de Videojuegos
+0x9c67|Evento Videojuegos 2016
+0x9c68|Evento Videojuegos 2017
+0x9c69|Evento Videojuegos 2018
+0x9c6a|Evento Videojuegos 2019
+0x9c6b|Evento Videojuegos 2020
+0x9c6c|Evento Videojuegos 2021
+0x9c6d|Evento Pokémon
+0x9c6e|Torneo
+0x9c6f|Evento de Videojuegos
+0x9c70|Pokémon Daisuki Club
+0x9c71|Programa sobre Pokémon
+0x9c72|Concierto
+0x9c73|Regalo en línea
+0x9c74|Pokémon Global Link
+0x9c75|Evento Pokémon 2016
+0x9c76|Evento Pokémon 2017
+0x9c77|Evento Pokémon 2018
+0x9c78|Evento Pokémon 2019
+0x9c79|Evento Pokémon 2020
+0x9c7a|Evento Pokémon 2021
+0x9c7b|Evento Pokémon
+0x9c7c|Evento Pokémon 2016
+0x9c7d|Evento Pokémon 2017
+0x9c7e|Evento Pokémon 2018
+0x9c7f|Evento Pokémon 2019
+0x9c80|Evento Pokémon 2020
+0x9c81|Evento Pokémon 2021
+0x9c82|PokéPark
+0x9c83|PokéPark 2016
+0x9c84|PokéPark 2017
+0x9c85|PokéPark 2018
+0x9c86|PokéPark 2019
+0x9c87|PokéPark 2020
+0x9c88|PokéPark 2021
+0x9c89|Evento
+0x9c8a|GAME FREAK
+0x9c8b|Estadio
+0x9c8c|VGC
+0x9c8d|VGC 2016
+0x9c8e|VGC 2017
+0x9c8f|VGC 2018
+0x9c90|VGC 2019
+0x9c91|VGC 2020
+0x9c92|VGC 2021
+0x9c93|Consola Virtual
+0x9c94|Pokémon GO
+0x9c95|Banco de Pokémon
+0x9c96|Establecimiento Pokémon
+0x9c97|versión de prueba
+0x9c98|Club de Entrenadores Pokémon
+0xea61|Persona lejana
+0xea62|Cuidados Pokémon
+0xea63|Buscatesoros
+0xea64|Anciana del Balneario

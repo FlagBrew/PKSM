@@ -1,8 +1,8 @@
-000|—
-018|Groenlandia
-019|Hovedstaden
-020|Jutlandia Central
-021|Jutlandia Septentrional
-022|Selandia
-023|Dinamarca del Sur
-024|Islas Feroe
+0|—
+18|Groenlandia
+19|Hovedstaden
+20|Jutlandia Central
+21|Jutlandia Septentrional
+22|Selandia
+23|Dinamarca del Sur
+24|Islas Feroe

@@ -1,35 +1,35 @@
-000|—
-002|Delhi
-003|Andamanen und Nikobaren
-004|Andhra Pradesh
-005|Assam
-006|Chandigarh
-007|Dadra und Nagar Haveli
-008|Gujarat
-009|Haryana
-010|Himachal Pradesh
-012|Kerala
-013|Lakshadweep
-014|Maharashtra
-015|Manipur
-016|Meghalaya
-017|Karnataka
-018|Nagaland
-019|Odisha
-020|Puducherry
-021|Punjab
-022|Rajasthan
-023|Tamil Nadu
-024|Tripura
-025|Westbengalen
-026|Sikkim
-028|Mizoram
-029|Daman und Diu
-030|Goa
-031|Bihar
-032|Madhya Pradesh
-033|Uttar Pradesh
-034|Chhattisgarh
-035|Jharkhand
-036|Uttarakhand
-037|Sonstige
+0|—
+2|Delhi
+3|Andamanen und Nikobaren
+4|Andhra Pradesh
+5|Assam
+6|Chandigarh
+7|Dadra und Nagar Haveli
+8|Gujarat
+9|Haryana
+10|Himachal Pradesh
+12|Kerala
+13|Lakshadweep
+14|Maharashtra
+15|Manipur
+16|Meghalaya
+17|Karnataka
+18|Nagaland
+19|Odisha
+20|Puducherry
+21|Punjab
+22|Rajasthan
+23|Tamil Nadu
+24|Tripura
+25|Westbengalen
+26|Sikkim
+28|Mizoram
+29|Daman und Diu
+30|Goa
+31|Bihar
+32|Madhya Pradesh
+33|Uttar Pradesh
+34|Chhattisgarh
+35|Jharkhand
+36|Uttarakhand
+37|Sonstige

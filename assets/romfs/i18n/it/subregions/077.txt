@@ -1,27 +1,27 @@
-000|—
-002|Île-de-France
-003|Alsazia
-004|Aquitania
-005|Alvernia
-006|Bassa Normandia
-007|Borgogna
-008|Bretagna
-009|Centro
-010|Champagne-Ardenne
-011|Corsica
-012|Franca Contea
-013|Alta Normandia
-014|Linguadoca-Rossiglione
-015|Limosino
-016|Lorena
-017|Mezzogiorno-Pirenei
-018|Nord-Passo di Calais
-019|Paesi della Loira
-020|Piccardia
-021|Poitou-Charentes
-022|Provenza-Alpi-Costa Azzurra
-023|Rodano-Alpi
-024|Guadalupa
-025|Martinica
-026|Guyana Francese
-027|Riunione
+0|—
+2|Île-de-France
+3|Alsazia
+4|Aquitania
+5|Alvernia
+6|Bassa Normandia
+7|Borgogna
+8|Bretagna
+9|Centro
+10|Champagne-Ardenne
+11|Corsica
+12|Franca Contea
+13|Alta Normandia
+14|Linguadoca-Rossiglione
+15|Limosino
+16|Lorena
+17|Mezzogiorno-Pirenei
+18|Nord-Passo di Calais
+19|Paesi della Loira
+20|Piccardia
+21|Poitou-Charentes
+22|Provenza-Alpi-Costa Azzurra
+23|Rodano-Alpi
+24|Guadalupa
+25|Martinica
+26|Guyana Francese
+27|Riunione

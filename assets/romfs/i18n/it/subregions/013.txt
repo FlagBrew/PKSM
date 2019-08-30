@@ -1,2 +1,2 @@
-000|—
-001|Barbados
+0|—
+1|Barbados

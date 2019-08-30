@@ -1,2 +1,2 @@
-000|—
-001|Singapore
+0|—
+1|Singapore

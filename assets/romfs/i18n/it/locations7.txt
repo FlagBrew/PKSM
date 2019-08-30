@@ -1,244 +1,244 @@
-0000|----------
-0002|Zona misteriosa
-0004|Luogo remoto
-0006|Percorso 1
-0007|Periferia di Hau’oli
-0008|Percorso 1
-000a|Percorso 3
-000c|Percorso 2
-000e|Baia Kala’e
-0010|Mare di Mele Mele
-0012|Hau’oli
-0013|Lungomare
-0014|Hau’oli
-0015|Zona Commerciale
-0016|Hau’oli
-0017|Porto
-0018|Lili
-001a|Sentiero Mahalo
-001c|Sentiero Mahalo
-001d|Ponte Sospeso
-001e|Tempio del Conflitto
-0020|Tempio del Conflitto
-0021|[~ 33]
-0022|Collina Diecicarati
-0024|Collina Diecicarati
-0025|Caldera Recondita
-0026|Cimitero di Hau’oli
-0028|Prato Mele Mele
-002a|Grotta Pratomare
-002c|Orto delle Bacche
-002e|Grotta Sottobosco
-002f|Luogo della Prova
-0030|Grotta Sottobosco
-0031|Arena del Dominante
-0032|Percorso 4
-0034|Percorso 5
-0036|Percorso 6
-0038|Percorso 7
-003a|Percorso 8
-003c|Percorso 9
-003e|Resort Hanu Hanu
-0040|Spiaggia Hanu Hanu
-0042|Prato Akala
-0044|Ohana
-0046|Kantai
-0048|Konikoni
-004a|Viale Royale
-004c|Colle della Memoria
-004e|Fattoria Ohana
-0050|[~ 80]
-0052|Parco Vulcano Wela
-0054|Parco Vulcano Wela
-0055|Arena del Dominante
-0056|Collina Scrosciante
-0058|Collina Scrosciante
-0059|Arena del Dominante
-005a|Giungla Ombrosa
-005c|Tempio della Vita
-005e|Punta Akala
-0060|[~ 96]
-0061|[~ 97]
-0062|[~ 98]
-0063|[~ 99]
-0064|Tunnel Diglett
-0066|Resort Hanu Hanu
-0068|Stadio Royale
-006a|Percorso 10
-006c|Percorso 11
-006e|Spiaggia di Ula Ula
-0070|Percorso 13
-0072|Villaggio Tapu
-0074|Percorso 15
-0076|Percorso 16
-0078|Percorso 17
-007a|Percorso 12
-007c|Deserto Haina
-007e|Percorso 14
-0080|Prato Ula Ula
-0082|Poh
-0084|Malie
-0086|Giardino di Malie
-0088|Picco Hokulani
-008a|Monte Tepore
-008c|Tempio del Raccolto
-008e|Lago Solare
-0090|Lago Lunare
-0092|Monte Lanakila
-0094|Villa Losca
-0096|Supermarket Affaroni
-0097|Edificio Abbandonato
-0098|Osservatorio
-009a|Lega Pokémon
-009c|Prato Poni
-009e|Piana di Poni
-00a0|Via Antica di Poni
-00a2|Scogliera di Poni
-00a4|Foresta di Poni
-00a6|Prateria di Poni
-00a8|Costa di Poni
-00aa|Erta di Poni
-00ac|Villaggio del Mare
-00ae|Canyon di Poni
-00b0|Altare Solare
-00b2|Altare Lunare
-00b4|Tempio del Passaggio
-00b6|Caverna Climax
-00b8|Isola Exeggutor
-00ba|Albero della Lotta
-00bc|Æther Paradise
-00be|Ultrabisso
-00c0|Malie
-00c1|Promontorio di Malie
-00c2|Mele Mele
-00c3|Akala
-00c4|Ula Ula
-00c5|Poni
-00c6|Spiaggia Big Wave
-00c8|Caverna Costiera
-00ca|Spiaggia di Kantai
-00cc|Spiaggia di Poni
-00ce|Ultramegalopoli
-00d0|Torre Megalopoli
-00d2|Ultracentrale
-00d4|Ultravalle
-00d6|Ultradeserto
-00d8|Ultraforesta
-00da|Ultragiungla
-00dc|Ultragglomerato
-00de|Ultramondo Ignoto
-00e0|Castello Team Rocket
-00e2|Grotta Prateria
-00e4|Valle dei Pikachu
-00e6|Percorso 1
-00e7|Scuola Allenatori
-00e8|Tunnel del Vulcano
-7531|Scambio in link
-7532|Scambio in link
-7533|Kanto
-7534|Johto
-7535|Hoenn
-7536|Sinnoh
-7537|Terra lontana
-7538|----------
-7539|Unima
-753a|Kalos
-753b|Pokémon Link
-753c|Pokémon GO
-753d|Kanto
-753e|Hoenn
-753f|Alola
-7540|Poké Resort
-7541|Johto
-9c41|Luogo grazioso
-9c42|Luogo remoto
-9c43|Film Pokémon
-9c44|Film Pokémon 2016
-9c45|Film Pokémon 2017
-9c46|Film Pokémon 2018
-9c47|Film Pokémon 2019
-9c48|Film Pokémon 2020
-9c49|Film Pokémon 2021
-9c4a|Pokémon Center
-9c4b|Cartone animato Pokémon
-9c4c|Pokémon Center MEGA TOKYO
-9c4d|Pokémon Center Osaka
-9c4e|Pokémon Center Fukuoka
-9c4f|Pokémon Center Nagoya
-9c50|Pokémon Center Sapporo
-9c51|Pokémon Center Yokohama
-9c52|Pokémon Center Tohoku
-9c53|Pokémon Center TOKYO-BAY
-9c54|Pokémon Center Hiroshima
-9c55|Pokémon Center Kyoto
-9c56|Pokémon Ctr. SKYTREE TOWN
-9c57|Pokémon Store
-9c58|WCS
-9c59|WCS 2016
-9c5a|WCS 2017
-9c5b|WCS 2018
-9c5c|WCS 2019
-9c5d|WCS 2020
-9c5e|WCS 2021
-9c5f|Worlds
-9c60|Worlds 2016
-9c61|Worlds 2017
-9c62|Worlds 2018
-9c63|Worlds 2019
-9c64|Worlds 2020
-9c65|Worlds 2021
-9c66|Evento di gioco
-9c67|Evento di gioco 2016
-9c68|Evento di gioco 2017
-9c69|Evento di gioco 2018
-9c6a|Evento di gioco 2019
-9c6b|Evento di gioco 2020
-9c6c|Evento di gioco 2021
-9c6d|Evento Pokémon
-9c6e|Gara
-9c6f|Evento di gioco
-9c70|Pokémon Daisuki Club
-9c71|Programma TV Pokémon
-9c72|Concerto
-9c73|Regalo online
-9c74|PGL
-9c75|Evento Pokémon 2016
-9c76|Evento Pokémon 2017
-9c77|Evento Pokémon 2018
-9c78|Evento Pokémon 2019
-9c79|Evento Pokémon 2020
-9c7a|Evento Pokémon 2021
-9c7b|Evento Pokémon
-9c7c|Evento Pokémon 2016
-9c7d|Evento Pokémon 2017
-9c7e|Evento Pokémon 2018
-9c7f|Evento Pokémon 2019
-9c80|Evento Pokémon 2020
-9c81|Evento Pokémon 2021
-9c82|PokéPark
-9c83|PokéPark 2016
-9c84|PokéPark 2017
-9c85|PokéPark 2018
-9c86|PokéPark 2019
-9c87|PokéPark 2020
-9c88|PokéPark 2021
-9c89|Evento
-9c8a|GAME FREAK
-9c8b|Stadio
-9c8c|VGC
-9c8d|VGC 2016
-9c8e|VGC 2017
-9c8f|VGC 2018
-9c90|VGC 2019
-9c91|VGC 2020
-9c92|VGC 2021
-9c93|Virtual Console
-9c94|Pokémon GO
-9c95|Banca Pokémon
-9c96|Negozio Pokémon
-9c97|Demo
-9c98|Club Allenatori di Pokémon
-ea61|Persona lontana
-ea62|Ostello Pokémon
-ea63|Cercatesori
-ea64|Vecchina delle terme
+0x0000|----------
+0x0002|Zona misteriosa
+0x0004|Luogo remoto
+0x0006|Percorso 1
+0x0007|Periferia di Hau’oli
+0x0008|Percorso 1
+0x000a|Percorso 3
+0x000c|Percorso 2
+0x000e|Baia Kala’e
+0x0010|Mare di Mele Mele
+0x0012|Hau’oli
+0x0013|Lungomare
+0x0014|Hau’oli
+0x0015|Zona Commerciale
+0x0016|Hau’oli
+0x0017|Porto
+0x0018|Lili
+0x001a|Sentiero Mahalo
+0x001c|Sentiero Mahalo
+0x001d|Ponte Sospeso
+0x001e|Tempio del Conflitto
+0x0020|Tempio del Conflitto
+0x0021|[~ 33]
+0x0022|Collina Diecicarati
+0x0024|Collina Diecicarati
+0x0025|Caldera Recondita
+0x0026|Cimitero di Hau’oli
+0x0028|Prato Mele Mele
+0x002a|Grotta Pratomare
+0x002c|Orto delle Bacche
+0x002e|Grotta Sottobosco
+0x002f|Luogo della Prova
+0x0030|Grotta Sottobosco
+0x0031|Arena del Dominante
+0x0032|Percorso 4
+0x0034|Percorso 5
+0x0036|Percorso 6
+0x0038|Percorso 7
+0x003a|Percorso 8
+0x003c|Percorso 9
+0x003e|Resort Hanu Hanu
+0x0040|Spiaggia Hanu Hanu
+0x0042|Prato Akala
+0x0044|Ohana
+0x0046|Kantai
+0x0048|Konikoni
+0x004a|Viale Royale
+0x004c|Colle della Memoria
+0x004e|Fattoria Ohana
+0x0050|[~ 80]
+0x0052|Parco Vulcano Wela
+0x0054|Parco Vulcano Wela
+0x0055|Arena del Dominante
+0x0056|Collina Scrosciante
+0x0058|Collina Scrosciante
+0x0059|Arena del Dominante
+0x005a|Giungla Ombrosa
+0x005c|Tempio della Vita
+0x005e|Punta Akala
+0x0060|[~ 96]
+0x0061|[~ 97]
+0x0062|[~ 98]
+0x0063|[~ 99]
+0x0064|Tunnel Diglett
+0x0066|Resort Hanu Hanu
+0x0068|Stadio Royale
+0x006a|Percorso 10
+0x006c|Percorso 11
+0x006e|Spiaggia di Ula Ula
+0x0070|Percorso 13
+0x0072|Villaggio Tapu
+0x0074|Percorso 15
+0x0076|Percorso 16
+0x0078|Percorso 17
+0x007a|Percorso 12
+0x007c|Deserto Haina
+0x007e|Percorso 14
+0x0080|Prato Ula Ula
+0x0082|Poh
+0x0084|Malie
+0x0086|Giardino di Malie
+0x0088|Picco Hokulani
+0x008a|Monte Tepore
+0x008c|Tempio del Raccolto
+0x008e|Lago Solare
+0x0090|Lago Lunare
+0x0092|Monte Lanakila
+0x0094|Villa Losca
+0x0096|Supermarket Affaroni
+0x0097|Edificio Abbandonato
+0x0098|Osservatorio
+0x009a|Lega Pokémon
+0x009c|Prato Poni
+0x009e|Piana di Poni
+0x00a0|Via Antica di Poni
+0x00a2|Scogliera di Poni
+0x00a4|Foresta di Poni
+0x00a6|Prateria di Poni
+0x00a8|Costa di Poni
+0x00aa|Erta di Poni
+0x00ac|Villaggio del Mare
+0x00ae|Canyon di Poni
+0x00b0|Altare Solare
+0x00b2|Altare Lunare
+0x00b4|Tempio del Passaggio
+0x00b6|Caverna Climax
+0x00b8|Isola Exeggutor
+0x00ba|Albero della Lotta
+0x00bc|Æther Paradise
+0x00be|Ultrabisso
+0x00c0|Malie
+0x00c1|Promontorio di Malie
+0x00c2|Mele Mele
+0x00c3|Akala
+0x00c4|Ula Ula
+0x00c5|Poni
+0x00c6|Spiaggia Big Wave
+0x00c8|Caverna Costiera
+0x00ca|Spiaggia di Kantai
+0x00cc|Spiaggia di Poni
+0x00ce|Ultramegalopoli
+0x00d0|Torre Megalopoli
+0x00d2|Ultracentrale
+0x00d4|Ultravalle
+0x00d6|Ultradeserto
+0x00d8|Ultraforesta
+0x00da|Ultragiungla
+0x00dc|Ultragglomerato
+0x00de|Ultramondo Ignoto
+0x00e0|Castello Team Rocket
+0x00e2|Grotta Prateria
+0x00e4|Valle dei Pikachu
+0x00e6|Percorso 1
+0x00e7|Scuola Allenatori
+0x00e8|Tunnel del Vulcano
+0x7531|Scambio in link
+0x7532|Scambio in link
+0x7533|Kanto
+0x7534|Johto
+0x7535|Hoenn
+0x7536|Sinnoh
+0x7537|Terra lontana
+0x7538|----------
+0x7539|Unima
+0x753a|Kalos
+0x753b|Pokémon Link
+0x753c|Pokémon GO
+0x753d|Kanto
+0x753e|Hoenn
+0x753f|Alola
+0x7540|Poké Resort
+0x7541|Johto
+0x9c41|Luogo grazioso
+0x9c42|Luogo remoto
+0x9c43|Film Pokémon
+0x9c44|Film Pokémon 2016
+0x9c45|Film Pokémon 2017
+0x9c46|Film Pokémon 2018
+0x9c47|Film Pokémon 2019
+0x9c48|Film Pokémon 2020
+0x9c49|Film Pokémon 2021
+0x9c4a|Pokémon Center
+0x9c4b|Cartone animato Pokémon
+0x9c4c|Pokémon Center MEGA TOKYO
+0x9c4d|Pokémon Center Osaka
+0x9c4e|Pokémon Center Fukuoka
+0x9c4f|Pokémon Center Nagoya
+0x9c50|Pokémon Center Sapporo
+0x9c51|Pokémon Center Yokohama
+0x9c52|Pokémon Center Tohoku
+0x9c53|Pokémon Center TOKYO-BAY
+0x9c54|Pokémon Center Hiroshima
+0x9c55|Pokémon Center Kyoto
+0x9c56|Pokémon Ctr. SKYTREE TOWN
+0x9c57|Pokémon Store
+0x9c58|WCS
+0x9c59|WCS 2016
+0x9c5a|WCS 2017
+0x9c5b|WCS 2018
+0x9c5c|WCS 2019
+0x9c5d|WCS 2020
+0x9c5e|WCS 2021
+0x9c5f|Worlds
+0x9c60|Worlds 2016
+0x9c61|Worlds 2017
+0x9c62|Worlds 2018
+0x9c63|Worlds 2019
+0x9c64|Worlds 2020
+0x9c65|Worlds 2021
+0x9c66|Evento di gioco
+0x9c67|Evento di gioco 2016
+0x9c68|Evento di gioco 2017
+0x9c69|Evento di gioco 2018
+0x9c6a|Evento di gioco 2019
+0x9c6b|Evento di gioco 2020
+0x9c6c|Evento di gioco 2021
+0x9c6d|Evento Pokémon
+0x9c6e|Gara
+0x9c6f|Evento di gioco
+0x9c70|Pokémon Daisuki Club
+0x9c71|Programma TV Pokémon
+0x9c72|Concerto
+0x9c73|Regalo online
+0x9c74|PGL
+0x9c75|Evento Pokémon 2016
+0x9c76|Evento Pokémon 2017
+0x9c77|Evento Pokémon 2018
+0x9c78|Evento Pokémon 2019
+0x9c79|Evento Pokémon 2020
+0x9c7a|Evento Pokémon 2021
+0x9c7b|Evento Pokémon
+0x9c7c|Evento Pokémon 2016
+0x9c7d|Evento Pokémon 2017
+0x9c7e|Evento Pokémon 2018
+0x9c7f|Evento Pokémon 2019
+0x9c80|Evento Pokémon 2020
+0x9c81|Evento Pokémon 2021
+0x9c82|PokéPark
+0x9c83|PokéPark 2016
+0x9c84|PokéPark 2017
+0x9c85|PokéPark 2018
+0x9c86|PokéPark 2019
+0x9c87|PokéPark 2020
+0x9c88|PokéPark 2021
+0x9c89|Evento
+0x9c8a|GAME FREAK
+0x9c8b|Stadio
+0x9c8c|VGC
+0x9c8d|VGC 2016
+0x9c8e|VGC 2017
+0x9c8f|VGC 2018
+0x9c90|VGC 2019
+0x9c91|VGC 2020
+0x9c92|VGC 2021
+0x9c93|Virtual Console
+0x9c94|Pokémon GO
+0x9c95|Banca Pokémon
+0x9c96|Negozio Pokémon
+0x9c97|Demo
+0x9c98|Club Allenatori di Pokémon
+0xea61|Persona lontana
+0xea62|Ostello Pokémon
+0xea63|Cercatesori
+0xea64|Vecchina delle terme

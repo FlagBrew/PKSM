@@ -152,19 +152,22 @@ void ConfigScreen::initButtons()
             currentTab = 0;
             return false;
         },
-        ui_sheet_res_null_idx, i18n::localize("LANGUAGE"), FONT_SIZE_11, COLOR_WHITE, ui_sheet_emulated_button_tab_unselected_idx, i18n::localize("LANGUAGE"), FONT_SIZE_11, COLOR_BLACK, &tabs, false));
+        ui_sheet_res_null_idx, i18n::localize("LANGUAGE"), FONT_SIZE_11, COLOR_WHITE, ui_sheet_emulated_button_tab_unselected_idx,
+        i18n::localize("LANGUAGE"), FONT_SIZE_11, COLOR_BLACK, &tabs, false));
     tabs.push_back(std::make_unique<ToggleButton>(108, 2, 104, 17,
         [&]() {
             currentTab = 1;
             return false;
         },
-        ui_sheet_res_null_idx, i18n::localize("DEFAULTS"), FONT_SIZE_11, COLOR_WHITE, ui_sheet_emulated_button_tab_unselected_idx, i18n::localize("DEFAULTS"), FONT_SIZE_11, COLOR_BLACK, &tabs, false));
+        ui_sheet_res_null_idx, i18n::localize("DEFAULTS"), FONT_SIZE_11, COLOR_WHITE, ui_sheet_emulated_button_tab_unselected_idx,
+        i18n::localize("DEFAULTS"), FONT_SIZE_11, COLOR_BLACK, &tabs, false));
     tabs.push_back(std::make_unique<ToggleButton>(215, 2, 104, 17,
         [&]() {
             currentTab = 2;
             return false;
         },
-        ui_sheet_res_null_idx, i18n::localize("MISC"), FONT_SIZE_11, COLOR_WHITE, ui_sheet_emulated_button_tab_unselected_idx, i18n::localize("MISC"), FONT_SIZE_11, COLOR_BLACK, &tabs, false));
+        ui_sheet_res_null_idx, i18n::localize("MISC"), FONT_SIZE_11, COLOR_WHITE, ui_sheet_emulated_button_tab_unselected_idx, i18n::localize("MISC"),
+        FONT_SIZE_11, COLOR_BLACK, &tabs, false));
     tabs[0]->setState(true);
 
     // First column of language buttons

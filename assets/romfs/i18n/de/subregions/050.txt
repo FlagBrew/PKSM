@@ -1,20 +1,20 @@
-000|—
-002|Montevideo
-003|Artigas
-004|Canelones
-005|Cerro Largo
-006|Colonia
-007|Durazno
-008|Flores
-009|Florida
-010|Lavalleja
-011|Maldonado
-012|Paysandú
-013|Río Negro
-014|Rivera
-015|Rocha
-016|Salto
-017|San José
-018|Soriano
-019|Tacuarembó
-020|Treinta y Tres
+0|—
+2|Montevideo
+3|Artigas
+4|Canelones
+5|Cerro Largo
+6|Colonia
+7|Durazno
+8|Flores
+9|Florida
+10|Lavalleja
+11|Maldonado
+12|Paysandú
+13|Río Negro
+14|Rivera
+15|Rocha
+16|Salto
+17|San José
+18|Soriano
+19|Tacuarembó
+20|Treinta y Tres

@@ -1,10 +1,10 @@
-000|—
-002|Gauteng
-003|Cabo Occidental
-004|Cabo Septentrional
-005|Cabo Oriental
-006|KwaZulu-Natal
-007|Estado Libre
-008|Noroeste
-009|Mpumalanga
-010|Limpopo
+0|—
+2|Gauteng
+3|Cabo Occidental
+4|Cabo Septentrional
+5|Cabo Oriental
+6|KwaZulu-Natal
+7|Estado Libre
+8|Noroeste
+9|Mpumalanga
+10|Limpopo

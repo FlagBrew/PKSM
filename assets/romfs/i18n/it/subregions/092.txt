@@ -1,2 +1,2 @@
-000|—
-001|Mozambico
+0|—
+1|Mozambico

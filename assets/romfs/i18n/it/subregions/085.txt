@@ -1,11 +1,11 @@
-000|—
-002|Maseru
-003|Berea
-004|Butha-Buthe
-005|Leribe
-006|Mafeteng
-007|Mohale's Hoek
-008|Mokhotlong
-009|Qacha's Nek
-010|Quthing
-011|Thaba-Tseka
+0|—
+2|Maseru
+3|Berea
+4|Butha-Buthe
+5|Leribe
+6|Mafeteng
+7|Mohale's Hoek
+8|Mokhotlong
+9|Qacha's Nek
+10|Quthing
+11|Thaba-Tseka

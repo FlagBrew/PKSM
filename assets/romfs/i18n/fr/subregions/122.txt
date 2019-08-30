@@ -1,2 +1,2 @@
-000|—
-001|Andorre
+0|—
+1|Andorre

@@ -1,23 +1,23 @@
-000|—
-002|Taipei
-003|Kaohsiung
-004|Keelung
-005|Hsinchu
-006|Taichung
-007|Chiayi
-008|Tainan
-009|Nouveau Taipei
-010|Taoyuan (comté de)
-011|Hsinchu (comté de)
-012|Miaoli (comté de)
-014|Changhua (comté de)
-015|Nantou (comté de)
-016|Yunlin (comté de)
-017|Chiayi (comté de)
-020|Pingtung (comté de)
-021|Ilan (comté de)
-022|Hualien (comté de)
-023|Taitung (comté de)
-024|Penghu (comté de)
-025|Kinmen (comté de)
-026|Lienchiang (comté de)
+0|—
+2|Taipei
+3|Kaohsiung
+4|Keelung
+5|Hsinchu
+6|Taichung
+7|Chiayi
+8|Tainan
+9|Nouveau Taipei
+10|Taoyuan (comté de)
+11|Hsinchu (comté de)
+12|Miaoli (comté de)
+14|Changhua (comté de)
+15|Nantou (comté de)
+16|Yunlin (comté de)
+17|Chiayi (comté de)
+20|Pingtung (comté de)
+21|Ilan (comté de)
+22|Hualien (comté de)
+23|Taitung (comté de)
+24|Penghu (comté de)
+25|Kinmen (comté de)
+26|Lienchiang (comté de)

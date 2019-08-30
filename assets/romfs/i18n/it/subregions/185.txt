@@ -1,2 +1,2 @@
-000|—
-001|Vaticano (Città del)
+0|—
+1|Vaticano (Città del)

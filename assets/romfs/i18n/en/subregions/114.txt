@@ -1,2 +1,2 @@
-000|—
-001|Mauritania
+0|—
+1|Mauritania

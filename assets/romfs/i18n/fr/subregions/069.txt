@@ -1,2 +1,2 @@
-000|—
-001|Botswana
+0|—
+1|Botswana

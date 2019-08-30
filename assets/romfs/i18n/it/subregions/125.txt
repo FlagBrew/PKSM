@@ -1,2 +1,2 @@
-000|—
-001|Isola di Man
+0|—
+1|Isola di Man

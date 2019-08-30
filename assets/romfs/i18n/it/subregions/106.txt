@@ -1,5 +1,5 @@
-000|—
-002|Hhohho
-003|Lubombo
-004|Manzini
-005|Shiselweni
+0|—
+2|Hhohho
+3|Lubombo
+4|Manzini
+5|Shiselweni

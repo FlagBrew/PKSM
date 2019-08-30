@@ -1,2 +1,2 @@
-000|—
-001|Niederländische Antillen
+0|—
+1|Niederländische Antillen

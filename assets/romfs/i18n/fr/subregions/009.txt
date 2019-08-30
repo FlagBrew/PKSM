@@ -1,8 +1,8 @@
-000|—
-002|Saint-Jean
-003|Barbuda
-004|Saint-Georges
-005|Sainte-Marie
-006|Saint-Paul
-007|Saint-Pierre
-008|Saint-Philippe
+0|—
+2|Saint-Jean
+3|Barbuda
+4|Saint-Georges
+5|Sainte-Marie
+6|Saint-Paul
+7|Saint-Pierre
+8|Saint-Philippe

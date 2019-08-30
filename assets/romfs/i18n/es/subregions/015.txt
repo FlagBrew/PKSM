@@ -1,10 +1,10 @@
-000|—
-002|La Paz
-003|Chuquisaca
-004|Cochabamba
-005|El Beni
-006|Oruro
-007|Pando
-008|Potosí
-009|Santa Cruz
-010|Tarija
+0|—
+2|La Paz
+3|Chuquisaca
+4|Cochabamba
+5|El Beni
+6|Oruro
+7|Pando
+8|Potosí
+9|Santa Cruz
+10|Tarija

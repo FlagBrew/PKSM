@@ -26,7 +26,6 @@
 
 #include "LanguageStrings.hpp"
 #include "utils.hpp"
-#include <stdio.h>
 
 static nlohmann::json& formJson()
 {
@@ -35,11 +34,14 @@ static nlohmann::json& formJson()
     if (first)
     {
         FILE* in = fopen("romfs:/i18n/forms.json", "rt");
-        if (!ferror(in))
+        if (in)
         {
-            forms = nlohmann::json::parse(in, nullptr, false);
+            if (!ferror(in))
+            {
+                forms = nlohmann::json::parse(in, nullptr, false);
+            }
+            fclose(in);
         }
-        fclose(in);
         first = false;
     }
     return forms;
@@ -89,19 +91,19 @@ LanguageStrings::LanguageStrings(Language lang)
     load(lang, "/natures.txt", natures);
     load(lang, "/species.txt", speciess);
     load(lang, "/games.txt", games);
-    loadMap(lang, "/locations4.txt", locations4);
-    loadMap(lang, "/locations5.txt", locations5);
-    loadMap(lang, "/locations6.txt", locations6);
-    loadMap(lang, "/locations7.txt", locations7);
-    loadMap(lang, "/locationsLGPE.txt", locationsLGPE);
+    load(lang, "/locations4.txt", locations4);
+    load(lang, "/locations5.txt", locations5);
+    load(lang, "/locations6.txt", locations6);
+    load(lang, "/locations7.txt", locations7);
+    load(lang, "/locationsLGPE.txt", locationsLGPE);
     countries = {};
-    loadMap(lang, "/countries.txt", countries);
+    load(lang, "/countries.txt", countries);
     for (auto i = countries.begin(); i != countries.end(); i++)
     {
         subregions[i->first] = {};
-        loadMap(lang, StringUtils::format("/subregions/%03i.txt", (int)i->first), subregions[i->first]);
+        load(lang, StringUtils::format("/subregions/%03i.txt", (int)i->first), subregions[i->first]);
     }
-    loadJson(lang, "/gui.json", gui);
+    load(lang, "/gui.json", gui);
 }
 
 void LanguageStrings::load(Language lang, const std::string& name, std::vector<std::string>& array)
@@ -111,105 +113,45 @@ void LanguageStrings::load(Language lang, const std::string& name, std::vector<s
 
     std::string tmp;
     FILE* values = fopen(path.c_str(), "rt");
-    if (ferror(values))
+    if (values)
     {
+        if (ferror(values))
+        {
+            fclose(values);
+            return;
+        }
+        char* data  = (char*)malloc(128);
+        size_t size = 0;
+        while (!feof(values) && !ferror(values))
+        {
+            size = std::max(size, (size_t)128);
+            if (__getline(&data, &size, values) >= 0)
+            {
+                tmp = std::string(data);
+                tmp = tmp.substr(0, tmp.find('\n'));
+                array.emplace_back(tmp.substr(0, tmp.find('\r')));
+            }
+            else
+            {
+                break;
+            }
+        }
         fclose(values);
-        return;
+        free(data);
     }
-    char* data  = (char*)malloc(128);
-    size_t size = 0;
-    while (!feof(values) && !ferror(values))
-    {
-        size = std::max(size, (size_t)128);
-        if (__getline(&data, &size, values) >= 0)
-        {
-            tmp = std::string(data);
-            tmp = tmp.substr(0, tmp.find('\n'));
-            array.emplace_back(tmp.substr(0, tmp.find('\r')));
-        }
-        else
-        {
-            break;
-        }
-    }
-    fclose(values);
-    free(data);
 }
 
-void LanguageStrings::loadMap(Language lang, const std::string& name, std::map<u16, std::string>& map)
-{
-    static const std::string base = "romfs:/i18n/";
-    std::string path              = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
-
-    std::string tmp;
-    FILE* values = fopen(path.c_str(), "rt");
-    if (ferror(values))
-    {
-        fclose(values);
-        return;
-    }
-    char* data  = (char*)malloc(128);
-    size_t size = 0;
-    while (!feof(values) && !ferror(values))
-    {
-        size = std::max(size, (size_t)128);
-        if (__getline(&data, &size, values) >= 0)
-        {
-            tmp      = std::string(data);
-            tmp      = tmp.substr(0, tmp.find('\n'));
-            u16 val  = std::stoi(tmp.substr(0, tmp.find('|')), 0, 16);
-            map[val] = tmp.substr(0, tmp.find('\r')).substr(tmp.find('|') + 1);
-        }
-        else
-        {
-            break;
-        }
-    }
-    fclose(values);
-    free(data);
-}
-
-void LanguageStrings::loadMap(Language lang, const std::string& name, std::map<u8, std::string>& map)
-{
-    static const std::string base = "romfs:/i18n/";
-    std::string path              = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
-
-    std::string tmp;
-    FILE* values = fopen(path.c_str(), "rt");
-    if (ferror(values))
-    {
-        fclose(values);
-        return;
-    }
-    char* data  = (char*)malloc(128);
-    size_t size = 0;
-    while (!feof(values) && !ferror(values))
-    {
-        size = std::max(size, (size_t)128);
-        if (__getline(&data, &size, values) >= 0)
-        {
-            tmp      = std::string(data);
-            tmp      = tmp.substr(0, tmp.find('\n'));
-            u8 val   = std::stoi(tmp.substr(0, tmp.find('|')), 0, 10);
-            map[val] = tmp.substr(0, tmp.find('\r')).substr(tmp.find('|') + 1);
-        }
-        else
-        {
-            break;
-        }
-    }
-    fclose(values);
-    free(data);
-}
-
-void LanguageStrings::loadJson(Language lang, const std::string& name, nlohmann::json& json)
+void LanguageStrings::load(Language lang, const std::string& name, nlohmann::json& json)
 {
     static const std::string base = "romfs:/i18n/";
     std::string path              = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
 
     FILE* values = fopen(path.c_str(), "rt");
-    json         = nlohmann::json::parse(values, nullptr, false);
-    fclose(values);
+    if (values)
+    {
+        json         = nlohmann::json::parse(values, nullptr, false);
+        fclose(values);
+    }
 }
 
 const std::string& LanguageStrings::ability(u8 v) const

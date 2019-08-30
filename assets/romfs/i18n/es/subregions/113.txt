@@ -1,2 +1,2 @@
-000|—
-001|Azerbaiyán
+0|—
+1|Azerbaiyán

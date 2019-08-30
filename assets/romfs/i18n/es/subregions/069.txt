@@ -1,2 +1,2 @@
-000|—
-001|Botsuana
+0|—
+1|Botsuana

@@ -1,4 +1,4 @@
-000|—
-002|Fédération de Bosnie-Herzégovine
-003|République serbe de Bosnie
-004|Brčko (district)
+0|—
+2|Fédération de Bosnie-Herzégovine
+3|République serbe de Bosnie
+4|Brčko (district)

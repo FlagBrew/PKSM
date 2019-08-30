@@ -1,2 +1,2 @@
-000|—
-001|French Guiana
+0|—
+1|French Guiana

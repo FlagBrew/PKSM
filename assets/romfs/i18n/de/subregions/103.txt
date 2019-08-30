@@ -1,2 +1,2 @@
-000|—
-001|Slowenien
+0|—
+1|Slowenien

@@ -1,8 +1,8 @@
-000|—
-002|Abu Dhabi
-003|Adschman
-004|Schardscha
-005|Ras al-Chaima
-006|Dubai
-007|Fudschaira
-008|Umm al-Qaiwain
+0|—
+2|Abu Dhabi
+3|Adschman
+4|Schardscha
+5|Ras al-Chaima
+6|Dubai
+7|Fudschaira
+8|Umm al-Qaiwain

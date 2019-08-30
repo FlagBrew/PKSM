@@ -1,34 +1,34 @@
-000|—
-002|Distretto Capitale
-003|Cundinamarca
-004|Amazonas
-005|Antioquia
-006|Arauca
-007|Atlántico
-008|Bolívar
-009|Boyacá
-010|Caldas
-011|Caquetá
-012|Cauca
-013|Cesar
-014|Chocó
-015|Córdoba
-016|Guaviare
-017|Guainía
-018|Huila
-019|La Guajira
-020|Magdalena
-021|Meta
-022|Nariño
-023|Norte de Santander
-024|Putumayo
-025|Quindío
-026|Risaralda
-027|" Providencia et Santa Cataline"
-028|Santander
-029|Sucre
-030|Tolima
-031|Valle del Cauca
-032|Vaupés
-033|Vichada
-034|Casanare
+0|—
+2|Distretto Capitale
+3|Cundinamarca
+4|Amazonas
+5|Antioquia
+6|Arauca
+7|Atlántico
+8|Bolívar
+9|Boyacá
+10|Caldas
+11|Caquetá
+12|Cauca
+13|Cesar
+14|Chocó
+15|Córdoba
+16|Guaviare
+17|Guainía
+18|Huila
+19|La Guajira
+20|Magdalena
+21|Meta
+22|Nariño
+23|Norte de Santander
+24|Putumayo
+25|Quindío
+26|Risaralda
+27|" Providencia et Santa Cataline"
+28|Santander
+29|Sucre
+30|Tolima
+31|Valle del Cauca
+32|Vaupés
+33|Vichada
+34|Casanare

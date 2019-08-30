@@ -1,2 +1,2 @@
-000|—
-001|Lettland
+0|—
+1|Lettland

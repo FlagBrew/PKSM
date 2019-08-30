@@ -1,2 +1,2 @@
-000|—
-001|San Marino
+0|—
+1|San Marino

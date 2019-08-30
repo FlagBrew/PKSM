@@ -1,2 +1,2 @@
-000|—
-001|Islanda
+0|—
+1|Islanda

@@ -1,84 +1,84 @@
-000|—
-009|Moskau (Stadt)
-010|Republik Adygeja
-011|Republik Altai
-012|Region Altai
-013|Oblast Amur
-014|Oblast Archangelsk
-015|Oblast Astrachan
-016|Republik Baschkortostan
-017|Oblast Belgorod
-018|Oblast Brjansk
-019|Republik Burjatien
-020|Republik Tschetschenien
-021|Oblast Tscheljabinsk
-022|Autonomer Kreis der Tschuktschen
-023|Republik Tschuwaschien
-024|Republik Dagestan
-025|Republik Inguschetien
-026|Oblast Irkutsk
-027|Oblast Iwanowo
-028|Republik Kabardino-Balkarien
-029|Oblast Kaliningrad
-030|Republik Kalmückien
-031|Oblast Kaluga
-032|Region Kamtschatka
-033|Republik Karatschai-Tscherkessien
-034|Republik Karelien
-035|Oblast Kemerowo
-036|Region Chabarowsk
-037|Republik Chakassien
-038|Autonomer Kreis der Chanten und Mansen
-039|Oblast Kirow
-040|Republik Komi
-041|Oblast Kostroma
-042|Region Krasnodar
-043|Region Krasnojarsk
-044|Oblast Kurgan
-045|Oblast Kursk
-046|Oblast Leningrad
-047|Oblast Lipezk
-048|Oblast Magadan
-049|Republik Mari El
-050|Republik Mordwinien
-051|Oblast Moskau
-052|Oblast Murmansk
-053|Autonomer Kreis der Nenzen
-054|Oblast Nischni Nowgorod
-055|Oblast Nowgorod
-056|Oblast Nowosibirsk
-057|Oblast Omsk
-058|Oblast Orenburg
-059|Oblast Orjol
-060|Oblast Pensa
-061|Region Perm
-062|Region Primorje
-063|Oblast Pskow
-064|Oblast Rostow
-065|Oblast Rjasan
-066|Republik Sacha (Jakutien)
-067|Oblast Sachalin
-068|Oblast Samara
-069|Sankt Petersburg
-070|Oblast Saratow
-071|Republik Nordossetien-Alanien
-072|Oblast Smolensk
-073|Region Stawropol
-074|Oblast Swerdlowsk
-075|Oblast Tambow
-076|Republik Tatarstan
-077|Oblast Tomsk
-078|Oblast Tula
-079|Oblast Twer
-080|Oblast Tjumen
-081|Republik Tuwa
-082|Republik Udmurtien
-083|Oblast Uljanowsk
-084|Oblast Wladimir
-085|Oblast Wolgograd
-086|Oblast Wologda
-087|Oblast Woronesch
-088|Autonomer Kreis der Jamal-Nenzen
-089|Oblast Jaroslawl
-090|Jüdisches Autonomes Gebiet
-091|Region Transbaikalien
+0|—
+9|Moskau (Stadt)
+10|Republik Adygeja
+11|Republik Altai
+12|Region Altai
+13|Oblast Amur
+14|Oblast Archangelsk
+15|Oblast Astrachan
+16|Republik Baschkortostan
+17|Oblast Belgorod
+18|Oblast Brjansk
+19|Republik Burjatien
+20|Republik Tschetschenien
+21|Oblast Tscheljabinsk
+22|Autonomer Kreis der Tschuktschen
+23|Republik Tschuwaschien
+24|Republik Dagestan
+25|Republik Inguschetien
+26|Oblast Irkutsk
+27|Oblast Iwanowo
+28|Republik Kabardino-Balkarien
+29|Oblast Kaliningrad
+30|Republik Kalmückien
+31|Oblast Kaluga
+32|Region Kamtschatka
+33|Republik Karatschai-Tscherkessien
+34|Republik Karelien
+35|Oblast Kemerowo
+36|Region Chabarowsk
+37|Republik Chakassien
+38|Autonomer Kreis der Chanten und Mansen
+39|Oblast Kirow
+40|Republik Komi
+41|Oblast Kostroma
+42|Region Krasnodar
+43|Region Krasnojarsk
+44|Oblast Kurgan
+45|Oblast Kursk
+46|Oblast Leningrad
+47|Oblast Lipezk
+48|Oblast Magadan
+49|Republik Mari El
+50|Republik Mordwinien
+51|Oblast Moskau
+52|Oblast Murmansk
+53|Autonomer Kreis der Nenzen
+54|Oblast Nischni Nowgorod
+55|Oblast Nowgorod
+56|Oblast Nowosibirsk
+57|Oblast Omsk
+58|Oblast Orenburg
+59|Oblast Orjol
+60|Oblast Pensa
+61|Region Perm
+62|Region Primorje
+63|Oblast Pskow
+64|Oblast Rostow
+65|Oblast Rjasan
+66|Republik Sacha (Jakutien)
+67|Oblast Sachalin
+68|Oblast Samara
+69|Sankt Petersburg
+70|Oblast Saratow
+71|Republik Nordossetien-Alanien
+72|Oblast Smolensk
+73|Region Stawropol
+74|Oblast Swerdlowsk
+75|Oblast Tambow
+76|Republik Tatarstan
+77|Oblast Tomsk
+78|Oblast Tula
+79|Oblast Twer
+80|Oblast Tjumen
+81|Republik Tuwa
+82|Republik Udmurtien
+83|Oblast Uljanowsk
+84|Oblast Wladimir
+85|Oblast Wolgograd
+86|Oblast Wologda
+87|Oblast Woronesch
+88|Autonomer Kreis der Jamal-Nenzen
+89|Oblast Jaroslawl
+90|Jüdisches Autonomes Gebiet
+91|Region Transbaikalien

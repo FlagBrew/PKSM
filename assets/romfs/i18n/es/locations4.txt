@@ -1,327 +1,327 @@
-0000|Lugar misterioso
-0001|Pueblo Hojaverde
-0002|Pueblo Arena
-0003|Pueblo Aromaflor
-0004|Pueblo Sosiego
-0005|Pueblo Caelestis
-0006|Ciudad Jubileo
-0007|Ciudad Canal
-0008|Ciudad Pirita
-0009|Ciudad Vetusta
-000a|Ciudad Corazón
-000b|Ciudad Pradera
-000c|Ciudad Rocavelo
-000d|Ciudad Marina
-000e|Ciudad Puntaneva
-000f|Liga Pokémon
-0010|Ruta 201
-0011|Ruta 202
-0012|Ruta 203
-0013|Ruta 204
-0014|Ruta 205
-0015|Ruta 206
-0016|Ruta 207
-0017|Ruta 208
-0018|Ruta 209
-0019|Ruta 210
-001a|Ruta 211
-001b|Ruta 212
-001c|Ruta 213
-001d|Ruta 214
-001e|Ruta 215
-001f|Ruta 216
-0020|Ruta 217
-0021|Ruta 218
-0022|Ruta 219
-0023|Ruta 220
-0024|Ruta 221
-0025|Ruta 222
-0026|Ruta 223
-0027|Ruta 224
-0028|Ruta 225
-0029|Ruta 226
-002a|Ruta 227
-002b|Ruta 228
-002c|Ruta 229
-002d|Ruta 230
-002e|Mina Pirita
-002f|Valle Eólico
-0030|Bosque Vetusto
-0031|Forja Fuego
-0032|Monte Corona
-0033|Columna Lanza
-0034|Gran Pantano
-0035|Ruinas Sosiego
-0036|Calle Victoria
-0037|Parque Compi
-0038|Plaza Amistad
-0039|Senda Desolada
-003a|Prado Aromaflor
-003b|Puerta Pirita
-003c|Isla Plenilunio
-003d|Fuente Despedida
-003e|Cueva Retorno
-003f|Paraíso Floral
-0040|Templo Puntaneva
-0041|Cueva Extravío
-0042|Mina Ruinamaníaco
-0043|Túnel Maníaco
-0044|Jardín Trofeo
-0045|Isla Hierro
-0046|Vieja Mansión
-0047|Base Galaxia
-0048|Orilla Veraz
-0049|Orilla Valor
-004a|Orilla Agudeza
-004b|Vía Manantial
-004c|Lago Veraz
-004d|Lago Valor
-004e|Lago Agudeza
-004f|Isla Lunanueva
-0050|Torre Batalla
-0051|Zona de Combate
-0052|Zona Sobrevivir
-0053|Zona de Descanso
-0054|Montaña Dura
-0055|Vía Costera
-0056|Sala del Origen
-0057|Caverna Veraz
-0058|Caverna Valor
-0059|Caverna Agudeza
-005a|Jubileo TV
-005b|Poké-reloj S.A.
-005c|GTS
-005d|Dojo PKMN
-005e|Museo Minero
-005f|Floristería
-0060|Tienda de Bicis
-0061|Auditorio
-0062|Pokochería
-0063|Templo
-0064|Guardería PKMN
-0065|C. C. Rocavelo
-0066|Casino
-0067|Biblioteca Canal
-0068|Faro Visión
-0069|Mercado Marino
-006a|Mansión Pokémon
-006b|Casa Huellas
-006c|Cafetería
-006d|Gran Lago
-006e|Restaurante
-006f|Parque Batalla
-0070|Frente Batalla
-0071|Fábrica Batalla
-0072|Castillo Batalla
-0073|Ruleta Batalla
-0074|Sala Batalla
-0075|Mundo Distorsión
-0076|Terminal Global
-0077|Mansión
-0078|Café Revancha
-0079|Sala de ROTOM
-007a|Edificio Galaxia
-007b|Ruinas Hierro
-007c|Ruinas Iceberg
-007d|Ruinas Pico Roca
-007e|Pueblo Primavera
-007f|Ciudad Cerezo
-0080|Ciudad Malva
-0081|Pueblo Azalea
-0082|Ciudad Orquídea
-0083|Ciudad Trigal
-0084|Ciudad Olivo
-0085|Ciudad Iris
-0086|Pueblo Caoba
-0087|Lago de la Furia
-0088|Ciudad Endrino
-0089|Monte Plateado
-008a|Pueblo Paleta
-008b|Ciudad Verde
-008c|Ciudad Plateada
-008d|Ciudad Celeste
-008e|Pueblo Lavanda
-008f|Ciudad Carmín
-0090|Ciudad Azulona
-0091|Ciudad Fucsia
-0092|Isla Canela
-0093|Meseta Añil
-0094|Ciudad Azafrán
-0095|Ruta 1
-0096|Ruta 2
-0097|Ruta 3
-0098|Ruta 4
-0099|Ruta 5
-009a|Ruta 6
-009b|Ruta 7
-009c|Ruta 8
-009d|Ruta 9
-009e|Ruta 10
-009f|Ruta 11
-00a0|Ruta 12
-00a1|Ruta 13
-00a2|Ruta 14
-00a3|Ruta 15
-00a4|Ruta 16
-00a5|Ruta 17
-00a6|Ruta 18
-00a7|Ruta 19
-00a8|Ruta 20
-00a9|Ruta 21
-00aa|Ruta 22
-00ab|Ruta 23
-00ac|Ruta 24
-00ad|Ruta 25
-00ae|Ruta 26
-00af|Ruta 27
-00b0|Ruta 28
-00b1|Ruta 29
-00b2|Ruta 30
-00b3|Ruta 31
-00b4|Ruta 32
-00b5|Ruta 33
-00b6|Ruta 34
-00b7|Ruta 35
-00b8|Ruta 36
-00b9|Ruta 37
-00ba|Ruta 38
-00bb|Ruta 39
-00bc|Ruta 40
-00bd|Ruta 41
-00be|Ruta 42
-00bf|Ruta 43
-00c0|Ruta 44
-00c1|Ruta 45
-00c2|Ruta 46
-00c3|Ruta 47
-00c4|Ruta 48
-00c5|Cueva DIGLETT
-00c6|Mt. Moon
-00c7|Cueva Celeste
-00c8|Túnel Roca
-00c9|Central Energía
-00ca|Zona Safari
-00cb|Islas Espuma
-00cc|Torre BELLSPROUT
-00cd|Torre Campana
-00ce|Torre Quemada
-00cf|Parque Nacional
-00d0|Torre Radio
-00d1|Ruinas Alfa
-00d2|Cueva Unión
-00d3|Pozo SLOWPOKE
-00d4|Faro
-00d5|Escon. T. Rocket
-00d6|Encinar
-00d7|Túnel Trigal
-00d8|Mt. Mortero
-00d9|Ruta Helada
-00da|Islas Remolino
-00db|Cueva M Plateado
-00dc|Cueva Oscura
-00dd|Calle Victoria
-00de|Guarida Dragón
-00df|Cataratas Tohjo
-00e0|Bosque Verde
-00e1|Carpa Pokéathlon
-00e2|S.S. Aqua
-00e3|Entrada Safari
-00e4|Cueva Acantilado
-00e5|Acceso al Frente
-00e6|Senda Dindón
-00e7|Ruinas de Sinjoh
-00e8|Torre Oculta
-00e9|Pokéwalker
-00ea|Paso Acantilado
-07d0|Pareja guardería
-07d1|Intercambio
-07d2|Intercambio
-07d3|Kanto
-07d4|Johto
-07d5|Hoenn
-07d6|Sinnoh
-07d7|----------
-07d8|Tierra lejana
-07d9|Viajero
-07da|Quinoa
-07db|Cintia
-07dc|Lugar misterioso
-07dd|Sr. Pokémon
-07de|Cástor
-0bb8|Lugar encantador
-0bb9|Pokémon Ranger
-0bba|Lugar lejano
-0bbb|Película Pokémon
-0bbc|Película PKMN 06
-0bbd|Película PKMN 07
-0bbe|Película PKMN 08
-0bbf|Película PKMN 09
-0bc0|Película PKMN 10
-0bc1|Película PKMN 11
-0bc2|Película PKMN 12
-0bc3|Película PKMN 13
-0bc4|Película PKMN 14
-0bc5|Película PKMN 15
-0bc6|Película PKMN 16
-0bc7|Animación PKMN
-0bc8|Space World
-0bc9|Space World 06
-0bca|Space World 07
-0bcb|Space World 08
-0bcc|Space World 09
-0bcd|Space World 10
-0bce|Space World 11
-0bcf|Space World 12
-0bd0|Space World 13
-0bd1|Space World 14
-0bd2|Space World 15
-0bd3|Space World 16
-0bd4|Pokémon Festa
-0bd5|Pokémon Festa 06
-0bd6|Pokémon Festa 07
-0bd7|Pokémon Festa 08
-0bd8|Pokémon Festa 09
-0bd9|Pokémon Festa 10
-0bda|Pokémon Festa 11
-0bdb|Pokémon Festa 12
-0bdc|Pokémon Festa 13
-0bdd|Pokémon Festa 14
-0bde|Pokémon Festa 15
-0bdf|Pokémon Festa 16
-0be0|POKéPARK
-0be1|POKéPARK 06
-0be2|POKéPARK 07
-0be3|POKéPARK 08
-0be4|POKéPARK 09
-0be5|POKéPARK 10
-0be6|POKéPARK 11
-0be7|POKéPARK 12
-0be8|POKéPARK 13
-0be9|POKéPARK 14
-0bea|POKéPARK 15
-0beb|POKéPARK 16
-0bec|Pokémon Center
-0bed|PC Tokio
-0bee|PC Osaka
-0bef|PC Fukuoka
-0bf0|PC Nagoya
-0bf1|PC Sapporo
-0bf2|PC Yokohama
-0bf3|Nintendo World
-0bf4|Evento PKMN
-0bf5|Evento PKMN 06
-0bf6|Evento PKMN 07
-0bf7|Evento PKMN 08
-0bf8|Evento PKMN 09
-0bf9|Evento PKMN 10
-0bfa|Evento PKMN 11
-0bfb|Evento PKMN 12
-0bfc|Evento PKMN 13
-0bfd|Evento PKMN 14
-0bfe|Evento PKMN 15
-0bff|Evento PKMN 16
-0c00|Evento Wi-Fi
-0c01|Regalo Wi-Fi
-0c02|Club fans PKMN
-0c03|Sitio Evento
-0c04|Concierto Evento
+0x0000|Lugar misterioso
+0x0001|Pueblo Hojaverde
+0x0002|Pueblo Arena
+0x0003|Pueblo Aromaflor
+0x0004|Pueblo Sosiego
+0x0005|Pueblo Caelestis
+0x0006|Ciudad Jubileo
+0x0007|Ciudad Canal
+0x0008|Ciudad Pirita
+0x0009|Ciudad Vetusta
+0x000a|Ciudad Corazón
+0x000b|Ciudad Pradera
+0x000c|Ciudad Rocavelo
+0x000d|Ciudad Marina
+0x000e|Ciudad Puntaneva
+0x000f|Liga Pokémon
+0x0010|Ruta 201
+0x0011|Ruta 202
+0x0012|Ruta 203
+0x0013|Ruta 204
+0x0014|Ruta 205
+0x0015|Ruta 206
+0x0016|Ruta 207
+0x0017|Ruta 208
+0x0018|Ruta 209
+0x0019|Ruta 210
+0x001a|Ruta 211
+0x001b|Ruta 212
+0x001c|Ruta 213
+0x001d|Ruta 214
+0x001e|Ruta 215
+0x001f|Ruta 216
+0x0020|Ruta 217
+0x0021|Ruta 218
+0x0022|Ruta 219
+0x0023|Ruta 220
+0x0024|Ruta 221
+0x0025|Ruta 222
+0x0026|Ruta 223
+0x0027|Ruta 224
+0x0028|Ruta 225
+0x0029|Ruta 226
+0x002a|Ruta 227
+0x002b|Ruta 228
+0x002c|Ruta 229
+0x002d|Ruta 230
+0x002e|Mina Pirita
+0x002f|Valle Eólico
+0x0030|Bosque Vetusto
+0x0031|Forja Fuego
+0x0032|Monte Corona
+0x0033|Columna Lanza
+0x0034|Gran Pantano
+0x0035|Ruinas Sosiego
+0x0036|Calle Victoria
+0x0037|Parque Compi
+0x0038|Plaza Amistad
+0x0039|Senda Desolada
+0x003a|Prado Aromaflor
+0x003b|Puerta Pirita
+0x003c|Isla Plenilunio
+0x003d|Fuente Despedida
+0x003e|Cueva Retorno
+0x003f|Paraíso Floral
+0x0040|Templo Puntaneva
+0x0041|Cueva Extravío
+0x0042|Mina Ruinamaníaco
+0x0043|Túnel Maníaco
+0x0044|Jardín Trofeo
+0x0045|Isla Hierro
+0x0046|Vieja Mansión
+0x0047|Base Galaxia
+0x0048|Orilla Veraz
+0x0049|Orilla Valor
+0x004a|Orilla Agudeza
+0x004b|Vía Manantial
+0x004c|Lago Veraz
+0x004d|Lago Valor
+0x004e|Lago Agudeza
+0x004f|Isla Lunanueva
+0x0050|Torre Batalla
+0x0051|Zona de Combate
+0x0052|Zona Sobrevivir
+0x0053|Zona de Descanso
+0x0054|Montaña Dura
+0x0055|Vía Costera
+0x0056|Sala del Origen
+0x0057|Caverna Veraz
+0x0058|Caverna Valor
+0x0059|Caverna Agudeza
+0x005a|Jubileo TV
+0x005b|Poké-reloj S.A.
+0x005c|GTS
+0x005d|Dojo PKMN
+0x005e|Museo Minero
+0x005f|Floristería
+0x0060|Tienda de Bicis
+0x0061|Auditorio
+0x0062|Pokochería
+0x0063|Templo
+0x0064|Guardería PKMN
+0x0065|C. C. Rocavelo
+0x0066|Casino
+0x0067|Biblioteca Canal
+0x0068|Faro Visión
+0x0069|Mercado Marino
+0x006a|Mansión Pokémon
+0x006b|Casa Huellas
+0x006c|Cafetería
+0x006d|Gran Lago
+0x006e|Restaurante
+0x006f|Parque Batalla
+0x0070|Frente Batalla
+0x0071|Fábrica Batalla
+0x0072|Castillo Batalla
+0x0073|Ruleta Batalla
+0x0074|Sala Batalla
+0x0075|Mundo Distorsión
+0x0076|Terminal Global
+0x0077|Mansión
+0x0078|Café Revancha
+0x0079|Sala de ROTOM
+0x007a|Edificio Galaxia
+0x007b|Ruinas Hierro
+0x007c|Ruinas Iceberg
+0x007d|Ruinas Pico Roca
+0x007e|Pueblo Primavera
+0x007f|Ciudad Cerezo
+0x0080|Ciudad Malva
+0x0081|Pueblo Azalea
+0x0082|Ciudad Orquídea
+0x0083|Ciudad Trigal
+0x0084|Ciudad Olivo
+0x0085|Ciudad Iris
+0x0086|Pueblo Caoba
+0x0087|Lago de la Furia
+0x0088|Ciudad Endrino
+0x0089|Monte Plateado
+0x008a|Pueblo Paleta
+0x008b|Ciudad Verde
+0x008c|Ciudad Plateada
+0x008d|Ciudad Celeste
+0x008e|Pueblo Lavanda
+0x008f|Ciudad Carmín
+0x0090|Ciudad Azulona
+0x0091|Ciudad Fucsia
+0x0092|Isla Canela
+0x0093|Meseta Añil
+0x0094|Ciudad Azafrán
+0x0095|Ruta 1
+0x0096|Ruta 2
+0x0097|Ruta 3
+0x0098|Ruta 4
+0x0099|Ruta 5
+0x009a|Ruta 6
+0x009b|Ruta 7
+0x009c|Ruta 8
+0x009d|Ruta 9
+0x009e|Ruta 10
+0x009f|Ruta 11
+0x00a0|Ruta 12
+0x00a1|Ruta 13
+0x00a2|Ruta 14
+0x00a3|Ruta 15
+0x00a4|Ruta 16
+0x00a5|Ruta 17
+0x00a6|Ruta 18
+0x00a7|Ruta 19
+0x00a8|Ruta 20
+0x00a9|Ruta 21
+0x00aa|Ruta 22
+0x00ab|Ruta 23
+0x00ac|Ruta 24
+0x00ad|Ruta 25
+0x00ae|Ruta 26
+0x00af|Ruta 27
+0x00b0|Ruta 28
+0x00b1|Ruta 29
+0x00b2|Ruta 30
+0x00b3|Ruta 31
+0x00b4|Ruta 32
+0x00b5|Ruta 33
+0x00b6|Ruta 34
+0x00b7|Ruta 35
+0x00b8|Ruta 36
+0x00b9|Ruta 37
+0x00ba|Ruta 38
+0x00bb|Ruta 39
+0x00bc|Ruta 40
+0x00bd|Ruta 41
+0x00be|Ruta 42
+0x00bf|Ruta 43
+0x00c0|Ruta 44
+0x00c1|Ruta 45
+0x00c2|Ruta 46
+0x00c3|Ruta 47
+0x00c4|Ruta 48
+0x00c5|Cueva DIGLETT
+0x00c6|Mt. Moon
+0x00c7|Cueva Celeste
+0x00c8|Túnel Roca
+0x00c9|Central Energía
+0x00ca|Zona Safari
+0x00cb|Islas Espuma
+0x00cc|Torre BELLSPROUT
+0x00cd|Torre Campana
+0x00ce|Torre Quemada
+0x00cf|Parque Nacional
+0x00d0|Torre Radio
+0x00d1|Ruinas Alfa
+0x00d2|Cueva Unión
+0x00d3|Pozo SLOWPOKE
+0x00d4|Faro
+0x00d5|Escon. T. Rocket
+0x00d6|Encinar
+0x00d7|Túnel Trigal
+0x00d8|Mt. Mortero
+0x00d9|Ruta Helada
+0x00da|Islas Remolino
+0x00db|Cueva M Plateado
+0x00dc|Cueva Oscura
+0x00dd|Calle Victoria
+0x00de|Guarida Dragón
+0x00df|Cataratas Tohjo
+0x00e0|Bosque Verde
+0x00e1|Carpa Pokéathlon
+0x00e2|S.S. Aqua
+0x00e3|Entrada Safari
+0x00e4|Cueva Acantilado
+0x00e5|Acceso al Frente
+0x00e6|Senda Dindón
+0x00e7|Ruinas de Sinjoh
+0x00e8|Torre Oculta
+0x00e9|Pokéwalker
+0x00ea|Paso Acantilado
+0x07d0|Pareja guardería
+0x07d1|Intercambio
+0x07d2|Intercambio
+0x07d3|Kanto
+0x07d4|Johto
+0x07d5|Hoenn
+0x07d6|Sinnoh
+0x07d7|----------
+0x07d8|Tierra lejana
+0x07d9|Viajero
+0x07da|Quinoa
+0x07db|Cintia
+0x07dc|Lugar misterioso
+0x07dd|Sr. Pokémon
+0x07de|Cástor
+0x0bb8|Lugar encantador
+0x0bb9|Pokémon Ranger
+0x0bba|Lugar lejano
+0x0bbb|Película Pokémon
+0x0bbc|Película PKMN 06
+0x0bbd|Película PKMN 07
+0x0bbe|Película PKMN 08
+0x0bbf|Película PKMN 09
+0x0bc0|Película PKMN 10
+0x0bc1|Película PKMN 11
+0x0bc2|Película PKMN 12
+0x0bc3|Película PKMN 13
+0x0bc4|Película PKMN 14
+0x0bc5|Película PKMN 15
+0x0bc6|Película PKMN 16
+0x0bc7|Animación PKMN
+0x0bc8|Space World
+0x0bc9|Space World 06
+0x0bca|Space World 07
+0x0bcb|Space World 08
+0x0bcc|Space World 09
+0x0bcd|Space World 10
+0x0bce|Space World 11
+0x0bcf|Space World 12
+0x0bd0|Space World 13
+0x0bd1|Space World 14
+0x0bd2|Space World 15
+0x0bd3|Space World 16
+0x0bd4|Pokémon Festa
+0x0bd5|Pokémon Festa 06
+0x0bd6|Pokémon Festa 07
+0x0bd7|Pokémon Festa 08
+0x0bd8|Pokémon Festa 09
+0x0bd9|Pokémon Festa 10
+0x0bda|Pokémon Festa 11
+0x0bdb|Pokémon Festa 12
+0x0bdc|Pokémon Festa 13
+0x0bdd|Pokémon Festa 14
+0x0bde|Pokémon Festa 15
+0x0bdf|Pokémon Festa 16
+0x0be0|POKéPARK
+0x0be1|POKéPARK 06
+0x0be2|POKéPARK 07
+0x0be3|POKéPARK 08
+0x0be4|POKéPARK 09
+0x0be5|POKéPARK 10
+0x0be6|POKéPARK 11
+0x0be7|POKéPARK 12
+0x0be8|POKéPARK 13
+0x0be9|POKéPARK 14
+0x0bea|POKéPARK 15
+0x0beb|POKéPARK 16
+0x0bec|Pokémon Center
+0x0bed|PC Tokio
+0x0bee|PC Osaka
+0x0bef|PC Fukuoka
+0x0bf0|PC Nagoya
+0x0bf1|PC Sapporo
+0x0bf2|PC Yokohama
+0x0bf3|Nintendo World
+0x0bf4|Evento PKMN
+0x0bf5|Evento PKMN 06
+0x0bf6|Evento PKMN 07
+0x0bf7|Evento PKMN 08
+0x0bf8|Evento PKMN 09
+0x0bf9|Evento PKMN 10
+0x0bfa|Evento PKMN 11
+0x0bfb|Evento PKMN 12
+0x0bfc|Evento PKMN 13
+0x0bfd|Evento PKMN 14
+0x0bfe|Evento PKMN 15
+0x0bff|Evento PKMN 16
+0x0c00|Evento Wi-Fi
+0x0c01|Regalo Wi-Fi
+0x0c02|Club fans PKMN
+0x0c03|Sitio Evento
+0x0c04|Concierto Evento

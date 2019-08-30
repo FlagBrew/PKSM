@@ -1,21 +1,21 @@
-000|—
-002|Lisbona
-007|Madera
-008|Azzorre
-009|Aveiro
-010|Beja
-011|Braga
-012|Bragança
-013|Castelo Branco
-014|Coimbra
-015|Évora
-016|Faro
-017|Guarda
-018|Leiria
-019|Portalegre
-020|Porto
-021|Santarém
-022|Setúbal
-023|Viana do Castelo
-024|Vila Real
-025|Viseu
+0|—
+2|Lisbona
+7|Madera
+8|Azzorre
+9|Aveiro
+10|Beja
+11|Braga
+12|Bragança
+13|Castelo Branco
+14|Coimbra
+15|Évora
+16|Faro
+17|Guarda
+18|Leiria
+19|Portalegre
+20|Porto
+21|Santarém
+22|Setúbal
+23|Viana do Castelo
+24|Vila Real
+25|Viseu

@@ -1,5 +1,5 @@
-000|—
-002|Inghilterra
-004|Scozia
-005|Galles
-006|Irlanda del Nord
+0|—
+2|Inghilterra
+4|Scozia
+5|Galles
+6|Irlanda del Nord

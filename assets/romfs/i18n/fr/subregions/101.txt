@@ -1,2 +1,2 @@
-000|—
-001|Serbie et Kosovo
+0|—
+1|Serbie et Kosovo

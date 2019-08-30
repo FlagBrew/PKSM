@@ -1,20 +1,20 @@
-000|—
-002|Madrid
-003|Andalusia
-004|Aragon
-005|Principality of Asturias
-006|Balearic Islands
-007|Canary Islands
-008|Cantabria
-009|Castile-La Mancha
-010|Castilla y León
-011|Catalonia
-012|Valencia
-013|Extremadura
-014|Galicia
-015|Murcia
-016|Navarre
-017|Basque Country
-018|La Rioja
-019|Ceuta
-020|Melilla
+0|—
+2|Madrid
+3|Andalusia
+4|Aragon
+5|Principality of Asturias
+6|Balearic Islands
+7|Canary Islands
+8|Cantabria
+9|Castile-La Mancha
+10|Castilla y León
+11|Catalonia
+12|Valencia
+13|Extremadura
+14|Galicia
+15|Murcia
+16|Navarre
+17|Basque Country
+18|La Rioja
+19|Ceuta
+20|Melilla

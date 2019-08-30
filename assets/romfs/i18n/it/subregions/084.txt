@@ -1,2 +1,2 @@
-000|—
-001|Lettonia
+0|—
+1|Lettonia

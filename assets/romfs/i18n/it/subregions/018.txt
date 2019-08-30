@@ -1,14 +1,14 @@
-000|—
-002|Ontario
-003|Alberta
-004|Columbia Britannica
-005|Manitoba
-006|Nuovo Brunswick
-007|Terranova e Labrador
-008|Nuova Scozia
-009|Isola del Principe Edoardo
-010|Québec
-011|Saskatchewan
-012|Yukon
-013|Territori del Nord-Ovest
-014|Nunavut
+0|—
+2|Ontario
+3|Alberta
+4|Columbia Britannica
+5|Manitoba
+6|Nuovo Brunswick
+7|Terranova e Labrador
+8|Nuova Scozia
+9|Isola del Principe Edoardo
+10|Québec
+11|Saskatchewan
+12|Yukon
+13|Territori del Nord-Ovest
+14|Nunavut

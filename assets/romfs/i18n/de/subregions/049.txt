@@ -1,53 +1,53 @@
-000|—
-002|District of Columbia
-003|Alaska
-004|Alabama
-005|Arkansas
-006|Arizona
-007|Kalifornien
-008|Colorado
-009|Connecticut
-010|Delaware
-011|Florida
-012|Georgia
-013|Hawaii
-014|Iowa
-015|Idaho
-016|Illinois
-017|Indiana
-018|Kansas
-019|Kentucky
-020|Louisiana
-021|Massachusetts
-022|Maryland
-023|Maine
-024|Michigan
-025|Minnesota
-026|Missouri
-027|Mississippi
-028|Montana
-029|North Carolina
-030|North Dakota
-031|Nebraska
-032|New Hampshire
-033|New Jersey
-034|New Mexico
-035|Nevada
-036|New York
-037|Ohio
-038|Oklahoma
-039|Oregon
-040|Pennsylvania
-041|Rhode Island
-042|South Carolina
-043|South Dakota
-044|Tennessee
-045|Texas
-046|Utah
-047|Virginia
-048|Vermont
-049|Washington
-050|Wisconsin
-051|West Virginia
-052|Wyoming
-053|Puerto Rico
+0|—
+2|District of Columbia
+3|Alaska
+4|Alabama
+5|Arkansas
+6|Arizona
+7|Kalifornien
+8|Colorado
+9|Connecticut
+10|Delaware
+11|Florida
+12|Georgia
+13|Hawaii
+14|Iowa
+15|Idaho
+16|Illinois
+17|Indiana
+18|Kansas
+19|Kentucky
+20|Louisiana
+21|Massachusetts
+22|Maryland
+23|Maine
+24|Michigan
+25|Minnesota
+26|Missouri
+27|Mississippi
+28|Montana
+29|North Carolina
+30|North Dakota
+31|Nebraska
+32|New Hampshire
+33|New Jersey
+34|New Mexico
+35|Nevada
+36|New York
+37|Ohio
+38|Oklahoma
+39|Oregon
+40|Pennsylvania
+41|Rhode Island
+42|South Carolina
+43|South Dakota
+44|Tennessee
+45|Texas
+46|Utah
+47|Virginia
+48|Vermont
+49|Washington
+50|Wisconsin
+51|West Virginia
+52|Wyoming
+53|Puerto Rico

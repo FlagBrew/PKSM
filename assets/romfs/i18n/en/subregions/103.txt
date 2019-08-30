@@ -1,2 +1,2 @@
-000|—
-001|Slovenia
+0|—
+1|Slovenia

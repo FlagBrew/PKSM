@@ -1,15 +1,15 @@
-000|—
-002|San Salvador
-003|Ahuachapán
-004|Cabañas
-005|Chalatenango
-006|Cuscatlán
-007|La Libertad
-008|La Paz
-009|La Unión
-010|Morazán
-011|San Miguel
-012|Santa Ana
-013|San Vicente
-014|Sonsonate
-015|Usulután
+0|—
+2|San Salvador
+3|Ahuachapán
+4|Cabañas
+5|Chalatenango
+6|Cuscatlán
+7|La Libertad
+8|La Paz
+9|La Unión
+10|Morazán
+11|San Miguel
+12|Santa Ana
+13|San Vicente
+14|Sonsonate
+15|Usulután

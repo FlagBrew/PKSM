@@ -1,17 +1,17 @@
-000|—
-002|Mazovie
-003|Basse-Silésie
-004|Cujavie-Poméranie
-005|Łódź
-006|Lublin
-007|Lubusz
-008|Petite-Pologne
-009|Opole
-010|Basses-Carpates
-011|Podlachie
-012|Poméranie
-013|Silésie
-014|Sainte-Croix
-015|Warmie-Mazurie
-016|Grande-Pologne
-017|Poméranie occidentale
+0|—
+2|Mazovie
+3|Basse-Silésie
+4|Cujavie-Poméranie
+5|Łódź
+6|Lublin
+7|Lubusz
+8|Petite-Pologne
+9|Opole
+10|Basses-Carpates
+11|Podlachie
+12|Poméranie
+13|Silésie
+14|Sainte-Croix
+15|Warmie-Mazurie
+16|Grande-Pologne
+17|Poméranie occidentale

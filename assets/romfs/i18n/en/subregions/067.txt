@@ -1,4 +1,4 @@
-000|—
-002|Brussels Region
-003|Flanders
-004|Wallonia
+0|—
+2|Brussels Region
+3|Flanders
+4|Wallonia

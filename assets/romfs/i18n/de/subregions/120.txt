@@ -1,2 +1,2 @@
-000|—
-001|Dschibuti
+0|—
+1|Dschibuti

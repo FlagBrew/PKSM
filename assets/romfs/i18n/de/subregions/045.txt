@@ -1,2 +1,2 @@
-000|—
-001|St. Vincent und die Grenadinen
+0|—
+1|St. Vincent und die Grenadinen

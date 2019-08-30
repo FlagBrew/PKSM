@@ -1,10 +1,10 @@
-000|—
-002|Gauteng
-003|Capo Occidentale
-004|Capo Settentrionale
-005|Capo Orientale
-006|KwaZulu-Natal
-007|Stato Libero
-008|Provincia del Nordovest
-009|Mpumalanga
-010|Limpopo
+0|—
+2|Gauteng
+3|Capo Occidentale
+4|Capo Settentrionale
+5|Capo Orientale
+6|KwaZulu-Natal
+7|Stato Libero
+8|Provincia del Nordovest
+9|Mpumalanga
+10|Limpopo

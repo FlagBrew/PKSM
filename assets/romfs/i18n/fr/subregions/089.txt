@@ -1,2 +1,2 @@
-000|—
-001|Macédoine (République)
+0|—
+1|Macédoine (République)

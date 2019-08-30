@@ -1,11 +1,11 @@
-000|—
-002|Condado de Vilna
-003|Condado de Alytus
-004|Condado de Kaunas
-005|Condado de Klaipėda
-006|Condado de Marijampolė
-007|Condado de Panevėžys
-008|Condado de Šiauliai
-009|Condado de Tauragė
-010|Condado de Telšiai
-011|Condado de Utena
+0|—
+2|Condado de Vilna
+3|Condado de Alytus
+4|Condado de Kaunas
+5|Condado de Klaipėda
+6|Condado de Marijampolė
+7|Condado de Panevėžys
+8|Condado de Šiauliai
+9|Condado de Tauragė
+10|Condado de Telšiai
+11|Condado de Utena

@@ -1,2 +1,2 @@
-000|—
-001|Britische Jungferninseln
+0|—
+1|Britische Jungferninseln

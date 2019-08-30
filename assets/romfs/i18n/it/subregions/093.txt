@@ -1,2 +1,2 @@
-000|—
-001|Namibia
+0|—
+1|Namibia

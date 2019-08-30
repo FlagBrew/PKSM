@@ -1,27 +1,27 @@
-000|—
-002|Bern
-004|Aargau
-005|Basel-Stadt
-006|Freiburg
-007|Genf
-008|Glarus
-009|Graubünden
-010|Jura
-011|Luzern
-012|Neuenburg
-013|Obwalden
-014|Sankt Gallen
-015|Schaffhausen
-016|Schwyz
-017|Solothurn
-018|Thurgau
-019|Tessin
-020|Uri
-021|Wallis
-022|Waadt
-023|Zug
-024|Zürich
-025|Appenzell Ausserrhoden
-026|Appenzell Innerrhoden
-027|Basel-Landschaft
-028|Nidwalden
+0|—
+2|Bern
+4|Aargau
+5|Basel-Stadt
+6|Freiburg
+7|Genf
+8|Glarus
+9|Graubünden
+10|Jura
+11|Luzern
+12|Neuenburg
+13|Obwalden
+14|Sankt Gallen
+15|Schaffhausen
+16|Schwyz
+17|Solothurn
+18|Thurgau
+19|Tessin
+20|Uri
+21|Wallis
+22|Waadt
+23|Zug
+24|Zürich
+25|Appenzell Ausserrhoden
+26|Appenzell Innerrhoden
+27|Basel-Landschaft
+28|Nidwalden

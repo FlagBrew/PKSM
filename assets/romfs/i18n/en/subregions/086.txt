@@ -1,2 +1,2 @@
-000|—
-001|Liechtenstein
+0|—
+1|Liechtenstein

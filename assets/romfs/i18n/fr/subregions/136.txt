@@ -1,17 +1,17 @@
-000|—
-002|Séoul
-003|Pusan
-004|Daegu
-005|Incheon
-006|Gwangju
-007|Daejeon
-008|Ulsan
-009|Gyeonggi
-010|Gangwon
-011|Chungcheong du Nord
-012|Chungcheong du Sud
-013|Jeolla du Nord
-014|Jeolla du Sud
-015|Gyeongsang du Nord
-016|Gyeongsang du Sud
-017|Jeju
+0|—
+2|Séoul
+3|Pusan
+4|Daegu
+5|Incheon
+6|Gwangju
+7|Daejeon
+8|Ulsan
+9|Gyeonggi
+10|Gangwon
+11|Chungcheong du Nord
+12|Chungcheong du Sud
+13|Jeolla du Nord
+14|Jeolla du Sud
+15|Gyeongsang du Nord
+16|Gyeongsang du Sud
+17|Jeju

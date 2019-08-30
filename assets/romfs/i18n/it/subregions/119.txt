@@ -1,2 +1,2 @@
-000|—
-001|Eritrea
+0|—
+1|Eritrea

@@ -1,2 +1,2 @@
-000|—
-001|Monaco (Principato di)
+0|—
+1|Monaco (Principato di)

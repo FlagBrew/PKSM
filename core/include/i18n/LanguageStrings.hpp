@@ -32,6 +32,7 @@
 #include "json.hpp"
 #include "types.h"
 #include <algorithm>
+#include <stdio.h>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -75,9 +76,44 @@ protected:
     nlohmann::json gui;
 
     static void load(Language lang, const std::string& name, std::vector<std::string>& array);
-    static void loadMap(Language lang, const std::string& name, std::map<u16, std::string>& map);
-    static void loadMap(Language lang, const std::string& name, std::map<u8, std::string>& map);
-    static void loadJson(Language lang, const std::string& name, nlohmann::json& json);
+    template <typename T>
+    static void load(Language lang, const std::string& name, std::map<T, std::string>& map)
+    {
+        static constexpr const char* base = "romfs:/i18n/";
+        std::string path = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
+
+        std::string tmp;
+        FILE* values = fopen(path.c_str(), "rt");
+        if (values)
+        {
+            if (ferror(values))
+            {
+                fclose(values);
+                return;
+            }
+            char* data  = (char*)malloc(128);
+            size_t size = 0;
+            while (!feof(values) && !ferror(values))
+            {
+                size = std::max(size, (size_t)128);
+                if (__getline(&data, &size, values) >= 0)
+                {
+                    tmp      = std::string(data);
+                    tmp      = tmp.substr(0, tmp.find('\n'));
+                    // 0 automatically deduces the base: 0x prefix makes it hexadecimal, 0 prefix makes it octal
+                    T val    = std::stoi(tmp.substr(0, tmp.find('|')), 0, 0);
+                    map[val] = tmp.substr(0, tmp.find('\r')).substr(tmp.find('|') + 1);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            fclose(values);
+            free(data);
+        }
+    }
+    static void load(Language lang, const std::string& name, nlohmann::json& json);
 
 public:
     LanguageStrings(Language lang);

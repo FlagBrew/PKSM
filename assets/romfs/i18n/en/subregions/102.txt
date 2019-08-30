@@ -1,9 +1,9 @@
-000|—
-002|Bratislava
-003|Banská Bystrica
-004|Košice
-005|Nitra
-006|Prešov
-007|Trencín
-008|Trnava
-009|Žilina
+0|—
+2|Bratislava
+3|Banská Bystrica
+4|Košice
+5|Nitra
+6|Prešov
+7|Trencín
+8|Trnava
+9|Žilina

@@ -1,131 +1,131 @@
-0000|－
-0001|Lugar misterioso
-0002|Lugar lejano
-0003|Ruta 1
-0004|Ruta 2
-0005|Ruta 3
-0006|Ruta 4
-0007|Ruta 5
-0008|Ruta 6
-0009|Ruta 7
-000a|Ruta 8
-000b|Ruta 9
-000c|Ruta 10
-000d|Ruta 11
-000e|Ruta 12
-000f|Ruta 13
-0010|Ruta 14
-0011|Ruta 15
-0012|Ruta 16
-0013|Ruta 17
-0014|Ruta 18
-0015|Ruta 19
-0016|Ruta 20
-0017|Ruta 21
-0018|Ruta 22
-0019|Ruta 23
-001a|Ruta 24
-001b|Ruta 25
-001c|Pueblo Paleta
-001d|Ciudad Verde
-001e|Ciudad Plateada
-001f|Ciudad Celeste
-0020|Pueblo Lavanda
-0021|Ciudad Carmín
-0022|Ciudad Azulona
-0023|Ciudad Fucsia
-0024|Isla Canela
-0025|Meseta Añil
-0026|Ciudad Azafrán
-0027|Bosque Verde
-0028|Monte Moon
-0029|Túnel Roca
-002a|Central de Energía
-002b|Cueva Diglett
-002c|Islas Espuma
-002d|Calle Victoria
-002e|Cueva Celeste
-002f|Torre Pokémon
-0030|S. S. Anne
-0031|Guarida Rocket
-0032|GO Park
-0033|Mansión Pokémon
-0034|Silph S. A.
-0035|Liga Pokémon
-9c41|Lugar encantador
-9c42|Lugar lejano
-9c43|Película Pokémon
-9c44|Película Pokémon 2018
-9c45|Película Pokémon 2019
-9c46|Película Pokémon 2020
-9c47|Película Pokémon 2021
-9c48|Película Pokémon 2022
-9c49|Película Pokémon 2023
-9c4a|Dibujos animados Pokémon
-9c4b|Pokémon Center
-9c4c|Pokémon Center Tohoku
-9c4d|WCS
-9c4e|WCS 2018
-9c4f|WCS 2019
-9c50|WCS 2020
-9c51|WCS 2021
-9c52|WCS 2022
-9c53|WCS 2023
-9c54|Worlds
-9c55|Worlds 2018
-9c56|Worlds 2019
-9c57|Worlds 2020
-9c58|Worlds 2021
-9c59|Worlds 2022
-9c5a|Worlds 2023
-9c5b|Evento de Videojuegos
-9c5c|Evento Videojuegos 2018
-9c5d|Evento Videojuegos 2019
-9c5e|Evento Videojuegos 2020
-9c5f|Evento Videojuegos 2021
-9c60|Evento Videojuegos 2022
-9c61|Evento Videojuegos 2023
-9c62|Evento Pokémon
-9c63|Torneo
-9c64|Evento de Videojuegos
-9c65|Pokémon Daisuki Club
-9c66|Programa sobre Pokémon
-9c67|Concierto
-9c68|Regalo en línea
-9c69|Pokémon Global Link
-9c6a|Evento Pokémon 2018
-9c6b|Evento Pokémon 2019
-9c6c|Evento Pokémon 2020
-9c6d|Evento Pokémon 2021
-9c6e|Evento Pokémon 2022
-9c6f|Evento Pokémon 2023
-9c70|Evento Pokémon
-9c71|Evento Pokémon 2018
-9c72|Evento Pokémon 2019
-9c73|Evento Pokémon 2020
-9c74|Evento Pokémon 2021
-9c75|Evento Pokémon 2022
-9c76|Evento Pokémon 2023
-9c77|PokéPark
-9c78|PokéPark 2018
-9c79|PokéPark 2019
-9c7a|PokéPark 2020
-9c7b|PokéPark 2021
-9c7c|PokéPark 2022
-9c7d|PokéPark 2023
-9c7e|Evento
-9c7f|GAME FREAK
-9c80|Estadio
-9c81|VGC
-9c82|VGC 2018
-9c83|VGC 2019
-9c84|VGC 2020
-9c85|VGC 2021
-9c86|VGC 2022
-9c87|VGC 2023
-9c88|Consola Virtual
-9c89|Pokémon GO
-9c8a|Banco de Pokémon
-9c8b|Establecimiento Pokémon
-9c8c|Versión de prueba
-9c8d|Poké Ball Plus
+0x0000|－
+0x0001|Lugar misterioso
+0x0002|Lugar lejano
+0x0003|Ruta 1
+0x0004|Ruta 2
+0x0005|Ruta 3
+0x0006|Ruta 4
+0x0007|Ruta 5
+0x0008|Ruta 6
+0x0009|Ruta 7
+0x000a|Ruta 8
+0x000b|Ruta 9
+0x000c|Ruta 10
+0x000d|Ruta 11
+0x000e|Ruta 12
+0x000f|Ruta 13
+0x0010|Ruta 14
+0x0011|Ruta 15
+0x0012|Ruta 16
+0x0013|Ruta 17
+0x0014|Ruta 18
+0x0015|Ruta 19
+0x0016|Ruta 20
+0x0017|Ruta 21
+0x0018|Ruta 22
+0x0019|Ruta 23
+0x001a|Ruta 24
+0x001b|Ruta 25
+0x001c|Pueblo Paleta
+0x001d|Ciudad Verde
+0x001e|Ciudad Plateada
+0x001f|Ciudad Celeste
+0x0020|Pueblo Lavanda
+0x0021|Ciudad Carmín
+0x0022|Ciudad Azulona
+0x0023|Ciudad Fucsia
+0x0024|Isla Canela
+0x0025|Meseta Añil
+0x0026|Ciudad Azafrán
+0x0027|Bosque Verde
+0x0028|Monte Moon
+0x0029|Túnel Roca
+0x002a|Central de Energía
+0x002b|Cueva Diglett
+0x002c|Islas Espuma
+0x002d|Calle Victoria
+0x002e|Cueva Celeste
+0x002f|Torre Pokémon
+0x0030|S. S. Anne
+0x0031|Guarida Rocket
+0x0032|GO Park
+0x0033|Mansión Pokémon
+0x0034|Silph S. A.
+0x0035|Liga Pokémon
+0x9c41|Lugar encantador
+0x9c42|Lugar lejano
+0x9c43|Película Pokémon
+0x9c44|Película Pokémon 2018
+0x9c45|Película Pokémon 2019
+0x9c46|Película Pokémon 2020
+0x9c47|Película Pokémon 2021
+0x9c48|Película Pokémon 2022
+0x9c49|Película Pokémon 2023
+0x9c4a|Dibujos animados Pokémon
+0x9c4b|Pokémon Center
+0x9c4c|Pokémon Center Tohoku
+0x9c4d|WCS
+0x9c4e|WCS 2018
+0x9c4f|WCS 2019
+0x9c50|WCS 2020
+0x9c51|WCS 2021
+0x9c52|WCS 2022
+0x9c53|WCS 2023
+0x9c54|Worlds
+0x9c55|Worlds 2018
+0x9c56|Worlds 2019
+0x9c57|Worlds 2020
+0x9c58|Worlds 2021
+0x9c59|Worlds 2022
+0x9c5a|Worlds 2023
+0x9c5b|Evento de Videojuegos
+0x9c5c|Evento Videojuegos 2018
+0x9c5d|Evento Videojuegos 2019
+0x9c5e|Evento Videojuegos 2020
+0x9c5f|Evento Videojuegos 2021
+0x9c60|Evento Videojuegos 2022
+0x9c61|Evento Videojuegos 2023
+0x9c62|Evento Pokémon
+0x9c63|Torneo
+0x9c64|Evento de Videojuegos
+0x9c65|Pokémon Daisuki Club
+0x9c66|Programa sobre Pokémon
+0x9c67|Concierto
+0x9c68|Regalo en línea
+0x9c69|Pokémon Global Link
+0x9c6a|Evento Pokémon 2018
+0x9c6b|Evento Pokémon 2019
+0x9c6c|Evento Pokémon 2020
+0x9c6d|Evento Pokémon 2021
+0x9c6e|Evento Pokémon 2022
+0x9c6f|Evento Pokémon 2023
+0x9c70|Evento Pokémon
+0x9c71|Evento Pokémon 2018
+0x9c72|Evento Pokémon 2019
+0x9c73|Evento Pokémon 2020
+0x9c74|Evento Pokémon 2021
+0x9c75|Evento Pokémon 2022
+0x9c76|Evento Pokémon 2023
+0x9c77|PokéPark
+0x9c78|PokéPark 2018
+0x9c79|PokéPark 2019
+0x9c7a|PokéPark 2020
+0x9c7b|PokéPark 2021
+0x9c7c|PokéPark 2022
+0x9c7d|PokéPark 2023
+0x9c7e|Evento
+0x9c7f|GAME FREAK
+0x9c80|Estadio
+0x9c81|VGC
+0x9c82|VGC 2018
+0x9c83|VGC 2019
+0x9c84|VGC 2020
+0x9c85|VGC 2021
+0x9c86|VGC 2022
+0x9c87|VGC 2023
+0x9c88|Consola Virtual
+0x9c89|Pokémon GO
+0x9c8a|Banco de Pokémon
+0x9c8b|Establecimiento Pokémon
+0x9c8c|Versión de prueba
+0x9c8d|Poké Ball Plus

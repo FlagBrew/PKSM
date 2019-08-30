@@ -1,21 +1,21 @@
-000|—
-002|Latium
-003|Vallée d'Aoste
-004|Piémont
-005|Ligurie
-006|Lombardie
-007|Trentin-Haut-Adige
-008|Vénétie
-009|Frioul-Vénétie julienne
-010|Émilie-Romagne
-011|Toscane
-012|Ombrie
-013|Marches
-014|Abruzzes
-015|Molise
-016|Campanie
-017|Pouilles
-018|Basilicate
-019|Calabre
-020|Sicile
-021|Sardaigne
+0|—
+2|Latium
+3|Vallée d'Aoste
+4|Piémont
+5|Ligurie
+6|Lombardie
+7|Trentin-Haut-Adige
+8|Vénétie
+9|Frioul-Vénétie julienne
+10|Émilie-Romagne
+11|Toscane
+12|Ombrie
+13|Marches
+14|Abruzzes
+15|Molise
+16|Campanie
+17|Pouilles
+18|Basilicate
+19|Calabre
+20|Sicile
+21|Sardaigne

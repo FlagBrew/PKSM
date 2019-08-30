@@ -1,8 +1,8 @@
-000|—
-018|Grönland
-019|Hauptstadtregion
-020|Mitteljütland
-021|Nordjütland
-022|Seeland
-023|Süddänemark
-024|Färöer
+0|—
+18|Grönland
+19|Hauptstadtregion
+20|Mitteljütland
+21|Nordjütland
+22|Seeland
+23|Süddänemark
+24|Färöer

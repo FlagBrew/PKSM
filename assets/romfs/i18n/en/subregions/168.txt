@@ -1,8 +1,8 @@
-000|—
-002|Abu Dhabi
-003|Ajman
-004|Ash Shariqah
-005|Ras al-Khaimah
-006|Dubai
-007|Al Fujayrah
-008|Umm al Qaywayn
+0|—
+2|Abu Dhabi
+3|Ajman
+4|Ash Shariqah
+5|Ras al-Khaimah
+6|Dubai
+7|Al Fujayrah
+8|Umm al Qaywayn

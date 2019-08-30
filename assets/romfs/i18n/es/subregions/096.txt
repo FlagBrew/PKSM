@@ -1,21 +1,21 @@
-000|—
-007|Oslo
-008|Akershus
-009|Aust-Agder
-010|Buskerud
-011|Finnmark
-012|Hedmark
-013|Hordaland
-014|Møre og Romsdal
-015|Nordland
-016|Nord-Trøndelag
-017|Oppland
-018|Rogaland
-019|Sogn og Fjordane
-020|Sør-Trøndelag
-021|Telemark
-022|Troms
-023|Vest-Agder
-024|Vestfold
-025|Østfold
-026|Svalbard
+0|—
+7|Oslo
+8|Akershus
+9|Aust-Agder
+10|Buskerud
+11|Finnmark
+12|Hedmark
+13|Hordaland
+14|Møre og Romsdal
+15|Nordland
+16|Nord-Trøndelag
+17|Oppland
+18|Rogaland
+19|Sogn og Fjordane
+20|Sør-Trøndelag
+21|Telemark
+22|Troms
+23|Vest-Agder
+24|Vestfold
+25|Østfold
+26|Svalbard

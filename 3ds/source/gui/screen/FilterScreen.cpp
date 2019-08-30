@@ -39,7 +39,7 @@ FilterScreen::FilterScreen(std::shared_ptr<PKFilter> filter) : filter(filter)
     {
         filter->species(1);
     }
-    
+
     buttons.push_back({});
 
     for (int i = 0; i < 4; i++)
@@ -74,7 +74,7 @@ FilterScreen::FilterScreen(std::shared_ptr<PKFilter> filter) : filter(filter)
             return false;
         },
         ui_sheet_icon_party_idx, "", 0.0f, 0));
-    
+
     buttons[0].push_back(std::make_unique<ToggleButton>(121, 63, 24, 24,
         [this]() {
             this->filter->speciesEnabled(!this->filter->speciesEnabled());
@@ -87,10 +87,12 @@ FilterScreen::FilterScreen(std::shared_ptr<PKFilter> filter) : filter(filter)
         ui_sheet_checkbox_on_idx, "", 0.0f, 0, ui_sheet_checkbox_off_idx, "", 0.0f, 0, nullptr, true));
     ((ToggleButton*)buttons[0].back().get())->setState(filter->speciesEnabled());
 
-    buttons[0].push_back(std::make_unique<ToggleButton>(105, 68, 13, 13, [this]() {
-        this->filter->speciesInversed(!this->filter->speciesInversed());
-        return false;
-    }, ui_sheet_emulated_button_filter_positive_idx, "", 0.0f, 0, ui_sheet_emulated_button_filter_negative_idx, "", 0.0f, 0, nullptr, true));
+    buttons[0].push_back(std::make_unique<ToggleButton>(105, 68, 13, 13,
+        [this]() {
+            this->filter->speciesInversed(!this->filter->speciesInversed());
+            return false;
+        },
+        ui_sheet_emulated_button_filter_positive_idx, "", 0.0f, 0, ui_sheet_emulated_button_filter_negative_idx, "", 0.0f, 0, nullptr, true));
     ((ToggleButton*)buttons[0].back().get())->setState(!filter->speciesInversed());
 
     buttons[0].push_back(std::make_unique<ClickButton>(172, 53, 50, 44,
@@ -112,10 +114,12 @@ FilterScreen::FilterScreen(std::shared_ptr<PKFilter> filter) : filter(filter)
         ui_sheet_checkbox_blank_idx, "", 0.0f, 0));
     ((EnablableToggleButton*)buttons[0].back().get())->setState(filter->alternativeFormEnabled());
 
-    buttons[0].push_back(std::make_unique<ToggleButton>(226, 68, 13, 13, [this]() {
-        this->filter->alternativeFormInversed(!this->filter->alternativeFormInversed());
-        return false;
-    }, ui_sheet_emulated_button_filter_positive_idx, "", 0.0f, 0, ui_sheet_emulated_button_filter_negative_idx, "", 0.0f, 0, nullptr, true));
+    buttons[0].push_back(std::make_unique<ToggleButton>(226, 68, 13, 13,
+        [this]() {
+            this->filter->alternativeFormInversed(!this->filter->alternativeFormInversed());
+            return false;
+        },
+        ui_sheet_emulated_button_filter_positive_idx, "", 0.0f, 0, ui_sheet_emulated_button_filter_negative_idx, "", 0.0f, 0, nullptr, true));
     ((ToggleButton*)buttons[0].back().get())->setState(!filter->alternativeFormInversed());
 }
 

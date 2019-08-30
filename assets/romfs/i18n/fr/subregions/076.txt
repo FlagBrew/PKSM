@@ -1,21 +1,21 @@
-000|—
-008|Uusimaa
-009|Laponie
-010|Ostrobotnie du Nord
-011|Kainuu
-012|Carélie du Nord
-013|Savonie du Nord
-014|Savonie du Sud
-015|Ostrobotnie du Sud
-016|Ostrobotnie
-017|Pirkanmaa
-018|Satakunta
-019|Ostrobotnie-Centrale
-020|Finlande-Centrale
-021|Finlande propre
-022|Carélie du Sud
-023|Päijät-Häme
-024|Kanta-Häme
-025|Uusimaa de l'Est
-026|Vallée de la Kymi
-027|Åland
+0|—
+8|Uusimaa
+9|Laponie
+10|Ostrobotnie du Nord
+11|Kainuu
+12|Carélie du Nord
+13|Savonie du Nord
+14|Savonie du Sud
+15|Ostrobotnie du Sud
+16|Ostrobotnie
+17|Pirkanmaa
+18|Satakunta
+19|Ostrobotnie-Centrale
+20|Finlande-Centrale
+21|Finlande propre
+22|Carélie du Sud
+23|Päijät-Häme
+24|Kanta-Häme
+25|Uusimaa de l'Est
+26|Vallée de la Kymi
+27|Åland

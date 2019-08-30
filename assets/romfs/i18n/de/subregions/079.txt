@@ -1,14 +1,14 @@
-000|—
-002|Attika
-003|Mittelgriechenland
-004|Zentralmakedonien
-005|Kreta
-006|Ostmakedonien und Thrakien
-007|Epirus
-008|Ionische Inseln
-009|Nördliche Ägäis
-010|Peloponnes
-011|Südliche Ägäis
-012|Thessalien
-013|Westgriechenland
-014|Westmakedonien
+0|—
+2|Attika
+3|Mittelgriechenland
+4|Zentralmakedonien
+5|Kreta
+6|Ostmakedonien und Thrakien
+7|Epirus
+8|Ionische Inseln
+9|Nördliche Ägäis
+10|Peloponnes
+11|Südliche Ägäis
+12|Thessalien
+13|Westgriechenland
+14|Westmakedonien

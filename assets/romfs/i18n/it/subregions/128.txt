@@ -1,23 +1,23 @@
-000|—
-002|Taipei
-003|Kaohsiung
-004|Keelung
-005|Hsinchu
-006|Taichung
-007|Chiayi
-008|Tainan
-009|New Taipei
-010|Contea di Taoyuan
-011|Contea di HsinChu
-012|Contea di Miaoli
-014|Contea di Changhua
-015|Contea di Nantou
-016|Contea di Yunlin
-017|Contea di Chiayi
-020|Contea di Pingtung
-021|Contea di Yilan
-022|Contea di Hualien
-023|Contea di Taitung
-024|Contea di Penghu
-025|Contea di Kinmen
-026|Contea di Lienchiang
+0|—
+2|Taipei
+3|Kaohsiung
+4|Keelung
+5|Hsinchu
+6|Taichung
+7|Chiayi
+8|Tainan
+9|New Taipei
+10|Contea di Taoyuan
+11|Contea di HsinChu
+12|Contea di Miaoli
+14|Contea di Changhua
+15|Contea di Nantou
+16|Contea di Yunlin
+17|Contea di Chiayi
+20|Contea di Pingtung
+21|Contea di Yilan
+22|Contea di Hualien
+23|Contea di Taitung
+24|Contea di Penghu
+25|Contea di Kinmen
+26|Contea di Lienchiang

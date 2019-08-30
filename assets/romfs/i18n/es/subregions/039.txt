@@ -1,18 +1,18 @@
-000|—
-002|Managua
-003|Boaco
-004|Carazo
-005|Chinandega
-006|Chontales
-007|Estelí
-008|Granada
-009|Jinotega
-010|León
-011|Madriz
-012|Masaya
-013|Matagalpa
-014|Nueva Segovia
-015|Río San Juan
-016|Rivas
-017|Atlántico Norte
-018|Atlántico Sur
+0|—
+2|Managua
+3|Boaco
+4|Carazo
+5|Chinandega
+6|Chontales
+7|Estelí
+8|Granada
+9|Jinotega
+10|León
+11|Madriz
+12|Masaya
+13|Matagalpa
+14|Nueva Segovia
+15|Río San Juan
+16|Rivas
+17|Atlántico Norte
+18|Atlántico Sur

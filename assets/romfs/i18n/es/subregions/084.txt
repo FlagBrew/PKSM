@@ -1,2 +1,2 @@
-000|—
-001|Letonia
+0|—
+1|Letonia

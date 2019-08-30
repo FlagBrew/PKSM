@@ -1,2 +1,2 @@
-000|—
-001|Simbabwe
+0|—
+1|Simbabwe

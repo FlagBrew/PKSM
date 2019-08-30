@@ -1,8 +1,8 @@
-000|—
-018|Groenlandia
-019|Hovedstaden
-020|Jutland Centrale
-021|Jutland Settentrionale
-022|Sjælland
-023|Syddanmark
-024|Isole Fær Øer
+0|—
+18|Groenlandia
+19|Hovedstaden
+20|Jutland Centrale
+21|Jutland Settentrionale
+22|Sjælland
+23|Syddanmark
+24|Isole Fær Øer

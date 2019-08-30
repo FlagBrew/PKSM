@@ -1,84 +1,84 @@
-000|—
-009|Mosca
-010|Repubblica di Adigezia
-011|Repubblica dell'Altaj
-012|Territorio dell'Altaj
-013|Regione dell'Amur
-014|Regione di Arcangelo
-015|Regione di Astrachan'
-016|Repubblica del Baškortostan
-017|Regione di Belgorod
-018|Regione di Brjansk
-019|Repubblica di Buriazia
-020|Repubblica Cecena
-021|Regione di Čeljabinsk
-022|Circondario Autonomo di Čukotka
-023|Repubblica Ciuvascia
-024|Repubblica del Dagestan
-025|Repubblica di Inguscezia
-026|Regione di Irkutsk
-027|Regione di Ivanovo
-028|Repubblica di Cabardino-Balcaria
-029|Regione di Kaliningrad
-030|Repubblica di Calmucchia
-031|Regione di Kaluga
-032|Territorio della Kamčatka
-033|Repubblica Karačajevo-Čerkessia
-034|Repubblica di Carelia
-035|Regione di Kemerovo
-036|Territorio di Chabarovsk
-037|Repubblica di Khakassia
-038|Circondario Autonomo di Chantia-Mansia
-039|Regione di Kirov
-040|Repubblica di Komi
-041|Regione di Kostroma
-042|Territorio di Krasnodar
-043|Territorio di Krasnojarsk
-044|Regione di Kurgan
-045|Regione di Kursk
-046|Regione di Leningrado
-047|Regione di Lipeck
-048|Regione di Magadan
-049|Repubblica di Mari-El
-050|Repubblica di Mordovia
-051|Regione di Mosca
-052|Regione di Murmansk
-053|Circondario Autonomo di Nenec
-054|Regione di Nižnij Novgorod
-055|Regione di Novgorod
-056|Regione di Novosibirsk
-057|Regione di Omsk
-058|Regione di Orenburg
-059|Regione di Orël
-060|Regione di Penza
-061|Territorio di Perm'
-062|Territorio del Litorale
-063|Regione di Pskov
-064|Regione di Rostov
-065|Regione di Rjazan'
-066|Repubblica di Sacha (Jacuzia)
-067|Regione di Sachalin
-068|Regione di Samara
-069|San Pietroburgo
-070|Regione di Saratov
-071|Repubblica dell'Ossezia Settentrionale-Alania
-072|Regione di Smolensk
-073|Territorio di Stavropol'
-074|Regione di Sverdlovsk
-075|Regione di Tambov
-076|Repubblica del Tatarstan
-077|Regione di Tomsk
-078|Regione di Tula
-079|Regione di Tver
-080|Regione di Tjumen'
-081|Repubblica di Tuva
-082|Repubblica Udmurta
-083|Regione di Ul'janovsk
-084|Regione di Vladimir
-085|Regione di Volgograd
-086|Regione di Vologda
-087|Regione di Voronež
-088|Circondario Autonomo Jamalo-Nenec
-089|Regione di Jaroslavl'
-090|Regione Autonoma Ebraica
-091|Territorio della Transbajkalia
+0|—
+9|Mosca
+10|Repubblica di Adigezia
+11|Repubblica dell'Altaj
+12|Territorio dell'Altaj
+13|Regione dell'Amur
+14|Regione di Arcangelo
+15|Regione di Astrachan'
+16|Repubblica del Baškortostan
+17|Regione di Belgorod
+18|Regione di Brjansk
+19|Repubblica di Buriazia
+20|Repubblica Cecena
+21|Regione di Čeljabinsk
+22|Circondario Autonomo di Čukotka
+23|Repubblica Ciuvascia
+24|Repubblica del Dagestan
+25|Repubblica di Inguscezia
+26|Regione di Irkutsk
+27|Regione di Ivanovo
+28|Repubblica di Cabardino-Balcaria
+29|Regione di Kaliningrad
+30|Repubblica di Calmucchia
+31|Regione di Kaluga
+32|Territorio della Kamčatka
+33|Repubblica Karačajevo-Čerkessia
+34|Repubblica di Carelia
+35|Regione di Kemerovo
+36|Territorio di Chabarovsk
+37|Repubblica di Khakassia
+38|Circondario Autonomo di Chantia-Mansia
+39|Regione di Kirov
+40|Repubblica di Komi
+41|Regione di Kostroma
+42|Territorio di Krasnodar
+43|Territorio di Krasnojarsk
+44|Regione di Kurgan
+45|Regione di Kursk
+46|Regione di Leningrado
+47|Regione di Lipeck
+48|Regione di Magadan
+49|Repubblica di Mari-El
+50|Repubblica di Mordovia
+51|Regione di Mosca
+52|Regione di Murmansk
+53|Circondario Autonomo di Nenec
+54|Regione di Nižnij Novgorod
+55|Regione di Novgorod
+56|Regione di Novosibirsk
+57|Regione di Omsk
+58|Regione di Orenburg
+59|Regione di Orël
+60|Regione di Penza
+61|Territorio di Perm'
+62|Territorio del Litorale
+63|Regione di Pskov
+64|Regione di Rostov
+65|Regione di Rjazan'
+66|Repubblica di Sacha (Jacuzia)
+67|Regione di Sachalin
+68|Regione di Samara
+69|San Pietroburgo
+70|Regione di Saratov
+71|Repubblica dell'Ossezia Settentrionale-Alania
+72|Regione di Smolensk
+73|Territorio di Stavropol'
+74|Regione di Sverdlovsk
+75|Regione di Tambov
+76|Repubblica del Tatarstan
+77|Regione di Tomsk
+78|Regione di Tula
+79|Regione di Tver
+80|Regione di Tjumen'
+81|Repubblica di Tuva
+82|Repubblica Udmurta
+83|Regione di Ul'janovsk
+84|Regione di Vladimir
+85|Regione di Volgograd
+86|Regione di Vologda
+87|Regione di Voronež
+88|Circondario Autonomo Jamalo-Nenec
+89|Regione di Jaroslavl'
+90|Regione Autonoma Ebraica
+91|Territorio della Transbajkalia

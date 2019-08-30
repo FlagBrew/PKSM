@@ -1,2 +1,2 @@
-000|—
-001|Luxemburg
+0|—
+1|Luxemburg

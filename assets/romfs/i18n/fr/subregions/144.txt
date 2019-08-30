@@ -1,2 +1,2 @@
-000|—
-001|Hong Kong
+0|—
+1|Hong Kong

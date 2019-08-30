@@ -1,15 +1,15 @@
-000|—
-002|Prague
-003|Central Bohemian Region
-004|South Bohemian Region
-005|Plzeň Region
-006|Karlovy Vary Region
-007|Ústí nad Labem Region
-008|Liberec Region
-009|Hradec Králové Region
-010|Pardubice Region
-011|Olomouc Region
-012|Moravian-Silesian Region
-013|South Moravian Region
-014|Zlín Region
-015|Vysočina Region
+0|—
+2|Prague
+3|Central Bohemian Region
+4|South Bohemian Region
+5|Plzeň Region
+6|Karlovy Vary Region
+7|Ústí nad Labem Region
+8|Liberec Region
+9|Hradec Králové Region
+10|Pardubice Region
+11|Olomouc Region
+12|Moravian-Silesian Region
+13|South Moravian Region
+14|Zlín Region
+15|Vysočina Region

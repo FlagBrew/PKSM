@@ -1,11 +1,11 @@
-000|—
-002|Ovest
-003|Nord-Ovest
-004|Artibonite
-005|Centro
-006|Grande Anse
-007|Nord
-008|Nord-Est
-009|Sud
-010|Sud-Est
-011|Nippes
+0|—
+2|Ovest
+3|Nord-Ovest
+4|Artibonite
+5|Centro
+6|Grande Anse
+7|Nord
+8|Nord-Est
+9|Sud
+10|Sud-Est
+11|Nippes

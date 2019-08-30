@@ -1,14 +1,14 @@
-000|—
-002|Port of Spain
-003|Arima
-004|Caroni
-005|Mayaro
-006|Nariva
-007|Saint Andrew
-008|Saint David
-009|Saint George
-010|Saint Patrick
-011|San Fernando
-012|Tobago
-013|Victoria
-014|Point Fortin
+0|—
+2|Port of Spain
+3|Arima
+4|Caroni
+5|Mayaro
+6|Nariva
+7|Saint Andrew
+8|Saint David
+9|Saint George
+10|Saint Patrick
+11|San Fernando
+12|Tobago
+13|Victoria
+14|Point Fortin

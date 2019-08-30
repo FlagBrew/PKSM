@@ -1,8 +1,8 @@
-000|—
-018|Groenland
-019|Hovedstaden
-020|Jutland-Central
-021|Jutland-du-Nord
-022|Zélande-du-Nord
-023|Danemark-du-Sud
-024|Îles Féroé
+0|—
+18|Groenland
+19|Hovedstaden
+20|Jutland-Central
+21|Jutland-du-Nord
+22|Zélande-du-Nord
+23|Danemark-du-Sud
+24|Îles Féroé

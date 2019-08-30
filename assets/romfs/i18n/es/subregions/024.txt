@@ -1,31 +1,31 @@
-000|—
-002|Distrito Nacional
-003|Azua
-004|Baoruco
-005|Barahona
-006|Dajabón
-007|Duarte
-008|Espaillat
-009|Independencia
-010|La Altagracia
-011|Elías Piña
-012|La Romana
-013|María Trinidad Sánchez
-014|Monte Cristi
-015|Pedernales
-016|Peravia
-017|Puerto Plata
-018|Salcedo
-019|Samaná
-020|Sánchez Ramírez
-021|San Juan
-022|San Pedro de Macorís
-023|Santiago
-024|Santiago Rodríguez
-025|Valverde
-026|El Seíbo
-027|Hato Mayor
-028|La Vega
-029|Monseñor Nouel
-030|Monte Plata
-031|San Cristóbal
+0|—
+2|Distrito Nacional
+3|Azua
+4|Baoruco
+5|Barahona
+6|Dajabón
+7|Duarte
+8|Espaillat
+9|Independencia
+10|La Altagracia
+11|Elías Piña
+12|La Romana
+13|María Trinidad Sánchez
+14|Monte Cristi
+15|Pedernales
+16|Peravia
+17|Puerto Plata
+18|Salcedo
+19|Samaná
+20|Sánchez Ramírez
+21|San Juan
+22|San Pedro de Macorís
+23|Santiago
+24|Santiago Rodríguez
+25|Valverde
+26|El Seíbo
+27|Hato Mayor
+28|La Vega
+29|Monseñor Nouel
+30|Monte Plata
+31|San Cristóbal

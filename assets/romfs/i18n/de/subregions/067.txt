@@ -1,4 +1,4 @@
-000|—
-002|Region Brüssel-Hauptstadt
-003|Flandern
-004|Wallonien
+0|—
+2|Region Brüssel-Hauptstadt
+3|Flandern
+4|Wallonien

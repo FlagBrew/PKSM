@@ -1,2 +1,2 @@
-000|—
-001|Bermudas
+0|—
+1|Bermudas

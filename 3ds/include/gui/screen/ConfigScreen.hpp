@@ -25,9 +25,9 @@
  */
 
 #include "Button.hpp"
-#include "ToggleButton.hpp"
 #include "Configuration.hpp"
 #include "Screen.hpp"
+#include "ToggleButton.hpp"
 #include "i18n.hpp"
 #include "loader.hpp"
 #include <array>
