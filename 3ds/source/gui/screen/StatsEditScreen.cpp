@@ -72,7 +72,7 @@ StatsEditScreen::StatsEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
             231, y, 13, 13, [=]() { return this->changeSecondaryStat(statValues[i], true); }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
     }
     instructions.addLine(false, 132, 34, 132, 168, 4, COLOR_GREY);
-    instructions.addLine(false, 213, 34, 211, 168, 4, COLOR_GREY);
+    instructions.addLine(false, 213, 34, 213, 168, 4, COLOR_GREY);
     instructions.addBox(false, 130, 18, 85, 16, COLOR_GREY, i18n::localize("EDIT"), COLOR_WHITE);
 
     buttons.push_back(
