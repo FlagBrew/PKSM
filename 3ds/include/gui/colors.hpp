@@ -50,5 +50,6 @@
 #define COLOR_GREY C2D_Color32(128, 128, 128, 255)
 #define COLOR_DARKGREY C2D_Color32(96, 96, 96, 255)
 #define COLOR_DARKYELLOW C2D_Color32(244, 170, 6, 120)
+#define COLOR_LINEBLUE C2D_Color32(31, 41, 139, 255)
 
 #endif

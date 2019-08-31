@@ -47,6 +47,11 @@ void Instructions::addBox(bool top, int x, int y, int width, int height, u32 col
     }
 }
 
+void Instructions::addLine(bool top, int x1, int y1, int x2, int y2, int w, u32 color)
+{
+    lines.emplace_back(top, x1, y1, x2, y2, w, color);
+}
+
 void Instructions::addText(bool top, int x, int y, int maxWidth, TextPosX xPos, TextPosY yPos, u32 color, const std::string& text)
 {
     texts.emplace_back(top, x, y, maxWidth, xPos, yPos, color, text);
@@ -66,6 +71,13 @@ void Instructions::drawTop() const
         if (box.top)
         {
             Gui::drawSolidRect(box.x, box.y, box.w, box.h, box.color);
+        }
+    }
+    for (auto& line : lines)
+    {
+        if (line.top)
+        {
+            Gui::drawLine(line.x1, line.y1, line.x2, line.y2, line.w, line.color);
         }
     }
     for (auto& circle : circles)
@@ -93,6 +105,13 @@ void Instructions::drawBottom() const
         if (!box.top)
         {
             Gui::drawSolidRect(box.x, box.y, box.w, box.h, box.color);
+        }
+    }
+    for (auto& line : lines)
+    {
+        if (!line.top)
+        {
+            Gui::drawLine(line.x1, line.y1, line.x2, line.y2, line.w, line.color);
         }
     }
     for (auto& circle : circles)

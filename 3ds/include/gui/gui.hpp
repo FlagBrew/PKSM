@@ -135,6 +135,7 @@ namespace Gui
     void drawSolidRect(float x, float y, float w, float h, u32 color);
     void drawSolidCircle(float x, float y, float radius, u32 color);
     void drawSolidTriangle(float x1, float y1, float x2, float y2, float x3, float y3, u32 color);
+    void drawLine(float x1, float y1, float x2, float y2, float thickness, u32 color);
 
     void backgroundTop(bool stripes);
     void backgroundBottom(bool stripes);

@@ -53,14 +53,12 @@ FileChooseOverlay::FileChooseOverlay(Overlay& ovly, std::string& retString, cons
 void FileChooseOverlay::drawTop() const
 {
     // slight change to stripy top
-    for (int x = 0; x < 400; x += 7)
+    Gui::drawSolidRect(0, 0, 400, 240, C2D_Color32(26, 35, 126, 255));
+    for (int x = -240; x < 400; x += 7)
     {
-        for (int y = 0; y < 240; y += 7)
-        {
-            Gui::sprite(ui_sheet_bg_stripe_top_idx, x, y);
-        }
+        Gui::drawLine(x, 0, x + 240, 240, 2, COLOR_LINEBLUE);
     }
-    Gui::drawSolidRect(0, 0, 400, 20, C2D_Color32(15, 22, 89, 255));
+    Gui::drawSolidRect(0, 0, 400, 25, C2D_Color32(15, 22, 89, 255));
 
     if (!currFiles.empty())
     {
