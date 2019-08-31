@@ -52,8 +52,8 @@ MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
         ui_sheet_button_editor_idx, "", 0.0f, 0));
 
     instructions.addCircle(false, 22, 225, 8, COLOR_GREY);
-    instructions.addBox(false, 20, 175, 4, 50, COLOR_GREY);
-    instructions.addBox(false, 20, 175, 90, 18, COLOR_GREY, i18n::localize("Y_LEGALIZE"), COLOR_WHITE);
+    instructions.addLine(false, 22, 175, 22, 225, 4, COLOR_GREY);
+    instructions.addBox(false, 20, 175, 140, 18, COLOR_GREY, i18n::localize("Y_LEGALIZE"), COLOR_WHITE);
     buttons.push_back(std::make_unique<ClickButton>(3, 211, 34, 28,
         [this]() {
             validate();

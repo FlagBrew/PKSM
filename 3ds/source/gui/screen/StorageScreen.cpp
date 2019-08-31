@@ -135,7 +135,7 @@ StorageScreen::StorageScreen()
 {
     instructions.addBox(true, 69, 21, 156, 24, COLOR_GREY, i18n::localize("A_BOX_NAME"), COLOR_WHITE);
     instructions.addCircle(false, 266, 23, 11, COLOR_GREY);
-    instructions.addBox(false, 264, 23, 4, 50, COLOR_GREY);
+    instructions.addLine(false, 266, 23, 266, 73, 4, COLOR_GREY);
     instructions.addBox(false, 148, 57, 120, 16, COLOR_GREY, i18n::localize("BOX_SWAP"), COLOR_WHITE);
     mainButtons[0] =
         std::make_unique<ClickButton>(242, 12, 47, 22, [this]() { return this->swapBoxWithStorage(); }, ui_sheet_button_swap_boxes_idx, "", 0.0f, 0);
@@ -156,7 +156,7 @@ StorageScreen::StorageScreen()
         std::make_unique<AccelButton>(189, 15, 17, 24, [this]() { return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
 
     instructions.addCircle(false, 17, 225, 8, COLOR_GREY);
-    instructions.addBox(false, 15, 175, 4, 50, COLOR_GREY);
+    instructions.addLine(false, 17, 175, 17, 225, 4, COLOR_GREY);
     instructions.addBox(false, 15, 175, 120, 18, COLOR_GREY, i18n::localize("GPSS_BROWSE"), COLOR_WHITE);
     mainButtons[9] = std::make_unique<ClickButton>(3, 211, 28, 28,
         [this]() {

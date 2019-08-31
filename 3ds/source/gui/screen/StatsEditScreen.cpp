@@ -71,8 +71,8 @@ StatsEditScreen::StatsEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
         buttons.push_back(std::make_unique<AccelButton>(
             231, y, 13, 13, [=]() { return this->changeSecondaryStat(statValues[i], true); }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
     }
-    instructions.addBox(false, 130, 34, 4, 134, COLOR_GREY);
-    instructions.addBox(false, 211, 34, 4, 134, COLOR_GREY);
+    instructions.addLine(false, 132, 34, 132, 168, 4, COLOR_GREY);
+    instructions.addLine(false, 213, 34, 211, 168, 4, COLOR_GREY);
     instructions.addBox(false, 130, 18, 85, 16, COLOR_GREY, i18n::localize("EDIT"), COLOR_WHITE);
 
     buttons.push_back(

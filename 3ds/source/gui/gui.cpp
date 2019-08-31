@@ -114,8 +114,7 @@ void Gui::drawLine(float x1, float y1, float x2, float y2, float width, u32 colo
 {
     flushText();
     // C2D_DrawLine(x1, y1, x2, y2, 0.5f, width, color);
-    float angle = atan2f(x2-x1, y2-y1);
-    angle = C3D_Angle(.25) + angle;
+    float angle = atan2f(y2-y1, x2-x1) + C3D_Angle(.25);
     float dy = width/2 * sinf(angle);
     float dx = width/2 * cosf(angle);
     drawSolidTriangle(x1 - dx, y1 - dy, x1 + dx, y1 + dy, x2 - dx, y2 - dy, color);

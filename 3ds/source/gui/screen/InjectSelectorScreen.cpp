@@ -57,7 +57,7 @@ InjectSelectorScreen::InjectSelectorScreen()
 
     // QR
     instructions.addCircle(false, 160, 195, 11, COLOR_GREY);
-    instructions.addBox(false, 158, 177, 4, 29, COLOR_GREY);
+    instructions.addLine(false, 160, 177, 160, 206, 4, COLOR_GREY);
     instructions.addBox(false, 160 - 100 / 2, 177 - 23, 100, 23, COLOR_GREY, i18n::localize("QR_SCANNER"));
     buttons.push_back(std::make_unique<Button>(
         160 - 70 / 2, 207 - 23, 70, 23, [this]() { return this->doQR(); }, ui_sheet_emulated_button_qr_idx, "", FONT_SIZE_14, COLOR_WHITE));
