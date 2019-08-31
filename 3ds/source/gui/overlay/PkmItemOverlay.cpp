@@ -101,7 +101,7 @@ PkmItemOverlay::PkmItemOverlay(Screen& screen, std::shared_ptr<PKX> pkm)
     hid.select(index(items, i18n::item(Configuration::getInstance().language(), pkm->heldItem())));
     searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+            searchBar();
             return false;
         },
         ui_sheet_emulated_box_search_idx, "", 0, 0);
@@ -143,7 +143,7 @@ PkmItemOverlay::PkmItemOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm)
     hid.select(index(items, i18n::item(Configuration::getInstance().language(), pkm->heldItem())));
     searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+            searchBar();
             return false;
         },
         ui_sheet_emulated_box_search_idx, "", 0, 0);
@@ -197,7 +197,7 @@ void PkmItemOverlay::update(touchPosition* touch)
 
     if (hidKeysDown() & KEY_X)
     {
-        Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+        searchBar();
     }
     searchButton->update(touch);
 

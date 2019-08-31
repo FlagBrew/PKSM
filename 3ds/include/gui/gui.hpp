@@ -165,7 +165,6 @@ namespace Gui
     void waitFrame(const std::string& message, std::optional<std::string> message2 = std::nullopt);
     void warn(const std::string& message, std::optional<std::string> message2 = std::nullopt, std::optional<Language> forceLang = std::nullopt);
     void error(const std::string& message, Result errorCode);
-    void setNextKeyboardFunc(std::function<void()> callback);
     void showResizeStorage(void);
 }
 

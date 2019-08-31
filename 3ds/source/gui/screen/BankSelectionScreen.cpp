@@ -89,11 +89,11 @@ void BankSelectionScreen::update(touchPosition* touch)
     }
     else if (downKeys & KEY_X)
     {
-        Gui::setNextKeyboardFunc([this]() { renameBank(); });
+        renameBank();
     }
     else if (downKeys & KEY_Y)
     {
-        Gui::setNextKeyboardFunc([this]() { resizeBank(); });
+        resizeBank();
     }
     else if (downKeys & KEY_START)
     {

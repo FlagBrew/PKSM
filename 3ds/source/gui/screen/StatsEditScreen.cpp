@@ -49,7 +49,7 @@ StatsEditScreen::StatsEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
             106, y, 13, 13, [=]() { return this->changeIV(statValues[i], false); }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
         buttons.push_back(std::make_unique<Button>(121, y, 23, 13,
             [=]() {
-                Gui::setNextKeyboardFunc([=]() { return this->setIV(statValues[i]); });
+                setIV(statValues[i]);
                 return false;
             },
             ui_sheet_res_null_idx, "", 0.0f, 0));
@@ -62,7 +62,7 @@ StatsEditScreen::StatsEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
             182, y, 13, 13, [=]() { return this->changeSecondaryStat(statValues[i], false); }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
         buttons.push_back(std::make_unique<Button>(197, y, 32, 13,
             [=]() {
-                Gui::setNextKeyboardFunc([=]() { return this->setSecondaryStat(statValues[i]); });
+                setSecondaryStat(statValues[i]);
                 return false;
             },
             ui_sheet_res_null_idx, "", 0.0f, 0));

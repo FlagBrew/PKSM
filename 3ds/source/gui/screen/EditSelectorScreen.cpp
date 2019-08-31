@@ -485,7 +485,7 @@ void EditSelectorScreen::update(touchPosition* touch)
         {
             if (cursorPos == 0)
             {
-                Gui::setNextKeyboardFunc(std::bind(&EditSelectorScreen::changeBoxName, this));
+                changeBoxName();
             }
             else if (moveMon && cursorPos < 31)
             {
@@ -871,7 +871,7 @@ bool EditSelectorScreen::clickIndex(int i)
     {
         if (cursorPos == 0)
         {
-            Gui::setNextKeyboardFunc(std::bind(&EditSelectorScreen::changeBoxName, this));
+            changeBoxName();
         }
         else
         {

@@ -71,7 +71,7 @@ void BagItemOverlay::update(touchPosition* touch)
 
     if (hidKeysDown() & KEY_X)
     {
-        Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+        searchBar();
     }
     searchButton->update(touch);
 

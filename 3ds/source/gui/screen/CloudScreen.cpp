@@ -39,12 +39,6 @@ CloudScreen::CloudScreen(int storageBox)
              i18n::localize("R_BOX_NEXT") + '\n' + i18n::localize("B_BACK")),
       storageBox(storageBox)
 {
-    if (!access.good())
-    {
-        Gui::warn(i18n::localize("OFFLINE_ERROR"));
-        Gui::setNextKeyboardFunc([]() { Gui::screenBack(); });
-        return;
-    }
     mainButtons[0] = std::make_unique<Button>(
         212, 109, 108, 28, [this]() { return this->showViewer(); }, ui_sheet_button_editor_idx, i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
     mainButtons[1] = std::make_unique<Button>(
@@ -76,6 +70,10 @@ CloudScreen::CloudScreen(int storageBox)
 
 void CloudScreen::drawBottom() const
 {
+    if (!access.good())
+    {
+        return;
+    }
     Gui::sprite(ui_sheet_emulated_bg_bottom_green, 0, 0);
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
     Gui::sprite(ui_sheet_bar_arc_bottom_green_idx, 0, 206);
@@ -136,6 +134,10 @@ void CloudScreen::drawBottom() const
 
 void CloudScreen::drawTop() const
 {
+    if (!access.good())
+    {
+        return;
+    }
     Gui::sprite(ui_sheet_emulated_bg_top_green, 0, 0);
     Gui::sprite(ui_sheet_bg_style_top_idx, 0, 0);
     Gui::backgroundAnimatedTop();
@@ -284,6 +286,12 @@ void CloudScreen::drawTop() const
 
 void CloudScreen::update(touchPosition* touch)
 {
+    if (!access.good())
+    {
+        Gui::warn(i18n::localize("OFFLINE_ERROR"));
+        Gui::screenBack();
+        return;
+    }
     if (justSwitched)
     {
         if ((keysHeld() | keysDown()) & KEY_TOUCH)

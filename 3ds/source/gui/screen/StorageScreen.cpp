@@ -575,7 +575,7 @@ void StorageScreen::update(touchPosition* touch)
         {
             if (moveMon.empty())
             {
-                Gui::setNextKeyboardFunc(std::bind(&StorageScreen::setBoxName, this, storageChosen));
+                setBoxName(storageChosen);
             }
         }
         else
@@ -598,7 +598,7 @@ void StorageScreen::update(touchPosition* touch)
                 {
                     return;
                 }
-                Gui::setNextKeyboardFunc([this]() { this->shareReceive(); });
+                shareReceive();
             }
             else
             {
@@ -803,7 +803,7 @@ bool StorageScreen::clickBottomIndex(int index)
         {
             if (moveMon.empty())
             {
-                Gui::setNextKeyboardFunc(std::bind(&StorageScreen::setBoxName, this, false));
+                setBoxName(false);
                 return true;
             }
         }

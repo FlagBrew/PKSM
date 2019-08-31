@@ -45,7 +45,6 @@ static TextParse::ScreenText* currentText = nullptr;
 static std::vector<C2D_Font> fonts;
 
 std::stack<std::unique_ptr<Screen>> screens;
-static std::function<void()> keyboardFunc;
 
 constexpr u32 magicNumber = 0xC7D84AB9;
 static float noHomeAlpha  = 0.0f;
@@ -463,6 +462,15 @@ void Gui::mainLoop(void)
             screens.top()->doBottomDraw();
             screens.top()->getInstructions().drawBottom();
             flushText();
+
+            if (!aptIsHomeAllowed() && aptIsHomePressed())
+            {
+                setDoHomeDraw();
+            }
+            drawNoHome();
+
+            C3D_FrameEnd(0);
+            inFrame = false;
         }
         else
         {
@@ -474,28 +482,22 @@ void Gui::mainLoop(void)
             screens.top()->doBottomDraw();
             flushText();
 
+            if (!aptIsHomeAllowed() && aptIsHomePressed())
+            {
+                setDoHomeDraw();
+            }
+            drawNoHome();
+
+            C3D_FrameEnd(0);
+            inFrame = false;
+
             touchPosition touch;
             hidTouchRead(&touch);
             screens.top()->doUpdate(&touch);
             exit = screens.size() == 1 && (kHeld & KEY_START);
         }
 
-        if (!aptIsHomeAllowed() && aptIsHomePressed())
-        {
-            setDoHomeDraw();
-        }
-
-        drawNoHome();
-
         textBuffer->clear();
-
-        inFrame = false;
-        C3D_FrameEnd(0);
-        if (keyboardFunc != nullptr)
-        {
-            keyboardFunc();
-            keyboardFunc = nullptr;
-        }
     }
 }
 
@@ -1759,11 +1761,6 @@ void Gui::warn(const std::string& message, std::optional<std::string> message2, 
 void Gui::screenBack()
 {
     screens.pop();
-}
-
-void Gui::setNextKeyboardFunc(std::function<void()> func)
-{
-    keyboardFunc = func;
 }
 
 void Gui::showRestoreProgress(u32 partial, u32 total)

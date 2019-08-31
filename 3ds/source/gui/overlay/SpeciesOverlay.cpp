@@ -36,7 +36,7 @@ SpeciesOverlay::SpeciesOverlay(Screen& screen, std::shared_ptr<PKX> pkm)
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+            searchBar();
             return false;
         },
         ui_sheet_emulated_box_search_idx, "", 0, 0);
@@ -75,7 +75,7 @@ SpeciesOverlay::SpeciesOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm)
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+            searchBar();
             return false;
         },
         ui_sheet_emulated_box_search_idx, "", 0, 0);
@@ -114,7 +114,7 @@ SpeciesOverlay::SpeciesOverlay(Screen& screen, std::shared_ptr<PKFilter> filter)
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+            searchBar();
             return false;
         },
         ui_sheet_emulated_box_search_idx, "", 0, 0);
@@ -153,7 +153,7 @@ SpeciesOverlay::SpeciesOverlay(Overlay& ovly, std::shared_ptr<PKFilter> filter)
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+            searchBar();
             return false;
         },
         ui_sheet_emulated_box_search_idx, "", 0, 0);
@@ -240,7 +240,7 @@ void SpeciesOverlay::update(touchPosition* touch)
 
     if (hidKeysDown() & KEY_X)
     {
-        Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+        searchBar();
     }
     searchButton->update(touch);
     if (!searchString.empty() && searchString != oldSearchString)

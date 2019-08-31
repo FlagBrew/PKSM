@@ -65,7 +65,7 @@ MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
         94, 34, 13, 13, [this]() { return this->changeMetLevel(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
     buttons.push_back(std::make_unique<Button>(109, 34, 31, 13,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { setMetLevel(); });
+            setMetLevel();
             return false;
         },
         ui_sheet_res_null_idx, "", 0.0f, 0));
@@ -74,19 +74,19 @@ MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
 
     buttons.push_back(std::make_unique<Button>(95, 54, 15, 12,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { day(); });
+            day();
             return true;
         },
         ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, 0));
     buttons.push_back(std::make_unique<ClickButton>(95, 74, 15, 12,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { month(); });
+            month();
             return true;
         },
         ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, 0));
     buttons.push_back(std::make_unique<Button>(95, 94, 15, 12,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { year(); });
+            year();
             return true;
         },
         ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, 0));
@@ -109,7 +109,7 @@ MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
             94, 154, 13, 13, [this]() { return this->changeEnjoyment(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
         buttons.push_back(std::make_unique<Button>(109, 154, 31, 13,
             [this]() {
-                Gui::setNextKeyboardFunc([this]() { setEnjoyment(); });
+                setEnjoyment();
                 return false;
             },
             ui_sheet_res_null_idx, "", 0.0f, 0));
@@ -120,7 +120,7 @@ MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
             94, 174, 13, 13, [this]() { return this->changeFullness(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
         buttons.push_back(std::make_unique<Button>(109, 174, 31, 13,
             [this]() {
-                Gui::setNextKeyboardFunc([this]() { setFullness(); });
+                setFullness();
                 return false;
             },
             ui_sheet_res_null_idx, "", 0.0f, 0));
@@ -131,7 +131,7 @@ MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
             94, 194, 13, 13, [this]() { return this->changeAffection(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
         buttons.push_back(std::make_unique<Button>(109, 194, 31, 13,
             [this]() {
-                Gui::setNextKeyboardFunc([this]() { setAffection(); });
+                setAffection();
                 return false;
             },
             ui_sheet_res_null_idx, "", 0.0f, 0));

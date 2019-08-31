@@ -317,19 +317,19 @@ void ConfigScreen::initButtons()
     // Defaults buttons
     tabButtons[1].push_back(std::make_unique<Button>(122, 38, 15, 12,
         []() {
-            Gui::setNextKeyboardFunc([]() { inputNumber([](u16 a) { Configuration::getInstance().defaultTID(a); }, 5, 0xFFFF); });
+            inputNumber([](u16 a) { Configuration::getInstance().defaultTID(a); }, 5, 0xFFFF); 
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
     tabButtons[1].push_back(std::make_unique<Button>(122, 59, 15, 12,
         []() {
-            Gui::setNextKeyboardFunc([]() { inputNumber([](u16 a) { Configuration::getInstance().defaultSID(a); }, 5, 0xFFFF); });
+            inputNumber([](u16 a) { Configuration::getInstance().defaultSID(a); }, 5, 0xFFFF);
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
     tabButtons[1].push_back(std::make_unique<Button>(122, 80, 15, 12,
         []() {
-            Gui::setNextKeyboardFunc(&inputOT);
+            inputOT();
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
@@ -349,19 +349,19 @@ void ConfigScreen::initButtons()
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
     tabButtons[1].push_back(std::make_unique<Button>(122, 164, 15, 12,
         []() {
-            Gui::setNextKeyboardFunc([]() { inputNumber([](u16 a) { Configuration::getInstance().day(a); }, 2, 31); });
+            inputNumber([](u16 a) { Configuration::getInstance().day(a); }, 2, 31);
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
     tabButtons[1].push_back(std::make_unique<Button>(122, 185, 15, 12,
         []() {
-            Gui::setNextKeyboardFunc([]() { inputNumber([](u16 a) { Configuration::getInstance().month(a); }, 2, 12); });
+            inputNumber([](u16 a) { Configuration::getInstance().month(a); }, 2, 12);
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
     tabButtons[1].push_back(std::make_unique<Button>(122, 206, 15, 12,
         []() {
-            Gui::setNextKeyboardFunc([]() { inputNumber([](u16 a) { Configuration::getInstance().year(a); }, 4, 9999); });
+            inputNumber([](u16 a) { Configuration::getInstance().year(a); }, 4, 9999);
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
@@ -425,7 +425,7 @@ void ConfigScreen::initButtons()
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
     tabButtons[3].push_back(std::make_unique<ClickButton>(247, 87, 15, 12,
         [this]() {
-            Gui::setNextKeyboardFunc(&inputPatronCode);
+            inputPatronCode();
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));

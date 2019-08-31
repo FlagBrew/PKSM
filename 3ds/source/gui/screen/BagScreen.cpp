@@ -62,7 +62,7 @@ BagScreen::BagScreen()
             ui_sheet_emulated_button_minus_small_black_idx, "", 0.0f, 0));
         amountButtons.push_back(std::make_unique<ClickButton>(262, 23 + i * 30, 37, 13,
             [this, i]() {
-                Gui::setNextKeyboardFunc([this, i]() { setCount(i); });
+                setCount(i);
                 selectingPouch = false;
                 selectedItem   = i;
                 return false;

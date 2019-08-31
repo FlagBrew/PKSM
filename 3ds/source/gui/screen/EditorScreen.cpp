@@ -226,7 +226,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
     buttons.push_back(NO_TEXT_ACCEL(94, 34, 13, 13, [this]() { return this->changeLevel(false); }, ui_sheet_button_minus_small_idx));
     buttons.push_back(NO_TEXT_BUTTON(109, 34, 31, 13,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { setLevel(); });
+            setLevel();
             return false;
         },
         ui_sheet_res_null_idx));
@@ -243,20 +243,20 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
     buttons.push_back(NO_TEXT_CLICK(75, 134, 15, 12, [this]() { return this->togglePokerus(); }, ui_sheet_button_info_detail_editor_dark_idx));
     buttons.push_back(NO_TEXT_BUTTON(75, 154, 15, 12,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { return this->setOT(); });
+            setOT();
             return false;
         },
         ui_sheet_button_info_detail_editor_dark_idx));
     buttons.push_back(NO_TEXT_BUTTON(75, 174, 15, 12,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { return this->setNick(); });
+            setNick();
             return false;
         },
         ui_sheet_button_info_detail_editor_dark_idx));
     buttons.push_back(NO_TEXT_ACCEL(94, 194, 13, 13, [this]() { return this->changeFriendship(false); }, ui_sheet_button_minus_small_idx));
     buttons.push_back(NO_TEXT_BUTTON(109, 194, 31, 13,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { return this->setFriendship(); });
+            setFriendship();
             return false;
         },
         ui_sheet_res_null_idx));

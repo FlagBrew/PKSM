@@ -104,7 +104,7 @@ MoveOverlay::MoveOverlay(Screen& screen, std::shared_ptr<PKX> pkm, int moveIndex
     }
     searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+            searchBar();
             return false;
         },
         ui_sheet_emulated_box_search_idx, "", 0, 0);
@@ -153,7 +153,7 @@ MoveOverlay::MoveOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm, int moveIndex)
     }
     searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+            searchBar();
             return false;
         },
         ui_sheet_emulated_box_search_idx, "", 0, 0);
@@ -188,7 +188,7 @@ MoveOverlay::MoveOverlay(Screen& screen, std::shared_ptr<PKFilter> filter, int m
     }
     searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+            searchBar();
             return false;
         },
         ui_sheet_emulated_box_search_idx, "", 0, 0);
@@ -223,7 +223,7 @@ MoveOverlay::MoveOverlay(Overlay& ovly, std::shared_ptr<PKFilter> filter, int mo
     }
     searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+            searchBar();
             return false;
         },
         ui_sheet_emulated_box_search_idx, "", 0, 0);
@@ -285,7 +285,7 @@ void MoveOverlay::update(touchPosition* touch)
 
     if (hidKeysDown() & KEY_X)
     {
-        Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+        searchBar();
     }
     searchButton->update(touch);
 
