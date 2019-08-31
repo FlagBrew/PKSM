@@ -60,9 +60,6 @@ private:                                                                        
 
 class PKFilter
 {
-private:
-    // dirty hack to make a qualified name work with this
-    using filterString = std::string;
     MAKE_DEFN(generation, Generation);
     MAKE_DEFN(species, u16);
     MAKE_DEFN(alternativeForm, u8);
@@ -70,9 +67,7 @@ private:
     MAKE_DEFN(heldItem, u16);
     MAKE_DEFN(level, u8);
     MAKE_DEFN(ability, u8);
-    MAKE_DEFN(formatTID, u32);
-    MAKE_DEFN(formatSID, u32);
-    MAKE_DEFN(otName, filterString);
+    MAKE_DEFN(TSV, u16);
     MAKE_DEFN(nature, u8);
     MAKE_DEFN(gender, u8);
     MAKE_NUM_DEFN(move, u16, 4);

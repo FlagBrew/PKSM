@@ -464,15 +464,7 @@ bool PKX::operator==(const PKFilter& filter) const
     {
         return false;
     }
-    if (filter.formatTIDEnabled() && (filter.formatTIDInversed() != (formatTID() != filter.formatTID())))
-    {
-        return false;
-    }
-    if (filter.formatSIDEnabled() && (filter.formatSIDInversed() != (formatSID() != filter.formatSID())))
-    {
-        return false;
-    }
-    if (filter.otNameEnabled() && (filter.otNameInversed() != (otName() != filter.otName())))
+    if (filter.TSVEnabled() && (filter.TSVInversed() != (TSV() != filter.TSV())))
     {
         return false;
     }
