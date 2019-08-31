@@ -59,7 +59,7 @@ void ScrollingTextScreen::update(touchPosition* touch)
 
 void ScrollingTextScreen::drawTop() const
 {
-    if (!currentOverlay)
+    if (!overlay)
     {
         Gui::backgroundTop(true);
         Gui::backgroundAnimatedTop();

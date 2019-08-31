@@ -28,27 +28,8 @@
 #include "ClickButton.hpp"
 #include "gui.hpp"
 
-ConfigCountryOverlay::ConfigCountryOverlay(Screen& screen)
-    : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
-      hid(40, 2),
-      validCountries(i18n::rawCountries(Configuration::getInstance().language())),
-      countries(validCountries)
-{
-    instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
-    searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
-        [this]() {
-            searchBar();
-            return false;
-        },
-        ui_sheet_emulated_box_search_idx, "", 0, 0);
-    hid.update(countries.size());
-    hid.select(std::distance(countries.begin(), std::find_if(countries.begin(), countries.end(), [](const std::pair<u16, std::string>& pair) {
-        return pair.first == Configuration::getInstance().defaultCountry();
-    })));
-}
-
-ConfigCountryOverlay::ConfigCountryOverlay(Overlay& ovly)
-    : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
+ConfigCountryOverlay::ConfigCountryOverlay(ReplaceableScreen& screen)
+    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
       hid(40, 2),
       validCountries(i18n::rawCountries(Configuration::getInstance().language())),
       countries(validCountries)
@@ -161,12 +142,12 @@ void ConfigCountryOverlay::update(touchPosition* touch)
             }
             Configuration::getInstance().defaultCountry(locIt->first);
         }
-        me = nullptr;
+        parent->removeOverlay();
         return;
     }
     else if (downKeys & KEY_B)
     {
-        me = nullptr;
+        parent->removeOverlay();
         return;
     }
 }

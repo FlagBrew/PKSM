@@ -24,20 +24,15 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "Overlay.hpp"
-#include "Screen.hpp"
+#include "ReplaceableScreen.hpp"
 #include "gui.hpp"
 
-Overlay::Overlay(Screen& screen, const std::string& instructions) : me(screen.currentOverlay), instructions(instructions) {}
-
-Overlay::Overlay(Overlay& overlay, const std::string& instructions) : me(overlay.overlay), instructions(instructions) {}
-
-void Overlay::dim() const
+void ReplaceableScreen::dim() const
 {
     Gui::drawSolidRect(0, 0, 400, 240, COLOR_MASKBLACK);
 }
 
-void Overlay::doTopDraw() const
+void ReplaceableScreen::doTopDraw() const
 {
     if (overlay)
     {
@@ -53,7 +48,7 @@ void Overlay::doTopDraw() const
     }
 }
 
-void Overlay::doBottomDraw() const
+void ReplaceableScreen::doBottomDraw() const
 {
     if (overlay)
     {
@@ -69,7 +64,7 @@ void Overlay::doBottomDraw() const
     }
 }
 
-void Overlay::doUpdate(touchPosition* touch)
+void ReplaceableScreen::doUpdate(touchPosition* touch)
 {
     if (overlay && overlay->willHandleUpdate())
     {
@@ -81,7 +76,7 @@ void Overlay::doUpdate(touchPosition* touch)
     }
 }
 
-bool Overlay::willHandleUpdate() const
+bool ReplaceableScreen::willHandleUpdate() const
 {
     if (overlay)
     {
@@ -93,7 +88,7 @@ bool Overlay::willHandleUpdate() const
     }
 }
 
-bool Overlay::willReplaceBottom() const
+bool ReplaceableScreen::willReplaceBottom() const
 {
     if (overlay)
     {
@@ -105,7 +100,7 @@ bool Overlay::willReplaceBottom() const
     }
 }
 
-bool Overlay::willReplaceTop() const
+bool ReplaceableScreen::willReplaceTop() const
 {
     if (overlay)
     {

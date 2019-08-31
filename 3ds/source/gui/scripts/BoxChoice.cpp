@@ -133,7 +133,7 @@ void BoxChoice::drawBottom() const
         }
     }
 
-    if (currentOverlay)
+    if (overlay)
     {
         Gui::drawSolidRect(0, 0, 320, 240, COLOR_MASKBLACK);
     }
@@ -141,7 +141,7 @@ void BoxChoice::drawBottom() const
 
 void BoxChoice::drawTop() const
 {
-    if (!currentOverlay)
+    if (!overlay)
     {
         Gui::sprite(ui_sheet_emulated_bg_top_green, 0, 0);
         Gui::sprite(ui_sheet_bg_style_top_idx, 0, 0);
@@ -327,7 +327,7 @@ void BoxChoice::update(touchPosition* touch)
     static bool sleep = true;
     u32 kDown         = hidKeysDown();
     u32 kHeld         = hidKeysHeld();
-    if (!currentOverlay)
+    if (!overlay)
     {
         for (size_t i = 0; i < mainButtons.size(); i++)
         {
@@ -505,7 +505,7 @@ bool BoxChoice::backButton()
     if (!backHeld)
     {
         backHeld = true;
-        if (currentOverlay)
+        if (overlay)
         {
             removeOverlays();
         }

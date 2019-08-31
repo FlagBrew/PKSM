@@ -70,12 +70,12 @@ void BallOverlay::update(touchPosition* touch)
     if (downKeys & KEY_A)
     {
         pkm->ball((u8)hid.fullIndex() + 1);
-        me = nullptr;
+        parent->removeOverlay();
         return;
     }
     else if (downKeys & KEY_B)
     {
-        me = nullptr;
+        parent->removeOverlay();
         return;
     }
 }

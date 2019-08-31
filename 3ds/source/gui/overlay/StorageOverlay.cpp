@@ -33,20 +33,20 @@
 #include "gui.hpp"
 #include "loader.hpp"
 
-StorageOverlay::StorageOverlay(Screen& screen, bool store, int& boxBox, int& storageBox, std::shared_ptr<PKFilter> filter)
-    : Overlay(screen, i18n::localize("B_BACK")), storage(store), boxBox(boxBox), storageBox(storageBox), filter(filter)
+StorageOverlay::StorageOverlay(ReplaceableScreen& screen, bool store, int& boxBox, int& storageBox, std::shared_ptr<PKFilter> filter)
+    : ReplaceableScreen(&screen, i18n::localize("B_BACK")), storage(store), boxBox(boxBox), storageBox(storageBox), filter(filter)
 {
     buttons.push_back(std::make_unique<ClickButton>(106, 63, 108, 28,
         [this]() {
             Gui::setScreen(std::make_unique<SortScreen>(storage));
-            me = nullptr;
+            parent->removeOverlay();
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("SORT"), FONT_SIZE_12, COLOR_BLACK));
     buttons.push_back(std::make_unique<ClickButton>(106, 94, 108, 28,
         [this]() {
             Gui::setScreen(std::make_unique<FilterScreen>(this->filter));
-            me = nullptr;
+            parent->removeOverlay();
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("FILTER"), FONT_SIZE_12, COLOR_BLACK));
@@ -55,47 +55,13 @@ StorageOverlay::StorageOverlay(Screen& screen, bool store, int& boxBox, int& sto
     buttons.push_back(std::make_unique<ClickButton>(106, 156, 108, 28,
         [this]() {
             Gui::setScreen(std::make_unique<BankSelectionScreen>(this->storageBox));
-            me = nullptr;
+            parent->removeOverlay();
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("BANK_SWITCH"), FONT_SIZE_12, COLOR_BLACK));
     buttons.push_back(std::make_unique<ClickButton>(283, 211, 34, 28,
         [this]() {
-            me = nullptr;
-            return true;
-        },
-        ui_sheet_button_back_idx, "", 0.0f, 0));
-}
-
-StorageOverlay::StorageOverlay(Overlay& ovly, bool store, int& boxBox, int& storageBox, std::shared_ptr<PKFilter> filter)
-    : Overlay(ovly, i18n::localize("B_BACK")), storage(store), boxBox(boxBox), storageBox(storageBox), filter(filter)
-{
-    buttons.push_back(std::make_unique<ClickButton>(106, 63, 108, 28,
-        [this]() {
-            Gui::setScreen(std::make_unique<SortScreen>(storage));
-            me = nullptr;
-            return true;
-        },
-        ui_sheet_button_editor_idx, i18n::localize("SORT"), FONT_SIZE_12, COLOR_BLACK));
-    buttons.push_back(std::make_unique<ClickButton>(106, 94, 108, 28,
-        [this]() {
-            Gui::setScreen(std::make_unique<FilterScreen>(this->filter));
-            me = nullptr;
-            return true;
-        },
-        ui_sheet_button_editor_idx, i18n::localize("FILTER"), FONT_SIZE_12, COLOR_BLACK));
-    buttons.push_back(std::make_unique<ClickButton>(
-        106, 125, 108, 28, [this]() { return selectBox(); }, ui_sheet_button_editor_idx, i18n::localize("BOX_JUMP"), FONT_SIZE_12, COLOR_BLACK));
-    buttons.push_back(std::make_unique<ClickButton>(106, 156, 108, 28,
-        [this]() {
-            Gui::setScreen(std::make_unique<BankSelectionScreen>(this->storageBox));
-            me = nullptr;
-            return true;
-        },
-        ui_sheet_button_editor_idx, i18n::localize("BANK_SWITCH"), FONT_SIZE_12, COLOR_BLACK));
-    buttons.push_back(std::make_unique<ClickButton>(283, 211, 34, 28,
-        [this]() {
-            me = nullptr;
+            parent->removeOverlay();
             return true;
         },
         ui_sheet_button_back_idx, "", 0.0f, 0));
@@ -120,7 +86,7 @@ void StorageOverlay::update(touchPosition* touch)
 {
     if (hidKeysDown() & KEY_B)
     {
-        me = nullptr;
+        parent->removeOverlay();
         return;
     }
     else

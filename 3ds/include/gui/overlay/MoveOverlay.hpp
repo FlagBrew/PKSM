@@ -30,19 +30,17 @@
 #include "Button.hpp"
 #include "Configuration.hpp"
 #include "HidVertical.hpp"
-#include "Overlay.hpp"
+#include "ReplaceableScreen.hpp"
 #include "PK6.hpp"
 #include "PK7.hpp"
 #include "PKFilter.hpp"
 #include "loader.hpp"
 
-class MoveOverlay : public Overlay
+class MoveOverlay : public ReplaceableScreen
 {
 public:
-    MoveOverlay(Screen& screen, std::shared_ptr<PKX> pkm, int moveIndex);
-    MoveOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm, int moveIndex);
-    MoveOverlay(Screen& screen, std::shared_ptr<PKFilter> filter, int moveIndex);
-    MoveOverlay(Overlay& ovly, std::shared_ptr<PKFilter> filter, int moveIndex);
+    MoveOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm, int moveIndex);
+    MoveOverlay(ReplaceableScreen& screen, std::shared_ptr<PKFilter> filter, int moveIndex);
     ~MoveOverlay();
     void drawTop() const override;
     bool replacesTop() const override { return true; }

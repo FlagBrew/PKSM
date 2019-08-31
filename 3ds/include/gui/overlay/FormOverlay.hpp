@@ -28,35 +28,23 @@
 #define FORMOVERLAY_HPP
 
 #include "HidHorizontal.hpp"
-#include "Overlay.hpp"
+#include "ReplaceableScreen.hpp"
 #include "PKX.hpp"
 #include "i18n.hpp"
 #include <memory>
 #include <variant>
 
-class FormOverlay : public Overlay
+class FormOverlay : public ReplaceableScreen
 {
 public:
-    FormOverlay(Screen& screen, std::shared_ptr<PKX> pkm, u8 formCount)
-        : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(pkm), hid(40, 6), formCount(formCount)
+    FormOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm, u8 formCount)
+        : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(pkm), hid(40, 6), formCount(formCount)
     {
         hid.update(40);
         hid.select(pkm->alternativeForm());
     }
-    FormOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm, u8 formCount)
-        : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(pkm), hid(40, 6), formCount(formCount)
-    {
-        hid.update(40);
-        hid.select(pkm->alternativeForm());
-    }
-    FormOverlay(Screen& screen, std::shared_ptr<PKFilter> filter, u8 formCount)
-        : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(filter), hid(40, 6), formCount(formCount)
-    {
-        hid.update(40);
-        hid.select(filter->alternativeForm());
-    }
-    FormOverlay(Overlay& ovly, std::shared_ptr<PKFilter> filter, u8 formCount)
-        : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(filter), hid(40, 6), formCount(formCount)
+    FormOverlay(ReplaceableScreen& screen, std::shared_ptr<PKFilter> filter, u8 formCount)
+        : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(filter), hid(40, 6), formCount(formCount)
     {
         hid.update(40);
         hid.select(filter->alternativeForm());

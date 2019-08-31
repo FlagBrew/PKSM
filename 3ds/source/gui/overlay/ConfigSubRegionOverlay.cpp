@@ -28,27 +28,8 @@
 #include "ClickButton.hpp"
 #include "gui.hpp"
 
-ConfigSubRegionOverlay::ConfigSubRegionOverlay(Screen& screen)
-    : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
-      hid(40, 2),
-      validSubRegions(i18n::rawSubregions(Configuration::getInstance().language(), Configuration::getInstance().defaultCountry())),
-      subregions(validSubRegions)
-{
-    instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
-    searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
-        [this]() {
-            searchBar();
-            return false;
-        },
-        ui_sheet_emulated_box_search_idx, "", 0, 0);
-    hid.update(subregions.size());
-    hid.select(std::distance(subregions.begin(), std::find_if(subregions.begin(), subregions.end(), [](const std::pair<u16, std::string>& pair) {
-        return pair.first == Configuration::getInstance().defaultRegion();
-    })));
-}
-
-ConfigSubRegionOverlay::ConfigSubRegionOverlay(Overlay& ovly)
-    : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
+ConfigSubRegionOverlay::ConfigSubRegionOverlay(ReplaceableScreen& screen)
+    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
       hid(40, 2),
       validSubRegions(i18n::rawSubregions(Configuration::getInstance().language(), Configuration::getInstance().defaultCountry())),
       subregions(validSubRegions)
@@ -161,12 +142,12 @@ void ConfigSubRegionOverlay::update(touchPosition* touch)
             }
             Configuration::getInstance().defaultRegion(locIt->first);
         }
-        me = nullptr;
+        parent->removeOverlay();
         return;
     }
     else if (downKeys & KEY_B)
     {
-        me = nullptr;
+        parent->removeOverlay();
         return;
     }
 }

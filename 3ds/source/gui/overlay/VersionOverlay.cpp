@@ -26,22 +26,7 @@
 
 #include "VersionOverlay.hpp"
 
-VersionOverlay::VersionOverlay(Screen& screen, std::shared_ptr<PKX> pkm) : Overlay(screen), pkm(pkm), hid(40, 2)
-{
-    for (size_t i = 0; i < i18n::numGameStrings(Configuration::getInstance().language()); i++)
-    {
-        const std::string& str = i18n::game(Configuration::getInstance().language(), i);
-        if (str != i18n::localize("INVALID_GAME"))
-        {
-            games.emplace_back((u8)i, str);
-        }
-    }
-    hid.update(games.size());
-    hid.select(std::distance(games.begin(),
-        std::find_if(games.begin(), games.end(), [pkm](const std::pair<u8, const std::string&>& pair) { return pair.first == pkm->version(); })));
-}
-
-VersionOverlay::VersionOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm) : Overlay(ovly), pkm(pkm), hid(40, 2)
+VersionOverlay::VersionOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm) : ReplaceableScreen(&screen), pkm(pkm), hid(40, 2)
 {
     for (size_t i = 0; i < i18n::numGameStrings(Configuration::getInstance().language()); i++)
     {
@@ -95,12 +80,12 @@ void VersionOverlay::update(touchPosition* touch)
     if (downKeys & KEY_A)
     {
         pkm->version(games[hid.fullIndex()].first);
-        me = nullptr;
+        parent->removeOverlay();
         return;
     }
     else if (downKeys & KEY_B)
     {
-        me = nullptr;
+        parent->removeOverlay();
         return;
     }
 }

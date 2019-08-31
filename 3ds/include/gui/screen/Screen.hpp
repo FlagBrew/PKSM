@@ -28,56 +28,29 @@
 #define SCREEN_HPP
 
 #include "Instructions.hpp"
-#include "Overlay.hpp"
+#include "ReplaceableScreen.hpp"
 #include <3ds.h>
 #include <citro3d.h>
 #include <memory>
 
-class Screen
+class Screen : public ReplaceableScreen
 {
-    friend class Overlay;
-
 public:
-    Screen(const std::string& instructions = "") : instructions(instructions) {}
+    Screen(const std::string& instructions = "") : ReplaceableScreen(nullptr, instructions) {}
     virtual ~Screen() {}
     virtual void update(void)
     {
         // increase timer
         mTimer += 0.025f;
     }
-    // Call currentOverlay->update if it exists, and update if it doesn't
-    virtual void doUpdate(touchPosition* touch) final;
     virtual void update(touchPosition* touch) = 0;
-    // Call draw, then currentOverlay->draw if it exists
-    virtual void doTopDraw() const final;
     virtual void drawTop() const = 0;
-    virtual void doBottomDraw() const final;
     virtual void drawBottom() const = 0;
     virtual float timer() const final { return mTimer; }
-    void removeOverlays() { currentOverlay = nullptr; }
-    template <typename Class, typename... Params>
-    void addOverlay(Params&&... args)
-    {
-        if (currentOverlay)
-        {
-            currentOverlay->addOverlay<Class>(std::forward<Params>(args)...);
-        }
-        else
-        {
-            currentOverlay = std::make_shared<Class>(*this, std::forward<Params>(args)...);
-        }
-    }
-    const Instructions& getInstructions() const
-    {
-        return currentOverlay && !currentOverlay->getInstructions().empty() ? currentOverlay->getInstructions() : instructions;
-    }
-
-protected:
-    // No point in restricting this to only being editable during update, especially since it's drawn afterwards. Allows setting it before the first
-    // draw loop is done
-    mutable std::shared_ptr<Overlay> currentOverlay = nullptr;
-    // Should only be changed in constructor
-    Instructions instructions;
+    virtual bool replacesTop() const final { return true; }
+    virtual bool replacesBottom() const final { return true; }
+    virtual bool handlesUpdate() const final { return true; }
+    void removeOverlays() { overlay = nullptr; }
 
 private:
     float mTimer = 0;

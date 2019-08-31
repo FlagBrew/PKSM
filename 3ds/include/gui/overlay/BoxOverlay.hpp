@@ -28,22 +28,16 @@
 #define BOXOVERLAY_HPP
 
 #include "HidVertical.hpp"
-#include "Overlay.hpp"
+#include "ReplaceableScreen.hpp"
 #include "i18n.hpp"
 #include <string>
 #include <vector>
 
-class BoxOverlay : public Overlay
+class BoxOverlay : public ReplaceableScreen
 {
 public:
-    BoxOverlay(Screen& screen, std::vector<std::string>& boxes, int& current)
-        : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), hid(40, 2), strings(boxes), out(current)
-    {
-        hid.update(strings.size());
-        hid.select(current);
-    }
-    BoxOverlay(Overlay& ovly, std::vector<std::string>& boxes, int& current)
-        : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), hid(40, 2), strings(boxes), out(current)
+    BoxOverlay(ReplaceableScreen& screen, std::vector<std::string>& boxes, int& current)
+        : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), hid(40, 2), strings(boxes), out(current)
     {
         hid.update(strings.size());
         hid.select(current);

@@ -29,15 +29,14 @@
 
 #include "Button.hpp"
 #include "CloudAccess.hpp"
-#include "Overlay.hpp"
+#include "ReplaceableScreen.hpp"
 #include <memory>
 #include <vector>
 
-class CloudOverlay : public Overlay
+class CloudOverlay : public ReplaceableScreen
 {
 public:
-    CloudOverlay(Screen& screen, CloudAccess& access);
-    CloudOverlay(Overlay& ovly, CloudAccess& access);
+    CloudOverlay(ReplaceableScreen& screen, CloudAccess& access);
     void drawTop() const override;
     void drawBottom() const override;
     void update(touchPosition* touch) override;

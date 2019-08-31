@@ -29,19 +29,17 @@
 
 #include "Button.hpp"
 #include "HidHorizontal.hpp"
-#include "Overlay.hpp"
+#include "ReplaceableScreen.hpp"
 #include "PKFilter.hpp"
 #include "PKX.hpp"
 #include <memory>
 #include <variant>
 
-class SpeciesOverlay : public Overlay
+class SpeciesOverlay : public ReplaceableScreen
 {
 public:
-    SpeciesOverlay(Screen& screen, std::shared_ptr<PKX> pkm);
-    SpeciesOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm);
-    SpeciesOverlay(Screen& screen, std::shared_ptr<PKFilter> filter);
-    SpeciesOverlay(Overlay& ovly, std::shared_ptr<PKFilter> filter);
+    SpeciesOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm);
+    SpeciesOverlay(ReplaceableScreen& screen, std::shared_ptr<PKFilter> filter);
     ~SpeciesOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }

@@ -28,22 +28,16 @@
 #define BALLOVERLAY_HPP
 
 #include "HidHorizontal.hpp"
-#include "Overlay.hpp"
+#include "ReplaceableScreen.hpp"
 #include "PKX.hpp"
 #include "i18n.hpp"
 #include <memory>
 
-class BallOverlay : public Overlay
+class BallOverlay : public ReplaceableScreen
 {
 public:
-    BallOverlay(Screen& screen, std::shared_ptr<PKX> pkm)
-        : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(30, 6)
-    {
-        hid.update(24);
-        hid.select(pkm->ball() - 1);
-    }
-    BallOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm)
-        : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(30, 6)
+    BallOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm)
+        : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(30, 6)
     {
         hid.update(24);
         hid.select(pkm->ball() - 1);

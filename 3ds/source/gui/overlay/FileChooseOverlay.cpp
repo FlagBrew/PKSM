@@ -28,19 +28,8 @@
 #include "gui.hpp"
 #include "i18n.hpp"
 
-FileChooseOverlay::FileChooseOverlay(Screen& screen, std::string& retString, const std::string& rootString)
-    : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
-      currDirString("/"),
-      rootString(rootString),
-      currDir("/"),
-      string(retString),
-      hid(9, 1)
-{
-    updateEntries();
-}
-
-FileChooseOverlay::FileChooseOverlay(Overlay& ovly, std::string& retString, const std::string& rootString)
-    : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
+FileChooseOverlay::FileChooseOverlay(ReplaceableScreen& screen, std::string& retString, const std::string& rootString)
+    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
       currDirString("/"),
       rootString(rootString),
       currDir("/"),
@@ -135,7 +124,7 @@ void FileChooseOverlay::update(touchPosition* touch)
     {
         if (currDirString == rootString)
         {
-            me = nullptr;
+            parent->removeOverlay();
             return;
         }
         else
@@ -160,7 +149,7 @@ void FileChooseOverlay::update(touchPosition* touch)
                 if (Gui::showChoiceMessage(i18n::localize("FILE_CONFIRM_CHOICE"), '\'' + currFiles[hid.fullIndex()].first + '\''))
                 {
                     string = currDirString + currFiles[hid.fullIndex()].first;
-                    me     = nullptr;
+                    parent->removeOverlay();
                 }
             }
         }

@@ -870,7 +870,7 @@ bool StorageScreen::showViewer()
     if (infoMon && infoMon->species() != 0)
     {
         justSwitched   = true;
-        currentOverlay = std::make_unique<StorageViewOverlay>(*this, infoMon, moveMon, partyNum, selectDimensions, currentlySelecting,
+        overlay = std::make_unique<StorageViewOverlay>(*this, infoMon, moveMon, partyNum, selectDimensions, currentlySelecting,
             std::pair<int, int>{storageChosen ? storageBox : -1, cursorIndex - 1});
     }
     return true;

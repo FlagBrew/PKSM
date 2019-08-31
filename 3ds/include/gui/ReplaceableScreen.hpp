@@ -24,21 +24,18 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef OVERLAY_HPP
-#define OVERLAY_HPP
+#ifndef REPLACEABLESCREEN_HPP
+#define REPLACEABLESCREEN_HPP
 
 #include "Instructions.hpp"
 #include <3ds.h>
 #include <memory>
 
-class Screen;
-
-class Overlay
+class ReplaceableScreen
 {
 public:
-    Overlay(Screen& screen, const std::string& instructions = "");
-    Overlay(Overlay& overlay, const std::string& instructions = "");
-    virtual ~Overlay() {}
+    ReplaceableScreen(ReplaceableScreen* parent, const std::string& instructions = "") : parent(parent), instructions(instructions) {}
+    virtual ~ReplaceableScreen() {}
     template <typename Class, typename... Params>
     void addOverlay(Params&&... args)
     {
@@ -63,12 +60,13 @@ public:
     virtual bool replacesTop() const { return false; }
     virtual bool replacesBottom() const { return false; }
     virtual bool handlesUpdate() const { return true; }
+    void removeOverlay() { if (overlay->overlay) overlay->removeOverlay(); else overlay = nullptr; }
     void dim(void) const;
-    const Instructions& getInstructions() const { return instructions; }
+    const Instructions& getInstructions() const { return (overlay && !overlay->getInstructions().empty()) ? overlay->getInstructions() : instructions; }
 
 protected:
-    std::shared_ptr<Overlay>& me;
-    std::shared_ptr<Overlay> overlay = nullptr;
+    ReplaceableScreen* parent;
+    std::shared_ptr<ReplaceableScreen> overlay = nullptr;
     Instructions instructions;
 };
 

@@ -30,8 +30,8 @@
 #include "gui.hpp"
 #include "loader.hpp"
 
-SpeciesOverlay::SpeciesOverlay(Screen& screen, std::shared_ptr<PKX> pkm)
-    : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(pkm), hid(40, 8)
+SpeciesOverlay::SpeciesOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm)
+    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(pkm), hid(40, 8)
 {
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
@@ -69,86 +69,8 @@ SpeciesOverlay::SpeciesOverlay(Screen& screen, std::shared_ptr<PKX> pkm)
     }
 }
 
-SpeciesOverlay::SpeciesOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm)
-    : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(pkm), hid(40, 8)
-{
-    instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
-    searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
-        [this]() {
-            searchBar();
-            return false;
-        },
-        ui_sheet_emulated_box_search_idx, "", 0, 0);
-    if (TitleLoader::save->generation() != Generation::LGPE)
-    {
-        for (int i = 1; i <= TitleLoader::save->maxSpecies(); i++)
-        {
-            dispPkm.push_back(i);
-        }
-        hid.update(dispPkm.size());
-        hid.select(pkm->species() == 0 ? 0 : pkm->species() - 1);
-    }
-    else
-    {
-        for (size_t i = 1; i <= 151; i++)
-        {
-            dispPkm.push_back(i);
-        }
-        dispPkm.push_back(808);
-        dispPkm.push_back(809);
-        hid.update(dispPkm.size());
-        if (pkm->species() == 808 || pkm->species() == 809)
-        {
-            hid.select(pkm->species() - 657);
-        }
-        else
-        {
-            hid.select(pkm->species() == 0 ? 0 : pkm->species() - 1);
-        }
-    }
-}
-
-SpeciesOverlay::SpeciesOverlay(Screen& screen, std::shared_ptr<PKFilter> filter)
-    : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(filter), hid(40, 8)
-{
-    instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
-    searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
-        [this]() {
-            searchBar();
-            return false;
-        },
-        ui_sheet_emulated_box_search_idx, "", 0, 0);
-    if (TitleLoader::save->generation() != Generation::LGPE)
-    {
-        for (int i = 1; i <= TitleLoader::save->maxSpecies(); i++)
-        {
-            dispPkm.push_back(i);
-        }
-        hid.update(dispPkm.size());
-        hid.select(filter->species() == 0 ? 0 : filter->species() - 1);
-    }
-    else
-    {
-        for (size_t i = 1; i <= 151; i++)
-        {
-            dispPkm.push_back(i);
-        }
-        dispPkm.push_back(808);
-        dispPkm.push_back(809);
-        hid.update(dispPkm.size());
-        if (filter->species() == 808 || filter->species() == 809)
-        {
-            hid.select(filter->species() - 657);
-        }
-        else
-        {
-            hid.select(filter->species() == 0 ? 0 : filter->species() - 1);
-        }
-    }
-}
-
-SpeciesOverlay::SpeciesOverlay(Overlay& ovly, std::shared_ptr<PKFilter> filter)
-    : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(filter), hid(40, 8)
+SpeciesOverlay::SpeciesOverlay(ReplaceableScreen& screen, std::shared_ptr<PKFilter> filter)
+    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(filter), hid(40, 8)
 {
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
@@ -372,13 +294,13 @@ void SpeciesOverlay::update(touchPosition* touch)
         }
         if (object.index() == 1 || std::get<0>(object)->species() != 0)
         {
-            me = nullptr;
+            parent->removeOverlay();
         }
         return;
     }
     else if (downKeys & KEY_B)
     {
-        me = nullptr;
+        parent->removeOverlay();
         return;
     }
 }

@@ -34,19 +34,9 @@
 class StorageViewOverlay : public ViewOverlay
 {
 public:
-    StorageViewOverlay(Screen& screen, std::shared_ptr<PKX>& pkm, std::vector<std::shared_ptr<PKX>>& clone, std::vector<int>& partyNum,
+    StorageViewOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX>& pkm, std::vector<std::shared_ptr<PKX>>& clone, std::vector<int>& partyNum,
         std::pair<int, int>& cloneDims, bool& currentlySelecting, std::pair<int, int> emergencyInfo)
-        : ViewOverlay(screen, pkm, true, i18n::localize("A_SELECT") + '\n' + i18n::localize("X_CLONE") + '\n' + i18n::localize("B_BACK")),
-          clone(clone),
-          partyNum(partyNum),
-          cloneDims(cloneDims),
-          currentlySelecting(currentlySelecting),
-          emergencyInfo(emergencyInfo)
-    {
-    }
-    StorageViewOverlay(Overlay& ovly, std::shared_ptr<PKX>& pkm, std::vector<std::shared_ptr<PKX>>& clone, std::vector<int>& partyNum,
-        std::pair<int, int>& cloneDims, bool& currentlySelecting, std::pair<int, int> emergencyInfo)
-        : ViewOverlay(ovly, pkm, true, i18n::localize("A_SELECT") + '\n' + i18n::localize("X_CLONE") + '\n' + i18n::localize("B_BACK")),
+        : ViewOverlay(std::forward<ReplaceableScreen&>(screen), pkm, true, i18n::localize("A_SELECT") + '\n' + i18n::localize("X_CLONE") + '\n' + i18n::localize("B_BACK")),
           clone(clone),
           partyNum(partyNum),
           cloneDims(cloneDims),

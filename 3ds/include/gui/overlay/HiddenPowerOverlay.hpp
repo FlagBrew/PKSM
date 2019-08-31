@@ -28,21 +28,15 @@
 #define HIDDENPOWEROVERLAY_HPP
 
 #include "HidHorizontal.hpp"
-#include "Overlay.hpp"
+#include "ReplaceableScreen.hpp"
 #include "PKX.hpp"
 #include "i18n.hpp"
 
-class HiddenPowerOverlay : public Overlay
+class HiddenPowerOverlay : public ReplaceableScreen
 {
 public:
-    HiddenPowerOverlay(Screen& screen, std::shared_ptr<PKX> pkm)
-        : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(16, 4)
-    {
-        hid.update(16);
-        hid.select(pkm->hpType());
-    }
-    HiddenPowerOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm)
-        : Overlay(ovly, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(16, 4)
+    HiddenPowerOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm)
+        : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(16, 4)
     {
         hid.update(16);
         hid.select(pkm->hpType());

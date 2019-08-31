@@ -102,12 +102,12 @@ void FormOverlay::update(touchPosition* touch)
                 std::get<1>(object)->alternativeForm(hid.fullIndex());
                 break;
         }
-        me = nullptr;
+        parent->removeOverlay();
         return;
     }
     else if (downKeys & KEY_B)
     {
-        me = nullptr;
+        parent->removeOverlay();
         return;
     }
 }

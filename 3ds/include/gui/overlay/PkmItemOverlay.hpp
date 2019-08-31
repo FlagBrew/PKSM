@@ -30,14 +30,13 @@
 #include "Button.hpp"
 #include "Configuration.hpp"
 #include "HidVertical.hpp"
-#include "Overlay.hpp"
+#include "ReplaceableScreen.hpp"
 #include "loader.hpp"
 
-class PkmItemOverlay : public Overlay
+class PkmItemOverlay : public ReplaceableScreen
 {
 public:
-    PkmItemOverlay(Screen& screen, std::shared_ptr<PKX> pkm);
-    PkmItemOverlay(Overlay& ovly, std::shared_ptr<PKX> pkm);
+    PkmItemOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm);
     ~PkmItemOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }

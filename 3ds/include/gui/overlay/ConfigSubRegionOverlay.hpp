@@ -29,15 +29,14 @@
 
 #include "Button.hpp"
 #include "HidVertical.hpp"
-#include "Overlay.hpp"
+#include "ReplaceableScreen.hpp"
 #include <map>
 #include <memory>
 
-class ConfigSubRegionOverlay : public Overlay
+class ConfigSubRegionOverlay : public ReplaceableScreen
 {
 public:
-    ConfigSubRegionOverlay(Screen& screen);
-    ConfigSubRegionOverlay(Overlay& ovly);
+    ConfigSubRegionOverlay(ReplaceableScreen& screen);
     void drawTop() const override;
     bool replacesTop() const override { return true; }
     void drawBottom() const override;

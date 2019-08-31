@@ -28,15 +28,14 @@
 #define FILECHOOSEOVERLAY_HPP
 
 #include "HidHorizontal.hpp"
-#include "Overlay.hpp"
+#include "ReplaceableScreen.hpp"
 #include "STDirectory.hpp"
 #include <vector>
 
-class FileChooseOverlay : public Overlay
+class FileChooseOverlay : public ReplaceableScreen
 {
 public:
-    FileChooseOverlay(Screen& screen, std::string& retString, const std::string& rootString = "/");
-    FileChooseOverlay(Overlay& ovly, std::string& retString, const std::string& rootString = "/");
+    FileChooseOverlay(ReplaceableScreen& screen, std::string& retString, const std::string& rootString = "/");
 
     void update(touchPosition* touch) override;
     void drawTop() const override;
