@@ -149,7 +149,7 @@ void LanguageStrings::load(Language lang, const std::string& name, nlohmann::jso
     FILE* values = fopen(path.c_str(), "rt");
     if (values)
     {
-        json         = nlohmann::json::parse(values, nullptr, false);
+        json = nlohmann::json::parse(values, nullptr, false);
         fclose(values);
     }
 }
