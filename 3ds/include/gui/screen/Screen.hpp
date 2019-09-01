@@ -38,22 +38,10 @@ class Screen : public ReplaceableScreen
 public:
     Screen(const std::string& instructions = "") : ReplaceableScreen(nullptr, instructions) {}
     virtual ~Screen() {}
-    virtual void update(void)
-    {
-        // increase timer
-        mTimer += 0.025f;
-    }
-    virtual void update(touchPosition* touch) = 0;
-    virtual void drawTop() const = 0;
-    virtual void drawBottom() const = 0;
-    virtual float timer() const final { return mTimer; }
     virtual bool replacesTop() const final { return true; }
     virtual bool replacesBottom() const final { return true; }
     virtual bool handlesUpdate() const final { return true; }
     void removeOverlays() { overlay = nullptr; }
-
-private:
-    float mTimer = 0;
 };
 
 #endif

@@ -113,9 +113,9 @@ void Gui::drawLine(float x1, float y1, float x2, float y2, float width, u32 colo
 {
     flushText();
     // C2D_DrawLine(x1, y1, x2, y2, 0.5f, width, color);
-    float angle = atan2f(y2-y1, x2-x1) + C3D_Angle(.25);
-    float dy = width/2 * sinf(angle);
-    float dx = width/2 * cosf(angle);
+    float angle = atan2f(y2 - y1, x2 - x1) + C3D_Angle(.25);
+    float dy    = width / 2 * sinf(angle);
+    float dx    = width / 2 * cosf(angle);
     drawSolidTriangle(x1 - dx, y1 - dy, x1 + dx, y1 + dy, x2 - dx, y2 - dy, color);
     drawSolidTriangle(x2 - dx, y2 - dy, x2 + dx, y2 + dy, x1 + dx, y1 + dy, color);
 }
@@ -201,7 +201,7 @@ void Gui::backgroundTop(bool stripes)
     {
         for (int x = -240; x < 400; x += 7)
         {
-            drawLine(x, 0, x + 240, 240, 2, COLOR_LINEBLUE);
+            drawLine(x, 240, x + 240, 0, 2, COLOR_LINEBLUE);
         }
     }
     Gui::drawSolidRect(0, 0, 400, 25, C2D_Color32(15, 22, 89, 255));

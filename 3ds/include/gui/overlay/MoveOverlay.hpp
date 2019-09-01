@@ -30,10 +30,10 @@
 #include "Button.hpp"
 #include "Configuration.hpp"
 #include "HidVertical.hpp"
-#include "ReplaceableScreen.hpp"
 #include "PK6.hpp"
 #include "PK7.hpp"
 #include "PKFilter.hpp"
+#include "ReplaceableScreen.hpp"
 #include "loader.hpp"
 
 class MoveOverlay : public ReplaceableScreen

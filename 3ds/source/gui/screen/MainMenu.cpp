@@ -205,7 +205,6 @@ void MainMenu::update(touchPosition* touch)
             justSwitched = false;
         }
     }
-    Screen::update();
     for (auto& button : buttons)
     {
         if (button->update(touch))

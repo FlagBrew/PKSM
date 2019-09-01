@@ -117,7 +117,6 @@ void ExtraSavesScreen::drawTop() const
 
 void ExtraSavesScreen::update(touchPosition* touch)
 {
-    Screen::update();
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_DOWN)
     {

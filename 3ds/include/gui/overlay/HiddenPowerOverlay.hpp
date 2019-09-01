@@ -28,8 +28,8 @@
 #define HIDDENPOWEROVERLAY_HPP
 
 #include "HidHorizontal.hpp"
-#include "ReplaceableScreen.hpp"
 #include "PKX.hpp"
+#include "ReplaceableScreen.hpp"
 #include "i18n.hpp"
 
 class HiddenPowerOverlay : public ReplaceableScreen

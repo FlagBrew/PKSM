@@ -176,7 +176,6 @@ void TitleLoadScreen::drawBottom() const
 
 void TitleLoadScreen::update(touchPosition* touch)
 {
-    Screen::update();
     u32 buttonsDown = hidKeysDown();
     if (TitleLoader::cardUpdate())
     {

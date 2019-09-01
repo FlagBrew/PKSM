@@ -60,9 +60,22 @@ public:
     virtual bool replacesTop() const { return false; }
     virtual bool replacesBottom() const { return false; }
     virtual bool handlesUpdate() const { return true; }
-    void removeOverlay() { if (overlay->overlay) overlay->removeOverlay(); else overlay = nullptr; }
+    void removeOverlay()
+    {
+        if (overlay->overlay)
+        {
+            overlay->removeOverlay();
+        }
+        else
+        {
+            overlay = nullptr;
+        }
+    }
     void dim(void) const;
-    const Instructions& getInstructions() const { return (overlay && !overlay->getInstructions().empty()) ? overlay->getInstructions() : instructions; }
+    const Instructions& getInstructions() const
+    {
+        return (overlay && !overlay->getInstructions().empty()) ? overlay->getInstructions() : instructions;
+    }
 
 protected:
     ReplaceableScreen* parent;

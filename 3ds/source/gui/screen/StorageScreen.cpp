@@ -544,7 +544,6 @@ void StorageScreen::update(touchPosition* touch)
             justSwitched = false;
         }
     }
-    Screen::update();
     static bool sleep = true;
     u32 kDown         = hidKeysDown();
     u32 kHeld         = hidKeysHeld();
@@ -869,8 +868,8 @@ bool StorageScreen::showViewer()
 
     if (infoMon && infoMon->species() != 0)
     {
-        justSwitched   = true;
-        overlay = std::make_unique<StorageViewOverlay>(*this, infoMon, moveMon, partyNum, selectDimensions, currentlySelecting,
+        justSwitched = true;
+        overlay      = std::make_unique<StorageViewOverlay>(*this, infoMon, moveMon, partyNum, selectDimensions, currentlySelecting,
             std::pair<int, int>{storageChosen ? storageBox : -1, cursorIndex - 1});
     }
     return true;

@@ -155,7 +155,8 @@ EditSelectorScreen::EditSelectorScreen() : Screen(i18n::localize("A_SELECT") + '
         std::make_unique<AccelButton>(189, 15, 17, 24, [this]() { return this->nextBox(); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5));
     auto cameraButtonText = Gui::parseText("\uE004+\uE005 \uE01E", FONT_SIZE_14, 0.0f);
     instructions.addCircle(false, 310 - cameraButtonText->maxWidth(FONT_SIZE_14) / 2, 24, 8, COLOR_GREY);
-    instructions.addLine(false, 310 - cameraButtonText->maxWidth(FONT_SIZE_14) / 2, 24, 310 - cameraButtonText->maxWidth(FONT_SIZE_14) / 2, 44, 4, COLOR_GREY);
+    instructions.addLine(
+        false, 310 - cameraButtonText->maxWidth(FONT_SIZE_14) / 2, 24, 310 - cameraButtonText->maxWidth(FONT_SIZE_14) / 2, 44, 4, COLOR_GREY);
     instructions.addBox(false, 222 - cameraButtonText->maxWidth(FONT_SIZE_14) / 2, 44, 90, 16, COLOR_GREY, i18n::localize("QR_SCANNER"), COLOR_WHITE);
     buttons.push_back(std::make_unique<ClickButton>(310 - cameraButtonText->maxWidth(FONT_SIZE_14), 16, cameraButtonText->maxWidth(FONT_SIZE_14) + 2,
         16, [this]() { return this->doQR(); }, ui_sheet_res_null_idx, "\uE004+\uE005 \uE01E", FONT_SIZE_14, COLOR_BLACK));

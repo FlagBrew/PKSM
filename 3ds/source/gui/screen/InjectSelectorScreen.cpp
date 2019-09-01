@@ -93,7 +93,6 @@ InjectSelectorScreen::~InjectSelectorScreen()
 
 void InjectSelectorScreen::update(touchPosition* touch)
 {
-    Screen::update();
     u32 downKeys = hidKeysDown();
     u32 heldKeys = hidKeysHeld();
     if (updateGifts)

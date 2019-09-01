@@ -29,9 +29,9 @@
 
 #include "Button.hpp"
 #include "HidHorizontal.hpp"
-#include "ReplaceableScreen.hpp"
 #include "PKFilter.hpp"
 #include "PKX.hpp"
+#include "ReplaceableScreen.hpp"
 #include <memory>
 #include <variant>
 

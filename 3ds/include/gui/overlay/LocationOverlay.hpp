@@ -29,8 +29,8 @@
 
 #include "Button.hpp"
 #include "HidVertical.hpp"
-#include "ReplaceableScreen.hpp"
 #include "PKX.hpp"
+#include "ReplaceableScreen.hpp"
 #include <map>
 #include <memory>
 

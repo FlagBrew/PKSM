@@ -28,8 +28,8 @@
 #define FORMOVERLAY_HPP
 
 #include "HidHorizontal.hpp"
-#include "ReplaceableScreen.hpp"
 #include "PKX.hpp"
+#include "ReplaceableScreen.hpp"
 #include "i18n.hpp"
 #include <memory>
 #include <variant>

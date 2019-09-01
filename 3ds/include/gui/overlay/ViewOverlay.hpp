@@ -27,8 +27,8 @@
 #ifndef VIEWOVERLAY_HPP
 #define VIEWOVERLAY_HPP
 
-#include "ReplaceableScreen.hpp"
 #include "PKX.hpp"
+#include "ReplaceableScreen.hpp"
 #include "Sav.hpp"
 
 class ViewOverlay : public ReplaceableScreen

@@ -323,7 +323,6 @@ void SaveLoadScreen::drawBottom() const
 
 void SaveLoadScreen::update(touchPosition* touch)
 {
-    Screen::update();
     u32 downKeys = hidKeysDown();
     if (selectedGroup)
     {

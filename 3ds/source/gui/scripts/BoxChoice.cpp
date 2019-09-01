@@ -323,7 +323,6 @@ void BoxChoice::update(touchPosition* touch)
             justSwitched = false;
         }
     }
-    Screen::update();
     static bool sleep = true;
     u32 kDown         = hidKeysDown();
     u32 kHeld         = hidKeysHeld();

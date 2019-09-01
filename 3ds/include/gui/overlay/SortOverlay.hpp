@@ -126,7 +126,8 @@ static constexpr std::string_view sortTypeToString(SortType type)
 class SortOverlay : public ReplaceableScreen
 {
 public:
-    SortOverlay(ReplaceableScreen& screen, SortType& type) : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), hid(40, 2), out(type)
+    SortOverlay(ReplaceableScreen& screen, SortType& type)
+        : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), hid(40, 2), out(type)
     {
         hid.update(vals.size());
         hid.select(int(type));

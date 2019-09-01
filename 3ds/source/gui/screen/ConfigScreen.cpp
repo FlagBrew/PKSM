@@ -317,7 +317,7 @@ void ConfigScreen::initButtons()
     // Defaults buttons
     tabButtons[1].push_back(std::make_unique<Button>(122, 38, 15, 12,
         []() {
-            inputNumber([](u16 a) { Configuration::getInstance().defaultTID(a); }, 5, 0xFFFF); 
+            inputNumber([](u16 a) { Configuration::getInstance().defaultTID(a); }, 5, 0xFFFF);
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
@@ -615,7 +615,6 @@ void ConfigScreen::update(touchPosition* touch)
             justSwitched = false;
         }
     }
-    Screen::update();
     if (hidKeysDown() & KEY_B)
     {
         back();

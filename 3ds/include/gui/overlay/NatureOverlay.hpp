@@ -28,8 +28,8 @@
 #define NATURESELECTIONSCREEN_HPP
 
 #include "HidHorizontal.hpp"
-#include "ReplaceableScreen.hpp"
 #include "PKX.hpp"
+#include "ReplaceableScreen.hpp"
 #include "i18n.hpp"
 
 class NatureOverlay : public ReplaceableScreen
