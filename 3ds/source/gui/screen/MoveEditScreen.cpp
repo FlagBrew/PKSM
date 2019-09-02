@@ -29,6 +29,7 @@
 #include "MoveOverlay.hpp"
 #include "ViewOverlay.hpp"
 #include "gui.hpp"
+#include "PB7.hpp"
 
 MoveEditScreen::MoveEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
 {
@@ -137,6 +138,11 @@ void MoveEditScreen::drawBottom() const
             Gui::text(i18n::move(lang, ((PK7*)pkm.get())->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
                 TextPosY::TOP);
         }
+        else if (pkm->generation() == Generation::LGPE)
+        {
+            Gui::text(i18n::move(lang, ((PB7*)pkm.get())->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+                TextPosY::TOP);
+        }
         else
         {
             Gui::text(i18n::localize("EDITOR_NOT_APPLICABLE_GEN"), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
@@ -158,5 +164,8 @@ void MoveEditScreen::drawBottom() const
 
 void MoveEditScreen::changeMove()
 {
-    addOverlay<MoveOverlay>(pkm, moveSelected);
+    if (moveSelected < 4 || pkm->generation() >= Generation::SIX)
+    {
+        addOverlay<MoveOverlay>(pkm, moveSelected);
+    }
 }

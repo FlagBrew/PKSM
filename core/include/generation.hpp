@@ -43,6 +43,22 @@ std::string genToString(Generation gen);
 const char* genToCstring(Generation gen);
 Generation stringToGen(const std::string& str);
 bool operator<(Generation g1, Generation g2);
+inline bool operator<=(Generation g1, Generation g2)
+{
+    if (g1 == g2)
+    {
+        return true;
+    }
+    return g1 < g2;
+}
 bool operator>(Generation g1, Generation g2);
+inline bool operator>=(Generation g1, Generation g2)
+{
+    if (g1 == g2)
+    {
+        return true;
+    }
+    return g1 > g2;
+}
 
 #endif
