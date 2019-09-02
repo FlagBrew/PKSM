@@ -37,17 +37,18 @@
 class FormOverlay : public ReplaceableScreen
 {
 public:
-    FormOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm, u8 formCount)
-        : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(pkm), hid(40, 6), formCount(formCount)
+    FormOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& object, u8 formCount)
+        : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(object), hid(40, 6), formCount(formCount)
     {
         hid.update(40);
-        hid.select(pkm->alternativeForm());
-    }
-    FormOverlay(ReplaceableScreen& screen, std::shared_ptr<PKFilter> filter, u8 formCount)
-        : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(filter), hid(40, 6), formCount(formCount)
-    {
-        hid.update(40);
-        hid.select(filter->alternativeForm());
+        if (object.index() == 0)
+        {
+            hid.select(std::get<0>(object)->alternativeForm());
+        }
+        else
+        {
+            hid.select(std::get<1>(object)->alternativeForm());
+        }
     }
     virtual ~FormOverlay() {}
     void drawTop() const override;

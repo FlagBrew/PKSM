@@ -30,8 +30,8 @@
 #include "gui.hpp"
 #include "loader.hpp"
 
-SpeciesOverlay::SpeciesOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm)
-    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(pkm), hid(40, 8)
+SpeciesOverlay::SpeciesOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& object)
+    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(object), hid(40, 8)
 {
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
@@ -47,46 +47,16 @@ SpeciesOverlay::SpeciesOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> p
             dispPkm.push_back(i);
         }
         hid.update(dispPkm.size());
-        hid.select(pkm->species() == 0 ? 0 : pkm->species() - 1);
-    }
-    else
-    {
-        for (size_t i = 1; i <= 151; i++)
+        if (object.index() == 0)
         {
-            dispPkm.push_back(i);
-        }
-        dispPkm.push_back(808);
-        dispPkm.push_back(809);
-        hid.update(dispPkm.size());
-        if (pkm->species() == 808 || pkm->species() == 809)
-        {
-            hid.select(pkm->species() - 657);
-        }
-        else
-        {
+            auto& pkm = std::get<0>(object);
             hid.select(pkm->species() == 0 ? 0 : pkm->species() - 1);
         }
-    }
-}
-
-SpeciesOverlay::SpeciesOverlay(ReplaceableScreen& screen, std::shared_ptr<PKFilter> filter)
-    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(filter), hid(40, 8)
-{
-    instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
-    searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
-        [this]() {
-            searchBar();
-            return false;
-        },
-        ui_sheet_emulated_box_search_idx, "", 0, 0);
-    if (TitleLoader::save->generation() != Generation::LGPE)
-    {
-        for (int i = 1; i <= TitleLoader::save->maxSpecies(); i++)
+        else
         {
-            dispPkm.push_back(i);
+            auto& filter = std::get<1>(object);
+            hid.select(filter->species() == 0 ? 0 : filter->species() - 1);
         }
-        hid.update(dispPkm.size());
-        hid.select(filter->species() == 0 ? 0 : filter->species() - 1);
     }
     else
     {
@@ -97,13 +67,29 @@ SpeciesOverlay::SpeciesOverlay(ReplaceableScreen& screen, std::shared_ptr<PKFilt
         dispPkm.push_back(808);
         dispPkm.push_back(809);
         hid.update(dispPkm.size());
-        if (filter->species() == 808 || filter->species() == 809)
+        if (object.index() == 0)
         {
-            hid.select(filter->species() - 657);
+            auto& pkm = std::get<0>(object);
+            if (pkm->species() == 808 || pkm->species() == 809)
+            {
+                hid.select(pkm->species() - 657);
+            }
+            else
+            {
+                hid.select(pkm->species() == 0 ? 0 : pkm->species() - 1);
+            }
         }
         else
         {
-            hid.select(filter->species() == 0 ? 0 : filter->species() - 1);
+            auto& filter = std::get<1>(object);
+            if (filter->species() == 808 || filter->species() == 809)
+            {
+                hid.select(filter->species() - 657);
+            }
+            else
+            {
+                hid.select(filter->species() == 0 ? 0 : filter->species() - 1);
+            }
         }
     }
 }

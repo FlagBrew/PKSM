@@ -38,8 +38,7 @@
 class SpeciesOverlay : public ReplaceableScreen
 {
 public:
-    SpeciesOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm);
-    SpeciesOverlay(ReplaceableScreen& screen, std::shared_ptr<PKFilter> filter);
+    SpeciesOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& object);
     ~SpeciesOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }
