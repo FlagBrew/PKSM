@@ -49,26 +49,22 @@ menu.
 
 ## Applications compatible with PKSM
 
-* **[serveLegality](https://github.com/FlagBrew/serveLegality)**: PC tool to
-  check and fix a pkmn's legality. (Development on hold)
 * **[PKHeX](https://github.com/kwsch/PKHeX)**: Generates .pk7, .pk6, .wc7, .wc6
   QR codes scannable from PKSM. Runs on PC.
 * **[MysteryGiftBot](https://twitter.com/mysterygiftbot)**: Generates .wc7 QR
   codes scannable from PKSM. Runs on Twitter.
-* **[servepkx](https://github.com/FlagBrew/servepkx)**: multiplatform tool to
-  send .pk7, .pk6, .wc7full, .wc6full, .wc7, .wc6 files to PKSM. Requires a web
-  browser or JRE. (Support on hold)
 * **[PKSM-Scripts](https://github.com/FlagBrew/PKSM-Scripts)**: a toolkit to
   develop and compile .pksm and .c scripts.
+* **[The GPSS](https://flagbrew.org/gpss)**: an online Pokémon sharing platform
 
 ## Working path
 
-* Additional assets are located at `/3ds/PKSM/assets/`
+* Additional assets are located at `/3ds/PKSM/assets`
 * Automatic save backups are located at `/3ds/PKSM/backups`
 * Extra storage data is located at `/3ds/PKSM/banks`
 * .pkx and .wcx dumps are located in `/3ds/PKSM/dumps`
-* Custom scripts are located in `3ds/PKSM/scripts`
-* Custom background songs are located in `3ds/PKSM/songs`
+* Custom scripts are located in `/3ds/PKSM/scripts`
+* Custom background songs are located in `/3ds/PKSM/songs`
 
 ## Troubleshooting
 
@@ -117,9 +113,8 @@ all`.
 * [SpiredMoth](https://github.com/SpiredMoth),
   [trainboy2019](https://github.com/trainboy2019) and all the scripters for
   making PKSM-Scripts great
-* [Archit Date](https://github.com/architdate) for serveLegality
-* [Allen](https://github.com/FM1337) and
-  [zaksabeast](https://github.com/zaksabeast) for servepkx
+* [Archit Date](https://github.com/architdate) for CoreConsole
+* [Allen](https://github.com/FM1337) for the GPSS
 * The whole [FlagBrew](https://github.com/FlagBrew) team for collaborating with
   us
 * [kwsch](https://github.com/kwsch) and [SciresM](https://github.com/SciresM)
@@ -138,7 +133,7 @@ all`.
 * All the patrons and the huge amount of supporters that this project has gained
   over the year
 
-without you, this project wouldn't have existed. Thank you.
+Without you, this project wouldn't have existed. Thank you.
 
 ## Support us
 

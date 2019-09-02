@@ -1125,7 +1125,7 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
     time_t thing = time(NULL);
     if (gmtime(&thing)->tm_mday == ((u16)(~magicNumber >> 16) ^ 0x3826) && gmtime(&thing)->tm_mon == ((u16)(~magicNumber) ^ 0xB545))
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, (u8)(~magicNumber >> 8)), x, y, &tint, scale, scale);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, (u8)(~magicNumber >> 13) ^ 474), x, y, &tint, scale, scale);
         return;
     }
     if (species == 490 && form == -1)
