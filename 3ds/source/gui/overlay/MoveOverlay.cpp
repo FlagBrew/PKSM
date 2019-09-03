@@ -230,7 +230,7 @@ void MoveOverlay::update(touchPosition* touch)
         {
             if (object.index() == 0)
             {
-                auto pkm = std::get<1>(object);
+                auto pkm = std::get<0>(object);
                 if (pkm->generation() == Generation::SIX)
                 {
                     ((PK6*)pkm.get())->relearnMove(moveIndex - 4, (u16)moves[hid.fullIndex()].first);
