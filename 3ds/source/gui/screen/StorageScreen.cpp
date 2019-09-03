@@ -587,9 +587,13 @@ void StorageScreen::update(touchPosition* touch)
         addOverlay<StorageOverlay>(storageChosen, boxBox, storageBox, filter);
         justSwitched = true;
     }
-    else if (buttonCooldown <= 0)
+    else if (kDown & KEY_X)
     {
-        if (kDown & KEY_X)
+        if (pickupMode == PickupMode::MULTI && currentlySelecting)
+        {
+            grabSelection(false);
+        }
+        else
         {
             if (!infoMon)
             {
@@ -607,8 +611,11 @@ void StorageScreen::update(touchPosition* touch)
                 }
                 shareSend();
             }
-            return;
         }
+        return;
+    }
+    else if (buttonCooldown <= 0)
+    {
         sleep = false;
         if (kHeld & KEY_LEFT)
         {
