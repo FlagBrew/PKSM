@@ -63,10 +63,19 @@ Configuration::Configuration()
             return;
         }
 
+        if (!(mJson.contains("language") && mJson["language"].is_number_integer()))
+        {
+            loadFromRomfs();
+            Gui::warn(i18n::localize(mJson["language"], "CONFIGURATION_INCORRECT_FORMAT"),
+                i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"), mJson["language"]);
+            return;
+        }
+
         if (mJson["version"].get<int>() != CURRENT_VERSION)
         {
             if (mJson["version"].get<int>() > CURRENT_VERSION)
             {
+                loadFromRomfs();
                 Gui::warn(i18n::localize(mJson["language"], "THE_FUCK"), i18n::localize(mJson["language"], "DO_NOT_DOWNGRADE"), mJson["language"]);
                 return;
             }
