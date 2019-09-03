@@ -166,17 +166,20 @@ void ScriptScreen::update(touchPosition* touch)
     }
     else if (down & KEY_A)
     {
-        if (currFiles[hid.fullIndex()].second)
+        if (currDir.good() && currDir.count() > 0)
         {
-            currDirString += '/' + currFiles[hid.fullIndex()].first;
-            currDir = STDirectory(currDirString);
-            updateEntries();
-        }
-        else
-        {
-            if (Gui::showChoiceMessage(i18n::localize("SCRIPTS_CONFIRM_USE"), '\'' + currFiles[hid.fullIndex()].first + '\''))
+            if (currFiles[hid.fullIndex()].second)
             {
-                applyScript();
+                currDirString += '/' + currFiles[hid.fullIndex()].first;
+                currDir = STDirectory(currDirString);
+                updateEntries();
+            }
+            else
+            {
+                if (Gui::showChoiceMessage(i18n::localize("SCRIPTS_CONFIRM_USE"), '\'' + currFiles[hid.fullIndex()].first + '\''))
+                {
+                    applyScript();
+                }
             }
         }
     }
@@ -223,6 +226,11 @@ void ScriptScreen::updateEntries()
     if (!currDir.good())
     {
         currFiles.push_back({i18n::localize("FOLDER_DOESNT_EXIST"), false});
+        return;
+    }
+    if (currDir.count() == 0)
+    {
+        currFiles.push_back({i18n::localize("EMPTY"), false});
         return;
     }
     for (size_t i = 0; i < currDir.count(); i++)
