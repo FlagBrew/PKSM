@@ -100,10 +100,12 @@ static Result downloadAdditionalAssets(void)
         }
         if (downloadAsset)
         {
+#if !CITRA_DEBUG
             u32 status;
             ACU_GetWifiStatus(&status);
             if (status == 0)
                 return -1;
+#endif
             Result res1 = Fetch::download(item.url, item.path);
             if (R_FAILED(res1))
                 return res1;
