@@ -73,6 +73,8 @@ std::string LanguageStrings::folder(Language lang)
             return "zh";
         case Language::TW:
             return "tw";
+        case Language::RO:
+            return "ro";
         default:
             return "en";
     }

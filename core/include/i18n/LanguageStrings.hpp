@@ -51,7 +51,8 @@ enum Language
     TW,
     NL,
     PT,
-    RU
+    RU,
+    RO
 };
 
 class LanguageStrings
