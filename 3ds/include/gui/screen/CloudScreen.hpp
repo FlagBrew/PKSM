@@ -40,7 +40,7 @@ class CloudScreen : public Screen
     friend class StorageViewOverlay;
 
 public:
-    CloudScreen(int storageBox);
+    CloudScreen(int storageBox, std::shared_ptr<PKFilter> filter = nullptr);
     ~CloudScreen() {}
 
     void update(touchPosition* touch) override;
@@ -62,13 +62,14 @@ private:
     void pickup();
 
     bool cloudChosen = false;
-    std::array<std::unique_ptr<Button>, 6> mainButtons;
+    std::array<std::unique_ptr<Button>, 7> mainButtons;
     std::array<std::unique_ptr<Button>, 31> clickButtons;
     int cursorIndex = 0, storageBox = 0;
     std::shared_ptr<PKX> infoMon = nullptr;
     std::shared_ptr<PKX> moveMon;
     bool justSwitched = true;
     CloudAccess access;
+    std::shared_ptr<PKFilter> filter;
 };
 
 #endif

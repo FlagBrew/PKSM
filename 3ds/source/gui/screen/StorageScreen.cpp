@@ -129,7 +129,7 @@ void StorageScreen::setBoxName(bool storage)
 }
 
 StorageScreen::StorageScreen()
-    : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_SHARE") + '\n' + i18n::localize("Y_CURSOR_MODE") + '\n' +
+    : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_CLONE") + '\n' + i18n::localize("Y_CURSOR_MODE") + '\n' +
              i18n::localize("L_BOX_PREV") + '\n' + i18n::localize("R_BOX_NEXT") + '\n' + i18n::localize("START_EXTRA_FUNC") + '\n' +
              i18n::localize("B_BACK"))
 {
@@ -160,7 +160,7 @@ StorageScreen::StorageScreen()
     instructions.addBox(false, 15, 175, 120, 18, COLOR_GREY, i18n::localize("GPSS_BROWSE"), COLOR_WHITE);
     mainButtons[9] = std::make_unique<ClickButton>(3, 211, 28, 28,
         [this]() {
-            Gui::setScreen(std::make_unique<CloudScreen>(storageBox));
+            Gui::setScreen(std::make_unique<CloudScreen>(storageBox, filter));
             justSwitched = true;
             return true;
         },
@@ -589,30 +589,14 @@ void StorageScreen::update(touchPosition* touch)
     }
     else if (kDown & KEY_X)
     {
-        if (pickupMode == PickupMode::MULTI && currentlySelecting)
+        if (currentlySelecting)
         {
             grabSelection(false);
         }
         else
         {
-            if (!infoMon)
-            {
-                if (!Gui::showChoiceMessage(i18n::localize("SHARE_CODE_ENTER_PROMPT")))
-                {
-                    return;
-                }
-                shareReceive();
-            }
-            else
-            {
-                if (!Gui::showChoiceMessage(i18n::localize("SHARE_SEND_CONFIRM")))
-                {
-                    return;
-                }
-                shareSend();
-            }
+            showViewer();
         }
-        return;
     }
     else if (buttonCooldown <= 0)
     {

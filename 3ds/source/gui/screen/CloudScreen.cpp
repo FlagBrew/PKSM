@@ -30,25 +30,33 @@
 #include "CloudOverlay.hpp"
 #include "CloudViewOverlay.hpp"
 #include "FSStream.hpp"
+#include "FilterScreen.hpp"
 #include "banks.hpp"
 #include "io.hpp"
 #include <sys/stat.h>
 
-CloudScreen::CloudScreen(int storageBox)
+CloudScreen::CloudScreen(int storageBox, std::shared_ptr<PKFilter> filter)
     : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("START_SORT_FILTER") + '\n' + i18n::localize("L_BOX_PREV") + '\n' +
              i18n::localize("R_BOX_NEXT") + '\n' + i18n::localize("B_BACK")),
-      storageBox(storageBox)
+      storageBox(storageBox),
+      filter(filter == nullptr ? std::make_shared<PKFilter>() : filter)
 {
-    mainButtons[0] = std::make_unique<Button>(
-        212, 109, 108, 28, [this]() { return this->showViewer(); }, ui_sheet_button_editor_idx, i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
+    mainButtons[0] = std::make_unique<ClickButton>(212, 78, 108, 28,
+        [this]() {
+            Gui::setScreen(std::make_unique<FilterScreen>(this->filter));
+            return true;
+        },
+        ui_sheet_button_editor_idx, i18n::localize("FILTER"), FONT_SIZE_12, COLOR_BLACK);
     mainButtons[1] = std::make_unique<Button>(
-        212, 140, 108, 28, [this]() { return this->releasePkm(); }, ui_sheet_button_editor_idx, i18n::localize("RELEASE"), FONT_SIZE_12, COLOR_BLACK);
+        212, 109, 108, 28, [this]() { return this->showViewer(); }, ui_sheet_button_editor_idx, i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
     mainButtons[2] = std::make_unique<Button>(
+        212, 140, 108, 28, [this]() { return this->releasePkm(); }, ui_sheet_button_editor_idx, i18n::localize("RELEASE"), FONT_SIZE_12, COLOR_BLACK);
+    mainButtons[3] = std::make_unique<Button>(
         212, 171, 108, 28, [this]() { return this->dumpPkm(); }, ui_sheet_button_editor_idx, i18n::localize("DUMP"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[3] = std::make_unique<Button>(283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
-    mainButtons[4] =
-        std::make_unique<AccelButton>(8, 15, 17, 24, [this]() { return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+    mainButtons[4] = std::make_unique<Button>(283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
     mainButtons[5] =
+        std::make_unique<AccelButton>(8, 15, 17, 24, [this]() { return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+    mainButtons[6] =
         std::make_unique<AccelButton>(189, 15, 17, 24, [this]() { return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
 
     // Pokemon buttons
@@ -97,7 +105,8 @@ void CloudScreen::drawBottom() const
             std::shared_ptr<PKX> pokemon = Banks::bank->pkm(storageBox, row * 6 + column);
             if (pokemon->species() > 0)
             {
-                Gui::pkm(*pokemon, x, y);
+                float blend = *pokemon == *filter ? 0.0f : 0.5f;
+                Gui::pkm(*pokemon, x, y, 1.0f, COLOR_BLACK, blend);
             }
             x += 34;
         }
@@ -113,8 +122,9 @@ void CloudScreen::drawBottom() const
             int dy = Gui::pointerBob();
             if (moveMon)
             {
+                float blend = *moveMon == *filter ? 0.0f : 0.5f;
                 Gui::pkm(*moveMon, 97, 10 + dy, 1.0f, COLOR_GREY_BLEND, 1.0f);
-                Gui::pkm(*moveMon, 94, 5 + dy);
+                Gui::pkm(*moveMon, 94, 5 + dy, 1.0f, COLOR_BLACK, blend);
             }
             Gui::sprite(ui_sheet_pointer_arrow_idx, 106, -4 + dy);
         }
@@ -124,8 +134,9 @@ void CloudScreen::drawBottom() const
             int yMod      = (tempIndex / 6) * 30 + Gui::pointerBob();
             if (moveMon)
             {
+                float blend = *moveMon == *filter ? 0.0f : 0.5f;
                 Gui::pkm(*moveMon, 12 + (tempIndex % 6) * 34, 44 + yMod, 1.0f, COLOR_GREY_BLEND, 1.0f);
-                Gui::pkm(*moveMon, 9 + (tempIndex % 6) * 34, 39 + yMod);
+                Gui::pkm(*moveMon, 9 + (tempIndex % 6) * 34, 39 + yMod, 1.0f, COLOR_BLACK, blend);
             }
             Gui::sprite(ui_sheet_pointer_arrow_idx, 21 + (tempIndex % 6) * 34, 30 + yMod);
         }
@@ -180,7 +191,8 @@ void CloudScreen::drawTop() const
             auto pkm = access.pkm(row * 6 + column);
             if (pkm->species() > 0)
             {
-                Gui::pkm(*pkm, x, y);
+                float blend = *pkm == *filter ? 0.0f : 0.5f;
+                Gui::pkm(*pkm, x, y, 1.0f, COLOR_BLACK, blend);
             }
             x += 34;
         }
@@ -202,8 +214,9 @@ void CloudScreen::drawTop() const
             int dy = Gui::pointerBob();
             if (moveMon)
             {
+                float blend = *moveMon == *filter ? 0.0f : 0.5f;
                 Gui::pkm(*moveMon, 138, 16 + dy, 1.0f, COLOR_GREY_BLEND, 1.0f);
-                Gui::pkm(*moveMon, 135, 11 + dy);
+                Gui::pkm(*moveMon, 135, 11 + dy, 1.0f, COLOR_BLACK, blend);
             }
             Gui::sprite(ui_sheet_pointer_arrow_idx, 147, 2 + dy);
         }
@@ -213,8 +226,9 @@ void CloudScreen::drawTop() const
             int yMod      = (tempIndex / 6) * 30 + Gui::pointerBob();
             if (moveMon)
             {
+                float blend = *moveMon == *filter ? 0.0f : 0.5f;
                 Gui::pkm(*moveMon, 53 + (tempIndex % 6) * 34, 65 + yMod, 1.0f, COLOR_GREY_BLEND, 1.0f);
-                Gui::pkm(*moveMon, 50 + (tempIndex % 6) * 34, 60 + yMod);
+                Gui::pkm(*moveMon, 50 + (tempIndex % 6) * 34, 60 + yMod, 1.0f, COLOR_BLACK, blend);
             }
             Gui::sprite(ui_sheet_pointer_arrow_idx, 62 + (tempIndex % 6) * 34, 51 + yMod);
         }

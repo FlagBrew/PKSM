@@ -27,9 +27,9 @@
 #include "MoveEditScreen.hpp"
 #include "ClickButton.hpp"
 #include "MoveOverlay.hpp"
+#include "PB7.hpp"
 #include "ViewOverlay.hpp"
 #include "gui.hpp"
-#include "PB7.hpp"
 
 MoveEditScreen::MoveEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
 {

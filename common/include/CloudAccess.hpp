@@ -84,7 +84,7 @@ private:
     struct Page
     {
         nlohmann::json data = {};
-        bool available = false;
+        bool available      = false;
     };
     struct PageDownloadInfo
     {
