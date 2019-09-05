@@ -80,13 +80,7 @@ void downloadCloudPage(CloudAccess::PageDownloadInfo* info)
 
 CloudAccess::CloudAccess() : pageNumber(1)
 {
-    current = std::make_shared<Page>();
-    if (current)
-    {
-        current->data      = grabPage(pageNumber);
-        current->available = true;
-        isGood             = !current->data.is_discarded() && current->data.size() > 0;
-    }
+    refreshPages();
 }
 
 void CloudAccess::refreshPages()
