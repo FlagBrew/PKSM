@@ -31,13 +31,15 @@
 #include "CloudViewOverlay.hpp"
 #include "FSStream.hpp"
 #include "FilterScreen.hpp"
+#include "QRScanner.hpp"
 #include "banks.hpp"
+#include "fetch.hpp"
 #include "io.hpp"
 #include <sys/stat.h>
 
 CloudScreen::CloudScreen(int storageBox, std::shared_ptr<PKFilter> filter)
-    : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("START_SORT_FILTER") + '\n' + i18n::localize("L_BOX_PREV") + '\n' +
-             i18n::localize("R_BOX_NEXT") + '\n' + i18n::localize("B_BACK")),
+    : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_SHARE") + '\n' + i18n::localize("START_SORT_FILTER") + '\n' +
+             i18n::localize("L_BOX_PREV") + '\n' + i18n::localize("R_BOX_NEXT") + '\n' + i18n::localize("B_BACK")),
       storageBox(storageBox),
       filter(filter == nullptr ? std::make_shared<PKFilter>() : filter)
 {
@@ -325,6 +327,26 @@ void CloudScreen::update(touchPosition* touch)
     {
         backButton();
         return;
+    }
+
+    if (kDown & KEY_X)
+    {
+        if (infoMon && !cloudChosen)
+        {
+            if (!Gui::showChoiceMessage(i18n::localize("SHARE_SEND_CONFIRM")))
+            {
+                return;
+            }
+            shareSend();
+        }
+        else
+        {
+            if (!Gui::showChoiceMessage(i18n::localize("SHARE_CODE_ENTER_PROMPT")))
+            {
+                return;
+            }
+            shareReceive();
+        }
     }
 
     for (auto& button : mainButtons)
@@ -698,4 +720,189 @@ bool CloudScreen::clickBottomIndex(int index)
         cloudChosen = false;
     }
     return false;
+}
+
+static size_t generation_from_header_callback(char* buffer, size_t size, size_t nitems, void* userdata)
+{
+    std::string tmp(buffer, size * nitems);
+    if (tmp.find("Generation:") == 0)
+    {
+        tmp = tmp.substr(12);
+        if (tmp.find("4") == 0)
+        {
+            *(Generation*)(userdata) = Generation::FOUR;
+        }
+        else if (tmp.find("5") == 0)
+        {
+            *(Generation*)(userdata) = Generation::FIVE;
+        }
+        else if (tmp.find("6") == 0)
+        {
+            *(Generation*)(userdata) = Generation::SIX;
+        }
+        else if (tmp.find("7") == 0)
+        {
+            *(Generation*)(userdata) = Generation::SEVEN;
+        }
+        else if (tmp.find("LGPE") == 0)
+        {
+            *(Generation*)(userdata) = Generation::LGPE;
+        }
+    }
+    return nitems * size;
+}
+
+void CloudScreen::shareSend()
+{
+    long status_code    = 0;
+    std::string version = "Generation: " + genToString(infoMon->generation());
+    std::string code    = Configuration::getInstance().patronCode();
+    if (!code.empty())
+    {
+        code = "PC: " + code;
+    }
+    struct curl_slist* headers = NULL;
+    headers                    = curl_slist_append(headers, "Content-Type: multipart/form-data");
+    headers                    = curl_slist_append(headers, version.c_str());
+    if (!code.empty())
+    {
+        headers = curl_slist_append(headers, code.c_str());
+    }
+
+    std::string writeData = "";
+    if (auto fetch = Fetch::init("https://flagbrew.org/gpss/share", false, true, &writeData, headers, ""))
+    {
+        auto mimeThing       = fetch->mimeInit();
+        curl_mimepart* field = curl_mime_addpart(mimeThing.get());
+        curl_mime_name(field, "pkmn");
+        curl_mime_data(field, (char*)infoMon->rawData(), infoMon->getLength());
+        curl_mime_filename(field, "pkmn");
+        fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
+
+        CURLcode res = fetch->perform();
+        if (res != CURLE_OK)
+        {
+            Gui::error(i18n::localize("CURL_ERROR"), abs(res));
+        }
+        else
+        {
+            fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
+            switch (status_code)
+            {
+                case 200:
+                case 201:
+                    Gui::warn(i18n::localize("SHARE_DOWNLOAD_CODE"), writeData);
+                    break;
+                case 400:
+                    Gui::error(i18n::localize("SHARE_FAILED_CHECK"), status_code);
+                    break;
+                case 502:
+                    Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
+                    break;
+                default:
+                    Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
+                    break;
+            }
+        }
+    }
+    curl_slist_free_all(headers);
+}
+
+void CloudScreen::shareReceive()
+{
+    static SwkbdState state;
+    static bool first = true;
+    if (first)
+    {
+        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 3, 10);
+        first = false;
+    }
+    swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
+    swkbdSetValidation(&state, SWKBD_FIXEDLEN, 0, 0);
+    swkbdSetButton(&state, SwkbdButton::SWKBD_BUTTON_MIDDLE, i18n::localize("QR_SCANNER").c_str(), false);
+    char input[11]  = {0};
+    SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
+    input[10]       = '\0';
+    CURLcode res;
+    if (ret == SWKBD_BUTTON_MIDDLE)
+    {
+        std::vector<u8> data = QRScanner::scan(NUMBER);
+        if (!data.empty() && data.size() < 12)
+        {
+            std::copy(data.begin(), data.end(), input);
+            input[10] = '\0';
+            ret       = SWKBD_BUTTON_CONFIRM;
+        }
+    }
+    if (ret == SWKBD_BUTTON_CONFIRM)
+    {
+        const std::string url  = "https://flagbrew.org/gpss/download/" + std::string(input);
+        std::string retB64Data = "";
+        if (auto fetch = Fetch::init(url, false, true, &retB64Data, nullptr, ""))
+        {
+            long status_code = 0;
+            Generation gen   = Generation::UNUSED;
+            fetch->setopt(CURLOPT_HEADERDATA, &gen);
+            fetch->setopt(CURLOPT_HEADERFUNCTION, generation_from_header_callback);
+            res = fetch->perform();
+            if (res != CURLE_OK)
+            {
+                Gui::error(i18n::localize("CURL_ERROR"), abs(res));
+            }
+            else
+            {
+                fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
+                switch (status_code)
+                {
+                    case 200:
+                        break;
+                    case 400:
+                    case 404:
+                        Gui::error(i18n::localize("SHARE_INVALID_CODE"), status_code);
+                        return;
+                    case 502:
+                        Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
+                        return;
+                    default:
+                        Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
+                        return;
+                }
+                auto retData = base64_decode(retB64Data.data(), retB64Data.size());
+
+                size_t targetLength = 0;
+                switch (gen)
+                {
+                    case Generation::FOUR:
+                    case Generation::FIVE:
+                        targetLength = 138;
+                        break;
+                    case Generation::SIX:
+                    case Generation::SEVEN:
+                        targetLength = 234;
+                        break;
+                    case Generation::LGPE:
+                        targetLength = 261;
+                        break;
+                    default:
+                        break;
+                }
+                if (retData.size() != targetLength)
+                {
+                    Gui::error(i18n::localize("SHARE_ERROR_INCORRECT_VERSION"), retData.size());
+                    return;
+                }
+
+                auto pkm = PKX::getPKM(gen, retData.data());
+
+                if (!cloudChosen && cursorIndex != 0)
+                {
+                    Banks::bank->pkm(pkm, storageBox, cursorIndex - 1);
+                }
+                else
+                {
+                    moveMon = pkm;
+                }
+            }
+        }
+    }
 }

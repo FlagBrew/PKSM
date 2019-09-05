@@ -61,6 +61,9 @@ private:
     // Clones from storage (bottom), clones and increments download counter (top), places in storage (bottom), or uploads (top)
     void pickup();
 
+    void shareSend();
+    void shareReceive();
+
     bool cloudChosen = false;
     std::array<std::unique_ptr<Button>, 7> mainButtons;
     std::array<std::unique_ptr<Button>, 31> clickButtons;

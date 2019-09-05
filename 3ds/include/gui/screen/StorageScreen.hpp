@@ -69,9 +69,6 @@ private:
     void scrunchSelection();
     void grabSelection(bool remove);
 
-    void shareSend();
-    void shareReceive();
-
     bool storageChosen = false;
     bool fromStorage   = false;
     std::array<std::unique_ptr<Button>, 10> mainButtons;
