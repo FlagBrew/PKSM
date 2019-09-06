@@ -42,11 +42,11 @@ ScrollingTextScreen::ScrollingTextScreen(const std::string& text, std::shared_pt
 void ScrollingTextScreen::update(touchPosition* touch)
 {
     u32 down = hidKeysDown();
-    if (down & KEY_UP && lineOffset + SHOWN_LINES < text->lineWidths.size())
+    if (down & KEY_DOWN && lineOffset + SHOWN_LINES < text->lineWidths.size())
     {
         lineOffset++;
     }
-    if (down & KEY_DOWN && lineOffset > 0)
+    if (down & KEY_UP && lineOffset > 0)
     {
         lineOffset--;
     }
@@ -77,7 +77,16 @@ void ScrollingTextScreen::drawBottom() const
     Gui::drawSolidCircle(310, 10, 5, COLOR_WHITE);
     Gui::drawSolidCircle(10, 230, 5, COLOR_WHITE);
 
-    Gui::text(text, 10, 5 - lineMod * lineOffset, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(text, 10, 7 - lineMod * lineOffset, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::drawSolidRect(0, 0, 320, 5, COLOR_MENUBLUE);
     Gui::drawSolidRect(0, 235, 320, 5, COLOR_MENUBLUE);
+
+    if (text->lineWidths.size() > SHOWN_LINES && lineOffset + SHOWN_LINES < text->lineWidths.size())
+    {
+        Gui::drawSolidTriangle(310, 220, 300, 220, 305, 230, COLOR_BLACK);
+    }
+    if (text->lineWidths.size() > SHOWN_LINES && lineOffset != 0)
+    {
+        Gui::drawSolidTriangle(310, 20, 300, 20, 305, 10, COLOR_BLACK);
+    }
 }
