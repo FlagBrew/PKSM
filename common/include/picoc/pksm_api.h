@@ -141,6 +141,7 @@ void sav_get_pkx(struct ParseState*, struct Value*, struct Value**, int);
 void sav_inject_pkx(struct ParseState*, struct Value*, struct Value**, int);
 void sav_get_value(struct ParseState*, struct Value*, struct Value**, int);
 void sav_get_max(struct ParseState*, struct Value*, struct Value**, int);
+void sav_set_string(struct ParseState*, struct Value*, struct Value**, int);
 void current_directory(struct ParseState*, struct Value*, struct Value**, int);
 void read_directory(struct ParseState*, struct Value*, struct Value**, int);
 void delete_directory(struct ParseState*, struct Value*, struct Value**, int);

@@ -23,6 +23,7 @@ struct LibraryFunction UnixFunctions[] =
     { sav_inject_pkx,       "void sav_inject_pkx(char* data, enum Generation type, int box, int slot, int doTradeEdits);" },
     { sav_get_value,        "int sav_get_value(enum SAV_Field field, ...);" },
     { sav_get_max,          "int sav_get_max(enum SAV_MaxField field, ...);" },
+    { sav_set_string,       "void sav_set_string(char* string, unsigned int offset, unsigned int codepoints);" },
     { party_get_pkx,        "void party_get_pkx(char* data, int slot);" },
     { party_inject_pkx,     "void party_inject_pkx(char* data, enum Generation type, int slot);" },
     { bank_inject_pkx,      "void bank_inject_pkx(char* data, enum Generation type, int box, int slot);" },

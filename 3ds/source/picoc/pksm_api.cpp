@@ -2070,4 +2070,51 @@ void g4_strlen(struct ParseState* Parser, struct Value* ReturnValue, struct Valu
     }
     ReturnValue->Val->Integer = size;
 }
+
+void sav_set_string(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    char* string = (char*)Param[0]->Val->Pointer;
+    u32 offset = Param[1]->Val->UnsignedInteger;
+    u32 codepoints = Param[2]->Val->UnsignedInteger; // Includes null terminator
+    if (TitleLoader::save->generation() != Generation::FOUR)
+    {
+        std::u16string write = StringUtils::UTF8toUTF16(string);
+        while (write.size() >= codepoints)
+        {
+            write.pop_back();
+        }
+        for (auto& codepoint : write) // Not sure whether this includes terminator, so let's make sure
+        {
+            *(u16*)(TitleLoader::save->rawData() + offset) = codepoint;
+        }
+        if (TitleLoader::save->generation() == Generation::FIVE)
+        {
+            *(u16*)(TitleLoader::save->rawData() + offset + write.size()) = 0xFFFF;
+        }
+        else
+        {
+            *(u16*)(TitleLoader::save->rawData() + offset + write.size()) = 0;
+        }
+        for (size_t i = write.size() + 1; i < codepoints; i++)
+        {
+            *((u16*)(TitleLoader::save->rawData() + offset) + i) = 0;
+        }
+    }
+    else
+    {
+        auto write = StringUtils::stringToG4(string);
+        while (write.size() > codepoints) // Remove non-terminator codepoints
+        {
+            write.erase(write.end() - 1);
+        }
+        for (auto& codepoint : write) // Definitely includes the terminator
+        {
+            *(u16*)(TitleLoader::save->rawData() + offset) = codepoint;
+        }
+        for (size_t i = write.size() + 1; i < codepoints; i++)
+        {
+            *((u16*)(TitleLoader::save->rawData() + offset) + i) = 0;
+        }
+    }
+}
 }
