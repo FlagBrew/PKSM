@@ -7,7 +7,7 @@ do
     if [[ "$line" != "{" && "$line" != "}" ]];
     then
         KEY=`echo "$line" | cut -d'"' -f 2`
-        if [[ $(grep -RIn "$KEY" ./3ds/source | wc -c) -eq 0 ]];
+        if [[ $(grep -RIn "$KEY" ./3ds/source ./3ds/include ./core/source ./core/include ./common/source ./common/include | wc -c) -eq 0 ]];
         then
             echo "$KEY is not used"
         fi
