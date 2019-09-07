@@ -166,7 +166,7 @@ void gui_keyboard(struct ParseState* Parser, struct Value* ReturnValue, struct V
 
 void gui_numpad(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    int* out                         = (int*)Param[0]->Val->Pointer;
+    unsigned int* out                = (unsigned int*)Param[0]->Val->Pointer;
     std::string hint                 = (char*)Param[1]->Val->Pointer;
     std::optional<std::string> hint2 = std::nullopt;
     if (hint.find('\n') != std::string::npos)
@@ -2073,8 +2073,8 @@ void g4_strlen(struct ParseState* Parser, struct Value* ReturnValue, struct Valu
 
 void sav_set_string(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    char* string = (char*)Param[0]->Val->Pointer;
-    u32 offset = Param[1]->Val->UnsignedInteger;
+    char* string   = (char*)Param[0]->Val->Pointer;
+    u32 offset     = Param[1]->Val->UnsignedInteger;
     u32 codepoints = Param[2]->Val->UnsignedInteger; // Includes null terminator
     if (TitleLoader::save->generation() != Generation::FOUR)
     {

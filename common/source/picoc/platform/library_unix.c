@@ -12,7 +12,7 @@ struct LibraryFunction UnixFunctions[] =
     { gui_menu6x5,          "int gui_menu_6x5(char* question, int options, char** labels, struct pkx* pokemon, enum Generation generation);" },
     { gui_menu20x2,         "int gui_menu_20x2(char* question, int options, char** labels);" },
     { gui_keyboard,         "void gui_keyboard(char* out, char* hint, int maxChars);" },
-    { gui_numpad,           "void gui_numpad(int* out, char* hint, int maxDigits);" },
+    { gui_numpad,           "void gui_numpad(unsigned int* out, char* hint, int maxDigits);" },
     { gui_boxes,            "int gui_boxes(int* fromStorage, int* box, int* slot, int doCrypt);" },
     // sav and storage
     { sav_sbo,              "int sav_sbo();" },
