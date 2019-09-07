@@ -541,7 +541,10 @@ void CloudScreen::pickup()
     {
         if (cloudChosen && Gui::showChoiceMessage(i18n::localize("SHARE_SEND_CONFIRM")))
         {
-            access.pkm(moveMon);
+            if (!access.pkm(moveMon))
+            {
+                Gui::warn(i18n::localize("DATA_SEND_FAIL"));
+            }
             moveMon = nullptr;
         }
         else if (!cloudChosen)
