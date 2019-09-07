@@ -113,7 +113,8 @@ CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O3 -mword-relocations \
 			-DUNIX_HOST \
 			-DUNIQUE_ID=${UNIQUE_ID} \
 			-DCITRA_DEBUG=${CITRA_DEBUG} \
-			`sdl-config --cflags`
+			`arm-none-eabi-pkg-config SDL_mixer --cflags` \
+			`curl-config --cflags`
 
 CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS -D_GNU_SOURCE=1
 
@@ -122,9 +123,9 @@ CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++17
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS	:= -lSDL_mixer -lSDL -lmpg123 -lvorbisidec -logg -lmikmod -lmad \
-		   -lcurl -lmbedtls -lmbedx509 -lmbedcrypto -lbz2 \
-		   -lz -lcitro2d -lcitro3d -lctru -lm
+LIBS	:= -lcitro2d -lbz2 \
+		   `arm-none-eabi-pkg-config SDL_mixer --libs-only-l --libs-only-L` -lvorbisidec -logg -lmikmod -lmad \
+		   `curl-config --libs`
 
 CXX		:= `which ccache` $(CXX)
 CC		:= `which ccache` $(CC)
