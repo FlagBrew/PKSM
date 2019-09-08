@@ -2083,17 +2083,17 @@ void sav_set_string(struct ParseState* Parser, struct Value* ReturnValue, struct
         {
             write.pop_back();
         }
-        for (auto& codepoint : write) // Not sure whether this includes terminator, so let's make sure
+        for (size_t i = 0; i < write.size(); i++) // Not sure whether this includes terminator, so let's make sure
         {
-            *(u16*)(TitleLoader::save->rawData() + offset) = codepoint;
+            *((u16*)(TitleLoader::save->rawData() + offset) + i) = write[i];
         }
         if (TitleLoader::save->generation() == Generation::FIVE)
         {
-            *(u16*)(TitleLoader::save->rawData() + offset + write.size()) = 0xFFFF;
+            *((u16*)(TitleLoader::save->rawData() + offset) + write.size()) = 0xFFFF;
         }
         else
         {
-            *(u16*)(TitleLoader::save->rawData() + offset + write.size()) = 0;
+            *((u16*)(TitleLoader::save->rawData() + offset) + write.size()) = 0;
         }
         for (size_t i = write.size() + 1; i < codepoints; i++)
         {
@@ -2107,9 +2107,9 @@ void sav_set_string(struct ParseState* Parser, struct Value* ReturnValue, struct
         {
             write.erase(write.end() - 1);
         }
-        for (auto& codepoint : write) // Definitely includes the terminator
+        for (size_t i = 0; i < write.size(); i++) // Definitely includes the terminator
         {
-            *(u16*)(TitleLoader::save->rawData() + offset) = codepoint;
+            *((u16*)(TitleLoader::save->rawData() + offset) + i) = write[i];
         }
         for (size_t i = write.size() + 1; i < codepoints; i++)
         {
