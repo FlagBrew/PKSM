@@ -89,6 +89,7 @@ PKSM has the following dependencies:
 - The latest version of ctrulib, citro3d, citro2d, 3ds-curl, 3ds-pkg-config, and SDL_mixer with
   their dependancies. All of these should be installed from [devKitPro
   pacman](https://devkitpro.org/wiki/devkitPro_pacman).
+- Your system's pkg-config
 - [3dstool](https://github.com/dnasdw/3dstool/releases),
   [bannertool](https://github.com/Steveice10/bannertool/releases) and
   [makerom](https://github.com/profi200/Project_CTR/releases), if you want to be
