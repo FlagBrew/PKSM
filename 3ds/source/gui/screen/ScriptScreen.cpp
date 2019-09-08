@@ -355,12 +355,12 @@ void ScriptScreen::parsePicoCScript(std::string& file)
     // The loops used in PicoC make this basically a necessity
     aptSetHomeAllowed(false);
     // setup for printing errors
-    static char error[1024];
-    std::fill_n(error, 1024, '\0');
+    static char error[4096];
+    std::fill_n(error, 4096, '\0');
     // Save stdout state
     int stdout_save = dup(STDOUT_FILENO);
     // Set stdout to buffer to error
-    setvbuf(stdout, error, _IOFBF, 1024);
+    setvbuf(stdout, error, _IOFBF, 4096);
 
     Picoc* picoc = picoC();
     if (!PicocPlatformSetExitPoint(picoc))
