@@ -382,9 +382,16 @@ void ScriptScreen::parsePicoCScript(std::string& file)
         // consoleInit(GFX_BOTTOM, NULL);
         // Restore stdout state
         dup2(stdout_save, STDOUT_FILENO);
+    }
+
+    if (picoc->PicocExitValue != 0)
+    {
         Gui::warn(i18n::localize("SCRIPTS_EXECUTION_ERROR"), file);
+        std::string show = error;
+        show += "\nExit code: " + std::to_string(picoc->PicocExitValue);
         Gui::setScreen(std::make_unique<ScrollingTextScreen>(error, nullptr));
     }
+
     if (Banks::bank->hasChanged())
     {
         Banks::bank->save();
