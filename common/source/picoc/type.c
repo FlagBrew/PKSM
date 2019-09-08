@@ -542,3 +542,14 @@ int TypeIsForwardDeclared(struct ParseState *Parser, struct ValueType *Typ)
         
     return FALSE;
 }
+
+int TypeIsUnsigned(struct ValueType *Typ)
+{
+    switch (Typ->Base){
+        case TypeUnsignedInt: return TRUE;
+        case TypeUnsignedShort: return TRUE;
+        case TypeUnsignedLong: return TRUE;
+        case TypeUnsignedChar: return TRUE;
+        default: return FALSE;
+    }
+}
