@@ -374,15 +374,10 @@ void ScriptScreen::parsePicoCScript(std::string& file)
         char version       = TitleLoader::save->version();
         args[2]            = &version;
         PicocCallMain(picoc, 3, args);
-        // Restore stdout state
-        dup2(stdout_save, STDOUT_FILENO);
     }
-    else
-    {
-        // consoleInit(GFX_BOTTOM, NULL);
-        // Restore stdout state
-        dup2(stdout_save, STDOUT_FILENO);
-    }
+
+    // Restore stdout state
+    dup2(stdout_save, STDOUT_FILENO);
 
     if (picoc->PicocExitValue != 0)
     {
