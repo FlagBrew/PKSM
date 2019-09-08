@@ -386,10 +386,13 @@ void ScriptScreen::parsePicoCScript(std::string& file)
 
     if (picoc->PicocExitValue != 0)
     {
-        Gui::warn(i18n::localize("SCRIPTS_EXECUTION_ERROR"), file);
         std::string show = error;
-        show += "\nExit code: " + std::to_string(picoc->PicocExitValue);
-        Gui::setScreen(std::make_unique<ScrollingTextScreen>(error, nullptr));
+        if (!show.empty())
+        {
+            Gui::warn(i18n::localize("SCRIPTS_EXECUTION_ERROR"), file);
+            show += "\nExit code: " + std::to_string(picoc->PicocExitValue);
+            Gui::setScreen(std::make_unique<ScrollingTextScreen>(error, nullptr));
+        }
     }
 
     if (Banks::bank->hasChanged())
