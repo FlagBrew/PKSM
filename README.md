@@ -86,7 +86,7 @@ You can get real-time support by joining FlagBrew's discord server.
 
 PKSM has the following dependencies:
 
-- The latest version of ctrulib, citro3d, citro2d, 3ds-curl and SDL_mixer with
+- The latest version of ctrulib, citro3d, citro2d, 3ds-curl, 3ds-pkg-config, and SDL_mixer with
   their dependancies. All of these should be installed from [devKitPro
   pacman](https://devkitpro.org/wiki/devkitPro_pacman).
 - [3dstool](https://github.com/dnasdw/3dstool/releases),
