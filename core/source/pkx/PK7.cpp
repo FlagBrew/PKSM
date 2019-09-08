@@ -515,7 +515,7 @@ std::string PK7::otName(void) const
 }
 void PK7::otName(const std::string& v)
 {
-    StringUtils::setString(data, StringUtils::transString67(v), 0xB0, 12);
+    StringUtils::setString(data, StringUtils::transString67(v), 0xB0, 13);
 }
 
 u8 PK7::otFriendship(void) const
