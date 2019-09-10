@@ -67,7 +67,7 @@ Result Archive::moveDir(FS_Archive src, const std::u16string& dir, FS_Archive ds
 
     FSUSER_DeleteDirectory(src, fsMakePath(PATH_UTF16, dir.data()));
 
-    if (res == (long)0xC82044BE && res == (long)0xC82044B9)
+    if (res == (long)0xC82044BE || res == (long)0xC82044B9)
         return 0;
 
     return res;
