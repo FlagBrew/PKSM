@@ -104,6 +104,8 @@ public:
 
     u16 move(u8 move) const override;
     void move(u8 move, u16 v) override;
+    u16 relearnMove(u8 move) const override;
+    void relearnMove(u8 move, u16 v) override;
     u8 PP(u8 move) const override;
     void PP(u8 move, u8 v) override;
     u8 PPUp(u8 move) const override;

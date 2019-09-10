@@ -37,7 +37,6 @@ protected:
 
     void shuffleArray(u8 sv) override;
     void crypt(void) override;
-    void reorderMoves(void) override;
 
 public:
     PK7()
@@ -118,8 +117,8 @@ public:
     void PP(u8 move, u8 v) override;
     u8 PPUp(u8 move) const override;
     void PPUp(u8 move, u8 v) override;
-    u16 relearnMove(u8 move) const;
-    void relearnMove(u8 move, u16 v);
+    u16 relearnMove(u8 move) const override;
+    void relearnMove(u8 move, u16 v) override;
     u8 iv(u8 iv) const override;
     void iv(u8 iv, u8 v) override;
 

@@ -309,23 +309,10 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
                     moveBad = true;
                     break;
                 }
-                if (pkm->generation() == Generation::SIX)
+                if (pkm->relearnMove(i) > TitleLoader::save->maxMove())
                 {
-                    PK6* pk6 = (PK6*)pkm.get();
-                    if (pk6->relearnMove(i) > TitleLoader::save->maxMove())
-                    {
-                        moveBad = true;
-                        break;
-                    }
-                }
-                else if (pkm->generation() == Generation::SEVEN)
-                {
-                    PK7* pk7 = (PK7*)pkm.get();
-                    if (pk7->relearnMove(i) > TitleLoader::save->maxMove())
-                    {
-                        moveBad = true;
-                        break;
-                    }
+                    moveBad = true;
+                    break;
                 }
             }
             if (pkm->species() > TitleLoader::save->maxSpecies())
@@ -756,23 +743,10 @@ void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, stru
                     moveBad = true;
                     break;
                 }
-                if (pkm->generation() == Generation::SIX)
+                if (pkm->relearnMove(i) > TitleLoader::save->maxMove())
                 {
-                    PK6* pk6 = (PK6*)pkm.get();
-                    if (pk6->relearnMove(i) > TitleLoader::save->maxMove())
-                    {
-                        moveBad = true;
-                        break;
-                    }
-                }
-                else if (pkm->generation() == Generation::SEVEN)
-                {
-                    PK7* pk7 = (PK7*)pkm.get();
-                    if (pk7->relearnMove(i) > TitleLoader::save->maxMove())
-                    {
-                        moveBad = true;
-                        break;
-                    }
+                    moveBad = true;
+                    break;
                 }
             }
             if (pkm->species() > TitleLoader::save->maxSpecies())

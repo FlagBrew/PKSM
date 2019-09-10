@@ -381,7 +381,7 @@ void Bank::convertFromBankBin()
                     badMove = true;
                     break;
                 }
-                if (((PK6*)pkm.get())->relearnMove(i) > 621)
+                if (pkm->relearnMove(i) > 621)
                 {
                     badMove = true;
                     break;

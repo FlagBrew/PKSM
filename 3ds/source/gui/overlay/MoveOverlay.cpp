@@ -96,21 +96,7 @@ MoveOverlay::MoveOverlay(ReplaceableScreen& screen, const std::variant<std::shar
         if (object.index() == 0)
         {
             auto pkm = std::get<0>(object);
-            if (pkm->generation() == Generation::SIX)
-            {
-                PK6* pk6 = ((PK6*)pkm.get());
-                hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), pk6->relearnMove(moveIndex - 4))));
-            }
-            else if (pkm->generation() == Generation::SEVEN)
-            {
-                PK7* pk7 = ((PK7*)pkm.get());
-                hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), pk7->relearnMove(moveIndex - 4))));
-            }
-            else if (pkm->generation() == Generation::LGPE)
-            {
-                PB7* pb7 = ((PB7*)pkm.get());
-                hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), pb7->relearnMove(moveIndex - 4))));
-            }
+            hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), pkm->relearnMove(moveIndex - 4))));
         }
         else
         {
@@ -231,18 +217,7 @@ void MoveOverlay::update(touchPosition* touch)
             if (object.index() == 0)
             {
                 auto pkm = std::get<0>(object);
-                if (pkm->generation() == Generation::SIX)
-                {
-                    ((PK6*)pkm.get())->relearnMove(moveIndex - 4, (u16)moves[hid.fullIndex()].first);
-                }
-                else if (pkm->generation() == Generation::SEVEN)
-                {
-                    ((PK7*)pkm.get())->relearnMove(moveIndex - 4, (u16)moves[hid.fullIndex()].first);
-                }
-                else if (pkm->generation() == Generation::LGPE)
-                {
-                    ((PB7*)pkm.get())->relearnMove(moveIndex - 4, (u16)moves[hid.fullIndex()].first);
-                }
+                pkm->relearnMove(moveIndex - 4, (u16)moves[hid.fullIndex()].first);
             }
             else
             {

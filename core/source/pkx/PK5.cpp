@@ -303,6 +303,15 @@ void PK5::move(u8 m, u16 v)
     *(u16*)(data + 0x28 + m * 2) = v;
 }
 
+u16 PK5::relearnMove(u8 m) const
+{
+    return 0;
+}
+void PK5::relearnMove(u8 m, u16 v)
+{
+    // stubbed
+}
+
 u8 PK5::PP(u8 m) const
 {
     return data[0x30 + m];

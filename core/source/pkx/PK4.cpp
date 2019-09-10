@@ -302,6 +302,15 @@ void PK4::move(u8 m, u16 v)
     *(u16*)(data + 0x28 + m * 2) = v;
 }
 
+u16 PK4::relearnMove(u8 m) const
+{
+    return 0;
+}
+void PK4::relearnMove(u8 m, u16 v)
+{
+    // stubbed
+}
+
 u8 PK4::PP(u8 m) const
 {
     return data[0x30 + m];

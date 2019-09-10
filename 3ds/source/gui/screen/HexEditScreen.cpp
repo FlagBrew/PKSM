@@ -129,26 +129,9 @@ bool HexEditScreen::checkValue()
                 }
                 return true;
             case 0x6A ... 0x71:
-                if (pkm->generation() == Generation::SEVEN)
+                if (pkm->relearnMove((i - 0x6A) / 2) >= TitleLoader::save->maxMove())
                 {
-                    if (((PK7*)pkm.get())->relearnMove((i - 0x6A) / 2) >= TitleLoader::save->maxMove())
-                    {
-                        return false;
-                    }
-                }
-                else if (pkm->generation() == Generation::SIX)
-                {
-                    if (((PK6*)pkm.get())->relearnMove((i - 0x6A) / 2) >= TitleLoader::save->maxMove())
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    if (((PB7*)pkm.get())->relearnMove((i - 0x6A) / 2) >= TitleLoader::save->maxMove())
-                    {
-                        return false;
-                    }
+                    return false;
                 }
                 return true;
             case 0xD2:
@@ -1539,21 +1522,8 @@ void HexEditScreen::drawMeaning() const
                         TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x6A ... 0x71:
-                    if (pkm->generation() == Generation::SEVEN)
-                    {
-                        Gui::text(i18n::move(Configuration::getInstance().language(), ((PK7*)pkm.get())->relearnMove((i - 0x6A) / 2)), 160, 100,
-                            FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-                    }
-                    else if (pkm->generation() == Generation::SIX)
-                    {
-                        Gui::text(i18n::move(Configuration::getInstance().language(), ((PK6*)pkm.get())->relearnMove((i - 0x6A) / 2)), 160, 100,
-                            FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-                    }
-                    else
-                    {
-                        Gui::text(i18n::move(Configuration::getInstance().language(), ((PB7*)pkm.get())->relearnMove((i - 0x6A) / 2)), 160, 100,
-                            FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-                    }
+                    Gui::text(i18n::move(Configuration::getInstance().language(), pkm->relearnMove((i - 0x6A) / 2)), 160, 100,
+                        FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0xD8 ... 0xD9:
                     Gui::text(i18n::location(Configuration::getInstance().language(), pkm->eggLocation(), pkm->version()), 160, 100, FONT_SIZE_12,

@@ -139,6 +139,29 @@ void PKX::reorderMoves(void)
         move(1, 0);
         reorderMoves();
     }
+    if (relearnMove(3) != 0 && relearnMove(2) == 0)
+    {
+        relearnMove(2, relearnMove(3));
+        PP(2, PP(3));
+        PPUp(2, PPUp(3));
+        relearnMove(3, 0);
+    }
+    if (relearnMove(2) != 0 && relearnMove(1) == 0)
+    {
+        relearnMove(1, relearnMove(2));
+        PP(1, PP(2));
+        PPUp(1, PPUp(2));
+        relearnMove(2, 0);
+        reorderMoves();
+    }
+    if (relearnMove(1) != 0 && relearnMove(0) == 0)
+    {
+        relearnMove(0, relearnMove(1));
+        PP(0, PP(1));
+        PPUp(0, PPUp(1));
+        relearnMove(1, 0);
+        reorderMoves();
+    }
 }
 
 void PKX::decrypt(void)

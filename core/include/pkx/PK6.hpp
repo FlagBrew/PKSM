@@ -36,7 +36,6 @@ class PK6 : public PKX
 protected:
     void shuffleArray(u8 sv) override;
     void crypt(void) override;
-    void reorderMoves(void) override;
 
 public:
     PK6()
@@ -125,8 +124,8 @@ public:
     void PP(u8 move, u8 v) override;
     u8 PPUp(u8 move) const override;
     void PPUp(u8 move, u8 v) override;
-    u16 relearnMove(u8 move) const;
-    void relearnMove(u8 move, u16 v);
+    u16 relearnMove(u8 move) const override;
+    void relearnMove(u8 move, u16 v) override;
     bool secretSuperTrainingUnlocked(void) const;
     void secretSuperTrainingUnlocked(bool v);
     bool secretSuperTrainingComplete(void) const;

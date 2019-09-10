@@ -929,23 +929,10 @@ bool StorageScreen::isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTrans
             moveBad = true;
             break;
         }
-        if (moveMon->generation() == Generation::SIX)
+        if (moveMon->relearnMove(i) > TitleLoader::save->maxMove())
         {
-            PK6* pk6 = (PK6*)moveMon.get();
-            if (pk6->relearnMove(i) > TitleLoader::save->maxMove())
-            {
-                moveBad = true;
-                break;
-            }
-        }
-        else if (moveMon->generation() == Generation::SEVEN)
-        {
-            PK7* pk7 = (PK7*)moveMon.get();
-            if (pk7->relearnMove(i) > TitleLoader::save->maxMove())
-            {
-                moveBad = true;
-                break;
-            }
+            moveBad = true;
+            break;
         }
     }
     if (moveBad)
