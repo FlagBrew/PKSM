@@ -67,6 +67,9 @@ Result Archive::moveDir(FS_Archive src, const std::u16string& dir, FS_Archive ds
 
     FSUSER_DeleteDirectory(src, fsMakePath(PATH_UTF16, dir.data()));
 
+    if (res == (long)0xC82044BE && res == (long)0xC82044B9)
+        return 0;
+
     return res;
 }
 
@@ -177,7 +180,7 @@ Result Archive::init(const std::string& execPath)
         if (R_FAILED(res = createPKSMExtdataArchive(execPath)))
             return res;
 
-        if (R_FAILED(res = FSUSER_CreateFile(data(), fsMakePath(PATH_UTF16, u"/sizeCheck"), 0, 1)))
+        if (R_FAILED(res = FSUSER_CreateFile(data(), fsMakePath(PATH_UTF16, u"/sizeCheck"), 0, 1)) && res != (long)0xC82044B9)
             return res;
     }
     else
@@ -199,7 +202,7 @@ Result Archive::init(const std::string& execPath)
             if (R_FAILED(res = moveDir(sd(), u"/3ds/PKSM/extdata", data(), u"/")))
                 return res;
 
-            if (R_FAILED(res = FSUSER_CreateFile(data(), fsMakePath(PATH_UTF16, u"/sizeCheck"), 0, 1)))
+            if (R_FAILED(res = FSUSER_CreateFile(data(), fsMakePath(PATH_UTF16, u"/sizeCheck"), 0, 1)) && res != (long)0xC82044B9)
                 return res;
         }
         else
