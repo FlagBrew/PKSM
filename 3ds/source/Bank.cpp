@@ -233,9 +233,9 @@ void Bank::resize(size_t boxes)
             boxNames[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
         }
 
+        size = newSize;
         save();
     }
-    size = newSize;
 }
 
 std::shared_ptr<PKX> Bank::pkm(int box, int slot) const
@@ -288,7 +288,8 @@ bool Bank::backup() const
     auto paths = this->paths();
     Archive::copyFile(Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".bnk.bak", Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".bnk.bak.old");
     Archive::copyFile(Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".json.bak", Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".json.bak.old");
-    if (R_FAILED(Archive::copyFile(ARCHIVE, BANK(paths), Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".bnk.bak")))
+    Result res = Archive::copyFile(ARCHIVE, BANK(paths), Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".bnk.bak");
+    if (R_FAILED(res))
     {
         return false;
     }
