@@ -44,6 +44,7 @@ Bank::Bank(const std::string& name, int maxBoxes) : bankName(name)
 
 void Bank::load(int maxBoxes)
 {
+    bool create = false;
     if (data)
     {
         delete[] data;
@@ -102,6 +103,7 @@ void Bank::load(int maxBoxes)
             in.close();
             createBank(maxBoxes);
             needSave = true;
+            create = true;
         }
 
         in = FSStream(ARCHIVE, JSON(paths), FS_OPEN_READ);
@@ -144,7 +146,14 @@ void Bank::load(int maxBoxes)
 
         if (needSave)
         {
-            save();
+            if (create)
+            {
+                saveWithoutBackup();
+            }
+            else
+            {
+                save();
+            }
         }
         else
         {
@@ -153,15 +162,8 @@ void Bank::load(int maxBoxes)
     }
 }
 
-bool Bank::save() const
+bool Bank::saveWithoutBackup() const
 {
-    if (Configuration::getInstance().autoBackup())
-    {
-        if (!backup() && !Gui::showChoiceMessage(i18n::localize("BACKUP_FAIL_SAVE_1"), i18n::localize("BACKUP_FAIL_SAVE_2")))
-        {
-            return false;
-        }
-    }
     auto paths = this->paths();
     Gui::waitFrame(i18n::localize("BANK_SAVE"));
     Archive::deleteFile(ARCHIVE, BANK(paths));
@@ -194,6 +196,18 @@ bool Bank::save() const
     }
 
     needsCheck = false;
+}
+
+bool Bank::save() const
+{
+    if (Configuration::getInstance().autoBackup())
+    {
+        if (!backup() && !Gui::showChoiceMessage(i18n::localize("BACKUP_FAIL_SAVE_1"), i18n::localize("BACKUP_FAIL_SAVE_2")))
+        {
+            return false;
+        }
+    }
+    return saveWithoutBackup();
 }
 
 void Bank::resize(size_t boxes)

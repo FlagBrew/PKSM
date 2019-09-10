@@ -40,6 +40,7 @@ public:
     void resize(size_t boxes);
     void load(int maxBoxes);
     bool save() const;
+    bool saveWithoutBackup() const;
     bool backup() const;
     std::string boxName(int box) const;
     std::pair<std::string, std::string> paths() const;
