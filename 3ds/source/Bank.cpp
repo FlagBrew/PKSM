@@ -158,6 +158,8 @@ void Bank::load(int maxBoxes)
         else
         {
             sha256(prevHash.data(), data, size);
+            std::string nameData = boxNames.dump(2);
+            sha256(prevNameHash.data(), (u8*)nameData.data(), nameData.size());
         }
     }
 }
@@ -180,6 +182,7 @@ bool Bank::saveWithoutBackup() const
         {
             out.write(jsonData.data(), jsonData.size() + 1);
             sha256(prevHash.data(), data, sizeof(BankHeader) + sizeof(BankEntry) * boxes() * 30);
+            sha256(prevNameHash.data(), (u8*)jsonData.data(), jsonData.size());
         }
         else
         {
@@ -338,6 +341,12 @@ bool Bank::hasChanged() const
     u8 hash[SHA256_BLOCK_SIZE];
     sha256(hash, data, sizeof(BankHeader) + sizeof(BankEntry) * boxes() * 30);
     if (memcmp(hash, prevHash.data(), SHA256_BLOCK_SIZE))
+    {
+        return true;
+    }
+    std::string jsonData = boxNames.dump(2);
+    sha256(hash, (u8*)jsonData.data(), jsonData.size());
+    if (memcmp(hash, prevNameHash.data(), SHA256_BLOCK_SIZE))
     {
         return true;
     }

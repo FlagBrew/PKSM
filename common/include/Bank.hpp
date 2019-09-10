@@ -71,6 +71,7 @@ private:
     nlohmann::json boxNames;
     size_t size;
     mutable std::array<u8, SHA256_BLOCK_SIZE> prevHash;
+    mutable std::array<u8, SHA256_BLOCK_SIZE> prevNameHash;
     mutable bool needsCheck = false;
     std::string bankName;
 };
