@@ -208,7 +208,7 @@ EditSelectorScreen::~EditSelectorScreen()
         int occupiedSlots = 0;
         for (int i = 0; i < TitleLoader::save->maxSlot(); i++)
         {
-            if (TitleLoader::save->pkm(u8(0), i)->encryptionConstant())
+            if (TitleLoader::save->pkm(u8(0), i)->species())
             {
                 occupiedSlots++;
             }
@@ -390,7 +390,7 @@ void EditSelectorScreen::update(touchPosition* touch)
     {
         infoMon = nullptr;
     }
-    if (infoMon && (infoMon->encryptionConstant() == 0 && infoMon->species() == 0))
+    if (infoMon && infoMon->species() == 0)
     {
         infoMon = nullptr;
     }
@@ -494,7 +494,7 @@ void EditSelectorScreen::update(touchPosition* touch)
                 if (box * 30 + cursorPos - 1 < TitleLoader::save->maxSlot())
                 {
                     tmpMon = TitleLoader::save->pkm(box, cursorPos - 1);
-                    if (tmpMon && (tmpMon->encryptionConstant() == 0 && tmpMon->species() == 0))
+                    if (tmpMon && tmpMon->species() == 0)
                     {
                         tmpMon = nullptr;
                     }
@@ -509,7 +509,7 @@ void EditSelectorScreen::update(touchPosition* touch)
                 {
                     tmpMon = TitleLoader::save->pkm(cursorPos - 31);
                 }
-                if (tmpMon && (tmpMon->encryptionConstant() == 0 && tmpMon->species() == 0))
+                if (tmpMon && tmpMon->species() == 0)
                 {
                     tmpMon = nullptr;
                 }
@@ -897,7 +897,7 @@ bool EditSelectorScreen::clonePkm()
             if (!moveMon)
             {
                 moveMon = TitleLoader::save->pkm(cursorPos - 31);
-                if (moveMon && (moveMon->encryptionConstant() == 0 && moveMon->species() == 0))
+                if (moveMon && moveMon->species() == 0)
                 {
                     moveMon = nullptr;
                 }
@@ -905,7 +905,7 @@ bool EditSelectorScreen::clonePkm()
             else
             {
                 std::shared_ptr<PKX> tmpMon = TitleLoader::save->pkm(cursorPos - 31);
-                if ((tmpMon->encryptionConstant() == 0 && tmpMon->species() == 0))
+                if (tmpMon && tmpMon->species() == 0)
                 {
                     tmpMon = nullptr;
                 }
@@ -919,7 +919,7 @@ bool EditSelectorScreen::clonePkm()
             if (!moveMon)
             {
                 moveMon = TitleLoader::save->pkm(box, cursorPos - 1);
-                if (moveMon && (moveMon->encryptionConstant() == 0 && moveMon->species() == 0))
+                if (moveMon && moveMon->species() == 0)
                 {
                     moveMon = nullptr;
                 }
@@ -927,7 +927,7 @@ bool EditSelectorScreen::clonePkm()
             else
             {
                 std::shared_ptr<PKX> tmpMon = TitleLoader::save->pkm(box, cursorPos - 1);
-                if ((tmpMon->encryptionConstant() == 0 && tmpMon->species() == 0))
+                if (tmpMon->species() == 0)
                 {
                     tmpMon = nullptr;
                 }

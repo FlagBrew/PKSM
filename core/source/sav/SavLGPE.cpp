@@ -340,7 +340,7 @@ void SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 slot)
 {
     u32 off     = partyOffset(slot);
     u16 newSlot = partyBoxSlot(slot);
-    if (pk->encryptionConstant() == 0 && pk->species() == 0)
+    if (pk->species() == 0)
     {
         if (off != 0)
         {

@@ -143,7 +143,7 @@ void SortScreen::sort()
             for (int i = 0; i < Banks::bank->boxes() * 30; i++)
             {
                 std::shared_ptr<PKX> pkm = Banks::bank->pkm(i / 30, i % 30);
-                if (pkm->encryptionConstant() != 0 && pkm->species() != 0)
+                if (pkm->species() != 0)
                 {
                     sortMe.push_back(pkm);
                 }
@@ -154,7 +154,7 @@ void SortScreen::sort()
             for (int i = 0; i < TitleLoader::save->maxSlot(); i++)
             {
                 std::shared_ptr<PKX> pkm = TitleLoader::save->pkm(i / 30, i % 30);
-                if (pkm->encryptionConstant() != 0 && pkm->species() != 0)
+                if (pkm->species() != 0)
                 {
                     sortMe.push_back(pkm);
                 }

@@ -1522,8 +1522,8 @@ void HexEditScreen::drawMeaning() const
                         TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x6A ... 0x71:
-                    Gui::text(i18n::move(Configuration::getInstance().language(), pkm->relearnMove((i - 0x6A) / 2)), 160, 100,
-                        FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::text(i18n::move(Configuration::getInstance().language(), pkm->relearnMove((i - 0x6A) / 2)), 160, 100, FONT_SIZE_12,
+                        FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0xD8 ... 0xD9:
                     Gui::text(i18n::location(Configuration::getInstance().language(), pkm->eggLocation(), pkm->version()), 160, 100, FONT_SIZE_12,

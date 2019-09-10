@@ -135,8 +135,8 @@ void MoveEditScreen::drawBottom() const
         }
         else
         {
-            Gui::text(i18n::move(lang, pkm->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
-                TextPosY::TOP);
+            Gui::text(
+                i18n::move(lang, pkm->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         }
     }
 

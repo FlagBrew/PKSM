@@ -160,8 +160,8 @@ void gui_keyboard(struct ParseState* Parser, struct Value* ReturnValue, struct V
     swkbdInit(&state, SWKBD_TYPE_NORMAL, 1, numChars);
     swkbdSetHintText(&state, hint);
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
-    swkbdInputText(&state, out, numChars * 3); // numChars is UTF-16 codepoints, each UTF-8 codepoint needs up to 3 bytes, so 
-    out[numChars*3 - 1] = '\0';
+    swkbdInputText(&state, out, numChars * 3); // numChars is UTF-16 codepoints, each UTF-8 codepoint needs up to 3 bytes, so
+    out[numChars * 3 - 1] = '\0';
 }
 
 void gui_numpad(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -1204,7 +1204,7 @@ void pkx_is_valid(struct ParseState* Parser, struct Value* ReturnValue, struct V
             break;
     }
 
-    if (pkm->species() == 0 && pkm->encryptionConstant() == 0)
+    if (pkm->species() == 0)
     {
         ReturnValue->Val->Integer = 0;
     }

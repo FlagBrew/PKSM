@@ -129,8 +129,8 @@ public:
     virtual void nickname(const std::string& v) = 0;
     virtual u16 move(u8 move) const             = 0;
     virtual void move(u8 move, u16 v)           = 0;
-    virtual u16 relearnMove(u8 move) const             = 0;
-    virtual void relearnMove(u8 move, u16 v)           = 0;
+    virtual u16 relearnMove(u8 move) const      = 0;
+    virtual void relearnMove(u8 move, u16 v)    = 0;
     virtual u8 PP(u8 move) const                = 0;
     virtual void PP(u8 move, u8 v)              = 0;
     virtual u8 PPUp(u8 move) const              = 0;

@@ -183,13 +183,13 @@ void Sav::fixParty()
     for (int i = 5; i > 0; i--)
     {
         auto checkPKM = pkm(i);
-        if ((checkPKM->encryptionConstant() == 0 && checkPKM->species() == 0))
+        if (checkPKM->species() == 0)
         {
             numPkm--;
             continue;
         }
         auto prevPKM = pkm(i - 1);
-        if (!(checkPKM->encryptionConstant() == 0 && checkPKM->species() == 0) && (prevPKM->encryptionConstant() == 0 && prevPKM->species() == 0))
+        if (checkPKM->species() != 0 && prevPKM->species() == 0)
         {
             pkm(checkPKM, i - 1);
             pkm(prevPKM, i);

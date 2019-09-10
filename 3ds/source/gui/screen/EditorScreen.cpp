@@ -53,7 +53,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
     : pkm(pokemon), box(box), index(index), emergency(emergency)
 {
     addOverlay<ViewOverlay>(pkm, false);
-    if (!pkm || (pkm->encryptionConstant() == 0 && pkm->species() == 0))
+    if (!pkm || pkm->species() == 0)
     {
         pkm = TitleLoader::save->emptyPkm();
         if (Configuration::getInstance().useSaveInfo())
@@ -81,7 +81,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
             }
         }
         pkm->ball(4);
-        pkm->encryptionConstant((((u32)randomNumbers()) % 0xFFFFFFFF) + 1);
+        pkm->encryptionConstant((u32)randomNumbers());
         pkm->version(TitleLoader::save->version());
         switch (pkm->version())
         {
@@ -496,7 +496,7 @@ bool EditorScreen::advanceMon(bool forward)
                 }
                 pkm = TitleLoader::save->pkm(box, index);
             }
-        } while (pkm->encryptionConstant() == 0 && pkm->species() == 0);
+        } while (pkm->species() == 0);
         sha256(origHash.data(), pkm->rawData(), pkm->getLength());
     }
     return false;

@@ -368,7 +368,7 @@ void Bank::convertFromBankBin()
         {
             u8* pkmData              = oldData + box * (232 * 30) + slot * 232;
             std::shared_ptr<PKX> pkm = std::make_shared<PK6>(pkmData, false);
-            if ((pkm->encryptionConstant() == 0 && pkm->species() == 0))
+            if (pkm->species() == 0)
             {
                 this->pkm(pkm, box, slot);
                 continue;

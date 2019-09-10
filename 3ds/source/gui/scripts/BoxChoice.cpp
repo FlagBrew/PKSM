@@ -308,7 +308,7 @@ void BoxChoice::update(touchPosition* touch)
     {
         infoMon = nullptr;
     }
-    if (infoMon && (infoMon->encryptionConstant() == 0 && infoMon->species() == 0))
+    if (infoMon && infoMon->species() == 0)
     {
         infoMon = nullptr;
     }

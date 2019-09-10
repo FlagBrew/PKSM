@@ -504,7 +504,7 @@ void CloudScreen::update(touchPosition* touch)
     {
         infoMon = nullptr;
     }
-    if (infoMon && (infoMon->encryptionConstant() == 0 && infoMon->species() == 0))
+    if (infoMon && infoMon->species() == 0)
     {
         infoMon = nullptr;
     }
@@ -517,8 +517,7 @@ void CloudScreen::pickup()
         if (cloudChosen)
         {
             auto cloudMon = access.pkm(cursorIndex - 1);
-            if (cloudMon && cloudMon->encryptionConstant() != 0 && cloudMon->species() != 0 &&
-                Gui::showChoiceMessage(i18n::localize("GPSS_DOWNLOAD")))
+            if (cloudMon && cloudMon->species() != 0 && Gui::showChoiceMessage(i18n::localize("GPSS_DOWNLOAD")))
             {
                 moveMon = access.fetchPkm(cursorIndex - 1);
             }
