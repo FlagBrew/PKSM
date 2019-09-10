@@ -226,9 +226,6 @@ void Bank::resize(size_t boxes)
         }
         data = newData;
 
-        Archive::deleteFile(ARCHIVE, BANK(paths));
-        Archive::deleteFile(ARCHIVE, JSON(paths));
-
         ((BankHeader*)data)->boxes = boxes;
 
         for (size_t i = boxNames.size(); i < boxes; i++)
