@@ -119,7 +119,7 @@ void BankSelectionScreen::renameBank()
     static bool first = true;
     if (first)
     {
-        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 20);
+        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 10);
         first = false;
     }
     swkbdSetHintText(&state, i18n::localize("BANK_NAME").c_str());
