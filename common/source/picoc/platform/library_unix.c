@@ -23,6 +23,7 @@ struct LibraryFunction UnixFunctions[] =
     { sav_inject_pkx,       "void sav_inject_pkx(char* data, enum Generation type, int box, int slot, int doTradeEdits);" },
     { sav_get_value,        "int sav_get_value(enum SAV_Field field, ...);" },
     { sav_get_max,          "int sav_get_max(enum SAV_MaxField field, ...);" },
+    { sav_get_string,       "char* sav_get_string(unsigned int offset, unsigned int codepoints);" },
     { sav_set_string,       "void sav_set_string(char* string, unsigned int offset, unsigned int codepoints);" },
     { party_get_pkx,        "void party_get_pkx(char* data, int slot);" },
     { party_inject_pkx,     "void party_inject_pkx(char* data, enum Generation type, int slot);" },
@@ -57,8 +58,6 @@ struct LibraryFunction UnixFunctions[] =
     // text conversion
     { pksm_utf16_to_utf8,   "char* utf16_to_utf8(char* data);" },
     { pksm_utf8_to_utf16,   "char* utf8_to_utf16(char* data);" },
-    { string_to_gen_4,      "unsigned short* string_to_gen_4(char* string);" },
-    { g4_strlen,            "int g4_strlen(unsigned short* string);" },
     // end
     { NULL,                 NULL }
 };

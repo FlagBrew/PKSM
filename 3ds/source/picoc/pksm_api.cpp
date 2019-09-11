@@ -2014,26 +2014,6 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
     delete pkm;
 }
 
-void string_to_gen_4(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
-{
-    char* string = (char*)Param[0]->Val->Pointer;
-    auto ret     = StringUtils::stringToG4(string);
-    u16* data    = (u16*)malloc(ret.size() * sizeof(u16));
-    std::copy(ret.begin(), ret.end(), data);
-    ReturnValue->Val->Pointer = data;
-}
-
-void g4_strlen(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
-{
-    u16* data = (u16*)Param[0]->Val->Pointer;
-    int size  = 0;
-    while (data[size] != 0xFFFF)
-    {
-        size++;
-    }
-    ReturnValue->Val->Integer = size;
-}
-
 void sav_set_string(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     char* string   = (char*)Param[0]->Val->Pointer;
@@ -2078,6 +2058,37 @@ void sav_set_string(struct ParseState* Parser, struct Value* ReturnValue, struct
         {
             *((u16*)(TitleLoader::save->rawData() + offset) + i) = 0;
         }
+    }
+}
+
+void sav_get_string(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    u32 offset     = Param[0]->Val->UnsignedInteger;
+    u32 codepoints = Param[1]->Val->UnsignedInteger; // Includes null terminator
+
+    if (TitleLoader::save->generation() == Generation::FOUR)
+    {
+        std::string data = StringUtils::getString4(TitleLoader::save->rawData(), offset, codepoints);
+        char* ret        = (char*)malloc(data.size() + 1);
+        std::copy(data.begin(), data.end(), ret);
+        ret[data.size()]                  = '\0';
+        ReturnValue->Val->UnsignedInteger = (u32)ret;
+    }
+    else if (TitleLoader::save->generation() == Generation::FIVE)
+    {
+        std::string data = StringUtils::getString(TitleLoader::save->rawData(), offset, codepoints, u'\uFFFF');
+        char* ret        = (char*)malloc(data.size() + 1);
+        std::copy(data.begin(), data.end(), ret);
+        ret[data.size()]                  = '\0';
+        ReturnValue->Val->UnsignedInteger = (u32)ret;
+    }
+    else
+    {
+        std::string data = StringUtils::getString(TitleLoader::save->rawData(), offset, codepoints);
+        char* ret        = (char*)malloc(data.size() + 1);
+        std::copy(data.begin(), data.end(), ret);
+        ret[data.size()]                  = '\0';
+        ReturnValue->Val->UnsignedInteger = (u32)ret;
     }
 }
 }

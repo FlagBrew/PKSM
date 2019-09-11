@@ -141,6 +141,7 @@ void sav_get_pkx(struct ParseState*, struct Value*, struct Value**, int);
 void sav_inject_pkx(struct ParseState*, struct Value*, struct Value**, int);
 void sav_get_value(struct ParseState*, struct Value*, struct Value**, int);
 void sav_get_max(struct ParseState*, struct Value*, struct Value**, int);
+void sav_get_string(struct ParseState*, struct Value*, struct Value**, int);
 void sav_set_string(struct ParseState*, struct Value*, struct Value**, int);
 void current_directory(struct ParseState*, struct Value*, struct Value**, int);
 void read_directory(struct ParseState*, struct Value*, struct Value**, int);
@@ -157,7 +158,5 @@ void pkx_get_value(struct ParseState*, struct Value*, struct Value**, int);
 // PKSM prefix to prevent name hiding
 void pksm_utf8_to_utf16(struct ParseState*, struct Value*, struct Value**, int);
 void pksm_utf16_to_utf8(struct ParseState*, struct Value*, struct Value**, int);
-void string_to_gen_4(struct ParseState*, struct Value*, struct Value**, int);
-void g4_strlen(struct ParseState*, struct Value*, struct Value**, int);
 
 #endif
