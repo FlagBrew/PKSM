@@ -80,7 +80,7 @@ protected:
     Game game;
     static u16 ccitt16(const u8* buf, u32 len);
     static std::unique_ptr<Sav> checkDSType(u8* dt);
-    static bool validSequence(u8* dt, u8* pattern, int shift = 0);
+    static bool validSequence(u8* dt, size_t offset);
 
 public:
     u8 boxes = 0;
