@@ -870,18 +870,7 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
     {
         pkm->TID(Configuration::getInstance().defaultTID());
         pkm->SID(Configuration::getInstance().defaultSID());
-        switch (pkm->generation())
-        {
-            case Generation::FOUR:
-            case Generation::FIVE:
-            default:
-                pkm->otName(Configuration::getInstance().defaultOT().substr(0, 7));
-                break;
-            case Generation::SIX:
-            case Generation::SEVEN:
-                pkm->otName(Configuration::getInstance().defaultOT());
-                break;
-        }
+        pkm->otName(Configuration::getInstance().defaultOT());
     }
     pkm->ball(4);
     pkm->encryptionConstant((((u32)randomNumbers()) % 0xFFFFFFFF) + 1);

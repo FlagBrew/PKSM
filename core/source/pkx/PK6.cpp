@@ -1028,8 +1028,8 @@ std::shared_ptr<PKX> PK6::previous(void) const
 
     pk5->version(version());
 
-    pk5->nickname(nickname().substr(0, 11));
-    pk5->otName(otName().substr(0, 7));
+    pk5->nickname(nickname());
+    pk5->otName(otName());
 
     pk5->metYear(metYear());
     pk5->metMonth(metMonth());

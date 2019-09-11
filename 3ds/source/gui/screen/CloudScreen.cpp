@@ -659,7 +659,7 @@ bool CloudScreen::releasePkm()
     if (!cloudChosen && cursorIndex != 0)
     {
         auto pkm = Banks::bank->pkm(storageBox, cursorIndex - 1);
-        if (pkm && pkm->encryptionConstant() != 0 && pkm->species() != 0 && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_RELEASE")))
+        if (pkm && pkm->species() != 0 && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_RELEASE")))
         {
             Banks::bank->pkm(std::make_shared<PK7>(), storageBox, cursorIndex - 1);
             return false;
@@ -673,7 +673,7 @@ bool CloudScreen::dumpPkm()
     if (!cloudChosen && cursorIndex != 0)
     {
         auto pkm = Banks::bank->pkm(storageBox, cursorIndex - 1);
-        if (pkm && pkm->encryptionConstant() != 0 && pkm->species() != 0 && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_DUMP")))
+        if (pkm && pkm->species() != 0 && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_DUMP")))
         {
             char stringDate[12]   = {0};
             char stringTime[11]   = {0};

@@ -67,18 +67,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
         {
             pkm->TID(Configuration::getInstance().defaultTID());
             pkm->SID(Configuration::getInstance().defaultSID());
-            switch (pkm->generation())
-            {
-                case Generation::FOUR:
-                case Generation::FIVE:
-                default:
-                    pkm->otName(Configuration::getInstance().defaultOT().substr(0, 7));
-                    break;
-                case Generation::SIX:
-                case Generation::SEVEN:
-                    pkm->otName(Configuration::getInstance().defaultOT());
-                    break;
-            }
+            pkm->otName(Configuration::getInstance().defaultOT());
         }
         pkm->ball(4);
         pkm->encryptionConstant((u32)randomNumbers());
@@ -564,7 +553,7 @@ bool EditorScreen::togglePokerus()
 void EditorScreen::setOT()
 {
     SwkbdState state;
-    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN ? 12 : (8 - 1));
+    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() >= Generation::SIX ? 12 : (8 - 1));
     swkbdSetHintText(&state, i18n::localize("OT_NAME").c_str());
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, SWKBD_FILTER_PROFANITY, 0);
     char input[25]  = {0};
@@ -579,7 +568,7 @@ void EditorScreen::setOT()
 void EditorScreen::setNick()
 {
     SwkbdState state;
-    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN ? 12 : (11 - 1));
+    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() >= Generation::SIX ? 12 : (11 - 1));
     swkbdSetHintText(&state, i18n::localize("NICKNAME").c_str());
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, SWKBD_FILTER_PROFANITY, 0);
     char input[25]  = {0};
