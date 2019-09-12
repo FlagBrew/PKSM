@@ -207,7 +207,7 @@ static bool update(std::string execPath)
                         }
                         break;
                     case 401:
-                        Gui::warn(i18n::localize("NOT_PATRON"), i18n::localize("INCIDENT_LOGGED"));
+                        Gui::warn(i18n::localize("NOT_PATRON") + '\n' + i18n::localize("INCIDENT_LOGGED"));
                         break;
                     case 502:
                         Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
@@ -238,7 +238,7 @@ static bool update(std::string execPath)
                     nlohmann::json retJson = nlohmann::json::parse(retString, nullptr, false);
                     if (retJson.is_discarded())
                     {
-                        Gui::warn(i18n::localize("UPDATE_CHECK_ERROR_BAD_JSON_1"), i18n::localize("UPDATE_CHECK_ERROR_BAD_JSON_2"));
+                        Gui::warn(i18n::localize("UPDATE_CHECK_ERROR_BAD_JSON_1") + '\n' + i18n::localize("UPDATE_CHECK_ERROR_BAD_JSON_2"));
                     }
                     else if (retJson["tag_name"].get<std::string>() > StringUtils::format("%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO))
                     {
@@ -344,7 +344,7 @@ static bool update(std::string execPath)
                 {
                     AM_CancelCIAInstall(dstHandle);
                     ciaFile.close();
-                    Gui::warn("Bytes written doesn't match bytes read:", std::to_string(bytesWritten) + " vs " + std::to_string(bytesRead));
+                    Gui::warn("Bytes written doesn't match bytes read:\n" + std::to_string(bytesWritten) + " vs " + std::to_string(bytesRead));
                     return false;
                 }
 
@@ -443,7 +443,7 @@ Result App::init(const std::string& execPath)
         }
         if (R_FAILED(res))
         {
-            Gui::warn(i18n::localize("UPDATE_SUCCESS_1"), i18n::localize("UPDATE_SUCCESS_2"));
+            Gui::warn(i18n::localize("UPDATE_SUCCESS_1") + '\n' + i18n::localize("UPDATE_SUCCESS_2"));
         }
         return -1;
     }

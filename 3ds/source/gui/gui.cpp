@@ -1595,7 +1595,7 @@ u8 transparencyWaver()
     return currentAmount;
 }
 
-bool Gui::showChoiceMessage(const std::string& message, std::optional<std::string> message2, int timer)
+bool Gui::showChoiceMessage(const std::string& message, int timer)
 {
     u32 keys = 0;
     if (inFrame)
@@ -1612,18 +1612,25 @@ bool Gui::showChoiceMessage(const std::string& message, std::optional<std::strin
 
         target(GFX_TOP);
         sprite(ui_sheet_part_info_top_idx, 0, 0);
-        if (!message2)
-        {
-            text(message, 200, 95, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::TOP);
-        }
-        else
-        {
-            u8 transparency = transparencyWaver();
-            text(message, 200, 85, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
-            text(message2.value(), 200, 105, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
-        }
 
-        text(i18n::localize("CONTINUE_CANCEL"), 200, 130, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        auto parsed = parseText(message, FONT_SIZE_15);
+        float lineMod = fontGetInfo(nullptr)->lineFeed * FONT_SIZE_15;
+
+        text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
+        // if (!message2)
+        // {
+        //     text(message, 200, 95, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::TOP);
+        // }
+        // else
+        // {
+        //     u8 transparency = transparencyWaver();
+        //     text(message, 200, 85, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
+        //     text(message2.value(), 200, 105, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
+        // }
+
+        float continueY = 110 + (lineMod / 2) * parsed->lineWidths.size();
+
+        text(i18n::localize("CONTINUE_CANCEL"), 200, continueY + 3, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
         flushText();
 
@@ -1661,7 +1668,7 @@ bool Gui::showChoiceMessage(const std::string& message, std::optional<std::strin
     return false;
 }
 
-void Gui::waitFrame(const std::string& message, std::optional<std::string> message2)
+void Gui::waitFrame(const std::string& message)
 {
     if (inFrame)
     {
@@ -1674,17 +1681,25 @@ void Gui::waitFrame(const std::string& message, std::optional<std::string> messa
 
     target(GFX_TOP);
     sprite(ui_sheet_part_info_top_idx, 0, 0);
-    if (!message2)
-    {
-        text(message, 200, 95, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-    }
-    else
-    {
-        text(message, 200, 85, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-        text(message2.value(), 200, 105, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-    }
 
-    text(i18n::localize("PLEASE_WAIT"), 200, 130, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    auto parsed = parseText(message, FONT_SIZE_15);
+    float lineMod = fontGetInfo(nullptr)->lineFeed * FONT_SIZE_15;
+
+    text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
+    // if (!message2)
+    // {
+    //     text(message, 200, 95, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::TOP);
+    // }
+    // else
+    // {
+    //     u8 transparency = transparencyWaver();
+    //     text(message, 200, 85, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
+    //     text(message2.value(), 200, 105, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
+    // }
+
+    float continueY = 110 + (lineMod / 2) * parsed->lineWidths.size();
+
+    text(i18n::localize("PLEASE_WAIT"), 200, continueY + 3, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
     flushText();
 
@@ -1699,7 +1714,7 @@ void Gui::waitFrame(const std::string& message, std::optional<std::string> messa
     }
 }
 
-void Gui::warn(const std::string& message, std::optional<std::string> message2, std::optional<Language> lang)
+void Gui::warn(const std::string& message, std::optional<Language> lang)
 {
     u32 keys = 0;
     if (inFrame)
@@ -1716,24 +1731,29 @@ void Gui::warn(const std::string& message, std::optional<std::string> message2, 
 
         target(GFX_TOP);
         sprite(ui_sheet_part_info_top_idx, 0, 0);
-        if (!message2)
-        {
-            text(message, 200, 95, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::TOP);
-        }
-        else
-        {
-            u8 transparency = transparencyWaver();
-            text(message, 200, 85, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
-            text(message2.value(), 200, 105, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
-        }
+        auto parsed = parseText(message, FONT_SIZE_15);
+        float lineMod = fontGetInfo(nullptr)->lineFeed * FONT_SIZE_15;
 
+        text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
+        // if (!message2)
+        // {
+        //     text(message, 200, 95, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::TOP);
+        // }
+        // else
+        // {
+        //     u8 transparency = transparencyWaver();
+        //     text(message, 200, 85, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
+        //     text(message2.value(), 200, 105, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
+        // }
+
+        float continueY = 110 + (lineMod / 2) * parsed->lineWidths.size();
         if (lang)
         {
-            text(i18n::localize(lang.value(), "CONTINUE"), 200, 130, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+            text(i18n::localize(lang.value(), "CONTINUE"), 200, continueY + 3, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
         }
         else
         {
-            text(i18n::localize("CONTINUE"), 200, 130, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+            text(i18n::localize("CONTINUE"), 200, continueY + 3, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
         }
 
         flushText();

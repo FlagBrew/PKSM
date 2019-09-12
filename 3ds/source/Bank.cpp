@@ -205,7 +205,7 @@ bool Bank::save() const
 {
     if (Configuration::getInstance().autoBackup())
     {
-        if (!backup() && !Gui::showChoiceMessage(i18n::localize("BACKUP_FAIL_SAVE_1"), i18n::localize("BACKUP_FAIL_SAVE_2")))
+        if (!backup() && !Gui::showChoiceMessage(i18n::localize("BACKUP_FAIL_SAVE_1") + '\n' + i18n::localize("BACKUP_FAIL_SAVE_2")))
         {
             return false;
         }
@@ -470,7 +470,7 @@ bool Bank::setName(const std::string& name)
         bankName = oldName;
         if (R_FAILED(Archive::moveFile(ARCHIVE, BANK(newPaths), ARCHIVE, BANK(oldPaths))))
         {
-            Gui::warn(i18n::localize("CRITICAL_BANK_ERROR_1"), i18n::localize("CRITICAL_BANK_ERROR_2"));
+            Gui::warn(i18n::localize("CRITICAL_BANK_ERROR_1") + '\n' + i18n::localize("CRITICAL_BANK_ERROR_2"));
             return false;
         }
         return false;

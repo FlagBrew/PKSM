@@ -41,12 +41,12 @@ static bool goToScreen(int buttonNum)
         case 0:
             if (TitleLoader::save->generation() == Generation::LGPE)
             {
-                Gui::warn(i18n::localize("STORAGE_IMPLEMENTATION"), i18n::localize("STORAGE_CHECKBACK"));
+                Gui::warn(i18n::localize("STORAGE_IMPLEMENTATION") + '\n' + i18n::localize("STORAGE_CHECKBACK"));
                 return false;
             }
             if (TitleLoader::save->partyCount() < 1)
             {
-                Gui::warn(i18n::localize("NEED_ONE_POKEMON"), i18n::localize("GET_STARTER"));
+                Gui::warn(i18n::localize("NEED_ONE_POKEMON") + '\n' + i18n::localize("GET_STARTER"));
                 return false;
             }
             Gui::setScreen(std::make_unique<StorageScreen>());
@@ -54,7 +54,7 @@ static bool goToScreen(int buttonNum)
         case 1:
             if (TitleLoader::save->partyCount() < 1)
             {
-                Gui::warn(i18n::localize("NEED_ONE_POKEMON"), i18n::localize("GET_STARTER"));
+                Gui::warn(i18n::localize("NEED_ONE_POKEMON") + '\n' + i18n::localize("GET_STARTER"));
                 return false;
             }
             Gui::setScreen(std::make_unique<EditSelectorScreen>());
@@ -100,7 +100,7 @@ MainMenu::~MainMenu()
 {
     if (isLoadedSaveFromBridge())
     {
-        if (Gui::showChoiceMessage(i18n::localize("BRIDGE_SHOULD_SEND_1"), i18n::localize("BRIDGE_SHOULD_SEND_2")))
+        if (Gui::showChoiceMessage(i18n::localize("BRIDGE_SHOULD_SEND_1") + '\n' + i18n::localize("BRIDGE_SHOULD_SEND_2")))
         {
             bool sent = sendSaveToBridge();
             if (!sent)
@@ -212,7 +212,7 @@ void MainMenu::update(touchPosition* touch)
     }
     if (keysDown() & KEY_B)
     {
-        if (Gui::showChoiceMessage(i18n::localize("SAVE_CHANGES_1"), i18n::localize("SAVE_CHANGES_2"), doTimer ? 250000000 : 0)) // Half second
+        if (Gui::showChoiceMessage(i18n::localize("SAVE_CHANGES_1") + '\n' + i18n::localize("SAVE_CHANGES_2"), doTimer ? 250000000 : 0)) // Half second
         {
             TitleLoader::saveChanges();
         }

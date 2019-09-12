@@ -463,7 +463,7 @@ void ExtraSavesSubScreen::update(touchPosition* touch)
         {
             entry = &currentSaves[selectedSave + firstSave];
         }
-        if (Gui::showChoiceMessage(i18n::localize("DELETE_EXTRASAVE_ENTRY"), "\'" + *entry + "\'"))
+        if (Gui::showChoiceMessage(i18n::localize("DELETE_EXTRASAVE_ENTRY") + '\n' + ("\'" + *entry + "\'")))
         {
             if (group == ExtraSavesSubScreen::Group::Pt || group == ExtraSavesSubScreen::Group::DP || group == ExtraSavesSubScreen::Group::HGSS ||
                 group == ExtraSavesSubScreen::Group::BW || group == ExtraSavesSubScreen::Group::B2W2)

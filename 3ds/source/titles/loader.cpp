@@ -384,7 +384,7 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
         u32 cap = SPIGetCapacity(title->SPICardType());
         if (cap != 524288)
         {
-            Gui::warn(i18n::localize("WRONG_SIZE"), i18n::localize("Please report"));
+            Gui::warn(i18n::localize("WRONG_SIZE") + '\n' + i18n::localize("Please report"));
             return false;
         }
 
@@ -435,7 +435,7 @@ bool TitleLoader::load(std::shared_ptr<Title> title, const std::string& savePath
     delete[] saveData;
     if (!save)
     {
-        Gui::warn(saveFileName, i18n::localize("SAVE_INVALID"));
+        Gui::warn(saveFileName + '\n' + i18n::localize("SAVE_INVALID"));
         saveFileName = "";
         loadedTitle  = nullptr;
         return false;
@@ -472,7 +472,7 @@ void TitleLoader::saveToTitle(bool ask)
     if (loadedTitle)
     {
         if (TitleLoader::cardTitle == loadedTitle &&
-            (!ask || Gui::showChoiceMessage(i18n::localize("SAVE_OVERWRITE_1"), i18n::localize("SAVE_OVERWRITE_CARD"))))
+            (!ask || Gui::showChoiceMessage(i18n::localize("SAVE_OVERWRITE_1") + '\n' + i18n::localize("SAVE_OVERWRITE_CARD"))))
         {
             auto& title = TitleLoader::cardTitle;
             if (title->cardType() == FS_CardType::CARD_CTR)
@@ -519,7 +519,7 @@ void TitleLoader::saveToTitle(bool ask)
             for (auto title : TitleLoader::nandTitles)
             {
                 if (title == loadedTitle &&
-                    (!ask || Gui::showChoiceMessage(i18n::localize("SAVE_OVERWRITE_1"), i18n::localize("SAVE_OVERWRITE_INSTALL"))))
+                    (!ask || Gui::showChoiceMessage(i18n::localize("SAVE_OVERWRITE_1") + '\n' + i18n::localize("SAVE_OVERWRITE_INSTALL"))))
                 {
                     FS_Archive archive;
                     Archive::save(&archive, title->mediaType(), title->lowId(), title->highId());

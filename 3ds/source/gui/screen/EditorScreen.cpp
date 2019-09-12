@@ -394,10 +394,6 @@ void EditorScreen::update(touchPosition* touch)
 
     if (downKeys & KEY_START)
     {
-        if (!Gui::showChoiceMessage("Update Pokémon data with save info?", "This may cause some legality issues."))
-        {
-            return;
-        }
         setSaveInfo();
         return;
     }

@@ -159,11 +159,11 @@ namespace Gui
 
     void setScreen(std::unique_ptr<Screen> screen);
     void screenBack(void);
-    bool showChoiceMessage(const std::string& message, std::optional<std::string> message2 = std::nullopt, int timer = 0);
+    bool showChoiceMessage(const std::string& message, int timer = 0);
     void showRestoreProgress(u32 partial, u32 total);
     void showDownloadProgress(const std::string& path, u32 partial, u32 total);
-    void waitFrame(const std::string& message, std::optional<std::string> message2 = std::nullopt);
-    void warn(const std::string& message, std::optional<std::string> message2 = std::nullopt, std::optional<Language> forceLang = std::nullopt);
+    void waitFrame(const std::string& message);
+    void warn(const std::string& message, std::optional<Language> forceLang = std::nullopt);
     void error(const std::string& message, Result errorCode);
     void showResizeStorage(void);
 }

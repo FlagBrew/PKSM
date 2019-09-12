@@ -146,7 +146,7 @@ void FileChooseOverlay::update(touchPosition* touch)
             }
             else
             {
-                if (Gui::showChoiceMessage(i18n::localize("FILE_CONFIRM_CHOICE"), '\'' + currFiles[hid.fullIndex()].first + '\''))
+                if (Gui::showChoiceMessage((i18n::localize("FILE_CONFIRM_CHOICE") + '\n') + '\'' + currFiles[hid.fullIndex()].first + '\''))
                 {
                     string = currDirString + currFiles[hid.fullIndex()].first;
                     parent->removeOverlay();

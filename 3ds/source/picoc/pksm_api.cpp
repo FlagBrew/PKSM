@@ -68,30 +68,12 @@ static struct Value* getNextVarArg(struct Value* arg)
 
 void gui_warn(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    char* lineOne = (char*)Param[0]->Val->Pointer;
-    char* lineTwo = (char*)Param[1]->Val->Pointer;
-    if (lineTwo != nullptr)
-    {
-        Gui::warn(lineOne, lineTwo);
-    }
-    else
-    {
-        Gui::warn(lineOne);
-    }
+    Gui::warn((char*)Param[0]->Val->Pointer);
 }
 
 void gui_choice(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    char* lineOne = (char*)Param[0]->Val->Pointer;
-    char* lineTwo = (char*)Param[1]->Val->Pointer;
-    if (lineTwo != nullptr)
-    {
-        ReturnValue->Val->Integer = (int)Gui::showChoiceMessage(lineOne, lineTwo);
-    }
-    else
-    {
-        ReturnValue->Val->Integer = (int)Gui::showChoiceMessage(lineOne);
-    }
+    ReturnValue->Val->Integer = (int)Gui::showChoiceMessage((char*)Param[0]->Val->Pointer);
 }
 
 void gui_menu6x5(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -168,12 +150,6 @@ void gui_numpad(struct ParseState* Parser, struct Value* ReturnValue, struct Val
 {
     unsigned int* out                = (unsigned int*)Param[0]->Val->Pointer;
     std::string hint                 = (char*)Param[1]->Val->Pointer;
-    std::optional<std::string> hint2 = std::nullopt;
-    if (hint.find('\n') != std::string::npos)
-    {
-        hint2 = hint.substr(hint.find('\n') + 1);
-        hint  = hint.substr(0, hint.find('\n'));
-    }
     int numChars = Param[2]->Val->Integer;
 
     char number[numChars + 1] = {0};
@@ -190,7 +166,7 @@ void gui_numpad(struct ParseState* Parser, struct Value* ReturnValue, struct Val
         button = swkbdInputText(&state, number, sizeof(number));
         if (button != SWKBD_BUTTON_CONFIRM)
         {
-            Gui::warn(hint, hint2);
+            Gui::warn(hint);
             C3D_FrameEnd(0); // Just make sure
         }
     } while (button != SWKBD_BUTTON_CONFIRM);
@@ -317,32 +293,32 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
             }
             if (pkm->species() > TitleLoader::save->maxSpecies())
             {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_SPECIES"));
+                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_SPECIES"));
                 return;
             }
             else if (pkm->alternativeForm() > TitleLoader::save->formCount(pkm->species()))
             {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_FORM"));
+                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_FORM"));
                 return;
             }
             else if (pkm->ability() > TitleLoader::save->maxAbility())
             {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_ABILITY"));
+                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_ABILITY"));
                 return;
             }
             else if (pkm->heldItem() > TitleLoader::save->maxItem())
             {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_ITEM"));
+                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_ITEM"));
                 return;
             }
             else if (pkm->ball() > TitleLoader::save->maxBall())
             {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_BALL"));
+                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_BALL"));
                 return;
             }
             else if (moveBad)
             {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_MOVE"));
+                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_MOVE"));
                 return;
             }
             TitleLoader::save->pkm(pkm, box, slot, doTradeEdits);
@@ -751,32 +727,32 @@ void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, stru
             }
             if (pkm->species() > TitleLoader::save->maxSpecies())
             {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_SPECIES"));
+                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_SPECIES"));
                 return;
             }
             else if (pkm->alternativeForm() > TitleLoader::save->formCount(pkm->species()))
             {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_FORM"));
+                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_FORM"));
                 return;
             }
             else if (pkm->ability() > TitleLoader::save->maxAbility())
             {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_ABILITY"));
+                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_ABILITY"));
                 return;
             }
             else if (pkm->heldItem() > TitleLoader::save->maxItem())
             {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_ITEM"));
+                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_ITEM"));
                 return;
             }
             else if (pkm->ball() > TitleLoader::save->maxBall())
             {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_BALL"));
+                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_BALL"));
                 return;
             }
             else if (moveBad)
             {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_MOVE"));
+                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_MOVE"));
                 return;
             }
             TitleLoader::save->pkm(pkm, slot);

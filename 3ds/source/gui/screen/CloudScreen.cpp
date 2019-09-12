@@ -531,7 +531,7 @@ void CloudScreen::pickup()
             moveMon = Banks::bank->pkm(storageBox, cursorIndex - 1);
         }
 
-        if (moveMon && (moveMon->encryptionConstant() == 0 && moveMon->species() == 0))
+        if (moveMon && moveMon->species() == 0)
         {
             moveMon = nullptr;
         }

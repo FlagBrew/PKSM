@@ -938,38 +938,38 @@ bool StorageScreen::isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTrans
     if (moveBad)
     {
         if (!bulkTransfer)
-            Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_MOVE"));
+            Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_MOVE"));
         return false;
     }
     else if (moveMon->species() > TitleLoader::save->maxSpecies())
     {
         if (!bulkTransfer)
-            Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_SPECIES"));
+            Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_SPECIES"));
         return false;
     }
     else if (moveMon->alternativeForm() > TitleLoader::save->formCount(moveMon->species()) &&
              !((moveMon->species() == 664 || moveMon->species() == 665) && moveMon->alternativeForm() <= TitleLoader::save->formCount(666)))
     {
         if (!bulkTransfer)
-            Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_FORM"));
+            Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_FORM"));
         return false;
     }
     else if (moveMon->ability() > TitleLoader::save->maxAbility())
     {
         if (!bulkTransfer)
-            Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_ABILITY"));
+            Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_ABILITY"));
         return false;
     }
     else if (moveMon->heldItem() > TitleLoader::save->maxItem())
     {
         if (!bulkTransfer)
-            Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_ITEM"));
+            Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_ITEM"));
         return false;
     }
     else if (moveMon->ball() > TitleLoader::save->maxBall())
     {
         if (!bulkTransfer)
-            Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_BALL"));
+            Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_BALL"));
         return false;
     }
     return true;
@@ -1095,7 +1095,7 @@ void StorageScreen::pickup()
                     if (!checkedWithUser && moveMon[index]->generation() != TitleLoader::save->generation())
                     {
                         checkedWithUser = true;
-                        acceptGenChange = Gui::showChoiceMessage(i18n::localize("GEN_CHANGE_1"), i18n::localize("GEN_CHANGE_2"));
+                        acceptGenChange = Gui::showChoiceMessage(i18n::localize("GEN_CHANGE_1") + '\n' + i18n::localize("GEN_CHANGE_2"));
                     }
                     std::shared_ptr<PKX> temPkm = TitleLoader::save->pkm(boxBox, cursorIndex - 1 + x + y * 6);
                     if (moveMon[index]->generation() == TitleLoader::save->generation() || acceptGenChange)
@@ -1161,7 +1161,7 @@ void StorageScreen::pickup()
                     return;
                 }
                 if ((Configuration::getInstance().transferEdit() || bankMon->generation() == TitleLoader::save->generation()) ||
-                    Gui::showChoiceMessage(i18n::localize("GEN_CHANGE_1"), i18n::localize("GEN_CHANGE_2")))
+                    Gui::showChoiceMessage(i18n::localize("GEN_CHANGE_1") + '\n' + i18n::localize("GEN_CHANGE_2")))
                 {
                     if (storageChosen)
                     {
@@ -1322,7 +1322,7 @@ bool StorageScreen::swapBoxWithStorage()
         if (!checkedWithUser && temPkm->generation() != TitleLoader::save->generation())
         {
             checkedWithUser = true;
-            acceptGenChange = Gui::showChoiceMessage(i18n::localize("GEN_CHANGE_1"), i18n::localize("GEN_CHANGE_2"));
+            acceptGenChange = Gui::showChoiceMessage(i18n::localize("GEN_CHANGE_1") + '\n' + i18n::localize("GEN_CHANGE_2"));
         }
         if (acceptGenChange || temPkm->generation() == TitleLoader::save->generation())
         {
@@ -1348,7 +1348,7 @@ bool StorageScreen::swapBoxWithStorage()
             unswapped += std::to_string(i) + ",";
         }
         unswapped.pop_back();
-        Gui::warn(i18n::localize("NO_SWAP_BULK"), unswapped);
+        Gui::warn(i18n::localize("NO_SWAP_BULK") + '\n' + unswapped);
     }
     return false;
 }

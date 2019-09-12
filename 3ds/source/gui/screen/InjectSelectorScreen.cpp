@@ -122,7 +122,7 @@ void InjectSelectorScreen::update(touchPosition* touch)
         {
             if (TitleLoader::save->generation() == Generation::LGPE)
             {
-                Gui::warn(i18n::localize("WC_LGPE"), i18n::localize("NOT_A_BUG"));
+                Gui::warn(i18n::localize("WC_LGPE") + '\n' + i18n::localize("NOT_A_BUG"));
             }
             else
             {
@@ -435,7 +435,7 @@ void InjectSelectorScreen::dumpCard(void) const
             path += ".wb7";
             break;
         case Generation::UNUSED:
-            Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS"));
+            Gui::warn(i18n::localize("THE_FUCK") + '\n' + i18n::localize("REPORT_THIS"));
             return;
     }
     FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, wc->size());

@@ -161,7 +161,7 @@ InjectorScreen::InjectorScreen(std::unique_ptr<WCX> wcx)
         [this]() {
             if (TitleLoader::save->generation() == Generation::LGPE)
             {
-                Gui::warn(i18n::localize("WC_LGPE"), i18n::localize("NOT_A_BUG"));
+                Gui::warn(i18n::localize("WC_LGPE") + '\n' + i18n::localize("NOT_A_BUG"));
                 return false;
             }
             else

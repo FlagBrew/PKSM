@@ -176,7 +176,7 @@ void ScriptScreen::update(touchPosition* touch)
             }
             else
             {
-                if (Gui::showChoiceMessage(i18n::localize("SCRIPTS_CONFIRM_USE"), '\'' + currFiles[hid.fullIndex()].first + '\''))
+                if (Gui::showChoiceMessage(i18n::localize("SCRIPTS_CONFIRM_USE") + "\n" + ('\'' + currFiles[hid.fullIndex()].first + '\'')))
                 {
                     applyScript();
                 }
@@ -197,7 +197,7 @@ void ScriptScreen::update(touchPosition* touch)
         }
         else
         {
-            Gui::warn("\"" + dirString + "\"", i18n::localize("SCRIPTS_NOT_FOUND"));
+            Gui::warn(("\"" + dirString + "\"") + '\n' + i18n::localize("SCRIPTS_NOT_FOUND"));
         }
     }
     else if (down & KEY_Y)
@@ -214,7 +214,7 @@ void ScriptScreen::update(touchPosition* touch)
         }
         else
         {
-            Gui::warn("\"" + dirString + "\"", i18n::localize("SCRIPTS_NOT_FOUND"));
+            Gui::warn(("\"" + dirString + "\"") + '\n' + i18n::localize("SCRIPTS_NOT_FOUND"));
         }
     }
 }
@@ -384,7 +384,7 @@ void ScriptScreen::parsePicoCScript(std::string& file)
         std::string show = error;
         if (!show.empty())
         {
-            Gui::warn(i18n::localize("SCRIPTS_EXECUTION_ERROR"), file);
+            Gui::warn(i18n::localize("SCRIPTS_EXECUTION_ERROR") + '\n' + file);
             show += "\nExit code: " + std::to_string(picoc->PicocExitValue);
             Gui::setScreen(std::make_unique<ScrollingTextScreen>(error, nullptr));
         }
