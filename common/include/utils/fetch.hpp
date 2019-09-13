@@ -30,6 +30,7 @@
 #include <memory>
 #include <string>
 
+// This should theoretically be thread-safe, but on the 3DS it is not, because SOC stuff is not thread safe. Whee
 class Fetch
 {
 public:

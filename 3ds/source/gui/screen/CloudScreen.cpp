@@ -793,7 +793,7 @@ void CloudScreen::shareSend()
             {
                 case 200:
                 case 201:
-                    Gui::warn(i18n::localize("SHARE_DOWNLOAD_CODE"), writeData);
+                    Gui::warn(i18n::localize("SHARE_DOWNLOAD_CODE") + '\n' + writeData);
                     break;
                 case 400:
                     Gui::error(i18n::localize("SHARE_FAILED_CHECK"), status_code);
