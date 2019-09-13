@@ -118,11 +118,11 @@ void Sav5::money(u32 v)
 
 u32 Sav5::BP(void) const
 {
-    return *(u32*)(data + BattleSubway);
+    return *(u16*)(data + BattleSubway);
 }
 void Sav5::BP(u32 v)
 {
-    *(u32*)(data + BattleSubway) = v;
+    *(u16*)(data + BattleSubway) = v;
 }
 
 u8 Sav5::badges(void) const
