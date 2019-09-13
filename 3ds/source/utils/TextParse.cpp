@@ -67,11 +67,11 @@ namespace TextParse
         });
     }
 
-    void Text::draw(float x, float y, float z, float scaleX, float scaleY, TextPosX textPos, u32 color) const
+    void Text::draw(float x, float y, float z, float scaleX, float scaleY, TextPosX textPos, PKSM_Color color) const
     {
         static const u8 lineFeed = fontGetInfo(nullptr)->lineFeed;
         C2D_ImageTint tint;
-        C2D_PlainImageTint(&tint, color, 1.0f);
+        C2D_PlainImageTint(&tint, colorToFormat(color), 1.0f);
         for (auto& glyph : glyphs)
         {
             float drawY = y + scaleY * (lineFeed * glyph.line - C2D_FontGetInfo(glyph.font)->tglp->baselinePos);
@@ -298,7 +298,7 @@ namespace TextParse
         }
     }
 
-    void ScreenText::addText(std::shared_ptr<Text> text, float x, float y, float z, float scaleX, float scaleY, TextPosX textPos, u32 color)
+    void ScreenText::addText(std::shared_ptr<Text> text, float x, float y, float z, float scaleX, float scaleY, TextPosX textPos, PKSM_Color color)
     {
         static const u8 lineFeed = fontGetInfo(nullptr)->lineFeed;
         if (!text || text->glyphs.empty())
@@ -325,7 +325,7 @@ namespace TextParse
 
     void ScreenText::optimize()
     {
-        std::sort(glyphs.begin(), glyphs.end(), [](const PositionedGlyph& g1, const PositionedGlyph& g2) {
+        std::sort(glyphs.begin(), glyphs.end(), [](const DrawableGlyph& g1, const DrawableGlyph& g2) {
             if (g1.glyph.font != g2.glyph.font)
             {
                 // These are arbitrarily ordered
@@ -344,7 +344,7 @@ namespace TextParse
         C2D_ImageTint tint;
         for (auto& glyph : glyphs)
         {
-            C2D_PlainImageTint(&tint, glyph.color, 1.0f);
+            C2D_PlainImageTint(&tint, colorToFormat(glyph.color), 1.0f);
             // The one exception to using Gui::drawImageAt: we want to control depth here
             C2D_DrawImageAt({glyph.glyph.tex, &glyph.glyph.subtex}, glyph.x, glyph.y, glyph.z, &tint, glyph.scaleX, glyph.scaleY);
         }

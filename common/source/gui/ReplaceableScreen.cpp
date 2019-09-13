@@ -29,9 +29,14 @@
 
 void ReplaceableScreen::dim() const
 {
+#if defined(_3DS)
     Gui::drawSolidRect(0, 0, 400, 240, COLOR_MASKBLACK);
+#elif defined(__SWITCH__)
+    Gui::drawSolidRect(0, 0, 1080, 720, COLOR_MASKBLACK);
+#endif
 }
 
+#if defined(_3DS)
 void ReplaceableScreen::doTopDraw() const
 {
     if (overlay)
@@ -64,30 +69,6 @@ void ReplaceableScreen::doBottomDraw() const
     }
 }
 
-void ReplaceableScreen::doUpdate(touchPosition* touch)
-{
-    if (overlay && overlay->willHandleUpdate())
-    {
-        overlay->doUpdate(touch);
-    }
-    else
-    {
-        update(touch);
-    }
-}
-
-bool ReplaceableScreen::willHandleUpdate() const
-{
-    if (overlay)
-    {
-        return overlay->willHandleUpdate();
-    }
-    else
-    {
-        return handlesUpdate();
-    }
-}
-
 bool ReplaceableScreen::willReplaceBottom() const
 {
     if (overlay)
@@ -109,5 +90,58 @@ bool ReplaceableScreen::willReplaceTop() const
     else
     {
         return replacesTop();
+    }
+}
+#elif defined(__SWITCH__)
+void ReplaceableScreen::doDraw() const
+{
+    if (overlay)
+    {
+        if (!overlay->willReplaceScreen())
+        {
+            draw();
+        }
+        overlay->doDraw();
+    }
+    else
+    {
+        draw();
+    }
+}
+
+bool ReplaceableScreen::willReplaceScreen() const
+{
+    if (overlay)
+    {
+        return overlay->willReplaceScreen();
+    }
+    else
+    {
+        return replacesScreen();
+    }
+}
+#endif
+
+void ReplaceableScreen::doUpdate(touchPosition* touch)
+{
+    if (overlay && overlay->willHandleUpdate())
+    {
+        overlay->doUpdate(touch);
+    }
+    else
+    {
+        update(touch);
+    }
+}
+
+bool ReplaceableScreen::willHandleUpdate() const
+{
+    if (overlay)
+    {
+        return overlay->willHandleUpdate();
+    }
+    else
+    {
+        return handlesUpdate();
     }
 }

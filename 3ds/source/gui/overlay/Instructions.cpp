@@ -38,7 +38,7 @@ Instructions::Instructions(const std::string& simpleInstructions)
     }
 }
 
-void Instructions::addBox(bool top, int x, int y, int width, int height, u32 color, const std::string& text, u32 textColor)
+void Instructions::addBox(bool top, int x, int y, int width, int height, PKSM_Color color, const std::string& text, PKSM_Color textColor)
 {
     boxes.emplace_back(top, x, y, width, height, color);
     if (!text.empty())
@@ -47,17 +47,17 @@ void Instructions::addBox(bool top, int x, int y, int width, int height, u32 col
     }
 }
 
-void Instructions::addLine(bool top, int x1, int y1, int x2, int y2, int w, u32 color)
+void Instructions::addLine(bool top, int x1, int y1, int x2, int y2, int w, PKSM_Color color)
 {
     lines.emplace_back(top, x1, y1, x2, y2, w, color);
 }
 
-void Instructions::addText(bool top, int x, int y, int maxWidth, TextPosX xPos, TextPosY yPos, u32 color, const std::string& text)
+void Instructions::addText(bool top, int x, int y, int maxWidth, TextPosX xPos, TextPosY yPos, PKSM_Color color, const std::string& text)
 {
     texts.emplace_back(top, x, y, maxWidth, xPos, yPos, color, text);
 }
 
-void Instructions::addCircle(bool top, int x, int y, int radius, u32 color)
+void Instructions::addCircle(bool top, int x, int y, int radius, PKSM_Color color)
 {
     circles.emplace_back(top, x, y, radius, color);
 }

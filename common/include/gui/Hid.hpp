@@ -24,26 +24,37 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef ACCELBUTTON_HPP
-#define ACCELBUTTON_HPP
+#ifndef HID_HPP
+#define HID_HPP
 
-#include "Button.hpp"
+#include "types.h"
 
-class AccelButton : public Button
+#define DELAY_TICKS 50000000
+
+class Hid
 {
 public:
-    AccelButton(int x, int y, u16 w, u16 h, const std::function<bool()>& callback, int image, const std::string& text, float textScale, u32 textColor,
-        int slowTime = 5, int fastTime = 1);
-    ~AccelButton(void) {}
+    virtual ~Hid(void) {}
 
-    virtual bool update(touchPosition* touch) override;
+    size_t fullIndex(void) const;
+    size_t index(void) const;
+    size_t maxEntries(size_t max) const;
+    size_t maxVisibleEntries(void) const;
+    int page(void) const;
+    virtual void update(size_t count) = 0;
+    void page_back(void);
+    void page_forward(void);
+    void select(size_t index);
 
 protected:
-    int clickedTime = 0;
-    int timer       = 0;
-    bool doTime     = false;
-    const int slowTime;
-    const int fastTime;
+    size_t mIndex;
+    int mPage;
+    size_t mMaxPages;
+    size_t mMaxVisibleEntries;
+    size_t mColumns;
+    size_t mRows;
+    u64 mCurrentTime;
+    u64 mLastTime;
 };
 
 #endif

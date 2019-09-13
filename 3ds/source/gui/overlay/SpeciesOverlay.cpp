@@ -39,7 +39,7 @@ SpeciesOverlay::SpeciesOverlay(ReplaceableScreen& screen, const std::variant<std
             searchBar();
             return false;
         },
-        ui_sheet_emulated_box_search_idx, "", 0, 0);
+        ui_sheet_emulated_box_search_idx, "", 0, COLOR_BLACK);
     if (TitleLoader::save->generation() != Generation::LGPE)
     {
         for (int i = 1; i <= TitleLoader::save->maxSpecies(); i++)

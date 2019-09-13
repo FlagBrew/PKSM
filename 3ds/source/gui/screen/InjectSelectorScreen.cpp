@@ -173,14 +173,14 @@ void InjectSelectorScreen::update(touchPosition* touch)
 void InjectSelectorScreen::drawBottom() const
 {
     Gui::backgroundBottom(true);
-    Gui::text(i18n::localize("WC_INST1"), 160, 222, FONT_SIZE_11, FONT_SIZE_11, C2D_Color32(197, 202, 233, 255), TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("WC_INST1"), 160, 222, FONT_SIZE_11, FONT_SIZE_11, PKSM_Color(197, 202, 233, 255), TextPosX::CENTER, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_eventmenu_page_indicator_idx, 65, 13);
 
-    Gui::text("\uE004", 75, 17, FONT_SIZE_18, FONT_SIZE_18, C2D_Color32(197, 202, 233, 255), TextPosX::LEFT, TextPosY::TOP);
-    Gui::text("\uE005", 228, 17, FONT_SIZE_18, FONT_SIZE_18, C2D_Color32(197, 202, 233, 255), TextPosX::LEFT, TextPosY::TOP);
+    Gui::text("\uE004", 75, 17, FONT_SIZE_18, FONT_SIZE_18, PKSM_Color(197, 202, 233, 255), TextPosX::LEFT, TextPosY::TOP);
+    Gui::text("\uE005", 228, 17, FONT_SIZE_18, FONT_SIZE_18, PKSM_Color(197, 202, 233, 255), TextPosX::LEFT, TextPosY::TOP);
     Gui::text(StringUtils::format("%d/%d", hid.page() + 1, wondercards.size() % 10 == 0 ? wondercards.size() / 10 : wondercards.size() / 10 + 1), 160,
-        20, FONT_SIZE_12, FONT_SIZE_12, C2D_Color32(197, 202, 233, 255), TextPosX::CENTER, TextPosY::TOP);
+        20, FONT_SIZE_12, FONT_SIZE_12, PKSM_Color(197, 202, 233, 255), TextPosX::CENTER, TextPosY::TOP);
 
     for (auto& button : buttons)
     {
@@ -213,7 +213,7 @@ void InjectSelectorScreen::drawTop() const
         Gui::backgroundTop(true);
 
         Gui::text(
-            i18n::localize("EVENT_DATABASE"), 200, 4, FONT_SIZE_14, FONT_SIZE_14, C2D_Color32(140, 158, 255, 255), TextPosX::CENTER, TextPosY::TOP);
+            i18n::localize("EVENT_DATABASE"), 200, 4, FONT_SIZE_14, FONT_SIZE_14, PKSM_Color(140, 158, 255, 255), TextPosX::CENTER, TextPosY::TOP);
 
         for (size_t i = 0; i < 10; i++)
         {
@@ -233,7 +233,7 @@ void InjectSelectorScreen::drawTop() const
                 }
                 else
                 {
-                    Gui::drawSolidRect(x, y, 178, 34, i == hid.index() ? C2D_Color32(0x3D, 0x5A, 0xFE, 0xFF) : C2D_Color32(0x8C, 0x9E, 0xFF, 0xFF));
+                    Gui::drawSolidRect(x, y, 178, 34, i == hid.index() ? PKSM_Color(0x3D, 0x5A, 0xFE, 0xFF) : PKSM_Color(0x8C, 0x9E, 0xFF, 0xFF));
                 }
             }
             else
@@ -254,7 +254,7 @@ void InjectSelectorScreen::drawTop() const
                 }
                 else
                 {
-                    Gui::drawSolidRect(x, y, 178, 34, i == hid.index() ? C2D_Color32(0x3D, 0x5A, 0xFE, 0xFF) : C2D_Color32(0x8C, 0x9E, 0xFF, 0xFF));
+                    Gui::drawSolidRect(x, y, 178, 34, i == hid.index() ? PKSM_Color(0x3D, 0x5A, 0xFE, 0xFF) : PKSM_Color(0x8C, 0x9E, 0xFF, 0xFF));
                 }
             }
         }
@@ -305,7 +305,7 @@ void InjectSelectorScreen::drawTop() const
                 text->maxLineWidth = *std::max_element(text->lineWidths.begin(), text->lineWidths.end());
                 // Then display it
                 Gui::text(text, x + 103, y + 14, FONT_SIZE_11, FONT_SIZE_11,
-                    i == hid.fullIndex() ? C2D_Color32(232, 234, 246, 255) : C2D_Color32(26, 35, 126, 255), TextPosX::CENTER, TextPosY::CENTER);
+                    i == hid.fullIndex() ? PKSM_Color(232, 234, 246, 255) : PKSM_Color(26, 35, 126, 255), TextPosX::CENTER, TextPosY::CENTER);
             }
         }
     }
@@ -324,7 +324,7 @@ void InjectSelectorScreen::drawTop() const
             }
             if (dumpHid.index() == i)
             {
-                Gui::drawSolidRect(x * 50, y * 48, 49, 47, C2D_Color32(15, 22, 89, 255));
+                Gui::drawSolidRect(x * 50, y * 48, 49, 47, PKSM_Color(15, 22, 89, 255));
             }
             if (fullI < gifts.size())
             {

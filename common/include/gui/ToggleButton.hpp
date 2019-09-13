@@ -24,24 +24,36 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef BUTTON_HPP
-#define BUTTON_HPP
+#ifndef TOGGLEBUTTON_HPP
+#define TOGGLEBUTTON_HPP
 
-#include "Clickable.hpp"
+#include "ClickButton.hpp"
+#include <memory>
+#include <optional>
 
-class Button : public Clickable
+class ToggleButton : public ClickButton
 {
 public:
-    Button(int x, int y, u16 w, u16 h, std::function<bool()> callback, int image, std::string text, float textScale, u32 textColor);
-    virtual ~Button(void) {}
+    ToggleButton(int x, int y, u16 w, u16 h, const std::function<bool()>& callback, int onImage, const std::string& onText, float onTextScale,
+        PKSM_Color onTextColor, const std::optional<int>& offImage = std::nullopt, const std::optional<std::string>& offText = std::nullopt,
+        const std::optional<float>& offTextScale = std::nullopt, const std::optional<PKSM_Color>& offTextColor = std::nullopt,
+        std::vector<std::unique_ptr<ToggleButton>>* radioCategory = nullptr, bool disablable = false);
+    ~ToggleButton(void) {}
 
-    virtual void draw() const override;
+    virtual bool update(touchPosition* touch) override;
+    virtual void setState(bool newState);
 
 protected:
-    int key;
-    std::string text;
-    float textScale;
-    u32 textColor;
+    int onImage;
+    std::string onText;
+    float onScale;
+    PKSM_Color onColor;
+    int offImage;
+    std::string offText;
+    float offScale;
+    PKSM_Color offColor;
+    std::vector<std::unique_ptr<ToggleButton>>* radioCategory;
+    bool currentState = true, disablable;
 };
 
 #endif

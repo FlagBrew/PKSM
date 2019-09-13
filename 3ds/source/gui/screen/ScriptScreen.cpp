@@ -106,18 +106,18 @@ ScriptScreen::ScriptScreen()
 void ScriptScreen::drawTop() const
 {
     // slight change to stripy top
-    Gui::drawSolidRect(0, 0, 400, 240, C2D_Color32(26, 35, 126, 255));
+    Gui::drawSolidRect(0, 0, 400, 240, PKSM_Color(26, 35, 126, 255));
     for (int x = -240; x < 400; x += 7)
     {
         Gui::drawLine(x, 0, x + 240, 240, 2, COLOR_LINEBLUE);
     }
-    Gui::drawSolidRect(0, 0, 400, 25, C2D_Color32(15, 22, 89, 255));
+    Gui::drawSolidRect(0, 0, 400, 25, PKSM_Color(15, 22, 89, 255));
 
     // Leaving space for the icon
     Gui::text(currDirString, 15, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_YELLOW, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(i18n::localize("SCRIPTS_INST1"), 200, 224, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-    Gui::drawSolidRect(0, 20 + hid.index() * 25, 400, 25, C2D_Color32(128, 128, 128, 255));
+    Gui::drawSolidRect(0, 20 + hid.index() * 25, 400, 25, PKSM_Color(128, 128, 128, 255));
     Gui::drawSolidRect(1, 21 + hid.index() * 25, 398, 23, COLOR_MASKBLACK);
 
     for (size_t i = hid.page() * hid.maxVisibleEntries(); i < (hid.page() + 1) * hid.maxVisibleEntries(); i++)
@@ -138,7 +138,7 @@ void ScriptScreen::drawTop() const
 void ScriptScreen::drawBottom() const
 {
     Gui::backgroundBottom(true);
-    Gui::drawSolidRect(20, 40, 280, 60, C2D_Color32(128, 128, 128, 255));
+    Gui::drawSolidRect(20, 40, 280, 60, PKSM_Color(128, 128, 128, 255));
     Gui::drawSolidRect(21, 41, 278, 58, COLOR_MASKBLACK);
     Gui::text(i18n::localize("SCRIPTS_INST2"), 160, 224, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 

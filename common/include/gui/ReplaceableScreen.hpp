@@ -28,7 +28,7 @@
 #define REPLACEABLESCREEN_HPP
 
 #include "Instructions.hpp"
-#include <3ds.h>
+#include "types.h"
 #include <memory>
 
 class ReplaceableScreen
@@ -49,16 +49,23 @@ public:
         }
     }
     bool willHandleUpdate() const;
+    void doUpdate(touchPosition* touch);
+#if defined(_3DS)
     bool willReplaceBottom() const;
     bool willReplaceTop() const;
-    void doUpdate(touchPosition* touch);
     void doTopDraw() const;
     void doBottomDraw() const;
-    virtual void update(touchPosition* touch) = 0;
     virtual void drawTop() const              = 0;
     virtual void drawBottom() const           = 0;
     virtual bool replacesTop() const { return false; }
     virtual bool replacesBottom() const { return false; }
+#elif defined(__SWITCH__)
+    bool willReplaceScreen() const;
+    void doDraw() const;
+    virtual void draw() const = 0;
+    virtual bool replacesScreen() const { return false; }
+#endif
+    virtual void update(touchPosition* touch) = 0;
     virtual bool handlesUpdate() const { return true; }
     void removeOverlay()
     {

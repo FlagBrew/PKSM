@@ -69,7 +69,7 @@ CloudOverlay::CloudOverlay(ReplaceableScreen& screen, CloudAccess& acc) : Replac
             parent->removeOverlay();
             return true;
         },
-        ui_sheet_button_back_idx, "", 0.0f, 0));
+        ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK));
 }
 
 void CloudOverlay::drawTop() const

@@ -28,10 +28,10 @@
 #include "gui.hpp"
 
 EnablableToggleButton::EnablableToggleButton(int x, int y, u16 w, u16 h, const std::function<bool()>& callback, const std::function<bool()>& disabled,
-    int onImage, const std::string& onText, float onTextScale, u32 onTextColor, const std::optional<int>& offImage,
-    const std::optional<std::string>& offText, const std::optional<float>& offTextScale, const std::optional<u32>& offTextColor,
+    int onImage, const std::string& onText, float onTextScale, PKSM_Color onTextColor, const std::optional<int>& offImage,
+    const std::optional<std::string>& offText, const std::optional<float>& offTextScale, const std::optional<PKSM_Color>& offTextColor,
     const std::optional<int>& disabledImage, const std::optional<std::string>& disabledText, const std::optional<float>& disabledTextScale,
-    const std::optional<u32> disabledTextColor)
+    const std::optional<PKSM_Color> disabledTextColor)
     : ToggleButton(x, y, w, h, callback, onImage, onText, onTextScale, onTextColor, offImage, offText, offTextScale, offTextColor, nullptr, true),
       disabled(disabled),
       disabledImage(disabledImage.value_or(offImage.value_or(onImage))),

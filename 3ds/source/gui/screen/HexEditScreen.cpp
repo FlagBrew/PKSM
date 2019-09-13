@@ -1265,7 +1265,7 @@ void HexEditScreen::drawTop() const
     Gui::sprite(ui_sheet_part_mtx_15x16_idx, 0, 0);
 
     // Selected box
-    Gui::drawSolidRect((hid.index() % 16) * 25, (hid.index() / 16) * 15, 24, 14, C2D_Color32(15, 22, 89, 0));
+    Gui::drawSolidRect((hid.index() % 16) * 25, (hid.index() / 16) * 15, 24, 14, PKSM_Color(15, 22, 89, 0));
     Gui::drawSolidRect((hid.index() % 16) * 25, (hid.index() / 16) * 15, 1, 14, COLOR_YELLOW);
     Gui::drawSolidRect((hid.index() % 16) * 25, (hid.index() / 16) * 15, 24, 1, COLOR_YELLOW);
     Gui::drawSolidRect((hid.index() % 16) * 25, (hid.index() / 16) * 15 + 13, 24, 1, COLOR_YELLOW);
@@ -1277,10 +1277,10 @@ void HexEditScreen::drawTop() const
             if (x + y * 16 + hid.page() * hid.maxVisibleEntries() < pkm->getLength())
             {
                 std::pair<const std::string*, SecurityLevel> description = describe(x + y * 16 + hid.page() * hid.maxVisibleEntries());
-                u32 color                                                = COLOR_WHITE;
+                PKSM_Color color                                                = COLOR_WHITE;
                 if (level < description.second)
                 {
-                    color = C2D_Color32(0, 0, 0, 120);
+                    color = PKSM_Color(0, 0, 0, 120);
                 }
                 Gui::text(StringUtils::format("%02X", pkm->rawData()[x + y * 16 + hid.page() * hid.maxVisibleEntries()]), x * 25 + 24 / 2, y * 15 + 1,
                     FONT_SIZE_9, FONT_SIZE_9, color, TextPosX::CENTER, TextPosY::TOP);

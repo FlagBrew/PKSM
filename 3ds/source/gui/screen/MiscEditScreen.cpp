@@ -43,13 +43,13 @@ MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
             Gui::screenBack();
             return true;
         },
-        ui_sheet_button_back_idx, "", 0.0f, 0));
+        ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<ClickButton>(204, 171, 108, 30,
         [this]() {
             otAndMet = !otAndMet;
             return true;
         },
-        ui_sheet_button_editor_idx, "", 0.0f, 0));
+        ui_sheet_button_editor_idx, "", 0.0f, COLOR_BLACK));
 
     instructions.addCircle(false, 22, 225, 8, COLOR_GREY);
     instructions.addLine(false, 22, 175, 22, 225, 4, COLOR_GREY);
@@ -59,84 +59,84 @@ MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
             validate();
             return true;
         },
-        ui_sheet_button_wireless_idx, "", 0.0f, 0));
+        ui_sheet_button_wireless_idx, "", 0.0f, COLOR_BLACK));
 
     buttons.push_back(std::make_unique<AccelButton>(
-        94, 34, 13, 13, [this]() { return this->changeMetLevel(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
+        94, 34, 13, 13, [this]() { return this->changeMetLevel(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(109, 34, 31, 13,
         [this]() {
             setMetLevel();
             return false;
         },
-        ui_sheet_res_null_idx, "", 0.0f, 0));
+        ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(
-        std::make_unique<AccelButton>(142, 34, 13, 13, [this]() { return this->changeMetLevel(true); }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
+        std::make_unique<AccelButton>(142, 34, 13, 13, [this]() { return this->changeMetLevel(true); }, ui_sheet_button_plus_small_idx, "", 0.0f, COLOR_BLACK));
 
     buttons.push_back(std::make_unique<Button>(95, 54, 15, 12,
         [this]() {
             day();
             return true;
         },
-        ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, 0));
+        ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<ClickButton>(95, 74, 15, 12,
         [this]() {
             month();
             return true;
         },
-        ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, 0));
+        ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(95, 94, 15, 12,
         [this]() {
             year();
             return true;
         },
-        ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, 0));
+        ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(95, 114, 15, 12,
         [this]() {
             addOverlay<LocationOverlay>(this->pkm, this->otAndMet);
             return true;
         },
-        ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, 0));
+        ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(95, 134, 15, 12,
         [this]() {
             addOverlay<VersionOverlay>(this->pkm);
             return true;
         },
-        ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, 0));
+        ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, COLOR_BLACK));
 
     if (pkm->generation() > Generation::FIVE)
     {
         buttons.push_back(std::make_unique<AccelButton>(
-            94, 154, 13, 13, [this]() { return this->changeEnjoyment(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
+            94, 154, 13, 13, [this]() { return this->changeEnjoyment(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, COLOR_BLACK));
         buttons.push_back(std::make_unique<Button>(109, 154, 31, 13,
             [this]() {
                 setEnjoyment();
                 return false;
             },
-            ui_sheet_res_null_idx, "", 0.0f, 0));
+            ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
         buttons.push_back(std::make_unique<AccelButton>(
-            142, 154, 13, 13, [this]() { return this->changeEnjoyment(true); }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
+            142, 154, 13, 13, [this]() { return this->changeEnjoyment(true); }, ui_sheet_button_plus_small_idx, "", 0.0f, COLOR_BLACK));
 
         buttons.push_back(std::make_unique<AccelButton>(
-            94, 174, 13, 13, [this]() { return this->changeFullness(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
+            94, 174, 13, 13, [this]() { return this->changeFullness(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, COLOR_BLACK));
         buttons.push_back(std::make_unique<Button>(109, 174, 31, 13,
             [this]() {
                 setFullness();
                 return false;
             },
-            ui_sheet_res_null_idx, "", 0.0f, 0));
+            ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
         buttons.push_back(std::make_unique<AccelButton>(
-            142, 174, 13, 13, [this]() { return this->changeFullness(true); }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
+            142, 174, 13, 13, [this]() { return this->changeFullness(true); }, ui_sheet_button_plus_small_idx, "", 0.0f, COLOR_BLACK));
 
         buttons.push_back(std::make_unique<AccelButton>(
-            94, 194, 13, 13, [this]() { return this->changeAffection(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
+            94, 194, 13, 13, [this]() { return this->changeAffection(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, COLOR_BLACK));
         buttons.push_back(std::make_unique<Button>(109, 194, 31, 13,
             [this]() {
                 setAffection();
                 return false;
             },
-            ui_sheet_res_null_idx, "", 0.0f, 0));
+            ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
         buttons.push_back(std::make_unique<AccelButton>(
-            142, 194, 13, 13, [this]() { return this->changeAffection(true); }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
+            142, 194, 13, 13, [this]() { return this->changeAffection(true); }, ui_sheet_button_plus_small_idx, "", 0.0f, COLOR_BLACK));
     }
 
     addOverlay<ViewOverlay>(this->pkm, false);

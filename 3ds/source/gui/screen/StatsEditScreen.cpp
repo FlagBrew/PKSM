@@ -41,42 +41,42 @@ StatsEditScreen::StatsEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
             Gui::screenBack();
             return true;
         },
-        ui_sheet_button_back_idx, "", 0.0f, 0));
+        ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK));
     for (int i = 0; i < 6; i++)
     {
         int y = 54 + i * 20;
         buttons.push_back(std::make_unique<AccelButton>(
-            106, y, 13, 13, [=]() { return this->changeIV(statValues[i], false); }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
+            106, y, 13, 13, [=]() { return this->changeIV(statValues[i], false); }, ui_sheet_button_minus_small_idx, "", 0.0f, COLOR_BLACK));
         buttons.push_back(std::make_unique<Button>(121, y, 23, 13,
             [=]() {
                 setIV(statValues[i]);
                 return false;
             },
-            ui_sheet_res_null_idx, "", 0.0f, 0));
+            ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
         instructions.addCircle(false, 132, y + 6, 9, COLOR_GREY);
 
         buttons.push_back(std::make_unique<AccelButton>(
-            146, y, 13, 13, [=]() { return this->changeIV(statValues[i], true); }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
+            146, y, 13, 13, [=]() { return this->changeIV(statValues[i], true); }, ui_sheet_button_plus_small_idx, "", 0.0f, COLOR_BLACK));
 
         buttons.push_back(std::make_unique<AccelButton>(
-            182, y, 13, 13, [=]() { return this->changeSecondaryStat(statValues[i], false); }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
+            182, y, 13, 13, [=]() { return this->changeSecondaryStat(statValues[i], false); }, ui_sheet_button_minus_small_idx, "", 0.0f, COLOR_BLACK));
         buttons.push_back(std::make_unique<Button>(197, y, 32, 13,
             [=]() {
                 setSecondaryStat(statValues[i]);
                 return false;
             },
-            ui_sheet_res_null_idx, "", 0.0f, 0));
+            ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
         instructions.addCircle(false, 213, y + 6, 9, COLOR_GREY);
 
         buttons.push_back(std::make_unique<AccelButton>(
-            231, y, 13, 13, [=]() { return this->changeSecondaryStat(statValues[i], true); }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
+            231, y, 13, 13, [=]() { return this->changeSecondaryStat(statValues[i], true); }, ui_sheet_button_plus_small_idx, "", 0.0f, COLOR_BLACK));
     }
     instructions.addLine(false, 132, 34, 132, 168, 4, COLOR_GREY);
     instructions.addLine(false, 213, 34, 213, 168, 4, COLOR_GREY);
     instructions.addBox(false, 130, 18, 85, 16, COLOR_GREY, i18n::localize("EDIT"), COLOR_WHITE);
 
     buttons.push_back(
-        std::make_unique<Button>(300, 184, 15, 12, [this]() { return this->setHP(); }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, 0));
+        std::make_unique<Button>(300, 184, 15, 12, [this]() { return this->setHP(); }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
 
     addOverlay<ViewOverlay>(this->pkm, false);
 }

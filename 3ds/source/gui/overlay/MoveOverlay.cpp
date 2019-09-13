@@ -108,7 +108,7 @@ MoveOverlay::MoveOverlay(ReplaceableScreen& screen, const std::variant<std::shar
             searchBar();
             return false;
         },
-        ui_sheet_emulated_box_search_idx, "", 0, 0);
+        ui_sheet_emulated_box_search_idx, "", 0, COLOR_BLACK);
 }
 
 MoveOverlay::~MoveOverlay()

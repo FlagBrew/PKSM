@@ -64,7 +64,7 @@ StorageOverlay::StorageOverlay(ReplaceableScreen& screen, bool store, int& boxBo
             parent->removeOverlay();
             return true;
         },
-        ui_sheet_button_back_idx, "", 0.0f, 0));
+        ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK));
 }
 
 void StorageOverlay::drawTop() const

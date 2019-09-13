@@ -24,11 +24,14 @@
  *         reasonable ways as different from the original version.
  */
 
+
+// TODO: Make this work for both 3DS and Switch, as I really like the interface and it's just better overall than parsing strings multiple times
 #ifndef TextBUF_HPP
 #define TextBUF_HPP
 
 #include "TextPos.hpp"
 #include "types.h"
+#include "colors.hpp"
 #include <citro2d.h>
 #include <memory>
 #include <optional>
@@ -67,7 +70,7 @@ namespace TextParse
         void addWord(std::pair<std::vector<Glyph>, float>&& word, float maxWidth = 0.0f);
         // These should ONLY be used when drawing text directly instead of using ScreenText, which shouldn't happen often!
         void optimize();
-        void draw(float x, float y, float z, float scaleX, float scaleY, TextPosX textPos, u32 color = C2D_Color32(0, 0, 0, 255)) const;
+        void draw(float x, float y, float z, float scaleX, float scaleY, TextPosX textPos, PKSM_Color color = COLOR_BLACK) const;
         std::vector<Glyph> glyphs;
         std::vector<float> lineWidths;
         float maxLineWidth;
@@ -105,25 +108,25 @@ namespace TextParse
         ScreenText() { glyphs.reserve(1024); }
         // y is always from baseline
         void addText(std::shared_ptr<Text> text, float x, float y, float z, float scaleX, float scaleY, TextPosX textPos,
-            u32 color = C2D_Color32(0, 0, 0, 255));
+            PKSM_Color color = COLOR_BLACK);
         void optimize();
         void draw() const;
         void clear();
 
     private:
-        struct PositionedGlyph
+        struct DrawableGlyph
         {
-            PositionedGlyph(const Glyph& glyph, float x = 0.0f, float y = 0.0f, float z = 0.0f, float scaleX = 1.0f, float scaleY = 1.0f,
-                u32 color = C2D_Color32(0, 0, 0, 255))
+            DrawableGlyph(const Glyph& glyph, float x = 0.0f, float y = 0.0f, float z = 0.0f, float scaleX = 1.0f, float scaleY = 1.0f,
+                PKSM_Color color = COLOR_BLACK)
                 : x(x), y(y), z(z), scaleX(scaleX), scaleY(scaleY), color(color), glyph(glyph)
             {
             }
             float x, y, z;
             float scaleX, scaleY;
-            u32 color;
+            PKSM_Color color;
             Glyph glyph;
         };
-        std::vector<PositionedGlyph> glyphs;
+        std::vector<DrawableGlyph> glyphs;
     };
 }
 

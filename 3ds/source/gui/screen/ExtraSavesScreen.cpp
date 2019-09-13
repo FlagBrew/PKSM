@@ -43,7 +43,7 @@ void ExtraSavesScreen::drawBottom() const
 
 void ExtraSavesScreen::drawTop() const
 {
-    Gui::drawSolidRect(0, 0, 400.0f, 240.0f, C2D_Color32(15, 22, 89, 255));
+    Gui::drawSolidRect(0, 0, 400.0f, 240.0f, PKSM_Color(15, 22, 89, 255));
 
     Gui::sprite(ui_sheet_emulated_gameselector_bg_idx, 4, 29);
     Gui::sprite(ui_sheet_gameselector_cart_idx, 35, 93);

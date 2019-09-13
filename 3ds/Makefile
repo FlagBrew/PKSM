@@ -39,6 +39,7 @@ TARGET			:=	$(subst $e ,_,$(notdir $(APP_TITLE)))
 OUTDIR			:=	out
 BUILD			:=	build
 FORMATSOURCES	:=	../common/source \
+					../common/source/gui \
 					../common/source/io \
 					../common/source/utils \
 					../core/source \
@@ -64,6 +65,7 @@ SOURCES			:=	$(FORMATSOURCES) \
 					../core/memecrypto
 DATA			:=	data
 FORMATINCLUDES	:=	../common/include \
+					../common/include/gui \
 					../common/include/io \
 					../common/include/utils \
 					../core/include \

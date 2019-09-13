@@ -24,24 +24,22 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "ClickButton.hpp"
+#ifndef CLICKBUTTON_HPP
+#define CLICKBUTTON_HPP
 
-ClickButton::ClickButton(
-    int x, int y, u16 w, u16 h, const std::function<bool()>& callback, int image, const std::string& text, float textScale, u32 textColor)
-    : Button(x, y, w, h, callback, image, text, textScale, textColor)
-{
-}
+#include "Button.hpp"
 
-bool ClickButton::update(touchPosition* touch)
+class ClickButton : public Button
 {
-    if (!isClicked && clicked(touch))
-    {
-        isClicked = true;
-        return noArg();
-    }
-    else
-    {
-        isClicked = clicked(touch);
-    }
-    return false;
-}
+public:
+    ClickButton(
+        int x, int y, u16 w, u16 h, const std::function<bool()>& callback, int image, const std::string& text, float textScale, PKSM_Color textColor);
+    ~ClickButton(void) {}
+
+    virtual bool update(touchPosition* touch) override;
+
+protected:
+    bool isClicked = false;
+};
+
+#endif

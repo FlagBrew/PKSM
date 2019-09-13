@@ -498,7 +498,7 @@ void ExtraSavesSubScreen::drawBottom() const
 
     if (selectedSave > -1)
     {
-        Gui::drawSolidRect(24, 96 + 17 * selectedSave, 174, 16, C2D_Color32(0x0f, 0x16, 0x59, 255));
+        Gui::drawSolidRect(24, 96 + 17 * selectedSave, 174, 16, PKSM_Color(0x0f, 0x16, 0x59, 255));
     }
 
     if (group == ExtraSavesSubScreen::Group::Pt || group == ExtraSavesSubScreen::Group::DP || group == ExtraSavesSubScreen::Group::HGSS ||
@@ -559,14 +559,14 @@ void ExtraSavesSubScreen::drawBottom() const
 
     if (selectedSave > 0 && firstSave > 0)
     {
-        Gui::drawSolidRect(191, 102, 4, 5, C2D_Color32(0x0f, 0x16, 0x59, 255));
-        Gui::drawSolidTriangle(189, 102, 197, 102, 193, 97, C2D_Color32(0x0f, 0x16, 0x59, 255));
+        Gui::drawSolidRect(191, 102, 4, 5, PKSM_Color(0x0f, 0x16, 0x59, 255));
+        Gui::drawSolidTriangle(189, 102, 197, 102, 193, 97, PKSM_Color(0x0f, 0x16, 0x59, 255));
     }
 
     if (selectedSave < 5 && firstSave + 5 < numSaves - 1)
     {
-        Gui::drawSolidRect(191, 186, 4, 5, C2D_Color32(0x0f, 0x16, 0x59, 255));
-        Gui::drawSolidTriangle(189, 191, 197, 191, 193, 196, C2D_Color32(0x0f, 0x16, 0x59, 255));
+        Gui::drawSolidRect(191, 186, 4, 5, PKSM_Color(0x0f, 0x16, 0x59, 255));
+        Gui::drawSolidTriangle(189, 191, 197, 191, 193, 196, PKSM_Color(0x0f, 0x16, 0x59, 255));
     }
 
     Gui::text(i18n::localize("A_ADD_SAVE"), 248, 113, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
@@ -576,7 +576,7 @@ void ExtraSavesSubScreen::drawBottom() const
         i18n::localize("EXTRASAVES_CONFIGURE_INSTRUCTIONS"), 160, 223, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
     Gui::drawSolidRect(245, 23, 48, 48, COLOR_BLACK);
-    Gui::drawSolidRect(243, 21, 52, 52, C2D_Color32(15, 22, 89, 255));
+    Gui::drawSolidRect(243, 21, 52, 52, PKSM_Color(15, 22, 89, 255));
     drawIcon(secondSelected ? groupToLabel2(group) : groupToLabel1(group), 245, 23);
     // Gui::sprite(ui_sheet_gameselector_unknown_idx, 245, 23);
 }

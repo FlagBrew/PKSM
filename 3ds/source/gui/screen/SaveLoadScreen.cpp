@@ -54,16 +54,16 @@ SaveLoadScreen::SaveLoadScreen()
           i18n::localize("A_SELECT") + '\n' + i18n::localize("X_SETTINGS") + '\n' + i18n::localize("Y_PRESENT") + '\n' + i18n::localize("START_EXIT"))
 {
     buttons.push_back(
-        std::make_unique<AccelButton>(24, 96, 175, 16, [this]() { return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
+        std::make_unique<AccelButton>(24, 96, 175, 16, [this]() { return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 10));
     for (int i = 1; i < 5; i++)
     {
         buttons.push_back(std::make_unique<ClickButton>(
-            24, 96 + 17 * i, 175, 16, [this, i]() { return this->setSelectedSave(i); }, ui_sheet_res_null_idx, "", 0.0f, 0));
+            24, 96 + 17 * i, 175, 16, [this, i]() { return this->setSelectedSave(i); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
     }
     buttons.push_back(
-        std::make_unique<AccelButton>(24, 181, 175, 16, [this]() { return this->setSelectedSave(5); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
-    buttons.push_back(std::make_unique<Button>(200, 95, 96, 51, [this]() { return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f, 0));
-    buttons.push_back(std::make_unique<Button>(200, 147, 96, 51, &receiveSaveFromBridge, ui_sheet_res_null_idx, "", 0.0f, 0));
+        std::make_unique<AccelButton>(24, 181, 175, 16, [this]() { return this->setSelectedSave(5); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 10));
+    buttons.push_back(std::make_unique<Button>(200, 95, 96, 51, [this]() { return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
+    buttons.push_back(std::make_unique<Button>(200, 147, 96, 51, &receiveSaveFromBridge, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
 
     for (auto i = TitleLoader::sdSaves.begin(); i != TitleLoader::sdSaves.end(); i++)
     {
@@ -198,7 +198,7 @@ SaveLoadScreen::SaveLoadScreen()
 
 void SaveLoadScreen::drawTop(void) const
 {
-    Gui::drawSolidRect(0, 0, 400.0f, 240.0f, C2D_Color32(15, 22, 89, 255));
+    Gui::drawSolidRect(0, 0, 400.0f, 240.0f, PKSM_Color(15, 22, 89, 255));
 
     Gui::sprite(ui_sheet_emulated_gameselector_bg_idx, 4, 29);
     Gui::sprite(ui_sheet_gameselector_cart_idx, 35, 93);
@@ -279,7 +279,7 @@ void SaveLoadScreen::drawBottom() const
 
     if (selectedSave > -1)
     {
-        Gui::drawSolidRect(24, 96 + 17 * selectedSave, 174, 16, C2D_Color32(0x0f, 0x16, 0x59, 255));
+        Gui::drawSolidRect(24, 96 + 17 * selectedSave, 174, 16, PKSM_Color(0x0f, 0x16, 0x59, 255));
     }
 
     int y = 97;
@@ -301,14 +301,14 @@ void SaveLoadScreen::drawBottom() const
 
     if (selectedSave > 0 && firstSave > 0)
     {
-        Gui::drawSolidRect(191, 102, 4, 5, C2D_Color32(0x0f, 0x16, 0x59, 255));
-        Gui::drawSolidTriangle(189, 102, 197, 102, 193, 97, C2D_Color32(0x0f, 0x16, 0x59, 255));
+        Gui::drawSolidRect(191, 102, 4, 5, PKSM_Color(0x0f, 0x16, 0x59, 255));
+        Gui::drawSolidTriangle(189, 102, 197, 102, 193, 97, PKSM_Color(0x0f, 0x16, 0x59, 255));
     }
 
     if (selectedSave < 5 && (size_t)firstSave + 5 < saves[saveGroup].size() - 1)
     {
-        Gui::drawSolidRect(191, 186, 4, 5, C2D_Color32(0x0f, 0x16, 0x59, 255));
-        Gui::drawSolidTriangle(189, 191, 197, 191, 193, 196, C2D_Color32(0x0f, 0x16, 0x59, 255));
+        Gui::drawSolidRect(191, 186, 4, 5, PKSM_Color(0x0f, 0x16, 0x59, 255));
+        Gui::drawSolidTriangle(189, 191, 197, 191, 193, 196, PKSM_Color(0x0f, 0x16, 0x59, 255));
     }
 
     Gui::text(i18n::localize("LOADER_LOAD"), 248, 113, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
@@ -317,7 +317,7 @@ void SaveLoadScreen::drawBottom() const
     Gui::text(i18n::localize("LOADER_INSTRUCTIONS_BOTTOM"), 160, 223, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
     Gui::drawSolidRect(245, 23, 48, 48, COLOR_BLACK);
-    Gui::drawSolidRect(243, 21, 52, 52, C2D_Color32(15, 22, 89, 255));
+    Gui::drawSolidRect(243, 21, 52, 52, PKSM_Color(15, 22, 89, 255));
     Gui::sprite(ui_sheet_gameselector_unknown_idx, 245, 23);
 }
 

@@ -36,6 +36,7 @@
 #include "fetch.hpp"
 #include "io.hpp"
 #include <sys/stat.h>
+#include "base64.hpp"
 
 CloudScreen::CloudScreen(int storageBox, std::shared_ptr<PKFilter> filter)
     : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_SHARE") + '\n' + i18n::localize("START_SORT_FILTER") + '\n' +
@@ -55,11 +56,11 @@ CloudScreen::CloudScreen(int storageBox, std::shared_ptr<PKFilter> filter)
         212, 140, 108, 28, [this]() { return this->releasePkm(); }, ui_sheet_button_editor_idx, i18n::localize("RELEASE"), FONT_SIZE_12, COLOR_BLACK);
     mainButtons[3] = std::make_unique<Button>(
         212, 171, 108, 28, [this]() { return this->dumpPkm(); }, ui_sheet_button_editor_idx, i18n::localize("DUMP"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[4] = std::make_unique<Button>(283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
+    mainButtons[4] = std::make_unique<Button>(283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK);
     mainButtons[5] =
-        std::make_unique<AccelButton>(8, 15, 17, 24, [this]() { return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+        std::make_unique<AccelButton>(8, 15, 17, 24, [this]() { return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5);
     mainButtons[6] =
-        std::make_unique<AccelButton>(189, 15, 17, 24, [this]() { return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+        std::make_unique<AccelButton>(189, 15, 17, 24, [this]() { return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5);
 
     // Pokemon buttons
     u16 y = 45;
@@ -69,13 +70,13 @@ CloudScreen::CloudScreen(int storageBox, std::shared_ptr<PKFilter> filter)
         for (u8 column = 0; column < 6; column++)
         {
             clickButtons[row * 6 + column] = std::make_unique<ClickButton>(
-                x, y, 34, 30, [this, row, column]() { return this->clickBottomIndex(row * 6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, 0);
+                x, y, 34, 30, [this, row, column]() { return this->clickBottomIndex(row * 6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
             x += 34;
         }
         y += 30;
     }
     clickButtons[30] =
-        std::make_unique<ClickButton>(25, 15, 164, 24, [this]() { return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0);
+        std::make_unique<ClickButton>(25, 15, 164, 24, [this]() { return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
 }
 
 void CloudScreen::drawBottom() const

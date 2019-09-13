@@ -34,6 +34,21 @@
 #include "WC6.hpp"
 #include "WC7.hpp"
 #include "loader.hpp"
+#include "base64.hpp"
+#include "gui.hpp"
+#include "quirc/quirc.h"
+
+typedef struct
+{
+    u16* camera_buffer;
+    Handle mutex;
+    volatile bool finished;
+    Handle cancel;
+    bool capturing;
+    struct quirc* context;
+    C3D_Tex* tex;
+    C2D_Image image;
+} qr_data;
 
 class QRData
 {

@@ -24,23 +24,28 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "Button.hpp"
-#include "gui.hpp"
+#ifndef QRSCANNER_HPP
+#define QRSCANNER_HPP
 
-Button::Button(int x, int y, u16 w, u16 h, std::function<bool()> callback, int image, std::string text, float textScale, u32 textColor)
-    : Clickable(x, y, w, h, callback)
+#include "types.h"
+#include <vector>
+
+enum QRMode
 {
-    key             = image;
-    this->text      = text;
-    this->textScale = textScale;
-    this->textColor = textColor;
+    PKM4,
+    PKM5,
+    PKM6,
+    PKM7,
+    WCX4,
+    WCX5,
+    WCX6,
+    WCX7,
+    NUMBER
+};
+
+namespace QRScanner
+{
+    std::vector<u8> scan(QRMode mode);
 }
 
-void Button::draw() const
-{
-    Gui::sprite(key, xPos, yPos);
-    if (!text.empty())
-    {
-        Gui::text(text, xPos + width / 2, yPos + height / 2, textScale, textScale, textColor, TextPosX::CENTER, TextPosY::CENTER, width);
-    }
-}
+#endif

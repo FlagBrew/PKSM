@@ -24,36 +24,28 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef TOGGLEBUTTON_HPP
-#define TOGGLEBUTTON_HPP
+#ifndef MAINMENUBUTTON_HPP
+#define MAINMENUBUTTON_HPP
 
-#include "ClickButton.hpp"
-#include <memory>
-#include <optional>
+#include "Button.hpp"
+#include "ui_sheet.h"
 
-class ToggleButton : public ClickButton
+// A clone of Button that adds the main menu image and centers the text differently
+class MainMenuButton : public Button
 {
 public:
-    ToggleButton(int x, int y, u16 w, u16 h, const std::function<bool()>& callback, int onImage, const std::string& onText, float onTextScale,
-        u32 onTextColor, const std::optional<int>& offImage = std::nullopt, const std::optional<std::string>& offText = std::nullopt,
-        const std::optional<float>& offTextScale = std::nullopt, const std::optional<u32>& offTextColor = std::nullopt,
-        std::vector<std::unique_ptr<ToggleButton>>* radioCategory = nullptr, bool disablable = false);
-    ~ToggleButton(void) {}
+    MainMenuButton(
+        int x, int y, u16 w, u16 h, std::function<bool()> callback, int image, std::string text, float textScale, PKSM_Color textColor, int imageY)
+        : Button(x, y, w, h, callback, ui_sheet_mainmenu_button_idx, text, textScale, textColor)
+    {
+        menuImage    = image;
+        this->imageY = imageY;
+    }
 
-    virtual bool update(touchPosition* touch) override;
-    virtual void setState(bool newState);
+    void draw() const override;
 
-protected:
-    int onImage;
-    std::string onText;
-    float onScale;
-    u32 onColor;
-    int offImage;
-    std::string offText;
-    float offScale;
-    u32 offColor;
-    std::vector<std::unique_ptr<ToggleButton>>* radioCategory;
-    bool currentState = true, disablable;
+private:
+    int menuImage, imageY;
 };
 
 #endif

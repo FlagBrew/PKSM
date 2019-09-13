@@ -42,16 +42,16 @@ FileChooseOverlay::FileChooseOverlay(ReplaceableScreen& screen, std::string& ret
 void FileChooseOverlay::drawTop() const
 {
     // slight change to stripy top
-    Gui::drawSolidRect(0, 0, 400, 240, C2D_Color32(26, 35, 126, 255));
+    Gui::drawSolidRect(0, 0, 400, 240, PKSM_Color(26, 35, 126, 255));
     for (int x = -240; x < 400; x += 7)
     {
         Gui::drawLine(x, 0, x + 240, 240, 2, COLOR_LINEBLUE);
     }
-    Gui::drawSolidRect(0, 0, 400, 25, C2D_Color32(15, 22, 89, 255));
+    Gui::drawSolidRect(0, 0, 400, 25, PKSM_Color(15, 22, 89, 255));
 
     if (!currFiles.empty())
     {
-        Gui::drawSolidRect(0, 20 + hid.index() * 25, 400, 25, C2D_Color32(128, 128, 128, 255));
+        Gui::drawSolidRect(0, 20 + hid.index() * 25, 400, 25, PKSM_Color(128, 128, 128, 255));
         Gui::drawSolidRect(1, 21 + hid.index() * 25, 398, 23, COLOR_MASKBLACK);
     }
 

@@ -50,21 +50,21 @@ TitleLoadScreen::TitleLoadScreen()
           i18n::localize("A_SELECT") + '\n' + i18n::localize("X_SETTINGS") + '\n' + i18n::localize("Y_ABSENT") + '\n' + i18n::localize("START_EXIT"))
 {
     buttons.push_back(
-        std::make_unique<AccelButton>(24, 96, 175, 16, [this]() { return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
+        std::make_unique<AccelButton>(24, 96, 175, 16, [this]() { return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 10));
     for (int i = 1; i < 5; i++)
     {
         buttons.push_back(std::make_unique<ClickButton>(
-            24, 96 + 17 * i, 175, 16, [this, i]() { return this->setSelectedSave(i); }, ui_sheet_res_null_idx, "", 0.0f, 0));
+            24, 96 + 17 * i, 175, 16, [this, i]() { return this->setSelectedSave(i); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
     }
     buttons.push_back(
-        std::make_unique<AccelButton>(24, 181, 175, 16, [this]() { return this->setSelectedSave(5); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 10));
-    buttons.push_back(std::make_unique<Button>(200, 95, 96, 51, [this]() { return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f, 0));
-    buttons.push_back(std::make_unique<Button>(200, 147, 96, 51, &receiveSaveFromBridge, ui_sheet_res_null_idx, "", 0.0f, 0));
+        std::make_unique<AccelButton>(24, 181, 175, 16, [this]() { return this->setSelectedSave(5); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 10));
+    buttons.push_back(std::make_unique<Button>(200, 95, 96, 51, [this]() { return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
+    buttons.push_back(std::make_unique<Button>(200, 147, 96, 51, &receiveSaveFromBridge, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
 }
 
 void TitleLoadScreen::drawTop() const
 {
-    Gui::drawSolidRect(0, 0, 400.0f, 240.0f, C2D_Color32(15, 22, 89, 255));
+    Gui::drawSolidRect(0, 0, 400.0f, 240.0f, PKSM_Color(15, 22, 89, 255));
 
     Gui::sprite(ui_sheet_emulated_gameselector_bg_idx, 4, 29);
     Gui::sprite(ui_sheet_gameselector_cart_idx, 35, 93);
@@ -96,9 +96,9 @@ void TitleLoadScreen::drawTop() const
     }
 
     Gui::text(i18n::localize("LOADER_INSTRUCTIONS_TOP_ABSENT"), 200, 8, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-    Gui::text(i18n::localize("LOADER_GAME_CARD"), 4 + 120 / 2, 197, FONT_SIZE_14, FONT_SIZE_14, C2D_Color32(15, 22, 89, 255), TextPosX::CENTER,
+    Gui::text(i18n::localize("LOADER_GAME_CARD"), 4 + 120 / 2, 197, FONT_SIZE_14, FONT_SIZE_14, PKSM_Color(15, 22, 89, 255), TextPosX::CENTER,
         TextPosY::TOP);
-    Gui::text(i18n::localize("LOADER_INSTALLED_GAMES"), 128 + 268 / 2, 197, FONT_SIZE_14, FONT_SIZE_14, C2D_Color32(15, 22, 89, 255),
+    Gui::text(i18n::localize("LOADER_INSTALLED_GAMES"), 128 + 268 / 2, 197, FONT_SIZE_14, FONT_SIZE_14, PKSM_Color(15, 22, 89, 255),
         TextPosX::CENTER, TextPosY::TOP);
 }
 
@@ -117,7 +117,7 @@ void TitleLoadScreen::drawBottom() const
 
     if (selectedTitle != -2)
     {
-        Gui::drawSolidRect(243, 21, 52, 52, C2D_Color32(15, 22, 89, 255));
+        Gui::drawSolidRect(243, 21, 52, 52, PKSM_Color(15, 22, 89, 255));
         Gui::drawImageAt(titleFromIndex(selectedTitle)->icon(), 245, 23, NULL, 1.0f, 1.0f);
         Gui::text(titleFromIndex(selectedTitle)->name(), 27, 26, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(StringUtils::format("%08X", titleFromIndex(selectedTitle)->lowId()), nextIdPart, 46, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE,
@@ -133,7 +133,7 @@ void TitleLoadScreen::drawBottom() const
 
     if (selectedSave > -1)
     {
-        Gui::drawSolidRect(24, 96 + 17 * selectedSave, 174, 16, C2D_Color32(0x0f, 0x16, 0x59, 255));
+        Gui::drawSolidRect(24, 96 + 17 * selectedSave, 174, 16, PKSM_Color(0x0f, 0x16, 0x59, 255));
     }
 
     int y = 97;
@@ -158,14 +158,14 @@ void TitleLoadScreen::drawBottom() const
 
     if (selectedSave > 0 && firstSave > -1)
     {
-        Gui::drawSolidRect(191, 102, 4, 5, C2D_Color32(0x0f, 0x16, 0x59, 255));
-        Gui::drawSolidTriangle(189, 102, 197, 102, 193, 97, C2D_Color32(0x0f, 0x16, 0x59, 255));
+        Gui::drawSolidRect(191, 102, 4, 5, PKSM_Color(0x0f, 0x16, 0x59, 255));
+        Gui::drawSolidTriangle(189, 102, 197, 102, 193, 97, PKSM_Color(0x0f, 0x16, 0x59, 255));
     }
 
     if (selectedSave < 5 && (size_t)firstSave + 5 < availableCheckpointSaves.size() - 1)
     {
-        Gui::drawSolidRect(191, 186, 4, 5, C2D_Color32(0x0f, 0x16, 0x59, 255));
-        Gui::drawSolidTriangle(189, 191, 197, 191, 193, 196, C2D_Color32(0x0f, 0x16, 0x59, 255));
+        Gui::drawSolidRect(191, 186, 4, 5, PKSM_Color(0x0f, 0x16, 0x59, 255));
+        Gui::drawSolidTriangle(189, 191, 197, 191, 193, 196, PKSM_Color(0x0f, 0x16, 0x59, 255));
     }
 
     Gui::text(i18n::localize("LOADER_LOAD"), 200 + 96 / 2, 113, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);

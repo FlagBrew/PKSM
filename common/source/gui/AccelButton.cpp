@@ -24,30 +24,33 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef ENABLABLETOGGLEBUTTON_HPP
-#define ENABLABLETOGGLEBUTTON_HPP
+#include "AccelButton.hpp"
 
-#include "ToggleButton.hpp"
-
-class EnablableToggleButton : public ToggleButton
+AccelButton::AccelButton(int x, int y, u16 w, u16 h, const std::function<bool()>& callback, int image, const std::string& text, float textScale,
+    PKSM_Color textColor, int slowTime, int fastTime)
+    : Button(x, y, w, h, callback, image, text, textScale, textColor), slowTime(slowTime), fastTime(fastTime)
 {
-public:
-    EnablableToggleButton(int x, int y, u16 w, u16 h, const std::function<bool()>& callback, const std::function<bool()>& disabled, int onImage,
-        const std::string& onText, float onTextScale, u32 onTextColor, const std::optional<int>& offImage = std::nullopt,
-        const std::optional<std::string>& offText = std::nullopt, const std::optional<float>& offTextScale = std::nullopt,
-        const std::optional<u32>& offTextColor = std::nullopt, const std::optional<int>& disabledImage = std::nullopt,
-        const std::optional<std::string>& disabledText = std::nullopt, const std::optional<float>& disabledTextScale = std::nullopt,
-        const std::optional<u32> disabledTextColor = std::nullopt);
+}
 
-    virtual bool update(touchPosition* touch) override;
-    virtual void draw() const override;
-
-protected:
-    std::function<bool()> disabled;
-    int disabledImage;
-    std::string disabledText;
-    float disabledTextScale;
-    u32 disabledTextColor;
-};
-
-#endif
+bool AccelButton::update(touchPosition* touch)
+{
+    if (clicked(touch))
+    {
+        clickedTime++;
+        if (timer <= 0)
+        {
+            doTime = true;
+            timer  = clickedTime > slowTime * 5 ? fastTime : slowTime;
+            return noArg();
+        }
+    }
+    else
+    {
+        clickedTime = 0;
+    }
+    if (doTime)
+    {
+        timer--;
+    }
+    return false;
+}

@@ -59,7 +59,7 @@ BagScreen::BagScreen()
                 selectedItem   = i;
                 return false;
             },
-            ui_sheet_emulated_button_minus_small_black_idx, "", 0.0f, 0));
+            ui_sheet_emulated_button_minus_small_black_idx, "", 0.0f, COLOR_BLACK));
         amountButtons.push_back(std::make_unique<ClickButton>(262, 23 + i * 30, 37, 13,
             [this, i]() {
                 setCount(i);
@@ -67,7 +67,7 @@ BagScreen::BagScreen()
                 selectedItem   = i;
                 return false;
             },
-            ui_sheet_res_null_idx, "", 0.0f, 0));
+            ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
         amountButtons.push_back(std::make_unique<AccelButton>(299, 23 + i * 30, 13, 13,
             [this, i]() {
                 editCount(true, i);
@@ -75,7 +75,7 @@ BagScreen::BagScreen()
                 selectedItem   = i;
                 return false;
             },
-            ui_sheet_emulated_button_plus_small_black_idx, "", 0.0f, 0));
+            ui_sheet_emulated_button_plus_small_black_idx, "", 0.0f, COLOR_BLACK));
     }
 
     for (int i = 0; i < limits[0].second; i++)

@@ -39,7 +39,7 @@ SortScreen::SortScreen(bool storage) : storage(storage)
                 pickSort(i);
                 return false;
             },
-            ui_sheet_button_editor_idx, "", 0.0f, 0));
+            ui_sheet_button_editor_idx, "", 0.0f, COLOR_BLACK));
     }
     buttons.push_back(std::make_unique<ClickButton>(212, 210, 108, 28,
         [this]() {
@@ -54,7 +54,7 @@ SortScreen::SortScreen(bool storage) : storage(storage)
             Gui::screenBack();
             return true;
         },
-        ui_sheet_button_back_idx, "", 0.0f, 0));
+        ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK));
 }
 
 void SortScreen::drawTop() const

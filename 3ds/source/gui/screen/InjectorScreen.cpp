@@ -68,7 +68,7 @@ InjectorScreen::InjectorScreen(nlohmann::json ids)
             if (langIndex != (int)Language::UNUSED)
             {
                 buttons.push_back(std::make_unique<Button>(
-                    x, y, 38, 23, [this, langIndex]() { return this->setLanguage((Language)langIndex); }, ui_sheet_res_null_idx, "", 0, 0));
+                    x, y, 38, 23, [this, langIndex]() { return this->setLanguage((Language)langIndex); }, ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
             }
             langIndex++;
         }
@@ -78,38 +78,38 @@ InjectorScreen::InjectorScreen(nlohmann::json ids)
             overwriteCard = true;
             return false;
         },
-        ui_sheet_res_null_idx, "", 0, 0));
+        ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(273, 102, 38, 23,
         [this]() {
             overwriteCard = false;
             return false;
         },
-        ui_sheet_res_null_idx, "", 0, 0));
+        ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(235, 135, 38, 23,
         [this]() {
             adaptLanguage = true;
             return false;
         },
-        ui_sheet_res_null_idx, "", 0, 0));
+        ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(273, 135, 38, 23,
         [this]() {
             adaptLanguage = false;
             return false;
         },
-        ui_sheet_res_null_idx, "", 0, 0));
+        ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(255, 168, 38, 23,
         [this]() {
             choosingSlot = true;
             hid.select(slot - 1);
             return true;
         },
-        ui_sheet_emulated_button_unselected_red_idx, "", 0.0f, 0));
+        ui_sheet_emulated_button_unselected_red_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(282, 212, 34, 28,
         []() {
             Gui::screenBack();
             return true;
         },
-        ui_sheet_button_back_idx, "", 0.0f, 0));
+        ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK));
 
     changeDate();
 }
@@ -128,7 +128,7 @@ InjectorScreen::InjectorScreen(std::unique_ptr<WCX> wcx)
             if (langIndex != (int)Language::UNUSED)
             {
                 buttons.push_back(std::make_unique<Button>(
-                    x, y, 38, 23, [this, langIndex]() { return this->setLanguage((Language)langIndex); }, ui_sheet_res_null_idx, "", 0, 0));
+                    x, y, 38, 23, [this, langIndex]() { return this->setLanguage((Language)langIndex); }, ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
             }
             langIndex++;
         }
@@ -138,25 +138,25 @@ InjectorScreen::InjectorScreen(std::unique_ptr<WCX> wcx)
             overwriteCard = true;
             return false;
         },
-        ui_sheet_res_null_idx, "", 0, 0));
+        ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(273, 102, 38, 23,
         [this]() {
             overwriteCard = false;
             return false;
         },
-        ui_sheet_res_null_idx, "", 0, 0));
+        ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(235, 135, 38, 23,
         [this]() {
             adaptLanguage = true;
             return false;
         },
-        ui_sheet_res_null_idx, "", 0, 0));
+        ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(273, 135, 38, 23,
         [this]() {
             adaptLanguage = false;
             return false;
         },
-        ui_sheet_res_null_idx, "", 0, 0));
+        ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(255, 168, 38, 23,
         [this]() {
             if (TitleLoader::save->generation() == Generation::LGPE)
@@ -173,13 +173,13 @@ InjectorScreen::InjectorScreen(std::unique_ptr<WCX> wcx)
         },
         TitleLoader::save->generation() == Generation::LGPE ? ui_sheet_emulated_button_unavailable_red_idx
                                                             : ui_sheet_emulated_button_unselected_red_idx,
-        "", 0.0f, 0));
+        "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(282, 212, 34, 28,
         []() {
             Gui::screenBack();
             return true;
         },
-        ui_sheet_button_back_idx, "", 0.0f, 0));
+        ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK));
 }
 
 void InjectorScreen::drawBottom() const
@@ -437,7 +437,7 @@ void InjectorScreen::drawTop() const
             }
             if (hid.index() == i)
             {
-                Gui::drawSolidRect(x * 50, y * 48, 49, 47, C2D_Color32(15, 22, 89, 255));
+                Gui::drawSolidRect(x * 50, y * 48, 49, 47, PKSM_Color(15, 22, 89, 255));
             }
             if (fullI < gifts.size())
             {

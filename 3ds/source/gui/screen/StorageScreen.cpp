@@ -138,7 +138,7 @@ StorageScreen::StorageScreen()
     instructions.addLine(false, 266, 23, 266, 73, 4, COLOR_GREY);
     instructions.addBox(false, 148, 57, 120, 16, COLOR_GREY, i18n::localize("BOX_SWAP"), COLOR_WHITE);
     mainButtons[0] =
-        std::make_unique<ClickButton>(242, 12, 47, 22, [this]() { return this->swapBoxWithStorage(); }, ui_sheet_button_swap_boxes_idx, "", 0.0f, 0);
+        std::make_unique<ClickButton>(242, 12, 47, 22, [this]() { return this->swapBoxWithStorage(); }, ui_sheet_button_swap_boxes_idx, "", 0.0f, COLOR_BLACK);
     mainButtons[1] = std::make_unique<Button>(
         212, 47, 108, 28, [this]() { return this->showViewer(); }, ui_sheet_button_editor_idx, i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
     mainButtons[2] = std::make_unique<Button>(
@@ -149,11 +149,11 @@ StorageScreen::StorageScreen()
         212, 140, 108, 28, [this]() { return this->dumpPkm(); }, ui_sheet_button_editor_idx, i18n::localize("DUMP"), FONT_SIZE_12, COLOR_BLACK);
     mainButtons[5] = std::make_unique<Button>(
         212, 171, 108, 28, [this]() { return this->duplicate(); }, ui_sheet_button_editor_idx, i18n::localize("CLONE"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[6] = std::make_unique<Button>(283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
+    mainButtons[6] = std::make_unique<Button>(283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK);
     mainButtons[7] =
-        std::make_unique<AccelButton>(8, 15, 17, 24, [this]() { return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+        std::make_unique<AccelButton>(8, 15, 17, 24, [this]() { return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5);
     mainButtons[8] =
-        std::make_unique<AccelButton>(189, 15, 17, 24, [this]() { return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+        std::make_unique<AccelButton>(189, 15, 17, 24, [this]() { return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5);
 
     instructions.addCircle(false, 17, 225, 8, COLOR_GREY);
     instructions.addLine(false, 17, 175, 17, 225, 4, COLOR_GREY);
@@ -164,7 +164,7 @@ StorageScreen::StorageScreen()
             justSwitched = true;
             return true;
         },
-        ui_sheet_button_wireless_no_y_idx, "", 0.0f, 0);
+        ui_sheet_button_wireless_no_y_idx, "", 0.0f, COLOR_BLACK);
 
     // Pokemon buttons
     u16 y = 45;
@@ -174,14 +174,14 @@ StorageScreen::StorageScreen()
         for (u8 column = 0; column < 6; column++)
         {
             clickButtons[row * 6 + column] = std::make_unique<ClickButton>(
-                x, y, 34, 30, [this, row, column]() { return this->clickBottomIndex(row * 6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, 0);
+                x, y, 34, 30, [this, row, column]() { return this->clickBottomIndex(row * 6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
             x += 34;
         }
         y += 30;
     }
     instructions.addBox(false, 25, 15, 164, 24, COLOR_GREY, i18n::localize("A_BOX_NAME"), COLOR_WHITE);
     clickButtons[30] =
-        std::make_unique<ClickButton>(25, 15, 164, 24, [this]() { return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0);
+        std::make_unique<ClickButton>(25, 15, 164, 24, [this]() { return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
     TitleLoader::save->cryptBoxData(true);
 
     boxBox = TitleLoader::save->currentBox() % TitleLoader::save->maxBoxes();
@@ -246,11 +246,11 @@ void StorageScreen::drawBottom() const
                 column >= std::min((cursorIndex - 1) % 6, selectDimensions.first) &&
                 row <= std::max((cursorIndex - 1) / 6, selectDimensions.second) && row >= std::min((cursorIndex - 1) / 6, selectDimensions.second))
             {
-                Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(0x50, 0xC0, 0x40, 0xC0));
             }
             if (TitleLoader::save->generation() == Generation::LGPE && row * 6 + column + boxBox * 30 >= TitleLoader::save->maxSlot())
             {
-                Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(128, 128, 128, 128));
+                Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(128, 128, 128, 128));
             }
             else
             {
@@ -287,7 +287,7 @@ void StorageScreen::drawBottom() const
                 int y = 10 + dy + (i / selectDimensions.first) * 30;
                 if (selectDimensions.first > 1 || selectDimensions.second > 1)
                 {
-                    Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                    Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(0x50, 0xC0, 0x40, 0xC0));
                 }
                 if (moveMon[i])
                 {
@@ -320,7 +320,7 @@ void StorageScreen::drawBottom() const
                 int y = 44 + yMod + (i / selectDimensions.first) * 30;
                 if (selectDimensions.first > 1 || selectDimensions.second > 1)
                 {
-                    Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                    Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(0x50, 0xC0, 0x40, 0xC0));
                 }
                 if (moveMon[i])
                 {
@@ -372,12 +372,11 @@ void StorageScreen::drawTop() const
         u16 x = 45;
         for (u8 column = 0; column < 6; column++)
         {
-            // C2D_Color32(0x50, 0xF0, 0x40, 0x80);
             if (currentlySelecting && storageChosen && column <= std::max((cursorIndex - 1) % 6, selectDimensions.first) &&
                 column >= std::min((cursorIndex - 1) % 6, selectDimensions.first) &&
                 row <= std::max((cursorIndex - 1) / 6, selectDimensions.second) && row >= std::min((cursorIndex - 1) / 6, selectDimensions.second))
             {
-                Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(0x50, 0xC0, 0x40, 0xC0));
             }
             auto pkm = Banks::bank->pkm(storageBox, row * 6 + column);
             if (pkm->species() > 0)
@@ -409,7 +408,7 @@ void StorageScreen::drawTop() const
                 int y = 16 + dy + (i / selectDimensions.first) * 30;
                 if (selectDimensions.first > 1 || selectDimensions.second > 1)
                 {
-                    Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                    Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(0x50, 0xC0, 0x40, 0xC0));
                 }
                 if (moveMon[i])
                 {
@@ -442,7 +441,7 @@ void StorageScreen::drawTop() const
                 int y = 65 + yMod + (i / selectDimensions.first) * 30;
                 if (selectDimensions.first > 1 || selectDimensions.second > 1)
                 {
-                    Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                    Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(0x50, 0xC0, 0x40, 0xC0));
                 }
                 if (moveMon[i])
                 {

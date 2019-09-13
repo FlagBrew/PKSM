@@ -24,32 +24,16 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef GUI_HPP
-#define GUI_HPP
+#ifndef SPRITESHEETS_H
+#define SPRITESHEETS_H
 
-#include "PKX.hpp"
-#include "Sav.hpp"
-#include "Screen.hpp"
-#include "TextParse.hpp"
-#include "TextPos.hpp"
-#include "WCX.hpp"
-#include "colors.hpp"
-#include "i18n.hpp"
-#include "json.hpp"
-#include "mixer.hpp"
+// These must exist for all valid targets
 #include "pkm_spritesheet.h"
-#include "thread.hpp"
 #include "types_spritesheet.h"
 #include "ui_sheet.h"
-#include "utils.hpp"
-#include <3ds.h>
-#include <citro2d.h>
-#include <random>
-#include <stack>
-#include <string.h>
-#include <unordered_map>
 
-// emulated
+#if defined(_3DS)
+// emulated sprites
 #define ui_sheet_res_null_idx 500
 #define ui_sheet_emulated_pointer_horizontal_flipped_idx 501
 #define ui_sheet_emulated_bg_top_red 502
@@ -101,71 +85,8 @@
 #define ui_sheet_emulated_button_filter_negative_idx 547
 #define ui_sheet_emulated_button_tab_unselected_idx 548
 
-#define FONT_SIZE_18 0.72f
-#define FONT_SIZE_15 0.6f
-#define FONT_SIZE_14 0.56f
-#define FONT_SIZE_12 0.50f
-#define FONT_SIZE_11 0.46f
-#define FONT_SIZE_9 0.37f
-
-namespace Gui
-{
-    Result init(void);
-    void mainLoop(void);
-    void exit(void);
-
-    void target(gfxScreen_t t);
-    void clearScreen(gfxScreen_t t);
-    void flushText();
-    C2D_Image TWLIcon(void);
-
-    void ball(size_t index, int x, int y);
-    void type(Language lang, u8 type, int x, int y);
-    void generation(const PKX& pkm, int x, int y);
-    void format(const PKX& pkm, int x, int y);
-    void sprite(int key, int x, int y);
-    void sprite(int key, int x, int y, u32 color);
-    void pkm(const PKX& pkm, int x, int y, float scale = 1.0f, u32 color = C2D_Color32(0, 0, 0, 255), float blend = 0.0f);
-    void pkm(int species, int form, Generation generation, int gender, int x, int y, float scale = 1.0f, u32 color = C2D_Color32(0, 0, 0, 255),
-        float blend = 0.0f);
-
-    int pointerBob();
-
-    void drawImageAt(const C2D_Image& img, float x, float y, const C2D_ImageTint* tint = nullptr, float scaleX = 1.0f, float scaleY = 1.0f);
-    void drawSolidRect(float x, float y, float w, float h, u32 color);
-    void drawSolidCircle(float x, float y, float radius, u32 color);
-    void drawSolidTriangle(float x1, float y1, float x2, float y2, float x3, float y3, u32 color);
-    void drawLine(float x1, float y1, float x2, float y2, float thickness, u32 color);
-
-    void backgroundTop(bool stripes);
-    void backgroundBottom(bool stripes);
-    void backgroundAnimatedTop(void);
-    void backgroundAnimatedBottom(void);
-    void setDoHomeDraw(void);
-    void drawNoHome(void);
-    void drawSelector(float x, float y);
-
-    std::shared_ptr<TextParse::Text> parseText(const std::string& str, float scaleX, float maxWidth = 0.0f);
-    void clearText(void);
-    void text(
-        const std::shared_ptr<TextParse::Text> text, float x, float y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY);
-    void text(const std::string& str, float x, float y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY,
-        float maxWidth = 0.0f);
-    // Only works with single lines, because why the fuck would you wrap AND scroll?
-    void scrollingText(
-        const std::string& str, float x, float y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY, int width);
-    void slicedText(
-        const std::string& str, float x, float y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY, int width);
-
-    void setScreen(std::unique_ptr<Screen> screen);
-    void screenBack(void);
-    bool showChoiceMessage(const std::string& message, int timer = 0);
-    void showRestoreProgress(u32 partial, u32 total);
-    void showDownloadProgress(const std::string& path, u32 partial, u32 total);
-    void waitFrame(const std::string& message);
-    void warn(const std::string& message, std::optional<Language> forceLang = std::nullopt);
-    void error(const std::string& message, Result errorCode);
-    void showResizeStorage(void);
-}
+#elif defined(__SWITCH__)
+// No emulated sprites because no sprites yet :P
+#endif
 
 #endif

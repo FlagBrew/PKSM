@@ -38,7 +38,7 @@ MoveEditScreen::MoveEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
             Gui::screenBack();
             return true;
         },
-        ui_sheet_button_back_idx, "", 0.0f, 0));
+        ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK));
     for (int i = 0; i < 4; i++)
     {
         buttons.push_back(std::make_unique<ClickButton>(0, 30 + 20 * i, 240, 20,
@@ -46,13 +46,13 @@ MoveEditScreen::MoveEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
                 moveSelected = i;
                 return true;
             },
-            ui_sheet_res_null_idx, "", 0.0f, 0));
+            ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
         buttons.push_back(std::make_unique<ClickButton>(0, 140 + 20 * i, 240, 20,
             [=]() {
                 moveSelected = i + 4;
                 return true;
             },
-            ui_sheet_res_null_idx, "", 0.0f, 0));
+            ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
     }
 
     addOverlay<ViewOverlay>(this->pkm, false);

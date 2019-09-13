@@ -40,7 +40,7 @@ ConfigSubRegionOverlay::ConfigSubRegionOverlay(ReplaceableScreen& screen)
             searchBar();
             return false;
         },
-        ui_sheet_emulated_box_search_idx, "", 0, 0);
+        ui_sheet_emulated_box_search_idx, "", 0, COLOR_BLACK);
     hid.update(subregions.size());
     hid.select(std::distance(subregions.begin(), std::find_if(subregions.begin(), subregions.end(), [](const std::pair<u16, std::string>& pair) {
         return pair.first == Configuration::getInstance().defaultRegion();

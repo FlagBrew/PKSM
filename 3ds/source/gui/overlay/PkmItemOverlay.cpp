@@ -104,7 +104,7 @@ PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> p
             searchBar();
             return false;
         },
-        ui_sheet_emulated_box_search_idx, "", 0, 0);
+        ui_sheet_emulated_box_search_idx, "", 0, COLOR_BLACK);
 }
 
 void PkmItemOverlay::drawBottom() const

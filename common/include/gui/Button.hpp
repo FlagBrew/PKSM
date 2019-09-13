@@ -24,32 +24,25 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef COLORS_HPP
-#define COLORS_HPP
+#ifndef BUTTON_HPP
+#define BUTTON_HPP
 
-#include <citro2d.h>
+#include "Clickable.hpp"
+#include "colors.hpp"
 
-#define COLOR_WHITE C2D_Color32(255, 255, 255, 255)
-#define COLOR_BLACK C2D_Color32(0, 0, 0, 255)
-#define COLOR_BLUE C2D_Color32(124, 147, 225, 255)
-#define COLOR_YELLOW C2D_Color32(237, 247, 157, 255)
-#define COLOR_LIGHTBLUE C2D_Color32(187, 208, 254, 255)
-#define COLOR_DARKBLUE C2D_Color32(55, 89, 187, 255)
-#define COLOR_HIGHBLUE C2D_Color32(48, 65, 106, 255)
-#define COLOR_MASKBLACK C2D_Color32(0, 0, 0, 190)
-#define COLOR_PALEBLUE C2D_Color32(90, 115, 164, 255)
-#define COLOR_MENUBLUE C2D_Color32(55, 89, 157, 255)
-#define COLOR_SELECTOR C2D_Color32(29, 50, 253, 255)
-#define COLOR_GREY_BLEND C2D_Color32(0, 0, 0, 100)
-#define COLOR_SELECTBLUE C2D_Color32(33, 33, 66, 255)
-#define COLOR_UNAVAILBLUE C2D_Color32(131, 131, 182, 255)
-#define COLOR_UNSELECTBLUE C2D_Color32(77, 77, 254, 255)
-#define COLOR_SELECTRED C2D_Color32(66, 33, 33, 255)
-#define COLOR_UNAVAILRED C2D_Color32(182, 131, 131, 255)
-#define COLOR_UNSELECTRED C2D_Color32(254, 77, 77, 255)
-#define COLOR_GREY C2D_Color32(128, 128, 128, 255)
-#define COLOR_DARKGREY C2D_Color32(96, 96, 96, 255)
-#define COLOR_DARKYELLOW C2D_Color32(244, 170, 6, 120)
-#define COLOR_LINEBLUE C2D_Color32(31, 41, 139, 255)
+class Button : public Clickable
+{
+public:
+    Button(int x, int y, u16 w, u16 h, std::function<bool()> callback, int image, std::string text, float textScale, PKSM_Color textColor);
+    virtual ~Button(void) {}
+
+    virtual void draw() const override;
+
+protected:
+    int key;
+    std::string text;
+    float textScale;
+    PKSM_Color textColor;
+};
 
 #endif

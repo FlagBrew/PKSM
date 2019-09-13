@@ -42,7 +42,7 @@ LocationOverlay::LocationOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX>
             searchBar();
             return false;
         },
-        ui_sheet_emulated_box_search_idx, "", 0, 0);
+        ui_sheet_emulated_box_search_idx, "", 0, COLOR_BLACK);
     hid.update(locations.size());
     hid.select(std::distance(locations.begin(), std::find_if(locations.begin(), locations.end(), [pkm, met](const std::pair<u16, std::string>& pair) {
         return pair.first == (met ? pkm->metLocation() : pkm->eggLocation());

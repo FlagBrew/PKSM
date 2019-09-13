@@ -24,33 +24,26 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "AccelButton.hpp"
+#ifndef ACCELBUTTON_HPP
+#define ACCELBUTTON_HPP
 
-AccelButton::AccelButton(int x, int y, u16 w, u16 h, const std::function<bool()>& callback, int image, const std::string& text, float textScale,
-    u32 textColor, int slowTime, int fastTime)
-    : Button(x, y, w, h, callback, image, text, textScale, textColor), slowTime(slowTime), fastTime(fastTime)
-{
-}
+#include "Button.hpp"
 
-bool AccelButton::update(touchPosition* touch)
+class AccelButton : public Button
 {
-    if (clicked(touch))
-    {
-        clickedTime++;
-        if (timer <= 0)
-        {
-            doTime = true;
-            timer  = clickedTime > slowTime * 5 ? fastTime : slowTime;
-            return noArg();
-        }
-    }
-    else
-    {
-        clickedTime = 0;
-    }
-    if (doTime)
-    {
-        timer--;
-    }
-    return false;
-}
+public:
+    AccelButton(int x, int y, u16 w, u16 h, const std::function<bool()>& callback, int image, const std::string& text, float textScale, PKSM_Color textColor,
+        int slowTime = 5, int fastTime = 1);
+    ~AccelButton(void) {}
+
+    virtual bool update(touchPosition* touch) override;
+
+protected:
+    int clickedTime = 0;
+    int timer       = 0;
+    bool doTime     = false;
+    const int slowTime;
+    const int fastTime;
+};
+
+#endif

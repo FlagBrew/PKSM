@@ -40,7 +40,7 @@ ConfigCountryOverlay::ConfigCountryOverlay(ReplaceableScreen& screen)
             searchBar();
             return false;
         },
-        ui_sheet_emulated_box_search_idx, "", 0, 0);
+        ui_sheet_emulated_box_search_idx, "", 0, COLOR_BLACK);
     hid.update(countries.size());
     hid.select(std::distance(countries.begin(), std::find_if(countries.begin(), countries.end(), [](const std::pair<u16, std::string>& pair) {
         return pair.first == Configuration::getInstance().defaultCountry();

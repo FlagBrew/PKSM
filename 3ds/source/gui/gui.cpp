@@ -91,25 +91,25 @@ void Gui::drawImageAt(const C2D_Image& img, float x, float y, const C2D_ImageTin
     C2D_DrawImageAt(img, x, y, 0.5f, tint, scaleX, scaleY);
 }
 
-void Gui::drawSolidCircle(float x, float y, float rad, u32 color)
+void Gui::drawSolidCircle(float x, float y, float rad, PKSM_Color color)
 {
     flushText();
-    C2D_DrawCircleSolid(x, y, 0.5f, rad, color);
+    C2D_DrawCircleSolid(x, y, 0.5f, rad, colorToFormat(color));
 }
 
-void Gui::drawSolidRect(float x, float y, float w, float h, u32 color)
+void Gui::drawSolidRect(float x, float y, float w, float h, PKSM_Color color)
 {
     flushText();
-    C2D_DrawRectSolid(x, y, 0.5f, w, h, color);
+    C2D_DrawRectSolid(x, y, 0.5f, w, h, colorToFormat(color));
 }
 
-void Gui::drawSolidTriangle(float x1, float y1, float x2, float y2, float x3, float y3, u32 color)
+void Gui::drawSolidTriangle(float x1, float y1, float x2, float y2, float x3, float y3, PKSM_Color color)
 {
     flushText();
-    C2D_DrawTriangle(x1, y1, color, x2, y2, color, x3, y3, color, 0.5f);
+    C2D_DrawTriangle(x1, y1, colorToFormat(color), x2, y2, colorToFormat(color), x3, y3, colorToFormat(color), 0.5f);
 }
 
-void Gui::drawLine(float x1, float y1, float x2, float y2, float width, u32 color)
+void Gui::drawLine(float x1, float y1, float x2, float y2, float width, PKSM_Color color)
 {
     flushText();
     // C2D_DrawLine(x1, y1, x2, y2, 0.5f, width, color);
@@ -157,11 +157,11 @@ void Gui::clearScreen(gfxScreen_t screen)
 {
     if (screen == GFX_BOTTOM)
     {
-        C2D_TargetClear(g_renderTargetBottom, COLOR_BLACK);
+        C2D_TargetClear(g_renderTargetBottom, colorToFormat(COLOR_BLACK));
     }
     else
     {
-        C2D_TargetClear(g_renderTargetTop, COLOR_BLACK);
+        C2D_TargetClear(g_renderTargetTop, colorToFormat(COLOR_BLACK));
     }
 }
 
@@ -183,7 +183,7 @@ void Gui::flushText()
 
 void Gui::backgroundBottom(bool stripes)
 {
-    Gui::drawSolidRect(0, 0, 320, 240, C2D_Color32(40, 53, 147, 255));
+    Gui::drawSolidRect(0, 0, 320, 240, PKSM_Color(40, 53, 147, 255));
     if (stripes)
     {
         for (int x = -240; x < 320; x += 7)
@@ -191,12 +191,12 @@ void Gui::backgroundBottom(bool stripes)
             drawLine(x, 0, x + 240, 240, 2, COLOR_LINEBLUE);
         }
     }
-    Gui::drawSolidRect(0, 220, 320, 20, C2D_Color32(26, 35, 126, 255));
+    Gui::drawSolidRect(0, 220, 320, 20, PKSM_Color(26, 35, 126, 255));
 }
 
 void Gui::backgroundTop(bool stripes)
 {
-    Gui::drawSolidRect(0, 0, 400, 240, C2D_Color32(26, 35, 126, 255));
+    Gui::drawSolidRect(0, 0, 400, 240, PKSM_Color(26, 35, 126, 255));
     if (stripes)
     {
         for (int x = -240; x < 400; x += 7)
@@ -204,7 +204,7 @@ void Gui::backgroundTop(bool stripes)
             drawLine(x, 240, x + 240, 0, 2, COLOR_LINEBLUE);
         }
     }
-    Gui::drawSolidRect(0, 0, 400, 25, C2D_Color32(15, 22, 89, 255));
+    Gui::drawSolidRect(0, 0, 400, 25, PKSM_Color(15, 22, 89, 255));
 }
 
 void Gui::backgroundAnimatedTop()
@@ -258,7 +258,7 @@ std::shared_ptr<TextParse::Text> Gui::parseText(const std::string& str, float sc
     return textBuffer->parse(str, maxWidth);
 }
 
-void Gui::text(std::shared_ptr<TextParse::Text> text, float x, float y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY)
+void Gui::text(std::shared_ptr<TextParse::Text> text, float x, float y, float scaleX, float scaleY, PKSM_Color color, TextPosX positionX, TextPosY positionY)
 {
     textMode            = true;
     const float lineMod = scaleY * C2D_FontGetInfo(fonts[1])->lineFeed;
@@ -279,7 +279,7 @@ void Gui::text(std::shared_ptr<TextParse::Text> text, float x, float y, float sc
 }
 
 void Gui::text(
-    const std::string& str, float x, float y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY, float maxWidth)
+    const std::string& str, float x, float y, float scaleX, float scaleY, PKSM_Color color, TextPosX positionX, TextPosY positionY, float maxWidth)
 {
     auto text = parseText(str, scaleX, maxWidth);
 
@@ -287,7 +287,7 @@ void Gui::text(
 }
 
 void Gui::scrollingText(
-    const std::string& str, float x, float y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY, int width)
+    const std::string& str, float x, float y, float scaleX, float scaleY, PKSM_Color color, TextPosX positionX, TextPosY positionY, int width)
 {
     static const Tex3DS_SubTexture t3x = {512, 256, 0.0f, 1.0f, 1.0f, 0.0f};
     static const C2D_Image textImage   = {&textChopTexture, &t3x};
@@ -350,7 +350,7 @@ void Gui::scrollingText(
 }
 
 void Gui::slicedText(
-    const std::string& str, float x, float y, float scaleX, float scaleY, u32 color, TextPosX positionX, TextPosY positionY, int width)
+    const std::string& str, float x, float y, float scaleX, float scaleY, PKSM_Color color, TextPosX positionX, TextPosY positionY, int width)
 {
     static const Tex3DS_SubTexture t3x = {512, 256, 0.0f, 1.0f, 1.0f, 0.0f};
     static const C2D_Image textImage   = {&textChopTexture, &t3x};
@@ -739,11 +739,11 @@ void Gui::sprite(int key, int x, int y)
     }
     else if (key == ui_sheet_emulated_toggle_green_idx)
     {
-        Gui::drawSolidRect(x, y, 13, 13, C2D_Color32(0x35, 0xC1, 0x3E, 0xFF));
+        Gui::drawSolidRect(x, y, 13, 13, PKSM_Color(0x35, 0xC1, 0x3E, 0xFF));
     }
     else if (key == ui_sheet_emulated_toggle_red_idx)
     {
-        Gui::drawSolidRect(x, y, 13, 13, C2D_Color32(0xCC, 0x3F, 0x26, 0xFF));
+        Gui::drawSolidRect(x, y, 13, 13, PKSM_Color(0xCC, 0x3F, 0x26, 0xFF));
     }
     else if (key == ui_sheet_emulated_gameselector_bg_idx)
     {
@@ -759,11 +759,11 @@ void Gui::sprite(int key, int x, int y)
         tex = _select_box(sprite, 0, off, 0, sprite.subtex->height);
         Gui::drawImageAt({sprite.tex, &tex}, x, y + off, nullptr, 1.0f, rep);
         x += 5;
-        Gui::drawSolidRect(x, y, 115, rep + 10, C2D_Color32(26, 35, 126, 255));
+        Gui::drawSolidRect(x, y, 115, rep + 10, PKSM_Color(26, 35, 126, 255));
 
         /* RIGHT */
         x += 119;
-        Gui::drawSolidRect(x, y, 263, rep + 10, C2D_Color32(26, 35, 126, 255));
+        Gui::drawSolidRect(x, y, 263, rep + 10, PKSM_Color(26, 35, 126, 255));
         x += 263;
         sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_gameselector_bg_left_idx);
         // Top side
@@ -779,7 +779,7 @@ void Gui::sprite(int key, int x, int y)
     {
         C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx);
         C2D_ImageTint tint;
-        C2D_PlainImageTint(&tint, COLOR_SELECTBLUE, 1.0f);
+        C2D_PlainImageTint(&tint, colorToFormat(COLOR_SELECTBLUE), 1.0f);
 
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, 5, 0);
         // Left
@@ -807,20 +807,20 @@ void Gui::sprite(int key, int x, int y)
     else if (key == ui_sheet_emulated_button_plus_small_black_idx)
     {
         C2D_ImageTint tint;
-        C2D_PlainImageTint(&tint, COLOR_BLACK, 1.0f);
+        C2D_PlainImageTint(&tint, colorToFormat(COLOR_BLACK), 1.0f);
         Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_plus_small_idx), x, y, &tint, 1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_button_minus_small_black_idx)
     {
         C2D_ImageTint tint;
-        C2D_PlainImageTint(&tint, COLOR_BLACK, 1.0f);
+        C2D_PlainImageTint(&tint, colorToFormat(COLOR_BLACK), 1.0f);
         Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_minus_small_idx), x, y, &tint, 1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_box_search_idx)
     {
         C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx);
         C2D_ImageTint tint;
-        C2D_PlainImageTint(&tint, COLOR_SELECTBLUE, 1.0f);
+        C2D_PlainImageTint(&tint, colorToFormat(COLOR_SELECTBLUE), 1.0f);
 
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, 5, 0);
         // Left
@@ -835,11 +835,11 @@ void Gui::sprite(int key, int x, int y)
     }
     else if (key == ui_sheet_emulated_toggle_gray_idx)
     {
-        Gui::drawSolidRect(x, y, 13, 13, C2D_Color32(0x80, 0x80, 0x80, 0xFF));
+        Gui::drawSolidRect(x, y, 13, 13, PKSM_Color(0x80, 0x80, 0x80, 0xFF));
     }
     else if (key == ui_sheet_emulated_toggle_blue_idx)
     {
-        Gui::drawSolidRect(x, y, 13, 13, C2D_Color32(0x00, 0x00, 0xFF, 0xFF));
+        Gui::drawSolidRect(x, y, 13, 13, PKSM_Color(0x00, 0x00, 0xFF, 0xFF));
     }
     else if (key == ui_sheet_emulated_party_indicator_1_idx)
     {
@@ -868,37 +868,37 @@ void Gui::sprite(int key, int x, int y)
     else if (key == ui_sheet_emulated_button_selected_blue_idx)
     {
         C2D_ImageTint tint;
-        C2D_PlainImageTint(&tint, COLOR_SELECTBLUE, 1.0f);
+        C2D_PlainImageTint(&tint, colorToFormat(COLOR_SELECTBLUE), 1.0f);
         Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, &tint, 1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_button_unselected_blue_idx)
     {
         C2D_ImageTint tint;
-        C2D_PlainImageTint(&tint, COLOR_UNSELECTBLUE, 1.0f);
+        C2D_PlainImageTint(&tint, colorToFormat(COLOR_UNSELECTBLUE), 1.0f);
         Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, &tint, 1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_button_unavailable_blue_idx)
     {
         C2D_ImageTint tint;
-        C2D_PlainImageTint(&tint, COLOR_UNAVAILBLUE, 1.0f);
+        C2D_PlainImageTint(&tint, colorToFormat(COLOR_UNAVAILBLUE), 1.0f);
         Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, &tint, 1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_button_selected_red_idx)
     {
         C2D_ImageTint tint;
-        C2D_PlainImageTint(&tint, COLOR_SELECTRED, 1.0f);
+        C2D_PlainImageTint(&tint, colorToFormat(COLOR_SELECTRED), 1.0f);
         Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, &tint, 1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_button_unselected_red_idx)
     {
         C2D_ImageTint tint;
-        C2D_PlainImageTint(&tint, COLOR_UNSELECTRED, 1.0f);
+        C2D_PlainImageTint(&tint, colorToFormat(COLOR_UNSELECTRED), 1.0f);
         Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, &tint, 1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_button_unavailable_red_idx)
     {
         C2D_ImageTint tint;
-        C2D_PlainImageTint(&tint, COLOR_UNAVAILRED, 1.0f);
+        C2D_PlainImageTint(&tint, colorToFormat(COLOR_UNAVAILRED), 1.0f);
         Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, &tint, 1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_button_pouch_idx)
@@ -950,7 +950,7 @@ void Gui::sprite(int key, int x, int y)
     else if (key == ui_sheet_emulated_stripe_move_grey_idx)
     {
         C2D_ImageTint tint;
-        C2D_PlainImageTint(&tint, COLOR_DARKGREY, 1.0f);
+        C2D_PlainImageTint(&tint, colorToFormat(COLOR_DARKGREY), 1.0f);
         C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_stripe_move_editor_row_idx), x, y, 0.5f, &tint);
     }
     else if (key == ui_sheet_emulated_button_filter_positive_idx)
@@ -1070,24 +1070,21 @@ void Gui::generation(const PKX& pkm, int x, int y)
     }
 }
 
-void Gui::sprite(int key, int x, int y, u32 color)
+void Gui::sprite(int key, int x, int y, PKSM_Color color)
 {
     if (key == ui_sheet_button_editor_idx || key == ui_sheet_icon_item_idx || key == ui_sheet_pointer_arrow_idx)
     {
         C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, key);
         C2D_ImageTint tint;
-        for (int i = 0; i < 4; i++)
-        {
-            tint.corners[i] = {color, 1.0f};
-        }
+        C2D_PlainImageTint(&tint, colorToFormat(color), 1.0f);
         Gui::drawImageAt(sprite, x, y, &tint);
     }
 }
 
-void Gui::pkm(const PKX& pokemon, int x, int y, float scale, u32 color, float blend)
+void Gui::pkm(const PKX& pokemon, int x, int y, float scale, PKSM_Color color, float blend)
 {
     static C2D_ImageTint tint;
-    C2D_PlainImageTint(&tint, color, blend);
+    C2D_PlainImageTint(&tint, colorToFormat(color), blend);
 
     if (pokemon.egg())
     {
@@ -1118,10 +1115,10 @@ void Gui::pkm(const PKX& pokemon, int x, int y, float scale, u32 color, float bl
     }
 }
 
-void Gui::pkm(int species, int form, Generation generation, int gender, int x, int y, float scale, u32 color, float blend)
+void Gui::pkm(int species, int form, Generation generation, int gender, int x, int y, float scale, PKSM_Color color, float blend)
 {
     static C2D_ImageTint tint;
-    C2D_PlainImageTint(&tint, color, blend);
+    C2D_PlainImageTint(&tint, colorToFormat(color), blend);
     time_t thing = time(NULL);
     if (gmtime(&thing)->tm_mday == ((u16)(~magicNumber >> 16) ^ 0x3826) && gmtime(&thing)->tm_mon == ((u16)(~magicNumber) ^ 0xB545))
     {
@@ -1616,17 +1613,7 @@ bool Gui::showChoiceMessage(const std::string& message, int timer)
         auto parsed = parseText(message, FONT_SIZE_15);
         float lineMod = fontGetInfo(nullptr)->lineFeed * FONT_SIZE_15;
 
-        text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
-        // if (!message2)
-        // {
-        //     text(message, 200, 95, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::TOP);
-        // }
-        // else
-        // {
-        //     u8 transparency = transparencyWaver();
-        //     text(message, 200, 85, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
-        //     text(message2.value(), 200, 105, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
-        // }
+        text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
 
         float continueY = 110 + (lineMod / 2) * parsed->lineWidths.size();
 
@@ -1685,17 +1672,7 @@ void Gui::waitFrame(const std::string& message)
     auto parsed = parseText(message, FONT_SIZE_15);
     float lineMod = fontGetInfo(nullptr)->lineFeed * FONT_SIZE_15;
 
-    text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
-    // if (!message2)
-    // {
-    //     text(message, 200, 95, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::TOP);
-    // }
-    // else
-    // {
-    //     u8 transparency = transparencyWaver();
-    //     text(message, 200, 85, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
-    //     text(message2.value(), 200, 105, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
-    // }
+    text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
 
     float continueY = 110 + (lineMod / 2) * parsed->lineWidths.size();
 
@@ -1734,17 +1711,7 @@ void Gui::warn(const std::string& message, std::optional<Language> lang)
         auto parsed = parseText(message, FONT_SIZE_15);
         float lineMod = fontGetInfo(nullptr)->lineFeed * FONT_SIZE_15;
 
-        text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
-        // if (!message2)
-        // {
-        //     text(message, 200, 95, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::TOP);
-        // }
-        // else
-        // {
-        //     u8 transparency = transparencyWaver();
-        //     text(message, 200, 85, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
-        //     text(message2.value(), 200, 105, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
-        // }
+        text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
 
         float continueY = 110 + (lineMod / 2) * parsed->lineWidths.size();
         if (lang)
@@ -1884,9 +1851,9 @@ void Gui::error(const std::string& message, Result errorCode)
         target(GFX_TOP);
         sprite(ui_sheet_part_info_top_idx, 0, 0);
         u8 transparency = transparencyWaver();
-        text(message, 200, 85, FONT_SIZE_15, FONT_SIZE_15, C2D_Color32(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
+        text(message, 200, 85, FONT_SIZE_15, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
         text(StringUtils::format(i18n::localize("ERROR_CODE"), errorCode), 200, 105, FONT_SIZE_15, FONT_SIZE_15,
-            C2D_Color32(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
+            PKSM_Color(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
 
         text(i18n::localize("CONTINUE"), 200, 130, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
@@ -1916,12 +1883,12 @@ void Gui::drawSelector(float x, float y)
     static constexpr int w     = 2;
     static float timer         = 0.0f;
     float highlight_multiplier = fmax(0.0, fabs(fmod(timer, 1.0) - 0.5) / 0.5);
-    u8 r                       = COLOR_SELECTOR & 0xFF;
-    u8 g                       = (COLOR_SELECTOR >> 8) & 0xFF;
-    u8 b                       = (COLOR_SELECTOR >> 16) & 0xFF;
-    u32 color = C2D_Color32(r + (255 - r) * highlight_multiplier, g + (255 - g) * highlight_multiplier, b + (255 - b) * highlight_multiplier, 255);
+    u8 r                       = COLOR_SELECTOR.r;
+    u8 g                       = COLOR_SELECTOR.g;
+    u8 b                       = COLOR_SELECTOR.b;
+    PKSM_Color color = PKSM_Color(r + (255 - r) * highlight_multiplier, g + (255 - g) * highlight_multiplier, b + (255 - b) * highlight_multiplier, 255);
 
-    Gui::drawSolidRect(x, y, 50, 50, C2D_Color32(255, 255, 255, 100));
+    Gui::drawSolidRect(x, y, 50, 50, PKSM_Color(255, 255, 255, 100));
     Gui::drawSolidRect(x, y, 50, w, color);                      // top
     Gui::drawSolidRect(x, y + w, w, 50 - 2 * w, color);          // left
     Gui::drawSolidRect(x + 50 - w, y + w, w, 50 - 2 * w, color); // right

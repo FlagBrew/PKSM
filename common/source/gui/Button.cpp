@@ -24,41 +24,22 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef QRSCANNER_HPP
-#define QRSCANNER_HPP
-
-#include "base64.hpp"
+#include "Button.hpp"
 #include "gui.hpp"
-#include "quirc/quirc.h"
 
-typedef struct
+Button::Button(int x, int y, u16 w, u16 h, std::function<bool()> callback, int image, std::string text, float textScale, PKSM_Color textColor)
+    : Clickable(x, y, w, h, callback), textColor(textColor)
 {
-    u16* camera_buffer;
-    Handle mutex;
-    volatile bool finished;
-    Handle cancel;
-    bool capturing;
-    struct quirc* context;
-    C3D_Tex* tex;
-    C2D_Image image;
-} qr_data;
-
-enum QRMode
-{
-    PKM4,
-    PKM5,
-    PKM6,
-    PKM7,
-    WCX4,
-    WCX5,
-    WCX6,
-    WCX7,
-    NUMBER
-};
-
-namespace QRScanner
-{
-    std::vector<u8> scan(QRMode mode);
+    key             = image;
+    this->text      = text;
+    this->textScale = textScale;
 }
 
-#endif
+void Button::draw() const
+{
+    Gui::sprite(key, xPos, yPos);
+    if (!text.empty())
+    {
+        Gui::text(text, xPos + width / 2, yPos + height / 2, textScale, textScale, textColor, TextPosX::CENTER, TextPosY::CENTER, width);
+    }
+}

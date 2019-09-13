@@ -24,38 +24,30 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef HID_HPP
-#define HID_HPP
+#ifndef ENABLABLETOGGLEBUTTON_HPP
+#define ENABLABLETOGGLEBUTTON_HPP
 
-#include <3ds.h>
-#include <cmath>
+#include "ToggleButton.hpp"
 
-#define DELAY_TICKS 50000000
-
-class Hid
+class EnablableToggleButton : public ToggleButton
 {
 public:
-    virtual ~Hid(void) {}
+    EnablableToggleButton(int x, int y, u16 w, u16 h, const std::function<bool()>& callback, const std::function<bool()>& disabled, int onImage,
+        const std::string& onText, float onTextScale, PKSM_Color onTextColor, const std::optional<int>& offImage = std::nullopt,
+        const std::optional<std::string>& offText = std::nullopt, const std::optional<float>& offTextScale = std::nullopt,
+        const std::optional<PKSM_Color>& offTextColor = std::nullopt, const std::optional<int>& disabledImage = std::nullopt,
+        const std::optional<std::string>& disabledText = std::nullopt, const std::optional<float>& disabledTextScale = std::nullopt,
+        const std::optional<PKSM_Color> disabledTextColor = std::nullopt);
 
-    size_t fullIndex(void) const;
-    size_t index(void) const;
-    size_t maxEntries(size_t max) const;
-    size_t maxVisibleEntries(void) const;
-    int page(void) const;
-    virtual void update(size_t count) = 0;
-    void page_back(void);
-    void page_forward(void);
-    void select(size_t index);
+    virtual bool update(touchPosition* touch) override;
+    virtual void draw() const override;
 
 protected:
-    size_t mIndex;
-    int mPage;
-    size_t mMaxPages;
-    size_t mMaxVisibleEntries;
-    size_t mColumns;
-    size_t mRows;
-    u64 mCurrentTime;
-    u64 mLastTime;
+    std::function<bool()> disabled;
+    int disabledImage;
+    std::string disabledText;
+    float disabledTextScale;
+    PKSM_Color disabledTextColor;
 };
 
 #endif

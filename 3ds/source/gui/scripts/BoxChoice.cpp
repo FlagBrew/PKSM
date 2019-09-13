@@ -42,12 +42,12 @@ BoxChoice::BoxChoice(bool doCrypt) : doCrypt(doCrypt)
 {
     mainButtons[0] = std::make_unique<Button>(
         212, 47, 108, 28, [this]() { return this->showViewer(); }, ui_sheet_button_editor_idx, i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[1] = std::make_unique<Button>(4, 212, 33, 28, [this]() { return false; }, ui_sheet_res_null_idx, "", 0.0f, 0);
-    mainButtons[2] = std::make_unique<Button>(283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
+    mainButtons[1] = std::make_unique<Button>(4, 212, 33, 28, [this]() { return false; }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
+    mainButtons[2] = std::make_unique<Button>(283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK);
     mainButtons[3] =
-        std::make_unique<AccelButton>(8, 15, 17, 24, [this]() { return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+        std::make_unique<AccelButton>(8, 15, 17, 24, [this]() { return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5);
     mainButtons[4] =
-        std::make_unique<AccelButton>(189, 15, 17, 24, [this]() { return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+        std::make_unique<AccelButton>(189, 15, 17, 24, [this]() { return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5);
 
     // Pokemon buttons
     u16 y = 45;
@@ -57,7 +57,7 @@ BoxChoice::BoxChoice(bool doCrypt) : doCrypt(doCrypt)
         for (u8 column = 0; column < 6; column++)
         {
             clickButtons[row * 6 + column] = std::make_unique<ClickButton>(
-                x, y, 34, 30, [this, row, column]() { return this->clickBottomIndex(row * 6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, 0);
+                x, y, 34, 30, [this, row, column]() { return this->clickBottomIndex(row * 6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
             x += 34;
         }
         y += 30;
@@ -101,7 +101,7 @@ void BoxChoice::drawBottom() const
         {
             if (TitleLoader::save->generation() == Generation::LGPE && row * 6 + column + boxBox * 30 >= TitleLoader::save->maxSlot())
             {
-                Gui::drawSolidRect(x, y, 34, 30, C2D_Color32(128, 128, 128, 128));
+                Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(128, 128, 128, 128));
             }
             else
             {
