@@ -27,12 +27,9 @@
 #include "Button.hpp"
 #include "gui.hpp"
 
-Button::Button(int x, int y, u16 w, u16 h, std::function<bool()> callback, int image, std::string text, float textScale, PKSM_Color textColor)
-    : Clickable(x, y, w, h, callback), textColor(textColor)
+Button::Button(int x, int y, u16 w, u16 h, std::function<bool()> callback, int image, std::string text, FontSize size, PKSM_Color textColor)
+    : Clickable(x, y, w, h, callback), key(image), text(text), size(size), textColor(textColor)
 {
-    key             = image;
-    this->text      = text;
-    this->textScale = textScale;
 }
 
 void Button::draw() const
@@ -40,6 +37,6 @@ void Button::draw() const
     Gui::sprite(key, xPos, yPos);
     if (!text.empty())
     {
-        Gui::text(text, xPos + width / 2, yPos + height / 2, textScale, textScale, textColor, TextPosX::CENTER, TextPosY::CENTER, width);
+        Gui::text(text, xPos + width / 2, yPos + height / 2, size, textColor, TextPosX::CENTER, TextPosY::CENTER, width);
     }
 }

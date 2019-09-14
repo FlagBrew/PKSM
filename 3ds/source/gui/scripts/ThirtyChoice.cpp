@@ -50,7 +50,7 @@ void ThirtyChoice::drawTop() const
                 break;
             }
             Gui::pkm(pkms[index].species, pkms[index].form, gen, 0, x * 67 + 18, y * 48 + 1);
-            Gui::text(labels[index], x * 67 + 32, y * 48 + 39, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, 65.0f);
+            Gui::text(labels[index], x * 67 + 32, y * 48 + 39, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, 65.0f);
         }
     }
 }

@@ -63,5 +63,5 @@ int ScriptChoice::run()
 void ScriptChoice::drawBottom() const
 {
     Gui::backgroundBottom(false);
-    Gui::text(question, 160, 120, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text(question, 160, 120, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 }

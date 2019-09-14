@@ -306,7 +306,7 @@ static void drawIcon(std::tuple<const char*, int, int> label, int x, int y)
 {
     Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
     Gui::pkm(std::get<1>(label), std::get<2>(label), Generation::SEVEN, 2, x + 8, y);
-    Gui::text(std::get<0>(label), x + 24, y + 30, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(std::get<0>(label), x + 24, y + 30, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 }
 
 void ExtraSavesSubScreen::drawTop() const
@@ -334,7 +334,7 @@ void ExtraSavesSubScreen::drawTop() const
         drawIcon(label, 176, 96);
         Gui::drawSelector(x - 1, 95);
     }
-    Gui::text(i18n::localize("EXTRA_SAVES"), 200, 12, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text(i18n::localize("EXTRA_SAVES"), 200, 12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 }
 
 void ExtraSavesSubScreen::update(touchPosition* touch)
@@ -494,7 +494,7 @@ void ExtraSavesSubScreen::drawBottom() const
 
     Gui::text(secondSelected ? i18n::game(Configuration::getInstance().language(), groupToGameId2(group))
                              : i18n::game(Configuration::getInstance().language(), groupToGameId1(group)),
-        27, 26, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        27, 26, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
     if (selectedSave > -1)
     {
@@ -516,12 +516,12 @@ void ExtraSavesSubScreen::drawBottom() const
                     if ((int)j == selectedSave)
                     {
                         Gui::scrollingText(
-                            idSaves.second[i - firstSave + j], 29, y, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 169);
+                            idSaves.second[i - firstSave + j], 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 169);
                     }
                     else
                     {
                         Gui::slicedText(
-                            idSaves.second[i - firstSave + j], 29, y, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 169);
+                            idSaves.second[i - firstSave + j], 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 169);
                     }
                     y += 17;
                 }
@@ -542,11 +542,11 @@ void ExtraSavesSubScreen::drawBottom() const
             {
                 if (i - firstSave == selectedSave)
                 {
-                    Gui::scrollingText(currentSaves[i], 29, y, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 169);
+                    Gui::scrollingText(currentSaves[i], 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 169);
                 }
                 else
                 {
-                    Gui::slicedText(currentSaves[i], 29, y, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 169);
+                    Gui::slicedText(currentSaves[i], 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 169);
                 }
             }
             else
@@ -569,11 +569,11 @@ void ExtraSavesSubScreen::drawBottom() const
         Gui::drawSolidTriangle(189, 191, 197, 191, 193, 196, PKSM_Color(0x0f, 0x16, 0x59, 255));
     }
 
-    Gui::text(i18n::localize("A_ADD_SAVE"), 248, 113, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-    Gui::text(i18n::localize("X_DELETE_SAVE"), 248, 172, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, 94);
+    Gui::text(i18n::localize("A_ADD_SAVE"), 248, 113, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("X_DELETE_SAVE"), 248, 172, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, 94);
 
     Gui::text(
-        i18n::localize("EXTRASAVES_CONFIGURE_INSTRUCTIONS"), 160, 223, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        i18n::localize("EXTRASAVES_CONFIGURE_INSTRUCTIONS"), 160, 223, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
     Gui::drawSolidRect(245, 23, 48, 48, COLOR_BLACK);
     Gui::drawSolidRect(243, 21, 52, 52, PKSM_Color(15, 22, 89, 255));

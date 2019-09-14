@@ -27,17 +27,17 @@
 #include "ToggleButton.hpp"
 
 ToggleButton::ToggleButton(int x, int y, u16 w, u16 h, const std::function<bool()>& callback, int onImage, const std::string& onText,
-    float onTextScale, PKSM_Color onTextColor, const std::optional<int>& offImage, const std::optional<std::string>& offText,
-    const std::optional<float>& offTextScale, const std::optional<PKSM_Color>& offTextColor, std::vector<std::unique_ptr<ToggleButton>>* radioCategory,
+    FontSize onFontSize, PKSM_Color onTextColor, const std::optional<int>& offImage, const std::optional<std::string>& offText,
+    const std::optional<FontSize>& offFontSize, const std::optional<PKSM_Color>& offTextColor, std::vector<std::unique_ptr<ToggleButton>>* radioCategory,
     bool disablable)
-    : ClickButton(x, y, w, h, callback, onImage, onText, onTextScale, onTextColor),
+    : ClickButton(x, y, w, h, callback, onImage, onText, onFontSize, onTextColor),
       onImage(onImage),
       onText(onText),
-      onScale(onTextScale),
+      onFontSize(onFontSize),
       onColor(onTextColor),
       offImage(offImage.value_or(onImage)),
       offText(offText.value_or(onText)),
-      offScale(offTextScale.value_or(onTextScale)),
+      offFontSize(offFontSize.value_or(onFontSize)),
       offColor(offTextColor.value_or(onTextColor)),
       radioCategory(radioCategory),
       disablable(disablable)
@@ -73,7 +73,7 @@ void ToggleButton::setState(bool state)
         key       = offImage;
         text      = offText;
         textColor = offColor;
-        textScale = offScale;
+        size = offFontSize;
     }
     else
     {
@@ -90,7 +90,7 @@ void ToggleButton::setState(bool state)
         key       = onImage;
         text      = onText;
         textColor = onColor;
-        textScale = onScale;
+        size = onFontSize;
     }
     currentState = state;
 }

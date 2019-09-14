@@ -148,14 +148,14 @@ void FilterScreen::drawBottom() const
     Gui::pkm(filter->species(), 0, TitleLoader::save->generation(), 0, 58, 60);
     Gui::pkm(filter->species(), filter->alternativeForm(), TitleLoader::save->generation(), 0, 179, 60);
 
-    Gui::text(i18n::localize("FILTER_OPTIONS"), 160, 14, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::text(i18n::localize("B_BACK"), 160, 230.5f, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::text(i18n::localize("SPECIES"), 10, 38, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::CENTER);
-    Gui::text(i18n::localize("MOVES"), 10, 111, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::CENTER);
+    Gui::text(i18n::localize("FILTER_OPTIONS"), 160, 14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text(i18n::localize("B_BACK"), 160, 230.5f, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text(i18n::localize("SPECIES"), 10, 38, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::CENTER);
+    Gui::text(i18n::localize("MOVES"), 10, 111, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::CENTER);
 
     for (int i = 0; i < 4; i++)
     {
-        Gui::text(i18n::move(Configuration::getInstance().language(), filter->move(i)), 95, 138 + i * 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE,
+        Gui::text(i18n::move(Configuration::getInstance().language(), filter->move(i)), 95, 138 + i * 24, FONT_SIZE_14, COLOR_WHITE,
             TextPosX::LEFT, TextPosY::CENTER);
     }
 }

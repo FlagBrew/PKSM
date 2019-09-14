@@ -122,33 +122,33 @@ void MoveEditScreen::drawBottom() const
         button->draw();
     }
 
-    Gui::text(i18n::localize("MOVES"), 12, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(i18n::localize("RELEARN_MOVES"), 12, 113, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("MOVES"), 12, 5, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("RELEARN_MOVES"), 12, 113, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
     for (int i = 0; i < 4; i++)
     {
-        Gui::text(i18n::move(lang, pkm->move(i)), 24, 32 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::move(lang, pkm->move(i)), 24, 32 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         if (pkm->generation() < Generation::SIX)
         {
-            Gui::text(i18n::localize("EDITOR_NOT_APPLICABLE_GEN"), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+            Gui::text(i18n::localize("EDITOR_NOT_APPLICABLE_GEN"), 24, 141 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
                 TextPosY::TOP);
         }
         else
         {
             Gui::text(
-                i18n::move(lang, pkm->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+                i18n::move(lang, pkm->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         }
     }
 
     if (moveSelected < 4)
     {
         Gui::sprite(ui_sheet_emulated_pointer_horizontal_flipped_idx, 169 + Gui::pointerBob(), 31 + moveSelected * 20);
-        Gui::text("\uE000", 194, 29 + moveSelected * 20, FONT_SIZE_18, FONT_SIZE_18, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text("\uE000", 194, 29 + moveSelected * 20, FONT_SIZE_18, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     }
     else
     {
         Gui::sprite(ui_sheet_emulated_pointer_horizontal_flipped_idx, 169 + Gui::pointerBob(), 140 + (moveSelected - 4) * 20);
-        Gui::text("\uE000", 194, 138 + (moveSelected - 4) * 20, FONT_SIZE_18, FONT_SIZE_18, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text("\uE000", 194, 138 + (moveSelected - 4) * 20, FONT_SIZE_18, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     }
 }
 

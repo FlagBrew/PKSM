@@ -32,7 +32,7 @@
 class AccelButton : public Button
 {
 public:
-    AccelButton(int x, int y, u16 w, u16 h, const std::function<bool()>& callback, int image, const std::string& text, float textScale, PKSM_Color textColor,
+    AccelButton(int x, int y, u16 w, u16 h, const std::function<bool()>& callback, int image, const std::string& text, FontSize size, PKSM_Color textColor,
         int slowTime = 5, int fastTime = 1);
     ~AccelButton(void) {}
 

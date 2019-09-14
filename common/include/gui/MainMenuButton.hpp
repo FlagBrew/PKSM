@@ -35,8 +35,8 @@ class MainMenuButton : public Button
 {
 public:
     MainMenuButton(
-        int x, int y, u16 w, u16 h, std::function<bool()> callback, int image, std::string text, float textScale, PKSM_Color textColor, int imageY)
-        : Button(x, y, w, h, callback, ui_sheet_mainmenu_button_idx, text, textScale, textColor)
+        int x, int y, u16 w, u16 h, std::function<bool()> callback, int image, std::string text, FontSize size, PKSM_Color textColor, int imageY)
+        : Button(x, y, w, h, callback, ui_sheet_mainmenu_button_idx, text, size, textColor)
     {
         menuImage    = image;
         this->imageY = imageY;

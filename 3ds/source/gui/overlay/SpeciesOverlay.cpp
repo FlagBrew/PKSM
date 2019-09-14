@@ -97,10 +97,10 @@ SpeciesOverlay::SpeciesOverlay(ReplaceableScreen& screen, const std::variant<std
 void SpeciesOverlay::drawBottom() const
 {
     dim();
-    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     searchButton->draw();
     Gui::sprite(ui_sheet_icon_search_idx, 79, 33);
-    Gui::text(searchString, 95, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(searchString, 95, 32, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 }
 
 void SpeciesOverlay::drawTop() const
@@ -130,7 +130,7 @@ void SpeciesOverlay::drawTop() const
             }
             size_t species = dispPkm[pkmIndex];
             Gui::pkm(species, 0, TitleLoader::save->generation(), 0, x * 50 + 7, y * 48 + 2);
-            Gui::text(std::to_string(species), x * 50 + 25, y * 48 + 34, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+            Gui::text(std::to_string(species), x * 50 + 25, y * 48 + 34, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
         }
     }
 }

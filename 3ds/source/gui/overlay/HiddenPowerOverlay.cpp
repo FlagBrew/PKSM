@@ -31,7 +31,7 @@
 void HiddenPowerOverlay::drawBottom() const
 {
     dim();
-    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 }
 
 void HiddenPowerOverlay::drawTop() const

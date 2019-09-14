@@ -74,13 +74,13 @@ void FileChooseOverlay::drawTop() const
         }
         else
         {
-            Gui::text(currFiles[i].first, 30, 24 + (i % hid.maxVisibleEntries() * 25), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT,
+            Gui::text(currFiles[i].first, 30, 24 + (i % hid.maxVisibleEntries() * 25), FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT,
                 TextPosY::TOP);
         }
     }
 
     // Leaving space for the icon
-    Gui::text(currDirString, 15, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_YELLOW, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(currDirString, 15, 2, FONT_SIZE_11, COLOR_YELLOW, TextPosX::LEFT, TextPosY::TOP);
 }
 
 void FileChooseOverlay::updateEntries()

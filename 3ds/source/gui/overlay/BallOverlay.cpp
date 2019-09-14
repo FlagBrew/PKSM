@@ -32,7 +32,7 @@
 void BallOverlay::drawBottom() const
 {
     dim();
-    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 }
 
 void BallOverlay::drawTop() const
@@ -57,7 +57,7 @@ void BallOverlay::drawTop() const
                 break;
             }
             Gui::ball(x + y * 6 + 1, x * 67 + 24, y * 48 + 8);
-            Gui::text(i18n::ball(Configuration::getInstance().language(), x + y * 6), x * 67 + 33, y * 48 + 30, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE,
+            Gui::text(i18n::ball(Configuration::getInstance().language(), x + y * 6), x * 67 + 33, y * 48 + 30, FONT_SIZE_9, COLOR_WHITE,
                 TextPosX::CENTER, TextPosY::TOP);
         }
     }

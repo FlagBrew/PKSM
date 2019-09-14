@@ -173,14 +173,14 @@ void InjectSelectorScreen::update(touchPosition* touch)
 void InjectSelectorScreen::drawBottom() const
 {
     Gui::backgroundBottom(true);
-    Gui::text(i18n::localize("WC_INST1"), 160, 222, FONT_SIZE_11, FONT_SIZE_11, PKSM_Color(197, 202, 233, 255), TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("WC_INST1"), 160, 222, FONT_SIZE_11, PKSM_Color(197, 202, 233, 255), TextPosX::CENTER, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_eventmenu_page_indicator_idx, 65, 13);
 
-    Gui::text("\uE004", 75, 17, FONT_SIZE_18, FONT_SIZE_18, PKSM_Color(197, 202, 233, 255), TextPosX::LEFT, TextPosY::TOP);
-    Gui::text("\uE005", 228, 17, FONT_SIZE_18, FONT_SIZE_18, PKSM_Color(197, 202, 233, 255), TextPosX::LEFT, TextPosY::TOP);
+    Gui::text("\uE004", 75, 17, FONT_SIZE_18, PKSM_Color(197, 202, 233, 255), TextPosX::LEFT, TextPosY::TOP);
+    Gui::text("\uE005", 228, 17, FONT_SIZE_18, PKSM_Color(197, 202, 233, 255), TextPosX::LEFT, TextPosY::TOP);
     Gui::text(StringUtils::format("%d/%d", hid.page() + 1, wondercards.size() % 10 == 0 ? wondercards.size() / 10 : wondercards.size() / 10 + 1), 160,
-        20, FONT_SIZE_12, FONT_SIZE_12, PKSM_Color(197, 202, 233, 255), TextPosX::CENTER, TextPosY::TOP);
+        20, FONT_SIZE_12, PKSM_Color(197, 202, 233, 255), TextPosX::CENTER, TextPosY::TOP);
 
     for (auto& button : buttons)
     {
@@ -197,12 +197,12 @@ void InjectSelectorScreen::drawBottom() const
         button->draw();
     }
 
-    Gui::text("\uE004+\uE005 \uE01E", 160, 207 - 21, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text("\uE004+\uE005 \uE01E", 160, 207 - 21, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
     if (dump)
     {
         Gui::drawSolidRect(0, 0, 320, 240, COLOR_MASKBLACK);
-        Gui::text(i18n::localize("WC_DUMP1"), 160, 107, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(i18n::localize("WC_DUMP1"), 160, 107, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     }
 }
 
@@ -213,7 +213,7 @@ void InjectSelectorScreen::drawTop() const
         Gui::backgroundTop(true);
 
         Gui::text(
-            i18n::localize("EVENT_DATABASE"), 200, 4, FONT_SIZE_14, FONT_SIZE_14, PKSM_Color(140, 158, 255, 255), TextPosX::CENTER, TextPosY::TOP);
+            i18n::localize("EVENT_DATABASE"), 200, 4, FONT_SIZE_14, PKSM_Color(140, 158, 255, 255), TextPosX::CENTER, TextPosY::TOP);
 
         for (size_t i = 0; i < 10; i++)
         {
@@ -289,22 +289,9 @@ void InjectSelectorScreen::drawTop() const
                 }
                 auto text = Gui::parseText(data.name, FONT_SIZE_11, 138.0f);
                 // Truncate to two lines
-                for (size_t i = 0; i < text->glyphs.size(); i++)
-                {
-                    if (text->glyphs[i].line > 2)
-                    {
-                        text->glyphs.erase(text->glyphs.begin() + i);
-                        i--;
-                    }
-                }
-                while (text->lineWidths.size() > 2)
-                {
-                    text->lineWidths.pop_back();
-                }
-                // Use max_element just in case there's only one line
-                text->maxLineWidth = *std::max_element(text->lineWidths.begin(), text->lineWidths.end());
+                text->truncate(2);
                 // Then display it
-                Gui::text(text, x + 103, y + 14, FONT_SIZE_11, FONT_SIZE_11,
+                Gui::text(text, x + 103, y + 14, FONT_SIZE_11,
                     i == hid.fullIndex() ? PKSM_Color(232, 234, 246, 255) : PKSM_Color(26, 35, 126, 255), TextPosX::CENTER, TextPosY::CENTER);
             }
         }
@@ -338,12 +325,12 @@ void InjectSelectorScreen::drawTop() const
                 }
 
                 Gui::text(
-                    std::to_string(fullI + 1), x * 50 + 25, y * 48 + 36, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    std::to_string(fullI + 1), x * 50 + 25, y * 48 + 36, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
             }
             else
             {
                 Gui::text(
-                    std::to_string(fullI + 1), x * 50 + 25, y * 48 + 36, FONT_SIZE_9, FONT_SIZE_9, COLOR_MASKBLACK, TextPosX::CENTER, TextPosY::TOP);
+                    std::to_string(fullI + 1), x * 50 + 25, y * 48 + 36, FONT_SIZE_9, COLOR_MASKBLACK, TextPosX::CENTER, TextPosY::TOP);
             }
         }
     }

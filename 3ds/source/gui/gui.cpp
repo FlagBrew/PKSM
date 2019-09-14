@@ -252,17 +252,19 @@ void Gui::clearText(void)
     textBuffer->clearUnconditional();
 }
 
-std::shared_ptr<TextParse::Text> Gui::parseText(const std::string& str, float scaleX, float maxWidth)
+std::shared_ptr<TextParse::Text> Gui::parseText(const std::string& str, FontSize size, float maxWidth)
 {
-    maxWidth /= scaleX;
+    static_assert(std::is_same<FontSize, float>::value);
+    maxWidth /= size;
     return textBuffer->parse(str, maxWidth);
 }
 
-void Gui::text(std::shared_ptr<TextParse::Text> text, float x, float y, float scaleX, float scaleY, PKSM_Color color, TextPosX positionX, TextPosY positionY)
+void Gui::text(std::shared_ptr<TextParse::Text> text, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY)
 {
+    static_assert(std::is_same<FontSize, float>::value);
     textMode            = true;
-    const float lineMod = scaleY * C2D_FontGetInfo(fonts[1])->lineFeed;
-    y -= scaleY * 6;
+    const float lineMod = size * C2D_FontGetInfo(fonts[1])->lineFeed;
+    y -= size * 6;
     switch (positionY)
     {
         case TextPosY::TOP:
@@ -275,33 +277,35 @@ void Gui::text(std::shared_ptr<TextParse::Text> text, float x, float y, float sc
             break;
     }
 
-    currentText->addText(text, x, y, 0.5f, scaleX, scaleY, positionX, color);
+    currentText->addText(text, x, y, 0.5f, size, positionX, color);
 }
 
 void Gui::text(
-    const std::string& str, float x, float y, float scaleX, float scaleY, PKSM_Color color, TextPosX positionX, TextPosY positionY, float maxWidth)
+    const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, float maxWidth)
 {
-    auto text = parseText(str, scaleX, maxWidth);
+    static_assert(std::is_same<FontSize, float>::value);
+    auto text = parseText(str, size, maxWidth);
 
-    Gui::text(text, x, y, scaleX, scaleY, color, positionX, positionY);
+    Gui::text(text, x, y, size, color, positionX, positionY);
 }
 
 void Gui::scrollingText(
-    const std::string& str, float x, float y, float scaleX, float scaleY, PKSM_Color color, TextPosX positionX, TextPosY positionY, int width)
+    const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, int width)
 {
+    static_assert(std::is_same<FontSize, float>::value);
     static const Tex3DS_SubTexture t3x = {512, 256, 0.0f, 1.0f, 1.0f, 0.0f};
     static const C2D_Image textImage   = {&textChopTexture, &t3x};
 
-    auto text = parseText(str, scaleX);
+    auto text = parseText(str, size);
     text->optimize();
     if (!scrollOffsets.count(str))
     {
         scrollOffsets[str] = {0, 1};
     }
 
-    static const float lineMod     = scaleY * C2D_FontGetInfo(nullptr)->lineFeed;
-    static const float baselinePos = scaleY * C2D_FontGetInfo(nullptr)->tglp->baselinePos;
-    y -= scaleY * 6;
+    static const float lineMod     = size * C2D_FontGetInfo(nullptr)->lineFeed;
+    static const float baselinePos = size * C2D_FontGetInfo(nullptr)->tglp->baselinePos;
+    y -= size * 6;
     switch (positionY)
     {
         case TextPosY::TOP:
@@ -315,7 +319,7 @@ void Gui::scrollingText(
     }
 
     C2D_SceneBegin(g_renderTargetTextChop);
-    text->draw(-scrollOffsets[str].offset / 3, scrollingTextY, 0, scaleX, scaleY, positionX, color);
+    text->draw(-scrollOffsets[str].offset / 3, scrollingTextY, 0, size, positionX, color);
     C2D_SceneBegin(drawingOnTopScreen ? g_renderTargetTop : g_renderTargetBottom);
     Tex3DS_SubTexture newt3x = _select_box(textImage, 0, scrollingTextY + lineMod - baselinePos, width, scrollingTextY + lineMod * 2 - baselinePos);
     scrollingTextY += ceilf(lineMod);
@@ -341,7 +345,7 @@ void Gui::scrollingText(
     else
     {
         scrollOffsets[str].offset += 1;
-        if (scrollOffsets[str].offset / 3 + width > (int)text->maxLineWidth * scaleX + 5)
+        if (scrollOffsets[str].offset / 3 + width > (int)text->maxLineWidth * size + 5)
         {
             scrollOffsets[str].pauseTime += 1;
         }
@@ -350,17 +354,18 @@ void Gui::scrollingText(
 }
 
 void Gui::slicedText(
-    const std::string& str, float x, float y, float scaleX, float scaleY, PKSM_Color color, TextPosX positionX, TextPosY positionY, int width)
+    const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, int width)
 {
+    static_assert(std::is_same<FontSize, float>::value);
     static const Tex3DS_SubTexture t3x = {512, 256, 0.0f, 1.0f, 1.0f, 0.0f};
     static const C2D_Image textImage   = {&textChopTexture, &t3x};
 
-    auto text = parseText(str, scaleX);
+    auto text = parseText(str, size);
     text->optimize();
 
-    static const float lineMod     = scaleY * C2D_FontGetInfo(nullptr)->lineFeed;
-    static const float baselinePos = scaleY * C2D_FontGetInfo(nullptr)->tglp->baselinePos;
-    y -= scaleY * 6;
+    static const float lineMod     = size * C2D_FontGetInfo(nullptr)->lineFeed;
+    static const float baselinePos = size * C2D_FontGetInfo(nullptr)->tglp->baselinePos;
+    y -= size * 6;
     switch (positionY)
     {
         case TextPosY::TOP:
@@ -374,7 +379,7 @@ void Gui::slicedText(
     }
 
     C2D_SceneBegin(g_renderTargetTextChop);
-    text->draw(0, scrollingTextY, 0, scaleX, scaleY, positionX, color);
+    text->draw(0, scrollingTextY, 0, size, positionX, color);
     C2D_SceneBegin(drawingOnTopScreen ? g_renderTargetTop : g_renderTargetBottom);
     Tex3DS_SubTexture newt3x = _select_box(textImage, 0, scrollingTextY + lineMod - baselinePos, width, scrollingTextY + lineMod * 2 - baselinePos);
     scrollingTextY += ceilf(lineMod);
@@ -843,27 +848,27 @@ void Gui::sprite(int key, int x, int y)
     }
     else if (key == ui_sheet_emulated_party_indicator_1_idx)
     {
-        text("\u2460", x, y - 3, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        text("\u2460", x, y - 3, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     }
     else if (key == ui_sheet_emulated_party_indicator_2_idx)
     {
-        text("\u2461", x, y - 3, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        text("\u2461", x, y - 3, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     }
     else if (key == ui_sheet_emulated_party_indicator_3_idx)
     {
-        text("\u2462", x, y - 3, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        text("\u2462", x, y - 3, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     }
     else if (key == ui_sheet_emulated_party_indicator_4_idx)
     {
-        text("\u2463", x, y - 3, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        text("\u2463", x, y - 3, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     }
     else if (key == ui_sheet_emulated_party_indicator_5_idx)
     {
-        text("\u2464", x, y - 3, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        text("\u2464", x, y - 3, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     }
     else if (key == ui_sheet_emulated_party_indicator_6_idx)
     {
-        text("\u2465", x, y - 3, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        text("\u2465", x, y - 3, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     }
     else if (key == ui_sheet_emulated_button_selected_blue_idx)
     {
@@ -1613,11 +1618,11 @@ bool Gui::showChoiceMessage(const std::string& message, int timer)
         auto parsed = parseText(message, FONT_SIZE_15);
         float lineMod = fontGetInfo(nullptr)->lineFeed * FONT_SIZE_15;
 
-        text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
+        text(parsed, 200, 110, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
 
         float continueY = 110 + (lineMod / 2) * parsed->lineWidths.size();
 
-        text(i18n::localize("CONTINUE_CANCEL"), 200, continueY + 3, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        text(i18n::localize("CONTINUE_CANCEL"), 200, continueY + 3, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
         flushText();
 
@@ -1672,11 +1677,11 @@ void Gui::waitFrame(const std::string& message)
     auto parsed = parseText(message, FONT_SIZE_15);
     float lineMod = fontGetInfo(nullptr)->lineFeed * FONT_SIZE_15;
 
-    text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
+    text(parsed, 200, 110, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
 
     float continueY = 110 + (lineMod / 2) * parsed->lineWidths.size();
 
-    text(i18n::localize("PLEASE_WAIT"), 200, continueY + 3, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    text(i18n::localize("PLEASE_WAIT"), 200, continueY + 3, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
     flushText();
 
@@ -1711,16 +1716,16 @@ void Gui::warn(const std::string& message, std::optional<Language> lang)
         auto parsed = parseText(message, FONT_SIZE_15);
         float lineMod = fontGetInfo(nullptr)->lineFeed * FONT_SIZE_15;
 
-        text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
+        text(parsed, 200, 110, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
 
         float continueY = 110 + (lineMod / 2) * parsed->lineWidths.size();
         if (lang)
         {
-            text(i18n::localize(lang.value(), "CONTINUE"), 200, continueY + 3, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+            text(i18n::localize(lang.value(), "CONTINUE"), 200, continueY + 3, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
         }
         else
         {
-            text(i18n::localize("CONTINUE"), 200, continueY + 3, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+            text(i18n::localize("CONTINUE"), 200, continueY + 3, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
         }
 
         flushText();
@@ -1762,8 +1767,8 @@ void Gui::showRestoreProgress(u32 partial, u32 total)
     Gui::clearScreen(GFX_BOTTOM);
     target(GFX_TOP);
     sprite(ui_sheet_part_info_top_idx, 0, 0);
-    text(i18n::localize("SAVING"), 200, 95, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-    text(StringUtils::format(i18n::localize("SAVE_PROGRESS"), partial, total), 200, 130, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
+    text(i18n::localize("SAVING"), 200, 95, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    text(StringUtils::format(i18n::localize("SAVE_PROGRESS"), partial, total), 200, 130, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
         TextPosY::TOP);
     flushText();
 
@@ -1790,9 +1795,9 @@ void Gui::showDownloadProgress(const std::string& path, u32 partial, u32 total)
     Gui::clearScreen(GFX_BOTTOM);
     target(GFX_TOP);
     sprite(ui_sheet_part_info_top_idx, 0, 0);
-    text(StringUtils::format(i18n::localize("DOWNLOADING_FILE"), path.c_str()), 200, 95, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER,
+    text(StringUtils::format(i18n::localize("DOWNLOADING_FILE"), path.c_str()), 200, 95, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER,
         TextPosY::TOP);
-    text(StringUtils::format(i18n::localize("SAVE_PROGRESS"), partial, total), 200, 130, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
+    text(StringUtils::format(i18n::localize("SAVE_PROGRESS"), partial, total), 200, 130, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
         TextPosY::TOP);
     flushText();
 
@@ -1819,7 +1824,7 @@ void Gui::showResizeStorage()
     Gui::clearScreen(GFX_BOTTOM);
     target(GFX_TOP);
     sprite(ui_sheet_part_info_top_idx, 0, 0);
-    text(i18n::localize("STORAGE_RESIZE"), 200, 95, FONT_SIZE_15, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    text(i18n::localize("STORAGE_RESIZE"), 200, 95, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     flushText();
 
     target(GFX_BOTTOM);
@@ -1851,11 +1856,11 @@ void Gui::error(const std::string& message, Result errorCode)
         target(GFX_TOP);
         sprite(ui_sheet_part_info_top_idx, 0, 0);
         u8 transparency = transparencyWaver();
-        text(message, 200, 85, FONT_SIZE_15, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
-        text(StringUtils::format(i18n::localize("ERROR_CODE"), errorCode), 200, 105, FONT_SIZE_15, FONT_SIZE_15,
+        text(message, 200, 85, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
+        text(StringUtils::format(i18n::localize("ERROR_CODE"), errorCode), 200, 105, FONT_SIZE_15,
             PKSM_Color(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
 
-        text(i18n::localize("CONTINUE"), 200, 130, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        text(i18n::localize("CONTINUE"), 200, 130, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
         flushText();
 

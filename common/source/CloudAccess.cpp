@@ -260,9 +260,9 @@ bool CloudAccess::prevPage()
     return isGood;
 }
 
-bool CloudAccess::pkm(std::shared_ptr<PKX> mon)
+long CloudAccess::pkm(std::shared_ptr<PKX> mon)
 {
-    bool ret            = false;
+    long ret            = 0;
     std::string version = "Generation: " + genToString(mon->generation());
     std::string code    = Configuration::getInstance().patronCode();
     if (!code.empty())
@@ -290,18 +290,10 @@ bool CloudAccess::pkm(std::shared_ptr<PKX> mon)
         CURLcode res = fetch->perform();
         if (res == CURLE_OK)
         {
-            long status_code;
-            fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
-            switch (status_code)
+            fetch->getinfo(CURLINFO_RESPONSE_CODE, &ret);
+            if (ret == 201)
             {
-                case 201:
-                    refreshPages();
-                    // falls through
-                case 200:
-                    ret = true;
-                    break;
-                default:
-                    break;
+                refreshPages();
             }
         }
     }

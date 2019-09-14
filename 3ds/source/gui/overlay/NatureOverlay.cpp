@@ -33,19 +33,19 @@ static constexpr std::string_view stats[] = {"ATTACK", "DEFENSE", "SPEED", "SPAT
 void NatureOverlay::drawBottom() const
 {
     dim();
-    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 }
 
 void NatureOverlay::drawTop() const
 {
     Gui::sprite(ui_sheet_part_editor_6x6_idx, 0, 0);
 
-    Gui::text(i18n::localize("NEUTRAL"), 0 + 65 / 2, 12, FONT_SIZE_11, FONT_SIZE_11, COLOR_YELLOW, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("NEUTRAL"), 0 + 65 / 2, 12, FONT_SIZE_11, COLOR_YELLOW, TextPosX::CENTER, TextPosY::TOP);
     for (int i = 0; i < 5; i++)
     {
-        Gui::text(std::string("-") + i18n::localize(std::string(stats[i])), i * 67 + 99, 12, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE,
+        Gui::text(std::string("-") + i18n::localize(std::string(stats[i])), i * 67 + 99, 12, FONT_SIZE_11, COLOR_WHITE,
             TextPosX::CENTER, TextPosY::TOP);
-        Gui::text(std::string("+") + i18n::localize(std::string(stats[i])), 32, i * 40 + 52, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE,
+        Gui::text(std::string("+") + i18n::localize(std::string(stats[i])), 32, i * 40 + 52, FONT_SIZE_11, COLOR_WHITE,
             TextPosX::CENTER, TextPosY::TOP);
     }
 
@@ -62,7 +62,7 @@ void NatureOverlay::drawTop() const
     {
         for (int x = 0; x < 5; x++)
         {
-            Gui::text(i18n::nature(Configuration::getInstance().language(), x + y * 5), x * 67 + 99, y * 40 + 52, FONT_SIZE_11, FONT_SIZE_11,
+            Gui::text(i18n::nature(Configuration::getInstance().language(), x + y * 5), x * 67 + 99, y * 40 + 52, FONT_SIZE_11,
                 x == y ? COLOR_YELLOW : COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
         }
     }

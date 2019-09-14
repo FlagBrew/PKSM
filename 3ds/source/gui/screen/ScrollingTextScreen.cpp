@@ -77,7 +77,7 @@ void ScrollingTextScreen::drawBottom() const
     Gui::drawSolidCircle(310, 10, 5, COLOR_WHITE);
     Gui::drawSolidCircle(10, 230, 5, COLOR_WHITE);
 
-    Gui::text(text, 10, 7 - lineMod * lineOffset, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(text, 10, 7 - lineMod * lineOffset, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::drawSolidRect(0, 0, 320, 5, COLOR_MENUBLUE);
     Gui::drawSolidRect(0, 235, 320, 5, COLOR_MENUBLUE);
 

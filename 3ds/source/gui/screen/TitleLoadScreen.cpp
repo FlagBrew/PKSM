@@ -95,10 +95,10 @@ void TitleLoadScreen::drawTop() const
         }
     }
 
-    Gui::text(i18n::localize("LOADER_INSTRUCTIONS_TOP_ABSENT"), 200, 8, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-    Gui::text(i18n::localize("LOADER_GAME_CARD"), 4 + 120 / 2, 197, FONT_SIZE_14, FONT_SIZE_14, PKSM_Color(15, 22, 89, 255), TextPosX::CENTER,
+    Gui::text(i18n::localize("LOADER_INSTRUCTIONS_TOP_ABSENT"), 200, 8, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("LOADER_GAME_CARD"), 4 + 120 / 2, 197, FONT_SIZE_14, PKSM_Color(15, 22, 89, 255), TextPosX::CENTER,
         TextPosY::TOP);
-    Gui::text(i18n::localize("LOADER_INSTALLED_GAMES"), 128 + 268 / 2, 197, FONT_SIZE_14, FONT_SIZE_14, PKSM_Color(15, 22, 89, 255),
+    Gui::text(i18n::localize("LOADER_INSTALLED_GAMES"), 128 + 268 / 2, 197, FONT_SIZE_14, PKSM_Color(15, 22, 89, 255),
         TextPosX::CENTER, TextPosY::TOP);
 }
 
@@ -109,26 +109,26 @@ void TitleLoadScreen::drawBottom() const
 
     auto text      = Gui::parseText(i18n::localize("LOADER_ID"), FONT_SIZE_11, 0.0f);
     int nextIdPart = 27 + text->maxWidth(FONT_SIZE_11);
-    Gui::text(text, 27, 46, FONT_SIZE_11, FONT_SIZE_11, COLOR_LIGHTBLUE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(text, 27, 46, FONT_SIZE_11, COLOR_LIGHTBLUE, TextPosX::LEFT, TextPosY::TOP);
 
     text              = Gui::parseText(i18n::localize("LOADER_MEDIA_TYPE"), FONT_SIZE_11, 0.0f);
     int nextMediaPart = 27 + text->maxWidth(FONT_SIZE_11);
-    Gui::text(text, 27, 58, FONT_SIZE_11, FONT_SIZE_11, COLOR_LIGHTBLUE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(text, 27, 58, FONT_SIZE_11, COLOR_LIGHTBLUE, TextPosX::LEFT, TextPosY::TOP);
 
     if (selectedTitle != -2)
     {
         Gui::drawSolidRect(243, 21, 52, 52, PKSM_Color(15, 22, 89, 255));
         Gui::drawImageAt(titleFromIndex(selectedTitle)->icon(), 245, 23, NULL, 1.0f, 1.0f);
-        Gui::text(titleFromIndex(selectedTitle)->name(), 27, 26, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(StringUtils::format("%08X", titleFromIndex(selectedTitle)->lowId()), nextIdPart, 46, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE,
+        Gui::text(titleFromIndex(selectedTitle)->name(), 27, 26, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(StringUtils::format("%08X", titleFromIndex(selectedTitle)->lowId()), nextIdPart, 46, FONT_SIZE_11, COLOR_WHITE,
             TextPosX::LEFT, TextPosY::TOP);
 
         Gui::text(selectedTitle == -1 ? i18n::localize("LOADER_CARTRIDGE") : i18n::localize("LOADER_SD"), nextMediaPart, 58, FONT_SIZE_11,
-            FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     }
     else
     {
-        Gui::text(i18n::localize("NONE"), 27, 26, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("NONE"), 27, 26, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     }
 
     if (selectedSave > -1)
@@ -141,13 +141,13 @@ void TitleLoadScreen::drawBottom() const
     {
         if (i == -1)
         {
-            Gui::text(i18n::localize("LOADER_GAME_SAVE"), 29, y, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(i18n::localize("LOADER_GAME_SAVE"), 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         }
         else if (i < (int)availableCheckpointSaves.size())
         {
             std::string save = availableCheckpointSaves[i].substr(0, availableCheckpointSaves[i].find_last_of('/'));
             save             = save.substr(save.find_last_of('/') + 1);
-            Gui::text(save, 29, y, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(save, 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         }
         else
         {
@@ -168,10 +168,10 @@ void TitleLoadScreen::drawBottom() const
         Gui::drawSolidTriangle(189, 191, 197, 191, 193, 196, PKSM_Color(0x0f, 0x16, 0x59, 255));
     }
 
-    Gui::text(i18n::localize("LOADER_LOAD"), 200 + 96 / 2, 113, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-    Gui::text(i18n::localize("LOADER_WIRELESS"), 200 + 96 / 2, 163, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("LOADER_LOAD"), 200 + 96 / 2, 113, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("LOADER_WIRELESS"), 200 + 96 / 2, 163, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-    Gui::text(i18n::localize("LOADER_INSTRUCTIONS_BOTTOM"), 160, 223, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("LOADER_INSTRUCTIONS_BOTTOM"), 160, 223, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 }
 
 void TitleLoadScreen::update(touchPosition* touch)

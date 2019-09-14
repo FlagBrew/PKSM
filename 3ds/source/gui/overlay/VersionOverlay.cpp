@@ -44,7 +44,7 @@ VersionOverlay::VersionOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> p
 void VersionOverlay::drawBottom() const
 {
     dim();
-    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 }
 
 void VersionOverlay::drawTop() const
@@ -64,7 +64,7 @@ void VersionOverlay::drawTop() const
         {
             Gui::text(std::to_string(games[hid.page() * hid.maxVisibleEntries() + i].first) + " - " +
                           games[hid.page() * hid.maxVisibleEntries() + i].second,
-                x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+                x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         }
         else
         {

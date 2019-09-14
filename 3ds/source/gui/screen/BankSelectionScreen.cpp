@@ -31,7 +31,7 @@ void BankSelectionScreen::drawBottom() const
 {
     Gui::sprite(ui_sheet_part_info_bottom_idx, 0, 0);
     Gui::text(i18n::localize("X_RENAME") + "\n" + i18n::localize("Y_RESIZE") + "\n" + i18n::localize("START_DELETE"), 160, 120, FONT_SIZE_18,
-        FONT_SIZE_18, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER);
+        COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER);
 }
 
 void BankSelectionScreen::drawTop() const
@@ -49,10 +49,10 @@ void BankSelectionScreen::drawTop() const
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 204;
         if (hid.page() * hid.maxVisibleEntries() + i < strings.size())
         {
-            Gui::text(strings[hid.page() * hid.maxVisibleEntries() + i].first, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9,
+            Gui::text(strings[hid.page() * hid.maxVisibleEntries() + i].first, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9,
                 COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
             Gui::text(std::to_string(strings[hid.page() * hid.maxVisibleEntries() + i].second), x + 192, (i % (hid.maxVisibleEntries() / 2)) * 12,
-                FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
+                FONT_SIZE_9, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
         }
         else
         {

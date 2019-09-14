@@ -54,50 +54,50 @@ void ExtraSavesScreen::drawTop() const
     // draw DS game boxes
     Gui::drawSolidRect(x += 60, y, 48, 48, COLOR_HIGHBLUE);
     Gui::pkm(483, 0, Generation::SEVEN, 2, x - 4, y - 2);
-    Gui::text("D", x + 48 - 9, y + 12, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text("D", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::pkm(484, 0, Generation::SEVEN, 2, x + 18, y + 20);
-    Gui::text("P", x + 9, y + 37, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text("P", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::drawSolidRect(x += 60, y, 48, 48, COLOR_HIGHBLUE);
     Gui::pkm(250, 0, Generation::SEVEN, 2, x - 5, y - 2);
-    Gui::text("HG", x + 48 - 9, y + 12, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text("HG", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::pkm(249, 0, Generation::SEVEN, 2, x + 17, y + 20);
-    Gui::text("SS", x + 9, y + 37, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text("SS", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::drawSolidRect(x += 60, y, 48, 48, COLOR_HIGHBLUE);
     Gui::pkm(643, 0, Generation::SEVEN, 2, x - 3, y - 2);
-    Gui::text("B", x + 48 - 9, y + 12, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text("B", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::pkm(644, 0, Generation::SEVEN, 2, x + 18, y + 20);
-    Gui::text("W", x + 9, y + 37, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text("W", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::drawSolidRect(x += 60, y, 48, 48, COLOR_HIGHBLUE);
     Gui::pkm(646, 2, Generation::SEVEN, 2, x - 6, y - 2);
-    Gui::text("B2", x + 48 - 9, y + 12, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text("B2", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::pkm(646, 1, Generation::SEVEN, 2, x + 16, y + 20);
-    Gui::text("W2", x + 11, y + 37, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text("W2", x + 11, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::drawSolidRect(40, 98, 48, 48, COLOR_HIGHBLUE);
     Gui::pkm(487, 1, Generation::SEVEN, 2, 48, 98);
-    Gui::text("Pt", 40 + 24, 98 + 30, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text("Pt", 40 + 24, 98 + 30, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
     x = 90, y = 128;
     // draw 3DS game boxes
     Gui::drawSolidRect(x += 60, y, 48, 48, COLOR_HIGHBLUE);
     Gui::pkm(716, 0, Generation::SEVEN, 2, x - 3, y - 2);
-    Gui::text("X", x + 48 - 9, y + 12, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text("X", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::pkm(717, 0, Generation::SEVEN, 2, x + 16, y + 20);
-    Gui::text("Y", x + 9, y + 37, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text("Y", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::drawSolidRect(x += 60, y, 48, 48, COLOR_HIGHBLUE);
     Gui::pkm(383, 1, Generation::SEVEN, 2, x - 2, y - 2);
-    Gui::text("OR", x + 48 - 7, y + 12, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text("OR", x + 48 - 7, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::pkm(382, 1, Generation::SEVEN, 2, x + 16, y + 20);
-    Gui::text("AS", x + 9, y + 37, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text("AS", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::drawSolidRect(x += 60, y, 48, 48, COLOR_HIGHBLUE);
     Gui::pkm(791, 0, Generation::SEVEN, 2, x - 4, y - 2);
-    Gui::text("S", x + 48 - 9, y + 12, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text("S", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::pkm(792, 0, Generation::SEVEN, 2, x + 18, y + 20);
-    Gui::text("M", x + 9, y + 37, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text("M", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::drawSolidRect(x += 60, y, 48, 48, COLOR_HIGHBLUE);
     Gui::pkm(800, 1, Generation::SEVEN, 2, x - 3, y - 2);
-    Gui::text("US", x + 48 - 9, y + 12, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text("US", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::pkm(800, 2, Generation::SEVEN, 2, x + 19, y + 20);
-    Gui::text("UM", x + 11, y + 37, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text("UM", x + 11, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 
     if (saveGroup == -1)
     {
@@ -112,7 +112,7 @@ void ExtraSavesScreen::drawTop() const
         Gui::drawSelector(149 + (saveGroup - 4) * 60, 127);
     }
 
-    Gui::text(i18n::localize("GROUP_CHOICE_INSTR"), 200, 8, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("GROUP_CHOICE_INSTR"), 200, 8, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 }
 
 void ExtraSavesScreen::update(touchPosition* touch)

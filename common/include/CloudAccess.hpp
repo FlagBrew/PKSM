@@ -44,7 +44,7 @@ public:
     bool isLegal(size_t slot) const;
     // Gets the Pokémon and increments the server-side download counter
     std::shared_ptr<PKX> fetchPkm(size_t slot) const;
-    bool pkm(std::shared_ptr<PKX> pk);
+    long pkm(std::shared_ptr<PKX> pk);
     int pages() const { return current->data["pages"].get<int>(); }
     int page() const { return pageNumber; }
     bool nextPage();

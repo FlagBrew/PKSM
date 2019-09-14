@@ -26,6 +26,7 @@
 
 #include "TextParse.hpp"
 #include <algorithm>
+#include <type_traits>
 
 namespace TextParse
 {
@@ -67,29 +68,47 @@ namespace TextParse
         });
     }
 
-    void Text::draw(float x, float y, float z, float scaleX, float scaleY, TextPosX textPos, PKSM_Color color) const
+    void Text::draw(float x, float y, float z, FontSize size, TextPosX textPos, PKSM_Color color) const
     {
+        static_assert(std::is_same<FontSize, float>::value);
         static const u8 lineFeed = fontGetInfo(nullptr)->lineFeed;
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, colorToFormat(color), 1.0f);
         for (auto& glyph : glyphs)
         {
-            float drawY = y + scaleY * (lineFeed * glyph.line - C2D_FontGetInfo(glyph.font)->tglp->baselinePos);
+            float drawY = y + size * (lineFeed * glyph.line - C2D_FontGetInfo(glyph.font)->tglp->baselinePos);
             // The one exception to using Gui::drawImageAt: we want to control depth here
-            float drawX = x + (float)glyph.xPos * scaleX;
+            float drawX = x + (float)glyph.xPos * size;
             switch (textPos)
             {
                 case TextPosX::LEFT:
                     break;
                 case TextPosX::CENTER:
-                    drawX -= scaleX * lineWidths[glyph.line - 1] / 2;
+                    drawX -= size * lineWidths[glyph.line - 1] / 2;
                     break;
                 case TextPosX::RIGHT:
-                    drawX -= scaleX * lineWidths[glyph.line - 1];
+                    drawX -= size * lineWidths[glyph.line - 1];
                     break;
             }
-            C2D_DrawImageAt({glyph.tex, &glyph.subtex}, drawX, drawY, z, &tint, scaleX, scaleY);
+            C2D_DrawImageAt({glyph.tex, &glyph.subtex}, drawX, drawY, z, &tint, size, size);
         }
+    }
+
+    void Text::truncate(size_t lines)
+    {
+        for (size_t i = 0; i < glyphs.size(); i++)
+        {
+            if (glyphs[i].line > 2)
+            {
+                glyphs.erase(glyphs.begin() + i);
+                i--;
+            }
+        }
+        while (lineWidths.size() > 2)
+        {
+            lineWidths.pop_back();
+        }
+        maxLineWidth = *std::max_element(lineWidths.begin(), lineWidths.end());
     }
 
     TextBuf::TextBuf(size_t maxGlyphs, const std::vector<C2D_Font>& fonts) : fonts(fonts), maxGlyphs(maxGlyphs), currentGlyphs(0)
@@ -298,28 +317,29 @@ namespace TextParse
         }
     }
 
-    void ScreenText::addText(std::shared_ptr<Text> text, float x, float y, float z, float scaleX, float scaleY, TextPosX textPos, PKSM_Color color)
+    void ScreenText::addText(std::shared_ptr<Text> text, float x, float y, float z, FontSize size, TextPosX textPos, PKSM_Color color)
     {
+        static_assert(std::is_same<FontSize,float>::value);
         static const u8 lineFeed = fontGetInfo(nullptr)->lineFeed;
         if (!text || text->glyphs.empty())
             return;
 
         for (auto& glyph : text->glyphs)
         {
-            float glyphX = x + scaleX * glyph.xPos;
+            float glyphX = x + size * glyph.xPos;
             switch (textPos)
             {
                 case TextPosX::LEFT:
                     break;
                 case TextPosX::CENTER:
-                    glyphX -= scaleX * text->lineWidths[glyph.line - 1] / 2;
+                    glyphX -= size * text->lineWidths[glyph.line - 1] / 2;
                     break;
                 case TextPosX::RIGHT:
-                    glyphX -= scaleX * text->lineWidths[glyph.line - 1];
+                    glyphX -= size * text->lineWidths[glyph.line - 1];
                     break;
             }
-            float glyphY = y + scaleY * (lineFeed * glyph.line - C2D_FontGetInfo(glyph.font)->tglp->baselinePos);
-            glyphs.emplace_back(glyph, glyphX, glyphY, z, scaleX, scaleY, color);
+            float glyphY = y + size * (lineFeed * glyph.line - C2D_FontGetInfo(glyph.font)->tglp->baselinePos);
+            glyphs.emplace_back(glyph, glyphX, glyphY, z, size, color);
         }
     }
 
@@ -341,12 +361,13 @@ namespace TextParse
 
     void ScreenText::draw() const
     {
+        static_assert(std::is_same<FontSize, float>::value);
         C2D_ImageTint tint;
         for (auto& glyph : glyphs)
         {
             C2D_PlainImageTint(&tint, colorToFormat(glyph.color), 1.0f);
             // The one exception to using Gui::drawImageAt: we want to control depth here
-            C2D_DrawImageAt({glyph.glyph.tex, &glyph.glyph.subtex}, glyph.x, glyph.y, glyph.z, &tint, glyph.scaleX, glyph.scaleY);
+            C2D_DrawImageAt({glyph.glyph.tex, &glyph.glyph.subtex}, glyph.x, glyph.y, glyph.z, &tint, glyph.size, glyph.size);
         }
     }
 

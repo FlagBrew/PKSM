@@ -47,13 +47,6 @@
 #include <string.h>
 #include <unordered_map>
 
-#define FONT_SIZE_18 0.72f
-#define FONT_SIZE_15 0.6f
-#define FONT_SIZE_14 0.56f
-#define FONT_SIZE_12 0.50f
-#define FONT_SIZE_11 0.46f
-#define FONT_SIZE_9 0.37f
-
 namespace Gui
 {
     Result init(void);
@@ -100,17 +93,17 @@ namespace Gui
     void drawSelector(float x, float y);
 
     // Used to get text width/number of lines
-    std::shared_ptr<TextParse::Text> parseText(const std::string& str, float scaleX, float maxWidth = 0.0f);
+    std::shared_ptr<TextParse::Text> parseText(const std::string& str, FontSize size, float maxWidth = 0.0f);
     void clearText(void);
     void text(
-        const std::shared_ptr<TextParse::Text> text, float x, float y, float scaleX, float scaleY, PKSM_Color color, TextPosX positionX, TextPosY positionY);
-    void text(const std::string& str, float x, float y, float scaleX, float scaleY, PKSM_Color color, TextPosX positionX, TextPosY positionY,
+        const std::shared_ptr<TextParse::Text> text, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY);
+    void text(const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY,
         float maxWidth = 0.0f);
     // Only works with single lines, because why the fuck would you wrap AND scroll?
     void scrollingText(
-        const std::string& str, float x, float y, float scaleX, float scaleY, PKSM_Color color, TextPosX positionX, TextPosY positionY, int width);
+        const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, int width);
     void slicedText(
-        const std::string& str, float x, float y, float scaleX, float scaleY, PKSM_Color color, TextPosX positionX, TextPosY positionY, int width);
+        const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, int width);
 
     void setScreen(std::unique_ptr<Screen> screen);
     void screenBack(void);

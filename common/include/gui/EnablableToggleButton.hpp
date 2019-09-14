@@ -33,10 +33,10 @@ class EnablableToggleButton : public ToggleButton
 {
 public:
     EnablableToggleButton(int x, int y, u16 w, u16 h, const std::function<bool()>& callback, const std::function<bool()>& disabled, int onImage,
-        const std::string& onText, float onTextScale, PKSM_Color onTextColor, const std::optional<int>& offImage = std::nullopt,
-        const std::optional<std::string>& offText = std::nullopt, const std::optional<float>& offTextScale = std::nullopt,
+        const std::string& onText, FontSize onFontSize, PKSM_Color onTextColor, const std::optional<int>& offImage = std::nullopt,
+        const std::optional<std::string>& offText = std::nullopt, const std::optional<FontSize>& offFontSize = std::nullopt,
         const std::optional<PKSM_Color>& offTextColor = std::nullopt, const std::optional<int>& disabledImage = std::nullopt,
-        const std::optional<std::string>& disabledText = std::nullopt, const std::optional<float>& disabledTextScale = std::nullopt,
+        const std::optional<std::string>& disabledText = std::nullopt, const std::optional<FontSize>& disabledFontSize = std::nullopt,
         const std::optional<PKSM_Color> disabledTextColor = std::nullopt);
 
     virtual bool update(touchPosition* touch) override;
@@ -46,7 +46,7 @@ protected:
     std::function<bool()> disabled;
     int disabledImage;
     std::string disabledText;
-    float disabledTextScale;
+    FontSize disabledFontSize;
     PKSM_Color disabledTextColor;
 };
 

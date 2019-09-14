@@ -34,7 +34,7 @@ void StorageViewOverlay::drawBottom() const
     dim();
     if (clone.empty())
     {
-        Gui::text(i18n::localize("PRESS_TO_CLONE"), 160, 110, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(i18n::localize("PRESS_TO_CLONE"), 160, 110, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     }
 }
 

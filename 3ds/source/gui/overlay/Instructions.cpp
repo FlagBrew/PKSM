@@ -91,7 +91,7 @@ void Instructions::drawTop() const
     {
         if (text.top)
         {
-            Gui::text(text.string, text.x, text.y, FONT_SIZE_12, FONT_SIZE_12, text.color, text.xPos, text.yPos, text.maxWidth);
+            Gui::text(text.string, text.x, text.y, FONT_SIZE_12, text.color, text.xPos, text.yPos, text.maxWidth);
         }
     }
 }
@@ -125,7 +125,7 @@ void Instructions::drawBottom() const
     {
         if (!text.top)
         {
-            Gui::text(text.string, text.x, text.y, FONT_SIZE_12, FONT_SIZE_12, text.color, text.xPos, text.yPos, text.maxWidth);
+            Gui::text(text.string, text.x, text.y, FONT_SIZE_12, text.color, text.xPos, text.yPos, text.maxWidth);
         }
     }
 }

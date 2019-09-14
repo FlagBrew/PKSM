@@ -33,7 +33,7 @@ void BagItemOverlay::drawBottom() const
     dim();
     searchButton->draw();
     Gui::sprite(ui_sheet_icon_search_idx, 79, 33);
-    Gui::text(searchString, 95, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(searchString, 95, 32, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 }
 
 void BagItemOverlay::drawTop() const
@@ -53,7 +53,7 @@ void BagItemOverlay::drawTop() const
             break;
         }
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
-        Gui::text(*items[i + hid.page() * hid.maxVisibleEntries()].first, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9,
+        Gui::text(*items[i + hid.page() * hid.maxVisibleEntries()].first, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9,
             COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     }
 }

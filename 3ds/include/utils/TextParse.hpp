@@ -32,13 +32,36 @@
 #include "TextPos.hpp"
 #include "types.h"
 #include "colors.hpp"
-#include <citro2d.h>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <variant>
 #include <vector>
+
+#if defined(_3DS)
+#include <citro2d.h>
+typedef float FontSize;
+typedef C2D_Font FontType;
+#define FONT_SIZE_18 0.72f
+#define FONT_SIZE_15 0.6f
+#define FONT_SIZE_14 0.56f
+#define FONT_SIZE_12 0.50f
+#define FONT_SIZE_11 0.46f
+#define FONT_SIZE_9 0.37f
+#elif defined(__SWITCH__)
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include FT_CACHE_H
+typedef int FontSize;
+typedef FT_Face FontType;
+#define FONT_SIZE_18 18
+#define FONT_SIZE_15 15
+#define FONT_SIZE_14 14
+#define FONT_SIZE_12 12
+#define FONT_SIZE_11 11
+#define FONT_SIZE_9 9
+#endif
 
 namespace TextParse
 {
@@ -47,6 +70,7 @@ namespace TextParse
     class TextBuf;
     class ScreenText;
 
+#if defined(_3DS)
     struct Glyph
     {
         Glyph(const Tex3DS_SubTexture& subtex, C3D_Tex* tex = nullptr, C2D_Font font = nullptr, u32 line = 0, float xPos = 0.0f, float width = 0.0f)
@@ -60,6 +84,28 @@ namespace TextParse
         float xPos;
         float width;
     };
+#elif defined(__SWITCH__)
+    struct Glyph
+    {
+        Glyph(FT_Glyph ftGlyph, FTC_Node node, u32 line = 0, float xPos = 0.0f)
+            : ftGlyph(ftGlyph), line(line), xPos(xPos)
+        {
+        }
+        Glyph(const Glyph& other) = delete;
+        Glyph(const Glyph&& other)
+        {
+            ftGlyph = other.ftGlyph;
+            node = other.node;
+            line = other.line;
+            xPos = other.xPos;
+        }
+        ~Glyph();
+        FT_Glyph ftGlyph;
+        FTC_Node node;
+        u32 line;
+        float xPos;
+    };
+#endif
 
     struct Text
     {
@@ -70,36 +116,40 @@ namespace TextParse
         void addWord(std::pair<std::vector<Glyph>, float>&& word, float maxWidth = 0.0f);
         // These should ONLY be used when drawing text directly instead of using ScreenText, which shouldn't happen often!
         void optimize();
-        void draw(float x, float y, float z, float scaleX, float scaleY, TextPosX textPos, PKSM_Color color = COLOR_BLACK) const;
+        void draw(float x, float y, float z, FontSize size, TextPosX textPos, PKSM_Color color = COLOR_BLACK) const;
+        void truncate(size_t lines);
         std::vector<Glyph> glyphs;
         std::vector<float> lineWidths;
         float maxLineWidth;
         float maxWidth(float sizeX) { return sizeX * maxLineWidth; }
+        size_t lines() { return lineWidths.size(); }
     };
 
     class TextBuf
     {
     public:
         // maxChars is more of a suggestion than a limit. If it's necessary, things can extend farther
-        TextBuf(size_t maxGlyphs, const std::vector<C2D_Font>& fonts = {nullptr});
+        TextBuf(size_t maxGlyphs, const std::vector<FontType>& fonts = {nullptr});
         std::shared_ptr<Text> parse(const std::string& str, float maxWidth = 0.0f);
-        void addFont(C2D_Font font);
+        void addFont(FontType font);
         // Clears if currentGlyphs is >= maxChars
         void clear();
         // Clears unconditionally
         void clearUnconditional();
 
     private:
-        bool fontHasChar(const C2D_Font& font, u32 codepoint);
-        C2D_Font fontForCodepoint(u32 codepoint);
+        bool fontHasChar(const FontType& font, u32 codepoint);
+        FontType fontForCodepoint(u32 codepoint);
+#if defined(_3DS)
+        std::unordered_map<C2D_Font, std::vector<C3D_Tex>> glyphSheets;
         void makeGlyphSheets(C2D_Font font);
+#endif
         std::pair<std::vector<Glyph>, float> parseWord(std::string::const_iterator& str, float maxWidth);
         std::variant<float, size_t> parseWhitespace(std::string::const_iterator& str);
-        std::vector<C2D_Font> fonts;
+        std::vector<FontType> fonts;
         std::unordered_map<std::string, std::shared_ptr<Text>> parsedText;
         size_t maxGlyphs;
         size_t currentGlyphs;
-        std::unordered_map<C2D_Font, std::vector<C3D_Tex>> glyphSheets;
     };
 
     class ScreenText
@@ -107,7 +157,7 @@ namespace TextParse
     public:
         ScreenText() { glyphs.reserve(1024); }
         // y is always from baseline
-        void addText(std::shared_ptr<Text> text, float x, float y, float z, float scaleX, float scaleY, TextPosX textPos,
+        void addText(std::shared_ptr<Text> text, float x, float y, float z, FontSize size, TextPosX textPos,
             PKSM_Color color = COLOR_BLACK);
         void optimize();
         void draw() const;
@@ -116,13 +166,13 @@ namespace TextParse
     private:
         struct DrawableGlyph
         {
-            DrawableGlyph(const Glyph& glyph, float x = 0.0f, float y = 0.0f, float z = 0.0f, float scaleX = 1.0f, float scaleY = 1.0f,
+            DrawableGlyph(const Glyph& glyph, float x, float y, float z, FontSize size,
                 PKSM_Color color = COLOR_BLACK)
-                : x(x), y(y), z(z), scaleX(scaleX), scaleY(scaleY), color(color), glyph(glyph)
+                : x(x), y(y), z(z), size(size), color(color), glyph(glyph)
             {
             }
             float x, y, z;
-            float scaleX, scaleY;
+            FontSize size;
             PKSM_Color color;
             Glyph glyph;
         };

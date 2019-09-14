@@ -116,7 +116,7 @@ void CloudScreen::drawBottom() const
         y += 30;
     }
 
-    Gui::text(Banks::bank->boxName(storageBox), 25 + 164 / 2, 18, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(Banks::bank->boxName(storageBox), 25 + 164 / 2, 18, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
 
     if (!cloudChosen)
     {
@@ -158,26 +158,26 @@ void CloudScreen::drawTop() const
     Gui::sprite(ui_sheet_bar_arc_top_green_idx, 0, 0);
 
     Gui::sprite(ui_sheet_textbox_pksm_idx, 261, 3);
-    Gui::text("GPSS", 394, 7, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
+    Gui::text("GPSS", 394, 7, FONT_SIZE_14, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
 
     if (cloudChosen && infoMon)
     {
         if (access.isLegal(cursorIndex - 1))
         {
             Gui::sprite(ui_sheet_textbox_legal_idx, 261, 34);
-            Gui::text(i18n::localize("LEGALITY_LEGAL"), 394, 38, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
+            Gui::text(i18n::localize("LEGALITY_LEGAL"), 394, 38, FONT_SIZE_14, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
         }
         else
         {
             Gui::sprite(ui_sheet_emulated_textbox_illegal_idx, 261, 34);
-            Gui::text(i18n::localize("LEGALITY_ILLEGAL"), 394, 38, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
+            Gui::text(i18n::localize("LEGALITY_ILLEGAL"), 394, 38, FONT_SIZE_14, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
         }
     }
 
     Gui::sprite(ui_sheet_bar_boxname_empty_idx, 44, 21);
-    Gui::text("\uE004", 45 + 24 / 2, 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::text("\uE005", 225 + 24 / 2, 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::text(StringUtils::format(i18n::localize("CLOUD_BOX"), access.page()), 69 + 156 / 2, 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK,
+    Gui::text("\uE004", 45 + 24 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text("\uE005", 225 + 24 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(StringUtils::format(i18n::localize("CLOUD_BOX"), access.page()), 69 + 156 / 2, 24, FONT_SIZE_14, COLOR_BLACK,
         TextPosX::CENTER, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 36, 50);
@@ -239,13 +239,13 @@ void CloudScreen::drawTop() const
 
     if (infoMon)
     {
-        Gui::text(infoMon->nickname(), 276, 61, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(infoMon->nickname(), 276, 61, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         std::string info = "#" + std::to_string(infoMon->species());
-        Gui::text(info, 273, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(info, 273, 77, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         info      = i18n::localize("LV") + std::to_string(infoMon->level());
         auto text = Gui::parseText(info, FONT_SIZE_12, 0.0f);
         int width = text->maxWidth(FONT_SIZE_12);
-        Gui::text(text, 375 - width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(text, 375 - width, 77, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         if (infoMon->gender() == 0)
         {
             Gui::sprite(ui_sheet_icon_male_idx, 362 - width, 80);
@@ -263,7 +263,7 @@ void CloudScreen::drawTop() const
             Gui::sprite(ui_sheet_icon_shiny_idx, 352 - width, 81);
         }
 
-        Gui::text(i18n::species(Configuration::getInstance().language(), infoMon->species()), 276, 98, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
+        Gui::text(i18n::species(Configuration::getInstance().language(), infoMon->species()), 276, 98, FONT_SIZE_12, COLOR_BLACK,
             TextPosX::LEFT, TextPosY::TOP);
         u8 firstType  = infoMon->type1();
         u8 secondType = infoMon->type2();
@@ -285,18 +285,18 @@ void CloudScreen::drawTop() const
         }
 
         info = infoMon->otName() + '\n' + i18n::localize("LOADER_ID") + std::to_string(infoMon->versionTID());
-        Gui::text(info, 276, 141, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(info, 276, 141, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
-        Gui::text(i18n::nature(Configuration::getInstance().language(), infoMon->nature()), 276, 181, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
+        Gui::text(i18n::nature(Configuration::getInstance().language(), infoMon->nature()), 276, 181, FONT_SIZE_12, COLOR_BLACK,
             TextPosX::LEFT, TextPosY::TOP);
         info  = i18n::localize("IV") + ": ";
         text  = Gui::parseText(info, FONT_SIZE_12, 0.0f);
         width = text->maxWidth(FONT_SIZE_12);
-        Gui::text(text, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(text, 276, 197, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(0), infoMon->iv(1), infoMon->iv(2));
-        Gui::text(info, 276 + width + 70 / 2, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(info, 276 + width + 70 / 2, 197, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(4), infoMon->iv(5), infoMon->iv(3));
-        Gui::text(info, 276 + width + 70 / 2, 209, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(info, 276 + width + 70 / 2, 209, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         Gui::format(*infoMon, 276, 213);
     }
 }
@@ -541,9 +541,20 @@ void CloudScreen::pickup()
     {
         if (cloudChosen && Gui::showChoiceMessage(i18n::localize("SHARE_SEND_CONFIRM")))
         {
-            if (!access.pkm(moveMon))
+            switch (long status_code = access.pkm(moveMon))
             {
-                Gui::warn(i18n::localize("DATA_SEND_FAIL"));
+                case 200:
+                case 201:
+                    break;
+                case 401:
+                    Gui::warn(i18n::localize("GPSS_BANNED"));
+                    break;
+                case 503:
+                    Gui::warn(i18n::localize("GPSS_TEMP_DISABLED") + '\n' + i18n::localize("PLEASE_WAIT"));
+                    break;
+                default:
+                    Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
+                    break;
             }
             moveMon = nullptr;
         }
@@ -799,8 +810,14 @@ void CloudScreen::shareSend()
                 case 400:
                     Gui::error(i18n::localize("SHARE_FAILED_CHECK"), status_code);
                     break;
+                case 401:
+                    Gui::warn(i18n::localize("GPSS_BANNED"));
+                    break;
                 case 502:
                     Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
+                    break;
+                case 503:
+                    Gui::warn(i18n::localize("GPSS_TEMP_DISABLED") + '\n' + i18n::localize("PLEASE_WAIT"));
                     break;
                 default:
                     Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
