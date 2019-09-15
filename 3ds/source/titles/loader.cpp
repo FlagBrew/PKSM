@@ -56,6 +56,8 @@ static constexpr std::string_view dsIds[9] = {
     "IRD"  // White 2
 };
 
+static bool cartWasUpdated = false;
+
 static std::string idToSaveName(const std::string& id)
 {
     if (id.size() == 3 || id.size() == 4)
@@ -653,46 +655,16 @@ bool TitleLoader::scanCard()
         }
     }
     isScanning = false;
+    cartWasUpdated = true;
     return ret;
 }
 
-bool TitleLoader::cardUpdate()
+bool TitleLoader::cardWasUpdated()
 {
-#if !CITRA_DEBUG
-    static bool first     = true;
-    static bool oldCardIn = false;
-    if (first)
+    if (cartWasUpdated)
     {
-        FSUSER_CardSlotIsInserted(&oldCardIn);
-        first = false;
-        return false;
+        cartWasUpdated = false;
+        return true;
     }
-    bool cardIn = false;
-
-    FSUSER_CardSlotIsInserted(&cardIn);
-    if (cardIn != oldCardIn)
-    {
-        bool power;
-        FSUSER_CardSlotGetCardIFPowerStatus(&power);
-        if (cardIn)
-        {
-            if (!power)
-            {
-                FSUSER_CardSlotPowerOn(&power);
-            }
-            while (!power)
-            {
-                FSUSER_CardSlotGetCardIFPowerStatus(&power);
-            }
-            return oldCardIn = scanCard();
-        }
-        else
-        {
-            cardTitle = nullptr;
-            oldCardIn = false;
-            return true;
-        }
-    }
-#endif
     return false;
 }

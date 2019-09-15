@@ -56,7 +56,7 @@ namespace TitleLoader
 {
     void scanTitles(void);
     bool scanCard(void);
-    bool cardUpdate(void);
+    bool cardWasUpdated(void);
     void scanSaves(void);
     bool load(std::shared_ptr<Title> title);
     bool load(std::shared_ptr<Title> title, const std::string& path);

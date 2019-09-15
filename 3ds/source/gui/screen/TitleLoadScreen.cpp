@@ -69,10 +69,10 @@ void TitleLoadScreen::drawTop() const
     Gui::sprite(ui_sheet_emulated_gameselector_bg_idx, 4, 29);
     Gui::sprite(ui_sheet_gameselector_cart_idx, 35, 93);
 
-    if (TitleLoader::cardTitle != nullptr)
+    if (auto title = TitleLoader::cardTitle)
     {
-        Gui::drawImageAt(TitleLoader::cardTitle->icon(), 40, 98, NULL, 1.0f, 1.0f);
-        if (titleFromIndex(selectedTitle) == TitleLoader::cardTitle)
+        Gui::drawImageAt(title->icon(), 40, 98, NULL, 1.0f, 1.0f);
+        if (titleFromIndex(selectedTitle) == title)
         {
             Gui::drawSelector(39, 97);
         }
@@ -115,12 +115,12 @@ void TitleLoadScreen::drawBottom() const
     int nextMediaPart = 27 + text->maxWidth(FONT_SIZE_11);
     Gui::text(text, 27, 58, FONT_SIZE_11, COLOR_LIGHTBLUE, TextPosX::LEFT, TextPosY::TOP);
 
-    if (selectedTitle != -2)
+    if (auto title = titleFromIndex(selectedTitle))
     {
         Gui::drawSolidRect(243, 21, 52, 52, PKSM_Color(15, 22, 89, 255));
-        Gui::drawImageAt(titleFromIndex(selectedTitle)->icon(), 245, 23, NULL, 1.0f, 1.0f);
-        Gui::text(titleFromIndex(selectedTitle)->name(), 27, 26, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(StringUtils::format("%08X", titleFromIndex(selectedTitle)->lowId()), nextIdPart, 46, FONT_SIZE_11, COLOR_WHITE,
+        Gui::drawImageAt(title->icon(), 245, 23, NULL, 1.0f, 1.0f);
+        Gui::text(title->name(), 27, 26, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(StringUtils::format("%08X", title->lowId()), nextIdPart, 46, FONT_SIZE_11, COLOR_WHITE,
             TextPosX::LEFT, TextPosY::TOP);
 
         Gui::text(selectedTitle == -1 ? i18n::localize("LOADER_CARTRIDGE") : i18n::localize("LOADER_SD"), nextMediaPart, 58, FONT_SIZE_11,
@@ -177,7 +177,7 @@ void TitleLoadScreen::drawBottom() const
 void TitleLoadScreen::update(touchPosition* touch)
 {
     u32 buttonsDown = hidKeysDown();
-    if (TitleLoader::cardUpdate())
+    if (TitleLoader::cardWasUpdated())
     {
         selectedGame  = false;
         selectedSave  = -1;
@@ -429,7 +429,14 @@ void TitleLoadScreen::update(touchPosition* touch)
             selectedSave = 0;
         }
     }
-    availableCheckpointSaves = TitleLoader::sdSaves[titleFromIndex(selectedTitle)->checkpointPrefix()];
+    if (auto title = titleFromIndex(selectedTitle))
+    {
+        availableCheckpointSaves = TitleLoader::sdSaves[title->checkpointPrefix()];
+    }
+    else
+    {
+        availableCheckpointSaves = {};
+    }
 
     if (buttonsDown & KEY_X)
     {
