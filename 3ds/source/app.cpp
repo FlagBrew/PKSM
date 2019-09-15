@@ -40,6 +40,7 @@
 #include "thread.hpp"
 #include <3ds.h>
 #include <stdio.h>
+#include <atomic>
 
 // increase the stack in order to allow quirc to decode large qrs
 int __stacksize__ = 64 * 1024;
@@ -366,48 +367,53 @@ static bool update(std::string execPath)
     return false;
 }
 
-static Handle notificationHandles[2];
+static std::atomic<bool> doCartScan = false;
 
 static void cartScan(void*)
 {
-    while (true)
+#if !CITRA_DEBUG
+    while (doCartScan)
     {
-        s32 out;
-        Result res = svcWaitSynchronizationN(&out, notificationHandles, 2, false, U64_MAX);
-        u32 notification = 0;
-        srvReceiveNotification(&notification);
-        if (R_SUCCEEDED(res))
+        static bool first     = true;
+        static bool oldCardIn = false;
+        if (first)
         {
-            switch (out)
+            FSUSER_CardSlotIsInserted(&oldCardIn);
+            first = false;
+        }
+        bool cardIn = false;
+
+        FSUSER_CardSlotIsInserted(&cardIn);
+        if (cardIn != oldCardIn)
+        {
+            bool power;
+            FSUSER_CardSlotGetCardIFPowerStatus(&power);
+            if (cardIn)
             {
-                case 0:
-                    switch (notification)
+                if (!power)
+                {
+                    FSUSER_CardSlotPowerOn(&power);
+                }
+                while (!power)
+                {
+                    FSUSER_CardSlotGetCardIFPowerStatus(&power);
+                }
+                for (size_t i = 0; i < 10; i++)
+                {
+                    if ((oldCardIn = TitleLoader::scanCard()))
                     {
-                        case 0x100: // Should terminate
-                            return;
-                        case 0x208: // Card inserted
-                            for (size_t i = 0; i < 10; i++) // try a max of 10 times
-                            {
-                                if (TitleLoader::scanCard())
-                                {
-                                    break;
-                                }
-                            }
-                            break;
-                        case 0x20A: // Card removed
-                            TitleLoader::scanCard();
-                            break;
+                        break;
                     }
-                    break;
-                case 1:
-                    return;
+                }
+            }
+            else
+            {
+                TitleLoader::scanCard();
+                oldCardIn = false;
             }
         }
-        else
-        {
-            return;
-        }
     }
+#endif
 }
 
 Result App::init(const std::string& execPath)
@@ -445,16 +451,6 @@ Result App::init(const std::string& execPath)
         return consoleDisplayError("amInit failed.", res);
     if (R_FAILED(res = acInit()))
         return consoleDisplayError("acInit failed.", res);
-#if !CITRA_DEBUG
-    if (R_FAILED(res = srvInit()))
-        return consoleDisplayError("srvInit failed.", res);
-    if (R_FAILED(res = srvEnableNotification(&notificationHandles[0])))
-        return consoleDisplayError("srvEnableNotification failed.", res);
-    if (R_FAILED(res = svcCreateEvent(&notificationHandles[1], RESET_ONESHOT)))
-        return consoleDisplayError("Failed to create cart thread event.", res);
-    if (R_FAILED(res = srvSubscribe(0x208)) || R_FAILED(res = srvSubscribe(0x20A)))
-        return consoleDisplayError("Failed to listen to cart notifications.", res);
-#endif
 
     u32* socketBuffer = (u32*)memalign(SOC_ALIGN, SOC_BUFFERSIZE);
     if (socketBuffer == NULL)
@@ -508,14 +504,14 @@ Result App::init(const std::string& execPath)
     Threads::create((ThreadFunc)TitleLoader::scanTitles);
     TitleLoader::scanSaves();
 
-#if !CITRA_DEBUG
+    doCartScan = true;
     Threads::create((ThreadFunc)cartScan);
-#endif
 
     randomNumbers.seed(osGetTime());
 
     Gui::setScreen(std::make_unique<TitleLoadScreen>());
     // uncomment when needing to debug with GDB
+    // consoleDebugInit(debugDevice_SVC);
 
     return 0;
 }
@@ -527,17 +523,14 @@ Result App::exit(void)
     Gui::exit();
     socExit();
     acExit();
-    svcSignalEvent(notificationHandles[1]);
+    doCartScan = false;
     Threads::destroy();
-    svcCloseHandle(notificationHandles[0]);
-    svcCloseHandle(notificationHandles[1]);
     i18n::exit();
     amExit();
     pxiDevExit();
     Archive::exit();
     romfsExit();
     cfguExit();
-    srvExit();
 
     if (old_time_limit != UINT32_MAX)
     {

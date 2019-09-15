@@ -30,6 +30,7 @@
 #include "FSStream.hpp"
 #include <ctime>
 #include <sys/stat.h>
+#include <atomic>
 
 static std::unordered_map<std::u16string, std::shared_ptr<Directory>> directories;
 
@@ -56,7 +57,7 @@ static constexpr std::string_view dsIds[9] = {
     "IRD"  // White 2
 };
 
-static bool cartWasUpdated = false;
+static std::atomic<bool> cartWasUpdated = false;
 
 static std::string idToSaveName(const std::string& id)
 {
