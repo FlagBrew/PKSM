@@ -28,8 +28,8 @@
 
 ToggleButton::ToggleButton(int x, int y, u16 w, u16 h, const std::function<bool()>& callback, int onImage, const std::string& onText,
     FontSize onFontSize, PKSM_Color onTextColor, const std::optional<int>& offImage, const std::optional<std::string>& offText,
-    const std::optional<FontSize>& offFontSize, const std::optional<PKSM_Color>& offTextColor, std::vector<std::unique_ptr<ToggleButton>>* radioCategory,
-    bool disablable)
+    const std::optional<FontSize>& offFontSize, const std::optional<PKSM_Color>& offTextColor,
+    std::vector<std::unique_ptr<ToggleButton>>* radioCategory, bool disablable)
     : ClickButton(x, y, w, h, callback, onImage, onText, onFontSize, onTextColor),
       onImage(onImage),
       onText(onText),
@@ -73,7 +73,7 @@ void ToggleButton::setState(bool state)
         key       = offImage;
         text      = offText;
         textColor = offColor;
-        size = offFontSize;
+        size      = offFontSize;
     }
     else
     {
@@ -90,7 +90,7 @@ void ToggleButton::setState(bool state)
         key       = onImage;
         text      = onText;
         textColor = onColor;
-        size = onFontSize;
+        size      = onFontSize;
     }
     currentState = state;
 }

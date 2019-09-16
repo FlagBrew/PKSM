@@ -66,8 +66,7 @@ inline constexpr ColorFormat colorToFormat(const PKSM_Color& color)
     return C2D_Color32(color.r, color.g, color.b, color.a);
 }
 #elif defined(__SWITCH__)
-typedef something ColorFormat
-inline constexpr ColorFormat colorToFormat(const C2D_Color& color)
+typedef something ColorFormat inline constexpr ColorFormat colorToFormat(const C2D_Color& color)
 {
     return format(color.r, color.g, color.b, color.a);
 }

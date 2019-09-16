@@ -28,8 +28,8 @@
 #define BUTTON_HPP
 
 #include "Clickable.hpp"
-#include "colors.hpp"
 #include "TextParse.hpp"
+#include "colors.hpp"
 
 class Button : public Clickable
 {

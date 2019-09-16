@@ -103,7 +103,7 @@ void Bank::load(int maxBoxes)
             in.close();
             createBank(maxBoxes);
             needSave = true;
-            create = true;
+            create   = true;
         }
 
         in = FSStream(ARCHIVE, JSON(paths), FS_OPEN_READ);

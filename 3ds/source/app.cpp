@@ -39,8 +39,8 @@
 #include "sha256.h"
 #include "thread.hpp"
 #include <3ds.h>
-#include <stdio.h>
 #include <atomic>
+#include <stdio.h>
 
 // increase the stack in order to allow quirc to decode large qrs
 int __stacksize__ = 64 * 1024;

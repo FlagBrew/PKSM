@@ -130,13 +130,11 @@ void MoveEditScreen::drawBottom() const
         Gui::text(i18n::move(lang, pkm->move(i)), 24, 32 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         if (pkm->generation() < Generation::SIX)
         {
-            Gui::text(i18n::localize("EDITOR_NOT_APPLICABLE_GEN"), 24, 141 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
-                TextPosY::TOP);
+            Gui::text(i18n::localize("EDITOR_NOT_APPLICABLE_GEN"), 24, 141 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         }
         else
         {
-            Gui::text(
-                i18n::move(lang, pkm->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(i18n::move(lang, pkm->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         }
     }
 

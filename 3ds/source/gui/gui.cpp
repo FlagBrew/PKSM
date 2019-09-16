@@ -280,8 +280,7 @@ void Gui::text(std::shared_ptr<TextParse::Text> text, float x, float y, FontSize
     currentText->addText(text, x, y, 0.5f, size, positionX, color);
 }
 
-void Gui::text(
-    const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, float maxWidth)
+void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, float maxWidth)
 {
     static_assert(std::is_same<FontSize, float>::value);
     auto text = parseText(str, size, maxWidth);
@@ -289,8 +288,7 @@ void Gui::text(
     Gui::text(text, x, y, size, color, positionX, positionY);
 }
 
-void Gui::scrollingText(
-    const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, int width)
+void Gui::scrollingText(const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, int width)
 {
     static_assert(std::is_same<FontSize, float>::value);
     static const Tex3DS_SubTexture t3x = {512, 256, 0.0f, 1.0f, 1.0f, 0.0f};
@@ -353,8 +351,7 @@ void Gui::scrollingText(
     C2D_DrawImageAt({&textChopTexture, &newt3x}, x, y + lineMod - baselinePos, 0.5f);
 }
 
-void Gui::slicedText(
-    const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, int width)
+void Gui::slicedText(const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, int width)
 {
     static_assert(std::is_same<FontSize, float>::value);
     static const Tex3DS_SubTexture t3x = {512, 256, 0.0f, 1.0f, 1.0f, 0.0f};
@@ -1615,7 +1612,7 @@ bool Gui::showChoiceMessage(const std::string& message, int timer)
         target(GFX_TOP);
         sprite(ui_sheet_part_info_top_idx, 0, 0);
 
-        auto parsed = parseText(message, FONT_SIZE_15);
+        auto parsed   = parseText(message, FONT_SIZE_15);
         float lineMod = fontGetInfo(nullptr)->lineFeed * FONT_SIZE_15;
 
         text(parsed, 200, 110, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
@@ -1674,7 +1671,7 @@ void Gui::waitFrame(const std::string& message)
     target(GFX_TOP);
     sprite(ui_sheet_part_info_top_idx, 0, 0);
 
-    auto parsed = parseText(message, FONT_SIZE_15);
+    auto parsed   = parseText(message, FONT_SIZE_15);
     float lineMod = fontGetInfo(nullptr)->lineFeed * FONT_SIZE_15;
 
     text(parsed, 200, 110, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
@@ -1713,7 +1710,7 @@ void Gui::warn(const std::string& message, std::optional<Language> lang)
 
         target(GFX_TOP);
         sprite(ui_sheet_part_info_top_idx, 0, 0);
-        auto parsed = parseText(message, FONT_SIZE_15);
+        auto parsed   = parseText(message, FONT_SIZE_15);
         float lineMod = fontGetInfo(nullptr)->lineFeed * FONT_SIZE_15;
 
         text(parsed, 200, 110, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
@@ -1768,8 +1765,7 @@ void Gui::showRestoreProgress(u32 partial, u32 total)
     target(GFX_TOP);
     sprite(ui_sheet_part_info_top_idx, 0, 0);
     text(i18n::localize("SAVING"), 200, 95, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-    text(StringUtils::format(i18n::localize("SAVE_PROGRESS"), partial, total), 200, 130, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
-        TextPosY::TOP);
+    text(StringUtils::format(i18n::localize("SAVE_PROGRESS"), partial, total), 200, 130, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     flushText();
 
     target(GFX_BOTTOM);
@@ -1795,10 +1791,8 @@ void Gui::showDownloadProgress(const std::string& path, u32 partial, u32 total)
     Gui::clearScreen(GFX_BOTTOM);
     target(GFX_TOP);
     sprite(ui_sheet_part_info_top_idx, 0, 0);
-    text(StringUtils::format(i18n::localize("DOWNLOADING_FILE"), path.c_str()), 200, 95, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER,
-        TextPosY::TOP);
-    text(StringUtils::format(i18n::localize("SAVE_PROGRESS"), partial, total), 200, 130, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
-        TextPosY::TOP);
+    text(StringUtils::format(i18n::localize("DOWNLOADING_FILE"), path.c_str()), 200, 95, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    text(StringUtils::format(i18n::localize("SAVE_PROGRESS"), partial, total), 200, 130, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     flushText();
 
     target(GFX_BOTTOM);
@@ -1857,8 +1851,8 @@ void Gui::error(const std::string& message, Result errorCode)
         sprite(ui_sheet_part_info_top_idx, 0, 0);
         u8 transparency = transparencyWaver();
         text(message, 200, 85, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
-        text(StringUtils::format(i18n::localize("ERROR_CODE"), errorCode), 200, 105, FONT_SIZE_15,
-            PKSM_Color(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
+        text(StringUtils::format(i18n::localize("ERROR_CODE"), errorCode), 200, 105, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparency),
+            TextPosX::CENTER, TextPosY::TOP);
 
         text(i18n::localize("CONTINUE"), 200, 130, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
@@ -1891,7 +1885,8 @@ void Gui::drawSelector(float x, float y)
     u8 r                       = COLOR_SELECTOR.r;
     u8 g                       = COLOR_SELECTOR.g;
     u8 b                       = COLOR_SELECTOR.b;
-    PKSM_Color color = PKSM_Color(r + (255 - r) * highlight_multiplier, g + (255 - g) * highlight_multiplier, b + (255 - b) * highlight_multiplier, 255);
+    PKSM_Color color =
+        PKSM_Color(r + (255 - r) * highlight_multiplier, g + (255 - g) * highlight_multiplier, b + (255 - b) * highlight_multiplier, 255);
 
     Gui::drawSolidRect(x, y, 50, 50, PKSM_Color(255, 255, 255, 100));
     Gui::drawSolidRect(x, y, 50, w, color);                      // top

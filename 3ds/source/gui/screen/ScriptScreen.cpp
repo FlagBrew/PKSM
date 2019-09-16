@@ -129,8 +129,7 @@ void ScriptScreen::drawTop() const
         else
         {
             Gui::sprite(currFiles[i].second ? ui_sheet_icon_folder_idx : ui_sheet_icon_script_idx, 3, 23 + i % hid.maxVisibleEntries() * 25);
-            Gui::text(currFiles[i].first, 30, 24 + (i % hid.maxVisibleEntries() * 25), FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT,
-                TextPosY::TOP);
+            Gui::text(currFiles[i].first, 30, 24 + (i % hid.maxVisibleEntries() * 25), FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         }
     }
 }

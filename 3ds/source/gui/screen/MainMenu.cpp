@@ -144,8 +144,8 @@ void MainMenu::drawTop() const
                     COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 1:
-                Gui::text(StringUtils::format(i18n::localize("TRAINER_NAME"), TitleLoader::save->otName().c_str()), 10, y, FONT_SIZE_12,
-                    COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+                Gui::text(StringUtils::format(i18n::localize("TRAINER_NAME"), TitleLoader::save->otName().c_str()), 10, y, FONT_SIZE_12, COLOR_BLACK,
+                    TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 2:
                 Gui::text(i18n::localize("TID_SID") + ": " + std::to_string(TitleLoader::save->displayTID()) + "/" +
@@ -159,16 +159,16 @@ void MainMenu::drawTop() const
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 4:
-                Gui::text(StringUtils::format(i18n::localize("WC_NUM"), TitleLoader::save->currentGifts().size()), 10, y, FONT_SIZE_12,
-                    COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+                Gui::text(StringUtils::format(i18n::localize("WC_NUM"), TitleLoader::save->currentGifts().size()), 10, y, FONT_SIZE_12, COLOR_BLACK,
+                    TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 5:
-                Gui::text(StringUtils::format(i18n::localize("DEX_SEEN"), TitleLoader::save->dexSeen()), 10, y, FONT_SIZE_12,
-                    COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+                Gui::text(StringUtils::format(i18n::localize("DEX_SEEN"), TitleLoader::save->dexSeen()), 10, y, FONT_SIZE_12, COLOR_BLACK,
+                    TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 6:
-                Gui::text(StringUtils::format(i18n::localize("DEX_CAUGHT"), TitleLoader::save->dexCaught()), 10, y, FONT_SIZE_12,
-                    COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+                Gui::text(StringUtils::format(i18n::localize("DEX_CAUGHT"), TitleLoader::save->dexCaught()), 10, y, FONT_SIZE_12, COLOR_BLACK,
+                    TextPosX::LEFT, TextPosY::TOP);
                 break;
             default:
                 break;
@@ -212,7 +212,8 @@ void MainMenu::update(touchPosition* touch)
     }
     if (keysDown() & KEY_B)
     {
-        if (Gui::showChoiceMessage(i18n::localize("SAVE_CHANGES_1") + '\n' + i18n::localize("SAVE_CHANGES_2"), doTimer ? 250000000 : 0)) // Half second
+        if (Gui::showChoiceMessage(
+                i18n::localize("SAVE_CHANGES_1") + '\n' + i18n::localize("SAVE_CHANGES_2"), doTimer ? 250000000 : 0)) // Half second
         {
             TitleLoader::saveChanges();
         }

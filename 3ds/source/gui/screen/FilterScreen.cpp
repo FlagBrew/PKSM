@@ -57,7 +57,8 @@ FilterScreen::FilterScreen(std::shared_ptr<PKFilter> filter) : filter(filter)
                 this->filter->moveInversed(i, !this->filter->moveInversed(i));
                 return false;
             },
-            ui_sheet_emulated_button_filter_positive_idx, "", 0.0f, COLOR_BLACK, ui_sheet_emulated_button_filter_negative_idx, "", 0.0f, COLOR_BLACK, nullptr, true));
+            ui_sheet_emulated_button_filter_positive_idx, "", 0.0f, COLOR_BLACK, ui_sheet_emulated_button_filter_negative_idx, "", 0.0f, COLOR_BLACK,
+            nullptr, true));
         ((ToggleButton*)buttons[0].back().get())->setState(!filter->moveInversed(i));
 
         buttons[0].push_back(std::make_unique<ClickButton>(70, 131 + 24 * i, 15, 12,
@@ -92,7 +93,8 @@ FilterScreen::FilterScreen(std::shared_ptr<PKFilter> filter) : filter(filter)
             this->filter->speciesInversed(!this->filter->speciesInversed());
             return false;
         },
-        ui_sheet_emulated_button_filter_positive_idx, "", 0.0f, COLOR_BLACK, ui_sheet_emulated_button_filter_negative_idx, "", 0.0f, COLOR_BLACK, nullptr, true));
+        ui_sheet_emulated_button_filter_positive_idx, "", 0.0f, COLOR_BLACK, ui_sheet_emulated_button_filter_negative_idx, "", 0.0f, COLOR_BLACK,
+        nullptr, true));
     ((ToggleButton*)buttons[0].back().get())->setState(!filter->speciesInversed());
 
     buttons[0].push_back(std::make_unique<ClickButton>(172, 53, 50, 44,
@@ -110,8 +112,8 @@ FilterScreen::FilterScreen(std::shared_ptr<PKFilter> filter) : filter(filter)
             this->filter->alternativeFormEnabled(!this->filter->alternativeFormEnabled());
             return false;
         },
-        [this]() { return !this->filter->speciesEnabled(); }, ui_sheet_checkbox_on_idx, "", 0.0f, COLOR_BLACK, ui_sheet_checkbox_off_idx, "", 0.0f, COLOR_BLACK,
-        ui_sheet_checkbox_blank_idx, "", 0.0f, COLOR_BLACK));
+        [this]() { return !this->filter->speciesEnabled(); }, ui_sheet_checkbox_on_idx, "", 0.0f, COLOR_BLACK, ui_sheet_checkbox_off_idx, "", 0.0f,
+        COLOR_BLACK, ui_sheet_checkbox_blank_idx, "", 0.0f, COLOR_BLACK));
     ((EnablableToggleButton*)buttons[0].back().get())->setState(filter->alternativeFormEnabled());
 
     buttons[0].push_back(std::make_unique<ToggleButton>(226, 68, 13, 13,
@@ -119,7 +121,8 @@ FilterScreen::FilterScreen(std::shared_ptr<PKFilter> filter) : filter(filter)
             this->filter->alternativeFormInversed(!this->filter->alternativeFormInversed());
             return false;
         },
-        ui_sheet_emulated_button_filter_positive_idx, "", 0.0f, COLOR_BLACK, ui_sheet_emulated_button_filter_negative_idx, "", 0.0f, COLOR_BLACK, nullptr, true));
+        ui_sheet_emulated_button_filter_positive_idx, "", 0.0f, COLOR_BLACK, ui_sheet_emulated_button_filter_negative_idx, "", 0.0f, COLOR_BLACK,
+        nullptr, true));
     ((ToggleButton*)buttons[0].back().get())->setState(!filter->alternativeFormInversed());
 }
 
@@ -155,8 +158,8 @@ void FilterScreen::drawBottom() const
 
     for (int i = 0; i < 4; i++)
     {
-        Gui::text(i18n::move(Configuration::getInstance().language(), filter->move(i)), 95, 138 + i * 24, FONT_SIZE_14, COLOR_WHITE,
-            TextPosX::LEFT, TextPosY::CENTER);
+        Gui::text(i18n::move(Configuration::getInstance().language(), filter->move(i)), 95, 138 + i * 24, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT,
+            TextPosY::CENTER);
     }
 }
 

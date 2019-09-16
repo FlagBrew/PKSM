@@ -74,8 +74,7 @@ void FileChooseOverlay::drawTop() const
         }
         else
         {
-            Gui::text(currFiles[i].first, 30, 24 + (i % hid.maxVisibleEntries() * 25), FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT,
-                TextPosY::TOP);
+            Gui::text(currFiles[i].first, 30, 24 + (i % hid.maxVisibleEntries() * 25), FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         }
     }
 

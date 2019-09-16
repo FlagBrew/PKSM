@@ -33,9 +33,9 @@
 #include "PK7.hpp"
 #include "WC6.hpp"
 #include "WC7.hpp"
-#include "loader.hpp"
 #include "base64.hpp"
 #include "gui.hpp"
+#include "loader.hpp"
 #include "quirc/quirc.h"
 
 typedef struct

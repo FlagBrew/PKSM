@@ -37,10 +37,10 @@
 #include "i18n.hpp"
 #include "json.hpp"
 #include "mixer.hpp"
-#include "thread.hpp"
-#include "utils.hpp"
 #include "spritesheets.h"
+#include "thread.hpp"
 #include "types.h"
+#include "utils.hpp"
 #include <citro2d.h>
 #include <random>
 #include <stack>
@@ -95,15 +95,12 @@ namespace Gui
     // Used to get text width/number of lines
     std::shared_ptr<TextParse::Text> parseText(const std::string& str, FontSize size, float maxWidth = 0.0f);
     void clearText(void);
+    void text(const std::shared_ptr<TextParse::Text> text, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY);
     void text(
-        const std::shared_ptr<TextParse::Text> text, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY);
-    void text(const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY,
-        float maxWidth = 0.0f);
+        const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, float maxWidth = 0.0f);
     // Only works with single lines, because why the fuck would you wrap AND scroll?
-    void scrollingText(
-        const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, int width);
-    void slicedText(
-        const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, int width);
+    void scrollingText(const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, int width);
+    void slicedText(const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, int width);
 
     void setScreen(std::unique_ptr<Screen> screen);
     void screenBack(void);

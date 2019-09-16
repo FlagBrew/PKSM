@@ -43,10 +43,10 @@ void NatureOverlay::drawTop() const
     Gui::text(i18n::localize("NEUTRAL"), 0 + 65 / 2, 12, FONT_SIZE_11, COLOR_YELLOW, TextPosX::CENTER, TextPosY::TOP);
     for (int i = 0; i < 5; i++)
     {
-        Gui::text(std::string("-") + i18n::localize(std::string(stats[i])), i * 67 + 99, 12, FONT_SIZE_11, COLOR_WHITE,
-            TextPosX::CENTER, TextPosY::TOP);
-        Gui::text(std::string("+") + i18n::localize(std::string(stats[i])), 32, i * 40 + 52, FONT_SIZE_11, COLOR_WHITE,
-            TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(
+            std::string("-") + i18n::localize(std::string(stats[i])), i * 67 + 99, 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(
+            std::string("+") + i18n::localize(std::string(stats[i])), 32, i * 40 + 52, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     }
 
     int x = (hid.index() % 5) * 67 + 66;

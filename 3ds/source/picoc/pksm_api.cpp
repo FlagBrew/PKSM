@@ -42,6 +42,22 @@
 #include <netdb.h>
 #include <sys/socket.h>
 
+static void* strToRet(const std::string& str)
+{
+    char* ret = (char*)malloc(str.size() + 1);
+    std::copy(str.begin(), str.end(), ret);
+    ret[str.size()] = '\0';
+    return (void*)ret;
+}
+
+static void* strToRet(const std::u16string& str)
+{
+    u16* ret = (u16*)malloc((str.size() + 1) * 2);
+    std::copy(str.begin(), str.end(), ret);
+    ret[str.size()] = u'\0';
+    return (void*)ret;
+}
+
 extern "C" {
 #include "pksm_api.h"
 
@@ -148,9 +164,9 @@ void gui_keyboard(struct ParseState* Parser, struct Value* ReturnValue, struct V
 
 void gui_numpad(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    unsigned int* out                = (unsigned int*)Param[0]->Val->Pointer;
-    std::string hint                 = (char*)Param[1]->Val->Pointer;
-    int numChars = Param[2]->Val->Integer;
+    unsigned int* out = (unsigned int*)Param[0]->Val->Pointer;
+    std::string hint  = (char*)Param[1]->Val->Pointer;
+    int numChars      = Param[2]->Val->Integer;
 
     char number[numChars + 1] = {0};
 
@@ -176,12 +192,9 @@ void gui_numpad(struct ParseState* Parser, struct Value* ReturnValue, struct Val
 
 void current_directory(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    std::string fileName = Parser->FileName;
-    fileName             = fileName.substr(0, fileName.rfind('/'));
-    char* ret            = (char*)malloc(fileName.size() + 1);
-    std::copy(fileName.begin(), fileName.end(), ret);
-    ret[fileName.size()]      = '\0';
-    ReturnValue->Val->Pointer = ret;
+    std::string fileName      = Parser->FileName;
+    fileName                  = fileName.substr(0, fileName.rfind('/'));
+    ReturnValue->Val->Pointer = strToRet(fileName);
 }
 
 void read_directory(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -329,11 +342,7 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
 
 void cfg_default_ot(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    std::string ot = Configuration::getInstance().defaultOT();
-    char* ret      = (char*)malloc(ot.size() + 1);
-    std::copy(ot.begin(), ot.end(), ret);
-    ret[ot.size()]            = '\0';
-    ReturnValue->Val->Pointer = ret;
+    ReturnValue->Val->Pointer = strToRet(Configuration::getInstance().defaultOT());
 }
 
 void cfg_default_tid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -351,7 +360,7 @@ void cfg_default_day(struct ParseState* Parser, struct Value* ReturnValue, struc
     int ret = Configuration::getInstance().day();
     if (ret == 0)
     {
-        const time_t current = time(NULL);
+        const time_t current      = time(NULL);
         ReturnValue->Val->Integer = gmtime(&current)->tm_mday;
     }
     else
@@ -365,7 +374,7 @@ void cfg_default_month(struct ParseState* Parser, struct Value* ReturnValue, str
     int ret = Configuration::getInstance().month();
     if (ret == 0)
     {
-        const time_t current = time(NULL);
+        const time_t current      = time(NULL);
         ReturnValue->Val->Integer = gmtime(&current)->tm_mon;
     }
     else
@@ -379,7 +388,7 @@ void cfg_default_year(struct ParseState* Parser, struct Value* ReturnValue, stru
     int ret = Configuration::getInstance().year();
     if (ret == 0)
     {
-        const time_t current = time(NULL);
+        const time_t current      = time(NULL);
         ReturnValue->Val->Integer = gmtime(&current)->tm_year;
     }
     else
@@ -673,28 +682,12 @@ void pkx_encrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Va
 
 void pksm_utf8_to_utf16(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    std::u16string str = StringUtils::UTF8toUTF16((char*)Param[0]->Val->Pointer);
-    // Create returned buffer
-    u16* ret = (u16*)malloc((str.size() + 1) * sizeof(u16));
-    // Translate data into buffer
-    std::copy(str.begin(), str.end(), ret);
-
-    ret[str.size()] = u'\0';
-
-    ReturnValue->Val->Pointer = ret;
+    ReturnValue->Val->Pointer = strToRet(StringUtils::UTF8toUTF16((char*)Param[0]->Val->Pointer));
 }
 
 void pksm_utf16_to_utf8(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    std::string str = StringUtils::UTF16toUTF8((char16_t*)Param[0]->Val->Pointer);
-    // Create returned buffer
-    u8* ret = (u8*)malloc((str.size() + 1) * sizeof(u8));
-    // Translate data into buffer
-    std::copy(str.begin(), str.end(), ret);
-
-    ret[str.size()] = '\0';
-
-    ReturnValue->Val->Pointer = ret;
+    ReturnValue->Val->Pointer = strToRet(StringUtils::UTF16toUTF8((char16_t*)Param[0]->Val->Pointer));
 }
 
 void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -1053,13 +1046,7 @@ void sav_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for SAV_OT_NAME", NumArgs);
             }
-            {
-                std::string otName = TitleLoader::save->otName();
-                char* ret          = (char*)malloc(otName.size() + 1);
-                std::copy(otName.begin(), otName.end(), ret);
-                ret[otName.size()]        = '\0';
-                ReturnValue->Val->Pointer = ret;
-            }
+            ReturnValue->Val->Pointer = strToRet(TitleLoader::save->otName());
             break;
         case SAV_TID:
             if (NumArgs != 1)

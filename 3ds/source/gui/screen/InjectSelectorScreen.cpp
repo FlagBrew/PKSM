@@ -212,8 +212,7 @@ void InjectSelectorScreen::drawTop() const
     {
         Gui::backgroundTop(true);
 
-        Gui::text(
-            i18n::localize("EVENT_DATABASE"), 200, 4, FONT_SIZE_14, PKSM_Color(140, 158, 255, 255), TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(i18n::localize("EVENT_DATABASE"), 200, 4, FONT_SIZE_14, PKSM_Color(140, 158, 255, 255), TextPosX::CENTER, TextPosY::TOP);
 
         for (size_t i = 0; i < 10; i++)
         {
@@ -291,8 +290,8 @@ void InjectSelectorScreen::drawTop() const
                 // Truncate to two lines
                 text->truncate(2);
                 // Then display it
-                Gui::text(text, x + 103, y + 14, FONT_SIZE_11,
-                    i == hid.fullIndex() ? PKSM_Color(232, 234, 246, 255) : PKSM_Color(26, 35, 126, 255), TextPosX::CENTER, TextPosY::CENTER);
+                Gui::text(text, x + 103, y + 14, FONT_SIZE_11, i == hid.fullIndex() ? PKSM_Color(232, 234, 246, 255) : PKSM_Color(26, 35, 126, 255),
+                    TextPosX::CENTER, TextPosY::CENTER);
             }
         }
     }
@@ -324,13 +323,11 @@ void InjectSelectorScreen::drawTop() const
                     Gui::sprite(ui_sheet_icon_item_idx, x * 50 + 20, y * 48 + 18);
                 }
 
-                Gui::text(
-                    std::to_string(fullI + 1), x * 50 + 25, y * 48 + 36, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                Gui::text(std::to_string(fullI + 1), x * 50 + 25, y * 48 + 36, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
             }
             else
             {
-                Gui::text(
-                    std::to_string(fullI + 1), x * 50 + 25, y * 48 + 36, FONT_SIZE_9, COLOR_MASKBLACK, TextPosX::CENTER, TextPosY::TOP);
+                Gui::text(std::to_string(fullI + 1), x * 50 + 25, y * 48 + 36, FONT_SIZE_9, COLOR_MASKBLACK, TextPosX::CENTER, TextPosY::TOP);
             }
         }
     }

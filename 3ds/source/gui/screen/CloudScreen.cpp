@@ -33,10 +33,10 @@
 #include "FilterScreen.hpp"
 #include "QRScanner.hpp"
 #include "banks.hpp"
+#include "base64.hpp"
 #include "fetch.hpp"
 #include "io.hpp"
 #include <sys/stat.h>
-#include "base64.hpp"
 
 CloudScreen::CloudScreen(int storageBox, std::shared_ptr<PKFilter> filter)
     : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_SHARE") + '\n' + i18n::localize("START_SORT_FILTER") + '\n' +
@@ -56,7 +56,8 @@ CloudScreen::CloudScreen(int storageBox, std::shared_ptr<PKFilter> filter)
         212, 140, 108, 28, [this]() { return this->releasePkm(); }, ui_sheet_button_editor_idx, i18n::localize("RELEASE"), FONT_SIZE_12, COLOR_BLACK);
     mainButtons[3] = std::make_unique<Button>(
         212, 171, 108, 28, [this]() { return this->dumpPkm(); }, ui_sheet_button_editor_idx, i18n::localize("DUMP"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[4] = std::make_unique<Button>(283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK);
+    mainButtons[4] =
+        std::make_unique<Button>(283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK);
     mainButtons[5] =
         std::make_unique<AccelButton>(8, 15, 17, 24, [this]() { return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5);
     mainButtons[6] =
@@ -69,8 +70,8 @@ CloudScreen::CloudScreen(int storageBox, std::shared_ptr<PKFilter> filter)
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            clickButtons[row * 6 + column] = std::make_unique<ClickButton>(
-                x, y, 34, 30, [this, row, column]() { return this->clickBottomIndex(row * 6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
+            clickButtons[row * 6 + column] = std::make_unique<ClickButton>(x, y, 34, 30,
+                [this, row, column]() { return this->clickBottomIndex(row * 6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
             x += 34;
         }
         y += 30;
@@ -177,8 +178,8 @@ void CloudScreen::drawTop() const
     Gui::sprite(ui_sheet_bar_boxname_empty_idx, 44, 21);
     Gui::text("\uE004", 45 + 24 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     Gui::text("\uE005", 225 + 24 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::text(StringUtils::format(i18n::localize("CLOUD_BOX"), access.page()), 69 + 156 / 2, 24, FONT_SIZE_14, COLOR_BLACK,
-        TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(StringUtils::format(i18n::localize("CLOUD_BOX"), access.page()), 69 + 156 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER,
+        TextPosY::TOP);
 
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 36, 50);
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 246, 50);
@@ -263,8 +264,8 @@ void CloudScreen::drawTop() const
             Gui::sprite(ui_sheet_icon_shiny_idx, 352 - width, 81);
         }
 
-        Gui::text(i18n::species(Configuration::getInstance().language(), infoMon->species()), 276, 98, FONT_SIZE_12, COLOR_BLACK,
-            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::species(Configuration::getInstance().language(), infoMon->species()), 276, 98, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+            TextPosY::TOP);
         u8 firstType  = infoMon->type1();
         u8 secondType = infoMon->type2();
         if (infoMon->generation() == Generation::FOUR)
@@ -287,8 +288,8 @@ void CloudScreen::drawTop() const
         info = infoMon->otName() + '\n' + i18n::localize("LOADER_ID") + std::to_string(infoMon->versionTID());
         Gui::text(info, 276, 141, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
-        Gui::text(i18n::nature(Configuration::getInstance().language(), infoMon->nature()), 276, 181, FONT_SIZE_12, COLOR_BLACK,
-            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::nature(Configuration::getInstance().language(), infoMon->nature()), 276, 181, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+            TextPosY::TOP);
         info  = i18n::localize("IV") + ": ";
         text  = Gui::parseText(info, FONT_SIZE_12, 0.0f);
         width = text->maxWidth(FONT_SIZE_12);

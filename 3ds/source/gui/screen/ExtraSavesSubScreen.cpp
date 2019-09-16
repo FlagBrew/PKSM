@@ -515,13 +515,11 @@ void ExtraSavesSubScreen::drawBottom() const
                 {
                     if ((int)j == selectedSave)
                     {
-                        Gui::scrollingText(
-                            idSaves.second[i - firstSave + j], 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 169);
+                        Gui::scrollingText(idSaves.second[i - firstSave + j], 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 169);
                     }
                     else
                     {
-                        Gui::slicedText(
-                            idSaves.second[i - firstSave + j], 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 169);
+                        Gui::slicedText(idSaves.second[i - firstSave + j], 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 169);
                     }
                     y += 17;
                 }
@@ -572,8 +570,7 @@ void ExtraSavesSubScreen::drawBottom() const
     Gui::text(i18n::localize("A_ADD_SAVE"), 248, 113, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     Gui::text(i18n::localize("X_DELETE_SAVE"), 248, 172, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, 94);
 
-    Gui::text(
-        i18n::localize("EXTRASAVES_CONFIGURE_INSTRUCTIONS"), 160, 223, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("EXTRASAVES_CONFIGURE_INSTRUCTIONS"), 160, 223, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
     Gui::drawSolidRect(245, 23, 48, 48, COLOR_BLACK);
     Gui::drawSolidRect(243, 21, 52, 52, PKSM_Color(15, 22, 89, 255));

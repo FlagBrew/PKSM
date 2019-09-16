@@ -28,9 +28,9 @@
 #include "Configuration.hpp"
 #include "Directory.hpp"
 #include "FSStream.hpp"
+#include <atomic>
 #include <ctime>
 #include <sys/stat.h>
-#include <atomic>
 
 static std::unordered_map<std::u16string, std::shared_ptr<Directory>> directories;
 
@@ -655,7 +655,7 @@ bool TitleLoader::scanCard()
             }
         }
     }
-    isScanning = false;
+    isScanning     = false;
     cartWasUpdated = true;
     return ret;
 }

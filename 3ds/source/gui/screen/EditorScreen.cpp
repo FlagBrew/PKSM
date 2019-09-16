@@ -342,14 +342,11 @@ void EditorScreen::drawBottom() const
     Gui::text(i18n::nature(lang, pkm->nature()), 95, 52, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(i18n::ability(lang, pkm->ability()), 95, 72, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(i18n::item(lang, pkm->heldItem()), 95, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(
-        pkm->shiny() ? i18n::localize("YES") : i18n::localize("NO"), 95, 112, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(pkm->pkrsDays() > 0 ? i18n::localize("YES") : i18n::localize("NO"), 95, 132, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
-        TextPosY::TOP);
+    Gui::text(pkm->shiny() ? i18n::localize("YES") : i18n::localize("NO"), 95, 112, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(pkm->pkrsDays() > 0 ? i18n::localize("YES") : i18n::localize("NO"), 95, 132, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(pkm->otName(), 95, 152, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(pkm->nickname(), 95, 172, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(
-        std::to_string((int)pkm->currentFriendship()), 107 + 35 / 2, 192, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(std::to_string((int)pkm->currentFriendship()), 107 + 35 / 2, 192, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     Gui::pkm(*pkm, 228, 38, 2.0f, COLOR_GREY_BLEND, 1.0f);
     Gui::pkm(*pkm, 224, 33, 2.0f);
 }

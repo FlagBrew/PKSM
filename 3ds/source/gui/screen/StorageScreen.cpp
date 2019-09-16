@@ -137,8 +137,8 @@ StorageScreen::StorageScreen()
     instructions.addCircle(false, 266, 23, 11, COLOR_GREY);
     instructions.addLine(false, 266, 23, 266, 73, 4, COLOR_GREY);
     instructions.addBox(false, 148, 57, 120, 16, COLOR_GREY, i18n::localize("BOX_SWAP"), COLOR_WHITE);
-    mainButtons[0] =
-        std::make_unique<ClickButton>(242, 12, 47, 22, [this]() { return this->swapBoxWithStorage(); }, ui_sheet_button_swap_boxes_idx, "", 0.0f, COLOR_BLACK);
+    mainButtons[0] = std::make_unique<ClickButton>(
+        242, 12, 47, 22, [this]() { return this->swapBoxWithStorage(); }, ui_sheet_button_swap_boxes_idx, "", 0.0f, COLOR_BLACK);
     mainButtons[1] = std::make_unique<Button>(
         212, 47, 108, 28, [this]() { return this->showViewer(); }, ui_sheet_button_editor_idx, i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
     mainButtons[2] = std::make_unique<Button>(
@@ -149,7 +149,8 @@ StorageScreen::StorageScreen()
         212, 140, 108, 28, [this]() { return this->dumpPkm(); }, ui_sheet_button_editor_idx, i18n::localize("DUMP"), FONT_SIZE_12, COLOR_BLACK);
     mainButtons[5] = std::make_unique<Button>(
         212, 171, 108, 28, [this]() { return this->duplicate(); }, ui_sheet_button_editor_idx, i18n::localize("CLONE"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[6] = std::make_unique<Button>(283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK);
+    mainButtons[6] =
+        std::make_unique<Button>(283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK);
     mainButtons[7] =
         std::make_unique<AccelButton>(8, 15, 17, 24, [this]() { return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5);
     mainButtons[8] =
@@ -173,8 +174,8 @@ StorageScreen::StorageScreen()
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            clickButtons[row * 6 + column] = std::make_unique<ClickButton>(
-                x, y, 34, 30, [this, row, column]() { return this->clickBottomIndex(row * 6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
+            clickButtons[row * 6 + column] = std::make_unique<ClickButton>(x, y, 34, 30,
+                [this, row, column]() { return this->clickBottomIndex(row * 6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
             x += 34;
         }
         y += 30;
@@ -492,8 +493,8 @@ void StorageScreen::drawTop() const
             Gui::sprite(ui_sheet_icon_shiny_idx, 352 - width, 81);
         }
 
-        Gui::text(i18n::species(Configuration::getInstance().language(), infoMon->species()), 276, 98, FONT_SIZE_12, COLOR_BLACK,
-            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::species(Configuration::getInstance().language(), infoMon->species()), 276, 98, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+            TextPosY::TOP);
         u8 firstType  = infoMon->type1();
         u8 secondType = infoMon->type2();
         if (infoMon->generation() == Generation::FOUR)
@@ -516,8 +517,8 @@ void StorageScreen::drawTop() const
         info = infoMon->otName() + '\n' + i18n::localize("LOADER_ID") + std::to_string(infoMon->versionTID());
         Gui::text(info, 276, 141, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
-        Gui::text(i18n::nature(Configuration::getInstance().language(), infoMon->nature()), 276, 181, FONT_SIZE_12, COLOR_BLACK,
-            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::nature(Configuration::getInstance().language(), infoMon->nature()), 276, 181, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+            TextPosY::TOP);
         info  = i18n::localize("IV") + ": ";
         text  = Gui::parseText(info, FONT_SIZE_12, 0.0f);
         width = text->maxWidth(FONT_SIZE_12);

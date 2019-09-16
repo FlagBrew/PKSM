@@ -77,8 +77,8 @@ void ConfigSubRegionOverlay::drawTop() const
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
         if (hid.page() * hid.maxVisibleEntries() + i < subregions.size())
         {
-            Gui::text(std::to_string(locIt->first) + " - " + locIt->second, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9,
-                COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(std::to_string(locIt->first) + " - " + locIt->second, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE,
+                TextPosX::LEFT, TextPosY::TOP);
             locIt++;
         }
         else

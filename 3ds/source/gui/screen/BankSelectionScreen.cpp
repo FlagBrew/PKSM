@@ -49,8 +49,8 @@ void BankSelectionScreen::drawTop() const
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 204;
         if (hid.page() * hid.maxVisibleEntries() + i < strings.size())
         {
-            Gui::text(strings[hid.page() * hid.maxVisibleEntries() + i].first, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9,
-                COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(strings[hid.page() * hid.maxVisibleEntries() + i].first, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE,
+                TextPosX::LEFT, TextPosY::TOP);
             Gui::text(std::to_string(strings[hid.page() * hid.maxVisibleEntries() + i].second), x + 192, (i % (hid.maxVisibleEntries() / 2)) * 12,
                 FONT_SIZE_9, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
         }

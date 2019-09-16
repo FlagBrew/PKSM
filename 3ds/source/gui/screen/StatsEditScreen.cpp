@@ -58,8 +58,8 @@ StatsEditScreen::StatsEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
         buttons.push_back(std::make_unique<AccelButton>(
             146, y, 13, 13, [=]() { return this->changeIV(statValues[i], true); }, ui_sheet_button_plus_small_idx, "", 0.0f, COLOR_BLACK));
 
-        buttons.push_back(std::make_unique<AccelButton>(
-            182, y, 13, 13, [=]() { return this->changeSecondaryStat(statValues[i], false); }, ui_sheet_button_minus_small_idx, "", 0.0f, COLOR_BLACK));
+        buttons.push_back(std::make_unique<AccelButton>(182, y, 13, 13, [=]() { return this->changeSecondaryStat(statValues[i], false); },
+            ui_sheet_button_minus_small_idx, "", 0.0f, COLOR_BLACK));
         buttons.push_back(std::make_unique<Button>(197, y, 32, 13,
             [=]() {
                 setSecondaryStat(statValues[i]);
@@ -75,8 +75,8 @@ StatsEditScreen::StatsEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
     instructions.addLine(false, 213, 34, 213, 168, 4, COLOR_GREY);
     instructions.addBox(false, 130, 18, 85, 16, COLOR_GREY, i18n::localize("EDIT"), COLOR_WHITE);
 
-    buttons.push_back(
-        std::make_unique<Button>(300, 184, 15, 12, [this]() { return this->setHP(); }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
+    buttons.push_back(std::make_unique<Button>(
+        300, 184, 15, 12, [this]() { return this->setHP(); }, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
 
     addOverlay<ViewOverlay>(this->pkm, false);
 }
@@ -276,13 +276,13 @@ void StatsEditScreen::drawBottom() const
 
     if (pkm->generation() == Generation::LGPE)
     {
-        Gui::text(i18n::localize("EDITOR_CP") + std::to_string((int)((PB7*)pkm.get())->CP()), 4, 5, FONT_SIZE_12, COLOR_WHITE,
-            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("EDITOR_CP") + std::to_string((int)((PB7*)pkm.get())->CP()), 4, 5, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+            TextPosY::TOP);
     }
     Gui::text(i18n::localize("EDITOR_STATS"), 4, 32, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(i18n::localize("IV"), 132, 32, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::text(pkm->generation() == Generation::LGPE ? i18n::localize("AWAKENED") : i18n::localize("EV"), 213, 32, FONT_SIZE_12,
-        COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(pkm->generation() == Generation::LGPE ? i18n::localize("AWAKENED") : i18n::localize("EV"), 213, 32, FONT_SIZE_12, COLOR_BLACK,
+        TextPosX::CENTER, TextPosY::TOP);
     Gui::text(i18n::localize("TOTAL"), 274, 32, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     Gui::text(i18n::localize("HP"), 4, 52, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(i18n::localize("ATTACK"), 4, 72, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
@@ -293,23 +293,20 @@ void StatsEditScreen::drawBottom() const
 
     for (int i = 0; i < 6; i++)
     {
-        Gui::text(
-            std::to_string((int)pkm->iv(statValues[i])), 132, 52 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(std::to_string((int)pkm->iv(statValues[i])), 132, 52 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         if (pkm->generation() != Generation::LGPE)
         {
-            Gui::text(std::to_string((int)pkm->ev(statValues[i])), 213, 52 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
-                TextPosY::TOP);
+            Gui::text(std::to_string((int)pkm->ev(statValues[i])), 213, 52 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         }
         else
         {
-            Gui::text(std::to_string((int)((PB7*)pkm.get())->awakened(statValues[i])), 213, 52 + i * 20, FONT_SIZE_12, COLOR_BLACK,
-                TextPosX::CENTER, TextPosY::TOP);
+            Gui::text(std::to_string((int)((PB7*)pkm.get())->awakened(statValues[i])), 213, 52 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
+                TextPosY::TOP);
         }
-        Gui::text(std::to_string((int)pkm->stat(statValues[i])), 274, 52 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
-            TextPosY::TOP);
+        Gui::text(std::to_string((int)pkm->stat(statValues[i])), 274, 52 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
-    Gui::text(i18n::localize("EDITOR_HIDDEN_POWER") + i18n::hp(lang, pkm->hpType()), 295, 181, FONT_SIZE_12, COLOR_WHITE,
-        TextPosX::RIGHT, TextPosY::TOP);
+    Gui::text(
+        i18n::localize("EDITOR_HIDDEN_POWER") + i18n::hp(lang, pkm->hpType()), 295, 181, FONT_SIZE_12, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
 }
 
 void StatsEditScreen::update(touchPosition* touch)

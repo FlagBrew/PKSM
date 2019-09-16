@@ -498,10 +498,8 @@ void ConfigScreen::drawBottom() const
         Gui::text(i18n::localize("MONTH"), 19, 183, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(i18n::localize("YEAR"), 19, 204, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
-        Gui::text(std::to_string(Configuration::getInstance().defaultTID()), 150, 36, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
-            TextPosY::TOP);
-        Gui::text(std::to_string(Configuration::getInstance().defaultSID()), 150, 57, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
-            TextPosY::TOP);
+        Gui::text(std::to_string(Configuration::getInstance().defaultTID()), 150, 36, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(std::to_string(Configuration::getInstance().defaultSID()), 150, 57, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(Configuration::getInstance().defaultOT(), 150, 78, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         std::string data;
         switch (Configuration::getInstance().nationality())
@@ -537,12 +535,9 @@ void ConfigScreen::drawBottom() const
         Gui::text(i18n::subregion(Configuration::getInstance().language(), Configuration::getInstance().defaultCountry(),
                       Configuration::getInstance().defaultRegion()),
             150, 141, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(
-            std::to_string(Configuration::getInstance().day()), 150, 162, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(
-            std::to_string(Configuration::getInstance().month()), 150, 183, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(
-            std::to_string(Configuration::getInstance().year()), 150, 204, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(std::to_string(Configuration::getInstance().day()), 150, 162, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(std::to_string(Configuration::getInstance().month()), 150, 183, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(std::to_string(Configuration::getInstance().year()), 150, 204, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
         for (auto& button : tabButtons[currentTab])
         {
@@ -568,22 +563,22 @@ void ConfigScreen::drawBottom() const
             button->draw();
         }
 
-        Gui::text(Configuration::getInstance().autoBackup() ? i18n::localize("YES") : i18n::localize("NO"), 270, 36, FONT_SIZE_12,
-            COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().transferEdit() ? i18n::localize("YES") : i18n::localize("NO"), 270, 57, FONT_SIZE_12,
-            COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().writeFileSave() ? i18n::localize("YES") : i18n::localize("NO"), 270, 78, FONT_SIZE_12,
-            COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().useSaveInfo() ? i18n::localize("YES") : i18n::localize("NO"), 270, 99, FONT_SIZE_12,
-            COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().useExtData() ? i18n::localize("YES") : i18n::localize("NO"), 270, 120, FONT_SIZE_12,
-            COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().randomMusic() ? i18n::localize("YES") : i18n::localize("NO"), 270, 141, FONT_SIZE_12,
-            COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().showBackups() ? i18n::localize("YES") : i18n::localize("NO"), 270, 162, FONT_SIZE_12,
-            COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().autoUpdate() ? i18n::localize("YES") : i18n::localize("NO"), 270, 183, FONT_SIZE_12,
-            COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(Configuration::getInstance().autoBackup() ? i18n::localize("YES") : i18n::localize("NO"), 270, 36, FONT_SIZE_12, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(Configuration::getInstance().transferEdit() ? i18n::localize("YES") : i18n::localize("NO"), 270, 57, FONT_SIZE_12, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(Configuration::getInstance().writeFileSave() ? i18n::localize("YES") : i18n::localize("NO"), 270, 78, FONT_SIZE_12, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(Configuration::getInstance().useSaveInfo() ? i18n::localize("YES") : i18n::localize("NO"), 270, 99, FONT_SIZE_12, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(Configuration::getInstance().useExtData() ? i18n::localize("YES") : i18n::localize("NO"), 270, 120, FONT_SIZE_12, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(Configuration::getInstance().randomMusic() ? i18n::localize("YES") : i18n::localize("NO"), 270, 141, FONT_SIZE_12, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(Configuration::getInstance().showBackups() ? i18n::localize("YES") : i18n::localize("NO"), 270, 162, FONT_SIZE_12, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(Configuration::getInstance().autoUpdate() ? i18n::localize("YES") : i18n::localize("NO"), 270, 183, FONT_SIZE_12, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
     }
     else if (currentTab == 3)
     {
@@ -597,8 +592,8 @@ void ConfigScreen::drawBottom() const
             button->draw();
         }
 
-        Gui::text(Configuration::getInstance().alphaChannel() ? i18n::localize("YES") : i18n::localize("NO"), 270, 108, FONT_SIZE_14,
-            COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(Configuration::getInstance().alphaChannel() ? i18n::localize("YES") : i18n::localize("NO"), 270, 108, FONT_SIZE_14, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
     }
 }
 
@@ -731,7 +726,7 @@ void ConfigScreen::drawTop() const
     int y = 20;
     for (size_t i = 0; i < credits.size(); i++)
     {
-        Gui::text(std::string(credits[i]), 200, y += 15, FONT_SIZE_14, PKSM_Color(0xFF, 0xFF, 0xFF, getNextAlpha(i)), TextPosX::CENTER,
-            TextPosY::TOP);
+        Gui::text(
+            std::string(credits[i]), 200, y += 15, FONT_SIZE_14, PKSM_Color(0xFF, 0xFF, 0xFF, getNextAlpha(i)), TextPosX::CENTER, TextPosY::TOP);
     }
 }

@@ -55,8 +55,8 @@ public:
     bool willReplaceTop() const;
     void doTopDraw() const;
     void doBottomDraw() const;
-    virtual void drawTop() const              = 0;
-    virtual void drawBottom() const           = 0;
+    virtual void drawTop() const    = 0;
+    virtual void drawBottom() const = 0;
     virtual bool replacesTop() const { return false; }
     virtual bool replacesBottom() const { return false; }
 #elif defined(__SWITCH__)

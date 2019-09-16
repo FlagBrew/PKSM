@@ -77,13 +77,13 @@ void SortScreen::drawBottom() const
     {
         if (i >= sortTypes.size())
         {
-            Gui::text(i18n::localize(std::string(sortTypeToString(NONE))), 160, 29 + 35 * i, FONT_SIZE_12, COLOR_BLACK,
-                TextPosX::CENTER, TextPosY::CENTER);
+            Gui::text(
+                i18n::localize(std::string(sortTypeToString(NONE))), 160, 29 + 35 * i, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER);
         }
         else
         {
-            Gui::text(i18n::localize(std::string(sortTypeToString(sortTypes[i]))), 160, 29 + 35 * i, FONT_SIZE_12, COLOR_BLACK,
-                TextPosX::CENTER, TextPosY::CENTER);
+            Gui::text(i18n::localize(std::string(sortTypeToString(sortTypes[i]))), 160, 29 + 35 * i, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
+                TextPosY::CENTER);
         }
     }
 }

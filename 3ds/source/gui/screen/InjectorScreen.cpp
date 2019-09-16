@@ -211,21 +211,20 @@ void InjectorScreen::drawBottom() const
                     if (langIndex == (int)lang)
                     {
                         Gui::sprite(ui_sheet_emulated_button_selected_red_idx, x, y);
-                        Gui::text(std::string(languages[langIndex - 1]), x + 38 / 2, y + 2, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER,
-                            TextPosY::TOP);
+                        Gui::text(
+                            std::string(languages[langIndex - 1]), x + 38 / 2, y + 2, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     }
                     else
                     {
                         Gui::sprite(ui_sheet_emulated_button_unselected_red_idx, x, y);
-                        Gui::text(std::string(languages[langIndex - 1]), x + 38 / 2, y + 2, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER,
-                            TextPosY::TOP);
+                        Gui::text(
+                            std::string(languages[langIndex - 1]), x + 38 / 2, y + 2, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
                     }
                 }
                 else
                 {
                     Gui::sprite(ui_sheet_emulated_button_unavailable_red_idx, x, y);
-                    Gui::text(std::string(languages[langIndex - 1]), x + 38 / 2, y + 2, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER,
-                        TextPosY::TOP);
+                    Gui::text(std::string(languages[langIndex - 1]), x + 38 / 2, y + 2, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
                 }
             }
             langIndex++;
@@ -350,8 +349,8 @@ void InjectorScreen::drawTop() const
             Gui::text(i18n::species(Configuration::getInstance().language(), wondercard->species()), 87, 35, FONT_SIZE_14, COLOR_BLACK,
                 TextPosX::LEFT, TextPosY::TOP);
             Gui::text(std::to_string(wondercard->level()), 87, 55, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::text(i18n::item(Configuration::getInstance().language(), wondercard->heldItem()), 87, 75, FONT_SIZE_14, COLOR_BLACK,
-                TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(i18n::item(Configuration::getInstance().language(), wondercard->heldItem()), 87, 75, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT,
+                TextPosY::TOP);
             std::string text = wondercard->otName();
             u16 tid = wondercard->TID(), sid = wondercard->SID();
             if (text == i18n::localize("YOUR_OT_NAME") || text == "")
@@ -363,15 +362,15 @@ void InjectorScreen::drawTop() const
             Gui::text(text, 87, 95, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             Gui::text(StringUtils::format("%i/%i", tid, sid), 87, 115, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             Gui::text(game, 87, 135, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::text(StringUtils::format("%i/%i/%i", wondercard->day(), wondercard->month(), wondercard->year()), 87, 155, FONT_SIZE_14,
-                COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(StringUtils::format("%i/%i/%i", wondercard->day(), wondercard->month(), wondercard->year()), 87, 155, FONT_SIZE_14, COLOR_BLACK,
+                TextPosX::LEFT, TextPosY::TOP);
             if (wondercard->generation() == Generation::SEVEN)
             {
                 Gui::sprite(ui_sheet_point_big_idx, 1, 180);
                 Gui::text(i18n::localize("ITEM"), 9, 175, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 u16 additionalItem = ((WC7*)wondercard.get())->additionalItem();
-                Gui::text(i18n::item(Configuration::getInstance().language(), additionalItem), 87, 175, FONT_SIZE_14, COLOR_BLACK,
-                    TextPosX::LEFT, TextPosY::TOP);
+                Gui::text(i18n::item(Configuration::getInstance().language(), additionalItem), 87, 175, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT,
+                    TextPosY::TOP);
             }
         }
         else if (wondercard->item())
@@ -389,8 +388,7 @@ void InjectorScreen::drawTop() const
                 itemString = &i18n::item(Configuration::getInstance().language(), ((WC7*)wondercard.get())->object(item));
                 numString  = " x " + std::to_string(((WC7*)wondercard.get())->objectQuantity(item));
             }
-            Gui::text(numString.empty() ? *itemString : *itemString + numString, 87, 75, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT,
-                TextPosY::TOP);
+            Gui::text(numString.empty() ? *itemString : *itemString + numString, 87, 75, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             Gui::text(i18n::localize("NA"), 87, 95, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             Gui::text(i18n::localize("NA"), 87, 115, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             Gui::text(game, 87, 135, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
@@ -418,8 +416,8 @@ void InjectorScreen::drawTop() const
         Gui::text(i18n::localize("MOVES"), 251, 136, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         for (int i = 0; i < 4; i++)
         {
-            Gui::text(i18n::move(Configuration::getInstance().language(), wondercard->move(i)), 251, 156 + 20 * i, FONT_SIZE_14,
-                COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(i18n::move(Configuration::getInstance().language(), wondercard->move(i)), 251, 156 + 20 * i, FONT_SIZE_14, COLOR_BLACK,
+                TextPosX::LEFT, TextPosY::TOP);
         }
     }
     else
@@ -450,18 +448,15 @@ void InjectorScreen::drawTop() const
                     Gui::sprite(ui_sheet_icon_item_idx, x * 50 + 20, y * 48 + 18);
                 }
 
-                Gui::text(
-                    std::to_string(fullI + 1), x * 50 + 50 / 2, y * 48 + 36, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                Gui::text(std::to_string(fullI + 1), x * 50 + 50 / 2, y * 48 + 36, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
             }
             else if (fullI == gifts.size())
             {
-                Gui::text(
-                    std::to_string(fullI + 1), x * 50 + 50 / 2, y * 48 + 36, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                Gui::text(std::to_string(fullI + 1), x * 50 + 50 / 2, y * 48 + 36, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
             }
             else
             {
-                Gui::text(std::to_string(fullI + 1), x * 50 + 50 / 2, y * 48 + 36, FONT_SIZE_9, COLOR_MASKBLACK, TextPosX::CENTER,
-                    TextPosY::TOP);
+                Gui::text(std::to_string(fullI + 1), x * 50 + 50 / 2, y * 48 + 36, FONT_SIZE_9, COLOR_MASKBLACK, TextPosX::CENTER, TextPosY::TOP);
             }
         }
     }

@@ -96,8 +96,8 @@ bool Sav::isValidDSSave(u8* dt)
     }
 
     // Check for block identifiers
-    static constexpr size_t DP_OFFSET = 0xC100;
-    static constexpr size_t PT_OFFSET = 0xCF2C;
+    static constexpr size_t DP_OFFSET   = 0xC100;
+    static constexpr size_t PT_OFFSET   = 0xCF2C;
     static constexpr size_t HGSS_OFFSET = 0xF628;
     if (validSequence(dt, DP_OFFSET))
         return true;
@@ -132,8 +132,8 @@ std::unique_ptr<Sav> Sav::checkDSType(u8* dt)
     }
 
     // Check for block identifiers
-    static constexpr size_t DP_OFFSET = 0xC100;
-    static constexpr size_t PT_OFFSET = 0xCF2C;
+    static constexpr size_t DP_OFFSET   = 0xC100;
+    static constexpr size_t PT_OFFSET   = 0xCF2C;
     static constexpr size_t HGSS_OFFSET = 0xF628;
     if (validSequence(dt, DP_OFFSET))
         return std::make_unique<SavDP>(dt);
@@ -155,7 +155,7 @@ std::unique_ptr<Sav> Sav::checkDSType(u8* dt)
 bool Sav::validSequence(u8* dt, size_t offset)
 {
     static constexpr u32 DATE_INTERNATIONAL = 0x20060623;
-    static constexpr u32 DATE_KOREAN = 0x20070903;
+    static constexpr u32 DATE_KOREAN        = 0x20070903;
 
     if (*(u32*)(dt + offset - 0xC) != (offset & 0xFFFF))
     {

@@ -1277,7 +1277,7 @@ void HexEditScreen::drawTop() const
             if (x + y * 16 + hid.page() * hid.maxVisibleEntries() < pkm->getLength())
             {
                 std::pair<const std::string*, SecurityLevel> description = describe(x + y * 16 + hid.page() * hid.maxVisibleEntries());
-                PKSM_Color color                                                = COLOR_WHITE;
+                PKSM_Color color                                         = COLOR_WHITE;
                 if (level < description.second)
                 {
                     color = PKSM_Color(0, 0, 0, 120);
@@ -1298,8 +1298,8 @@ void HexEditScreen::drawTop() const
 void HexEditScreen::drawBottom() const
 {
     Gui::backgroundBottom(false);
-    Gui::text(StringUtils::format("%s 0x%02X", i18n::localize("HEX_SELECTED_BYTE").c_str(), hid.fullIndex()), 160, 8, FONT_SIZE_14,
-        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(StringUtils::format("%s 0x%02X", i18n::localize("HEX_SELECTED_BYTE").c_str(), hid.fullIndex()), 160, 8, FONT_SIZE_14, COLOR_WHITE,
+        TextPosX::CENTER, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_emulated_button_selected_blue_idx, 140, 50);
     Gui::text(StringUtils::format("%01X %01X", pkm->rawData()[hid.fullIndex()] >> 4, pkm->rawData()[hid.fullIndex()] & 0x0F), 160, 52, FONT_SIZE_14,
@@ -1455,20 +1455,20 @@ void HexEditScreen::drawMeaning() const
             switch (i)
             {
                 case 0x8 ... 0x9:
-                    Gui::text(i18n::species(Configuration::getInstance().language(), pkm->species()), 160, 100, FONT_SIZE_12,
-                        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::text(i18n::species(Configuration::getInstance().language(), pkm->species()), 160, 100, FONT_SIZE_12, COLOR_WHITE,
+                        TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0xA ... 0xB:
                     Gui::text(i18n::item(Configuration::getInstance().language(), pkm->heldItem()), 160, 100, FONT_SIZE_12, COLOR_WHITE,
                         TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x15:
-                    Gui::text(i18n::ability(Configuration::getInstance().language(), pkm->ability()), 160, 100, FONT_SIZE_12,
-                        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::text(i18n::ability(Configuration::getInstance().language(), pkm->ability()), 160, 100, FONT_SIZE_12, COLOR_WHITE,
+                        TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x28 ... 0x2F:
-                    Gui::text(i18n::move(Configuration::getInstance().language(), pkm->move((i - 0x28) / 2)), 160, 100, FONT_SIZE_12,
-                        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::text(i18n::move(Configuration::getInstance().language(), pkm->move((i - 0x28) / 2)), 160, 100, FONT_SIZE_12, COLOR_WHITE,
+                        TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x5F:
                     Gui::text(i18n::game(Configuration::getInstance().language(), pkm->version()), 160, 100, FONT_SIZE_12, COLOR_WHITE,
@@ -1502,20 +1502,20 @@ void HexEditScreen::drawMeaning() const
             switch (i)
             {
                 case 0x8 ... 0x9:
-                    Gui::text(i18n::species(Configuration::getInstance().language(), pkm->species()), 160, 100, FONT_SIZE_12,
-                        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::text(i18n::species(Configuration::getInstance().language(), pkm->species()), 160, 100, FONT_SIZE_12, COLOR_WHITE,
+                        TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0xA ... 0xB:
                     Gui::text(i18n::item(Configuration::getInstance().language(), pkm->heldItem()), 160, 100, FONT_SIZE_12, COLOR_WHITE,
                         TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x14:
-                    Gui::text(i18n::ability(Configuration::getInstance().language(), pkm->ability()), 160, 100, FONT_SIZE_12,
-                        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::text(i18n::ability(Configuration::getInstance().language(), pkm->ability()), 160, 100, FONT_SIZE_12, COLOR_WHITE,
+                        TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x5A ... 0x61:
-                    Gui::text(i18n::move(Configuration::getInstance().language(), pkm->move((i - 0x5A) / 2)), 160, 100, FONT_SIZE_12,
-                        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::text(i18n::move(Configuration::getInstance().language(), pkm->move((i - 0x5A) / 2)), 160, 100, FONT_SIZE_12, COLOR_WHITE,
+                        TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0xDF:
                     Gui::text(i18n::game(Configuration::getInstance().language(), pkm->version()), 160, 100, FONT_SIZE_12, COLOR_WHITE,
