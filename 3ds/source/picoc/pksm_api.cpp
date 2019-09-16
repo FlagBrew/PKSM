@@ -348,17 +348,44 @@ void cfg_default_sid(struct ParseState* Parser, struct Value* ReturnValue, struc
 
 void cfg_default_day(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    ReturnValue->Val->Integer = Configuration::getInstance().day();
+    int ret = Configuration::getInstance().day();
+    if (ret == 0)
+    {
+        const time_t current = time(NULL);
+        ReturnValue->Val->Integer = gmtime(&current)->tm_mday;
+    }
+    else
+    {
+        ReturnValue->Val->Integer = ret;
+    }
 }
 
 void cfg_default_month(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    ReturnValue->Val->Integer = Configuration::getInstance().month();
+    int ret = Configuration::getInstance().month();
+    if (ret == 0)
+    {
+        const time_t current = time(NULL);
+        ReturnValue->Val->Integer = gmtime(&current)->tm_mon;
+    }
+    else
+    {
+        ReturnValue->Val->Integer = ret;
+    }
 }
 
 void cfg_default_year(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    ReturnValue->Val->Integer = Configuration::getInstance().year();
+    int ret = Configuration::getInstance().year();
+    if (ret == 0)
+    {
+        const time_t current = time(NULL);
+        ReturnValue->Val->Integer = gmtime(&current)->tm_year;
+    }
+    else
+    {
+        ReturnValue->Val->Integer = ret;
+    }
 }
 
 void gui_boxes(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -1393,7 +1420,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 ProgramFail(Parser, "Incorrect number of args (%i) for EGG_YEAR", NumArgs);
             }
-            pkm->eggYear(nextArg->Val->Integer);
+            pkm->eggYear(nextArg->Val->Integer > 2000 ? nextArg->Val->Integer - 2000 : nextArg->Val->Integer);
             break;
         case MET_DAY:
             if (NumArgs != 4)
@@ -1417,7 +1444,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 ProgramFail(Parser, "Incorrect number of args (%i) for MET_YEAR", NumArgs);
             }
-            pkm->metYear(nextArg->Val->Integer);
+            pkm->metYear(nextArg->Val->Integer > 2000 ? nextArg->Val->Integer - 2000 : nextArg->Val->Integer);
             break;
         case FORM:
             if (NumArgs != 4)
