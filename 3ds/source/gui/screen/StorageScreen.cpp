@@ -1160,7 +1160,7 @@ void StorageScreen::pickup()
                 {
                     return;
                 }
-                if ((Configuration::getInstance().transferEdit() || bankMon->generation() == TitleLoader::save->generation()) ||
+                if (bankMon->species() == 0 || (Configuration::getInstance().transferEdit() || bankMon->generation() == TitleLoader::save->generation()) ||
                     Gui::showChoiceMessage(i18n::localize("GEN_CHANGE_1") + '\n' + i18n::localize("GEN_CHANGE_2")))
                 {
                     if (storageChosen)
