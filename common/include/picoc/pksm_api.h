@@ -114,6 +114,9 @@ enum SAV_MAX_FIELD
 };
 
 void bank_inject_pkx(struct ParseState*, struct Value*, struct Value**, int);
+void bank_get_pkx(struct ParseState*, struct Value*, struct Value**, int);
+void bank_get_size(struct ParseState*, struct Value*, struct Value**, int);
+void bank_select(struct ParseState*, struct Value*, struct Value**, int);
 void cfg_default_ot(struct ParseState*, struct Value*, struct Value**, int);
 void cfg_default_tid(struct ParseState*, struct Value*, struct Value**, int);
 void cfg_default_sid(struct ParseState*, struct Value*, struct Value**, int);

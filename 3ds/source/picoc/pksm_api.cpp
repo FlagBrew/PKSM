@@ -24,6 +24,7 @@
  *         reasonable ways as different from the original version.
  */
 
+#include "BankChoice.hpp"
 #include "BoxChoice.hpp"
 #include "FortyChoice.hpp"
 #include "PB7.hpp"
@@ -577,6 +578,38 @@ void bank_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struc
     }
 
     Banks::bank->pkm(pkm, box, slot);
+}
+
+void bank_get_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    Generation* outGen = (Generation*)Param[0]->Val->Pointer;
+    int box            = Param[1]->Val->Integer;
+    int slot           = Param[2]->Val->Integer;
+
+    if (box + slot / 30 >= Banks::bank->boxes() * 30)
+    {
+        ProgramFail(Parser, "Invalid box, slot number: Max box is %i", Banks::bank->boxes() - 1);
+    }
+    else
+    {
+        auto pkm = Banks::bank->pkm(box, slot);
+        *outGen  = pkm->generation();
+
+        u8* out = (u8*)malloc(pkm->getLength());
+        std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), out);
+        ReturnValue->Val->Pointer = (void*)out;
+    }
+}
+
+void bank_get_size(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    ReturnValue->Val->Integer = Banks::bank->boxes();
+}
+
+void bank_select(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    BankChoice screen;
+    screen.run();
 }
 
 void net_ip(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
