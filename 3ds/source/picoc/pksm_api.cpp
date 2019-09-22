@@ -759,6 +759,7 @@ void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, stru
             if (pkm->generation() == Generation::LGPE)
             {
                 TitleLoader::save->pkm(pkm, slot);
+                TitleLoader::save->dex(pkm);
             }
         }
         else
