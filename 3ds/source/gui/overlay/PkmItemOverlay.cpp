@@ -31,10 +31,6 @@
 #include "loader.hpp"
 #include "utils.hpp"
 
-static constexpr auto stringComp = [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2) {
-    return pair1.second < pair2.second;
-};
-
 namespace
 {
     int index(std::vector<std::pair<int, std::string>>& search, const std::string& v)
@@ -73,18 +69,22 @@ PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> p
     const std::set<int>& availableItems      = TitleLoader::save->availableItems();
     for (auto i = availableItems.begin(); i != availableItems.end(); i++)
     {
-        if (*i == 0)
-            continue;
-        else if (rawItems[*i].find("\uFF1F\uFF1F\uFF1F") != std::string::npos || rawItems[*i].find("???") != std::string::npos)
-            continue;
-        else if (*i >= 807 && *i <= 835)
-            continue; // Bag Z-Crystals
-        else if (*i >= 927 && *i <= 932)
-            continue; // Bag Z-Crystals
+        if ((rawItems[*i].find("\uFF1F\uFF1F\uFF1F") != std::string::npos || rawItems[*i].find("???") != std::string::npos) ||
+            (*i >= 807 && *i <= 835) || (*i >= 927 && *i <= 932))
+            continue; // Invalid items and bag Z-Crystals
         items.emplace_back(*i, rawItems[*i]);
     }
-    std::sort(items.begin(), items.end(), stringComp);
-    items.insert(items.begin(), {0, rawItems[0]});
+    std::sort(items.begin(), items.end(), [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2) {
+        if (pair1.first == 0)
+        {
+            if (pair2.first == 0)
+            {
+                return false;
+            }
+            return true;
+        }
+        return pair1.second < pair2.second;
+    });
     validItems = items;
 
     hid.update(items.size());
