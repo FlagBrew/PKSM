@@ -29,7 +29,6 @@
 #include "Configuration.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
-#include <list>
 
 SpeciesOverlay::SpeciesOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& object)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
