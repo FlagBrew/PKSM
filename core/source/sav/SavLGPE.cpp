@@ -1130,3 +1130,75 @@ std::string SavLGPE::pouchName(Pouch pouch) const
             return "";
     }
 }
+
+const std::vector<int>& SavLGPE::availableItems(void) const
+{
+    static std::vector<int> ret;
+    if (ret.empty())
+    {
+        ret.reserve(maxItem());
+        for (int i = 0; i < maxItem(); i++)
+        {
+            ret.push_back(i + 1);
+        }
+    }
+    return ret;
+}
+
+const std::vector<int>& SavLGPE::availableMoves(void) const
+{
+    static std::vector<int> ret;
+    if (ret.empty())
+    {
+        ret.reserve(maxMove());
+        for (int i = 0; i < maxMove(); i++)
+        {
+            ret.push_back(i + 1);
+        }
+    }
+    return ret;
+}
+
+const std::vector<int>& SavLGPE::availableSpecies(void) const
+{
+    static std::vector<int> ret;
+    if (ret.empty())
+    {
+        ret.reserve(153);
+        for (int i = 0; i < 151; i++)
+        {
+            ret.push_back(i + 1);
+        }
+        ret.push_back(808);
+        ret.push_back(809);
+    }
+    return ret;
+}
+
+const std::vector<int>& SavLGPE::availableAbilities(void) const
+{
+    static std::vector<int> ret;
+    if (ret.empty())
+    {
+        ret.reserve(maxAbility());
+        for (int i = 0; i < maxAbility(); i++)
+        {
+            ret.push_back(i + 1);
+        }
+    }
+    return ret;
+}
+
+const std::vector<int>& SavLGPE::availableBalls(void) const
+{
+    static std::vector<int> ret;
+    if (ret.empty())
+    {
+        ret.reserve(maxBall());
+        for (int i = 0; i < maxBall(); i++)
+        {
+            ret.push_back(i + 1);
+        }
+    }
+    return ret;
+}

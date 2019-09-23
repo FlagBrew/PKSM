@@ -25,6 +25,7 @@ struct LibraryFunction UnixFunctions[] =
     { sav_get_max,          "int sav_get_max(enum SAV_MaxField field, ...);" },
     { sav_get_string,       "char* sav_get_string(unsigned int offset, unsigned int codepoints);" },
     { sav_set_string,       "void sav_set_string(char* string, unsigned int offset, unsigned int codepoints);" },
+    { sav_check_value,      "int sav_check_value(enum SAV_CheckValue field, int value);" },
     { party_get_pkx,        "void party_get_pkx(char* data, int slot);" },
     { party_inject_pkx,     "void party_inject_pkx(char* data, enum Generation type, int slot);" },
     { bank_inject_pkx,      "void bank_inject_pkx(char* data, enum Generation type, int box, int slot);" },
@@ -78,7 +79,7 @@ void PlatformLibraryInit(Picoc *pc)
                     "PP, PP_UPS, EGG, NICKNAMED, EGG_LOCATION, MET_LEVEL, OT_GENDER, ORIGINAL_GAME};"
     "enum SAV_Field { SAV_OT_NAME, SAV_TID, SAV_SID, SAV_GENDER, SAV_COUNTRY, SAV_SUBREGION, SAV_REGION,"
                     "SAV_LANGUAGE, SAV_MONEY, SAV_BP, SAV_HOURS, SAV_MINUTES, SAV_SECONDS, SAV_ITEM };"
-    "enum SAV_MaxField { MAX_SLOTS, MAX_BOXES, MAX_WONDER_CARDS, MAX_SPECIES, MAX_MOVE, MAX_ITEM,"
-                    "MAX_ABILITY, MAX_BALL, MAX_FORM };"
+    "enum SAV_MaxField { MAX_SLOTS, MAX_BOXES, MAX_WONDER_CARDS, MAX_FORM, MAX_IN_POUCH };"
+    "enum SAV_CheckValue { SAV_VALUE_SPECIES, SAV_VALUE_MOVE, SAV_VALUE_ITEM, SAV_VALUE_ABILITY, SAV_VALUE_BALL };"
     "enum Pouch { NormalItem, KeyItem, TM, Mail, Medicine, Berry, Ball, Battle, Candy, ZCrystals };");
 }

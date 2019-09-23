@@ -81,6 +81,19 @@ static constexpr int FAST_TIME     = 1;
 static constexpr int SLOW_TIME     = 5;
 static constexpr int TIME_TO_ACCEL = 5;
 
+template <typename T>
+static bool contains(const std::vector<T> vec, T check)
+{
+    for (size_t i = 0; i < vec.size(); i++)
+    {
+        if (vec[i] == check)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool HexEditScreen::toggleBit(int selected, int offset)
 {
     pkm->rawData()[selected] ^= 0x1 << offset;
@@ -99,25 +112,25 @@ bool HexEditScreen::checkValue()
         switch (i)
         {
             case 0x8 ... 0x9:
-                if (pkm->species() > TitleLoader::save->maxSpecies())
+                if (!contains(TitleLoader::save->availableSpecies(), (int)pkm->species()))
                 {
                     return false;
                 }
                 return true;
             case 0xA ... 0xB:
-                if (pkm->heldItem() >= TitleLoader::save->maxItem())
+                if (!contains(TitleLoader::save->availableItems(), (int)pkm->heldItem()))
                 {
                     return false;
                 }
                 return true;
             case 0x14:
-                if (pkm->ability() >= TitleLoader::save->maxAbility())
+                if (!contains(TitleLoader::save->availableAbilities(), (int)pkm->ability()))
                 {
                     return false;
                 }
                 return true;
             case 0x5A ... 0x61:
-                if (pkm->move((i - 0x5A) / 2) >= TitleLoader::save->maxMove())
+                if (!contains(TitleLoader::save->availableMoves(), (int)pkm->move((i - 0x5A) / 2)))
                 {
                     return false;
                 }
@@ -129,7 +142,7 @@ bool HexEditScreen::checkValue()
                 }
                 return true;
             case 0x6A ... 0x71:
-                if (pkm->relearnMove((i - 0x6A) / 2) >= TitleLoader::save->maxMove())
+                if (!contains(TitleLoader::save->availableMoves(), (int)pkm->relearnMove((i - 0x6A) / 2)))
                 {
                     return false;
                 }
@@ -168,25 +181,25 @@ bool HexEditScreen::checkValue()
         switch (i)
         {
             case 0x8 ... 0x9:
-                if (pkm->species() > TitleLoader::save->maxSpecies())
+                if (!contains(TitleLoader::save->availableSpecies(), (int)pkm->species()))
                 {
                     return false;
                 }
                 return true;
             case 0xA ... 0xB:
-                if (pkm->heldItem() >= TitleLoader::save->maxItem())
+                if (!contains(TitleLoader::save->availableItems(), (int)pkm->heldItem()))
                 {
                     return false;
                 }
                 return true;
             case 0x15:
-                if (pkm->ability() >= TitleLoader::save->maxAbility())
+                if (!contains(TitleLoader::save->availableAbilities(), (int)pkm->ability()))
                 {
                     return false;
                 }
                 return true;
             case 0x28 ... 0x2F:
-                if (pkm->move((i - 0x28) / 2) >= TitleLoader::save->maxMove())
+                if (!contains(TitleLoader::save->availableMoves(), (int)pkm->move((i - 0x28) / 2)))
                 {
                     return false;
                 }

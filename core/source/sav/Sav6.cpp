@@ -768,3 +768,73 @@ std::string Sav6::pouchName(Pouch pouch) const
             return "";
     }
 }
+
+const std::vector<int>& Sav6::availableItems(void) const
+{
+    static std::vector<int> ret;
+    if (ret.empty())
+    {
+        ret.reserve(maxItem());
+        for (int i = 0; i < maxItem(); i++)
+        {
+            ret.push_back(i + 1);
+        }
+    }
+    return ret;
+}
+
+const std::vector<int>& Sav6::availableMoves(void) const
+{
+    static std::vector<int> ret;
+    if (ret.empty())
+    {
+        ret.reserve(maxMove());
+        for (int i = 0; i < maxMove(); i++)
+        {
+            ret.push_back(i + 1);
+        }
+    }
+    return ret;
+}
+
+const std::vector<int>& Sav6::availableSpecies(void) const
+{
+    static std::vector<int> ret;
+    if (ret.empty())
+    {
+        ret.reserve(maxSpecies());
+        for (int i = 0; i < maxSpecies(); i++)
+        {
+            ret.push_back(i + 1);
+        }
+    }
+    return ret;
+}
+
+const std::vector<int>& Sav6::availableAbilities(void) const
+{
+    static std::vector<int> ret;
+    if (ret.empty())
+    {
+        ret.reserve(maxAbility());
+        for (int i = 0; i < maxAbility(); i++)
+        {
+            ret.push_back(i + 1);
+        }
+    }
+    return ret;
+}
+
+const std::vector<int>& Sav6::availableBalls(void) const
+{
+    static std::vector<int> ret;
+    if (ret.empty())
+    {
+        ret.reserve(maxBall());
+        for (int i = 0; i < maxBall(); i++)
+        {
+            ret.push_back(i + 1);
+        }
+    }
+    return ret;
+}

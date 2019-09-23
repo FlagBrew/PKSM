@@ -117,13 +117,13 @@ public:
     int maxBoxes(void) const override { return 18; }
     size_t maxWondercards(void) const override { return 8; }
     Generation generation(void) const override { return Generation::FOUR; }
-    int maxSpecies(void) const { return 493; }
-    int maxMove(void) const { return 467; }
-    int maxItem(void) const { return game == Game::DP ? 464 : game == Game::Pt ? 467 : 536; };
-    int maxAbility(void) const { return 123; }
-    int maxBall(void) const { return 0x18; }
     int getGBO(void) const { return gbo; }
     int getSBO(void) const { return sbo; }
+    const std::vector<int>& availableItems(void) const override;
+    const std::vector<int>& availableMoves(void) const override;
+    const std::vector<int>& availableSpecies(void) const override;
+    const std::vector<int>& availableAbilities(void) const override;
+    const std::vector<int>& availableBalls(void) const override;
 
     void item(Item& item, Pouch pouch, u16 slot) override;
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
@@ -132,6 +132,13 @@ public:
     std::string pouchName(Pouch pouch) const override;
 
     u8 formCount(u16 species) const override { return PersonalDPPtHGSS::formCount(species); }
+
+protected:
+    int maxSpecies(void) const override { return 493; }
+    int maxMove(void) const override { return 467; }
+    int maxItem(void) const override { return game == Game::DP ? 464 : game == Game::Pt ? 467 : 536; }
+    int maxAbility(void) const override { return 123; }
+    int maxBall(void) const override { return 0x18; }
 };
 
 #endif

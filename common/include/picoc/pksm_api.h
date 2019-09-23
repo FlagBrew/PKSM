@@ -104,13 +104,17 @@ enum SAV_MAX_FIELD
     MAX_SLOTS,
     MAX_BOXES,
     MAX_WONDER_CARDS,
-    MAX_SPECIES,
-    MAX_MOVE,
-    MAX_ITEM,
-    MAX_ABILITY,
-    MAX_BALL,
     MAX_FORM,
     MAX_IN_POUCH
+};
+
+enum SAV_VALUE_CHECK
+{
+    SAV_VALUE_SPECIES,
+    SAV_VALUE_MOVE,
+    SAV_VALUE_ITEM,
+    SAV_VALUE_ABILITY,
+    SAV_VALUE_BALL
 };
 
 void bank_inject_pkx(struct ParseState*, struct Value*, struct Value**, int);
@@ -146,6 +150,7 @@ void sav_get_value(struct ParseState*, struct Value*, struct Value**, int);
 void sav_get_max(struct ParseState*, struct Value*, struct Value**, int);
 void sav_get_string(struct ParseState*, struct Value*, struct Value**, int);
 void sav_set_string(struct ParseState*, struct Value*, struct Value**, int);
+void sav_check_value(struct ParseState*, struct Value*, struct Value**, int);
 void current_directory(struct ParseState*, struct Value*, struct Value**, int);
 void read_directory(struct ParseState*, struct Value*, struct Value**, int);
 void delete_directory(struct ParseState*, struct Value*, struct Value**, int);

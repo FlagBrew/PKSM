@@ -107,11 +107,11 @@ public:
     int maxBoxes(void) const override { return 24; }
     size_t maxWondercards(void) const override { return 12; }
     Generation generation(void) const override { return Generation::FIVE; }
-    int maxSpecies(void) const { return 649; }
-    int maxMove(void) const { return 559; }
-    int maxItem(void) const { return game == Game::BW ? 632 : 638; }
-    int maxAbility(void) const { return 164; }
-    int maxBall(void) const { return 0x19; }
+    const std::vector<int>& availableItems(void) const override;
+    const std::vector<int>& availableMoves(void) const override;
+    const std::vector<int>& availableSpecies(void) const override;
+    const std::vector<int>& availableAbilities(void) const override;
+    const std::vector<int>& availableBalls(void) const override;
 
     void item(Item& item, Pouch pouch, u16 slot) override;
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
@@ -120,6 +120,13 @@ public:
     std::string pouchName(Pouch pouch) const override;
 
     u8 formCount(u16 species) const override { return PersonalBWB2W2::formCount(species); }
+
+protected:
+    int maxSpecies(void) const override { return 649; }
+    int maxMove(void) const override { return 559; }
+    int maxItem(void) const override { return game == Game::BW ? 632 : 638; }
+    int maxAbility(void) const override { return 164; }
+    int maxBall(void) const override { return 0x19; }
 };
 
 #endif

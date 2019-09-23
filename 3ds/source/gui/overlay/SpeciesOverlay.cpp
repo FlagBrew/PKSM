@@ -29,6 +29,7 @@
 #include "Configuration.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
+#include <list>
 
 SpeciesOverlay::SpeciesOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& object)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(object), hid(40, 8)
@@ -40,13 +41,10 @@ SpeciesOverlay::SpeciesOverlay(ReplaceableScreen& screen, const std::variant<std
             return false;
         },
         ui_sheet_emulated_box_search_idx, "", 0, COLOR_BLACK);
+    dispPkm      = TitleLoader::save->availableSpecies();
+    hid.update(dispPkm.size());
     if (TitleLoader::save->generation() != Generation::LGPE)
     {
-        for (int i = 1; i <= TitleLoader::save->maxSpecies(); i++)
-        {
-            dispPkm.push_back(i);
-        }
-        hid.update(dispPkm.size());
         if (object.index() == 0)
         {
             auto& pkm = std::get<0>(object);
@@ -60,13 +58,6 @@ SpeciesOverlay::SpeciesOverlay(ReplaceableScreen& screen, const std::variant<std
     }
     else
     {
-        for (size_t i = 1; i <= 151; i++)
-        {
-            dispPkm.push_back(i);
-        }
-        dispPkm.push_back(808);
-        dispPkm.push_back(809);
-        hid.update(dispPkm.size());
         if (object.index() == 0)
         {
             auto& pkm = std::get<0>(object);
@@ -153,100 +144,24 @@ void SpeciesOverlay::update(touchPosition* touch)
     searchButton->update(touch);
     if (!searchString.empty() && searchString != oldSearchString)
     {
+        std::list<int> species(TitleLoader::save->availableSpecies().begin(), TitleLoader::save->availableSpecies().end());
         dispPkm.clear();
-        if (TitleLoader::save->generation() != Generation::LGPE)
+        for (auto i = species.begin(); i != species.end(); i++)
         {
-            for (int i = 1; i <= TitleLoader::save->maxSpecies(); i++)
+            std::string speciesName = i18n::species(Configuration::getInstance().language(), *i).substr(0, searchString.size());
+            StringUtils::toLower(speciesName);
+            if (speciesName != searchString)
             {
-                std::string speciesName = i18n::species(Configuration::getInstance().language(), i).substr(0, searchString.size());
-                StringUtils::toLower(speciesName);
-                if (speciesName == searchString)
-                {
-                    dispPkm.push_back(i);
-                }
+                i = species.erase(i);
+                i--;
             }
         }
-        else
-        {
-            std::string speciesName;
-            for (size_t i = 1; i <= 151; i++)
-            {
-                speciesName = i18n::species(Configuration::getInstance().language(), i).substr(0, searchString.size());
-                StringUtils::toLower(speciesName);
-                if (speciesName == searchString)
-                {
-                    dispPkm.push_back(i);
-                }
-            }
-            speciesName = i18n::species(Configuration::getInstance().language(), 808).substr(0, searchString.size());
-            StringUtils::toLower(speciesName);
-            if (speciesName == searchString)
-            {
-                dispPkm.push_back(808);
-            }
-            speciesName = i18n::species(Configuration::getInstance().language(), 809).substr(0, searchString.size());
-            StringUtils::toLower(speciesName);
-            if (speciesName == searchString)
-            {
-                dispPkm.push_back(809);
-            }
-        }
+        dispPkm         = std::vector(species.begin(), species.end());
         oldSearchString = searchString;
     }
     else if (searchString.empty() && !oldSearchString.empty())
     {
-        dispPkm.clear();
-        if (TitleLoader::save->generation() != Generation::LGPE)
-        {
-            for (int i = 1; i <= TitleLoader::save->maxSpecies(); i++)
-            {
-                dispPkm.push_back(i);
-            }
-            hid.update(dispPkm.size());
-            switch (object.index())
-            {
-                case 0:
-                    hid.select(std::get<0>(object)->species() == 0 ? 0 : std::get<0>(object)->species() - 1);
-                    break;
-                case 1:
-                    hid.select(std::get<1>(object)->species() == 0 ? 0 : std::get<1>(object)->species() - 1);
-                    break;
-            }
-        }
-        else
-        {
-            for (size_t i = 1; i <= 151; i++)
-            {
-                dispPkm.push_back(i);
-            }
-            dispPkm.push_back(808);
-            dispPkm.push_back(809);
-            hid.update(dispPkm.size());
-            switch (object.index())
-            {
-                case 0:
-                    if (std::get<0>(object)->species() == 808 || std::get<0>(object)->species() == 809)
-                    {
-                        hid.select(std::get<0>(object)->species() - 657);
-                    }
-                    else
-                    {
-                        hid.select(std::get<0>(object)->species() == 0 ? 0 : std::get<0>(object)->species() - 1);
-                    }
-                    break;
-                case 1:
-                    if (std::get<1>(object)->species() == 808 || std::get<1>(object)->species() == 809)
-                    {
-                        hid.select(std::get<1>(object)->species() - 657);
-                    }
-                    else
-                    {
-                        hid.select(std::get<1>(object)->species() == 0 ? 0 : std::get<1>(object)->species() - 1);
-                    }
-                    break;
-            }
-        }
-
+        dispPkm         = TitleLoader::save->availableSpecies();
         oldSearchString = searchString = "";
     }
     if (hid.fullIndex() >= dispPkm.size())

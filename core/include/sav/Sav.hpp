@@ -54,6 +54,13 @@ enum Pouch
 
 class Sav
 {
+    friend class PKX;
+    friend class PK4;
+    friend class PK5;
+    friend class PK6;
+    friend class PK7;
+    friend class PB7;
+
 protected:
     int Box, Party, PokeDex, WondercardData, WondercardFlags;
     int PouchHeldItem, PouchKeyItem, PouchTMHM, PouchMedicine, PouchBerry;
@@ -81,6 +88,12 @@ protected:
     static u16 ccitt16(const u8* buf, u32 len);
     static std::unique_ptr<Sav> checkDSType(u8* dt);
     static bool validSequence(u8* dt, size_t offset);
+
+    virtual int maxSpecies(void) const = 0;
+    virtual int maxMove(void) const    = 0;
+    virtual int maxItem(void) const    = 0;
+    virtual int maxAbility(void) const = 0;
+    virtual int maxBall(void) const    = 0;
 
 public:
     u8 boxes = 0;
@@ -152,14 +165,14 @@ public:
     virtual void fixParty(void); // Has to be overridden by SavLGPE because it works stupidly
 
     virtual int maxSlot(void) const { return maxBoxes() * 30; }
-    virtual int maxBoxes(void) const          = 0;
-    virtual size_t maxWondercards(void) const = 0;
-    virtual int maxSpecies(void) const        = 0;
-    virtual int maxMove(void) const           = 0;
-    virtual int maxItem(void) const           = 0;
-    virtual int maxAbility(void) const        = 0;
-    virtual int maxBall(void) const           = 0;
-    virtual Generation generation(void) const = 0;
+    virtual int maxBoxes(void) const                               = 0;
+    virtual size_t maxWondercards(void) const                      = 0;
+    virtual Generation generation(void) const                      = 0;
+    virtual const std::vector<int>& availableItems(void) const     = 0;
+    virtual const std::vector<int>& availableMoves(void) const     = 0;
+    virtual const std::vector<int>& availableSpecies(void) const   = 0;
+    virtual const std::vector<int>& availableAbilities(void) const = 0;
+    virtual const std::vector<int>& availableBalls(void) const     = 0;
 
     virtual void item(Item& item, Pouch pouch, u16 slot)             = 0;
     virtual std::unique_ptr<Item> item(Pouch pouch, u16 slot) const  = 0;

@@ -59,6 +59,19 @@ static void* strToRet(const std::u16string& str)
     return (void*)ret;
 }
 
+template <typename T>
+static bool contains(const std::vector<T> vec, T check)
+{
+    for (size_t i = 0; i < vec.size(); i++)
+    {
+        if (vec[i] == check)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 extern "C" {
 #include "pksm_api.h"
 
@@ -294,45 +307,40 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
             bool moveBad = false;
             for (int i = 0; i < 4; i++)
             {
-                if (pkm->move(i) > TitleLoader::save->maxMove())
+                if (!contains(TitleLoader::save->availableMoves(), (int)pkm->move(i)))
                 {
                     moveBad = true;
                     break;
                 }
-                if (pkm->relearnMove(i) > TitleLoader::save->maxMove())
+                if (!contains(TitleLoader::save->availableMoves(), (int)pkm->relearnMove(i)))
                 {
                     moveBad = true;
                     break;
                 }
             }
-            if (pkm->species() > TitleLoader::save->maxSpecies())
+            if (moveBad)
             {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_SPECIES"));
                 return;
             }
-            else if (pkm->alternativeForm() > TitleLoader::save->formCount(pkm->species()))
+            else if (!contains(TitleLoader::save->availableSpecies(), (int)pkm->species()))
             {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_FORM"));
                 return;
             }
-            else if (pkm->ability() > TitleLoader::save->maxAbility())
+            else if (pkm->alternativeForm() > TitleLoader::save->formCount(pkm->species()) &&
+                     !((pkm->species() == 664 || pkm->species() == 665) && pkm->alternativeForm() <= TitleLoader::save->formCount(666)))
             {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_ABILITY"));
                 return;
             }
-            else if (pkm->heldItem() > TitleLoader::save->maxItem())
+            else if (!contains(TitleLoader::save->availableAbilities(), (int)pkm->ability()))
             {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_ITEM"));
                 return;
             }
-            else if (pkm->ball() > TitleLoader::save->maxBall())
+            else if (!contains(TitleLoader::save->availableItems(), (int)pkm->heldItem()))
             {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_BALL"));
                 return;
             }
-            else if (moveBad)
+            else if (!contains(TitleLoader::save->availableBalls(), (int)pkm->ball()))
             {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_MOVE"));
                 return;
             }
             TitleLoader::save->pkm(pkm, box, slot, doTradeEdits);
@@ -768,45 +776,40 @@ void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, stru
             bool moveBad = false;
             for (int i = 0; i < 4; i++)
             {
-                if (pkm->move(i) > TitleLoader::save->maxMove())
+                if (!contains(TitleLoader::save->availableMoves(), (int)pkm->move(i)))
                 {
                     moveBad = true;
                     break;
                 }
-                if (pkm->relearnMove(i) > TitleLoader::save->maxMove())
+                if (!contains(TitleLoader::save->availableMoves(), (int)pkm->relearnMove(i)))
                 {
                     moveBad = true;
                     break;
                 }
             }
-            if (pkm->species() > TitleLoader::save->maxSpecies())
+            if (moveBad)
             {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_SPECIES"));
                 return;
             }
-            else if (pkm->alternativeForm() > TitleLoader::save->formCount(pkm->species()))
+            else if (!contains(TitleLoader::save->availableSpecies(), (int)pkm->species()))
             {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_FORM"));
                 return;
             }
-            else if (pkm->ability() > TitleLoader::save->maxAbility())
+            else if (pkm->alternativeForm() > TitleLoader::save->formCount(pkm->species()) &&
+                     !((pkm->species() == 664 || pkm->species() == 665) && pkm->alternativeForm() <= TitleLoader::save->formCount(666)))
             {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_ABILITY"));
                 return;
             }
-            else if (pkm->heldItem() > TitleLoader::save->maxItem())
+            else if (!contains(TitleLoader::save->availableAbilities(), (int)pkm->ability()))
             {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_ITEM"));
                 return;
             }
-            else if (pkm->ball() > TitleLoader::save->maxBall())
+            else if (!contains(TitleLoader::save->availableItems(), (int)pkm->heldItem()))
             {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_BALL"));
                 return;
             }
-            else if (moveBad)
+            else if (!contains(TitleLoader::save->availableBalls(), (int)pkm->ball()))
             {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_MOVE"));
                 return;
             }
             TitleLoader::save->pkm(pkm, slot);
@@ -1002,41 +1005,6 @@ void sav_get_max(struct ParseState* Parser, struct Value* ReturnValue, struct Va
             }
             ReturnValue->Val->Integer = TitleLoader::save->maxWondercards();
             break;
-        case MAX_SPECIES:
-            if (NumArgs != 1)
-            {
-                ProgramFail(Parser, "Incorrect number of args (%i) for MAX_SPECIES", NumArgs);
-            }
-            ReturnValue->Val->Integer = TitleLoader::save->maxSpecies();
-            break;
-        case MAX_MOVE:
-            if (NumArgs != 1)
-            {
-                ProgramFail(Parser, "Incorrect number of args (%i) for MAX_MOVE", NumArgs);
-            }
-            ReturnValue->Val->Integer = TitleLoader::save->maxMove();
-            break;
-        case MAX_ITEM:
-            if (NumArgs != 1)
-            {
-                ProgramFail(Parser, "Incorrect number of args (%i) for MAX_ITEM", NumArgs);
-            }
-            ReturnValue->Val->Integer = TitleLoader::save->maxItem();
-            break;
-        case MAX_ABILITY:
-            if (NumArgs != 1)
-            {
-                ProgramFail(Parser, "Incorrect number of args (%i) for MAX_ABILITY", NumArgs);
-            }
-            ReturnValue->Val->Integer = TitleLoader::save->maxAbility();
-            break;
-        case MAX_BALL:
-            if (NumArgs != 1)
-            {
-                ProgramFail(Parser, "Incorrect number of args (%i) for MAX_BALL", NumArgs);
-            }
-            ReturnValue->Val->Integer = TitleLoader::save->maxBall();
-            break;
         case MAX_FORM:
             if (NumArgs != 2)
             {
@@ -1187,6 +1155,33 @@ void sav_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
         default:
             ProgramFail(Parser, "Field number %i is invalid", (int)field);
             break;
+    }
+}
+
+void sav_check_value(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    SAV_VALUE_CHECK field = SAV_VALUE_CHECK(Param[0]->Val->Integer);
+    int value             = Param[1]->Val->Integer;
+
+    switch (field)
+    {
+        case SAV_VALUE_SPECIES:
+            ReturnValue->Val->Integer = contains(TitleLoader::save->availableSpecies(), (int)value);
+            break;
+        case SAV_VALUE_MOVE:
+            ReturnValue->Val->Integer = contains(TitleLoader::save->availableMoves(), (int)value);
+            break;
+        case SAV_VALUE_ITEM:
+            ReturnValue->Val->Integer = contains(TitleLoader::save->availableItems(), (int)value);
+            break;
+        case SAV_VALUE_ABILITY:
+            ReturnValue->Val->Integer = contains(TitleLoader::save->availableAbilities(), (int)value);
+            break;
+        case SAV_VALUE_BALL:
+            ReturnValue->Val->Integer = contains(TitleLoader::save->availableBalls(), (int)value);
+            break;
+        default:
+            ProgramFail(Parser, "Field number %i is invalid", (int)field);
     }
 }
 

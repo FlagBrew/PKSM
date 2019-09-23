@@ -319,7 +319,7 @@ namespace TextParse
 
     void ScreenText::addText(std::shared_ptr<Text> text, float x, float y, float z, FontSize size, TextPosX textPos, PKSM_Color color)
     {
-        static_assert(std::is_same<FontSize,float>::value);
+        static_assert(std::is_same<FontSize, float>::value);
         static const u8 lineFeed = fontGetInfo(nullptr)->lineFeed;
         if (!text || text->glyphs.empty())
             return;

@@ -66,11 +66,12 @@ MoveOverlay::MoveOverlay(ReplaceableScreen& screen, const std::variant<std::shar
 {
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     const std::vector<std::string>& rawMoves = i18n::rawMoves(Configuration::getInstance().language());
-    for (int i = 1; i <= TitleLoader::save->maxMove(); i++)
+    const std::vector<int>& availableMoves   = TitleLoader::save->availableMoves();
+    for (size_t i = 0; i < availableMoves.size(); i++)
     {
-        if (i >= 622 && i <= 658)
+        if (availableMoves[i] > 622 && availableMoves[i] <= 658)
             continue;
-        moves.emplace_back(i, rawMoves[i]);
+        moves.emplace_back(availableMoves[i], rawMoves[i]);
     }
     static const auto less = [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2) {
         return pair1.second < pair2.second;

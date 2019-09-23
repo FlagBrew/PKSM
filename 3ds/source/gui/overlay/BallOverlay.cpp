@@ -29,6 +29,24 @@
 #include "gui.hpp"
 #include "loader.hpp"
 
+BallOverlay::BallOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm)
+    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
+      pkm(pkm),
+      hid(30, 6),
+      balls(TitleLoader::save->availableBalls())
+{
+    hid.update(24);
+    auto index = std::find(balls.begin(), balls.end(), pkm->ball());
+    if (index != balls.end())
+    {
+        hid.select(std::distance(balls.begin(), index));
+    }
+    else
+    {
+        hid.select(0);
+    }
+}
+
 void BallOverlay::drawBottom() const
 {
     dim();
@@ -48,16 +66,16 @@ void BallOverlay::drawTop() const
     Gui::drawSolidRect(x + 65, y, 1, 47, COLOR_YELLOW);
     Gui::drawSolidRect(x, y + 46, 66, 1, COLOR_YELLOW);
 
-    for (int y = 0; y < 5; y++)
+    for (size_t y = 0; y < 5; y++)
     {
-        for (int x = 0; x < 6; x++)
+        for (size_t x = 0; x < 6; x++)
         {
-            if (x + y * 6 >= TitleLoader::save->maxBall())
+            if (x + y * 6 >= balls.size())
             {
                 break;
             }
             Gui::ball(x + y * 6 + 1, x * 67 + 24, y * 48 + 8);
-            Gui::text(i18n::ball(Configuration::getInstance().language(), x + y * 6), x * 67 + 33, y * 48 + 30, FONT_SIZE_9, COLOR_WHITE,
+            Gui::text(i18n::ball(Configuration::getInstance().language(), balls[x + y * 6]), x * 67 + 33, y * 48 + 30, FONT_SIZE_9, COLOR_WHITE,
                 TextPosX::CENTER, TextPosY::TOP);
         }
     }
@@ -65,7 +83,7 @@ void BallOverlay::drawTop() const
 
 void BallOverlay::update(touchPosition* touch)
 {
-    hid.update(TitleLoader::save->maxBall());
+    hid.update(balls.size());
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {
