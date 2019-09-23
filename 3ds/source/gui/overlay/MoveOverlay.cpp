@@ -69,7 +69,7 @@ MoveOverlay::MoveOverlay(ReplaceableScreen& screen, const std::variant<std::shar
     const std::set<int>& availableMoves      = TitleLoader::save->availableMoves();
     for (auto i = availableMoves.begin(); i != availableMoves.end(); i++)
     {
-        if (*i > 622 && *i <= 658)
+        if (*i >= 622 && *i <= 658)
             continue;
         if (*i == 0)
             continue;
