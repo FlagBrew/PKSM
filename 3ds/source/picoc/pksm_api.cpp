@@ -59,19 +59,6 @@ static void* strToRet(const std::u16string& str)
     return (void*)ret;
 }
 
-template <typename T>
-static bool contains(const std::vector<T> vec, T check)
-{
-    for (size_t i = 0; i < vec.size(); i++)
-    {
-        if (vec[i] == check)
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
 extern "C" {
 #include "pksm_api.h"
 

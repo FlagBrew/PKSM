@@ -661,9 +661,9 @@ const std::set<int>& Sav7::availableItems(void) const
     static std::set<int> ret;
     if (ret.empty())
     {
-        for (int i = 0; i < maxItem(); i++)
+        for (int i = 0; i <= maxItem(); i++)
         {
-            ret.insert(i + 1);
+            ret.insert(i);
         }
     }
     return ret;
@@ -674,9 +674,9 @@ const std::set<int>& Sav7::availableMoves(void) const
     static std::set<int> ret;
     if (ret.empty())
     {
-        for (int i = 0; i < maxMove(); i++)
+        for (int i = 0; i <= maxMove(); i++)
         {
-            ret.insert(i + 1);
+            ret.insert(i);
         }
     }
     return ret;
