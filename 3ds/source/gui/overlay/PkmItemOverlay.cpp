@@ -70,19 +70,18 @@ PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> p
 {
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     const std::vector<std::string>& rawItems = i18n::rawItems(Configuration::getInstance().language());
-    const std::vector<int>& availableItems   = TitleLoader::save->availableItems();
-    for (size_t i = 0; i < availableItems.size(); i++)
+    const std::set<int>& availableItems      = TitleLoader::save->availableItems();
+    for (auto i = availableItems.begin(); i != availableItems.end(); i++)
     {
-        if (availableItems[i] == 0)
+        if (*i == 0)
             continue;
-        else if (rawItems[availableItems[i]].find("\uFF1F\uFF1F\uFF1F") != std::string::npos ||
-                 rawItems[availableItems[i]].find("???") != std::string::npos)
+        else if (rawItems[*i].find("\uFF1F\uFF1F\uFF1F") != std::string::npos || rawItems[*i].find("???") != std::string::npos)
             continue;
-        else if (availableItems[i] >= 807 && availableItems[i] <= 835)
+        else if (*i >= 807 && *i <= 835)
             continue; // Bag Z-Crystals
-        else if (availableItems[i] >= 927 && availableItems[i] <= 932)
+        else if (*i >= 927 && *i <= 932)
             continue; // Bag Z-Crystals
-        items.emplace_back(availableItems[i], rawItems[i]);
+        items.emplace_back(*i, rawItems[*i]);
     }
     std::sort(items.begin(), items.end(), stringComp);
     items.insert(items.begin(), {0, rawItems[0]});

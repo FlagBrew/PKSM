@@ -36,6 +36,7 @@
 #include "mysterygift.hpp"
 #include "utils.hpp"
 #include <memory>
+#include <set>
 #include <stdint.h>
 
 enum Pouch
@@ -54,6 +55,8 @@ enum Pouch
 
 class Sav
 {
+    // Friends so they can use the max functions, as these classes are guaranteed to know what they're doing
+    // This allows for some optimizations in transfer code
     friend class PKX;
     friend class PK4;
     friend class PK5;
@@ -165,14 +168,14 @@ public:
     virtual void fixParty(void); // Has to be overridden by SavLGPE because it works stupidly
 
     virtual int maxSlot(void) const { return maxBoxes() * 30; }
-    virtual int maxBoxes(void) const                               = 0;
-    virtual size_t maxWondercards(void) const                      = 0;
-    virtual Generation generation(void) const                      = 0;
-    virtual const std::vector<int>& availableItems(void) const     = 0;
-    virtual const std::vector<int>& availableMoves(void) const     = 0;
-    virtual const std::vector<int>& availableSpecies(void) const   = 0;
-    virtual const std::vector<int>& availableAbilities(void) const = 0;
-    virtual const std::vector<int>& availableBalls(void) const     = 0;
+    virtual int maxBoxes(void) const                            = 0;
+    virtual size_t maxWondercards(void) const                   = 0;
+    virtual Generation generation(void) const                   = 0;
+    virtual const std::set<int>& availableItems(void) const     = 0;
+    virtual const std::set<int>& availableMoves(void) const     = 0;
+    virtual const std::set<int>& availableSpecies(void) const   = 0;
+    virtual const std::set<int>& availableAbilities(void) const = 0;
+    virtual const std::set<int>& availableBalls(void) const     = 0;
 
     virtual void item(Item& item, Pouch pouch, u16 slot)             = 0;
     virtual std::unique_ptr<Item> item(Pouch pouch, u16 slot) const  = 0;

@@ -32,8 +32,12 @@
 #include <list>
 
 SpeciesOverlay::SpeciesOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& object)
-    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(object), hid(40, 8)
+    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
+      object(object),
+      hid(40, 8),
+      dispPkm(TitleLoader::save->availableSpecies().begin(), TitleLoader::save->availableSpecies().end())
 {
+    std::sort(dispPkm.begin(), dispPkm.end());
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
         [this]() {
@@ -41,7 +45,6 @@ SpeciesOverlay::SpeciesOverlay(ReplaceableScreen& screen, const std::variant<std
             return false;
         },
         ui_sheet_emulated_box_search_idx, "", 0, COLOR_BLACK);
-    dispPkm      = TitleLoader::save->availableSpecies();
     hid.update(dispPkm.size());
     if (TitleLoader::save->generation() != Generation::LGPE)
     {
@@ -144,24 +147,24 @@ void SpeciesOverlay::update(touchPosition* touch)
     searchButton->update(touch);
     if (!searchString.empty() && searchString != oldSearchString)
     {
-        std::list<int> species(TitleLoader::save->availableSpecies().begin(), TitleLoader::save->availableSpecies().end());
         dispPkm.clear();
-        for (auto i = species.begin(); i != species.end(); i++)
+        for (auto i = TitleLoader::save->availableSpecies().begin(); i != TitleLoader::save->availableSpecies().end(); i++)
         {
             std::string speciesName = i18n::species(Configuration::getInstance().language(), *i).substr(0, searchString.size());
             StringUtils::toLower(speciesName);
-            if (speciesName != searchString)
+            if (speciesName == searchString)
             {
-                i = species.erase(i);
-                i--;
+                dispPkm.push_back(*i);
             }
         }
-        dispPkm         = std::vector(species.begin(), species.end());
+        std::sort(dispPkm.begin(), dispPkm.end());
         oldSearchString = searchString;
     }
     else if (searchString.empty() && !oldSearchString.empty())
     {
-        dispPkm         = TitleLoader::save->availableSpecies();
+        dispPkm.clear();
+        dispPkm.insert(dispPkm.begin(), TitleLoader::save->availableSpecies().begin(), TitleLoader::save->availableSpecies().end());
+        std::sort(dispPkm.begin(), dispPkm.end());
         oldSearchString = searchString = "";
     }
     if (hid.fullIndex() >= dispPkm.size())

@@ -573,71 +573,66 @@ std::string Sav5::pouchName(Pouch pouch) const
     }
 }
 
-const std::vector<int>& Sav5::availableItems(void) const
+const std::set<int>& Sav5::availableItems(void) const
 {
-    static std::vector<int> ret;
+    static std::set<int> ret;
     if (ret.empty())
     {
-        ret.reserve(maxItem());
         for (int i = 0; i < maxItem(); i++)
         {
-            ret.push_back(i + 1);
+            ret.insert(i + 1);
         }
     }
     return ret;
 }
 
-const std::vector<int>& Sav5::availableMoves(void) const
+const std::set<int>& Sav5::availableMoves(void) const
 {
-    static std::vector<int> ret;
+    static std::set<int> ret;
     if (ret.empty())
     {
-        ret.reserve(maxMove());
         for (int i = 0; i < maxMove(); i++)
         {
-            ret.push_back(i + 1);
+            ret.insert(i + 1);
         }
     }
     return ret;
 }
 
-const std::vector<int>& Sav5::availableSpecies(void) const
+const std::set<int>& Sav5::availableSpecies(void) const
 {
-    static std::vector<int> ret;
+    static std::set<int> ret;
     if (ret.empty())
     {
-        ret.reserve(maxSpecies());
         for (int i = 1; i <= maxSpecies(); i++)
         {
-            ret.push_back(i);
+            ret.insert(i);
         }
     }
     return ret;
 }
 
-const std::vector<int>& Sav5::availableAbilities(void) const
+const std::set<int>& Sav5::availableAbilities(void) const
 {
-    static std::vector<int> ret;
+    static std::set<int> ret;
     if (ret.empty())
     {
-        ret.reserve(maxAbility());
         for (int i = 1; i <= maxAbility(); i++)
         {
-            ret.push_back(i);
+            ret.insert(i);
         }
     }
     return ret;
 }
 
-const std::vector<int>& Sav5::availableBalls(void) const
+const std::set<int>& Sav5::availableBalls(void) const
 {
-    static std::vector<int> ret;
+    static std::set<int> ret;
     if (ret.empty())
     {
-        ret.reserve(maxBall());
         for (int i = 1; i <= maxBall(); i++)
         {
-            ret.push_back(i);
+            ret.insert(i);
         }
     }
     return ret;

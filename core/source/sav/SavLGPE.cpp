@@ -1131,9 +1131,9 @@ std::string SavLGPE::pouchName(Pouch pouch) const
     }
 }
 
-const std::vector<int>& SavLGPE::availableItems(void) const
+const std::set<int>& SavLGPE::availableItems(void) const
 {
-    static std::vector<int> ret;
+    static std::set<int> ret;
     if (ret.empty())
     {
         ret = {0, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 38, 39, 40, 41, 709, 903, 328, 329, 330, 331, 332, 333, 334, 335,
@@ -1147,14 +1147,13 @@ const std::vector<int>& SavLGPE::availableItems(void) const
             663, 671, 672, 675, 676, 678, 679, 760, 762, 770, 773, 76, 77, 78, 79, 86, 87, 88, 89, 90, 91, 92, 93, 101, 102, 103, 113, 115, 121, 122,
             123, 124, 125, 126, 127, 128, 442, 571, 632, 651, 795, 796, 872, 873, 874, 875, 876, 877, 878, 885, 886, 887, 888, 889, 890, 891, 892,
             893, 894, 895, 896, 900, 901, 902};
-        std::sort(ret.begin(), ret.end());
     }
     return ret;
 }
 
-const std::vector<int>& SavLGPE::availableMoves(void) const
+const std::set<int>& SavLGPE::availableMoves(void) const
 {
-    static std::vector<int> ret;
+    static std::set<int> ret;
     if (ret.empty())
     {
         ret = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
@@ -1165,50 +1164,46 @@ const std::vector<int>& SavLGPE::availableMoves(void) const
             157, 158, 159, 160, 161, 162, 163, 164, 182, 188, 200, 224, 227, 231, 242, 243, 247, 252, 257, 261, 263, 269, 270, 276, 280, 281, 339,
             347, 355, 364, 369, 389, 394, 398, 399, 403, 404, 405, 406, 417, 420, 430, 438, 446, 453, 483, 492, 499, 503, 504, 525, 529, 583, 585,
             603, 605, 606, 607, 729, 730, 731, 733, 734, 735, 736, 737, 738, 739, 740, 742};
-        std::sort(ret.begin(), ret.end());
     }
     return ret;
 }
 
-const std::vector<int>& SavLGPE::availableSpecies(void) const
+const std::set<int>& SavLGPE::availableSpecies(void) const
 {
-    static std::vector<int> ret;
+    static std::set<int> ret;
     if (ret.empty())
     {
-        ret.reserve(153);
         for (int i = 0; i < 151; i++)
         {
-            ret.push_back(i + 1);
+            ret.insert(i + 1);
         }
-        ret.push_back(808);
-        ret.push_back(809);
+        ret.insert(808);
+        ret.insert(809);
     }
     return ret;
 }
 
-const std::vector<int>& SavLGPE::availableAbilities(void) const
+const std::set<int>& SavLGPE::availableAbilities(void) const
 {
-    static std::vector<int> ret;
+    static std::set<int> ret;
     if (ret.empty())
     {
-        ret.reserve(maxAbility());
         for (int i = 1; i <= maxAbility(); i++)
         {
-            ret.push_back(i);
+            ret.insert(i);
         }
     }
     return ret;
 }
 
-const std::vector<int>& SavLGPE::availableBalls(void) const
+const std::set<int>& SavLGPE::availableBalls(void) const
 {
-    static std::vector<int> ret;
+    static std::set<int> ret;
     if (ret.empty())
     {
-        ret.reserve(maxBall());
         for (int i = 1; i <= maxBall(); i++)
         {
-            ret.push_back(i);
+            ret.insert(i);
         }
     }
     return ret;

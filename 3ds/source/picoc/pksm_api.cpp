@@ -307,12 +307,12 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
             bool moveBad = false;
             for (int i = 0; i < 4; i++)
             {
-                if (!contains(TitleLoader::save->availableMoves(), (int)pkm->move(i)))
+                if (TitleLoader::save->availableMoves().count(pkm->move(i)) == 0)
                 {
                     moveBad = true;
                     break;
                 }
-                if (!contains(TitleLoader::save->availableMoves(), (int)pkm->relearnMove(i)))
+                if (TitleLoader::save->availableMoves().count(pkm->relearnMove(i)) == 0)
                 {
                     moveBad = true;
                     break;
@@ -322,7 +322,7 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
             {
                 return;
             }
-            else if (!contains(TitleLoader::save->availableSpecies(), (int)pkm->species()))
+            else if (TitleLoader::save->availableSpecies().count(pkm->species()) == 0)
             {
                 return;
             }
@@ -331,15 +331,15 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
             {
                 return;
             }
-            else if (!contains(TitleLoader::save->availableAbilities(), (int)pkm->ability()))
+            else if (TitleLoader::save->availableAbilities().count(pkm->ability()) == 0)
             {
                 return;
             }
-            else if (!contains(TitleLoader::save->availableItems(), (int)pkm->heldItem()))
+            else if (TitleLoader::save->availableItems().count(pkm->heldItem()) == 0)
             {
                 return;
             }
-            else if (!contains(TitleLoader::save->availableBalls(), (int)pkm->ball()))
+            else if (TitleLoader::save->availableBalls().count(pkm->ball()) == 0)
             {
                 return;
             }
@@ -776,12 +776,12 @@ void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, stru
             bool moveBad = false;
             for (int i = 0; i < 4; i++)
             {
-                if (!contains(TitleLoader::save->availableMoves(), (int)pkm->move(i)))
+                if (TitleLoader::save->availableMoves().count(pkm->move(i)) == 0)
                 {
                     moveBad = true;
                     break;
                 }
-                if (!contains(TitleLoader::save->availableMoves(), (int)pkm->relearnMove(i)))
+                if (TitleLoader::save->availableMoves().count(pkm->relearnMove(i)) == 0)
                 {
                     moveBad = true;
                     break;
@@ -791,7 +791,7 @@ void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, stru
             {
                 return;
             }
-            else if (!contains(TitleLoader::save->availableSpecies(), (int)pkm->species()))
+            else if (TitleLoader::save->availableSpecies().count(pkm->species()) == 0)
             {
                 return;
             }
@@ -800,15 +800,15 @@ void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, stru
             {
                 return;
             }
-            else if (!contains(TitleLoader::save->availableAbilities(), (int)pkm->ability()))
+            else if (TitleLoader::save->availableAbilities().count(pkm->ability()) == 0)
             {
                 return;
             }
-            else if (!contains(TitleLoader::save->availableItems(), (int)pkm->heldItem()))
+            else if (TitleLoader::save->availableItems().count(pkm->heldItem()) == 0)
             {
                 return;
             }
-            else if (!contains(TitleLoader::save->availableBalls(), (int)pkm->ball()))
+            else if (TitleLoader::save->availableBalls().count(pkm->ball()) == 0)
             {
                 return;
             }
@@ -1166,19 +1166,19 @@ void sav_check_value(struct ParseState* Parser, struct Value* ReturnValue, struc
     switch (field)
     {
         case SAV_VALUE_SPECIES:
-            ReturnValue->Val->Integer = contains(TitleLoader::save->availableSpecies(), (int)value);
+            ReturnValue->Val->Integer = TitleLoader::save->availableSpecies().count(value);
             break;
         case SAV_VALUE_MOVE:
-            ReturnValue->Val->Integer = contains(TitleLoader::save->availableMoves(), (int)value);
+            ReturnValue->Val->Integer = TitleLoader::save->availableMoves().count(value);
             break;
         case SAV_VALUE_ITEM:
-            ReturnValue->Val->Integer = contains(TitleLoader::save->availableItems(), (int)value);
+            ReturnValue->Val->Integer = TitleLoader::save->availableItems().count(value);
             break;
         case SAV_VALUE_ABILITY:
-            ReturnValue->Val->Integer = contains(TitleLoader::save->availableAbilities(), (int)value);
+            ReturnValue->Val->Integer = TitleLoader::save->availableAbilities().count(value);
             break;
         case SAV_VALUE_BALL:
-            ReturnValue->Val->Integer = contains(TitleLoader::save->availableBalls(), (int)value);
+            ReturnValue->Val->Integer = TitleLoader::save->availableBalls().count(value);
             break;
         default:
             ProgramFail(Parser, "Field number %i is invalid", (int)field);

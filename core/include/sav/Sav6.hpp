@@ -36,6 +36,11 @@ class Sav6 : public Sav
 {
 protected:
     int TrainerCard, Trainer2, PlayTime, LastViewedBox, PokeDexLanguageFlags, EncounterCount, PCLayout;
+    int maxSpecies(void) const override { return 721; }
+    int maxMove(void) const override { return game == Game::XY ? 617 : 621; }
+    int maxItem(void) const override { return game == Game::XY ? 717 : 775; }
+    int maxAbility(void) const override { return game == Game::XY ? 188 : 191; }
+    int maxBall(void) const override { return 0x19; }
 
 private:
     int dexFormIndex(int species, int formct) const;
@@ -106,11 +111,11 @@ public:
     int maxBoxes(void) const override { return 31; }
     size_t maxWondercards(void) const override { return 24; }
     Generation generation(void) const override { return Generation::SIX; }
-    const std::vector<int>& availableItems(void) const override;
-    const std::vector<int>& availableMoves(void) const override;
-    const std::vector<int>& availableSpecies(void) const override;
-    const std::vector<int>& availableAbilities(void) const override;
-    const std::vector<int>& availableBalls(void) const override;
+    const std::set<int>& availableItems(void) const override;
+    const std::set<int>& availableMoves(void) const override;
+    const std::set<int>& availableSpecies(void) const override;
+    const std::set<int>& availableAbilities(void) const override;
+    const std::set<int>& availableBalls(void) const override;
 
     void item(Item& item, Pouch pouch, u16 slot) override;
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
@@ -119,13 +124,6 @@ public:
     std::string pouchName(Pouch pouch) const override;
 
     u8 formCount(u16 species) const override { return PersonalXYORAS::formCount(species); }
-
-protected:
-    int maxSpecies(void) const override { return 721; }
-    int maxMove(void) const override { return game == Game::XY ? 617 : 621; }
-    int maxItem(void) const override { return game == Game::XY ? 717 : 775; }
-    int maxAbility(void) const override { return game == Game::XY ? 188 : 191; }
-    int maxBall(void) const override { return 0x19; }
 };
 
 #endif
