@@ -71,6 +71,8 @@ MoveOverlay::MoveOverlay(ReplaceableScreen& screen, const std::variant<std::shar
     {
         if (availableMoves[i] > 622 && availableMoves[i] <= 658)
             continue;
+        if (availableMoves[i] == 0)
+            continue;
         moves.emplace_back(availableMoves[i], rawMoves[i]);
     }
     static const auto less = [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2) {

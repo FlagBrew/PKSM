@@ -607,9 +607,9 @@ const std::vector<int>& Sav5::availableSpecies(void) const
     if (ret.empty())
     {
         ret.reserve(maxSpecies());
-        for (int i = 0; i < maxSpecies(); i++)
+        for (int i = 1; i <= maxSpecies(); i++)
         {
-            ret.push_back(i + 1);
+            ret.push_back(i);
         }
     }
     return ret;
@@ -621,9 +621,9 @@ const std::vector<int>& Sav5::availableAbilities(void) const
     if (ret.empty())
     {
         ret.reserve(maxAbility());
-        for (int i = 0; i < maxAbility(); i++)
+        for (int i = 1; i <= maxAbility(); i++)
         {
-            ret.push_back(i + 1);
+            ret.push_back(i);
         }
     }
     return ret;
@@ -635,9 +635,9 @@ const std::vector<int>& Sav5::availableBalls(void) const
     if (ret.empty())
     {
         ret.reserve(maxBall());
-        for (int i = 0; i < maxBall(); i++)
+        for (int i = 1; i <= maxBall(); i++)
         {
-            ret.push_back(i + 1);
+            ret.push_back(i);
         }
     }
     return ret;

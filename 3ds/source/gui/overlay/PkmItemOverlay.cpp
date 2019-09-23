@@ -75,8 +75,8 @@ PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> p
     {
         if (availableItems[i] == 0)
             continue;
-        if (rawItems[availableItems[i]].find("\uFF1F\uFF1F\uFF1F") != std::string::npos ||
-            rawItems[availableItems[i]].find("???") != std::string::npos)
+        else if (rawItems[availableItems[i]].find("\uFF1F\uFF1F\uFF1F") != std::string::npos ||
+                 rawItems[availableItems[i]].find("???") != std::string::npos)
             continue;
         else if (availableItems[i] >= 807 && availableItems[i] <= 835)
             continue; // Bag Z-Crystals
@@ -102,7 +102,7 @@ PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> p
             itemIndex--;
         }
     }
-    hid.select(index(items, i18n::item(Configuration::getInstance().language(), pkm->heldItem())));
+    hid.select(itemIndex);
     searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
         [this]() {
             searchBar();
